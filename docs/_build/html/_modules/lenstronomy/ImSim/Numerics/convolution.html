@@ -1,0 +1,455 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lenstronomy.ImSim.Numerics.convolution &#8212; lenstronomy 1.10.3 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css" />
+    
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.ImSim.Numerics.convolution</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for lenstronomy.ImSim.Numerics.convolution</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">fftpack</span><span class="p">,</span> <span class="n">ndimage</span><span class="p">,</span> <span class="n">signal</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">lenstronomy.Util.kernel_util</span> <span class="k">as</span> <span class="nn">kernel_util</span>
+<span class="kn">import</span> <span class="nn">lenstronomy.Util.util</span> <span class="k">as</span> <span class="nn">util</span>
+<span class="kn">import</span> <span class="nn">lenstronomy.Util.image_util</span> <span class="k">as</span> <span class="nn">image_util</span>
+
+<span class="kn">from</span> <span class="nn">lenstronomy.Util.package_util</span> <span class="kn">import</span> <span class="n">exporter</span>
+<span class="n">export</span><span class="p">,</span> <span class="n">__all__</span> <span class="o">=</span> <span class="n">exporter</span><span class="p">()</span>
+
+<span class="n">_rfft_mt_safe</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># (NumpyVersion(np.__version__) &gt;= &#39;1.9.0.dev-e24486e&#39;)</span>
+<span class="n">_rfft_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+
+
+
+
+<span class="k">def</span> <span class="nf">_centered</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">newshape</span><span class="p">):</span>
+    <span class="c1"># Return the center newshape portion of the array.</span>
+    <span class="n">newshape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">newshape</span><span class="p">)</span>
+    <span class="n">currshape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">startind</span> <span class="o">=</span> <span class="p">(</span><span class="n">currshape</span> <span class="o">-</span> <span class="n">newshape</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+    <span class="n">endind</span> <span class="o">=</span> <span class="n">startind</span> <span class="o">+</span> <span class="n">newshape</span>
+    <span class="n">myslice</span> <span class="o">=</span> <span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="n">startind</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">endind</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">endind</span><span class="p">))]</span>
+    <span class="k">return</span> <span class="n">arr</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">myslice</span><span class="p">)]</span>
+
+
+<div class="viewcode-block" id="PixelKernelConvolution"><a class="viewcode-back" href="../../../../lenstronomy.ImSim.Numerics.html#lenstronomy.ImSim.Numerics.convolution.PixelKernelConvolution">[docs]</a><span class="nd">@export</span>
+<span class="k">class</span> <span class="nc">PixelKernelConvolution</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    class to compute convolutions for a given pixelized kernel (fft, grid)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">convolution_type</span><span class="o">=</span><span class="s1">&#39;fft_static&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param kernel: 2d array, convolution kernel</span>
+<span class="sd">        :param convolution_type: string, &#39;fft&#39;, &#39;grid&#39;, &#39;fft_static&#39; mode of 2d convolution</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_kernel</span> <span class="o">=</span> <span class="n">kernel</span>
+        <span class="k">if</span> <span class="n">convolution_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;fft&#39;</span><span class="p">,</span> <span class="s1">&#39;grid&#39;</span><span class="p">,</span> <span class="s1">&#39;fft_static&#39;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;convolution_type </span><span class="si">%s</span><span class="s1"> not supported!&#39;</span> <span class="o">%</span> <span class="n">convolution_type</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_type</span> <span class="o">=</span> <span class="n">convolution_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pre_computed</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="PixelKernelConvolution.pixel_kernel"><a class="viewcode-back" href="../../../../lenstronomy.ImSim.Numerics.html#lenstronomy.ImSim.Numerics.convolution.PixelKernelConvolution.pixel_kernel">[docs]</a>    <span class="k">def</span> <span class="nf">pixel_kernel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_pix</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        access pixelated kernel</span>
+
+<span class="sd">        :param num_pix: size of returned kernel (odd number per axis). If None, return the original kernel.</span>
+<span class="sd">        :return: pixel kernel centered</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">num_pix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">cut_psf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_kernel</span><span class="p">,</span> <span class="n">num_pix</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kernel</span></div>
+
+<div class="viewcode-block" id="PixelKernelConvolution.copy_transpose"><a class="viewcode-back" href="../../../../lenstronomy.ImSim.Numerics.html#lenstronomy.ImSim.Numerics.convolution.PixelKernelConvolution.copy_transpose">[docs]</a>    <span class="k">def</span> <span class="nf">copy_transpose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        :return: copy of the class with kernel set to the transpose of original one</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">PixelKernelConvolution</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_kernel</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">convolution_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_type</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PixelKernelConvolution.convolution2d"><a class="viewcode-back" href="../../../../lenstronomy.ImSim.Numerics.html#lenstronomy.ImSim.Numerics.convolution.PixelKernelConvolution.convolution2d">[docs]</a>    <span class="k">def</span> <span class="nf">convolution2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param image: 2d array (image) to be convolved</span>
+<span class="sd">        :return: fft convolution</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_type</span> <span class="o">==</span> <span class="s1">&#39;fft&#39;</span><span class="p">:</span>
+            <span class="n">image_conv</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">fftconvolve</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kernel</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_type</span> <span class="o">==</span> <span class="s1">&#39;fft_static&#39;</span><span class="p">:</span>
+            <span class="n">image_conv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_static_fft</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_type</span> <span class="o">==</span> <span class="s1">&#39;grid&#39;</span><span class="p">:</span>
+            <span class="n">image_conv</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">convolve2d</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kernel</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;convolution_type </span><span class="si">%s</span><span class="s1"> not supported!&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_type</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">image_conv</span></div>
+
+    <span class="k">def</span> <span class="nf">_static_fft</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        scipy fft convolution with saved static fft kernel</span>
+
+<span class="sd">        :param image: 2d numpy array to be convolved</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">in1</span> <span class="o">=</span> <span class="n">image</span>
+        <span class="n">in1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">in1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pre_computed</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_s1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fshape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fslice</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sp2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_static_pre_compute</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pre_computed</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">complex_result</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">fshape</span><span class="p">,</span> <span class="n">fslice</span><span class="p">,</span> <span class="n">sp2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fshape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fslice</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sp2</span>
+        <span class="c1"># if in1.ndim == in2.ndim == 0:  # scalar inputs</span>
+        <span class="c1">#    return in1 * in2</span>
+        <span class="c1"># elif not in1.ndim == in2.ndim:</span>
+        <span class="c1">#    raise ValueError(&quot;in1 and in2 should have the same dimensionality&quot;)</span>
+        <span class="c1"># elif in1.size == 0 or in2.size == 0:  # empty arrays</span>
+        <span class="c1">#    return np.array([])</span>
+
+        <span class="c1"># Check that input sizes are compatible with &#39;valid&#39; mode</span>
+        <span class="c1"># if _inputs_swap_needed(mode, s1, s2):</span>
+            <span class="c1"># Convolution is commutative; order doesn&#39;t have any effect on output</span>
+            <span class="c1"># only applicable for &#39;valid&#39; mode</span>
+        <span class="c1">#    in1, s1, in2, s2 = in2, s2, in1, s1</span>
+
+        <span class="c1"># Pre-1.9 NumPy FFT routines are not threadsafe.  For older NumPys, make</span>
+        <span class="c1"># sure we only call rfftn/irfftn from one thread at a time.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">complex_result</span> <span class="ow">and</span> <span class="p">(</span><span class="n">_rfft_mt_safe</span> <span class="ow">or</span> <span class="n">_rfft_lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">(</span><span class="kc">False</span><span class="p">)):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">sp1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">rfftn</span><span class="p">(</span><span class="n">in1</span><span class="p">,</span> <span class="n">fshape</span><span class="p">)</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">irfftn</span><span class="p">(</span><span class="n">sp1</span> <span class="o">*</span> <span class="n">sp2</span><span class="p">,</span> <span class="n">fshape</span><span class="p">)[</span><span class="n">fslice</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+            <span class="k">finally</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">_rfft_mt_safe</span><span class="p">:</span>
+                    <span class="n">_rfft_lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># If we&#39;re here, it&#39;s either because we need a complex result, or we</span>
+            <span class="c1"># failed to acquire _rfft_lock (meaning rfftn isn&#39;t threadsafe and</span>
+            <span class="c1"># is already in use by another thread).  In either case, use the</span>
+            <span class="c1"># (threadsafe but slower) SciPy complex-FFT routines instead.</span>
+            <span class="n">sp1</span> <span class="o">=</span> <span class="n">fftpack</span><span class="o">.</span><span class="n">fftn</span><span class="p">(</span><span class="n">in1</span><span class="p">,</span> <span class="n">fshape</span><span class="p">)</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="n">fftpack</span><span class="o">.</span><span class="n">ifftn</span><span class="p">(</span><span class="n">sp1</span> <span class="o">*</span> <span class="n">sp2</span><span class="p">)[</span><span class="n">fslice</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">complex_result</span><span class="p">:</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="n">ret</span><span class="o">.</span><span class="n">real</span>
+
+        <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;full&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ret</span>
+        <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;same&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_centered</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">s1</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;valid&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_centered</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">s1</span> <span class="o">-</span> <span class="n">s2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Acceptable mode flags are &#39;valid&#39;,&quot;</span>
+                             <span class="s2">&quot; &#39;same&#39;, or &#39;full&#39;.&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_static_pre_compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        pre-compute Fourier transformed kernel and shape quantities to speed up convolution</span>
+
+<span class="sd">        :param image: 2d numpy array</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">in1</span> <span class="o">=</span> <span class="n">image</span>
+        <span class="n">in2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kernel</span>
+        <span class="n">s1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">in1</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">s2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">in2</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">complex_result</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">in1</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">complexfloating</span><span class="p">)</span> <span class="ow">or</span>
+                          <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">in2</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">complexfloating</span><span class="p">))</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">s1</span> <span class="o">+</span> <span class="n">s2</span> <span class="o">-</span> <span class="mi">1</span>
+
+        <span class="c1"># Check that input sizes are compatible with &#39;valid&#39; mode</span>
+        <span class="c1"># if _inputs_swap_needed(mode, s1, s2):</span>
+        <span class="c1"># Convolution is commutative; order doesn&#39;t have any effect on output</span>
+        <span class="c1"># only applicable for &#39;valid&#39; mode</span>
+        <span class="c1">#    in1, s1, in2, s2 = in2, s2, in1, s1</span>
+
+        <span class="c1"># Speed up FFT by padding to optimal size for FFTPACK</span>
+        <span class="n">fshape</span> <span class="o">=</span> <span class="p">[</span><span class="n">fftpack</span><span class="o">.</span><span class="n">helper</span><span class="o">.</span><span class="n">next_fast_len</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">d</span><span class="p">))</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">shape</span><span class="p">]</span>
+        <span class="n">fslice</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="nb">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">sz</span><span class="p">))</span> <span class="k">for</span> <span class="n">sz</span> <span class="ow">in</span> <span class="n">shape</span><span class="p">])</span>
+        <span class="c1"># Pre-1.9 NumPy FFT routines are not threadsafe.  For older NumPys, make</span>
+        <span class="c1"># sure we only call rfftn/irfftn from one thread at a time.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">complex_result</span> <span class="ow">and</span> <span class="p">(</span><span class="n">_rfft_mt_safe</span> <span class="ow">or</span> <span class="n">_rfft_lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">(</span><span class="kc">False</span><span class="p">)):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">sp2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">rfftn</span><span class="p">(</span><span class="n">in2</span><span class="p">,</span> <span class="n">fshape</span><span class="p">)</span>
+            <span class="k">finally</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">_rfft_mt_safe</span><span class="p">:</span>
+                    <span class="n">_rfft_lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># If we&#39;re here, it&#39;s either because we need a complex result, or we</span>
+            <span class="c1"># failed to acquire _rfft_lock (meaning rfftn isn&#39;t threadsafe and</span>
+            <span class="c1"># is already in use by another thread).  In either case, use the</span>
+            <span class="c1"># (threadsafe but slower) SciPy complex-FFT routines instead.</span>
+            <span class="n">sp2</span> <span class="o">=</span> <span class="n">fftpack</span><span class="o">.</span><span class="n">fftn</span><span class="p">(</span><span class="n">in2</span><span class="p">,</span> <span class="n">fshape</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">complex_result</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">fshape</span><span class="p">,</span> <span class="n">fslice</span><span class="p">,</span> <span class="n">sp2</span>
+
+<div class="viewcode-block" id="PixelKernelConvolution.re_size_convolve"><a class="viewcode-back" href="../../../../lenstronomy.ImSim.Numerics.html#lenstronomy.ImSim.Numerics.convolution.PixelKernelConvolution.re_size_convolve">[docs]</a>    <span class="k">def</span> <span class="nf">re_size_convolve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_low_res</span><span class="p">,</span> <span class="n">image_high_res</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param image_low_res: regular sampled image/model</span>
+<span class="sd">        :param image_high_res: supersampled image/model to be convolved on a regular pixel grid</span>
+<span class="sd">        :return: convolved and re-sized image</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">convolution2d</span><span class="p">(</span><span class="n">image_low_res</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="SubgridKernelConvolution"><a class="viewcode-back" href="../../../../lenstronomy.ImSim.Numerics.html#lenstronomy.ImSim.Numerics.convolution.SubgridKernelConvolution">[docs]</a><span class="nd">@export</span>
+<span class="k">class</span> <span class="nc">SubgridKernelConvolution</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    class to compute the convolution on a supersampled grid with partial convolution computed on the regular grid</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kernel_supersampled</span><span class="p">,</span> <span class="n">supersampling_factor</span><span class="p">,</span> <span class="n">supersampling_kernel_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">convolution_type</span><span class="o">=</span><span class="s1">&#39;fft_static&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param kernel_supersampled: kernel in supersampled pixels</span>
+<span class="sd">        :param supersampling_factor: supersampling factor relative to the image pixel grid</span>
+<span class="sd">        :param supersampling_kernel_size: number of pixels (in units of the image pixels) that are convolved with the</span>
+<span class="sd">        supersampled kernel</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># n_high = len(kernel_supersampled)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_supersampling_factor</span> <span class="o">=</span> <span class="n">supersampling_factor</span>
+        <span class="c1"># numPix = int(n_high / self._supersampling_factor)</span>
+        <span class="c1"># if self._supersampling_factor % 2 == 0:</span>
+        <span class="c1">#    self._kernel = kernel_util.averaging_even_kernel(kernel_supersampled, self._supersampling_factor)</span>
+        <span class="c1"># else:</span>
+        <span class="c1">#    self._kernel = util.averaging(kernel_supersampled, numGrid=n_high, numPix=numPix)</span>
+        <span class="k">if</span> <span class="n">supersampling_kernel_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kernel_low_res</span><span class="p">,</span> <span class="n">kernel_high_res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span> <span class="n">kernel_supersampled</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_low_res_convolution</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">kernel_low_res</span><span class="p">,</span> <span class="n">kernel_high_res</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">split_kernel</span><span class="p">(</span><span class="n">kernel_supersampled</span><span class="p">,</span> <span class="n">supersampling_kernel_size</span><span class="p">,</span>
+                                                                       <span class="bp">self</span><span class="o">.</span><span class="n">_supersampling_factor</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_low_res_convolution</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_low_res_conv</span> <span class="o">=</span> <span class="n">PixelKernelConvolution</span><span class="p">(</span><span class="n">kernel_low_res</span><span class="p">,</span> <span class="n">convolution_type</span><span class="o">=</span><span class="n">convolution_type</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_high_res_conv</span> <span class="o">=</span> <span class="n">PixelKernelConvolution</span><span class="p">(</span><span class="n">kernel_high_res</span><span class="p">,</span> <span class="n">convolution_type</span><span class="o">=</span><span class="n">convolution_type</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SubgridKernelConvolution.convolution2d"><a class="viewcode-back" href="../../../../lenstronomy.ImSim.Numerics.html#lenstronomy.ImSim.Numerics.convolution.SubgridKernelConvolution.convolution2d">[docs]</a>    <span class="k">def</span> <span class="nf">convolution2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param image: 2d array (high resoluton image) to be convolved and re-sized</span>
+<span class="sd">        :return: convolved image</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">image_high_res_conv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_high_res_conv</span><span class="o">.</span><span class="n">convolution2d</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+        <span class="n">image_resized_conv</span> <span class="o">=</span> <span class="n">image_util</span><span class="o">.</span><span class="n">re_size</span><span class="p">(</span><span class="n">image_high_res_conv</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supersampling_factor</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_low_res_convolution</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">image_resized</span> <span class="o">=</span> <span class="n">image_util</span><span class="o">.</span><span class="n">re_size</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supersampling_factor</span><span class="p">)</span>
+            <span class="n">image_resized_conv</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_low_res_conv</span><span class="o">.</span><span class="n">convolution2d</span><span class="p">(</span><span class="n">image_resized</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">image_resized_conv</span></div>
+
+<div class="viewcode-block" id="SubgridKernelConvolution.re_size_convolve"><a class="viewcode-back" href="../../../../lenstronomy.ImSim.Numerics.html#lenstronomy.ImSim.Numerics.convolution.SubgridKernelConvolution.re_size_convolve">[docs]</a>    <span class="k">def</span> <span class="nf">re_size_convolve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_low_res</span><span class="p">,</span> <span class="n">image_high_res</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param image_high_res: supersampled image/model to be convolved on a regular pixel grid</span>
+<span class="sd">        :return: convolved and re-sized image</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">image_high_res_conv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_high_res_conv</span><span class="o">.</span><span class="n">convolution2d</span><span class="p">(</span><span class="n">image_high_res</span><span class="p">)</span>
+        <span class="n">image_resized_conv</span> <span class="o">=</span> <span class="n">image_util</span><span class="o">.</span><span class="n">re_size</span><span class="p">(</span><span class="n">image_high_res_conv</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supersampling_factor</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_low_res_convolution</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">image_resized_conv</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_low_res_conv</span><span class="o">.</span><span class="n">convolution2d</span><span class="p">(</span><span class="n">image_low_res</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">image_resized_conv</span></div></div>
+
+
+<div class="viewcode-block" id="MultiGaussianConvolution"><a class="viewcode-back" href="../../../../lenstronomy.ImSim.Numerics.html#lenstronomy.ImSim.Numerics.convolution.MultiGaussianConvolution">[docs]</a><span class="nd">@export</span>
+<span class="k">class</span> <span class="nc">MultiGaussianConvolution</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    class to perform a convolution consisting of multiple 2d Gaussians</span>
+<span class="sd">    This is aimed to lead to a speed-up without significant loss of accuracy do to the simplified convolution kernel</span>
+<span class="sd">    relative to a pixelized kernel.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sigma_list</span><span class="p">,</span> <span class="n">fraction_list</span><span class="p">,</span> <span class="n">pixel_scale</span><span class="p">,</span> <span class="n">supersampling_factor</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">supersampling_convolution</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">truncation</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param sigma_list: list of std value of Gaussian kernel</span>
+<span class="sd">        :param fraction_list: fraction of flux to be convoled with each Gaussian kernel</span>
+<span class="sd">        :param pixel_scale: scale of pixel width (to convert sigmas into units of pixels)</span>
+<span class="sd">        :param truncation: float. Truncate the filter at this many standard deviations.</span>
+<span class="sd">        Default is 4.0.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num_gaussians</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sigma_list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sigmas_scaled</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sigma_list</span><span class="p">)</span> <span class="o">/</span> <span class="n">pixel_scale</span>
+        <span class="k">if</span> <span class="n">supersampling_convolution</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sigmas_scaled</span> <span class="o">*=</span> <span class="n">supersampling_factor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fraction_list</span> <span class="o">=</span> <span class="n">fraction_list</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">fraction_list</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sigmas_scaled</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fraction_list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_truncation</span> <span class="o">=</span> <span class="n">truncation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pixel_scale</span> <span class="o">=</span> <span class="n">pixel_scale</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_supersampling_factor</span> <span class="o">=</span> <span class="n">supersampling_factor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_supersampling_convolution</span> <span class="o">=</span> <span class="n">supersampling_convolution</span>
+
+<div class="viewcode-block" id="MultiGaussianConvolution.convolution2d"><a class="viewcode-back" href="../../../../lenstronomy.ImSim.Numerics.html#lenstronomy.ImSim.Numerics.convolution.MultiGaussianConvolution.convolution2d">[docs]</a>    <span class="k">def</span> <span class="nf">convolution2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        2d convolution</span>
+
+<span class="sd">        :param image: 2d numpy array, image to be convolved</span>
+<span class="sd">        :return: convolved image, 2d numpy array</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">image_conv</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_gaussians</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">image_conv</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">image_conv</span> <span class="o">=</span> <span class="n">ndimage</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">gaussian_filter</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sigmas_scaled</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span>
+                                                             <span class="n">truncate</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_truncation</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fraction_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">image_conv</span> <span class="o">+=</span> <span class="n">ndimage</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">gaussian_filter</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sigmas_scaled</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span>
+                                                              <span class="n">truncate</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_truncation</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fraction_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">image_conv</span></div>
+
+<div class="viewcode-block" id="MultiGaussianConvolution.re_size_convolve"><a class="viewcode-back" href="../../../../lenstronomy.ImSim.Numerics.html#lenstronomy.ImSim.Numerics.convolution.MultiGaussianConvolution.re_size_convolve">[docs]</a>    <span class="k">def</span> <span class="nf">re_size_convolve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_low_res</span><span class="p">,</span> <span class="n">image_high_res</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param image_high_res: supersampled image/model to be convolved on a regular pixel grid</span>
+<span class="sd">        :return: convolved and re-sized image</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supersampling_convolution</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">image_high_res_conv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convolution2d</span><span class="p">(</span><span class="n">image_high_res</span><span class="p">)</span>
+            <span class="n">image_resized_conv</span> <span class="o">=</span> <span class="n">image_util</span><span class="o">.</span><span class="n">re_size</span><span class="p">(</span><span class="n">image_high_res_conv</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supersampling_factor</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">image_resized_conv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convolution2d</span><span class="p">(</span><span class="n">image_low_res</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">image_resized_conv</span></div>
+
+<div class="viewcode-block" id="MultiGaussianConvolution.pixel_kernel"><a class="viewcode-back" href="../../../../lenstronomy.ImSim.Numerics.html#lenstronomy.ImSim.Numerics.convolution.MultiGaussianConvolution.pixel_kernel">[docs]</a>    <span class="k">def</span> <span class="nf">pixel_kernel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_pix</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        computes a pixelized kernel from the MGE parameters</span>
+
+<span class="sd">        :param num_pix: int, size of kernel (odd number per axis)</span>
+<span class="sd">        :return: pixel kernel centered</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">lenstronomy.LightModel.Profiles.gaussian</span> <span class="kn">import</span> <span class="n">MultiGaussian</span>
+        <span class="n">mg</span> <span class="o">=</span> <span class="n">MultiGaussian</span><span class="p">()</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">make_grid</span><span class="p">(</span><span class="n">numPix</span><span class="o">=</span><span class="n">num_pix</span><span class="p">,</span> <span class="n">deltapix</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_pixel_scale</span><span class="p">)</span>
+        <span class="n">kernel</span> <span class="o">=</span> <span class="n">mg</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">amp</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_fraction_list</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_sigmas_scaled</span><span class="p">)</span>
+        <span class="n">kernel</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">kernel</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="FWHMGaussianConvolution"><a class="viewcode-back" href="../../../../lenstronomy.ImSim.Numerics.html#lenstronomy.ImSim.Numerics.convolution.FWHMGaussianConvolution">[docs]</a><span class="nd">@export</span>
+<span class="k">class</span> <span class="nc">FWHMGaussianConvolution</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    uses a two-dimensional Gaussian function with same FWHM of given kernel as approximation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">truncation</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param kernel: 2d kernel</span>
+<span class="sd">        :param truncation: sigma scaling of kernel truncation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fwhm</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">fwhm_kernel</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sigma</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">fwhm2sigma</span><span class="p">(</span><span class="n">fwhm</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_truncation</span> <span class="o">=</span> <span class="n">truncation</span>
+
+<div class="viewcode-block" id="FWHMGaussianConvolution.convolution2d"><a class="viewcode-back" href="../../../../lenstronomy.ImSim.Numerics.html#lenstronomy.ImSim.Numerics.convolution.FWHMGaussianConvolution.convolution2d">[docs]</a>    <span class="k">def</span> <span class="nf">convolution2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        2d convolution</span>
+
+<span class="sd">        :param image: 2d numpy array, image to be convolved</span>
+<span class="sd">        :return: convolved image, 2d numpy array</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">image_conv</span> <span class="o">=</span> <span class="n">ndimage</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">gaussian_filter</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sigma</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">truncate</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_truncation</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">image_conv</span></div></div>
+
+
+<div class="viewcode-block" id="MGEConvolution"><a class="viewcode-back" href="../../../../lenstronomy.ImSim.Numerics.html#lenstronomy.ImSim.Numerics.convolution.MGEConvolution">[docs]</a><span class="nd">@export</span>
+<span class="k">class</span> <span class="nc">MGEConvolution</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    approximates a 2d kernel with an azimuthal Multi-Gaussian expansion</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">pixel_scale</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param kernel: 2d convolution kernel (centered, odd axis number)</span>
+<span class="sd">        :param order: order of Multi-Gaussian Expansion</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">amps</span><span class="p">,</span> <span class="n">sigmas</span><span class="p">,</span> <span class="n">norm</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">mge_kernel</span><span class="p">(</span><span class="n">kernel</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span>
+        <span class="c1"># make instance o MultiGaussian convolution kernel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mge_conv</span> <span class="o">=</span> <span class="n">MultiGaussianConvolution</span><span class="p">(</span><span class="n">sigma_list</span><span class="o">=</span><span class="n">sigmas</span><span class="o">*</span><span class="n">pixel_scale</span><span class="p">,</span> <span class="n">fraction_list</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">amps</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">amps</span><span class="p">),</span>
+                                                  <span class="n">pixel_scale</span><span class="o">=</span><span class="n">pixel_scale</span><span class="p">,</span> <span class="n">truncation</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_kernel</span> <span class="o">=</span> <span class="n">kernel</span>
+        <span class="c1"># store difference between MGE approximation and real kernel</span>
+
+<div class="viewcode-block" id="MGEConvolution.convolution2d"><a class="viewcode-back" href="../../../../lenstronomy.ImSim.Numerics.html#lenstronomy.ImSim.Numerics.convolution.MGEConvolution.convolution2d">[docs]</a>    <span class="k">def</span> <span class="nf">convolution2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param image:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mge_conv</span><span class="o">.</span><span class="n">convolution2d</span><span class="p">(</span><span class="n">image</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MGEConvolution.kernel_difference"><a class="viewcode-back" href="../../../../lenstronomy.ImSim.Numerics.html#lenstronomy.ImSim.Numerics.convolution.MGEConvolution.kernel_difference">[docs]</a>    <span class="k">def</span> <span class="nf">kernel_difference</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :return: difference between true kernel and MGE approximation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">kernel_mge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mge_conv</span><span class="o">.</span><span class="n">pixel_kernel</span><span class="p">(</span><span class="n">num_pix</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_kernel</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kernel</span> <span class="o">-</span> <span class="n">kernel_mge</span></div></div>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.ImSim.Numerics.convolution</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Simon Birrer and contributors.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
+    </div>
+  </body>
+</html>

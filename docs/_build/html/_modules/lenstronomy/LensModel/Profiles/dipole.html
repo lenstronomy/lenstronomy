@@ -1,0 +1,197 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lenstronomy.LensModel.Profiles.dipole &#8212; lenstronomy 1.10.3 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css" />
+    
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.Profiles.dipole</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for lenstronomy.LensModel.Profiles.dipole</h1><div class="highlight"><pre>
+<span></span><span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;sibirrer&#39;</span>
+
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.base_profile</span> <span class="kn">import</span> <span class="n">LensProfileBase</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Dipole&#39;</span><span class="p">,</span> <span class="s1">&#39;DipoleUtil&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="Dipole"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.dipole.Dipole">[docs]</a><span class="k">class</span> <span class="nc">Dipole</span><span class="p">(</span><span class="n">LensProfileBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    class for dipole response of two massive bodies (experimental)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">param_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;com_x&#39;</span><span class="p">,</span> <span class="s1">&#39;com_y&#39;</span><span class="p">,</span> <span class="s1">&#39;phi_dipole&#39;</span><span class="p">,</span> <span class="s1">&#39;coupling&#39;</span><span class="p">]</span>
+    <span class="n">lower_limit_default</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;com_x&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;com_y&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;phi_dipole&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;coupling&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">10</span><span class="p">}</span>
+    <span class="n">upper_limit_default</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;com_x&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;com_y&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;phi_dipole&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;coupling&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">}</span>
+
+<div class="viewcode-block" id="Dipole.function"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.dipole.Dipole.function">[docs]</a>    <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">com_x</span><span class="p">,</span> <span class="n">com_y</span><span class="p">,</span> <span class="n">phi_dipole</span><span class="p">,</span> <span class="n">coupling</span><span class="p">):</span>
+        <span class="c1"># coordinate shift</span>
+        <span class="n">x_shift</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">com_x</span>
+        <span class="n">y_shift</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">com_y</span>
+
+        <span class="c1"># rotation angle</span>
+        <span class="n">sin_phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi_dipole</span><span class="p">)</span>
+        <span class="n">cos_phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi_dipole</span><span class="p">)</span>
+        <span class="n">x_</span> <span class="o">=</span> <span class="n">cos_phi</span><span class="o">*</span><span class="n">x_shift</span> <span class="o">+</span> <span class="n">sin_phi</span><span class="o">*</span><span class="n">y_shift</span>
+        <span class="c1"># y_ = -sin_phi*x_shift + cos_phi*y_shift</span>
+        <span class="c1"># r = np.sqrt(x_**2 + y_**2)</span>
+
+        <span class="c1"># f_ = coupling**2 * (x_/y_)**2  # np.sqrt(np.abs(y_)/r) * np.abs(y_)</span>
+        <span class="c1"># f_ = coupling * np.abs(x_)</span>
+        <span class="n">f_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x_</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">f_</span></div>
+
+<div class="viewcode-block" id="Dipole.derivatives"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.dipole.Dipole.derivatives">[docs]</a>    <span class="k">def</span> <span class="nf">derivatives</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">com_x</span><span class="p">,</span> <span class="n">com_y</span><span class="p">,</span> <span class="n">phi_dipole</span><span class="p">,</span> <span class="n">coupling</span><span class="p">):</span>
+
+        <span class="c1"># coordinate shift</span>
+        <span class="n">x_shift</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">com_x</span>
+        <span class="n">y_shift</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">com_y</span>
+
+        <span class="c1"># rotation angle</span>
+        <span class="n">sin_phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi_dipole</span><span class="p">)</span>
+        <span class="n">cos_phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi_dipole</span><span class="p">)</span>
+        <span class="n">x_</span> <span class="o">=</span> <span class="n">cos_phi</span><span class="o">*</span><span class="n">x_shift</span> <span class="o">+</span> <span class="n">sin_phi</span><span class="o">*</span><span class="n">y_shift</span>
+        <span class="n">y_</span> <span class="o">=</span> <span class="o">-</span><span class="n">sin_phi</span><span class="o">*</span><span class="n">x_shift</span> <span class="o">+</span> <span class="n">cos_phi</span><span class="o">*</span><span class="n">y_shift</span>
+
+        <span class="n">f_x_prim</span> <span class="o">=</span> <span class="n">coupling</span> <span class="o">*</span> <span class="n">x_</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x_</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y_</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">f_y_prim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x_</span><span class="p">)</span>
+        <span class="c1"># rotate back</span>
+        <span class="n">f_x</span> <span class="o">=</span> <span class="n">cos_phi</span><span class="o">*</span><span class="n">f_x_prim</span><span class="o">-</span><span class="n">sin_phi</span><span class="o">*</span><span class="n">f_y_prim</span>
+        <span class="n">f_y</span> <span class="o">=</span> <span class="n">sin_phi</span><span class="o">*</span><span class="n">f_x_prim</span><span class="o">+</span><span class="n">cos_phi</span><span class="o">*</span><span class="n">f_y_prim</span>
+        <span class="k">return</span> <span class="n">f_x</span><span class="p">,</span> <span class="n">f_y</span></div>
+
+<div class="viewcode-block" id="Dipole.hessian"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.dipole.Dipole.hessian">[docs]</a>    <span class="k">def</span> <span class="nf">hessian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">com_x</span><span class="p">,</span> <span class="n">com_y</span><span class="p">,</span> <span class="n">phi_dipole</span><span class="p">,</span> <span class="n">coupling</span><span class="p">):</span>
+
+        <span class="c1"># coordinate shift</span>
+        <span class="n">x_shift</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">com_x</span>
+        <span class="n">y_shift</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">com_y</span>
+
+        <span class="c1"># rotation angle</span>
+        <span class="n">sin_phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi_dipole</span><span class="p">)</span>
+        <span class="n">cos_phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi_dipole</span><span class="p">)</span>
+        <span class="n">x_</span> <span class="o">=</span> <span class="n">cos_phi</span><span class="o">*</span><span class="n">x_shift</span> <span class="o">+</span> <span class="n">sin_phi</span><span class="o">*</span><span class="n">y_shift</span>
+        <span class="n">y_</span> <span class="o">=</span> <span class="o">-</span><span class="n">sin_phi</span><span class="o">*</span><span class="n">x_shift</span> <span class="o">+</span> <span class="n">cos_phi</span><span class="o">*</span><span class="n">y_shift</span>
+
+        <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x_</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y_</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">f_xx_prim</span> <span class="o">=</span> <span class="n">coupling</span><span class="o">*</span><span class="n">y_</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">r</span><span class="o">**</span><span class="mi">3</span>
+        <span class="n">f_xy_prim</span> <span class="o">=</span> <span class="o">-</span><span class="n">coupling</span> <span class="o">*</span> <span class="n">x_</span> <span class="o">*</span> <span class="n">y_</span> <span class="o">/</span> <span class="n">r</span><span class="o">**</span><span class="mi">3</span>
+        <span class="n">f_yy_prim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x_</span><span class="p">)</span>
+
+        <span class="n">kappa</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">f_xx_prim</span> <span class="o">+</span> <span class="n">f_yy_prim</span><span class="p">)</span>
+        <span class="n">gamma1_value</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">f_xx_prim</span> <span class="o">-</span> <span class="n">f_yy_prim</span><span class="p">)</span>
+        <span class="n">gamma2_value</span> <span class="o">=</span> <span class="n">f_xy_prim</span>
+        <span class="c1"># rotate back</span>
+        <span class="n">gamma1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">phi_dipole</span><span class="p">)</span><span class="o">*</span><span class="n">gamma1_value</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">phi_dipole</span><span class="p">)</span><span class="o">*</span><span class="n">gamma2_value</span>
+        <span class="n">gamma2</span> <span class="o">=</span> <span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">phi_dipole</span><span class="p">)</span><span class="o">*</span><span class="n">gamma1_value</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">phi_dipole</span><span class="p">)</span><span class="o">*</span><span class="n">gamma2_value</span>
+
+        <span class="n">f_xx</span> <span class="o">=</span> <span class="n">kappa</span> <span class="o">+</span> <span class="n">gamma1</span>
+        <span class="n">f_yy</span> <span class="o">=</span> <span class="n">kappa</span> <span class="o">-</span> <span class="n">gamma1</span>
+        <span class="n">f_xy</span> <span class="o">=</span> <span class="n">gamma2</span>
+        <span class="k">return</span> <span class="n">f_xx</span><span class="p">,</span> <span class="n">f_xy</span><span class="p">,</span> <span class="n">f_xy</span><span class="p">,</span> <span class="n">f_yy</span></div></div>
+
+
+<div class="viewcode-block" id="DipoleUtil"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.dipole.DipoleUtil">[docs]</a><span class="k">class</span> <span class="nc">DipoleUtil</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    pre-calculation of dipole properties</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="DipoleUtil.com"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.dipole.DipoleUtil.com">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">com</span><span class="p">(</span><span class="n">center1_x</span><span class="p">,</span> <span class="n">center1_y</span><span class="p">,</span> <span class="n">center2_x</span><span class="p">,</span> <span class="n">center2_y</span><span class="p">,</span> <span class="n">Fm</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: center of mass</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">com_x</span> <span class="o">=</span> <span class="p">(</span><span class="n">Fm</span> <span class="o">*</span> <span class="n">center1_x</span> <span class="o">+</span> <span class="n">center2_x</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">Fm</span> <span class="o">+</span> <span class="mf">1.</span><span class="p">)</span>
+        <span class="n">com_y</span> <span class="o">=</span> <span class="p">(</span><span class="n">Fm</span> <span class="o">*</span> <span class="n">center1_y</span> <span class="o">+</span> <span class="n">center2_y</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">Fm</span> <span class="o">+</span> <span class="mf">1.</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">com_x</span><span class="p">,</span> <span class="n">com_y</span></div>
+
+<div class="viewcode-block" id="DipoleUtil.mass_ratio"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.dipole.DipoleUtil.mass_ratio">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">mass_ratio</span><span class="p">(</span><span class="n">theta_E</span><span class="p">,</span> <span class="n">theta_E_sub</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        computes mass ration of the two clumps with given Einstein radius and power law slope (clump1/sub-clump)</span>
+<span class="sd">        :param theta_E:</span>
+<span class="sd">        :param theta_E_sub:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">theta_E</span> <span class="o">/</span> <span class="n">theta_E_sub</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span></div>
+
+<div class="viewcode-block" id="DipoleUtil.angle"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.dipole.DipoleUtil.angle">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">angle</span><span class="p">(</span><span class="n">center1_x</span><span class="p">,</span> <span class="n">center1_y</span><span class="p">,</span> <span class="n">center2_x</span><span class="p">,</span> <span class="n">center2_y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        compute the rotation angle of the dipole</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">phi_G</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">center2_y</span> <span class="o">-</span> <span class="n">center1_y</span><span class="p">,</span> <span class="n">center2_x</span> <span class="o">-</span> <span class="n">center1_x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">phi_G</span></div></div>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.Profiles.dipole</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Simon Birrer and contributors.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
+    </div>
+  </body>
+</html>

@@ -4,24 +4,24 @@ scipy>=0.19.1
 mpmath
 emcee>=3.0.0
 matplotlib
-sklearn
+scikit-learn
 numba>=0.43.1
-future
 dynesty
 pymultinest
 nestcheck
 corner>=2.2.1
-h5py
 scikit-image
 pyyaml
 pyxdg
+h5py
+zeus-mcmc
+nautilus-sampler
 
-# schwimmbad version that is supporting dill, which is not the current pip release version
--e git://github.com/adrn/schwimmbad.git@master#egg=schwimmbad
+
+schwimmbad
+# schwimmbad version that is supporting dill, which was not implemented yet in the pip release version
+# -e git://github.com/adrn/schwimmbad.git@master#egg=schwimmbad
 multiprocess>=0.70.8
 # fastell is not a direct requirement as it needs a fortran compiler and is optional
 #-e git://github.com/sibirrer/fastell4py.git#egg=fastell4py
 slitronomy==0.3.2
-
-# requirements for tests
-colossus

@@ -1,0 +1,364 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lenstronomy.LensModel.Profiles.elliptical_density_slice &#8212; lenstronomy 1.10.3 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css" />
+    
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.Profiles.elliptical_density_slice</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for lenstronomy.LensModel.Profiles.elliptical_density_slice</h1><div class="highlight"><pre>
+<span></span><span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;lynevdv&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">cmath</span> <span class="k">as</span> <span class="nn">c</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Util</span> <span class="kn">import</span> <span class="n">param_util</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.base_profile</span> <span class="kn">import</span> <span class="n">LensProfileBase</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ElliSLICE&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="ElliSLICE"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.elliptical_density_slice.ElliSLICE">[docs]</a><span class="k">class</span> <span class="nc">ElliSLICE</span> <span class="p">(</span><span class="n">LensProfileBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class computes the lensing quantities for an elliptical slice of constant density.</span>
+<span class="sd">    Based on Schramm 1994 https://ui.adsabs.harvard.edu/abs/1994A%26A...284...44S/abstract</span>
+
+<span class="sd">    Computes the lensing quantities of an elliptical slice with semi major axis &#39;a&#39; and</span>
+<span class="sd">    semi minor axis &#39;b&#39;, centered on &#39;center_x&#39; and &#39;center_y&#39;, oriented with an angle &#39;psi&#39;</span>
+<span class="sd">    in radian, and with constant surface mass density &#39;sigma_0&#39;.</span>
+<span class="sd">    In other words, this lens model is characterized by the surface mass density :</span>
+
+<span class="sd">    ..math::</span>
+<span class="sd">        \\kappa(x,y) = \\left{</span>
+<span class="sd">            \\begin{array}{ll}</span>
+<span class="sd">                \\sigma_0  &amp; \\mbox{if } \\frac{x_{rot}^2}{a^2} + \\frac{y_{rot}^2}{b^2} \\leq 1 \\\</span>
+<span class="sd">                0 &amp; \\mbox{else}</span>
+
+<span class="sd">            \\end{array}</span>
+
+<span class="sd">        \\right}.</span>
+
+<span class="sd">    with</span>
+
+<span class="sd">    ..math::</span>
+<span class="sd">        x_{rot} = x_c \\cos \\psi + y_c \\sin \\psi  \\</span>
+<span class="sd">        y_{rot} = - x_c \\sin \\psi + y_c \\cos \\psi  \\</span>
+<span class="sd">        x_c = x - center_x  \\</span>
+<span class="sd">        y_c = y - center_y</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">param_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;psi&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma_0&#39;</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">]</span>
+    <span class="n">lower_limit_default</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mf">0.</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mf">0.</span><span class="p">,</span> <span class="s1">&#39;psi&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">90.</span><span class="o">/</span><span class="mf">180.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">100.</span><span class="p">}</span>
+    <span class="n">upper_limit_default</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;psi&#39;</span><span class="p">:</span> <span class="mf">90.</span> <span class="o">/</span> <span class="mf">180.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}</span>
+
+<div class="viewcode-block" id="ElliSLICE.function"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.elliptical_density_slice.ElliSLICE.function">[docs]</a>    <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">psi</span><span class="p">,</span> <span class="n">sigma_0</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        lensing potential</span>
+
+<span class="sd">        :param a: float, semi-major axis, must be positive</span>
+<span class="sd">        :param b: float, semi-minor axis, must be positive</span>
+<span class="sd">        :param psi: float, orientation in radian</span>
+<span class="sd">        :param sigma_0: float, surface mass density, must be positive</span>
+<span class="sd">        :param center_x: float, center on the x axis</span>
+<span class="sd">        :param center_y: float, center on the y axis</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">kwargs_slice</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;center_x&#39;</span><span class="p">:</span> <span class="n">center_x</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">:</span> <span class="n">center_y</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="n">a</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="n">b</span><span class="p">,</span> <span class="s1">&#39;psi&#39;</span><span class="p">:</span> <span class="n">psi</span><span class="p">,</span> <span class="s1">&#39;sigma_0&#39;</span><span class="p">:</span> <span class="n">sigma_0</span><span class="p">}</span>
+        <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
+        <span class="n">y_</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
+        <span class="n">x_rot</span> <span class="o">=</span> <span class="n">x_</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span> <span class="o">+</span> <span class="n">y_</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span>
+        <span class="n">y_rot</span> <span class="o">=</span> <span class="o">-</span><span class="n">x_</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span> <span class="o">+</span> <span class="n">y_</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nb">len</span><span class="p">(</span><span class="n">x_</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">x_rot</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">a</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">y_rot</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">b</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pot_in</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="n">kwargs_slice</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pot_ext</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="n">kwargs_slice</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">pot_in</span><span class="p">(</span><span class="n">x_</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">y_</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">kwargs_slice</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="n">x_rot</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">a</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">y_rot</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">b</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span>
+                          <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">pot_ext</span><span class="p">(</span><span class="n">x_</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">y_</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">kwargs_slice</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_</span><span class="p">))])</span>
+            <span class="k">return</span> <span class="n">f</span></div>
+
+<div class="viewcode-block" id="ElliSLICE.derivatives"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.elliptical_density_slice.ElliSLICE.derivatives">[docs]</a>    <span class="k">def</span> <span class="nf">derivatives</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">psi</span><span class="p">,</span> <span class="n">sigma_0</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        lensing deflection angle</span>
+
+<span class="sd">        :param a: float, semi-major axis, must be positive</span>
+<span class="sd">        :param b: float, semi-minor axis, must be positive</span>
+<span class="sd">        :param psi: float, orientation in radian</span>
+<span class="sd">        :param sigma_0: float, surface mass density, must be positive</span>
+<span class="sd">        :param center_x: float, center on the x axis</span>
+<span class="sd">        :param center_y: float, center on the y axis</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">kwargs_slice</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;center_x&#39;</span><span class="p">:</span> <span class="n">center_x</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">:</span> <span class="n">center_y</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="n">a</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="n">b</span><span class="p">,</span> <span class="s1">&#39;psi&#39;</span><span class="p">:</span> <span class="n">psi</span><span class="p">,</span> <span class="s1">&#39;sigma_0&#39;</span><span class="p">:</span> <span class="n">sigma_0</span><span class="p">}</span>
+        <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
+        <span class="n">y_</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
+        <span class="n">x_rot</span> <span class="o">=</span> <span class="n">x_</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span> <span class="o">+</span> <span class="n">y_</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span>
+        <span class="n">y_rot</span> <span class="o">=</span> <span class="o">-</span><span class="n">x_</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span> <span class="o">+</span> <span class="n">y_</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nb">len</span><span class="p">(</span><span class="n">x_</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">x_rot</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">a</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">y_rot</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">b</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha_in</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="n">kwargs_slice</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha_ext</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="n">kwargs_slice</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">defl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha_in</span><span class="p">(</span><span class="n">x_</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">y_</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">kwargs_slice</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="n">x_rot</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">a</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">y_rot</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">b</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span>
+                             <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha_ext</span><span class="p">(</span><span class="n">x_</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">y_</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">kwargs_slice</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_</span><span class="p">))])</span>
+            <span class="k">return</span> <span class="n">defl</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">defl</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="ElliSLICE.hessian"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.elliptical_density_slice.ElliSLICE.hessian">[docs]</a>    <span class="k">def</span> <span class="nf">hessian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">psi</span><span class="p">,</span> <span class="n">sigma_0</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        lensing second derivatives</span>
+
+<span class="sd">        :param a: float, semi-major axis, must be positive</span>
+<span class="sd">        :param b: float, semi-minor axis, must be positive</span>
+<span class="sd">        :param psi: float, orientation in radian</span>
+<span class="sd">        :param sigma_0: float, surface mass density, must be positive</span>
+<span class="sd">        :param center_x: float, center on the x axis</span>
+<span class="sd">        :param center_y: float, center on the y axis</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">diff</span> <span class="o">=</span> <span class="mf">0.000000001</span>
+        <span class="n">alpha_ra</span><span class="p">,</span> <span class="n">alpha_dec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">psi</span><span class="p">,</span> <span class="n">sigma_0</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
+        <span class="n">alpha_ra_dx</span><span class="p">,</span> <span class="n">alpha_dec_dx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">diff</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">psi</span><span class="p">,</span> <span class="n">sigma_0</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
+        <span class="n">alpha_ra_dy</span><span class="p">,</span> <span class="n">alpha_dec_dy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">diff</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">psi</span><span class="p">,</span> <span class="n">sigma_0</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
+
+        <span class="n">f_xx</span> <span class="o">=</span> <span class="p">(</span><span class="n">alpha_ra_dx</span> <span class="o">-</span> <span class="n">alpha_ra</span><span class="p">)</span> <span class="o">/</span> <span class="n">diff</span>
+        <span class="n">f_xy</span> <span class="o">=</span> <span class="p">(</span><span class="n">alpha_ra_dy</span> <span class="o">-</span> <span class="n">alpha_ra</span><span class="p">)</span> <span class="o">/</span> <span class="n">diff</span>
+        <span class="n">f_yx</span> <span class="o">=</span> <span class="p">(</span><span class="n">alpha_dec_dx</span> <span class="o">-</span> <span class="n">alpha_dec</span><span class="p">)</span> <span class="o">/</span> <span class="n">diff</span>
+        <span class="n">f_yy</span> <span class="o">=</span> <span class="p">(</span><span class="n">alpha_dec_dy</span> <span class="o">-</span> <span class="n">alpha_dec</span><span class="p">)</span> <span class="o">/</span> <span class="n">diff</span>
+        <span class="k">return</span> <span class="n">f_xx</span><span class="p">,</span> <span class="n">f_xy</span><span class="p">,</span> <span class="n">f_yx</span><span class="p">,</span> <span class="n">f_yy</span></div>
+
+<div class="viewcode-block" id="ElliSLICE.sign"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.elliptical_density_slice.ElliSLICE.sign">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">sign</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        sign function</span>
+
+<span class="sd">        :param z: complex</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">real</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">imag</span>
+        <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">y</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">return</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span></div>
+
+<div class="viewcode-block" id="ElliSLICE.alpha_in"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.elliptical_density_slice.ElliSLICE.alpha_in">[docs]</a>    <span class="k">def</span> <span class="nf">alpha_in</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs_slice</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        deflection angle for (x,y) inside the elliptical slice</span>
+
+<span class="sd">        :param kwargs_slice: dict, dictionary with  the slice definition (a,b,psi,sigma_0)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="nb">complex</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="n">zb</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">conjugate</span><span class="p">()</span>
+        <span class="n">psi</span> <span class="o">=</span> <span class="n">kwargs_slice</span><span class="p">[</span><span class="s1">&#39;psi&#39;</span><span class="p">]</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="p">(</span><span class="n">kwargs_slice</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">kwargs_slice</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="n">kwargs_slice</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">kwargs_slice</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">])</span>
+        <span class="n">sig_0</span> <span class="o">=</span> <span class="n">kwargs_slice</span><span class="p">[</span><span class="s1">&#39;sigma_0&#39;</span><span class="p">]</span>
+        <span class="n">e2ipsi</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">2</span><span class="n">j</span> <span class="o">*</span> <span class="n">psi</span><span class="p">)</span>
+        <span class="n">I_in</span> <span class="o">=</span> <span class="p">(</span><span class="n">z</span> <span class="o">-</span> <span class="n">e</span> <span class="o">*</span> <span class="n">zb</span> <span class="o">*</span> <span class="n">e2ipsi</span><span class="p">)</span> <span class="o">*</span> <span class="n">sig_0</span>
+        <span class="k">return</span> <span class="n">I_in</span><span class="o">.</span><span class="n">real</span><span class="p">,</span> <span class="n">I_in</span><span class="o">.</span><span class="n">imag</span></div>
+
+<div class="viewcode-block" id="ElliSLICE.alpha_ext"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.elliptical_density_slice.ElliSLICE.alpha_ext">[docs]</a>    <span class="k">def</span> <span class="nf">alpha_ext</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs_slice</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        deflection angle for (x,y) outside the elliptical slice</span>
+
+<span class="sd">        :param kwargs_slice: dict, dictionary with  the slice definition (a,b,psi,sigma_0)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="nb">complex</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="n">r</span><span class="p">,</span> <span class="n">phi</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">cart2polar</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="n">zb</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">conjugate</span><span class="p">()</span>
+        <span class="n">psi</span> <span class="o">=</span> <span class="n">kwargs_slice</span><span class="p">[</span><span class="s1">&#39;psi&#39;</span><span class="p">]</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">kwargs_slice</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">]</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">kwargs_slice</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">]</span>
+        <span class="n">f2</span> <span class="o">=</span> <span class="n">a</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">b</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="n">sig_0</span> <span class="o">=</span> <span class="n">kwargs_slice</span><span class="p">[</span><span class="s1">&#39;sigma_0&#39;</span><span class="p">]</span>
+        <span class="n">median_op</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="c1"># when (x,y) is on one of the ellipse axis, there might be an issue when calculating the square root of</span>
+        <span class="c1"># zb ** 2 * e2ipsi - f2. When the argument has an imaginary part ==0, having 0. or -0. may return different</span>
+        <span class="c1"># answers. Therefore, for points (x,y) close to one axis, we take 3 points (one is x,y ; another one is a delta</span>
+        <span class="c1"># away from this position, perpendicularly to the axis ; another one is at -delta perpendicularly away from</span>
+        <span class="c1"># x,y). We calculate the function for each point and take the median. This avoids any singularity for points</span>
+        <span class="c1"># along the axis but it slows down the function.</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi</span> <span class="o">-</span> <span class="n">psi</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="mi">10</span> <span class="o">**</span> <span class="o">-</span><span class="mi">10</span> \
+                <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi</span> <span class="o">-</span> <span class="n">psi</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="mi">10</span> <span class="o">**</span> <span class="o">-</span><span class="mi">10</span><span class="p">:</span>  <span class="c1"># very close to one of the ellipse axis</span>
+            <span class="n">median_op</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">e2ipsi</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">2</span><span class="n">j</span> <span class="o">*</span> <span class="n">psi</span><span class="p">)</span>
+        <span class="n">eipsi</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">psi</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">median_op</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">eps</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">**</span> <span class="o">-</span><span class="mi">10</span>
+            <span class="n">z_minus_eps</span> <span class="o">=</span> <span class="nb">complex</span><span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi</span> <span class="o">-</span> <span class="n">eps</span><span class="p">),</span> <span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi</span> <span class="o">-</span> <span class="n">eps</span><span class="p">))</span>
+            <span class="n">zb_minus_eps</span> <span class="o">=</span> <span class="n">z_minus_eps</span><span class="o">.</span><span class="n">conjugate</span><span class="p">()</span>
+            <span class="n">z_plus_eps</span> <span class="o">=</span> <span class="nb">complex</span><span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi</span> <span class="o">+</span> <span class="n">eps</span><span class="p">),</span> <span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi</span> <span class="o">+</span> <span class="n">eps</span><span class="p">))</span>
+            <span class="n">zb_plus_eps</span> <span class="o">=</span> <span class="n">z_plus_eps</span><span class="o">.</span><span class="n">conjugate</span><span class="p">()</span>
+            <span class="n">I_out_minus</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span> <span class="o">/</span> <span class="n">f2</span> <span class="o">*</span> <span class="p">(</span><span class="n">zb_minus_eps</span> <span class="o">*</span> <span class="n">e2ipsi</span> <span class="o">-</span> <span class="n">eipsi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">zb_minus_eps</span> <span class="o">*</span> <span class="n">eipsi</span><span class="p">)</span>
+                                            <span class="o">*</span> <span class="n">c</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">zb_minus_eps</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">e2ipsi</span> <span class="o">-</span> <span class="n">f2</span><span class="p">))</span> <span class="o">*</span> <span class="n">sig_0</span>
+            <span class="n">I_out_plus</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span> <span class="o">/</span> <span class="n">f2</span> <span class="o">*</span> <span class="p">(</span><span class="n">zb_plus_eps</span> <span class="o">*</span> <span class="n">e2ipsi</span> <span class="o">-</span> <span class="n">eipsi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">zb_plus_eps</span> <span class="o">*</span> <span class="n">eipsi</span><span class="p">)</span>
+                                           <span class="o">*</span> <span class="n">c</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">zb_plus_eps</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">e2ipsi</span> <span class="o">-</span> <span class="n">f2</span><span class="p">))</span> <span class="o">*</span> <span class="n">sig_0</span>
+            <span class="n">I_out_mid</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span> <span class="o">/</span> <span class="n">f2</span> <span class="o">*</span> <span class="p">(</span><span class="n">zb</span> <span class="o">*</span> <span class="n">e2ipsi</span> <span class="o">-</span> <span class="n">eipsi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">zb</span> <span class="o">*</span> <span class="n">eipsi</span><span class="p">)</span>
+                                          <span class="o">*</span> <span class="n">c</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">zb</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">e2ipsi</span> <span class="o">-</span> <span class="n">f2</span><span class="p">))</span> <span class="o">*</span> <span class="n">sig_0</span>
+            <span class="n">I_out_real</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">([</span><span class="n">I_out_minus</span><span class="o">.</span><span class="n">real</span><span class="p">,</span> <span class="n">I_out_plus</span><span class="o">.</span><span class="n">real</span><span class="p">,</span> <span class="n">I_out_mid</span><span class="o">.</span><span class="n">real</span><span class="p">])</span>
+            <span class="n">I_out_imag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">([</span><span class="n">I_out_minus</span><span class="o">.</span><span class="n">imag</span><span class="p">,</span> <span class="n">I_out_plus</span><span class="o">.</span><span class="n">imag</span><span class="p">,</span> <span class="n">I_out_mid</span><span class="o">.</span><span class="n">imag</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">I_out</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span> <span class="o">/</span> <span class="n">f2</span> <span class="o">*</span> <span class="p">(</span>
+                        <span class="n">zb</span> <span class="o">*</span> <span class="n">e2ipsi</span> <span class="o">-</span> <span class="n">eipsi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">zb</span> <span class="o">*</span> <span class="n">eipsi</span><span class="p">)</span> <span class="o">*</span> <span class="n">c</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">zb</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">e2ipsi</span> <span class="o">-</span> <span class="n">f2</span><span class="p">))</span> <span class="o">*</span> <span class="n">sig_0</span>
+            <span class="n">I_out_real</span> <span class="o">=</span> <span class="n">I_out</span><span class="o">.</span><span class="n">real</span>
+            <span class="n">I_out_imag</span> <span class="o">=</span> <span class="n">I_out</span><span class="o">.</span><span class="n">imag</span>
+
+        <span class="c1"># buf = zb ** 2 * e2ipsi - f2  ##problem with 0. and -0. giving different answers</span>
+        <span class="c1"># if buf.real == 0:</span>
+        <span class="c1">#     buf = complex(0, buf.imag)</span>
+        <span class="c1"># if buf.imag == 0:</span>
+        <span class="c1">#     buf = complex(buf.real, 0)</span>
+
+        <span class="k">return</span> <span class="n">I_out_real</span><span class="p">,</span> <span class="n">I_out_imag</span></div>
+
+<div class="viewcode-block" id="ElliSLICE.pot_in"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.elliptical_density_slice.ElliSLICE.pot_in">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">pot_in</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs_slice</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        lensing potential for (x,y) inside the elliptical slice</span>
+
+<span class="sd">        :param kwargs_slice: dict, dictionary with  the slice definition (a,b,psi,sigma_0)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">psi</span> <span class="o">=</span> <span class="n">kwargs_slice</span><span class="p">[</span><span class="s1">&#39;psi&#39;</span><span class="p">]</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">kwargs_slice</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">]</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">kwargs_slice</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">]</span>
+        <span class="n">sig_0</span> <span class="o">=</span> <span class="n">kwargs_slice</span><span class="p">[</span><span class="s1">&#39;sigma_0&#39;</span><span class="p">]</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span>
+        <span class="n">rE</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span>
+        <span class="n">pot_in</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="n">e</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">psi</span><span class="p">))</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">e</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span>
+                    <span class="n">y</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span> <span class="o">-</span> <span class="n">x</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">psi</span><span class="p">))</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">sig_0</span>
+        <span class="n">cst</span> <span class="o">=</span> <span class="n">sig_0</span> <span class="o">*</span> <span class="n">rE</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">e</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">rE</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pot_in</span> <span class="o">+</span> <span class="n">cst</span></div>
+
+<div class="viewcode-block" id="ElliSLICE.pot_ext"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.elliptical_density_slice.ElliSLICE.pot_ext">[docs]</a>    <span class="k">def</span> <span class="nf">pot_ext</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs_slice</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        lensing potential for (x,y) outside the elliptical slice</span>
+
+<span class="sd">        :param kwargs_slice: dict, dictionary with  the slice definition (a,b,psi,sigma_0)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="nb">complex</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="c1"># zb = z.conjugate()</span>
+        <span class="n">psi</span> <span class="o">=</span> <span class="n">kwargs_slice</span><span class="p">[</span><span class="s1">&#39;psi&#39;</span><span class="p">]</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">kwargs_slice</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">]</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">kwargs_slice</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">]</span>
+        <span class="n">sig_0</span> <span class="o">=</span> <span class="n">kwargs_slice</span><span class="p">[</span><span class="s1">&#39;sigma_0&#39;</span><span class="p">]</span>
+        <span class="n">r</span><span class="p">,</span> <span class="n">phi</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">cart2polar</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="n">median_op</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="c1"># when (x,y) is on one of the ellipse axis, there might be an issue when calculating the square root of</span>
+        <span class="c1"># z ** 2 * em2ipsi - f2. When the argument has an imaginary part ==0, having 0. or -0. may return different</span>
+        <span class="c1"># answers. Therefore, for points (x,y) close to one axis, we take 3 points (one is x,y ; another one is a delta</span>
+        <span class="c1"># away from this position, perpendicularly to the axis ; another one is at -delta perpendicularly away from</span>
+        <span class="c1"># x,y). We calculate the function for each point and take the median. This avoids any singularity for points</span>
+        <span class="c1"># along the axis but it slows down the function.</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi</span> <span class="o">-</span> <span class="n">psi</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="mi">10</span> <span class="o">**</span> <span class="o">-</span><span class="mi">10</span> \
+                <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi</span> <span class="o">-</span> <span class="n">psi</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="mi">10</span> <span class="o">**</span> <span class="o">-</span><span class="mi">10</span><span class="p">:</span>  <span class="c1"># very close to one of the ellipse axis</span>
+            <span class="n">median_op</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span>
+        <span class="n">f2</span> <span class="o">=</span> <span class="n">a</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">b</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="n">emipsi</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">psi</span><span class="p">)</span>
+        <span class="n">em2ipsi</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="n">j</span> <span class="o">*</span> <span class="n">psi</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">median_op</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">eps</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">**</span> <span class="o">-</span><span class="mi">10</span>
+            <span class="n">z_minus_eps</span> <span class="o">=</span> <span class="nb">complex</span><span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi</span> <span class="o">-</span> <span class="n">eps</span><span class="p">),</span> <span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi</span> <span class="o">-</span> <span class="n">eps</span><span class="p">))</span>
+            <span class="n">z_plus_eps</span> <span class="o">=</span> <span class="nb">complex</span><span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi</span> <span class="o">+</span> <span class="n">eps</span><span class="p">),</span> <span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi</span> <span class="o">+</span> <span class="n">eps</span><span class="p">))</span>
+
+            <span class="n">pot_ext_minus</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">e</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">e</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">f2</span> <span class="o">*</span> <span class="n">c</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">z_minus_eps</span> <span class="o">*</span> <span class="n">emipsi</span><span class="p">)</span> <span class="o">*</span> <span class="n">z_minus_eps</span> <span class="o">*</span> <span class="n">emipsi</span> <span class="o">+</span> <span class="n">c</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">z_minus_eps</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">em2ipsi</span> <span class="o">-</span> <span class="n">f2</span><span class="p">))</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span>
+                                                      <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">z_minus_eps</span> <span class="o">*</span> <span class="n">emipsi</span><span class="p">)</span> <span class="o">*</span> <span class="n">z_minus_eps</span> <span class="o">*</span> <span class="n">emipsi</span> <span class="o">*</span> <span class="n">c</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+                        <span class="n">z_minus_eps</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">em2ipsi</span> <span class="o">-</span> <span class="n">f2</span><span class="p">)</span> <span class="o">+</span> <span class="n">z_minus_eps</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">em2ipsi</span><span class="p">)</span> <span class="o">*</span> <span class="n">sig_0</span>
+            <span class="n">pot_ext_plus</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">e</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">e</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">f2</span> <span class="o">*</span> <span class="n">c</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">z_plus_eps</span> <span class="o">*</span> <span class="n">emipsi</span><span class="p">)</span> <span class="o">*</span> <span class="n">z_plus_eps</span> <span class="o">*</span> <span class="n">emipsi</span> <span class="o">+</span> <span class="n">c</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">z_plus_eps</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">em2ipsi</span> <span class="o">-</span> <span class="n">f2</span><span class="p">))</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span>
+                                                     <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">z_plus_eps</span> <span class="o">*</span> <span class="n">emipsi</span><span class="p">)</span> <span class="o">*</span> <span class="n">z_plus_eps</span> <span class="o">*</span> <span class="n">emipsi</span> <span class="o">*</span> <span class="n">c</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+                        <span class="n">z_plus_eps</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">em2ipsi</span> <span class="o">-</span> <span class="n">f2</span><span class="p">)</span> <span class="o">+</span> <span class="n">z_plus_eps</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">em2ipsi</span><span class="p">)</span> <span class="o">*</span> <span class="n">sig_0</span>
+            <span class="n">pot_ext_mid</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">e</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">e</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span>
+                        <span class="n">f2</span> <span class="o">*</span> <span class="n">c</span><span class="o">.</span><span class="n">log</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">z</span> <span class="o">*</span> <span class="n">emipsi</span><span class="p">)</span> <span class="o">*</span> <span class="n">z</span> <span class="o">*</span> <span class="n">emipsi</span> <span class="o">+</span> <span class="n">c</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">z</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">em2ipsi</span> <span class="o">-</span> <span class="n">f2</span><span class="p">))</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span>
+                        <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">z</span> <span class="o">*</span> <span class="n">emipsi</span><span class="p">)</span> <span class="o">*</span> <span class="n">z</span> <span class="o">*</span> <span class="n">emipsi</span> <span class="o">*</span> <span class="n">c</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">z</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">em2ipsi</span> <span class="o">-</span> <span class="n">f2</span><span class="p">)</span> <span class="o">+</span> <span class="n">z</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">em2ipsi</span><span class="p">)</span> <span class="o">*</span> <span class="n">sig_0</span>
+            <span class="n">pot_ext</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">([</span><span class="n">pot_ext_minus</span><span class="o">.</span><span class="n">real</span><span class="p">,</span> <span class="n">pot_ext_plus</span><span class="o">.</span><span class="n">real</span><span class="p">,</span> <span class="n">pot_ext_mid</span><span class="o">.</span><span class="n">real</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pot_ext</span> <span class="o">=</span> <span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="n">e</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">e</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span>
+                        <span class="n">f2</span> <span class="o">*</span> <span class="n">c</span><span class="o">.</span><span class="n">log</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">z</span> <span class="o">*</span> <span class="n">emipsi</span><span class="p">)</span> <span class="o">*</span> <span class="n">z</span> <span class="o">*</span> <span class="n">emipsi</span> <span class="o">+</span> <span class="n">c</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">z</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">em2ipsi</span> <span class="o">-</span> <span class="n">f2</span><span class="p">))</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span>
+                        <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">z</span> <span class="o">*</span> <span class="n">emipsi</span><span class="p">)</span> <span class="o">*</span> <span class="n">z</span> <span class="o">*</span> <span class="n">emipsi</span> <span class="o">*</span>
+                        <span class="n">c</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">z</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">em2ipsi</span> <span class="o">-</span> <span class="n">f2</span><span class="p">)</span> <span class="o">+</span> <span class="n">z</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">em2ipsi</span><span class="p">)</span> <span class="o">*</span> <span class="n">sig_0</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+        <span class="k">return</span> <span class="n">pot_ext</span></div></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.Profiles.elliptical_density_slice</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Simon Birrer and contributors.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
+    </div>
+  </body>
+</html>

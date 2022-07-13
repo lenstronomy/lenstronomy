@@ -49,6 +49,9 @@ class PSF(object):
                 self._kernel_point_source_supersampled = kernel_point_source
                 self._point_source_supersampling_factor = point_source_supersampling_factor
                 kernel_point_source = kernel_util.degrade_kernel(self._kernel_point_source_supersampled, self._point_source_supersampling_factor)
+            # making sure the PSF is positive semi-definite and normalized
+            if np.min(kernel_point_source) < 0:
+                raise ValueError('Input PSF model has at least one negative element, which is unphysical.')
             self._kernel_point_source = kernel_point_source / np.sum(kernel_point_source)
 
         elif self.psf_type == 'NONE':

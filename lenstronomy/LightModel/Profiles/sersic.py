@@ -49,6 +49,15 @@ class Sersic(SersicUtil):
 class SersicElliptic(SersicUtil):
     """
     this class contains functions to evaluate an elliptical Sersic function
+
+    .. math::
+        I(R) = I_0 \\exp \\left[ -b_n (R/R_{\\rm Sersic})^{\\frac{1}{n}}\\right]
+
+    with :math:`I_0 = amp`,
+    :math:`R = \\sqrt{q \\theta^2_x + \\theta^2_y/q}`
+    and
+    with :math:`b_{n}\\approx 1.999n-0.327`
+
     """
     param_names = ['amp', 'R_sersic', 'n_sersic', 'e1', 'e2', 'center_x', 'center_y']
     lower_limit_default = {'amp': 0, 'R_sersic': 0, 'n_sersic': 0.5, 'e1': -0.5, 'e2': -0.5, 'center_x': -100,
@@ -92,7 +101,7 @@ class CoreSersic(SersicUtil):
     .. math::
         I' = I_b 2^{-\\gamma/ \\alpha} \\exp \\left[b_n 2^{1 / (n\\alpha)} (R_b/R_e)^{1/n}  \\right]
 
-    where :math:`I_b` is the intensity at the break radius.
+    where :math:`I_b` is the intensity at the break radius and :math:`R = \\sqrt{q \\theta^2_x + \\theta^2_y/q}`.
 
     """
     param_names = ['amp', 'R_sersic', 'Rb', 'n_sersic', 'gamma', 'e1', 'e2', 'center_x', 'center_y']

@@ -16,8 +16,8 @@ class ModelAPI(object):
     Currently, all other model choices are equivalent to the ones provided by LightModel, LensModel, PointSource.
     The current options of the class instance only describe a subset of possibilities.
     """
-    def __init__(self, lens_model_list=[], z_lens=None, z_source=None, lens_redshift_list=None,
-                 source_light_model_list=[], lens_light_model_list=[], point_source_model_list=[],
+    def __init__(self, lens_model_list=None, z_lens=None, z_source=None, lens_redshift_list=None,
+                 source_light_model_list=None, lens_light_model_list=None, point_source_model_list=None,
                  source_redshift_list=None, cosmo=None, z_source_convention=None):
         """
 
@@ -26,7 +26,8 @@ class ModelAPI(object):
         Is only needed for specific functions that require a cosmology.
         :param z_source: redshift of the source: Needed in multi_plane option only,
         not required for the core functionalities in the single plane mode. This will be the redshift of the source
-        plane (if not further specified the 'source_redshift_list') and the point source redshift (regardless of 'source_redshift_list')
+        plane (if not further specified the 'source_redshift_list') and the point source redshift
+        (regardless of 'source_redshift_list')
         :param lens_redshift_list: list of deflector redshift (corresponding to the lens model list),
         only applicable in multi_plane mode.
         :param source_light_model_list: list of strings with source light model names (lensed light profiles)
@@ -37,22 +38,30 @@ class ModelAPI(object):
         :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens
         models. If None, 'z_source' is used.
         """
+        if lens_model_list is None:
+            lens_model_list = []
+        if source_light_model_list is None:
+            source_light_model_list = []
+        if lens_light_model_list is None:
+            lens_light_model_list = []
+        if point_source_model_list is None:
+            point_source_model_list = []
         if cosmo is None:
             cosmo = default_cosmology.get()
-            
+
         if lens_redshift_list is not None or source_redshift_list is not None:
             multi_plane = True
         else:
-            multi_plane = False  
-            
+            multi_plane = False
+
         if z_source_convention is None:
             z_source_convention = z_source
 
         self._lens_model_class = LensModel(lens_model_list=lens_model_list, z_source=z_source, z_lens=z_lens,
-                                     lens_redshift_list=lens_redshift_list, multi_plane=multi_plane, cosmo=cosmo,
-                                     z_source_convention=z_source_convention)
+                                           lens_redshift_list=lens_redshift_list, multi_plane=multi_plane, cosmo=cosmo,
+                                           z_source_convention=z_source_convention)
         self._source_model_class = LightModel(light_model_list=source_light_model_list,
-                                        source_redshift_list=source_redshift_list)
+                                              source_redshift_list=source_redshift_list)
         self._lens_light_model_class = LightModel(light_model_list=lens_light_model_list)
         fixed_magnification = [False] * len(point_source_model_list)
         for i, ps_type in enumerate(point_source_model_list):
@@ -102,7 +111,8 @@ class ModelAPI(object):
         """
 
         :param kwargs_mass: list of keyword arguments of all the lens models. Einstein radius 'theta_E' are replaced by
-         'sigma_v', velocity dispersion in km/s, 'alpha_Rs' and 'Rs' of NFW profiles are replaced by 'M200' and 'concentration'
+         'sigma_v', velocity dispersion in km/s, 'alpha_Rs' and 'Rs' of NFW profiles are replaced by 'M200' and
+         'concentration'
         :return: kwargs_lens in reduced deflection angles compatible with the lensModel instance of this module
         """
         kwargs_lens = copy.deepcopy(kwargs_mass)

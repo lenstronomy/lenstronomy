@@ -1,0 +1,394 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lenstronomy.Sampling.likelihood &#8212; lenstronomy 1.10.3 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/classic.css" />
+    
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.Sampling.likelihood</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for lenstronomy.Sampling.likelihood</h1><div class="highlight"><pre>
+<span></span><span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;sibirrer&#39;</span>
+
+<span class="kn">from</span> <span class="nn">lenstronomy.Sampling.Likelihoods.time_delay_likelihood</span> <span class="kn">import</span> <span class="n">TimeDelayLikelihood</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Sampling.Likelihoods.image_likelihood</span> <span class="kn">import</span> <span class="n">ImageLikelihood</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Sampling.Likelihoods.position_likelihood</span> <span class="kn">import</span> <span class="n">PositionLikelihood</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Sampling.Likelihoods.flux_ratio_likelihood</span> <span class="kn">import</span> <span class="n">FluxRatioLikelihood</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Sampling.Likelihoods.prior_likelihood</span> <span class="kn">import</span> <span class="n">PriorLikelihood</span>
+<span class="kn">import</span> <span class="nn">lenstronomy.Util.class_creator</span> <span class="k">as</span> <span class="nn">class_creator</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;LikelihoodModule&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="LikelihoodModule"><a class="viewcode-back" href="../../../lenstronomy.Sampling.html#lenstronomy.Sampling.likelihood.LikelihoodModule">[docs]</a><span class="k">class</span> <span class="nc">LikelihoodModule</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    this class contains the routines to run a MCMC process</span>
+<span class="sd">    the key components are:</span>
+<span class="sd">    - imSim_class: an instance of a class that simulates one (or more) images and returns the likelihood, such as</span>
+<span class="sd">    ImageModel(), Multiband(), MultiExposure()</span>
+<span class="sd">    - param_class: instance of a Param() class that can cast the sorted list of parameters that are sampled into the</span>
+<span class="sd">    conventions of the imSim_class</span>
+
+<span class="sd">    Additional arguments are supported for adding a time-delay likelihood etc (see __init__ definition)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_data_joint</span><span class="p">,</span> <span class="n">kwargs_model</span><span class="p">,</span> <span class="n">param_class</span><span class="p">,</span> <span class="n">image_likelihood</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">check_bounds</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                 <span class="n">check_matched_source_position</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">astrometric_likelihood</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">image_position_likelihood</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">source_position_likelihood</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">image_position_uncertainty</span><span class="o">=</span><span class="mf">0.004</span><span class="p">,</span> <span class="n">check_positive_flux</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">source_position_tolerance</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">source_position_sigma</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">force_no_add_image</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">source_marg</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">linear_prior</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">restrict_image_number</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">max_num_images</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bands_compute</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time_delay_likelihood</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">image_likelihood_mask_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">flux_ratio_likelihood</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">kwargs_flux_compute</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">prior_lens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">prior_source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">prior_extinction</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">prior_lens_light</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">prior_ps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">prior_special</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">prior_lens_kde</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">prior_source_kde</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">prior_lens_light_kde</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">prior_ps_kde</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">prior_special_kde</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">prior_extinction_kde</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">prior_lens_lognormal</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">prior_source_lognormal</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">prior_extinction_lognormal</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">prior_lens_light_lognormal</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">prior_ps_lognormal</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">prior_special_lognormal</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">custom_logL_addition</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwargs_pixelbased</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        initializing class</span>
+
+
+<span class="sd">        :param param_class: instance of a Param() class that can cast the sorted list of parameters that are sampled</span>
+<span class="sd">         into the conventions of the imSim_class</span>
+<span class="sd">        :param image_likelihood: bool, option to compute the imaging likelihood</span>
+<span class="sd">        :param source_position_likelihood: bool, if True, ray-traces image positions back to source plane and evaluates</span>
+<span class="sd">        relative errors in respect ot the position_uncertainties in the image plane</span>
+<span class="sd">        :param check_bounds:  bool, option to punish the hard bounds in parameter space</span>
+<span class="sd">        :param check_matched_source_position: bool, option to check whether point source position of solver finds a</span>
+<span class="sd">         solution to match all the image positions in the same source plane coordinate</span>
+<span class="sd">        :param astrometric_likelihood: bool, additional likelihood term of the predicted vs modelled point source</span>
+<span class="sd">         position</span>
+<span class="sd">        :param image_position_uncertainty: float, 1-sigma Gaussian uncertainty on the point source position</span>
+<span class="sd">         (only used if point_source_likelihood=True)</span>
+<span class="sd">        :param check_positive_flux: bool, option to punish models that do not have all positive linear amplitude</span>
+<span class="sd">         parameters</span>
+<span class="sd">        :param source_position_tolerance: float, punishment of check_solver occurs when image positions are predicted</span>
+<span class="sd">         further away than this number</span>
+<span class="sd">        :param image_likelihood_mask_list: list of boolean 2d arrays of size of images marking the pixels to be</span>
+<span class="sd">         evaluated in the likelihood</span>
+<span class="sd">        :param force_no_add_image: bool, if True: computes ALL image positions of the point source. If there are more</span>
+<span class="sd">        images predicted than modelled, a punishment occures</span>
+<span class="sd">        :param source_marg: marginalization addition on the imaging likelihood based on the covariance of the inferred</span>
+<span class="sd">         linear coefficients</span>
+<span class="sd">        :param linear_prior: float or list of floats (when multi-linear setting is chosen) indicating the range of</span>
+<span class="sd">        linear amplitude priors when computing the marginalization term.</span>
+<span class="sd">        :param restrict_image_number: bool, if True: computes ALL image positions of the point source. If there are more</span>
+<span class="sd">        images predicted than indicated in max_num_images, a punishment occurs</span>
+<span class="sd">        :param max_num_images: int, see restrict_image_number</span>
+<span class="sd">        :param bands_compute: list of bools with same length as data objects, indicates which &quot;band&quot; to include in the</span>
+<span class="sd">         fitting</span>
+<span class="sd">        :param time_delay_likelihood: bool, if True computes the time-delay likelihood of the FIRST point source</span>
+<span class="sd">        :param kwargs_flux_compute: keyword arguments of how to compute the image position fluxes</span>
+<span class="sd">         (see FluxRatioLikeliood)</span>
+<span class="sd">        :param custom_logL_addition: a definition taking as arguments (kwargs_lens, kwargs_source, kwargs_lens_light,</span>
+<span class="sd">         kwargs_ps, kwargs_special, kwargs_extinction) and returns a logL (punishing) value.</span>
+<span class="sd">        :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver</span>
+<span class="sd">         (see SLITronomy documentation)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">multi_band_list</span><span class="p">,</span> <span class="n">multi_band_type</span><span class="p">,</span> <span class="n">time_delays_measured</span><span class="p">,</span> <span class="n">time_delays_uncertainties</span><span class="p">,</span> <span class="n">flux_ratios</span><span class="p">,</span> <span class="n">flux_ratio_errors</span><span class="p">,</span> <span class="n">ra_image_list</span><span class="p">,</span> <span class="n">dec_image_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unpack_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_data_joint</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">multi_band_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">image_likelihood</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">param</span> <span class="o">=</span> <span class="n">param_class</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lower_limit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_upper_limit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">param_limits</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prior_likelihood</span> <span class="o">=</span> <span class="n">PriorLikelihood</span><span class="p">(</span><span class="n">prior_lens</span><span class="p">,</span> <span class="n">prior_source</span><span class="p">,</span> <span class="n">prior_lens_light</span><span class="p">,</span> <span class="n">prior_ps</span><span class="p">,</span> <span class="n">prior_special</span><span class="p">,</span>
+                                                 <span class="n">prior_extinction</span><span class="p">,</span>
+                                                 <span class="n">prior_lens_kde</span><span class="p">,</span> <span class="n">prior_source_kde</span><span class="p">,</span> <span class="n">prior_lens_light_kde</span><span class="p">,</span> <span class="n">prior_ps_kde</span><span class="p">,</span>
+                                                 <span class="n">prior_special_kde</span><span class="p">,</span> <span class="n">prior_extinction_kde</span><span class="p">,</span>
+                                                 <span class="n">prior_lens_lognormal</span><span class="p">,</span> <span class="n">prior_source_lognormal</span><span class="p">,</span>
+                                                 <span class="n">prior_lens_light_lognormal</span><span class="p">,</span> <span class="n">prior_ps_lognormal</span><span class="p">,</span>
+                                                 <span class="n">prior_special_lognormal</span><span class="p">,</span> <span class="n">prior_extinction_lognormal</span><span class="p">,</span>
+                                                 <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_time_delay_likelihood</span> <span class="o">=</span> <span class="n">time_delay_likelihood</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_image_likelihood</span> <span class="o">=</span> <span class="n">image_likelihood</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_flux_ratio_likelihood</span> <span class="o">=</span> <span class="n">flux_ratio_likelihood</span>
+        <span class="k">if</span> <span class="n">kwargs_flux_compute</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs_flux_compute</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_flux_compute</span> <span class="o">=</span> <span class="n">kwargs_flux_compute</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_bounds</span> <span class="o">=</span> <span class="n">check_bounds</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_custom_logL_addition</span> <span class="o">=</span> <span class="n">custom_logL_addition</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_time_delay</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time_delays_measured&#39;</span><span class="p">:</span> <span class="n">time_delays_measured</span><span class="p">,</span>
+                                   <span class="s1">&#39;time_delays_uncertainties&#39;</span><span class="p">:</span> <span class="n">time_delays_uncertainties</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_imaging</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;multi_band_list&#39;</span><span class="p">:</span> <span class="n">multi_band_list</span><span class="p">,</span> <span class="s1">&#39;multi_band_type&#39;</span><span class="p">:</span> <span class="n">multi_band_type</span><span class="p">,</span>
+                                <span class="s1">&#39;bands_compute&#39;</span><span class="p">:</span> <span class="n">bands_compute</span><span class="p">,</span>
+                                <span class="s1">&#39;image_likelihood_mask_list&#39;</span><span class="p">:</span> <span class="n">image_likelihood_mask_list</span><span class="p">,</span> <span class="s1">&#39;source_marg&#39;</span><span class="p">:</span> <span class="n">source_marg</span><span class="p">,</span>
+                                <span class="s1">&#39;linear_prior&#39;</span><span class="p">:</span> <span class="n">linear_prior</span><span class="p">,</span> <span class="s1">&#39;check_positive_flux&#39;</span><span class="p">:</span> <span class="n">check_positive_flux</span><span class="p">,</span>
+                                <span class="s1">&#39;kwargs_pixelbased&#39;</span><span class="p">:</span> <span class="n">kwargs_pixelbased</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_position</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;astrometric_likelihood&#39;</span><span class="p">:</span> <span class="n">astrometric_likelihood</span><span class="p">,</span>
+                                 <span class="s1">&#39;image_position_likelihood&#39;</span><span class="p">:</span> <span class="n">image_position_likelihood</span><span class="p">,</span>
+                                 <span class="s1">&#39;source_position_likelihood&#39;</span><span class="p">:</span> <span class="n">source_position_likelihood</span><span class="p">,</span>
+                                 <span class="s1">&#39;ra_image_list&#39;</span><span class="p">:</span> <span class="n">ra_image_list</span><span class="p">,</span> <span class="s1">&#39;dec_image_list&#39;</span><span class="p">:</span> <span class="n">dec_image_list</span><span class="p">,</span>
+                                 <span class="s1">&#39;image_position_uncertainty&#39;</span><span class="p">:</span> <span class="n">image_position_uncertainty</span><span class="p">,</span>
+                                 <span class="s1">&#39;check_matched_source_position&#39;</span><span class="p">:</span> <span class="n">check_matched_source_position</span><span class="p">,</span>
+                                 <span class="s1">&#39;source_position_tolerance&#39;</span><span class="p">:</span> <span class="n">source_position_tolerance</span><span class="p">,</span>
+                                 <span class="s1">&#39;source_position_sigma&#39;</span><span class="p">:</span> <span class="n">source_position_sigma</span><span class="p">,</span>
+                                 <span class="s1">&#39;force_no_add_image&#39;</span><span class="p">:</span> <span class="n">force_no_add_image</span><span class="p">,</span>
+                                 <span class="s1">&#39;restrict_image_number&#39;</span><span class="p">:</span> <span class="n">restrict_image_number</span><span class="p">,</span> <span class="s1">&#39;max_num_images&#39;</span><span class="p">:</span> <span class="n">max_num_images</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_flux</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;flux_ratios&#39;</span><span class="p">:</span> <span class="n">flux_ratios</span><span class="p">,</span> <span class="s1">&#39;flux_ratio_errors&#39;</span><span class="p">:</span> <span class="n">flux_ratio_errors</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_flux</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_flux_compute</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_class_instances</span><span class="p">(</span><span class="n">kwargs_model</span><span class="o">=</span><span class="n">kwargs_model</span><span class="p">,</span> <span class="n">kwargs_imaging</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_imaging</span><span class="p">,</span>
+                              <span class="n">kwargs_position</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_position</span><span class="p">,</span> <span class="n">kwargs_flux</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_flux</span><span class="p">,</span>
+                              <span class="n">kwargs_time_delay</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_time_delay</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_class_instances</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_model</span><span class="p">,</span> <span class="n">kwargs_imaging</span><span class="p">,</span> <span class="n">kwargs_position</span><span class="p">,</span> <span class="n">kwargs_flux</span><span class="p">,</span> <span class="n">kwargs_time_delay</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param kwargs_model: lenstronomy model keyword arguments</span>
+<span class="sd">        :param kwargs_imaging: keyword arguments for imaging likelihood</span>
+<span class="sd">        :param kwargs_position: keyword arguments for positional likelihood</span>
+<span class="sd">        :param kwargs_flux: keyword arguments for flux ratio likelihood</span>
+<span class="sd">        :param kwargs_time_delay: keyword arguments for time delay likelihood</span>
+<span class="sd">        :return: updated model instances of this class</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># TODO: in case lens model or point source models are only applied on partial images, then this current class</span>
+        <span class="c1"># has ambiguities when it comes to time-delay likelihood and flux ratio likelihood</span>
+        <span class="n">lens_model_class</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">point_source_class</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">class_creator</span><span class="o">.</span><span class="n">create_class_instances</span><span class="p">(</span><span class="n">all_models</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                                                                             <span class="o">**</span><span class="n">kwargs_model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">PointSource</span> <span class="o">=</span> <span class="n">point_source_class</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time_delay_likelihood</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">time_delay_likelihood</span> <span class="o">=</span> <span class="n">TimeDelayLikelihood</span><span class="p">(</span><span class="n">lens_model_class</span><span class="o">=</span><span class="n">lens_model_class</span><span class="p">,</span>
+                                                             <span class="n">point_source_class</span><span class="o">=</span><span class="n">point_source_class</span><span class="p">,</span>
+                                                             <span class="o">**</span><span class="n">kwargs_time_delay</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_likelihood</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">image_likelihood</span> <span class="o">=</span> <span class="n">ImageLikelihood</span><span class="p">(</span><span class="n">kwargs_model</span><span class="o">=</span><span class="n">kwargs_model</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_imaging</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_position_likelihood</span> <span class="o">=</span> <span class="n">PositionLikelihood</span><span class="p">(</span><span class="n">point_source_class</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_position</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flux_ratio_likelihood</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">flux_ratio_likelihood</span> <span class="o">=</span> <span class="n">FluxRatioLikelihood</span><span class="p">(</span><span class="n">lens_model_class</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_flux</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">logL</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+
+<div class="viewcode-block" id="LikelihoodModule.logL"><a class="viewcode-back" href="../../../lenstronomy.Sampling.html#lenstronomy.Sampling.likelihood.LikelihoodModule.logL">[docs]</a>    <span class="k">def</span> <span class="nf">logL</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        routine to compute X2 given variable parameters for a MCMC/PSO chain</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># extract parameters</span>
+        <span class="n">kwargs_return</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">args2kwargs</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_bounds</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">penalty</span><span class="p">,</span> <span class="n">bound_hit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_bounds</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lower_limit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_upper_limit</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">bound_hit</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="k">return</span> <span class="o">-</span><span class="mi">10</span><span class="o">**</span><span class="mi">15</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_likelihood</span><span class="p">(</span><span class="n">kwargs_return</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LikelihoodModule.log_likelihood"><a class="viewcode-back" href="../../../lenstronomy.Sampling.html#lenstronomy.Sampling.likelihood.LikelihoodModule.log_likelihood">[docs]</a>    <span class="k">def</span> <span class="nf">log_likelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_return</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_special</span> <span class="o">=</span> <span class="n">kwargs_return</span><span class="p">[</span><span class="s1">&#39;kwargs_lens&#39;</span><span class="p">],</span> \
+                                                                                   <span class="n">kwargs_return</span><span class="p">[</span><span class="s1">&#39;kwargs_source&#39;</span><span class="p">],</span> \
+                                                                                   <span class="n">kwargs_return</span><span class="p">[</span><span class="s1">&#39;kwargs_lens_light&#39;</span><span class="p">],</span> \
+                                                                                   <span class="n">kwargs_return</span><span class="p">[</span><span class="s1">&#39;kwargs_ps&#39;</span><span class="p">],</span> \
+                                                                                   <span class="n">kwargs_return</span><span class="p">[</span><span class="s1">&#39;kwargs_special&#39;</span><span class="p">]</span>
+        <span class="c1"># update model instance in case of changes affecting it (i.e. redshift sampling in multi-plane)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_model</span><span class="p">(</span><span class="n">kwargs_special</span><span class="p">)</span>
+        <span class="c1"># generate image and computes likelihood</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reset_point_source_cache</span><span class="p">(</span><span class="n">bool_input</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">logL</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_likelihood</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">logL_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_likelihood</span><span class="o">.</span><span class="n">logL</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_return</span><span class="p">)</span>
+            <span class="n">logL</span> <span class="o">+=</span> <span class="n">logL_image</span>
+            <span class="k">if</span> <span class="n">verbose</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;image logL = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">logL_image</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time_delay_likelihood</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">logL_time_delay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_delay_likelihood</span><span class="o">.</span><span class="n">logL</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_special</span><span class="p">)</span>
+            <span class="n">logL</span> <span class="o">+=</span> <span class="n">logL_time_delay</span>
+            <span class="k">if</span> <span class="n">verbose</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;time-delay logL = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">logL_time_delay</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flux_ratio_likelihood</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">ra_image_list</span><span class="p">,</span> <span class="n">dec_image_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">PointSource</span><span class="o">.</span><span class="n">image_position</span><span class="p">(</span><span class="n">kwargs_ps</span><span class="o">=</span><span class="n">kwargs_ps</span><span class="p">,</span>
+                                                                            <span class="n">kwargs_lens</span><span class="o">=</span><span class="n">kwargs_lens</span><span class="p">)</span>
+            <span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span> <span class="o">=</span> <span class="n">ra_image_list</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dec_image_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">logL_flux_ratios</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flux_ratio_likelihood</span><span class="o">.</span><span class="n">logL</span><span class="p">(</span><span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_special</span><span class="p">)</span>
+            <span class="n">logL</span> <span class="o">+=</span> <span class="n">logL_flux_ratios</span>
+            <span class="k">if</span> <span class="n">verbose</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;flux ratio logL = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">logL_flux_ratios</span><span class="p">)</span>
+        <span class="n">logL</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_position_likelihood</span><span class="o">.</span><span class="n">logL</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_special</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="n">logL_prior</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prior_likelihood</span><span class="o">.</span><span class="n">logL</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_return</span><span class="p">)</span>
+        <span class="n">logL</span> <span class="o">+=</span> <span class="n">logL_prior</span>
+        <span class="k">if</span> <span class="n">verbose</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Prior likelihood = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">logL_prior</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_custom_logL_addition</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logL_cond</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_custom_logL_addition</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_return</span><span class="p">)</span>
+            <span class="n">logL</span> <span class="o">+=</span> <span class="n">logL_cond</span>
+            <span class="k">if</span> <span class="n">verbose</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;custom added logL = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">logL_cond</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reset_point_source_cache</span><span class="p">(</span><span class="n">bool_input</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">logL</span>  <span class="c1"># , None</span></div>
+
+<div class="viewcode-block" id="LikelihoodModule.check_bounds"><a class="viewcode-back" href="../../../lenstronomy.Sampling.html#lenstronomy.Sampling.likelihood.LikelihoodModule.check_bounds">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">check_bounds</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">lowerLimit</span><span class="p">,</span> <span class="n">upperLimit</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        checks whether the parameter vector has left its bound, if so, adds a big number</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">penalty</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="n">bound_hit</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">lowerLimit</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">or</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">upperLimit</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="n">penalty</span> <span class="o">=</span> <span class="mf">10.</span><span class="o">**</span><span class="mi">5</span>
+                <span class="n">bound_hit</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">if</span> <span class="n">verbose</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;parameter </span><span class="si">%s</span><span class="s1"> with value </span><span class="si">%s</span><span class="s1"> hit the bounds [</span><span class="si">%s</span><span class="s1">, </span><span class="si">%s</span><span class="s1">] &#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">lowerLimit</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                                                                   <span class="n">upperLimit</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+                <span class="k">return</span> <span class="n">penalty</span><span class="p">,</span> <span class="n">bound_hit</span>
+        <span class="k">return</span> <span class="n">penalty</span><span class="p">,</span> <span class="n">bound_hit</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">num_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :return: number of independent data points in the combined fitting</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">num_data</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_likelihood</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">num_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_likelihood</span><span class="o">.</span><span class="n">num_data</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time_delay_likelihood</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">num_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_delay_likelihood</span><span class="o">.</span><span class="n">num_data</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flux_ratio_likelihood</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">num_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flux_ratio_likelihood</span><span class="o">.</span><span class="n">num_data</span>
+        <span class="n">num_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_position_likelihood</span><span class="o">.</span><span class="n">num_data</span>
+        <span class="k">return</span> <span class="n">num_data</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">param_limits</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lower_limit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_upper_limit</span>
+
+<div class="viewcode-block" id="LikelihoodModule.effective_num_data_points"><a class="viewcode-back" href="../../../lenstronomy.Sampling.html#lenstronomy.Sampling.likelihood.LikelihoodModule.effective_num_data_points">[docs]</a>    <span class="k">def</span> <span class="nf">effective_num_data_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        returns the effective number of data points considered in the X2 estimation to compute the reduced X2 value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">num_linear</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_likelihood</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">num_linear</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_likelihood</span><span class="o">.</span><span class="n">num_param_linear</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">num_param</span><span class="p">,</span> <span class="n">param_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">num_param</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_data</span> <span class="o">-</span> <span class="n">num_param</span> <span class="o">-</span> <span class="n">num_linear</span></div>
+
+<div class="viewcode-block" id="LikelihoodModule.likelihood"><a class="viewcode-back" href="../../../lenstronomy.Sampling.html#lenstronomy.Sampling.likelihood.LikelihoodModule.likelihood">[docs]</a>    <span class="k">def</span> <span class="nf">likelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">logL</span><span class="p">(</span><span class="n">a</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LikelihoodModule.negativelogL"><a class="viewcode-back" href="../../../lenstronomy.Sampling.html#lenstronomy.Sampling.likelihood.LikelihoodModule.negativelogL">[docs]</a>    <span class="k">def</span> <span class="nf">negativelogL</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        for minimizer function, the negative value of the logl value is requested</span>
+
+<span class="sd">        :param a: array of parameters</span>
+<span class="sd">        :return: -logL</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">logL</span><span class="p">(</span><span class="n">a</span><span class="p">)</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_unpack_data</span><span class="p">(</span><span class="n">multi_band_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">multi_band_type</span><span class="o">=</span><span class="s1">&#39;multi-linear&#39;</span><span class="p">,</span> <span class="n">time_delays_measured</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">time_delays_uncertainties</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flux_ratios</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flux_ratio_errors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ra_image_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">dec_image_list</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param multi_band_list: list of [[kwargs_data, kwargs_psf, kwargs_numerics], [], ...]</span>
+<span class="sd">        :param multi_band_type: string, type of multi-plane settings (multi-linear or joint-linear)</span>
+<span class="sd">        :param time_delays_measured: measured time delays (units of days)</span>
+<span class="sd">        :param time_delays_uncertainties: uncertainties in time-delay measurement</span>
+<span class="sd">        :param flux_ratios: flux ratios of point sources</span>
+<span class="sd">        :param flux_ratio_errors: error in flux ratio measurement</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">multi_band_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">multi_band_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">ra_image_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ra_image_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">dec_image_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dec_image_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">return</span> <span class="n">multi_band_list</span><span class="p">,</span> <span class="n">multi_band_type</span><span class="p">,</span> <span class="n">time_delays_measured</span><span class="p">,</span> <span class="n">time_delays_uncertainties</span><span class="p">,</span> <span class="n">flux_ratios</span><span class="p">,</span> \
+               <span class="n">flux_ratio_errors</span><span class="p">,</span> <span class="n">ra_image_list</span><span class="p">,</span> <span class="n">dec_image_list</span>
+
+    <span class="k">def</span> <span class="nf">_reset_point_source_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bool_input</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">PointSource</span><span class="o">.</span><span class="n">delete_lens_model_cache</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">PointSource</span><span class="o">.</span><span class="n">set_save_cache</span><span class="p">(</span><span class="n">bool_input</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_likelihood</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">image_likelihood</span><span class="o">.</span><span class="n">reset_point_source_cache</span><span class="p">(</span><span class="n">bool_input</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_update_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_special</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        updates lens model instance of this class (and all class instances related to it) when an update to the</span>
+<span class="sd">        modeled redshifts of the deflector and/or source planes are made</span>
+
+<span class="sd">        :param kwargs_special: keyword arguments from SpecialParam() class return of sampling arguments</span>
+<span class="sd">        :return: None, all class instances updated to recent modek</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">kwargs_model</span><span class="p">,</span> <span class="n">update_bool</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">update_kwargs_model</span><span class="p">(</span><span class="n">kwargs_special</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">update_bool</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_class_instances</span><span class="p">(</span><span class="n">kwargs_model</span><span class="o">=</span><span class="n">kwargs_model</span><span class="p">,</span> <span class="n">kwargs_imaging</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_imaging</span><span class="p">,</span>
+                                  <span class="n">kwargs_position</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_position</span><span class="p">,</span> <span class="n">kwargs_flux</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_flux</span><span class="p">,</span>
+                                  <span class="n">kwargs_time_delay</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_time_delay</span><span class="p">)</span></div>
+        <span class="c1"># TODO remove redundancies with Param() calls updates</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.Sampling.likelihood</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Simon Birrer and contributors.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
+    </div>
+  </body>
+</html>

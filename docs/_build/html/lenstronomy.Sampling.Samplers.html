@@ -1,0 +1,346 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>lenstronomy.Sampling.Samplers package &#8212; lenstronomy 1.10.3 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="lenstronomy.SimulationAPI package" href="lenstronomy.SimulationAPI.html" />
+    <link rel="prev" title="lenstronomy.Sampling.Pool package" href="lenstronomy.Sampling.Pool.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="lenstronomy.SimulationAPI.html" title="lenstronomy.SimulationAPI package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="lenstronomy.Sampling.Pool.html" title="lenstronomy.Sampling.Pool package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="lenstronomy.Sampling.html" accesskey="U">lenstronomy.Sampling package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.Sampling.Samplers package</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="lenstronomy-sampling-samplers-package">
+<h1>lenstronomy.Sampling.Samplers package<a class="headerlink" href="#lenstronomy-sampling-samplers-package" title="Permalink to this headline">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-lenstronomy.Sampling.Samplers.base_nested_sampler">
+<span id="lenstronomy-sampling-samplers-base-nested-sampler-module"></span><h2>lenstronomy.Sampling.Samplers.base_nested_sampler module<a class="headerlink" href="#module-lenstronomy.Sampling.Samplers.base_nested_sampler" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="lenstronomy.Sampling.Samplers.base_nested_sampler.NestedSampler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.Sampling.Samplers.base_nested_sampler.</span></span><span class="sig-name descname"><span class="pre">NestedSampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">likelihood_module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_means</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_sigmas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width_scale</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_scale</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Samplers/base_nested_sampler.html#NestedSampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Sampling.Samplers.base_nested_sampler.NestedSampler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class for nested samplers</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lenstronomy.Sampling.Samplers.base_nested_sampler.NestedSampler.log_likelihood">
+<span class="sig-name descname"><span class="pre">log_likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Samplers/base_nested_sampler.html#NestedSampler.log_likelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Sampling.Samplers.base_nested_sampler.NestedSampler.log_likelihood" title="Permalink to this definition">¶</a></dt>
+<dd><p>compute the log-likelihood given list of parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>log-likelihood (from the likelihood module)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lenstronomy.Sampling.Samplers.base_nested_sampler.NestedSampler.prior">
+<span class="sig-name descname"><span class="pre">prior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Samplers/base_nested_sampler.html#NestedSampler.prior"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Sampling.Samplers.base_nested_sampler.NestedSampler.prior" title="Permalink to this definition">¶</a></dt>
+<dd><p>compute the mapping between the unit cube and parameter cube</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>hypercube in parameter space</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lenstronomy.Sampling.Samplers.base_nested_sampler.NestedSampler.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs_run</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Samplers/base_nested_sampler.html#NestedSampler.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Sampling.Samplers.base_nested_sampler.NestedSampler.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>run the nested sampling algorithm</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-lenstronomy.Sampling.Samplers.dynesty_sampler">
+<span id="lenstronomy-sampling-samplers-dynesty-sampler-module"></span><h2>lenstronomy.Sampling.Samplers.dynesty_sampler module<a class="headerlink" href="#module-lenstronomy.Sampling.Samplers.dynesty_sampler" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="lenstronomy.Sampling.Samplers.dynesty_sampler.DynestySampler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.Sampling.Samplers.dynesty_sampler.</span></span><span class="sig-name descname"><span class="pre">DynestySampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">likelihood_module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'uniform'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_means</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_sigmas</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'multi'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_mpi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_pool</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Samplers/dynesty_sampler.html#DynestySampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Sampling.Samplers.dynesty_sampler.DynestySampler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#lenstronomy.Sampling.Samplers.base_nested_sampler.NestedSampler" title="lenstronomy.Sampling.Samplers.base_nested_sampler.NestedSampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.Sampling.Samplers.base_nested_sampler.NestedSampler</span></code></a></p>
+<p>Wrapper for dynamical nested sampling algorithm Dynesty by J. Speagle</p>
+<p>paper : <a class="reference external" href="https://arxiv.org/abs/1904.02180">https://arxiv.org/abs/1904.02180</a>
+doc : <a class="reference external" href="https://dynesty.readthedocs.io/">https://dynesty.readthedocs.io/</a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lenstronomy.Sampling.Samplers.dynesty_sampler.DynestySampler.log_likelihood">
+<span class="sig-name descname"><span class="pre">log_likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Samplers/dynesty_sampler.html#DynestySampler.log_likelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Sampling.Samplers.dynesty_sampler.DynestySampler.log_likelihood" title="Permalink to this definition">¶</a></dt>
+<dd><p>compute the log-likelihood given list of parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> – parameter values</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>log-likelihood (from the likelihood module)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lenstronomy.Sampling.Samplers.dynesty_sampler.DynestySampler.prior">
+<span class="sig-name descname"><span class="pre">prior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Samplers/dynesty_sampler.html#DynestySampler.prior"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Sampling.Samplers.dynesty_sampler.DynestySampler.prior" title="Permalink to this definition">¶</a></dt>
+<dd><p>compute the mapping between the unit cube and parameter cube</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>u</strong> – unit hypercube, sampled by the algorithm</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>hypercube in parameter space</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lenstronomy.Sampling.Samplers.dynesty_sampler.DynestySampler.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs_run</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Samplers/dynesty_sampler.html#DynestySampler.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Sampling.Samplers.dynesty_sampler.DynestySampler.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>run the Dynesty nested sampler</p>
+<p>see <a class="reference external" href="https://dynesty.readthedocs.io">https://dynesty.readthedocs.io</a> for content of kwargs_run</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>kwargs_run</strong> – kwargs directly passed to DynamicNestedSampler.run_nested</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>samples, means, logZ, logZ_err, logL, results</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-lenstronomy.Sampling.Samplers.multinest_sampler">
+<span id="lenstronomy-sampling-samplers-multinest-sampler-module"></span><h2>lenstronomy.Sampling.Samplers.multinest_sampler module<a class="headerlink" href="#module-lenstronomy.Sampling.Samplers.multinest_sampler" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="lenstronomy.Sampling.Samplers.multinest_sampler.MultiNestSampler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.Sampling.Samplers.multinest_sampler.</span></span><span class="sig-name descname"><span class="pre">MultiNestSampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">likelihood_module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'uniform'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_means</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_sigmas</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_basename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'-'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_output_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_mpi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Samplers/multinest_sampler.html#MultiNestSampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Sampling.Samplers.multinest_sampler.MultiNestSampler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#lenstronomy.Sampling.Samplers.base_nested_sampler.NestedSampler" title="lenstronomy.Sampling.Samplers.base_nested_sampler.NestedSampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.Sampling.Samplers.base_nested_sampler.NestedSampler</span></code></a></p>
+<p>Wrapper for nested sampling algorithm MultInest by F. Feroz &amp; M. Hobson
+papers : arXiv:0704.3704, arXiv:0809.3437, arXiv:1306.2144
+pymultinest doc : https://johannesbuchner.github.io/PyMultiNest/pymultinest.html</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lenstronomy.Sampling.Samplers.multinest_sampler.MultiNestSampler.log_likelihood">
+<span class="sig-name descname"><span class="pre">log_likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ndim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nparams</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Samplers/multinest_sampler.html#MultiNestSampler.log_likelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Sampling.Samplers.multinest_sampler.MultiNestSampler.log_likelihood" title="Permalink to this definition">¶</a></dt>
+<dd><p>compute the log-likelihood given list of parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args</strong> – parameter values</p></li>
+<li><p><strong>ndim</strong> – number of sampled parameters</p></li>
+<li><p><strong>nparams</strong> – total number of parameters</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>log-likelihood (from the likelihood module)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lenstronomy.Sampling.Samplers.multinest_sampler.MultiNestSampler.prior">
+<span class="sig-name descname"><span class="pre">prior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cube</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ndim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nparams</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Samplers/multinest_sampler.html#MultiNestSampler.prior"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Sampling.Samplers.multinest_sampler.MultiNestSampler.prior" title="Permalink to this definition">¶</a></dt>
+<dd><p>compute the mapping between the unit cube and parameter cube (in-place)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cube</strong> – unit hypercube, sampled by the algorithm</p></li>
+<li><p><strong>ndim</strong> – number of sampled parameters</p></li>
+<li><p><strong>nparams</strong> – total number of parameters</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lenstronomy.Sampling.Samplers.multinest_sampler.MultiNestSampler.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs_run</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Samplers/multinest_sampler.html#MultiNestSampler.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Sampling.Samplers.multinest_sampler.MultiNestSampler.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>run the MultiNest nested sampler</p>
+<p>see <a class="reference external" href="https://johannesbuchner.github.io/PyMultiNest/pymultinest.html">https://johannesbuchner.github.io/PyMultiNest/pymultinest.html</a> for content of kwargs_run</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>kwargs_run</strong> – kwargs directly passed to pymultinest.run</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>samples, means, logZ, logZ_err, logL, stats</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-lenstronomy.Sampling.Samplers.polychord_sampler">
+<span id="lenstronomy-sampling-samplers-polychord-sampler-module"></span><h2>lenstronomy.Sampling.Samplers.polychord_sampler module<a class="headerlink" href="#module-lenstronomy.Sampling.Samplers.polychord_sampler" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="lenstronomy.Sampling.Samplers.polychord_sampler.DyPolyChordSampler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.Sampling.Samplers.polychord_sampler.</span></span><span class="sig-name descname"><span class="pre">DyPolyChordSampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">likelihood_module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'uniform'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_means</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_sigmas</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_basename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'-'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resume_dyn_run</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">polychord_settings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_output_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_mpi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Samplers/polychord_sampler.html#DyPolyChordSampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Sampling.Samplers.polychord_sampler.DyPolyChordSampler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#lenstronomy.Sampling.Samplers.base_nested_sampler.NestedSampler" title="lenstronomy.Sampling.Samplers.base_nested_sampler.NestedSampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.Sampling.Samplers.base_nested_sampler.NestedSampler</span></code></a></p>
+<p>Wrapper for dynamical nested sampling algorithm DyPolyChord
+by E. Higson, M. Hobson, W. Handley, A. Lasenby</p>
+<p>papers : arXiv:1704.03459, arXiv:1804.06406
+doc : https://dypolychord.readthedocs.io</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lenstronomy.Sampling.Samplers.polychord_sampler.DyPolyChordSampler.log_likelihood">
+<span class="sig-name descname"><span class="pre">log_likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Samplers/polychord_sampler.html#DyPolyChordSampler.log_likelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Sampling.Samplers.polychord_sampler.DyPolyChordSampler.log_likelihood" title="Permalink to this definition">¶</a></dt>
+<dd><p>compute the log-likelihood given list of parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> – parameter values</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>log-likelihood (from the likelihood module)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lenstronomy.Sampling.Samplers.polychord_sampler.DyPolyChordSampler.prior">
+<span class="sig-name descname"><span class="pre">prior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cube</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Samplers/polychord_sampler.html#DyPolyChordSampler.prior"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Sampling.Samplers.polychord_sampler.DyPolyChordSampler.prior" title="Permalink to this definition">¶</a></dt>
+<dd><p>compute the mapping between the unit cube and parameter cube</p>
+<p>‘copy=True’ below because cube can not be modified in-place (read-only)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>cube</strong> – unit hypercube, sampled by the algorithm</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>hypercube in parameter space</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lenstronomy.Sampling.Samplers.polychord_sampler.DyPolyChordSampler.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dynamic_goal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_run</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Samplers/polychord_sampler.html#DyPolyChordSampler.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Sampling.Samplers.polychord_sampler.DyPolyChordSampler.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>run the DyPolyChord dynamical nested sampler</p>
+<p>see <a class="reference external" href="https://dypolychord.readthedocs.io">https://dypolychord.readthedocs.io</a> for content of kwargs_run</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dynamic_goal</strong> – 0 for evidence computation, 1 for posterior computation</p></li>
+<li><p><strong>kwargs_run</strong> – kwargs directly passed to dyPolyChord.run_dypolychord</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>samples, means, logZ, logZ_err, logL, ns_run</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-lenstronomy.Sampling.Samplers">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-lenstronomy.Sampling.Samplers" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">lenstronomy.Sampling.Samplers package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.Sampling.Samplers.base_nested_sampler">lenstronomy.Sampling.Samplers.base_nested_sampler module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.Sampling.Samplers.dynesty_sampler">lenstronomy.Sampling.Samplers.dynesty_sampler module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.Sampling.Samplers.multinest_sampler">lenstronomy.Sampling.Samplers.multinest_sampler module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.Sampling.Samplers.polychord_sampler">lenstronomy.Sampling.Samplers.polychord_sampler module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.Sampling.Samplers">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="lenstronomy.Sampling.Pool.html"
+                        title="previous chapter">lenstronomy.Sampling.Pool package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="lenstronomy.SimulationAPI.html"
+                        title="next chapter">lenstronomy.SimulationAPI package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/lenstronomy.Sampling.Samplers.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="lenstronomy.SimulationAPI.html" title="lenstronomy.SimulationAPI package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="lenstronomy.Sampling.Pool.html" title="lenstronomy.Sampling.Pool package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="lenstronomy.Sampling.html" >lenstronomy.Sampling package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.Sampling.Samplers package</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Simon Birrer and contributors.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
+    </div>
+  </body>
+</html>

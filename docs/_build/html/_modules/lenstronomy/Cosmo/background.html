@@ -1,0 +1,160 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lenstronomy.Cosmo.background &#8212; lenstronomy 1.10.3 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/classic.css" />
+    
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.Cosmo.background</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for lenstronomy.Cosmo.background</h1><div class="highlight"><pre>
+<span></span><span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;sibirrer&#39;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">lenstronomy.Util.constants</span> <span class="k">as</span> <span class="nn">const</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Cosmo.cosmo_interp</span> <span class="kn">import</span> <span class="n">CosmoInterp</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Background&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="Background"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.background.Background">[docs]</a><span class="k">class</span> <span class="nc">Background</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    class to compute cosmological distances</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_interp</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param cosmo: instance of astropy.cosmology</span>
+<span class="sd">        :param interp: boolean, if True, uses interpolated cosmology to evaluate specific redshifts</span>
+<span class="sd">        :param kwargs_interp: keyword arguments of CosmoInterp specifying the interpolation interval and maximum</span>
+<span class="sd">        redshift</span>
+<span class="sd">        :return: Background class with instance of astropy.cosmology</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">cosmo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">astropy.cosmology</span> <span class="kn">import</span> <span class="n">default_cosmology</span>
+            <span class="n">cosmo</span> <span class="o">=</span> <span class="n">default_cosmology</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">interp</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span> <span class="o">=</span> <span class="n">CosmoInterp</span><span class="p">(</span><span class="n">cosmo</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_interp</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span> <span class="o">=</span> <span class="n">cosmo</span>
+
+<div class="viewcode-block" id="Background.a_z"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.background.Background.a_z">[docs]</a>    <span class="k">def</span> <span class="nf">a_z</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        returns scale factor (a_0 = 1) for given redshift</span>
+<span class="sd">        :param z: redshift</span>
+<span class="sd">        :return: scale factor</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">z</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Background.d_xy"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.background.Background.d_xy">[docs]</a>    <span class="k">def</span> <span class="nf">d_xy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_observer</span><span class="p">,</span> <span class="n">z_source</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param z_observer: observer redshift</span>
+<span class="sd">        :param z_source: source redshift</span>
+<span class="sd">        :return: angular diameter distance in units of Mpc</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">D_xy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">angular_diameter_distance_z1z2</span><span class="p">(</span><span class="n">z_observer</span><span class="p">,</span> <span class="n">z_source</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">D_xy</span><span class="o">.</span><span class="n">value</span></div>
+
+<div class="viewcode-block" id="Background.ddt"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.background.Background.ddt">[docs]</a>    <span class="k">def</span> <span class="nf">ddt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_lens</span><span class="p">,</span> <span class="n">z_source</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        time-delay distance</span>
+
+<span class="sd">        :param z_lens: redshift of lens</span>
+<span class="sd">        :param z_source: redshift of source</span>
+<span class="sd">        :return: time-delay distance in units of proper Mpc</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">d_xy</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">z_lens</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">d_xy</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">z_source</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">d_xy</span><span class="p">(</span><span class="n">z_lens</span><span class="p">,</span> <span class="n">z_source</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">z_lens</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Background.T_xy"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.background.Background.T_xy">[docs]</a>    <span class="k">def</span> <span class="nf">T_xy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_observer</span><span class="p">,</span> <span class="n">z_source</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param z_observer: observer</span>
+<span class="sd">        :param z_source: source</span>
+<span class="sd">        :return: transverse comoving distance in units of Mpc</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">D_xy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">d_xy</span><span class="p">(</span><span class="n">z_observer</span><span class="p">,</span> <span class="n">z_source</span><span class="p">)</span>
+        <span class="n">T_xy</span> <span class="o">=</span> <span class="n">D_xy</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">z_source</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">T_xy</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">rho_crit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        critical density</span>
+<span class="sd">        :return: value in M_sol/Mpc^3</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">H</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">value</span> <span class="o">/</span> <span class="mf">100.</span>
+        <span class="k">return</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">h</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">8</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">G</span><span class="p">)</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">**</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">Mpc</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">M_sun</span></div>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.Cosmo.background</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Simon Birrer and contributors.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
+    </div>
+  </body>
+</html>

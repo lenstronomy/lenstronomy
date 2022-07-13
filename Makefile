@@ -16,6 +16,7 @@ clean-build:
 	rm -fr build/
 	rm -fr dist/
 	rm -fr *.egg-info
+	rm -fr docs/_build
 
 clean-pyc:
 	find . -name '*.pyc' -exec rm -f {} +
@@ -55,3 +56,6 @@ pypi-upload:
 	python setup.py sdist
 	twine upload --repository-url https://test.pypi.org/legacy/ dist/*
 	twine upload dist/*
+
+conda-upload:
+    grayskull pypi lenstronomy

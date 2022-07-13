@@ -1,0 +1,183 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lenstronomy.ImSim.MultiBand.multi_linear &#8212; lenstronomy 1.10.3 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css" />
+    
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.ImSim.MultiBand.multi_linear</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for lenstronomy.ImSim.MultiBand.multi_linear</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">lenstronomy.ImSim.MultiBand.multi_data_base</span> <span class="kn">import</span> <span class="n">MultiDataBase</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.ImSim.MultiBand.single_band_multi_model</span> <span class="kn">import</span> <span class="n">SingleBandMultiModel</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;MultiLinear&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="MultiLinear"><a class="viewcode-back" href="../../../../lenstronomy.ImSim.MultiBand.html#lenstronomy.ImSim.MultiBand.multi_linear.MultiLinear">[docs]</a><span class="k">class</span> <span class="nc">MultiLinear</span><span class="p">(</span><span class="n">MultiDataBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    class to simulate/reconstruct images in multi-band option.</span>
+<span class="sd">    This class calls functions of image_model.py with different bands with</span>
+<span class="sd">    joint non-linear parameters and decoupled linear parameters.</span>
+
+<span class="sd">    the class supports keyword arguments &#39;index_lens_model_list&#39;, &#39;index_source_light_model_list&#39;,</span>
+<span class="sd">    &#39;index_lens_light_model_list&#39;, &#39;index_point_source_model_list&#39;, &#39;index_optical_depth_model_list&#39; in kwargs_model</span>
+<span class="sd">    These arguments should be lists of length the number of imaging bands available and each entry in the list</span>
+<span class="sd">    is a list of integers specifying the model components being evaluated for the specific band.</span>
+
+<span class="sd">    E.g. there are two bands and you want to different light profiles being modeled.</span>
+<span class="sd">    - you define two different light profiles lens_light_model_list = [&#39;SERSIC&#39;, &#39;SERSIC&#39;]</span>
+<span class="sd">    - set index_lens_light_model_list = [[0], [1]]</span>
+<span class="sd">    - (optional) for now all the parameters between the two light profiles are independent in the model. You have</span>
+<span class="sd">    the possibility to join a subset of model parameters (e.g. joint centroid). See the Param() class for documentation.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">multi_band_list</span><span class="p">,</span> <span class="n">kwargs_model</span><span class="p">,</span> <span class="n">likelihood_mask_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">compute_bool</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwargs_pixelbased</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param multi_band_list: list of imaging band configurations [[kwargs_data, kwargs_psf, kwargs_numerics],[...], ...]</span>
+<span class="sd">        :param kwargs_model: model option keyword arguments</span>
+<span class="sd">        :param likelihood_mask_list: list of likelihood masks (booleans with size of the individual images)</span>
+<span class="sd">        :param compute_bool: (optional), bool list to indicate which band to be included in the modeling</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="s1">&#39;multi-linear&#39;</span>
+        <span class="n">imageModel_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">band_index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">multi_band_list</span><span class="p">)):</span>
+            <span class="n">imageModel</span> <span class="o">=</span> <span class="n">SingleBandMultiModel</span><span class="p">(</span><span class="n">multi_band_list</span><span class="p">,</span> <span class="n">kwargs_model</span><span class="p">,</span> <span class="n">likelihood_mask_list</span><span class="o">=</span><span class="n">likelihood_mask_list</span><span class="p">,</span>
+                                              <span class="n">band_index</span><span class="o">=</span><span class="n">band_index</span><span class="p">,</span> <span class="n">kwargs_pixelbased</span><span class="o">=</span><span class="n">kwargs_pixelbased</span><span class="p">)</span>
+            <span class="n">imageModel_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">imageModel</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MultiLinear</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">imageModel_list</span><span class="p">,</span> <span class="n">compute_bool</span><span class="o">=</span><span class="n">compute_bool</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MultiLinear.image_linear_solve"><a class="viewcode-back" href="../../../../lenstronomy.ImSim.MultiBand.html#lenstronomy.ImSim.MultiBand.multi_linear.MultiLinear.image_linear_solve">[docs]</a>    <span class="k">def</span> <span class="nf">image_linear_solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                           <span class="n">kwargs_extinction</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwargs_special</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inv_bool</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        computes the image (lens and source surface brightness with a given lens model).</span>
+<span class="sd">        The linear parameters are computed with a weighted linear least square optimization</span>
+<span class="sd">        (i.e. flux normalization of the brightness profiles)</span>
+
+<span class="sd">        :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles</span>
+<span class="sd">        :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles</span>
+<span class="sd">        :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles</span>
+<span class="sd">        :param kwargs_ps: keyword arguments corresponding to &quot;other&quot; parameters, such as external shear and point source image positions</span>
+<span class="sd">        :param inv_bool: if True, invert the full linear solver Matrix Ax = y for the purpose of the covariance matrix.</span>
+<span class="sd">        :return: 1d array of surface brightness pixels of the optimal solution of the linear parameters to match the data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">wls_list</span><span class="p">,</span> <span class="n">error_map_list</span><span class="p">,</span> <span class="n">cov_param_list</span><span class="p">,</span> <span class="n">param_list</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_bands</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_bool</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">wls_model</span><span class="p">,</span> <span class="n">error_map</span><span class="p">,</span> <span class="n">cov_param</span><span class="p">,</span> <span class="n">param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_imageModel_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">image_linear_solve</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">,</span>
+                                                                                                     <span class="n">kwargs_source</span><span class="p">,</span>
+                                                                                                     <span class="n">kwargs_lens_light</span><span class="p">,</span>
+                                                                                                     <span class="n">kwargs_ps</span><span class="p">,</span>
+                                                                                                     <span class="n">kwargs_extinction</span><span class="p">,</span>
+                                                                                                     <span class="n">kwargs_special</span><span class="p">,</span>
+                                                                                                     <span class="n">inv_bool</span><span class="o">=</span><span class="n">inv_bool</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">wls_model</span><span class="p">,</span> <span class="n">error_map</span><span class="p">,</span> <span class="n">cov_param</span><span class="p">,</span> <span class="n">param</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+            <span class="n">wls_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">wls_model</span><span class="p">)</span>
+            <span class="n">error_map_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">error_map</span><span class="p">)</span>
+            <span class="n">cov_param_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cov_param</span><span class="p">)</span>
+            <span class="n">param_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">wls_list</span><span class="p">,</span> <span class="n">error_map_list</span><span class="p">,</span> <span class="n">cov_param_list</span><span class="p">,</span> <span class="n">param_list</span></div>
+
+<div class="viewcode-block" id="MultiLinear.likelihood_data_given_model"><a class="viewcode-back" href="../../../../lenstronomy.ImSim.MultiBand.html#lenstronomy.ImSim.MultiBand.multi_linear.MultiLinear.likelihood_data_given_model">[docs]</a>    <span class="k">def</span> <span class="nf">likelihood_data_given_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                    <span class="n">kwargs_extinction</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwargs_special</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">source_marg</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">linear_prior</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                    <span class="n">check_positive_flux</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        computes the likelihood of the data given a model</span>
+<span class="sd">        This is specified with the non-linear parameters and a linear inversion and prior marginalisation.</span>
+
+<span class="sd">        :param kwargs_lens:</span>
+<span class="sd">        :param kwargs_source:</span>
+<span class="sd">        :param kwargs_lens_light:</span>
+<span class="sd">        :param kwargs_ps:</span>
+<span class="sd">        :param check_positive_flux: bool, if True, checks whether the linear inversion resulted in non-negative flux</span>
+<span class="sd">         components and applies a punishment in the likelihood if so.</span>
+<span class="sd">        :return: log likelihood (natural logarithm) (sum of the log likelihoods of the individual images)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># generate image</span>
+        <span class="n">logL</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">linear_prior</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">linear_prior</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_bands</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_bands</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_bool</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">logL</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_imageModel_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">likelihood_data_given_model</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span>
+                                                                             <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">,</span>
+                                                                             <span class="n">kwargs_extinction</span><span class="p">,</span> <span class="n">kwargs_special</span><span class="p">,</span>
+                                                                             <span class="n">source_marg</span><span class="o">=</span><span class="n">source_marg</span><span class="p">,</span>
+                                                                             <span class="n">linear_prior</span><span class="o">=</span><span class="n">linear_prior</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                                                             <span class="n">check_positive_flux</span><span class="o">=</span><span class="n">check_positive_flux</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">logL</span></div></div>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.ImSim.MultiBand.multi_linear</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Simon Birrer and contributors.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
+    </div>
+  </body>
+</html>

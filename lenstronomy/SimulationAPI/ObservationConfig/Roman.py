@@ -110,7 +110,6 @@ class Roman(object):
             path = os.getcwd()
             dirpath, _ = os.path.split(path)
             module_path, _ = os.path.split(dirpath)
-            print(path,dirpath, module_path)
             psf_filename = os.path.join(path, 'lenstronomy\SimulationAPI\ObservationConfig\PSF_models\{}.fits'.format(band))
             kernel = pyfits.getdata(psf_filename)
             self.obs.update({'psf_type': 'PIXEL','kernel_point_source': kernel})

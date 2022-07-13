@@ -313,10 +313,10 @@ class ProfileListBase(object):
             from lenstronomy.LensModel.Profiles.cored_density_mst import CoredDensityMST
             return CoredDensityMST(profile_type='CORED_DENSITY_ULDM')
         elif lens_type == 'LOS':
-            from lenstronomy.LensModel.LineOfSight.LOSModels.los import LOS #NHmod
+            from lenstronomy.LensModel.LineOfSight.LOSModels.los import LOS
             return LOS()
         elif lens_type == 'LOS_MINIMAL':
-            from lenstronomy.LensModel.LineOfSight.LOSModels.los_minimal import LOSMinimal #NHmod
+            from lenstronomy.LensModel.LineOfSight.LOSModels.los_minimal import LOSMinimal
             return LOSMinimal()
         else:
             raise ValueError('%s is not a valid lens model. Supported are: %s.' % (lens_type, _SUPPORTED_MODELS))

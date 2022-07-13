@@ -11,8 +11,6 @@ __all__ = ['LensModel']
 class LensModel(object):
     """
     class to handle an arbitrary list of lens models. This is the main lenstronomy LensModel API for all other modules.
-    NH modifiying to include LOS effects 08/09/21 #NHmod
-    PF modifying to make the detection of LOS effects automatic and remove los_effects flag #PFmod
     """
 
     def __init__(self, lens_model_list, z_lens=None, z_source=None, lens_redshift_list=None, cosmo=None,
@@ -85,7 +83,6 @@ class LensModel(object):
                                          kwargs_interp=kwargs_interp)
         else:
             if los_effects is True:
-                # print('Adding '+los_model+' to the main lens.')
                 self.lens_model = SinglePlaneLOS(lens_model_list,
                     index_los=index_los,
                     numerical_alpha_class=numerical_alpha_class,
@@ -93,7 +90,6 @@ class LensModel(object):
                     z_source_convention=z_source_convention,
                     kwargs_interp=kwargs_interp)
             else:
-                # print('No line-of-sight effects being added.')
                 self.lens_model = SinglePlane(lens_model_list,
                     numerical_alpha_class=numerical_alpha_class,
                     lens_redshift_list=lens_redshift_list,

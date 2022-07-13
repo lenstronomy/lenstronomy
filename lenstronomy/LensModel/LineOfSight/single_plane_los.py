@@ -11,10 +11,10 @@ class SinglePlaneLOS(SinglePlane):
     """
     This class is based on the 'SinglePlane' class, modified to include
     line-of-sight effects as presented by Fleury et al. in 2104.08883.
-    
+
     Are modified:
     - init (to include a new attribute, self.los)
-    - fermat potential                 #DJMod
+    - fermat potential                 
     - alpha
     - hessian
 
@@ -69,13 +69,13 @@ class SinglePlaneLOS(SinglePlane):
             kwargs_los['gamma2_ds'] = kwargs_los['gamma2_od']
             kwargs_los['omega_ds'] = kwargs_los['omega_od']
 
-        kwargs_dominant = [kwarg for i, kwarg in enumerate(kwargs)                                          #DJMod
+        kwargs_dominant = [kwarg for i, kwarg in enumerate(kwargs)
                        if i != self.index_los]
 
-        return kwargs_dominant, kwargs_los                                                                  #DJMod
+        return kwargs_dominant, kwargs_los
 
 
-    def fermat_potential(self, x_image, y_image, kwargs_lens, x_source=None, y_source=None, k=None):         #DJMod
+    def fermat_potential(self, x_image, y_image, kwargs_lens, x_source=None, y_source=None, k=None):
         """
         Calculates the Fermat Potential with LOS corrections in the tidal regime
 
@@ -86,7 +86,7 @@ class SinglePlaneLOS(SinglePlane):
         :param kwargs_lens: list of keyword arguments of lens model parameters matching the lens model classes
         :return: fermat potential in arcsec**2 as a list
         """
-        
+
         kwargs_dominant, kwargs_los = self.split_lens_los(kwargs_lens)
 
         #the amplification matrices
@@ -101,7 +101,7 @@ class SinglePlaneLOS(SinglePlane):
 
         #the composite amplification matrices
         A_LOS = np.dot(np.dot(A_od_tsp,A_ds_inv),A_os)
-        
+
         # Angular position where the ray hits the deflector's plane
         x_d, y_d = self.los.distort_vector(x_image, y_image,
                                            kappa=kwargs_los['kappa_od'],
@@ -118,19 +118,19 @@ class SinglePlaneLOS(SinglePlane):
 
         #the source position, modified by A_os_inv
         b_x = A_os_inv[0][0]*x_source + A_os_inv[0][1]*y_source
-        b_y = A_os_inv[1][0]*x_source + A_os_inv[1][1]*y_source   
+        b_y = A_os_inv[1][0]*x_source + A_os_inv[1][1]*y_source
 
         #alpha'
         f_x = x_image - b_x
-        f_y = y_image - b_y       
+        f_y = y_image - b_y
 
         #alpha' must then be further distorted by A_LOS
         a_x = A_LOS[0][0]*f_x + A_LOS[0][1]*f_y
         a_y = A_LOS[1][0]*f_x + A_LOS[1][1]*f_y
-        
+
         #we can then obtain the geometrical term
         geometry = (f_x*a_x + f_y*a_y) / 2
-        
+
         #return geometry - effective_potential
         return geometry - effective_potential
 
@@ -146,8 +146,8 @@ class SinglePlaneLOS(SinglePlane):
         :param k: only evaluate the k-th lens model
         :return: deflection angles in units of arcsec
         """
-        
-        kwargs_dominant, kwargs_los = self.split_lens_los(kwargs)                          #DJMod
+
+        kwargs_dominant, kwargs_los = self.split_lens_los(kwargs)
 
         # Angular position where the ray hits the deflector's plane
         x_d, y_d = self.los.distort_vector(x, y,
@@ -157,7 +157,7 @@ class SinglePlaneLOS(SinglePlane):
                                            gamma2=kwargs_los['gamma2_od'])
 
         # Displacement due to the main lens only
-        f_x, f_y = super().alpha(x_d, y_d, kwargs=kwargs_dominant, k=k)                     #DJMod
+        f_x, f_y = super().alpha(x_d, y_d, kwargs=kwargs_dominant, k=k)
 
         # Correction due to the background convergence, shear and rotation
         f_x, f_y = self.los.distort_vector(f_x, f_y,
@@ -192,7 +192,7 @@ class SinglePlaneLOS(SinglePlane):
         :return: f_xx, f_xy, f_yx, f_yy components
         """
 
-        kwargs_dominant, kwargs_los = self.split_lens_los(kwargs)                          #DJMod
+        kwargs_dominant, kwargs_los = self.split_lens_los(kwargs)
 
         # Angular position where the ray hits the deflector's plane
         x_d, y_d = self.los.distort_vector(x, y,
@@ -203,7 +203,7 @@ class SinglePlaneLOS(SinglePlane):
 
         # Hessian matrix of the main lens only
         f_xx, f_xy, f_yx, f_yy = super().hessian(x_d, y_d,
-                                                 kwargs=kwargs_dominant, k=k)              #DJMod
+                                                 kwargs=kwargs_dominant, k=k)
 
         # Multiply on the left by (1 - Gamma_ds)
         f_xx, f_xy, f_yx, f_yy = self.los.left_multiply(

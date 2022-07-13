@@ -88,10 +88,11 @@ class TestRoman(unittest.TestCase):
 
     def test_Roman_psf_pixel(self):
         self.F062_pixel = Roman(psf_type = 'PIXEL')
-        path = os.getcwd()
-        psf_filename = os.path.join(path, 'lenstronomy\SimulationAPI\ObservationConfig\PSF_models\F062.fits')
-        self.kernel = pyfits.getdata(psf_filename)
-        self.assertEqual(self.F062_pixel.obs['kernel_point_source'].all(), self.kernel.all(), msg="PSF did not match")
+        import lenstronomy
+        module_path = os.path.dirname(lenstronomy.__file__)
+        psf_filename = os.path.join(module_path, 'SimulationAPI\ObservationConfig\PSF_models\F062.fits')
+        kernel = pyfits.getdata(psf_filename)
+        self.assertEqual(self.F062_pixel.obs['kernel_point_source'].all(), kernel.all(), msg="PSF did not match")
 
     def test_kwargs_single_band(self):
         kwargs_F062 = util.merge_dicts(self.F062.camera, self.F062.obs)

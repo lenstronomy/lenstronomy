@@ -107,10 +107,9 @@ class Roman(object):
             raise ValueError("survey mode %s not supported! Choose 'wide_area' or 'microlensing'" % survey_mode)
 
         if psf_type == 'PIXEL':
-            path = os.getcwd()
-            dirpath, _ = os.path.split(path)
-            module_path, _ = os.path.split(dirpath)
-            psf_filename = os.path.join(path, 'lenstronomy\SimulationAPI\ObservationConfig\PSF_models\{}.fits'.format(band))
+            import lenstronomy
+            module_path = os.path.dirname(lenstronomy.__file__)
+            psf_filename = os.path.join(module_path, 'SimulationAPI\ObservationConfig\PSF_models\F062.fits')
             kernel = pyfits.getdata(psf_filename)
             self.obs.update({'psf_type': 'PIXEL','kernel_point_source': kernel})
         elif psf_type == 'GAUSSIAN':

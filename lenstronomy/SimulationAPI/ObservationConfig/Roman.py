@@ -1,6 +1,8 @@
 # %%
 """Provisional Roman instrument and observational settings."""
 import lenstronomy.Util.util as util
+import os
+import astropy.io.fits as pyfits
 
 # magnitude_zero_point: table 1 from https://iopscience.iop.org/article/10.3847/1538-4357/aac08b/pdf
 # ccd_gain found right under table 1 in paper
@@ -14,28 +16,23 @@ __all__ = ['Roman']
 
 F062_band_obs = {'sky_brightness': 23.19,
               'magnitude_zero_point': 26.56,
-              'seeing': 0.058,
-              'psf_type': 'GAUSSIAN'}
+              'seeing': 0.058}
 
 F087_band_obs = {'sky_brightness': 22.93,
               'magnitude_zero_point': 26.30,
-              'seeing': 0.073,
-              'psf_type': 'GAUSSIAN'}
+              'seeing': 0.073}
 
 F106_band_obs = {'sky_brightness': 22.99,
               'magnitude_zero_point': 26.44,
-              'seeing': 0.087,
-              'psf_type': 'GAUSSIAN'}
+              'seeing': 0.087}
 
 F129_band_obs = {'sky_brightness': 22.99,
               'magnitude_zero_point': 26.40,
-              'seeing': 0.105,
-              'psf_type': 'GAUSSIAN'}
+              'seeing': 0.105}
 
 F158_band_obs = {'sky_brightness': 23.10,
               'magnitude_zero_point': 26.43,
-              'seeing': 0.127,
-              'psf_type': 'GAUSSIAN'}
+              'seeing': 0.127}
 
 F184_band_obs = {'sky_brightness': 23.22,
               'magnitude_zero_point': 25.95,
@@ -44,8 +41,7 @@ F184_band_obs = {'sky_brightness': 23.22,
 
 F146_band_obs = {'sky_brightness': 22.03,
               'magnitude_zero_point': 26.65,
-              'seeing': 0.105,
-              'psf_type': 'GAUSSIAN'}
+              'seeing': 0.105}
 
 
 """
@@ -65,7 +61,7 @@ class Roman(object):
         """
 
         :param band: string, 'F062', 'F087', 'F106', 'F129', 'F158' , 'F184' or 'F146' supported. Determines obs dictionary.
-        :param psf_type: string, type of PSF ('GAUSSIAN' supported).
+        :param psf_type: string, type of PSF ('GAUSSIAN', 'PIXEL' supported).
         """
         
         if band == 'F062':
@@ -110,7 +106,17 @@ class Roman(object):
         else:
             raise ValueError("survey mode %s not supported! Choose 'wide_area' or 'microlensing'" % survey_mode)
 
-        if psf_type != 'GAUSSIAN':
+        if psf_type == 'PIXEL':
+            path = os.getcwd()
+            dirpath, _ = os.path.split(path)
+            module_path, _ = os.path.split(dirpath)
+            print(path,dirpath, module_path)
+            psf_filename = os.path.join(path, 'lenstronomy\SimulationAPI\ObservationConfig\PSF_models\{}.fits'.format(band))
+            kernel = pyfits.getdata(psf_filename)
+            self.obs.update({'psf_type': 'PIXEL','kernel_point_source': kernel})
+        elif psf_type == 'GAUSSIAN':
+            self.obs.update({'psf_type': 'GAUSSIAN'})
+        else:
             raise ValueError("psf_type %s not supported!" % psf_type)
 
         self.camera = {'read_noise': 15.5,

@@ -109,7 +109,7 @@ class Roman(object):
         if psf_type == 'PIXEL':
             import lenstronomy
             module_path = os.path.dirname(lenstronomy.__file__)
-            psf_filename = os.path.join(module_path, 'SimulationAPI\ObservationConfig\PSF_models\{}.fits'.format(band))
+            psf_filename = os.path.join(module_path, 'SimulationAPI/ObservationConfig/PSF_models/{}.fits'.format(band))
             kernel = pyfits.getdata(psf_filename)
             self.obs.update({'psf_type': 'PIXEL','kernel_point_source': kernel})
         elif psf_type == 'GAUSSIAN':

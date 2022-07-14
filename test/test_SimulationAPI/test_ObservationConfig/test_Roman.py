@@ -90,7 +90,7 @@ class TestRoman(unittest.TestCase):
         self.F062_pixel = Roman(psf_type = 'PIXEL')
         import lenstronomy
         module_path = os.path.dirname(lenstronomy.__file__)
-        psf_filename = os.path.join(module_path, 'SimulationAPI\ObservationConfig\PSF_models\F062.fits')
+        psf_filename = os.path.join(module_path, 'SimulationAPI/ObservationConfig/PSF_models/F062.fits')
         kernel = pyfits.getdata(psf_filename)
         self.assertEqual(self.F062_pixel.obs['kernel_point_source'].all(), kernel.all(), msg="PSF did not match")
 

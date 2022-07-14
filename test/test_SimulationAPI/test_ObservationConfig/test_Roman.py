@@ -2,6 +2,8 @@ import unittest
 from lenstronomy.SimulationAPI.ObservationConfig.Roman import Roman
 from lenstronomy.SimulationAPI.observation_api import Instrument, SingleBand
 import lenstronomy.Util.util as util
+import os
+import astropy.io.fits as pyfits
 
 
 class TestRoman(unittest.TestCase):
@@ -31,7 +33,7 @@ class TestRoman(unittest.TestCase):
         self.F184_band = SingleBand(**kwargs_F184)
         self.F146_band = SingleBand(**kwargs_F146)
 
-        # dictionaries mapping HST kwargs to SingleBand kwargs
+        # dictionaries mapping Roman kwargs to SingleBand kwargs
         self.camera_settings = {'read_noise': '_read_noise',
                                 'pixel_scale': 'pixel_scale',
                                 'ccd_gain': 'ccd_gain'}
@@ -83,6 +85,14 @@ class TestRoman(unittest.TestCase):
             self.assertEqual(self.F158.obs[config], getattr(self.F158_band, setting), msg=f"{config} did not match")
             self.assertEqual(self.F184.obs[config], getattr(self.F184_band, setting), msg=f"{config} did not match")
             self.assertEqual(self.F146.obs[config], getattr(self.F146_band, setting), msg=f"{config} did not match")
+
+    def test_Roman_psf_pixel(self):
+        self.F062_pixel = Roman(psf_type = 'PIXEL')
+        import lenstronomy
+        module_path = os.path.dirname(lenstronomy.__file__)
+        psf_filename = os.path.join(module_path, 'SimulationAPI/ObservationConfig/PSF_models/F062.fits')
+        kernel = pyfits.getdata(psf_filename)
+        self.assertEqual(self.F062_pixel.obs['kernel_point_source'].all(), kernel.all(), msg="PSF did not match")
 
     def test_kwargs_single_band(self):
         kwargs_F062 = util.merge_dicts(self.F062.camera, self.F062.obs)

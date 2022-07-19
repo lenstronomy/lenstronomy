@@ -30,7 +30,7 @@ class SpecialParam(object):
         :param source_grid_offset: bool, if True, samples two parameters (x, y) for the offset of the pixelated source
          plane grid coordinates.
          Warning: this is only defined for pixel-based source modelling (e.g. 'SLIT_STARLETS' light profile)
-        :param kinematic_sampling: bool, if True, samples the kinematic parameters b_ani, incli
+        :param kinematic_sampling: bool, if True, samples the kinematic parameters b_ani, incli, with cosmography D_dt and Dd
         """
 
         self._D_dt_sampling = Ddt_sampling
@@ -161,6 +161,17 @@ class SpecialParam(object):
                 i += 1
             else:
                 kwargs_special['incli'] = self._kwargs_fixed['incli']
+            if self._D_dt_sampling is False:
+                if 'D_dt' not in self._kwargs_fixed:
+                    kwargs_special['D_dt'] = args[i]
+                    i += 1
+                else:
+                    kwargs_special['D_dt'] = self._kwargs_fixed['D_dt']
+            if 'D_d' not in self._kwargs_fixed:
+                kwargs_special['D_d'] = args[i]
+                i += 1
+            else:
+                kwargs_special['D_d'] = self._kwargs_fixed['D_d']
         return kwargs_special, i
 
     def set_params(self, kwargs_special):
@@ -205,6 +216,11 @@ class SpecialParam(object):
                 args.append(kwargs_special['b_ani'])
             if 'incli' not in self._kwargs_fixed:
                 args.append(kwargs_special['incli'])
+            if self._D_dt_sampling is False:
+                if 'D_dt' not in self._kwargs_fixed:
+                    args.append(kwargs_special['D_dt'])
+            if 'D_d' not in self._kwargs_fixed:
+                args.append(kwargs_special['D_d'])
         return args
 
     def num_param(self):
@@ -260,4 +276,11 @@ class SpecialParam(object):
             if 'incli' not in self._kwargs_fixed:
                 num += 1
                 string_list.append('incli')
+            if self._D_dt_sampling is False:
+                if 'D_dt' not in self._kwargs_fixed:
+                    num += 1
+                    string_list.append('D_dt')
+            if 'D_d' not in self._kwargs_fixed:
+                num += 1
+                string_list.append('D_d')
         return num, string_list

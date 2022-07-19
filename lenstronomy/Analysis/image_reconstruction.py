@@ -17,7 +17,7 @@ class MultiBandImageReconstruction(object):
     or different for multiple bands) and this class performs the linear inversion for the surface brightness amplitudes
     and stores them for each individual band to be accessible by the user.
 
-    This class is is the backbone of the ModelPlot routine that provides the interface of this class with plotting and
+    This class is the backbone of the ModelPlot routine that provides the interface of this class with plotting and
     illustration routines.
     """
 

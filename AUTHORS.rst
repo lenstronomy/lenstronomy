@@ -21,11 +21,12 @@ Contributors (alphabetic)
 * Jelle Aalbers `JelleAalbers <https://github.com/JelleAalbers>`_
 * Joel Akeret `jakeret <https://github.com/jakeret/>`_
 * Adam Amara `aamara <https://github.com/aamara/>`_
-* Vikram Bhamre `vikramb1 <https://github.com/vikramb1/>`
+* Vikram Bhamre `vikramb1 <https://github.com/vikramb1/>`_
 * Xuheng Ding `dartoon <https://github.com/dartoon/>`_
 * Sydney Erickson `smericks <https://github.com/smericks/>`_
 * Kevin Fusshoeller
 * Matthew R. Gomer `mattgomer <https://github.com/mattgomer>`_
+* Natalie B. Hogg `nataliehogg <https://github.com/nataliehogg>`_
 * Felix A. Kuhn
 * Felix Mayor
 * Martin Millon `martin-millon <https://github.com/martin-millon/>`_

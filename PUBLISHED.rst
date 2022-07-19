@@ -39,6 +39,9 @@ Related software publications
 * LensingETC: a tool to optimize multi-filter imaging campaigns of galaxy-scale strong lensing systems; `Shajib et al. 2022b <https://arxiv.org/abs/2203.05170>`_
     *A Python package to select an optimal observing strategy for multi-filter imaging campaigns of strong lensing systems.*
 
+* Using wavelets to capture deviations from smoothness in galaxy-scale strong lenses; `Galan et al. 2022 <https://arxiv.org/abs/2207.05763>`_
+    *Presenting a new software 'herculens'. The code structure and part of the modeling routines of herculens are based on lenstronomy.*
+
 
 
 

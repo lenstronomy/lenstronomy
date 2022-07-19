@@ -35,7 +35,7 @@ class LikelihoodModule(object):
                  prior_extinction_kde=None, prior_lens_lognormal=None, prior_source_lognormal=None,
                  prior_extinction_lognormal=None, prior_lens_light_lognormal=None, prior_ps_lognormal=None,
                  prior_special_lognormal=None, custom_logL_addition=None, kwargs_pixelbased=None,
-                 kinematic_2D_likelihood=False):
+                 kinematic_2D_likelihood=False, kin_lens_idx=0, kin_lens_light_idx=0):
         """
         initializing class
 
@@ -124,6 +124,15 @@ class LikelihoodModule(object):
         self._class_instances(kwargs_model=kwargs_model, kwargs_imaging=self._kwargs_imaging,
                               kwargs_position=self._kwargs_position, kwargs_flux=self._kwargs_flux,
                               kwargs_time_delay=self._kwargs_time_delay, kinematic_data = self.kinematic_class)
+        if kinematic_2D_likelihood :
+            if len(multi_band_list) > 1 :
+                print('Kinematic Likelihood not meant for multiband, using first band by default')
+            if kwargs_model['lens_model_list'][kin_lens_idx] not in ['SIE','PEMD', 'SIS']:
+                print('Lens for kinematic is not SIS, SIE or PEMD, the 2D kinematic likelihood will break.')
+            if kwargs_model['lens_light_model_list'][kin_lens_light_idx] not in ['SERSIC', 'SERSIC_ELLIPSE']:
+                print('Lens light for kinematic is not SERSIC or SERSIC_ELLIPSE, the 2D kinematic likelihood will break.')
+            self._kin_lens_idx = kin_lens_idx
+            self._kin_lens_light_idx = kin_lens_light_idx
 
     def _class_instances(self, kwargs_model, kwargs_imaging, kwargs_position, kwargs_flux, kwargs_time_delay, kinematic_data):
         """
@@ -153,7 +162,9 @@ class LikelihoodModule(object):
         if self._flux_ratio_likelihood is True:
             self.flux_ratio_likelihood = FluxRatioLikelihood(lens_model_class, **kwargs_flux)
         if self._kinematic_2D_likelihood is True:
-            self.kinematic_2D_likelihood = KinLikelihood(kinematic_data, lens_model_class, lens_light_model_class)
+            self.kinematic_2D_likelihood = KinLikelihood(kinematic_data, lens_model_class, lens_light_model_class,
+                                                         kwargs_imaging['multi_band_list'][0][0],self._kin_lens_idx,
+                                                         self._kin_lens_light_idx)
 
     def __call__(self, a):
         return self.logL(a)

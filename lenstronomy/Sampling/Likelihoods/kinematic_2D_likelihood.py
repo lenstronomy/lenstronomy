@@ -1,5 +1,5 @@
 import numpy as np
-import Util.param_util as param_util
+import lenstronomy.Util.param_util as param_util
 
 __all__ = ['KinLikelihood']
 

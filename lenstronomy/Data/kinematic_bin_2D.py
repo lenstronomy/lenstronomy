@@ -67,5 +67,5 @@ class KinBin(object):
         Creates the kwargs needed for the 2D kinematic likelihood
         """
         kwargs = {'image':binned_image(),'deltaPix':PixelGrid.pixel_width,'transform_pix2angle':PixelGrid._Mpix2a,
-                  'ra_at_xy0':PixelGrid._ra_at_xy_0, 'dec_at_xy0'=PixelGrid._dec_at_xy_0}
+                  'ra_at_xy0':PixelGrid._ra_at_xy_0, 'dec_at_xy0':PixelGrid._dec_at_xy_0}
         return kwargs

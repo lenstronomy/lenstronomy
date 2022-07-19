@@ -136,7 +136,7 @@ class LensModel(object):
             raise ValueError('In multi-plane lensing you need to provide a specific z_lens and z_source for which the '
                              'effective Fermat potential is evaluated')
 
-    def arrival_time(self, x_image, y_image, kwargs, kappa_ext=0, x_source=None, y_source=None):
+    def arrival_time(self, x_image, y_image, kwargs_lens, kappa_ext=0, x_source=None, y_source=None):
         """
         Arrival time of images relative to a straight line without lensing.
         Negative values correspond to images arriving earlier, and positive signs correspond to images arriving later.

@@ -125,6 +125,7 @@ class LikelihoodModule(object):
                               kwargs_position=self._kwargs_position, kwargs_flux=self._kwargs_flux,
                               kwargs_time_delay=self._kwargs_time_delay, kinematic_data = self.kinematic_class)
         if kinematic_2D_likelihood :
+            print("Note that the 2D kinematic likelihood assumes that the lens and lens light have the same center, oientation, and ellipticity")
             if len(multi_band_list) > 1 :
                 print('Kinematic Likelihood not meant for multiband, using first band by default')
             if kwargs_model['lens_model_list'][kin_lens_idx] not in ['SIE','PEMD', 'SIS']:

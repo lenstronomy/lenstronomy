@@ -146,53 +146,6 @@ def subgrid_kernel(kernel, subgrid_res, odd=False, num_iter=100):
 
 
 @export
-def averaging_even_kernel(kernel_high_res, subgrid_res):
-    """
-    makes a lower resolution kernel based on the kernel_high_res (odd numbers) and the subgrid_res (even number), both
-    meant to be centered.
-
-    :param kernel_high_res: high resolution kernel with even subsampling resolution, centered
-    :param subgrid_res: subsampling resolution (even number)
-    :return: averaged undersampling kernel
-    """
-    n_kernel_high_res = len(kernel_high_res)
-    n_low = int(round(n_kernel_high_res / subgrid_res + 0.5))
-    if n_low % 2 == 0:
-        n_low += 1
-    n_high = int(n_low * subgrid_res - 1)
-    assert n_high % 2 == 1
-    if n_high == n_kernel_high_res:
-        kernel_high_res_edges = kernel_high_res
-    else:
-        i_start = int((n_high - n_kernel_high_res) / 2)
-        kernel_high_res_edges = np.zeros((n_high, n_high))
-        kernel_high_res_edges[i_start:-i_start, i_start:-i_start] = kernel_high_res
-    kernel_low_res = np.zeros((n_low, n_low))
-    # adding pixels that are fully within a single re-binned pixel
-    for i in range(subgrid_res-1):
-        for j in range(subgrid_res-1):
-            kernel_low_res += kernel_high_res_edges[i::subgrid_res, j::subgrid_res]
-    # adding half of a pixel that has over-lap with two pixels
-    i = subgrid_res - 1
-    for j in range(subgrid_res - 1):
-        kernel_low_res[1:, :] += kernel_high_res_edges[i::subgrid_res, j::subgrid_res] / 2
-        kernel_low_res[:-1, :] += kernel_high_res_edges[i::subgrid_res, j::subgrid_res] / 2
-    j = subgrid_res - 1
-    for i in range(subgrid_res - 1):
-        kernel_low_res[:, 1:] += kernel_high_res_edges[i::subgrid_res, j::subgrid_res] / 2
-        kernel_low_res[:, :-1] += kernel_high_res_edges[i::subgrid_res, j::subgrid_res] / 2
-    # adding a quarter of a pixel value that is at the boarder of four pixels
-    i = subgrid_res - 1
-    j = subgrid_res - 1
-    kernel_edge = kernel_high_res_edges[i::subgrid_res, j::subgrid_res]
-    kernel_low_res[1:, 1:] += kernel_edge / 4
-    kernel_low_res[:-1, 1:] += kernel_edge / 4
-    kernel_low_res[1:, :-1] += kernel_edge / 4
-    kernel_low_res[:-1, :-1] += kernel_edge / 4
-    return kernel_low_res
-
-
-@export
 def kernel_pixelsize_change(kernel, deltaPix_in, deltaPix_out):
     """
     change the pixel size of a given kernel
@@ -344,16 +297,73 @@ def degrade_kernel(kernel_super, degrading_factor):
     if degrading_factor % 2 == 0:
         kernel_low_res = averaging_even_kernel(kernel_super, degrading_factor)
     else:
-        n_kernel = len(kernel_super)
-        numPix = int(round(n_kernel / degrading_factor + 0.5))
-        if numPix % 2 == 0:
-            numPix += 1
-        n_high = numPix * degrading_factor
+        kernel_low_res = averaging_odd_kernel(kernel_super, degrading_factor)
+        # degrading_factor**2  # multiplicative factor added when providing flux conservation
+        kernel_low_res *= degrading_factor ** 2
+    return kernel_low_res
 
-        kernel_super_ = np.zeros((n_high, n_high))
-        i_start = int((n_high-n_kernel)/2)
-        kernel_super_[i_start:i_start+n_kernel, i_start:i_start+n_kernel] = kernel_super
-        kernel_low_res = util.averaging(kernel_super_, numGrid=n_high, numPix=numPix) * degrading_factor**2  # multiplicative factor added when providing flux conservation
+
+def averaging_odd_kernel(kernel_super, degrading_factor):
+    """
+
+    """
+    n_kernel = len(kernel_super)
+    numPix = int(round(n_kernel / degrading_factor + 0.5))
+    if numPix % 2 == 0:
+        numPix += 1
+    n_high = numPix * degrading_factor
+
+    kernel_super_ = np.zeros((n_high, n_high))
+    i_start = int((n_high - n_kernel) / 2)
+    kernel_super_[i_start:i_start + n_kernel, i_start:i_start + n_kernel] = kernel_super
+    kernel_low_res = util.averaging(kernel_super_, numGrid=n_high, numPix=numPix)
+    return kernel_low_res
+
+
+@export
+def averaging_even_kernel(kernel_high_res, subgrid_res):
+    """
+    makes a lower resolution kernel based on the kernel_high_res (odd numbers) and the subgrid_res (even number), both
+    meant to be centered.
+
+    :param kernel_high_res: high resolution kernel with even subsampling resolution, centered
+    :param subgrid_res: subsampling resolution (even number)
+    :return: averaged undersampling kernel
+    """
+    n_kernel_high_res = len(kernel_high_res)
+    n_low = int(round(n_kernel_high_res / subgrid_res + 0.5))
+    if n_low % 2 == 0:
+        n_low += 1
+    n_high = int(n_low * subgrid_res - 1)
+    assert n_high % 2 == 1
+    if n_high == n_kernel_high_res:
+        kernel_high_res_edges = kernel_high_res
+    else:
+        i_start = int((n_high - n_kernel_high_res) / 2)
+        kernel_high_res_edges = np.zeros((n_high, n_high))
+        kernel_high_res_edges[i_start:-i_start, i_start:-i_start] = kernel_high_res
+    kernel_low_res = np.zeros((n_low, n_low))
+    # adding pixels that are fully within a single re-binned pixel
+    for i in range(subgrid_res-1):
+        for j in range(subgrid_res-1):
+            kernel_low_res += kernel_high_res_edges[i::subgrid_res, j::subgrid_res]
+    # adding half of a pixel that has over-lap with two pixels
+    i = subgrid_res - 1
+    for j in range(subgrid_res - 1):
+        kernel_low_res[1:, :] += kernel_high_res_edges[i::subgrid_res, j::subgrid_res] / 2
+        kernel_low_res[:-1, :] += kernel_high_res_edges[i::subgrid_res, j::subgrid_res] / 2
+    j = subgrid_res - 1
+    for i in range(subgrid_res - 1):
+        kernel_low_res[:, 1:] += kernel_high_res_edges[i::subgrid_res, j::subgrid_res] / 2
+        kernel_low_res[:, :-1] += kernel_high_res_edges[i::subgrid_res, j::subgrid_res] / 2
+    # adding a quarter of a pixel value that is at the boarder of four pixels
+    i = subgrid_res - 1
+    j = subgrid_res - 1
+    kernel_edge = kernel_high_res_edges[i::subgrid_res, j::subgrid_res]
+    kernel_low_res[1:, 1:] += kernel_edge / 4
+    kernel_low_res[:-1, 1:] += kernel_edge / 4
+    kernel_low_res[1:, :-1] += kernel_edge / 4
+    kernel_low_res[:-1, :-1] += kernel_edge / 4
     return kernel_low_res
 
 

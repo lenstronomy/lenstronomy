@@ -25,9 +25,7 @@ class KinLikelihood(object):
         """
         Calculates Log likelihood from 2D kinematic likelihood
         """
-        orientation_ellipse,q = param_util.ellipticity2phi_q(kwargs_lens[self._idx_lens]['e1'],
-                                                             kwrags_lens[self._idx_lens]['e2'])
-        self.image_input['ellipse_PA']=orientation_ellipse
+        update_image_input(kwargs_lens)
 
         return 0
     def kwargs_data2image_input(self,kwargs_data):
@@ -38,3 +36,12 @@ class KinLikelihood(object):
         kwargs = {'image':kwargs_data['imaging_data'], 'deltaPix':deltaPix, 'transform_pix2angle':deltaPix,
                   'ra_at_xy0':kwargs_data['ra_at_xy_0'],'dec_at_xy0':kwargs_data['dec_at_xy_0']}
         return kwargs
+
+    def update_image_input(self,kwargs_lens):
+        orientation_ellipse, q = param_util.ellipticity2phi_q(kwargs_lens[self._idx_lens]['e1'],
+                                                              kwrags_lens[self._idx_lens]['e2'])
+        cx = kwargs_lens[self._idx_lens]['center_x']
+        cy = kwargs_lens[self._idx_lens]['center_y']
+        self.image_input['ellipse_PA'] = orientation_ellipse
+        self.image_input['offset_x'] = cx
+        self.image_input['offset_y'] = cy

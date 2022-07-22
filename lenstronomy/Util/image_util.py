@@ -73,7 +73,10 @@ def add_layer2image_int(grid2d, x_pos, y_pos, kernel):
 @export
 def add_background(image, sigma_bkd):
     """
-    adds background noise to image
+    Generates background noise to image.
+    To generate a noisy image with background noise, generate
+    image_noisy = image + add_background(image, sigma_bkd)
+
     :param image: pixel values of image
     :param sigma_bkd: background noise (sigma)
     :return: a realisation of Gaussian noise of the same size as image
@@ -86,13 +89,12 @@ def add_background(image, sigma_bkd):
 @export
 def add_poisson(image, exp_time):
     """
-    adds a poison (or Gaussian) distributed noise with mean given by surface brightness
+    Generates a poison (or Gaussian) distributed noise with mean given by surface brightness.
+    To generate a noisy image with Poisson noise, perform image_noisy = image + add_poisson(image, exp_time)
+
     :param image: pixel values (photon counts per unit exposure time)
     :param exp_time: exposure time
     :return: Poisson noise realization of input image
-    """
-    """
-    adds a poison (or Gaussian) distributed noise with mean given by surface brightness
     """
 
     # Gaussian approximation for Poisson distribution, normalized to exposure time

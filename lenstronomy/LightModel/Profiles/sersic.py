@@ -24,6 +24,7 @@ class Sersic(SersicUtil):
     """
 
     param_names = ['amp', 'R_sersic', 'n_sersic', 'center_x', 'center_y']
+    param_names_latex = {r'$I_{1/2}$', r'$R_{1/2}$', r'$n_{\rm Sersic}$', r'$x_0$', r'$y_0$'}
     lower_limit_default = {'amp': 0, 'R_sersic': 0, 'n_sersic': 0.5, 'center_x': -100, 'center_y': -100}
     upper_limit_default = {'amp': 100, 'R_sersic': 100, 'n_sersic': 8, 'center_x': 100, 'center_y': 100}
 

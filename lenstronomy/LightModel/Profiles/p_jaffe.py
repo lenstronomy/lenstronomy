@@ -8,6 +8,7 @@ class PJaffe(object):
     class for pseudo Jaffe lens light (2d projected light/mass distribution)
     """
     param_names = ['amp', 'Ra', 'Rs', 'center_x', 'center_y']
+    param_names_latex = {r'$I_0$', r'$R_a$', r'$R_s$', r'$x_0$', r'$y_0$'}
     lower_limit_default = {'amp': 0, 'Ra': 0, 'Rs': 0, 'center_x': -100, 'center_y': -100}
     upper_limit_default = {'amp': 100, 'Ra': 100, 'Rs': 100, 'center_x': 100, 'center_y': 100}
 
@@ -48,6 +49,7 @@ class PJaffeEllipse(object):
     calss for elliptical pseudo Jaffe lens light
     """
     param_names = ['amp', 'Ra', 'Rs', 'e1', 'e2', 'center_x', 'center_y']
+    param_names_latex = {r'$I_0$', r'$R_a$', r'$R_s$', r'$e_1$', r'$e_2$', r'$x_0$', r'$y_0$'}
     lower_limit_default = {'amp': 0, 'Ra': 0, 'Rs': 0, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}
     upper_limit_default = {'amp': 100, 'Ra': 100, 'Rs': 100, 'e1': 0.5, 'e2': 0.5, 'center_x': 100, 'center_y': 100}
 

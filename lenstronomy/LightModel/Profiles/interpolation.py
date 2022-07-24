@@ -21,6 +21,7 @@ class Interpol(object):
 
     """
     param_names = ['image', 'amp', 'center_x', 'center_y', 'phi_G', 'scale']
+    param_names_latex = {r'$I_{xy}$', r'$I_0$', r'$\phi_G$', r'scale', r'$x_0$', r'$y_0$'}
     lower_limit_default = {'amp': 0, 'center_x': -1000, 'center_y': -1000, 'scale': 0.000000001, 'phi_G': -np.pi}
     upper_limit_default = {'amp': 1000000, 'center_x': 1000, 'center_y': 1000, 'scale': 10000000000, 'phi_G': np.pi}
 

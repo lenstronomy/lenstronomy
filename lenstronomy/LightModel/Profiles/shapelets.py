@@ -45,6 +45,7 @@ class Shapelets(object):
 
     """
     param_names = ['amp', 'beta', 'n1', 'n2', 'center_x', 'center_y']
+    param_names_latex = {r'$I_0$', r'$\beta$', r'$n_1$', r'$n_2$', r'$x_0$', r'$y_0$'}
     lower_limit_default = {'amp': 0, 'beta': 0.01, 'n1': 0, 'n2': 0, 'center_x': -100, 'center_y': -100}
     upper_limit_default = {'amp': 100, 'beta': 100, 'n1': 150, 'n2': 150, 'center_x': 100, 'center_y': 100}
 

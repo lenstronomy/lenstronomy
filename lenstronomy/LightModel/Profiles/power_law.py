@@ -12,6 +12,7 @@ class PowerLaw(object):
 
     """
     param_names = ['amp', 'gamma', 'e1', 'e2', 'center_x', 'center_y']
+    param_names_latex = {r'$I_0$', r'$\gamma_{\rm pl}$', r'$e_1$', r'$e_2$', r'$x_0$', r'$y_0$'}
     lower_limit_default = {'amp': 0, 'gamma': 1, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}
     upper_limit_default = {'amp': 100, 'gamma': 3, 'e1': 0.5, 'e2': 0.5, 'center_x': 100, 'center_y': 100}
 

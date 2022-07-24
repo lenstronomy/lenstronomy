@@ -10,6 +10,7 @@ class Hernquist(object):
     def __init__(self):
         from lenstronomy.LensModel.Profiles.hernquist import Hernquist as Hernquist_lens
         self.lens = Hernquist_lens()
+        self.param_names_latex = {r'$I_0$', r'$R-s$', r'$x_0$', r'$y_0$'}
         self.param_names = ['amp', 'Rs', 'center_x', 'center_y']
         self.lower_limit_default = {'amp': 0, 'Rs': 0, 'center_x': -100, 'center_y': -100}
         self.upper_limit_default = {'amp': 100, 'Rs': 100, 'center_x': 100, 'center_y': 100}

@@ -12,6 +12,7 @@ class NIE(LightProfileBase):
     radius 'theta_E'
     """
     param_names = ['amp', 'e1', 'e2', 's_scale', 'center_x', 'center_y']
+    param_names_latex = {r'$I_0$', r'$e_1$', r'$e_2$', r'$s_{\rm scale}$', r'$x_0$', r'$y_0$'}
     lower_limit_default = {'amp': 0, 'e1': -0.5, 'e2': -0.5, 's_scale': 0, 'center_x': -100, 'center_y': -100}
     upper_limit_default = {'amp': 100, 'e1': 0.5, 'e2': 0.5, 's_scale': 100, 'center_x': 100, 'center_y': 100}
 

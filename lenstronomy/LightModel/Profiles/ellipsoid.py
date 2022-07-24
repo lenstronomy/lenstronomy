@@ -13,6 +13,7 @@ class Ellipsoid(object):
     """
     def __init__(self):
         self.param_names = ['amp', 'radius', 'e1', 'e2', 'center_x', 'center_y']
+        self.param_names_latex = {r'$I_0$', r'$R$', r'$e_1$', r'$e_2$', r'$x_0$', r'$y_0$'}
         self.lower_limit_default = {'amp': 0, 'radius': 0, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}
         self.upper_limit_default = {'amp': 1000, 'radius': 100, 'e1': 0.5, 'e2': 0.5, 'center_x': 100, 'center_y': 100}
 

@@ -24,12 +24,27 @@ class LinearBasis(LightModelBase):
     def param_name_list(self):
         """
         returns the list of all parameter names
-
+        :param latex_style: boolean; if True returns latex strings for plotting where available
         :return: list of list of strings (for each light model separately)
         """
         name_list = []
         for i, func in enumerate(self.func_list):
             name_list.append(func.param_names)
+        return name_list
+
+    @property
+    def param_name_list_latex(self):
+        """
+        returns the list of all parameter names
+        :param latex_style: boolean; if True returns latex strings for plotting where available
+        :return: list of list of strings (for each light model separately)
+        """
+        name_list = []
+        for i, func in enumerate(self.func_list):
+            if hasattr(func, 'param_names_latex'):
+                name_list.append(func.param_names_latex)
+            else:
+                name_list.append(func.param_names)
         return name_list
 
     def functions_split(self, x, y, kwargs_list, k=None):

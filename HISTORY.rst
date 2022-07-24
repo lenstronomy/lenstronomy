@@ -299,3 +299,6 @@ History
 * Zeus sampler implemented
 * Nautilus sampler implemented
 * Roman telescope configuration added
+* double power-law mass profile
+* generalized NFW profile
+* enabled to turn off linear solver in fitting

@@ -8,7 +8,7 @@ class LensedPositions(PSBase):
     """
     class of a a lensed point source parameterized as the (multiple) observed image positions
     Name within the PointSource module: 'LENSED_POSITION'
-    parameters: ra_image, dec_image, point_amp
+    parameters: ra_image, dec_image, source_amp/source_amp
     If fixed_magnification=True, than 'source_amp' is a parameter instead of 'image_amp'
 
     """

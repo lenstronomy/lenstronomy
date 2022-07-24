@@ -61,7 +61,7 @@ class TestParam(object):
         kwargs_true_lens_light = [{'center_x': -0.06, 'center_y': 0.4, 'phi_G': 4.8,
                                   'q': 0.86, 'n_sersic': 1.7,
                                   'amp': 11.8, 'R_sersic': 0.697, 'phi_G_2': 0}]
-        kwargs_true_ps = [{'point_amp': [1, 1], 'ra_image': [-1, 1], 'dec_image': [-1, 1]}]
+        kwargs_true_ps = [{'image_amp': [1, 1], 'ra_image': [-1, 1], 'dec_image': [-1, 1]}]
         kwargs_special = {'z_sampling': [0.5]}
         args = self.param_class.kwargs2args(kwargs_true_lens, kwargs_true_source,
                                             kwargs_lens_light=kwargs_true_lens_light, kwargs_ps=kwargs_true_ps,
@@ -99,7 +99,7 @@ class TestParam(object):
         kwargs_true_lens_light = [{'center_x': -0.06, 'center_y': 0.4, 'phi_G': 4.8,
                                    'q': 0.86, 'n_sersic': 1.7,
                                    'amp': 11.8, 'R_sersic': 0.697, 'phi_G_2': 0}]
-        kwargs_true_ps = [{'point_amp': [1, 1], 'ra_image': [-1, 1], 'dec_image': [-1, 1]}]
+        kwargs_true_ps = [{'image_amp': [1, 1], 'ra_image': [-1, 1], 'dec_image': [-1, 1]}]
         args = param_class.kwargs2args(kwargs_true_lens, kwargs_true_source,
                                        kwargs_lens_light=kwargs_true_lens_light, kwargs_ps=kwargs_true_ps,
                                        kwargs_special={'D_dt': 1000})

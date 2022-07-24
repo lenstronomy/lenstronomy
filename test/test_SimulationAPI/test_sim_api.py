@@ -33,7 +33,7 @@ class TestModelAPI(object):
                                                                         kwargs_ps_mag)
 
         npt.assert_almost_equal(kwargs_source[0]['amp'], 1, decimal=5)
-        npt.assert_almost_equal(kwargs_ps[0]['point_amp'][0], 1, decimal=5)
+        npt.assert_almost_equal(kwargs_ps[0]['image_amp'][0], 1, decimal=5)
         npt.assert_almost_equal(kwargs_lens_light[0]['amp'], 0.38680586575451237, decimal=5)
 
 

@@ -11,7 +11,7 @@ class TestLensedPosition(object):
         self.kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}]
         self.ps_mag = SourcePositions(lens_model=lens_model, fixed_magnification=True)
         self.ps = SourcePositions(lens_model=lens_model, fixed_magnification=False)
-        self.kwargs = {'point_amp': [2, 1], 'ra_source': 0.1, 'dec_source': 0}
+        self.kwargs = {'image_amp': [2, 1], 'ra_source': 0.1, 'dec_source': 0}
         self.kwargs_mag = {'source_amp': 1, 'ra_source': 0.1, 'dec_source': 0}
 
     def test_image_position(self):
@@ -38,7 +38,7 @@ class TestLensedPosition(object):
         amp = self.ps.image_amplitude(self.kwargs, kwargs_lens=self.kwargs_lens, x_pos=x_img,
                                               y_pos=y_img, magnification_limit=None,
                                               kwargs_lens_eqn_solver=None)
-        npt.assert_almost_equal(amp, self.kwargs['point_amp'])
+        npt.assert_almost_equal(amp, self.kwargs['image_amp'])
 
         #see if works with mag_pert defined
         self.kwargs['mag_pert'] = [0.1,0.1]

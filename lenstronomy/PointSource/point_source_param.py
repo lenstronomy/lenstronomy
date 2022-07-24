@@ -45,7 +45,7 @@ class PointSourceParam(object):
                 if self._fixed_magnification_list[k] is True and model in ['LENSED_POSITION', 'SOURCE_POSITION']:
                     fixed_low['source_amp'] = 0
                 else:
-                    fixed_low['point_amp'] = np.zeros(num)
+                    fixed_low['image_amp'] = np.zeros(num)
                 kwargs_lower.append(fixed_low)
         if kwargs_upper is None:
             kwargs_upper = []
@@ -60,7 +60,7 @@ class PointSourceParam(object):
                 if self._fixed_magnification_list[k] is True and model in ['LENSED_POSITION', 'SOURCE_POSITION']:
                     fixed_high['source_amp'] = 100
                 else:
-                    fixed_high['point_amp'] = np.ones(num)*100
+                    fixed_high['image_amp'] = np.ones(num)*100
                 kwargs_upper.append(fixed_high)
         self.lower_limit = kwargs_lower
         self.upper_limit = kwargs_upper
@@ -106,11 +106,11 @@ class PointSourceParam(object):
                 else:
                     kwargs['source_amp'] = kwargs_fixed['source_amp']
             else:
-                if 'point_amp' not in kwargs_fixed:
-                    kwargs['point_amp'] = np.array(args[i:i + self._num_point_sources_list[k]])
+                if 'image_amp' not in kwargs_fixed:
+                    kwargs['image_amp'] = np.array(args[i:i + self._num_point_sources_list[k]])
                     i += self._num_point_sources_list[k]
                 else:
-                    kwargs['point_amp'] = kwargs_fixed['point_amp']
+                    kwargs['image_amp'] = kwargs_fixed['image_amp']
 
             kwargs_list.append(kwargs)
         return kwargs_list, i
@@ -144,8 +144,8 @@ class PointSourceParam(object):
                 if 'source_amp' not in kwargs_fixed:
                     args.append(kwargs['source_amp'])
             else:
-                if 'point_amp' not in kwargs_fixed:
-                    amp = kwargs['point_amp'][0:self._num_point_sources_list[k]]
+                if 'image_amp' not in kwargs_fixed:
+                    amp = kwargs['image_amp'][0:self._num_point_sources_list[k]]
                     for a in amp:
                         args.append(a)
         return args
@@ -182,10 +182,10 @@ class PointSourceParam(object):
                     num += 1
                     name_list.append('source_amp')
             else:
-                if 'point_amp' not in kwargs_fixed:
+                if 'image_amp' not in kwargs_fixed:
                     num += self._num_point_sources_list[k]
                     for i in range(self._num_point_sources_list[k]):
-                        name_list.append('point_amp')
+                        name_list.append('image_amp')
         return num, name_list
 
     def add_fix_linear(self, kwargs_fixed):
@@ -199,7 +199,7 @@ class PointSourceParam(object):
             if self._fixed_magnification_list[k] is True and model in ['LENSED_POSITION', 'SOURCE_POSITION']:
                 kwargs_fixed[k]['source_amp'] = 1
             else:
-                kwargs_fixed[k]['point_amp'] = np.ones(self._num_point_sources_list[k])
+                kwargs_fixed[k]['image_amp'] = np.ones(self._num_point_sources_list[k])
         return kwargs_fixed
 
     def num_param_linear(self):

@@ -19,8 +19,8 @@ class TestParam(object):
                                       fixed_magnification_list=fixed_magnification_list)
         self.kwargs =[{'ra_image': np.array([0, 0, 0, 0]), 'dec_image': np.array([0, 0, 0, 0]),
                        'source_amp': 1},
-                      {'ra_source': 1, 'dec_source': 1, 'point_amp': np.array([1.])},
-                      {'ra_image': [1], 'dec_image': [1], 'point_amp': np.array([1.])}]
+                      {'ra_source': 1, 'dec_source': 1, 'image_amp': np.array([1.])},
+                      {'ra_image': [1], 'dec_image': [1], 'image_amp': np.array([1.])}]
 
         self.param_linear = PointSourceParam(model_list=point_source_model_list, kwargs_fixed=[{}, {}, {}],
                                       num_point_source_list=num_point_sources_list, linear_solver=False,

@@ -12,7 +12,7 @@ class TestLensedPosition(object):
         self.ps_mag = LensedPositions(lens_model=lens_model, fixed_magnification=True)
         self.ps = LensedPositions(lens_model=lens_model, fixed_magnification=False)
         self.ps_add = LensedPositions(lens_model=lens_model, fixed_magnification=[False], additional_image=True)
-        self.kwargs = {'point_amp': [2, 1], 'ra_image': [0, 1.2], 'dec_image': [0, 0]}
+        self.kwargs = {'image_amp': [2, 1], 'ra_image': [0, 1.2], 'dec_image': [0, 0]}
         self.kwargs_mag = {'source_amp': 2, 'ra_image': [0, 1.2], 'dec_image': [0, 0]}
 
     def test_image_source_position(self):
@@ -37,7 +37,7 @@ class TestLensedPosition(object):
         amp = self.ps.image_amplitude(self.kwargs, kwargs_lens=self.kwargs_lens, x_pos=self.kwargs['ra_image'],
                                       y_pos=self.kwargs['dec_image'], magnification_limit=None,
                                       kwargs_lens_eqn_solver=None)
-        npt.assert_almost_equal(self.kwargs['point_amp'], amp)
+        npt.assert_almost_equal(self.kwargs['image_amp'], amp)
 
         amp = self.ps_mag.image_amplitude(self.kwargs_mag, kwargs_lens=self.kwargs_lens, x_pos=None,
                                           y_pos=None, magnification_limit=None, kwargs_lens_eqn_solver=None)

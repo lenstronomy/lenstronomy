@@ -1,4 +1,5 @@
 from lenstronomy.LensModel.single_plane import SinglePlane
+from lenstronomy.Plots.plot_util import add_string_index
 import numpy as np
 
 __all__ = ['LensParam']
@@ -147,13 +148,14 @@ class LensParam(object):
                             args.append(kwargs[name])
         return args
 
-    def num_param(self):
+    def num_param(self, latex_style=False):
         """
-
+        :param latex_style: boolean;
+            if True returns (if available) latex text strings instead of the sampler-identified text string.
         :return: integer, number of free parameters being sampled from the lens model components
         """
         num = 0
-        list = []
+        name_list = []
         type = 'lens'
         for k, model in enumerate(self.model_list):
             kwargs_fixed = self.kwargs_fixed[k]
@@ -168,17 +170,19 @@ class LensParam(object):
                             elif self._num_images == 2:
                                 num_coeffs -= 3
                         num += num_coeffs
-                        list += [str(name + '_' + type + str(k))] * num_coeffs
+                        name_list += [str(name + '_' + type + str(k))] * num_coeffs
+                        # name_list.append(add_string_index(name, k, type, latex_style=latex_style))
                     elif model in ['MULTI_GAUSSIAN_KAPPA', 'MULTI_GAUSSIAN_KAPPA_ELLIPSE'] and name == 'amp':
                         num_param = len(kwargs_fixed['sigma'])
                         num += num_param
                         for i in range(num_param):
-                            list.append(str(name + '_' + type + str(k)))
+                            name_list.append(str(name + '_' + type + str(k)))
                     elif model in ['MULTI_GAUSSIAN_KAPPA', 'MULTI_GAUSSIAN_KAPPA_ELLIPSE'] and name == 'sigma':
                         raise ValueError("'sigma' must be a fixed keyword argument for MULTI_GAUSSIAN")
                     elif model in ['INTERPOL', 'INTERPOL_SCALED'] and name in ['f_', 'f_xx', 'f_xy', 'f_yy']:
                         pass
                     else:
                         num += 1
-                        list.append(str(name + '_' + type + str(k)))
-        return num, list
+                        name_list.append(str(name + '_' + type + str(k)))
+
+        return num, name_list

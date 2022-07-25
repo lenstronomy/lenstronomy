@@ -1,4 +1,5 @@
 from lenstronomy.LightModel.light_model import LightModel
+from lenstronomy.Plots.plot_util import add_string_index
 
 __all__ = ['LightParam']
 
@@ -145,13 +146,14 @@ class LightParam(object):
 
     def num_param(self, latex_style=False):
         """
-        :param latex_style: boolena; if True, returns latex strings for plotting
+        :param latex_style: boolean; if True, returns latex strings for plotting
         :return: int, list of strings with param names
         """
         num = 0
         name_list = []
         for k, model in enumerate(self.model_list):
             kwargs_fixed = self.kwargs_fixed[k]
+            # TODO latex name list also iterate through
             param_names = self._param_name_list[k]
             for name in param_names:
                 if name not in kwargs_fixed:
@@ -165,7 +167,7 @@ class LightParam(object):
                             num_param = int((n_max + 1) * (n_max + 2) / 2)
                         num += num_param
                         for i in range(num_param):
-                            name_list.append(str(name + '_' + self._type + str(k)))
+                            name_list.append(add_string_index(name, k, self._type, latex_style=latex_style))
                     elif model in ['SLIT_STARLETS', 'SLIT_STARLETS_GEN2'] and name == 'amp':
                         if 'n_scales' not in kwargs_fixed or 'n_pixels' not in kwargs_fixed:
                             raise ValueError("n_scales and n_pixels need to be fixed when using STARLETS-like models!")
@@ -174,15 +176,15 @@ class LightParam(object):
                         num_param = n_scales * n_pixels
                         num += num_param
                         for i in range(num_param):
-                            name_list.append(str(name + '_' + self._type + str(k)))
+                            name_list.append(add_string_index(name, k, self._type, latex_style=latex_style))
                     elif model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE'] and name == 'amp':
                         num_param = len(kwargs_fixed['sigma'])
                         num += num_param
                         for i in range(num_param):
-                            name_list.append(str(name + '_' + self._type + str(k)))
+                            name_list.append(add_string_index(name, k, self._type, latex_style=latex_style))
                     else:
                         num += 1
-                        name_list.append(str(name + '_' + self._type + str(k)))
+                        name_list.append(add_string_index(name, k, self._type, latex_style=latex_style))
         return num, name_list
 
     def num_param_linear(self):

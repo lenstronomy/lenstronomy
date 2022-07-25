@@ -96,6 +96,25 @@ class TestPlotUtil(object):
                                            origin=[1, 1], flipped_x=True, pixel_offset=True)
         plt.close()
 
+    def test_add_string_index(self):
+        doc_string = 'param'
+        index = 3
+        model_type = 'lens'
+        doc_string_test = plot_util.add_string_index(doc_string, index, model_type, latex_style=False)
+        assert doc_string_test == 'param_lens3'
+
+        doc_string = r'$\alpha$'
+        index = 3
+        model_type = 'lens'
+        doc_string_test = plot_util.add_string_index(doc_string, index, model_type, latex_style=True)
+        assert doc_string_test == r'$\alpha_{\rm lens,3}$'
+
+        doc_string = r'$\alpha$ text'
+        index = 3
+        model_type = 'lens'
+        doc_string_test = plot_util.add_string_index(doc_string, index, model_type, latex_style=True)
+        assert doc_string_test == r'$\alpha$ text$_{\rm lens,3}$'
+
 
 if __name__ == '__main__':
     pytest.main()

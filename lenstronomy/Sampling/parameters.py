@@ -388,25 +388,28 @@ class Param(object):
                                        kwargs_extinction=self.extinctionParams.upper_limit)
         return lower_limit, upper_limit
 
-    def num_param(self):
+    def num_param(self, latex_style=False):
         """
+        number of parameters involved in the sampling. This number excludes the linear parameters.
 
-        :return: number of parameters involved (int), list of parameter names
+        :param latex_style: boolean;
+            if True returns (if available) latex text strings instead of the sampler-identified text string.
+        :return: number of parameters involved (int), list of parameter names as strings
         """
-        num, name_list = self.lensParams.num_param()
-        _num, _list = self.sourceParams.num_param()
+        num, name_list = self.lensParams.num_param(latex_style=latex_style)
+        _num, _list = self.sourceParams.num_param(latex_style=latex_style)
         num += _num
         name_list += _list
-        _num, _list = self.lensLightParams.num_param()
+        _num, _list = self.lensLightParams.num_param(latex_style=latex_style)
         num += _num
         name_list += _list
-        _num, _list = self.pointSourceParams.num_param()
+        _num, _list = self.pointSourceParams.num_param(latex_style=latex_style)
         num += _num
         name_list += _list
-        _num, _list = self.specialParams.num_param()
+        _num, _list = self.specialParams.num_param(latex_style=latex_style)
         num += _num
         name_list += _list
-        _num, _list = self.extinctionParams.num_param()
+        _num, _list = self.extinctionParams.num_param(latex_style=latex_style)
         num += _num
         name_list += _list
         return num, name_list

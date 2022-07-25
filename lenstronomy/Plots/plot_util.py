@@ -241,3 +241,23 @@ def cmap_conf(cmap_string):
     cmap.set_bad(color='k', alpha=1.)
     cmap.set_under('k')
     return cmap
+
+
+def add_string_index(doc_string, index, model_type, latex_style=False):
+    """
+    adds a subscript _index on the doc_string.
+    This method differs depending on whether the docstring is in latex style or not.
+
+    :param doc_string: string or latex string
+    :param model_type: string of type (e.g. lens light or source light)
+    :param index: integer
+    :param latex_style: boolean; if True, returns latex strings for plotting
+    :return: doc_string with subscript added in same format
+    """
+    if latex_style:
+        if doc_string[-1] == '$':
+            return str(doc_string[:-1] + '_{\\rm ' + model_type + ',' + str(index) + '}$')
+        else:
+            return str(doc_string + '$_{\\rm ' + model_type + ',' + str(index) + '}$')
+    else:
+        return str(doc_string + '_' + model_type + str(index))

@@ -23,9 +23,8 @@ class PsfFitting(object):
 
     'stacking_method': 'median', 'mean'; the different estimates of the PSF are stacked and combined together.
     The choices are:
-        'mean': mean of pixel values as the estimator (not robust to outliers)
-        'median': median of pixel values as the estimator (outlier rejection robust but needs >2 point sources in the
-        data
+    - 'mean': mean of pixel values as the estimator (not robust to outliers)
+    - 'median': median of pixel values as the estimator (outlier rejection robust but needs >2 point sources in the data
 
     'block_center_neighbour': angle, radius of neighbouring point sources around their centers the estimates is ignored.
         Default is zero, meaning a not optimal subtraction of the neighbouring point sources might contaminate the

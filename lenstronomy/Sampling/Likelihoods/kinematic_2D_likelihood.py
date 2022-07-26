@@ -2,6 +2,7 @@ import numpy as np
 import lenstronomy.Util.param_util as param_util
 import lenstronomy.Util.util as util
 from scipy import signal
+from lenstronomy.Util.kin_sampling_util import KinNN_image_align
 
 __all__ = ['KinLikelihood']
 
@@ -24,6 +25,7 @@ class KinLikelihood(object):
         self.image_input = kwargs_data2image_input(kwargs_data)
         self.kin_class = kinematic_data_2D_class
         self.kin_input = self.kin_class.KinBin.KinBin2kwargs()
+        self.kinNN_input = {'deltaPix':0.02}
 
         self.data = self.kin_class.KinBin._data
         self.psf = self.kin_class.PSF.kernel_point_source
@@ -43,8 +45,14 @@ class KinLikelihood(object):
         light_map = self.lens_light_model_class.surface_brightness(self.kin_x_grid,self.kin_y_grid,kwargs_lens_light,
                                                                    self.lens_light_bool_list)
         velo_map = np.ones_like(light_map) # NEED TO BE REPLACED BY NN
-        rotated_velo = velo_map #NEED TO BE REPLACED BY ROT
+
+        #Rotation and interpolation in kin data coordinates
+        self.kinNN_input['image']=velo_map
+        KiNNalign = KinNN_image_align(self.kin_input, self.image_input, self.kinNN_input)
+        rotated_velo = KiNNalign.interp_image()
+        #Convolution by PSF to calculate Vrms and binning
         vrms = self.auto_binning(rotated_velo,light_map)
+
         logL = self._logL(vrms)
 
         return logL

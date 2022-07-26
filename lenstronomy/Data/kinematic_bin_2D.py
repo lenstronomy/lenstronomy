@@ -40,8 +40,6 @@ class KinBin(object):
             transform_pix2angle = np.array([[1, 0], [0, 1]])
         self.PixelGrid =   PixelGrid(nx, ny, transform_pix2angle, ra_at_xy_0 + ra_shift, dec_at_xy_0 + dec_shift)
 
-        self._x = bin_pos_ra
-        self._y = bin_pos_dec
         self._data = bin_data
         self._snr = bin_SNR
         self._bin_mask = bin_mask
@@ -64,8 +62,9 @@ class KinBin(object):
         """
         Creates the kwargs needed for the 2D kinematic likelihood
         """
-        kwargs = {'image':binned_image(),'deltaPix':PixelGrid.pixel_width,'transform_pix2angle':PixelGrid._Mpix2a,
-                  'ra_at_xy0':PixelGrid._ra_at_xy_0, 'dec_at_xy0':PixelGrid._dec_at_xy_0}
+        kwargs = {'image' : self.binned_image(), 'deltaPix' : self.PixelGrid.pixel_width,
+                  'transform_pix2angle' : self.PixelGrid._Mpix2a, 'ra_at_xy0' : self.PixelGrid._ra_at_xy_0,
+                  'dec_at_xy0' : self.PixelGrid._dec_at_xy_0}
         return kwargs
     def kin_grid(self):
         """

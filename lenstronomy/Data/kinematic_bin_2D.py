@@ -1,5 +1,5 @@
 import numpy as np
-
+import lenstronomy.Util.util as util
 from lenstronomy.Data.pixel_grid import PixelGrid
 
 __all__ = ['KinBin']
@@ -38,29 +38,27 @@ class KinBin(object):
         self._ny = ny
         if transform_pix2angle is None:
             transform_pix2angle = np.array([[1, 0], [0, 1]])
-
         self.PixelGrid =   PixelGrid(nx, ny, transform_pix2angle, ra_at_xy_0 + ra_shift, dec_at_xy_0 + dec_shift)
 
         self._x = bin_pos_ra
         self._y = bin_pos_dec
         self._data = bin_data
         self._snr = bin_SNR
-
         self._bin_mask = bin_mask
 
     def noise(self):
         """
         Calculate the sigma (noise) associated to each bin, using the signal and the signal-to-noise ratio.
         """
-        self._noise = self._data/self._snr
-        return self._noise
+        noise = self._data/self._snr
+        return noise
     def binned_image(self):
         """
         Creates the binned image of the kinemmatic
         """
-        binned_image = np.zeros_like(bin_mask)
-        for idx, value in enumerate(bin_data):
-            binned_image[bin_mask==idx] = value
+        binned_image = np.zeros_like(self._bin_mask)
+        for idx, value in enumerate(self._data):
+            binned_image[self._bin_mask==idx] = value
         return binned_image
     def KinBin2kwargs(self):
         """
@@ -69,3 +67,9 @@ class KinBin(object):
         kwargs = {'image':binned_image(),'deltaPix':PixelGrid.pixel_width,'transform_pix2angle':PixelGrid._Mpix2a,
                   'ra_at_xy0':PixelGrid._ra_at_xy_0, 'dec_at_xy0':PixelGrid._dec_at_xy_0}
         return kwargs
+    def kin_grid(self):
+        """
+        Creates a pixel grid that satisfy the kinematics coordinates system
+        """
+        x_grid, y_grid = self.PixelGrid._x_grid, self.PixelGrid._y_grid
+        return x_grid,y_grid

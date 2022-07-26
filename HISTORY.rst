@@ -293,3 +293,12 @@ History
 +++++++++++++++++++
 * class_creator update
 * conda-forge linked and installation updated
+
+1.10.4 (2022-07-25)
++++++++++++++++++++
+* Zeus sampler implemented
+* Nautilus sampler implemented
+* Roman telescope configuration added
+* double power-law mass profile
+* generalized NFW profile
+* enabled to turn off linear solver in fitting

@@ -104,8 +104,9 @@ class Param(object):
         :param kwargs_upper_extinction: upper limits for parameters of extinction model (keyword argument list)
         :param kwargs_lens_init: initial guess of lens model keyword arguments (only relevant as the starting point of
          the non-linear solver)
-        :param linear_solver: bool, if True fixes the linear amplitude parameters 'amp' (avoid sampling) such that they
+        :param linear_solver: bool, if True; avoids sampling the linear amplitude parameters 'amp' such that they
          get overwritten by the linear solver solution.
+         Fixed 'amp' parameters will be overwritten if linear_solver = True.
         :param joint_lens_with_lens: list [[i_lens, k_lens, ['param_name1', 'param_name2', ...]], [...], ...],
          joint parameter between two lens models
         :param joint_lens_light_with_lens_light: list [[i_lens_light, k_lens_light, ['param_name1', 'param_name2', ...]], [...], ...],

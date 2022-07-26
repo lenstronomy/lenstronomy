@@ -111,7 +111,7 @@ Measuring the Hubble constant
     *Using lenstronomy to reproduce a lens and simulate the observed images based on parameters fitted by other work.*
 
 * Consequences of the lack of azimuthal freedom in the modeling of lensing galaxies `van de Vyvere et al. 2022 <https://arxiv.org/abs/2206.00022>`_
-    *Implemented a model ’ElliSLICE’ to describe radial changes in ellipticities and investigating assumptiosn on azimuthal freedom in the reconstruction.
+    *Implemented a model ’ElliSLICE’ to describe radial changes in ellipticities and investigating assumptiosn on azimuthal freedom in the reconstruction.*
 
 
 

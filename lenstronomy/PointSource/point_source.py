@@ -17,7 +17,9 @@ class PointSource(object):
         :param point_source_type_list: list of point source types
         :param lensModel: instance of the LensModel() class
         :param fixed_magnification_list: list of booleans (same length as point_source_type_list).
-         If True, magnification ratio of point sources is fixed to the one given by the lens model
+         If True, magnification ratio of point sources is fixed to the one given by the lens model.
+         This option then requires to provide a 'source_amp' amplitude of the source brightness instead of
+         'point_amp' the list of image brightnesses.
         :param additional_images_list: list of booleans (same length as point_source_type_list). If True, search for
         additional images of the same source is conducted.
         :param flux_from_point_source_list: list of booleans (optional), if set, will only return image positions

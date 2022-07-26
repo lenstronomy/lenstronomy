@@ -309,30 +309,26 @@ def test_averaging_even_kernel():
 
     x_grid, y_gird = Util.make_grid(17, 1., 1)
     sigma = 1.5
-    flux = gaussian.function(x_grid, y_gird, amp=1, sigma=sigma)
+    amp = 2
+    flux = gaussian.function(x_grid, y_gird, amp=amp, sigma=sigma)
     kernel_super = Util.array2image(flux)
 
     kernel_pixel = kernel_util.averaging_even_kernel(kernel_super, subgrid_res)
-    npt.assert_almost_equal(np.sum(kernel_pixel), 1, decimal=5)
+    npt.assert_almost_equal(np.sum(kernel_pixel), amp, decimal=5)
     assert len(kernel_pixel) == 5
 
 
 def test_degrade_kernel():
-    subgrid_res = 2
 
-    x_grid, y_gird = Util.make_grid(19, 1., 1)
+    x_grid, y_gird = Util.make_grid(19*5, 1., 1)
     sigma = 1.5
-    flux = gaussian.function(x_grid, y_gird, amp=1, sigma=sigma)
-    kernel_super = Util.array2image(flux)/np.sum(flux)
+    amp = 2
+    flux = gaussian.function(x_grid, y_gird, amp=2, sigma=sigma)
+    kernel_super = Util.array2image(flux)/np.sum(flux) * amp
 
-    kernel_degraded = kernel_util.degrade_kernel(kernel_super, degrading_factor=subgrid_res)
-    npt.assert_almost_equal(np.sum(kernel_degraded), 1, decimal=8)
-
-    kernel_degraded = kernel_util.degrade_kernel(kernel_super, degrading_factor=3)
-    npt.assert_almost_equal(np.sum(kernel_degraded), 1, decimal=8)
-
-    kernel_degraded = kernel_util.degrade_kernel(kernel_super, degrading_factor=1)
-    npt.assert_almost_equal(np.sum(kernel_degraded), 1, decimal=8)
+    for degrading_factor in range(7):
+        kernel_degraded = kernel_util.degrade_kernel(kernel_super, degrading_factor=degrading_factor+1)
+        npt.assert_almost_equal(np.sum(kernel_degraded), amp, decimal=8)
 
 
 def test_match_kernel_sixe():

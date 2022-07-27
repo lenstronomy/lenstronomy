@@ -11,9 +11,9 @@ import lenstronomy.Util.kernel_util as kernel_util
 
 class TestKinLikelihood(object):
     def setup(self):
-        lens_model_list = ['PEMD', 'SHEAR']
+        lens_model_list = ['SIE', 'SHEAR']
         lensModel = LensModel(lens_model_list=lens_model_list)
-        self.kwargs_lens = [{'theta_E': 1., 'e1': 0.1, 'e2': 0.1, 'gamma': 2., 'center_x': 0, 'center_y': 0},
+        self.kwargs_lens = [{'theta_E': 1., 'e1': 0.1, 'e2': 0.1, 'center_x': 0, 'center_y': 0},
                        {'gamma1': 0.06, 'gamma2': -0.03}]
 
         lens_light_model_list = ['SERSIC_ELLIPSE']

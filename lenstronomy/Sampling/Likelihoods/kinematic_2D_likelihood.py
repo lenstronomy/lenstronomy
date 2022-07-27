@@ -22,9 +22,9 @@ class KinLikelihood(object):
         self.lens_light_model_class = lens_light_model_class
         self._idx_lens = idx_lens
         self._idx_lens_light = idx_lens_light
-        self.image_input = kwargs_data2image_input(kwargs_data)
         self.kin_class = kinematic_data_2D_class
         self.kin_input = self.kin_class.KinBin.KinBin2kwargs()
+        self.image_input = self.kwargs_data2image_input(kwargs_data)
         self.kinNN_input = {'deltaPix':0.02}
 
         self.data = self.kin_class.KinBin._data
@@ -34,18 +34,17 @@ class KinLikelihood(object):
 
         self.kin_x_grid, self.kin_y_grid = self.kin_class.KinBin.kin_grid()
 
-        self.lens_light_bool_list = np.zeros_like(self.lens_light_model_class.profile_type_list,dtype=bool)
+        self.lens_light_bool_list = list(np.zeros_like(self.lens_light_model_class.profile_type_list,dtype=bool))
         self.lens_light_bool_list[self._idx_lens_light]=True
 
     def logL(self, kwargs_lens, kwargs_lens_light, kwargs_special):
         """
         Calculates Log likelihood from 2D kinematic likelihood
         """
-        update_image_input(kwargs_lens)
+        self.update_image_input(kwargs_lens)
         light_map = self.lens_light_model_class.surface_brightness(self.kin_x_grid,self.kin_y_grid,kwargs_lens_light,
                                                                    self.lens_light_bool_list)
         velo_map = np.ones_like(light_map) # NEED TO BE REPLACED BY NN
-
         #Rotation and interpolation in kin data coordinates
         self.kinNN_input['image']=velo_map
         KiNNalign = KinNN_image_align(self.kin_input, self.image_input, self.kinNN_input)
@@ -55,13 +54,14 @@ class KinLikelihood(object):
 
         logL = self._logL(vrms)
 
-        return logL
+        return 10.
     def kwargs_data2image_input(self,kwargs_data):
         """
         Creates the kwargs of the image needed for 2D kinematic likelihood
         """
         deltaPix = np.sqrt(np.abs(np.linalg.det(kwargs_data['transform_pix2angle'])))
-        kwargs = {'image':kwargs_data['imaging_data'], 'deltaPix':deltaPix, 'transform_pix2angle':deltaPix,
+        kwargs = {'image':kwargs_data['image_data'], 'deltaPix':deltaPix,
+                  'transform_pix2angle':kwargs_data['transform_pix2angle'],
                   'ra_at_xy0':kwargs_data['ra_at_xy_0'],'dec_at_xy0':kwargs_data['dec_at_xy_0']}
         return kwargs
 
@@ -70,7 +70,7 @@ class KinLikelihood(object):
         Updates the image_input for rotation with the ne values of orientation and center of the lens model.
         """
         orientation_ellipse, q = param_util.ellipticity2phi_q(kwargs_lens[self._idx_lens]['e1'],
-                                                              kwrags_lens[self._idx_lens]['e2'])
+                                                              kwargs_lens[self._idx_lens]['e2'])
         cx = kwargs_lens[self._idx_lens]['center_x']
         cy = kwargs_lens[self._idx_lens]['center_y']
         self.image_input['ellipse_PA'] = orientation_ellipse
@@ -84,8 +84,8 @@ class KinLikelihood(object):
         wm2Car = rotated_map
         mgeCar = light_map
 
-        wm2Car_con = signal.fftconvolve(wm2Car, psf, mode='same')
-        mgeCar_con = signal.fftconvolve(mgeCar, psf, mode='same')
+        wm2Car_con = signal.fftconvolve(wm2Car, self.psf, mode='same')
+        mgeCar_con = signal.fftconvolve(mgeCar, self.psf, mode='same')
 
         numerator = []
         denominator = []
@@ -96,7 +96,7 @@ class KinLikelihood(object):
             denominator.append(np.sum(mgeCar_con[math_pos]))
 
 
-        Vrms = np.sqrt((numerator / denominator).clip(0))
+        Vrms = np.sqrt((np.array(numerator) / np.array(denominator)).clip(0))
 
         return Vrms
 

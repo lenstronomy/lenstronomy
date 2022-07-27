@@ -180,4 +180,4 @@ class KinNN_image_align(object):
         interp_fcn = RectBivariateSpline(x_axis, y_axis, self.kinNN_data['image'])
         # y and x are flipped in RectBivariateSpline call:
         flux_interp = interp_fcn.ev(muse_kinNNy, muse_kinNNx).reshape(self.muse_data['npix'], self.muse_data['npix'])
-        return
+        return flux_interp

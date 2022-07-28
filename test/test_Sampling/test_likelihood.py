@@ -10,6 +10,9 @@ from lenstronomy.Sampling.likelihood import LikelihoodModule
 from lenstronomy.Sampling.parameters import Param
 from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
+from lenstronomy.Data.kinematic_data_2D import KinData
+from lenstronomy.Data.kinematic_bin_2D import KinBin
+import lenstronomy.Util.kernel_util as kernel_util
 
 
 class TestLikelihoodModule(object):
@@ -128,6 +131,34 @@ class TestLikelihoodModule(object):
 
         logL = likelihood.logL(args, verbose=True)
         npt.assert_almost_equal(logL, -1328.821179288249, decimal=-1)
+    def test_kin_likelihood(self):
+        kwargs_likelihood = {'kinematic_2D_likelihood':True, 'kin_lens_idx':0, 'kin_lens_light_idx':0,'time_delay_likelihood': False}
+
+        kinnumPix = 10
+        kinnum_bin = 4
+        kwargs_kin = {'bin_data': np.zeros(kinnum_bin) + 10.,
+                      'bin_SNR': np.ones(kinnum_bin) * 2.,
+                      'bin_mask': np.zeros((kinnumPix, kinnumPix))}
+        _KinBin = KinBin(**kwargs_kin)
+        kinkernel_point_source = kernel_util.kernel_gaussian(kernel_numPix=9, deltaPix=1., fwhm=2.)
+        kwargs_pixelkin = {'psf_type': 'PIXEL', 'kernel_point_source': kinkernel_point_source}
+        kinPSF = PSF(**kwargs_pixelkin)
+        _KinData = KinData(_KinBin, kinPSF)
+
+        kwargs_data_kin = self.kwargs_data.copy()
+        kwargs_data_kin['kinematic_data'] = _KinData
+
+        likelihood = LikelihoodModule(kwargs_data_joint=kwargs_data_kin, kwargs_model=self.kwargs_model,
+                                      param_class=self.param_class, **kwargs_likelihood)
+        # kwargs_constrains = {'kinematic_sampling' : True}
+        kwargs_cosmo = {'D_dt':1000,'D_d':3000}
+        args = self.param_class.kwargs2args(kwargs_lens=self.kwargs_lens, kwargs_source=self.kwargs_source,
+                                            kwargs_lens_light=self.kwargs_lens_light, kwargs_ps=self.kwargs_ps,
+                                            kwargs_special=kwargs_cosmo)
+
+        logL = likelihood.logL(args, verbose=True)
+
+        npt.assert_almost_equal(logL,-1328.821179288249 + 10. + 57.292559456, decimal=-1)
 
     def test_check_bounds(self):
         penalty, bound_hit = self.Likelihood.check_bounds(args=[0, 1], lowerLimit=[1, 0], upperLimit=[2, 2],

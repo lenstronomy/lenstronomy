@@ -5,6 +5,7 @@ from lenstronomy.Sampling.Likelihoods.image_likelihood import ImageLikelihood
 from lenstronomy.Sampling.Likelihoods.position_likelihood import PositionLikelihood
 from lenstronomy.Sampling.Likelihoods.flux_ratio_likelihood import FluxRatioLikelihood
 from lenstronomy.Sampling.Likelihoods.prior_likelihood import PriorLikelihood
+from lenstronomy.Sampling.Likelihoods.kinematic_2D_likelihood import KinLikelihood
 import lenstronomy.Util.class_creator as class_creator
 import numpy as np
 
@@ -121,10 +122,8 @@ class LikelihoodModule(object):
                                  'restrict_image_number': restrict_image_number, 'max_num_images': max_num_images}
         self._kwargs_flux = {'flux_ratios': flux_ratios, 'flux_ratio_errors': flux_ratio_errors}
         self._kwargs_flux.update(self._kwargs_flux_compute)
-        self._class_instances(kwargs_model=kwargs_model, kwargs_imaging=self._kwargs_imaging,
-                              kwargs_position=self._kwargs_position, kwargs_flux=self._kwargs_flux,
-                              kwargs_time_delay=self._kwargs_time_delay, kinematic_data = self.kinematic_class)
-        if kinematic_2D_likelihood :
+
+        if self._kinematic_2D_likelihood is True :
             print("Note that the 2D kinematic likelihood assumes that the lens and lens light have the same center, oientation, and ellipticity")
             if len(multi_band_list) > 1 :
                 print('Kinematic Likelihood not meant for multiband, using first band by default')
@@ -134,6 +133,11 @@ class LikelihoodModule(object):
                 print('Lens light for kinematic is not SERSIC or SERSIC_ELLIPSE, the 2D kinematic likelihood will break.')
             self._kin_lens_idx = kin_lens_idx
             self._kin_lens_light_idx = kin_lens_light_idx
+
+        self._class_instances(kwargs_model=kwargs_model, kwargs_imaging=self._kwargs_imaging,
+                              kwargs_position=self._kwargs_position, kwargs_flux=self._kwargs_flux,
+                              kwargs_time_delay=self._kwargs_time_delay, kinematic_data = self.kinematic_class)
+
 
     def _class_instances(self, kwargs_model, kwargs_imaging, kwargs_position, kwargs_flux, kwargs_time_delay, kinematic_data):
         """

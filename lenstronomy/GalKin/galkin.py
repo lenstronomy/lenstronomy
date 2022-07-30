@@ -125,7 +125,8 @@ class Galkin(GalkinModel, GalkinObservation):
     def dispersion_map_grid_convolved(self, kwargs_mass, kwargs_light,
                                       kwargs_anisotropy,
                                       supersampling_factor=1,
-                                      voronoi_bins=None
+                                      voronoi_bins=None,
+                                      get_IR_map=False
                                       ):
         """
         computes the velocity dispersion in each Integral Field Unit
@@ -135,6 +136,7 @@ class Galkin(GalkinModel, GalkinObservation):
         :param kwargs_anisotropy: anisotropy keyword arguments
         :param supersampling_factor: sampling factor for the grid to do the 2D convolution on.
         :param voronoi_bins: mapping of the voronoi bins, -1 values for  pixels not binned
+        :param get_IR_map: if True, will return the pixelized IR maps to use for Voronoi binning in post-processing
         :return: ordered array of velocity dispersions [km/s] for each unit
         """
         # draw from light profile (3d and 2d option)
@@ -148,16 +150,16 @@ class Galkin(GalkinModel, GalkinObservation):
                 raise ValueError("False for 'lum_weight_int_method' is not "
                                  "supported!")
 
-        if 'center_x' in kwargs_mass:
-            mass_center_x = kwargs_mass['center_x']
-            mass_center_y = kwargs_mass['center_y']
+        if 'center_x' in kwargs_mass[0]:
+            mass_center_x = kwargs_mass[0]['center_x']
+            mass_center_y = kwargs_mass[0]['center_y']
         else:
             mass_center_x = 0
             mass_center_y = 0
 
         if 'center_y' in kwargs_light:
-            light_center_x = kwargs_mass['center_x']
-            light_center_y = kwargs_mass['center_y']
+            light_center_x = kwargs_mass[0]['center_x']
+            light_center_y = kwargs_mass[0]['center_y']
         else:
             light_center_x = 0
             light_center_y = 0
@@ -170,15 +172,15 @@ class Galkin(GalkinModel, GalkinObservation):
         delta_y = np.abs(y_grid[1, 0] - y_grid[0, 0])
         assert delta_x == delta_y
 
-        x_start = x_grid[0, 0] - delta_x/2. * (1 - 1 / supersampling_factor)
-        x_end = x_grid[0, -1] + delta_x/2. * (1 - 1 / supersampling_factor)
-        y_start = y_grid[0, 0] - delta_y / 2. * (1 - 1 / supersampling_factor)
-        y_end = y_grid[-1, 0] + delta_y / 2. * (1 - 1 / supersampling_factor)
+        new_delta_x = delta_x / supersampling_factor
+        new_delta_y = delta_y / supersampling_factor
+        x_start = x_grid[0, 0] - delta_x / 2. + new_delta_x/2.
+        x_end = x_grid[0, -1] + delta_x / 2. - + new_delta_x/2.
+        y_start = y_grid[0, 0] - delta_y / 2. + new_delta_y/2.
+        y_end = y_grid[-1, 0] + delta_y /2. - new_delta_y/2.
 
-        xs = np.arange(x_start, x_end + delta_x / (10 + supersampling_factor),
-                         delta_x / supersampling_factor)
-        ys = np.arange(y_start, y_end + delta_y / (10 + supersampling_factor),
-                         delta_y / supersampling_factor)
+        xs = np.arange(x_start, x_end + 1e-5, new_delta_x)
+        ys = np.arange(y_start, y_end + 1e-5, new_delta_y)
 
         x_grid_supersampled, y_grid_supersmapled = np.meshgrid(xs, ys)
 
@@ -189,7 +191,7 @@ class Galkin(GalkinModel, GalkinObservation):
         R_max = np.sqrt((xs - mass_center_x)**2 + (ys -
                                                    mass_center_y)**2).max()
 
-        Rs = np.linspace(0, R_max, 50)
+        Rs = np.linspace(0, R_max+1, 300)
         sigma2_IRs = np.zeros_like(Rs)
         IRs = np.zeros_like(Rs)
 
@@ -200,7 +202,6 @@ class Galkin(GalkinModel, GalkinObservation):
                     R,
                     kwargs_mass,
                     kwargs_light, kwargs_anisotropy)
-
 
         sigma2_interp = interp1d(Rs, sigma2_IRs,
                                  kind='cubic',
@@ -263,7 +264,10 @@ class Galkin(GalkinModel, GalkinObservation):
         sigma2_grid = sigma_IR_integrated / IR_integrated
 
         # apply unit conversion from arc seconds and deflections to physical velocity dispersion in (km/s)
-        return np.sqrt(sigma2_grid) / 1000.   # in units of km/s
+        if get_IR_map:
+            return np.sqrt(sigma2_grid) / 1000., IR_integrated   # in units of km/s
+        else:
+            return np.sqrt(sigma2_grid) / 1000. # in units of km/s
 
     def _draw_one_sigma2(self, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """

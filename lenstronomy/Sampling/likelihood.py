@@ -95,6 +95,7 @@ class LikelihoodModule(object):
         self._flux_ratio_likelihood = flux_ratio_likelihood
         if kwargs_flux_compute is None:
             kwargs_flux_compute = {}
+        linear_solver = self.param.linear_solver
         self._kwargs_flux_compute = kwargs_flux_compute
         self._check_bounds = check_bounds
         self._custom_logL_addition = custom_logL_addition
@@ -104,7 +105,7 @@ class LikelihoodModule(object):
                                 'bands_compute': bands_compute,
                                 'image_likelihood_mask_list': image_likelihood_mask_list, 'source_marg': source_marg,
                                 'linear_prior': linear_prior, 'check_positive_flux': check_positive_flux,
-                                'kwargs_pixelbased': kwargs_pixelbased}
+                                'kwargs_pixelbased': kwargs_pixelbased, 'linear_solver': linear_solver}
         self._kwargs_position = {'astrometric_likelihood': astrometric_likelihood,
                                  'image_position_likelihood': image_position_likelihood,
                                  'source_position_likelihood': source_position_likelihood,
@@ -132,7 +133,10 @@ class LikelihoodModule(object):
         :return: updated model instances of this class
         """
 
-        lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class = class_creator.create_class_instances(**kwargs_model)
+        # TODO: in case lens model or point source models are only applied on partial images, then this current class
+        # has ambiguities when it comes to time-delay likelihood and flux ratio likelihood
+        lens_model_class, _, _, point_source_class, _ = class_creator.create_class_instances(all_models=True,
+                                                                                             **kwargs_model)
         self.PointSource = point_source_class
 
         if self._time_delay_likelihood is True:

@@ -39,6 +39,9 @@ Related software publications
 * LensingETC: a tool to optimize multi-filter imaging campaigns of galaxy-scale strong lensing systems; `Shajib et al. 2022b <https://arxiv.org/abs/2203.05170>`_
     *A Python package to select an optimal observing strategy for multi-filter imaging campaigns of strong lensing systems.*
 
+* Using wavelets to capture deviations from smoothness in galaxy-scale strong lenses; `Galan et al. 2022 <https://arxiv.org/abs/2207.05763>`_
+    *Presenting a new software 'herculens'. The code structure and part of the modeling routines of herculens are based on lenstronomy.*
+
 
 
 
@@ -107,6 +110,10 @@ Measuring the Hubble constant
 * Forecast of observing time delay of the strongly lensed quasars with Muztagh-Ata 1.93m telescope `Zhu et al. 2022a <https://arxiv.org/abs/2203.15680>`_
     *Using lenstronomy to reproduce a lens and simulate the observed images based on parameters fitted by other work.*
 
+* Consequences of the lack of azimuthal freedom in the modeling of lensing galaxies `van de Vyvere et al. 2022 <https://arxiv.org/abs/2206.00022>`_
+    *Implemented a model ’ElliSLICE’ to describe radial changes in ellipticities and investigating assumptiosn on azimuthal freedom in the reconstruction.*
+
+
 
 
 
@@ -161,7 +168,14 @@ Dark Matter substructure
 * Interlopers speak out: Studying the dark universe using small-scale lensing anisotropies; `Dhanasingham et al. 2022 <https://arxiv.org/abs/2203.13775>`_
     *rendering line of sight and subhalos with pyhalo on top of lenstronomy*
 
+* Probing Dark Matter with Strong Gravitational Lensing through an Effective Density Slope; `Senguel & Dvorkin 2022 <https://arxiv.org/abs/2206.10635>`_
+    *measuring an effective slope of a subhalo in HST data and tests on mock data from N-body simulations*
 
+* Quantum fluctuations masquerade as halos: Bounds on ultra-light dark matter from quadruply-imaged quasars; `Laroche et al. 2022 <https://arxiv.org/abs/2206.11269>`_
+    *using lenstronomy for flux ratio statistics calculation with pyHalo*
+
+* Constraining resonant dark matter self-interactions with strong gravitational lenses; `Gilman et al. 2022 <https://arxiv.org/abs/2207.13111>`_
+    *using lenstronomy for flux ratio statistics calculation with pyHalo*
 
 
 
@@ -175,10 +189,16 @@ Lens searches
     *simulating training sets for lens searches*
 
 * DeepZipper: A Novel Deep Learning Architecture for Lensed Supernovae Identification; `Morgan et al. 2021b <https://arxiv.org/abs/2112.01541>`_
-    *simulating deeplenstronomy to simulate lensed supernovae data sets*
+    *Using deeplenstronomy to simulate lensed supernovae data sets*
 
 * Detecting gravitational lenses using machine learning: exploring interpretability and sensitivity to rare lensing configurations; `Wilde et al. 2021b <https://arxiv.org/abs/2202.12776>`_
     *Simulating compound lenses*
+
+* DeepZipper II: Searching for Lensed Supernovae in Dark Energy Survey Data with Deep Learning; `Morgan et al. 2022 <https://arxiv.org/abs/2204.05924>`_
+    *Using deeplenstronomy to simulate lensed supernovae training sets*
+
+* DeepGraviLens: a Multi-Modal Architecture for Classifying Gravitational Lensing Data; `Oreste Pinciroli Vago et al. 2022 <https://arxiv.org/abs/2205.00701>`_
+    *Using deeplenstronomy to simulate lensed supernovae training sets*
 
 
 
@@ -206,6 +226,15 @@ Galaxy formation and evolution
 * The Near Infrared Imager and Slitless Spectrograph for the James Webb Space Telescope -- II. Wide Field Slitless Spectroscopy; `Willott et al. 2022 <https://arxiv.org/abs/2202.01714>`_
     *lensing calculations in cluster environments*
 
+* Inferences on relations between distant supermassive black holes and their hosts complemented by the galaxy fundamental plane; `Silverman et al. 2022 <https://arxiv.org/abs/2204.11948>`_
+    *galaxy size measurement with quasar decomposition*
+
+* Concordance between observations and simulations in the evolution of the mass relation between supermassive black holes and their host galaxies; `Ding et al. 2022 <https://arxiv.org/abs/2205.04481>`_
+    *galaxy size measurement with quasar decomposition*
+
+* Early results from GLASS-JWST. V: the first rest-frame optical size-luminosity relation of galaxies at  z>7; `Yang et al. 2022 <https://arxiv.org/abs/2207.13101>`_
+    *galaxy size measurement from JWST data with Galight/lenstronomy*
+
 
 
 Automatized Lens Modeling
@@ -222,6 +251,9 @@ Automatized Lens Modeling
 
 * GIGA-Lens: Fast Bayesian Inference for Strong Gravitational Lens Modeling; `Gu et al. 2022 <https://arxiv.org/abs/2202.07663>`_
     *lenstronomy-inspired GPU lensing code with PEMD+shear and Sersic modeling, and tested against lenstronomy.*
+
+* STRIDES: Automated uniform models for 30 quadruply imaged quasars; `Schmidt et al. 2022 <https://arxiv.org/abs/2206.04696>`_
+    *Automated and uniform modeling of 30 quadruply lensed quasars.*
 
 
 
@@ -248,6 +280,8 @@ Quasar-host galaxy decomposition
 * Synchronized Co-evolution between Supermassive Black Holes and Galaxies Over the Last Seven Billion Years as Revealed by the Hyper Suprime-Cam; `Li et al. 2021b <https://arxiv.org/abs/2109.02751>`_
     *Quasar-host decomposition of SDSS quasars with HSC data*
 
+* Evidence for a milli-parsec separation Supermassive Black Hole Binary with quasar microlensing; `Millon et al. 2022 <https://arxiv.org/abs/2207.00598>`_
+    *Using lenstronomy to generate the microlensed images of the accretion disk*
 
 
 
@@ -262,7 +296,7 @@ Lensing of Gravitational Waves
     *solving the lens equation with lenstronomy using lensingGW*
 
 * Lensing magnification: gravitational wave from coalescing stellar-mass binary black holes; `Shan & Hu 2020 <https://arxiv.org/abs/2012.08381>`_
-    *lensing magnificatoin calculations*
+    *lensing magnification calculations*
 
 * Identifying Type-II Strongly-Lensed Gravitational-Wave Images in Third-Generation Gravitational-Wave Detectors; `Y. Wang et al. 2021 <https://arxiv.org/abs/2101.08264>`_
     *solving the lens equation*
@@ -270,6 +304,8 @@ Lensing of Gravitational Waves
 * Beyond the detector horizon: Forecasting gravitational-wave strong lensing; `Renske et al. 2021 <https://arxiv.org/abs/2106.06303>`_
     *computing image positions, time delays and magnifications for gravitational wave forecasting*
 
+* A lensing multi-messenger channel: Combining LIGO-Virgo-Kagra lensed gravitational-wave measurements with Euclid observations; `Wempe et al. 2022 <https://arxiv.org/abs/2204.08732>`_
+    *simulating Euclid-like simulations using lenstronomy and presenting a fast method to cacluate caustics for a PEMD+Shear model*
 
 
 

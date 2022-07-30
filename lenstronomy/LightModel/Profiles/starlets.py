@@ -20,6 +20,7 @@ class SLIT_Starlets(object):
     Based on Starck et al. : https://ui.adsabs.harvard.edu/abs/2007ITIP...16..297S/abstract
     """
     param_names = ['amp', 'n_scales', 'n_pixels', 'scale', 'center_x', 'center_y']
+    param_names_latex = {r'$I_0$', r'$n_{\rm scales}$', r'$n_{\rm pix}$', r'scale', r'$x_0$', r'$y_0$'}
     lower_limit_default = {'amp': [0], 'n_scales': 2, 'n_pixels': 5, 'center_x': -1000, 'center_y': -1000, 'scale': 0.000000001}
     upper_limit_default = {'amp': [1e8], 'n_scales': 20, 'n_pixels': 1e10, 'center_x': 1000, 'center_y': 1000, 'scale': 10000000000}
 

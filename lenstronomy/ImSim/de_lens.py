@@ -14,7 +14,7 @@ def get_param_WLS(A, C_D_inv, d, inv_bool=True):
     :param A: response matrix Nd x Ns (Nd = # data points, Ns = # parameters)
     :param C_D_inv: inverse covariance matrix of the data, Nd x Nd, diagonal form
     :param d: data array, 1-d Nd
-    :param inv_bool: boolean, wheter returning also the inverse matrix or just solve the linear system
+    :param inv_bool: boolean, whether returning also the inverse matrix or just solve the linear system
     :return: 1-d array of parameter values
     """
     M = A.T.dot(np.multiply(C_D_inv, A.T).T)

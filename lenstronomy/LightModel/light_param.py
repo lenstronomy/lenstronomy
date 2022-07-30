@@ -143,9 +143,9 @@ class LightParam(object):
                         args.append(kwargs[name])
         return args
 
-    def num_param(self):
+    def num_param(self, latex_style=False):
         """
-
+        :param latex_style: boolena; if True, returns latex strings for plotting
         :return: int, list of strings with param names
         """
         num = 0

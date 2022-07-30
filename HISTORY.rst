@@ -288,3 +288,17 @@ History
 1.10.2 (2022-03-27)
 +++++++++++++++++++
 * requirement from sklearn changed to scikit-learn
+
+1.10.3 (2022-04-18)
++++++++++++++++++++
+* class_creator update
+* conda-forge linked and installation updated
+
+1.10.4 (2022-07-25)
++++++++++++++++++++
+* Zeus sampler implemented
+* Nautilus sampler implemented
+* Roman telescope configuration added
+* double power-law mass profile
+* generalized NFW profile
+* enabled to turn off linear solver in fitting

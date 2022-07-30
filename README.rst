@@ -3,9 +3,6 @@ lenstronomy - gravitational lensing software package
 ====================================================
 
 
-.. image:: https://badge.fury.io/py/lenstronomy.png
-    :target: https://badge.fury.io/py/lenstronomy
-
 .. image:: https://github.com/sibirrer/lenstronomy/workflows/Tests/badge.svg
     :target: https://github.com/sibirrer/lenstronomy/actions
 
@@ -43,7 +40,7 @@ A (incomplete) list of publications making use of lenstronomy can be found `at t
 
 The development is coordinated on `GitHub <https://github.com/sibirrer/lenstronomy>`_ and contributions are welcome.
 The documentation of ``lenstronomy`` is available at `readthedocs.org <http://lenstronomy.readthedocs.org/>`_ and
-the package is distributed over `PyPI <https://pypi.python.org/pypi/lenstronomy>`_.
+the package is distributed through PyPI_ and conda-forge_.
 ``lenstronomy`` is an `affiliated package <https://www.astropy.org/affiliated/>`_ of `astropy <https://www.astropy.org/>`_.
 
 
@@ -51,14 +48,23 @@ the package is distributed over `PyPI <https://pypi.python.org/pypi/lenstronomy>
 Installation
 ------------
 
-.. code-block:: bash
+|PyPI| |conda-forge|
 
-    $ pip install lenstronomy --user
-
-
+lenstronomy releases are distributed through PyPI_ and conda-forge_. Instructions for
+installing lenstronomy and its dependencies can be found in the Installation_
+section of the documentation.
 Specific instructions for settings and installation requirements for special cases that can provide speed-ups,
-we refer to the `documentation <https://lenstronomy.readthedocs.io/en/latest/installation.html>`_ page.
+we also refer to the Installation_ page.
 
+.. |PyPI| image:: https://img.shields.io/pypi/v/lenstronomy?label=PyPI&logo=pypi
+    :target: https://pypi.python.org/pypi/lenstronomy
+
+.. |conda-forge| image:: https://img.shields.io/conda/vn/conda-forge/lenstronomy?logo=conda-forge
+    :target: https://anaconda.org/conda-forge/lenstronomy
+
+.. _PyPI: https://pypi.org/project/lenstronomy/
+.. _conda-forge: https://anaconda.org/conda-forge/lenstronomy
+.. _Installation: https://lenstronomy.readthedocs.io/en/stable/installation.html
 
 
 Getting started

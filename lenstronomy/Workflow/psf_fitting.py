@@ -21,12 +21,14 @@ class PsfFitting(object):
 
     Various options can be chosen. There is no guarantee that the method works for specific data and models.
 
-    'stacking_method': 'median', 'mean'; the different estimates of the PSF are stacked and combined together. The choices are:
-        'mean': mean of pixel values as the estimator (not robust to outliers)
-        'median': median of pixel values as the estimator (outlier rejection robust but needs >2 point sources in the data
+    'stacking_method': 'median', 'mean'; the different estimates of the PSF are stacked and combined together.
+    The choices are:
+    - 'mean': mean of pixel values as the estimator (not robust to outliers)
+    - 'median': median of pixel values as the estimator (outlier rejection robust but needs >2 point sources in the data
 
     'block_center_neighbour': angle, radius of neighbouring point sources around their centers the estimates is ignored.
-        Default is zero, meaning a not optimal subtraction of the neighbouring point sources might contaminate the estimate.
+        Default is zero, meaning a not optimal subtraction of the neighbouring point sources might contaminate the
+        estimate.
 
     'keep_error_map': bool, if True, does not replace the error term associated with the PSF estimate.
         If false, re-estimates the variance between the PSF estimates.
@@ -60,7 +62,7 @@ class PsfFitting(object):
         :return: keyword argument of PSF constructor for PSF() class with updated PSF
         """
         self._image_model_class.PointSource.set_save_cache(True)
-        if not 'kernel_point_source_init' in kwargs_psf:
+        if 'kernel_point_source_init' not in kwargs_psf:
             kernel_point_source_init = copy.deepcopy(kwargs_psf['kernel_point_source'])
         else:
             kernel_point_source_init = kwargs_psf['kernel_point_source_init']
@@ -101,7 +103,7 @@ class PsfFitting(object):
 
     def update_psf(self, kwargs_psf, kwargs_params, stacking_method='median', psf_symmetry=1, psf_iter_factor=.2,
                    block_center_neighbour=0, error_map_radius=None, block_center_neighbour_error_map=None,
-                   new_procedure=False):
+                   new_procedure=True):
         """
 
         :param kwargs_psf: keyword arguments to construct the PSF() class
@@ -109,7 +111,8 @@ class PsfFitting(object):
         :param stacking_method: 'median', 'mean'; the different estimates of the PSF are stacked and combined together.
          The choices are:
          'mean': mean of pixel values as the estimator (not robust to outliers)
-         'median': median of pixel values as the estimator (outlier rejection robust but needs >2 point sources in the data
+         'median': median of pixel values as the estimator (outlier rejection robust but needs >2 point sources in the
+         data
         :param psf_symmetry: number of rotational invariant symmetries in the estimated PSF.
          =1 mean no additional symmetries. =4 means 90 deg symmetry. This is enforced by a rotatioanl stack according to
          the symmetry specified. These additional imposed symmetries can help stabelize the PSF estimate when there are
@@ -123,7 +126,8 @@ class PsfFitting(object):
         :param error_map_radius: float, radius (in arc seconds) of the outermost error in the PSF estimate
          (e.g. to avoid double counting of overlapping PSF errors), if None, all of the pixels are considered
          (unless blocked through other means)
-        :param new_procedure: boolean, uses post lenstronomy 1.9.2 procedure which is more optimal for super-sampled PSF's
+        :param new_procedure: boolean, uses post lenstronomy 1.9.2 procedure which is more optimal for super-sampled
+         PSF's
         :return: kwargs_psf_new, logL_after, error_map
         """
         if block_center_neighbour_error_map is None:
@@ -135,7 +139,7 @@ class PsfFitting(object):
         kwargs_psf_new = {'psf_type': 'PIXEL', 'kernel_point_source': kwargs_psf_copy['kernel_point_source'],
                           'point_source_supersampling_factor': point_source_supersampling_factor,
                           'psf_error_map': kwargs_psf_copy.get('psf_error_map', None)}
-        #if 'psf_error_map' in kwargs_psf_copy:
+        # if 'psf_error_map' in kwargs_psf_copy:
         #    kwargs_psf_new['psf_error_map'] = kwargs_psf_copy['psf_error_map'] / 10
         self._image_model_class.update_psf(PSF(**kwargs_psf_new))
 
@@ -189,14 +193,14 @@ class PsfFitting(object):
             kernel_new = kernel_util.cut_psf(kernel_new, psf_size=kernel_size_high)
 
             # resize kernel for error_map estimate
-            kernel_new_low = kernel_util.degrade_kernel(kernel_new, point_source_supersampling_factor)
+            # kernel_new_low = kernel_util.degrade_kernel(kernel_new, point_source_supersampling_factor)
             # compute error map on pixel level
             error_map = self.error_map_estimate_new(kernel_new, psf_kernel_list, ra_image, dec_image, point_amp,
                                                     point_source_supersampling_factor,
                                                     error_map_radius=error_map_radius)
 
         kwargs_psf_new['kernel_point_source'] = kernel_new
-        #if 'psf_error_map' in kwargs_psf_new:
+        # if 'psf_error_map' in kwargs_psf_new:
         #    kwargs_psf_new['psf_error_map'] *= 10
         self._image_model_class.update_psf(PSF(**kwargs_psf_new))
         logL_after = self._image_model_class.likelihood_data_given_model(**kwargs_params)

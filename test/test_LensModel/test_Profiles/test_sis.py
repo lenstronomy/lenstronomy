@@ -74,6 +74,12 @@ class TestSIS(object):
         assert values[3][1] == 0.28460498941515411
         assert values[1][1] == -0.094868329805051374
 
+    def test_theta2rho(self):
+        theta_E = 2.
+        rho0 = self.SIS.theta2rho(theta_E)
+        theta_E_new = self.SIS.rho2theta(rho0)
+        npt.assert_almost_equal(theta_E_new, theta_E, decimal=7)
+
 
 if __name__ == '__main__':
     pytest.main()

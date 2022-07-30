@@ -134,8 +134,8 @@ class Galkin(GalkinModel, GalkinObservation):
         :param kwargs_mass: keyword arguments of the mass model
         :param kwargs_light: keyword argument of the light model
         :param kwargs_anisotropy: anisotropy keyword arguments
-        :param supersampling_factor: sampling factor for the grid to do the 2D convolution on.
-        :param voronoi_bins: mapping of the voronoi bins, -1 values for  pixels not binned
+        :param supersampling_factor: sampling factor for the grid to do the 2D convolution on
+        :param voronoi_bins: mapping of the voronoi bins, bin indices should start from 0, -1 values for pixels not binned
         :param get_IR_map: if True, will return the pixelized IR maps to use for Voronoi binning in post-processing
         :return: ordered array of velocity dispersions [km/s] for each unit
         """

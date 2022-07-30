@@ -150,19 +150,35 @@ class Galkin(GalkinModel, GalkinObservation):
                 raise ValueError("False for 'lum_weight_int_method' is not "
                                  "supported!")
 
-        if 'center_x' in kwargs_mass[0]:
-            mass_center_x = kwargs_mass[0]['center_x']
-            mass_center_y = kwargs_mass[0]['center_y']
+        if not isinstance(kwargs_mass, dict):
+            if 'center_x' in kwargs_mass[0]:
+                mass_center_x = kwargs_mass[0]['center_x']
+                mass_center_y = kwargs_mass[0]['center_y']
+            else:
+                mass_center_x = 0
+                mass_center_y = 0
         else:
-            mass_center_x = 0
-            mass_center_y = 0
+            if 'center_x' in kwargs_mass:
+                mass_center_x = kwargs_mass['center_x']
+                mass_center_y = kwargs_mass['center_y']
+            else:
+                mass_center_x = 0
+                mass_center_y = 0
 
-        if 'center_y' in kwargs_light:
-            light_center_x = kwargs_mass[0]['center_x']
-            light_center_y = kwargs_mass[0]['center_y']
+        if not isinstance(kwargs_light, dict):
+            if 'center_x' in kwargs_light[0]:
+                light_center_x = kwargs_light[0]['center_x']
+                light_center_y = kwargs_light[0]['center_y']
+            else:
+                light_center_x = 0
+                light_center_y = 0
         else:
-            light_center_x = 0
-            light_center_y = 0
+            if 'center_x' in kwargs_light:
+                light_center_x = kwargs_light['center_x']
+                light_center_y = kwargs_light['center_y']
+            else:
+                light_center_x = 0
+                light_center_y = 0
 
         num_segments = self.num_segments
         x_grid = self._aperture._x_grid

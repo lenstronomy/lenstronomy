@@ -123,7 +123,9 @@ class KinematicsAPI(object):
     def velocity_dispersion_map(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, r_eff=None, theta_E=None,
                                 gamma=None, kappa_ext=0,
                                 direct_convolve=False,
-                                supersampling_factor=1, voronoi_bins=None):
+                                supersampling_factor=1, voronoi_bins=None,
+                                get_IR_map=False
+                                ):
         """
         API for both, analytic and numerical JAM to compute the velocity dispersion map with IFU data [km/s]
 
@@ -139,27 +141,46 @@ class KinematicsAPI(object):
         :param direct_convolve: bool, if True, compute the 2D integral numerically
         :param supersampling_factor: supersampling factor for 2D integration grid
         :param voronoi_bins: mapping of the voronoi bins, -1 values for  pixels not binned
+        :param get_IR_map: if True, will return the pixelized IR maps to use for Voronoi binning in post-processing
         :return: velocity dispersion [km/s]
         """
         galkin, kwargs_profile, kwargs_light = self.galkin_settings(kwargs_lens, kwargs_lens_light, r_eff=r_eff,
                                                                     theta_E=theta_E, gamma=gamma
                                                                     )
         if direct_convolve:
-            sigma_v_map = galkin.dispersion_map_grid_convolved(
-                kwargs_profile, kwargs_light,
-                kwargs_anisotropy,
-                supersampling_factor=supersampling_factor,
-                voronoi_bins=voronoi_bins
-                #num_kin_sampling=self._num_kin_sampling,
-                #num_psf_sampling=self._num_psf_sampling
-            )
+            if get_IR_map:
+                sigma_v_map, IR_map = galkin.dispersion_map_grid_convolved(
+                    kwargs_profile, kwargs_light,
+                    kwargs_anisotropy,
+                    supersampling_factor=supersampling_factor,
+                    voronoi_bins=voronoi_bins,
+                    get_IR_map=True
+                    #num_kin_sampling=self._num_kin_sampling,
+                    #num_psf_sampling=self._num_psf_sampling
+                )
+                sigma_v_map = self.transform_kappa_ext(sigma_v_map,
+                                                       kappa_ext=kappa_ext)
+                return sigma_v_map, IR_map
+            else:
+                sigma_v_map = galkin.dispersion_map_grid_convolved(
+                    kwargs_profile, kwargs_light,
+                    kwargs_anisotropy,
+                    supersampling_factor=supersampling_factor,
+                    voronoi_bins=voronoi_bins,
+                    get_IR_map=get_IR_map
+                    # num_kin_sampling=self._num_kin_sampling,
+                    # num_psf_sampling=self._num_psf_sampling
+                )
+                sigma_v_map = self.transform_kappa_ext(sigma_v_map,
+                                                       kappa_ext=kappa_ext)
+                return sigma_v_map
         else:
             sigma_v_map = galkin.dispersion_map(
                 kwargs_profile, kwargs_light, kwargs_anisotropy,
                 num_kin_sampling=self._num_kin_sampling,
                 num_psf_sampling=self._num_psf_sampling)
-        sigma_v_map = self.transform_kappa_ext(sigma_v_map, kappa_ext=kappa_ext)
-        return sigma_v_map
+            sigma_v_map = self.transform_kappa_ext(sigma_v_map, kappa_ext=kappa_ext)
+            return sigma_v_map
 
     def velocity_dispersion_analytical(self, theta_E, gamma, r_eff, r_ani, kappa_ext=0):
         """

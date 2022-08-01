@@ -38,7 +38,7 @@ class Interpol(object):
         :param center_x: center of interpolated image
         :param center_y: center of interpolated image
         :param phi_G: rotation angle of simulated image in respect to input gird
-        :param scale: pixel scale (in angular units) of the simulated image
+        :param scale: pixel scale (in angular units) of the 'image' which is the input image that gets interpolated
         :return: surface brightness from the model at coordinates (x, y)
         """
         x_, y_ = self.coord2image_pixel(x, y, center_x, center_y, phi_G, scale)

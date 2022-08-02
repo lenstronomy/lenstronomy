@@ -82,7 +82,7 @@ class ImageLinearFit(ImageModel):
         return self._image_linear_solve(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_extinction,
                                         kwargs_special, inv_bool=inv_bool)
     
-    
+    # linear solver for natwt special method, added to the original lenstronomy
     def _image_linear_solve_natwt_special(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
                             kwargs_extinction=None, kwargs_special=None,):
         """
@@ -173,7 +173,8 @@ class ImageLinearFit(ImageModel):
             C_D_response, model_error = self._error_response(kwargs_lens, kwargs_ps, kwargs_special=kwargs_special)
             d = self.data_response
             param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1 / C_D_response, d, inv_bool=inv_bool)
-            # _check_if_use_linear_solver determines whether or not to do the linear parameter marginalisation
+            
+            # _check_if_use_linear_solver determines whether or not to find the amplitudes by using a linear solver
             if self._check_if_use_linear_solver == True:
                 if self._if_use_natwt_linear_solver == True:
                     model, param = self._image_linear_solve_natwt_special(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,kwargs_extinction, kwargs_special)

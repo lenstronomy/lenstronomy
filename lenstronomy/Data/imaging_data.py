@@ -92,9 +92,11 @@ class ImageData(PixelGrid, ImageNoise):
                             likelihood_method = 'diagonal', 
                             eigen_vector_set=None,eigen_value_set=None,num_of_modes=None,data_mask=None,
                             d_minv_d = 0, convolution_core = None)
+        
         dim=nx*ny
         
-        self._bkg_variance = background_rms**2
+        if background_rms is not None:
+            self._bkg_variance = background_rms**2
         
         self._use_linear_solver=use_linear_solver
         self._pb=primary_beam

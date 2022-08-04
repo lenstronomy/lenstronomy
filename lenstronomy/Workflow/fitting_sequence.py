@@ -117,8 +117,9 @@ class FittingSequence(object):
                 chain_list.append([points, log_w, log_l, log_z])
                 if kwargs.get('verbose', False):
                     print(len(points), 'number of points sampled')
-                kwargs_result = self.best_fit_from_samples(points, log_l)
-                self._updateManager.update_param_state(**kwargs_result)
+                if not kwargs.get('one_step', False):  # this is only for testing purposes
+                    kwargs_result = self.best_fit_from_samples(points, log_l)
+                    self._updateManager.update_param_state(**kwargs_result)
 
             elif fitting_type == 'nested_sampling':
                 ns_output = self.nested_sampling(**kwargs)

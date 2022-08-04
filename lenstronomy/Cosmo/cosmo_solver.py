@@ -105,9 +105,11 @@ class InvertCosmo(object):
             Dd, Ds_Dds = cosmo2angular_diameter_distances(H0_grid[i], omega_m_grid[i], self.z_d, self.z_s)
             Dd_grid[i] = Dd
             Ds_Dds_grid[i] = Ds_Dds
-        self._f_H0 = interpolate.interp2d(Dd_grid, Ds_Dds_grid, H0_grid, kind='linear', copy=False, bounds_error=False, fill_value=-1)
+        self._f_H0 = interpolate.interp2d(Dd_grid, Ds_Dds_grid, H0_grid, kind='linear', copy=False, bounds_error=False,
+                                          fill_value=-1)
         print("H0 interpolation done")
-        self._f_omega_m = interpolate.interp2d(Dd_grid, Ds_Dds_grid, omega_m_grid, kind='linear', copy=False, bounds_error=False, fill_value=0)
+        self._f_omega_m = interpolate.interp2d(Dd_grid, Ds_Dds_grid, omega_m_grid, kind='linear', copy=False,
+                                               bounds_error=False, fill_value=0)
         print("omega_m interpolation done")
 
     def get_cosmo(self, Dd, Ds_Dds):

@@ -1,11 +1,8 @@
-__author__ = 'aymgal'
 
 import copy
 
 import pytest
-import numpy as np
 from numpy.testing import assert_raises
-import numpy.testing as npt
 
 from lenstronomy.Sampling.Samplers.nautilus import Nautilus
 
@@ -43,6 +40,7 @@ class TestNautilusSampler(object):
         }
         points, log_w, log_l, log_z = sampler.nautilus_sampling(**kwargs_run)
         assert len(points) == 100
+        assert len(log_l) == 100
 
         kwargs_run_fail = copy.deepcopy(kwargs_run)
         kwargs_run_fail['prior_type'] = 'wrong'

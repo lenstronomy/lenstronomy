@@ -137,18 +137,6 @@ and become an author of ``lenstronomy``! A big shutout to the current `list of c
 
 
 
-
-Shapelet reconstruction demonstration movies
---------------------------------------------
-
-We provide some examples where a real galaxy has been lensed and then been reconstructed by a shapelet basis set.
-
-* `HST quality data with perfect knowledge of the lens model <http://www.astro.ucla.edu/~sibirrer/video/true_reconstruct.mp4>`_
-* `HST quality with a clump hidden in the data <http://www.astro.ucla.edu/~sibirrer/video/clump_reconstruct.mp4>`_
-* `Extremely large telescope quality data with a clump hidden in the data <http://www.astro.ucla.edu/~sibirrer/video/TMT_high_res_clump_reconstruct.mp4>`_
-
-
-
 Attribution
 -----------
 The design concept of ``lenstronomy`` is reported by `Birrer & Amara 2018 <https://arxiv.org/abs/1803.09746v1>`_.

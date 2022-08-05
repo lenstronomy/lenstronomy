@@ -9,10 +9,7 @@ from lenstronomy.LensModel.single_plane import SinglePlane
 from lenstronomy.LensModel.LineOfSight.single_plane_los import SinglePlaneLOS
 from lenstronomy.LensModel.MultiPlane.multi_plane import MultiPlane
 from lenstronomy.LensModel.Profiles.sis import SIS
-# from lenstronomy.Cosmo import lcdm
 
-# is it ok to rely on astropy here? it makes the shear conversion less clunky
-# unless I don't understand how the lenstronomy cosmo works...
 from astropy.cosmology import default_cosmology
 cosmo = default_cosmology.get()
 
@@ -28,6 +25,7 @@ class TestSinglePlaneLOS(object):
 
     these functions are the same as in TestLensModel but with the addition of LOS and LOS_MINIMAL as profiles.
     with all params in self.kwargs_los set to zero, the results should be the same as the non-LOS cases originally tested
+    the test_los_vs_multiplane checks that a multiplane setup with three shear planes returns the same as the LOS and LOS MINIMAL models
     """
 
     def setup(self):
@@ -131,10 +129,10 @@ class TestSinglePlaneLOS(object):
         z_b = (z_d + z_s)/2
 
         gamma1_od = 0.05
-        gamma2_od = 0.0
+        gamma2_od = -0.01
         gamma1_os = 0.02
         gamma2_os = 0.1
-        gamma1_ds = 0.0
+        gamma1_ds = -0.04
         gamma2_ds = 0.03
 
         def d(z1, z2):
@@ -186,8 +184,7 @@ class TestSinglePlaneLOS(object):
 
         kwargs_los = {'kappa_os': kappa_os, 'omega_os': omega_os, 'gamma1_os': gamma1_os, 'gamma2_os': gamma2_os,
                       'kappa_od': 0.0, 'omega_od': 0.0, 'gamma1_od': gamma1_od, 'gamma2_od': gamma2_od,
-                      'kappa_ds': 0.0, 'omega_ds': 0.0, 'gamma1_ds': gamma1_ds, 'gamma2_ds': gamma2_ds}#,
-                      # 'kappa_los': 0.0, 'omega_los': 0.0, 'gamma1_los': gamma1_los, 'gamma2_los': gamma2_los}
+                      'kappa_ds': 0.0, 'omega_ds': 0.0, 'gamma1_ds': gamma1_ds, 'gamma2_ds': gamma2_ds}
 
         kwargs_epl = {'theta_E': 0.8, 'gamma': 1.95, 'center_x': 0, 'center_y': 0, 'e1': 0.07, 'e2': -0.03}
 
@@ -224,29 +221,6 @@ class TestSinglePlaneLOS(object):
         npt.assert_allclose(hessian_multiplane_xy, hessian_los_xy, rtol = tolerance)
         npt.assert_allclose(hessian_multiplane_yx, hessian_los_yx, rtol = tolerance)
         npt.assert_allclose(hessian_multiplane_yy, hessian_los_yy, rtol = tolerance)
-
-        # now compare the same with LOS MINIMAL
-        # the corrections here aren't right, to be fixed
-
-        # kwargs_minimal_los = {'kappa_od': 0.0, 'kappa_los': kappa_os,
-        #                       'omega_od': 0.0, 'omega_los': omega_os,
-        #                       'gamma1_od': gamma1_od, 'gamma2_od': gamma1_od,
-        #                       'gamma1_los': gamma2_os, 'gamma2_los': gamma2_os}
-        #
-        # kwargs_singleplane_minimal = [kwargs_minimal_los, kwargs_epl]
-        #
-        # lens_model_minimal = SinglePlaneLOS(['LOS_MINIMAL', 'EPL'], index_los = 0)
-        # beta_minimal_x, beta_minimal_y = lens_model_minimal.ray_shooting(x, y, kwargs_singleplane_minimal)
-        # hessian_minimal_xx, hessian_minimal_xy, hessian_minimal_yx, hessian_minimal_yy = lens_model_minimal.hessian(x, y, kwargs_singleplane_minimal)
-        #
-        # npt.assert_allclose(beta_multiplane_x, beta_minimal_x, rtol = tolerance)
-        # npt.assert_allclose(beta_multiplane_y, beta_minimal_y , rtol = tolerance)
-        #
-        # npt.assert_allclose(hessian_multiplane_xx, hessian_minimal_xx, rtol = tolerance)
-        # npt.assert_allclose(hessian_multiplane_xy, hessian_minimal_xy, rtol = tolerance)
-        # npt.assert_allclose(hessian_multiplane_yx, hessian_minimal_yx, rtol = tolerance)
-        # npt.assert_allclose(hessian_multiplane_yy, hessian_minimal_yy, rtol = tolerance)
-
 
     def test_init(self):
         # need to do this for los minimal too?

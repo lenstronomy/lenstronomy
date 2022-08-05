@@ -37,11 +37,11 @@ def de_shift_kernel(kernel, shift_x, shift_y, iterations=20, fractional_step_siz
     int_shift_y = int(round(shift_y))
     frac_y_shift = shift_y - int_shift_y
     kernel_init = copy.deepcopy(kernel_new)
-    kernel_init_shifted = copy.deepcopy(interp.shift(kernel_init, [int_shift_y, int_shift_x], order=1))
-    kernel_new = interp.shift(kernel_new, [int_shift_y, int_shift_x], order=1)
+    kernel_init_shifted = copy.deepcopy(interp.shift(kernel_init, shift=[int_shift_y, int_shift_x], order=1))
+    kernel_new = interp.shift(kernel_new, shift=[int_shift_y, int_shift_x], order=1)
     norm = np.sum(kernel_init_shifted)
     for i in range(iterations):
-        kernel_shifted_inv = interp.shift(kernel_new, [-frac_y_shift, -frac_x_shift], order=1)
+        kernel_shifted_inv = interp.shift(kernel_new, shift=[-frac_y_shift, -frac_x_shift], order=1)
         delta = kernel_init_shifted - kernel_norm(kernel_shifted_inv) * norm
         kernel_new += delta * fractional_step_size
         kernel_new = kernel_norm(kernel_new) * norm

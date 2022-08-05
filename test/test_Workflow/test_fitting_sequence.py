@@ -340,7 +340,6 @@ class TestFittingSequence(object):
         fitting_list.append(['nested_sampling', kwargs_dynesty])
         chain_list = fittingSequence.fit_sequence(fitting_list)
 
-
     def test_nautilus(self):
         kwargs_params = copy.deepcopy(self.kwargs_params)
         fittingSequence = FittingSequence(self.kwargs_data_joint, self.kwargs_model, self.kwargs_constraints,
@@ -358,7 +357,6 @@ class TestFittingSequence(object):
 
         fitting_list.append(['Nautilus', kwargs_nautilus])
         chain_list = fittingSequence.fit_sequence(fitting_list)
-
 
     def test_dypolychord(self):
         fittingSequence = FittingSequence(self.kwargs_data_joint, self.kwargs_model, self.kwargs_constraints,

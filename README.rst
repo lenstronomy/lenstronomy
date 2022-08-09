@@ -3,7 +3,7 @@ lenstronomy - gravitational lensing software package
 ====================================================
 
 
-.. image:: https://github.com/sibirrer/lenstronomy/workflows/Tests/badge.svg
+.. image:: https://github.com/lenstronomy/lenstronomy/workflows/Tests/badge.svg
     :target: https://github.com/lenstronomy/lenstronomy/actions
 
 .. image:: https://readthedocs.org/projects/lenstronomy/badge/?version=latest
@@ -35,7 +35,7 @@ lenstronomy - gravitational lensing software package
 ``lenstronomy`` finds application for time-delay cosmography and measuring
 the expansion rate of the Universe, for quantifying lensing substructure to infer dark matter properties, morphological quantification of galaxies,
 quasar-host galaxy decomposition and much more.
-A (incomplete) list of publications making use of lenstronomy can be found `at this link <https://github.com/sibirrer/lenstronomy/blob/main/PUBLISHED.rst>`_.
+A (incomplete) list of publications making use of lenstronomy can be found `at this link <https://github.com/lenstronomy/lenstronomy/blob/main/PUBLISHED.rst>`_.
 
 
 The development is coordinated on `GitHub <https://github.com/lenstronomy/lenstronomy>`_ and contributions are welcome.
@@ -141,7 +141,7 @@ Attribution
 -----------
 The design concept of ``lenstronomy`` is reported by `Birrer & Amara 2018 <https://arxiv.org/abs/1803.09746v1>`_.
 The current JOSS software publication is presented by `Birrer et al. 2021 <https://joss.theoj.org/papers/10.21105/joss.03283>`_.
-Please cite these two publications when you use lenstronomy in a publication and link to `https://github.com/sibirrer/lenstronomy <https://github.com/sibirrer/lenstronomy>`_.
+Please cite these two publications when you use lenstronomy in a publication and link to `https://github.com/lenstronomy/lenstronomy <https://github.com/sibirrer/lenstronomy>`_.
 Please also cite `Birrer et al 2015 <http://adsabs.harvard.edu/abs/2015ApJ...813..102B>`_
 when you make use of the ``lenstronomy`` work-flow or the Shapelet source reconstruction and make sure to cite also
 the relevant work that was implemented in ``lenstronomy``, as described in the release paper and the documentation.

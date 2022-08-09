@@ -45,6 +45,7 @@ class KinLikelihood(object):
         light_map = self.lens_light_model_class.surface_brightness(self.kin_x_grid,self.kin_y_grid,kwargs_lens_light,
                                                                    self.lens_light_bool_list)
         velo_map = np.ones_like(light_map) # NEED TO BE REPLACED BY NN
+        #RESCALE ACCORDING TO D_d, D_dt (should be a part of NN function)
         #Rotation and interpolation in kin data coordinates
         self.kinNN_input['image']=velo_map
         KiNNalign = KinNN_image_align(self.kin_input, self.image_input, self.kinNN_input)

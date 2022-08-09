@@ -58,7 +58,7 @@ class KinNN_image_align(object):
         """
         for input_set in [self.muse_data, self.hst_data, self.kinNN_data]:
             # make sure each image is square and add npix to each dictionary
-            if 'image' in input_set.keys()
+            if 'image' in input_set.keys():
                 if np.shape(input_set['image'])[0] != np.shape(input_set['image'])[1]:
                     raise ValueError('current version only works for square images')
                 npix = np.shape(input_set['image'])[0]

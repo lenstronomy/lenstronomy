@@ -123,7 +123,7 @@ The email list is meant to provide a communication platform between users and de
 and suggest new features. New releases will be announced via this mailing list.
 
 We also have a `Slack channel <https://lenstronomers.slack.com>`_ for the community.
-Please send me an `email <sibirrer@gmail.com>`_ such that I can add you to the channel.
+Please send us an `email <lenstronomy-dev@googlegroups.com>`_ such that we can add you to the channel.
 
 
 If you encounter errors or problems with ``lenstronomy``, please let us know!

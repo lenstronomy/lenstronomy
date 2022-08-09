@@ -5,9 +5,12 @@ Credits
 
 Current maintainers
 -------------------
-* Simon Birrer <sibirrer@gmail.com> `sibirrer <https://github.com/sibirrer/>`_
+* Simon Birrer <sibirrer@gmail.com>_ `sibirrer <https://github.com/sibirrer/>`_
 * Anowar Shajib `ajshajib <https://github.com/ajshajib/>`_
 * Daniel Gilman `dangilman <https://github.com/dangilman/>`_
+
+lenstronomy developer `mailing list <lenstronomy-dev@googlegroups.com>`_
+
 
 
 Contributors (alphabetic)

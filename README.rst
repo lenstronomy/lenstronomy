@@ -4,17 +4,17 @@ lenstronomy - gravitational lensing software package
 
 
 .. image:: https://github.com/sibirrer/lenstronomy/workflows/Tests/badge.svg
-    :target: https://github.com/sibirrer/lenstronomy/actions
+    :target: https://github.com/lenstronomy/lenstronomy/actions
 
 .. image:: https://readthedocs.org/projects/lenstronomy/badge/?version=latest
         :target: http://lenstronomy.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
 
-.. image:: https://coveralls.io/repos/github/sibirrer/lenstronomy/badge.svg?branch=main
-        :target: https://coveralls.io/github/sibirrer/lenstronomy?branch=main
+.. image:: https://coveralls.io/repos/github/lenstronomy/lenstronomy/badge.svg?branch=main
+        :target: https://coveralls.io/github/lenstronomy/lenstronomy?branch=main
 
 .. image:: https://img.shields.io/badge/license-MIT-blue.svg?style=flat
-    :target: https://github.com/sibirrer/lenstronomy/blob/main/LICENSE
+    :target: https://github.com/lenstronomy/lenstronomy/blob/main/LICENSE
 
 .. image:: https://img.shields.io/badge/arXiv-1803.09746%20-yellowgreen.svg
     :target: https://arxiv.org/abs/1803.09746
@@ -26,8 +26,8 @@ lenstronomy - gravitational lensing software package
 .. image:: https://joss.theoj.org/papers/6a562375312c9a9e4466912a16f27589/status.svg
     :target: https://joss.theoj.org/papers/6a562375312c9a9e4466912a16f27589
 
-.. image:: https://raw.githubusercontent.com/sibirrer/lenstronomy/main/docs/figures/readme_fig.png
-    :target: https://raw.githubusercontent.com/sibirrer/lenstronomy/main/docs/figures/readme_fig.png
+.. image:: https://raw.githubusercontent.com/lenstronomy/lenstronomy/main/docs/figures/readme_fig.png
+    :target: https://raw.githubusercontent.com/lenstronomy/lenstronomy/main/docs/figures/readme_fig.png
 
 
 ``lenstronomy`` is a multi-purpose package to model strong gravitational lenses. The software package is presented in
@@ -38,7 +38,7 @@ quasar-host galaxy decomposition and much more.
 A (incomplete) list of publications making use of lenstronomy can be found `at this link <https://github.com/sibirrer/lenstronomy/blob/main/PUBLISHED.rst>`_.
 
 
-The development is coordinated on `GitHub <https://github.com/sibirrer/lenstronomy>`_ and contributions are welcome.
+The development is coordinated on `GitHub <https://github.com/lenstronomy/lenstronomy>`_ and contributions are welcome.
 The documentation of ``lenstronomy`` is available at `readthedocs.org <http://lenstronomy.readthedocs.org/>`_ and
 the package is distributed through PyPI_ and conda-forge_.
 ``lenstronomy`` is an `affiliated package <https://www.astropy.org/affiliated/>`_ of `astropy <https://www.astropy.org/>`_.

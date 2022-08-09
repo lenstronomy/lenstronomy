@@ -23,9 +23,11 @@ class KinLikelihood(object):
         self._idx_lens = idx_lens
         self._idx_lens_light = idx_lens_light
         self.kin_class = kinematic_data_2D_class
+
         self.kin_input = self.kin_class.KinBin.KinBin2kwargs()
         self.image_input = self.kwargs_data2image_input(kwargs_data)
         self.kinNN_input = {'deltaPix':0.02}
+        self.KiNNalign = KinNN_image_align(self.kin_input, self.image_input, self.kinNN_input)
 
         self.data = self.kin_class.KinBin._data
         self.psf = self.kin_class.PSF.kernel_point_source
@@ -47,8 +49,8 @@ class KinLikelihood(object):
         velo_map = np.ones_like(light_map) # NEED TO BE REPLACED BY NN
         #Rotation and interpolation in kin data coordinates
         self.kinNN_input['image']=velo_map
-        KiNNalign = KinNN_image_align(self.kin_input, self.image_input, self.kinNN_input)
-        rotated_velo = KiNNalign.interp_image()
+        self.KiNNalign.update(kinNN_inputs=self.kinNN_input)
+        rotated_velo = self.KiNNalign.interp_image()
         #Convolution by PSF to calculate Vrms and binning
         vrms = self.auto_binning(rotated_velo,light_map)
 

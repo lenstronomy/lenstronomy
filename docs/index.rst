@@ -21,11 +21,3 @@ Contents:
    affiliatedpackages
    history
    modules
-
-Feedback
-========
-
-If you have any suggestions or questions about **lenstronomy** feel free to email me
-at sibirrer@gmail.com.
-
-If you encounter any errors or problems with **lenstronomy**, please let me know!

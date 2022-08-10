@@ -212,8 +212,8 @@ class SingleBand(Instrument, Observation):
             return bkg_noise
         else:
             if self._read_noise is not None:
-                warnings.warn('read noise is specified but not used for noise properties. background noise is estimated'
-                              ' from "background_noise" argument')
+                warnings.warn('read noise is specified but not used for noise properties. Background noise is estimated'
+                              ' from "background_noise" argument.')
             return self._background_noise
 
     def flux_noise(self, flux):

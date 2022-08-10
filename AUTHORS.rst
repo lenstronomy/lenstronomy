@@ -2,17 +2,15 @@
 Credits
 =======
 
-Development Lead
-----------------
 
+Current maintainers
+-------------------
 * Simon Birrer <sibirrer@gmail.com> `sibirrer <https://github.com/sibirrer/>`_
-
-
-Key contributors
-----------------
 * Anowar Shajib `ajshajib <https://github.com/ajshajib/>`_
-* Aymeric Galan `aymgal <https://github.com/aymgal/>`_
 * Daniel Gilman `dangilman <https://github.com/dangilman/>`_
+
+lenstronomy developer `mailing list <lenstronomy-dev@googlegroups.com>`_
+
 
 
 Contributors (alphabetic)
@@ -27,6 +25,7 @@ Contributors (alphabetic)
 * Andreas Filipp `andreasfilipp <https://github.com/andreasfilipp/>`_
 * Pierre Fleury `pierrefleury <https://github.com/pierrefleury/>`_
 * Kevin Fusshoeller
+* Aymeric Galan `aymgal <https://github.com/aymgal/>`_
 * Matthew R. Gomer `mattgomer <https://github.com/mattgomer>`_
 * Natalie B. Hogg `nataliehogg <https://github.com/nataliehogg>`_
 * Daniel Johnson `DanJohnson98 <https://github.com/DanJohnson98>`_
@@ -49,3 +48,10 @@ Contributors (alphabetic)
 * Ewoud Wempe `ewoudwempe <https://github.com/ewoudwempe/>`_
 * Lilan Yang `ylilan <https://github.com/ylilan/>`_
 * Zhiyuan Ma `Jerry-Ma <https://github.com/Jerry-Ma/>`_
+
+
+Past development lead
+---------------------
+
+The initial source code of lenstronomy was developed by Simon Birrer `sibirrer <https://github.com/sibirrer/>`_
+in 2014-2018 and made public in 2018. The lenstronomy developement moved to the project repository in 2022.

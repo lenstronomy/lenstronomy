@@ -68,7 +68,7 @@ class TestLensCosmo(object):
 
         for z in zvals:
             nfw_colossus = NFWProfile(M=m200 * h, z=z, c=c, mdef='200c')
-            rhos_colossus, rs_colossus = nfw_colossus.fundamentalParameters(m200 * h, c, z, mdef='200c')
+            rhos_colossus, rs_colossus = nfw_colossus.nativeParameters(m200 * h, c, z, mdef='200c')
             r200_colossus = rs_colossus * c
 
             # according to colossus documentation the density is in physical units[M h^2/kpc^3] and distance [kpc/h]

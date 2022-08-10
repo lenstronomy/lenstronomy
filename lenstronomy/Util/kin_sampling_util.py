@@ -38,9 +38,9 @@ class KinNN_image_align(object):
         self.muse_data = muse_inputs
         self.hst_data = hst_inputs
         self.kinNN_data = kinNN_inputs
-        self.check_npix()
+        self.write_npix()
 
-    def update(self, muse_inputs=None, hst_inputs=None, kinNN_inputs=None):
+    def update(self, muse_inputs=None, hst_inputs=None, kinNN_inputs=None, update_npix=False):
         """
         Update with inputs
         """
@@ -50,9 +50,10 @@ class KinNN_image_align(object):
             self.hst_data = hst_inputs
         if kinNN_inputs is not None:
             self.kinNN_data = kinNN_inputs
-        self.check_npix()
+        if update_npix:
+            self.write_npix()
 
-    def check_npix(self):
+    def write_npix(self):
         """
         Check that images are squared and write the keyword 'npix'
         """

@@ -238,6 +238,7 @@ def cmap_conf(cmap_string):
         cmap = plt.get_cmap(cmap_string)
     else:
         cmap = cmap_string
-    cmap.set_bad(color='k', alpha=1.)
-    cmap.set_under('k')
-    return cmap
+    cmap_new = cmap.copy()
+    cmap_new.set_bad(color='k', alpha=1.)
+    cmap_new.set_under('k')
+    return cmap_new

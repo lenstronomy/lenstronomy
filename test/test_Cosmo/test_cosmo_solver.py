@@ -72,8 +72,8 @@ class TestCompare(object):
 class TestInvertCosmo(object):
     def setup(self):
         self.z_d, self.z_s = 0.295, 0.658
-        self.invertCosmo = InvertCosmo(z_d=self.z_d, z_s=self.z_s, H0_range=np.linspace(10, 100, 20),
-                                       omega_m_range=np.linspace(0.05, 1, 20))
+        self.invertCosmo = InvertCosmo(z_d=self.z_d, z_s=self.z_s, H0_range=np.linspace(10, 100, 50),
+                                       omega_m_range=np.linspace(0.05, 1, 50))
 
     def test_get_cosmo(self):
         H0 = 80

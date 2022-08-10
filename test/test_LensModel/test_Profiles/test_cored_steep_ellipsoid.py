@@ -43,6 +43,33 @@ class TestCSP(object):
         npt.assert_almost_equal(f_xy, [-0.13493, -0.], decimal=5)
         npt.assert_almost_equal(f_yy, [-0.03315,  0.27639], decimal=5)
 
+    def test_ellipticity(self):
+        """
+        test the definition of the ellipticity normalization (along major axis or product averaged axes)
+        """
+        x, y = np.linspace(start=0.001, stop=10, num=100), np.zeros(100)
+        kwargs_round = {'a': 2, 's': 1, 'e1': 0.3, 'e2': 0., 'center_x': 0, 'center_y': 0}
+        kwargs = {'a': 2, 's': 1, 'e1': 0.3, 'e2': 0., 'center_x': 0, 'center_y': 0}
+
+        f_xx, f_xy, f_yx, f_yy = self.CSP.hessian(x, y, **kwargs_round)
+        kappa_round = 1. / 2 * (f_xx + f_yy)
+
+        f_xx, f_xy, f_yx, f_yy = self.CSP.hessian(x, y, **kwargs)
+        kappa_major = 1. / 2 * (f_xx + f_yy)
+
+        f_xx, f_xy, f_yx, f_yy = self.CSP.hessian(y, x, **kwargs)
+        kappa_minor = 1. / 2 * (f_xx + f_yy)
+
+        npt.assert_almost_equal(kappa_major, kappa_round, decimal=4)
+
+        # import matplotlib.pyplot as plt
+        # plt.plot(x, kappa_round, ':', label='round', alpha=0.5)
+        # plt.plot(x, kappa_major, ',-', label='major', alpha=0.5)
+        # plt.plot(x, kappa_minor, '--', label='minor', alpha=0.5)
+        # plt.legend()
+        # plt.show()
+        # assert 1 == 0
+
 
 if __name__ == '__main__':
     pytest.main()

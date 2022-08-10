@@ -167,6 +167,7 @@ class NFW_ELLIPSE_CSE(NFW_ELLIPSE):
         :return: normalization (m)
         """
         rho0 = self.nfw.alpha2rho0(alpha_Rs, Rs)
-        rs_ = Rs / np.sqrt(q)
-        const = 4 * rho0 * rs_ ** 3
+        c = 2 * q / (1 + q)  # this is the same as 1 - e with e = (1. - q) / (1. + q)
+        rs_ = Rs  # / np.sqrt(q)
+        const = 4 * rho0 * rs_ ** 3 / c
         return const

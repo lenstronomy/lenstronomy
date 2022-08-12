@@ -47,7 +47,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'lenstronomy'
-copyright = u'2018-2022, Simon Birrer and contributors'
+copyright = u'2018-2022, lenstronomy developers'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

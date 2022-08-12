@@ -119,7 +119,7 @@ class MultiPlaneBase(ProfileListBase):
                             delta_T = self._cosmo_bkg.T_xy(z_start, z_lens)
                     else:
                         delta_T = T_ij_start
-                    first_deflector = False # NH: what is this doing?
+                    first_deflector = False
                 else:
                     delta_T = self._T_ij_list[i]
                 x, y = self._ray_step_add(x, y, alpha_x, alpha_y, delta_T)

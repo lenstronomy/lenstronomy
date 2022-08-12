@@ -284,7 +284,7 @@ class EPLMajorAxis(LensProfileBase):
         R_omega = Z*hyp2f1(1, t/2, 2-t/2, -(1-q)/(1+q)*(Z/Z.conj()))
 
         # deflection, eq. (22)
-        alpha = 2/(1+q)*(b/R)**t*R_omega #NH: why isn't the exponent t - 1?
+        alpha = 2/(1+q)*(b/R)**t*R_omega
 
         # return real and imaginary part
         alpha_real = np.nan_to_num(alpha.real, posinf=10**10, neginf=-10**10)

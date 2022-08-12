@@ -34,7 +34,7 @@ class LensParam(object):
         self._solver_type = solver_type
         self._num_shapelet_lens = num_shapelet_lens
 
-        #PF: Here the instantiation of SinglePlane is only made to deal with
+        # PF: Here the instantiation of SinglePlane is only made to deal with
         # a list of lens parameters. It does not seem to matter whether multi-
         # plane lensing or line-of-sight effects are activated.
         lens_model = SinglePlane(lens_model_list=lens_model_list)

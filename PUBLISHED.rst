@@ -111,7 +111,7 @@ Measuring the Hubble constant
     *Using lenstronomy to reproduce a lens and simulate the observed images based on parameters fitted by other work.*
 
 * Consequences of the lack of azimuthal freedom in the modeling of lensing galaxies `van de Vyvere et al. 2022 <https://arxiv.org/abs/2206.00022>`_
-    *Implemented a model ’ElliSLICE’ to describe radial changes in ellipticities and investigating assumptiosn on azimuthal freedom in the reconstruction.
+    *Implemented a model ’ElliSLICE’ to describe radial changes in ellipticities and investigating assumptiosn on azimuthal freedom in the reconstruction.*
 
 
 
@@ -174,6 +174,8 @@ Dark Matter substructure
 * Quantum fluctuations masquerade as halos: Bounds on ultra-light dark matter from quadruply-imaged quasars; `Laroche et al. 2022 <https://arxiv.org/abs/2206.11269>`_
     *using lenstronomy for flux ratio statistics calculation with pyHalo*
 
+* Constraining resonant dark matter self-interactions with strong gravitational lenses; `Gilman et al. 2022 <https://arxiv.org/abs/2207.13111>`_
+    *using lenstronomy for flux ratio statistics calculation with pyHalo*
 
 
 
@@ -229,6 +231,10 @@ Galaxy formation and evolution
 
 * Concordance between observations and simulations in the evolution of the mass relation between supermassive black holes and their host galaxies; `Ding et al. 2022 <https://arxiv.org/abs/2205.04481>`_
     *galaxy size measurement with quasar decomposition*
+
+* Early results from GLASS-JWST. V: the first rest-frame optical size-luminosity relation of galaxies at  z>7; `Yang et al. 2022 <https://arxiv.org/abs/2207.13101>`_
+    *galaxy size measurement from JWST data with Galight/lenstronomy*
+
 
 
 Automatized Lens Modeling

@@ -67,7 +67,7 @@ setup(
     version='1.10.4',
     description='Strong lens modeling package.',
     long_description=desc,
-    author='Simon Birrer',
+    author='lenstronomy developers',
     author_email='sibirrer@gmail.com',
     url='https://github.com/lenstronomy/lenstronomy',
     download_url='https://github.com/sibirrer/lenstronomy/archive/1.10.4.tar.gz',
@@ -76,7 +76,7 @@ setup(
     include_package_data=True,
     # setup_requires=requires,
     install_requires=requires,
-    license='MIT',
+    license='BSD-3',
     zip_safe=False,
     keywords='lenstronomy',
     classifiers=[

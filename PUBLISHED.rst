@@ -220,7 +220,7 @@ Galaxy formation and evolution
 * RELICS: Small Lensed z≥5.5 Galaxies Selected as Potential Lyman Continuum Leakers; `Neufeld et al. 2021 <https://arxiv.org/abs/2111.14882>`_
     *size measurements of high-z lensed galaxies*
 
-* The size-luminosity relation of lensed galaxies at z=6−9 in the Hubble Frontier Fields; `Yang et al. 2022 <https://arxiv.org/abs/2201.08858>`_
+* The size-luminosity relation of lensed galaxies at z=6−9 in the Hubble Frontier Fields; `Yang et al. 2022a <https://arxiv.org/abs/2201.08858>`_
     *size measurements of high-z lensed galaxies*
 
 * The Near Infrared Imager and Slitless Spectrograph for the James Webb Space Telescope -- II. Wide Field Slitless Spectroscopy; `Willott et al. 2022 <https://arxiv.org/abs/2202.01714>`_
@@ -232,7 +232,7 @@ Galaxy formation and evolution
 * Concordance between observations and simulations in the evolution of the mass relation between supermassive black holes and their host galaxies; `Ding et al. 2022 <https://arxiv.org/abs/2205.04481>`_
     *galaxy size measurement with quasar decomposition*
 
-* Early results from GLASS-JWST. V: the first rest-frame optical size-luminosity relation of galaxies at  z>7; `Yang et al. 2022 <https://arxiv.org/abs/2207.13101>`_
+* Early results from GLASS-JWST. V: the first rest-frame optical size-luminosity relation of galaxies at  z>7; `Yang et al. 2022b <https://arxiv.org/abs/2207.13101>`_
     *galaxy size measurement from JWST data with Galight/lenstronomy*
 
 

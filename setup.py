@@ -69,7 +69,7 @@ setup(
     long_description=desc,
     author='Simon Birrer',
     author_email='sibirrer@gmail.com',
-    url='https://github.com/sibirrer/lenstronomy',
+    url='https://github.com/lenstronomy/lenstronomy',
     download_url='https://github.com/sibirrer/lenstronomy/archive/1.10.4.tar.gz',
     packages=find_packages(PACKAGE_PATH, "test"),
     package_dir={'lenstronomy': 'lenstronomy'},

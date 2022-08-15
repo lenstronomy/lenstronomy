@@ -96,7 +96,8 @@ When you feel that work on your new feature is complete, you should create a *Pu
   6. Give your pull request a title and fill out the the template for the description
   7. Click the green **Create pull request** button
 
-### Updating your branch
+Updating your branch
+^^^^^^^^^^^^^^^^^^^^
 
 As you work on your feature, new commits might be made to the ``lenstronomy/lenstronomy`` main branch. You will need to update your branch with these new commits before your pull request can be accepted. You can achieve this in a few different ways:
 

@@ -14,13 +14,17 @@ class DataAPI(SingleBand):
     options are available. Have a look in the specific modules if you are interested in.
 
     """
-    def __init__(self, numpix, **kwargs_single_band):
+    def __init__(self, numpix, kwargs_pixel_grid=None, **kwargs_single_band):
         """
 
         :param numpix: number of pixels per axis in the simulation to be modelled
+        :param kwargs_pixel_grid: if None, uses default pixel grid option
+            if defined, must contain keyword arguments for custom pixel grid
+            (ra_at_xy_0,dec_at_xy_0,transform_pix2angle)
         :param kwargs_single_band: keyword arguments used to create instance of SingleBand class
         """
         self.numpix = numpix
+        self.kwargs_pixel_grid = kwargs_pixel_grid
         SingleBand.__init__(self, **kwargs_single_band)
 
     @property
@@ -39,11 +43,21 @@ class DataAPI(SingleBand):
 
         :return: keyword arguments for ImageData class instance
         """
-        x_grid, y_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, transform_pix2angle, transform_angle2pix = util.make_grid_with_coordtransform(
-            numPix=self.numpix, deltapix=self.pixel_scale, subgrid_res=1, left_lower=False, inverse=False)
+        # default pixel grid
+        if self.kwargs_pixel_grid is None:
+            _, _, ra_at_xy_0, dec_at_xy_0, _, _, transform_pix2angle, _ = (
+                util.make_grid_with_coordtransform(numPix=self.numpix, 
+                    deltapix=self.pixel_scale, subgrid_res=1, 
+                    left_lower=False, inverse=False) )
+        # user defined pixel grid
+        else:
+            ra_at_xy_0 = self.kwargs_pixel_grid['ra_at_xy_0']
+            dec_at_xy_0 = self.kwargs_pixel_grid['dec_at_xy_0']
+            transform_pix2angle = self.kwargs_pixel_grid['transform_pix2angle']
         # CCD gain corrected exposure time to allow a direct Poisson estimates based on IID counts
         scaled_exposure_time = self.flux_iid(1)
-        kwargs_data = {'image_data': np.zeros((self.numpix, self.numpix)), 'ra_at_xy_0': ra_at_xy_0,
+        kwargs_data = {'image_data': np.zeros((self.numpix, self.numpix)), 
+                       'ra_at_xy_0': ra_at_xy_0,
                        'dec_at_xy_0': dec_at_xy_0,
                        'transform_pix2angle': transform_pix2angle,
                        'background_rms': self.background_noise,

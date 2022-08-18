@@ -107,12 +107,13 @@ class SpecialParam(object):
         """
 
         self._D_dt_sampling = DdtSamplingParam(Ddt_sampling)
-        # FIXME mass_scaling argument now unused
         if not mass_scaling:
             num_scale_factor = 0
         self._mass_scaling = MassScalingParam(num_scale_factor)
-        # FIXME point_source_offset argument now unused
-        self._point_source_offset = PointSourceOffsetParam(point_source_offset, num_images)
+        if point_source_offset:
+            self._point_source_offset = PointSourceOffsetParam(True, num_images)
+        else:
+            self._point_source_offset = PointSourceOffsetParam(False, 0)
         self._source_size = SourceSizeParam(source_size)
         self._tau0 = Tau0ListParam(num_tau0)
         self._z_sampling = ZSamplingParam(num_z_sampling)

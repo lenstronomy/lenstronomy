@@ -87,3 +87,9 @@ class TestRaise(unittest.TestCase):
         with self.assertRaises(ValueError):
             data_api = DataAPI(numpix=numpix, data_count_unit='ADU', **kwargs_data)
             psf_class = data_api.psf_class
+        
+        kwargs_data['kernel_point_source'] = np.ones((3, 3))
+        kwargs_pixel_grid = {'ra_at_xy_0':0.02,'dec_at_xy_0':0.02}
+        with self.assertRaises(ValueError):
+            data_api = DataAPI(numpix=numpix,kwargs_pixel_grid=kwargs_pixel_grid,
+                **kwargs_data)

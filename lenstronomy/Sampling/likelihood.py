@@ -156,6 +156,13 @@ class LikelihoodModule(object):
     def logL(self, args, verbose=False):
         """
         routine to compute X2 given variable parameters for a MCMC/PSO chain
+
+        Parameters
+        ----------
+        args : tuple or list of floats
+            ordered parameter values that are being sampled
+        verbose : boolean
+            if True, makes print statements about individual likelihood components
         """
         # extract parameters
         kwargs_return = self.param.args2kwargs(args)
@@ -166,6 +173,21 @@ class LikelihoodModule(object):
         return self.log_likelihood(kwargs_return, verbose=verbose)
 
     def log_likelihood(self, kwargs_return, verbose=False):
+        """
+
+        Parameters
+        ----------
+        kwargs_return : keyword arguments
+            need to contain 'kwargs_lens', 'kwargs_source', 'kwargs_lens_light', 'kwargs_ps', 'kwargs_special'
+            These entries themselfs are lists of keyword argument of the parameters entering the model to be evaluated
+        verbose : boolean
+            if True, makes print statements about individual likelihood components
+
+        Returns
+        -------
+        logL : float
+            log likelihood of the data given the model (natural logarithm)
+        """
         kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_special = kwargs_return['kwargs_lens'], \
                                                                                    kwargs_return['kwargs_source'], \
                                                                                    kwargs_return['kwargs_lens_light'], \

@@ -12,7 +12,7 @@ Contents:
    :maxdepth: 2
 
    installation
-   modules
+   lenstronomy
    usage
    contributing
    mailinglist

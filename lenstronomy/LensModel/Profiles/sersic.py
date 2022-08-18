@@ -1,5 +1,4 @@
 __author__ = 'sibirrer'
-#this file contains a class to make a gaussian
 
 import numpy as np
 import lenstronomy.Util.util as util
@@ -29,6 +28,7 @@ class Sersic(SersicUtil, LensProfileBase):
     >>> lens_cosmo = LensCosmo(z_lens=0.5, z_source=1.5, cosmo=cosmo)
 
     We define the half-light radius R_sersic (arc seconds on the sky) and Sersic index n_sersic
+
     >>> R_sersic = 2
     >>> n_sersic = 4
 
@@ -102,10 +102,6 @@ class Sersic(SersicUtil, LensProfileBase):
             r[r < self._s] = self._s
         d_alpha_dr = self.d_alpha_dr(x, y, n_sersic, R_sersic, k_eff, center_x, center_y)
         alpha = -self.alpha_abs(x, y, n_sersic, R_sersic, k_eff, center_x, center_y)
-
-        #f_xx_ = d_alpha_dr * calc_util.d_r_dx(x_, y_) * x_/r + alpha * calc_util.d_x_diffr_dx(x_, y_)
-        #f_yy_ = d_alpha_dr * calc_util.d_r_dy(x_, y_) * y_/r + alpha * calc_util.d_y_diffr_dy(x_, y_)
-        #f_xy_ = d_alpha_dr * calc_util.d_r_dy(x_, y_) * x_/r + alpha * calc_util.d_x_diffr_dy(x_, y_)
 
         f_xx = -(d_alpha_dr/r + alpha/r**2) * x_**2/r + alpha/r
         f_yy = -(d_alpha_dr/r + alpha/r**2) * y_**2/r + alpha/r

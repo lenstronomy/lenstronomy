@@ -275,3 +275,37 @@ class LensCosmo(object):
         theta_c = r_c / D_Lens / const.arcsec
         return kappa_0, theta_c
 
+    def sersic_m_star2k_eff(self, m_star, R_sersic, n_sersic):
+        """
+        translates a total stellar mass into 'k_eff', the convergence at
+        'R_sersic' (effective radius or half-light radius) for a Sersic profile
+
+        :param m_star: total stellar mass in physical Msun
+        :param R_sersic: half-light radius in arc seconds
+        :param n_sersic: Sersic index
+        :return: k_eff
+        """
+        # compute mass integral
+        from lenstronomy.LensModel.Profiles.sersic_utils import SersicUtil
+        sersic_util = SersicUtil()
+        norm_integral = sersic_util.total_flux(amp=1, R_sersic=R_sersic, n_sersic=n_sersic)
+        # compute total kappa normalization and re
+        k_eff = m_star / self.sigma_crit_angle
+        # renormalize
+        k_eff /= norm_integral
+        return k_eff
+
+    def sersic_k_eff2m_star(self, k_eff, R_sersic, n_sersic):
+        """
+        translates convergence at half-light radius to total integrated physical stellar mass for a Sersic profile
+
+        :param k_eff: lensing convergence at half-light radius
+        :param R_sersic: half-light radius in arc seconds
+        :param n_sersic: Sersic index
+        :return: stellar mass in physical Msun
+        """
+        from lenstronomy.LensModel.Profiles.sersic_utils import SersicUtil
+        sersic_util = SersicUtil()
+        norm_integral = sersic_util.total_flux(amp=1, R_sersic=R_sersic, n_sersic=n_sersic)
+        m_star = k_eff *self.sigma_crit_angle * norm_integral
+        return m_star

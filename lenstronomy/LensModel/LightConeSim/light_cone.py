@@ -25,8 +25,10 @@ class LightCone(object):
     def __init__(self, mass_map_list, grid_spacing_list, redshift_list):
         """
 
-        :param mass_map_list: 2d numpy array of mass map (in units Msol)
+        :param mass_map_list: 2d numpy array of mass map
+         (in units physical Solar masses enclosed in each pixel/gird point of the map)
         :param grid_spacing_list: list of grid spacing of the individual mass maps
+         in units of physical Mpc
         :param redshift_list: list of redshifts of the mass maps
 
         """

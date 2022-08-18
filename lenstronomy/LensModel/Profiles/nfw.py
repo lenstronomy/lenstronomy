@@ -34,7 +34,7 @@ class NFW(LensProfileBase):
 
     The lens model calculation uses angular units as arguments! So to execute a deflection angle calculation one uses
 
-    >>> from lenstronomy.LensModel.Profiles.hernquist import NFW
+    >>> from lenstronomy.LensModel.Profiles.nfw import NFW
     >>> nfw = NFW()
     >>> alpha_x, alpha_y = nfw.derivatives(x=1, y=1, Rs=Rs_angle, alpha_Rs=alpha_Rs, center_x=0, center_y=0)
 

@@ -20,6 +20,9 @@ class Sersic(SersicUtil, LensProfileBase):
 
     Examples for converting physical mass units into convergence units used in the definition of this profile
     ---------------------------------------------------------------------------------------------------------
+
+    We first define an AstroPy cosmology instance and a LensCosmo class instance with a lens and source redshift.
+
     >>> from lenstronomy.Cosmo.lens_cosmo import LensCosmo
     >>> from astropy.cosmology import FlatLambdaCDM
     >>> cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.05)

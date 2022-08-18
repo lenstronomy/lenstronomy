@@ -17,8 +17,10 @@ class Sersic(SersicUtil, LensProfileBase):
 
     with :math:`b_{n}\\approx 1.999n-0.327`
 
-    Examples for converting physical mass units into convergence units used in the definition of this profile
-    ---------------------------------------------------------------------------------------------------------
+    Examples
+    --------
+
+    Example for converting physical mass units into convergence units used in the definition of this profile.
 
     We first define an AstroPy cosmology instance and a LensCosmo class instance with a lens and source redshift.
 

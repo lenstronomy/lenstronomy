@@ -58,4 +58,4 @@ pypi-upload:
 	twine upload dist/*
 
 conda-upload:
-    grayskull pypi lenstronomy
+	grayskull pypi lenstronomy

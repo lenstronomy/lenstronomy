@@ -19,6 +19,7 @@ class CSE(LensProfileBase):
         \\kappa(u;s) = \\frac{A}{2(s^2 + \\xi^2)^{3/2}}
 
     with
+
     .. math::
         \\xi(x, y) = \\sqrt{x^2 + \\frac{y^2}{q^2}}
 
@@ -127,6 +128,7 @@ class CSEMajorAxis(LensProfileBase):
         \\kappa(u;s) = \\frac{A}{2(s^2 + \\xi^2)^{3/2}}
 
     with
+
     .. math::
         \\xi(x, y) = \\sqrt{x^2 + \\frac{y^2}{q^2}}
 

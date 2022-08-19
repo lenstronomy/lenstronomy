@@ -401,6 +401,7 @@ class PsfFitting(object):
     def combine_psf(kernel_list_new, kernel_old, factor=1., stacking_option='median', symmetry=1):
         """
         updates psf estimate based on old kernel and several new estimates
+
         :param kernel_list_new: list of new PSF kernels estimated from the point sources in the image (un-normalized)
         :param kernel_old: old PSF kernel
         :param factor: weight of updated estimate based on new and old estimate, factor=1 means new estimate,

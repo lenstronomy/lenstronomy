@@ -179,7 +179,7 @@ class NumericKinematics(Anisotropy):
 
     def _I_R_sigma2(self, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """
-        equation A15 in Mamon&Lokas 2005 as a logarithmic numerical integral (if option is chosen)
+        equation A15 in Mamon & Lokas 2005 as a logarithmic numerical integral (if option is chosen)
 
         :param R: 2d projected radius (in angular units)
         :param kwargs_mass: mass model parameters (following lenstronomy lens model conventions)

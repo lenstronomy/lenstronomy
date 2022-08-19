@@ -95,6 +95,7 @@ class SPLCORE(LensProfileBase):
 
         """
         Returns the deflection angle at r
+
         :param r: radius [arcsec]
         :param sigma0: convergence at r=0
         :param r_core: core radius [arcsec]
@@ -108,6 +109,7 @@ class SPLCORE(LensProfileBase):
     def density(r, rho0, r_core, gamma):
         """
         Returns the 3D density at r
+
         :param r: radius [arcsec]
         :param rho0: convergence at r=0
         :param r_core: core radius [arcsec]
@@ -119,6 +121,7 @@ class SPLCORE(LensProfileBase):
     def density_lens(self, r, sigma0, r_core, gamma):
         """
         Returns the 3D density at r
+
         :param r: radius [arcsec]
         :param sigma0: convergence at r=0
         :param r_core: core radius [arcsec]
@@ -131,6 +134,7 @@ class SPLCORE(LensProfileBase):
     def _density_2d_r(self, r, rho0, r_core, gamma):
         """
         Returns the convergence at radius r after applying _safe_r_division
+
         :param r: position [arcsec]
         :param rho0: convergence at r=0
         :param r_core: core radius [arcsec]
@@ -151,6 +155,7 @@ class SPLCORE(LensProfileBase):
     def density_2d(self, x, y, rho0, r_core, gamma):
         """
         Returns the convergence at radius r
+
         :param x: x position [arcsec]
         :param y: y position [arcsec]
         :param rho0: convergence at r=0
@@ -166,9 +171,10 @@ class SPLCORE(LensProfileBase):
     def mass_3d(self, r, rho0, r_core, gamma):
         """
         mass enclosed a 3d sphere or radius r
+
         :param r: radius [arcsec]
         :param rho0: density at r = 0 in units [rho_0_physical / sigma_crit] (which should be equal to [arcsec])
-        where rho_0_physical is a physical density normalization and sigma_crit is the critical density for lensing
+         where rho_0_physical is a physical density normalization and sigma_crit is the critical density for lensing
         :param r_core: core radius [arcsec]
         :param gamma: logarithmic slope at r -> infinity
         :return: mass inside radius r
@@ -178,6 +184,7 @@ class SPLCORE(LensProfileBase):
     def mass_3d_lens(self, r, sigma0, r_core, gamma):
         """
         mass enclosed a 3d sphere or radius r
+
         :param r: radius [arcsec]
         :param sigma0: convergence at r = 0
         :param r_core: core radius [arcsec]
@@ -190,9 +197,10 @@ class SPLCORE(LensProfileBase):
     def mass_2d(self, r, rho0, r_core, gamma):
         """
         mass enclosed projected 2d disk of radius r
+
         :param r: radius [arcsec]
         :param rho0: density at r = 0 in units [rho_0_physical / sigma_crit] (which should be equal to [1/arcsec])
-        where rho_0_physical is a physical density normalization and sigma_crit is the critical density for lensing
+         where rho_0_physical is a physical density normalization and sigma_crit is the critical density for lensing
         :param r_core: core radius [arcsec]
         :param gamma: logarithmic slope at r -> infinity
         :return: projected mass inside disk of radius r
@@ -202,9 +210,10 @@ class SPLCORE(LensProfileBase):
     def mass_2d_lens(self, r, sigma0, r_core, gamma):
         """
         mass enclosed projected 2d disk of radius r
+
         :param r: radius [arcsec]
         :param sigma0: convergence at r = 0
-        where rho_0_physical is a physical density normalization and sigma_crit is the critical density for lensing
+         where rho_0_physical is a physical density normalization and sigma_crit is the critical density for lensing
         :param r_core: core radius [arcsec]
         :param gamma: logarithmic slope at r -> infinity
         :return: projected mass inside disk of radius r
@@ -216,6 +225,7 @@ class SPLCORE(LensProfileBase):
     def _safe_r_division(r, r_core, x_min=1e-6):
         """
         Avoids accidental division by 0
+
         :param r: radius in arcsec
         :param r_core: core radius in arcsec
         :return: a minimum value of r
@@ -231,6 +241,7 @@ class SPLCORE(LensProfileBase):
     def _sigma2rho0(sigma0, r_core):
         """
         Converts the convergence normalization to the 3d normalization
+
         :param sigma0: convergence at r=0
         :param r_core: core radius [arcsec]
         :return: density normalization in units 1/arcsec, or rho_0_physical / sigma_crit
@@ -241,6 +252,7 @@ class SPLCORE(LensProfileBase):
     def _rho02sigma(rho0, r_core):
         """
         Converts the convergence normalization to the 3d normalization
+
         :param rho0: convergence at r=0
         :param r_core: core radius [arcsec]
         :return: density normalization in units 1/arcsec, or rho_0_physical / sigma_crit

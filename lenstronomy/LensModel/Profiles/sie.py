@@ -106,6 +106,7 @@ class SIE(LensProfileBase):
     def theta2rho(theta_E):
         """
         converts projected density parameter (in units of deflection) into 3d density parameter
+
         :param theta_E:
         :return:
         """
@@ -117,6 +118,7 @@ class SIE(LensProfileBase):
     def mass_3d(r, rho0, e1=0, e2=0):
         """
         mass enclosed a 3d sphere or radius r
+
         :param r: radius in angular units
         :param rho0: density at angle=1
         :return: mass in angular units
@@ -138,6 +140,7 @@ class SIE(LensProfileBase):
     def mass_2d(self, r, rho0, e1=0, e2=0):
         """
         mass enclosed projected 2d sphere of radius r
+
         :param r:
         :param rho0:
         :param e1:
@@ -163,6 +166,7 @@ class SIE(LensProfileBase):
     def grav_pot(self, x, y, rho0, e1=0, e2=0, center_x=0, center_y=0):
         """
         gravitational potential (modulo 4 pi G and rho0 in appropriate units)
+
         :param x:
         :param y:
         :param rho0:
@@ -197,6 +201,7 @@ class SIE(LensProfileBase):
     def density(r, rho0, e1=0, e2=0):
         """
         computes the density
+
         :param r: radius in angles
         :param rho0: density at angle=1
         :return: density at r
@@ -208,6 +213,7 @@ class SIE(LensProfileBase):
     def density_2d(x, y, rho0, e1=0, e2=0, center_x=0, center_y=0):
         """
         projected density
+
         :param x:
         :param y:
         :param rho0:

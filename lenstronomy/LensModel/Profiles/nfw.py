@@ -19,6 +19,7 @@ class NFW(LensProfileBase):
 
     Examples for converting angular to physical mass units
     ------------------------------------------------------
+
     >>> from lenstronomy.Cosmo.lens_cosmo import LensCosmo
     >>> from astropy.cosmology import FlatLambdaCDM
     >>> cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.05)

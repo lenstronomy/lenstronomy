@@ -39,6 +39,7 @@ class Slit(object):
     def num_segments(self):
         """
         number of segments with separate measurements of the velocity dispersion
+
         :return: int
         """
         return 1
@@ -101,6 +102,7 @@ class Frame(object):
     def num_segments(self):
         """
         number of segments with separate measurements of the velocity dispersion
+
         :return: int
         """
         return 1
@@ -161,6 +163,7 @@ class Shell(object):
     def num_segments(self):
         """
         number of segments with separate measurements of the velocity dispersion
+
         :return: int
         """
         return 1

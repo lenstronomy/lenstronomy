@@ -29,9 +29,11 @@ class Background(object):
         else:
             self.cosmo = cosmo
 
-    def a_z(self, z):
+    @staticmethod
+    def a_z(z):
         """
         returns scale factor (a_0 = 1) for given redshift
+
         :param z: redshift
         :return: scale factor
         """
@@ -72,6 +74,7 @@ class Background(object):
     def rho_crit(self):
         """
         critical density
+
         :return: value in M_sol/Mpc^3
         """
         h = self.cosmo.H(0).value / 100.

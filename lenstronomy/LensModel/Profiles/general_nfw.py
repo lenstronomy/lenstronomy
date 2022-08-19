@@ -14,7 +14,7 @@ class GNFW(LensProfileBase):
     This class contains a double power law profile with flexible inner and outer logarithmic slopes g and n
 
     .. math::
-        \\rho = \\rho_0 (x^g (1+x^2)^((n-g)/2))^{-1}
+        \\rho(r) = \\frac{\\rho_0}{r^{\\gamma}} \\frac{Rs^{n}}{\\left(r^2 + Rs^2 \\right)^{(n - \\gamma)/2}}
 
     For g = 1.0 and n=3, it is approximately the same as an NFW profile
     The original reference is [1]_.
@@ -68,14 +68,15 @@ class GNFW(LensProfileBase):
         y_ = y - center_y
         R = np.sqrt(x_ ** 2 + y_ ** 2)
         R = np.maximum(R, 0.00000001)
-        kappa = self.density_2d(R, 0, Rs, rho0_input,gamma_inner, gamma_outer)
-        gamma1, gamma2 = self.nfwGamma(R, Rs, rho0_input,gamma_inner, gamma_outer, x_, y_)
+        kappa = self.density_2d(R, 0, Rs, rho0_input, gamma_inner, gamma_outer)
+        gamma1, gamma2 = self.nfwGamma(R, Rs, rho0_input, gamma_inner, gamma_outer, x_, y_)
         f_xx = kappa + gamma1
         f_yy = kappa - gamma1
         f_xy = gamma2
         return f_xx, f_xy, f_xy, f_yy
 
-    def density(self, R, Rs, rho0, gamma_inner, gamma_outer):
+    @staticmethod
+    def density(R, Rs, rho0, gamma_inner, gamma_outer):
         """
         three dimensional NFW profile
 
@@ -88,7 +89,7 @@ class GNFW(LensProfileBase):
         """
         x = R/Rs
         outer_slope = (gamma_outer-gamma_inner)/2
-        return rho0 / (x**gamma_inner * (1 +x ** 2) ** outer_slope)
+        return rho0 / (x**gamma_inner * (1 + x ** 2) ** outer_slope)
 
     def density_lens(self, r, Rs, alpha_Rs, gamma_inner, gamma_outer):
         """
@@ -112,7 +113,7 @@ class GNFW(LensProfileBase):
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
         :param Rs: turn over point in the slope of the NFW profile in angular unit
-        :param alpha_Rs: deflection (angular units) at projected Rs
+        :param rho0: density normalization at Rs
         :param gamma_inner: logarithmic profile slope interior to Rs
         :param gamma_outer: logarithmic profile slope outside Rs
         :param center_x: profile center (same units as x)
@@ -126,7 +127,8 @@ class GNFW(LensProfileBase):
         Fx = self._f(x, gamma_inner, gamma_outer)
         return 2 * rho0 * Rs * Fx
 
-    def mass_3d(self, r, Rs, rho0, gamma_inner, gamma_outer):
+    @staticmethod
+    def mass_3d(r, Rs, rho0, gamma_inner, gamma_outer):
         """
         mass enclosed a 3d sphere or radius r
 
@@ -164,7 +166,7 @@ class GNFW(LensProfileBase):
         """
         mass enclosed a 2d cylinder or projected radius R
 
-        :param r: 3d radius
+        :param R: 3d radius
         :param Rs: scale radius
         :param rho0: central density normalization
         :param gamma_inner: logarithmic profile slope interior to Rs
@@ -182,7 +184,7 @@ class GNFW(LensProfileBase):
 
         deflection angel of NFW profile (times Sigma_crit D_OL) along the projection to coordinate 'axis'
 
-        :param r: 3d radius
+        :param R: 3d radius
         :param Rs: scale radius
         :param rho0: central density normalization
         :param gamma_inner: logarithmic profile slope interior to Rs
@@ -202,7 +204,7 @@ class GNFW(LensProfileBase):
 
         shear gamma of NFW profile (times Sigma_crit) along the projection to coordinate 'axis'
 
-        :param r: 3d radius
+        :param R: 3d radius
         :param Rs: scale radius
         :param rho0: central density normalization
         :param gamma_inner: logarithmic profile slope interior to Rs
@@ -229,8 +231,8 @@ class GNFW(LensProfileBase):
         :param n: logarithmic profile slope exterior to Rs
         :return: solution to the projection integral
         """
-        if n==3:
-            n=3.001 # for numerical stability
+        if n == 3:
+            n = 3.001  # for numerical stability
         hyp2f1_term = hyp2f1((n-1)/2, g/2, n/2, 1/(1+X**2))
         beta_term = beta((n-1)/2, 0.5)
         return 0.5 * beta_term * hyp2f1_term * (1+X**2) ** ((1-n)/2)
@@ -246,8 +248,8 @@ class GNFW(LensProfileBase):
         :param n: logarithmic profile slope exterior to Rs
         :return: solution of the integral over projected mass
         """
-        if n==3:
-            n=3.001 # for numerical stability
+        if n == 3:
+            n = 3.001  # for numerical stability
         xi = 1 + X**2
         hyp2f1_term = hyp2f1((n - 3) / 2, g / 2, n / 2, 1 / xi)
         beta_term_1 = beta((n - 3) / 2, (3-g)/2)
@@ -267,7 +269,7 @@ class GNFW(LensProfileBase):
         """
 
         gx = self._g(1.0, gamma_inner, gamma_outer)
-        rho0 = alpha_Rs / (4. * Rs **2 * gx / 1.0 ** 2)
+        rho0 = alpha_Rs / (4. * Rs ** 2 * gx / 1.0 ** 2)
         return rho0
 
     def rho02alpha(self, rho0, Rs, gamma_inner, gamma_outer):
@@ -282,5 +284,5 @@ class GNFW(LensProfileBase):
         :return: deflection angle at RS
         """
         gx = self._g(1.0, gamma_inner, gamma_outer)
-        alpha_Rs = rho0 * (4. * Rs **2 * gx / 1.0 ** 2)
+        alpha_Rs = rho0 * (4. * Rs ** 2 * gx / 1.0 ** 2)
         return alpha_Rs

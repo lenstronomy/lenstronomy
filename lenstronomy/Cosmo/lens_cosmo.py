@@ -30,6 +30,7 @@ class LensCosmo(object):
     def a_z(self, z):
         """
         convert redshift into scale factor
+
         :param z: redshift
         :return: scale factor
         """
@@ -75,6 +76,7 @@ class LensCosmo(object):
     def sigma_crit(self):
         """
         returns the critical projected lensing mass density in units of M_sun/Mpc^2
+
         :return: critical projected lensing mass density
         """
         if not hasattr(self, '_sigma_crit_mpc'):
@@ -89,6 +91,7 @@ class LensCosmo(object):
         """
         returns the critical surface density in units of M_sun/arcsec^2 (in physical solar mass units)
         when provided a physical mass per physical Mpc^2
+
         :return: critical projected mass density
         """
         if not hasattr(self, '_sigma_crit_arcsec'):
@@ -101,6 +104,7 @@ class LensCosmo(object):
     def phys2arcsec_lens(self, phys):
         """
         convert physical Mpc into arc seconds
+
         :param phys: physical distance [Mpc]
         :return: angular diameter [arcsec]
         """
@@ -109,6 +113,7 @@ class LensCosmo(object):
     def arcsec2phys_lens(self, arcsec):
         """
         convert angular to physical quantities for lens plane
+
         :param arcsec: angular size at lens plane [arcsec]
         :return: physical size at lens plane [Mpc]
         """
@@ -117,6 +122,7 @@ class LensCosmo(object):
     def arcsec2phys_source(self, arcsec):
         """
         convert angular to physical quantities for source plane
+
         :param arcsec: angular size at source plane [arcsec]
         :return: physical size at source plane [Mpc]
         """
@@ -125,6 +131,7 @@ class LensCosmo(object):
     def kappa2proj_mass(self, kappa):
         """
         convert convergence to projected mass M_sun/Mpc^2
+
         :param kappa: lensing convergence
         :return: projected mass [M_sun/Mpc^2]
         """
@@ -133,6 +140,7 @@ class LensCosmo(object):
     def mass_in_theta_E(self, theta_E):
         """
         mass within Einstein radius (area * epsilon crit) [M_sun]
+
         :param theta_E: Einstein radius [arcsec]
         :return: mass within Einstein radius [M_sun]
         """
@@ -225,6 +233,7 @@ class LensCosmo(object):
     def sis_theta_E2sigma_v(self, theta_E):
         """
         converts the lensing Einstein radius into a physical velocity dispersion
+
         :param theta_E: Einstein radius (in arcsec)
         :return: velocity dispersion in units (km/s)
         """
@@ -234,6 +243,7 @@ class LensCosmo(object):
     def sis_sigma_v2theta_E(self, v_sigma):
         """
         converts the velocity dispersion into an Einstein radius for a SIS profile
+
         :param v_sigma: velocity dispersion (km/s)
         :return: theta_E (arcsec)
         """
@@ -245,6 +255,7 @@ class LensCosmo(object):
         converts the anguar parameters entering the LensModel Uldm() (Ultra Light
         Dark Matter) class in physical masses, i.e. the total soliton mass and the
         mass of the particle
+
         :param kappa_0: central convergence of profile
         :param theta_c: core radius (in arcseconds)
         :return: m_eV_log10, M_sol_log10, the log10 of the masses, m in eV and M in M_sun
@@ -261,6 +272,7 @@ class LensCosmo(object):
         """
         converts physical ULDM mass in the ones, in angular units, that enter
         the LensModel Uldm() class
+
         :param m_log10: exponent of ULDM mass in eV
         :param M_log10: exponent of soliton mass in M_sun
         :return: kappa_0, theta_c, the central convergence and core radius (in arcseconds)

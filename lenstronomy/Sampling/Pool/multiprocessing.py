@@ -79,8 +79,6 @@ class MultiPool(Pool):
         :meth:`multiprocessing.pool.Pool.map()`, without catching
         ``KeyboardInterrupt``.
 
-        Parameters
-        ----------
         :param func: A function or callable object that is executed on each element of
             the specified ``tasks`` iterable. This object must be picklable
             (i.e. it can't be a function scoped within a function or a

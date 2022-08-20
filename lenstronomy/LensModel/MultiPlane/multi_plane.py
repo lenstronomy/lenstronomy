@@ -25,16 +25,16 @@ class MultiPlane(object):
         :param lens_redshift_list: list of floats with redshifts of the lens models indicated in lens_model_list
         :param cosmo: instance of astropy.cosmology
         :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model
-        (see documentation in Profiles/numerical_alpha)
+         (see documentation in Profiles/numerical_alpha)
         :param kwargs_interp: interpolation keyword arguments specifying the numerics.
          See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
         :param observed_convention_index: a list of indices, corresponding to the lens_model_list element with same
-        index, where the 'center_x' and 'center_y' kwargs correspond to observed (lensed) positions, not physical
-        positions. The code will compute the physical locations when performing computations
+         index, where the 'center_x' and 'center_y' kwargs correspond to observed (lensed) positions, not physical
+         positions. The code will compute the physical locations when performing computations
         :param ignore_observed_positions: bool, if True, will ignore the conversion between observed to physical
-        position of deflectors
+         position of deflectors
         :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens
-        models. If None, 'z_source' is used.
+         models. If None, 'z_source' is used.
         """
 
         if z_source_convention is None:

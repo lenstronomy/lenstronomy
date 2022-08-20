@@ -144,7 +144,7 @@ class Param(object):
          in ascending numbering e.g. [-1, 0, 0, 1, 0, 2], -1 indicating not sampled fixed indexes. These indexes are
          the sample as for the lens
         :param source_grid_offset: optional, if True when using a pixel-based modelling (e.g. with STARLETS-like profiles),
-        adds two additional sampled parameters describing RA/Dec offsets between data coordinate grid and pixelated source plane coordinate grid.
+         adds two additional sampled parameters describing RA/Dec offsets between data coordinate grid and pixelated source plane coordinate grid.
         :param num_shapelet_lens: number of shapelet coefficients in the 'SHAPELETS_CART' or 'SHAPELETS_POLAR' mass profile.
         :param log_sampling_lens: Sample the log10 of the lens model parameters. Format : [[i_lens, ['param_name1', 'param_name2', ...]], [...], ...],
         """

@@ -21,7 +21,7 @@ class PointSource(object):
          This option then requires to provide a 'source_amp' amplitude of the source brightness instead of
          'point_amp' the list of image brightnesses.
         :param additional_images_list: list of booleans (same length as point_source_type_list). If True, search for
-        additional images of the same source is conducted.
+         additional images of the same source is conducted.
         :param flux_from_point_source_list: list of booleans (optional), if set, will only return image positions
          (for imaging modeling) for the subset of the point source lists that =True. This option enables to model
          imaging data with transient point sources, when the point source positions are measured and present at a
@@ -32,10 +32,8 @@ class PointSource(object):
          equation is conducted with the lens model parameters provided. This can increase the speed as multiple times
          the image positions are requested for the same lens model. Attention in usage!
         :param kwargs_lens_eqn_solver: keyword arguments specifying the numerical settings for the lens equation solver
-         see LensEquationSolver() class for details
-
-        for the kwargs_lens_eqn_solver parameters: have a look at the lensEquationSolver class, such as:
-        min_distance=0.01, search_window=5, precision_limit=10**(-10), num_iter_max=100
+         see LensEquationSolver() class for details ,such as:
+         min_distance=0.01, search_window=5, precision_limit=10**(-10), num_iter_max=100
 
         """
         self._lensModel = lensModel

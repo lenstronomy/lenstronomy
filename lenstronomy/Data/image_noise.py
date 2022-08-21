@@ -18,10 +18,10 @@ class ImageNoise(object):
 
         :param image_data: numpy array, pixel data values
         :param exposure_time: int or array of size the data; exposure time
-        (common for all pixels or individually for each individual pixel)
+         (common for all pixels or individually for each individual pixel)
         :param background_rms: root-mean-square value of Gaussian background noise
         :param noise_map: int or array of size the data; joint noise sqrt(variance) of each individual pixel.
-        Overwrites meaning of background_rms and exposure_time.
+         Overwrites meaning of background_rms and exposure_time.
         :param gradient_boost_factor: None or float, variance terms added in quadrature scaling with
          gradient^2 * gradient_boost_factor
         """

@@ -39,7 +39,7 @@ class Optimizer(object):
         :param re_optimize_scale: float, controls how tight the initial spread of particles is
         :param pso_convergence_mean: when to terminate the PSO fit
         :param foreground_rays: (optional) can pass in pre-computed foreground light rays from a previous fit
-        so as to not waste time recomputing them
+         so as to not waste time recomputing them
         :param tol_source: sigma in the source plane chi^2
         :param tol_simplex_func: tolerance for the downhill simplex optimization
         :param simplex_n_iterations: number of iterations per dimension for the downhill simplex optimization

@@ -34,6 +34,11 @@ import lenstronomy
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.coverage', 'sphinx.ext.mathjax', 'sphinx.ext.viewcode']\
 #    , 'sphinx.ext.autosectionlabel']
 
+autodoc_default_options = {
+    'member-order': 'bysource',
+    'special-members': '__init__',
+}
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 

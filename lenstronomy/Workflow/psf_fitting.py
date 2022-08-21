@@ -405,7 +405,7 @@ class PsfFitting(object):
         :param kernel_list_new: list of new PSF kernels estimated from the point sources in the image (un-normalized)
         :param kernel_old: old PSF kernel
         :param factor: weight of updated estimate based on new and old estimate, factor=1 means new estimate,
-        factor=0 means old estimate
+         factor=0 means old estimate
         :param stacking_option: option of stacking, mean or median
         :param symmetry: imposed symmetry of PSF estimate
         :return: updated PSF estimate and error_map associated with it

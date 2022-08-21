@@ -17,7 +17,7 @@ class Background(object):
         :param cosmo: instance of astropy.cosmology
         :param interp: boolean, if True, uses interpolated cosmology to evaluate specific redshifts
         :param kwargs_interp: keyword arguments of CosmoInterp specifying the interpolation interval and maximum
-        redshift
+         redshift
         :return: Background class with instance of astropy.cosmology
         """
 

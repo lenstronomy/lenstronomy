@@ -16,9 +16,9 @@ class PointSourceParam(object):
         :param kwargs_fixed: list of keyword arguments with parameters to be held fixed
         :param num_point_source_list: list of number of point sources per point source model class
         :param linear_solver: bool, if True, does not return linear parameters for the sampler
-        (will be solved linearly instead)
+         (will be solved linearly instead)
         :param fixed_magnification_list: list of booleans, if entry is True, keeps one overall scaling among the
-        point sources in this class
+         point sources in this class
         """
         self.model_list = model_list
         if num_point_source_list is None:

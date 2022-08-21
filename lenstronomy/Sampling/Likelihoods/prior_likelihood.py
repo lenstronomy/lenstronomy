@@ -34,8 +34,7 @@ class PriorLikelihood(object):
         :param prior_special_kde: list of [param_name, samples]
         :param prior_extinction_kde: list of [index_model, param_name, samples]
 
-        :param prior_lens_lognormal: list of [index_model, param_name, mean, 1-sigma
-        priors]
+        :param prior_lens_lognormal: list of [index_model, param_name, mean, 1-sigma priors]
         :param prior_source_lognormal: list of [index_model, param_name, mean, 1-sigma priors]
         :param prior_lens_light_lognormal: list of [index_model, param_name, mean, 1-sigma priors]
         :param prior_ps_lognormal: list of [index_model, param_name, mean, 1-sigma priors]

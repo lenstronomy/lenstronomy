@@ -191,7 +191,7 @@ class SubgridKernelConvolution(object):
         :param kernel_supersampled: kernel in supersampled pixels
         :param supersampling_factor: supersampling factor relative to the image pixel grid
         :param supersampling_kernel_size: number of pixels (in units of the image pixels) that are convolved with the
-        supersampled kernel
+         supersampled kernel
         """
         # n_high = len(kernel_supersampled)
         self._supersampling_factor = supersampling_factor
@@ -253,7 +253,7 @@ class MultiGaussianConvolution(object):
         :param fraction_list: fraction of flux to be convoled with each Gaussian kernel
         :param pixel_scale: scale of pixel width (to convert sigmas into units of pixels)
         :param truncation: float. Truncate the filter at this many standard deviations.
-        Default is 4.0.
+         Default is 4.0.
         """
         self._num_gaussians = len(sigma_list)
         self._sigmas_scaled = np.array(sigma_list) / pixel_scale

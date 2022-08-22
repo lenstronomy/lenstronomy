@@ -7,6 +7,7 @@ import lenstronomy.Util.mask_util as mask_util
 import numpy as np
 import copy
 import scipy.ndimage.interpolation as interp
+from scipy import ndimage
 
 __all__ = ['PsfFitting']
 
@@ -315,11 +316,11 @@ class PsfFitting(object):
             shift_y = (y_int - y_[l]) * supersampling_factor
             # for odd number super-sampling
             if supersampling_factor % 2 == 1:
-                residuals_shifted = interp.shift(residual_cutout_mask, shift=[shift_y, shift_x], order=1)
+                residuals_shifted = ndimage.shift(residual_cutout_mask, shift=[shift_y, shift_x], order=1)
 
             else:
                 # for even number super-sampling half a super-sampled pixel offset needs to be performed
-                residuals_shifted = interp.shift(residual_cutout_mask, shift=[shift_y - 0.5, shift_x - 0.5], order=1)
+                residuals_shifted = ndimage.shift(residual_cutout_mask, shift=[shift_y - 0.5, shift_x - 0.5], order=1)
                 # and the last column and row need to be removed
                 residuals_shifted = residuals_shifted[:-1, :-1]
 
@@ -379,7 +380,7 @@ class PsfFitting(object):
         # shift the initial kernel to the shift of the star
         shift_x = x_int - x
         shift_y = y_int - y
-        kernel_shifted = interp.shift(kernel_enlarged, shift=[-shift_y, -shift_x], order=1)
+        kernel_shifted = ndimage.shift(kernel_enlarged, shift=[-shift_y, -shift_x], order=1)
         # compute normalization of masked and unmasked region of the shifted kernel
         # norm_masked = np.sum(kernel_shifted[mask_i == 0])
         norm_unmasked = np.sum(kernel_shifted[mask_cutout == 1])
@@ -515,7 +516,7 @@ class PsfFitting(object):
             y_int = int(round(y))
             shift_x = x_int - x
             shift_y = y_int - y
-            kernel_shifted = interp.shift(kernel, shift=[-shift_y, -shift_x], order=1)
+            kernel_shifted = ndimage.shift(kernel, shift=[-shift_y, -shift_x], order=1)
             # multiply kernel with amplitude
             model = kernel_shifted * amp_i
             # compute residuals

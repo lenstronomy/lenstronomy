@@ -1,14 +1,46 @@
-
+__author__ = 'jhodonnell'
+__all__ = ['ModelParamGroup', 'SingleParam', 'ArrayParam']
 
 
 class ModelParamGroup:
+    '''
+    This abstract class represents any lenstronomy fitting parameters used
+    in the Param class.
+
+    Subclasses should implement num_params(), set_params(), and get_params()
+    to convert parameters from lenstronomy's semantic dictionary format to a
+    flattened array format and back.
+
+    This class also contains three static methods to easily aggregate groups
+    of parameter classes, called `compose_num_params()`, `compose_set_params()`,
+    and `compose_get_params()`.
+    '''
     def num_params(self):
+        '''
+        Tells the number of parameters that this group samples and theri names.
+
+        returns: 2-tuple of (num param, list of names)
+        '''
         raise NotImplementedError
 
     def set_params(self, kwargs):
+        '''
+        Converts lenstronomy semantic parameters in dictionary format into a
+        flattened array of parameters.
+
+        The flattened array is for use in optimization algorithms, e.g. MCMC,
+        Particle swarm, etc.
+        '''
         raise NotImplementedError
 
     def get_params(self, args, i):
+        '''
+        Converts a flattened array of parameters back into a lenstronomy dictionary,
+        starting at index i.
+
+        args: list of floats
+        returns: dictionary of parameters
+        '''
         raise NotImplementedError
 
     @staticmethod
@@ -36,11 +68,17 @@ class ModelParamGroup:
             output_kwargs = dict(output_kwargs, **kwargs_grp)
         return output_kwargs, i
 
+
 class SingleParam(ModelParamGroup):
     '''
-    Helper for handling parameters in the SpecialGroup.
+    Helper for handling parameters which are a single float.
 
-    Internal use, please ignore. Check below for the actual definitions of special parameters.
+    Subclasses should define:
+
+    on: (bool) Whether this parameter is sampled
+    param_names: List of strings, the name of each parameter
+    _kwargs_lower: Dictionary. Lower bounds of each parameter
+    _kwargs_upper: Dictionary. Upper bounds of each parameter
     '''
     def __init__(self, on):
         self.on = bool(on)
@@ -89,9 +127,16 @@ class SingleParam(ModelParamGroup):
 
 class ArrayParam(ModelParamGroup):
     '''
-    Helper for handling parameters in the SpecialGroup.
+    Helper for handling parameters which are an array of values. Examples
+    include mass_scaling, which is an array of scaling parameters, and wavelet
+    or gaussian decompositions which have different coefficients for each mode.
 
-    Internal use, please ignore. Check below for the actual definitions of special parameters.
+    Subclasses should define:
+
+    on: (bool) Whether this parameter is sampled
+    param_names: Dictionary mapping the name of each parameter to the number of values needed.
+    _kwargs_lower: Dictionary. Lower bounds of each parameter
+    _kwargs_upper: Dictionary. Upper bounds of each parameter
     '''
     def num_params(self, kwargs_fixed):
         if not self.on:

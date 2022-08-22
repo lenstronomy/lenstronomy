@@ -12,18 +12,27 @@ from .param_group import ModelParamGroup, SingleParam, ArrayParam
 
 
 class DdtSamplingParam(SingleParam):
+    '''
+    Time delay parameter
+    '''
     param_names = ['D_dt']
     _kwargs_lower = {'D_dt': 0}
     _kwargs_upper = {'D_dt': 100000}
 
 
 class SourceSizeParam(SingleParam):
+    '''
+    Source size parameter
+    '''
     param_names = ['source_size']
     _kwargs_lower = {'source_size': 0}
     _kwargs_upper = {'source_size': 1}
 
 
 class SourceGridOffsetParam(SingleParam):
+    '''
+    Source grid offset, both x and y.
+    '''
     param_names = ['delta_x_source_grid', 'delta_y_source_grid']
     _kwargs_lower = {
         'delta_x_source_grid': -100,
@@ -36,6 +45,9 @@ class SourceGridOffsetParam(SingleParam):
 
 
 class MassScalingParam(ArrayParam):
+    '''
+    Mass scaling. Can scale the masses of arbitrary subsets of lens models
+    '''
     _kwargs_lower = {'scale_factor': 0}
     _kwargs_upper = {'scale_factor': 1000}
     def __init__(self, num_scale_factor):
@@ -44,6 +56,9 @@ class MassScalingParam(ArrayParam):
 
 
 class PointSourceOffsetParam(ArrayParam):
+    '''
+    Point source offset, both x and y
+    '''
     _kwargs_lower = {'delta_x_image': -1, 'delta_y_image': -1}
     _kwargs_upper = {'delta_x_image': 1, 'delta_y_image': 1}
     def __init__(self, offset, num_images):
@@ -55,6 +70,9 @@ class PointSourceOffsetParam(ArrayParam):
 
 
 class Tau0ListParam(ArrayParam):
+    '''
+    Optical depth renormalization parameters
+    '''
     _kwargs_lower = {'tau0_list': 0}
     _kwargs_upper = {'tau0_list': 1000}
     def __init__(self, num_tau0):
@@ -63,6 +81,9 @@ class Tau0ListParam(ArrayParam):
 
 
 class ZSamplingParam(ArrayParam):
+    '''
+    Redshift sampling.
+    '''
     _kwargs_lower = {'z_sampling': 0}
     _kwargs_upper = {'z_sampling': 1000}
     def __init__(self, num_z_sampling):
@@ -71,9 +92,13 @@ class ZSamplingParam(ArrayParam):
 
 
 class GeneralScalingParam(ArrayParam):
-    # Mass scaling needs:
-    #   - name of scaled param
-    #   - number of scaled params
+    '''
+    General lens scaling.
+
+    For each scaled lens parameter, adds a `{param}_scale_factor` and
+    `{param}_scale_pow` special parameter, and updates the scaled param
+    as `param = param_scale_factor * param**param_scale_pow`.
+    '''
     def __init__(self, params: dict):
         # params is a dictionary
         self.param_names = {}

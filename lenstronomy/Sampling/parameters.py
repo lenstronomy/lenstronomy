@@ -47,6 +47,42 @@ class Param(object):
     'joint_lens_with_source_light': [[i_source, k_lens, ['param_name1', 'param_name2', ...]], [...], ...],
     joint parameter between lens model and source light model. Samples light model parameter only.
 
+    'mass_scaling_list': e.g. [False, 1, 1, False, 2, False, 1, ...]
+    Links lens models to have their masses scaled together. In this example,
+    masses with False are not scaled, masses labeled 1 are scaled together,
+    and those labeled 2 are scaled together independent of 1, etc.
+
+    'general_scaling': { 'param1': [False, 1, 1, False, 1, ...], 'param2': [1, 1, 1, False, 2, 2, ...] }
+    Generalized parameter scaling. Input should be a dictionary mapping
+    parameter names to the masks defining which lens models are scaled together,
+    in the same format as for 'mass_scaling_list'. For each scaled parameter,
+    two special params will be added called '${param}_scale_factor' and
+    '${param}_scale_pow', defining the scaling and power-law of each.
+
+    Each scale will be modified as `param = param_scale_factor * param**param_scale_pow`.
+
+    For example, if we want to jointly constrain the `sigma0` and `Rs` parameters
+    of some lens models, we can add:
+
+    ```
+    'general_scaling': {
+        'sigma0': [False]*num_halo + [1]*nmembers,
+        'Rs': [False]*num_halo + [1]*nmembers,
+    }
+    ```
+
+    Then we can choose to fix the power-law and vary the scale factor like so:
+
+    ```
+    fixed_special = {'sigma0_scale_pow': [alpha*2], 'Rs_scale_pow': [beta]}
+    kwargs_special_init = {'sigma0_scale_factor': [17.0], 'Rs_scale_factor': [8]}
+    kwargs_special_sigma = {'sigma0_scale_factor': [10.0], 'Rs_scale_factor': [3]}
+    kwargs_lower_special = {'sigma0_scale_factor': [0.5], 'Rs_scale_factor': [1]}
+    kwargs_upper_special = {'sigma0_scale_factor': [40], 'Rs_scale_factor': [20]}
+
+    special_params = [kwargs_special_init, kwargs_special_sigma, fixed_special, kwargs_lower_special, kwargs_upper_special]
+    ```
+
     hierarchy is as follows:
     1. Point source parameters are inferred
     2. Lens light joint parameters are set

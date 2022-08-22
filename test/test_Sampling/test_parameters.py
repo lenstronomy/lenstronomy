@@ -192,23 +192,23 @@ class TestParam(object):
         kwargs_return = param_class.args2kwargs(args)
         kwargs_lens = kwargs_return['kwargs_lens']
         print('kwargs_lens:', kwargs_lens)
-        np.testing.assert_almost_equal(kwargs_lens[0]['Rs'], 2.0 * 2.0**1.1)
-        np.testing.assert_almost_equal(kwargs_lens[0]['sigma0'], 3)
-        np.testing.assert_almost_equal(kwargs_lens[1]['Rs'], 3.0)
-        np.testing.assert_almost_equal(kwargs_lens[1]['sigma0'], 3.0 * 2.0**2.0)
-        np.testing.assert_almost_equal(kwargs_lens[2]['alpha_Rs'], 0.3 * 0.1**0.5)
-        np.testing.assert_almost_equal(kwargs_lens[3]['Rs'], 2.0 * 1.5**1.1)
-        np.testing.assert_almost_equal(kwargs_lens[3]['sigma0'], 3.0 * 3**2.0)
-        np.testing.assert_almost_equal(kwargs_lens[4]['alpha_Rs'], 0.3 * 4**0.5)
+        npt.assert_almost_equal(kwargs_lens[0]['Rs'], 2.0 * 2.0**1.1)
+        npt.assert_almost_equal(kwargs_lens[0]['sigma0'], 3)
+        npt.assert_almost_equal(kwargs_lens[1]['Rs'], 3.0)
+        npt.assert_almost_equal(kwargs_lens[1]['sigma0'], 3.0 * 2.0**2.0)
+        npt.assert_almost_equal(kwargs_lens[2]['alpha_Rs'], 0.3 * 0.1**0.5)
+        npt.assert_almost_equal(kwargs_lens[3]['Rs'], 2.0 * 1.5**1.1)
+        npt.assert_almost_equal(kwargs_lens[3]['sigma0'], 3.0 * 3**2.0)
+        npt.assert_almost_equal(kwargs_lens[4]['alpha_Rs'], 0.3 * 4**0.5)
 
         kwargs_return = param_class.args2kwargs(args, bijective=True)
         kwargs_lens = kwargs_return['kwargs_lens']
-        np.testing.assert_almost_equal(kwargs_lens[0]['Rs'], 2.0)
-        np.testing.assert_almost_equal(kwargs_lens[1]['sigma0'], 2.0)
-        np.testing.assert_almost_equal(kwargs_lens[2]['alpha_Rs'], 0.1)
-        np.testing.assert_almost_equal(kwargs_lens[3]['Rs'], 1.5)
-        np.testing.assert_almost_equal(kwargs_lens[3]['sigma0'], 3)
-        np.testing.assert_almost_equal(kwargs_lens[4]['alpha_Rs'], 4)
+        npt.assert_almost_equal(kwargs_lens[0]['Rs'], 2.0)
+        npt.assert_almost_equal(kwargs_lens[1]['sigma0'], 2.0)
+        npt.assert_almost_equal(kwargs_lens[2]['alpha_Rs'], 0.1)
+        npt.assert_almost_equal(kwargs_lens[3]['Rs'], 1.5)
+        npt.assert_almost_equal(kwargs_lens[3]['sigma0'], 3)
+        npt.assert_almost_equal(kwargs_lens[4]['alpha_Rs'], 4)
 
     def test_joint_lens_with_light(self):
         kwargs_model = {'lens_model_list': ['CHAMELEON'], 'lens_light_model_list': ['CHAMELEON']}

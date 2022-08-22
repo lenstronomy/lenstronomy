@@ -2,16 +2,22 @@ import numpy as np
 
 __all__ = ['PointSourceParam']
 
-from ..Sampling.param_group import ModelParamGroup, SingleParam, ArrayParam
+from lenstronomy.Sampling.param_group import ModelParamGroup, SingleParam, ArrayParam
 
 
 class SourcePositionParam(SingleParam):
+    '''
+    Source position parameter, ra_source and dec_source
+    '''
     param_names = ['ra_source', 'dec_source']
     _kwargs_lower = {'ra_source': -100, 'dec_source': -100}
     _kwargs_upper = {'ra_source': 100, 'dec_source': 100}
 
 
 class LensedPosition(ArrayParam):
+    '''
+    Represents lensed positions, possibly many. ra_image and dec_image
+    '''
     _kwargs_lower = {'ra_image': -100, 'dec_image': -100, }
     _kwargs_upper = {'ra_image': 100, 'dec_image': 100, }
     def __init__(self, num_images):
@@ -20,12 +26,18 @@ class LensedPosition(ArrayParam):
 
 
 class SourceAmp(SingleParam):
+    '''
+    Source amplification
+    '''
     param_names = ['source_amp']
     _kwargs_lower = {'source_amp': 0}
     _kwargs_upper = {'source_amp': 100}
 
 
 class PointAmp(ArrayParam):
+    '''
+    Point amplification, possibly many
+    '''
     _kwargs_lower = {'point_amp': 0}
     _kwargs_upper = {'point_amp': 100}
     def __init__(self, fixed_magnification):
@@ -35,7 +47,7 @@ class PointAmp(ArrayParam):
 
 class PointSourceParam(object):
     """
-
+    Point source parameters
     """
 
     def __init__(self, model_list, kwargs_fixed, num_point_source_list=None, linear_solver=True,

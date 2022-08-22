@@ -77,6 +77,8 @@ class Param(object):
                  joint_source_with_source=[], joint_lens_with_light=[], joint_source_with_point_source=[],
                  joint_lens_light_with_point_source=[], joint_extinction_with_lens_light=[],
                  joint_lens_with_source_light=[], mass_scaling_list=None, point_source_offset=False,
+                 # General scaling: need names of params and number of individual params
+                 general_scaling=None,
                  num_point_source_list=None, image_plane_source_list=None, solver_type='NONE', Ddt_sampling=None,
                  source_size=False, num_tau0=0, lens_redshift_sampling_indexes=None,
                  source_redshift_sampling_indexes=None, source_grid_offset=False, num_shapelet_lens=0,
@@ -211,6 +213,14 @@ class Param(object):
         else:
             self._num_scale_factor = 0
             self._mass_scaling = False
+
+        if general_scaling is not None:
+            self._general_scaling = True
+            self._general_scaling_masks = dict(general_scaling)
+        else:
+            self._general_scaling = False
+            self._general_scaling_masks = dict()
+
         self._point_source_offset = point_source_offset
         if num_point_source_list is None:
             num_point_source_list = [1] * len(self._point_source_model_list)
@@ -270,6 +280,7 @@ class Param(object):
                                            kwargs_lower=kwargs_lower_extinction, kwargs_upper=kwargs_upper_extinction,
                                            linear_solver=False)
         self.specialParams = SpecialParam(Ddt_sampling=Ddt_sampling, mass_scaling=self._mass_scaling,
+                                          general_scaling_params=self._general_scaling_masks,
                                           kwargs_fixed=kwargs_fixed_special, num_scale_factor=self._num_scale_factor,
                                           kwargs_lower=kwargs_lower_special, kwargs_upper=kwargs_upper_special,
                                           point_source_offset=self._point_source_offset, num_images=self._num_images,
@@ -544,24 +555,41 @@ class Param(object):
         :return: updated lens model keyword argument list
         """
         kwargs_lens_updated = copy.deepcopy(kwargs_lens)
-        if self._mass_scaling is False:
+        # If we do not scaling, there's nothing to be done
+        if not (self._mass_scaling or self._general_scaling):
             return kwargs_lens_updated
-        scale_factor_list = np.array(kwargs_special['scale_factor'])
-        if inverse is True:
-            scale_factor_list = 1. / np.array(kwargs_special['scale_factor'])
-        for i, kwargs in enumerate(kwargs_lens_updated):
-            if self._mass_scaling_list[i] is not False:
-                scale_factor = scale_factor_list[self._mass_scaling_list[i] - 1]
-                if 'theta_E' in kwargs:
-                    kwargs['theta_E'] *= scale_factor
-                elif 'alpha_Rs' in kwargs:
-                    kwargs['alpha_Rs'] *= scale_factor
-                elif 'alpha_1' in kwargs:
-                    kwargs['alpha_1'] *= scale_factor
-                elif 'sigma0' in kwargs:
-                    kwargs['sigma0'] *= scale_factor
-                elif 'k_eff' in kwargs:
-                    kwargs['k_eff'] *= scale_factor
+
+        if self._mass_scaling:
+            scale_factor_list = np.array(kwargs_special['scale_factor'])
+            if inverse is True:
+                scale_factor_list = 1. / np.array(kwargs_special['scale_factor'])
+            for i, kwargs in enumerate(kwargs_lens_updated):
+                if self._mass_scaling_list[i] is not False:
+                    scale_factor = scale_factor_list[self._mass_scaling_list[i] - 1]
+                    if 'theta_E' in kwargs:
+                        kwargs['theta_E'] *= scale_factor
+                    elif 'alpha_Rs' in kwargs:
+                        kwargs['alpha_Rs'] *= scale_factor
+                    elif 'alpha_1' in kwargs:
+                        kwargs['alpha_1'] *= scale_factor
+                    elif 'sigma0' in kwargs:
+                        kwargs['sigma0'] *= scale_factor
+                    elif 'k_eff' in kwargs:
+                        kwargs['k_eff'] *= scale_factor
+
+        if self._general_scaling:
+            for param_name in self._general_scaling_masks.keys():
+                factors = kwargs_special[f'{param_name}_scale_factor']
+                _pows = kwargs_special[f'{param_name}_scale_pow']
+
+                for i, kwargs in enumerate(kwargs_lens_updated):
+                    scale_idx = self._general_scaling_masks[param_name][i]
+                    if scale_idx is not False:
+                        if inverse:
+                            kwargs[param_name] = (kwargs[param_name] / factors[scale_idx - 1]) ** (1 / _pows[scale_idx - 1])
+                        else:
+                            kwargs[param_name] = factors[scale_idx - 1] * kwargs[param_name]**_pows[scale_idx - 1]
+
         return kwargs_lens_updated
 
     def _add_fixed_lens(self, kwargs_fixed, kwargs_init):

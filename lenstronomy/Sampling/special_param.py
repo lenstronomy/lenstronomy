@@ -2,6 +2,7 @@ __author__ = 'sibirrer'
 
 __all__ = ['SpecialParam']
 
+import numpy as np
 from .param_group import ModelParamGroup, SingleParam, ArrayParam
 
 
@@ -69,6 +70,35 @@ class ZSamplingParam(ArrayParam):
         self.param_names = {'z_sampling': int(num_z_sampling)}
 
 
+class GeneralScalingParam(ArrayParam):
+    # Mass scaling needs:
+    #   - name of scaled param
+    #   - number of scaled params
+    def __init__(self, params: dict):
+        # params is a dictionary
+        self.param_names = {}
+        self._kwargs_lower = {}
+        self._kwargs_upper = {}
+
+        if params:
+            self.on = True
+        else:
+            self.on = False
+            return
+
+        for name, array in params.items():
+            num_param = np.max(array)
+
+            if num_param > 0:
+                fac_name = f'{name}_scale_factor'
+                self.param_names[fac_name] = num_param
+                self._kwargs_lower[fac_name] = 0
+                self._kwargs_upper[fac_name] = 1000
+
+                pow_name = f'{name}_scale_pow'
+                self.param_names[pow_name] = num_param
+                self._kwargs_lower[pow_name] = -10
+                self._kwargs_upper[pow_name] = 10
 
 
 # ======================================== #
@@ -83,7 +113,8 @@ class SpecialParam(object):
     These includes cosmology relevant parameters, astrometric errors and overall scaling parameters.
     """
 
-    def __init__(self, Ddt_sampling=False, mass_scaling=False, num_scale_factor=1, kwargs_fixed=None, kwargs_lower=None,
+    def __init__(self, Ddt_sampling=False, mass_scaling=False, num_scale_factor=1,
+                 general_scaling_params=None, kwargs_fixed=None, kwargs_lower=None,
                  kwargs_upper=None, point_source_offset=False, source_size=False, num_images=0, num_tau0=0,
                  num_z_sampling=0, source_grid_offset=False):
         """
@@ -110,6 +141,9 @@ class SpecialParam(object):
         if not mass_scaling:
             num_scale_factor = 0
         self._mass_scaling = MassScalingParam(num_scale_factor)
+
+        self._general_scaling = GeneralScalingParam(general_scaling_params or dict())
+
         if point_source_offset:
             self._point_source_offset = PointSourceOffsetParam(True, num_images)
         else:
@@ -170,6 +204,7 @@ class SpecialParam(object):
     def _param_groups(self):
         return [self._D_dt_sampling,
                 self._mass_scaling,
+                self._general_scaling,
                 self._point_source_offset,
                 self._source_size,
                 self._tau0,

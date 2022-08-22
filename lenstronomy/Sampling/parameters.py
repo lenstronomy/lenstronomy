@@ -670,6 +670,7 @@ class Param(object):
         num, param_list = self.num_param()
         num_linear = self.num_param_linear()
 
+        # TODO print settings of specailParams?
         print("The following model options are chosen:")
         print("Lens models:", self._lens_model_list)
         print("Source models:", self._source_light_model_list)

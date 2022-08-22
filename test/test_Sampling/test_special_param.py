@@ -79,6 +79,18 @@ class TestParam(object):
         assert kwargs_new['delta_x_source_grid'] == kwargs_fixed['delta_x_source_grid']
         assert kwargs_new['delta_y_source_grid'] == kwargs_fixed['delta_y_source_grid']
 
+    def test_general_scaling(self):
+        kwargs_fixed = {}
+        param = SpecialParam(kwargs_fixed=kwargs_fixed,
+                             general_scaling_params={'param': [False, 1, 1, False, 2]})
+        args = param.set_params({'param_scale_factor': [1, 2], 'param_scale_pow': [3, 4]})
+        assert len(args) == 4
+        num_param, param_list = param.num_param()
+        assert num_param == 4
+        kwargs_new, _ = param.get_params(args, i=0)
+        assert kwargs_new['param_scale_factor'] == [1, 2]
+        assert kwargs_new['param_scale_pow'] == [3, 4]
+
 
 if __name__ == '__main__':
     pytest.main()

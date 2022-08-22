@@ -13,7 +13,9 @@ class PSBase(object):
 
         :param lens_model: instance of the LensModel() class
         :param fixed_magnification: bool. If True, magnification
-         ratio of point sources is fixed to the one given by the lens model
+         ratio of point sources is fixed to the one given by the lens model.
+         If True, amplitude parameters are passed as 'source_amp'.
+         If False, amplitudes are passed as in the image plane as 'image_amp'.
         :param additional_image: bool. If True, search for additional images of the same source is conducted.
         """
         self._lens_model = lens_model

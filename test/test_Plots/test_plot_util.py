@@ -31,9 +31,9 @@ class TestPlotUtil(object):
         lensModel = LensModel(lens_model_list=['SIS'])
         ps = PointSource(point_source_type_list=['UNLENSED', 'LENSED_POSITION', 'SOURCE_POSITION'], lensModel=lensModel)
         kwargs_lens = [{'theta_E': 1., 'center_x': 0, 'center_y': 0}]
-        kwargs_ps = [{'ra_image': [1., 1.], 'dec_image': [0, 1], 'point_amp': [1, 1]},
-                          {'ra_image': [1.], 'dec_image': [1.], 'point_amp': [10]},
-                          {'ra_source': 0.1, 'dec_source': 0, 'point_amp': 1.}]
+        kwargs_ps = [{'ra_image': [1., 1.], 'dec_image': [0, 1], 'image_amp': [1, 1]},
+                          {'ra_image': [1.], 'dec_image': [1.], 'image_amp': [10]},
+                          {'ra_source': 0.1, 'dec_source': 0, 'image_amp': 1.}]
         ra_source, dec_source = ps.source_position(kwargs_ps, kwargs_lens)
         from lenstronomy.Data.coord_transforms import Coordinates
         coords_source = Coordinates(transform_pix2angle=np.array([[1, 0], [0, 1]])* 0.1,

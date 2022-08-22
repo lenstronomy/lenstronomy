@@ -104,5 +104,5 @@ class PointSourceVariability(object):
         for i, dt in enumerate(self._dt_days):
             t_i = -dt + t
             mag[i] = self._variability_func(t_i)
-        kwargs_ps[0]['point_amp'] = self.sim_api_ps.magnitude2cps(mag) * np.abs(self._mag)
+        kwargs_ps[0]['image_amp'] = self.sim_api_ps.magnitude2cps(mag) * np.abs(self._mag)
         return kwargs_ps

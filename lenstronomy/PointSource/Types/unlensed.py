@@ -9,7 +9,7 @@ class Unlensed(PSBase):
     class of a single point source in the image plane, aka star
     Name within the PointSource module: 'UNLENSED'
     This model can deal with arrays of point sources.
-    parameters: ra_image, dec_image, point_amp
+    parameters: ra_image, dec_image, image_amp
 
     """
 
@@ -43,7 +43,7 @@ class Unlensed(PSBase):
         :param kwargs: keyword arguments of function call (which are not used for this object
         :return: numpy array of amplitudes
         """
-        point_amp = kwargs_ps['point_amp']
+        point_amp = kwargs_ps['image_amp']
         return np.array(point_amp)
 
     def source_amplitude(self, kwargs_ps, **kwargs):
@@ -54,5 +54,5 @@ class Unlensed(PSBase):
         :param kwargs: keyword arguments of function call (which are not used for this object
         :return: numpy array of amplitudes
         """
-        point_amp = kwargs_ps['point_amp']
+        point_amp = kwargs_ps['image_amp']
         return np.array(point_amp)

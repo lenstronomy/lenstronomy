@@ -19,7 +19,7 @@ class PointSource(object):
         :param fixed_magnification_list: list of booleans (same length as point_source_type_list).
          If True, magnification ratio of point sources is fixed to the one given by the lens model.
          This option then requires to provide a 'source_amp' amplitude of the source brightness instead of
-         'point_amp' the list of image brightnesses.
+         'image_amp' the list of image brightnesses.
         :param additional_images_list: list of booleans (same length as point_source_type_list). If True, search for
          additional images of the same source is conducted.
         :param flux_from_point_source_list: list of booleans (optional), if set, will only return image positions
@@ -320,7 +320,7 @@ class PointSource(object):
                     i += 1
                 else:
                     n_points = len(ra_pos_list[k])
-                    kwargs['point_amp'] = np.array(param[i:i + n_points])
+                    kwargs['image_amp'] = np.array(param[i:i + n_points])
                     i += n_points
         return kwargs_ps, i
 
@@ -359,12 +359,12 @@ class PointSource(object):
             if self._flux_from_point_source_list[i]:
                 amp = amp_list[i]
                 if model == 'UNLENSED':
-                    kwargs_list[i]['point_amp'] = amp
+                    kwargs_list[i]['image_amp'] = amp
                 elif model in ['LENSED_POSITION', 'SOURCE_POSITION']:
                     if self._fixed_magnification_list[i] is True:
                         kwargs_list[i]['source_amp'] = amp
                     else:
-                        kwargs_list[i]['point_amp'] = amp
+                        kwargs_list[i]['image_amp'] = amp
         return kwargs_list
 
     @classmethod
@@ -373,12 +373,12 @@ class PointSource(object):
         check whether inferred linear parameters are positive
 
         :param kwargs_ps: point source keyword argument list
-        :return: bool, True, if all 'point_amp' parameters are positive semi-definite
+        :return: bool, True, if all 'image_amp' or 'source_amp' parameters are positive semi-definite
         """
         pos_bool = True
         for kwargs in kwargs_ps:
-            if 'point_amp' in kwargs:
-                point_amp = kwargs['point_amp']
+            if 'image_amp' in kwargs:
+                point_amp = kwargs['image_amp']
                 if not np.all(point_amp >= 0):
                     pos_bool = False
                     break

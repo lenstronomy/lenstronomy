@@ -11,7 +11,7 @@ class SourcePositions(PSBase):
 
     Name within the PointSource module: 'SOURCE_POSITION'
     parameters: ra_source, dec_source, source_amp, mag_pert (optional)
-    If fixed_magnification=True, than 'source_amp' is a parameter instead of 'point_amp'
+    If fixed_magnification=True, than 'source_amp' is a parameter instead of 'image_amp'
     mag_pert is a list of fractional magnification pertubations applied to point source images
 
     """
@@ -76,7 +76,7 @@ class SourcePositions(PSBase):
             mag = self._lens_model.magnification(ra_image, dec_image, kwargs_lens)
             point_amp = kwargs_ps['source_amp'] * np.abs(mag)
         else:
-            point_amp = kwargs_ps['point_amp']
+            point_amp = kwargs_ps['image_amp']
             if x_pos is not None:
                 point_amp = _expand_to_array(point_amp, len(x_pos))
         mag_pert = kwargs_ps.get('mag_pert', 1)
@@ -100,6 +100,6 @@ class SourcePositions(PSBase):
         else:
             ra_image, dec_image = self.image_position(kwargs_ps, kwargs_lens)
             mag = self._lens_model.magnification(ra_image, dec_image, kwargs_lens)
-            point_amp = kwargs_ps['point_amp']
+            point_amp = kwargs_ps['image_amp']
             source_amp = np.mean(np.array(point_amp) / np.array(mag))
         return np.array(source_amp)

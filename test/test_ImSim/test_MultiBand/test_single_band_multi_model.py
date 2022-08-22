@@ -47,7 +47,7 @@ class TestSingleBandMultiModel(object):
 
         # Point Source
         point_source_model_list = ['UNLENSED']
-        kwargs_ps = [{'ra_image': [0.4], 'dec_image': [-0.2], 'point_amp': [2]}]
+        kwargs_ps = [{'ra_image': [0.4], 'dec_image': [-0.2], 'image_amp': [2]}]
         point_source_class = PointSource(point_source_type_list=point_source_model_list)
 
         kwargs_numerics = {'supersampling_factor': 1, 'supersampling_convolution': False, 'compute_mode': 'regular'}

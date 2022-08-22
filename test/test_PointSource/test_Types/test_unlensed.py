@@ -8,7 +8,7 @@ class TestUnlensed(object):
     def setup(self):
 
         self.ps = Unlensed()
-        self.kwargs = {'point_amp': [2, 1], 'ra_image': [0, 1], 'dec_image': [1, 0]}
+        self.kwargs = {'image_amp': [2, 1], 'ra_image': [0, 1], 'dec_image': [1, 0]}
 
     def test_image_position(self):
         x_img, y_img = self.ps.image_position(self.kwargs)
@@ -23,11 +23,11 @@ class TestUnlensed(object):
     def test_image_amplitude(self):
         amp = self.ps.image_amplitude(self.kwargs, kwargs_lens=None, x_pos=None,
                                       y_pos=None, magnification_limit=None, kwargs_lens_eqn_solver=None)
-        npt.assert_almost_equal(amp, self.kwargs['point_amp'])
+        npt.assert_almost_equal(amp, self.kwargs['image_amp'])
 
     def test_source_amplitude(self):
         amp = self.ps.source_amplitude(self.kwargs, kwargs_lens=None)
-        npt.assert_almost_equal(amp, self.kwargs['point_amp'])
+        npt.assert_almost_equal(amp, self.kwargs['image_amp'])
 
 
 if __name__ == '__main__':

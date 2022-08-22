@@ -269,7 +269,7 @@ class TestLightAnalysis(object):
         kwargs_model = {'lens_model_list': ['SPEMD', 'SHEAR_GAMMA_PSI'], 'point_source_model_list': ['SOURCE_POSITION']}
         lensAnalysis = ProfileAnalysis(kwargs_model=kwargs_model)
         source_x, source_y = 0.02, 0.1
-        kwargs_ps = [{'dec_source': source_y, 'ra_source': source_x, 'point_amp': 75.155}]
+        kwargs_ps = [{'dec_source': source_y, 'ra_source': source_x, 'image_amp': 75.155}]
         kwargs_lens = [{'e2': 0.1, 'center_x': 0, 'theta_E': 1.133, 'e1': 0.1, 'gamma': 2.063, 'center_y': 0}, {'gamma_ext': 0.026, 'psi_ext': 1.793}]
         x_image, y_image = lensAnalysis.PointSource.image_position(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens)
         from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver

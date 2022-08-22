@@ -22,9 +22,9 @@ class TestPointSource(object):
         self.PointSource = PointSource(point_source_type_list=['LENSED_POSITION', 'UNLENSED', 'SOURCE_POSITION'],
                                        lensModel=lensModel, fixed_magnification_list=[False]*3,
                                        additional_images_list=[False]*4, flux_from_point_source_list=[True, True, True])
-        self.kwargs_ps = [{'ra_image': self.x_pos, 'dec_image': self.y_pos, 'point_amp': np.ones_like(self.x_pos) * 2},
-                          {'ra_image': [1.], 'dec_image': [1.], 'point_amp': [10]},
-                          {'ra_source': self.sourcePos_x, 'dec_source': self.sourcePos_y, 'point_amp': np.ones_like(self.x_pos)}, {}]
+        self.kwargs_ps = [{'ra_image': self.x_pos, 'dec_image': self.y_pos, 'image_amp': np.ones_like(self.x_pos) * 2},
+                          {'ra_image': [1.], 'dec_image': [1.], 'image_amp': [10]},
+                          {'ra_source': self.sourcePos_x, 'dec_source': self.sourcePos_y, 'image_amp': np.ones_like(self.x_pos)}, {}]
 
     def test_image_position(self):
         x_image_list, y_image_list = self.PointSource.image_position(kwargs_ps=self.kwargs_ps, kwargs_lens=self.kwargs_lens)
@@ -89,9 +89,9 @@ class TestPointSource(object):
     def test_set_amplitudes(self):
         amp_list = [np.ones_like(self.x_pos)*20, [100], np.ones_like(self.x_pos)*10]
         kwargs_out = self.PointSource.set_amplitudes(amp_list, self.kwargs_ps)
-        assert kwargs_out[0]['point_amp'][0] == 10 * self.kwargs_ps[0]['point_amp'][0]
-        assert kwargs_out[1]['point_amp'][0] == 10 * self.kwargs_ps[1]['point_amp'][0]
-        assert kwargs_out[2]['point_amp'][3] == 10 * self.kwargs_ps[2]['point_amp'][3]
+        assert kwargs_out[0]['image_amp'][0] == 10 * self.kwargs_ps[0]['image_amp'][0]
+        assert kwargs_out[1]['image_amp'][0] == 10 * self.kwargs_ps[1]['image_amp'][0]
+        assert kwargs_out[2]['image_amp'][3] == 10 * self.kwargs_ps[2]['image_amp'][3]
 
     def test_update_search_window(self):
         search_window = 5
@@ -152,7 +152,7 @@ class TestPointSourceFixedMag(object):
         self.PointSource = PointSource(point_source_type_list=['LENSED_POSITION', 'UNLENSED', 'SOURCE_POSITION'],
                                        lensModel=lensModel, fixed_magnification_list=[True]*4, additional_images_list=[False]*4)
         self.kwargs_ps = [{'ra_image': self.x_pos, 'dec_image': self.y_pos, 'source_amp': 1},
-                          {'ra_image': [1.], 'dec_image': [1.], 'point_amp': [10]},
+                          {'ra_image': [1.], 'dec_image': [1.], 'image_amp': [10]},
                           {'ra_source': self.sourcePos_x, 'dec_source': self.sourcePos_y, 'source_amp': 1.}, {}]
 
     def test_image_position(self):
@@ -208,23 +208,23 @@ class TestPointSourceFixedMag(object):
         amp_list = [10, [100], 10]
         kwargs_out = self.PointSource.set_amplitudes(amp_list, self.kwargs_ps)
         assert kwargs_out[0]['source_amp'] == 10 * self.kwargs_ps[0]['source_amp']
-        assert kwargs_out[1]['point_amp'][0] == 10 * self.kwargs_ps[1]['point_amp'][0]
+        assert kwargs_out[1]['image_amp'][0] == 10 * self.kwargs_ps[1]['image_amp'][0]
         assert kwargs_out[2]['source_amp'] == 10 * self.kwargs_ps[2]['source_amp']
 
     def test_positive_flux(self):
-        bool = PointSource.check_positive_flux(kwargs_ps=[{'point_amp': np.array([1, -1])}])
+        bool = PointSource.check_positive_flux(kwargs_ps=[{'image_amp': np.array([1, -1])}])
         assert bool is False
-        bool = PointSource.check_positive_flux(kwargs_ps=[{'point_amp': -1}])
+        bool = PointSource.check_positive_flux(kwargs_ps=[{'image_amp': -1}])
         assert bool is False
 
-        bool = PointSource.check_positive_flux(kwargs_ps=[{'point_amp': np.array([0, 1])}])
+        bool = PointSource.check_positive_flux(kwargs_ps=[{'image_amp': np.array([0, 1])}])
         assert bool is True
-        bool = PointSource.check_positive_flux(kwargs_ps=[{'point_amp': 1}])
+        bool = PointSource.check_positive_flux(kwargs_ps=[{'image_amp': 1}])
         assert bool is True
 
-        bool = PointSource.check_positive_flux(kwargs_ps=[{'point_amp': np.array([0, 1]), 'source_amp': 1}])
+        bool = PointSource.check_positive_flux(kwargs_ps=[{'image_amp': np.array([0, 1]), 'source_amp': 1}])
         assert bool is True
-        bool = PointSource.check_positive_flux(kwargs_ps=[{'point_amp': 1, 'source_amp': -1}])
+        bool = PointSource.check_positive_flux(kwargs_ps=[{'image_amp': 1, 'source_amp': -1}])
         assert bool is False
 
 

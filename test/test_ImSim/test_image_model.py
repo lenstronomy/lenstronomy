@@ -173,7 +173,7 @@ class TestImageModel(object):
         ra_pos, dec_pos = makeImage.Data.map_pix2coord(x_pix, y_pix)
         e1, e2 = param_util.phi_q2_ellipticity(0, 0.8)
         kwargs_lens_init = [{'theta_E': 1, 'gamma': 2, 'e1': e1, 'e2': e2, 'center_x': 0, 'center_y': 0}]
-        kwargs_else = [{'ra_image': ra_pos, 'dec_image': dec_pos, 'point_amp': np.ones_like(ra_pos)}]
+        kwargs_else = [{'ra_image': ra_pos, 'dec_image': dec_pos, 'image_amp': np.ones_like(ra_pos)}]
         image = makeImage.image(kwargs_lens_init, kwargs_source={}, kwargs_lens_light={}, kwargs_ps=kwargs_else)
         #print(np.shape(model), 'test')
         #image = makeImage.ImageNumerics.array2image(model)
@@ -186,7 +186,7 @@ class TestImageModel(object):
         phi, q = 0., 0.8
         e1, e2 = param_util.phi_q2_ellipticity(phi, q)
         kwargs_lens_init = [{'theta_E': 1, 'gamma': 2, 'e1': e1, 'e2': e2, 'center_x': 0, 'center_y': 0}]
-        kwargs_else = [{'ra_image': ra_pos, 'dec_image': dec_pos, 'point_amp': np.ones_like(ra_pos)}]
+        kwargs_else = [{'ra_image': ra_pos, 'dec_image': dec_pos, 'image_amp': np.ones_like(ra_pos)}]
         image = makeImage.image(kwargs_lens_init, kwargs_source={}, kwargs_lens_light={}, kwargs_ps=kwargs_else)
         #image = makeImage.ImageNumerics.array2image(model)
         for i in range(len(x_pix)):

@@ -142,7 +142,7 @@ class SingleParam(ModelParamGroup):
 
     def num_params(self, kwargs_fixed):
         '''
-        Tells the number of parameters that this group samples and theri names.
+        Tells the number of parameters that this group samples and their names.
 
         :param kwargs_fixed: Dictionary of fixed arguments
         :type kwargs_fixed: dict
@@ -245,7 +245,7 @@ class ArrayParam(ModelParamGroup):
 
     def num_params(self, kwargs_fixed):
         '''
-        Tells the number of parameters that this group samples and theri names.
+        Tells the number of parameters that this group samples and their names.
 
         :param kwargs_fixed: Dictionary of fixed arguments
         :type kwargs_fixed: dict

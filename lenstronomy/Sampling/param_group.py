@@ -2,6 +2,13 @@ __author__ = 'jhodonnell'
 __all__ = ['ModelParamGroup', 'SingleParam', 'ArrayParam']
 
 
+'''
+This module provides helper classes for managing sample parameters. This is
+for internal use, if you are not modifying lenstronomy sampling to include
+new parameters you can safely ignore this.
+'''
+
+
 class ModelParamGroup:
     '''
     This abstract class represents any lenstronomy fitting parameters used
@@ -119,10 +126,11 @@ class SingleParam(ModelParamGroup):
 
     Subclasses should define:
 
-    on: (bool) Whether this parameter is sampled
-    param_names: List of strings, the name of each parameter
-    _kwargs_lower: Dictionary. Lower bounds of each parameter
-    _kwargs_upper: Dictionary. Upper bounds of each parameter
+    :param on: Whether this parameter is sampled
+    :type on: bool
+    :param param_names: List of strings, the name of each parameter
+    :param _kwargs_lower: Dictionary. Lower bounds of each parameter
+    :param _kwargs_upper: Dictionary. Upper bounds of each parameter
     '''
     def __init__(self, on):
         self.on = bool(on)
@@ -169,6 +177,7 @@ class SingleParam(ModelParamGroup):
             return {}
         return self._kwargs_upper
 
+
 class ArrayParam(ModelParamGroup):
     '''
     Helper for handling parameters which are an array of values. Examples
@@ -177,10 +186,11 @@ class ArrayParam(ModelParamGroup):
 
     Subclasses should define:
 
-    on: (bool) Whether this parameter is sampled
-    param_names: Dictionary mapping the name of each parameter to the number of values needed.
-    _kwargs_lower: Dictionary. Lower bounds of each parameter
-    _kwargs_upper: Dictionary. Upper bounds of each parameter
+    :param on:  Whether this parameter is sampled
+    :type on: bool
+    :param param_names: Dictionary mapping the name of each parameter to the number of values needed.
+    :param _kwargs_lower: Dictionary. Lower bounds of each parameter
+    :param _kwargs_upper: Dictionary. Upper bounds of each parameter
     '''
     def num_params(self, kwargs_fixed):
         if not self.on:

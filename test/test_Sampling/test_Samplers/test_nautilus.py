@@ -11,7 +11,7 @@ from lenstronomy.Sampling.Samplers.nautilus import Nautilus
 def import_fixture(simple_einstein_ring_likelihood_2d):
     """
 
-    :param simple_einstein_ring_likelihood: fixture
+    :param simple_einstein_ring_likelihood_2d: fixture
     :return:
     """
     likelihood, kwargs_truths = simple_einstein_ring_likelihood_2d
@@ -45,6 +45,16 @@ class TestNautilusSampler(object):
         kwargs_run_fail = copy.deepcopy(kwargs_run)
         kwargs_run_fail['prior_type'] = 'wrong'
         assert_raises(ValueError, sampler.nautilus_sampling, **kwargs_run_fail)
+
+    def test_prior(self):
+
+        num_param = 10
+        from nautilus import Prior
+        prior = Prior()
+
+        for i in range(num_param):
+            prior.add_parameter(dist=(0, 1))
+        assert num_param == prior.dimensionality()
 
 
 if __name__ == '__main__':

@@ -23,7 +23,7 @@ class ModelParamGroup:
     '''
     def num_params(self):
         '''
-        Tells the number of parameters that this group samples and theri names.
+        Tells the number of parameters that this group samples and their names.
 
         :returns: 2-tuple of (num param, list of names)
         '''
@@ -134,7 +134,11 @@ class SingleParam(ModelParamGroup):
     :param _kwargs_upper: Dictionary. Upper bounds of each parameter
     '''
     def __init__(self, on):
-        self.on = bool(on)
+        '''
+        :param on: Whether this paramter should be sampled
+        :type on: bool
+        '''
+        self._on = bool(on)
 
     def num_params(self, kwargs_fixed):
         '''
@@ -213,6 +217,10 @@ class SingleParam(ModelParamGroup):
             return {}
         return self._kwargs_upper
 
+    @property
+    def on(self):
+        return self._on
+
 
 class ArrayParam(ModelParamGroup):
     '''
@@ -228,6 +236,13 @@ class ArrayParam(ModelParamGroup):
     :param _kwargs_lower: Dictionary. Lower bounds of each parameter
     :param _kwargs_upper: Dictionary. Upper bounds of each parameter
     '''
+    def __init__(self, on):
+        '''
+        :param on: Whether this paramter should be sampled
+        :type on: bool
+        '''
+        self._on = bool(on)
+
     def num_params(self, kwargs_fixed):
         '''
         Tells the number of parameters that this group samples and theri names.
@@ -319,3 +334,7 @@ class ArrayParam(ModelParamGroup):
         for name, count in self.param_names.items():
             out[name] = [self._kwargs_upper[name]] * count
         return out
+
+    @property
+    def on(self):
+        return self._on

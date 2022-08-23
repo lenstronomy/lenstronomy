@@ -23,7 +23,7 @@ class LensedPosition(ArrayParam):
     _kwargs_lower = {'ra_image': -100, 'dec_image': -100, }
     _kwargs_upper = {'ra_image': 100, 'dec_image': 100, }
     def __init__(self, num_images):
-        self.on = int(num_images) > 0
+        super().__init__(int(num_images) > 0)
         self.param_names = {'ra_image': int(num_images), 'dec_image': int(num_images)}
 
 
@@ -46,7 +46,7 @@ class ImageAmp(ArrayParam):
     _kwargs_lower = {'point_amp': 0}
     _kwargs_upper = {'point_amp': 100}
     def __init__(self, num_point_sources):
-        self.on = int(num_point_sources) > 0
+        super().__init__(int(num_point_sources) > 0)
         self.param_names = {'point_amp': int(num_point_sources)}
 
 

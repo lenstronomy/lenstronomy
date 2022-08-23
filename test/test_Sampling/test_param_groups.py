@@ -22,9 +22,6 @@ class ExampleArrayParam(ArrayParam):
     _kwargs_lower = {'ap1': [0], 'ap2': [0]*3}
     _kwargs_upper = {'ap1': [10], 'ap2': [10]*3}
 
-    def __init__(self, on):
-        self.on = bool(on)
-
 
 class TestParamGroup(object):
     def setup(self):

@@ -51,7 +51,7 @@ class MassScalingParam(ArrayParam):
     _kwargs_lower = {'scale_factor': 0}
     _kwargs_upper = {'scale_factor': 1000}
     def __init__(self, num_scale_factor):
-        self.on = int(num_scale_factor) > 0
+        super().__init__(on=int(num_scale_factor) > 0)
         self.param_names = {'scale_factor': int(num_scale_factor)}
 
 
@@ -62,7 +62,7 @@ class PointSourceOffsetParam(ArrayParam):
     _kwargs_lower = {'delta_x_image': -1, 'delta_y_image': -1}
     _kwargs_upper = {'delta_x_image': 1, 'delta_y_image': 1}
     def __init__(self, offset, num_images):
-        self.on = offset and (int(num_images) > 0)
+        super().__init__(on=offset and (int(num_images) > 0))
         self.param_names = {
             'delta_x_image': int(num_images),
             'delta_y_image': int(num_images),
@@ -76,7 +76,7 @@ class Tau0ListParam(ArrayParam):
     _kwargs_lower = {'tau0_list': 0}
     _kwargs_upper = {'tau0_list': 1000}
     def __init__(self, num_tau0):
-        self.on = int(num_tau0) > 0
+        super().__init__(on=int(num_tau0) > 0)
         self.param_names = {'tau0_list': int(num_tau0)}
 
 
@@ -87,7 +87,7 @@ class ZSamplingParam(ArrayParam):
     _kwargs_lower = {'z_sampling': 0}
     _kwargs_upper = {'z_sampling': 1000}
     def __init__(self, num_z_sampling):
-        self.on = int(num_z_sampling) > 0
+        super().__init__(on=int(num_z_sampling) > 0)
         self.param_names = {'z_sampling': int(num_z_sampling)}
 
 
@@ -105,10 +105,8 @@ class GeneralScalingParam(ArrayParam):
         self._kwargs_lower = {}
         self._kwargs_upper = {}
 
-        if params:
-            self.on = True
-        else:
-            self.on = False
+        super().__init__(params)
+        if not self.on:
             return
 
         for name, array in params.items():

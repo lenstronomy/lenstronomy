@@ -47,6 +47,48 @@ class Param(object):
     'joint_lens_with_source_light': [[i_source, k_lens, ['param_name1', 'param_name2', ...]], [...], ...],
     joint parameter between lens model and source light model. Samples light model parameter only.
 
+    'mass_scaling_list': e.g. [False, 1, 1, False, 2, False, 1, ...]
+    Links lens models to have their masses scaled together. In this example,
+    masses with False are not scaled, masses labeled 1 are scaled together,
+    and those labeled 2 are scaled together independent of 1, etc.
+
+    'general_scaling': { 'param1': [False, 1, 1, False, 1, ...], 'param2': [1, 1, 1, False, 2, 2, ...] }
+    Generalized parameter scaling. Input should be a dictionary mapping
+    parameter names to the masks defining which lens models are scaled together,
+    in the same format as for 'mass_scaling_list'. For each scaled parameter,
+    two special params will be added called '${param}_scale_factor' and
+    '${param}_scale_pow', defining the scaling and power-law of each.
+
+    Each scale will be modified as `param = param_scale_factor * param**param_scale_pow`.
+
+    For example, say we want to jointly constrain the `sigma0` and `Rs` parameters
+    of some lens models indexed by `i`, like so:
+
+    .. math::
+
+        \\sigma_{0,i} = \\sigma_0^{ref} L_i^\\alpha \\\\
+        r_{cut,i} = r_{cut}^{ref} L_i^\\beta
+
+    To do this we can add the following. The lens models corresponding to
+    entries of `1` will be scaled together, and those corresponding to `False`
+    will not be. As in `mass_scaling_list`, subsets of models can be scaled
+    independently by marking them `2`, `3`, etc.
+
+    >>> 'general_scaling': {
+    >>>     'sigma0': [False, 1, 1, False, 1, ...],
+    >>>     'Rs': [False, 1, 1, False, 1, ...],
+    >>> }
+
+    Then we can choose to fix the power-law and vary the scale factor like so:
+
+    >>> fixed_special = {'sigma0_scale_pow': [alpha*2], 'Rs_scale_pow': [beta]}
+    >>> kwargs_special_init = {'sigma0_scale_factor': [17.0], 'Rs_scale_factor': [8]}
+    >>> kwargs_special_sigma = {'sigma0_scale_factor': [10.0], 'Rs_scale_factor': [3]}
+    >>> kwargs_lower_special = {'sigma0_scale_factor': [0.5], 'Rs_scale_factor': [1]}
+    >>> kwargs_upper_special = {'sigma0_scale_factor': [40], 'Rs_scale_factor': [20]}
+
+    >>> special_params = [kwargs_special_init, kwargs_special_sigma, fixed_special, kwargs_lower_special, kwargs_upper_special]
+
     hierarchy is as follows:
     1. Point source parameters are inferred
     2. Lens light joint parameters are set
@@ -77,6 +119,7 @@ class Param(object):
                  joint_source_with_source=[], joint_lens_with_light=[], joint_source_with_point_source=[],
                  joint_lens_light_with_point_source=[], joint_extinction_with_lens_light=[],
                  joint_lens_with_source_light=[], mass_scaling_list=None, point_source_offset=False,
+                 general_scaling=None,
                  num_point_source_list=None, image_plane_source_list=None, solver_type='NONE', Ddt_sampling=None,
                  source_size=False, num_tau0=0, lens_redshift_sampling_indexes=None,
                  source_redshift_sampling_indexes=None, source_grid_offset=False, num_shapelet_lens=0,
@@ -125,6 +168,7 @@ class Param(object):
          joint parameter between lens model and source light model. Samples light model parameter only.
         :param mass_scaling_list: boolean list of length of lens model list (optional) models with identical integers
          will be scaled with the same additional scaling factor. First integer starts with 1 (not 0)
+        :param general_scaling: { 'param_1': [list of booleans/integers defining which model to fit], 'param_2': [..], ..}
         :param point_source_offset: bool, if True, adds relative offsets ot the modeled image positions relative to the
          time-delay and lens equation solver
         :param num_point_source_list: list of number of point sources per point source model class
@@ -211,6 +255,18 @@ class Param(object):
         else:
             self._num_scale_factor = 0
             self._mass_scaling = False
+
+        if general_scaling is not None:
+            self._general_scaling = True
+            # FIXME TODO: check that the scaled parameters are actually used
+            # by each lens model. For example, NFW has no theta_E parameter,
+            # if a user tries to scale theta_E for an NFW we should throw an
+            # error
+            self._general_scaling_masks = dict(general_scaling)
+        else:
+            self._general_scaling = False
+            self._general_scaling_masks = dict()
+
         self._point_source_offset = point_source_offset
         if num_point_source_list is None:
             num_point_source_list = [1] * len(self._point_source_model_list)
@@ -270,6 +326,7 @@ class Param(object):
                                            kwargs_lower=kwargs_lower_extinction, kwargs_upper=kwargs_upper_extinction,
                                            linear_solver=False)
         self.specialParams = SpecialParam(Ddt_sampling=Ddt_sampling, mass_scaling=self._mass_scaling,
+                                          general_scaling_params=self._general_scaling_masks,
                                           kwargs_fixed=kwargs_fixed_special, num_scale_factor=self._num_scale_factor,
                                           kwargs_lower=kwargs_lower_special, kwargs_upper=kwargs_upper_special,
                                           point_source_offset=self._point_source_offset, num_images=self._num_images,
@@ -544,24 +601,43 @@ class Param(object):
         :return: updated lens model keyword argument list
         """
         kwargs_lens_updated = copy.deepcopy(kwargs_lens)
-        if self._mass_scaling is False:
+        # If we do not scaling, there's nothing to be done
+        if not (self._mass_scaling or self._general_scaling):
             return kwargs_lens_updated
-        scale_factor_list = np.array(kwargs_special['scale_factor'])
-        if inverse is True:
-            scale_factor_list = 1. / np.array(kwargs_special['scale_factor'])
-        for i, kwargs in enumerate(kwargs_lens_updated):
-            if self._mass_scaling_list[i] is not False:
-                scale_factor = scale_factor_list[self._mass_scaling_list[i] - 1]
-                if 'theta_E' in kwargs:
-                    kwargs['theta_E'] *= scale_factor
-                elif 'alpha_Rs' in kwargs:
-                    kwargs['alpha_Rs'] *= scale_factor
-                elif 'alpha_1' in kwargs:
-                    kwargs['alpha_1'] *= scale_factor
-                elif 'sigma0' in kwargs:
-                    kwargs['sigma0'] *= scale_factor
-                elif 'k_eff' in kwargs:
-                    kwargs['k_eff'] *= scale_factor
+
+        # TODO: remove separate logic for mass scaling. either deprecate it
+        # entirely, implement the details as a special case of general_scaling
+        if self._mass_scaling:
+            scale_factor_list = np.array(kwargs_special['scale_factor'])
+            if inverse is True:
+                scale_factor_list = 1. / np.array(kwargs_special['scale_factor'])
+            for i, kwargs in enumerate(kwargs_lens_updated):
+                if self._mass_scaling_list[i] is not False:
+                    scale_factor = scale_factor_list[self._mass_scaling_list[i] - 1]
+                    if 'theta_E' in kwargs:
+                        kwargs['theta_E'] *= scale_factor
+                    elif 'alpha_Rs' in kwargs:
+                        kwargs['alpha_Rs'] *= scale_factor
+                    elif 'alpha_1' in kwargs:
+                        kwargs['alpha_1'] *= scale_factor
+                    elif 'sigma0' in kwargs:
+                        kwargs['sigma0'] *= scale_factor
+                    elif 'k_eff' in kwargs:
+                        kwargs['k_eff'] *= scale_factor
+
+        if self._general_scaling:
+            for param_name in self._general_scaling_masks.keys():
+                factors = kwargs_special[f'{param_name}_scale_factor']
+                _pows = kwargs_special[f'{param_name}_scale_pow']
+
+                for i, kwargs in enumerate(kwargs_lens_updated):
+                    scale_idx = self._general_scaling_masks[param_name][i]
+                    if scale_idx is not False:
+                        if inverse:
+                            kwargs[param_name] = (kwargs[param_name] / factors[scale_idx - 1]) ** (1 / _pows[scale_idx - 1])
+                        else:
+                            kwargs[param_name] = factors[scale_idx - 1] * kwargs[param_name]**_pows[scale_idx - 1]
+
         return kwargs_lens_updated
 
     def _add_fixed_lens(self, kwargs_fixed, kwargs_init):
@@ -642,6 +718,7 @@ class Param(object):
         num, param_list = self.num_param()
         num_linear = self.num_param_linear()
 
+        # TODO print settings of specailParams?
         print("The following model options are chosen:")
         print("Lens models:", self._lens_model_list)
         print("Source models:", self._source_light_model_list)
@@ -661,6 +738,8 @@ class Param(object):
         print("Joint lens with light:", self._joint_lens_with_light)
         print("Joint source with point source:", self._joint_source_with_point_source)
         print("Joint lens light with point source:", self._joint_lens_light_with_point_source)
+        print("Mass scaling:", self._num_scale_factor, "groups")
+        print("General lens scaling:", self._general_scaling_masks)
         print("===================")
         print("Number of non-linear parameters being sampled: ", num)
         print("Parameters being sampled: ", param_list)

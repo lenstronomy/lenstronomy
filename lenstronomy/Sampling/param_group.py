@@ -1,12 +1,11 @@
-__author__ = 'jhodonnell'
-__all__ = ['ModelParamGroup', 'SingleParam', 'ArrayParam']
-
-
 '''
 This module provides helper classes for managing sample parameters. This is
 for internal use, if you are not modifying lenstronomy sampling to include
 new parameters you can safely ignore this.
 '''
+
+__author__ = 'jhodonnell'
+__all__ = ['ModelParamGroup', 'SingleParam', 'ArrayParam']
 
 
 class ModelParamGroup:
@@ -49,6 +48,8 @@ class ModelParamGroup:
 
         :param args: flattened arguments to convert to lenstronomy format
         :type args: list
+        :param i: index to begin at in args
+        :type i: int
         :returns: dictionary of parameters
         '''
         raise NotImplementedError
@@ -136,6 +137,14 @@ class SingleParam(ModelParamGroup):
         self.on = bool(on)
 
     def num_params(self, kwargs_fixed):
+        '''
+        Tells the number of parameters that this group samples and theri names.
+
+        :param kwargs_fixed: Dictionary of fixed arguments
+        :type kwargs_fixed: dict
+
+        :returns: 2-tuple of (num param, list of names)
+        '''
         if self.on:
             npar, names = 0, []
             for name in self.param_names:
@@ -146,6 +155,20 @@ class SingleParam(ModelParamGroup):
         return 0, []
 
     def set_params(self, kwargs, kwargs_fixed):
+        '''
+        Converts lenstronomy semantic parameters in dictionary format into a
+        flattened array of parameters.
+
+        The flattened array is for use in optimization algorithms, e.g. MCMC,
+        Particle swarm, etc.
+
+        :param kwargs: lenstronomy parameters to flatten
+        :type kwargs: dict
+        :param kwargs_fixed: Dictionary of fixed arguments
+        :type kwargs_fixed: dict
+
+        :returns: flattened array of parameters as floats
+        '''
         if self.on:
             output = []
             for name in self.param_names:
@@ -155,6 +178,19 @@ class SingleParam(ModelParamGroup):
         return []
 
     def get_params(self, args, i, kwargs_fixed):
+        '''
+        Converts a flattened array of parameters back into a lenstronomy dictionary,
+        starting at index i.
+
+        :param args: flattened arguments to convert to lenstronomy format
+        :type args: list
+        :param i: index to begin at in args
+        :type i: int
+        :param kwargs_fixed: Dictionary of fixed arguments
+        :type kwargs_fixed: dict
+
+        :returns: dictionary of parameters
+        '''
         out = {}
         if self.on:
             for name in self.param_names:
@@ -193,6 +229,14 @@ class ArrayParam(ModelParamGroup):
     :param _kwargs_upper: Dictionary. Upper bounds of each parameter
     '''
     def num_params(self, kwargs_fixed):
+        '''
+        Tells the number of parameters that this group samples and theri names.
+
+        :param kwargs_fixed: Dictionary of fixed arguments
+        :type kwargs_fixed: dict
+
+        :returns: 2-tuple of (num param, list of names)
+        '''
         if not self.on:
             return 0, []
 
@@ -206,6 +250,20 @@ class ArrayParam(ModelParamGroup):
         return npar, names
 
     def set_params(self, kwargs, kwargs_fixed):
+        '''
+        Converts lenstronomy semantic parameters in dictionary format into a
+        flattened array of parameters.
+
+        The flattened array is for use in optimization algorithms, e.g. MCMC,
+        Particle swarm, etc.
+
+        :param kwargs: lenstronomy parameters to flatten
+        :type kwargs: dict
+        :param kwargs_fixed: Dictionary of fixed arguments
+        :type kwargs_fixed: dict
+
+        :returns: flattened array of parameters as floats
+        '''
         if not self.on:
             return []
 
@@ -216,6 +274,19 @@ class ArrayParam(ModelParamGroup):
         return args
 
     def get_params(self, args, i, kwargs_fixed):
+        '''
+        Converts a flattened array of parameters back into a lenstronomy dictionary,
+        starting at index i.
+
+        :param args: flattened arguments to convert to lenstronomy format
+        :type args: list
+        :param i: index to begin at in args
+        :type i: int
+        :param kwargs_fixed: Dictionary of fixed arguments
+        :type kwargs_fixed: dict
+
+        :returns: dictionary of parameters
+        '''
         if not self.on:
             return {}, i
 

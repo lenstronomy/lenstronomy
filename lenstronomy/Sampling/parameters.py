@@ -738,6 +738,8 @@ class Param(object):
         print("Joint lens with light:", self._joint_lens_with_light)
         print("Joint source with point source:", self._joint_source_with_point_source)
         print("Joint lens light with point source:", self._joint_lens_light_with_point_source)
+        print("Mass scaling:", self._num_scale_factor, "groups")
+        print("General lens scaling:", self._general_scaling_masks)
         print("===================")
         print("Number of non-linear parameters being sampled: ", num)
         print("Parameters being sampled: ", param_list)

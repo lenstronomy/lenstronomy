@@ -19,7 +19,7 @@ class ModelParamGroup:
         '''
         Tells the number of parameters that this group samples and theri names.
 
-        returns: 2-tuple of (num param, list of names)
+        :returns: 2-tuple of (num param, list of names)
         '''
         raise NotImplementedError
 
@@ -30,6 +30,8 @@ class ModelParamGroup:
 
         The flattened array is for use in optimization algorithms, e.g. MCMC,
         Particle swarm, etc.
+
+        :returns: flattened array of parameters as floats
         '''
         raise NotImplementedError
 
@@ -38,13 +40,25 @@ class ModelParamGroup:
         Converts a flattened array of parameters back into a lenstronomy dictionary,
         starting at index i.
 
-        args: list of floats
-        returns: dictionary of parameters
+        :param args: flattened arguments to convert to lenstronomy format
+        :type args: list
+        :returns: dictionary of parameters
         '''
         raise NotImplementedError
 
     @staticmethod
     def compose_num_params(each_group, *args, **kwargs):
+        '''
+        Aggregates the number of parameters for a group of parameter groups,
+        calling each instance's `num_params()` method and combining the results
+
+        :param each_group: collection of parameter groups. Should each be subclasses of ModelParamGroup.
+        :type each_group: list
+        :param args: Extra arguments to be passed to each call of `num_params()`
+        :param kwargs: Extra keyword arguments to be passed to each call of `num_params()`
+
+        :returns: As in each individual `num_params()`, a 2-tuple of (num params, list of param names)
+        '''
         tot_param = 0
         param_names = []
         for group in each_group:
@@ -55,6 +69,20 @@ class ModelParamGroup:
 
     @staticmethod
     def compose_set_params(each_group, param_kwargs, *args, **kwargs):
+        '''
+        Converts lenstronomy semantic arguments in dictionary format to a
+        flattened list of floats for use in optimization/fitting algorithms.
+        Combines the results for a set of arbitrarily many parameter groups.
+
+        :param each_group: collection of parameter groups. Should each be subclasses of ModelParamGroup.
+        :type each_group: list
+        :param param_kwargs: the kwargs to process
+        :type param_kwargs: dict
+        :param args: Extra arguments to be passed to each call of `set_params()`
+        :param kwargs: Extra keyword arguments to be passed to each call of `set_params()`
+
+        :returns: As in each individual `set_params()`, a list of floats
+        '''
         output_args = []
         for group in each_group:
             output_args += group.set_params(param_kwargs, *args, **kwargs)
@@ -62,6 +90,22 @@ class ModelParamGroup:
 
     @staticmethod
     def compose_get_params(each_group, flat_args, i, *args, **kwargs):
+        '''
+        Converts a flattened array of parameters to lenstronomy semantic
+        parameters in dictionary format.
+        Combines the results for a set of arbitrarily many parameter groups.
+
+        :param each_group: collection of parameter groups. Should each be subclasses of ModelParamGroup.
+        :type each_group: list
+        :param flat_args: the input array of parameters
+        :type flat_args: list
+        :param i: the index in `flat_args` to start at
+        :type i: int
+        :param args: Extra arguments to be passed to each call of `set_params()`
+        :param kwargs: Extra keyword arguments to be passed to each call of `set_params()`
+
+        :returns: As in each individual `get_params()`, a 2-tuple of (dictionary of params, new index)
+        '''
         output_kwargs = {}
         for group in each_group:
             kwargs_grp, i = group.get_params(flat_args, i, *args, **kwargs)

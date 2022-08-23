@@ -17,6 +17,8 @@ class SourcePositionParam(SingleParam):
 class LensedPosition(ArrayParam):
     '''
     Represents lensed positions, possibly many. ra_image and dec_image
+
+    :param num_images: integer. The number of lensed positions to model.
     '''
     _kwargs_lower = {'ra_image': -100, 'dec_image': -100, }
     _kwargs_upper = {'ra_image': 100, 'dec_image': 100, }
@@ -34,9 +36,12 @@ class SourceAmp(SingleParam):
     _kwargs_upper = {'source_amp': 100}
 
 
-class PointAmp(ArrayParam):
+class ImageAmp(ArrayParam):
     '''
-    Point amplification, possibly many
+    Observed amplification of lensed images of a point source. Can model
+    arbitrarily many magnified images
+
+    :param fixed_magnification: integer. The number of lensed images with known magnification to fit.
     '''
     _kwargs_lower = {'point_amp': 0}
     _kwargs_upper = {'point_amp': 100}
@@ -88,7 +93,7 @@ class PointSourceParam(object):
             if fixed_magnification_list[i] and model in ['LENSED_POSITION', 'SOURCE_POSITION']:
                 params.append(SourceAmp(True))
             else:
-                params.append(PointAmp(num))
+                params.append(ImageAmp(num))
 
             self.param_groups.append(params)
 
@@ -96,16 +101,16 @@ class PointSourceParam(object):
             kwargs_lower = []
             for model_params in self.param_groups:
                 fixed_lower = {}
-                for grp in model_params:
-                    fixed_lower = dict(fixed_lower, **grp.kwargs_lower)
+                for param_group in model_params:
+                    fixed_lower = dict(fixed_lower, **param_group.kwargs_lower)
                 kwargs_lower.append(fixed_lower)
 
         if kwargs_upper is None:
             kwargs_upper = []
             for model_params in self.param_groups:
                 fixed_upper = {}
-                for grp in model_params:
-                    fixed_upper = dict(fixed_upper, **grp.kwargs_upper)
+                for param_group in model_params:
+                    fixed_upper = dict(fixed_upper, **param_group.kwargs_upper)
                 kwargs_upper.append(fixed_upper)
 
         self.lower_limit = kwargs_lower

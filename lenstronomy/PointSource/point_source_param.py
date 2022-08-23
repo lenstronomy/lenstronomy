@@ -41,13 +41,13 @@ class ImageAmp(ArrayParam):
     Observed amplification of lensed images of a point source. Can model
     arbitrarily many magnified images
 
-    :param fixed_magnification: integer. The number of lensed images with known magnification to fit.
+    :param num_point_sources: integer. The number of lensed images without fixed magnification.
     '''
     _kwargs_lower = {'point_amp': 0}
     _kwargs_upper = {'point_amp': 100}
-    def __init__(self, fixed_magnification):
-        self.on = int(fixed_magnification) > 0
-        self.param_names = {'point_amp': int(fixed_magnification)}
+    def __init__(self, num_point_sources):
+        self.on = int(num_point_sources) > 0
+        self.param_names = {'point_amp': int(num_point_sources)}
 
 
 class PointSourceParam(object):

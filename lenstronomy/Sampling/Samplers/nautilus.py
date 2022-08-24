@@ -44,8 +44,8 @@ class Nautilus(object):
         if prior_type == 'uniform':
             for i in range(self._num_param):
                 prior.add_parameter(dist=(self._lower_limit[i], self._upper_limit[i]))
-            assert self._num_param == prior.dimensionality()
-            print(self._num_param, prior.dimensionality(), 'number of param, dimensionality')
+            # assert self._num_param == prior.dimensionality()
+            # print(self._num_param, prior.dimensionality(), 'number of param, dimensionality')
         else:
             raise ValueError('prior_type %s is not supported for Nautilus wrapper.' % prior_type)
         # loop through prior

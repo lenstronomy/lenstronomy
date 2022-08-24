@@ -3,8 +3,8 @@ lenstronomy - gravitational lensing software package
 ====================================================
 
 
-.. image:: https://raw.githubusercontent.com/lenstronomy/lenstronomy/main/docs/figures/logo_text.png
-    :target: https://raw.githubusercontent.com/lenstronomy/lenstronomy/main/docs/figures/logo_text.png
+.. image:: https://raw.githubusercontent.com/sibirrer/lenstronomy/main/docs/figures/logo_text.png
+    :target: https://raw.githubusercontent.com/sibirrer/lenstronomy/main/docs/figures/logo_text.png
 
 .. image:: https://github.com/lenstronomy/lenstronomy/workflows/Tests/badge.svg
     :target: https://github.com/lenstronomy/lenstronomy/actions

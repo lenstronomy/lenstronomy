@@ -26,8 +26,8 @@
     :target: https://arxiv.org/abs/1803.09746
 
 ..
-.. image:: https://raw.githubusercontent.com/lenstronomy/lenstronomy/main/docs/figures/readme_fig.png
-    :target: https://raw.githubusercontent.com/lenstronomy/lenstronomy/main/docs/figures/readme_fig.png
+    .. image:: https://raw.githubusercontent.com/lenstronomy/lenstronomy/main/docs/figures/readme_fig.png
+        :target: https://raw.githubusercontent.com/lenstronomy/lenstronomy/main/docs/figures/readme_fig.png
 
 
 ``lenstronomy`` is a multi-purpose software package to model strong gravitational lenses.

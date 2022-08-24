@@ -1,7 +1,3 @@
-====================================================
-lenstronomy - gravitational lensing software package
-====================================================
-
 
 .. image:: https://raw.githubusercontent.com/sibirrer/lenstronomy/main/docs/figures/logo_text.png
     :target: https://raw.githubusercontent.com/sibirrer/lenstronomy/main/docs/figures/logo_text.png
@@ -29,6 +25,7 @@ lenstronomy - gravitational lensing software package
 .. image:: https://img.shields.io/badge/arXiv-1803.09746%20-yellowgreen.svg
     :target: https://arxiv.org/abs/1803.09746
 
+..
 .. image:: https://raw.githubusercontent.com/lenstronomy/lenstronomy/main/docs/figures/readme_fig.png
     :target: https://raw.githubusercontent.com/lenstronomy/lenstronomy/main/docs/figures/readme_fig.png
 

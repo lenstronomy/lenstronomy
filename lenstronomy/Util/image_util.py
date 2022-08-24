@@ -3,7 +3,6 @@ __author__ = 'sibirrer'
 import numpy as np
 from scipy import ndimage
 from scipy import interpolate
-from scipy.ndimage import interpolation as interp
 import copy
 import lenstronomy.Util.util as util
 
@@ -28,7 +27,7 @@ def add_layer2image(grid2d, x_pos, y_pos, kernel, order=1):
     y_int = int(round(y_pos))
     shift_x = x_int - x_pos
     shift_y = y_int - y_pos
-    kernel_shifted = interp.shift(kernel, shift=[-shift_y, -shift_x], order=order)
+    kernel_shifted = ndimage.shift(kernel, shift=[-shift_y, -shift_x], order=order)
     return add_layer2image_int(grid2d, x_int, y_int, kernel_shifted)
 
 

@@ -1,7 +1,6 @@
-====================================================
-lenstronomy - gravitational lensing software package
-====================================================
 
+.. image:: https://raw.githubusercontent.com/lenstronomy/lenstronomy/main/docs/figures/logo_text.png
+    :target: https://raw.githubusercontent.com/lenstronomy/lenstronomy/main/docs/figures/logo_text.png
 
 .. image:: https://github.com/lenstronomy/lenstronomy/workflows/Tests/badge.svg
     :target: https://github.com/lenstronomy/lenstronomy/actions
@@ -26,8 +25,9 @@ lenstronomy - gravitational lensing software package
 .. image:: https://img.shields.io/badge/arXiv-1803.09746%20-yellowgreen.svg
     :target: https://arxiv.org/abs/1803.09746
 
-.. image:: https://raw.githubusercontent.com/lenstronomy/lenstronomy/main/docs/figures/readme_fig.png
-    :target: https://raw.githubusercontent.com/lenstronomy/lenstronomy/main/docs/figures/readme_fig.png
+..
+    .. image:: https://raw.githubusercontent.com/lenstronomy/lenstronomy/main/docs/figures/readme_fig.png
+        :target: https://raw.githubusercontent.com/lenstronomy/lenstronomy/main/docs/figures/readme_fig.png
 
 
 ``lenstronomy`` is a multi-purpose software package to model strong gravitational lenses.

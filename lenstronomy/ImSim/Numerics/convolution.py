@@ -152,7 +152,7 @@ class PixelKernelConvolution(object):
         #    in1, s1, in2, s2 = in2, s2, in1, s1
 
         # Speed up FFT by padding to optimal size for FFTPACK
-        fshape = [fftpack.helper.next_fast_len(int(d)) for d in shape]
+        fshape = [fftpack.next_fast_len(int(d)) for d in shape]
         fslice = tuple([slice(0, int(sz)) for sz in shape])
         # Pre-1.9 NumPy FFT routines are not threadsafe.  For older NumPys, make
         # sure we only call rfftn/irfftn from one thread at a time.
@@ -276,10 +276,10 @@ class MultiGaussianConvolution(object):
         image_conv = None
         for i in range(self._num_gaussians):
             if image_conv is None:
-                image_conv = ndimage.filters.gaussian_filter(image, self._sigmas_scaled[i], mode='nearest',
+                image_conv = ndimage.gaussian_filter(image, self._sigmas_scaled[i], mode='nearest',
                                                              truncate=self._truncation) * self._fraction_list[i]
             else:
-                image_conv += ndimage.filters.gaussian_filter(image, self._sigmas_scaled[i], mode='nearest',
+                image_conv += ndimage.gaussian_filter(image, self._sigmas_scaled[i], mode='nearest',
                                                               truncate=self._truncation) * self._fraction_list[i]
         return image_conv
 

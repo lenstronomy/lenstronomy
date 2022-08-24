@@ -6,47 +6,49 @@ from lenstronomy.Sampling.param_group import ModelParamGroup, SingleParam, Array
 
 
 class SourcePositionParam(SingleParam):
-    '''
+    """
     Source position parameter, ra_source and dec_source
-    '''
+    """
     param_names = ['ra_source', 'dec_source']
     _kwargs_lower = {'ra_source': -100, 'dec_source': -100}
     _kwargs_upper = {'ra_source': 100, 'dec_source': 100}
 
 
 class LensedPosition(ArrayParam):
-    '''
+    """
     Represents lensed positions, possibly many. ra_image and dec_image
 
     :param num_images: integer. The number of lensed positions to model.
-    '''
+    """
     _kwargs_lower = {'ra_image': -100, 'dec_image': -100, }
     _kwargs_upper = {'ra_image': 100, 'dec_image': 100, }
+
     def __init__(self, num_images):
-        super().__init__(int(num_images) > 0)
+        ArrayParam.__init__(self, int(num_images) > 0)
         self.param_names = {'ra_image': int(num_images), 'dec_image': int(num_images)}
 
 
 class SourceAmp(SingleParam):
-    '''
+    """
     Source amplification
-    '''
+    """
     param_names = ['source_amp']
     _kwargs_lower = {'source_amp': 0}
     _kwargs_upper = {'source_amp': 100}
 
 
 class ImageAmp(ArrayParam):
-    '''
+    """
     Observed amplification of lensed images of a point source. Can model
     arbitrarily many magnified images
 
     :param num_point_sources: integer. The number of lensed images without fixed magnification.
-    '''
+    """
     _kwargs_lower = {'point_amp': 0}
     _kwargs_upper = {'point_amp': 100}
+
     def __init__(self, num_point_sources):
-        super().__init__(int(num_point_sources) > 0)
+        ArrayParam.__init__(self, int(num_point_sources) > 0)
         self.param_names = {'point_amp': int(num_point_sources)}
 
 

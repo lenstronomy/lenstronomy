@@ -1,5 +1,5 @@
 from lenstronomy.LightModel.light_model import LightModel
-from ..Sampling.param_group import ModelParamGroup, SingleParam, ArrayParam, MixedParams
+from ..Sampling.param_group import SingleParam, MixedParams
 
 __all__ = ['LightParam']
 
@@ -156,7 +156,7 @@ class LightParam(object):
             args.extend(model.set_params(kwargs, kwargs_fixed))
         return args
 
-    def num_param(self, latex_style=False):
+    def num_params(self, latex_style=False):
         """
         :param latex_style: boolean; if True, returns latex strings for plotting
         :return: int, list of strings with param names

@@ -90,7 +90,7 @@ class TestParam(object):
             npt.assert_almost_equal(args[k], args_new[k], decimal=8)
 
     def test_num_params(self):
-        num, list = self.param.num_param()
+        num, list = self.param.num_params()
         assert num == (66+1200), list
 
     def test_param_name_list(self):
@@ -121,7 +121,7 @@ class TestRaise(unittest.TestCase):
             lighModel.set_params(kwargs_list=[{'amp': 1, 'sigma': 1}])
         with self.assertRaises(ValueError):
             lighModel = LightParam(light_model_list=['SHAPELETS'], kwargs_fixed=[{}], linear_solver=False)
-            lighModel.num_param()
+            lighModel.num_params()
         with self.assertRaises(ValueError):
             lighModel = LightParam(light_model_list=['SHAPELETS'], kwargs_fixed=[{}], linear_solver=False)
             lighModel.get_params(args=[], i=0)
@@ -142,7 +142,7 @@ class TestRaise(unittest.TestCase):
         with self.assertRaises(ValueError):
             # missing fixed params
             lighModel = LightParam(light_model_list=['SLIT_STARLETS'], kwargs_fixed=[{'n_scales': 3}], linear_solver=False)
-            lighModel.num_param()
+            lighModel.num_params()
         with self.assertRaises(ValueError):
             # missing fixed params
             lighModel = LightParam(light_model_list=['SLIT_STARLETS'], kwargs_fixed=[{'amp': np.ones((3*20**2))}],

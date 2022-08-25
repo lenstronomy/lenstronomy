@@ -1,7 +1,12 @@
 from lenstronomy.LensModel.single_plane import SinglePlane
 import numpy as np
 
+from ..Sampling.param_group import ModelParamGroup, SingleParam, ArrayParam, MixedParams
+
 __all__ = ['LensParam']
+
+
+# TODO reimplement in new Param classes
 
 
 class LensParam(object):
@@ -147,7 +152,7 @@ class LensParam(object):
                             args.append(kwargs[name])
         return args
 
-    def num_param(self):
+    def num_params(self):
         """
 
         :return: integer, number of free parameters being sampled from the lens model components

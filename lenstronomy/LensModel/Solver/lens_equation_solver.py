@@ -189,7 +189,8 @@ class LensEquationSolver(object):
         # pixel width
         x_mins, y_mins, delta_map, pixel_width = self.candidate_solutions(sourcePos_x, sourcePos_y, kwargs_lens, min_distance, search_window, verbose, x_center, y_center)
         if verbose:
-            print("There are %s regions identified that could contain a solution of the lens equation" % len(x_mins))
+            print("There are %s regions identified that could contain a solution of the lens equation with"
+                  "coordinates %s and %s " % (len(x_mins), x_mins, y_mins))
         if len(x_mins) < 1:
             return x_mins, y_mins
         if initial_guess_cut:

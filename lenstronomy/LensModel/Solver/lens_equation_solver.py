@@ -100,7 +100,7 @@ class LensEquationSolver(object):
         absmapped = util.displaceAbs(x_mapped, y_mapped, sourcePos_x, sourcePos_y)
         # select minima in the grid points and select grid points that do not deviate more than the
         # width of the grid point to a solution of the lens equation
-        x_mins, y_mins, delta_map = util.neighborSelect(absmapped, x_grid, y_grid)
+        x_mins, y_mins, delta_map = util.local_minima_2d(absmapped, x_grid, y_grid)
         # pixel width
         pixel_width = x_grid[1]-x_grid[0] 
             

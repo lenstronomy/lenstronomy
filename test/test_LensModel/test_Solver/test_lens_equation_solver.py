@@ -151,7 +151,7 @@ class TestLensEquationSolver(object):
         sourcePos_x = 0.03
         sourcePos_y = 0.0
         kwargs_lens = [{'theta_E': 1., 'gamma': 2.2, 'center_x': 0.01, 'center_y': 0.02, 'e1': 0.01, 'e2': 0.05},
-                       {'gamma1': -0.04, 'gamma2': -0.1, 'ra_0': 1.0, 'dec_0': 1.0}]
+                       {'gamma1': -0.04, 'gamma2': -0.1, 'ra_0': 0.0, 'dec_0': 1.0}]
 
         x_pos, y_pos = lensEquationSolver.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens,
                                                                      solver='analytical')
@@ -174,7 +174,8 @@ class TestLensEquationSolver(object):
         lensplane_cut = caustics_epl_shear(kwargs, return_which='cut', sourceplane=False)
         twoimg = caustics_epl_shear(kwargs, return_which='double')
         fourimg = caustics_epl_shear(kwargs, return_which='quad')
-        assert np.abs(lm.magnification(*lensplane_caus, kwargs)).min() > 1e12
+        min_mag = np.abs(lm.magnification(*lensplane_caus, kwargs)).min()
+        assert min_mag > 1e12
         assert np.abs(lm.magnification(*lensplane_cut, kwargs)).min() > 1e12
 
         # Test whether the caustics indeed the number of images they say
@@ -227,11 +228,6 @@ class TestLensEquationSolver(object):
 
         with pytest.raises(ValueError):
             lensEquationSolver.image_position_from_source(0.1, 0., kwargs_lens, solver='nonexisting')
-
-        # with pytest.raises(ValueError):
-        #    kwargs_lens[1]['ra_0']=0.1
-        #    lensEquationSolver.image_position_from_source(0.1, 0., kwargs_lens, solver='analytical')
-
 
 
 if __name__ == '__main__':

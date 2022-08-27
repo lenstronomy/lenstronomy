@@ -165,11 +165,13 @@ def _check_center(kwargs_lens):
     # calculate (inverse) displacement caused by the offset between shear and lens centroid
     # this shift needs to be added to the source position such that the solution of the lens equation
     # without this shift in the shear is the correct one
-
-    shear = Shear()
-    # calculate shift from the deflector centroid from the shear field
-    alpha_x, alpha_y = shear.derivatives(kwargs_lens[0]['center_x'], kwargs_lens[0]['center_y'], **kwargs_lens[1])
-    return alpha_x, alpha_y
+    if len(kwargs_lens) > 1:
+        shear = Shear()
+        # calculate shift from the deflector centroid from the shear field
+        alpha_x, alpha_y = shear.derivatives(kwargs_lens[0]['center_x'], kwargs_lens[0]['center_y'], **kwargs_lens[1])
+        return alpha_x, alpha_y
+    else:
+        return 0, 0
 
 
 def solve_lenseq_pemd(pos_, kwargs_lens, Nmeas=400, Nmeas_extra=80, **kwargs):
@@ -191,10 +193,9 @@ def solve_lenseq_pemd(pos_, kwargs_lens, Nmeas=400, Nmeas_extra=80, **kwargs):
     b = kwargs_lens[0]['theta_E']*np.sqrt(q)
     if len(kwargs_lens) > 1:
         gamma = kwargs_lens[1]['gamma1']+1j*kwargs_lens[1]['gamma2']
-        shift_x, shift_y = _check_center(kwargs_lens)
     else:
         gamma = 0+0j
-        shift_x, shift_y = 0, 0
+    shift_x, shift_y = _check_center(kwargs_lens)
     shift = shift_x + 1j * shift_y
     cen = kwargs_lens[0]['center_x']+1j*kwargs_lens[0]['center_y']
     p = pos[0]+1j*pos[1] - cen + shift
@@ -227,13 +228,11 @@ def caustics_epl_shear(kwargs_lens, num_th=500, maginf=0, sourceplane=True, retu
         gamma1unr, gamma2unr = kwargs_lens[1]['gamma1'], kwargs_lens[1]['gamma2']
     else:
         gamma1unr, gamma2unr = 0, 0
-    shift_x, shift_y = _check_center(kwargs_lens)
     t = kwargs_lens[0]['gamma']-1 if 'gamma' in kwargs_lens[0] else 1
     theta_ell, q = ellipticity2phi_q(e1, e2)
     theta_gamma, gamma_mag = shear_cartesian2polar(gamma1unr, gamma2unr)
     b = np.sqrt(q)*kwargs_lens[0]['theta_E']
-    # TODO: check whether shear shift is applied in the correct direction
-    cen = np.expand_dims(np.array([kwargs_lens[0]['center_x']-shift_x, kwargs_lens[0]['center_y']-shift_y]), 1)
+    cen = np.expand_dims(np.array([kwargs_lens[0]['center_x'], kwargs_lens[0]['center_y']]), 1)
     theta_gamma -= theta_ell
     gamma1, gamma2 = shear_polar2cartesian(theta_gamma, gamma_mag)
     M = rotmat(-theta_ell)

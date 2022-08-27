@@ -278,7 +278,6 @@ class TestFittingSequence(object):
 
         chain_list = fittingSequence.fit_sequence(fitting_list)
 
-
     def test_multinest(self):
         # Nested sampler tests
         # further decrease the parameter space for nested samplers to run faster
@@ -321,8 +320,9 @@ class TestFittingSequence(object):
         assert kwargs_out['kwargs_lens'] == 1
 
     def test_dynesty(self):
+        np.random.seed(42)
         kwargs_params = copy.deepcopy(self.kwargs_params)
-        kwargs_params['lens_model'][0][0]['theta_E'] += 0.01
+        kwargs_params['lens_model'][0][0]['theta_E'] += 0.2
         fittingSequence = FittingSequence(self.kwargs_data_joint, self.kwargs_model, self.kwargs_constraints,
                                           self.kwargs_likelihood, kwargs_params)
 
@@ -341,6 +341,7 @@ class TestFittingSequence(object):
         chain_list = fittingSequence.fit_sequence(fitting_list)
 
     def test_nautilus(self):
+        np.random.seed(42)
         kwargs_params = copy.deepcopy(self.kwargs_params)
         fittingSequence = FittingSequence(self.kwargs_data_joint, self.kwargs_model, self.kwargs_constraints,
                                           self.kwargs_likelihood, kwargs_params)

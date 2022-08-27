@@ -88,6 +88,7 @@ def _getphi(thpl, args):
     """
     Finds all roots to both versions the 1-dimensional lens equation in phi, by doing a grid search for sign changes on
     the supplied thpl. In the case of extrema, refine at the relevant location.
+
     :param thpl: What points to calculate the equation on use for detecting sign changes
     :param args: Parameters to be passed to the lens equation
     :return: an array containing all roots
@@ -163,6 +164,9 @@ def _check_center(kwargs_lens):
     if kwargs_lens[1]['ra_0'] != kwargs_lens[0]['center_x'] or kwargs_lens[1]['dec_0'] != kwargs_lens[0]['center_y']:
         raise ValueError("Center of lens (center_{x,y}) must be the same as center of shear ({ra,dec}_0). "
                          "This can be ensured by supplying a dictionary-style joint_setting_list to the model.")
+    # TODO: calculate (inverse) displacement caused by the offset between shear and lens centroid
+    # this shift needs to be added to the source position such that the solution of the lens equation
+    # without this shift in the shear is the correct one
 
 
 def solve_lenseq_pemd(pos_, kwargs_lens, Nmeas=400, Nmeas_extra=80, **kwargs):

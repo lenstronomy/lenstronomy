@@ -145,6 +145,24 @@ class TestLensEquationSolver(object):
         for x, y in zip(x_pos_ls, y_pos_ls):  # Check if it found all solutions lenstronomy found
             assert np.sqrt((x-x_pos)**2+(y-y_pos)**2).min() < 1e-8
 
+        # here we test with shear and mass profile centroids not aligned
+        """
+        
+        lensModel = LensModel(['EPL_NUMBA', 'SHEAR'])
+        lensEquationSolver = LensEquationSolver(lensModel)
+        sourcePos_x = 0.03
+        sourcePos_y = 0.0
+        kwargs_lens = [{'theta_E': 1., 'gamma': 2.2, 'center_x': 0.01, 'center_y': 0.02, 'e1': 0.01, 'e2': 0.05},
+                       {'gamma1': -0.04, 'gamma2': -0.1, 'ra_0': 0.0, 'dec_0': 0.0}]
+
+        x_pos, y_pos = lensEquationSolver.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens,
+                                                                     solver='analytical')
+        source_x, source_y = lensModel.ray_shooting(x_pos, y_pos, kwargs_lens)
+        assert len(source_x) == len(source_y) >= 4
+        npt.assert_almost_equal(sourcePos_x, source_x, decimal=10)
+        npt.assert_almost_equal(sourcePos_y, source_y, decimal=10)
+        """
+
     def test_caustics(self):
         lm = LensModel(['EPL_NUMBA', 'SHEAR'])
         leqs = LensEquationSolver(lm)

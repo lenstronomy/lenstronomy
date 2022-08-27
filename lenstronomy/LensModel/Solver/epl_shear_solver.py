@@ -7,6 +7,7 @@ from lenstronomy.Util.image_util import findOverlap
 from lenstronomy.LensModel.Profiles.epl_numba import alpha, omega
 from lenstronomy.Util.numba_util import jit
 from lenstronomy.Util.param_util import ellipticity2phi_q, shear_cartesian2polar, shear_polar2cartesian
+from lenstronomy.LensModel.Profiles.shear import Shear
 
 
 @jit()
@@ -161,12 +162,14 @@ def solvelenseq_majoraxis(args, Nmeas=200, Nmeas_extra=50):
 
 def _check_center(kwargs_lens):
     """Checks if the shear-at-center convention is properly used."""
-    if kwargs_lens[1]['ra_0'] != kwargs_lens[0]['center_x'] or kwargs_lens[1]['dec_0'] != kwargs_lens[0]['center_y']:
-        raise ValueError("Center of lens (center_{x,y}) must be the same as center of shear ({ra,dec}_0). "
-                         "This can be ensured by supplying a dictionary-style joint_setting_list to the model.")
-    # TODO: calculate (inverse) displacement caused by the offset between shear and lens centroid
+    # calculate (inverse) displacement caused by the offset between shear and lens centroid
     # this shift needs to be added to the source position such that the solution of the lens equation
     # without this shift in the shear is the correct one
+
+    shear = Shear()
+    # calculate shift from the deflector centroid from the shear field
+    alpha_x, alpha_y = shear.derivatives(kwargs_lens[0]['center_x'], kwargs_lens[0]['center_y'], **kwargs_lens[1])
+    return alpha_x, alpha_y
 
 
 def solve_lenseq_pemd(pos_, kwargs_lens, Nmeas=400, Nmeas_extra=80, **kwargs):
@@ -186,14 +189,16 @@ def solve_lenseq_pemd(pos_, kwargs_lens, Nmeas=400, Nmeas_extra=80, **kwargs):
 
     theta_ell, q = ellipticity2phi_q(kwargs_lens[0]['e1'], kwargs_lens[0]['e2'])
     b = kwargs_lens[0]['theta_E']*np.sqrt(q)
-
-    cen = kwargs_lens[0]['center_x']+1j*kwargs_lens[0]['center_y']
-    p = pos[0]+1j*pos[1]-cen
     if len(kwargs_lens) > 1:
         gamma = kwargs_lens[1]['gamma1']+1j*kwargs_lens[1]['gamma2']
-        _check_center(kwargs_lens)
+        shift_x, shift_y = _check_center(kwargs_lens)
     else:
         gamma = 0+0j
+        shift_x, shift_y = 0, 0
+    shift = shift_x + 1j * shift_y
+    cen = kwargs_lens[0]['center_x']+1j*kwargs_lens[0]['center_y']
+    p = pos[0]+1j*pos[1] - cen + shift
+
     rotfact = np.exp(-1j*theta_ell)
     gamma *= rotfact**2
     p *= rotfact
@@ -222,12 +227,13 @@ def caustics_epl_shear(kwargs_lens, num_th=500, maginf=0, sourceplane=True, retu
         gamma1unr, gamma2unr = kwargs_lens[1]['gamma1'], kwargs_lens[1]['gamma2']
     else:
         gamma1unr, gamma2unr = 0, 0
-    _check_center(kwargs_lens)
+    shift_x, shift_y = _check_center(kwargs_lens)
     t = kwargs_lens[0]['gamma']-1 if 'gamma' in kwargs_lens[0] else 1
     theta_ell, q = ellipticity2phi_q(e1, e2)
     theta_gamma, gamma_mag = shear_cartesian2polar(gamma1unr, gamma2unr)
     b = np.sqrt(q)*kwargs_lens[0]['theta_E']
-    cen = np.expand_dims(np.array([kwargs_lens[0]['center_x'], kwargs_lens[0]['center_y']]), 1)
+    # TODO: check whether shear shift is applied in the correct direction
+    cen = np.expand_dims(np.array([kwargs_lens[0]['center_x']-shift_x, kwargs_lens[0]['center_y']-shift_y]), 1)
     theta_gamma -= theta_ell
     gamma1, gamma2 = shear_polar2cartesian(theta_gamma, gamma_mag)
     M = rotmat(-theta_ell)

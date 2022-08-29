@@ -214,7 +214,7 @@ class TestKinematicsAPI(object):
 
         anisotropy_type = 'const'
 
-        kwargs_model = {'lens_model_list': ['PEMD'],
+        kwargs_model = {'lens_model_list': ['EPL'],
                         'lens_light_model_list': ['SERSIC', 'SERSIC']
                         }
 

@@ -208,6 +208,96 @@ class TestKinematicsAPI(object):
         assert kin_api._kwargs_mge_mass['n_comp'] == 5
         assert kin_api._kwargs_mge_light['n_comp'] == 10
 
+    def test_velocity_dispersion_map_direct_convolved_against_jampy(self):
+        Z_L = 0.295
+        Z_S = 0.657
+
+        anisotropy_type = 'const'
+
+        kwargs_model = {'lens_model_list': ['PEMD'],
+                        'lens_light_model_list': ['SERSIC', 'SERSIC']
+                        }
+
+        X_GRID, Y_GRID = np.meshgrid(
+            np.arange(-3.0597, 3.1597, 0.1457),  # x-axis points to negative RA
+            np.arange(-3.0597, 3.1597, 0.1457),
+        )
+        PSF_FWHM = 0.7
+
+        kwargs_aperture = {'aperture_type': 'IFU_grid',
+                           'x_grid': X_GRID,
+                           'y_grid': Y_GRID,
+                           'center_ra': 0.,
+                           'center_dec': 0.,
+                           }
+        kwargs_seeing = {'psf_type': 'GAUSSIAN',
+                         'fwhm': PSF_FWHM,
+                         }
+
+        kwargs_galkin_numerics = {'interpol_grid_num': 1000,
+                                  'log_integration': True,
+                                  'max_integrate': 100,
+                                  'min_integrate': 0.001}
+
+        light_model_bool = [True, True]
+        lens_model_bool = [True]
+
+        kinematics_api = KinematicsAPI(z_lens=Z_L, z_source=Z_S,
+                                       kwargs_model=kwargs_model,
+                                       kwargs_aperture=kwargs_aperture,
+                                       kwargs_seeing=kwargs_seeing,
+                                       anisotropy_model=anisotropy_type,
+                                       cosmo=None,
+                                       lens_model_kinematics_bool=lens_model_bool,
+                                       light_model_kinematics_bool=light_model_bool,
+                                       multi_observations=False,
+                                       kwargs_numerics_galkin=kwargs_galkin_numerics,
+                                       analytic_kinematics=False,
+                                       Hernquist_approx=False,
+                                       MGE_light=True,
+                                       MGE_mass=False,
+                                       kwargs_mge_light=None,
+                                       kwargs_mge_mass=None,
+                                       sampling_number=1000,
+                                       num_kin_sampling=2000,
+                                       num_psf_sampling=500,
+                                       )
+
+        r_eff = 2.013174842002009
+        beta = 0.25
+
+        kwargs_lens = [
+            {'theta_E': 1.6381683017993576, 'gamma': 2.022380920890103,
+             'e1': 0.0, 'e2': 0.0, 'center_x': 0.0, 'center_y': 0.2914}]
+
+        kwargs_lens_light = [
+            {'amp': 0.09140015720836722, 'R_sersic': 2.1663040783936363,
+             'n_sersic': 0.9700063614486569, 'center_x': 0.0,
+             'center_y': 0.2914},
+            {'amp': 0.8647182783851214, 'R_sersic': 0.32239019270617386,
+             'n_sersic': 1.6279835558957334, 'center_x': 0.0,
+             'center_y': 0.2914}]
+
+        kwargs_anisotropy = {'beta': beta}
+
+        vel_dis, IR_map = kinematics_api.velocity_dispersion_map(
+            kwargs_lens,
+            kwargs_lens_light,
+            # kwargs_result['kwargs_lens_light'],
+            kwargs_anisotropy,
+            r_eff=(1 + np.sqrt(2)) * r_eff, theta_E=kwargs_lens[0]['theta_E'],
+            gamma=kwargs_lens[0]['gamma'],
+            kappa_ext=0,
+            direct_convolve=True,
+            supersampling_factor=5,
+            voronoi_bins=None,
+            get_IR_map=True
+        )
+
+        jampy_vel_dis = np.loadtxt('./jampy_output.txt')
+
+        assert np.max(np.abs(jampy_vel_dis - vel_dis)) < 7.3
+
     def test_velocity_dispersion_map(self):
         np.random.seed(42)
         z_lens = 0.5

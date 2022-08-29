@@ -167,7 +167,7 @@ class KinematicsAPI(object):
                     kwargs_anisotropy,
                     supersampling_factor=supersampling_factor,
                     voronoi_bins=voronoi_bins,
-                    get_IR_map=get_IR_map
+                    get_IR_map=False
                     # num_kin_sampling=self._num_kin_sampling,
                     # num_psf_sampling=self._num_psf_sampling
                 )

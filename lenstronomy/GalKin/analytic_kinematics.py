@@ -16,7 +16,7 @@ __all__ = ['AnalyticKinematics']
 class AnalyticKinematics(Anisotropy):
     """
     class to compute eqn 20 in Suyu+2010 with a Monte-Carlo from rendering from the
-    light profile distribution and displacing them with a Gaussian seeing convolution
+    light profile distribution and displacing them with a Gaussian seeing convolution.
 
     This class assumes spherical symmetry in light and mass distribution and
         - a Hernquist light profile (parameterised by the half-light radius)
@@ -26,9 +26,7 @@ class AnalyticKinematics(Anisotropy):
     the spectral rendering approach to compute the seeing convolved slit measurement is presented in Birrer et al. 2016.
     The stellar anisotropy is parameterised based on Osipkov 1979; Merritt 1985.
 
-    Units
-    -----
-    all units are meant to be in angular arc seconds. The physical units are fold in through the angular diameter
+    All units are meant to be in angular arc seconds. The physical units are fold in through the angular diameter
     distances
 
     """

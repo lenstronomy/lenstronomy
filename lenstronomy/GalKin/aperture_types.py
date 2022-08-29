@@ -39,6 +39,7 @@ class Slit(object):
     def num_segments(self):
         """
         number of segments with separate measurements of the velocity dispersion
+
         :return: int
         """
         return 1
@@ -101,6 +102,7 @@ class Frame(object):
     def num_segments(self):
         """
         number of segments with separate measurements of the velocity dispersion
+
         :return: int
         """
         return 1
@@ -161,6 +163,7 @@ class Shell(object):
     def num_segments(self):
         """
         number of segments with separate measurements of the velocity dispersion
+
         :return: int
         """
         return 1
@@ -196,7 +199,7 @@ class IFUShells(object):
         """
 
         :param r_bins: array of radial bins to average the dispersion spectra in ascending order.
-        It starts with the inner-most edge to the outermost edge.
+         It starts with the inner-most edge to the outermost edge.
         :param center_ra: center of the sphere
         :param center_dec: center of the sphere
         """
@@ -289,7 +292,7 @@ def shell_ifu_select(ra, dec, r_bin, center_ra=0, center_dec=0):
     :param ra: angular coordinate of photon/ray
     :param dec: angular coordinate of photon/ray
     :param r_bin: array of radial bins to average the dispersion spectra in ascending order.
-        It starts with the inner-most edge to the outermost edge.
+     It starts with the inner-most edge to the outermost edge.
     :param center_ra: center of the sphere
     :param center_dec: center of the sphere
     :return: boolean, True if within the radial range, False otherwise

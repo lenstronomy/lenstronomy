@@ -51,7 +51,7 @@ class KinematicsAPI(object):
         :param kwargs_mge_mass: keyword arguments that go into the MGE decomposition routine
         :param kwargs_mge_light: keyword arguments that go into the MGE decomposition routine
         :param sampling_number: int, number of spectral rendering to compute the light weighted integrated LOS
-        dispersion within the aperture. This keyword should be chosen high enough to result in converged results within the tolerance.
+         dispersion within the aperture. This keyword should be chosen high enough to result in converged results within the tolerance.
         :param num_kin_sampling: number of kinematic renderings on a total IFU
         :param num_psf_sampling: number of PSF displacements for each kinematic rendering on the IFU
         """

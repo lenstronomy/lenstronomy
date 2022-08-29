@@ -30,10 +30,10 @@ class SPEP(LensProfileBase):
         :type theta_E: float.
         :param gamma: power law slope of mass profifle
         :type gamma: <2 float
-        :param q: Axis ratio
-        :type q: 0<q<1
-        :param phi_G: position angel of SES
-        :type q: 0<phi_G<pi/2
+        :param e1: eccentricity
+        :type e1: -1<e1<1
+        :param e2: eccentricity
+        :type e2: -1<e1<1
         :returns:  function
         :raises: AttributeError, KeyError
         """
@@ -130,6 +130,7 @@ class SPEP(LensProfileBase):
     def mass_3d_lens(self, r, theta_E, gamma, e1=None, e2=None):
         """
         computes the spherical power-law mass enclosed (with SPP routine)
+
         :param r: radius within the mass is computed
         :param theta_E: Einstein radius
         :param gamma: power-law slope
@@ -153,7 +154,8 @@ class SPEP(LensProfileBase):
         """
         return self.spp.density_lens(r, theta_E, gamma)
 
-    def _param_bounds(self, gamma, q):
+    @staticmethod
+    def _param_bounds(gamma, q):
         """
         bounds parameters
 

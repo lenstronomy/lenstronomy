@@ -24,9 +24,9 @@ class PSF(object):
         :param kernel_point_source: 2d numpy array, odd length, centered PSF of a point source
          (if not normalized, will be normalized)
         :param psf_error_map: uncertainty in the PSF model per pixel (size of data, not super-sampled). 2d numpy array.
-        Size can be larger or smaller than the pixel-sized PSF model and if so, will be matched.
-        This error will be added to the pixel error around the position of point sources as follows:
-        sigma^2_i += 'psf_error_map'_j * (point_source_flux_i)**2
+         Size can be larger or smaller than the pixel-sized PSF model and if so, will be matched.
+         This error will be added to the pixel error around the position of point sources as follows:
+         sigma^2_i += 'psf_error_map'_j * (point_source_flux_i)**2
         :param point_source_supersampling_factor: int, supersampling factor of kernel_point_source.
          This is the input PSF to this class and does not need to be the choice in the modeling
          (thought preferred if modeling choses supersampling)

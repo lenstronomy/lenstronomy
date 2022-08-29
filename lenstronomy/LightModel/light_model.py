@@ -28,7 +28,7 @@ class LightModel(LinearBasis):
         :param light_model_list: list of light models
         :param deflection_scaling_list: list of floats indicating a relative scaling of the deflection angle from the
          reduced angles in the lens model definition (optional, only possible in single lens plane with multiple source
-          planes)
+         planes)
         :param source_redshift_list: list of redshifts for the different light models
          (optional and only used in multi-plane lensing in conjunction with a cosmology model)
         :param smoothing: smoothing factor for certain models (deprecated)

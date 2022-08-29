@@ -216,6 +216,7 @@ class SPEMD(LensProfileBase):
     def is_not_empty(x1, x2):
         """
         Check if float or not an empty array
+
         :return: True if x1 and x2 are either floats/ints or an non-empty array, False if e.g. objects are []
         :rtype: bool
         """

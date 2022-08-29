@@ -14,11 +14,11 @@ class KDELikelihood(object):
 
         :param D_d_sample: 1-d numpy array of angular diameter distances to the lens plane
         :param D_delta_t_sample: 1-d numpy array of time-delay distances
-        kde_type : string
-            The kernel to use.  Valid kernels are
-            'scipy_gaussian' or
-            ['gaussian'|'tophat'|'epanechnikov'|'exponential'|'linear'|'cosine']
-            Default is 'gaussian'.
+        :param kde_type: The kernel to use.  Valid kernels are
+         'scipy_gaussian' or
+         ['gaussian'|'tophat'|'epanechnikov'|'exponential'|'linear'|'cosine']
+         Default is 'gaussian'.
+        :type kde_type: string
         :param bandwidth: width of kernel (in same units as the angular diameter quantities)
         """
         values = np.vstack([D_d_sample, D_delta_t_sample])

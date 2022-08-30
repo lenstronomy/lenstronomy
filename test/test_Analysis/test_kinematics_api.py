@@ -232,9 +232,7 @@ class TestKinematicsAPI(object):
 
         kwargs_aperture = {'aperture_type': 'IFU_grid',
                            'x_grid': X_GRID,
-                           'y_grid': Y_GRID,
-                           'center_ra': 0.,
-                           'center_dec': 0.,
+                           'y_grid': Y_GRID
                            }
         kwargs_seeing = {'psf_type': 'GAUSSIAN',
                          'fwhm': PSF_FWHM,

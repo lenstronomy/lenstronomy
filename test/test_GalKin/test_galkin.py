@@ -322,7 +322,6 @@ class TestGalkin(object):
         kwargs_ifu = {'aperture_type': 'IFU_grid',
                       'x_grid': x_grid,
                       'y_grid': y_grid,
-                      'center_ra': 0, 'center_dec': 0,
                       }
         kwargs_aperture = {'aperture_type': 'slit',
                            'width': 0.4, 'length': 0.4,

@@ -236,7 +236,7 @@ class TestGalkin(object):
 
     def test_dispersion_map(self):
         """
-        tests whether the old and new version provide the same answer
+        Test whether the old and new version provide the same answer.
         """
         # light profile
         light_profile_list = ['HERNQUIST']
@@ -287,7 +287,8 @@ class TestGalkin(object):
 
     def test_dispersion_map_grid_convolved(self):
         """
-        tests whether the old and new version provide the same answer
+        Test whether the old and new version using direct PSF convolution
+        provide the same answer.
         """
         # light profile
         light_profile_list = ['HERNQUIST']
@@ -367,7 +368,7 @@ class TestGalkin(object):
 
                 npt.assert_almost_equal(sigma_v, sigma_v_ifu[i, j], decimal=-1)
 
-        # test for voronoi bin
+        # test for voronoi binning
         voronoi_bins = np.zeros_like(x_grid) - 1
         voronoi_bins[8:12, 8:12] = 0
         kwargs_aperture = {'aperture_type': 'slit',

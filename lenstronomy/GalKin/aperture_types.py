@@ -230,17 +230,14 @@ class IFUGrid(object):
     class for an Integral Field Unit spectrograph with rectangular grid where
     the kinematics are measured
     """
-    def __init__(self, x_grid, y_grid, center_ra, center_dec):
+    def __init__(self, x_grid, y_grid):
         """
 
         :param x_grid: x coordinates of the grid
         :param y_grid: y coordinates of the grid
-        :param center_ra: ra of galaxy
-        :param center_dec: dec of galaxy
         """
         self._x_grid = x_grid
         self._y_grid = y_grid
-        self._center_ra, self._center_dec = center_ra, center_dec
 
     def aperture_select(self, ra, dec):
         """
@@ -249,8 +246,7 @@ class IFUGrid(object):
         :param dec: angular coordinate of photon/ray
         :return: bool, True if photon/ray is within the slit, False otherwise, index of shell
         """
-        return grid_ifu_select(ra, dec, self._x_grid, self._y_grid,
-                               self._center_ra, self._center_dec)
+        return grid_ifu_select(ra, dec, self._x_grid, self._y_grid)
 
     @property
     def num_segments(self):
@@ -258,31 +254,34 @@ class IFUGrid(object):
         number of segments with separate measurements of the velocity dispersion
         :return: int
         """
-        return len(self._x_grid) * len(self._y_grid)
+        return self._x_grid.shape[0] * self._x_grid.shape[1]
 
 
 @export
-def grid_ifu_select(ra, dec, x_grid, y_grid, center_ra=0, center_dec=0):
+def grid_ifu_select(ra, dec, x_grid, y_grid):
     """
 
     :param ra: angular coordinate of photon/ray
     :param dec: angular coordinate of photon/ray
-    :param r_bin: array of radial bins to average the dispersion spectra in ascending order.
-        It starts with the inner-most edge to the outermost edge.
-    :param center_ra: center of the sphere
-    :param center_dec: center of the sphere
-    :return: boolean, True if within the radial range, False otherwise
+    :param x_grid: array of x_grid bins
+    :param y_grid: array of y_grid bins
+    :return: boolean, True if within the grid range, False otherwise
     """
-    x_pixel_size = x_grid[1, 0] - x_grid[0, 0]
-    y_pixel_size = y_grid[0, 1] - y_grid[0, 0]
+    x_pixel_size = x_grid[0, 1] - x_grid[0, 0]
+    y_pixel_size = y_grid[1, 0] - y_grid[0, 0]
 
-    x = np.floor((ra - x_grid[0, 0] - x_pixel_size/2.) / x_pixel_size)
-    y = np.floor((dec - y_grid[0, 0] - y_pixel_size/2.) / y_pixel_size)
+    for i in range(x_grid.shape[0]):
+        for j in range(x_grid.shape[1]):
+            x_down = x_grid[i, j] - x_pixel_size / 2
+            x_up = x_grid[i, j] + x_pixel_size / 2
 
-    if (x > 0 and y > 0) and (x < len(x_grid) and y < len(y_grid[0])):
-        return True, y*len(x_grid) + x
-    else:
-        return False, None
+            y_down = y_grid[i, j] - y_pixel_size / 2
+            y_up = y_grid[i, j] + y_pixel_size / 2
+
+            if (x_down <= ra <= x_up) and (y_down <= dec <= y_up):
+                return True, (i, j)
+
+    return False, None
 
 
 @export

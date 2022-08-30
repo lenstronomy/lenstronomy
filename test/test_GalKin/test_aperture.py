@@ -45,6 +45,7 @@ class TestAperture(object):
         frame = Aperture(aperture_type='IFU_grid', **kwargs_ifugrid)
         bool, i = frame.aperture_select(ra=0.95, dec=0.95)
         assert bool is True
+        assert i == (9, 9)
         bool, i = frame.aperture_select(ra=5, dec=5)
         assert bool is False
         assert frame.num_segments == 100

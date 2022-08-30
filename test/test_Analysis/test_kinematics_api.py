@@ -209,6 +209,12 @@ class TestKinematicsAPI(object):
         assert kin_api._kwargs_mge_light['n_comp'] == 10
 
     def test_velocity_dispersion_map_direct_convolved_against_jampy(self):
+        """
+        Test the computed velocity dispersion map through the Kinematics_API
+        with PSF convolution against `jampy` computed values. The `jampy`
+        values are computed using the same model, grid, and PSF used for
+        Galkin.
+        """
         Z_L = 0.295
         Z_S = 0.657
 

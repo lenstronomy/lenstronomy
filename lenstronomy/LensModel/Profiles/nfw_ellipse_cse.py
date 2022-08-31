@@ -4,6 +4,7 @@ import numpy as np
 from lenstronomy.Util import util
 from lenstronomy.LensModel.Profiles.nfw import NFW
 from lenstronomy.LensModel.Profiles.nfw_ellipse import NFW_ELLIPSE
+from lenstronomy.LensModel.Profiles.cored_steep_ellipsoid import CSEProductAvgSet
 from lenstronomy.LensModel.Profiles.cored_steep_ellipsoid import CSEMajorAxisSet
 import lenstronomy.Util.param_util as param_util
 
@@ -30,7 +31,8 @@ class NFW_ELLIPSE_CSE(NFW_ELLIPSE):
 
         :param high_accuracy: boolean, if True uses a more accurate larger set of CSE profiles (see Oguri 2021)
         """
-        self.cse_major_axis_set = CSEMajorAxisSet()
+        # self.cse_major_axis_set = CSEMajorAxisSet()
+        self.cse_major_axis_set = CSEProductAvgSet()
         self.nfw = NFW()
         if high_accuracy is True:
             # Table 1 in Oguri 2021
@@ -168,6 +170,6 @@ class NFW_ELLIPSE_CSE(NFW_ELLIPSE):
         """
         rho0 = self.nfw.alpha2rho0(alpha_Rs, Rs)
         c = 2 * q / (1 + q)  # this is the same as 1 - e with e = (1. - q) / (1. + q)
-        rs_ = Rs  # / np.sqrt(q)
-        const = 4 * rho0 * rs_ ** 3 / c
+        rs_ = Rs  #/ np.sqrt(q)
+        const = 4 * rho0 * rs_ ** 3 #/ c
         return const

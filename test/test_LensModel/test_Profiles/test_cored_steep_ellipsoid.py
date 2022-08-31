@@ -4,6 +4,7 @@ __author__ = 'sibirrer'
 import numpy as np
 import pytest
 import numpy.testing as npt
+from lenstronomy.Util import param_util
 
 
 class TestCSP(object):
@@ -12,7 +13,7 @@ class TestCSP(object):
     """
     def setup(self):
         from lenstronomy.LensModel.Profiles.cored_steep_ellipsoid import CSE
-        self.CSP = CSE()
+        self.CSP = CSE(axis='product_avg')
 
     def test_function(self):
 
@@ -48,7 +49,7 @@ class TestCSP(object):
         test the definition of the ellipticity normalization (along major axis or product averaged axes)
         """
         x, y = np.linspace(start=0.001, stop=10, num=100), np.zeros(100)
-        kwargs_round = {'a': 2, 's': 1, 'e1': 0.3, 'e2': 0., 'center_x': 0, 'center_y': 0}
+        kwargs_round = {'a': 2, 's': 1, 'e1': 0., 'e2': 0., 'center_x': 0, 'center_y': 0}
         kwargs = {'a': 2, 's': 1, 'e1': 0.3, 'e2': 0., 'center_x': 0, 'center_y': 0}
 
         f_xx, f_xy, f_yx, f_yy = self.CSP.hessian(x, y, **kwargs_round)
@@ -60,16 +61,19 @@ class TestCSP(object):
         f_xx, f_xy, f_yx, f_yy = self.CSP.hessian(y, x, **kwargs)
         kappa_minor = 1. / 2 * (f_xx + f_yy)
 
-        npt.assert_almost_equal(kappa_major, kappa_round, decimal=4)
-
-        # import matplotlib.pyplot as plt
+        import matplotlib.pyplot as plt
         # plt.plot(x, kappa_round, ':', label='round', alpha=0.5)
         # plt.plot(x, kappa_major, ',-', label='major', alpha=0.5)
         # plt.plot(x, kappa_minor, '--', label='minor', alpha=0.5)
-        # plt.legend()
-        # plt.show()
-        # assert 1 == 0
+        # plt.plot(x, np.sqrt(kappa_minor*kappa_major), '-', label='square', alpha=0.5)
 
+        plt.plot(x, np.sqrt(kappa_minor*kappa_major)/kappa_round,label='prod/kappa_round')
+        plt.legend()
+        plt.show()
+
+        npt.assert_almost_equal(kappa_round,np.sqrt(kappa_minor*kappa_major), decimal=5)
+        #I think I need to modify s too
+#test that it breaks if product average or major axis not given
 
 if __name__ == '__main__':
     pytest.main()

@@ -5,7 +5,7 @@ import numpy as np
 from lenstronomy.Util import param_util
 from lenstronomy.Util import util
 
-__all__ = ['CSE', 'CSEMajorAxis', 'CSEMajorAxisSet']
+__all__ = ['CSE', 'CSEMajorAxis', 'CSEMajorAxisSet','CSEProductAvg','CSEProductAvgSet']
 
 
 class CSE(LensProfileBase):

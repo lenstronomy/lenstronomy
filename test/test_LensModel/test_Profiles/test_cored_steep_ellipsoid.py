@@ -62,18 +62,15 @@ class TestCSP(object):
         f_xx, f_xy, f_yx, f_yy = self.CSP.hessian(y, x, **kwargs)
         kappa_minor = 1. / 2 * (f_xx + f_yy)
 
-        import matplotlib.pyplot as plt
-        # plt.plot(x, kappa_round, ':', label='round', alpha=0.5)
-        plt.plot(x, kappa_major/kappa_round, ',-', label='major/round', alpha=0.5)
-        plt.plot(x, kappa_minor/kappa_round, '--', label='minor/round', alpha=0.5)
-        # plt.plot(x, np.sqrt(kappa_minor*kappa_major), '-', label='square', alpha=0.5)
+        # import matplotlib.pyplot as plt
+        # plt.plot(x, kappa_major/kappa_round, ',-', label='major/round', alpha=0.5)
+        # plt.plot(x, kappa_minor/kappa_round, '--', label='minor/round', alpha=0.5)
+        #
+        # plt.plot(x, np.sqrt(kappa_minor*kappa_major)/kappa_round,label='prod/kappa_round')
+        # plt.legend()
+        # plt.show()
 
-        plt.plot(x, np.sqrt(kappa_minor*kappa_major)/kappa_round,label='prod/kappa_round')
-        plt.legend()
-        plt.show()
-
-        # npt.assert_almost_equal(kappa_round,np.sqrt(kappa_minor*kappa_major), decimal=5)
-#test that it breaks if product average or major axis not given
+        npt.assert_almost_equal(kappa_round,np.sqrt(kappa_minor*kappa_major), decimal=1)
 
 if __name__ == '__main__':
     pytest.main()

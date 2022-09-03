@@ -44,13 +44,11 @@ class Nautilus(object):
         if prior_type == 'uniform':
             for i in range(self._num_param):
                 prior.add_parameter(dist=(self._lower_limit[i], self._upper_limit[i]))
-            # assert self._num_param == prior.dimensionality()
-            # print(self._num_param, prior.dimensionality(), 'number of param, dimensionality')
         else:
             raise ValueError('prior_type %s is not supported for Nautilus wrapper.' % prior_type)
         # loop through prior
         pool = choose_pool(mpi=mpi, processes=thread_count, use_dill=True)
-        sampler = Sampler(prior, likelihood=self.likelihood, pool=pool, **kwargs_nautilus)
+        sampler = Sampler(prior, likelihood=self.likelihood, pool=pool, pass_struct=False, **kwargs_nautilus)
         time_start = time.time()
         if one_step is True:
             sampler.add_bound()

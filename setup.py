@@ -56,7 +56,7 @@ requires = ['numpy>=1.13',
             ]
 tests_require = ['pytest>=2.3', "mock", 'colossus==1.3.0', 'slitronomy==0.3.2',
                  'emcee>=3.0.0', 'dynesty', 'nestcheck', 'pymultinest', 'zeus-mcmc>=2.4.0',
-                 'nautilus-sampler==0.1.0',
+                 'nautilus-sampler>=0.2.1',
                  ]
 
 PACKAGE_PATH = os.path.abspath(os.path.join(__file__, os.pardir))

@@ -40,7 +40,7 @@ class TestLensModel(object):
         lensModel = SinglePlane(['GAUSSIAN_KAPPA'])
         kwargs = [{'amp': 1., 'sigma': 2., 'center_x': 0., 'center_y': 0.}]
         output = lensModel.mass_2d(r=1, kwargs=kwargs)
-        assert output == 0.11750309741540453
+        npt.assert_almost_equal(output, 0.11750309741540453, decimal=9)
 
     def test_density(self):
         theta_E = 1

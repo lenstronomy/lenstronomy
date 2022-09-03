@@ -15,7 +15,7 @@ pyyaml
 pyxdg
 h5py
 zeus-mcmc
-nautilus-sampler==0.1.0
+nautilus-sampler>=0.2.1
 
 
 schwimmbad

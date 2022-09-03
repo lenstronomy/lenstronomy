@@ -1,4 +1,4 @@
-__author__ = 'ewoudwempe'
+__author__ = 'ewoudwempe', 'sibirrer'
 
 import numpy as np
 from lenstronomy.LensModel.Util.epl_util import min_approx, pol_to_cart, cart_to_pol, cdot, ps, rotmat, solvequadeq, brentq_inline

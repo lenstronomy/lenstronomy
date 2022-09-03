@@ -46,15 +46,15 @@ class TestNautilusSampler(object):
         kwargs_run_fail['prior_type'] = 'wrong'
         assert_raises(ValueError, sampler.nautilus_sampling, **kwargs_run_fail)
 
-    def test_prior(self):
+    # def test_prior(self):
 
-        num_param = 10
-        from nautilus import Prior
-        prior = Prior()
+    #    num_param = 10
+    #    from nautilus import Prior
+    #    prior = Prior()
 
-        for i in range(num_param):
-            prior.add_parameter(dist=(0, 1))
-        assert num_param == prior.dimensionality()
+    #    for i in range(num_param):
+    #        prior.add_parameter(dist=(0, 1))
+    #    assert num_param == prior.dimensionality()
 
 
 if __name__ == '__main__':

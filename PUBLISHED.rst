@@ -235,6 +235,10 @@ Galaxy formation and evolution
 * Early results from GLASS-JWST. V: the first rest-frame optical size-luminosity relation of galaxies at  z>7; `Yang et al. 2022b <https://arxiv.org/abs/2207.13101>`_
     *galaxy size measurement from JWST data with Galight/lenstronomy*
 
+* A New Polar Ring Galaxy Discovered in the COSMOS Field; `Nishimura et al. 2022 <https://arxiv.org/abs/2208.12388>`_
+
+* Webb's PEARLS: dust attenuation and gravitational lensing in the backlit-galaxy system VV 191; `Keel et al. 2022 <https://arxiv.org/abs/2208.14475>`_
+
 
 
 Automatized Lens Modeling

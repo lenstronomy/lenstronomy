@@ -4,7 +4,8 @@ Published work with lenstronomy
 
 In this section you can find the concept papers **lenstronomy** is based on and a list of science publications that made
 use of **lenstronomy** before 09/2022.
-For a more complete and current list of publications using lenstronomy we refer to the `NASA/ADS query <https://ui.adsabs.harvard.edu/search/p_=0&q=citations(author%3A%22%5EBirrer%22%20title%3A%22lenstronomy%22)&sort=date%20desc%2C%20bibcode%20desc>`_,.
+For a more complete and current list of publications using lenstronomy we refer to the `NASA/ADS query <https://ui.adsabs.harvard.edu/search/p_=0&q=citations(author%3A%22%5EBirrer%22%20title%3A%22lenstronomy%22)&sort=date%20desc%2C%20bibcode%20desc>`_
+(this incudes all publications citing lenstronomy papers, which is not the same as publications making active use of the software).
 
 
 Core lenstronomy methodology and software publications

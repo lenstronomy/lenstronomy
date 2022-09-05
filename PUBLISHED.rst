@@ -2,10 +2,9 @@
 Published work with lenstronomy
 ===============================
 
-In this section you can find the concept papers **lenstronomy** is based on the list of science publications that made
-use of **lenstronomy**. Please let the developers know when you publish a paper that made use of **lenstronomy**.
-We are happy to include your publication in this list.
-
+In this section you can find the concept papers **lenstronomy** is based on and a list of science publications that made
+use of **lenstronomy** before 09/2022.
+For a more complete and current list of publications using lenstronomy we refer to the `NASA/ADS query <https://ui.adsabs.harvard.edu/search/p_=0&q=citations(author%3A%22%5EBirrer%22%20title%3A%22lenstronomy%22)&sort=date%20desc%2C%20bibcode%20desc>`_,.
 
 
 Core lenstronomy methodology and software publications
@@ -43,6 +42,10 @@ Related software publications
     *Presenting a new software 'herculens'. The code structure and part of the modeling routines of herculens are based on lenstronomy.*
 
 
+
+=====================================
+Scientific publication before 09/2022
+=====================================
 
 
 
@@ -348,7 +351,6 @@ Large scale structure
 
 * Combining strong and weak lensingestimates in the Cosmos field; `Kuhn et al. 2020 <https://arxiv.org/abs/2010.08680>`_
     *inferring cosmic shear with three strong lenses in the COSMOS field*
-
 
 
 

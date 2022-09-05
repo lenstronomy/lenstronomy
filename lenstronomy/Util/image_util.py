@@ -3,7 +3,6 @@ __author__ = 'sibirrer'
 import numpy as np
 from scipy import ndimage
 from scipy import interpolate
-from scipy.ndimage import interpolation as interp
 import copy
 import lenstronomy.Util.util as util
 
@@ -15,6 +14,7 @@ export, __all__ = exporter()
 def add_layer2image(grid2d, x_pos, y_pos, kernel, order=1):
     """
     adds a kernel on the grid2d image at position x_pos, y_pos with an interpolated subgrid pixel shift of order=order
+
     :param grid2d: 2d pixel grid (i.e. image)
     :param x_pos: x-position center (pixel coordinate) of the layer to be added
     :param y_pos: y-position center (pixel coordinate) of the layer to be added
@@ -27,7 +27,7 @@ def add_layer2image(grid2d, x_pos, y_pos, kernel, order=1):
     y_int = int(round(y_pos))
     shift_x = x_int - x_pos
     shift_y = y_int - y_pos
-    kernel_shifted = interp.shift(kernel, shift=[-shift_y, -shift_x], order=order)
+    kernel_shifted = ndimage.shift(kernel, shift=[-shift_y, -shift_x], order=order)
     return add_layer2image_int(grid2d, x_int, y_int, kernel_shifted)
 
 
@@ -35,6 +35,7 @@ def add_layer2image(grid2d, x_pos, y_pos, kernel, order=1):
 def add_layer2image_int(grid2d, x_pos, y_pos, kernel):
     """
     adds a kernel on the grid2d image at position x_pos, y_pos at integer positions of pixel
+
     :param grid2d: 2d pixel grid (i.e. image)
     :param x_pos: x-position center (pixel coordinate) of the layer to be added
     :param y_pos: y-position center (pixel coordinate) of the layer to be added
@@ -121,6 +122,7 @@ def rotateImage(img, angle):
 def re_size_array(x_in, y_in, input_values, x_out, y_out):
     """
     resizes 2d array (i.e. image) to new coordinates. So far only works with square output aligned with coordinate axis.
+
     :param x_in:
     :param y_in:
     :param input_values:
@@ -138,6 +140,7 @@ def re_size_array(x_in, y_in, input_values, x_out, y_out):
 def symmetry_average(image, symmetry):
     """
     symmetry averaged image
+
     :param image:
     :param symmetry:
     :return:
@@ -176,8 +179,6 @@ def coordInImage(x_coord, y_coord, num_pix, deltapix):
     checks whether image positions are within the pixel image in units of arcsec
     if not: remove it
 
-    :param imcoord: image coordinate (in units of angels)  [[x,y,delta,magnification][...]]
-    :type imcoord: (n,4) numpy array
     :returns: image positions within the pixel image
     """
     idex = []
@@ -243,14 +244,7 @@ def rebin_image(bin_size, image, wht_map, sigma_bkg, ra_coords, dec_coords, idex
 def rebin_coord_transform(factor, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix):
     """
     adopt coordinate system and transformation between angular and pixel coordinates of a re-binned image
-    :param bin_size:
-    :param ra_0:
-    :param dec_0:
-    :param x_0:
-    :param y_0:
-    :param Matrix:
-    :param Matrix_inv:
-    :return:
+
     """
     factor = int(factor)
     Mcoord2pix_resized = Mcoord2pix / factor
@@ -265,7 +259,7 @@ def rebin_coord_transform(factor, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord
 def stack_images(image_list, wht_list, sigma_list):
     """
     stacks images and saves new image as a fits file
-    :param image_name_list: list of image_names to be stacked
+
     :return:
     """
     image_stacked = np.zeros_like(image_list[0])
@@ -286,6 +280,7 @@ def cut_edges(image, num_pix):
     """
     cuts out the edges of a 2d image and returns re-sized image to numPix
     center is well defined for odd pixel sizes.
+
     :param image: 2d numpy array
     :param num_pix: square size of cut out image
     :return: cutout image with size numPix

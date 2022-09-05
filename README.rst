@@ -1,7 +1,6 @@
-====================================================
-lenstronomy - gravitational lensing software package
-====================================================
 
+.. image:: https://raw.githubusercontent.com/lenstronomy/lenstronomy/main/docs/figures/logo_text.png
+    :target: https://raw.githubusercontent.com/lenstronomy/lenstronomy/main/docs/figures/logo_text.png
 
 .. image:: https://github.com/lenstronomy/lenstronomy/workflows/Tests/badge.svg
     :target: https://github.com/lenstronomy/lenstronomy/actions
@@ -13,11 +12,8 @@ lenstronomy - gravitational lensing software package
 .. image:: https://coveralls.io/repos/github/lenstronomy/lenstronomy/badge.svg?branch=main
         :target: https://coveralls.io/github/lenstronomy/lenstronomy?branch=main
 
-.. image:: https://img.shields.io/badge/license-MIT-blue.svg?style=flat
+.. image:: https://img.shields.io/badge/License-BSD_3--Clause-blue.svg
     :target: https://github.com/lenstronomy/lenstronomy/blob/main/LICENSE
-
-.. image:: https://img.shields.io/badge/arXiv-1803.09746%20-yellowgreen.svg
-    :target: https://arxiv.org/abs/1803.09746
 
 .. image:: http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat
         :target: http://www.astropy.org
@@ -26,12 +22,15 @@ lenstronomy - gravitational lensing software package
 .. image:: https://joss.theoj.org/papers/6a562375312c9a9e4466912a16f27589/status.svg
     :target: https://joss.theoj.org/papers/6a562375312c9a9e4466912a16f27589
 
-.. image:: https://raw.githubusercontent.com/lenstronomy/lenstronomy/main/docs/figures/readme_fig.png
-    :target: https://raw.githubusercontent.com/lenstronomy/lenstronomy/main/docs/figures/readme_fig.png
+.. image:: https://img.shields.io/badge/arXiv-1803.09746%20-yellowgreen.svg
+    :target: https://arxiv.org/abs/1803.09746
+
+..
+    .. image:: https://raw.githubusercontent.com/lenstronomy/lenstronomy/main/docs/figures/readme_fig.png
+        :target: https://raw.githubusercontent.com/lenstronomy/lenstronomy/main/docs/figures/readme_fig.png
 
 
-``lenstronomy`` is a multi-purpose package to model strong gravitational lenses. The software package is presented in
-`Birrer & Amara 2018 <https://arxiv.org/abs/1803.09746v1>`_ and `Birrer et al. 2021 <https://joss.theoj.org/papers/10.21105/joss.03283>`_ , and is based on `Birrer et al 2015 <http://adsabs.harvard.edu/abs/2015ApJ...813..102B>`_.
+``lenstronomy`` is a multi-purpose software package to model strong gravitational lenses.
 ``lenstronomy`` finds application for time-delay cosmography and measuring
 the expansion rate of the Universe, for quantifying lensing substructure to infer dark matter properties, morphological quantification of galaxies,
 quasar-host galaxy decomposition and much more.
@@ -82,7 +81,7 @@ with interactive Jupyter notebooks in the cloud.
 Example notebooks
 -----------------
 
-We have made an extension module available at `https://github.com/lenstronomy/lenstronom-tutorials <https://github.com/lenstronomy/lenstronom-tutorials>`_.
+We have made an extension module available at `https://github.com/lenstronomy/lenstronomy-tutorials <https://github.com/lenstronomy/lenstronomy-tutorials>`_.
 You can find simple example notebooks for various cases. The latest versions of the notebooks should be compatible with the recent pip version of lenstronomy.
 
 
@@ -120,9 +119,9 @@ and become an author of ``lenstronomy``! A big shout-out to the current `list of
 
 Attribution
 -----------
-The design concept of ``lenstronomy`` is reported by `Birrer & Amara 2018 <https://arxiv.org/abs/1803.09746v1>`_.
+The design concept of ``lenstronomy`` is reported by `Birrer & Amara 2018 <https://arxiv.org/abs/1803.09746v1>`_ and is based on `Birrer et al 2015 <http://adsabs.harvard.edu/abs/2015ApJ...813..102B>`_.
 The current JOSS software publication is presented by `Birrer et al. 2021 <https://joss.theoj.org/papers/10.21105/joss.03283>`_.
-Please cite these two publications when you use lenstronomy in a publication and link to `https://github.com/lenstronomy/lenstronomy <https://github.com/sibirrer/lenstronomy>`_.
+Please cite `Birrer & Amara 2018 <https://arxiv.org/abs/1803.09746v1>`_ and `Birrer et al. 2021 <https://joss.theoj.org/papers/10.21105/joss.03283>`_ when you use lenstronomy in a publication and link to `https://github.com/lenstronomy/lenstronomy <https://github.com/lenstronomy/lenstronomy>`_.
 Please also cite `Birrer et al 2015 <http://adsabs.harvard.edu/abs/2015ApJ...813..102B>`_
 when you make use of the ``lenstronomy`` work-flow or the Shapelet source reconstruction and make sure to cite also
 the relevant work that was implemented in ``lenstronomy``, as described in the release paper and the documentation.

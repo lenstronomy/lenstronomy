@@ -2,10 +2,10 @@
 Published work with lenstronomy
 ===============================
 
-In this section you can find the concept papers **lenstronomy** is based on the list of science publications that made
-use of **lenstronomy**. Please let the developers know when you publish a paper that made use of **lenstronomy**.
-We are happy to include your publication in this list.
-
+In this section you can find the concept papers **lenstronomy** is based on and a list of science publications that made
+use of **lenstronomy** before 09/2022.
+For a more complete and current list of publications using lenstronomy we refer to the `NASA/ADS query <https://ui.adsabs.harvard.edu/search/p_=0&q=citations(author%3A%22%5EBirrer%22%20title%3A%22lenstronomy%22)&sort=date%20desc%2C%20bibcode%20desc>`_
+(this incudes all publications citing lenstronomy papers, which is not the same as publications making active use of the software).
 
 
 Core lenstronomy methodology and software publications
@@ -43,6 +43,10 @@ Related software publications
     *Presenting a new software 'herculens'. The code structure and part of the modeling routines of herculens are based on lenstronomy.*
 
 
+
+=====================================
+Scientific publication before 09/2022
+=====================================
 
 
 
@@ -220,7 +224,7 @@ Galaxy formation and evolution
 * RELICS: Small Lensed z≥5.5 Galaxies Selected as Potential Lyman Continuum Leakers; `Neufeld et al. 2021 <https://arxiv.org/abs/2111.14882>`_
     *size measurements of high-z lensed galaxies*
 
-* The size-luminosity relation of lensed galaxies at z=6−9 in the Hubble Frontier Fields; `Yang et al. 2022 <https://arxiv.org/abs/2201.08858>`_
+* The size-luminosity relation of lensed galaxies at z=6−9 in the Hubble Frontier Fields; `Yang et al. 2022a <https://arxiv.org/abs/2201.08858>`_
     *size measurements of high-z lensed galaxies*
 
 * The Near Infrared Imager and Slitless Spectrograph for the James Webb Space Telescope -- II. Wide Field Slitless Spectroscopy; `Willott et al. 2022 <https://arxiv.org/abs/2202.01714>`_
@@ -232,8 +236,12 @@ Galaxy formation and evolution
 * Concordance between observations and simulations in the evolution of the mass relation between supermassive black holes and their host galaxies; `Ding et al. 2022 <https://arxiv.org/abs/2205.04481>`_
     *galaxy size measurement with quasar decomposition*
 
-* Early results from GLASS-JWST. V: the first rest-frame optical size-luminosity relation of galaxies at  z>7; `Yang et al. 2022 <https://arxiv.org/abs/2207.13101>`_
+* Early results from GLASS-JWST. V: the first rest-frame optical size-luminosity relation of galaxies at  z>7; `Yang et al. 2022b <https://arxiv.org/abs/2207.13101>`_
     *galaxy size measurement from JWST data with Galight/lenstronomy*
+
+* A New Polar Ring Galaxy Discovered in the COSMOS Field; `Nishimura et al. 2022 <https://arxiv.org/abs/2208.12388>`_
+
+* Webb's PEARLS: dust attenuation and gravitational lensing in the backlit-galaxy system VV 191; `Keel et al. 2022 <https://arxiv.org/abs/2208.14475>`_
 
 
 
@@ -344,7 +352,6 @@ Large scale structure
 
 * Combining strong and weak lensingestimates in the Cosmos field; `Kuhn et al. 2020 <https://arxiv.org/abs/2010.08680>`_
     *inferring cosmic shear with three strong lenses in the COSMOS field*
-
 
 
 

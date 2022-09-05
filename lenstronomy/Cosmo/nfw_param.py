@@ -81,6 +81,7 @@ class NFWParam(object):
     def c_rho0(self, rho0, z):
         """
         computes the concentration given density normalization rho_0 in h^2/Mpc^3 (physical) (inverse of function rho0_c)
+
         :param rho0: density normalization in h^2/Mpc^3 (physical)
         :param z: redshift
         :return: concentration parameter c

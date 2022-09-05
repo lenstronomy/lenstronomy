@@ -26,7 +26,7 @@ class Aperture(object):
 
         :param aperture_type: string
         :param kwargs_aperture: keyword arguments reflecting the aperture type chosen.
-        We refer to the specific class instances for documentation.
+         We refer to the specific class instances for documentation.
         """
         if aperture_type == 'slit':
             self._aperture = Slit(**kwargs_aperture)

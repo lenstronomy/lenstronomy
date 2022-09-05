@@ -4,6 +4,7 @@ routines that manipulate convolution kernels
 import numpy as np
 import copy
 import scipy.ndimage.interpolation as interp
+from scipy import ndimage
 import lenstronomy.Util.util as util
 import lenstronomy.Util.image_util as image_util
 from lenstronomy.LightModel.Profiles.gaussian import Gaussian
@@ -19,8 +20,8 @@ def de_shift_kernel(kernel, shift_x, shift_y, iterations=20, fractional_step_siz
     de-shifts a shifted kernel to the center of a pixel. This is performed iteratively.
 
     The input kernel is the solution of a linear interpolated shift of a sharper kernel centered in the middle of the
-     pixel. To find the de-shifted kernel, we perform an iterative correction of proposed de-shifted kernels and compare
-     its shifted version with the input kernel.
+    pixel. To find the de-shifted kernel, we perform an iterative correction of proposed de-shifted kernels and compare
+    its shifted version with the input kernel.
 
     :param kernel: (shifted) kernel, e.g. a star in an image that is not centered in the pixel grid
     :param shift_x: x-offset relative to the center of the pixel (sub-pixel shift)
@@ -37,11 +38,11 @@ def de_shift_kernel(kernel, shift_x, shift_y, iterations=20, fractional_step_siz
     int_shift_y = int(round(shift_y))
     frac_y_shift = shift_y - int_shift_y
     kernel_init = copy.deepcopy(kernel_new)
-    kernel_init_shifted = copy.deepcopy(interp.shift(kernel_init, shift=[int_shift_y, int_shift_x], order=1))
-    kernel_new = interp.shift(kernel_new, shift=[int_shift_y, int_shift_x], order=1)
+    kernel_init_shifted = copy.deepcopy(ndimage.shift(kernel_init, shift=[int_shift_y, int_shift_x], order=1))
+    kernel_new = ndimage.shift(kernel_new, shift=[int_shift_y, int_shift_x], order=1)
     norm = np.sum(kernel_init_shifted)
     for i in range(iterations):
-        kernel_shifted_inv = interp.shift(kernel_new, shift=[-frac_y_shift, -frac_x_shift], order=1)
+        kernel_shifted_inv = ndimage.shift(kernel_new, shift=[-frac_y_shift, -frac_x_shift], order=1)
         delta = kernel_init_shifted - kernel_norm(kernel_shifted_inv) * norm
         kernel_new += delta * fractional_step_size
         kernel_new = kernel_norm(kernel_new) * norm
@@ -149,6 +150,7 @@ def subgrid_kernel(kernel, subgrid_res, odd=False, num_iter=100):
 def kernel_pixelsize_change(kernel, deltaPix_in, deltaPix_out):
     """
     change the pixel size of a given kernel
+
     :param kernel:
     :param deltaPix_in:
     :param deltaPix_out:
@@ -169,6 +171,7 @@ def kernel_pixelsize_change(kernel, deltaPix_in, deltaPix_out):
 def cut_psf(psf_data, psf_size):
     """
     cut the psf properly
+
     :param psf_data: image of PSF
     :param psf_size: size of psf
     :return: re-sized and re-normalized PSF
@@ -371,6 +374,7 @@ def averaging_even_kernel(kernel_high_res, subgrid_res):
 def cutout_source(x_pos, y_pos, image, kernelsize, shift=True):
     """
     cuts out point source (e.g. PSF estimate) out of image and shift it to the center of a pixel
+
     :param x_pos:
     :param y_pos:
     :param image:
@@ -434,6 +438,7 @@ def fwhm_kernel(kernel):
 def estimate_amp(data, x_pos, y_pos, psf_kernel):
     """
     estimates the amplitude of a point source located at x_pos, y_pos
+
     :param data:
     :param x_pos:
     :param y_pos:

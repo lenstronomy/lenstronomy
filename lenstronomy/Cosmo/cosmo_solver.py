@@ -85,15 +85,20 @@ class InvertCosmo(object):
     """
     class to do an interpolation and call the inverse of this interpolation to get H_0 and omega_m
     """
-    def __init__(self, z_d, z_s, H0_range=np.linspace(10, 100, 90), omega_m_range=np.linspace(0.05, 1, 95)):
+    def __init__(self, z_d, z_s, H0_range=None, omega_m_range=None):
         self.z_d = z_d
         self.z_s = z_s
+        if H0_range is None:
+            H0_range = np.linspace(10, 100, 90)
+        if omega_m_range is None:
+            omega_m_range = np.linspace(0.05, 1, 95)
         self._H0_range = H0_range
         self._omega_m_range = omega_m_range
 
     def _make_interpolation(self):
         """
         creates an interpolation grid in H_0, omega_m and computes quantities in Dd and Ds_Dds
+
         :return:
         """
         grid2d = np.dstack(np.meshgrid(self._H0_range, self._omega_m_range)).reshape(-1, 2)
@@ -115,6 +120,7 @@ class InvertCosmo(object):
     def get_cosmo(self, Dd, Ds_Dds):
         """
         return the values of H0 and omega_m computed with an interpolation
+
         :param Dd: flat
         :param Ds_Dds: float
         :return:

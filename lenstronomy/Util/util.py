@@ -95,6 +95,7 @@ def map_coord2pix(ra, dec, x_0, y_0, M):
     """
     this routines performs a linear transformation between two coordinate systems. Mainly used to transform angular
     into pixel coordinates in an image
+
     :param ra: ra coordinates
     :param dec: dec coordinates
     :param x_0: pixel value in x-axis of ra,dec = 0,0
@@ -226,6 +227,7 @@ def make_grid(numPix, deltapix, subgrid_res=1, left_lower=False):
 def make_grid_transformed(numPix, Mpix2Angle):
     """
     returns grid with linear transformation (deltaPix and rotation)
+
     :param numPix: number of Pixels
     :param Mpix2Angle: 2-by-2 matrix to mat a pixel to a coordinate
     :return: coordinate grid
@@ -281,7 +283,6 @@ def grid_from_coordinate_transform(nx, ny, Mpix2coord, ra_at_xy_0, dec_at_xy_0):
     """
     return a grid in x and y coordinates that satisfy the coordinate system
 
-
     :param nx: number of pixels in x-axis
     :param ny: number of pixels in y-axis
     :param Mpix2coord: transformation matrix (2x2) of pixels into coordinate displacements
@@ -303,6 +304,7 @@ def grid_from_coordinate_transform(nx, ny, Mpix2coord, ra_at_xy_0, dec_at_xy_0):
 def get_axes(x, y):
     """
     computes the axis x and y of a given 2d grid
+
     :param x:
     :param y:
     :return:
@@ -321,6 +323,7 @@ def get_axes(x, y):
 def averaging(grid, numGrid, numPix):
     """
     resize 2d pixel grid with numGrid to numPix and averages over the pixels
+
     :param grid: higher resolution pixel grid
     :param numGrid: number of pixels per axis in the high resolution input image
     :param numPix: lower number of pixels per axis in the output image (numGrid/numPix is integer number)
@@ -403,6 +406,7 @@ def compare_distance(x_mapped, y_mapped):
 def min_square_dist(x_1, y_1, x_2, y_2):
     """
     return minimum of quadratic distance of pairs (x1, y1) to pairs (x2, y2)
+
     :param x_1:
     :param y_1:
     :param x_2:
@@ -467,6 +471,7 @@ def select_best(array, criteria, num_select, highest=True):
 def points_on_circle(radius, num_points, connect_ends=True):
     """
     returns a set of uniform points around a circle
+
     :param radius: radius of the circle
     :param num_points: number of points on the circle
     :param connect_ends: boolean, if True, start and end point are the same
@@ -479,6 +484,40 @@ def points_on_circle(radius, num_points, connect_ends=True):
     x_coord = np.cos(angle) * radius
     y_coord = np.sin(angle) * radius
     return x_coord, y_coord
+
+@export
+@jit()
+def local_minima_2d(a, x, y):
+    """
+    finds (local) minima in a 2d grid
+    applies less rigid criteria for maximum without second-order tangential minima criteria
+
+    :param a: 1d array of displacements from the source positions
+    :type a: numpy array with length numPix**2 in float
+    :param x: 1d coordinate grid in x-direction
+    :type x: numpy array with length numPix**2 in float
+    :param y: 1d coordinate grid in x-direction
+    :type y: numpy array with length numPix**2 in float
+    :returns:  array of indices of local minima, values of those minima
+    :raises: AttributeError, KeyError
+    """
+    dim = int(np.sqrt(len(a)))
+    values = []
+    x_mins = []
+    y_mins = []
+    for i in range(dim + 1, len(a) - dim - 1):
+        if (a[i] < a[i - 1]
+                and a[i] < a[i + 1]
+                and a[i] < a[i - dim]
+                and a[i] < a[i + dim]
+                and a[i] < a[i - (dim - 1)]
+                and a[i] < a[i - (dim + 1)]
+                and a[i] < a[i + (dim - 1)]
+                and a[i] < a[i + (dim + 1)]):
+            x_mins.append(x[i])
+            y_mins.append(y[i])
+            values.append(a[i])
+    return np.array(x_mins), np.array(y_mins), np.array(values)
 
 
 @export
@@ -540,7 +579,7 @@ def neighborSelect(a, x, y):
 def fwhm2sigma(fwhm):
     """
 
-    :param fwhm: full-widt-half-max value
+    :param fwhm: full-width-half-max value
     :return: gaussian sigma (sqrt(var))
     """
     sigma = fwhm / (2 * np.sqrt(2 * np.log(2)))
@@ -585,6 +624,7 @@ def hyper2F2_array(a, b, c, d, x):
 def make_subgrid(ra_coord, dec_coord, subgrid_res=2):
     """
     return a grid with subgrid resolution
+
     :param ra_coord:
     :param dec_coord:
     :param subgrid_res:
@@ -620,6 +660,7 @@ def make_subgrid(ra_coord, dec_coord, subgrid_res=2):
 def convert_bool_list(n, k=None):
     """
     returns a bool list of the length of the lens models
+
     if k = None: returns bool list with True's
     if k is int, returns bool list with False's but k'th is True
     if k is a list of int, e.g. [0, 3, 5], returns a bool list with True's in the integers listed and False elsewhere

@@ -14,7 +14,7 @@ class DifferentialExtinction(object):
         """
 
         :param optical_depth_model: list of strings naming the profiles (same convention as LightModel module)
-        describing the optical depth of the extinction
+         describing the optical depth of the extinction
         """
         if optical_depth_model is None:
             optical_depth_model = []

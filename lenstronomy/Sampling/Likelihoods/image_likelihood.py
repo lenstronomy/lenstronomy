@@ -19,9 +19,9 @@ class ImageLikelihood(object):
         :param image_likelihood_mask_list: list of boolean 2d arrays of size of images marking the pixels to be
          evaluated in the likelihood
         :param source_marg: marginalization addition on the imaging likelihood based on the covariance of the inferred
-        linear coefficients
+         linear coefficients
         :param linear_prior: float or list of floats (when multi-linear setting is chosen) indicating the range of
-        linear amplitude priors when computing the marginalization term.
+         linear amplitude priors when computing the marginalization term.
         :param check_positive_flux: bool, option to punish models that do not have all positive linear amplitude
          parameters
         :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver

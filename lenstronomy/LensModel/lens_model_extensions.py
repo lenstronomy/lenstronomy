@@ -13,12 +13,12 @@ class LensModelExtensions(object):
 
         """
         :param lensModel: instance of the LensModel() class, or with same functionalities.
-        In particular, the following definitions are required to execute all functionalities presented in this class:
-        def ray_shooting()
-        def magnification()
-        def kappa()
-        def alpha()
-        def hessian()
+         In particular, the following definitions are required to execute all functionalities presented in this class:
+         def ray_shooting()
+         def magnification()
+         def kappa()
+         def alpha()
+         def hessian()
 
         """
         self._lensModel = lensModel

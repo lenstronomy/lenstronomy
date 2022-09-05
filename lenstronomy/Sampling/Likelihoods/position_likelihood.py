@@ -19,7 +19,7 @@ class PositionLikelihood(object):
         :param image_position_uncertainty: uncertainty in image position uncertainty (1-sigma Gaussian radially),
          this is applicable for astrometric uncertainties as well as if image positions are provided as data
         :param astrometric_likelihood: bool, if True, evaluates the astrometric uncertainty of the predicted and modeled
-        image positions with an offset 'delta_x_image' and 'delta_y_image'
+         image positions with an offset 'delta_x_image' and 'delta_y_image'
         :param image_position_likelihood: bool, if True, evaluates the likelihood of the model predicted image position
          given the data/measured image positions
         :param ra_image_list: list or RA image positions per model component
@@ -32,11 +32,11 @@ class PositionLikelihood(object):
         :param source_position_sigma: r.m.s. value corresponding to a 1-sigma Gaussian likelihood accepted by the model
          precision in matching the source position
         :param force_no_add_image: bool, if True, will punish additional images appearing in the frame of the modelled
-        image(first calculate them)
+         image(first calculate them)
         :param restrict_image_number: bool, if True, searches for all appearing images in the frame of the data and
-        compares with max_num_images
+         compares with max_num_images
         :param max_num_images: integer, maximum number of appearing images. Default is the number of  images given in
-        the Param() class
+         the Param() class
         """
         self._pointSource = point_source_class
         # TODO replace with public function of ray_shooting

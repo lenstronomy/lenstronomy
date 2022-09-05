@@ -56,7 +56,7 @@ requires = ['numpy>=1.13',
             ]
 tests_require = ['pytest>=2.3', "mock", 'colossus==1.3.0', 'slitronomy==0.3.2',
                  'emcee>=3.0.0', 'dynesty', 'nestcheck', 'pymultinest', 'zeus-mcmc>=2.4.0',
-                 'nautilus-sampler==0.1.0',
+                 'nautilus-sampler>=0.2.1',
                  ]
 
 PACKAGE_PATH = os.path.abspath(os.path.join(__file__, os.pardir))
@@ -67,16 +67,16 @@ setup(
     version='1.10.4',
     description='Strong lens modeling package.',
     long_description=desc,
-    author='Simon Birrer',
+    author='lenstronomy developers',
     author_email='sibirrer@gmail.com',
-    url='https://github.com/sibirrer/lenstronomy',
+    url='https://github.com/lenstronomy/lenstronomy',
     download_url='https://github.com/sibirrer/lenstronomy/archive/1.10.4.tar.gz',
     packages=find_packages(PACKAGE_PATH, "test"),
     package_dir={'lenstronomy': 'lenstronomy'},
     include_package_data=True,
     # setup_requires=requires,
     install_requires=requires,
-    license='MIT',
+    license='BSD-3',
     zip_safe=False,
     keywords='lenstronomy',
     classifiers=[

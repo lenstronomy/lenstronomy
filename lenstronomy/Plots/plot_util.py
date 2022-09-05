@@ -10,14 +10,14 @@ export, __all__ = exporter()
 def sqrt(inputArray, scale_min=None, scale_max=None):
     """Performs sqrt scaling of the input numpy array.
 
-    @type inputArray: numpy array
-    @param inputArray: image data array
-    @type scale_min: float
-    @param scale_min: minimum data value
-    @type scale_max: float
-    @param scale_max: maximum data value
-    @rtype: numpy array
-    @return: image data array
+    :type inputArray: numpy array
+    :param inputArray: image data array
+    :type scale_min: float
+    :param scale_min: minimum data value
+    :type scale_max: float
+    :param scale_max: maximum data value
+    :rtype: numpy array
+    :return: image data array
 
     """
 

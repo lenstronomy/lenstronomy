@@ -270,9 +270,19 @@ class CSEProductAvg(LensProfileBase):
     lower_limit_default = {'A': -1000, 's': 0, 'q': 0.001, 'center_x': -100, 'center_y': -100}
     upper_limit_default = {'A': 1000, 's': 10000, 'q': 0.99999, 'e2': 0.5, 'center_x': -100, 'center_y': -100}
 
+    def __init__(self):
+        self.MA_class = CSEMajorAxis()
+
+    def _convert2prodavg(self, x, y, a, s, q):
+        """
+        converts coordinates and renormalizes major-axis parameterization to instead be wrt. product-averaged
+        """
+        a = a / q
+        x = x * np.sqrt(q)
+        y = y * np.sqrt(q)
+        return x, y, a, s, q
     def function(self, x, y, a, s, q):
         """
-
         :param x: coordinate in image plane (angle)
         :param y: coordinate in image plane (angle)
         :param a: lensing strength
@@ -280,17 +290,11 @@ class CSEProductAvg(LensProfileBase):
         :param q: axis ratio
         :return: lensing potential
         """
-        x = x * np.sqrt(q)
-        y = y * np.sqrt(q)
-        # potential calculation
-        psi = np.sqrt(q**2*(s**2 + x**2) + y**2)
-        Phi = (psi + s)**2 + (1-q**2) * x**2
-        phi = q/(2*s) * np.log(Phi) - q/s * np.log((1+q) * s)
-        return a * phi
+        x, y, a, s, q = self._convert2prodavg(x, y, a, s, q)
+        return self.MA_class.function(x, y, a, s, q)
 
     def derivatives(self, x, y, a, s, q):
         """
-
         :param x: coordinate in image plane (angle)
         :param y: coordinate in image plane (angle)
         :param a: lensing strength
@@ -298,19 +302,13 @@ class CSEProductAvg(LensProfileBase):
         :param q: axis ratio
         :return: deflection in x- and y-direction
         """
-        x = x * np.sqrt(q)
-        y = y * np.sqrt(q)
-
-        psi = np.sqrt(q ** 2 * (s ** 2 + x ** 2) + y ** 2)
-        Phi = (psi + s) ** 2 + (1 - q ** 2) * x ** 2
-        f_x = q * x * (psi + q**2*s) / (s * psi * Phi)
-        f_y = q * y * (psi + s) / (s * psi * Phi)
-
-        return a * f_x, a * f_y
+        x, y, a, s, q = self._convert2prodavg(x, y, a, s, q)
+        af_x,af_y=self.MA_class.derivatives(x, y, a, s, q)
+        #extra sqrt(q) factor from taking derivative of transformed coordinate
+        return np.sqrt(q)* af_x, np.sqrt(q)* af_y
 
     def hessian(self, x, y, a, s, q):
         """
-
         :param x: coordinate in image plane (angle)
         :param y: coordinate in image plane (angle)
         :param a: lensing strength
@@ -318,17 +316,10 @@ class CSEProductAvg(LensProfileBase):
         :param q: axis ratio
         :return: hessian elements f_xx, f_xy, f_yx, f_yy
         """
-        x = x * np.sqrt(q)
-        y = y * np.sqrt(q)
-
-        # equations 21-23 in Oguri 2021
-        psi = np.sqrt(q ** 2 * (s ** 2 + x ** 2) + y ** 2)
-        Phi = (psi + s) ** 2 + (1 - q ** 2) * x ** 2
-        f_xx = q/(s * Phi) * (1 + q**2*s*(q**2 * s**2 + y**2)/psi**3 - 2*x**2*(psi + q**2*s)**2/(psi**2 * Phi))
-        f_yy = q/(s * Phi) * (1 + q**2 * s * (s**2 + x**2)/psi**3 - 2*y**2*(psi + s)**2/(psi**2 * Phi))
-        f_xy = - q * x*y / (s * Phi) * (q**2 * s / psi**3 + 2 * (psi + q**2*s) * (psi + s) / (psi**2 * Phi))
-
-        return a * f_xx, a * f_xy, a * f_xy, a * f_yy
+        x, y, a, s, q = self._convert2prodavg(x, y, a, s, q)
+        af_xx, af_xy, af_xy, af_yy=self.MA_class.hessian(x, y, a, s, q)
+        #two sqrt(q) factors from taking derivatives of transformed coordinate
+        return q* af_xx, q * af_xy, q * af_xy, q * af_yy
 
 
 class CSEProductAvgSet(LensProfileBase):

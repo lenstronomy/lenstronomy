@@ -16,6 +16,7 @@ class NFW_ELLIPSE_CSE(NFW_ELLIPSE):
     this class contains functions concerning the NFW profile with an ellipticity defined in the convergence
     parameterization of alpha_Rs and Rs is the same as for the spherical NFW profile
     Approximation with CSE profile introduced by Oguri 2021: https://arxiv.org/pdf/2106.11464.pdf
+    Match to NFW using CSEs is approximate: kappa matches to ~1-2%
 
     relation are: R_200 = c * Rs
 
@@ -31,7 +32,6 @@ class NFW_ELLIPSE_CSE(NFW_ELLIPSE):
 
         :param high_accuracy: boolean, if True uses a more accurate larger set of CSE profiles (see Oguri 2021)
         """
-        # self.cse_major_axis_set = CSEMajorAxisSet()
         self.cse_major_axis_set = CSEProductAvgSet()
         self.nfw = NFW()
         if high_accuracy is True:
@@ -169,7 +169,6 @@ class NFW_ELLIPSE_CSE(NFW_ELLIPSE):
         :return: normalization (m)
         """
         rho0 = self.nfw.alpha2rho0(alpha_Rs, Rs)
-        # c = 2 * q / (1 + q)  # this is the same as 1 - e with e = (1. - q) / (1. + q)
-        rs_ = Rs  #/ np.sqrt(q)
-        const = 4 * rho0 * rs_ ** 3 #/ c
+        rs_ = Rs
+        const = 4 * rho0 * rs_ ** 3
         return const

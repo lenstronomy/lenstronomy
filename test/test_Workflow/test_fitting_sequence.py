@@ -198,6 +198,7 @@ class TestFittingSequence(object):
         assert kwargs_set['kwargs_ps'][0]['ra_source'] == 0.007
 
     def test_zeus(self):
+        np.random.seed(42)
         # we make a very basic lens+source model to feed to check zeus can be run through fitting sequence
         # we don't use the kwargs defined in setup() as those are modified during the tests; using unique kwargs here is safer
 
@@ -214,8 +215,6 @@ class TestFittingSequence(object):
         data_class = ImageData(**kwargs_data)
         kwargs_psf_gaussian = {'psf_type': 'GAUSSIAN', 'fwhm': fwhm, 'pixel_size': deltaPix, 'truncation': 3}
         psf_gaussian = PSF(**kwargs_psf_gaussian)
-        kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': psf_gaussian.kernel_point_source, 'psf_error_map': np.zeros_like(psf_gaussian.kernel_point_source)}
-        psf_class = PSF(**kwargs_psf)
 
         # make a lens
         lens_model_list = ['EPL']
@@ -232,7 +231,7 @@ class TestFittingSequence(object):
 
         kwargs_numerics = {'supersampling_factor': 1, 'supersampling_convolution': False}
 
-        imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class, kwargs_numerics=kwargs_numerics)
+        imageModel = ImageModel(data_class, psf_gaussian, lens_model_class, source_model_class, kwargs_numerics=kwargs_numerics)
         image_sim = sim_util.simulate_simple(imageModel, kwargs_lens, kwargs_source)
 
         data_class.update_data(image_sim)
@@ -260,12 +259,12 @@ class TestFittingSequence(object):
 
         kwargs_constraints = {}
 
-        multi_band_list = [[kwargs_data, kwargs_psf, kwargs_numerics]]
+        multi_band_list = [[kwargs_data, kwargs_psf_gaussian, kwargs_numerics]]
 
         kwargs_data_joint = {'multi_band_list': multi_band_list,
                              'multi_band_type': 'multi-linear'}
 
-        kwargs_likelihood = {'source_marg': True}
+        kwargs_likelihood = {'source_marg': False}
 
         fittingSequence = FittingSequence(kwargs_data_joint, kwargs_model,
                                           kwargs_constraints, kwargs_likelihood,
@@ -277,7 +276,6 @@ class TestFittingSequence(object):
         fitting_list.append(['MCMC', kwargs_zeus])
 
         chain_list = fittingSequence.fit_sequence(fitting_list)
-
 
     def test_multinest(self):
         # Nested sampler tests
@@ -323,7 +321,7 @@ class TestFittingSequence(object):
     def test_dynesty(self):
         np.random.seed(42)
         kwargs_params = copy.deepcopy(self.kwargs_params)
-        kwargs_params['lens_model'][0][0]['theta_E'] += 0.01
+        kwargs_params['lens_model'][0][0]['theta_E'] += 0.2
         fittingSequence = FittingSequence(self.kwargs_data_joint, self.kwargs_model, self.kwargs_constraints,
                                           self.kwargs_likelihood, kwargs_params)
 
@@ -342,6 +340,7 @@ class TestFittingSequence(object):
         chain_list = fittingSequence.fit_sequence(fitting_list)
 
     def test_nautilus(self):
+        np.random.seed(42)
         kwargs_params = copy.deepcopy(self.kwargs_params)
         fittingSequence = FittingSequence(self.kwargs_data_joint, self.kwargs_model, self.kwargs_constraints,
                                           self.kwargs_likelihood, kwargs_params)

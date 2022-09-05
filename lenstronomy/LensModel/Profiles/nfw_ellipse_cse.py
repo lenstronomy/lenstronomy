@@ -5,7 +5,6 @@ from lenstronomy.Util import util
 from lenstronomy.LensModel.Profiles.nfw import NFW
 from lenstronomy.LensModel.Profiles.nfw_ellipse import NFW_ELLIPSE
 from lenstronomy.LensModel.Profiles.cored_steep_ellipsoid import CSEProductAvgSet
-from lenstronomy.LensModel.Profiles.cored_steep_ellipsoid import CSEMajorAxisSet
 import lenstronomy.Util.param_util as param_util
 
 __all__ = ['NFW_ELLIPSE_CSE']
@@ -30,7 +29,8 @@ class NFW_ELLIPSE_CSE(NFW_ELLIPSE):
     def __init__(self, high_accuracy=True):
         """
 
-        :param high_accuracy: boolean, if True uses a more accurate larger set of CSE profiles (see Oguri 2021)
+        :param high_accuracy: if True uses a more accurate larger set of CSE profiles (see Oguri 2021)
+        :type high_accuracy: boolean
         """
         self.cse_major_axis_set = CSEProductAvgSet()
         self.nfw = NFW()

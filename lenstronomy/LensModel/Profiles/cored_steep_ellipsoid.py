@@ -5,7 +5,7 @@ import numpy as np
 from lenstronomy.Util import param_util
 from lenstronomy.Util import util
 
-__all__ = ['CSE', 'CSEMajorAxis', 'CSEMajorAxisSet','CSEProductAvg','CSEProductAvgSet']
+__all__ = ['CSE', 'CSEMajorAxis', 'CSEMajorAxisSet', 'CSEProductAvg', 'CSEProductAvgSet']
 
 
 class CSE(LensProfileBase):
@@ -30,12 +30,12 @@ class CSE(LensProfileBase):
     upper_limit_default = {'A': 1000, 's': 10000, 'e1': 0.5, 'e2': 0.5, 'center_x': -100, 'center_y': -100}
 
     def __init__(self, axis='product_avg'):
-        if axis=='major':
+        if axis == 'major':
             self.major_axis_model = CSEMajorAxis()
-        elif axis=='product_avg':
+        elif axis == 'product_avg':
             self.major_axis_model = CSEProductAvg()
         else:
-            raise ValueError("axis must be set to'major' or 'product_avg'")
+            raise ValueError("axis must be set to 'major' or 'product_avg'. Input is %s ." % axis)
         super(CSE, self).__init__()
 
     def function(self, x, y, a, s, e1, e2, center_x, center_y):
@@ -258,12 +258,26 @@ class CSEMajorAxisSet(LensProfileBase):
             f_yy += f_yy_
         return f_xx, f_xy, f_xy, f_yy
 
+
 class CSEProductAvg(LensProfileBase):
     """
     Cored steep ellipsoid (CSE) evaluated at the product-averaged radius sqrt(ab),
     such that mass is not changed when increasing ellipticity
 
-    Same as CSEMajorAxis but evalulated at r=sqrt(q)*r_original
+    Same as CSEMajorAxis but evaluated at r=sqrt(q)*r_original
+
+    Keeton and Kochanek (1998)
+    Oguri 2021: https://arxiv.org/pdf/2106.11464.pdf
+
+    .. math::
+        \\kappa(u;s) = \\frac{A}{2(s^2 + \\xi^2)^{3/2}}
+
+    with
+
+    .. math::
+        \\xi(x, y) = \\sqrt{qx^2 + \\frac{y^2}{q}}
+
+
 
     """
     param_names = ['A', 's', 'q', 'center_x', 'center_y']
@@ -271,16 +285,19 @@ class CSEProductAvg(LensProfileBase):
     upper_limit_default = {'A': 1000, 's': 10000, 'q': 0.99999, 'e2': 0.5, 'center_x': -100, 'center_y': -100}
 
     def __init__(self):
+        super(CSEProductAvg, self).__init__()
         self.MA_class = CSEMajorAxis()
 
-    def _convert2prodavg(self, x, y, a, s, q):
+    @staticmethod
+    def _convert2prodavg(x, y, a, s, q):
         """
-        converts coordinates and renormalizes major-axis parameterization to instead be wrt. product-averaged
+        converts coordinates and re-normalizes major-axis parameterization to instead be wrt. product-averaged
         """
         a = a / q
         x = x * np.sqrt(q)
         y = y * np.sqrt(q)
         return x, y, a, s, q
+
     def function(self, x, y, a, s, q):
         """
         :param x: coordinate in image plane (angle)
@@ -303,9 +320,9 @@ class CSEProductAvg(LensProfileBase):
         :return: deflection in x- and y-direction
         """
         x, y, a, s, q = self._convert2prodavg(x, y, a, s, q)
-        af_x,af_y=self.MA_class.derivatives(x, y, a, s, q)
-        #extra sqrt(q) factor from taking derivative of transformed coordinate
-        return np.sqrt(q)* af_x, np.sqrt(q)* af_y
+        af_x, af_y = self.MA_class.derivatives(x, y, a, s, q)
+        # extra sqrt(q) factor from taking derivative of transformed coordinate
+        return np.sqrt(q) * af_x, np.sqrt(q) * af_y
 
     def hessian(self, x, y, a, s, q):
         """
@@ -317,9 +334,9 @@ class CSEProductAvg(LensProfileBase):
         :return: hessian elements f_xx, f_xy, f_yx, f_yy
         """
         x, y, a, s, q = self._convert2prodavg(x, y, a, s, q)
-        af_xx, af_xy, af_xy, af_yy=self.MA_class.hessian(x, y, a, s, q)
-        #two sqrt(q) factors from taking derivatives of transformed coordinate
-        return q* af_xx, q * af_xy, q * af_xy, q * af_yy
+        af_xx, af_xy, af_xy, af_yy = self.MA_class.hessian(x, y, a, s, q)
+        # two sqrt(q) factors from taking derivatives of transformed coordinate
+        return q * af_xx, q * af_xy, q * af_xy, q * af_yy
 
 
 class CSEProductAvgSet(LensProfileBase):

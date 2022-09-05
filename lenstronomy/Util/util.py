@@ -485,6 +485,40 @@ def points_on_circle(radius, num_points, connect_ends=True):
     y_coord = np.sin(angle) * radius
     return x_coord, y_coord
 
+@export
+@jit()
+def local_minima_2d(a, x, y):
+    """
+    finds (local) minima in a 2d grid
+    applies less rigid criteria for maximum without second-order tangential minima criteria
+
+    :param a: 1d array of displacements from the source positions
+    :type a: numpy array with length numPix**2 in float
+    :param x: 1d coordinate grid in x-direction
+    :type x: numpy array with length numPix**2 in float
+    :param y: 1d coordinate grid in x-direction
+    :type y: numpy array with length numPix**2 in float
+    :returns:  array of indices of local minima, values of those minima
+    :raises: AttributeError, KeyError
+    """
+    dim = int(np.sqrt(len(a)))
+    values = []
+    x_mins = []
+    y_mins = []
+    for i in range(dim + 1, len(a) - dim - 1):
+        if (a[i] < a[i - 1]
+                and a[i] < a[i + 1]
+                and a[i] < a[i - dim]
+                and a[i] < a[i + dim]
+                and a[i] < a[i - (dim - 1)]
+                and a[i] < a[i - (dim + 1)]
+                and a[i] < a[i + (dim - 1)]
+                and a[i] < a[i + (dim + 1)]):
+            x_mins.append(x[i])
+            y_mins.append(y[i])
+            values.append(a[i])
+    return np.array(x_mins), np.array(y_mins), np.array(values)
+
 
 @export
 @jit()
@@ -545,7 +579,7 @@ def neighborSelect(a, x, y):
 def fwhm2sigma(fwhm):
     """
 
-    :param fwhm: full-widt-half-max value
+    :param fwhm: full-width-half-max value
     :return: gaussian sigma (sqrt(var))
     """
     sigma = fwhm / (2 * np.sqrt(2 * np.log(2)))

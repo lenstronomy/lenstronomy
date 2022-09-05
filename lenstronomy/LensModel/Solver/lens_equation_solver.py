@@ -100,7 +100,7 @@ class LensEquationSolver(object):
         absmapped = util.displaceAbs(x_mapped, y_mapped, sourcePos_x, sourcePos_y)
         # select minima in the grid points and select grid points that do not deviate more than the
         # width of the grid point to a solution of the lens equation
-        x_mins, y_mins, delta_map = util.neighborSelect(absmapped, x_grid, y_grid)
+        x_mins, y_mins, delta_map = util.local_minima_2d(absmapped, x_grid, y_grid)
         # pixel width
         pixel_width = x_grid[1]-x_grid[0] 
             
@@ -124,7 +124,7 @@ class LensEquationSolver(object):
         """
         lens_model_list = list(self.lensModel.lens_model_list)
         if lens_model_list not in (['SIE', 'SHEAR'], ['SIE'], ['EPL_NUMBA', 'SHEAR'], ['EPL_NUMBA'], ['EPL', 'SHEAR'], ['EPL']):
-            raise ValueError("Only SIE or PEMD (+shear) supported in the analytical solver for now")
+            raise ValueError("Only SIE, EPL, EPL_NUMBA (+shear) supported in the analytical solver for now.")
 
         x_mins, y_mins = solve_lenseq_pemd((x, y), kwargs_lens, **kwargs_solver)
         if arrival_time_sort:

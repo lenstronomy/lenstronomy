@@ -61,4 +61,4 @@ The lenstronomy development moved to the `project repository <https://github.com
 
 Lenstronomy logo
 ----------------
-The lenstronomy logo was designed by Zoe Alexandre.
+The lenstronomy logo was designed by Zoe Alexander `zoe-blyss <https://github.com/zoe-blyss>`_.

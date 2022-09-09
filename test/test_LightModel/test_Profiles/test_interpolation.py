@@ -42,6 +42,9 @@ class TestInterpol(object):
             out = interp.function(x=1000, y=0, **kwargs_interp)
             assert out == 0
 
+        # TODO: test for scale !=1
+
+
         # test change of center without re-doing interpolation
         out = interp.function(x=0, y=0, image=image, scale=1., phi_G=0, center_x=0, center_y=0)
         out_shift = interp.function(x=1, y=0, image=image, scale=1., phi_G=0, center_x=1, center_y=0)

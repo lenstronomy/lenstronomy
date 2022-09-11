@@ -80,9 +80,6 @@ class TestInterpol(object):
 
         npt.assert_almost_equal(output / image_interp, 1, decimal=5)
 
-        from lenstronomy.ImSim.image_model import ImageModel
-
-
     def test_delete_cache(self):
         x, y = util.make_grid(numPix=20, deltapix=1.)
         gauss = Gaussian()

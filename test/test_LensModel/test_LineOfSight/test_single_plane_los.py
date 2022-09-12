@@ -65,8 +65,10 @@ class TestSinglePlaneLOS(object):
         lensModel_minimal = SinglePlaneLOS(['GAUSSIAN_KAPPA', 'LOS_MINIMAL'], index_los = 1)
         output = lensModel.mass_2d(r=1, kwargs=[mass_kwargs, self.los_kwargs])
         output_minimal = lensModel_minimal.mass_2d(r=1, kwargs=[mass_kwargs, self.los_kwargs])
-        assert output == 0.11750309741540453
-        assert output_minimal == 0.11750309741540453
+        # assert output == 0.11750309741540453
+        # assert output_minimal == 0.11750309741540453
+        npt.assert_almost_equal(output, 0.11750309741540453, decimal=8)
+        npt.assert_almost_equal(output_minimal, 0.11750309741540453, decimal=8)
 
     def test_density(self):
         theta_E = 1

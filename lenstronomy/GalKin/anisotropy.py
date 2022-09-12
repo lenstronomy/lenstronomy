@@ -42,6 +42,7 @@ class Anisotropy(object):
     def beta_r(self, r, **kwargs):
         """
         returns the anisotropy parameter at a given radius
+
         :param r: 3d radius
         :param kwargs: parameters of the specified anisotropy model
         :return: beta(r)
@@ -73,7 +74,8 @@ class Anisotropy(object):
     def delete_anisotropy_cache(self):
         """
         deletes cached interpolations for a fixed anisotropy model
-        :return:
+
+        :return: None
         """
         if hasattr(self._model, 'delete_cache'):
             self._model.delete_cache()

@@ -22,28 +22,28 @@ class LensModel(object):
 
         :param lens_model_list: list of strings with lens model names
         :param z_lens: redshift of the deflector (only considered when operating in single plane mode).
-        Is only needed for specific functions that require a cosmology.
+         Is only needed for specific functions that require a cosmology.
         :param z_source: redshift of the source: Needed in multi_plane option only,
-        not required for the core functionalities in the single plane mode.
+         not required for the core functionalities in the single plane mode.
         :param lens_redshift_list: list of deflector redshift (corresponding to the lens model list),
-        only applicable in multi_plane mode.
+         only applicable in multi_plane mode.
         :param cosmo: instance of the astropy cosmology class. If not specified, uses the default cosmology.
         :param multi_plane: bool, if True, uses multi-plane mode. Default is False.
         :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model
-        (see documentation in Profiles/numerical_alpha)
+         (see documentation in Profiles/numerical_alpha)
         :param kwargs_interp: interpolation keyword arguments specifying the numerics.
          See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
         :param observed_convention_index: a list of indices, corresponding to the lens_model_list element with same
-        index, where the 'center_x' and 'center_y' kwargs correspond to observed (lensed) positions, not physical
-        positions. The code will compute the physical locations when performing computations
+         index, where the 'center_x' and 'center_y' kwargs correspond to observed (lensed) positions, not physical
+         positions. The code will compute the physical locations when performing computations
         :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens
-        models. If None, 'z_source' is used.
+         models. If None, 'z_source' is used.
         :param cosmo_interp: boolean (only employed in multi-plane mode), interpolates astropy.cosmology distances for
-        faster calls when accessing several lensing planes
+         faster calls when accessing several lensing planes
         :param z_interp_stop: (only in multi-plane with cosmo_interp=True); maximum redshift for distance interpolation
-        This number should be higher or equal the maximum of the source redshift and/or the z_source_convention
+         This number should be higher or equal the maximum of the source redshift and/or the z_source_convention
         :param num_z_interp: (only in multi-plane with cosmo_interp=True); number of redshift bins for interpolating
-        distances
+         distances
         """
         self.lens_model_list = lens_model_list
         self.z_lens = z_lens

@@ -47,8 +47,8 @@ class TestCorrelation(object):
         assert r_half == -1
 
     def test_bic_model(self):
-        bic=analysis_util.bic_model(0,np.e,1)
-        assert bic == 1
+        bic=analysis_util.bic_model(0, np.e, 1)
+        npt.assert_almost_equal(bic, 1, decimal=8)
 
     def test_azimuthalAverage(self):
         num_pix = 101

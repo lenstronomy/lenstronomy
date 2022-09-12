@@ -284,6 +284,7 @@ class ShapeletSet(object):
     def decomposition(self, image, x, y, n_max, beta, deltaPix, center_x=0, center_y=0):
         """
         decomposes an image into the shapelet coefficients in same order as for the function call
+
         :param image:
         :param x:
         :param y:

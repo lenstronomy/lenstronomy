@@ -31,7 +31,7 @@ class ProfileListBase(object):
 
         :param lens_model_list: list of strings with lens model names
         :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model
-        deflection angles as a lens model. See the documentation in Profiles.numerical_deflections
+         deflection angles as a lens model. See the documentation in Profiles.numerical_deflections
         :param kwargs_interp: interpolation keyword arguments specifying the numerics.
          See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
         """

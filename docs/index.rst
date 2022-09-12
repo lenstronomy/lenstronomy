@@ -12,11 +12,11 @@ Contents:
    :maxdepth: 2
 
    installation
-   modules
    usage
    contributing
    mailinglist
    authors
    published
    affiliatedpackages
+   lenstronomy
    history

@@ -40,7 +40,7 @@ class FittingSequence(object):
          'extinction_model': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
          'special': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
         :param mpi: MPI option (bool), if True, will launch an MPI Pool job for the steps in the fitting sequence where
-        possible
+         possible
         :param verbose: bool, if True prints temporary results and indicators of the fitting process
         """
         self.kwargs_data_joint = kwargs_data_joint
@@ -164,7 +164,8 @@ class FittingSequence(object):
     @property
     def bic(self):
         """
-        returns the bayesian information criterion of the model.
+        Bayesian information criterion (BIC) of the model.
+
         :return: bic value, float
         """
         num_data = self.likelihoodModule.num_data
@@ -493,6 +494,7 @@ class FittingSequence(object):
     def set_param_value(self, **kwargs):
         """
         Set a parameter to a specific value. `kwargs` are below.
+
         :param lens: [[i_model, ['param1', 'param2',...], [...]]
         :type lens:
         :param source: [[i_model, ['param1', 'param2',...], [...]]

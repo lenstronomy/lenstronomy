@@ -29,8 +29,7 @@ class ImageData(PixelGrid, ImageNoise):
     If this keyword is set, the other noise properties will be ignored.
 
 
-    Notes:
-    ------
+    ** notes **
     the likelihood for the data given model P(data|model) is defined in the function below. Please make sure that
     your definitions and units of 'exposure_map', 'background_rms' and 'image_data' are in accordance with the
     likelihood function. In particular, make sure that the Poisson noise contribution is defined in the count rate.
@@ -43,7 +42,7 @@ class ImageData(PixelGrid, ImageNoise):
 
         :param image_data: 2d numpy array of the image data
         :param exposure_time: int or array of size the data; exposure time
-        (common for all pixels or individually for each individual pixel)
+         (common for all pixels or individually for each individual pixel)
         :param background_rms: root-mean-square value of Gaussian background noise in units counts per second
         :param noise_map: int or array of size the data; joint noise sqrt(variance) of each individual pixel.
         :param gradient_boost_factor: None or float, variance terms added in quadrature scaling with

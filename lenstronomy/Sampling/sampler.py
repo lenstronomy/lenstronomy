@@ -44,7 +44,7 @@ class Sampler(object):
         kwargs_return = self.chain.param.args2kwargs(result['x'])
         print(-logL * 2 / (max(self.chain.effective_num_data_points(**kwargs_return), 1)),
               'reduced X^2 of best position')
-        print(logL, 'logL')
+        print(logL, 'log likelihood')
         print(self.chain.effective_num_data_points(**kwargs_return), 'effective number of data points')
         print(kwargs_return.get('kwargs_lens', None), 'lens result')
         print(kwargs_return.get('kwargs_source', None), 'source result')
@@ -100,13 +100,13 @@ class Sampler(object):
 
         time_start = time.time()
 
-        result, [chi2_list, pos_list, vel_list] = pso.optimize(n_iterations)
+        result, [log_likelihood_list, pos_list, vel_list] = pso.optimize(n_iterations)
 
         if pool.is_master():
             kwargs_return = self.chain.param.args2kwargs(result)
             print(pso.global_best.fitness * 2 / (max(
                 self.chain.effective_num_data_points(**kwargs_return), 1)), 'reduced X^2 of best position')
-            print(pso.global_best.fitness, 'logL')
+            print(pso.global_best.fitness, 'log likelihood')
             print(self.chain.effective_num_data_points(**kwargs_return), 'effective number of data points')
             print(kwargs_return.get('kwargs_lens', None), 'lens result')
             print(kwargs_return.get('kwargs_source', None), 'source result')
@@ -116,7 +116,7 @@ class Sampler(object):
             time_end = time.time()
             print(time_end - time_start, 'time used for ', print_key)
             print('===================')
-        return result, [chi2_list, pos_list, vel_list]
+        return result, [log_likelihood_list, pos_list, vel_list]
 
     def mcmc_emcee(self, n_walkers, n_run, n_burn, mean_start, sigma_start,
                    mpi=False, progress=False, threadCount=1,
@@ -217,12 +217,14 @@ class Sampler(object):
         :type mean_start: numpy array of length the number of parameters
         :param sigma_start: spread of the parameter values (uncorrelated in each dimension) of the initialising sample
         :type sigma_start: numpy array of length the number of parameters
+        :param mpi: if True, initializes an MPIPool to allow for MPI execution of the sampler
+        :type mpi: bool
         :param progress:
         :type progress: bool
         :param initpos: initial walker position to start sampling (optional)
         :type initpos: numpy array of size num param x num walkser
-        :param backup_filename: name of the HDF5 file where sampling state is saved (through zeus callback function)
-        :type backup_filename: string
+        :param backend_filename: name of the HDF5 file where sampling state is saved (through zeus callback function)
+        :type backend_filename: string
         :return: samples, ln likelihood value of samples
         :rtype: numpy 2d array, numpy 1d array
         """
@@ -251,7 +253,7 @@ class Sampler(object):
                                        blobs_dtype=blobs_dtype, verbose=verbose, check_walkers=check_walkers,
                                        shuffle_ensemble=shuffle_ensemble, light_mode=light_mode)
 
-        sampler.run_mcmc(initpos, n_run_eff, progress=progress, callbacks = backend)
+        sampler.run_mcmc(initpos, n_run_eff, progress=progress, callbacks=backend)
 
         flat_samples = sampler.get_chain(flat=True, thin=1, discard=n_burn)
 

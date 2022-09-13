@@ -150,9 +150,6 @@ class ProfileListBase(object):
         elif lens_type == 'EPL':
             from lenstronomy.LensModel.Profiles.epl import EPL
             return EPL()
-        elif lens_type == 'EPL_SHEARED':
-            from lenstronomy.LensModel.Profiles.epl_sheared import EPL_SHEARED
-            return EPL_SHEARED()
         elif lens_type == 'EPL_NUMBA':
             from lenstronomy.LensModel.Profiles.epl_numba import EPL_numba
             return EPL_numba()

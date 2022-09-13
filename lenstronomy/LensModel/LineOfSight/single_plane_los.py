@@ -36,18 +36,26 @@ class SinglePlaneLOS(SinglePlane):
         lens_model_list (for correct association with kwargs)
         - attribute "los" containing the LOS model.
         """
+        
+        super().__init__(lens_model_list)
+        # NB: It is important to run that init first, in order to create a
+        # list_func for the entire model, before splitting it between a main
+        # lens and the LOS corrections
 
-        # Extract the los model
+        # Extract the los model and import its class
         self.index_los = index_los
         self.los_model = lens_model_list[index_los]
         self.los = self._import_class(self.los_model, custom_class=None, kwargs_interp=None)
-
-        # Proceed with the rest of the lenses
+        
+        # Define a separate class for the main lens
         lens_model_list_wo_los = [
             model for i, model in enumerate(lens_model_list)
             if i != index_los]
-        super().__init__(lens_model_list_wo_los)
-
+        self.main_lens = SinglePlane(lens_model_list_wo_los,
+                                     numerical_alpha_class=numerical_alpha_class,
+                                     lens_redshift_list=lens_redshift_list,
+                                     z_source_convention=z_source_convention,
+                                     kwargs_interp=kwargs_interp)
 
     def split_lens_los(self, kwargs):
         """
@@ -113,7 +121,7 @@ class SinglePlaneLOS(SinglePlane):
                                            gamma2=kwargs_los['gamma2_od'])
 
         #Evaluating the potential of the main lens at this position
-        effective_potential = super().potential(x_d, y_d, kwargs=kwargs_dominant, k=k)
+        effective_potential = self.main_lens.potential(x_d, y_d, kwargs=kwargs_dominant, k=k)
 
         #obtaining the source position
         if x_source is None or y_source is None:
@@ -160,7 +168,7 @@ class SinglePlaneLOS(SinglePlane):
                                            gamma2=kwargs_los['gamma2_od'])
 
         # Displacement due to the main lens only
-        f_x, f_y = super().alpha(x_d, y_d, kwargs=kwargs_dominant, k=k)
+        f_x, f_y = self.main_lens.alpha(x_d, y_d, kwargs=kwargs_dominant, k=k)
 
         # Correction due to the background convergence, shear and rotation
         f_x, f_y = self.los.distort_vector(f_x, f_y,
@@ -205,7 +213,7 @@ class SinglePlaneLOS(SinglePlane):
                                            gamma2=kwargs_los['gamma2_od'])
 
         # Hessian matrix of the main lens only
-        f_xx, f_xy, f_yx, f_yy = super().hessian(x_d, y_d,
+        f_xx, f_xy, f_yx, f_yy = self.main_lens.hessian(x_d, y_d,
                                                  kwargs=kwargs_dominant, k=k)
 
         # Multiply on the left by (1 - Gamma_ds)

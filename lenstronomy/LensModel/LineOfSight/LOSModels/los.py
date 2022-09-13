@@ -146,3 +146,21 @@ class LOS(object):
         f__yy = (- gamma2 + omega) * f_yx + (1 - kappa + gamma1) * f_yy
 
         return f__xx, f__xy, f__yx, f__yy
+    
+    def set_static(self, **kwargs):
+        """
+        pre-computes certain computations that do only relate to the lens model parameters and not to the specific
+        position where to evaluate the lens model
+
+        :param kwargs: lens model parameters
+        :return: no return, for certain lens model some private self variables are initiated
+        """
+        pass
+
+    def set_dynamic(self):
+        """
+
+        :return: no return, deletes pre-computed variables for certain lens models
+        """
+        pass
+

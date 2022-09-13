@@ -31,7 +31,8 @@ class TestSinglePlaneLOS(object):
     """
 
     def setup(self):
-        self.lensModel = SinglePlaneLOS(['GAUSSIAN', 'LOS'], index_los = 1)
+        self.lensModel = SinglePlane(['GAUSSIAN'])
+        self.lensModel_los = SinglePlaneLOS(['GAUSSIAN', 'LOS'], index_los = 1)
         self.lensModel_minimal = SinglePlaneLOS(['GAUSSIAN', 'LOS_MINIMAL'], index_los = 1)
         self.kwargs = {'amp': 1., 'sigma_x': 2., 'sigma_y': 2., 'center_x': 0., 'center_y': 0.}
         self.los_kwargs = {'gamma1_os': 0.0, 'gamma2_os': 0.0, 'kappa_os': 0.0, 'omega_os': 0.0,
@@ -40,39 +41,43 @@ class TestSinglePlaneLOS(object):
                            'gamma1_los': 0.0, 'gamma2_los': 0.0, 'kappa_los': 0.0, 'omega_los': 0.0}
 
     def test_potential(self):
-        output = self.lensModel.potential(x=1., y=1., kwargs=[self.kwargs, self.los_kwargs])
+        output = self.lensModel.potential(x=1., y=1., kwargs = [self.kwargs])
+        output_los = self.lensModel_los.potential(x=1., y=1., kwargs=[self.kwargs, self.los_kwargs])
         output_minimal = self.lensModel_minimal.potential(x=1., y=1., kwargs=[self.kwargs, self.los_kwargs])
-        single_plane_known_result =  0.77880078307140488/(8*np.pi)
-        npt.assert_almost_equal(output, single_plane_known_result, decimal=8)
-        npt.assert_almost_equal(output_minimal, single_plane_known_result, decimal=8)
+        npt.assert_almost_equal(output_los, output, decimal=8)
+        npt.assert_almost_equal(output_minimal, output, decimal=8)
 
     def test_alpha(self):
-        output1, output2 = self.lensModel.alpha(x=1., y=1., kwargs=[self.kwargs, self.los_kwargs])
+        output1, output2 = self.lensModel.alpha(x=1., y=1., kwargs = [self.kwargs])
+        output1_los, output2_los = self.lensModel_los.alpha(x=1., y=1., kwargs=[self.kwargs, self.los_kwargs])
         output1_minimal, output2_minimal = self.lensModel_minimal.alpha(x=1., y=1., kwargs=[self.kwargs, self.los_kwargs])
-        single_plane_known_result = -0.19470019576785122/(8*np.pi)
-        npt.assert_almost_equal(output1, single_plane_known_result, decimal=8)
-        npt.assert_almost_equal(output2, single_plane_known_result, decimal=8)
-        npt.assert_almost_equal(output1_minimal, single_plane_known_result, decimal=8)
-        npt.assert_almost_equal(output2_minimal, single_plane_known_result, decimal=8)
+        npt.assert_almost_equal(output1_los, output1, decimal=8)
+        npt.assert_almost_equal(output2_los, output2, decimal=8)
+        npt.assert_almost_equal(output1_minimal, output1, decimal=8)
+        npt.assert_almost_equal(output2_minimal, output2, decimal=8)
 
     def test_ray_shooting(self):
-        delta_x, delta_y = self.lensModel.ray_shooting(x=1., y=1., kwargs=[self.kwargs, self.los_kwargs])
+        delta_x, delta_y = self.lensModel.ray_shooting(x=1., y=1., kwargs=[self.kwargs])
+        delta_x_los, delta_y_los = self.lensModel_los.ray_shooting(x=1., y=1., kwargs=[self.kwargs, self.los_kwargs])
         delta_x_minimal, delta_y_minimal = self.lensModel_minimal.ray_shooting(x=1., y=1., kwargs=[self.kwargs, self.los_kwargs])
-        single_plane_known_result = 1 + 0.19470019576785122/(8*np.pi)
-        npt.assert_almost_equal(delta_x, single_plane_known_result, decimal=8)
-        npt.assert_almost_equal(delta_y, single_plane_known_result, decimal=8)
-        npt.assert_almost_equal(delta_x_minimal, single_plane_known_result, decimal=8)
-        npt.assert_almost_equal(delta_y_minimal, single_plane_known_result, decimal=8)
+        npt.assert_almost_equal(delta_x_los, delta_x, decimal=8)
+        npt.assert_almost_equal(delta_y_los, delta_y, decimal=8)
+        npt.assert_almost_equal(delta_x_minimal, delta_x, decimal=8)
+        npt.assert_almost_equal(delta_y_minimal, delta_y, decimal=8)
 
     def test_mass_2d(self):
         mass_kwargs = {'amp': 1., 'sigma': 2., 'center_x': 0., 'center_y': 0.}
-        lensModel = SinglePlaneLOS(['GAUSSIAN_KAPPA', 'LOS'], index_los = 1)
+
+        lensModel = SinglePlane(['GAUSSIAN_KAPPA'])
+        lensModel_los = SinglePlaneLOS(['GAUSSIAN_KAPPA', 'LOS'], index_los = 1)
         lensModel_minimal = SinglePlaneLOS(['GAUSSIAN_KAPPA', 'LOS_MINIMAL'], index_los = 1)
-        output = lensModel.mass_2d(r=1, kwargs=[mass_kwargs, self.los_kwargs])
+
+        output = lensModel.mass_2d(r=1, kwargs=[mass_kwargs])
+        output_los = lensModel_los.mass_2d(r=1, kwargs=[mass_kwargs, self.los_kwargs])
         output_minimal = lensModel_minimal.mass_2d(r=1, kwargs=[mass_kwargs, self.los_kwargs])
-        single_plane_known_result = 0.11750309741540453
-        npt.assert_almost_equal(output, single_plane_known_result, decimal=8)
-        npt.assert_almost_equal(output_minimal, single_plane_known_result, decimal=8)
+
+        npt.assert_almost_equal(output_los, output, decimal=8)
+        npt.assert_almost_equal(output_minimal, output, decimal=8)
 
     def test_density(self):
         theta_E = 1
@@ -81,9 +86,9 @@ class TestSinglePlaneLOS(object):
         density_model = sis.density_lens(r=r, theta_E=theta_E)
 
         # LOS
-        lensModel = SinglePlaneLOS(lens_model_list=['SIS', 'LOS'], index_los = 1)
-        density = lensModel.density(r=r, kwargs=[{'theta_E': theta_E}, self.los_kwargs])
-        npt.assert_almost_equal(density, density_model, decimal=8)
+        lensModel_los = SinglePlaneLOS(lens_model_list=['SIS', 'LOS'], index_los = 1)
+        density_los = lensModel_los.density(r=r, kwargs=[{'theta_E': theta_E}, self.los_kwargs])
+        npt.assert_almost_equal(density_los, density_model, decimal=8)
 
         # LOS_MINIMAL
         lensModel_minimal = SinglePlaneLOS(lens_model_list = ['SIS', 'LOS_MINIMAL'], index_los = 1)
@@ -91,22 +96,22 @@ class TestSinglePlaneLOS(object):
         npt.assert_almost_equal(density_minimal, density_model, decimal=8)
 
     def test_bool_list(self):
-        lensModel = SinglePlaneLOS(['SPEP', 'SHEAR', 'LOS'], index_los = 2)
+        lensModel_los = SinglePlaneLOS(['SPEP', 'SHEAR', 'LOS'], index_los = 2)
         lensModel_minimal = SinglePlaneLOS(['SPEP', 'SHEAR', 'LOS_MINIMAL'], index_los = 2)
         kwargs = [{'theta_E': 1, 'gamma': 2, 'e1': 0.1, 'e2': -0.1, 'center_x': 0, 'center_y': 0},
                            {'gamma1': 0.01, 'gamma2': -0.02}, self.los_kwargs]
 
         # LOS
-        alphax_1, alphay_1 = lensModel.alpha(1, 1, kwargs, k=0)
-        alphax_1_list, alphay_1_list = lensModel.alpha(1, 1, kwargs, k=[0])
-        npt.assert_almost_equal(alphax_1, alphax_1_list, decimal=5)
-        npt.assert_almost_equal(alphay_1, alphay_1_list, decimal=5)
+        alphax_1_los, alphay_1_los = lensModel_los.alpha(1, 1, kwargs, k=0)
+        alphax_1_list, alphay_1_list = lensModel_los.alpha(1, 1, kwargs, k=[0])
+        npt.assert_almost_equal(alphax_1_los, alphax_1_list, decimal=5)
+        npt.assert_almost_equal(alphay_1_los, alphay_1_list, decimal=5)
 
-        alphax_1_1, alphay_1_1 = lensModel.alpha(1, 1, kwargs, k=0)
-        alphax_1_2, alphay_1_2 = lensModel.alpha(1, 1, kwargs, k=1)
-        alphax_full, alphay_full = lensModel.alpha(1, 1, kwargs, k=None)
-        npt.assert_almost_equal(alphax_1_1 + alphax_1_2, alphax_full, decimal=5)
-        npt.assert_almost_equal(alphay_1_1 + alphay_1_2, alphay_full, decimal=5)
+        alphax_1_1_los, alphay_1_1_los = lensModel_los.alpha(1, 1, kwargs, k=0)
+        alphax_1_2_los, alphay_1_2_los = lensModel_los.alpha(1, 1, kwargs, k=1)
+        alphax_full, alphay_full = lensModel_los.alpha(1, 1, kwargs, k=None)
+        npt.assert_almost_equal(alphax_1_1_los + alphax_1_2_los, alphax_full, decimal=5)
+        npt.assert_almost_equal(alphay_1_1_los + alphay_1_2_los, alphay_full, decimal=5)
 
         # LOS_MINIMAL
         alphax_1_minimal, alphay_1_minimal = lensModel_minimal.alpha(1, 1, kwargs, k=0)

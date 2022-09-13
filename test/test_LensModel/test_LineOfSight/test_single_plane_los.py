@@ -9,6 +9,8 @@ from lenstronomy.LensModel.single_plane import SinglePlane
 from lenstronomy.LensModel.LineOfSight.single_plane_los import SinglePlaneLOS
 from lenstronomy.LensModel.MultiPlane.multi_plane import MultiPlane
 from lenstronomy.LensModel.Profiles.sis import SIS
+from lenstronomy.LensModel.lens_model import LensModel
+from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 
 from astropy.cosmology import default_cosmology
 cosmo = default_cosmology.get()
@@ -211,6 +213,14 @@ class TestSinglePlaneLOS(object):
         tolerance = 1e-5
 
         # compare some different results from single_plane_los and multiplane
+        # we use assert_allclose rather than assert_almost_equal because we are dealing with arrays
+        # since we pass an array of image positions
+
+        # displacement angle
+        alpha_multiplane_x, alpha_multiplane_y = lens_model_multiplane.alpha(x, y, kwargs_multiplane)
+        alpha_los_x, alpha_los_y = lens_model_los.alpha(x, y, kwargs_singleplane_los)
+        npt.assert_allclose(alpha_multiplane_x, alpha_los_x, rtol=tolerance)
+        npt.assert_allclose(alpha_multiplane_y, alpha_los_y, rtol=tolerance)
 
         # ray_shooting
         beta_multiplane_x, beta_multiplane_y = lens_model_multiplane.ray_shooting(x, y, kwargs_multiplane)
@@ -225,6 +235,36 @@ class TestSinglePlaneLOS(object):
         npt.assert_allclose(hessian_multiplane_xy, hessian_los_xy, rtol = tolerance)
         npt.assert_allclose(hessian_multiplane_yx, hessian_los_yx, rtol = tolerance)
         npt.assert_allclose(hessian_multiplane_yy, hessian_los_yy, rtol = tolerance)
+
+        # time delays
+        ra_source, dec_source = 0.05, 0.02
+        number_of_images = 4
+
+        # defining new lens models here to avoid a bug in which the solver doesn't work
+        # if the LOS kwargs are defined and added to the model before the lens kwargs
+
+        lens_model_multiplane_time = LensModel(lens_model_list, z_lens = z_d, z_source = z_s,
+                                               lens_redshift_list = redshift_list,
+                                               multi_plane = True)
+
+        multiplane_solver = LensEquationSolver(lens_model_multiplane_time)
+        x_image_mp, y_image_mp = multiplane_solver.findBrightImage(ra_source, dec_source,
+                                                                   kwargs_multiplane, numImages=number_of_images)
+
+        t_days_mp = lens_model_multiplane_time.arrival_time(x_image_mp, y_image_mp, kwargs_multiplane)
+        dt_days_mp = t_days_mp[1:] - t_days_mp[0]
+
+        lens_model_los_time = LensModel(['EPL', 'LOS'], z_lens=z_d, z_source=z_s)
+        kwargs_time_los = [kwargs_epl, kwargs_los]
+
+        los_solver = LensEquationSolver(lens_model_los_time)
+        x_image_los, y_image_los = los_solver.findBrightImage(ra_source, dec_source,
+                                                              kwargs_time_los, numImages=number_of_images)
+
+        t_days_los = lens_model_los_time.arrival_time(x_image_los, y_image_los, kwargs_time_los)
+        dt_days_los =  t_days_los[1:] - t_days_los[0]
+
+        npt.assert_allclose(dt_days_mp, dt_days_los, rtol=tolerance)
 
     def test_init(self):
         # need to do this for los minimal too?

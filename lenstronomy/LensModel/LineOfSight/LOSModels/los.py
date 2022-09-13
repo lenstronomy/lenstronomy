@@ -60,6 +60,14 @@ class LOS(object):
 
             y
             \\end{pmatrix}
+
+        :param x: x-component of the vector to which the distortion matrix is applied
+        :param y: y-component of the vector to which the distortion matrix is applied
+        :param kappa: the convergence
+        :param gamma1: the first shear component
+        :param gamma2: the second shear component
+        :param omega: the rotation
+        :return: the distorted vector
         """
 
         x_ = (1 - kappa - gamma1) * x + (-gamma2 + omega) * y
@@ -84,6 +92,16 @@ class LOS(object):
             -\\gamma_2 - \\omega & 1 - \\kappa + \\gamma_1
             \\end{pmatrix}
             \\mathsf{H}
+
+        :param f_xx: the i, i element of the Hessian matrix
+        :param f_xy: the i, j element of the Hessian matrix
+        :param f_yx: the j, i element of the Hessian matrix
+        :param f_yy: the j, j element of the Hessian matrix
+        :param kappa: the convergence
+        :param gamma1: the first shear component
+        :param gamma2: the second shear component
+        :param omega: the rotation
+        :return: the Hessian left-multiplied by the distortion matrix
         """
 
         f__xx = (1 - kappa - gamma1) * f_xx + (- gamma2 + omega) * f_yx
@@ -110,6 +128,16 @@ class LOS(object):
 
             -\\gamma_2 - \\omega & 1 - \\kappa + \\gamma_1
             \\end{pmatrix}
+
+        :param f_xx: the i, i element of the Hessian matrix
+        :param f_xy: the i, j element of the Hessian matrix
+        :param f_yx: the j, i element of the Hessian matrix
+        :param f_yy: the j, j element of the Hessian matrix
+        :param kappa: the convergence
+        :param gamma1: the first shear component
+        :param gamma2: the second shear component
+        :param omega: the rotation
+        :return: the Hessian right-multiplied by the distortion matrix
         """
 
         f__xx = (1 - kappa - gamma1) * f_xx - (gamma2 + omega) * f_xy

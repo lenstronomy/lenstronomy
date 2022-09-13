@@ -14,7 +14,7 @@ class SinglePlaneLOS(SinglePlane):
 
     Are modified:
     - init (to include a new attribute, self.los)
-    - fermat potential                 
+    - fermat potential
     - alpha
     - hessian
 
@@ -52,8 +52,11 @@ class SinglePlaneLOS(SinglePlane):
     def split_lens_los(self, kwargs):
         """
         This function splits the list of key-word arguments given to the lens
-        model into those that correspond to the lens itself (kwargs_lens), and
+        model into those that correspond to the lens itself (kwargs_dominant), and
         those that correspond to the line-of-sight corrections (kwargs_los).
+
+        :param kwargs: the list of key-word arguments passed to lenstronomy
+        :return: a list of kwargs corresponding to the lens and a list of kwargs corresponding to the LOS effects
         """
 
         kwargs_los = copy.deepcopy(kwargs[self.index_los])

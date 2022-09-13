@@ -60,7 +60,7 @@ class SinglePlaneLOS(SinglePlane):
     def split_lens_los(self, kwargs):
         """
         This function splits the list of key-word arguments given to the lens
-        model into those that correspond to the lens itself (kwargs_dominant), and
+        model into those that correspond to the lens itself (kwargs_main), and
         those that correspond to the line-of-sight corrections (kwargs_los).
 
         :param kwargs: the list of key-word arguments passed to lenstronomy
@@ -80,10 +80,10 @@ class SinglePlaneLOS(SinglePlane):
             kwargs_los['gamma2_ds'] = kwargs_los['gamma2_od']
             kwargs_los['omega_ds'] = kwargs_los['omega_od']
 
-        kwargs_dominant = [kwarg for i, kwarg in enumerate(kwargs)
+        kwargs_main = [kwarg for i, kwarg in enumerate(kwargs)
                        if i != self.index_los]
 
-        return kwargs_dominant, kwargs_los
+        return kwargs_main, kwargs_los
 
 
     def fermat_potential(self, x_image, y_image, kwargs_lens, x_source=None, y_source=None, k=None):
@@ -98,7 +98,7 @@ class SinglePlaneLOS(SinglePlane):
         :return: fermat potential in arcsec**2 as a list
         """
 
-        kwargs_dominant, kwargs_los = self.split_lens_los(kwargs_lens)
+        kwargs_main, kwargs_los = self.split_lens_los(kwargs_lens)
 
         #the amplification matrices
         A_od = np.array([[1-kwargs_los['kappa_od']-kwargs_los['gamma1_od'],-kwargs_los['gamma2_od']+kwargs_los['omega_od']],[-kwargs_los['gamma2_od']-kwargs_los['omega_od'],1-kwargs_los['kappa_od']+kwargs_los['gamma1_od']]])
@@ -121,7 +121,7 @@ class SinglePlaneLOS(SinglePlane):
                                            gamma2=kwargs_los['gamma2_od'])
 
         #Evaluating the potential of the main lens at this position
-        effective_potential = self.main_lens.potential(x_d, y_d, kwargs=kwargs_dominant, k=k)
+        effective_potential = self.main_lens.potential(x_d, y_d, kwargs=kwargs_main, k=k)
 
         #obtaining the source position
         if x_source is None or y_source is None:
@@ -158,7 +158,7 @@ class SinglePlaneLOS(SinglePlane):
         :return: deflection angles in units of arcsec
         """
 
-        kwargs_dominant, kwargs_los = self.split_lens_los(kwargs)
+        kwargs_main, kwargs_los = self.split_lens_los(kwargs)
 
         # Angular position where the ray hits the deflector's plane
         x_d, y_d = self.los.distort_vector(x, y,
@@ -168,7 +168,7 @@ class SinglePlaneLOS(SinglePlane):
                                            gamma2=kwargs_los['gamma2_od'])
 
         # Displacement due to the main lens only
-        f_x, f_y = self.main_lens.alpha(x_d, y_d, kwargs=kwargs_dominant, k=k)
+        f_x, f_y = self.main_lens.alpha(x_d, y_d, kwargs=kwargs_main, k=k)
 
         # Correction due to the background convergence, shear and rotation
         f_x, f_y = self.los.distort_vector(f_x, f_y,
@@ -203,7 +203,7 @@ class SinglePlaneLOS(SinglePlane):
         :return: f_xx, f_xy, f_yx, f_yy components
         """
 
-        kwargs_dominant, kwargs_los = self.split_lens_los(kwargs)
+        kwargs_main, kwargs_los = self.split_lens_los(kwargs)
 
         # Angular position where the ray hits the deflector's plane
         x_d, y_d = self.los.distort_vector(x, y,
@@ -214,7 +214,7 @@ class SinglePlaneLOS(SinglePlane):
 
         # Hessian matrix of the main lens only
         f_xx, f_xy, f_yx, f_yy = self.main_lens.hessian(x_d, y_d,
-                                                 kwargs=kwargs_dominant, k=k)
+                                                 kwargs=kwargs_main, k=k)
 
         # Multiply on the left by (1 - Gamma_ds)
         f_xx, f_xy, f_yx, f_yy = self.los.left_multiply(
@@ -239,3 +239,90 @@ class SinglePlaneLOS(SinglePlane):
         f_yy += kwargs_los['kappa_os'] - kwargs_los['gamma1_os']
 
         return f_xx, f_xy, f_yx, f_yy
+    
+    
+    def mass_3d(self, r, kwargs, bool_list=None):
+        """
+        Computes the mass within a 3d sphere of radius r *for the main lens only*
+
+        :param r: radius (in angular units)
+        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
+        :param bool_list: list of bools that are part of the output
+        :return: mass (in angular units, modulo epsilon_crit)
+        """
+        
+        print("Note: The computation of the 3d mass ignores the LOS corrections.")
+        
+        kwargs_main, kwargs_los = self.split_lens_los(kwargs)
+        mass_3d = self.main_lens.mass_3d(r=r, kwargs=kwargs_main, bool_list=bool_list)
+        
+        return mass_3d
+    
+    
+    def mass_2d(self, r, kwargs, bool_list=None):
+        """
+        Computes the mass enclosed a projected (2d) radius r *for the main lens only*
+
+        The mass definition is such that:
+
+        .. math::
+            \\alpha = mass_2d / r / \\pi
+
+        with alpha is the deflection angle
+
+        :param r: radius (in angular units)
+        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
+        :param bool_list: list of bools that are part of the output
+        :return: projected mass (in angular units, modulo epsilon_crit)
+        """
+        
+        print("Note: The computation of the 2d mass ignores the LOS corrections.")
+        
+        kwargs_main, kwargs_los = self.split_lens_los(kwargs)
+        mass_2d = self.main_lens.mass_2d(r=r, kwargs=kwargs_main, bool_list=bool_list)
+        
+        return mass_2d
+    
+    
+    def density(self, r, kwargs, bool_list=None):
+        """
+        3d mass density at radius r *for the main lens only*
+        The integral in the LOS projection of this quantity results in the convergence quantity.
+
+        :param r: radius (in angular units)
+        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
+        :param bool_list: list of bools that are part of the output
+        :return: mass density at radius r (in angular units, modulo epsilon_crit)
+        """
+        
+        print("Note: The computation of the density ignores the LOS corrections.")
+        
+        kwargs_main, kwargs_los = self.split_lens_los(kwargs)
+        density = self.main_lens.density(r=r, kwargs=kwargs_main, bool_list=bool_list)
+        
+        return density
+    
+    
+    def potential(self, x, y, kwargs, k=None):
+        """
+        Lensing potential *of the main lens only*
+        In the presence of LOS corrections, the system generally does not admit
+        a potential, in the sense that the curl of alpha is generally non-zero
+
+        :param x: x-position (preferentially arcsec)
+        :type x: numpy array
+        :param y: y-position (preferentially arcsec)
+        :type y: numpy array
+        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
+        :param k: only evaluate the k-th lens model
+        :return: lensing potential in units of arcsec^2
+        """
+        
+        print("Note: The computation of the potential ignores the LOS corrections.\
+              In the presence of LOS corrections, a lensing system does not always\
+              derive from a potential.")
+        
+        kwargs_main, kwargs_los = self.split_lens_los(kwargs)
+        potential = self.main_lens.potential(x, y, kwargs, k=k)
+        
+        return potential

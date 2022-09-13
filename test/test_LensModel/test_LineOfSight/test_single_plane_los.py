@@ -268,9 +268,9 @@ class TestSinglePlaneLOS(object):
 
     def test_init(self):
         # need to do this for los minimal too?
-        lens_model_list = ['LOS', 'TNFW', 'TRIPLE_CHAMELEON', 'SHEAR_GAMMA_PSI', 'CURVED_ARC_CONST',
+        lens_model_list = ['TNFW', 'TRIPLE_CHAMELEON', 'LOS', 'SHEAR_GAMMA_PSI', 'CURVED_ARC_CONST',
                            'NFW_MC', 'ARC_PERT', 'MULTIPOLE', 'CURVED_ARC_SPP']
-        lensModel = SinglePlaneLOS(lens_model_list=lens_model_list, index_los = 0)
+        lensModel = SinglePlaneLOS(lens_model_list=lens_model_list, index_los=0)
         assert lensModel.func_list[0].param_names[0] == 'Rs'
 
 

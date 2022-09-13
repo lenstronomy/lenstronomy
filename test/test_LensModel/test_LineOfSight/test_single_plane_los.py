@@ -40,24 +40,27 @@ class TestSinglePlaneLOS(object):
     def test_potential(self):
         output = self.lensModel.potential(x=1., y=1., kwargs=[self.kwargs, self.los_kwargs])
         output_minimal = self.lensModel_minimal.potential(x=1., y=1., kwargs=[self.kwargs, self.los_kwargs])
-        assert output == 0.77880078307140488/(8*np.pi)
-        assert output_minimal == 0.77880078307140488/(8*np.pi)
+        single_plane_known_result =  0.77880078307140488/(8*np.pi)
+        npt.assert_almost_equal(output, single_plane_known_result, decimal=8)
+        npt.assert_almost_equal(output_minimal, single_plane_known_result, decimal=8)
 
     def test_alpha(self):
         output1, output2 = self.lensModel.alpha(x=1., y=1., kwargs=[self.kwargs, self.los_kwargs])
         output1_minimal, output2_minimal = self.lensModel_minimal.alpha(x=1., y=1., kwargs=[self.kwargs, self.los_kwargs])
-        assert output1 == -0.19470019576785122/(8*np.pi)
-        assert output2 == -0.19470019576785122/(8*np.pi)
-        assert output1_minimal == -0.19470019576785122/(8*np.pi)
-        assert output2_minimal == -0.19470019576785122/(8*np.pi)
+        single_plane_known_result = -0.19470019576785122/(8*np.pi)
+        npt.assert_almost_equal(output1, single_plane_known_result, decimal=8)
+        npt.assert_almost_equal(output2, single_plane_known_result, decimal=8)
+        npt.assert_almost_equal(output1_minimal, single_plane_known_result, decimal=8)
+        npt.assert_almost_equal(output2_minimal, single_plane_known_result, decimal=8)
 
     def test_ray_shooting(self):
         delta_x, delta_y = self.lensModel.ray_shooting(x=1., y=1., kwargs=[self.kwargs, self.los_kwargs])
         delta_x_minimal, delta_y_minimal = self.lensModel_minimal.ray_shooting(x=1., y=1., kwargs=[self.kwargs, self.los_kwargs])
-        assert delta_x == 1 + 0.19470019576785122/(8*np.pi)
-        assert delta_y == 1 + 0.19470019576785122/(8*np.pi)
-        assert delta_x_minimal == 1 + 0.19470019576785122/(8*np.pi)
-        assert delta_y_minimal == 1 + 0.19470019576785122/(8*np.pi)
+        single_plane_known_result = 1 + 0.19470019576785122/(8*np.pi)
+        npt.assert_almost_equal(delta_x, single_plane_known_result, decimal=8)
+        npt.assert_almost_equal(delta_y, single_plane_known_result, decimal=8)
+        npt.assert_almost_equal(delta_x_minimal, single_plane_known_result, decimal=8)
+        npt.assert_almost_equal(delta_y_minimal, single_plane_known_result, decimal=8)
 
     def test_mass_2d(self):
         mass_kwargs = {'amp': 1., 'sigma': 2., 'center_x': 0., 'center_y': 0.}
@@ -65,10 +68,9 @@ class TestSinglePlaneLOS(object):
         lensModel_minimal = SinglePlaneLOS(['GAUSSIAN_KAPPA', 'LOS_MINIMAL'], index_los = 1)
         output = lensModel.mass_2d(r=1, kwargs=[mass_kwargs, self.los_kwargs])
         output_minimal = lensModel_minimal.mass_2d(r=1, kwargs=[mass_kwargs, self.los_kwargs])
-        # assert output == 0.11750309741540453
-        # assert output_minimal == 0.11750309741540453
-        npt.assert_almost_equal(output, 0.11750309741540453, decimal=8)
-        npt.assert_almost_equal(output_minimal, 0.11750309741540453, decimal=8)
+        single_plane_known_result = 0.11750309741540453
+        npt.assert_almost_equal(output, single_plane_known_result, decimal=8)
+        npt.assert_almost_equal(output_minimal, single_plane_known_result, decimal=8)
 
     def test_density(self):
         theta_E = 1

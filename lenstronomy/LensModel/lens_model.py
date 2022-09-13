@@ -146,12 +146,15 @@ class LensModel(object):
         :param kwargs_lens: lens model parameter keyword argument list
         :param kappa_ext: external convergence contribution not accounted in the lens model that leads to the same
          observables in position and relative fluxes but rescales the time delays
+        :param x_source: source position (optional), otherwise computed with ray-tracing
+        :param y_source: source position (optional), otherwise computed with ray-tracing
         :return: arrival time of image positions in units of days
         """
         if hasattr(self.lens_model, 'arrival_time'):
             arrival_time = self.lens_model.arrival_time(x_image, y_image, kwargs_lens)
         else:
-            fermat_pot = self.lens_model.fermat_potential(x_image, y_image, kwargs_lens)
+            fermat_pot = self.lens_model.fermat_potential(x_image, y_image, kwargs_lens, x_source=x_source,
+                                                          y_source=y_source)
             if not hasattr(self, '_lensCosmo'):
                 raise ValueError("LensModel class was not initialized with lens and source redshifts!")
             arrival_time = self._lensCosmo.time_delay_units(fermat_pot)

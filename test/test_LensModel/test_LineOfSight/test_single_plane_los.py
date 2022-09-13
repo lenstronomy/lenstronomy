@@ -240,9 +240,6 @@ class TestSinglePlaneLOS(object):
         ra_source, dec_source = 0.05, 0.02
         number_of_images = 4
 
-        # defining new lens models here to avoid a bug in which the solver doesn't work
-        # if the LOS kwargs are defined and added to the model before the lens kwargs
-
         lens_model_multiplane_time = LensModel(lens_model_list, z_lens = z_d, z_source = z_s,
                                                lens_redshift_list = redshift_list,
                                                multi_plane = True)
@@ -254,8 +251,8 @@ class TestSinglePlaneLOS(object):
         t_days_mp = lens_model_multiplane_time.arrival_time(x_image_mp, y_image_mp, kwargs_multiplane)
         dt_days_mp = t_days_mp[1:] - t_days_mp[0]
 
-        lens_model_los_time = LensModel(['EPL', 'LOS'], z_lens=z_d, z_source=z_s)
-        kwargs_time_los = [kwargs_epl, kwargs_los]
+        lens_model_los_time = LensModel(['LOS', 'EPL'], z_lens=z_d, z_source=z_s)
+        kwargs_time_los = [kwargs_los, kwargs_epl]
 
         los_solver = LensEquationSolver(lens_model_los_time)
         x_image_los, y_image_los = los_solver.findBrightImage(ra_source, dec_source,

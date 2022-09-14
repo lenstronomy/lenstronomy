@@ -26,6 +26,7 @@ class TestLensModel(object):
                            'GAUSSIAN_ELLIPSE_KAPPA', 'GAUSSIAN_ELLIPSE_POTENTIAL',
                            'MULTI_GAUSSIAN_KAPPA', 'MULTI_GAUSSIAN_KAPPA_ELLIPSE', 'CHAMELEON',
                            'DOUBLE_CHAMELEON']
+
         lensModel = LensModel(lens_model_list)
         assert len(lensModel.lens_model_list) == len(lens_model_list)
 
@@ -179,6 +180,12 @@ class TestRaise(unittest.TestCase):
             lens_model = LensModel(lens_model_list=['SIS'])
             kwargs = [{'theta_E': 1., 'center_x': 0., 'center_y': 0.}]
             lens_model.hessian(0, 0, kwargs, diff=0.001, diff_method='bad')
+        with self.assertRaises(ValueError):
+            lens_model = LensModel(lens_model_list=['LOS', 'LOS_MINIMAL'])
+        with self.assertRaises(ValueError):
+            lens_model = LensModel(lens_model_list=['LOS', 'EPL', 'NFW'], multi_plane=True)
+        with self.assertRaises(ValueError):
+            lens_model = LensModel(lens_model_list=['LOS_MINIMAL', 'SIS', 'GAUSSIAN'], multi_plane=True)
 
 
 if __name__ == '__main__':

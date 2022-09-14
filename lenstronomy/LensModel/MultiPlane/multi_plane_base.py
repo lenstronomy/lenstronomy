@@ -100,11 +100,12 @@ class MultiPlaneBase(ProfileListBase):
         """
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
+
         alpha_x = np.array(alpha_x)
         alpha_y = np.array(alpha_y)
+
         z_lens_last = z_start
         first_deflector = True
-
         for i, idex in enumerate(self._sorted_redshift_index):
             z_lens = self._lens_redshift_list[idex]
 
@@ -122,7 +123,6 @@ class MultiPlaneBase(ProfileListBase):
                     delta_T = self._T_ij_list[i]
                 x, y = self._ray_step_add(x, y, alpha_x, alpha_y, delta_T)
                 alpha_x, alpha_y = self._add_deflection(x, y, alpha_x, alpha_y, kwargs_lens, i)
-
                 z_lens_last = z_lens
         if T_ij_end is None:
             if z_lens_last == z_stop:

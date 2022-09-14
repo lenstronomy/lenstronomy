@@ -156,7 +156,8 @@ def symmetry_average(image, symmetry):
 @export
 def findOverlap(x_mins, y_mins, min_distance):
     """
-    finds overlapping solutions, deletes multiples and deletes non-solutions and if it is not a solution, deleted as well
+    finds overlapping solutions, deletes multiples and deletes non-solutions and if it is not a solution,
+    deleted as well
     """
     n = len(x_mins)
     idex = []
@@ -202,7 +203,7 @@ def re_size(image, factor=1):
     :return:
     """
     if factor < 1:
-        raise ValueError('scaling factor in re-sizing %s < 1' %factor)
+        raise ValueError('scaling factor in re-sizing %s < 1' % factor)
     elif factor == 1:
         return image
     f = int(factor)
@@ -211,7 +212,7 @@ def re_size(image, factor=1):
         small = image.reshape([int(nx/f), f, int(ny/f), f]).mean(3).mean(1)
         return small
     else:
-        raise ValueError("scaling with factor %s is not possible with grid size %s, %s" %(f, nx, ny))
+        raise ValueError("scaling with factor %s is not possible with grid size %s, %s" % (f, nx, ny))
 
 
 @export
@@ -251,7 +252,8 @@ def rebin_coord_transform(factor, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord
     Mpix2coord_resized = Mpix2coord * factor
     x_at_radec_0_resized = (x_at_radec_0 + 0.5) / factor - 0.5
     y_at_radec_0_resized = (y_at_radec_0 + 0.5) / factor - 0.5
-    ra_at_xy_0_resized, dec_at_xy_0_resized = util.map_coord2pix(-x_at_radec_0_resized, -y_at_radec_0_resized, 0, 0, Mpix2coord_resized)
+    ra_at_xy_0_resized, dec_at_xy_0_resized = util.map_coord2pix(-x_at_radec_0_resized, -y_at_radec_0_resized, 0, 0,
+                                                                 Mpix2coord_resized)
     return ra_at_xy_0_resized, dec_at_xy_0_resized, x_at_radec_0_resized, y_at_radec_0_resized, Mpix2coord_resized, Mcoord2pix_resized
 
 
@@ -290,7 +292,7 @@ def cut_edges(image, num_pix):
         raise ValueError('image can not be resized, in routine cut_edges with image shape (%s %s) '
                          'and desired new shape (%s %s)' % (nx, ny, num_pix, num_pix))
     if (nx % 2 == 0 and ny % 2 == 1) or (nx % 2 == 1 and ny % 2 == 0):
-        raise ValueError('image with odd and even axis (%s %s) not supported for re-sizeing' % (nx, ny))
+        raise ValueError('image with odd and even axis (%s %s) not supported for re-sizing' % (nx, ny))
     if (nx % 2 == 0 and num_pix % 2 == 1) or (nx % 2 == 1 and num_pix % 2 == 0):
         raise ValueError('image can only be re-sized from even to even or odd to odd number.')
 
@@ -303,16 +305,14 @@ def cut_edges(image, num_pix):
 
 
 @export
-def radial_profile(data, center=None):
+def radial_profile(data, center):
     """
     computes radial profile
 
     :param data: 2d numpy array
-    :param center: center [x, y] from where to compute the radial profile
+    :param center: center [x, y] from which pixel to compute the radial profile
     :return: radial profile (in units pixel)
     """
-    if center is None:
-        center = np.array([0, 0])
     y, x = np.indices(data.shape)
     r = np.sqrt((x - center[0])**2 + (y - center[1])**2)
     r = r.astype(int)

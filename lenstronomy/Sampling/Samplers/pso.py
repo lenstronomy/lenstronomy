@@ -25,12 +25,6 @@ class ParticleSwarmOptimizer(object):
     :param low: array of the lower bound of the parameter space
     :param high: array of the upper bound of the parameter space
     :param particle_count: the number of particles to use.
-    :param threads: (optional)
-        The number of threads to use for parallelization. If ``threads == 1``,
-        then the ``multiprocessing`` module is not used but if
-        ``threads > 1``, then a ``Pool`` object is created and calls to
-        ``lnpostfn`` are run in parallel.
-
     :param pool: (optional)
         An alternative method of using the parallelized algorithm. If
         provided, the value of ``threads`` is ignored and the
@@ -118,7 +112,8 @@ class ParticleSwarmOptimizer(object):
 
         return swarm
 
-    def sample(self, max_iter=1000, c1=1.193, c2=1.193, p=0.7, m=1e-3, n=1e-2, early_stop_tolerance=None):
+    def sample(self, max_iter=1000, c1=1.193, c2=1.193, p=0.7, m=1e-3, n=1e-2, early_stop_tolerance=None,
+               verbose=True):
         """
         Launches the PSO. Yields the complete swarm per iteration
 
@@ -130,6 +125,8 @@ class ParticleSwarmOptimizer(object):
         :param n: stop criterion, difference between norm of the particle
          vector and norm of the global best
         :param early_stop_tolerance: will terminate at the given value (should be specified as a chi^2)
+        :param verbose: prints when it stopped
+        :type verbose: boolean
         """
 
         self._get_fitness(self.swarm)
@@ -147,14 +144,16 @@ class ParticleSwarmOptimizer(object):
 
             if i >= max_iter:
                 if self.is_master():
-                    print("Max iteration reached! Stopping.")
+                    if verbose:
+                        print("Max iteration reached! Stopping.")
                 return
 
             if self._converged(i, p=p, m=m, n=n):
                 if self.is_master():
-                    print("Converged after {} iterations!".format(i))
-                    print("Best fit found: ", self.global_best.fitness,
-                          self.global_best.position)
+                    if verbose:
+                        print("Converged after {} iterations!".format(i))
+                        print("Best fit found: ", self.global_best.fitness,
+                              self.global_best.position)
                 return
 
             if early_stop_tolerance is not None:

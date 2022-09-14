@@ -39,9 +39,9 @@ class MultiPlaneBase(ProfileListBase):
         if len(lens_redshift_list) > 0:
             z_lens_max = np.max(lens_redshift_list)
             if z_lens_max >= z_source_convention:
-                raise ValueError('deflector redshifts higher or equal the source redshift convention (%s >= %s for the reduced lens'
-                                 ' model quantities not allowed (leads to negative reduced deflection angles!'
-                                 % (z_lens_max, z_source_convention))
+                raise ValueError('deflector redshifts higher or equal the source redshift convention (%s >= %s for the '
+                                 'reduced lens model quantities not allowed (leads to negative reduced deflection '
+                                 'angles!' % (z_lens_max, z_source_convention))
         if not len(lens_model_list) == len(lens_redshift_list):
             raise ValueError("The length of lens_model_list does not correspond to redshift_list")
 
@@ -59,7 +59,7 @@ class MultiPlaneBase(ProfileListBase):
         self._T_ij_list = []
         self._T_z_list = []
         # Sort redshift for vectorized reduced2physical factor calculation
-        if len(lens_model_list)<1:
+        if len(lens_model_list) < 1:
             self._reduced2physical_factor = []
         else:
             z_sort = np.array(self._lens_redshift_list)[self._sorted_redshift_index]
@@ -90,7 +90,8 @@ class MultiPlaneBase(ProfileListBase):
         :param z_stop: redshift where output is computed
         :param kwargs_lens: lens model keyword argument list
         :param include_z_start: bool, if True, includes the computation of the deflection angle at the same redshift as
-         the start of the ray-tracing. ATTENTION: deflection angles at the same redshift as z_stop will be computed always!
+         the start of the ray-tracing. ATTENTION: deflection angles at the same redshift as z_stop will be computed
+         always!
          This can lead to duplications in the computation of deflection angles.
         :param T_ij_start: transverse angular distance between the starting redshift to the first lens plane to follow.
          If not set, will compute the distance each time this function gets executed.

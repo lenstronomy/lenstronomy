@@ -1,4 +1,4 @@
-__author__ = 'nataliehogg', 'pierrefleury', 'danjohnson98'
+__author__ = ['nataliehogg', 'pierrefleury', 'danjohnson98']
 
 from lenstronomy.LensModel.single_plane import SinglePlane
 import numpy as np
@@ -24,7 +24,6 @@ class SinglePlaneLOS(SinglePlane):
     corrections.
     """
 
-
     def __init__(self, lens_model_list, index_los,
                  numerical_alpha_class=None,
                  lens_redshift_list=None,
@@ -37,7 +36,7 @@ class SinglePlaneLOS(SinglePlane):
         - attribute "los" containing the LOS model.
         """
 
-        super().__init__(lens_model_list)
+        super(SinglePlaneLOS, self).__init__(lens_model_list)
         # NB: It is important to run that init first, in order to create a
         # list_func for the entire model, before splitting it between a main
         # lens and the LOS corrections
@@ -52,10 +51,10 @@ class SinglePlaneLOS(SinglePlane):
             model for i, model in enumerate(lens_model_list)
             if i != index_los]
         self._main_lens = SinglePlane(lens_model_list_wo_los,
-                                     numerical_alpha_class=numerical_alpha_class,
-                                     lens_redshift_list=lens_redshift_list,
-                                     z_source_convention=z_source_convention,
-                                     kwargs_interp=kwargs_interp)
+                                      numerical_alpha_class=numerical_alpha_class,
+                                      lens_redshift_list=lens_redshift_list,
+                                      z_source_convention=z_source_convention,
+                                      kwargs_interp=kwargs_interp)
 
     def split_lens_los(self, kwargs):
         """
@@ -85,7 +84,6 @@ class SinglePlaneLOS(SinglePlane):
 
         return kwargs_main, kwargs_los
 
-
     def fermat_potential(self, x_image, y_image, kwargs_lens, x_source=None, y_source=None, k=None):
         """
         Calculates the Fermat Potential with LOS corrections in the tidal regime
@@ -101,9 +99,18 @@ class SinglePlaneLOS(SinglePlane):
         kwargs_main, kwargs_los = self.split_lens_los(kwargs_lens)
 
         # the amplification matrices
-        A_od = np.array([[1-kwargs_los['kappa_od']-kwargs_los['gamma1_od'],-kwargs_los['gamma2_od']+kwargs_los['omega_od']],[-kwargs_los['gamma2_od']-kwargs_los['omega_od'],1-kwargs_los['kappa_od']+kwargs_los['gamma1_od']]])
-        A_os = np.array([[1-kwargs_los['kappa_os']-kwargs_los['gamma1_os'],-kwargs_los['gamma2_os']+kwargs_los['omega_os']],[-kwargs_los['gamma2_os']-kwargs_los['omega_os'],1-kwargs_los['kappa_os']+kwargs_los['gamma1_os']]])
-        A_ds = np.array([[1-kwargs_los['kappa_ds']-kwargs_los['gamma1_ds'],-kwargs_los['gamma2_ds']+kwargs_los['omega_ds']],[-kwargs_los['gamma2_ds']-kwargs_los['omega_ds'],1-kwargs_los['kappa_ds']+kwargs_los['gamma1_ds']]])
+        A_od = np.array([[1-kwargs_los['kappa_od']-kwargs_los['gamma1_od'],
+                          -kwargs_los['gamma2_od']+kwargs_los['omega_od']],
+                         [-kwargs_los['gamma2_od']-kwargs_los['omega_od'],
+                          1-kwargs_los['kappa_od']+kwargs_los['gamma1_od']]])
+        A_os = np.array([[1-kwargs_los['kappa_os']-kwargs_los['gamma1_os'],
+                          -kwargs_los['gamma2_os']+kwargs_los['omega_os']],
+                         [-kwargs_los['gamma2_os']-kwargs_los['omega_os'],
+                          1-kwargs_los['kappa_os']+kwargs_los['gamma1_os']]])
+        A_ds = np.array([[1-kwargs_los['kappa_ds']-kwargs_los['gamma1_ds'],
+                          -kwargs_los['gamma2_ds']+kwargs_los['omega_ds']],
+                         [-kwargs_los['gamma2_ds']-kwargs_los['omega_ds'],
+                          1-kwargs_los['kappa_ds']+kwargs_los['gamma1_ds']]])
 
         # the inverse and transposed amplification matrices
         A_od_tsp = np.transpose(A_od)
@@ -111,7 +118,7 @@ class SinglePlaneLOS(SinglePlane):
         A_os_inv = np.linalg.inv(A_os)
 
         # the composite amplification matrices
-        A_LOS = np.dot(np.dot(A_od_tsp,A_ds_inv),A_os)
+        A_LOS = np.dot(np.dot(A_od_tsp, A_ds_inv), A_os)
 
         # Angular position where the ray hits the deflector's plane
         x_d, y_d = self.los.distort_vector(x_image, y_image,
@@ -147,12 +154,13 @@ class SinglePlaneLOS(SinglePlane):
     def alpha(self, x, y, kwargs, k=None):
         """
         Displacement angle including the line-of-sight corrections
+
         :param x: x-position (preferentially arcsec)
         :type x: numpy array
         :param y: y-position (preferentially arcsec)
         :type y: numpy array
         :param kwargs: list of keyword arguments of lens model parameters
-        matching the lens model classes, including line-of-sight corrections
+         matching the lens model classes, including line-of-sight corrections
         :param k: only evaluate the k-th lens model
         :return: deflection angles in units of arcsec
         """
@@ -189,10 +197,10 @@ class SinglePlaneLOS(SinglePlane):
 
         return f_x, f_y
 
-
     def hessian(self, x, y, kwargs, k=None):
         """
         Hessian matrix
+
         :param x: x-position (preferentially arcsec)
         :type x: numpy array
         :param y: y-position (preferentially arcsec)
@@ -212,8 +220,7 @@ class SinglePlaneLOS(SinglePlane):
                                            gamma2=kwargs_los['gamma2_od'])
 
         # Hessian matrix of the main lens only
-        f_xx, f_xy, f_yx, f_yy = self._main_lens.hessian(x_d, y_d,
-                                                 kwargs=kwargs_main, k=k)
+        f_xx, f_xy, f_yx, f_yy = self._main_lens.hessian(x_d, y_d, kwargs=kwargs_main, k=k)
 
         # Multiply on the left by (1 - Gamma_ds)
         f_xx, f_xy, f_yx, f_yy = self.los.left_multiply(
@@ -239,7 +246,6 @@ class SinglePlaneLOS(SinglePlane):
 
         return f_xx, f_xy, f_yx, f_yy
 
-
     def mass_3d(self, r, kwargs, bool_list=None):
         """
         Computes the mass within a 3d sphere of radius r *for the main lens only*
@@ -256,7 +262,6 @@ class SinglePlaneLOS(SinglePlane):
         mass_3d = self._main_lens.mass_3d(r=r, kwargs=kwargs_main, bool_list=bool_list)
 
         return mass_3d
-
 
     def mass_2d(self, r, kwargs, bool_list=None):
         """
@@ -282,7 +287,6 @@ class SinglePlaneLOS(SinglePlane):
 
         return mass_2d
 
-
     def density(self, r, kwargs, bool_list=None):
         """
         3d mass density at radius r *for the main lens only*
@@ -300,7 +304,6 @@ class SinglePlaneLOS(SinglePlane):
         density = self._main_lens.density(r=r, kwargs=kwargs_main, bool_list=bool_list)
 
         return density
-
 
     def potential(self, x, y, kwargs, k=None):
         """
@@ -321,7 +324,7 @@ class SinglePlaneLOS(SinglePlane):
               In the presence of LOS corrections, a lensing system does not always\
               derive from a potential.")
 
-        kwargs_main, kwargs_los = self.split_lens_los(kwargs)
+        # kwargs_main, kwargs_los = self.split_lens_los(kwargs)
         potential = self._main_lens.potential(x, y, kwargs, k=k)
 
         return potential

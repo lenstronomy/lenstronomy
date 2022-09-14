@@ -79,6 +79,20 @@ class TestSinglePlaneLOS(object):
         npt.assert_almost_equal(output_los, output, decimal=8)
         npt.assert_almost_equal(output_minimal, output, decimal=8)
 
+    def test_mass_3d(self):
+        mass_kwargs = {'amp': 1., 'sigma': 2., 'center_x': 0., 'center_y': 0.}
+
+        lensModel = SinglePlane(['GAUSSIAN_KAPPA'])
+        lensModel_los = SinglePlaneLOS(['GAUSSIAN_KAPPA', 'LOS'], index_los = 1)
+        lensModel_minimal = SinglePlaneLOS(['GAUSSIAN_KAPPA', 'LOS_MINIMAL'], index_los = 1)
+
+        output = lensModel.mass_3d(r=1, kwargs=[mass_kwargs])
+        output_los = lensModel_los.mass_3d(r=1, kwargs=[mass_kwargs, self.los_kwargs])
+        output_minimal = lensModel_minimal.mass_3d(r=1, kwargs=[mass_kwargs, self.los_kwargs])
+
+        npt.assert_almost_equal(output_los, output, decimal=8)
+        npt.assert_almost_equal(output_minimal, output, decimal=8)
+
     def test_density(self):
         theta_E = 1
         r = 1

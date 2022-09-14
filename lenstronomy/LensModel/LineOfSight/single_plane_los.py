@@ -43,15 +43,15 @@ class SinglePlaneLOS(SinglePlane):
         # lens and the LOS corrections
 
         # Extract the los model and import its class
-        self.index_los = index_los
-        self.los_model = lens_model_list[index_los]
-        self.los = self._import_class(self.los_model, custom_class=None, kwargs_interp=None)
+        self._index_los = index_los
+        self._los_model = lens_model_list[index_los]
+        self.los = self._import_class(self._los_model, custom_class=None, kwargs_interp=None)
 
         # Define a separate class for the main lens
         lens_model_list_wo_los = [
             model for i, model in enumerate(lens_model_list)
             if i != index_los]
-        self.main_lens = SinglePlane(lens_model_list_wo_los,
+        self._main_lens = SinglePlane(lens_model_list_wo_los,
                                      numerical_alpha_class=numerical_alpha_class,
                                      lens_redshift_list=lens_redshift_list,
                                      z_source_convention=z_source_convention,
@@ -67,10 +67,10 @@ class SinglePlaneLOS(SinglePlane):
         :return: a list of kwargs corresponding to the lens and a list of kwargs corresponding to the LOS effects
         """
 
-        kwargs_los = copy.deepcopy(kwargs[self.index_los])
+        kwargs_los = copy.deepcopy(kwargs[self._index_los])
         # if 'LOS_MINIMAL' is at play, we set Gamma_os = Gamma_los
         # and Gamma_ds = Gamma_od
-        if self.los_model == 'LOS_MINIMAL':
+        if self._los_model == 'LOS_MINIMAL':
             kwargs_los['kappa_os'] = kwargs_los.pop('kappa_los')
             kwargs_los['gamma1_os'] = kwargs_los.pop('gamma1_los')
             kwargs_los['gamma2_os'] = kwargs_los.pop('gamma2_los')
@@ -81,7 +81,7 @@ class SinglePlaneLOS(SinglePlane):
             kwargs_los['omega_ds'] = kwargs_los['omega_od']
 
         kwargs_main = [kwarg for i, kwarg in enumerate(kwargs)
-                       if i != self.index_los]
+                       if i != self._index_los]
 
         return kwargs_main, kwargs_los
 
@@ -121,7 +121,7 @@ class SinglePlaneLOS(SinglePlane):
                                            gamma2=kwargs_los['gamma2_od'])
 
         # Evaluating the potential of the main lens at this position
-        effective_potential = self.main_lens.potential(x_d, y_d, kwargs=kwargs_main, k=k)
+        effective_potential = self._main_lens.potential(x_d, y_d, kwargs=kwargs_main, k=k)
 
         # obtaining the source position
         if x_source is None or y_source is None:
@@ -167,7 +167,7 @@ class SinglePlaneLOS(SinglePlane):
                                            gamma2=kwargs_los['gamma2_od'])
 
         # Displacement due to the main lens only
-        f_x, f_y = self.main_lens.alpha(x_d, y_d, kwargs=kwargs_main, k=k)
+        f_x, f_y = self._main_lens.alpha(x_d, y_d, kwargs=kwargs_main, k=k)
 
         # Correction due to the background convergence, shear and rotation
         f_x, f_y = self.los.distort_vector(f_x, f_y,
@@ -212,7 +212,7 @@ class SinglePlaneLOS(SinglePlane):
                                            gamma2=kwargs_los['gamma2_od'])
 
         # Hessian matrix of the main lens only
-        f_xx, f_xy, f_yx, f_yy = self.main_lens.hessian(x_d, y_d,
+        f_xx, f_xy, f_yx, f_yy = self._main_lens.hessian(x_d, y_d,
                                                  kwargs=kwargs_main, k=k)
 
         # Multiply on the left by (1 - Gamma_ds)
@@ -253,7 +253,7 @@ class SinglePlaneLOS(SinglePlane):
         print("Note: The computation of the 3d mass ignores the LOS corrections.")
 
         kwargs_main, kwargs_los = self.split_lens_los(kwargs)
-        mass_3d = self.main_lens.mass_3d(r=r, kwargs=kwargs_main, bool_list=bool_list)
+        mass_3d = self._main_lens.mass_3d(r=r, kwargs=kwargs_main, bool_list=bool_list)
 
         return mass_3d
 
@@ -278,7 +278,7 @@ class SinglePlaneLOS(SinglePlane):
         print("Note: The computation of the 2d mass ignores the LOS corrections.")
 
         kwargs_main, kwargs_los = self.split_lens_los(kwargs)
-        mass_2d = self.main_lens.mass_2d(r=r, kwargs=kwargs_main, bool_list=bool_list)
+        mass_2d = self._main_lens.mass_2d(r=r, kwargs=kwargs_main, bool_list=bool_list)
 
         return mass_2d
 
@@ -297,7 +297,7 @@ class SinglePlaneLOS(SinglePlane):
         print("Note: The computation of the density ignores the LOS corrections.")
 
         kwargs_main, kwargs_los = self.split_lens_los(kwargs)
-        density = self.main_lens.density(r=r, kwargs=kwargs_main, bool_list=bool_list)
+        density = self._main_lens.density(r=r, kwargs=kwargs_main, bool_list=bool_list)
 
         return density
 
@@ -322,6 +322,6 @@ class SinglePlaneLOS(SinglePlane):
               derive from a potential.")
 
         kwargs_main, kwargs_los = self.split_lens_los(kwargs)
-        potential = self.main_lens.potential(x, y, kwargs, k=k)
+        potential = self._main_lens.potential(x, y, kwargs, k=k)
 
         return potential

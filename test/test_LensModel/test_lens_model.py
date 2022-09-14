@@ -183,9 +183,9 @@ class TestRaise(unittest.TestCase):
         with self.assertRaises(ValueError):
             lens_model = LensModel(lens_model_list=['LOS', 'LOS_MINIMAL'])
         with self.assertRaises(ValueError):
-            lens_model = LensModel(lens_model_list=['LOS', 'EPL', 'NFW'], multi_plane=True)
+            lens_model = LensModel(lens_model_list=['LOS', 'EPL', 'NFW'], multi_plane=True, z_source=1.0)
         with self.assertRaises(ValueError):
-            lens_model = LensModel(lens_model_list=['LOS_MINIMAL', 'SIS', 'GAUSSIAN'], multi_plane=True)
+            lens_model = LensModel(lens_model_list=['LOS_MINIMAL', 'SIS', 'GAUSSIAN'], multi_plane=True, z_source=1.0)
 
 
 if __name__ == '__main__':

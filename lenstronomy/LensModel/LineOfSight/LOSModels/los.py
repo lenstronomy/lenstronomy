@@ -2,6 +2,7 @@ __author__ = 'pierrefleury'
 
 __all__ = ['LOS']
 
+
 class LOS(object):
     """
     Class allowing one to add tidal line-of-sight effects (convergence and
@@ -26,19 +27,18 @@ class LOS(object):
     """
 
     param_names = ['kappa_od', 'kappa_os', 'kappa_ds',
-                   'gamma1_od','gamma2_od',
-                   'gamma1_os','gamma2_os',
-                   'gamma1_ds','gamma2_ds',
+                   'gamma1_od', 'gamma2_od',
+                   'gamma1_os', 'gamma2_os',
+                   'gamma1_ds', 'gamma2_ds',
                    'omega_od', 'omega_os', 'omega_ds']
     lower_limit_default = {pert: -0.5 for pert in param_names}
     upper_limit_default = {pert: 0.5 for pert in param_names}
 
-
     def __init__(self, *args, **kwargs):
         self._static = False
 
-
-    def distort_vector(self, x, y, kappa=0, gamma1=0, gamma2=0, omega=0):
+    @staticmethod
+    def distort_vector(x, y, kappa=0, gamma1=0, gamma2=0, omega=0):
         """
         This function applies a distortion matrix to a vector (x, y) and
         returns (x', y') as follows:
@@ -75,8 +75,8 @@ class LOS(object):
 
         return x_, y_
 
-
-    def left_multiply(self, f_xx, f_xy, f_yx, f_yy,
+    @staticmethod
+    def left_multiply(f_xx, f_xy, f_yx, f_yy,
                       kappa=0, gamma1=0, gamma2=0, omega=0):
 
         """
@@ -111,9 +111,9 @@ class LOS(object):
 
         return f__xx, f__xy, f__yx, f__yy
 
-
-    def right_multiply(self, f_xx, f_xy, f_yx, f_yy,
-                      kappa=0, gamma1=0, gamma2=0, omega=0):
+    @staticmethod
+    def right_multiply(f_xx, f_xy, f_yx, f_yy,
+                       kappa=0, gamma1=0, gamma2=0, omega=0):
 
         """
         Right-multiplies the Hessian matrix of a lens with a distortion matrix
@@ -163,4 +163,3 @@ class LOS(object):
         :return: no return, deletes pre-computed variables for certain lens models
         """
         pass
-

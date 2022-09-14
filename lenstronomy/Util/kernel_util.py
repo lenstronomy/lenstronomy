@@ -3,7 +3,6 @@ routines that manipulate convolution kernels
 """
 import numpy as np
 import copy
-import scipy.ndimage.interpolation as interp
 from scipy import ndimage
 import lenstronomy.Util.util as util
 import lenstronomy.Util.image_util as image_util
@@ -92,8 +91,15 @@ def subgrid_kernel(kernel, subgrid_res, odd=False, num_iter=100):
     iterative approach
 
     :param kernel: initial kernel
+    :type kernel: 2d numpy array with square odd size
     :param subgrid_res: subgrid resolution required
+    :type subgrid_res: integer
+    :param odd: forces odd axis size return (-1 in size if even)
+    :type odd: boolean
+    :param num_iter: number of iterations in the de-shifting and enhancement
+    :type num_iter: integer
     :return: kernel with higher resolution (larger)
+    :rtype: 2d numpy array with n x subgrid size (-1 if result is even and odd=True)
     """
     subgrid_res = int(subgrid_res)
     if subgrid_res == 1:
@@ -130,11 +136,10 @@ def subgrid_kernel(kernel, subgrid_res, odd=False, num_iter=100):
         kernel_subgrid = kernel_norm(kernel_subgrid)
         kernel_input = temp_kernel
 
-    #from scipy.ndimage import zoom
-
-    #ratio = subgrid_res
-    #kernel_subgrid = zoom(kernel, ratio, order=4) / ratio ** 2
-    #print(np.shape(kernel_subgrid))
+    # from scipy.ndimage import zoom
+    # ratio = subgrid_res
+    # kernel_subgrid = zoom(kernel, ratio, order=4) / ratio ** 2
+    # print(np.shape(kernel_subgrid))
     # whatever has not been matched is added to zeroth order (in squares of the undersampled PSF)
     if subgrid_res % 2 == 0:
         return kernel_subgrid
@@ -228,8 +233,7 @@ def kernel_average_pixel(kernel_super, supersampling_factor):
     if supersampling_factor % 2 == 0:
         kernel_pixel = averaging_even_kernel(kernel_pixel, supersampling_factor)
     else:
-        kernel_pixel = util.averaging(kernel_pixel, numGrid=n_high,
-                                                   numPix=kernel_size)
+        kernel_pixel = util.averaging(kernel_pixel, numGrid=n_high, numPix=kernel_size)
     kernel_pixel /= np.sum(kernel_pixel)
     return kernel_pixel * kernel_sum
 
@@ -237,7 +241,7 @@ def kernel_average_pixel(kernel_super, supersampling_factor):
 @export
 def kernel_gaussian(kernel_numPix, deltaPix, fwhm):
     sigma = util.fwhm2sigma(fwhm)
-    #if kernel_numPix % 2 == 0:
+    # if kernel_numPix % 2 == 0:
     #    kernel_numPix += 1
     x_grid, y_grid = util.make_grid(kernel_numPix, deltaPix)
     gaussian = Gaussian()
@@ -255,11 +259,12 @@ def split_kernel(kernel_super, supersampling_kernel_size, supersampling_factor, 
 
     :param kernel_super: super-sampled kernel
     :param supersampling_kernel_size: size of super-sampled PSF in units of degraded pixels
-    :param normalized: boolean, if True returns a split kernel that is area normalized=1 representing a convolution kernel
+    :param normalized: boolean, if True returns a split kernel that is area normalized=1 representing a convolution
+     kernel
     :return: degraded kernel with hole and super-sampled kernel
     """
     if supersampling_factor <= 1:
-        raise ValueError('To split a kernel, the supersampling_factor needs to be > 1, givn %s' %supersampling_factor)
+        raise ValueError('To split a kernel, the supersampling_factor needs to be > 1, given %s' % supersampling_factor)
     if supersampling_kernel_size % 2 == 0:
         raise ValueError('supersampling_kernel_size needs to be an odd number!')
     n_super = len(kernel_super)
@@ -301,8 +306,8 @@ def degrade_kernel(kernel_super, degrading_factor):
         kernel_low_res = averaging_even_kernel(kernel_super, degrading_factor)
     else:
         kernel_low_res = averaging_odd_kernel(kernel_super, degrading_factor)
-        # degrading_factor**2  # multiplicative factor added when providing flux conservation
-        kernel_low_res *= degrading_factor ** 2
+    # degrading_factor**2  # multiplicative factor added when providing flux conservation
+    kernel_low_res *= degrading_factor ** 2
     return kernel_low_res
 
 
@@ -367,7 +372,7 @@ def averaging_even_kernel(kernel_high_res, subgrid_res):
     kernel_low_res[:-1, 1:] += kernel_edge / 4
     kernel_low_res[1:, :-1] += kernel_edge / 4
     kernel_low_res[:-1, :-1] += kernel_edge / 4
-    return kernel_low_res
+    return kernel_low_res / subgrid_res ** 2
 
 
 @export
@@ -446,9 +451,8 @@ def estimate_amp(data, x_pos, y_pos, psf_kernel):
     :return:
     """
     numPix_x, numPix_y = np.shape(data)
-    #data_center = int((numPix-1.)/2)
-    x_int = int(round(x_pos-0.49999))#+data_center
-    y_int = int(round(y_pos-0.49999))#+data_center
+    x_int = int(round(x_pos-0.49999))
+    y_int = int(round(y_pos-0.49999))
     # TODO: make amplitude estimate not sucebtible to rounding effects on which pixels to chose to estimate the amplitude
     if x_int > 2 and x_int < numPix_x-2 and y_int > 2 and y_int < numPix_y-2:
         mean_image = max(np.sum(data[y_int - 2:y_int+3, x_int-2:x_int+3]), 0)

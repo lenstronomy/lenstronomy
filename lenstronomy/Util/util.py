@@ -327,7 +327,7 @@ def averaging(grid, numGrid, numPix):
     :param grid: higher resolution pixel grid
     :param numGrid: number of pixels per axis in the high resolution input image
     :param numPix: lower number of pixels per axis in the output image (numGrid/numPix is integer number)
-    :return:
+    :return: averaged pixel grid
     """
 
     Nbig = numGrid

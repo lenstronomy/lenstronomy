@@ -12,7 +12,7 @@ export, __all__ = exporter()
 @export
 class Sersic(SersicUtil):
     """
-    this class contains functions to evaluate an spherical Sersic function
+    this class contains functions to evaluate a spherical Sersic function
 
     .. math::
         I(R) = I_0 \\exp \\left[ -b_n (R/R_{\\rm Sersic})^{\\frac{1}{n}}\\right]

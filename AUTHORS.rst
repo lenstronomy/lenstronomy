@@ -23,11 +23,13 @@ Contributors (alphabetic)
 * Xuheng Ding `dartoon <https://github.com/dartoon/>`_
 * Sydney Erickson `smericks <https://github.com/smericks/>`_
 * Andreas Filipp `andreasfilipp <https://github.com/andreasfilipp/>`_
+* Pierre Fleury `pierrefleury <https://github.com/pierrefleury/>`_
 * Kevin Fusshoeller
 * Aymeric Galan `aymgal <https://github.com/aymgal/>`_
 * Matthew R. Gomer `mattgomer <https://github.com/mattgomer>`_
 * Natalie B. Hogg `nataliehogg <https://github.com/nataliehogg>`_
 * Tyler Hughes
+* Daniel Johnson `DanJohnson98 <https://github.com/DanJohnson98>`_
 * Felix A. Kuhn
 * Felix Mayor
 * Martin Millon `martin-millon <https://github.com/martin-millon/>`_

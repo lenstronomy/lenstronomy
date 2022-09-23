@@ -192,11 +192,12 @@ class AnalyticKinematics(Anisotropy):
         #    IR_sigma2_dr_log = IR_sigma2_ * dlog_r * r_array
         #    IR_sigma2_dr = np.append(IR_sigma2_dr_lin, IR_sigma2_dr_log)
         if self._log_int is True:
-            min_log = np.log10(R)
-            max_log = np.log10(max_integrate)
+            min_log = np.log(R)
+            max_log = np.log(max_integrate)
             dlogr = (max_log - min_log) / (self._interp_grid_num - 1)
-            r_array = np.logspace(min_log + dlogr / 2., max_log + dlogr / 2., self._interp_grid_num)
-            dlog_r = (np.log10(r_array[2]) - np.log10(r_array[1])) * np.log(10)
+            r_array = np.logspace(min_log, max_log + dlogr / 2.,
+                                  self._interp_grid_num, base=np.e)
+            dlog_r = (np.log(r_array[2]) - np.log(r_array[1]))
             IR_sigma2_ = self._integrand_suyu10_eq21(r_array, R, kwargs_mass,
                                           kwargs_light, kwargs_anisotropy)
             IR_sigma2_dr = IR_sigma2_ * dlog_r * r_array

@@ -16,9 +16,10 @@ class Solver4Point(object):
     def __init__(self, lensModel, solver_type='PROFILE'):
         self._solver_type = solver_type  # supported:
         if not lensModel.lens_model_list[0] in ['SPEP', 'SPEMD', 'PEMD', 'SIE', 'NIE', 'NFW_ELLIPSE', 'NFW_ELLIPSE_CSE',
-                                                'SHAPELETS_CART', 'CNFW_ELLIPSE', 'EPL']:
+                                                'SHAPELETS_CART', 'CNFW_ELLIPSE', 'EPL', 'EPL_boxydisky']:
             raise ValueError("first lens model must be supported by the solver: 'SPEP', 'SPEMD', 'PEMD',"
-                             " 'SIE', 'NIE', 'EPL', 'NFW_ELLIPSE', 'NFW_ELLIPSE_CSE', 'SHAPELETS_CART', 'CNFW_ELLIPSE'."
+                             " 'SIE', 'NIE', 'EPL', 'EPL_boxydisky', 'NFW_ELLIPSE', 'NFW_ELLIPSE_CSE', "
+                             "'SHAPELETS_CART', 'CNFW_ELLIPSE'."
                              "Your choice was %s" % lensModel.lens_model_list[0])
         if solver_type not in ['PROFILE', 'PROFILE_SHEAR']:
             raise ValueError("solver_type %s not supported! Choose from 'PROFILE', 'PROFILE_SHEAR'"
@@ -127,12 +128,22 @@ class Solver4Point(object):
             kwargs_list[1]['gamma2'] = gamma2
         lens_model = self._lens_mode_list[0]
         if lens_model in ['SPEP', 'SPEMD', 'SIE', 'NIE', 'PEMD', 'EPL']:
+            # a_m for EPL_boxydisky is not needed because it is for the four points for now.
             [theta_E, e1, e2, center_x, center_y, _] = x
             kwargs_list[0]['theta_E'] = theta_E
             kwargs_list[0]['e1'] = e1
             kwargs_list[0]['e2'] = e2
             kwargs_list[0]['center_x'] = center_x
             kwargs_list[0]['center_y'] = center_y
+        elif lens_model == 'EPL_boxydisky':
+            [theta_E, e1, e2, center_x, center_y, a_m, phi] = x
+            kwargs_list[0]['theta_E'] = theta_E
+            kwargs_list[0]['e1'] = e1
+            kwargs_list[0]['e2'] = e2
+            kwargs_list[0]['center_x'] = center_x
+            kwargs_list[0]['center_y'] = center_y
+            kwargs_list[0]['a_m'] = a_m
+
         elif lens_model in ['NFW_ELLIPSE', 'CNFW_ELLIPSE', 'NFW_ELLIPSE_CSE']:
             [alpha_Rs, e1, e2, center_x, center_y, _] = x
             kwargs_list[0]['alpha_Rs'] = alpha_Rs
@@ -177,6 +188,15 @@ class Solver4Point(object):
             center_y = kwargs_list[0]['center_y']
             theta_E = kwargs_list[0]['theta_E']
             x = [theta_E, e1, e2, center_x, center_y, phi_ext]
+        elif lens_model == 'EPL_boxydisky':
+            e1 = kwargs_list[0]['e1']
+            e2 = kwargs_list[0]['e2']
+            center_x = kwargs_list[0]['center_x']
+            center_y = kwargs_list[0]['center_y']
+            theta_E = kwargs_list[0]['theta_E']
+            #
+            a_m = theta_E = kwargs_list[0]['a_m']
+            x = [theta_E, e1, e2, center_x, center_y, a_m, phi_ext]
         elif lens_model in ['NFW_ELLIPSE', 'CNFW_ELLIPSE', 'NFW_ELLIPSE_CSE']:
             e1 = kwargs_list[0]['e1']
             e2 = kwargs_list[0]['e2']
@@ -206,12 +226,14 @@ class Solver4Point(object):
         if self._solver_type in ['PROFILE_SHEAR', 'PROFILE_SHEAR_GAMMA_PSI']:
             pass
             # kwargs_fixed_lens_list[1]['psi_ext'] = kwargs_lens_init[1]['psi_ext']
-        if lens_model in ['SPEP', 'SPEMD', 'SIE', 'NIE', 'PEMD', 'EPL']:
+        if lens_model in ['SPEP', 'SPEMD', 'SIE', 'NIE', 'PEMD', 'EPL', 'EPL_boxydisky']:
             kwargs_fixed['theta_E'] = kwargs_lens['theta_E']
             kwargs_fixed['e1'] = kwargs_lens['e1']
             kwargs_fixed['e2'] = kwargs_lens['e2']
             kwargs_fixed['center_x'] = kwargs_lens['center_x']
             kwargs_fixed['center_y'] = kwargs_lens['center_y']
+            if lens_model == 'EPL_boxydisky':
+                kwargs_fixed['a_m'] = kwargs_lens['a_m']
         elif lens_model in ['NFW_ELLIPSE', 'CNFW_ELLIPSE', 'NFW_ELLIPSE_CSE']:
             kwargs_fixed['alpha_Rs'] = kwargs_lens['alpha_Rs']
             kwargs_fixed['e1'] = kwargs_lens['e1']

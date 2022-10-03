@@ -5,7 +5,8 @@ __all__ = ['ProfileListBase']
 
 _SUPPORTED_MODELS = ['SHIFT', 'NIE_POTENTIAL', 'CONST_MAG', 'SHEAR', 'SHEAR_GAMMA_PSI', 'SHEAR_REDUCED', 'CONVERGENCE', 'FLEXION',
                      'FLEXIONFG', 'POINT_MASS', 'SIS', 'SIS_TRUNCATED', 'SIE', 'SPP', 'NIE', 'NIE_SIMPLE', 'CHAMELEON',
-                     'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'SPEP', 'PEMD', 'SPEMD', 'EPL', 'EPL_NUMBA', 'SPL_CORE',
+                     'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'SPEP', 'PEMD', 'SPEMD', 'EPL', 'EPL_NUMBA',
+                     'EPL_boxydisky', 'SPL_CORE',
                      'NFW', 'NFW_ELLIPSE', 'NFW_ELLIPSE_GAUSS_DEC', 'NFW_ELLIPSE_CSE', 'TNFW', 'TNFW_ELLIPSE',
                      'CNFW', 'CNFW_ELLIPSE', 'CTNFW_GAUSS_DEC', 'NFW_MC', 'SERSIC',
                      'SERSIC_ELLIPSE_POTENTIAL', 'SERSIC_ELLIPSE_KAPPA', 'SERSIC_ELLIPSE_GAUSS_DEC', 'PJAFFE',
@@ -152,6 +153,9 @@ class ProfileListBase(object):
         elif lens_type == 'EPL_NUMBA':
             from lenstronomy.LensModel.Profiles.epl_numba import EPL_numba
             return EPL_numba()
+        elif lens_type == 'EPL_boxydisky':
+            from lenstronomy.LensModel.Profiles.epl_boxydisky import EPL_boxydisky
+            return EPL_boxydisky()
         elif lens_type == 'SPL_CORE':
             from lenstronomy.LensModel.Profiles.splcore import SPLCORE
             return SPLCORE()

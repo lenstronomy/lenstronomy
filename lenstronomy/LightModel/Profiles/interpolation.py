@@ -13,7 +13,7 @@ class Interpol(object):
     class which uses an interpolation of an image to compute the surface brightness
 
     parameters are
-    'image': 2d numpy array of surface brightness (not integrated flux per pixel!)
+    'image': 2d numpy array of surface brightness per square arc second (not integrated flux per pixel!)
     'center_x': coordinate of center of image in angular units (i.e. arc seconds)
     'center_y': coordinate of center of image in angular units (i.e. arc seconds)
     'phi_G': rotation of image relative to the rectangular ra-to-dec orientation
@@ -32,8 +32,10 @@ class Interpol(object):
 
         :param x: x-coordinate to evaluate surface brightness
         :param y: y-coordinate to evaluate surface brightness
-        :param image: 2d numpy array (image) to be used to interpolate
-        :param amp: amplitude of surface brightness scaling in respect of original image
+        :param image: pixelized surface brightness (an image) to be used to interpolate in units of surface brightness
+         (flux per square arc seconds, not flux per pixel!)
+        :type image: 2d numpy array
+        :param amp: amplitude of surface brightness scaling in respect of original input image
         :param center_x: center of interpolated image
         :param center_y: center of interpolated image
         :param phi_G: rotation angle of simulated image in respect to input gird
@@ -60,12 +62,14 @@ class Interpol(object):
         # (try reversing, the unit tests will fail)
         return self._image_interp(y, x, grid=False)
 
-    def total_flux(self, image, scale, amp=1, center_x=0, center_y=0, phi_G=0):
+    @staticmethod
+    def total_flux(image, scale, amp=1, center_x=0, center_y=0, phi_G=0):
         """
-        sums up all the image surface brightness (image pixels defined in surface brightness at the coordinate of the pixel)
-        times pixel area
+        sums up all the image surface brightness (image pixels defined in surface brightness at the coordinate of the
+         pixel) times pixel area
 
-        :param image: pixelized surface brightness
+        :param image: pixelized surface brightness used to interpolate in units of surface brightness
+         (flux per square arc seconds, not flux per pixel!)
         :param scale: scale of the pixel in units of angle
         :param amp: linear scaling parameter of the surface brightness multiplicative with the initial image
         :param center_x: center of image in angular coordinates

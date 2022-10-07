@@ -302,3 +302,11 @@ History
 * double power-law mass profile
 * generalized NFW profile
 * enabled to turn off linear solver in fitting
+
+1.11.0 (2022-09-26)
++++++++++++++++++++
+* transitioning to project repository
+* logo update
+* line of sight lensing module
+* documentation improvements
+* lens equation solver numerics improved

@@ -17,7 +17,7 @@ user to directly access a lot of tools and each module can also be used as stand
 Example notebooks
 -----------------
 
-We have made an extension module available at `https://github.com/lenstronomy/lenstronom-tutorials <https://github.com/lenstronomy/lenstronom-tutorials/>`_.
+We have made an extension module available at `https://github.com/lenstronomy/lenstronomy-tutorials <https://github.com/lenstronomy/lenstronomy-tutorials/>`_.
 You can find simple example notebooks for various cases. The latest versions of the notebooks should be compatible with the recent pip version of lenstronomy.
 
 

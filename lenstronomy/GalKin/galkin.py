@@ -184,19 +184,19 @@ class Galkin(GalkinModel, GalkinObservation):
         x_grid = self._aperture._x_grid
         y_grid = self._aperture._y_grid
 
-        delta_x = np.abs(x_grid[0, 1] - x_grid[0, 0])
-        delta_y = np.abs(y_grid[1, 0] - y_grid[0, 0])
-        assert delta_x == delta_y
+        delta_x = (x_grid[0, 1] - x_grid[0, 0])
+        delta_y = (y_grid[1, 0] - y_grid[0, 0])
+        assert np.abs(delta_x) == np.abs(delta_y)
 
         new_delta_x = delta_x / supersampling_factor
         new_delta_y = delta_y / supersampling_factor
-        x_start = x_grid[0, 0] - delta_x / 2. + new_delta_x/2.
-        x_end = x_grid[0, -1] + delta_x / 2. - + new_delta_x/2.
-        y_start = y_grid[0, 0] - delta_y / 2. + new_delta_y/2.
-        y_end = y_grid[-1, 0] + delta_y /2. - new_delta_y/2.
+        x_start = x_grid[0, 0] - delta_x / 2. * (1 - 1 / supersampling_factor)
+        x_end = x_grid[0, -1] + delta_x / 2. * (1 - 1 / supersampling_factor)
+        y_start = y_grid[0, 0] - delta_y / 2. * (1 - 1 / supersampling_factor)
+        y_end = y_grid[-1, 0] + delta_y /2. * (1 - 1 / supersampling_factor)
 
-        xs = np.arange(x_start, x_end + 1e-5, new_delta_x)
-        ys = np.arange(y_start, y_end + 1e-5, new_delta_y)
+        xs = np.arange(x_start, x_end*(1+1e-6), new_delta_x)
+        ys = np.arange(y_start, y_end*(1+1e-6), new_delta_y)
 
         x_grid_supersampled, y_grid_supersmapled = np.meshgrid(xs, ys)
 
@@ -241,12 +241,12 @@ class Galkin(GalkinModel, GalkinObservation):
                     (y_grid_supersmapled-mass_center_y) ** 2))
         fwhm_factor = 3
         psf_x = np.arange(-fwhm_factor*self._psf._fwhm,
-                          fwhm_factor * self._psf._fwhm+delta_x/(
-                supersampling_factor+1), delta_x/supersampling_factor)
+                          fwhm_factor * self._psf._fwhm+np.abs(delta_x)/(
+                supersampling_factor+1), np.abs(delta_x)/supersampling_factor)
         psf_y = np.arange(-fwhm_factor * self._psf._fwhm,
-                          fwhm_factor * self._psf._fwhm + delta_y / (
+                          fwhm_factor * self._psf._fwhm + np.abs(delta_y) / (
                                   supersampling_factor + 1),
-                          delta_y / supersampling_factor)
+                          np.abs(delta_y) / supersampling_factor)
         psf_x_grid, psf_y_grid = np.meshgrid(psf_x, psf_y)
         psf_kernel = self.get_psf_kernel(psf_x_grid, psf_y_grid)
 

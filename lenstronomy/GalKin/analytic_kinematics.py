@@ -38,7 +38,6 @@ class AnalyticKinematics(Anisotropy):
 
         :param kwargs_cosmo: keyword argument with angular diameter distances
         """
-        print('analytic', interpol_grid_num, log_integration, max_integrate, min_integrate)
         self._interp_grid_num = interpol_grid_num
         self._log_int = log_integration
         self._max_integrate = max_integrate  # maximal integration (and interpolation) in units of arcsecs

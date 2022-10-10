@@ -41,16 +41,6 @@ class PSF(object):
         """
         return self._psf.get_psf_kernel(x, y)
 
-    @property
-    def fwhm(self):
-        """
-        Retrieve FWHM of PSF if stored as a private variable
-        """
-        if hasattr(self, '_fwhm'):
-            return self._fwhm
-        else:
-            return None
-
 
 @export
 class PSFGaussian(object):
@@ -81,6 +71,16 @@ class PSFGaussian(object):
         """
         sigma = self._fwhm / 2 / np.sqrt(2 * np.log(2))
         return np.exp( - (x**2 + y**2) / 2 / sigma**2) / (2 * np.pi * sigma**2)
+
+    @property
+    def fwhm(self):
+        """
+        Retrieve FWHM of PSF if stored as a private variable
+        """
+        if hasattr(self, '_fwhm'):
+            return self._fwhm
+        else:
+            return None
 
 
 @export
@@ -117,3 +117,13 @@ class PSFMoffat(object):
 
         return (self._moffat_beta - 1) / (np.pi * alpha**2) / (1 + (x**2 +
                                         y**2) / alpha**2)**(self._moffat_beta)
+
+    @property
+    def fwhm(self):
+        """
+        Retrieve FWHM of PSF if stored as a private variable
+        """
+        if hasattr(self, '_fwhm'):
+            return self._fwhm
+        else:
+            return None

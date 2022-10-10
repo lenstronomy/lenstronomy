@@ -30,8 +30,6 @@ class NumericKinematics(Anisotropy):
          solution. ATTENTION: currently less accurate than 3d solution
         :param min_integrate:
         """
-        print('numeric', interpol_grid_num, log_integration, max_integrate,
-              min_integrate)
         mass_profile_list = kwargs_model.get('mass_profile_list')
         light_profile_list = kwargs_model.get('light_profile_list')
         anisotropy_model = kwargs_model.get('anisotropy_model')

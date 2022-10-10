@@ -26,7 +26,7 @@ class CurvedArcTanDiff(LensProfileBase):
     """
     param_names = ['tangential_stretch', 'radial_stretch', 'curvature', 'dtan_dtan', 'direction', 'center_x', 'center_y']
     lower_limit_default = {'tangential_stretch': -100, 'radial_stretch': -5, 'curvature': 0.000001, 'dtan_dtan': -10, 'direction': -np.pi, 'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'tangential_stretch': 100, 'radial_stretch': 5, 'curvature': 100, 'dtan_dtab': 10, 'direction': np.pi, 'center_x': 100, 'center_y': 100}
+    upper_limit_default = {'tangential_stretch': 100, 'radial_stretch': 5, 'curvature': 100, 'dtan_dtan': 10, 'direction': np.pi, 'center_x': 100, 'center_y': 100}
 
     def __init__(self):
         self._sie = SIE(NIE=True)
@@ -155,4 +155,3 @@ def center_deflector(curvature, direction, center_x, center_y):
     center_x_sis = center_x - np.cos(direction) / curvature
     center_y_sis = center_y - np.sin(direction) / curvature
     return center_x_sis, center_y_sis
-

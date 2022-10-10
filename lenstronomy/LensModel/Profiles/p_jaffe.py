@@ -33,7 +33,7 @@ class PJaffe(LensProfileBase):
     In the lensing parameterization,
 
     .. math::
-        \\sigma_0 = \\frac{\Sigma_0}{\\Sigma_{\\rm crit}}
+        \\sigma_0 = \\frac{\\Sigma_0}{\\Sigma_{\\rm crit}}
 
     """
 
@@ -101,7 +101,7 @@ class PJaffe(LensProfileBase):
         mass enclosed a 3d sphere or radius r given a lens parameterization with angular units
 
         :param r: radial distance from the center (in 3D)
-        :param rho0: density normalization (see class documentation above)
+        :param sigma0: density normalization (see class documentation above)
         :param Ra: core radius
         :param Rs: transition radius from logarithmic slope -2 to -4
         :return: M(<r) in angular units (modulo critical mass density)

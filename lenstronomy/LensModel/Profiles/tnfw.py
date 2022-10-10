@@ -14,6 +14,11 @@ class TNFW(LensProfileBase):
     """
     this class contains functions concerning the truncated NFW profile with a truncation function (r_trunc^2)*(r^2+r_trunc^2)
 
+    density equation is:
+
+    .. math::
+        \\rho(r) = \\frac{r_\\text{trunc}^2}{r^2+r_\\text{trunc}^2}\\frac{\\rho_0(\\alpha_{R_s})}{r/R_s(1+r/R_s)^2}
+
     relation are: R_200 = c * Rs
 
     """
@@ -53,6 +58,7 @@ class TNFW(LensProfileBase):
     def _L(self, x, tau):
         """
         Logarithm that appears frequently
+
         :param x: r/Rs
         :param tau: t/Rs
         :return:
@@ -63,6 +69,7 @@ class TNFW(LensProfileBase):
     def F(self, x):
         """
         Classic NFW function in terms of arctanh and arctan
+
         :param x: r/Rs
         :return:
         """

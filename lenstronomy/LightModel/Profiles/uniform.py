@@ -9,6 +9,7 @@ class Uniform(object):
     name for profile: 'UNIFORM'
     """
     param_names = ['amp']
+    param_names_latex = {r'$I_0$'}
     lower_limit_default = {'amp': -100}
     upper_limit_default = {'amp': 100}
 
@@ -20,6 +21,7 @@ class Uniform(object):
 
         :param x: x-coordinate
         :param y: y-coordinate
+        :param amp: surface brightness
         :return: constant flux
         """
         return np.ones_like(x) * amp

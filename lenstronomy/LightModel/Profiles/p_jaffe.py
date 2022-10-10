@@ -1,6 +1,6 @@
 import lenstronomy.Util.param_util as param_util
 
-__all__ = ['PJaffe', 'PJaffe_Ellipse']
+__all__ = ['PJaffe', 'PJaffeEllipse']
 
 
 class PJaffe(object):
@@ -21,8 +21,8 @@ class PJaffe(object):
         :param x:
         :param y:
         :param amp:
-        :param a:
-        :param s:
+        :param Ra:
+        :param Rs:
         :param center_x:
         :param center_y:
         :return:
@@ -33,18 +33,17 @@ class PJaffe(object):
     def light_3d(self, r, amp, Ra, Rs):
         """
 
-        :param y:
+        :param r:
         :param amp:
         :param Rs:
-        :param center_x:
-        :param center_y:
+        :param Ra:
         :return:
         """
         rho0 = self.lens.sigma2rho(amp, Ra, Rs)
         return self.lens.density(r, rho0, Ra, Rs)
 
 
-class PJaffe_Ellipse(object):
+class PJaffeEllipse(object):
     """
     calss for elliptical pseudo Jaffe lens light
     """
@@ -75,11 +74,10 @@ class PJaffe_Ellipse(object):
     def light_3d(self, r, amp, Ra, Rs, e1=0, e2=0):
         """
 
-        :param y:
+        :param r:
         :param amp:
+        :param Ra:
         :param Rs:
-        :param center_x:
-        :param center_y:
         :return:
         """
         return self.spherical.light_3d(r, amp, Ra, Rs)

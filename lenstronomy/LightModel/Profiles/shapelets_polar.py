@@ -16,6 +16,7 @@ class ShapeletsPolar(object):
     2D polar Shapelets, see Massey & Refregier 2005
     """
     param_names = ['amp', 'beta', 'n', 'm', 'center_x', 'center_y']
+    param_names_latex = {r'$I_0$', r'$\beta$', r'$n$', r'$m$', r'$x_0$', r'$y_0$'}
     lower_limit_default = {'amp': 0, 'beta': 0, 'n': 0, 'm': 0, 'center_x': -100, 'center_y': -100}
     upper_limit_default = {'amp': 100, 'beta': 100, 'n': 150, 'm': 150, 'center_x': 100, 'center_y': 100}
 
@@ -34,7 +35,8 @@ class ShapeletsPolar(object):
         :param amp: amplitude normalization
         :param beta: shaplet scale
         :param n: order of polynomial
-        :param m: roational invariance
+        :param m: rotational invariance
+        :param complex_bool: boolean; if True uses complex value of function _chi_n_m()
         :param center_x: center of shapelet
         :param center_y: center of shapelet
         :return: amplitude of shapelet at possition (x, y)
@@ -45,7 +47,8 @@ class ShapeletsPolar(object):
         else:
             return amp * self._chi_n_m(r, beta, n, m) * np.exp(-1j * m * phi).real
 
-    def _chi_n_m(self, r, beta, n, m):
+    @staticmethod
+    def _chi_n_m(r, beta, n, m):
         """
 
         :param r: radius / beta
@@ -64,10 +67,11 @@ class ShapeletsPolar(object):
         prefactor = prefac/beta**(m_abs + 1)*np.sqrt(math.factorial(p)/(np.pi*math.factorial(p2)))
         poly = scipy.special.genlaguerre(n=p, alpha=m_abs)  # lower part, upper part of definition in Massey & Refregier
         r_ = (r/beta)**2
-        L_n_alpha = poly(r_)
-        return prefactor*r**m_abs*L_n_alpha*np.exp(-(r/beta)**2/2)
+        l_n_alpha = poly(r_)
+        return prefactor*r**m_abs*l_n_alpha*np.exp(-(r/beta)**2/2)
 
-    def _index2n(self, index):
+    @staticmethod
+    def _index2n(index):
         """
 
         :param index: index of convention
@@ -113,7 +117,8 @@ class ShapeletsPolar(object):
                 m = delta
         return n, m, complex_bool
 
-    def poly2index(self, n, m, complex_bool):
+    @staticmethod
+    def poly2index(n, m, complex_bool):
         """
 
         :param n: non-negative integer
@@ -142,7 +147,8 @@ class ShapeletsPolar(object):
                 index += m
         return int(index - 1)
 
-    def num_param(self, n_max):
+    @staticmethod
+    def num_param(n_max):
         """
 
         :param n_max: maximal polynomial order
@@ -175,7 +181,8 @@ class ShapeletsPolarExp(object):
         :param amp: amplitude normalization
         :param beta: shaplet scale
         :param n: order of polynomial
-        :param m: roational invariance
+        :param m: rotational invariance
+        :param complex_bool: boolean; if True uses complex value of function _chi_n_m()
         :param center_x: center of shapelet
         :param center_y: center of shapelet
         :return: amplitude of shapelet at possition (x, y)
@@ -186,7 +193,8 @@ class ShapeletsPolarExp(object):
         else:
             return amp * self._chi_n_m(r, beta, n, m) * np.exp(-1j * m * phi).real
 
-    def _chi_n_m(self, r, beta, n, m):
+    @staticmethod
+    def _chi_n_m(r, beta, n, m):
         """
 
         :param r: radius
@@ -205,10 +213,11 @@ class ShapeletsPolarExp(object):
         prefactor = prefac * np.sqrt(2./(beta*np.pi * (2*n + 1)**3) * math.factorial(p) / math.factorial(p2))
         poly = scipy.special.genlaguerre(n=p, alpha=2*m_abs)  # lower part, upper part of definition in Massey & Refregier
         x_ = 2. * r / (beta * (2*n + 1))
-        L_n_alpha = poly(x_)
-        return prefactor * x_**m_abs * L_n_alpha * np.exp(-x_/2) / np.sqrt(beta)
+        l_n_alpha = poly(x_)
+        return prefactor * x_**m_abs * l_n_alpha * np.exp(-x_/2) / np.sqrt(beta)
 
-    def num_param(self, n_max):
+    @staticmethod
+    def num_param(n_max):
         """
 
         :param n_max: maximal polynomial order
@@ -216,7 +225,8 @@ class ShapeletsPolarExp(object):
         """
         return int((n_max + 1)**2)
 
-    def _index2n(self, index):
+    @staticmethod
+    def _index2n(index):
         """
 
         :param index: index convention
@@ -247,7 +257,8 @@ class ShapeletsPolarExp(object):
             complex_bool = True
         return n, m, complex_bool
 
-    def poly2index(self, n, m, complex_bool):
+    @staticmethod
+    def poly2index(n, m, complex_bool):
         """
 
         :param n:
@@ -284,6 +295,7 @@ class ShapeletSetPolar(object):
         :param x:
         :param y:
         :param amp:
+        :param n_max:
         :param beta:
         :param center_x:
         :param center_y:
@@ -291,12 +303,14 @@ class ShapeletSetPolar(object):
         """
         num_param = self.shapelets.num_param(n_max)
         f_ = np.zeros(len(np.atleast_1d(x)))
-        L_list = self._pre_calc(x, y, beta, n_max, center_x, center_y)
+        l_list = self._pre_calc(x, y, beta, n_max, center_x, center_y)
         for i in range(num_param):
-            out = self._pre_calc_function(L_list, i) * amp[i]
+            out = self._pre_calc_function(l_list, i) * amp[i]
             f_ += out
-        try: len(x)
-        except: f_ = f_[0]
+        try:
+            len(x)
+        except:
+            f_ = f_[0]
         return np.nan_to_num(f_)
 
     def function_split(self, x, y, amp, n_max, beta, center_x=0, center_y=0):
@@ -332,7 +346,7 @@ class ShapeletSetPolar(object):
             theta_m_imag_list.append(exp_complex.imag)
 
         # compute the Laguerre polynomials in n, m
-        chi_n_m_list = [[0 for x in range(n_max + 1)] for y in range(n_max + 1)]
+        chi_n_m_list = [[0 for _ in range(n_max + 1)] for _ in range(n_max + 1)]
         for n in range(n_max+1):
             for m in range(n+1):
                 if (n - m) % 2 == 0 or self._exponential is True:
@@ -348,7 +362,8 @@ class ShapeletSetPolar(object):
             L_list.append(L_i)
         return L_list
 
-    def _pre_calc_function(self, L_list, i):
+    @staticmethod
+    def _pre_calc_function(L_list, i):
         """
         evaluates the shapelet function based on the pre-calculated components in _pre_calc()
 

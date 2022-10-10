@@ -69,7 +69,7 @@ class CurvedArcSISMST(LensProfileBase):
         """
         r_curvature = np.sqrt((center_x_sis - center_x) ** 2 + (center_y_sis - center_y) ** 2)
         direction = np.arctan2(center_y - center_y_sis, center_x - center_x_sis)
-        radial_stretch = 1./ (1 - kappa_ext)
+        radial_stretch = 1. / (1 - kappa_ext)
         tangential_stretch = 1 / (1 - (theta_E/r_curvature)) * radial_stretch
         curvature = 1./r_curvature
         return tangential_stretch, radial_stretch, curvature, direction
@@ -111,8 +111,8 @@ class CurvedArcSISMST(LensProfileBase):
         """
         lambda_mst = 1. / radial_stretch
         theta_E, kappa_ext, center_x_sis, center_y_sis = self.stretch2sis_mst(tangential_stretch,
-                                                                          radial_stretch, curvature,
-                                                                          direction, center_x, center_y)
+                                                                              radial_stretch, curvature,
+                                                                              direction, center_x, center_y)
         f_x_sis, f_y_sis = self._sis.derivatives(x, y, theta_E, center_x_sis, center_y_sis)
         f_x0, f_y0 = self._sis.derivatives(center_x, center_y, theta_E, center_x_sis, center_y_sis)
         f_x_mst, f_y_mst = self._mst.derivatives(x, y, kappa_ext, ra_0=center_x, dec_0=center_y)
@@ -135,8 +135,8 @@ class CurvedArcSISMST(LensProfileBase):
         """
         lambda_mst = 1. / radial_stretch
         theta_E, kappa_ext, center_x_sis, center_y_sis = self.stretch2sis_mst(tangential_stretch,
-                                                                          radial_stretch, curvature,
-                                                                          direction, center_x, center_y)
+                                                                              radial_stretch, curvature,
+                                                                              direction, center_x, center_y)
         f_xx_sis, f_xy_sis, f_yx_sis, f_yy_sis = self._sis.hessian(x, y, theta_E, center_x_sis, center_y_sis)
         f_xx_mst, f_xy_mst, f_yx_mst, f_yy_mst = self._mst.hessian(x, y, kappa_ext, ra_0=center_x, dec_0=center_y)
         return lambda_mst * f_xx_sis + f_xx_mst, lambda_mst * f_xy_sis + f_xy_mst, lambda_mst * f_yx_sis + f_yx_mst, lambda_mst * f_yy_sis + f_yy_mst
@@ -154,4 +154,3 @@ def center_deflector(curvature, direction, center_x, center_y):
     center_x_sis = center_x - np.cos(direction) / curvature
     center_y_sis = center_y - np.sin(direction) / curvature
     return center_x_sis, center_y_sis
-

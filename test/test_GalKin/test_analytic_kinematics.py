@@ -29,7 +29,7 @@ class TestAnalyticKinematics(object):
         z_s = 0.657
 
         kwargs_model = {
-            'mass_profile_list': ['PEMD'],
+            'mass_profile_list': ['EPL'],
             'light_profile_list': ['HERNQUIST'],
             'anisotropy_model': 'OM',
             # 'lens_redshift_list': [z_d],

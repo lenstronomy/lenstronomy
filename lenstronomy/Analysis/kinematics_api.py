@@ -2,6 +2,7 @@ __author__ = 'sibirrer'
 
 import numpy as np
 import copy
+import warnings
 from lenstronomy.GalKin.galkin_multiobservation import GalkinMultiObservation
 from lenstronomy.GalKin.galkin import Galkin
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
@@ -84,10 +85,18 @@ class KinematicsAPI(object):
         else:
             self._kwargs_mge_light = kwargs_mge_light
         if kwargs_numerics_galkin is None:
-            kwargs_numerics_galkin = {'interpol_grid_num': 1000,  # numerical interpolation, should converge -> infinity
-                                      'log_integration': True,  # log or linear interpolation of surface brightness and mass models
-                                      'max_integrate': 100,
-                                      'min_integrate': 0.001}  # lower/upper bound of numerical integrals
+            if analytic_kinematics:
+                kwargs_numerics_galkin = {'interpol_grid_num': 2000, # numerical interpolation, should converge -> infinity
+                                          'log_integration': True, # log or linear interpolation of surface brightness and mass models
+                                          'max_integrate': 100,
+                                          'min_integrate': 1e-4}  # lower/upper
+                # bound of numerical integrals
+            else:
+                kwargs_numerics_galkin = {'interpol_grid_num': 1000, # numerical interpolation, should converge -> infinity
+                                          'log_integration': True, # log or linear interpolation of surface brightness and mass models
+                                          'max_integrate': 100,
+                                          'min_integrate': 1e-4}  # lower/upper
+                # bound of numerical integrals
         self._kwargs_numerics_kin = kwargs_numerics_galkin
         self._anisotropy_model = anisotropy_model
         self._analytic_kinematics = analytic_kinematics
@@ -106,8 +115,7 @@ class KinematicsAPI(object):
         :param kwargs_lens: lens model keyword arguments
         :param kwargs_lens_light: lens light model keyword arguments
         :param kwargs_anisotropy: stellar anisotropy keyword arguments
-        :param r_eff: projected half-light radius of the stellar light associated with the deflector galaxy, optional,
-         if set to None will be computed in this function with default settings that may not be accurate.
+        :param r_eff: projected half-light radius of the stellar light associated with the deflector galaxy, optional, if set to None will be computed in this function with default settings THAT MAY NOT BE ACCURATE
         :param theta_E: Einstein radius (optional)
         :param gamma: power-law slope (optional)
         :param kappa_ext: external convergence (optional)
@@ -147,34 +155,36 @@ class KinematicsAPI(object):
         galkin, kwargs_profile, kwargs_light = self.galkin_settings(kwargs_lens, kwargs_lens_light, r_eff=r_eff,
                                                                     theta_E=theta_E, gamma=gamma
                                                                     )
+        print(kwargs_light)
         if direct_convolve:
+            if self._kwargs_aperture_kin['aperture_type'] != 'IFU_grid':
+                raise ValueError('direct_convolve=True is not supported if '
+                                 'aperture type is not "IFU_grid"!')
+
+            sigma_v_map = galkin.dispersion_map_grid_convolved(
+                kwargs_profile, kwargs_light,
+                kwargs_anisotropy,
+                supersampling_factor=supersampling_factor,
+                voronoi_bins=voronoi_bins,
+                get_IR_map=get_IR_map
+                #num_kin_sampling=self._num_kin_sampling,
+                #num_psf_sampling=self._num_psf_sampling
+            )
+
             if get_IR_map:
-                sigma_v_map, IR_map = galkin.dispersion_map_grid_convolved(
-                    kwargs_profile, kwargs_light,
-                    kwargs_anisotropy,
-                    supersampling_factor=supersampling_factor,
-                    voronoi_bins=voronoi_bins,
-                    get_IR_map=True
-                    #num_kin_sampling=self._num_kin_sampling,
-                    #num_psf_sampling=self._num_psf_sampling
-                )
-                sigma_v_map = self.transform_kappa_ext(sigma_v_map,
-                                                       kappa_ext=kappa_ext)
-                return sigma_v_map, IR_map
+                sigma_v_map = (self.transform_kappa_ext(sigma_v_map[0],
+                                                   kappa_ext=kappa_ext),
+                               sigma_v_map[1])
             else:
-                sigma_v_map = galkin.dispersion_map_grid_convolved(
-                    kwargs_profile, kwargs_light,
-                    kwargs_anisotropy,
-                    supersampling_factor=supersampling_factor,
-                    voronoi_bins=voronoi_bins,
-                    get_IR_map=False
-                    # num_kin_sampling=self._num_kin_sampling,
-                    # num_psf_sampling=self._num_psf_sampling
-                )
                 sigma_v_map = self.transform_kappa_ext(sigma_v_map,
                                                        kappa_ext=kappa_ext)
-                return sigma_v_map
+
+            return sigma_v_map
         else:
+            if self._kwargs_aperture_kin['aperture_type'] == 'IFU_grid':
+                warnings.warn('direct_convolve=False may be slow with '
+                             'aperture type "IFU_grid", you may want to use '
+                             'direct_convolve=True instead.')
             sigma_v_map = galkin.dispersion_map(
                 kwargs_profile, kwargs_light, kwargs_anisotropy,
                 num_kin_sampling=self._num_kin_sampling,

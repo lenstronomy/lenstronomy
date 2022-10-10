@@ -7,6 +7,7 @@ import unittest
 
 from lenstronomy.Analysis.kinematics_api import KinematicsAPI
 import lenstronomy.Util.param_util as param_util
+from astropy.cosmology import FlatLambdaCDM
 
 
 class TestKinematicsAPI(object):
@@ -438,7 +439,7 @@ class TestKinematicsAPI(object):
                 286.35308715, 282.7597284 , 278.78453985, 274.50666731,
                 270.01992492, 265.41081885, 260.74497935]])
 
-        assert np.max(np.abs(jampy_vel_dis - vel_dis[10:33, 10:33])) < 5.5
+        assert np.max(np.abs(jampy_vel_dis - vel_dis[10:33, 10:33])) < 5.8
 
     def test_velocity_dispersion_map(self):
         np.random.seed(42)
@@ -569,6 +570,118 @@ class TestRaise(unittest.TestCase):
             kinematicAPI = KinematicsAPI(z_lens, z_source, kwargs_model, kwargs_seeing={}, kwargs_aperture={}, anisotropy_model='OM')
             kinematicAPI.kinematic_lens_profiles(kwargs_lens, MGE_fit=True, model_kinematics_bool=None, theta_E=None,
                                 kwargs_mge={})
+
+    def test_dispersion_map_grid_convolved_numeric_vs_analytical(self):
+        """
+        Test numerical vs analytical computation of IFU_grid velocity
+        dispersion
+        """
+        r_eff = 1.85
+        theta_e = 1.63
+        gamma = 2
+        a_ani = 1
+
+        def get_v_rms(theta_e, gamma, r_eff, a_ani=1,
+                      z_d=0.295, z_s=0.657, analytic=False
+                      ):
+            """
+            Compute v_rms for power-law mass and Hernquist light using Galkin's numerical
+            approach.
+            :param hernquist_mass: if mass in M_sun provided, uses Hernquist mass profile. For debugging purpose.
+            :param do_mge: True will use lenstronomy's own MGE implementation
+            """
+            cosmo = FlatLambdaCDM(H0=70, Om0=0.3)
+
+            D_d = cosmo.angular_diameter_distance(z_d).value
+            D_s = cosmo.angular_diameter_distance(z_s).value
+            D_ds = cosmo.angular_diameter_distance_z1z2(0.5, 2.).value
+
+            kwargs_cosmo = {'d_d': D_d, 'd_s': D_s, 'd_ds': D_ds}
+
+            xs, ys = np.meshgrid(np.linspace(-1, 1, 20),
+                                 np.linspace(-1, 1, 20)
+                                 )
+
+            kwargs_aperture = {'aperture_type': 'IFU_grid',
+                               'x_grid': xs,
+                               'y_grid': ys,
+                               }
+
+            kwargs_seeing = {'psf_type': 'GAUSSIAN',
+                             'fwhm': 0.7,
+                             }
+
+            kwargs_galkin_numerics = {  # 'sampling_number': 1000,
+                'interpol_grid_num': 2000,
+                'log_integration': True,
+                'max_integrate': 100,
+                'min_integrate': 0.001,
+            }
+
+            kwargs_model = {
+                'lens_model_list': ['PEMD'],
+                'lens_light_model_list': ['HERNQUIST'],
+            }
+
+            kinematics_api = KinematicsAPI(z_lens=z_d, z_source=z_s,
+                                           kwargs_model=kwargs_model,
+                                           kwargs_aperture=kwargs_aperture,
+                                           kwargs_seeing=kwargs_seeing,
+                                           anisotropy_model='OM',
+                                           cosmo=cosmo,
+                                           multi_observations=False,
+                                           # kwargs_numerics_galkin=kwargs_galkin_numerics,
+                                           analytic_kinematics=analytic,
+                                           Hernquist_approx=False,
+                                           MGE_light=False,
+                                           MGE_mass=False,  # self._cgd,
+                                           kwargs_mge_light=None,
+                                           kwargs_mge_mass=None,
+                                           sampling_number=1000,
+                                           num_kin_sampling=2000,
+                                           num_psf_sampling=500,
+                                           )
+
+            kwargs_mass = [{
+                'theta_E': theta_e, 'gamma': gamma, 'center_x': 0,
+                'center_y': 0,
+                'e1': 0, 'e2': 0
+            }]
+
+            kwargs_light = [{
+                'Rs': 0.551 * r_eff, 'amp': 1., 'center_x': 0, 'center_y': 0
+            }]
+
+            kwargs_anisotropy = {
+                'r_ani': a_ani * r_eff
+            }
+
+            vel_dis, ir = kinematics_api.velocity_dispersion_map(
+                kwargs_mass,
+                kwargs_light,
+                kwargs_anisotropy,
+                r_eff=r_eff,
+                theta_E=theta_e,
+                gamma=gamma,
+                kappa_ext=0,
+                direct_convolve=True,
+                supersampling_factor=5,
+                voronoi_bins=None,
+                get_IR_map=True
+            )
+
+            return vel_dis, ir
+
+        analytic_sigma, analytic_ir = get_v_rms(theta_e, gamma, r_eff,
+                                           analytic=True)
+        numeric_sigma, numeric_ir = get_v_rms(theta_e, gamma, r_eff,
+                                          analytic=False)
+
+        # check if values match within 1%
+        npt.assert_array_less((analytic_sigma - numeric_sigma) /
+                              analytic_sigma,
+                              0.01 * np.ones_like(analytic_sigma)
+                              )
 
 
 if __name__ == '__main__':

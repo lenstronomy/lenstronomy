@@ -32,7 +32,7 @@ class Flexionfg(LensProfileBase):
         :return: lensing potential
         """
         _g1, _g2, _g3, _g4 = self.transform_fg(F1, F2, G1, G2)
-        return self.flexion_cart.function(x,y,_g1, _g2, _g3, _g4, ra_0, dec_0)
+        return self.flexion_cart.function(x, y, _g1, _g2, _g3, _g4, ra_0, dec_0)
 
     def derivatives(self, x, y, F1, F2, G1, G2, ra_0=0, dec_0=0):
         """
@@ -70,10 +70,10 @@ class Flexionfg(LensProfileBase):
     def transform_fg(F1, F2, G1, G2):
         """
         basis transform from (F1,F2,G1,G2) to (g1,g2,g3,g4)
-        :param f1: F1 flexion, derivative of kappa in x direction
-        :param f2: F2 flexion, derivative of kappa in y direction
-        :param g1: G1 flexion
-        :param g2: G2 flexion
+        :param F1: F1 flexion, derivative of kappa in x direction
+        :param F2: F2 flexion, derivative of kappa in y direction
+        :param G1: G1 flexion
+        :param G2: G2 flexion
         :return: g1,g2,g3,g4 (phi_xxx, phi_xxy, phi_xyy, phi_yyy)
         """
         g1 = (3*F1 + G1) * 0.5

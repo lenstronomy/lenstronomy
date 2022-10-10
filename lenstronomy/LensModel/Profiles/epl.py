@@ -4,13 +4,15 @@ import numpy as np
 import lenstronomy.Util.util as util
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
+from lenstronomy.LensModel.Profiles.spp import SPP
 from scipy.special import hyp2f1
+
 
 __all__ = ['EPL', 'EPLMajorAxis']
 
 
 class EPL(LensProfileBase):
-    """"
+    """
     Elliptical Power Law mass profile
 
     .. math::
@@ -24,7 +26,7 @@ class EPL(LensProfileBase):
     In terms of eccentricities, this profile is defined as
 
     .. math::
-        \\kappa(r) = \\frac{3-\\gamma}{2} \\left(\\frac{\\theta'_{E}}{r \\sqrt{1 − e*\\cos(2*\\phi)}} \\right)^{\\gamma-1}
+        \\kappa(r) = \\frac{3-\\gamma}{2} \\left(\\frac{\\theta'_{E}}{r \\sqrt{1 - e*\\cos(2*\\phi)}} \\right)^{\\gamma-1}
 
     with :math:`\\epsilon` is the ellipticity defined as
 
@@ -49,6 +51,7 @@ class EPL(LensProfileBase):
 
     def __init__(self):
         self.epl_major_axis = EPLMajorAxis()
+        self.spp = SPP()
         super(EPL, self).__init__()
 
     def param_conv(self, theta_E, gamma, e1, e2):
@@ -66,10 +69,11 @@ class EPL(LensProfileBase):
             return self._b_static, self._t_static, self._q_static, self._phi_G_static
         return self._param_conv(theta_E, gamma, e1, e2)
 
-    def _param_conv(self, theta_E, gamma, e1, e2):
+    @staticmethod
+    def _param_conv(theta_E, gamma, e1, e2):
         """
-        convert parameters from :math:`R = r \sqrt{1 − e*cos(2*phi)}` to
-        :math:`R = \sqrt{q^2 x^2 + y^2}`
+        convert parameters from :math:`R = \\sqrt{q x^2 + y^2/q}` to
+        :math:`R = \\sqrt{q^2 x^2 + y^2}`
 
         :param gamma: power law slope
         :param theta_E: Einstein radius
@@ -77,18 +81,14 @@ class EPL(LensProfileBase):
         :param e2: eccentricity component
         :return: critical radius b, slope t, axis ratio q, orientation angle phi_G
         """
-
-        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
-        theta_E_conv = self._theta_E_q_convert(theta_E, q)
-        b = theta_E_conv * np.sqrt((1 + q**2)/2)
         t = gamma - 1
+        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
+        b = theta_E * np.sqrt(q)
         return b, t, q, phi_G
 
     def set_static(self, theta_E, gamma, e1, e2, center_x=0, center_y=0):
         """
 
-        :param x: x-coordinate in image plane
-        :param y: y-coordinate in image plane
         :param theta_E: Einstein radius
         :param gamma: power law slope
         :param e1: eccentricity component
@@ -197,20 +197,31 @@ class EPL(LensProfileBase):
         f_xy = gamma2
         return f_xx, f_xy, f_xy, f_yy
 
-    def _theta_E_q_convert(self, theta_E, q):
+    def mass_3d_lens(self, r, theta_E, gamma, e1=None, e2=None):
         """
-        converts a spherical averaged Einstein radius to an elliptical (major axis) Einstein radius.
-        This then follows the convention of the PEMD profile in lenstronomy.
-
-        .. math::
-            \\frac{\\theta_E}{\\theta_{E gravlens}}) = \\sqrt{(1+q^2) / (2 q)}
-
-        :param theta_E: Einstein radius in lenstronomy conventions
-        :param q: axis ratio minor/major
-        :return: theta_E in convention of kappa=  b *(q2(s2 + x2) + y2􏰉)−1/2
+        computes the spherical power-law mass enclosed (with SPP routine)
+        :param r: radius within the mass is computed
+        :param theta_E: Einstein radius
+        :param gamma: power-law slope
+        :param e1: eccentricity component (not used)
+        :param e2: eccentricity component (not used)
+        :return: mass enclosed a 3D radius r
         """
-        theta_E_new = theta_E / (np.sqrt((1.+q**2) / (2. * q)))
-        return theta_E_new
+        return self.spp.mass_3d_lens(r, theta_E, gamma)
+
+    def density_lens(self, r, theta_E, gamma, e1=None, e2=None):
+        """
+        computes the density at 3d radius r given lens model parameterization.
+        The integral in the LOS projection of this quantity results in the convergence quantity.
+
+        :param r: radius within the mass is computed
+        :param theta_E: Einstein radius
+        :param gamma: power-law slope
+        :param e1: eccentricity component (not used)
+        :param e2: eccentricity component (not used)
+        :return: mass enclosed a 3D radius r
+        """
+        return self.spp.density_lens(r, theta_E, gamma)
 
 
 class EPLMajorAxis(LensProfileBase):
@@ -267,6 +278,7 @@ class EPLMajorAxis(LensProfileBase):
         Z.real = q*x
         Z.imag = y
         R = np.abs(Z)
+        R = np.maximum(R, 0.000000001)
 
         # angular dependency with extra factor of R, eq. (23)
         R_omega = Z*hyp2f1(1, t/2, 2-t/2, -(1-q)/(1+q)*(Z/Z.conj()))
@@ -292,6 +304,7 @@ class EPLMajorAxis(LensProfileBase):
         :return: f_xx, f_yy, f_xy
         """
         R = np.hypot(q*x, y)
+        R = np.maximum(R, 0.00000001)
         r = np.hypot(x, y)
 
         cos, sin = x/r, y/r

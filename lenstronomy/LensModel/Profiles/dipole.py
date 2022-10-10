@@ -24,8 +24,8 @@ class Dipole(LensProfileBase):
         sin_phi = np.sin(phi_dipole)
         cos_phi = np.cos(phi_dipole)
         x_ = cos_phi*x_shift + sin_phi*y_shift
-        y_ = -sin_phi*x_shift + cos_phi*y_shift
-        r = np.sqrt(x_**2 + y_**2)
+        # y_ = -sin_phi*x_shift + cos_phi*y_shift
+        # r = np.sqrt(x_**2 + y_**2)
 
         # f_ = coupling**2 * (x_/y_)**2  # np.sqrt(np.abs(y_)/r) * np.abs(y_)
         # f_ = coupling * np.abs(x_)
@@ -86,7 +86,8 @@ class DipoleUtil(object):
     pre-calculation of dipole properties
     """
 
-    def com(self, center1_x, center1_y, center2_x, center2_y, Fm):
+    @staticmethod
+    def com(center1_x, center1_y, center2_x, center2_y, Fm):
         """
         :return: center of mass
         """
@@ -94,7 +95,8 @@ class DipoleUtil(object):
         com_y = (Fm * center1_y + center2_y)/(Fm + 1.)
         return com_x, com_y
 
-    def mass_ratio(self, theta_E, theta_E_sub):
+    @staticmethod
+    def mass_ratio(theta_E, theta_E_sub):
         """
         computes mass ration of the two clumps with given Einstein radius and power law slope (clump1/sub-clump)
         :param theta_E:
@@ -103,7 +105,8 @@ class DipoleUtil(object):
         """
         return (theta_E / theta_E_sub) ** 2
 
-    def angle(self, center1_x, center1_y, center2_x, center2_y):
+    @staticmethod
+    def angle(center1_x, center1_y, center2_x, center2_y):
         """
         compute the rotation angle of the dipole
         :return:

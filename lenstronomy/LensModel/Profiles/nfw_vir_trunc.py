@@ -38,23 +38,23 @@ class NFWVirTrunc(LensProfileBase):
 
         :param theta: radial angle from the center of the profile
         :param logM: log_10 halo mass in physical units of M_sun
-        :param c: concentration of the halo; r_vir = c * r_s
+        :param c: concentration of the halo; r_200 = c * r_s
         :return: convergence at theta
         """
         M = 10. ** logM
-        theta_vir = self._lens_cosmo.nfw_M_theta_vir(M)
+        theta_r200 = self._lens_cosmo.nfw_M_theta_r200(M)
         #r_vir = theta_vir * self._lens_cosmo.D_d * const.arcsec  # physical Mpc
         #print(r_vir, 'r_vir')
-        x = c * theta / theta_vir
+        x = c * theta / theta_r200
         f = self._f(c)
-        return M / self._lens_cosmo.sigma_crit_angle * c ** 2 * f / (2 * np.pi * theta_vir ** 2) * self._G(x, c)
+        return M / self._lens_cosmo.sigma_crit_angle * c ** 2 * f / (2 * np.pi * theta_r200 ** 2) * self._G(x, c)
 
     def _G(self, x, c):
         """
         # G(x) https://arxiv.org/pdf/astro-ph/0209167.pdf equation 27
 
-        :param x: scaled projected radius with c * theta / theta_vir
-        :param c: oncentration of the halo; r_vir = c * r_s
+        :param x: scaled projected radius with c * theta / theta_r200
+        :param c: oncentration of the halo; r_200 = c * r_s
         :return: G(x)
         """
         s = 0.000001

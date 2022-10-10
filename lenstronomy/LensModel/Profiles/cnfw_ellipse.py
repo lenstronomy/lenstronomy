@@ -1,7 +1,7 @@
 __author__ = 'sibirrer'
 
-#this file contains a class to compute the Navaro-Frank-White function in mass/kappa space
-#the potential therefore is its integral
+# this file contains a class to compute the Navaro-Frank-White function in mass/kappa space
+# the potential therefore is its integral
 
 import numpy as np
 from lenstronomy.LensModel.Profiles.cnfw import CNFW

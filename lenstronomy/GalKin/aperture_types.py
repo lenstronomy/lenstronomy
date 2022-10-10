@@ -254,7 +254,7 @@ class IFUGrid(object):
         number of segments with separate measurements of the velocity dispersion
         :return: int
         """
-        return self._x_grid.shape[0] * self._x_grid.shape[1]
+        return (self._x_grid.shape[0], self._x_grid.shape[1])
 
 
 @export

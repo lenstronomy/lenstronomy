@@ -48,7 +48,7 @@ class TestAperture(object):
         assert i == (9, 9)
         bool, i = frame.aperture_select(ra=5, dec=5)
         assert bool is False
-        assert frame.num_segments == 100
+        assert frame.num_segments == (10, 10)
 
 
 class TestRaise(unittest.TestCase):

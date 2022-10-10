@@ -13,8 +13,8 @@ __all__ = ['NumericKinematics']
 
 class NumericKinematics(Anisotropy):
 
-    def __init__(self, kwargs_model, kwargs_cosmo, interpol_grid_num=1000, log_integration=True, max_integrate=1000,
-                 min_integrate=0.0001, max_light_draw=None, lum_weight_int_method=True):
+    def __init__(self, kwargs_model, kwargs_cosmo, interpol_grid_num=1000, log_integration=True, max_integrate=100,
+                 min_integrate=1e-4, max_light_draw=None, lum_weight_int_method=True):
         """
         What we need:
         - max projected R to have ACCURATE I_R_sigma values
@@ -30,6 +30,8 @@ class NumericKinematics(Anisotropy):
          solution. ATTENTION: currently less accurate than 3d solution
         :param min_integrate:
         """
+        print('numeric', interpol_grid_num, log_integration, max_integrate,
+              min_integrate)
         mass_profile_list = kwargs_model.get('mass_profile_list')
         light_profile_list = kwargs_model.get('light_profile_list')
         anisotropy_model = kwargs_model.get('anisotropy_model')
@@ -49,6 +51,20 @@ class NumericKinematics(Anisotropy):
         self.cosmo = Cosmo(**kwargs_cosmo)
         self._mass_profile = SinglePlane(mass_profile_list)
         self._lum_weight_int_method = lum_weight_int_method
+
+    @property
+    def max_integrate(self):
+        """
+        Get the maximum range of integration
+        """
+        return self._max_integrate
+
+    @property
+    def min_integrate(self):
+        """
+        Get the maximum range of integration
+        """
+        return self._min_integrate
 
     def sigma_s2(self, r, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """
@@ -224,6 +240,14 @@ class NumericKinematics(Anisotropy):
 
         IR_sigma2 = np.sum(IR_sigma2_dr)  # integral from angle to physical scales
         IR = self.lightProfile.light_2d_finite(R, kwargs_light)
+
+        # if 'a' not in kwargs_light:
+        #     R_s = 0.551 * kwargs_light['r_eff']
+        # else:
+        #     R_s = kwargs_light['a']
+        #
+        # IR = self.lightProfile.lens.density_2d(R, 0, 1, R_s)
+
         return IR_sigma2 * 2 * const.G / (const.arcsec * self.cosmo.dd * const.Mpc), IR
 
     def I_R_sigma2_and_IR(self, R, kwargs_mass, kwargs_light,

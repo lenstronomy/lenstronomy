@@ -208,11 +208,16 @@ class Galkin(GalkinModel, GalkinObservation):
         R_max = np.sqrt((xs - mass_center_x)**2 + (ys -
                                                    mass_center_y)**2).max()
 
-        Rs = np.linspace(0, R_max+1, 300)
+        Rs = np.logspace(np.log10(self.numerics.min_integrate),
+                         np.log10(R_max+0.1),
+                         300)
+
+        # Rs = np.linspace(self.numerics.min_integrate,
+        #                  R_max + 0.1,
+        #                  300)
+
         sigma2_IRs = np.zeros_like(Rs)
         IRs = np.zeros_like(Rs)
-
-        self.numerics._lum_weight_int_method = True
 
         for i, R in enumerate(Rs):
             sigma2_IRs[i], IRs[i] = self.numerics.I_R_sigma2_and_IR(
@@ -220,26 +225,33 @@ class Galkin(GalkinModel, GalkinObservation):
                     kwargs_mass,
                     kwargs_light, kwargs_anisotropy)
 
+        Rs = np.log10(Rs)
+        sigma2_IRs = np.log10(sigma2_IRs)
+        IRs = np.log10(IRs)
+
         sigma2_interp = interp1d(Rs, sigma2_IRs,
-                                 kind='cubic',
-                                 bounds_error=True,
+                                 kind='linear',
+                                 bounds_error=False,
+                                 fill_value=(sigma2_IRs[0], sigma2_IRs[-1]),
                                  assume_sorted=True
                                  )
         IR_interp = interp1d(Rs, IRs,
-                             kind='cubic',
-                             bounds_error=True,
+                             kind='linear',
+                             bounds_error=False,
+                             fill_value=(IRs[0], IRs[-1]),
                              assume_sorted=True
                              )
 
         # sigma2_IR_grid = np.zeros_like(x_grid_supersampled)
         # IR_grid = np.zeros_like(x_grid_supersampled)
 
-        sigma2_IR_grid = sigma2_interp(
-            np.sqrt((x_grid_supersampled-mass_center_x) ** 2 +
-                    (y_grid_supersmapled-mass_center_y) ** 2))
-        IR_grid = IR_interp(
-            np.sqrt((x_grid_supersampled-mass_center_x) ** 2 +
-                    (y_grid_supersmapled-mass_center_y) ** 2))
+        sigma2_IR_grid = 10**sigma2_interp(
+            np.log10(np.sqrt((x_grid_supersampled-mass_center_x) ** 2 +
+                             (y_grid_supersmapled-mass_center_y) ** 2)))
+        IR_grid = 10**IR_interp(
+            np.log10(np.sqrt((x_grid_supersampled-mass_center_x) ** 2 +
+                             (y_grid_supersmapled-mass_center_y) ** 2)))
+
         fwhm_factor = 3
         psf_x = np.arange(-fwhm_factor*self._psf._fwhm,
                           fwhm_factor * self._psf._fwhm+np.abs(delta_x)/(
@@ -251,8 +263,8 @@ class Galkin(GalkinModel, GalkinObservation):
         psf_x_grid, psf_y_grid = np.meshgrid(psf_x, psf_y)
         psf_kernel = self.get_psf_kernel(psf_x_grid, psf_y_grid)
 
-        sigma2_IR_convolved = convolve2d(sigma2_IR_grid,
-                                                   psf_kernel, mode='same')
+        sigma2_IR_convolved = convolve2d(sigma2_IR_grid, psf_kernel,
+                                         mode='same')
         IR_convolved = convolve2d(IR_grid, psf_kernel, mode='same')
 
         if voronoi_bins is not None:

@@ -150,12 +150,11 @@ class KinematicsAPI(object):
         :param supersampling_factor: supersampling factor for 2D integration grid
         :param voronoi_bins: mapping of the voronoi bins, -1 values for  pixels not binned
         :param get_IR_map: if True, will return the pixelized IR maps to use for Voronoi binning in post-processing
-        :return: velocity dispersion [km/s]
+        :return: velocity dispersion map in specified bins or grid in `kwargs_aperture`, in [km/s] unit
         """
         galkin, kwargs_profile, kwargs_light = self.galkin_settings(kwargs_lens, kwargs_lens_light, r_eff=r_eff,
                                                                     theta_E=theta_E, gamma=gamma
                                                                     )
-        print(kwargs_light)
         if direct_convolve:
             if self._kwargs_aperture_kin['aperture_type'] != 'IFU_grid':
                 raise ValueError('direct_convolve=True is not supported if '
@@ -172,19 +171,16 @@ class KinematicsAPI(object):
             )
 
             if get_IR_map:
-                sigma_v_map = (self.transform_kappa_ext(sigma_v_map[0],
-                                                   kappa_ext=kappa_ext),
+                sigma_v_map = (self.transform_kappa_ext(sigma_v_map[0], kappa_ext=kappa_ext),
                                sigma_v_map[1])
             else:
-                sigma_v_map = self.transform_kappa_ext(sigma_v_map,
-                                                       kappa_ext=kappa_ext)
+                sigma_v_map = self.transform_kappa_ext(sigma_v_map, kappa_ext=kappa_ext)
 
             return sigma_v_map
         else:
             if self._kwargs_aperture_kin['aperture_type'] == 'IFU_grid':
-                warnings.warn('direct_convolve=False may be slow with '
-                             'aperture type "IFU_grid", you may want to use '
-                             'direct_convolve=True instead.')
+                warnings.warn('direct_convolve=False may be slow with aperture type "IFU_grid", '
+                              'you may want to use direct_convolve=True instead.')
             sigma_v_map = galkin.dispersion_map(
                 kwargs_profile, kwargs_light, kwargs_anisotropy,
                 num_kin_sampling=self._num_kin_sampling,

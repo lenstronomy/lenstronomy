@@ -48,11 +48,9 @@ class AnalyticKinematics(Anisotropy):
 
         self._cosmo = Cosmo(**kwargs_cosmo)
         self._spp = SPP()
-        self.lightProfile = LightProfile(['HERNQUIST'],
-                                         interpol_grid_num=interpol_grid_num,
+        self.lightProfile = LightProfile(['HERNQUIST'], interpol_grid_num=interpol_grid_num,
                                          max_interpolate=max_integrate,
-                                         min_interpolate=min_integrate,
-                                         max_draw=max_integrate)
+                                         min_interpolate=min_integrate, max_draw=max_integrate)
         Anisotropy.__init__(self, anisotropy_type='OM')
 
     @property
@@ -211,37 +209,22 @@ class AnalyticKinematics(Anisotropy):
         """
         R = max(R, self._min_integrate)
         max_integrate = self._max_integrate  # make sure the integration of the Jeans equation is performed further out than the interpolation
-        # if False:
-        #    # linear integral near R
-        #    lin_max = min(2 * R_, self._max_interpolate)
-        #    lin_max = min(lin_max, R_+1)
-        #    r_array = np.linspace(start=R, stop=lin_max, num=int(self._interp_grid_num / 2))
-        #    dr = r_array[2] - r_array[1]
-        #    IR_sigma2_ = self._integrand_A15(r_array[1:] - dr/2, R, kwargs_mass, kwargs_light, kwargs_anisotropy)
-        #    IR_sigma2_dr_lin = IR_sigma2_ * dr
-        #    # logarithmic integral for larger extent
-        #    max_log = np.log10(max_integrate)
-        #    r_array = np.logspace(np.log10(lin_max), max_log, int(self._interp_grid_num / 2))
-        #    dlog_r = (np.log10(r_array[2]) - np.log10(r_array[1])) * np.log(10)
-        #    IR_sigma2_ = self._integrand_A15(r_array, R_, kwargs_mass, kwargs_light, kwargs_anisotropy)
-        #    IR_sigma2_dr_log = IR_sigma2_ * dlog_r * r_array
-        #    IR_sigma2_dr = np.append(IR_sigma2_dr_lin, IR_sigma2_dr_log)
+
         if self._log_int is True:
             min_log = np.log(R)
             max_log = np.log(max_integrate)
             dlogr = (max_log - min_log) / (self._interp_grid_num - 1)
-            r_array = np.logspace(min_log + dlogr / 2., max_log + dlogr / 2.,
-                                  self._interp_grid_num,
+            r_array = np.logspace(min_log + dlogr / 2., max_log + dlogr / 2., self._interp_grid_num,
                                   base=np.e)
             dlog_r = (np.log(r_array[2]) - np.log(r_array[1]))
-            IR_sigma2_ = self._integrand_suyu10_eq21(r_array, R, kwargs_mass,
-                                          kwargs_light, kwargs_anisotropy)
+            IR_sigma2_ = self._integrand_suyu10_eq21(r_array, R, kwargs_mass, kwargs_light,
+                                                     kwargs_anisotropy)
             IR_sigma2_dr = IR_sigma2_ * dlog_r * r_array
         else:
             r_array = np.linspace(start=R, stop=self._max_interpolate, num=self._interp_grid_num)
             dr = r_array[2] - r_array[1]
             IR_sigma2_ = self._integrand_suyu10_eq21(r_array + dr / 2., R, kwargs_mass,
-                                       kwargs_light, kwargs_anisotropy)
+                                                     kwargs_light, kwargs_anisotropy)
             IR_sigma2_dr = IR_sigma2_ * dr
 
         IR_sigma2 = 2 * np.sum(IR_sigma2_dr)  # integral from angle to
@@ -255,8 +238,7 @@ class AnalyticKinematics(Anisotropy):
 
         return IR_sigma2, IR
 
-    def _integrand_suyu10_eq21(self, r, R, kwargs_mass, kwargs_light,
-                            kwargs_anisotropy):
+    def _integrand_suyu10_eq21(self, r, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """
         Compute the integrand of Eq. 21 from Suyu et al. (2010).
 
@@ -268,8 +250,7 @@ class AnalyticKinematics(Anisotropy):
             We refer to the Anisotropy() class for details on the parameters.
         :return: integrand of Eq. 21 from Suyu et al. (2010)
         """
-        a, gamma, rho0_r0_gamma, r_ani = self._read_out_params(kwargs_mass,
-                                                               kwargs_light,
+        a, gamma, rho0_r0_gamma, r_ani = self._read_out_params(kwargs_mass, kwargs_light,
                                                                kwargs_anisotropy)
         kwargs_light_copy = deepcopy(kwargs_light)
         if 'r_eff' in kwargs_light_copy:
@@ -277,11 +258,10 @@ class AnalyticKinematics(Anisotropy):
             kwargs_light_copy['amp'] = 1
             kwargs_light_copy.pop('r_eff')
 
-        return self._sigma_s2(r, R, r_ani, a, gamma, rho0_r0_gamma) * r / \
-               np.sqrt(r**2 - R**2) * self.lightProfile.light_3d(r, [kwargs_light_copy])
+        return self._sigma_s2(r, R, r_ani, a, gamma, rho0_r0_gamma) * r / np.sqrt(r**2 - R**2) \
+            * self.lightProfile.light_3d(r, [kwargs_light_copy])
 
-    def I_R_sigma2_and_IR(self, R, kwargs_mass, kwargs_light,
-                           kwargs_anisotropy):
+    def I_R_sigma2_and_IR(self, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """
         Return I(R)*sigma^2 equation 20 in Suyu 2010 as interpolation
         in log space, and I(R)
@@ -292,8 +272,7 @@ class AnalyticKinematics(Anisotropy):
         :param kwargs_anisotropy: stellar anisotropy keyword arguments
         :return:
         """
-        return self._I_R_sigma2(R, kwargs_mass, kwargs_light,
-                           kwargs_anisotropy)
+        return self._I_R_sigma2(R, kwargs_mass, kwargs_light, kwargs_anisotropy)
 
     def grav_potential(self, r, kwargs_mass):
         """

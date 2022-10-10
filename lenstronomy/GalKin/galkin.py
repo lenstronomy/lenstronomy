@@ -148,8 +148,7 @@ class Galkin(GalkinModel, GalkinObservation):
         # return value per segment
         if hasattr(self, 'lum_weight_int_method'):
             if not self.lum_weight_int_method:
-                raise ValueError("False for 'lum_weight_int_method' is not "
-                                 "supported!")
+                raise ValueError("False for 'lum_weight_int_method' is not supported!")
 
         if not isinstance(kwargs_mass, dict):
             if 'center_x' in kwargs_mass[0]:
@@ -202,69 +201,45 @@ class Galkin(GalkinModel, GalkinObservation):
         x_grid_supersampled, y_grid_supersmapled = np.meshgrid(xs, ys)
 
         if voronoi_bins is not None:
-            supersampled_voronoi_bins = voronoi_bins.repeat(
-                supersampling_factor, axis=0).repeat(supersampling_factor,
-                                                     axis=1)
-        R_max = np.sqrt((xs - mass_center_x)**2 + (ys -
-                                                   mass_center_y)**2).max()
+            supersampled_voronoi_bins = voronoi_bins.repeat(supersampling_factor, axis=0).repeat(
+                                                                    supersampling_factor, axis=1)
+        R_max = np.sqrt((xs - mass_center_x)**2 + (ys - mass_center_y)**2).max()
 
-        Rs = np.logspace(np.log10(self.numerics.min_integrate),
-                         np.log10(R_max+0.1),
-                         300)
-
-        # Rs = np.linspace(self.numerics.min_integrate,
-        #                  R_max + 0.1,
-        #                  300)
+        Rs = np.logspace(np.log10(self.numerics.min_integrate), np.log10(R_max+0.1), 300)
 
         sigma2_IRs = np.zeros_like(Rs)
         IRs = np.zeros_like(Rs)
 
         for i, R in enumerate(Rs):
-            sigma2_IRs[i], IRs[i] = self.numerics.I_R_sigma2_and_IR(
-                    R,
-                    kwargs_mass,
-                    kwargs_light, kwargs_anisotropy)
+            sigma2_IRs[i], IRs[i] = self.numerics.I_R_sigma2_and_IR(R, kwargs_mass, kwargs_light,
+                                                                    kwargs_anisotropy)
 
-        Rs = np.log10(Rs)
-        sigma2_IRs = np.log10(sigma2_IRs)
-        IRs = np.log10(IRs)
+        log10_Rs = np.log10(Rs)
+        log10_sigma2_IRs = np.log10(sigma2_IRs)
+        log10_IRs = np.log10(IRs)
 
-        sigma2_interp = interp1d(Rs, sigma2_IRs,
-                                 kind='linear',
-                                 bounds_error=False,
-                                 fill_value=(sigma2_IRs[0], sigma2_IRs[-1]),
-                                 assume_sorted=True
-                                 )
-        IR_interp = interp1d(Rs, IRs,
-                             kind='linear',
-                             bounds_error=False,
-                             fill_value=(IRs[0], IRs[-1]),
-                             assume_sorted=True
-                             )
+        log10_sigma2_interp = interp1d(log10_Rs, log10_sigma2_IRs, kind='linear', bounds_error=False,
+                                       fill_value=(log10_sigma2_IRs[0], log10_sigma2_IRs[-1]),
+                                       assume_sorted=True)
+        log10_IR_interp = interp1d(log10_Rs, log10_IRs, kind='linear', bounds_error=False,
+                                   fill_value=(log10_IRs[0], log10_IRs[-1]), assume_sorted=True)
 
-        # sigma2_IR_grid = np.zeros_like(x_grid_supersampled)
-        # IR_grid = np.zeros_like(x_grid_supersampled)
-
-        sigma2_IR_grid = 10**sigma2_interp(
-            np.log10(np.sqrt((x_grid_supersampled-mass_center_x) ** 2 +
-                             (y_grid_supersmapled-mass_center_y) ** 2)))
-        IR_grid = 10**IR_interp(
-            np.log10(np.sqrt((x_grid_supersampled-mass_center_x) ** 2 +
-                             (y_grid_supersmapled-mass_center_y) ** 2)))
+        log10_radial_distance_from_center = np.log10(np.sqrt((x_grid_supersampled - mass_center_x)**2
+                                                   + (y_grid_supersmapled - mass_center_y)**2))
+        sigma2_IR_grid = 10**log10_sigma2_interp(log10_radial_distance_from_center)
+        IR_grid = 10**log10_IR_interp(log10_radial_distance_from_center)
 
         fwhm_factor = 3
-        psf_x = np.arange(-fwhm_factor*self._psf._fwhm,
-                          fwhm_factor * self._psf._fwhm+np.abs(delta_x)/(
-                supersampling_factor+1), np.abs(delta_x)/supersampling_factor)
-        psf_y = np.arange(-fwhm_factor * self._psf._fwhm,
-                          fwhm_factor * self._psf._fwhm + np.abs(delta_y) / (
-                                  supersampling_factor + 1),
+        psf_x = np.arange(-fwhm_factor*self._psf.fwhm,
+                          fwhm_factor * self._psf.fwhm+np.abs(delta_x)/(supersampling_factor+1),
+                          np.abs(delta_x)/supersampling_factor)
+        psf_y = np.arange(-fwhm_factor * self._psf.fwhm,
+                          fwhm_factor * self._psf.fwhm + np.abs(delta_y)/(supersampling_factor + 1),
                           np.abs(delta_y) / supersampling_factor)
         psf_x_grid, psf_y_grid = np.meshgrid(psf_x, psf_y)
         psf_kernel = self.get_psf_kernel(psf_x_grid, psf_y_grid)
 
-        sigma2_IR_convolved = convolve2d(sigma2_IR_grid, psf_kernel,
-                                         mode='same')
+        sigma2_IR_convolved = convolve2d(sigma2_IR_grid, psf_kernel, mode='same')
         IR_convolved = convolve2d(IR_grid, psf_kernel, mode='same')
 
         if voronoi_bins is not None:
@@ -273,30 +248,23 @@ class Galkin(GalkinModel, GalkinObservation):
             sigma_IR_integrated = np.zeros(n_bins)
             IR_integrated = np.zeros(n_bins)
             for n in range(n_bins):
-                sigma_IR_integrated[n] = np.sum(
-                    sigma2_IR_convolved[supersampled_voronoi_bins == n]
-                )
-                IR_integrated[n] = np.sum(
-                    IR_convolved[supersampled_voronoi_bins == n]
-                )
+                sigma_IR_integrated[n] = np.sum(sigma2_IR_convolved[supersampled_voronoi_bins == n])
+                IR_integrated[n] = np.sum(IR_convolved[supersampled_voronoi_bins == n])
         else:
-            sigma_IR_integrated = sigma2_IR_convolved.reshape(
-                len(x_grid), supersampling_factor,
-                len(y_grid), supersampling_factor
-            ).sum(3).sum(1)
+            sigma_IR_integrated = sigma2_IR_convolved.reshape(len(x_grid), supersampling_factor,
+                                                              len(y_grid), supersampling_factor
+                                                              ).sum(3).sum(1)
 
-            IR_integrated = IR_convolved.reshape(
-                len(x_grid), supersampling_factor,
-                len(y_grid), supersampling_factor
-            ).sum(3).sum(1)
+            IR_integrated = IR_convolved.reshape(len(x_grid), supersampling_factor,
+                                                 len(y_grid), supersampling_factor).sum(3).sum(1)
 
         sigma2_grid = sigma_IR_integrated / IR_integrated
 
         # apply unit conversion from arc seconds and deflections to physical velocity dispersion in (km/s)
         if get_IR_map:
-            return np.sqrt(sigma2_grid) / 1000., IR_integrated   # in units of km/s
+            return np.sqrt(sigma2_grid) / 1000., IR_integrated  # in units of km/s
         else:
-            return np.sqrt(sigma2_grid) / 1000. # in units of km/s
+            return np.sqrt(sigma2_grid) / 1000.  # in units of km/s
 
     def _draw_one_sigma2(self, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """

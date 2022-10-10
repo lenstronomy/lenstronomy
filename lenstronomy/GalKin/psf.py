@@ -41,6 +41,16 @@ class PSF(object):
         """
         return self._psf.get_psf_kernel(x, y)
 
+    @property
+    def fwhm(self):
+        """
+        Retrieve FWHM of PSF if stored as a private variable
+        """
+        if hasattr(self, '_fwhm'):
+            return self._fwhm
+        else:
+            return None
+
 
 @export
 class PSFGaussian(object):

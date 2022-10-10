@@ -619,7 +619,7 @@ class TestRaise(unittest.TestCase):
             }
 
             kwargs_model = {
-                'lens_model_list': ['PEMD'],
+                'lens_model_list': ['EPL'],
                 'lens_light_model_list': ['HERNQUIST'],
             }
 

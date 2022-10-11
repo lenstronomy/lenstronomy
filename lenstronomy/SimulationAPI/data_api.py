@@ -24,10 +24,9 @@ class DataAPI(SingleBand):
         """
         self.numpix = numpix
         if kwargs_pixel_grid is not None:
-            required_keys = ['ra_at_xy_0','dec_at_xy_0','transform_pix2angle']
+            required_keys = ['ra_at_xy_0', 'dec_at_xy_0', 'transform_pix2angle']
             if not all(k in kwargs_pixel_grid for k in required_keys):
-                raise ValueError('Missing 1 or more required'+
-                    'kwargs_pixel_grid parameters')
+                raise ValueError('Missing 1 or more required' + 'kwargs_pixel_grid parameters')
         self._kwargs_pixel_grid = kwargs_pixel_grid
         SingleBand.__init__(self, **kwargs_single_band)
 

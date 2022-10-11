@@ -218,7 +218,7 @@ History
 * short-hand class imports
 
 
-1.8.0 (2020-03-21)
+1.8.0 (2021-03-21)
 ++++++++++++++++++
 * EPL numba version
 * numba configuration variables can be set globally with configuration file
@@ -231,13 +231,13 @@ History
 * multi-patch illustration class and plotting routines
 * updated PSF iteration procedure with more settings
 
-1.8.1 (2020-04-19)
+1.8.1 (2021-04-19)
 ++++++++++++++++++
 * illustration plots for curved arcs updated
 * documentation of elliptical lens models updated
 
 
-1.8.2 (2020-06-08)
+1.8.2 (2021-06-08)
 ++++++++++++++++++
 * JOSS paper added
 * improved testing documentation and tox compatibility
@@ -245,7 +245,7 @@ History
 * ULDM lens model implemented
 
 
-1.9.0 (2020-07-15)
+1.9.0 (2021-07-15)
 ++++++++++++++++++
 * re-defined half light radius in Sersic profile
 * re-named parameter in 'CONVERGENCE' profile
@@ -253,13 +253,13 @@ History
 * configuration import design changed
 
 
-1.9.1 (2020-08-27)
+1.9.1 (2021-08-27)
 ++++++++++++++++++
 * re-defined amplitude normalization in NIE and CHAMELEON light profiles
 * bug fix in sky brightness errors (SimulationAPI)
 
 
-1.9.2 (2020-12-12)
+1.9.2 (2021-12-12)
 ++++++++++++++++++
 * support for astropy v5
 * new PSF iteration procedure implemented
@@ -268,7 +268,7 @@ History
 * analytic point source solver for SIE+shear
 
 
-1.9.3 (2020-12-22)
+1.9.3 (2021-12-22)
 ++++++++++++++++++
 * changed syntax to be compatible with python3 version <3.9
 

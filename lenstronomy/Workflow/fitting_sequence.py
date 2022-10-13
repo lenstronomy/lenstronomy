@@ -17,7 +17,8 @@ class FittingSequence(object):
     """
     class to define a sequence of fitting applied, inherit the Fitting class
     this is a Workflow manager that allows to update model configurations before executing another step in the modelling
-    The user can take this module as an example of how to create their own workflows or build their own around the FittingSequence
+    The user can take this module as an example of how to create their own workflows or build their own around the
+    FittingSequence
     """
     def __init__(self, kwargs_data_joint, kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params, mpi=False,
                  verbose=True):
@@ -39,7 +40,7 @@ class FittingSequence(object):
          'extinction_model': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
          'special': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
         :param mpi: MPI option (bool), if True, will launch an MPI Pool job for the steps in the fitting sequence where
-        possible
+         possible
         :param verbose: bool, if True prints temporary results and indicators of the fitting process
         """
         self.kwargs_data_joint = kwargs_data_joint
@@ -100,7 +101,7 @@ class FittingSequence(object):
                 chain_list.append([fitting_type, kwargs_result])
 
             elif fitting_type == 'MCMC':
-                if not 'init_samples' in kwargs:
+                if 'init_samples' not in kwargs:
                     kwargs['init_samples'] = self._mcmc_init_samples
                 elif kwargs['init_samples'] is None:
                     kwargs['init_samples'] = self._mcmc_init_samples
@@ -108,6 +109,17 @@ class FittingSequence(object):
                 kwargs_result = self._result_from_mcmc(mcmc_output)
                 self._updateManager.update_param_state(**kwargs_result)
                 chain_list.append(mcmc_output)
+
+            elif fitting_type == 'Nautilus':
+                from lenstronomy.Sampling.Samplers.nautilus import Nautilus
+                nautilus = Nautilus(likelihood_module=self.likelihoodModule)
+                points, log_w, log_l, log_z = nautilus.nautilus_sampling(mpi=self._mpi, **kwargs)
+                chain_list.append([points, log_w, log_l, log_z])
+                if kwargs.get('verbose', False):
+                    print(len(points), 'number of points sampled')
+                if not kwargs.get('one_step', False):  # this is only for testing purposes
+                    kwargs_result = self.best_fit_from_samples(points, log_l)
+                    self._updateManager.update_param_state(**kwargs_result)
 
             elif fitting_type == 'nested_sampling':
                 ns_output = self.nested_sampling(**kwargs)
@@ -152,14 +164,15 @@ class FittingSequence(object):
     @property
     def bic(self):
         """
-        returns the bayesian information criterion of the model.
+        Bayesian information criterion (BIC) of the model.
+
         :return: bic value, float
         """
         num_data = self.likelihoodModule.num_data
         num_param_nonlinear = self.param_class.num_param()[0]
         num_param_linear = self.param_class.num_param_linear()
         num_param = num_param_nonlinear + num_param_linear
-        bic = analysis_util.bic_model(self.best_fit_likelihood, num_data,num_param)
+        bic = analysis_util.bic_model(self.best_fit_likelihood, num_data, num_param)
         return bic
 
     @property
@@ -199,8 +212,13 @@ class FittingSequence(object):
         kwargs_result = param_class.args2kwargs(result, bijective=True)
         return kwargs_result
 
-    def mcmc(self, n_burn, n_run, walkerRatio, n_walkers=None, sigma_scale=1, threadCount=1, init_samples=None,
-             re_use_samples=True, sampler_type='EMCEE', progress=True, backup_filename=None, start_from_backup=False):
+    def mcmc(self, n_burn, n_run, walkerRatio=None, n_walkers=None, sigma_scale=1, threadCount=1, init_samples=None,
+             re_use_samples=True, sampler_type='EMCEE', progress=True, backend_filename=None, start_from_backend=False,
+             # zeus specific kwargs
+             moves=None, tune=True, tolerance=0.05, patience=5,
+             maxsteps=10000, mu=1.0, maxiter=10000, pool=None,
+             vectorize=False, blobs_dtype=None, verbose=True,
+             check_walkers=True, shuffle_ensemble=True, light_mode=False):
         """
         MCMC routine
 
@@ -211,10 +229,17 @@ class FittingSequence(object):
         :param sigma_scale: scaling of the initial parameter spread relative to the width in the initial settings
         :param threadCount: number of CPU threads. If MPI option is set, threadCount=1
         :param init_samples: initial sample from where to start the MCMC process
-        :param re_use_samples: bool, if True, re-uses the samples described in init_samples.nOtherwise starts from scratch.
-        :param sampler_type: string, which MCMC sampler to be used. Options are: 'EMCEE'
+        :param re_use_samples: bool, if True, re-uses the samples described in init_samples.nOtherwise starts from
+         scratch.
+        :param sampler_type: string, which MCMC sampler to be used. Options are: 'EMCEE', 'ZEUS'
         :param progress: boolean, if True shows progress bar in EMCEE
-        :return: list of output arguments, e.g. MCMC samples, parameter names, logL distances of all samples specified by the specific sampler used
+        :param backend_filename: name of the HDF5 file where sampling state is saved (through emcee backend engine)
+        :type backend_filename: string
+        :param start_from_backend: if True, start from the state saved in `backup_filename`.
+         Otherwise, create a new backup file with name `backup_filename` (any already existing file is overwritten!).
+        :type start_from_backend: bool
+        :return: list of output arguments, e.g. MCMC samples, parameter names, logL distances of all samples specified
+         by the specific sampler used
         """
 
         param_class = self.param_class
@@ -226,9 +251,11 @@ class FittingSequence(object):
         sigma_start = np.array(param_class.kwargs2args(**kwargs_sigma)) * sigma_scale
         num_param, param_list = param_class.num_param()
         if n_walkers is None:
+            if walkerRatio is None:
+                raise ValueError('MCMC sampler needs either n_walkers or walkerRatio as input argument')
             n_walkers = num_param * walkerRatio
         # run MCMC
-        if not init_samples is None and re_use_samples is True:
+        if init_samples is not None and re_use_samples is True:
             num_samples, num_param_prev = np.shape(init_samples)
             if num_param_prev == num_param:
                 print("re-using previous samples to initialize the next MCMC run.")
@@ -242,7 +269,18 @@ class FittingSequence(object):
         if sampler_type == 'EMCEE':
             samples, dist = mcmc_class.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=self._mpi,
                                                   threadCount=threadCount, progress=progress, initpos=initpos,
-                                                  backup_filename=backup_filename, start_from_backup=start_from_backup)
+                                                  backend_filename=backend_filename,
+                                                  start_from_backend=start_from_backend)
+            output = [sampler_type, samples, param_list, dist]
+
+        elif sampler_type == 'ZEUS':
+            samples, dist = mcmc_class.mcmc_zeus(n_walkers, n_run, n_burn, mean_start, sigma_start,
+                                                 mpi=self._mpi, threadCount=threadCount,
+                                                 progress=progress, initpos = initpos, backend_filename = backend_filename,
+                                                 moves=moves, tune=tune, tolerance=tolerance, patience=patience,
+                                                 maxsteps=maxsteps, mu=mu, maxiter=maxiter, pool=pool,
+                                                 vectorize=vectorize, blobs_dtype=blobs_dtype, verbose=verbose,
+                                                 check_walkers=check_walkers, shuffle_ensemble=shuffle_ensemble, light_mode=light_mode)
             output = [sampler_type, samples, param_list, dist]
         else:
             raise ValueError('sampler_type %s not supported!' % sampler_type)
@@ -258,7 +296,8 @@ class FittingSequence(object):
         :param sigma_scale: scaling of the initial parameter spread relative to the width in the initial settings
         :param print_key: string, printed text when executing this routine
         :param threadCount: number of CPU threads. If MPI option is set, threadCount=1
-        :return: result of the best fit, the chain of the best fit parameter after each iteration, list of parameters in same order
+        :return: result of the best fit, the PSO chain of the best fit parameter after each iteration
+         [lnlikelihood, parameters, velocities], list of parameters in same order as in chain
         """
 
         param_class = self.param_class
@@ -273,13 +312,13 @@ class FittingSequence(object):
         # run PSO
         sampler = Sampler(likelihoodModule=self.likelihoodModule)
         result, chain = sampler.pso(n_particles, n_iterations, lowerLimit, upperLimit, init_pos=init_pos,
-                                       threadCount=threadCount, mpi=self._mpi, print_key=print_key)
+                                    threadCount=threadCount, mpi=self._mpi, print_key=print_key)
         kwargs_result = param_class.args2kwargs(result, bijective=True)
         return kwargs_result, chain, param_list
 
     def nested_sampling(self, sampler_type='MULTINEST', kwargs_run={},
-                        prior_type='uniform', width_scale=1, sigma_scale=1, 
-                        output_basename='chain', remove_output_dir=True, 
+                        prior_type='uniform', width_scale=1, sigma_scale=1,
+                        output_basename='chain', remove_output_dir=True,
                         dypolychord_dynamic_goal=0.8,
                         polychord_settings={},
                         dypolychord_seed_increment=200,
@@ -343,7 +382,7 @@ class FittingSequence(object):
                                      prior_sigmas=sigma_start,
                                      width_scale=width_scale,
                                      sigma_scale=sigma_scale,
-                                     bound=dynesty_bound, 
+                                     bound=dynesty_bound,
                                      sample=dynesty_sample,
                                      use_mpi=self._mpi)
             samples, means, logZ, logZ_err, logL, results_object = sampler.run(kwargs_run)
@@ -353,7 +392,7 @@ class FittingSequence(object):
         # update current best fit values
         self._update_state(samples[-1])
 
-        output = [sampler_type, samples, sampler.param_names, logL, 
+        output = [sampler_type, samples, sampler.param_names, logL,
                   logZ, logZ_err, results_object]
         return output
 
@@ -419,10 +458,10 @@ class FittingSequence(object):
                 self.multi_band_list[i][0] = kwargs_data
         return 0
 
-    def update_settings(self, kwargs_model={}, kwargs_constraints={}, kwargs_likelihood={}, lens_add_fixed=[],
-                        source_add_fixed=[], lens_light_add_fixed=[], ps_add_fixed=[], cosmo_add_fixed=[],
-                        lens_remove_fixed=[],
-                        source_remove_fixed=[], lens_light_remove_fixed=[], ps_remove_fixed=[], cosmo_remove_fixed=[],
+    def update_settings(self, kwargs_model=None, kwargs_constraints=None, kwargs_likelihood=None, lens_add_fixed=None,
+                        source_add_fixed=None, lens_light_add_fixed=None, ps_add_fixed=None, cosmo_add_fixed=None,
+                        lens_remove_fixed=None, source_remove_fixed=None, lens_light_remove_fixed=None,
+                        ps_remove_fixed=None, cosmo_remove_fixed=None,
                         change_source_lower_limit=None, change_source_upper_limit=None,
                         change_lens_lower_limit=None, change_lens_upper_limit=None):
         """
@@ -455,6 +494,7 @@ class FittingSequence(object):
     def set_param_value(self, **kwargs):
         """
         Set a parameter to a specific value. `kwargs` are below.
+
         :param lens: [[i_model, ['param1', 'param2',...], [...]]
         :type lens:
         :param source: [[i_model, ['param1', 'param2',...], [...]]
@@ -482,7 +522,7 @@ class FittingSequence(object):
         if prior_type == 'gaussian':
             mean_start = self.param_class.kwargs2args(**self._updateManager.parameter_state)
             sigma_start = self.param_class.kwargs2args(**self._updateManager.sigma_kwargs)
-            mean_start  = np.array(mean_start)
+            mean_start = np.array(mean_start)
             sigma_start = np.array(sigma_start)
         else:
             mean_start, sigma_start = None, None
@@ -504,10 +544,20 @@ class FittingSequence(object):
         :return: kwargs_result like returned by self.pso(), from best logL MCMC sample
         """
         _, samples, _, logL_values = mcmc_output
+        return self.best_fit_from_samples(samples, logL_values)
+
+    def best_fit_from_samples(self, samples, logl):
+        """
+        return best fit (max likelihood) value of samples in lenstronomy conventions
+
+        :param samples: samples of multi-dimensional parameter space
+        :param logl: likelihood values for each sample
+        :return: kwargs_result in lenstronomy convention
+        """
         # get index of best logL sample
-        bestfit_idx = np.argmax(logL_values)
-        bestfit_sample = samples[bestfit_idx, :]
-        bestfit_result = bestfit_sample.tolist()
+        best_fit_index = np.argmax(logl)
+        best_fit_sample = samples[best_fit_index, :]
+        best_fit_result = best_fit_sample.tolist()
         # get corresponding kwargs
-        kwargs_result = self.param_class.args2kwargs(bestfit_result, bijective=True)
+        kwargs_result = self.param_class.args2kwargs(best_fit_result, bijective=True)
         return kwargs_result

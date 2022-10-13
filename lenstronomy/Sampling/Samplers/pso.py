@@ -25,12 +25,6 @@ class ParticleSwarmOptimizer(object):
     :param low: array of the lower bound of the parameter space
     :param high: array of the upper bound of the parameter space
     :param particle_count: the number of particles to use.
-    :param threads: (optional)
-        The number of threads to use for parallelization. If ``threads == 1``,
-        then the ``multiprocessing`` module is not used but if
-        ``threads > 1``, then a ``Pool`` object is created and calls to
-        ``lnpostfn`` are run in parallel.
-
     :param pool: (optional)
         An alternative method of using the parallelized algorithm. If
         provided, the value of ``threads`` is ignored and the
@@ -105,6 +99,7 @@ class ParticleSwarmOptimizer(object):
     def _init_swarm(self):
         """
         Initiate the swarm.
+
         :return:
         :rtype:
         """
@@ -117,7 +112,8 @@ class ParticleSwarmOptimizer(object):
 
         return swarm
 
-    def sample(self, max_iter=1000, c1=1.193, c2=1.193, p=0.7, m=1e-3, n=1e-2, early_stop_tolerance=None):
+    def sample(self, max_iter=1000, c1=1.193, c2=1.193, p=0.7, m=1e-3, n=1e-2, early_stop_tolerance=None,
+               verbose=True):
         """
         Launches the PSO. Yields the complete swarm per iteration
 
@@ -125,11 +121,12 @@ class ParticleSwarmOptimizer(object):
         :param c1: cognitive weight
         :param c2: social weight
         :param p: stop criterion, percentage of particles to use
-        :param m: stop criterion, difference between mean fitness and global
-        best
+        :param m: stop criterion, difference between mean fitness and global best
         :param n: stop criterion, difference between norm of the particle
-        vector and norm of the global best
+         vector and norm of the global best
         :param early_stop_tolerance: will terminate at the given value (should be specified as a chi^2)
+        :param verbose: prints when it stopped
+        :type verbose: boolean
         """
 
         self._get_fitness(self.swarm)
@@ -147,14 +144,16 @@ class ParticleSwarmOptimizer(object):
 
             if i >= max_iter:
                 if self.is_master():
-                    print("Max iteration reached! Stopping.")
+                    if verbose:
+                        print("Max iteration reached! Stopping.")
                 return
 
             if self._converged(i, p=p, m=m, n=n):
                 if self.is_master():
-                    print("Converged after {} iterations!".format(i))
-                    print("Best fit found: ", self.global_best.fitness,
-                          self.global_best.position)
+                    if verbose:
+                        print("Converged after {} iterations!".format(i))
+                        print("Best fit found: ", self.global_best.fitness,
+                              self.global_best.position)
                 return
 
             if early_stop_tolerance is not None:
@@ -194,19 +193,18 @@ class ParticleSwarmOptimizer(object):
         :param c1: cognitive weight
         :param c2: social weight
         :param p: stop criterion, percentage of particles to use
-        :param m: stop criterion, difference between mean fitness and global
-        best
+        :param m: stop criterion, difference between mean fitness and global best
         :param n: stop criterion, difference between norm of the particle
-        vector and norm of the global best
+         vector and norm of the global best
         :param early_stop_tolerance: will terminate at the given value (should be specified as a chi^2)
         """
-        chi2_list = []
+        log_likelihood_list = []
         vel_list = []
         pos_list = []
 
         num_iter = 0
         for _ in self.sample(max_iter, c1, c2, p, m, n, early_stop_tolerance):
-            chi2_list.append(self.global_best.fitness * 2)
+            log_likelihood_list.append(self.global_best.fitness)
             vel_list.append(self.global_best.velocity)
             pos_list.append(self.global_best.position)
             num_iter += 1
@@ -215,11 +213,12 @@ class ParticleSwarmOptimizer(object):
                 if num_iter % 10 == 0:
                     print(num_iter)
 
-        return self.global_best.position, [chi2_list, pos_list, vel_list]
+        return self.global_best.position, [log_likelihood_list, pos_list, vel_list]
 
     def _get_fitness(self, swarm):
         """
         Set fitness (probability) of the particles in swarm.
+
         :param swarm: PSO state
         :type swarm: list of Particle() instances of the swarm
         :return:
@@ -239,6 +238,7 @@ class ParticleSwarmOptimizer(object):
     def _converged(self, it, p, m, n):
         """
         Check for convergence.
+
         :param it:
         :type it:
         :param p:
@@ -274,7 +274,7 @@ class ParticleSwarmOptimizer(object):
         best_sort = np.sort([particle.personal_best.fitness for particle in
                              self.swarm])[::-1]
         mean_fit = np.mean(best_sort[1:int(math.floor(self.particleCount * p))])
-        #print( "best %f, mean_fit %f, ration %f"%( self.global_best[0],
+        # print( "best %f, mean_fit %f, ration %f"%( self.global_best[0],
         # mean_fit, abs((self.global_best[0]-mean_fit))))
         return abs(self.global_best.fitness - mean_fit) < m
 

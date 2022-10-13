@@ -1,6 +1,4 @@
 import numpy as np
-import lenstronomy.Util.util as util
-from lenstronomy.ImSim.Numerics.convolution import PixelKernelConvolution
 
 from lenstronomy.Data.pixel_grid import PixelGrid
 from lenstronomy.Data.image_noise import ImageNoise
@@ -31,8 +29,7 @@ class ImageData(PixelGrid, ImageNoise):
     If this keyword is set, the other noise properties will be ignored.
 
 
-    Notes:
-    ------
+    ** notes **
     the likelihood for the data given model P(data|model) is defined in the function below. Please make sure that
     your definitions and units of 'exposure_map', 'background_rms' and 'image_data' are in accordance with the
     likelihood function. In particular, make sure that the Poisson noise contribution is defined in the count rate.
@@ -40,15 +37,12 @@ class ImageData(PixelGrid, ImageNoise):
 
     """
     def __init__(self, image_data, exposure_time=None, background_rms=None, noise_map=None, gradient_boost_factor=None,
-                 ra_at_xy_0=0, dec_at_xy_0=0, transform_pix2angle=None, ra_shift=0, dec_shift=0,
-                 primary_beam=None,use_linear_solver=True, likelihood_method = 'diagonal',
-                 eigen_vector_set=None,eigen_value_set=None,num_of_modes=None,data_mask=None,
-                 d_minv_d = 0, convolution_core = None ):
+                 ra_at_xy_0=0, dec_at_xy_0=0, transform_pix2angle=None, ra_shift=0, dec_shift=0):
         """
 
         :param image_data: 2d numpy array of the image data
         :param exposure_time: int or array of size the data; exposure time
-        (common for all pixels or individually for each individual pixel)
+         (common for all pixels or individually for each individual pixel)
         :param background_rms: root-mean-square value of Gaussian background noise in units counts per second
         :param noise_map: int or array of size the data; joint noise sqrt(variance) of each individual pixel.
         :param gradient_boost_factor: None or float, variance terms added in quadrature scaling with
@@ -59,95 +53,12 @@ class ImageData(PixelGrid, ImageNoise):
         :param ra_shift: RA shift of pixel grid
         :param dec_shift: DEC shift of pixel grid
         """
-        
-        """
-        primary_beam: 2d np array, the primary beam. It should be in the same size of image_data
-        use_linear_solver: bool variable, if True, then the sampler will use the linear solver to find 'amp's
-
-        likelihood_method: should be one of 'diagonal', 'eigen' or 'natwt_special'
-                    'diagonal' calculates the diagonal cov matrix likelihood privided by original lenstronomy
-                    'eigen' calculates the non-diagonal cov matrix likelihood using eigen modes and eigen values
-                    'natwt_special' calculates the natwt PSF convolved image using the speicial method
-                    
-        The followings are parameters for 'eigen' method:
-        eigen_vector_set: 2d np array, eg. eigen_vector_set[0] is the 0th eigen vector
-        eigen_value_set: 
-            1d np array with entries in a descending sequence,eg. eigen_value_set[0] is the eigenvalue corresponds to eigen_vector_set[0]
-            the eigen values are square of rms.
-        num_of_modes: a number, the number of modes contributing to the likelihood
-        data_mask: a boolean array tells a subset of pixels to do the fitting (the corresponding eigen modes are the constructed from the cov matrix of the same pixel subset)
-        
-        The followings are parameters for 'natwt_special' method:
-        d_minv_d: a constant, (d_minv_d/rms^2) has a constant contribution to the X^2
-        convolution_core: the convolution core, i.e. a cut of psf which should be twice larger than the data image.
-                        the central pixel should be the brightest and un-renormalized
-        """
-        
         nx, ny = np.shape(image_data)
         if transform_pix2angle is None:
             transform_pix2angle = np.array([[1, 0], [0, 1]])
-        PixelGrid.__init__(self, nx, ny, transform_pix2angle, ra_at_xy_0 + ra_shift, dec_at_xy_0 + dec_shift,primary_beam=None,use_linear_solver=True)
+        PixelGrid.__init__(self, nx, ny, transform_pix2angle, ra_at_xy_0 + ra_shift, dec_at_xy_0 + dec_shift)
         ImageNoise.__init__(self, image_data, exposure_time=exposure_time, background_rms=background_rms,
-                            noise_map=noise_map, gradient_boost_factor=gradient_boost_factor, verbose=False,
-                            likelihood_method = 'diagonal', 
-                            eigen_vector_set=None,eigen_value_set=None,num_of_modes=None,data_mask=None,
-                            d_minv_d = 0, convolution_core = None)
-        
-        dim=nx*ny
-        
-        if background_rms is not None:
-            self._bkg_variance = background_rms**2
-        
-        self._use_linear_solver=use_linear_solver
-        self._pb=primary_beam
-        if primary_beam is not None:
-            pbx,pby=np.shape(primary_beam)
-            if (pbx,pby) != (nx,ny):
-                raise ValueError("The input primary beam should be in the same size of the data!")
-        
-        self._likelihood_method = likelihood_method
-        self._data_mask=data_mask
-        self._eigen_vector_set=eigen_vector_set
-        self._eigen_value_set=eigen_value_set
-        self._d_minv_d = d_minv_d
-        self._convolve_core = convolution_core
-        self._use_natwt_linear_solver = False
-        
-        if self._likelihood_method == 'eigen':
-            if eigen_vector_set is None or eigen_value_set is None:
-                raise ValueError("For 'eigen' likelihood method, please input eigen value and eigen vector sets.")
-            nv,lv=np.shape(eigen_vector_set)
-            num_of_mask=np.nansum(data_mask)
-            if lv != dim:
-                if self._data_mask is not None:
-                    if lv != num_of_mask:
-                        raise ValueError("The input eigenvectors should have the same shape with the data mask!")
-                else:
-                    raise ValueError("The input eigenvectors should have the same dimension with the data!")
-            if num_of_modes is None:
-                self._num_of_modes=nv
-            elif num_of_modes > nv:
-                self._num_of_modes=nv
-            else:
-                self._num_of_modes=num_of_modes
-                
-        elif self._likelihood_method == 'natwt_special':
-            self._convolution = PixelKernelConvolution(kernel = convolution_core)
-            if use_linear_solver == True:
-                self._use_natwt_linear_solver = True
-        
-        elif self._likelihood_method != 'diagonal':
-            raise ValueError("The likelihood method should be one of 'diagonal', 'eigen' or 'natwt_special'." )
-            
-    
-    def check_if_use_linear_solver(self):
-        return self._use_linear_solver
-    
-    def use_natwt_linear_solver(self):
-        return self._use_natwt_linear_solver , self._convolve_core
-    
-    def give_pb(self):
-        return self._pb
+                            noise_map=noise_map, gradient_boost_factor=gradient_boost_factor, verbose=False)
 
     def update_data(self, image_data):
         """
@@ -185,45 +96,8 @@ class ImageData(PixelGrid, ImageNoise):
             This can e.g. come from model errors in the PSF estimation.
         :return: the natural logarithm of the likelihood p(data|model)
         """
-        
-    
-    
-        if self._likelihood_method == 'diagonal':           
-            C_D = self.C_D_model(model)
-            X2 = (model - self._data) ** 2 / (C_D + np.abs(additional_error_map)) * mask
-            X2 = np.array(X2)
-            logL = - np.sum(X2) / 2
-            return logL
-        
-        elif self._likelihood_method == 'natwt_special':
-            check_if_used_linear_solver = len(np.shape(model))
-            
-            if check_if_used_linear_solver == 3:
-                xd = np.sum(model[0] * self._data)
-                xMx = np.sum(model[0] * model[1])
-            
-            if check_if_used_linear_solver == 2:
-                xd = np.sum(model * self._data)
-                convolved_x = self._convolution._static_fft(model, mode='same')
-                xMx = np.sum(model * convolved_x)
-            
-            X2_times_variance = self._d_minv_d + xMx - 2*xd
-            logL = - 0.5 * X2_times_variance/ (self._bkg_variance)
-            return logL
-        
-        elif self._likelihood_method == 'eigen':
-            dchi2_times_variance = np.zeros(self._num_of_modes)
-            
-            if self._data_mask is not None:
-                residual = np.array(model - self._data)
-                residual = residual[~np.isnan(self._data_mask)]
-            else:
-                residual = np.array(util.image2array(model - self._data))  
-                
-            for i in range(self._num_of_modes):
-                coefficient = np.sum(residual * self._eigen_vector_set[i])
-                dchi2_times_variance[i] = coefficient * coefficient / self._eigen_value_set[i]
-            logL = - 0.5 * np.sum(dchi2_times_variance) / (self._bkg_variance)
-            return logL
-        
-            
+        C_D = self.C_D_model(model)
+        X2 = (model - self._data) ** 2 / (C_D + np.abs(additional_error_map)) * mask
+        X2 = np.array(X2)
+        logL = - np.sum(X2) / 2
+        return logL

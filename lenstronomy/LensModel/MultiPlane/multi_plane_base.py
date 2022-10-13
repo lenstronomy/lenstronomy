@@ -39,9 +39,9 @@ class MultiPlaneBase(ProfileListBase):
         if len(lens_redshift_list) > 0:
             z_lens_max = np.max(lens_redshift_list)
             if z_lens_max >= z_source_convention:
-                raise ValueError('deflector redshifts higher or equal the source redshift convention (%s >= %s for the reduced lens'
-                                 ' model quantities not allowed (leads to negative reduced deflection angles!'
-                                 % (z_lens_max, z_source_convention))
+                raise ValueError('deflector redshifts higher or equal the source redshift convention (%s >= %s for the '
+                                 'reduced lens model quantities not allowed (leads to negative reduced deflection '
+                                 'angles!' % (z_lens_max, z_source_convention))
         if not len(lens_model_list) == len(lens_redshift_list):
             raise ValueError("The length of lens_model_list does not correspond to redshift_list")
 
@@ -59,7 +59,7 @@ class MultiPlaneBase(ProfileListBase):
         self._T_ij_list = []
         self._T_z_list = []
         # Sort redshift for vectorized reduced2physical factor calculation
-        if len(lens_model_list)<1:
+        if len(lens_model_list) < 1:
             self._reduced2physical_factor = []
         else:
             z_sort = np.array(self._lens_redshift_list)[self._sorted_redshift_index]
@@ -90,7 +90,8 @@ class MultiPlaneBase(ProfileListBase):
         :param z_stop: redshift where output is computed
         :param kwargs_lens: lens model keyword argument list
         :param include_z_start: bool, if True, includes the computation of the deflection angle at the same redshift as
-         the start of the ray-tracing. ATTENTION: deflection angles at the same redshift as z_stop will be computed always!
+         the start of the ray-tracing. ATTENTION: deflection angles at the same redshift as z_stop will be computed
+         always!
          This can lead to duplications in the computation of deflection angles.
         :param T_ij_start: transverse angular distance between the starting redshift to the first lens plane to follow.
          If not set, will compute the distance each time this function gets executed.
@@ -100,11 +101,12 @@ class MultiPlaneBase(ProfileListBase):
         """
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
+
         alpha_x = np.array(alpha_x)
         alpha_y = np.array(alpha_y)
+
         z_lens_last = z_start
         first_deflector = True
-
         for i, idex in enumerate(self._sorted_redshift_index):
             z_lens = self._lens_redshift_list[idex]
 
@@ -122,7 +124,6 @@ class MultiPlaneBase(ProfileListBase):
                     delta_T = self._T_ij_list[i]
                 x, y = self._ray_step_add(x, y, alpha_x, alpha_y, delta_T)
                 alpha_x, alpha_y = self._add_deflection(x, y, alpha_x, alpha_y, kwargs_lens, i)
-
                 z_lens_last = z_lens
         if T_ij_end is None:
             if z_lens_last == z_stop:
@@ -221,9 +222,9 @@ class MultiPlaneBase(ProfileListBase):
         :return: indexes in ascending order to be evaluated (from z=0 to z=z_source)
         """
         redshift_list = np.array(redshift_list)
-        #sort_index = np.argsort(redshift_list[redshift_list < z_source])
+        # sort_index = np.argsort(redshift_list[redshift_list < z_source])
         sort_index = np.argsort(redshift_list)
-        #if len(sort_index) < 1:
+        # if len(sort_index) < 1:
         #    Warning("There is no lens object between observer at z=0 and source at z=%s" % z_source)
         return sort_index
 
@@ -341,7 +342,6 @@ class MultiPlaneBase(ProfileListBase):
         :param alpha_y: physical angle (radian) before the deflector plane
         :param kwargs_lens: lens model parameter kwargs
         :param index: index of the lens model to be added in sorted redshift list convention
-        :param idex_lens: redshift of the deflector plane
         :return: updated physical deflection after deflector plane (in a backwards ray-tracing perspective)
         """
         theta_x, theta_y = self._co_moving2angle(x, y, index)

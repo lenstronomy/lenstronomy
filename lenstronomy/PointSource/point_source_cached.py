@@ -22,8 +22,8 @@ class PointSourceCached(object):
         if hasattr(self, '_y_source'):
             del self._y_source
 
-    def set_save_cache(self, bool):
-        self._save_cache = bool
+    def set_save_cache(self, save_bool):
+        self._save_cache = save_bool
 
     def update_lens_model(self, lens_model_class):
         self._model.update_lens_model(lens_model_class)
@@ -33,7 +33,8 @@ class PointSourceCached(object):
         on-sky image positions
 
         :param kwargs_ps: keyword arguments of the point source model
-        :param kwargs_lens: keyword argument list of the lens model(s), only used when requiring the lens equation solver
+        :param kwargs_lens: keyword argument list of the lens model(s), only used when requiring the lens equation
+         solver
         :param magnification_limit: float >0 or None, if float is set and additional images are computed, only those
          images will be computed that exceed the lensing magnification (absolute value) limit
         :param kwargs_lens_eqn_solver: keyword arguments specifying the numerical settings for the lens equation solver
@@ -63,7 +64,8 @@ class PointSourceCached(object):
         image brightness amplitudes
 
         :param kwargs_ps: keyword arguments of the point source model
-        :param kwargs_lens: keyword argument list of the lens model(s), only used when requiring the lens equation solver
+        :param kwargs_lens: keyword argument list of the lens model(s), only used when requiring the lens equation
+         solver
         :param magnification_limit: float >0 or None, if float is set and additional images are computed, only those
          images will be computed that exceed the lensing magnification (absolute value) limit
         :param kwargs_lens_eqn_solver: keyword arguments specifying the numerical settings for the lens equation solver

@@ -10,12 +10,14 @@ class DifferentialExtinction(object):
     the LightModel module to describe an optical depth tau_ext to compute the extinction on the sky/image.
     """
 
-    def __init__(self, optical_depth_model=[], tau0_index=0):
+    def __init__(self, optical_depth_model=None, tau0_index=0):
         """
 
         :param optical_depth_model: list of strings naming the profiles (same convention as LightModel module)
-        describing the optical depth of the extinction
+         describing the optical depth of the extinction
         """
+        if optical_depth_model is None:
+            optical_depth_model = []
         self._profile = LightModel(light_model_list=optical_depth_model)
         if len(optical_depth_model) == 0:
             self._compute_bool = False
@@ -35,7 +37,6 @@ class DifferentialExtinction(object):
 
         :param x: coordinate in image plane of flux intensity
         :param y: coordinate in image plane of flux intensity
-        :param tau_0: normalization factor of the extinction profile
         :param kwargs_extinction: keyword argument list matching the extinction profile
         :param kwargs_special: keyword arguments hosting special parameters, here required 'tau0_list'
         :return: extinction corrected flux

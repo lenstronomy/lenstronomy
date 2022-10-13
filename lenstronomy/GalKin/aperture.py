@@ -16,6 +16,7 @@ Available aperture types:
 
 """
 
+
 class Aperture(object):
     """
     defines mask(s) of spectra, can handle IFU and single slit/box type data.
@@ -25,7 +26,7 @@ class Aperture(object):
 
         :param aperture_type: string
         :param kwargs_aperture: keyword arguments reflecting the aperture type chosen.
-        We refer to the specific class instances for documentation.
+         We refer to the specific class instances for documentation.
         """
         if aperture_type == 'slit':
             self._aperture = Slit(**kwargs_aperture)
@@ -36,7 +37,8 @@ class Aperture(object):
         elif aperture_type == 'frame':
             self._aperture = Frame(**kwargs_aperture)
         else:
-            raise ValueError("aperture type %s not implemented! Available are 'slit', 'shell', 'IFU_shells'. " % aperture_type)
+            raise ValueError("aperture type %s not implemented! Available are 'slit', 'shell', 'IFU_shells'. "
+                             % aperture_type)
 
     def aperture_select(self, ra, dec):
         """

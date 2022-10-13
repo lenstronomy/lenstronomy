@@ -14,6 +14,7 @@ class Coordinates(object):
     def __init__(self, transform_pix2angle, ra_at_xy_0, dec_at_xy_0):
         """
         initialize the coordinate-to-pixel transform and their inverse
+
         :param transform_pix2angle: 2x2 matrix, mapping of pixel to coordinate
         :param ra_at_xy_0: ra coordinate at pixel (0,0)
         :param dec_at_xy_0: dec coordinate at pixel (0,0)
@@ -22,7 +23,8 @@ class Coordinates(object):
         self._Ma2pix = linalg.inv(self._Mpix2a)
         self._ra_at_xy_0 = ra_at_xy_0
         self._dec_at_xy_0 = dec_at_xy_0
-        self._x_at_radec_0, self._y_at_radec_0 = util.map_coord2pix(-self._ra_at_xy_0, -self._dec_at_xy_0, 0, 0, self._Ma2pix)
+        self._x_at_radec_0, self._y_at_radec_0 = util.map_coord2pix(-self._ra_at_xy_0, -self._dec_at_xy_0, 0, 0,
+                                                                    self._Ma2pix)
 
     @property
     def transform_angle2pix(self):
@@ -81,6 +83,7 @@ class Coordinates(object):
     def pixel_area(self):
         """
         angular area of a pixel in the image
+
         :return: area [arcsec^2]
         """
         return np.abs(linalg.det(self._Mpix2a))
@@ -89,6 +92,7 @@ class Coordinates(object):
     def pixel_width(self):
         """
         size of pixel
+
         :return: sqrt(pixel_area)
         """
         return np.sqrt(self.pixel_area)
@@ -100,7 +104,8 @@ class Coordinates(object):
         :param ny: number of pixels in y-direction
         :return: 2d arrays with coordinates in RA/DEC with ra_coord[y-axis, x-axis]
         """
-        ra_coords, dec_coords = util.grid_from_coordinate_transform(nx, ny, self._Mpix2a, self._ra_at_xy_0, self._dec_at_xy_0)
+        ra_coords, dec_coords = util.grid_from_coordinate_transform(nx, ny, self._Mpix2a, self._ra_at_xy_0,
+                                                                    self._dec_at_xy_0)
         ra_coords = util.array2image(ra_coords, nx, ny)  # new
         dec_coords = util.array2image(dec_coords, nx, ny)  # new
         return ra_coords, dec_coords
@@ -108,6 +113,7 @@ class Coordinates(object):
     def shift_coordinate_system(self, x_shift, y_shift, pixel_unit=False):
         """
         shifts the coordinate system
+
         :param x_shift: shift in x (or RA)
         :param y_shift: shift in y (or DEC)
         :param pixel_unit: bool, if True, units of pixels in input, otherwise RA/DEC
@@ -119,6 +125,7 @@ class Coordinates(object):
         """
 
         shifts the coordinate system
+
         :param x_shift: shift in x (or RA)
         :param y_shift: shift in y (or DEC)
         :param pixel_unit: bool, if True, units of pixels in input, otherwise RA/DEC
@@ -149,5 +156,6 @@ class Coordinates1D(Coordinates):
         :param ny: number of pixels in y-direction
         :return: 2d arrays with coordinates in RA/DEC with ra_coord[y-axis, x-axis]
         """
-        ra_coords, dec_coords = util.grid_from_coordinate_transform(nx, ny, self._Mpix2a, self._ra_at_xy_0, self._dec_at_xy_0)
+        ra_coords, dec_coords = util.grid_from_coordinate_transform(nx, ny, self._Mpix2a, self._ra_at_xy_0,
+                                                                    self._dec_at_xy_0)
         return ra_coords, dec_coords

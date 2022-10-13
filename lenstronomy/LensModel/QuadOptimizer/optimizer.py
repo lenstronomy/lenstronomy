@@ -8,8 +8,8 @@ from lenstronomy.Sampling.Pool.pool import choose_pool
 
 __all__ = ['Optimizer']
 
-class Optimizer(object):
 
+class Optimizer(object):
     """
     class which executes the optimization routines. Currently implemented as a particle swarm optimization followed by
     a downhill simplex routine.
@@ -39,7 +39,7 @@ class Optimizer(object):
         :param re_optimize_scale: float, controls how tight the initial spread of particles is
         :param pso_convergence_mean: when to terminate the PSO fit
         :param foreground_rays: (optional) can pass in pre-computed foreground light rays from a previous fit
-        so as to not waste time recomputing them
+         so as to not waste time recomputing them
         :param tol_source: sigma in the source plane chi^2
         :param tol_simplex_func: tolerance for the downhill simplex optimization
         :param simplex_n_iterations: number of iterations per dimension for the downhill simplex optimization
@@ -71,7 +71,7 @@ class Optimizer(object):
         :param n_particles: number of PSO particles, will be ignored if self._particle_swarm is False
         :param n_iterations: number of PSO iterations, will be ignored if self._particle_swarm is False
         :param verbose: whether to print stuff
-        :param pool: instance of Pool with a map method for multiprocessing
+        :param threadCount: integer; number of threads in multi-threading mode
         :return: keyword arguments that map (x_image, y_image) to the same source coordinate (source_x, source_y)
         """
 
@@ -144,9 +144,3 @@ class Optimizer(object):
         source_penalty = opt['fun']
 
         return kwargs, source_penalty
-
-
-
-
-
-

@@ -1,5 +1,5 @@
 import numpy as np
-from lenstronomy.Data.coord_transforms import Coordinates, Coordinates1D
+from lenstronomy.Data.coord_transforms import Coordinates
 
 __all__ = ['PixelGrid']
 
@@ -9,7 +9,7 @@ class PixelGrid(Coordinates):
     class that manages a specified pixel grid (rectangular at the moment) and its coordinates
     """
 
-    def __init__(self, nx, ny, transform_pix2angle, ra_at_xy_0, dec_at_xy_0,primary_beam=None,use_linear_solver=True):
+    def __init__(self, nx, ny, transform_pix2angle, ra_at_xy_0, dec_at_xy_0):
         """
 
         :param nx: number of pixels in x-axis
@@ -22,20 +22,6 @@ class PixelGrid(Coordinates):
         self._nx = nx
         self._ny = ny
         self._x_grid, self._y_grid = self.coordinate_grid(nx, ny)
-        
-        self._marg=use_linear_solver
-        self._pb=primary_beam
-        if primary_beam is not None:
-            pbx,pby=np.shape(primary_beam)
-            if (pbx,pby) != (nx,ny):
-                raise ValueError("The inputed primary beam should be in the same size of the data!")
-    
-    def check_marg(self):
-        return self._marg
-    
-    def give_pb(self):
-        return self._pb
-
 
     @property
     def num_pixel(self):

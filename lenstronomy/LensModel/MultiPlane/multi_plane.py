@@ -25,16 +25,16 @@ class MultiPlane(object):
         :param lens_redshift_list: list of floats with redshifts of the lens models indicated in lens_model_list
         :param cosmo: instance of astropy.cosmology
         :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model
-        (see documentation in Profiles/numerical_alpha)
+         (see documentation in Profiles/numerical_alpha)
         :param kwargs_interp: interpolation keyword arguments specifying the numerics.
          See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
         :param observed_convention_index: a list of indices, corresponding to the lens_model_list element with same
-        index, where the 'center_x' and 'center_y' kwargs correspond to observed (lensed) positions, not physical
-        positions. The code will compute the physical locations when performing computations
+         index, where the 'center_x' and 'center_y' kwargs correspond to observed (lensed) positions, not physical
+         positions. The code will compute the physical locations when performing computations
         :param ignore_observed_positions: bool, if True, will ignore the conversion between observed to physical
-        position of deflectors
+         position of deflectors
         :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens
-        models. If None, 'z_source' is used.
+         models. If None, 'z_source' is used.
         """
 
         if z_source_convention is None:
@@ -42,7 +42,8 @@ class MultiPlane(object):
         if z_interp_stop is None:
             z_interp_stop = max(z_source, z_source_convention)
         if z_interp_stop < max(z_source, z_source_convention):
-            raise ValueError('z_interp_stop= %s needs to be larger or equal the maximum of z_source=%s and z_source_convention=%s' % (z_interp_stop, z_source, z_source_convention))
+            raise ValueError('z_interp_stop= %s needs to be larger or equal the maximum of z_source=%s and '
+                             'z_source_convention=%s' % (z_interp_stop, z_source, z_source_convention))
         self._multi_plane_base = MultiPlaneBase(lens_model_list=lens_model_list,
                                                 lens_redshift_list=lens_redshift_list, cosmo=cosmo,
                                                 numerical_alpha_class=numerical_alpha_class,
@@ -61,7 +62,8 @@ class MultiPlane(object):
 
     def update_source_redshift(self, z_source):
         """
-        update instance of this class to compute reduced lensing quantities and time delays to a specific source redshift
+        update instance of this class to compute reduced lensing quantities and time delays to a specific source
+        redshift
 
         :param z_source: float; source redshift
         :return: self variables update to new redshift
@@ -97,7 +99,9 @@ class MultiPlane(object):
         ray-tracing (backwards light cone) to the default z_source redshift
 
         :param theta_x: angle in x-direction on the image
+         (usually arc seconds, in the same convention as lensing deflection angles)
         :param theta_y: angle in y-direction on the image
+         (usually arc seconds, in the same convention as lensing deflection angles)
         :param kwargs_lens: lens model keyword argument list
         :param check_convention: flag to check the image position convention (leave this alone)
         :return: angles in the source plane
@@ -114,6 +118,7 @@ class MultiPlane(object):
                                                                  kwargs_lens=kwargs_lens, T_ij_start=self._T_ij_start,
                                                                  T_ij_end=self._T_ij_stop)
         beta_x, beta_y = self.co_moving2angle_source(x, y)
+
         return beta_x, beta_y
 
     def ray_shooting_partial(self, x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens, include_z_start=False,
@@ -122,8 +127,8 @@ class MultiPlane(object):
         ray-tracing through parts of the coin, starting with (x,y) co-moving distances and angles (alpha_x, alpha_y) at
         redshift z_start and then backwards to redshift z_stop
 
-        :param x: co-moving position [Mpc]
-        :param y: co-moving position [Mpc]
+        :param x: co-moving position [Mpc] / angle definition
+        :param y: co-moving position [Mpc] / angle definition
         :param alpha_x: ray angle at z_start [arcsec]
         :param alpha_y: ray angle at z_start [arcsec]
         :param z_start: redshift of start of computation
@@ -137,11 +142,12 @@ class MultiPlane(object):
          If not set, will compute the distance each time this function gets executed.
         :param T_ij_end: transverse angular distance between the last lens plane being computed and z_end. If not set,
          will compute the distance each time this function gets executed.
-        :return: co-moving position and angles at redshift z_stop
+        :return: co-moving position (modulo angle definition) and angles at redshift z_stop
         """
 
         if check_convention and not self.ignore_observed_positions:
             kwargs_lens = self._convention(kwargs_lens)
+
         return self._multi_plane_base.ray_shooting_partial(x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
                                                            include_z_start=include_z_start, T_ij_start=T_ij_start,
                                                            T_ij_end=T_ij_end)
@@ -186,7 +192,7 @@ class MultiPlane(object):
         if check_convention and not self.ignore_observed_positions:
             kwargs_lens = self._convention(kwargs_lens)
         return self._multi_plane_base.geo_shapiro_delay(theta_x, theta_y, kwargs_lens, z_stop=self._z_source,
-                                                   T_z_stop=self._T_z_source, T_ij_end=self._T_ij_stop)
+                                                        T_z_stop=self._T_z_source, T_ij_end=self._T_ij_stop)
 
     def alpha(self, theta_x, theta_y, kwargs_lens, check_convention=True, k=None):
         """
@@ -200,8 +206,10 @@ class MultiPlane(object):
         """
         self._check_raise(k=k)
         beta_x, beta_y = self.ray_shooting(theta_x, theta_y, kwargs_lens, check_convention=check_convention)
+
         alpha_x = theta_x - beta_x
         alpha_y = theta_y - beta_y
+
         return alpha_x, alpha_y
 
     def hessian(self, theta_x, theta_y, kwargs_lens, k=None, diff=0.00000001, check_convention=True):
@@ -332,8 +340,8 @@ class LensedLocation(object):
             theta_x = kwargs_lens[ind]['center_x']
             theta_y = kwargs_lens[ind]['center_y']
             zstop = self._multiplane._lens_redshift_list[ind]
-            x, y, _, _ = self._multiplane.ray_shooting_partial(0, 0, theta_x,
-                                                               theta_y, 0, zstop, new_kwargs, T_ij_start=None, T_ij_end=None)
+            x, y, _, _ = self._multiplane.ray_shooting_partial(0, 0, theta_x, theta_y, 0, zstop, new_kwargs,
+                                                               T_ij_start=None, T_ij_end=None)
 
             T = self._multiplane._T_z_list[ind]
             new_kwargs[ind]['center_x'] = x / T

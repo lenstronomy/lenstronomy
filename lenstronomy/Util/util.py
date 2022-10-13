@@ -5,7 +5,6 @@ this file contains standard routines
 """
 
 import numpy as np
-import mpmath
 import itertools
 from lenstronomy.Util.numba_util import jit
 from lenstronomy.Util.package_util import exporter
@@ -96,6 +95,7 @@ def map_coord2pix(ra, dec, x_0, y_0, M):
     """
     this routines performs a linear transformation between two coordinate systems. Mainly used to transform angular
     into pixel coordinates in an image
+
     :param ra: ra coordinates
     :param dec: dec coordinates
     :param x_0: pixel value in x-axis of ra,dec = 0,0
@@ -132,8 +132,8 @@ def image2array(image):
     """
     returns the information contained in a 2d array into an n*n 1d array
 
-    :param array: image values
-    :type array: array of size (n,n)
+    :param image: image values
+    :type image: array of size (n,n)
     :returns:  1d array
     :raises: AttributeError, KeyError
     """
@@ -150,9 +150,9 @@ def array2cube(array, n_1, n_23):
     :param array: image values
     :type array: 1d array
     :param n_1: first dimension of returned array
-    :type int:
+    :type n_1: int
     :param n_23: square of second and third dimensions of returned array
-    :type int:
+    :type n_23: int
     :returns: 3d array
     :raises ValueError: when n_23 is not a perfect square
     """
@@ -169,8 +169,8 @@ def cube2array(cube):
     """
     returns the information contained in a 3d array of shape (n_1, n_2, n_3) into 1d array with shape (n_1*n_2*n_3)
 
-    :param array: image values
-    :type array: 3d array
+    :param cube: image values
+    :type cube: 3d array
     :returns: 1d array
     """
     n_1, n_2, n_3 = cube.shape
@@ -197,14 +197,14 @@ def make_grid(numPix, deltapix, subgrid_res=1, left_lower=False):
         assert len(numPix) == 2
         if any(x != round(x) for x in numPix):
             raise ValueError("numPix contains non-integers: %s" % numPix)
-        numPix = np.asarray(numPix, dtype=np.int)
+        numPix = np.asarray(numPix, dtype=int)
     else:
         if numPix != round(numPix):
             raise ValueError("Attempt to specify non-int numPix: %s" % numPix)
-        numPix = np.array([numPix, numPix], dtype=np.int)
+        numPix = np.array([numPix, numPix], dtype=int)
 
     # Super-resolution sampling
-    numPix_eff = (numPix * subgrid_res).astype(np.int)
+    numPix_eff = (numPix * subgrid_res).astype(int)
     deltapix_eff = deltapix / float(subgrid_res)
 
     # Compute unshifted grids.
@@ -227,6 +227,7 @@ def make_grid(numPix, deltapix, subgrid_res=1, left_lower=False):
 def make_grid_transformed(numPix, Mpix2Angle):
     """
     returns grid with linear transformation (deltaPix and rotation)
+
     :param numPix: number of Pixels
     :param Mpix2Angle: 2-by-2 matrix to mat a pixel to a coordinate
     :return: coordinate grid
@@ -244,12 +245,12 @@ def make_grid_with_coordtransform(numPix, deltapix, subgrid_res=1, center_ra=0, 
 
     :param numPix: number of pixels per axis
     :param deltapix: pixel scale per axis
-    :param subgrid_res: supersampling resolution relative to the stated pixel size
+    :param subgrid_res: super-sampling resolution relative to the stated pixel size
     :param center_ra: center of the grid
     :param center_dec: center of the grid
     :param left_lower: sets the zero point at the lower left corner of the pixels
     :param inverse: bool, if true sets East as left, otherwise East is righrt
-    :return:
+    :return: ra_grid, dec_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix
     """
     numPix_eff = numPix * subgrid_res
     deltapix_eff = deltapix / float(subgrid_res)
@@ -266,8 +267,8 @@ def make_grid_with_coordtransform(numPix, deltapix, subgrid_res=1, center_ra=0, 
         ra_grid = (matrix[:, 0] - (numPix_eff - 1) / 2.) * delta_x
         dec_grid = (matrix[:, 1] - (numPix_eff - 1) / 2.) * deltapix_eff
     shift = (subgrid_res - 1) / (2. * subgrid_res) * deltapix
-    ra_grid -= shift + center_ra
-    dec_grid -= shift + center_dec
+    ra_grid += -shift + center_ra
+    dec_grid += -shift + center_dec
     ra_at_xy_0 = ra_grid[0]
     dec_at_xy_0 = dec_grid[0]
 
@@ -281,7 +282,6 @@ def make_grid_with_coordtransform(numPix, deltapix, subgrid_res=1, center_ra=0, 
 def grid_from_coordinate_transform(nx, ny, Mpix2coord, ra_at_xy_0, dec_at_xy_0):
     """
     return a grid in x and y coordinates that satisfy the coordinate system
-
 
     :param nx: number of pixels in x-axis
     :param ny: number of pixels in y-axis
@@ -304,6 +304,7 @@ def grid_from_coordinate_transform(nx, ny, Mpix2coord, ra_at_xy_0, dec_at_xy_0):
 def get_axes(x, y):
     """
     computes the axis x and y of a given 2d grid
+
     :param x:
     :param y:
     :return:
@@ -322,10 +323,11 @@ def get_axes(x, y):
 def averaging(grid, numGrid, numPix):
     """
     resize 2d pixel grid with numGrid to numPix and averages over the pixels
+
     :param grid: higher resolution pixel grid
     :param numGrid: number of pixels per axis in the high resolution input image
     :param numPix: lower number of pixels per axis in the output image (numGrid/numPix is integer number)
-    :return:
+    :return: averaged pixel grid
     """
 
     Nbig = numGrid
@@ -339,10 +341,14 @@ def displaceAbs(x, y, sourcePos_x, sourcePos_y):
     """
     calculates a grid of distances to the observer in angel
 
-    :param mapped_cartcoord: mapped cartesian coordinates
-    :type mapped_cartcoord: numpy array (n,2)
-    :param sourcePos: source position
-    :type sourcePos: numpy vector [x0,y0]
+    :param x: cartesian coordinates
+    :type x: numpy array
+    :param y: cartesian coordinates
+    :type y: numpy array
+    :param sourcePos_x: source position
+    :type sourcePos_x: float
+    :param sourcePos_y: source position
+    :type sourcePos_y: float
     :returns:  array of displacement
     :raises: AttributeError, KeyError
     """
@@ -400,6 +406,7 @@ def compare_distance(x_mapped, y_mapped):
 def min_square_dist(x_1, y_1, x_2, y_2):
     """
     return minimum of quadratic distance of pairs (x1, y1) to pairs (x2, y2)
+
     :param x_1:
     :param y_1:
     :param x_2:
@@ -464,6 +471,7 @@ def select_best(array, criteria, num_select, highest=True):
 def points_on_circle(radius, num_points, connect_ends=True):
     """
     returns a set of uniform points around a circle
+
     :param radius: radius of the circle
     :param num_points: number of points on the circle
     :param connect_ends: boolean, if True, start and end point are the same
@@ -476,6 +484,40 @@ def points_on_circle(radius, num_points, connect_ends=True):
     x_coord = np.cos(angle) * radius
     y_coord = np.sin(angle) * radius
     return x_coord, y_coord
+
+@export
+@jit()
+def local_minima_2d(a, x, y):
+    """
+    finds (local) minima in a 2d grid
+    applies less rigid criteria for maximum without second-order tangential minima criteria
+
+    :param a: 1d array of displacements from the source positions
+    :type a: numpy array with length numPix**2 in float
+    :param x: 1d coordinate grid in x-direction
+    :type x: numpy array with length numPix**2 in float
+    :param y: 1d coordinate grid in x-direction
+    :type y: numpy array with length numPix**2 in float
+    :returns:  array of indices of local minima, values of those minima
+    :raises: AttributeError, KeyError
+    """
+    dim = int(np.sqrt(len(a)))
+    values = []
+    x_mins = []
+    y_mins = []
+    for i in range(dim + 1, len(a) - dim - 1):
+        if (a[i] < a[i - 1]
+                and a[i] < a[i + 1]
+                and a[i] < a[i - dim]
+                and a[i] < a[i + dim]
+                and a[i] < a[i - (dim - 1)]
+                and a[i] < a[i - (dim + 1)]
+                and a[i] < a[i + (dim - 1)]
+                and a[i] < a[i + (dim + 1)]):
+            x_mins.append(x[i])
+            y_mins.append(y[i])
+            values.append(a[i])
+    return np.array(x_mins), np.array(y_mins), np.array(values)
 
 
 @export
@@ -537,7 +579,7 @@ def neighborSelect(a, x, y):
 def fwhm2sigma(fwhm):
     """
 
-    :param fwhm: full-widt-half-max value
+    :param fwhm: full-width-half-max value
     :return: gaussian sigma (sqrt(var))
     """
     sigma = fwhm / (2 * np.sqrt(2 * np.log(2)))
@@ -566,6 +608,8 @@ def hyper2F2_array(a, b, c, d, x):
     :param x:
     :return:
     """
+    import mpmath
+
     if isinstance(x, int) or isinstance(x, float):
         out = mpmath.hyp2f2(a, b, c, d, x)
     else:
@@ -580,6 +624,7 @@ def hyper2F2_array(a, b, c, d, x):
 def make_subgrid(ra_coord, dec_coord, subgrid_res=2):
     """
     return a grid with subgrid resolution
+
     :param ra_coord:
     :param dec_coord:
     :param subgrid_res:
@@ -615,6 +660,7 @@ def make_subgrid(ra_coord, dec_coord, subgrid_res=2):
 def convert_bool_list(n, k=None):
     """
     returns a bool list of the length of the lens models
+
     if k = None: returns bool list with True's
     if k is int, returns bool list with False's but k'th is True
     if k is a list of int, e.g. [0, 3, 5], returns a bool list with True's in the integers listed and False elsewhere
@@ -649,3 +695,21 @@ def convert_bool_list(n, k=None):
     else:
         raise ValueError('input list k as %s not compatible' % k)
     return bool_list
+
+
+def area(vs):
+    """
+    Use Green's theorem to compute the area enclosed by the given contour.
+
+    param vs: 2d array of vertices of a contour line
+    return: area within contour line
+    """
+    a = 0
+    x0, y0 = vs[0]
+    for [x1, y1] in vs[1:]:
+        dx = x1 - x0
+        dy = y1 - y0
+        a += 0.5 * (y0 * dx - x0 * dy)
+        x0 = x1
+        y0 = y1
+    return abs(a)

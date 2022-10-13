@@ -1,16 +1,17 @@
 from scipy import fftpack, ndimage, signal
 import numpy as np
 import threading
-#from scipy._lib._version import NumpyVersion
-_rfft_mt_safe = True  # (NumpyVersion(np.__version__) >= '1.9.0.dev-e24486e')
-_rfft_lock = threading.Lock()
-
 import lenstronomy.Util.kernel_util as kernel_util
 import lenstronomy.Util.util as util
 import lenstronomy.Util.image_util as image_util
 
 from lenstronomy.Util.package_util import exporter
 export, __all__ = exporter()
+
+_rfft_mt_safe = True  # (NumpyVersion(np.__version__) >= '1.9.0.dev-e24486e')
+_rfft_lock = threading.Lock()
+
+
 
 
 def _centered(arr, newshape):
@@ -87,16 +88,15 @@ class PixelKernelConvolution(object):
             self._s1, self._s2, self._complex_result, self._shape, self._fshape, self._fslice, self._sp2 = self._static_pre_compute(image)
             self._pre_computed = True
         s1, s2, complex_result, shape, fshape, fslice, sp2 = self._s1, self._s2, self._complex_result, self._shape, self._fshape, self._fslice, self._sp2
-        #if in1.ndim == in2.ndim == 0:  # scalar inputs
+        # if in1.ndim == in2.ndim == 0:  # scalar inputs
         #    return in1 * in2
-        #elif not in1.ndim == in2.ndim:
+        # elif not in1.ndim == in2.ndim:
         #    raise ValueError("in1 and in2 should have the same dimensionality")
-        #elif in1.size == 0 or in2.size == 0:  # empty arrays
+        # elif in1.size == 0 or in2.size == 0:  # empty arrays
         #    return np.array([])
 
-
         # Check that input sizes are compatible with 'valid' mode
-        #if _inputs_swap_needed(mode, s1, s2):
+        # if _inputs_swap_needed(mode, s1, s2):
             # Convolution is commutative; order doesn't have any effect on output
             # only applicable for 'valid' mode
         #    in1, s1, in2, s2 = in2, s2, in1, s1
@@ -152,7 +152,7 @@ class PixelKernelConvolution(object):
         #    in1, s1, in2, s2 = in2, s2, in1, s1
 
         # Speed up FFT by padding to optimal size for FFTPACK
-        fshape = [fftpack.helper.next_fast_len(int(d)) for d in shape]
+        fshape = [fftpack.next_fast_len(int(d)) for d in shape]
         fslice = tuple([slice(0, int(sz)) for sz in shape])
         # Pre-1.9 NumPy FFT routines are not threadsafe.  For older NumPys, make
         # sure we only call rfftn/irfftn from one thread at a time.
@@ -173,6 +173,7 @@ class PixelKernelConvolution(object):
     def re_size_convolve(self, image_low_res, image_high_res=None):
         """
 
+        :param image_low_res: regular sampled image/model
         :param image_high_res: supersampled image/model to be convolved on a regular pixel grid
         :return: convolved and re-sized image
         """
@@ -190,14 +191,14 @@ class SubgridKernelConvolution(object):
         :param kernel_supersampled: kernel in supersampled pixels
         :param supersampling_factor: supersampling factor relative to the image pixel grid
         :param supersampling_kernel_size: number of pixels (in units of the image pixels) that are convolved with the
-        supersampled kernel
+         supersampled kernel
         """
-        n_high = len(kernel_supersampled)
+        # n_high = len(kernel_supersampled)
         self._supersampling_factor = supersampling_factor
-        numPix = int(n_high / self._supersampling_factor)
-        #if self._supersampling_factor % 2 == 0:
+        # numPix = int(n_high / self._supersampling_factor)
+        # if self._supersampling_factor % 2 == 0:
         #    self._kernel = kernel_util.averaging_even_kernel(kernel_supersampled, self._supersampling_factor)
-        #else:
+        # else:
         #    self._kernel = util.averaging(kernel_supersampled, numGrid=n_high, numPix=numPix)
         if supersampling_kernel_size is None:
             kernel_low_res, kernel_high_res = np.zeros((3, 3)), kernel_supersampled
@@ -252,7 +253,7 @@ class MultiGaussianConvolution(object):
         :param fraction_list: fraction of flux to be convoled with each Gaussian kernel
         :param pixel_scale: scale of pixel width (to convert sigmas into units of pixels)
         :param truncation: float. Truncate the filter at this many standard deviations.
-        Default is 4.0.
+         Default is 4.0.
         """
         self._num_gaussians = len(sigma_list)
         self._sigmas_scaled = np.array(sigma_list) / pixel_scale
@@ -275,10 +276,10 @@ class MultiGaussianConvolution(object):
         image_conv = None
         for i in range(self._num_gaussians):
             if image_conv is None:
-                image_conv = ndimage.filters.gaussian_filter(image, self._sigmas_scaled[i], mode='nearest',
+                image_conv = ndimage.gaussian_filter(image, self._sigmas_scaled[i], mode='nearest',
                                                              truncate=self._truncation) * self._fraction_list[i]
             else:
-                image_conv += ndimage.filters.gaussian_filter(image, self._sigmas_scaled[i], mode='nearest',
+                image_conv += ndimage.gaussian_filter(image, self._sigmas_scaled[i], mode='nearest',
                                                               truncate=self._truncation) * self._fraction_list[i]
         return image_conv
 
@@ -348,7 +349,6 @@ class MGEConvolution(object):
         :param kernel: 2d convolution kernel (centered, odd axis number)
         :param order: order of Multi-Gaussian Expansion
         """
-        #kernel_util.fwhm_kernel(kernel)
         amps, sigmas, norm = kernel_util.mge_kernel(kernel, order=order)
         # make instance o MultiGaussian convolution kernel
         self._mge_conv = MultiGaussianConvolution(sigma_list=sigmas*pixel_scale, fraction_list=np.array(amps) / np.sum(amps),

@@ -7,8 +7,10 @@ __all__ = ['LensParam']
 class LensParam(object):
     """
     class to handle the lens model parameter
+
     """
-    def __init__(self, lens_model_list, kwargs_fixed, kwargs_lower=None, kwargs_upper=None, kwargs_logsampling=None,
+    def __init__(self, lens_model_list, kwargs_fixed,
+                 kwargs_lower=None, kwargs_upper=None, kwargs_logsampling=None,
                  num_images=0, solver_type='NONE', num_shapelet_lens=0):
         """
 
@@ -24,12 +26,19 @@ class LensParam(object):
         :param num_shapelet_lens: integer, number of shapelets in the lensing potential
          (only relevant when 'SHAPELET' lens model is used)
         """
+
+
         self.model_list = lens_model_list
         self.kwargs_fixed = kwargs_fixed
         self._num_images = num_images
         self._solver_type = solver_type
         self._num_shapelet_lens = num_shapelet_lens
+
+        # PF: Here the instantiation of SinglePlane is only made to deal with
+        # a list of lens parameters. It does not seem to matter whether multi-
+        # plane lensing or line-of-sight effects are activated.
         lens_model = SinglePlane(lens_model_list=lens_model_list)
+
         name_list = []
         for func in lens_model.func_list:
             name_list.append(func.param_names)
@@ -43,9 +52,10 @@ class LensParam(object):
             for func in lens_model.func_list:
                 kwargs_upper.append(func.upper_limit_default)
 
+
         self.lower_limit = kwargs_lower
         self.upper_limit = kwargs_upper
-        if kwargs_logsampling is None :
+        if kwargs_logsampling is None:
             kwargs_logsampling = [[] for i in range(len(self.model_list))]
         self.kwargs_logsampling = kwargs_logsampling
 
@@ -63,7 +73,7 @@ class LensParam(object):
             kwargs_logsampling = self.kwargs_logsampling[k]
             param_names = self._param_name_list[k]
             for name in param_names:
-                if not name in kwargs_fixed:
+                if name not in kwargs_fixed:
                     if model in ['SHAPELETS_POLAR', 'SHAPELETS_CART'] and name == 'coeffs':
                         num_coeffs = self._num_shapelet_lens
                         if self._solver_type == 'SHAPELETS' and k == 0:
@@ -98,7 +108,7 @@ class LensParam(object):
                 else:
                     kwargs[name] = kwargs_fixed[name]
 
-                if name in kwargs_logsampling and not name in kwargs_fixed:
+                if name in kwargs_logsampling and name not in kwargs_fixed:
                     kwargs[name] = 10**(kwargs[name])
 
             kwargs_list.append(kwargs)
@@ -118,7 +128,7 @@ class LensParam(object):
 
             param_names = self._param_name_list[k]
             for name in param_names:
-                if not name in kwargs_fixed:
+                if name not in kwargs_fixed:
                     if model in ['SHAPELETS_POLAR', 'SHAPELETS_CART'] and name == 'coeffs':
                         coeffs = kwargs['coeffs']
                         if self._solver_type == 'SHAPELETS' and k == 0:
@@ -134,7 +144,7 @@ class LensParam(object):
                         raise ValueError("%s must have fixed 'sigma' list!" % model)
                     elif model in ['INTERPOL', 'INTERPOL_SCALED'] and name in ['f_', 'f_xx', 'f_xy', 'f_yy']:
                         pass
-                    #elif self._solver_type == 'PROFILE_SHEAR' and k == 1:
+                    # elif self._solver_type == 'PROFILE_SHEAR' and k == 1:
                     #    if name == 'e1':
                     #        _, gamma_ext = param_util.ellipticity2phi_gamma(kwargs['e1'], kwargs['e2'])
                     #        args.append(gamma_ext)
@@ -159,7 +169,7 @@ class LensParam(object):
             kwargs_fixed = self.kwargs_fixed[k]
             param_names = self._param_name_list[k]
             for name in param_names:
-                if not name in kwargs_fixed:
+                if name not in kwargs_fixed:
                     if model in ['SHAPELETS_POLAR', 'SHAPELETS_CART'] and name == 'coeffs':
                         num_coeffs = self._num_shapelet_lens
                         if self._solver_type == 'SHAPELETS' and k == 0:

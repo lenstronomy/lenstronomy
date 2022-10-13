@@ -1,5 +1,5 @@
 import numpy as np
-from lenstronomy.PointSource.Types.base_ps import PSBase, _expand_to_array
+from lenstronomy.PointSource.Types.base_ps import PSBase, _expand_to_array, _shrink_array
 
 __all__ = ['SourcePositions']
 
@@ -10,8 +10,9 @@ class SourcePositions(PSBase):
     The lens equation is solved to compute the image positions for the specified source position.
 
     Name within the PointSource module: 'SOURCE_POSITION'
-    parameters: ra_source, dec_source, source_amp
+    parameters: ra_source, dec_source, source_amp, mag_pert (optional)
     If fixed_magnification=True, than 'source_amp' is a parameter instead of 'point_amp'
+    mag_pert is a list of fractional magnification pertubations applied to point source images
 
     """
 
@@ -20,7 +21,8 @@ class SourcePositions(PSBase):
         on-sky image positions
 
         :param kwargs_ps: keyword arguments of the point source model
-        :param kwargs_lens: keyword argument list of the lens model(s), only used when requiring the lens equation solver
+        :param kwargs_lens: keyword argument list of the lens model(s), only used when requiring the lens equation
+         solver
         :param magnification_limit: float >0 or None, if float is set and additional images are computed, only those
          images will be computed that exceed the lensing magnification (absolute value) limit
         :param kwargs_lens_eqn_solver: keyword arguments specifying the numerical settings for the lens equation solver
@@ -77,6 +79,9 @@ class SourcePositions(PSBase):
             point_amp = kwargs_ps['point_amp']
             if x_pos is not None:
                 point_amp = _expand_to_array(point_amp, len(x_pos))
+        mag_pert = kwargs_ps.get('mag_pert', 1)
+        mag_pert = _shrink_array(mag_pert, len(point_amp))
+        point_amp *= np.array(mag_pert)
         return np.array(point_amp)
 
     def source_amplitude(self, kwargs_ps, kwargs_lens=None):

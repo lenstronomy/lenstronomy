@@ -42,6 +42,7 @@ class Anisotropy(object):
     def beta_r(self, r, **kwargs):
         """
         returns the anisotropy parameter at a given radius
+
         :param r: 3d radius
         :param kwargs: parameters of the specified anisotropy model
         :return: beta(r)
@@ -73,7 +74,8 @@ class Anisotropy(object):
     def delete_anisotropy_cache(self):
         """
         deletes cached interpolations for a fixed anisotropy model
-        :return:
+
+        :return: None
         """
         if hasattr(self._model, 'delete_cache'):
             self._model.delete_cache()
@@ -159,7 +161,8 @@ class Isotropic(object):
         """
         return 0.
 
-    def anisotropy_solution(self, r, **kwargs):
+    @staticmethod
+    def anisotropy_solution(r, **kwargs):
         """
         the solution to
         d ln(f)/ d ln(r) = 2 beta(r)
@@ -181,7 +184,8 @@ class Radial(object):
     def __init__(self):
         pass
 
-    def K(self, r, R):
+    @staticmethod
+    def K(r, R):
         """
         equation A16 im Mamon & Lokas for constant anisotropy
 
@@ -203,14 +207,14 @@ class Radial(object):
         """
         return 1.
 
-    def anisotropy_solution(self, r):
+    @staticmethod
+    def anisotropy_solution(r):
         """
         the solution to
         d ln(f)/ d ln(r) = 2 beta(r)
         See e.g. A4 in Mamon & Lokas
 
         :param r: 3d radius
-        :param kwargs: parameters of the specified anisotropy model
         :return: f(r)
         """
         return r**2
@@ -225,7 +229,8 @@ class OsipkovMerritt(object):
     def __init__(self):
         pass
 
-    def K(self, r, R, r_ani):
+    @staticmethod
+    def K(r, R, r_ani):
         """
         equation A16 im Mamon & Lokas 2005 for Osipkov&Merrit anisotropy
 
@@ -274,7 +279,7 @@ class GeneralizedOM(object):
     """
     def __init__(self):
         self._z_interp = np.append(-np.flip(np.logspace(-1, 3, 200)**2), 0)
-        #self._z_interp = -np.linspace(-200, 0, 200)**2  # z = (R**2 - r**2) / (r_ani**2 + R**2)
+        # self._z_interp = -np.linspace(-200, 0, 200)**2  # z = (R**2 - r**2) / (r_ani**2 + R**2)
 
     @staticmethod
     def beta_r(r, r_ani, beta_inf):
@@ -301,7 +306,8 @@ class GeneralizedOM(object):
         """
         return (np.sqrt(r**2 - R**2) + self._k_beta(r, R, r_ani, beta_inf)) / r
 
-    def anisotropy_solution(self, r, r_ani, beta_inf):
+    @staticmethod
+    def anisotropy_solution(r, r_ani, beta_inf):
         """
         the solution to
         d ln(f)/ d ln(r) = 2 beta(r)
@@ -339,7 +345,7 @@ class GeneralizedOM(object):
         z = (R**2 - r**2) / (r_ani**2 + R**2)
         # ((r**2 + r_ani**2) / (R**2 + r_ani**2)) ** beta_inf
         return - self.beta_r(R, r_ani, beta_inf) * self._j_beta(R, r, r_ani, beta_inf) *\
-               np.sqrt(r**2 - R**2) * (self._F_12(z, beta_inf) + 2. * (1 - r**2/R**2) / 3 * self._F_32(z, beta_inf))
+            np.sqrt(r**2 - R**2) * (self._F_12(z, beta_inf) + 2. * (1 - r**2/R**2) / 3 * self._F_32(z, beta_inf))
 
     def _F_12(self, z, beta_inf):
         """
@@ -365,7 +371,8 @@ class GeneralizedOM(object):
             self._f_32_interp = interp1d(self._z_interp, f_32_interp, kind='cubic', fill_value="extrapolate")
         return self._f_32_interp(z)
 
-    def _j_beta(self, r, s, r_ani, beta_inf):
+    @staticmethod
+    def _j_beta(r, s, r_ani, beta_inf):
         """
         equation (12) in Agnello et al. 2014
 
@@ -377,7 +384,8 @@ class GeneralizedOM(object):
         """
         return ((s**2 + r_ani**2) / (r**2 + r_ani**2)) ** beta_inf
 
-    def _F(self, a, z, beta_inf):
+    @staticmethod
+    def _F(a, z, beta_inf):
         """
         the hypergeometric function 2F1 (a, 1 +beta_inf, a + 1, z)
 
@@ -403,7 +411,8 @@ class Colin(object):
     def __init__(self):
         pass
 
-    def K(self, r, R, r_ani):
+    @staticmethod
+    def K(r, R, r_ani):
         """
         equation A16 im Mamon & Lokas for Osipkov&Merrit anisotropy
 
@@ -419,10 +428,10 @@ class Colin(object):
         if ua == 1:
             k = (1 + 1. / u) * np.arccosh(u) - 1. / 6 * (8. / u + 7) * np.sqrt((u - 1.) / (u + 1.))
         elif ua > 1:
-            k = 0.5 / (ua ** 2 - 1) * np.sqrt(1 - 1. / u ** 2) + (1. + ua / u) * np.arccosh(u) - np.sign(ua - 1) * ua * \
+            k = 0.5 / (ua ** 2 - 1) * np.sqrt(1 - 1. / u ** 2) + (1. + ua / u) * np.arccosh(u) - np.sign(ua - 1) * ua *\
                 (ua ** 2 - 0.5) / np.abs(ua ** 2 - 1) ** (3. / 2) * (1. + ua / u) * np.arccosh((ua * u + 1) / (u + ua))
         else:  # ua < 1
-            k = 0.5 / (ua ** 2 - 1) * np.sqrt(1 - 1. / u ** 2) + (1. + ua / u) * np.arccosh(u) - np.sign(ua - 1) * ua * \
+            k = 0.5 / (ua ** 2 - 1) * np.sqrt(1 - 1. / u ** 2) + (1. + ua / u) * np.arccosh(u) - np.sign(ua - 1) * ua *\
                 (ua ** 2 - 0.5) / np.abs(ua ** 2 - 1) ** (3. / 2) * (1. + ua / u) * np.arccos((ua * u + 1) / (u + ua))
         return k
 

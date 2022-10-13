@@ -41,13 +41,14 @@ class SersicUtil(object):
     @staticmethod
     def b_n(n):
         """
-        b(n) computation. This is the approximation of the exact solution to the relation,
+        b(n) computation. 
+        The older one 'bn = 1.9992*n - 0.3271' is the approximation of the exact solution to the relation,
          2*incomplete_gamma_function(2n; b_n) = Gamma_function(2*n).
 
         :param n: the sersic index
         :return: b(n)
         """
-        bn = 1.9992*n - 0.3271
+        bn = special.gammaincinv(2. * n, 0.5)
         bn = np.maximum(bn, 0.00001)  # make sure bn is strictly positive as a save guard for very low n_sersic
         return bn
 

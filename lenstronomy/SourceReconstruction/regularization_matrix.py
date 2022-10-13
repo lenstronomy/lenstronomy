@@ -25,7 +25,7 @@ def give_curvature_regularization_pixel(col,row):
         reg = give_curvature_regularization_rect(col,row)
     return reg
 
-## below is one function gives the curvature regularization matrix for the shapelets of lenstronomy
+## below are functions give the gradient and curvature regularization matrix for the shapelets of lenstronomy
     # input is the n_max defined for a set of shaplets
     # output is a num_of_shapelets-by-num_of_shapelets size matrix, where the num_of_shapelets is calculated from n_max
 def give_curvature_regularization_shapelets(n_max):
@@ -33,6 +33,30 @@ def give_curvature_regularization_shapelets(n_max):
     Cv = np.zeros(((num_of_shapelets,num_of_shapelets)))
 
     Cv_dict = give_curvature_regularization_dictionary_for_SHO_wavefunction(n_max)
+
+    seq1 = 0
+    for i in range(n_max+1):
+        for j in range(i+1):
+            n_temp = j
+            m_temp = i-j
+            seq2 = 0
+
+            for i1 in range(n_max+1):
+                for j1 in range(i1+1):
+                    k_temp = j1
+                    l_temp = i1 - j1
+
+                    Cv[seq1,seq2] = Cv_dict[n_temp,m_temp,k_temp,l_temp]
+                    seq2 += 1
+
+            seq1 += 1
+    return Cv
+
+def give_gradient_regularization_shapelets(n_max):
+    num_of_shapelets = int( ((n_max+1)*(n_max+2))/2 )
+    Cv = np.zeros(((num_of_shapelets,num_of_shapelets)))
+
+    Cv_dict = give_gradient_regularization_dictionary_for_SHO_wavefunction(n_max)
 
     seq1 = 0
     for i in range(n_max+1):
@@ -351,5 +375,32 @@ def give_curvature_regularization_dictionary_for_SHO_wavefunction(n_max):
                     S[n,m,n,m+4] += np.sqrt((m+1)*(m+2)*(m+3)*(m+4))
                     
     S = (1/4) * S
+                           
+    return S
+
+def give_gradient_regularization_dictionary_for_SHO_wavefunction(n_max):
+    # Auxiliary function for shapelets gradient regularization
+    # input is n_max, which is the largest n of the defined set of shapelets of lenstronomy
+    # output is a 4-dimensional matrix, gives the coefficient of \phi_{n,m}\phi_{k,l} term contributing to the regularization term
+    S = np.zeros((n_max+1,n_max+1,n_max+1,n_max+1))
+    
+    for n in range(n_max+1):
+        for m in range(n_max+1):
+            
+            S[n,m,n,m] += (2*n+2*m+2)
+            
+            if (n-2) >= 0:
+                S[n,m,n-2,m] += -np.sqrt(n*(n-1))
+
+            if (n+2) <= n_max:
+                S[n,m,n+2,m] += -np.sqrt((n+1)*(n+2))
+                                   
+            if (m-2) >=0:
+                S[n,m,n,m-2] += -np.sqrt(m*(m-1))
+                            
+            if (m+2) <= n_max:
+                S[n,m,n,m+2] += -np.sqrt((m+1)*(m+2))
+                
+    S = (1/2) * S
                            
     return S

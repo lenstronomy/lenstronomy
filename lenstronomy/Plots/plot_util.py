@@ -1,6 +1,7 @@
 import numpy as np
 import math
 import matplotlib.pyplot as plt
+import copy
 
 from lenstronomy.Util.package_util import exporter
 export, __all__ = exporter()
@@ -238,7 +239,8 @@ def cmap_conf(cmap_string):
         cmap = plt.get_cmap(cmap_string)
     else:
         cmap = cmap_string
-    cmap_new = cmap.copy()
+    #cmap_new = cmap.copy()
+    cmap_new = copy.deepcopy(cmap)
     cmap_new.set_bad(color='k', alpha=1.)
     cmap_new.set_under('k')
     return cmap_new

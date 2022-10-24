@@ -68,6 +68,7 @@ class UpdateManager(object):
         self._kwargs_temp = self.init_kwargs
 
     # TODO: check compatibility with number of point sources provided as well as other parameter labeling
+    # TODO: give raise statement if sigma value is =0
 
     @property
     def init_kwargs(self):

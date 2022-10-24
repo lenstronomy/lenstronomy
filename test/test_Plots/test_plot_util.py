@@ -96,6 +96,9 @@ class TestPlotUtil(object):
                                            origin=[1, 1], flipped_x=True, pixel_offset=True)
         plt.close()
 
+    def test_cmap_copy(self):
+        from lenstronomy.Plots.plot_util import cmap_conf
+        cmap_new = cmap_conf("gist_heat")
 
 if __name__ == '__main__':
     pytest.main()

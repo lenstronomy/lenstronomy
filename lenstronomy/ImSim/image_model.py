@@ -76,7 +76,7 @@ class ImageModel(object):
         else:
             self.source_mapping = Image2SourceMapping(lensModel=lens_model_class, sourceModel=source_model_class)
             
-        self._pb = data_class.give_pb()
+        self._pb = data_class.give_pb
         if self._pb is not None:
             self._pb_1d = util.image2array(self._pb)
         else:

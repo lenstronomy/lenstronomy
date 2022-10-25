@@ -57,16 +57,10 @@ class ImageData(PixelGrid, ImageNoise):
         nx, ny = np.shape(image_data)
         if transform_pix2angle is None:
             transform_pix2angle = np.array([[1, 0], [0, 1]])
-        PixelGrid.__init__(self, nx, ny, transform_pix2angle, ra_at_xy_0 + ra_shift, dec_at_xy_0 + dec_shift)
+        PixelGrid.__init__(self, nx, ny, transform_pix2angle, ra_at_xy_0 + ra_shift, dec_at_xy_0 + dec_shift, primary_beam)
         ImageNoise.__init__(self, image_data, exposure_time=exposure_time, background_rms=background_rms,
                             noise_map=noise_map, gradient_boost_factor=gradient_boost_factor, verbose=False)
         
-        if primary_beam is not None:
-            pbx,pby=np.shape(primary_beam)
-            if (pbx,pby) != (nx,ny):
-                raise ValueError("The primary beam should have the same size with the image data!")
-                
-        self._pb = primary_beam
 
     def update_data(self, image_data):
         """
@@ -109,10 +103,3 @@ class ImageData(PixelGrid, ImageNoise):
         X2 = np.array(X2)
         logL = - np.sum(X2) / 2
         return logL
-
-    def give_pb(self):
-        """
-        :return: 2d numpy array of primary beam
-
-        """
-        return self._pb

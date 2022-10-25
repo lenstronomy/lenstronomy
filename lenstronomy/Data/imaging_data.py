@@ -37,7 +37,7 @@ class ImageData(PixelGrid, ImageNoise):
 
     """
     def __init__(self, image_data, exposure_time=None, background_rms=None, noise_map=None, gradient_boost_factor=None,
-                 ra_at_xy_0=0, dec_at_xy_0=0, transform_pix2angle=None, ra_shift=0, dec_shift=0):
+                 ra_at_xy_0=0, dec_at_xy_0=0, transform_pix2angle=None, ra_shift=0, dec_shift=0, primary_beam=None):
         """
 
         :param image_data: 2d numpy array of the image data
@@ -52,6 +52,7 @@ class ImageData(PixelGrid, ImageNoise):
         :param dec_at_xy_0: dec coordinate at pixel (0,0)
         :param ra_shift: RA shift of pixel grid
         :param dec_shift: DEC shift of pixel grid
+        :param primary_beam: 2d numpy array; primary beam is specifically for interferometry images; should have the same size of image data
         """
         nx, ny = np.shape(image_data)
         if transform_pix2angle is None:
@@ -59,6 +60,13 @@ class ImageData(PixelGrid, ImageNoise):
         PixelGrid.__init__(self, nx, ny, transform_pix2angle, ra_at_xy_0 + ra_shift, dec_at_xy_0 + dec_shift)
         ImageNoise.__init__(self, image_data, exposure_time=exposure_time, background_rms=background_rms,
                             noise_map=noise_map, gradient_boost_factor=gradient_boost_factor, verbose=False)
+        
+        if primary_beam is not None:
+            pbx,pby=np.shape(primary_beam)
+            if (pbx,pby) != (nx,ny):
+                raise ValueError("The primary beam should have the same size with the image data!")
+                
+        self._pb = primary_beam
 
     def update_data(self, image_data):
         """
@@ -101,3 +109,10 @@ class ImageData(PixelGrid, ImageNoise):
         X2 = np.array(X2)
         logL = - np.sum(X2) / 2
         return logL
+
+    def give_pb(self):
+        """
+        :return: 2d numpy array of primary beam
+
+        """
+        return self._pb

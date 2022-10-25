@@ -288,6 +288,11 @@ class ImageLinearFit(ImageModel):
         # response of lensed source profile
         for i in range(0, n_source):
             image = source_light_response[i]
+            
+            #multiply with primary beam before convolution
+            if self._pb is not None:
+                image *= self._pb_1d
+            
             image *= extinction
             image = self.ImageNumerics.re_size_convolve(image, unconvolved=unconvolved)
             A[n, :] = np.nan_to_num(self.image2array_masked(image), copy=False)
@@ -295,6 +300,11 @@ class ImageLinearFit(ImageModel):
         # response of deflector light profile (or any other un-lensed extended components)
         for i in range(0, n_lens_light):
             image = lens_light_response[i]
+            
+            #multiply with primary beam before convolution
+            if self._pb is not None:
+                image *= self._pb_1d
+                
             image = self.ImageNumerics.re_size_convolve(image, unconvolved=unconvolved)
             A[n, :] = np.nan_to_num(self.image2array_masked(image), copy=False)
             n += 1

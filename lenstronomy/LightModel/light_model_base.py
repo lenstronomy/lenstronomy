@@ -15,7 +15,7 @@ _MODELS_SUPPORTED = ['GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'ELLIPSOID', 'MULTI_GAUSSIA
                      'SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC', 'SHAPELETS', 'SHAPELETS_POLAR', 'SHAPELETS_POLAR_EXP',
                      'HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE', 'UNIFORM', 'POWER_LAW', 'NIE',
                      'CHAMELEON', 'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'INTERPOL', 'SLIT_STARLETS',
-                     'SLIT_STARLETS_GEN2', 'THINDISK']
+                     'SLIT_STARLETS_GEN2', 'THINDISK', 'THINDISK_ELLIPSE','THINDISK_ECCENTRIC']
 
 
 class LightModelBase(object):
@@ -111,6 +111,12 @@ class LightModelBase(object):
             elif profile_type == 'THINDISK':
                 from lenstronomy.LightModel.Profiles.thin_disk import ThinDisk
                 self.func_list.append(ThinDisk())
+            elif profile_type == 'THINDISK_ELLIPSE':
+                from lenstronomy.LightModel.Profiles.thin_disk import ThinDiskEllipse
+                self.func_list.append(ThinDiskEllipse())
+            elif profile_type == 'THINDISK_ECCENTRIC':
+                from lenstronomy.LightModel.Profiles.thin_disk import ThinDiskEccentric
+                self.func_list.append(ThinDiskEccentric())
             else:
                 raise ValueError('No light model of type %s found! Supported are the following models: %s'
                                  % (profile_type, _MODELS_SUPPORTED))

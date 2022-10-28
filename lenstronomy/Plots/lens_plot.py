@@ -102,7 +102,7 @@ def convergence_plot(ax, pixel_grid, lens_model, kwargs_lens, extent=None, vmin=
 
 
 def caustics_plot(ax, pixel_grid, lens_model, kwargs_lens, fast_caustic=True, coord_inverse=False, color_crit='r',
-                  color_caustic='g', pixel_offset=False, *args, **kwargs):
+                  color_caustic='g', pixel_offset=False, plot_critical=True, *args, **kwargs):
     """
 
     :param ax: matplotlib axis instance
@@ -145,7 +145,8 @@ def caustics_plot(ax, pixel_grid, lens_model, kwargs_lens, fast_caustic=True, co
     plot_util.plot_line_set(ax, pixel_grid, ra_caustic_list, dec_caustic_list, color=color_caustic, origin=origin,
                             flipped_x=coord_inverse, points_only=points_only, pixel_offset=pixel_offset, *args,
                             **kwargs)
-    plot_util.plot_line_set(ax, pixel_grid, ra_crit_list, dec_crit_list, color=color_crit, origin=origin,
+    if plot_critical:
+        plot_util.plot_line_set(ax, pixel_grid, ra_crit_list, dec_crit_list, color=color_crit, origin=origin,
                             flipped_x=coord_inverse, points_only=points_only, pixel_offset=pixel_offset, *args,
                             **kwargs)
     return ax

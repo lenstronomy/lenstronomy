@@ -17,9 +17,11 @@ class PointSource(object):
         :param point_source_type_list: list of point source types
         :param lensModel: instance of the LensModel() class
         :param fixed_magnification_list: list of booleans (same length as point_source_type_list).
-         If True, magnification ratio of point sources is fixed to the one given by the lens model
+         If True, magnification ratio of point sources is fixed to the one given by the lens model.
+         This option then requires to provide a 'source_amp' amplitude of the source brightness instead of
+         'point_amp' the list of image brightnesses.
         :param additional_images_list: list of booleans (same length as point_source_type_list). If True, search for
-        additional images of the same source is conducted.
+         additional images of the same source is conducted.
         :param flux_from_point_source_list: list of booleans (optional), if set, will only return image positions
          (for imaging modeling) for the subset of the point source lists that =True. This option enables to model
          imaging data with transient point sources, when the point source positions are measured and present at a
@@ -30,10 +32,8 @@ class PointSource(object):
          equation is conducted with the lens model parameters provided. This can increase the speed as multiple times
          the image positions are requested for the same lens model. Attention in usage!
         :param kwargs_lens_eqn_solver: keyword arguments specifying the numerical settings for the lens equation solver
-         see LensEquationSolver() class for details
-
-        for the kwargs_lens_eqn_solver parameters: have a look at the lensEquationSolver class, such as:
-        min_distance=0.01, search_window=5, precision_limit=10**(-10), num_iter_max=100
+         see LensEquationSolver() class for details ,such as:
+         min_distance=0.01, search_window=5, precision_limit=10**(-10), num_iter_max=100
 
         """
         self._lensModel = lensModel
@@ -54,7 +54,8 @@ class PointSource(object):
             elif model == 'LENSED_POSITION':
                 from lenstronomy.PointSource.Types.lensed_position import LensedPositions
                 self._point_source_list.append(PointSourceCached(LensedPositions(lensModel, fixed_magnification=fixed_magnification_list[i],
-                                                               additional_image=additional_images_list[i]), save_cache=save_cache))
+                                                                 additional_image=additional_images_list[i]),
+                                                                 save_cache=save_cache))
             elif model == 'SOURCE_POSITION':
                 from lenstronomy.PointSource.Types.source_position import SourcePositions
                 self._point_source_list.append(PointSourceCached(SourcePositions(lensModel,
@@ -167,12 +168,13 @@ class PointSource(object):
         for i, model in enumerate(self._point_source_list):
             if k is None or k == i:
                 kwargs = kwargs_ps[i]
+                x_image, y_image = model.image_position(kwargs, kwargs_lens,
+                                                        magnification_limit=self._magnification_limit,
+                                                        kwargs_lens_eqn_solver=self._kwargs_lens_eqn_solver)
                 if original_position is True and self.point_source_type_list[i] == 'LENSED_POSITION':
-                    x_image, y_image = kwargs['ra_image'], kwargs['dec_image']
-                else:
-                    x_image, y_image = model.image_position(kwargs, kwargs_lens,
-                                                            magnification_limit=self._magnification_limit,
-                                                            kwargs_lens_eqn_solver=self._kwargs_lens_eqn_solver)
+                    x_o, y_o = kwargs['ra_image'], kwargs['dec_image']
+                    x_image, y_image = _sort_position_by_original(x_o, y_o, x_image, y_image)
+
                 x_image_list.append(x_image)
                 y_image_list.append(y_image)
         return x_image_list, y_image_list
@@ -386,3 +388,35 @@ class PointSource(object):
                     pos_bool = False
                     break
         return pos_bool
+
+
+def _sort_position_by_original(x_o, y_o, x_solved, y_solved):
+    """
+    sorting new image positions such that the old order is best preserved
+
+    :param x_o: numpy array; original image positions
+    :param y_o: numpy array; original image positions
+    :param x_solved: numpy array; solved image positions with potentially more or fewer images
+    :param y_solved: numpy array; solved image positions with potentially more or fewer images
+    :return: sorted new image positions with the order best matching the original positions first,
+     and then all other images in the same order as solved for
+    """
+    if len(x_o) > len(x_solved):
+        # if new images are less , then return the original images (no sorting required)
+        x_solved_new, y_solved_new = x_o, y_o
+    else:
+        x_solved_new, y_solved_new = [], []
+        for i in range(len(x_o)):
+            x, y = x_o[i], y_o[i]
+            r2_i = (x - x_solved) ** 2 + (y - y_solved) ** 2
+            # index of minimum radios
+            index = np.argmin(r2_i)
+            x_solved_new.append(x_solved[index])
+            y_solved_new.append(y_solved[index])
+            # delete this index
+            x_solved = np.delete(x_solved, index)
+            y_solved = np.delete(y_solved, index)
+        # now we append the remaining additional images in the same order behind the original ones
+        x_solved_new = np.append(np.array(x_solved_new), x_solved)
+        y_solved_new = np.append(np.array(y_solved_new), y_solved)
+    return x_solved_new, y_solved_new

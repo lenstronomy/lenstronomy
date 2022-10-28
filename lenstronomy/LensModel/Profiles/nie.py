@@ -13,7 +13,7 @@ class NIE(LensProfileBase):
     Non-singular isothermal ellipsoid (NIE)
 
     .. math::
-     \\kappa = \\theta_E/2 \\left[s_{scale} + qx^2 + y^2/q]−1/2
+     \\kappa = \\theta_E/2 \\left[s^2_{scale} + qx^2 + y^2/q]−1/2
 
     """
     param_names = ['theta_E', 'e1', 'e2', 's_scale', 'center_x', 'center_y']
@@ -160,14 +160,12 @@ class NIE(LensProfileBase):
         theta_E_conv = self._theta_E_prod_average2major_axis(theta_E, q)
         b = theta_E_conv * np.sqrt((1 + q**2)/2)
         s = s_scale / np.sqrt(q)
-        #s = s_scale * np.sqrt((1 + q**2) / (2*q**2))
+        # s = s_scale * np.sqrt((1 + q**2) / (2*q**2))
         return b, s, q, phi_G
 
     def set_static(self, theta_E, e1, e2, s_scale, center_x=0, center_y=0):
         """
 
-        :param x: x-coordinate in image plane
-        :param y: y-coordinate in image plane
         :param theta_E: Einstein radius
         :param e1: eccentricity component
         :param e2: eccentricity component

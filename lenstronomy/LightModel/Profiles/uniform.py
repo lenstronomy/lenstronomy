@@ -9,6 +9,7 @@ class Uniform(object):
     name for profile: 'UNIFORM'
     """
     param_names = ['amp']
+    param_names_latex = {r'$I_0$'}
     lower_limit_default = {'amp': -100}
     upper_limit_default = {'amp': 100}
 

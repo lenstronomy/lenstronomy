@@ -25,8 +25,9 @@ class Cosmo(object):
     def arcsec2phys_lens(self, theta):
         """
         converts are seconds to physical units on the deflector
+
         :param theta: angle observed on the sky in units of arc seconds
-        :return: pyhsical distance of the angle in units of Mpc
+        :return: physical distance of the angle in units of Mpc
         """
         return theta * const.arcsec * self.dd
 

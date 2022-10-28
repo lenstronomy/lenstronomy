@@ -27,3 +27,5 @@ class TestRaise(unittest.TestCase):
             base.density_lens()
         with self.assertRaises(ValueError):
             base.mass_3d_lens()
+        with self.assertRaises(ValueError):
+            base.mass_2d_lens()

@@ -53,11 +53,11 @@ class TestLightModel(object):
 
     def test_surface_brightness(self):
         output = self.LightModel.surface_brightness(x=1., y=1., kwargs_list=self.kwargs)
-        npt.assert_almost_equal(output, 2.6448702845796355, decimal=6)
+        npt.assert_almost_equal(output, 2.648255253434085, decimal=6)
 
     def test_surface_brightness_array(self):
         output = self.LightModel.surface_brightness(x=[1], y=[1], kwargs_list=self.kwargs)
-        npt.assert_almost_equal(output[0], 2.6448702845796355, decimal=6)
+        npt.assert_almost_equal(output[0], 2.648255, decimal=6)
 
     def test_functions_split(self):
         output = self.LightModel.functions_split(x=1., y=1., kwargs_list=self.kwargs)
@@ -66,6 +66,11 @@ class TestLightModel(object):
     def test_param_name_list(self):
         param_name_list = self.LightModel.param_name_list
         assert len(self.light_model_list) == len(param_name_list)
+
+    def test_param_name_list_latex(self):
+        param_name_list = self.LightModel.param_name_list_latex
+        assert len(self.light_model_list) == len(param_name_list)
+
 
     def test_num_param_linear(self):
         num = self.LightModel.num_param_linear(self.kwargs, list_return=False)

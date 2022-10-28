@@ -1,4 +1,3 @@
-from __future__ import print_function, division, absolute_import, unicode_literals
 __author__ = 'sibirrer'
 
 import numpy as np
@@ -18,7 +17,7 @@ class Background(object):
         :param cosmo: instance of astropy.cosmology
         :param interp: boolean, if True, uses interpolated cosmology to evaluate specific redshifts
         :param kwargs_interp: keyword arguments of CosmoInterp specifying the interpolation interval and maximum
-        redshift
+         redshift
         :return: Background class with instance of astropy.cosmology
         """
 
@@ -30,9 +29,11 @@ class Background(object):
         else:
             self.cosmo = cosmo
 
-    def a_z(self, z):
+    @staticmethod
+    def a_z(z):
         """
         returns scale factor (a_0 = 1) for given redshift
+
         :param z: redshift
         :return: scale factor
         """
@@ -73,6 +74,7 @@ class Background(object):
     def rho_crit(self):
         """
         critical density
+
         :return: value in M_sol/Mpc^3
         """
         h = self.cosmo.H(0).value / 100.

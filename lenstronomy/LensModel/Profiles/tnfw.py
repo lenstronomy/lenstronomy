@@ -58,6 +58,7 @@ class TNFW(LensProfileBase):
     def _L(self, x, tau):
         """
         Logarithm that appears frequently
+
         :param x: r/Rs
         :param tau: t/Rs
         :return:
@@ -68,6 +69,7 @@ class TNFW(LensProfileBase):
     def F(self, x):
         """
         Classic NFW function in terms of arctanh and arctan
+
         :param x: r/Rs
         :return:
         """

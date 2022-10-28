@@ -8,6 +8,7 @@ Subpackages
    :maxdepth: 4
 
    lenstronomy.LensModel.LightConeSim
+   lenstronomy.LensModel.LineOfSight
    lenstronomy.LensModel.MultiPlane
    lenstronomy.LensModel.Profiles
    lenstronomy.LensModel.QuadOptimizer

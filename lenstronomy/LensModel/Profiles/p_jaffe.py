@@ -33,7 +33,7 @@ class PJaffe(LensProfileBase):
     In the lensing parameterization,
 
     .. math::
-        \\sigma_0 = \\frac{\Sigma_0}{\\Sigma_{\\rm crit}}
+        \\sigma_0 = \\frac{\\Sigma_0}{\\Sigma_{\\rm crit}}
 
     """
 

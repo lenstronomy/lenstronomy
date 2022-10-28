@@ -1,5 +1,7 @@
 __author__ = 'sibirrer'
 
+import copy
+
 import pytest
 import numpy.testing as npt
 import numpy as np
@@ -96,14 +98,6 @@ class TestFittingSequence(object):
                                   'check_positive_flux': True,
                                   }
 
-    def test_simulationAPI_image(self):
-        npt.assert_almost_equal(self.data_class.data[4, 4], 0.1, decimal=0)
-
-    def test_simulationAPI_psf(self):
-        npt.assert_almost_equal(np.sum(self.psf_class.kernel_point_source),1, decimal=6)
-
-    def test_fitting_sequence(self):
-        # kwargs_init = [self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps]
         lens_sigma = [{'theta_E': 0.1, 'gamma': 0.1, 'e1': 0.1, 'e2': 0.1, 'center_x': 0.1, 'center_y': 0.1},
                       {'gamma1': 0.1, 'gamma2': 0.1}]
         lens_lower = [{'theta_E': 0., 'gamma': 1.5, 'center_x': -2, 'center_y': -2, 'e1': -0.4, 'e2': -0.4},
@@ -124,18 +118,26 @@ class TestFittingSequence(object):
         lens_light_param = self.kwargs_lens_light, lens_light_sigma, [{'center_x': 0}], lens_light_lower, lens_light_upper
         ps_param = self.kwargs_ps, ps_sigma, [{}], self.kwargs_ps, self.kwargs_ps
 
-        kwargs_params = {'lens_model': lens_param,
+        self.kwargs_params = {'lens_model': lens_param,
                          'source_model': source_param,
                          'lens_light_model': lens_light_param,
                          'point_source_model': ps_param,
                          # 'cosmography': cosmo_param
                          }
-        # kwargs_params = [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_init, kwargs_init]
         image_band = [self.kwargs_data, self.kwargs_psf, self.kwargs_numerics]
         multi_band_list = [image_band]
-        kwargs_data_joint = {'multi_band_list': multi_band_list, 'multi_band_type': 'multi-linear'}
-        fittingSequence = FittingSequence(kwargs_data_joint, self.kwargs_model, self.kwargs_constraints,
-                                          self.kwargs_likelihood, kwargs_params)
+        self.kwargs_data_joint = {'multi_band_list': multi_band_list, 'multi_band_type': 'multi-linear'}
+
+    def test_simulationAPI_image(self):
+        npt.assert_almost_equal(self.data_class.data[4, 4], 0.1, decimal=0)
+
+    def test_simulationAPI_psf(self):
+        npt.assert_almost_equal(np.sum(self.psf_class.kernel_point_source), 1, decimal=6)
+
+    def test_fitting_sequence(self):
+
+        fittingSequence = FittingSequence(self.kwargs_data_joint, self.kwargs_model, self.kwargs_constraints,
+                                          self.kwargs_likelihood, self.kwargs_params)
 
         kwargs_result = fittingSequence.best_fit(bijective=False)
         lens_temp = kwargs_result['kwargs_lens']
@@ -148,7 +150,7 @@ class TestFittingSequence(object):
         bic = fittingSequence.bic
         assert bic > 0
         #npt.assert_almost_equal(bic, 20000000220.29376, decimal=-4)
-        
+
         #npt.assert_almost_equal(logL, -10000000061.792593, decimal=-4)
 
         n_p = 2
@@ -157,12 +159,6 @@ class TestFittingSequence(object):
 
         kwargs_pso = {'sigma_scale': 1, 'n_particles': n_p, 'n_iterations': n_i}
         fitting_list.append(['PSO', kwargs_pso])
-        #kwargs_mcmc = {'sigma_scale': 0.1, 'n_burn': 1, 'n_run': 1, 'walkerRatio': 2}
-        #fitting_list.append(['MCMC', kwargs_mcmc])
-        #kwargs_mcmc['re_use_samples'] = True
-        #fitting_list.append(['MCMC', kwargs_mcmc])
-        #kwargs_mcmc['sampler_type'] = 'EMCEE'
-        #fitting_list.append(['MCMC', kwargs_mcmc])
         kwargs_align = {'lowerLimit': -0.1, 'upperLimit': 0.1, 'n_particles': 2, 'n_iterations': 2}
         fitting_list.append(['align_images', kwargs_align])
         kwargs_psf_iter = {'num_iter': 2, 'psf_iter_factor': 0.5, 'stacking_method': 'mean', 'new_procedure': False}
@@ -171,14 +167,10 @@ class TestFittingSequence(object):
         fitting_list.append(['fix_not_computed', {'free_bands': [True]}])
         n_sersic_overwrite = 4
         kwargs_update = {'lens_light_add_fixed': [[0, ['n_sersic'], [n_sersic_overwrite]]],
-                         'lens_light_remove_fixed': [[0, ['center_x']]], 
-                         'change_source_lower_limit': [[0, ['n_sersic'], [0.1]]], 
+                         'lens_light_remove_fixed': [[0, ['center_x']]],
+                         'change_source_lower_limit': [[0, ['n_sersic'], [0.1]]],
                          'change_source_upper_limit': [[0, ['n_sersic'], [10]]]}
         fitting_list.append(['update_settings', kwargs_update])
-
-        #kwargs_model = {}, kwargs_constraints = {}, kwargs_likelihood = {}, lens_add_fixed = [],
-        #source_add_fixed = [], lens_light_add_fixed = [], ps_add_fixed = [], cosmo_add_fixed = [], lens_remove_fixed = [],
-        #source_remove_fixed = [], lens_light_remove_fixed = [], ps_remove_fixed = [], cosmo_remove_fixed = []
 
         chain_list = fittingSequence.fit_sequence(fitting_list)
         lens_fixed, source_fixed, lens_light_fixed, ps_fixed, special_fixed, extinction_fixed = fittingSequence._updateManager.fixed_kwargs
@@ -205,18 +197,102 @@ class TestFittingSequence(object):
         assert kwargs_set['kwargs_source'][0]['n_sersic'] == 2.993
         assert kwargs_set['kwargs_ps'][0]['ra_source'] == 0.007
 
+    def test_zeus(self):
+        np.random.seed(42)
+        # we make a very basic lens+source model to feed to check zeus can be run through fitting sequence
+        # we don't use the kwargs defined in setup() as those are modified during the tests; using unique kwargs here is safer
+
+        # data specifics
+        sigma_bkg = 0.05  # background noise per pixel
+        exp_time = 100  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)
+        numPix = 10  # cutout pixel size
+        deltaPix = 0.05  # pixel size in arcsec (area per pixel = deltaPix**2)
+        fwhm = 0.5  # full width half max of PSF
+
+        # PSF specification
+
+        kwargs_data = sim_util.data_configure_simple(numPix, deltaPix, exp_time, sigma_bkg)
+        data_class = ImageData(**kwargs_data)
+        kwargs_psf_gaussian = {'psf_type': 'GAUSSIAN', 'fwhm': fwhm, 'pixel_size': deltaPix, 'truncation': 3}
+        psf_gaussian = PSF(**kwargs_psf_gaussian)
+
+        # make a lens
+        lens_model_list = ['EPL']
+        kwargs_epl = {'theta_E': 0.6, 'gamma': 2.6, 'center_x': 0.0, 'center_y': 0.0, 'e1': 0.1, 'e2': 0.1}
+        kwargs_lens = [kwargs_epl]
+        lens_model_class = LensModel(lens_model_list=lens_model_list)
+
+        # make a source
+        source_model_list = ['SERSIC_ELLIPSE']
+        kwargs_sersic_ellipse = {'amp': 1., 'R_sersic': 0.6, 'n_sersic': 3, 'center_x': 0.0, 'center_y': 0.0,
+                                 'e1': 0.1, 'e2': 0.1}
+        kwargs_source = [kwargs_sersic_ellipse]
+        source_model_class = LightModel(light_model_list=source_model_list)
+
+        kwargs_numerics = {'supersampling_factor': 1, 'supersampling_convolution': False}
+
+        imageModel = ImageModel(data_class, psf_gaussian, lens_model_class, source_model_class, kwargs_numerics=kwargs_numerics)
+        image_sim = sim_util.simulate_simple(imageModel, kwargs_lens, kwargs_source)
+
+        data_class.update_data(image_sim)
+
+        kwargs_data['image_data'] = image_sim
+
+        kwargs_model = {'lens_model_list': lens_model_list,
+                             'source_light_model_list': source_model_list}
+
+        lens_fixed = [{}]
+        lens_sigma = [{'theta_E': 0.1, 'gamma': 0.1, 'e1': 0.1, 'e2': 0.1, 'center_x': 0.1, 'center_y': 0.1}]
+        lens_lower = [{'theta_E': 0., 'gamma': 1.5, 'center_x': -2, 'center_y': -2, 'e1': -0.4, 'e2': -0.4}]
+        lens_upper = [{'theta_E': 10., 'gamma': 2.5, 'center_x': 2, 'center_y': 2, 'e1': 0.4, 'e2': 0.4}]
+
+        source_fixed = [{}]
+        source_sigma = [{'R_sersic': 0.05, 'n_sersic': 0.5, 'center_x': 0.1, 'center_y': 0.1, 'e1': 0.1, 'e2': 0.1}]
+        source_lower = [{'R_sersic': 0.01, 'n_sersic': 0.5, 'center_x': -2, 'center_y': -2, 'e1': -0.4, 'e2': -0.4}]
+        source_upper = [{'R_sersic': 10, 'n_sersic': 5.5, 'center_x': 2, 'center_y': 2, 'e1': 0.4, 'e2': 0.4}]
+
+        lens_param = [kwargs_lens, lens_sigma, lens_fixed, lens_lower, lens_upper]
+        source_param = [kwargs_source, source_sigma, source_fixed, source_lower, source_upper]
+
+        kwargs_params = {'lens_model': lens_param,
+                         'source_model': source_param}
+
+        kwargs_constraints = {}
+
+        multi_band_list = [[kwargs_data, kwargs_psf_gaussian, kwargs_numerics]]
+
+        kwargs_data_joint = {'multi_band_list': multi_band_list,
+                             'multi_band_type': 'multi-linear'}
+
+        kwargs_likelihood = {'source_marg': False}
+
+        fittingSequence = FittingSequence(kwargs_data_joint, kwargs_model,
+                                          kwargs_constraints, kwargs_likelihood,
+                                          kwargs_params)
+
+        fitting_list = []
+        kwargs_zeus = {'sampler_type': 'ZEUS', 'n_burn': 2, 'n_run': 2, 'walkerRatio': 4}
+
+        fitting_list.append(['MCMC', kwargs_zeus])
+
+        chain_list = fittingSequence.fit_sequence(fitting_list)
+
+    def test_multinest(self):
         # Nested sampler tests
         # further decrease the parameter space for nested samplers to run faster
-        fitting_list2 = []
-        kwargs_update2 = {'ps_add_fixed': [[0, ['ra_source', 'dec_source'], [0, 0]]],
+
+        fittingSequence = FittingSequence(self.kwargs_data_joint, self.kwargs_model, self.kwargs_constraints,
+                                          self.kwargs_likelihood, self.kwargs_params)
+        fitting_list = []
+        kwargs_update = {'ps_add_fixed': [[0, ['ra_source', 'dec_source'], [0, 0]]],
                           'lens_light_add_fixed': [[0, ['n_sersic', 'R_sersic', 'center_x', 'center_y'], [4, .1, 0, 0]]],
                           'source_add_fixed': [[0, ['R_sersic', 'e1', 'e2', 'center_x', 'center_y'], [.6, .1, .1, 0, 0]]],
                           'lens_add_fixed': [[0, ['gamma', 'theta_E', 'e1', 'e2', 'center_x', 'center_y'], [1.8, 1., .1, .1, 0, 0]],
                                              [1, ['gamma1', 'gamma2'], [0.01, 0.01]]],
-                          'change_source_lower_limit': [[0, ['n_sersic'], [2.9]]], 
+                          'change_source_lower_limit': [[0, ['n_sersic'], [2.9]]],
                           'change_source_upper_limit': [[0, ['n_sersic'], [3.1]]]
         }
-        fitting_list2.append(['update_settings', kwargs_update2])
+        fitting_list.append(['update_settings', kwargs_update])
         kwargs_multinest = {
             'sampler_type': 'MULTINEST',
             'kwargs_run': {
@@ -229,17 +305,64 @@ class TestFittingSequence(object):
             },
             'remove_output_dir': True,
         }
-        fitting_list2.append(['nested_sampling', kwargs_multinest])
+        fitting_list.append(['nested_sampling', kwargs_multinest])
+
+        chain_list2 = fittingSequence.fit_sequence(fitting_list)
+        kwargs_fixed = fittingSequence._updateManager.fixed_kwargs
+        npt.assert_almost_equal(kwargs_fixed[0][1]['gamma1'], 0.01, decimal=2)
+        assert fittingSequence._updateManager._lower_kwargs[1][0]['n_sersic'] == 2.9
+        assert fittingSequence._updateManager._upper_kwargs[1][0]['n_sersic'] == 3.1
+
+        kwargs_test = {'kwargs_lens': 1}
+        fittingSequence.update_state(kwargs_test)
+        kwargs_out = fittingSequence.best_fit(bijective=True)
+        assert kwargs_out['kwargs_lens'] == 1
+
+    def test_dynesty(self):
+        np.random.seed(42)
+        kwargs_params = copy.deepcopy(self.kwargs_params)
+        kwargs_params['lens_model'][0][0]['theta_E'] += 0.2
+        kwargs_params['lens_model'][0][0]['gamma'] += 0.1
+        fittingSequence = FittingSequence(self.kwargs_data_joint, self.kwargs_model, self.kwargs_constraints,
+                                          self.kwargs_likelihood, kwargs_params)
+
+        fitting_list = []
         kwargs_dynesty = {
             'sampler_type': 'DYNESTY',
             'kwargs_run': {
                 'dlogz_init': 0.01,
-                'nlive_init': 3,
-                'nlive_batch': 3,
+                'nlive_init': 6,
+                'nlive_batch': 6,
                 'maxbatch': 1,
             },
         }
-        fitting_list2.append(['nested_sampling', kwargs_dynesty])
+
+        fitting_list.append(['nested_sampling', kwargs_dynesty])
+        chain_list = fittingSequence.fit_sequence(fitting_list)
+
+    def test_nautilus(self):
+        np.random.seed(42)
+        kwargs_params = copy.deepcopy(self.kwargs_params)
+        fittingSequence = FittingSequence(self.kwargs_data_joint, self.kwargs_model, self.kwargs_constraints,
+                                          self.kwargs_likelihood, kwargs_params)
+
+        fitting_list = []
+        kwargs_nautilus = {
+            'prior_type': 'uniform',
+            'thread_count': 1,
+            'verbose': True,
+            'one_step': True,
+            'n_live': 2,
+            'random_state': 42
+        }
+
+        fitting_list.append(['Nautilus', kwargs_nautilus])
+        chain_list = fittingSequence.fit_sequence(fitting_list)
+
+    def test_dypolychord(self):
+        fittingSequence = FittingSequence(self.kwargs_data_joint, self.kwargs_model, self.kwargs_constraints,
+                                          self.kwargs_likelihood, self.kwargs_params)
+        fitting_list = []
         kwargs_dypolychord = {
             'sampler_type': 'DYPOLYCHORD',
             'kwargs_run': {
@@ -256,18 +379,8 @@ class TestFittingSequence(object):
             'dypolychord_dynamic_goal': 0.8, # 1 for posterior-only, 0 for evidence-only
             'remove_output_dir': True,
         }
-        fitting_list2.append(['nested_sampling', kwargs_dypolychord])
-
-        chain_list2 = fittingSequence.fit_sequence(fitting_list2)
-        kwargs_fixed = fittingSequence._updateManager.fixed_kwargs
-        npt.assert_almost_equal(kwargs_fixed[0][1]['gamma1'], 0.01, decimal=2)
-        assert fittingSequence._updateManager._lower_kwargs[1][0]['n_sersic'] == 2.9
-        assert fittingSequence._updateManager._upper_kwargs[1][0]['n_sersic'] == 3.1
-
-        kwargs_test = {'kwargs_lens': 1}
-        fittingSequence.update_state(kwargs_test)
-        kwargs_out = fittingSequence.best_fit(bijective=True)
-        assert kwargs_out['kwargs_lens'] == 1
+        fitting_list.append(['nested_sampling', kwargs_dypolychord])
+        chain_list = fittingSequence.fit_sequence(fitting_list)
 
     def test_minimizer(self):
         n_p = 2
@@ -280,7 +393,7 @@ class TestFittingSequence(object):
         fitting_list.append(['SIMPLEX', kwargs_simplex])
         kwargs_pso = {'sigma_scale': 1, 'n_particles': n_p, 'n_iterations': n_i}
         fitting_list.append(['PSO', kwargs_pso])
-        kwargs_mcmc = {'sigma_scale': 0.1, 'n_burn': 1, 'n_run': 1, 'walkerRatio': 2, 'sampler_type': 'EMCEE'}
+        kwargs_mcmc = {'sigma_scale': 1, 'n_burn': 1, 'n_run': 1, 'n_walkers': 10, 'sampler_type': 'EMCEE'}
         fitting_list.append(['MCMC', kwargs_mcmc])
         kwargs_mcmc['re_use_samples'] = True
         kwargs_mcmc['init_samples'] = np.array([[np.random.normal(1, 0.001)] for i in range(100)])
@@ -307,6 +420,8 @@ class TestFittingSequence(object):
         chain_list = fittingSequence.fit_sequence(fitting_list)
         kwargs_result = fittingSequence.best_fit(bijective=False)
         npt.assert_almost_equal(kwargs_result['kwargs_lens'][0]['theta_E'], 1, decimal=2)
+
+
 
 
 if __name__ == '__main__':

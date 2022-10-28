@@ -24,10 +24,12 @@ class PSF(object):
         :param kernel_point_source: 2d numpy array, odd length, centered PSF of a point source
          (if not normalized, will be normalized)
         :param psf_error_map: uncertainty in the PSF model per pixel (size of data, not super-sampled). 2d numpy array.
-        Size can be larger or smaller than the pixel-sized PSF model and if so, will be matched.
-        This error will be added to the pixel error around the position of point sources as follows:
-        sigma^2_i += 'psf_error_map'_j * (point_source_flux_i)**2
-        :param point_source_supersampling_factor: int, supersampling factor of kernel_point_source
+         Size can be larger or smaller than the pixel-sized PSF model and if so, will be matched.
+         This error will be added to the pixel error around the position of point sources as follows:
+         sigma^2_i += 'psf_error_map'_j * (point_source_flux_i)**2
+        :param point_source_supersampling_factor: int, supersampling factor of kernel_point_source.
+         This is the input PSF to this class and does not need to be the choice in the modeling
+         (thought preferred if modeling choses supersampling)
         :param kernel_point_source_init: memory of an initial point source kernel that gets passed through the psf iteration
         """
         self.psf_type = psf_type
@@ -49,6 +51,9 @@ class PSF(object):
                 self._kernel_point_source_supersampled = kernel_point_source
                 self._point_source_supersampling_factor = point_source_supersampling_factor
                 kernel_point_source = kernel_util.degrade_kernel(self._kernel_point_source_supersampled, self._point_source_supersampling_factor)
+            # making sure the PSF is positive semi-definite and normalized
+            if np.min(kernel_point_source) < 0:
+                raise ValueError('Input PSF model has at least one negative element, which is unphysical.')
             self._kernel_point_source = kernel_point_source / np.sum(kernel_point_source)
 
         elif self.psf_type == 'NONE':

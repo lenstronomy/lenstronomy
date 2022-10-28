@@ -14,3 +14,4 @@ conventions:
 
   sersic_major_axis: True  # if True, defines the half-light radius of the Sersic light profile along the semi-major axis (which is the Galfit convention)
                             # if False, uses the product average of semi-major and semi-minor axis as the convention (default definition for all light profiles in lenstronomy other than the Sersic profile)
+

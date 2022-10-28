@@ -218,7 +218,7 @@ History
 * short-hand class imports
 
 
-1.8.0 (2020-03-21)
+1.8.0 (2021-03-21)
 ++++++++++++++++++
 * EPL numba version
 * numba configuration variables can be set globally with configuration file
@@ -231,13 +231,13 @@ History
 * multi-patch illustration class and plotting routines
 * updated PSF iteration procedure with more settings
 
-1.8.1 (2020-04-19)
+1.8.1 (2021-04-19)
 ++++++++++++++++++
 * illustration plots for curved arcs updated
 * documentation of elliptical lens models updated
 
 
-1.8.2 (2020-06-08)
+1.8.2 (2021-06-08)
 ++++++++++++++++++
 * JOSS paper added
 * improved testing documentation and tox compatibility
@@ -245,7 +245,7 @@ History
 * ULDM lens model implemented
 
 
-1.9.0 (2020-07-15)
+1.9.0 (2021-07-15)
 ++++++++++++++++++
 * re-defined half light radius in Sersic profile
 * re-named parameter in 'CONVERGENCE' profile
@@ -253,13 +253,13 @@ History
 * configuration import design changed
 
 
-1.9.1 (2020-08-27)
+1.9.1 (2021-08-27)
 ++++++++++++++++++
 * re-defined amplitude normalization in NIE and CHAMELEON light profiles
 * bug fix in sky brightness errors (SimulationAPI)
 
 
-1.9.2 (2020-12-12)
+1.9.2 (2021-12-12)
 ++++++++++++++++++
 * support for astropy v5
 * new PSF iteration procedure implemented
@@ -267,6 +267,46 @@ History
 * magnification perturbations in point source amplitudes
 * analytic point source solver for SIE+shear
 
-1.9.3 (2020-12-22)
+
+1.9.3 (2021-12-22)
 ++++++++++++++++++
 * changed syntax to be compatible with python3 version <3.9
+
+
+1.10.0 (2022-03-23)
++++++++++++++++++++
+* schwimmbad dependency to pip version
+* ellipticity definition in lensing potential changed
+* Implemented Cored steep ellipsoid approximation of NFW and Hernquist profile
+
+
+1.10.1 (2022-03-26)
++++++++++++++++++++
+* install requirements changed
+
+
+1.10.2 (2022-03-27)
++++++++++++++++++++
+* requirement from sklearn changed to scikit-learn
+
+1.10.3 (2022-04-18)
++++++++++++++++++++
+* class_creator update
+* conda-forge linked and installation updated
+
+1.10.4 (2022-07-25)
++++++++++++++++++++
+* Zeus sampler implemented
+* Nautilus sampler implemented
+* Roman telescope configuration added
+* double power-law mass profile
+* generalized NFW profile
+* enabled to turn off linear solver in fitting
+
+1.11.0 (2022-09-26)
++++++++++++++++++++
+* transitioning to project repository
+* logo update
+* line of sight lensing module
+* documentation improvements
+* lens equation solver numerics improved

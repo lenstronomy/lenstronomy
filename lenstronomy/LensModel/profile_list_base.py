@@ -6,17 +6,18 @@ __all__ = ['ProfileListBase']
 _SUPPORTED_MODELS = ['SHIFT', 'NIE_POTENTIAL', 'CONST_MAG', 'SHEAR', 'SHEAR_GAMMA_PSI', 'SHEAR_REDUCED', 'CONVERGENCE', 'FLEXION',
                      'FLEXIONFG', 'POINT_MASS', 'SIS', 'SIS_TRUNCATED', 'SIE', 'SPP', 'NIE', 'NIE_SIMPLE', 'CHAMELEON',
                      'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'SPEP', 'PEMD', 'SPEMD', 'EPL', 'EPL_NUMBA', 'SPL_CORE',
-                     'NFW', 'NFW_ELLIPSE', 'NFW_ELLIPSE_GAUSS_DEC', 'TNFW', 'TNFW_ELLIPSE',
+                     'NFW', 'NFW_ELLIPSE', 'NFW_ELLIPSE_GAUSS_DEC', 'NFW_ELLIPSE_CSE', 'TNFW', 'TNFW_ELLIPSE',
                      'CNFW', 'CNFW_ELLIPSE', 'CTNFW_GAUSS_DEC', 'NFW_MC', 'SERSIC',
                      'SERSIC_ELLIPSE_POTENTIAL', 'SERSIC_ELLIPSE_KAPPA', 'SERSIC_ELLIPSE_GAUSS_DEC', 'PJAFFE',
-                     'PJAFFE_ELLIPSE', 'HERNQUIST', 'HERNQUIST_ELLIPSE', 'GAUSSIAN', 'GAUSSIAN_KAPPA',
+                     'PJAFFE_ELLIPSE', 'HERNQUIST', 'HERNQUIST_ELLIPSE', 'HERNQUIST_ELLIPSE_CSE', 'GAUSSIAN', 'GAUSSIAN_KAPPA',
                      'GAUSSIAN_ELLIPSE_KAPPA', 'GAUSSIAN_ELLIPSE_POTENTIAL', 'MULTI_GAUSSIAN_KAPPA',
                      'MULTI_GAUSSIAN_KAPPA_ELLIPSE', 'INTERPOL', 'INTERPOL_SCALED', 'SHAPELETS_POLAR', 'SHAPELETS_CART',
                      'DIPOLE', 'CURVED_ARC_CONST', 'CURVED_ARC_SPP', 'CURVED_ARC_SIS_MST', 'CURVED_ARC_SPT',
                      'CURVED_ARC_TAN_DIFF', 'ARC_PERT', 'coreBURKERT',
                      'CORED_DENSITY', 'CORED_DENSITY_2', 'CORED_DENSITY_MST', 'CORED_DENSITY_2_MST', 'CORED_DENSITY_EXP',
-                     'CORED_DENSITY_EXP_MST', 'NumericalAlpha', 'MULTIPOLE', 'HESSIAN', 'ElliSLICE', 'ULDM',
-                     'CORED_DENSITY_ULDM_MST']
+                     'CORED_DENSITY_EXP_MST', 'NumericalAlpha', 'MULTIPOLE', 'HESSIAN', 'ElliSLICE', 'ULDM','CORED_DENSITY_ULDM_MST',
+                     'LOS', 'LOS_MINIMAL',
+                     'GNFW','CSE']
 
 
 class ProfileListBase(object):
@@ -30,11 +31,10 @@ class ProfileListBase(object):
 
         :param lens_model_list: list of strings with lens model names
         :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model
-        deflection angles as a lens model. See the documentation in Profiles.numerical_deflections
+         deflection angles as a lens model. See the documentation in Profiles.numerical_deflections
         :param kwargs_interp: interpolation keyword arguments specifying the numerics.
          See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
         """
-
         self.func_list = self._load_model_instances(lens_model_list, custom_class=numerical_alpha_class,
                                                     lens_redshift_list=lens_redshift_list,
                                                     z_source_convention=z_source_convention,
@@ -165,6 +165,9 @@ class ProfileListBase(object):
         elif lens_type == 'NFW_ELLIPSE_GAUSS_DEC':
             from lenstronomy.LensModel.Profiles.gauss_decomposition import NFWEllipseGaussDec
             return NFWEllipseGaussDec()
+        elif lens_type == 'NFW_ELLIPSE_CSE':
+            from lenstronomy.LensModel.Profiles.nfw_ellipse_cse import NFW_ELLIPSE_CSE
+            return NFW_ELLIPSE_CSE()
         elif lens_type == 'TNFW':
             from lenstronomy.LensModel.Profiles.tnfw import TNFW
             return TNFW()
@@ -207,6 +210,9 @@ class ProfileListBase(object):
         elif lens_type == 'HERNQUIST_ELLIPSE':
             from lenstronomy.LensModel.Profiles.hernquist_ellipse import Hernquist_Ellipse
             return Hernquist_Ellipse()
+        elif lens_type =='HERNQUIST_ELLIPSE_CSE':
+            from lenstronomy.LensModel.Profiles.hernquist_ellipse_cse import HernquistEllipseCSE
+            return HernquistEllipseCSE()
         elif lens_type == 'GAUSSIAN':
             from lenstronomy.LensModel.Profiles.gaussian_potential import Gaussian
             return Gaussian()
@@ -288,15 +294,27 @@ class ProfileListBase(object):
         elif lens_type == 'MULTIPOLE':
             from lenstronomy.LensModel.Profiles.multipole import Multipole
             return Multipole()
+        elif lens_type == 'CSE':
+            from lenstronomy.LensModel.Profiles.cored_steep_ellipsoid import CSE
+            return CSE()
         elif lens_type == 'ElliSLICE':
             from lenstronomy.LensModel.Profiles.elliptical_density_slice import ElliSLICE
             return ElliSLICE()
         elif lens_type == 'ULDM':
             from lenstronomy.LensModel.Profiles.uldm import Uldm
             return Uldm()
+        elif lens_type == 'GNFW':
+            from lenstronomy.LensModel.Profiles.general_nfw import GNFW
+            return GNFW()
         elif lens_type == 'CORED_DENSITY_ULDM_MST':
             from lenstronomy.LensModel.Profiles.cored_density_mst import CoredDensityMST
             return CoredDensityMST(profile_type='CORED_DENSITY_ULDM')
+        elif lens_type == 'LOS':
+            from lenstronomy.LensModel.LineOfSight.LOSModels.los import LOS
+            return LOS()
+        elif lens_type == 'LOS_MINIMAL':
+            from lenstronomy.LensModel.LineOfSight.LOSModels.los_minimal import LOSMinimal
+            return LOSMinimal()
         else:
             raise ValueError('%s is not a valid lens model. Supported are: %s.' % (lens_type, _SUPPORTED_MODELS))
 

@@ -26,7 +26,7 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
     :param ax: matplotlib axis instance
     :param lensModel: LensModel() class instance
     :param kwargs_lens: lens model keyword argument list
-    :param numPix: total nnumber of pixels (for convergence map)
+    :param numPix: total number of pixels (for convergence map)
     :param deltaPix: width of pixel (total frame size is deltaPix x numPix)
     :param sourcePos_x: float, x-position of point source (image positions computed by the lens equation)
     :param sourcePos_y: float, y-position of point source (image positions computed by the lens equation)

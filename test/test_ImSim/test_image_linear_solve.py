@@ -1,9 +1,5 @@
 __author__ = 'sibirrer'
 
-import numpy.testing as npt
-import numpy as np
-import pytest
-
 from lenstronomy.ImSim.image_linear_solve import ImageLinearFit
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LensModel.lens_model import LensModel
@@ -56,3 +52,9 @@ class TestImageLinearFit(object):
 
         self.imageModel = ImageLinearFit(data_class, psf_class, lens_model_class, source_model_class,
                                          lens_light_model_class, point_source_class, kwargs_numerics=kwargs_numerics)
+
+    def test_linear_param_from_kwargs(self):
+        param = self.imageModel.linear_param_from_kwargs(self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps)
+        assert param[0] == self.kwargs_source[0]['amp']
+        assert param[1] == self.kwargs_lens_light[0]['amp']
+        assert param[2] == self.kwargs_ps[0]['source_amp']

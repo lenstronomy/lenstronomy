@@ -1,5 +1,6 @@
 __author__ = 'sibirrer'
 from lenstronomy.LensModel.single_plane import SinglePlane
+from lenstronomy.LensModel.LineOfSight.single_plane_los import SinglePlaneLOS
 from lenstronomy.LensModel.MultiPlane.multi_plane import MultiPlane
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 from lenstronomy.Util import constants as const
@@ -14,7 +15,8 @@ class LensModel(object):
 
     def __init__(self, lens_model_list, z_lens=None, z_source=None, lens_redshift_list=None, cosmo=None,
                  multi_plane=False, numerical_alpha_class=None, observed_convention_index=None,
-                 z_source_convention=None, cosmo_interp=False, z_interp_stop=None, num_z_interp=100,
+                 z_source_convention=None, cosmo_interp=False,
+                 z_interp_stop=None, num_z_interp=100,
                  kwargs_interp=None):
         """
 
@@ -53,11 +55,26 @@ class LensModel(object):
             from astropy.cosmology import default_cosmology
             cosmo = default_cosmology.get()
         self.cosmo = cosmo
+
+        # Are there line-of-sight corrections?
+        permitted_los_models = ['LOS', 'LOS_MINIMAL']
+        los_models = [(i, model) for (i, model) in enumerate(lens_model_list)
+                      if model in permitted_los_models]
+        if len(los_models) == 0:
+            los_effects = False
+        elif len(los_models) == 1:
+            los_effects = True
+            index_los, los_model = los_models[0]
+        else:
+            raise ValueError('You can only have one model for line-of-sight corrections.')
+
+        # Multi-plane or single-plane lensing?
         self.multi_plane = multi_plane
         if multi_plane is True:
             if z_source is None:
                 raise ValueError('z_source needs to be set for multi-plane lens modelling.')
-
+            if los_effects is True:
+                raise ValueError('LOS effects and multi-plane lensing are incompatible.')
             self.lens_model = MultiPlane(z_source, lens_model_list, lens_redshift_list, cosmo=cosmo,
                                          numerical_alpha_class=numerical_alpha_class,
                                          observed_convention_index=observed_convention_index,
@@ -65,9 +82,20 @@ class LensModel(object):
                                          z_interp_stop=z_interp_stop, num_z_interp=num_z_interp,
                                          kwargs_interp=kwargs_interp)
         else:
-            self.lens_model = SinglePlane(lens_model_list, numerical_alpha_class=numerical_alpha_class,
-                                          lens_redshift_list=lens_redshift_list,
-                                          z_source_convention=z_source_convention, kwargs_interp=kwargs_interp)
+            if los_effects is True:
+                self.lens_model = SinglePlaneLOS(lens_model_list,
+                    index_los=index_los,
+                    numerical_alpha_class=numerical_alpha_class,
+                    lens_redshift_list=lens_redshift_list,
+                    z_source_convention=z_source_convention,
+                    kwargs_interp=kwargs_interp)
+            else:
+                self.lens_model = SinglePlane(lens_model_list,
+                    numerical_alpha_class=numerical_alpha_class,
+                    lens_redshift_list=lens_redshift_list,
+                    z_source_convention=z_source_convention,
+                    kwargs_interp=kwargs_interp)
+
         if z_lens is not None and z_source is not None:
             self._lensCosmo = LensCosmo(z_lens, z_source, cosmo=cosmo)
 

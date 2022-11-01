@@ -23,17 +23,20 @@ Contributors (alphabetic)
 * Xuheng Ding `dartoon <https://github.com/dartoon/>`_
 * Sydney Erickson `smericks <https://github.com/smericks/>`_
 * Andreas Filipp `andreasfilipp <https://github.com/andreasfilipp/>`_
+* Pierre Fleury `pierrefleury <https://github.com/pierrefleury/>`_
 * Kevin Fusshoeller
 * Aymeric Galan `aymgal <https://github.com/aymgal/>`_
 * Matthew R. Gomer `mattgomer <https://github.com/mattgomer>`_
 * Natalie B. Hogg `nataliehogg <https://github.com/nataliehogg>`_
 * Tyler Hughes
+* Daniel Johnson `DanJohnson98 <https://github.com/DanJohnson98>`_
 * Felix A. Kuhn
 * Felix Mayor
 * Martin Millon `martin-millon <https://github.com/martin-millon/>`_
 * Robert Morgan `rmorgan10 <https://github.com/rmorgan10/>`_
 * Anna Nierenberg `amn3142 <https://github.com/amn3142/>`_
 * Brian Nord `bnord <https://github.com/bnord/>`_
+* Maverick S. H. Oh `Maverick-Oh <https://github.com/Maverick-Oh>`_
 * Giulia Pagano
 * Ji Won Park `jiwoncpark <https://github.com/jiwoncpark/>`_
 * Jackson O'Donnell `jhod0 <https://github.com/jhod0/>`_
@@ -48,6 +51,7 @@ Contributors (alphabetic)
 * Ewoud Wempe `ewoudwempe <https://github.com/ewoudwempe/>`_
 * Lilan Yang `ylilan <https://github.com/ylilan/>`_
 * Zhiyuan Ma `Jerry-Ma <https://github.com/Jerry-Ma/>`_
+
 
 
 Past development lead

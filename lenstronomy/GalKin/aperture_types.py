@@ -183,8 +183,8 @@ def shell_select(ra, dec, r_in, r_out, center_ra=0, center_dec=0):
     """
     x = ra - center_ra
     y = dec - center_dec
-    R = np.sqrt(x ** 2 + y ** 2)
-    if (R >= r_in) and (R < r_out):
+    r = np.sqrt(x ** 2 + y ** 2)
+    if (r >= r_in) and (r < r_out):
         return True
     else:
         return False
@@ -238,8 +238,8 @@ def shell_ifu_select(ra, dec, r_bin, center_ra=0, center_dec=0):
     """
     x = ra - center_ra
     y = dec - center_dec
-    R = np.sqrt(x ** 2 + y ** 2)
+    r = np.sqrt(x ** 2 + y ** 2)
     for i in range(0, len(r_bin) - 1):
-        if (R >= r_bin[i]) and (R < r_bin[i+1]):
+        if (r >= r_bin[i]) and (r < r_bin[i+1]):
             return True, i
     return False, None

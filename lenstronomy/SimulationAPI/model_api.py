@@ -48,10 +48,12 @@ class ModelAPI(object):
             point_source_model_list = []
         if cosmo is None:
             cosmo = default_cosmology.get()
+
         if lens_redshift_list is not None or source_redshift_list is not None:
             multi_plane = True
         else:
             multi_plane = False
+
         if z_source_convention is None:
             z_source_convention = z_source
 
@@ -107,7 +109,7 @@ class ModelAPI(object):
 
     def physical2lensing_conversion(self, kwargs_mass):
         """
-        
+
         :param kwargs_mass: list of keyword arguments of all the lens models. Einstein radius 'theta_E' are replaced by
          'sigma_v', velocity dispersion in km/s, 'alpha_Rs' and 'Rs' of NFW profiles are replaced by 'M200' and
          'concentration'

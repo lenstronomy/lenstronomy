@@ -304,7 +304,7 @@ def test_averaging_even_kernel():
     kernel_super = Util.array2image(flux)
 
     kernel_pixel = kernel_util.averaging_even_kernel(kernel_super, subgrid_res)
-    npt.assert_almost_equal(np.sum(kernel_pixel), 1, decimal=5)
+    npt.assert_almost_equal(np.sum(kernel_pixel) * subgrid_res ** 2, 1, decimal=5)
     assert len(kernel_pixel) == 5
 
     x_grid, y_gird = Util.make_grid(17, 1., 1)
@@ -314,7 +314,7 @@ def test_averaging_even_kernel():
     kernel_super = Util.array2image(flux)
 
     kernel_pixel = kernel_util.averaging_even_kernel(kernel_super, subgrid_res)
-    npt.assert_almost_equal(np.sum(kernel_pixel), amp, decimal=5)
+    npt.assert_almost_equal(np.sum(kernel_pixel) * subgrid_res ** 2, amp, decimal=5)
     assert len(kernel_pixel) == 5
 
 

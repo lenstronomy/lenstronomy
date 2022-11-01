@@ -22,7 +22,9 @@ class SinglePlane(ProfileListBase):
         :param k: only evaluate the k-th lens model
         :return: source plane positions corresponding to (x, y) in the image plane
         """
+
         dx, dy = self.alpha(x, y, kwargs, k=k)
+
         return x - dx, y - dy
 
     def fermat_potential(self, x_image, y_image, kwargs_lens, x_source=None, y_source=None, k=None):
@@ -78,8 +80,10 @@ class SinglePlane(ProfileListBase):
         :param k: only evaluate the k-th lens model
         :return: deflection angles in units of arcsec
         """
+
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
+
         if isinstance(k, int):
             return self.func_list[k].derivatives(x, y, **kwargs[k])
         bool_list = self._bool_list(k)
@@ -89,6 +93,7 @@ class SinglePlane(ProfileListBase):
                 f_x_i, f_y_i = func.derivatives(x, y, **kwargs[i])
                 f_x += f_x_i
                 f_y += f_y_i
+
         return f_x, f_y
 
     def hessian(self, x, y, kwargs, k=None):

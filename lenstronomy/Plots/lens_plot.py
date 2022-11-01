@@ -26,7 +26,7 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
     :param ax: matplotlib axis instance
     :param lensModel: LensModel() class instance
     :param kwargs_lens: lens model keyword argument list
-    :param numPix: total nnumber of pixels (for convergence map)
+    :param numPix: total number of pixels (for convergence map)
     :param deltaPix: width of pixel (total frame size is deltaPix x numPix)
     :param sourcePos_x: float, x-position of point source (image positions computed by the lens equation)
     :param sourcePos_y: float, y-position of point source (image positions computed by the lens equation)
@@ -151,7 +151,7 @@ def caustics_plot(ax, pixel_grid, lens_model, kwargs_lens, fast_caustic=True, co
     return ax
 
 
-def point_source_plot(ax, pixel_grid, lens_model, kwargs_lens, source_x, source_y, **kwargs):
+def point_source_plot(ax, pixel_grid, lens_model, kwargs_lens, source_x, source_y, name_list=None, **kwargs):
     """
     plots and illustrates images of a point source
     The plotting routine orders the image labels according to the arrival time and illustrates a diamond shape of the
@@ -163,6 +163,8 @@ def point_source_plot(ax, pixel_grid, lens_model, kwargs_lens, source_x, source_
     :param kwargs_lens: lens model keyword argument list
     :param source_x: x-position of source
     :param source_y: y-position of source
+    :param name_list: list of names of images
+    :type name_list: list of strings, longer or equal the number of point sources
     :param kwargs: additional plotting keyword arguments
     :return: matplotlib axis instance with figure
     """
@@ -184,12 +186,13 @@ def point_source_plot(ax, pixel_grid, lens_model, kwargs_lens, source_x, source_
     mag_images = lens_model.magnification(theta_x, theta_y, kwargs_lens)
 
     x_image, y_image = pixel_grid.map_coord2pix(theta_x, theta_y)
-    abc_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K']
+    if name_list is None:
+        name_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K']
     for i in range(len(x_image)):
         x_ = (x_image[i] + 0.5) * delta_pix_x + origin[0]
         y_ = (y_image[i] + 0.5) * delta_pix + origin[1]
         ax.plot(x_, y_, 'dk', markersize=4 * (1 + np.log(np.abs(mag_images[i]))), alpha=0.5)
-        ax.text(x_, y_, abc_list[i], fontsize=20, color='k')
+        ax.text(x_, y_, name_list[i], fontsize=20, color='k')
     x_source, y_source = pixel_grid.map_coord2pix(source_x, source_y)
     ax.plot((x_source + 0.5) * delta_pix_x + origin[0], (y_source + 0.5) * delta_pix + origin[1], '*k', markersize=10)
     return ax
@@ -198,7 +201,7 @@ def point_source_plot(ax, pixel_grid, lens_model, kwargs_lens, source_x, source_
 @export
 def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourcePos_x=0, sourcePos_y=0,
                          with_caustics=False, point_source=False, n_levels=10, kwargs_contours=None,
-                         image_color_list=None, letter_font_size=20):
+                         image_color_list=None, letter_font_size=20, name_list=None):
     """
 
     :param ax: matplotlib axis instance
@@ -209,6 +212,8 @@ def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, 
     :param sourcePos_x:
     :param sourcePos_y:
     :param with_caustics:
+    :param name_list: list of names of images
+    :type name_list: list of strings, longer or equal the number of point sources
     :return:
     """
     kwargs_data = sim_util.data_configure_simple(numPix, deltaPix)
@@ -246,7 +251,8 @@ def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, 
                         levels=np.sort(fermat_pot_images), **kwargs_contours)
         # mag_images = lensModel.magnification(theta_x, theta_y, kwargs_lens)
         x_image, y_image = _coords.map_coord2pix(theta_x, theta_y)
-        abc_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K']
+        if name_list is None:
+            name_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K']
 
         for i in range(len(x_image)):
             x_ = (x_image[i] + 0.5) * deltaPix - _frame_size/2
@@ -256,7 +262,7 @@ def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, 
             else:
                 color = image_color_list[i]
             ax.plot(x_, y_, 'x', markersize=10, alpha=1, color=color)  # markersize=8*(1 + np.log(np.abs(mag_images[i])))
-            ax.text(x_ + deltaPix, y_ + deltaPix, abc_list[i], fontsize=letter_font_size, color='k')
+            ax.text(x_ + deltaPix, y_ + deltaPix, name_list[i], fontsize=letter_font_size, color='k')
         x_source, y_source = _coords.map_coord2pix(sourcePos_x, sourcePos_y)
         ax.plot((x_source + 0.5) * deltaPix - _frame_size/2, (y_source + 0.5) * deltaPix - _frame_size/2, '*k', markersize=20)
     else:

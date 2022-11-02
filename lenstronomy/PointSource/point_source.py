@@ -324,6 +324,26 @@ class PointSource(object):
                     i += n_points
         return kwargs_ps, i
 
+    def linear_param_from_kwargs(self, kwargs_list):
+        """
+        inverse function of update_linear() returning the linear amplitude list for the keyword argument list
+
+        :param kwargs_list: model parameters including the linear amplitude parameters
+        :type kwargs_list: list of keyword arguments
+        :return: list of linear amplitude parameters
+        :rtype: list
+        """
+        param = []
+        for k, model in enumerate(self._point_source_list):
+            if self._flux_from_point_source_list[k]:
+                kwargs = kwargs_list[k]
+                if self._fixed_magnification_list[k]:
+                    param.append(kwargs['source_amp'])
+                else:
+                    for a in kwargs['point_amp']:
+                        param.append(a)
+        return param
+
     def check_image_positions(self, kwargs_ps, kwargs_lens, tolerance=0.001):
         """
         checks whether the point sources in kwargs_ps satisfy the lens equation with a tolerance

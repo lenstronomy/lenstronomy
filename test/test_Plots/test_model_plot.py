@@ -214,6 +214,20 @@ class TestOutputPlots(object):
         bool = check_solver_error(image=np.array([0, 0.1]))
         assert bool == 0
 
+    def test_no_linear_solver(self):
+        kwargs_data = sim_util.data_configure_simple(numPix=10, deltaPix=1, background_rms=1, exposure_time=1)
+        # kwargs_data['image_data'] = np.zeros((10, 10))
+        kwargs_model = {'source_light_model_list': ['GAUSSIAN']}
+        kwargs_params = {'kwargs_lens': [],
+                         'kwargs_source': [{'amp': 2, 'sigma': 1, 'center_x': 0, 'center_y': 0}],
+                         'kwargs_ps': [], 'kwargs_lens_light': []}
+        lensPlot = ModelPlot(multi_band_list=[[kwargs_data, {'psf_type': 'NONE'}, {}]],
+                             kwargs_model=kwargs_model, kwargs_params=kwargs_params, bands_compute=[True],
+                             arrow_size=0.02, cmap_string="gist_heat", linear_solver=False)
+        lensPlot.plot_main(with_caustics=True)
+        plt.close()
+        assert kwargs_params['kwargs_source'][0]['amp'] == 2
+
 
 class TestRaise(unittest.TestCase):
 
@@ -270,6 +284,18 @@ class TestRaise(unittest.TestCase):
                                       caustic_color='yellow',
                                       fsize=15, plot_scale='wrong')
             plt.close()
+        with self.assertRaises(ValueError):
+            # test whether linear_solver=False returns raise when having two bands
+            kwargs_data = sim_util.data_configure_simple(numPix=10, deltaPix=1, background_rms=1, exposure_time=1)
+            # kwargs_data['image_data'] = np.zeros((10, 10))
+            kwargs_model = {'source_light_model_list': ['GAUSSIAN']}
+            kwargs_params = {'kwargs_lens': [],
+                             'kwargs_source': [{'amp': 2, 'sigma': 1, 'center_x': 0, 'center_y': 0}],
+                             'kwargs_ps': [], 'kwargs_lens_light': []}
+            lensPlot = ModelPlot(multi_band_list=[[kwargs_data, {'psf_type': 'NONE'}, {}],
+                                                  [kwargs_data, {'psf_type': 'NONE'}, {}]],
+                                 kwargs_model=kwargs_model, kwargs_params=kwargs_params, bands_compute=[True],
+                                 arrow_size=0.02, cmap_string="gist_heat", linear_solver=False)
 
 
 if __name__ == '__main__':

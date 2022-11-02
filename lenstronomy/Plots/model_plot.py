@@ -50,10 +50,13 @@ class ModelPlot(object):
                                                        bands_compute=bands_compute, linear_solver=linear_solver,
                                                        image_likelihood_mask_list=image_likelihood_mask_list)
 
-        model, error_map, cov_param, param = self._imageModel.image_linear_solve(inv_bool=True, **kwargs_params)
+        kwargs_params_copy = copy.deepcopy(kwargs_params)
+        model, error_map, cov_param, param = self._imageModel.image_linear_solve(inv_bool=True, **kwargs_params_copy)
+
         if linear_solver is False:
             if len(multi_band_list) > 1:
                 raise ValueError('plotting the solution without the linear solver currently only works with one band.')
+
             im_sim = class_creator.create_im_sim(multi_band_list, 'single-band', kwargs_model,
                                                  bands_compute=bands_compute, linear_solver=linear_solver,
                                                  image_likelihood_mask_list=image_likelihood_mask_list)
@@ -62,7 +65,8 @@ class ModelPlot(object):
             # retrieve amplitude parameters directly from kwargs_list
             param[0] = im_sim.linear_param_from_kwargs(kwargs_params['kwargs_source'], kwargs_params['kwargs_lens_light'],
                                                        kwargs_params['kwargs_ps'])
-
+        else:
+            kwargs_params = kwargs_params_copy  # overwrite the keyword list with the linear solved 'amp' values
 
         check_solver_error(param)
         log_l = self._imageModel.likelihood_data_given_model(source_marg=source_marg, linear_prior=linear_prior,

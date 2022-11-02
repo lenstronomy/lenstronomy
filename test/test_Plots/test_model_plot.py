@@ -226,6 +226,7 @@ class TestOutputPlots(object):
                              arrow_size=0.02, cmap_string="gist_heat", linear_solver=False)
         lensPlot.plot_main(with_caustics=True)
         plt.close()
+        assert kwargs_params['kwargs_source'][0]['amp'] == 2
 
 
 class TestRaise(unittest.TestCase):

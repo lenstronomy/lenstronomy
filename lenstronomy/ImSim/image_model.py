@@ -76,7 +76,7 @@ class ImageModel(object):
         else:
             self.source_mapping = Image2SourceMapping(lensModel=lens_model_class, sourceModel=source_model_class)
             
-        self._pb = data_class.give_pb
+        self._pb = data_class.primary_beam
         if self._pb is not None:
             self._pb_1d = util.image2array(self._pb)
         else:
@@ -154,7 +154,7 @@ class ImageModel(object):
             source_light *= self._extinction.extinction(ra_grid, dec_grid, kwargs_extinction=kwargs_extinction,
                                                         kwargs_special=kwargs_special)
             
-        #multiply with primary beam before convolution
+        # multiply with primary beam before convolution
         if self._pb is not None:
             source_light *= self._pb_1d
             
@@ -216,7 +216,7 @@ class ImageModel(object):
         ra_grid, dec_grid = self.ImageNumerics.coordinates_evaluate
         lens_light = self.LensLightModel.surface_brightness(ra_grid, dec_grid, kwargs_lens_light, k=k)
         
-        #multiply with primary beam before convolution
+        # multiply with primary beam before convolution
         if self._pb is not None:
             lens_light *= self._pb_1d
             
@@ -250,6 +250,9 @@ class ImageModel(object):
         if unconvolved or self.PointSource is None:
             return point_source_image
         ra_pos, dec_pos, amp = self.PointSource.point_source_list(kwargs_ps, kwargs_lens=kwargs_lens, k=k)
+        # raise warnings when primary beam is attempted to be applied to point sources.
+        if len(ra_pos) != 0 and self._pb is not None:
+            raise Warning("Antenna primary beam does not apply to point sources in ImageModel!")
         ra_pos, dec_pos = self._displace_astrometry(ra_pos, dec_pos, kwargs_special=kwargs_special)
         point_source_image += self.ImageNumerics.point_source_rendering(ra_pos, dec_pos, amp)
         return point_source_image

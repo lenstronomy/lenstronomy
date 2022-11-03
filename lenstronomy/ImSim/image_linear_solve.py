@@ -289,7 +289,7 @@ class ImageLinearFit(ImageModel):
         for i in range(0, n_source):
             image = source_light_response[i]
             
-            #multiply with primary beam before convolution
+            # multiply with primary beam before convolution
             if self._pb is not None:
                 image *= self._pb_1d
             
@@ -301,7 +301,7 @@ class ImageLinearFit(ImageModel):
         for i in range(0, n_lens_light):
             image = lens_light_response[i]
             
-            #multiply with primary beam before convolution
+            # multiply with primary beam before convolution
             if self._pb is not None:
                 image *= self._pb_1d
                 
@@ -310,6 +310,11 @@ class ImageLinearFit(ImageModel):
             n += 1
         # response of point sources
         for i in range(0, n_points):
+            
+            # raise warnings when primary beam is attempted to be applied for point sources
+            if self._pb is not None:
+                raise Warning("Antenna primary beam does not apply to point sources!")
+            
             image = self.ImageNumerics.point_source_rendering(ra_pos[i], dec_pos[i], amp[i])
             A[n, :] = np.nan_to_num(self.image2array_masked(image), copy=False)
             n += 1

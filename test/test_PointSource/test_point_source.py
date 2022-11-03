@@ -56,6 +56,11 @@ class TestPointSource(object):
         assert n == num_basis
         assert ra_pos[0][0] == self.x_pos[0]
 
+    def test_linear_param_from_kwargs(self):
+        param = self.PointSource.linear_param_from_kwargs(self.kwargs_ps)
+        assert param[0] == self.kwargs_ps[0]['point_amp'][0]
+        assert param[1] == self.kwargs_ps[0]['point_amp'][1]
+
     def test_point_source_list(self):
         ra_list, dec_list, amp_list = self.PointSource.point_source_list(self.kwargs_ps, self.kwargs_lens)
         assert ra_list[0] == self.x_pos[0]

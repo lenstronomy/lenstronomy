@@ -30,7 +30,8 @@ class SpecialParam(object):
         :param source_grid_offset: bool, if True, samples two parameters (x, y) for the offset of the pixelated source
          plane grid coordinates.
          Warning: this is only defined for pixel-based source modelling (e.g. 'SLIT_STARLETS' light profile)
-        :param kinematic_sampling: bool, if True, samples the kinematic parameters b_ani, incli, with cosmography D_dt and Dd
+        :param kinematic_sampling: bool, if True, samples the kinematic parameters b_ani, incli, with cosmography D_dt
+         and Dd
         """
 
         self._D_dt_sampling = Ddt_sampling
@@ -69,6 +70,7 @@ class SpecialParam(object):
             if self._source_grid_offset:
                 kwargs_lower['delta_x_source_grid'] = -100
                 kwargs_lower['delta_y_source_grid'] = -100
+            #TO DO : add bounds for kinematic_sampling
         if kwargs_upper is None:
             kwargs_upper = {}
             if self._D_dt_sampling is True:
@@ -87,6 +89,7 @@ class SpecialParam(object):
             if self._source_grid_offset:
                 kwargs_upper['delta_x_source_grid'] = 100
                 kwargs_upper['delta_y_source_grid'] = 100
+            # TO DO : add bounds for kinematic_sampling
         self.lower_limit = kwargs_lower
         self.upper_limit = kwargs_upper
 

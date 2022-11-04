@@ -17,6 +17,8 @@ class KinLikelihood(object):
         :param kinematic_data_2D_class: KinData class instance
         :param lens_model_class: LensModel class instance
         :param lens_light_model_class: LightModel class instance
+        :param idx_lens: int, index of the LensModel mass profile to consider for kinematics
+        :param idx_lens_light: int, index of the lens LightModel profile to consider for kinematics
         """
         self.lens_model_class = lens_model_class
         self.lens_light_model_class = lens_light_model_class

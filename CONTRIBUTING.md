@@ -9,7 +9,7 @@ GitHub Workflow
 
 First *fork* the lenstronomy repository. A fork is your own remote copy of the repository on GitHub. To create a fork:
 
-  1. Go to the [lenstronomy GitHub Repository](https://github.com/sibirrer/lenstronomy)
+  1. Go to the [lenstronomy GitHub Repository](https://github.com/lenstronomy/lenstronomy)
   2. Click the **Fork** button (in the top-right-hand corner)
   3. Choose where to create the fork, typically your personal GitHub account
 
@@ -19,11 +19,11 @@ Next *clone* your fork. Cloning creates a local copy of the repository on your c
   git clone https://github.com/<your-account>/lenstronomy.git
   ```
 
-Finally add the `lenstronomy` repository as a *remote*. This will allow you to fetch changes made to the codebase. To add the `skypyproject` remote:
+Finally add the `lenstronomy` repository as a *remote*. This will allow you to fetch changes made to the codebase. To add the `lenstronomyproject` remote:
 
   ```bash
   cd lenstronomy
-  git remote add lenstronomyproject https://github.com/sibirrer/lenstronomy.git
+  git remote add lenstronomyproject https://github.com/lenstronomy/lenstronomy.git
   ```
 
 ### Install your local lenstronomy version
@@ -42,7 +42,7 @@ Alternatively, create virtual environments for the development (recommended for 
 
 ### Create a branch for your new feature
 
-Create a *branch* off the `lenstronomyproject` main branch. Working on unique branches for each new feature simplifies the development, review and merge processes by maintining logical separation. To create a feature branch:
+Create a *branch* off the `lenstronomyproject` main branch. Working on unique branches for each new feature simplifies the development, review and merge processes by maintaining logical separation. To create a feature branch:
 
   ```bash
   git fetch lenstronomyproject
@@ -76,17 +76,17 @@ Write the new code you would like to contribute and *commit* it to the feature b
 
 When you feel that work on your new feature is complete, you should create a *Pull Request*. This will propose your work to be merged into the main lenstronomy repository.
 
-  1. Go to [lenstronomy Pull Requests](https://github.com/sibirrer/lenstronomy/pulls)
+  1. Go to [lenstronomy Pull Requests](https://github.com/lenstronomy/lenstronomy/pulls)
   2. Click the green **New pull request** button
   3. Click **compare across forks**
-  4. Confirm that the base fork is `sibirrer/lenstronomy` and the base branch is `main`
+  4. Confirm that the base fork is `lenstronomy/lenstronomy` and the base branch is `main`
   5. Confirm the head fork is `<your-account>/lenstronomy` and the compare branch is `<your-branch-name>`
   6. Give your pull request a title and fill out the the template for the description
   7. Click the green **Create pull request** button
 
 ### Updating your branch
 
-As you work on your feature, new commits might be made to the `sibirrer/lenstronomy` main branch. You will need to update your branch with these new commits before your pull request can be accepted. You can achieve this in a few different ways:
+As you work on your feature, new commits might be made to the `lenstronomy/lenstronomy` main branch. You will need to update your branch with these new commits before your pull request can be accepted. You can achieve this in a few different ways:
 
   - If your pull request has no conflicts, click **Update branch**
   - If your pull request has conflicts, click **Resolve conflicts**, manually resolve the conflicts and click **Mark as resolved**

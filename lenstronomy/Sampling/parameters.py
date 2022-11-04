@@ -172,13 +172,13 @@ class Param(object):
                                                         sourceModel=self._source_model_class)
 
         if kwargs_fixed_lens is None:
-            kwargs_fixed_lens = [{} for i in range(len(self._lens_model_list))]
+            kwargs_fixed_lens = [{} for _ in range(len(self._lens_model_list))]
         if kwargs_fixed_source is None:
-            kwargs_fixed_source = [{} for i in range(len(self._source_light_model_list))]
+            kwargs_fixed_source = [{} for _ in range(len(self._source_light_model_list))]
         if kwargs_fixed_lens_light is None:
-            kwargs_fixed_lens_light = [{} for i in range(len(self._lens_light_model_list))]
+            kwargs_fixed_lens_light = [{} for _ in range(len(self._lens_light_model_list))]
         if kwargs_fixed_ps is None:
-            kwargs_fixed_ps = [{} for i in range(len(self._point_source_model_list))]
+            kwargs_fixed_ps = [{} for _ in range(len(self._point_source_model_list))]
         if kwargs_fixed_special is None:
             kwargs_fixed_special = {}
 
@@ -441,7 +441,8 @@ class Param(object):
                     kwargs['center_y'] = y_mapped
         return kwargs_source_copy
 
-    def _update_source_joint_with_point_source(self, kwargs_lens_list, kwargs_source_list, kwargs_ps, kwargs_special, image_plane=False):
+    def _update_source_joint_with_point_source(self, kwargs_lens_list, kwargs_source_list, kwargs_ps, kwargs_special,
+                                               image_plane=False):
         kwargs_source_list = self.image2source_plane(kwargs_source_list, kwargs_lens_list, image_plane=image_plane)
 
         for setting in self._joint_source_with_point_source:

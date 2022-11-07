@@ -36,6 +36,7 @@ Contributors (alphabetic)
 * Robert Morgan `rmorgan10 <https://github.com/rmorgan10/>`_
 * Anna Nierenberg `amn3142 <https://github.com/amn3142/>`_
 * Brian Nord `bnord <https://github.com/bnord/>`_
+* Maverick S. H. Oh `Maverick-Oh <https://github.com/Maverick-Oh>`_
 * Giulia Pagano
 * Ji Won Park `jiwoncpark <https://github.com/jiwoncpark/>`_
 * Jackson O'Donnell `jhod0 <https://github.com/jhod0/>`_
@@ -50,6 +51,7 @@ Contributors (alphabetic)
 * Ewoud Wempe `ewoudwempe <https://github.com/ewoudwempe/>`_
 * Lilan Yang `ylilan <https://github.com/ylilan/>`_
 * Zhiyuan Ma `Jerry-Ma <https://github.com/Jerry-Ma/>`_
+
 
 
 Past development lead

@@ -38,12 +38,32 @@ class KinNN_image_align(object):
         self.muse_data = muse_inputs
         self.hst_data = hst_inputs
         self.kinNN_data = kinNN_inputs
+        self.write_npix()
+
+    def update(self, muse_inputs=None, hst_inputs=None, kinNN_inputs=None, update_npix=False):
+        """
+        Update with inputs
+        """
+        if muse_inputs is not None:
+            self.muse_data = muse_inputs
+        if hst_inputs is not None:
+            self.hst_data = hst_inputs
+        if kinNN_inputs is not None:
+            self.kinNN_data = kinNN_inputs
+        if update_npix:
+            self.write_npix()
+
+    def write_npix(self):
+        """
+        Check that images are squared and write the keyword 'npix'
+        """
         for input_set in [self.muse_data, self.hst_data, self.kinNN_data]:
             # make sure each image is square and add npix to each dictionary
-            if np.shape(input_set['image'])[0] != np.shape(input_set['image'])[1]:
-                raise ValueError('current version only works for square images')
-            npix = np.shape(input_set['image'])[0]
-            input_set['npix'] = npix
+            if 'image' in input_set.keys():
+                if np.shape(input_set['image'])[0] != np.shape(input_set['image'])[1]:
+                    raise ValueError('current version only works for square images')
+                npix = np.shape(input_set['image'])[0]
+                input_set['npix'] = npix
 
     def pix_coords(self, input_set, flatten=True):
         """

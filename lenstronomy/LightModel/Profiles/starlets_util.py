@@ -1,7 +1,7 @@
-__author__ = 'herjy', 'aymgal'
+__author__ = 'herjy', 'aymgal', 'sibirrer'
 
 import numpy as np
-import scipy.ndimage.filters as scf
+from scipy import ndimage
 
 from lenstronomy.Util.package_util import exporter
 export, __all__ = exporter()
@@ -47,17 +47,17 @@ def transform(img, n_scales, second_gen=False):
 
         ######Calculates c(j+1)
         ###### Line convolution
-        cnew = scf.convolve1d(c, newh[0, :], axis=0, mode=mode)
+        cnew = ndimage.convolve1d(c, newh[0, :], axis=0, mode=mode)
 
         ###### Column convolution
-        cnew = scf.convolve1d(cnew, newh[0, :], axis=1, mode=mode)
+        cnew = ndimage.convolve1d(cnew, newh[0, :], axis=1, mode=mode)
 
         if second_gen:
             ###### hoh for g; Column convolution
-            hc = scf.convolve1d(cnew, newh[0, :], axis=0, mode=mode)
+            hc = ndimage.convolve1d(cnew, newh[0, :], axis=0, mode=mode)
 
             ###### hoh for g; Line convolution
-            hc = scf.convolve1d(hc, newh[0, :], axis=1, mode=mode)
+            hc = ndimage.convolve1d(hc, newh[0, :], axis=1, mode=mode)
             
             ###### wj+1 = cj - hcj+1
             wave[i, :, :] = c - hc
@@ -101,9 +101,9 @@ def inverse_transform(wave, fast=True, second_gen=False):
         H = np.dot(newh.T, newh)
 
         ###### Line convolution
-        cnew = scf.convolve1d(cJ, newh[0, :], axis=0, mode=mode)
+        cnew = ndimage.convolve1d(cJ, newh[0, :], axis=0, mode=mode)
         ###### Column convolution
-        cnew = scf.convolve1d(cnew, newh[0, :], axis=1, mode=mode)
+        cnew = ndimage.convolve1d(cnew, newh[0, :], axis=1, mode=mode)
 
         cJ = cnew + wave[lvl-1-i, :, :]
 

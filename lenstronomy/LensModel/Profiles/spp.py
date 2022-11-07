@@ -20,6 +20,8 @@ class SPP(LensProfileBase):
         """
         :param x: set of x-coordinates
         :type x: array of size (n)
+        :param y: set of y-coordinates
+        :type y: array of size (n)
         :param theta_E: Einstein radius of lens
         :type theta_E: float.
         :param gamma: power law slope of mass profile
@@ -85,6 +87,7 @@ class SPP(LensProfileBase):
     def rho2theta(rho0, gamma):
         """
         converts 3d density into 2d projected density parameter
+
         :param rho0:
         :param gamma:
         :return:
@@ -99,6 +102,7 @@ class SPP(LensProfileBase):
     def theta2rho(theta_E, gamma):
         """
         converts projected density parameter (in units of deflection) into 3d density parameter
+
         :param theta_E:
         :param gamma:
         :return:
@@ -112,9 +116,10 @@ class SPP(LensProfileBase):
     def mass_3d(r, rho0, gamma):
         """
         mass enclosed a 3d sphere or radius r
+
         :param r:
-        :param a:
-        :param s:
+        :param rho0:
+        :param gamma:
         :return:
         """
         mass_3d = 4 * np.pi * rho0 /(-gamma + 3) * r ** (-gamma + 3)
@@ -134,10 +139,10 @@ class SPP(LensProfileBase):
     def mass_2d(self, r, rho0, gamma):
         """
         mass enclosed projected 2d sphere of radius r
+
         :param r:
         :param rho0:
-        :param a:
-        :param s:
+        :param gamma:
         :return:
         """
         alpha = np.sqrt(np.pi) * special.gamma(1. / 2 * (-1 + gamma)) / special.gamma(gamma / 2.) * r ** (2 - gamma)/(3 - gamma) * 2 * rho0
@@ -158,11 +163,11 @@ class SPP(LensProfileBase):
     def grav_pot(self, x, y, rho0, gamma, center_x=0, center_y=0):
         """
         gravitational potential (modulo 4 pi G and rho0 in appropriate units)
+
         :param x:
         :param y:
         :param rho0:
-        :param a:
-        :param s:
+        :param gamma:
         :param center_x:
         :param center_y:
         :return:
@@ -178,11 +183,10 @@ class SPP(LensProfileBase):
     def density(r, rho0, gamma):
         """
         computes the density
-        :param x:
-        :param y:
+
+        :param r:
         :param rho0:
-        :param a:
-        :param s:
+        :param gamma:
         :return:
         """
         rho = rho0 / r**gamma
@@ -201,11 +205,11 @@ class SPP(LensProfileBase):
     def density_2d(x, y, rho0, gamma, center_x=0, center_y=0):
         """
         projected density
+
         :param x:
         :param y:
         :param rho0:
-        :param a:
-        :param s:
+        :param gamma:
         :param center_x:
         :param center_y:
         :return:

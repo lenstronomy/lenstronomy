@@ -16,6 +16,7 @@ _SUPPORTED_MODELS = ['SHIFT', 'NIE_POTENTIAL', 'CONST_MAG', 'SHEAR', 'SHEAR_GAMM
                      'CURVED_ARC_TAN_DIFF', 'ARC_PERT', 'coreBURKERT',
                      'CORED_DENSITY', 'CORED_DENSITY_2', 'CORED_DENSITY_MST', 'CORED_DENSITY_2_MST', 'CORED_DENSITY_EXP',
                      'CORED_DENSITY_EXP_MST', 'NumericalAlpha', 'MULTIPOLE', 'HESSIAN', 'ElliSLICE', 'ULDM','CORED_DENSITY_ULDM_MST',
+                     'LOS', 'LOS_MINIMAL',
                      'GNFW','CSE']
 
 
@@ -30,7 +31,7 @@ class ProfileListBase(object):
 
         :param lens_model_list: list of strings with lens model names
         :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model
-        deflection angles as a lens model. See the documentation in Profiles.numerical_deflections
+         deflection angles as a lens model. See the documentation in Profiles.numerical_deflections
         :param kwargs_interp: interpolation keyword arguments specifying the numerics.
          See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
         """
@@ -308,6 +309,12 @@ class ProfileListBase(object):
         elif lens_type == 'CORED_DENSITY_ULDM_MST':
             from lenstronomy.LensModel.Profiles.cored_density_mst import CoredDensityMST
             return CoredDensityMST(profile_type='CORED_DENSITY_ULDM')
+        elif lens_type == 'LOS':
+            from lenstronomy.LensModel.LineOfSight.LOSModels.los import LOS
+            return LOS()
+        elif lens_type == 'LOS_MINIMAL':
+            from lenstronomy.LensModel.LineOfSight.LOSModels.los_minimal import LOSMinimal
+            return LOSMinimal()
         else:
             raise ValueError('%s is not a valid lens model. Supported are: %s.' % (lens_type, _SUPPORTED_MODELS))
 

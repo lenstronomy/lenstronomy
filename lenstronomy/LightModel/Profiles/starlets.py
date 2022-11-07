@@ -53,7 +53,7 @@ class SLIT_Starlets(object):
         Follows lenstronomy conventions for light profiles.
 
         :param amp: decomposition coefficients ('amp' to follow conventions in other light profile)
-        This is an ndarray with shape (n_scales, sqrt(n_pixels), sqrt(n_pixels)) or (n_scales*n_pixels,)
+         This is an ndarray with shape (n_scales, sqrt(n_pixels), sqrt(n_pixels)) or (n_scales*n_pixels,)
         :param n_scales: number of decomposition scales
         :param n_pixels: number of pixels in a single scale
         :return: reconstructed signal as 1D array of shape (n_pixels,)
@@ -74,8 +74,8 @@ class SLIT_Starlets(object):
         """
         2D inverse starlet transform from starlet coefficients stored in coeffs
 
-        :param coeffs: decomposition coefficients, 
-        ndarray with shape (n_scales, sqrt(n_pixels), sqrt(n_pixels))
+        :param coeffs: decomposition coefficients,
+         ndarray with shape (n_scales, sqrt(n_pixels), sqrt(n_pixels))
         :param n_scales: number of decomposition scales
         :return: reconstructed signal as 2D array of shape (sqrt(n_pixels), sqrt(n_pixels))
         """

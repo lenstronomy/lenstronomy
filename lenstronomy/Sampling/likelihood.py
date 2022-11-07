@@ -45,7 +45,7 @@ class LikelihoodModule(object):
          into the conventions of the imSim_class
         :param image_likelihood: bool, option to compute the imaging likelihood
         :param source_position_likelihood: bool, if True, ray-traces image positions back to source plane and evaluates
-        relative errors in respect ot the position_uncertainties in the image plane
+         relative errors in respect ot the position_uncertainties in the image plane
         :param check_bounds:  bool, option to punish the hard bounds in parameter space
         :param check_matched_source_position: bool, option to check whether point source position of solver finds a
          solution to match all the image positions in the same source plane coordinate
@@ -60,13 +60,13 @@ class LikelihoodModule(object):
         :param image_likelihood_mask_list: list of boolean 2d arrays of size of images marking the pixels to be
          evaluated in the likelihood
         :param force_no_add_image: bool, if True: computes ALL image positions of the point source. If there are more
-        images predicted than modelled, a punishment occures
+         images predicted than modelled, a punishment occurs
         :param source_marg: marginalization addition on the imaging likelihood based on the covariance of the inferred
          linear coefficients
         :param linear_prior: float or list of floats (when multi-linear setting is chosen) indicating the range of
-        linear amplitude priors when computing the marginalization term.
+         linear amplitude priors when computing the marginalization term.
         :param restrict_image_number: bool, if True: computes ALL image positions of the point source. If there are more
-        images predicted than indicated in max_num_images, a punishment occurs
+         images predicted than indicated in max_num_images, a punishment occurs
         :param max_num_images: int, see restrict_image_number
         :param bands_compute: list of bools with same length as data objects, indicates which "band" to include in the
          fitting
@@ -177,6 +177,13 @@ class LikelihoodModule(object):
     def logL(self, args, verbose=False):
         """
         routine to compute X2 given variable parameters for a MCMC/PSO chain
+
+
+        :param args: ordered parameter values that are being sampled
+        :type args: tuple or list of floats
+        :param verbose: if True, makes print statements about individual likelihood components
+        :type verbose: boolean
+        :returns: log likelihood of the data given the model (natural logarithm)
         """
         # extract parameters
         kwargs_return = self.param.args2kwargs(args)
@@ -187,6 +194,19 @@ class LikelihoodModule(object):
         return self.log_likelihood(kwargs_return, verbose=verbose)
 
     def log_likelihood(self, kwargs_return, verbose=False):
+        """
+
+
+        :param kwargs_return: need to contain 'kwargs_lens', 'kwargs_source', 'kwargs_lens_light', 'kwargs_ps',
+         'kwargs_special'. These entries themselves are lists of keyword argument of the parameters entering the model
+         to be evaluated
+        :type kwargs_return: keyword arguments
+        :param verbose: if True, makes print statements about individual likelihood components
+        :type verbose: boolean
+
+        :returns:
+         - logL (float) log likelihood of the data given the model (natural logarithm)
+        """
         kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_special = kwargs_return['kwargs_lens'], \
                                                                                    kwargs_return['kwargs_source'], \
                                                                                    kwargs_return['kwargs_lens_light'], \

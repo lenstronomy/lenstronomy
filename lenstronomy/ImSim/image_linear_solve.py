@@ -319,6 +319,21 @@ class ImageLinearFit(ImageModel):
         kwargs_ps, i = self.PointSource.update_linear(param, i, kwargs_ps, kwargs_lens)
         return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps
 
+    def linear_param_from_kwargs(self, kwargs_source, kwargs_lens_light, kwargs_ps):
+        """
+        inverse function of update_linear() returning the linear amplitude list for the keyword argument list
+
+        :param kwargs_source:
+        :param kwargs_lens_light:
+        :param kwargs_ps:
+        :return: list of linear coefficients
+        """
+        param = []
+        param += self.SourceModel.linear_param_from_kwargs(kwargs_source)
+        param += self.LensLightModel.linear_param_from_kwargs(kwargs_lens_light)
+        param += self.PointSource.linear_param_from_kwargs(kwargs_ps)
+        return param
+
     def update_pixel_kwargs(self, kwargs_source, kwargs_lens_light):
         """
 

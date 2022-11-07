@@ -24,7 +24,7 @@ class AdaptiveGrid(Coordinates1D):
         :param supersampling_indexes: bool array of shape nx x ny, corresponding to pixels being super_sampled
         :param supersampling_factor: int, factor (per axis) of super-sampling
         :param flux_evaluate_indexes: bool array of shape nx x ny, corresponding to pixels being evaluated
-        (for both low and high res). Default is None, replaced by setting all pixels to being evaluated.
+         (for both low and high res). Default is None, replaced by setting all pixels to being evaluated.
         """
         super(AdaptiveGrid, self).__init__(transform_pix2angle, ra_at_xy_0, dec_at_xy_0)
         self._nx = nx
@@ -171,7 +171,7 @@ class RegularGrid(Coordinates1D):
         :param dec_at_xy_0: dec coordinate at pixel (0,0)
         :param supersampling_factor: int, factor (per axis) of super-sampling
         :param flux_evaluate_indexes: bool array of shape nx x ny, corresponding to pixels being evaluated
-        (for both low and high res). Default is None, replaced by setting all pixels to being evaluated.
+         (for both low and high res). Default is None, replaced by setting all pixels to being evaluated.
         """
         super(RegularGrid, self).__init__(transform_pix2angle, ra_at_xy_0, dec_at_xy_0)
         self._supersampling_factor = supersampling_factor

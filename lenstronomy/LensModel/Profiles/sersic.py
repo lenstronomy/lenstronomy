@@ -1,5 +1,4 @@
 __author__ = 'sibirrer'
-#this file contains a class to make a gaussian
 
 import numpy as np
 import lenstronomy.Util.util as util
@@ -12,6 +11,43 @@ __all__ = ['Sersic']
 class Sersic(SersicUtil, LensProfileBase):
     """
     this class contains functions to evaluate a Sersic mass profile: https://arxiv.org/pdf/astro-ph/0311559.pdf
+
+    .. math::
+        \\kappa(R) = \\kappa_{\\rm eff} \\exp \\left[ -b_n (R/R_{\\rm Sersic})^{\\frac{1}{n}}\\right]
+
+    with :math:`b_{n}\\approx 1.999n-0.327`
+
+    Examples
+    --------
+
+    Example for converting physical mass units into convergence units used in the definition of this profile.
+
+    We first define an AstroPy cosmology instance and a LensCosmo class instance with a lens and source redshift.
+
+    >>> from lenstronomy.Cosmo.lens_cosmo import LensCosmo
+    >>> from astropy.cosmology import FlatLambdaCDM
+    >>> cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.05)
+    >>> lens_cosmo = LensCosmo(z_lens=0.5, z_source=1.5, cosmo=cosmo)
+
+    We define the half-light radius R_sersic (arc seconds on the sky) and Sersic index n_sersic
+
+    >>> R_sersic = 2
+    >>> n_sersic = 4
+
+    Here we compute k_eff, the convergence at the half-light radius R_sersic for a stellar mass in Msun
+
+    >>> k_eff = lens_cosmo.sersic_m_star2k_eff(m_star=10**11.5, R_sersic=R_sersic, n_sersic=n_sersic)
+
+    And here we perform the inverse calculation given k_eff to return the physical stellar mass.
+
+    >>> m_star = lens_cosmo.sersic_k_eff2m_star(k_eff=k_eff, R_sersic=R_sersic, n_sersic=n_sersic)
+
+    The lens model calculation uses angular units as arguments! So to execute a deflection angle calculation one uses
+
+    >>> from lenstronomy.LensModel.Profiles.sersic import Sersic
+    >>> sersic = Sersic()
+    >>> alpha_x, alpha_y = sersic.derivatives(x=1, y=1, k_eff=k_eff, R_sersic=R_sersic, center_x=0, center_y=0)
+
     """
     param_names = ['k_eff', 'R_sersic', 'n_sersic', 'center_x', 'center_y']
     lower_limit_default = {'k_eff': 0, 'R_sersic': 0, 'n_sersic': 0.5, 'center_x': -100, 'center_y': -100}
@@ -68,10 +104,6 @@ class Sersic(SersicUtil, LensProfileBase):
             r[r < self._s] = self._s
         d_alpha_dr = self.d_alpha_dr(x, y, n_sersic, R_sersic, k_eff, center_x, center_y)
         alpha = -self.alpha_abs(x, y, n_sersic, R_sersic, k_eff, center_x, center_y)
-
-        #f_xx_ = d_alpha_dr * calc_util.d_r_dx(x_, y_) * x_/r + alpha * calc_util.d_x_diffr_dx(x_, y_)
-        #f_yy_ = d_alpha_dr * calc_util.d_r_dy(x_, y_) * y_/r + alpha * calc_util.d_y_diffr_dy(x_, y_)
-        #f_xy_ = d_alpha_dr * calc_util.d_r_dy(x_, y_) * x_/r + alpha * calc_util.d_x_diffr_dy(x_, y_)
 
         f_xx = -(d_alpha_dr/r + alpha/r**2) * x_**2/r + alpha/r
         f_yy = -(d_alpha_dr/r + alpha/r**2) * y_**2/r + alpha/r

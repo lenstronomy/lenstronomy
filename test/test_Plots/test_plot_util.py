@@ -53,7 +53,7 @@ class TestPlotUtil(object):
     def test_cmap_conf(self):
         cmap = plot_util.cmap_conf(cmap_string='gist_heat')
         cmap_update = plot_util.cmap_conf(cmap_string=cmap)
-        assert cmap is cmap_update
+        assert cmap.name == cmap_update.name
 
     def test_plot_line_set(self):
 
@@ -96,6 +96,9 @@ class TestPlotUtil(object):
                                            origin=[1, 1], flipped_x=True, pixel_offset=True)
         plt.close()
 
-
+    def test_cmap_copy(self):
+        from lenstronomy.Plots.plot_util import cmap_conf
+        cmap_new = cmap_conf("gist_heat")
+        
 if __name__ == '__main__':
     pytest.main()

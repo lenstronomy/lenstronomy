@@ -40,7 +40,7 @@ class FittingSequence(object):
          'extinction_model': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
          'special': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
         :param mpi: MPI option (bool), if True, will launch an MPI Pool job for the steps in the fitting sequence where
-        possible
+         possible
         :param verbose: bool, if True prints temporary results and indicators of the fitting process
         """
         self.kwargs_data_joint = kwargs_data_joint
@@ -115,8 +115,11 @@ class FittingSequence(object):
                 nautilus = Nautilus(likelihood_module=self.likelihoodModule)
                 points, log_w, log_l, log_z = nautilus.nautilus_sampling(mpi=self._mpi, **kwargs)
                 chain_list.append([points, log_w, log_l, log_z])
-                kwargs_result = self.best_fit_from_samples(points, log_l)
-                self._updateManager.update_param_state(**kwargs_result)
+                if kwargs.get('verbose', False):
+                    print(len(points), 'number of points sampled')
+                if not kwargs.get('one_step', False):  # this is only for testing purposes
+                    kwargs_result = self.best_fit_from_samples(points, log_l)
+                    self._updateManager.update_param_state(**kwargs_result)
 
             elif fitting_type == 'nested_sampling':
                 ns_output = self.nested_sampling(**kwargs)
@@ -161,7 +164,8 @@ class FittingSequence(object):
     @property
     def bic(self):
         """
-        returns the bayesian information criterion of the model.
+        Bayesian information criterion (BIC) of the model.
+
         :return: bic value, float
         """
         num_data = self.likelihoodModule.num_data
@@ -490,6 +494,7 @@ class FittingSequence(object):
     def set_param_value(self, **kwargs):
         """
         Set a parameter to a specific value. `kwargs` are below.
+
         :param lens: [[i_model, ['param1', 'param2',...], [...]]
         :type lens:
         :param source: [[i_model, ['param1', 'param2',...], [...]]

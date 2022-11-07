@@ -68,6 +68,7 @@ class UpdateManager(object):
         self._kwargs_temp = self.init_kwargs
 
     # TODO: check compatibility with number of point sources provided as well as other parameter labeling
+    # TODO: give raise statement if sigma value is =0
 
     @property
     def init_kwargs(self):
@@ -300,9 +301,7 @@ class UpdateManager(object):
         if special_add_fixed is None:
             special_add_fixed = []
         for param_name in special_add_fixed:
-            if param_name in special_fixed:
-                pass
-            else:
+            if param_name not in special_fixed:
                 special_fixed[param_name] = special_temp[param_name]
         if special_remove_fixed is None:
             special_remove_fixed = []

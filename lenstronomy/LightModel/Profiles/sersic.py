@@ -12,7 +12,7 @@ export, __all__ = exporter()
 @export
 class Sersic(SersicUtil):
     """
-    this class contains functions to evaluate an spherical Sersic function
+    this class contains functions to evaluate a spherical Sersic function
 
     .. math::
         I(R) = I_0 \\exp \\left[ -b_n (R/R_{\\rm Sersic})^{\\frac{1}{n}}\\right]
@@ -51,6 +51,7 @@ class SersicElliptic(SersicUtil):
     this class contains functions to evaluate an elliptical Sersic function
 
     .. math::
+
         I(R) = I_0 \\exp \\left[ -b_n (R/R_{\\rm Sersic})^{\\frac{1}{n}}\\right]
 
     with :math:`I_0 = amp`,
@@ -93,8 +94,9 @@ class CoreSersic(SersicUtil):
     this class contains the Core-Sersic function introduced by e.g Trujillo et al. 2004
 
     .. math::
+
         I(R) = I' \\left[1 + (R_b/R)^{\\alpha} \\right]^{\\gamma / \\alpha}
-        \\exp \\left{ -b_n \\left[(R^{\\alpha} + R_b^{\alpha})/R_e^{\\alpha}  \\right]^{1 / (n\\alpha)}  \\right}
+        \\exp \\left{ -b_n \\left[(R^{\\alpha} + R_b^{\\alpha})/R_e^{\\alpha}  \\right]^{1 / (n\\alpha)}  \\right}
 
     with
 

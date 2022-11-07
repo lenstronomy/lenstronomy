@@ -16,14 +16,12 @@ class KinNN_image_align(object):
         intialize input data
         :param muse_inputs: dictionary which encodes grid and transformation information for kinematic data (doesn't have to be MUSE)
             :'image': contains 2d image used to calculate grid coordinates
-            :'deltaPix': pixel size
             :'transform_pix2angle': transformation matrix to convert from pixel xy to ra/dec
             :'ra_at_xy0': ra coordinate at pixel (0,0)
             :'dec_at_xy0': dec coordinate at pixel (0,0)
 
         :param hst_inputs: dictionary which encodes grid and transformation information for imaging data (doesn't have to be HST)
             :'image': contains 2d image used to calculate grid coordinates
-            :'deltaPix': pixel size
             :'transform_pix2angle': transformation matrix to convert from pixel xy to ra/dec
             :'ra_at_xy0': ra coordinate at pixel (0,0)
             :'dec_at_xy0': dec coordinate at pixel (0,0)
@@ -34,29 +32,12 @@ class KinNN_image_align(object):
         :param kinNN_inputs: dictionary which encodes grid information for NN output data
             :'image': contains 2d image used to calculate grid coordinates
             :'deltaPix': pixel size
+
         """
         self.muse_data = muse_inputs
         self.hst_data = hst_inputs
+        self.hst_deltapix = np.sqrt(np.abs(np.linalg.det(self.hst_data['transform_pix2angle'])))
         self.kinNN_data = kinNN_inputs
-        self.write_npix()
-
-    def update(self, muse_inputs=None, hst_inputs=None, kinNN_inputs=None, update_npix=False):
-        """
-        Update with inputs
-        """
-        if muse_inputs is not None:
-            self.muse_data = muse_inputs
-        if hst_inputs is not None:
-            self.hst_data = hst_inputs
-        if kinNN_inputs is not None:
-            self.kinNN_data = kinNN_inputs
-        if update_npix:
-            self.write_npix()
-
-    def write_npix(self):
-        """
-        Check that images are squared and write the keyword 'npix'
-        """
         for input_set in [self.muse_data, self.hst_data, self.kinNN_data]:
             # make sure each image is square and add npix to each dictionary
             if 'image' in input_set.keys():
@@ -127,16 +108,18 @@ class KinNN_image_align(object):
 
         :return: x and y coordinates in NN coordinate system
         """
-        # define rotation matrix
-        CD1_1 = np.cos(ellipse_PA_to_hstx_angle)
-        CD1_2 = -np.sin(ellipse_PA_to_hstx_angle)
-        CD2_1 = np.sin(ellipse_PA_to_hstx_angle)
-        CD2_2 = np.cos(ellipse_PA_to_hstx_angle)
+        # define rotation matrix to rotate back into alignment
+        counterrotation = -ellipse_PA_to_hstx_angle
+        CD1_1 = np.cos(counterrotation)
+        CD1_2 = -np.sin(counterrotation)
+        CD2_1 = np.sin(counterrotation)
+        CD2_2 = np.cos(counterrotation)
         # rotation matrix, applied to matching centers ()
         rotation_by_ellipse_angle = np.array([[CD1_1, CD1_2], [CD2_1, CD2_2]]) * (deltapix_HST / deltapix_kinNN)
 
         kinNNx_at_hstcenter, kinNNy_at_hstcenter = rotation_by_ellipse_angle.dot(
-            np.array([-npix_hst / 2 - offsetx, -npix_hst / 2 - offsety])) + [npix_kinNN / 2, npix_kinNN / 2]
+            np.array([-npix_hst / 2 - offsetx / deltapix_HST, -npix_hst / 2 - offsety / deltapix_HST])) + [
+                                                       npix_kinNN / 2, npix_kinNN / 2]
 
         kinNNx, kinNNy = rotation_by_ellipse_angle.dot(np.array([HST_x, HST_y]))
         return kinNNx + kinNNx_at_hstcenter, kinNNy + kinNNy_at_hstcenter
@@ -183,7 +166,7 @@ class KinNN_image_align(object):
         """
         muse_coords_in_HSTx, muse_coords_in_HSTy = self.musegrid_in_hstxy()
         kinNNx, kinNNy = self.rotateHST_into_kinNN(muse_coords_in_HSTx, muse_coords_in_HSTy,
-                                                   self.hst_data['ellipse_PA'], self.hst_data['deltaPix'],
+                                                   self.hst_data['ellipse_PA'], self.hst_deltapix,
                                                    self.kinNN_data['deltaPix'], self.hst_data['npix'],
                                                    self.kinNN_data['npix'],
                                                    offsetx=self.hst_data['offset_x'], offsety=self.hst_data['offset_y'])

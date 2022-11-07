@@ -3,6 +3,7 @@ import lenstronomy.Util.param_util as param_util
 import lenstronomy.Util.util as util
 from scipy import signal
 from lenstronomy.Util.kin_sampling_util import KinNN_image_align
+from lenstronomy.Likelihoods import kinematic_NN_call
 
 __all__ = ['KinLikelihood']
 
@@ -11,7 +12,7 @@ class KinLikelihood(object):
     """
     Class to compute the likelihood associated to binned 2D kinematic maps
     """
-    def __init__(self, kinematic_data_2D_class, lens_model_class, lens_light_model_class,kwargs_data,idx_lens=0,
+    def __init__(self, kinematic_data_2D_class, lens_model_class, lens_light_model_class, kwargs_data, idx_lens=0,
                  idx_lens_light=0):
         """
         :param kinematic_data_2D_class: KinData class instance
@@ -28,6 +29,7 @@ class KinLikelihood(object):
 
         self.kin_input = self.kin_class.KinBin.KinBin2kwargs()
         self.image_input = self.kwargs_data2image_input(kwargs_data)
+        self.kinematic_NN=kinematic_NN_call()
         self.kinNN_input = {'deltaPix':0.02, 'image': np.ones((550,550))}
         self.KiNNalign = KinNN_image_align(self.kin_input, self.image_input, self.kinNN_input)
 
@@ -72,7 +74,7 @@ class KinLikelihood(object):
 
     def update_image_input(self,kwargs_lens):
         """
-        Updates the image_input for rotation with the ne values of orientation and center of the lens model.
+        Updates the image_input for rotation with the new values of orientation and center of the lens model.
         """
         orientation_ellipse, q = param_util.ellipticity2phi_q(kwargs_lens[self._idx_lens]['e1'],
                                                               kwargs_lens[self._idx_lens]['e2'])

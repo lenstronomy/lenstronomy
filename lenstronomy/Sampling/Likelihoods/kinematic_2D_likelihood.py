@@ -3,7 +3,7 @@ import lenstronomy.Util.param_util as param_util
 import lenstronomy.Util.util as util
 from scipy import signal
 from lenstronomy.Util.kin_sampling_util import KinNN_image_align
-from lenstronomy.Likelihoods import kinematic_NN_call
+from lenstronomy.Sampling.Likelihoods import kinematic_NN_call
 
 __all__ = ['KinLikelihood']
 

@@ -141,7 +141,6 @@ class LensParam(object):
                     #    else:
                     #        pass
                     else:
-                        print(name)
                         if name in kwargs_logsampling:
                             args.append(np.log10(kwargs[name]))
                         else:

@@ -18,7 +18,7 @@ def plot_chain_list(chain_list, index=0, num_average=100):
     :param chain_list: list of chains with arguments [type string, samples etc...]
     :param index: index of chain to be plotted
     :param num_average: in chains, number of steps to average over in plotting diagnostics
-    :return: plotting instance
+    :return: plotting instance figure, axes (potentially multiple)
     """
     chain_i = chain_list[index]
     chain_type = chain_i[0]
@@ -99,13 +99,17 @@ def plot_mcmc_behaviour(ax, samples_mcmc, param_mcmc, dist_mcmc=None, num_averag
 def psf_iteration_compare(kwargs_psf, **kwargs):
     """
 
-    :param kwargs_psf:
+    :param kwargs_psf: keyword arguments that initiate a PSF() class
     :param kwargs: kwargs to send to matplotlib.pyplot.matshow()
     :return:
     """
     psf_out = kwargs_psf['kernel_point_source']
     psf_in = kwargs_psf['kernel_point_source_init']
-    psf_error_map = kwargs_psf.get('psf_error_map', None)
+    # psf_error_map = kwargs_psf.get('psf_error_map', None)
+    from lenstronomy.Data.psf import PSF
+    psf = PSF(**kwargs_psf)
+    # psf_out = psf.kernel_point_source
+    psf_error_map = psf.psf_error_map
     n_kernel = len(psf_in)
     delta_x = n_kernel/20.
     delta_y = n_kernel/10.
@@ -156,7 +160,7 @@ def psf_iteration_compare(kwargs_psf, **kwargs):
 
     if psf_error_map is not None:
         ax = axes[3]
-        im = ax.matshow(np.log10(psf_error_map*psf_out**2), origin='lower', **kwargs)
+        im = ax.matshow(np.log10(psf_error_map*psf.kernel_point_source**2), origin='lower', **kwargs)
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         plt.colorbar(im, cax=cax)

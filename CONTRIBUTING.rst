@@ -150,7 +150,10 @@ General Guidelines
 Unit Tests
 ^^^^^^^^^^
 
-Pull requests will require existing unit tests to pass before they can be merged. Additionally, new unit tests should be written for all new public methods and functions. Unit tests for each submodule are contained in subdirectories called ``tests`` and you can run them locally using ``python setup.py test``. For more information see the [Astropy Testing Guidelines](https://docs.astropy.org/en/stable/development/testguide.html).
+Pull requests will require existing unit tests to pass before they can be merged.
+Additionally, new unit tests should be written for all new public methods and functions.
+Unit tests for each submodule are contained in subdirectories called ``tests`` and you can run them locally using ``python setup.py test``.
+For more information see the `Astropy Testing Guidelines <https://docs.astropy.org/en/stable/development/testguide.html>`_.
 
 Docstrings
 ^^^^^^^^^^

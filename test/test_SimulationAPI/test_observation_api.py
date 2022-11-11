@@ -102,7 +102,7 @@ class TestRaise(unittest.TestCase):
 
 class TestData(object):
 
-    def setup(self):
+    def setup_method(self):
         self.ccd_gain = 4.
         pixel_scale = 0.13
         self.read_noise = 10.

@@ -195,6 +195,12 @@ class Sampler(object):
     def mcmc_zeus(self, n_walkers, n_run, n_burn, mean_start, sigma_start,
                   mpi=False, threadCount=1,
                   progress=False, initpos=None, backend_filename=None,
+                  autocorrelation_callback=False,
+                  ncheck=100, dact=0.01, nact=50, discard=0.5,
+                  splitr_callback=False,
+                  epsilon=0.01, nsplits=2,
+                  miniter_callback=False,
+                  nmin=500,
                   moves=None, tune=True, tolerance=0.05, patience=5,
                   maxsteps=10000, mu=1.0, maxiter=10000, pool=None,
                   vectorize=False, blobs_dtype=None, verbose=True,
@@ -239,11 +245,28 @@ class Sampler(object):
                                                           size=n_walkers)
 
         if backend_filename is not None:
-            backend = zeus.callbacks.SaveProgressCallback(filename= backend_filename, ncheck = 1)
+            backend = zeus.callbacks.SaveProgressCallback(filename= backend_filename, ncheck = ncheck)
             n_run_eff = n_burn + n_run
         else:
             backend = None
             n_run_eff = n_burn + n_run
+
+        if autocorrelation_callback == True:
+            cb0 = zeus.callbacks.AutocorrelationCallback(ncheck=ncheck, dact=dact, nact=nact, discard=discard)
+        else:
+            cb0 = None
+
+        if splitr_callback == True:
+            cb1 = zeus.callbacks.SplitRCallback(ncheck=ncheck, epsilon=epsilon, nsplits=nsplits, discard=discard)
+        else:
+            cb1 = None
+
+        if miniter_callback == True:
+            cb2 = zeus.callbacks.MinIterCallback(nmin=nmin)
+        else:
+            cb2 = None
+
+        callback_list = [backend, cb0, cb1, cb2]
 
         pool = choose_pool(mpi=mpi, processes=threadCount, use_dill=True)
 
@@ -253,7 +276,7 @@ class Sampler(object):
                                        blobs_dtype=blobs_dtype, verbose=verbose, check_walkers=check_walkers,
                                        shuffle_ensemble=shuffle_ensemble, light_mode=light_mode)
 
-        sampler.run_mcmc(initpos, n_run_eff, progress=progress, callbacks=backend)
+        sampler.run_mcmc(initpos, n_run_eff, progress=progress, callbacks=callback_list)
 
         flat_samples = sampler.get_chain(flat=True, thin=1, discard=n_burn)
 

@@ -252,12 +252,12 @@ class Sampler(object):
             n_run_eff = n_burn + n_run
 
         if autocorrelation_callback == True:
-            cb0 = zeus.callbacks.AutocorrelationCallback(ncheck=ncheck, dact=dact, nact=nact, discard=discard)
+            cb0 = zeus.callbacks.AutocorrelationCallback(ncheck=ncheck, dact=dact, nact=nact, discard=discard, trigger=trigger, method=method)
         else:
             cb0 = None
 
         if splitr_callback == True:
-            cb1 = zeus.callbacks.SplitRCallback(ncheck=ncheck, epsilon=epsilon, nsplits=nsplits, discard=discard)
+            cb1 = zeus.callbacks.SplitRCallback(ncheck=ncheck, epsilon=epsilon, nsplits=nsplits, discard=discard, trigger=trigger)
         else:
             cb1 = None
 

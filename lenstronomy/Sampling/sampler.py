@@ -197,6 +197,8 @@ class Sampler(object):
                   progress=False, initpos=None, backend_filename=None,
                   autocorrelation_callback=False,
                   ncheck=100, dact=0.01, nact=50, discard=0.5,
+                  trigger=True,
+                  method='mk',
                   splitr_callback=False,
                   epsilon=0.01, nsplits=2,
                   miniter_callback=False,

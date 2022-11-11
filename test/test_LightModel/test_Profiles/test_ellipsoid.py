@@ -23,7 +23,7 @@ class TestTorus(object):
 
 class TestEllipsoid(object):
 
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_function(self):

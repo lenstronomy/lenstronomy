@@ -23,7 +23,7 @@ class TestPSBase(object):
 
 class TestUtil(object):
 
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_expand_to_array(self):

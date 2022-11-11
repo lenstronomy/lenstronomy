@@ -92,7 +92,7 @@ class TestShapeletsPolar(object):
 
 class TestShapeletsPolarExp(object):
 
-    def setup(self):
+    def setup_method(self):
         self.shapelets = ShapeletsPolarExp()
 
     def test_function(self):
@@ -180,7 +180,7 @@ class TestShapeletSetPolar(object):
     class to test Shapelets
     """
 
-    def setup(self):
+    def setup_method(self):
         self.shapeletSet = ShapeletSetPolar()
         self.shapelets = ShapeletsPolar()
         self.x, self.y = util.make_grid(10, 0.1, 1)
@@ -244,7 +244,7 @@ class TestShapeletSetPolarExp(object):
     class to test Shapelets
     """
 
-    def setup(self):
+    def setup_method(self):
         self.shapeletSet = ShapeletSetPolar(exponential=True)
         self.shapelets = ShapeletsPolarExp()
         self.x, self.y = util.make_grid(10, 0.1, 1)

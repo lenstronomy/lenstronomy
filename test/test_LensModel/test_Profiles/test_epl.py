@@ -157,7 +157,7 @@ class TestEPLvsPEMD(object):
     Test EPL model vs PEMD with FASTELL
     This tests get only executed if fastell is installed
     """
-    def setup(self):
+    def setup_method(self):
         try:
             import fastell4py
             self._fastell4py_bool = True

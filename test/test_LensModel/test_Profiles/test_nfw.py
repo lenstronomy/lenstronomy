@@ -118,7 +118,7 @@ class TestMassAngleConversion(object):
     """
     test angular to mass unit conversions
     """
-    def setup(self):
+    def setup_method(self):
         self.nfw = NFW()
         self.nfw_ellipse = NFW_ELLIPSE()
 

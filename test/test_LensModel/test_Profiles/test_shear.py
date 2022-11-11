@@ -78,7 +78,7 @@ class TestShear(object):
 
 class TestShearGammaPsi(object):
 
-    def setup(self):
+    def setup_method(self):
         self.shear_e1e2 = Shear()
         self.shear = ShearGammaPsi()
 
@@ -112,7 +112,7 @@ class TestShearGammaPsi(object):
 
 class TestShearReduced(object):
 
-    def setup(self):
+    def setup_method(self):
         self.shear = ShearReduced()
 
     def test_magnification(self):

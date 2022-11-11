@@ -79,7 +79,7 @@ class TestNumericalAlpha(object):
     """
     tests the Gaussian methods
     """
-    def setup(self):
+    def setup_method(self):
 
         self.numerical_alpha = NumericalAlpha(custom_class=TestClass())
         self.nfw = NFW()

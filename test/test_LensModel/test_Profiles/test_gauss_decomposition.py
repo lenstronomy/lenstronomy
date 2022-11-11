@@ -237,7 +237,7 @@ class TestCTNFWGaussDec(object):
     This class tests the methods for Gauss-decomposed spherical
     cored-truncated NFW profile.
     """
-    def setup(self):
+    def setup_method(self):
         self.ctnfw_gauss = CTNFWGaussDec(n_sigma=15)
 
     def test_gauss_decompose_ctnfw(self):

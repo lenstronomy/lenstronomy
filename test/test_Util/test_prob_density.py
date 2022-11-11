@@ -39,7 +39,7 @@ class TestSkewGaussian(object):
 
 class TestKDE1D(object):
 
-    def setup(self):
+    def setup_method(self):
         np.random.seed(seed=42)
 
     def gauss(self, x, mean, simga):

@@ -73,7 +73,7 @@ class TestGaussianKappaEllipse(object):
     """
     test the Gaussian with Gaussian kappa
     """
-    def setup(self):
+    def setup_method(self):
         self.multi = MultiGaussianKappaEllipse()
         self.single = GaussianEllipsePotential()
 

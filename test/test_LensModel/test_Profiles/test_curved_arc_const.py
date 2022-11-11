@@ -96,7 +96,7 @@ class TestCurvedArcConst(object):
 
 class TestCurvedArcConstMST(object):
 
-    def setup(self):
+    def setup_method(self):
         self.arc_const = CurvedArcConstMST()
 
     def test_function(self):

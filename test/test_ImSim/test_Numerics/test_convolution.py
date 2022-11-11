@@ -45,7 +45,7 @@ class TestPixelKernelConvolution(object):
 
 class TestSubgridKernelConvolution(object):
 
-    def setup(self):
+    def setup_method(self):
         self.supersampling_factor = 3
         lightModel = LightModel(light_model_list=['GAUSSIAN'])
         self.delta_pix = 1.
@@ -108,7 +108,7 @@ class TestSubgridKernelConvolution(object):
 
 class TestMultiGaussianConvolution(object):
 
-    def setup(self):
+    def setup_method(self):
         lightModel = LightModel(light_model_list=['GAUSSIAN'])
         self.delta_pix = 1
         x, y = util.make_grid(10, deltapix=self.delta_pix)
@@ -126,7 +126,7 @@ class TestMultiGaussianConvolution(object):
 
 class TestMGEConvolution(object):
 
-    def setup(self):
+    def setup_method(self):
         lightModel = LightModel(light_model_list=['GAUSSIAN'])
         self.delta_pix = 1
         x, y = util.make_grid(10, deltapix=self.delta_pix)

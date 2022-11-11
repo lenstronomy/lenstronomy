@@ -73,7 +73,7 @@ class TestAdaptiveGrid(object):
 
 class TestRegularGrid(object):
 
-    def setup(self):
+    def setup_method(self):
         self._deltaPix = 1.
         transform_pix2angle = np.array([[1, 0], [0, 1]]) * self._deltaPix
         ra_at_xy_0, dec_at_xy_0 = -5, -5

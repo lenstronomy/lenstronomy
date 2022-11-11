@@ -121,7 +121,7 @@ class TestNIE(object):
 
 class TestNIEMajorAxis(object):
 
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_kappa(self):

@@ -67,7 +67,7 @@ class TestNumericsProfile(object):
     """
     tests the second derivatives of various lens models
     """
-    def setup(self):
+    def setup_method(self):
         pass
 
     def assert_differentials(self, lens_model, kwargs, potential=True):

@@ -16,7 +16,7 @@ class TestShear(object):
     """
     tests the Gaussian methods
     """
-    def setup(self):
+    def setup_method(self):
         self.extShear = Shear()
 
         gamma1, gamma2 = 0.1, 0.1

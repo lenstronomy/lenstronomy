@@ -11,7 +11,7 @@ import pytest
 
 class TestPixelKernelConvolution(object):
 
-    def setup(self):
+    def setup_method(self):
         lightModel = LightModel(light_model_list=['GAUSSIAN'])
         self.delta_pix = 1
         x, y = util.make_grid(10, deltapix=self.delta_pix)

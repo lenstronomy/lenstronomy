@@ -13,7 +13,7 @@ import lenstronomy.Util.util as util
 
 class TestLightAnalysis(object):
 
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_ellipticity(self):

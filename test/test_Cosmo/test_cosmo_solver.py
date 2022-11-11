@@ -11,7 +11,7 @@ import numpy.testing as npt
 
 class TestCompare(object):
 
-    def setup(self):
+    def setup_method(self):
         self.z_d, self.z_s = 0.295, 0.658
         self.solver = SolverFlatLCDM(z_d=self.z_d, z_s=self.z_s)
 

@@ -13,7 +13,7 @@ class TestChameleon(object):
     """
     class to test the Moffat profile
     """
-    def setup(self):
+    def setup_method(self):
         self.chameleon = Chameleon()
         self.nie = NIE()
 

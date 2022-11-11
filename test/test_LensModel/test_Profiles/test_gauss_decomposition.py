@@ -15,7 +15,7 @@ class TestSersicEllipseGaussDec(object):
     This class tests the methods for Gauss-decomposed elliptic Sersic
     convergence.
     """
-    def setup(self):
+    def setup_method(self):
         self.sersic_gauss = SersicEllipseGaussDec()
         self.sersic_light = SersicElliptic(sersic_major_axis=False)
         self.sersic_sphere = Sersic(sersic_major_axis=False)

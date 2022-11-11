@@ -11,7 +11,7 @@ class TestGaussian(object):
     """
     tests the Gaussian methods
     """
-    def setup(self):
+    def setup_method(self):
         self.Gaussian = Gaussian()
 
     def test_function(self):

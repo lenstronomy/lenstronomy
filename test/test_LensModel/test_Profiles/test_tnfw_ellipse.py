@@ -14,7 +14,7 @@ class TestNFWELLIPSE(object):
     """
     tests the Gaussian methods
     """
-    def setup(self):
+    def setup_method(self):
         self.tnfw = TNFW()
         self.nfw_e = NFW_ELLIPSE()
         self.tnfw_e = TNFW_ELLIPSE()

@@ -10,7 +10,7 @@ class TestSIE(object):
         """
         tests the Gaussian methods
         """
-        def setup(self):
+        def setup_method(self):
             from lenstronomy.LensModel.Profiles.sie import SIE
             from lenstronomy.LensModel.Profiles.epl import EPL
             from lenstronomy.LensModel.Profiles.nie import NIE

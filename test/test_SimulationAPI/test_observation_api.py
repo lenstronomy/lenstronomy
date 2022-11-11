@@ -7,7 +7,7 @@ import unittest
 
 class TestInstrumentObservation(object):
 
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_instrument(self):

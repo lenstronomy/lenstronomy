@@ -12,7 +12,7 @@ class TestCartShapelets(object):
     """
     tests the Gaussian methods
     """
-    def setup(self):
+    def setup_method(self):
         self.polarShapelets = PolarShapelets()
         self.cartShapelets = CartShapelets()
 

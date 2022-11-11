@@ -11,7 +11,7 @@ import lenstronomy.Util.param_util as param_util
 
 class TestPointSource(object):
 
-    def setup(self):
+    def setup_method(self):
         lensModel = LensModel(lens_model_list=['SPEP'])
         solver = LensEquationSolver(lensModel=lensModel)
         e1, e2 = param_util.phi_q2_ellipticity(0, 0.7)

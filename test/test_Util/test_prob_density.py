@@ -15,7 +15,7 @@ import unittest
 
 class TestSkewGaussian(object):
 
-    def setup(self):
+    def setup_method(self):
         self.skewGassian = SkewGaussian()
         np.random.seed(seed=42)
 

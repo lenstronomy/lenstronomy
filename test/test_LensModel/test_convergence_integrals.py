@@ -9,7 +9,7 @@ class TestConvergenceIntegrals(object):
     """
     test angular to mass unit conversions
     """
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_potential_from_kappa(self):

@@ -12,7 +12,7 @@ import pytest
 
 class TestAdaptiveGrid(object):
 
-    def setup(self):
+    def setup_method(self):
         deltaPix = 1.
         transform_pix2angle = np.array([[1, 0], [0, 1]]) * deltaPix
         ra_at_xy_0, dec_at_xy_0 = -5, -5

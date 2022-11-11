@@ -21,7 +21,7 @@ class TestPSFIteration(object):
     tests the source model routines
     """
 
-    def setup(self):
+    def setup_method(self):
 
         # data specifics
         sigma_bkg = 0.01  # background noise per pixel

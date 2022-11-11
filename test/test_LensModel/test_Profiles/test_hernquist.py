@@ -11,7 +11,7 @@ import lenstronomy.Util.param_util as param_util
 
 class TestHernquist(object):
 
-    def setup(self):
+    def setup_method(self):
         self.profile = Hernquist()
 
     def test_function(self):

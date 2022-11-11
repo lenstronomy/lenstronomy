@@ -13,7 +13,7 @@ class TestNFW(object):
     """
     tests the Gaussian methods
     """
-    def setup(self):
+    def setup_method(self):
         self.nfw = NFW()
 
     def test_function(self):

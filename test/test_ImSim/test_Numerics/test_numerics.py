@@ -10,7 +10,7 @@ from lenstronomy.ImSim.image_model import ImageModel
 
 class TestNumerics(object):
 
-    def setup(self):
+    def setup_method(self):
 
         # we define a model consisting of a singe Sersric profile
         from lenstronomy.LightModel.light_model import LightModel

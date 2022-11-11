@@ -12,7 +12,7 @@ import pytest
 
 class TestPixelConvolution(object):
 
-    def setup(self):
+    def setup_method(self):
         lightModel = LightModel(light_model_list=['GAUSSIAN'])
         self.delta_pix = 1
         self.num_pix = 10

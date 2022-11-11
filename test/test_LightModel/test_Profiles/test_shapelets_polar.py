@@ -8,7 +8,7 @@ from lenstronomy.LightModel.Profiles.shapelets_polar import ShapeletsPolar, Shap
 
 class TestShapeletsPolar(object):
 
-    def setup(self):
+    def setup_method(self):
         self.shapelets = ShapeletsPolar()
 
     def test_function(self):

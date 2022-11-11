@@ -321,8 +321,8 @@ class TestFittingSequence(object):
     def test_dynesty(self):
         np.random.seed(41)
         kwargs_params = copy.deepcopy(self.kwargs_params)
-        kwargs_params['lens_model'][0][0]['theta_E'] += 0.1
-        kwargs_params['lens_model'][0][0]['gamma'] += 0.1
+        kwargs_params['lens_model'][0][0]['theta_E'] += 0.3
+        kwargs_params['lens_model'][0][0]['gamma'] += 0.3
         fittingSequence = FittingSequence(self.kwargs_data_joint, self.kwargs_model, self.kwargs_constraints,
                                           self.kwargs_likelihood, kwargs_params)
 

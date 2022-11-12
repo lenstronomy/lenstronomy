@@ -20,7 +20,7 @@ class TestJointLinear(object):
     """
     tests the source model routines
     """
-    def setup(self):
+    def setup_method(self):
 
         # data specifics
         sigma_bkg = .05  # background noise per pixel

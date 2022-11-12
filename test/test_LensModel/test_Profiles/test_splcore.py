@@ -7,9 +7,10 @@ from scipy.integrate import quad
 import pytest
 import numpy.testing as npt
 
+
 class TestSPLCORE(object):
 
-    def setup(self):
+    def setup_method(self):
 
         self.profile = SPLCORE()
 

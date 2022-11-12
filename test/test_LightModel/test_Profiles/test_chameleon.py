@@ -13,7 +13,7 @@ class TestChameleon(object):
     """
     class to test the Moffat profile
     """
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_param_name(self):
@@ -69,7 +69,7 @@ class TestDoubleChameleon(object):
     """
     class to test the Moffat profile
     """
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_param_name(self):
@@ -103,7 +103,7 @@ class TestTripleChameleon(object):
     """
     class to test the Moffat profile
     """
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_param_name(self):

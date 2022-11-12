@@ -12,7 +12,7 @@ from lenstronomy.Data.psf import PSF
 
 class TestImageLinearFit(object):
 
-    def setup(self):
+    def setup_method(self):
         sigma_bkg = .05  # background noise per pixel
         exp_time = 100  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)
         numPix = 100  # cutout pixel size

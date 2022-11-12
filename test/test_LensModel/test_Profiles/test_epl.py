@@ -19,7 +19,7 @@ class TestEPLvsNIE(object):
     """
     tests the Gaussian methods
     """
-    def setup(self):
+    def setup_method(self):
         from lenstronomy.LensModel.Profiles.epl import EPL
         self.EPL = EPL()
         from lenstronomy.LensModel.Profiles.nie import NIE
@@ -157,7 +157,7 @@ class TestEPLvsPEMD(object):
     Test EPL model vs PEMD with FASTELL
     This tests get only executed if fastell is installed
     """
-    def setup(self):
+    def setup_method(self):
         try:
             import fastell4py
             self._fastell4py_bool = True

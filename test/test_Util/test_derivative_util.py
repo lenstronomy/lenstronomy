@@ -12,7 +12,7 @@ class TestCalcUtil(object):
     """
     tests the Gaussian methods
     """
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_d_r_dx(self):

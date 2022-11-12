@@ -13,7 +13,7 @@ class TestSersic(object):
     """
     tests the Gaussian methods
     """
-    def setup(self):
+    def setup_method(self):
         self.sersic = Sersic(smoothing=0.02)
         self.sersic_elliptic = SersicElliptic(smoothing=0.02, sersic_major_axis=True)
         self.core_sersic = CoreSersic(smoothing=0.02, sersic_major_axis=True)

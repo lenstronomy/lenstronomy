@@ -6,7 +6,7 @@ from lenstronomy.Cosmo.background import Background
 
 class TestCosmoProp(object):
 
-    def setup(self):
+    def setup_method(self):
         self.z_L = 0.8
         self.z_S = 3.0
         from astropy.cosmology import FlatLambdaCDM

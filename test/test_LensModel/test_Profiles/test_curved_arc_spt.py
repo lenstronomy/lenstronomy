@@ -8,7 +8,7 @@ from lenstronomy.Util import util
 
 class TestCurvedArcSPT(object):
 
-    def setup(self):
+    def setup_method(self):
         self._curve_spt = CurvedArcSPT()
         self._curve_regular = CurvedArcSISMST()
 

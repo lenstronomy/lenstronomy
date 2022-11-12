@@ -12,7 +12,7 @@ class TestGaussianKappaPot(object):
     """
     test the Gaussian with Gaussian kappa
     """
-    def setup(self):
+    def setup_method(self):
         self.gaussian_kappa = GaussianKappa()
         self.ellipse = GaussianEllipsePotential()
 

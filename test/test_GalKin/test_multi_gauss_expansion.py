@@ -13,7 +13,7 @@ from lenstronomy.GalKin.galkin import Galkin
 
 class TestGalkin(object):
 
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_mge_hernquist_light(self):

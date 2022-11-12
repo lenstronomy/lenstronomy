@@ -15,7 +15,7 @@ class TestMultiPlane(object):
     """
     tests the source model routines
     """
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_update_source_redshift(self):

@@ -17,7 +17,7 @@ from lenstronomy.Plots.multi_patch_plot import MultiPatchPlot
 
 class TestMultiPatchPlot(object):
 
-    def setup(self):
+    def setup_method(self):
         # data specifics
         sigma_bkg = .05  # background noise per pixel (Gaussian)
         exp_time = 100.  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)

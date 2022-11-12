@@ -11,7 +11,7 @@ class TestUldm(object):
     """
     tests the Gaussian methods
     """
-    def setup(self):
+    def setup_method(self):
         self.model = Uldm()
 
     def test_function(self):

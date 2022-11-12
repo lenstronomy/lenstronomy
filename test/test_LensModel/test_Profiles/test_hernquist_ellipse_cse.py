@@ -13,7 +13,7 @@ class TestHernquistEllipseCSE(object):
     """
     tests the Gaussian methods
     """
-    def setup(self):
+    def setup_method(self):
         self.hernquist = Hernquist()
         self.hernquist_cse = HernquistEllipseCSE()
 

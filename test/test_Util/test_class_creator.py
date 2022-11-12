@@ -9,7 +9,7 @@ import unittest
 
 class TestClassCreator(object):
 
-    def setup(self):
+    def setup_method(self):
         self.kwargs_model = {'lens_model_list': ['SIS'], 'source_light_model_list': ['SERSIC'],
                              'lens_light_model_list': ['SERSIC'], 'point_source_model_list': ['LENSED_POSITION'],
                              'index_lens_model_list': [[0]], 'index_source_light_model_list': [[0]],

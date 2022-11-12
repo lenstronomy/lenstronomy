@@ -11,7 +11,7 @@ import pytest
 
 class TestTNFW(object):
 
-    def setup(self):
+    def setup_method(self):
         self.nfw = NFW()
         self.tnfw = TNFW()
 

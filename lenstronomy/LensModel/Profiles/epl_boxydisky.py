@@ -27,7 +27,7 @@ class EPL_BOXYDISKY(LensProfileBase):
         self.m = int(4)
         super(EPL_BOXYDISKY, self).__init__()
 
-    def set_static(self, theta_E, gamma, e1, e2, center_x=0, center_y=0):
+    def set_static(self, theta_E, gamma, e1, e2, a_m, center_x=0, center_y=0):
         """
 
         :param x: x-coordinate in image plane
@@ -75,8 +75,8 @@ class EPL_BOXYDISKY(LensProfileBase):
         _, _, _, phi = self.epl.param_conv(theta_E, gamma, e1, e2)
         x_ = x - center_x
         y_ = y - center_y
-        f_epl = self.epl.function(self, x_, y_, theta_E, gamma, e1, e2)
-        f_multipole = self.multipole.function(self, x_, y_, self.m, a_m, phi)
+        f_epl = self.epl.function(x_, y_, theta_E, gamma, e1, e2)
+        f_multipole = self.multipole.function(x_, y_, self.m, a_m, phi)
         return f_epl + f_multipole
 
     def derivatives(self, x, y, theta_E, gamma, e1, e2, a_m, center_x=0, center_y=0):
@@ -117,7 +117,7 @@ class EPL_BOXYDISKY(LensProfileBase):
         _, _, _, phi = self.epl.param_conv(theta_E, gamma, e1, e2)
         x_ = x - center_x
         y_ = y - center_y
-        f_xx_epl, f_xy_epl, f_yx_epl, f_yy_epl = self.epl.hessian(self, x_, y_, theta_E, gamma, e1, e2)
+        f_xx_epl, f_xy_epl, f_yx_epl, f_yy_epl = self.epl.hessian(x_, y_, theta_E, gamma, e1, e2)
         f_xx_multipole, f_xy_multipole, f_yx_multipole, f_yy_multipole = self.multipole.hessian(x_, y_, self.m,
                                                                                                     a_m, phi)
         f_xx = f_xx_epl + f_xx_multipole

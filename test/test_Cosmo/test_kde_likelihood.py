@@ -11,7 +11,7 @@ from astropy.cosmology import FlatLambdaCDM
 
 class TestKDELikelihood(object):
 
-    def setup(self):
+    def setup_method(self):
         # set up seed
         np.random.seed(seed=41)
 

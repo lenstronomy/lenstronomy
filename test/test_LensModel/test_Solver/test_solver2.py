@@ -15,7 +15,7 @@ class TestSolver(object):
     """
     tests the Gaussian methods
     """
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_subtract(self):

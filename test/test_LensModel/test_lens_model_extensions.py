@@ -11,11 +11,12 @@ import lenstronomy.Util.param_util as param_util
 from lenstronomy.LightModel.light_model import LightModel
 from astropy.cosmology import FlatLambdaCDM
 
+
 class TestLensModelExtensions(object):
     """
     tests the source model routines
     """
-    def setup(self):
+    def setup_method(self):
 
         self.cosmo = FlatLambdaCDM(H0=70, Om0=0.3)
 

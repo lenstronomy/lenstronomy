@@ -9,7 +9,7 @@ from lenstronomy.PointSource.point_source_param import PointSourceParam
 
 class TestParam(object):
 
-    def setup(self):
+    def setup_method(self):
         kwargs_fixed = [{}, {}, {}]
         num_point_sources_list = [4, 1, 1]
         fixed_magnification_list = [True, False, False]

@@ -5,7 +5,7 @@ import numpy.testing as npt
 
 class TestUnlensed(object):
 
-    def setup(self):
+    def setup_method(self):
 
         self.ps = Unlensed()
         self.kwargs = {'point_amp': [2, 1], 'ra_image': [0, 1], 'dec_image': [1, 0]}

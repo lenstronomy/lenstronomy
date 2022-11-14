@@ -12,7 +12,7 @@ import unittest
 
 class TestMultiSourcePlane(object):
 
-    def setup(self):
+    def setup_method(self):
         lens_model_list = ['SIS', 'SIS']
         self.kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}, {'theta_E': 0.5, 'center_x': 1, 'center_y':1}]
         singlePlane = LensModel(lens_model_list=lens_model_list)

@@ -11,7 +11,7 @@ from lenstronomy.GalKin.anisotropy import Anisotropy
 
 class TestAnisotropy(object):
 
-    def setup(self):
+    def setup_method(self):
         self._r_array = np.array([2., 3.])
         self._R_array = 1.
 

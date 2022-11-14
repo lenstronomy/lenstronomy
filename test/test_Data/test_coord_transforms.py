@@ -7,7 +7,7 @@ from lenstronomy.Data.coord_transforms import Coordinates
 
 
 class TestCoordinates(object):
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_init(self):

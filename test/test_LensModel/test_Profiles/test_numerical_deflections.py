@@ -9,6 +9,7 @@ import numpy as np
 import numpy.testing as npt
 import pytest
 
+
 class TestClass():
 
     def __call__(self, x, y, Rs, norm, center_x = 0, center_y = 0):
@@ -78,7 +79,7 @@ class TestNumericalAlpha(object):
     """
     tests the Gaussian methods
     """
-    def setup(self):
+    def setup_method(self):
 
         self.numerical_alpha = NumericalAlpha(custom_class=TestClass())
         self.nfw = NFW()

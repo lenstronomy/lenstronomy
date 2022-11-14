@@ -5,7 +5,7 @@ import numpy as np
 
 class TestApertureTypes(object):
 
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_shell_select(self):

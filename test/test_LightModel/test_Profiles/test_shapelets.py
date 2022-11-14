@@ -10,7 +10,7 @@ class TestShapeletSet(object):
     """
     class to test Shapelets
     """
-    def setup(self):
+    def setup_method(self):
         self.shapeletSet = ShapeletSet()
         self.shapelets = Shapelets(precalc=False)
         self.x, self.y = util.make_grid(10, 0.1, 1)

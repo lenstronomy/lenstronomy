@@ -8,7 +8,7 @@ import pytest
 
 class TestPartialImage(object):
 
-    def setup(self):
+    def setup_method(self):
         self.num = 10
         partial_read_bools = np.zeros((self.num, self.num), dtype=bool)
         partial_read_bools[3, 3] = 1

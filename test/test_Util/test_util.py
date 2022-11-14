@@ -16,6 +16,7 @@ def test_estimate_theta_E():
     approx = util.approx_theta_E(x, y)
     npt.assert_array_less(approx - 1, 0.2)
 
+
 def test_sort_img_index():
 
     ximg,yimg = np.array([1,2,3,4]),np.array([0,0,1,2])

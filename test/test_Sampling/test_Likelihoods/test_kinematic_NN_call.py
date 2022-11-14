@@ -13,6 +13,9 @@ class TestKinNNCall(object):
         self.kinematic_NN=kinematic_NN(cuda=False)
     def test_generate_map(self):
         map=self.kinematic_NN.generate_map(input_p=self.example_input)
-        plt.imshow(map)
-        plt.colorbar()
-        plt.show()
+        #check that returned map is 551x551 pixels at approximately 200 km/s
+        npt.assert_allclose(np.shape(map), (551,551))
+        npt.assert_almost_equal(np.mean(map), 229, decimal=0)
+        # plt.imshow(map)
+        # plt.colorbar()
+        # plt.show()

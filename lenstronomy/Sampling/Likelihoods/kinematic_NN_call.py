@@ -11,7 +11,6 @@ from matplotlib import pyplot as plt
 weights_path = SKiNN.useful_functions.get_weights_path()
 import SKiNN.src.NN_models as NN_models
 scaling_y = SKiNN.useful_functions.get_scaling_y()
-scaling_y=1135.9134111229412 #rescaling from normalized units into velocity, manually imported in this version of SKiNN
 scaling_x = SKiNN.useful_functions.get_scaling_x()
 
 

@@ -25,7 +25,7 @@ class TestChainPlots(object):
     """
     test the fitting sequences
     """
-    def setup(self):
+    def setup_method(self):
         # data specifics
         deltaPix = 0.5  # pixel size in arcsec (area per pixel = deltaPix**2)
         fwhm = 0.5  # full width half max of PSF

@@ -13,7 +13,7 @@ from lenstronomy.GalKin.analytic_kinematics import AnalyticKinematics
 
 class TestMassProfile(object):
 
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_mass_3d(self):

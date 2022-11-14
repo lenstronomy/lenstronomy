@@ -14,7 +14,7 @@ class TestNIE_POTENTIAL(object):
     """
     tests the NIE_POTENTIAL profile for different rotations
     """
-    def setup(self):
+    def setup_method(self):
 
         self.nie_potential = NIE_POTENTIAL()
         self.spep = SPEP()

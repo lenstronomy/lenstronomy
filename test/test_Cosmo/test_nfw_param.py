@@ -12,7 +12,7 @@ class TestLensCosmo(object):
     """
     tests the UnitManager class routines
     """
-    def setup(self):
+    def setup_method(self):
 
         cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.05)
         self.nfwParam = NFWParam(cosmo=cosmo)

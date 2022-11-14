@@ -4,7 +4,7 @@ from lenstronomy.GalKin.analytic_kinematics import AnalyticKinematics
 
 class TestAnalyticKinematics(object):
 
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_sigma_s2(self):

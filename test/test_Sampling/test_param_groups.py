@@ -24,7 +24,7 @@ class ExampleArrayParam(ArrayParam):
 
 
 class TestParamGroup(object):
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_single_param(self):

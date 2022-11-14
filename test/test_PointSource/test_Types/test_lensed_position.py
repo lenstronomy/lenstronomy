@@ -6,7 +6,7 @@ import numpy.testing as npt
 
 class TestLensedPosition(object):
 
-    def setup(self):
+    def setup_method(self):
         lens_model = LensModel(lens_model_list=['SIS'])
         self.kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}]
         self.ps_mag = LensedPositions(lens_model=lens_model, fixed_magnification=True)

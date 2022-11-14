@@ -5,7 +5,7 @@ import unittest
 
 class TestPSF(object):
 
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_displace_psf(self):

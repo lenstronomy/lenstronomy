@@ -9,7 +9,7 @@ from lenstronomy.LightModel.light_param import LightParam
 
 class TestParam(object):
 
-    def setup(self):
+    def setup_method(self):
         self.light_model_list = ['GAUSSIAN', 'MULTI_GAUSSIAN', 'SERSIC', 'SERSIC_ELLIPSE',
                                  'CORE_SERSIC', 'SHAPELETS', 'HERNQUIST',
                                  'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE', 'UNIFORM',

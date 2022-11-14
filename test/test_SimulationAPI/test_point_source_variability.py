@@ -7,7 +7,7 @@ import lenstronomy.Util.data_util as data_util
 
 class TestPointSourceVariability(object):
 
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_image(self):

@@ -11,7 +11,7 @@ class TestDipole(object):
     """
     tests the Gaussian methods
     """
-    def setup(self):
+    def setup_method(self):
         self.dipole = Dipole()
         self.dipole_util = DipoleUtil()
 

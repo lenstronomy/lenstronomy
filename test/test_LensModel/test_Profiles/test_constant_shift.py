@@ -12,7 +12,7 @@ class TestShift(object):
     """
     tests the Gaussian methods
     """
-    def setup(self):
+    def setup_method(self):
         self.shift = Shift()
 
         alpha_x, alpha_y = 10., 0.1

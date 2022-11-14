@@ -6,7 +6,7 @@ import pytest
 
 class TestPointSourceCached(object):
 
-    def setup(self):
+    def setup_method(self):
         self.ps_cached = PointSourceCached(Unlensed(), save_cache=True)
         self.ps = Unlensed()
         self.kwargs_ps = {'ra_image': [1], 'dec_image': [0], 'point_amp': [1]}

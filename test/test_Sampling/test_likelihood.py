@@ -17,7 +17,7 @@ class TestLikelihoodModule(object):
     test the fitting sequences
     """
 
-    def setup(self):
+    def setup_method(self):
         np.random.seed(42)
 
         # data specifics

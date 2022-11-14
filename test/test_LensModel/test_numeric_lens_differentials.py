@@ -76,8 +76,7 @@ class TestNumericsProfile(object):
         # x, y = 1., 2.
 
         x = np.linspace(start=0.1, stop=5.5, num=10)
-        y = np.linspace(start=0.1, stop=5.5, num=10)
-        x,y = np.meshgrid(x,y)
+        y = np.zeros_like(x)
 
         lensModel = LensModel(lens_model)
         f_xx, f_xy, f_yx, f_yy = lensModel.hessian(x, y, [kwargs])

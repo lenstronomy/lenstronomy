@@ -106,6 +106,7 @@ class FittingSequence(object):
                 elif kwargs['init_samples'] is None:
                     kwargs['init_samples'] = self._mcmc_init_samples
                 mcmc_output = self.mcmc(**kwargs)
+                # mcmc_output = self.mcmc(**kwargs, **kwargs_zeus) # NHmod
                 kwargs_result = self._result_from_mcmc(mcmc_output)
                 self._updateManager.update_param_state(**kwargs_result)
                 chain_list.append(mcmc_output)
@@ -214,7 +215,7 @@ class FittingSequence(object):
 
     def mcmc(self, n_burn, n_run, walkerRatio=None, n_walkers=None, sigma_scale=1, threadCount=1, init_samples=None,
              re_use_samples=True, sampler_type='EMCEE', progress=True, backend_filename=None, start_from_backend=False,
-             zeus_settings = None):
+             **kwargs_zeus):
         """
         MCMC routine
 
@@ -275,24 +276,7 @@ class FittingSequence(object):
             samples, dist = mcmc_class.mcmc_zeus(n_walkers, n_run, n_burn, mean_start, sigma_start,
                                                  mpi=self._mpi, threadCount=threadCount,
                                                  progress=progress, initpos = initpos, backend_filename = backend_filename,
-                                                 # zeus only; checks the dict for the key and if not present returns the given value
-                                                 autocorrelation_callback=zeus_settings.get('autocorrelation_callback', False),
-                                                 ncheck=zeus_settings.get('ncheck', 100), dact=zeus_settings.get('dact', 0.01),
-                                                 nact=zeus_settings.get('nact', 50),
-                                                 discard=zeus_settings.get('discard', 0.5),
-                                                 trigger=zeus_settings.get('trigger', True),
-                                                 method=zeus_settings.get('method', 'mk'),
-                                                 splitr_callback=zeus_settings.get('splitr_callback', False),
-                                                 epsilon=zeus_settings.get('epsilon', 0.01), nsplits=zeus_settings.get('nsplits', 2),
-                                                 miniter_callback=zeus_settings.get('miniter_callback', False),
-                                                 nmin=zeus_settings.get('nmin', 1000),
-                                                 moves=zeus_settings.get('moves'), tune=zeus_settings.get('tune', True),
-                                                 tolerance=zeus_settings.get('tolerance', 0.05), patience=zeus_settings.get('patience', 5),
-                                                 maxsteps=zeus_settings.get('maxsteps', 10000), mu=zeus_settings.get('mu', 1.0),
-                                                 maxiter=zeus_settings.get('maxiter', 10000), pool=zeus_settings.get('pool', None),
-                                                 vectorize=zeus_settings.get('vectorize', False), blobs_dtype=zeus_settings.get('blobs_dtype'),
-                                                 verbose=zeus_settings.get('verbose', True), check_walkers=zeus_settings.get('check_walkers', True),
-                                                 shuffle_ensemble=zeus_settings.get('shuffle_ensemble', True), light_mode=zeus_settings.get('light_mode', False))
+                                                 **kwargs_zeus)
             output = [sampler_type, samples, param_list, dist]
         else:
             raise ValueError('sampler_type %s not supported!' % sampler_type)

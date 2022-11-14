@@ -233,7 +233,7 @@ class Sampler(object):
 
         # zeus kwargs; checks the dict for the key and if not present returns the given value
         autocorrelation_callback = kwargs_zeus.get('autocorrelation_callback', False)
-        ncheck = kwargs_zeus.get('ncheck', 100)
+        ncheck = kwargs_zeus.get('ncheck', 1)
         dact = kwargs_zeus.get('dact', 0.01)
         nact = kwargs_zeus.get('nact', 50)
         discard = kwargs_zeus.get('discard', 0.5)
@@ -305,6 +305,8 @@ class Sampler(object):
         sampler.run_mcmc(initpos, n_run_eff, progress=progress, callbacks=callback_list)
 
         flat_samples = sampler.get_chain(flat=True, thin=1, discard=n_burn)
+
+        print(len(flat_samples))
 
         dist = sampler.get_log_prob(flat=True, thin=1, discard=n_burn)
 

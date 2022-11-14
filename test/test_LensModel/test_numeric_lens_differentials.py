@@ -76,7 +76,8 @@ class TestNumericsProfile(object):
         # x, y = 1., 2.
 
         x = np.linspace(start=0.1, stop=5.5, num=10)
-        y = np.zeros_like(x)
+        y = np.linspace(start=0.1, stop=5.5, num=10)
+        x,y = np.meshgrid(x,y)
 
         lensModel = LensModel(lens_model)
         f_xx, f_xy, f_yx, f_yy = lensModel.hessian(x, y, [kwargs])
@@ -283,7 +284,7 @@ class TestNumericsProfile(object):
         self.assert_differentials(lens_model, kwargs)
 
     def test_EPL_BOXYDISKY(self):
-        kwargs = {'theta_E': 2., 'e1': 0.1, 'e2': 0., 'gamma': 2.13, 'a_m': 0.01}
+        kwargs = {'theta_E': 2., 'e1': 0.1, 'e2': 0., 'gamma': 2.13, 'a_m': 0.1}
         lens_model = ['EPL_BOXYDISKY']
         self.assert_differentials(lens_model, kwargs)
 

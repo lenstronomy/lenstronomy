@@ -139,6 +139,24 @@ class TestSampler(object):
 
         os.remove(backup_filename)
 
+        # test callbacks
+        autocorrelation_callback = True
+        splitr_callback = True
+        miniter_callback = True
+
+        samples_ac, dist_ac = self.sampler.mcmc_zeus(n_walkers, n_run, n_burn, mean_start, sigma_start,
+                                                     autocorrelation_callback=autocorrelation_callback)
+        assert len(samples_ac) == n_walkers * n_run
+
+        # the default nsplits is 2, here we set it to 1 because the test chain is very short
+        # i.e. 4/3 != integer; 4/2 = integer
+        samples_sp, dist_sp = self.sampler.mcmc_zeus(n_walkers, n_run, n_burn, mean_start, sigma_start,
+                                                     splitr_callback=splitr_callback, nsplits=1)
+        assert len(samples_sp) == n_walkers * n_run
+
+        samples_mi, dist_mi = self.sampler.mcmc_zeus(n_walkers, n_run, n_burn, mean_start, sigma_start,
+                                                     miniter_callback=miniter_callback)
+        assert len(samples_mi) == n_walkers * n_run
 
 if __name__ == '__main__':
     pytest.main()

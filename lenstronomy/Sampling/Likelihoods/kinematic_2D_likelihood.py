@@ -128,7 +128,7 @@ class KinLikelihood(object):
 
         for idx in range(len(self.data)):
             math_pos = np.where(self.bin_mask == idx)
-            numerator.append(np.sum(wmCar_con[math_pos]))
+            numerator.append(np.sum(wmCar_con[math_pos]*mgeCar_con[math_pos]))
             denominator.append(np.sum(mgeCar_con[math_pos]))
 
 

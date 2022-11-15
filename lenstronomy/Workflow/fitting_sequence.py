@@ -106,7 +106,6 @@ class FittingSequence(object):
                 elif kwargs['init_samples'] is None:
                     kwargs['init_samples'] = self._mcmc_init_samples
                 mcmc_output = self.mcmc(**kwargs)
-                # mcmc_output = self.mcmc(**kwargs, **kwargs_zeus) # NHmod
                 kwargs_result = self._result_from_mcmc(mcmc_output)
                 self._updateManager.update_param_state(**kwargs_result)
                 chain_list.append(mcmc_output)
@@ -235,8 +234,7 @@ class FittingSequence(object):
         :param start_from_backend: if True, start from the state saved in `backup_filename`.
          Otherwise, create a new backup file with name `backup_filename` (any already existing file is overwritten!).
         :type start_from_backend: bool
-        :param zeus_settings: dictionary of zeus-specific kwargs
-        :type zeus_settings: dictionary
+        :param **kwargs_zeus: zeus-specific kwargs
         :return: list of output arguments, e.g. MCMC samples, parameter names, logL distances of all samples specified
          by the specific sampler used
         """
@@ -273,6 +271,7 @@ class FittingSequence(object):
             output = [sampler_type, samples, param_list, dist]
 
         elif sampler_type == 'ZEUS':
+
             samples, dist = mcmc_class.mcmc_zeus(n_walkers, n_run, n_burn, mean_start, sigma_start,
                                                  mpi=self._mpi, threadCount=threadCount,
                                                  progress=progress, initpos = initpos, backend_filename = backend_filename,

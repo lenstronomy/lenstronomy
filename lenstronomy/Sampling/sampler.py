@@ -232,21 +232,6 @@ class Sampler(object):
         num_param, _ = self.chain.param.num_param()
 
         # zeus kwargs; checks the dict for the key and if not present returns the given value
-        autocorrelation_callback = kwargs_zeus.get('autocorrelation_callback', False)
-        ncheck = kwargs_zeus.get('ncheck', 1)
-        dact = kwargs_zeus.get('dact', 0.01)
-        nact = kwargs_zeus.get('nact', 50)
-        discard = kwargs_zeus.get('discard', 0.5)
-        trigger = kwargs_zeus.get('trigger', True)
-        method = kwargs_zeus.get('method', 'mk')
-
-        splitr_callback = kwargs_zeus.get('splitr_callback', False)
-        epsilon = kwargs_zeus.get('epsilon', 0.01)
-        nsplits = kwargs_zeus.get('nsplits', 2)
-
-        miniter_callback=kwargs_zeus.get('miniter_callback', False)
-        nmin = kwargs_zeus.get('nmin', 1000)
-
         moves = kwargs_zeus.get('moves')
         tune = kwargs_zeus.get('tune', True)
         tolerance = kwargs_zeus.get('tolerance', 0.05)
@@ -261,6 +246,20 @@ class Sampler(object):
         check_walkers = kwargs_zeus.get('check_walkers', True)
         shuffle_ensemble = kwargs_zeus.get('shuffle_ensemble', True)
         light_mode = kwargs_zeus.get('light_mode', False)
+
+        # kwargs specifically for the callbacks
+        autocorrelation_callback = kwargs_zeus.get('autocorrelation_callback', False)
+        ncheck = kwargs_zeus.get('ncheck', 1)
+        dact = kwargs_zeus.get('dact', 0.01)
+        nact = kwargs_zeus.get('nact', 50)
+        discard = kwargs_zeus.get('discard', 0.5)
+        trigger = kwargs_zeus.get('trigger', True)
+        method = kwargs_zeus.get('method', 'mk')
+        splitr_callback = kwargs_zeus.get('splitr_callback', False)
+        epsilon = kwargs_zeus.get('epsilon', 0.01)
+        nsplits = kwargs_zeus.get('nsplits', 2)
+        miniter_callback=kwargs_zeus.get('miniter_callback', False)
+        nmin = kwargs_zeus.get('nmin', 1000)
 
         if initpos is None:
             initpos = sampling_util.sample_ball_truncated(mean_start, sigma_start, self.lower_limit, self.upper_limit,
@@ -300,13 +299,12 @@ class Sampler(object):
                                        moves=moves, tune=tune, tolerance=tolerance, patience=patience,
                                        maxsteps=maxsteps, mu=mu, maxiter=maxiter, pool=pool, vectorize=vectorize,
                                        blobs_dtype=blobs_dtype, verbose=verbose, check_walkers=check_walkers,
-                                       shuffle_ensemble=shuffle_ensemble, light_mode=light_mode)
+                                       shuffle_ensemble=shuffle_ensemble, light_mode=light_mode
+                                       )
 
         sampler.run_mcmc(initpos, n_run_eff, progress=progress, callbacks=callback_list)
 
         flat_samples = sampler.get_chain(flat=True, thin=1, discard=n_burn)
-
-        print(len(flat_samples))
 
         dist = sampler.get_log_prob(flat=True, thin=1, discard=n_burn)
 

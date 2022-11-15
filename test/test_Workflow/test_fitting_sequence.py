@@ -20,7 +20,7 @@ class TestFittingSequence(object):
     test the fitting sequences
     """
 
-    def setup(self):
+    def setup_method(self):
 
         # data specifics
         sigma_bkg = 0.05  # background noise per pixel

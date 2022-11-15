@@ -50,7 +50,7 @@ class TestKinLikelihood(object):
                                                        [0.1,0.9]]),
                        'ra_at_xy_0':2.,'dec_at_xy_0':-2.}
 
-        self.KinLikelihood = KinLikelihood(_KinData,LensModel,lensLightModel,kwargs_data,idx_lens=0,idx_lens_light=0,cuda=False)
+        self.KinLikelihood = KinLikelihood(_KinData,lensModel,lensLightModel,kwargs_data,idx_lens=0,idx_lens_light=0,cuda=False)
 
         self.kwargs_special = {'D_dt': 1988, 'b_ani':0.1, 'incli':0.,'D_d':2000}
         self.z_d=0.5

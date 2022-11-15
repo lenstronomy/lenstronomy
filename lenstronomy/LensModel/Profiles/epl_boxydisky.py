@@ -121,7 +121,7 @@ class EPL_BOXYDISKY(LensProfileBase):
         f_xx_multipole, f_xy_multipole, f_yx_multipole, f_yy_multipole = self.multipole.hessian(x_, y_, self.m,
                                                                                                     a_m, phi)
         f_xx = f_xx_epl + f_xx_multipole
-        f_xy = f_xy_epl = f_xy_multipole
+        f_xy = f_xy_epl + f_xy_multipole
         f_yx = f_yx_epl + f_yx_multipole
         f_yy = f_yy_epl + f_yy_multipole
         return f_xx, f_xy, f_yx, f_yy

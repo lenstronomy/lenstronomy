@@ -67,7 +67,7 @@ class KinLikelihood(object):
         self.KiNNalign = KinNN_image_align(self.kin_input, self.image_input, self.kinNN_input)
         self.rotated_velo = self.KiNNalign.interp_image()
         #Convolution by PSF to calculate Vrms and binning
-        vrms = self.auto_binning(rotated_velo,light_map)
+        vrms = self.auto_binning(self.rotated_velo,light_map)
         logL = self._logL(vrms)
 
         return logL

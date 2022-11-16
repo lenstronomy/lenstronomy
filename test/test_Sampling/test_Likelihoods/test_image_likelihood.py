@@ -5,7 +5,7 @@ import pytest
 
 class TestImageLikelihood(object):
 
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_create_im_sim(self):

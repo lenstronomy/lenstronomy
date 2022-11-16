@@ -14,7 +14,7 @@ class TestLensPlot(object):
     """
     test the fitting sequences
     """
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_lens_model_plot(self):

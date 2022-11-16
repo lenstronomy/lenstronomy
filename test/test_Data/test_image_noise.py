@@ -8,7 +8,7 @@ import lenstronomy.Data.image_noise as image_noise
 
 
 class TestData(object):
-    def setup(self):
+    def setup_method(self):
         self.numPix = 10
         kwargs_noise = {'image_data': np.zeros((self.numPix, self.numPix)), 'exposure_time': 1, 'background_rms': 1,
                         'noise_map': None, 'verbose': True}

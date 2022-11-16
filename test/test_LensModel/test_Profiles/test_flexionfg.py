@@ -12,7 +12,7 @@ class TestFlexionfg(object):
     """
     tests the Gaussian methods
     """
-    def setup(self):
+    def setup_method(self):
         self.flex = Flexionfg()
         F1, F2, G1, G2= 0.02, 0.03, -0.04, -0.05
         self.kwargs_lens = {'F1': F1, 'F2': F2, 'G1': G1, 'G2': G2}

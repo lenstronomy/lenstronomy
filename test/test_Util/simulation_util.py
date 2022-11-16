@@ -6,7 +6,7 @@ import pytest
 
 
 class TestSimulation(object):
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_data_configure_simple(self):

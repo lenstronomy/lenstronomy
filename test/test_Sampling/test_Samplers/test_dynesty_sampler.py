@@ -29,7 +29,7 @@ class TestDynestySampler(object):
     test the fitting sequences
     """
 
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_sampler(self, import_fixture):

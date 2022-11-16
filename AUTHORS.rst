@@ -31,15 +31,16 @@ Contributors (alphabetic)
 * Tyler Hughes
 * Daniel Johnson `DanJohnson98 <https://github.com/DanJohnson98>`_
 * Felix A. Kuhn
+* Zhiyuan Ma `Jerry-Ma <https://github.com/Jerry-Ma/>`_
 * Felix Mayor
 * Martin Millon `martin-millon <https://github.com/martin-millon/>`_
 * Robert Morgan `rmorgan10 <https://github.com/rmorgan10/>`_
 * Anna Nierenberg `amn3142 <https://github.com/amn3142/>`_
 * Brian Nord `bnord <https://github.com/bnord/>`_
+* Jackson O'Donnell `jhod0 <https://github.com/jhod0/>`_
 * Maverick S. H. Oh `Maverick-Oh <https://github.com/Maverick-Oh>`_
 * Giulia Pagano
 * Ji Won Park `jiwoncpark <https://github.com/jiwoncpark/>`_
-* Jackson O'Donnell `jhod0 <https://github.com/jhod0/>`_
 * Thomas Schmidt `Thomas-01 <https://github.com/Thomas-01/>`_
 * Dominique Sluse
 * Luca Teodori `lucateo <https://github.com/lucateo/>`_
@@ -50,7 +51,9 @@ Contributors (alphabetic)
 * Cyril Welschen
 * Ewoud Wempe `ewoudwempe <https://github.com/ewoudwempe/>`_
 * Lilan Yang `ylilan <https://github.com/ylilan/>`_
-* Zhiyuan Ma `Jerry-Ma <https://github.com/Jerry-Ma/>`_
+* Nan Zhang `nanz6 <https://github.com/nanz6/>`_
+
+
 
 
 

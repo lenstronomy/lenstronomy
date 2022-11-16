@@ -13,7 +13,7 @@ class TestHessian(object):
     """
     tests the Gaussian methods
     """
-    def setup(self):
+    def setup_method(self):
         self.hessian = Hessian()
 
         self.f_xx, self.f_yy, self.f_xy, self.f_yx = 0.1, 0.1, -0.1, -0.1

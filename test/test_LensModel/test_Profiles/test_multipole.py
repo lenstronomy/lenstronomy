@@ -7,11 +7,12 @@ import numpy as np
 import pytest
 import numpy.testing as npt
 
+
 class TestMultipole(object):
     """
     tests the Gaussian methods
     """
-    def setup(self):
+    def setup_method(self):
         self.Multipole = Multipole()
 
     def test_function(self):

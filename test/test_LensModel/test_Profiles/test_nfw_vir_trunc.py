@@ -14,7 +14,7 @@ class TestNFW(object):
     """
     tests the Gaussian methods
     """
-    def setup(self):
+    def setup_method(self):
         z_lens = 0.55
         z_source = 2.5
         from astropy.cosmology import FlatLambdaCDM

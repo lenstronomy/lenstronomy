@@ -9,7 +9,7 @@ import lenstronomy.Plots.plot_util as plot_util
 
 class TestPlotUtil(object):
 
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_sqrt(self):

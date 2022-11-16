@@ -10,7 +10,7 @@ import numpy as np
 
 class TestLightCone(object):
 
-    def setup(self):
+    def setup_method(self):
         # define a cosmology
         cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.05)
         self._cosmo = cosmo

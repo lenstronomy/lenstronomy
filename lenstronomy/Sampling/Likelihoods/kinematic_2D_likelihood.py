@@ -23,6 +23,7 @@ class KinLikelihood(object):
         :param idx_lens_light: int, index of the lens LightModel profile to consider for kinematics
         """
         self.lens_model_class = lens_model_class
+        self.z_lens = self.lens_model_class.z_lens
         self.lens_light_model_class = lens_light_model_class
         self._idx_lens = idx_lens
         self._idx_lens_light = idx_lens_light
@@ -51,7 +52,7 @@ class KinLikelihood(object):
         D_dt_fiducial = (1 + z_d_fiducial) * D_d_fiducial * D_s_fiducial / D_ds_fiducial
         self.fiducial_scale = D_dt_fiducial / (D_d_fiducial * (1 + z_d_fiducial))
 
-    def logL(self, kwargs_lens, kwargs_lens_light, kwargs_special, z_d):
+    def logL(self, kwargs_lens, kwargs_lens_light, kwargs_special):
         """
         Calculates Log likelihood from 2D kinematic likelihood
         """
@@ -60,7 +61,7 @@ class KinLikelihood(object):
                                                                    self.lens_light_bool_list)
         input_params=self.convert_to_NN_params(kwargs_lens,kwargs_lens_light,kwargs_special)
         velo_map = self.kinematic_NN.generate_map(input_params)
-        velo_map=self.rescale_distance(velo_map,kwargs_special,z_d) #RESCALE ACCORDING TO D_d, D_dt
+        velo_map=self.rescale_distance(velo_map,kwargs_special,self.z_lens) #RESCALE ACCORDING TO D_d, D_dt
         #Rotation and interpolation in kin data coordinates
         self.kinNN_input['image']=velo_map
         #recreate KiNNalign class. might be smarter to create KiNNalign.update function
@@ -82,11 +83,11 @@ class KinLikelihood(object):
         return np.array([9.44922512e-01, 8.26468232e-01, 1.00161407e+00, 3.10945081e+00, 7.90308638e-01, 1.00000000e-04,
                          4.60606795e-01, 2.67345695e-01, 8.93001866e+01])
 
-    def rescale_distance(self, image, kwargs_special, z_d):
+    def rescale_distance(self, image, kwargs_special):
         """
-        rescales velocity map according to distance, requires lens redshift z_d
+        rescales velocity map according to distance, requires lens redshift
         """
-        new_scale = kwargs_special['D_dt'] / (kwargs_special['D_d'] * (1 + z_d))
+        new_scale = kwargs_special['D_dt'] / (kwargs_special['D_d'] * (1 +self.z_lens))
         factor = np.sqrt(
             new_scale / self.fiducial_scale)  # sigma^2 propto D_dt/Dd (see https://arxiv.org/pdf/2109.14615.pdf Eq. 20)
         return image * factor

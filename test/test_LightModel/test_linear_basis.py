@@ -4,7 +4,7 @@ from lenstronomy.LightModel.linear_basis import LinearBasis
 
 class TestLinearBasis(object):
 
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_linear_param_from_kwargs(self):

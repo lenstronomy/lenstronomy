@@ -11,7 +11,7 @@ class TestPowerLaw(object):
     """
     class to test the Moffat profile
     """
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_function(self):

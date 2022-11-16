@@ -22,7 +22,7 @@ class TestNIE(object):
     """
     tests the Gaussian methods
     """
-    def setup(self):
+    def setup_method(self):
 
         self.nie = NIE()
         self.spemd = SPEMD(suppress_fastell=True)
@@ -121,7 +121,7 @@ class TestNIE(object):
 
 class TestNIEMajorAxis(object):
 
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_kappa(self):

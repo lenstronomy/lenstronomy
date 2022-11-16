@@ -12,7 +12,7 @@ class TestConvergence(object):
     """
     tests the Gaussian methods
     """
-    def setup(self):
+    def setup_method(self):
         self.profile = Convergence()
         self.kwargs_lens = {'kappa': 0.1}
 

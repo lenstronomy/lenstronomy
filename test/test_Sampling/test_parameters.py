@@ -12,7 +12,7 @@ from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 
 class TestParam(object):
 
-    def setup(self):
+    def setup_method(self):
         kwargs_model = {'lens_model_list': ['SPEP'], 'source_light_model_list': ['GAUSSIAN'],
                         'lens_light_model_list': ['SERSIC'], 'point_source_model_list': ['LENSED_POSITION'],
                         'multi_plane': True, 'lens_redshift_list': [0.5], 'z_source': 2, 'source_redshift_list': [0.5]}

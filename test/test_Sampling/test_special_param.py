@@ -8,7 +8,7 @@ from lenstronomy.Sampling.special_param import SpecialParam
 
 class TestParam(object):
 
-    def setup(self):
+    def setup_method(self):
         self.param = SpecialParam(Ddt_sampling=True, kwargs_fixed=None, point_source_offset=True, num_images=2,
                                   source_size=True, num_tau0=2, num_z_sampling=3, source_grid_offset=True,
                                   kinematic_sampling=True)

@@ -161,6 +161,9 @@ def psf_iteration_compare(kwargs_psf, **kwargs):
     if psf_error_map is not None:
         ax = axes[3]
         im = ax.matshow(np.log10(psf_error_map*psf.kernel_point_source**2), origin='lower', **kwargs)
+        n_kernel = len(psf_error_map)
+        delta_x = n_kernel / 20.
+        delta_y = n_kernel / 10.
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         plt.colorbar(im, cax=cax)

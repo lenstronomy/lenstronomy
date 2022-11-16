@@ -65,5 +65,6 @@ class TestZTF(unittest.TestCase):
         kwargs_g = util.merge_dicts(self.g.camera, self.g.obs)
         self.assertEqual(self.g.kwargs_single_band(), kwargs_g)
 
+
 if __name__ == '__main__':
     unittest.main()

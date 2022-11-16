@@ -11,7 +11,7 @@ import lenstronomy.Util.image_util as image_util
 
 class TestData(object):
 
-    def setup(self):
+    def setup_method(self):
         self.deltaPix = 0.05
         fwhm = 0.2
         kwargs_gaussian = {'psf_type': 'GAUSSIAN', 'fwhm': fwhm, 'truncation': 5, 'pixel_size': self.deltaPix}

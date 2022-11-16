@@ -5,7 +5,7 @@ import pytest
 
 class TestUpdateManager(object):
 
-    def setup(self):
+    def setup_method(self):
         kwargs_model = {'lens_model_list': ['SHEAR', 'SHEAR'], 'source_light_model_list': ['UNIFORM'], 'optical_depth_model_list': []}
         kwargs_constraints ={}
         kwargs_likelihood = {}

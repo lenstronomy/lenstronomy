@@ -12,7 +12,7 @@ class TestP_JAFFW(object):
     """
     tests the Gaussian methods
     """
-    def setup(self):
+    def setup_method(self):
         self.profile = PJaffe_Ellipse()
 
     def test_function(self):

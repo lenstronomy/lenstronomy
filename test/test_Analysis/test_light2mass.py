@@ -4,9 +4,10 @@ import numpy.testing as npt
 from lenstronomy.Analysis import light2mass
 from lenstronomy.LightModel.light_model import LightModel
 
+
 class TestLight2Mass(object):
 
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_light2mass_conversion(self):

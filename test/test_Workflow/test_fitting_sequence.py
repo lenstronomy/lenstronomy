@@ -20,7 +20,7 @@ class TestFittingSequence(object):
     test the fitting sequences
     """
 
-    def setup(self):
+    def setup_method(self):
 
         # data specifics
         sigma_bkg = 0.05  # background noise per pixel
@@ -271,7 +271,7 @@ class TestFittingSequence(object):
                                           kwargs_params)
 
         fitting_list = []
-        kwargs_zeus = {'sampler_type': 'ZEUS', 'n_burn': 2, 'n_run': 2, 'walkerRatio': 4}
+        kwargs_zeus = {'sampler_type': 'ZEUS', 'n_burn': 2, 'n_run': 2, 'walkerRatio': 4, 'backend_filename': 'test_mcmc_zeus.h5'}
 
         fitting_list.append(['MCMC', kwargs_zeus])
 

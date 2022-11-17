@@ -95,7 +95,7 @@ class KinLikelihood(object):
         #                  4.60606795e-01, 2.67345695e-01, 8.93001866e+01])
         return np.array([q_mass, q_light, thetaE_GLEE, kwargs_lens_light[self._idx_lens]['n_sersic'],
                          kwargs_lens_light[self._idx_lens]['R_sersic'], 1.0e-04, gamma_GLEE,
-                        kwargs_special['b_ani'], kwargs_special['incli']*np.pi/180])
+                        kwargs_special['b_ani'], kwargs_special['incli']*180/np.pi])
 
     def rescale_distance(self, image, kwargs_special, z_d):
         """

@@ -63,8 +63,7 @@ class KinLikelihood(object):
         velo_map=self.rescale_distance(velo_map,kwargs_special,z_d) #RESCALE ACCORDING TO D_d, D_dt
         #Rotation and interpolation in kin data coordinates
         self.kinNN_input['image']=velo_map
-        #recreate KiNNalign class. might be smarter to create KiNNalign.update function
-        self.KiNNalign = KinNN_image_align(self.kin_input, self.image_input, self.kinNN_input)
+        self.KiNNalign.update(self.kin_input, self.image_input, self.kinNN_input)
         self.rotated_velo = self.KiNNalign.interp_image()
         #Convolution by PSF to calculate Vrms and binning
         vrms = self.auto_binning(self.rotated_velo,light_map)

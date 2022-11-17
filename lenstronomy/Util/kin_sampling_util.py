@@ -38,6 +38,25 @@ class KinNN_image_align(object):
         self.hst_data = hst_inputs
         self.hst_deltapix = np.sqrt(np.abs(np.linalg.det(self.hst_data['transform_pix2angle'])))
         self.kinNN_data = kinNN_inputs
+        self.write_npix()
+
+    def update(self, muse_inputs=None, hst_inputs=None, kinNN_inputs=None, update_npix=False):
+        """
+        Update with inputs
+        """
+        if muse_inputs is not None:
+            self.muse_data = muse_inputs
+        if hst_inputs is not None:
+            self.hst_data = hst_inputs
+        if kinNN_inputs is not None:
+            self.kinNN_data = kinNN_inputs
+        if update_npix:
+            self.write_npix()
+
+    def write_npix(self):
+        """
+        Check that images are squared and write the keyword 'npix'
+        """
         for input_set in [self.muse_data, self.hst_data, self.kinNN_data]:
             # make sure each image is square and add npix to each dictionary
             if 'image' in input_set.keys():

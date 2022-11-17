@@ -82,7 +82,7 @@ class KinLikelihood(object):
         orientation_light, q_light = param_util.ellipticity2phi_q(kwargs_lens_light[self._idx_lens]['e1'],
                                                                    kwargs_lens_light[self._idx_lens]['e2'])
         thetaE_lenstro=kwargs_lens[self._idx_lens]['theta_E']
-        if self.lens_model_class[self._idx_lens]=='SIE':
+        if self.lens_model_class.lens_model_list[self._idx_lens]=='SIE':
             gamma_lenstro=2.0
         else:
             gamma_lenstro=kwargs_lens[self._idx_lens]['gamma']

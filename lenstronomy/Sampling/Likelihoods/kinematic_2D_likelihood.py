@@ -135,7 +135,7 @@ class KinLikelihood(object):
         wm2Car = rotated_map
         mgeCar = light_map
 
-        wm2Car_con = signal.fftconvolve(wmCar, self.psf, mode='same')
+        wm2Car_con = signal.fftconvolve(wm2Car, self.psf, mode='same')
         mgeCar_con = signal.fftconvolve(mgeCar, self.psf, mode='same')
 
         numerator = []

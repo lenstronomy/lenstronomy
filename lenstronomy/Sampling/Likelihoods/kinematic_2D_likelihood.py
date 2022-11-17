@@ -77,10 +77,25 @@ class KinLikelihood(object):
         converts lenstronomy kwargs into input vector for SKiNN
         """
         # lenstronomy to GLEE conversion
+        orientation_mass, q_mass = param_util.ellipticity2phi_q(kwargs_lens[self._idx_lens]['e1'],
+                                                              kwargs_lens[self._idx_lens]['e2'])
+        orientation_light, q_light = param_util.ellipticity2phi_q(kwargs_lens_light[self._idx_lens]['e1'],
+                                                                   kwargs_lens_light[self._idx_lens]['e2'])
+        thetaE_lenstro=kwargs_lens[self._idx_lens]['theta_E']
+        if self.lens_model_class[self._idx_lens]=='SIE':
+            gamma_lenstro=2.0
+        else:
+            gamma_lenstro=kwargs_lens[self._idx_lens]['gamma']
+        gamma_GLEE=(gamma_lenstro-1)/2
+        RE_scale=(2/(1+q_mass))**(1/(2*gamma_GLEE)) * np.sqrt(q_mass)
+        thetaE_GLEE=thetaE_lenstro/RE_scale
         # return [kwargs_lens['theta_E'],kwargs_lens['gamma']] #list of input params
-        print('WARNING: conversion to NN params not yet implemented. Returning test values.')
-        return np.array([9.44922512e-01, 8.26468232e-01, 1.00161407e+00, 3.10945081e+00, 7.90308638e-01, 1.00000000e-04,
-                         4.60606795e-01, 2.67345695e-01, 8.93001866e+01])
+        # print('WARNING: conversion to NN params not yet implemented. Returning test values.')
+        # return np.array([9.44922512e-01, 8.26468232e-01, 1.00161407e+00, 3.10945081e+00, 7.90308638e-01, 1.00000000e-04,
+        #                  4.60606795e-01, 2.67345695e-01, 8.93001866e+01])
+        return np.array([q_mass, q_light, thetaE_GLEE, kwargs_lens_light[self._idx_lens]['n_sersic'],
+                         kwargs_lens_light[self._idx_lens]['R_sersic'], 1.0e-04, gamma_GLEE,
+                        kwargs_special['b_ani'], kwargs_special['incli']*np.pi/180])
 
     def rescale_distance(self, image, kwargs_special, z_d):
         """

@@ -132,10 +132,10 @@ class KinLikelihood(object):
         """
         Function to convolve and bin the NN rotated output
         """
-        wmCar = rotated_map
+        wm2Car = rotated_map
         mgeCar = light_map
 
-        wmCar_con = signal.fftconvolve(wmCar, self.psf, mode='same')
+        wm2Car_con = signal.fftconvolve(wmCar, self.psf, mode='same')
         mgeCar_con = signal.fftconvolve(mgeCar, self.psf, mode='same')
 
         numerator = []
@@ -143,11 +143,11 @@ class KinLikelihood(object):
 
         for idx in range(len(self.data)):
             math_pos = np.where(self.bin_mask == idx)
-            numerator.append(np.sum(wmCar_con[math_pos]*mgeCar_con[math_pos]))
+            numerator.append(np.sum(wm2Car_con[math_pos]))
             denominator.append(np.sum(mgeCar_con[math_pos]))
 
 
-        Vrms = (np.array(numerator) / np.array(denominator)).clip(0)
+        Vrms = np.sqrt(np.array(numerator) / np.array(denominator)).clip(0)
 
         return Vrms
 

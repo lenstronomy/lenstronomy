@@ -13,7 +13,7 @@ class TestExternalShear(object):
     """
     tests the Gaussian methods
     """
-    def setup(self):
+    def setup_method(self):
         self.flex = Flexion()
 
         g1, g2, g3, g4 = 0.01, 0.02, 0.03, 0.04

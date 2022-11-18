@@ -10,7 +10,7 @@ import unittest
 
 class TestPointSourceRendering(object):
 
-    def setup(self):
+    def setup_method(self):
         Mpix2coord = np.array([[1, 0], [0, 1]])
         kwargs_grid = {'ra_at_xy_0': 0, 'dec_at_xy_0': 0,
                        'transform_pix2angle': Mpix2coord, 'nx': 10, 'ny': 10}

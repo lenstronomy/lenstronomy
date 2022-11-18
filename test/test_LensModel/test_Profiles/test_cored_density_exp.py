@@ -11,7 +11,7 @@ class TestCoredDensityExp(object):
     """
     tests the Gaussian methods
     """
-    def setup(self):
+    def setup_method(self):
         self.model = CoredDensityExp()
 
     def test_function(self):

@@ -214,11 +214,7 @@ class FittingSequence(object):
 
     def mcmc(self, n_burn, n_run, walkerRatio=None, n_walkers=None, sigma_scale=1, threadCount=1, init_samples=None,
              re_use_samples=True, sampler_type='EMCEE', progress=True, backend_filename=None, start_from_backend=False,
-             # zeus specific kwargs
-             moves=None, tune=True, tolerance=0.05, patience=5,
-             maxsteps=10000, mu=1.0, maxiter=10000, pool=None,
-             vectorize=False, blobs_dtype=None, verbose=True,
-             check_walkers=True, shuffle_ensemble=True, light_mode=False):
+             **kwargs_zeus):
         """
         MCMC routine
 
@@ -238,6 +234,7 @@ class FittingSequence(object):
         :param start_from_backend: if True, start from the state saved in `backup_filename`.
          Otherwise, create a new backup file with name `backup_filename` (any already existing file is overwritten!).
         :type start_from_backend: bool
+        :param **kwargs_zeus: zeus-specific kwargs
         :return: list of output arguments, e.g. MCMC samples, parameter names, logL distances of all samples specified
          by the specific sampler used
         """
@@ -274,13 +271,11 @@ class FittingSequence(object):
             output = [sampler_type, samples, param_list, dist]
 
         elif sampler_type == 'ZEUS':
+
             samples, dist = mcmc_class.mcmc_zeus(n_walkers, n_run, n_burn, mean_start, sigma_start,
                                                  mpi=self._mpi, threadCount=threadCount,
                                                  progress=progress, initpos = initpos, backend_filename = backend_filename,
-                                                 moves=moves, tune=tune, tolerance=tolerance, patience=patience,
-                                                 maxsteps=maxsteps, mu=mu, maxiter=maxiter, pool=pool,
-                                                 vectorize=vectorize, blobs_dtype=blobs_dtype, verbose=verbose,
-                                                 check_walkers=check_walkers, shuffle_ensemble=shuffle_ensemble, light_mode=light_mode)
+                                                 **kwargs_zeus)
             output = [sampler_type, samples, param_list, dist]
         else:
             raise ValueError('sampler_type %s not supported!' % sampler_type)

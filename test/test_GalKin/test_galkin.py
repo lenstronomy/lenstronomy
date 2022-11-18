@@ -15,7 +15,7 @@ from lenstronomy.Util import constants as const
 
 class TestGalkin(object):
 
-    def setup(self):
+    def setup_method(self):
         np.random.seed(42)
 
     def test_compare_power_law(self):

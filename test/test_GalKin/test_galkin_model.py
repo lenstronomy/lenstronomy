@@ -8,7 +8,7 @@ import pytest
 
 class TestGalkinModel(object):
 
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_radius_slope_anisotropy(self):

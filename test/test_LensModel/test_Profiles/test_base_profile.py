@@ -4,7 +4,7 @@ import unittest
 
 class TestBaseProfile(object):
 
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_base_functions(self):

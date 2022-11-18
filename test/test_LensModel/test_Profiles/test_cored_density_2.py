@@ -11,7 +11,7 @@ class TestCoredDensity(object):
     """
     tests the Gaussian methods
     """
-    def setup(self):
+    def setup_method(self):
         self.model = CoredDensity2()
 
     def test_function(self):

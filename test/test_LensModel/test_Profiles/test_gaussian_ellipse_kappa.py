@@ -14,7 +14,7 @@ class TestGaussianEllipseKappa(object):
     """
     This class tests the methods for elliptical Gaussian convergence.
     """
-    def setup(self):
+    def setup_method(self):
         """
         :return:
         :rtype:

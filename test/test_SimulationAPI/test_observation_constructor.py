@@ -5,9 +5,6 @@ import unittest
 
 class TestObservationConstructor(unittest.TestCase):
 
-    def setup(self):
-        pass
-
     def test_constructor(self):
         instrument_name = 'LSST'
         observation_name = 'LSST_g_band'

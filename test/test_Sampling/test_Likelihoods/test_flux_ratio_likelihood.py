@@ -9,7 +9,7 @@ from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 
 class TestFluxRatioLikelihood(object):
 
-    def setup(self):
+    def setup_method(self):
         lens_model_list = ['SPEP', 'SHEAR']
         lensModel = LensModel(lens_model_list=lens_model_list)
         lensModelExtensions = LensModelExtensions(lensModel=lensModel)

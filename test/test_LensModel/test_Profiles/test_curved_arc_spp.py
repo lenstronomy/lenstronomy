@@ -12,7 +12,7 @@ class TestCurvedArc(object):
     """
     tests the source model routines
     """
-    def setup(self):
+    def setup_method(self):
         self.model = CurvedArcSPP()
         self.spp = SPP()
 

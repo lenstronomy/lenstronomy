@@ -12,7 +12,7 @@ from lenstronomy.Util import constants as const
 
 class TestTDCosmography(object):
 
-    def setup(self):
+    def setup_method(self):
         kwargs_model = {'lens_light_model_list': ['HERNQUIST'],
                         'lens_model_list': ['SIE'],
                         'point_source_model_list': ['LENSED_POSITION']}

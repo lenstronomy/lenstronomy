@@ -1,4 +1,4 @@
-__author__ = 'maverickoh'
+__author__ = 'Maverick-Oh'
 
 import numpy as np
 import lenstronomy.Util.util as util
@@ -11,8 +11,18 @@ __all__ = ['EPL_BOXYDISKY']
 
 class EPL_BOXYDISKY(LensProfileBase):
     """"
-    EPL (Elliptical Power Law) mass profile, combined with MULTIPOLE with m=4
-    It adds an aligned boxy/diskyness (MULTIPOLE, m=4)
+    EPL (Elliptical Power Law) mass profile combined with Multipole with m=4, so that it's either purely boxy or
+    disky with EPL's axis and Multipole's axis aligned.
+
+    Read the documentation of lenstrnomy.LensModel.Profiles.epl and lenstrnomy.LensModel.Profiles.multipole for details.
+
+    :param theta_E: Einstein radius
+    :param gamma: negative power-law slope of the 3D mass distributions
+    :param e1: eccentricity. For details, read lenstronomy.Util.param_util.phi_q2_ellipticity document.
+    :param e2: eccentricity. For details, read lenstronomy.Util.param_util.phi_q2_ellipticity document.
+    :param center_x: center of distortion
+    :param center_y: center of distortion
+    :param a_m: multipole strength. The profile becomes disky when a_m>0 and boxy when a_m<0
     """
     param_names = ['theta_E', 'gamma', 'e1', 'e2', 'center_x', 'center_y', 'a_m']
     lower_limit_default = {'theta_E': 0, 'gamma': 1.5, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100,\

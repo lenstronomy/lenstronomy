@@ -37,7 +37,7 @@ class KinLikelihood(object):
         self.data = self.kin_class.KinBin._data
         self.psf = self.kin_class.PSF.kernel_point_source
         self.bin_mask = self.kin_class.KinBin._bin_mask
-        self.noise = self.kin_class.KinBin.noise()
+        self.noise = self.kin_class.KinBin._sigmas
 
         self.kin_x_grid, self.kin_y_grid = self.kin_class.KinBin.kin_grid()
 

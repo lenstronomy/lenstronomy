@@ -54,7 +54,6 @@ class EPL_BOXYDISKY(LensProfileBase):
         :param gamma: power law slope
         :param e1: eccentricity component
         :param e2: eccentricity component
-        :param e2: eccentricity component
         :param a_m: multipole strength. The profile becomes disky when a_m>0 and boxy when a_m<0
         :param center_x: profile center
         :param center_y: profile center

@@ -77,11 +77,5 @@ class TestEPL_BOXYDISKY(object):
                             npt.assert_almost_equal(f_yx, f_yx_, decimal=10)
                             npt.assert_almost_equal(f_yy, f_yy_, decimal=10)
 
-a = TestEPL_BOXYDISKY()
-a.setup()
-a.test_function()
-a.test_derivatives()
-a.test_hessian()
-
 if __name__ == '__main__':
     pytest.main()

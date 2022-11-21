@@ -100,5 +100,6 @@ class TestPlotUtil(object):
         from lenstronomy.Plots.plot_util import cmap_conf
         cmap_new = cmap_conf("gist_heat")
         
+        
 if __name__ == '__main__':
     pytest.main()

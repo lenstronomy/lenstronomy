@@ -77,17 +77,11 @@ class TestEPL_BOXYDISKY(object):
                             npt.assert_almost_equal(f_yx, f_yx_, decimal=10)
                             npt.assert_almost_equal(f_yy, f_yy_, decimal=10)
 
-    def test_static(self):
-        theta_E, gamma, e1, e2, a_m = 1.0, 2.0, 0.2, 0.2, 0.05
-        kwargs_epl_boxydisky = {'theta_E': theta_E, 'gamma': gamma, 'e1': e1, 'e2': e2, 'a_m': a_m}
-        f_ = self.epl_boxydisky.function(self.x, self.y, **kwargs_epl_boxydisky)
-        self.epl_boxydisky.set_static(**kwargs_epl_boxydisky)
-        f_static = self.epl_boxydisky.function(self.x, self.y, **kwargs_epl_boxydisky)
-        npt.assert_almost_equal(f_, f_static, decimal=10)
-        self.epl_boxydisky.set_dynamic()
-        kwargs_epl_boxydisky = {'theta_E': theta_E + 0.1, 'gamma': gamma, 'e1': e1, 'e2': e2, 'a_m': a_m + 0.1}
-        f_dyn = self.epl_boxydisky.function(self.x, self.y, **kwargs_epl_boxydisky)
-        assert (f_dyn != f_static).all()
+a = TestEPL_BOXYDISKY()
+a.setup()
+a.test_function()
+a.test_derivatives()
+a.test_hessian()
 
 if __name__ == '__main__':
     pytest.main()

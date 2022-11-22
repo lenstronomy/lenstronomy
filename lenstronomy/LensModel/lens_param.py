@@ -155,6 +155,7 @@ class LensParam(object):
                             args.append(np.log10(kwargs[name]))
                         else:
                             args.append(kwargs[name])
+
         return args
 
     def num_param(self):

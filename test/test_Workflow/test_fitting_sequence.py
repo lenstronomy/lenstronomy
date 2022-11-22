@@ -271,7 +271,7 @@ class TestFittingSequence(object):
                                           kwargs_params)
 
         fitting_list = []
-        kwargs_zeus = {'sampler_type': 'ZEUS', 'n_burn': 2, 'n_run': 2, 'walkerRatio': 4}
+        kwargs_zeus = {'sampler_type': 'ZEUS', 'n_burn': 2, 'n_run': 2, 'walkerRatio': 4, 'backend_filename': 'test_mcmc_zeus.h5'}
 
         fitting_list.append(['MCMC', kwargs_zeus])
 
@@ -319,10 +319,10 @@ class TestFittingSequence(object):
         assert kwargs_out['kwargs_lens'] == 1
 
     def test_dynesty(self):
-        np.random.seed(41)
+        np.random.seed(42)
         kwargs_params = copy.deepcopy(self.kwargs_params)
-        kwargs_params['lens_model'][0][0]['theta_E'] += 0.3
-        kwargs_params['lens_model'][0][0]['gamma'] += 0.3
+        kwargs_params['lens_model'][0][0]['theta_E'] += 0.2
+        kwargs_params['lens_model'][0][0]['gamma'] += 0.1
         fittingSequence = FittingSequence(self.kwargs_data_joint, self.kwargs_model, self.kwargs_constraints,
                                           self.kwargs_likelihood, kwargs_params)
 

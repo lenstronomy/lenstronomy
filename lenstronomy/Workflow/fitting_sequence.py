@@ -476,13 +476,13 @@ class FittingSequence(object):
         :param lens_light_remove_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param ps_remove_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param cosmo_remove_fixed: ['param1', 'param2',...]
-        :param change_lens_lower_limit: [[i_model, ['param_name', ...], [value1, value2, ...]]]
-        :param change_lens_upper_limit: [[i_model, ['param_name', ...], [value1, value2, ...]]]
-        :param change_source_lower_limit: [[i_model, ['param_name', ...], [value1, value2, ...]]]
-        :param change_source_upper_limit: [[i_model, ['param_name', ...], [value1, value2, ...]]]
-        :param change_sigma_lens: [[i_model, ['param_name', ...], [value1, value2, ...]]]
-        :param change_sigma_source: [[i_model, ['param_name', ...], [value1, value2, ...]]]
-        :param change_sigma_lens_light: [[i_model, ['param_name', ...], [value1, value2, ...]]]
+        :param change_lens_lower_limit: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
+        :param change_lens_upper_limit: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
+        :param change_source_lower_limit: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
+        :param change_source_upper_limit: [[i_model, [''param_name1', 'param_name2', ...], [value1, value2, ...]]]
+        :param change_sigma_lens: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
+        :param change_sigma_source: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
+        :param change_sigma_lens_light: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
         :return: 0, the settings are overwritten for the next fitting step to come
         """
         self._updateManager.update_options(kwargs_model, kwargs_constraints, kwargs_likelihood)

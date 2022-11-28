@@ -236,10 +236,10 @@ class UpdateManager(object):
         """
         updates the limits (lower and upper) of the update manager instance
 
-        :param change_source_lower_limit: [[i_model, ['param_name', ...], [value1, value2, ...]]]
-        :param change_lens_lower_limit: [[i_model, ['param_name', ...], [value1, value2, ...]]]
-        :param change_source_upper_limit: [[i_model, ['param_name', ...], [value1, value2, ...]]]
-        :param change_lens_upper_limit: [[i_model, ['param_name', ...], [value1, value2, ...]]]
+        :param change_source_lower_limit: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
+        :param change_lens_lower_limit: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
+        :param change_source_upper_limit: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
+        :param change_lens_upper_limit: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
         :return: updates internal state of lower and upper limits accessible from outside
         """
         if change_source_lower_limit is not None:
@@ -255,9 +255,9 @@ class UpdateManager(object):
         """
         updates individual estimated uncertainty levels for the initialization of search and sampling algorithms
 
-        :param change_sigma_lens: [[i_model, ['param_name', ...], [value1, value2, ...]]]
-        :param change_sigma_source: [[i_model, ['param_name', ...], [value1, value2, ...]]]
-        :param change_sigma_lens_light: [[i_model, ['param_name', ...], [value1, value2, ...]]]
+        :param change_sigma_lens: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
+        :param change_sigma_source: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
+        :param change_sigma_lens_light: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
         :return: updated internal state of the spread to initialize samplers
         """
         if change_sigma_lens is not None:
@@ -271,7 +271,8 @@ class UpdateManager(object):
     def _update_kwargs_list(change_list, kwargs_list_previous):
         """
 
-        :param change_list: input format of def update_limits [[i_model, ['param_name', ...], [value1, value2, ...]]]
+        :param change_list: input format of def update_limits [[i_model, ['param_name1', 'param_name2', ...],
+         [value1, value2, ...]]]
         :param kwargs_list_previous: keyword argument list
         :return: update limits
         """

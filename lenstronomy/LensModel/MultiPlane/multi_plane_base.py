@@ -304,6 +304,8 @@ class MultiPlaneBase(ProfileListBase):
     def _ray_step(x, y, alpha_x, alpha_y, delta_T):
         """
         ray propagation with small angle approximation
+        The difference to _ray_step_add() is that the previous input position (x, y) do NOT get overwritten and are
+        still accessible.
 
         :param x: co-moving x-position
         :param y: co-moving y-position
@@ -320,6 +322,7 @@ class MultiPlaneBase(ProfileListBase):
     def _ray_step_add(x, y, alpha_x, alpha_y, delta_T):
         """
         ray propagation with small angle approximation
+        The difference to _ray_step() is that the previous input position (x, y) do get overwritten, which is faster.
 
         :param x: co-moving x-position
         :param y: co-moving y-position

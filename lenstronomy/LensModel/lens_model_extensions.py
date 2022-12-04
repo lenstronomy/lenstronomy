@@ -383,8 +383,10 @@ class LensModelExtensions(object):
         :return: lists of ra and dec arrays corresponding to different disconnected critical curves and their caustic counterparts
 
         """
-        numPix = int(compute_window / grid_scale)
-        x_grid_high_res, y_grid_high_res = util.make_grid(numPix, deltapix=grid_scale, subgrid_res=1)
+        num_pix = int(compute_window / grid_scale)
+        if num_pix % 2 == 1:
+            num_pix += 1
+        x_grid_high_res, y_grid_high_res = util.make_grid(num_pix, deltapix=grid_scale, subgrid_res=1)
         x_grid_high_res += center_x
         y_grid_high_res += center_y
         mag_high_res = util.array2image(self._lensModel.magnification(x_grid_high_res, y_grid_high_res, kwargs_lens))
@@ -400,8 +402,8 @@ class LensModelExtensions(object):
 
         for i, v in enumerate(paths):
             # x, y changed because of skimage conventions
-            ra_points = v[:, 1] * grid_scale - grid_scale * (numPix-1)/2 + center_x
-            dec_points = v[:, 0] * grid_scale - grid_scale * (numPix-1)/2 + center_y
+            ra_points = v[:, 1] * grid_scale - grid_scale * (num_pix-1)/2. + center_x
+            dec_points = v[:, 0] * grid_scale - grid_scale * (num_pix-1)/2. + center_y
             ra_crit_list.append(ra_points)
             dec_crit_list.append(dec_points)
             ra_caustics, dec_caustics = self._lensModel.ray_shooting(ra_points, dec_points, kwargs_lens)

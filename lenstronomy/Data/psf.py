@@ -14,7 +14,8 @@ class PSF(object):
     """
 
     def __init__(self, psf_type='NONE', fwhm=None, truncation=5, pixel_size=None, kernel_point_source=None,
-                 psf_error_map=None, point_source_supersampling_factor=1, kernel_point_source_init=None):
+                 psf_error_map=None, point_source_supersampling_factor=1, kernel_point_source_init=None,
+                 kernel_point_source_normalisation=True):
         """
 
         :param psf_type: string, type of PSF: options are 'NONE', 'PIXEL', 'GAUSSIAN'
@@ -31,6 +32,7 @@ class PSF(object):
          This is the input PSF to this class and does not need to be the choice in the modeling
          (thought preferred if modeling choses supersampling)
         :param kernel_point_source_init: memory of an initial point source kernel that gets passed through the psf iteration
+        :param kernel_point_source_normalisation: boolean, if False, the pixel PSF will not be normalised automatically.
         """
         self.psf_type = psf_type
         self._pixel_size = pixel_size
@@ -51,10 +53,12 @@ class PSF(object):
                 self._kernel_point_source_supersampled = kernel_point_source
                 self._point_source_supersampling_factor = point_source_supersampling_factor
                 kernel_point_source = kernel_util.degrade_kernel(self._kernel_point_source_supersampled, self._point_source_supersampling_factor)
-            # making sure the PSF is positive semi-definite and normalized
+            # making sure the PSF is positive semi-definite and do the normalisation if kernel_point_source_normalisation is true
             if np.min(kernel_point_source) < 0:
-                raise ValueError('Input PSF model has at least one negative element, which is unphysical.')
-            self._kernel_point_source = kernel_point_source / np.sum(kernel_point_source)
+                warnings.warn('Input PSF model has at least one negative element, which is unphysical except for a PSF of an interferometric array.')
+            self._kernel_point_source = kernel_point_source
+            if kernel_point_source_normalisation is not False:
+                self._kernel_point_source /= np.sum(kernel_point_source)
 
         elif self.psf_type == 'NONE':
             self._kernel_point_source = np.zeros((3, 3))

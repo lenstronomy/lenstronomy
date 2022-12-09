@@ -70,6 +70,18 @@ class TestLensPlot(object):
         lens_plot.curved_arc_illustration(ax, lensModel, kwargs_lens)
         plt.close()
 
+    def test_stretch_plot(self):
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        lensModel = LensModel(lens_model_list=['SIE'])
+        kwargs_lens = [{'theta_E': 1, 'e1': 0.2, 'e2': 0., 'center_x': 0, 'center_y': 0}]
+        lens_plot.stretch_plot(ax, lensModel, kwargs_lens)
+        plt.close()
+    def test_shear_plot(self):
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        lensModel = LensModel(lens_model_list=['SIE'])
+        kwargs_lens = [{'theta_E': 1, 'e1': 0.2, 'e2': 0., 'center_x': 0, 'center_y': 0}]
+        lens_plot.shear_plot(ax, lensModel, kwargs_lens)
+        plt.close()
 
 if __name__ == '__main__':
     pytest.main()

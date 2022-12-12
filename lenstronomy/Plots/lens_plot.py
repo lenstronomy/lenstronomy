@@ -1,7 +1,9 @@
 
 import lenstronomy.Util.util as util
+from lenstronomy.Util.param_util import shear_cartesian2polar
 import lenstronomy.Util.simulation_util as sim_util
 import matplotlib.pyplot as plt
+from matplotlib import patches
 import numpy as np
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
@@ -9,6 +11,7 @@ from lenstronomy.LensModel.Profiles.curved_arc_spp import center_deflector
 from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Plots import plot_util
 import scipy.ndimage as ndimage
+from lenstronomy.Data.pixel_grid import PixelGrid
 
 from lenstronomy.Util.package_util import exporter
 export, __all__ = exporter()
@@ -451,3 +454,84 @@ def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0
     _plot_frame(axes[2, 3], dphi_rad_dtan2d, vmin=0, vmax=20, text_string='dphi_rad_dtan')
 
     return f, axes
+
+
+def stretch_plot(ax, lens_model, kwargs_lens, plot_grid=None,
+                 scale=1, ellipse_color='k', max_stretch=np.inf,
+                       **patch_kwargs):
+    """
+    Plots ellipses at each point on a grid, scaled corresponding to the local Jacobian eigenvalues
+
+    :param ax: matplotib axis instance
+    :param lens_model: LensModel instance
+    :param kwargs_lens: lens model keyword argument list
+    :param plot_grid: pixelgrid instance at which to draw ellipses. 'None' uses default.
+    :param scale: scales sizes of drawn ellipses, bigger number=larger
+    :param ellipse_color: color of ellipses, defaults to black
+    :param max_stretch: optional max amount to stretch ellipses which sometimes diverge
+    :param patch_kwargs: additional keyword arguments for creating ellipse patch
+    :return: matplotlib axis instance with figure
+    """
+
+    if plot_grid==None:
+        #define default ellipse grid (20x20 spanning from -2 to 2)
+        plot_grid=PixelGrid(20, 20, np.array([[1, 0],[0, 1]])*0.2,
+                 -2, -2)
+    lme=LensModelExtensions(lens_model)
+    x_grid, y_grid = plot_grid.pixel_coordinates
+    x = util.image2array(x_grid)
+    y = util.image2array(y_grid)
+    w1, w2, v11, v12, v21, v22 = lme.hessian_eigenvectors(x, y, kwargs_lens)
+    stretch_1 = np.abs(1. / w1)  # stretch in direction of first eigenvalue (unsorted)
+    stretch_2 = np.abs(1. / w2)
+    stretch_direction = np.arctan2(v12,v11)  # Direction of first eigenvector. Other eigenvector is orthogonal.
+
+    for i in range(len(stretch_direction)):
+        stretch_1_amount = np.minimum(stretch_1[i],max_stretch)
+        stretch_2_amount = np.minimum(stretch_2[i], max_stretch)
+        ell = patches.Ellipse((x[i], y[i]), stretch_1_amount * scale/40, #40 arbitrarily chosen
+                             stretch_2_amount * scale/40,
+                             angle=stretch_direction[i] * 180 / np.pi,
+                             linewidth=1, fill=False, color=ellipse_color,**patch_kwargs)
+        ax.add_patch(ell)
+    ax.set_xlim(np.min(x),np.max(x))
+    ax.set_ylim(np.min(y), np.max(y))
+    return ax
+
+def shear_plot(ax, lens_model, kwargs_lens, plot_grid=None,
+                       scale=5, color='k', max_stretch=np.inf,
+                       **kwargs):
+    """
+    Plots combined internal+external shear at each point on a grid,
+    represented by pseudovectors in the direction of local shear
+    with length corresponding to shear magnitude.
+
+    :param ax: matplotib axis instance
+    :param lens_model: LensModel instance
+    :param kwargs_lens: lens model keyword argument list
+    :param plot_grid: pixelgrid instance at which to draw pseudovectors
+    :param scale: scales sizes of drawn pseudovectors, smaller number=larger vectors
+    :param color: color of pseudovectors, defaults to black
+    :param max_stretch: optional max amount to stretch ellipses which sometimes diverge
+    :param kwargs: additional plotting keyword arguments
+    :return: matplotlib axis instance with figure
+    """
+
+    if plot_grid==None:
+        #define default ellipse grid (20x20 spanning from -2 to 2)
+        plot_grid=PixelGrid(20, 20, np.array([[1, 0],[0, 1]])*0.2,
+                 -2, -2)
+
+    x_grid, y_grid = plot_grid.pixel_coordinates
+    g1, g2 = lens_model.gamma(x_grid, y_grid, kwargs_lens)
+    phi, shear = shear_cartesian2polar(g1, g2)
+    max_stretch_array = np.ones_like(shear) * max_stretch
+    shear = np.minimum(shear, max_stretch_array)
+    arrow_x = shear * np.cos(phi)
+    arrow_y = shear * np.sin(phi)
+    ax.quiver(x_grid, y_grid, arrow_x, arrow_y, headaxislength=0, headlength=0,
+                 pivot='middle', scale=scale,
+                 linewidth=.5, units='xy', width=.02, headwidth=1, color=color,**kwargs)  # ,headwidth=0,headlength=0)
+    ax.set_xlim(np.min(x_grid),np.max(x_grid))
+    ax.set_ylim(np.min(y_grid), np.max(y_grid))
+    return ax

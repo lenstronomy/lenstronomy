@@ -456,17 +456,21 @@ def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0
     return f, axes
 
 
-def stretch_plot(ax, lens_model, kwargs_lens,
-                       plot_grid= None, scale= 1, ellipse_color= 'k',
-                       **kwargs):
+def stretch_plot(ax, lens_model, kwargs_lens, plot_grid=None,
+                 scale=1, ellipse_color='k', max_stretch=np.inf,
+                       **patch_kwargs):
     """
     Plots ellipses at each point on a grid, scaled corresponding to the local Jacobian eigenvalues
+
     :param ax: matplotib axis instance
-    :param plot_grid: pixelgrid instance at which to draw ellipses
+    :param lens_model: LensModel instance
+    :param kwargs_lens: lens model keyword argument list
+    :param plot_grid: pixelgrid instance at which to draw ellipses. 'None' uses default.
     :param scale: scales sizes of drawn ellipses, bigger number=larger
     :param ellipse_color: color of ellipses, defaults to black
-    :param kwargs: kwargs to send to matplotlib.pyplot.matshow()
-    :return:
+    :param max_stretch: optional max amount to stretch ellipses which sometimes diverge
+    :param patch_kwargs: additional keyword arguments for creating ellipse patch
+    :return: matplotlib axis instance with figure
     """
 
     if plot_grid==None:
@@ -483,26 +487,34 @@ def stretch_plot(ax, lens_model, kwargs_lens,
     stretch_direction = np.arctan2(v12,v11)  # Direction of first eigenvector. Other eigenvector is orthogonal.
 
     for i in range(len(stretch_direction)):
-        ell = patches.Ellipse((x[i], y[i]), stretch_1[i] * scale/40, #40 arbitrarily chosen
-                             stretch_2[i] * scale/40,
+        stretch_1_amount = np.minimum(stretch_1[i],max_stretch)
+        stretch_2_amount = np.minimum(stretch_2[i], max_stretch)
+        ell = patches.Ellipse((x[i], y[i]), stretch_1_amount * scale/40, #40 arbitrarily chosen
+                             stretch_2_amount * scale/40,
                              angle=stretch_direction[i] * 180 / np.pi,
-                             linewidth=1, fill=False, color=ellipse_color)
-        ax.add_patch(ell,**kwargs)
+                             linewidth=1, fill=False, color=ellipse_color,**patch_kwargs)
+        ax.add_patch(ell)
     ax.set_xlim(np.min(x),np.max(x))
     ax.set_ylim(np.min(y), np.max(y))
     return ax
 
-def shear_plot(ax, lens_model, kwargs_lens,
-                       plot_grid= None, scale= 5, color= 'k',
+def shear_plot(ax, lens_model, kwargs_lens, plot_grid=None,
+                       scale=5, color='k', max_stretch=np.inf,
                        **kwargs):
     """
-    Plots shear (internal+external) pseudovectors at each point on a grid
+    Plots combined internal+external shear at each point on a grid,
+    represented by pseudovectors in the direction of local shear
+    with length corresponding to shear magnitude.
+
     :param ax: matplotib axis instance
+    :param lens_model: LensModel instance
+    :param kwargs_lens: lens model keyword argument list
     :param plot_grid: pixelgrid instance at which to draw pseudovectors
     :param scale: scales sizes of drawn pseudovectors, smaller number=larger vectors
-    :param ellipse_color: color of pseudovectors, defaults to black
-    :param kwargs: kwargs to send to matplotlib.pyplot.matshow()
-    :return:
+    :param color: color of pseudovectors, defaults to black
+    :param max_stretch: optional max amount to stretch ellipses which sometimes diverge
+    :param kwargs: additional plotting keyword arguments
+    :return: matplotlib axis instance with figure
     """
 
     if plot_grid==None:
@@ -513,6 +525,8 @@ def shear_plot(ax, lens_model, kwargs_lens,
     x_grid, y_grid = plot_grid.pixel_coordinates
     g1, g2 = lens_model.gamma(x_grid, y_grid, kwargs_lens)
     phi, shear = shear_cartesian2polar(g1, g2)
+    max_stretch_array = np.ones_like(shear) * max_stretch
+    shear = np.minimum(shear, max_stretch_array)
     arrow_x = shear * np.cos(phi)
     arrow_y = shear * np.sin(phi)
     ax.quiver(x_grid, y_grid, arrow_x, arrow_y, headaxislength=0, headlength=0,

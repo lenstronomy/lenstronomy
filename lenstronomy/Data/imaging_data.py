@@ -29,7 +29,9 @@ class ImageData(PixelGrid, ImageNoise):
     If this keyword is set, the other noise properties will be ignored.
 
     optional keywords for interferometric quantities:
+    - 'log_likelihood_constant': a constant that adds to logL, can be useful for special likelihood computation method
     - 'antenna_primary_beam': primary beam pattern of antennae (now treat each antenna with the same primary beam)
+    - 'likelihood_method': can choose 'interferometry_natwt' to compute logL for natwt images, the default one is for gaussian noise
 
     ** notes **
     the likelihood for the data given model P(data|model) is defined in the function below. Please make sure that
@@ -39,7 +41,8 @@ class ImageData(PixelGrid, ImageNoise):
 
     """
     def __init__(self, image_data, exposure_time=None, background_rms=None, noise_map=None, gradient_boost_factor=None,
-                 ra_at_xy_0=0, dec_at_xy_0=0, transform_pix2angle=None, ra_shift=0, dec_shift=0, antenna_primary_beam=None):
+                 ra_at_xy_0=0, dec_at_xy_0=0, transform_pix2angle=None, ra_shift=0, dec_shift=0, log_likelihood_constant = 0,
+                 antenna_primary_beam=None, likelihood_method = 'diagonal'):
         """
 
         :param image_data: 2d numpy array of the image data
@@ -54,8 +57,11 @@ class ImageData(PixelGrid, ImageNoise):
         :param dec_at_xy_0: dec coordinate at pixel (0,0)
         :param ra_shift: RA shift of pixel grid
         :param dec_shift: DEC shift of pixel grid
+        :param log_likelihood_constant: float, allows user to input a constant that will be added to the log likelihood
         :param antenna_primary_beam: 2d numpy array with the same size of imaga_data;
          more descriptions of the primary beam can be found in the AngularSensitivity class
+        :param likelihood_method: string, type of method of log_likelihood computation: options are 'diagonal', 'interferometry_natwt'
+         the default option is 'diagonal', which supports gaussian errors with a diagonal noise covariance matrix
         """
         nx, ny = np.shape(image_data)
         if transform_pix2angle is None:
@@ -63,6 +69,11 @@ class ImageData(PixelGrid, ImageNoise):
         PixelGrid.__init__(self, nx, ny, transform_pix2angle, ra_at_xy_0 + ra_shift, dec_at_xy_0 + dec_shift, antenna_primary_beam)
         ImageNoise.__init__(self, image_data, exposure_time=exposure_time, background_rms=background_rms,
                             noise_map=noise_map, gradient_boost_factor=gradient_boost_factor, verbose=False)
+        
+        self.logL_constant = log_likelihood_constant
+        self.logL_method = likelihood_method
+        if self.logL_method != 'diagonal' and self.logL_method != 'interferometry_natwt':
+            raise ValueError("likelihood_method %s not supported!" % self.logL_method)
 
     def update_data(self, image_data):
         """
@@ -100,8 +111,30 @@ class ImageData(PixelGrid, ImageNoise):
             This can e.g. come from model errors in the PSF estimation.
         :return: the natural logarithm of the likelihood p(data|model)
         """
-        C_D = self.C_D_model(model)
-        X2 = (model - self._data) ** 2 / (C_D + np.abs(additional_error_map)) * mask
-        X2 = np.array(X2)
-        logL = - np.sum(X2) / 2
-        return logL
+        
+        if self.logL_method == 'diagonal':
+            C_D = self.C_D_model(model)
+            X2 = (model - self._data) ** 2 / (C_D + np.abs(additional_error_map)) * mask
+            X2 = np.array(X2)
+            logL = - np.sum(X2) / 2
+            
+        elif self.logL_method == 'interferometry_natwt':
+            """
+            In this case, the model should be in the form [array1, array2], 
+            where array1 and array2 are unconvolved and convolved model images respectively.
+            They are both 2d array with the same shape of the data.
+            """
+            xd = np.sum(model[0] * self.data)
+            xAx = np.sum(model[0] * model[1])
+            logL = - (xAx - 2 * xd) / (2 * self._background_rms ** 2)
+            
+        return logL + self.logL_constant
+    
+    def likelihood_method(self):
+        """
+        
+        passes the likelihood_method to the ImageModel and will be used to identify the method of 
+        likelihood computation in ImageLinearFit.
+        :return: string, likelihood method
+        """
+        return self.logL_method

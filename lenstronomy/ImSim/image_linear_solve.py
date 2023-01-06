@@ -1,6 +1,7 @@
 from lenstronomy.ImSim.image_model import ImageModel
 import lenstronomy.ImSim.de_lens as de_lens
 from lenstronomy.Util import util
+from lenstronomy.ImSim.Numerics.convolution import PixelKernelConvolution
 import numpy as np
 
 __all__ = ['ImageLinearFit']
@@ -49,6 +50,10 @@ class ImageLinearFit(ImageModel):
         if self._pixelbased_bool is True:
             # update the pixel-based solver with the likelihood mask
             self.PixelSolver.set_likelihood_mask(self.likelihood_mask)
+            
+        # prepare to use fft convolution for the natwt linear solver 
+        if self.Data.likelihood_method() == 'interferometry_natwt':
+            self._convolution = PixelKernelConvolution(kernel = self.PSF.kernel_point_source)
 
     def image_linear_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
                            kwargs_extinction=None, kwargs_special=None, inv_bool=False):
@@ -88,13 +93,23 @@ class ImageLinearFit(ImageModel):
             model, model_error, cov_param, param = self.image_pixelbased_solve(kwargs_lens, kwargs_source, 
                                                                                kwargs_lens_light, kwargs_ps, 
                                                                                kwargs_extinction, kwargs_special)
-        else:
+        elif self.Data.likelihood_method() == 'diagonal':
             A = self._linear_response_matrix(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_extinction, kwargs_special)
             C_D_response, model_error = self._error_response(kwargs_lens, kwargs_ps, kwargs_special=kwargs_special)
             d = self.data_response
             param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1 / C_D_response, d, inv_bool=inv_bool)
             model = self.array_masked2image(wls_model)
             _, _, _, _ = self.update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+        elif self.Data.likelihood_method() == 'interferometry_natwt':
+            # 'interferometry_natwt' method does not support the correct use of model_error, cov_param.
+            A = self._linear_response_matrix(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_extinction, kwargs_special, unconvolved=True)
+            d = self.data_response
+            model, param = self._image_linear_solve_natwt_special(A, d)
+            model_error = 0 # just a place holder 
+            cov_param = None # just a place holder
+            _, _, _, _ = self.update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+        else:
+            raise ValueError("likelihood_method %s not supported!" % self.Data.likelihood_method())
         return model, model_error, cov_param, param
 
     def image_pixelbased_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, 
@@ -550,3 +565,48 @@ class ImageLinearFit(ImageModel):
             return True
         else:
             return False
+
+    # linear solver for interferometric natwt method
+    def _image_linear_solve_natwt_special(self, A, d):
+        """
+        linearly solve the amplitude of each light profile response to the image.
+        
+        :param A: response of each light profiles, however, for the natwt method, the responses here are not convolved
+        :param d: data image
+        :return: [array1, array2], where the two arrays are unconvolved and convolved model images respectively with optimal amplitudes.
+        
+        """
+        num_of_light, num_of_image_pixel = np.shape(A)
+        
+        A_convolved = np.zeros(np.shape(A))
+        
+        # convolve each response separately
+        for i in range(num_of_light):
+            A_convolved[i] = util.image2array(self._convolution._static_fft(util.array2image(A[i]), mode='same'))
+            
+        M = np.zeros((num_of_light,num_of_light))
+        for i in range(num_of_light):
+            for j in range(num_of_light):
+                if j < i:
+                    M[i,j] = M[j,i]
+                else:
+                    M[i,j] = np.sum(A_convolved[j] * A[i])
+        
+        b = np.zeros((num_of_light))
+        for i in range(num_of_light):
+            b[i] = np.sum(A[i] * (d))
+            
+        param_amps = np.linalg.lstsq(M, b)[0]
+        
+        clean_temp = np.zeros((num_of_image_pixel))
+        dirty_temp = np.zeros((num_of_image_pixel))
+        for i in range(num_of_light):
+            clean_temp += param_amps[i] * A[i]
+            dirty_temp += param_amps[i] * A_convolved[i]
+            
+        clean_model = util.array2image(clean_temp)
+        dirty_model = util.array2image(dirty_temp)
+            
+        model = [clean_model, dirty_model]
+        
+        return model, param_amps

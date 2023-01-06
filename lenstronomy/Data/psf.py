@@ -15,7 +15,7 @@ class PSF(object):
 
     def __init__(self, psf_type='NONE', fwhm=None, truncation=5, pixel_size=None, kernel_point_source=None,
                  psf_error_map=None, point_source_supersampling_factor=1, kernel_point_source_init=None,
-                 kernel_point_source_normalisation=True):
+                 kernel_point_source_normalization=True):
         """
 
         :param psf_type: string, type of PSF: options are 'NONE', 'PIXEL', 'GAUSSIAN'
@@ -57,7 +57,7 @@ class PSF(object):
             if np.min(kernel_point_source) < 0:
                 warnings.warn('Input PSF model has at least one negative element, which is unphysical except for a PSF of an interferometric array.')
             self._kernel_point_source = kernel_point_source
-            if kernel_point_source_normalisation is not False:
+            if kernel_point_source_normalization is not False:
                 self._kernel_point_source /= np.sum(kernel_point_source)
 
         elif self.psf_type == 'NONE':

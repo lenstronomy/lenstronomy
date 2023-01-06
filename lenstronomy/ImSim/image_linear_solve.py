@@ -105,7 +105,7 @@ class ImageLinearFit(ImageModel):
             A = self._linear_response_matrix(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_extinction, kwargs_special, unconvolved=True)
             d = self.data_response
             model, param = self._image_linear_solve_natwt_special(A, d)
-            model_error = np.zeros(np.shape(util.array2image(d))) # just a place holder 
+            model_error = 0 # just a place holder 
             cov_param = None # just a place holder
             _, _, _, _ = self.update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
         else:

@@ -338,3 +338,30 @@ class ArrayParam(ModelParamGroup):
     @property
     def on(self):
         return self._on
+
+
+class MixedParams(ModelParamGroup):
+    '''
+    Represents a mixture of single and array parameters
+    '''
+    def __init__(self, single_params, array_params):
+        self._single = SingleParam(on=True)
+        self._single.param_names = single_params
+
+        self._array = ArrayParam(on=True)
+        self._array.param_names = array_params
+
+    def num_params(self, kwargs_fixed):
+        npar_s, names_s = self._single.num_params(kwargs_fixed)
+        npar_a, names_a = self._array.num_params(kwargs_fixed)
+        return npar_s + npar_a, names_s + names_a
+
+    def set_params(self, kwargs, kwargs_fixed):
+        single = self._single.set_params(kwargs, kwargs_fixed)
+        array = self._array.set_params(kwargs, kwargs_fixed)
+        return single + array
+
+    def get_params(self, args, i, kwargs_fixed):
+        params_s, i = self._single.get_params(args, i, kwargs_fixed)
+        params_a, i = self._array.get_params(args, i, kwargs_fixed)
+        return dict(params_s, **params_a), i

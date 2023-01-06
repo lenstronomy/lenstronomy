@@ -73,7 +73,7 @@ class TestParam(object):
         assert len(lens_model_list) == len(param_name_list)
 
     def test_num_params(self):
-        num, list = self.param.num_param()
+        num, list = self.param.num_params()
         assert num == 20
 
     def test_shapelet_solver(self):
@@ -85,7 +85,7 @@ class TestParam(object):
         kwargs_out, i = lensParam.get_params(args, i=0)
         assert kwargs_out[0]['coeffs'][1] == 0
         assert kwargs_out[0]['beta'] == kwargs_lens[0]['beta']
-        num, param_list = lensParam.num_param()
+        num, param_list = lensParam.num_params()
         assert num == 8
 
         lensParam = LensParam(lens_model_list, kwargs_fixed=[{}], num_images=4, solver_type='SHAPELETS',
@@ -95,7 +95,7 @@ class TestParam(object):
         kwargs_out, i = lensParam.get_params(args, i=0)
         assert kwargs_out[0]['coeffs'][5] == 0
         assert kwargs_out[0]['beta'] == kwargs_lens[0]['beta']
-        num, param_list = lensParam.num_param()
+        num, param_list = lensParam.num_params()
         assert num == 5
 
 

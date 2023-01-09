@@ -173,7 +173,7 @@ def kernel_pixelsize_change(kernel, deltaPix_in, deltaPix_out):
 
 
 @export
-def cut_psf(psf_data, psf_size, normalization=True):
+def cut_psf(psf_data, psf_size, normalisation=True):
     """
     cut the psf properly
 
@@ -182,7 +182,7 @@ def cut_psf(psf_data, psf_size, normalization=True):
     :return: re-sized and re-normalized PSF
     """
     kernel = image_util.cut_edges(psf_data, psf_size)
-    if normalization is True:
+    if normalisation is True:
         kernel = kernel_norm(kernel)
     return kernel
 

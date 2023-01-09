@@ -31,7 +31,8 @@ class ImageData(PixelGrid, ImageNoise):
     optional keywords for interferometric quantities:
     - 'log_likelihood_constant': a constant that adds to logL, can be useful for special likelihood computation method
     - 'antenna_primary_beam': primary beam pattern of antennae (now treat each antenna with the same primary beam)
-    - 'likelihood_method': can choose 'interferometry_natwt' to compute logL for natwt images, the default one is for gaussian noise
+    - 'likelihood_method': can choose 'interferometry_natwt' to compute logL for natwt images. 
+    The default 'diagonal' is used for non-correlated noises, of which the pixel covariance matrix is diagonal.
 
     ** notes **
     the likelihood for the data given model P(data|model) is defined in the function below. Please make sure that
@@ -41,8 +42,8 @@ class ImageData(PixelGrid, ImageNoise):
 
     """
     def __init__(self, image_data, exposure_time=None, background_rms=None, noise_map=None, gradient_boost_factor=None,
-                 ra_at_xy_0=0, dec_at_xy_0=0, transform_pix2angle=None, ra_shift=0, dec_shift=0, log_likelihood_constant = 0,
-                 antenna_primary_beam=None, likelihood_method = 'diagonal'):
+                 ra_at_xy_0=0, dec_at_xy_0=0, transform_pix2angle=None, ra_shift=0, dec_shift=0, log_likelihood_constant=0,
+                 antenna_primary_beam=None, likelihood_method='diagonal'):
         """
 
         :param image_data: 2d numpy array of the image data
@@ -57,11 +58,11 @@ class ImageData(PixelGrid, ImageNoise):
         :param dec_at_xy_0: dec coordinate at pixel (0,0)
         :param ra_shift: RA shift of pixel grid
         :param dec_shift: DEC shift of pixel grid
-        :param log_likelihood_constant: float, allows user to input a constant that will be added to the log likelihood
+        :param log_likelihood_constant: float, allows user to input a constant that will be added to the log likelihood. Note that, as for now, this variable is ONLY used for interferometric mode.
         :param antenna_primary_beam: 2d numpy array with the same size of imaga_data;
          more descriptions of the primary beam can be found in the AngularSensitivity class
         :param likelihood_method: string, type of method of log_likelihood computation: options are 'diagonal', 'interferometry_natwt'
-         the default option is 'diagonal', which supports gaussian errors with a diagonal noise covariance matrix
+         the default option is 'diagonal', which supports noises with a diagonal pixel-pixel noise covariance matrix
         """
         nx, ny = np.shape(image_data)
         if transform_pix2angle is None:
@@ -70,10 +71,10 @@ class ImageData(PixelGrid, ImageNoise):
         ImageNoise.__init__(self, image_data, exposure_time=exposure_time, background_rms=background_rms,
                             noise_map=noise_map, gradient_boost_factor=gradient_boost_factor, verbose=False)
         
-        self.logL_constant = log_likelihood_constant
-        self.logL_method = likelihood_method
-        if self.logL_method != 'diagonal' and self.logL_method != 'interferometry_natwt':
-            raise ValueError("likelihood_method %s not supported!" % self.logL_method)
+        self._logL_constant = log_likelihood_constant
+        self._logL_method = likelihood_method
+        if self._logL_method != 'diagonal' and self._logL_method != 'interferometry_natwt':
+            raise ValueError("likelihood_method %s not supported! likelihood_method can only be 'diagonal' or 'interferometry_natwt'!" % self._logL_method)
 
     def update_data(self, image_data):
         """
@@ -112,23 +113,23 @@ class ImageData(PixelGrid, ImageNoise):
         :return: the natural logarithm of the likelihood p(data|model)
         """
         
-        if self.logL_method == 'diagonal':
+        if self._logL_method == 'diagonal':
             C_D = self.C_D_model(model)
             X2 = (model - self._data) ** 2 / (C_D + np.abs(additional_error_map)) * mask
             X2 = np.array(X2)
             logL = - np.sum(X2) / 2
             
-        elif self.logL_method == 'interferometry_natwt':
+        elif self._logL_method == 'interferometry_natwt':
             """
             In this case, the model should be in the form [array1, array2], 
             where array1 and array2 are unconvolved and convolved model images respectively.
             They are both 2d array with the same shape of the data.
             """
-            xd = np.sum(model[0] * self.data)
+            xd = np.sum(model[0] * self._data)
             xAx = np.sum(model[0] * model[1])
-            logL = - (xAx - 2 * xd) / (2 * self._background_rms ** 2)
+            logL = - (xAx - 2 * xd) / (2 * self._background_rms ** 2) + self._logL_constant
             
-        return logL + self.logL_constant
+        return logL
     
     def likelihood_method(self):
         """
@@ -137,4 +138,4 @@ class ImageData(PixelGrid, ImageNoise):
         likelihood computation in ImageLinearFit.
         :return: string, likelihood method
         """
-        return self.logL_method
+        return self._logL_method

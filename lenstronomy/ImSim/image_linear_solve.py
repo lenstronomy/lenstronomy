@@ -570,8 +570,13 @@ class ImageLinearFit(ImageModel):
     def _image_linear_solve_natwt_special(self, A, d):
         """
         linearly solve the amplitude of each light profile response to the image.
+        The idea of amplitudes linear solving for natural weighting (natwt for short) interferometric image is to:
+        (1.) construct matrix M and vector b from light profile responses and data and 
+        (2.) solve linear equation set M \alpha == b to get \alpha, which is a vector with its components being the amplitudes.
+        The entries of M is made by M_ij = x_i.(x_j~) and b is made by b_i = x_i.d, where x_i is i-th unconvolved light response,
+        x_j~ is the j-th convolved response, d is the data and operator '.' means inner product.
         
-        :param A: response of each light profiles, however, for the natwt method, the responses here are not convolved
+        :param A: response of unconvolved light profiles
         :param d: data image
         :return: [array1, array2], where the two arrays are unconvolved and convolved model images respectively with optimal amplitudes.
         

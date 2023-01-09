@@ -59,8 +59,8 @@ def test_image_linear_solve_with_primary_beam_and_interferometry_psf():
     kwargs_data['likelihood_method'] = 'interferometry_natwt' # testing just for interferometry natwt method
     data_class = ImageData(**kwargs_data)
     
-    kernel_cut = kernel_util.cut_psf(psf_test, kernel_size, normalization = False)
-    kwargs_psf = {'psf_type': psf_type,'pixel_size': deltaPix, 'kernel_point_source': kernel_cut,'kernel_point_source_normalization': False}
+    kernel_cut = kernel_util.cut_psf(psf_test, kernel_size, normalisation = False)
+    kwargs_psf = {'psf_type': psf_type,'pixel_size': deltaPix, 'kernel_point_source': kernel_cut,'kernel_point_source_normalisation': False}
     psf_class = PSF(**kwargs_psf)
     
     # define lens model and source model

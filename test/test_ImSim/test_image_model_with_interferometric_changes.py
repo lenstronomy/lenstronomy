@@ -54,8 +54,8 @@ def test_ImageModel_with_primary_beam_and_interferometry_psf():
     kwargs_psf_none = {'psf_type': 'NONE'}
     psf_class_none = PSF(**kwargs_psf_none)
 
-    kernel_cut = kernel_util.cut_psf(psf_test, 201, normalization = False)
-    kwargs_psf = {'psf_type': 'PIXEL', 'pixel_size': deltaPix, 'kernel_point_source': kernel_cut,'kernel_point_source_normalization': False }
+    kernel_cut = kernel_util.cut_psf(psf_test, 201, normalisation = False)
+    kwargs_psf = {'psf_type': 'PIXEL', 'pixel_size': deltaPix, 'kernel_point_source': kernel_cut,'kernel_point_source_normalisation': False }
     psf_class = PSF(**kwargs_psf)
 
     # define lens model and source model

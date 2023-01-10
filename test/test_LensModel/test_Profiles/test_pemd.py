@@ -18,7 +18,7 @@ class TestSPEMD(object):
     """
     tests the Gaussian methods
     """
-    def setup(self):
+    def setup_method(self):
         from lenstronomy.LensModel.Profiles.pemd import PEMD
         from lenstronomy.LensModel.Profiles.spep import SPEP
         self.PEMD = PEMD(suppress_fastell=True)

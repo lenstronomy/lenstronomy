@@ -9,7 +9,7 @@ from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 
 class TestPositionLikelihood(object):
 
-    def setup(self):
+    def setup_method(self):
 
         # compute image positions
         lensModel = LensModel(lens_model_list=['SIE'])

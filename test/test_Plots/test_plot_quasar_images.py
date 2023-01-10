@@ -4,6 +4,7 @@ from lenstronomy.Plots.plot_quasar_images import plot_quasar_images
 import matplotlib.pyplot as plt
 import pytest
 
+
 class TestPlotQuasarImages(object):
 
     def test_plot_quasar_images(self):
@@ -21,6 +22,7 @@ class TestPlotQuasarImages(object):
         plot_quasar_images(lensmodel, x_image, y_image, source_x, source_y, kwargs_lens,
                                      source_fwhm_parsec, z_source)
         plt.close()
+
 
 if __name__ == '__main__':
     pytest.main()

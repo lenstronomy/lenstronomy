@@ -28,7 +28,7 @@ class TestImageModel(object):
     """
     tests the source model routines
     """
-    def setup(self):
+    def setup_method(self):
         # data specifics
         sigma_bkg = .05  # background noise per pixel
         exp_time = 100  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)

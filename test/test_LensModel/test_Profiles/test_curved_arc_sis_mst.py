@@ -13,7 +13,7 @@ class TestCurvedArcSISMST(object):
     """
     tests the source model routines
     """
-    def setup(self):
+    def setup_method(self):
         self.model = CurvedArcSISMST()
         self.sis = SIS()
         self.mst = Convergence()

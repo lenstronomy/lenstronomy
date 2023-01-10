@@ -7,7 +7,7 @@ class TestShapelet(object):
     """
     class to test Shapelets
     """
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_function(self):

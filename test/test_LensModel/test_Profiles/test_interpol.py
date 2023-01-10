@@ -10,7 +10,7 @@ from lenstronomy.LensModel.Profiles.interpol import Interpol, InterpolScaled
 
 class TestInterpol(object):
 
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_do_interpol(self):

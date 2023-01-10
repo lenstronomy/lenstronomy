@@ -11,7 +11,7 @@ class TestCSP(object):
     """
     tests the cored steep ellipsoid (CSE)
     """
-    def setup(self):
+    def setup_method(self):
         from lenstronomy.LensModel.Profiles.cored_steep_ellipsoid import CSE
         self.CSP = CSE(axis='product_avg')
 

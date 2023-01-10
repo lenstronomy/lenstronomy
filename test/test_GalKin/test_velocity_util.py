@@ -9,7 +9,7 @@ class TestVelocityUtil(object):
 
     """
 
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_sample_gaussian(self):

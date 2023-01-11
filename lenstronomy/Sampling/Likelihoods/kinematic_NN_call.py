@@ -38,7 +38,7 @@ class kinematic_NN():
 
         Returns the velocity maps
         """
-        self.check_bounds(input_p)
+        self.within_bounds=self.check_bounds(input_p)
         self.input_p = scaling_x.transform(np.reshape(input_p, (-1, len(input_p))))
         if self.cuda:
             self.input_p = torch.Tensor(self.input_p).cuda()
@@ -59,6 +59,7 @@ class kinematic_NN():
         plt.colorbar()
 
     def check_bounds(self,input_p):
+        within_bounds=True
         training_abs_bounds = {'q_mass': [0.6, 1.0],
                                'q_light': [0.6, 1.0],
                                'theta_E': [0.5, 2.0],
@@ -72,7 +73,11 @@ class kinematic_NN():
                                     'core_size','gamma','b_ani','incli']):
             if input_p[idx]<training_abs_bounds[pname][0] or input_p[idx]>training_abs_bounds[pname][1]:
                 print('WARNING: param', pname, 'is outside of training bounds!')
+                within_bounds=False
         if input_p[4] > input_p[2] or input_p[4] < 0.5*input_p[2]:
             print('WARNING: R_sersic is not within theta_E training bounds!')
+            within_bounds=False
         if input_p[8] < np.arccos(input_p[0]): #should this be wrt q_light or q_mass?
             print('WARNING: Inclination is nonphysical!')
+            within_bounds=False
+        return within_bounds

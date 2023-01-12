@@ -13,14 +13,14 @@ import lenstronomy.Util.kernel_util as kernel_util
 
 class TestKinLikelihood(object):
     def setup(self):
-        lens_model_list = ['SIE', 'SHEAR']
-        lensModel = LensModel(lens_model_list=lens_model_list)
-        self.kwargs_lens = [{'theta_E': 1., 'e1': 0.1, 'e2': 0.1, 'center_x': 0, 'center_y': 0},
+        lens_model_list = ['PEMD_Q_PHI', 'SHEAR']
+        lensModel = LensModel(lens_model_list=lens_model_list,z_lens=0.5)
+        self.kwargs_lens = [{'theta_E': 1., 'gamma': 2., 'q': 0.9, 'phi': np.pi/6, 'center_x': 0, 'center_y': 0},
                        {'gamma1': 0.06, 'gamma2': -0.03}]
 
-        lens_light_model_list = ['SERSIC_ELLIPSE']
+        lens_light_model_list = ['SERSIC_ELLIPSE_Q_PHI']
         lensLightModel = LightModel(lens_light_model_list)
-        self.kwargs_lens_light = [{'amp': 10, 'R_sersic': 1., 'e1': 0.1, 'e2': 0.1, 'n_sersic': 3., 'center_x': 0.,
+        self.kwargs_lens_light = [{'amp': 10, 'R_sersic': 1., 'q': 0.9, 'phi': np.pi/6, 'n_sersic': 3., 'center_x': 0.,
                               'center_y': 0.}]
 
         kinnumPix = 10
@@ -30,7 +30,7 @@ class TestKinLikelihood(object):
         binmap[0,0]=2
         binmap[0,1]=3
         kwargs_kin = {'bin_data': np.zeros(kinnum_bin) + 200.,
-                      'bin_SNR': np.ones(kinnum_bin) * 2.,
+                      'bin_sigma': np.ones(kinnum_bin) * 2.,
                       'bin_mask': binmap}
 
         _KinBin = KinBin(**kwargs_kin)
@@ -52,35 +52,33 @@ class TestKinLikelihood(object):
 
         self.KinLikelihood = KinLikelihood(_KinData,lensModel,lensLightModel,kwargs_data,idx_lens=0,idx_lens_light=0,cuda=False)
 
-        self.kwargs_special = {'D_dt': 1988, 'b_ani':0.1, 'incli':0.,'D_d':2000}
-        self.z_d=0.5
+        self.kwargs_special = {'D_dt': 1988, 'b_ani':0.1, 'incli':np.pi/2,'D_d':2000}
         # input_params = self.KinLikelihood.convert_to_NN_params(self.kwargs_lens, self.kwargs_lens_light,
         #                                                        self.kwargs_special)
         # self.NNvelo_map = self.KinLikelihood.kinematic_NN.generate_map(input_params)
 
     def test_convert_to_NN_params(self):
-        #currently conversion is not implemented. This just checks that input is the test values
-        params=self.KinLikelihood.convert_to_NN_params(self.kwargs_lens, self.kwargs_lens_light, self.kwargs_special)
-        npt.assert_array_equal(params,np.array([9.44922512e-01, 8.26468232e-01, 1.00161407e+00, 3.10945081e+00,
-                                             7.90308638e-01, 1.00000000e-04, 4.60606795e-01, 2.67345695e-01,
-                                             8.93001866e+01]))
+        #tests pretty simple case where there is no scaling. Should update to check another case
+        kwargs_lens_test=[{'theta_E': 2., 'gamma': 2., 'q': 1., 'phi': 0, 'center_x': 0, 'center_y': 0},
+         {'gamma1': 0.06, 'gamma2': -0.03}]
+        kwargs_lens_light_test = [{'amp': 10, 'R_sersic': 1., 'q': 1, 'phi': 0, 'n_sersic': 3., 'center_x': 0.,
+                              'center_y': 0.}]
+        params=self.KinLikelihood.convert_to_NN_params(kwargs_lens_test, kwargs_lens_light_test, self.kwargs_special)
+        npt.assert_array_equal(params,np.array([1., 1., 2., 3., 1., 1.00000000e-04, 0.5, self.kwargs_special['b_ani'],
+                                             self.kwargs_special['incli']*180/np.pi]))
 
     def test_rescale_distance(self):
         #scale=fiducial
         kwargs_special = {'D_dt': 2886.544, 'b_ani': 0.1, 'incli': 0., 'D_d': 1215.739 }
-        rescaled_map = self.KinLikelihood.rescale_distance(self.image_data, kwargs_special, self.z_d)
+        rescaled_map = self.KinLikelihood.rescale_distance(self.image_data, kwargs_special)
         npt.assert_allclose(rescaled_map,self.image_data,atol=10**-4)
         #scale D_dt
         kwargs_special = {'D_dt': 2886.544*2, 'b_ani': 0.1, 'incli': 0., 'D_d': 1215.739}
-        rescaled_map = self.KinLikelihood.rescale_distance(self.image_data, kwargs_special, self.z_d)
+        rescaled_map = self.KinLikelihood.rescale_distance(self.image_data, kwargs_special)
         npt.assert_allclose(np.sqrt(2)*self.image_data,rescaled_map,atol=10**-4)
         #scale D_d
         kwargs_special = {'D_dt': 2886.544, 'b_ani': 0.1, 'incli': 0., 'D_d': 1215.739*2}
-        rescaled_map = self.KinLikelihood.rescale_distance(self.image_data, kwargs_special, self.z_d)
-        npt.assert_allclose(1/np.sqrt(2)*self.image_data,rescaled_map,atol=10**-4)
-        #scale z_d
-        kwargs_special = {'D_dt': 2886.544, 'b_ani': 0.1, 'incli': 0., 'D_d': 1215.739}
-        rescaled_map = self.KinLikelihood.rescale_distance(self.image_data, kwargs_special, z_d=2.)
+        rescaled_map = self.KinLikelihood.rescale_distance(self.image_data, kwargs_special)
         npt.assert_allclose(1/np.sqrt(2)*self.image_data,rescaled_map,atol=10**-4)
 
     def test_convert_kwargs_to_KiNNalign_input(self):
@@ -97,7 +95,7 @@ class TestKinLikelihood(object):
 
 
     def test_logL(self):
-        logL = self.KinLikelihood.logL(self.kwargs_lens, self.kwargs_lens_light, self.kwargs_special,z_d=self.z_d)
+        logL = self.KinLikelihood.logL(self.kwargs_lens, self.kwargs_lens_light, self.kwargs_special)
         assert logL == 10. #think of a value to test this at
 
 

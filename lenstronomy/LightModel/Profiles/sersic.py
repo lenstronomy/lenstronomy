@@ -4,7 +4,8 @@ __author__ = 'sibirrer'
 
 import numpy as np
 from lenstronomy.LensModel.Profiles.sersic_utils import SersicUtil
-
+import lenstronomy.Util.param_util as param_util
+import numpy as np
 from lenstronomy.Util.package_util import exporter
 export, __all__ = exporter()
 
@@ -86,6 +87,40 @@ class SersicElliptic(SersicUtil):
         R = self.get_distance_from_center(x, y, e1, e2, center_x, center_y)
         result = self._r_sersic(R, R_sersic, n_sersic, max_R_frac)
         return amp * result
+
+@export
+class SersicElliptic_qPhi(SersicUtil):
+    """
+    this class is the same as SersicElliptic except sampling over q and phi instead of e1 and e2
+
+    """
+    param_names = ['amp', 'R_sersic', 'n_sersic', 'q', 'phi', 'center_x', 'center_y']
+    lower_limit_default = {'amp': 0, 'R_sersic': 0, 'n_sersic': 0.5, 'q': 0, 'phi': -np.pi, 'center_x': -100,
+                           'center_y': -100}
+    upper_limit_default = {'amp': 100, 'R_sersic': 100, 'n_sersic': 8, 'q': 0.1, 'phi': np.pi, 'center_x': 100,
+                           'center_y': 100}
+
+    def __init__(self, *args, **kwargs):
+        self._sersic_e1e2 = SersicElliptic(*args, **kwargs)
+
+    def function(self, x, y, amp, R_sersic, n_sersic, q, phi, center_x=0, center_y=0, max_R_frac=100.0):
+        """
+
+        :param x:
+        :param y:
+        :param amp: surface brightness/amplitude value at the half light radius
+        :param R_sersic: half light radius (either semi-major axis or product average of semi-major and semi-minor axis)
+        :param n_sersic: Sersic index
+        :param q: axis ratio
+        :param phi: position angle (radians)
+        :param center_x: center in x-coordinate
+        :param center_y: center in y-coordinate
+        :param max_R_frac: maximum window outside of which the mass is zeroed, in units of R_sersic (float)
+        :return: Sersic profile value at (x, y)
+        """
+
+        e1, e2 = param_util.phi_q2_ellipticity(phi, q)
+        return self._sersic_e1e2.function(x, y, amp, R_sersic, n_sersic, e1, e2, center_x, center_y, max_R_frac)
 
 
 @export

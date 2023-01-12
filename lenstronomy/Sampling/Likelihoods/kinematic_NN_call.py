@@ -72,12 +72,12 @@ class kinematic_NN():
         for idx,pname in enumerate(['q_mass','q_light','theta_E','n_sersic','R_sersic',
                                     'core_size','gamma','b_ani','incli']):
             if input_p[idx]<training_abs_bounds[pname][0] or input_p[idx]>training_abs_bounds[pname][1]:
-                print('WARNING: param', pname, 'is outside of training bounds!')
+                print('NN CALL WARNING: param', pname, 'is outside of training bounds!')
                 within_bounds=False
         if input_p[4] > input_p[2] or input_p[4] < 0.5*input_p[2]:
-            print('WARNING: R_sersic is not within theta_E training bounds!')
+            print('NN CALL WARNING: R_sersic is not within theta_E training bounds!')
             within_bounds=False
         if input_p[8] < np.arccos(input_p[0]): #should this be wrt q_light or q_mass?
-            print('WARNING: Inclination is nonphysical!')
+            print('NN CALL WARNING: Inclination is nonphysical!')
             within_bounds=False
         return within_bounds

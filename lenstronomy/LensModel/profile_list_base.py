@@ -52,7 +52,9 @@ class ProfileListBase(object):
         func_list = []
         imported_classes = {}
         for i, lens_type in enumerate(lens_model_list):
-            # those models require a new instance per profile as certain pre-computations are relevant per individual profile
+            # those models require a new instance per profile as some pre-computations are different when parameters or
+            # other settings are changed. For example, the 'INTERPOL' model needs to know the specific map to be
+            # interpolated.
             if lens_type in ['NFW_MC', 'CHAMELEON', 'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'NFW_ELLIPSE_GAUSS_DEC',
                              'CTNFW_GAUSS_DEC', 'INTERPOL', 'INTERPOL_SCALED', 'NIE', 'NIE_SIMPLE']:
                 lensmodel_class = self._import_class(lens_type, custom_class, z_lens=lens_redshift_list[i],

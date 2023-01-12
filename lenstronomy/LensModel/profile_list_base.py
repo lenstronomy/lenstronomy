@@ -5,7 +5,7 @@ __all__ = ['ProfileListBase']
 
 _SUPPORTED_MODELS = ['SHIFT', 'NIE_POTENTIAL', 'CONST_MAG', 'SHEAR', 'SHEAR_GAMMA_PSI', 'SHEAR_REDUCED', 'CONVERGENCE', 'FLEXION',
                      'FLEXIONFG', 'POINT_MASS', 'SIS', 'SIS_TRUNCATED', 'SIE', 'SPP', 'NIE', 'NIE_SIMPLE', 'CHAMELEON',
-                     'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'SPEP', 'PEMD', 'SPEMD', 'EPL', 'EPL_NUMBA',
+                     'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'SPEP', 'PEMD', 'PEMD_Q_PHI', 'SPEMD', 'EPL', 'EPL_NUMBA',
                      'EPL_BOXYDISKY', 'SPL_CORE',
                      'NFW', 'NFW_ELLIPSE', 'NFW_ELLIPSE_GAUSS_DEC', 'NFW_ELLIPSE_CSE', 'TNFW', 'TNFW_ELLIPSE',
                      'CNFW', 'CNFW_ELLIPSE', 'CTNFW_GAUSS_DEC', 'NFW_MC', 'SERSIC',
@@ -145,6 +145,9 @@ class ProfileListBase(object):
         elif lens_type == 'PEMD':
             from lenstronomy.LensModel.Profiles.pemd import PEMD
             return PEMD()
+        elif lens_type == 'PEMD_Q_PHI':
+            from lenstronomy.LensModel.Profiles.pemd import PEMD_qPhi
+            return PEMD_qPhi()
         elif lens_type == 'SPEMD':
             from lenstronomy.LensModel.Profiles.spemd import SPEMD
             return SPEMD()

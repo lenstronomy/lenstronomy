@@ -6,7 +6,7 @@ import unittest
 
 class TestDataAPI(object):
 
-    def setup(self):
+    def setup_method(self):
         numpix = 10
         self.ccd_gain = 4.
         self.pixel_scale = 0.13

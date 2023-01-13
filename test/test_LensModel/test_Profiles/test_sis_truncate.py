@@ -11,7 +11,7 @@ class TestSIS_truncate(object):
     """
     tests the Gaussian methods
     """
-    def setup(self):
+    def setup_method(self):
         self.SIS = SIS_truncate()
 
     def test_function(self):

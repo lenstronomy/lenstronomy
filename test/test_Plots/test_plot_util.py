@@ -9,7 +9,7 @@ import lenstronomy.Plots.plot_util as plot_util
 
 class TestPlotUtil(object):
 
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_sqrt(self):
@@ -99,6 +99,7 @@ class TestPlotUtil(object):
     def test_cmap_copy(self):
         from lenstronomy.Plots.plot_util import cmap_conf
         cmap_new = cmap_conf("gist_heat")
+        
         
 if __name__ == '__main__':
     pytest.main()

@@ -25,7 +25,7 @@ class TestNestedSampler(object):
     test the fitting sequences
     """
 
-    def setup(self):
+    def setup_method(self):
 
         pass
 

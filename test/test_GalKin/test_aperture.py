@@ -6,7 +6,7 @@ import unittest
 
 class TestAperture(object):
 
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_aperture_select(self):

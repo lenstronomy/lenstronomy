@@ -8,7 +8,7 @@ import pytest
 
 class TestDeLens(object):
 
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_get_param_WLS(self):

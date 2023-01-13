@@ -18,7 +18,7 @@ from lenstronomy.Analysis.multi_patch_reconstruction import MultiPatchReconstruc
 
 class TestMultiPatchReconstruction(object):
 
-    def setup(self):
+    def setup_method(self):
         # data specifics
         sigma_bkg = .05  # background noise per pixel (Gaussian)
         exp_time = 100.  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)

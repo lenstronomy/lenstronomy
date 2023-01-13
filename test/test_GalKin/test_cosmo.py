@@ -4,7 +4,6 @@ import pytest
 import unittest
 
 
-
 class TestRaise(unittest.TestCase):
 
     def test_raise(self):

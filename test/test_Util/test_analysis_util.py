@@ -12,7 +12,7 @@ import unittest
 
 class TestCorrelation(object):
 
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_radial_profile(self):

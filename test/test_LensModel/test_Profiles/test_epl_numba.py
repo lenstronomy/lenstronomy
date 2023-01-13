@@ -11,7 +11,7 @@ class TestEPL_numba(object):
     """
     tests the Gaussian methods
     """
-    def setup(self):
+    def setup_method(self):
         from lenstronomy.LensModel.Profiles.epl import EPL
         self.EPL = EPL()
         from lenstronomy.LensModel.Profiles.epl_numba import EPL_numba

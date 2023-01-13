@@ -5,8 +5,10 @@ import pytest
 
 class TestUpdateManager(object):
 
-    def setup(self):
-        kwargs_model = {'lens_model_list': ['SHEAR', 'SHEAR'], 'source_light_model_list': ['UNIFORM'], 'optical_depth_model_list': []}
+    def setup_method(self):
+        kwargs_model = {'lens_model_list': ['SHEAR', 'SHEAR'], 'source_light_model_list': ['UNIFORM'],
+                        'lens_light_model_list': ['UNIFORM'],
+                        'optical_depth_model_list': []}
         kwargs_constraints ={}
         kwargs_likelihood = {}
         kwargs_params = {}
@@ -17,6 +19,7 @@ class TestUpdateManager(object):
         lens_upper = [{'e1': 1, 'e2': 1}, {'e1': 1, 'e2': 1}]
         kwargs_params['lens_model'] = [lens_init, lens_sigma, lens_fixed, lens_lower, lens_upper]
         kwargs_params['source_model'] = [[{}], [{}], [{}], [{}], [{}]]
+        kwargs_params['lens_light_model'] = [[{}], [{}], [{}], [{}], [{}]]
         kwargs_params['special'] = [{'special1': 1}, {'special1': 1}, {'special1': 0.1}, {'special1': 0}, {'special1': 1}]
         kwargs_params['extinction_model'] = [[], [], [], [], []]
         self.manager = UpdateManager(kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params)
@@ -69,6 +72,15 @@ class TestUpdateManager(object):
         upper_lens, upper_source, _, _, _, _ = self.manager._upper_kwargs
         assert upper_source[0]['test'] == 1
         assert upper_lens[0]['e1'] == 0.9
+
+    def test_update_sigmas(self):
+        self.manager.update_sigmas(change_sigma_source=[[0, ['test'], [1]]],
+                                   change_sigma_lens=[[0, ['test'], [2]]])
+        self.manager.update_sigmas(change_sigma_lens_light=[[0, ['e1'], [-0.9]]],
+                                   change_sigma_lens=[[0, ['e1'], [0.9]]])
+        upper_lens, upper_source, _, _, _, _ = self.manager._upper_kwargs
+        assert self.manager._lens_sigma[0]['test'] == 2
+        assert self.manager._lens_sigma[0]['e1'] == 0.9
 
     def test_update_fixed(self):
         lens_add_fixed = [[0, ['e1'], [-1]]]

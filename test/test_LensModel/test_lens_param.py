@@ -7,7 +7,7 @@ from lenstronomy.LensModel.lens_param import LensParam
 
 class TestParam(object):
 
-    def setup(self):
+    def setup_method(self):
         self.lens_model_list = ['SPEP',
                                 'INTERPOL_SCALED',
                                 'SHAPELETS_CART',

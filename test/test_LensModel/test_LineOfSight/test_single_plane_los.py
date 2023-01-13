@@ -21,6 +21,7 @@ try:
 except:
     bool_test = False
 
+
 class TestSinglePlaneLOS(object):
     """
     tests the SinglePlaneLOS routines
@@ -30,7 +31,7 @@ class TestSinglePlaneLOS(object):
     the test_los_vs_multiplane checks that a multiplane setup with three shear planes returns the same as the LOS and LOS MINIMAL models
     """
 
-    def setup(self):
+    def setup_method(self):
         self.lensModel = SinglePlane(['GAUSSIAN'])
         self.lensModel_los = SinglePlaneLOS(['GAUSSIAN', 'LOS'], index_los = 1)
         self.lensModel_minimal = SinglePlaneLOS(['GAUSSIAN', 'LOS_MINIMAL'], index_los = 1)

@@ -11,7 +11,7 @@ import lenstronomy.Util.param_util as param_util
 
 class TestLensProfileAnalysis(object):
 
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_profile_slope(self):

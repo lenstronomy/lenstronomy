@@ -9,9 +9,10 @@ from lenstronomy.LensModel.Profiles.splcore import SPLCORE
 import numpy.testing as npt
 import pytest
 
+
 class TestGNFW(object):
 
-    def setup(self):
+    def setup_method(self):
         self.gnfw = GNFW()
         self.splcore = SPLCORE()
         self.kwargs_lens = {'alpha_Rs': 2.1, 'Rs': 1.5, 'gamma_inner': 1.0, 'gamma_outer': 3.0,'center_x': 0.04, 'center_y': -1.0}

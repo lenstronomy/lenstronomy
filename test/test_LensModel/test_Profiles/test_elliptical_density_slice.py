@@ -11,7 +11,7 @@ class TestElliSLICE(object):
     """
     tests the elliptical slice lens model
     """
-    def setup(self):
+    def setup_method(self):
         self.ElliSLICE = ElliSLICE()
 
     def test_function(self):

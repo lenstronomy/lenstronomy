@@ -16,7 +16,7 @@ class TestShear(object):
     """
     tests the Gaussian methods
     """
-    def setup(self):
+    def setup_method(self):
         self.extShear = Shear()
 
         gamma1, gamma2 = 0.1, 0.1
@@ -78,7 +78,7 @@ class TestShear(object):
 
 class TestShearGammaPsi(object):
 
-    def setup(self):
+    def setup_method(self):
         self.shear_e1e2 = Shear()
         self.shear = ShearGammaPsi()
 
@@ -112,7 +112,7 @@ class TestShearGammaPsi(object):
 
 class TestShearReduced(object):
 
-    def setup(self):
+    def setup_method(self):
         self.shear = ShearReduced()
 
     def test_magnification(self):

@@ -6,7 +6,7 @@ import numpy.testing as npt
 
 class TestModelAPI(object):
 
-    def setup(self):
+    def setup_method(self):
 
         numpix = 10
         instrument_name = 'LSST'

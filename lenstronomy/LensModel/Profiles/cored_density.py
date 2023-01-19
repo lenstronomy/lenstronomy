@@ -12,17 +12,17 @@ class CoredDensity(LensProfileBase):
     class for a uniform cored density dropping steep in the outskirts
     This profile is e.g. featured in Blum et al. 2020 https://arxiv.org/abs/2001.07182v1
 
-    ..math:
+    ..math::
         \\rho_c(r) = \\frac{2}{\\pi} \\Sigma_{c} R_c^3 \\left(R_c^2 + r^2 \\right)^{-2}
 
     with the convergence profile as
 
-    ..math:
+    ..math::
         \\kappa_c(\\theta) = \\left(1 + \\frac{\\theta^2}{\\theta_c^2} \\right)^{-3/2}.
 
     An approximate mass-sheet degeneracy can then be written as
 
-    ..math:
+    ..math::
         \\kappa_{\\lambda_c}(\\theta) = \\lambda_c \\kappa(\\theta) + (1-\\lambda_c) \\kappa_c(\\theta).
 
 

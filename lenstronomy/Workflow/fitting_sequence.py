@@ -39,6 +39,7 @@ class FittingSequence(object):
          'point_source_model': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
          'extinction_model': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
          'special': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
+         'tracer_source_model': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
         :param mpi: MPI option (bool), if True, will launch an MPI Pool job for the steps in the fitting sequence where
          possible
         :param verbose: bool, if True prints temporary results and indicators of the fitting process

@@ -2,6 +2,7 @@ __author__ = 'sibirrer'
 
 from lenstronomy.Sampling.Likelihoods.time_delay_likelihood import TimeDelayLikelihood
 from lenstronomy.Sampling.Likelihoods.image_likelihood import ImageLikelihood
+from lenstronomy.Sampling.Likelihoods.tracer_likelihood import TracerLikelihood
 from lenstronomy.Sampling.Likelihoods.position_likelihood import PositionLikelihood
 from lenstronomy.Sampling.Likelihoods.flux_ratio_likelihood import FluxRatioLikelihood
 from lenstronomy.Sampling.Likelihoods.prior_likelihood import PriorLikelihood
@@ -34,7 +35,8 @@ class LikelihoodModule(object):
                  prior_source_kde=None, prior_lens_light_kde=None, prior_ps_kde=None, prior_special_kde=None,
                  prior_extinction_kde=None, prior_lens_lognormal=None, prior_source_lognormal=None,
                  prior_extinction_lognormal=None, prior_lens_light_lognormal=None, prior_ps_lognormal=None,
-                 prior_special_lognormal=None, custom_logL_addition=None, kwargs_pixelbased=None):
+                 prior_special_lognormal=None, custom_logL_addition=None, kwargs_pixelbased=None,
+                 tracer_likelihood=False):
         """
         initializing class
 
@@ -75,7 +77,9 @@ class LikelihoodModule(object):
          kwargs_ps, kwargs_special, kwargs_extinction) and returns a logL (punishing) value.
         :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver
          (see SLITronomy documentation)
+        :param tracer_likelihood: option to perform likelihood on tracer quantity derived from imaging or spectroscopy
         """
+        # TODO unpack also tracer model from kwargs_data
         multi_band_list, multi_band_type, time_delays_measured, time_delays_uncertainties, flux_ratios, flux_ratio_errors, ra_image_list, dec_image_list = self._unpack_data(**kwargs_data_joint)
         if len(multi_band_list) == 0:
             image_likelihood = False
@@ -121,6 +125,7 @@ class LikelihoodModule(object):
         self._class_instances(kwargs_model=kwargs_model, kwargs_imaging=self._kwargs_imaging,
                               kwargs_position=self._kwargs_position, kwargs_flux=self._kwargs_flux,
                               kwargs_time_delay=self._kwargs_time_delay)
+        self._tracer_likelihood = tracer_likelihood
 
     def _class_instances(self, kwargs_model, kwargs_imaging, kwargs_position, kwargs_flux, kwargs_time_delay):
         """
@@ -146,6 +151,8 @@ class LikelihoodModule(object):
 
         if self._image_likelihood is True:
             self.image_likelihood = ImageLikelihood(kwargs_model=kwargs_model, **kwargs_imaging)
+        if self._tracer_likelihood is True:
+            self.tracer_likelihood = TracerLikelihood()
         self._position_likelihood = PositionLikelihood(point_source_class, **kwargs_position)
         if self._flux_ratio_likelihood is True:
             self.flux_ratio_likelihood = FluxRatioLikelihood(lens_model_class, **kwargs_flux)
@@ -215,6 +222,12 @@ class LikelihoodModule(object):
             logL += logL_flux_ratios
             if verbose is True:
                 print('flux ratio logL = %s' % logL_flux_ratios)
+        if self._tracer_likelihood is True:
+            # TODO: get kwargs_source from a specified setting/band, make sure linear inversion has been applied
+            logL_tracer = self.tracer_likelihood.logL(kwargs_tracer, kwargs_lens, kwargs_source, kwargs_special)
+            if verbose is True:
+                print('tracer logL = %s' % logL_tracer)
+            logL += logL_tracer
         logL += self._position_likelihood.logL(kwargs_lens, kwargs_ps, kwargs_special, verbose=verbose)
         logL_prior = self._prior_likelihood.logL(**kwargs_return)
         logL += logL_prior

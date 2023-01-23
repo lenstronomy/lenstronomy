@@ -198,6 +198,7 @@ class LikelihoodModule(object):
                                                                                    kwargs_return['kwargs_lens_light'], \
                                                                                    kwargs_return['kwargs_ps'], \
                                                                                    kwargs_return['kwargs_special']
+        kwargs_tracer_source = kwargs_return['kwargs_tracer_source']
         # update model instance in case of changes affecting it (i.e. redshift sampling in multi-plane)
         self._update_model(kwargs_special)
         # generate image and computes likelihood
@@ -224,7 +225,7 @@ class LikelihoodModule(object):
                 print('flux ratio logL = %s' % logL_flux_ratios)
         if self._tracer_likelihood is True:
             # TODO: get kwargs_source from a specified setting/band, make sure linear inversion has been applied
-            logL_tracer = self.tracer_likelihood.logL(kwargs_tracer, kwargs_lens, kwargs_source, kwargs_special)
+            logL_tracer = self.tracer_likelihood.logL(kwargs_tracer_source, kwargs_lens, kwargs_source, kwargs_special)
             if verbose is True:
                 print('tracer logL = %s' % logL_tracer)
             logL += logL_tracer
@@ -273,6 +274,8 @@ class LikelihoodModule(object):
         if self._flux_ratio_likelihood is True:
             num_data += self.flux_ratio_likelihood.num_data
         num_data += self._position_likelihood.num_data
+        if self._tracer_likelihood is True:
+            num_data += self.tracer_likelihood.num_data
         return num_data
 
     @property
@@ -329,6 +332,8 @@ class LikelihoodModule(object):
         self.PointSource.set_save_cache(bool_input)
         if self._image_likelihood is True:
             self.image_likelihood.reset_point_source_cache(bool_input)
+        if self._tracer_likelihood is True:
+            self.tracer_likelihood.reset_point_source_cache(bool_input)
 
     def _update_model(self, kwargs_special):
         """

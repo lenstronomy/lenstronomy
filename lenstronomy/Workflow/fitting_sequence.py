@@ -455,9 +455,10 @@ class FittingSequence(object):
         return 0
 
     def update_settings(self, kwargs_model=None, kwargs_constraints=None, kwargs_likelihood=None, lens_add_fixed=None,
-                        source_add_fixed=None, lens_light_add_fixed=None, ps_add_fixed=None, cosmo_add_fixed=None,
+                        source_add_fixed=None, lens_light_add_fixed=None, ps_add_fixed=None, special_add_fixed=None,
+                        tracer_source_add_fixed=None,
                         lens_remove_fixed=None, source_remove_fixed=None, lens_light_remove_fixed=None,
-                        ps_remove_fixed=None, cosmo_remove_fixed=None,
+                        ps_remove_fixed=None, special_remove_fixed=None, tracer_source_remove_fixed=None,
                         change_source_lower_limit=None, change_source_upper_limit=None,
                         change_lens_lower_limit=None, change_lens_upper_limit=None,
                         change_sigma_lens=None, change_sigma_source=None, change_sigma_lens_light=None):
@@ -471,12 +472,14 @@ class FittingSequence(object):
         :param source_add_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param lens_light_add_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param ps_add_fixed: [[i_model, ['param1', 'param2',...], [...]]
-        :param cosmo_add_fixed: ['param1', 'param2',...]
+        :param special_add_fixed: ['param1', 'param2',...]
+        :param tracer_source_add_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param lens_remove_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param source_remove_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param lens_light_remove_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param ps_remove_fixed: [[i_model, ['param1', 'param2',...], [...]]
-        :param cosmo_remove_fixed: ['param1', 'param2',...]
+        :param special_remove_fixed: ['param1', 'param2',...]
+        :param tracer_source_remove_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param change_lens_lower_limit: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
         :param change_lens_upper_limit: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
         :param change_source_lower_limit: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
@@ -488,8 +491,9 @@ class FittingSequence(object):
         """
         self._updateManager.update_options(kwargs_model, kwargs_constraints, kwargs_likelihood)
         self._updateManager.update_fixed(lens_add_fixed, source_add_fixed, lens_light_add_fixed,
-                                         ps_add_fixed, cosmo_add_fixed, lens_remove_fixed, source_remove_fixed,
-                                         lens_light_remove_fixed, ps_remove_fixed, cosmo_remove_fixed)
+                                         ps_add_fixed, special_add_fixed, tracer_source_add_fixed,
+                                         lens_remove_fixed, source_remove_fixed, lens_light_remove_fixed,
+                                         ps_remove_fixed, special_remove_fixed, tracer_source_remove_fixed)
         self._updateManager.update_limits(change_source_lower_limit, change_source_upper_limit, change_lens_lower_limit,
                                           change_lens_upper_limit)
         self._updateManager.update_sigmas(change_sigma_lens=change_sigma_lens, change_sigma_source=change_sigma_source,

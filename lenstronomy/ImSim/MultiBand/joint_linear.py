@@ -153,4 +153,4 @@ class JointLinear(MultiLinear):
             bool_ = self._imageModel_list[0].check_positive_flux(kwargs_source, kwargs_lens_light, kwargs_ps)
             if bool_ is False:
                 logL -= 10 ** 5
-        return logL
+        return logL, param

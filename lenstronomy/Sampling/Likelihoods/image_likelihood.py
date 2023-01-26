@@ -48,16 +48,16 @@ class ImageLikelihood(object):
         :param kwargs_ps: point source keyword argument list according to PointSource module
         :param kwargs_special: special keyword argument list as part of the Param module
         :param kwargs_extinction: extinction parameter keyword argument list according to LightModel module
-        :return: log likelihood of the data given the model
+        :return: log likelihood of the data given the model, linear parameter inversion list
         """
-        logL = self.imSim.likelihood_data_given_model(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
+        logL, param = self.imSim.likelihood_data_given_model(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
                                                       kwargs_extinction=kwargs_extinction,
                                                       kwargs_special=kwargs_special,
                                                       source_marg=self._source_marg, linear_prior=self._linear_prior,
                                                       check_positive_flux=self._check_positive_flux)
         if np.isnan(logL) is True:
             return -10 ** 15
-        return logL
+        return logL, param
 
     @property
     def num_data(self):

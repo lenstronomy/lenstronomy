@@ -206,7 +206,7 @@ class LikelihoodModule(object):
         logL = 0
 
         if self._image_likelihood is True:
-            logL_image = self.image_likelihood.logL(**kwargs_return)
+            logL_image, param = self.image_likelihood.logL(**kwargs_return)
             logL += logL_image
             if verbose is True:
                 print('image logL = %s' % logL_image)
@@ -225,7 +225,8 @@ class LikelihoodModule(object):
                 print('flux ratio logL = %s' % logL_flux_ratios)
         if self._tracer_likelihood is True:
             # TODO: get kwargs_source from a specified setting/band, make sure linear inversion has been applied
-            logL_tracer = self.tracer_likelihood.logL(kwargs_tracer_source, kwargs_lens, kwargs_source, kwargs_special)
+            logL_tracer = self.tracer_likelihood.logL(kwargs_tracer_source, kwargs_lens, kwargs_source, kwargs_special,
+                                                      param)
             if verbose is True:
                 print('tracer logL = %s' % logL_tracer)
             logL += logL_tracer

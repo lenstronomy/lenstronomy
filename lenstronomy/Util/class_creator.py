@@ -156,7 +156,8 @@ def create_class_instances(lens_model_list=None, z_lens=None, z_source=None, z_s
 
 
 @export
-def create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, image_likelihood_mask=None):
+def create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, image_likelihood_mask=None,
+                       fixed_lens_model=False):
     """
 
     :param kwargs_data: ImageData keyword arguments
@@ -165,19 +166,22 @@ def create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, i
     :param kwargs_model: model keyword arguments
     :param image_likelihood_mask: image likelihood mask
      (same size as image_data with 1 indicating being evaluated and 0 being left out)
+    :param fixed_lens_model: keeps the lens model fixed during likelihood calls; this setting should only be set to
+        true if all lens components are fixed
     :return: ImageLinearFit() instance
     """
     data_class = ImageData(**kwargs_data)
     psf_class = PSF(**kwargs_psf)
     lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class = create_class_instances(**kwargs_model)
     imageModel = ImageLinearFit(data_class, psf_class, lens_model_class, source_model_class, lens_light_model_class,
-                                point_source_class, extinction_class, kwargs_numerics, likelihood_mask=image_likelihood_mask)
+                                point_source_class, extinction_class, kwargs_numerics, likelihood_mask=image_likelihood_mask,
+                                fixed_lens_model=fixed_lens_model)
     return imageModel
 
 
 @export
 def create_im_sim(multi_band_list, multi_band_type, kwargs_model, bands_compute=None, image_likelihood_mask_list=None,
-                  band_index=0, kwargs_pixelbased=None, linear_solver=True):
+                  band_index=0, kwargs_pixelbased=None, linear_solver=True, fixed_lens_model=False):
     """
 
 
@@ -194,6 +198,8 @@ def create_im_sim(multi_band_list, multi_band_type, kwargs_model, bands_compute=
     :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver (see SLITronomy documentation)
     :param linear_solver: bool, if True (default) fixes the linear amplitude parameters 'amp' (avoid sampling) such
      that they get overwritten by the linear solver solution.
+    :param fixed_lens_model: keeps the lens model fixed during likelihood calls; this setting should only be set to
+        true if all lens components are fixed
     :return: MultiBand class instance
     """
     if linear_solver is False and multi_band_type not in ['single-band', 'multi-linear']:
@@ -203,16 +209,17 @@ def create_im_sim(multi_band_list, multi_band_type, kwargs_model, bands_compute=
     if multi_band_type == 'multi-linear':
         from lenstronomy.ImSim.MultiBand.multi_linear import MultiLinear
         multiband = MultiLinear(multi_band_list, kwargs_model, compute_bool=bands_compute,
-                                likelihood_mask_list=image_likelihood_mask_list, linear_solver=linear_solver)
+                                likelihood_mask_list=image_likelihood_mask_list, linear_solver=linear_solver,
+                                fixed_lens_model=fixed_lens_model)
     elif multi_band_type == 'joint-linear':
         from lenstronomy.ImSim.MultiBand.joint_linear import JointLinear
         multiband = JointLinear(multi_band_list, kwargs_model, compute_bool=bands_compute,
-                                likelihood_mask_list=image_likelihood_mask_list)
+                                likelihood_mask_list=image_likelihood_mask_list, fixed_lens_model=fixed_lens_model)
     elif multi_band_type == 'single-band':
         from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModel
         multiband = SingleBandMultiModel(multi_band_list, kwargs_model, likelihood_mask_list=image_likelihood_mask_list,
                                          band_index=band_index, kwargs_pixelbased=kwargs_pixelbased,
-                                         linear_solver=linear_solver)
+                                         linear_solver=linear_solver, fixed_lens_model=fixed_lens_model)
     else:
         raise ValueError("type %s is not supported!" % multi_band_type)
     return multiband

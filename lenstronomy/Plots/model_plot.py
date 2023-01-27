@@ -42,6 +42,7 @@ class ModelPlot(object):
         :param linear_solver: bool, if True (default) fixes the linear amplitude parameters 'amp' (avoid sampling) such
          that they get overwritten by the linear solver solution.
         """
+
         if bands_compute is None:
             bands_compute = [True] * len(multi_band_list)
         if multi_band_type == 'single-band':

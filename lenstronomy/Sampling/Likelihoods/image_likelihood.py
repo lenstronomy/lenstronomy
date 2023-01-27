@@ -11,7 +11,7 @@ class ImageLikelihood(object):
 
     def __init__(self, multi_band_list, multi_band_type, kwargs_model, bands_compute=None,
                  image_likelihood_mask_list=None, source_marg=False, linear_prior=None, check_positive_flux=False,
-                 kwargs_pixelbased=None, linear_solver=True):
+                 kwargs_pixelbased=None, linear_solver=True, fixed_lens_model=False):
         """
 
         :param bands_compute: list of bools with same length as data objects, indicates which "band" to include in the
@@ -28,11 +28,14 @@ class ImageLikelihood(object):
          (see SLITronomy documentation)
         :param linear_solver: bool, if True (default) fixes the linear amplitude parameters 'amp' (avoid sampling) such
          that they get overwritten by the linear solver solution.
+        :param fixed_lens_model: bool, if True keeps the lens model fixed during likelihood calls; this setting should only be set to
+        true if all lens components are fixed
         """
         self.imSim = class_creator.create_im_sim(multi_band_list, multi_band_type, kwargs_model,
                                                  bands_compute=bands_compute,
                                                  image_likelihood_mask_list=image_likelihood_mask_list,
-                                                 kwargs_pixelbased=kwargs_pixelbased, linear_solver=linear_solver)
+                                                 kwargs_pixelbased=kwargs_pixelbased, linear_solver=linear_solver,
+                                                 fixed_lens_model=fixed_lens_model)
         self._model_type = self.imSim.type
         self._source_marg = source_marg
         self._linear_prior = linear_prior

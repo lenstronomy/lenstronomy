@@ -19,7 +19,7 @@ class ImageModel(object):
     """
     def __init__(self, data_class, psf_class, lens_model_class=None, source_model_class=None,
                  lens_light_model_class=None, point_source_class=None, extinction_class=None, kwargs_numerics=None,
-                 kwargs_pixelbased=None):
+                 kwargs_pixelbased=None, fixed_lens_model=False):
         """
         :param data_class: instance of ImageData() or PixelGrid() class
         :param psf_class: instance of PSF() class
@@ -29,6 +29,8 @@ class ImageModel(object):
         :param point_source_class: instance of PointSource() class describing the point sources
         :param kwargs_numerics: keyword arguments with various numeric description (see ImageNumerics class for options)
         :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver (see SLITronomy documentation)
+        :param fixed_lens_model: keeps the lens model fixed during likelihood calls; this setting should only be set to
+        true if all lens components are fixed
         """
         self.type = 'single-band'
         self.num_bands = 1
@@ -74,7 +76,8 @@ class ImageModel(object):
                                                    self._extinction, kwargs_pixelbased)
             self.source_mapping = None  # handled with pixelated operator
         else:
-            self.source_mapping = Image2SourceMapping(lensModel=lens_model_class, sourceModel=source_model_class)
+            self.source_mapping = Image2SourceMapping(lensModel=lens_model_class, sourceModel=source_model_class,
+                                                      fixed_lens_model=fixed_lens_model)
 
     def reset_point_source_cache(self, cache=True):
         """

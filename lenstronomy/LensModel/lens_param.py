@@ -25,6 +25,8 @@ class LensParam(object):
          (only relevant in this class when 'SHAPELETS' is the solver type)
         :param num_shapelet_lens: integer, number of shapelets in the lensing potential
          (only relevant when 'SHAPELET' lens model is used)
+        :param fixed_lens_model: keeps the lens model fixed during likelihood calls; this setting should only be set to
+        true if all lens components are fixed
         """
 
 
@@ -52,7 +54,6 @@ class LensParam(object):
             for func in lens_model.func_list:
                 kwargs_upper.append(func.upper_limit_default)
 
-
         self.lower_limit = kwargs_lower
         self.upper_limit = kwargs_upper
         if kwargs_logsampling is None:
@@ -66,6 +67,7 @@ class LensParam(object):
         :param i: integer, index at the beginning of the tuple for read out to keyword argument convention
         :return: kwargs_list, index at the end of read out of this model component
         """
+
         kwargs_list = []
         for k, model in enumerate(self.model_list):
             kwargs = {}
@@ -112,6 +114,7 @@ class LensParam(object):
                     kwargs[name] = 10**(kwargs[name])
 
             kwargs_list.append(kwargs)
+
         return kwargs_list, i
 
     def set_params(self, kwargs_list):
@@ -120,6 +123,7 @@ class LensParam(object):
         :param kwargs_list: keyword argument list of lens model components
         :return: tuple of arguments (floats) that are being sampled
         """
+
         args = []
         for k, model in enumerate(self.model_list):
             kwargs = kwargs_list[k]
@@ -155,6 +159,7 @@ class LensParam(object):
                             args.append(np.log10(kwargs[name]))
                         else:
                             args.append(kwargs[name])
+
         return args
 
     def num_param(self):

@@ -24,7 +24,7 @@ class MultiLinear(MultiDataBase):
     """
 
     def __init__(self, multi_band_list, kwargs_model, likelihood_mask_list=None, compute_bool=None,
-                 kwargs_pixelbased=None, linear_solver=True):
+                 kwargs_pixelbased=None, linear_solver=True, fixed_lens_model=False):
         """
 
         :param multi_band_list: list of imaging band configurations [[kwargs_data, kwargs_psf, kwargs_numerics],[...], ...]
@@ -33,6 +33,8 @@ class MultiLinear(MultiDataBase):
         :param compute_bool: (optional), bool list to indicate which band to be included in the modeling
         :param linear_solver: bool, if True (default) fixes the linear amplitude parameters 'amp' (avoid sampling) such
          that they get overwritten by the linear solver solution.
+        :param fixed_lens_model: keeps the lens model fixed during likelihood calls; this setting should only be set to
+        true if all lens components are fixed
         """
         self.type = 'multi-linear'
         imageModel_list = []
@@ -41,7 +43,7 @@ class MultiLinear(MultiDataBase):
         for band_index in range(len(multi_band_list)):
             imageModel = SingleBandMultiModel(multi_band_list, kwargs_model, likelihood_mask_list=likelihood_mask_list,
                                               band_index=band_index, kwargs_pixelbased=kwargs_pixelbased,
-                                              linear_solver=linear_solver)
+                                              linear_solver=linear_solver, fixed_lens_model=fixed_lens_model)
             imageModel_list.append(imageModel)
         super(MultiLinear, self).__init__(imageModel_list, compute_bool=compute_bool)
 

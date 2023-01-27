@@ -17,7 +17,7 @@ class ImageLinearFit(ImageModel):
     def __init__(self, data_class, psf_class=None, lens_model_class=None, source_model_class=None,
                  lens_light_model_class=None, point_source_class=None, extinction_class=None, 
                  kwargs_numerics=None, likelihood_mask=None,
-                 psf_error_map_bool_list=None, kwargs_pixelbased=None):
+                 psf_error_map_bool_list=None, kwargs_pixelbased=None, fixed_lens_model=False):
         """
 
         :param data_class: ImageData() instance
@@ -33,6 +33,8 @@ class ImageLinearFit(ImageModel):
          Indicates whether PSF error map is used for the point source model stated as the index.
         :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver
          (see SLITronomy documentation) being applied to the point sources.
+        :param fixed_lens_model: keeps the lens model fixed during likelihood calls; this setting should only be set to
+        true if all lens components are fixed
         """
         if likelihood_mask is None:
             likelihood_mask = np.ones_like(data_class.data)
@@ -42,7 +44,8 @@ class ImageLinearFit(ImageModel):
                                              source_model_class=source_model_class,
                                              lens_light_model_class=lens_light_model_class,
                                              point_source_class=point_source_class, extinction_class=extinction_class, 
-                                             kwargs_numerics=kwargs_numerics, kwargs_pixelbased=kwargs_pixelbased)
+                                             kwargs_numerics=kwargs_numerics, kwargs_pixelbased=kwargs_pixelbased,
+                                             fixed_lens_model=fixed_lens_model)
         if psf_error_map_bool_list is None:
             psf_error_map_bool_list = [True] * len(self.PointSource.point_source_type_list)
         self._psf_error_map_bool_list = psf_error_map_bool_list

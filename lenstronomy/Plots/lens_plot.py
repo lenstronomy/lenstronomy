@@ -1,7 +1,9 @@
 
 import lenstronomy.Util.util as util
+from lenstronomy.Util.param_util import shear_cartesian2polar
 import lenstronomy.Util.simulation_util as sim_util
 import matplotlib.pyplot as plt
+from matplotlib import patches
 import numpy as np
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
@@ -9,12 +11,14 @@ from lenstronomy.LensModel.Profiles.curved_arc_spp import center_deflector
 from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Plots import plot_util
 import scipy.ndimage as ndimage
+from lenstronomy.Data.pixel_grid import PixelGrid
 
 from lenstronomy.Util.package_util import exporter
 export, __all__ = exporter()
 
 
 # TODO define coordinate grid beforehand, e.g. kwargs_data
+# TODO feed in PointSource instance?
 
 @export
 def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourcePos_x=0, sourcePos_y=0,
@@ -26,7 +30,7 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
     :param ax: matplotlib axis instance
     :param lensModel: LensModel() class instance
     :param kwargs_lens: lens model keyword argument list
-    :param numPix: total nnumber of pixels (for convergence map)
+    :param numPix: total number of pixels (for convergence map)
     :param deltaPix: width of pixel (total frame size is deltaPix x numPix)
     :param sourcePos_x: float, x-position of point source (image positions computed by the lens equation)
     :param sourcePos_y: float, y-position of point source (image positions computed by the lens equation)
@@ -42,8 +46,8 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
     :param with_convergence: boolean, if True, plots the convergence of the deflector
     :return:
     """
-    kwargs_data = sim_util.data_configure_simple(numPix, deltaPix, center_ra=coord_center_ra, center_dec=coord_center_dec, 
-                                                 inverse=coord_inverse)
+    kwargs_data = sim_util.data_configure_simple(numPix, deltaPix, center_ra=coord_center_ra,
+                                                 center_dec=coord_center_dec, inverse=coord_inverse)
     data = ImageData(**kwargs_data)
     _coords = data
     _frame_size = numPix * deltaPix
@@ -136,9 +140,9 @@ def caustics_plot(ax, pixel_grid, lens_model, kwargs_lens, fast_caustic=True, co
         # only supports individual points due to output of critical_curve_tiling definition
         points_only = True
         ra_crit_list, dec_crit_list = lens_model_ext.critical_curve_tiling(kwargs_lens, compute_window=frame_size,
-                                                                         start_scale=pixel_width, max_order=10,
-                                                                         center_x=coord_center_ra,
-                                                                         center_y=coord_center_dec)
+                                                                           start_scale=pixel_width, max_order=10,
+                                                                           center_x=coord_center_ra,
+                                                                           center_y=coord_center_dec)
         ra_caustic_list, dec_caustic_list = lens_model.ray_shooting(ra_crit_list, dec_crit_list, kwargs_lens)
         # ra_crit_list, dec_crit_list = list(ra_crit_list), list(dec_crit_list)
         # ra_caustic_list, dec_caustic_list = list(ra_caustic_list), list(dec_caustic_list)
@@ -151,7 +155,7 @@ def caustics_plot(ax, pixel_grid, lens_model, kwargs_lens, fast_caustic=True, co
     return ax
 
 
-def point_source_plot(ax, pixel_grid, lens_model, kwargs_lens, source_x, source_y, **kwargs):
+def point_source_plot(ax, pixel_grid, lens_model, kwargs_lens, source_x, source_y, name_list=None, **kwargs):
     """
     plots and illustrates images of a point source
     The plotting routine orders the image labels according to the arrival time and illustrates a diamond shape of the
@@ -163,6 +167,8 @@ def point_source_plot(ax, pixel_grid, lens_model, kwargs_lens, source_x, source_
     :param kwargs_lens: lens model keyword argument list
     :param source_x: x-position of source
     :param source_y: y-position of source
+    :param name_list: list of names of images
+    :type name_list: list of strings, longer or equal the number of point sources
     :param kwargs: additional plotting keyword arguments
     :return: matplotlib axis instance with figure
     """
@@ -184,12 +190,13 @@ def point_source_plot(ax, pixel_grid, lens_model, kwargs_lens, source_x, source_
     mag_images = lens_model.magnification(theta_x, theta_y, kwargs_lens)
 
     x_image, y_image = pixel_grid.map_coord2pix(theta_x, theta_y)
-    abc_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K']
+    if name_list is None:
+        name_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K']
     for i in range(len(x_image)):
         x_ = (x_image[i] + 0.5) * delta_pix_x + origin[0]
         y_ = (y_image[i] + 0.5) * delta_pix + origin[1]
         ax.plot(x_, y_, 'dk', markersize=4 * (1 + np.log(np.abs(mag_images[i]))), alpha=0.5)
-        ax.text(x_, y_, abc_list[i], fontsize=20, color='k')
+        ax.text(x_, y_, name_list[i], fontsize=20, color='k')
     x_source, y_source = pixel_grid.map_coord2pix(source_x, source_y)
     ax.plot((x_source + 0.5) * delta_pix_x + origin[0], (y_source + 0.5) * delta_pix + origin[1], '*k', markersize=10)
     return ax
@@ -198,7 +205,7 @@ def point_source_plot(ax, pixel_grid, lens_model, kwargs_lens, source_x, source_
 @export
 def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourcePos_x=0, sourcePos_y=0,
                          with_caustics=False, point_source=False, n_levels=10, kwargs_contours=None,
-                         image_color_list=None, letter_font_size=20):
+                         image_color_list=None, letter_font_size=20, name_list=None):
     """
 
     :param ax: matplotlib axis instance
@@ -209,6 +216,9 @@ def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, 
     :param sourcePos_x:
     :param sourcePos_y:
     :param with_caustics:
+    :param point_source:
+    :param name_list: list of names of images
+    :type name_list: list of strings, longer or equal the number of point sources
     :return:
     """
     kwargs_data = sim_util.data_configure_simple(numPix, deltaPix)
@@ -219,7 +229,7 @@ def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, 
     _coords = data
     x_grid, y_grid = data.pixel_coordinates
     lensModelExt = LensModelExtensions(lensModel)
-    #ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list = lensModelExt.critical_curve_caustics(
+    # ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list = lensModelExt.critical_curve_caustics(
     #    kwargs_lens, compute_window=_frame_size, grid_scale=deltaPix/2.)
     x_grid1d = util.image2array(x_grid)
     y_grid1d = util.image2array(y_grid)
@@ -227,11 +237,10 @@ def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, 
     fermat_surface = util.array2image(fermat_surface)
     if kwargs_contours is None:
         kwargs_contours = {}
-
-        #, cmap='Greys', vmin=-1, vmax=1) #, cmap=self._cmap, vmin=v_min, vmax=v_max)
+        # , cmap='Greys', vmin=-1, vmax=1) #, cmap=self._cmap, vmin=v_min, vmax=v_max)
     if with_caustics is True:
         ra_crit_list, dec_crit_list = lensModelExt.critical_curve_tiling(kwargs_lens, compute_window=_frame_size,
-                                                                             start_scale=deltaPix/5, max_order=10)
+                                                                         start_scale=deltaPix/5, max_order=10)
         ra_caustic_list, dec_caustic_list = lensModel.ray_shooting(ra_crit_list, dec_crit_list, kwargs_lens)
         plot_util.plot_line_set(ax, _coords, ra_caustic_list, dec_caustic_list, origin=origin, color='g')
         plot_util.plot_line_set(ax, _coords, ra_crit_list, dec_crit_list, origin=origin, color='r')
@@ -243,10 +252,11 @@ def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, 
 
         fermat_pot_images = lensModel.fermat_potential(theta_x, theta_y, kwargs_lens)
         _ = ax.contour(x_grid, y_grid, fermat_surface, origin='lower',  # extent=[0, _frame_size, 0, _frame_size],
-                        levels=np.sort(fermat_pot_images), **kwargs_contours)
+                       levels=np.sort(fermat_pot_images), **kwargs_contours)
         # mag_images = lensModel.magnification(theta_x, theta_y, kwargs_lens)
         x_image, y_image = _coords.map_coord2pix(theta_x, theta_y)
-        abc_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K']
+        if name_list is None:
+            name_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K']
 
         for i in range(len(x_image)):
             x_ = (x_image[i] + 0.5) * deltaPix - _frame_size/2
@@ -255,10 +265,12 @@ def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, 
                 color = 'k'
             else:
                 color = image_color_list[i]
-            ax.plot(x_, y_, 'x', markersize=10, alpha=1, color=color)  # markersize=8*(1 + np.log(np.abs(mag_images[i])))
-            ax.text(x_ + deltaPix, y_ + deltaPix, abc_list[i], fontsize=letter_font_size, color='k')
+            ax.plot(x_, y_, 'x', markersize=10, alpha=1, color=color)
+            # markersize=8*(1 + np.log(np.abs(mag_images[i])))
+            ax.text(x_ + deltaPix, y_ + deltaPix, name_list[i], fontsize=letter_font_size, color='k')
         x_source, y_source = _coords.map_coord2pix(sourcePos_x, sourcePos_y)
-        ax.plot((x_source + 0.5) * deltaPix - _frame_size/2, (y_source + 0.5) * deltaPix - _frame_size/2, '*k', markersize=20)
+        ax.plot((x_source + 0.5) * deltaPix - _frame_size/2, (y_source + 0.5) * deltaPix - _frame_size/2, '*k',
+                markersize=20)
     else:
         vmin = np.min(fermat_surface)
         vmax = np.max(fermat_surface)
@@ -279,7 +291,8 @@ def curved_arc_illustration(ax, lensModel, kwargs_lens, with_centroid=True, stre
     :param lensModel: LensModel() instance
     :param kwargs_lens: list of lens model keyword arguments (only those of CURVED_ARC considered
     :param with_centroid: plots the center of the curvature radius
-    :param stretch_scale: float, relative scale of banana to the tangential and radial stretches (effectively intrinsic source size)
+    :param stretch_scale: float, relative scale of banana to the tangential and radial stretches
+     (effectively intrinsic source size)
     :param color: string, matplotlib color for plot
     :return: matplotlib axis instance
     """
@@ -316,6 +329,9 @@ def plot_arc(ax, tangential_stretch, radial_stretch, curvature, direction, cente
     :param with_centroid: plots the center of the curvature radius
     :param stretch_scale: float, relative scale of banana to the tangential and radial stretches
      (effectively intrinsic source size)
+    :param linewidth: linewidth
+    :param color: color
+    :type color: string in matplotlib color convention
     :param dtan_dtan: tangential eigenvector differential in tangential direction (not implemented yet as illustration)
     :return:
     """
@@ -333,7 +349,8 @@ def plot_arc(ax, tangential_stretch, radial_stretch, curvature, direction, cente
     # compute angle of size of the tangential stretch
     r = 1. / curvature
 
-    # make sure tangential stretch * stretch_scale is not larger than r * 2pi such that the full circle is only plotted once
+    # make sure tangential stretch * stretch_scale is not larger than r * 2pi such that the full circle is only
+    # plotted once
     tangential_stretch_ = min(tangential_stretch, np.pi * r / stretch_scale)
     d_phi = tangential_stretch_ * stretch_scale / r
 
@@ -400,11 +417,11 @@ def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0
         orientation_angle2d = ndimage.gaussian_filter(orientation_angle2d, sigma=smoothing_scale/delta_pix)
         dphi_tan_dtan2d = ndimage.gaussian_filter(dphi_tan_dtan2d, sigma=smoothing_scale/delta_pix)
 
-    def _plot_frame(ax, map, vmin, vmax, text_string):
+    def _plot_frame(ax, frame, vmin, vmax, text_string):
         """
 
         :param ax: matplotlib.axis instance
-        :param map: 2d array
+        :param frame: 2d array
         :param vmin: minimum plotting scale
         :param vmax: maximum plotting scale
         :param text_string: string to describe the label
@@ -412,18 +429,18 @@ def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0
         """
         font_size = 10
         _arrow_size = 0.02
-        im = ax.matshow(map, extent=[0, _frame_size, 0, _frame_size], vmin=vmin, vmax=vmax)
+        im = ax.matshow(frame, extent=[0, _frame_size, 0, _frame_size], vmin=vmin, vmax=vmax)
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax, orientation='vertical')
-        #cb.set_label(text_string, fontsize=10)
-        #plot_util.scale_bar(ax, _frame_size, dist=1, text='1"', font_size=font_size)
+        # cb.set_label(text_string, fontsize=10)
+        # plot_util.scale_bar(ax, _frame_size, dist=1, text='1"', font_size=font_size)
         plot_util.text_description(ax, _frame_size, text=text_string, color="k",
                                    backgroundcolor='w', font_size=font_size)
-        #if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
+        # if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
         #    plot_util.coordinate_arrows(ax, _frame_size, _coords,
         #                                color='w', arrow_size=_arrow_size,
         #                                font_size=font_size)
@@ -444,3 +461,80 @@ def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0
     _plot_frame(axes[2, 3], dphi_rad_dtan2d, vmin=0, vmax=20, text_string='dphi_rad_dtan')
 
     return f, axes
+
+
+def stretch_plot(ax, lens_model, kwargs_lens, plot_grid=None, scale=1, ellipse_color='k', max_stretch=np.inf,
+                 **patch_kwargs):
+    """
+    Plots ellipses at each point on a grid, scaled corresponding to the local Jacobian eigenvalues
+
+    :param ax: matplotib axis instance
+    :param lens_model: LensModel instance
+    :param kwargs_lens: lens model keyword argument list
+    :param plot_grid: pixelgrid instance at which to draw ellipses. 'None' uses default.
+    :param scale: scales sizes of drawn ellipses, bigger number=larger
+    :param ellipse_color: color of ellipses, defaults to black
+    :param max_stretch: optional max amount to stretch ellipses which sometimes diverge
+    :param patch_kwargs: additional keyword arguments for creating ellipse patch
+    :return: matplotlib axis instance with figure
+    """
+
+    if plot_grid is None:
+        # define default ellipse grid (20x20 spanning from -2 to 2)
+        plot_grid = PixelGrid(20, 20, np.array([[1, 0], [0, 1]])*0.2, -2, -2)
+    lme = LensModelExtensions(lens_model)
+    x_grid, y_grid = plot_grid.pixel_coordinates
+    x = util.image2array(x_grid)
+    y = util.image2array(y_grid)
+    w1, w2, v11, v12, v21, v22 = lme.hessian_eigenvectors(x, y, kwargs_lens)
+    stretch_1 = np.abs(1. / w1)  # stretch in direction of first eigenvalue (unsorted)
+    stretch_2 = np.abs(1. / w2)
+    stretch_direction = np.arctan2(v12, v11)  # Direction of first eigenvector. Other eigenvector is orthogonal.
+
+    for i in range(len(stretch_direction)):
+        stretch_1_amount = np.minimum(stretch_1[i], max_stretch)
+        stretch_2_amount = np.minimum(stretch_2[i], max_stretch)
+        ell = patches.Ellipse((x[i], y[i]), stretch_1_amount * scale/40,  # 40 arbitrarily chosen
+                              stretch_2_amount * scale/40,
+                              angle=stretch_direction[i] * 180 / np.pi,
+                              linewidth=1, fill=False, color=ellipse_color, **patch_kwargs)
+        ax.add_patch(ell)
+    ax.set_xlim(np.min(x), np.max(x))
+    ax.set_ylim(np.min(y), np.max(y))
+    return ax
+
+
+def shear_plot(ax, lens_model, kwargs_lens, plot_grid=None, scale=5, color='k', max_stretch=np.inf, **kwargs):
+    """
+    Plots combined internal+external shear at each point on a grid,
+    represented by pseudovectors in the direction of local shear
+    with length corresponding to shear magnitude.
+
+    :param ax: matplotib axis instance
+    :param lens_model: LensModel instance
+    :param kwargs_lens: lens model keyword argument list
+    :param plot_grid: pixelgrid instance at which to draw pseudovectors
+    :param scale: scales sizes of drawn pseudovectors, smaller number=larger vectors
+    :param color: color of pseudovectors, defaults to black
+    :param max_stretch: optional max amount to stretch ellipses which sometimes diverge
+    :param kwargs: additional plotting keyword arguments
+    :return: matplotlib axis instance with figure
+    """
+
+    if plot_grid is None:
+        # define default ellipse grid (20x20 spanning from -2 to 2)
+        plot_grid = PixelGrid(20, 20, np.array([[1, 0], [0, 1]])*0.2, -2, -2)
+
+    x_grid, y_grid = plot_grid.pixel_coordinates
+    g1, g2 = lens_model.gamma(x_grid, y_grid, kwargs_lens)
+    phi, shear = shear_cartesian2polar(g1, g2)
+    max_stretch_array = np.ones_like(shear) * max_stretch
+    shear = np.minimum(shear, max_stretch_array)
+    arrow_x = shear * np.cos(phi)
+    arrow_y = shear * np.sin(phi)
+    ax.quiver(x_grid, y_grid, arrow_x, arrow_y, headaxislength=0, headlength=0,
+              pivot='middle', scale=scale, linewidth=.5, units='xy', width=.02, headwidth=1, color=color, **kwargs)
+    # , headwidth=0, headlength=0)
+    ax.set_xlim(np.min(x_grid), np.max(x_grid))
+    ax.set_ylim(np.min(y_grid), np.max(y_grid))
+    return ax

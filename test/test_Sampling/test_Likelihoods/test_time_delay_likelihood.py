@@ -12,7 +12,7 @@ import copy
 
 class TestImageLikelihood(object):
 
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_logL(self):

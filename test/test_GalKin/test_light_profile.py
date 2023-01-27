@@ -13,7 +13,7 @@ import scipy.integrate as integrate
 
 class TestLightProfile(object):
 
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_draw_light(self):

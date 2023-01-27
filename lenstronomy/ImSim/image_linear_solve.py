@@ -291,6 +291,11 @@ class ImageLinearFit(ImageModel):
         # response of lensed source profile
         for i in range(0, n_source):
             image = source_light_response[i]
+            
+            # multiply with primary beam before convolution
+            if self._pb is not None:
+                image *= self._pb_1d
+            
             image *= extinction
             image = self.ImageNumerics.re_size_convolve(image, unconvolved=unconvolved)
             A[n, :] = np.nan_to_num(self.image2array_masked(image), copy=False)
@@ -298,11 +303,21 @@ class ImageLinearFit(ImageModel):
         # response of deflector light profile (or any other un-lensed extended components)
         for i in range(0, n_lens_light):
             image = lens_light_response[i]
+            
+            # multiply with primary beam before convolution
+            if self._pb is not None:
+                image *= self._pb_1d
+                
             image = self.ImageNumerics.re_size_convolve(image, unconvolved=unconvolved)
             A[n, :] = np.nan_to_num(self.image2array_masked(image), copy=False)
             n += 1
         # response of point sources
         for i in range(0, n_points):
+            
+            # raise warnings when primary beam is attempted to be applied for point sources
+            if self._pb is not None:
+                raise Warning("Antenna primary beam does not apply to point sources!")
+            
             image = self.ImageNumerics.point_source_rendering(ra_pos[i], dec_pos[i], amp[i])
             A[n, :] = np.nan_to_num(self.image2array_masked(image), copy=False)
             n += 1
@@ -321,6 +336,21 @@ class ImageLinearFit(ImageModel):
         kwargs_lens_light, i = self.LensLightModel.update_linear(param, i, kwargs_list=kwargs_lens_light)
         kwargs_ps, i = self.PointSource.update_linear(param, i, kwargs_ps, kwargs_lens)
         return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps
+
+    def linear_param_from_kwargs(self, kwargs_source, kwargs_lens_light, kwargs_ps):
+        """
+        inverse function of update_linear() returning the linear amplitude list for the keyword argument list
+
+        :param kwargs_source:
+        :param kwargs_lens_light:
+        :param kwargs_ps:
+        :return: list of linear coefficients
+        """
+        param = []
+        param += self.SourceModel.linear_param_from_kwargs(kwargs_source)
+        param += self.LensLightModel.linear_param_from_kwargs(kwargs_lens_light)
+        param += self.PointSource.linear_param_from_kwargs(kwargs_ps)
+        return param
 
     def update_pixel_kwargs(self, kwargs_source, kwargs_lens_light):
         """

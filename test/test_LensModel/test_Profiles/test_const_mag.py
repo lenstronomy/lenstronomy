@@ -12,7 +12,7 @@ class TestCONST_MAG(object):
     tests the CONST_MAG profile for different rotations
     """
     
-    def setup(self):
+    def setup_method(self):
 
         self.const_mag = ConstMag()
         

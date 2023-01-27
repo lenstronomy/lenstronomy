@@ -5,7 +5,8 @@ __all__ = ['ProfileListBase']
 
 _SUPPORTED_MODELS = ['SHIFT', 'NIE_POTENTIAL', 'CONST_MAG', 'SHEAR', 'SHEAR_GAMMA_PSI', 'SHEAR_REDUCED', 'CONVERGENCE', 'FLEXION',
                      'FLEXIONFG', 'POINT_MASS', 'SIS', 'SIS_TRUNCATED', 'SIE', 'SPP', 'NIE', 'NIE_SIMPLE', 'CHAMELEON',
-                     'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'SPEP', 'PEMD', 'SPEMD', 'EPL', 'EPL_NUMBA', 'SPL_CORE',
+                     'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'SPEP', 'PEMD', 'SPEMD', 'EPL', 'EPL_NUMBA',
+                     'EPL_BOXYDISKY', 'SPL_CORE',
                      'NFW', 'NFW_ELLIPSE', 'NFW_ELLIPSE_GAUSS_DEC', 'NFW_ELLIPSE_CSE', 'TNFW', 'TNFW_ELLIPSE',
                      'CNFW', 'CNFW_ELLIPSE', 'CTNFW_GAUSS_DEC', 'NFW_MC', 'SERSIC',
                      'SERSIC_ELLIPSE_POTENTIAL', 'SERSIC_ELLIPSE_KAPPA', 'SERSIC_ELLIPSE_GAUSS_DEC', 'PJAFFE',
@@ -51,7 +52,9 @@ class ProfileListBase(object):
         func_list = []
         imported_classes = {}
         for i, lens_type in enumerate(lens_model_list):
-            # those models require a new instance per profile as certain pre-computations are relevant per individual profile
+            # those models require a new instance per profile as some pre-computations are different when parameters or
+            # other settings are changed. For example, the 'INTERPOL' model needs to know the specific map to be
+            # interpolated.
             if lens_type in ['NFW_MC', 'CHAMELEON', 'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'NFW_ELLIPSE_GAUSS_DEC',
                              'CTNFW_GAUSS_DEC', 'INTERPOL', 'INTERPOL_SCALED', 'NIE', 'NIE_SIMPLE']:
                 lensmodel_class = self._import_class(lens_type, custom_class, z_lens=lens_redshift_list[i],
@@ -153,6 +156,9 @@ class ProfileListBase(object):
         elif lens_type == 'EPL_NUMBA':
             from lenstronomy.LensModel.Profiles.epl_numba import EPL_numba
             return EPL_numba()
+        elif lens_type == 'EPL_BOXYDISKY':
+            from lenstronomy.LensModel.Profiles.epl_boxydisky import EPL_BOXYDISKY
+            return EPL_BOXYDISKY()
         elif lens_type == 'SPL_CORE':
             from lenstronomy.LensModel.Profiles.splcore import SPLCORE
             return SPLCORE()

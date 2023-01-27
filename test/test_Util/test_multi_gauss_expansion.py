@@ -13,7 +13,7 @@ class TestMGE(object):
     """
     tests the Gaussian methods
     """
-    def setup(self):
+    def setup_method(self):
         self.sersic = Sersic()
         self.multiGaussian = MultiGaussian()
 

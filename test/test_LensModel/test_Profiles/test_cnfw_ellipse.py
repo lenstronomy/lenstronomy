@@ -13,7 +13,7 @@ class TestCNFWELLIPSE(object):
     """
     tests the Gaussian methods
     """
-    def setup(self):
+    def setup_method(self):
         self.nfw = CNFW()
         self.nfw_e = CNFW_ELLIPSE()
 

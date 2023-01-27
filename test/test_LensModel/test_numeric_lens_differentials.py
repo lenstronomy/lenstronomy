@@ -12,7 +12,7 @@ class TestNumerics(object):
     """
     tests the source model routines
     """
-    def setup(self):
+    def setup_method(self):
         self.lensModel = LensModel(['GAUSSIAN'])
         self.kwargs = [{'amp': 1./4., 'sigma_x': 2., 'sigma_y': 2., 'center_x': 0., 'center_y': 0.}]
 
@@ -67,7 +67,7 @@ class TestNumericsProfile(object):
     """
     tests the second derivatives of various lens models
     """
-    def setup(self):
+    def setup_method(self):
         pass
 
     def assert_differentials(self, lens_model, kwargs, potential=True):
@@ -280,6 +280,11 @@ class TestNumericsProfile(object):
     def test_EPL(self):
         kwargs = {'theta_E': 2., 'e1': 0.1, 'e2': 0., 'gamma': 2.13}
         lens_model = ['EPL']
+        self.assert_differentials(lens_model, kwargs)
+
+    def test_EPL_BOXYDISKY(self):
+        kwargs = {'theta_E': 2., 'e1': 0.1, 'e2': 0.2, 'gamma': 2.13, 'a_m': 0.1}
+        lens_model = ['EPL_BOXYDISKY']
         self.assert_differentials(lens_model, kwargs)
 
     def test_EPL_numba(self):

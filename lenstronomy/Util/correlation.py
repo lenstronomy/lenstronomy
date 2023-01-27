@@ -42,7 +42,7 @@ def power_spectrum_1d(image):
     """
 
     :param image: 2d numpy array
-    :return: 1d radially averaged power spectrum of image in frequency units of pixels
+    :return: 1d radially averaged power spectrum of image in frequency units of pixels, radius in units of pixels
     """
     psd2D = power_spectrum_2d(image)
     # Calculate the azimuthally averaged 1D power spectrum

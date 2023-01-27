@@ -14,8 +14,8 @@ __all__ = ['Sampler']
 class Sampler(object):
     """
     class which executes the different sampling  methods
-    Available are: MCMC with emcee a Particle Swarm Optimizer.
-    This are examples and depending on your problem, you might find other/better solutions.
+    Available are: affine-invariant ensemble sampling with emcee, ensemble slice sampling with zeus and a Particle Swarm Optimizer.
+    These are examples and depending on your problem, you might find other/better solutions.
     Feel free to sample with your convenient sampler!
 
     """
@@ -195,15 +195,12 @@ class Sampler(object):
     def mcmc_zeus(self, n_walkers, n_run, n_burn, mean_start, sigma_start,
                   mpi=False, threadCount=1,
                   progress=False, initpos=None, backend_filename=None,
-                  moves=None, tune=True, tolerance=0.05, patience=5,
-                  maxsteps=10000, mu=1.0, maxiter=10000, pool=None,
-                  vectorize=False, blobs_dtype=None, verbose=True,
-                  check_walkers=True, shuffle_ensemble=True, light_mode=False):
+                  **kwargs_zeus):
 
         """
         Lightning fast MCMC with zeus: https://github.com/minaskar/zeus
 
-        For the full list of arguments for the EnsembleSampler, see see `the zeus docs <https://zeus-mcmc.readthedocs.io/en/latest/api/sampler.html>`_.
+        For the full list of arguments for the EnsembleSampler and callbacks, see see `the zeus docs <https://zeus-mcmc.readthedocs.io/en/latest/api/sampler.html>`_.
 
         If you use the zeus sampler, you should cite the following papers: 2105.03468, 2002.06212.
 
@@ -234,16 +231,67 @@ class Sampler(object):
 
         num_param, _ = self.chain.param.num_param()
 
+        # zeus kwargs; checks the dict for the key and if not present returns the given value
+        moves = kwargs_zeus.get('moves')
+        tune = kwargs_zeus.get('tune', True)
+        tolerance = kwargs_zeus.get('tolerance', 0.05)
+        patience = kwargs_zeus.get('patience', 5)
+        maxsteps = kwargs_zeus.get('maxsteps', 10000)
+        mu = kwargs_zeus.get('mu', 1.0)
+        maxiter = kwargs_zeus.get('maxiter', 10000)
+        pool = kwargs_zeus.get('pool', None)
+        vectorize = kwargs_zeus.get('vectorize', False)
+        blobs_dtype = kwargs_zeus.get('blobs_dtype')
+        verbose = kwargs_zeus.get('verbose', True)
+        check_walkers = kwargs_zeus.get('check_walkers', True)
+        shuffle_ensemble = kwargs_zeus.get('shuffle_ensemble', True)
+        light_mode = kwargs_zeus.get('light_mode', False)
+
+        # kwargs specifically for the callbacks
+        autocorrelation_callback = kwargs_zeus.get('autocorrelation_callback', False)
+        ncheck = kwargs_zeus.get('ncheck', 1)
+        dact = kwargs_zeus.get('dact', 0.01)
+        nact = kwargs_zeus.get('nact', 50)
+        discard = kwargs_zeus.get('discard', 0.5)
+        trigger = kwargs_zeus.get('trigger', True)
+        method = kwargs_zeus.get('method', 'mk')
+        splitr_callback = kwargs_zeus.get('splitr_callback', False)
+        epsilon = kwargs_zeus.get('epsilon', 0.01)
+        nsplits = kwargs_zeus.get('nsplits', 2)
+        miniter_callback=kwargs_zeus.get('miniter_callback', False)
+        nmin = kwargs_zeus.get('nmin', 1000)
+
         if initpos is None:
             initpos = sampling_util.sample_ball_truncated(mean_start, sigma_start, self.lower_limit, self.upper_limit,
                                                           size=n_walkers)
 
+        n_run_eff = n_burn + n_run
+
+        callback_list = []
+
         if backend_filename is not None:
-            backend = zeus.callbacks.SaveProgressCallback(filename= backend_filename, ncheck = 1)
-            n_run_eff = n_burn + n_run
+            backend = zeus.callbacks.SaveProgressCallback(filename=backend_filename, ncheck=ncheck)
+            callback_list.append(backend)
         else:
-            backend = None
-            n_run_eff = n_burn + n_run
+            pass
+
+        if autocorrelation_callback == True:
+            autocorrelation = zeus.callbacks.AutocorrelationCallback(ncheck=ncheck, dact=dact, nact=nact, discard=discard, trigger=trigger, method=method)
+            callback_list.append(autocorrelation)
+        else:
+            pass
+
+        if splitr_callback == True:
+            splitr = zeus.callbacks.SplitRCallback(ncheck=ncheck, epsilon=epsilon, nsplits=nsplits, discard=discard, trigger=trigger)
+            callback_list.append(splitr)
+        else:
+            pass
+
+        if miniter_callback == True:
+            miniter = zeus.callbacks.MinIterCallback(nmin=nmin)
+            callback_list.append(miniter)
+        else:
+            pass
 
         pool = choose_pool(mpi=mpi, processes=threadCount, use_dill=True)
 
@@ -251,9 +299,10 @@ class Sampler(object):
                                        moves=moves, tune=tune, tolerance=tolerance, patience=patience,
                                        maxsteps=maxsteps, mu=mu, maxiter=maxiter, pool=pool, vectorize=vectorize,
                                        blobs_dtype=blobs_dtype, verbose=verbose, check_walkers=check_walkers,
-                                       shuffle_ensemble=shuffle_ensemble, light_mode=light_mode)
+                                       shuffle_ensemble=shuffle_ensemble, light_mode=light_mode
+                                       )
 
-        sampler.run_mcmc(initpos, n_run_eff, progress=progress, callbacks=backend)
+        sampler.run_mcmc(initpos, n_run_eff, progress=progress, callbacks=callback_list)
 
         flat_samples = sampler.get_chain(flat=True, thin=1, discard=n_burn)
 

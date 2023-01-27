@@ -15,11 +15,12 @@ def mask_center_2d(center_x, center_y, r, x_grid, y_grid):
     :param x_grid: x-coordinate grid
     :param y_grid: y-coordinate grid
     :return: mask array of shape x_grid with =0 inside the radius and =1 outside
+    :rtype: array of size of input grid with integers 0 or 1
     """
     x_shift = x_grid - center_x
     y_shift = y_grid - center_y
     R = np.sqrt(x_shift*x_shift + y_shift*y_shift)
-    mask = np.empty_like(R)
+    mask = np.empty_like(R, dtype='int')
     mask[R > r] = 1
     mask[R <= r] = 0
     return mask
@@ -35,11 +36,12 @@ def mask_azimuthal(x, y, center_x, center_y, r):
     :param center_y: center of azimuthal mask in y
     :param r: radius of azimuthal mask
     :return: array with zeros outside r and ones inside azimuthal radius r
+    :rtype: array of size of input grid with integers 0 or 1
     """
     x_shift = x - center_x
     y_shift = y - center_y
     R = np.sqrt(x_shift*x_shift + y_shift*y_shift)
-    mask = np.empty_like(R)
+    mask = np.empty_like(R, dtype='int')
     mask[R > r] = 0
     mask[R <= r] = 1
     return mask
@@ -57,12 +59,13 @@ def mask_ellipse(x, y, center_x, center_y, a, b, angle):
     :param b: minor axis
     :param angle: angle of major axis
     :return: mask (list of zeros and ones)
+    :rtype: array of size of input grid with integers 0 or 1
     """
     x_shift = x - center_x
     y_shift = y - center_y
     x_rot, y_rot = util.rotate(x_shift, y_shift, angle)
     r_ab = x_rot**2 / a**2 + y_rot**2 / b**2
-    mask = np.empty_like(r_ab)
+    mask = np.empty_like(r_ab, dtype='int')
     mask[r_ab > 1] = 0
     mask[r_ab <= 1] = 1
     return mask
@@ -81,6 +84,7 @@ def mask_half_moon(x, y, center_x, center_y, r_in, r_out, phi0=0, delta_phi=2*np
     :param phi0:
     :param delta_phi:
     :return:
+    :rtype: array of size of input grid with integers 0 or 1
     """
     x_shift = x - center_x
     y_shift = y - center_y
@@ -88,7 +92,7 @@ def mask_half_moon(x, y, center_x, center_y, r_in, r_out, phi0=0, delta_phi=2*np
     phi = np.arctan2(x_shift, y_shift)
     phi_min = phi0 - delta_phi/2.
     phi_max = phi0 + delta_phi/2.
-    mask = np.zeros_like(x)
+    mask = np.zeros_like(x, dtype='int')
     if phi_max > phi_min:
         mask[(R < r_out) & (R > r_in) & (phi > phi_min) & (phi < phi_max)] = 1
     else:

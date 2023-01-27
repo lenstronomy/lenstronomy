@@ -10,7 +10,7 @@ import numpy.testing as npt
 
 class TestOptimizer(object):
 
-    def setup(self):
+    def setup_method(self):
 
         self.zlens, self.zsource = 0.5, 1.5
         epl_kwargs = {'theta_E': 1., 'center_x': 0., 'center_y': 0., 'e1': 0.2, 'e2': 0.1, 'gamma': 2.05}

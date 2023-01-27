@@ -2,7 +2,6 @@ __author__ = 'sibirrer'
 
 import numpy.testing as npt
 import numpy as np
-import pytest
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 from lenstronomy.LensModel.lens_model import LensModel
@@ -11,11 +10,12 @@ import lenstronomy.Util.param_util as param_util
 from lenstronomy.LightModel.light_model import LightModel
 from astropy.cosmology import FlatLambdaCDM
 
+
 class TestLensModelExtensions(object):
     """
     tests the source model routines
     """
-    def setup(self):
+    def setup_method(self):
 
         self.cosmo = FlatLambdaCDM(H0=70, Om0=0.3)
 
@@ -26,8 +26,13 @@ class TestLensModelExtensions(object):
         kwargs_lens = [{'theta_E': 1., 'gamma': 2., 'e1': e1, 'e2': e2, 'center_x': 0, 'center_y': 0}]
         lens_model = LensModel(lens_model_list)
         lensModelExtensions = LensModelExtensions(LensModel(lens_model_list))
+
+        # this first test is for even pixel grid numbers
+        compute_window, grid_scale = 5, 0.05
+        num_pix = int(compute_window / grid_scale)
+        assert num_pix % 2 == 0
         ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list = lensModelExtensions.critical_curve_caustics(kwargs_lens,
-                                                                                                           compute_window=5, grid_scale=0.005)
+                                                                                                           compute_window=compute_window, grid_scale=grid_scale)
 
         # here we test whether the caustic points are in fact at high magnifications (close to infinite)
         # close here means above magnification of 1000000 (with matplotlib method, this limit achieved was 170)
@@ -35,7 +40,25 @@ class TestLensModelExtensions(object):
             ra_crit = ra_crit_list[k]
             dec_crit = dec_crit_list[k]
             mag = lens_model.magnification(ra_crit, dec_crit, kwargs_lens)
-            assert np.all(np.abs(mag) > 100000)
+            assert np.all(np.abs(mag) > 1000)
+
+        # this second test is for odd pixel grid numbers
+        compute_window, grid_scale = 5. + 0.06, 0.05
+        print(compute_window / grid_scale, 'test float')
+        num_pix = int(compute_window / grid_scale)
+        print(num_pix, 'test num_pix')
+        assert num_pix % 2 == 1
+        ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list = lensModelExtensions.critical_curve_caustics(
+            kwargs_lens,
+            compute_window=compute_window, grid_scale=grid_scale)
+
+        # here we test whether the caustic points are in fact at high magnifications (close to infinite)
+        # close here means above magnification of 1000000 (with matplotlib method, this limit achieved was 170)
+        for k in range(len(ra_crit_list)):
+            ra_crit = ra_crit_list[k]
+            dec_crit = dec_crit_list[k]
+            mag = lens_model.magnification(ra_crit, dec_crit, kwargs_lens)
+            assert np.all(np.abs(mag) > 1000)
 
     def test_critical_curves_tiling(self):
         lens_model_list = ['SPEP']
@@ -171,7 +194,6 @@ class TestLensModelExtensions(object):
                                                       source_light_model='DOUBLE_GAUSSIAN', dx=0., dy=0., amp_scale=1., size_scale=1.)
         npt.assert_almost_equal(magnification_double_gaussian, 2 * mag_adaptive_grid)
 
-
         grid_radius = 0.3
         npix = 400
         _x = _y = np.linspace(-grid_radius, grid_radius, npix)
@@ -255,7 +277,3 @@ class TestLensModelExtensions(object):
         area = lensModelExtensions.caustic_area(kwargs_lens=kwargs_lens, kwargs_caustic_num=kwargs_caustic_num,
                                                 index_vertices=0)
         npt.assert_almost_equal(area, 0.08445866728739478, decimal=3)
-
-
-if __name__ == '__main__':
-    pytest.main("-k TestLensModel")

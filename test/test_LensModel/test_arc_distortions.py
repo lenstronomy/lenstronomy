@@ -16,7 +16,7 @@ class TestArcDistortions(object):
     """
     tests the source model routines
     """
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_radial_tangential_distortions(self):

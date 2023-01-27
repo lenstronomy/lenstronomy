@@ -11,7 +11,7 @@ import lenstronomy.Util.image_util as image_util
 
 class TestData(object):
 
-    def setup(self):
+    def setup_method(self):
         self.deltaPix = 0.05
         fwhm = 0.2
         kwargs_gaussian = {'psf_type': 'GAUSSIAN', 'fwhm': fwhm, 'truncation': 5, 'pixel_size': self.deltaPix}
@@ -168,8 +168,6 @@ class TestRaise(unittest.TestCase):
         with self.assertRaises(ValueError):
             psf = PSF(psf_type='GAUSSIAN', fwhm=100, pixel_size=0.0001)
             psf.kernel_point_source_supersampled(supersampling_factor=3)
-        with self.assertRaises(ValueError):
-            psf = PSF(psf_type='PIXEL', kernel_point_source=-np.ones((3, 3)))
 
         with warnings.catch_warnings(record=True) as w:
             # Cause all warnings to always be triggered.

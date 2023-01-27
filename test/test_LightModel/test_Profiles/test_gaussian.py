@@ -10,7 +10,7 @@ class TestMultiGaussian(object):
     """
     class to test the Gaussian profile
     """
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_function_split(self):
@@ -26,7 +26,7 @@ class TestMultiGaussian(object):
 
 class TestGaussian(object):
 
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_total_flux(self):
@@ -44,7 +44,7 @@ class TestGaussian(object):
 
 class TestGaussianEllipse(object):
 
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_function_split(self):

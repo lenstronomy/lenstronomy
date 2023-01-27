@@ -5,7 +5,7 @@ import numpy.testing as npt
 
 class TestDifferentialExtinction(object):
 
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_extinction(self):

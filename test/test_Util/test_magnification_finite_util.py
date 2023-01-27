@@ -4,6 +4,7 @@ from lenstronomy.LensModel.lens_model import LensModel
 import numpy.testing as npt
 import pytest
 
+
 class TestMagnificationFiniteUtil(object):
 
     def test_grid_resolution(self):

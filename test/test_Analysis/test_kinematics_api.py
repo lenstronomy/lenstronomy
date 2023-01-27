@@ -11,7 +11,7 @@ import lenstronomy.Util.param_util as param_util
 
 class TestKinematicsAPI(object):
 
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_velocity_dispersion(self):

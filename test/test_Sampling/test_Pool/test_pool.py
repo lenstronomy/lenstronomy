@@ -5,7 +5,7 @@ from lenstronomy.Sampling.Pool.multiprocessing import MultiPool
 
 class TestPool(object):
 
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_choose_pool(self):

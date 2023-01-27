@@ -6,7 +6,7 @@ import pytest
 
 class TestImageLikelihood(object):
 
-    def setup(self):
+    def setup_method(self):
         self.prior = PriorLikelihood(prior_lens=[[0, 'gamma', 2, 0.1]], prior_source=None, prior_lens_light=None,
                                      prior_ps=None,
                                      prior_special=[['source_size', 1, 0.1]])

@@ -6,7 +6,7 @@ from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 
 class TestModelAPI(object):
 
-    def setup(self):
+    def setup_method(self):
         self.api = ModelAPI(lens_model_list=['SIS'], z_lens=None, z_source=None, lens_redshift_list=None,
                             source_light_model_list=['GAUSSIAN'], lens_light_model_list=['SERSIC'],
                             point_source_model_list=['UNLENSED'], source_redshift_list=None, cosmo=None)

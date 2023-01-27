@@ -214,11 +214,7 @@ class FittingSequence(object):
 
     def mcmc(self, n_burn, n_run, walkerRatio=None, n_walkers=None, sigma_scale=1, threadCount=1, init_samples=None,
              re_use_samples=True, sampler_type='EMCEE', progress=True, backend_filename=None, start_from_backend=False,
-             # zeus specific kwargs
-             moves=None, tune=True, tolerance=0.05, patience=5,
-             maxsteps=10000, mu=1.0, maxiter=10000, pool=None,
-             vectorize=False, blobs_dtype=None, verbose=True,
-             check_walkers=True, shuffle_ensemble=True, light_mode=False):
+             **kwargs_zeus):
         """
         MCMC routine
 
@@ -236,8 +232,9 @@ class FittingSequence(object):
         :param backend_filename: name of the HDF5 file where sampling state is saved (through emcee backend engine)
         :type backend_filename: string
         :param start_from_backend: if True, start from the state saved in `backup_filename`.
-         Otherwise, create a new backup file with name `backup_filename` (any already existing file is overwritten!).
+         O therwise, create a new backup file with name `backup_filename` (any already existing file is overwritten!).
         :type start_from_backend: bool
+        :param kwargs_zeus: zeus-specific kwargs
         :return: list of output arguments, e.g. MCMC samples, parameter names, logL distances of all samples specified
          by the specific sampler used
         """
@@ -274,13 +271,11 @@ class FittingSequence(object):
             output = [sampler_type, samples, param_list, dist]
 
         elif sampler_type == 'ZEUS':
+
             samples, dist = mcmc_class.mcmc_zeus(n_walkers, n_run, n_burn, mean_start, sigma_start,
                                                  mpi=self._mpi, threadCount=threadCount,
                                                  progress=progress, initpos = initpos, backend_filename = backend_filename,
-                                                 moves=moves, tune=tune, tolerance=tolerance, patience=patience,
-                                                 maxsteps=maxsteps, mu=mu, maxiter=maxiter, pool=pool,
-                                                 vectorize=vectorize, blobs_dtype=blobs_dtype, verbose=verbose,
-                                                 check_walkers=check_walkers, shuffle_ensemble=shuffle_ensemble, light_mode=light_mode)
+                                                 **kwargs_zeus)
             output = [sampler_type, samples, param_list, dist]
         else:
             raise ValueError('sampler_type %s not supported!' % sampler_type)
@@ -463,7 +458,8 @@ class FittingSequence(object):
                         lens_remove_fixed=None, source_remove_fixed=None, lens_light_remove_fixed=None,
                         ps_remove_fixed=None, cosmo_remove_fixed=None,
                         change_source_lower_limit=None, change_source_upper_limit=None,
-                        change_lens_lower_limit=None, change_lens_upper_limit=None):
+                        change_lens_lower_limit=None, change_lens_upper_limit=None,
+                        change_sigma_lens=None, change_sigma_source=None, change_sigma_lens_light=None):
         """
         updates lenstronomy settings "on the fly"
 
@@ -480,7 +476,13 @@ class FittingSequence(object):
         :param lens_light_remove_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param ps_remove_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param cosmo_remove_fixed: ['param1', 'param2',...]
-        :param change_lens_lower_limit: [[i_model, ['param_name', ...], [value1, value2, ...]]]
+        :param change_lens_lower_limit: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
+        :param change_lens_upper_limit: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
+        :param change_source_lower_limit: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
+        :param change_source_upper_limit: [[i_model, [''param_name1', 'param_name2', ...], [value1, value2, ...]]]
+        :param change_sigma_lens: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
+        :param change_sigma_source: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
+        :param change_sigma_lens_light: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
         :return: 0, the settings are overwritten for the next fitting step to come
         """
         self._updateManager.update_options(kwargs_model, kwargs_constraints, kwargs_likelihood)
@@ -489,6 +491,8 @@ class FittingSequence(object):
                                          lens_light_remove_fixed, ps_remove_fixed, cosmo_remove_fixed)
         self._updateManager.update_limits(change_source_lower_limit, change_source_upper_limit, change_lens_lower_limit,
                                           change_lens_upper_limit)
+        self._updateManager.update_sigmas(change_sigma_lens=change_sigma_lens, change_sigma_source=change_sigma_source,
+                                          change_sigma_lens_light=change_sigma_lens_light)
         return 0
 
     def set_param_value(self, **kwargs):

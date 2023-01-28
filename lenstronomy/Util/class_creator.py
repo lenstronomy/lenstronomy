@@ -52,7 +52,7 @@ def create_class_instances(lens_model_list=None, z_lens=None, z_source=None, z_s
     :param cosmo: astropy.cosmology instance
     :param index_lens_model_list:
     :param index_source_light_model_list:
-    :param index_lens_light_model_list:
+    :param index_lens_light_model_list: optional, list of list of all model indexes for each modeled band
     :param index_point_source_model_list:
     :param optical_depth_model_list: list of strings indicating the optical depth model to compute (differential) extinctions from the source
     :param index_optical_depth_model_list:

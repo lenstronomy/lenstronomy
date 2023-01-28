@@ -109,23 +109,19 @@ class MultiLinear(MultiDataBase):
                 param_list.append(param_i)
         return logL, param_list
 
-    def update_linear_kwargs(self, param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
+    def update_linear_kwargs(self, param, model_band, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
         """
         links linear parameters to kwargs arguments
 
         :param param: linear parameter vector corresponding to the response matrix
+        :type param: list of array
+        :param model_band: for which band the model parameters need to be retrieved
         :param kwargs_lens:
         :param kwargs_source:
         :param kwargs_lens_light:
         :param kwargs_ps:
-        :return: updated list of kwargs with linear parameter values
+        :return: updated list of kwargs with linear parameter values for specific band
         """
-        kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i, _ = self.select_kwargs(
-            kwargs_lens,
-            kwargs_source,
-            kwargs_lens_light,
-            kwargs_ps,
-            kwargs_extinction=None)
-        if self._linear_solver is True:
-            self._update_linear_kwargs(param, kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i)
-        return kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i
+        model_band = self._imageModel_list[model_band]
+        # TODO: which parameter list index 'j' need to be queried?
+        return model_band.update_linear_kwargs(param[j], kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)

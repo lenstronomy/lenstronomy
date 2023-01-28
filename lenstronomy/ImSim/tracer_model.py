@@ -7,11 +7,8 @@ import numpy as np
 
 class TracerModel(ImageModel):
     """
-    linear version class, inherits ImageModel.
+    Tracer model class, inherits ImageModel.
 
-    When light models use pixel-based profile types, such as 'SLIT_STARLETS',
-    the WLS linear inversion is replaced by the regularized inversion performed by an external solver.
-    The current pixel-based solver is provided by the SLITronomy plug-in.
     """
     def __init__(self, data_class, psf_class=None, lens_model_class=None, source_model_class=None,
                  lens_light_model_class=None, point_source_class=None, extinction_class=None,

@@ -210,6 +210,8 @@ class LikelihoodModule(object):
             logL += logL_image
             if verbose is True:
                 print('image logL = %s' % logL_image)
+        else:
+            param = None
         if self._time_delay_likelihood is True:
             logL_time_delay = self.time_delay_likelihood.logL(kwargs_lens, kwargs_ps, kwargs_special)
             logL += logL_time_delay
@@ -224,9 +226,8 @@ class LikelihoodModule(object):
             if verbose is True:
                 print('flux ratio logL = %s' % logL_flux_ratios)
         if self._tracer_likelihood is True:
-            # TODO: get kwargs_source from a specified setting/band, make sure linear inversion has been applied
             logL_tracer = self.tracer_likelihood.logL(kwargs_tracer_source, kwargs_lens, kwargs_source, kwargs_special,
-                                                      param)
+                                                      param=param)
             if verbose is True:
                 print('tracer logL = %s' % logL_tracer)
             logL += logL_tracer

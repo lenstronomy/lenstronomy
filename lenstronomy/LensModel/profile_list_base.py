@@ -18,7 +18,7 @@ _SUPPORTED_MODELS = ['SHIFT', 'NIE_POTENTIAL', 'CONST_MAG', 'SHEAR', 'SHEAR_GAMM
                      'CORED_DENSITY', 'CORED_DENSITY_2', 'CORED_DENSITY_MST', 'CORED_DENSITY_2_MST', 'CORED_DENSITY_EXP',
                      'CORED_DENSITY_EXP_MST', 'NumericalAlpha', 'MULTIPOLE', 'HESSIAN', 'ElliSLICE', 'ULDM','CORED_DENSITY_ULDM_MST',
                      'LOS', 'LOS_MINIMAL',
-                     'GNFW','CSE']
+                     'GNFW','CSE', 'GNFW_ELLIPSE_CSE']
 
 
 class ProfileListBase(object):
@@ -312,6 +312,9 @@ class ProfileListBase(object):
         elif lens_type == 'GNFW':
             from lenstronomy.LensModel.Profiles.general_nfw import GNFW
             return GNFW()
+        elif lens_type == 'GNFW_ELLIPSE_CSE':
+            from lenstronomy.LensModel.Profiles.gnfw_ellipse_cse import GNFW_ELLIPSE_CSE
+            return GNFW_ELLIPSE_CSE()
         elif lens_type == 'CORED_DENSITY_ULDM_MST':
             from lenstronomy.LensModel.Profiles.cored_density_mst import CoredDensityMST
             return CoredDensityMST(profile_type='CORED_DENSITY_ULDM')

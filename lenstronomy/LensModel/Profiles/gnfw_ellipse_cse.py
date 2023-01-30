@@ -1,4 +1,4 @@
-__author__ = 'sibirrer'
+__author__ = 'mgomer'
 
 import numpy as np
 from lenstronomy.Util import util
@@ -11,8 +11,15 @@ from lenstronomy.LensModel.lens_model import LensModel
 __all__ = ['GNFW_ELLIPSE_CSE']
 
 
-class GNFW_ELLIPSE_CSE():
+class GNFW_ELLIPSE_CSE(GNFW):
     """
+    This class is used to approximate a generalized NFW profile (see LensModel.Profiles.general_nfw) using
+    a sum of CSE profiles (same method as lenstronomy.LensModel.Profiles.nfw_ellipse_cse).
+    This enables an elliptical version of a GNFW profile.
+
+    Approximated over the range from 10^(-6) * Rs to 10^(3) * Rs
+    Accuracy of the approximation can be estimated  using estimate_deflection_error and differs depending
+    on inner slope and outer slope. Accurate to ~3% or better for most values of inner slope < 2 and outer slope > 2
 
     """
     profile_name = 'GNFW_ELLIPSE_CSE'
@@ -48,6 +55,20 @@ class GNFW_ELLIPSE_CSE():
             A_matrix[:, j] = const * self.single_cse.kappa(x=self.r_eval_list, y=0, kwargs=kwargs_lens)
 
         return np.matmul(np.linalg.inv(A_matrix), Y)
+
+    def estimate_deflection_error(self, gamma_inner, gamma_outer):
+        """
+        estimates the mean x-direction deflection error of the approximation over the radial range
+
+        :param gamma_inner: logarithmic profile slope interior to Rs
+        :param gamma_outer: logarithmic profile slope outside Rs
+        :return: sqrt(mean(squared relative errors) over 100 radial bins
+        """
+        rtargets=np.logspace(-6,3,100)
+        alpha_Rs = self.gnfw.rho02alpha(1, 1, gamma_inner, gamma_outer)
+        cse_approx=np.array(self.derivatives(rtargets, np.zeros_like(rtargets), 1, alpha_Rs, 0, 0, gamma_inner, gamma_outer, center_x=0, center_y=0)[0])
+        target=np.array(self.gnfw.derivatives(rtargets, np.zeros_like(rtargets), 1, alpha_Rs, gamma_inner, gamma_outer, center_x=0, center_y=0)[0])
+        return np.sqrt(np.mean((cse_approx-target)**2/target**2)) #sqrt(mean(squared relative errors))
 
     def function(self, x, y, Rs, alpha_Rs, e1, e2, gamma_inner, gamma_outer, center_x=0, center_y=0):
         """

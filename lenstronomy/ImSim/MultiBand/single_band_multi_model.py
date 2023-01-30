@@ -115,7 +115,7 @@ class SingleBandMultiModel(ImageLinearFit):
                                                  linear_solver=self._linear_solver)
         return logL, param
 
-    def update_linear_kwargs(self, param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
+    def update_linear_kwargs(self, param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, model_band=None):
         """
         links linear parameters to kwargs arguments
 

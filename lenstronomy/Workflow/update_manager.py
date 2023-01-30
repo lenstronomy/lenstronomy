@@ -60,7 +60,7 @@ class UpdateManager(object):
         else:
             self._extinction_init, self._extinction_sigma, self._extinction_fixed, self._extinction_lower, self._extinction_upper = [], [], [], [], []
 
-        if kwargs_model.get('tracer_source_model', None) is not None:
+        if kwargs_model.get('tracer_source_model_list', None) is not None:
             self._tracer_source_init, self._tracer_source_sigma, self._tracer_source_fixed, self._tracer_source_lower, self._tracer_source_upper = \
             kwargs_params['tracer_source_model']
         else:
@@ -148,7 +148,7 @@ class UpdateManager(object):
             source_temp = self.param_class.image2source_plane(source_temp, lens_temp)
         return {'kwargs_lens': lens_temp, 'kwargs_source': source_temp, 'kwargs_lens_light': lens_light_temp,
                 'kwargs_ps': ps_temp, 'kwargs_special': special_temp, 'kwargs_extinction': extinction_temp,
-                'kwargs_source_tracer': tracer_source_temp}
+                'kwargs_tracer_source': tracer_source_temp}
 
     def update_param_state(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
                            kwargs_special=None, kwargs_extinction=None, kwargs_tracer_source=None):
@@ -333,7 +333,6 @@ class UpdateManager(object):
         ps_fixed = self._remove_fixed(ps_fixed, ps_remove_fixed)
         special_fixed = copy.deepcopy(self._special_fixed)
         special_temp = self._kwargs_temp['kwargs_special']
-
         tracer_source_fixed = self._add_fixed(self._kwargs_temp['kwargs_tracer_source'], self._tracer_source_fixed,
                                               tracer_source_add_fixed)
         tracer_source_fixed = self._remove_fixed(tracer_source_fixed, tracer_source_remove_fixed)

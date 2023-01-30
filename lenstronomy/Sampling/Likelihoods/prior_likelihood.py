@@ -79,7 +79,7 @@ class PriorLikelihood(object):
         return kde_list
 
     def logL(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None, kwargs_special=None,
-             kwargs_extinction=None):
+             kwargs_extinction=None, kwargs_tracer_source=None):
         """
 
         :param kwargs_lens: lens model parameter list

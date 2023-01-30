@@ -17,7 +17,7 @@ from lenstronomy.Data.psf import PSF
 from lenstronomy.ImSim.differential_extinction import DifferentialExtinction
 from lenstronomy.Util import util
 
-from lenstronomy.ImSim.tracer_model import TracerModel
+from lenstronomy.ImSim.tracer_model import TracerModelSource
 
 
 class TestTracerModel(object):
@@ -57,9 +57,9 @@ class TestTracerModel(object):
         self.kwargs_tracer = [{'amp': 1, 'k': 2, 'center_x': 0, 'center_y': 0}]
         tracer_source_class = LightModel(light_model_list=tracer_model)
         kwargs_numerics = {'supersampling_factor': 2, 'supersampling_convolution': False}
-        self.tracerModel = TracerModel(data_class, psf_class=psf_class, lens_model_class=lens_model_class,
-                                       source_model_class=source_model_class, tracer_source_class=tracer_source_class,
-                                       kwargs_numerics=kwargs_numerics)
+        self.tracerModel = TracerModelSource(data_class, psf_class=psf_class, lens_model_class=lens_model_class,
+                                             source_model_class=source_model_class, tracer_source_class=tracer_source_class,
+                                             kwargs_numerics=kwargs_numerics)
 
     def test_tracer_model(self):
         tracer_model = self.tracerModel.tracer_model(self.kwargs_tracer, kwargs_lens=self.kwargs_lens,

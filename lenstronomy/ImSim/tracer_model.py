@@ -5,7 +5,7 @@ from lenstronomy.Util import util
 import numpy as np
 
 
-class TracerModel(ImageModel):
+class TracerModelSource(ImageModel):
     """
     Tracer model class, inherits ImageModel.
 
@@ -35,11 +35,11 @@ class TracerModel(ImageModel):
             likelihood_mask = np.ones_like(data_class.data)
         self.likelihood_mask = np.array(likelihood_mask, dtype=bool)
         self._mask1d = util.image2array(self.likelihood_mask)
-        super(TracerModel, self).__init__(data_class, psf_class=psf_class, lens_model_class=lens_model_class,
-                                          source_model_class=source_model_class,
-                                          lens_light_model_class=lens_light_model_class,
-                                          point_source_class=point_source_class, extinction_class=extinction_class,
-                                          kwargs_numerics=kwargs_numerics, kwargs_pixelbased=kwargs_pixelbased)
+        super(TracerModelSource, self).__init__(data_class, psf_class=psf_class, lens_model_class=lens_model_class,
+                                                source_model_class=source_model_class,
+                                                lens_light_model_class=lens_light_model_class,
+                                                point_source_class=point_source_class, extinction_class=extinction_class,
+                                                kwargs_numerics=kwargs_numerics, kwargs_pixelbased=kwargs_pixelbased)
         if psf_error_map_bool_list is None:
             psf_error_map_bool_list = [True] * len(self.PointSource.point_source_type_list)
         self._psf_error_map_bool_list = psf_error_map_bool_list
@@ -48,13 +48,13 @@ class TracerModel(ImageModel):
         self.tracer_mapping = Image2SourceMapping(lensModel=lens_model_class, sourceModel=tracer_source_class)
         self.tracer_source_class = tracer_source_class
 
-    def tracer_model(self, kwargs_tracer, kwargs_lens, kwargs_source, kwargs_extinction=None, kwargs_special=None,
+    def tracer_model(self, kwargs_tracer_source, kwargs_lens, kwargs_source, kwargs_extinction=None, kwargs_special=None,
                      de_lensed=False):
         """
         tracer model as a convolved surface brightness weighted quantity
         conv(tracer * surface brightness) / conv(surface brightness)
 
-        :param kwargs_tracer:
+        :param kwargs_tracer_source:
         :param kwargs_lens:
         :param kwargs_source:
         :return:
@@ -64,20 +64,35 @@ class TracerModel(ImageModel):
                                                                            kwargs_special=kwargs_special,
                                                                            de_lensed=de_lensed)
         source_light_conv = self.ImageNumerics.re_size_convolve(source_light, unconvolved=False)
-        tracer = self._tracer_model_source(kwargs_tracer, kwargs_lens, de_lensed=de_lensed)
+        source_light_conv[source_light_conv < 10 ** (-20)] = 10 ** (-20)
+        tracer = self._tracer_model_source(kwargs_tracer_source, kwargs_lens, de_lensed=de_lensed)
         tracer_brightness_conv = self.ImageNumerics.re_size_convolve(tracer * source_light, unconvolved=False)
         return tracer_brightness_conv / source_light_conv
 
-    def _tracer_model_source(self, kwargs_tracer, kwargs_lens, de_lensed=False, k=None):
+    def _tracer_model_source(self, kwargs_tracer_source, kwargs_lens, de_lensed=False, k=None):
         """
 
-        :param kwargs_tracer:
+        :param kwargs_tracer_source:
         :param kwargs_lens:
         :return:
         """
         ra_grid, dec_grid = self.ImageNumerics.coordinates_evaluate
         if de_lensed is True:
-            source_light = self.tracer_source_class.surface_brightness(ra_grid, dec_grid, kwargs_tracer, k=k)
+            source_light = self.tracer_source_class.surface_brightness(ra_grid, dec_grid, kwargs_tracer_source, k=k)
         else:
-            source_light = self.tracer_mapping.image_flux_joint(ra_grid, dec_grid, kwargs_lens, kwargs_tracer, k=k)
+            source_light = self.tracer_mapping.image_flux_joint(ra_grid, dec_grid, kwargs_lens, kwargs_tracer_source, k=k)
         return source_light
+
+    def likelihood_data_given_model(self, kwargs_tracer_source, kwargs_lens, kwargs_source, kwargs_extinction=None,
+                                    kwargs_special=None):
+        model = self.tracer_model(kwargs_tracer_source, kwargs_lens, kwargs_source, kwargs_extinction, kwargs_special)
+        log_likelihood = self.Data.log_likelihood(model, self.likelihood_mask, additional_error_map=0)
+        return log_likelihood
+
+    @property
+    def num_data_evaluate(self):
+        """
+        number of data points to be used in the linear solver
+        :return:
+        """
+        return int(np.sum(self.likelihood_mask))

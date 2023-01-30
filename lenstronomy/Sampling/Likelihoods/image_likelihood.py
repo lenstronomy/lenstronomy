@@ -39,7 +39,7 @@ class ImageLikelihood(object):
         self._check_positive_flux = check_positive_flux
 
     def logL(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None, kwargs_special=None,
-             kwargs_extinction=None):
+             kwargs_extinction=None, **kwargs):
         """
 
         :param kwargs_lens: lens model keyword argument list according to LensModel module
@@ -68,7 +68,7 @@ class ImageLikelihood(object):
         return self.imSim.num_data_evaluate
 
     def num_param_linear(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
-                         kwargs_special=None, kwargs_extinction=None):
+                         kwargs_special=None, kwargs_extinction=None, kwargs_tracer_source=None):
         """
 
         :return:  number of linear parameters solved for during the image reconstruction process

@@ -107,6 +107,8 @@ class MultiLinear(MultiDataBase):
                                                                              check_positive_flux=check_positive_flux)
                 logL += logL_i
                 param_list.append(param_i)
+            else:
+                param_list.append(None)
         return logL, param_list
 
     def update_linear_kwargs(self, param, model_band, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
@@ -123,5 +125,4 @@ class MultiLinear(MultiDataBase):
         :return: updated list of kwargs with linear parameter values for specific band
         """
         model_band = self._imageModel_list[model_band]
-        # TODO: which parameter list index 'j' need to be queried?
-        return model_band.update_linear_kwargs(param[j], kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+        return model_band.update_linear_kwargs(param[model_band], kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)

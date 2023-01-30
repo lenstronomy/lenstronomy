@@ -76,11 +76,13 @@ class PsfFitting(object):
         error_map_init = copy.deepcopy(error_map_final)
         psf_class = PSF(**kwargs_psf)
         self._image_model_class.update_psf(psf_class)
-        logL_before = self._image_model_class.likelihood_data_given_model(**kwargs_params)
+        _kwargs_params = copy.deepcopy(kwargs_params)
+        _kwargs_params.pop('kwargs_tracer_source', None)
+        logL_before, _ = self._image_model_class.likelihood_data_given_model(**_kwargs_params)
         logL_best = copy.deepcopy(logL_before)
         i_best = 0
         for i in range(num_iter):
-            kwargs_psf_new, logL_after, error_map = self.update_psf(kwargs_psf_new, kwargs_params, **kwargs_psf_update)
+            kwargs_psf_new, logL_after, error_map = self.update_psf(kwargs_psf_new, _kwargs_params, **kwargs_psf_update)
 
             if logL_after > logL_best:
                 kwargs_psf_final = copy.deepcopy(kwargs_psf_new)
@@ -204,7 +206,7 @@ class PsfFitting(object):
         # if 'psf_error_map' in kwargs_psf_new:
         #    kwargs_psf_new['psf_error_map'] *= 10
         self._image_model_class.update_psf(PSF(**kwargs_psf_new))
-        logL_after = self._image_model_class.likelihood_data_given_model(**kwargs_params)
+        logL_after, _ = self._image_model_class.likelihood_data_given_model(**kwargs_params)
         return kwargs_psf_new, logL_after, error_map
 
     def image_single_point_source(self, image_model_class, kwargs_params):

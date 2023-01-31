@@ -309,7 +309,7 @@ class TracerPlot(object):
             center_x, center_y = center[0], center[1]
         elif len(self._kwargs_tracer_source) > 0:
             center_x = self._kwargs_tracer_source[0]['center_x']
-            center_y = self._kwargs_tracer_source['center_y']
+            center_y = self._kwargs_tracer_source[0]['center_y']
         x_grid_source += center_x
         y_grid_source += center_y
 
@@ -317,8 +317,8 @@ class TracerPlot(object):
                                     ra_at_xy_0=ra_at_xy_0 + center_x,
                                     dec_at_xy_0=dec_at_xy_0 + center_y)
 
-        source = self.tracerModel.tracer_model(x_grid_source, y_grid_source,
-                                                               self._kwargs_tracer_source, de_lensed=True)
+        source = self.tracerModel.tracer_source_class.surface_brightnesstracer_model(x_grid_source, y_grid_source,
+                                                                                     self._kwargs_tracer_source)
         source = util.array2image(source) * deltaPix ** 2
         return source, coords_source
 

@@ -7,7 +7,7 @@ class TracerLikelihood(object):
     class to evaluate the tracer map
     """
 
-    def __init__(self, tracer_data, kwargs_model, kwargs_imaging, tracer_likelihood_mask=None, tracer_source_band=0):
+    def __init__(self, tracer_data, kwargs_model, kwargs_imaging, tracer_likelihood_mask=None):
         """
 
         :param tracer_bands_compute: list of bools with same length as data objects, indicates which "band" to include in the

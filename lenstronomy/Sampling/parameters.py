@@ -203,6 +203,7 @@ class Param(object):
         self._point_source_model_list = kwargs_model.get('point_source_model_list', [])
         self._optical_depth_model_list = kwargs_model.get('optical_depth_model_list', [])
         self._kwargs_model = kwargs_model
+        self._fixed_lens_model = fixed_lens_model
 
         # check how many redshifts need to be sampled
         num_z_sampling = 0
@@ -371,7 +372,12 @@ class Param(object):
         """
         i = 0
         args = np.atleast_1d(args)
-        kwargs_lens, i = self.lensParams.get_params(args, i)
+        if self._fixed_lens_model:
+            if not hasattr(self, '_kwargs_lens_fixed'):
+                self._kwargs_lens_fixed, self._i_fixed = self.lensParams.get_params(args, i)
+            kwargs_lens, i = self._kwargs_lens_fixed, self._i_fixed
+        else:
+            kwargs_lens, i = self.lensParams.get_params(args, i)
         kwargs_source, i = self.sourceParams.get_params(args, i)
         kwargs_lens_light, i = self.lensLightParams.get_params(args, i)
         kwargs_ps, i = self.pointSourceParams.get_params(args, i)

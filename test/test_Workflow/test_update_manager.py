@@ -69,7 +69,7 @@ class TestUpdateManager(object):
     def test_update_limits(self):
         self.manager.update_limits(change_source_lower_limit=[[0, ['test'], [-1]]], change_source_upper_limit=[[0, ['test'], [1]]])
         self.manager.update_limits(change_lens_lower_limit=[[0, ['e1'], [-0.9]]], change_lens_upper_limit=[[0, ['e1'], [0.9]]])
-        upper_lens, upper_source, _, _, _, _ = self.manager._upper_kwargs
+        upper_lens, upper_source, _, _, _, _, _ = self.manager._upper_kwargs
         assert upper_source[0]['test'] == 1
         assert upper_lens[0]['e1'] == 0.9
 
@@ -78,7 +78,7 @@ class TestUpdateManager(object):
                                    change_sigma_lens=[[0, ['test'], [2]]])
         self.manager.update_sigmas(change_sigma_lens_light=[[0, ['e1'], [-0.9]]],
                                    change_sigma_lens=[[0, ['e1'], [0.9]]])
-        upper_lens, upper_source, _, _, _, _ = self.manager._upper_kwargs
+        upper_lens, upper_source, _, _, _, _, _ = self.manager._upper_kwargs
         assert self.manager._lens_sigma[0]['test'] == 2
         assert self.manager._lens_sigma[0]['e1'] == 0.9
 

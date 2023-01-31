@@ -59,6 +59,13 @@ class UpdateManager(object):
                 'extinction_model']
         else:
             self._extinction_init, self._extinction_sigma, self._extinction_fixed, self._extinction_lower, self._extinction_upper = [], [], [], [], []
+
+        if kwargs_model.get('tracer_source_model_list', None) is not None:
+            self._tracer_source_init, self._tracer_source_sigma, self._tracer_source_fixed, self._tracer_source_lower, self._tracer_source_upper = \
+            kwargs_params['tracer_source_model']
+        else:
+            self._tracer_source_init, self._tracer_source_sigma, self._tracer_source_fixed, self._tracer_source_lower, self._tracer_source_upper = [], [], [], [], []
+
         if 'special' in kwargs_params:
             self._special_init, self._special_sigma, self._special_fixed, self._special_lower, self._special_upper = \
             kwargs_params['special']
@@ -78,7 +85,8 @@ class UpdateManager(object):
         """
         return {'kwargs_lens': self._lens_init, 'kwargs_source': self._source_init,
                 'kwargs_lens_light': self._lens_light_init, 'kwargs_ps': self._ps_init,
-                'kwargs_special': self._special_init, 'kwargs_extinction': self._extinction_init}
+                'kwargs_special': self._special_init, 'kwargs_extinction': self._extinction_init,
+                'kwargs_tracer_source': self._tracer_source_init}
 
     @property
     def sigma_kwargs(self):
@@ -88,19 +96,20 @@ class UpdateManager(object):
         """
         return {'kwargs_lens': self._lens_sigma, 'kwargs_source': self._source_sigma,
                 'kwargs_lens_light': self._lens_light_sigma, 'kwargs_ps': self._ps_sigma,
-                'kwargs_special': self._special_sigma, 'kwargs_extinction': self._extinction_sigma}
+                'kwargs_special': self._special_sigma, 'kwargs_extinction': self._extinction_sigma,
+                'kwargs_tracer_source': self._tracer_source_sigma}
 
     @property
     def _lower_kwargs(self):
-        return self._lens_lower, self._source_lower, self._lens_light_lower, self._ps_lower, self._special_lower, self._extinction_lower
+        return self._lens_lower, self._source_lower, self._lens_light_lower, self._ps_lower, self._special_lower, self._extinction_lower, self._tracer_source_lower
 
     @property
     def _upper_kwargs(self):
-        return self._lens_upper, self._source_upper, self._lens_light_upper, self._ps_upper, self._special_upper, self._extinction_upper
+        return self._lens_upper, self._source_upper, self._lens_light_upper, self._ps_upper, self._special_upper, self._extinction_upper, self._tracer_source_upper
 
     @property
     def fixed_kwargs(self):
-        return self._lens_fixed, self._source_fixed, self._lens_light_fixed, self._ps_fixed, self._special_fixed, self._extinction_fixed
+        return self._lens_fixed, self._source_fixed, self._lens_light_fixed, self._ps_fixed, self._special_fixed, self._extinction_fixed, self._tracer_source_fixed
 
     def set_init_state(self):
         """
@@ -127,20 +136,22 @@ class UpdateManager(object):
          remain in the image plane rather than being mapped to the source plane.
         :return: kwargs_result with all the keyword arguments of the best fit for the model components
         """
-        lens_temp, source_temp, lens_light_temp, ps_temp, special_temp, extinction_temp = self._kwargs_temp['kwargs_lens'], \
+        lens_temp, source_temp, lens_light_temp, ps_temp, special_temp, extinction_temp, tracer_source_temp = self._kwargs_temp['kwargs_lens'], \
                                                                          self._kwargs_temp['kwargs_source'], \
                                                                          self._kwargs_temp['kwargs_lens_light'], \
                                                                          self._kwargs_temp['kwargs_ps'], \
                                                                          self._kwargs_temp['kwargs_special'], \
-                                                                         self._kwargs_temp['kwargs_extinction']
+                                                                         self._kwargs_temp['kwargs_extinction'], \
+                                                                         self._kwargs_temp['kwargs_tracer_source']
         if bijective is False:
             lens_temp = self.param_class.update_lens_scaling(special_temp, lens_temp, inverse=False)
             source_temp = self.param_class.image2source_plane(source_temp, lens_temp)
         return {'kwargs_lens': lens_temp, 'kwargs_source': source_temp, 'kwargs_lens_light': lens_light_temp,
-                'kwargs_ps': ps_temp, 'kwargs_special': special_temp, 'kwargs_extinction': extinction_temp}
+                'kwargs_ps': ps_temp, 'kwargs_special': special_temp, 'kwargs_extinction': extinction_temp,
+                'kwargs_tracer_source': tracer_source_temp}
 
     def update_param_state(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
-                           kwargs_special=None, kwargs_extinction=None):
+                           kwargs_special=None, kwargs_extinction=None, kwargs_tracer_source=None):
         """
         updates the temporary state of the parameters being saved. ATTENTION: Any previous knowledge gets lost if you
         call this function
@@ -151,11 +162,13 @@ class UpdateManager(object):
         :param kwargs_ps:
         :param kwargs_special:
         :param kwargs_extinction:
+        :param kwargs_tracer_source:
         :return:
         """
         self._kwargs_temp = {'kwargs_lens': kwargs_lens, 'kwargs_source': kwargs_source,
                              'kwargs_lens_light': kwargs_lens_light, 'kwargs_ps': kwargs_ps,
-                             'kwargs_special': kwargs_special, 'kwargs_extinction': kwargs_extinction}
+                             'kwargs_special': kwargs_special, 'kwargs_extinction': kwargs_extinction,
+                             'kwargs_tracer_source': kwargs_tracer_source}
 
     def update_param_value(self, lens=None, source=None, lens_light=None, ps=None):
         """
@@ -194,18 +207,19 @@ class UpdateManager(object):
 
         :return: instance of the Param class with the recent options and bounds
         """
-        kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_special, kwargs_fixed_extinction = self.fixed_kwargs
-        kwargs_lower_lens, kwargs_lower_source, kwargs_lower_lens_light, kwargs_lower_ps, kwargs_lower_special, kwargs_lower_extinction = self._lower_kwargs
-        kwargs_upper_lens, kwargs_upper_source, kwargs_upper_lens_light, kwargs_upper_ps, kwargs_upper_special, kwargs_upper_extinction = self._upper_kwargs
+        kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_special, kwargs_fixed_extinction, kwargs_fixed_tracer_source = self.fixed_kwargs
+        kwargs_lower_lens, kwargs_lower_source, kwargs_lower_lens_light, kwargs_lower_ps, kwargs_lower_special, kwargs_lower_extinction, kwargs_lower_tracer_source = self._lower_kwargs
+        kwargs_upper_lens, kwargs_upper_source, kwargs_upper_lens_light, kwargs_upper_ps, kwargs_upper_special, kwargs_upper_extinction, kwargs_upper_tracer_source = self._upper_kwargs
         kwargs_model = self.kwargs_model
         kwargs_constraints = self.kwargs_constraints
         lens_temp = self._kwargs_temp['kwargs_lens']
         param_class = Param(kwargs_model, kwargs_fixed_lens, kwargs_fixed_source,
                             kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_special, kwargs_fixed_extinction,
+                            kwargs_fixed_tracer_source,
                             kwargs_lower_lens, kwargs_lower_source, kwargs_lower_lens_light, kwargs_lower_ps,
-                            kwargs_lower_special, kwargs_lower_extinction,
+                            kwargs_lower_special, kwargs_lower_extinction, kwargs_lower_tracer_source,
                             kwargs_upper_lens, kwargs_upper_source, kwargs_upper_lens_light, kwargs_upper_ps,
-                            kwargs_upper_special, kwargs_upper_extinction,
+                            kwargs_upper_special, kwargs_upper_extinction, kwargs_upper_tracer_source,
                             kwargs_lens_init=lens_temp, **kwargs_constraints)
         return param_class
 
@@ -286,8 +300,10 @@ class UpdateManager(object):
         return kwargs_limit_updated
 
     def update_fixed(self, lens_add_fixed=None, source_add_fixed=None, lens_light_add_fixed=None, ps_add_fixed=None,
-                     special_add_fixed=None, lens_remove_fixed=None, source_remove_fixed=None,
-                     lens_light_remove_fixed=None, ps_remove_fixed=None, special_remove_fixed=None):
+                     special_add_fixed=None, tracer_source_add_fixed=None,
+                     lens_remove_fixed=None, source_remove_fixed=None,
+                     lens_light_remove_fixed=None, ps_remove_fixed=None, special_remove_fixed=None,
+                     tracer_source_remove_fixed=None):
         """
         adds or removes the values of the keyword arguments that are stated in the _add_fixed to the existing fixed
         arguments. convention for input arguments are:
@@ -298,11 +314,13 @@ class UpdateManager(object):
         :param lens_light_add_fixed: added fixed parameter in lens light model
         :param ps_add_fixed: added fixed parameter in point source model
         :param special_add_fixed: added fixed parameter in special model
+        :param tracer_source_add_fixed: added fixed parameter in tracer source model
         :param lens_remove_fixed: remove fixed parameter in lens model
         :param source_remove_fixed: remove fixed parameter in source model
         :param lens_light_remove_fixed: remove fixed parameter in lens light model
         :param ps_remove_fixed: remove fixed parameter in point source model
         :param special_remove_fixed: remove fixed parameter in special model
+        :param tracer_source_remove_fixed: remove fixed parameter in tracer source model
         :return: updated kwargs fixed
         """
         lens_fixed = self._add_fixed(self._kwargs_temp['kwargs_lens'], self._lens_fixed, lens_add_fixed)
@@ -315,6 +333,10 @@ class UpdateManager(object):
         ps_fixed = self._remove_fixed(ps_fixed, ps_remove_fixed)
         special_fixed = copy.deepcopy(self._special_fixed)
         special_temp = self._kwargs_temp['kwargs_special']
+        tracer_source_fixed = self._add_fixed(self._kwargs_temp['kwargs_tracer_source'], self._tracer_source_fixed,
+                                              tracer_source_add_fixed)
+        tracer_source_fixed = self._remove_fixed(tracer_source_fixed, tracer_source_remove_fixed)
+
         if special_add_fixed is None:
             special_add_fixed = []
         for param_name in special_add_fixed:
@@ -325,7 +347,7 @@ class UpdateManager(object):
         for param_name in special_remove_fixed:
             if param_name in special_fixed:
                 del special_fixed[param_name]
-        self._lens_fixed, self._source_fixed, self._lens_light_fixed, self._ps_fixed, self._special_fixed = lens_fixed, source_fixed, lens_light_fixed, ps_fixed, special_fixed
+        self._lens_fixed, self._source_fixed, self._lens_light_fixed, self._ps_fixed, self._special_fixed, self._tracer_source_fixed = lens_fixed, source_fixed, lens_light_fixed, ps_fixed, special_fixed, tracer_source_fixed
 
     @staticmethod
     def _add_fixed(kwargs_model, kwargs_fixed, add_fixed):

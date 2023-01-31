@@ -5,6 +5,7 @@ from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.ImSim.differential_extinction import DifferentialExtinction
 from lenstronomy.ImSim.image_linear_solve import ImageLinearFit
+from lenstronomy.ImSim.tracer_model import TracerModelSource
 
 from lenstronomy.Util.package_util import exporter
 export, __all__ = exporter()
@@ -22,7 +23,8 @@ def create_class_instances(lens_model_list=None, z_lens=None, z_source=None, z_s
                            index_lens_light_model_list=None, index_point_source_model_list=None,
                            optical_depth_model_list=None, index_optical_depth_model_list=None,
                            band_index=0, tau0_index_list=None, all_models=False, point_source_magnification_limit=None,
-                           surface_brightness_smoothing=0.001, sersic_major_axis=None):
+                           surface_brightness_smoothing=0.001, sersic_major_axis=None, tracer_source_model_list=None,
+                           tracer_source_band=0):
     """
 
     :param lens_model_list: list of strings indicating the type of lens models
@@ -52,7 +54,7 @@ def create_class_instances(lens_model_list=None, z_lens=None, z_source=None, z_s
     :param cosmo: astropy.cosmology instance
     :param index_lens_model_list:
     :param index_source_light_model_list:
-    :param index_lens_light_model_list:
+    :param index_lens_light_model_list: optional, list of list of all model indexes for each modeled band
     :param index_point_source_model_list:
     :param optical_depth_model_list: list of strings indicating the optical depth model to compute (differential) extinctions from the source
     :param index_optical_depth_model_list:
@@ -65,6 +67,8 @@ def create_class_instances(lens_model_list=None, z_lens=None, z_source=None, z_s
     :param sersic_major_axis: boolean or None, if True, uses the semi-major axis as the definition of the Sersic
      half-light radius, if False, uses the product average of semi-major and semi-minor axis. If None, uses the
      convention in the lenstronomy yaml setting (which by default is =False)
+    :param tracer_source_model_list: list of tracer source models (not used in this function)
+    :param tracer_source_band: integer, list index of source surface brightness band to apply tracer model to
     :return:
     """
     if lens_model_list is None:
@@ -216,3 +220,29 @@ def create_im_sim(multi_band_list, multi_band_type, kwargs_model, bands_compute=
     else:
         raise ValueError("type %s is not supported!" % multi_band_type)
     return multiband
+
+
+def create_tracer_model(tracer_data, kwargs_model, tracer_likelihood_mask=None):
+    """
+
+    :param tracer_data:
+    :param kwargs_model:
+    :param tracer_likelihood_mask_list:
+
+    :return:
+    """
+    tracer_source_band = kwargs_model.get('tracer_source_band', 0)
+    tracer_source_class = LightModel(light_model_list=kwargs_model.get('tracer_source_model_list', []))
+    kwargs_data, kwargs_psf, kwargs_numerics = tracer_data
+    lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class = create_class_instances(
+        band_index=tracer_source_band, **kwargs_model)
+    data_class = ImageData(**kwargs_data)
+    psf_class = PSF(**kwargs_psf)
+    tracer_model = TracerModelSource(data_class, psf_class=psf_class, lens_model_class=lens_model_class,
+                                     source_model_class=source_model_class, lens_light_model_class=lens_light_model_class,
+                                     point_source_class=point_source_class, extinction_class=extinction_class,
+                                     tracer_source_class=tracer_source_class, kwargs_numerics=kwargs_numerics,
+                                     likelihood_mask=tracer_likelihood_mask,
+                                     psf_error_map_bool_list=None, kwargs_pixelbased=None
+                                     )
+    return tracer_model

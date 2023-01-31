@@ -51,6 +51,7 @@ class ModelPlot(object):
                                                        image_likelihood_mask_list=image_likelihood_mask_list)
 
         kwargs_params_copy = copy.deepcopy(kwargs_params)
+        kwargs_params_copy.pop('kwargs_tracer_source', None)
         model, error_map, cov_param, param = self._imageModel.image_linear_solve(inv_bool=True, **kwargs_params_copy)
 
         if linear_solver is False:
@@ -69,8 +70,8 @@ class ModelPlot(object):
             kwargs_params = kwargs_params_copy  # overwrite the keyword list with the linear solved 'amp' values
 
         check_solver_error(param)
-        log_l = self._imageModel.likelihood_data_given_model(source_marg=source_marg, linear_prior=linear_prior,
-                                                             **kwargs_params)
+        log_l, _ = self._imageModel.likelihood_data_given_model(source_marg=source_marg, linear_prior=linear_prior,
+                                                                **kwargs_params)
 
         n_data = self._imageModel.num_data_evaluate
         if n_data > 0:

@@ -2,6 +2,7 @@ __author__ = 'sibirrer'
 
 from lenstronomy.Sampling.Likelihoods.time_delay_likelihood import TimeDelayLikelihood
 from lenstronomy.Sampling.Likelihoods.image_likelihood import ImageLikelihood
+from lenstronomy.Sampling.Likelihoods.tracer_likelihood import TracerLikelihood
 from lenstronomy.Sampling.Likelihoods.position_likelihood import PositionLikelihood
 from lenstronomy.Sampling.Likelihoods.flux_ratio_likelihood import FluxRatioLikelihood
 from lenstronomy.Sampling.Likelihoods.prior_likelihood import PriorLikelihood
@@ -34,7 +35,8 @@ class LikelihoodModule(object):
                  prior_source_kde=None, prior_lens_light_kde=None, prior_ps_kde=None, prior_special_kde=None,
                  prior_extinction_kde=None, prior_lens_lognormal=None, prior_source_lognormal=None,
                  prior_extinction_lognormal=None, prior_lens_light_lognormal=None, prior_ps_lognormal=None,
-                 prior_special_lognormal=None, custom_logL_addition=None, kwargs_pixelbased=None):
+                 prior_special_lognormal=None, custom_logL_addition=None, kwargs_pixelbased=None,
+                 tracer_likelihood=False, tracer_likelihood_mask=None):
         """
         initializing class
 
@@ -75,8 +77,10 @@ class LikelihoodModule(object):
          kwargs_ps, kwargs_special, kwargs_extinction) and returns a logL (punishing) value.
         :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver
          (see SLITronomy documentation)
+        :param tracer_likelihood: option to perform likelihood on tracer quantity derived from imaging or spectroscopy
         """
-        multi_band_list, multi_band_type, time_delays_measured, time_delays_uncertainties, flux_ratios, flux_ratio_errors, ra_image_list, dec_image_list = self._unpack_data(**kwargs_data_joint)
+        # TODO unpack also tracer model from kwargs_data
+        multi_band_list, multi_band_type, time_delays_measured, time_delays_uncertainties, flux_ratios, flux_ratio_errors, ra_image_list, dec_image_list, tracer_data = self._unpack_data(**kwargs_data_joint)
         if len(multi_band_list) == 0:
             image_likelihood = False
 
@@ -93,6 +97,7 @@ class LikelihoodModule(object):
         self._time_delay_likelihood = time_delay_likelihood
         self._image_likelihood = image_likelihood
         self._flux_ratio_likelihood = flux_ratio_likelihood
+        self._tracer_likelihood = tracer_likelihood
         if kwargs_flux_compute is None:
             kwargs_flux_compute = {}
         linear_solver = self.param.linear_solver
@@ -101,11 +106,12 @@ class LikelihoodModule(object):
         self._custom_logL_addition = custom_logL_addition
         self._kwargs_time_delay = {'time_delays_measured': time_delays_measured,
                                    'time_delays_uncertainties': time_delays_uncertainties}
-        self._kwargs_imaging = {'multi_band_list': multi_band_list, 'multi_band_type': multi_band_type,
-                                'bands_compute': bands_compute,
-                                'image_likelihood_mask_list': image_likelihood_mask_list, 'source_marg': source_marg,
+        self._kwargs_image_likelihood =  {'source_marg': source_marg,
                                 'linear_prior': linear_prior, 'check_positive_flux': check_positive_flux,
                                 'kwargs_pixelbased': kwargs_pixelbased, 'linear_solver': linear_solver}
+        self._kwargs_image_sim = {'multi_band_list': multi_band_list, 'multi_band_type': multi_band_type,
+                                'bands_compute': bands_compute,
+                                'image_likelihood_mask_list': image_likelihood_mask_list}
         self._kwargs_position = {'astrometric_likelihood': astrometric_likelihood,
                                  'image_position_likelihood': image_position_likelihood,
                                  'source_position_likelihood': source_position_likelihood,
@@ -116,13 +122,16 @@ class LikelihoodModule(object):
                                  'source_position_sigma': source_position_sigma,
                                  'force_no_add_image': force_no_add_image,
                                  'restrict_image_number': restrict_image_number, 'max_num_images': max_num_images}
+        self._kwargs_tracer = {'tracer_data': tracer_data, 'tracer_likelihood_mask': tracer_likelihood_mask}
         self._kwargs_flux = {'flux_ratios': flux_ratios, 'flux_ratio_errors': flux_ratio_errors}
         self._kwargs_flux.update(self._kwargs_flux_compute)
-        self._class_instances(kwargs_model=kwargs_model, kwargs_imaging=self._kwargs_imaging,
+        self._class_instances(kwargs_model=kwargs_model, kwargs_image_sim=self._kwargs_image_sim,
+                              kwargs_image_likelihood=self._kwargs_image_likelihood,
                               kwargs_position=self._kwargs_position, kwargs_flux=self._kwargs_flux,
-                              kwargs_time_delay=self._kwargs_time_delay)
+                              kwargs_time_delay=self._kwargs_time_delay, kwargs_tracer=self._kwargs_tracer)
 
-    def _class_instances(self, kwargs_model, kwargs_imaging, kwargs_position, kwargs_flux, kwargs_time_delay):
+    def _class_instances(self, kwargs_model, kwargs_image_sim, kwargs_image_likelihood, kwargs_position, kwargs_flux,
+                         kwargs_time_delay, kwargs_tracer):
         """
 
         :param kwargs_model: lenstronomy model keyword arguments
@@ -143,9 +152,12 @@ class LikelihoodModule(object):
             self.time_delay_likelihood = TimeDelayLikelihood(lens_model_class=lens_model_class,
                                                              point_source_class=point_source_class,
                                                              **kwargs_time_delay)
-
         if self._image_likelihood is True:
+            kwargs_imaging = {**kwargs_image_likelihood, **kwargs_image_sim}
             self.image_likelihood = ImageLikelihood(kwargs_model=kwargs_model, **kwargs_imaging)
+        if self._tracer_likelihood is True:
+            self.tracer_likelihood = TracerLikelihood(kwargs_model=kwargs_model,
+                                                      kwargs_imaging=kwargs_image_sim, **kwargs_tracer)
         self._position_likelihood = PositionLikelihood(point_source_class, **kwargs_position)
         if self._flux_ratio_likelihood is True:
             self.flux_ratio_likelihood = FluxRatioLikelihood(lens_model_class, **kwargs_flux)
@@ -191,6 +203,7 @@ class LikelihoodModule(object):
                                                                                    kwargs_return['kwargs_lens_light'], \
                                                                                    kwargs_return['kwargs_ps'], \
                                                                                    kwargs_return['kwargs_special']
+        kwargs_tracer_source = kwargs_return['kwargs_tracer_source']
         # update model instance in case of changes affecting it (i.e. redshift sampling in multi-plane)
         self._update_model(kwargs_special)
         # generate image and computes likelihood
@@ -198,10 +211,12 @@ class LikelihoodModule(object):
         logL = 0
 
         if self._image_likelihood is True:
-            logL_image = self.image_likelihood.logL(**kwargs_return)
+            logL_image, param = self.image_likelihood.logL(**kwargs_return)
             logL += logL_image
             if verbose is True:
                 print('image logL = %s' % logL_image)
+        else:
+            param = None
         if self._time_delay_likelihood is True:
             logL_time_delay = self.time_delay_likelihood.logL(kwargs_lens, kwargs_ps, kwargs_special)
             logL += logL_time_delay
@@ -215,6 +230,11 @@ class LikelihoodModule(object):
             logL += logL_flux_ratios
             if verbose is True:
                 print('flux ratio logL = %s' % logL_flux_ratios)
+        if self._tracer_likelihood is True:
+            logL_tracer = self.tracer_likelihood.logL(param=param, **kwargs_return)
+            if verbose is True:
+                print('tracer logL = %s' % logL_tracer)
+            logL += logL_tracer
         logL += self._position_likelihood.logL(kwargs_lens, kwargs_ps, kwargs_special, verbose=verbose)
         logL_prior = self._prior_likelihood.logL(**kwargs_return)
         logL += logL_prior
@@ -260,6 +280,8 @@ class LikelihoodModule(object):
         if self._flux_ratio_likelihood is True:
             num_data += self.flux_ratio_likelihood.num_data
         num_data += self._position_likelihood.num_data
+        if self._tracer_likelihood is True:
+            num_data += self.tracer_likelihood.num_data
         return num_data
 
     @property
@@ -291,7 +313,7 @@ class LikelihoodModule(object):
     @staticmethod
     def _unpack_data(multi_band_list=None, multi_band_type='multi-linear', time_delays_measured=None,
                      time_delays_uncertainties=None, flux_ratios=None, flux_ratio_errors=None, ra_image_list=None,
-                     dec_image_list=None):
+                     dec_image_list=None, tracer_data=None):
         """
 
         :param multi_band_list: list of [[kwargs_data, kwargs_psf, kwargs_numerics], [], ...]
@@ -309,13 +331,15 @@ class LikelihoodModule(object):
         if dec_image_list is None:
             dec_image_list = []
         return multi_band_list, multi_band_type, time_delays_measured, time_delays_uncertainties, flux_ratios, \
-               flux_ratio_errors, ra_image_list, dec_image_list
+               flux_ratio_errors, ra_image_list, dec_image_list, tracer_data
 
     def _reset_point_source_cache(self, bool_input=True):
         self.PointSource.delete_lens_model_cache()
         self.PointSource.set_save_cache(bool_input)
         if self._image_likelihood is True:
             self.image_likelihood.reset_point_source_cache(bool_input)
+        if self._tracer_likelihood is True:
+            self.tracer_likelihood.reset_point_source_cache(bool_input)
 
     def _update_model(self, kwargs_special):
         """
@@ -327,7 +351,8 @@ class LikelihoodModule(object):
         """
         kwargs_model, update_bool = self.param.update_kwargs_model(kwargs_special)
         if update_bool is True:
-            self._class_instances(kwargs_model=kwargs_model, kwargs_imaging=self._kwargs_imaging,
+            self._class_instances(kwargs_model=kwargs_model, kwargs_image_sim=self._kwargs_image_sim,
+                                  kwargs_image_likelihood=self._kwargs_image_likelihood,
                                   kwargs_position=self._kwargs_position, kwargs_flux=self._kwargs_flux,
-                                  kwargs_time_delay=self._kwargs_time_delay)
+                                  kwargs_time_delay=self._kwargs_time_delay, kwargs_tracer=self._kwargs_tracer)
         # TODO remove redundancies with Param() calls updates

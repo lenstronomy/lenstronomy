@@ -209,13 +209,13 @@ class ImageLinearFit(ImageModel):
          components and applies a punishment in the likelihood if so.
         :param linear_solver: bool, if True (default) fixes the linear amplitude parameters 'amp' (avoid sampling) such
          that they get overwritten by the linear solver solution.
-        :return: log likelihood (natural logarithm)
+        :return: log likelihood (natural logarithm), linear parameter list
         """
         # generate image
         if linear_solver is False:
             im_sim = self.image(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_extinction,
                                 kwargs_special)
-            cov_matrix = None
+            cov_matrix, param = None, None
             model_error = self._error_map_model(kwargs_lens, kwargs_ps=kwargs_ps, kwargs_special=kwargs_special)
         else:
             im_sim, model_error, cov_matrix, param = self._image_linear_solve(kwargs_lens, kwargs_source,
@@ -223,16 +223,42 @@ class ImageLinearFit(ImageModel):
                                                                               kwargs_extinction, kwargs_special,
                                                                               inv_bool=source_marg)
         # compute X^2
-        logL = self.Data.log_likelihood(im_sim, self.likelihood_mask, model_error)
+        logL = self.likelihood_data_given_model_solution(im_sim, model_error, cov_matrix, param, kwargs_lens,
+                                                         kwargs_source, kwargs_lens_light, kwargs_ps,
+                                                         source_marg=source_marg, linear_prior=linear_prior,
+                                                         check_positive_flux=check_positive_flux)
+        return logL, param
+
+    def likelihood_data_given_model_solution(self, model, model_error, cov_matrix, param, kwargs_lens, kwargs_source,
+                                             kwargs_lens_light, kwargs_ps, source_marg=False, linear_prior=None,
+                                             check_positive_flux=False):
+        """
+
+        :param model:
+        :param model_error:
+        :param cov_matrix:
+        :param param:
+        :param kwargs_lens:
+        :param kwargs_source:
+        :param kwargs_lens_light:
+        :param kwargs_ps:
+        :param source_marg:
+        :param linear_prior:
+        :param check_positive_flux:
+        :return:
+        """
+
+        logL = self.Data.log_likelihood(model, self.likelihood_mask, model_error)
 
         if self._pixelbased_bool is False:
             if cov_matrix is not None and source_marg:
                 marg_const = de_lens.marginalization_new(cov_matrix, d_prior=linear_prior)
                 logL += marg_const
         if check_positive_flux is True:
+            _, _, _, _ = self.update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
             bool_ = self.check_positive_flux(kwargs_source, kwargs_lens_light, kwargs_ps)
             if bool_ is False:
-                logL -= 10**8
+                logL -= 10 ** 8
         return logL
 
     def num_param_linear(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
@@ -321,6 +347,16 @@ class ImageLinearFit(ImageModel):
         return A
 
     def update_linear_kwargs(self, param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
+        """
+
+        links linear parameters to kwargs arguments
+
+        :param param: linear parameter vector corresponding to the response matrix
+        :return: updated list of kwargs with linear parameter values
+        """
+        return self._update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+
+    def _update_linear_kwargs(self, param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
         """
 
         links linear parameters to kwargs arguments

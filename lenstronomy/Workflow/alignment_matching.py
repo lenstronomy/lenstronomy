@@ -68,7 +68,8 @@ class AlignmentLikelihood(object):
         self._source_marg = False
         self._band_index = band_index
         self._likelihood_mask_list = likelihood_mask_list
-        self._kwargs_params = kwargs_params
+        self._kwargs_params = copy.deepcopy(kwargs_params)
+        self._kwargs_params.pop('kwargs_tracer_source', None)
 
     def _likelihood(self, args):
         """
@@ -78,7 +79,7 @@ class AlignmentLikelihood(object):
         multi_band_list = self.update_multi_band(args)
         image_model = SingleBandMultiModel(multi_band_list, self._kwargs_model,
                                            likelihood_mask_list=self._likelihood_mask_list, band_index=self._band_index)
-        logL = image_model.likelihood_data_given_model(source_marg=self._source_marg, **self._kwargs_params)
+        logL, _ = image_model.likelihood_data_given_model(source_marg=self._source_marg, **self._kwargs_params)
         return logL
 
     def __call__(self, a):

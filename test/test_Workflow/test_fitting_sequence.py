@@ -173,7 +173,7 @@ class TestFittingSequence(object):
         fitting_list.append(['update_settings', kwargs_update])
 
         chain_list = fittingSequence.fit_sequence(fitting_list)
-        lens_fixed, source_fixed, lens_light_fixed, ps_fixed, special_fixed, extinction_fixed = fittingSequence._updateManager.fixed_kwargs
+        lens_fixed, source_fixed, lens_light_fixed, ps_fixed, special_fixed, extinction_fixed, tracer_source_fixed = fittingSequence._updateManager.fixed_kwargs
         kwargs_result = fittingSequence.best_fit(bijective=False)
         npt.assert_almost_equal(kwargs_result['kwargs_lens'][0]['theta_E'], self.kwargs_lens[0]['theta_E'], decimal=1)
         npt.assert_almost_equal(fittingSequence._updateManager._lens_light_fixed[0]['n_sersic'], n_sersic_overwrite, decimal=8)
@@ -399,8 +399,7 @@ class TestFittingSequence(object):
         kwargs_mcmc['init_samples'] = np.array([[np.random.normal(1, 0.001)] for i in range(100)])
         fitting_list.append(['MCMC', kwargs_mcmc])
 
-        def custom_likelihood(kwargs_lens, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
-                              kwargs_special=None, kwargs_extinction=None):
+        def custom_likelihood(kwargs_lens, **kwargs):
             theta_E = kwargs_lens[0]['theta_E']
             return -(theta_E - 1.)**2 / 0.1**2 / 2
         kwargs_likelihood = {'custom_logL_addition': custom_likelihood}

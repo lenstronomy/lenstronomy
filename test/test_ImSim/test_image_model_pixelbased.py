@@ -154,7 +154,7 @@ class TestImageModel(object):
         npt.assert_almost_equal(chi2_reduced, 1, decimal=1)
 
     def test_likelihood_data_given_model(self):
-        logL = self.imageModel.likelihood_data_given_model(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps, source_marg=False)
+        logL, param = self.imageModel.likelihood_data_given_model(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps, source_marg=False)
         npt.assert_almost_equal(logL, -5000, decimal=-3)
 
     def test_reduced_residuals(self):

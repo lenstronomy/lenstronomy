@@ -32,7 +32,7 @@ class MultiBandUpdateManager(UpdateManager):
         :param num_bands: integer, number of image bands
         """
         super(MultiBandUpdateManager, self).__init__(kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params)
-        kwargs_lens_fixed_init, _, _, _, _, _ = self.fixed_kwargs
+        kwargs_lens_fixed_init, _, _, _, _, _, _ = self.fixed_kwargs
         self._kwargs_lens_fixed_init = copy.deepcopy(kwargs_lens_fixed_init)
 
         self._index_lens_model_list = kwargs_model.get('index_lens_model_list', [None for i in range(num_bands)])

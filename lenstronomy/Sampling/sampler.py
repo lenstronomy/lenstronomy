@@ -45,12 +45,7 @@ class Sampler(object):
         print(-logL * 2 / (max(self.chain.effective_num_data_points(**kwargs_return), 1)),
               'reduced X^2 of best position')
         print(logL, 'log likelihood')
-        print(self.chain.effective_num_data_points(**kwargs_return), 'effective number of data points')
-        print(kwargs_return.get('kwargs_lens', None), 'lens result')
-        print(kwargs_return.get('kwargs_source', None), 'source result')
-        print(kwargs_return.get('kwargs_lens_light', None), 'lens light result')
-        print(kwargs_return.get('kwargs_ps', None), 'point source result')
-        print(kwargs_return.get('kwargs_special', None), 'special param result')
+        self._print_result(result['x'])
         time_end = time.time()
         print(time_end - time_start, 'time used for ', print_key)
         print('===================')
@@ -107,12 +102,7 @@ class Sampler(object):
             print(pso.global_best.fitness * 2 / (max(
                 self.chain.effective_num_data_points(**kwargs_return), 1)), 'reduced X^2 of best position')
             print(pso.global_best.fitness, 'log likelihood')
-            print(self.chain.effective_num_data_points(**kwargs_return), 'effective number of data points')
-            print(kwargs_return.get('kwargs_lens', None), 'lens result')
-            print(kwargs_return.get('kwargs_source', None), 'source result')
-            print(kwargs_return.get('kwargs_lens_light', None), 'lens light result')
-            print(kwargs_return.get('kwargs_ps', None), 'point source result')
-            print(kwargs_return.get('kwargs_special', None), 'special param result')
+            self._print_result(result=result)
             time_end = time.time()
             print(time_end - time_start, 'time used for ', print_key)
             print('===================')
@@ -309,3 +299,13 @@ class Sampler(object):
         dist = sampler.get_log_prob(flat=True, thin=1, discard=n_burn)
 
         return flat_samples, dist
+
+    def _print_result(self, result):
+        kwargs_return = self.chain.param.args2kwargs(result)
+        print(self.chain.effective_num_data_points(**kwargs_return), 'effective number of data points')
+        print(kwargs_return.get('kwargs_lens', None), 'lens result')
+        print(kwargs_return.get('kwargs_source', None), 'source result')
+        print(kwargs_return.get('kwargs_lens_light', None), 'lens light result')
+        print(kwargs_return.get('kwargs_ps', None), 'point source result')
+        print(kwargs_return.get('kwargs_tracer_source', None), 'tracer source result')
+        print(kwargs_return.get('kwargs_special', None), 'special param result')

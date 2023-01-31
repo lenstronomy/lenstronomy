@@ -60,7 +60,7 @@ class MultiBandImageReconstruction(object):
         check_solver_error(param)
 
         if verbose:
-            logL = self._imageModel.likelihood_data_given_model(source_marg=source_marg, linear_prior=linear_prior,
+            logL, _ = self._imageModel.likelihood_data_given_model(source_marg=source_marg, linear_prior=linear_prior,
                                                                 **kwargs_params)
             n_data = self._imageModel.num_data_evaluate
             if n_data > 0:

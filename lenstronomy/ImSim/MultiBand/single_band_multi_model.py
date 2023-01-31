@@ -109,11 +109,32 @@ class SingleBandMultiModel(ImageLinearFit):
                                                                                               kwargs_lens_light,
                                                                                               kwargs_ps,
                                                                                               kwargs_extinction)
-        logL = self._likelihood_data_given_model(kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i,
+        logL, param = self._likelihood_data_given_model(kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i,
                                                  kwargs_extinction_i, kwargs_special, source_marg=source_marg,
                                                  linear_prior=linear_prior, check_positive_flux=check_positive_flux,
                                                  linear_solver=self._linear_solver)
-        return logL
+        return logL, param
+
+    def update_linear_kwargs(self, param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, model_band=None):
+        """
+        links linear parameters to kwargs arguments
+
+        :param param: linear parameter vector corresponding to the response matrix
+        :param kwargs_lens:
+        :param kwargs_source:
+        :param kwargs_lens_light:
+        :param kwargs_ps:
+        :return: updated list of kwargs with linear parameter values
+        """
+        kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i, _ = self.select_kwargs(
+            kwargs_lens,
+            kwargs_source,
+            kwargs_lens_light,
+            kwargs_ps,
+            kwargs_extinction=None)
+        if self._linear_solver is True:
+            self._update_linear_kwargs(param, kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i)
+        return kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i
 
     def num_param_linear(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None):
         """

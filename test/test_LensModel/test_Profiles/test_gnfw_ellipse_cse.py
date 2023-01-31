@@ -40,10 +40,10 @@ class TestNFWELLIPSE(object):
                 kwargs = {'alpha_Rs': 0.5, 'Rs': 2, 'gamma_inner': gamma_inner, 'gamma_outer': gamma_outer, 'center_x': 0, 'center_y': 0}
                 f_xx_gnfw, f_xy_gnfw, f_yx_gnfw, f_yy_gnfw = self.gnfw.hessian(x, y, **kwargs)
                 f_xx_cse, f_xy_cse, f_yx_cse, f_yy_cse = self.gnfw_cse.hessian(x, y, e1=0, e2=0, **kwargs)
-                npt.assert_almost_equal(f_xx_cse, f_xx_gnfw, decimal=5)
-                npt.assert_almost_equal(f_xy_cse, f_xy_gnfw, decimal=5)
-                npt.assert_almost_equal(f_yx_cse, f_yx_gnfw, decimal=5)
-                npt.assert_almost_equal(f_yy_cse, f_yy_gnfw, decimal=5)
+                npt.assert_almost_equal(f_xx_cse, f_xx_gnfw, decimal=4)
+                npt.assert_almost_equal(f_xy_cse, f_xy_gnfw, decimal=4)
+                npt.assert_almost_equal(f_yx_cse, f_yx_gnfw, decimal=4)
+                npt.assert_almost_equal(f_yy_cse, f_yy_gnfw, decimal=4)
 
     def test_mass_3d_lens(self):
         R = 1

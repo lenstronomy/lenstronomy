@@ -31,9 +31,10 @@ class NFWParam(object):
         :return: critical density of the universe at redshift z in physical units [h^2 M_sun Mpc^-3]
         """
         return self.rhoc * (self.cosmo.efunc(z)) ** 2
-        #return self.rhoc*(1+z)**3
+        # return self.rhoc*(1+z)**3
 
-    def M200(self, rs, rho0, c):
+    @staticmethod
+    def M200(rs, rho0, c):
         """
         M(R_200) calculation for NFW profile
 
@@ -87,13 +88,15 @@ class NFWParam(object):
         :return: concentration parameter c
         """
         if not hasattr(self, '_c_rho0_interp'):
-            c_array = np.linspace(0.1, 10, 100)
+            c_array = np.linspace(0.1, 30, 100)
             rho0_array = self.rho0_c(c_array, z)
             from scipy import interpolate
-            self._c_rho0_interp = interpolate.InterpolatedUnivariateSpline(rho0_array, c_array, w=None, bbox=[None, None], k=3)
+            self._c_rho0_interp = interpolate.InterpolatedUnivariateSpline(rho0_array, c_array, w=None,
+                                                                           bbox=[None, None], k=3)
         return self._c_rho0_interp(rho0)
 
-    def c_M_z(self, M, z):
+    @staticmethod
+    def c_M_z(M, z):
         """
         fitting function of http://moriond.in2p3.fr/J08/proceedings/duffy.pdf for the mass and redshift dependence of
         the concentration parameter

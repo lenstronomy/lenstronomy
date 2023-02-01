@@ -36,21 +36,24 @@ class NFWParam(object):
     @staticmethod
     def M200(rs, rho0, c):
         """
-        M(R_200) calculation for NFW profile
+        Calculation of the mass enclosed r_200 for NFW profile defined as
+
+        .. math::
+            M_{200} = 4 \\pi \\rho_0^{3} * \\left(\\log(1+c) - c / (1 + c)  \\right))
 
         :param rs: scale radius
         :type rs: float
-        :param rho0: density normalization (characteristic density)
+        :param rho0: density normalization (characteristic density) in units mass/[distance unit of rs]^3
         :type rho0: float
         :param c: concentration
         :type c: float [4,40]
-        :return: M(R_200) density
+        :return: M(R_200) mass in units of rho0 * rs^3
         """
         return 4 * np.pi * rho0 * rs ** 3 * (np.log(1. + c) - c / (1. + c))
 
     def r200_M(self, M, z):
         """
-        computes the radius R_200 crit of a halo of mass M in physical distances M/h
+        computes the radius R_200 crit of a halo of mass M in physical mass M/h
 
         :param M: halo mass in M_sun/h
         :type M: float or numpy array
@@ -121,6 +124,9 @@ class NFWParam(object):
         rho_s in  h^2/Mpc^3 (physical)
         Rs in Mpc/h physical
         c unit less
+
+        :param M: Mass in physical M_sun/h
+        :param z: redshift
         """
         c = self.c_M_z(M, z)
         r200 = self.r200_M(M, z)

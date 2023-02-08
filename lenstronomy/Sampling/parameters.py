@@ -123,7 +123,7 @@ class Param(object):
                  num_point_source_list=None, image_plane_source_list=None, solver_type='NONE', Ddt_sampling=None,
                  source_size=False, num_tau0=0, lens_redshift_sampling_indexes=None,
                  source_redshift_sampling_indexes=None, source_grid_offset=False, num_shapelet_lens=0,
-                 log_sampling_lens=[], fixed_lens_model=False):
+                 log_sampling_lens=[]):
         """
 
         :param kwargs_model: keyword arguments to describe all model components used in class_creator.create_class_instances()
@@ -191,8 +191,6 @@ class Param(object):
          adds two additional sampled parameters describing RA/Dec offsets between data coordinate grid and pixelated source plane coordinate grid.
         :param num_shapelet_lens: number of shapelet coefficients in the 'SHAPELETS_CART' or 'SHAPELETS_POLAR' mass profile.
         :param log_sampling_lens: Sample the log10 of the lens model parameters. Format : [[i_lens, ['param_name1', 'param_name2', ...]], [...], ...],
-        :param fixed_lens_model: keeps the lens model fixed during likelihood calls; this setting should only be set to
-        true if all lens components are fixed
         """
 
         self._lens_model_list = kwargs_model.get('lens_model_list', [])
@@ -203,7 +201,10 @@ class Param(object):
         self._point_source_model_list = kwargs_model.get('point_source_model_list', [])
         self._optical_depth_model_list = kwargs_model.get('optical_depth_model_list', [])
         self._kwargs_model = kwargs_model
-        self._fixed_lens_model = fixed_lens_model
+        if 'fixed_lens_model' in kwargs_model.keys():
+            self._fixed_lens_model = kwargs_model['fixed_lens_model']
+        else:
+            self._fixed_lens_model = False
 
         # check how many redshifts need to be sampled
         num_z_sampling = 0
@@ -217,7 +218,7 @@ class Param(object):
         self._lens_model_class, self._source_model_class, _, _, _ = class_creator.create_class_instances(all_models=True, **kwargs_model)
         self._image2SourceMapping = Image2SourceMapping(lensModel=self._lens_model_class,
                                                         sourceModel=self._source_model_class,
-                                                        fixed_lens_model=fixed_lens_model)
+                                                        fixed_lens_model=self._fixed_lens_model)
 
         if kwargs_fixed_lens is None:
             kwargs_fixed_lens = [{} for _ in range(len(self._lens_model_list))]
@@ -400,7 +401,8 @@ class Param(object):
         # update point source constraint solver
         if self._solver is True:
             x_pos, y_pos = kwargs_ps[0]['ra_image'], kwargs_ps[0]['dec_image']
-            kwargs_lens = self._solver_module.update_solver(kwargs_lens, x_pos, y_pos)
+            if self._fixed_lens_model is False:
+                kwargs_lens = self._solver_module.update_solver(kwargs_lens, x_pos, y_pos)
         # update source joint with point source
         kwargs_source = self._update_source_joint_with_point_source(kwargs_lens, kwargs_source, kwargs_ps,
                                                                     kwargs_special, image_plane=bijective)

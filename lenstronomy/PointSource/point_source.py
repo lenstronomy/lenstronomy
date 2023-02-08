@@ -11,7 +11,7 @@ class PointSource(object):
 
     def __init__(self, point_source_type_list, lensModel=None, fixed_magnification_list=None,
                  additional_images_list=None, flux_from_point_source_list=None, magnification_limit=None,
-                 save_cache=False, kwargs_lens_eqn_solver=None):
+                 save_cache=False, kwargs_lens_eqn_solver=None, fixed_lens_model=False):
         """
 
         :param point_source_type_list: list of point source types
@@ -34,7 +34,8 @@ class PointSource(object):
         :param kwargs_lens_eqn_solver: keyword arguments specifying the numerical settings for the lens equation solver
          see LensEquationSolver() class for details ,such as:
          min_distance=0.01, search_window=5, precision_limit=10**(-10), num_iter_max=100
-
+        :param fixed_lens_model: keeps the lens model fixed during likelihood calls; this setting should only be set to
+        true if all lens components are fixed
         """
         self._lensModel = lensModel
         self.point_source_type_list = point_source_type_list
@@ -54,7 +55,8 @@ class PointSource(object):
             elif model == 'LENSED_POSITION':
                 from lenstronomy.PointSource.Types.lensed_position import LensedPositions
                 self._point_source_list.append(PointSourceCached(LensedPositions(lensModel, fixed_magnification=fixed_magnification_list[i],
-                                                                 additional_image=additional_images_list[i]),
+                                                                 additional_image=additional_images_list[i],
+                                                                 fixed_lens_model=fixed_lens_model),
                                                                  save_cache=save_cache))
             elif model == 'SOURCE_POSITION':
                 from lenstronomy.PointSource.Types.source_position import SourcePositions

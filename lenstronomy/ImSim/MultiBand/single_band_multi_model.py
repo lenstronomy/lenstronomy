@@ -26,7 +26,7 @@ class SingleBandMultiModel(ImageLinearFit):
     """
 
     def __init__(self, multi_band_list, kwargs_model, likelihood_mask_list=None, band_index=0, kwargs_pixelbased=None,
-                 linear_solver=True, fixed_lens_model=False):
+                 linear_solver=True):
         """
 
         :param multi_band_list: list of imaging band configurations [[kwargs_data, kwargs_psf, kwargs_numerics],[...], ...]
@@ -37,8 +37,6 @@ class SingleBandMultiModel(ImageLinearFit):
          (see SLITronomy documentation)
         :param linear_solver: bool, if True (default) fixes the linear amplitude parameters 'amp' (avoid sampling) such
          that they get overwritten by the linear solver solution.
-        :param fixed_lens_model: keeps the lens model fixed during likelihood calls; this setting should only be set to
-        true if all lens components are fixed
         """
         self.type = 'single-band-multi-model'
         if likelihood_mask_list is None:
@@ -62,7 +60,10 @@ class SingleBandMultiModel(ImageLinearFit):
                                                    [None for i in range(len(multi_band_list))])
         self._index_optical_depth = index_optical_depth[band_index]
         self._linear_solver = linear_solver
-
+        if 'fixed_lens_model' in kwargs_model.keys():
+            fixed_lens_model = kwargs_model['fixed_lens_model']
+        else:
+            fixed_lens_model = False
         super(SingleBandMultiModel, self).__init__(data_i, psf_i, lens_model_class, source_model_class,
                                                    lens_light_model_class, point_source_class, extinction_class,
                                                    kwargs_numerics=kwargs_numerics, likelihood_mask=likelihood_mask_list[band_index],

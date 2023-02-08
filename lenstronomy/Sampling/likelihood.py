@@ -34,8 +34,7 @@ class LikelihoodModule(object):
                  prior_source_kde=None, prior_lens_light_kde=None, prior_ps_kde=None, prior_special_kde=None,
                  prior_extinction_kde=None, prior_lens_lognormal=None, prior_source_lognormal=None,
                  prior_extinction_lognormal=None, prior_lens_light_lognormal=None, prior_ps_lognormal=None,
-                 prior_special_lognormal=None, custom_logL_addition=None, kwargs_pixelbased=None,
-                 fixed_lens_model=False):
+                 prior_special_lognormal=None, custom_logL_addition=None, kwargs_pixelbased=None):
         """
         initializing class
 
@@ -76,8 +75,6 @@ class LikelihoodModule(object):
          kwargs_ps, kwargs_special, kwargs_extinction) and returns a logL (punishing) value.
         :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver
          (see SLITronomy documentation)
-        :param fixed_lens_model: if True keeps the lens model fixed during likelihood calls; this setting should only be set to
-        true if all lens components are fixed
         """
         multi_band_list, multi_band_type, time_delays_measured, time_delays_uncertainties, flux_ratios, flux_ratio_errors, ra_image_list, dec_image_list = self._unpack_data(**kwargs_data_joint)
         if len(multi_band_list) == 0:
@@ -108,8 +105,7 @@ class LikelihoodModule(object):
                                 'bands_compute': bands_compute,
                                 'image_likelihood_mask_list': image_likelihood_mask_list, 'source_marg': source_marg,
                                 'linear_prior': linear_prior, 'check_positive_flux': check_positive_flux,
-                                'kwargs_pixelbased': kwargs_pixelbased, 'linear_solver': linear_solver,
-                                'fixed_lens_model': fixed_lens_model}
+                                'kwargs_pixelbased': kwargs_pixelbased, 'linear_solver': linear_solver}
         self._kwargs_position = {'astrometric_likelihood': astrometric_likelihood,
                                  'image_position_likelihood': image_position_likelihood,
                                  'source_position_likelihood': source_position_likelihood,

@@ -33,8 +33,6 @@ class MultiLinear(MultiDataBase):
         :param compute_bool: (optional), bool list to indicate which band to be included in the modeling
         :param linear_solver: bool, if True (default) fixes the linear amplitude parameters 'amp' (avoid sampling) such
          that they get overwritten by the linear solver solution.
-        :param fixed_lens_model: keeps the lens model fixed during likelihood calls; this setting should only be set to
-        true if all lens components are fixed
         """
         self.type = 'multi-linear'
         imageModel_list = []

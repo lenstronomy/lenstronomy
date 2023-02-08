@@ -13,8 +13,7 @@ class JointLinear(MultiLinear):
     brightness models to be called in all available images/bands
 
     """
-    def __init__(self, multi_band_list, kwargs_model, compute_bool=None, likelihood_mask_list=None,
-                 fixed_lens_model=False):
+    def __init__(self, multi_band_list, kwargs_model, compute_bool=None, likelihood_mask_list=None):
         # TODO: make this raise statement valid
         # if kwargs_model.get('index_source_light_model_list', None) is not None or \
         #        kwargs_model.get('index_lens_light_model_list', None) is not None or \
@@ -22,7 +21,7 @@ class JointLinear(MultiLinear):
         #    raise ValueError('You are not allowed to set partial surface brightness models to individual bands in the '
         #                     'joint-linear mode. Your settings are: ', kwargs_model)
         super(JointLinear, self).__init__(multi_band_list, kwargs_model=kwargs_model, compute_bool=compute_bool,
-                                          likelihood_mask_list=likelihood_mask_list, fixed_lens_model=fixed_lens_model)
+                                          likelihood_mask_list=likelihood_mask_list)
         self.type = 'joint-linear'
 
     def image_linear_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,

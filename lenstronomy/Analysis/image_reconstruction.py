@@ -22,7 +22,7 @@ class MultiBandImageReconstruction(object):
     """
 
     def __init__(self, multi_band_list, kwargs_model, kwargs_params, multi_band_type='multi-linear',
-                 kwargs_likelihood=None, verbose=True, fixed_lens_model=False):
+                 kwargs_likelihood=None, verbose=True):
         """
 
         :param multi_band_list: list of imaging data configuration [[kwargs_data, kwargs_psf, kwargs_numerics], [...]]
@@ -38,8 +38,6 @@ class MultiBandImageReconstruction(object):
         :param verbose: if True (default), computes and prints the total log-likelihood.
          This option can be deactivated for speedup purposes (does not run linear inversion again), and reduces the
          number of prints.
-        :param fixed_lens_model: keeps the lens model fixed during likelihood calls; this setting should only be set to
-        true if all lens components are fixed
         """
         # here we retrieve those settings in the likelihood keyword arguments that are relevant for the image
         # reconstruction
@@ -55,8 +53,7 @@ class MultiBandImageReconstruction(object):
             multi_band_type = 'multi-linear'  # this makes sure that the linear inversion outputs are coming in a list
         self._imageModel = class_creator.create_im_sim(multi_band_list, multi_band_type, kwargs_model,
                                                        bands_compute=bands_compute,
-                                                       image_likelihood_mask_list=image_likelihood_mask_list,
-                                                       fixed_lens_model=fixed_lens_model)
+                                                       image_likelihood_mask_list=image_likelihood_mask_list)
 
         # here we perform the (joint) linear inversion with all data
         model, error_map, cov_param, param = self._imageModel.image_linear_solve(inv_bool=True, **kwargs_params)

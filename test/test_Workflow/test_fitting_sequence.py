@@ -331,8 +331,8 @@ class TestFittingSequence(object):
             'sampler_type': 'DYNESTY',
             'kwargs_run': {
                 'dlogz_init': 0.01,
-                'nlive_init': 6,
-                'nlive_batch': 6,
+                'nlive_init': 10,
+                'nlive_batch': 10,
                 'maxbatch': 1,
             },
         }

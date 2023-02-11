@@ -100,7 +100,7 @@ class LightProfileAnalysis(object):
         if r_h is None:
             r_h = self.half_light_radius(kwargs_light, center_x=center_x, center_y=center_y,
                                          model_bool_list=model_bool_list, grid_spacing=grid_spacing, grid_num=grid_num)
-        r_array = np.logspace(-2.5, 2, 200) * r_h
+        r_array = np.logspace(-3, 2, 200) * r_h * 2
         flux_r = self.radial_light_profile(r_array, kwargs_light, center_x=center_x, center_y=center_y,
                                            model_bool_list=model_bool_list)
 

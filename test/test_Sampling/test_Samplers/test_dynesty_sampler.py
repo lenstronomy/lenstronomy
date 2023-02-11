@@ -17,6 +17,7 @@ def import_fixture(simple_einstein_ring_likelihood):
     likelihood, kwargs_truths = simple_einstein_ring_likelihood
     prior_means = likelihood.param.kwargs2args(**kwargs_truths)
     prior_sigmas = np.ones_like(prior_means) * 0.1
+    print(prior_sigmas, prior_means, 'test prior sigmas')
     sampler = DynestySampler(likelihood, prior_type='uniform',
                              prior_means=prior_means,
                              prior_sigmas=prior_sigmas,
@@ -36,8 +37,8 @@ class TestDynestySampler(object):
         sampler, likelihood = import_fixture
         kwargs_run = {
             'dlogz_init': 0.01,
-            'nlive_init': 4,
-            'nlive_batch': 4,
+            'nlive_init': 10,
+            'nlive_batch': 10,
             'maxbatch': 1,
             'wt_kwargs': {'pfrac': 0.8},
         }

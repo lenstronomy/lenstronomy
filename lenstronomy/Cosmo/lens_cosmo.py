@@ -27,15 +27,6 @@ class LensCosmo(object):
         self.background = Background(cosmo=cosmo)
         self.nfw_param = NFWParam(cosmo=cosmo)
 
-    def a_z(self, z):
-        """
-        convert redshift into scale factor
-
-        :param z: redshift
-        :return: scale factor
-        """
-        return 1. / (1. + z)
-
     @property
     def h(self):
         return self.background.cosmo.H(0).value / 100.

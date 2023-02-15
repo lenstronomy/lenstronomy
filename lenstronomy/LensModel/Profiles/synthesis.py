@@ -11,27 +11,45 @@ from lenstronomy.LensModel.lens_model import LensModel
 
 class SynthesisProfile(LensProfileBase):
     """
-    Similar to CSEProductAvgSet, this class is more general. Describes a linear sum of many simple profiles.
+    A general class which describes a linear sum of many simple profiles to approximate a target profile
 
-    Example (default): Mimic an NFW profile with many CSE profiles. If given the right weights, similar to NFW_ELLIPSE_CSE class.
-    Can instead use LinearWeightFit class to fit for the right weights instead of importing them.
+    Example: Mimic an NFW profile with many CSE profiles. In this case, you could use LensModel(['SYNTHESIS'],kwargs_synthesis=kwargs_synthesis) with
+    kwargs_synthesis={'target_lens_model': 'NFW',
+                    'component_lens_model': 'CSE',
+                   'kwargs_list': kwargs_list,
+                   'lin_fit_hyperparams':{'lower_log_bound':-6, 'upper_log_bound':3, 'num_r_evals':100, 'sigma':0.01} (default values)
+                   }
+    where kwargs_list would be a list of input CSE kwargs (where the amplitude will be re-adjusted).
+
     """
     profile_name = 'SYNTHESIS'
-    def __init__(self, target_lens_model, component_lens_model, kwargs_list, lin_fit_hyperparams,product_average=True):
+    def __init__(self, target_lens_model, component_lens_model, kwargs_list, lin_fit_hyperparams):
         """
-        kwargs_list: the normalization (must be nonzero) will be effectively overridden by the linear weights
-        product_average: if True, indicates that the class profile provided is evaluated at r=sqrt(q)*r_major_axis
+        :param target_lens_model: name of target profile
+        :param component_lens_model: name of component profile
+        :param kwargs_list: list of kwargs of component profile, length of list corresponds to number of components used to fit.
+                            The normalization (must be nonzero) will be effectively overridden by the linear weights
+        :param lin_fit_hyperparams: kwargs indicating range of fit, number of points to evaluate fit, etc.
         """
 
         self.target_class = LensModel([target_lens_model])
         self.component_class = LensModel([component_lens_model])
         self.kwargs_list=kwargs_list
         self.lin_fit_hyperparams=lin_fit_hyperparams
+        self.check_num_evals()
+
 
     def LinearWeightMLEFit(self, kwargs_target, kwargs_list):
+        """
+        Fits a linear fit of the amplitudes for each component to minimize a chi2.
 
+        :param kwargs_target: kwargs of target profile to be approximated
+        :param kwargs_list: list of kwargs of component profile, length of list corresponds to number of components used to fit.
+                            The normalization (must be nonzero) will be effectively overridden by the linear weights
+        """
         self.set_limits(kwargs_list, self.lin_fit_hyperparams)
-        Y = self.target_class.kappa(x=self.r_eval_list, y=np.zeros_like(self.r_eval_list), kwargs=kwargs_target)
+        kwargs_target_centered=[self.circular_centered_kwargs(kwargs_target[0])]
+        Y = self.target_class.kappa(x=self.r_eval_list, y=np.zeros_like(self.r_eval_list), kwargs=kwargs_target_centered)
         M = np.zeros((len(self.r_eval_list),self.num_components))
         C = np.diag(Y * self.sigma) #covariance matrix between components
         for j in range(self.num_components): # M[i,j] is the jth component 1D kappa evaluated at r[i].
@@ -43,7 +61,9 @@ class SynthesisProfile(LensProfileBase):
         return np.matmul(first_term,second_term)
 
     def circular_centered_kwargs(self,kwargs):
-
+        """
+        :param kwargs: kwargs to remove center and ellipticity for linear fit. These are re-added when functions are called
+        """
         kwargs_new=copy.deepcopy(kwargs)
         if 'e1' in kwargs_new:
             kwargs_new['e1']=0
@@ -57,7 +77,14 @@ class SynthesisProfile(LensProfileBase):
 
 
     def set_limits(self, kwargs_list, lin_fit_hyperparams):
-
+        """
+        :param kwargs_list: list of kwargs of component profile
+        :param lin_fit_hyperparams: kwargs indicating range of fit, number of points to evaluate fit, etc.
+            'lower_log_bound': log10 innermost radius of fit
+            'upper_log_bound': log10 outermost radius of fit
+            'num_r_evals': number of locations to evaluate fit to minimize chi2, must be larger than the number of components
+            'sigma': used to evaluate chi2. default is 1%
+        """
         self.num_components=len(kwargs_list)
         if 'lower_log_bound' not in lin_fit_hyperparams:
             self.lower_log_bound = -6
@@ -79,18 +106,13 @@ class SynthesisProfile(LensProfileBase):
 
     def function(self, x, y, **kwargs_target):
         """
+        returns lensing potential
 
-
+        :param x: angular position (normally in units of arc seconds)
+        :param y: angular position (normally in units of arc seconds)
+        :kwargs_target: kwargs of target profile to be approximated
         """
-        # TODO: how to handle offset centers? Need to be at zero for fitting, then place at center_x, center_y
-        # phi_q, q = param_util.ellipticity2phi_q(e1, e2)
-        # # shift
-        # x_ = x - center_x
-        # y_ = y - center_y
-        # # rotate
-        # x__, y__ = util.rotate(x_, y_, phi_q)
         weight_list = self.LinearWeightMLEFit([kwargs_target], self.kwargs_list)
-        # potential calculation
         f_ = np.zeros_like(x)
         f_innermost = 0 #for some profiles, minimum potential can go below zero. Add a constant here to make zero the minimum
         for kwargs, weight in zip(self.kwargs_list, weight_list):
@@ -100,18 +122,12 @@ class SynthesisProfile(LensProfileBase):
 
     def derivatives(self, x, y, **kwargs_target):
         """
+        returns df/dx and df/dy of the function which are the deflection angles
 
-
+        :param x: angular position (normally in units of arc seconds)
+        :param y: angular position (normally in units of arc seconds)
+        :kwargs_target: kwargs of target profile to be approximated
         """
-        # TODO: how to handle offset centers? Need to be at zero for fitting, then place at center_x, center_y
-        # phi_q, q = param_util.ellipticity2phi_q(e1, e2)
-        # # shift
-        # x_ = x - center_x
-        # y_ = y - center_y
-        # # rotate
-        # x__, y__ = util.rotate(x_, y_, phi_q)
-
-        # potential calculation
         weight_list = self.LinearWeightMLEFit([kwargs_target],self.kwargs_list)
         f_x, f_y = np.zeros_like(x), np.zeros_like(y)
         for kwargs, weight in zip(self.kwargs_list, weight_list):
@@ -122,18 +138,12 @@ class SynthesisProfile(LensProfileBase):
 
     def hessian(self, x, y, **kwargs_target):
         """
+        returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
 
-
+        :param x: angular position (normally in units of arc seconds)
+        :param y: angular position (normally in units of arc seconds)
+        :kwargs_target: kwargs of target profile to be approximated
         """
-        # TODO: how to handle offset centers? Need to be at zero for fitting, then place at center_x, center_y
-        # phi_q, q = param_util.ellipticity2phi_q(e1, e2)
-        # # shift
-        # x_ = x - center_x
-        # y_ = y - center_y
-        # # rotate
-        # x__, y__ = util.rotate(x_, y_, phi_q)
-
-        # potential calculation
         weight_list = self.LinearWeightMLEFit([kwargs_target], self.kwargs_list)
         f_xx, f_xy, f_yx, f_yy = np.zeros_like(x), np.zeros_like(x), np.zeros_like(x), np.zeros_like(x)
         for kwargs, weight in zip(self.kwargs_list, weight_list):
@@ -144,6 +154,11 @@ class SynthesisProfile(LensProfileBase):
             f_yy += f_yy_i
         return f_xx, f_xy, f_yx, f_yy
 
-
-#TODO implement a test of accuracy and a warning if things have gone wrong (for some choices of kwargs_target, can overfit)
+    def check_num_evals(self):
+        """
+        Confirm that the number of evaluations is more than the number of components. Still not guaranteed to prevent overfitting
+        """
+        num_comp=len(self.kwargs_list)
+        if num_comp >= self.lin_fit_hyperparams['num_r_evals']:
+            raise ValueError('There must be more num_r_evals than components or the profile will be overfit')
 

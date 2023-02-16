@@ -1,5 +1,6 @@
 from lenstronomy.ImSim.image_model import ImageModel
 from lenstronomy.LightModel.light_model import LightModel
+from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.ImSim.image2source_mapping import Image2SourceMapping
 from lenstronomy.Util import util
 import numpy as np
@@ -45,6 +46,8 @@ class TracerModelSource(ImageModel):
         self._psf_error_map_bool_list = psf_error_map_bool_list
         if tracer_source_class is None:
             tracer_source_class = LightModel(light_model_list=[])
+        if lens_model_class is None:
+            lens_model_class = LensModel(lens_model_list=[])
         self.tracer_mapping = Image2SourceMapping(lensModel=lens_model_class, sourceModel=tracer_source_class)
         self.tracer_source_class = tracer_source_class
 

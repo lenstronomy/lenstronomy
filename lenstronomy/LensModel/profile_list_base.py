@@ -35,6 +35,7 @@ class ProfileListBase(object):
          deflection angles as a lens model. See the documentation in Profiles.numerical_deflections
         :param kwargs_interp: interpolation keyword arguments specifying the numerics.
          See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
+        :param kwargs_synthesis: keyword arguments for the 'SYNTHESIS' lens model, if applicable
         """
         self.func_list = self._load_model_instances(lens_model_list, custom_class=numerical_alpha_class,
                                                     lens_redshift_list=lens_redshift_list,

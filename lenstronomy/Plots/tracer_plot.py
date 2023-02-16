@@ -22,16 +22,9 @@ class TracerPlot(object):
                  fast_caustic=True):
         """
 
-        :param multi_band_list: list of imaging data configuration [[kwargs_data, kwargs_psf, kwargs_numerics], [...]]
         :param kwargs_model: model keyword argument list for the full multi-band modeling
-        :param model: 2d numpy array of modeled image for the specified band
-        :param error_map: 2d numpy array of size of the image, additional error in the pixels coming from PSF uncertainties
-        :param cov_param: covariance matrix of the linear inversion
-        :param param: 1d numpy array of the linear coefficients of this imaging band
         :param kwargs_params: keyword argument of keyword argument lists of the different model components selected for
          the imaging band, NOT including linear amplitudes (not required as being overwritten by the param list)
-        :param likelihood_mask_list: list of 2d numpy arrays of likelihood masks (for all bands)
-        :param band_index: integer of the band to be considered in this class
         :param arrow_size: size of the scale and orientation arrow
         :param cmap_string: string of color map (or cmap matplotlib object)
         :param fast_caustic: boolean; if True, uses fast (but less accurate) caustic calculation method
@@ -317,9 +310,9 @@ class TracerPlot(object):
                                     ra_at_xy_0=ra_at_xy_0 + center_x,
                                     dec_at_xy_0=dec_at_xy_0 + center_y)
 
-        source = self.tracerModel.tracer_source_class.surface_brightnesstracer_model(x_grid_source, y_grid_source,
-                                                                                     self._kwargs_tracer_source)
-        source = util.array2image(source) * deltaPix ** 2
+        source = self.tracerModel.tracer_source_class.surface_brightness(x_grid_source, y_grid_source,
+                                                                         self._kwargs_tracer_source)
+        source = util.array2image(source)
         return source, coords_source
 
     def source_plot(self, ax, numPix, deltaPix_source, center=None, v_min=None,
@@ -327,7 +320,7 @@ class TracerPlot(object):
                     font_size=15, plot_scale='log',
                     scale_size=0.1,
                     text="Reconstructed source",
-                    colorbar_label=r'log$_{10}$ flux', point_source_position=True,
+                    colorbar_label=r'tracer', point_source_position=True,
                     **kwargs):
         """
 
@@ -343,12 +336,13 @@ class TracerPlot(object):
         :param kwargs:
         :return:
         """
-        if v_min is None:
-            v_min = self._v_min_default
-        if v_max is None:
-            v_max = self._v_max_default
+        #if v_min is None:
+        #    v_min = self._v_min_default
+        #if v_max is None:
+        #    v_max = self._v_max_default
         d_s = numPix * deltaPix_source
         source, coords_source = self.source(numPix, deltaPix_source, center=center)
+        print(np.sum(source), 'test source')
         if plot_scale == 'log':
             source[source < 10**v_min] = 10**(v_min)  # to remove weird shadow in plot
             source_scale = np.log10(source)

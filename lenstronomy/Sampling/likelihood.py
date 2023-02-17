@@ -122,7 +122,8 @@ class LikelihoodModule(object):
                                  'source_position_sigma': source_position_sigma,
                                  'force_no_add_image': force_no_add_image,
                                  'restrict_image_number': restrict_image_number, 'max_num_images': max_num_images}
-        self._kwargs_tracer = {'tracer_data': tracer_data, 'tracer_likelihood_mask': tracer_likelihood_mask}
+        self._kwargs_tracer = {'tracer_data': tracer_data, 'tracer_likelihood_mask': tracer_likelihood_mask,
+                               'linear_solver': linear_solver}
         self._kwargs_flux = {'flux_ratios': flux_ratios, 'flux_ratio_errors': flux_ratio_errors}
         self._kwargs_flux.update(self._kwargs_flux_compute)
         self._class_instances(kwargs_model=kwargs_model, kwargs_image_sim=self._kwargs_image_sim,

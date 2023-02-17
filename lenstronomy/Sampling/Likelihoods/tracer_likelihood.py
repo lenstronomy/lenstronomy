@@ -7,16 +7,18 @@ class TracerLikelihood(object):
     class to evaluate the tracer map
     """
 
-    def __init__(self, tracer_data, kwargs_model, kwargs_imaging, tracer_likelihood_mask=None):
+    def __init__(self, tracer_data, kwargs_model, kwargs_imaging, tracer_likelihood_mask=None, linear_solver=True):
         """
 
         :param tracer_bands_compute: list of bools with same length as data objects, indicates which "band" to include in the
          fitting
-        :param tracer_likelihood_mask_list: list of boolean 2d arrays of size of images marking the pixels to be
+        :param tracer_likelihood_mask: boolean 2d arrays of size of images marking the pixels to be
+        :param linear_solver: boolean, if True, linear solver for surface brigthness amplitude is activated
          evaluated in the likelihood
         """
         self._tracer_light_model_band = kwargs_model.get('tracer_source_band', 0)
-        self.image_model = class_creator.create_im_sim(kwargs_model=kwargs_model, **kwargs_imaging)
+        self.image_model = class_creator.create_im_sim(kwargs_model=kwargs_model, linear_solver=linear_solver,
+                                                       **kwargs_imaging)
         self.tracerModel = class_creator.create_tracer_model(tracer_data, kwargs_model,
                                                              tracer_likelihood_mask=tracer_likelihood_mask)
 

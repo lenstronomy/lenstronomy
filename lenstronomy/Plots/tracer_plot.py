@@ -336,10 +336,10 @@ class TracerPlot(object):
         :param kwargs:
         :return:
         """
-        #if v_min is None:
-        #    v_min = self._v_min_default
-        #if v_max is None:
-        #    v_max = self._v_max_default
+        if v_min is None:
+           v_min = self._v_min_default
+        if v_max is None:
+           v_max = self._v_max_default
         d_s = numPix * deltaPix_source
         source, coords_source = self.source(numPix, deltaPix_source, center=center)
         print(np.sum(source), 'test source')

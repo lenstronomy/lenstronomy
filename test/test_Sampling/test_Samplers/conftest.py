@@ -75,8 +75,8 @@ def simple_einstein_ring_likelihood():
     kwargs_fixed_lens = [{'gamma': 1.8, 'center_x': 0, 'center_y': 0, 'e1': 0.1, 'e2': 0.1}]
     kwargs_lower_lens = [{'theta_E': 0.8, 'center_x': -0.1}]
     kwargs_upper_lens = [{'theta_E': 1.2, 'center_x': 0.1}]
-    kwargs_fixed_source = [{'R_sersic': 0.6, 'n_sersic': 3, 'center_x': 0, 'center_y': 0, 'e1': 0.1, 'e2': 0.1}]
-    kwargs_fixed_lens_light = [{'R_sersic': 0.1, 'n_sersic': 2, 'center_x': 0, 'center_y': 0}]
+    kwargs_fixed_source = kwargs_source
+    kwargs_fixed_lens_light = kwargs_lens_light
 
     param_class = Param(kwargs_model,
                              kwargs_fixed_lens=kwargs_fixed_lens,

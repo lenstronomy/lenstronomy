@@ -27,7 +27,7 @@ class Sersic(SersicUtil):
     lower_limit_default = {'amp': 0, 'R_sersic': 0, 'n_sersic': 0.5, 'center_x': -100, 'center_y': -100}
     upper_limit_default = {'amp': 100, 'R_sersic': 100, 'n_sersic': 8, 'center_x': 100, 'center_y': 100}
 
-    def function(self, x, y, amp, R_sersic, n_sersic, center_x=0, center_y=0, max_R_frac=100.0):
+    def function(self, x, y, amp, R_sersic, n_sersic, center_x=0, center_y=0, max_R_frac=1000.0):
         """
 
         :param x:
@@ -37,7 +37,7 @@ class Sersic(SersicUtil):
         :param n_sersic: Sersic index
         :param center_x: center in x-coordinate
         :param center_y: center in y-coordinate
-        :param max_R_frac: maximum window outside of which the mass is zeroed, in units of R_sersic (float)
+        :param max_R_frac: maximum window outside which the mass is zeroed, in units of R_sersic (float)
         :return: Sersic profile value at (x, y)
         """
         R = self.get_distance_from_center(x, y, e1=0, e2=0, center_x=center_x, center_y=center_y)
@@ -66,7 +66,7 @@ class SersicElliptic(SersicUtil):
     upper_limit_default = {'amp': 100, 'R_sersic': 100, 'n_sersic': 8, 'e1': 0.5, 'e2': 0.5, 'center_x': 100,
                            'center_y': 100}
 
-    def function(self, x, y, amp, R_sersic, n_sersic, e1, e2, center_x=0, center_y=0, max_R_frac=100.0):
+    def function(self, x, y, amp, R_sersic, n_sersic, e1, e2, center_x=0, center_y=0, max_R_frac=1000.0):
         """
 
         :param x:
@@ -74,11 +74,11 @@ class SersicElliptic(SersicUtil):
         :param amp: surface brightness/amplitude value at the half light radius
         :param R_sersic: half light radius (either semi-major axis or product average of semi-major and semi-minor axis)
         :param n_sersic: Sersic index
-        :param e1: eccentricity parameter
-        :param e2: eccentricity parameter
+        :param e1: eccentricity parameter e1
+        :param e2: eccentricity parameter e2
         :param center_x: center in x-coordinate
         :param center_y: center in y-coordinate
-        :param max_R_frac: maximum window outside of which the mass is zeroed, in units of R_sersic (float)
+        :param max_R_frac: maximum window outside which the mass is zeroed, in units of R_sersic (float)
         :return: Sersic profile value at (x, y)
         """
 
@@ -91,7 +91,7 @@ class SersicElliptic(SersicUtil):
 @export
 class CoreSersic(SersicUtil):
     """
-    this class contains the Core-Sersic function introduced by e.g Trujillo et al. 2004
+    this class contains the Core-Sersic function introduced by e.g. Trujillo et al. 2004
 
     .. math::
 
@@ -113,7 +113,7 @@ class CoreSersic(SersicUtil):
                            'center_y': 100}
 
     def function(self, x, y, amp, R_sersic, Rb, n_sersic, gamma, e1, e2, center_x=0, center_y=0, alpha=3.0,
-                 max_R_frac=100.0):
+                 max_R_frac=1000.0):
         """
         :param x:
         :param y:
@@ -122,12 +122,12 @@ class CoreSersic(SersicUtil):
         :param Rb: "break" core radius
         :param n_sersic: Sersic index
         :param gamma: inner power-law exponent
-        :param e1: eccentricity parameter
-        :param e2: eccentricity parameter
+        :param e1: eccentricity parameter e1
+        :param e2: eccentricity parameter e2
         :param center_x: center in x-coordinate
         :param center_y: center in y-coordinate
         :param alpha: sharpness of the transition between the cusp and the outer Sersic profile (float)
-        :param max_R_frac: maximum window outside of which the mass is zeroed, in units of R_sersic (float)
+        :param max_R_frac: maximum window outside which the mass is zeroed, in units of R_sersic (float)
         :return: Cored Sersic profile value at (x, y)
         """
         # TODO: max_R_frac not implemented

@@ -19,11 +19,12 @@ class TestLensCosmo(object):
         self.z = 0.5  # needed fixed redshift for the inversion function
 
     def test_rho0_c(self):
-        c = 4
-
-        rho0 = self.nfwParam.rho0_c(c, z=self.z)
-        c_out = self.nfwParam.c_rho0(rho0, z=self.z)
-        npt.assert_almost_equal(c_out, c, decimal=3)
+        c_list = [0.1, 1, 4, 10, 20]
+        for c in c_list:
+            rho0 = self.nfwParam.rho0_c(c, z=self.z)
+            c_out = self.nfwParam.c_rho0(rho0, z=self.z)
+            print(c, 'c')
+            npt.assert_almost_equal(c_out, c, decimal=3)
 
     def test_rhoc_z(self):
         z = 0

@@ -15,33 +15,32 @@ import astropy.io.fits as pyfits
 __all__ = ['Roman']
 
 F062_band_obs = {'sky_brightness': 23.19,
-              'magnitude_zero_point': 26.56,
-              'seeing': 0.058}
+                 'magnitude_zero_point': 26.56,
+                 'seeing': 0.058}
 
 F087_band_obs = {'sky_brightness': 22.93,
-              'magnitude_zero_point': 26.30,
-              'seeing': 0.073}
+                 'magnitude_zero_point': 26.30,
+                 'seeing': 0.073}
 
 F106_band_obs = {'sky_brightness': 22.99,
-              'magnitude_zero_point': 26.44,
-              'seeing': 0.087}
+                 'magnitude_zero_point': 26.44,
+                 'seeing': 0.087}
 
 F129_band_obs = {'sky_brightness': 22.99,
-              'magnitude_zero_point': 26.40,
-              'seeing': 0.105}
+                 'magnitude_zero_point': 26.40,
+                 'seeing': 0.105}
 
 F158_band_obs = {'sky_brightness': 23.10,
-              'magnitude_zero_point': 26.43,
-              'seeing': 0.127}
+                 'magnitude_zero_point': 26.43,
+                 'seeing': 0.127}
 
 F184_band_obs = {'sky_brightness': 23.22,
-              'magnitude_zero_point': 25.95,
-              'seeing': 0.151,
-              'psf_type': 'GAUSSIAN'}
+                 'magnitude_zero_point': 25.95,
+                 'seeing': 0.151}
 
 F146_band_obs = {'sky_brightness': 22.03,
-              'magnitude_zero_point': 26.65,
-              'seeing': 0.105}
+                 'magnitude_zero_point': 26.65,
+                 'seeing': 0.105}
 
 
 """

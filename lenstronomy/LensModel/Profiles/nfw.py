@@ -19,6 +19,7 @@ class NFW(LensProfileBase):
 
     Examples for converting angular to physical mass units
     ------------------------------------------------------
+
     >>> from lenstronomy.Cosmo.lens_cosmo import LensCosmo
     >>> from astropy.cosmology import FlatLambdaCDM
     >>> cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.05)
@@ -209,6 +210,18 @@ class NFW(LensProfileBase):
         gx = self.g_(x)
         m_2d = 4*rho0*Rs*R**2*gx/x**2 * np.pi
         return m_2d
+
+    def mass_2d_lens(self, R, Rs, alpha_Rs):
+        """
+
+        :param R: projected radius
+        :param Rs: scale radius
+        :param alpha_Rs: deflection (angular units) at projected Rs
+        :return: mass enclosed 2d cylinder <R
+        """
+
+        rho0 = self.alpha2rho0(alpha_Rs, Rs)
+        return self.mass_2d(R, Rs=Rs, rho0=rho0)
 
     def nfwPot(self, R, Rs, rho0):
         """

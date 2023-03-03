@@ -13,7 +13,7 @@ class TestSPEP(object):
     """
     tests the Gaussian methods
     """
-    def setup(self):
+    def setup_method(self):
         self.SPEP = SPEP()
         self.SPP = SPP()
         self.SIS = SIS()

@@ -17,7 +17,9 @@ class Galkin(GalkinModel, GalkinObservation):
     The computation follows Mamon&Lokas 2005 and performs the spectral rendering of the seeing convolved apperture with
     the method introduced by Birrer et al. 2016.
 
-    The class supports various types of anisotropy models (see Anisotropy class) and aperture types (see Aperture class).
+    The class supports various types of anisotropy models (see Anisotropy class) and aperture types
+    (see Aperture class).
+
     Solving the Jeans Equation requires a numerical integral over the 3d light and mass profile (see Mamon&Lokas 2005).
     This class (as well as the dedicated LightModel and MassModel classes) perform those integral numerically with an
     interpolated grid.
@@ -52,7 +54,8 @@ class Galkin(GalkinModel, GalkinObservation):
         :param kwargs_model: keyword arguments describing the model components
         :param kwargs_aperture: keyword arguments describing the spectroscopic aperture, see Aperture() class
         :param kwargs_psf: keyword argument specifying the PSF of the observation
-        :param kwargs_cosmo: keyword arguments that define the cosmology in terms of the angular diameter distances involved
+        :param kwargs_cosmo: keyword arguments that define the cosmology in terms of the angular diameter distances
+         involved
         :param kwargs_numerics: numerics keyword arguments
         :param analytic_kinematics: bool, if True uses the analytic kinematic model
         """
@@ -108,8 +111,8 @@ class Galkin(GalkinModel, GalkinObservation):
             sigma2_IR, IR = self.numerics.sigma_s2(r, R, kwargs_mass, kwargs_light, kwargs_anisotropy)
             for k in range(0, num_psf_sampling):
                 x_, y_ = self.displace_psf(x, y)
-                bool, ifu_index = self.aperture_select(x_, y_)
-                if bool is True:
+                bool_ap, ifu_index = self.aperture_select(x_, y_)
+                if bool_ap is True:
                     sigma2_IR_sum[ifu_index] += sigma2_IR
                     count_draws[ifu_index] += IR
 
@@ -131,8 +134,8 @@ class Galkin(GalkinModel, GalkinObservation):
         while True:
             r, R, x, y = self.numerics.draw_light(kwargs_light)
             x_, y_ = self.displace_psf(x, y)
-            bool, _ = self.aperture_select(x_, y_)
-            if bool is True:
+            bool_ap, _ = self.aperture_select(x_, y_)
+            if bool_ap is True:
                 break
         sigma2_IR, IR = self.numerics.sigma_s2(r, R, kwargs_mass, kwargs_light, kwargs_anisotropy)
         return sigma2_IR, IR

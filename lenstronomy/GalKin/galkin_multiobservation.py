@@ -19,9 +19,11 @@ class GalkinMultiObservation(GalkinModel):
         """
 
         :param kwargs_model: keyword arguments describing the model components
-        :param kwargs_aperture_list: list of keyword arguments describing the spectroscopic aperture, see Aperture() class
+        :param kwargs_aperture_list: list of keyword arguments describing the spectroscopic aperture, see Aperture()
+         class
         :param kwargs_psf_list: list of keyword argument specifying the PSF of the observation
-        :param kwargs_cosmo: keyword arguments that define the cosmology in terms of the angular diameter distances involved
+        :param kwargs_cosmo: keyword arguments that define the cosmology in terms of the angular diameter distances
+         involved
         :param kwargs_numerics: numerics keyword arguments - see GalkinModel
         :param analytic_kinematics: bool, if True uses the analytic kinematic model
         """
@@ -30,7 +32,8 @@ class GalkinMultiObservation(GalkinModel):
         self._observation_list = []
         self._num_observations = len(kwargs_aperture_list)
         for i in range(self._num_observations):
-            self._observation_list.append(GalkinObservation(kwargs_aperture=kwargs_aperture_list[i], kwargs_psf=kwargs_psf_list[i]))
+            self._observation_list.append(GalkinObservation(kwargs_aperture=kwargs_aperture_list[i],
+                                                            kwargs_psf=kwargs_psf_list[i]))
 
     def dispersion_map(self, kwargs_mass, kwargs_light, kwargs_anisotropy, num_kin_sampling=1000, num_psf_sampling=100):
         """
@@ -58,8 +61,8 @@ class GalkinMultiObservation(GalkinModel):
             for obs_index, observation in enumerate(self._observation_list):
                 for k in range(0, num_psf_sampling):
                     x_, y_ = observation.displace_psf(x, y)
-                    bool, _ = observation.aperture_select(x_, y_)
-                    if bool is True:
+                    bool_ap, _ = observation.aperture_select(x_, y_)
+                    if bool_ap is True:
                         sigma2_R_sum[obs_index] += sigma2_IR
                         count_draws[obs_index] += IR
 

@@ -41,9 +41,11 @@ class SersicUtil(object):
     @staticmethod
     def b_n(n):
         """
-        b(n) computation. This is the approximation of the exact solution to the relation, 2*incomplete_gamma_function(2n; b_n) = Gamma_function(2*n).
+        b(n) computation. This is the approximation of the exact solution to the relation,
+         2*incomplete_gamma_function(2n; b_n) = Gamma_function(2*n).
+
         :param n: the sersic index
-        :return:
+        :return: b(n)
         """
         bn = 1.9992*n - 0.3271
         bn = np.maximum(bn, 0.00001)  # make sure bn is strictly positive as a save guard for very low n_sersic
@@ -180,7 +182,8 @@ class SersicUtil(object):
         # compute product average half-light radius
         if self._sersic_major_axis:
             phi_G, q = param_util.ellipticity2phi_q(e1, e2)
-            r_eff = R_sersic * np.sqrt(q)  # translate semi-major axis R_eff into product averaged definition for circularization
+            # translate semi-major axis R_eff into product averaged definition for circularization
+            r_eff = R_sersic * np.sqrt(q)
         else:
             r_eff = R_sersic
         return self._total_flux(r_eff=r_eff, I_eff=amp, n_sersic=n_sersic)
@@ -193,13 +196,13 @@ class SersicUtil(object):
         """
         return np.maximum(self._smoothing, R)
 
-    def _r_sersic(self, R, R_sersic, n_sersic, max_R_frac=100.0, alpha=1.0, R_break=0.0):
+    def _r_sersic(self, R, R_sersic, n_sersic, max_R_frac=1000.0, alpha=1.0, R_break=0.0):
         """
 
         :param R: radius (array or float)
         :param R_sersic: Sersic radius (half-light radius)
         :param n_sersic: Sersic index (float)
-        :param max_R_frac: maximum window outside of which the mass is zeroed, in units of R_sersic (float)
+        :param max_R_frac: maximum window outside which the mass is zeroed, in units of R_sersic (float)
         :return: kernel of the Sersic surface brightness at R
         """
 
@@ -207,7 +210,6 @@ class SersicUtil(object):
         R_sersic_ = self._R_stable(R_sersic)
         bn = self.b_n(n_sersic)
         R_frac = R_ / R_sersic_
-        #R_frac = R_frac.astype(np.float32)
         if isinstance(R_, int) or isinstance(R_, float):
             if R_frac > max_R_frac:
                 result = 0

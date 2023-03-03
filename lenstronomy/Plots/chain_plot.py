@@ -18,14 +18,14 @@ def plot_chain_list(chain_list, index=0, num_average=100):
     :param chain_list: list of chains with arguments [type string, samples etc...]
     :param index: index of chain to be plotted
     :param num_average: in chains, number of steps to average over in plotting diagnostics
-    :return: plotting instance
+    :return: plotting instance figure, axes (potentially multiple)
     """
     chain_i = chain_list[index]
     chain_type = chain_i[0]
     if chain_type == 'PSO':
         chain, param = chain_i[1:]
         f, axes = plot_chain(chain, param)
-    elif chain_type == 'EMCEE':
+    elif chain_type in ['EMCEE', 'ZEUS']:
         samples, param, dist = chain_i[1:]
         f, ax = plt.subplots(1, 1, figsize=(6, 6))
         axes = plot_mcmc_behaviour(ax, samples, param, dist, num_average=num_average)
@@ -40,11 +40,11 @@ def plot_chain_list(chain_list, index=0, num_average=100):
 
 @export
 def plot_chain(chain, param_list):
-    X2_list, pos_list, vel_list = chain
+    chi2_list, pos_list, vel_list = chain
 
     f, axes = plt.subplots(1, 3, figsize=(18, 6))
     ax = axes[0]
-    ax.plot(np.log10(-np.array(X2_list)))
+    ax.plot(np.log10(-np.array(chi2_list)))
     ax.set_title('-logL')
 
     ax = axes[1]
@@ -58,7 +58,7 @@ def plot_chain(chain, param_list):
     ax.legend()
 
     ax = axes[2]
-    for i in range(0,len(vel[0])):
+    for i in range(0, len(vel[0])):
         ax.plot(vel[:, i] / (pos[n_iter-1, i] + 1), label=param_list[i])
     ax.set_title('param velocity')
     ax.legend()
@@ -69,6 +69,8 @@ def plot_chain(chain, param_list):
 def plot_mcmc_behaviour(ax, samples_mcmc, param_mcmc, dist_mcmc=None, num_average=100):
     """
     plots the MCMC behaviour and looks for convergence of the chain
+
+    :param ax: matplotlib.axis instance
     :param samples_mcmc: parameters sampled 2d numpy array
     :param param_mcmc: list of parameters
     :param dist_mcmc: log likelihood of the chain
@@ -97,18 +99,22 @@ def plot_mcmc_behaviour(ax, samples_mcmc, param_mcmc, dist_mcmc=None, num_averag
 def psf_iteration_compare(kwargs_psf, **kwargs):
     """
 
-    :param kwargs_psf:
+    :param kwargs_psf: keyword arguments that initiate a PSF() class
     :param kwargs: kwargs to send to matplotlib.pyplot.matshow()
     :return:
     """
     psf_out = kwargs_psf['kernel_point_source']
     psf_in = kwargs_psf['kernel_point_source_init']
-    psf_error_map = kwargs_psf.get('psf_error_map', None)
+    # psf_error_map = kwargs_psf.get('psf_error_map', None)
+    from lenstronomy.Data.psf import PSF
+    psf = PSF(**kwargs_psf)
+    # psf_out = psf.kernel_point_source
+    psf_error_map = psf.psf_error_map
     n_kernel = len(psf_in)
     delta_x = n_kernel/20.
     delta_y = n_kernel/10.
 
-    if not 'cmap' in kwargs:
+    if 'cmap' not in kwargs:
         kwargs['cmap'] = 'seismic'
 
     n = 3
@@ -118,16 +124,16 @@ def psf_iteration_compare(kwargs_psf, **kwargs):
     ax = axes[0]
     im = ax.matshow(np.log10(psf_in), origin='lower', **kwargs)
     v_min, v_max = im.get_clim()
-    if not 'vmin' in kwargs:
+    if 'vmin' not in kwargs:
         kwargs['vmin'] = v_min
-    if not 'vmax' in kwargs:
+    if 'vmax' not in kwargs:
         kwargs['vmax'] = v_max
     divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax)
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
-    ax.text(delta_x, n_kernel-delta_y, "stacked stars", color="k", fontsize=20, backgroundcolor='w')
+    ax.text(delta_x, n_kernel-delta_y, "Initial PSF model", color="k", fontsize=20, backgroundcolor='w')
 
     ax = axes[1]
     im = ax.matshow(np.log10(psf_out), origin='lower', **kwargs)
@@ -154,7 +160,10 @@ def psf_iteration_compare(kwargs_psf, **kwargs):
 
     if psf_error_map is not None:
         ax = axes[3]
-        im = ax.matshow(np.log10(psf_error_map*psf_out**2), origin='lower', **kwargs)
+        im = ax.matshow(np.log10(psf_error_map*psf.kernel_point_source**2), origin='lower', **kwargs)
+        n_kernel = len(psf_error_map)
+        delta_x = n_kernel / 20.
+        delta_y = n_kernel / 10.
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         plt.colorbar(im, cax=cax)

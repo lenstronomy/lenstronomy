@@ -28,9 +28,10 @@ class ImageData(PixelGrid, ImageNoise):
     - 'noise_map': Gaussian noise (1-sigma) for each individual pixel.
     If this keyword is set, the other noise properties will be ignored.
 
+    optional keywords for interferometric quantities:
+    - 'antenna_primary_beam': primary beam pattern of antennae (now treat each antenna with the same primary beam)
 
-    Notes:
-    ------
+    ** notes **
     the likelihood for the data given model P(data|model) is defined in the function below. Please make sure that
     your definitions and units of 'exposure_map', 'background_rms' and 'image_data' are in accordance with the
     likelihood function. In particular, make sure that the Poisson noise contribution is defined in the count rate.
@@ -38,12 +39,12 @@ class ImageData(PixelGrid, ImageNoise):
 
     """
     def __init__(self, image_data, exposure_time=None, background_rms=None, noise_map=None, gradient_boost_factor=None,
-                 ra_at_xy_0=0, dec_at_xy_0=0, transform_pix2angle=None, ra_shift=0, dec_shift=0):
+                 ra_at_xy_0=0, dec_at_xy_0=0, transform_pix2angle=None, ra_shift=0, dec_shift=0, antenna_primary_beam=None):
         """
 
         :param image_data: 2d numpy array of the image data
         :param exposure_time: int or array of size the data; exposure time
-        (common for all pixels or individually for each individual pixel)
+         (common for all pixels or individually for each individual pixel)
         :param background_rms: root-mean-square value of Gaussian background noise in units counts per second
         :param noise_map: int or array of size the data; joint noise sqrt(variance) of each individual pixel.
         :param gradient_boost_factor: None or float, variance terms added in quadrature scaling with
@@ -53,11 +54,13 @@ class ImageData(PixelGrid, ImageNoise):
         :param dec_at_xy_0: dec coordinate at pixel (0,0)
         :param ra_shift: RA shift of pixel grid
         :param dec_shift: DEC shift of pixel grid
+        :param antenna_primary_beam: 2d numpy array with the same size of imaga_data;
+         more descriptions of the primary beam can be found in the AngularSensitivity class
         """
         nx, ny = np.shape(image_data)
         if transform_pix2angle is None:
             transform_pix2angle = np.array([[1, 0], [0, 1]])
-        PixelGrid.__init__(self, nx, ny, transform_pix2angle, ra_at_xy_0 + ra_shift, dec_at_xy_0 + dec_shift)
+        PixelGrid.__init__(self, nx, ny, transform_pix2angle, ra_at_xy_0 + ra_shift, dec_at_xy_0 + dec_shift, antenna_primary_beam)
         ImageNoise.__init__(self, image_data, exposure_time=exposure_time, background_rms=background_rms,
                             noise_map=noise_map, gradient_boost_factor=gradient_boost_factor, verbose=False)
 

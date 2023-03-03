@@ -13,10 +13,10 @@ class TimeDelayLikelihood(object):
 
         :param time_delays_measured: relative time delays (in days) in respect to the first image of the point source
         :param time_delays_uncertainties: time-delay uncertainties in same order as time_delay_measured. Alternatively
-        a full covariance matrix that describes the likelihood.
+         a full covariance matrix that describes the likelihood.
         :param lens_model_class: instance of the LensModel() class
         :param point_source_class: instance of the PointSource() class, note: the first point source type is the one the
-        time delays are imposed on
+         time delays are imposed on
         """
 
         if time_delays_measured is None:
@@ -44,7 +44,8 @@ class TimeDelayLikelihood(object):
         logL = self._logL_delays(delay_days, self._delays_measured, self._delays_errors)
         return logL
 
-    def _logL_delays(self, delays_model, delays_measured, delays_errors):
+    @staticmethod
+    def _logL_delays(delays_model, delays_measured, delays_errors):
         """
         log likelihood of modeled delays vs measured time delays under considerations of errors
 
@@ -54,13 +55,16 @@ class TimeDelayLikelihood(object):
         :return: log likelihood of data given model
         """
         if len(delays_model)-1 != len(delays_measured):
-            return -10**(15)
+            return -10**15
         delta_t_model = np.array(delays_model[1:]) - delays_model[0]
         if delays_errors.ndim <= 1:
             logL = np.sum(-(delta_t_model - delays_measured) ** 2 / (2 * delays_errors ** 2))
         elif delays_errors.ndim == 2:
             D = delta_t_model - delays_measured
-            logL = -1/2* D @ np.linalg.inv(delays_errors) @ D # TODO: only calculate the inverse once
+            logL = -1/2 * D @ np.linalg.inv(delays_errors) @ D  # TODO: only calculate the inverse once
+        else:
+            raise ValueError('Dimension of time delay error needs to be either one- or two-dimensional, not %s'
+                             % delays_errors.ndim)
         return logL
 
     @property

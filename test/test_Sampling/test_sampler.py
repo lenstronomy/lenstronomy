@@ -19,7 +19,7 @@ class TestSampler(object):
     test the fitting sequences
     """
 
-    def setup(self):
+    def setup_method(self):
 
         # data specifics
         sigma_bkg = 0.05  # background noise per pixel
@@ -110,16 +110,53 @@ class TestSampler(object):
         # 1) run a chain specifiying a backup file name
         backup_filename = 'test_mcmc_emcee.h5'
         samples_1, dist_1 = self.sampler.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=False,
-                                                    backup_filename=backup_filename)
+                                                    backend_filename=backup_filename)
         assert len(samples_1) == n_walkers * n_run
         # 2) run a chain starting from the backup of previous run
         samples_2, dist_2 = self.sampler.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=False,
-                                                    backup_filename=backup_filename, start_from_backup=True)
+                                                    backend_filename=backup_filename, start_from_backend=True)
         assert len(samples_2) == len(samples_1) + n_walkers * n_run
         assert len(dist_2) == len(samples_2)
-        
+
         os.remove(backup_filename)  # just remove the backup file created above
 
+    def test_mcmc_zeus(self):
+        n_walkers = 36
+        n_run = 2
+        n_burn = 2
+        mean_start = self.param_class.kwargs2args(kwargs_lens=self.kwargs_lens, kwargs_source=self.kwargs_source,
+                                                  kwargs_lens_light=self.kwargs_lens_light)
+        sigma_start = np.ones_like(mean_start) * 0.1
+        samples, dist = self.sampler.mcmc_zeus(n_walkers, n_run, n_burn, mean_start, sigma_start)
+        assert len(samples) == n_walkers * n_run
+        assert len(dist) == len(samples)
+
+        # test of backup file
+        backup_filename = 'test_mcmc_zeus.h5'
+        samples_1, dist_1 = self.sampler.mcmc_zeus(n_walkers, n_run, n_burn, mean_start, sigma_start,
+                                                    backend_filename=backup_filename)
+        assert len(samples_1) == n_walkers * n_run
+
+        os.remove(backup_filename)
+
+        # test callbacks
+        autocorrelation_callback = True
+        splitr_callback = True
+        miniter_callback = True
+
+        samples_ac, dist_ac = self.sampler.mcmc_zeus(n_walkers, n_run, n_burn, mean_start, sigma_start,
+                                                     autocorrelation_callback=autocorrelation_callback)
+        assert len(samples_ac) == n_walkers * n_run
+
+        # the default nsplits is 2, here we set it to 1 because the test chain is very short
+        # i.e. 4/3 != integer; 4/2 = integer
+        samples_sp, dist_sp = self.sampler.mcmc_zeus(n_walkers, n_run, n_burn, mean_start, sigma_start,
+                                                     splitr_callback=splitr_callback, nsplits=1)
+        assert len(samples_sp) == n_walkers * n_run
+
+        samples_mi, dist_mi = self.sampler.mcmc_zeus(n_walkers, n_run, n_burn, mean_start, sigma_start,
+                                                     miniter_callback=miniter_callback)
+        assert len(samples_mi) == n_walkers * n_run
 
 if __name__ == '__main__':
     pytest.main()

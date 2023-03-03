@@ -25,14 +25,18 @@ class SingleBandMultiModel(ImageLinearFit):
 
     """
 
-    def __init__(self, multi_band_list, kwargs_model, likelihood_mask_list=None, band_index=0, kwargs_pixelbased=None):
+    def __init__(self, multi_band_list, kwargs_model, likelihood_mask_list=None, band_index=0, kwargs_pixelbased=None,
+                 linear_solver=True):
         """
 
         :param multi_band_list: list of imaging band configurations [[kwargs_data, kwargs_psf, kwargs_numerics],[...], ...]
         :param kwargs_model: model option keyword arguments
         :param likelihood_mask_list: list of likelihood masks (booleans with size of the individual images
         :param band_index: integer, index of the imaging band to model
-        :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver (see SLITronomy documentation)
+        :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver
+         (see SLITronomy documentation)
+        :param linear_solver: bool, if True (default) fixes the linear amplitude parameters 'amp' (avoid sampling) such
+         that they get overwritten by the linear solver solution.
         """
         self.type = 'single-band-multi-model'
         if likelihood_mask_list is None:
@@ -55,6 +59,7 @@ class SingleBandMultiModel(ImageLinearFit):
         index_optical_depth = kwargs_model.get('index_optical_depth_model_list',
                                                    [None for i in range(len(multi_band_list))])
         self._index_optical_depth = index_optical_depth[band_index]
+        self._linear_solver = linear_solver
 
         super(SingleBandMultiModel, self).__init__(data_i, psf_i, lens_model_class, source_model_class,
                                                    lens_light_model_class, point_source_class, extinction_class,
@@ -106,15 +111,17 @@ class SingleBandMultiModel(ImageLinearFit):
                                                                                               kwargs_extinction)
         logL = self._likelihood_data_given_model(kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i,
                                                  kwargs_extinction_i, kwargs_special, source_marg=source_marg,
-                                                 linear_prior=linear_prior, check_positive_flux=check_positive_flux)
+                                                 linear_prior=linear_prior, check_positive_flux=check_positive_flux,
+                                                 linear_solver=self._linear_solver)
         return logL
 
     def num_param_linear(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None):
         """
 
-        :param compute_bool:
         :return: number of linear coefficients to be solved for in the linear inversion
         """
+        if self._linear_solver is False:
+            return 0
         kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i, kwargs_extinction_i = self.select_kwargs(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
         num = self._num_param_linear(kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i)
         return num

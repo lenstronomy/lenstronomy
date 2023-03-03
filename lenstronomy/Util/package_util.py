@@ -53,6 +53,11 @@ def short(_laconic=False):
     all_modules = dict()
 
     for loader, module_name, is_pkg in pkgutil.walk_packages(lenstronomy.__path__):
+        # This deep internal module relies heavily on 'multiprocessing',
+        # which may not be installed
+        if module_name == 'Sampling.Pool.multiprocessing':
+            continue
+
         # Load the module
         module = all_modules[module_name] = \
             loader.find_module(module_name).load_module(module_name)

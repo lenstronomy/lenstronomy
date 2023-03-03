@@ -9,7 +9,7 @@ from lenstronomy.PointSource.point_source_param import PointSourceParam
 
 class TestParam(object):
 
-    def setup(self):
+    def setup_method(self):
         kwargs_fixed = [{}, {}, {}]
         num_point_sources_list = [4, 1, 1]
         fixed_magnification_list = [True, False, False]
@@ -27,15 +27,15 @@ class TestParam(object):
                                              fixed_magnification_list=fixed_magnification_list)
 
     def test_get_setParams(self):
-        args = self.param.setParams(self.kwargs)
-        kwargs_new, _ = self.param.getParams(args, i=0)
-        args_new = self.param.setParams(kwargs_new)
+        args = self.param.set_params(self.kwargs)
+        kwargs_new, _ = self.param.get_params(args, i=0)
+        args_new = self.param.set_params(kwargs_new)
         for k in range(len(args)):
             npt.assert_almost_equal(args[k], args_new[k], decimal=8)
 
-        args = self.param_linear.setParams(self.kwargs)
-        kwargs_new, _ = self.param_linear.getParams(args, i=0)
-        args_new = self.param_linear.setParams(kwargs_new)
+        args = self.param_linear.set_params(self.kwargs)
+        kwargs_new, _ = self.param_linear.get_params(args, i=0)
+        args_new = self.param_linear.set_params(kwargs_new)
         for k in range(len(args)):
             npt.assert_almost_equal(args[k], args_new[k], decimal=8)
 

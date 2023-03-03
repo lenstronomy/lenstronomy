@@ -12,7 +12,7 @@ import unittest
 
 class TestCorrelation(object):
 
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_radial_profile(self):
@@ -47,8 +47,8 @@ class TestCorrelation(object):
         assert r_half == -1
 
     def test_bic_model(self):
-        bic=analysis_util.bic_model(0,np.e,1)
-        assert bic == 1
+        bic=analysis_util.bic_model(0, np.e, 1)
+        npt.assert_almost_equal(bic, 1, decimal=8)
 
     def test_azimuthalAverage(self):
         num_pix = 101
@@ -59,12 +59,12 @@ class TestCorrelation(object):
         I_xy = profile.function(x_grid, y_grid, **kwargs_profile)
         I_xy = util.array2image(I_xy)
         I_r, r_new = analysis_util.azimuthalAverage(I_xy, center=None)
-        r = np.linspace(start=0.5, stop=len(I_r) + 0.5, num=len(I_r))
+        # r = np.linspace(start=0.5, stop=len(I_r) + 0.5, num=len(I_r))
 
         #r = np.linspace(start=1, stop=len(I_r), num=len(I_r))
         #npt.assert_almost_equal(r_new, r, decimal=5)
         I_r_true = profile.function(0, r_new, **kwargs_profile)
-        I_r_true_new = profile.function(0, r, **kwargs_profile)
+        # I_r_true_new = profile.function(0, r, **kwargs_profile)
         npt.assert_almost_equal(I_r / I_r_true, 1, decimal=2)
 
         r = np.sqrt(x_grid**2 + y_grid**2)

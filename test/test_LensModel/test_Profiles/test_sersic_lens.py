@@ -15,7 +15,7 @@ class TestSersic(object):
     """
     tests the Gaussian methods
     """
-    def setup(self):
+    def setup_method(self):
 
         self.sersic_2 = SersicEllipseKappa()
         self.sersic = Sersic()

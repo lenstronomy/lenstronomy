@@ -11,7 +11,7 @@ import lenstronomy.Util.param_util as param_util
 
 class TestPointSource(object):
 
-    def setup(self):
+    def setup_method(self):
         lensModel = LensModel(lens_model_list=['SPEP'])
         solver = LensEquationSolver(lensModel=lensModel)
         e1, e2 = param_util.phi_q2_ellipticity(0, 0.7)
@@ -55,6 +55,11 @@ class TestPointSource(object):
         assert amp[0][0] != 1
         assert n == num_basis
         assert ra_pos[0][0] == self.x_pos[0]
+
+    def test_linear_param_from_kwargs(self):
+        param = self.PointSource.linear_param_from_kwargs(self.kwargs_ps)
+        assert param[0] == self.kwargs_ps[0]['point_amp'][0]
+        assert param[1] == self.kwargs_ps[0]['point_amp'][1]
 
     def test_point_source_list(self):
         ra_list, dec_list, amp_list = self.PointSource.point_source_list(self.kwargs_ps, self.kwargs_lens)
@@ -125,10 +130,23 @@ class TestPointSource(object):
         assert point_source._kwargs_lens_eqn_solver['x_center'] == x_center
         assert point_source._kwargs_lens_eqn_solver['x_center'] == y_center
 
+    def test__sort_position_by_original(self):
+        from lenstronomy.PointSource.point_source import _sort_position_by_original
+        x_o, y_o = np.array([1, 2]), np.array([0, 0])
+        x_solved, y_solved = np.array([2]), np.array([0])
+        x_new, y_new = _sort_position_by_original(x_o, y_o, x_solved, y_solved)
+        npt.assert_almost_equal(x_new, x_o, decimal=7)
+        npt.assert_almost_equal(y_new, y_o, decimal=7)
+
+        x_solved, y_solved = np.array([2, 1]), np.array([0, 0.01])
+        x_new, y_new = _sort_position_by_original(x_o, y_o, x_solved, y_solved)
+        npt.assert_almost_equal(x_new, x_o, decimal=7)
+        npt.assert_almost_equal(y_new, np.array([0.01, 0]), decimal=7)
+
 
 class TestPointSourceFixedMag(object):
 
-    def setup(self):
+    def setup_method(self):
         lensModel = LensModel(lens_model_list=['SPEP'])
         solver = LensEquationSolver(lensModel=lensModel)
         e1, e2 = param_util.phi_q2_ellipticity(0, 0.7)

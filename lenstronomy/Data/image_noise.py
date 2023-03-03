@@ -18,10 +18,10 @@ class ImageNoise(object):
 
         :param image_data: numpy array, pixel data values
         :param exposure_time: int or array of size the data; exposure time
-        (common for all pixels or individually for each individual pixel)
+         (common for all pixels or individually for each individual pixel)
         :param background_rms: root-mean-square value of Gaussian background noise
         :param noise_map: int or array of size the data; joint noise sqrt(variance) of each individual pixel.
-        Overwrites meaning of background_rms and exposure_time.
+         Overwrites meaning of background_rms and exposure_time.
         :param gradient_boost_factor: None or float, variance terms added in quadrature scaling with
          gradient^2 * gradient_boost_factor
         """
@@ -39,10 +39,11 @@ class ImageNoise(object):
             assert np.shape(noise_map) == np.shape(image_data)
         else:
             if background_rms is not None and exposure_time is not None:
-                if background_rms * np.max(exposure_time) < 1 and verbose is True:
+                if np.any(background_rms * exposure_time) < 1 and \
+                        verbose is True:
                     print("WARNING! sigma_b*f %s < 1 count may introduce unstable error estimates with a Gaussian"
                           " error function for a Poisson distribution with mean < 1." % (
-                        background_rms * np.max(exposure_time)))
+                           background_rms * np.max(exposure_time)))
         self._data = image_data
         self._gradient_boost_factor = gradient_boost_factor
 
@@ -84,7 +85,8 @@ class ImageNoise(object):
             if self._noise_map is not None:
                 self._C_D = self._noise_map ** 2
             else:
-                self._C_D = covariance_matrix(self._data, self.background_rms, self.exposure_map, self._gradient_boost_factor)
+                self._C_D = covariance_matrix(self._data, self.background_rms, self.exposure_map,
+                                              self._gradient_boost_factor)
         return self._C_D
 
     def C_D_model(self, model):

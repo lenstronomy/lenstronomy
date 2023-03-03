@@ -16,7 +16,7 @@ class TestSLITStarlets(object):
     """
     class to test SLIT_Starlets light profile
     """
-    def setup(self):
+    def setup_method(self):
         # different versions of Starlet transforms
         self.starlets = SLIT_Starlets(fast_inverse=False, second_gen=False, force_no_pysap=_force_no_pysap)
         self.starlets_fast = SLIT_Starlets(fast_inverse=True, second_gen=False, force_no_pysap=_force_no_pysap)

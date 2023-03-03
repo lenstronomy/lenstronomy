@@ -12,7 +12,7 @@ from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 
 class TestParam(object):
 
-    def setup(self):
+    def setup_method(self):
         kwargs_model = {'lens_model_list': ['SPEP'], 'source_light_model_list': ['GAUSSIAN'],
                         'lens_light_model_list': ['SERSIC'], 'point_source_model_list': ['LENSED_POSITION'],
                         'multi_plane': True, 'lens_redshift_list': [0.5], 'z_source': 2, 'source_redshift_list': [0.5]}
@@ -103,7 +103,7 @@ class TestParam(object):
         args = param_class.kwargs2args(kwargs_true_lens, kwargs_true_source,
                                        kwargs_lens_light=kwargs_true_lens_light, kwargs_ps=kwargs_true_ps,
                                        kwargs_special={'D_dt': 1000})
-        assert param_class.specialParams._D_dt_sampling is True
+        assert param_class.specialParams._D_dt_sampling.on
 
     def test_mass_scaling(self):
         kwargs_model = {'lens_model_list': ['SIS', 'NFW', 'NFW', 'SIS', 'SERSIC', 'HERNQUIST']}
@@ -143,6 +143,72 @@ class TestParam(object):
         assert kwargs_lens[0]['theta_E'] == 1
         assert kwargs_lens[1]['alpha_Rs'] == 0.1
         assert kwargs_lens[2]['alpha_Rs'] == 0.3
+
+    def test_general_scaling(self):
+        kwargs_model = {'lens_model_list': ['PJAFFE', 'PJAFFE', 'NFW', 'PJAFFE', 'NFW']}
+        # Scale Rs for two of the PJAFFEs, and sigma0 for a different set of PJAFFEs
+        # Scale alpha_Rs for the NFWs
+        kwargs_constraints = {
+            'general_scaling': {
+                'Rs': [1, False, False, 1, False],
+                'sigma0': [False, 1, False, 1, False],
+                'alpha_Rs': [False, False, 1, False, 1],
+            }
+        }
+        # PJAFFE: sigma0, Ra, Rs, center_x, center_y
+        # NFW: Rs, alpha_Rs, center_x, center_y
+        kwargs_fixed_lens = [
+            {'Rs': 2.0, 'center_x': 1.0},
+            {'sigma0': 2.0, 'Ra': 2.0, 'Rs': 3.0, 'center_y': 1.5},
+            {'alpha_Rs': 0.1},
+            {'Ra': 0.1, 'center_x': 0, 'center_y': 0},
+            {'Rs': 3, 'center_x': -1, 'center_y': 3},
+        ]
+        kwargs_fixed_cosmo = {}
+        param_class = Param(kwargs_model, kwargs_fixed_lens=kwargs_fixed_lens, kwargs_fixed_special=kwargs_fixed_cosmo
+                            , **kwargs_constraints)
+        kwargs_lens = [{'sigma0': 3, 'Ra': 2, 'center_y': 5},
+                       {'center_x': 1.},
+                       {'Rs': 3, 'center_x': 0.0, 'center_y': -1.0},
+                       {'sigma0': 3, 'Rs': 1.5},
+                       {'alpha_Rs': 4}]
+        kwargs_source = []
+        kwargs_lens_light = []
+        kwargs_ps = []
+        # Define the scaling and power for each parameter
+        kwargs_cosmo = {
+            'Rs_scale_factor': [2.0],
+            'Rs_scale_pow': [1.1],
+            'sigma0_scale_factor': [3],
+            'sigma0_scale_pow': [2.0],
+            'alpha_Rs_scale_factor': [0.3],
+            'alpha_Rs_scale_pow': [0.5],
+        }
+        args = param_class.kwargs2args(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_special=kwargs_cosmo)
+        num, names = param_class.num_param()
+        print(names)
+        print(args)
+
+        kwargs_return = param_class.args2kwargs(args)
+        kwargs_lens = kwargs_return['kwargs_lens']
+        print('kwargs_lens:', kwargs_lens)
+        npt.assert_almost_equal(kwargs_lens[0]['Rs'], 2.0 * 2.0**1.1)
+        npt.assert_almost_equal(kwargs_lens[0]['sigma0'], 3)
+        npt.assert_almost_equal(kwargs_lens[1]['Rs'], 3.0)
+        npt.assert_almost_equal(kwargs_lens[1]['sigma0'], 3.0 * 2.0**2.0)
+        npt.assert_almost_equal(kwargs_lens[2]['alpha_Rs'], 0.3 * 0.1**0.5)
+        npt.assert_almost_equal(kwargs_lens[3]['Rs'], 2.0 * 1.5**1.1)
+        npt.assert_almost_equal(kwargs_lens[3]['sigma0'], 3.0 * 3**2.0)
+        npt.assert_almost_equal(kwargs_lens[4]['alpha_Rs'], 0.3 * 4**0.5)
+
+        kwargs_return = param_class.args2kwargs(args, bijective=True)
+        kwargs_lens = kwargs_return['kwargs_lens']
+        npt.assert_almost_equal(kwargs_lens[0]['Rs'], 2.0)
+        npt.assert_almost_equal(kwargs_lens[1]['sigma0'], 2.0)
+        npt.assert_almost_equal(kwargs_lens[2]['alpha_Rs'], 0.1)
+        npt.assert_almost_equal(kwargs_lens[3]['Rs'], 1.5)
+        npt.assert_almost_equal(kwargs_lens[3]['sigma0'], 3)
+        npt.assert_almost_equal(kwargs_lens[4]['alpha_Rs'], 4)
 
     def test_joint_lens_with_light(self):
         kwargs_model = {'lens_model_list': ['CHAMELEON'], 'lens_light_model_list': ['CHAMELEON']}

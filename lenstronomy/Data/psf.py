@@ -14,21 +14,27 @@ class PSF(object):
     """
 
     def __init__(self, psf_type='NONE', fwhm=None, truncation=5, pixel_size=None, kernel_point_source=None,
-                 psf_error_map=None, point_source_supersampling_factor=1, kernel_point_source_init=None):
+                 psf_error_map=None, point_source_supersampling_factor=1, kernel_point_source_init=None,
+                 kernel_point_source_normalisation=True):
         """
 
         :param psf_type: string, type of PSF: options are 'NONE', 'PIXEL', 'GAUSSIAN'
         :param fwhm: float, full width at half maximum, only required for 'GAUSSIAN' model
         :param truncation: float, Gaussian truncation (in units of sigma), only required for 'GAUSSIAN' model
-        :param pixel_size: width of pixel (required for Gaussian model, not required when using in combination with ImageModel modules)
+        :param pixel_size: width of pixel (required for Gaussian model, not required when using in combination with
+         ImageModel modules)
         :param kernel_point_source: 2d numpy array, odd length, centered PSF of a point source
          (if not normalized, will be normalized)
         :param psf_error_map: uncertainty in the PSF model per pixel (size of data, not super-sampled). 2d numpy array.
-        Size can be larger or smaller than the pixel-sized PSF model and if so, will be matched.
-        This error will be added to the pixel error around the position of point sources as follows:
-        sigma^2_i += 'psf_error_map'_j * (point_source_flux_i)**2
-        :param point_source_supersampling_factor: int, supersampling factor of kernel_point_source
-        :param kernel_point_source_init: memory of an initial point source kernel that gets passed through the psf iteration
+         Size can be larger or smaller than the pixel-sized PSF model and if so, will be matched.
+         This error will be added to the pixel error around the position of point sources as follows:
+         sigma^2_i += 'psf_error_map'_j * <point source amplitude>**2
+        :param point_source_supersampling_factor: int, supersampling factor of kernel_point_source.
+         This is the input PSF to this class and does not need to be the choice in the modeling
+         (thought preferred if modeling choses supersampling)
+        :param kernel_point_source_init: memory of an initial point source kernel that gets passed through the psf
+         iteration
+        :param kernel_point_source_normalisation: boolean, if False, the pixel PSF will not be normalized automatically.
         """
         self.psf_type = psf_type
         self._pixel_size = pixel_size
@@ -49,7 +55,12 @@ class PSF(object):
                 self._kernel_point_source_supersampled = kernel_point_source
                 self._point_source_supersampling_factor = point_source_supersampling_factor
                 kernel_point_source = kernel_util.degrade_kernel(self._kernel_point_source_supersampled, self._point_source_supersampling_factor)
-            self._kernel_point_source = kernel_point_source / np.sum(kernel_point_source)
+            # making sure the PSF is positive semi-definite and do the normalisation if kernel_point_source_normalisation is true
+            if np.min(kernel_point_source) < 0:
+                warnings.warn('Input PSF model has at least one negative element, which is unphysical except for a PSF of an interferometric array.')
+            self._kernel_point_source = kernel_point_source
+            if kernel_point_source_normalisation is not False:
+                self._kernel_point_source /= np.sum(kernel_point_source)
 
         elif self.psf_type == 'NONE':
             self._kernel_point_source = np.zeros((3, 3))
@@ -146,6 +157,14 @@ class PSF(object):
 
     @property
     def psf_error_map(self):
+        """
+        error variance of the normalized PSF.
+        This error will be added to the pixel error around the position of point sources as follows:
+         sigma^2_i += 'psf_error_map'_j * <point source amplitude>**2
+
+        :return: error variance of the normalized PSF. Variance of
+        :rtype 2d numpy array of size of the PSF in pixel size (not supersampled)
+        """
         if not hasattr(self, '_psf_error_map'):
             self._psf_error_map = np.zeros_like(self.kernel_point_source)
         return self._psf_error_map

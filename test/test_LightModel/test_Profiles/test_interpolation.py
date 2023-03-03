@@ -3,13 +3,14 @@ import numpy.testing as npt
 from lenstronomy.LightModel.Profiles.interpolation import Interpol
 from lenstronomy.LightModel.Profiles.gaussian import Gaussian
 import lenstronomy.Util.util as util
+import numpy as np
 
 
 class TestInterpol(object):
     """
     class to test Shapelets
     """
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_function(self):
@@ -54,6 +55,30 @@ class TestInterpol(object):
         out = interp.function(x=1., y=0, image=image, scale=1., phi_G=0, center_x=0, center_y=0)
         out_scaled = interp.function(x=2., y=0, image=image, scale=2, phi_G=0, center_x=0, center_y=0)
         assert out_scaled == out
+
+    def test_flux_normalization(self):
+        interp = Interpol()
+        delta_pix = 0.1
+        len_x, len_y = 21, 21
+        x, y = util.make_grid(numPix=(len_x, len_y), deltapix=delta_pix)
+        gauss = Gaussian()
+        flux = gauss.function(x, y, amp=1., center_x=0., center_y=0., sigma=0.3)
+        image = util.array2image(flux, nx=len_y, ny=len_x)
+        flux_total = np.sum(image)
+
+        kwargs_interp = {'image': image, 'scale': delta_pix, 'phi_G': 0., 'center_x': 0., 'center_y': 0.}
+        image_interp = interp.function(x, y, **kwargs_interp)
+        flux_interp = np.sum(image_interp)
+        npt.assert_almost_equal(flux_interp, flux_total, decimal=3)
+
+        # test for scale !=1
+        # demands same surface brightness values. We rescale the pixel grid by the same amount as the image
+        scale = 0.5
+        x, y = util.make_grid(numPix=(len_x, len_y), deltapix=delta_pix * scale)
+        kwargs_interp = {'image': image, 'scale': delta_pix * scale, 'phi_G': 0., 'center_x': 0., 'center_y': 0.}
+        output = interp.function(x, y, **kwargs_interp)
+
+        npt.assert_almost_equal(output / image_interp, 1, decimal=5)
 
     def test_delete_cache(self):
         x, y = util.make_grid(numPix=20, deltapix=1.)

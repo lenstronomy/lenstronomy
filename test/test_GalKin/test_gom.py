@@ -4,7 +4,7 @@ import numpy as np
 
 
 class TestGOM(object):
-    def setup(self):
+    def setup_method(self):
         np.random.seed(2)
 
     def test_OMvsGOM(self):

@@ -2,6 +2,7 @@ from lenstronomy.Util.magnification_finite_util import setup_mag_finite
 import numpy as np
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 
+
 def plot_quasar_images(lens_model, x_image, y_image, source_x, source_y, kwargs_lens,
                        source_fwhm_parsec, z_source,
                        cosmo=None, grid_resolution=None,
@@ -22,19 +23,19 @@ def plot_quasar_images(lens_model, x_image, y_image, source_x, source_y, kwargs_
     :param z_source: the source redshift
     :param cosmo: (optional) an instance of astropy.cosmology; if not specified, a default cosmology will be used
     :param grid_resolution: the grid resolution in units arcsec/pixel; if not specified, an appropriate value will
-    be estimated from the source size
+     be estimated from the source size
     :param grid_radius_arcsec: (optional) the size of the ray tracing region in arcsec; if not specified, an appropriate value
-    will be estimated from the source size
+     will be estimated from the source size
     :param source_light_model: the model for background source light; currently implemented are 'SINGLE_GAUSSIAN' and
-    'DOUBLE_GAUSSIAN'.
+     'DOUBLE_GAUSSIAN'.
     :param dx: used with source model 'DOUBLE_GAUSSIAN', the offset of the second source light profile from the first
-    [arcsec]
+     [arcsec]
     :param dy: used with source model 'DOUBLE_GAUSSIAN', the offset of the second source light profile from the first
-    [arcsec]
+     [arcsec]
     :param size_scale: used with source model 'DOUBLE_GAUSSIAN', the size of the second source light profile relative
-    to the first
+     to the first
     :param amp_scale: used with source model 'DOUBLE_GAUSSIAN', the peak brightness of the second source light profile
-    relative to the first
+     relative to the first
     :return: Four images of the background source in the image plane
     """
 

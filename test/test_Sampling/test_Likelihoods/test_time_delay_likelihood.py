@@ -12,7 +12,7 @@ import copy
 
 class TestImageLikelihood(object):
 
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_logL(self):
@@ -80,9 +80,6 @@ class TestImageLikelihood(object):
                                                  lens_model_class=lensModel, point_source_class=pointSource)
         logL = td_likelihood.logL(kwargs_lens=kwargs_lens, kwargs_ps=kwargs_ps, kwargs_cosmo=kwargs_cosmo)
         npt.assert_almost_equal(logL, -10**15, decimal=8)
-        
-
-
 
 
 if __name__ == '__main__':

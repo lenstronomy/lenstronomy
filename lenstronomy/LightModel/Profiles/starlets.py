@@ -20,6 +20,7 @@ class SLIT_Starlets(object):
     Based on Starck et al. : https://ui.adsabs.harvard.edu/abs/2007ITIP...16..297S/abstract
     """
     param_names = ['amp', 'n_scales', 'n_pixels', 'scale', 'center_x', 'center_y']
+    param_names_latex = {r'$I_0$', r'$n_{\rm scales}$', r'$n_{\rm pix}$', r'scale', r'$x_0$', r'$y_0$'}
     lower_limit_default = {'amp': [0], 'n_scales': 2, 'n_pixels': 5, 'center_x': -1000, 'center_y': -1000, 'scale': 0.000000001}
     upper_limit_default = {'amp': [1e8], 'n_scales': 20, 'n_pixels': 1e10, 'center_x': 1000, 'center_y': 1000, 'scale': 10000000000}
 
@@ -52,7 +53,7 @@ class SLIT_Starlets(object):
         Follows lenstronomy conventions for light profiles.
 
         :param amp: decomposition coefficients ('amp' to follow conventions in other light profile)
-        This is an ndarray with shape (n_scales, sqrt(n_pixels), sqrt(n_pixels)) or (n_scales*n_pixels,)
+         This is an ndarray with shape (n_scales, sqrt(n_pixels), sqrt(n_pixels)) or (n_scales*n_pixels,)
         :param n_scales: number of decomposition scales
         :param n_pixels: number of pixels in a single scale
         :return: reconstructed signal as 1D array of shape (n_pixels,)
@@ -73,8 +74,8 @@ class SLIT_Starlets(object):
         """
         2D inverse starlet transform from starlet coefficients stored in coeffs
 
-        :param coeffs: decomposition coefficients, 
-        ndarray with shape (n_scales, sqrt(n_pixels), sqrt(n_pixels))
+        :param coeffs: decomposition coefficients,
+         ndarray with shape (n_scales, sqrt(n_pixels), sqrt(n_pixels))
         :param n_scales: number of decomposition scales
         :return: reconstructed signal as 2D array of shape (sqrt(n_pixels), sqrt(n_pixels))
         """

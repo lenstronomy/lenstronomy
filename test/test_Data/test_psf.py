@@ -11,7 +11,7 @@ import lenstronomy.Util.image_util as image_util
 
 class TestData(object):
 
-    def setup(self):
+    def setup_method(self):
         self.deltaPix = 0.05
         fwhm = 0.2
         kwargs_gaussian = {'psf_type': 'GAUSSIAN', 'fwhm': fwhm, 'truncation': 5, 'pixel_size': self.deltaPix}
@@ -31,8 +31,8 @@ class TestData(object):
         kernel_point_source = psf_class.kernel_point_source
         assert len(kernel_point_source) == 13
         kernel_super = psf_class.kernel_point_source_supersampled(supersampling_factor=3)
-        assert np.sum(kernel_point_source) == np.sum(kernel_super)
-        assert np.sum(kernel_point_source) == 1
+        npt.assert_almost_equal(np.sum(kernel_point_source), np.sum(kernel_super), decimal=9)
+        npt.assert_almost_equal(np.sum(kernel_point_source), 1, decimal=9)
 
     def test_kernel_subsampled(self):
         deltaPix = 0.05  # pixel size of image

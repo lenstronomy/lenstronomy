@@ -138,7 +138,7 @@ class Chameleon(LensProfileBase):
         :param w_c: see Suyu+2014
         :param w_t: see Suyu+2014
         :param e1: eccentricity modulus
-        :param ee: eccentricity modulus
+        :param e2: eccentricity modulus
         :return:
         """
         if self._static is True:
@@ -155,6 +155,7 @@ class Chameleon(LensProfileBase):
         f_x = f_x_1 - f_x_2
         theta_E_convert = alpha_1 / f_x
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
+        # TODO: is this next conversion really needed since the NIE definition is already in the average sense?
         s_scale_1 = np.sqrt(4 * w_c ** 2 / (1. + q) ** 2)
         s_scale_2 = np.sqrt(4 * w_t ** 2 / (1. + q) ** 2)
         return theta_E_convert, w_c, w_t, s_scale_1, s_scale_2
@@ -474,7 +475,7 @@ class TripleChameleon(LensProfileBase):
         return f_1 + f_2 + f_3
 
     def mass_3d_lens(self, r, alpha_1, ratio12, ratio13, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22, w_c3, w_t3, e13, e23,
-                 center_x=0, center_y=0):
+                     center_x=0, center_y=0):
         """
 
         :param r: 3d radius
@@ -500,7 +501,7 @@ class TripleChameleon(LensProfileBase):
         return m_1 + m_2 + m_3
 
     def set_static(self, alpha_1, ratio12, ratio13, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22, w_c3, w_t3, e13, e23,
-                 center_x=0, center_y=0):
+                   center_x=0, center_y=0):
         amp1, amp2, amp3 = self._ratio_definition(alpha_1, ratio12, ratio13)
         self._chameleon_1.set_static(amp1, w_c1, w_t1, e11, e21, center_x, center_y)
         self._chameleon_2.set_static(amp2, w_c2, w_t2, e12, e22, center_x, center_y)
@@ -607,5 +608,5 @@ class DoubleChameleonPointMass(LensProfileBase):
         """
         f_xx1, f_xy1, f_yx1, f_yy1 = self.pointMass.hessian(x, y, alpha_1 / (1. + 1. / ratio_pointmass), center_x, center_y)
         f_xx2, f_xy2, f_yx2, f_yy2 = self.chameleon.hessian(x, y, alpha_1 / (1. + ratio_pointmass), ratio_chameleon, w_c1, w_t1,
-                                                     e11, e21, w_c2, w_t2, e12, e22, center_x, center_y)
+                                                            e11, e21, w_c2, w_t2, e12, e22, center_x, center_y)
         return f_xx1 + f_xx2, f_xy1 + f_xy2, f_yx1 + f_yx2, f_yy1 + f_yy2

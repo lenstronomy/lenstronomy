@@ -26,8 +26,9 @@ class SersicEllipse(LensProfileBase):
         """
         returns Gaussian
         """
-        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
-        x_, y_ = self._coord_transf(x, y, q, phi_G, center_x, center_y)
+        # phi_G, q = param_util.ellipticity2phi_q(e1, e2)
+        x_, y_ = param_util.transform_e1e2_square_average(x, y, e1, e2, center_x, center_y)
+        # x_, y_ = self._coord_transf(x, y, q, phi_G, center_x, center_y)
         f_ = self.sersic.function(x_, y_, n_sersic, R_sersic, k_eff)
         return f_
 
@@ -36,10 +37,12 @@ class SersicEllipse(LensProfileBase):
         returns df/dx and df/dy of the function
         """
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
-        e = abs(1. - q)
+        e = param_util.q2e(q)
+        # e = abs(1. - q)
         cos_phi = np.cos(phi_G)
         sin_phi = np.sin(phi_G)
-        x_, y_ = self._coord_transf(x, y, q, phi_G, center_x, center_y)
+        x_, y_ = param_util.transform_e1e2_square_average(x, y, e1, e2, center_x, center_y)
+        # x_, y_ = self._coord_transf(x, y, q, phi_G, center_x, center_y)
         f_x_prim, f_y_prim = self.sersic.derivatives(x_, y_, n_sersic, R_sersic, k_eff)
         f_x_prim *= np.sqrt(1 - e)
         f_y_prim *= np.sqrt(1 + e)
@@ -62,24 +65,3 @@ class SersicEllipse(LensProfileBase):
         f_yy = (alpha_dec_dy - alpha_dec)/diff
 
         return f_xx, f_xy, f_yx, f_yy
-
-    @staticmethod
-    def _coord_transf(x, y, q, phi_G, center_x, center_y):
-        """
-
-        :param x:
-        :param y:
-        :param q:
-        :param phi_G:
-        :param center_x:
-        :param center_y:
-        :return:
-        """
-        x_shift = x - center_x
-        y_shift = y - center_y
-        cos_phi = np.cos(phi_G)
-        sin_phi = np.sin(phi_G)
-        e = abs(1 - q)
-        x_ = (cos_phi * x_shift + sin_phi * y_shift) * np.sqrt(1 - e)
-        y_ = (-sin_phi * x_shift + cos_phi * y_shift) * np.sqrt(1 + e)
-        return x_, y_

@@ -36,7 +36,7 @@ class NumericalAlpha(LensProfileBase):
         self._custom_lens_class = custom_class
         super(NumericalAlpha, self).__init__()
 
-    def function(self, x, y,center_x = 0, center_y = 0, **kwargs):
+    def function(self, x, y, center_x=0, center_y=0, **kwargs):
 
         raise Exception('no potential for this class.')
 
@@ -86,4 +86,3 @@ class NumericalAlpha(LensProfileBase):
         f_yx = dalpha_decra
 
         return f_xx, f_xy, f_yx, f_yy
-

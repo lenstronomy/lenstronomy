@@ -67,7 +67,8 @@ class UpdateManager(object):
 
         self._kwargs_temp = self.init_kwargs
 
-    # TODO: check compatibility with number of point sources provided as well as other parameter labelings
+    # TODO: check compatibility with number of point sources provided as well as other parameter labeling
+    # TODO: give raise statement if sigma value is =0
 
     @property
     def init_kwargs(self):
@@ -156,7 +157,7 @@ class UpdateManager(object):
                              'kwargs_lens_light': kwargs_lens_light, 'kwargs_ps': kwargs_ps,
                              'kwargs_special': kwargs_special, 'kwargs_extinction': kwargs_extinction}
 
-    def update_param_value(self, lens=[], source=[], lens_light=[], ps=[]):
+    def update_param_value(self, lens=None, source=None, lens_light=None, ps=None):
         """
         Set a model parameter to a specific value.
 
@@ -166,6 +167,14 @@ class UpdateManager(object):
         :param ps: [[i_model, ['param1', 'param2',...], [...]]
         :return: 0, the value of the param is overwritten
         """
+        if lens is None:
+            lens = []
+        if source is None:
+            source = []
+        if lens_light is None:
+            lens_light = []
+        if ps is None:
+            ps = []
         for items, kwargs_key in zip([lens, source, lens_light, ps],
             ['kwargs_lens', 'kwargs_source', 'kwargs_lens_light', 'kwargs_ps']):
             for item in items:
@@ -200,7 +209,7 @@ class UpdateManager(object):
                             kwargs_lens_init=lens_temp, **kwargs_constraints)
         return param_class
 
-    def update_options(self, kwargs_model, kwargs_constraints, kwargs_likelihood):
+    def update_options(self, kwargs_model=None, kwargs_constraints=None, kwargs_likelihood=None):
         """
         updates the options by overwriting the kwargs with the new ones being added/changed
         WARNING: some updates may not be valid depending on the model options. Use carefully!
@@ -211,6 +220,12 @@ class UpdateManager(object):
         :param kwargs_likelihood:
         :return: kwargs_model, kwargs_constraints, kwargs_likelihood
         """
+        if kwargs_model is None:
+            kwargs_model = {}
+        if kwargs_constraints is None:
+            kwargs_constraints = {}
+        if kwargs_likelihood is None:
+            kwargs_likelihood = []
         kwargs_model_updated = self.kwargs_model.update(kwargs_model)
         kwargs_constraints_updated = self.kwargs_constraints.update(kwargs_constraints)
         kwargs_likelihood_updated = self.kwargs_likelihood.update(kwargs_likelihood)
@@ -221,41 +236,58 @@ class UpdateManager(object):
         """
         updates the limits (lower and upper) of the update manager instance
 
-        :param change_source_lower_limit: [[i_model, ['param_name', ...], [value1, value2, ...]]]
-        :param change_lens_lower_limit: [[i_model, ['param_name', ...], [value1, value2, ...]]]
-        :param change_source_upper_limit: [[i_model, ['param_name', ...], [value1, value2, ...]]]
-        :param change_lens_upper_limit: [[i_model, ['param_name', ...], [value1, value2, ...]]]
+        :param change_source_lower_limit: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
+        :param change_lens_lower_limit: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
+        :param change_source_upper_limit: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
+        :param change_lens_upper_limit: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
         :return: updates internal state of lower and upper limits accessible from outside
         """
-        if not change_source_lower_limit is None:
-            self._source_lower = self._update_limit(change_source_lower_limit, self._source_lower)
-        if not change_source_upper_limit is None:
-            self._source_upper = self._update_limit(change_source_upper_limit, self._source_upper)
-        if not change_lens_lower_limit is None:
-            self._lens_lower = self._update_limit(change_lens_lower_limit, self._lens_lower)
-        if not change_lens_upper_limit is None:
-            self._lens_upper = self._update_limit(change_lens_upper_limit, self._lens_upper)
+        if change_source_lower_limit is not None:
+            self._source_lower = self._update_kwargs_list(change_source_lower_limit, self._source_lower)
+        if change_source_upper_limit is not None:
+            self._source_upper = self._update_kwargs_list(change_source_upper_limit, self._source_upper)
+        if change_lens_lower_limit is not None:
+            self._lens_lower = self._update_kwargs_list(change_lens_lower_limit, self._lens_lower)
+        if change_lens_upper_limit is not None:
+            self._lens_upper = self._update_kwargs_list(change_lens_upper_limit, self._lens_upper)
+
+    def update_sigmas(self, change_sigma_lens=None, change_sigma_source=None, change_sigma_lens_light=None):
+        """
+        updates individual estimated uncertainty levels for the initialization of search and sampling algorithms
+
+        :param change_sigma_lens: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
+        :param change_sigma_source: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
+        :param change_sigma_lens_light: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
+        :return: updated internal state of the spread to initialize samplers
+        """
+        if change_sigma_lens is not None:
+            self._lens_sigma = self._update_kwargs_list(change_sigma_lens, self._lens_sigma)
+        if change_sigma_source is not None:
+            self._source_sigma = self._update_kwargs_list(change_sigma_source, self._source_sigma)
+        if change_sigma_lens_light is not None:
+            self._lens_light_sigma = self._update_kwargs_list(change_sigma_lens_light, self._lens_light_sigma)
 
     @staticmethod
-    def _update_limit(change_limit, kwargs_limit_previous):
+    def _update_kwargs_list(change_list, kwargs_list_previous):
         """
 
-        :param change_limit: input format of def update_limits
-        :param kwargs_limit_previous: all limits of a model type
+        :param change_list: input format of def update_limits [[i_model, ['param_name1', 'param_name2', ...],
+         [value1, value2, ...]]]
+        :param kwargs_list_previous: keyword argument list
         :return: update limits
         """
-        kwargs_limit_updated = copy.deepcopy(kwargs_limit_previous)
-        for i in range(len(change_limit)):
-            i_model = change_limit[i][0]
-            change_names = change_limit[i][1]
-            values = change_limit[i][2]
+        kwargs_limit_updated = copy.deepcopy(kwargs_list_previous)
+        for i in range(len(change_list)):
+            i_model = change_list[i][0]
+            change_names = change_list[i][1]
+            values = change_list[i][2]
             for j, param_name in enumerate(change_names):
                 kwargs_limit_updated[i_model][param_name] = values[j]
         return kwargs_limit_updated
 
-    def update_fixed(self, lens_add_fixed=[], source_add_fixed=[], lens_light_add_fixed=[], ps_add_fixed=[],
-                     special_add_fixed=[], lens_remove_fixed=[], source_remove_fixed=[], lens_light_remove_fixed=[],
-                     ps_remove_fixed=[], special_remove_fixed=[]):
+    def update_fixed(self, lens_add_fixed=None, source_add_fixed=None, lens_light_add_fixed=None, ps_add_fixed=None,
+                     special_add_fixed=None, lens_remove_fixed=None, source_remove_fixed=None,
+                     lens_light_remove_fixed=None, ps_remove_fixed=None, special_remove_fixed=None):
         """
         adds or removes the values of the keyword arguments that are stated in the _add_fixed to the existing fixed
         arguments. convention for input arguments are:
@@ -283,11 +315,13 @@ class UpdateManager(object):
         ps_fixed = self._remove_fixed(ps_fixed, ps_remove_fixed)
         special_fixed = copy.deepcopy(self._special_fixed)
         special_temp = self._kwargs_temp['kwargs_special']
+        if special_add_fixed is None:
+            special_add_fixed = []
         for param_name in special_add_fixed:
-            if param_name in special_fixed:
-                pass
-            else:
+            if param_name not in special_fixed:
                 special_fixed[param_name] = special_temp[param_name]
+        if special_remove_fixed is None:
+            special_remove_fixed = []
         for param_name in special_remove_fixed:
             if param_name in special_fixed:
                 del special_fixed[param_name]
@@ -299,10 +333,13 @@ class UpdateManager(object):
 
         :param kwargs_model: model parameters
         :param kwargs_fixed: parameters that are held fixed (even before)
-        :param add_fixed: additional fixed parameters [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ... (optional)], [], ...]
+        :param add_fixed: additional fixed parameters
+         [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ... (optional)], [], ...]
         :return: updated kwargs_fixed
         """
-        #fixed_kwargs = copy.deepcopy(kwargs_fixed)
+        if add_fixed is None:
+            add_fixed = []
+        # fixed_kwargs = copy.deepcopy(kwargs_fixed)
         for i in range(len(add_fixed)):
             i_model = add_fixed[i][0]
             fix_names = add_fixed[i][1]
@@ -326,6 +363,8 @@ class UpdateManager(object):
          kwargs_model [[i_model, ['param_name1', 'param_name2', ...]], [], ...]
         :return: updated kwargs fixed parameters
         """
+        if remove_fixed is None:
+            remove_fixed = []
         for i in range(len(remove_fixed)):
             i_model = remove_fixed[i][0]
             fix_names = remove_fixed[i][1]

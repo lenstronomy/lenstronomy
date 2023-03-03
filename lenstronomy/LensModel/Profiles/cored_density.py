@@ -11,7 +11,20 @@ class CoredDensity(LensProfileBase):
     """
     class for a uniform cored density dropping steep in the outskirts
     This profile is e.g. featured in Blum et al. 2020 https://arxiv.org/abs/2001.07182v1
-    3d rho(r) = 2/pi * Sigma_crit R_c**3 * (R_c**2 + r**2)**(-2)
+
+    ..math::
+        \\rho_c(r) = \\frac{2}{\\pi} \\Sigma_{c} R_c^3 \\left(R_c^2 + r^2 \\right)^{-2}
+
+    with the convergence profile as
+
+    ..math::
+        \\kappa_c(\\theta) = \\left(1 + \\frac{\\theta^2}{\\theta_c^2} \\right)^{-3/2}.
+
+    An approximate mass-sheet degeneracy can then be written as
+
+    ..math::
+        \\kappa_{\\lambda_c}(\\theta) = \\lambda_c \\kappa(\\theta) + (1-\\lambda_c) \\kappa_c(\\theta).
+
 
     """
     _s = 0.000001  # numerical limit for minimal radius
@@ -92,7 +105,7 @@ class CoredDensity(LensProfileBase):
         :param r_core: core radius
         :return: deflection angle
         """
-        return 2 * sigma0 * r_core ** 2 / r * (1 - (1 + (r/r_core)**2) **(-1./2))
+        return 2 * sigma0 * r_core ** 2 / r * (1 - (1 + (r/r_core)**2) ** (-1./2))
 
     @staticmethod
     def d_alpha_dr(r, sigma0, r_core):

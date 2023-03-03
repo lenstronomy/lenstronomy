@@ -12,7 +12,7 @@ def half_light_radius(lens_light, x_grid, y_grid, center_x=0, center_y=0):
 
     :param lens_light: array of surface brightness
     :param x_grid: x-axis coordinates
-    :param y_gird: y-axis coordinates
+    :param y_grid: y-axis coordinates
     :param center_x: center of light
     :param center_y: center of light
     :return:
@@ -32,14 +32,15 @@ def half_light_radius(lens_light, x_grid, y_grid, center_x=0, center_y=0):
 @export
 def radial_profile(light_grid, x_grid, y_grid, center_x=0, center_y=0, n=None):
     """
+    computes radial profile
 
     :param light_grid: array of surface brightness
     :param x_grid: x-axis coordinates
-    :param y_gird: y-axis coordinates
+    :param y_grid: y-axis coordinates
     :param center_x: center of light
     :param center_y: center of light
     :param n: number of discrete steps
-    :return:
+    :return: I(r), r with r in units of the coordinate grid
     """
     r_max = np.max(np.sqrt((x_grid-center_x)**2 + (y_grid-center_y)**2))
     if n is None:
@@ -64,7 +65,7 @@ def azimuthalAverage(image, center=None):
     image - The 2D image
     center - The [x,y] pixel coordinates used as the center. The default is None, which then uses the center of the
     image (including fractional pixels).
-    :return: I(r) (averaged), r of bin edges
+    :return: I(r) (averaged), r of bin edges in units of pixels of the 2D image
     """
     # Calculate the indices from the image
     y, x = np.indices(image.shape)
@@ -100,7 +101,7 @@ def moments(I_xy_input, x, y):
     """
     compute quadrupole moments from a light distribution
 
-    :param I_xy: light distribution
+    :param I_xy_input: light distribution
     :param x: x-coordinates of I_xy
     :param y: y-coordinates of I_xy
     :return: Q_xx, Q_xy, Q_yy
@@ -123,10 +124,10 @@ def ellipticities(I_xy, x, y):
     """
     compute ellipticities of a light distribution
 
-    :param I_xy:
-    :param x:
-    :param y:
-    :return:
+    :param I_xy: surface brightness I(x, y) as array
+    :param x: x-coordinates in same shape as I_xy
+    :param y: y-coordinates in same shape as I_xy
+    :return: reduced shear moments g1, g2
     """
     Q_xx, Q_xy, Q_yy, bkg = moments(I_xy, x, y)
     norm = Q_xx + Q_yy + 2 * np.sqrt(Q_xx*Q_yy - Q_xy**2)

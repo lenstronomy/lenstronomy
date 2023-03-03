@@ -24,12 +24,13 @@ class Image2SourceMapping(object):
     def __init__(self, lensModel, sourceModel):
         """
 
-        :param lensModel: lenstronomy LensModel() class instance
-        :param sourceModel: LightModel () class instance
-        The lightModel includes:
-        - source_scale_factor_list: list of floats corresponding to the rescaled deflection angles to the specific source
-         components. None indicates that the list will be set to 1, meaning a single source plane model (in single lens plane mode).
-        - source_redshift_list: list of redshifts of the light components (in multi lens plane mode)
+        :param lensModel: LensModel() class instance
+        :param sourceModel: LightModel() class instance.
+
+         The lightModel includes:
+
+         - source_scale_factor_list: list of floats corresponding to the rescaled deflection angles to the specific source components. None indicates that the list will be set to 1, meaning a single source plane model (in single lens plane mode).
+         - source_redshift_list: list of redshifts of the light components (in multi lens plane mode)
         """
         self._lightModel = sourceModel
         self._lensModel = lensModel
@@ -111,6 +112,7 @@ class Image2SourceMapping(object):
         :param y: coordinate in image plane
         :param kwargs_lens: lens model kwargs list
         :param kwargs_source: source model kwargs list
+        :param k: None or int or list of int for partial evaluation of light models
         :return: surface brightness of all joint light components at image position (x, y)
         """
         if self._multi_source_plane is False:

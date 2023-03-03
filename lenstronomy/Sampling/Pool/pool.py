@@ -32,11 +32,8 @@ import logging
 log = logging.getLogger(__name__)
 _VERBOSE = 5
 
-#from schwimmbad.multiprocessing import MultiPool
-from lenstronomy.Sampling.Pool.multiprocessing import MultiPool
-from schwimmbad.serial import SerialPool
-from schwimmbad.mpi import MPIPool
-#from schwimmbad.jl import JoblibPool
+# from schwimmbad.multiprocessing import MultiPool
+# from schwimmbad.jl import JoblibPool
 
 __all__ = ['choose_pool']
 
@@ -53,19 +50,22 @@ def choose_pool(mpi=False, processes=1, **kwargs):
 
     Choose between the different pools given options from, e.g., argparse.
 
-    Parameters
-    ----------
-    mpi : bool, optional
-        Use the MPI processing pool, :class:`~schwimmbad.mpi.MPIPool`. By
+
+    :param mpi: Use the MPI processing pool, :class:`~schwimmbad.mpi.MPIPool`. By
         default, ``False``, will use the :class:`~schwimmbad.serial.SerialPool`.
-    processes : int, optional
-        Use the multiprocessing pool,
+    :type mpi: bool, optional
+    :param processes: Use the multiprocessing pool,
         :class:`~schwimmbad.multiprocessing.MultiPool`, with this number of
         processes. By default, ``processes=1``, will use them:class:`~schwimmbad.serial.SerialPool`.
-
-    Any additional kwargs are passed in to the pool class initializer selected by the arguments.
-
+    :type processes: int, optional
+    :param kwargs: Any additional kwargs are passed in to the pool class initializer selected by the arguments.
+    :type kwargs: keyword arguments
     """
+    # Imports moved here to avoid crashing at import time if dependencies
+    # are missing
+    from lenstronomy.Sampling.Pool.multiprocessing import MultiPool
+    from schwimmbad.serial import SerialPool
+    from schwimmbad.mpi import MPIPool
 
     if mpi:
         if not MPIPool.enabled():

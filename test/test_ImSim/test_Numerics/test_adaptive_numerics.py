@@ -11,7 +11,7 @@ import pytest
 
 class TestAdaptiveConvolution(object):
 
-    def setup(self):
+    def setup_method(self):
         self.supersampling_factor = 3
         lightModel = LightModel(light_model_list=['GAUSSIAN'])
         self.delta_pix = 1.

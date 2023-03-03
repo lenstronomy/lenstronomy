@@ -9,7 +9,7 @@ class TestConvergenceIntegrals(object):
     """
     test angular to mass unit conversions
     """
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_potential_from_kappa(self):
@@ -119,6 +119,31 @@ class TestConvergenceIntegrals(object):
         f_00 = sersic_lens.function(x_grid2d[x0, y0], y_grid2d[x0, y0], **kwargs_lens)
         npt.assert_almost_equal(f_ - f_00, f_num[x1, y1] - f_num[x0, y0], decimal=2)
 
+    def test_gnfw(self):
+
+        from lenstronomy.LensModel.Profiles.general_nfw import GNFW
+        gnfw = GNFW()
+        deltaPix = 0.005
+        numPix = 2000
+        x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
+
+        kwargs_lens = {'alpha_Rs': 1.2, 'Rs': 0.8, 'gamma_inner': 1.5, 'gamma_outer': 3.4}
+        f_xx, _, _, f_yy = gnfw.hessian(x_grid, y_grid, **kwargs_lens)
+        f_x, f_y = gnfw.derivatives(x_grid, y_grid, **kwargs_lens)
+        f_x = util.array2image(f_x)
+        kappa = util.array2image((f_xx + f_yy) / 2.)
+        f_x_num, f_y_num = convergence_integrals.deflection_from_kappa_grid(kappa, deltaPix)
+        x1, y1 = 500, 550
+        npt.assert_almost_equal(f_x[x1, y1], f_x_num[x1, y1], decimal=2)
+
+        kwargs_lens = {'alpha_Rs': 1.2, 'Rs': 0.8, 'gamma_inner': 2.3, 'gamma_outer': 3.45}
+        f_xx, _, _, f_yy = gnfw.hessian(x_grid, y_grid, **kwargs_lens)
+        f_x, f_y = gnfw.derivatives(x_grid, y_grid, **kwargs_lens)
+        f_x = util.array2image(f_x)
+        kappa = util.array2image((f_xx + f_yy) / 2.)
+        f_x_num, f_y_num = convergence_integrals.deflection_from_kappa_grid(kappa, deltaPix)
+        x1, y1 = 500, 550
+        npt.assert_almost_equal(f_x[x1, y1], f_x_num[x1, y1], decimal=2)
 
 if __name__ == '__main__':
     pytest.main()

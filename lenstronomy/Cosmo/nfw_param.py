@@ -31,25 +31,29 @@ class NFWParam(object):
         :return: critical density of the universe at redshift z in physical units [h^2 M_sun Mpc^-3]
         """
         return self.rhoc * (self.cosmo.efunc(z)) ** 2
-        #return self.rhoc*(1+z)**3
+        # return self.rhoc*(1+z)**3
 
-    def M200(self, rs, rho0, c):
+    @staticmethod
+    def M200(rs, rho0, c):
         """
-        M(R_200) calculation for NFW profile
+        Calculation of the mass enclosed r_200 for NFW profile defined as
+
+        .. math::
+            M_{200} = 4 \\pi \\rho_0^{3} * \\left(\\log(1+c) - c / (1 + c)  \\right))
 
         :param rs: scale radius
         :type rs: float
-        :param rho0: density normalization (characteristic density)
+        :param rho0: density normalization (characteristic density) in units mass/[distance unit of rs]^3
         :type rho0: float
         :param c: concentration
         :type c: float [4,40]
-        :return: M(R_200) density
+        :return: M(R_200) mass in units of rho0 * rs^3
         """
         return 4 * np.pi * rho0 * rs ** 3 * (np.log(1. + c) - c / (1. + c))
 
     def r200_M(self, M, z):
         """
-        computes the radius R_200 crit of a halo of mass M in physical distances M/h
+        computes the radius R_200 crit of a halo of mass M in physical mass M/h
 
         :param M: halo mass in M_sun/h
         :type M: float or numpy array
@@ -81,18 +85,21 @@ class NFWParam(object):
     def c_rho0(self, rho0, z):
         """
         computes the concentration given density normalization rho_0 in h^2/Mpc^3 (physical) (inverse of function rho0_c)
+
         :param rho0: density normalization in h^2/Mpc^3 (physical)
         :param z: redshift
         :return: concentration parameter c
         """
         if not hasattr(self, '_c_rho0_interp'):
-            c_array = np.linspace(0.1, 10, 100)
+            c_array = np.linspace(0.1, 30, 100)
             rho0_array = self.rho0_c(c_array, z)
             from scipy import interpolate
-            self._c_rho0_interp = interpolate.InterpolatedUnivariateSpline(rho0_array, c_array, w=None, bbox=[None, None], k=3)
+            self._c_rho0_interp = interpolate.InterpolatedUnivariateSpline(rho0_array, c_array, w=None,
+                                                                           bbox=[None, None], k=3)
         return self._c_rho0_interp(rho0)
 
-    def c_M_z(self, M, z):
+    @staticmethod
+    def c_M_z(M, z):
         """
         fitting function of http://moriond.in2p3.fr/J08/proceedings/duffy.pdf for the mass and redshift dependence of
         the concentration parameter
@@ -117,6 +124,9 @@ class NFWParam(object):
         rho_s in  h^2/Mpc^3 (physical)
         Rs in Mpc/h physical
         c unit less
+
+        :param M: Mass in physical M_sun/h
+        :param z: redshift
         """
         c = self.c_M_z(M, z)
         r200 = self.r200_M(M, z)

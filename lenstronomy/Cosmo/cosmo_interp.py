@@ -1,4 +1,12 @@
-from astropy.cosmology.core import vectorize_if_needed, isiterable
+import astropy
+if float(astropy.__version__[0]) < 5.0:
+    from astropy.cosmology.core import isiterable
+    DeprecationWarning('Astropy<5 is going to be deprecated soon. This is in combination with Python version<3.8.'
+                       'We recommend you to update astropy to the latest versionbut keep supporting your settings for '
+                       'the time being.')
+else:
+    from astropy.cosmology.utils import isiterable
+#
 from astropy import units
 from math import sqrt
 import numpy as np
@@ -19,6 +27,12 @@ class CosmoInterp(object):
         :param num_interp: int, number of interpolating steps
         """
         self._cosmo = cosmo
+        if float(astropy.__version__[0]) < 5.0:
+            from lenstronomy.Cosmo._cosmo_interp_astropy_v4 import CosmoInterp as CosmoInterp_
+            self._comoving_interp = CosmoInterp_(cosmo)
+        else:
+            from lenstronomy.Cosmo._cosmo_interp_astropy_v5 import CosmoInterp as CosmoInterp_
+            self._comoving_interp = CosmoInterp_(cosmo)
         self._comoving_distance_interpolation_func = self._interpolate_comoving_distance(z_start=0, z_stop=z_stop,
                                                                                          num_interp=num_interp)
 
@@ -173,31 +187,7 @@ class CosmoInterp(object):
         running_dist = 0
         ang_dist = np.zeros(num_interp+1)
         for i in range(num_interp):
-            delta_dist = self._integral_comoving_distance_z1z2(z_steps[i], z_steps[i+1])
+            delta_dist = self._comoving_interp._integral_comoving_distance_z1z2(z_steps[i], z_steps[i+1])
             running_dist += delta_dist.value
             ang_dist[i+1] = copy.deepcopy(running_dist)
         return interp1d(z_steps, ang_dist)
-
-    def _integral_comoving_distance_z1z2(self, z1, z2):
-        """ Comoving line-of-sight distance in Mpc between objects at
-        redshifts z1 and z2.
-
-        The comoving distance along the line-of-sight between two
-        objects remains constant with time for objects in the Hubble
-        flow.
-
-        Parameters
-        ----------
-        z1, z2 : array_like, shape (N,)
-          Input redshifts.  Must be 1D or scalar.
-
-        Returns
-        -------
-        d : `~astropy.units.Quantity`
-          Comoving distance in Mpc between each input redshift.
-        """
-
-        from scipy.integrate import quad
-        f = lambda z1, z2: quad(self._cosmo._inv_efunc_scalar, z1, z2,
-                             args=self._cosmo._inv_efunc_scalar_args)[0]
-        return self._cosmo._hubble_distance * vectorize_if_needed(f, z1, z2)

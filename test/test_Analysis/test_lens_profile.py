@@ -11,7 +11,7 @@ import lenstronomy.Util.param_util as param_util
 
 class TestLensProfileAnalysis(object):
 
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_profile_slope(self):
@@ -72,6 +72,14 @@ class TestLensProfileAnalysis(object):
         theta_E_return = lensModel.effective_einstein_radius(kwargs_interpol,
                                                       get_precision=False, verbose=True, center_x=center_x, center_y=center_y)
         npt.assert_almost_equal(theta_E_return, 1, decimal=2)
+
+        # sub-critical mass profile
+        lensModel = LensProfileAnalysis(LensModel(lens_model_list=['NFW']))
+        kwargs_nfw =[{'Rs': 1, 'alpha_Rs': 0.2, 'center_x': 0, 'center_y': 0}]
+        theta_E_subcrit = lensModel.effective_einstein_radius(kwargs_nfw, get_precision=False)
+        assert np.isnan(theta_E_subcrit)
+        theta_E_subcrit, _ = lensModel.effective_einstein_radius(kwargs_nfw, get_precision=True)
+        assert np.isnan(theta_E_subcrit)
 
     def test_external_lensing_effect(self):
         lens_model_list = ['SHEAR']

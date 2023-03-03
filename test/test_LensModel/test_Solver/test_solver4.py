@@ -11,7 +11,7 @@ import lenstronomy.Util.param_util as param_util
 
 class TestSolver4Point(object):
 
-    def setup(self):
+    def setup_method(self):
         """
 
         :return:

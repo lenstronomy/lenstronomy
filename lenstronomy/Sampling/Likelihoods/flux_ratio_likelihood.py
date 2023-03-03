@@ -13,9 +13,7 @@ class FluxRatioLikelihood(object):
                  source_type='INF', window_size=0.1, grid_number=100, polar_grid=False, aspect_ratio=0.5):
         """
 
-        :param point_source_class: PointSource class instance
         :param lens_model_class: LensModel class instance
-        :param param_class: Param() class instance
         :param flux_ratios: ratio of fluxes of the multiple images (relative to the first appearing)
         :param flux_ratio_errors: errors in the flux ratios (relative to the first appearing. Alternatively 
         a log-normal covariance matrix. Note: in the case of a the covariance matrix, the errors are are assumed
@@ -40,7 +38,6 @@ class FluxRatioLikelihood(object):
         """
 
         :param kwargs_lens:
-        :param kwargs_ps:
         :param kwargs_cosmo:
         :return: log likelihood of the measured flux ratios given a model
         """
@@ -73,7 +70,10 @@ class FluxRatioLikelihood(object):
         elif self._flux_ratio_errors.ndim == 2:
             # Assume covariance matrix is in ln units!
             D = np.log(flux_ratios) - np.log(self._flux_ratios)
-            logL = -1/2 * D @ np.linalg.inv(self._flux_ratio_errors) @ D # TODO: only calculate the inverse once
+            logL = -1/2 * D @ np.linalg.inv(self._flux_ratio_errors) @ D  # TODO: only calculate the inverse once
+        else:
+            raise ValueError('flux_ratio_errors need dimension of 1 or 2. Current dimensions are %s'
+                             % self._flux_ratio_errors.ndim)
         if not np.isfinite(logL):
             return -10 ** 15
         return logL

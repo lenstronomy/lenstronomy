@@ -13,7 +13,7 @@ import lenstronomy.Util.util as util
 
 class TestLightAnalysis(object):
 
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_ellipticity(self):
@@ -217,8 +217,8 @@ class TestLightAnalysis(object):
 
         flux_list, R_h_list = profile.flux_components(kwargs_profile, grid_num=400, grid_spacing=0.01)
         assert len(flux_list) == 2
-        npt.assert_almost_equal(flux_list[0], 0.23898248741810812, decimal=8)
-        npt.assert_almost_equal(flux_list[1], 3.0565768930826662, decimal=8)
+        npt.assert_almost_equal(flux_list[0], 0.26974824714781637, decimal=6)
+        npt.assert_almost_equal(flux_list[1], 3.0964046927612707, decimal=6)
 
 
 

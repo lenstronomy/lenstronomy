@@ -12,18 +12,19 @@ class TestLensCosmo(object):
     """
     tests the UnitManager class routines
     """
-    def setup(self):
+    def setup_method(self):
 
         cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.05)
         self.nfwParam = NFWParam(cosmo=cosmo)
         self.z = 0.5  # needed fixed redshift for the inversion function
 
     def test_rho0_c(self):
-        c = 4
-
-        rho0 = self.nfwParam.rho0_c(c, z=self.z)
-        c_out = self.nfwParam.c_rho0(rho0, z=self.z)
-        npt.assert_almost_equal(c_out, c, decimal=3)
+        c_list = [0.1, 1, 4, 10, 20]
+        for c in c_list:
+            rho0 = self.nfwParam.rho0_c(c, z=self.z)
+            c_out = self.nfwParam.c_rho0(rho0, z=self.z)
+            print(c, 'c')
+            npt.assert_almost_equal(c_out, c, decimal=3)
 
     def test_rhoc_z(self):
         z = 0
@@ -67,14 +68,13 @@ class TestLensCosmo(object):
         h = 0.7
 
         for z in zvals:
-            nfw_colossus = NFWProfile(m200 * h, z, mdef='200c')
-            rhos_colossus, rs_colossus = nfw_colossus.fundamentalParameters(m200 * h, c, z, mdef='200c')
+            nfw_colossus = NFWProfile(M=m200 * h, z=z, c=c, mdef='200c')
+            rhos_colossus, rs_colossus = nfw_colossus.nativeParameters(m200 * h, c, z, mdef='200c')
             r200_colossus = rs_colossus * c
 
             # according to colossus documentation the density is in physical units[M h^2/kpc^3] and distance [kpc/h]
             rs_colossus *= h ** -1
             rhos_colossus *= h ** 2
-
 
             r200_lenstronomy = nfw_param.r200_M(m200 * h, z) / h  # physical radius r200
             rs_lenstronomy = r200_lenstronomy / c

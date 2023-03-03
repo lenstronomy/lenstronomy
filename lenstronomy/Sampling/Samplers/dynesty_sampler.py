@@ -18,7 +18,7 @@ class DynestySampler(NestedSampler):
 
     def __init__(self, likelihood_module, prior_type='uniform', 
                  prior_means=None, prior_sigmas=None, width_scale=1, sigma_scale=1,
-                 bound='multi', sample='auto', use_mpi=False, use_pool={}):
+                 bound='multi', sample='auto', use_mpi=False, use_pool=None):
         """
         :param likelihood_module: likelihood_module like in likelihood.py (should be callable)
         :param prior_type: 'uniform' of 'gaussian', for converting the unit hypercube to param cube
@@ -46,18 +46,13 @@ class DynestySampler(NestedSampler):
                 pool.wait()
                 sys.exit(0)
 
-            self._sampler = self._dynesty.DynamicNestedSampler(self.log_likelihood,
-                                                         self.prior, self.n_dims,
-                                                         bound=bound,
-                                                         sample=sample,
-                                                         pool=pool,
-                                                         use_pool=use_pool)
+            self._sampler = self._dynesty.DynamicNestedSampler(loglikelihood=self.log_likelihood,
+                                                               prior_transform=self.prior, ndim=self.n_dims,
+                                                               bound=bound, sample=sample, pool=pool, use_pool=use_pool)
         else:
-            self._sampler = self._dynesty.DynamicNestedSampler(self.log_likelihood,
-                                                         self.prior,
-                                                         self.n_dims,
-                                                         bound=bound,
-                                                         sample=sample)
+            self._sampler = self._dynesty.DynamicNestedSampler(loglikelihood=self.log_likelihood,
+                                                               prior_transform=self.prior, ndim=self.n_dims,
+                                                               bound=bound, sample=sample)
         self._has_warned = False
 
     def prior(self, u):
@@ -85,13 +80,13 @@ class DynestySampler(NestedSampler):
         :param x: parameter values
         :return: log-likelihood (from the likelihood module)
         """
-        logL = self._ll(x)
-        if not np.isfinite(logL):
+        log_l = self._ll(x)
+        if not np.isfinite(log_l):
             if not self._has_warned:
                 print("WARNING : logL is not finite : return very low value instead")
-            logL = -1e15
+            log_l = -1e15
             self._has_warned = True
-        return float(logL)
+        return float(log_l)
 
     def run(self, kwargs_run):
         """
@@ -109,12 +104,12 @@ class DynestySampler(NestedSampler):
 
         results = self._sampler.results
         samples_w = results.samples  # weighted samples
-        logL = results.logl
-        logZ = results.logz
-        logZ_err = results.logzerr
+        log_l = results.logl
+        log_z = results.logz
+        log_z_err = results.logzerr
 
         # Compute weighted mean and covariance.
-        weights = np.exp(results.logwt - logZ[-1])  # normalized weights
+        weights = np.exp(results.logwt - log_z[-1])  # normalized weights
         if np.sum(weights) != 1.:
             # TODO : clearly this is not optimal...
             # weights should by definition be normalized, but it appears that for very small 
@@ -127,13 +122,13 @@ class DynestySampler(NestedSampler):
         # Resample weighted samples to get equally weighted (aka unweighted) samples
         samples = self._dyfunc.resample_equal(samples_w, weights)
 
-        return samples, means, logZ, logZ_err, logL, results
+        return samples, means, log_z, log_z_err, log_l, results
 
     def _check_install(self):
         try:
             import dynesty
             import dynesty.utils as dyfunc
-        except:
+        except ImportError:
             print("Warning : dynesty not properly installed (results might be unexpected). \
                     You can get it with $pip install dynesty.")
             self._dynesty_installed = False

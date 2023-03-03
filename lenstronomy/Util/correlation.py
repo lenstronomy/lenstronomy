@@ -17,12 +17,12 @@ def correlation_2D(image):
     :return: 2d fourier transform
     """
     # Take the fourier transform of the image.
-    F1 = fftpack.fft2(image)
+    f1 = fftpack.fft2(image)
 
     # Now shift the quadrants around so that low spatial frequencies are in
     # the center of the 2D fourier transformed image.
-    F2 = fftpack.fftshift(F1)
-    return np.abs(F2)
+    f2 = fftpack.fftshift(f1)
+    return np.abs(f2)
 
 
 @export
@@ -42,7 +42,7 @@ def power_spectrum_1d(image):
     """
 
     :param image: 2d numpy array
-    :return: 1d radially averaged power spectrum of image in frequency units of pixels
+    :return: 1d radially averaged power spectrum of image in frequency units of pixels, radius in units of pixels
     """
     psd2D = power_spectrum_2d(image)
     # Calculate the azimuthally averaged 1D power spectrum

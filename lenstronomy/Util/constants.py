@@ -26,12 +26,12 @@ a_ES = G * M_sun / AU**2  # Earth-Sun acceleration
 F_ES = G * M_sun * M_earth / AU**2
 
 
-def delay_arcsec2days(delay_arcsec, D_dt):
+def delay_arcsec2days(delay_arcsec, ddt):
     """
     given a delay in arcsec^2 and a Delay distance, the delay is computed in days
 
     :param delay_arcsec: gravitational delay in units of arcsec^2 (e.g. Fermat potential)
-    :param D_dt: Time delay distance (in units of Mpc)
+    :param ddt: Time delay distance (in units of Mpc)
     :return: time-delay in units of days
     """
-    return D_dt * Mpc / c * delay_arcsec / day_s * arcsec**2
+    return ddt * Mpc / c * delay_arcsec / day_s * arcsec ** 2

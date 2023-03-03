@@ -14,7 +14,7 @@ class TestCurvedArcTanDiff(object):
     """
     tests the source model routines
     """
-    def setup(self):
+    def setup_method(self):
         self.model = CurvedArcTanDiff()
         self.sie = SIE()
         self.mst = Convergence()

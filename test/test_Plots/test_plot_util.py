@@ -9,7 +9,7 @@ import lenstronomy.Plots.plot_util as plot_util
 
 class TestPlotUtil(object):
 
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_sqrt(self):
@@ -53,7 +53,7 @@ class TestPlotUtil(object):
     def test_cmap_conf(self):
         cmap = plot_util.cmap_conf(cmap_string='gist_heat')
         cmap_update = plot_util.cmap_conf(cmap_string=cmap)
-        assert cmap is cmap_update
+        assert cmap.name == cmap_update.name
 
     def test_plot_line_set(self):
 
@@ -61,12 +61,13 @@ class TestPlotUtil(object):
         line_set_x = np.linspace(start=0, stop=1, num=10)
         line_set_y = np.linspace(start=0, stop=1, num=10)
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
-        ax = plot_util.plot_line_set(ax, coords, line_set_x, line_set_y, origin=None, color='g', flipped_x=True)
+        ax = plot_util.plot_line_set(ax, coords, line_set_x, line_set_y, origin=None, color='g', flipped_x=True,
+                                     pixel_offset=False)
         plt.close()
 
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
-        ax = plot_util.plot_line_set(ax, coords, line_set_x, line_set_y, origin=[1, 1], color='g',
-                                     flipped_x=False)
+        ax = plot_util.plot_line_set(ax, coords, line_set_x, line_set_y, origin=[1, 1], color='g', flipped_x=False,
+                                     pixel_offset=True)
         plt.close()
 
         # and here we input a list of arrays
@@ -80,7 +81,7 @@ class TestPlotUtil(object):
 
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
         ax = plot_util.plot_line_set(ax, coords, line_set_list_x, line_set_list_y, origin=[1, 1], color='g',
-                                          flipped_x=False)
+                                     flipped_x=False)
         plt.close()
 
     def test_image_position_plot(self):
@@ -89,12 +90,16 @@ class TestPlotUtil(object):
 
         ra_image, dec_image = np.array([1, 2]), np.array([1, 2])
         ax = plot_util.image_position_plot(ax, coords, ra_image, dec_image, color='w', image_name_list=None,
-                                           origin=None, flipped_x=False)
+                                           origin=None, flipped_x=False, pixel_offset=False)
         plt.close()
         ax = plot_util.image_position_plot(ax, coords, ra_image, dec_image, color='w', image_name_list=['A', 'B'],
-                                           origin=[1, 1], flipped_x=True)
+                                           origin=[1, 1], flipped_x=True, pixel_offset=True)
         plt.close()
 
-
+    def test_cmap_copy(self):
+        from lenstronomy.Plots.plot_util import cmap_conf
+        cmap_new = cmap_conf("gist_heat")
+        
+        
 if __name__ == '__main__':
     pytest.main()

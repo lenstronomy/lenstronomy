@@ -40,6 +40,7 @@ class LCDM(object):
     def D_d(self, H_0, Om0, Ode0=None):
         """
         angular diameter to deflector
+
         :param H_0: Hubble parameter [km/s/Mpc]
         :param Om0: normalized matter density at present time
         :return: float [Mpc]
@@ -50,6 +51,7 @@ class LCDM(object):
     def D_s(self, H_0, Om0, Ode0=None):
         """
         angular diameter to source
+
         :param H_0: Hubble parameter [km/s/Mpc]
         :param Om0: normalized matter density at present time
         :return: float [Mpc]
@@ -60,6 +62,7 @@ class LCDM(object):
     def D_ds(self, H_0, Om0, Ode0=None):
         """
         angular diameter from deflector to source
+
         :param H_0: Hubble parameter [km/s/Mpc]
         :param Om0: normalized matter density at present time
         :return: float [Mpc]
@@ -69,7 +72,8 @@ class LCDM(object):
 
     def D_dt(self, H_0, Om0, Ode0=None):
         """
-        time delay distance
+        time-delay distance
+
         :param H_0: Hubble parameter [km/s/Mpc]
         :param Om0: normalized matter density at present time
         :return: float [Mpc]

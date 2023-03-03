@@ -8,7 +8,7 @@ import pytest
 import unittest
 import numpy as np
 import numpy.testing as npt
-import scipy.ndimage.interpolation as interp
+from scipy.ndimage import shift
 
 
 def test_fwhm_kernel():
@@ -35,17 +35,17 @@ def test_center_kernel():
     kernel_new = kernel_util.kernel_norm(kernel_new)
     npt.assert_almost_equal(kernel_new/kernel, 1, decimal=8)
     # kernel shifted in x
-    kernel_shifted = interp.shift(kernel, [-.1, 0], order=1)
+    kernel_shifted = shift(kernel, shift=[-.1, 0], order=1)
     kernel_new = kernel_util.center_kernel(kernel_shifted, iterations=5)
     kernel_new = kernel_util.kernel_norm(kernel_new)
     npt.assert_almost_equal((kernel_new + 0.00001) / (kernel + 0.00001), 1, decimal=4)
     # kernel shifted in y
-    kernel_shifted = interp.shift(kernel, [0, -0.4], order=1)
+    kernel_shifted = shift(kernel, shift=[0, -0.4], order=1)
     kernel_new = kernel_util.center_kernel(kernel_shifted, iterations=5)
     kernel_new = kernel_util.kernel_norm(kernel_new)
     npt.assert_almost_equal((kernel_new + 0.01) / (kernel + 0.01), 1, decimal=3)
     # kernel shifted in x and y
-    kernel_shifted = interp.shift(kernel, [0.2, -0.3], order=1)
+    kernel_shifted = shift(kernel, shift=[0.2, -0.3], order=1)
     kernel_new = kernel_util.center_kernel(kernel_shifted, iterations=5)
     kernel_new = kernel_util.kernel_norm(kernel_new)
     npt.assert_almost_equal((kernel_new + 0.01) / (kernel + 0.01), 1, decimal=3)
@@ -114,7 +114,7 @@ def test_de_shift():
     kernel[2, 2] = 2
     shift_x = 0.48
     shift_y = 0.2
-    kernel_shifted = interp.shift(kernel, [-shift_y, -shift_x], order=1)
+    kernel_shifted = shift(kernel, shift=[-shift_y, -shift_x], order=1)
     kernel_de_shifted = kernel_util.de_shift_kernel(kernel_shifted, shift_x, shift_y, iterations=50)
     delta_max = np.max(kernel- kernel_de_shifted)
     assert delta_max < 0.01
@@ -125,7 +125,7 @@ def test_de_shift():
     kernel[2, 2] = 2
     shift_x = 1.48
     shift_y = 0.2
-    kernel_shifted = interp.shift(kernel, [-shift_y, -shift_x], order=1)
+    kernel_shifted = shift(kernel, shift=[-shift_y, -shift_x], order=1)
     kernel_de_shifted = kernel_util.de_shift_kernel(kernel_shifted, shift_x, shift_y, iterations=50)
     delta_max = np.max(kernel - kernel_de_shifted)
     assert delta_max < 0.01
@@ -137,7 +137,7 @@ def test_de_shift():
     kernel[2, 2] = 2
     shift_x = 1.48
     shift_y = 0.2
-    kernel_shifted = interp.shift(kernel, [-shift_y, -shift_x], order=1)
+    kernel_shifted = shift(kernel, shift=[-shift_y, -shift_x], order=1)
     kernel_de_shifted = kernel_util.de_shift_kernel(kernel_shifted, shift_x, shift_y, iterations=50)
     delta_max = np.max(kernel - kernel_de_shifted)
     assert delta_max < 0.01
@@ -160,7 +160,7 @@ def test_deshift_subgrid():
     shift_y = 0.2
     shift_x_subgird = shift_x * subgrid
     shift_y_subgrid = shift_y * subgrid
-    kernel_shifted_subgrid = interp.shift(kernel_subgrid, [-shift_y_subgrid, -shift_x_subgird], order=1)
+    kernel_shifted_subgrid = shift(kernel_subgrid, shift=[-shift_y_subgrid, -shift_x_subgird], order=1)
     kernel_shifted = util.averaging(kernel_shifted_subgrid, kernel_subgrid_size, kernel_size)
     kernel_shifted_highres = kernel_util.subgrid_kernel(kernel_shifted, subgrid_res=subgrid, num_iter=1)
     #npt.assert_almost_equal(kernel_shifted_highres[7, 7], kernel_shifted_subgrid[7, 7], decimal=10)
@@ -177,8 +177,8 @@ def test_shift_long_dist():
     kernel[4, 4] = 2.
     shift_x = 2.
     shift_y = 1.
-    input_kernel = interp.shift(kernel, [-shift_y, -shift_x], order=1)
-    old_style_kernel = interp.shift(input_kernel, [shift_y, shift_x], order=1)
+    input_kernel = shift(kernel, shift=[-shift_y, -shift_x], order=1)
+    old_style_kernel = shift(input_kernel, shift=[shift_y, shift_x], order=1)
     shifted_new = kernel_util.de_shift_kernel(input_kernel, shift_x, shift_y)
     assert kernel[3, 2] == shifted_new[3, 2]
     assert np.max(old_style_kernel - shifted_new) < 0.01
@@ -304,35 +304,31 @@ def test_averaging_even_kernel():
     kernel_super = Util.array2image(flux)
 
     kernel_pixel = kernel_util.averaging_even_kernel(kernel_super, subgrid_res)
-    npt.assert_almost_equal(np.sum(kernel_pixel), 1, decimal=5)
+    npt.assert_almost_equal(np.sum(kernel_pixel) * subgrid_res ** 2, 1, decimal=5)
     assert len(kernel_pixel) == 5
 
     x_grid, y_gird = Util.make_grid(17, 1., 1)
     sigma = 1.5
-    flux = gaussian.function(x_grid, y_gird, amp=1, sigma=sigma)
+    amp = 2
+    flux = gaussian.function(x_grid, y_gird, amp=amp, sigma=sigma)
     kernel_super = Util.array2image(flux)
 
     kernel_pixel = kernel_util.averaging_even_kernel(kernel_super, subgrid_res)
-    npt.assert_almost_equal(np.sum(kernel_pixel), 1, decimal=5)
+    npt.assert_almost_equal(np.sum(kernel_pixel) * subgrid_res ** 2, amp, decimal=5)
     assert len(kernel_pixel) == 5
 
 
 def test_degrade_kernel():
-    subgrid_res = 2
 
-    x_grid, y_gird = Util.make_grid(19, 1., 1)
+    x_grid, y_gird = Util.make_grid(19*5, 1., 1)
     sigma = 1.5
-    flux = gaussian.function(x_grid, y_gird, amp=1, sigma=sigma)
-    kernel_super = Util.array2image(flux)/np.sum(flux)
+    amp = 2
+    flux = gaussian.function(x_grid, y_gird, amp=2, sigma=sigma)
+    kernel_super = Util.array2image(flux)/np.sum(flux) * amp
 
-    kernel_degraded = kernel_util.degrade_kernel(kernel_super, degrading_factor=subgrid_res)
-    npt.assert_almost_equal(np.sum(kernel_degraded), 1, decimal=8)
-
-    kernel_degraded = kernel_util.degrade_kernel(kernel_super, degrading_factor=3)
-    npt.assert_almost_equal(np.sum(kernel_degraded), 1, decimal=8)
-
-    kernel_degraded = kernel_util.degrade_kernel(kernel_super, degrading_factor=1)
-    npt.assert_almost_equal(np.sum(kernel_degraded), 1, decimal=8)
+    for degrading_factor in range(7):
+        kernel_degraded = kernel_util.degrade_kernel(kernel_super, degrading_factor=degrading_factor+1)
+        npt.assert_almost_equal(np.sum(kernel_degraded), amp, decimal=8)
 
 
 def test_match_kernel_sixe():

@@ -32,8 +32,10 @@ def polar2cart(r, phi, center):
     """
     transforms polar coords [r,phi] into cartesian coords [x,y] in the frame of the lense center
 
-    :param coord: set of coordinates
-    :type coord: array of size (n,2)
+    :param r: radial coordinate (distance) to the center
+    :type r: array of size n or float
+    :param phi: angular coordinate
+    :type phi: array of size n or float
     :param center: rotation point
     :type center: array of size (2)
     :returns:  array of same size with coords [x,y]
@@ -115,12 +117,12 @@ def transform_e1e2_product_average(x, y, e1, e2, center_x, center_y):
     :param center_y: center of distortion
     :return: distorted coordinates x', y'
     """
-    phi_G, q = ellipticity2phi_q(e1, e2)
+    phi_g, q = ellipticity2phi_q(e1, e2)
     x_shift = x - center_x
     y_shift = y - center_y
 
-    cos_phi = np.cos(phi_G)
-    sin_phi = np.sin(phi_G)
+    cos_phi = np.cos(phi_g)
+    sin_phi = np.sin(phi_g)
 
     xt1 = cos_phi * x_shift + sin_phi * y_shift
     xt2 = -sin_phi * x_shift + cos_phi * y_shift
@@ -141,12 +143,26 @@ def transform_e1e2_square_average(x, y, e1, e2, center_x, center_y):
     :param center_y: center of distortion
     :return: distorted coordinates x', y'
     """
-    phi_G, q = ellipticity2phi_q(e1, e2)
+    phi_g, q = ellipticity2phi_q(e1, e2)
     x_shift = x - center_x
     y_shift = y - center_y
-    cos_phi = np.cos(phi_G)
-    sin_phi = np.sin(phi_G)
-    e = abs(1 - q)
+    cos_phi = np.cos(phi_g)
+    sin_phi = np.sin(phi_g)
+    e = q2e(q)
     x_ = (cos_phi * x_shift + sin_phi * y_shift) * np.sqrt(1 - e)
     y_ = (-sin_phi * x_shift + cos_phi * y_shift) * np.sqrt(1 + e)
     return x_, y_
+
+
+def q2e(q):
+    """
+    computes
+
+    .. math::
+        e = \\equic \\frac{1 - q^2}{1 + q^2}
+
+    :param q: axis ratio of minor to major axis
+    :return: ellipticity e
+    """
+    e = abs(1 - q ** 2) / (1 + q ** 2)
+    return e

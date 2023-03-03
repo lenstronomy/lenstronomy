@@ -8,7 +8,6 @@ import lenstronomy.Util.class_creator as class_creator
 from lenstronomy.ImSim.image_model import ImageModel
 from lenstronomy.Sampling.likelihood import LikelihoodModule
 from lenstronomy.Sampling.parameters import Param
-from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
 
@@ -18,7 +17,7 @@ class TestLikelihoodModule(object):
     test the fitting sequences
     """
 
-    def setup(self):
+    def setup_method(self):
         np.random.seed(42)
 
         # data specifics

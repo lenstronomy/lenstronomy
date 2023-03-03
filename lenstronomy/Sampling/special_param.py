@@ -2,6 +2,133 @@ __author__ = 'sibirrer'
 
 __all__ = ['SpecialParam']
 
+import numpy as np
+from .param_group import ModelParamGroup, SingleParam, ArrayParam
+
+
+# ==================================== #
+# == Defining individual parameters == #
+# ==================================== #
+
+
+class DdtSamplingParam(SingleParam):
+    '''
+    Time delay parameter
+    '''
+    param_names = ['D_dt']
+    _kwargs_lower = {'D_dt': 0}
+    _kwargs_upper = {'D_dt': 100000}
+
+
+class SourceSizeParam(SingleParam):
+    '''
+    Source size parameter
+    '''
+    param_names = ['source_size']
+    _kwargs_lower = {'source_size': 0}
+    _kwargs_upper = {'source_size': 1}
+
+
+class SourceGridOffsetParam(SingleParam):
+    '''
+    Source grid offset, both x and y.
+    '''
+    param_names = ['delta_x_source_grid', 'delta_y_source_grid']
+    _kwargs_lower = {
+        'delta_x_source_grid': -100,
+        'delta_y_source_grid': -100
+    }
+    _kwargs_upper = {
+        'delta_x_source_grid': 100,
+        'delta_y_source_grid': 100
+    }
+
+
+class MassScalingParam(ArrayParam):
+    '''
+    Mass scaling. Can scale the masses of arbitrary subsets of lens models
+    '''
+    _kwargs_lower = {'scale_factor': 0}
+    _kwargs_upper = {'scale_factor': 1000}
+    def __init__(self, num_scale_factor):
+        super().__init__(on=int(num_scale_factor) > 0)
+        self.param_names = {'scale_factor': int(num_scale_factor)}
+
+
+class PointSourceOffsetParam(ArrayParam):
+    '''
+    Point source offset, both x and y
+    '''
+    _kwargs_lower = {'delta_x_image': -1, 'delta_y_image': -1}
+    _kwargs_upper = {'delta_x_image': 1, 'delta_y_image': 1}
+    def __init__(self, offset, num_images):
+        super().__init__(on=offset and (int(num_images) > 0))
+        self.param_names = {
+            'delta_x_image': int(num_images),
+            'delta_y_image': int(num_images),
+        }
+
+
+class Tau0ListParam(ArrayParam):
+    '''
+    Optical depth renormalization parameters
+    '''
+    _kwargs_lower = {'tau0_list': 0}
+    _kwargs_upper = {'tau0_list': 1000}
+    def __init__(self, num_tau0):
+        super().__init__(on=int(num_tau0) > 0)
+        self.param_names = {'tau0_list': int(num_tau0)}
+
+
+class ZSamplingParam(ArrayParam):
+    '''
+    Redshift sampling.
+    '''
+    _kwargs_lower = {'z_sampling': 0}
+    _kwargs_upper = {'z_sampling': 1000}
+    def __init__(self, num_z_sampling):
+        super().__init__(on=int(num_z_sampling) > 0)
+        self.param_names = {'z_sampling': int(num_z_sampling)}
+
+
+class GeneralScalingParam(ArrayParam):
+    '''
+    General lens scaling.
+
+    For each scaled lens parameter, adds a `{param}_scale_factor` and
+    `{param}_scale_pow` special parameter, and updates the scaled param
+    as `param = param_scale_factor * param**param_scale_pow`.
+    '''
+    def __init__(self, params: dict):
+        # params is a dictionary
+        self.param_names = {}
+        self._kwargs_lower = {}
+        self._kwargs_upper = {}
+
+        super().__init__(params)
+        if not self.on:
+            return
+
+        for name, array in params.items():
+            num_param = np.max(array)
+
+            if num_param > 0:
+                fac_name = f'{name}_scale_factor'
+                self.param_names[fac_name] = num_param
+                self._kwargs_lower[fac_name] = 0
+                self._kwargs_upper[fac_name] = 1000
+
+                pow_name = f'{name}_scale_pow'
+                self.param_names[pow_name] = num_param
+                self._kwargs_lower[pow_name] = -10
+                self._kwargs_upper[pow_name] = 10
+
+
+# ======================================== #
+# == All together: Composing into class == #
+# ======================================== #
+
+
 
 class SpecialParam(object):
     """
@@ -9,7 +136,8 @@ class SpecialParam(object):
     These includes cosmology relevant parameters, astrometric errors and overall scaling parameters.
     """
 
-    def __init__(self, Ddt_sampling=False, mass_scaling=False, num_scale_factor=1, kwargs_fixed=None, kwargs_lower=None,
+    def __init__(self, Ddt_sampling=False, mass_scaling=False, num_scale_factor=1,
+                 general_scaling_params=None, kwargs_fixed=None, kwargs_lower=None,
                  kwargs_upper=None, point_source_offset=False, source_size=False, num_images=0, num_tau0=0,
                  num_z_sampling=0, source_grid_offset=False):
         """
@@ -22,67 +150,45 @@ class SpecialParam(object):
         :param kwargs_upper: keyword arguments, upper bound of parameters being sampled
         :param point_source_offset: bool, if True, adds relative offsets ot the modeled image positions relative to the
          time-delay and lens equation solver
-        :param num_images: number of point source images such that the point source offset parameters match their numbers
+        :param num_images: number of point source images such that the point source offset parameters match their
+         numbers
         :param source_size: bool, if True, samples a source size parameters to be evaluated in the flux ratio likelihood
         :param num_tau0: integer, number of different optical depth re-normalization factors
         :param num_z_sampling: integer, number of different lens redshifts to be sampled
-        :param source_grid_offset: bool, if True, samples two parameters (x, y) for the offset of the pixelated source plane grid coordinates.
-        Warning: this is only defined for pixel-based source modelluing (e.g. 'SLIT_STARLETS' light profile)
+        :param source_grid_offset: bool, if True, samples two parameters (x, y) for the offset of the pixelated source
+         plane grid coordinates.
+         Warning: this is only defined for pixel-based source modelling (e.g. 'SLIT_STARLETS' light profile)
         """
 
-        self._D_dt_sampling = Ddt_sampling
-        self._mass_scaling = mass_scaling
-        self._num_scale_factor = num_scale_factor
-        self._point_source_offset = point_source_offset
-        self._num_images = num_images
-        self._num_tau0 = num_tau0
-        self._num_z_sampling = num_z_sampling
-        if num_z_sampling > 0:
-            self._z_sampling = True
+        self._D_dt_sampling = DdtSamplingParam(Ddt_sampling)
+        if not mass_scaling:
+            num_scale_factor = 0
+        self._mass_scaling = MassScalingParam(num_scale_factor)
+
+        self._general_scaling = GeneralScalingParam(general_scaling_params or dict())
+
+        if point_source_offset:
+            self._point_source_offset = PointSourceOffsetParam(True, num_images)
         else:
-            self._z_sampling = False
+            self._point_source_offset = PointSourceOffsetParam(False, 0)
+        self._source_size = SourceSizeParam(source_size)
+        self._tau0 = Tau0ListParam(num_tau0)
+        self._z_sampling = ZSamplingParam(num_z_sampling)
+        self._source_grid_offset = SourceGridOffsetParam(source_grid_offset)
 
         if kwargs_fixed is None:
             kwargs_fixed = {}
         self._kwargs_fixed = kwargs_fixed
-        self._source_size = source_size
-        self._source_grid_offset = source_grid_offset
+
         if kwargs_lower is None:
             kwargs_lower = {}
-            if self._D_dt_sampling is True:
-                kwargs_lower['D_dt'] = 0
-            if self._mass_scaling is True:
-                kwargs_lower['scale_factor'] = [0] * self._num_scale_factor
-            if self._point_source_offset is True:
-                kwargs_lower['delta_x_image'] = [-1] * self._num_images
-                kwargs_lower['delta_y_image'] = [-1] * self._num_images
-            if self._source_size is True:
-                kwargs_lower['source_size'] = 0
-            if self._num_tau0 > 0:
-                kwargs_lower['tau0_list'] = [0] * self._num_tau0
-            if self._z_sampling is True:
-                kwargs_lower['z_sampling'] = [0] * self._num_z_sampling
-            if self._source_grid_offset:
-                kwargs_lower['delta_x_source_grid'] = -100
-                kwargs_lower['delta_y_source_grid'] = -100
+            for group in self._param_groups:
+                kwargs_lower = dict(kwargs_lower, **group.kwargs_lower)
         if kwargs_upper is None:
             kwargs_upper = {}
-            if self._D_dt_sampling is True:
-                kwargs_upper['D_dt'] = 100000
-            if self._mass_scaling is True:
-                kwargs_upper['scale_factor'] = [1000] * self._num_scale_factor
-            if self._point_source_offset is True:
-                kwargs_upper['delta_x_image'] = [1] * self._num_images
-                kwargs_upper['delta_y_image'] = [1] * self._num_images
-            if self._source_size is True:
-                kwargs_upper[source_size] = 1
-            if self._num_tau0 > 0:
-                kwargs_upper['tau0_list'] = [1000] * self._num_tau0
-            if self._z_sampling is True:
-                kwargs_upper['z_sampling'] = [20] * self._num_z_sampling
-            if self._source_grid_offset:
-                kwargs_upper['delta_x_source_grid'] = 100
-                kwargs_upper['delta_y_source_grid'] = 100
+            for group in self._param_groups:
+                kwargs_upper = dict(kwargs_upper, **group.kwargs_upper)
+
         self.lower_limit = kwargs_lower
         self.upper_limit = kwargs_upper
 
@@ -93,60 +199,10 @@ class SpecialParam(object):
         :param i: integer, list index to start the read out for this class
         :return: keyword arguments related to args, index after reading out arguments of this class
         """
-        kwargs_special = {}
-        if self._D_dt_sampling is True:
-            if 'D_dt' not in self._kwargs_fixed:
-                kwargs_special['D_dt'] = args[i]
-                i += 1
-            else:
-                kwargs_special['D_dt'] = self._kwargs_fixed['D_dt']
-        if self._mass_scaling is True:
-            if 'scale_factor' not in self._kwargs_fixed:
-                kwargs_special['scale_factor'] = args[i: i + self._num_scale_factor]
-                i += self._num_scale_factor
-            else:
-                kwargs_special['scale_factor'] = self._kwargs_fixed['scale_factor']
-        if self._point_source_offset is True:
-            if 'delta_x_image' not in self._kwargs_fixed:
-                kwargs_special['delta_x_image'] = args[i: i + self._num_images]
-                i += self._num_images
-            else:
-                kwargs_special['delta_x_image'] = self._kwargs_fixed['delta_x_image']
-            if 'delta_y_image' not in self._kwargs_fixed:
-                kwargs_special['delta_y_image'] = args[i: i + self._num_images]
-                i += self._num_images
-            else:
-                kwargs_special['delta_y_image'] = self._kwargs_fixed['delta_y_image']
-        if self._source_size is True:
-            if 'source_size' not in self._kwargs_fixed:
-                kwargs_special['source_size'] = args[i]
-                i += 1
-            else:
-                kwargs_special['source_size'] = self._kwargs_fixed['source_size']
-        if self._num_tau0 > 0:
-            if 'tau0_list' not in self._kwargs_fixed:
-                kwargs_special['tau0_list'] = args[i:i + self._num_tau0]
-                i += self._num_tau0
-            else:
-                kwargs_special['tau0_list'] = self._kwargs_fixed['tau0_list']
-        if self._z_sampling is True:
-            if 'z_sampling' not in self._kwargs_fixed:
-                kwargs_special['z_sampling'] = args[i:i + self._num_z_sampling]
-                i += self._num_z_sampling
-            else:
-                kwargs_special['z_sampling'] = self._kwargs_fixed['z_sampling']
-        if self._source_grid_offset:
-            if 'delta_x_source_grid' not in self._kwargs_fixed:
-                kwargs_special['delta_x_source_grid'] = args[i]
-                i += 1
-            else:
-                kwargs_special['delta_x_source_grid'] = self._kwargs_fixed['delta_x_source_grid']
-            if 'delta_y_source_grid' not in self._kwargs_fixed:
-                kwargs_special['delta_y_source_grid'] = args[i]
-                i += 1
-            else:
-                kwargs_special['delta_y_source_grid'] = self._kwargs_fixed['delta_y_source_grid']
-        return kwargs_special, i
+        result = ModelParamGroup.compose_get_params(
+            self._param_groups, args, i, kwargs_fixed=self._kwargs_fixed
+        )
+        return result
 
     def set_params(self, kwargs_special):
         """
@@ -154,83 +210,26 @@ class SpecialParam(object):
         :param kwargs_special: keyword arguments with parameter settings
         :return: argument list of the sampled parameters extracted from kwargs_special
         """
-        args = []
-        if self._D_dt_sampling is True:
-            if 'D_dt' not in self._kwargs_fixed:
-                args.append(kwargs_special['D_dt'])
-        if self._mass_scaling is True:
-            if 'scale_factor' not in self._kwargs_fixed:
-                for i in range(self._num_scale_factor):
-                    args.append(kwargs_special['scale_factor'][i])
-        if self._point_source_offset is True:
-            if 'delta_x_image' not in self._kwargs_fixed:
-                for i in range(self._num_images):
-                    args.append(kwargs_special['delta_x_image'][i])
-            if 'delta_y_image' not in self._kwargs_fixed:
-                for i in range(self._num_images):
-                    args.append(kwargs_special['delta_y_image'][i])
-        if self._source_size is True:
-            if 'source_size' not in self._kwargs_fixed:
-                args.append(kwargs_special['source_size'])
-        if self._num_tau0 > 0:
-            if 'tau0_list' not in self._kwargs_fixed:
-                for i in range(self._num_tau0):
-                    args.append(kwargs_special['tau0_list'][i])
-        if self._z_sampling is True:
-            if 'z_sampling' not in self._kwargs_fixed:
-                for i in range(self._num_z_sampling):
-                    args.append(kwargs_special['z_sampling'][i])
-        if self._source_grid_offset is True:
-            if 'delta_x_source_grid' not in self._kwargs_fixed:
-                args.append(kwargs_special['delta_x_source_grid'])
-            if 'delta_y_source_grid' not in self._kwargs_fixed:
-                args.append(kwargs_special['delta_y_source_grid'])
-        return args
+        return ModelParamGroup.compose_set_params(
+            self._param_groups, kwargs_special, kwargs_fixed=self._kwargs_fixed
+        )
 
     def num_param(self):
         """
 
         :return: integer, number of free parameters sampled (and managed) by this class, parameter names (list of strings)
         """
-        num = 0
-        string_list = []
-        if self._D_dt_sampling is True:
-            if 'D_dt' not in self._kwargs_fixed:
-                num += 1
-                string_list.append('D_dt')
-        if self._mass_scaling is True:
-            if 'scale_factor' not in self._kwargs_fixed:
-                num += self._num_scale_factor
-                for i in range(self._num_scale_factor):
-                    string_list.append('scale_factor')
-        if self._point_source_offset is True:
-            if 'delta_x_image' not in self._kwargs_fixed:
-                num += self._num_images
-                for i in range(self._num_images):
-                    string_list.append('delta_x_image')
-            if 'delta_y_image' not in self._kwargs_fixed:
-                num += self._num_images
-                for i in range(self._num_images):
-                    string_list.append('delta_y_image')
-        if self._source_size is True:
-            if 'source_size' not in self._kwargs_fixed:
-                num += 1
-                string_list.append('source_size')
-        if self._num_tau0 > 0:
-            if 'tau0_list' not in self._kwargs_fixed:
-                num += self._num_tau0
-                for i in range(self._num_tau0):
-                    string_list.append('tau0')
-        if self._z_sampling is True:
-            if 'z_sampling' not in self._kwargs_fixed:
-                num += self._num_z_sampling
-                for i in range(self._num_z_sampling):
-                    string_list.append('z')
-        if self._source_grid_offset is True:
-            if 'delta_x_source_grid' not in self._kwargs_fixed:
-                num += 1
-                string_list.append('delta_x_source_grid')
-            if 'delta_y_source_grid' not in self._kwargs_fixed:
-                num += 1
-                string_list.append('delta_y_source_grid')
-        return num, string_list
+        return ModelParamGroup.compose_num_params(
+            self._param_groups, kwargs_fixed=self._kwargs_fixed
+        )
+
+    @property
+    def _param_groups(self):
+        return [self._D_dt_sampling,
+                self._mass_scaling,
+                self._general_scaling,
+                self._point_source_offset,
+                self._source_size,
+                self._tau0,
+                self._z_sampling,
+                self._source_grid_offset]

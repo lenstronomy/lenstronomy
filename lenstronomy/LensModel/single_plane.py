@@ -22,7 +22,9 @@ class SinglePlane(ProfileListBase):
         :param k: only evaluate the k-th lens model
         :return: source plane positions corresponding to (x, y) in the image plane
         """
+
         dx, dy = self.alpha(x, y, kwargs, k=k)
+
         return x - dx, y - dy
 
     def fermat_potential(self, x_image, y_image, kwargs_lens, x_source=None, y_source=None, k=None):
@@ -34,6 +36,7 @@ class SinglePlane(ProfileListBase):
         :param x_source: source position
         :param y_source: source position
         :param kwargs_lens: list of keyword arguments of lens model parameters matching the lens model classes
+        :param k:
         :return: fermat potential in arcsec**2 without geometry term (second part of Eqn 1 in Suyu et al. 2013) as a list
         """
 
@@ -77,8 +80,10 @@ class SinglePlane(ProfileListBase):
         :param k: only evaluate the k-th lens model
         :return: deflection angles in units of arcsec
         """
+
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
+
         if isinstance(k, int):
             return self.func_list[k].derivatives(x, y, **kwargs[k])
         bool_list = self._bool_list(k)
@@ -88,6 +93,7 @@ class SinglePlane(ProfileListBase):
                 f_x_i, f_y_i = func.derivatives(x, y, **kwargs[i])
                 f_x += f_x_i
                 f_y += f_y_i
+
         return f_x, f_y
 
     def hessian(self, x, y, kwargs, k=None):
@@ -135,7 +141,7 @@ class SinglePlane(ProfileListBase):
         mass_3d = 0
         for i, func in enumerate(self.func_list):
             if bool_list[i] is True:
-                kwargs_i = {k:v for k, v in kwargs[i].items() if not k in ['center_x', 'center_y']}
+                kwargs_i = {k: v for k, v in kwargs[i].items() if k not in ['center_x', 'center_y']}
                 mass_3d_i = func.mass_3d_lens(r, **kwargs_i)
                 mass_3d += mass_3d_i
         return mass_3d
@@ -143,6 +149,13 @@ class SinglePlane(ProfileListBase):
     def mass_2d(self, r, kwargs, bool_list=None):
         """
         computes the mass enclosed a projected (2d) radius r
+
+        The mass definition is such that:
+
+        .. math::
+            \\alpha = mass_2d / r / \\pi
+
+        with alpha is the deflection angle
 
         :param r: radius (in angular units)
         :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
@@ -153,7 +166,7 @@ class SinglePlane(ProfileListBase):
         mass_2d = 0
         for i, func in enumerate(self.func_list):
             if bool_list[i] is True:
-                kwargs_i = {k: v for k, v in kwargs[i].items() if not k in ['center_x', 'center_y']}
+                kwargs_i = {k: v for k, v in kwargs[i].items() if k not in ['center_x', 'center_y']}
                 mass_2d_i = func.mass_2d_lens(r, **kwargs_i)
                 mass_2d += mass_2d_i
         return mass_2d
@@ -172,7 +185,7 @@ class SinglePlane(ProfileListBase):
         density = 0
         for i, func in enumerate(self.func_list):
             if bool_list[i] is True:
-                kwargs_i = {k: v for k, v in kwargs[i].items() if not k in ['center_x', 'center_y']}
+                kwargs_i = {k: v for k, v in kwargs[i].items() if k not in ['center_x', 'center_y']}
                 density_i = func.density_lens(r, **kwargs_i)
                 density += density_i
         return density

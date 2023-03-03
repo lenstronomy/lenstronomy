@@ -105,12 +105,12 @@ class EPL_numba(LensProfileBase):
         """
         z, b, t, q, ang_ell = param_transform(x, y, theta_E, gamma, e1, e2, center_x, center_y)
         ang = np.angle(z)
-        #r = np.abs(z)
+        # r = np.abs(z)
         zz_ell = z.real*q+1j*z.imag
         R = np.abs(zz_ell)
         phi = np.angle(zz_ell)
 
-        #u = np.minimum(nan_to_num((b/R)**t),1e100)
+        # u = np.minimum(nan_to_num((b/R)**t),1e100)
         u = np.fmin((b/R)**t, 1e10)               # I remove all factors of (b/R)**t to only have to remove nans once.
                                                   # The np.fmin is a regularisation near R=0, to avoid overflows
                                                   # in the magnification calculations
@@ -127,6 +127,7 @@ class EPL_numba(LensProfileBase):
         # Fix the nans if x=y=0 is filled in
 
         return f_xx, f_xy, f_xy, f_yy
+
 
 @jit()
 def param_transform(x, y, theta_E, gamma, e1, e2, center_x=0., center_y=0.):
@@ -163,11 +164,11 @@ def alpha(x, y, b, q, t, Omega=None):
     return alph
 
 
-@jit(fastmath=True) # Because of the reduction nature of this, relaxing commutativity actually matters a lot (4x speedup).
+@jit(fastmath=True)  # Because of the reduction nature of this, relaxing commutativity actually matters a lot (4x speedup).
 def omega(phi, t, q, niter_max=200, tol=1e-16):
     f = (1-q)/(1+q)
     omegas = np.zeros_like(phi, dtype=np.complex128)
-    niter = min(niter_max, int(np.log(tol)/np.log(f))+2) # The absolute value of each summand is always less than f, hence this limit for the number of iterations.
+    niter = min(niter_max, int(np.log(tol)/np.log(f))+2)  # The absolute value of each summand is always less than f, hence this limit for the number of iterations.
     Omega = 1*np.exp(1j*phi)
     fact = -f*np.exp(2j*phi)
     for n in range(1, niter):

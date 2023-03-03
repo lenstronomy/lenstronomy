@@ -428,7 +428,8 @@ class FittingSequence(object):
         :param n_iterations: number of iterations in the optimization process
         :param lowerLimit: lower limit of relative shift
         :param upperLimit: upper limit of relative shift
-        :param compute_bands: bool list, if multiple bands, this process can be limited to a subset of bands
+        :param compute_bands: bool list, if multiple bands, this process can be limited to a subset of bands for which
+         the coordinate system is being fit for best alignment to the model parameters
         :return: 0, updated coordinate system for the band(s)
         """
         kwargs_model = self._updateManager.kwargs_model

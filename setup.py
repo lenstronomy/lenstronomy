@@ -64,7 +64,7 @@ PACKAGE_PATH = os.path.abspath(os.path.join(__file__, os.pardir))
 
 setup(
     name='lenstronomy',
-    version='1.11.0',
+    version='1.11.1',
     description='Strong lens modeling package.',
     long_description=desc,
     author='lenstronomy developers',

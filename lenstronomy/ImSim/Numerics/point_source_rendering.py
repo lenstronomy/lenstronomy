@@ -72,5 +72,5 @@ class PointSourceRendering(object):
                 amp_estimated = amp
             else:
                 amp_estimated = kernel_util.estimate_amp(data, x_pos[i], y_pos[i], psf_kernel)
-            error_map = image_util.add_layer2image(error_map, x_pos[i], y_pos[i], psf_error_map * (psf_kernel * amp_estimated) ** 2)
+            error_map = image_util.add_layer2image(error_map, x_pos[i], y_pos[i], psf_error_map * amp_estimated ** 2)
         return error_map

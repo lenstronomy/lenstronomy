@@ -70,7 +70,7 @@ setup(
     author='lenstronomy developers',
     author_email='lenstronomy-dev@googlegroups.com',
     url='https://github.com/lenstronomy/lenstronomy',
-    download_url='https://github.com/lenstronomy/lenstronomy/archive/1.11.0.tar.gz',
+    download_url='https://github.com/lenstronomy/lenstronomy/archive/1.11.1.tar.gz',
     packages=find_packages(PACKAGE_PATH, "test"),
     package_dir={'lenstronomy': 'lenstronomy'},
     include_package_data=True,

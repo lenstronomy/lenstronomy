@@ -160,10 +160,10 @@ class PSF(object):
         """
         error variance of the normalized PSF.
         This error will be added to the pixel error around the position of point sources as follows:
-         sigma^2_i += 'psf_error_map'_j * <point source amplitude>**2
+        sigma^2_i += 'psf_error_map'_j * <point source amplitude>**2
 
         :return: error variance of the normalized PSF. Variance of
-        :rtype 2d numpy array of size of the PSF in pixel size (not supersampled)
+        :rtype: 2d numpy array of size of the PSF in pixel size (not supersampled)
         """
         if not hasattr(self, '_psf_error_map'):
             self._psf_error_map = np.zeros_like(self.kernel_point_source)

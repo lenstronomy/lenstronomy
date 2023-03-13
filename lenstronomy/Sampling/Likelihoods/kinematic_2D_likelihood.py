@@ -13,7 +13,7 @@ class KinLikelihood(object):
     Class to compute the likelihood associated to binned 2D kinematic maps
     """
     def __init__(self, kinematic_data_2D_class, lens_model_class, lens_light_model_class, kwargs_data, idx_lens=0,
-                 idx_lens_light=0,cuda=True):
+                 idx_lens_light=0):
         """
         :param kinematic_data_2D_class: KinData class instance
         :param lens_model_class: LensModel class instance
@@ -31,7 +31,7 @@ class KinLikelihood(object):
 
         self.kin_input = self.kin_class.KinBin.KinBin2kwargs()
         self.image_input = self.kwargs_data2image_input(kwargs_data)
-        self.kinematic_NN=kinematic_NN_call.kinematic_NN(cuda=cuda)
+        self.kinematic_NN=kinematic_NN_call.kinematic_NN()
         self.kinNN_input = {'deltaPix':0.02, 'image': np.ones((551,551))}
         self.KiNNalign = KinNN_image_align(self.kin_input, self.image_input, self.kinNN_input)
 
@@ -80,10 +80,10 @@ class KinLikelihood(object):
         converts lenstronomy kwargs into input vector for SKiNN
         """
         # lenstronomy to GLEE conversion
-        orientation_mass, q_mass = param_util.ellipticity2phi_q(kwargs_lens[self._idx_lens]['e1'],
-                                                              kwargs_lens[self._idx_lens]['e2'])
-        orientation_light, q_light = param_util.ellipticity2phi_q(kwargs_lens_light[self._idx_lens]['e1'],
-                                                                   kwargs_lens_light[self._idx_lens]['e2'])
+        orientation_mass = kwargs_lens[self._idx_lens]['phi']
+        q_mass =  kwargs_lens[self._idx_lens]['q']
+        orientation_light = kwargs_lens_light[self._idx_lens]['phi']
+        q_light =  kwargs_lens_light[self._idx_lens]['q']
         thetaE_lenstro=kwargs_lens[self._idx_lens]['theta_E']
         if self.lens_model_class.lens_model_list[self._idx_lens]=='SIE':
             gamma_lenstro=2.0
@@ -92,12 +92,8 @@ class KinLikelihood(object):
         gamma_GLEE=(gamma_lenstro-1)/2
         RE_scale=(2/(1+q_mass))**(1/(2*gamma_GLEE)) * np.sqrt(q_mass)
         thetaE_GLEE=thetaE_lenstro/RE_scale
-        # return [kwargs_lens['theta_E'],kwargs_lens['gamma']] #list of input params
-        # print('WARNING: conversion to NN params not yet implemented. Returning test values.')
-        # return np.array([9.44922512e-01, 8.26468232e-01, 1.00161407e+00, 3.10945081e+00, 7.90308638e-01, 1.00000000e-04,
-        #                  4.60606795e-01, 2.67345695e-01, 8.93001866e+01])
         return np.array([q_mass, q_light, thetaE_GLEE, kwargs_lens_light[self._idx_lens]['n_sersic'],
-                         kwargs_lens_light[self._idx_lens]['R_sersic'], 1.0e-04, gamma_GLEE,
+                         kwargs_lens_light[self._idx_lens]['R_sersic'], 8.0e-2, gamma_GLEE,
                         kwargs_special['b_ani'], kwargs_special['incli']*180/np.pi])
 
     def rescale_distance(self, image, kwargs_special):
@@ -123,8 +119,8 @@ class KinLikelihood(object):
         """
         Updates the image_input for rotation with the new values of orientation and center of the lens model.
         """
-        orientation_ellipse, q = param_util.ellipticity2phi_q(kwargs_lens[self._idx_lens]['e1'],
-                                                              kwargs_lens[self._idx_lens]['e2'])
+        orientation_ellipse=kwargs_lens[self._idx_lens]['phi']
+        q =  kwargs_lens[self._idx_lens]['q']
         cx = kwargs_lens[self._idx_lens]['center_x']
         cy = kwargs_lens[self._idx_lens]['center_y']
         self.image_input['ellipse_PA'] = orientation_ellipse

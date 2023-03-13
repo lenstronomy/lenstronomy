@@ -50,12 +50,9 @@ class TestKinLikelihood(object):
                                                        [0.1,0.9]]),
                        'ra_at_xy_0':2.,'dec_at_xy_0':-2.}
 
-        self.KinLikelihood = KinLikelihood(_KinData,lensModel,lensLightModel,kwargs_data,idx_lens=0,idx_lens_light=0,cuda=False)
+        self.KinLikelihood = KinLikelihood(_KinData,lensModel,lensLightModel,kwargs_data,idx_lens=0,idx_lens_light=0)
 
         self.kwargs_special = {'D_dt': 1988, 'b_ani':0.1, 'incli':np.pi/2,'D_d':2000}
-        # input_params = self.KinLikelihood.convert_to_NN_params(self.kwargs_lens, self.kwargs_lens_light,
-        #                                                        self.kwargs_special)
-        # self.NNvelo_map = self.KinLikelihood.kinematic_NN.generate_map(input_params)
 
     def test_convert_to_NN_params(self):
         #tests pretty simple case where there is no scaling. Should update to check another case
@@ -64,7 +61,7 @@ class TestKinLikelihood(object):
         kwargs_lens_light_test = [{'amp': 10, 'R_sersic': 1., 'q': 1, 'phi': 0, 'n_sersic': 3., 'center_x': 0.,
                               'center_y': 0.}]
         params=self.KinLikelihood.convert_to_NN_params(kwargs_lens_test, kwargs_lens_light_test, self.kwargs_special)
-        npt.assert_array_equal(params,np.array([1., 1., 2., 3., 1., 1.00000000e-04, 0.5, self.kwargs_special['b_ani'],
+        npt.assert_array_equal(params,np.array([1., 1., 2., 3., 1., 8.0e-2, 0.5, self.kwargs_special['b_ani'],
                                              self.kwargs_special['incli']*180/np.pi]))
 
     def test_rescale_distance(self):
@@ -91,12 +88,16 @@ class TestKinLikelihood(object):
                                                                                self.kwargs_lens_light,
                                                                    self.KinLikelihood.lens_light_bool_list)
         vrms=self.KinLikelihood.auto_binning(self.image_data, light_map)
-        npt.assert_array_equal(vrms,1) #think of a value to test this at
+        npt.assert_array_equal(vrms,1) #TODO: think of a value to test this at
 
 
     def test_logL(self):
-        logL = self.KinLikelihood.logL(self.kwargs_lens, self.kwargs_lens_light, self.kwargs_special)
-        assert logL == 10. #think of a value to test this at
+        logL_truth = self.KinLikelihood.logL(self.kwargs_lens, self.kwargs_lens_light, self.kwargs_special)
+        kwargs_lens_different=[{'theta_E': 1.5, 'gamma': 2., 'q': 0.8, 'phi': np.pi/6, 'center_x': 0, 'center_y': 0},
+                       {'gamma1': 0.06, 'gamma2': -0.03}]
+        logL_different=self.KinLikelihood.logL(kwargs_lens_different, self.kwargs_lens_light, self.kwargs_special)
+        assert logL_truth > logL_different #check that truth is closer than when wrong #TODO: give more realistic vbin values so that this test works, or think of a new test
+
 
 
 

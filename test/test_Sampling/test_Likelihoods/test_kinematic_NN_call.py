@@ -9,13 +9,15 @@ import sys
 
 class TestKinNNCall(object):
     def setup(self):
-        self.example_input = np.array([9.44922512e-01, 8.26468232e-01, 1.00161407e+00, 3.10945081e+00, 7.90308638e-01, 1.00000000e-04, 4.60606795e-01, 2.67345695e-01, 8.93001866e+01])
-        self.kinematic_NN=kinematic_NN(cuda=False)
+        self.example_input=np.array([8.56306356e-01,  6.77923305e-01,  1.46690845e+00,  3.00871520e+00,
+                                      1.30421229e+00, 8.0e-2, 4.55349851e-01, -5.68615913e-02,
+                                      8.07435011e+01])
+        self.kinematic_NN=kinematic_NN()
     def test_generate_map(self):
         map=self.kinematic_NN.generate_map(input_p=self.example_input)
         #check that returned map is 551x551 pixels at approximately 200 km/s
-        npt.assert_allclose(np.shape(map), (551,551))
-        npt.assert_almost_equal(np.mean(map), 229, decimal=0)
+        npt.assert_equal(np.shape(map), (551,551))
+        npt.assert_allclose(np.mean(map), 235.19, rtol=1e-2)
         # plt.imshow(map)
         # plt.colorbar()
         # plt.show()

@@ -97,7 +97,7 @@ class Const(object):
 
         :param r: 3d radius
         :param R: projected 2d radius
-        :param beta: anisotropy
+        :param beta: anisotropy, float >-0.5
         :return: K(r, R, beta)
         """
         u = r / R

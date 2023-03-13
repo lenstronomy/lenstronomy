@@ -48,14 +48,14 @@ class Nautilus(object):
             raise ValueError('prior_type %s is not supported for Nautilus wrapper.' % prior_type)
         # loop through prior
         pool = choose_pool(mpi=mpi, processes=thread_count, use_dill=True)
-        sampler = Sampler(prior, likelihood=self.likelihood, pool=pool, pass_struct=False, **kwargs_nautilus)
+        sampler = Sampler(prior, likelihood=self.likelihood, pool=pool, pass_dict=False, **kwargs_nautilus)
         time_start = time.time()
         if one_step is True:
             sampler.add_bound()
             sampler.fill_bound()
         else:
             sampler.run(verbose=verbose)
-        points, log_w, log_l = sampler.posterior()
+        points, log_w, log_l = sampler.posterior(return_as_dict=False)
         log_z = sampler.evidence()
         time_end = time.time()
         if pool.is_master():

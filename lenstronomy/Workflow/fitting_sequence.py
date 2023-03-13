@@ -232,9 +232,9 @@ class FittingSequence(object):
         :param backend_filename: name of the HDF5 file where sampling state is saved (through emcee backend engine)
         :type backend_filename: string
         :param start_from_backend: if True, start from the state saved in `backup_filename`.
-         Otherwise, create a new backup file with name `backup_filename` (any already existing file is overwritten!).
+         O therwise, create a new backup file with name `backup_filename` (any already existing file is overwritten!).
         :type start_from_backend: bool
-        :param **kwargs_zeus: zeus-specific kwargs
+        :param kwargs_zeus: zeus-specific kwargs
         :return: list of output arguments, e.g. MCMC samples, parameter names, logL distances of all samples specified
          by the specific sampler used
         """
@@ -300,13 +300,13 @@ class FittingSequence(object):
         init_pos = param_class.kwargs2args(**kwargs_temp)
         kwargs_sigma = self._updateManager.sigma_kwargs
         sigma_start = param_class.kwargs2args(**kwargs_sigma)
-        lowerLimit = np.array(init_pos) - np.array(sigma_start) * sigma_scale
-        upperLimit = np.array(init_pos) + np.array(sigma_start) * sigma_scale
+        lower_start = np.array(init_pos) - np.array(sigma_start) * sigma_scale
+        upper_start = np.array(init_pos) + np.array(sigma_start) * sigma_scale
         num_param, param_list = param_class.num_param()
 
         # run PSO
         sampler = Sampler(likelihoodModule=self.likelihoodModule)
-        result, chain = sampler.pso(n_particles, n_iterations, lowerLimit, upperLimit, init_pos=init_pos,
+        result, chain = sampler.pso(n_particles, n_iterations, lower_start, upper_start, init_pos=init_pos,
                                     threadCount=threadCount, mpi=self._mpi, print_key=print_key)
         kwargs_result = param_class.args2kwargs(result, bijective=True)
         return kwargs_result, chain, param_list
@@ -428,7 +428,8 @@ class FittingSequence(object):
         :param n_iterations: number of iterations in the optimization process
         :param lowerLimit: lower limit of relative shift
         :param upperLimit: upper limit of relative shift
-        :param compute_bands: bool list, if multiple bands, this process can be limited to a subset of bands
+        :param compute_bands: bool list, if multiple bands, this process can be limited to a subset of bands for which
+         the coordinate system is being fit for best alignment to the model parameters
         :return: 0, updated coordinate system for the band(s)
         """
         kwargs_model = self._updateManager.kwargs_model

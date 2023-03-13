@@ -31,7 +31,7 @@ class KinLikelihood(object):
 
         self.kin_input = self.kin_class.KinBin.KinBin2kwargs()
         self.image_input = self.kwargs_data2image_input(kwargs_data)
-        self.kinematic_NN=kinematic_NN_call.kinematic_NN()
+        self.kinematic_NN = kinematic_NN_call.kinematic_NN()
         self.kinNN_input = {'deltaPix':0.02, 'image': np.ones((551,551))}
         self.KiNNalign = KinNN_image_align(self.kin_input, self.image_input, self.kinNN_input)
 
@@ -60,18 +60,21 @@ class KinLikelihood(object):
         light_map = self.lens_light_model_class.surface_brightness(self.kin_x_grid,self.kin_y_grid,kwargs_lens_light,
                                                                    self.lens_light_bool_list)
         input_params=self.convert_to_NN_params(kwargs_lens,kwargs_lens_light,kwargs_special)
-        velo_map = self.kinematic_NN.generate_map(input_params)
-        if self.kinematic_NN.within_bounds==False:
-            #params not within training set. Penalty
-            return -10**8
-        velo_map=self.rescale_distance(velo_map,kwargs_special) #RESCALE ACCORDING TO D_d, D_dt
-        #Rotation and interpolation in kin data coordinates
-        self.kinNN_input['image']=velo_map
-        self.KiNNalign.update(self.kin_input, self.image_input, self.kinNN_input)
-        self.rotated_velo = self.KiNNalign.interp_image()
-        #Convolution by PSF to calculate Vrms and binning
-        vrms = self.auto_binning(self.rotated_velo,light_map)
-        logL = self._logL(vrms)
+        if self.kinematic_NN.SKiNN_installed:
+            velo_map = self.kinematic_NN.generate_map(input_params)
+            if self.kinematic_NN.within_bounds==False:
+                #params not within training set. Penalty
+                return -10**8
+            velo_map=self.rescale_distance(velo_map,kwargs_special) #RESCALE ACCORDING TO D_d, D_dt
+            #Rotation and interpolation in kin data coordinates
+            self.kinNN_input['image']=velo_map
+            self.KiNNalign.update(self.kin_input, self.image_input, self.kinNN_input)
+            self.rotated_velo = self.KiNNalign.interp_image()
+            #Convolution by PSF to calculate Vrms and binning
+            vrms = self.auto_binning(self.rotated_velo,light_map)
+            logL = self._logL(vrms)
+        else:
+            logL=np.nan
 
         return logL
 

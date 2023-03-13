@@ -1,9 +1,7 @@
 from lenstronomy.Sampling.Likelihoods.kinematic_NN_call import kinematic_NN
 import numpy as np
-import pytest
 import numpy.testing as npt
 import matplotlib.pyplot as plt
-import sys
 
 
 
@@ -14,10 +12,11 @@ class TestKinNNCall(object):
                                       8.07435011e+01])
         self.kinematic_NN=kinematic_NN()
     def test_generate_map(self):
-        map=self.kinematic_NN.generate_map(input_p=self.example_input)
-        #check that returned map is 551x551 pixels at approximately 200 km/s
-        npt.assert_equal(np.shape(map), (551,551))
-        npt.assert_allclose(np.mean(map), 235.19, rtol=1e-2)
-        # plt.imshow(map)
-        # plt.colorbar()
-        # plt.show()
+        if self.kinematic_NN.SKiNN_installed:
+            map=self.kinematic_NN.generate_map(input_p=self.example_input)
+            #check that returned map is 551x551 pixels at approximately 200 km/s
+            npt.assert_equal(np.shape(map), (551,551))
+            npt.assert_allclose(np.mean(map), 235.19, rtol=1e-2)
+            # plt.imshow(map)
+            # plt.colorbar()
+            # plt.show()

@@ -92,11 +92,12 @@ class TestKinLikelihood(object):
 
 
     def test_logL(self):
-        logL_truth = self.KinLikelihood.logL(self.kwargs_lens, self.kwargs_lens_light, self.kwargs_special)
-        kwargs_lens_different=[{'theta_E': 1.5, 'gamma': 2., 'q': 0.8, 'phi': np.pi/6, 'center_x': 0, 'center_y': 0},
-                       {'gamma1': 0.06, 'gamma2': -0.03}]
-        logL_different=self.KinLikelihood.logL(kwargs_lens_different, self.kwargs_lens_light, self.kwargs_special)
-        assert logL_truth > logL_different #check that truth is closer than when wrong #TODO: give more realistic vbin values so that this test works, or think of a new test
+        if self.KinLikelihood.kinematic_NN.SKiNN_installed:
+            logL_truth = self.KinLikelihood.logL(self.kwargs_lens, self.kwargs_lens_light, self.kwargs_special)
+            kwargs_lens_different=[{'theta_E': 1.5, 'gamma': 2., 'q': 0.8, 'phi': np.pi/6, 'center_x': 0, 'center_y': 0},
+                           {'gamma1': 0.06, 'gamma2': -0.03}]
+            logL_different=self.KinLikelihood.logL(kwargs_lens_different, self.kwargs_lens_light, self.kwargs_special)
+            assert logL_truth > logL_different #check that truth is closer than when wrong #TODO: give more realistic vbin values so that this test works, or think of a new test
 
 
 

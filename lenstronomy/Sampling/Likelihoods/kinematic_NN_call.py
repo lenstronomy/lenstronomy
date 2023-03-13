@@ -1,17 +1,23 @@
 # import trained NN
-import SKiNN
-import torch
 import numpy as np
-from SKiNN.generator import Generator
 import matplotlib.pyplot as plt
-
 
 class kinematic_NN():
     """
     Class to call the NN to emulate JAM kinematics
     """
     def __init__(self):
-        self.generator=Generator()
+        try:
+            import SKiNN
+            from SKiNN.generator import Generator
+            self.SKiNN_installed = True
+            self.generator = Generator()
+        except:
+            print("Warning : SKiNN not installed properly, \
+        but tests will be trivially fulfilled. \
+                  Get SKiNN from https://github.com/lucabig/lensing_odyssey_kinematics")
+            self.SKiNN_installed = False
+
 
     def generate_map(self, input_p):
         """Generate velocity map given input parameters.

@@ -133,11 +133,11 @@ class TestLikelihoodModule(object):
         npt.assert_almost_equal(logL, -1328.821179288249, decimal=-1)
     def test_kin_likelihood(self):
         kwargs_likelihood = {'kinematic_2D_likelihood':True, 'kin_lens_idx':0, 'kin_lens_light_idx':0,'time_delay_likelihood': False}
-
+        #TODO: this won't work with the SPEP profile
         kinnumPix = 10
         kinnum_bin = 4
         kwargs_kin = {'bin_data': np.zeros(kinnum_bin) + 10.,
-                      'bin_SNR': np.ones(kinnum_bin) * 2.,
+                      'bin_sigma': np.ones(kinnum_bin) * 2.,
                       'bin_mask': np.zeros((kinnumPix, kinnumPix))}
         _KinBin = KinBin(**kwargs_kin)
         kinkernel_point_source = kernel_util.kernel_gaussian(kernel_numPix=9, deltaPix=1., fwhm=2.)

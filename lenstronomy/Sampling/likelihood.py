@@ -129,8 +129,8 @@ class LikelihoodModule(object):
                 print('Kinematic Likelihood not meant for multiband, using first band by default')
             if kwargs_model['lens_model_list'][kin_lens_idx] not in ['PEMD_Q_PHI']:
                 print('Lens for kinematic is not PEMD_Q_PHI, the 2D kinematic likelihood will break.')
-            if kwargs_model['lens_light_model_list'][kin_lens_light_idx] not in ['SERSIC_Q_PHI']:
-                print('Lens light for kinematic is not SERSIC_Q_PHI , the 2D kinematic likelihood will break.')
+            if kwargs_model['lens_light_model_list'][kin_lens_light_idx] not in ['SERSIC_ELLIPSE_Q_PHI']:
+                print('Lens light for kinematic is not SERSIC_ELLIPSE_Q_PHI , the 2D kinematic likelihood will break.')
             self._kin_lens_idx = kin_lens_idx
             self._kin_lens_light_idx = kin_lens_light_idx
 
@@ -168,7 +168,7 @@ class LikelihoodModule(object):
             self.flux_ratio_likelihood = FluxRatioLikelihood(lens_model_class, **kwargs_flux)
         if self._kinematic_2D_likelihood is True:
             self.kinematic_2D_likelihood = KinLikelihood(kinematic_data, lens_model_class, lens_light_model_class,
-                                                         kwargs_imaging['multi_band_list'][0][0],self._kin_lens_idx,
+                                                         kwargs_imaging['multi_band_list'][0],self._kin_lens_idx,
                                                          self._kin_lens_light_idx)
 
     def __call__(self, a):

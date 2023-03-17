@@ -129,8 +129,8 @@ class LikelihoodModule(object):
                 print('Kinematic Likelihood not meant for multiband, using first band by default')
             if kwargs_model['lens_model_list'][kin_lens_idx] not in ['PEMD_Q_PHI']:
                 print('Lens for kinematic is not PEMD_Q_PHI, the 2D kinematic likelihood will break.')
-            if kwargs_model['lens_light_model_list'][kin_lens_light_idx] not in ['SERSIC', 'SERSIC_ELLIPSE']:
-                print('Lens light for kinematic is not SERSIC or SERSIC_ELLIPSE, the 2D kinematic likelihood will break.')
+            if kwargs_model['lens_light_model_list'][kin_lens_light_idx] not in ['SERSIC_Q_PHI']:
+                print('Lens light for kinematic is not SERSIC_Q_PHI , the 2D kinematic likelihood will break.')
             self._kin_lens_idx = kin_lens_idx
             self._kin_lens_light_idx = kin_lens_light_idx
 

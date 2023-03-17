@@ -88,10 +88,7 @@ class KinLikelihood(object):
         orientation_light = kwargs_lens_light[self._idx_lens]['phi']
         q_light =  kwargs_lens_light[self._idx_lens]['q']
         thetaE_lenstro=kwargs_lens[self._idx_lens]['theta_E']
-        if self.lens_model_class.lens_model_list[self._idx_lens]=='SIE':
-            gamma_lenstro=2.0
-        else:
-            gamma_lenstro=kwargs_lens[self._idx_lens]['gamma']
+        gamma_lenstro=kwargs_lens[self._idx_lens]['gamma']
         gamma_GLEE=(gamma_lenstro-1)/2
         RE_scale=(2/(1+q_mass))**(1/(2*gamma_GLEE)) * np.sqrt(q_mass)
         thetaE_GLEE=thetaE_lenstro/RE_scale

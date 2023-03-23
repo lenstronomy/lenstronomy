@@ -34,7 +34,10 @@ class ImageModel(object):
         self.num_bands = 1
         self.PSF = psf_class
         self.Data = data_class
-        self._flux_scaling = self.Data.flux_scaling
+        if hasattr(self.Data, 'flux_scaling'):
+            self._flux_scaling = self.Data.flux_scaling
+        else:
+            self._flux_scaling = 1
         self.PSF.set_pixel_size(self.Data.pixel_width)
         if kwargs_numerics is None:
             kwargs_numerics = {}

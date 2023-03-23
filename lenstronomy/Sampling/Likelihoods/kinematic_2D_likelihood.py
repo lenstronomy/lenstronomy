@@ -57,7 +57,7 @@ class KinLikelihood(object):
         Calculates Log likelihood from 2D kinematic likelihood
         """
         self.update_image_input(kwargs_lens)
-        light_map = self.lens_light_model_class.surface_brightness(self.kin_x_grid,self.kin_y_grid,kwargs_lens_light,
+        self.light_map = self.lens_light_model_class.surface_brightness(self.kin_x_grid,self.kin_y_grid,kwargs_lens_light,
                                                                    self.lens_light_bool_list)
         input_params=self.convert_to_NN_params(kwargs_lens,kwargs_lens_light,kwargs_special)
         if self.kinematic_NN.SKiNN_installed:
@@ -71,8 +71,8 @@ class KinLikelihood(object):
             self.KiNNalign.update(self.kin_input, self.image_input, self.kinNN_input)
             self.rotated_velo = self.KiNNalign.interp_image()
             #Convolution by PSF to calculate Vrms and binning
-            vrms = self.auto_binning(self.rotated_velo,light_map)
-            logL = self._logL(vrms)
+            self.vrms = self.auto_binning(self.rotated_velo,self.light_map)
+            logL = self._logL(self.vrms)
         else:
             logL=np.nan
 

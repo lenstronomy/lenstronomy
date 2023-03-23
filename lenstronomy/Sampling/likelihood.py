@@ -124,7 +124,7 @@ class LikelihoodModule(object):
         self._kwargs_flux.update(self._kwargs_flux_compute)
 
         if self._kinematic_2D_likelihood is True :
-            print("Note that the 2D kinematic likelihood assumes that the lens and lens light have the same center, oientation, and ellipticity")
+            print("Note that the 2D kinematic likelihood assumes that the lens and lens light have the same center, orientation, and ellipticity")
             if len(multi_band_list) > 1 :
                 print('Kinematic Likelihood not meant for multiband, using first band by default')
             if kwargs_model['lens_model_list'][kin_lens_idx] not in ['PEMD_Q_PHI']:

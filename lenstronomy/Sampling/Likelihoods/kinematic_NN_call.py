@@ -37,7 +37,7 @@ class kinematic_NN():
         plt.title('Prediction')
         plt.colorbar()
 
-    def check_bounds(self,input_p,verbose=True):
+    def check_bounds(self,input_p,verbose=False):
         within_bounds=True
         training_abs_bounds = {'q_mass': [0.6, 1.0],
                                'q_light': [0.6, 1.0],

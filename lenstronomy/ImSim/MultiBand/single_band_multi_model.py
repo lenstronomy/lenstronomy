@@ -40,7 +40,7 @@ class SingleBandMultiModel(ImageLinearFit):
         """
         self.type = 'single-band-multi-model'
         if likelihood_mask_list is None:
-            likelihood_mask_list = [None for i in range(len(multi_band_list))]
+            likelihood_mask_list = [None for _ in range(len(multi_band_list))]
         lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class = class_creator.create_class_instances(band_index=band_index, **kwargs_model)
         kwargs_data = multi_band_list[band_index][0]
         kwargs_psf = multi_band_list[band_index][1]

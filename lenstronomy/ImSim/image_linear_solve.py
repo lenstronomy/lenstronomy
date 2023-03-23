@@ -81,7 +81,7 @@ class ImageLinearFit(ImageModel):
         :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
         :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
         :param inv_bool: if True, invert the full linear solver Matrix Ax = y for the purpose of the covariance matrix.
-        This has no impact in case of pixel-based modelling.
+         This has no impact in case of pixel-based modelling.
         :return: 2d array of surface brightness pixels of the optimal solution of the linear parameters to match the data
         """
         if self._pixelbased_bool is True:
@@ -318,7 +318,7 @@ class ImageLinearFit(ImageModel):
             image = self.ImageNumerics.point_source_rendering(ra_pos[i], dec_pos[i], amp[i])
             A[n, :] = np.nan_to_num(self.image2array_masked(image), copy=False)
             n += 1
-        return A
+        return A * self._flux_scaling
 
     def update_linear_kwargs(self, param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
         """

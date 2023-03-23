@@ -13,7 +13,8 @@ class ImageData(PixelGrid, ImageNoise):
     The Data() class is initialized with keyword arguments:
 
     - 'image_data': 2d numpy array of the image data
-    - 'transform_pix2angle' 2x2 transformation matrix (linear) to transform a pixel shift into a coordinate shift (x, y) -> (ra, dec)
+    - 'transform_pix2angle' 2x2 transformation matrix (linear) to transform a pixel shift into a coordinate shift
+     (x, y) -> (ra, dec)
     - 'ra_at_xy_0' RA coordinate of pixel (0,0)
     - 'dec_at_xy_0' DEC coordinate of pixel (0,0)
 
@@ -39,7 +40,8 @@ class ImageData(PixelGrid, ImageNoise):
 
     """
     def __init__(self, image_data, exposure_time=None, background_rms=None, noise_map=None, gradient_boost_factor=None,
-                 ra_at_xy_0=0, dec_at_xy_0=0, transform_pix2angle=None, ra_shift=0, dec_shift=0, antenna_primary_beam=None):
+                 ra_at_xy_0=0, dec_at_xy_0=0, transform_pix2angle=None, ra_shift=0, dec_shift=0,
+                 antenna_primary_beam=None):
         """
 
         :param image_data: 2d numpy array of the image data
@@ -54,13 +56,14 @@ class ImageData(PixelGrid, ImageNoise):
         :param dec_at_xy_0: dec coordinate at pixel (0,0)
         :param ra_shift: RA shift of pixel grid
         :param dec_shift: DEC shift of pixel grid
-        :param antenna_primary_beam: 2d numpy array with the same size of imaga_data;
+        :param antenna_primary_beam: 2d numpy array with the same size of image_data;
          more descriptions of the primary beam can be found in the AngularSensitivity class
         """
         nx, ny = np.shape(image_data)
         if transform_pix2angle is None:
             transform_pix2angle = np.array([[1, 0], [0, 1]])
-        PixelGrid.__init__(self, nx, ny, transform_pix2angle, ra_at_xy_0 + ra_shift, dec_at_xy_0 + dec_shift, antenna_primary_beam)
+        PixelGrid.__init__(self, nx, ny, transform_pix2angle, ra_at_xy_0 + ra_shift, dec_at_xy_0 + dec_shift,
+                           antenna_primary_beam)
         ImageNoise.__init__(self, image_data, exposure_time=exposure_time, background_rms=background_rms,
                             noise_map=noise_map, gradient_boost_factor=gradient_boost_factor, verbose=False)
 
@@ -100,8 +103,8 @@ class ImageData(PixelGrid, ImageNoise):
             This can e.g. come from model errors in the PSF estimation.
         :return: the natural logarithm of the likelihood p(data|model)
         """
-        C_D = self.C_D_model(model)
-        X2 = (model - self._data) ** 2 / (C_D + np.abs(additional_error_map)) * mask
-        X2 = np.array(X2)
-        logL = - np.sum(X2) / 2
-        return logL
+        c_d = self.C_D_model(model)
+        chi2 = (model - self._data) ** 2 / (c_d + np.abs(additional_error_map)) * mask
+        chi2 = np.array(chi2)
+        log_likelihood = - np.sum(chi2) / 2
+        return log_likelihood

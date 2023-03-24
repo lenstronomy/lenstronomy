@@ -98,6 +98,8 @@ class TestRaise(unittest.TestCase):
         image_data_new = np.zeros((5, 5))
         with self.assertRaises(ValueError):
             out = Data.update_data(image_data_new)
+        with self.assertRaises(ValueError):
+            ImageData(**kwargs_data, likelihood_method = 'WRONG')
 
 
 if __name__ == '__main__':

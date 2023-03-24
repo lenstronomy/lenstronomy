@@ -131,13 +131,13 @@ class ImageData(PixelGrid, ImageNoise):
         
         The chi^2 of interferometry is computed by
         .. math::
-        \\chi^2 =  (d-Ax)^TC^{-1}(d-Ax) = \\frac{1}{\\sigma^2}(d^TA^{-1}d - 2x^Td + x^TAx)
+            \\chi^2 =  (d-Ax)^TC^{-1}(d-Ax) = \\frac{1}{\\sigma^2}(d^TA^{-1}d - 2x^Td + x^TAx)
         where :math:`d` and :math:`x` are the data vector and the unconvolved model image vector respectively.
         :math:`A` is the convolution operation matrix, where we normalize the PSF by setting its central pixel to 1.
         :math:`C` is the noise covariance matrix, its diagonal entries are rms^2 of noises, :math:`\\sigma^2`.
         For natural weighting interferometric images, we used the relation
         .. math::
-        C = \\sigma^2 A
+            C = \\sigma^2 A
         to simplify the likelihood function above. 
         """
         

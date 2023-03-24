@@ -1,5 +1,5 @@
 from lenstronomy.Workflow.psf_fitting import PsfFitting
-from lenstronomy.Workflow.alignment_matching import AlignmentFitting
+from lenstronomy.Workflow.image_calibration import CalibrationFitting
 from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModel
 from lenstronomy.Workflow.multi_band_manager import MultiBandUpdateManager
 from lenstronomy.Sampling.likelihood import LikelihoodModule
@@ -87,8 +87,8 @@ class FittingSequence(object):
             elif fitting_type == 'psf_iteration':
                 self.psf_iteration(**kwargs)
 
-            elif fitting_type == 'align_images':
-                self.align_images(**kwargs)
+            elif fitting_type == 'calibrate_images':
+                self.calibrate_images(**kwargs)
 
             elif fitting_type == 'PSO':
                 kwargs_result, chain, param = self.pso(**kwargs)
@@ -418,18 +418,18 @@ class FittingSequence(object):
                 self.multi_band_list[band_index][1] = kwargs_psf
         return 0
 
-    def align_images(self, n_particles=10, n_iterations=10, lowerLimit=-0.2, upperLimit=0.2, threadCount=1,
-                     compute_bands=None):
+    def calibrate_images(self, n_particles=10, n_iterations=10, threadCount=1, compute_bands=None, image_alignment=True,
+                         flux_calibration=False, kwargs_lower_limit=None, kwargs_upper_limit=None):
         """
         aligns the coordinate systems of different exposures within a fixed model parameterisation by executing a PSO
-        with relative coordinate shifts as free parameters
+        with relative coordinate shifts as free parameters, or does flux calibration, only used in joint-linear mode
 
         :param n_particles: number of particles in the Particle Swarm Optimization
         :param n_iterations: number of iterations in the optimization process
-        :param lowerLimit: lower limit of relative shift
-        :param upperLimit: upper limit of relative shift
         :param compute_bands: bool list, if multiple bands, this process can be limited to a subset of bands for which
          the coordinate system is being fit for best alignment to the model parameters
+        :param image_alignment: boolean, if True fits for coordinate offset
+        :param flux_calibration: boolean, if True fits for flux amplitude offset relative to model
         :return: 0, updated coordinate system for the band(s)
         """
         kwargs_model = self._updateManager.kwargs_model
@@ -441,16 +441,24 @@ class FittingSequence(object):
 
         for i in range(len(self.multi_band_list)):
             if compute_bands[i] is True:
+                if flux_calibration is True:
+                    if self.kwargs_data_joint.get('multi_band_type', 'multi-linear') != 'joint-linear':
+                        raise ValueError('flux calibration should only be done with join-linear data model!')
 
-                alignmentFitting = AlignmentFitting(self.multi_band_list, kwargs_model, kwargs_temp, band_index=i,
-                                                    likelihood_mask_list=likelihood_mask_list)
+                calibration_fitting = CalibrationFitting(self.multi_band_list, kwargs_model, kwargs_temp, band_index=i,
+                                                         likelihood_mask_list=likelihood_mask_list,
+                                                         image_alignment=image_alignment,
+                                                         flux_calibration=flux_calibration)
 
-                kwargs_data, chain = alignmentFitting.pso(n_particles=n_particles, n_iterations=n_iterations,
-                                                          lowerLimit=lowerLimit, upperLimit=upperLimit,
-                                                          threadCount=threadCount, mpi=self._mpi,
-                                                          print_key='Alignment fitting for band %s ...' % i)
-                print('Align completed for band %s.' % i)
-                print('ra_shift: %s,  dec_shift: %s' %(kwargs_data['ra_shift'], kwargs_data['dec_shift']))
+                kwargs_data, chain = calibration_fitting.pso(n_particles=n_particles, n_iterations=n_iterations,
+                                                             threadCount=threadCount, mpi=self._mpi,
+                                                             kwargs_lower_limit=kwargs_lower_limit,
+                                                             kwargs_upper_limit=kwargs_upper_limit,
+                                                             print_key='Calibrate fitting for band %s ...' % i)
+                print('Calibration completed for band %s.' % i)
+                print('ra_shift: %s,  dec_shift: %s, flux_scaling: %s' %(kwargs_data['ra_shift'],
+                                                                         kwargs_data['dec_shift'],
+                                                                         kwargs_data.get('flux_scaling', 1)))
                 self.multi_band_list[i][0] = kwargs_data
         return 0
 

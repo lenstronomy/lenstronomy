@@ -41,7 +41,7 @@ class ImageData(PixelGrid, ImageNoise):
     """
     def __init__(self, image_data, exposure_time=None, background_rms=None, noise_map=None, gradient_boost_factor=None,
                  ra_at_xy_0=0, dec_at_xy_0=0, transform_pix2angle=None, ra_shift=0, dec_shift=0,
-                 antenna_primary_beam=None):
+                 antenna_primary_beam=None, flux_scaling=1):
         """
 
         :param image_data: 2d numpy array of the image data
@@ -58,6 +58,9 @@ class ImageData(PixelGrid, ImageNoise):
         :param dec_shift: DEC shift of pixel grid
         :param antenna_primary_beam: 2d numpy array with the same size of image_data;
          more descriptions of the primary beam can be found in the AngularSensitivity class
+        :param flux_scaling: scales the model amplitudes to match the imaging data units. This can be used, for example,
+         when modeling multiple exposures that have different magnitude zero points (or flux normalizations) but demand
+         the same model normalization
         """
         nx, ny = np.shape(image_data)
         if transform_pix2angle is None:
@@ -65,7 +68,8 @@ class ImageData(PixelGrid, ImageNoise):
         PixelGrid.__init__(self, nx, ny, transform_pix2angle, ra_at_xy_0 + ra_shift, dec_at_xy_0 + dec_shift,
                            antenna_primary_beam)
         ImageNoise.__init__(self, image_data, exposure_time=exposure_time, background_rms=background_rms,
-                            noise_map=noise_map, gradient_boost_factor=gradient_boost_factor, verbose=False)
+                            noise_map=noise_map, gradient_boost_factor=gradient_boost_factor, verbose=False,
+                            flux_scaling=flux_scaling)
 
     def update_data(self, image_data):
         """

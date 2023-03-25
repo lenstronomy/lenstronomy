@@ -159,9 +159,8 @@ class TestFittingSequence(object):
 
         kwargs_pso = {'sigma_scale': 1, 'n_particles': n_p, 'n_iterations': n_i}
         fitting_list.append(['PSO', kwargs_pso])
-        kwargs_calibrate = {'n_particles': 2, 'n_iterations': 2,
-                            'flux_calibration': False, 'image_alignment': True}
-        fitting_list.append(['calibrate_images', kwargs_calibrate])
+        kwargs_align = {'lowerLimit': -0.1, 'upperLimit': 0.1, 'n_particles': 2, 'n_iterations': 2}
+        fitting_list.append(['align_images', kwargs_align])
         kwargs_psf_iter = {'num_iter': 2, 'psf_iter_factor': 0.5, 'stacking_method': 'mean', 'new_procedure': False}
         fitting_list.append(['psf_iteration', kwargs_psf_iter])
         fitting_list.append(['restart', None])

@@ -42,7 +42,7 @@ class ImageData(PixelGrid, ImageNoise):
 
     """
     def __init__(self, image_data, exposure_time=None, background_rms=None, noise_map=None, gradient_boost_factor=None,
-                 ra_at_xy_0=0, dec_at_xy_0=0, transform_pix2angle=None, ra_shift=0, dec_shift=0,  log_likelihood_constant=0,
+                 ra_at_xy_0=0, dec_at_xy_0=0, transform_pix2angle=None, ra_shift=0, dec_shift=0, log_likelihood_constant=0,
                  antenna_primary_beam=None, likelihood_method='diagonal'):
         """
 
@@ -62,7 +62,7 @@ class ImageData(PixelGrid, ImageNoise):
         :param antenna_primary_beam: 2d numpy array with the same size of imaga_data;
          more descriptions of the primary beam can be found in the AngularSensitivity class
         :param likelihood_method: string, type of method of log_likelihood computation: options are 'diagonal', 'interferometry_natwt'.
-         The default option 'diagonal' uses a diagonal covariance matrix, which is case for CCD images.
+         The default option 'diagonal' uses a diagonal covariance matrix, which is the case for CCD images.
          The 'interferometry_natwt' option uses our special interferometric likelihood function based on natural weighting images.
         """
         nx, ny = np.shape(image_data)

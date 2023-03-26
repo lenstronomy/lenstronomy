@@ -125,6 +125,9 @@ class ImageData(PixelGrid, ImageNoise):
     
     def log_likelihood_interferometry(self, model):
         """
+        log_likelihood function for natural weighting interferometric images,
+        based on (place holder for Nan Zhang's paper).
+        
         For the interferometry case, the model should be in the form [array1, array2], 
         where array1 and array2 are unconvolved and convolved model images respectively.
         They are both 2d array with the same shape of the data.
@@ -135,7 +138,8 @@ class ImageData(PixelGrid, ImageNoise):
         where :math:`d` and :math:`x` are the data vector and the unconvolved model image vector respectively.
         :math:`A` is the convolution operation matrix, where we normalize the PSF by setting its central pixel to 1.
         :math:`C` is the noise covariance matrix, its diagonal entries are rms^2 of noises, :math:`\\sigma^2`.
-        For natural weighting interferometric images, we used the relation
+        For natural weighting interferometric images, we used the relation 
+        (see Section 3.2 of https://doi.org/10.1093/mnras/staa2740 for the relation of natural weighting covariance matrix and PSF convolution)
         .. math::
             C = \\sigma^2 A
         to simplify the likelihood function above. 

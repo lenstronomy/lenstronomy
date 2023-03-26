@@ -560,7 +560,6 @@ class ImageLinearFit(ImageModel):
             return True
         else:
             return False
-
     
     # linear solver for interferometric natwt method
     def _image_linear_solve_interferometry_natwt(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
@@ -585,7 +584,8 @@ class ImageLinearFit(ImageModel):
 
     def _image_linear_solve_interferometry_natwt_solving(self, A, d):
         """
-        linearly solve the amplitude of each light profile response to the image.
+        Linearly solve the amplitude of each light profile response to the natural weighting interferometry images,
+        based on (place holder for Nan Zhang's paper).
         
         Theories:
             Suppose there are a set of light responses :math:`\\{x_i\\}`, we want to solve the set of amplitudes :math:`\\{\\alpha_i\\}`,
@@ -594,20 +594,22 @@ class ImageLinearFit(ImageModel):
                     \\chi^2 = (d - A_{PSF}\\sum_i \\alpha_i x_i)^TC^{-1}(d - A_{PSF}\\sum_i \\alpha_i x_i),
             where :math:`A_{PSF}` is the PSF convolution operation matrix (not to be confused with the input A of this function) 
             and :math:`C` is the noise covariance matrix. :math:`d` is the data image.
-            For natural weighting interferometric images, we have :math:`C = \\sigma^2 A_{PSF}`, therefore the chi^2 function simplifies to 
+            For natural weighting interferometric images, we have :math:`C = \\sigma^2 A_{PSF}`, 
+            (see Section 3.2 of https://doi.org/10.1093/mnras/staa2740 for the relation of natural weighting covariance matrix and PSF convolution)
+            therefore the chi^2 function simplifies to 
             .. math::
                     \\chi^2 = \\frac{1}{\\sigma^2}(d^TA_{PSF}^{-1}d + \\sum_{i,j}\\alpha_i\\alpha_j x_i^TA_{PSF}x_j - 2\\sum_{i}x_i^Td),
             from which the optimal amplitudes :math:`\\{\\alpha_i\\}` can be solved linearly by solving
             .. math::
                     \\sum_{j} M_{ij}\\alpha_{j} = b_i,
-            where :math:`M_{ij} = \\frac{1}{\sigma^2}x_i^TA_{PSF}x_j` and :math:`b_{i} = \\frac{1}{\sigma^2}x_i^Td`.
+            where :math:`M_{ij} = \\frac{1}{\\sigma^2}x_i^TA_{PSF}x_j` and :math:`b_{i} = \\frac{1}{\\sigma^2}x_i^Td`.
         
         The steps of this function are:
-            (1.) Making the entris :math:`M_{ij}` and :math:`b_i` defined above.
-            (2.) Solve the linear function to get optimal amplitudes.
+            (1.) Making the entries :math:`M_{ij}` and :math:`b_i` defined above.
+            (2.) Solve the linear function to get the optimal amplitudes.
             (3.) Apply these optimal amplitudes to make unconvolved and convolved model images.
                 The output model images are in the form [array1, array2]. 
-                (Note that this different from the non-interferometric linear solve of Lenstronomy, 
+                (Note that this is different from the non-interferometric linear solver of Lenstronomy, 
                  this output form saves time for likelihood computations in imaging_data for interferometric method.)
                 array1 is the unconvolved model image :math:`array1 = \\sum_i \\alpha_i x_i`, where :math:`\\alpha_i` is the solved optimal amplitudes.
                 array2 is the convolved model image :math:`array2 = A_{PSF}\\sum_i \\alpha_i x_i`, where :math:`\\alpha_i`.
@@ -615,8 +617,8 @@ class ImageLinearFit(ImageModel):
         :param A: response of unconvolved light profiles, [x_1, x_2, ...]
         :param d: data image, d
         :return: [array1, array2], [amp_array] 
-        where the [array1, array2] are unconvolved and convolved model images with marginalized amplitudes
-        and [amp_array] are marginalized optimal amplitudes.
+        where the [array1, array2] are unconvolved and convolved model images with solved amplitudes
+        and [amp_array] are the solved optimal amplitudes.
         
         """
         num_of_light, num_of_image_pixel = np.shape(A)

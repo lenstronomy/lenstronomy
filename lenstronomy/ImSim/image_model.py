@@ -358,7 +358,7 @@ class ImageModel(object):
         if (supersampling_convolution is True and supersampling_factor > 1):
             raise ValueError("Only non-supersampled convolution is supported for pixel-based modelling")
 
-        # setup the source numerics with a (possibily) different supersampling resolution
+        # set up the source numerics with a (possibily) different supersampling resolution
         supersampling_factor_source = kwargs_pixelbased.pop('supersampling_factor_source', 1)
         kwargs_numerics_source = kwargs_numerics.copy()
         kwargs_numerics_source['supersampling_factor'] = supersampling_factor_source

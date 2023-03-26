@@ -562,8 +562,8 @@ class ImageLinearFit(ImageModel):
             return False
     
     # linear solver for interferometric natwt method
-    def _image_linear_solve_interferometry_natwt(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
-                            kwargs_extinction=None, kwargs_special=None):
+    def _image_linear_solve_interferometry_natwt(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None,
+                                                 kwargs_ps=None, kwargs_extinction=None, kwargs_special=None):
         """
         'interferometry_natwt' method does NOT support model_error, cov_param.
         The interferometry linear solver just does the linear solving to get the optimal linear amplitudes
@@ -585,7 +585,7 @@ class ImageLinearFit(ImageModel):
     def _image_linear_solve_interferometry_natwt_solving(self, A, d):
         """
         Linearly solve the amplitude of each light profile response to the natural weighting interferometry images,
-        based on (place holder for Nan Zhang's paper).
+        based on (placeholder for Nan Zhang's paper).
         
         Theories:
             Suppose there are a set of light responses :math:`\\{x_i\\}`, we want to solve the set of amplitudes :math:`\\{\\alpha_i\\}`,

@@ -43,8 +43,8 @@ class ImageData(PixelGrid, ImageNoise):
 
     """
     def __init__(self, image_data, exposure_time=None, background_rms=None, noise_map=None, gradient_boost_factor=None,
-                 ra_at_xy_0=0, dec_at_xy_0=0, transform_pix2angle=None, ra_shift=0, dec_shift=0, log_likelihood_constant=0,
-                 antenna_primary_beam=None, likelihood_method='diagonal', phi_rot=0, flux_scaling=1):
+                 ra_at_xy_0=0, dec_at_xy_0=0, transform_pix2angle=None, ra_shift=0, dec_shift=0, phi_rot=0,
+                 log_likelihood_constant=0, antenna_primary_beam=None, likelihood_method='diagonal', flux_scaling=1):
         """
 
         :param image_data: 2d numpy array of the image data
@@ -137,7 +137,7 @@ class ImageData(PixelGrid, ImageNoise):
     def log_likelihood_interferometry(self, model):
         """
         log_likelihood function for natural weighting interferometric images,
-        based on (place holder for Nan Zhang's paper).
+        based on (placeholder for Nan Zhang's paper).
 
         For the interferometry case, the model should be in the form [array1, array2],
         where array1 and array2 are unconvolved and convolved model images respectively.

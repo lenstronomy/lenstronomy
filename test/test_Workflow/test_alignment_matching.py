@@ -11,7 +11,8 @@ from lenstronomy.Workflow.fitting_sequence import FittingSequence
 from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
 
-class TestImageCalibration(object):
+
+class TestAlignmentMatching(object):
 
     def setup(self):
         np.random.seed(41)
@@ -25,27 +26,38 @@ class TestImageCalibration(object):
         # PSF specification
 
         self.kwargs_data = sim_util.data_configure_simple(numPix, deltaPix, exp_time, sigma_bkg)
+        transform_pix2angle = self.kwargs_data['transform_pix2angle']
+        self.kwargs_data2 = copy.deepcopy(self.kwargs_data)
+        self.delta_x_offset = 0.2
+        self.kwargs_data2['ra_at_xy_0'] += self.delta_x_offset
+        self.phi_rot = 0.1
+        cos_phi, sin_phi = np.cos(self.phi_rot), np.sin(self.phi_rot)
+        rot_matrix = np.array([[cos_phi, -sin_phi], [sin_phi, cos_phi]])
+        transform_pix2angle_rot = np.dot(transform_pix2angle, rot_matrix)
+        self.kwargs_data2['transform_pix2angle'] = transform_pix2angle_rot
+
         data_class = ImageData(**self.kwargs_data)
+        data_class2 = ImageData(**self.kwargs_data2)
         kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': fwhm, 'pixel_size': deltaPix, 'truncation': 3}
         psf_class = PSF(**kwargs_psf)
         kwargs_numerics = {'supersampling_factor': 1}
 
-        self.flux_scale_factor = 0.1
-        self.kwargs_lens_light = [{'amp': 100., 'R_sersic': 0.5, 'n_sersic': 2, 'center_x': 0, 'center_y': 0}]
-        self.kwargs_lens_light2 = [{'amp': 100 * self.flux_scale_factor, 'R_sersic': 0.5, 'n_sersic': 2, 'center_x': 0, 'center_y': 0}]
-        lens_light_model_list = ['SERSIC']
+        self.kwargs_lens_light = [{'amp': 100., 'R_sersic': 0.5, 'n_sersic': 2, 'e1': 0.3, 'e2': -0.2,
+                                   'center_x': 0, 'center_y': 0}]
+        lens_light_model_list = ['SERSIC_ELLIPSE']
         lens_light_model_class = LightModel(light_model_list=lens_light_model_list)
 
         imageModel = ImageModel(data_class, psf_class, lens_light_model_class=lens_light_model_class)
+        imageModel2 = ImageModel(data_class2, psf_class, lens_light_model_class=lens_light_model_class)
         image_sim = sim_util.simulate_simple(imageModel, kwargs_lens_light=self.kwargs_lens_light)
-        image_sim2 = sim_util.simulate_simple(imageModel, kwargs_lens_light=self.kwargs_lens_light2)
+        image_sim2 = sim_util.simulate_simple(imageModel2, kwargs_lens_light=self.kwargs_lens_light)
         self.kwargs_data['image_data'] = image_sim
 
-        self.kwargs_data2 = copy.deepcopy(self.kwargs_data)
-        self.kwargs_data2['image_data'] = image_sim2
+        self.kwargs_data2_offset = copy.deepcopy(self.kwargs_data)
+        self.kwargs_data2_offset['image_data'] = image_sim2
 
         image_band1 = [self.kwargs_data, kwargs_psf, kwargs_numerics]
-        image_band2 = [self.kwargs_data2, kwargs_psf, kwargs_numerics]
+        image_band2 = [self.kwargs_data2_offset, kwargs_psf, kwargs_numerics]
         multi_band_list = [image_band1, image_band2]
         self.kwargs_data_joint = {'multi_band_list': multi_band_list, 'multi_band_type': 'joint-linear'}
 
@@ -64,10 +76,14 @@ class TestImageCalibration(object):
                                           self.kwargs_likelihood, self.kwargs_params)
         fitting_list = []
 
-        kwargs_calibrate = {'n_particles': 20, 'n_iterations': 40, 'calibrate_bands': [False, True]}
-        fitting_list.append(['calibrate_images', kwargs_calibrate])
+        kwargs_align = {'n_particles': 20, 'n_iterations': 40, 'compute_bands': [False, True],
+                            'align_offset': True, 'align_rotation': True, 'delta_shift': 0.3, 'delta_rot': 0.5}
+
+        fitting_list.append(['align_images', kwargs_align])
         chain_list = fittingSequence.fit_sequence(fitting_list)
         multi_band_list_new = fittingSequence.multi_band_list
         kwargs_data2_new = multi_band_list_new[1][0]
-        flux_scaling = kwargs_data2_new['flux_scaling']
-        npt.assert_almost_equal(flux_scaling, self.flux_scale_factor, decimal=1)
+        ra_shift = kwargs_data2_new['ra_shift']
+        npt.assert_almost_equal(ra_shift, self.delta_x_offset, decimal=1)
+        phi_rot = kwargs_data2_new['phi_rot']
+        npt.assert_almost_equal(phi_rot, self.phi_rot, decimal=1)

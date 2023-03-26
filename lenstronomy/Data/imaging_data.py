@@ -40,7 +40,7 @@ class ImageData(PixelGrid, ImageNoise):
 
     """
     def __init__(self, image_data, exposure_time=None, background_rms=None, noise_map=None, gradient_boost_factor=None,
-                 ra_at_xy_0=0, dec_at_xy_0=0, transform_pix2angle=None, ra_shift=0, dec_shift=0,
+                 ra_at_xy_0=0, dec_at_xy_0=0, transform_pix2angle=None, ra_shift=0, dec_shift=0, phi_rot=0,
                  antenna_primary_beam=None, flux_scaling=1):
         """
 
@@ -56,6 +56,7 @@ class ImageData(PixelGrid, ImageNoise):
         :param dec_at_xy_0: dec coordinate at pixel (0,0)
         :param ra_shift: RA shift of pixel grid
         :param dec_shift: DEC shift of pixel grid
+        :param phi_rot: rotation angle in regard to pixel coordinate transform_pix2angle
         :param antenna_primary_beam: 2d numpy array with the same size of image_data;
          more descriptions of the primary beam can be found in the AngularSensitivity class
         :param flux_scaling: scales the model amplitudes to match the imaging data units. This can be used, for example,
@@ -65,7 +66,10 @@ class ImageData(PixelGrid, ImageNoise):
         nx, ny = np.shape(image_data)
         if transform_pix2angle is None:
             transform_pix2angle = np.array([[1, 0], [0, 1]])
-        PixelGrid.__init__(self, nx, ny, transform_pix2angle, ra_at_xy_0 + ra_shift, dec_at_xy_0 + dec_shift,
+        cos_phi, sin_phi = np.cos(phi_rot), np.sin(phi_rot)
+        rot_matrix = np.array([[cos_phi, -sin_phi], [sin_phi, cos_phi]])
+        transform_pix2angle_rot = np.dot(transform_pix2angle, rot_matrix)
+        PixelGrid.__init__(self, nx, ny, transform_pix2angle_rot, ra_at_xy_0 + ra_shift, dec_at_xy_0 + dec_shift,
                            antenna_primary_beam)
         ImageNoise.__init__(self, image_data, exposure_time=exposure_time, background_rms=background_rms,
                             noise_map=noise_map, gradient_boost_factor=gradient_boost_factor, verbose=False,

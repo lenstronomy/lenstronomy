@@ -131,7 +131,8 @@ class FittingSequence(object):
 
             else:
                 raise ValueError("fitting_sequence %s is not supported. Please use: 'PSO', 'SIMPLEX', 'MCMC', "
-                                 "'psf_iteration', 'restart', 'update_settings' or ""'align_images'" % fitting_type)
+                                 "'psf_iteration', 'restart', 'update_settings', 'calibrate_images' or "
+                                 "'align_images'" % fitting_type)
         return chain_list
 
     def best_fit(self, bijective=False):
@@ -422,15 +423,19 @@ class FittingSequence(object):
                 self.multi_band_list[band_index][1] = kwargs_psf
         return 0
 
-    def align_images(self, n_particles=10, n_iterations=10, lowerLimit=-0.2, upperLimit=0.2, threadCount=1,
-                     compute_bands=None):
+    def align_images(self, n_particles=10, n_iterations=10, align_offset=True, align_rotation=False, threadCount=1,
+                     compute_bands=None, delta_shift=0.2, delta_rot=0.1):
         """
         aligns the coordinate systems of different exposures within a fixed model parameterisation by executing a PSO
         with relative coordinate shifts as free parameters
         :param n_particles: number of particles in the Particle Swarm Optimization
         :param n_iterations: number of iterations in the optimization process
-        :param lowerLimit: lower limit of relative shift
-        :param upperLimit: upper limit of relative shift
+        :param align_offset: aligns shift in Ra and Dec
+        :type align_offset: boolean
+        :param align_rotation: aligns coordinate rotation
+        :type align_rotation: boolean
+        :param delta_shift: astrometric shift tolerance
+        :param delta_rot: rotation angle tolerance [in radian]
         :param compute_bands: bool list, if multiple bands, this process can be limited to a subset of bands for which
          the coordinate system is being fit for best alignment to the model parameters
         :return: 0, updated coordinate system for the band(s)
@@ -446,10 +451,11 @@ class FittingSequence(object):
             if compute_bands[i] is True:
 
                 alignmentFitting = AlignmentFitting(self.multi_band_list, kwargs_model, kwargs_temp, band_index=i,
-                                                    likelihood_mask_list=likelihood_mask_list)
+                                                    likelihood_mask_list=likelihood_mask_list,
+                                                    align_offset=align_offset, align_rotation=align_rotation)
 
                 kwargs_data, chain = alignmentFitting.pso(n_particles=n_particles, n_iterations=n_iterations,
-                                                          lowerLimit=lowerLimit, upperLimit=upperLimit,
+                                                          delta_shift=delta_shift, delta_rot=delta_rot,
                                                           threadCount=threadCount, mpi=self._mpi,
                                                           print_key='Alignment fitting for band %s ...' % i)
                 print('Align completed for band %s.' % i)
@@ -483,9 +489,9 @@ class FittingSequence(object):
                                               calibrate_bands=calibrate_bands)
 
         multi_band_list, chain = calibration_fitting.pso(n_particles=n_particles, n_iterations=n_iterations,
-                                                     threadCount=threadCount, mpi=self._mpi,
-                                                     scaling_lower_limit=scaling_lower_limit,
-                                                     scaling_upper_limit=scaling_upper_limit)
+                                                         threadCount=threadCount, mpi=self._mpi,
+                                                         scaling_lower_limit=scaling_lower_limit,
+                                                         scaling_upper_limit=scaling_upper_limit)
         self.multi_band_list = multi_band_list
         return 0
 

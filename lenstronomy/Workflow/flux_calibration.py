@@ -15,7 +15,14 @@ class FluxCalibration(object):
     """
     def __init__(self, kwargs_imaging, kwargs_model, kwargs_params, calibrate_bands):
         """
-        initialise the classes of the chain and for parameter options
+        initialise the classes of the chain and for parameter options for the flux calibration fitting
+
+        :param kwargs_imaging: keyword argument related to imaging data and imaging likelihood.
+         Feeds into ImageLikelihood(**kwargs_imaging)
+        :param kwargs_model: keyword argument of model components
+        :param kwargs_params: keyword argument of model parameters
+        :param calibrate_bands: state which bands the flux calibration is applied to
+        :type calibrate_bands: list of booleans of length of the imaging bands
         """
         multi_band_list = kwargs_imaging['multi_band_list']
         multi_band_type = kwargs_imaging['multi_band_type']
@@ -34,6 +41,14 @@ class FluxCalibration(object):
         """
         returns the best fit for the lens model on catalogue basis with particle swarm optimizer
 
+        :param n_particles: number of particles in the PSO
+        :param n_iterations: number of iterationsof the PSO
+        :param threadCount: number of threads
+        :param mpi: boolean, MPI mode
+        :param scaling_lower_limit: lower limit of the flux_scaling initialization
+        :param scaling_upper_limit: upper limit of the flux_scaling initialization
+        :param print_key: string, print statement
+        :return: multi_band_list, [chi2_list, pos_list, vel_list]
         """
         init_pos = self.chain.get_args(self.chain.multi_band_list)
         pool = choose_pool(mpi=mpi, processes=threadCount, use_dill=True)
@@ -67,9 +82,8 @@ class CalibrationLikelihood(object):
         """
         initializes all the classes needed for the chain
 
-        :param multi_band_list:
-        :param kwargs_model:
-        :param kwargs_params:
+        :param kwargs_model: keyword argument of model components
+        :param kwargs_params: keyword argument of model parameters
         :param calibrate_bands: state which bands the flux calibration is applied to
         :type calibrate_bands: list of booleans of length of the imaging bands
         :param kwargs_imaging: keyword arguments of the imaging likelihood

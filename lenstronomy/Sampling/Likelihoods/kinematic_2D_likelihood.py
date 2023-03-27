@@ -52,7 +52,7 @@ class KinLikelihood(object):
         D_dt_fiducial = (1 + z_d_fiducial) * D_d_fiducial * D_s_fiducial / D_ds_fiducial
         self.fiducial_scale = D_dt_fiducial / (D_d_fiducial * (1 + z_d_fiducial))
 
-    def logL(self, kwargs_lens, kwargs_lens_light, kwargs_special):
+    def logL(self, kwargs_lens, kwargs_lens_light, kwargs_special,verbose=False):
         """
         Calculates Log likelihood from 2D kinematic likelihood
         """
@@ -61,7 +61,7 @@ class KinLikelihood(object):
                                                                    self.lens_light_bool_list)
         input_params=self.convert_to_NN_params(kwargs_lens,kwargs_lens_light,kwargs_special)
         if self.kinematic_NN.SKiNN_installed:
-            velo_map = self.kinematic_NN.generate_map(input_params)
+            velo_map = self.kinematic_NN.generate_map(input_params,verbose=verbose)
             if self.kinematic_NN.within_bounds==False:
                 #params not within training set. Penalty
                 return -10**8

@@ -19,14 +19,14 @@ class kinematic_NN():
             self.SKiNN_installed = False
 
 
-    def generate_map(self, input_p):
+    def generate_map(self, input_p,verbose=False):
         """Generate velocity map given input parameters.
 
         input_p: input parameters
 
         Returns the velocity maps
         """
-        self.within_bounds=self.check_bounds(input_p)
+        self.within_bounds=self.check_bounds(input_p,verbose)
         return self.generator.generate_map(input_p)
 
     def plot_map(self,input_p):
@@ -58,7 +58,7 @@ class kinematic_NN():
             if verbose:
                 print('NN CALL WARNING: R_sersic is not within theta_E training bounds!')
             within_bounds=False
-        if input_p[8] < np.arccos(input_p[0]): #should this be wrt q_light or q_mass?
+        if (input_p[8]-2)*np.pi/180 < np.arccos(np.min([input_p[0],input_p[1]])): #wrt q_light and q_mass
             if verbose:
                 print('NN CALL WARNING: Inclination is nonphysical!')
             within_bounds=False

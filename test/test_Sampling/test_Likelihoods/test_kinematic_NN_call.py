@@ -1,6 +1,7 @@
 from lenstronomy.Sampling.Likelihoods.kinematic_NN_call import kinematic_NN
 import numpy as np
 import numpy.testing as npt
+import copy
 import matplotlib.pyplot as plt
 
 
@@ -11,6 +12,7 @@ class TestKinNNCall(object):
                                       1.30421229e+00, 8.0e-2, 4.55349851e-01, -5.68615913e-02,
                                       8.07435011e+01])
         self.kinematic_NN=kinematic_NN()
+        
     def test_generate_map(self):
         if self.kinematic_NN.SKiNN_installed:
             map=self.kinematic_NN.generate_map(input_p=self.example_input)
@@ -20,3 +22,25 @@ class TestKinNNCall(object):
             # plt.imshow(map)
             # plt.colorbar()
             # plt.show()
+    def test_check_bounds(self):
+        if self.kinematic_NN.SKiNN_installed:
+            in_bounds=self.kinematic_NN.check_bounds(input_p=self.example_input,verbose=True)
+            assert(in_bounds==True)
+            # check r_eff out of bounds
+            test_input = copy.copy(self.example_input)
+            test_input[4] = 10
+            in_bounds = self.kinematic_NN.check_bounds(input_p=test_input, verbose=True)
+            assert (in_bounds == False)
+
+            # check r_eff > theta_E
+            test_input = copy.copy(self.example_input)
+            test_input[4] = 1.6
+            in_bounds = self.kinematic_NN.check_bounds(input_p=test_input, verbose=True)
+            assert (in_bounds == False)
+
+            #check inclination
+            test_input=copy.copy(self.example_input)
+            test_input[8]=10
+            in_bounds = self.kinematic_NN.check_bounds(input_p=test_input, verbose=True)
+            assert (in_bounds == False)
+

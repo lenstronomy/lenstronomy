@@ -44,6 +44,7 @@ class PsfFitting(object):
     Any previously set subgrid kernels or pixel_kernels are removed and constructed from the 'point_source_kernel'.
 
     """
+
     def __init__(self, image_model_class):
         self._image_model_class = image_model_class
 
@@ -104,7 +105,7 @@ class PsfFitting(object):
 
     def update_psf(self, kwargs_psf, kwargs_params, stacking_method='median', psf_symmetry=1, psf_iter_factor=.2,
                    block_center_neighbour=0, error_map_radius=None, block_center_neighbour_error_map=None,
-                   new_procedure=True):
+                   new_procedure=True, corner_symmetry=None):
         """
 
         :param kwargs_psf: keyword arguments to construct the PSF() class
@@ -129,6 +130,15 @@ class PsfFitting(object):
          (unless blocked through other means)
         :param new_procedure: boolean, uses post lenstronomy 1.9.2 procedure which is more optimal for super-sampled
          PSF's
+
+         :boolean corner_symmetry: if the imposed symmetry is an odd number, the edges of the reconstructed PSF in its default form will be
+        clipped at the corners. corner_symmetry
+        1) tracks where the residuals are being clipped by the imposed symmetry and then
+        2) creates a psf with no symmetry
+        3) adds the corner_symmetry psf (which has information at the corners) to the odd symmetry PSF, in the regions
+        where the odd-symmetry PSF does not have information
+
+
         :return: kwargs_psf_new, logL_after, error_map
         """
         if block_center_neighbour_error_map is None:
@@ -137,6 +147,7 @@ class PsfFitting(object):
         kwargs_psf_copy = copy.deepcopy(kwargs_psf)
 
         point_source_supersampling_factor = kwargs_psf_copy.get('point_source_supersampling_factor', 1)
+
         kwargs_psf_new = {'psf_type': 'PIXEL', 'kernel_point_source': kwargs_psf_copy['kernel_point_source'],
                           'point_source_supersampling_factor': point_source_supersampling_factor,
                           'psf_error_map': kwargs_psf_copy.get('psf_error_map', None)}
@@ -179,7 +190,8 @@ class PsfFitting(object):
                 kernel_new = kernel_util.cut_psf(kernel_new, psf_size=n_kernel)
 
         else:
-            kernel_old_high_res = psf_class.kernel_point_source_supersampled(supersampling_factor=point_source_supersampling_factor)
+            kernel_old_high_res = psf_class.kernel_point_source_supersampled(
+                supersampling_factor=point_source_supersampling_factor)
             kernel_size_high = len(kernel_old_high_res)
             data = self._image_model_class.Data.data
             residuals = data - model
@@ -190,7 +202,8 @@ class PsfFitting(object):
                                                            block_center_neighbour=block_center_neighbour)
 
             kernel_new = self.combine_psf(psf_kernel_list, kernel_old_high_res, factor=psf_iter_factor,
-                                          stacking_option=stacking_method, symmetry=psf_symmetry)
+                                          stacking_option=stacking_method, symmetry=psf_symmetry,
+                                          corner_symmetry=corner_symmetry)
             kernel_new = kernel_util.cut_psf(kernel_new, psf_size=kernel_size_high)
 
             # resize kernel for error_map estimate
@@ -239,7 +252,8 @@ class PsfFitting(object):
         point_list = []
         ra_array, dec_array, amp_array = image_model_class.PointSource.point_source_list(kwargs_ps, kwargs_lens, k=k)
         for i in range(len(ra_array)):
-            point_source = image_model_class.ImageNumerics.point_source_rendering([ra_array[i]], [dec_array[i]], [amp_array[i]])
+            point_source = image_model_class.ImageNumerics.point_source_rendering([ra_array[i]], [dec_array[i]],
+                                                                                  [amp_array[i]])
             point_list.append(point_source)
         return point_list
 
@@ -309,7 +323,8 @@ class PsfFitting(object):
             # re-scale residuals with point source brightness
             residual_cutout_mask /= point_amp[l]
             # enlarge residuals by super-sampling factor
-            residual_cutout_mask = residual_cutout_mask.repeat(supersampling_factor, axis=0).repeat(supersampling_factor, axis=1)
+            residual_cutout_mask = residual_cutout_mask.repeat(supersampling_factor, axis=0).repeat(
+                supersampling_factor, axis=1)
 
             # inverse shift residuals
             shift_x = (x_int - x_[l]) * supersampling_factor
@@ -399,7 +414,9 @@ class PsfFitting(object):
         return kernel_deshifted
 
     @staticmethod
-    def combine_psf(kernel_list_new, kernel_old, factor=1., stacking_option='median', symmetry=1):
+    ####Correct this based on Maverick Oh's note about lack of flux conservation.
+    def combine_psf(kernel_list_new, kernel_old, factor=1., stacking_option='median', symmetry=1, corner_symmetry=None):
+        ##TODO: Account for image edges/masked pixels.
         """
         updates psf estimate based on old kernel and several new estimates
 
@@ -409,36 +426,92 @@ class PsfFitting(object):
          factor=0 means old estimate
         :param stacking_option: option of stacking, mean or median
         :param symmetry: imposed symmetry of PSF estimate
-        :return: updated PSF estimate and error_map associated with it
-        """
+        :boolean corner_symmetry: if the imposed symmetry is an odd number, the edges of the reconstructed PSF in its default form will be
+        clipped at the corners. corner_symmetry
+        1) tracks where the residuals are being clipped by the imposed symmetry and then
+        2) creates a psf with symmetry=corner symmetry which is either 1 or an even symmetry number. (e.g for a symmetry 6 psf you could use symmetry 2 in the corners).
+        3) adds the corner_symmetry psf (which has information at the corners) to the odd symmetry PSF, in the regions
+        where the odd-symmetry PSF does not have complete information.
 
+
+        :return: updated PSF estimate
+        """
+        ##keep_corners is a boolean which tracks whether to calc PSF separately in the corners for odd symmetry rotations.
+        keep_corners = type(corner_symmetry) == int
         n = int(len(kernel_list_new) * symmetry)
         angle = 360. / symmetry
         kernelsize = len(kernel_old)
+
         kernel_list = np.zeros((n, kernelsize, kernelsize))
+
+        if keep_corners:
+            n_corners = int(len(kernel_list_new * corner_symmetry))
+            angle_corner = 360. / corner_symmetry
+            corner_kernel_array = np.zeros((n_corners, kernelsize, kernelsize))
+
+            ### numerically calculate the fraction of flux missing from the default symmetry value
+            ##this is for tracking the overall normalization of the rotated ims, so we use n for the original symmetry.
+            ones_im = np.ones((kernelsize, kernelsize))
+            corner_norm_array = np.zeros((n, kernelsize, kernelsize))
         i = 0
+        m = 0
         for kernel_new in kernel_list_new:
+            ##normalize each residual kernel one time at the start, before rotations clip them.
+            kernel_new = kernel_util.kernel_norm(kernel_new)
             for k in range(symmetry):
                 kernel_rotated = image_util.rotateImage(kernel_new, angle * k)
-                kernel_norm = kernel_util.kernel_norm(kernel_rotated)
-                kernel_list[i, :, :] = kernel_norm
+                kernel_list[i, :, :] = kernel_rotated
+                if keep_corners:
+                    ones_im_rotated = image_util.rotateImage(ones_im, angle * k)
+                    ones_im_rotated[ones_im_rotated > 1] = 1
+                    corner_norm_array[i, :, :] = ones_im_rotated
                 i += 1
 
-        kernel_old_rotated = np.zeros((symmetry, kernelsize, kernelsize))
-        for i in range(symmetry):
-            kernel_old_rotated[i, :, :] = kernel_old/np.sum(kernel_old)
+            ###do a rotation for the corner part of the data (i.e. if symmetry is 2 or 4).
+            if keep_corners:
+                for j in range(corner_symmetry):
+                    corner_kernel_rotated = image_util.rotateImage(kernel_new, angle_corner * j)
+                    corner_kernel_array[m, :, :] = corner_kernel_rotated
+                    m += 1
 
-        kernel_list_new_extended = np.append(kernel_list, kernel_old_rotated, axis=0)
         if stacking_option == 'median':
-            kernel_new = np.median(kernel_list_new_extended, axis=0)
+            ##previous version took the median including the old kernel (extended kernel list with rotated old kernel)
+            # Now remove that and use the weighting later for stabilization
+            kernel_new = np.median(kernel_list, axis=0)
+            if keep_corners:
+                kernel_new_corners = np.median(corner_kernel_array, axis=0)
+
+
         elif stacking_option == 'mean':
-            kernel_new = np.mean(kernel_list_new_extended, axis=0)
+            ##previous version took the mean including the old kernel. Now remove that and use the weighting later for stabilization
+            kernel_new = np.mean(kernel_list, axis=0)
+            if keep_corners:
+                kernel_new_corners = np.mean(corner_kernel_array, axis=0)
+
         else:
             raise ValueError(" stack_option must be 'median' or 'mean', %s is not supported." % stacking_option)
+
+        ###calculate the completeness for the main rotational symmetry--> anywhere this is not 1, only use the 'corners'
+        # kernel future improvement: do a weighted median/mean based on this normalization.
+
         kernel_new = np.nan_to_num(kernel_new)
         kernel_new[kernel_new < 0] = 0
+
+        if keep_corners:
+            # corner_norm was rotated the same way as the full symmetry psf e.g. 6, so it tracks where the flux is getting clipped by the rotation.
+            corner_norm = np.sum(corner_norm_array, axis=0)
+            mask = corner_norm < corner_norm.max()
+
+            kernel_new_corners = np.nan_to_num(kernel_new_corners)
+            kernel_new_corners[kernel_new_corners < 0] = 0
+
+            ##anywhere you didn't have complete data for n_symmetry exposures, then substitute the corners kernel.
+            kernel_new[mask] = kernel_new_corners[mask]
+
+        ###just in case the old kernel is not normalized. Probably want to do this earlier elsewhere, but @simon can let me know if this is necessary here.
+        kernel_old = kernel_util.kernel_norm(kernel_old)
         kernel_new = kernel_util.kernel_norm(kernel_new)
-        kernel_return = factor * kernel_new + (1.-factor) * kernel_old
+        kernel_return = factor * kernel_new + (1. - factor) * kernel_old
         return kernel_return
 
     def error_map_estimate_new(self, psf_kernel, psf_kernel_list, ra_image, dec_image, point_amp, supersampling_factor,
@@ -471,7 +544,7 @@ class PsfFitting(object):
             residuals_i = np.abs(kernel_low - kernel_low_i)
             residuals_i -= np.sqrt(C_D_cutout) / amp_i
             residuals_i[residuals_i < 0] = 0
-            error_map_list[i, :, :] = residuals_i**2
+            error_map_list[i, :, :] = residuals_i ** 2
 
         error_map = np.median(error_map_list, axis=0)
         error_map[kernel_low > 0] /= kernel_low[kernel_low > 0] ** 2
@@ -522,7 +595,8 @@ class PsfFitting(object):
             # compute residuals
             residual = np.abs(star - model)
             # subtract background and Poisson noise residuals
-            C_D_cutout = kernel_util.cutout_source(x_int, y_int, self._image_model_class.Data.C_D, len(star), shift=False)
+            C_D_cutout = kernel_util.cutout_source(x_int, y_int, self._image_model_class.Data.C_D, len(star),
+                                                   shift=False)
             # block neighbor points in error estimate
             mask_point_source = self.mask_point_source(x_pos, y_pos, ra_grid, dec_grid, radius=block_center_neighbour,
                                                        i=i)
@@ -532,12 +606,12 @@ class PsfFitting(object):
             residual[residual < 0] = 0
             # estimate relative error per star
             residual /= amp_i
-            error_map_list[i, :, :] = residual**2*mask_i
+            error_map_list[i, :, :] = residual ** 2 * mask_i
             mask_list[i, :, :] = mask_i
         # take median absolute error for each pixel
         # TODO: only for pixels that are not masked
         error_map = np.median(error_map_list, axis=0)
-        error_map[kernel > 0] /= kernel[kernel > 0]**2
+        error_map[kernel > 0] /= kernel[kernel > 0] ** 2
         error_map = np.nan_to_num(error_map)
         error_map[error_map > 1] = 1  # cap on error to be the same
 

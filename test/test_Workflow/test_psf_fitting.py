@@ -113,6 +113,29 @@ class TestPSFIteration(object):
         diff_new = np.sum((kernel_new - kernel_true) ** 2)
         assert diff_old > diff_new
 
+
+    def test_combine_psf_corner(self):
+        ## start kernel
+        kernel_old = np.ones((100,100))
+        test_updated_kernel = copy.deepcopy(kernel_old)
+
+        ##allow the residuals to have different normaliztions
+        kernel_list_new = [test_updated_kernel*2, test_updated_kernel, test_updated_kernel*4, test_updated_kernel]
+
+        nsymmetry = 6
+
+        updated_psf = self.psf_fitting.combine_psf(kernel_list_new, kernel_old, factor=1., stacking_option='median', symmetry=nsymmetry, corner_symmetry=1)
+
+        ##maybe a better criteria here for floats?
+        assert abs(updated_psf.max()-updated_psf.min())<1e-10
+
+        updated_psf = self.psf_fitting.combine_psf(kernel_list_new, kernel_old, factor=1., stacking_option='median',
+                                                   symmetry=nsymmetry, corner_symmetry=2)
+        assert abs(updated_psf.max() - updated_psf.min()) < 1e-10
+
+
+
+
     def test_update_iterative(self):
         fwhm = 0.5
         sigma = util.fwhm2sigma(fwhm)
@@ -298,7 +321,6 @@ class TestPSFIterationOld(object):
         diff_new = np.sum((kernel_new - kernel_true) ** 2)
         assert diff_old > diff_new
         assert diff_new < 0.01
-
 
 if __name__ == '__main__':
     pytest.main()

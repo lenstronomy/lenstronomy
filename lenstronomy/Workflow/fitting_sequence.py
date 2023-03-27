@@ -459,7 +459,9 @@ class FittingSequence(object):
                                                           threadCount=threadCount, mpi=self._mpi,
                                                           print_key='Alignment fitting for band %s ...' % i)
                 print('Align completed for band %s.' % i)
-                print('ra_shift: %s,  dec_shift: %s' %(kwargs_data['ra_shift'], kwargs_data['dec_shift']))
+                print('ra_shift: %s,  dec_shift: %s, phi_rot: %s' %(kwargs_data.get('ra_shift', 0),
+                                                                    kwargs_data.get('dec_shift', 0),
+                                                                    kwargs_data.get('phi_rot', 0)))
                 self.multi_band_list[i][0] = kwargs_data
         return 0
 

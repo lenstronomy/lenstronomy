@@ -42,7 +42,7 @@ class FluxCalibration(object):
         returns the best fit for the lens model on catalogue basis with particle swarm optimizer
 
         :param n_particles: number of particles in the PSO
-        :param n_iterations: number of iterationsof the PSO
+        :param n_iterations: number of iterations of the PSO
         :param threadCount: number of threads
         :param mpi: boolean, MPI mode
         :param scaling_lower_limit: lower limit of the flux_scaling initialization

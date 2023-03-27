@@ -34,6 +34,10 @@ class ImageModel(object):
         self.num_bands = 1
         self.PSF = psf_class
         self.Data = data_class
+        if hasattr(self.Data, 'flux_scaling'):
+            self._flux_scaling = self.Data.flux_scaling
+        else:
+            self._flux_scaling = 1
         self.PSF.set_pixel_size(self.Data.pixel_width)
         if kwargs_numerics is None:
             kwargs_numerics = {}
@@ -159,7 +163,7 @@ class ImageModel(object):
             source_light *= self._pb_1d
             
         source_light_final = self.ImageNumerics.re_size_convolve(source_light, unconvolved=unconvolved)
-        return source_light_final
+        return source_light_final * self._flux_scaling
 
     def _source_surface_brightness_pixelbased(self, kwargs_source, kwargs_lens=None, kwargs_extinction=None, kwargs_special=None,
                                               unconvolved=False, de_lensed=False, k=None, update_mapping=True):
@@ -186,7 +190,7 @@ class ImageModel(object):
             source_light = self.ImageNumerics.re_size_convolve(source_light, unconvolved=unconvolved)
         # undo flux normalization performed by re_size_convolve (already handled in SLITronomy)
         source_light_final = source_light / self.Data.pixel_width**2
-        return source_light_final
+        return source_light_final * self._flux_scaling
 
     def lens_surface_brightness(self, kwargs_lens_light, unconvolved=False, k=None):
         """
@@ -221,7 +225,7 @@ class ImageModel(object):
             lens_light *= self._pb_1d
             
         lens_light_final = self.ImageNumerics.re_size_convolve(lens_light, unconvolved=unconvolved)
-        return lens_light_final
+        return lens_light_final * self._flux_scaling
 
     def _lens_surface_brightness_pixelbased(self, kwargs_lens_light, k=None):
         """
@@ -235,7 +239,7 @@ class ImageModel(object):
         ra_grid, dec_grid = self.ImageNumerics.coordinates_evaluate
         lens_light = self.LensLightModel.surface_brightness(ra_grid, dec_grid, kwargs_lens_light, k=k)
         lens_light_final = util.array2image(lens_light)
-        return lens_light_final
+        return lens_light_final * self._flux_scaling
 
     def point_source(self, kwargs_ps, kwargs_lens=None, kwargs_special=None, unconvolved=False, k=None):
         """
@@ -255,10 +259,11 @@ class ImageModel(object):
             raise Warning("Antenna primary beam does not apply to point sources in ImageModel!")
         ra_pos, dec_pos = self._displace_astrometry(ra_pos, dec_pos, kwargs_special=kwargs_special)
         point_source_image += self.ImageNumerics.point_source_rendering(ra_pos, dec_pos, amp)
-        return point_source_image
+        return point_source_image * self._flux_scaling
 
     def image(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
-              kwargs_extinction=None, kwargs_special=None, unconvolved=False, source_add=True, lens_light_add=True, point_source_add=True):
+              kwargs_extinction=None, kwargs_special=None, unconvolved=False, source_add=True, lens_light_add=True,
+              point_source_add=True):
         """
 
         make an image with a realisation of linear parameter values "param"
@@ -273,7 +278,7 @@ class ImageModel(object):
         :param point_source_add: if True, add point sources, otherwise without
         :return: 2d array of surface brightness pixels of the simulation
         """
-        model = np.zeros((self.Data.num_pixel_axes))
+        model = np.zeros(self.Data.num_pixel_axes)
         if source_add is True:
             model += self.source_surface_brightness(kwargs_source, kwargs_lens, kwargs_extinction=kwargs_extinction,
                                                     kwargs_special=kwargs_special, unconvolved=unconvolved)
@@ -293,7 +298,7 @@ class ImageModel(object):
         """
         ra_grid, dec_grid = self.ImageNumerics.coordinates_evaluate
         extinction = self._extinction.extinction(ra_grid, dec_grid, kwargs_extinction=kwargs_extinction,
-                                                        kwargs_special=kwargs_special)
+                                                 kwargs_special=kwargs_special)
         extinction_array = np.ones_like(ra_grid) * extinction
         extinction = self.ImageNumerics.re_size_convolve(extinction_array, unconvolved=True)
         return extinction
@@ -353,7 +358,7 @@ class ImageModel(object):
         if (supersampling_convolution is True and supersampling_factor > 1):
             raise ValueError("Only non-supersampled convolution is supported for pixel-based modelling")
 
-        # setup the source numerics with a (possibily) different supersampling resolution
+        # set up the source numerics with a (possibily) different supersampling resolution
         supersampling_factor_source = kwargs_pixelbased.pop('supersampling_factor_source', 1)
         kwargs_numerics_source = kwargs_numerics.copy()
         kwargs_numerics_source['supersampling_factor'] = supersampling_factor_source

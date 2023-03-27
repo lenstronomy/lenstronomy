@@ -86,7 +86,7 @@ class ImageLinearFit(ImageModel):
         :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
         :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
         :param inv_bool: if True, invert the full linear solver Matrix Ax = y for the purpose of the covariance matrix.
-        This has no impact in case of pixel-based modelling.
+         This has no impact in case of pixel-based modelling.
         :return: 2d array of surface brightness pixels of the optimal solution of the linear parameters to match the data
         """
         if self._pixelbased_bool is True:
@@ -328,7 +328,7 @@ class ImageLinearFit(ImageModel):
             image = self.ImageNumerics.point_source_rendering(ra_pos[i], dec_pos[i], amp[i])
             A[n, :] = np.nan_to_num(self.image2array_masked(image), copy=False)
             n += 1
-        return A
+        return A * self._flux_scaling
 
     def update_linear_kwargs(self, param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
         """
@@ -562,8 +562,8 @@ class ImageLinearFit(ImageModel):
             return False
     
     # linear solver for interferometric natwt method
-    def _image_linear_solve_interferometry_natwt(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
-                            kwargs_extinction=None, kwargs_special=None):
+    def _image_linear_solve_interferometry_natwt(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None,
+                                                 kwargs_ps=None, kwargs_extinction=None, kwargs_special=None):
         """
         'interferometry_natwt' method does NOT support model_error, cov_param.
         The interferometry linear solver just does the linear solving to get the optimal linear amplitudes
@@ -585,7 +585,7 @@ class ImageLinearFit(ImageModel):
     def _image_linear_solve_interferometry_natwt_solving(self, A, d):
         """
         Linearly solve the amplitude of each light profile response to the natural weighting interferometry images,
-        based on (place holder for Nan Zhang's paper).
+        based on (placeholder for Nan Zhang's paper).
         
         Theories:
             Suppose there are a set of light responses :math:`\\{x_i\\}`, we want to solve the set of amplitudes :math:`\\{\\alpha_i\\}`,

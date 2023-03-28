@@ -16,8 +16,9 @@ class SNeLikelihood(LikelihoodModule):
         :return:
         """
         kwargs_return = self.param.args2kwargs(args)
-        # TODO extract additional SNe parameters
-        kwargs_sne = {}
+        # extract additional SNe parameters
+        kwargs_special = kwargs_return['kwargs_special']
+        kwargs_sne = self.param.specialParams.sne_kwargs(kwargs_special)
 
         # compute image magnifications and time delays
         kwargs_ps = kwargs_return['kwargs_ps']
@@ -28,8 +29,11 @@ class SNeLikelihood(LikelihoodModule):
         image_magnification = self.LensModel.magnification(ra_image, dec_image, kwargs_lens)
         # time delays
         fermat_pot = self.LensModel.fermat_potential(ra_image, dec_image, kwargs_lens)
+        # the user needs to sample or keep fixed 'D_dt', otherwise no time-delay can be computed.
         ddt = kwargs_return['kwargs_special']['D_dt']
         time_delay = fermat_potential2time_delay(fermat_pot, ddt=ddt, kappa_ext=0)
         # compute flux in different bands at the epochs of the images taken
+
+
 
         # compute image likelihood for all the bands

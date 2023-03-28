@@ -212,9 +212,7 @@ class SpecialParam(object):
         :param i: integer, list index to start the readout for this class
         :return: keyword arguments related to args, index after reading out arguments of this class
         """
-        result = ModelParamGroup.compose_get_params(
-            self._param_groups, args, i, kwargs_fixed=self._kwargs_fixed
-        )
+        result = ModelParamGroup.compose_get_params(self._param_groups, args, i, kwargs_fixed=self._kwargs_fixed)
         return result
 
     def set_params(self, kwargs_special):
@@ -223,9 +221,7 @@ class SpecialParam(object):
         :param kwargs_special: keyword arguments with parameter settings
         :return: argument list of the sampled parameters extracted from kwargs_special
         """
-        return ModelParamGroup.compose_set_params(
-            self._param_groups, kwargs_special, kwargs_fixed=self._kwargs_fixed
-        )
+        return ModelParamGroup.compose_set_params(self._param_groups, kwargs_special, kwargs_fixed=self._kwargs_fixed)
 
     def num_param(self):
         """
@@ -233,9 +229,7 @@ class SpecialParam(object):
         :return: integer, number of free parameters sampled (and managed) by this class, parameter names
         :rtype: list of strings
         """
-        return ModelParamGroup.compose_num_params(
-            self._param_groups, kwargs_fixed=self._kwargs_fixed
-        )
+        return ModelParamGroup.compose_num_params(self._param_groups, kwargs_fixed=self._kwargs_fixed)
 
     @property
     def _param_groups(self):
@@ -246,4 +240,15 @@ class SpecialParam(object):
                 self._source_size,
                 self._tau0,
                 self._z_sampling,
-                self._source_grid_offset]
+                self._source_grid_offset,
+                self._sne_sampling]
+
+    def sne_kwargs(self, kwargs_special):
+        """
+        makes a new dictionary with only the supernovae parameters
+
+        :param kwargs_special: dictionary of all special parameters
+        :return: dictionary of only the supernovae parameters
+        """
+        kwargs_sne = self._sne_sampling.kwargs_single_param(kwargs_special, self._kwargs_fixed)
+        return kwargs_sne

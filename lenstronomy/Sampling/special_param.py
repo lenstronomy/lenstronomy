@@ -10,6 +10,14 @@ from .param_group import ModelParamGroup, SingleParam, ArrayParam
 # == Defining individual parameters == #
 # ==================================== #
 
+class SNeSamplingParam(SingleParam):
+    """
+    Supernovae light curve parameters
+    """
+    param_names = ['dt2', 'm_peak', 't_peak']
+    _kwargs_lower = {'dt2': 0, 'm_peak': 30, 't_peak': -1000}
+    _kwargs_upper = {'dt2': 1000, 'm_peak': 10, 't_peak': 1000}
+
 
 class DdtSamplingParam(SingleParam):
     """
@@ -141,7 +149,7 @@ class SpecialParam(object):
     def __init__(self, Ddt_sampling=False, mass_scaling=False, num_scale_factor=1,
                  general_scaling_params=None, kwargs_fixed=None, kwargs_lower=None,
                  kwargs_upper=None, point_source_offset=False, source_size=False, num_images=0, num_tau0=0,
-                 num_z_sampling=0, source_grid_offset=False):
+                 num_z_sampling=0, source_grid_offset=False, sne_sampling=False):
         """
 
         :param Ddt_sampling: bool, if True, samples the time-delay distance D_dt (in units of Mpc)
@@ -160,6 +168,8 @@ class SpecialParam(object):
         :param source_grid_offset: bool, if True, samples two parameters (x, y) for the offset of the pixelated source
          plane grid coordinates.
          Warning: this is only defined for pixel-based source modelling (e.g. 'SLIT_STARLETS' light profile)
+        :param sne_sampling: boolean, if True, samples supernovae light curve parameters
+         (needs time series to be constrained)
         """
 
         self._D_dt_sampling = DdtSamplingParam(Ddt_sampling)
@@ -177,6 +187,7 @@ class SpecialParam(object):
         self._tau0 = Tau0ListParam(num_tau0)
         self._z_sampling = ZSamplingParam(num_z_sampling)
         self._source_grid_offset = SourceGridOffsetParam(source_grid_offset)
+        self._sne_sampling = SNeSamplingParam(sne_sampling)
 
         if kwargs_fixed is None:
             kwargs_fixed = {}
@@ -198,7 +209,7 @@ class SpecialParam(object):
         """
 
         :param args: argument list
-        :param i: integer, list index to start the read out for this class
+        :param i: integer, list index to start the readout for this class
         :return: keyword arguments related to args, index after reading out arguments of this class
         """
         result = ModelParamGroup.compose_get_params(

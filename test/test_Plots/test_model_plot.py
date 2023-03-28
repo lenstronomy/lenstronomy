@@ -296,6 +296,23 @@ class TestRaise(unittest.TestCase):
                                                   [kwargs_data, {'psf_type': 'NONE'}, {}]],
                                  kwargs_model=kwargs_model, kwargs_params=kwargs_params, bands_compute=[True],
                                  arrow_size=0.02, cmap_string="gist_heat", linear_solver=False)
+        
+        # test no error would be raised if kwargs_data['likelihood_method'] = 'interferometry_natwt' for Model Plot
+        with self.assertRaises(ValueError):
+            try:
+                kwargs_data = sim_util.data_configure_simple(numPix=10, deltaPix=1, background_rms=1, exposure_time=1)
+                kwargs_data['likelihood_method'] = 'interferometry_natwt'
+                kwargs_model = {'source_light_model_list': ['GAUSSIAN']}
+                kwargs_params = {'kwargs_lens': [],
+                                 'kwargs_source': [{'amp': 2, 'sigma': 1, 'center_x': 0, 'center_y': 0}],
+                                 'kwargs_ps': [], 'kwargs_lens_light': []}
+                lensPlot = ModelPlot(multi_band_list=[[kwargs_data, {'psf_type': 'NONE'}, {}]],
+                                     kwargs_model=kwargs_model, kwargs_params=kwargs_params, bands_compute=[True],
+                                     arrow_size=0.02, cmap_string="gist_heat", linear_solver=True)
+            except:
+                pass
+            else:
+                raise ValueError("There is error raised for model plot when likelihood method is 'interferometry_natwt'.")
 
 
 if __name__ == '__main__':

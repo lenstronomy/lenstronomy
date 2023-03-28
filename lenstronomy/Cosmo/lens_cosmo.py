@@ -155,8 +155,7 @@ class LensCosmo(object):
         :param kappa_ext: unit-less external shear not accounted for in the Fermat potential
         :return: time delay in days
         """
-        D_dt = self.ddt * (1. - kappa_ext) * const.Mpc  # eqn 7 in Suyu et al.
-        return D_dt / const.c * fermat_pot / const.day_s * const.arcsec ** 2  # * self.arcsec2phys_lens(1.)**2
+        return fermat_potential2time_delay(fermat_pot, self.ddt, kappa_ext=kappa_ext)
 
     def time_delay2fermat_pot(self, dt):
         """
@@ -310,5 +309,18 @@ class LensCosmo(object):
         from lenstronomy.LensModel.Profiles.sersic_utils import SersicUtil
         sersic_util = SersicUtil()
         norm_integral = sersic_util.total_flux(amp=1, R_sersic=R_sersic, n_sersic=n_sersic)
-        m_star = k_eff *self.sigma_crit_angle * norm_integral
+        m_star = k_eff * self.sigma_crit_angle * norm_integral
         return m_star
+
+
+def fermat_potential2time_delay(fermat_pot, ddt, kappa_ext=0):
+    """
+    computes time delay given Fermat potential and time-delay distance
+
+    :param fermat_pot: in units of arcsec^2 (e.g. Fermat potential)
+    :param ddt: time-delay distance (1 + z_lens) * Dd * Ds Dds in units of Mpc
+    :param kappa_ext: unit-less external shear not accounted for in the Fermat potential
+    :return: time delay in days
+    """
+    d_dt = ddt * (1. - kappa_ext) * const.Mpc
+    return d_dt / const.c * fermat_pot / const.day_s * const.arcsec ** 2

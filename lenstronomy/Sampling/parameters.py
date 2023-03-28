@@ -572,8 +572,8 @@ class Param(object):
             if type(param_list) == list:
                 kwargs_logsampling_lens[i_1] = param_list
             else:
-                raise TypeError(
-                    "Bad format for constraint setting: got %s. This should be in the format [[i_1, ['param_name1', 'param_name2', ...]], [...], ...]" % param_list)
+                raise TypeError("Bad format for constraint setting: got %s. This should be in the format "
+                                "[[i_1, ['param_name1', 'param_name2', ...]], [...], ...]" % param_list)
         return kwargs_logsampling_lens
 
     @staticmethod

@@ -12,27 +12,27 @@ from .param_group import ModelParamGroup, SingleParam, ArrayParam
 
 
 class DdtSamplingParam(SingleParam):
-    '''
+    """
     Time delay parameter
-    '''
+    """
     param_names = ['D_dt']
     _kwargs_lower = {'D_dt': 0}
     _kwargs_upper = {'D_dt': 100000}
 
 
 class SourceSizeParam(SingleParam):
-    '''
+    """
     Source size parameter
-    '''
+    """
     param_names = ['source_size']
     _kwargs_lower = {'source_size': 0}
     _kwargs_upper = {'source_size': 1}
 
 
 class SourceGridOffsetParam(SingleParam):
-    '''
+    """
     Source grid offset, both x and y.
-    '''
+    """
     param_names = ['delta_x_source_grid', 'delta_y_source_grid']
     _kwargs_lower = {
         'delta_x_source_grid': -100,
@@ -45,22 +45,24 @@ class SourceGridOffsetParam(SingleParam):
 
 
 class MassScalingParam(ArrayParam):
-    '''
+    """
     Mass scaling. Can scale the masses of arbitrary subsets of lens models
-    '''
+    """
     _kwargs_lower = {'scale_factor': 0}
     _kwargs_upper = {'scale_factor': 1000}
+
     def __init__(self, num_scale_factor):
         super().__init__(on=int(num_scale_factor) > 0)
         self.param_names = {'scale_factor': int(num_scale_factor)}
 
 
 class PointSourceOffsetParam(ArrayParam):
-    '''
+    """
     Point source offset, both x and y
-    '''
+    """
     _kwargs_lower = {'delta_x_image': -1, 'delta_y_image': -1}
     _kwargs_upper = {'delta_x_image': 1, 'delta_y_image': 1}
+
     def __init__(self, offset, num_images):
         super().__init__(on=offset and (int(num_images) > 0))
         self.param_names = {
@@ -70,35 +72,37 @@ class PointSourceOffsetParam(ArrayParam):
 
 
 class Tau0ListParam(ArrayParam):
-    '''
+    """
     Optical depth renormalization parameters
-    '''
+    """
     _kwargs_lower = {'tau0_list': 0}
     _kwargs_upper = {'tau0_list': 1000}
+
     def __init__(self, num_tau0):
         super().__init__(on=int(num_tau0) > 0)
         self.param_names = {'tau0_list': int(num_tau0)}
 
 
 class ZSamplingParam(ArrayParam):
-    '''
+    """
     Redshift sampling.
-    '''
+    """
     _kwargs_lower = {'z_sampling': 0}
     _kwargs_upper = {'z_sampling': 1000}
+
     def __init__(self, num_z_sampling):
         super().__init__(on=int(num_z_sampling) > 0)
         self.param_names = {'z_sampling': int(num_z_sampling)}
 
 
 class GeneralScalingParam(ArrayParam):
-    '''
+    """
     General lens scaling.
 
     For each scaled lens parameter, adds a `{param}_scale_factor` and
     `{param}_scale_pow` special parameter, and updates the scaled param
     as `param = param_scale_factor * param**param_scale_pow`.
-    '''
+    """
     def __init__(self, params: dict):
         # params is a dictionary
         self.param_names = {}
@@ -128,12 +132,10 @@ class GeneralScalingParam(ArrayParam):
 # == All together: Composing into class == #
 # ======================================== #
 
-
-
 class SpecialParam(object):
     """
     class that handles special parameters that are not directly part of a specific model component.
-    These includes cosmology relevant parameters, astrometric errors and overall scaling parameters.
+    These include cosmology relevant parameters, astrometric errors and overall scaling parameters.
     """
 
     def __init__(self, Ddt_sampling=False, mass_scaling=False, num_scale_factor=1,
@@ -217,7 +219,8 @@ class SpecialParam(object):
     def num_param(self):
         """
 
-        :return: integer, number of free parameters sampled (and managed) by this class, parameter names (list of strings)
+        :return: integer, number of free parameters sampled (and managed) by this class, parameter names
+        :rtype: list of strings
         """
         return ModelParamGroup.compose_num_params(
             self._param_groups, kwargs_fixed=self._kwargs_fixed

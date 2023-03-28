@@ -138,6 +138,7 @@ class LikelihoodModule(object):
         lens_model_class, _, _, point_source_class, _ = class_creator.create_class_instances(all_models=True,
                                                                                              **kwargs_model)
         self.PointSource = point_source_class
+        self.LensModel = lens_model_class
 
         if self._time_delay_likelihood is True:
             self.time_delay_likelihood = TimeDelayLikelihood(lens_model_class=lens_model_class,

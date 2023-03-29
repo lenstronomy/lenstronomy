@@ -17,7 +17,7 @@ class TestPointSourceRendering(object):
         pixel_grid = PixelGrid(**kwargs_grid)
         kernel = np.zeros((5, 5))
         kernel[2, 2] = 1
-        kwargs_psf = {'kernel_point_source': kernel, 'psf_type': 'PIXEL', 'psf_error_map': np.ones_like(kernel)}
+        kwargs_psf = {'kernel_point_source': kernel, 'psf_type': 'PIXEL', 'psf_error_map': np.ones_like(kernel) * kernel**2}
         psf_class = PSF(**kwargs_psf)
 
         self._ps_rendering = PointSourceRendering(pixel_grid, supersampling_factor=1, psf=psf_class)

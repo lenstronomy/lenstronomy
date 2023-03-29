@@ -159,7 +159,7 @@ class TestFittingSequence(object):
 
         kwargs_pso = {'sigma_scale': 1, 'n_particles': n_p, 'n_iterations': n_i}
         fitting_list.append(['PSO', kwargs_pso])
-        kwargs_align = {'lowerLimit': -0.1, 'upperLimit': 0.1, 'n_particles': 2, 'n_iterations': 2}
+        kwargs_align = {'delta_shift':0.2, 'n_particles': 2, 'n_iterations': 2}
         fitting_list.append(['align_images', kwargs_align])
         kwargs_psf_iter = {'num_iter': 2, 'psf_iter_factor': 0.5, 'stacking_method': 'mean', 'new_procedure': False}
         fitting_list.append(['psf_iteration', kwargs_psf_iter])
@@ -321,8 +321,8 @@ class TestFittingSequence(object):
     def test_dynesty(self):
         np.random.seed(42)
         kwargs_params = copy.deepcopy(self.kwargs_params)
-        kwargs_params['lens_model'][0][0]['theta_E'] += 0.2
-        kwargs_params['lens_model'][0][0]['gamma'] += 0.1
+        kwargs_params['lens_model'][0][0]['theta_E'] += 0.01
+        kwargs_params['lens_model'][0][0]['gamma'] += 0.01
         fittingSequence = FittingSequence(self.kwargs_data_joint, self.kwargs_model, self.kwargs_constraints,
                                           self.kwargs_likelihood, kwargs_params)
 
@@ -331,8 +331,8 @@ class TestFittingSequence(object):
             'sampler_type': 'DYNESTY',
             'kwargs_run': {
                 'dlogz_init': 0.01,
-                'nlive_init': 6,
-                'nlive_batch': 6,
+                'nlive_init': 20,
+                'nlive_batch': 20,
                 'maxbatch': 1,
             },
         }

@@ -54,6 +54,17 @@ def text_description(ax, d, text, color='w', backgroundcolor='k',
 
 @export
 def scale_bar(ax, d, dist=1., text='1"', color='w', font_size=15, flipped=False):
+    """
+
+    :param ax: matplotlib.axes instance
+    :param d: diameter of frame
+    :param dist: distance scale printed
+    :param text: string printed on scale bar
+    :param color: color of scale bar
+    :param font_size: font size
+    :param flipped: boolean
+    :return: None, updated ax instance
+    """
     if flipped:
         p0 = d - d / 15. - dist
         p1 = d / 15.
@@ -68,6 +79,16 @@ def scale_bar(ax, d, dist=1., text='1"', color='w', font_size=15, flipped=False)
 
 @export
 def coordinate_arrows(ax, d, coords, color='w', font_size=15, arrow_size=0.05):
+    """
+
+    :param ax: matplotlib axes instance
+    :param d: diameter of frame in ax
+    :param coords: lenstronomy.Data.coord_transforms Coordinates() instance
+    :param color: color string
+    :param font_size: font size of length scale
+    :param arrow_size: size of arrow
+    :return: updated ax instance
+    """
     d0 = d / 8.
     p0 = d / 15.
     pt = d / 9.

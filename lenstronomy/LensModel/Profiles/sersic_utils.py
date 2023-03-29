@@ -196,13 +196,13 @@ class SersicUtil(object):
         """
         return np.maximum(self._smoothing, R)
 
-    def _r_sersic(self, R, R_sersic, n_sersic, max_R_frac=100.0, alpha=1.0, R_break=0.0):
+    def _r_sersic(self, R, R_sersic, n_sersic, max_R_frac=1000.0, alpha=1.0, R_break=0.0):
         """
 
         :param R: radius (array or float)
         :param R_sersic: Sersic radius (half-light radius)
         :param n_sersic: Sersic index (float)
-        :param max_R_frac: maximum window outside of which the mass is zeroed, in units of R_sersic (float)
+        :param max_R_frac: maximum window outside which the mass is zeroed, in units of R_sersic (float)
         :return: kernel of the Sersic surface brightness at R
         """
 

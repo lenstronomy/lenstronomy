@@ -310,3 +310,18 @@ History
 * line of sight lensing module
 * documentation improvements
 * lens equation solver numerics improved
+
+1.11.1 (2023-03-07)
++++++++++++++++++++
+* psf_error_map definition changed
+* added JWST configurations
+* minor change in Sersic light profile
+* simplified LensCosmo class
+* NFW c-rho0 inversion extended in range
+* added stretch_plot and shear_plot to lens_plot
+* minor bug fix for critical_curve_caustic
+* enable the change of kwargs_sigma initial guess parameters in FittingSequence
+* improve zeus and nautilus sampler implementations
+* added EPL_boxydisky lens profile
+* added primary beam to image simulation (for interferrometic data)
+

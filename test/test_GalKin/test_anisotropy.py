@@ -22,6 +22,10 @@ class TestAnisotropy(object):
         k = anisoClass.K(self._r_array, self._R_array, **kwargs)
         npt.assert_almost_equal(k[0], 0.61418484930437822, decimal=5)
 
+        kwargs = {'beta': -0.49}
+        k = anisoClass.K(self._r_array, self._R_array, **kwargs)
+        npt.assert_almost_equal(k[0], 0.7645553632433857, decimal=5)
+
         anisoClass = Anisotropy(anisotropy_type='Colin')
         kwargs = {'r_ani': 1}
         k = anisoClass.K(self._r_array, self._R_array, **kwargs)

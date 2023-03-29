@@ -31,9 +31,9 @@ class MultiBandImageReconstruction(object):
          'kwargs_result'
         :param multi_band_type: string, option when having multiple imaging data sets modelled simultaneously.
          Options are:
-            - 'multi-linear': linear amplitudes are inferred on single data set
-            - 'linear-joint': linear amplitudes ae jointly inferred
-            - 'single-band': single band
+         - 'multi-linear': linear amplitudes are inferred on single data set
+         - 'linear-joint': linear amplitudes ae jointly inferred
+         - 'single-band': single band
         :param kwargs_likelihood: likelihood keyword arguments as supported by the Likelihood() class
         :param verbose: if True (default), computes and prints the total log-likelihood.
          This option can be deactivated for speedup purposes (does not run linear inversion again), and reduces the

@@ -20,6 +20,8 @@ class ModelAPI(object):
                  source_light_model_list=None, lens_light_model_list=None, point_source_model_list=None,
                  source_redshift_list=None, cosmo=None, z_source_convention=None):
         """
+        # TODO: make inputs follow the kwargs_model of the class_creator instances of 'kwargs_model',
+        # i.e. multi-plane options, perhaps others
 
         :param lens_model_list: list of strings with lens model names
         :param z_lens: redshift of the deflector (only considered when operating in single plane mode).
@@ -49,6 +51,7 @@ class ModelAPI(object):
         if cosmo is None:
             cosmo = default_cosmology.get()
 
+        # making sure multi_plane mode is activated when either lens or source redshift lists are provided
         if lens_redshift_list is not None or source_redshift_list is not None:
             multi_plane = True
         else:

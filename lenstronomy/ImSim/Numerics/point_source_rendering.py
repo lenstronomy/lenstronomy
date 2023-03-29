@@ -59,7 +59,8 @@ class PointSourceRendering(object):
         :param dec_pos: image positions of point sources
         :param amp: amplitude of modeled point sources
         :param data: 2d numpy array of the data
-        :param fix_psf_error_map: bool, if True, estimates the error based on the imput (modeled) amplitude, else uses the data to do so.
+        :param fix_psf_error_map: bool, if True, estimates the error based on the input (modeled) amplitude, else uses
+         the data to do so.
         :return: 2d array of size of the image with error terms (sigma**2) expected from inaccuracies in the PSF modeling
         """
         x_pos, y_pos = self._pixel_grid.map_coord2pix(ra_pos, dec_pos)
@@ -71,5 +72,5 @@ class PointSourceRendering(object):
                 amp_estimated = amp
             else:
                 amp_estimated = kernel_util.estimate_amp(data, x_pos[i], y_pos[i], psf_kernel)
-            error_map = image_util.add_layer2image(error_map, x_pos[i], y_pos[i], psf_error_map * (psf_kernel * amp_estimated) ** 2)
+            error_map = image_util.add_layer2image(error_map, x_pos[i], y_pos[i], psf_error_map * amp_estimated ** 2)
         return error_map

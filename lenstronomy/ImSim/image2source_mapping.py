@@ -34,6 +34,7 @@ class Image2SourceMapping(object):
          - source_scale_factor_list: list of floats corresponding to the rescaled deflection angles to the specific source components. None indicates that the list will be set to 1, meaning a single source plane model (in single lens plane mode).
          - source_redshift_list: list of redshifts of the light components (in multi lens plane mode)
         """
+
         self._lightModel = sourceModel
         self._lensModel = lensModel
         light_model_list = sourceModel.profile_type_list

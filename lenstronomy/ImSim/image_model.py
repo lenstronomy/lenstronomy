@@ -32,6 +32,7 @@ class ImageModel(object):
         :param fixed_lens_model: keeps the lens model fixed during likelihood calls; this setting should only be set to
         true if all lens components are fixed
         """
+
         self.type = 'single-band'
         self.num_bands = 1
         self.PSF = psf_class

@@ -111,6 +111,7 @@ class LensModel(object):
         :param k: only evaluate the k-th lens model
         :return: source plane positions corresponding to (x, y) in the image plane
         """
+
         return self.lens_model.ray_shooting(x, y, kwargs, k=k)
 
     def fermat_potential(self, x_image, y_image, kwargs_lens, x_source=None, y_source=None):

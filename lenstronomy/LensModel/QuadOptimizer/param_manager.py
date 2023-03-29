@@ -99,16 +99,15 @@ class PowerLawParamManager(object):
             thetaE_shift = 0.005
             center_shift = 0.01
             e_shift = 0.05
-            g_shift = 0.025
+            g_shift = 0.005
 
         else:
             thetaE_shift = 0.25
             center_shift = 0.2
             e_shift = 0.2
-            g_shift = 0.05
+            g_shift = 0.01
 
         shifts = np.array([thetaE_shift, center_shift, center_shift, e_shift, e_shift, g_shift, g_shift])
-
         low = np.array(args) - shifts * scale
         high = np.array(args) + shifts * scale
         return low, high

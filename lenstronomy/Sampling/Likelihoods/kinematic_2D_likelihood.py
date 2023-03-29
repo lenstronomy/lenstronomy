@@ -61,10 +61,10 @@ class KinLikelihood(object):
                                                                    self.lens_light_bool_list)
         input_params=self.convert_to_NN_params(kwargs_lens,kwargs_lens_light,kwargs_special)
         if self.kinematic_NN.SKiNN_installed:
-            velo_map = self.kinematic_NN.generate_map(input_params,verbose=verbose)
-            if self.kinematic_NN.within_bounds==False:
+            if self.kinematic_NN.check_bounds(input_params,verbose=verbose)==False:
                 #params not within training set. Penalty
                 return -10**8
+            velo_map = self.kinematic_NN.generate_map(input_params, verbose=verbose)
             velo_map=self.rescale_distance(velo_map,kwargs_special) #RESCALE ACCORDING TO D_d, D_dt
             #Rotation and interpolation in kin data coordinates
             self.kinNN_input['image']=velo_map

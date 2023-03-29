@@ -12,7 +12,7 @@ class TestKinNNCall(object):
                                       1.30421229e+00, 8.0e-2, 4.55349851e-01, -5.68615913e-02,
                                       8.07435011e+01])
         self.kinematic_NN=kinematic_NN()
-        
+
     def test_generate_map(self):
         if self.kinematic_NN.SKiNN_installed:
             map=self.kinematic_NN.generate_map(input_p=self.example_input)

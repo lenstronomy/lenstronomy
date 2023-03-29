@@ -7,7 +7,7 @@ import lenstronomy.Util.constants as const
 from lenstronomy.Cosmo.background import Background
 from lenstronomy.Cosmo.nfw_param import NFWParam
 
-__all__ = ['LensCosmo']
+__all__ = ['LensCosmo', 'fermat_potential2time_delay']
 
 
 class LensCosmo(object):

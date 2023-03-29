@@ -9,7 +9,7 @@ __all__ = ['ModelParamGroup', 'SingleParam', 'ArrayParam']
 
 
 class ModelParamGroup:
-    '''
+    """
     This abstract class represents any lenstronomy fitting parameters used
     in the Param class.
 
@@ -20,17 +20,17 @@ class ModelParamGroup:
     This class also contains three static methods to easily aggregate groups
     of parameter classes, called `compose_num_params()`, `compose_set_params()`,
     and `compose_get_params()`.
-    '''
+    """
     def num_params(self):
-        '''
+        """
         Tells the number of parameters that this group samples and their names.
 
         :returns: 2-tuple of (num param, list of names)
-        '''
+        """
         raise NotImplementedError
 
     def set_params(self, kwargs):
-        '''
+        """
         Converts lenstronomy semantic parameters in dictionary format into a
         flattened array of parameters.
 
@@ -38,11 +38,11 @@ class ModelParamGroup:
         Particle swarm, etc.
 
         :returns: flattened array of parameters as floats
-        '''
+        """
         raise NotImplementedError
 
     def get_params(self, args, i):
-        '''
+        """
         Converts a flattened array of parameters back into a lenstronomy dictionary,
         starting at index i.
 
@@ -51,12 +51,12 @@ class ModelParamGroup:
         :param i: index to begin at in args
         :type i: int
         :returns: dictionary of parameters
-        '''
+        """
         raise NotImplementedError
 
     @staticmethod
     def compose_num_params(each_group, *args, **kwargs):
-        '''
+        """
         Aggregates the number of parameters for a group of parameter groups,
         calling each instance's `num_params()` method and combining the results
 
@@ -66,7 +66,7 @@ class ModelParamGroup:
         :param kwargs: Extra keyword arguments to be passed to each call of `num_params()`
 
         :returns: As in each individual `num_params()`, a 2-tuple of (num params, list of param names)
-        '''
+        """
         tot_param = 0
         param_names = []
         for group in each_group:
@@ -77,7 +77,7 @@ class ModelParamGroup:
 
     @staticmethod
     def compose_set_params(each_group, param_kwargs, *args, **kwargs):
-        '''
+        """
         Converts lenstronomy semantic arguments in dictionary format to a
         flattened list of floats for use in optimization/fitting algorithms.
         Combines the results for a set of arbitrarily many parameter groups.
@@ -90,7 +90,7 @@ class ModelParamGroup:
         :param kwargs: Extra keyword arguments to be passed to each call of `set_params()`
 
         :returns: As in each individual `set_params()`, a list of floats
-        '''
+        """
         output_args = []
         for group in each_group:
             output_args += group.set_params(param_kwargs, *args, **kwargs)
@@ -98,7 +98,7 @@ class ModelParamGroup:
 
     @staticmethod
     def compose_get_params(each_group, flat_args, i, *args, **kwargs):
-        '''
+        """
         Converts a flattened array of parameters to lenstronomy semantic
         parameters in dictionary format.
         Combines the results for a set of arbitrarily many parameter groups.
@@ -113,7 +113,7 @@ class ModelParamGroup:
         :param kwargs: Extra keyword arguments to be passed to each call of `set_params()`
 
         :returns: As in each individual `get_params()`, a 2-tuple of (dictionary of params, new index)
-        '''
+        """
         output_kwargs = {}
         for group in each_group:
             kwargs_grp, i = group.get_params(flat_args, i, *args, **kwargs)
@@ -122,7 +122,7 @@ class ModelParamGroup:
 
 
 class SingleParam(ModelParamGroup):
-    '''
+    """
     Helper for handling parameters which are a single float.
 
     Subclasses should define:
@@ -132,23 +132,23 @@ class SingleParam(ModelParamGroup):
     :param param_names: List of strings, the name of each parameter
     :param _kwargs_lower: Dictionary. Lower bounds of each parameter
     :param _kwargs_upper: Dictionary. Upper bounds of each parameter
-    '''
+    """
     def __init__(self, on):
-        '''
+        """
         :param on: Whether this paramter should be sampled
         :type on: bool
-        '''
+        """
         self._on = bool(on)
 
     def num_params(self, kwargs_fixed):
-        '''
+        """
         Tells the number of parameters that this group samples and their names.
 
         :param kwargs_fixed: Dictionary of fixed arguments
         :type kwargs_fixed: dict
 
         :returns: 2-tuple of (num param, list of names)
-        '''
+        """
         if self.on:
             npar, names = 0, []
             for name in self.param_names:
@@ -159,7 +159,7 @@ class SingleParam(ModelParamGroup):
         return 0, []
 
     def set_params(self, kwargs, kwargs_fixed):
-        '''
+        """
         Converts lenstronomy semantic parameters in dictionary format into a
         flattened array of parameters.
 
@@ -172,7 +172,7 @@ class SingleParam(ModelParamGroup):
         :type kwargs_fixed: dict
 
         :returns: flattened array of parameters as floats
-        '''
+        """
         if self.on:
             output = []
             for name in self.param_names:
@@ -182,7 +182,7 @@ class SingleParam(ModelParamGroup):
         return []
 
     def get_params(self, args, i, kwargs_fixed):
-        '''
+        """
         Converts a flattened array of parameters back into a lenstronomy dictionary,
         starting at index i.
 
@@ -194,7 +194,7 @@ class SingleParam(ModelParamGroup):
         :type kwargs_fixed: dict
 
         :returns: dictionary of parameters
-        '''
+        """
         out = {}
         if self.on:
             for name in self.param_names:
@@ -221,9 +221,28 @@ class SingleParam(ModelParamGroup):
     def on(self):
         return self._on
 
+    def kwargs_single_param(self, kwargs_special, kwargs_fixed):
+        """
+
+        :param kwargs_special: all or more keyword arguments
+        :type kwargs_special: dictionary
+        :param kwargs_fixed: Dictionary of fixed arguments
+        :type kwargs_fixed: dict
+        :return: separate dictionary only returning keywords of this calls
+        """
+        kwargs_param = {}
+        if self._on:
+            for name in self.param_names:
+                if name in kwargs_fixed:
+                    kwargs_param[name] = kwargs_fixed[name]
+                else:
+                    kwargs_param[name] = kwargs_special[name]
+        return kwargs_param
+
+
 
 class ArrayParam(ModelParamGroup):
-    '''
+    """
     Helper for handling parameters which are an array of values. Examples
     include mass_scaling, which is an array of scaling parameters, and wavelet
     or gaussian decompositions which have different coefficients for each mode.
@@ -235,23 +254,23 @@ class ArrayParam(ModelParamGroup):
     :param param_names: Dictionary mapping the name of each parameter to the number of values needed.
     :param _kwargs_lower: Dictionary. Lower bounds of each parameter
     :param _kwargs_upper: Dictionary. Upper bounds of each parameter
-    '''
+    """
     def __init__(self, on):
-        '''
+        """
         :param on: Whether this paramter should be sampled
         :type on: bool
-        '''
+        """
         self._on = bool(on)
 
     def num_params(self, kwargs_fixed):
-        '''
+        """
         Tells the number of parameters that this group samples and their names.
 
         :param kwargs_fixed: Dictionary of fixed arguments
         :type kwargs_fixed: dict
 
         :returns: 2-tuple of (num param, list of names)
-        '''
+        """
         if not self.on:
             return 0, []
 
@@ -265,7 +284,7 @@ class ArrayParam(ModelParamGroup):
         return npar, names
 
     def set_params(self, kwargs, kwargs_fixed):
-        '''
+        """
         Converts lenstronomy semantic parameters in dictionary format into a
         flattened array of parameters.
 
@@ -278,7 +297,7 @@ class ArrayParam(ModelParamGroup):
         :type kwargs_fixed: dict
 
         :returns: flattened array of parameters as floats
-        '''
+        """
         if not self.on:
             return []
 
@@ -289,7 +308,7 @@ class ArrayParam(ModelParamGroup):
         return args
 
     def get_params(self, args, i, kwargs_fixed):
-        '''
+        """
         Converts a flattened array of parameters back into a lenstronomy dictionary,
         starting at index i.
 
@@ -301,7 +320,7 @@ class ArrayParam(ModelParamGroup):
         :type kwargs_fixed: dict
 
         :returns: dictionary of parameters
-        '''
+        """
         if not self.on:
             return {}, i
 

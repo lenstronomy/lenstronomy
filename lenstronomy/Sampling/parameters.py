@@ -119,7 +119,7 @@ class Param(object):
                  joint_source_with_source=[], joint_lens_with_light=[], joint_source_with_point_source=[],
                  joint_lens_light_with_point_source=[], joint_extinction_with_lens_light=[],
                  joint_lens_with_source_light=[], mass_scaling_list=None, point_source_offset=False,
-                 general_scaling=None,
+                 general_scaling=None, sne_sampling=False,
                  num_point_source_list=None, image_plane_source_list=None, solver_type='NONE', Ddt_sampling=None,
                  source_size=False, num_tau0=0, lens_redshift_sampling_indexes=None,
                  source_redshift_sampling_indexes=None, source_grid_offset=False, num_shapelet_lens=0,
@@ -191,6 +191,8 @@ class Param(object):
          adds two additional sampled parameters describing RA/Dec offsets between data coordinate grid and pixelated source plane coordinate grid.
         :param num_shapelet_lens: number of shapelet coefficients in the 'SHAPELETS_CART' or 'SHAPELETS_POLAR' mass profile.
         :param log_sampling_lens: Sample the log10 of the lens model parameters. Format : [[i_lens, ['param_name1', 'param_name2', ...]], [...], ...],
+        :param sne_sampling: boolean, if True, samples supernovae light curve parameters
+         (needs time series to be constrained)
         """
 
         self._lens_model_list = kwargs_model.get('lens_model_list', [])
@@ -331,7 +333,7 @@ class Param(object):
                                           kwargs_lower=kwargs_lower_special, kwargs_upper=kwargs_upper_special,
                                           point_source_offset=self._point_source_offset, num_images=self._num_images,
                                           source_size=source_size, num_tau0=num_tau0, num_z_sampling=num_z_sampling,
-                                          source_grid_offset=source_grid_offset)
+                                          source_grid_offset=source_grid_offset, sne_sampling=sne_sampling)
         for lens_source_joint in self._joint_lens_with_source_light:
             i_source = lens_source_joint[0]
             if i_source in self._image_plane_source_list:
@@ -572,8 +574,8 @@ class Param(object):
             if type(param_list) == list:
                 kwargs_logsampling_lens[i_1] = param_list
             else:
-                raise TypeError(
-                    "Bad format for constraint setting: got %s. This should be in the format [[i_1, ['param_name1', 'param_name2', ...]], [...], ...]" % param_list)
+                raise TypeError("Bad format for constraint setting: got %s. This should be in the format "
+                                "[[i_1, ['param_name1', 'param_name2', ...]], [...], ...]" % param_list)
         return kwargs_logsampling_lens
 
     @staticmethod
@@ -718,7 +720,7 @@ class Param(object):
         num, param_list = self.num_param()
         num_linear = self.num_param_linear()
 
-        # TODO print settings of specailParams?
+        # TODO print settings of special Params?
         print("The following model options are chosen:")
         print("Lens models:", self._lens_model_list)
         print("Source models:", self._source_light_model_list)

@@ -10,29 +10,37 @@ from .param_group import ModelParamGroup, SingleParam, ArrayParam
 # == Defining individual parameters == #
 # ==================================== #
 
+class SNeSamplingParam(SingleParam):
+    """
+    Supernovae light curve parameters
+    """
+    param_names = ['dt2', 'm_peak', 't_peak']
+    _kwargs_lower = {'dt2': 0, 'm_peak': 30, 't_peak': -1000}
+    _kwargs_upper = {'dt2': 1000, 'm_peak': 10, 't_peak': 1000}
+
 
 class DdtSamplingParam(SingleParam):
-    '''
+    """
     Time delay parameter
-    '''
+    """
     param_names = ['D_dt']
     _kwargs_lower = {'D_dt': 0}
     _kwargs_upper = {'D_dt': 100000}
 
 
 class SourceSizeParam(SingleParam):
-    '''
+    """
     Source size parameter
-    '''
+    """
     param_names = ['source_size']
     _kwargs_lower = {'source_size': 0}
     _kwargs_upper = {'source_size': 1}
 
 
 class SourceGridOffsetParam(SingleParam):
-    '''
+    """
     Source grid offset, both x and y.
-    '''
+    """
     param_names = ['delta_x_source_grid', 'delta_y_source_grid']
     _kwargs_lower = {
         'delta_x_source_grid': -100,
@@ -45,22 +53,24 @@ class SourceGridOffsetParam(SingleParam):
 
 
 class MassScalingParam(ArrayParam):
-    '''
+    """
     Mass scaling. Can scale the masses of arbitrary subsets of lens models
-    '''
+    """
     _kwargs_lower = {'scale_factor': 0}
     _kwargs_upper = {'scale_factor': 1000}
+
     def __init__(self, num_scale_factor):
         super().__init__(on=int(num_scale_factor) > 0)
         self.param_names = {'scale_factor': int(num_scale_factor)}
 
 
 class PointSourceOffsetParam(ArrayParam):
-    '''
+    """
     Point source offset, both x and y
-    '''
+    """
     _kwargs_lower = {'delta_x_image': -1, 'delta_y_image': -1}
     _kwargs_upper = {'delta_x_image': 1, 'delta_y_image': 1}
+
     def __init__(self, offset, num_images):
         super().__init__(on=offset and (int(num_images) > 0))
         self.param_names = {
@@ -70,35 +80,37 @@ class PointSourceOffsetParam(ArrayParam):
 
 
 class Tau0ListParam(ArrayParam):
-    '''
+    """
     Optical depth renormalization parameters
-    '''
+    """
     _kwargs_lower = {'tau0_list': 0}
     _kwargs_upper = {'tau0_list': 1000}
+
     def __init__(self, num_tau0):
         super().__init__(on=int(num_tau0) > 0)
         self.param_names = {'tau0_list': int(num_tau0)}
 
 
 class ZSamplingParam(ArrayParam):
-    '''
+    """
     Redshift sampling.
-    '''
+    """
     _kwargs_lower = {'z_sampling': 0}
     _kwargs_upper = {'z_sampling': 1000}
+
     def __init__(self, num_z_sampling):
         super().__init__(on=int(num_z_sampling) > 0)
         self.param_names = {'z_sampling': int(num_z_sampling)}
 
 
 class GeneralScalingParam(ArrayParam):
-    '''
+    """
     General lens scaling.
 
     For each scaled lens parameter, adds a `{param}_scale_factor` and
     `{param}_scale_pow` special parameter, and updates the scaled param
     as `param = param_scale_factor * param**param_scale_pow`.
-    '''
+    """
     def __init__(self, params: dict):
         # params is a dictionary
         self.param_names = {}
@@ -128,18 +140,16 @@ class GeneralScalingParam(ArrayParam):
 # == All together: Composing into class == #
 # ======================================== #
 
-
-
 class SpecialParam(object):
     """
     class that handles special parameters that are not directly part of a specific model component.
-    These includes cosmology relevant parameters, astrometric errors and overall scaling parameters.
+    These include cosmology relevant parameters, astrometric errors and overall scaling parameters.
     """
 
     def __init__(self, Ddt_sampling=False, mass_scaling=False, num_scale_factor=1,
                  general_scaling_params=None, kwargs_fixed=None, kwargs_lower=None,
                  kwargs_upper=None, point_source_offset=False, source_size=False, num_images=0, num_tau0=0,
-                 num_z_sampling=0, source_grid_offset=False):
+                 num_z_sampling=0, source_grid_offset=False, sne_sampling=False):
         """
 
         :param Ddt_sampling: bool, if True, samples the time-delay distance D_dt (in units of Mpc)
@@ -158,6 +168,8 @@ class SpecialParam(object):
         :param source_grid_offset: bool, if True, samples two parameters (x, y) for the offset of the pixelated source
          plane grid coordinates.
          Warning: this is only defined for pixel-based source modelling (e.g. 'SLIT_STARLETS' light profile)
+        :param sne_sampling: boolean, if True, samples supernovae light curve parameters
+         (needs time series to be constrained)
         """
 
         self._D_dt_sampling = DdtSamplingParam(Ddt_sampling)
@@ -175,6 +187,7 @@ class SpecialParam(object):
         self._tau0 = Tau0ListParam(num_tau0)
         self._z_sampling = ZSamplingParam(num_z_sampling)
         self._source_grid_offset = SourceGridOffsetParam(source_grid_offset)
+        self._sne_sampling = SNeSamplingParam(sne_sampling)
 
         if kwargs_fixed is None:
             kwargs_fixed = {}
@@ -196,12 +209,10 @@ class SpecialParam(object):
         """
 
         :param args: argument list
-        :param i: integer, list index to start the read out for this class
+        :param i: integer, list index to start the readout for this class
         :return: keyword arguments related to args, index after reading out arguments of this class
         """
-        result = ModelParamGroup.compose_get_params(
-            self._param_groups, args, i, kwargs_fixed=self._kwargs_fixed
-        )
+        result = ModelParamGroup.compose_get_params(self._param_groups, args, i, kwargs_fixed=self._kwargs_fixed)
         return result
 
     def set_params(self, kwargs_special):
@@ -210,18 +221,15 @@ class SpecialParam(object):
         :param kwargs_special: keyword arguments with parameter settings
         :return: argument list of the sampled parameters extracted from kwargs_special
         """
-        return ModelParamGroup.compose_set_params(
-            self._param_groups, kwargs_special, kwargs_fixed=self._kwargs_fixed
-        )
+        return ModelParamGroup.compose_set_params(self._param_groups, kwargs_special, kwargs_fixed=self._kwargs_fixed)
 
     def num_param(self):
         """
 
-        :return: integer, number of free parameters sampled (and managed) by this class, parameter names (list of strings)
+        :return: integer, number of free parameters sampled (and managed) by this class, parameter names
+        :rtype: list of strings
         """
-        return ModelParamGroup.compose_num_params(
-            self._param_groups, kwargs_fixed=self._kwargs_fixed
-        )
+        return ModelParamGroup.compose_num_params(self._param_groups, kwargs_fixed=self._kwargs_fixed)
 
     @property
     def _param_groups(self):
@@ -232,4 +240,15 @@ class SpecialParam(object):
                 self._source_size,
                 self._tau0,
                 self._z_sampling,
-                self._source_grid_offset]
+                self._source_grid_offset,
+                self._sne_sampling]
+
+    def sne_kwargs(self, kwargs_special):
+        """
+        makes a new dictionary with only the supernovae parameters
+
+        :param kwargs_special: dictionary of all special parameters
+        :return: dictionary of only the supernovae parameters
+        """
+        kwargs_sne = self._sne_sampling.kwargs_single_param(kwargs_special, self._kwargs_fixed)
+        return kwargs_sne

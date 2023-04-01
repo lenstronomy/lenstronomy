@@ -13,3 +13,7 @@ def test_einstein_radius():
     theta_E = micro_lensing.einstein_radius(mass=mass, d_l=d_l, d_s=d_s)
     npt.assert_almost_equal(theta_E / 0.00024, 1, decimal=2)
 
+
+def test_source_size():
+    size_arc_seconds = micro_lensing.source_size(diameter=1, d_s=1000)
+    npt.assert_almost_equal(size_arc_seconds, 9.304945278694935e-06, decimal=9)

@@ -86,6 +86,10 @@ class SingleBandMultiModel(ImageLinearFit):
         wls_model, error_map, cov_param, param = self._image_linear_solve(kwargs_lens_i, kwargs_source_i,
                                                                           kwargs_lens_light_i, kwargs_ps_i,
                                                                           kwargs_extinction_i, kwargs_special, inv_bool=inv_bool)
+        # For the interfometric likelihood method, 
+        # return the array2 of [array1, array2] of the model output of _image_linear_solver.
+        if self.Data.likelihood_method() == "interferometry_natwt":
+            wls_model = wls_model[1]
         return wls_model, error_map, cov_param, param
 
     def likelihood_data_given_model(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,

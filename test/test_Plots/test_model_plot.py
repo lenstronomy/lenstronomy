@@ -298,5 +298,21 @@ class TestRaise(unittest.TestCase):
                                  arrow_size=0.02, cmap_string="gist_heat", linear_solver=False)
 
 
+def test_interferometry_natwt_Model_Plot_linear_solver():
+    # Test no errors are raised in the Model Plot linear solver for 'interferometry_natwt' likelihood function.
+    try:
+        kwargs_data = sim_util.data_configure_simple(numPix=10, deltaPix=1, background_rms=1, exposure_time=1)
+        kwargs_data['likelihood_method'] = 'interferometry_natwt'
+        kwargs_model = {'source_light_model_list': ['GAUSSIAN']}
+        kwargs_params = {'kwargs_lens': [],
+                         'kwargs_source': [{'amp': 2, 'sigma': 1, 'center_x': 0, 'center_y': 0}],
+                         'kwargs_ps': [], 'kwargs_lens_light': []}
+        lensPlot = ModelPlot(multi_band_list=[[kwargs_data, {'psf_type': 'NONE'}, {}]],
+                             kwargs_model=kwargs_model, kwargs_params=kwargs_params, bands_compute=[True],
+                             arrow_size=0.02, cmap_string="gist_heat", linear_solver=True)
+    except:
+        pytest.fail("Errors are raised in the Model Plot linear solver for the 'interferometric_natwt' likelihood method, which is not expected.")
+
+
 if __name__ == '__main__':
     pytest.main()

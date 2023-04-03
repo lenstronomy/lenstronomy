@@ -17,9 +17,10 @@ class ModelPlot(object):
     of the output of the FittingSequence results.
 
     """
+
     def __init__(self, multi_band_list, kwargs_model, kwargs_params, image_likelihood_mask_list=None,
                  bands_compute=None, multi_band_type='multi-linear', source_marg=False, linear_prior=None,
-                 arrow_size=0.02, cmap_string="gist_heat", fast_caustic=True):
+                 arrow_size=0.02, cmap_string="gist_heat", fast_caustic=True, linear_solver=True):
         """
 
         :param multi_band_list: list of [[kwargs_data, kwargs_psf, kwargs_numerics], [], ..]
@@ -39,16 +40,35 @@ class ModelPlot(object):
         :param arrow_size:
         :param cmap_string:
         :param fast_caustic: boolean; if True, uses fast (but less accurate) caustic calculation method
+        :param linear_solver: bool, if True (default) fixes the linear amplitude parameters 'amp' (avoid sampling) such
+         that they get overwritten by the linear solver solution.
         """
         if bands_compute is None:
             bands_compute = [True] * len(multi_band_list)
         if multi_band_type == 'single-band':
             multi_band_type = 'multi-linear'  # this makes sure that the linear inversion outputs are coming in a list
         self._imageModel = class_creator.create_im_sim(multi_band_list, multi_band_type, kwargs_model,
-                                                       bands_compute=bands_compute,
+                                                       bands_compute=bands_compute, linear_solver=linear_solver,
                                                        image_likelihood_mask_list=image_likelihood_mask_list)
 
-        model, error_map, cov_param, param = self._imageModel.image_linear_solve(inv_bool=True, **kwargs_params)
+        kwargs_params_copy = copy.deepcopy(kwargs_params)
+        model, error_map, cov_param, param = self._imageModel.image_linear_solve(inv_bool=True, **kwargs_params_copy)
+
+        if linear_solver is False:
+            if len(multi_band_list) > 1:
+                raise ValueError('plotting the solution without the linear solver currently only works with one band.')
+
+            im_sim = class_creator.create_im_sim(multi_band_list, 'single-band', kwargs_model,
+                                                 bands_compute=bands_compute, linear_solver=linear_solver,
+                                                 image_likelihood_mask_list=image_likelihood_mask_list)
+            # overwrite model with initial input without linear solver applied
+            model[0] = im_sim.image(**kwargs_params)
+            # retrieve amplitude parameters directly from kwargs_list
+            param[0] = im_sim.linear_param_from_kwargs(kwargs_params['kwargs_source'],
+                                                       kwargs_params['kwargs_lens_light'],
+                                                       kwargs_params['kwargs_ps'])
+        else:
+            kwargs_params = kwargs_params_copy  # overwrite the keyword list with the linear solved 'amp' values
 
         check_solver_error(param)
         log_l = self._imageModel.likelihood_data_given_model(source_marg=source_marg, linear_prior=linear_prior,
@@ -56,7 +76,8 @@ class ModelPlot(object):
 
         n_data = self._imageModel.num_data_evaluate
         if n_data > 0:
-            print(log_l * 2 / n_data, 'reduced X^2 of all evaluated imaging data combined.')
+            print(log_l * 2 / n_data, 'reduced X^2 of all evaluated imaging data combined '
+                                      '(without degrees of freedom subtracted).')
 
         self._band_plot_list = []
         self._index_list = []
@@ -80,18 +101,6 @@ class ModelPlot(object):
             else:
                 self._index_list.append(-1)
             index += 1
-
-    def _select_band(self, band_index):
-        """
-
-        :param band_index: index of imaging band to be plotted
-        :return: bandplot() instance of selected band, raises when band is not computed
-        """
-        i = self._index_list[band_index]
-        if i == -1:
-            raise ValueError("band %s is not computed or out of range." % band_index)
-        i = int(i)
-        return self._band_plot_list[i]
 
     def reconstruction_all_bands(self, **kwargs):
         """

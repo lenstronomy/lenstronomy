@@ -13,17 +13,21 @@ class ImageNoise(object):
     """
 
     def __init__(self, image_data, exposure_time=None, background_rms=None, noise_map=None,
-                 gradient_boost_factor=None, verbose=True):
+                 gradient_boost_factor=None, verbose=True, flux_scaling=1):
         """
 
         :param image_data: numpy array, pixel data values
         :param exposure_time: int or array of size the data; exposure time
-        (common for all pixels or individually for each individual pixel)
+         (common for all pixels or individually for each individual pixel)
         :param background_rms: root-mean-square value of Gaussian background noise
         :param noise_map: int or array of size the data; joint noise sqrt(variance) of each individual pixel.
-        Overwrites meaning of background_rms and exposure_time.
+         Overwrites meaning of background_rms and exposure_time.
         :param gradient_boost_factor: None or float, variance terms added in quadrature scaling with
          gradient^2 * gradient_boost_factor
+        :param flux_scaling: scales the model amplitudes to match the imaging data units. This can be used, for example,
+         when modeling multiple exposures that have different magnitude zero points (or flux normalizations) but demand
+         the same model normalization
+        :type flux_scaling: float or int (default=1)
         """
         if exposure_time is not None:
             # make sure no negative exposure values are present no dividing by zero
@@ -35,6 +39,7 @@ class ImageNoise(object):
         self._exp_map = exposure_time
         self._background_rms = background_rms
         self._noise_map = noise_map
+        self.flux_scaling = flux_scaling
         if noise_map is not None:
             assert np.shape(noise_map) == np.shape(image_data)
         else:

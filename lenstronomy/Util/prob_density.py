@@ -16,6 +16,7 @@ class SkewGaussian(object):
         """
         probability density function
         see: https://en.wikipedia.org/wiki/Skew_normal_distribution
+
         :param x: input value
         :param e:
         :param w:
@@ -28,6 +29,7 @@ class SkewGaussian(object):
     def pdf_skew(self, x, mu, sigma, skw):
         """
         function with different parameterisation
+
         :param x:
         :param mu: mean
         :param sigma: sigma
@@ -61,6 +63,7 @@ class SkewGaussian(object):
     def _w_sigma_delta(self, sigma, delta):
         """
         invert variance
+
         :param sigma:
         :param delta:
         :return: w parameter
@@ -84,6 +87,7 @@ class SkewGaussian(object):
     def map_mu_sigma_skw(self, mu, sigma, skw):
         """
         map to parameters e, w, a
+
         :param mu: mean
         :param sigma: standard deviation
         :param skw: skewness
@@ -125,6 +129,7 @@ def compute_lower_upper_errors(sample, num_sigma=1):
     """
     computes the upper and lower sigma from the median value.
     This functions gives good error estimates for skewed pdf's
+
     :param sample: 1-D sample
     :param num_sigma: integer, number of sigmas to be returned
     :return: median, lower_sigma, upper_sigma

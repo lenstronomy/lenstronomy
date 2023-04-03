@@ -1,6 +1,7 @@
 import numpy as np
 import math
 import matplotlib.pyplot as plt
+import copy
 
 from lenstronomy.Util.package_util import exporter
 export, __all__ = exporter()
@@ -10,14 +11,14 @@ export, __all__ = exporter()
 def sqrt(inputArray, scale_min=None, scale_max=None):
     """Performs sqrt scaling of the input numpy array.
 
-    @type inputArray: numpy array
-    @param inputArray: image data array
-    @type scale_min: float
-    @param scale_min: minimum data value
-    @type scale_max: float
-    @param scale_max: maximum data value
-    @rtype: numpy array
-    @return: image data array
+    :type inputArray: numpy array
+    :param inputArray: image data array
+    :type scale_min: float
+    :param scale_min: minimum data value
+    :type scale_max: float
+    :param scale_max: maximum data value
+    :rtype: numpy array
+    :return: image data array
 
     """
 
@@ -53,6 +54,17 @@ def text_description(ax, d, text, color='w', backgroundcolor='k',
 
 @export
 def scale_bar(ax, d, dist=1., text='1"', color='w', font_size=15, flipped=False):
+    """
+
+    :param ax: matplotlib.axes instance
+    :param d: diameter of frame
+    :param dist: distance scale printed
+    :param text: string printed on scale bar
+    :param color: color of scale bar
+    :param font_size: font size
+    :param flipped: boolean
+    :return: None, updated ax instance
+    """
     if flipped:
         p0 = d - d / 15. - dist
         p1 = d / 15.
@@ -67,6 +79,16 @@ def scale_bar(ax, d, dist=1., text='1"', color='w', font_size=15, flipped=False)
 
 @export
 def coordinate_arrows(ax, d, coords, color='w', font_size=15, arrow_size=0.05):
+    """
+
+    :param ax: matplotlib axes instance
+    :param d: diameter of frame in ax
+    :param coords: lenstronomy.Data.coord_transforms Coordinates() instance
+    :param color: color string
+    :param font_size: font size of length scale
+    :param arrow_size: size of arrow
+    :return: updated ax instance
+    """
     d0 = d / 8.
     p0 = d / 15.
     pt = d / 9.
@@ -238,6 +260,8 @@ def cmap_conf(cmap_string):
         cmap = plt.get_cmap(cmap_string)
     else:
         cmap = cmap_string
-    cmap.set_bad(color='k', alpha=1.)
-    cmap.set_under('k')
-    return cmap
+    #cmap_new = cmap.copy()
+    cmap_new = copy.deepcopy(cmap)
+    cmap_new.set_bad(color='k', alpha=1.)
+    cmap_new.set_under('k')
+    return cmap_new

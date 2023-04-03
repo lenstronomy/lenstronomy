@@ -10,7 +10,7 @@ class TestShapeletSet(object):
     """
     class to test Shapelets
     """
-    def setup(self):
+    def setup_method(self):
         self.shapeletSet = ShapeletSet()
         self.shapelets = Shapelets(precalc=False)
         self.x, self.y = util.make_grid(10, 0.1, 1)
@@ -50,7 +50,7 @@ class TestShapeletSet(object):
         beta = 1
         numPix = 10
         kernel_list = self.shapeletSet.shapelet_basis_2d(num_order, beta, numPix)
-        assert kernel_list[0][4, 4] == 0.43939128946772255
+        npt.assert_almost_equal(kernel_list[0][4, 4], 0.4393912894677224, decimal=9)
 
     def test_decomposition(self):
         """

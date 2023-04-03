@@ -51,7 +51,7 @@ class KinematicsAPI(object):
         :param kwargs_mge_mass: keyword arguments that go into the MGE decomposition routine
         :param kwargs_mge_light: keyword arguments that go into the MGE decomposition routine
         :param sampling_number: int, number of spectral rendering to compute the light weighted integrated LOS
-        dispersion within the aperture. This keyword should be chosen high enough to result in converged results within the tolerance.
+         dispersion within the aperture. This keyword should be chosen high enough to result in converged results within the tolerance.
         :param num_kin_sampling: number of kinematic renderings on a total IFU
         :param num_psf_sampling: number of PSF displacements for each kinematic rendering on the IFU
         """
@@ -310,6 +310,12 @@ class KinematicsAPI(object):
             return None, {'r_eff': r_eff}
         light_profile_list = []
         kwargs_light = []
+        if Hernquist_approx is True:
+            if r_eff is None:
+                raise ValueError('r_eff needs to be pre-computed and specified when using the Hernquist approximation')
+            light_profile_list = ['HERNQUIST']
+            kwargs_light = [{'Rs': r_eff * 0.551, 'amp': 1.}]
+            return light_profile_list, kwargs_light
         if model_kinematics_bool is None:
             model_kinematics_bool = [True] * len(kwargs_lens_light)
         for i, light_model in enumerate(self._lens_light_model_list):
@@ -321,19 +327,14 @@ class KinematicsAPI(object):
                     kwargs_lens_light_i['e1'] = 0
                     kwargs_lens_light_i['e2'] = 0
                 kwargs_light.append(kwargs_lens_light_i)
-        if Hernquist_approx is True:
-            if r_eff is None:
-                raise ValueError('r_eff needs to be pre-computed and specified when using the Hernquist approximation')
-            light_profile_list = ['HERNQUIST']
-            kwargs_light = [{'Rs': r_eff * 0.551, 'amp': 1.}]
-        else:
-            if MGE_fit is True:
-                if kwargs_mge is None:
-                    raise ValueError('kwargs_mge must be provided to compute the MGE')
-                amps, sigmas, center_x, center_y = self._lensLightProfile.multi_gaussian_decomposition(
-                    kwargs_lens_light, model_bool_list=model_kinematics_bool, r_h=r_eff, **kwargs_mge)
-                light_profile_list = ['MULTI_GAUSSIAN']
-                kwargs_light = [{'amp': amps, 'sigma': sigmas}]
+
+        if MGE_fit is True:
+            if kwargs_mge is None:
+                raise ValueError('kwargs_mge must be provided to compute the MGE')
+            amps, sigmas, center_x, center_y = self._lensLightProfile.multi_gaussian_decomposition(
+                kwargs_lens_light, model_bool_list=model_kinematics_bool, r_h=r_eff, **kwargs_mge)
+            light_profile_list = ['MULTI_GAUSSIAN']
+            kwargs_light = [{'amp': amps, 'sigma': sigmas}]
         return light_profile_list, kwargs_light
 
     def kinematics_modeling_settings(self, anisotropy_model, kwargs_numerics_galkin, analytic_kinematics=False,

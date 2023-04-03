@@ -155,6 +155,7 @@ class Chameleon(LensProfileBase):
         f_x = f_x_1 - f_x_2
         theta_E_convert = alpha_1 / f_x
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
+        # TODO: is this next conversion really needed since the NIE definition is already in the average sense?
         s_scale_1 = np.sqrt(4 * w_c ** 2 / (1. + q) ** 2)
         s_scale_2 = np.sqrt(4 * w_t ** 2 / (1. + q) ** 2)
         return theta_E_convert, w_c, w_t, s_scale_1, s_scale_2

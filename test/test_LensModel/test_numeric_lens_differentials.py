@@ -12,7 +12,7 @@ class TestNumerics(object):
     """
     tests the source model routines
     """
-    def setup(self):
+    def setup_method(self):
         self.lensModel = LensModel(['GAUSSIAN'])
         self.kwargs = [{'amp': 1./4., 'sigma_x': 2., 'sigma_y': 2., 'center_x': 0., 'center_y': 0.}]
 
@@ -67,7 +67,7 @@ class TestNumericsProfile(object):
     """
     tests the second derivatives of various lens models
     """
-    def setup(self):
+    def setup_method(self):
         pass
 
     def assert_differentials(self, lens_model, kwargs, potential=True):
@@ -282,6 +282,11 @@ class TestNumericsProfile(object):
         lens_model = ['EPL']
         self.assert_differentials(lens_model, kwargs)
 
+    def test_EPL_BOXYDISKY(self):
+        kwargs = {'theta_E': 2., 'e1': 0.1, 'e2': 0.2, 'gamma': 2.13, 'a_m': 0.1}
+        lens_model = ['EPL_BOXYDISKY']
+        self.assert_differentials(lens_model, kwargs)
+
     def test_EPL_numba(self):
         kwargs = {'theta_E': 2., 'e1': 0.1, 'e2': 0., 'gamma': 2.13}
         lens_model = ['EPL_NUMBA']
@@ -428,6 +433,16 @@ class TestNumericsProfile(object):
         lens_model = ['SPL_CORE']
         self.assert_differentials(lens_model, kwargs, potential=False)
 
+    def test_gnfw(self):
+
+        kwargs = {'alpha_Rs': 1.2, 'Rs': 0.8, 'gamma_inner': 2.3, 'gamma_outer': 3.15}
+        lens_model = ['GNFW']
+        self.assert_differentials(lens_model, kwargs, potential=False)
+
+        kwargs = {'alpha_Rs': 1.2, 'Rs': 0.8, 'gamma_inner': 0.3, 'gamma_outer': 3.15}
+        lens_model = ['GNFW']
+        self.assert_differentials(lens_model, kwargs, potential=False)
+
     def test_cse(self):
         kwargs = {'a': 2, 's': 1., 'e1': 0, 'e2': 0, 'center_x': 0., 'center_y': 0.}
         lens_model = ['CSE']
@@ -470,7 +485,6 @@ class TestNumericsProfile(object):
         kwargs = {'sigma0': 2, 'Rs': .5, 'e1': 0, 'e2': 0.4, 'center_x': 0., 'center_y': 0.}
         lens_model = ['HERNQUIST_ELLIPSE_CSE']
         self.assert_differentials(lens_model, kwargs, potential=True)
-
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

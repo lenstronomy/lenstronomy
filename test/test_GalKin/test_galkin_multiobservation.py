@@ -4,7 +4,7 @@ from lenstronomy.GalKin.galkin_multiobservation import GalkinMultiObservation
 
 class TestGalkinMultiObservation(object):
 
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_dispersion(self):

@@ -8,7 +8,7 @@ class TestCosmoInterp(object):
     """
 
     """
-    def setup(self):
+    def setup_method(self):
         self.H0_true = 70
         self.omega_m_true = 0.3
         self._ok_true = 0.1

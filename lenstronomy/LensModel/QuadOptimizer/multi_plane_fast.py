@@ -29,7 +29,7 @@ class MultiplaneFast(object):
         :param astropy_instance: instance of astropy to pass to lens model
         :param param_class: an instance of ParamClass (see documentation in QuadOptimmizer.param_manager)
         :param foreground_rays: (optional) pre-computed foreground rays from a previous iteration, if they are not specified
-        they will be re-computed
+         they will be re-computed
         :param tol_source: source plane chi^2 sigma
         :param numerical_alpha_class: class for computing numerically tabulated deflection angles
         """

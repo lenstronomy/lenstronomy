@@ -43,9 +43,9 @@ class Observation(object):
         :param num_exposures: number of exposures that are combined
         :param psf_type: string, type of PSF ('GAUSSIAN' and 'PIXEL' supported)
         :param kernel_point_source: 2d numpy array, model of PSF centered with odd number of pixels per axis
-        (optional when psf_type='PIXEL' is chosen)
+         (optional when psf_type='PIXEL' is chosen)
         :param point_source_supersampling_factor: int, supersampling factor of kernel_point_source
-        (optional when psf_type='PIXEL' is chosen)
+         (optional when psf_type='PIXEL' is chosen)
         """
         self._exposure_time = exposure_time
         self._sky_brightness_ = sky_brightness
@@ -99,12 +99,11 @@ class Observation(object):
         return self._exposure_time * self._num_exposures
 
     @property
-    def psf_class(self):
+    def kwargs_psf(self):
         """
-        creates instance of PSF() class based on knowledge of the observations
-        For the full possibility of how to create such an instance, see the PSF() class documentation
+        keyword arguments to initiate a PSF() class
 
-        :return: instance of PSF() class
+        :return: kwargs_psf
         """
         if self._psf_type == 'GAUSSIAN':
             psf_type = "GAUSSIAN"
@@ -121,7 +120,17 @@ class Observation(object):
             kwargs_psf = {'psf_type': "NONE"}
         else:
             raise ValueError("psf_type %s not supported!" % self._psf_type)
-        psf_class = PSF(**kwargs_psf)
+        return kwargs_psf
+
+    @property
+    def psf_class(self):
+        """
+        creates instance of PSF() class based on knowledge of the observations
+        For the full possibility of how to create such an instance, see the PSF() class documentation
+
+        :return: instance of PSF() class
+        """
+        psf_class = PSF(**self.kwargs_psf)
         return psf_class
 
 
@@ -146,7 +155,7 @@ class SingleBand(Instrument, Observation):
         :param magnitude_zero_point: magnitude in which 1 count (e-) per second per arcsecond square is registered
         :param num_exposures: number of exposures that are combined
         :param point_source_supersampling_factor: int, supersampling factor of kernel_point_source
-        (optional when psf_type='PIXEL' is chosen)
+         (optional when psf_type='PIXEL' is chosen)
         :param data_count_unit: string, unit of the data (not noise properties - see other definitions),
          'e-': (electrons assumed to be IID),
          'ADU': (analog-to-digital unit)
@@ -203,8 +212,8 @@ class SingleBand(Instrument, Observation):
             return bkg_noise
         else:
             if self._read_noise is not None:
-                warnings.warn('read noise is specified but not used for noise properties. background noise is estimated'
-                              ' from "background_noise" argument')
+                warnings.warn('read noise is specified but not used for noise properties. Background noise is estimated'
+                              ' from "background_noise" argument.')
             return self._background_noise
 
     def flux_noise(self, flux):

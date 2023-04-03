@@ -11,7 +11,7 @@ from lenstronomy.Util import util
 
 class TestCorrelation(object):
 
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_power_spectrum_2D(self):

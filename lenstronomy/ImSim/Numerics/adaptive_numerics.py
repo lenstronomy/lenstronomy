@@ -27,7 +27,7 @@ class AdaptiveConvolution(object):
         :param supersampling_factor: factor of supersampling relative to pixel grid
         :param conv_supersample_pixels: bool array same size as data, pixels to be convolved and their light to be blurred
         :param supersampling_kernel_size: number of pixels (in units of the image pixels) that are convolved with the
-        supersampled kernel
+         supersampled kernel
         :param compute_pixels: bool array of size of image, these pixels (if True) will get blurred light from other pixels
         :param nopython: bool, numba jit setting to use python or compiled.
         :param cache: bool, numba jit setting to use cache

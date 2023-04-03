@@ -59,7 +59,8 @@ class LightProfile(object):
         :return: flux per 3d volume at radius r
         """
         if not hasattr(self, '_f_light_3d') or new_compute is True:
-            r_array = np.logspace(np.log10(self._min_interpolate), np.log10(self._max_interpolate), self._interp_grid_num)
+            r_array = np.logspace(np.log10(self._min_interpolate), np.log10(self._max_interpolate),
+                                  self._interp_grid_num)
             light_3d_array = self.light_model.light_3d(r_array, kwargs_list)
             light_3d_array[light_3d_array < 10 ** (-1000)] = 10 ** (-1000)
             f = interp1d(np.log(r_array), np.log(light_3d_array), fill_value=(np.log(light_3d_array[0]), -1000),
@@ -219,7 +220,8 @@ class LightProfile(object):
         if not hasattr(self, '_light_3d_cdf_log') or new_compute is True:
             r_array = np.logspace(np.log10(self._min_interpolate), np.log10(self._max_draw), self._interp_grid_num)
             dlog_r = np.log10(r_array[1]) - np.log10(r_array[0])
-            r_array_int = np.logspace(np.log10(self._min_interpolate) + dlog_r / 2, np.log10(self._max_draw) + dlog_r / 2, self._interp_grid_num)
+            r_array_int = np.logspace(np.log10(self._min_interpolate) + dlog_r / 2, np.log10(self._max_draw) + dlog_r /
+                                      2, self._interp_grid_num)
             cum_sum = np.zeros_like(r_array)
             sum_light = 0
             for i, r in enumerate(r_array_int[:-1]):

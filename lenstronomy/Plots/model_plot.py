@@ -64,8 +64,8 @@ class ModelPlot(object):
             # overwrite model with initial input without linear solver applied
             model[0] = im_sim.image(**kwargs_params)
             # retrieve amplitude parameters directly from kwargs_list
-            param[0] = im_sim.linear_param_from_kwargs(kwargs_params['kwargs_source'],
-                                                       kwargs_params['kwargs_lens_light'],
+
+            param[0] = im_sim.linear_param_from_kwargs(kwargs_params['kwargs_source'], kwargs_params['kwargs_lens_light'],
                                                        kwargs_params['kwargs_ps'])
         else:
             kwargs_params = kwargs_params_copy  # overwrite the keyword list with the linear solved 'amp' values

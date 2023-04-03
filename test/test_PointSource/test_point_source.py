@@ -11,7 +11,7 @@ import lenstronomy.Util.param_util as param_util
 
 class TestPointSource(object):
 
-    def setup(self):
+    def setup_method(self):
         lensModel = LensModel(lens_model_list=['SPEP'])
         solver = LensEquationSolver(lensModel=lensModel)
         e1, e2 = param_util.phi_q2_ellipticity(0, 0.7)
@@ -55,6 +55,11 @@ class TestPointSource(object):
         assert amp[0][0] != 1
         assert n == num_basis
         assert ra_pos[0][0] == self.x_pos[0]
+
+    def test_linear_param_from_kwargs(self):
+        param = self.PointSource.linear_param_from_kwargs(self.kwargs_ps)
+        assert param[0] == self.kwargs_ps[0]['point_amp'][0]
+        assert param[1] == self.kwargs_ps[0]['point_amp'][1]
 
     def test_point_source_list(self):
         ra_list, dec_list, amp_list = self.PointSource.point_source_list(self.kwargs_ps, self.kwargs_lens)
@@ -141,7 +146,7 @@ class TestPointSource(object):
 
 class TestPointSourceFixedMag(object):
 
-    def setup(self):
+    def setup_method(self):
         lensModel = LensModel(lens_model_list=['SPEP'])
         solver = LensEquationSolver(lensModel=lensModel)
         e1, e2 = param_util.phi_q2_ellipticity(0, 0.7)

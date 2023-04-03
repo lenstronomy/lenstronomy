@@ -11,7 +11,7 @@ class TestNIE(object):
     """
     class to test the NIE profile
     """
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_function(self):

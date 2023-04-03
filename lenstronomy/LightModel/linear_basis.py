@@ -32,6 +32,21 @@ class LinearBasis(LightModelBase):
             name_list.append(func.param_names)
         return name_list
 
+    @property
+    def param_name_list_latex(self):
+        """
+        returns the list of all parameter names in LateX style
+
+        :return: list of list of strings (for each light model separately)
+        """
+        name_list = []
+        for i, func in enumerate(self.func_list):
+            if hasattr(func, 'param_names_latex'):
+                name_list.append(func.param_names_latex)
+            else:
+                name_list.append(func.param_names)
+        return name_list
+
     def functions_split(self, x, y, kwargs_list, k=None):
         """
         split model in different components
@@ -173,6 +188,26 @@ class LinearBasis(LightModelBase):
                 if 'amp' not in kwargs_fixed:
                     kwargs_fixed['amp'] = 1
         return kwargs_fixed_list
+
+    def linear_param_from_kwargs(self, kwargs_list):
+        """
+        inverse function of update_linear() returning the linear amplitude list for the keyword argument list
+
+        :param kwargs_list: model parameters including the linear amplitude parameters
+        :type kwargs_list: list of keyword arguments
+        :return: list of linear amplitude parameters
+        :rtype: list
+        """
+        param = []
+        for k, model in enumerate(self.profile_type_list):
+            kwargs_ = kwargs_list[k]
+            param_names = self.param_name_list[k]
+            if 'amp' in param_names:
+                amp = kwargs_['amp']
+                amp_list = np.atleast_1d(amp)
+                for a in amp_list:
+                    param.append(a)
+        return param
 
     def check_positive_flux_profile(self, kwargs_list):
         """

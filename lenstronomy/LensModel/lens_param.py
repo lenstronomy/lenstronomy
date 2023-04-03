@@ -7,8 +7,10 @@ __all__ = ['LensParam']
 class LensParam(object):
     """
     class to handle the lens model parameter
+
     """
-    def __init__(self, lens_model_list, kwargs_fixed, kwargs_lower=None, kwargs_upper=None, kwargs_logsampling=None,
+    def __init__(self, lens_model_list, kwargs_fixed,
+                 kwargs_lower=None, kwargs_upper=None, kwargs_logsampling=None,
                  num_images=0, solver_type='NONE', num_shapelet_lens=0):
         """
 
@@ -24,12 +26,19 @@ class LensParam(object):
         :param num_shapelet_lens: integer, number of shapelets in the lensing potential
          (only relevant when 'SHAPELET' lens model is used)
         """
+
+
         self.model_list = lens_model_list
         self.kwargs_fixed = kwargs_fixed
         self._num_images = num_images
         self._solver_type = solver_type
         self._num_shapelet_lens = num_shapelet_lens
+
+        # PF: Here the instantiation of SinglePlane is only made to deal with
+        # a list of lens parameters. It does not seem to matter whether multi-
+        # plane lensing or line-of-sight effects are activated.
         lens_model = SinglePlane(lens_model_list=lens_model_list)
+
         name_list = []
         for func in lens_model.func_list:
             name_list.append(func.param_names)
@@ -42,6 +51,7 @@ class LensParam(object):
             kwargs_upper = []
             for func in lens_model.func_list:
                 kwargs_upper.append(func.upper_limit_default)
+
 
         self.lower_limit = kwargs_lower
         self.upper_limit = kwargs_upper
@@ -145,6 +155,7 @@ class LensParam(object):
                             args.append(np.log10(kwargs[name]))
                         else:
                             args.append(kwargs[name])
+
         return args
 
     def num_param(self):

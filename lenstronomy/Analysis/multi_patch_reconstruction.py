@@ -29,7 +29,7 @@ class MultiPatchReconstruction(MultiBandImageReconstruction):
         :param kwargs_pixel_grid: keyword argument of PixelGrid() class. This is optional and overwrites a minimal grid
          Attention for consistent pixel grid definitions!
         :param verbose: if True (default), computes and prints the total log-likelihood.
-        This can deactivated for speedup purposes (does not run linear inversion again), and reduces the number of prints.
+         This can de-activated for speedup purposes (does not run linear inversion again), and reduces the number of prints.
         """
         self._multi_band_list = multi_band_list
         if not multi_band_type == 'joint-linear':

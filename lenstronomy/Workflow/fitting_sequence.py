@@ -1,5 +1,6 @@
 from lenstronomy.Workflow.psf_fitting import PsfFitting
 from lenstronomy.Workflow.alignment_matching import AlignmentFitting
+from lenstronomy.Workflow.flux_calibration import FluxCalibration
 from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModel
 from lenstronomy.Workflow.multi_band_manager import MultiBandUpdateManager
 from lenstronomy.Sampling.likelihood import LikelihoodModule
@@ -17,7 +18,8 @@ class FittingSequence(object):
     """
     class to define a sequence of fitting applied, inherit the Fitting class
     this is a Workflow manager that allows to update model configurations before executing another step in the modelling
-    The user can take this module as an example of how to create their own workflows or build their own around the FittingSequence
+    The user can take this module as an example of how to create their own workflows or build their own around the
+    FittingSequence
     """
     def __init__(self, kwargs_data_joint, kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params, mpi=False,
                  verbose=True):
@@ -39,7 +41,7 @@ class FittingSequence(object):
          'extinction_model': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
          'special': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
         :param mpi: MPI option (bool), if True, will launch an MPI Pool job for the steps in the fitting sequence where
-        possible
+         possible
         :param verbose: bool, if True prints temporary results and indicators of the fitting process
         """
         self.kwargs_data_joint = kwargs_data_joint
@@ -84,14 +86,13 @@ class FittingSequence(object):
                 self.fix_not_computed(**kwargs)
 
             elif fitting_type == 'psf_iteration':
-                #from lenstronomy.Sampling.Pool.pool import choose_pool
-                #pool = choose_pool(mpi=self._mpi, processes=1, use_dill=True)
-                #if pool.is_master():
-                #    self.psf_iteration(**kwargs)
                 self.psf_iteration(**kwargs)
 
             elif fitting_type == 'align_images':
                 self.align_images(**kwargs)
+
+            elif fitting_type == 'calibrate_images':
+                self.flux_calibration(**kwargs)
 
             elif fitting_type == 'PSO':
                 kwargs_result, chain, param = self.pso(**kwargs)
@@ -105,7 +106,7 @@ class FittingSequence(object):
                 chain_list.append([fitting_type, kwargs_result])
 
             elif fitting_type == 'MCMC':
-                if not 'init_samples' in kwargs:
+                if 'init_samples' not in kwargs:
                     kwargs['init_samples'] = self._mcmc_init_samples
                 elif kwargs['init_samples'] is None:
                     kwargs['init_samples'] = self._mcmc_init_samples
@@ -114,13 +115,25 @@ class FittingSequence(object):
                 self._updateManager.update_param_state(**kwargs_result)
                 chain_list.append(mcmc_output)
 
+            elif fitting_type == 'Nautilus':
+                from lenstronomy.Sampling.Samplers.nautilus import Nautilus
+                nautilus = Nautilus(likelihood_module=self.likelihoodModule)
+                points, log_w, log_l, log_z = nautilus.nautilus_sampling(mpi=self._mpi, **kwargs)
+                chain_list.append([points, log_w, log_l, log_z])
+                if kwargs.get('verbose', False):
+                    print(len(points), 'number of points sampled')
+                if not kwargs.get('one_step', False):  # this is only for testing purposes
+                    kwargs_result = self.best_fit_from_samples(points, log_l)
+                    self._updateManager.update_param_state(**kwargs_result)
+
             elif fitting_type == 'nested_sampling':
                 ns_output = self.nested_sampling(**kwargs)
                 chain_list.append(ns_output)
 
             else:
                 raise ValueError("fitting_sequence %s is not supported. Please use: 'PSO', 'SIMPLEX', 'MCMC', "
-                                 "'psf_iteration', 'restart', 'update_settings' or ""'align_images'" % fitting_type)
+                                 "'psf_iteration', 'restart', 'update_settings', 'calibrate_images' or "
+                                 "'align_images'" % fitting_type)
         return chain_list
 
     def best_fit(self, bijective=False):
@@ -157,14 +170,15 @@ class FittingSequence(object):
     @property
     def bic(self):
         """
-        returns the bayesian information criterion of the model.
+        Bayesian information criterion (BIC) of the model.
+
         :return: bic value, float
         """
         num_data = self.likelihoodModule.num_data
         num_param_nonlinear = self.param_class.num_param()[0]
         num_param_linear = self.param_class.num_param_linear()
         num_param = num_param_nonlinear + num_param_linear
-        bic = analysis_util.bic_model(self.best_fit_likelihood, num_data,num_param)
+        bic = analysis_util.bic_model(self.best_fit_likelihood, num_data, num_param)
         return bic
 
     @property
@@ -204,8 +218,9 @@ class FittingSequence(object):
         kwargs_result = param_class.args2kwargs(result, bijective=True)
         return kwargs_result
 
-    def mcmc(self, n_burn, n_run, walkerRatio, n_walkers=None, sigma_scale=1, threadCount=1, init_samples=None,
-             re_use_samples=True, sampler_type='EMCEE', progress=True, backup_filename=None, start_from_backup=False):
+    def mcmc(self, n_burn, n_run, walkerRatio=None, n_walkers=None, sigma_scale=1, threadCount=1, init_samples=None,
+             re_use_samples=True, sampler_type='EMCEE', progress=True, backend_filename=None, start_from_backend=False,
+             **kwargs_zeus):
         """
         MCMC routine
 
@@ -216,10 +231,18 @@ class FittingSequence(object):
         :param sigma_scale: scaling of the initial parameter spread relative to the width in the initial settings
         :param threadCount: number of CPU threads. If MPI option is set, threadCount=1
         :param init_samples: initial sample from where to start the MCMC process
-        :param re_use_samples: bool, if True, re-uses the samples described in init_samples.nOtherwise starts from scratch.
-        :param sampler_type: string, which MCMC sampler to be used. Options are: 'EMCEE'
+        :param re_use_samples: bool, if True, re-uses the samples described in init_samples.nOtherwise starts from
+         scratch.
+        :param sampler_type: string, which MCMC sampler to be used. Options are: 'EMCEE', 'ZEUS'
         :param progress: boolean, if True shows progress bar in EMCEE
-        :return: list of output arguments, e.g. MCMC samples, parameter names, logL distances of all samples specified by the specific sampler used
+        :param backend_filename: name of the HDF5 file where sampling state is saved (through emcee backend engine)
+        :type backend_filename: string
+        :param start_from_backend: if True, start from the state saved in `backup_filename`.
+         O therwise, create a new backup file with name `backup_filename` (any already existing file is overwritten!).
+        :type start_from_backend: bool
+        :param kwargs_zeus: zeus-specific kwargs
+        :return: list of output arguments, e.g. MCMC samples, parameter names, logL distances of all samples specified
+         by the specific sampler used
         """
 
         param_class = self.param_class
@@ -231,9 +254,11 @@ class FittingSequence(object):
         sigma_start = np.array(param_class.kwargs2args(**kwargs_sigma)) * sigma_scale
         num_param, param_list = param_class.num_param()
         if n_walkers is None:
+            if walkerRatio is None:
+                raise ValueError('MCMC sampler needs either n_walkers or walkerRatio as input argument')
             n_walkers = num_param * walkerRatio
         # run MCMC
-        if not init_samples is None and re_use_samples is True:
+        if init_samples is not None and re_use_samples is True:
             num_samples, num_param_prev = np.shape(init_samples)
             if num_param_prev == num_param:
                 print("re-using previous samples to initialize the next MCMC run.")
@@ -247,7 +272,16 @@ class FittingSequence(object):
         if sampler_type == 'EMCEE':
             samples, dist = mcmc_class.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=self._mpi,
                                                   threadCount=threadCount, progress=progress, initpos=initpos,
-                                                  backup_filename=backup_filename, start_from_backup=start_from_backup)
+                                                  backend_filename=backend_filename,
+                                                  start_from_backend=start_from_backend)
+            output = [sampler_type, samples, param_list, dist]
+
+        elif sampler_type == 'ZEUS':
+
+            samples, dist = mcmc_class.mcmc_zeus(n_walkers, n_run, n_burn, mean_start, sigma_start,
+                                                 mpi=self._mpi, threadCount=threadCount,
+                                                 progress=progress, initpos = initpos, backend_filename = backend_filename,
+                                                 **kwargs_zeus)
             output = [sampler_type, samples, param_list, dist]
         else:
             raise ValueError('sampler_type %s not supported!' % sampler_type)
@@ -263,7 +297,8 @@ class FittingSequence(object):
         :param sigma_scale: scaling of the initial parameter spread relative to the width in the initial settings
         :param print_key: string, printed text when executing this routine
         :param threadCount: number of CPU threads. If MPI option is set, threadCount=1
-        :return: result of the best fit, the chain of the best fit parameter after each iteration, list of parameters in same order
+        :return: result of the best fit, the PSO chain of the best fit parameter after each iteration
+         [lnlikelihood, parameters, velocities], list of parameters in same order as in chain
         """
 
         param_class = self.param_class
@@ -271,20 +306,20 @@ class FittingSequence(object):
         init_pos = param_class.kwargs2args(**kwargs_temp)
         kwargs_sigma = self._updateManager.sigma_kwargs
         sigma_start = param_class.kwargs2args(**kwargs_sigma)
-        lowerLimit = np.array(init_pos) - np.array(sigma_start) * sigma_scale
-        upperLimit = np.array(init_pos) + np.array(sigma_start) * sigma_scale
+        lower_start = np.array(init_pos) - np.array(sigma_start) * sigma_scale
+        upper_start = np.array(init_pos) + np.array(sigma_start) * sigma_scale
         num_param, param_list = param_class.num_param()
 
         # run PSO
         sampler = Sampler(likelihoodModule=self.likelihoodModule)
-        result, chain = sampler.pso(n_particles, n_iterations, lowerLimit, upperLimit, init_pos=init_pos,
-                                       threadCount=threadCount, mpi=self._mpi, print_key=print_key)
+        result, chain = sampler.pso(n_particles, n_iterations, lower_start, upper_start, init_pos=init_pos,
+                                    threadCount=threadCount, mpi=self._mpi, print_key=print_key)
         kwargs_result = param_class.args2kwargs(result, bijective=True)
         return kwargs_result, chain, param_list
 
     def nested_sampling(self, sampler_type='MULTINEST', kwargs_run={},
-                        prior_type='uniform', width_scale=1, sigma_scale=1, 
-                        output_basename='chain', remove_output_dir=True, 
+                        prior_type='uniform', width_scale=1, sigma_scale=1,
+                        output_basename='chain', remove_output_dir=True,
                         dypolychord_dynamic_goal=0.8,
                         polychord_settings={},
                         dypolychord_seed_increment=200,
@@ -348,7 +383,7 @@ class FittingSequence(object):
                                      prior_sigmas=sigma_start,
                                      width_scale=width_scale,
                                      sigma_scale=sigma_scale,
-                                     bound=dynesty_bound, 
+                                     bound=dynesty_bound,
                                      sample=dynesty_sample,
                                      use_mpi=self._mpi)
             samples, means, logZ, logZ_err, logL, results_object = sampler.run(kwargs_run)
@@ -358,7 +393,7 @@ class FittingSequence(object):
         # update current best fit values
         self._update_state(samples[-1])
 
-        output = [sampler_type, samples, sampler.param_names, logL, 
+        output = [sampler_type, samples, sampler.param_names, logL,
                   logZ, logZ_err, results_object]
         return output
 
@@ -389,17 +424,21 @@ class FittingSequence(object):
                 self.multi_band_list[band_index][1] = kwargs_psf
         return 0
 
-    def align_images(self, n_particles=10, n_iterations=10, lowerLimit=-0.2, upperLimit=0.2, threadCount=1,
-                     compute_bands=None):
+    def align_images(self, n_particles=10, n_iterations=10, align_offset=True, align_rotation=False, threadCount=1,
+                     compute_bands=None, delta_shift=0.2, delta_rot=0.1):
         """
         aligns the coordinate systems of different exposures within a fixed model parameterisation by executing a PSO
         with relative coordinate shifts as free parameters
-
         :param n_particles: number of particles in the Particle Swarm Optimization
         :param n_iterations: number of iterations in the optimization process
-        :param lowerLimit: lower limit of relative shift
-        :param upperLimit: upper limit of relative shift
-        :param compute_bands: bool list, if multiple bands, this process can be limited to a subset of bands
+        :param align_offset: aligns shift in Ra and Dec
+        :type align_offset: boolean
+        :param align_rotation: aligns coordinate rotation
+        :type align_rotation: boolean
+        :param delta_shift: astrometric shift tolerance
+        :param delta_rot: rotation angle tolerance [in radian]
+        :param compute_bands: bool list, if multiple bands, this process can be limited to a subset of bands for which
+         the coordinate system is being fit for best alignment to the model parameters
         :return: 0, updated coordinate system for the band(s)
         """
         kwargs_model = self._updateManager.kwargs_model
@@ -413,23 +452,59 @@ class FittingSequence(object):
             if compute_bands[i] is True:
 
                 alignmentFitting = AlignmentFitting(self.multi_band_list, kwargs_model, kwargs_temp, band_index=i,
-                                                    likelihood_mask_list=likelihood_mask_list)
+                                                    likelihood_mask_list=likelihood_mask_list,
+                                                    align_offset=align_offset, align_rotation=align_rotation)
 
                 kwargs_data, chain = alignmentFitting.pso(n_particles=n_particles, n_iterations=n_iterations,
-                                                          lowerLimit=lowerLimit, upperLimit=upperLimit,
+                                                          delta_shift=delta_shift, delta_rot=delta_rot,
                                                           threadCount=threadCount, mpi=self._mpi,
                                                           print_key='Alignment fitting for band %s ...' % i)
                 print('Align completed for band %s.' % i)
-                print('ra_shift: %s,  dec_shift: %s' %(kwargs_data['ra_shift'], kwargs_data['dec_shift']))
+                print('ra_shift: %s,  dec_shift: %s, phi_rot: %s' %(kwargs_data.get('ra_shift', 0),
+                                                                    kwargs_data.get('dec_shift', 0),
+                                                                    kwargs_data.get('phi_rot', 0)))
                 self.multi_band_list[i][0] = kwargs_data
         return 0
 
-    def update_settings(self, kwargs_model={}, kwargs_constraints={}, kwargs_likelihood={}, lens_add_fixed=[],
-                        source_add_fixed=[], lens_light_add_fixed=[], ps_add_fixed=[], cosmo_add_fixed=[],
-                        lens_remove_fixed=[],
-                        source_remove_fixed=[], lens_light_remove_fixed=[], ps_remove_fixed=[], cosmo_remove_fixed=[],
+    def flux_calibration(self, n_particles=10, n_iterations=10, threadCount=1, calibrate_bands=None,
+                         scaling_lower_limit=0, scaling_upper_limit=1000):
+        """
+        calibrates flux_scaling between multiple images. This routine only works in 'join-linear' model when fluxes
+        are meant to be identical for different bands
+
+        :param n_particles: number of particles in the Particle Swarm Optimization
+        :param n_iterations: number of iterations in the optimization process
+        :param calibrate_bands: state which bands the flux calibration is applied to
+        :type calibrate_bands: list of booleans of length of the imaging bands
+        :param threadCount: number of CPU threads. If MPI option is set, threadCount=1
+        :type threadCount: integer
+        :param scaling_lower_limit: lower limit of flux_scaling
+        :param scaling_upper_limit: upper limit of flux scaling
+        :return: 0, updated coordinate system for the band(s)
+        """
+        kwargs_model = self._updateManager.kwargs_model
+        kwargs_temp = self.best_fit(bijective=False)
+        multi_band_type = self.kwargs_data_joint.get('multi_band_type', 'multi-linear')
+        kwargs_imaging = self.likelihoodModule.kwargs_imaging
+
+        calibration_fitting = FluxCalibration(kwargs_imaging=kwargs_imaging, kwargs_model=kwargs_model,
+                                              kwargs_params=kwargs_temp,
+                                              calibrate_bands=calibrate_bands)
+
+        multi_band_list, chain = calibration_fitting.pso(n_particles=n_particles, n_iterations=n_iterations,
+                                                         threadCount=threadCount, mpi=self._mpi,
+                                                         scaling_lower_limit=scaling_lower_limit,
+                                                         scaling_upper_limit=scaling_upper_limit)
+        self.multi_band_list = multi_band_list
+        return 0
+
+    def update_settings(self, kwargs_model=None, kwargs_constraints=None, kwargs_likelihood=None, lens_add_fixed=None,
+                        source_add_fixed=None, lens_light_add_fixed=None, ps_add_fixed=None, cosmo_add_fixed=None,
+                        lens_remove_fixed=None, source_remove_fixed=None, lens_light_remove_fixed=None,
+                        ps_remove_fixed=None, cosmo_remove_fixed=None,
                         change_source_lower_limit=None, change_source_upper_limit=None,
-                        change_lens_lower_limit=None, change_lens_upper_limit=None):
+                        change_lens_lower_limit=None, change_lens_upper_limit=None,
+                        change_sigma_lens=None, change_sigma_source=None, change_sigma_lens_light=None):
         """
         updates lenstronomy settings "on the fly"
 
@@ -446,7 +521,13 @@ class FittingSequence(object):
         :param lens_light_remove_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param ps_remove_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param cosmo_remove_fixed: ['param1', 'param2',...]
-        :param change_lens_lower_limit: [[i_model, ['param_name', ...], [value1, value2, ...]]]
+        :param change_lens_lower_limit: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
+        :param change_lens_upper_limit: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
+        :param change_source_lower_limit: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
+        :param change_source_upper_limit: [[i_model, [''param_name1', 'param_name2', ...], [value1, value2, ...]]]
+        :param change_sigma_lens: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
+        :param change_sigma_source: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
+        :param change_sigma_lens_light: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
         :return: 0, the settings are overwritten for the next fitting step to come
         """
         self._updateManager.update_options(kwargs_model, kwargs_constraints, kwargs_likelihood)
@@ -455,11 +536,14 @@ class FittingSequence(object):
                                          lens_light_remove_fixed, ps_remove_fixed, cosmo_remove_fixed)
         self._updateManager.update_limits(change_source_lower_limit, change_source_upper_limit, change_lens_lower_limit,
                                           change_lens_upper_limit)
+        self._updateManager.update_sigmas(change_sigma_lens=change_sigma_lens, change_sigma_source=change_sigma_source,
+                                          change_sigma_lens_light=change_sigma_lens_light)
         return 0
 
     def set_param_value(self, **kwargs):
         """
         Set a parameter to a specific value. `kwargs` are below.
+
         :param lens: [[i_model, ['param1', 'param2',...], [...]]
         :type lens:
         :param source: [[i_model, ['param1', 'param2',...], [...]]

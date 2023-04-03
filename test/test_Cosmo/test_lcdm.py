@@ -7,7 +7,7 @@ from lenstronomy.Cosmo.lcdm import  LCDM
 
 
 class TestFlatLCDM(object):
-    def setup(self):
+    def setup_method(self):
         self.cosmo = LCDM(z_lens=0.5, z_source=1.5, flat=True)
         self.cosmo_k = LCDM(z_lens=0.5, z_source=1.5, flat=False)
 

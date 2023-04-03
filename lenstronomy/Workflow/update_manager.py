@@ -68,6 +68,7 @@ class UpdateManager(object):
         self._kwargs_temp = self.init_kwargs
 
     # TODO: check compatibility with number of point sources provided as well as other parameter labeling
+    # TODO: give raise statement if sigma value is =0
 
     @property
     def init_kwargs(self):
@@ -209,7 +210,7 @@ class UpdateManager(object):
                             kwargs_lens_init=lens_temp, **kwargs_constraints)
         return param_class
 
-    def update_options(self, kwargs_model, kwargs_constraints, kwargs_likelihood):
+    def update_options(self, kwargs_model=None, kwargs_constraints=None, kwargs_likelihood=None):
         """
         updates the options by overwriting the kwargs with the new ones being added/changed
         WARNING: some updates may not be valid depending on the model options. Use carefully!
@@ -220,6 +221,12 @@ class UpdateManager(object):
         :param kwargs_likelihood:
         :return: kwargs_model, kwargs_constraints, kwargs_likelihood
         """
+        if kwargs_model is None:
+            kwargs_model = {}
+        if kwargs_constraints is None:
+            kwargs_constraints = {}
+        if kwargs_likelihood is None:
+            kwargs_likelihood = []
         kwargs_model_updated = self.kwargs_model.update(kwargs_model)
         kwargs_constraints_updated = self.kwargs_constraints.update(kwargs_constraints)
         kwargs_likelihood_updated = self.kwargs_likelihood.update(kwargs_likelihood)
@@ -230,34 +237,51 @@ class UpdateManager(object):
         """
         updates the limits (lower and upper) of the update manager instance
 
-        :param change_source_lower_limit: [[i_model, ['param_name', ...], [value1, value2, ...]]]
-        :param change_lens_lower_limit: [[i_model, ['param_name', ...], [value1, value2, ...]]]
-        :param change_source_upper_limit: [[i_model, ['param_name', ...], [value1, value2, ...]]]
-        :param change_lens_upper_limit: [[i_model, ['param_name', ...], [value1, value2, ...]]]
+        :param change_source_lower_limit: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
+        :param change_lens_lower_limit: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
+        :param change_source_upper_limit: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
+        :param change_lens_upper_limit: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
         :return: updates internal state of lower and upper limits accessible from outside
         """
         if change_source_lower_limit is not None:
-            self._source_lower = self._update_limit(change_source_lower_limit, self._source_lower)
+            self._source_lower = self._update_kwargs_list(change_source_lower_limit, self._source_lower)
         if change_source_upper_limit is not None:
-            self._source_upper = self._update_limit(change_source_upper_limit, self._source_upper)
+            self._source_upper = self._update_kwargs_list(change_source_upper_limit, self._source_upper)
         if change_lens_lower_limit is not None:
-            self._lens_lower = self._update_limit(change_lens_lower_limit, self._lens_lower)
+            self._lens_lower = self._update_kwargs_list(change_lens_lower_limit, self._lens_lower)
         if change_lens_upper_limit is not None:
-            self._lens_upper = self._update_limit(change_lens_upper_limit, self._lens_upper)
+            self._lens_upper = self._update_kwargs_list(change_lens_upper_limit, self._lens_upper)
+
+    def update_sigmas(self, change_sigma_lens=None, change_sigma_source=None, change_sigma_lens_light=None):
+        """
+        updates individual estimated uncertainty levels for the initialization of search and sampling algorithms
+
+        :param change_sigma_lens: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
+        :param change_sigma_source: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
+        :param change_sigma_lens_light: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
+        :return: updated internal state of the spread to initialize samplers
+        """
+        if change_sigma_lens is not None:
+            self._lens_sigma = self._update_kwargs_list(change_sigma_lens, self._lens_sigma)
+        if change_sigma_source is not None:
+            self._source_sigma = self._update_kwargs_list(change_sigma_source, self._source_sigma)
+        if change_sigma_lens_light is not None:
+            self._lens_light_sigma = self._update_kwargs_list(change_sigma_lens_light, self._lens_light_sigma)
 
     @staticmethod
-    def _update_limit(change_limit, kwargs_limit_previous):
+    def _update_kwargs_list(change_list, kwargs_list_previous):
         """
 
-        :param change_limit: input format of def update_limits
-        :param kwargs_limit_previous: all limits of a model type
+        :param change_list: input format of def update_limits [[i_model, ['param_name1', 'param_name2', ...],
+         [value1, value2, ...]]]
+        :param kwargs_list_previous: keyword argument list
         :return: update limits
         """
-        kwargs_limit_updated = copy.deepcopy(kwargs_limit_previous)
-        for i in range(len(change_limit)):
-            i_model = change_limit[i][0]
-            change_names = change_limit[i][1]
-            values = change_limit[i][2]
+        kwargs_limit_updated = copy.deepcopy(kwargs_list_previous)
+        for i in range(len(change_list)):
+            i_model = change_list[i][0]
+            change_names = change_list[i][1]
+            values = change_list[i][2]
             for j, param_name in enumerate(change_names):
                 kwargs_limit_updated[i_model][param_name] = values[j]
         return kwargs_limit_updated
@@ -295,9 +319,7 @@ class UpdateManager(object):
         if special_add_fixed is None:
             special_add_fixed = []
         for param_name in special_add_fixed:
-            if param_name in special_fixed:
-                pass
-            else:
+            if param_name not in special_fixed:
                 special_fixed[param_name] = special_temp[param_name]
         if special_remove_fixed is None:
             special_remove_fixed = []

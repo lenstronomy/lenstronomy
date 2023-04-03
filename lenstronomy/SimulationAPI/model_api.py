@@ -20,23 +20,25 @@ class ModelAPI(object):
                  source_light_model_list=None, lens_light_model_list=None, point_source_model_list=None,
                  source_redshift_list=None, cosmo=None, z_source_convention=None):
         """
+        # TODO: make inputs follow the kwargs_model of the class_creator instances of 'kwargs_model',
+        # i.e. multi-plane options, perhaps others
 
         :param lens_model_list: list of strings with lens model names
         :param z_lens: redshift of the deflector (only considered when operating in single plane mode).
-        Is only needed for specific functions that require a cosmology.
+         Is only needed for specific functions that require a cosmology.
         :param z_source: redshift of the source: Needed in multi_plane option only,
-        not required for the core functionalities in the single plane mode. This will be the redshift of the source
-        plane (if not further specified the 'source_redshift_list') and the point source redshift
-        (regardless of 'source_redshift_list')
+         not required for the core functionalities in the single plane mode. This will be the redshift of the source
+         plane (if not further specified the 'source_redshift_list') and the point source redshift
+         (regardless of 'source_redshift_list')
         :param lens_redshift_list: list of deflector redshift (corresponding to the lens model list),
-        only applicable in multi_plane mode.
+         only applicable in multi_plane mode.
         :param source_light_model_list: list of strings with source light model names (lensed light profiles)
         :param lens_light_model_list: list of strings with lens light model names (not lensed light profiles)
         :param point_source_model_list: list of strings with point source model names
         :param source_redshift_list: list of redshifts of the source profiles (optional)
         :param cosmo: instance of the astropy cosmology class. If not specified, uses the default cosmology.
         :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens
-        models. If None, 'z_source' is used.
+         models. If None, 'z_source' is used.
         """
         if lens_model_list is None:
             lens_model_list = []
@@ -48,10 +50,13 @@ class ModelAPI(object):
             point_source_model_list = []
         if cosmo is None:
             cosmo = default_cosmology.get()
+
+        # making sure multi_plane mode is activated when either lens or source redshift lists are provided
         if lens_redshift_list is not None or source_redshift_list is not None:
             multi_plane = True
         else:
             multi_plane = False
+
         if z_source_convention is None:
             z_source_convention = z_source
 
@@ -107,7 +112,7 @@ class ModelAPI(object):
 
     def physical2lensing_conversion(self, kwargs_mass):
         """
-        
+
         :param kwargs_mass: list of keyword arguments of all the lens models. Einstein radius 'theta_E' are replaced by
          'sigma_v', velocity dispersion in km/s, 'alpha_Rs' and 'Rs' of NFW profiles are replaced by 'M200' and
          'concentration'

@@ -11,7 +11,7 @@ class TestGaussian(object):
     """
     tests the Gaussian methods
     """
-    def setup(self):
+    def setup_method(self):
         self.Gaussian = Gaussian()
 
     def test_function(self):
@@ -68,16 +68,16 @@ class TestGaussian(object):
         assert values[0][0] == 0.
         assert values[3][0] == -np.exp(-1./2)
         assert values[1][0] == 0.
-        assert values[0][1] == 0.40600584970983811
-        assert values[3][1] == -0.1353352832366127
-        assert values[1][1] == 0.
+        npt.assert_almost_equal(values[0][1], 0.40600584970983811, decimal=9)
+        npt.assert_almost_equal(values[3][1], -0.1353352832366127, decimal=9)
+        npt.assert_almost_equal(values[1][1], 0, decimal=9)
 
 
 class TestGaussianKappa(object):
     """
     test the Gaussian with Gaussian kappa
     """
-    def setup(self):
+    def setup_method(self):
         self.gaussian_kappa = GaussianKappa()
         self.gaussian = Gaussian()
 

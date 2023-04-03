@@ -12,7 +12,7 @@ __all__ = ['EPL', 'EPLMajorAxis']
 
 
 class EPL(LensProfileBase):
-    """"
+    """
     Elliptical Power Law mass profile
 
     .. math::
@@ -26,7 +26,7 @@ class EPL(LensProfileBase):
     In terms of eccentricities, this profile is defined as
 
     .. math::
-        \\kappa(r) = \\frac{3-\\gamma}{2} \\left(\\frac{\\theta'_{E}}{r \\sqrt{1 − e*\\cos(2*\\phi)}} \\right)^{\\gamma-1}
+        \\kappa(r) = \\frac{3-\\gamma}{2} \\left(\\frac{\\theta'_{E}}{r \\sqrt{1 - e*\\cos(2*\\phi)}} \\right)^{\\gamma-1}
 
     with :math:`\\epsilon` is the ellipticity defined as
 

@@ -15,7 +15,7 @@ class TestLightModel(object):
     tests the source model routines
     """
 
-    def setup(self):
+    def setup_method(self):
         self.light_model_list = ['GAUSSIAN', 'MULTI_GAUSSIAN', 'SERSIC', 'SERSIC_ELLIPSE',
                                  'CORE_SERSIC', 'SHAPELETS', 'HERNQUIST',
                                  'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE', 'UNIFORM', 'POWER_LAW', 'NIE',
@@ -66,6 +66,11 @@ class TestLightModel(object):
     def test_param_name_list(self):
         param_name_list = self.LightModel.param_name_list
         assert len(self.light_model_list) == len(param_name_list)
+
+    def test_param_name_list_latex(self):
+        param_name_list = self.LightModel.param_name_list_latex
+        assert len(self.light_model_list) == len(param_name_list)
+
 
     def test_num_param_linear(self):
         num = self.LightModel.num_param_linear(self.kwargs, list_return=False)

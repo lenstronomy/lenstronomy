@@ -31,7 +31,13 @@ import lenstronomy
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.coverage', 'sphinx.ext.mathjax', 'sphinx.ext.viewcode']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.coverage', 'sphinx.ext.mathjax', 'sphinx.ext.viewcode']\
+#    , 'sphinx.ext.autosectionlabel']
+
+autodoc_default_options = {
+    'member-order': 'bysource',
+    'special-members': '__init__',
+}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -47,7 +53,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'lenstronomy'
-copyright = u'2018, Simon Birrer and contributors'
+copyright = u'2018-2022, lenstronomy developers'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -80,11 +86,11 @@ exclude_patterns = ['_build']
 
 # If true, the current module name will be prepended to all description
 # unit titles (such as .. function::).
-#add_module_names = True
+add_module_names = False  # changed from default
 
 # If true, sectionauthor and moduleauthor directives will be shown in the
 # output. They are ignored by default.
-#show_authors = False
+# show_authors = False  # changed from default option
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
@@ -100,7 +106,7 @@ pygments_style = 'sphinx'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-# html_theme = 'default'
+html_theme = 'default'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -162,7 +168,7 @@ html_static_path = ['_static']
 #html_show_sphinx = True
 
 # If true, "(C) Copyright ..." is shown in the HTML footer. Default is True.
-#html_show_copyright = True
+html_show_copyright = True
 
 # If true, an OpenSearch description file will be output, and all pages will
 # contain a <link> tag referring to it.  The value of this option must be the
@@ -237,7 +243,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
   ('index', 'lenstronomy', u'lenstronomy Documentation',
-   u'Simon Birrer', 'lenstronomy', 'One line description of project.',
+   u'Simon Birrer', 'lenstronomy', 'Multi-purpose gravitational lens modeling package.',
    'Miscellaneous'),
 ]
 
@@ -252,10 +258,3 @@ texinfo_documents = [
 
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 #texinfo_no_detailmenu = False
-
-try:
-    import sphinx_eth_theme
-    html_theme = "sphinx_eth_theme"
-    html_theme_path = [sphinx_eth_theme.get_html_theme_path()]
-except ImportError:
-    html_theme = 'default'

@@ -4,7 +4,7 @@ import numpy as np
 from lenstronomy.Util import util
 from lenstronomy.LensModel.Profiles.nfw import NFW
 from lenstronomy.LensModel.Profiles.nfw_ellipse import NFW_ELLIPSE
-from lenstronomy.LensModel.Profiles.cored_steep_ellipsoid import CSEMajorAxisSet
+from lenstronomy.LensModel.Profiles.cored_steep_ellipsoid import CSEProductAvgSet
 import lenstronomy.Util.param_util as param_util
 
 __all__ = ['NFW_ELLIPSE_CSE']
@@ -15,6 +15,7 @@ class NFW_ELLIPSE_CSE(NFW_ELLIPSE):
     this class contains functions concerning the NFW profile with an ellipticity defined in the convergence
     parameterization of alpha_Rs and Rs is the same as for the spherical NFW profile
     Approximation with CSE profile introduced by Oguri 2021: https://arxiv.org/pdf/2106.11464.pdf
+    Match to NFW using CSEs is approximate: kappa matches to ~1-2%
 
     relation are: R_200 = c * Rs
 
@@ -28,9 +29,10 @@ class NFW_ELLIPSE_CSE(NFW_ELLIPSE):
     def __init__(self, high_accuracy=True):
         """
 
-        :param high_accuracy: boolean, if True uses a more accurate larger set of CSE profiles (see Oguri 2021)
+        :param high_accuracy: if True uses a more accurate larger set of CSE profiles (see Oguri 2021)
+        :type high_accuracy: boolean
         """
-        self.cse_major_axis_set = CSEMajorAxisSet()
+        self.cse_major_axis_set = CSEProductAvgSet()
         self.nfw = NFW()
         if high_accuracy is True:
             # Table 1 in Oguri 2021
@@ -123,7 +125,8 @@ class NFW_ELLIPSE_CSE(NFW_ELLIPSE):
     def hessian(self, x, y, Rs, alpha_Rs, e1, e2, center_x=0, center_y=0):
         """
         returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
-        the calculation is performed as a numerical differential from the deflection field. Analytical relations are possible
+        the calculation is performed as a numerical differential from the deflection field.
+        Analytical relations are possible.
 
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
@@ -158,7 +161,7 @@ class NFW_ELLIPSE_CSE(NFW_ELLIPSE):
 
     def _normalization(self, alpha_Rs, Rs, q):
         """
-        apping to eqn 7 and 8 in Oguri 2021 from phenomenological definition
+        applying to eqn 7 and 8 in Oguri 2021 from phenomenological definition
 
         :param alpha_Rs: deflection at Rs
         :param Rs: scale radius
@@ -166,6 +169,6 @@ class NFW_ELLIPSE_CSE(NFW_ELLIPSE):
         :return: normalization (m)
         """
         rho0 = self.nfw.alpha2rho0(alpha_Rs, Rs)
-        rs_ = Rs / np.sqrt(q)
+        rs_ = Rs
         const = 4 * rho0 * rs_ ** 3
         return const

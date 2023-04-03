@@ -22,7 +22,7 @@ class TestImageModel(object):
     """
     tests the source model routines
     """
-    def setup(self):
+    def setup_method(self):
 
         # data specifics
         sigma_bkg = .05  # background noise per pixel
@@ -38,7 +38,8 @@ class TestImageModel(object):
         kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': fwhm, 'truncation': 5, 'pixel_size': deltaPix}
         psf_class = PSF(**kwargs_psf)
         kernel = psf_class.kernel_point_source
-        kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': kernel, 'psf_error_map': np.ones_like(kernel) * 0.001}
+        kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': kernel,
+                      'psf_error_map': np.ones_like(kernel) * 0.001 * kernel**2}
         psf_class = PSF(**kwargs_psf)
 
         # 'EXERNAL_SHEAR': external shear

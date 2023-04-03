@@ -9,7 +9,7 @@ import unittest
 
 class TestClassCreator(object):
 
-    def setup(self):
+    def setup_method(self):
         self.kwargs_model = {'lens_model_list': ['SIS'], 'source_light_model_list': ['SERSIC'],
                              'lens_light_model_list': ['SERSIC'], 'point_source_model_list': ['LENSED_POSITION'],
                              'index_lens_model_list': [[0]], 'index_source_light_model_list': [[0]],
@@ -85,6 +85,9 @@ class TestRaise(unittest.TestCase):
         with self.assertRaises(ValueError):
             class_creator.create_im_sim(multi_band_list=None, multi_band_type='WRONG', kwargs_model=None,
                                         bands_compute=None, image_likelihood_mask_list=None, band_index=0)
+        with self.assertRaises(ValueError):
+            class_creator.create_im_sim(multi_band_list=[[], []], multi_band_type='multi-linear', linear_solver=False,
+                                        kwargs_model=None, bands_compute=None, image_likelihood_mask_list=None, band_index=0)
 
 
 if __name__ == '__main__':

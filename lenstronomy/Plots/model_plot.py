@@ -66,7 +66,9 @@ class ModelPlot(object):
             param[0] = im_sim.linear_param_from_kwargs(kwargs_params['kwargs_source'], kwargs_params['kwargs_lens_light'],
                                                        kwargs_params['kwargs_ps'])
         else:
-            kwargs_params = kwargs_params_copy  # overwrite the keyword list with the linear solved 'amp' values
+            # overwrite the keyword list with the linear solved 'amp' values
+            for key in kwargs_params.keys():
+                kwargs_params[key] = kwargs_params_copy[key]
 
         check_solver_error(param)
         log_l = self._imageModel.likelihood_data_given_model(source_marg=source_marg, linear_prior=linear_prior,

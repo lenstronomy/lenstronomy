@@ -39,8 +39,6 @@ class PsfFitting(object):
         =1 mean no additional symmetries. =4 means 90 deg symmetry. This is enforced by a rotatioanl stack according to
         the symmetry specified. These additional imposed symmetries can help stabelize the PSF estimate when there are
         limited constraints/number of point sources in the image.
-
-
     The procedure only requires and changes the 'point_source_kernel' in the PSF() class and the 'psf_error_map'.
     Any previously set subgrid kernels or pixel_kernels are removed and constructed from the 'point_source_kernel'.
 
@@ -52,13 +50,14 @@ class PsfFitting(object):
     @staticmethod
     def calc_cornermask(kernelsize, psf_symmetry):
         """
-        # calculate the completeness numerically when rotational symmetry is imposed. This is the simplest 'mask' which throws away
-        # anywhere the rotations are not fully complete ->e.g. in the corners. This ONLY accounts for information loss in
-        # corners, not due e.g. to losses at the edges of the images.
-        # :param kwargs_psf: all the psf_kwargs, really only the kernel size is needed here
-        # :param psf_symmetry: the symmetry being imposed on the data
-        """
 
+        calculate the completeness numerically when rotational symmetry is imposed. This is the simplest 'mask' which throws away
+        anywhere the rotations are not fully complete ->e.g. in the corners. This ONLY accounts for information loss in
+        corners, not due e.g. to losses at the edges of the images.
+        :param kwargs_psf: all the psf_kwargs, really only the kernel size is needed here
+        :param psf_symmetry: the symmetry being imposed on the data
+
+        """
         angle = 360. / psf_symmetry
 
         ones_im = np.ones((kernelsize, kernelsize))
@@ -67,7 +66,6 @@ class PsfFitting(object):
             ones_im_rotated = image_util.rotateImage(ones_im, angle * k)
             ones_im_rotated[ones_im_rotated > 1] = 1
             corner_norm_array[k, :, :] = ones_im_rotated
-
         total_corner_norm = np.sum(corner_norm_array, axis=0)
         mask = total_corner_norm < total_corner_norm.max()
         return mask
@@ -227,8 +225,7 @@ class PsfFitting(object):
                 kernel_new = kernel_util.cut_psf(kernel_new, psf_size=n_kernel)
 
         else:
-            kernel_old_high_res = psf_class.kernel_point_source_supersampled(
-                supersampling_factor=point_source_supersampling_factor)
+            kernel_old_high_res = psf_class.kernel_point_source_supersampled(supersampling_factor=point_source_supersampling_factor)
             kernel_size_high = len(kernel_old_high_res)
             data = self._image_model_class.Data.data
             residuals = data - model
@@ -363,8 +360,7 @@ class PsfFitting(object):
             # re-scale residuals with point source brightness
             residual_cutout_mask /= point_amp[l]
             # enlarge residuals by super-sampling factor
-            residual_cutout_mask = residual_cutout_mask.repeat(supersampling_factor, axis=0).repeat(
-                supersampling_factor, axis=1)
+            residual_cutout_mask = residual_cutout_mask.repeat(supersampling_factor, axis=0).repeat(supersampling_factor, axis=1)
 
             # inverse shift residuals
             shift_x = (x_int - x_[l]) * supersampling_factor
@@ -398,7 +394,7 @@ class PsfFitting(object):
         :param x_pos: list of image positions in pixel units
         :param y_pos: list of image position in pixel units
         :param image_list: list of 2d numpy arrays with cleaned images, with all contaminating sources removed except
-         the point-like object to be cut out.
+        the point-like object to be cut out.
         :param cutout_size: odd integer, size of cutout.
         :return: list of cutouts
         """
@@ -468,14 +464,12 @@ class PsfFitting(object):
          factor=0 means old estimate
         :param stacking_option: option of stacking, mean or median
         :param symmetry: imposed symmetry of PSF estimate
-        :boolean corner_symmetry: if the imposed symmetry is an odd number, the edges of the reconstructed PSF in its default form will be
+        :int corner_symmetry: if the imposed symmetry is an odd number, the edges of the reconstructed PSF in its default form will be
         clipped at the corners. corner_symmetry
         1) tracks where the residuals are being clipped by the imposed symmetry and then
         2) creates a psf with symmetry=corner symmetry which is either 1 or an even symmetry number. (e.g for a symmetry 6 psf you could use symmetry 2 in the corners).
         3) adds the corner_symmetry psf (which has information at the corners) to the odd symmetry PSF, in the regions
         where the odd-symmetry PSF does not have complete information.
-
-
         :return: updated PSF estimate
         """
         ##keep_corners is a boolean which tracks whether to calc PSF separately in the corners for odd symmetry rotations.

@@ -12,6 +12,7 @@ from scipy import ndimage
 __all__ = ['PsfFitting']
 
 
+
 class PsfFitting(object):
     """
     class to find subsequently a better psf
@@ -48,6 +49,30 @@ class PsfFitting(object):
     def __init__(self, image_model_class):
         self._image_model_class = image_model_class
 
+    @staticmethod
+    def calc_cornermask(kernelsize, psf_symmetry):
+        """
+        # calculate the completeness numerically when rotational symmetry is imposed. This is the simplest 'mask' which throws away
+        # anywhere the rotations are not fully complete ->e.g. in the corners. This ONLY accounts for information loss in
+        # corners, not due e.g. to losses at the edges of the images.
+        # :param kwargs_psf: all the psf_kwargs, really only the kernel size is needed here
+        # :param psf_symmetry: the symmetry being imposed on the data
+        """
+
+        angle = 360. / psf_symmetry
+
+        ones_im = np.ones((kernelsize, kernelsize))
+        corner_norm_array = np.zeros((psf_symmetry, kernelsize, kernelsize))
+        for k in range(psf_symmetry):
+            ones_im_rotated = image_util.rotateImage(ones_im, angle * k)
+            ones_im_rotated[ones_im_rotated > 1] = 1
+            corner_norm_array[k, :, :] = ones_im_rotated
+
+        total_corner_norm = np.sum(corner_norm_array, axis=0)
+        mask = total_corner_norm < total_corner_norm.max()
+        return mask
+
+
     def update_iterative(self, kwargs_psf, kwargs_params, num_iter=10, keep_psf_error_map=True, no_break=True,
                          verbose=True, **kwargs_psf_update):
         """
@@ -80,8 +105,17 @@ class PsfFitting(object):
         logL_before = self._image_model_class.likelihood_data_given_model(**kwargs_params)
         logL_best = copy.deepcopy(logL_before)
         i_best = 0
+
+        corner_mask = None
+        if ('corner_symmetry' in kwargs_psf_update.keys()):
+            if type(kwargs_psf_update['corner_symmetry']) == int:
+                psf_symmetry = kwargs_psf_update['psf_symmetry']
+                kernel_size = len(kwargs_psf['kernel_point_source'])
+                corner_mask= self.calc_cornermask(kernel_size, psf_symmetry)
+
+
         for i in range(num_iter):
-            kwargs_psf_new, logL_after, error_map = self.update_psf(kwargs_psf_new, kwargs_params, **kwargs_psf_update)
+            kwargs_psf_new, logL_after, error_map = self.update_psf(kwargs_psf_new, kwargs_params, corner_mask,**kwargs_psf_update)
 
             if logL_after > logL_best:
                 kwargs_psf_final = copy.deepcopy(kwargs_psf_new)
@@ -103,7 +137,9 @@ class PsfFitting(object):
         kwargs_psf_final['kernel_point_source_init'] = kernel_point_source_init
         return kwargs_psf_final
 
-    def update_psf(self, kwargs_psf, kwargs_params, stacking_method='median', psf_symmetry=1, psf_iter_factor=.2,
+
+
+    def update_psf(self, kwargs_psf, kwargs_params, corner_mask = None,stacking_method='median', psf_symmetry=1, psf_iter_factor=.2,
                    block_center_neighbour=0, error_map_radius=None, block_center_neighbour_error_map=None,
                    new_procedure=True, corner_symmetry=None):
         """
@@ -130,6 +166,7 @@ class PsfFitting(object):
          (unless blocked through other means)
         :param new_procedure: boolean, uses post lenstronomy 1.9.2 procedure which is more optimal for super-sampled
          PSF's
+         :param corner_mask: a mask which tracks completeness due to non 90 degree rotation for PSF symmetry. computed before this function to save time.
 
          :boolean corner_symmetry: if the imposed symmetry is an odd number, the edges of the reconstructed PSF in its default form will be
         clipped at the corners. corner_symmetry
@@ -203,7 +240,7 @@ class PsfFitting(object):
 
             kernel_new = self.combine_psf(psf_kernel_list, kernel_old_high_res, factor=psf_iter_factor,
                                           stacking_option=stacking_method, symmetry=psf_symmetry,
-                                          corner_symmetry=corner_symmetry)
+                                          corner_symmetry=corner_symmetry,corner_mask = corner_mask)
             kernel_new = kernel_util.cut_psf(kernel_new, psf_size=kernel_size_high)
 
             # resize kernel for error_map estimate
@@ -219,6 +256,9 @@ class PsfFitting(object):
         self._image_model_class.update_psf(PSF(**kwargs_psf_new))
         logL_after = self._image_model_class.likelihood_data_given_model(**kwargs_params)
         return kwargs_psf_new, logL_after, error_map
+
+
+
 
     def image_single_point_source(self, image_model_class, kwargs_params):
         """
@@ -413,9 +453,11 @@ class PsfFitting(object):
         kernel_deshifted = kernel_util.kernel_norm(kernel_deshifted)
         return kernel_deshifted
 
+
     @staticmethod
     ####Correct this based on Maverick Oh's note about lack of flux conservation.
-    def combine_psf(kernel_list_new, kernel_old, factor=1., stacking_option='median', symmetry=1, corner_symmetry=None):
+    def combine_psf(kernel_list_new, kernel_old, factor=1., stacking_option='median', symmetry=1,
+                    corner_symmetry=None, corner_mask = None):
         ##TODO: Account for image edges/masked pixels.
         """
         updates psf estimate based on old kernel and several new estimates
@@ -438,6 +480,7 @@ class PsfFitting(object):
         """
         ##keep_corners is a boolean which tracks whether to calc PSF separately in the corners for odd symmetry rotations.
         keep_corners = type(corner_symmetry) == int
+        print('keep corners true')
         n = int(len(kernel_list_new) * symmetry)
         angle = 360. / symmetry
         kernelsize = len(kernel_old)
@@ -451,8 +494,9 @@ class PsfFitting(object):
 
             ### numerically calculate the fraction of flux missing from the default symmetry value
             ##this is for tracking the overall normalization of the rotated ims, so we use n for the original symmetry.
-            ones_im = np.ones((kernelsize, kernelsize))
-            corner_norm_array = np.zeros((n, kernelsize, kernelsize))
+            ###UPDATE: switch to calculating this before calling the psf iteration.
+            #ones_im = np.ones((kernelsize, kernelsize))
+            #corner_norm_array = np.zeros((n, kernelsize, kernelsize))
         i = 0
         m = 0
         for kernel_new in kernel_list_new:
@@ -461,10 +505,10 @@ class PsfFitting(object):
             for k in range(symmetry):
                 kernel_rotated = image_util.rotateImage(kernel_new, angle * k)
                 kernel_list[i, :, :] = kernel_rotated
-                if keep_corners:
-                    ones_im_rotated = image_util.rotateImage(ones_im, angle * k)
-                    ones_im_rotated[ones_im_rotated > 1] = 1
-                    corner_norm_array[i, :, :] = ones_im_rotated
+                #if keep_corners:
+                #    ones_im_rotated = image_util.rotateImage(ones_im, angle * k)
+                #    ones_im_rotated[ones_im_rotated > 1] = 1
+                #    corner_norm_array[i, :, :] = ones_im_rotated
                 i += 1
 
             ###do a rotation for the corner part of the data (i.e. if symmetry is 2 or 4).
@@ -499,14 +543,17 @@ class PsfFitting(object):
 
         if keep_corners:
             # corner_norm was rotated the same way as the full symmetry psf e.g. 6, so it tracks where the flux is getting clipped by the rotation.
-            corner_norm = np.sum(corner_norm_array, axis=0)
-            mask = corner_norm < corner_norm.max()
+            #corner_norm = np.sum(corner_norm_array, axis=0)
+           # mask = corner_norm < corner_norm.max()
 
             kernel_new_corners = np.nan_to_num(kernel_new_corners)
             kernel_new_corners[kernel_new_corners < 0] = 0
 
+            #import pylab
+            #pylab.imshow(corner_mask)
+            #pylab.show()
             ##anywhere you didn't have complete data for n_symmetry exposures, then substitute the corners kernel.
-            kernel_new[mask] = kernel_new_corners[mask]
+            kernel_new[corner_mask] = kernel_new_corners[corner_mask]
 
         ###just in case the old kernel is not normalized. Probably want to do this earlier elsewhere, but @simon can let me know if this is necessary here.
         kernel_old = kernel_util.kernel_norm(kernel_old)

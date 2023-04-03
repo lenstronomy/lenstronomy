@@ -113,26 +113,21 @@ class TestPSFIteration(object):
         diff_new = np.sum((kernel_new - kernel_true) ** 2)
         assert diff_old > diff_new
 
-
     def test_combine_psf_corner(self):
         ## start kernel
-        kernel_old = np.ones((100,100))
+        kernel_old = np.ones((101,101))
         test_updated_kernel = copy.deepcopy(kernel_old)
-
         ##allow the residuals to have different normaliztions
         kernel_list_new = [test_updated_kernel*2, test_updated_kernel, test_updated_kernel*4, test_updated_kernel]
-
         nsymmetry = 6
-
-        updated_psf = self.psf_fitting.combine_psf(kernel_list_new, kernel_old, factor=1., stacking_option='median', symmetry=nsymmetry, corner_symmetry=1)
-
+        corner_mask = self.psf_fitting.calc_cornermask(len(kernel_old), nsymmetry)
+        updated_psf = self.psf_fitting.combine_psf(kernel_list_new, kernel_old, factor=1., stacking_option='median',
+                                                   symmetry=nsymmetry, corner_symmetry=1, corner_mask = corner_mask)
         ##maybe a better criteria here for floats?
         assert abs(updated_psf.max()-updated_psf.min())<1e-10
-
         updated_psf = self.psf_fitting.combine_psf(kernel_list_new, kernel_old, factor=1., stacking_option='median',
-                                                   symmetry=nsymmetry, corner_symmetry=2)
+                                                   symmetry=nsymmetry, corner_symmetry=2,corner_mask = corner_mask)
         assert abs(updated_psf.max() - updated_psf.min()) < 1e-10
-
 
 
 
@@ -183,7 +178,6 @@ class TestPSFIteration(object):
         radius = 0.5
         mask_point_source = self.psf_fitting.mask_point_source(ra_image, dec_image, x_grid, y_grid, radius, i=0)
         assert mask_point_source[10, 10] == 1
-
 
 class TestPSFIterationOld(object):
     """

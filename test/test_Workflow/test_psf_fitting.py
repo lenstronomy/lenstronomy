@@ -113,6 +113,17 @@ class TestPSFIteration(object):
         diff_new = np.sum((kernel_new - kernel_true) ** 2)
         assert diff_old > diff_new
 
+    def test_calc_corner_mask(self):
+        kernel_old = np.ones((101,101))
+        nsymmetry = 4
+        corner_mask = self.psf_fitting.calc_cornermask(len(kernel_old), nsymmetry)
+        assert corner_mask[corner_mask].size == 0
+
+        nsymmetry = 6
+        corner_mask = self.psf_fitting.calc_cornermask(len(kernel_old), nsymmetry)
+        assert corner_mask[corner_mask].size < kernel_old.size
+        assert corner_mask[corner_mask].size > 0
+
     def test_combine_psf_corner(self):
         ## start kernel
         kernel_old = np.ones((101,101))
@@ -128,8 +139,6 @@ class TestPSFIteration(object):
         updated_psf = self.psf_fitting.combine_psf(kernel_list_new, kernel_old, factor=1., stacking_option='median',
                                                    symmetry=nsymmetry, corner_symmetry=2,corner_mask = corner_mask)
         assert abs(updated_psf.max() - updated_psf.min()) < 1e-10
-
-
 
     def test_update_iterative(self):
         fwhm = 0.5
@@ -178,6 +187,7 @@ class TestPSFIteration(object):
         radius = 0.5
         mask_point_source = self.psf_fitting.mask_point_source(ra_image, dec_image, x_grid, y_grid, radius, i=0)
         assert mask_point_source[10, 10] == 1
+
 
 class TestPSFIterationOld(object):
     """
@@ -315,6 +325,8 @@ class TestPSFIterationOld(object):
         diff_new = np.sum((kernel_new - kernel_true) ** 2)
         assert diff_old > diff_new
         assert diff_new < 0.01
+
+
 
 if __name__ == '__main__':
     pytest.main()

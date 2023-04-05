@@ -5,6 +5,8 @@ import numpy.testing as npt
 from lenstronomy.LightModel.Profiles.power_law import PowerLaw
 from lenstronomy.LensModel.Profiles.spp import SPP
 from lenstronomy.LensModel.Profiles.sis import SIS
+from lenstronomy.LensModel.Profiles.nie import NIE
+from lenstronomy.LensModel.Profiles.epl import EPL
 
 
 class TestPowerLaw(object):
@@ -33,6 +35,26 @@ class TestPowerLaw(object):
         kappa_sis = 1 / 2. * (f_xx + f_yy)
         npt.assert_almost_equal(kappa_sis, kappa_spp, decimal=5)
         npt.assert_almost_equal(flux/flux[0], kappa_sis/kappa_sis[0], decimal=5)
+
+        # test against NIE
+        nie = NIE()
+        e1, e2 = 0.2, -0.1
+        kwargs_light = {'amp': 1., 'gamma': 2, 'e1': e1, 'e2': e2}
+        kwargs_nie = {'theta_E': 1., 'e1': e1, 'e2': e2, 's_scale': 0.00001}
+        flux = profile.function(x=x, y=1., **kwargs_light)
+        f_xx, f_xy, f_yx, f_yy = nie.hessian(x=x, y=1., **kwargs_nie)
+        kappa_nie = 1/2. * (f_xx + f_yy)
+        npt.assert_almost_equal(flux/flux[0], kappa_nie/kappa_nie[0], decimal=5)
+
+        # test against EPL
+        epl = EPL()
+        e1, e2 = 0.2, -0.1
+        kwargs_light = {'amp': 1., 'gamma': 2, 'e1': e1, 'e2': e2}
+        kwargs_epl = {'theta_E': 1., 'e1': e1, 'e2': e2, 'gamma': 2}
+        flux = profile.function(x=x, y=1., **kwargs_light)
+        f_xx, f_xy, f_yx, f_yy = epl.hessian(x=x, y=1., **kwargs_epl)
+        kappa_epl = 1 / 2. * (f_xx + f_yy)
+        npt.assert_almost_equal(flux / flux[0], kappa_epl / kappa_epl[0], decimal=5)
 
 
 if __name__ == '__main__':

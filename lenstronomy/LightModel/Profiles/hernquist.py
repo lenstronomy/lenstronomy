@@ -66,7 +66,7 @@ class HernquistEllipse(object):
         :param center_y:
         :return:
         """
-        x_, y_ = param_util.transform_e1e2_square_average(x, y, e1, e2, center_x, center_y)
+        x_, y_ = param_util.transform_e1e2_product_average(x, y, e1, e2, center_x, center_y)
         return self.spherical.function(x_, y_, amp, Rs)
 
     def light_3d(self, r, amp, Rs, e1=0, e2=0):

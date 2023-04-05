@@ -32,7 +32,7 @@ class ModelPlot(object):
         :param bands_compute: (optional), bool list to indicate which band to be included in the modeling
         :param image_likelihood_mask_list: list of image likelihood mask
          (same size as image_data with 1 indicating being evaluated and 0 being left out)
-        :param kwargs_params: keyword arguments of 'kwargs_lens', 'kwargs_source' etc as coming as kwargs_result from
+        :param kwargs_params: keyword arguments of 'kwargs_lens', 'kwargs_source' etc. as coming as kwargs_result from
          FittingSequence class
         :param source_marg:
         :param linear_prior:
@@ -63,7 +63,8 @@ class ModelPlot(object):
             # overwrite model with initial input without linear solver applied
             model[0] = im_sim.image(**kwargs_params)
             # retrieve amplitude parameters directly from kwargs_list
-            param[0] = im_sim.linear_param_from_kwargs(kwargs_params['kwargs_source'], kwargs_params['kwargs_lens_light'],
+            param[0] = im_sim.linear_param_from_kwargs(kwargs_params['kwargs_source'],
+                                                       kwargs_params['kwargs_lens_light'],
                                                        kwargs_params['kwargs_ps'])
         else:
             # overwrite the keyword list with the linear solved 'amp' values

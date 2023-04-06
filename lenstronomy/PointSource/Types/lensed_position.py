@@ -51,12 +51,7 @@ class LensedPositions(PSBase):
         """
         ra_image = kwargs_ps['ra_image']
         dec_image = kwargs_ps['dec_image']
-        if self._fixed_lens_model:
-            if not hasattr(self, '_x_source_fixed'):
-                self._x_source_fixed, self._y_source_fixed = self._lens_model.ray_shooting(ra_image, dec_image, kwargs_lens)
-            x_source, y_source = self._x_source_fixed, self._y_source_fixed
-        else:
-            x_source, y_source = self._lens_model.ray_shooting(ra_image, dec_image, kwargs_lens)
+        x_source, y_source = self._lens_model.ray_shooting(ra_image, dec_image, kwargs_lens)
         x_source = np.mean(x_source)
         y_source = np.mean(y_source)
         return np.array(x_source), np.array(y_source)

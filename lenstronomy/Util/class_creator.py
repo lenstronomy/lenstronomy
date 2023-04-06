@@ -22,7 +22,7 @@ def create_class_instances(lens_model_list=None, z_lens=None, z_source=None, z_s
                            index_lens_light_model_list=None, index_point_source_model_list=None,
                            optical_depth_model_list=None, index_optical_depth_model_list=None,
                            band_index=0, tau0_index_list=None, all_models=False, point_source_magnification_limit=None,
-                           surface_brightness_smoothing=0.001, sersic_major_axis=None, fixed_lens_model=False,
+                           surface_brightness_smoothing=0.001, sersic_major_axis=None,
                            tabulated_deflection_angles=None):
     """
 
@@ -66,8 +66,8 @@ def create_class_instances(lens_model_list=None, z_lens=None, z_source=None, z_s
     :param sersic_major_axis: boolean or None, if True, uses the semi-major axis as the definition of the Sersic
      half-light radius, if False, uses the product average of semi-major and semi-minor axis. If None, uses the
      convention in the lenstronomy yaml setting (which by default is =False)
-    :param fixed_lens_model: keeps the lens model fixed during likelihood calls; this setting should only be set to
-        true if all lens components are fixed
+    :param tabulated_deflection_angles: a user-specified class with a call method that returns deflection angles given
+    (x, y) coordinates on the sky. This class gets passed to the lens model class TabulatedDeflections
     :return:
     """
     if lens_model_list is None:

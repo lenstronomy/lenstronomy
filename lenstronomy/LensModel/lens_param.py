@@ -25,10 +25,7 @@ class LensParam(object):
          (only relevant in this class when 'SHAPELETS' is the solver type)
         :param num_shapelet_lens: integer, number of shapelets in the lensing potential
          (only relevant when 'SHAPELET' lens model is used)
-        :param fixed_lens_model: keeps the lens model fixed during likelihood calls; this setting should only be set to
-        true if all lens components are fixed
         """
-
 
         self.model_list = lens_model_list
         self.kwargs_fixed = kwargs_fixed

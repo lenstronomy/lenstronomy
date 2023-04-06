@@ -103,10 +103,10 @@ class TestNumericalAlpha(object):
 
         for i, flag in enumerate([False, True]):
             lensmodel = LensModel(lens_model_list=['NumericalAlpha', 'NFW'], z_source=1.5, z_lens=0.5, lens_redshift_list=zlist[i],
-                                  multi_plane=flag, tabulated_deflection_class=numerical_alpha_class)
+                                  multi_plane=flag, numerical_alpha_class=numerical_alpha_class)
 
             lensmodel_nfw = LensModel(lens_model_list=['NFW', 'NFW'], z_source=1.5, z_lens=0.5, lens_redshift_list=zlist[i],
-                                  multi_plane=flag, tabulated_deflection_class=numerical_alpha_class)
+                                  multi_plane=flag, numerical_alpha_class=numerical_alpha_class)
 
             keywords_num = [{'norm': alpha_Rs, 'Rs': Rs, 'center_x': center_x, 'center_y': center_y},
                             {'alpha_Rs': 0.7*alpha_Rs, 'Rs': 2*Rs, 'center_x': center_x, 'center_y': center_y}]
@@ -134,11 +134,11 @@ class TestNumericalAlpha(object):
         for i, flag in enumerate([False, True]):
             lensmodel = LensModel(lens_model_list=['NumericalAlpha', 'NFW'], z_source=1.5, z_lens=0.5,
                                   lens_redshift_list=zlist[i],
-                                  multi_plane=flag, tabulated_deflection_class=numerical_alpha_class)
+                                  multi_plane=flag, numerical_alpha_class=numerical_alpha_class)
 
             lensmodel_nfw = LensModel(lens_model_list=['NFW', 'NFW'], z_source=1.5, z_lens=0.5,
                                       lens_redshift_list=zlist[i],
-                                      multi_plane=flag, tabulated_deflection_class=numerical_alpha_class)
+                                      multi_plane=flag, numerical_alpha_class=numerical_alpha_class)
 
             keywords_num = [{'norm': alpha_Rs, 'Rs': Rs, 'center_x': center_x, 'center_y': center_y},
                             {'alpha_Rs': 0.7 * alpha_Rs, 'Rs': 2 * Rs, 'center_x': center_x, 'center_y': center_y}]

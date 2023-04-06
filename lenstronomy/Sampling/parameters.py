@@ -692,8 +692,7 @@ class Param(object):
             self._lens_model_class, self._source_model_class, _, _, _ = class_creator.create_class_instances(
                 all_models=True, **kwargs_model)
             self._image2SourceMapping = Image2SourceMapping(lensModel=self._lens_model_class,
-                                                            sourceModel=self._source_model_class,
-                                                            fixed_lens_model=self._fixed_lens_model)
+                                                            sourceModel=self._source_model_class)
 
     def check_solver(self, kwargs_lens, kwargs_ps):
         """

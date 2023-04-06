@@ -39,7 +39,7 @@ class TabulatedDeflections(LensProfileBase):
         """
 
         self._custom_lens_class = custom_class
-        super(NumericalAlpha, self).__init__()
+        super(TabulatedDeflections, self).__init__()
 
     def function(self, x, y, center_x=0, center_y=0, **kwargs):
 

@@ -27,7 +27,6 @@ class LensParam(object):
          (only relevant when 'SHAPELET' lens model is used)
         """
 
-
         self.model_list = lens_model_list
         self.kwargs_fixed = kwargs_fixed
         self._num_images = num_images
@@ -52,7 +51,6 @@ class LensParam(object):
             for func in lens_model.func_list:
                 kwargs_upper.append(func.upper_limit_default)
 
-
         self.lower_limit = kwargs_lower
         self.upper_limit = kwargs_upper
         if kwargs_logsampling is None:
@@ -66,6 +64,7 @@ class LensParam(object):
         :param i: integer, index at the beginning of the tuple for read out to keyword argument convention
         :return: kwargs_list, index at the end of read out of this model component
         """
+
         kwargs_list = []
         for k, model in enumerate(self.model_list):
             kwargs = {}
@@ -112,6 +111,7 @@ class LensParam(object):
                     kwargs[name] = 10**(kwargs[name])
 
             kwargs_list.append(kwargs)
+
         return kwargs_list, i
 
     def set_params(self, kwargs_list):
@@ -120,6 +120,7 @@ class LensParam(object):
         :param kwargs_list: keyword argument list of lens model components
         :return: tuple of arguments (floats) that are being sampled
         """
+
         args = []
         for k, model in enumerate(self.model_list):
             kwargs = kwargs_list[k]

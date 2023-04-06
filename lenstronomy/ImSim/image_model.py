@@ -30,6 +30,7 @@ class ImageModel(object):
         :param kwargs_numerics: keyword arguments with various numeric description (see ImageNumerics class for options)
         :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver (see SLITronomy documentation)
         """
+
         self.type = 'single-band'
         self.num_bands = 1
         self.PSF = psf_class
@@ -78,13 +79,15 @@ class ImageModel(object):
                                                    self._extinction, kwargs_pixelbased)
             self.source_mapping = None  # handled with pixelated operator
         else:
+
             self.source_mapping = Image2SourceMapping(lensModel=lens_model_class, sourceModel=source_model_class)
-            
+
         self._pb = data_class.primary_beam
         if self._pb is not None:
             self._pb_1d = util.image2array(self._pb)
         else:
             self._pb_1d = None
+
 
     def reset_point_source_cache(self, cache=True):
         """

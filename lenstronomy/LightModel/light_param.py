@@ -106,7 +106,6 @@ class LightParam(object):
         for k, model in enumerate(self.model_list):
             kwargs = kwargs_list[k]
             kwargs_fixed = self.kwargs_fixed[k]
-
             param_names = self._param_name_list[k]
             for name in param_names:
                 if name not in kwargs_fixed:

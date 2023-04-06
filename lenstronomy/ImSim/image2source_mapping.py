@@ -26,12 +26,12 @@ class Image2SourceMapping(object):
 
         :param lensModel: LensModel() class instance
         :param sourceModel: LightModel() class instance.
-
          The lightModel includes:
 
          - source_scale_factor_list: list of floats corresponding to the rescaled deflection angles to the specific source components. None indicates that the list will be set to 1, meaning a single source plane model (in single lens plane mode).
          - source_redshift_list: list of redshifts of the light components (in multi lens plane mode)
         """
+
         self._lightModel = sourceModel
         self._lensModel = lensModel
         light_model_list = sourceModel.profile_type_list
@@ -39,6 +39,7 @@ class Image2SourceMapping(object):
         self._source_redshift_list = sourceModel.redshift_list
         self._deflection_scaling_list = sourceModel.deflection_scaling_list
         self._multi_source_plane = True
+
         if self._multi_lens_plane is True:
             if self._deflection_scaling_list is not None:
                 raise ValueError('deflection scaling for different source planes not possible in combination of '

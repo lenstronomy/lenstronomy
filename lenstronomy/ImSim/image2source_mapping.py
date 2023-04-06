@@ -21,14 +21,11 @@ class Image2SourceMapping(object):
     the mapping between source to image plane.
     """
 
-    def __init__(self, lensModel, sourceModel, fixed_lens_model=False):
+    def __init__(self, lensModel, sourceModel):
         """
 
         :param lensModel: LensModel() class instance
         :param sourceModel: LightModel() class instance.
-        :param fixed_lens_model: bool; optionally fixes the lens model, mapping a given image plane coordinate to a
-        certain source-plane coordinate with the ray tracing computation performed only once. Only works with single
-        source plane systems
          The lightModel includes:
 
          - source_scale_factor_list: list of floats corresponding to the rescaled deflection angles to the specific source components. None indicates that the list will be set to 1, meaning a single source plane model (in single lens plane mode).
@@ -42,7 +39,6 @@ class Image2SourceMapping(object):
         self._source_redshift_list = sourceModel.redshift_list
         self._deflection_scaling_list = sourceModel.deflection_scaling_list
         self._multi_source_plane = True
-        self._fixed_lens_model = fixed_lens_model
 
         if self._multi_lens_plane is True:
             if self._deflection_scaling_list is not None:
@@ -89,7 +85,7 @@ class Image2SourceMapping(object):
         :return: source plane coordinate corresponding to the source model of index idex_source
         """
         if self._multi_source_plane is False:
-            x_source, y_source = self._image2source_mapping(x, y, kwargs_lens)
+            x_source, y_source = self._lensModel.ray_shooting(x, y, kwargs_lens)
         else:
             if self._multi_lens_plane is False:
                 x_alpha, y_alpha = self._lensModel.alpha(x, y, kwargs_lens)
@@ -110,22 +106,6 @@ class Image2SourceMapping(object):
                 y_source = y_comov / T_z
         return x_source, y_source
 
-    def _image2source_mapping(self, x, y, kwargs_lens):
-        """
-        Maps a coordinate in the image plane (x, y) to a coordinate on the source plane
-        :param x: image plane coordinate [arcsec]
-        :param y: image plance coordinate [arcsec]
-        :param kwargs_lens: keyword arguments for the LensModel class
-        :return: source plane coordinates
-        """
-        if self._fixed_lens_model:
-            if not hasattr(self, '_fixed_source_x'):
-                self._fixed_source_x, self._fixed_source_y = self._lensModel.ray_shooting(x, y, kwargs_lens)
-            return self._fixed_source_x, self._fixed_source_y
-        else:
-            x_source, y_source = self._lensModel.ray_shooting(x, y, kwargs_lens)
-        return x_source, y_source
-
     def image_flux_joint(self, x, y, kwargs_lens, kwargs_source, k=None):
         """
 
@@ -137,7 +117,7 @@ class Image2SourceMapping(object):
         :return: surface brightness of all joint light components at image position (x, y)
         """
         if self._multi_source_plane is False:
-            x_source, y_source = self._image2source_mapping(x, y, kwargs_lens)
+            x_source, y_source = self._lensModel.ray_shooting(x, y, kwargs_lens)
             return self._lightModel.surface_brightness(x_source, y_source, kwargs_source, k=k)
         else:
             flux = np.zeros_like(x)
@@ -182,7 +162,7 @@ class Image2SourceMapping(object):
         :return: list of responses of every single basis component with default amplitude amp=1, in the same order as the light_model_list
         """
         if self._multi_source_plane is False:
-            x_source, y_source = self._image2source_mapping(x, y, kwargs_lens)
+            x_source, y_source = self._lensModel.ray_shooting(x, y, kwargs_lens)
             return self._lightModel.functions_split(x_source, y_source, kwargs_source)
         else:
             response = []

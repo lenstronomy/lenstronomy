@@ -22,7 +22,8 @@ def create_class_instances(lens_model_list=None, z_lens=None, z_source=None, z_s
                            index_lens_light_model_list=None, index_point_source_model_list=None,
                            optical_depth_model_list=None, index_optical_depth_model_list=None,
                            band_index=0, tau0_index_list=None, all_models=False, point_source_magnification_limit=None,
-                           surface_brightness_smoothing=0.001, sersic_major_axis=None, fixed_lens_model=False):
+                           surface_brightness_smoothing=0.001, sersic_major_axis=None, fixed_lens_model=False,
+                           tabulated_deflection_angles=None):
     """
 
     :param lens_model_list: list of strings indicating the type of lens models
@@ -101,7 +102,8 @@ def create_class_instances(lens_model_list=None, z_lens=None, z_source=None, z_s
                                  z_source_convention=z_source_convention,
                                  lens_redshift_list=lens_redshift_list_i,
                                  multi_plane=multi_plane, cosmo=cosmo,
-                                 observed_convention_index=observed_convention_index_i, kwargs_interp=kwargs_interp)
+                                 observed_convention_index=observed_convention_index_i, kwargs_interp=kwargs_interp,
+                                 numerical_alpha_class=tabulated_deflection_angles)
 
     if index_source_light_model_list is None or all_models is True:
         source_light_model_list_i = source_light_model_list
@@ -144,8 +146,7 @@ def create_class_instances(lens_model_list=None, z_lens=None, z_source=None, z_s
                                      flux_from_point_source_list=flux_from_point_source_list,
                                      additional_images_list=additional_images_list_i,
                                      magnification_limit=point_source_magnification_limit,
-                                     kwargs_lens_eqn_solver=kwargs_lens_eqn_solver,
-                                     fixed_lens_model=fixed_lens_model)
+                                     kwargs_lens_eqn_solver=kwargs_lens_eqn_solver)
     if tau0_index_list is None:
         tau0_index = 0
     else:
@@ -159,8 +160,7 @@ def create_class_instances(lens_model_list=None, z_lens=None, z_source=None, z_s
 
 
 @export
-def create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, image_likelihood_mask=None,
-                       fixed_lens_model=False):
+def create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, image_likelihood_mask=None):
     """
 
     :param kwargs_data: ImageData keyword arguments
@@ -169,16 +169,13 @@ def create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, i
     :param kwargs_model: model keyword arguments
     :param image_likelihood_mask: image likelihood mask
      (same size as image_data with 1 indicating being evaluated and 0 being left out)
-    :param fixed_lens_model: keeps the lens model fixed during likelihood calls; this setting should only be set to
-        true if all lens components are fixed
     :return: ImageLinearFit() instance
     """
     data_class = ImageData(**kwargs_data)
     psf_class = PSF(**kwargs_psf)
     lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class = create_class_instances(**kwargs_model)
     imageModel = ImageLinearFit(data_class, psf_class, lens_model_class, source_model_class, lens_light_model_class,
-                                point_source_class, extinction_class, kwargs_numerics, likelihood_mask=image_likelihood_mask,
-                                fixed_lens_model=fixed_lens_model)
+                                point_source_class, extinction_class, kwargs_numerics, likelihood_mask=image_likelihood_mask)
     return imageModel
 
 

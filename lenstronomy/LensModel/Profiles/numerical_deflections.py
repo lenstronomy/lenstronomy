@@ -2,19 +2,24 @@ __author__ = 'dgilman'
 
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
-__all__ = ['NumericalAlpha']
+__all__ = ['TabulatedDeflections']
 
 
-class NumericalAlpha(LensProfileBase):
-
-    """
-    This class allows one to incorporate any lens profile into the usage framework of lenstronomy. When creating the
-    instance of LensModel with this lens profile, you must pass in numerical_alpha_class = CustomClass(), where
-    CustomClass is a class with a call method that returns the x/y deflection angles. This allows one to numerically
-    compute and interpolate deflection angles for potentially very complex mass profiles, and then use the results with
-    lenstronomy without having to heavily modify the existing structure of the software.
+class TabulatedDeflections(LensProfileBase):
 
     """
+    A user-defined class that returns deflection angles given a set of observed coordinates on the sky (x, y).
+
+    This class has similar functionality as INTERPOL, with the difference being that the interpolation for this class is
+    done prior to class creation. When used with routines in the lenstronomy.Sampling, this class effectively acts as
+    a fixed lens model with no keyword arguments.
+    """
+
+    profile_name = 'TABULATED_DEFLECTIONS'
+    param_names = []
+    lower_limit_default = {}
+    upper_limit_default = {}
+
     def __init__(self, custom_class):
 
         """

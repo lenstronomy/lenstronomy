@@ -201,10 +201,6 @@ class Param(object):
         self._point_source_model_list = kwargs_model.get('point_source_model_list', [])
         self._optical_depth_model_list = kwargs_model.get('optical_depth_model_list', [])
         self._kwargs_model = kwargs_model
-        if 'fixed_lens_model' in kwargs_model.keys():
-            self._fixed_lens_model = kwargs_model['fixed_lens_model']
-        else:
-            self._fixed_lens_model = False
 
         # check how many redshifts need to be sampled
         num_z_sampling = 0
@@ -217,8 +213,7 @@ class Param(object):
 
         self._lens_model_class, self._source_model_class, _, _, _ = class_creator.create_class_instances(all_models=True, **kwargs_model)
         self._image2SourceMapping = Image2SourceMapping(lensModel=self._lens_model_class,
-                                                        sourceModel=self._source_model_class,
-                                                        fixed_lens_model=self._fixed_lens_model)
+                                                        sourceModel=self._source_model_class)
 
         if kwargs_fixed_lens is None:
             kwargs_fixed_lens = [{} for _ in range(len(self._lens_model_list))]
@@ -373,12 +368,7 @@ class Param(object):
         """
         i = 0
         args = np.atleast_1d(args)
-        if self._fixed_lens_model:
-            if not hasattr(self, '_kwargs_lens_fixed'):
-                self._kwargs_lens_fixed, self._i_fixed = self.lensParams.get_params(args, i)
-            kwargs_lens, i = self._kwargs_lens_fixed, self._i_fixed
-        else:
-            kwargs_lens, i = self.lensParams.get_params(args, i)
+        kwargs_lens, i = self.lensParams.get_params(args, i)
         kwargs_source, i = self.sourceParams.get_params(args, i)
         kwargs_lens_light, i = self.lensLightParams.get_params(args, i)
         kwargs_ps, i = self.pointSourceParams.get_params(args, i)
@@ -401,8 +391,7 @@ class Param(object):
         # update point source constraint solver
         if self._solver is True:
             x_pos, y_pos = kwargs_ps[0]['ra_image'], kwargs_ps[0]['dec_image']
-            if self._fixed_lens_model is False:
-                kwargs_lens = self._solver_module.update_solver(kwargs_lens, x_pos, y_pos)
+            kwargs_lens = self._solver_module.update_solver(kwargs_lens, x_pos, y_pos)
         # update source joint with point source
         kwargs_source = self._update_source_joint_with_point_source(kwargs_lens, kwargs_source, kwargs_ps,
                                                                     kwargs_special, image_plane=bijective)

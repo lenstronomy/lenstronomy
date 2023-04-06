@@ -60,14 +60,11 @@ class SingleBandMultiModel(ImageLinearFit):
                                                    [None for i in range(len(multi_band_list))])
         self._index_optical_depth = index_optical_depth[band_index]
         self._linear_solver = linear_solver
-        if 'fixed_lens_model' in kwargs_model.keys():
-            fixed_lens_model = kwargs_model['fixed_lens_model']
-        else:
-            fixed_lens_model = False
+
         super(SingleBandMultiModel, self).__init__(data_i, psf_i, lens_model_class, source_model_class,
                                                    lens_light_model_class, point_source_class, extinction_class,
                                                    kwargs_numerics=kwargs_numerics, likelihood_mask=likelihood_mask_list[band_index],
-                                                   kwargs_pixelbased=kwargs_pixelbased, fixed_lens_model=fixed_lens_model)
+                                                   kwargs_pixelbased=kwargs_pixelbased)
 
     def image_linear_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
                            kwargs_extinction=None, kwargs_special=None, inv_bool=False):

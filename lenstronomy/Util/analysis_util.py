@@ -1,6 +1,7 @@
 import numpy as np
 import copy
 import lenstronomy.Util.mask_util as mask_util
+from lenstronomy.Util import param_util
 
 from lenstronomy.Util.package_util import exporter
 export, __all__ = exporter()
@@ -120,7 +121,7 @@ def moments(I_xy_input, x, y):
 
 
 @export
-def ellipticities(I_xy, x, y):
+def _ellipticities(I_xy, x, y):
     """
     compute ellipticities of a light distribution
 
@@ -134,6 +135,30 @@ def ellipticities(I_xy, x, y):
     e1 = (Q_xx - Q_yy) / norm
     e2 = 2 * Q_xy / norm
     return e1 / (1+bkg), e2 / (1+bkg)
+
+
+def ellipticities(I_xy, x_grid, y_grid, num_iterative=30, iterative=False, center_x=0, center_y=0):
+    """
+
+    :param I_xy: surface brightness I(x, y) as array
+    :param x_grid: x-coordinates in same shape as I_xy
+    :param y_grid: y-coordinates in same shape as I_xy
+    :param iterative: if True iteratively adopts an eccentric mask to overcome edge effects
+    :type iterative: boolean
+    :param num_iterative: number of iterative changes in ellipticity
+    :type num_iterative: int
+    :return:
+    """
+    radius = (np.max(x_grid) - np.min(x_grid)) / 2.
+    mask = mask_util.mask_azimuthal(x_grid, y_grid, center_x=center_x, center_y=center_y, r=radius)
+    e1, e2 = _ellipticities(I_xy * mask, x_grid - center_x, y_grid - center_y)
+    phi, q = param_util.ellipticity2phi_q(e1, e2)
+    if iterative:
+        for i in range(num_iterative):
+            mask = mask_util.mask_eccentric(x_grid, y_grid, center_x, center_y, e1, e2, r=radius * q / np.sqrt(2))
+            e1, e2 = _ellipticities(I_xy * mask, x_grid - center_x, y_grid - center_y)
+            phi, q = param_util.ellipticity2phi_q(e1, e2)
+    return e1, e2
 
 
 @export

@@ -136,7 +136,7 @@ def _ellipticities(I_xy, x, y):
     e2 = 2 * Q_xy / norm
     return e1 / (1+bkg), e2 / (1+bkg)
 
-
+@export
 def ellipticities(I_xy, x_grid, y_grid, num_iterative=30, iterative=False, center_x=0, center_y=0):
     """
 
@@ -147,7 +147,7 @@ def ellipticities(I_xy, x_grid, y_grid, num_iterative=30, iterative=False, cente
     :type iterative: boolean
     :param num_iterative: number of iterative changes in ellipticity
     :type num_iterative: int
-    :return:
+    :return: e1, e2 eccentricities
     """
     radius = (np.max(x_grid) - np.min(x_grid)) / 2.
     mask = mask_util.mask_azimuthal(x_grid, y_grid, center_x=center_x, center_y=center_y, r=radius)

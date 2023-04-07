@@ -16,7 +16,7 @@ _SUPPORTED_MODELS = ['SHIFT', 'NIE_POTENTIAL', 'CONST_MAG', 'SHEAR', 'SHEAR_GAMM
                      'DIPOLE', 'CURVED_ARC_CONST', 'CURVED_ARC_SPP', 'CURVED_ARC_SIS_MST', 'CURVED_ARC_SPT',
                      'CURVED_ARC_TAN_DIFF', 'ARC_PERT', 'coreBURKERT',
                      'CORED_DENSITY', 'CORED_DENSITY_2', 'CORED_DENSITY_MST', 'CORED_DENSITY_2_MST', 'CORED_DENSITY_EXP',
-                     'CORED_DENSITY_EXP_MST', 'NumericalAlpha', 'MULTIPOLE', 'HESSIAN', 'ElliSLICE', 'ULDM','CORED_DENSITY_ULDM_MST',
+                     'CORED_DENSITY_EXP_MST', 'TABULATED_DEFLECTIONS', 'MULTIPOLE', 'HESSIAN', 'ElliSLICE', 'ULDM','CORED_DENSITY_ULDM_MST',
                      'LOS', 'LOS_MINIMAL',
                      'GNFW','CSE']
 
@@ -294,9 +294,9 @@ class ProfileListBase(object):
         elif lens_type == 'CORED_DENSITY_EXP_MST':
             from lenstronomy.LensModel.Profiles.cored_density_mst import CoredDensityMST
             return CoredDensityMST(profile_type='CORED_DENSITY_EXP')
-        elif lens_type == 'NumericalAlpha':
-            from lenstronomy.LensModel.Profiles.numerical_deflections import NumericalAlpha
-            return NumericalAlpha(custom_class)
+        elif lens_type == 'TABULATED_DEFLECTIONS':
+            from lenstronomy.LensModel.Profiles.numerical_deflections import TabulatedDeflections
+            return TabulatedDeflections(custom_class)
         elif lens_type == 'MULTIPOLE':
             from lenstronomy.LensModel.Profiles.multipole import Multipole
             return Multipole()

@@ -105,20 +105,20 @@ class TestParamClasses(object):
         param_names = ['gamma1', 'gamma2']
         args += [self.kwargs_epl[1][param_name] for param_name in param_names]
 
-        shift = np.array([0.25, 0.2, 0.2, 0.2, 0.2, 0.05, 0.05])
+        shift = np.array([0.1, 0.05, 0.05, 0.1, 0.1, 0.025, 0.025])
         param_class = PowerLawFixedShear(self.kwargs_epl, 0.12)
         bounds = param_class.bounds(re_optimize=False)
         npt.assert_almost_equal(bounds[0], np.array(args) - shift)
         npt.assert_almost_equal(bounds[1], np.array(args) + shift)
 
-        shift = np.array([0.005, 0.01, 0.01, 0.05, 0.05, 0.025, 0.025])
+        shift = np.array([0.005, 0.025, 0.025, 0.05, 0.05, 0.01, 0.01])
         param_class = PowerLawFixedShear(self.kwargs_epl, 0.12)
         bounds = param_class.bounds(re_optimize=True)
         npt.assert_almost_equal(bounds[0], np.array(args) - shift)
         npt.assert_almost_equal(bounds[1], np.array(args) + shift)
 
         scale = 0.7
-        shift = scale * np.array([0.005, 0.01, 0.01, 0.05, 0.05, 0.025, 0.025])
+        shift = scale * shift
         param_class = PowerLawFixedShear(self.kwargs_epl, 0.12)
         bounds = param_class.bounds(re_optimize=True, scale=scale)
         npt.assert_almost_equal(bounds[0], np.array(args) - shift)

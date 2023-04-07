@@ -1,7 +1,7 @@
 __author__ = 'dgilman'
 
 
-from lenstronomy.LensModel.Profiles.numerical_deflections import NumericalAlpha
+from lenstronomy.LensModel.Profiles.numerical_deflections import TabulatedDeflections
 from lenstronomy.LensModel.Profiles.nfw import NFW
 from lenstronomy.LensModel.lens_model import LensModel
 
@@ -81,7 +81,7 @@ class TestNumericalAlpha(object):
     """
     def setup_method(self):
 
-        self.numerical_alpha = NumericalAlpha(custom_class=TestClass())
+        self.numerical_alpha = TabulatedDeflections(custom_class=TestClass())
         self.nfw = NFW()
 
     def test_no_potential(self):
@@ -102,7 +102,7 @@ class TestNumericalAlpha(object):
         numerical_alpha_class = TestClass()
 
         for i, flag in enumerate([False, True]):
-            lensmodel = LensModel(lens_model_list=['NumericalAlpha', 'NFW'], z_source=1.5, z_lens=0.5, lens_redshift_list=zlist[i],
+            lensmodel = LensModel(lens_model_list=['TABULATED_DEFLECTIONS', 'NFW'], z_source=1.5, z_lens=0.5, lens_redshift_list=zlist[i],
                                   multi_plane=flag, numerical_alpha_class=numerical_alpha_class)
 
             lensmodel_nfw = LensModel(lens_model_list=['NFW', 'NFW'], z_source=1.5, z_lens=0.5, lens_redshift_list=zlist[i],
@@ -132,7 +132,7 @@ class TestNumericalAlpha(object):
         numerical_alpha_class = TestClass()
 
         for i, flag in enumerate([False, True]):
-            lensmodel = LensModel(lens_model_list=['NumericalAlpha', 'NFW'], z_source=1.5, z_lens=0.5,
+            lensmodel = LensModel(lens_model_list=['TABULATED_DEFLECTIONS', 'NFW'], z_source=1.5, z_lens=0.5,
                                   lens_redshift_list=zlist[i],
                                   multi_plane=flag, numerical_alpha_class=numerical_alpha_class)
 

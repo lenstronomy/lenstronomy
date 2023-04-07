@@ -89,7 +89,7 @@ def mask_eccentric(x, y, center_x, center_y, e1, e2, r):
     :rtype: array of size of input grid with integers 0 or 1
     """
     x_, y_ = param_util.transform_e1e2_product_average(x, y, e1, e2, center_x, center_y)
-    r_ab = (x_**2 + y_**2) / r
+    r_ab = (x_**2 + y_**2) / r ** 2
     mask = np.empty_like(r_ab, dtype='int')
     mask[r_ab > 1] = 0
     mask[r_ab <= 1] = 1

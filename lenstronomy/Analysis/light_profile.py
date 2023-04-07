@@ -43,15 +43,8 @@ class LightProfileAnalysis(object):
         x_grid += center_x
         y_grid += center_y
         I_xy = self._light_model.surface_brightness(x_grid, y_grid, kwargs_light, k=model_bool_list)
-        # spherical mask
-        mask = mask_util.mask_azimuthal(x_grid, y_grid, center_x=center_x, center_y=center_y,
-                                        r=grid_num*grid_spacing/2.)
-
-        e1, e2 = analysis_util.ellipticities(I_xy * mask, x_grid-center_x, y_grid-center_y)
-        if iterative:
-            for i in range(num_iterative):
-                mask = mask_util.mask_eccentric(x_grid, y_grid, center_x, center_y, e1, e2, r=grid_num*grid_spacing/2.)
-                e1, e2 = analysis_util.ellipticities(I_xy * mask, x_grid - center_x, y_grid - center_y)
+        e1, e2 = analysis_util.ellipticities(I_xy, x_grid-center_x, y_grid-center_y, center_x=0,
+                                             center_y=0, iterative=iterative, num_iterative=num_iterative)
         return e1, e2
 
     def half_light_radius(self, kwargs_light, grid_spacing, grid_num, center_x=None, center_y=None, model_bool_list=None):

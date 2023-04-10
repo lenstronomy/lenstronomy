@@ -12,6 +12,8 @@ class PEMD(LensProfileBase):
     class for power law ellipse mass density profile.
     This class effectively calls the class SPEMD_SMOOTH with a fixed and very small central smoothing scale
     to perform the numerical integral using the FASTELL code by Renan Barkana.
+    An alternative implementation of the same model using pure python with analytical functions is probided as 'EPL'
+    profile.
 
     .. math::
         \\kappa(x, y) = \\frac{3-\\gamma}{2} \\left(\\frac{\\theta_{E}}{\\sqrt{q x^2 + y^2/q}} \\right)^{\\gamma-1}

@@ -43,7 +43,8 @@ class EPL(LensProfileBase):
     converging in few iterations to high precision and accuracy.
 
     A (faster) implementation of the same model using numba is accessible as 'EPL_NUMBA' with the iterative calculation
-    scheme.
+    scheme. An alternative implementation of the same model using a fortran code FASTELL is implemented as 'PEMD'
+    profile.
     """
     param_names = ['theta_E', 'gamma', 'e1', 'e2', 'center_x', 'center_y']
     lower_limit_default = {'theta_E': 0, 'gamma': 1.5, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}

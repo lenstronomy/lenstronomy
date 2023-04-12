@@ -3,7 +3,6 @@ See Optics and Observation Conditions spreadsheet at
 https://docs.google.com/spreadsheets/d/1pMUB_OOZWwXON2dd5oP8PekhCT5MBBZJO1HV7IMZg4Y/edit?usp=sharing for list of
 sources. """
 import copy
-
 import lenstronomy.Util.util as util
 
 __all__ = ['LSST']

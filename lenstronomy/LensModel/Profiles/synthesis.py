@@ -39,13 +39,13 @@ class SynthesisProfile(LensProfileBase):
         self.check_num_evals()
 
 
-    def LinearWeightMLEFit(self, kwargs_target, kwargs_list):
+    def linear_weight_mle_fit(self, kwargs_target, kwargs_list):
         if self._static is True:
             return self._linear_weights
         else:
-            return self._LinearWeightMLEFit(kwargs_target, kwargs_list)
+            return self._linear_weight_mle_fit(kwargs_target, kwargs_list)
 
-    def _LinearWeightMLEFit(self, kwargs_target, kwargs_list):
+    def _linear_weight_mle_fit(self, kwargs_target, kwargs_list):
         """
         Fits a linear fit of the amplitudes for each component to minimize a chi2.
 
@@ -134,7 +134,7 @@ class SynthesisProfile(LensProfileBase):
         :param y: angular position (normally in units of arc seconds)
         :kwargs_target: kwargs of target profile to be approximated
         """
-        weight_list = self.LinearWeightMLEFit([kwargs_target], self.kwargs_list)
+        weight_list = self.linear_weight_mle_fit([kwargs_target], self.kwargs_list)
         f_ = np.zeros_like(x)
         f_innermost = 0 #for some profiles, minimum potential can go below zero. Add a constant here to make zero the minimum
         for kwargs, weight in zip(self.kwargs_list, weight_list):
@@ -150,7 +150,7 @@ class SynthesisProfile(LensProfileBase):
         :param y: angular position (normally in units of arc seconds)
         :kwargs_target: kwargs of target profile to be approximated
         """
-        weight_list = self.LinearWeightMLEFit([kwargs_target],self.kwargs_list)
+        weight_list = self.linear_weight_mle_fit([kwargs_target],self.kwargs_list)
         f_x, f_y = np.zeros_like(x), np.zeros_like(y)
         for kwargs, weight in zip(self.kwargs_list, weight_list):
             f_x_, f_y_ = weight * np.array(self.component_class.alpha(x, y, [kwargs]))
@@ -166,7 +166,7 @@ class SynthesisProfile(LensProfileBase):
         :param y: angular position (normally in units of arc seconds)
         :kwargs_target: kwargs of target profile to be approximated
         """
-        weight_list = self.LinearWeightMLEFit([kwargs_target], self.kwargs_list)
+        weight_list = self.linear_weight_mle_fit([kwargs_target], self.kwargs_list)
         f_xx, f_xy, f_yx, f_yy = np.zeros_like(x), np.zeros_like(x), np.zeros_like(x), np.zeros_like(x)
         for kwargs, weight in zip(self.kwargs_list, weight_list):
             f_xx_i, f_xy_i, f_yx_i, f_yy_i = weight * np.array(self.component_class.hessian(x, y, [kwargs]))

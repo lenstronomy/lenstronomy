@@ -150,7 +150,7 @@ class TestSynthesis(object):
                             }
         synth_prof = SynthesisProfile(**kwargs_synthesis)
         synth_func = synth_prof.function(self.x_test, self.y_test, **kwargs_nfw[0])
-        linear_weights=synth_prof.LinearWeightMLEFit(kwargs_nfw,kwargs_list)
+        linear_weights=synth_prof.linear_weight_mle_fit(kwargs_nfw,kwargs_list)
         synth_prof.set_static(linear_weights)
         kwargs_nfw[0]['Rs']=10 #change kwargs, doesn't affect static weights
         changed_synth_func = synth_prof.function(self.x_test, self.y_test, **kwargs_nfw[0])

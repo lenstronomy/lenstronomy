@@ -114,7 +114,7 @@ class TestSynthesis(object):
         r_test=self.x_test
         kwargs_list = []
         center_x = 1
-        center_y = 0
+        center_y = -1
         for s in self.s_list:
             kwargs_list.append({'a': 1, 's': s, 'e1': 0.3, 'e2': 0, 'center_x': center_x, 'center_y': center_y})
 
@@ -132,3 +132,26 @@ class TestSynthesis(object):
         LensAn_nfw = LensProfileAnalysis(lensmodel_nfw)
         nfw_avg_kappa = LensAn_nfw.radial_lens_profile(r_test, kwargs_nfw)
         npt.assert_allclose(nfw_avg_kappa,synth_avg_kappa, rtol=5e-2)
+
+    def test_set_static_method(self):
+        # test that when set_static is used the result doesn't load the kwargs anymore, instead using the saved weights
+        kwargs_list = []
+        center_x = 0
+        center_y = 0
+        for s in self.s_list:
+            kwargs_list.append({'a': 1, 's': s, 'e1': 0, 'e2': 0, 'center_x': center_x, 'center_y': center_y})
+
+        # test nfw
+        kwargs_nfw = [{'Rs': 1.5, 'alpha_Rs': 1, 'center_x': center_x, 'center_y': center_y}]
+        kwargs_synthesis = {'target_lens_model': 'NFW',
+                            'component_lens_model': 'CSE',
+                            'kwargs_list': kwargs_list,
+                            'lin_fit_hyperparams': self.lin_fit_hyperparams
+                            }
+        synth_prof = SynthesisProfile(**kwargs_synthesis)
+        synth_func = synth_prof.function(self.x_test, self.y_test, **kwargs_nfw[0])
+        linear_weights=synth_prof.LinearWeightMLEFit(kwargs_nfw,kwargs_list)
+        synth_prof.set_static(linear_weights)
+        kwargs_nfw[0]['Rs']=10 #change kwargs, doesn't affect static weights
+        changed_synth_func = synth_prof.function(self.x_test, self.y_test, **kwargs_nfw[0])
+        npt.assert_array_equal(synth_func,changed_synth_func)

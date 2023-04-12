@@ -31,7 +31,7 @@ class SynthesisProfile(LensProfileBase):
                             The normalization (must be nonzero) will be effectively overridden by the linear weights
         :param lin_fit_hyperparams: kwargs indicating range of fit, number of points to evaluate fit, etc.
         """
-
+        super(SynthesisProfile, self).__init__()
         self.target_class = LensModel([target_lens_model])
         self.component_class = LensModel([component_lens_model])
         self.kwargs_list=kwargs_list
@@ -40,6 +40,12 @@ class SynthesisProfile(LensProfileBase):
 
 
     def LinearWeightMLEFit(self, kwargs_target, kwargs_list):
+        if self._static is True:
+            return self._linear_weights
+        else:
+            return self._LinearWeightMLEFit(kwargs_target, kwargs_list)
+
+    def _LinearWeightMLEFit(self, kwargs_target, kwargs_list):
         """
         Fits a linear fit of the amplitudes for each component to minimize a chi2.
 
@@ -59,6 +65,22 @@ class SynthesisProfile(LensProfileBase):
         first_term=np.linalg.inv(np.matmul(MTinvC,M))
         second_term=np.matmul(MTinvC,Y)
         return np.matmul(first_term,second_term)
+
+    def set_static(self, linear_weights):
+        """
+        Sets weights to be static self values. Useful to call e.g. function many times with the same kwargs.
+        If kwargs_target or kwargs_list change, need to rerun linear fit by using set_dynamic.
+
+        :param linear_weights: output of LinearWeightMLEFit
+        :return: self weights set
+        """
+        self._static = True
+        self._linear_weights = linear_weights
+
+    def set_dynamic(self):
+        self._static = False
+        if hasattr(self, '_linear_weights'):
+            del self._linear_weights
 
     def circular_centered_kwargs(self,kwargs):
         """

@@ -7,6 +7,10 @@ class ShapeletSetEllipse(object):
     cartesian shapelets with elliptical axis ratios
 
     """
+    param_names = ['amp', 'n_max', 'beta', 'e1', 'e2', 'center_x', 'center_y']
+    lower_limit_default = {'beta': 0.01, 'e1': -0.6, 'e2': -0.6, 'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'beta': 100, 'e1': 0.6, 'e2': 0.6, 'center_x': 100, 'center_y': 100}
+
     def __init__(self):
         self._shapelet_set = ShapeletSet()
 

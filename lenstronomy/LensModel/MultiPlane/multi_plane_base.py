@@ -17,7 +17,7 @@ class MultiPlaneBase(ProfileListBase):
 
     def __init__(self, lens_model_list, lens_redshift_list, z_source_convention, cosmo=None,
                  numerical_alpha_class=None, cosmo_interp=False, z_interp_stop=None, num_z_interp=100,
-                 kwargs_interp=None):
+                 kwargs_interp=None,  kwargs_synthesis=None):
         """
         A description of the recursive multi-plane formalism can be found e.g. here: https://arxiv.org/abs/1312.1536
 
@@ -30,7 +30,7 @@ class MultiPlaneBase(ProfileListBase):
          (see documentation in Profiles/numerical_alpha)
         :param kwargs_interp: interpolation keyword arguments specifying the numerics.
          See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
-
+        :param kwargs_synthesis: keyword arguments for the 'SYNTHESIS' lens model, if applicable
         """
         if z_interp_stop is None:
             z_interp_stop = z_source_convention
@@ -48,7 +48,8 @@ class MultiPlaneBase(ProfileListBase):
         self._lens_redshift_list = lens_redshift_list
         super(MultiPlaneBase, self).__init__(lens_model_list, numerical_alpha_class=numerical_alpha_class,
                                              lens_redshift_list=lens_redshift_list,
-                                             z_source_convention=z_source_convention, kwargs_interp=kwargs_interp)
+                                             z_source_convention=z_source_convention, kwargs_interp=kwargs_interp,
+                                             kwargs_synthesis=kwargs_synthesis)
 
         if len(lens_model_list) < 1:
             self._sorted_redshift_index = []

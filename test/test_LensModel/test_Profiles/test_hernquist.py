@@ -25,7 +25,7 @@ class TestHernquist(object):
         y = np.array([0])
         Rs = 1.
         sigma0 = 0.5
-        values = self.profile.function( x, y, sigma0, Rs)
+        values = self.profile.function(x, y, sigma0, Rs)
         npt.assert_almost_equal(values[0], 0, decimal=6)
 
         x = np.array([2,3,4])

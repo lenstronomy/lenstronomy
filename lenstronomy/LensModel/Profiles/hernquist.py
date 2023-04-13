@@ -37,12 +37,13 @@ class Hernquist(LensProfileBase):
 
     """
     _diff = 0.00001
-    _s = 0.00000001
+    _s = 0.00001
     param_names = ['sigma0', 'Rs', 'center_x', 'center_y']
     lower_limit_default = {'sigma0': 0, 'Rs': 0, 'center_x': -100, 'center_y': -100}
     upper_limit_default = {'sigma0': 100, 'Rs': 100, 'center_x': 100, 'center_y': 100}
 
-    def density(self, r, rho0, Rs):
+    @staticmethod
+    def density(r, rho0, Rs):
         """
         computes the 3-d density
 
@@ -92,7 +93,8 @@ class Hernquist(LensProfileBase):
         sigma = sigma0 / (X**2-1)**2 * (-3 + (2+X**2)*self._F(X))
         return sigma
 
-    def mass_3d(self, r, rho0, Rs):
+    @staticmethod
+    def mass_3d(r, rho0, Rs):
         """
         mass enclosed a 3d sphere or radius r
 
@@ -109,6 +111,7 @@ class Hernquist(LensProfileBase):
         mass enclosed a 3d sphere or radius r for lens parameterisation
         This function converts the lensing definition sigma0 into the 3d density
 
+        :param r: radius
         :param sigma0: rho0 * Rs (units of projected density)
         :param Rs: Hernquist radius
         :return: enclosed mass in 3d
@@ -160,7 +163,8 @@ class Hernquist(LensProfileBase):
 
         :param x: x-coordinate position (units of angle)
         :param y: y-coordinate position (units of angle)
-        :param sigma0: normalization parameter defined such that the deflection at projected RS leads to alpha = 2./3 * Rs * sigma0
+        :param sigma0: normalization parameter defined such that the deflection at projected RS leads to
+         alpha = 2./3 * Rs * sigma0
         :param Rs: Hernquist radius in units of angle
         :param center_x: x-center of the profile (units of angle)
         :param center_y: y-center of the profile (units of angle)
@@ -179,7 +183,8 @@ class Hernquist(LensProfileBase):
 
         :param x: x-coordinate position (units of angle)
         :param y: y-coordinate position (units of angle)
-        :param sigma0: normalization parameter defined such that the deflection at projected RS leads to alpha = 2./3 * Rs * sigma0
+        :param sigma0: normalization parameter defined such that the deflection at projected RS leads to
+         alpha = 2./3 * Rs * sigma0
         :param Rs: Hernquist radius in units of angle
         :param center_x: x-center of the profile (units of angle)
         :param center_y: y-center of the profile (units of angle)
@@ -191,7 +196,7 @@ class Hernquist(LensProfileBase):
         r = np.maximum(r, self._s)
         X = r/Rs
         if isinstance(r, int) or isinstance(r, float):
-        #f = (1 - self._F(X)) / (X ** 2 - 1)  # this expression is 1/3 for X=1
+            # f = (1 - self._F(X)) / (X ** 2 - 1)  # this expression is 1/3 for X=1
             if X == 1:
                 f = 1./3
             else:
@@ -212,7 +217,8 @@ class Hernquist(LensProfileBase):
 
         :param x: x-coordinate position (units of angle)
         :param y: y-coordinate position (units of angle)
-        :param sigma0: normalization parameter defined such that the deflection at projected RS leads to alpha = 2./3 * Rs * sigma0
+        :param sigma0: normalization parameter defined such that the deflection at projected RS leads to
+         alpha = 2./3 * Rs * sigma0
         :param Rs: Hernquist radius in units of angle
         :param center_x: x-center of the profile (units of angle)
         :param center_y: y-center of the profile (units of angle)
@@ -231,7 +237,8 @@ class Hernquist(LensProfileBase):
         f_yy = (alpha_dec_dy - alpha_dec_dy_) / diff
         return f_xx, f_xy, f_yx, f_yy
 
-    def rho2sigma(self, rho0, Rs):
+    @staticmethod
+    def rho2sigma(rho0, Rs):
         """
         converts 3d density into 2d projected density parameter
         :param rho0: 3d density normalization of Hernquist model
@@ -240,7 +247,8 @@ class Hernquist(LensProfileBase):
         """
         return rho0 * Rs
 
-    def sigma2rho(self, sigma0, Rs):
+    @staticmethod
+    def sigma2rho(sigma0, Rs):
         """
         converts projected density parameter (in units of deflection) into 3d density parameter
         :param sigma0: density defined quantity in projected units
@@ -258,7 +266,7 @@ class Hernquist(LensProfileBase):
         c = self._s
         if isinstance(X, int) or isinstance(X, float):
             X = max(X, c)
-            if X < 1 and X > 0:
+            if 0 < X < 1:
                 a = 1. / np.sqrt(1 - X ** 2) * np.arctanh(np.sqrt(1 - X**2))
             elif X == 1:
                 a = 1.
@@ -273,7 +281,7 @@ class Hernquist(LensProfileBase):
             x = X[X < 1]
             a[X < 1] = 1 / np.sqrt(1 - x ** 2) * np.arctanh(np.sqrt((1 - x**2)))
 
-            x = X[X == 1]
+            # x = X[X == 1]
             a[X == 1] = 1.
 
             x = X[X > 1]

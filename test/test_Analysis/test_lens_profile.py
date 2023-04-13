@@ -48,8 +48,8 @@ class TestLensProfileAnalysis(object):
         assert len(ret) == 2
         npt.assert_almost_equal(ret[0], 1., decimal=2)
         kwargs_lens_bad = [{'theta_E': 100, 'center_x': 0, 'center_y': 0}]
-        ret_nan = lensModel.effective_einstein_radius(kwargs_lens_bad,
-                                                      get_precision=True, verbose=True)
+        ret_nan, precision = lensModel.effective_einstein_radius(kwargs_lens_bad,
+                                                      get_precision=True)
         assert np.isnan(ret_nan)
 
         # test interpolated profile

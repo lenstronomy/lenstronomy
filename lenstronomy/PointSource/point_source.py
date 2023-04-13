@@ -34,7 +34,6 @@ class PointSource(object):
         :param kwargs_lens_eqn_solver: keyword arguments specifying the numerical settings for the lens equation solver
          see LensEquationSolver() class for details ,such as:
          min_distance=0.01, search_window=5, precision_limit=10**(-10), num_iter_max=100
-
         """
         self._lensModel = lensModel
         self.point_source_type_list = point_source_type_list

@@ -18,6 +18,7 @@ class LensModel(object):
                  z_source_convention=None, cosmo_interp=False,
                  z_interp_stop=None, num_z_interp=100,
                  kwargs_interp=None, kwargs_synthesis=None):
+
         """
 
         :param lens_model_list: list of strings with lens model names
@@ -29,8 +30,8 @@ class LensModel(object):
          only applicable in multi_plane mode.
         :param cosmo: instance of the astropy cosmology class. If not specified, uses the default cosmology.
         :param multi_plane: bool, if True, uses multi-plane mode. Default is False.
-        :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model
-         (see documentation in Profiles/numerical_alpha)
+        :param numerical_alpha_class: an instance of a custom class for use in TabulatedDeflections() lens model
+         (see documentation in Profiles/numerical_deflections)
         :param kwargs_interp: interpolation keyword arguments specifying the numerics.
          See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
         :param observed_convention_index: a list of indices, corresponding to the lens_model_list element with same

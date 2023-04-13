@@ -2,6 +2,7 @@
 See Optics and Observation Conditions spreadsheet at
 https://docs.google.com/spreadsheets/d/1pMUB_OOZWwXON2dd5oP8PekhCT5MBBZJO1HV7IMZg4Y/edit?usp=sharing for list of
 sources. """
+import copy
 import lenstronomy.Util.util as util
 
 __all__ = ['LSST']
@@ -75,17 +76,17 @@ class LSST(object):
         if band.isalpha():
             band = band.lower()
         if band == 'g':
-            self.obs = g_band_obs
+            self.obs = copy.deepcopy(g_band_obs)
         elif band == 'r':
-            self.obs = r_band_obs
+            self.obs = copy.deepcopy(r_band_obs)
         elif band == 'i':
-            self.obs = i_band_obs
+            self.obs = copy.deepcopy(i_band_obs)
         elif band == 'u':
-            self.obs = u_band_obs
+            self.obs = copy.deepcopy(u_band_obs)
         elif band == 'z':
-            self.obs = z_band_obs
+            self.obs = copy.deepcopy(z_band_obs)
         elif band == 'y':
-            self.obs = y_band_obs
+            self.obs = copy.deepcopy(y_band_obs)
         else:
             raise ValueError("band %s not supported! Choose 'u', 'g', 'r', 'i', 'z' or 'y'." % band)
 

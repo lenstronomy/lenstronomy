@@ -30,5 +30,11 @@ def test_mask_ellipse():
     assert mask[0] == 0
 
 
+def test_mask_eccentric():
+    x, y = util.make_grid(numPix=100, deltapix=1)
+    mask = mask_util.mask_eccentric(x, y, center_x=0, center_y=0, e1=0.1, e2=0.2, r=10)
+    assert mask[0] == 0
+
+
 if __name__ == '__main__':
     pytest.main()

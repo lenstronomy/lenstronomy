@@ -16,12 +16,12 @@ The idea of this test is to define two sets of data class and psf class, one wit
 and compare the (image_with_pb_and_psf) with scipy.signal.fftconvolve(image_without_pb_psf * pb, PSF, mode='same').
 """
 
-def test_interferometric_changes():
+def test_ImageModel_with_primary_beam_and_interferometry_psf():
 
-    sigma_bkg = .05  # background noise per pixel
-    exp_time = 100  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)
-    numPix = 100  # cutout pixel size
-    deltaPix = 0.05  # pixel size in arcsec (area per pixel = deltaPix**2)
+    sigma_bkg = .05  
+    exp_time = np.inf
+    numPix = 100  
+    deltaPix = 0.05
 
     # simulate a primary beam (pb)
     primary_beam = np.zeros((numPix,numPix))

@@ -1,6 +1,7 @@
 from lenstronomy.ImSim.image_model import ImageModel
 import lenstronomy.ImSim.de_lens as de_lens
 from lenstronomy.Util import util
+from lenstronomy.ImSim.Numerics.convolution import PixelKernelConvolution
 import numpy as np
 
 __all__ = ['ImageLinearFit']
@@ -50,6 +51,10 @@ class ImageLinearFit(ImageModel):
             # update the pixel-based solver with the likelihood mask
             self.PixelSolver.set_likelihood_mask(self.likelihood_mask)
 
+        # prepare to use fft convolution for the natwt linear solver 
+        if self.Data.likelihood_method() == 'interferometry_natwt':
+            self._convolution = PixelKernelConvolution(kernel = self.PSF.kernel_point_source)
+            
     def image_linear_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
                            kwargs_extinction=None, kwargs_special=None, inv_bool=False):
         """
@@ -81,20 +86,25 @@ class ImageLinearFit(ImageModel):
         :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
         :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
         :param inv_bool: if True, invert the full linear solver Matrix Ax = y for the purpose of the covariance matrix.
-        This has no impact in case of pixel-based modelling.
+         This has no impact in case of pixel-based modelling.
         :return: 2d array of surface brightness pixels of the optimal solution of the linear parameters to match the data
         """
         if self._pixelbased_bool is True:
             model, model_error, cov_param, param = self.image_pixelbased_solve(kwargs_lens, kwargs_source, 
                                                                                kwargs_lens_light, kwargs_ps, 
                                                                                kwargs_extinction, kwargs_special)
-        else:
+        elif self.Data.likelihood_method() == 'diagonal':
             A = self._linear_response_matrix(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_extinction, kwargs_special)
             C_D_response, model_error = self._error_response(kwargs_lens, kwargs_ps, kwargs_special=kwargs_special)
             d = self.data_response
             param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1 / C_D_response, d, inv_bool=inv_bool)
             model = self.array_masked2image(wls_model)
             _, _, _, _ = self.update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+        elif self.Data.likelihood_method() == 'interferometry_natwt':
+            model, model_error, cov_param, param = self._image_linear_solve_interferometry_natwt(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
+                            kwargs_extinction, kwargs_special)
+        else:
+            raise ValueError("likelihood_method %s not supported!" % self.Data.likelihood_method())
         return model, model_error, cov_param, param
 
     def image_pixelbased_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, 
@@ -318,7 +328,7 @@ class ImageLinearFit(ImageModel):
             image = self.ImageNumerics.point_source_rendering(ra_pos[i], dec_pos[i], amp[i])
             A[n, :] = np.nan_to_num(self.image2array_masked(image), copy=False)
             n += 1
-        return A
+        return A * self._flux_scaling
 
     def update_linear_kwargs(self, param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
         """
@@ -550,3 +560,98 @@ class ImageLinearFit(ImageModel):
             return True
         else:
             return False
+    
+    # linear solver for interferometric natwt method
+    def _image_linear_solve_interferometry_natwt(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None,
+                                                 kwargs_ps=None, kwargs_extinction=None, kwargs_special=None):
+        """
+        'interferometry_natwt' method does NOT support model_error, cov_param.
+        The interferometry linear solver just does the linear solving to get the optimal linear amplitudes
+        and apply the marginalized amplitudes to make the model images.
+        
+        :return: model, model_error, cov_param, param
+        model and param are the same returns of self._image_linear_solve_interferometry_natwt_solving(A, d) function
+        model_error =0 and cov_param = None for the interferometric method.
+        
+        """
+        A = self._linear_response_matrix(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_extinction, kwargs_special, unconvolved=True)
+        d = self.data_response
+        model, param = self._image_linear_solve_interferometry_natwt_solving(A, d)
+        model_error = 0 # just a place holder 
+        cov_param = None # just a place holder
+        _, _, _, _ = self.update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+        return model, model_error, cov_param, param
+
+    def _image_linear_solve_interferometry_natwt_solving(self, A, d):
+        """
+        Linearly solve the amplitude of each light profile response to the natural weighting interferometry images,
+        based on (placeholder for Nan Zhang's paper).
+        
+        Theories:
+            Suppose there are a set of light responses :math:`\\{x_i\\}`, we want to solve the set of amplitudes :math:`\\{\\alpha_i\\}`,
+            such that minimizes the chi^2 given by 
+            .. math::
+                    \\chi^2 = (d - A_{PSF}\\sum_i \\alpha_i x_i)^TC^{-1}(d - A_{PSF}\\sum_i \\alpha_i x_i),
+            where :math:`A_{PSF}` is the PSF convolution operation matrix (not to be confused with the input A of this function) 
+            and :math:`C` is the noise covariance matrix. :math:`d` is the data image.
+            For natural weighting interferometric images, we have :math:`C = \\sigma^2 A_{PSF}`, 
+            (see Section 3.2 of https://doi.org/10.1093/mnras/staa2740 for the relation of natural weighting covariance matrix and PSF convolution)
+            therefore the chi^2 function simplifies to 
+            .. math::
+                    \\chi^2 = \\frac{1}{\\sigma^2}(d^TA_{PSF}^{-1}d + \\sum_{i,j}\\alpha_i\\alpha_j x_i^TA_{PSF}x_j - 2\\sum_{i}x_i^Td),
+            from which the optimal amplitudes :math:`\\{\\alpha_i\\}` can be solved linearly by solving
+            .. math::
+                    \\sum_{j} M_{ij}\\alpha_{j} = b_i,
+            where :math:`M_{ij} = \\frac{1}{\\sigma^2}x_i^TA_{PSF}x_j` and :math:`b_{i} = \\frac{1}{\\sigma^2}x_i^Td`.
+        
+        The steps of this function are:
+            (1.) Making the entries :math:`M_{ij}` and :math:`b_i` defined above.
+            (2.) Solve the linear function to get the optimal amplitudes.
+            (3.) Apply these optimal amplitudes to make unconvolved and convolved model images.
+                The output model images are in the form [array1, array2]. 
+                (Note that this is different from the non-interferometric linear solver of Lenstronomy, 
+                 this output form saves time for likelihood computations in imaging_data for interferometric method.)
+                array1 is the unconvolved model image :math:`array1 = \\sum_i \\alpha_i x_i`, where :math:`\\alpha_i` is the solved optimal amplitudes.
+                array2 is the convolved model image :math:`array2 = A_{PSF}\\sum_i \\alpha_i x_i`, where :math:`\\alpha_i`.
+         
+        :param A: response of unconvolved light profiles, [x_1, x_2, ...]
+        :param d: data image, d
+        :return: [array1, array2], [amp_array] 
+        where the [array1, array2] are unconvolved and convolved model images with solved amplitudes
+        and [amp_array] are the solved optimal amplitudes.
+        
+        """
+        num_of_light, num_of_image_pixel = np.shape(A)
+        
+        A_convolved = np.zeros(np.shape(A))
+        
+        # convolve each response separately
+        for i in range(num_of_light):
+            A_convolved[i] = util.image2array(self._convolution._static_fft(util.array2image(A[i]), mode='same'))
+            
+        M = np.zeros((num_of_light,num_of_light))
+        for i in range(num_of_light):
+            for j in range(num_of_light):
+                if j < i:
+                    M[i,j] = M[j,i]
+                else:
+                    M[i,j] = np.sum(A_convolved[j] * A[i])
+        
+        b = np.zeros((num_of_light))
+        for i in range(num_of_light):
+            b[i] = np.sum(A[i] * (d))
+            
+        param_amps = np.linalg.lstsq(M, b)[0]
+        
+        clean_temp = np.zeros((num_of_image_pixel))
+        dirty_temp = np.zeros((num_of_image_pixel))
+        for i in range(num_of_light):
+            clean_temp += param_amps[i] * A[i]
+            dirty_temp += param_amps[i] * A_convolved[i]
+            
+        clean_model = util.array2image(clean_temp)
+        dirty_model = util.array2image(dirty_temp)
+            
+        model = [clean_model, dirty_model]
+        
+        return model, param_amps

@@ -25,6 +25,8 @@ class AnalyticKinematics(Anisotropy):
     the spectral rendering approach to compute the seeing convolved slit measurement is presented in Birrer et al. 2016.
     The stellar anisotropy is parameterised based on Osipkov 1979; Merritt 1985.
 
+    WARNING!!! Only supports Osipkov-Merritt anisotropy for now!
+
     All units are meant to be in angular arc seconds. The physical units are fold in through the angular diameter
     distances
 
@@ -33,7 +35,11 @@ class AnalyticKinematics(Anisotropy):
                  min_integrate=0.001):
         """
 
-        :param kwargs_cosmo: keyword argument with angular diameter distances
+        :param kwargs_cosmo: keyword argument with angular diameter distances entering the Galkin.cosmo class
+        :param interpol_grid_num: number of interpolations in radius to compute radial velocity dispersion
+        :param log_integration: perform numerical integration in logarithmic space
+        :param max_integrate: maximum radius of integration (in projected arc seconds)
+        :param min_integrate: minimum drawing/calculation of velocity dispersion (in projected arc seconds)
         """
 
         self._interp_grid_num = interpol_grid_num

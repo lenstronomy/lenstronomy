@@ -105,7 +105,7 @@ class TestLensCosmo(object):
 
     def test_a_z(self):
 
-        a = self.lensCosmo.a_z(z=1)
+        a = self.lensCosmo.background.a_z(z=1)
         npt.assert_almost_equal(a, 0.5)
 
     def test_sersic_m_star2k_eff(self):

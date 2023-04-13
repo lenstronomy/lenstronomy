@@ -3,6 +3,7 @@ import numpy as np
 import lenstronomy.Util.util as util
 import lenstronomy.Util.analysis_util as analysis_util
 import lenstronomy.Util.multi_gauss_expansion as mge
+from lenstronomy.Util import mask_util
 
 __all__ = ['LightProfileAnalysis']
 
@@ -18,7 +19,8 @@ class LightProfileAnalysis(object):
         """
         self._light_model = light_model
 
-    def ellipticity(self, kwargs_light, grid_spacing, grid_num, center_x=None, center_y=None, model_bool_list=None):
+    def ellipticity(self, kwargs_light, grid_spacing, grid_num, center_x=None, center_y=None, model_bool_list=None,
+                    num_iterative=10, iterative=False):
         """
         make sure that the window covers all the light, otherwise the moments may give a too low answers.
 
@@ -28,6 +30,10 @@ class LightProfileAnalysis(object):
         :param model_bool_list: list of booleans to select subsets of the profile
         :param grid_spacing: grid spacing over which the moments are computed
         :param grid_num: grid size over which the moments are computed
+        :param iterative: if True iteratively adopts an eccentric mask to overcome edge effects
+        :type iterative: boolean
+        :param num_iterative: number of iterative changes in ellipticity
+        :type num_iterative: int
         :return: eccentricities e1, e2
         """
         center_x, center_y = analysis_util.profile_center(kwargs_light, center_x, center_y)
@@ -37,7 +43,8 @@ class LightProfileAnalysis(object):
         x_grid += center_x
         y_grid += center_y
         I_xy = self._light_model.surface_brightness(x_grid, y_grid, kwargs_light, k=model_bool_list)
-        e1, e2 = analysis_util.ellipticities(I_xy, x_grid-center_x, y_grid-center_y)
+        e1, e2 = analysis_util.ellipticities(I_xy, x_grid-center_x, y_grid-center_y, center_x=0,
+                                             center_y=0, iterative=iterative, num_iterative=num_iterative)
         return e1, e2
 
     def half_light_radius(self, kwargs_light, grid_spacing, grid_num, center_x=None, center_y=None, model_bool_list=None):

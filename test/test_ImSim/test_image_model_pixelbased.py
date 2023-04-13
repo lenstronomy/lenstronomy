@@ -16,8 +16,6 @@ from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
 from lenstronomy.ImSim.differential_extinction import DifferentialExtinction
-from lenstronomy.Util import util
-
 from lenstronomy.LightModel.Profiles.starlets import SLIT_Starlets
 
 

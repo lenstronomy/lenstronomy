@@ -417,7 +417,6 @@ class Param(object):
         :param kwargs_extinction: extinction model keyword argument list
         :return: numpy array of parameters
         """
-
         args = self.lensParams.set_params(kwargs_lens)
         args += self.sourceParams.set_params(kwargs_source)
         args += self.lensLightParams.set_params(kwargs_lens_light)

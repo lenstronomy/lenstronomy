@@ -47,9 +47,23 @@ class TestLightAnalysis(object):
         light_model_list = ['SERSIC_ELLIPSE']
         lensAnalysis =  LightProfileAnalysis(LightModel(light_model_list=light_model_list))
         e1, e2 = lensAnalysis.ellipticity(kwargs_light, center_x=0, center_y=0, model_bool_list=None, grid_spacing=0.2,
-                                          grid_num=400)
+                                          grid_num=400, iterative=True, num_iterative=30)
         print(e1, e2)
         npt.assert_almost_equal(e1, e1_in, decimal=3)
+        npt.assert_almost_equal(e2, e2_in, decimal=3)
+
+        # Power-law
+        e1_in = 0.3
+        e2_in = 0
+        center_x, center_y = 0., 0
+        kwargs_light = [
+            {'gamma': 2., 'amp': 1, 'center_x': center_x, 'center_y': center_y, 'e1': e1_in, 'e2': e2_in}]
+        light_model_list = ['POWER_LAW']
+        lensAnalysis = LightProfileAnalysis(LightModel(light_model_list=light_model_list))
+        e1, e2 = lensAnalysis.ellipticity(kwargs_light, center_x=center_x, center_y=center_y, model_bool_list=None,
+                                          grid_spacing=0.05, grid_num=401, iterative=True, num_iterative=30)
+        print(e1, e2)
+        npt.assert_almost_equal(e1, e1_in, decimal=2)
         npt.assert_almost_equal(e2, e2_in, decimal=3)
 
     def test_half_light_radius(self):
@@ -217,7 +231,7 @@ class TestLightAnalysis(object):
 
         flux_list, R_h_list = profile.flux_components(kwargs_profile, grid_num=400, grid_spacing=0.01)
         assert len(flux_list) == 2
-        npt.assert_almost_equal(flux_list[0], 0.26974824714781637, decimal=6)
+        npt.assert_almost_equal(flux_list[0], 0.1940428118053717, decimal=6)
         npt.assert_almost_equal(flux_list[1], 3.0964046927612707, decimal=6)
 
 

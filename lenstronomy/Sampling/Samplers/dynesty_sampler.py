@@ -46,10 +46,12 @@ class DynestySampler(NestedSampler):
                 pool.wait()
                 sys.exit(0)
 
-            self._sampler = self._dynesty.DynamicNestedSampler(self.log_likelihood, self.prior, self.n_dims,
+            self._sampler = self._dynesty.DynamicNestedSampler(loglikelihood=self.log_likelihood,
+                                                               prior_transform=self.prior, ndim=self.n_dims,
                                                                bound=bound, sample=sample, pool=pool, use_pool=use_pool)
         else:
-            self._sampler = self._dynesty.DynamicNestedSampler(self.log_likelihood, self.prior, self.n_dims,
+            self._sampler = self._dynesty.DynamicNestedSampler(loglikelihood=self.log_likelihood,
+                                                               prior_transform=self.prior, ndim=self.n_dims,
                                                                bound=bound, sample=sample)
         self._has_warned = False
 

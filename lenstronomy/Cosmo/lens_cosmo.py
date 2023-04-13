@@ -254,8 +254,9 @@ class LensCosmo(object):
         :return: sigma0, Rs_angle
         """
         rs_angle = rs / self.dd / const.arcsec  # Rs in arcsec
-        rhos = mass / (2 * np.pi) / rs_angle ** 3
-        sigma0 = rhos * rs_angle
+        rhos = mass / (2 * np.pi) / rs ** 3  # units of M_sun / Mpc^3
+        sigma0 = rhos * rs  # units of M_sun / Mpc^2
+        sigma0 /= self.sigma_crit
         return sigma0, rs_angle
 
     def hernquist_angular2phys(self, sigma0, rs_angle):
@@ -268,8 +269,8 @@ class LensCosmo(object):
         :return: mass [M_sun], rs  [Mpc]
         """
         rs = rs_angle * self.dd * const.arcsec  # units of Mpc
-        rhos = sigma0 / rs_angle
-        m_tot = 2*np.pi*rhos*rs_angle**3
+        rhos = sigma0 / rs * self.sigma_crit
+        m_tot = 2*np.pi*rhos*rs**3
         return m_tot, rs
 
     def uldm_angular2phys(self, kappa_0, theta_c):

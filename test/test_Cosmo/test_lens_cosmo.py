@@ -138,8 +138,8 @@ class TestLensCosmo(object):
 
         # test mass integrals
         # make large grid
-        delta_pix = rs_angle / 10
-        x, y = util.make_grid(numPix=100, deltapix=delta_pix)
+        delta_pix = rs_angle / 30.
+        x, y = util.make_grid(numPix=501, deltapix=delta_pix)
         # compute convergence
         from lenstronomy.LensModel.lens_model import LensModel
         lens_model = LensModel(lens_model_list=['HERNQUIST'])
@@ -151,7 +151,7 @@ class TestLensCosmo(object):
         mass_tot = kappa_tot * self.lensCosmo.sigma_crit_angle
 
         # compare
-        npt.assert_almost_equal(mass_tot, m_star, decimal=1)
+        npt.assert_almost_equal(mass_tot/ m_star, 1, decimal=1)
 
 
 if __name__ == '__main__':

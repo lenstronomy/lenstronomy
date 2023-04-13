@@ -17,7 +17,7 @@ class MultiPlane(object):
 
     def __init__(self, z_source, lens_model_list, lens_redshift_list, cosmo=None, numerical_alpha_class=None,
                  observed_convention_index=None, ignore_observed_positions=False, z_source_convention=None,
-                 cosmo_interp=False, z_interp_stop=None, num_z_interp=100, kwargs_interp=None):
+                 cosmo_interp=False, z_interp_stop=None, num_z_interp=100, kwargs_interp=None,  kwargs_synthesis=None):
         """
 
         :param z_source: source redshift for default computation of reduced lensing quantities
@@ -35,6 +35,7 @@ class MultiPlane(object):
          position of deflectors
         :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens
          models. If None, 'z_source' is used.
+        :param kwargs_synthesis: keyword arguments for the 'SYNTHESIS' lens model, if applicable
         """
 
         if z_source_convention is None:
@@ -49,7 +50,7 @@ class MultiPlane(object):
                                                 numerical_alpha_class=numerical_alpha_class,
                                                 z_source_convention=z_source_convention, cosmo_interp=cosmo_interp,
                                                 z_interp_stop=z_interp_stop, num_z_interp=num_z_interp,
-                                                kwargs_interp=kwargs_interp)
+                                                kwargs_interp=kwargs_interp,  kwargs_synthesis=kwargs_synthesis)
 
         self._set_source_distances(z_source)
         self._observed_convention_index = observed_convention_index

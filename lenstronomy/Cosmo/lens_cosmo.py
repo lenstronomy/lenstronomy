@@ -201,7 +201,7 @@ class LensCosmo(object):
         """
         returns the NFW parameters in physical units
 
-        :param M: physical mass in M_sun
+        :param M: physical mass in M_sun in definition m200
         :param c: concentration
         :return: rho0 [Msun/Mpc^3], Rs [Mpc], r200 [Mpc]
         """
@@ -240,6 +240,37 @@ class LensCosmo(object):
         """
         theta_E = 4 * np.pi * (v_sigma * 1000./const.c) ** 2 * self.dds / self.ds / const.arcsec
         return theta_E
+
+    def hernquist_phys2angular(self, mass, rs):
+        """
+        Translates physical mass definitions of the Hernquist profile to the angular units used in the Hernquist lens
+        profile of lenstronomy.
+
+        'sigma0' is defined such that the deflection at projected RS leads to
+        alpha = 2./3 * Rs * sigma0
+
+        :param mass: A spherical overdensity mass in M_sun corresponding to the mass definition mdef at redshift z
+        :param rs: rs in units of physical Mpc
+        :return: sigma0, Rs_angle
+        """
+        rs_angle = rs / self.dd / const.arcsec  # Rs in arcsec
+        rhos = mass / (2 * np.pi) / rs_angle ** 3
+        sigma0 = rhos * rs_angle
+        return sigma0, rs_angle
+
+    def hernquist_angular2phys(self, sigma0, rs_angle):
+        """
+        'sigma0' is defined such that the deflection at projected RS leads to
+        alpha = 2./3 * Rs * sigma0
+
+        :param sigma0: convergence normalization
+        :param rs_angle: rs in angular units [arcseconds]
+        :return: mass [M_sun], rs  [Mpc]
+        """
+        rs = rs_angle * self.dd * const.arcsec  # units of Mpc
+        rhos = sigma0 / rs_angle
+        m_tot = 2*np.pi*rhos*rs_angle**3
+        return m_tot, rs
 
     def uldm_angular2phys(self, kappa_0, theta_c):
         """

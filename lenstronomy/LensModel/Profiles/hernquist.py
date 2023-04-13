@@ -120,7 +120,8 @@ class Hernquist(LensProfileBase):
         mass_2d = alpha_r * r * np.pi
         return mass_2d
 
-    def mass_tot(self, rho0, Rs):
+    @staticmethod
+    def mass_tot(rho0, Rs):
         """
         total mass within the profile
         :param rho0: density normalization

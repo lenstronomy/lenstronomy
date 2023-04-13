@@ -112,7 +112,7 @@ class Shapelets(object):
         :param n2: y-order of Hermite polynomial
         :param center_x: center in x
         :param center_y: center in y
-        :return: flux surface brighness at (x, y)
+        :return: flux surface brightness at (x, y)
         """
 
         if self._precalc:

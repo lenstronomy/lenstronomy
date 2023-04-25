@@ -39,6 +39,7 @@ class Aperture(object):
         else:
             raise ValueError("aperture type %s not implemented! Available are 'slit', 'shell', 'IFU_shells'. "
                              % aperture_type)
+        self.aperture_type = aperture_type
 
     def aperture_select(self, ra, dec):
         """

@@ -1,5 +1,6 @@
 from lenstronomy.GalKin.psf import PSF
 import numpy as np
+import numpy.testing as npt
 import unittest
 
 
@@ -20,6 +21,16 @@ class TestPSF(object):
         x, y = psf.displace_psf(0, 0)
         assert x != 0
         assert y != 0
+
+    def kernel(self):
+        psf = PSF(psf_type='GAUSSIAN', fwhm=1)
+
+        kernel = psf.convolution_kernel(delta_pix=0.3, num_pix=21)
+        npt.assert_almost_equal(np.sum(kernel), 1, decimal=5)
+
+        psf = PSF(psf_type='MOFFAT', fwhm=1, moffat_beta=2.6)
+        kernel = psf.convolution_kernel(delta_pix=0.3, num_pix=21)
+        npt.assert_almost_equal(np.sum(kernel), 1, decimal=5)
 
 
 class TestRaise(unittest.TestCase):

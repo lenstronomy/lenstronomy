@@ -7,7 +7,9 @@ from scipy import ndimage
 import lenstronomy.Util.util as util
 import lenstronomy.Util.image_util as image_util
 from lenstronomy.LightModel.Profiles.gaussian import Gaussian
+from lenstronomy.LightModel.Profiles.moffat import Moffat
 import lenstronomy.Util.multi_gauss_expansion as mge
+from lenstronomy.GalKin import velocity_util
 
 from lenstronomy.Util.package_util import exporter
 export, __all__ = exporter()
@@ -240,17 +242,43 @@ def kernel_average_pixel(kernel_super, supersampling_factor):
 
 
 @export
-def kernel_gaussian(kernel_numPix, deltaPix, fwhm):
+def kernel_gaussian(num_pix, delta_pix, fwhm):
+    """
+    Gaussian kernel
+
+    :param num_pix: number of pixels
+    :param delta_pix: pixel scale
+    :param fwhm: full width at half maximum
+    :return: 2d kernel
+    """
     sigma = util.fwhm2sigma(fwhm)
     # if kernel_numPix % 2 == 0:
     #    kernel_numPix += 1
-    x_grid, y_grid = util.make_grid(kernel_numPix, deltaPix)
+    x_grid, y_grid = util.make_grid(num_pix, delta_pix)
     gaussian = Gaussian()
     kernel = gaussian.function(x_grid, y_grid, amp=1., sigma=sigma, center_x=0, center_y=0)
     kernel /= np.sum(kernel)
     kernel = util.array2image(kernel)
     return kernel
 
+
+def kernel_moffat(num_pix, delta_pix, fwhm, moffat_beta):
+    """
+    Moffat kernel
+
+    :param delta_pix: pixel scale of kernel
+    :param num_pix: number of pixels per axis of the kernel
+    :param fwhm: full width at half maximum
+    :param moffat_beta: beta of Moffat profile
+    :return: 2d kernel
+    """
+    alpha = velocity_util.moffat_fwhm_alpha(fwhm, moffat_beta)
+    x, y = util.make_grid(numPix=num_pix, deltapix=delta_pix)
+    moffat = Moffat()
+    kernel = moffat.function(x=x, y=y, amp=1, alpha=alpha, beta=moffat_beta)
+    kernel /= np.sum(kernel)
+    kernel = util.array2image(kernel)
+    return kernel
 
 @export
 def split_kernel(kernel_super, supersampling_kernel_size, supersampling_factor, normalized=True):

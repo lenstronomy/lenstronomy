@@ -199,7 +199,7 @@ class IFUShells(object):
         """
 
         :param r_bins: array of radial bins to average the dispersion spectra in ascending order.
-         It starts with the inner-most edge to the outermost edge.
+         It starts with the innermost edge to the outermost edge.
         :param center_ra: center of the sphere
         :param center_dec: center of the sphere
         """

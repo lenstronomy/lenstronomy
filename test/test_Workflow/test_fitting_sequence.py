@@ -122,7 +122,7 @@ class TestFittingSequence(object):
                          'source_model': source_param,
                          'lens_light_model': lens_light_param,
                          'point_source_model': ps_param,
-                         # 'cosmography': cosmo_param
+                         # 'special': special_param
                          }
         image_band = [self.kwargs_data, self.kwargs_psf, self.kwargs_numerics]
         multi_band_list = [image_band]
@@ -145,7 +145,7 @@ class TestFittingSequence(object):
 
         logL = fittingSequence.best_fit_likelihood
         print(logL, 'test')
-        #print(lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp)
+        #print(lens_temp, source_temp, lens_light_temp, ps_temp, special_temp)
         assert logL < 0
         bic = fittingSequence.bic
         assert bic > 0

@@ -77,6 +77,7 @@ class PSFGaussian(object):
         kernel = kernel_util.kernel_gaussian(num_pix, delta_pix, self._fwhm)
         return kernel
 
+
 @export
 class PSFMoffat(object):
     """
@@ -110,6 +111,6 @@ class PSFMoffat(object):
         :return: 2d numpy array of kernel
         """
 
-        kernel = kernel_util.kernel_moffat(num_pix=num_pix, delta_pix=delta_pix, moffat_beta=self._moffat_beta)
+        kernel = kernel_util.kernel_moffat(num_pix=num_pix, delta_pix=delta_pix, fwhm=self._fwhm,
+                                           moffat_beta=self._moffat_beta)
         return kernel
-

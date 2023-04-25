@@ -22,7 +22,7 @@ class TestPSF(object):
         assert x != 0
         assert y != 0
 
-    def kernel(self):
+    def test_kernel(self):
         psf = PSF(psf_type='GAUSSIAN', fwhm=1)
 
         kernel = psf.convolution_kernel(delta_pix=0.3, num_pix=21)

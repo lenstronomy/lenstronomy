@@ -2,7 +2,8 @@ from lenstronomy.GalKin.galkin import Galkin
 from lenstronomy.GalKin.galkin_shells import GalkinShells
 import numpy as np
 import numpy.testing as npt
-
+import pytest
+import unittest
 
 class TestGalkinShells(object):
 
@@ -50,3 +51,21 @@ class TestGalkinShells(object):
                                          kwargs_anisotropy=kwargs_anisotropy,
                                          num_kin_sampling=1000, num_psf_sampling=100)
         npt.assert_almost_equal(vel_disp_bins / disp_map, 1, decimal=2)
+
+
+class TestRaise(unittest.TestCase):
+
+    def test_raise(self):
+        with self.assertRaises(ValueError):
+            kwargs_model = {'mass_profile_list': ['SPP'],
+                            'light_profile_list': ['HERNQUIST'],
+                            'anisotropy_model': 'const'}
+            kwargs_aperture = {'center_ra': 0, 'width': 1, 'length': 1, 'angle': 0, 'center_dec': 0,
+                               'aperture_type': 'slit'}
+            kwargs_cosmo = {'d_d': 1000, 'd_s': 1500, 'd_ds': 800}
+            kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': 1}
+            GalkinShells(kwargs_model, kwargs_aperture, kwargs_psf, kwargs_cosmo)
+
+
+if __name__ == '__main__':
+    pytest.main()

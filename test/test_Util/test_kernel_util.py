@@ -355,6 +355,11 @@ def test_match_kernel_sixe():
     assert ny == size
 
 
+def test_kernel_moffat():
+    kernel = kernel_util.kernel_moffat(num_pix=10, delta_pix=0.1, fwhm=0.5, moffat_beta=1)
+    npt.assert_almost_equal(np.sum(kernel), 1, decimal=3)
+
+
 class TestRaise(unittest.TestCase):
 
     def test_raise(self):

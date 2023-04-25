@@ -372,7 +372,7 @@ class Param(object):
         kwargs_source, i = self.sourceParams.get_params(args, i)
         kwargs_lens_light, i = self.lensLightParams.get_params(args, i)
         kwargs_ps, i = self.pointSourceParams.get_params(args, i)
-        kwargs_special, i = self.specialParams.get_params(args, i)
+        kwargs_special, i = self.specialParams.get_params(args, i, impose_range=True)
         kwargs_extinction, i = self.extinctionParams.get_params(args, i)
         self._update_lens_model(kwargs_special)
         # update lens_light joint parameters

@@ -7,6 +7,8 @@ new parameters you can safely ignore this.
 __author__ = 'jhodonnell'
 __all__ = ['ModelParamGroup', 'SingleParam', 'ArrayParam']
 
+import numpy as np
+
 
 class ModelParamGroup:
     '''
@@ -181,7 +183,7 @@ class SingleParam(ModelParamGroup):
             return output
         return []
 
-    def get_params(self, args, i, kwargs_fixed):
+    def get_params(self, args, i, kwargs_fixed, kwargs_upper=None, kwargs_lower=None):
         '''
         Converts a flattened array of parameters back into a lenstronomy dictionary,
         starting at index i.
@@ -202,6 +204,12 @@ class SingleParam(ModelParamGroup):
                     out[name] = kwargs_fixed[name]
                 else:
                     out[name] = args[i]
+                    if kwargs_lower is not None:
+                        if out[name] < kwargs_lower[name]:
+                            out[name] = kwargs_lower[name]
+                    elif kwargs_upper is not None:
+                        if out[name] > kwargs_upper[name]:
+                            out[name] = kwargs_upper[name]
                     i += 1
         return out, i
 
@@ -288,7 +296,7 @@ class ArrayParam(ModelParamGroup):
                 args.extend(kwargs[name])
         return args
 
-    def get_params(self, args, i, kwargs_fixed):
+    def get_params(self, args, i, kwargs_fixed, kwargs_lower=None, kwargs_upper=None):
         '''
         Converts a flattened array of parameters back into a lenstronomy dictionary,
         starting at index i.
@@ -299,7 +307,10 @@ class ArrayParam(ModelParamGroup):
         :type i: int
         :param kwargs_fixed: Dictionary of fixed arguments
         :type kwargs_fixed: dict
-
+        :param kwargs_lower: Dictionary of lower bounds
+        :type kwargs_lower: dict
+        :param kwargs_upper: Dictionary of upper bounds
+        :type kwargs_upper: dict
         :returns: dictionary of parameters
         '''
         if not self.on:
@@ -309,6 +320,17 @@ class ArrayParam(ModelParamGroup):
         for name, count in self.param_names.items():
             if name not in kwargs_fixed:
                 params[name] = args[i:i + count]
+
+                if kwargs_lower is not None:
+                    for j in range(len(params[name])):
+                        if params[name][j] < kwargs_lower[name][j]:
+                            params[name][j] = kwargs_lower[name][j]
+
+                if kwargs_upper is not None:
+                    for j in range(len(params[name])):
+                        if params[name][j] > kwargs_upper[name][j]:
+                            params[name][j] = kwargs_upper[name][j]
+
                 i += count
             else:
                 params[name] = kwargs_fixed[name]

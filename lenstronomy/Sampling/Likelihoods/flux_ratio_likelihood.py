@@ -34,17 +34,17 @@ class FluxRatioLikelihood(object):
         self._polar_grid = polar_grid
         self._aspect_ratio = aspect_ratio
 
-    def logL(self, x_pos, y_pos, kwargs_lens, kwargs_cosmo):
+    def logL(self, x_pos, y_pos, kwargs_lens, kwargs_special):
         """
 
-        :param kwargs_lens:
-        :param kwargs_cosmo:
+        :param kwargs_lens: lens model keyword argument list
+        :param kwargs_special: dictionary of 'special' keyword parameters
         :return: log likelihood of the measured flux ratios given a model
         """
         if self._source_type == 'INF':
             mag = np.abs(self._lens_model_class.magnification(x_pos, y_pos, kwargs_lens))
         else:
-            source_sigma = kwargs_cosmo['source_size']
+            source_sigma = kwargs_special['source_size']
             mag = self._lens_model_extensions.magnification_finite(x_pos, y_pos, kwargs_lens, source_sigma=source_sigma,
                                                                    window_size=self._window_size,
                                                                    grid_number=self._gird_number,

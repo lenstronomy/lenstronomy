@@ -8,6 +8,7 @@ from lenstronomy.Sampling.sampler import Sampler
 from lenstronomy.Sampling.Samplers.multinest_sampler import MultiNestSampler
 from lenstronomy.Sampling.Samplers.polychord_sampler import DyPolyChordSampler
 from lenstronomy.Sampling.Samplers.dynesty_sampler import DynestySampler
+from lenstronomy.Sampling.Samplers.cobaya_sampler import CobayaSampler # NHmod
 import numpy as np
 import lenstronomy.Util.analysis_util as analysis_util
 
@@ -129,10 +130,18 @@ class FittingSequence(object):
                 ns_output = self.nested_sampling(**kwargs)
                 chain_list.append(ns_output)
 
+            elif fitting_type == 'metropolis_hastings': # NHmod
+                mh_output = self.metropolis_hastings(**kwargs)
+                chain_list.append(mh_output)
+
             else:
-                raise ValueError("fitting_sequence %s is not supported. Please use: 'PSO', 'SIMPLEX', 'MCMC', "
+                # raise ValueError("fitting_sequence %s is not supported. Please use: 'PSO', 'SIMPLEX', 'MCMC', "
+                #                  "'psf_iteration', 'restart', 'update_settings', 'calibrate_images' or "
+                #                  "'align_images'" % fitting_type)
+                raise ValueError("fitting_sequence {} is not supported. Please use: 'PSO', 'SIMPLEX', 'MCMC', " # NHmod
+                                 "'Nautilus', 'nested_sampling', 'metropolis_hastings', "
                                  "'psf_iteration', 'restart', 'update_settings', 'calibrate_images' or "
-                                 "'align_images'" % fitting_type)
+                                 "'align_images'".format(fitting_type))
         return chain_list
 
     def best_fit(self, bijective=False):
@@ -315,6 +324,24 @@ class FittingSequence(object):
                                     threadCount=threadCount, mpi=self._mpi, print_key=print_key)
         kwargs_result = param_class.args2kwargs(result, bijective=True)
         return kwargs_result, chain, param_list
+
+    def metropolis_hastings(self, kwargs_run={}): #NHmod
+        '''
+        Pure Metropolis--Hastings MCMC with Cobaya
+        '''
+
+        # to do:
+        # - add all the arguments in the function definition
+        # - pass the relevant arguments to the below functions
+        # - construct the correct output list
+
+        sampler = CobayaSampler(self.LikelihoodModule)
+
+        samples = sampler.run(kwargs_run)
+
+        output = [samples]
+
+        return output
 
     def nested_sampling(self, sampler_type='MULTINEST', kwargs_run={},
                         prior_type='uniform', width_scale=1, sigma_scale=1,

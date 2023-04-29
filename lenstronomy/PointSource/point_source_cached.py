@@ -52,9 +52,9 @@ class PointSourceCached(object):
             # ignore cached parts if additional images
             if not self._save_cache or not hasattr(self, '_x_image_add') or not hasattr(self, '_y_image_add'):
                 self._x_image_add, self._y_image_add = self._model.image_position(kwargs_ps, kwargs_lens=kwargs_lens,
-                                              magnification_limit=magnification_limit,
-                                              kwargs_lens_eqn_solver=kwargs_lens_eqn_solver,
-                                              additional_images=additional_images)
+                                                                                  magnification_limit=magnification_limit,
+                                                                                  kwargs_lens_eqn_solver=kwargs_lens_eqn_solver,
+                                                                                  additional_images=additional_images)
             return self._x_image_add, self._y_image_add
         if not self._save_cache or not hasattr(self, '_x_image') or not hasattr(self, '_y_image'):
             self._x_image, self._y_image = self._model.image_position(kwargs_ps, kwargs_lens=kwargs_lens,

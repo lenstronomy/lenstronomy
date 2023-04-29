@@ -17,6 +17,10 @@ class PointSourceCached(object):
             del self._x_image
         if hasattr(self, '_y_image'):
             del self._y_image
+        if hasattr(self, '_x_image_add'):
+            del self._x_image_add
+        if hasattr(self, '_y_image_add'):
+            del self._y_image_add
         if hasattr(self, '_x_source'):
             del self._x_source
         if hasattr(self, '_y_source'):
@@ -28,7 +32,8 @@ class PointSourceCached(object):
     def update_lens_model(self, lens_model_class):
         self._model.update_lens_model(lens_model_class)
 
-    def image_position(self, kwargs_ps, kwargs_lens=None, magnification_limit=None, kwargs_lens_eqn_solver=None):
+    def image_position(self, kwargs_ps, kwargs_lens=None, magnification_limit=None, kwargs_lens_eqn_solver=None,
+                       additional_images=False):
         """
         on-sky image positions
 
@@ -39,12 +44,23 @@ class PointSourceCached(object):
          images will be computed that exceed the lensing magnification (absolute value) limit
         :param kwargs_lens_eqn_solver: keyword arguments specifying the numerical settings for the lens equation solver
          see LensEquationSolver() class for details
+        :param additional_images: if True, solves the lens equation for additional images
+        :type additional_images: bool
         :return: image positions in x, y as arrays
         """
+        if additional_images and not self._model.additional_images:
+            # ignore cached parts if additional images
+            if not self._save_cache or not hasattr(self, '_x_image_add') or not hasattr(self, '_y_image_add'):
+                self._x_image_add, self._y_image_add = self._model.image_position(kwargs_ps, kwargs_lens=kwargs_lens,
+                                              magnification_limit=magnification_limit,
+                                              kwargs_lens_eqn_solver=kwargs_lens_eqn_solver,
+                                              additional_images=additional_images)
+            return self._x_image_add, self._y_image_add
         if not self._save_cache or not hasattr(self, '_x_image') or not hasattr(self, '_y_image'):
             self._x_image, self._y_image = self._model.image_position(kwargs_ps, kwargs_lens=kwargs_lens,
                                                                       magnification_limit=magnification_limit,
-                                                                      kwargs_lens_eqn_solver=kwargs_lens_eqn_solver)
+                                                                      kwargs_lens_eqn_solver=kwargs_lens_eqn_solver,
+                                                                      additional_images=additional_images)
         return self._x_image, self._y_image
 
     def source_position(self, kwargs_ps, kwargs_lens=None):

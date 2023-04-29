@@ -211,6 +211,16 @@ class UpdateManager(object):
                             kwargs_lens_init=lens_temp, **kwargs_constraints)
         return param_class
 
+    def update_kwargs_model(self, kwargs_result):
+        """
+        Update the kwargs_model with the new kwargs_special
+        """
+        kwargs_model, update_bool = self.param_class.update_kwargs_model(kwargs_result['kwargs_special'])
+        if update_bool:
+            self.kwargs_model = kwargs_model
+
+        return kwargs_model
+
     def update_options(self, kwargs_model=None, kwargs_constraints=None, kwargs_likelihood=None):
         """
         updates the options by overwriting the kwargs with the new ones being added/changed

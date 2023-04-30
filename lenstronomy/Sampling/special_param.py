@@ -192,7 +192,7 @@ class SpecialParam(object):
         self.lower_limit = kwargs_lower
         self.upper_limit = kwargs_upper
 
-    def get_params(self, args, i, impose_range=False):
+    def get_params(self, args, i):
         """
 
         :param args: argument list
@@ -200,15 +200,9 @@ class SpecialParam(object):
         :param impose_range: bool, if True, imposes the lower and upper limits on the sampled parameters
         :return: keyword arguments related to args, index after reading out arguments of this class
         """
-        if impose_range:
-            result = ModelParamGroup.compose_get_params(
-                self._param_groups, args, i, kwargs_fixed=self._kwargs_fixed,
-                kwargs_lower=self.lower_limit, kwargs_upper=self.upper_limit
-            )
-        else:
-            result = ModelParamGroup.compose_get_params(
-                self._param_groups, args, i, kwargs_fixed=self._kwargs_fixed
-            )
+        result = ModelParamGroup.compose_get_params(
+            self._param_groups, args, i, kwargs_fixed=self._kwargs_fixed
+        )
         return result
 
     def set_params(self, kwargs_special):

@@ -299,6 +299,7 @@ class ArrayParam(ModelParamGroup):
         :type i: int
         :param kwargs_fixed: Dictionary of fixed arguments
         :type kwargs_fixed: dict
+
         :returns: dictionary of parameters
         '''
         if not self.on:

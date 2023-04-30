@@ -197,7 +197,6 @@ class SpecialParam(object):
 
         :param args: argument list
         :param i: integer, list index to start the read out for this class
-        :param impose_range: bool, if True, imposes the lower and upper limits on the sampled parameters
         :return: keyword arguments related to args, index after reading out arguments of this class
         """
         result = ModelParamGroup.compose_get_params(

@@ -7,8 +7,6 @@ new parameters you can safely ignore this.
 __author__ = 'jhodonnell'
 __all__ = ['ModelParamGroup', 'SingleParam', 'ArrayParam']
 
-import numpy as np
-
 
 class ModelParamGroup:
     '''
@@ -301,10 +299,6 @@ class ArrayParam(ModelParamGroup):
         :type i: int
         :param kwargs_fixed: Dictionary of fixed arguments
         :type kwargs_fixed: dict
-        :param kwargs_lower: Dictionary of lower bounds
-        :type kwargs_lower: dict
-        :param kwargs_upper: Dictionary of upper bounds
-        :type kwargs_upper: dict
         :returns: dictionary of parameters
         '''
         if not self.on:

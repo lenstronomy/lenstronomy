@@ -97,13 +97,11 @@ class FittingSequence(object):
             elif fitting_type == 'PSO':
                 kwargs_result, chain, param = self.pso(**kwargs)
                 self._updateManager.update_param_state(**kwargs_result)
-                self._updateManager.update_kwargs_model(kwargs_result)
                 chain_list.append([fitting_type, chain, param])
 
             elif fitting_type == 'SIMPLEX':
                 kwargs_result = self.simplex(**kwargs)
                 self._updateManager.update_param_state(**kwargs_result)
-                self._updateManager.update_kwargs_model(kwargs_result)
                 chain_list.append([fitting_type, kwargs_result])
 
             elif fitting_type == 'MCMC':
@@ -114,7 +112,6 @@ class FittingSequence(object):
                 mcmc_output = self.mcmc(**kwargs)
                 kwargs_result = self._result_from_mcmc(mcmc_output)
                 self._updateManager.update_param_state(**kwargs_result)
-                self._updateManager.update_kwargs_model(kwargs_result)
                 chain_list.append(mcmc_output)
 
             elif fitting_type == 'Nautilus':
@@ -127,7 +124,6 @@ class FittingSequence(object):
                 if not kwargs.get('one_step', False):  # this is only for testing purposes
                     kwargs_result = self.best_fit_from_samples(points, log_l)
                     self._updateManager.update_param_state(**kwargs_result)
-                    self._updateManager.update_kwargs_model(kwargs_result)
 
             elif fitting_type == 'nested_sampling':
                 ns_output = self.nested_sampling(**kwargs)

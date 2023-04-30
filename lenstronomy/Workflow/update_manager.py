@@ -158,6 +158,7 @@ class UpdateManager(object):
         self._kwargs_temp = {'kwargs_lens': kwargs_lens, 'kwargs_source': kwargs_source,
                              'kwargs_lens_light': kwargs_lens_light, 'kwargs_ps': kwargs_ps,
                              'kwargs_special': kwargs_special, 'kwargs_extinction': kwargs_extinction}
+        self.update_kwargs_model(kwargs_special)
 
     def update_param_value(self, lens=None, source=None, lens_light=None, ps=None):
         """
@@ -211,11 +212,11 @@ class UpdateManager(object):
                             kwargs_lens_init=lens_temp, **kwargs_constraints)
         return param_class
 
-    def update_kwargs_model(self, kwargs_result):
+    def update_kwargs_model(self, kwargs_special):
         """
         Update the kwargs_model with the new kwargs_special
         """
-        kwargs_model, update_bool = self.param_class.update_kwargs_model(kwargs_result['kwargs_special'])
+        kwargs_model, update_bool = self.param_class.update_kwargs_model(kwargs_special)
         if update_bool:
             self.kwargs_model = kwargs_model
 

@@ -16,7 +16,7 @@ class TestData(object):
         fwhm = 0.2
         kwargs_gaussian = {'psf_type': 'GAUSSIAN', 'fwhm': fwhm, 'truncation': 5, 'pixel_size': self.deltaPix}
         self.psf_gaussian = PSF(**kwargs_gaussian)
-        kernel_point_source = kernel_util.kernel_gaussian(kernel_numPix=21, deltaPix=self.deltaPix, fwhm=fwhm)
+        kernel_point_source = kernel_util.kernel_gaussian(num_pix=21, delta_pix=self.deltaPix, fwhm=fwhm)
         kwargs_pixel = {'psf_type': 'PIXEL', 'kernel_point_source': kernel_point_source}
         self.psf_pixel = PSF(**kwargs_pixel)
 
@@ -43,7 +43,7 @@ class TestData(object):
 
         # create Gaussian/Pixelized kernels
         # first we create the sub-sampled kernel
-        kernel_point_source_subsampled = kernel_util.kernel_gaussian(kernel_numPix=11*subsampling_res, deltaPix=deltaPix/subsampling_res, fwhm=fwhm)
+        kernel_point_source_subsampled = kernel_util.kernel_gaussian(num_pix=11 * subsampling_res, delta_pix=deltaPix / subsampling_res, fwhm=fwhm)
         # to have the same consistent kernel, we re-size (average over the sub-sampled pixels) the sub-sampled kernel
         kernel_point_source = image_util.re_size(kernel_point_source_subsampled, subsampling_res)
         # here we create the two PSF() classes
@@ -69,8 +69,8 @@ class TestData(object):
 
         # create Gaussian/Pixelized kernels
         # first we create the sub-sampled kernel
-        kernel_point_source_subsampled = kernel_util.kernel_gaussian(kernel_numPix=11 * subsampling_res + 1,
-                                                                     deltaPix=deltaPix / subsampling_res, fwhm=fwhm)
+        kernel_point_source_subsampled = kernel_util.kernel_gaussian(num_pix=11 * subsampling_res + 1,
+                                                                     delta_pix=deltaPix / subsampling_res, fwhm=fwhm)
 
         kwargs_pixel_subsampled = {'psf_type': 'PIXEL', 'kernel_point_source': kernel_point_source_subsampled,
                                    'point_source_supersampling_factor': subsampling_res}
@@ -96,7 +96,7 @@ class TestData(object):
         fwhm_compute = psf_kernel.fwhm
         assert fwhm_compute == fwhm
 
-        kernel = kernel_util.kernel_gaussian(kernel_numPix=31, deltaPix=deltaPix, fwhm=fwhm)
+        kernel = kernel_util.kernel_gaussian(num_pix=31, delta_pix=deltaPix, fwhm=fwhm)
         kwargs = {'psf_type': 'PIXEL',  'truncation': 5, 'pixel_size': deltaPix, 'kernel_point_source': kernel}
         psf_kernel = PSF(**kwargs)
         fwhm_compute = psf_kernel.fwhm
@@ -131,8 +131,8 @@ class TestData(object):
 
         # create Gaussian/Pixelized kernels
         # first we create the sub-sampled kernel
-        kernel_point_source_subsampled = kernel_util.kernel_gaussian(kernel_numPix=11 * subsampling_res + 1,
-                                                                     deltaPix=deltaPix / subsampling_res, fwhm=fwhm)
+        kernel_point_source_subsampled = kernel_util.kernel_gaussian(num_pix=11 * subsampling_res + 1,
+                                                                     delta_pix=deltaPix / subsampling_res, fwhm=fwhm)
         print(len(kernel_point_source_subsampled), 'test')
         kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': kernel_point_source_subsampled,
                       'point_source_supersampling_factor': subsampling_res,

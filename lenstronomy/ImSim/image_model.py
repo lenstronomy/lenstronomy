@@ -88,7 +88,6 @@ class ImageModel(object):
         else:
             self._pb_1d = None
 
-
     def reset_point_source_cache(self, cache=True):
         """
         deletes all the cache in the point source class and saves it from then on
@@ -306,7 +305,8 @@ class ImageModel(object):
         extinction = self.ImageNumerics.re_size_convolve(extinction_array, unconvolved=True)
         return extinction
 
-    def _displace_astrometry(self, x_pos, y_pos, kwargs_special=None):
+    @staticmethod
+    def _displace_astrometry(x_pos, y_pos, kwargs_special=None):
         """
         displaces point sources by shifts specified in kwargs_special
 

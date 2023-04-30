@@ -67,8 +67,7 @@ class TestUpdateManager(object):
         manager = UpdateManager(kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params)
 
         kwargs_special = {'z_sampling': [1.9, 0.7]}
-        manager.update_kwargs_model({'kwargs_special': kwargs_special})
-        print(manager.kwargs_model)
+        manager.update_kwargs_model(kwargs_special)
 
         assert manager.kwargs_model['lens_redshift_list'] == [0.5, 0.7]
         assert manager.kwargs_model['source_redshift_list'] == [1.9]

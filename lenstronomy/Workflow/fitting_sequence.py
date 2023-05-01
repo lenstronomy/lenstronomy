@@ -307,8 +307,13 @@ class FittingSequence(object):
         sigma_start = param_class.kwargs2args(**kwargs_sigma)
         lower_start = np.array(init_pos) - np.array(sigma_start) * sigma_scale
         upper_start = np.array(init_pos) + np.array(sigma_start) * sigma_scale
-        num_param, param_list = param_class.num_param()
 
+        lower_limit, upper_limit = param_class.param_limits()
+
+        lower_start = np.maximum(lower_start, lower_limit)
+        upper_start = np.minimum(upper_start, upper_limit)
+
+        num_param, param_list = param_class.num_param()
         # run PSO
         sampler = Sampler(likelihoodModule=self.likelihoodModule)
         result, chain = sampler.pso(n_particles, n_iterations, lower_start, upper_start, init_pos=init_pos,

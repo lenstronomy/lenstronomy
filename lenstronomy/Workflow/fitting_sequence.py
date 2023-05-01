@@ -433,6 +433,7 @@ class FittingSequence(object):
         """
         aligns the coordinate systems of different exposures within a fixed model parameterisation by executing a PSO
         with relative coordinate shifts as free parameters
+
         :param n_particles: number of particles in the Particle Swarm Optimization
         :param n_iterations: number of iterations in the optimization process
         :param align_offset: aligns shift in Ra and Dec

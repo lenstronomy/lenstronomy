@@ -13,25 +13,30 @@ class ImageData(PixelGrid, ImageNoise):
     The Data() class is initialized with keyword arguments:
 
     - 'image_data': 2d numpy array of the image data
-    - 'transform_pix2angle' 2x2 transformation matrix (linear) to transform a pixel shift into a coordinate shift
-     (x, y) -> (ra, dec)
+    - 'transform_pix2angle' 2x2 transformation matrix (linear) to transform a pixel shift into a coordinate shift (x, y) -> (ra, dec)
     - 'ra_at_xy_0' RA coordinate of pixel (0,0)
     - 'dec_at_xy_0' DEC coordinate of pixel (0,0)
 
     optional keywords for shifts in the coordinate system:
+
     - 'ra_shift': shifts the coordinate system with respect to 'ra_at_xy_0'
     - 'dec_shift': shifts the coordinate system with respect to 'dec_at_xy_0'
 
     optional keywords for noise properties:
+
     - 'background_rms': rms value of the background noise
     - 'exp_time': float, exposure time to compute the Poisson noise contribution
     - 'exposure_map': 2d numpy array, effective exposure time for each pixel. If set, will replace 'exp_time'
     - 'noise_map': Gaussian noise (1-sigma) for each individual pixel.
+
     If this keyword is set, the other noise properties will be ignored.
 
     optional keywords for interferometric quantities:
+
     - 'likelihood_method': need to be specified to 'interferometry_natwt' if one needs to use the interferometric likelihood function.
+
     The default of 'likelihood_method' is 'diagonal', which is used for non-correlated noises (usually for the CCD images.)
+
     - 'log_likelihood_constant': a constant that adds to logL.
     - 'antenna_primary_beam': primary beam pattern of antennae (now treat each antenna dish with the same primary beam).
 
@@ -144,15 +149,19 @@ class ImageData(PixelGrid, ImageNoise):
         They are both 2d array with the same shape of the data.
 
         The chi^2 of interferometry is computed by
+
         .. math::
             \\chi^2 =  (d-Ax)^TC^{-1}(d-Ax) = \\frac{1}{\\sigma^2}(d^TA^{-1}d - 2x^Td + x^TAx)
+
         where :math:`d` and :math:`x` are the data vector and the unconvolved model image vector respectively.
         :math:`A` is the convolution operation matrix, where we normalize the PSF by setting its central pixel to 1.
         :math:`C` is the noise covariance matrix, its diagonal entries are rms^2 of noises, :math:`\\sigma^2`.
         For natural weighting interferometric images, we used the relation
         (see Section 3.2 of https://doi.org/10.1093/mnras/staa2740 for the relation of natural weighting covariance matrix and PSF convolution)
+
         .. math::
             C = \\sigma^2 A
+
         to simplify the likelihood function above.
         """
 

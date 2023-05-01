@@ -338,6 +338,7 @@ class ModelBandPlot(ModelBand):
                                     points_only=self._caustic_points_only)
             plot_util.plot_line_set(ax, coords_source, ra_caustic_list, dec_caustic_list, color=caustic_color,
                                     points_only=self._caustic_points_only, **kwargs.get('kwargs_caustic', {}))
+        if scale_size > 0:
             plot_util.scale_bar(ax, d_s, dist=scale_size, text='{:.1f}"'.format(scale_size), color='w', flipped=False,
                                 font_size=font_size)
         if 'no_arrow' not in kwargs or not kwargs['no_arrow']:

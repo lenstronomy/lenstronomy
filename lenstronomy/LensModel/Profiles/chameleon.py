@@ -537,6 +537,7 @@ class DoubleChameleonPointMass(LensProfileBase):
                  center_x=0, center_y=0):
         """
         #TODO chose better parameterization for combining point mass and Chameleon profiles
+
         :param x: ra-coordinate
         :param y: dec-coordinate
         :param alpha_1: deflection angle at 1 (arcseconds) from the center
@@ -552,7 +553,7 @@ class DoubleChameleonPointMass(LensProfileBase):
         :param e22: ellipticity parameter for second profile
         :param center_x: ra center
         :param center_y: dec center
-        :return:
+        :return: lensing potential
         """
         f_1 = self.pointMass.function(x, y, alpha_1 / (1. + 1. / ratio_pointmass), center_x, center_y)
         f_2 = self.chameleon.function(x, y, alpha_1 / (1. + ratio_pointmass), ratio_chameleon, w_c1, w_t1, e11, e21,

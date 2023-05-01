@@ -22,7 +22,8 @@ def create_class_instances(lens_model_list=None, z_lens=None, z_source=None, z_s
                            index_lens_light_model_list=None, index_point_source_model_list=None,
                            optical_depth_model_list=None, index_optical_depth_model_list=None,
                            band_index=0, tau0_index_list=None, all_models=False, point_source_magnification_limit=None,
-                           surface_brightness_smoothing=0.001, sersic_major_axis=None):
+                           surface_brightness_smoothing=0.001, sersic_major_axis=None,
+                           tabulated_deflection_angles=None):
     """
 
     :param lens_model_list: list of strings indicating the type of lens models
@@ -65,7 +66,9 @@ def create_class_instances(lens_model_list=None, z_lens=None, z_source=None, z_s
     :param sersic_major_axis: boolean or None, if True, uses the semi-major axis as the definition of the Sersic
      half-light radius, if False, uses the product average of semi-major and semi-minor axis. If None, uses the
      convention in the lenstronomy yaml setting (which by default is =False)
-    :return:
+    :param tabulated_deflection_angles: a user-specified class with a call method that returns deflection angles given
+     (x, y) coordinates on the sky. This class gets passed to the lens model class TabulatedDeflections
+    :return: lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class
     """
     if lens_model_list is None:
         lens_model_list = []
@@ -99,7 +102,8 @@ def create_class_instances(lens_model_list=None, z_lens=None, z_source=None, z_s
                                  z_source_convention=z_source_convention,
                                  lens_redshift_list=lens_redshift_list_i,
                                  multi_plane=multi_plane, cosmo=cosmo,
-                                 observed_convention_index=observed_convention_index_i, kwargs_interp=kwargs_interp)
+                                 observed_convention_index=observed_convention_index_i, kwargs_interp=kwargs_interp,
+                                 numerical_alpha_class=tabulated_deflection_angles)
 
     if index_source_light_model_list is None or all_models is True:
         source_light_model_list_i = source_light_model_list

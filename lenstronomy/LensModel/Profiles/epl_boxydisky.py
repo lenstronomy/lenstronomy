@@ -14,7 +14,9 @@ class EPL_BOXYDISKY(LensProfileBase):
     EPL (Elliptical Power Law) mass profile combined with Multipole with m=4, so that it's either purely boxy or
     disky with EPL's axis and Multipole's axis aligned.
 
-    Read the documentation of lenstrnomy.LensModel.Profiles.epl and lenstrnomy.LensModel.Profiles.multipole for details.
+    Reference to the implementation: https://ui.adsabs.harvard.edu/abs/2022A%26A...659A.127V/abstract
+
+    Read the documentation of lenstronomy.LensModel.Profiles.epl and lenstrnomy.LensModel.Profiles.multipole for details.
 
     :param theta_E: Einstein radius
     :param gamma: negative power-law slope of the 3D mass distributions

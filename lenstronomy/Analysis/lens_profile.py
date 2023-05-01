@@ -33,7 +33,8 @@ class LensProfileAnalysis(object):
          Einstein radius
         :param grid_spacing: spacing in angular units of the grid
         :param get_precision: If `True`, return the precision of estimated Einstein radius
-        :param verbose: boolean, if True prints warning if indication of insufficient result
+        :param verbose: if True, indicates warning when Einstein radius can not be computed
+        :type verbose: bool
         :return: estimate of the Einstein radius
         """
         center_x, center_y = analysis_util.profile_center(kwargs_lens, center_x, center_y)
@@ -46,30 +47,8 @@ class LensProfileAnalysis(object):
             center_x = x_grid[kappa == np.max(kappa)][0]
             center_y = y_grid[kappa == np.max(kappa)][0]
 
-        r_array = np.linspace(0, grid_num*grid_spacing/2., grid_num*2)
-        inner_most_bin = True
-        for r in r_array:
-            mask = np.array(1 - mask_util.mask_center_2d(center_x, center_y, r, x_grid, y_grid))
-            sum_mask = np.sum(mask)
-            if sum_mask > 0:
-                kappa_mean = np.sum(kappa*mask)/np.sum(mask)
-                if inner_most_bin:
-                    if kappa_mean < 1:
-                        Warning(
-                            "Central convergence value is subcritical <1 and hence an Einstein radius is ill defined.")
-                        if get_precision:
-                            return np.nan, 0
-                        else:
-                            return np.nan
-                    inner_most_bin = False
-                if kappa_mean < 1:
-                    if get_precision:
-                        return r, r_array[1] - r_array[0]
-                    else:
-                        return r
-        if verbose:
-            Warning("No Einstein radius computed for the following model!", kwargs_lens)
-        return np.nan
+        return einstein_radius_from_grid(kappa, x_grid, y_grid, grid_spacing, grid_num, center_x=center_x,
+                                         center_y=center_y, get_precision=get_precision, verbose=verbose)
 
     def local_lensing_effect(self, kwargs_lens, ra_pos=0, dec_pos=0, model_list_bool=None):
         """
@@ -215,3 +194,50 @@ class LensProfileAnalysis(object):
         center_x = x_grid[kappa == np.max(kappa)]
         center_y = y_grid[kappa == np.max(kappa)]
         return center_x, center_y
+
+
+def einstein_radius_from_grid(kappa, x_grid, y_grid, grid_spacing, grid_num, center_x=0, center_y=0,
+                              get_precision=False, verbose=True):
+    """
+    computes the radius with mean convergence=1
+
+    :param kappa: convergence calculated on a grid
+    :param x_grid: x-value of grid points
+    :param y_grid: y-value of grid points
+    :param grid_spacing: spacing of grid points
+    :param grid_num: number of grid points
+    :param center_x: x-center of profile from where to measure circular averaged convergence
+    :param center_y: y-center of profile from where to measure circular averaged convergence
+    :param get_precision: if True, returns Einstein radius and expected numerical precision
+    :param verbose: if True, indicates warning when Einstein radius can not be computed
+    :type verbose: bool
+    :return: einstein radius
+    """
+
+    r_array = np.linspace(start=0, stop=grid_num * grid_spacing / 2., num=grid_num * 2)
+    inner_most_bin = True
+    for r in r_array:
+        mask = np.array(1 - mask_util.mask_center_2d(center_x, center_y, r, x_grid, y_grid))
+        sum_mask = np.sum(mask)
+        if sum_mask > 0:
+            kappa_mean = np.sum(kappa * mask) / np.sum(mask)
+            if inner_most_bin:
+                if kappa_mean < 1:
+                    Warning(
+                        "Central convergence value is subcritical <1 and hence an Einstein radius is ill defined.")
+                    if get_precision:
+                        return np.nan, 0
+                    else:
+                        return np.nan
+                inner_most_bin = False
+            if kappa_mean < 1:
+                if get_precision:
+                    return r, r_array[1] - r_array[0]
+                else:
+                    return r
+    if verbose:
+        Warning('Einstein radius could not be computed (or does not exist) for lens model.')
+    if get_precision:
+        return np.nan, 0
+    else:
+        return np.nan

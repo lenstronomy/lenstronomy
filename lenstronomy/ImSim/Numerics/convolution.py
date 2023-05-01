@@ -12,8 +12,6 @@ _rfft_mt_safe = True  # (NumpyVersion(np.__version__) >= '1.9.0.dev-e24486e')
 _rfft_lock = threading.Lock()
 
 
-
-
 def _centered(arr, newshape):
     # Return the center newshape portion of the array.
     newshape = np.asarray(newshape)

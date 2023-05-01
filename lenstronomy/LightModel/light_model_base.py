@@ -13,6 +13,7 @@ __all__ = ['LightModelBase']
 
 _MODELS_SUPPORTED = ['GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'ELLIPSOID', 'MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE',
                      'SERSIC', 'SERSIC_ELLIPSE', 'SERSIC_ELLIPSE_Q_PHI', 'CORE_SERSIC', 'SHAPELETS', 'SHAPELETS_POLAR', 'SHAPELETS_POLAR_EXP',
+                     'SHAPELETS_ELLIPSE',
                      'HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE', 'UNIFORM', 'POWER_LAW', 'NIE',
                      'CHAMELEON', 'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'INTERPOL', 'SLIT_STARLETS',
                      'SLIT_STARLETS_GEN2']
@@ -66,6 +67,9 @@ class LightModelBase(object):
             elif profile_type == 'SHAPELETS':
                 from lenstronomy.LightModel.Profiles.shapelets import ShapeletSet
                 self.func_list.append(ShapeletSet())
+            elif profile_type == 'SHAPELETS_ELLIPSE':
+                from lenstronomy.LightModel.Profiles.shapelets_ellipse import ShapeletSetEllipse
+                self.func_list.append(ShapeletSetEllipse())
             elif profile_type == 'SHAPELETS_POLAR':
                 from lenstronomy.LightModel.Profiles.shapelets_polar import ShapeletSetPolar
                 self.func_list.append(ShapeletSetPolar(exponential=False))

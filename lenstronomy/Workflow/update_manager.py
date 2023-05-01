@@ -33,6 +33,8 @@ class UpdateManager(object):
         self.kwargs_model = kwargs_model
         self.kwargs_constraints = kwargs_constraints
         self.kwargs_likelihood = kwargs_likelihood
+        if 'fixed_lens_model' in self.kwargs_constraints.keys():
+            self.kwargs_likelihood['fixed_lens_model'] = self.kwargs_constraints['fixed_lens_model']
 
         if kwargs_model.get('lens_model_list', None) is not None:
             self._lens_init, self._lens_sigma, self._lens_fixed, self._lens_lower, self._lens_upper = kwargs_params[
@@ -156,6 +158,7 @@ class UpdateManager(object):
         self._kwargs_temp = {'kwargs_lens': kwargs_lens, 'kwargs_source': kwargs_source,
                              'kwargs_lens_light': kwargs_lens_light, 'kwargs_ps': kwargs_ps,
                              'kwargs_special': kwargs_special, 'kwargs_extinction': kwargs_extinction}
+        self.update_kwargs_model(kwargs_special)
 
     def update_param_value(self, lens=None, source=None, lens_light=None, ps=None):
         """
@@ -208,6 +211,16 @@ class UpdateManager(object):
                             kwargs_upper_special, kwargs_upper_extinction,
                             kwargs_lens_init=lens_temp, **kwargs_constraints)
         return param_class
+
+    def update_kwargs_model(self, kwargs_special):
+        """
+        Update the kwargs_model with the new kwargs_special
+        """
+        kwargs_model, update_bool = self.param_class.update_kwargs_model(kwargs_special)
+        if update_bool:
+            self.kwargs_model = kwargs_model
+
+        return kwargs_model
 
     def update_options(self, kwargs_model=None, kwargs_constraints=None, kwargs_likelihood=None):
         """

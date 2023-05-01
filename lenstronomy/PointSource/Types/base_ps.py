@@ -8,13 +8,13 @@ class PSBase(object):
     """
     base point source type class
     """
-    def __init__(self, lens_model=None, fixed_magnification=False, additional_image=False):
+    def __init__(self, lens_model=None, fixed_magnification=False, additional_images=False):
         """
 
         :param lens_model: instance of the LensModel() class
         :param fixed_magnification: bool. If True, magnification
          ratio of point sources is fixed to the one given by the lens model
-        :param additional_image: bool. If True, search for additional images of the same source is conducted.
+        :param additional_images: bool. If True, search for additional images of the same source is conducted.
         """
         self._lens_model = lens_model
         if self._lens_model is None:
@@ -22,8 +22,8 @@ class PSBase(object):
         else:
             self._solver = LensEquationSolver(lens_model)
         self._fixed_magnification = fixed_magnification
-        self._additional_image = additional_image
-        if fixed_magnification is True and additional_image is True:
+        self.additional_images = additional_images
+        if fixed_magnification is True and additional_images is True:
             Warning('The combination of fixed_magnification=True and additional_image=True is not optimal for the '
                     'current computation. If you see this warning, please approach the developers.')
 

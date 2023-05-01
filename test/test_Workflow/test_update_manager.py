@@ -37,6 +37,41 @@ class TestUpdateManager(object):
         kwargs_sigma = self.manager.sigma_kwargs
         assert kwargs_sigma['kwargs_lens'][0]['e1'] == 0.1
 
+    def test_update_kwargs_model(self):
+        kwargs_model = {'lens_model_list': ['SHEAR', 'SHEAR'],
+                        'source_light_model_list': ['UNIFORM'],
+                        'lens_light_model_list': ['UNIFORM'],
+                        'optical_depth_model_list': [],
+                        'multi_plane': True,
+                        'z_source': 2.,
+                        'lens_redshift_list': [0.5, 0.6],
+                        'source_redshift_list': [2.],
+                        }
+        kwargs_constraints = {'lens_redshift_sampling_indexes': [-1, 1],
+                              'source_redshift_sampling_indexes': [0]
+                              }
+        kwargs_likelihood = {}
+        kwargs_params = {}
+        lens_init = [{'e1': 0, 'e2': 0}, {'e1': 0, 'e2': 0}]
+        lens_sigma = [{'e1': 0.1, 'e2': 0.1}, {'e1': 0.1, 'e2': 0.1}]
+        lens_fixed = [{'ra_0': 0, 'dec_0': 0}, {'ra_0': 0, 'dec_0': 0}]
+        lens_lower = [{'e1': -1, 'e2': -1}, {'e1': -1, 'e2': -1}]
+        lens_upper = [{'e1': 1, 'e2': 1}, {'e1': 1, 'e2': 1}]
+        kwargs_params['lens_model'] = [lens_init, lens_sigma, lens_fixed, lens_lower, lens_upper]
+        kwargs_params['source_model'] = [[{}], [{}], [{}], [{}], [{}]]
+        kwargs_params['lens_light_model'] = [[{}], [{}], [{}], [{}], [{}]]
+        kwargs_params['special'] = [{'special1': 1}, {'special1': 1}, {'special1': 0.1}, {'special1': 0},
+                                    {'special1': 1}]
+        kwargs_params['extinction_model'] = [[], [], [], [], []]
+
+        manager = UpdateManager(kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params)
+
+        kwargs_special = {'z_sampling': [1.9, 0.7]}
+        manager.update_kwargs_model(kwargs_special)
+
+        assert manager.kwargs_model['lens_redshift_list'] == [0.5, 0.7]
+        assert manager.kwargs_model['source_redshift_list'] == [1.9]
+
     def test_update_parameter_state(self):
         self.manager.update_param_state(kwargs_lens=[{'e1': -2, 'e2': 0}, {'e1': 2, 'e2': 0}])
         kwargs_temp = self.manager.parameter_state

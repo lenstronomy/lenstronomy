@@ -16,8 +16,8 @@ _SUPPORTED_MODELS = ['SHIFT', 'NIE_POTENTIAL', 'CONST_MAG', 'SHEAR', 'SHEAR_GAMM
                      'DIPOLE', 'CURVED_ARC_CONST', 'CURVED_ARC_SPP', 'CURVED_ARC_SIS_MST', 'CURVED_ARC_SPT',
                      'CURVED_ARC_TAN_DIFF', 'ARC_PERT', 'coreBURKERT',
                      'CORED_DENSITY', 'CORED_DENSITY_2', 'CORED_DENSITY_MST', 'CORED_DENSITY_2_MST', 'CORED_DENSITY_EXP',
-                     'CORED_DENSITY_EXP_MST', 'NumericalAlpha', 'MULTIPOLE', 'HESSIAN', 'ElliSLICE', 'ULDM','CORED_DENSITY_ULDM_MST',
-                     'LOS', 'LOS_MINIMAL',
+                     'CORED_DENSITY_EXP_MST', 'TABULATED_DEFLECTIONS', 'MULTIPOLE', 'HESSIAN', 'ElliSLICE', 'ULDM','CORED_DENSITY_ULDM_MST',
+                     'LOS', 'LOS_MINIMAL' , 'SYNTHESIS',
                      'GNFW','CSE']
 
 
@@ -27,7 +27,7 @@ class ProfileListBase(object):
     plane lensing
     """
     def __init__(self, lens_model_list, numerical_alpha_class=None, lens_redshift_list=None, z_source_convention=None,
-                 kwargs_interp=None):
+                 kwargs_interp=None, kwargs_synthesis=None):
         """
 
         :param lens_model_list: list of strings with lens model names
@@ -35,20 +35,24 @@ class ProfileListBase(object):
          deflection angles as a lens model. See the documentation in Profiles.numerical_deflections
         :param kwargs_interp: interpolation keyword arguments specifying the numerics.
          See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
+        :param kwargs_synthesis: keyword arguments for the 'SYNTHESIS' lens model, if applicable
         """
         self.func_list = self._load_model_instances(lens_model_list, custom_class=numerical_alpha_class,
                                                     lens_redshift_list=lens_redshift_list,
                                                     z_source_convention=z_source_convention,
-                                                    kwargs_interp=kwargs_interp)
+                                                    kwargs_interp=kwargs_interp,
+                                                    kwargs_synthesis=kwargs_synthesis)
         self._num_func = len(self.func_list)
         self._model_list = lens_model_list
 
     def _load_model_instances(self, lens_model_list, custom_class=None, lens_redshift_list=None,
-                              z_source_convention=None, kwargs_interp=None):
+                              z_source_convention=None, kwargs_interp=None, kwargs_synthesis=None):
         if lens_redshift_list is None:
             lens_redshift_list = [None] * len(lens_model_list)
         if kwargs_interp is None:
             kwargs_interp = {}
+        if kwargs_synthesis is None:
+            kwargs_synthesis = {}
         func_list = []
         imported_classes = {}
         for i, lens_type in enumerate(lens_model_list):
@@ -58,10 +62,12 @@ class ProfileListBase(object):
             if lens_type in ['NFW_MC', 'CHAMELEON', 'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'NFW_ELLIPSE_GAUSS_DEC',
                              'CTNFW_GAUSS_DEC', 'INTERPOL', 'INTERPOL_SCALED', 'NIE', 'NIE_SIMPLE']:
                 lensmodel_class = self._import_class(lens_type, custom_class, z_lens=lens_redshift_list[i],
-                                                     z_source=z_source_convention, kwargs_interp=kwargs_interp)
+                                                     z_source=z_source_convention, kwargs_interp=kwargs_interp,
+                                                     kwargs_synthesis=kwargs_synthesis)
             else:
                 if lens_type not in imported_classes.keys():
-                    lensmodel_class = self._import_class(lens_type, custom_class, kwargs_interp=kwargs_interp)
+                    lensmodel_class = self._import_class(lens_type, custom_class, kwargs_interp=kwargs_interp,
+                                                         kwargs_synthesis=kwargs_synthesis)
                     imported_classes.update({lens_type: lensmodel_class})
                 else:
                     lensmodel_class = imported_classes[lens_type]
@@ -69,7 +75,7 @@ class ProfileListBase(object):
         return func_list
 
     @staticmethod
-    def _import_class(lens_type, custom_class, kwargs_interp, z_lens=None, z_source=None):
+    def _import_class(lens_type, custom_class, kwargs_interp, kwargs_synthesis, z_lens=None, z_source=None):
         """
 
         :param lens_type: string, lens model type
@@ -297,9 +303,9 @@ class ProfileListBase(object):
         elif lens_type == 'CORED_DENSITY_EXP_MST':
             from lenstronomy.LensModel.Profiles.cored_density_mst import CoredDensityMST
             return CoredDensityMST(profile_type='CORED_DENSITY_EXP')
-        elif lens_type == 'NumericalAlpha':
-            from lenstronomy.LensModel.Profiles.numerical_deflections import NumericalAlpha
-            return NumericalAlpha(custom_class)
+        elif lens_type == 'TABULATED_DEFLECTIONS':
+            from lenstronomy.LensModel.Profiles.numerical_deflections import TabulatedDeflections
+            return TabulatedDeflections(custom_class)
         elif lens_type == 'MULTIPOLE':
             from lenstronomy.LensModel.Profiles.multipole import Multipole
             return Multipole()
@@ -324,6 +330,9 @@ class ProfileListBase(object):
         elif lens_type == 'LOS_MINIMAL':
             from lenstronomy.LensModel.LineOfSight.LOSModels.los_minimal import LOSMinimal
             return LOSMinimal()
+        elif lens_type == 'SYNTHESIS':
+            from lenstronomy.LensModel.Profiles.synthesis import SynthesisProfile
+            return SynthesisProfile(**kwargs_synthesis)
         else:
             raise ValueError('%s is not a valid lens model. Supported are: %s.' % (lens_type, _SUPPORTED_MODELS))
 

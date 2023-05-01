@@ -76,7 +76,7 @@ class TestFittingSequence(object):
                              'lens_light_model_list': lens_light_model_list,
                              'point_source_model_list': point_source_list,
                              'fixed_magnification_list': [False],
-                             'index_lens_model_list': [[0, 1]],
+                             'index_lens_model_list': [[0, 1]]
                              }
         self.kwargs_numerics = kwargs_numerics
 
@@ -122,7 +122,7 @@ class TestFittingSequence(object):
                          'source_model': source_param,
                          'lens_light_model': lens_light_param,
                          'point_source_model': ps_param,
-                         # 'cosmography': cosmo_param
+                         # 'special': special_param
                          }
         image_band = [self.kwargs_data, self.kwargs_psf, self.kwargs_numerics]
         multi_band_list = [image_band]
@@ -145,7 +145,7 @@ class TestFittingSequence(object):
 
         logL = fittingSequence.best_fit_likelihood
         print(logL, 'test')
-        #print(lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp)
+        #print(lens_temp, source_temp, lens_light_temp, ps_temp, special_temp)
         assert logL < 0
         bic = fittingSequence.bic
         assert bic > 0
@@ -159,7 +159,7 @@ class TestFittingSequence(object):
 
         kwargs_pso = {'sigma_scale': 1, 'n_particles': n_p, 'n_iterations': n_i}
         fitting_list.append(['PSO', kwargs_pso])
-        kwargs_align = {'lowerLimit': -0.1, 'upperLimit': 0.1, 'n_particles': 2, 'n_iterations': 2}
+        kwargs_align = {'delta_shift':0.2, 'n_particles': 2, 'n_iterations': 2}
         fitting_list.append(['align_images', kwargs_align])
         kwargs_psf_iter = {'num_iter': 2, 'psf_iter_factor': 0.5, 'stacking_method': 'mean', 'new_procedure': False}
         fitting_list.append(['psf_iteration', kwargs_psf_iter])

@@ -105,11 +105,11 @@ class LikelihoodModule(object):
         self._custom_logL_addition = custom_logL_addition
         self._kwargs_time_delay = {'time_delays_measured': time_delays_measured,
                                    'time_delays_uncertainties': time_delays_uncertainties}
-        self._kwargs_imaging = {'multi_band_list': multi_band_list, 'multi_band_type': multi_band_type,
-                                'bands_compute': bands_compute,
-                                'image_likelihood_mask_list': image_likelihood_mask_list, 'source_marg': source_marg,
-                                'linear_prior': linear_prior, 'check_positive_flux': check_positive_flux,
-                                'kwargs_pixelbased': kwargs_pixelbased, 'linear_solver': linear_solver}
+        self.kwargs_imaging = {'multi_band_list': multi_band_list, 'multi_band_type': multi_band_type,
+                               'bands_compute': bands_compute,
+                               'image_likelihood_mask_list': image_likelihood_mask_list, 'source_marg': source_marg,
+                               'linear_prior': linear_prior, 'check_positive_flux': check_positive_flux,
+                               'kwargs_pixelbased': kwargs_pixelbased, 'linear_solver': linear_solver}
         self._kwargs_position = {'astrometric_likelihood': astrometric_likelihood,
                                  'image_position_likelihood': image_position_likelihood,
                                  'source_position_likelihood': source_position_likelihood,
@@ -122,7 +122,7 @@ class LikelihoodModule(object):
                                  'restrict_image_number': restrict_image_number, 'max_num_images': max_num_images}
         self._kwargs_flux = {'flux_ratios': flux_ratios, 'flux_ratio_errors': flux_ratio_errors}
         self._kwargs_flux.update(self._kwargs_flux_compute)
-
+        
         if self._kinematic_2D_likelihood is True :
             print("Note that the 2D kinematic likelihood assumes that the lens and lens light have the same center, orientation, and ellipticity")
             if len(multi_band_list) > 1 :
@@ -353,7 +353,7 @@ class LikelihoodModule(object):
         """
         kwargs_model, update_bool = self.param.update_kwargs_model(kwargs_special)
         if update_bool is True:
-            self._class_instances(kwargs_model=kwargs_model, kwargs_imaging=self._kwargs_imaging,
+            self._class_instances(kwargs_model=kwargs_model, kwargs_imaging=self.kwargs_imaging,
                                   kwargs_position=self._kwargs_position, kwargs_flux=self._kwargs_flux,
                                   kwargs_time_delay=self._kwargs_time_delay)
         # TODO remove redundancies with Param() calls updates

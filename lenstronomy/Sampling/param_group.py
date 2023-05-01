@@ -205,11 +205,9 @@ class SingleParam(ModelParamGroup):
                 else:
                     out[name] = args[i]
                     if kwargs_lower is not None:
-                        if out[name] < kwargs_lower[name]:
-                            out[name] = kwargs_lower[name]
-                    elif kwargs_upper is not None:
-                        if out[name] > kwargs_upper[name]:
-                            out[name] = kwargs_upper[name]
+                        out = np.maximum(out, kwargs_lower[name])
+                    if kwargs_upper is not None:
+                        out = np.minimum(out, kwargs_upper[name])
                     i += 1
         return out, i
 

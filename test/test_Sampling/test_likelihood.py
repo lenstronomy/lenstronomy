@@ -140,7 +140,7 @@ class TestLikelihoodModule(object):
                       'bin_sigma': np.ones(kinnum_bin) * 2.,
                       'bin_mask': np.zeros((kinnumPix, kinnumPix))}
         _KinBin = KinBin(**kwargs_kin)
-        kinkernel_point_source = kernel_util.kernel_gaussian(kernel_numPix=9, deltaPix=1., fwhm=2.)
+        kinkernel_point_source = kernel_util.kernel_gaussian(num_pix=9, delta_pix=1., fwhm=2.)
         kwargs_pixelkin = {'psf_type': 'PIXEL', 'kernel_point_source': kinkernel_point_source}
         kinPSF = PSF(**kwargs_pixelkin)
         _KinData = KinData(_KinBin, kinPSF)

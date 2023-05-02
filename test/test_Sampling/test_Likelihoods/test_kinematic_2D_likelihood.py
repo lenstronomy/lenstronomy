@@ -1,12 +1,10 @@
-import pytest
+
 import numpy as np
 import numpy.testing as npt
-import matplotlib.pyplot as plt
 from lenstronomy.Sampling.Likelihoods.kinematic_2D_likelihood import KinLikelihood
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.Data.kinematic_data_2D import KinData
-from lenstronomy.Util.kin_sampling_util import KinNN_image_align
 from lenstronomy.Data.psf import PSF
 from lenstronomy.Data.kinematic_bin_2D import KinBin
 from lenstronomy.Data.pixel_grid import PixelGrid
@@ -14,7 +12,7 @@ import lenstronomy.Util.kernel_util as kernel_util
 
 class TestKinLikelihood(object):
     def setup(self):
-        #initialize KinLikelihood class and calculate example vrms for testing
+        # initialize KinLikelihood class and calculate example vrms for testing
         major_axis_PA = 30 * np.pi / 180
         mass_q = 0.7
         light_q = 0.6

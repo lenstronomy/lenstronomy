@@ -105,7 +105,7 @@ class LikelihoodModule(object):
         self._custom_logL_addition = custom_logL_addition
         self._kwargs_time_delay = {'time_delays_measured': time_delays_measured,
                                    'time_delays_uncertainties': time_delays_uncertainties}
-        self.kwargs_imaging = {'multi_band_list': multi_band_list, 'multi_band_type': multi_band_type,
+        self._kwargs_imaging = {'multi_band_list': multi_band_list, 'multi_band_type': multi_band_type,
                                'bands_compute': bands_compute,
                                'image_likelihood_mask_list': image_likelihood_mask_list, 'source_marg': source_marg,
                                'linear_prior': linear_prior, 'check_positive_flux': check_positive_flux,
@@ -124,7 +124,7 @@ class LikelihoodModule(object):
         self._kwargs_flux.update(self._kwargs_flux_compute)
         
         if self._kinematic_2D_likelihood is True :
-            print("Note that the 2D kinematic likelihood assumes that the lens and lens light have the same center, orientation, and ellipticity")
+            print("Note that the 2D kinematic likelihood assumes that the lens and lens light have the same center and orientation")
             if len(multi_band_list) > 1 :
                 print('Kinematic Likelihood not meant for multiband, using first band by default')
             if kwargs_model['lens_model_list'][kin_lens_idx] not in ['PEMD_Q_PHI']:
@@ -168,7 +168,7 @@ class LikelihoodModule(object):
             self.flux_ratio_likelihood = FluxRatioLikelihood(lens_model_class, **kwargs_flux)
         if self._kinematic_2D_likelihood is True:
             self.kinematic_2D_likelihood = KinLikelihood(kinematic_data, lens_model_class, lens_light_model_class,
-                                                         kwargs_imaging['multi_band_list'][0],self._kin_lens_idx,
+                                                         kwargs_imaging['multi_band_list'][0][0],self._kin_lens_idx,
                                                          self._kin_lens_light_idx)
 
     def __call__(self, a):

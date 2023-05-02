@@ -4,6 +4,8 @@ from astropy.io import fits
 import lenstronomy.Util.coolest_read_util as read
 import lenstronomy.Util.coolest_update_util as update
 import numpy as np
+from lenstronomy.Sampling.parameters import Param
+import lenstronomy.Util.class_creator as class_util
 
 
 def create_lenstro_from_coolest(file_name):
@@ -12,7 +14,7 @@ def create_lenstro_from_coolest(file_name):
 
     Input
     -----
-    file_name: str, name of the .json file containing the COOLEST information
+    file_name: str, name (with path) of the .json file containing the COOLEST information
 
     Output
     ------
@@ -320,10 +322,16 @@ def update_coolest_from_lenstro(file_name, kwargs_result, kwargs_mcmc=None,
 
     INPUT
     -----
-    file_name: str, name of the json file to update
+    file_name: str, name (with path) of the json file to update
     kwargs_results: dict, lenstronomy kwargs_results {'kwargs_lens': [{..},{..}], 'kwargs_source': [{..}],...}
-    kwargs_mcmc: dict, {'args_lens':args_lens,'args_source':args_source,'args_lens_light':args_lens_light}
-                        with args_lens being a list of dict of kwargs_lens_results
+    kwargs_mcmc: dict, {'args_lens':args_lens,'args_source':args_source,'args_lens_light':args_lens_light,
+                        'args_ps': args_ps}
+                        with args_lens being a list, each element of the list being lens results of type
+                        kwargs_results['kwargs_lens'] for a given MCMC point.
+                        ex: {'args_lens': [[{'theta_E':0.71,...},{'gamma1':...}],
+                                           [{'theta_E':0.709,...},{'gamma1':...}],
+                                           [{'theta_E':0.711,...},{'gamma1':...}], ...],
+                             'args_source': [[{'R_sersic':0.11,...}], [{'R_sersic':0.115,...}, ...]], ...}
                  if None, will not perform the Posterior update
     ending: str, ending of the name for saving the updated json file
 
@@ -431,18 +439,21 @@ def update_coolest_from_lenstro(file_name, kwargs_result, kwargs_mcmc=None,
                     mass_list = galac.mass_model
                     for mass in mass_list:
 
-                        kwargs_lens = kwargs_result['kwargs_lens'][idx_lens]
+
                         kwargs_lens_mcmc = None
                         if kwargs_mcmc is not None:
                             kwargs_lens_mcmc = [arg[idx_lens] for arg in kwargs_mcmc['args_lens']]
 
                         if mass.type == 'PEMD':
+                            kwargs_lens = kwargs_result['kwargs_lens'][idx_lens]
                             update.pemd_update(mass, kwargs_lens, kwargs_lens_mcmc)
                             idx_lens += 1
                         elif mass.type == 'SIE':
+                            kwargs_lens = kwargs_result['kwargs_lens'][idx_lens]
                             update.sie_update(mass, kwargs_lens, kwargs_lens_mcmc)
                             idx_lens += 1
                         elif mass.type == 'SIS':
+                            kwargs_lens = kwargs_result['kwargs_lens'][idx_lens]
                             update.sis_update(mass, kwargs_lens, kwargs_lens_mcmc)
                             idx_lens += 1
 
@@ -503,3 +514,65 @@ def update_coolest_from_lenstro(file_name, kwargs_result, kwargs_mcmc=None,
     lens_coolest_encoded = encoder.dump_jsonpickle()
 
     return
+
+def create_kwargs_mcmc_from_chain_list(chain_list, kwargs_model, kwargs_params, kwargs_data, kwargs_psf,
+                                       kwargs_numerics, kwargs_constraints, image_likelihood_mask=None, idx_chain=-1, likelihood_threshold=None):
+    """
+    function to construct kwargs_mcmc in the right format for the "update_coolest_from_lenstro" function
+
+    Input:
+    ------
+    chain_list: list, output of FittingSequence.fitting_sequence()
+    kwargs_model, kwargs_params, kwargs_data, kwargs_psf, kwargs_numerics, kwargs_constraints, image_likelihood_mask: the usual lenstronomy kwargs
+    idx_chain: int, index of the MCMC chain in the chain_list, default is the last one.
+                    Can be useful if several PSO and MCMC are perfomed in the fitting sequence.
+    likelihood_threshold: float, likelihood limit (negative) underwhich the MCMC point is not considered.
+                                 Can be useful if a few chains are stucked in another (less good) minimum
+
+    Return:
+    -------
+    kwargs_mcmc: list, list containing all the relevant MCMC points in a userfriendly format
+                       (with linear parameters etc)
+
+    """
+    par_buf = chain_list2[idx_chain][1]
+    dist_buf = chain_list2[idx_chain][3]
+
+    kwargs_lens_init, kwargs_lens_sigma, kwargs_fixed_lens, kwargs_lower_lens, kwargs_upper_lens = kwargs_params[
+        'lens_model']
+    kwargs_source_init, kwargs_source_sigma, kwargs_fixed_source, kwargs_lower_source, kwargs_upper_source = \
+    kwargs_params['source_model']
+    kwargs_lens_light_init, kwargs_lens_light_sigma, kwargs_fixed_lens_light, kwargs_lower_lens_light, kwargs_upper_lens_light = \
+    kwargs_params['lens_light_model']
+    kwargs_ps_init, kwargs_ps_sigma, kwargs_fixed_ps, kwargs_lower_ps, kwargs_upper_ps = kwargs_params[
+        'point_source_model']
+
+    Param_class = Param(kwargs_model, kwargs_fixed_lens=kwargs_fixed_lens,
+                        kwargs_fixed_source=kwargs_fixed_source, kwargs_fixed_lens_light=kwargs_fixed_lens_light,
+                        kwargs_fixed_ps=kwargs_fixed_ps,
+                        kwargs_lower_lens=kwargs_lower_lens, kwargs_lower_source=kwargs_lower_source,
+                        kwargs_lower_lens_light=kwargs_lower_lens_light, kwargs_lower_ps=kwargs_lower_ps,
+                        kwargs_upper_lens=kwargs_upper_lens, kwargs_upper_source=kwargs_upper_source,
+                        kwargs_upper_lens_light=kwargs_upper_lens_light, kwargs_upper_ps=kwargs_upper_ps,
+                        kwargs_lens_init=kwargs_lens_init, **kwargs_constraints)
+
+    ImLin = class_util.create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model,
+                                          image_likelihood_mask=image_likelihood_mask)
+    args_lens = []
+    args_source = []
+    args_lens_light = []
+    args_ps = []
+    for w in range(len(dist_buf)):
+        kwargs_return = Param_class.args2kwargs(par_buf[w])
+        ImLin.image_linear_solve(**kwargs_return)
+        args_lens.append(kwargs_return['kwargs_lens'])
+        args_source.append(kwargs_return['kwargs_source'])
+        args_lens_light.append(kwargs_return['kwargs_lens_light'])
+        args_ps.append(kwargs_return['kwargs_ps'])
+    kwargs_mcmc_results = {'args_lens': args_lens, 'args_source': args_source, 'args_lens_light': args_lens_light,
+                           'args_ps': args_ps}
+    return kwargs_mcmc_results
+
+
+
+

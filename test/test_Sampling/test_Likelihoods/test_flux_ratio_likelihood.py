@@ -51,7 +51,7 @@ class TestFluxRatioLikelihood(object):
         self.kwargs_lens = kwargs_lens
 
     def test_logL(self):
-        logL = self.flux_likelihood.logL(self.x_img, self.y_img, self.kwargs_lens, kwargs_cosmo=self.kwargs_cosmo)
+        logL = self.flux_likelihood.logL(self.x_img, self.y_img, self.kwargs_lens, kwargs_special=self.kwargs_cosmo)
         assert logL == 0
 
         logL_inf = self.flux_likelihood_inf.logL(self.x_img, self.y_img, self.kwargs_lens, {})
@@ -76,12 +76,12 @@ class TestFluxRatioLikelihood(object):
 
     def test_numimgs(self):
         # Test with a different number of images
-        logL = self.flux_likelihood.logL(self.x_img[:-1], self.y_img[:-1], self.kwargs_lens, kwargs_cosmo=self.kwargs_cosmo)
+        logL = self.flux_likelihood.logL(self.x_img[:-1], self.y_img[:-1], self.kwargs_lens, kwargs_special=self.kwargs_cosmo)
         assert logL == -10**15
 
     def test_covmatrix(self):
         # Test with a different number of images
-        logL = self.flux_likelihood_inf_cov.logL(self.x_img, self.y_img, self.kwargs_lens, kwargs_cosmo=self.kwargs_cosmo)
+        logL = self.flux_likelihood_inf_cov.logL(self.x_img, self.y_img, self.kwargs_lens, kwargs_special=self.kwargs_cosmo)
         npt.assert_almost_equal(logL, 0, decimal=8)
 
 

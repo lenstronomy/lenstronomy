@@ -8,8 +8,8 @@ from lenstronomy.LensModel.lens_model import LensModel
 class TestPSBase(object):
 
     def setup_method(self):
-        self.base = PSBase(lens_model=LensModel(lens_model_list=[]), fixed_magnification=False, additional_image=False)
-        PSBase(fixed_magnification=True, additional_image=True)
+        self.base = PSBase(lens_model=LensModel(lens_model_list=[]), fixed_magnification=False, additional_images=False)
+        PSBase(fixed_magnification=True, additional_images=True)
 
     def test_update_lens_model(self):
         self.base.update_lens_model(lens_model_class=None)
@@ -18,7 +18,7 @@ class TestPSBase(object):
         base = PSBase()
         base.update_lens_model(lens_model_class=LensModel(lens_model_list=['SIS']))
         assert base._solver is not None
-        PSBase(fixed_magnification=True, additional_image=True)
+        PSBase(fixed_magnification=True, additional_images=True)
 
 
 class TestUtil(object):

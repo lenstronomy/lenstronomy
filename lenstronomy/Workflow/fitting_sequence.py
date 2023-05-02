@@ -309,11 +309,6 @@ class FittingSequence(object):
         lower_start = np.array(init_pos) - np.array(sigma_start) * sigma_scale
         upper_start = np.array(init_pos) + np.array(sigma_start) * sigma_scale
 
-        lower_limit, upper_limit = param_class.param_limits()
-
-        lower_start = np.maximum(lower_start, lower_limit)
-        upper_start = np.minimum(upper_start, upper_limit)
-
         num_param, param_list = param_class.num_param()
         # run PSO
         sampler = Sampler(likelihoodModule=self.likelihoodModule)

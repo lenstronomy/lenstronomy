@@ -53,9 +53,10 @@ class FittingSequence(object):
                                                      num_bands=len(self.multi_band_list))
         self._mcmc_init_samples = None
 
+    @property
     def kwargs_fixed(self):
         """
-        returns the updated kwargs_fixed from the update Manager
+        Returns the updated kwargs_fixed from the update manager.
 
         :return: list of fixed kwargs, see UpdateManager()
         """

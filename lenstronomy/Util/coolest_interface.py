@@ -31,238 +31,239 @@ def create_lenstro_from_coolest(file_name):
     lens_coolest = decoder.load()
 
     print('LENS COOLEST : ', lens_coolest.mode)
+    exclude_keys = lens_coolest.exclude_keys
 
     # IMAGE
 
     kwargs_data = {}
-    lens_observation = lens_coolest.observation
-    if lens_observation.pixels is not None:
-        creation_data = True
-        image_path = lens_observation.pixels.fits_file.path
-        pixel_size = lens_observation.pixels.pixel_size
-        nx = lens_observation.pixels.num_pix_x
-        ny = lens_observation.pixels.num_pix_y
-        try:
-            image = fits.open(image_path)[0].data
-            if (np.shape(image)[0] != nx) or (np.shape(image)[1] != ny):
-                print('image shape ', np.shape(image), ' is different from the coolest file ', nx, ',', ny)
-        except:
-            image = image_path
-            print('could not find image file ', image_path, '. Saving file name instead.')
-        if nx != ny:
-            print("nx ", nx, " is different from ny ", ny)
-        ra_at_xy_0 = list(lens_observation.pixels.field_of_view_x)[0] - pixel_size / 2.
-        dec_at_xy_0 = list(lens_observation.pixels.field_of_view_y)[0] + pixel_size / 2.
-        transform_pix2angle = np.array([[-1, 0], [0, 1]]) * pixel_size
+    if "observation" not in exclude_keys:
+        lens_observation = lens_coolest.observation
+        if lens_observation.pixels is not None:
+            creation_data = True
+            image_path = lens_observation.pixels.fits_file.path
+            pixel_size = lens_observation.pixels.pixel_size
+            nx = lens_observation.pixels.num_pix_x
+            ny = lens_observation.pixels.num_pix_y
+            try:
+                image = fits.open(image_path)[0].data
+                if (np.shape(image)[0] != nx) or (np.shape(image)[1] != ny):
+                    print('image shape ', np.shape(image), ' is different from the coolest file ', nx, ',', ny)
+            except:
+                image = image_path
+                print('could not find image file ', image_path, '. Saving file name instead.')
+            if nx != ny:
+                print("nx ", nx, " is different from ny ", ny)
+            ra_at_xy_0 = list(lens_observation.pixels.field_of_view_x)[0] - pixel_size / 2.
+            dec_at_xy_0 = list(lens_observation.pixels.field_of_view_y)[0] + pixel_size / 2.
+            transform_pix2angle = np.array([[-1, 0], [0, 1]]) * pixel_size
 
-        kwargs_data = {'ra_at_xy_0': ra_at_xy_0,
-                       'dec_at_xy_0': dec_at_xy_0,
-                       'transform_pix2angle': transform_pix2angle,
-                       'image_data': image}
-        print('Data creation')
+            kwargs_data = {'ra_at_xy_0': ra_at_xy_0,
+                           'dec_at_xy_0': dec_at_xy_0,
+                           'transform_pix2angle': transform_pix2angle,
+                           'image_data': image}
+            print('Data creation')
 
     # NOISE
-
-    if lens_observation.noise is not None:
-        if lens_observation.noise.type == "NoiseMap":
-            creation_data = True
-            noise_path = lens_observation.noise.noise_map.fits_file.path
-            try:
-                noise = fits.open(noise_path)[0].data
-            except:
-                noise = noise_path
-                print('could not find noise file ', noise_path, '. Saving file name instead.')
-            noise_pixel_size = lens_observation.noise.noise_map.pixel_size
-            noise_nx = lens_observation.noise.noise_map.num_pix_x
-            noise_ny = lens_observation.noise.noise_map.num_pix_y
-            if pixel_size != noise_pixel_size:
-                print("noise pixel size ", noise_pixel_size, " is different from image pixel size ", pixel_size)
-            elif nx != noise_nx:
-                print("noise nx ", noise_nx, " is different from image nx ", nx)
-            elif ny != noise_ny:
-                print("noise ny ", noise_ny, " is different from image ny ", ny)
-            kwargs_data['noise_map'] = noise
-            print('Noise (in Data) creation')
-        else:
-            print("noise type ", lens_observation.noise.type, " is unknown")
+    if "noise" not in exclude_keys:
+        if lens_observation.noise is not None:
+            if lens_observation.noise.type == "NoiseMap":
+                creation_data = True
+                noise_path = lens_observation.noise.noise_map.fits_file.path
+                try:
+                    noise = fits.open(noise_path)[0].data
+                except:
+                    noise = noise_path
+                    print('could not find noise file ', noise_path, '. Saving file name instead.')
+                noise_pixel_size = lens_observation.noise.noise_map.pixel_size
+                noise_nx = lens_observation.noise.noise_map.num_pix_x
+                noise_ny = lens_observation.noise.noise_map.num_pix_y
+                if pixel_size != noise_pixel_size:
+                    print("noise pixel size ", noise_pixel_size, " is different from image pixel size ", pixel_size)
+                elif nx != noise_nx:
+                    print("noise nx ", noise_nx, " is different from image nx ", nx)
+                elif ny != noise_ny:
+                    print("noise ny ", noise_ny, " is different from image ny ", ny)
+                kwargs_data['noise_map'] = noise
+                print('Noise (in Data) creation')
+            else:
+                print("noise type ", lens_observation.noise.type, " is unknown")
 
     # PSF
+    if "instrument" not in exclude_keys:
+        lens_instru = lens_coolest.instrument
+        if lens_instru is not None:
+            if lens_instru.psf is not None:
+                if lens_instru.psf.type == "PixelatedPSF":
+                    creation_instrument = True
+                    psf_path = lens_instru.psf.pixels.fits_file.path
+                    try:
+                        psf = fits.open(psf_path)[0].data
+                    except:
+                        psf = psf_path
+                        print('could not find PSF file ', psf_path, '. Saving file name instead.')
+                    psf_pixel_size = lens_instru.psf.pixels.pixel_size
+                    psf_nx = lens_instru.psf.pixels.num_pix_x
+                    psf_ny = lens_instru.psf.pixels.num_pix_y
+                    super_sampling_factor = 1
+                    if pixel_size != psf_pixel_size:
+                        super_sampling_factor = int(pixel_size / psf_pixel_size)
+                        print("PSF pixel size ", psf_pixel_size, " is different from image pixel size ", pixel_size,
+                              '. Assuming super sampling factor of ', super_sampling_factor)
 
-    lens_instru = lens_coolest.instrument
-    if lens_instru is not None:
-        if lens_instru.psf is not None:
-            if lens_instru.psf.type == "PixelatedPSF":
-                creation_instrument = True
-                psf_path = lens_instru.psf.pixels.fits_file.path
-                try:
-                    psf = fits.open(psf_path)[0].data
-                except:
-                    psf = psf_path
-                    print('could not find PSF file ', psf_path, '. Saving file name instead.')
-                psf_pixel_size = lens_instru.psf.pixels.pixel_size
-                psf_nx = lens_instru.psf.pixels.num_pix_x
-                psf_ny = lens_instru.psf.pixels.num_pix_y
-                super_sampling_factor = 1
-                if pixel_size != psf_pixel_size:
-                    super_sampling_factor = int(pixel_size / psf_pixel_size)
-                    print("PSF pixel size ", psf_pixel_size, " is different from image pixel size ", pixel_size,
-                          '. Assuming super sampling factor of ', super_sampling_factor)
-
-                kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': psf,
-                              'point_source_supersampling_factor': super_sampling_factor}
-                print('PSF creation')
-            else:
-                print("PSF type ", lens_instru.psf.type, " is unknown")
+                    kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': psf,
+                                  'point_source_supersampling_factor': super_sampling_factor}
+                    print('PSF creation')
+                else:
+                    print("PSF type ", lens_instru.psf.type, " is unknown")
 
     # COSMO
-
-    lens_cosmo = lens_coolest.cosmology
-    if lens_cosmo is not None:
-        if lens_cosmo.astropy_name == "FlatLambdaCDM":
-            Cosmo = FlatLambdaCDM(lens_cosmo.H0, lens_cosmo.Om0)
-            creation_cosmo = True
-            print("Cosmo class creation")
-        else:
-            print("Cosmology name ", lens_cosmo.astropy_name, " is unknown")
+    if "cosmology" not in exclude_keys:
+        lens_cosmo = lens_coolest.cosmology
+        if lens_cosmo is not None:
+            if lens_cosmo.astropy_name == "FlatLambdaCDM":
+                Cosmo = FlatLambdaCDM(lens_cosmo.H0, lens_cosmo.Om0)
+                creation_cosmo = True
+                print("Cosmo class creation")
+            else:
+                print("Cosmology name ", lens_cosmo.astropy_name, " is unknown")
 
 
     # LIKELIHOODS
-
-    likelihoods = lens_coolest.likelihoods
-    if likelihoods is not None:
-        kwargs_likelihood = {}
-        creation_kwargs_likelihood = True
-        for like in likelihoods:
-            if like == 'imaging_data':
-                kwargs_likelihood['image_likelihood'] = True
-            else:
-                print("Likelihood ", like, " not yet implemented")
-        print("kwargs_likelihood creation")
+    if "likelihoods" not in exclude_keys:
+        likelihoods = lens_coolest.likelihoods
+        if likelihoods is not None:
+            kwargs_likelihood = {}
+            creation_kwargs_likelihood = True
+            for like in likelihoods:
+                if like == 'imaging_data':
+                    kwargs_likelihood['image_likelihood'] = True
+                else:
+                    print("Likelihood ", like, " not yet implemented")
+            print("kwargs_likelihood creation")
 
         # LENSING ENTITIES
+    if "lensing_entities" not in exclude_keys:
+        lensing_entities_list = lens_coolest.lensing_entities
+        if lensing_entities_list is not None:
 
-    lensing_entities_list = lens_coolest.lensing_entities
+            lens_model_list = []
+            kwargs_lens = []
+            kwargs_lens_up = []
+            kwargs_lens_down = []
+            kwargs_lens_init = []
+            kwargs_lens_fixed = []
+            kwargs_lens_sigma = []
+            lens_light_model_list = []
+            kwargs_lens_light = []
+            kwargs_lens_light_up = []
+            kwargs_lens_light_down = []
+            kwargs_lens_light_init = []
+            kwargs_lens_light_fixed = []
+            kwargs_lens_light_sigma = []
+            source_model_list = []
+            kwargs_source = []
+            kwargs_source_up = []
+            kwargs_source_down = []
+            kwargs_source_init = []
+            kwargs_source_fixed = []
+            kwargs_source_sigma = []
+            ps_model_list = []
+            kwargs_ps = []
+            kwargs_ps_up = []
+            kwargs_ps_down = []
+            kwargs_ps_init = []
+            kwargs_ps_fixed = []
+            kwargs_ps_sigma = []
 
-    if lensing_entities_list is not None:
+            creation_lens_source_light = True
 
-        lens_model_list = []
-        kwargs_lens = []
-        kwargs_lens_up = []
-        kwargs_lens_down = []
-        kwargs_lens_init = []
-        kwargs_lens_fixed = []
-        kwargs_lens_sigma = []
-        lens_light_model_list = []
-        kwargs_lens_light = []
-        kwargs_lens_light_up = []
-        kwargs_lens_light_down = []
-        kwargs_lens_light_init = []
-        kwargs_lens_light_fixed = []
-        kwargs_lens_light_sigma = []
-        source_model_list = []
-        kwargs_source = []
-        kwargs_source_up = []
-        kwargs_source_down = []
-        kwargs_source_init = []
-        kwargs_source_fixed = []
-        kwargs_source_sigma = []
-        ps_model_list = []
-        kwargs_ps = []
-        kwargs_ps_up = []
-        kwargs_ps_down = []
-        kwargs_ps_init = []
-        kwargs_ps_fixed = []
-        kwargs_ps_sigma = []
-
-        creation_lens_source_light = True
-
-        min_red = 0
-        max_red = 5
-        creation_red_list = True
-        red_list = []
-        MultiPlane = False
-        for lensing_entity in lensing_entities_list:
-            red_list.append(lensing_entity.redshift)
-        min_red = np.min(red_list)
-        max_red = np.max(red_list)
-        for lensing_entity in lensing_entities_list:
-            if lensing_entity.type == "galaxy":
-                galac = lensing_entity
-                if galac.redshift > min_red:
-                    # SOURCE OF LIGHT
-                    light_list = galac.light_model
-                    for light in light_list:
-                        print('Source Light : ')
-                        if light.type == 'Sersic':
-                            read.sersic(light, source_model_list, kwargs_source,
-                                   kwargs_source_init, kwargs_source_up,
-                                   kwargs_source_down, kwargs_source_fixed,
-                                   kwargs_source_sigma, cleaning=True)
-                        elif light.type == 'Shapelets':
-                            read.shapelets(light, source_model_list, kwargs_source,
-                                      kwargs_source_init, kwargs_source_up,
-                                      kwargs_source_down, kwargs_source_fixed,
-                                      kwargs_source_sigma, cleaning=True)
-                        elif light.type == 'LensedPS':
-                            read.lensed_point_source(light, ps_model_list, kwargs_ps,
-                                                kwargs_ps_init, kwargs_ps_up,
-                                                kwargs_ps_down, kwargs_ps_fixed,
-                                                kwargs_ps_sigma, cleaning=True)
-                        else:
-                            print('Light Type ', light.type, ' not yet implemented.')
-
-                if galac.redshift < max_red:
-                    # LENSING GALAXY
+            min_red = 0
+            max_red = 5
+            creation_red_list = True
+            red_list = []
+            MultiPlane = False
+            for lensing_entity in lensing_entities_list:
+                red_list.append(lensing_entity.redshift)
+            min_red = np.min(red_list)
+            max_red = np.max(red_list)
+            for lensing_entity in lensing_entities_list:
+                if lensing_entity.type == "galaxy":
+                    galac = lensing_entity
                     if galac.redshift > min_red:
-                        MultiPlane = True
-                        print('Multiplane lensing to consider.')
-                    mass_list = galac.mass_model
-                    for mass in mass_list:
-                        print('Lens Mass : ')
-                        if mass.type == 'PEMD':
-                            read.pemd(mass, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens_up,
-                                 kwargs_lens_down, kwargs_lens_fixed, kwargs_lens_sigma, cleaning=True)
-                        elif mass.type == 'SIE':
-                            read.sie(mass, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens_up,
-                                kwargs_lens_down, kwargs_lens_fixed, kwargs_lens_sigma, cleaning=True)
+                        # SOURCE OF LIGHT
+                        light_list = galac.light_model
+                        for light in light_list:
+                            print('Source Light : ')
+                            if light.type == 'Sersic':
+                                read.sersic(light, source_model_list, kwargs_source,
+                                       kwargs_source_init, kwargs_source_up,
+                                       kwargs_source_down, kwargs_source_fixed,
+                                       kwargs_source_sigma, cleaning=True)
+                            elif light.type == 'Shapelets':
+                                read.shapelets(light, source_model_list, kwargs_source,
+                                          kwargs_source_init, kwargs_source_up,
+                                          kwargs_source_down, kwargs_source_fixed,
+                                          kwargs_source_sigma, cleaning=True)
+                            elif light.type == 'LensedPS':
+                                read.lensed_point_source(light, ps_model_list, kwargs_ps,
+                                                    kwargs_ps_init, kwargs_ps_up,
+                                                    kwargs_ps_down, kwargs_ps_fixed,
+                                                    kwargs_ps_sigma, cleaning=True)
+                            else:
+                                print('Light Type ', light.type, ' not yet implemented.')
+
+                    if galac.redshift < max_red:
+                        # LENSING GALAXY
+                        if galac.redshift > min_red:
+                            MultiPlane = True
+                            print('Multiplane lensing to consider.')
+                        mass_list = galac.mass_model
+                        for mass in mass_list:
+                            print('Lens Mass : ')
+                            if mass.type == 'PEMD':
+                                read.pemd(mass, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens_up,
+                                     kwargs_lens_down, kwargs_lens_fixed, kwargs_lens_sigma, cleaning=True)
+                            elif mass.type == 'SIE':
+                                read.sie(mass, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens_up,
+                                    kwargs_lens_down, kwargs_lens_fixed, kwargs_lens_sigma, cleaning=True)
+                            else:
+                                print('Mass Type ', mass.type, ' not yet implemented.')
+
+                    if galac.redshift == min_red:
+                        # LENSING LIGHT GALAXY
+                        light_list = galac.light_model
+                        for light in light_list:
+                            print('Lens Light : ')
+                            if light.type == 'Sersic':
+                                read.sersic(light, lens_light_model_list, kwargs_lens_light, kwargs_lens_light_init,
+                                       kwargs_lens_light_up, kwargs_lens_light_down, kwargs_lens_light_fixed,
+                                       kwargs_lens_light_sigma, cleaning=True)
+                            elif light.type == 'LensedPS':
+                                read.lensed_point_source(light, ps_model_list, kwargs_ps, kwargs_ps_init, kwargs_ps_up,
+                                                    kwargs_ps_down, kwargs_ps_fixed, kwargs_ps_sigma, cleaning=True)
+                            else:
+                                print('Light Type ', light.type, ' not yet implemented.')
+
+                    if (galac.redshift <= min_red) and (galac.redshift >= max_red):
+                        print('REDSHIFT ', galac.redshift, ' is not in the range ]', min_red, ',', max_red, '[')
+
+
+                elif lensing_entity.type == "external_shear":
+                    shear_list = lensing_entity.mass_model
+                    for shear_idx in shear_list:
+                        print('Shear : ')
+                        if shear_idx.type == 'ExternalShear':
+                            read.shear(shear_idx, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens_up,
+                                  kwargs_lens_down, kwargs_lens_fixed, kwargs_lens_sigma, cleaning=True)
+
                         else:
-                            print('Mass Type ', mass.type, ' not yet implemented.')
-
-                if galac.redshift == min_red:
-                    # LENSING LIGHT GALAXY
-                    light_list = galac.light_model
-                    for light in light_list:
-                        print('Lens Light : ')
-                        if light.type == 'Sersic':
-                            read.sersic(light, lens_light_model_list, kwargs_lens_light, kwargs_lens_light_init,
-                                   kwargs_lens_light_up, kwargs_lens_light_down, kwargs_lens_light_fixed,
-                                   kwargs_lens_light_sigma, cleaning=True)
-                        elif light.type == 'LensedPS':
-                            read.lensed_point_source(light, ps_model_list, kwargs_ps, kwargs_ps_init, kwargs_ps_up,
-                                                kwargs_ps_down, kwargs_ps_fixed, kwargs_ps_sigma, cleaning=True)
-                        else:
-                            print('Light Type ', light.type, ' not yet implemented.')
-
-                if (galac.redshift <= min_red) and (galac.redshift >= max_red):
-                    print('REDSHIFT ', galac.redshift, ' is not in the range ]', min_red, ',', max_red, '[')
-
-
-            elif lensing_entity.type == "external_shear":
-                shear_list = lensing_entity.mass_model
-                for shear_idx in shear_list:
-                    print('Shear : ')
-                    if shear_idx.type == 'ExternalShear':
-                        read.shear(shear_idx, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens_up,
-                              kwargs_lens_down, kwargs_lens_fixed, kwargs_lens_sigma, cleaning=True)
-
-                    else:
-                        print("type of Shear ", shear_idx.type, " not implemented")
+                            print("type of Shear ", shear_idx.type, " not implemented")
 
 
 
 
-            else:
-                print("lensing entity of type ", lensing_enity.type, " is unknown.")
+                else:
+                    print("lensing entity of type ", lensing_enity.type, " is unknown.")
 
     return_dict = {}
     if creation_lens_source_light is True:

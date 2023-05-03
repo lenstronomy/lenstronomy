@@ -1028,14 +1028,14 @@
       "documentation": "",
       "field_of_view_x": {
         "py/tuple": [
-          0,
-          0
+          -4.,
+          4.
         ]
       },
       "field_of_view_y": {
         "py/tuple": [
-          0,
-          0
+          -4.,
+          4.
         ]
       },
       "num_pix_x": 100,
@@ -1056,14 +1056,14 @@
         "documentation": "",
         "field_of_view_x": {
           "py/tuple": [
-            0,
-            0
+            -4.,
+            4.
           ]
         },
         "field_of_view_y": {
           "py/tuple": [
-            0,
-            0
+            -4.,
+            4.
           ]
         },
         "num_pix_x": 100,
@@ -1092,14 +1092,14 @@
         "documentation": "",
         "field_of_view_x": {
           "py/tuple": [
-            0,
-            0
+            -3.96,
+            3.96
           ]
         },
         "field_of_view_y": {
           "py/tuple": [
-            0,
-            0
+            -3.96,
+            3.96
           ]
         },
         "num_pix_x": 99,

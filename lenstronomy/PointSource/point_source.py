@@ -173,7 +173,9 @@ class PointSource(object):
                                                         magnification_limit=self._magnification_limit,
                                                         kwargs_lens_eqn_solver=self._kwargs_lens_eqn_solver,
                                                         additional_images=additional_images)
-                if original_position is True and self.point_source_type_list[i] == 'LENSED_POSITION':
+                # this takes action when new images are computed not necessary in order
+                if original_position is True and additional_images is True and\
+                        self.point_source_type_list[i] == 'LENSED_POSITION':
                     x_o, y_o = kwargs['ra_image'], kwargs['dec_image']
                     x_image, y_image = _sort_position_by_original(x_o, y_o, x_image, y_image)
 

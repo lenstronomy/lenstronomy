@@ -56,7 +56,7 @@ class FittingSequence(object):
     @property
     def kwargs_fixed(self):
         """
-        returns the updated kwargs_fixed from the update Manager
+        Returns the updated kwargs_fixed from the update manager.
 
         :return: list of fixed kwargs, see UpdateManager()
         """

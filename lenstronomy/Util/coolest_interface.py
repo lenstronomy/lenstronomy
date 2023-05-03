@@ -55,7 +55,7 @@ def create_lenstro_from_coolest(file_name):
                 print('could not find image file ', image_path, '. Saving file name instead.')
             if nx != ny:
                 print("nx ", nx, " is different from ny ", ny)
-            ra_at_xy_0 = list(lens_observation.pixels.field_of_view_x)[0] - pixel_size / 2.
+            ra_at_xy_0 = - ( list(lens_observation.pixels.field_of_view_x)[0] + pixel_size / 2. )
             dec_at_xy_0 = list(lens_observation.pixels.field_of_view_y)[0] + pixel_size / 2.
             transform_pix2angle = np.array([[-1, 0], [0, 1]]) * pixel_size
 
@@ -342,7 +342,7 @@ def update_coolest_from_lenstro(file_name, kwargs_result, kwargs_mcmc=None,
 
     decoder = JSONSerializer(file_name, indent=2)
     lens_coolest = decoder.load()
-
+    available_profiles = ['LensedPS', 'Sersic', 'Shapelets', 'PEMD', 'SIE', 'SIS', 'ExternalShear']
     if lens_coolest.mode == 'MAP':
         print('LENS COOLEST : ', lens_coolest.mode)
     else:
@@ -415,7 +415,7 @@ def update_coolest_from_lenstro(file_name, kwargs_result, kwargs_mcmc=None,
                         else:
                             print('Light Type ', light.type, ' not yet implemented.')
 
-                        if kwargs_mcmc is not None:
+                        if (kwargs_mcmc is not None) & (light.type in available_profiles):
                             if light.type == 'LensedPS':
                                 kwargs_ps_mcmc = [arg[idx_ps] for arg in kwargs_mcmc['args_ps']]
                             elif light.type in ['Sersic', 'Shapelets']:
@@ -430,6 +430,8 @@ def update_coolest_from_lenstro(file_name, kwargs_result, kwargs_mcmc=None,
                         elif light.type == 'LensedPS':
                             update.lensed_point_source_update(light, kwargs_ps, kwargs_ps_mcmc)
                             idx_ps += 1
+                        else:
+                            pass
 
                 if galac.redshift < max_red:
                     # LENSING GALAXY
@@ -439,9 +441,8 @@ def update_coolest_from_lenstro(file_name, kwargs_result, kwargs_mcmc=None,
                     mass_list = galac.mass_model
                     for mass in mass_list:
 
-
                         kwargs_lens_mcmc = None
-                        if kwargs_mcmc is not None:
+                        if (kwargs_mcmc is not None) & (mass.type in available_profiles):
                             kwargs_lens_mcmc = [arg[idx_lens] for arg in kwargs_mcmc['args_lens']]
 
                         if mass.type == 'PEMD':
@@ -456,9 +457,9 @@ def update_coolest_from_lenstro(file_name, kwargs_result, kwargs_mcmc=None,
                             kwargs_lens = kwargs_result['kwargs_lens'][idx_lens]
                             update.sis_update(mass, kwargs_lens, kwargs_lens_mcmc)
                             idx_lens += 1
-
                         else:
                             print('Mass Type ', mass.type, ' not yet implemented.')
+
 
 
                 if galac.redshift == min_red:
@@ -474,7 +475,7 @@ def update_coolest_from_lenstro(file_name, kwargs_result, kwargs_mcmc=None,
                             kwargs_lens_light_mcmc = None
                         else:
                             print('Light Type ', light.type, ' not yet implemented.')
-                        if kwargs_mcmc is not None:
+                        if (kwargs_mcmc is not None) & (light.type in available_profiles):
                             if light.type == 'LensedPS':
                                 kwargs_ps_mcmc = [arg[idx_ps] for arg in kwargs_mcmc['args_ps']]
 
@@ -488,6 +489,8 @@ def update_coolest_from_lenstro(file_name, kwargs_result, kwargs_mcmc=None,
                         elif light.type == 'LensedPS':
                             update.lensed_point_source_update(light, kwargs_ps, kwargs_ps_mcmc)
                             idx_ps += 1
+                        else:
+                            pass
 
                 if (galac.redshift <= min_red) and (galac.redshift >= max_red):
                     print('REDSHIFT ', galac.redshift, ' is not in the range ]', min_red, ',', max_red, '[')
@@ -498,7 +501,7 @@ def update_coolest_from_lenstro(file_name, kwargs_result, kwargs_mcmc=None,
 
                     kwargs_lens = kwargs_result['kwargs_lens'][idx_lens]
                     kwargs_lens_mcmc = None
-                    if kwargs_mcmc is not None:
+                    if (kwargs_mcmc is not None) & (shear_idx.type in available_profiles):
                         kwargs_lens_mcmc = [arg[idx_lens] for arg in kwargs_mcmc['args_lens']]
 
                     if shear_idx.type == 'ExternalShear':
@@ -506,6 +509,7 @@ def update_coolest_from_lenstro(file_name, kwargs_result, kwargs_mcmc=None,
                         idx_lens += 1
                     else:
                         print("type of Shear ", shear_idx.type, " not implemented")
+
             else:
                 print("Lensing entity of type ", lensing_enity.type, " is unknown.")
 
@@ -516,7 +520,8 @@ def update_coolest_from_lenstro(file_name, kwargs_result, kwargs_mcmc=None,
     return
 
 def create_kwargs_mcmc_from_chain_list(chain_list, kwargs_model, kwargs_params, kwargs_data, kwargs_psf,
-                                       kwargs_numerics, kwargs_constraints, image_likelihood_mask=None, idx_chain=-1, likelihood_threshold=None):
+                                       kwargs_numerics, kwargs_constraints, image_likelihood_mask=None, idx_chain=-1,
+                                       likelihood_threshold=None):
     """
     function to construct kwargs_mcmc in the right format for the "update_coolest_from_lenstro" function
 
@@ -535,8 +540,8 @@ def create_kwargs_mcmc_from_chain_list(chain_list, kwargs_model, kwargs_params, 
                        (with linear parameters etc)
 
     """
-    par_buf = chain_list2[idx_chain][1]
-    dist_buf = chain_list2[idx_chain][3]
+    par_buf = chain_list[idx_chain][1]
+    dist_buf = chain_list[idx_chain][3]
 
     kwargs_lens_init, kwargs_lens_sigma, kwargs_fixed_lens, kwargs_lower_lens, kwargs_upper_lens = kwargs_params[
         'lens_model']
@@ -563,6 +568,9 @@ def create_kwargs_mcmc_from_chain_list(chain_list, kwargs_model, kwargs_params, 
     args_lens_light = []
     args_ps = []
     for w in range(len(dist_buf)):
+        if likelihood_threshold is not None:
+            if dist_buf[w] < likelihood_threshold :
+                pass
         kwargs_return = Param_class.args2kwargs(par_buf[w])
         ImLin.image_linear_solve(**kwargs_return)
         args_lens.append(kwargs_return['kwargs_lens'])

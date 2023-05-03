@@ -40,7 +40,7 @@ class ModelAPI(object):
         :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens
          models. If None, 'z_source' is used.
         :param tabulated_deflection_angles: a class that returns deflection angles given a set of (x, y) coordinates.
-        Effectively a fixed lens model. See documentation in Profiles.numerical_alpha
+         Effectively a fixed lens model. See documentation in Profiles.numerical_alpha
         """
         if lens_model_list is None:
             lens_model_list = []

@@ -67,8 +67,8 @@ def create_class_instances(lens_model_list=None, z_lens=None, z_source=None, z_s
      half-light radius, if False, uses the product average of semi-major and semi-minor axis. If None, uses the
      convention in the lenstronomy yaml setting (which by default is =False)
     :param tabulated_deflection_angles: a user-specified class with a call method that returns deflection angles given
-    (x, y) coordinates on the sky. This class gets passed to the lens model class TabulatedDeflections
-    :return:
+     (x, y) coordinates on the sky. This class gets passed to the lens model class TabulatedDeflections
+    :return: lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class
     """
     if lens_model_list is None:
         lens_model_list = []

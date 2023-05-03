@@ -16,7 +16,8 @@ class LensedPositions(PSBase):
     #    super(LensedPositions, self).__init__(lens_model=lens_model, fixed_magnification=fixed_magnification,
     #                                          additional_image=additional_image)
 
-    def image_position(self, kwargs_ps, kwargs_lens=None, magnification_limit=None, kwargs_lens_eqn_solver=None):
+    def image_position(self, kwargs_ps, kwargs_lens=None, magnification_limit=None, kwargs_lens_eqn_solver=None,
+                       additional_images=False):
         """
         on-sky image positions
 
@@ -27,9 +28,11 @@ class LensedPositions(PSBase):
          images will be computed that exceed the lensing magnification (absolute value) limit
         :param kwargs_lens_eqn_solver: keyword arguments specifying the numerical settings for the lens equation solver
          see LensEquationSolver() class for details
+        :param additional_images: if True, solves the lens equation for additional images
+        :type additional_images: bool
         :return: image positions in x, y as arrays
         """
-        if self._additional_image is True:
+        if self.additional_images is True or additional_images:
             if kwargs_lens_eqn_solver is None:
                 kwargs_lens_eqn_solver = {}
             ra_source, dec_source = self.source_position(kwargs_ps, kwargs_lens)

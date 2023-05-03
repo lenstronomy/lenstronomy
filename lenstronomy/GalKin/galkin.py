@@ -70,7 +70,7 @@ class Galkin(GalkinModel, GalkinObservation):
         :param kwargs_mass: mass model parameters (following lenstronomy lens model conventions)
         :param kwargs_light: deflector light parameters (following lenstronomy light model conventions)
         :param kwargs_anisotropy: anisotropy parameters, may vary according to anisotropy type chosen.
-            We refer to the Anisotropy() class for details on the parameters.
+         We refer to the Anisotropy() class for details on the parameters.
         :param sampling_number: int, number of spectral sampling of the light distribution
         :return: integrated LOS velocity dispersion in units [km/s]
         """

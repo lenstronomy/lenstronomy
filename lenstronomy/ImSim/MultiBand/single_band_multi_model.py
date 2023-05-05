@@ -17,7 +17,7 @@ class SingleBandMultiModel(ImageLinearFit):
     These arguments should be lists of length the number of imaging bands available and each entry in the list
     is a list of integers specifying the model components being evaluated for the specific band.
 
-    E.g. there are two bands and you want to different light profiles being modeled.
+    E.g. there are two bands, and you want to different light profiles being modeled.
     - you define two different light profiles lens_light_model_list = ['SERSIC', 'SERSIC']
     - set index_lens_light_model_list = [[0], [1]]
     - (optional) for now all the parameters between the two light profiles are independent in the model. You have

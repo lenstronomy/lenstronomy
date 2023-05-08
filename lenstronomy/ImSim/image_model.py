@@ -28,7 +28,8 @@ class ImageModel(object):
         :param lens_light_model_class: instance of LightModel() class describing the lens light parameters
         :param point_source_class: instance of PointSource() class describing the point sources
         :param kwargs_numerics: keyword arguments with various numeric description (see ImageNumerics class for options)
-        :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver (see SLITronomy documentation)
+        :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver
+         (see SLITronomy documentation)
         """
 
         self.type = 'single-band'
@@ -124,17 +125,36 @@ class ImageModel(object):
         :param k: integer, if set, will only return the model of the specific index
         :return: 2d array of surface brightness pixels
         """
+        return self._source_surface_brightness(kwargs_source, kwargs_lens, kwargs_extinction=kwargs_extinction,
+                                               kwargs_special=kwargs_special, unconvolved=unconvolved,
+                                               de_lensed=de_lensed, k=k,
+                                               update_pixelbased_mapping=update_pixelbased_mapping)
+
+    def _source_surface_brightness(self, kwargs_source, kwargs_lens=None, kwargs_extinction=None, kwargs_special=None,
+                                  unconvolved=False, de_lensed=False, k=None, update_pixelbased_mapping=True):
+        """
+
+        computes the source surface brightness distribution
+
+        :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
+        :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
+        :param kwargs_extinction: list of keyword arguments of extinction model
+        :param unconvolved: if True: returns the unconvolved light distribution (prefect seeing)
+        :param de_lensed: if True: returns the un-lensed source surface brightness profile, otherwise the lensed.
+        :param k: integer, if set, will only return the model of the specific index
+        :return: 2d array of surface brightness pixels
+        """
         if len(self.SourceModel.profile_type_list) == 0:
             return np.zeros(self.Data.num_pixel_axes)
         if self._pixelbased_bool is True:
-            return self._source_surface_brightness_pixelbased(kwargs_source, kwargs_lens=kwargs_lens, 
-                                                       kwargs_extinction=kwargs_extinction, 
+            return self._source_surface_brightness_pixelbased(kwargs_source, kwargs_lens=kwargs_lens,
+                                                       kwargs_extinction=kwargs_extinction,
                                                        kwargs_special=kwargs_special,
                                                        unconvolved=unconvolved, de_lensed=de_lensed, k=k,
                                                        update_mapping=update_pixelbased_mapping)
         else:
-            return self._source_surface_brightness_analytical(kwargs_source, kwargs_lens=kwargs_lens, 
-                                                       kwargs_extinction=kwargs_extinction, 
+            return self._source_surface_brightness_analytical(kwargs_source, kwargs_lens=kwargs_lens,
+                                                       kwargs_extinction=kwargs_extinction,
                                                        kwargs_special=kwargs_special,
                                                        unconvolved=unconvolved, de_lensed=de_lensed, k=k)
 
@@ -203,6 +223,17 @@ class ImageModel(object):
         :param unconvolved: if True, returns unconvolved surface brightness (perfect seeing), otherwise convolved with PSF kernel
         :return: 2d array of surface brightness pixels
         """
+        return self._lens_surface_brightness(kwargs_lens_light, unconvolved=unconvolved, k=k)
+
+    def _lens_surface_brightness(self, kwargs_lens_light, unconvolved=False, k=None):
+        """
+
+        computes the lens surface brightness distribution
+
+        :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
+        :param unconvolved: if True, returns unconvolved surface brightness (perfect seeing), otherwise convolved with PSF kernel
+        :return: 2d array of surface brightness pixels
+        """
         if self._pixelbased_bool is True:
             if unconvolved is True:
                 raise ValueError("Lens light pixel-based modelling does not perform deconvolution")
@@ -249,6 +280,24 @@ class ImageModel(object):
         computes the point source positions and paints PSF convolutions on them
 
         :param kwargs_ps:
+        :param kwargs_lens:
+        :param kwargs_special:
+        :param unconvolved:
+        :param k:
+        :return:
+        """
+        return self._point_source(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens, kwargs_special=kwargs_special,
+                                  unconvolved=unconvolved, k=k)
+
+    def _point_source(self, kwargs_ps, kwargs_lens=None, kwargs_special=None, unconvolved=False, k=None):
+        """
+
+        computes the point source positions and paints PSF convolutions on them
+
+        :param kwargs_ps:
+        :param kwargs_lens:
+        :param kwargs_special:
+        :param unconvolved:
         :param k:
         :return:
         """
@@ -280,17 +329,47 @@ class ImageModel(object):
         :param point_source_add: if True, add point sources, otherwise without
         :return: 2d array of surface brightness pixels of the simulation
         """
+        return self._image(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_extinction, kwargs_special,
+                           unconvolved, source_add, lens_light_add, point_source_add)
+
+    def _image(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
+              kwargs_extinction=None, kwargs_special=None, unconvolved=False, source_add=True, lens_light_add=True,
+              point_source_add=True):
+        """
+
+        make an image with a realisation of linear parameter values "param"
+
+        :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
+        :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
+        :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
+        :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
+        :param unconvolved: if True: returns the unconvolved light distribution (prefect seeing)
+        :param source_add: if True, compute source, otherwise without
+        :param lens_light_add: if True, compute lens light, otherwise without
+        :param point_source_add: if True, add point sources, otherwise without
+        :return: 2d array of surface brightness pixels of the simulation
+        """
         model = np.zeros(self.Data.num_pixel_axes)
         if source_add is True:
-            model += self.source_surface_brightness(kwargs_source, kwargs_lens, kwargs_extinction=kwargs_extinction,
+            model += self._source_surface_brightness(kwargs_source, kwargs_lens, kwargs_extinction=kwargs_extinction,
                                                     kwargs_special=kwargs_special, unconvolved=unconvolved)
         if lens_light_add is True:
-            model += self.lens_surface_brightness(kwargs_lens_light, unconvolved=unconvolved)
+            model += self._lens_surface_brightness(kwargs_lens_light, unconvolved=unconvolved)
         if point_source_add is True:
-            model += self.point_source(kwargs_ps, kwargs_lens, kwargs_special=kwargs_special, unconvolved=unconvolved)
+            model += self._point_source(kwargs_ps, kwargs_lens, kwargs_special=kwargs_special, unconvolved=unconvolved)
         return model
 
     def extinction_map(self, kwargs_extinction=None, kwargs_special=None):
+        """
+        differential extinction per pixel
+
+        :param kwargs_extinction: list of keyword arguments corresponding to the optical depth models tau, such that extinction is exp(-tau)
+        :param kwargs_special: keyword arguments, additional parameter to the extinction
+        :return: 2d array of size of the image
+        """
+        return self._extinction_map(kwargs_extinction, kwargs_special)
+
+    def _extinction_map(self, kwargs_extinction=None, kwargs_special=None):
         """
         differential extinction per pixel
 

@@ -377,7 +377,7 @@ class ModelBandPlot(ModelBand):
         y_grid_source += y_center
         coords_source = Coordinates(self._coords.transform_pix2angle * deltaPix_source / self._deltaPix, ra_at_xy_0=x_grid_source[0],
                                     dec_at_xy_0=y_grid_source[0])
-        error_map_source = self._bandmodel._error_map_source(self._kwargs_source_partial, x_grid_source, y_grid_source,
+        error_map_source = self._bandmodel.error_map_source(self._kwargs_source_partial, x_grid_source, y_grid_source,
                                                             self._cov_param, model_index_select=False)
         error_map_source = util.array2image(error_map_source)
         d_s = numPix * deltaPix_source

@@ -320,19 +320,19 @@ class SingleBandMultiModel(ImageLinearFit):
         :param kwargs_ps:
         :return:
         """
-        if self._index_lens_model is None:
+        if self._index_lens_model is None or kwargs_lens is None:
             kwargs_lens_i = kwargs_lens
         else:
             kwargs_lens_i = [kwargs_lens[k] for k in self._index_lens_model]
-        if self._index_source is None:
+        if self._index_source is None or kwargs_source is None:
             kwargs_source_i = kwargs_source
         else:
             kwargs_source_i = [kwargs_source[k] for k in self._index_source]
-        if self._index_lens_light is None:
+        if self._index_lens_light is None or kwargs_lens_light is None:
             kwargs_lens_light_i = kwargs_lens_light
         else:
             kwargs_lens_light_i = [kwargs_lens_light[k] for k in self._index_lens_light]
-        if self._index_point_source is None:
+        if self._index_point_source is None or kwargs_ps is None:
             kwargs_ps_i = kwargs_ps
         else:
             kwargs_ps_i = [kwargs_ps[k] for k in self._index_point_source]

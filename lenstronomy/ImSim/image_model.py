@@ -380,8 +380,9 @@ class ImageModel(object):
         ra_grid, dec_grid = self.ImageNumerics.coordinates_evaluate
         extinction = self._extinction.extinction(ra_grid, dec_grid, kwargs_extinction=kwargs_extinction,
                                                  kwargs_special=kwargs_special)
+        print(extinction, 'test extinction')
         extinction_array = np.ones_like(ra_grid) * extinction
-        extinction = self.ImageNumerics.re_size_convolve(extinction_array, unconvolved=True)
+        extinction = self.ImageNumerics.re_size_convolve(extinction_array, unconvolved=True) / self.ImageNumerics.grid_class.pixel_width ** 2
         return extinction
 
     @staticmethod

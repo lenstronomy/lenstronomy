@@ -1,5 +1,6 @@
 import pytest
 import numpy.testing as npt
+import numpy as np
 
 from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModel
 
@@ -54,6 +55,7 @@ class TestSingleBandMultiModel(object):
         imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class,
                                 lens_light_model_class, point_source_class=point_source_class,
                                 kwargs_numerics=kwargs_numerics)
+        self.imageModel = imageModel
         image_sim = simulation_util.simulate_simple(imageModel, kwargs_lens, kwargs_source, kwargs_lens_light,
                                                     kwargs_ps)
 
@@ -92,6 +94,46 @@ class TestSingleBandMultiModel(object):
         assert num_linear == 3
         num_linear = self.single_band_no_linear.num_param_linear(**self.kwargs_params)
         assert num_linear == 0
+
+    def test_image(self):
+        image = self.single_band.image(**self.kwargs_params)
+        image_ = self.imageModel.image(**self.kwargs_params)
+        npt.assert_almost_equal(image, image_)
+
+    def test_source_surface_brightness(self):
+        image = self.single_band.source_surface_brightness(kwargs_source=self.kwargs_params['kwargs_source'],
+                                                           kwargs_lens=self.kwargs_params['kwargs_lens'])
+        image_ = self.imageModel.source_surface_brightness(kwargs_source=self.kwargs_params['kwargs_source'],
+                                                           kwargs_lens=self.kwargs_params['kwargs_lens'])
+        npt.assert_almost_equal(image, image_)
+
+    def test_lens_surface_brightness(self):
+        image = self.single_band.lens_surface_brightness(kwargs_lens_light=self.kwargs_params['kwargs_lens_light'])
+        image_ = self.imageModel.lens_surface_brightness(kwargs_lens_light=self.kwargs_params['kwargs_lens_light'])
+        npt.assert_almost_equal(image, image_)
+
+    def test_point_source(self):
+        image = self.single_band.point_source(kwargs_lens=self.kwargs_params['kwargs_lens'],
+                                              kwargs_ps=self.kwargs_params['kwargs_ps'])
+        image_ = self.imageModel.point_source(kwargs_lens=self.kwargs_params['kwargs_lens'],
+                                              kwargs_ps=self.kwargs_params['kwargs_ps'])
+        npt.assert_almost_equal(image, image_)
+
+    def test_update_linear_kwargs(self):
+        num = self.single_band.num_param_linear(self.kwargs_params['kwargs_lens'], self.kwargs_params['kwargs_source'],
+                                                self.kwargs_params['kwargs_lens_light'],
+                                                self.kwargs_params['kwargs_ps'])
+        param = np.ones(num) * 10
+        kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps = self.single_band.update_linear_kwargs(param,
+                                              kwargs_lens=self.kwargs_params['kwargs_lens'],
+                                              kwargs_source=self.kwargs_params['kwargs_ps'],
+                                              kwargs_lens_light=self.kwargs_params['kwargs_lens_light'],
+                                              kwargs_ps=self.kwargs_params['kwargs_ps'])
+        assert kwargs_source[0]['amp'] == 10
+
+    def test_extinction_map(self):
+        extinction_map = self.single_band.extinction_map(kwargs_extinction=None, kwargs_special=None)
+        npt.assert_almost_equal(extinction_map, 1)
 
 
 if __name__ == '__main__':

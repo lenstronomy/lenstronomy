@@ -102,7 +102,7 @@ class MultiBandImageReconstruction(object):
 class ModelBand(object):
     """
     class to plot a single band given the full modeling results
-    This class has it's specific role when the linear inference is performed on the joint band level and/or when only
+    This class has its specific role when the linear inference is performed on the joint band level and/or when only
     a subset of model components get used for this specific band in the modeling.
 
     """
@@ -128,7 +128,7 @@ class ModelBand(object):
                                                likelihood_mask_list=image_likelihood_mask_list, band_index=band_index)
         self._kwargs_special_partial = kwargs_params.get('kwargs_special', None)
         kwarks_lens_partial, kwargs_source_partial, kwargs_lens_light_partial, kwargs_ps_partial, self._kwargs_extinction_partial = self._bandmodel.select_kwargs(**kwargs_params)
-        self._kwargs_lens_partial, self._kwargs_source_partial, self._kwargs_lens_light_partial, self._kwargs_ps_partial = self._bandmodel.update_linear_kwargs(param, kwarks_lens_partial, kwargs_source_partial, kwargs_lens_light_partial, kwargs_ps_partial)
+        self._kwargs_lens_partial, self._kwargs_source_partial, self._kwargs_lens_light_partial, self._kwargs_ps_partial = self._bandmodel._update_linear_kwargs(param, kwarks_lens_partial, kwargs_source_partial, kwargs_lens_light_partial, kwargs_ps_partial)
         # this is an (out-commented) example of how to re-create the model in this band
         # model_new = self.bandmodel.image(self._kwargs_lens_partial, self._kwargs_source_partial, self._kwargs_lens_light_partial, self._kwargs_ps_partial, self._kwargs_special_partial, self._kwargs_extinction_partial)
 

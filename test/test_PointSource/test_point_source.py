@@ -32,6 +32,13 @@ class TestPointSource(object):
         npt.assert_almost_equal(x_image_list[1], 1, decimal=8)
         npt.assert_almost_equal(x_image_list[2][0], self.x_pos[0], decimal=8)
 
+        x_image_list, y_image_list = self.PointSource.image_position(kwargs_ps=self.kwargs_ps,
+                                                                     kwargs_lens=self.kwargs_lens,
+                                                                     original_position=True, additional_images=True)
+        npt.assert_almost_equal(x_image_list[0][0], self.x_pos[0], decimal=8)
+        npt.assert_almost_equal(x_image_list[1], 1, decimal=8)
+        npt.assert_almost_equal(x_image_list[2][0], self.x_pos[0], decimal=8)
+
     def test_source_position(self):
         x_source_list, y_source_list = self.PointSource.source_position(kwargs_ps=self.kwargs_ps, kwargs_lens=self.kwargs_lens)
         npt.assert_almost_equal(x_source_list[0], self.sourcePos_x, decimal=8)

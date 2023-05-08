@@ -356,7 +356,8 @@ class ModelBandPlot(ModelBand):
         """
         plots the uncertainty in the surface brightness in the source from the linear inversion by taking the diagonal
         elements of the covariance matrix of the inversion of the basis set to be propagated to the source plane.
-        #TODO illustration of the uncertainties in real space with the full covariance matrix is subtle. The best way is probably to draw realizations from the covariance matrix.
+        #TODO illustration of the uncertainties in real space with the full covariance matrix is subtle.
+        # The best way is probably to draw realizations from the covariance matrix.
 
         :param ax: matplotlib axis instance
         :param numPix: number of pixels in plot per axis
@@ -495,7 +496,7 @@ class ModelBandPlot(ModelBand):
         :param kwargs: kwargs to send matplotlib.pyplot.matshow()
         :return:
         """
-        model = self._bandmodel.image(self._kwargs_lens_partial, self._kwargs_source_partial, self._kwargs_lens_light_partial,
+        model = self._bandmodel._image(self._kwargs_lens_partial, self._kwargs_source_partial, self._kwargs_lens_light_partial,
                                       self._kwargs_ps_partial, unconvolved=unconvolved, source_add=source_add,
                                       lens_light_add=lens_light_add, point_source_add=point_source_add)
         if v_min is None:
@@ -524,7 +525,7 @@ class ModelBandPlot(ModelBand):
                                 source_add=False, lens_light_add=False,
                                 font_size=15
                                 ):
-        model = self._bandmodel.image(self._kwargs_lens_partial, self._kwargs_source_partial, self._kwargs_lens_light_partial,
+        model = self._bandmodel._image(self._kwargs_lens_partial, self._kwargs_source_partial, self._kwargs_lens_light_partial,
                                       self._kwargs_ps_partial, unconvolved=False, source_add=source_add,
                                       lens_light_add=lens_light_add, point_source_add=point_source_add)
         if v_min is None:
@@ -612,7 +613,7 @@ class ModelBandPlot(ModelBand):
         :param v_max:
         :return:
         """
-        model = self._bandmodel.extinction_map(self._kwargs_extinction_partial, self._kwargs_special_partial)
+        model = self._bandmodel._extinction_map(self._kwargs_extinction_partial, self._kwargs_special_partial)
         if v_min is None:
             v_min = 0
         if v_max is None:

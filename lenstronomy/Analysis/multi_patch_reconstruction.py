@@ -42,6 +42,7 @@ class MultiPatchReconstruction(MultiBandImageReconstruction):
             self._pixel_grid_joint = PixelGrid(**kwargs_pixel_grid)
         else:
             self._pixel_grid_joint = self._joint_pixel_grid(multi_band_list)
+        self._kwargs_params = kwargs_params
 
     @property
     def pixel_grid_joint(self):
@@ -107,8 +108,8 @@ class MultiPatchReconstruction(MultiBandImageReconstruction):
         for model_band in self.model_band_list:
             if model_band is not None:
                 image_model = model_band.image_model_class
-                kwargs_params = model_band.kwargs_model
-                model = image_model.image(**kwargs_params)
+                # kwargs_params = model_band.kwargs_model
+                model = image_model.image(**self._kwargs_params)
                 data_class_i = image_model.Data
                 # evaluate pixel of zero point with the base coordinate system
                 ra0, dec0 = data_class_i.radec_at_xy_0
@@ -178,9 +179,8 @@ class MultiPatchReconstruction(MultiBandImageReconstruction):
         x_grid_source += center_x
         y_grid_source += center_y
 
-        pixel_grid = PixelGrid(nx=num_pix, ny=num_pix,transform_pix2angle=Mpix2coord,
-                                    ra_at_xy_0=ra_at_xy_0 + center_x,
-                                    dec_at_xy_0=dec_at_xy_0 + center_y)
+        pixel_grid = PixelGrid(nx=num_pix, ny=num_pix,transform_pix2angle=Mpix2coord, ra_at_xy_0=ra_at_xy_0 + center_x,
+                               dec_at_xy_0=dec_at_xy_0 + center_y)
 
         source = image_model.SourceModel.surface_brightness(x_grid_source, y_grid_source, kwargs_source)
         source = util.array2image(source) * delta_pix ** 2

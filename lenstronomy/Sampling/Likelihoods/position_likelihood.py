@@ -112,14 +112,16 @@ class PositionLikelihood(object):
     def check_additional_images(self, kwargs_ps, kwargs_lens):
         """
         checks whether additional images have been found and placed in kwargs_ps of the first point source model
-        #TODO check for all point source models
+
         :param kwargs_ps: point source kwargs
+        :param kwargs_lens: lens model keyword arguments
         :return: bool, True if more image positions are found than originally been assigned
         """
-        ra_image_list, dec_image_list = self._pointSource.image_position(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens)
-        if len(ra_image_list) > 0:
-            if 'ra_image' in kwargs_ps[0]:
-                if len(ra_image_list[0]) > len(kwargs_ps[0]['ra_image']):
+        ra_image_list, dec_image_list = self._pointSource.image_position(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens,
+                                                                         additional_images=True)
+        for i in range(len(ra_image_list)):
+            if 'ra_image' in kwargs_ps[i]:
+                if len(ra_image_list[i]) > len(kwargs_ps[i]['ra_image']):
                     return True
         return False
 
@@ -160,10 +162,13 @@ class PositionLikelihood(object):
         :param sigma: 1-sigma uncertainty in the measured position of the images
         :return: log likelihood of the model predicted image positions given the data/measured image positions.
         """
-        ra_image_list, dec_image_list = self._pointSource.image_position(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens)
+        ra_image_list, dec_image_list = self._pointSource.image_position(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens,
+                                                                         original_position=True)
         logL = 0
         for i in range(len(ra_image_list)):  # sum over the images of the different model components
-            logL += -np.sum(((ra_image_list[i] - self._ra_image_list[i])**2 + (dec_image_list[i] - self._dec_image_list[i])**2) / sigma**2 / 2)
+            len_i = min(len(self._ra_image_list[i]), len(ra_image_list[i]))
+            logL += -np.sum(((ra_image_list[i][:len_i] - self._ra_image_list[i][:len_i])**2 +
+                             (dec_image_list[i][:len_i] - self._dec_image_list[i][:len_i])**2) / sigma**2 / 2)
         return logL
 
     def source_position_likelihood(self, kwargs_lens, kwargs_ps, sigma, hard_bound_rms=None, verbose=False):

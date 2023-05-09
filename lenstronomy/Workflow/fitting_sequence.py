@@ -54,9 +54,10 @@ class FittingSequence(object):
                                                      num_bands=len(self.multi_band_list))
         self._mcmc_init_samples = None
 
+    @property
     def kwargs_fixed(self):
         """
-        returns the updated kwargs_fixed from the update Manager
+        Returns the updated kwargs_fixed from the update manager.
 
         :return: list of fixed kwargs, see UpdateManager()
         """
@@ -329,8 +330,8 @@ class FittingSequence(object):
         sigma_start = param_class.kwargs2args(**kwargs_sigma)
         lower_start = np.array(init_pos) - np.array(sigma_start) * sigma_scale
         upper_start = np.array(init_pos) + np.array(sigma_start) * sigma_scale
-        num_param, param_list = param_class.num_param()
 
+        num_param, param_list = param_class.num_param()
         # run PSO
         sampler = Sampler(likelihoodModule=self.likelihoodModule)
         result, chain = sampler.pso(n_particles, n_iterations, lower_start, upper_start, init_pos=init_pos,
@@ -468,6 +469,7 @@ class FittingSequence(object):
         """
         aligns the coordinate systems of different exposures within a fixed model parameterisation by executing a PSO
         with relative coordinate shifts as free parameters
+
         :param n_particles: number of particles in the Particle Swarm Optimization
         :param n_iterations: number of iterations in the optimization process
         :param align_offset: aligns shift in Ra and Dec

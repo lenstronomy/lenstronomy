@@ -11,7 +11,7 @@ class TestLensedPosition(object):
         self.kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}]
         self.ps_mag = LensedPositions(lens_model=lens_model, fixed_magnification=True)
         self.ps = LensedPositions(lens_model=lens_model, fixed_magnification=False)
-        self.ps_add = LensedPositions(lens_model=lens_model, fixed_magnification=[False], additional_image=True)
+        self.ps_add = LensedPositions(lens_model=lens_model, fixed_magnification=[False], additional_images=True)
         self.kwargs = {'point_amp': [2, 1], 'ra_image': [0, 1.2], 'dec_image': [0, 0]}
         self.kwargs_mag = {'source_amp': 2, 'ra_image': [0, 1.2], 'dec_image': [0, 0]}
 

@@ -3,7 +3,7 @@ import numpy as np
 from coolest.template.classes.parameter import PointEstimate
 from coolest.template.classes.probabilities import PosteriorStatistics
 
-def shapelet_amp_lenstro2COOLEST(value):
+def shapelet_amp_lenstronomy_to_coolest(value):
     """
     Transforms shapelets coefficients from lenstronomy conventions (x following ra, to the left) to
     COOLEST conventions (x to the right)
@@ -360,7 +360,7 @@ def shapelets_update(light, kwargs_light, kwargs_light_mcmc=None):
      - : updated light
     """
     light.parameters['amps'].set_point_estimate(
-        PointEstimate(shapelet_amp_lenstro2COOLEST(np.ndarray.tolist(kwargs_light['amp']))))
+        PointEstimate(shapelet_amp_lenstronomy_to_coolest(np.ndarray.tolist(kwargs_light['amp']))))
     light.parameters['beta'].set_point_estimate(PointEstimate(float(kwargs_light['beta'])))
     light.parameters['n_max'].set_point_estimate(PointEstimate(int(kwargs_light['n_max'])))
     light.parameters['center_x'].set_point_estimate(PointEstimate(-float(kwargs_light['center_x'])))
@@ -370,10 +370,10 @@ def shapelets_update(light, kwargs_light, kwargs_light_mcmc=None):
         a = [arg['amp'] for arg in kwargs_light_mcmc]
         a_mean = np.mean(a, axis=0)
         a_16, a_50, a_84 = np.quantile(a, [0.16, 0.5, 0.84], axis=0)
-        light.parameters['amps'].set_posterior(PosteriorStatistics(shapelet_amp_lenstro2COOLEST(np.ndarray.tolist(a_mean)),
-                                                                   shapelet_amp_lenstro2COOLEST(np.ndarray.tolist(a_50)),
-                                                                   shapelet_amp_lenstro2COOLEST(np.ndarray.tolist(a_16)),
-                                                                   shapelet_amp_lenstro2COOLEST(np.ndarray.tolist(a_84))))
+        light.parameters['amps'].set_posterior(PosteriorStatistics(shapelet_amp_lenstronomy_to_coolest(np.ndarray.tolist(a_mean)),
+                                                                   shapelet_amp_lenstronomy_to_coolest(np.ndarray.tolist(a_50)),
+                                                                   shapelet_amp_lenstronomy_to_coolest(np.ndarray.tolist(a_16)),
+                                                                   shapelet_amp_lenstronomy_to_coolest(np.ndarray.tolist(a_84))))
 
         b = [arg['beta'] for arg in kwargs_light_mcmc]
         b_mean = np.mean(b)

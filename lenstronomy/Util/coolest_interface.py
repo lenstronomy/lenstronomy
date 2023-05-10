@@ -8,7 +8,7 @@ from lenstronomy.Sampling.parameters import Param
 import lenstronomy.Util.class_creator as class_util
 
 
-def create_lenstro_from_coolest(file_name):
+def create_lenstronomy_from_coolest(file_name):
     """
     Creates lenstronomy typical kwargs from a COOLEST (JSON) file
 
@@ -315,7 +315,7 @@ def create_lenstro_from_coolest(file_name):
     return return_dict
 
 
-def update_coolest_from_lenstro(file_name, kwargs_result, kwargs_mcmc=None,
+def update_coolest_from_lenstronomy(file_name, kwargs_result, kwargs_mcmc=None,
                             ending='_update'):
     """
     Function to update a json file already containing a model with the results of this model fitting
@@ -523,7 +523,7 @@ def create_kwargs_mcmc_from_chain_list(chain_list, kwargs_model, kwargs_params, 
                                        kwargs_numerics, kwargs_constraints, image_likelihood_mask=None, idx_chain=-1,
                                        likelihood_threshold=None):
     """
-    function to construct kwargs_mcmc in the right format for the "update_coolest_from_lenstro" function
+    function to construct kwargs_mcmc in the right format for the "update_coolest_from_lenstronomy" function
 
     Input:
     ------

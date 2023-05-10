@@ -2,7 +2,7 @@ import numpy as np
 import coolest
 
 
-def shapelet_amp_COOLEST2lenstro(value):
+def shapelet_amp_coolest_to_lenstronomy(value):
     """
     Transforms shapelets coefficients from COOLEST conventions (x to the right)
     to lenstronomy conventions (x following ra, to the left)
@@ -71,7 +71,7 @@ def gextphiextCOOLEST2g1g2lenstro(gamma_ext, phi_ext):
         return gamma1, gamma2
 
 
-def elliboundsCOOLEST2lenstro(q_down, q_up, phi_down, phi_up):
+def ellibounds_coolest_to_lenstronomy(q_down, q_up, phi_down, phi_up):
     if None in [q_down, q_up, phi_down, phi_up]:
         return None, None, None, None
     else:
@@ -86,7 +86,7 @@ def elliboundsCOOLEST2lenstro(q_down, q_up, phi_down, phi_up):
         return e1_down, e1_up, e2_down, e2_up
 
 
-def shearboundsCOOLEST2lenstro(gamma_ext_down, gamma_ext_up, phi_ext_down, phi_ext_up):
+def shearbounds_coolest_to_lenstronomy(gamma_ext_down, gamma_ext_up, phi_ext_down, phi_ext_up):
     if None in [gamma_ext_down, gamma_ext_up, phi_ext_down, phi_ext_up]:
         return None, None, None, None
     else:
@@ -133,7 +133,7 @@ def shear(shear_idx, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens
             print(shear_name, " not known")
     gamma1, gamma2 = gextphiextCOOLEST2g1g2lenstro(gammaext, psiext)
     gamma1_fixed, gamma2_fixed = gextphiextCOOLEST2g1g2lenstro(gammaext_fixed, psiext_fixed)
-    gamma1_down, gamma1_up, gamma2_down, gamma2_up = shearboundsCOOLEST2lenstro(gammaext_down, gammaext_up, psiext_down,
+    gamma1_down, gamma1_up, gamma2_down, gamma2_up = shearbounds_coolest_to_lenstronomy(gammaext_down, gammaext_up, psiext_down,
                                                                             psiext_up)
 
     kw_1 = {'gamma1': gamma1, 'gamma2': gamma2, 'ra_0': 0., 'dec_0': 0.}
@@ -229,7 +229,7 @@ def pemd(mass, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens_up, k
 
     e1, e2 = qphiCOOLEST2e1e2lenstro(q, phi)
     e1_fixed, e2_fixed = qphiCOOLEST2e1e2lenstro(q_fixed, phi_fixed)
-    e1_down, e1_up, e2_down, e2_up = elliboundsCOOLEST2lenstro(q_down, q_up, phi_down, phi_up)
+    e1_down, e1_up, e2_down, e2_up = ellibounds_coolest_to_lenstronomy(q_down, q_up, phi_down, phi_up)
 
     kw_1 = {'theta_E': te, 'gamma': gamma, 'e1': e1, 'e2': e2, 'center_x': center_x, 'center_y': center_y}
     kw_up_1 = {'theta_E': te_up, 'gamma': gamma_up, 'e1': e1_up, 'e2': e2_up, 'center_x': center_x_up,
@@ -322,7 +322,7 @@ def sie(mass, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens_up, kw
 
     e1, e2 = qphiCOOLEST2e1e2lenstro(q, phi)
     e1_fixed, e2_fixed = qphiCOOLEST2e1e2lenstro(q_fixed, phi_fixed)
-    e1_down, e1_up, e2_down, e2_up = elliboundsCOOLEST2lenstro(q_down, q_up, phi_down, phi_up)
+    e1_down, e1_up, e2_down, e2_up = ellibounds_coolest_to_lenstronomy(q_down, q_up, phi_down, phi_up)
 
     kw_1 = {'theta_E': te, 'e1': e1, 'e2': e2, 'center_x': center_x, 'center_y': center_y}
     kw_up_1 = {'theta_E': te_up, 'e1': e1_up, 'e2': e2_up, 'center_x': center_x_up,
@@ -426,7 +426,7 @@ def sersic(light, light_model_list, kwargs_light, kwargs_light_init, kwargs_ligh
 
     e1, e2 = qphiCOOLEST2e1e2lenstro(q, phi)
     e1_fixed, e2_fixed = qphiCOOLEST2e1e2lenstro(q_fixed, phi_fixed)
-    e1_down, e1_up, e2_down, e2_up = elliboundsCOOLEST2lenstro(q_down, q_up, phi_down, phi_up)
+    e1_down, e1_up, e2_down, e2_up = ellibounds_coolest_to_lenstronomy(q_down, q_up, phi_down, phi_up)
 
     kw_1 = {'amp': amp, 'R_sersic': R, 'n_sersic': n, 'e1': e1, 'e2': e2, 'center_x': cx, 'center_y': cy}
     kw_up_1 = {'R_sersic': R_up, 'n_sersic': n_up, 'e1': e1_up, 'e2': e2_up,
@@ -511,9 +511,9 @@ def shapelets(light, light_model_list, kwargs_light, kwargs_light_init, kwargs_l
             cy_down = getattr(light_param.definition_range, 'min_value')
             cy_fixed = cy if getattr(light_param, 'fixed') else None
         elif light_name == 'amps':
-            amp = shapelet_amp_COOLEST2lenstro(getattr(light_param.point_estimate, 'value'))
-            amp_up = shapelet_amp_COOLEST2lenstro(getattr(light_param.definition_range, 'max_value'))
-            amp_down = shapelet_amp_COOLEST2lenstro(getattr(light_param.definition_range, 'min_value'))
+            amp = shapelet_amp_coolest_to_lenstronomy(getattr(light_param.point_estimate, 'value'))
+            amp_up = shapelet_amp_coolest_to_lenstronomy(getattr(light_param.definition_range, 'max_value'))
+            amp_down = shapelet_amp_coolest_to_lenstronomy(getattr(light_param.definition_range, 'min_value'))
             amp_fixed = amp if getattr(light_param, 'fixed') else None
         else:
             print('Parameter ', light_name, ' unknown in Shapelets profile.')

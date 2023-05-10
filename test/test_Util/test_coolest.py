@@ -4,7 +4,7 @@ import numpy as np
 import unittest
 import os
 
-from lenstronomy.Util.coolest_interface import create_lenstro_from_coolest,update_coolest_from_lenstro,create_kwargs_mcmc_from_chain_list
+from lenstronomy.Util.coolest_interface import create_lenstronomy_from_coolest,update_coolest_from_lenstro,create_kwargs_mcmc_from_chain_list
 
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
@@ -19,7 +19,7 @@ class TestCOOLESTinterface(object):
 
     def test_load(self):
         path = os.getcwd()
-        kwargs_out = create_lenstro_from_coolest(path+"/coolest_template")
+        kwargs_out = create_lenstronomy_from_coolest(path+"/coolest_template")
         print(kwargs_out)
         return
     def test_update(self):
@@ -33,8 +33,8 @@ class TestCOOLESTinterface(object):
                                              'center_y':0.01,'e1':-0.15,'e2':0.01},
                                             {'amp':12.,'R_sersic':0.02,'n_sersic':6.,'center_x':0.03,
                                              'center_y':0.01,'e1':0.,'e2':-0.15}]}
-        update_coolest_from_lenstro(path+"/coolest_template",kwargs_result,ending="_update")
-        kwargs_out = create_lenstro_from_coolest(path+"/coolest_template_update")
+        update_coolest_from_lenstronomy(path+"/coolest_template",kwargs_result,ending="_update")
+        kwargs_out = create_lenstronomy_from_coolest(path+"/coolest_template_update")
         assert kwargs_out['kwargs_params']['lens_model'][0][1]['gamma'] == kwargs_result['kwargs_lens'][1]['gamma']
         assert kwargs_out['kwargs_params']['lens_model'][0][1]['e1'] == kwargs_result['kwargs_lens'][1]['e1']
         assert kwargs_out['kwargs_params']['lens_model'][0][1]['e2'] == kwargs_result['kwargs_lens'][1]['e2']
@@ -45,7 +45,7 @@ class TestCOOLESTinterface(object):
         # use read json ; create an image ; create noise ; do fit (PSO for result + MCMC for chain)
         # create the kwargs mcmc ; upadte json
         path = os.getcwd()
-        kwargs_out = create_lenstro_from_coolest(path+"/coolest_template")
+        kwargs_out = create_lenstronomy_from_coolest(path+"/coolest_template")
 
         # IMAGE specifics
         background_rms = .005  # background noise per pixel
@@ -112,7 +112,7 @@ class TestCOOLESTinterface(object):
         # Notes :
         # All the lines above were meant to create a mock image
         # The following is basically the only lines of code you will need
-        # (after running the "create_lenstro_from_coolest" function) when you actually do the
+        # (after running the "create_lenstronomy_from_coolest" function) when you actually do the
         # modeling on a pre-existing image (with associated noise and psf proveded)
         band_list = [kwargs_out['kwargs_data'], kwargs_out['kwargs_psf'], kwargs_numerics]
         multi_band_list = [band_list]
@@ -142,6 +142,6 @@ class TestCOOLESTinterface(object):
                                            kwargs_out['kwargs_data'],kwargs_out['kwargs_psf'],kwargs_numerics,
                                            kwargs_constraints,idx_chain=1)
         # save the results (aka update the COOLEST json)
-        update_coolest_from_lenstro(path+"/coolest_template",kwargs_result, kwargs_mcmc)
+        update_coolest_from_lenstronomy(path+"/coolest_template",kwargs_result, kwargs_mcmc)
 
         return

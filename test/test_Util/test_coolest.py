@@ -4,7 +4,7 @@ import numpy as np
 import unittest
 import os
 
-from lenstronomy.Util.coolest_interface import create_lenstronomy_from_coolest,update_coolest_from_lenstro,create_kwargs_mcmc_from_chain_list
+from lenstronomy.Util.coolest_interface import create_lenstronomy_from_coolest,update_coolest_from_lenstronomy,create_kwargs_mcmc_from_chain_list
 
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
@@ -35,9 +35,12 @@ class TestCOOLESTinterface(object):
                                              'center_y':0.01,'e1':0.,'e2':-0.15}]}
         update_coolest_from_lenstronomy(path+"/coolest_template",kwargs_result,ending="_update")
         kwargs_out = create_lenstronomy_from_coolest(path+"/coolest_template_update")
-        assert kwargs_out['kwargs_params']['lens_model'][0][1]['gamma'] == kwargs_result['kwargs_lens'][1]['gamma']
-        assert kwargs_out['kwargs_params']['lens_model'][0][1]['e1'] == kwargs_result['kwargs_lens'][1]['e1']
-        assert kwargs_out['kwargs_params']['lens_model'][0][1]['e2'] == kwargs_result['kwargs_lens'][1]['e2']
+        npt.assert_almost_equal(kwargs_out['kwargs_params']['lens_model'][0][1]['gamma'],
+                                kwargs_result['kwargs_lens'][1]['gamma'], decimal=4)
+        npt.assert_almost_equal(kwargs_out['kwargs_params']['lens_model'][0][1]['e1'],
+                                kwargs_result['kwargs_lens'][1]['e1'], decimal=4)
+        npt.assert_almost_equal(kwargs_out['kwargs_params']['lens_model'][0][1]['e2'],
+                                kwargs_result['kwargs_lens'][1]['e2'], decimal=4)
 
         return
 

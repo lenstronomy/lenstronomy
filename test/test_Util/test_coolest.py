@@ -19,10 +19,6 @@ class TestCOOLESTinterface(object):
 
     def test_load(self):
         path = os.getcwd()
-        print(path)
-        os.system('ls')
-        os.system('cd test')
-        os.system('ls')
         if path[-23:] == 'lenstronomy/lenstronomy':
             path+='/test/test_Util'
         kwargs_out = create_lenstronomy_from_coolest(path+"/coolest_template")

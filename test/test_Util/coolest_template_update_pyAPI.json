@@ -36,14 +36,14 @@
                   "fixed": false,
                   "point_estimate": {
                     "py/object": "coolest.template.classes.parameter.PointEstimate",
-                    "value": 0.062428138301150016
+                    "value": 0.36819753421624485
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": 0.06163125961683182,
-                    "median": 0.061905365686725125,
-                    "percentile_16th": 0.0594451947545,
-                    "percentile_84th": 0.06379699403550054
+                    "mean": 0.36270958583286156,
+                    "median": 0.3624538489204764,
+                    "percentile_16th": 0.3613204271430777,
+                    "percentile_84th": 0.3642002834444593
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",
@@ -65,14 +65,14 @@
                   "fixed": false,
                   "point_estimate": {
                     "py/object": "coolest.template.classes.parameter.PointEstimate",
-                    "value": 67.21587217027758
+                    "value": 55.185261481606375
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": 65.08894111414742,
-                    "median": 65.1797836047843,
-                    "percentile_16th": 64.32501816731072,
-                    "percentile_84th": 65.83874643004253
+                    "mean": 54.81326414731999,
+                    "median": 54.81654916950091,
+                    "percentile_16th": 54.72398216821312,
+                    "percentile_84th": 54.89377019967739
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",
@@ -114,14 +114,14 @@
                   "fixed": false,
                   "point_estimate": {
                     "py/object": "coolest.template.classes.parameter.PointEstimate",
-                    "value": 2.0022849848837807
+                    "value": 1.5970569439199371
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": 2.0149867361815854,
-                    "median": 2.0150548672381707,
-                    "percentile_16th": 2.0111281174539064,
-                    "percentile_84th": 2.0184747455646734
+                    "mean": 1.6044909470318693,
+                    "median": 1.6048284506253494,
+                    "percentile_16th": 1.6017677043284497,
+                    "percentile_84th": 1.6072495740799566
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.GaussianPrior",
@@ -145,14 +145,14 @@
                   "fixed": false,
                   "point_estimate": {
                     "py/object": "coolest.template.classes.parameter.PointEstimate",
-                    "value": 0.4702779189832353
+                    "value": 2.1123467100378663
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": 0.4703521705704812,
-                    "median": 0.4681641840226991,
-                    "percentile_16th": 0.4596549884491627,
-                    "percentile_84th": 0.48105483583520314
+                    "mean": 2.1564616764801077,
+                    "median": 2.1571586647905954,
+                    "percentile_16th": 2.136215970698119,
+                    "percentile_84th": 2.1736421312807996
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",
@@ -174,14 +174,14 @@
                   "fixed": false,
                   "point_estimate": {
                     "py/object": "coolest.template.classes.parameter.PointEstimate",
-                    "value": 0.7033066423903995
+                    "value": 0.8780207588055268
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": 0.7454988610065735,
-                    "median": 0.7471150278779496,
-                    "percentile_16th": 0.7414117755886859,
-                    "percentile_84th": 0.7514772193238588
+                    "mean": 0.8805094974570401,
+                    "median": 0.8808749039370376,
+                    "percentile_16th": 0.8769647049004932,
+                    "percentile_84th": 0.8841127807464428
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",
@@ -203,14 +203,14 @@
                   "fixed": false,
                   "point_estimate": {
                     "py/object": "coolest.template.classes.parameter.PointEstimate",
-                    "value": -42.744765240567574
+                    "value": 20.508910114645147
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": -45.559142224478016,
-                    "median": -45.65191528139664,
-                    "percentile_16th": -46.33394987928179,
-                    "percentile_84th": -44.89386444994239
+                    "mean": 25.97191172368751,
+                    "median": 26.134131052078693,
+                    "percentile_16th": 25.089248773073408,
+                    "percentile_84th": 27.033895729785108
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",
@@ -232,14 +232,14 @@
                   "fixed": false,
                   "point_estimate": {
                     "py/object": "coolest.template.classes.parameter.PointEstimate",
-                    "value": 0.04742784507763092
+                    "value": -0.01687544090867521
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": 0.009203026347580454,
-                    "median": 0.005422375738346428,
-                    "percentile_16th": 0.0182412958145457,
-                    "percentile_84th": -0.002428212445102448
+                    "mean": -0.01574956724999294,
+                    "median": -0.015154021954961485,
+                    "percentile_16th": -0.01072462525823516,
+                    "percentile_84th": -0.019577762942179097
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",
@@ -261,14 +261,14 @@
                   "fixed": false,
                   "point_estimate": {
                     "py/object": "coolest.template.classes.parameter.PointEstimate",
-                    "value": 0.06592744133941414
+                    "value": 0.057189719749783235
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": 0.026162091960378865,
-                    "median": 0.026809709787359744,
-                    "percentile_16th": 0.013855070037159026,
-                    "percentile_84th": 0.038433438834956944
+                    "mean": 0.07294275776239488,
+                    "median": 0.07447982518376256,
+                    "percentile_16th": 0.06627355844382445,
+                    "percentile_84th": 0.07960551046555091
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",
@@ -338,10 +338,10 @@
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": 13.001753785864405,
-                    "median": 12.676913890059502,
-                    "percentile_16th": 11.813349182137603,
-                    "percentile_84th": 14.103464204952532
+                    "mean": 0.10297454374729904,
+                    "median": 0.1062338205866119,
+                    "percentile_16th": 0.028532963832677408,
+                    "percentile_84th": 0.17778241255667201
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",
@@ -363,14 +363,14 @@
                   "fixed": false,
                   "point_estimate": {
                     "py/object": "coolest.template.classes.parameter.PointEstimate",
-                    "value": 0.5201045493777976
+                    "value": 0.7285390947161251
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": 0.5025017865017722,
-                    "median": 0.508415651032094,
-                    "percentile_16th": 0.4813421986242054,
-                    "percentile_84th": 0.5266723721892794
+                    "mean": 0.7000791120319656,
+                    "median": 0.7037691359096307,
+                    "percentile_16th": 0.6737213869985963,
+                    "percentile_84th": 0.7238668382082719
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",
@@ -392,14 +392,14 @@
                   "fixed": false,
                   "point_estimate": {
                     "py/object": "coolest.template.classes.parameter.PointEstimate",
-                    "value": 2.6842449083597377
+                    "value": 3.923248435847699
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": 2.7376960105894748,
-                    "median": 2.733846979464529,
-                    "percentile_16th": 2.710208875410223,
-                    "percentile_84th": 2.7609249372453695
+                    "mean": 3.937333752613417,
+                    "median": 3.9346126728798074,
+                    "percentile_16th": 3.923797872844826,
+                    "percentile_84th": 3.952873198614004
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",
@@ -421,14 +421,14 @@
                   "fixed": false,
                   "point_estimate": {
                     "py/object": "coolest.template.classes.parameter.PointEstimate",
-                    "value": 0.7032990921993649
+                    "value": 0.4885241886328574
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": 0.6946733570244904,
-                    "median": 0.6961339254950273,
-                    "percentile_16th": 0.6892035056986822,
-                    "percentile_84th": 0.7012984168145759
+                    "mean": 0.4740645416852218,
+                    "median": 0.47366095985983764,
+                    "percentile_16th": 0.4710746552476131,
+                    "percentile_84th": 0.4768026637761305
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",
@@ -450,14 +450,14 @@
                   "fixed": false,
                   "point_estimate": {
                     "py/object": "coolest.template.classes.parameter.PointEstimate",
-                    "value": 86.5289622058935
+                    "value": -50.271973505662515
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": 87.52064664469216,
-                    "median": 88.8829441285747,
-                    "percentile_16th": 88.46319542468086,
-                    "percentile_84th": 89.20337046742144
+                    "mean": -50.24629889790544,
+                    "median": -50.24240434169951,
+                    "percentile_16th": -50.44166238123643,
+                    "percentile_84th": -50.06231271401608
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",
@@ -479,14 +479,14 @@
                   "fixed": false,
                   "point_estimate": {
                     "py/object": "coolest.template.classes.parameter.PointEstimate",
-                    "value": -0.09799994004928587
+                    "value": -0.261158415424755
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": -0.075654698333332,
-                    "median": -0.07541964280613625,
-                    "percentile_16th": -0.06764033449127413,
-                    "percentile_84th": -0.08400585979435209
+                    "mean": -0.22837912560108747,
+                    "median": -0.22822767812409375,
+                    "percentile_16th": -0.22153476287416096,
+                    "percentile_84th": -0.23580200751092573
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",
@@ -508,14 +508,14 @@
                   "fixed": false,
                   "point_estimate": {
                     "py/object": "coolest.template.classes.parameter.PointEstimate",
-                    "value": 0.012520676651651103
+                    "value": 0.08636636104391032
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": 0.05388183004815283,
-                    "median": 0.05664043308977647,
-                    "percentile_16th": 0.04477570186575032,
-                    "percentile_84th": 0.06338948642274712
+                    "mean": 0.1271355603837557,
+                    "median": 0.12900201810074108,
+                    "percentile_16th": 0.11837124020437831,
+                    "percentile_84th": 0.13596545193661883
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",
@@ -549,10 +549,10 @@
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": 1.8713775439610878,
-                    "median": 1.8536201713174145,
-                    "percentile_16th": 1.3909470099562102,
-                    "percentile_84th": 2.398409763261574
+                    "mean": 29.1732108440827,
+                    "median": 28.88170929763801,
+                    "percentile_16th": 27.36182517492496,
+                    "percentile_84th": 31.079082647349214
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",
@@ -574,14 +574,14 @@
                   "fixed": false,
                   "point_estimate": {
                     "py/object": "coolest.template.classes.parameter.PointEstimate",
-                    "value": 0.9155848766778123
+                    "value": 0.5580932327714656
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": 0.9465390611265878,
-                    "median": 0.9446123825613193,
-                    "percentile_16th": 0.9240892304561609,
-                    "percentile_84th": 0.9697637745789393
+                    "mean": 0.5954536840113952,
+                    "median": 0.5974971113256773,
+                    "percentile_16th": 0.5763543820259525,
+                    "percentile_84th": 0.6151539961200507
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",
@@ -603,14 +603,14 @@
                   "fixed": false,
                   "point_estimate": {
                     "py/object": "coolest.template.classes.parameter.PointEstimate",
-                    "value": 3.836795595447336
+                    "value": 0.9667863331728446
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": 3.965849477257361,
-                    "median": 3.964172929591002,
-                    "percentile_16th": 3.9396688582669506,
-                    "percentile_84th": 3.9909251020573095
+                    "mean": 0.9581954754419593,
+                    "median": 0.9588010474471268,
+                    "percentile_16th": 0.9362641117501339,
+                    "percentile_84th": 0.9764072785065967
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",
@@ -632,14 +632,14 @@
                   "fixed": false,
                   "point_estimate": {
                     "py/object": "coolest.template.classes.parameter.PointEstimate",
-                    "value": 0.7033066423903995
+                    "value": 0.8780207588055268
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": 0.7454988610065735,
-                    "median": 0.7471150278779496,
-                    "percentile_16th": 0.7414117755886859,
-                    "percentile_84th": 0.7514772193238588
+                    "mean": 0.8805094974570401,
+                    "median": 0.8808749039370376,
+                    "percentile_16th": 0.8769647049004932,
+                    "percentile_84th": 0.8841127807464428
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",
@@ -661,14 +661,14 @@
                   "fixed": false,
                   "point_estimate": {
                     "py/object": "coolest.template.classes.parameter.PointEstimate",
-                    "value": -42.744765240567574
+                    "value": 20.508910114645147
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": -45.559142224478016,
-                    "median": -45.65191528139664,
-                    "percentile_16th": -46.33394987928179,
-                    "percentile_84th": -44.89386444994239
+                    "mean": 25.97191172368751,
+                    "median": 26.134131052078693,
+                    "percentile_16th": 25.089248773073408,
+                    "percentile_84th": 27.033895729785108
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",
@@ -690,14 +690,14 @@
                   "fixed": false,
                   "point_estimate": {
                     "py/object": "coolest.template.classes.parameter.PointEstimate",
-                    "value": 0.04742784507763092
+                    "value": -0.01687544090867521
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": 0.009203026347580454,
-                    "median": 0.005422375738346428,
-                    "percentile_16th": 0.0182412958145457,
-                    "percentile_84th": -0.002428212445102448
+                    "mean": -0.01574956724999294,
+                    "median": -0.015154021954961485,
+                    "percentile_16th": -0.01072462525823516,
+                    "percentile_84th": -0.019577762942179097
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",
@@ -719,14 +719,14 @@
                   "fixed": false,
                   "point_estimate": {
                     "py/object": "coolest.template.classes.parameter.PointEstimate",
-                    "value": 0.06592744133941414
+                    "value": 0.057189719749783235
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": 0.026162091960378865,
-                    "median": 0.026809709787359744,
-                    "percentile_16th": 0.013855070037159026,
-                    "percentile_84th": 0.038433438834956944
+                    "mean": 0.07294275776239488,
+                    "median": 0.07447982518376256,
+                    "percentile_16th": 0.06627355844382445,
+                    "percentile_84th": 0.07960551046555091
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",
@@ -776,10 +776,10 @@
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": 1.167259709551892,
-                    "median": 1.127251362174318,
-                    "percentile_16th": 1.0117985576623574,
-                    "percentile_84th": 1.2890607695454042
+                    "mean": 0.001949766212987457,
+                    "median": 0.0017190697217200263,
+                    "percentile_16th": 0.000884760145492968,
+                    "percentile_84th": 0.0028776000170514285
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",
@@ -801,14 +801,14 @@
                   "fixed": false,
                   "point_estimate": {
                     "py/object": "coolest.template.classes.parameter.PointEstimate",
-                    "value": 0.7471277498096659
+                    "value": 1.0702062940453991
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": 0.8346895483691879,
-                    "median": 0.8420160391787688,
-                    "percentile_16th": 0.8031040762377529,
-                    "percentile_84th": 0.8673238807835977
+                    "mean": 1.0103506500280577,
+                    "median": 1.007828393630136,
+                    "percentile_16th": 0.9901156716052356,
+                    "percentile_84th": 1.0302688879942374
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",
@@ -830,14 +830,14 @@
                   "fixed": false,
                   "point_estimate": {
                     "py/object": "coolest.template.classes.parameter.PointEstimate",
-                    "value": 3.7352697750631227
+                    "value": 8.127332723841102
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": 3.9131793544113376,
-                    "median": 3.9225487889430863,
-                    "percentile_16th": 3.879138405841035,
-                    "percentile_84th": 3.9528316599287328
+                    "mean": 8.164521538350376,
+                    "median": 8.166394314904215,
+                    "percentile_16th": 8.14616996212032,
+                    "percentile_84th": 8.183298020667987
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",
@@ -859,14 +859,14 @@
                   "fixed": false,
                   "point_estimate": {
                     "py/object": "coolest.template.classes.parameter.PointEstimate",
-                    "value": 0.8345043948429564
+                    "value": 0.7356343996473754
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": 0.8400474056317409,
-                    "median": 0.8394679137477696,
-                    "percentile_16th": 0.8344495494572995,
-                    "percentile_84th": 0.8458979125024801
+                    "mean": 0.7510337131261421,
+                    "median": 0.7504104094900562,
+                    "percentile_16th": 0.7461210942297984,
+                    "percentile_84th": 0.7560113335545362
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",
@@ -888,14 +888,14 @@
                   "fixed": false,
                   "point_estimate": {
                     "py/object": "coolest.template.classes.parameter.PointEstimate",
-                    "value": 51.35254259922975
+                    "value": -69.31613121556923
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": 56.40137505263893,
-                    "median": 56.64242643567799,
-                    "percentile_16th": 55.332774434491306,
-                    "percentile_84th": 57.62928358258527
+                    "mean": -68.99674643375393,
+                    "median": -68.9339478547144,
+                    "percentile_16th": -69.39847503565343,
+                    "percentile_84th": -68.59113295130588
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",
@@ -917,14 +917,14 @@
                   "fixed": false,
                   "point_estimate": {
                     "py/object": "coolest.template.classes.parameter.PointEstimate",
-                    "value": 0.06844187399803255
+                    "value": -0.27596890003907515
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": 0.08091743767922734,
-                    "median": 0.08320710122781799,
-                    "percentile_16th": 0.0878709363247684,
-                    "percentile_84th": 0.07361742259470713
+                    "mean": -0.2406033250245791,
+                    "median": -0.239493796862353,
+                    "percentile_16th": -0.23221127902670238,
+                    "percentile_84th": -0.24730581170499136
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",
@@ -946,14 +946,14 @@
                   "fixed": false,
                   "point_estimate": {
                     "py/object": "coolest.template.classes.parameter.PointEstimate",
-                    "value": 0.19258614453929782
+                    "value": -0.3678819416391289
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": 0.2093329681855254,
-                    "median": 0.21150741136614815,
-                    "percentile_16th": 0.19907256261432787,
-                    "percentile_84th": 0.21914283437174925
+                    "mean": -0.35820527316783674,
+                    "median": -0.3582274091331011,
+                    "percentile_16th": -0.3641446002220724,
+                    "percentile_84th": -0.35352096920607307
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",

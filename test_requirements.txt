@@ -1,5 +1,5 @@
 # requirements for tests
 colossus
 git+https://github.com/aymgal/coolest@main#egg=coolest
-json==2.0.9
 jsonpickle==3.0.1
+json5==0.9.6

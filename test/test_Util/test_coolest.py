@@ -19,6 +19,12 @@ class TestCOOLESTinterface(object):
 
     def test_load(self):
         path = os.getcwd()
+        print(path)
+        !ls
+        !cd ..
+        !ls
+        !cd ..
+        !ls
         if path[-23:] == 'lenstronomy/lenstronomy':
             path = path[:-11]
             path+='test/test_Util'

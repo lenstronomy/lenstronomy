@@ -98,41 +98,10 @@
           "py/object": "coolest.template.classes.mass_light_model.MassModel",
           "py/seq": [
             {
-              "py/object": "coolest.template.classes.profiles.mass.PEMD",
-              "type": "PEMD",
+              "py/object": "coolest.template.classes.profiles.mass.SIE",
+              "type": "SIE",
               "documentation": "Powerlaw elliptical mass distribution",
               "parameters": {
-                "gamma": {
-                  "py/object": "coolest.template.classes.parameter.NonLinearParameter",
-                  "documentation": "Mass density slope at Einstein radius",
-                  "units": null,
-                  "definition_range": {
-                    "py/object": "coolest.template.classes.parameter.DefinitionRange",
-                    "min_value": 1.0,
-                    "max_value": 3.0
-                  },
-                  "fixed": false,
-                  "point_estimate": {
-                    "py/object": "coolest.template.classes.parameter.PointEstimate",
-                    "value": null
-                  },
-                  "posterior_stats": {
-                    "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": null,
-                    "median": null,
-                    "percentile_16th": null,
-                    "percentile_84th": null
-                  },
-                  "prior": {
-                    "py/object": "coolest.template.classes.probabilities.GaussianPrior",
-                    "type": "GaussianPrior",
-                    "mean": 2.0,
-                    "width": 0.2,
-                    "documentation": ""
-                  },
-                  "latex_str": "$\\gamma$",
-                  "id": "galaxy_1-mass_model-PEMD_0-gamma"
-                },
                 "theta_E": {
                   "py/object": "coolest.template.classes.parameter.NonLinearParameter",
                   "documentation": "Einstein radius",
@@ -160,7 +129,7 @@
                     "documentation": ""
                   },
                   "latex_str": "$\\theta_{\\rm E}$",
-                  "id": "galaxy_1-mass_model-PEMD_0-theta_E"
+                  "id": "galaxy_1-mass_model-SIE_0-theta_E"
                 },
                 "q": {
                   "py/object": "coolest.template.classes.parameter.NonLinearParameter",
@@ -189,7 +158,7 @@
                     "documentation": ""
                   },
                   "latex_str": "$q$",
-                  "id": "galaxy_1-mass_model-PEMD_0-q"
+                  "id": "galaxy_1-mass_model-SIE_0-q"
                 },
                 "phi": {
                   "py/object": "coolest.template.classes.parameter.NonLinearParameter",
@@ -218,7 +187,7 @@
                     "documentation": ""
                   },
                   "latex_str": "$\\phi$",
-                  "id": "galaxy_1-mass_model-PEMD_0-phi"
+                  "id": "galaxy_1-mass_model-SIE_0-phi"
                 },
                 "center_x": {
                   "py/object": "coolest.template.classes.parameter.NonLinearParameter",
@@ -247,7 +216,7 @@
                     "documentation": ""
                   },
                   "latex_str": "$x_0$",
-                  "id": "galaxy_1-mass_model-PEMD_0-center_x"
+                  "id": "galaxy_1-mass_model-SIE_0-center_x"
                 },
                 "center_y": {
                   "py/object": "coolest.template.classes.parameter.NonLinearParameter",
@@ -276,10 +245,10 @@
                     "documentation": ""
                   },
                   "latex_str": "$y_0$",
-                  "id": "galaxy_1-mass_model-PEMD_0-center_y"
+                  "id": "galaxy_1-mass_model-SIE_0-center_y"
                 }
               },
-              "id": "galaxy_1-mass_model-PEMD_0"
+              "id": "galaxy_1-mass_model-SIE_0"
             },
             {
               "py/object": "coolest.template.classes.profiles.mass.PixelatedRegularGridPotential",

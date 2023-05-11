@@ -29,7 +29,7 @@ class TestCOOLESTinterface(object):
         if path[-23:] == 'lenstronomy/lenstronomy':
             path+='/test/test_Util'
         kwargs_result={"kwargs_lens":[{'gamma1':0.1,'gamma2':-0.05,'ra_0':0.,'dec_0':0.},
-                                      {'theta_E': 0.7, 'gamma': 1.9, 'e1': -0.15, 'e2': 0.01,
+                                      {'theta_E': 0.7, 'e1': -0.15, 'e2': 0.01,
                                        'center_x': 0.03, 'center_y': 0.01}],
                        "kwargs_source":[{'amp':15.,'R_sersic':0.11,'n_sersic':3.6,'center_x':0.02,
                                          'center_y':-0.03,'e1':0.1,'e2':-0.2}],
@@ -39,8 +39,6 @@ class TestCOOLESTinterface(object):
                                              'center_y':0.01,'e1':0.,'e2':-0.15}]}
         update_coolest_from_lenstronomy(path+"/coolest_template",kwargs_result,ending="_update")
         kwargs_out = create_lenstronomy_from_coolest(path+"/coolest_template_update")
-        npt.assert_almost_equal(kwargs_out['kwargs_params']['lens_model'][0][1]['gamma'],
-                                kwargs_result['kwargs_lens'][1]['gamma'], decimal=4)
         npt.assert_almost_equal(kwargs_out['kwargs_params']['lens_model'][0][1]['e1'],
                                 kwargs_result['kwargs_lens'][1]['e1'], decimal=4)
         npt.assert_almost_equal(kwargs_out['kwargs_params']['lens_model'][0][1]['e2'],
@@ -66,10 +64,10 @@ class TestCOOLESTinterface(object):
 
         # lensing quantities to create an image
         lens_model_list = kwargs_out['kwargs_model']['lens_model_list']
-        kwargs_pemd = {'theta_E': .66, 'center_x': 0.05, 'center_y': 0, 'e1': -0.1,
-                        'e2': 0.1, 'gamma':2.1}  # parameters of the deflector lens model
+        kwargs_sie = {'theta_E': .66, 'center_x': 0.05, 'center_y': 0, 'e1': -0.1,
+                        'e2': 0.1}  # parameters of the deflector lens model
         kwargs_shear = {'gamma1': 0.0, 'gamma2': -0.05}  # shear values to the source plane
-        kwargs_lens = [kwargs_shear, kwargs_pemd]
+        kwargs_lens = [kwargs_shear, kwargs_sie]
         lens_model_class = LensModel(lens_model_list)
 
         # Sersic parameters in the initial simulation for the source

@@ -308,7 +308,8 @@ def sie(mass, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens_up, kw
             phi_down = getattr(mass_param.definition_range, 'min_value')
             phi_fixed = phi if getattr(mass_param, 'fixed') else None
         elif mass_name == 'center_x':
-            center_x = - getattr(mass_param.point_estimate, 'value')
+            center_x = - getattr(mass_param.point_estimate, 'value') if getattr(mass_param.point_estimate,
+                                                                                'value') is not None else None
             center_x_up = getattr(mass_param.definition_range, 'max_value')
             center_x_down = getattr(mass_param.definition_range, 'min_value')
             center_x_fixed = center_x if getattr(mass_param, 'fixed') else None

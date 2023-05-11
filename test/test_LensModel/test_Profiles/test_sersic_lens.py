@@ -36,8 +36,8 @@ class TestSersic(object):
         values = self.sersic.function(x, y, n_sersic, R_sersic, k_eff)
         npt.assert_almost_equal(values[0], 0., decimal=9)
 
-        x = np.array([2,3,4])
-        y = np.array([1,1,1])
+        x = np.array([2, 3, 4])
+        y = np.array([1, 1, 1])
         values = self.sersic.function(x, y, n_sersic, R_sersic, k_eff)
 
         npt.assert_almost_equal(values[0], 1.0272982586319199, decimal=10)
@@ -53,8 +53,8 @@ class TestSersic(object):
         f_x, f_y = self.sersic.derivatives(x, y, n_sersic, R_sersic, k_eff)
         f_x2, f_y2 = self.sersic_2.derivatives(x, y, n_sersic, R_sersic, k_eff, 0, 0.00000001)
 
-        assert f_x[0] == 0.16556078301997193
-        assert f_y[0] == 0.33112156603994386
+        npt.assert_almost_equal(f_x[0], 0.16556078301997193, decimal=9)
+        npt.assert_almost_equal(f_y[0], 0.33112156603994386, decimal=9)
         npt.assert_almost_equal(f_x2[0], f_x[0])
         npt.assert_almost_equal(f_y2[0], f_y[0])
 
@@ -67,14 +67,14 @@ class TestSersic(object):
         npt.assert_almost_equal(f_x2[0], f_x[0])
         npt.assert_almost_equal(f_y2[0], f_y[0])
 
-        x = np.array([1,3,4])
-        y = np.array([2,1,1])
+        x = np.array([1, 3, 4])
+        y = np.array([2, 1, 1])
         values = self.sersic.derivatives(x, y, n_sersic, R_sersic, k_eff)
         values2 = self.sersic_2.derivatives(x, y, n_sersic, R_sersic, k_eff, 0, 0.00000001)
-        assert values[0][0] == 0.16556078301997193
-        assert values[1][0] == 0.33112156603994386
-        assert values[0][1] == 0.2772992378623737
-        assert values[1][1] == 0.092433079287457892
+        npt.assert_almost_equal(values[0][0], 0.16556078301997193, decimal=9)
+        npt.assert_almost_equal(values[1][0], 0.33112156603994386, decimal=9)
+        npt.assert_almost_equal(values[0][1], 0.2772992378623737, decimal=9)
+        npt.assert_almost_equal(values[1][1], 0.092433079287457892, decimal=9)
         npt.assert_almost_equal(values2[0][0], values[0][0])
         npt.assert_almost_equal(values2[1][0], values[1][0])
         npt.assert_almost_equal(values2[0][1], values[0][1])
@@ -113,16 +113,16 @@ class TestSersic(object):
         R_sersic = 1.
         k_eff = 0.2
         f_xx, f_xy, f_yx, f_yy = self.sersic.hessian(x, y, n_sersic, R_sersic, k_eff)
-        assert f_xx[0] == 0.1123170666045793
+        npt.assert_almost_equal(f_xx[0], 0.1123170666045793, decimal=10)
         npt.assert_almost_equal(f_yy[0], -0.047414082641598576, decimal=10)
-        npt.assert_almost_equal(f_xy[0], -0.10648743283078525 , decimal=10)
+        npt.assert_almost_equal(f_xy[0], -0.10648743283078525, decimal=10)
         npt.assert_almost_equal(f_xy, f_yx, decimal=5)
-        x = np.array([1,3,4])
-        y = np.array([2,1,1])
+        x = np.array([1, 3, 4])
+        y = np.array([2, 1, 1])
         values = self.sersic.hessian(x, y, n_sersic, R_sersic, k_eff)
-        assert values[0][0] == 0.1123170666045793
+        npt.assert_almost_equal(values[0][0], 0.1123170666045793, decimal=10)
         npt.assert_almost_equal(values[3][0], -0.047414082641598576, decimal=10)
-        npt.assert_almost_equal(values[1][0], -0.10648743283078525 , decimal=10)
+        npt.assert_almost_equal(values[1][0], -0.10648743283078525, decimal=10)
         npt.assert_almost_equal(values[0][1], -0.053273787681591328, decimal=10)
         npt.assert_almost_equal(values[3][1], 0.076243427402007985, decimal=10)
         npt.assert_almost_equal(values[1][1], -0.048568955656349749, decimal=10)

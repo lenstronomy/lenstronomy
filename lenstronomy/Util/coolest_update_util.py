@@ -31,15 +31,15 @@ def shapelet_amp_lenstronomy_to_coolest(value):
         return new_value
 
 
-def radlenstro2degreeCOOLEST(value):
+def radian_lenstronomy_to_degree_coolest(value):
     """
     Transform an angle in radian from lenstronomy into an angle in degree for the COOLEST with folding
     """
-    COOLEST_oriented_degree = foldingCOOLEST(radlenstro2degree(value))
+    COOLEST_oriented_degree = folding_coolest(radian_lenstronomy_to_degree(value))
     return COOLEST_oriented_degree
 
 
-def radlenstro2degree(value):
+def radian_lenstronomy_to_degree(value):
     """
     Transform an angle in radian from lenstronomy into an angle in degree for the COOLEST conventions
     (without folding)
@@ -51,7 +51,7 @@ def radlenstro2degree(value):
     return COOLEST_oriented_degree
 
 
-def foldingCOOLEST(value):
+def folding_coolest(value):
     """
     Folds the angle into COOLEST convention range ]-90;90]
     """
@@ -70,13 +70,13 @@ def foldingCOOLEST(value):
     return COOLEST_oriented_degree
 
 
-def e1e2lenstro2qphiCOOLEST(e1, e2):
+def e1e2_lenstronomy_to_qphi_coolest(e1, e2):
     """
     Transform e1,e2 in lenstronomy to q and phi (axis ratio, position angle East-of-North)
     """
 
     angle = np.arctan2(e2, e1) / 2.
-    phi = radlenstro2degreeCOOLEST(angle)
+    phi = radian_lenstronomy_to_degree_coolest(angle)
 
     c = np.sqrt(e1 ** 2 + e2 ** 2)
     c = np.minimum(c, 0.9999)
@@ -85,28 +85,28 @@ def e1e2lenstro2qphiCOOLEST(e1, e2):
     return q, phi
 
 
-def g1g2lenstro2gextphiextCOOLEST(gamma1, gamma2):
+def g1g2_lenstronomy_to_gextphiext_coolest(gamma1, gamma2):
     """
     Transform gamma1,gamma2 in lenstronomy to gamma_ext and phi_ext (shear strength, position angle East-of-North)
      with folding
     """
 
     angle = np.arctan2(gamma2, gamma1) / 2.
-    phi_ext = radlenstro2degreeCOOLEST(angle)
+    phi_ext = radian_lenstronomy_to_degree_coolest(angle)
 
     gamma_ext = np.sqrt(gamma1 ** 2 + gamma2 ** 2)
 
     return gamma_ext, phi_ext
 
 
-def g1g2lenstro2gextphiext(gamma1, gamma2):
+def g1g2_lenstronomy_to_gextphiext(gamma1, gamma2):
     """
     Transform gamma1,gamma2 in lenstronomy to gamma_ext and phi_ext (shear strength, position angle East-of-North)
      without folding
     """
 
     angle = np.arctan2(gamma2, gamma1) / 2.
-    phi_ext = radlenstro2degree(angle)
+    phi_ext = radian_lenstronomy_to_degree(angle)
 
     gamma_ext = np.sqrt(gamma1 ** 2 + gamma2 ** 2)
 
@@ -126,7 +126,7 @@ def shear_update(shear_idx, kwargs_lens, kwargs_lens_mcmc=None):
     ------
      - : updated shear_idx
     """
-    gamma_ext, phi_ext = g1g2lenstro2gextphiextCOOLEST(float(kwargs_lens['gamma1']),
+    gamma_ext, phi_ext = g1g2_lenstronomy_to_gextphiext_coolest(float(kwargs_lens['gamma1']),
                                                                float(kwargs_lens['gamma2']))
     shear_idx.parameters['gamma_ext'].set_point_estimate(PointEstimate(float(gamma_ext)))
     shear_idx.parameters['phi_ext'].set_point_estimate(PointEstimate(float(phi_ext)))
@@ -135,15 +135,15 @@ def shear_update(shear_idx, kwargs_lens, kwargs_lens_mcmc=None):
         g1 = [arg['gamma1'] for arg in kwargs_lens_mcmc]
         g2 = [arg['gamma2'] for arg in kwargs_lens_mcmc]
 
-        g_ext, p_ext = g1g2lenstro2gextphiext(np.array(g1), np.array(g2))
+        g_ext, p_ext = g1g2_lenstronomy_to_gextphiext(np.array(g1), np.array(g2))
 
         g_ext_mean = np.mean(g_ext)
         g_ext_16, g_ext_50, g_ext_84 = np.quantile(g_ext, [0.16, 0.5, 0.84])
         shear_idx.parameters['gamma_ext'].set_posterior(PosteriorStatistics(float(g_ext_mean), float(g_ext_50),
                                                                             float(g_ext_16), float(g_ext_84)))
 
-        p_ext_mean = foldingCOOLEST(np.mean(p_ext))
-        p_ext_16, p_ext_50, p_ext_84 = foldingCOOLEST(np.quantile(p_ext, [0.16, 0.5, 0.84]))
+        p_ext_mean = folding_coolest(np.mean(p_ext))
+        p_ext_16, p_ext_50, p_ext_84 = folding_coolest(np.quantile(p_ext, [0.16, 0.5, 0.84]))
         shear_idx.parameters['phi_ext'].set_posterior(PosteriorStatistics(float(p_ext_mean), float(p_ext_50),
                                                                           float(p_ext_16), float(p_ext_84)))
     print('shear correctly updated')
@@ -164,7 +164,7 @@ def pemd_update(mass, kwargs_lens, kwargs_lens_mcmc=None):
     ------
      - : updated mass
     """
-    q, phi = e1e2lenstro2qphiCOOLEST(float(kwargs_lens['e1']), float(kwargs_lens['e2']))
+    q, phi = e1e2_lenstronomy_to_qphi_coolest(float(kwargs_lens['e1']), float(kwargs_lens['e2']))
     mass.parameters['theta_E'].set_point_estimate(PointEstimate(float(kwargs_lens['theta_E'])))
     mass.parameters['gamma'].set_point_estimate(PointEstimate(float(kwargs_lens['gamma'])))
     mass.parameters['q'].set_point_estimate(PointEstimate(float(q)))
@@ -187,7 +187,7 @@ def pemd_update(mass, kwargs_lens, kwargs_lens_mcmc=None):
 
         e1 = [arg['e1'] for arg in kwargs_lens_mcmc]
         e2 = [arg['e2'] for arg in kwargs_lens_mcmc]
-        ql, phil = e1e2lenstro2qphiCOOLEST(np.array(e1), np.array(e2))
+        ql, phil = e1e2_lenstronomy_to_qphi_coolest(np.array(e1), np.array(e2))
 
         ql_mean = np.mean(ql)
         ql_16, ql_50, ql_84 = np.quantile(ql, [0.16, 0.5, 0.84])
@@ -230,7 +230,7 @@ def sie_update(mass, kwargs_lens, kwargs_lens_mcmc=None):
      - : updated mass
     """
 
-    q, phi = e1e2lenstro2qphiCOOLEST(float(kwargs_lens['e1']), float(kwargs_lens['e2']))
+    q, phi = e1e2_lenstronomy_to_qphi_coolest(float(kwargs_lens['e1']), float(kwargs_lens['e2']))
     mass.parameters['theta_E'].set_point_estimate(PointEstimate(float(kwargs_lens['theta_E'])))
     mass.parameters['q'].set_point_estimate(PointEstimate(float(q)))
     mass.parameters['phi'].set_point_estimate(PointEstimate(float(phi)))
@@ -246,7 +246,7 @@ def sie_update(mass, kwargs_lens, kwargs_lens_mcmc=None):
 
         e1 = [arg['e1'] for arg in kwargs_lens_mcmc]
         e2 = [arg['e2'] for arg in kwargs_lens_mcmc]
-        ql, phil = e1e2lenstro2qphiCOOLEST(np.array(e1), np.array(e2))
+        ql, phil = e1e2_lenstronomy_to_qphi_coolest(np.array(e1), np.array(e2))
 
         ql_mean = np.mean(ql)
         ql_16, ql_50, ql_84 = np.quantile(ql, [0.16, 0.5, 0.84])
@@ -288,7 +288,7 @@ def sersic_update(light, kwargs_light, kwargs_light_mcmc=None):
     ------
      - : updated light
     """
-    q, phi = e1e2lenstro2qphiCOOLEST(float(kwargs_light['e1']), float(kwargs_light['e2']))
+    q, phi = e1e2_lenstronomy_to_qphi_coolest(float(kwargs_light['e1']), float(kwargs_light['e2']))
     light.parameters['I_eff'].set_point_estimate(PointEstimate(float(kwargs_light['amp'])))
     light.parameters['theta_eff'].set_point_estimate(PointEstimate(float(kwargs_light['R_sersic'])))
     light.parameters['n'].set_point_estimate(PointEstimate(float(kwargs_light['n_sersic'])))
@@ -318,7 +318,7 @@ def sersic_update(light, kwargs_light, kwargs_light_mcmc=None):
 
         e1 = [arg['e1'] for arg in kwargs_light_mcmc]
         e2 = [arg['e2'] for arg in kwargs_light_mcmc]
-        ql, phil = e1e2lenstro2qphiCOOLEST(np.array(e1), np.array(e2))
+        ql, phil = e1e2_lenstronomy_to_qphi_coolest(np.array(e1), np.array(e2))
 
         ql_mean = np.mean(ql)
         ql_16, ql_50, ql_84 = np.quantile(ql, [0.16, 0.5, 0.84])

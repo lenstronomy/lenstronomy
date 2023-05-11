@@ -28,7 +28,7 @@ def shapelet_amp_coolest_to_lenstronomy(value):
         return new_value
 
 
-def degreeCOOLEST2radlenstro(value):
+def degree_coolest_to_radian_lenstronomy(value):
     """
     Transform an angle in degree in COOLEST conventions (from y to negative x - aka East of North)
     into an angle in radian in lenstronomy conventions (from x to y with x pointing to the left - aka North of East)
@@ -44,20 +44,20 @@ def degreeCOOLEST2radlenstro(value):
         return lenstro_oriented_degree * np.pi / 180.
 
 
-def qphiCOOLEST2e1e2lenstro(q, phi):
+def qphi_coolest_to_e1e2_lenstronomy(q, phi):
     """
     Transform q and phi (axis ratio, position angle East-of-North) to e1,e2 in lenstronomy
     """
     if None in [q, phi]:
         return None, None
     else:
-        angle = degreeCOOLEST2radlenstro(phi)
+        angle = degree_coolest_to_radian_lenstronomy(phi)
         e1 = (1. - q) / (1. + q) * np.cos(2 * angle)
         e2 = (1. - q) / (1. + q) * np.sin(2 * angle)
         return e1, e2
 
 
-def gextphiextCOOLEST2g1g2lenstro(gamma_ext, phi_ext):
+def gextphiext_coolest_to_g1g2_lenstronomy(gamma_ext, phi_ext):
     """
     Transform gamma_ext and phi_ext (shear strength, position angle East-of-North)
     to gamma1,gamma2 in lenstronomy
@@ -65,7 +65,7 @@ def gextphiextCOOLEST2g1g2lenstro(gamma_ext, phi_ext):
     if None in [gamma_ext, phi_ext]:
         return None, None
     else:
-        angle = degreeCOOLEST2radlenstro(phi_ext)
+        angle = degree_coolest_to_radian_lenstronomy(phi_ext)
         gamma1 = gamma_ext * np.cos(2 * angle)
         gamma2 = gamma_ext * np.sin(2 * angle)
         return gamma1, gamma2
@@ -131,8 +131,8 @@ def shear(shear_idx, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens
             psiext_fixed = psiext if getattr(shear_param, 'fixed') else None
         else:
             print(shear_name, " not known")
-    gamma1, gamma2 = gextphiextCOOLEST2g1g2lenstro(gammaext, psiext)
-    gamma1_fixed, gamma2_fixed = gextphiextCOOLEST2g1g2lenstro(gammaext_fixed, psiext_fixed)
+    gamma1, gamma2 = gextphiext_coolest_to_g1g2_lenstronomy(gammaext, psiext)
+    gamma1_fixed, gamma2_fixed = gextphiext_coolest_to_g1g2_lenstronomy(gammaext_fixed, psiext_fixed)
     gamma1_down, gamma1_up, gamma2_down, gamma2_up = shearbounds_coolest_to_lenstronomy(gammaext_down, gammaext_up, psiext_down,
                                                                             psiext_up)
 
@@ -227,8 +227,8 @@ def pemd(mass, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens_up, k
         else:
             print(mass_name, " not known")
 
-    e1, e2 = qphiCOOLEST2e1e2lenstro(q, phi)
-    e1_fixed, e2_fixed = qphiCOOLEST2e1e2lenstro(q_fixed, phi_fixed)
+    e1, e2 = qphi_coolest_to_e1e2_lenstronomy(q, phi)
+    e1_fixed, e2_fixed = qphi_coolest_to_e1e2_lenstronomy(q_fixed, phi_fixed)
     e1_down, e1_up, e2_down, e2_up = ellibounds_coolest_to_lenstronomy(q_down, q_up, phi_down, phi_up)
 
     kw_1 = {'theta_E': te, 'gamma': gamma, 'e1': e1, 'e2': e2, 'center_x': center_x, 'center_y': center_y}
@@ -321,8 +321,8 @@ def sie(mass, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens_up, kw
         else:
             print(mass_name, " not known")
 
-    e1, e2 = qphiCOOLEST2e1e2lenstro(q, phi)
-    e1_fixed, e2_fixed = qphiCOOLEST2e1e2lenstro(q_fixed, phi_fixed)
+    e1, e2 = qphi_coolest_to_e1e2_lenstronomy(q, phi)
+    e1_fixed, e2_fixed = qphi_coolest_to_e1e2_lenstronomy(q_fixed, phi_fixed)
     e1_down, e1_up, e2_down, e2_up = ellibounds_coolest_to_lenstronomy(q_down, q_up, phi_down, phi_up)
 
     kw_1 = {'theta_E': te, 'e1': e1, 'e2': e2, 'center_x': center_x, 'center_y': center_y}
@@ -425,8 +425,8 @@ def sersic(light, light_model_list, kwargs_light, kwargs_light_init, kwargs_ligh
         else:
             print('Parameter ', light_name, ' unknown in SersicEllipse profile.')
 
-    e1, e2 = qphiCOOLEST2e1e2lenstro(q, phi)
-    e1_fixed, e2_fixed = qphiCOOLEST2e1e2lenstro(q_fixed, phi_fixed)
+    e1, e2 = qphi_coolest_to_e1e2_lenstronomy(q, phi)
+    e1_fixed, e2_fixed = qphi_coolest_to_e1e2_lenstronomy(q_fixed, phi_fixed)
     e1_down, e1_up, e2_down, e2_up = ellibounds_coolest_to_lenstronomy(q_down, q_up, phi_down, phi_up)
 
     kw_1 = {'amp': amp, 'R_sersic': R, 'n_sersic': n, 'e1': e1, 'e2': e2, 'center_x': cx, 'center_y': cy}

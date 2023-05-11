@@ -1,4 +1,4 @@
 # requirements for tests
 colossus
 git+https://github.com/aymgal/coolest@main#egg=coolest
-git+https://github.com/sibirrer/fastell4py@main#egg=fastell4py
+git+https://github.com/sibirrer/fastell4py@master#egg=fastell4py

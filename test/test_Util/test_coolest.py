@@ -162,3 +162,27 @@ class TestCOOLESTinterface(object):
         update_coolest_from_lenstronomy(path+"/coolest_template",kwargs_result, kwargs_mcmc)
 
         return
+
+    def test_pemd(self):
+        path = os.getcwd()
+        if path[-23:] == 'lenstronomy/lenstronomy':
+            path+='/test/test_Util'
+        kwargs_out = create_lenstronomy_from_coolest(path+"/coolest_template_pemd")
+        print(kwargs_out)
+
+        kwargs_result={"kwargs_lens":[{'theta_E': 0.7, 'e1': -0.15, 'e2': 0.01, 'gamma': 2.1,
+                                       'center_x': 0.03, 'center_y': 0.01}],
+                       "kwargs_source":[{'amp':15.,'R_sersic':0.11,'n_sersic':3.6,'center_x':0.02,
+                                         'center_y':-0.03,'e1':0.1,'e2':-0.2}],
+                       "kwargs_lens_light":[{'amp':11.,'R_sersic':0.2,'n_sersic':3.,'center_x':0.03,
+                                             'center_y':0.01,'e1':-0.15,'e2':0.01}]}
+        update_coolest_from_lenstronomy(path+"/coolest_template_pemd",kwargs_result,ending="_update")
+        kwargs_out = create_lenstronomy_from_coolest(path+"/coolest_template_pemd_update")
+        print(kwargs_out)
+        npt.assert_almost_equal(kwargs_out['kwargs_params']['lens_model'][0][0]['e1'],
+                                kwargs_result['kwargs_lens'][0]['e1'], decimal=4)
+        npt.assert_almost_equal(kwargs_out['kwargs_params']['lens_model'][0][0]['e2'],
+                                kwargs_result['kwargs_lens'][0]['e2'], decimal=4)
+
+        return
+

@@ -522,7 +522,7 @@ def shapelets(light, light_model_list, kwargs_light, kwargs_light_init, kwargs_l
     kw_1 = {'amp': amp, 'beta': b, 'center_x': cx, 'center_y': cy, 'n_max': nmax}
     kw_up_1 = {'beta': b_up, 'center_x': cx_up, 'center_y': cy_up}
     kw_down_1 = {'beta': b_down, 'center_x': cx_down, 'center_y': cy_down}
-    kw_fixed_1 = {'beta': b_fixed, 'center_x': cx_fixed, 'center_y': cy_fixed, 'n_max': True}
+    kw_fixed_1 = {'beta': b_fixed, 'center_x': cx_fixed, 'center_y': cy_fixed, 'n_max': nmax}
 
     kw_ = kw_1.copy()
     kw_init = kw_1.copy()

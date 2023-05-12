@@ -12,6 +12,7 @@ from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
 import lenstronomy.Util.image_util as image_util
 from lenstronomy.ImSim.image_model import ImageModel
+from lenstronomy.Plots.model_plot import ModelPlot
 
 from lenstronomy.Workflow.fitting_sequence import FittingSequence
 
@@ -32,7 +33,9 @@ class TestCOOLESTinterface(object):
                                       {'theta_E': 0.7, 'e1': -0.15, 'e2': 0.01,
                                        'center_x': 0.03, 'center_y': 0.01}],
                        "kwargs_source":[{'amp':15.,'R_sersic':0.11,'n_sersic':3.6,'center_x':0.02,
-                                         'center_y':-0.03,'e1':0.1,'e2':-0.2}],
+                                         'center_y':-0.03,'e1':0.1,'e2':-0.2},
+                                        {'amp': np.array([70., 33., 2.1, 3.9, 15., -16., 2.8, -1.7, -4.1, 0.2]),
+                                         'n_max': 3, 'beta': 0.1, 'center_x': 0.1, 'center_y': 0.0}],
                        "kwargs_lens_light":[{'amp':11.,'R_sersic':0.2,'n_sersic':3.,'center_x':0.03,
                                              'center_y':0.01,'e1':-0.15,'e2':0.01},
                                             {'amp':12.,'R_sersic':0.02,'n_sersic':6.,'center_x':0.03,
@@ -74,7 +77,9 @@ class TestCOOLESTinterface(object):
         source_model_list = kwargs_out['kwargs_model']['source_light_model_list']
         kwargs_sersic = {'amp': 16, 'R_sersic': 0.1, 'n_sersic': 3.5, 'e1': -0.1, 'e2': 0.1,
                          'center_x': 0.1, 'center_y': 0}
-        kwargs_source = [kwargs_sersic]
+        kwargs_shapelets = {'amp': np.array([ 70.,  33.,   2.1,   3.9 ,  15., -16.,   2.8,  -1.7, -4.1, 0.2]),
+                            'n_max': 3, 'beta': 0.1, 'center_x': 0.1, 'center_y': 0.0}
+        kwargs_source = [kwargs_sersic, kwargs_shapelets]
         source_model_class = LightModel(source_model_list)
 
         # Sersic parameters in the initial simulation for the lens light
@@ -144,6 +149,10 @@ class TestCOOLESTinterface(object):
                                ]
         chain_list = fitting_seq.fit_sequence(fitting_kwargs_list)
         kwargs_result = fitting_seq.best_fit()
+
+        modelPlot = ModelPlot(kwargs_data_joint['multi_band_list'], kwargs_out['kwargs_model'], kwargs_result)
+        modelPlot._imageModel.image_linear_solve(inv_bool=True, **kwargs_result)
+        #the last 2 lines are meant for solving the linear parameters
 
         # use the function to save mcmc chains in userfriendly mode
         kwargs_mcmc = create_kwargs_mcmc_from_chain_list(chain_list,kwargs_out['kwargs_model'],kwargs_out['kwargs_params'],

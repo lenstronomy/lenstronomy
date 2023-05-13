@@ -2,12 +2,6 @@ __author__ = 'nataliehogg'
 
 # man with one sampling method always knows his posterior distribution; man with two never certain.
 
-# to do:
-# - put all the relevant arguments in the init definition
-# - write the relevant function definitions: run() and log_l
-# - think about MPI functionality?
-# - unit testing!
-
 class CobayaSampler(object):
 
     def __init__(self, likelihood_module):
@@ -43,20 +37,23 @@ class CobayaSampler(object):
 
         from cobaya.run import run as crun
 
-        sampled_keys = self._param_names
+        sampled_params = self._param_names
 
-        sampled_params = {k: {'prior': {'min': self._lower_limit[i], 'max': self._upper_limit[i]}} for k, i in zip(sampled_keys, range(len(sampled_keys)))}
+        sampled_params = {k: {'prior': {'min': self._lower_limit[i], 'max': self._upper_limit[i]}} for k, i in zip(sampled_params, range(len(sampled_params)))} # add the priors to the sampled_params
 
         # refs = self._mean_start
 
         # print(refs)
 
-        refs = [1.5, 0.3, 3.0, 0.1, 0.1]
+        # refs = [1.5, 0.3, 3.0, 0.1, 0.1]
 
         # add reference values to start chain close to expected best fit
-        [sampled_params[k].update({'ref': refs[i]}) for k, i in zip(sampled_params.keys(), range(len(refs)))]
+        # [sampled_params[k].update({'ref': refs[i]}) for k, i in zip(sampled_params.keys(), range(len(refs)))]
 
-        # todo: add fixed params??
+        # add LaTeX labels so lenstronomy kwarg names don't break getdist plotting
+        if kwargs['latex'] is not None:
+            latex = kwargs['latex']
+            [sampled_params[k].update({'latex': latex[i]}) for k, i in zip(sampled_params.keys(), range(len(latex)))]
 
         def likelihood_for_cobaya(**kwargs):
             current_input_values = [kwargs[p] for p in sampled_params]
@@ -69,8 +66,10 @@ class CobayaSampler(object):
 
         info['params'] = sampled_params
 
+        # Gelman--Rubin criterion
         GR = kwargs['GR']
 
+        # max attempts to start the chain
         mt = kwargs['max_tries']
 
         info['sampler'] = {'mcmc': {'Rminus1_stop': GR, 'max_tries': mt}} # consider what should be hardcoded here or not

@@ -185,10 +185,10 @@ def create_lenstronomy_from_coolest(file_name):
 
             for lensing_entity in lensing_entities_list:
                 if lensing_entity.type == "galaxy":
-                    galac = lensing_entity
-                    if galac.redshift > min_redshift:
+                    galaxy = lensing_entity
+                    if galaxy.redshift > min_redshift:
                         # SOURCE OF LIGHT
-                        light_list = galac.light_model
+                        light_list = galaxy.light_model
                         for light in light_list:
                             print('Source Light : ')
                             if light.type == 'Sersic':
@@ -209,12 +209,12 @@ def create_lenstronomy_from_coolest(file_name):
                             else:
                                 print(f'Light Type {light.type} not yet implemented.')
 
-                    if galac.redshift < max_redshift:
+                    if galaxy.redshift < max_redshift:
                         # LENSING GALAXY
-                        if galac.redshift > min_redshift:
+                        if galaxy.redshift > min_redshift:
                             multi_plane = True
                             print('Multiplane lensing to consider.')
-                        mass_list = galac.mass_model
+                        mass_list = galaxy.mass_model
                         for mass in mass_list:
                             print('Lens Mass : ')
                             if mass.type == 'PEMD':
@@ -226,9 +226,9 @@ def create_lenstronomy_from_coolest(file_name):
                             else:
                                 print(f'Mass Type {mass.type} not yet implemented.')
 
-                    if galac.redshift == min_redshift:
+                    if galaxy.redshift == min_redshift:
                         # LENSING LIGHT GALAXY
-                        light_list = galac.light_model
+                        light_list = galaxy.light_model
                         for light in light_list:
                             print('Lens Light : ')
                             if light.type == 'Sersic':
@@ -241,8 +241,8 @@ def create_lenstronomy_from_coolest(file_name):
                             else:
                                 print(f'Light Type {light.type} not yet implemented.')
 
-                    if (galac.redshift <= min_redshift) and (galac.redshift >= max_redshift):
-                        print(f'REDSHIFT {galac.redshift} is not in the range ] {min_red} , {max_red} [')
+                    if (galaxy.redshift <= min_redshift) and (galaxy.redshift >= max_redshift):
+                        print(f'REDSHIFT {galaxy.redshift} is not in the range ] {min_red} , {max_red} [')
 
 
                 elif lensing_entity.type == "external_shear":
@@ -388,11 +388,11 @@ def update_coolest_from_lenstronomy(file_name, kwargs_result, kwargs_mcmc=None,
 
         for lensing_entity in lensing_entities_list:
             if lensing_entity.type == "galaxy":
-                galac = lensing_entity
+                galaxy = lensing_entity
 
-                if galac.redshift > min_redshift:
+                if galaxy.redshift > min_redshift:
                     # SOURCE OF LIGHT
-                    light_list = galac.light_model
+                    light_list = galaxy.light_model
                     for light in light_list:
 
                         # ASSUME same list of models as in the json !!
@@ -423,12 +423,12 @@ def update_coolest_from_lenstronomy(file_name, kwargs_result, kwargs_mcmc=None,
                         else:
                             pass
 
-                if galac.redshift < max_redshift:
+                if galaxy.redshift < max_redshift:
                     # LENSING GALAXY
-                    if galac.redshift > min_redshift:
+                    if galaxy.redshift > min_redshift:
                         multi_plane = True
                         print('Multiplane lensing to consider.')
-                    mass_list = galac.mass_model
+                    mass_list = galaxy.mass_model
                     for mass in mass_list:
 
                         kwargs_lens_mcmc = None
@@ -452,9 +452,9 @@ def update_coolest_from_lenstronomy(file_name, kwargs_result, kwargs_mcmc=None,
 
 
 
-                if galac.redshift == min_redshift:
+                if galaxy.redshift == min_redshift:
                     # LENSING LIGHT GALAXY
-                    light_list = galac.light_model
+                    light_list = galaxy.light_model
                     for light in light_list:
 
                         if light.type == 'LensedPS':
@@ -482,8 +482,8 @@ def update_coolest_from_lenstronomy(file_name, kwargs_result, kwargs_mcmc=None,
                         else:
                             pass
 
-                if (galac.redshift <= min_redshift) and (galac.redshift >= max_redshift):
-                    print(f'REDSHIFT {galac.redshift} is not in the range ] {min_red} , {max_red} [')
+                if (galaxy.redshift <= min_redshift) and (galaxy.redshift >= max_redshift):
+                    print(f'REDSHIFT {galaxy.redshift} is not in the range ] {min_red} , {max_red} [')
 
             elif lensing_entity.type == "external_shear":
                 shear_list = lensing_entity.mass_model

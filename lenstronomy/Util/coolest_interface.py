@@ -26,7 +26,7 @@ def create_lenstronomy_from_coolest(file_name):
     creation_cosmo = False
     creation_data = False
     creation_instrument = False
-    creation_red_list = False
+    creation_redshift_list = False
     creation_kwargs_likelihood = False
 
     decoder = JSONSerializer(file_name, indent=2)
@@ -178,20 +178,15 @@ def create_lenstronomy_from_coolest(file_name):
             kwargs_ps_sigma = []
 
             creation_lens_source_light = True
-
-            min_red = 0
-            max_red = 5
-            creation_red_list = True
-            red_list = []
             MultiPlane = False
-            for lensing_entity in lensing_entities_list:
-                red_list.append(lensing_entity.redshift)
-            min_red = np.min(red_list)
-            max_red = np.max(red_list)
+            creation_redshift_list = True
+
+            min_redshift, max_redshift, redshift_list = create_redshift_info(lensing_entities_list)
+
             for lensing_entity in lensing_entities_list:
                 if lensing_entity.type == "galaxy":
                     galac = lensing_entity
-                    if galac.redshift > min_red:
+                    if galac.redshift > min_redshift:
                         # SOURCE OF LIGHT
                         light_list = galac.light_model
                         for light in light_list:
@@ -214,9 +209,9 @@ def create_lenstronomy_from_coolest(file_name):
                             else:
                                 print(f'Light Type {light.type} not yet implemented.')
 
-                    if galac.redshift < max_red:
+                    if galac.redshift < max_redshift:
                         # LENSING GALAXY
-                        if galac.redshift > min_red:
+                        if galac.redshift > min_redshift:
                             MultiPlane = True
                             print('Multiplane lensing to consider.')
                         mass_list = galac.mass_model
@@ -231,7 +226,7 @@ def create_lenstronomy_from_coolest(file_name):
                             else:
                                 print(f'Mass Type {mass.type} not yet implemented.')
 
-                    if galac.redshift == min_red:
+                    if galac.redshift == min_redshift:
                         # LENSING LIGHT GALAXY
                         light_list = galac.light_model
                         for light in light_list:
@@ -246,7 +241,7 @@ def create_lenstronomy_from_coolest(file_name):
                             else:
                                 print(f'Light Type {light.type} not yet implemented.')
 
-                    if (galac.redshift <= min_red) and (galac.redshift >= max_red):
+                    if (galac.redshift <= min_redshift) and (galac.redshift >= max_redshift):
                         print(f'REDSHIFT {galac.redshift} is not in the range ] {min_red} , {max_red} [')
 
 
@@ -293,8 +288,8 @@ def create_lenstronomy_from_coolest(file_name):
                          'kwargs_lens_light': kwargs_lens_light,
                          'kwargs_ps': kwargs_ps}
         return_dict['kwargs_result'] = kwargs_result
-    if creation_red_list is True:
-        return_dict['red_list'] = red_list
+    if creation_redshift_list is True:
+        return_dict['redshift_list'] = redshift_list
     if creation_kwargs_likelihood is True:
         return_dict['kwargs_likelihood'] = kwargs_likelihood
     if creation_cosmo is True:
@@ -386,21 +381,16 @@ def update_coolest_from_lenstronomy(file_name, kwargs_result, kwargs_mcmc=None,
         idx_source = 0
         idx_ps = 0
 
-        min_red = 0
-        max_red = 5
-        creation_red_list = True
-        red_list = []
         MultiPlane = False
-        for lensing_entity in lensing_entities_list:
-            red_list.append(lensing_entity.redshift)
-        min_red = np.min(red_list)
-        max_red = np.max(red_list)
+        creation_redshift_list = True
+
+        min_redshift, max_redshift, redshift_list = create_redshift_info(lensing_entities_list)
 
         for lensing_entity in lensing_entities_list:
             if lensing_entity.type == "galaxy":
                 galac = lensing_entity
 
-                if galac.redshift > min_red:
+                if galac.redshift > min_redshift:
                     # SOURCE OF LIGHT
                     light_list = galac.light_model
                     for light in light_list:
@@ -433,9 +423,9 @@ def update_coolest_from_lenstronomy(file_name, kwargs_result, kwargs_mcmc=None,
                         else:
                             pass
 
-                if galac.redshift < max_red:
+                if galac.redshift < max_redshift:
                     # LENSING GALAXY
-                    if galac.redshift > min_red:
+                    if galac.redshift > min_redshift:
                         MultiPlane = True
                         print('Multiplane lensing to consider.')
                     mass_list = galac.mass_model
@@ -462,7 +452,7 @@ def update_coolest_from_lenstronomy(file_name, kwargs_result, kwargs_mcmc=None,
 
 
 
-                if galac.redshift == min_red:
+                if galac.redshift == min_redshift:
                     # LENSING LIGHT GALAXY
                     light_list = galac.light_model
                     for light in light_list:
@@ -492,7 +482,7 @@ def update_coolest_from_lenstronomy(file_name, kwargs_result, kwargs_mcmc=None,
                         else:
                             pass
 
-                if (galac.redshift <= min_red) and (galac.redshift >= max_red):
+                if (galac.redshift <= min_redshift) and (galac.redshift >= max_redshift):
                     print(f'REDSHIFT {galac.redshift} is not in the range ] {min_red} , {max_red} [')
 
             elif lensing_entity.type == "external_shear":
@@ -581,6 +571,16 @@ def create_kwargs_mcmc_from_chain_list(chain_list, kwargs_model, kwargs_params, 
                            'args_ps': args_ps}
     return kwargs_mcmc_results
 
-
+def create_redshift_info(lensing_entities_list,min_redshift=0, max_redshift=5):
+    """
+    Side fuction to create the minimum, maximum and whole redshift list of galaxies in the COOLEST template
+    Note that the redshifts helps knowing which galaxy is a lens, or a source, and if multiplane has to be considered
+    """
+    redshift_list = []
+    for lensing_entity in lensing_entities_list:
+        redshift_list.append(lensing_entity.redshift)
+    min_redshift = np.min(redshift_list)
+    max_redshift = np.max(redshift_list)
+    return min_redshift, max_redshift, redshift_list
 
 

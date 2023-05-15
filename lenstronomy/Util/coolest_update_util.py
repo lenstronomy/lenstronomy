@@ -1,7 +1,7 @@
 import numpy as np
-
 from coolest.template.classes.parameter import PointEstimate
 from coolest.template.classes.probabilities import PosteriorStatistics
+
 
 def shapelet_amp_lenstronomy_to_coolest(value):
     """
@@ -35,8 +35,8 @@ def radian_lenstronomy_to_degree_coolest(value):
     """
     Transform an angle in radian from lenstronomy into an angle in degree for the COOLEST with folding
     """
-    COOLEST_oriented_degree = folding_coolest(radian_lenstronomy_to_degree(value))
-    return COOLEST_oriented_degree
+    coolest_oriented_degree = folding_coolest(radian_lenstronomy_to_degree(value))
+    return coolest_oriented_degree
 
 
 def radian_lenstronomy_to_degree(value):
@@ -46,28 +46,28 @@ def radian_lenstronomy_to_degree(value):
     """
 
     lenstro_degree = value * 180. / np.pi
-    COOLEST_oriented_degree = lenstro_degree - 90.
-    COOLEST_oriented_degree *= -1
-    return COOLEST_oriented_degree
+    coolest_oriented_degree = lenstro_degree - 90.
+    coolest_oriented_degree *= -1
+    return coolest_oriented_degree
 
 
 def folding_coolest(value):
     """
     Folds the angle into COOLEST convention range ]-90;90]
     """
-    COOLEST_oriented_degree = value
-    if type(COOLEST_oriented_degree) == type(np.array([])):
-        for idx, val in enumerate(COOLEST_oriented_degree):
+    coolest_oriented_degree = value
+    if type(coolest_oriented_degree) == type(np.array([])):
+        for idx, val in enumerate(coolest_oriented_degree):
             if val <= -90.:
-                COOLEST_oriented_degree[idx] += 180.
+                coolest_oriented_degree[idx] += 180.
             elif val > 90.:
-                COOLEST_oriented_degree[idx] -= 180.
+                coolest_oriented_degree[idx] -= 180.
     else:
-        if COOLEST_oriented_degree <= -90:
-            COOLEST_oriented_degree += 180.
-        elif COOLEST_oriented_degree > 90:
-            COOLEST_oriented_degree -= 180.
-    return COOLEST_oriented_degree
+        if coolest_oriented_degree <= -90:
+            coolest_oriented_degree += 180.
+        elif coolest_oriented_degree > 90:
+            coolest_oriented_degree -= 180.
+    return coolest_oriented_degree
 
 
 def e1e2_lenstronomy_to_qphi_coolest(e1, e2):

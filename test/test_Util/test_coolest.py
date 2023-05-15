@@ -16,6 +16,7 @@ from lenstronomy.Plots.model_plot import ModelPlot
 
 from lenstronomy.Workflow.fitting_sequence import FittingSequence
 
+
 class TestCOOLESTinterface(object):
 
     def test_load(self):
@@ -25,6 +26,7 @@ class TestCOOLESTinterface(object):
         kwargs_out = create_lenstronomy_from_coolest(path+"/coolest_template")
         print(kwargs_out)
         return
+
     def test_update(self):
         path = os.getcwd()
         if path[-23:] == 'lenstronomy/lenstronomy':

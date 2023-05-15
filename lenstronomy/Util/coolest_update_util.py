@@ -80,7 +80,7 @@ def e1e2_lenstronomy_to_qphi_coolest(e1, e2):
     return q, phi
 
 
-def g1g2_lenstronomy_to_gextphiext_coolest(gamma1, gamma2):
+def g1g2_lenstronomy_to_gamma_phi_coolest(gamma1, gamma2):
     """
     Transform gamma1,gamma2 in lenstronomy to gamma_ext and phi_ext (shear strength, position angle East-of-North)
      with folding
@@ -90,7 +90,7 @@ def g1g2_lenstronomy_to_gextphiext_coolest(gamma1, gamma2):
     return gamma_ext, phi_ext
 
 
-def g1g2_lenstronomy_to_gextphiext(gamma1, gamma2):
+def g1g2_lenstronomy_to_gamma_phi(gamma1, gamma2):
     """
     Transform gamma1,gamma2 in lenstronomy to gamma_ext and phi_ext (shear strength, position angle East-of-North)
      without folding
@@ -117,7 +117,7 @@ def shear_update(shear_idx, kwargs_lens, kwargs_lens_mcmc=None):
     ------
      - : updated shear_idx
     """
-    gamma_ext, phi_ext = g1g2_lenstronomy_to_gextphiext_coolest(float(kwargs_lens['gamma1']),
+    gamma_ext, phi_ext = g1g2_lenstronomy_to_gamma_phi_coolest(float(kwargs_lens['gamma1']),
                                                                float(kwargs_lens['gamma2']))
     shear_idx.parameters['gamma_ext'].set_point_estimate(PointEstimate(float(gamma_ext)))
     shear_idx.parameters['phi_ext'].set_point_estimate(PointEstimate(float(phi_ext)))
@@ -126,7 +126,7 @@ def shear_update(shear_idx, kwargs_lens, kwargs_lens_mcmc=None):
         g1 = [arg['gamma1'] for arg in kwargs_lens_mcmc]
         g2 = [arg['gamma2'] for arg in kwargs_lens_mcmc]
 
-        g_ext, p_ext = g1g2_lenstronomy_to_gextphiext(np.array(g1), np.array(g2))
+        g_ext, p_ext = g1g2_lenstronomy_to_gamma_phi(np.array(g1), np.array(g2))
 
         g_ext_mean = np.mean(g_ext)
         g_ext_16, g_ext_50, g_ext_84 = np.quantile(g_ext, [0.16, 0.5, 0.84])

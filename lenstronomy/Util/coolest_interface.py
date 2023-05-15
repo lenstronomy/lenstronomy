@@ -197,17 +197,17 @@ def create_lenstronomy_from_coolest(file_name):
                         for light in light_list:
                             print('Source Light : ')
                             if light.type == 'Sersic':
-                                read.sersic(light, source_model_list, kwargs_source,
+                                read.update_kwargs_sersic(light, source_model_list, kwargs_source,
                                        kwargs_source_init, kwargs_source_up,
                                        kwargs_source_down, kwargs_source_fixed,
                                        kwargs_source_sigma, cleaning=True)
                             elif light.type == 'Shapelets':
-                                read.shapelets(light, source_model_list, kwargs_source,
+                                read.update_kwargs_shapelets(light, source_model_list, kwargs_source,
                                           kwargs_source_init, kwargs_source_up,
                                           kwargs_source_down, kwargs_source_fixed,
                                           kwargs_source_sigma, cleaning=True)
                             elif light.type == 'LensedPS':
-                                read.lensed_point_source(light, ps_model_list, kwargs_ps,
+                                read.update_kwargs_lensed_ps(light, ps_model_list, kwargs_ps,
                                                     kwargs_ps_init, kwargs_ps_up,
                                                     kwargs_ps_down, kwargs_ps_fixed,
                                                     kwargs_ps_sigma, cleaning=True)
@@ -223,10 +223,10 @@ def create_lenstronomy_from_coolest(file_name):
                         for mass in mass_list:
                             print('Lens Mass : ')
                             if mass.type == 'PEMD':
-                                read.pemd(mass, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens_up,
+                                read.update_kwargs_pemd(mass, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens_up,
                                      kwargs_lens_down, kwargs_lens_fixed, kwargs_lens_sigma, cleaning=True)
                             elif mass.type == 'SIE':
-                                read.sie(mass, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens_up,
+                                read.update_kwargs_sie(mass, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens_up,
                                     kwargs_lens_down, kwargs_lens_fixed, kwargs_lens_sigma, cleaning=True)
                             else:
                                 print('Mass Type ', mass.type, ' not yet implemented.')
@@ -237,11 +237,11 @@ def create_lenstronomy_from_coolest(file_name):
                         for light in light_list:
                             print('Lens Light : ')
                             if light.type == 'Sersic':
-                                read.sersic(light, lens_light_model_list, kwargs_lens_light, kwargs_lens_light_init,
+                                read.update_kwargs_sersic(light, lens_light_model_list, kwargs_lens_light, kwargs_lens_light_init,
                                        kwargs_lens_light_up, kwargs_lens_light_down, kwargs_lens_light_fixed,
                                        kwargs_lens_light_sigma, cleaning=True)
                             elif light.type == 'LensedPS':
-                                read.lensed_point_source(light, ps_model_list, kwargs_ps, kwargs_ps_init, kwargs_ps_up,
+                                read.update_kwargs_lensed_ps(light, ps_model_list, kwargs_ps, kwargs_ps_init, kwargs_ps_up,
                                                     kwargs_ps_down, kwargs_ps_fixed, kwargs_ps_sigma, cleaning=True)
                             else:
                                 print('Light Type ', light.type, ' not yet implemented.')
@@ -255,7 +255,7 @@ def create_lenstronomy_from_coolest(file_name):
                     for shear_idx in shear_list:
                         print('Shear : ')
                         if shear_idx.type == 'ExternalShear':
-                            read.shear(shear_idx, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens_up,
+                            read.update_kwargs_shear(shear_idx, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens_up,
                                   kwargs_lens_down, kwargs_lens_fixed, kwargs_lens_sigma, cleaning=True)
 
                         else:

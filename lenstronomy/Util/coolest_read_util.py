@@ -57,7 +57,7 @@ def qphi_coolest_to_e1e2_lenstronomy(q, phi):
         return e1, e2
 
 
-def gextphiext_coolest_to_g1g2_lenstronomy(gamma_ext, phi_ext):
+def gamma_phi_coolest_to_g1_g2_lenstronomy(gamma_ext, phi_ext):
     """
     Transform gamma_ext and phi_ext (shear strength, position angle East-of-North)
     to gamma1,gamma2 in lenstronomy
@@ -72,6 +72,10 @@ def gextphiext_coolest_to_g1g2_lenstronomy(gamma_ext, phi_ext):
 
 
 def ellibounds_coolest_to_lenstronomy(q_down, q_up, phi_down, phi_up):
+    """
+    Transforms upper and lower bounds on coolest ellipticity parameters (q, phi) towards lenstronomy bound on e1, e2
+    The mapping can not be perfect but it's the best we can do
+    """
     if None in [q_down, q_up, phi_down, phi_up]:
         return None, None, None, None
     else:
@@ -87,6 +91,11 @@ def ellibounds_coolest_to_lenstronomy(q_down, q_up, phi_down, phi_up):
 
 
 def shearbounds_coolest_to_lenstronomy(gamma_ext_down, gamma_ext_up, phi_ext_down, phi_ext_up):
+    """
+    Transforms upper and lower bounds on coolest shear parameters (gamma_ext, phi_ext) towards lenstronomy bounds
+    on gamma_1, gamma_2
+    The mapping can not be perfect but it's the best we can do
+    """
     if None in [gamma_ext_down, gamma_ext_up, phi_ext_down, phi_ext_up]:
         return None, None, None, None
     else:
@@ -101,7 +110,7 @@ def shearbounds_coolest_to_lenstronomy(gamma_ext_down, gamma_ext_up, phi_ext_dow
         return gamma1_down, gamma1_up, gamma2_down, gamma2_up
 
 
-def shear(shear_idx, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens_up, kwargs_lens_down,
+def update_kwargs_shear(shear_idx, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens_up, kwargs_lens_down,
           kwargs_lens_fixed, kwargs_lens_sigma, cleaning=False):
     """
     Update the lens model list and kwargs with SHEAR mass model (gamma_ext - psi_ext)
@@ -130,9 +139,9 @@ def shear(shear_idx, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens
             psiext_down = getattr(shear_param.definition_range, 'min_value')
             psiext_fixed = psiext if getattr(shear_param, 'fixed') else None
         else:
-            print(shear_name, " not known")
-    gamma1, gamma2 = gextphiext_coolest_to_g1g2_lenstronomy(gammaext, psiext)
-    gamma1_fixed, gamma2_fixed = gextphiext_coolest_to_g1g2_lenstronomy(gammaext_fixed, psiext_fixed)
+            print(f"{shear_name} not known")
+    gamma1, gamma2 = gamma_phi_coolest_to_g1_g2_lenstronomy(gammaext, psiext)
+    gamma1_fixed, gamma2_fixed = gamma_phi_coolest_to_g1_g2_lenstronomy(gammaext_fixed, psiext_fixed)
     gamma1_down, gamma1_up, gamma2_down, gamma2_up = shearbounds_coolest_to_lenstronomy(gammaext_down, gammaext_up, psiext_down,
                                                                             psiext_up)
 
@@ -175,7 +184,7 @@ def shear(shear_idx, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens
     return
 
 
-def pemd(mass, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens_up, kwargs_lens_down, kwargs_lens_fixed,
+def update_kwargs_pemd(mass, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens_up, kwargs_lens_down, kwargs_lens_fixed,
          kwargs_lens_sigma, cleaning=False):
     """
     Update the lens list and kwargs with PEMD mass model
@@ -225,7 +234,7 @@ def pemd(mass, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens_up, k
             center_y_down = getattr(mass_param.definition_range, 'min_value')
             center_y_fixed = center_y if getattr(mass_param, 'fixed') else None
         else:
-            print(mass_name, " not known")
+            print(f"{mass_name} not known")
 
     e1, e2 = qphi_coolest_to_e1e2_lenstronomy(q, phi)
     e1_fixed, e2_fixed = qphi_coolest_to_e1e2_lenstronomy(q_fixed, phi_fixed)
@@ -274,7 +283,7 @@ def pemd(mass, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens_up, k
     return
 
 
-def sie(mass, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens_up, kwargs_lens_down, kwargs_lens_fixed,
+def update_kwargs_sie(mass, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens_up, kwargs_lens_down, kwargs_lens_fixed,
         kwargs_lens_sigma, cleaning=False):
     """
     Update the lens list and kwargs with SIE mass model
@@ -319,7 +328,7 @@ def sie(mass, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens_up, kw
             center_y_down = getattr(mass_param.definition_range, 'min_value')
             center_y_fixed = center_y if getattr(mass_param, 'fixed') else None
         else:
-            print(mass_name, " not known")
+            print(f"{mass_name} not known")
 
     e1, e2 = qphi_coolest_to_e1e2_lenstronomy(q, phi)
     e1_fixed, e2_fixed = qphi_coolest_to_e1e2_lenstronomy(q_fixed, phi_fixed)
@@ -368,7 +377,7 @@ def sie(mass, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens_up, kw
     return
 
 
-def sersic(light, light_model_list, kwargs_light, kwargs_light_init, kwargs_light_up, kwargs_light_down,
+def update_kwargs_sersic(light, light_model_list, kwargs_light, kwargs_light_init, kwargs_light_up, kwargs_light_down,
            kwargs_light_fixed, kwargs_light_sigma, cleaning=False):
     """
     Update the source list and kwargs with SERSIC_ELLISPE light model
@@ -423,7 +432,7 @@ def sersic(light, light_model_list, kwargs_light, kwargs_light_init, kwargs_ligh
             cy_down = getattr(light_param.definition_range, 'min_value')
             cy_fixed = cy if getattr(light_param, 'fixed') else None
         else:
-            print('Parameter ', light_name, ' unknown in SersicEllipse profile.')
+            print(f'Parameter {light_name} unknown in SersicEllipse profile.')
 
     e1, e2 = qphi_coolest_to_e1e2_lenstronomy(q, phi)
     e1_fixed, e2_fixed = qphi_coolest_to_e1e2_lenstronomy(q_fixed, phi_fixed)
@@ -474,7 +483,7 @@ def sersic(light, light_model_list, kwargs_light, kwargs_light_init, kwargs_ligh
     return
 
 
-def shapelets(light, light_model_list, kwargs_light, kwargs_light_init, kwargs_light_up, kwargs_light_down,
+def update_kwargs_shapelets(light, light_model_list, kwargs_light, kwargs_light_init, kwargs_light_up, kwargs_light_down,
               kwargs_light_fixed, kwargs_light_sigma, cleaning=False):
     """
     Update the source list and kwargs with SHAPELETS light model
@@ -517,7 +526,7 @@ def shapelets(light, light_model_list, kwargs_light, kwargs_light_init, kwargs_l
             amp_down = shapelet_amp_coolest_to_lenstronomy(getattr(light_param.definition_range, 'min_value'))
             amp_fixed = amp if getattr(light_param, 'fixed') else None
         else:
-            print('Parameter ', light_name, ' unknown in Shapelets profile.')
+            print(f'Parameter {light_name} unknown in Shapelets profile.')
 
     kw_1 = {'amp': amp, 'beta': b, 'center_x': cx, 'center_y': cy, 'n_max': nmax}
     kw_up_1 = {'beta': b_up, 'center_x': cx_up, 'center_y': cy_up}
@@ -557,7 +566,7 @@ def shapelets(light, light_model_list, kwargs_light, kwargs_light_init, kwargs_l
     return
 
 
-def lensed_point_source(light, ps_model_list, kwargs_ps, kwargs_ps_init, kwargs_ps_up, kwargs_ps_down, kwargs_ps_fixed,
+def update_kwargs_lensed_ps(light, ps_model_list, kwargs_ps, kwargs_ps_init, kwargs_ps_up, kwargs_ps_down, kwargs_ps_fixed,
                         kwargs_ps_sigma, cleaning=False):
     """
     Update the source list and kwargs with lensed point source "LENSED_POSITION" light model
@@ -600,7 +609,7 @@ def lensed_point_source(light, ps_model_list, kwargs_ps, kwargs_ps_init, kwargs_
             amp_down = getattr(light_param.definition_range, 'min_value')
             amp_fixed = amp if getattr(light_param, 'fixed') else None
         else:
-            print('Parameter ', light_name, ' unknown in LensedPS profile.')
+            print(f'Parameter {light_name} unknown in LensedPS profile.')
 
     kw_1 = {'point_amp': np.array(amp) if amp is not None else None,
             'ra_image': np.array(ra) if ra is not None else None,
@@ -619,7 +628,6 @@ def lensed_point_source(light, ps_model_list, kwargs_ps, kwargs_ps_init, kwargs_
     kw_fixed = kw_fixed_1.copy()
 
     if cleaning is True:
-        print('cleaning true')
         kw_init_default = {'point_amp': np.ones(num_ps), 'ra_image': np.ones(num_ps), 'dec_image': np.ones(num_ps)}
         kw_up_default = {'ra_image': np.ones(num_ps) * 10, 'dec_image': np.ones(num_ps) * 10}
         kw_down_default = {'ra_image': np.ones(num_ps) * (-10), 'dec_image': np.ones(num_ps) * (-10)}

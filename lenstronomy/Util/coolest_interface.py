@@ -92,20 +92,20 @@ def create_lenstronomy_from_coolest(file_name):
 
     # PSF
     if "instrument" not in exclude_keys:
-        lens_instru = lens_coolest.instrument
-        if lens_instru is not None:
-            if lens_instru.psf is not None:
-                if lens_instru.psf.type == "PixelatedPSF":
+        lens_instrument = lens_coolest.instrument
+        if lens_instrument is not None:
+            if lens_instrument.psf is not None:
+                if lens_instrument.psf.type == "PixelatedPSF":
                     creation_instrument = True
-                    psf_path = lens_instru.psf.pixels.fits_file.path
+                    psf_path = lens_instrument.psf.pixels.fits_file.path
                     try:
                         psf = fits.open(psf_path)[0].data
                     except:
                         psf = psf_path
                         print(f'could not find PSF file {psf_path}. Saving file name instead.')
-                    psf_pixel_size = lens_instru.psf.pixels.pixel_size
-                    psf_nx = lens_instru.psf.pixels.num_pix_x
-                    psf_ny = lens_instru.psf.pixels.num_pix_y
+                    psf_pixel_size = lens_instrument.psf.pixels.pixel_size
+                    psf_nx = lens_instrument.psf.pixels.num_pix_x
+                    psf_ny = lens_instrument.psf.pixels.num_pix_y
                     super_sampling_factor = 1
                     if pixel_size != psf_pixel_size:
                         super_sampling_factor = int(pixel_size / psf_pixel_size)
@@ -116,7 +116,7 @@ def create_lenstronomy_from_coolest(file_name):
                                   'point_source_supersampling_factor': super_sampling_factor}
                     print('PSF creation')
                 else:
-                    print(f"PSF type {lens_instru.psf.type} is unknown")
+                    print(f"PSF type {lens_instrument.psf.type} is unknown")
 
     # COSMO
     if "cosmology" not in exclude_keys:

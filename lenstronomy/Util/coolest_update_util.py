@@ -1,6 +1,7 @@
 import numpy as np
 from coolest.template.classes.parameter import PointEstimate
 from coolest.template.classes.probabilities import PosteriorStatistics
+from lenstronomy.Util.param_util import ellipticity2phi_q, shear_cartesian2polar
 
 
 def shapelet_amp_lenstronomy_to_coolest(value):
@@ -74,14 +75,8 @@ def e1e2_lenstronomy_to_qphi_coolest(e1, e2):
     """
     Transform e1,e2 in lenstronomy to q and phi (axis ratio, position angle East-of-North)
     """
-
-    angle = np.arctan2(e2, e1) / 2.
+    angle,q = ellipticity2phi_q(e1,e2)
     phi = radian_lenstronomy_to_degree_coolest(angle)
-
-    c = np.sqrt(e1 ** 2 + e2 ** 2)
-    c = np.minimum(c, 0.9999)
-    q = (1 - c) / (1 + c)
-
     return q, phi
 
 
@@ -90,12 +85,8 @@ def g1g2_lenstronomy_to_gextphiext_coolest(gamma1, gamma2):
     Transform gamma1,gamma2 in lenstronomy to gamma_ext and phi_ext (shear strength, position angle East-of-North)
      with folding
     """
-
-    angle = np.arctan2(gamma2, gamma1) / 2.
+    angle, gamma_ext = shear_cartesian2polar(gamma1, gamma2)
     phi_ext = radian_lenstronomy_to_degree_coolest(angle)
-
-    gamma_ext = np.sqrt(gamma1 ** 2 + gamma2 ** 2)
-
     return gamma_ext, phi_ext
 
 

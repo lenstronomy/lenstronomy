@@ -1,5 +1,6 @@
 import numpy as np
 import coolest
+from lenstronomy.Util.param_util import phi_q2_ellipticity, shear_polar2cartesian
 
 
 def shapelet_amp_coolest_to_lenstronomy(value):
@@ -52,8 +53,7 @@ def qphi_coolest_to_e1e2_lenstronomy(q, phi):
         return None, None
     else:
         angle = degree_coolest_to_radian_lenstronomy(phi)
-        e1 = (1. - q) / (1. + q) * np.cos(2 * angle)
-        e2 = (1. - q) / (1. + q) * np.sin(2 * angle)
+        e1, e2 = phi_q2_ellipticity(angle, q)
         return e1, e2
 
 
@@ -66,8 +66,7 @@ def gamma_phi_coolest_to_g1_g2_lenstronomy(gamma_ext, phi_ext):
         return None, None
     else:
         angle = degree_coolest_to_radian_lenstronomy(phi_ext)
-        gamma1 = gamma_ext * np.cos(2 * angle)
-        gamma2 = gamma_ext * np.sin(2 * angle)
+        gamma1, gamma2 = shear_polar2cartesian(angle,gamma_ext)
         return gamma1, gamma2
 
 

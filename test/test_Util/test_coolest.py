@@ -21,15 +21,15 @@ class TestCOOLESTinterface(object):
 
     def test_load(self):
         path = os.getcwd()
-        if path[-23:] == 'lenstronomy/lenstronomy':
+        if path[-11:] == 'lenstronomy':
             path+='/test/test_Util'
         kwargs_out = create_lenstronomy_from_coolest(path+"/coolest_template")
-        print(kwargs_out)
+        kwargs_out = create_lenstronomy_from_coolest(path + "/coolest_template_pemd_random")
         return
 
     def test_update(self):
         path = os.getcwd()
-        if path[-23:] == 'lenstronomy/lenstronomy':
+        if path[-11:] == 'lenstronomy':
             path+='/test/test_Util'
         kwargs_result={"kwargs_lens":[{'gamma1':0.1,'gamma2':-0.05,'ra_0':0.,'dec_0':0.},
                                       {'theta_E': 0.7, 'e1': -0.15, 'e2': 0.01,
@@ -55,7 +55,7 @@ class TestCOOLESTinterface(object):
         # use read json ; create an image ; create noise ; do fit (PSO for result + MCMC for chain)
         # create the kwargs mcmc ; upadte json
         path = os.getcwd()
-        if path[-23:] == 'lenstronomy/lenstronomy':
+        if path[-11:] == 'lenstronomy':
             path+='/test/test_Util'
 
         kwargs_out = create_lenstronomy_from_coolest(path+"/coolest_template")
@@ -167,7 +167,7 @@ class TestCOOLESTinterface(object):
 
     def test_pemd(self):
         path = os.getcwd()
-        if path[-23:] == 'lenstronomy/lenstronomy':
+        if path[-11:] == 'lenstronomy':
             path+='/test/test_Util'
         kwargs_out = create_lenstronomy_from_coolest(path+"/coolest_template_pemd")
         print(kwargs_out)

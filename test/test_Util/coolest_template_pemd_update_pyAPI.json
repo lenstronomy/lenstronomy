@@ -699,8 +699,8 @@
             4.0
           ]
         },
-        "num_pix_x": 100,
-        "num_pix_y": 100
+        "num_pix_x": 102,
+        "num_pix_y": 102
       },
       "documentation": "Noise characterized by a noise map, which contains diagonal elements of the data covariance matrix"
     },
@@ -725,14 +725,14 @@
         "documentation": "",
         "field_of_view_x": {
           "py/tuple": [
-            -3.96,
-            3.96
+            -3.8,
+            3.7
           ]
         },
         "field_of_view_y": {
           "py/tuple": [
-            -3.96,
-            3.96
+            -3.8,
+            3.7
           ]
         },
         "num_pix_x": 99,

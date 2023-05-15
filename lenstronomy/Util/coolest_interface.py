@@ -53,8 +53,6 @@ def create_lenstronomy_from_coolest(file_name):
             except:
                 image = image_path
                 print(f'could not find image file {image_path}. Saving file name instead.')
-            if nx != ny:
-                print(f"nx  {nx} is different from ny  {ny}")
             ra_at_xy_0 = - ( list(lens_observation.pixels.field_of_view_x)[0] + pixel_size / 2. )
             dec_at_xy_0 = list(lens_observation.pixels.field_of_view_y)[0] + pixel_size / 2.
             transform_pix2angle = np.array([[-1, 0], [0, 1]]) * pixel_size
@@ -129,21 +127,21 @@ def create_lenstronomy_from_coolest(file_name):
             else:
                 print(f"Cosmology name {lens_cosmo.astropy_name} is unknown")
 
+#LIKELIHOODS not yet well supported by COOLEST
+    # # LIKELIHOODS
+    # if "likelihoods" not in exclude_keys:
+    #     likelihoods = lens_coolest.likelihoods
+    #     if likelihoods is not None:
+    #         kwargs_likelihood = {}
+    #         creation_kwargs_likelihood = True
+    #         for like in likelihoods:
+    #             if like == 'imaging_data':
+    #                 kwargs_likelihood['image_likelihood'] = True
+    #             else:
+    #                 print(f"Likelihood {like} not yet implemented")
+    #         print("kwargs_likelihood creation")
 
-    # LIKELIHOODS
-    if "likelihoods" not in exclude_keys:
-        likelihoods = lens_coolest.likelihoods
-        if likelihoods is not None:
-            kwargs_likelihood = {}
-            creation_kwargs_likelihood = True
-            for like in likelihoods:
-                if like == 'imaging_data':
-                    kwargs_likelihood['image_likelihood'] = True
-                else:
-                    print(f"Likelihood {like} not yet implemented")
-            print("kwargs_likelihood creation")
-
-        # LENSING ENTITIES
+    # LENSING ENTITIES
     if "lensing_entities" not in exclude_keys:
         lensing_entities_list = lens_coolest.lensing_entities
         if lensing_entities_list is not None:

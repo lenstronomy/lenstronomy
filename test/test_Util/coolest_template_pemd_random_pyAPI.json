@@ -644,6 +644,103 @@
                 }
               },
               "id": "galaxy_2-light_model-Sersic_0"
+            },
+
+
+            {
+              "py/object": "coolest.template.classes.profiles.light.LensedPS",
+              "type": "LensedPS",
+              "documentation": "Set of lensed point sources",
+              "parameters": {
+                "ra_list": {
+                  "py/object": "coolest.template.classes.parameter.NonLinearParameterSet",
+                  "documentation": "RA positions of the lensed point sources",
+                  "units": null,
+                  "definition_range": {
+                    "py/object": "coolest.template.classes.parameter.DefinitionRange",
+                    "min_value": null,
+                    "max_value": null
+                  },
+                  "fixed": false,
+                  "point_estimate": {
+                    "py/object": "coolest.template.classes.parameter.PointEstimate",
+                    "value": null
+                  },
+                  "posterior_stats": {
+                    "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
+                    "mean": null,
+                    "median": null,
+                    "percentile_16th": null,
+                    "percentile_84th": null
+                  },
+                  "prior": {
+                    "py/object": "coolest.template.classes.probabilities.Prior",
+                    "type": null,
+                    "documentation": ""
+                  },
+                  "latex_str": "$ra$",
+                  "id": "galaxy_2-light_model-LensedPS_1-ra_list"
+                },
+                "dec_list": {
+                  "py/object": "coolest.template.classes.parameter.NonLinearParameterSet",
+                  "documentation": "DEC positions of the lensed point sources",
+                  "units": null,
+                  "definition_range": {
+                    "py/object": "coolest.template.classes.parameter.DefinitionRange",
+                    "min_value": null,
+                    "max_value": null
+                  },
+                  "fixed": false,
+                  "point_estimate": {
+                    "py/object": "coolest.template.classes.parameter.PointEstimate",
+                    "value": null
+                  },
+                  "posterior_stats": {
+                    "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
+                    "mean": null,
+                    "median": null,
+                    "percentile_16th": null,
+                    "percentile_84th": null
+                  },
+                  "prior": {
+                    "py/object": "coolest.template.classes.probabilities.Prior",
+                    "type": null,
+                    "documentation": ""
+                  },
+                  "latex_str": "$dec$",
+                  "id": "galaxy_2-light_model-LensedPS_1-dec_list"
+                },
+                "amps": {
+                  "py/object": "coolest.template.classes.parameter.LinearParameterSet",
+                  "documentation": "Set of amplitude values for the lensed point sources",
+                  "units": null,
+                  "definition_range": {
+                    "py/object": "coolest.template.classes.parameter.DefinitionRange",
+                    "min_value": 0.0,
+                    "max_value": null
+                  },
+                  "fixed": false,
+                  "point_estimate": {
+                    "py/object": "coolest.template.classes.parameter.PointEstimate",
+                    "value": null
+                  },
+                  "posterior_stats": {
+                    "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
+                    "mean": null,
+                    "median": null,
+                    "percentile_16th": null,
+                    "percentile_84th": null
+                  },
+                  "prior": {
+                    "py/object": "coolest.template.classes.probabilities.Prior",
+                    "type": null,
+                    "documentation": ""
+                  },
+                  "latex_str": "$A$",
+                  "id": "galaxy_2-light_model-LensedPS_1-amps"
+                }
+              },
+              "id": "galaxy_2-light_model-LensedPS_1"
             }
           ]
         }
@@ -689,18 +786,18 @@
         "documentation": "",
         "field_of_view_x": {
           "py/tuple": [
-            -4.0,
-            4.0
+            -8.0,
+            8.0
           ]
         },
         "field_of_view_y": {
           "py/tuple": [
-            -4.0,
-            4.0
+            -8.0,
+            8.0
           ]
         },
-        "num_pix_x": 102,
-        "num_pix_y": 102
+        "num_pix_x": 200,
+        "num_pix_y": 200
       },
       "documentation": "Noise characterized by a noise map, which contains diagonal elements of the data covariance matrix"
     },

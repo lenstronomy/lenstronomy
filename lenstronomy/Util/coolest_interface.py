@@ -123,7 +123,7 @@ def create_lenstronomy_from_coolest(file_name):
         lens_cosmo = lens_coolest.cosmology
         if lens_cosmo is not None:
             if lens_cosmo.astropy_name == "FlatLambdaCDM":
-                Cosmo = FlatLambdaCDM(lens_cosmo.H0, lens_cosmo.Om0)
+                cosmo = FlatLambdaCDM(lens_cosmo.H0, lens_cosmo.Om0)
                 creation_cosmo = True
                 print("Cosmo class creation")
             else:
@@ -178,7 +178,7 @@ def create_lenstronomy_from_coolest(file_name):
             kwargs_ps_sigma = []
 
             creation_lens_source_light = True
-            MultiPlane = False
+            multi_plane = False
             creation_redshift_list = True
 
             min_redshift, max_redshift, redshift_list = create_redshift_info(lensing_entities_list)
@@ -212,7 +212,7 @@ def create_lenstronomy_from_coolest(file_name):
                     if galac.redshift < max_redshift:
                         # LENSING GALAXY
                         if galac.redshift > min_redshift:
-                            MultiPlane = True
+                            multi_plane = True
                             print('Multiplane lensing to consider.')
                         mass_list = galac.mass_model
                         for mass in mass_list:
@@ -293,7 +293,7 @@ def create_lenstronomy_from_coolest(file_name):
     if creation_kwargs_likelihood is True:
         return_dict['kwargs_likelihood'] = kwargs_likelihood
     if creation_cosmo is True:
-        return_dict['Cosmo'] = Cosmo
+        return_dict['Cosmo'] = cosmo
     if creation_data is True:
         return_dict['kwargs_data'] = kwargs_data
     if creation_instrument is True:
@@ -381,7 +381,7 @@ def update_coolest_from_lenstronomy(file_name, kwargs_result, kwargs_mcmc=None,
         idx_source = 0
         idx_ps = 0
 
-        MultiPlane = False
+        multi_plane = False
         creation_redshift_list = True
 
         min_redshift, max_redshift, redshift_list = create_redshift_info(lensing_entities_list)
@@ -426,7 +426,7 @@ def update_coolest_from_lenstronomy(file_name, kwargs_result, kwargs_mcmc=None,
                 if galac.redshift < max_redshift:
                     # LENSING GALAXY
                     if galac.redshift > min_redshift:
-                        MultiPlane = True
+                        multi_plane = True
                         print('Multiplane lensing to consider.')
                     mass_list = galac.mass_model
                     for mass in mass_list:
@@ -542,7 +542,7 @@ def create_kwargs_mcmc_from_chain_list(chain_list, kwargs_model, kwargs_params, 
     kwargs_ps_init, kwargs_ps_sigma, kwargs_fixed_ps, kwargs_lower_ps, kwargs_upper_ps = kwargs_params[
         'point_source_model']
 
-    Param_class = Param(kwargs_model, kwargs_fixed_lens=kwargs_fixed_lens,
+    param_class = Param(kwargs_model, kwargs_fixed_lens=kwargs_fixed_lens,
                         kwargs_fixed_source=kwargs_fixed_source, kwargs_fixed_lens_light=kwargs_fixed_lens_light,
                         kwargs_fixed_ps=kwargs_fixed_ps,
                         kwargs_lower_lens=kwargs_lower_lens, kwargs_lower_source=kwargs_lower_source,
@@ -551,7 +551,7 @@ def create_kwargs_mcmc_from_chain_list(chain_list, kwargs_model, kwargs_params, 
                         kwargs_upper_lens_light=kwargs_upper_lens_light, kwargs_upper_ps=kwargs_upper_ps,
                         kwargs_lens_init=kwargs_lens_init, **kwargs_constraints)
 
-    ImLin = class_util.create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model,
+    image_linear = class_util.create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model,
                                           image_likelihood_mask=image_likelihood_mask)
     args_lens = []
     args_source = []
@@ -561,8 +561,8 @@ def create_kwargs_mcmc_from_chain_list(chain_list, kwargs_model, kwargs_params, 
         if likelihood_threshold is not None:
             if dist_buf[w] < likelihood_threshold :
                 pass
-        kwargs_return = Param_class.args2kwargs(par_buf[w])
-        ImLin.image_linear_solve(**kwargs_return)
+        kwargs_return = param_class.args2kwargs(par_buf[w])
+        image_linear.image_linear_solve(**kwargs_return)
         args_lens.append(kwargs_return['kwargs_lens'])
         args_source.append(kwargs_return['kwargs_source'])
         args_lens_light.append(kwargs_return['kwargs_lens_light'])

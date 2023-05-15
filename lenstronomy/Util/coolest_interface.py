@@ -32,7 +32,7 @@ def create_lenstronomy_from_coolest(file_name):
     decoder = JSONSerializer(file_name, indent=2)
     lens_coolest = decoder.load()
 
-    print('LENS COOLEST : ', lens_coolest.mode)
+    print(f'LENS COOLEST : {lens_coolest.mode}')
     exclude_keys = lens_coolest.exclude_keys
 
     # IMAGE
@@ -49,12 +49,12 @@ def create_lenstronomy_from_coolest(file_name):
             try:
                 image = fits.open(image_path)[0].data
                 if (np.shape(image)[0] != nx) or (np.shape(image)[1] != ny):
-                    print('image shape ', np.shape(image), ' is different from the coolest file ', nx, ',', ny)
+                    print(f'image shape {np.shape(image)} is different from the coolest file  {nx}, {ny}')
             except:
                 image = image_path
-                print('could not find image file ', image_path, '. Saving file name instead.')
+                print(f'could not find image file {image_path}. Saving file name instead.')
             if nx != ny:
-                print("nx ", nx, " is different from ny ", ny)
+                print(f"nx  {nx} is different from ny  {ny}")
             ra_at_xy_0 = - ( list(lens_observation.pixels.field_of_view_x)[0] + pixel_size / 2. )
             dec_at_xy_0 = list(lens_observation.pixels.field_of_view_y)[0] + pixel_size / 2.
             transform_pix2angle = np.array([[-1, 0], [0, 1]]) * pixel_size
@@ -75,20 +75,20 @@ def create_lenstronomy_from_coolest(file_name):
                     noise = fits.open(noise_path)[0].data
                 except:
                     noise = noise_path
-                    print('could not find noise file ', noise_path, '. Saving file name instead.')
+                    print(f'could not find noise file {noise_path}. Saving file name instead.')
                 noise_pixel_size = lens_observation.noise.noise_map.pixel_size
                 noise_nx = lens_observation.noise.noise_map.num_pix_x
                 noise_ny = lens_observation.noise.noise_map.num_pix_y
                 if pixel_size != noise_pixel_size:
-                    print("noise pixel size ", noise_pixel_size, " is different from image pixel size ", pixel_size)
+                    print(f"noise pixel size {noise_pixel_size} is different from image pixel size {pixel_size}")
                 elif nx != noise_nx:
-                    print("noise nx ", noise_nx, " is different from image nx ", nx)
+                    print(f"noise nx {noise_nx} is different from image nx {nx}")
                 elif ny != noise_ny:
-                    print("noise ny ", noise_ny, " is different from image ny ", ny)
+                    print(f"noise ny {noise_ny} is different from image ny {ny}")
                 kwargs_data['noise_map'] = noise
                 print('Noise (in Data) creation')
             else:
-                print("noise type ", lens_observation.noise.type, " is unknown")
+                print(f"noise type {lens_observation.noise.type} is unknown")
 
     # PSF
     if "instrument" not in exclude_keys:
@@ -102,21 +102,21 @@ def create_lenstronomy_from_coolest(file_name):
                         psf = fits.open(psf_path)[0].data
                     except:
                         psf = psf_path
-                        print('could not find PSF file ', psf_path, '. Saving file name instead.')
+                        print(f'could not find PSF file {psf_path}. Saving file name instead.')
                     psf_pixel_size = lens_instru.psf.pixels.pixel_size
                     psf_nx = lens_instru.psf.pixels.num_pix_x
                     psf_ny = lens_instru.psf.pixels.num_pix_y
                     super_sampling_factor = 1
                     if pixel_size != psf_pixel_size:
                         super_sampling_factor = int(pixel_size / psf_pixel_size)
-                        print("PSF pixel size ", psf_pixel_size, " is different from image pixel size ", pixel_size,
-                              '. Assuming super sampling factor of ', super_sampling_factor)
+                        print(f"PSF pixel size {psf_pixel_size} is different from image pixel size {pixel_size}. "
+                              f"Assuming super sampling factor of {super_sampling_factor}.")
 
                     kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': psf,
                                   'point_source_supersampling_factor': super_sampling_factor}
                     print('PSF creation')
                 else:
-                    print("PSF type ", lens_instru.psf.type, " is unknown")
+                    print(f"PSF type {lens_instru.psf.type} is unknown")
 
     # COSMO
     if "cosmology" not in exclude_keys:
@@ -127,7 +127,7 @@ def create_lenstronomy_from_coolest(file_name):
                 creation_cosmo = True
                 print("Cosmo class creation")
             else:
-                print("Cosmology name ", lens_cosmo.astropy_name, " is unknown")
+                print(f"Cosmology name {lens_cosmo.astropy_name} is unknown")
 
 
     # LIKELIHOODS
@@ -140,7 +140,7 @@ def create_lenstronomy_from_coolest(file_name):
                 if like == 'imaging_data':
                     kwargs_likelihood['image_likelihood'] = True
                 else:
-                    print("Likelihood ", like, " not yet implemented")
+                    print(f"Likelihood {like} not yet implemented")
             print("kwargs_likelihood creation")
 
         # LENSING ENTITIES
@@ -212,7 +212,7 @@ def create_lenstronomy_from_coolest(file_name):
                                                     kwargs_ps_down, kwargs_ps_fixed,
                                                     kwargs_ps_sigma, cleaning=True)
                             else:
-                                print('Light Type ', light.type, ' not yet implemented.')
+                                print(f'Light Type {light.type} not yet implemented.')
 
                     if galac.redshift < max_red:
                         # LENSING GALAXY
@@ -229,7 +229,7 @@ def create_lenstronomy_from_coolest(file_name):
                                 read.update_kwargs_sie(mass, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens_up,
                                     kwargs_lens_down, kwargs_lens_fixed, kwargs_lens_sigma, cleaning=True)
                             else:
-                                print('Mass Type ', mass.type, ' not yet implemented.')
+                                print(f'Mass Type {mass.type} not yet implemented.')
 
                     if galac.redshift == min_red:
                         # LENSING LIGHT GALAXY
@@ -244,10 +244,10 @@ def create_lenstronomy_from_coolest(file_name):
                                 read.update_kwargs_lensed_ps(light, ps_model_list, kwargs_ps, kwargs_ps_init, kwargs_ps_up,
                                                     kwargs_ps_down, kwargs_ps_fixed, kwargs_ps_sigma, cleaning=True)
                             else:
-                                print('Light Type ', light.type, ' not yet implemented.')
+                                print(f'Light Type {light.type} not yet implemented.')
 
                     if (galac.redshift <= min_red) and (galac.redshift >= max_red):
-                        print('REDSHIFT ', galac.redshift, ' is not in the range ]', min_red, ',', max_red, '[')
+                        print(f'REDSHIFT {galac.redshift} is not in the range ] {min_red} , {max_red} [')
 
 
                 elif lensing_entity.type == "external_shear":
@@ -259,13 +259,13 @@ def create_lenstronomy_from_coolest(file_name):
                                   kwargs_lens_down, kwargs_lens_fixed, kwargs_lens_sigma, cleaning=True)
 
                         else:
-                            print("type of Shear ", shear_idx.type, " not implemented")
+                            print(f"type of Shear {shear_idx.type} not implemented")
 
 
 
 
                 else:
-                    print("lensing entity of type ", lensing_enity.type, " is unknown.")
+                    print(f"lensing entity of type {lensing_enity.type} is unknown.")
 
     return_dict = {}
     if creation_lens_source_light is True:
@@ -344,9 +344,9 @@ def update_coolest_from_lenstronomy(file_name, kwargs_result, kwargs_mcmc=None,
     lens_coolest = decoder.load()
     available_profiles = ['LensedPS', 'Sersic', 'Shapelets', 'PEMD', 'SIE', 'SIS', 'ExternalShear']
     if lens_coolest.mode == 'MAP':
-        print('LENS COOLEST : ', lens_coolest.mode)
+        print(f'LENS COOLEST : {lens_coolest.mode}')
     else:
-        print('LENS COOLEST IS NOT MAP, BUT IS ', lens_coolest.mode)
+        print(f'LENS COOLEST IS NOT MAP, BUT IS {lens_coolest.mode}')
 
     lensing_entities_list = lens_coolest.lensing_entities
 
@@ -413,7 +413,7 @@ def update_coolest_from_lenstronomy(file_name, kwargs_result, kwargs_mcmc=None,
                             kwargs_source = kwargs_result['kwargs_source'][idx_source]
                             kwargs_source_mcmc = None
                         else:
-                            print('Light Type ', light.type, ' not yet implemented.')
+                            print(f'Light Type {light.type} not yet implemented.')
 
                         if (kwargs_mcmc is not None) & (light.type in available_profiles):
                             if light.type == 'LensedPS':
@@ -458,7 +458,7 @@ def update_coolest_from_lenstronomy(file_name, kwargs_result, kwargs_mcmc=None,
                             update.sis_update(mass, kwargs_lens, kwargs_lens_mcmc)
                             idx_lens += 1
                         else:
-                            print('Mass Type ', mass.type, ' not yet implemented.')
+                            print(f'Mass Type {mass.type} not yet implemented.')
 
 
 
@@ -474,7 +474,7 @@ def update_coolest_from_lenstronomy(file_name, kwargs_result, kwargs_mcmc=None,
                             kwargs_lens_light = kwargs_result['kwargs_lens_light'][idx_lens_light]
                             kwargs_lens_light_mcmc = None
                         else:
-                            print('Light Type ', light.type, ' not yet implemented.')
+                            print(f'Light Type {light.type} not yet implemented.')
                         if (kwargs_mcmc is not None) & (light.type in available_profiles):
                             if light.type == 'LensedPS':
                                 kwargs_ps_mcmc = [arg[idx_ps] for arg in kwargs_mcmc['args_ps']]
@@ -493,7 +493,7 @@ def update_coolest_from_lenstronomy(file_name, kwargs_result, kwargs_mcmc=None,
                             pass
 
                 if (galac.redshift <= min_red) and (galac.redshift >= max_red):
-                    print('REDSHIFT ', galac.redshift, ' is not in the range ]', min_red, ',', max_red, '[')
+                    print(f'REDSHIFT {galac.redshift} is not in the range ] {min_red} , {max_red} [')
 
             elif lensing_entity.type == "external_shear":
                 shear_list = lensing_entity.mass_model
@@ -508,10 +508,10 @@ def update_coolest_from_lenstronomy(file_name, kwargs_result, kwargs_mcmc=None,
                         update.shear_update(shear_idx, kwargs_lens, kwargs_lens_mcmc)
                         idx_lens += 1
                     else:
-                        print("type of Shear ", shear_idx.type, " not implemented")
+                        print(f"type of Shear {shear_idx.type} not implemented")
 
             else:
-                print("Lensing entity of type ", lensing_enity.type, " is unknown.")
+                print(f"Lensing entity of type {lensing_enity.type} is unknown.")
 
     encoder = JSONSerializer(file_name + ending,
                              obj=lens_coolest, indent=2)

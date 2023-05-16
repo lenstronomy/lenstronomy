@@ -5,7 +5,8 @@ import unittest
 import os
 
 from lenstronomy.Util.coolest_interface import create_lenstronomy_from_coolest,update_coolest_from_lenstronomy,create_kwargs_mcmc_from_chain_list
-from lenstronomy.Util.coolest_read_util import degree_coolest_to_radian_lenstronomy,ellibounds_coolest_to_lenstronomy
+from lenstronomy.Util.coolest_read_util import degree_coolest_to_radian_lenstronomy,ellibounds_coolest_to_lenstronomy, shearbounds_coolest_to_lenstronomy
+from lenstronomy.Util.coolest_update_util import shapelet_amp_lenstronomy_to_coolest, folding_coolest
 
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
@@ -25,6 +26,7 @@ class TestCOOLESTinterface(object):
         if path[-11:] == 'lenstronomy':
             path+='/test/test_Util'
         kwargs_out = create_lenstronomy_from_coolest(path+"/coolest_template")
+        print(kwargs_out)
         kwargs_out = create_lenstronomy_from_coolest(path + "/coolest_template_pemd")
         kwargs_out = create_lenstronomy_from_coolest(path + "/coolest_template_pemd_random")
         return
@@ -194,7 +196,17 @@ class TestCOOLESTinterface(object):
         radian = degree_coolest_to_radian_lenstronomy(-120.)
         npt.assert_almost_equal(radian,np.pi/6., decimal=4)
 
+        radian = degree_coolest_to_radian_lenstronomy(120.)
+        npt.assert_almost_equal(radian,5*np.pi/6., decimal=4)
+
         ellibounds_coolest_to_lenstronomy(0.6,1.0,None,None)
         shearbounds_coolest_to_lenstronomy(0.0, 0.1, -90., None)
+
+        shapelet_amp_lenstronomy_to_coolest(None)
+        folding_coolest(np.array([-95.,95.]))
+        folding_coolest(-95.)
+        folding_coolest(95.)
+
+
         return
 

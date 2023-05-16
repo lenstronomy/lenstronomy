@@ -582,17 +582,15 @@ def update_kwargs_lensed_ps(light, ps_model_list, kwargs_ps, kwargs_ps_init, kwa
      - : updated list and kwargs
     """
     ps_model_list.append('LENSED_POSITION')
+
     try:
-        num_ps = len(getattr(light.parameters['ra_list'].initial_estimate, 'value'))
+        num_ps = len(getattr(light.parameters['ra_list'].point_estimate, 'value'))
     except:
-        try:
-            num_ps = len(getattr(light.parameters['ra_list'].point_estimate, 'value'))
-        except:
-            num_ps = 4
+        num_ps = 4
 
     for light_name, light_param in light.parameters.items():
         if light_name == 'ra_list':
-            ra = - getattr(light_param.point_estimate, 'value') if getattr(light_param.point_estimate,
+            ra = - np.array(getattr(light_param.point_estimate, 'value')) if getattr(light_param.point_estimate,
                                                                            'value') is not None else None
             ra_up = getattr(light_param.definition_range, 'max_value')
             ra_down = getattr(light_param.definition_range, 'min_value')

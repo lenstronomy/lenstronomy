@@ -79,9 +79,9 @@ def create_lenstronomy_from_coolest(file_name):
                 noise_ny = lens_observation.noise.noise_map.num_pix_y
                 if pixel_size != noise_pixel_size:
                     print(f"noise pixel size {noise_pixel_size} is different from image pixel size {pixel_size}")
-                elif nx != noise_nx:
+                if nx != noise_nx:
                     print(f"noise nx {noise_nx} is different from image nx {nx}")
-                elif ny != noise_ny:
+                if ny != noise_ny:
                     print(f"noise ny {noise_ny} is different from image ny {ny}")
                 kwargs_data['noise_map'] = noise
                 print('Noise (in Data) creation')
@@ -233,14 +233,14 @@ def create_lenstronomy_from_coolest(file_name):
                                 read.update_kwargs_sersic(light, lens_light_model_list, kwargs_lens_light, kwargs_lens_light_init,
                                        kwargs_lens_light_up, kwargs_lens_light_down, kwargs_lens_light_fixed,
                                        kwargs_lens_light_sigma, cleaning=True)
-                            elif light.type == 'LensedPS':
-                                read.update_kwargs_lensed_ps(light, ps_model_list, kwargs_ps, kwargs_ps_init, kwargs_ps_up,
-                                                    kwargs_ps_down, kwargs_ps_fixed, kwargs_ps_sigma, cleaning=True)
+                            # elif light.type == 'LensedPS':
+                            #     read.update_kwargs_lensed_ps(light, ps_model_list, kwargs_ps, kwargs_ps_init, kwargs_ps_up,
+                            #                         kwargs_ps_down, kwargs_ps_fixed, kwargs_ps_sigma, cleaning=True)
                             else:
                                 print(f'Light Type {light.type} not yet implemented.')
 
-                    if (galaxy.redshift <= min_redshift) and (galaxy.redshift >= max_redshift):
-                        print(f'REDSHIFT {galaxy.redshift} is not in the range ] {min_red} , {max_red} [')
+                    # if (galaxy.redshift <= min_redshift) or (galaxy.redshift >= max_redshift):
+                    #     print(f'REDSHIFT {galaxy.redshift} is not in the range ] {min_red} , {max_red} [')
 
 
                 elif lensing_entity.type == "external_shear":
@@ -258,7 +258,7 @@ def create_lenstronomy_from_coolest(file_name):
 
 
                 else:
-                    print(f"lensing entity of type {lensing_enity.type} is unknown.")
+                    print(f"lensing entity of type {lensing_entity.type} is unknown.")
 
     return_dict = {}
     if creation_lens_source_light is True:
@@ -288,8 +288,8 @@ def create_lenstronomy_from_coolest(file_name):
         return_dict['kwargs_result'] = kwargs_result
     if creation_redshift_list is True:
         return_dict['redshift_list'] = redshift_list
-    if creation_kwargs_likelihood is True:
-        return_dict['kwargs_likelihood'] = kwargs_likelihood
+    # if creation_kwargs_likelihood is True:
+    #     return_dict['kwargs_likelihood'] = kwargs_likelihood
     if creation_cosmo is True:
         return_dict['Cosmo'] = cosmo
     if creation_data is True:

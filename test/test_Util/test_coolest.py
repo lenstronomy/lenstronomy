@@ -45,7 +45,8 @@ class TestCOOLESTinterface(object):
                        "kwargs_lens_light":[{'amp':11.,'R_sersic':0.2,'n_sersic':3.,'center_x':0.03,
                                              'center_y':0.01,'e1':-0.15,'e2':0.01},
                                             {'amp':12.,'R_sersic':0.02,'n_sersic':6.,'center_x':0.03,
-                                             'center_y':0.01,'e1':0.,'e2':-0.15}]}
+                                             'center_y':0.01,'e1':0.,'e2':-0.15}],
+                       "kwargs_ps":[{'point_amp':np.array([0.1]),'ra_image':np.array([0.25]), 'dec_image':np.array([0.2])}]}
         update_coolest_from_lenstronomy(path+"/coolest_template",kwargs_result,ending="_update")
         kwargs_out = create_lenstronomy_from_coolest(path+"/coolest_template_update")
         npt.assert_almost_equal(kwargs_out['kwargs_params']['lens_model'][0][1]['e1'],
@@ -161,9 +162,15 @@ class TestCOOLESTinterface(object):
         #the last 2 lines are meant for solving the linear parameters
 
         # use the function to save mcmc chains in userfriendly mode
-        kwargs_mcmc = create_kwargs_mcmc_from_chain_list(chain_list,kwargs_out['kwargs_model'],kwargs_out['kwargs_params'],
-                                           kwargs_out['kwargs_data'],kwargs_out['kwargs_psf'],kwargs_numerics,
-                                           kwargs_constraints,idx_chain=1)
+        # kwargs_mcmc = create_kwargs_mcmc_from_chain_list(chain_list,kwargs_out['kwargs_model'],kwargs_out['kwargs_params'],
+        #                                    kwargs_out['kwargs_data'],kwargs_out['kwargs_psf'],kwargs_numerics,
+        #                                    kwargs_constraints,idx_chain=1)
+
+        kwargs_mcmc = create_kwargs_mcmc_from_chain_list(chain_list, kwargs_out['kwargs_model'],
+                                                         kwargs_out['kwargs_params'],
+                                                         kwargs_out['kwargs_data'], kwargs_out['kwargs_psf'],
+                                                         kwargs_numerics,
+                                                         kwargs_constraints, idx_chain=1, likelihood_threshold= -100000)
         # save the results (aka update the COOLEST json)
         update_coolest_from_lenstronomy(path+"/coolest_template",kwargs_result, kwargs_mcmc)
 
@@ -176,13 +183,33 @@ class TestCOOLESTinterface(object):
         kwargs_out = create_lenstronomy_from_coolest(path+"/coolest_template_pemd")
         print(kwargs_out)
 
+        # kwargs_results to update the COOLEST template
         kwargs_result={"kwargs_lens":[{'theta_E': 0.7, 'e1': -0.15, 'e2': 0.01, 'gamma': 2.1,
                                        'center_x': 0.03, 'center_y': 0.01}],
                        "kwargs_source":[{'amp':15.,'R_sersic':0.11,'n_sersic':3.6,'center_x':0.02,
                                          'center_y':-0.03,'e1':0.1,'e2':-0.2}],
                        "kwargs_lens_light":[{'amp':11.,'R_sersic':0.2,'n_sersic':3.,'center_x':0.03,
                                              'center_y':0.01,'e1':-0.15,'e2':0.01}]}
-        update_coolest_from_lenstronomy(path+"/coolest_template_pemd",kwargs_result,ending="_update")
+        # kwargs_mcmc to update the COOLEST template. In real cases, this list would be much bigger
+        # as each element is a result from a given point at a given iteration of a MCMC chain
+
+        kwargs_mcmc={"args_lens":[[{'theta_E': 0.68, 'e1': -0.10, 'e2': -0.04, 'gamma': 1.9,
+                                    'center_x': 0.02, 'center_y': 0.10}],[{'theta_E': 0.65, 'e1': -0.10, 'e2': -0.04, 'gamma': 1.9,
+                                    'center_x': 0.03, 'center_y': 0.01}],[{'theta_E': 0.65, 'e1': -0.10, 'e2': -0.04, 'gamma': 1.9,
+                                    'center_x': 0.03, 'center_y': 0.01}],[{'theta_E': 0.65, 'e1': -0.10, 'e2': -0.04, 'gamma': 1.9,
+                                    'center_x': 0.03, 'center_y': 0.01}]],
+                       "args_source":[[{'amp':15.,'R_sersic':0.11,'n_sersic':3.6,'center_x':0.02,
+                                        'center_y':-0.03,'e1':0.1,'e2':-0.2}],[{'amp':15.,'R_sersic':0.11,'n_sersic':3.6,'center_x':0.02,
+                                        'center_y':-0.03,'e1':0.1,'e2':-0.2}],[{'amp':15.,'R_sersic':0.11,'n_sersic':3.6,'center_x':0.02,
+                                        'center_y':-0.03,'e1':0.1,'e2':-0.2}],[{'amp':15.,'R_sersic':0.11,'n_sersic':3.6,'center_x':0.02,
+                                        'center_y':-0.03,'e1':0.1,'e2':-0.2}]],
+                       "args_lens_light":[[{'amp':11.,'R_sersic':0.2,'n_sersic':3.,'center_x':0.03,
+                                            'center_y':0.01,'e1':-0.15,'e2':0.01}],[{'amp':11.,'R_sersic':0.2,'n_sersic':3.,'center_x':0.03,
+                                            'center_y':0.01,'e1':-0.15,'e2':0.01}],[{'amp':11.,'R_sersic':0.2,'n_sersic':3.,'center_x':0.03,
+                                            'center_y':0.01,'e1':-0.15,'e2':0.01}],[{'amp':11.,'R_sersic':0.2,'n_sersic':3.,'center_x':0.03,
+                                            'center_y':0.01,'e1':-0.15,'e2':0.01}]]}
+        update_coolest_from_lenstronomy(path+"/coolest_template_pemd",kwargs_result,ending="_update",
+                                        kwargs_mcmc=kwargs_mcmc)
         kwargs_out = create_lenstronomy_from_coolest(path+"/coolest_template_pemd_update")
         print(kwargs_out)
         npt.assert_almost_equal(kwargs_out['kwargs_params']['lens_model'][0][0]['e1'],

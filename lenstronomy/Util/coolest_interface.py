@@ -441,10 +441,6 @@ def update_coolest_from_lenstronomy(file_name, kwargs_result, kwargs_mcmc=None,
                             kwargs_lens = kwargs_result['kwargs_lens'][idx_lens]
                             update.sie_update(mass, kwargs_lens, kwargs_lens_mcmc)
                             idx_lens += 1
-                        elif mass.type == 'SIS':
-                            kwargs_lens = kwargs_result['kwargs_lens'][idx_lens]
-                            update.sis_update(mass, kwargs_lens, kwargs_lens_mcmc)
-                            idx_lens += 1
                         else:
                             print(f'Mass Type {mass.type} not yet implemented.')
 
@@ -454,34 +450,25 @@ def update_coolest_from_lenstronomy(file_name, kwargs_result, kwargs_mcmc=None,
                     # LENSING LIGHT GALAXY
                     light_list = galaxy.light_model
                     for light in light_list:
-
-                        if light.type == 'LensedPS':
-                            kwargs_ps = kwargs_result['kwargs_ps'][idx_ps]
-                            kwargs_ps_mcmc = None
-                        elif light.type in ['Sersic']:
+                        if light.type in ['Sersic']:
                             kwargs_lens_light = kwargs_result['kwargs_lens_light'][idx_lens_light]
                             kwargs_lens_light_mcmc = None
                         else:
                             print(f'Light Type {light.type} not yet implemented.')
-                        if (kwargs_mcmc is not None) & (light.type in available_profiles):
-                            if light.type == 'LensedPS':
-                                kwargs_ps_mcmc = [arg[idx_ps] for arg in kwargs_mcmc['args_ps']]
 
-                            elif light.type in ['Sersic']:
+                        if (kwargs_mcmc is not None) & (light.type in available_profiles):
+                            if light.type in ['Sersic']:
                                 kwargs_lens_light_mcmc = [arg[idx_lens_light] for arg in
                                                           kwargs_mcmc['args_lens_light']]
 
                         if light.type == 'Sersic':
                             update.sersic_update(light, kwargs_lens_light, kwargs_lens_light_mcmc)
                             idx_lens_light += 1
-                        elif light.type == 'LensedPS':
-                            update.lensed_point_source_update(light, kwargs_ps, kwargs_ps_mcmc)
-                            idx_ps += 1
                         else:
                             pass
-
-                if (galaxy.redshift <= min_redshift) and (galaxy.redshift >= max_redshift):
-                    print(f'REDSHIFT {galaxy.redshift} is not in the range ] {min_red} , {max_red} [')
+                #
+                # if (galaxy.redshift <= min_redshift) and (galaxy.redshift >= max_redshift):
+                #     print(f'REDSHIFT {galaxy.redshift} is not in the range ] {min_red} , {max_red} [')
 
             elif lensing_entity.type == "external_shear":
                 shear_list = lensing_entity.mass_model
@@ -499,7 +486,7 @@ def update_coolest_from_lenstronomy(file_name, kwargs_result, kwargs_mcmc=None,
                         print(f"type of Shear {shear_idx.type} not implemented")
 
             else:
-                print(f"Lensing entity of type {lensing_enity.type} is unknown.")
+                print(f"Lensing entity of type {lensing_entity.type} is unknown.")
 
     encoder = JSONSerializer(file_name + ending,
                              obj=lens_coolest, indent=2)

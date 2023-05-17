@@ -8,6 +8,9 @@ def shapelet_amp_lenstronomy_to_coolest(value):
     """
     Transforms shapelets coefficients from lenstronomy conventions (x following ra, to the left) to
     COOLEST conventions (x to the right)
+
+    :param value: amplitude of the shapelet (float or np.array) in lenstronomy conventions
+    :return: amplitude of the shapelet (float or np.array) in COOLEST conventions
     """
     if value is None:
         return None
@@ -34,7 +37,11 @@ def shapelet_amp_lenstronomy_to_coolest(value):
 
 def radian_lenstronomy_to_degree_coolest(value):
     """
-    Transform an angle in radian from lenstronomy into an angle in degree for the COOLEST with folding
+    Transform an angle in radian from lenstronomy (from x to y with x pointing to the left - aka North of East)
+    into an angle in degree for the COOLEST (from y to negative x - aka East of North) with folding
+
+    :param value: float, angle in lenstronomy conventions
+    :return: float, angle in COOLEST conventions
     """
     coolest_oriented_degree = folding_coolest(radian_lenstronomy_to_degree(value))
     return coolest_oriented_degree
@@ -42,8 +49,12 @@ def radian_lenstronomy_to_degree_coolest(value):
 
 def radian_lenstronomy_to_degree(value):
     """
-    Transform an angle in radian from lenstronomy into an angle in degree for the COOLEST conventions
-    (without folding)
+    Transform an angle in radian from lenstronomy (from x to y with x pointing to the left - aka North of East)
+    into an angle in degree for the COOLEST (from y to negative x - aka East of North) without folding in ]-90;90],
+    which is COOLEST convention
+
+    :param value: float, angle in lenstronomy conventions
+    :return: float, angle almost in COOLEST conventions (without folding)
     """
 
     lenstro_degree = value * 180. / np.pi
@@ -54,7 +65,10 @@ def radian_lenstronomy_to_degree(value):
 
 def folding_coolest(value):
     """
-    Folds the angle into COOLEST convention range ]-90;90]
+    Folds the angle (already in degree with COOLEST East of North convention) into COOLEST range, ]-90;90]
+
+    :param value: float, angle almost in COOLEST conventions (without folding in ]-90;90])
+    :return: float, angle in COOLEST conventions (with folding in ]-90;90])
     """
     coolest_oriented_degree = value
     if type(coolest_oriented_degree) == type(np.array([])):
@@ -74,6 +88,11 @@ def folding_coolest(value):
 def e1e2_lenstronomy_to_qphi_coolest(e1, e2):
     """
     Transform e1,e2 in lenstronomy to q and phi (axis ratio, position angle East-of-North)
+
+    :param e1: lenstronomy usual ellipticity parameters
+    :param e2: lenstronomy usual ellipticity parameters
+
+    :return: q, phi ; axis ratio and position angle in COOLEST conventions
     """
     angle,q = ellipticity2phi_q(e1,e2)
     phi = radian_lenstronomy_to_degree_coolest(angle)
@@ -83,7 +102,12 @@ def e1e2_lenstronomy_to_qphi_coolest(e1, e2):
 def g1g2_lenstronomy_to_gamma_phi_coolest(gamma1, gamma2):
     """
     Transform gamma1,gamma2 in lenstronomy to gamma_ext and phi_ext (shear strength, position angle East-of-North)
-     with folding
+    with folding
+
+    :param gamma1: lenstronomy usual shear parameters
+    :param gamma2: lenstronomy usual shear parameters
+
+    :return: gamma_ext, phi_ext ; shear strenght and shear position angle in COOLEST conventions (with folding)
     """
     angle, gamma_ext = shear_cartesian2polar(gamma1, gamma2)
     phi_ext = radian_lenstronomy_to_degree_coolest(angle)
@@ -93,7 +117,12 @@ def g1g2_lenstronomy_to_gamma_phi_coolest(gamma1, gamma2):
 def g1g2_lenstronomy_to_gamma_phi(gamma1, gamma2):
     """
     Transform gamma1,gamma2 in lenstronomy to gamma_ext and phi_ext (shear strength, position angle East-of-North)
-     without folding
+    without folding
+
+    :param gamma1: lenstronomy usual shear parameters
+    :param gamma2: lenstronomy usual shear parameters
+
+    :return: gamma_ext, phi_ext ; shear strenght and shear position angle almost in COOLEST conventions (without folding)
     """
 
     angle = np.arctan2(gamma2, gamma1) / 2.
@@ -106,16 +135,12 @@ def g1g2_lenstronomy_to_gamma_phi(gamma1, gamma2):
 
 def shear_update(shear_idx, kwargs_lens, kwargs_lens_mcmc=None):
     """
-    Update the COOLEST SHEAR mass model (gamma1 - gamma2) with results in kwargs_lens
+    Update the COOLEST SHEAR mass model (gamma_ext - phi_ext) with results in kwargs_lens
 
-    INPUT
-    -----
-    shear_idx  : coolest.api.profiles.mass.ExternalShearAngleStrength object
-    kwargs_lens : dictionnary with the point estimate
+    :param shear_idx: coolest.template.classes.profiles.mass.ExternalShear object
+    :param kwargs_lens: dictionnary with the point estimate
 
-    OUTPUT
-    ------
-     - : updated shear_idx
+    :return: updated shear_idx
     """
     gamma_ext, phi_ext = g1g2_lenstronomy_to_gamma_phi_coolest(float(kwargs_lens['gamma1']),
                                                                float(kwargs_lens['gamma2']))
@@ -146,14 +171,10 @@ def pemd_update(mass, kwargs_lens, kwargs_lens_mcmc=None):
     """
     Update the COOLEST PEMD mass model with results in kwargs_lens
 
-    INPUT
-    -----
-    mass  : coolest.api.profiles.mass.PEMD object
-    kwargs_lens : dictionnary with the point estimate
+    :param mass: coolest.template.classes.profiles.mass.PEMD object
+    :param kwargs_lens: dictionnary with the point estimate
 
-    OUTPUT
-    ------
-     - : updated mass
+    :return: updated mass
     """
     q, phi = e1e2_lenstronomy_to_qphi_coolest(float(kwargs_lens['e1']), float(kwargs_lens['e2']))
     mass.parameters['theta_E'].set_point_estimate(PointEstimate(float(kwargs_lens['theta_E'])))
@@ -211,14 +232,10 @@ def sie_update(mass, kwargs_lens, kwargs_lens_mcmc=None):
     """
     Update the COOLEST SIE mass model with results in kwargs_lens
 
-    INPUT
-    -----
-    mass  : coolest.api.profiles.mass.SIE object
-    kwargs_lens : dictionnary with the point estimate
+    :param mass: coolest.template.classes.profiles.mass.SIE object
+    :param kwargs_lens : dictionnary with the point estimate
 
-    OUTPUT
-    ------
-     - : updated mass
+    :return: updated mass
     """
 
     q, phi = e1e2_lenstronomy_to_qphi_coolest(float(kwargs_lens['e1']), float(kwargs_lens['e2']))
@@ -270,14 +287,10 @@ def sersic_update(light, kwargs_light, kwargs_light_mcmc=None):
     """
     Update the COOLEST Sersic (ellipse) light model with results in kwargs_light
 
-    INPUT
-    -----
-    light  : coolest.api.profiles.light.Sersic object
-    kwargs_light : dictionnary with the point estimate
+    :param light: coolest.template.classes.profiles.light.Sersic object
+    :param kwargs_light: dictionnary with the point estimate
 
-    OUTPUT
-    ------
-     - : updated light
+    :return: updated light
     """
     q, phi = e1e2_lenstronomy_to_qphi_coolest(float(kwargs_light['e1']), float(kwargs_light['e2']))
     light.parameters['I_eff'].set_point_estimate(PointEstimate(float(kwargs_light['amp'])))
@@ -341,14 +354,10 @@ def shapelets_update(light, kwargs_light, kwargs_light_mcmc=None):
     """
     Update the COOLEST Shapelets light model with results in kwargs_light
 
-    INPUT
-    -----
-    light  : coolest.api.profiles.light.Shapelets object
-    kwargs_light : dictionnary with the point estimate
+    :param light: coolest.template.classes.profiles.light.Shapelets object
+    :param kwargs_light: dictionnary with the point estimate
 
-    OUTPUT
-    ------
-     - : updated light
+    :return: updated light
     """
     light.parameters['amps'].set_point_estimate(
         PointEstimate(shapelet_amp_lenstronomy_to_coolest(np.ndarray.tolist(kwargs_light['amp']))))
@@ -398,14 +407,10 @@ def lensed_point_source_update(light, kwargs_ps, kwargs_ps_mcmc=None):
     """
     Update the COOLEST LensedPS light model with results in kwargs_ps
 
-    INPUT
-    -----
-    light  : coolest.api.profiles.light.LensedPS object
-    kwargs_ps : dictionnary with the point estimate
+    :param light: coolest.template.classes.profiles.light.LensedPS object
+    :param kwargs_ps: dictionnary with the point estimate
 
-    OUTPUT
-    ------
-     - : updated light
+    :return: updated light
     """
     light.parameters['amps'].set_point_estimate(PointEstimate(np.ndarray.tolist(kwargs_ps['point_amp'])))
     light.parameters['ra_list'].set_point_estimate(PointEstimate(np.ndarray.tolist(-kwargs_ps['ra_image'])))

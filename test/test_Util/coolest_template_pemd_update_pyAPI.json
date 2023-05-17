@@ -1,6 +1,6 @@
 {
   "py/object": "coolest.template.standard.COOLEST",
-  "mode": "MOCK",
+  "mode": "MAP",
   "coordinates_origin": {
     "py/object": "coolest.template.classes.coordinates.CoordinatesOrigin",
     "ra": "00h11m20.244s",
@@ -11,6 +11,162 @@
     "py/object": "coolest.template.classes.lensing_entity_list.LensingEntityList",
     "documentation": "The list of components that define the lensing system.\n    In COOLEST, a \"lensing entity\" means either a galaxy, or an external shear component.",
     "py/seq": [
+      {
+        "py/object": "coolest.template.classes.external_shear.ExternalShear",
+        "type": "external_shearrrrr",
+        "name": "my lovely external shear",
+        "redshift": 0.5,
+        "mass_model": {
+          "py/object": "coolest.template.classes.mass_light_model.MassModel",
+          "py/seq": [
+            {
+              "py/object": "coolest.template.classes.profiles.mass.ExternalShear",
+              "type": "ExternalShear",
+              "documentation": "External shear defined with a strength and orientation",
+              "parameters": {
+                "gamma_ext": {
+                  "py/object": "coolest.template.classes.parameter.NonLinearParameter",
+                  "documentation": "Strength of external shear",
+                  "units": null,
+                  "definition_range": {
+                    "py/object": "coolest.template.classes.parameter.DefinitionRange",
+                    "min_value": 0.0,
+                    "max_value": 1.0
+                  },
+                  "fixed": false,
+                  "point_estimate": {
+                    "py/object": "coolest.template.classes.parameter.PointEstimate",
+                    "value": 0.07
+                  },
+                  "posterior_stats": {
+                    "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
+                    "mean": null,
+                    "median": null,
+                    "percentile_16th": null,
+                    "percentile_84th": null
+                  },
+                  "prior": {
+                    "py/object": "coolest.template.classes.probabilities.Prior",
+                    "type": null,
+                    "documentation": ""
+                  },
+                  "latex_str": "$\\gamma_{\\rm ext}$",
+                  "id": "extshear_model_0-ExternalShear_0-gamma_ext"
+                },
+                "phi_ext": {
+                  "py/object": "coolest.template.classes.parameter.NonLinearParameter",
+                  "documentation": "Orientation of external shear",
+                  "units": null,
+                  "definition_range": {
+                    "py/object": "coolest.template.classes.parameter.DefinitionRange",
+                    "min_value": -90.0,
+                    "max_value": 90.0
+                  },
+                  "fixed": false,
+                  "point_estimate": {
+                    "py/object": "coolest.template.classes.parameter.PointEstimate",
+                    "value": null
+                  },
+                  "posterior_stats": {
+                    "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
+                    "mean": null,
+                    "median": null,
+                    "percentile_16th": null,
+                    "percentile_84th": null
+                  },
+                  "prior": {
+                    "py/object": "coolest.template.classes.probabilities.Prior",
+                    "type": null,
+                    "documentation": ""
+                  },
+                  "latex_str": "$\\phi_{\\rm ext}$",
+                  "id": "extshear_model_0-ExternalShear_0-phi_ext"
+                }
+              },
+              "id": "extshear_model_0-ExternalShear_0"
+            }
+          ]
+        },
+        "documentation": ""
+      },
+      {
+        "py/object": "coolest.template.classes.external_shear.ExternalShear",
+        "type": "external_shear",
+        "name": "my lovely external shear",
+        "redshift": 0.5,
+        "mass_model": {
+          "py/object": "coolest.template.classes.mass_light_model.MassModel",
+          "py/seq": [
+            {
+              "py/object": "coolest.template.classes.profiles.mass.ExternalShear",
+              "type": "ExternalShearrrr",
+              "documentation": "External shear defined with a strength and orientation",
+              "parameters": {
+                "gamma_ext": {
+                  "py/object": "coolest.template.classes.parameter.NonLinearParameter",
+                  "documentation": "Strength of external shear",
+                  "units": null,
+                  "definition_range": {
+                    "py/object": "coolest.template.classes.parameter.DefinitionRange",
+                    "min_value": 0.0,
+                    "max_value": 1.0
+                  },
+                  "fixed": false,
+                  "point_estimate": {
+                    "py/object": "coolest.template.classes.parameter.PointEstimate",
+                    "value": 0.07
+                  },
+                  "posterior_stats": {
+                    "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
+                    "mean": null,
+                    "median": null,
+                    "percentile_16th": null,
+                    "percentile_84th": null
+                  },
+                  "prior": {
+                    "py/object": "coolest.template.classes.probabilities.Prior",
+                    "type": null,
+                    "documentation": ""
+                  },
+                  "latex_str": "$\\gamma_{\\rm ext}$",
+                  "id": "extshear_model_0-ExternalShear_0-gamma_ext"
+                },
+                "phi_ext": {
+                  "py/object": "coolest.template.classes.parameter.NonLinearParameter",
+                  "documentation": "Orientation of external shear",
+                  "units": null,
+                  "definition_range": {
+                    "py/object": "coolest.template.classes.parameter.DefinitionRange",
+                    "min_value": -90.0,
+                    "max_value": 90.0
+                  },
+                  "fixed": false,
+                  "point_estimate": {
+                    "py/object": "coolest.template.classes.parameter.PointEstimate",
+                    "value": null
+                  },
+                  "posterior_stats": {
+                    "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
+                    "mean": null,
+                    "median": null,
+                    "percentile_16th": null,
+                    "percentile_84th": null
+                  },
+                  "prior": {
+                    "py/object": "coolest.template.classes.probabilities.Prior",
+                    "type": null,
+                    "documentation": ""
+                  },
+                  "latex_str": "$\\phi_{\\rm ext}$",
+                  "id": "extshear_model_0-ExternalShear_0-phi_ext"
+                }
+              },
+              "id": "extshear_model_0-ExternalShear_0"
+            }
+          ]
+        },
+        "documentation": ""
+      },
       {
         "py/object": "coolest.template.classes.galaxy.Galaxy",
         "type": "galaxy",
@@ -40,10 +196,10 @@
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": null,
-                    "median": null,
-                    "percentile_16th": null,
-                    "percentile_84th": null
+                    "mean": 0.6575,
+                    "median": 0.65,
+                    "percentile_16th": 0.65,
+                    "percentile_84th": 0.6656000000000001
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",
@@ -69,10 +225,10 @@
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": null,
-                    "median": null,
-                    "percentile_16th": null,
-                    "percentile_84th": null
+                    "mean": 1.9,
+                    "median": 1.9,
+                    "percentile_16th": 1.9,
+                    "percentile_84th": 1.9
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",
@@ -98,10 +254,10 @@
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": null,
-                    "median": null,
-                    "percentile_16th": null,
-                    "percentile_84th": null
+                    "mean": 0.8055376443895385,
+                    "median": 0.8055376443895385,
+                    "percentile_16th": 0.8055376443895385,
+                    "percentile_84th": 0.8055376443895385
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",
@@ -127,10 +283,10 @@
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": null,
-                    "median": null,
-                    "percentile_16th": null,
-                    "percentile_84th": null
+                    "mean": -10.900704743175908,
+                    "median": -10.900704743175908,
+                    "percentile_16th": -10.900704743175908,
+                    "percentile_84th": -10.900704743175908
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",
@@ -156,10 +312,10 @@
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": null,
-                    "median": null,
-                    "percentile_16th": null,
-                    "percentile_84th": null
+                    "mean": -0.0275,
+                    "median": -0.03,
+                    "percentile_16th": -0.0248,
+                    "percentile_84th": -0.03
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",
@@ -185,10 +341,10 @@
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": null,
-                    "median": null,
-                    "percentile_16th": null,
-                    "percentile_84th": null
+                    "mean": 0.0325,
+                    "median": 0.01,
+                    "percentile_16th": 0.01,
+                    "percentile_84th": 0.0568
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",
@@ -209,7 +365,7 @@
           "py/seq": [
             {
               "py/object": "coolest.template.classes.profiles.light.Sersic",
-              "type": "Sersic",
+              "type": "Sersicccc",
               "documentation": "Elliptical Sersic",
               "parameters": {
                 "I_eff": {
@@ -224,7 +380,7 @@
                   "fixed": false,
                   "point_estimate": {
                     "py/object": "coolest.template.classes.parameter.PointEstimate",
-                    "value": 11.0
+                    "value": null
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
@@ -253,7 +409,7 @@
                   "fixed": false,
                   "point_estimate": {
                     "py/object": "coolest.template.classes.parameter.PointEstimate",
-                    "value": 0.2
+                    "value": null
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
@@ -282,7 +438,7 @@
                   "fixed": false,
                   "point_estimate": {
                     "py/object": "coolest.template.classes.parameter.PointEstimate",
-                    "value": 3.0
+                    "value": null
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
@@ -311,7 +467,7 @@
                   "fixed": false,
                   "point_estimate": {
                     "py/object": "coolest.template.classes.parameter.PointEstimate",
-                    "value": 0.7386270436183159
+                    "value": null
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
@@ -340,7 +496,7 @@
                   "fixed": false,
                   "point_estimate": {
                     "py/object": "coolest.template.classes.parameter.PointEstimate",
-                    "value": 1.907037417145176
+                    "value": null
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
@@ -369,7 +525,7 @@
                   "fixed": false,
                   "point_estimate": {
                     "py/object": "coolest.template.classes.parameter.PointEstimate",
-                    "value": -0.03
+                    "value": null
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
@@ -398,7 +554,7 @@
                   "fixed": false,
                   "point_estimate": {
                     "py/object": "coolest.template.classes.parameter.PointEstimate",
-                    "value": 0.01
+                    "value": null
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
@@ -406,6 +562,217 @@
                     "median": null,
                     "percentile_16th": null,
                     "percentile_84th": null
+                  },
+                  "prior": {
+                    "py/object": "coolest.template.classes.probabilities.Prior",
+                    "type": null,
+                    "documentation": ""
+                  },
+                  "latex_str": "$y_0$",
+                  "id": "galaxy_1-light_model-Sersic_0-center_y"
+                }
+              },
+              "id": "galaxy_1-light_model-Sersic_0"
+            },
+            {
+              "py/object": "coolest.template.classes.profiles.light.Sersic",
+              "type": "Sersic",
+              "documentation": "Elliptical Sersic",
+              "parameters": {
+                "I_eff": {
+                  "py/object": "coolest.template.classes.parameter.LinearParameter",
+                  "documentation": "Amplitude at the Sersic radius",
+                  "units": null,
+                  "definition_range": {
+                    "py/object": "coolest.template.classes.parameter.DefinitionRange",
+                    "min_value": 0.0,
+                    "max_value": null
+                  },
+                  "fixed": false,
+                  "point_estimate": {
+                    "py/object": "coolest.template.classes.parameter.PointEstimate",
+                    "value": 11.0
+                  },
+                  "posterior_stats": {
+                    "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
+                    "mean": 11.0,
+                    "median": 11.0,
+                    "percentile_16th": 11.0,
+                    "percentile_84th": 11.0
+                  },
+                  "prior": {
+                    "py/object": "coolest.template.classes.probabilities.Prior",
+                    "type": null,
+                    "documentation": ""
+                  },
+                  "latex_str": "$I_{\\rm Sersic}$",
+                  "id": "galaxy_1-light_model-Sersic_0-I_eff"
+                },
+                "theta_eff": {
+                  "py/object": "coolest.template.classes.parameter.NonLinearParameter",
+                  "documentation": "Sersic (half-light) radius",
+                  "units": null,
+                  "definition_range": {
+                    "py/object": "coolest.template.classes.parameter.DefinitionRange",
+                    "min_value": 0.0,
+                    "max_value": null
+                  },
+                  "fixed": false,
+                  "point_estimate": {
+                    "py/object": "coolest.template.classes.parameter.PointEstimate",
+                    "value": 0.2
+                  },
+                  "posterior_stats": {
+                    "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
+                    "mean": 0.2,
+                    "median": 0.2,
+                    "percentile_16th": 0.2,
+                    "percentile_84th": 0.2
+                  },
+                  "prior": {
+                    "py/object": "coolest.template.classes.probabilities.Prior",
+                    "type": null,
+                    "documentation": ""
+                  },
+                  "latex_str": "$R_{\\rm Sersic}$",
+                  "id": "galaxy_1-light_model-Sersic_0-theta_eff"
+                },
+                "n": {
+                  "py/object": "coolest.template.classes.parameter.NonLinearParameter",
+                  "documentation": "Sersic index",
+                  "units": null,
+                  "definition_range": {
+                    "py/object": "coolest.template.classes.parameter.DefinitionRange",
+                    "min_value": 0.5,
+                    "max_value": 10.0
+                  },
+                  "fixed": false,
+                  "point_estimate": {
+                    "py/object": "coolest.template.classes.parameter.PointEstimate",
+                    "value": 3.0
+                  },
+                  "posterior_stats": {
+                    "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
+                    "mean": 3.0,
+                    "median": 3.0,
+                    "percentile_16th": 3.0,
+                    "percentile_84th": 3.0
+                  },
+                  "prior": {
+                    "py/object": "coolest.template.classes.probabilities.Prior",
+                    "type": null,
+                    "documentation": ""
+                  },
+                  "latex_str": "$n_{\\rm Sersic}$",
+                  "id": "galaxy_1-light_model-Sersic_0-n"
+                },
+                "q": {
+                  "py/object": "coolest.template.classes.parameter.NonLinearParameter",
+                  "documentation": "Axis ratio, semi-minor axis / semi-major axis",
+                  "units": null,
+                  "definition_range": {
+                    "py/object": "coolest.template.classes.parameter.DefinitionRange",
+                    "min_value": 0.0,
+                    "max_value": 1.0
+                  },
+                  "fixed": false,
+                  "point_estimate": {
+                    "py/object": "coolest.template.classes.parameter.PointEstimate",
+                    "value": 0.7386270436183159
+                  },
+                  "posterior_stats": {
+                    "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
+                    "mean": 0.7386270436183159,
+                    "median": 0.7386270436183159,
+                    "percentile_16th": 0.7386270436183159,
+                    "percentile_84th": 0.7386270436183159
+                  },
+                  "prior": {
+                    "py/object": "coolest.template.classes.probabilities.Prior",
+                    "type": null,
+                    "documentation": ""
+                  },
+                  "latex_str": "$q$",
+                  "id": "galaxy_1-light_model-Sersic_0-q"
+                },
+                "phi": {
+                  "py/object": "coolest.template.classes.parameter.NonLinearParameter",
+                  "documentation": "Position angle",
+                  "units": null,
+                  "definition_range": {
+                    "py/object": "coolest.template.classes.parameter.DefinitionRange",
+                    "min_value": -90.0,
+                    "max_value": 90.0
+                  },
+                  "fixed": false,
+                  "point_estimate": {
+                    "py/object": "coolest.template.classes.parameter.PointEstimate",
+                    "value": 1.907037417145176
+                  },
+                  "posterior_stats": {
+                    "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
+                    "mean": 1.907037417145176,
+                    "median": 1.907037417145176,
+                    "percentile_16th": 1.907037417145176,
+                    "percentile_84th": 1.907037417145176
+                  },
+                  "prior": {
+                    "py/object": "coolest.template.classes.probabilities.Prior",
+                    "type": null,
+                    "documentation": ""
+                  },
+                  "latex_str": "$\\phi$",
+                  "id": "galaxy_1-light_model-Sersic_0-phi"
+                },
+                "center_x": {
+                  "py/object": "coolest.template.classes.parameter.NonLinearParameter",
+                  "documentation": "Profile center along x coordinates",
+                  "units": null,
+                  "definition_range": {
+                    "py/object": "coolest.template.classes.parameter.DefinitionRange",
+                    "min_value": null,
+                    "max_value": null
+                  },
+                  "fixed": false,
+                  "point_estimate": {
+                    "py/object": "coolest.template.classes.parameter.PointEstimate",
+                    "value": -0.03
+                  },
+                  "posterior_stats": {
+                    "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
+                    "mean": -0.03,
+                    "median": -0.03,
+                    "percentile_16th": -0.03,
+                    "percentile_84th": -0.03
+                  },
+                  "prior": {
+                    "py/object": "coolest.template.classes.probabilities.Prior",
+                    "type": null,
+                    "documentation": ""
+                  },
+                  "latex_str": "$x_0$",
+                  "id": "galaxy_1-light_model-Sersic_0-center_x"
+                },
+                "center_y": {
+                  "py/object": "coolest.template.classes.parameter.NonLinearParameter",
+                  "documentation": "Profile center along y coordinates",
+                  "units": null,
+                  "definition_range": {
+                    "py/object": "coolest.template.classes.parameter.DefinitionRange",
+                    "min_value": null,
+                    "max_value": null
+                  },
+                  "fixed": false,
+                  "point_estimate": {
+                    "py/object": "coolest.template.classes.parameter.PointEstimate",
+                    "value": 0.01
+                  },
+                  "posterior_stats": {
+                    "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
+                    "mean": 0.01,
+                    "median": 0.01,
+                    "percentile_16th": 0.01,
+                    "percentile_84th": 0.01
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",
@@ -455,10 +822,10 @@
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": null,
-                    "median": null,
-                    "percentile_16th": null,
-                    "percentile_84th": null
+                    "mean": 15.0,
+                    "median": 15.0,
+                    "percentile_16th": 15.0,
+                    "percentile_84th": 15.0
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",
@@ -485,9 +852,9 @@
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
                     "mean": 0.11,
-                    "median": 0.15,
-                    "percentile_16th": 0.03,
-                    "percentile_84th": 0.05
+                    "median": 0.11,
+                    "percentile_16th": 0.11,
+                    "percentile_84th": 0.11
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",
@@ -513,10 +880,10 @@
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": null,
-                    "median": null,
-                    "percentile_16th": null,
-                    "percentile_84th": null
+                    "mean": 3.6,
+                    "median": 3.6,
+                    "percentile_16th": 3.6,
+                    "percentile_84th": 3.6
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",
@@ -542,10 +909,10 @@
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": null,
-                    "median": null,
-                    "percentile_16th": null,
-                    "percentile_84th": null
+                    "mean": 0.6345120047368864,
+                    "median": 0.6345120047368864,
+                    "percentile_16th": 0.6345120047368864,
+                    "percentile_84th": 0.6345120047368864
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",
@@ -571,10 +938,10 @@
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": null,
-                    "median": null,
-                    "percentile_16th": null,
-                    "percentile_84th": null
+                    "mean": -58.28252558853899,
+                    "median": -58.28252558853899,
+                    "percentile_16th": -58.28252558853899,
+                    "percentile_84th": -58.28252558853899
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",
@@ -600,10 +967,10 @@
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": null,
-                    "median": null,
-                    "percentile_16th": null,
-                    "percentile_84th": null
+                    "mean": -0.02,
+                    "median": -0.02,
+                    "percentile_16th": -0.02,
+                    "percentile_84th": -0.02
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",
@@ -629,10 +996,10 @@
                   },
                   "posterior_stats": {
                     "py/object": "coolest.template.classes.probabilities.PosteriorStatistics",
-                    "mean": null,
-                    "median": null,
-                    "percentile_16th": null,
-                    "percentile_84th": null
+                    "mean": -0.03,
+                    "median": -0.03,
+                    "percentile_16th": -0.03,
+                    "percentile_84th": -0.03
                   },
                   "prior": {
                     "py/object": "coolest.template.classes.probabilities.Prior",

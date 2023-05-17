@@ -12,14 +12,9 @@ def create_lenstronomy_from_coolest(file_name):
     """
     Creates lenstronomy typical kwargs from a COOLEST (JSON) file
 
-    Input
-    -----
-    file_name: str, name (with path) of the .json file containing the COOLEST information
+    :param file_name: str, name (with path) of the .json file containing the COOLEST information
 
-    Output
-    ------
-    return_dict: dict, dictionarry with typical lenstronomy kwarg (as kwargs_data, kwargs_psf, kwargs_params,
-                       kwargs_results, kwargs_model etc)
+    :return: return_dict, dictionary with typical lenstronomy kwarg (as kwargs_data, kwargs_psf, kwargs_params, kwargs_results, kwargs_model etc)
 
     """
     creation_lens_source_light = False
@@ -313,11 +308,9 @@ def update_coolest_from_lenstronomy(file_name, kwargs_result, kwargs_mcmc=None,
     """
     Function to update a json file already containing a model with the results of this model fitting
 
-    INPUT
-    -----
-    file_name: str, name (with path) of the json file to update
-    kwargs_results: dict, lenstronomy kwargs_results {'kwargs_lens': [{..},{..}], 'kwargs_source': [{..}],...}
-    kwargs_mcmc: dict, {'args_lens':args_lens,'args_source':args_source,'args_lens_light':args_lens_light,
+    :param file_name: str, name (with path) of the json file to update
+    :param kwargs_results: dict, lenstronomy kwargs_results {'kwargs_lens': [{..},{..}], 'kwargs_source': [{..}],...}
+    :param kwargs_mcmc: dict, {'args_lens':args_lens,'args_source':args_source,'args_lens_light':args_lens_light,
                         'args_ps': args_ps}
                         with args_lens being a list, each element of the list being lens results of type
                         kwargs_results['kwargs_lens'] for a given MCMC point.
@@ -326,11 +319,9 @@ def update_coolest_from_lenstronomy(file_name, kwargs_result, kwargs_mcmc=None,
                                            [{'theta_E':0.711,...},{'gamma1':...}], ...],
                              'args_source': [[{'R_sersic':0.11,...}], [{'R_sersic':0.115,...}, ...]], ...}
                  if None, will not perform the Posterior update
-    ending: str, ending of the name for saving the updated json file
+    :param ending: str, ending of the name for saving the updated json file
 
-    OUTPUT
-    ------
-     - :   the new json file is saved with the updated kwargs.
+     :return:   the new json file is saved with the updated kwargs.
     """
 
     decoder = JSONSerializer(file_name, indent=2)
@@ -500,18 +491,20 @@ def create_kwargs_mcmc_from_chain_list(chain_list, kwargs_model, kwargs_params, 
     """
     function to construct kwargs_mcmc in the right format for the "update_coolest_from_lenstronomy" function
 
-    Input:
-    ------
-    chain_list: list, output of FittingSequence.fitting_sequence()
-    kwargs_model, kwargs_params, kwargs_data, kwargs_psf, kwargs_numerics, kwargs_constraints, image_likelihood_mask: the usual lenstronomy kwargs
-    idx_chain: int, index of the MCMC chain in the chain_list, default is the last one.
+    :param chain_list: list, output of FittingSequence.fitting_sequence()
+    :param kwargs_model: the usual lenstronomy kwargs
+    :param kwargs_params: the usual lenstronomy kwargs
+    :param kwargs_data: the usual lenstronomy kwargs
+    :param kwargs_psf: the usual lenstronomy kwargs
+    :param kwargs_numerics: the usual lenstronomy kwargs
+    :param kwargs_constraints: the usual lenstronomy kwargs
+    :param image_likelihood_mask: the usual lenstronomy kwargs
+    :param idx_chain: int, index of the MCMC chain in the chain_list, default is the last one.
                     Can be useful if several PSO and MCMC are perfomed in the fitting sequence.
-    likelihood_threshold: float, likelihood limit (negative) underwhich the MCMC point is not considered.
+    :param likelihood_threshold: float, likelihood limit (negative) underwhich the MCMC point is not considered.
                                  Can be useful if a few chains are stucked in another (less good) minimum
 
-    Return:
-    -------
-    kwargs_mcmc: list, list containing all the relevant MCMC points in a userfriendly format
+    :return: kwargs_mcmc, list containing all the relevant MCMC points in a userfriendly format
                        (with linear parameters etc)
 
     """
@@ -556,10 +549,13 @@ def create_kwargs_mcmc_from_chain_list(chain_list, kwargs_model, kwargs_params, 
                            'args_ps': args_ps}
     return kwargs_mcmc_results
 
-def create_redshift_info(lensing_entities_list,min_redshift=0, max_redshift=5):
+def create_redshift_info(lensing_entities_list):
     """
     Side fuction to create the minimum, maximum and whole redshift list of galaxies in the COOLEST template
     Note that the redshifts helps knowing which galaxy is a lens, or a source, and if multiplane has to be considered
+
+    :param lensing_entities_list: coolest.template.classes.lensing_entity_list.LensingEntityList object
+    :return: min_redshift, max_redshift, redshift_list ; minimum, maximum and full list of lensing entities redshifts
     """
     redshift_list = []
     for lensing_entity in lensing_entities_list:

@@ -7,6 +7,9 @@ def shapelet_amp_coolest_to_lenstronomy(value):
     """
     Transforms shapelets coefficients from COOLEST conventions (x to the right)
     to lenstronomy conventions (x following ra, to the left)
+
+    :param value: amplitude of the shapelet (float or np.array) in COOLEST conventions
+    :return: amplitude of the shapelet (float or np.array) in lenstronomy conventions
     """
     if value is None:
         return None
@@ -33,6 +36,9 @@ def degree_coolest_to_radian_lenstronomy(value):
     """
     Transform an angle in degree in COOLEST conventions (from y to negative x - aka East of North)
     into an angle in radian in lenstronomy conventions (from x to y with x pointing to the left - aka North of East)
+
+    :param value: float, angle in COOLEST conventions
+    :return: float, angle in lenstronomy conventions
     """
     if value is None:
         return None
@@ -48,6 +54,10 @@ def degree_coolest_to_radian_lenstronomy(value):
 def qphi_coolest_to_e1e2_lenstronomy(q, phi):
     """
     Transform q and phi (axis ratio, position angle East-of-North) to e1,e2 in lenstronomy
+
+    :param q: float, axis ratio
+    :param phi: float, position angle in COOLEST conventions
+    :return: e1, e2, lenstronomy usual ellipticity parameters
     """
     if None in [q, phi]:
         return None, None
@@ -61,6 +71,10 @@ def gamma_phi_coolest_to_g1_g2_lenstronomy(gamma_ext, phi_ext):
     """
     Transform gamma_ext and phi_ext (shear strength, position angle East-of-North)
     to gamma1,gamma2 in lenstronomy
+
+    :param gamma_ext: float, shear strenght
+    :param phi_ext: float, shear angle in COOLEST conventions
+    :return: gamma1, gamma2, lenstronomy usual shear parameters
     """
     if None in [gamma_ext, phi_ext]:
         return None, None
@@ -74,6 +88,12 @@ def ellibounds_coolest_to_lenstronomy(q_down, q_up, phi_down, phi_up):
     """
     Transforms upper and lower bounds on coolest ellipticity parameters (q, phi) towards lenstronomy bound on e1, e2
     The mapping can not be perfect but it's the best we can do
+
+    :param q_down: float, lower bound of axis ratio
+    :param q_up: float, upper bound of axis ratio
+    :param phi_down: float, lower bound of position angle in COOLEST conventions
+    :param phi_up: float, upper bound of position angle in COOLEST conventions
+    :return: e1_down, e1_up, e2_down, e2_up, bounds for lenstronomy usual ellipticity parameters
     """
     if None in [q_down, q_up, phi_down, phi_up]:
         return None, None, None, None
@@ -94,6 +114,12 @@ def shearbounds_coolest_to_lenstronomy(gamma_ext_down, gamma_ext_up, phi_ext_dow
     Transforms upper and lower bounds on coolest shear parameters (gamma_ext, phi_ext) towards lenstronomy bounds
     on gamma_1, gamma_2
     The mapping can not be perfect but it's the best we can do
+
+    :param gamma_ext_down: float, lower bound of shear strenght
+    :param gamma_ext_up: float, upper bound of shear strenght
+    :param phi_ext_down: float, lower bound of shear position angle in COOLEST conventions
+    :param phi_ext_up: float, upper bound of shear position angle in COOLEST conventions
+    :return: gamma1_down, gamma1_up, gamma2_down, gamma2_up ; bounds for lenstronomy usual shear parameters
     """
     if None in [gamma_ext_down, gamma_ext_up, phi_ext_down, phi_ext_up]:
         return None, None, None, None
@@ -112,18 +138,18 @@ def shearbounds_coolest_to_lenstronomy(gamma_ext_down, gamma_ext_up, phi_ext_dow
 def update_kwargs_shear(shear_idx, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens_up, kwargs_lens_down,
           kwargs_lens_fixed, kwargs_lens_sigma, cleaning=False):
     """
-    Update the lens model list and kwargs with SHEAR mass model (gamma_ext - psi_ext)
+    Update the lens model list and kwargs with SHEAR mass model (gamma_ext - phi_ext)
 
-    INPUT
-    -----
-    shear_idx  : coolest.api.profiles.mass.ExternalShearAngleStrength object
-    lens_model_list : list
-    kwargs_x : list (of dictionnaries)
-    cleaning : bool, if True, will update the empty fields with default values + cleans the kwargs_fixed
-
-    OUTPUT
-    ------
-     - : updated list and kwargs
+    :param shear_idx: coolest.template.classes.profiles.mass.ExternalShear object
+    :param lens_model_list: the usual lenstronomy lens_model_list
+    :param kwargs_lens: the usual lenstronomy kwargs
+    :param kwargs_lens_init: the usual lenstronomy kwargs
+    :param kwargs_lens_up: the usual lenstronomy kwargs
+    :param kwargs_lens_down: the usual lenstronomy kwargs
+    :param kwargs_lens_fixed: the usual lenstronomy kwargs
+    :param kwargs_lens_sigma: the usual lenstronomy kwargs
+    :param cleaning: bool, if True, will update the empty fields with default values + cleans the kwargs_fixed
+    :return: updated list and kwargs
     """
     lens_model_list.append('SHEAR')
     for shear_name, shear_param in shear_idx.parameters.items():
@@ -188,16 +214,17 @@ def update_kwargs_pemd(mass, lens_model_list, kwargs_lens, kwargs_lens_init, kwa
     """
     Update the lens list and kwargs with PEMD mass model
 
-    INPUT
-    -----
-    mass : coolest.api.profiles.mass.PEMD object
-    lens_model_list : list
-    kwargs_x : list (of dictionnaries)
-    cleaning : bool, if True, will update the empty fields with default values + cleans the kwargs_fixed
+    :param mass: coolest.template.classes.profiles.mass.PEMD object
+    :param lens_model_list: the usual lenstronomy lens_model_list
+    :param kwargs_lens: the usual lenstronomy kwargs
+    :param kwargs_lens_init: the usual lenstronomy kwargs
+    :param kwargs_lens_up: the usual lenstronomy kwargs
+    :param kwargs_lens_down: the usual lenstronomy kwargs
+    :param kwargs_lens_fixed: the usual lenstronomy kwargs
+    :param kwargs_lens_sigma: the usual lenstronomy kwargs
+    :param cleaning: bool, if True, will update the empty fields with default values + cleans the kwargs_fixed
 
-    OUTPUT
-    ------
-     - : updated list and kwargs
+    :return: updated list and kwargs
     """
     lens_model_list.append('PEMD')
     for mass_name, mass_param in mass.parameters.items():
@@ -287,16 +314,17 @@ def update_kwargs_sie(mass, lens_model_list, kwargs_lens, kwargs_lens_init, kwar
     """
     Update the lens list and kwargs with SIE mass model
 
-    INPUT
-    -----
-    mass : coolest.api.profiles.mass.SIE object
-    lens_model_list : list
-    kwargs_x : list (of dictionnaries)
-    cleaning : bool, if True, will update the empty fields with default values + cleans the kwargs_fixed
+    :param mass: coolest.template.classes.profiles.mass.SIE object
+    :param lens_model_list: the usual lenstronomy lens_model_list
+    :param kwargs_lens: the usual lenstronomy kwargs
+    :param kwargs_lens_init: the usual lenstronomy kwargs
+    :param kwargs_lens_up: the usual lenstronomy kwargs
+    :param kwargs_lens_down: the usual lenstronomy kwargs
+    :param kwargs_lens_fixed: the usual lenstronomy kwargs
+    :param kwargs_lens_sigma: the usual lenstronomy kwargs
+    :param cleaning: bool, if True, will update the empty fields with default values + cleans the kwargs_fixed
 
-    OUTPUT
-    ------
-     - : updated list and kwargs
+    :return: updated list and kwargs
     """
     lens_model_list.append('SIE')
     for mass_name, mass_param in mass.parameters.items():
@@ -381,16 +409,17 @@ def update_kwargs_sersic(light, light_model_list, kwargs_light, kwargs_light_ini
     """
     Update the source list and kwargs with SERSIC_ELLISPE light model
 
-    INPUT
-    -----
-    light  : coolest.api.profiles.light.Sersic object
-    source_model_list : list
-    kwargs_x : list (of dictionnaries)
-    cleaning : bool, if True, will update the empty fields with default values + cleans the kwargs_fixed
+    :param light: coolest.template.classes.profiles.light.Sersic object
+    :param light_model_list: the usual lenstronomy lens_light_model_list or source_light_model_list
+    :param kwargs_light: the usual lenstronomy kwargs
+    :param kwargs_light_init: the usual lenstronomy kwargs
+    :param kwargs_light_up: the usual lenstronomy kwargs
+    :param kwargs_light_down: the usual lenstronomy kwargs
+    :param kwargs_light_fixed: the usual lenstronomy kwargs
+    :param kwargs_light_sigma: the usual lenstronomy kwargs
+    :param cleaning: bool, if True, will update the empty fields with default values + cleans the kwargs_fixed
 
-    OUTPUT
-    ------
-     - : updated list and kwargs
+    :return: updated list and kwargs
     """
     light_model_list.append('SERSIC_ELLIPSE')
     for light_name, light_param in light.parameters.items():
@@ -487,16 +516,17 @@ def update_kwargs_shapelets(light, light_model_list, kwargs_light, kwargs_light_
     """
     Update the source list and kwargs with SHAPELETS light model
 
-    INPUT
-    -----
-    light  : coolest.api.profiles.light.Shapelets object
-    source_model_list : list
-    kwargs_x : list (of dictionnaries)
-    cleaning : bool, if True, will update the empty fields with default values + cleans the kwargs_fixed
+    :param light: coolest.template.classes.profiles.light.Shapelets object
+    :param light_model_list: the usual lenstronomy lens_light_model_list or source_light_model_list
+    :param kwargs_light: the usual lenstronomy kwargs
+    :param kwargs_light_init: the usual lenstronomy kwargs
+    :param kwargs_light_up: the usual lenstronomy kwargs
+    :param kwargs_light_down: the usual lenstronomy kwargs
+    :param kwargs_light_fixed: the usual lenstronomy kwargs
+    :param kwargs_light_sigma: the usual lenstronomy kwargs
+    :param cleaning: bool, if True, will update the empty fields with default values + cleans the kwargs_fixed
 
-    OUTPUT
-    ------
-     - : updated list and kwargs
+    :return: updated list and kwargs
     """
     light_model_list.append('SHAPELETS')
     for light_name, light_param in light.parameters.items():
@@ -570,16 +600,17 @@ def update_kwargs_lensed_ps(light, ps_model_list, kwargs_ps, kwargs_ps_init, kwa
     """
     Update the source list and kwargs with lensed point source "LENSED_POSITION" light model
 
-    INPUT
-    -----
-    light  : coolest.api.profiles.light.LensedPS object
-    ps_model_list : list
-    kwargs_x : list (of dictionnaries)
-    cleaning : bool, if True, will update the empty fields with default values + cleans the kwargs_fixed
+    :param light: coolest.template.classes.profiles.lightLensedPS object
+    :param ps_model_list: the usual lenstronomy point_source_model_list
+    :param kwargs_ps: the usual lenstronomy kwargs
+    :param kwargs_ps_init: the usual lenstronomy kwargs
+    :param kwargs_ps_up: the usual lenstronomy kwargs
+    :param kwargs_ps_down: the usual lenstronomy kwargs
+    :param kwargs_ps_fixed: the usual lenstronomy kwargs
+    :param kwargs_ps_sigma: the usual lenstronomy kwargs
+    :param cleaning: bool, if True, will update the empty fields with default values + cleans the kwargs_fixed
 
-    OUTPUT
-    ------
-     - : updated list and kwargs
+    :return: updated list and kwargs
     """
     ps_model_list.append('LENSED_POSITION')
 

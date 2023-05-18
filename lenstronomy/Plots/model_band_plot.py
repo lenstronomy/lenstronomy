@@ -157,7 +157,8 @@ class ModelBandPlot(ModelBand):
                                                                              self._kwargs_lens_partial,
                                                                              original_position=kwargs.get('original_position', True))
             plot_util.image_position_plot(ax, self._coords, ra_image, dec_image,
-                                          image_name_list=kwargs.get('image_name_list', None))
+                                          image_name_list=kwargs.get('image_name_list', None),
+                                          plot_out_of_image=False)
         #source_position_plot(ax, self._coords, self._kwargs_source)
 
     def convergence_plot(self, ax, text='Convergence', v_min=None, v_max=None,
@@ -436,7 +437,8 @@ class ModelBandPlot(ModelBand):
         cb = plt.colorbar(im, cax=cax)
         cb.set_label(colorbar_label, fontsize=font_size)
         ra_image, dec_image = self._bandmodel.PointSource.image_position(self._kwargs_ps_partial, self._kwargs_lens_partial)
-        plot_util.image_position_plot(ax, self._coords, ra_image, dec_image, color='k', image_name_list=image_name_list)
+        plot_util.image_position_plot(ax, self._coords, ra_image, dec_image, color='k', image_name_list=image_name_list,
+                                      plot_out_of_image=False)
         return ax
 
     def deflection_plot(self, ax, v_min=None, v_max=None, axis=0,
@@ -476,7 +478,8 @@ class ModelBandPlot(ModelBand):
             plot_util.plot_line_set(ax, self._coords, ra_crit_list, dec_crit_list, color='r',
                                     points_only=self._caustic_points_only)
         ra_image, dec_image = self._bandmodel.PointSource.image_position(self._kwargs_ps_partial, self._kwargs_lens_partial)
-        plot_util.image_position_plot(ax, self._coords, ra_image, dec_image, image_name_list=image_name_list)
+        plot_util.image_position_plot(ax, self._coords, ra_image, dec_image, image_name_list=image_name_list,
+                                      plot_out_of_image=False)
         return ax
 
     def decomposition_plot(self, ax, text='Reconstructed', v_min=None, v_max=None,

@@ -48,16 +48,19 @@ class SingleBandMultiModel(ImageLinearFit):
         data_i = ImageData(**kwargs_data)
         psf_i = PSF(**kwargs_psf)
 
-        index_lens_model_list = kwargs_model.get('index_lens_model_list', [None for i in range(len(multi_band_list))])
+        index_lens_model_list = kwargs_model.get('index_lens_model_list', [None for _ in range(len(multi_band_list))])
         self._index_lens_model = index_lens_model_list[band_index]
-        index_source_list = kwargs_model.get('index_source_light_model_list', [None for i in range(len(multi_band_list))])
+        index_source_list = kwargs_model.get('index_source_light_model_list',
+                                             [None for _ in range(len(multi_band_list))])
         self._index_source = index_source_list[band_index]
-        index_lens_light_list = kwargs_model.get('index_lens_light_model_list', [None for i in range(len(multi_band_list))])
+        index_lens_light_list = kwargs_model.get('index_lens_light_model_list',
+                                                 [None for _ in range(len(multi_band_list))])
         self._index_lens_light = index_lens_light_list[band_index]
-        index_point_source_list = kwargs_model.get('index_point_source_model_list', [None for i in range(len(multi_band_list))])
+        index_point_source_list = kwargs_model.get('index_point_source_model_list',
+                                                   [None for _ in range(len(multi_band_list))])
         self._index_point_source = index_point_source_list[band_index]
         index_optical_depth = kwargs_model.get('index_optical_depth_model_list',
-                                                   [None for i in range(len(multi_band_list))])
+                                               [None for _ in range(len(multi_band_list))])
         self._index_optical_depth = index_optical_depth[band_index]
 
         super(SingleBandMultiModel, self).__init__(data_i, psf_i, lens_model_class, source_model_class,

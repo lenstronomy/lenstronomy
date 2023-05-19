@@ -100,7 +100,6 @@ class TestOutputPlots(object):
 
         lensPlot = ModelPlot(multi_band_list, self.kwargs_model, self.kwargs_params, arrow_size=0.02, cmap_string=cmap)
 
-
         lensPlot.plot_separate()
         plt.close()
         lensPlot.plot_subtract_from_data_all()

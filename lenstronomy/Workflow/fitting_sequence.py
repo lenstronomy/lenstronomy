@@ -105,7 +105,7 @@ class FittingSequence(object):
                 self._updateManager.update_param_state(**kwargs_result)
                 chain_list.append([fitting_type, kwargs_result])
 
-            elif fitting_type == 'MCMC': # NH: I propose to rename this `ensemble_MCMC` or similar
+            elif fitting_type == 'MCMC': # NH: I propose to rename this 'ensemble_MCMC' or similar
                 if 'init_samples' not in kwargs:
                     kwargs['init_samples'] = self._mcmc_init_samples
                 elif kwargs['init_samples'] is None:
@@ -132,23 +132,29 @@ class FittingSequence(object):
 
             elif fitting_type == 'metropolis_hastings': # NHmod
 
+                # import the CobayaSampler class
                 from lenstronomy.Sampling.Samplers.cobaya_sampler import CobayaSampler
 
                 print('Using the Metropolis--Hastings MCMC sampler in Cobaya.')
 
+                # pass the likelihood to the sampler
                 sampler = CobayaSampler(self.likelihoodModule)
 
+                # run the sampler
                 updated_info, sampler_type, best_fit_values = sampler.run(**kwargs)
 
+                # change the best-fit values returned by cobaya into lenstronomy kwargs format
                 best_fit_kwargs = self.param_class.args2kwargs(best_fit_values, bijective=True)
 
+                # collect the products
                 mh_output = [updated_info, sampler_type, best_fit_kwargs]
 
+                # append the products to the chain list
                 chain_list.append(mh_output)
-                
+
             else:
-                raise ValueError("fitting_sequence {} is not supported. Please use: 'PSO', 'SIMPLEX', 'MCMC', " # NHmod
-                                 "'Nautilus', 'nested_sampling', 'metropolis_hastings', "
+                raise ValueError("fitting_sequence {} is not supported. Please use: 'PSO', 'SIMPLEX', 'MCMC', "
+                                 "'Nautilus', 'nested_sampling', 'metropolis_hastings', " # NHmod
                                  "'psf_iteration', 'restart', 'update_settings', 'calibrate_images' or "
                                  "'align_images'".format(fitting_type))
         return chain_list

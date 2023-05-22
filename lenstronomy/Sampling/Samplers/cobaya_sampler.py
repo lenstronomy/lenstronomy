@@ -41,8 +41,9 @@ class CobayaSampler(object):
         sampled_params = {k: {'prior': {'min': self._lower_limit[i], 'max': self._upper_limit[i]}} for k, i in zip(sampled_params, range(len(sampled_params)))}
 
         # add reference values to start chain close to expected best fit
-        # to do: can we get these values internally from lenstronomy? e.g. from _ll.param
-        # though I quite like having it directly accessible/controllable by the user
+        # we could get these values internally from lenstronomy e.g. from _ll.param
+        # that would mimic how the emcee implementation is done (with sampling_util/sample_ball_truncated())
+        # but I like having it directly accessible/controllable by the user when they run the MCMC
         if 'starting_points' not in kwargs:
             print('No starting point provided. Drawing a starting point from the prior.')
             pass
@@ -86,22 +87,23 @@ class CobayaSampler(object):
         # parameter info
         info['params'] = sampled_params
 
-        # choose the sampler and pass the relevant sampler settings
+        # select mcmc as the sampler and pass the relevant sampler settings
         info['sampler'] = {'mcmc': {'Rminus1_stop': kwargs['GR'], 'max_tries': kwargs['max_tries']}}
 
         # where the chains and other files will be saved
         info['output'] = kwargs['path']
 
-        # Bool: whether or not to overwrite previous chains with the same name
+        # whether or not to overwrite previous chains with the same name (bool)
         info['force'] = kwargs['force_overwrite']
 
         # run the sampler
         updated_info, sampler = crun(info)
 
-        # get the best fit (max likelihood)
-        # this bypasses lenstronomy's way of doing it -- is that ok?
+        # get the best fit (max likelihood); format returned is a pandas series
+        # this bypasses lenstronomy's way of doing it but matches lenstronomy result
         best_fit_series = sampler.collection.bestfit()
 
+        # turn that pandas series into a list (of floats)
         best_fit_values = best_fit_series[sampled_params].values.tolist()
 
         return updated_info, sampler, best_fit_values

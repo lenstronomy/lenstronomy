@@ -27,9 +27,6 @@ class CobayaSampler(object):
         self._num_params, self._param_names = self._ll.param.num_param()
         self._lower_limit, self._upper_limit = self._ll.param.param_limits()
 
-        # self._kwargs_temp = self._updateManager.parameter_state
-        # self._mean_start = self._ll.param.kwargs2args(**self._kwargs_temp)
-
     def run(self, **kwargs):
         """
         docstring goes here
@@ -37,47 +34,74 @@ class CobayaSampler(object):
 
         from cobaya.run import run as crun
 
+        # get the parameters to be sampled
         sampled_params = self._param_names
 
-        sampled_params = {k: {'prior': {'min': self._lower_limit[i], 'max': self._upper_limit[i]}} for k, i in zip(sampled_params, range(len(sampled_params)))} # add the priors to the sampled_params
-
-        # refs = self._mean_start
-
-        # print(refs)
-
-        # refs = [1.5, 0.3, 3.0, 0.1, 0.1]
+        # add the priors to the sampled_params
+        sampled_params = {k: {'prior': {'min': self._lower_limit[i], 'max': self._upper_limit[i]}} for k, i in zip(sampled_params, range(len(sampled_params)))}
 
         # add reference values to start chain close to expected best fit
-        # [sampled_params[k].update({'ref': refs[i]}) for k, i in zip(sampled_params.keys(), range(len(refs)))]
+        # to do: can we get these values internally from lenstronomy? e.g. from _ll.param
+        # though I quite like having it directly accessible/controllable by the user
+        if 'starting_points' not in kwargs:
+            print('No starting point provided. Drawing a starting point from the prior.')
+            pass
+        else:
+            refs = kwargs['starting_points']
+            if len(refs) != len(sampled_params.keys()):
+                raise ValueError('You must provide the same number of starting points as sampled parameters.')
+            [sampled_params[k].update({'ref': refs[i]}) for k, i in zip(sampled_params.keys(), range(len(refs)))]
+
+        # add proposal widths
+        if 'proposal_widths' not in kwargs:
+            print('No proposal widths provided. Learning covariance matrix.')
+            pass
+        else:
+            props = kwargs['proposal_widths']
+            if len(props) != len(sampled_params.keys()):
+                raise ValueError('You must provide the same number of proposal widths as sampled parameters.')
+            [sampled_params[k].update({'proposal': props[i]}) for k, i in zip(sampled_params.keys(), range(len(props)))]
 
         # add LaTeX labels so lenstronomy kwarg names don't break getdist plotting
-        if kwargs['latex'] is not None:
+        if 'latex' not in kwargs:
+            print('No LaTeX labels provided. Manually edit the updated.yaml file to avoid lenstronomy parameter labels breaking GetDist.')
+            pass
+        else:
             latex = kwargs['latex']
+            if len(latex) != len(sampled_params.keys()):
+                raise ValueError('You must provide the same number of labels as sampled parameters.')
             [sampled_params[k].update({'latex': latex[i]}) for k, i in zip(sampled_params.keys(), range(len(latex)))]
 
+        # likelihood function in cobaya-friendly format
         def likelihood_for_cobaya(**kwargs):
             current_input_values = [kwargs[p] for p in sampled_params]
             logp = self._ll.likelihood(current_input_values)
             return logp
 
-        info_like = {"lenstronomy_likelihood": {"external": likelihood_for_cobaya, "input_params": sampled_params}}#, "output_params": ["sum_a"]}}
+        # gather all the information to pass to cobaya, starting with the likelihood
+        info = {'likelihood': {'lenstronomy_likelihood': {'external': likelihood_for_cobaya, 'input_params': sampled_params}}}
 
-        info = {'likelihood': info_like}
+        # for the above, can we do an args2kwargs for the 'output_params' key?? might bypass plotting issue
 
+        # parameter info
         info['params'] = sampled_params
 
-        # Gelman--Rubin criterion
-        GR = kwargs['GR']
+        # choose the sampler and pass the relevant sampler settings
+        info['sampler'] = {'mcmc': {'Rminus1_stop': kwargs['GR'], 'max_tries': kwargs['max_tries']}}
 
-        # max attempts to start the chain
-        mt = kwargs['max_tries']
-
-        info['sampler'] = {'mcmc': {'Rminus1_stop': GR, 'max_tries': mt}} # consider what should be hardcoded here or not
-
+        # where the chains and other files will be saved
         info['output'] = kwargs['path']
 
+        # Bool: whether or not to overwrite previous chains with the same name
+        info['force'] = kwargs['force_overwrite']
+
+        # run the sampler
         updated_info, sampler = crun(info)
 
-        output = [updated_info, sampler]
+        # get the best fit (max likelihood)
+        # this bypasses lenstronomy's way of doing it -- is that ok?
+        best_fit_series = sampler.collection.bestfit()
 
-        return output
+        best_fit_values = best_fit_series[sampled_params].values.tolist()
+
+        return updated_info, sampler, best_fit_values

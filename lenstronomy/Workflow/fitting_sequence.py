@@ -138,12 +138,14 @@ class FittingSequence(object):
 
                 sampler = CobayaSampler(self.likelihoodModule)
 
-                samples = sampler.run(**kwargs)
+                updated_info, sampler_type, best_fit_values = sampler.run(**kwargs)
 
-                mh_output = [samples]
+                best_fit_kwargs = self.param_class.args2kwargs(best_fit_values, bijective=True)
+
+                mh_output = [updated_info, sampler_type, best_fit_kwargs]
 
                 chain_list.append(mh_output)
-
+                
             else:
                 raise ValueError("fitting_sequence {} is not supported. Please use: 'PSO', 'SIMPLEX', 'MCMC', " # NHmod
                                  "'Nautilus', 'nested_sampling', 'metropolis_hastings', "

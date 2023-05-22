@@ -197,14 +197,19 @@ class PositionLikelihood(object):
                 y_image = kwargs_ps[k]['dec_image']
                 # calculating the individual source positions from the image positions
                 # TODO: have option for ray-shooting back to specific redshift in multi-plane lensing
-                x_source, y_source = self._lensModel.ray_shooting(x_image, y_image, kwargs_lens)
+                k_list = self._pointSource.k_list(k)
                 for i in range(len(x_image)):
                     # TODO: add redshift information in computation
-                    f_xx, f_xy, f_yx, f_yy = self._lensModel.hessian(x_image[i], y_image[i], kwargs_lens)
+                    if k_list is not None:
+                        k_lens = k_list[i]
+                    else:
+                        k_lens = None
+                    x_source_i, y_source_i = self._lensModel.ray_shooting(x_image[i], y_image[i], kwargs_lens, k=k_lens)
+                    f_xx, f_xy, f_yx, f_yy = self._lensModel.hessian(x_image[i], y_image[i], kwargs_lens, k=k_lens)
                     A = np.array([[1 - f_xx, -f_xy], [-f_yx, 1 - f_yy]])
                     Sigma_theta = np.array([[1, 0], [0, 1]]) * sigma ** 2
                     Sigma_beta = image2source_covariance(A, Sigma_theta)
-                    delta = np.array([source_x[k] - x_source[i], source_y[k] - y_source[i]])
+                    delta = np.array([source_x[k] - x_source_i, source_y[k] - y_source_i])
                     if hard_bound_rms is not None:
                         if delta[0]**2 + delta[1]**2 > hard_bound_rms**2:
                             if verbose is True:

@@ -8,15 +8,29 @@ class PSBase(object):
     """
     base point source type class
     """
-    def __init__(self, lens_model=None, fixed_magnification=False, additional_images=False):
+    def __init__(self, lens_model=None, fixed_magnification=False, additional_images=False, index_lens_model_list=None,
+                 point_source_frame_list=None):
         """
 
         :param lens_model: instance of the LensModel() class
         :param fixed_magnification: bool. If True, magnification
          ratio of point sources is fixed to the one given by the lens model
         :param additional_images: bool. If True, search for additional images of the same source is conducted.
+        :param index_lens_model_list: list (length of different patches/bands) of integer lists, e.g., [[0, 1], [2, 3]];
+         evaluating a subset of the lens models per individual bands. If this keyword is set, the image positions need
+         to have a specified band/frame assigned to it
+        :param point_source_frame_list: list of lists mirroring the structure of the image positions.
+         Integers correspond to the i'th list entry of index_lens_model_list indicating in which frame/band the image is
+         appearing
         """
         self._lens_model = lens_model
+        if index_lens_model_list is not None:
+            k_list = []
+            for point_source_frame in point_source_frame_list:
+                k_list.append(index_lens_model_list[point_source_frame])
+            self.k_list = k_list
+        else:
+            self.k_list = None
         if self._lens_model is None:
             self._solver = None
         else:

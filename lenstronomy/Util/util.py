@@ -666,7 +666,7 @@ def convert_bool_list(n, k=None):
     if k is a list of int, e.g. [0, 3, 5], returns a bool list with True's in the integers listed and False elsewhere
     if k is a boolean list, checks for size to match the numbers of models and returns it
 
-    :param n: integer, total lenght of output boolean list
+    :param n: integer, total length of output boolean list
     :param k: None, int, or list of ints
     :return: bool list
     """
@@ -691,7 +691,7 @@ def convert_bool_list(n, k=None):
                 if k_i < n:
                     bool_list[k_i] = True
                 else:
-                    raise ValueError("k as set by %s is not convertable in a bool string!" % k)
+                    raise ValueError("k as set by %s is not convertable in a bool string of length %s !" % (k, n))
     else:
         raise ValueError('input list k as %s not compatible' % k)
     return bool_list

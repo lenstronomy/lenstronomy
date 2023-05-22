@@ -72,6 +72,7 @@ class TestSingleBandMultiModel(object):
                         'index_lens_light_model_list': [[0]],
                         'index_source_light_model_list': [[0]],
                         'index_point_source_model_list': [[0]],
+                        'point_source_frame_list': [[0]]
                         }
 
         self.kwargs_params = {'kwargs_lens': kwargs_lens, 'kwargs_source': kwargs_source,

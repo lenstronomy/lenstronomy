@@ -76,7 +76,8 @@ class TestFittingSequence(object):
                              'lens_light_model_list': lens_light_model_list,
                              'point_source_model_list': point_source_list,
                              'fixed_magnification_list': [False],
-                             'index_lens_model_list': [[0, 1]]
+                             'index_lens_model_list': [[0, 1]],
+                             'point_source_frame_list': [[0]]
                              }
         self.kwargs_numerics = kwargs_numerics
 

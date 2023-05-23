@@ -2,6 +2,14 @@ __author__ = 'nataliehogg'
 
 # man with one sampling method always knows his posterior distribution; man with two never certain.
 
+import numpy as np
+from mpi4py import MPI # new requirement
+from cobaya.run import run as crun
+from cobaya.log import LoggedError
+
+comm = MPI.COMM_WORLD
+rank = comm.Get_rank()
+
 class CobayaSampler(object):
 
     def __init__(self, likelihood_module):
@@ -32,10 +40,9 @@ class CobayaSampler(object):
         docstring goes here
         """
 
-        from cobaya.run import run as crun
-
         # get the parameters to be sampled
         sampled_params = self._param_names
+        num_params = self._num_params
 
         # add the priors to the sampled_params
         sampled_params = {k: {'prior': {'min': self._lower_limit[i], 'max': self._upper_limit[i]}} for k, i in zip(sampled_params, range(len(sampled_params)))}
@@ -45,7 +52,6 @@ class CobayaSampler(object):
         # that would mimic how the emcee implementation is done (with sampling_util/sample_ball_truncated())
         # but I like having it directly accessible/controllable by the user when they run the MCMC
         if 'starting_points' not in kwargs:
-            print('No starting point provided. Drawing a starting point from the prior.')
             pass
         else:
             refs = kwargs['starting_points']
@@ -55,7 +61,6 @@ class CobayaSampler(object):
 
         # add proposal widths
         if 'proposal_widths' not in kwargs:
-            print('No proposal widths provided. Learning covariance matrix.')
             pass
         else:
             props = kwargs['proposal_widths']
@@ -87,8 +92,33 @@ class CobayaSampler(object):
         # parameter info
         info['params'] = sampled_params
 
-        # select mcmc as the sampler and pass the relevant sampler settings
-        info['sampler'] = {'mcmc': {'Rminus1_stop': kwargs['GR'], 'max_tries': kwargs['max_tries']}}
+        # get all the kwargs for the mcmc sampler in cobaya
+        # if not present, passes a default value (taken from cobaya docs)
+        # note: parameter blocking kwargs not provided because fast/slow parameters are very case-by-case
+        # also the temperature option is apparently deprecated
+
+        mcmc_kwargs = {'burn_in': kwargs.get('burn_in', 0),
+                       'max_tries': kwargs.get('max_tries', 40*num_params),
+                       'covmat': kwargs.get('covmat', None),
+                       'proposal_scale': kwargs.get('proposal_scale', 1),
+                       'output_every': kwargs.get('output_every', 500),
+                       'learn_every': kwargs.get('learn_every', 40*num_params),
+                       'learn_proposal': kwargs.get('learn_proposal', True),
+                       'learn_proposal_Rminus1_max': kwargs.get('learn_proposal_Rminus1_max', 2),
+                       'learn_proposal_Rminus1_max_early': kwargs.get('learn_proposal_Rminus1_max_early', 30),
+                       'learn_proposal_Rminus1_min': kwargs.get('learn_proposal_Rminus1_min', 0),
+                       'max_samples': kwargs.get('max_samples', np.inf),
+                       'Rminus1_stop': kwargs.get('Rminus1_stop', 0.01),
+                       'Rminus1_cl_stop': kwargs.get('Rminus1_cl_stop', 0.2),
+                       'Rminus1_cl_level': kwargs.get('Rminus1_cl_level', 0.95),
+                       'Rminus1_single_split': kwargs.get('Rminus1_single_split', 4),
+                       'measure_speeds': kwargs.get('measure_speeds', True),
+                       'oversample_power': kwargs.get('oversample_power', 0.4),
+                       'oversample_thin': kwargs.get('oversample_thin', True),
+                       'drag': kwargs.get('drag', False)}
+
+        # select mcmc as the sampler and pass the relevant kwargs
+        info['sampler'] = {'mcmc': mcmc_kwargs}
 
         # where the chains and other files will be saved
         info['output'] = kwargs['path']
@@ -97,7 +127,17 @@ class CobayaSampler(object):
         info['force'] = kwargs['force_overwrite']
 
         # run the sampler
-        updated_info, sampler = crun(info)
+        # we wrap the call to crun to make sure any MPI exceptions are caught properly
+        # this ensures the entire run will be terminated if any individual process breaks
+        success = False
+        try:
+            updated_info, sampler = crun(info)
+            success = True
+        except LoggedError as err:
+            pass
+        success = all(comm.allgather(success))
+        if not success and rank == 0:
+            print('Sampling with MPI failed!')
 
         # get the best fit (max likelihood); format returned is a pandas series
         # this bypasses lenstronomy's way of doing it but matches lenstronomy result

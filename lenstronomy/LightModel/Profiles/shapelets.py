@@ -165,8 +165,8 @@ class Shapelets(object):
         x_ = x - center_x
         y_ = y - center_y
         n = len(np.atleast_1d(x))
-        H_x = np.empty((n_order+1, n))
-        H_y = np.empty((n_order+1, n))
+        H_x = np.empty((n_order + 1, n))
+        H_y = np.empty((n_order + 1, n))
         exp_x = np.exp(-(x_ / beta) ** 2 / 2.)
         exp_y = np.exp(-(y_ / beta) ** 2 / 2.)
         if n_order > 170:

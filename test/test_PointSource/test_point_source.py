@@ -21,7 +21,8 @@ class TestPointSource(object):
                                                                    sourcePos_y=self.sourcePos_y, kwargs_lens=self.kwargs_lens)
         self.PointSource = PointSource(point_source_type_list=['LENSED_POSITION', 'UNLENSED', 'SOURCE_POSITION'],
                                        lensModel=lensModel, fixed_magnification_list=[False]*3,
-                                       additional_images_list=[False]*4, flux_from_point_source_list=[True, True, True])
+                                       additional_images_list=[False]*4, flux_from_point_source_list=[True, True, True],
+                                       index_lens_model_list=[[0]], point_source_frame_list=[[0] * len(self.x_pos), [0], [0]])
         self.kwargs_ps = [{'ra_image': self.x_pos, 'dec_image': self.y_pos, 'point_amp': np.ones_like(self.x_pos) * 2},
                           {'ra_image': [1.], 'dec_image': [1.], 'point_amp': [10]},
                           {'ra_source': self.sourcePos_x, 'dec_source': self.sourcePos_y, 'point_amp': np.ones_like(self.x_pos)}, {}]

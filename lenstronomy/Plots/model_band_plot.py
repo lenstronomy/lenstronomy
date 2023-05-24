@@ -348,7 +348,7 @@ class ModelBandPlot(ModelBand):
             plot_util.text_description(ax, d_s, text=text, color="w", backgroundcolor='k',
                          flipped=False, font_size=font_size)
         if point_source_position is True:
-            ra_source, dec_source = self._bandmodel.PointSource.source_position(self._kwargs_ps_partial, self._kwargs_lens_partial)
+            ra_source, dec_source = self._bandmodel.PointSource.source_position(self._kwargs_ps_partial, self._kwargs_lens)
             plot_util.source_position_plot(ax, coords_source, ra_source, dec_source)
         return ax
 
@@ -400,7 +400,7 @@ class ModelBandPlot(ModelBand):
         plot_util.text_description(ax, d_s, text="Error map in source", color="w", backgroundcolor='k', flipped=False,
                                    font_size=font_size)
         if point_source_position is True:
-            ra_source, dec_source = self._bandmodel.PointSource.source_position(self._kwargs_ps_partial, self._kwargs_lens_partial)
+            ra_source, dec_source = self._bandmodel.PointSource.source_position(self._kwargs_ps_partial, self._kwargs_lens)
             plot_util.source_position_plot(ax, coords_source, ra_source, dec_source)
         return ax
 

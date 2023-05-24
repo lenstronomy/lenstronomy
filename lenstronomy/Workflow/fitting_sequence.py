@@ -8,6 +8,8 @@ from lenstronomy.Sampling.sampler import Sampler
 from lenstronomy.Sampling.Samplers.multinest_sampler import MultiNestSampler
 from lenstronomy.Sampling.Samplers.polychord_sampler import DyPolyChordSampler
 from lenstronomy.Sampling.Samplers.dynesty_sampler import DynestySampler
+from lenstronomy.Sampling.Samplers.nautilus import Nautilus
+from lenstronomy.Sampling.Samplers.cobaya_sampler import CobayaSampler
 import numpy as np
 import lenstronomy.Util.analysis_util as analysis_util
 
@@ -116,7 +118,6 @@ class FittingSequence(object):
                 chain_list.append(mcmc_output)
 
             elif fitting_type == 'Nautilus':
-                from lenstronomy.Sampling.Samplers.nautilus import Nautilus
                 nautilus = Nautilus(likelihood_module=self.likelihoodModule)
                 points, log_w, log_l, log_z = nautilus.nautilus_sampling(mpi=self._mpi, **kwargs)
                 chain_list.append([points, log_w, log_l, log_z])
@@ -131,9 +132,6 @@ class FittingSequence(object):
                 chain_list.append(ns_output)
 
             elif fitting_type == 'metropolis_hastings': # NHmod
-
-                # import the CobayaSampler class
-                from lenstronomy.Sampling.Samplers.cobaya_sampler import CobayaSampler
 
                 print('Using the Metropolis--Hastings MCMC sampler in Cobaya.')
 

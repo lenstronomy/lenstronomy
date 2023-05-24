@@ -3,7 +3,7 @@ __author__ = 'nataliehogg'
 # man with one sampling method always knows his posterior distribution; man with two never certain.
 
 import numpy as np
-from mpi4py import MPI # new requirement
+from mpi4py import MPI
 from cobaya.run import run as crun
 from cobaya.log import LoggedError
 
@@ -51,10 +51,10 @@ class CobayaSampler(object):
         # we could get these values internally from lenstronomy e.g. from _ll.param
         # that would mimic how the emcee implementation is done (with sampling_util/sample_ball_truncated())
         # but I like having it directly accessible/controllable by the user when they run the MCMC
-        if 'starting_points' not in kwargs:
+        if 'refs' not in kwargs:
             pass
         else:
-            refs = kwargs['starting_points']
+            refs = kwargs['refs']
             if len(refs) != len(sampled_params.keys()):
                 raise ValueError('You must provide the same number of starting points as sampled parameters.')
             [sampled_params[k].update({'ref': refs[i]}) for k, i in zip(sampled_params.keys(), range(len(refs)))]
@@ -137,10 +137,11 @@ class CobayaSampler(object):
             pass
         success = all(comm.allgather(success))
         if not success and rank == 0:
-            print('Sampling with MPI failed!')
+            print('Sampling failed!')
 
-        # get the best fit (max likelihood); format returned is a pandas series
-        # this bypasses lenstronomy's way of doing it but matches lenstronomy result
+        # get the best fit (max likelihood); returns a pandas series
+        # we use the native cobaya calculation instead of lenstronomy's
+        # this is because crun does not directly expose the samples themselves
         best_fit_series = sampler.collection.bestfit()
 
         # turn that pandas series into a list (of floats)

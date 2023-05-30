@@ -135,8 +135,15 @@ class FittingSequence(object):
 
                 print('Using the Metropolis--Hastings MCMC sampler in Cobaya.')
 
-                # pass the likelihood to the sampler
-                sampler = CobayaSampler(self.likelihoodModule)
+                param_class = self.param_class
+
+                kwargs_temp = self._updateManager.parameter_state
+                mean_start = param_class.kwargs2args(**kwargs_temp)
+                kwargs_sigma = self._updateManager.sigma_kwargs
+                sigma_start = np.array(param_class.kwargs2args(**kwargs_sigma))
+
+                # pass the likelihood and starting info to the sampler
+                sampler = CobayaSampler(self.likelihoodModule, mean_start, sigma_start)
 
                 # run the sampler
                 updated_info, sampler_type, best_fit_values = sampler.run(**kwargs)

@@ -12,7 +12,7 @@ rank = comm.Get_rank()
 
 class CobayaSampler(object):
 
-    def __init__(self, likelihood_module):
+    def __init__(self, likelihood_module, mean_start, sigma_start):
         """
         Pure Metropolis--Hastings MCMC sampling with Cobaya.
 
@@ -35,47 +35,62 @@ class CobayaSampler(object):
         self._num_params, self._param_names = self._ll.param.num_param()
         self._lower_limit, self._upper_limit = self._ll.param.param_limits()
 
+        self._mean_start = mean_start
+        self._sigma_start = sigma_start
+
     def run(self, **kwargs):
         """
         docstring goes here
         """
 
-        # get the parameters to be sampled
         sampled_params = self._param_names
-        num_params = self._num_params
 
         # add the priors to the sampled_params
-        sampled_params = {k: {'prior': {'min': self._lower_limit[i], 'max': self._upper_limit[i]}} for k, i in zip(sampled_params, range(len(sampled_params)))}
+        # currently a uniform prior is hardcoded for all params
+        # cobaya allows any 1D continuous dist in scipy.stats; thinking how to implement this here
+        sampled_params = {k: {'prior': {'dist': 'uniform', 'min': self._lower_limit[i], 'max': self._upper_limit[i]}} for k, i in zip(sampled_params, range(len(sampled_params)))}
 
         # add reference values to start chain close to expected best fit
-        # we could get these values internally from lenstronomy e.g. from _ll.param
-        # that would mimic how the emcee implementation is done (with sampling_util/sample_ball_truncated())
-        # but I like having it directly accessible/controllable by the user when they run the MCMC
-        if 'refs' not in kwargs:
-            pass
-        else:
-            refs = kwargs['refs']
-            if len(refs) != len(sampled_params.keys()):
-                raise ValueError('You must provide the same number of starting points as sampled parameters.')
-            [sampled_params[k].update({'ref': refs[i]}) for k, i in zip(sampled_params.keys(), range(len(refs)))]
+        # this hardcodes a Gaussian and uses the sigma_kwargs passed by the user
+        # again cobaya allows any 1D continous distribution; thinking how to implement this
+        # tricky with current info internal in lenstronomy
+        [sampled_params[k].update({'ref': {'dist': 'norm', 'loc': self._mean_start[i], 'scale': self._sigma_start[i]}}) for k, i in zip(sampled_params.keys(), range(len(sampled_params)))]
 
         # add proposal widths
+        # first check if proposal_widths has been passed
         if 'proposal_widths' not in kwargs:
             pass
         else:
-            props = kwargs['proposal_widths']
+            # check if what's been passed is dict
+            if isinstance(kwargs['proposal_widths'], dict):
+                # if yes, convert to list
+                props = list(kwargs['proposal_widths'].values())
+            elif isinstance(kwargs['proposal_widths'], list):
+                # if no and it's a list, do nothing
+                props = kwargs['proposal_widths']
+            else:
+                # if no and not a list, raise TypeError
+                raise TypeError('Proposal widths must be a list of floats or a dictionary of parameters and floats.')
+            # check the right number of values are present
             if len(props) != len(sampled_params.keys()):
+                # if not, raise ValueError
                 raise ValueError('You must provide the same number of proposal widths as sampled parameters.')
+            # update sampled_params dict with proposal widths
             [sampled_params[k].update({'proposal': props[i]}) for k, i in zip(sampled_params.keys(), range(len(props)))]
 
         # add LaTeX labels so lenstronomy kwarg names don't break getdist plotting
+        # first check if the labels have been passed
         if 'latex' not in kwargs:
+            # if not, print a warning
             print('No LaTeX labels provided. Manually edit the updated.yaml file to avoid lenstronomy parameter labels breaking GetDist.')
             pass
         else:
             latex = kwargs['latex']
+            # check the right number of labels are present
             if len(latex) != len(sampled_params.keys()):
+                # if not, raise ValueError
                 raise ValueError('You must provide the same number of labels as sampled parameters.')
+            # update sampled_params dict with labels
             [sampled_params[k].update({'latex': latex[i]}) for k, i in zip(sampled_params.keys(), range(len(latex)))]
 
         # likelihood function in cobaya-friendly format
@@ -93,16 +108,17 @@ class CobayaSampler(object):
         info['params'] = sampled_params
 
         # get all the kwargs for the mcmc sampler in cobaya
-        # if not present, passes a default value (taken from cobaya docs)
-        # note: parameter blocking kwargs not provided because fast/slow parameters are very case-by-case
+        # if not present, passes a default value (most taken from cobaya docs)
+        # note: parameter blocking kwargs not provided because fast/slow parameters do not exist in strong lensing
+        # todo: remove drag and oversample options?
         # also the temperature option is apparently deprecated
 
         mcmc_kwargs = {'burn_in': kwargs.get('burn_in', 0),
-                       'max_tries': kwargs.get('max_tries', 40*num_params),
+                       'max_tries': kwargs.get('max_tries', 100*self._num_params),
                        'covmat': kwargs.get('covmat', None),
                        'proposal_scale': kwargs.get('proposal_scale', 1),
                        'output_every': kwargs.get('output_every', 500),
-                       'learn_every': kwargs.get('learn_every', 40*num_params),
+                       'learn_every': kwargs.get('learn_every', 40*self._num_params),
                        'learn_proposal': kwargs.get('learn_proposal', True),
                        'learn_proposal_Rminus1_max': kwargs.get('learn_proposal_Rminus1_max', 2),
                        'learn_proposal_Rminus1_max_early': kwargs.get('learn_proposal_Rminus1_max_early', 30),

@@ -49,5 +49,14 @@ def test_flux_noise():
     npt.assert_almost_equal(noise, 1, decimal=5)
 
 
+def test_magnitude2amplitude():
+    from lenstronomy.LightModel.light_model import LightModel
+    light_model_class = LightModel(['GAUSSIAN'])
+    kwargs_light_mag = [{'magnitude': 0, 'sigma': 2, 'center_x': 0, 'center_y': 0}]
+    magnitude_zero_point = 2.5
+    kwargs_light_amp = data_util.magnitude2amplitude(light_model_class, kwargs_light_mag, magnitude_zero_point)
+    npt.assert_almost_equal(kwargs_light_amp[0]['amp'], 10, decimal=5)
+
+
 if __name__ == '__main__':
     pytest.main()

@@ -325,3 +325,15 @@ History
 * added EPL_boxydisky lens profile
 * added primary beam to image simulation (for interferrometic data)
 
+1.11.2 (2023-05-30)
++++++++++++++++++++
+* COOLEST standard utilities
+* minor bug fixed in LSST data configuration
+* point source positions with multi-frame enabled
+* check additional images without imaging data enabled
+* Galkin Shells class
+* elliptical shapelets
+* Hernquist functionalities to turn mass into profile parameters
+* ellipticity measurement update
+* stellar micro-lensing routines
+* PSF fitting accounts for corners

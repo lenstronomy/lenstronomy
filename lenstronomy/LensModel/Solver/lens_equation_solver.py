@@ -123,7 +123,8 @@ class LensEquationSolver(object):
          setting a a proper magnification_limit is more important. To get similar behaviour, a limit of 1e-1 is acceptable
         """
         lens_model_list = list(self.lensModel.lens_model_list)
-        if lens_model_list not in (['SIE', 'SHEAR'], ['SIE'], ['EPL_NUMBA', 'SHEAR'], ['EPL_NUMBA'], ['EPL', 'SHEAR'], ['EPL']):
+        if lens_model_list not in (['SIE', 'SHEAR'], ['SIE'], ['EPL_NUMBA', 'SHEAR'], ['EPL_NUMBA'], ['EPL', 'SHEAR'],
+                                   ['EPL']):
             raise ValueError("Only SIE, EPL, EPL_NUMBA (+shear) supported in the analytical solver for now.")
 
         x_mins, y_mins = solve_lenseq_pemd((x, y), kwargs_lens, **kwargs_solver)

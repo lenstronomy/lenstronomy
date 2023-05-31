@@ -82,7 +82,7 @@ class CobayaSampler(object):
         # first check if the labels have been passed
         if 'latex' not in kwargs:
             # if not, print a warning
-            print('No LaTeX labels provided. Manually edit the updated.yaml file to avoid lenstronomy parameter labels breaking GetDist.')
+            print('No LaTeX labels provided: manually edit the updated.yaml file to avoid lenstronomy labels breaking GetDist.')
             pass
         else:
             latex = kwargs['latex']

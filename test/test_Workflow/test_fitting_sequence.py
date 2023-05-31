@@ -198,7 +198,82 @@ class TestFittingSequence(object):
         assert kwargs_set['kwargs_source'][0]['n_sersic'] == 2.993
         assert kwargs_set['kwargs_ps'][0]['ra_source'] == 0.007
 
+    def test_cobaya(self):
+        np.random.seed(42)
+
+        # make a basic lens model to fit
+        # data specifics
+        sigma_bkg = 0.05  # background noise per pixel
+        exp_time = 100  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)
+        numPix = 10  # cutout pixel size
+        deltaPix = 0.05  # pixel size in arcsec (area per pixel = deltaPix**2)
+        fwhm = 0.5  # full width half max of PSF
+
+        # PSF specification
+        kwargs_data = sim_util.data_configure_simple(numPix, deltaPix, exp_time, sigma_bkg)
+        data_class = ImageData(**kwargs_data)
+        kwargs_psf_gaussian = {'psf_type': 'GAUSSIAN', 'fwhm': fwhm, 'pixel_size': deltaPix, 'truncation': 3}
+        psf_gaussian = PSF(**kwargs_psf_gaussian)
+
+        # make a lens
+        lens_model_list = ['SIS']
+        kwargs_lens = [{'theta_E': 1.5, 'center_x': 0.0, 'center_y': 0.0}]
+        lens_model_class = LensModel(lens_model_list=lens_model_list)
+
+        # make a source
+        source_model_list = ['SERSIC']
+        kwargs_source = [{'amp': 1., 'R_sersic': 0.3, 'n_sersic': 3.0, 'center_x': 0.1, 'center_y': 0.1}]
+        source_model_class = LightModel(light_model_list=source_model_list)
+
+        kwargs_numerics = {'supersampling_factor': 1, 'supersampling_convolution': False}
+
+        imageModel = ImageModel(data_class, psf_gaussian, lens_model_class, source_model_class, kwargs_numerics=kwargs_numerics)
+        image_sim = sim_util.simulate_simple(imageModel, kwargs_lens, kwargs_source)
+
+        data_class.update_data(image_sim)
+
+        kwargs_data['image_data'] = image_sim
+
+        kwargs_model = {'lens_model_list': lens_model_list, 'source_light_model_list': source_model_list}
+
+        lens_fixed = [{'center_x': 0.0, 'center_y': 0.0}]
+        lens_sigma = [{'theta_E': 0.01}]
+        lens_lower = [{'theta_E': 0.1}]
+        lens_upper = [{'theta_E': 3.0}]
+
+        source_fixed = [{}]
+        source_sigma = [{'R_sersic': 0.01, 'n_sersic': 0.01, 'center_x': 0.01, 'center_y': 0.01}]
+        source_lower = [{'R_sersic': 0.01, 'n_sersic': 0.5, 'center_x': -1, 'center_y': -1}]
+        source_upper = [{'R_sersic': 1.0, 'n_sersic': 6.0, 'center_x': 1, 'center_y': 1}]
+
+        lens_param = [kwargs_lens, lens_sigma, lens_fixed, lens_lower, lens_upper]
+        source_param = [kwargs_source, source_sigma, source_fixed, source_lower, source_upper]
+
+        kwargs_params = {'lens_model': lens_param,
+                         'source_model': source_param}
+
+        kwargs_constraints = {}
+
+        multi_band_list = [[kwargs_data, kwargs_psf_gaussian, kwargs_numerics]]
+
+        kwargs_data_joint = {'multi_band_list': multi_band_list,
+                             'multi_band_type': 'multi-linear'}
+
+        kwargs_likelihood = {'source_marg': False}
+
+        fittingSequence = FittingSequence(kwargs_data_joint, kwargs_model,
+                                          kwargs_constraints, kwargs_likelihood,
+                                          kwargs_params)
+
+        kwargs_cobaya = {'proposal_widths': [0.001, 0.001, 0.001, 0.001, 0.001],
+                         'Rminus1_stop': 100,
+                         'path': 'test_cobaya',
+                         'force_overwrite': True}
+
+        chain_list = fittingSequence.fit_sequence([['metropolis_hastings', kwargs_cobaya]])
+
     def test_zeus(self):
+        print('in test zeus')
         np.random.seed(42)
         # we make a very basic lens+source model to feed to check zeus can be run through fitting sequence
         # we don't use the kwargs defined in setup() as those are modified during the tests; using unique kwargs here is safer
@@ -279,6 +354,8 @@ class TestFittingSequence(object):
         chain_list = fittingSequence.fit_sequence(fitting_list)
 
     def test_multinest(self):
+        print('in test multinest')
+
         # Nested sampler tests
         # further decrease the parameter space for nested samplers to run faster
 
@@ -320,6 +397,8 @@ class TestFittingSequence(object):
         assert kwargs_out['kwargs_lens'] == 1
 
     def test_dynesty(self):
+        print('in test dynesty')
+
         np.random.seed(42)
         kwargs_params = copy.deepcopy(self.kwargs_params)
         kwargs_params['lens_model'][0][0]['theta_E'] += 0.01

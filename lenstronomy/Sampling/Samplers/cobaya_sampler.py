@@ -14,7 +14,7 @@ class CobayaSampler(object):
 
     def __init__(self, likelihood_module, mean_start, sigma_start):
         """
-        Pure Metropolis--Hastings MCMC sampling with Cobaya.
+        Wrapper for pure Metropolis--Hastings MCMC sampling with Cobaya.
 
         If you use this sampler, you must cite the following works:
 
@@ -27,6 +27,8 @@ class CobayaSampler(object):
         For more information about Cobaya, see https://cobaya.readthedocs.io/en/latest/index.html
 
         :param likelihood_module: LikelihoodModule() instance
+        :param mean_start: initial point for parameters are drawn from Gaussians with these means
+        :param sigma_start: initial point for parameters are drawn from Gaussians with these standard deviations
 
         """
 
@@ -94,6 +96,7 @@ class CobayaSampler(object):
             [sampled_params[k].update({'latex': latex[i]}) for k, i in zip(sampled_params.keys(), range(len(latex)))]
 
         # likelihood function in cobaya-friendly format
+        # many problems trying to get this to work not as a nested function
         def likelihood_for_cobaya(**kwargs):
             current_input_values = [kwargs[p] for p in sampled_params]
             logp = self._ll.likelihood(current_input_values)
@@ -137,10 +140,16 @@ class CobayaSampler(object):
         info['sampler'] = {'mcmc': mcmc_kwargs}
 
         # where the chains and other files will be saved
-        info['output'] = kwargs['path']
+        if 'path' not in kwargs:
+            info['output'] = 'cobaya_chain'
+        else:
+            info['output'] = kwargs['path']
 
         # whether or not to overwrite previous chains with the same name (bool)
-        info['force'] = kwargs['force_overwrite']
+        if 'force_overwrite' not in kwargs:
+            info['force'] =  True
+        else:
+            info['force'] = kwargs['force_overwrite']
 
         # run the sampler
         # we wrap the call to crun to make sure any MPI exceptions are caught properly

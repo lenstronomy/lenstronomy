@@ -266,14 +266,13 @@ class TestFittingSequence(object):
                                           kwargs_params)
 
         kwargs_cobaya = {'proposal_widths': [0.001, 0.001, 0.001, 0.001, 0.001],
-                         'Rminus1_stop': 100,
+                         'Rminus1_stop': 100, # does this need to be large? can we run in test mode?
                          'path': 'test_cobaya',
                          'force_overwrite': True}
 
         chain_list = fittingSequence.fit_sequence([['metropolis_hastings', kwargs_cobaya]])
 
     def test_zeus(self):
-        print('in test zeus')
         np.random.seed(42)
         # we make a very basic lens+source model to feed to check zeus can be run through fitting sequence
         # we don't use the kwargs defined in setup() as those are modified during the tests; using unique kwargs here is safer
@@ -354,8 +353,6 @@ class TestFittingSequence(object):
         chain_list = fittingSequence.fit_sequence(fitting_list)
 
     def test_multinest(self):
-        print('in test multinest')
-
         # Nested sampler tests
         # further decrease the parameter space for nested samplers to run faster
 
@@ -397,8 +394,6 @@ class TestFittingSequence(object):
         assert kwargs_out['kwargs_lens'] == 1
 
     def test_dynesty(self):
-        print('in test dynesty')
-
         np.random.seed(42)
         kwargs_params = copy.deepcopy(self.kwargs_params)
         kwargs_params['lens_model'][0][0]['theta_E'] += 0.01

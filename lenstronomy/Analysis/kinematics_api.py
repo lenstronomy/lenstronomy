@@ -186,10 +186,10 @@ class KinematicsAPI(object):
                                                              center_x=None, center_y=None,
                                                              model_bool_list=self._light_model_kinematics_bool)
         if theta_E is None:
-            theta_E = self._lensMassProfile.effective_einstein_radius(kwargs_lens, center_x=None, center_y=None,
-                                                                      model_bool_list=self._lens_model_kinematics_bool,
-                                                                      grid_num=200, grid_spacing=0.05,
-                                                                      get_precision=False, verbose=True)
+            theta_E = self._lensMassProfile.effective_einstein_radius_grid(kwargs_lens, center_x=None, center_y=None,
+                                                                           model_bool_list=self._lens_model_kinematics_bool,
+                                                                           grid_num=200, grid_spacing=0.05,
+                                                                           get_precision=False, verbose=True)
         if gamma is None and self._analytic_kinematics is True:
             gamma = self._lensMassProfile.profile_slope(kwargs_lens, theta_E, center_x=None, center_y=None,
                                                         model_list_bool=self._lens_model_kinematics_bool,

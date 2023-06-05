@@ -32,7 +32,9 @@ class TestCobayaSampler(object):
 
         sampler, likelihood, means, sigmas = import_fixture
 
-        updated_info, sampler_name, best_fit_values = sampler.run()
+        info = {'mpi': False} # tests passing now?
+
+        updated_info, sampler_name, best_fit_values = sampler.run(**info)
 
         assert str(sampler_name) == 'mcmc'
 

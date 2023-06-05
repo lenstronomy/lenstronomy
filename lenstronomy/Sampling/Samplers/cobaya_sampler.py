@@ -3,9 +3,7 @@ __author__ = 'nataliehogg'
 # man with one sampling method always knows his posterior distribution; man with two never certain.
 
 import numpy as np
-from mpi4py import MPI
 from cobaya.run import run as crun
-from cobaya.log import LoggedError
 
 class CobayaSampler(object):
 
@@ -149,45 +147,31 @@ class CobayaSampler(object):
             info['force'] = kwargs['force_overwrite']
 
         # check for mpi
-        # if 'mpi' not in kwargs:
-        #     kwargs['mpi'] = False
+        if 'mpi' not in kwargs:
+            kwargs['mpi'] = False
 
         # run the sampler
         # we wrap the call to crun to make sure any MPI exceptions are caught properly
         # this ensures the entire run will be terminated if any individual process breaks
-        # if kwargs['mpi'] == True:
-        #     from mpi4py import MPI
-        #     from cobaya.log import LoggedError
-        #
-        #     comm = MPI.COMM_WORLD
-        #     rank = comm.Get_rank()
-        #
-        #     success = False
-        #     try:
-        #         updated_info, sampler = crun(info)
-        #         success = True
-        #     except LoggedError as err:
-        #         pass
-        #     success = all(comm.allgather(success))
-        #     if not success and rank == 0:
-        #         print('Sampling failed!')
-        # else:
-        #     comm = None
-        #     updated_info, sampler = crun(info)
+        if kwargs['mpi'] == True:
+            from mpi4py import MPI
+            from cobaya.log import LoggedError
 
-        # seeing if the tests pass like this...
-        comm = MPI.COMM_WORLD
-        rank = comm.Get_rank()
+            comm = MPI.COMM_WORLD
+            rank = comm.Get_rank()
 
-        success = False
-        try:
+            success = False
+            try:
+                updated_info, sampler = crun(info)
+                success = True
+            except LoggedError as err:
+                pass
+            success = all(comm.allgather(success))
+            if not success and rank == 0:
+                print('Sampling failed!')
+        else:
+            comm = None # is this necessary?
             updated_info, sampler = crun(info)
-            success = True
-        except LoggedError as err:
-            pass
-        success = all(comm.allgather(success))
-        if not success and rank == 0:
-            print('Sampling failed!')
 
         # get the best fit (max likelihood); returns a pandas series
         # we use the native cobaya calculation instead of lenstronomy's

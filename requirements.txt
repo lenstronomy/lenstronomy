@@ -16,7 +16,6 @@ pyxdg
 h5py
 zeus-mcmc
 cobaya
-mpi4py
 nautilus-sampler==0.4.1
 
 

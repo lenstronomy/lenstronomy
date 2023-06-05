@@ -1,4 +1,5 @@
 import numpy as np
+import scipy
 from lenstronomy.Util import util
 from lenstronomy.Util import mask_util as mask_util
 import lenstronomy.Util.multi_gauss_expansion as mge
@@ -19,10 +20,10 @@ class LensProfileAnalysis(object):
         """
         self._lens_model = lens_model
 
-    def effective_einstein_radius(self, kwargs_lens, center_x=None, center_y=None, model_bool_list=None, grid_num=200,
-                                  grid_spacing=0.05, get_precision=False, verbose=True):
+    def effective_einstein_radius_grid(self, kwargs_lens, center_x=None, center_y=None, model_bool_list=None,
+                                       grid_num=200, grid_spacing=0.05, get_precision=False, verbose=True):
         """
-        computes the radius with mean convergence=1
+        computes the radius with mean convergence=1 on a grid
 
         :param kwargs_lens: list of lens model keyword arguments
         :param center_x: position of the center (if not set, is attempting to find it from the parameters kwargs_lens)
@@ -49,6 +50,52 @@ class LensProfileAnalysis(object):
 
         return einstein_radius_from_grid(kappa, x_grid, y_grid, grid_spacing, grid_num, center_x=center_x,
                                          center_y=center_y, get_precision=get_precision, verbose=verbose)
+
+    def effective_einstein_radius(self, kwargs_lens, r_min=1e-3, r_max=1e1, num_points=30):
+        """
+        Numerical estimate of the Einstein radius with integral approximation of radial convergence profile
+
+        :param kwargs_lens: list of lens model keyword arguments
+        :param r_min: minimum radius of the convergence integrand
+        :param r_max: maximum radius of the convergence integrand (should be larger than Einstein radius)
+        :param num_points: number of radial points in log spacing
+        :return: estimate of the Einstein radius
+        """
+        r_array = np.logspace(np.log10(r_min), np.log10(r_max), num_points)
+
+        # Define the integrand function for the 1D numerical integration: this is the surface mass density
+        # kappa at a given radius r, multiplied by 2*pi*r to account for the circular geometry.
+        kappa_r = self.radial_lens_profile(r_array, kwargs_lens, center_x=0, center_y=0)
+
+        # here we make a finer grid interpolation in log-log space
+        k_interp = scipy.interpolate.interp1d(np.log10(r_array), np.log10(kappa_r))
+        r_array = np.logspace(np.log10(r_min), np.log10(r_max), num_points * 10)
+        kappa_r = 10 ** k_interp(np.log10(r_array))
+
+        # we perform the integral in logarithmic steps of the convergence
+        kappa_r = np.array(kappa_r)
+        kappa_r_ = (kappa_r[1:] + kappa_r[:-1]) / 2
+        r_array_ = (r_array[1:] + r_array[:-1]) / 2
+        dlog_r = (np.log10(r_array[2]) - np.log10(r_array[1])) * np.log(10)
+        # add the mass within the innermost bin and assume it's constant
+        kappa_innermost = kappa_r[0] * np.pi * r_array[0] ** 2
+
+        # the first part is the logarithmic integrand, the second part the circle integrand
+        kappa_slice = kappa_r_ * dlog_r * r_array_ * (2 * np.pi * r_array_)
+        kappa_slice = np.append(kappa_innermost, kappa_slice)
+
+        kappa_cdf = np.cumsum(kappa_slice)
+        # calculate average convergence at radius
+        kappa_average = kappa_cdf / (np.pi * r_array ** 2)
+
+        # we interpolate as the inverse function and evaluate this function for average kappa = 1
+        # (assumes monotonic decline in average convergence)
+        inv_interp = scipy.interpolate.interp1d(np.log10(kappa_average), np.log10(r_array))
+        try:
+            theta_e = 10 ** inv_interp(0)
+        except:
+            theta_e = np.nan
+        return theta_e
 
     def local_lensing_effect(self, kwargs_lens, ra_pos=0, dec_pos=0, model_list_bool=None):
         """
@@ -148,7 +195,7 @@ class LensProfileAnalysis(object):
         :return:
         """
         center_x, center_y = analysis_util.profile_center(kwargs_lens, center_x, center_y)
-        theta_E = self.effective_einstein_radius(kwargs_lens)
+        theta_E = self.effective_einstein_radius_grid(kwargs_lens)
         r_array = np.logspace(-4, 2, 200) * theta_E
         kappa_s = self.radial_lens_profile(r_array, kwargs_lens, center_x=center_x, center_y=center_y,
                                            model_bool_list=model_bool_list)

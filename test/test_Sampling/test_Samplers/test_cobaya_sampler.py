@@ -5,7 +5,7 @@ import numpy as np
 
 from lenstronomy.Sampling.Samplers.cobaya_sampler import CobayaSampler
 
-_outpath = 'cobaya_chain'
+_outpath = None
 
 @pytest.fixture
 def import_fixture(simple_einstein_ring_likelihood):

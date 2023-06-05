@@ -267,7 +267,6 @@ class TestFittingSequence(object):
 
         kwargs_cobaya = {'proposal_widths': [0.001, 0.001, 0.001, 0.001, 0.001],
                          'Rminus1_stop': 100, # does this need to be large? can we run in test mode?
-                         'path': 'test_cobaya',
                          'force_overwrite': True}
 
         chain_list = fittingSequence.fit_sequence([['metropolis_hastings', kwargs_cobaya]])

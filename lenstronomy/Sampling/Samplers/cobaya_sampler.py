@@ -136,7 +136,7 @@ class CobayaSampler(object):
 
         # where the chains and other files will be saved
         if 'path' not in kwargs:
-            info['output'] = 'cobaya_chain'
+            info['output'] = None
         else:
             info['output'] = kwargs['path']
 
@@ -179,6 +179,7 @@ class CobayaSampler(object):
         best_fit_series = sampler.collection.bestfit()
 
         # turn that pandas series into a list (of floats)
-        best_fit_values = best_fit_series[sampled_params].values.tolist()
+        keys = list(sampled_params) #  avoiding some new pandas error...
+        best_fit_values = best_fit_series[keys].values.tolist()
 
         return updated_info, sampler, best_fit_values

@@ -131,7 +131,7 @@ class FittingSequence(object):
                 ns_output = self.nested_sampling(**kwargs)
                 chain_list.append(ns_output)
 
-            elif fitting_type == 'metropolis_hastings': # NHmod
+            elif fitting_type == 'metropolis_hastings':
 
                 print('Using the Metropolis--Hastings MCMC sampler in Cobaya.')
 
@@ -158,9 +158,8 @@ class FittingSequence(object):
                 chain_list.append(mh_output)
 
             else:
-                raise ValueError("fitting_sequence {} is not supported. Please use: 'PSO', 'SIMPLEX', 'MCMC', "
-                                 "'Nautilus', 'nested_sampling', 'metropolis_hastings', " # NHmod
-                                 "'psf_iteration', 'restart', 'update_settings', 'calibrate_images' or "
+                raise ValueError("fitting_sequence {} is not supported. Please use: 'PSO', 'SIMPLEX', 'MCMC', 'metropolis_hastings', "
+                                 "'Nautilus', 'nested_sampling', 'psf_iteration', 'restart', 'update_settings', 'calibrate_images' or "
                                  "'align_images'".format(fitting_type))
         return chain_list
 

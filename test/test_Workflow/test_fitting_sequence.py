@@ -14,7 +14,6 @@ from lenstronomy.Workflow.fitting_sequence import FittingSequence
 from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
 
-
 class TestFittingSequence(object):
     """
     test the fitting sequences
@@ -38,7 +37,7 @@ class TestFittingSequence(object):
         self.kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': psf_gaussian.kernel_point_source, 'psf_error_map': np.zeros_like(psf_gaussian.kernel_point_source)}
         psf_class = PSF(**self.kwargs_psf)
         # 'EXTERNAL_SHEAR': external shear
-        kwargs_shear = {'gamma1': 0.01, 'gamma2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
+        kwargs_shear = {'gamma1': 0.01, 'gamma2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angle (in radian)
         kwargs_spemd = {'theta_E': 1., 'gamma': 1.8, 'center_x': 0, 'center_y': 0, 'e1': 0.1, 'e2': 0.1}
 
         lens_model_list = ['SPEP', 'SHEAR']
@@ -494,9 +493,6 @@ class TestFittingSequence(object):
         chain_list = fittingSequence.fit_sequence(fitting_list)
         kwargs_result = fittingSequence.best_fit(bijective=False)
         npt.assert_almost_equal(kwargs_result['kwargs_lens'][0]['theta_E'], 1, decimal=2)
-
-
-
 
 if __name__ == '__main__':
     pytest.main()

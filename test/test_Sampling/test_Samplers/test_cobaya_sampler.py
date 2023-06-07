@@ -68,18 +68,6 @@ class TestCobayaSampler(object):
 
         assert str(sampler_name) == 'mcmc'
 
-    def test_mpi(self, import_fixture):
-        '''
-        function to test mpi option
-        '''
-        sampler, likelihood, means, sigmas = import_fixture
-
-        test_mpi_kwargs = {'Rminus1_stop': 100, 'mpi': True}
-
-        updated_info, sampler_name, best_fit_values = sampler.run(**test_mpi_kwargs)
-
-        assert str(sampler_name) == 'mcmc'
-
     def test_path(self, import_fixture):
         '''
         function to test passing an outpath

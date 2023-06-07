@@ -118,5 +118,10 @@ class TestRaise(TestCobayaSampler):
             test_latex_num = {'latex': ['theta_{\rm E}', 'gamma']}
             sampler.run(**test_latex_num)
 
+        with t.assertRaises(ValueError):
+            # checks that ValueError is raised if drag is passed
+            test_drag = {'drag': True}
+            sampler.run(**test_drag)
+
 if __name__ == '__main__':
     pytest.main()

@@ -37,7 +37,7 @@ class CobayaSampler(object):
 
     def run(self, **kwargs):
         """
-        docstring goes here
+        :param kwargs: dictionary of keyword arguments for cobaya
         """
 
         sampled_params = self._param_names
@@ -107,9 +107,7 @@ class CobayaSampler(object):
 
         # get all the kwargs for the mcmc sampler in cobaya
         # if not present, passes a default value (most taken from cobaya docs)
-        # note: parameter blocking kwargs not provided because fast/slow parameters do not exist in strong lensing
-        # todo: remove drag and oversample options?
-        # also the temperature option is apparently deprecated
+        # note: parameter blocking and drag kwargs not provided because speed hierarchy not possible in strong lensing likelihoods
 
         mcmc_kwargs = {'burn_in': kwargs.get('burn_in', 0),
                        'max_tries': kwargs.get('max_tries', 100*self._num_params),
@@ -128,8 +126,10 @@ class CobayaSampler(object):
                        'Rminus1_single_split': kwargs.get('Rminus1_single_split', 4),
                        'measure_speeds': kwargs.get('measure_speeds', True),
                        'oversample_power': kwargs.get('oversample_power', 0.4),
-                       'oversample_thin': kwargs.get('oversample_thin', True),
-                       'drag': kwargs.get('drag', False)}
+                       'oversample_thin': kwargs.get('oversample_thin', True)}
+
+        if 'drag' in kwargs:
+            raise ValueError('Parameter dragging not possible in a strong lensing likelihood.')
 
         # select mcmc as the sampler and pass the relevant kwargs
         info['sampler'] = {'mcmc': mcmc_kwargs}

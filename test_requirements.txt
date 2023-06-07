@@ -1,3 +1,4 @@
 # requirements for tests
 colossus
+mpi4py
 git+https://github.com/aymgal/coolest@main#egg=coolest

@@ -197,6 +197,13 @@ class TestFittingSequence(object):
         assert kwargs_set['kwargs_source'][0]['n_sersic'] == 2.993
         assert kwargs_set['kwargs_ps'][0]['ra_source'] == 0.007
 
+        from unittest import TestCase
+        t = TestCase()
+        with t.assertRaises(ValueError):
+            fitting_list_two = []
+            fitting_list_two.append(['fake_mcmc_method', kwargs_pso])
+            fittingSequence.fit_sequence(fitting_list_two)
+
     def test_cobaya(self):
         np.random.seed(42)
 
@@ -493,6 +500,17 @@ class TestFittingSequence(object):
         chain_list = fittingSequence.fit_sequence(fitting_list)
         kwargs_result = fittingSequence.best_fit(bijective=False)
         npt.assert_almost_equal(kwargs_result['kwargs_lens'][0]['theta_E'], 1, decimal=2)
+
+# class TestRaise(TestFittingSequence):
+#
+#     def test_raise(self):
+#
+#         from unittest import TestCase
+#
+#         t = TestCase()
+#
+#         with t.assertRaises(ValueError):
+#
 
 if __name__ == '__main__':
     pytest.main()

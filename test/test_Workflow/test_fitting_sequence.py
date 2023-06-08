@@ -14,6 +14,7 @@ from lenstronomy.Workflow.fitting_sequence import FittingSequence
 from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
 
+
 class TestFittingSequence(object):
     """
     test the fitting sequences
@@ -500,17 +501,6 @@ class TestFittingSequence(object):
         chain_list = fittingSequence.fit_sequence(fitting_list)
         kwargs_result = fittingSequence.best_fit(bijective=False)
         npt.assert_almost_equal(kwargs_result['kwargs_lens'][0]['theta_E'], 1, decimal=2)
-
-# class TestRaise(TestFittingSequence):
-#
-#     def test_raise(self):
-#
-#         from unittest import TestCase
-#
-#         t = TestCase()
-#
-#         with t.assertRaises(ValueError):
-#
 
 if __name__ == '__main__':
     pytest.main()

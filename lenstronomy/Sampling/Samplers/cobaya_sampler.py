@@ -5,6 +5,7 @@ __author__ = 'nataliehogg'
 import numpy as np
 from cobaya.run import run as crun
 
+
 class CobayaSampler(object):
 
     def __init__(self, likelihood_module, mean_start, sigma_start):
@@ -28,16 +29,24 @@ class CobayaSampler(object):
         """
 
         # get the logL and parameter info from LikelihoodModule
-        self._ll = likelihood_module
-        self._num_params, self._param_names = self._ll.param.num_param()
-        self._lower_limit, self._upper_limit = self._ll.param.param_limits()
+        self._likelihood_module = likelihood_module
+        self._num_params, self._param_names = self._likelihood_module.param.num_param()
+        self._lower_limit, self._upper_limit = self._likelihood_module.param.param_limits()
 
         self._mean_start = mean_start
         self._sigma_start = sigma_start
 
     def run(self, **kwargs):
         """
-        :param kwargs: dictionary of keyword arguments for cobaya
+        :param kwargs: dictionary of keyword arguments for Cobaya. kwargs that can be passed are:
+        'proposal_widths' (standard deviation of the Gaussian from which initial point is drawn, list or dict),
+        'latex' (list of LaTeX lables for params),
+        'path' (where products will be saved, string),
+        'force_overwrite' (whether or not to overwite previous products with the same name, bool) and
+        'mpi' (to run in MPI mode, bool).
+        Furthermore, all the cobaya-native kwargs for the mcmc sampler listed in the docs are available: https://cobaya.readthedocs.io/en/latest/sampler_mcmc.html#options-and-defaults
+        except 'drag' and 'blocking', since there is no obvious parameter speed hierarchy in a strong lensing likelihood.
+        If none of these kwargs are passed, the default values/settings will be used.
         """
 
         sampled_params = self._param_names
@@ -90,11 +99,15 @@ class CobayaSampler(object):
             # update sampled_params dict with labels
             [sampled_params[k].update({'latex': latex[i]}) for k, i in zip(sampled_params.keys(), range(len(latex)))]
 
-        # likelihood function in cobaya-friendly format
-        # many problems trying to get this to work not as a nested function
         def likelihood_for_cobaya(**kwargs):
+            '''
+            We define a function to return the log-likelihood; this function is passed to Cobaya.
+            The function must be nested within the run() function for it to work properly.
+
+            :param kwargs: dictionary of keyword arguments
+            '''
             current_input_values = [kwargs[p] for p in sampled_params]
-            logp = self._ll.likelihood(current_input_values)
+            logp = self._likelihood_module.likelihood(current_input_values)
             return logp
 
         # gather all the information to pass to cobaya, starting with the likelihood

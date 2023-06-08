@@ -6,6 +6,7 @@ from unittest import TestCase
 
 from lenstronomy.Sampling.Samplers.cobaya_sampler import CobayaSampler
 
+
 @pytest.fixture
 def import_fixture(simple_einstein_ring_likelihood):
     """
@@ -17,6 +18,7 @@ def import_fixture(simple_einstein_ring_likelihood):
     sigmas = np.ones_like(means)*0.1
     sampler = CobayaSampler(likelihood_module=likelihood, mean_start=means, sigma_start=sigmas)
     return sampler, likelihood, means, sigmas
+
 
 class TestCobayaSampler(object):
     """
@@ -90,6 +92,7 @@ class TestCobayaSampler(object):
             # checks that ValueError is raised if drag is passed
             test_drag = {'drag': True}
             sampler.run(**test_drag)
+
 
 if __name__ == '__main__':
     pytest.main()

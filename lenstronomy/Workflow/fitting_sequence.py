@@ -160,7 +160,7 @@ class FittingSequence(object):
 
             elif fitting_type == 'MCMC':
                 raise ValueError("The legacy 'MCMC' keyword has been changed to 'ensemble_MCMC', please use this if that was your intention. "
-                                 "For other types of sampling algorithms, you may use metropolis_hastings' or 'nested_sampling' or 'importance_nested_sampling'. "
+                                 "For other types of sampling algorithms, you may use 'metropolis_hastings' or 'nested_sampling' or 'importance_nested_sampling'. "
                                  "Please check the documentation for more details.")
 
 

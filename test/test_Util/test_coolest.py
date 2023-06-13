@@ -151,7 +151,7 @@ class TestCOOLESTinterface(object):
         n_run_mcmc = 10
         n_burn_mcmc = 10
         fitting_kwargs_list = [['PSO', {'sigma_scale': 1., 'n_particles': n_particules, 'n_iterations': n_iterations}],
-                               ['ensemble_MCMC', {'n_burn': n_burn_mcmc, 'n_run': n_run_mcmc, 'walkerRatio': wr,
+                               ['MCMC', {'n_burn': n_burn_mcmc, 'n_run': n_run_mcmc, 'walkerRatio': wr,
                                          'sigma_scale': 0.01}]
                                ]
         chain_list = fitting_seq.fit_sequence(fitting_kwargs_list)

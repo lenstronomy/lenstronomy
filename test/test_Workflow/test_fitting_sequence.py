@@ -442,7 +442,7 @@ class TestFittingSequence(object):
             'random_state': 42
         }
 
-        fitting_list.append(['Nautilus', kwargs_nautilus])
+        fitting_list.append(['importance_nested_sampling', kwargs_nautilus])
         chain_list = fittingSequence.fit_sequence(fitting_list)
 
     def test_dypolychord(self):

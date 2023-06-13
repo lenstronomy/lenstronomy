@@ -205,6 +205,11 @@ class TestFittingSequence(object):
             fitting_list_two.append(['fake_mcmc_method', kwargs_pso])
             fittingSequence.fit_sequence(fitting_list_two)
 
+        with t.assertRaises(ValueError):
+            fitting_list_three = []
+            fitting_list_three.append(['MCMC', kwargs_pso])
+            fittingSequence.fit_sequence(fitting_list_three)
+
     def test_cobaya(self):
         np.random.seed(42)
 
@@ -354,7 +359,7 @@ class TestFittingSequence(object):
         fitting_list = []
         kwargs_zeus = {'sampler_type': 'ZEUS', 'n_burn': 2, 'n_run': 2, 'walkerRatio': 4, 'backend_filename': 'test_mcmc_zeus.h5'}
 
-        fitting_list.append(['MCMC', kwargs_zeus])
+        fitting_list.append(['ensemble_MCMC', kwargs_zeus])
 
         chain_list = fittingSequence.fit_sequence(fitting_list)
 
@@ -475,10 +480,10 @@ class TestFittingSequence(object):
         kwargs_pso = {'sigma_scale': 1, 'n_particles': n_p, 'n_iterations': n_i}
         fitting_list.append(['PSO', kwargs_pso])
         kwargs_mcmc = {'sigma_scale': 1, 'n_burn': 1, 'n_run': 1, 'n_walkers': 10, 'sampler_type': 'EMCEE'}
-        fitting_list.append(['MCMC', kwargs_mcmc])
+        fitting_list.append(['ensemble_MCMC', kwargs_mcmc])
         kwargs_mcmc['re_use_samples'] = True
         kwargs_mcmc['init_samples'] = np.array([[np.random.normal(1, 0.001)] for i in range(100)])
-        fitting_list.append(['MCMC', kwargs_mcmc])
+        fitting_list.append(['ensemble_MCMC', kwargs_mcmc])
 
         def custom_likelihood(kwargs_lens, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
                               kwargs_special=None, kwargs_extinction=None):

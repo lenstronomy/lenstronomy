@@ -107,17 +107,18 @@ class FittingSequence(object):
                 self._updateManager.update_param_state(**kwargs_result)
                 chain_list.append([fitting_type, kwargs_result])
 
-            elif fitting_type == 'MCMC': # NH: I propose to rename this 'ensemble_MCMC' or similar
+            elif fitting_type == 'ensemble_MCMC':
                 if 'init_samples' not in kwargs:
                     kwargs['init_samples'] = self._mcmc_init_samples
                 elif kwargs['init_samples'] is None:
                     kwargs['init_samples'] = self._mcmc_init_samples
-                mcmc_output = self.mcmc(**kwargs)
+                mcmc_output = self.ensemble_mcmc(**kwargs)
                 kwargs_result = self._result_from_mcmc(mcmc_output)
                 self._updateManager.update_param_state(**kwargs_result)
                 chain_list.append(mcmc_output)
 
-            elif fitting_type == 'Nautilus':
+            elif fitting_type == 'importance_nested_sampling':
+                # do importance nested sampling with Nautilus
                 nautilus = Nautilus(likelihood_module=self.likelihoodModule)
                 points, log_w, log_l, log_z = nautilus.nautilus_sampling(mpi=self._mpi, **kwargs)
                 chain_list.append([points, log_w, log_l, log_z])
@@ -157,9 +158,15 @@ class FittingSequence(object):
                 # append the products to the chain list
                 chain_list.append(mh_output)
 
+            elif fitting_type == 'MCMC':
+                raise ValueError("The legacy 'MCMC' keyword has been changed to 'ensemble_MCMC', please use this if that was your intention. "
+                                 "For other types of sampling algorithms, you may use metropolis_hastings' or 'nested_sampling' or 'importance_nested_sampling'. "
+                                 "Please check the documentation for more details.")
+
+
             else:
-                raise ValueError("fitting_sequence {} is not supported. Please use: 'PSO', 'SIMPLEX', 'MCMC', 'metropolis_hastings', "
-                                 "'Nautilus', 'nested_sampling', 'psf_iteration', 'restart', 'update_settings', 'calibrate_images' or "
+                raise ValueError("fitting_sequence {} is not supported. Please use: 'PSO', 'SIMPLEX', 'ensemble_MCMC', 'metropolis_hastings', "
+                                 "'importance_nested_sampling', 'nested_sampling', 'psf_iteration', 'restart', 'update_settings', 'calibrate_images' or "
                                  "'align_images'".format(fitting_type))
         return chain_list
 
@@ -245,10 +252,9 @@ class FittingSequence(object):
         kwargs_result = param_class.args2kwargs(result, bijective=True)
         return kwargs_result
 
-    def mcmc(self, n_burn, n_run, walkerRatio=None, n_walkers=None, sigma_scale=1, threadCount=1, init_samples=None,
+    def ensemble_mcmc(self, n_burn, n_run, walkerRatio=None, n_walkers=None, sigma_scale=1, threadCount=1, init_samples=None,
              re_use_samples=True, sampler_type='EMCEE', progress=True, backend_filename=None, start_from_backend=False,
              **kwargs_zeus):
-        # NH: I would also rename this ensemble_MCMC or whatever
         """
         MCMC routine
 

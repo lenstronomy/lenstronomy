@@ -205,6 +205,13 @@ class TestFittingSequence(object):
             fitting_list_two.append(['fake_mcmc_method', kwargs_pso])
             fittingSequence.fit_sequence(fitting_list_two)
 
+        with t.assertRaises(ValueError):
+            # should raise a value error for n_walkers = walkerRatio = None
+            fitting_list_three = []
+            kwargs_test = {'n_burn': 10, 'n_run': 10}
+            fitting_list_three.append(['emcee', kwargs_test])
+            fittingSequence.fit_sequence(fitting_list_three)
+
     def test_cobaya(self):
         np.random.seed(42)
 

@@ -438,10 +438,6 @@ class FittingSequence(object):
                   logZ, logZ_err, results_object]
         return output
 
-        output = [sampler_type, samples, sampler.param_names, logL,
-                  logZ, logZ_err, results_object]
-        return output
-
     def psf_iteration(self, compute_bands=None, **kwargs_psf_iter):
         """
         iterative PSF reconstruction

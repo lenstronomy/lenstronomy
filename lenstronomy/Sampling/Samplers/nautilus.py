@@ -11,7 +11,7 @@ class Nautilus(object):
 
     def __init__(self, likelihood_module):
         """
-        sampling with Nautilus [1]_
+        importance nested sampling with Nautilus [1]_
 
         References:
         -----------
@@ -59,7 +59,7 @@ class Nautilus(object):
         log_z = sampler.evidence()
         time_end = time.time()
         if pool.is_master():
-            print(time_end - time_start, 'time taken for MCMC sampling')
+            print(time_end - time_start, 'time taken for nested sampling')
         return points, log_w, log_l, log_z
 
     def likelihood(self, args):

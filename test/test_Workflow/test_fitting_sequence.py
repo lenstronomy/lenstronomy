@@ -276,7 +276,7 @@ class TestFittingSequence(object):
                          'Rminus1_stop': 100, # does this need to be large? can we run in test mode?
                          'force_overwrite': True}
 
-        chain_list = fittingSequence.fit_sequence([['metropolis_hastings', kwargs_cobaya]])
+        chain_list = fittingSequence.fit_sequence([['Cobaya', kwargs_cobaya]])
 
     def test_zeus(self):
         np.random.seed(42)
@@ -352,9 +352,9 @@ class TestFittingSequence(object):
                                           kwargs_params)
 
         fitting_list = []
-        kwargs_zeus = {'sampler_type': 'ZEUS', 'n_burn': 2, 'n_run': 2, 'walkerRatio': 4, 'backend_filename': 'test_mcmc_zeus.h5'}
+        kwargs_zeus = {'n_burn': 2, 'n_run': 2, 'walkerRatio': 4, 'backend_filename': 'test_mcmc_zeus.h5'}
 
-        fitting_list.append(['MCMC', kwargs_zeus])
+        fitting_list.append(['zeus', kwargs_zeus])
 
         chain_list = fittingSequence.fit_sequence(fitting_list)
 
@@ -375,7 +375,6 @@ class TestFittingSequence(object):
         }
         fitting_list.append(['update_settings', kwargs_update])
         kwargs_multinest = {
-            'sampler_type': 'MULTINEST',
             'kwargs_run': {
                 'n_live_points': 10,
                 'evidence_tolerance': 0.5,
@@ -386,7 +385,7 @@ class TestFittingSequence(object):
             },
             'remove_output_dir': True,
         }
-        fitting_list.append(['nested_sampling', kwargs_multinest])
+        fitting_list.append(['MultiNest', kwargs_multinest])
 
         chain_list2 = fittingSequence.fit_sequence(fitting_list)
         kwargs_fixed = fittingSequence._updateManager.fixed_kwargs
@@ -409,7 +408,6 @@ class TestFittingSequence(object):
 
         fitting_list = []
         kwargs_dynesty = {
-            'sampler_type': 'DYNESTY',
             'kwargs_run': {
                 'dlogz_init': 0.01,
                 'nlive_init': 20,
@@ -418,7 +416,7 @@ class TestFittingSequence(object):
             },
         }
 
-        fitting_list.append(['nested_sampling', kwargs_dynesty])
+        fitting_list.append(['dynesty', kwargs_dynesty])
         chain_list = fittingSequence.fit_sequence(fitting_list)
 
     def test_nautilus(self):
@@ -445,7 +443,6 @@ class TestFittingSequence(object):
                                           self.kwargs_likelihood, self.kwargs_params)
         fitting_list = []
         kwargs_dypolychord = {
-            'sampler_type': 'DYPOLYCHORD',
             'kwargs_run': {
                 'ninit': 8,
                 'nlive_const': 10,
@@ -460,7 +457,7 @@ class TestFittingSequence(object):
             'dypolychord_dynamic_goal': 0.8, # 1 for posterior-only, 0 for evidence-only
             'remove_output_dir': True,
         }
-        fitting_list.append(['nested_sampling', kwargs_dypolychord])
+        fitting_list.append(['dyPolyChord', kwargs_dypolychord])
         chain_list = fittingSequence.fit_sequence(fitting_list)
 
     def test_minimizer(self):
@@ -474,11 +471,11 @@ class TestFittingSequence(object):
         fitting_list.append(['SIMPLEX', kwargs_simplex])
         kwargs_pso = {'sigma_scale': 1, 'n_particles': n_p, 'n_iterations': n_i}
         fitting_list.append(['PSO', kwargs_pso])
-        kwargs_mcmc = {'sigma_scale': 1, 'n_burn': 1, 'n_run': 1, 'n_walkers': 10, 'sampler_type': 'EMCEE'}
-        fitting_list.append(['MCMC', kwargs_mcmc])
+        kwargs_mcmc = {'sigma_scale': 1, 'n_burn': 1, 'n_run': 1, 'n_walkers': 10}
+        fitting_list.append(['emcee', kwargs_mcmc])
         kwargs_mcmc['re_use_samples'] = True
         kwargs_mcmc['init_samples'] = np.array([[np.random.normal(1, 0.001)] for i in range(100)])
-        fitting_list.append(['MCMC', kwargs_mcmc])
+        fitting_list.append(['emcee', kwargs_mcmc])
 
         def custom_likelihood(kwargs_lens, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
                               kwargs_special=None, kwargs_extinction=None):

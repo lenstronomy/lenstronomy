@@ -73,41 +73,48 @@ class FittingSequence(object):
         """
         chain_list = []
         for i, fitting in enumerate(fitting_list):
-            fitting_type = fitting[0]
+            self.fitting_type = fitting[0]
             kwargs = fitting[1]
 
-            if fitting_type == 'restart':
+            if self.fitting_type == 'restart':
                 self._updateManager.set_init_state()
 
-            elif fitting_type == 'update_settings':
+            elif self.fitting_type == 'update_settings':
                 self.update_settings(**kwargs)
 
-            elif fitting_type == 'set_param_value':
+            elif self.fitting_type == 'set_param_value':
                 self.set_param_value(**kwargs)
 
-            elif fitting_type == 'fix_not_computed':
+            elif self.fitting_type == 'fix_not_computed':
                 self.fix_not_computed(**kwargs)
 
-            elif fitting_type == 'psf_iteration':
+            elif self.fitting_type == 'psf_iteration':
                 self.psf_iteration(**kwargs)
 
-            elif fitting_type == 'align_images':
+            elif self.fitting_type == 'align_images':
                 self.align_images(**kwargs)
 
-            elif fitting_type == 'calibrate_images':
+            elif self.fitting_type == 'calibrate_images':
                 self.flux_calibration(**kwargs)
 
-            elif fitting_type == 'PSO':
+            elif self.fitting_type == 'PSO':
                 kwargs_result, chain, param = self.pso(**kwargs)
                 self._updateManager.update_param_state(**kwargs_result)
-                chain_list.append([fitting_type, chain, param])
+                chain_list.append([self.fitting_type, chain, param])
 
-            elif fitting_type == 'SIMPLEX':
+            elif self.fitting_type == 'SIMPLEX':
                 kwargs_result = self.simplex(**kwargs)
                 self._updateManager.update_param_state(**kwargs_result)
-                chain_list.append([fitting_type, kwargs_result])
+                chain_list.append([self.fitting_type, kwargs_result])
 
-            elif fitting_type == 'MCMC':
+            # NH: here and below I've changed the names to be as the packages are typeset
+            # rather than in all-caps. this will result in some backwards incompatibility
+
+            # furthermore the samplers are sorted by type and then alphabetically
+
+            elif self.fitting_type == 'MCMC' or self.fitting_type == 'emcee' or self.fitting_type == 'zeus':
+                if self.fitting_type == 'MCMC':
+                    print('MCMC selected. Sampling with default option (emcee).')
                 if 'init_samples' not in kwargs:
                     kwargs['init_samples'] = self._mcmc_init_samples
                 elif kwargs['init_samples'] is None:
@@ -117,7 +124,29 @@ class FittingSequence(object):
                 self._updateManager.update_param_state(**kwargs_result)
                 chain_list.append(mcmc_output)
 
-            elif fitting_type == 'Nautilus':
+            elif self.fitting_type == 'Cobaya':
+                print('Using the Metropolis--Hastings MCMC sampler in Cobaya.')
+                param_class = self.param_class
+                kwargs_temp = self._updateManager.parameter_state
+                mean_start = param_class.kwargs2args(**kwargs_temp)
+                kwargs_sigma = self._updateManager.sigma_kwargs
+                sigma_start = np.array(param_class.kwargs2args(**kwargs_sigma))
+                # pass the likelihood and starting info to the sampler
+                sampler = CobayaSampler(self.likelihoodModule, mean_start, sigma_start)
+                # run the sampler
+                updated_info, sampler_type, best_fit_values = sampler.run(**kwargs)
+                # change the best-fit values returned by cobaya into lenstronomy kwargs format
+                best_fit_kwargs = self.param_class.args2kwargs(best_fit_values, bijective=True)
+                # collect the products
+                mh_output = [updated_info, sampler_type, best_fit_kwargs]
+                # append the products to the chain list
+                chain_list.append(mh_output)
+
+            elif self.fitting_type == 'dynesty' or self.fitting_type == 'dyPolyChord' or self.fitting_type == 'MultiNest':
+                ns_output = self.nested_sampling(**kwargs)
+                chain_list.append(ns_output)
+
+            elif self.fitting_type == 'Nautilus':
                 # do importance nested sampling with Nautilus
                 nautilus = Nautilus(likelihood_module=self.likelihoodModule)
                 points, log_w, log_l, log_z = nautilus.nautilus_sampling(mpi=self._mpi, **kwargs)
@@ -128,40 +157,12 @@ class FittingSequence(object):
                     kwargs_result = self.best_fit_from_samples(points, log_l)
                     self._updateManager.update_param_state(**kwargs_result)
 
-            elif fitting_type == 'nested_sampling':
-                ns_output = self.nested_sampling(**kwargs)
-                chain_list.append(ns_output)
-
-            elif fitting_type == 'metropolis_hastings':
-
-                print('Using the Metropolis--Hastings MCMC sampler in Cobaya.')
-
-                param_class = self.param_class
-
-                kwargs_temp = self._updateManager.parameter_state
-                mean_start = param_class.kwargs2args(**kwargs_temp)
-                kwargs_sigma = self._updateManager.sigma_kwargs
-                sigma_start = np.array(param_class.kwargs2args(**kwargs_sigma))
-
-                # pass the likelihood and starting info to the sampler
-                sampler = CobayaSampler(self.likelihoodModule, mean_start, sigma_start)
-
-                # run the sampler
-                updated_info, sampler_type, best_fit_values = sampler.run(**kwargs)
-
-                # change the best-fit values returned by cobaya into lenstronomy kwargs format
-                best_fit_kwargs = self.param_class.args2kwargs(best_fit_values, bijective=True)
-
-                # collect the products
-                mh_output = [updated_info, sampler_type, best_fit_kwargs]
-
-                # append the products to the chain list
-                chain_list.append(mh_output)
-
             else:
-                raise ValueError("fitting_sequence {} is not supported. Please use: 'PSO', 'SIMPLEX', 'MCMC', 'metropolis_hastings', "
-                                 "'Nautilus', 'nested_sampling', 'psf_iteration', 'restart', 'update_settings', 'calibrate_images' or "
-                                 "'align_images'".format(fitting_type))
+                raise ValueError("fitting_sequence {} is not supported. Please use: 'PSO', 'SIMPLEX', "
+                                 "'MCMC' or 'emcee', 'zeus', 'Cobaya', "
+                                 "'dynesty', 'dyPolyChord',  'Multinest', 'Nautilus, '"
+                                 "'psf_iteration', 'restart', 'update_settings', 'calibrate_images' or "
+                                 "'align_images'".format(self.fitting_type))
         return chain_list
 
     def best_fit(self, bijective=False):
@@ -246,8 +247,10 @@ class FittingSequence(object):
         kwargs_result = param_class.args2kwargs(result, bijective=True)
         return kwargs_result
 
-    def mcmc(self, n_burn, n_run, walkerRatio=None, n_walkers=None, sigma_scale=1, threadCount=1, init_samples=None,
-             re_use_samples=True, sampler_type='EMCEE', progress=True, backend_filename=None, start_from_backend=False,
+    def mcmc(self,
+             n_burn, n_run, walkerRatio=None, n_walkers=None, sigma_scale=1, threadCount=1, init_samples=None, re_use_samples=True,
+             sampler_type='EMCEE', # NH: eventually this can be removed
+             progress=True, backend_filename=None, start_from_backend=False,
              **kwargs_zeus):
         """
         MCMC routine
@@ -261,7 +264,8 @@ class FittingSequence(object):
         :param init_samples: initial sample from where to start the MCMC process
         :param re_use_samples: bool, if True, re-uses the samples described in init_samples.nOtherwise starts from
          scratch.
-        :param sampler_type: string, which MCMC sampler to be used. Options are: 'EMCEE', 'ZEUS'
+        :param sampler_type: string, which MCMC sampler to be used.
+        This option is deprecated in favour of passing the sampler type as the first item in the fitting_kwargs_list.
         :param progress: boolean, if True shows progress bar in EMCEE
         :param backend_filename: name of the HDF5 file where sampling state is saved (through emcee backend engine)
         :type backend_filename: string
@@ -272,6 +276,12 @@ class FittingSequence(object):
         :return: list of output arguments, e.g. MCMC samples, parameter names, logL distances of all samples specified
          by the specific sampler used
         """
+
+        if sampler_type is not None:
+            # NH: is there a better way to do this? I didn't want to remove the kwarg immediately
+            # since that will also create a backards compatibility issue
+            print("""The sampler_type keyword argument is deprecated.
+                     The sampler type should now be passed as the first item in fitting_kwargs_list.""")
 
         param_class = self.param_class
         # run PSO
@@ -297,22 +307,21 @@ class FittingSequence(object):
         else:
             initpos = None
 
-        if sampler_type == 'EMCEE':
-            samples, dist = mcmc_class.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=self._mpi,
-                                                  threadCount=threadCount, progress=progress, initpos=initpos,
-                                                  backend_filename=backend_filename,
-                                                  start_from_backend=start_from_backend)
-            output = [sampler_type, samples, param_list, dist]
-
-        elif sampler_type == 'ZEUS':
-
+        if self.fitting_type == 'zeus':
+            # check if zeus is specified, if not default to emcee
             samples, dist = mcmc_class.mcmc_zeus(n_walkers, n_run, n_burn, mean_start, sigma_start,
                                                  mpi=self._mpi, threadCount=threadCount,
                                                  progress=progress, initpos = initpos, backend_filename = backend_filename,
                                                  **kwargs_zeus)
-            output = [sampler_type, samples, param_list, dist]
+            output = [self.fitting_type, samples, param_list, dist]
         else:
-            raise ValueError('sampler_type %s not supported!' % sampler_type)
+            # sample with emcee
+            samples, dist = mcmc_class.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=self._mpi,
+                                                  threadCount=threadCount, progress=progress, initpos=initpos,
+                                                  backend_filename=backend_filename,
+                                                  start_from_backend=start_from_backend)
+            output = [self.fitting_type, samples, param_list, dist]
+
         self._mcmc_init_samples = samples  # overwrites previous samples to continue from there in the next MCMC run
         return output
 
@@ -345,7 +354,9 @@ class FittingSequence(object):
         kwargs_result = param_class.args2kwargs(result, bijective=True)
         return kwargs_result, chain, param_list
 
-    def nested_sampling(self, sampler_type='MULTINEST', kwargs_run={},
+    def nested_sampling(self,
+                        sampler_type='MULTINEST', # NH: can eventually be removed
+                         kwargs_run={},
                         prior_type='uniform', width_scale=1, sigma_scale=1,
                         output_basename='chain', remove_output_dir=True,
                         dypolychord_dynamic_goal=0.8,
@@ -372,20 +383,24 @@ class FittingSequence(object):
         """
         mean_start, sigma_start = self._prepare_sampling(prior_type)
 
-        if sampler_type == 'MULTINEST':
-            sampler = MultiNestSampler(self.likelihoodModule,
-                                       prior_type=prior_type,
-                                       prior_means=mean_start,
-                                       prior_sigmas=sigma_start,
-                                       width_scale=width_scale,
-                                       sigma_scale=sigma_scale,
-                                       output_dir=output_dir,
-                                       output_basename=output_basename,
-                                       remove_output_dir=remove_output_dir,
-                                       use_mpi=self._mpi)
-            samples, means, logZ, logZ_err, logL, results_object = sampler.run(kwargs_run)
+        if sampler_type is not None:
+            # NH: as above
+            print("""The sampler_type keyword argument is deprecated.
+                     The sampler type should now be passed as the first item in fitting_kwargs_list.""")
 
-        elif sampler_type == 'DYPOLYCHORD':
+        # NH: reordered to make MultiNest the default
+        if self.fitting_type == 'dynesty':
+            sampler = DynestySampler(self.likelihoodModule,
+                                     prior_type=prior_type,
+                                     prior_means=mean_start,
+                                     prior_sigmas=sigma_start,
+                                     width_scale=width_scale,
+                                     sigma_scale=sigma_scale,
+                                     bound=dynesty_bound,
+                                     sample=dynesty_sample,
+                                     use_mpi=self._mpi)
+            samples, means, logZ, logZ_err, logL, results_object = sampler.run(kwargs_run)
+        elif self.fitting_type == 'dyPolyChord':
             if 'resume_dyn_run' in kwargs_run and kwargs_run['resume_dyn_run'] is True:
                 resume_dyn_run = True
             else:
@@ -403,23 +418,25 @@ class FittingSequence(object):
                                          resume_dyn_run=resume_dyn_run,
                                          use_mpi=self._mpi)
             samples, means, logZ, logZ_err, logL, results_object = sampler.run(dypolychord_dynamic_goal, kwargs_run)
-
-        elif sampler_type == 'DYNESTY':
-            sampler = DynestySampler(self.likelihoodModule,
-                                     prior_type=prior_type,
-                                     prior_means=mean_start,
-                                     prior_sigmas=sigma_start,
-                                     width_scale=width_scale,
-                                     sigma_scale=sigma_scale,
-                                     bound=dynesty_bound,
-                                     sample=dynesty_sample,
-                                     use_mpi=self._mpi)
+        else:
+            sampler = MultiNestSampler(self.likelihoodModule,
+                                       prior_type=prior_type,
+                                       prior_means=mean_start,
+                                       prior_sigmas=sigma_start,
+                                       width_scale=width_scale,
+                                       sigma_scale=sigma_scale,
+                                       output_dir=output_dir,
+                                       output_basename=output_basename,
+                                       remove_output_dir=remove_output_dir,
+                                       use_mpi=self._mpi)
             samples, means, logZ, logZ_err, logL, results_object = sampler.run(kwargs_run)
 
-        else:
-            raise ValueError('Sampler type %s not supported.' % sampler_type)
         # update current best fit values
         self._update_state(samples[-1])
+
+        output = [self.fitting_type, samples, sampler.param_names, logL,
+                  logZ, logZ_err, results_object]
+        return output
 
         output = [sampler_type, samples, sampler.param_names, logL,
                   logZ, logZ_err, results_object]

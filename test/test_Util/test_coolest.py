@@ -236,4 +236,3 @@ class TestCOOLESTinterface(object):
 
 
         return
-

@@ -152,7 +152,7 @@ class NFW(LensProfileBase):
 
     def density_2d(self, x, y, Rs, rho0, center_x=0, center_y=0):
         """
-        projected two dimensional NFW profile (kappa*Sigma_crit)
+        projected two dimensional NFW profile (kappa)
 
         :param R: radius of interest
         :type R: float/numpy array
@@ -162,6 +162,8 @@ class NFW(LensProfileBase):
         :type rho0: float
         :param r200: radius of (sub)halo
         :type r200: float>0
+        :param center_x: x-centroid position
+        :param center_y: y-centroid position
         :return: Epsilon(R) projected density at radius R
         """
         x_ = x - center_x

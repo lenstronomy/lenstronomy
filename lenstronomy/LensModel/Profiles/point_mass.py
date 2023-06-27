@@ -35,7 +35,7 @@ class PointMass(LensProfileBase):
             r = max(self.r_min, a)
         else:
             r = np.empty_like(a)
-            r[a > self.r_min] = a[a > self.r_min]  #in the SIS regime
+            r[a > self.r_min] = a[a > self.r_min]  # in the SIS regime
             r[a <= self.r_min] = self.r_min
         phi = theta_E**2*np.log(r)
         return phi
@@ -55,7 +55,7 @@ class PointMass(LensProfileBase):
             r = max(self.r_min, a)
         else:
             r = np.empty_like(a)
-            r[a > self.r_min] = a[a > self.r_min]  #in the SIS regime
+            r[a > self.r_min] = a[a > self.r_min]  # in the SIS regime
             r[a <= self.r_min] = self.r_min
         alpha = theta_E**2/r
         return alpha*x_/r, alpha*y_/r
@@ -76,7 +76,7 @@ class PointMass(LensProfileBase):
             r2 = max(self.r_min**2, a)
         else:
             r2 = np.empty_like(a)
-            r2[a > self.r_min**2] = a[a > self.r_min**2]  #in the SIS regime
+            r2[a > self.r_min**2] = a[a > self.r_min**2]  # in the SIS regime
             r2[a <= self.r_min**2] = self.r_min**2
         f_xx = C * (y_**2-x_**2)/r2**2
         f_yy = C * (x_**2-y_**2)/r2**2

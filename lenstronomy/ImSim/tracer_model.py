@@ -14,7 +14,7 @@ class TracerModelSource(ImageModel):
     def __init__(self, data_class, psf_class=None, lens_model_class=None, source_model_class=None,
                  lens_light_model_class=None, point_source_class=None, extinction_class=None,
                  tracer_source_class=None, kwargs_numerics=None, likelihood_mask=None,
-                 psf_error_map_bool_list=None, kwargs_pixelbased=None):
+                 psf_error_map_bool_list=None, kwargs_pixelbased=None, tracer_partition=None):
         """
 
         :param data_class: ImageData() instance
@@ -31,11 +31,17 @@ class TracerModelSource(ImageModel):
          Indicates whether PSF error map is used for the point source model stated as the index.
         :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver
          (see SLITronomy documentation) being applied to the point sources.
+        :param tracer_partition: in case of tracer models for specific sub-parts of the surface brightness model
+         [[list of light profiles, list of tracer profiles], [list of light profiles, list of tracer profiles], [...], ...]
+        :type tracer_partition: None or list
         """
         if likelihood_mask is None:
             likelihood_mask = np.ones_like(data_class.data)
         self.likelihood_mask = np.array(likelihood_mask, dtype=bool)
         self._mask1d = util.image2array(self.likelihood_mask)
+        if tracer_partition is None:
+            tracer_partition = [[None, None]]
+        self._tracer_partition = tracer_partition
         super(TracerModelSource, self).__init__(data_class, psf_class=psf_class, lens_model_class=lens_model_class,
                                                 source_model_class=source_model_class,
                                                 lens_light_model_class=lens_light_model_class,
@@ -60,16 +66,21 @@ class TracerModelSource(ImageModel):
         :param kwargs_tracer_source:
         :param kwargs_lens:
         :param kwargs_source:
-        :return:
+        :return: model predicted observed tracer component
         """
-        source_light = self._source_surface_brightness_analytical_numerics(kwargs_source, kwargs_lens,
-                                                                           kwargs_extinction,
-                                                                           kwargs_special=kwargs_special,
-                                                                           de_lensed=de_lensed)
-        source_light_conv = self.ImageNumerics.re_size_convolve(source_light, unconvolved=False)
-        source_light_conv[source_light_conv < 10 ** (-20)] = 10 ** (-20)
-        tracer = self._tracer_model_source(kwargs_tracer_source, kwargs_lens, de_lensed=de_lensed)
-        tracer_brightness_conv = self.ImageNumerics.re_size_convolve(tracer * source_light, unconvolved=False)
+        tracer_brightness_conv = np.zeros_like(self.Data.data)
+        source_light_conv = np.zeros_like(self.Data.data)
+        for [k_light, k_tracer] in self._tracer_partition:
+            source_light_k = self._source_surface_brightness_analytical_numerics(kwargs_source, kwargs_lens,
+                                                                               kwargs_extinction,
+                                                                               kwargs_special=kwargs_special,
+                                                                               de_lensed=de_lensed, k=k_light)
+            source_light_conv_k = self.ImageNumerics.re_size_convolve(source_light_k, unconvolved=False)
+            source_light_conv_k[source_light_conv_k < 10 ** (-20)] = 10 ** (-20)
+            tracer_k = self._tracer_model_source(kwargs_tracer_source, kwargs_lens, de_lensed=de_lensed, k=k_tracer)
+            tracer_brightness_conv_k = self.ImageNumerics.re_size_convolve(tracer_k * source_light_k, unconvolved=False)
+            tracer_brightness_conv += tracer_brightness_conv_k
+            source_light_conv += source_light_conv_k
         return tracer_brightness_conv / source_light_conv
 
     def _tracer_model_source(self, kwargs_tracer_source, kwargs_lens, de_lensed=False, k=None):

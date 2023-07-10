@@ -233,6 +233,7 @@ def create_tracer_model(tracer_data, kwargs_model, tracer_likelihood_mask=None):
     """
     tracer_source_band = kwargs_model.get('tracer_source_band', 0)
     tracer_source_class = LightModel(light_model_list=kwargs_model.get('tracer_source_model_list', []))
+    tracer_partition = kwargs_model.get('tracer_partition', None)
     kwargs_data, kwargs_psf, kwargs_numerics = tracer_data
     lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class = create_class_instances(
         band_index=tracer_source_band, **kwargs_model)
@@ -243,6 +244,7 @@ def create_tracer_model(tracer_data, kwargs_model, tracer_likelihood_mask=None):
                                      point_source_class=point_source_class, extinction_class=extinction_class,
                                      tracer_source_class=tracer_source_class, kwargs_numerics=kwargs_numerics,
                                      likelihood_mask=tracer_likelihood_mask,
-                                     psf_error_map_bool_list=None, kwargs_pixelbased=None
+                                     psf_error_map_bool_list=None, kwargs_pixelbased=None,
+                                     tracer_partition=tracer_partition
                                      )
     return tracer_model

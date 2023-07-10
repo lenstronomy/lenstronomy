@@ -233,9 +233,9 @@ class FittingSequence(object):
         :param backend_filename: name of the HDF5 file where sampling state is saved (through emcee backend engine)
         :type backend_filename: string
         :param start_from_backend: if True, start from the state saved in `backup_filename`.
-         Otherwise, create a new backup file with name `backup_filename` (any already existing file is overwritten!).
+         O therwise, create a new backup file with name `backup_filename` (any already existing file is overwritten!).
         :type start_from_backend: bool
-        :param **kwargs_zeus: zeus-specific kwargs
+        :param kwargs_zeus: zeus-specific kwargs
         :return: list of output arguments, e.g. MCMC samples, parameter names, logL distances of all samples specified
          by the specific sampler used
         """

@@ -51,8 +51,8 @@ def overload(nopython=nopython, cache=cache, parallel=parallel, fastmath=fastmat
         def wrapper(func):
             return func
 
-        @numba.extending.overload(wrapper, nopython=nopython, cache=cache, parallel=parallel, fastmath=fastmath,
-                                  error_model=error_model)
+        @numba.extending.overload(wrapper, jit_options={'nopython': nopython, 'cache': cache, 'parallel': parallel,
+                                                        'fastmath': fastmath, 'error_model': error_model})
         def ol_wrapper(func):
             return func
     else:

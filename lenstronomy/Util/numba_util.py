@@ -22,11 +22,13 @@ error_model = numba_conf['error_model']
 if numba_enabled:
     try:
         import numba
+        from numba import extending
     except ImportError:
         numba_enabled = False
         numba = None
+        extending = None
 
-__all__ = ['jit', 'generated_jit', 'nan_to_num', 'nan_to_num_arr', 'nan_to_num_single']
+__all__ = ['jit', 'overload', 'nan_to_num', 'nan_to_num_arr', 'nan_to_num_single']
 
 
 def jit(nopython=nopython, cache=cache, parallel=parallel, fastmath=fastmath, error_model=error_model, inline='never'):
@@ -40,15 +42,19 @@ def jit(nopython=nopython, cache=cache, parallel=parallel, fastmath=fastmath, er
     return wrapper
 
 
-def generated_jit(nopython=nopython, cache=cache, parallel=parallel, fastmath=fastmath, error_model=error_model):
+def overload(nopython=nopython, cache=cache, parallel=parallel, fastmath=fastmath, error_model=error_model):
     """
     Wrapper around numba.generated_jit. Allows you to redirect a function to another based on its type
      - see the Numba docs for more info
     """
     if numba_enabled:
         def wrapper(func):
-            return numba.generated_jit(func, nopython=nopython, cache=cache, parallel=parallel, fastmath=fastmath,
-                                       error_model=error_model)
+            return func
+
+        @numba.extending.overload(wrapper, nopython=nopython, cache=cache, parallel=parallel, fastmath=fastmath,
+                                  error_model=error_model)
+        def ol_wrapper(func):
+            return func
     else:
         def wrapper(func):
             return func
@@ -56,7 +62,7 @@ def generated_jit(nopython=nopython, cache=cache, parallel=parallel, fastmath=fa
     return wrapper
 
 
-@generated_jit()
+@overload()
 def nan_to_num(x, posinf=1e10, neginf=-1e10, nan=0.):
     """
     Implements a Numba equivalent to np.nan_to_num (with copy=False!) array or scalar in Numba.

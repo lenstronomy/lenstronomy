@@ -50,9 +50,9 @@ def overload(nopython=nopython, cache=cache, parallel=parallel, fastmath=fastmat
     if numba_enabled:
 
         def wrapper(func):
-            return numba.extending.overload(func, jit_options={'nopython': nopython, 'cache': cache,
-                                                               'parallel': parallel,
-                                                               'fastmath': fastmath, 'error_model': error_model})
+            return extending.overload(func, jit_options={'nopython': nopython, 'cache': cache,
+                                                         'parallel': parallel,
+                                                         'fastmath': fastmath, 'error_model': error_model})
     else:
         def wrapper(func):
             return func

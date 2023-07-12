@@ -48,7 +48,8 @@ class TestOutputPlots(object):
 
         lens_model_list = ['SPEP', 'SHEAR']
         self.kwargs_lens = [kwargs_spemd, kwargs_shear]
-        lens_model_class = LensModel(lens_model_list=lens_model_list)
+        lens_model_class = LensModel(lens_model_list=lens_model_list, multi_plane=True, lens_redshift_list=[0.5, 0.5],
+                                     z_source=2.0)
         self.LensModel = lens_model_class
         # list of light profiles (for lens and source)
         # 'SERSIC': spherical Sersic profile
@@ -79,6 +80,9 @@ class TestOutputPlots(object):
         data_class.update_data(image_sim)
         self.kwargs_data['image_data'] = image_sim
         self.kwargs_model = {'lens_model_list': lens_model_list,
+                             'lens_redshift_list': [0.5, 0.5],
+                             'multi_plane': True,
+                             'z_source': 2.0,
                                'source_light_model_list': source_model_list,
                                'lens_light_model_list': lens_light_model_list,
                                'point_source_model_list': point_source_list,
@@ -132,6 +136,14 @@ class TestOutputPlots(object):
 
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
         kwargs_plot = {'index_macromodel': [0]}
+        lensPlot.substructure_plot(ax=ax, **kwargs_plot)
+        plt.close()
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        kwargs_plot = {'index_macromodel': [0], 'with_critical_curves': True}
+        lensPlot.substructure_plot(ax=ax, **kwargs_plot)
+        plt.close()
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        kwargs_plot = {'index_macromodel': [0], 'with_critical_curves': True}
         lensPlot.substructure_plot(ax=ax, **kwargs_plot)
         plt.close()
 

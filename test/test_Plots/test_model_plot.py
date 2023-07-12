@@ -131,6 +131,11 @@ class TestOutputPlots(object):
         lensPlot.plot_extinction_map(ax=ax)
         plt.close()
 
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        kwargs_plot = {'index_macromodel': [0]}
+        lensPlot.substructure_plot(ax=ax, **kwargs_plot)
+        plt.close()
+
     def test_source_plot(self):
         multi_band_list = [[self.kwargs_data, self.kwargs_psf, self.kwargs_numerics]]
         lensPlot = ModelPlot(multi_band_list, self.kwargs_model, self.kwargs_params, arrow_size=0.02,

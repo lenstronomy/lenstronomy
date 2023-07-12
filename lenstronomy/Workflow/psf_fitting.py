@@ -70,7 +70,6 @@ class PsfFitting(object):
         mask = total_corner_norm < total_corner_norm.max()
         return mask
 
-
     def update_iterative(self, kwargs_psf, kwargs_params, num_iter=10, keep_psf_error_map=True, no_break=True,
                          verbose=True, **kwargs_psf_update):
         """

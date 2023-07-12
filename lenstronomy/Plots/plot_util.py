@@ -157,7 +157,6 @@ def plot_line_set(ax, coords, line_set_list_x, line_set_list_y, origin=None, fli
         ax.plot((x_c + shift) * pixel_width_x + origin[0], (y_c + shift) * pixel_width + origin[1], *args, **kwargs)
     return ax
 
-
 @export
 def image_position_plot(ax, coords, ra_image, dec_image, color='w', image_name_list=None, origin=None, flipped_x=False,
                         pixel_offset=True):

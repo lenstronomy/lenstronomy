@@ -51,6 +51,7 @@ class TestOutputPlots(object):
         lens_model_class = LensModel(lens_model_list=lens_model_list, multi_plane=True, lens_redshift_list=[0.5, 0.5],
                                      z_source=2.0)
         self.LensModel = lens_model_class
+
         # list of light profiles (for lens and source)
         # 'SERSIC': spherical Sersic profile
         kwargs_sersic = {'amp': 1., 'R_sersic': 0.1, 'n_sersic': 2, 'center_x': 0, 'center_y': 0}
@@ -136,10 +137,6 @@ class TestOutputPlots(object):
 
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
         kwargs_plot = {'index_macromodel': [0]}
-        lensPlot.substructure_plot(ax=ax, **kwargs_plot)
-        plt.close()
-        f, ax = plt.subplots(1, 1, figsize=(4, 4))
-        kwargs_plot = {'index_macromodel': [0], 'with_critical_curves': True}
         lensPlot.substructure_plot(ax=ax, **kwargs_plot)
         plt.close()
         f, ax = plt.subplots(1, 1, figsize=(4, 4))

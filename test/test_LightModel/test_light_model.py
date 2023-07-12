@@ -46,7 +46,8 @@ class TestLightModel(object):
         self.LightModel = LightModel(light_model_list=self.light_model_list, sersic_major_axis=False)
 
     def test_init(self):
-        model_list = ['CORE_SERSIC', 'SHAPELETS', 'SHAPELETS_POLAR', 'SHAPELETS_POLAR_EXP', 'UNIFORM', 'CHAMELEON',
+        model_list = ['CORE_SERSIC', 'SHAPELETS', 'SHAPELETS_ELLIPSE', 'SHAPELETS_POLAR', 'SHAPELETS_POLAR_EXP',
+                      'UNIFORM', 'CHAMELEON',
                       'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON']
         lightModel = LightModel(light_model_list=model_list)
         assert len(lightModel.profile_type_list) == len(model_list)

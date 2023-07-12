@@ -100,7 +100,6 @@ class TestOutputPlots(object):
 
         lensPlot = ModelPlot(multi_band_list, self.kwargs_model, self.kwargs_params, arrow_size=0.02, cmap_string=cmap)
 
-
         lensPlot.plot_separate()
         plt.close()
         lensPlot.plot_subtract_from_data_all()
@@ -296,7 +295,6 @@ class TestRaise(unittest.TestCase):
                                                   [kwargs_data, {'psf_type': 'NONE'}, {}]],
                                  kwargs_model=kwargs_model, kwargs_params=kwargs_params, bands_compute=[True],
                                  arrow_size=0.02, cmap_string="gist_heat", linear_solver=False)
-
 
 def test_interferometry_natwt_Model_Plot_linear_solver():
     # Test no errors are raised in the Model Plot linear solver for 'interferometry_natwt' likelihood function.

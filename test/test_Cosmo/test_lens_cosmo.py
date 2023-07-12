@@ -5,6 +5,7 @@ import numpy.testing as npt
 import pytest
 
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
+from lenstronomy.Util  import util
 
 
 class TestLensCosmo(object):
@@ -117,6 +118,40 @@ class TestLensCosmo(object):
 
         m_star_out = self.lensCosmo.sersic_k_eff2m_star(k_eff, R_sersic, n_sersic)
         npt.assert_almost_equal(m_star_out, m_star, decimal=6)
+
+    def test_hernquist_angular2phys(self):
+        m_star = 10**10  # in M_sun
+        rs = 0.01  # in Mpc
+
+        # test bijective transformation
+        sigma0, rs_angle = self.lensCosmo.hernquist_phys2angular(mass=m_star, rs=rs)
+        m_star_new, rs_new = self.lensCosmo.hernquist_angular2phys(sigma0=sigma0, rs_angle=rs_angle)
+        npt.assert_almost_equal(m_star_new, m_star, decimal=1)
+        npt.assert_almost_equal(rs_new, rs, decimal=8)
+
+    def test_hernquist_mass_normalization(self):
+        m_star = 10 ** 10  # in M_sun
+        rs = 0.01  # in Mpc
+
+        # test bijective transformation
+        sigma0, rs_angle = self.lensCosmo.hernquist_phys2angular(mass=m_star, rs=rs)
+
+        # test mass integrals
+        # make large grid
+        delta_pix = rs_angle / 30.
+        x, y = util.make_grid(numPix=501, deltapix=delta_pix)
+        # compute convergence
+        from lenstronomy.LensModel.lens_model import LensModel
+        lens_model = LensModel(lens_model_list=['HERNQUIST'])
+        kwargs = [{'sigma0': sigma0, 'Rs': rs_angle, 'center_x': 0, 'center_y': 0}]
+        kappa = lens_model.kappa(x, y, kwargs)
+        # sum up convergence
+        kappa_tot = np.sum(kappa) * delta_pix ** 2
+        # transform to mass
+        mass_tot = kappa_tot * self.lensCosmo.sigma_crit_angle
+
+        # compare
+        npt.assert_almost_equal(mass_tot/ m_star, 1, decimal=1)
 
 
 if __name__ == '__main__':

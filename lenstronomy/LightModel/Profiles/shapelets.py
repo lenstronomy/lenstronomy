@@ -112,7 +112,7 @@ class Shapelets(object):
         :param n2: y-order of Hermite polynomial
         :param center_x: center in x
         :param center_y: center in y
-        :return: flux surface brighness at (x, y)
+        :return: flux surface brightness at (x, y)
         """
 
         if self._precalc:
@@ -165,8 +165,8 @@ class Shapelets(object):
         x_ = x - center_x
         y_ = y - center_y
         n = len(np.atleast_1d(x))
-        H_x = np.empty((n_order+1, n))
-        H_y = np.empty((n_order+1, n))
+        H_x = np.empty((n_order + 1, n))
+        H_y = np.empty((n_order + 1, n))
         exp_x = np.exp(-(x_ / beta) ** 2 / 2.)
         exp_y = np.exp(-(y_ / beta) ** 2 / 2.)
         if n_order > 170:

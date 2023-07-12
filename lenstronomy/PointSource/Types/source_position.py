@@ -16,7 +16,8 @@ class SourcePositions(PSBase):
 
     """
 
-    def image_position(self, kwargs_ps, kwargs_lens=None, magnification_limit=None, kwargs_lens_eqn_solver=None):
+    def image_position(self, kwargs_ps, kwargs_lens=None, magnification_limit=None, kwargs_lens_eqn_solver=None,
+                       **kwargs):
         """
         on-sky image positions
 

@@ -11,7 +11,8 @@ class PointSource(object):
 
     def __init__(self, point_source_type_list, lensModel=None, fixed_magnification_list=None,
                  additional_images_list=None, flux_from_point_source_list=None, magnification_limit=None,
-                 save_cache=False, kwargs_lens_eqn_solver=None):
+                 save_cache=False, kwargs_lens_eqn_solver=None, index_lens_model_list=None,
+                 point_source_frame_list=None):
         """
 
         :param point_source_type_list: list of point source types
@@ -32,9 +33,23 @@ class PointSource(object):
          equation is conducted with the lens model parameters provided. This can increase the speed as multiple times
          the image positions are requested for the same lens model. Attention in usage!
         :param kwargs_lens_eqn_solver: keyword arguments specifying the numerical settings for the lens equation solver
-         see LensEquationSolver() class for details ,such as:
+         see LensEquationSolver() class for details, such as:
          min_distance=0.01, search_window=5, precision_limit=10**(-10), num_iter_max=100
+        :param index_lens_model_list: list (length of different patches/bands) of integer lists, e.g., [[0, 1], [2, 3]];
+         evaluating a subset of the lens models per individual bands. If this keyword is set, the image positions need
+         to have a specified band/frame assigned to it
+        :param point_source_frame_list: list of lists mirroring the structure of the image positions.
+         Integers correspond to the i'th list entry of index_lens_model_list indicating in which frame/band the image is
+         appearing
         """
+        if len(point_source_type_list) > 0:
+            if index_lens_model_list is not None and point_source_frame_list is None:
+                raise ValueError('with specified index_lens_model_list a specified point_source_frame_list argument is '
+                                 'required')
+            if index_lens_model_list is None:
+                point_source_frame_list = [None] * len(point_source_type_list)
+        self._index_lens_model_list = index_lens_model_list
+        self._point_source_frame_list = point_source_frame_list
         self._lensModel = lensModel
         self.point_source_type_list = point_source_type_list
         self._point_source_list = []
@@ -52,9 +67,12 @@ class PointSource(object):
                 self._point_source_list.append(PointSourceCached(Unlensed(), save_cache=save_cache))
             elif model == 'LENSED_POSITION':
                 from lenstronomy.PointSource.Types.lensed_position import LensedPositions
-                self._point_source_list.append(PointSourceCached(LensedPositions(lensModel, fixed_magnification=fixed_magnification_list[i],
-                                                                 additional_image=additional_images_list[i]),
-                                                                 save_cache=save_cache))
+                self._point_source_list.append(PointSourceCached(LensedPositions(lensModel,
+                    fixed_magnification=fixed_magnification_list[i],
+                     additional_images=additional_images_list[i],
+                     index_lens_model_list=index_lens_model_list,
+                     point_source_frame_list=point_source_frame_list[i]),
+                                                save_cache=save_cache))
             elif model == 'SOURCE_POSITION':
                 from lenstronomy.PointSource.Types.source_position import SourcePositions
                 self._point_source_list.append(PointSourceCached(SourcePositions(lensModel,
@@ -133,6 +151,20 @@ class PointSource(object):
         for model in self._point_source_list:
             model.set_save_cache(save_cache)
 
+    def k_list(self, k):
+        """
+
+        :param k: index of point source model
+        :return: list of lengths of images with corresponding lens models in the frame (or None if not multi-frame)
+        """
+        if self._index_lens_model_list is not None:
+            k_list = []
+            for point_source_frame in self._point_source_frame_list[k]:
+                k_list.append(self._index_lens_model_list[point_source_frame])
+        else:
+            k_list = None
+        return k_list
+
     def source_position(self, kwargs_ps, kwargs_lens):
         """
         intrinsic source positions of the point sources
@@ -150,7 +182,7 @@ class PointSource(object):
             y_source_list.append(y_source)
         return x_source_list, y_source_list
 
-    def image_position(self, kwargs_ps, kwargs_lens, k=None, original_position=False):
+    def image_position(self, kwargs_ps, kwargs_lens, k=None, original_position=False, additional_images=False):
         """
         image positions as observed on the sky of the point sources
 
@@ -160,6 +192,8 @@ class PointSource(object):
         :param original_position: boolean (only applies to 'LENSED_POSITION' models), returns the image positions in
          the model parameters and does not re-compute images (which might be differently ordered) in case of the lens
          equation solver
+        :param additional_images: if True, solves the lens equation for additional images
+        :type additional_images: bool
         :return: list of: list of image positions per point source model component
         """
         x_image_list = []
@@ -169,8 +203,11 @@ class PointSource(object):
                 kwargs = kwargs_ps[i]
                 x_image, y_image = model.image_position(kwargs, kwargs_lens,
                                                         magnification_limit=self._magnification_limit,
-                                                        kwargs_lens_eqn_solver=self._kwargs_lens_eqn_solver)
-                if original_position is True and self.point_source_type_list[i] == 'LENSED_POSITION':
+                                                        kwargs_lens_eqn_solver=self._kwargs_lens_eqn_solver,
+                                                        additional_images=additional_images)
+                # this takes action when new images are computed not necessary in order
+                if original_position is True and additional_images is True and\
+                        self.point_source_type_list[i] == 'LENSED_POSITION':
                     x_o, y_o = kwargs['ra_image'], kwargs['dec_image']
                     x_image, y_image = _sort_position_by_original(x_o, y_o, x_image, y_image)
 
@@ -350,7 +387,7 @@ class PointSource(object):
 
         :param kwargs_ps: point source keyword argument list
         :param kwargs_lens: lens model keyword argument list
-        :param tolerance: Eucledian distance between the source positions ray-traced backwards to be tolerated
+        :param tolerance: Euclidian distance between the source positions ray-traced backwards to be tolerated
         :return: bool: True, if requirement on tolerance is fulfilled, False if not.
         """
         x_image_list, y_image_list = self.image_position(kwargs_ps, kwargs_lens)

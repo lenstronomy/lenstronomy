@@ -15,7 +15,7 @@ def create_class_instances(lens_model_list=None, z_lens=None, z_source=None, z_s
                            lens_redshift_list=None, kwargs_interp=None,
                            multi_plane=False, observed_convention_index=None, source_light_model_list=None,
                            lens_light_model_list=None, point_source_model_list=None, fixed_magnification_list=None,
-                           flux_from_point_source_list=None,
+                           flux_from_point_source_list=None, point_source_frame_list=None,
                            additional_images_list=None, kwargs_lens_eqn_solver=None,
                            source_deflection_scaling_list=None, source_redshift_list=None, cosmo=None,
                            index_lens_model_list=None, index_source_light_model_list=None,
@@ -42,6 +42,9 @@ def create_class_instances(lens_model_list=None, z_lens=None, z_source=None, z_s
     :param fixed_magnification_list:
     :param flux_from_point_source_list: list of bools (optional), if set, will only return image positions
          (for imaging modeling) for the subset of the point source lists that =True. This option enables to model
+    :param point_source_frame_list: list of lists mirroring the structure of the image positions.
+     Integers correspond to the i'th list entry of index_lens_model_list indicating in which frame/band the image is
+     appearing
     :param additional_images_list:
     :param kwargs_lens_eqn_solver: keyword arguments specifying the numerical settings for the lens equation solver
          see LensEquationSolver() class for details
@@ -67,8 +70,8 @@ def create_class_instances(lens_model_list=None, z_lens=None, z_source=None, z_s
      half-light radius, if False, uses the product average of semi-major and semi-minor axis. If None, uses the
      convention in the lenstronomy yaml setting (which by default is =False)
     :param tabulated_deflection_angles: a user-specified class with a call method that returns deflection angles given
-    (x, y) coordinates on the sky. This class gets passed to the lens model class TabulatedDeflections
-    :return:
+     (x, y) coordinates on the sky. This class gets passed to the lens model class TabulatedDeflections
+    :return: lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class
     """
     if lens_model_list is None:
         lens_model_list = []
@@ -105,6 +108,12 @@ def create_class_instances(lens_model_list=None, z_lens=None, z_source=None, z_s
                                  observed_convention_index=observed_convention_index_i, kwargs_interp=kwargs_interp,
                                  numerical_alpha_class=tabulated_deflection_angles)
 
+    lens_model_class_all = LensModel(lens_model_list=lens_model_list, z_lens=z_lens, z_source=z_source,
+                                     z_source_convention=z_source_convention, lens_redshift_list=lens_redshift_list,
+                                     multi_plane=multi_plane, cosmo=cosmo,
+                                     observed_convention_index=observed_convention_index, kwargs_interp=kwargs_interp,
+                                     numerical_alpha_class=tabulated_deflection_angles)
+
     if index_source_light_model_list is None or all_models is True:
         source_light_model_list_i = source_light_model_list
         source_deflection_scaling_list_i = source_deflection_scaling_list
@@ -134,6 +143,7 @@ def create_class_instances(lens_model_list=None, z_lens=None, z_source=None, z_s
     point_source_model_list_i = point_source_model_list
     fixed_magnification_list_i = fixed_magnification_list
     additional_images_list_i = additional_images_list
+    point_source_frame_list_i = point_source_frame_list
 
     if index_point_source_model_list is not None and not all_models:
         point_source_model_list_i = [point_source_model_list[k] for k in index_point_source_model_list[band_index]]
@@ -141,12 +151,16 @@ def create_class_instances(lens_model_list=None, z_lens=None, z_source=None, z_s
             fixed_magnification_list_i = [fixed_magnification_list[k] for k in index_point_source_model_list[band_index]]
         if additional_images_list is not None:
             additional_images_list_i = [additional_images_list[k] for k in index_point_source_model_list[band_index]]
-    point_source_class = PointSource(point_source_type_list=point_source_model_list_i, lensModel=lens_model_class,
+        if point_source_frame_list is not None:
+            point_source_frame_list_i = [point_source_frame_list[k] for k in index_point_source_model_list[band_index]]
+    point_source_class = PointSource(point_source_type_list=point_source_model_list_i, lensModel=lens_model_class_all,
                                      fixed_magnification_list=fixed_magnification_list_i,
                                      flux_from_point_source_list=flux_from_point_source_list,
                                      additional_images_list=additional_images_list_i,
                                      magnification_limit=point_source_magnification_limit,
-                                     kwargs_lens_eqn_solver=kwargs_lens_eqn_solver)
+                                     kwargs_lens_eqn_solver=kwargs_lens_eqn_solver,
+                                     point_source_frame_list=point_source_frame_list_i,
+                                     index_lens_model_list=index_lens_model_list)
     if tau0_index_list is None:
         tau0_index = 0
     else:

@@ -17,6 +17,7 @@ def auto_raytracing_grid_size(source_fwhm_parcsec, grid_size_scale=0.005, power=
     grid_radius_arcsec = grid_size_scale * source_fwhm_parcsec ** power
     return grid_radius_arcsec
 
+
 def auto_raytracing_grid_resolution(source_fwhm_parcsec, grid_resolution_scale=0.0002, ref=10., power=1.):
 
     """

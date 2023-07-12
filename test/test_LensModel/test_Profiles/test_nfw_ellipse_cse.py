@@ -102,11 +102,11 @@ class TestNFWELLIPSE(object):
          """
         kwargs_round = {'alpha_Rs': 0.5, 'Rs': 2, 'center_x': 0, 'center_y': 0, 'e1': 0, 'e2': 0}
         kwargs = {'alpha_Rs': 0.5, 'Rs': 2, 'center_x': 0, 'center_y': 0, 'e1': 0.3, 'e2': 0}
-        LensMod=LensModel(['NFW_ELLIPSE_CSE'])
-        LensAn=LensProfileAnalysis(LensMod)
-        r_Ein_round=LensAn.effective_einstein_radius([kwargs_round])
-        r_Ein_ell=LensAn.effective_einstein_radius([kwargs])
-        npt.assert_almost_equal(r_Ein_round,r_Ein_ell,decimal=1)
+        LensMod = LensModel(['NFW_ELLIPSE_CSE'])
+        LensAn = LensProfileAnalysis(LensMod)
+        r_Ein_round = LensAn.effective_einstein_radius([kwargs_round])
+        r_Ein_ell = LensAn.effective_einstein_radius([kwargs])
+        npt.assert_almost_equal(r_Ein_round, r_Ein_ell, decimal=1)
 
 
 if __name__ == '__main__':

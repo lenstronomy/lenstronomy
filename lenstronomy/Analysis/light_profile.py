@@ -3,7 +3,6 @@ import numpy as np
 import lenstronomy.Util.util as util
 import lenstronomy.Util.analysis_util as analysis_util
 import lenstronomy.Util.multi_gauss_expansion as mge
-from lenstronomy.Util import mask_util
 
 __all__ = ['LightProfileAnalysis']
 

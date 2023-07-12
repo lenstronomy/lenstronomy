@@ -124,3 +124,23 @@ def mask_half_moon(x, y, center_x, center_y, r_in, r_out, phi0=0, delta_phi=2*np
         mask[(R < r_out) & (R > r_in) & (phi > phi_max)] = 1
         mask[(R < r_out) & (R > r_in) & (phi < phi_min)] = 1
     return mask
+
+
+def mask_shell(x, y, center_x, center_y, r_in, r_out):
+    """
+    ring mask
+
+    :param x: x-coordinate grid
+    :param y: y-coordinate grid
+    :param center_x: center of ring mask
+    :param center_y: center of ring mask
+    :param r_in: inner ring radius
+    :param r_out: outer ring radius
+    :return: mask
+    """
+    x_shift = x - center_x
+    y_shift = y - center_y
+    r = np.sqrt(x_shift * x_shift + y_shift * y_shift)
+    mask = np.zeros_like(x, dtype='int')
+    mask[(r >= r_in) & (r< r_out)] = 1
+    return mask

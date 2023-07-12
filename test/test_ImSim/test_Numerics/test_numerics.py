@@ -108,8 +108,8 @@ class TestNumerics(object):
 
 
         # import PSF file
-        kernel_super = kernel_util.kernel_gaussian(kernel_numPix=11 * self._supersampling_factor,
-                                                                     deltaPix=deltaPix / self._supersampling_factor, fwhm=0.1)
+        kernel_super = kernel_util.kernel_gaussian(num_pix=11 * self._supersampling_factor,
+                                                   delta_pix=deltaPix / self._supersampling_factor, fwhm=0.1)
 
 
         kernel_size = 9
@@ -239,8 +239,8 @@ def test_supersampling_simple():
     image = util.array2image(image_1d)
 
     # generate psf kernal supersampled
-    kernel_super = kernel_util.kernel_gaussian(kernel_numPix=21 * supersampling_factor + 1,
-                                               deltaPix=detector_pixel_scale / supersampling_factor, fwhm=0.2)
+    kernel_super = kernel_util.kernel_gaussian(num_pix=21 * supersampling_factor + 1,
+                                               delta_pix=detector_pixel_scale / supersampling_factor, fwhm=0.2)
 
     psf_parameters = {'psf_type': 'PIXEL', 'kernel_point_source': kernel_super,
                       'point_source_supersampling_factor': supersampling_factor}

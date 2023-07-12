@@ -159,7 +159,7 @@ def plot_line_set(ax, coords, line_set_list_x, line_set_list_y, origin=None, fli
 
 @export
 def image_position_plot(ax, coords, ra_image, dec_image, color='w', image_name_list=None, origin=None, flipped_x=False,
-                        pixel_offset=True):
+                        pixel_offset=True, plot_out_of_image=True):
     """
 
     :param ax: matplotlib axis instance
@@ -172,6 +172,8 @@ def image_position_plot(ax, coords, ra_image, dec_image, color='w', image_name_l
     :param flipped_x: bool, if True, flips x-axis
     :param pixel_offset: boolean; if True (default plotting), the coordinates are shifted a half a pixel to match with
      the matshow() command to center the coordinates in the pixel center
+    :param plot_out_of_image: if True, plots images even appearing out of the Coordinate frame
+    :type plot_out_of_image: bool
     :return: matplotlib axis instance with images plotted on
     """
     if origin is None:
@@ -191,14 +193,20 @@ def image_position_plot(ax, coords, ra_image, dec_image, color='w', image_name_l
         shift = 0.5
     else:
         shift = 0
+    try:
+        nx, ny = coords.num_pixel_axes
+    except:
+        plot_out_of_image = True
     for ra, dec in zip(ra_image_, dec_image_):
         x_image, y_image = coords.map_coord2pix(ra, dec)
 
         for i in range(len(x_image)):
-            x_ = (x_image[i] + shift) * pixel_width_x + origin[0]
-            y_ = (y_image[i] + shift) * pixel_width + origin[1]
-            ax.plot(x_, y_, 'o', color=color)
-            ax.text(x_, y_, image_name_list[i], fontsize=20, color=color)
+            if not plot_out_of_image:
+                if 0 < x_image[i] < nx and 0 < y_image[i] < ny:
+                    x_ = (x_image[i] + shift) * pixel_width_x + origin[0]
+                    y_ = (y_image[i] + shift) * pixel_width + origin[1]
+                    ax.plot(x_, y_, 'o', color=color)
+                    ax.text(x_, y_, image_name_list[i], fontsize=20, color=color)
     return ax
 
 

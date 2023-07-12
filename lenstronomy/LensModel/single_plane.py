@@ -24,7 +24,6 @@ class SinglePlane(ProfileListBase):
         """
 
         dx, dy = self.alpha(x, y, kwargs, k=k)
-
         return x - dx, y - dy
 
     def fermat_potential(self, x_image, y_image, kwargs_lens, x_source=None, y_source=None, k=None):

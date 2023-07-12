@@ -39,7 +39,12 @@ class LightParam(object):
                 kwargs_upper.append(func.upper_limit_default)
         self.lower_limit = kwargs_lower
         self.upper_limit = kwargs_upper
-    
+        # check that n_max is fixed
+        for k, model in enumerate(self.model_list):
+            if model in ['SHAPELETS', 'SHAPELETS_POLAR', 'SHAPELETS_POLAR_EXP']:
+                if 'n_max' not in self.kwargs_fixed[k]:
+                    Warning('n_max needs to be fixed in %s.' % model)
+
     @property
     def param_name_list(self):
         return self._param_name_list

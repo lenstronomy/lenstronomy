@@ -76,7 +76,8 @@ class LinearBasis(LightModelBase):
                     kwargs_new.update(new)
                     response += self.func_list[i].function_split(x, y, **kwargs_new)
                     n += num
-                elif model in ['SHAPELETS', 'SHAPELETS_POLAR', 'SHAPELETS_POLAR_EXP']:
+                elif model in ['SHAPELETS', 'SHAPELETS_POLAR', 'SHAPELETS_POLAR_EXP',
+                               'SHAPELETS_ELLIPSE']:
                     kwargs = kwargs_list[i]
                     n_max = kwargs['n_max']
                     if model in ['SHAPELETS_POLAR_EXP']:
@@ -122,7 +123,8 @@ class LinearBasis(LightModelBase):
             elif model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE']:
                 num = len(kwargs_list[i]['sigma'])
                 n_list += [num]
-            elif model in ['SHAPELETS', 'SHAPELETS_POLAR', 'SHAPELETS_POLAR_EXP']:
+            elif model in ['SHAPELETS', 'SHAPELETS_POLAR', 'SHAPELETS_POLAR_EXP',
+                           'SHAPELETS_ELLIPSE']:
                 n_max = kwargs_list[i]['n_max']
                 if model in ['SHAPELETS_POLAR_EXP']:
                     num_param = int((n_max+1)**2)
@@ -157,7 +159,8 @@ class LinearBasis(LightModelBase):
                 num_param = len(kwargs_list[k]['sigma'])
                 kwargs_list[k]['amp'] = param[i:i + num_param]
                 i += num_param
-            elif model in ['SHAPELETS', 'SHAPELETS_POLAR', 'SHAPELETS_POLAR_EXP']:
+            elif model in ['SHAPELETS', 'SHAPELETS_POLAR', 'SHAPELETS_POLAR_EXP',
+                           'SHAPELETS_ELLIPSE']:
                 n_max = kwargs_list[k]['n_max']
                 if model in ['SHAPELETS_POLAR_EXP']:
                     num_param = int((n_max+1)**2)

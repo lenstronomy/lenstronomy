@@ -112,14 +112,16 @@ class PositionLikelihood(object):
     def check_additional_images(self, kwargs_ps, kwargs_lens):
         """
         checks whether additional images have been found and placed in kwargs_ps of the first point source model
-        #TODO check for all point source models
+
         :param kwargs_ps: point source kwargs
+        :param kwargs_lens: lens model keyword arguments
         :return: bool, True if more image positions are found than originally been assigned
         """
-        ra_image_list, dec_image_list = self._pointSource.image_position(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens)
-        if len(ra_image_list) > 0:
-            if 'ra_image' in kwargs_ps[0]:
-                if len(ra_image_list[0]) > len(kwargs_ps[0]['ra_image']):
+        ra_image_list, dec_image_list = self._pointSource.image_position(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens,
+                                                                         additional_images=True)
+        for i in range(len(ra_image_list)):
+            if 'ra_image' in kwargs_ps[i]:
+                if len(ra_image_list[i]) > len(kwargs_ps[i]['ra_image']):
                     return True
         return False
 
@@ -160,10 +162,13 @@ class PositionLikelihood(object):
         :param sigma: 1-sigma uncertainty in the measured position of the images
         :return: log likelihood of the model predicted image positions given the data/measured image positions.
         """
-        ra_image_list, dec_image_list = self._pointSource.image_position(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens)
+        ra_image_list, dec_image_list = self._pointSource.image_position(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens,
+                                                                         original_position=True)
         logL = 0
         for i in range(len(ra_image_list)):  # sum over the images of the different model components
-            logL += -np.sum(((ra_image_list[i] - self._ra_image_list[i])**2 + (dec_image_list[i] - self._dec_image_list[i])**2) / sigma**2 / 2)
+            len_i = min(len(self._ra_image_list[i]), len(ra_image_list[i]))
+            logL += -np.sum(((ra_image_list[i][:len_i] - self._ra_image_list[i][:len_i])**2 +
+                             (dec_image_list[i][:len_i] - self._dec_image_list[i][:len_i])**2) / sigma**2 / 2)
         return logL
 
     def source_position_likelihood(self, kwargs_lens, kwargs_ps, sigma, hard_bound_rms=None, verbose=False):
@@ -192,14 +197,19 @@ class PositionLikelihood(object):
                 y_image = kwargs_ps[k]['dec_image']
                 # calculating the individual source positions from the image positions
                 # TODO: have option for ray-shooting back to specific redshift in multi-plane lensing
-                x_source, y_source = self._lensModel.ray_shooting(x_image, y_image, kwargs_lens)
+                k_list = self._pointSource.k_list(k)
                 for i in range(len(x_image)):
                     # TODO: add redshift information in computation
-                    f_xx, f_xy, f_yx, f_yy = self._lensModel.hessian(x_image[i], y_image[i], kwargs_lens)
+                    if k_list is not None:
+                        k_lens = k_list[i]
+                    else:
+                        k_lens = None
+                    x_source_i, y_source_i = self._lensModel.ray_shooting(x_image[i], y_image[i], kwargs_lens, k=k_lens)
+                    f_xx, f_xy, f_yx, f_yy = self._lensModel.hessian(x_image[i], y_image[i], kwargs_lens, k=k_lens)
                     A = np.array([[1 - f_xx, -f_xy], [-f_yx, 1 - f_yy]])
                     Sigma_theta = np.array([[1, 0], [0, 1]]) * sigma ** 2
                     Sigma_beta = image2source_covariance(A, Sigma_theta)
-                    delta = np.array([source_x[k] - x_source[i], source_y[k] - y_source[i]])
+                    delta = np.array([source_x[k] - x_source_i, source_y[k] - y_source_i])
                     if hard_bound_rms is not None:
                         if delta[0]**2 + delta[1]**2 > hard_bound_rms**2:
                             if verbose is True:

@@ -42,15 +42,19 @@ class TestLensProfileAnalysis(object):
     def test_effective_einstein_radius(self):
         kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}]
         lensModel = LensProfileAnalysis(LensModel(lens_model_list=['SIS']))
-        ret = lensModel.effective_einstein_radius(kwargs_lens,
-                                                  get_precision=True)
+        ret = lensModel.effective_einstein_radius_grid(kwargs_lens, get_precision=True)
 
         assert len(ret) == 2
         npt.assert_almost_equal(ret[0], 1., decimal=2)
+        theta_E = lensModel.effective_einstein_radius(kwargs_lens, r_min=1e-3, r_max=1e1, num_points=30)
+        npt.assert_almost_equal(theta_E, 1, decimal=3)
+
         kwargs_lens_bad = [{'theta_E': 100, 'center_x': 0, 'center_y': 0}]
-        ret_nan = lensModel.effective_einstein_radius(kwargs_lens_bad,
-                                                      get_precision=True, verbose=True)
+        ret_nan, precision = lensModel.effective_einstein_radius_grid(kwargs_lens_bad,
+                                                                      get_precision=True)
         assert np.isnan(ret_nan)
+        theta_E = lensModel.effective_einstein_radius(kwargs_lens_bad, r_min=1e-3, r_max=1e1, num_points=30)
+        assert np.isnan(theta_E)
 
         # test interpolated profile
         numPix = 101
@@ -69,16 +73,16 @@ class TestLensProfileAnalysis(object):
                            'f_x': util.array2image(f_x), 'f_y': util.array2image(f_y), 'f_xx': util.array2image(f_xx),
                            'f_xy': util.array2image(f_xy), 'f_yy': util.array2image(f_yy)}]
         lensModel = LensProfileAnalysis(LensModel(lens_model_list=['INTERPOL']))
-        theta_E_return = lensModel.effective_einstein_radius(kwargs_interpol,
-                                                      get_precision=False, verbose=True, center_x=center_x, center_y=center_y)
+        theta_E_return = lensModel.effective_einstein_radius_grid(kwargs_interpol,
+                                                                  get_precision=False, verbose=True, center_x=center_x, center_y=center_y)
         npt.assert_almost_equal(theta_E_return, 1, decimal=2)
 
         # sub-critical mass profile
         lensModel = LensProfileAnalysis(LensModel(lens_model_list=['NFW']))
         kwargs_nfw =[{'Rs': 1, 'alpha_Rs': 0.2, 'center_x': 0, 'center_y': 0}]
-        theta_E_subcrit = lensModel.effective_einstein_radius(kwargs_nfw, get_precision=False)
+        theta_E_subcrit = lensModel.effective_einstein_radius_grid(kwargs_nfw, get_precision=False)
         assert np.isnan(theta_E_subcrit)
-        theta_E_subcrit, _ = lensModel.effective_einstein_radius(kwargs_nfw, get_precision=True)
+        theta_E_subcrit, _ = lensModel.effective_einstein_radius_grid(kwargs_nfw, get_precision=True)
         assert np.isnan(theta_E_subcrit)
 
     def test_external_lensing_effect(self):

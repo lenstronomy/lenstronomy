@@ -289,7 +289,7 @@ class SingleBand(Instrument, Observation):
         :param magnitude: magnitude of object
         :return: counts per second of object
         """
-        # compute counts in units of ADS (as magnitude zero point is defined)
+        # compute counts in units of e- or ADS (depending on data and magnitude zero point defined)
         cps = data_util.magnitude2cps(magnitude, magnitude_zero_point=self._magnitude_zero_point)
         if self._data_count_unit == 'ADU':
             cps /= self.ccd_gain

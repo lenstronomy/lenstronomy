@@ -28,12 +28,15 @@ class SinglePlaneLOS(SinglePlane):
                  numerical_alpha_class=None,
                  lens_redshift_list=None,
                  z_source_convention=None,
-                 kwargs_interp=None):
+                 kwargs_interp=None,
+                 kwargs_synthesis=None
+                 ):
         """
         Instance of SinglePlaneLOS() based on the SinglePlane(), except:
         - argument "index_los" indicating the position of the LOS model in the
         lens_model_list (for correct association with kwargs)
         - attribute "los" containing the LOS model.
+        :param kwargs_synthesis: keyword arguments for the 'SYNTHESIS' lens model, if applicable
         """
 
         super(SinglePlaneLOS, self).__init__(lens_model_list)
@@ -44,7 +47,7 @@ class SinglePlaneLOS(SinglePlane):
         # Extract the los model and import its class
         self._index_los = index_los
         self._los_model = lens_model_list[index_los]
-        self.los = self._import_class(self._los_model, custom_class=None, kwargs_interp=None)
+        self.los = self._import_class(self._los_model, custom_class=None, kwargs_interp=None, kwargs_synthesis=kwargs_synthesis)
 
         # Define a separate class for the main lens
         lens_model_list_wo_los = [
@@ -54,7 +57,8 @@ class SinglePlaneLOS(SinglePlane):
                                       numerical_alpha_class=numerical_alpha_class,
                                       lens_redshift_list=lens_redshift_list,
                                       z_source_convention=z_source_convention,
-                                      kwargs_interp=kwargs_interp)
+                                      kwargs_interp=kwargs_interp,
+                                      kwargs_synthesis=kwargs_synthesis)
 
     def split_lens_los(self, kwargs):
         """

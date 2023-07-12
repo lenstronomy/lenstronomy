@@ -45,7 +45,7 @@ class Solver4Point(object):
         :param y_pos: list of image position (y-axis)
         :param xtol: numerical tolerance level
         :param kwargs_list: list of lens model kwargs
-        :return: updated lens model that satisfies the lens equation for the point sources
+        :return: updated lens model that satisfies the lens equation for the point sources, accuracy
         """
         kwargs = copy.deepcopy(kwargs_list)
         init = self._extract_array(kwargs)

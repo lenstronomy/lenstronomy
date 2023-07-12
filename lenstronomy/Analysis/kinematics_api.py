@@ -4,6 +4,7 @@ import numpy as np
 import copy
 from lenstronomy.GalKin.galkin_multiobservation import GalkinMultiObservation
 from lenstronomy.GalKin.galkin import Galkin
+from lenstronomy.GalKin.galkin_shells import GalkinShells
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 from lenstronomy.Util import class_creator
 from lenstronomy.Analysis.lens_profile import LensProfileAnalysis
@@ -139,7 +140,8 @@ class KinematicsAPI(object):
         galkin, kwargs_profile, kwargs_light = self.galkin_settings(kwargs_lens, kwargs_lens_light, r_eff=r_eff,
                                                                     theta_E=theta_E, gamma=gamma)
         sigma_v_map = galkin.dispersion_map(kwargs_profile, kwargs_light, kwargs_anisotropy,
-                                        num_kin_sampling=self._num_kin_sampling, num_psf_sampling=self._num_psf_sampling)
+                                            num_kin_sampling=self._num_kin_sampling,
+                                            num_psf_sampling=self._num_psf_sampling)
         sigma_v_map = self.transform_kappa_ext(sigma_v_map, kappa_ext=kappa_ext)
         return sigma_v_map
 
@@ -184,10 +186,10 @@ class KinematicsAPI(object):
                                                              center_x=None, center_y=None,
                                                              model_bool_list=self._light_model_kinematics_bool)
         if theta_E is None:
-            theta_E = self._lensMassProfile.effective_einstein_radius(kwargs_lens, center_x=None, center_y=None,
-                                                                      model_bool_list=self._lens_model_kinematics_bool,
-                                                                      grid_num=200, grid_spacing=0.05,
-                                                                      get_precision=False, verbose=True)
+            theta_E = self._lensMassProfile.effective_einstein_radius_grid(kwargs_lens, center_x=None, center_y=None,
+                                                                           model_bool_list=self._lens_model_kinematics_bool,
+                                                                           grid_num=200, grid_spacing=0.05,
+                                                                           get_precision=False, verbose=True)
         if gamma is None and self._analytic_kinematics is True:
             gamma = self._lensMassProfile.profile_slope(kwargs_lens, theta_E, center_x=None, center_y=None,
                                                         model_list_bool=self._lens_model_kinematics_bool,
@@ -211,6 +213,10 @@ class KinematicsAPI(object):
                                             kwargs_psf_list=self._kwargs_psf_kin, kwargs_cosmo=self._kwargs_cosmo,
                                             kwargs_numerics=self._kwargs_numerics_kin,
                                             analytic_kinematics=self._analytic_kinematics)
+        elif self._kwargs_aperture_kin['aperture_type'] == 'IFU_shells' and not self._analytic_kinematics:
+            galkin = GalkinShells(kwargs_model=kwargs_model, kwargs_aperture=self._kwargs_aperture_kin,
+                   kwargs_psf=self._kwargs_psf_kin, kwargs_cosmo=self._kwargs_cosmo,
+                   kwargs_numerics=self._kwargs_numerics_kin, analytic_kinematics=self._analytic_kinematics)
         else:
             galkin = Galkin(kwargs_model=kwargs_model, kwargs_aperture=self._kwargs_aperture_kin,
                             kwargs_psf=self._kwargs_psf_kin, kwargs_cosmo=self._kwargs_cosmo,

@@ -101,10 +101,10 @@ class LikelihoodModule(object):
         self._kwargs_time_delay = {'time_delays_measured': time_delays_measured,
                                    'time_delays_uncertainties': time_delays_uncertainties}
         self.kwargs_imaging = {'multi_band_list': multi_band_list, 'multi_band_type': multi_band_type,
-                                'bands_compute': bands_compute,
-                                'image_likelihood_mask_list': image_likelihood_mask_list, 'source_marg': source_marg,
-                                'linear_prior': linear_prior, 'check_positive_flux': check_positive_flux,
-                                'kwargs_pixelbased': kwargs_pixelbased, 'linear_solver': linear_solver}
+                               'bands_compute': bands_compute,
+                               'image_likelihood_mask_list': image_likelihood_mask_list, 'source_marg': source_marg,
+                               'linear_prior': linear_prior, 'check_positive_flux': check_positive_flux,
+                               'kwargs_pixelbased': kwargs_pixelbased, 'linear_solver': linear_solver}
         self._kwargs_position = {'astrometric_likelihood': astrometric_likelihood,
                                  'image_position_likelihood': image_position_likelihood,
                                  'source_position_likelihood': source_position_likelihood,
@@ -133,7 +133,7 @@ class LikelihoodModule(object):
         """
 
         # TODO: in case lens model or point source models are only applied on partial images, then this current class
-        # has ambiguities when it comes to time-delay likelihood and flux ratio likelihood
+        # has ambiguities when it comes to position likelihood, time-delay likelihood and flux ratio likelihood
         lens_model_class, _, _, point_source_class, _ = class_creator.create_class_instances(all_models=True,
                                                                                              **kwargs_model)
         self.PointSource = point_source_class

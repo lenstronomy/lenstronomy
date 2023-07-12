@@ -1,5 +1,7 @@
 __author__ = 'sibirrer'
 
+import numpy as np
+
 from lenstronomy.ImSim.image_linear_solve import ImageLinearFit
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LensModel.lens_model import LensModel
@@ -8,6 +10,7 @@ from lenstronomy.PointSource.point_source import PointSource
 import lenstronomy.Util.simulation_util as sim_util
 from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
+import numpy.testing as npt
 
 
 class TestImageLinearFit(object):
@@ -58,3 +61,17 @@ class TestImageLinearFit(object):
         assert param[0] == self.kwargs_source[0]['amp']
         assert param[1] == self.kwargs_lens_light[0]['amp']
         assert param[2] == self.kwargs_ps[0]['source_amp']
+
+    def test_update_linear_kwargs(self):
+        num = self.imageModel.num_param_linear(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light,
+                                               self.kwargs_ps)
+        param = np.ones(num) * 10
+        kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps = self.imageModel.update_linear_kwargs(param,
+            kwargs_lens=self.kwargs_lens,
+            kwargs_source=self.kwargs_source, kwargs_lens_light=self.kwargs_lens_light, kwargs_ps=self.kwargs_ps)
+        assert kwargs_source[0]['amp'] == 10
+
+    def test_error_response(self):
+        C_D_response, model_error = self.imageModel.error_response(kwargs_lens=self.kwargs_lens,
+                                                                   kwargs_ps=self.kwargs_ps, kwargs_special=None)
+        npt.assert_almost_equal(model_error, 0)

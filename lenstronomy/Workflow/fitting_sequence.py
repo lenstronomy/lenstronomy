@@ -8,6 +8,8 @@ from lenstronomy.Sampling.sampler import Sampler
 from lenstronomy.Sampling.Samplers.multinest_sampler import MultiNestSampler
 from lenstronomy.Sampling.Samplers.polychord_sampler import DyPolyChordSampler
 from lenstronomy.Sampling.Samplers.dynesty_sampler import DynestySampler
+from lenstronomy.Sampling.Samplers.nautilus import Nautilus
+from lenstronomy.Sampling.Samplers.cobaya_sampler import CobayaSampler
 import numpy as np
 import lenstronomy.Util.analysis_util as analysis_util
 
@@ -53,9 +55,10 @@ class FittingSequence(object):
                                                      num_bands=len(self.multi_band_list))
         self._mcmc_init_samples = None
 
+    @property
     def kwargs_fixed(self):
         """
-        returns the updated kwargs_fixed from the update Manager
+        Returns the updated kwargs_fixed from the update manager.
 
         :return: list of fixed kwargs, see UpdateManager()
         """
@@ -115,7 +118,7 @@ class FittingSequence(object):
                 chain_list.append(mcmc_output)
 
             elif fitting_type == 'Nautilus':
-                from lenstronomy.Sampling.Samplers.nautilus import Nautilus
+                # do importance nested sampling with Nautilus
                 nautilus = Nautilus(likelihood_module=self.likelihoodModule)
                 points, log_w, log_l, log_z = nautilus.nautilus_sampling(mpi=self._mpi, **kwargs)
                 chain_list.append([points, log_w, log_l, log_z])
@@ -129,10 +132,36 @@ class FittingSequence(object):
                 ns_output = self.nested_sampling(**kwargs)
                 chain_list.append(ns_output)
 
+            elif fitting_type == 'metropolis_hastings':
+
+                print('Using the Metropolis--Hastings MCMC sampler in Cobaya.')
+
+                param_class = self.param_class
+
+                kwargs_temp = self._updateManager.parameter_state
+                mean_start = param_class.kwargs2args(**kwargs_temp)
+                kwargs_sigma = self._updateManager.sigma_kwargs
+                sigma_start = np.array(param_class.kwargs2args(**kwargs_sigma))
+
+                # pass the likelihood and starting info to the sampler
+                sampler = CobayaSampler(self.likelihoodModule, mean_start, sigma_start)
+
+                # run the sampler
+                updated_info, sampler_type, best_fit_values = sampler.run(**kwargs)
+
+                # change the best-fit values returned by cobaya into lenstronomy kwargs format
+                best_fit_kwargs = self.param_class.args2kwargs(best_fit_values, bijective=True)
+
+                # collect the products
+                mh_output = [updated_info, sampler_type, best_fit_kwargs]
+
+                # append the products to the chain list
+                chain_list.append(mh_output)
+
             else:
-                raise ValueError("fitting_sequence %s is not supported. Please use: 'PSO', 'SIMPLEX', 'MCMC', "
-                                 "'psf_iteration', 'restart', 'update_settings', 'calibrate_images' or "
-                                 "'align_images'" % fitting_type)
+                raise ValueError("fitting_sequence {} is not supported. Please use: 'PSO', 'SIMPLEX', 'MCMC', 'metropolis_hastings', "
+                                 "'Nautilus', 'nested_sampling', 'psf_iteration', 'restart', 'update_settings', 'calibrate_images' or "
+                                 "'align_images'".format(fitting_type))
         return chain_list
 
     def best_fit(self, bijective=False):
@@ -307,8 +336,8 @@ class FittingSequence(object):
         sigma_start = param_class.kwargs2args(**kwargs_sigma)
         lower_start = np.array(init_pos) - np.array(sigma_start) * sigma_scale
         upper_start = np.array(init_pos) + np.array(sigma_start) * sigma_scale
-        num_param, param_list = param_class.num_param()
 
+        num_param, param_list = param_class.num_param()
         # run PSO
         sampler = Sampler(likelihoodModule=self.likelihoodModule)
         result, chain = sampler.pso(n_particles, n_iterations, lower_start, upper_start, init_pos=init_pos,
@@ -428,6 +457,7 @@ class FittingSequence(object):
         """
         aligns the coordinate systems of different exposures within a fixed model parameterisation by executing a PSO
         with relative coordinate shifts as free parameters
+
         :param n_particles: number of particles in the Particle Swarm Optimization
         :param n_iterations: number of iterations in the optimization process
         :param align_offset: aligns shift in Ra and Dec
@@ -498,9 +528,9 @@ class FittingSequence(object):
         return 0
 
     def update_settings(self, kwargs_model=None, kwargs_constraints=None, kwargs_likelihood=None, lens_add_fixed=None,
-                        source_add_fixed=None, lens_light_add_fixed=None, ps_add_fixed=None, cosmo_add_fixed=None,
+                        source_add_fixed=None, lens_light_add_fixed=None, ps_add_fixed=None, special_add_fixed=None,
                         lens_remove_fixed=None, source_remove_fixed=None, lens_light_remove_fixed=None,
-                        ps_remove_fixed=None, cosmo_remove_fixed=None,
+                        ps_remove_fixed=None, special_remove_fixed=None,
                         change_source_lower_limit=None, change_source_upper_limit=None,
                         change_lens_lower_limit=None, change_lens_upper_limit=None,
                         change_sigma_lens=None, change_sigma_source=None, change_sigma_lens_light=None):
@@ -514,12 +544,12 @@ class FittingSequence(object):
         :param source_add_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param lens_light_add_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param ps_add_fixed: [[i_model, ['param1', 'param2',...], [...]]
-        :param cosmo_add_fixed: ['param1', 'param2',...]
+        :param special_add_fixed: ['param1', 'param2',...]
         :param lens_remove_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param source_remove_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param lens_light_remove_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param ps_remove_fixed: [[i_model, ['param1', 'param2',...], [...]]
-        :param cosmo_remove_fixed: ['param1', 'param2',...]
+        :param special_remove_fixed: ['param1', 'param2',...]
         :param change_lens_lower_limit: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
         :param change_lens_upper_limit: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
         :param change_source_lower_limit: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
@@ -531,8 +561,8 @@ class FittingSequence(object):
         """
         self._updateManager.update_options(kwargs_model, kwargs_constraints, kwargs_likelihood)
         self._updateManager.update_fixed(lens_add_fixed, source_add_fixed, lens_light_add_fixed,
-                                         ps_add_fixed, cosmo_add_fixed, lens_remove_fixed, source_remove_fixed,
-                                         lens_light_remove_fixed, ps_remove_fixed, cosmo_remove_fixed)
+                                         ps_add_fixed, special_add_fixed, lens_remove_fixed, source_remove_fixed,
+                                         lens_light_remove_fixed, ps_remove_fixed, special_remove_fixed)
         self._updateManager.update_limits(change_source_lower_limit, change_source_upper_limit, change_lens_lower_limit,
                                           change_lens_upper_limit)
         self._updateManager.update_sigmas(change_sigma_lens=change_sigma_lens, change_sigma_source=change_sigma_source,

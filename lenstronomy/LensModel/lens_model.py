@@ -16,7 +16,9 @@ class LensModel(object):
     def __init__(self, lens_model_list, z_lens=None, z_source=None, lens_redshift_list=None, cosmo=None,
                  multi_plane=False, numerical_alpha_class=None, observed_convention_index=None,
                  z_source_convention=None, cosmo_interp=False,
-                 z_interp_stop=None, num_z_interp=100, kwargs_interp=None):
+                 z_interp_stop=None, num_z_interp=100,
+                 kwargs_interp=None, kwargs_synthesis=None):
+
         """
 
         :param lens_model_list: list of strings with lens model names
@@ -79,7 +81,7 @@ class LensModel(object):
                                          observed_convention_index=observed_convention_index,
                                          z_source_convention=z_source_convention, cosmo_interp=cosmo_interp,
                                          z_interp_stop=z_interp_stop, num_z_interp=num_z_interp,
-                                         kwargs_interp=kwargs_interp)
+                                         kwargs_interp=kwargs_interp, kwargs_synthesis=kwargs_synthesis)
         else:
             if los_effects is True:
                 self.lens_model = SinglePlaneLOS(lens_model_list,
@@ -87,13 +89,15 @@ class LensModel(object):
                     numerical_alpha_class=numerical_alpha_class,
                     lens_redshift_list=lens_redshift_list,
                     z_source_convention=z_source_convention,
-                    kwargs_interp=kwargs_interp)
+                    kwargs_interp=kwargs_interp,
+                    kwargs_synthesis=kwargs_synthesis)
             else:
                 self.lens_model = SinglePlane(lens_model_list,
                     numerical_alpha_class=numerical_alpha_class,
                     lens_redshift_list=lens_redshift_list,
                     z_source_convention=z_source_convention,
-                    kwargs_interp=kwargs_interp)
+                    kwargs_interp=kwargs_interp,
+                    kwargs_synthesis=kwargs_synthesis)
 
         if z_lens is not None and z_source is not None:
             self._lensCosmo = LensCosmo(z_lens, z_source, cosmo=cosmo)

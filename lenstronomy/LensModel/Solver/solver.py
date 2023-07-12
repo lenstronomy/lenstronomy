@@ -31,11 +31,11 @@ class Solver(object):
     def constraint_lensmodel(self, x_pos, y_pos, kwargs_list, xtol=1.49012e-12):
         """
 
-        :param x_pos:
-        :param y_pos:
-        :param kwargs_list:
-        :param xtol:
-        :return:
+        :param x_pos: x-position constraints on images
+        :param y_pos: y-position constraints on images
+        :param kwargs_list: lens model keyword argument list
+        :param xtol: tolerance level of solution when to stop the non-linear solver
+        :return: updated lens model that satisfies the lens equation for the point sources, accuracy
         """
         return self._solver.constraint_lensmodel(x_pos, y_pos, kwargs_list, xtol=xtol)
 
@@ -43,10 +43,10 @@ class Solver(object):
         """
 
 
-        :param kwargs_lens:
-        :param x_pos:
-        :param y_pos:
-        :return:
+        :param kwargs_lens: lens model keyword argument list
+        :param x_pos: x-position constraints on images
+        :param y_pos: y-position constraints on images
+        :return: updated lens model that satisfies the lens equation for the point sources
         """
 
         if not len(x_pos) == self._num_images:

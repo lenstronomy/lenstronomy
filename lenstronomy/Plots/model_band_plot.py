@@ -7,6 +7,7 @@ from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 from lenstronomy.Data.coord_transforms import Coordinates
 from lenstronomy.Plots import plot_util
 from lenstronomy.Analysis.image_reconstruction import ModelBand
+from lenstronomy.LensModel.lens_model import LensModel
 
 __all__ = ['ModelBandPlot']
 
@@ -189,6 +190,84 @@ class ModelBandPlot(ModelBand):
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
         cb.set_label(colorbar_label, fontsize=font_size)
+        return ax
+
+    def substructure_plot(self, ax, index_macromodel, text='Substructure convergence', subtract_mean=True,
+                          v_min=-0.05, v_max=0.05, font_size=15, colorbar_label=r'$\kappa - \kappa_{\rm{macro}}$',
+                          cmap='bwr',  with_critical_curves=False, crit_curve_color='k', image_name_list=None,
+                          **kwargs):
+        """
+
+        Plots the convergence of a full lens model minus the convergence from a few specified lens models to
+        more clearly show the presence of substructure
+        :param ax: matplotib axis instance
+        :param index_macromodel: a list of indexes corresponding to the lens models with convergence to be subtracted
+        :param text: text appearing in frame
+        :param subtract_mean: bool; displays the substructure convergence relative to the mean convergence in the frame
+        :param v_min: minimum color scale
+        :param v_max: max color scale
+        :param font_size: font size for text appearing in image
+        :param colorbar_label: label for the color bar
+        :param cmap: colormap for use in the visualization
+        :param with_critical_curves: bool; plots the critical curves in the frame
+        :param crit_curve_color: color of the critical curves
+        :param image_name_list: labels the images, default is A, B, C, ...
+        :param kwargs: any additional keyword arguments
+        :return: matplotib axis
+        """
+        kwargs_lens_macro = []
+        lens_model_list_macro = []
+        multi_plane = self._lensModel.multi_plane
+        if multi_plane:
+            lens_redshift_list = self._lensModel.redshift_list
+            lens_redshift_list_macro = []
+            z_source = self._lensModel.z_source
+            cosmo = self._lensModel.cosmo
+        else:
+            lens_redshift_list = None
+            lens_redshift_list_macro = None
+            z_source = None
+            cosmo = None
+        for idx in index_macromodel:
+            lens_model_list_macro.append(self._lensModel.lens_model_list[idx])
+            kwargs_lens_macro.append(self._kwargs_lens_partial[idx])
+            if multi_plane:
+                lens_redshift_list_macro.append(lens_redshift_list[idx])
+
+        lens_model_macro = LensModel(lens_model_list_macro, multi_plane=multi_plane, lens_redshift_list=lens_redshift_list_macro,
+                                     z_source=z_source, cosmo=cosmo)
+        kappa_full = util.array2image(self._lensModel.kappa(self._x_grid, self._y_grid, self._kwargs_lens_partial))
+        kappa_macro = util.array2image(lens_model_macro.kappa(self._x_grid, self._y_grid, kwargs_lens_macro))
+        residual_kappa = kappa_full - kappa_macro
+        if subtract_mean:
+            mean_kappa = np.mean(residual_kappa)
+            residual_kappa -= mean_kappa
+            colorbar_label = r'$\kappa_{\rm{sub}} - \langle \kappa_{\rm{sub}} \rangle$'
+        im=ax.imshow(residual_kappa, origin='lower', vmin=v_min, vmax=v_max,
+                   extent=[0, self._frame_size, 0, self._frame_size], cmap=cmap)
+        ax.get_xaxis().set_visible(False)
+        ax.get_yaxis().set_visible(False)
+        ax.autoscale(False)
+        plot_util.scale_bar(ax, self._frame_size, dist=1, text='1"', color='k', font_size=font_size)
+        if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
+            plot_util.coordinate_arrows(ax, self._frame_size, self._coords, color='k',
+                                        arrow_size=self._arrow_size, font_size=font_size)
+            plot_util.text_description(ax, self._frame_size, text=text,
+                                       color="k", backgroundcolor='w', flipped=False,
+                                       font_size=font_size)
+        divider = make_axes_locatable(ax)
+        cax = divider.append_axes("right", size="5%", pad=0.05)
+        cb = plt.colorbar(im, cax=cax)
+        cb.set_label(colorbar_label, fontsize=font_size)
+        ra_image, dec_image = self._bandmodel.PointSource.image_position(self._kwargs_ps_partial,
+                                                                         self._kwargs_lens_partial)
+        plot_util.image_position_plot(ax, self._coords, ra_image, dec_image, color='k', image_name_list=image_name_list)
+
+        if with_critical_curves is True:
+            ra_crit_list, dec_crit_list = self._critical_curves()
+            plot_util.plot_line_set(ax, self._coords, ra_crit_list, dec_crit_list, color=crit_curve_color,
+                                    points_only=self._caustic_points_only)
+
         return ax
 
     def normalized_residual_plot(self, ax, v_min=-6, v_max=6, font_size=15, text="Normalized Residuals",

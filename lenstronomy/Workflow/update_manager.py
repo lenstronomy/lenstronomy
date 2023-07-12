@@ -33,8 +33,6 @@ class UpdateManager(object):
         self.kwargs_model = kwargs_model
         self.kwargs_constraints = kwargs_constraints
         self.kwargs_likelihood = kwargs_likelihood
-        if 'fixed_lens_model' in self.kwargs_constraints.keys():
-            self.kwargs_likelihood['fixed_lens_model'] = self.kwargs_constraints['fixed_lens_model']
 
         if kwargs_model.get('lens_model_list', None) is not None:
             self._lens_init, self._lens_sigma, self._lens_fixed, self._lens_lower, self._lens_upper = kwargs_params[

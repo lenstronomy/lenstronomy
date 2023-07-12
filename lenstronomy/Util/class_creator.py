@@ -24,7 +24,7 @@ def create_class_instances(lens_model_list=None, z_lens=None, z_source=None, z_s
                            optical_depth_model_list=None, index_optical_depth_model_list=None,
                            band_index=0, tau0_index_list=None, all_models=False, point_source_magnification_limit=None,
                            surface_brightness_smoothing=0.001, sersic_major_axis=None, tracer_source_model_list=None,
-                           tracer_source_band=0):
+                           tracer_source_band=0, tracer_partition=None):
     """
 
     :param lens_model_list: list of strings indicating the type of lens models
@@ -69,6 +69,9 @@ def create_class_instances(lens_model_list=None, z_lens=None, z_source=None, z_s
      convention in the lenstronomy yaml setting (which by default is =False)
     :param tracer_source_model_list: list of tracer source models (not used in this function)
     :param tracer_source_band: integer, list index of source surface brightness band to apply tracer model to
+    :param tracer_partition: in case of tracer models for specific sub-parts of the surface brightness model
+     [[list of light profiles, list of tracer profiles], [list of light profiles, list of tracer profiles], [...], ...]
+    :type tracer_partition: None or list
     :return:
     """
     if lens_model_list is None:

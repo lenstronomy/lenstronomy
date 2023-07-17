@@ -173,6 +173,17 @@ class ModelPlot(object):
         plot_band = self._select_band(band_index)
         return plot_band.convergence_plot(**kwargs)
 
+    def substructure_plot(self, band_index=0, **kwargs):
+        """
+        illustrates substructure in the lens system
+
+        :param band_index: index of band
+        :param kwargs: arguments of plotting
+        :return: plot instance
+        """
+        plot_band = self._select_band(band_index)
+        return plot_band.substructure_plot(**kwargs)
+
     def normalized_residual_plot(self, band_index=0, **kwargs):
         """
         illustrates normalized residuals between data and model fit

@@ -48,8 +48,10 @@ class TestOutputPlots(object):
 
         lens_model_list = ['SPEP', 'SHEAR']
         self.kwargs_lens = [kwargs_spemd, kwargs_shear]
-        lens_model_class = LensModel(lens_model_list=lens_model_list)
+        lens_model_class = LensModel(lens_model_list=lens_model_list, multi_plane=True, lens_redshift_list=[0.5, 0.5],
+                                     z_source=2.0)
         self.LensModel = lens_model_class
+
         # list of light profiles (for lens and source)
         # 'SERSIC': spherical Sersic profile
         kwargs_sersic = {'amp': 1., 'R_sersic': 0.1, 'n_sersic': 2, 'center_x': 0, 'center_y': 0}
@@ -79,6 +81,15 @@ class TestOutputPlots(object):
         data_class.update_data(image_sim)
         self.kwargs_data['image_data'] = image_sim
         self.kwargs_model = {'lens_model_list': lens_model_list,
+                                        'source_light_model_list': source_model_list,
+                                        'lens_light_model_list': lens_light_model_list,
+                                        'point_source_model_list': point_source_list,
+                                        'fixed_magnification_list': [False],
+                                        }
+        self.kwargs_model_multiplane = {'lens_model_list': lens_model_list,
+                             'lens_redshift_list': [0.5, 0.5],
+                             'multi_plane': True,
+                             'z_source': 2.0,
                                'source_light_model_list': source_model_list,
                                'lens_light_model_list': lens_light_model_list,
                                'point_source_model_list': point_source_list,
@@ -92,6 +103,11 @@ class TestOutputPlots(object):
     def test_lensModelPlot(self):
         multi_band_list = [[self.kwargs_data, self.kwargs_psf, self.kwargs_numerics]]
         lensPlot = ModelPlot(multi_band_list, self.kwargs_model, self.kwargs_params, arrow_size=0.02, cmap_string="gist_heat",
+                             multi_band_type='single-band')
+
+        multi_band_list_multiplane = [[self.kwargs_data, self.kwargs_psf, self.kwargs_numerics]]
+        lensPlot_multiplane = ModelPlot(multi_band_list_multiplane, self.kwargs_model_multiplane, self.kwargs_params, arrow_size=0.02,
+                             cmap_string="gist_heat",
                              multi_band_type='single-band')
 
         lensPlot.plot_main(with_caustics=True)
@@ -128,6 +144,21 @@ class TestOutputPlots(object):
 
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
         lensPlot.plot_extinction_map(ax=ax)
+        plt.close()
+
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        kwargs_plot = {'index_macromodel': [0]}
+        lensPlot.substructure_plot(ax=ax, **kwargs_plot)
+        plt.close()
+
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        kwargs_plot = {'index_macromodel': [0], 'with_critical_curves': True}
+        lensPlot.substructure_plot(ax=ax, **kwargs_plot)
+        plt.close()
+
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        kwargs_plot = {'index_macromodel': [0], 'with_critical_curves': True}
+        lensPlot_multiplane.substructure_plot(ax=ax, **kwargs_plot)
         plt.close()
 
     def test_source_plot(self):

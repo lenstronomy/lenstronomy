@@ -13,9 +13,10 @@ class NFW(LensProfileBase):
     this class contains functions concerning the NFW profile
 
     relation are: R_200 = c * Rs
-    The definition of 'Rs' is in angular (arc second) units and the normalization is put in in regards to a deflection
+    The definition of 'Rs' is in angular (arc second) units and the normalization is put in with regard to a deflection
     angle at 'Rs' - 'alpha_Rs'. To convert a physical mass and concentration definition into those lensing quantities
-    for a specific redshift configuration and cosmological model, you can find routines in lenstronomy.Cosmo.lens_cosmo.py
+    for a specific redshift configuration and cosmological model, you can find routines in
+    lenstronomy.Cosmo.lens_cosmo.py
 
     Examples for converting angular to physical mass units
     ------------------------------------------------------
@@ -123,9 +124,10 @@ class NFW(LensProfileBase):
         f_xy = gamma2
         return f_xx, f_xy, f_xy, f_yy
 
-    def density(self, R, Rs, rho0):
+    @staticmethod
+    def density(R, Rs, rho0):
         """
-        three dimensional NFW profile
+        three-dimensional NFW profile
 
         :param R: radius of interest
         :type R: float/numpy array
@@ -152,16 +154,14 @@ class NFW(LensProfileBase):
 
     def density_2d(self, x, y, Rs, rho0, center_x=0, center_y=0):
         """
-        projected two dimensional NFW profile (kappa)
+        projected two-dimensional NFW profile (kappa)
 
-        :param R: radius of interest
-        :type R: float/numpy array
+        :param x: x-coordinate
+        :param y: y-coordinate
         :param Rs: scale radius
         :type Rs: float
         :param rho0: density normalization (characteristic density)
         :type rho0: float
-        :param r200: radius of (sub)halo
-        :type r200: float>0
         :param center_x: x-centroid position
         :param center_y: y-centroid position
         :return: Epsilon(R) projected density at radius R
@@ -236,8 +236,6 @@ class NFW(LensProfileBase):
         :type Rs: float
         :param rho0: density normalization (characteristic density)
         :type rho0: float
-        :param r200: radius of (sub)halo
-        :type r200: float>0
         :return: Epsilon(R) projected density at radius R
         """
         x = R/Rs
@@ -255,10 +253,10 @@ class NFW(LensProfileBase):
         :type Rs: float
         :param rho0: density normalization (characteristic density)
         :type rho0: float
-        :param r200: radius of (sub)halo
-        :type r200: float>0
-        :param axis: projection to either x- or y-axis
-        :type axis: same as R
+        :param ax_x: projection to either x- or y-axis
+        :type ax_x: same as R
+        :param ax_y: projection to either x- or y-axis
+        :type ax_y: same as R
         :return: Epsilon(R) projected density at radius R
         """
         R = np.maximum(R, 0.00000001)
@@ -278,10 +276,10 @@ class NFW(LensProfileBase):
         :type Rs: float
         :param rho0: density normalization (characteristic density)
         :type rho0: float
-        :param r200: radius of (sub)halo
-        :type r200: float>0
-        :param axis: projection to either x- or y-axis
-        :type axis: same as R
+        :param ax_x: projection to either x- or y-axis
+        :type ax_x: same as R
+        :param ax_y: projection to either x- or y-axis
+        :type ax_y: same as R
         :return: Epsilon(R) projected density at radius R
         """
         c = 0.000001
@@ -289,7 +287,7 @@ class NFW(LensProfileBase):
         x = R/Rs
         gx = self.g_(x)
         Fx = self.F_(x)
-        a = 2*rho0*Rs*(2*gx/x**2 - Fx)#/x #2*rho0*Rs*(2*gx/x**2 - Fx)*axis/x
+        a = 2*rho0*Rs*(2*gx/x**2 - Fx)  # /x #2*rho0*Rs*(2*gx/x**2 - Fx)*axis/x
         return a*(ax_y**2-ax_x**2)/R**2, -a*2*(ax_x*ax_y)/R**2
 
     def F_(self, X):

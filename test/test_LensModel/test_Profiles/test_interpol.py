@@ -178,4 +178,4 @@ class TestInterpol(object):
 
 
 if __name__ == '__main__':
-    pytest.main("-k TestInterpol")
+    pytest.main()

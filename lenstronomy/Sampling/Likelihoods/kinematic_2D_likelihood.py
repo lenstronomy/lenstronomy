@@ -142,9 +142,10 @@ class KinLikelihood(object):
 
         for idx in range(len(self.data)):
             math_pos = np.where(self.bin_mask == idx)
+            if np.shape(math_pos[0])[0]==0:
+                raise ValueError('binmap mismatch with data: no pixels in bin with idx %i' %(idx))
             numerator.append(np.sum(vrms[math_pos]*mgeCar_con[math_pos]))
             denominator.append(np.sum(mgeCar_con[math_pos]))
-
 
         Vrms = np.array(numerator) / np.array(denominator).clip(0)
 

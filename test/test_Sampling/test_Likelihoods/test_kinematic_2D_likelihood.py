@@ -93,7 +93,6 @@ class TestKinLikelihood(object):
         assert close_logL > far_logL #param instance close to truth is more likely than far away
 
     def test_convert_to_NN_params(self):
-        #tests pretty simple case where there is no scaling. Should update to check another case
         kwargs_lens_test=[{'theta_E': 2., 'gamma': 2., 'q': 1., 'phi': 0, 'center_x': 0, 'center_y': 0},
          {'gamma1': 0.06, 'gamma2': -0.03}]
         kwargs_lens_light_test = [{'amp': 10, 'R_sersic': 1., 'q': 1, 'phi': 0, 'n_sersic': 3., 'center_x': 0.,
@@ -121,8 +120,6 @@ class TestKinLikelihood(object):
         assert 'ellipse_PA' in self._KinLikelihood.image_input
 
     def test_auto_binning(self):
-        #psf testing: set light image to delta fcn
-
         #light weighting testing, change light image
         dummy_vrms_map=np.array([[1,2,3],[4,5,6],[7,8,9]])
         sharp_image=np.array([[0,0,0],[0,1,0],[0,0,0]])+0.0001

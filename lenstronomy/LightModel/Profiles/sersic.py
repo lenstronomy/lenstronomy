@@ -97,7 +97,7 @@ class SersicElliptic_qPhi(SersicUtil):
     param_names = ['amp', 'R_sersic', 'n_sersic', 'q', 'phi', 'center_x', 'center_y']
     lower_limit_default = {'amp': 0, 'R_sersic': 0, 'n_sersic': 0.5, 'q': 0, 'phi': -np.pi, 'center_x': -100,
                            'center_y': -100}
-    upper_limit_default = {'amp': 100, 'R_sersic': 100, 'n_sersic': 8, 'q': 0.1, 'phi': np.pi, 'center_x': 100,
+    upper_limit_default = {'amp': 100, 'R_sersic': 100, 'n_sersic': 8, 'q': 1.0, 'phi': np.pi, 'center_x': 100,
                            'center_y': 100}
 
     def __init__(self, *args, **kwargs):

@@ -61,7 +61,8 @@ class LinearBasis(LightModelBase):
         bool_list = self._bool_list(k=k)
         for i, model in enumerate(self.profile_type_list):
             if bool_list[i] is True:
-                if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC', 'HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE',
+                if model in ['SERSIC', 'SERSIC_ELLIPSE', 'SERSIC_ELLIPSE_Q_PHI', 'CORE_SERSIC',
+                             'HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE',
                              'PJAFFE_ELLIPSE', 'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON',
                              'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'UNIFORM', 'INTERPOL', 'ELLIPSOID']:
                     kwargs_new = kwargs_list[i].copy()
@@ -76,7 +77,7 @@ class LinearBasis(LightModelBase):
                     kwargs_new.update(new)
                     response += self.func_list[i].function_split(x, y, **kwargs_new)
                     n += num
-                elif model in ['SHAPELETS', 'SHAPELETS_POLAR', 'SHAPELETS_POLAR_EXP',
+                elif model in ['SHAPELETS', 'SHAPELETS_POLsAR', 'SHAPELETS_POLAR_EXP',
                                'SHAPELETS_ELLIPSE']:
                     kwargs = kwargs_list[i]
                     n_max = kwargs['n_max']
@@ -150,7 +151,8 @@ class LinearBasis(LightModelBase):
         :return: kwargs list with over-written or added 'amp' parameters according to the coefficients in param
         """
         for k, model in enumerate(self.profile_type_list):
-            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC', 'HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE',
+            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'SERSIC_ELLIPSE_Q_PHI', 'CORE_SERSIC',
+                         'HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE',
                          'HERNQUIST_ELLIPSE', 'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON',
                          'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'UNIFORM', 'INTERPOL', 'ELLIPSOID']:
                 kwargs_list[k]['amp'] = param[i]

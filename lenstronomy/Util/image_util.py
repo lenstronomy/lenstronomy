@@ -141,6 +141,8 @@ def re_size_array(x_in, y_in, input_values, x_out, y_out):
     :param y_out:
     :return:
     """
+    # from skimage.transform import resize
+    # resize(input_values)
     interp_2d = interpolate.interp2d(x_in, y_in, input_values, kind='linear')
     # interp_2d = scipy.interpolate.RectBivariateSpline(x_in, y_in, input_values, kx=1, ky=1)
     out_values = interp_2d.__call__(x_out, y_out)

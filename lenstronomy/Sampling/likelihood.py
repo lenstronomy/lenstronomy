@@ -151,8 +151,8 @@ class LikelihoodModule(object):
         """
 
         # TODO: in case lens model or point source models are only applied on partial images, then this current class
-        # has ambiguities when it comes to time-delay likelihood and flux ratio likelihood
-        lens_model_class, _,  lens_light_model_class, point_source_class, _ = class_creator.create_class_instances(all_models=True,
+        # has ambiguities when it comes to position likelihood, time-delay likelihood and flux ratio likelihood
+        lens_model_class, _, _, point_source_class, _ = class_creator.create_class_instances(all_models=True,
                                                                                              **kwargs_model)
         self.PointSource = point_source_class
 

@@ -1,3 +1,5 @@
+import copy
+
 from lenstronomy.Analysis.multi_patch_reconstruction import MultiPatchReconstruction
 from lenstronomy.Plots import plot_util
 
@@ -128,7 +130,12 @@ class MultiPatchPlot(MultiPatchReconstruction):
         f, axes = plt.subplots(2, 3, figsize=(16, 8))
         self.data_plot(ax=axes[0, 0], **kwargs)
         self.model_plot(ax=axes[0, 1], image_names=True, **kwargs)
-        self.normalized_residual_plot(ax=axes[0, 2], v_min=-6, v_max=6, **kwargs)
+        kwargs_residuals = copy.deepcopy(kwargs)
+        if 'v_min' in kwargs_residuals:
+            kwargs_residuals.pop('v_min')
+        if 'v_max' in kwargs_residuals:
+            kwargs_residuals.pop('v_max')
+        self.normalized_residual_plot(ax=axes[0, 2], v_min=-6, v_max=6, **kwargs_residuals)
         self.source_plot(ax=axes[1, 0], delta_pix=0.01, num_pix=100, **kwargs)
         self.convergence_plot(ax=axes[1, 1], **kwargs)
         self.magnification_plot(ax=axes[1, 2], **kwargs)

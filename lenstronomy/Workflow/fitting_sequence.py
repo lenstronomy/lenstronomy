@@ -8,6 +8,8 @@ from lenstronomy.Sampling.sampler import Sampler
 from lenstronomy.Sampling.Samplers.multinest_sampler import MultiNestSampler
 from lenstronomy.Sampling.Samplers.polychord_sampler import DyPolyChordSampler
 from lenstronomy.Sampling.Samplers.dynesty_sampler import DynestySampler
+from lenstronomy.Sampling.Samplers.nautilus import Nautilus
+from lenstronomy.Sampling.Samplers.cobaya_sampler import CobayaSampler
 import numpy as np
 import lenstronomy.Util.analysis_util as analysis_util
 
@@ -116,7 +118,7 @@ class FittingSequence(object):
                 chain_list.append(mcmc_output)
 
             elif fitting_type == 'Nautilus':
-                from lenstronomy.Sampling.Samplers.nautilus import Nautilus
+                # do importance nested sampling with Nautilus
                 nautilus = Nautilus(likelihood_module=self.likelihoodModule)
                 points, log_w, log_l, log_z = nautilus.nautilus_sampling(mpi=self._mpi, **kwargs)
                 chain_list.append([points, log_w, log_l, log_z])
@@ -130,10 +132,36 @@ class FittingSequence(object):
                 ns_output = self.nested_sampling(**kwargs)
                 chain_list.append(ns_output)
 
+            elif fitting_type == 'metropolis_hastings':
+
+                print('Using the Metropolis--Hastings MCMC sampler in Cobaya.')
+
+                param_class = self.param_class
+
+                kwargs_temp = self._updateManager.parameter_state
+                mean_start = param_class.kwargs2args(**kwargs_temp)
+                kwargs_sigma = self._updateManager.sigma_kwargs
+                sigma_start = np.array(param_class.kwargs2args(**kwargs_sigma))
+
+                # pass the likelihood and starting info to the sampler
+                sampler = CobayaSampler(self.likelihoodModule, mean_start, sigma_start)
+
+                # run the sampler
+                updated_info, sampler_type, best_fit_values = sampler.run(**kwargs)
+
+                # change the best-fit values returned by cobaya into lenstronomy kwargs format
+                best_fit_kwargs = self.param_class.args2kwargs(best_fit_values, bijective=True)
+
+                # collect the products
+                mh_output = [updated_info, sampler_type, best_fit_kwargs]
+
+                # append the products to the chain list
+                chain_list.append(mh_output)
+
             else:
-                raise ValueError("fitting_sequence %s is not supported. Please use: 'PSO', 'SIMPLEX', 'MCMC', "
-                                 "'psf_iteration', 'restart', 'update_settings', 'calibrate_images' or "
-                                 "'align_images'" % fitting_type)
+                raise ValueError("fitting_sequence {} is not supported. Please use: 'PSO', 'SIMPLEX', 'MCMC', 'metropolis_hastings', "
+                                 "'Nautilus', 'nested_sampling', 'psf_iteration', 'restart', 'update_settings', 'calibrate_images' or "
+                                 "'align_images'".format(fitting_type))
         return chain_list
 
     def best_fit(self, bijective=False):
@@ -308,11 +336,6 @@ class FittingSequence(object):
         sigma_start = param_class.kwargs2args(**kwargs_sigma)
         lower_start = np.array(init_pos) - np.array(sigma_start) * sigma_scale
         upper_start = np.array(init_pos) + np.array(sigma_start) * sigma_scale
-
-        lower_limit, upper_limit = param_class.param_limits()
-
-        lower_start = np.maximum(lower_start, lower_limit)
-        upper_start = np.minimum(upper_start, upper_limit)
 
         num_param, param_list = param_class.num_param()
         # run PSO

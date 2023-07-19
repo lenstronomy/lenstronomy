@@ -24,6 +24,15 @@ class TestPositionLikelihood(object):
                                              image_position_likelihood=True, ra_image_list=[x_pos], dec_image_list=[y_pos],
                                              source_position_likelihood=True, check_matched_source_position=False, source_position_tolerance=0.001, force_no_add_image=False,
                                              restrict_image_number=False, max_num_images=None)
+
+        self.likelihood_all = PositionLikelihood(point_source_class, image_position_uncertainty=0.005,
+                                             astrometric_likelihood=True,
+                                             image_position_likelihood=True, ra_image_list=[x_pos],
+                                             dec_image_list=[y_pos],
+                                             source_position_likelihood=True, check_matched_source_position=True,
+                                             source_position_tolerance=0.001, force_no_add_image=True,
+                                             restrict_image_number=True, max_num_images=5)
+
         self._x_pos, self._y_pos = x_pos, y_pos
 
     def test_image_position_likelihood(self):
@@ -33,6 +42,9 @@ class TestPositionLikelihood(object):
 
         kwargs_ps = [{'ra_image': self._x_pos + 0.01, 'dec_image': self._y_pos}]
         logL = self.likelihood.image_position_likelihood(kwargs_ps, self._kwargs_lens, sigma=0.01)
+        npt.assert_almost_equal(logL, -2, decimal=8)
+
+        self.likelihood_all.image_position_likelihood(kwargs_ps, self._kwargs_lens, sigma=0.01)
         npt.assert_almost_equal(logL, -2, decimal=8)
 
     def test_astrometric_likelihood(self):

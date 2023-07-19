@@ -11,7 +11,9 @@ class TestParam(object):
     def setup_method(self):
         self.param = SpecialParam(Ddt_sampling=True, kwargs_fixed=None, point_source_offset=True, num_images=2,
                                   source_size=True, num_tau0=2, num_z_sampling=3, source_grid_offset=True,
-                                  kinematic_sampling=True)
+				  kinematic_sampling=True, 
+				  kwargs_lower={'z_sampling': [0.05, 0.1, 0.5]}, kwargs_upper={'z_sampling': [0.2, 1., 1.]}
+                                  )
         self.kwargs = {'D_dt': 1988, 'delta_x_image': [0, 0], 'delta_y_image': [0, 0], 'source_size': 0.1,
                        'tau0_list': [0, 1], 'z_sampling': np.array([0.1, 0.5, 2]),
                        'delta_x_source_grid': 0, 'delta_y_source_grid': 0, 'b_ani':0.1, 'incli':0.,'D_d':2000}
@@ -30,6 +32,12 @@ class TestParam(object):
         kwargs_new['b_ani'] = self.kwargs['b_ani']
         kwargs_new['incli'] = self.kwargs['incli']
         kwargs_new['D_d'] = self.kwargs['D_d']
+
+        special_param = SpecialParam(num_z_sampling=1, kwargs_lower={'z_sampling': [0.1]},
+                                     kwargs_upper={'z_sampling': [0.2]})
+
+        kwargs_test, i = special_param.get_params(args=[0.3], i=0, impose_bound=True)
+        assert kwargs_test['z_sampling'] == [0.2]
 
     def test_num_params(self):
         num, list = self.param.num_param()

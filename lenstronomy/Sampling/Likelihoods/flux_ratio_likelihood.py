@@ -14,15 +14,16 @@ class FluxRatioLikelihood(object):
         """
 
         :param lens_model_class: LensModel class instance
-        :param flux_ratios: ratio of fluxes of the multiple images (relative to the first appearing)
+        :param flux_ratios: ratio of fluxes of the multiple images (relative to the first appearing in
+         same order as the images)
         :param flux_ratio_errors: errors in the flux ratios (relative to the first appearing). Alternatively
-        a log-normal covariance matrix. Note: in the case of a the covariance matrix, the errors are are assumed
-        to be log-normal, i.e. the logarithms of the flux ratios, ln(F[i]/F[0]) are assumed to have a multivariate 
-        Gaussian distribution, with the given covariance matrix.
+         a log-normal covariance matrix. Note: in the case of a covariance matrix, the errors are assumed
+         to be log-normal, i.e. the logarithms of the flux ratios, ln(F[i]/F[0]) are assumed to have a multivariate
+         Gaussian distribution, with the given covariance matrix.
         :param source_type: string, type of source, 'INF' specifies a point source, while 'GAUSSIAN' specifies a
-        finite-size source modeled as a Gaussian
+         finite-size source modeled as a Gaussian
         :param window_size: size of window to compute the finite flux
-        :param grid_number: number of grid cells per axis in the window to numerically comute the flux
+        :param grid_number: number of grid cells per axis in the window to numerically compute the flux
         """
         self._lens_model_class = lens_model_class
         self._flux_ratios = np.array(flux_ratios)

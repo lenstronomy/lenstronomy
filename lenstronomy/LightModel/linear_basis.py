@@ -77,7 +77,7 @@ class LinearBasis(LightModelBase):
                     kwargs_new.update(new)
                     response += self.func_list[i].function_split(x, y, **kwargs_new)
                     n += num
-                elif model in ['SHAPELETS', 'SHAPELETS_POLsAR', 'SHAPELETS_POLAR_EXP',
+                elif model in ['SHAPELETS', 'SHAPELETS_POLAR', 'SHAPELETS_POLAR_EXP',
                                'SHAPELETS_ELLIPSE']:
                     kwargs = kwargs_list[i]
                     n_max = kwargs['n_max']

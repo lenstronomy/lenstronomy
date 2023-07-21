@@ -105,7 +105,7 @@ class LikelihoodModule(object):
         self._custom_logL_addition = custom_logL_addition
         self._kwargs_time_delay = {'time_delays_measured': time_delays_measured,
                                    'time_delays_uncertainties': time_delays_uncertainties}
-        self._kwargs_imaging = {'multi_band_list': multi_band_list, 'multi_band_type': multi_band_type,
+        self.kwargs_imaging = {'multi_band_list': multi_band_list, 'multi_band_type': multi_band_type,
                                'bands_compute': bands_compute,
                                'image_likelihood_mask_list': image_likelihood_mask_list, 'source_marg': source_marg,
                                'linear_prior': linear_prior, 'check_positive_flux': check_positive_flux,
@@ -134,7 +134,7 @@ class LikelihoodModule(object):
             self._kin_lens_idx = kin_lens_idx
             self._kin_lens_light_idx = kin_lens_light_idx
 
-        self._class_instances(kwargs_model=kwargs_model, kwargs_imaging=self._kwargs_imaging,
+        self._class_instances(kwargs_model=kwargs_model, kwargs_imaging=self.kwargs_imaging,
                               kwargs_position=self._kwargs_position, kwargs_flux=self._kwargs_flux,
                               kwargs_time_delay=self._kwargs_time_delay, kinematic_data = self.kinematic_class)
 
@@ -152,7 +152,7 @@ class LikelihoodModule(object):
 
         # TODO: in case lens model or point source models are only applied on partial images, then this current class
         # has ambiguities when it comes to position likelihood, time-delay likelihood and flux ratio likelihood
-        lens_model_class, _, _, point_source_class, _ = class_creator.create_class_instances(all_models=True,
+        lens_model_class, _, lens_light_model_class, point_source_class, _ = class_creator.create_class_instances(all_models=True,
                                                                                              **kwargs_model)
         self.PointSource = point_source_class
 

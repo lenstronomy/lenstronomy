@@ -29,7 +29,7 @@ class KinLikelihood(object):
         self._idx_lens_light = idx_lens_light
         self.kin_class = kinematic_data_2D_class
 
-        self.kin_input = self.kin_class.KinBin.KinBin2kwargs()
+        self.kin_input = self.kin_class.KinBin.kin_bin2kwargs()
         self.image_input = self.kwargs_data2image_input(kwargs_data)
         self.kinematic_NN = kinematic_NN_call.kinematic_NN()
         self.kinNN_input = {'deltaPix':0.02, 'image': np.ones((551,551))}

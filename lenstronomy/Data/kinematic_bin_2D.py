@@ -52,7 +52,8 @@ class KinBin(object):
         for idx, value in enumerate(self._data):
             binned_image[self._bin_mask==idx] = value
         return binned_image
-    def KinBin2kwargs(self):
+
+    def kin_bin2kwargs(self):
         """
         Creates the kwargs needed for the 2D kinematic likelihood
         """
@@ -60,6 +61,7 @@ class KinBin(object):
                   'transform_pix2angle' : self.PixelGrid._Mpix2a, 'ra_at_xy0' : self.PixelGrid._ra_at_xy_0,
                   'dec_at_xy0' : self.PixelGrid._dec_at_xy_0}
         return kwargs
+
     def kin_grid(self):
         """
         Creates a pixel grid that satisfy the kinematics coordinates system

@@ -51,6 +51,7 @@ class KinLikelihood(object):
         z_d_fiducial = 0.5
         D_dt_fiducial = (1 + z_d_fiducial) * D_d_fiducial * D_s_fiducial / D_ds_fiducial
         self.fiducial_scale = D_dt_fiducial / (D_d_fiducial * (1 + z_d_fiducial))
+        self.vrms=None
 
     def logL(self, kwargs_lens, kwargs_lens_light, kwargs_special,verbose=False):
         """

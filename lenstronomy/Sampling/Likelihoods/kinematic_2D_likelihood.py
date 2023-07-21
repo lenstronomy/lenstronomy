@@ -77,11 +77,11 @@ class KinLikelihood(object):
         """
         Calculates Log likelihood from 2D kinematic likelihood
         """
-        self.update_image_input(kwargs_lens)
-        self.light_map = self.lens_light_model_class.surface_brightness(self.kin_x_grid,self.kin_y_grid,kwargs_lens_light,
-                                                                   self.lens_light_bool_list)
-        input_params,same_orientation=self.convert_to_NN_params(kwargs_lens,kwargs_lens_light,kwargs_special)
         if self.kinematic_NN.SKiNN_installed:
+            self.update_image_input(kwargs_lens)
+            self.light_map = self.lens_light_model_class.surface_brightness(self.kin_x_grid,self.kin_y_grid,kwargs_lens_light,
+                                                                       self.lens_light_bool_list)
+            input_params,same_orientation=self.convert_to_NN_params(kwargs_lens,kwargs_lens_light,kwargs_special)
             if self.kinematic_NN.check_bounds(input_params,same_orientation=same_orientation,verbose=verbose)==False:
                 #params not within training set. Penalty
                 return -10**8

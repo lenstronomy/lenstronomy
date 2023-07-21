@@ -15,7 +15,7 @@ class kinematic_NN():
         except:
             print("Warning : SKiNN not installed properly, \
         but tests will be trivially fulfilled. \
-                  Get SKiNN from https://github.com/lucabig/lensing_odyssey_kinematics")
+                  Get SKiNN from https://github.com/mattgomer/SKiNN")
             self.SKiNN_installed = False
 
 

@@ -514,7 +514,7 @@ class FittingSequence(object):
         kwargs_model = self._updateManager.kwargs_model
         kwargs_temp = self.best_fit(bijective=False)
         multi_band_type = self.kwargs_data_joint.get('multi_band_type', 'multi-linear')
-        kwargs_imaging = self.likelihoodModule._kwargs_imaging
+        kwargs_imaging = self.likelihoodModule.kwargs_imaging
 
         calibration_fitting = FluxCalibration(kwargs_imaging=kwargs_imaging, kwargs_model=kwargs_model,
                                               kwargs_params=kwargs_temp,

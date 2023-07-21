@@ -15,7 +15,7 @@ class TestKinData(object):
         self.numPix = 10
         self.num_bin = 4
         kwargs_kin = {'bin_data':np.zeros(self.num_bin)+10.,
-                      'bin_sigma' : np.ones(self.num_bin)*2.,
+                      'bin_cov' : np.diag(np.ones(self.num_bin)*2.**2),
                       'bin_mask' : np.zeros((self.numPix,self.numPix))}
         kwargs_kin['bin_mask'][0, 0]=1
         kwargs_kin['bin_mask'][0, 1] = 1
@@ -35,6 +35,6 @@ class TestKinData(object):
     def test_binned_image(self):
         assert self.KinData.KinBin.binned_image()[0,0]==20.
     def test_KinBin2kwargs(self):
-        assert self.KinData.KinBin.KinBin2kwargs()['deltaPix'] == 1.
+        assert self.KinData.KinBin.kin_bin2kwargs()['deltaPix'] == 1.
     def test_kin_grid(self):
         assert np.shape(self.KinData.KinBin.kin_grid()[0]) == (self.numPix,self.numPix)

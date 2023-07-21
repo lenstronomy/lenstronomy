@@ -37,8 +37,12 @@ class kinematic_NN():
         plt.title('Prediction')
         plt.colorbar()
 
-    def check_bounds(self,input_p,verbose=False):
+    def check_bounds(self,input_p,same_orientation=True,verbose=False):
         within_bounds=True
+        if not same_orientation:
+            if verbose:
+                print('NN CALL WARNING: Mass and light have different PAs!')
+            within_bounds = False
         training_abs_bounds = {'q_mass': [0.6, 1.0],
                                'q_light': [0.6, 1.0],
                                'theta_E': [0.5, 2.0],

@@ -23,7 +23,7 @@ class TestKinLikelihood(object):
                             'center_y': center_y}]
         self.kwargs_special = {'D_dt': 4000, 'b_ani': 0.2, 'incli': np.pi / 2, 'D_d': 1000}
 
-        lens_model_list = ['PEMD_Q_PHI']
+        lens_model_list = ['EPL_Q_PHI']
         self.lensModel = LensModel(lens_model_list=lens_model_list, z_lens=0.5)
         lens_light_model_list = ['SERSIC_ELLIPSE_Q_PHI']
 
@@ -108,9 +108,15 @@ class TestKinLikelihood(object):
          {'gamma1': 0.06, 'gamma2': -0.03}]
         kwargs_lens_light_test = [{'amp': 10, 'R_sersic': 1., 'q': 1, 'phi': 0, 'n_sersic': 3., 'center_x': 0.,
                               'center_y': 0.}]
-        params=self._KinLikelihood.convert_to_NN_params(kwargs_lens_test, kwargs_lens_light_test, self.kwargs_special)
+        params,same_orientation=self._KinLikelihood.convert_to_NN_params(kwargs_lens_test, kwargs_lens_light_test, self.kwargs_special)
         npt.assert_array_equal(params,np.array([1., 1., 2., 3., 1., 8.0e-2, 0.5, self.kwargs_special['b_ani'],
                                              self.kwargs_special['incli']*180/np.pi]))
+        #check that wrong orientations are caught
+        assert same_orientation == True
+        kwargs_lens_test = [{'theta_E': 2., 'gamma': 2., 'q': 0.5, 'phi': 1.0, 'center_x': 0, 'center_y': 0},
+                            {'gamma1': 0.06, 'gamma2': -0.03}]
+        params,same_orientation = self._KinLikelihood.convert_to_NN_params(kwargs_lens_test, kwargs_lens_light_test, self.kwargs_special)
+        assert same_orientation == False
 
     def test_rescale_distance(self):
         #scale=fiducial

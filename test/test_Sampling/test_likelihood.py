@@ -133,11 +133,11 @@ class TestLikelihoodModule(object):
         npt.assert_almost_equal(logL, -1328.821179288249, decimal=-1)
     def test_kin_likelihood(self):
         #since this doesn't work for the SPEP model, test it with a different lens model:
-        kwargs_pemdqphi = {'theta_E': 1., 'gamma': 1.95, 'center_x': 0, 'center_y': 0, 'q': 0.7, 'phi': 0.7}
-        kwargs_lens = [kwargs_pemdqphi]
-        kwargs_sersic_ellipse_qphi = {'amp': 1., 'R_sersic': .51, 'n_sersic': 2.5, 'center_x': 0, 'center_y': 0,'q': 0.99, 'phi': 0.1}
+        kwargs_eplqphi = {'theta_E': 1., 'gamma': 1.95, 'center_x': 0, 'center_y': 0, 'q': 0.7, 'phi': 0.7}
+        kwargs_lens = [kwargs_eplqphi]
+        kwargs_sersic_ellipse_qphi = {'amp': 1., 'R_sersic': .51, 'n_sersic': 2.5, 'center_x': 0, 'center_y': 0,'q': 0.99, 'phi': 0.7}
         kwargs_lens_light = [kwargs_sersic_ellipse_qphi]
-        kwargs_model = {'lens_model_list': ['PEMD_Q_PHI'],
+        kwargs_model = {'lens_model_list': ['EPL_Q_PHI'],
                         'lens_light_model_list': ['SERSIC_ELLIPSE_Q_PHI'],
                         'source_light_model_list': ['SERSIC'],
                         'point_source_model_list': ['SOURCE_POSITION'],

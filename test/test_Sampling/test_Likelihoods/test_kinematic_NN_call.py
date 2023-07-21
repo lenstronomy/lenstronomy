@@ -24,23 +24,27 @@ class TestKinNNCall(object):
             # plt.show()
     def test_check_bounds(self):
         if self.kinematic_NN.SKiNN_installed:
-            in_bounds=self.kinematic_NN.check_bounds(input_p=self.example_input,verbose=True)
+            verbose=True
+            in_bounds=self.kinematic_NN.check_bounds(self.example_input,same_orientation=True,verbose=verbose)
             assert(in_bounds==True)
+            #check if different orientations
+            in_bounds = self.kinematic_NN.check_bounds(self.example_input, same_orientation=False, verbose=verbose)
+            assert (in_bounds == False)
             # check r_eff out of bounds
             test_input = copy.copy(self.example_input)
             test_input[4] = 10
-            in_bounds = self.kinematic_NN.check_bounds(input_p=test_input, verbose=True)
+            in_bounds = self.kinematic_NN.check_bounds(test_input,same_orientation=True,verbose=verbose)
             assert (in_bounds == False)
 
             # check r_eff > theta_E
             test_input = copy.copy(self.example_input)
             test_input[4] = 1.6
-            in_bounds = self.kinematic_NN.check_bounds(input_p=test_input, verbose=True)
+            in_bounds = self.kinematic_NN.check_bounds(test_input,same_orientation=True,verbose=verbose)
             assert (in_bounds == False)
 
             #check inclination
             test_input=copy.copy(self.example_input)
             test_input[8]=10
-            in_bounds = self.kinematic_NN.check_bounds(input_p=test_input, verbose=True)
+            in_bounds = self.kinematic_NN.check_bounds(test_input,same_orientation=True,verbose=verbose)
             assert (in_bounds == False)
 

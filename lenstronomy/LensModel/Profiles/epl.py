@@ -8,7 +8,7 @@ from lenstronomy.LensModel.Profiles.spp import SPP
 from scipy.special import hyp2f1
 
 
-__all__ = ['EPL', 'EPLMajorAxis']
+__all__ = ['EPL', 'EPLMajorAxis', 'EPL_qPhi']
 
 
 class EPL(LensProfileBase):
@@ -330,3 +330,90 @@ class EPLMajorAxis(LensProfileBase):
         f_xy = gamma_2
 
         return f_xx, f_xy, f_xy, f_yy
+
+class EPL_qPhi(LensProfileBase):
+    """
+    class to model a EPL sampling over q and phi instead of e1 and e2.
+
+    """
+    param_names = ['theta_E', 'gamma', 'q', 'phi', 'center_x', 'center_y']
+    lower_limit_default = {'theta_E': 0, 'gamma': 1.5, 'q': 0, 'phi': -np.pi, 'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'theta_E': 100, 'gamma': 2.5, 'q': 1, 'phi': np.pi, 'center_x': 100, 'center_y': 100}
+
+    def __init__(self):
+        self._EPL = EPL()
+        super(EPL_qPhi, self).__init__()
+
+    def function(self, x, y, theta_E, gamma, q, phi, center_x=0, center_y=0):
+        """
+
+        :param x: x-coordinate in image plane
+        :param y: y-coordinate in image plane
+        :param theta_E: Einstein radius
+        :param gamma: power law slope
+        :param q: axis ratio
+        :param phi: position angle
+        :param center_x: profile center
+        :param center_y: profile center
+        :return: lensing potential
+        """
+        e1, e2 = param_util.phi_q2_ellipticity(phi, q)
+        return self._EPL.function(x, y, theta_E, gamma, e1, e2, center_x, center_y)
+
+    def derivatives(self, x, y, theta_E, gamma, q, phi, center_x=0, center_y=0):
+        """
+
+        :param x: x-coordinate in image plane
+        :param y: y-coordinate in image plane
+        :param theta_E: Einstein radius
+        :param gamma: power law slope
+        :param q: axis ratio
+        :param phi: position angle
+        :param center_x: profile center
+        :param center_y: profile center
+        :return: alpha_x, alpha_y
+        """
+        e1, e2 = param_util.phi_q2_ellipticity(phi, q)
+        return self._EPL.derivatives(x, y, theta_E, gamma, e1, e2, center_x, center_y)
+
+    def hessian(self, x, y, theta_E, gamma, q, phi, center_x=0, center_y=0):
+        """
+
+        :param x: x-coordinate in image plane
+        :param y: y-coordinate in image plane
+        :param theta_E: Einstein radius
+        :param gamma: power law slope
+        :param q: axis ratio
+        :param phi: position angle
+        :param center_x: profile center
+        :param center_y: profile center
+        :return: f_xx, f_xy, f_yx, f_yy
+        """
+        e1, e2 = param_util.phi_q2_ellipticity(phi, q)
+        return self._EPL.hessian(x, y, theta_E, gamma, e1, e2, center_x, center_y)
+
+    def mass_3d_lens(self, r, theta_E, gamma, q=None, phi=None):
+        """
+        computes the spherical power-law mass enclosed (with SPP routine)
+        :param r: radius within the mass is computed
+        :param theta_E: Einstein radius
+        :param gamma: power-law slope
+        :param q: axis ratio (not used)
+        :param phi: position angle (not used)
+        :return: mass enclosed a 3D radius r
+        """
+        return self._EPL.mass_3d_lens(r, theta_E, gamma)
+
+    def density_lens(self, r, theta_E, gamma, q=None, phi=None):
+        """
+        computes the density at 3d radius r given lens model parameterization.
+        The integral in the LOS projection of this quantity results in the convergence quantity.
+
+        :param r: radius within the mass is computed
+        :param theta_E: Einstein radius
+        :param gamma: power-law slope
+        :param q: axis ratio (not used)
+        :param phi: position angle (not used)
+        :return: mass enclosed a 3D radius r
+        """
+        return self._EPL.density_lens(r, theta_E, gamma)

@@ -59,9 +59,9 @@ class KinLikelihood(object):
         self.update_image_input(kwargs_lens)
         self.light_map = self.lens_light_model_class.surface_brightness(self.kin_x_grid,self.kin_y_grid,kwargs_lens_light,
                                                                    self.lens_light_bool_list)
-        input_params=self.convert_to_NN_params(kwargs_lens,kwargs_lens_light,kwargs_special)
+        input_params,same_orientation=self.convert_to_NN_params(kwargs_lens,kwargs_lens_light,kwargs_special)
         if self.kinematic_NN.SKiNN_installed:
-            if self.kinematic_NN.check_bounds(input_params,verbose=verbose)==False:
+            if self.kinematic_NN.check_bounds(input_params,same_orientation=same_orientation,verbose=verbose)==False:
                 #params not within training set. Penalty
                 return -10**8
             velo_map = self.kinematic_NN.generate_map(input_params, verbose=verbose)
@@ -80,13 +80,23 @@ class KinLikelihood(object):
 
     def convert_to_NN_params(self, kwargs_lens, kwargs_lens_light, kwargs_special):
         """
-        converts lenstronomy kwargs into input vector for SKiNN
+        converts lenstronomy kwargs into input vector for SKiNN, also returns whether or not mass and light are aligned
         """
         # lenstronomy to GLEE conversion
+        # orientation_mass,q_mass=param_util.ellipticity2phi_q(kwargs_lens[self._idx_lens]['e1'],
+        #                                                      kwargs_lens[self._idx_lens]['e2'])
         orientation_mass = kwargs_lens[self._idx_lens]['phi']
         q_mass =  kwargs_lens[self._idx_lens]['q']
+        # orientation_light, q_light = param_util.ellipticity2phi_q(kwargs_lens_light[self._idx_lens]['e1'],
+        #                                                         kwargs_lens_light[self._idx_lens]['e2'])
         orientation_light = kwargs_lens_light[self._idx_lens]['phi']
-        q_light =  kwargs_lens_light[self._idx_lens]['q']
+        q_light = kwargs_lens_light[self._idx_lens]['q']
+
+        same_orientation=True #confirm that angles are aligned
+        if np.abs(orientation_mass-orientation_light)>0.05:
+            if q_light<0.95 or q_mass<0.95:
+                same_orientation=False
+
         thetaE_lenstro=kwargs_lens[self._idx_lens]['theta_E']
         gamma_lenstro=kwargs_lens[self._idx_lens]['gamma']
         gamma_GLEE=(gamma_lenstro-1)/2
@@ -94,7 +104,7 @@ class KinLikelihood(object):
         thetaE_GLEE=thetaE_lenstro/RE_scale
         return np.array([q_mass, q_light, thetaE_GLEE, kwargs_lens_light[self._idx_lens]['n_sersic'],
                          kwargs_lens_light[self._idx_lens]['R_sersic'], 8.0e-2, gamma_GLEE,
-                        kwargs_special['b_ani'], kwargs_special['incli']*180/np.pi])
+                        kwargs_special['b_ani'], kwargs_special['incli']*180/np.pi]),same_orientation
 
     def rescale_distance(self, image, kwargs_special):
         """
@@ -102,7 +112,7 @@ class KinLikelihood(object):
         """
         new_scale = kwargs_special['D_dt'] / (kwargs_special['D_d'] * (1 +self.z_lens))
         factor = np.sqrt(
-            new_scale / self.fiducial_scale)  # sigma^2 propto D_dt/Dd (see https://arxiv.org/pdf/2109.14615.pdf Eq. 20)
+            new_scale / self.fiducial_scale)  # vrms^2 propto D_dt/Dd (see https://arxiv.org/pdf/2109.14615.pdf Eq. 20)
         return image * factor
 
     def kwargs_data2image_input(self,kwargs_data):

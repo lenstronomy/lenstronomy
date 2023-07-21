@@ -62,8 +62,7 @@ class TestKinLikelihood(object):
         self.kinPSF = PSF(**kwargs_pixelkin)
         _KinData = KinData(_KinBin, self.kinPSF)
         dummy_KinLikelihood = KinLikelihood(_KinData, self.lensModel, self.lensLightModel, self.kwargs_data, idx_lens=0, idx_lens_light=0)
-        dummy_logL=dummy_KinLikelihood.logL(self.kwargs_lens, self.kwargs_lens_light, self.kwargs_special,verbose=False)
-        self.truth_vrms=dummy_KinLikelihood.vrms
+        self.truth_vrms=dummy_KinLikelihood.calc_vrms(self.kwargs_lens, self.kwargs_lens_light, self.kwargs_special,verbose=False)
         self.kwargs_kin = {'bin_data': self.truth_vrms,
                       'bin_cov': np.diag((self.truth_vrms * 0.05)**2),  # 5% error
                       'bin_mask': binmap,

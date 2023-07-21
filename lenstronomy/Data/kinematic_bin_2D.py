@@ -17,12 +17,12 @@ class KinBin(object):
 
     """
 
-    def __init__(self, bin_data, bin_sigma, bin_mask, ra_at_xy_0=0, dec_at_xy_0=0,
+    def __init__(self, bin_data, bin_cov, bin_mask, ra_at_xy_0=0, dec_at_xy_0=0,
                  transform_pix2angle=None, ra_shift=0, dec_shift=0):
 
         """
         :param bin_data: list, kinematic value of each bin, ordered by bin index.
-        :param bin_sigma: list, uncertainty of vrms associated to each bin, ordered by bin index.
+        :param bin_cov: 2D array (nbins x nbins), covariance matrix of vrms associated to each bin, ordered by bin index.
         :param bin_mask: 2D array, mapping from the unbinned image to the binned one, each pixel value is the
          corresponding bin index.
         :param ra_at_xy_0: float, ra coordinate at pixel (0,0) (unbinned image)
@@ -41,7 +41,7 @@ class KinBin(object):
         self.PixelGrid =   PixelGrid(nx, ny, transform_pix2angle, ra_at_xy_0 + ra_shift, dec_at_xy_0 + dec_shift)
 
         self._data = bin_data
-        self._sigmas = bin_sigma
+        self._covariance = bin_cov
         self._bin_mask = bin_mask
 
     def binned_image(self):

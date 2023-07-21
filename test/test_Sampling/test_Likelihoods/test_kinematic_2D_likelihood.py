@@ -52,26 +52,26 @@ class TestKinLikelihood(object):
                        'transform_pix2angle': transform_pix2angle,
                        'ra_at_xy_0': ra_at_xy_0, 'dec_at_xy_0': dec_at_xy_0}
         kwargs_kin = {'bin_data': binned_dummy_data,
-                      'bin_sigma': binned_dummy_data * 0.05,  # 5% error
+                      'bin_cov': np.diag((binned_dummy_data * 0.05)**2),  # 5% error
                       'bin_mask': binmap,
                       'ra_at_xy_0': -(npix_kin - 1) / 2. * delta_pix_kin,
                       'dec_at_xy_0': -(npix_kin - 1) / 2. * delta_pix_kin,
                       'transform_pix2angle': np.array([[1, 0], [0, 1]]) * delta_pix_kin}
         _KinBin = KinBin(**kwargs_kin)
         kwargs_pixelkin = {'psf_type': 'PIXEL', 'kernel_point_source': sharp_kin_PSF}
-        kinPSF = PSF(**kwargs_pixelkin)
-        _KinData = KinData(_KinBin, kinPSF)
+        self.kinPSF = PSF(**kwargs_pixelkin)
+        _KinData = KinData(_KinBin, self.kinPSF)
         dummy_KinLikelihood = KinLikelihood(_KinData, self.lensModel, self.lensLightModel, self.kwargs_data, idx_lens=0, idx_lens_light=0)
         dummy_logL=dummy_KinLikelihood.logL(self.kwargs_lens, self.kwargs_lens_light, self.kwargs_special,verbose=False)
         self.truth_vrms=dummy_KinLikelihood.vrms
         self.kwargs_kin = {'bin_data': self.truth_vrms,
-                      'bin_sigma': self.truth_vrms * 0.05,  # 5% error
+                      'bin_cov': np.diag((self.truth_vrms * 0.05)**2),  # 5% error
                       'bin_mask': binmap,
                       'ra_at_xy_0': -(npix_kin - 1) / 2. * delta_pix_kin,
                       'dec_at_xy_0': -(npix_kin - 1) / 2. * delta_pix_kin,
                       'transform_pix2angle': np.array([[1, 0], [0, 1]]) * delta_pix_kin}
         _KinBin = KinBin(**self.kwargs_kin)
-        _KinData = KinData(_KinBin, kinPSF)
+        _KinData = KinData(_KinBin, self.kinPSF)
         self._KinLikelihood = KinLikelihood(_KinData, self.lensModel, self.lensLightModel, self.kwargs_data, idx_lens=0, idx_lens_light=0)
 
 
@@ -91,6 +91,17 @@ class TestKinLikelihood(object):
         far_logL = self._KinLikelihood.logL(kwargs_lens_far, kwargs_lens_light_far, self.kwargs_special, verbose=False)
         assert close_logL > -10 #instance close to truth should be likely (usually around -0.5)
         assert close_logL > far_logL #param instance close to truth is more likely than far away
+
+        #test  that doubling variance decreases logL by factor of 2
+        kwargs_kin = self.kwargs_kin.copy()
+        kwargs_kin['bin_cov']=self.kwargs_kin['bin_cov']*2
+        _KinBin = KinBin(**kwargs_kin)
+        _KinData = KinData(_KinBin, self.kinPSF)
+        var_KinLikelihood = KinLikelihood(_KinData, self.lensModel, self.lensLightModel, self.kwargs_data, idx_lens=0,
+                                            idx_lens_light=0)
+        var_logL = var_KinLikelihood.logL(kwargs_lens_close, kwargs_lens_light_close, self.kwargs_special,
+                                              verbose=False)
+        npt.assert_almost_equal(var_logL, close_logL/2,decimal=2)
 
     def test_convert_to_NN_params(self):
         kwargs_lens_test=[{'theta_E': 2., 'gamma': 2., 'q': 1., 'phi': 0, 'center_x': 0, 'center_y': 0},

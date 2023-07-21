@@ -38,7 +38,7 @@ class KinLikelihood(object):
         self.data = self.kin_class.KinBin._data
         self.psf = self.kin_class.PSF.kernel_point_source
         self.bin_mask = self.kin_class.KinBin._bin_mask
-        self.noise = self.kin_class.KinBin._sigmas
+        self.covariance = self.kin_class.KinBin._covariance
 
         self.kin_x_grid, self.kin_y_grid = self.kin_class.KinBin.kin_grid()
 
@@ -155,7 +155,9 @@ class KinLikelihood(object):
         """
         Calculates the log likelihood for a given binned model
         """
-        log_like = (vrms - self.data)**2 / self.noise**2
+        # log_like = (vrms - self.data)**2 / self.noise**2
+        cov_inv=np.linalg.inv(self.covariance)
+        log_like=np.matmul(np.matmul((vrms - self.data).T,cov_inv),(vrms - self.data))
         logL = - np.sum(log_like) / 2
 
         if not np.isfinite(logL):

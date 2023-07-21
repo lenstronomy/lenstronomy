@@ -171,7 +171,7 @@ class TestLikelihoodModule(object):
         npix_kin = numPix
 
         kwargs_kin = {'bin_data': binned_dummy_data,
-                      'bin_sigma': binned_dummy_data * 0.05,  # 5% error
+                      'bin_cov': np.diag((binned_dummy_data * 0.05)**2),  # 5% error
                       'bin_mask': binmap,
                       'ra_at_xy_0': -(npix_kin - 1) / 2. * delta_pix_kin,
                       'dec_at_xy_0': -(npix_kin - 1) / 2. * delta_pix_kin,
@@ -199,7 +199,7 @@ class TestLikelihoodModule(object):
         logL = Likelihood.logL(args, verbose=True)
         #With only one bin, the new logL should be worse than without kin by
         #half the mean chi2 averaged over the whole image
-        image_averaged_chi2=((np.mean(Likelihood.kinematic_2D_likelihood.vrms)-binned_dummy_data)**2/kwargs_kin['bin_sigma']**2).flatten()
+        image_averaged_chi2=((np.mean(Likelihood.kinematic_2D_likelihood.vrms)-binned_dummy_data)**2/kwargs_kin['bin_cov']).flatten()
         npt.assert_almost_equal(logL_nokin-logL,image_averaged_chi2/2)
 
     def test_check_bounds(self):

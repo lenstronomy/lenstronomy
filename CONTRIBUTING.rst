@@ -1,6 +1,10 @@
 Contributor Guidelines
 ======================
 
+We welcome EVERY contribution from EVERYONE!
+Please read and adhere to our `code of conduct <https://github.com/lenstronomy/lenstronomy/blob/main/CODE_OF_CONDUCT.rst>`_.
+
+
 GitHub Workflow
 ---------------
 

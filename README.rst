@@ -112,6 +112,8 @@ If you encounter errors or problems with ``lenstronomy``, please let us know!
 
 Contribution
 ------------
+We welcome EVERY contribution from EVERYONE! See our `code of conduct <https://github.com/lenstronomy/lenstronomy/blob/main/CODE_OF_CONDUCT.rst>`_.
+
 Check out the `contributing page <https://lenstronomy.readthedocs.io/en/latest/contributing.html>`_
 and become an author of ``lenstronomy``! A big shout-out to the current `list of contributors and developers <https://lenstronomy.readthedocs.io/en/latest/authors.html>`_!
 

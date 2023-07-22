@@ -12,6 +12,7 @@ from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
 from lenstronomy.Data.kinematic_data_2D import KinData
 from lenstronomy.Data.kinematic_bin_2D import KinBin
+from lenstronomy.Sampling.Likelihoods import kinematic_NN_call
 import lenstronomy.Util.kernel_util as kernel_util
 
 
@@ -132,75 +133,77 @@ class TestLikelihoodModule(object):
         logL = likelihood.logL(args, verbose=True)
         npt.assert_almost_equal(logL, -1328.821179288249, decimal=-1)
     def test_kin_likelihood(self):
-        #since this doesn't work for the SPEP model, test it with a different lens model:
-        kwargs_eplqphi = {'theta_E': 1., 'gamma': 1.95, 'center_x': 0, 'center_y': 0, 'q': 0.7, 'phi': 0.7}
-        kwargs_lens = [kwargs_eplqphi]
-        kwargs_sersic_ellipse_qphi = {'amp': 1., 'R_sersic': .51, 'n_sersic': 2.5, 'center_x': 0, 'center_y': 0,'q': 0.99, 'phi': 0.7}
-        kwargs_lens_light = [kwargs_sersic_ellipse_qphi]
-        kwargs_model = {'lens_model_list': ['EPL_Q_PHI'],
-                        'lens_light_model_list': ['SERSIC_ELLIPSE_Q_PHI'],
-                        'source_light_model_list': ['SERSIC'],
-                        'point_source_model_list': ['SOURCE_POSITION'],
-                        'fixed_magnification_list': [True],
-                        'z_lens':1}
-        kwargs_constraints = {
-            'num_point_source_list': [4],
-            'solver_type': 'NONE',  # 'PROFILE', 'PROFILE_SHEAR', 'ELLIPSE', 'CENTER'
-            'Ddt_sampling': True
-        }
-        kwargs_likelihood = {'kinematic_2D_likelihood': False, 'kin_lens_idx': 0, 'kin_lens_light_idx': 0,
-                             'time_delay_likelihood': False}
-        param_class = Param(kwargs_model, **kwargs_constraints)
-        Likelihood = LikelihoodModule(kwargs_data_joint=self.kwargs_data, kwargs_model=kwargs_model,
-                                           param_class=param_class, **kwargs_likelihood)
-        kwargs_cosmo = {'D_dt':2000,'D_d':1000, 'b_ani': 0.2, 'incli': np.pi / 2-0.01}
-        args = param_class.kwargs2args(kwargs_lens=kwargs_lens, kwargs_source=self.kwargs_source,
-                                            kwargs_lens_light=kwargs_lens_light, kwargs_ps=self.kwargs_ps, kwargs_special=kwargs_cosmo)
-        logL_nokin = Likelihood.logL(args, verbose=True)
-        #logL should be same order as SPEP value, buthas different r_sersic so it will be worse
-        npt.assert_allclose(logL_nokin, -1328.821179288249, rtol=1)
+        self.kinematic_NN = kinematic_NN_call.kinematic_NN().SKiNN_installed
+        if self.kinematic_NN:
+            #since this doesn't work for the SPEP model, test it with a different lens model:
+            kwargs_eplqphi = {'theta_E': 1., 'gamma': 1.95, 'center_x': 0, 'center_y': 0, 'q': 0.7, 'phi': 0.7}
+            kwargs_lens = [kwargs_eplqphi]
+            kwargs_sersic_ellipse_qphi = {'amp': 1., 'R_sersic': .51, 'n_sersic': 2.5, 'center_x': 0, 'center_y': 0,'q': 0.99, 'phi': 0.7}
+            kwargs_lens_light = [kwargs_sersic_ellipse_qphi]
+            kwargs_model = {'lens_model_list': ['EPL_Q_PHI'],
+                            'lens_light_model_list': ['SERSIC_ELLIPSE_Q_PHI'],
+                            'source_light_model_list': ['SERSIC'],
+                            'point_source_model_list': ['SOURCE_POSITION'],
+                            'fixed_magnification_list': [True],
+                            'z_lens':1}
+            kwargs_constraints = {
+                'num_point_source_list': [4],
+                'solver_type': 'NONE',  # 'PROFILE', 'PROFILE_SHEAR', 'ELLIPSE', 'CENTER'
+                'Ddt_sampling': True
+            }
+            kwargs_likelihood = {'kinematic_2D_likelihood': False, 'kin_lens_idx': 0, 'kin_lens_light_idx': 0,
+                                 'time_delay_likelihood': False}
+            param_class = Param(kwargs_model, **kwargs_constraints)
+            Likelihood = LikelihoodModule(kwargs_data_joint=self.kwargs_data, kwargs_model=kwargs_model,
+                                               param_class=param_class, **kwargs_likelihood)
+            kwargs_cosmo = {'D_dt':2000,'D_d':1000, 'b_ani': 0.2, 'incli': np.pi / 2-0.01}
+            args = param_class.kwargs2args(kwargs_lens=kwargs_lens, kwargs_source=self.kwargs_source,
+                                                kwargs_lens_light=kwargs_lens_light, kwargs_ps=self.kwargs_ps, kwargs_special=kwargs_cosmo)
+            logL_nokin = Likelihood.logL(args, verbose=True)
+            #logL should be same order as SPEP value, buthas different r_sersic so it will be worse
+            npt.assert_allclose(logL_nokin, -1328.821179288249, rtol=1)
 
-        #Now add kinematic likelihood
-        #for simplicity, set kin image data to same as light data
-        numPix = 50  # cutout pixel size
-        deltaPix = 0.1  # pixel size in arcsec (area per pixel = deltaPix**2)
+            #Now add kinematic likelihood
+            #for simplicity, set kin image data to same as light data
+            numPix = 50  # cutout pixel size
+            deltaPix = 0.1  # pixel size in arcsec (area per pixel = deltaPix**2)
 
-        binmap = np.zeros_like(self.kwargs_band['image_data']) #one single bin across whole image
-        binned_dummy_data = np.array([200])
-        delta_pix_kin = deltaPix
-        npix_kin = numPix
+            binmap = np.zeros_like(self.kwargs_band['image_data']) #one single bin across whole image
+            binned_dummy_data = np.array([200])
+            delta_pix_kin = deltaPix
+            npix_kin = numPix
 
-        kwargs_kin = {'bin_data': binned_dummy_data,
-                      'bin_cov': np.diag((binned_dummy_data * 0.05)**2),  # 5% error
-                      'bin_mask': binmap,
-                      'ra_at_xy_0': -(npix_kin - 1) / 2. * delta_pix_kin,
-                      'dec_at_xy_0': -(npix_kin - 1) / 2. * delta_pix_kin,
-                      'transform_pix2angle': np.array([[1, 0], [0, 1]]) * delta_pix_kin}
-        _KinBin = KinBin(**kwargs_kin)
-        kinkernel_point_source = kernel_util.kernel_gaussian(num_pix=9, delta_pix=0.2, fwhm=1.)
-        kwargs_pixelkin = {'psf_type': 'PIXEL', 'kernel_point_source': kinkernel_point_source}
-        kinPSF = PSF(**kwargs_pixelkin)
-        _KinData = KinData(_KinBin, kinPSF)
-        kwargs_data_kin = self.kwargs_data.copy() #add kinematics data to kwargs_data
-        kwargs_data_kin['kinematic_data'] = _KinData
+            kwargs_kin = {'bin_data': binned_dummy_data,
+                          'bin_cov': np.diag((binned_dummy_data * 0.05)**2),  # 5% error
+                          'bin_mask': binmap,
+                          'ra_at_xy_0': -(npix_kin - 1) / 2. * delta_pix_kin,
+                          'dec_at_xy_0': -(npix_kin - 1) / 2. * delta_pix_kin,
+                          'transform_pix2angle': np.array([[1, 0], [0, 1]]) * delta_pix_kin}
+            _KinBin = KinBin(**kwargs_kin)
+            kinkernel_point_source = kernel_util.kernel_gaussian(num_pix=9, delta_pix=0.2, fwhm=1.)
+            kwargs_pixelkin = {'psf_type': 'PIXEL', 'kernel_point_source': kinkernel_point_source}
+            kinPSF = PSF(**kwargs_pixelkin)
+            _KinData = KinData(_KinBin, kinPSF)
+            kwargs_data_kin = self.kwargs_data.copy() #add kinematics data to kwargs_data
+            kwargs_data_kin['kinematic_data'] = _KinData
 
-        #confirm that full likelihood is now lens+kin
-        kwargs_likelihood = {'kinematic_2D_likelihood': True, 'kin_lens_idx': 0, 'kin_lens_light_idx': 0,
-                             'time_delay_likelihood': False}
+            #confirm that full likelihood is now lens+kin
+            kwargs_likelihood = {'kinematic_2D_likelihood': True, 'kin_lens_idx': 0, 'kin_lens_light_idx': 0,
+                                 'time_delay_likelihood': False}
 
-        kwargs_constraints['kinematic_sampling'] = True
-        param_class = Param(kwargs_model, **kwargs_constraints)
-        Likelihood = LikelihoodModule(kwargs_data_joint=kwargs_data_kin, kwargs_model=kwargs_model,
-                                      param_class=param_class, **kwargs_likelihood)
-        args = param_class.kwargs2args(kwargs_lens=kwargs_lens, kwargs_source=self.kwargs_source,
-                                            kwargs_lens_light=kwargs_lens_light, kwargs_ps=self.kwargs_ps,
-                                            kwargs_special=kwargs_cosmo)
+            kwargs_constraints['kinematic_sampling'] = True
+            param_class = Param(kwargs_model, **kwargs_constraints)
+            Likelihood = LikelihoodModule(kwargs_data_joint=kwargs_data_kin, kwargs_model=kwargs_model,
+                                          param_class=param_class, **kwargs_likelihood)
+            args = param_class.kwargs2args(kwargs_lens=kwargs_lens, kwargs_source=self.kwargs_source,
+                                                kwargs_lens_light=kwargs_lens_light, kwargs_ps=self.kwargs_ps,
+                                                kwargs_special=kwargs_cosmo)
 
-        logL = Likelihood.logL(args, verbose=True)
-        #With only one bin, the new logL should be worse than without kin by
-        #half the mean chi2 averaged over the whole image
-        image_averaged_chi2=((np.mean(Likelihood.kinematic_2D_likelihood.vrms)-binned_dummy_data)**2/kwargs_kin['bin_cov']).flatten()
-        npt.assert_almost_equal(logL_nokin-logL,image_averaged_chi2/2)
+            logL = Likelihood.logL(args, verbose=True)
+            #With only one bin, the new logL should be worse than without kin by
+            #half the mean chi2 averaged over the whole image
+            image_averaged_chi2=((np.mean(Likelihood.kinematic_2D_likelihood.vrms)-binned_dummy_data)**2/kwargs_kin['bin_cov']).flatten()
+            npt.assert_almost_equal(logL_nokin-logL,image_averaged_chi2/2)
 
     def test_check_bounds(self):
         penalty, bound_hit = self.Likelihood.check_bounds(args=[0, 1], lowerLimit=[1, 0], upperLimit=[2, 2],

@@ -35,20 +35,20 @@ class TestKinSamplingUtil(object):
     def test_rotation(self):
         #muse grid not rotated from HST:
         muse_inputs=self.define_muse_kwargs_from_rotation_angle(0)
-        SKiNNAlign=kin_sampling_util.KinNN_image_align(muse_inputs, self.hst_inputs, self.kinNN_inputs)
+        SKiNNAlign=kin_sampling_util.KinNNImageAlign(muse_inputs, self.hst_inputs, self.kinNN_inputs)
         muse_img_coords=SKiNNAlign.musegrid_in_hstxy()
         hst_img_coords=SKiNNAlign.pix_coords(self.hst_inputs)
         npt.assert_allclose(hst_img_coords, muse_img_coords,atol=1e-7)
 
         muse_inputs=self.define_muse_kwargs_from_rotation_angle(2*np.pi)
-        SKiNNAlign = kin_sampling_util.KinNN_image_align(muse_inputs, self.hst_inputs, self.kinNN_inputs)
+        SKiNNAlign = kin_sampling_util.KinNNImageAlign(muse_inputs, self.hst_inputs, self.kinNN_inputs)
         muse_img_coords = SKiNNAlign.musegrid_in_hstxy()
         hst_img_coords = SKiNNAlign.pix_coords(self.hst_inputs)
         npt.assert_allclose(hst_img_coords, muse_img_coords,atol=1e-7)
 
         #muse_grid 90 degrees from HST:
         muse_inputs = self.define_muse_kwargs_from_rotation_angle(np.pi/2)
-        SKiNNAlign = kin_sampling_util.KinNN_image_align(muse_inputs, self.hst_inputs, self.kinNN_inputs)
+        SKiNNAlign = kin_sampling_util.KinNNImageAlign(muse_inputs, self.hst_inputs, self.kinNN_inputs)
         muse_img_coords = SKiNNAlign.musegrid_in_hstxy()
         hst_img_coords = SKiNNAlign.pix_coords(self.hst_inputs)
         npt.assert_allclose(hst_img_coords[0], muse_img_coords[1],atol=1e-7)#old x coordinate is new y coordinate
@@ -56,7 +56,7 @@ class TestKinSamplingUtil(object):
     def test_samegrid(self):
         #check interpolation in case where grids are the same
         muse_inputs = self.define_muse_kwargs_from_rotation_angle(0)
-        SKiNNAlign = kin_sampling_util.KinNN_image_align(muse_inputs, self.hst_inputs, self.kinNN_inputs)
+        SKiNNAlign = kin_sampling_util.KinNNImageAlign(muse_inputs, self.hst_inputs, self.kinNN_inputs)
         interp_image=SKiNNAlign.interp_image()
         npt.assert_almost_equal(interp_image,self.image)
 
@@ -66,7 +66,7 @@ class TestKinSamplingUtil(object):
                       'ellipse_PA': 0,
                       'offset_x': 1, 'offset_y': 1}
         muse_inputs = self.define_muse_kwargs_from_rotation_angle(0)
-        SKiNNAlign = kin_sampling_util.KinNN_image_align(muse_inputs, hst_inputs, self.kinNN_inputs)
+        SKiNNAlign = kin_sampling_util.KinNNImageAlign(muse_inputs, hst_inputs, self.kinNN_inputs)
         interp_image = SKiNNAlign.interp_image()
         # #uncomment to see plots
         # plt.imshow(image)

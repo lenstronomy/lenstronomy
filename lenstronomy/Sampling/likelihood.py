@@ -36,7 +36,7 @@ class LikelihoodModule(object):
                  prior_extinction_kde=None, prior_lens_lognormal=None, prior_source_lognormal=None,
                  prior_extinction_lognormal=None, prior_lens_light_lognormal=None, prior_ps_lognormal=None,
                  prior_special_lognormal=None, custom_logL_addition=None, kwargs_pixelbased=None,
-                 kinematic_2D_likelihood=False, kin_lens_idx=0, kin_lens_light_idx=0):
+                 kinematic_2d_likelihood=False, kin_lens_idx=0, kin_lens_light_idx=0):
         """
         initializing class
 
@@ -77,7 +77,7 @@ class LikelihoodModule(object):
          kwargs_ps, kwargs_special, kwargs_extinction) and returns a logL (punishing) value.
         :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver
          (see SLITronomy documentation)
-        :param kinematic_2D_likelihood: bool, option to compute the kinematic likelihood
+        :param kinematic_2d_likelihood: bool, option to compute the kinematic likelihood
         """
         multi_band_list, multi_band_type, time_delays_measured, time_delays_uncertainties, flux_ratios, flux_ratio_errors, ra_image_list, dec_image_list, kinematic_data = self._unpack_data(**kwargs_data_joint)
         if len(multi_band_list) == 0:
@@ -96,7 +96,7 @@ class LikelihoodModule(object):
         self._time_delay_likelihood = time_delay_likelihood
         self._image_likelihood = image_likelihood
         self._flux_ratio_likelihood = flux_ratio_likelihood
-        self._kinematic_2D_likelihood = kinematic_2D_likelihood
+        self._kinematic_2D_likelihood = kinematic_2d_likelihood
         if kwargs_flux_compute is None:
             kwargs_flux_compute = {}
         linear_solver = self.param.linear_solver
@@ -237,10 +237,10 @@ class LikelihoodModule(object):
             if verbose is True:
                 print('flux ratio logL = %s' % logL_flux_ratios)
         if self._kinematic_2D_likelihood is True:
-            logL_kinematic_2D = self.kinematic_2D_likelihood.logL(kwargs_lens,kwargs_lens_light,kwargs_special)
-            logL += logL_kinematic_2D
+            logL_kinematic_2d = self.kinematic_2D_likelihood.logL(kwargs_lens,kwargs_lens_light,kwargs_special)
+            logL += logL_kinematic_2d
             if verbose is True:
-                print('kinematic logL = %s' %logL_kinematic_2D)
+                print('kinematic logL = %s' %logL_kinematic_2d)
         logL += self._position_likelihood.logL(kwargs_lens, kwargs_ps, kwargs_special, verbose=verbose)
         logL_prior = self._prior_likelihood.logL(**kwargs_return)
         logL += logL_prior

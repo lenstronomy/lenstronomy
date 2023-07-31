@@ -26,13 +26,10 @@ class TestKinBin(object):
         kwargs_kin['ra_at_xy_0'] = 0
         kwargs_kin['dec_at_xy_0'] = 0
 
-        self.KinBin = KinBin(**kwargs_kin)
-
         kernel_point_source = kernel_util.kernel_gaussian(num_pix=9, delta_pix=1., fwhm=2.)
         kwargs_pixel = {'psf_type': 'PIXEL', 'kernel_point_source': kernel_point_source}
         self.PSF = PSF(**kwargs_pixel)
-
-        self.KinData = KinData(self.KinBin,self.PSF)
+        self.KinBin = KinBin(psf_class=self.PSF,**kwargs_kin)
 
     def test_binned_image(self):
         assert self.KinBin.binned_image()[0,0]==20.

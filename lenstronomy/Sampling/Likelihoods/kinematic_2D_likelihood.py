@@ -36,10 +36,10 @@ class KinLikelihood(object):
         self.kinNN_input = {'deltaPix': 0.02, 'image': np.ones((551, 551))}
         self.KiNNalign = KinNNImageAlign(self.kin_input, self.image_input, self.kinNN_input)
 
-        self.data = self.kin_class._data
+        self.data = self.kin_class.data
         self.psf = self.kin_class.PSF.kernel_point_source
-        self.bin_mask = self.kin_class._bin_mask
-        self.covariance = self.kin_class._covariance
+        self.bin_mask = self.kin_class.bin_mask
+        self.covariance = self.kin_class.covariance
 
         self.kin_x_grid, self.kin_y_grid = self.kin_class.kin_grid()
 

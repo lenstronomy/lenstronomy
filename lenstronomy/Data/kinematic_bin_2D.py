@@ -39,17 +39,20 @@ class KinBin(object):
         self._ny = ny
         self.PixelGrid =   PixelGrid(nx, ny, transform_pix2angle, ra_at_xy_0 + ra_shift, dec_at_xy_0 + dec_shift)
 
-        self._data = bin_data
-        self._covariance = bin_cov
-        self._bin_mask = bin_mask
+        self.data = bin_data
+        self.covariance = bin_cov
+        self.bin_mask = bin_mask
+        self._pix2a = transform_pix2angle
+        self._ra_at_xy_0 = ra_at_xy_0
+        self._dec_at_xy_0 = dec_at_xy_0
 
     def binned_image(self):
         """
         Creates the binned image of the kinemmatic
         """
-        binned_image = np.zeros_like(self._bin_mask)
-        for idx, value in enumerate(self._data):
-            binned_image[self._bin_mask==idx] = value
+        binned_image = np.zeros_like(self.bin_mask)
+        for idx, value in enumerate(self.data):
+            binned_image[self.bin_mask==idx] = value
         return binned_image
 
     def kin_bin2kwargs(self):
@@ -57,8 +60,8 @@ class KinBin(object):
         Creates the kwargs needed for the 2D kinematic likelihood
         """
         kwargs = {'image' : self.binned_image(), 'deltaPix' : self.PixelGrid.pixel_width,
-                  'transform_pix2angle' : self.PixelGrid._Mpix2a, 'ra_at_xy0' : self.PixelGrid._ra_at_xy_0,
-                  'dec_at_xy0' : self.PixelGrid._dec_at_xy_0}
+                  'transform_pix2angle' : self._pix2a, 'ra_at_xy0' : self._ra_at_xy_0,
+                  'dec_at_xy0' : self._dec_at_xy_0}
         return kwargs
 
     def kin_grid(self):

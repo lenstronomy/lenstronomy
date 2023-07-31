@@ -118,18 +118,6 @@ def rotateImage(img, angle):
     return imgR
 
 @export
-def shiftImage(img, shift):
-    """
-
-    querries scipy.ndimage.shift routine
-    :param img: image to be shifted
-    :param shift: sequence containing x and y shift in pixels
-    :return: shifted image
-    """
-    imgS = ndimage.shift(img, shift)
-    return imgS
-
-@export
 def re_size_array(x_in, y_in, input_values, x_out, y_out):
     """
     resizes 2d array (i.e. image) to new coordinates. So far only works with square output aligned with coordinate axis.

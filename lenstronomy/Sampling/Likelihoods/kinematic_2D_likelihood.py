@@ -61,7 +61,7 @@ class KinLikelihood(object):
         :param kwargs_lens_light: lens light kwargs list
         :param kwargs_special: cosmology and other kwargs
         :param verbose: default False; if True print statements when out of bounds
-        return binned vrms; if SKiNN not installed return nan
+        return binned vrms [km/s]; if SKiNN not installed return nan
         """
         self.update_image_input(kwargs_lens)
         self.light_map = self.lens_light_model_class.surface_brightness(self.kin_x_grid, self.kin_y_grid,
@@ -141,9 +141,9 @@ class KinLikelihood(object):
     def rescale_distance(self, image, kwargs_special):
         """
         rescales velocity map according to distance, requires lens redshift
-        :param image: vrms image
+        :param image: vrms image [km/s]
         :param kwargs_special: kwargs with cosmological distances for rescaling
-        return rescaled vrms image
+        return rescaled vrms image [km/s]
         """
         new_scale = kwargs_special['D_dt'] / (kwargs_special['D_d'] * (1 + self.z_lens))
         factor = np.sqrt(
@@ -180,7 +180,7 @@ class KinLikelihood(object):
         Function to convolve and bin the NN rotated output
         :param rotated_map: model vrms map in data pixel coordinates
         :param light_map: model light map in data pixel coordinates for weighting
-        :return: binned vrms for comparison with data
+        :return: binned vrms [km/s] for comparison with data
         """
         vrms = rotated_map
         mge_car = light_map
@@ -205,7 +205,7 @@ class KinLikelihood(object):
     def _logL(self, vrms):
         """
         Calculates the log likelihood for a given binned model
-        :param vrms: binned vrms to compare with observed binned data
+        :param vrms: binned vrms [km/s] to compare with observed binned data
         :return: log likelihood
         """
         # log_like = (vrms - self.data)**2 / self.noise**2

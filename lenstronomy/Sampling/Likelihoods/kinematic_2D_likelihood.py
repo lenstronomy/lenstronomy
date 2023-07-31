@@ -16,7 +16,7 @@ class KinLikelihood(object):
     def __init__(self, kinematic_data_2d_class, lens_model_class, lens_light_model_class, kwargs_data, idx_lens=0,
                  idx_lens_light=0):
         """
-        :param kinematic_data_2d_class: KinData class instance
+        :param kinematic_data_2d_class: KinBin class instance
         :param lens_model_class: LensModel class instance
         :param lens_light_model_class: LightModel class instance
         :param kwargs_data: kwargs describing image rotation
@@ -30,18 +30,18 @@ class KinLikelihood(object):
         self._idx_lens_light = idx_lens_light
         self.kin_class = kinematic_data_2d_class
 
-        self.kin_input = self.kin_class.KinBin.kin_bin2kwargs()
+        self.kin_input = self.kin_class.kin_bin2kwargs()
         self.image_input = self.kwargs_data2image_input(kwargs_data)
         self.kinematic_NN = kinematic_NN_call.KinematicNN()
         self.kinNN_input = {'deltaPix': 0.02, 'image': np.ones((551, 551))}
         self.KiNNalign = KinNNImageAlign(self.kin_input, self.image_input, self.kinNN_input)
 
-        self.data = self.kin_class.KinBin._data
+        self.data = self.kin_class._data
         self.psf = self.kin_class.PSF.kernel_point_source
-        self.bin_mask = self.kin_class.KinBin._bin_mask
-        self.covariance = self.kin_class.KinBin._covariance
+        self.bin_mask = self.kin_class._bin_mask
+        self.covariance = self.kin_class._covariance
 
-        self.kin_x_grid, self.kin_y_grid = self.kin_class.KinBin.kin_grid()
+        self.kin_x_grid, self.kin_y_grid = self.kin_class.kin_grid()
 
         self.lens_light_bool_list = list(np.zeros_like(self.lens_light_model_class.profile_type_list, dtype=bool))
         self.lens_light_bool_list[self._idx_lens_light] = True

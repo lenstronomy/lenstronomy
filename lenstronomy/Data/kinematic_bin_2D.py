@@ -9,16 +9,16 @@ class KinBin(object):
     Class that summarizes the binned kinematic data.
 
     The KinBin() class is initialized with :
-     - The information about the bins (bin positions, bin value, and bin signal-to-noise): bin_pos_ra, bin_pos_dec,
-    bin_data, bin_SNR.
+     - The information about the bins (bin values, and bin covariances, which pixels belong to which bin):
+    bin_data, bin_cov, bin_mask.
      - The information about the associated intial shape of the unbinned kinematic map: bin_mask gives the index of
     corresponding bin for each pixel), and ra_at_xy_0,dec_at_xy_0,transform_pix2angle,ra_shift,dec_shift are the usual
     PixelGrid characteritics.
 
     """
 
-    def __init__(self, bin_data, bin_cov, bin_mask, ra_at_xy_0=0, dec_at_xy_0=0,
-                 transform_pix2angle=None, ra_shift=0, dec_shift=0):
+    def __init__(self, bin_data, bin_cov, bin_mask, ra_at_xy_0, dec_at_xy_0,
+                 transform_pix2angle, psf_class, ra_shift=0, dec_shift=0):
 
         """
         :param bin_data: list, kinematic value of each bin, ordered by bin index.
@@ -28,16 +28,15 @@ class KinBin(object):
         :param ra_at_xy_0: float, ra coordinate at pixel (0,0) (unbinned image)
         :param dec_at_xy_0: float, dec coordinate at pixel (0,0) (unbinned image)
         :param transform_pix2angle: 2x2 array, mapping of pixel (unbinned image) to coordinate
+        :param psf_class: PSF class
         :param ra_shift:  float, RA shift of pixel grid
         :param dec_shift: float, DEC shift of pixel grid
 
         """
-
+        self.PSF = psf_class
         nx, ny = np.shape(bin_mask)
         self._nx = nx
         self._ny = ny
-        if transform_pix2angle is None:
-            transform_pix2angle = np.array([[1, 0], [0, 1]])
         self.PixelGrid =   PixelGrid(nx, ny, transform_pix2angle, ra_at_xy_0 + ra_shift, dec_at_xy_0 + dec_shift)
 
         self._data = bin_data
@@ -66,5 +65,5 @@ class KinBin(object):
         """
         Creates a pixel grid that satisfy the kinematics coordinates system
         """
-        x_grid, y_grid = self.PixelGrid._x_grid, self.PixelGrid._y_grid
+        x_grid, y_grid = self.PixelGrid.pixel_coordinates
         return x_grid,y_grid

@@ -10,7 +10,6 @@ from lenstronomy.Sampling.likelihood import LikelihoodModule
 from lenstronomy.Sampling.parameters import Param
 from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
-from lenstronomy.Data.kinematic_data_2D import KinData
 from lenstronomy.Data.kinematic_bin_2D import KinBin
 from lenstronomy.Sampling.Likelihoods import kinematic_NN_call
 import lenstronomy.Util.kernel_util as kernel_util
@@ -190,13 +189,13 @@ class TestLikelihoodModule(object):
                           'ra_at_xy_0': -(npix_kin - 1) / 2. * delta_pix_kin,
                           'dec_at_xy_0': -(npix_kin - 1) / 2. * delta_pix_kin,
                           'transform_pix2angle': np.array([[1, 0], [0, 1]]) * delta_pix_kin}
-            _KinBin = KinBin(**kwargs_kin)
+
             kinkernel_point_source = kernel_util.kernel_gaussian(num_pix=9, delta_pix=0.2, fwhm=1.)
             kwargs_pixelkin = {'psf_type': 'PIXEL', 'kernel_point_source': kinkernel_point_source}
             kinPSF = PSF(**kwargs_pixelkin)
-            _KinData = KinData(_KinBin, kinPSF)
+            _KinBin = KinBin(psf_class=kinPSF, **kwargs_kin)
             kwargs_data_kin = self.kwargs_data.copy()  # add kinematics data to kwargs_data
-            kwargs_data_kin['kinematic_data'] = _KinData
+            kwargs_data_kin['kinematic_data'] = _KinBin
 
             # confirm that full likelihood is now lens+kin
             kwargs_likelihood = {'kinematic_2d_likelihood': True, 'kin_lens_idx': 0, 'kin_lens_light_idx': 0,

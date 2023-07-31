@@ -7,8 +7,7 @@ from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 from lenstronomy.LensModel.Profiles.spp import SPP
 from scipy.special import hyp2f1
 
-
-__all__ = ['EPL', 'EPLMajorAxis', 'EPL_qPhi']
+__all__ = ['EPL', 'EPLMajorAxis', 'EPLQPhi']
 
 
 class EPL(LensProfileBase):
@@ -188,8 +187,8 @@ class EPL(LensProfileBase):
         # evaluate
         f__xx, f__xy, f__yx, f__yy = self.epl_major_axis.hessian(x__, y__, b, t, q)
         # rotate back
-        kappa = 1./2 * (f__xx + f__yy)
-        gamma1__ = 1./2 * (f__xx - f__yy)
+        kappa = 1. / 2 * (f__xx + f__yy)
+        gamma1__ = 1. / 2 * (f__xx - f__yy)
         gamma2__ = f__xy
         gamma1 = np.cos(2 * phi_G) * gamma1__ - np.sin(2 * phi_G) * gamma2__
         gamma2 = +np.sin(2 * phi_G) * gamma1__ + np.cos(2 * phi_G) * gamma2__
@@ -241,7 +240,6 @@ class EPLMajorAxis(LensProfileBase):
     param_names = ['b', 't', 'q', 'center_x', 'center_y']
 
     def __init__(self):
-
         super(EPLMajorAxis, self).__init__()
 
     def function(self, x, y, b, t, q):
@@ -259,7 +257,7 @@ class EPLMajorAxis(LensProfileBase):
         alpha_x, alpha_y = self.derivatives(x, y, b, t, q)
 
         # deflection potential, eq. (15)
-        psi = (x*alpha_x + y*alpha_y)/(2 - t)
+        psi = (x * alpha_x + y * alpha_y) / (2 - t)
 
         return psi
 
@@ -276,20 +274,20 @@ class EPLMajorAxis(LensProfileBase):
         """
         # elliptical radius, eq. (5)
         Z = np.empty(np.shape(x), dtype=complex)
-        Z.real = q*x
+        Z.real = q * x
         Z.imag = y
         R = np.abs(Z)
         R = np.maximum(R, 0.000000001)
 
         # angular dependency with extra factor of R, eq. (23)
-        R_omega = Z*hyp2f1(1, t/2, 2-t/2, -(1-q)/(1+q)*(Z/Z.conj()))
+        R_omega = Z * hyp2f1(1, t / 2, 2 - t / 2, -(1 - q) / (1 + q) * (Z / Z.conj()))
 
         # deflection, eq. (22)
-        alpha = 2/(1+q)*(b/R)**t*R_omega
+        alpha = 2 / (1 + q) * (b / R) ** t * R_omega
 
         # return real and imaginary part
-        alpha_real = np.nan_to_num(alpha.real, posinf=10**10, neginf=-10**10)
-        alpha_imag = np.nan_to_num(alpha.imag, posinf=10**10, neginf=-10**10)
+        alpha_real = np.nan_to_num(alpha.real, posinf=10 ** 10, neginf=-10 ** 10)
+        alpha_imag = np.nan_to_num(alpha.imag, posinf=10 ** 10, neginf=-10 ** 10)
 
         return alpha_real, alpha_imag
 
@@ -304,25 +302,25 @@ class EPLMajorAxis(LensProfileBase):
         :param q: axis ratio
         :return: f_xx, f_yy, f_xy
         """
-        R = np.hypot(q*x, y)
+        R = np.hypot(q * x, y)
         R = np.maximum(R, 0.00000001)
         r = np.hypot(x, y)
 
-        cos, sin = x/r, y/r
-        cos2, sin2 = cos*cos*2 - 1, sin*cos*2
+        cos, sin = x / r, y / r
+        cos2, sin2 = cos * cos * 2 - 1, sin * cos * 2
 
         # convergence, eq. (2)
-        kappa = (2 - t)/2*(b/R)**t
-        kappa = np.nan_to_num(kappa, posinf=10**10, neginf=-10**10)
+        kappa = (2 - t) / 2 * (b / R) ** t
+        kappa = np.nan_to_num(kappa, posinf=10 ** 10, neginf=-10 ** 10)
 
         # deflection via method
         alpha_x, alpha_y = self.derivatives(x, y, b, t, q)
 
         # shear, eq. (17), corrected version from arXiv/corrigendum
-        gamma_1 = (1-t)*(alpha_x*cos - alpha_y*sin)/r - kappa*cos2
-        gamma_2 = (1-t)*(alpha_y*cos + alpha_x*sin)/r - kappa*sin2
-        gamma_1 = np.nan_to_num(gamma_1, posinf=10**10, neginf=-10**10)
-        gamma_2 = np.nan_to_num(gamma_2, posinf=10**10, neginf=-10**10)
+        gamma_1 = (1 - t) * (alpha_x * cos - alpha_y * sin) / r - kappa * cos2
+        gamma_2 = (1 - t) * (alpha_y * cos + alpha_x * sin) / r - kappa * sin2
+        gamma_1 = np.nan_to_num(gamma_1, posinf=10 ** 10, neginf=-10 ** 10)
+        gamma_2 = np.nan_to_num(gamma_2, posinf=10 ** 10, neginf=-10 ** 10)
 
         # second derivatives from convergence and shear
         f_xx = kappa + gamma_1
@@ -331,7 +329,8 @@ class EPLMajorAxis(LensProfileBase):
 
         return f_xx, f_xy, f_xy, f_yy
 
-class EPL_qPhi(LensProfileBase):
+
+class EPLQPhi(LensProfileBase):
     """
     class to model a EPL sampling over q and phi instead of e1 and e2.
 
@@ -342,7 +341,7 @@ class EPL_qPhi(LensProfileBase):
 
     def __init__(self):
         self._EPL = EPL()
-        super(EPL_qPhi, self).__init__()
+        super(EPLQPhi, self).__init__()
 
     def function(self, x, y, theta_E, gamma, q, phi, center_x=0, center_y=0):
         """

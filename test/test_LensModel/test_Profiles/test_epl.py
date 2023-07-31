@@ -199,9 +199,9 @@ class TestEPLvsPEMD(object):
         """
 
         def setup_method(self):
-            from lenstronomy.LensModel.Profiles.epl import EPL, EPL_qPhi
+            from lenstronomy.LensModel.Profiles.epl import EPL, EPLQPhi
             self.epl = EPL()
-            self.epl_qphi=EPL_qPhi()
+            self.epl_qphi=EPLQPhi()
 
         def test_epl_eplqphi(self):
             """

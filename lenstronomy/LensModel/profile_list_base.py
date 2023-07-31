@@ -160,8 +160,8 @@ class ProfileListBase(object):
             from lenstronomy.LensModel.Profiles.epl import EPL
             return EPL()
         elif lens_type == 'EPL_Q_PHI':
-            from lenstronomy.LensModel.Profiles.epl import EPL_qPhi
-            return EPL_qPhi()
+            from lenstronomy.LensModel.Profiles.epl import EPLQPhi
+            return EPLQPhi()
         elif lens_type == 'EPL_NUMBA':
             from lenstronomy.LensModel.Profiles.epl_numba import EPL_numba
             return EPL_numba()

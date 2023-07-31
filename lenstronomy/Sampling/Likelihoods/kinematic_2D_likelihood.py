@@ -178,7 +178,7 @@ class KinLikelihood(object):
     def auto_binning(self, rotated_map, light_map):
         """
         Function to convolve and bin the NN rotated output
-        :param rotated_map: model vrms map in data pixel coordinates
+        :param rotated_map: model vrms map [km/s] in data pixel coordinates
         :param light_map: model light map in data pixel coordinates for weighting
         :return: binned vrms [km/s] for comparison with data
         """

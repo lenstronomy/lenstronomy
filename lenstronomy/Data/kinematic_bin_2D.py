@@ -22,7 +22,7 @@ class KinBin(object):
                  transform_pix2angle, psf_class, ra_shift=0, dec_shift=0):
         """
         :param bin_data: list, kinematic value of each bin, ordered by bin index.
-        :param bin_cov: 2D array (nbins x nbins), covariance matrix of vrms associated to each bin, ordered by bin index.
+        :param bin_cov: 2D array (nbins x nbins), vrms covariance matrix associated to each bin, ordered by bin index
         :param bin_mask: 2D array, mapping from the unbinned image to the binned one, each pixel value is the
          corresponding bin index.
         :param ra_at_xy_0: float, ra coordinate at pixel (0,0) (unbinned image)

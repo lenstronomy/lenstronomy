@@ -39,6 +39,12 @@ class KinematicNN():
         plt.colorbar()
 
     def check_bounds(self, input_p, same_orientation=True, verbose=False):
+        """
+        Checks to see if input parameters lie in bounds used for the training set
+        :param input_p: input parameters to NN
+        :param same_orientation: default True; confirms that mass and light have same position angles
+        :param verbose: default False; if True prints statements when out of bounds
+        """
         within_bounds = True
         if not same_orientation:
             if verbose:
@@ -61,7 +67,7 @@ class KinematicNN():
                 within_bounds = False
         if input_p[4] > input_p[2] or input_p[4] < 0.5 * input_p[2]:
             if verbose:
-                print('NN CALL WARNING: R_sersic is not within theta_E training bounds!')
+                print('NN CALL WARNING: R_sersic is not within training bounds- must be between 0.5R_E and R_E!')
             within_bounds = False
         if (input_p[8] - 2) * np.pi / 180 < np.arccos(np.min([input_p[0], input_p[1]])):  # wrt q_light and q_mass
             if verbose:

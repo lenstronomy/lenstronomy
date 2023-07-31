@@ -7,29 +7,30 @@ import matplotlib.pyplot as plt
 
 class KinNNImageAlign(object):
     """
-    class to rotate and interpolate kinNN image aligned with MUSE grid
+    class to rotate and interpolate SKiNN image (which is built along x-axis) to be on the MUSE grid,
+        rotated to match light distribution as defined by the lens model
     main function is interp_image() which will output a 2D image interpolated on the MUSE grid
     """
 
     def __init__(self, muse_inputs, hst_inputs, kin_nn_inputs):
         """
-        intialize input data
+        initialize input data
         :param muse_inputs: dictionary which encodes grid and transformation information for kinematic data
             (doesn't have to be MUSE)
-        :'image': contains 2d image used to calculate grid coordinates
-        :'transform_pix2angle': transformation matrix to convert from pixel xy to ra/dec
-        :'ra_at_xy0': ra coordinate at pixel (0,0)
-        :'dec_at_xy0': dec coordinate at pixel (0,0)
+            :'image': contains 2d image used to calculate grid coordinates
+            :'transform_pix2angle': transformation matrix to convert from pixel xy to ra/dec
+            :'ra_at_xy0': ra coordinate at pixel (0,0)
+            :'dec_at_xy0': dec coordinate at pixel (0,0)
 
         :param hst_inputs: dictionary which encodes grid and transformation information for imaging data
             (doesn't have to be HST)
-        :'image': contains 2d image used to calculate grid coordinates
-        :'transform_pix2angle': transformation matrix to convert from pixel xy to ra/dec
-        :'ra_at_xy0': ra coordinate at pixel (0,0)
-        :'dec_at_xy0': dec coordinate at pixel (0,0)
-        :'ellipse_PA': position angle of ellipse axis relative to x direction
-        :'offset_x': how many pixels to offset the center of the grid to match the kinNN center (x-direction)
-        :'offset_y': how many pixels to offset the center of the grid to match the kinNN center (y-direction)
+            :'image': contains 2d image used to calculate grid coordinates
+            :'transform_pix2angle': transformation matrix to convert from pixel xy to ra/dec
+            :'ra_at_xy0': ra coordinate at pixel (0,0)
+            :'dec_at_xy0': dec coordinate at pixel (0,0)
+            :'ellipse_PA': position angle of ellipse axis relative to x direction
+            :'offset_x': how many pixels to offset the center of the grid to match the kinNN center (x-direction)
+            :'offset_y': how many pixels to offset the center of the grid to match the kinNN center (y-direction)
 
         :param kin_nn_inputs: dictionary which encodes grid information for NN output data
             :'image': contains 2d image used to calculate grid coordinates
@@ -76,7 +77,7 @@ class KinNNImageAlign(object):
         """
         x_grid = np.tile(np.arange(input_set['npix']), input_set['npix'])
         y_grid = np.repeat(np.arange(input_set['npix']), input_set['npix'])
-        if flatten == True:
+        if flatten is True:
             return x_grid, y_grid
         else:
             return x_grid.reshape(input_set['npix'], input_set['npix']), y_grid.reshape(input_set['npix'],
@@ -118,11 +119,12 @@ class KinNNImageAlign(object):
         """
         rotates and rescales from the x,y HST coordinate system into the NN coordinate system
         :param hst_x: HST x coordinate to transform
-        :param hst_x: HST y coordinate to transform
-        :param ellipse_pa_to_hstx_angle: (radians) position angle of ellipse major axis relative to x in the HST coordinate system
+        :param hst_y: HST y coordinate to transform
+        :param ellipse_pa_to_hstx_angle: (radians) position angle of ellipse major axis relative to x
+            in the HST coordinate system
         :param deltapix_hst: pixel size of HST image
         :param deltapix_kin_nn: pixel size of NN image
-        :param npix_HST: number of pixels on a side of the HST image
+        :param npix_hst: number of pixels on a side of the HST image
         :param npix_kin_nn: number of pixels on a side of the NN image
         :param offsetx: how many pixels to offset the center of the grid to match the kinNN center (x-direction)
         :param offsety: how many pixels to offset the center of the grid to match the kinNN center (y-direction)
@@ -151,7 +153,8 @@ class KinNNImageAlign(object):
         :param xcoords: grid x coordinates, flattened
         :param ycoords: grid y coordinates, flattened
         :param orig_image: original 2D image
-        :params color, alpha: plotting kwargs
+        :param color: plotting color
+        :param alpha: plotting alpha
         """
         ell_cond_2d = np.isclose(orig_image, 0.1, rtol=5e-02)
         ell_cond = ell_cond_2d.flatten()
@@ -175,9 +178,9 @@ class KinNNImageAlign(object):
         """
         muse_ra, muse_dec = self.musegrid_in_radec()
         muse_coords_in_hst_x, muse_coords_in_hst_y = self.radec_to_xy(muse_ra, muse_dec,
-                                                                     self.hst_data['transform_pix2angle'],
-                                                                     self.hst_data['ra_at_xy0'],
-                                                                     self.hst_data['dec_at_xy0'])
+                                                                      self.hst_data['transform_pix2angle'],
+                                                                      self.hst_data['ra_at_xy0'],
+                                                                      self.hst_data['dec_at_xy0'])
         return muse_coords_in_hst_x, muse_coords_in_hst_y
 
     def musegrid_in_kin_nn_xy(self):
@@ -187,11 +190,11 @@ class KinNNImageAlign(object):
         """
         muse_coords_in_hst_x, muse_coords_in_hst_y = self.musegrid_in_hstxy()
         kin_nn_x, kin_nn_y = self.rotate_hst_into_kin_nn(muse_coords_in_hst_x, muse_coords_in_hst_y,
-                                                     self.hst_data['ellipse_PA'], self.hst_deltapix,
-                                                     self.kinNN_data['deltaPix'], self.hst_data['npix'],
-                                                     self.kinNN_data['npix'],
-                                                     offsetx=self.hst_data['offset_x'],
-                                                     offsety=self.hst_data['offset_y'])
+                                                         self.hst_data['ellipse_PA'], self.hst_deltapix,
+                                                         self.kinNN_data['deltaPix'], self.hst_data['npix'],
+                                                         self.kinNN_data['npix'],
+                                                         offsetx=self.hst_data['offset_x'],
+                                                         offsety=self.hst_data['offset_y'])
         return kin_nn_x, kin_nn_y
 
     def interp_image(self):
@@ -204,5 +207,6 @@ class KinNNImageAlign(object):
         y_axis = np.arange(self.kinNN_data['npix'])
         interp_fcn = RectBivariateSpline(x_axis, y_axis, self.kinNN_data['image'])
         # y and x are flipped in RectBivariateSpline call:
-        flux_interp = interp_fcn.ev(muse_kin_nn_y, muse_kin_nn_x).reshape(self.muse_data['npix'], self.muse_data['npix'])
+        flux_interp = interp_fcn.ev(muse_kin_nn_y, muse_kin_nn_x).reshape(self.muse_data['npix'],
+                                                                          self.muse_data['npix'])
         return flux_interp

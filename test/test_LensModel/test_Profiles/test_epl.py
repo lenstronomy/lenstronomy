@@ -193,12 +193,20 @@ class TestEPLvsPEMD(object):
                             npt.assert_almost_equal(f_x, f_x_pemd, decimal=4)
                             npt.assert_almost_equal(f_y, f_y_pemd, decimal=4)
 
-    def test_epl_eplqphi(self):
-        """
-        tests if EPL and EPL_Q_PHI return same values
-        """
+class TestEPLQPhi(object):
+    """
+    tests if EPL and EPL_Q_PHI return same values
+    """
+
+    def setup_method(self):
+        from lenstronomy.LensModel.Profiles.epl import EPL
+        self.epl = EPL()
         from lenstronomy.LensModel.Profiles.epl import EPLQPhi
         self.epl_qphi = EPLQPhi()
+
+
+    def test_epl_eplqphi(self):
+
         x, y = util.make_grid(numPix=10, deltapix=0.2)
 
         theta_E_list = [0.5, 1, 2]

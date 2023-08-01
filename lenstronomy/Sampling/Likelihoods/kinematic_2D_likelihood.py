@@ -13,7 +13,7 @@ class KinLikelihood(object):
     Class to compute the likelihood associated to binned 2D kinematic maps
     """
 
-    def __init__(self, kinematic_data_2d_class, lens_model_class, lens_light_model_class, kwargs_data, idx_lens=0,
+    def __init__(self, kinematic_bin_2d_class, lens_model_class, lens_light_model_class, kwargs_data, idx_lens=0,
                  idx_lens_light=0):
         """
         :param kinematic_data_2d_class: KinBin class instance
@@ -28,12 +28,15 @@ class KinLikelihood(object):
         self.lens_light_model_class = lens_light_model_class
         self._idx_lens = idx_lens
         self._idx_lens_light = idx_lens_light
-        self.kin_class = kinematic_data_2d_class
+        self.kin_class = kinematic_bin_2d_class
 
+        # setup KinematicNN and KinNNImagealign class inputs to be updated when called
         self.kin_input = self.kin_class.kin_bin2kwargs()
         self.image_input = self.kwargs_data2image_input(kwargs_data)
         self.kinematic_NN = kinematic_NN_call.KinematicNN()
-        self.kinNN_input = {'deltaPix': 0.02, 'image': np.ones((551, 551))}
+        self.config = self.kinematic_NN.config
+        self.kinNN_input = {'deltaPix': self.config['grid_settings']['deltapix'],
+                            'image': np.ones((self.config['grid_settings']['npix'], self.config['grid_settings']['npix']))}
         self.KiNNalign = KinNNImageAlign(self.kin_input, self.image_input, self.kinNN_input)
 
         self.data = self.kin_class.data

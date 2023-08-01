@@ -1,6 +1,8 @@
 # import trained NN
 import numpy as np
 import matplotlib.pyplot as plt
+import os
+import json
 
 
 class KinematicNN():
@@ -9,6 +11,10 @@ class KinematicNN():
     """
 
     def __init__(self):
+        current_directory = os.path.dirname(os.path.abspath(__file__))
+        filepath = os.path.join(current_directory, "SKiNN_1.0_config.json")
+        with open(filepath, 'r') as json_file:
+            self.config = json.load(json_file)
         try:
             import SKiNN
             from SKiNN.generator import Generator
@@ -50,15 +56,7 @@ class KinematicNN():
             if verbose:
                 print('NN CALL WARNING: Mass and light have different PAs!')
             within_bounds = False
-        training_abs_bounds = {'q_mass': [0.6, 1.0],
-                               'q_light': [0.6, 1.0],
-                               'theta_E': [0.5, 2.0],
-                               'n_sersic': [2.0, 4.0],
-                               'R_sersic': [0.25, 2],
-                               'core_size': [0., 8.1e-2],
-                               'gamma': [0.25, 0.75],
-                               'b_ani': [-0.4, 0.4],
-                               'incli': [0, 90]}
+        training_abs_bounds=self.config['training_abs_bounds']
         for idx, pname in enumerate(['q_mass', 'q_light', 'theta_E', 'n_sersic', 'R_sersic',
                                      'core_size', 'gamma', 'b_ani', 'incli']):
             if input_p[idx] < training_abs_bounds[pname][0] or input_p[idx] > training_abs_bounds[pname][1]:

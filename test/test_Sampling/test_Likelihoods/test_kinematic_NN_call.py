@@ -30,11 +30,12 @@ class TestKinNNCall(object):
             # check if different orientations
             in_bounds = self.kinematic_NN.check_bounds(self.example_input, same_orientation=False, verbose=verbose)
             assert (in_bounds is False)
-            # check r_eff out of bounds
-            test_input = copy.copy(self.example_input)
-            test_input[4] = 10
-            in_bounds = self.kinematic_NN.check_bounds(test_input, same_orientation=True, verbose=verbose)
-            assert (in_bounds is False)
+            # check all params out of bounds
+            for i in range(len(self.example_input)):
+                test_input = copy.copy(self.example_input)
+                test_input[i] = 100
+                in_bounds = self.kinematic_NN.check_bounds(test_input, same_orientation=True, verbose=verbose)
+                assert (in_bounds is False)
 
             # check r_eff > theta_E
             test_input = copy.copy(self.example_input)

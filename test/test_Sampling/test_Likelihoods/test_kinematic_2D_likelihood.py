@@ -63,7 +63,7 @@ class TestKinLikelihood(object):
 
         kwargs_pixelkin = {'psf_type': 'PIXEL', 'kernel_point_source': sharp_kin_psf}
         self.kinPSF = PSF(**kwargs_pixelkin)
-        _KinBin = KinBin(psf_class=self.kinPSF,**self.kwargs_kin)
+        _KinBin = KinBin(psf_class=self.kinPSF, **self.kwargs_kin)
         self._KinLikelihood = KinLikelihood(_KinBin, self.lensModel, self.lensLightModel, self.kwargs_data, idx_lens=0,
                                             idx_lens_light=0)
         if self.kinematic_NN:
@@ -76,7 +76,7 @@ class TestKinLikelihood(object):
                                'ra_at_xy_0': -(npix_kin - 1) / 2. * delta_pix_kin,
                                'dec_at_xy_0': -(npix_kin - 1) / 2. * delta_pix_kin,
                                'transform_pix2angle': np.array([[1, 0], [0, 1]]) * delta_pix_kin}
-            _KinBin = KinBin(psf_class=self.kinPSF,**self.kwargs_kin)
+            _KinBin = KinBin(psf_class=self.kinPSF, **self.kwargs_kin)
             self._KinLikelihood = KinLikelihood(_KinBin, self.lensModel, self.lensLightModel, self.kwargs_data,
                                                 idx_lens=0, idx_lens_light=0)
 
@@ -110,6 +110,18 @@ class TestKinLikelihood(object):
             var_logL = var_kin_likelihood.logL(kwargs_lens_close, kwargs_lens_light_close, self.kwargs_special,
                                                verbose=False)
             npt.assert_almost_equal(var_logL, close_logL / 2, decimal=2)
+
+            # test that if velocity off by 1 sigma, logL off by 1 sigma
+            kwargs_kin = self.kwargs_kin.copy()
+            kwargs_kin['bin_data'][-1] = kwargs_kin['bin_data'][-1] * 1.05  # increase one bin by 1 sigma
+
+            _KinBin = KinBin(psf_class=self.kinPSF, **kwargs_kin)
+            sig_kin_likelihood = KinLikelihood(_KinBin, self.lensModel, self.lensLightModel, self.kwargs_data,
+                                               idx_lens=0,
+                                               idx_lens_light=0)
+            sig_logL = sig_kin_likelihood.logL(kwargs_lens_close, kwargs_lens_light_close, self.kwargs_special,
+                                               verbose=False)
+            npt.assert_almost_equal(sig_logL, close_logL - 1 / 2, decimal=1)
 
     def test_convert_to_nn_params(self):
         kwargs_lens_test = [{'theta_E': 2., 'gamma': 2., 'q': 1., 'phi': 0, 'center_x': 0, 'center_y': 0},
@@ -155,7 +167,7 @@ class TestKinLikelihood(object):
         sharp_kin_psf = kernel_util.kernel_gaussian(num_pix=5, delta_pix=0.2, fwhm=0.01)
         kwargs_pixelkin = {'psf_type': 'PIXEL', 'kernel_point_source': sharp_kin_psf}
         kin_psf = PSF(**kwargs_pixelkin)
-        _KinBin = KinBin(psf_class=kin_psf,**self.kwargs_kin)
+        _KinBin = KinBin(psf_class=kin_psf, **self.kwargs_kin)
         _KinLikelihood = KinLikelihood(_KinBin, self.lensModel, self.lensLightModel, self.kwargs_data, idx_lens=0,
                                        idx_lens_light=0)
         vrms = _KinLikelihood.auto_binning(dummy_vrms_map, sharp_image)
@@ -166,7 +178,7 @@ class TestKinLikelihood(object):
         wide_kin_psf = kernel_util.kernel_gaussian(num_pix=5, delta_pix=0.2, fwhm=100)
         kwargs_pixelkin = {'psf_type': 'PIXEL', 'kernel_point_source': wide_kin_psf}
         kin_psf = PSF(**kwargs_pixelkin)
-        _KinBin = KinBin(psf_class=kin_psf,**self.kwargs_kin)
+        _KinBin = KinBin(psf_class=kin_psf, **self.kwargs_kin)
         _KinLikelihood = KinLikelihood(_KinBin, self.lensModel, self.lensLightModel, self.kwargs_data, idx_lens=0,
                                        idx_lens_light=0)
 

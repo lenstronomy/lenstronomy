@@ -1,10 +1,10 @@
-
 import copy
-
+import numpy as np
 import pytest
+
 from numpy.testing import assert_raises
 
-from lenstronomy.Sampling.Samplers.nautilus import Nautilus
+from lenstronomy.Sampling.Samplers.nautilus_sampler import NautilusSampler
 
 
 @pytest.fixture
@@ -15,7 +15,7 @@ def import_fixture(simple_einstein_ring_likelihood_2d):
     :return:
     """
     likelihood, kwargs_truths = simple_einstein_ring_likelihood_2d
-    sampler = Nautilus(likelihood_module=likelihood)
+    sampler = NautilusSampler(likelihood_module=likelihood)
     return sampler, likelihood
 
 
@@ -29,22 +29,17 @@ class TestNautilusSampler(object):
 
     def test_sampler(self, import_fixture):
         sampler, likelihood = import_fixture
-        kwargs_run = {
-            'prior_type': 'uniform',
+        kwargs = {
             'mpi': False,
-            'thread_count': 1,
             'verbose': True,
-            'one_step': True,
-            'n_live': 2,
-            'random_state': 42
+            'f_live': 1.0,
+            'n_eff': 0.0,
+            'seed': 42,
         }
-        points, log_w, log_l, log_z = sampler.nautilus_sampling(**kwargs_run)
-        assert len(points) == 100
-        assert len(log_l) == 100
-
-        kwargs_run_fail = copy.deepcopy(kwargs_run)
-        kwargs_run_fail['prior_type'] = 'wrong'
-        assert_raises(ValueError, sampler.nautilus_sampling, **kwargs_run_fail)
+        points, log_w, log_l, log_z = sampler.run(**kwargs)
+        assert len(points) == len(log_w)
+        assert len(points) == len(log_l)
+        assert np.isfinite(log_z)
 
     def test_prior(self):
 

@@ -119,7 +119,9 @@ class FittingSequence(object):
 
             elif fitting_type == 'Nautilus':
                 # do importance nested sampling with Nautilus
-                nautilus = Nautilus(likelihood_module=self.likelihoodModule, mpi=self._mpi, **kwargs)
+                nautilus = NautilusSampler(
+                    likelihood_module=self.likelihoodModule, mpi=self._mpi,
+                    **kwargs)
                 points, log_w, log_l, log_z = nautilus.run(**kwargs)
                 chain_list.append([points, log_w, log_l, log_z])
                 if kwargs.get('verbose', False):

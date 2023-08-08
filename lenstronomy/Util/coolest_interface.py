@@ -238,16 +238,16 @@ def create_lenstronomy_from_coolest(file_name):
                     #     print(f'REDSHIFT {galaxy.redshift} is not in the range ] {min_red} , {max_red} [')
 
 
-                elif lensing_entity.type == "external_shear":
-                    shear_list = lensing_entity.mass_model
-                    for shear_idx in shear_list:
+                elif lensing_entity.type == "MassField":
+                    mass_field_list = lensing_entity.mass_model
+                    for mass_field_idx in mass_field_list:
                         print('Shear : ')
-                        if shear_idx.type == 'ExternalShear':
-                            read.update_kwargs_shear(shear_idx, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens_up,
+                        if mass_field_idx.type == 'ExternalShear':
+                            read.update_kwargs_shear(mass_field_idx, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens_up,
                                   kwargs_lens_down, kwargs_lens_fixed, kwargs_lens_sigma, cleaning=True)
 
                         else:
-                            print(f"type of Shear {shear_idx.type} not implemented")
+                            print(f"type of Shear {mass_field_idx.type} not implemented")
 
 
 
@@ -461,20 +461,20 @@ def update_coolest_from_lenstronomy(file_name, kwargs_result, kwargs_mcmc=None,
                 # if (galaxy.redshift <= min_redshift) and (galaxy.redshift >= max_redshift):
                 #     print(f'REDSHIFT {galaxy.redshift} is not in the range ] {min_red} , {max_red} [')
 
-            elif lensing_entity.type == "external_shear":
-                shear_list = lensing_entity.mass_model
-                for shear_idx in shear_list:
+            elif lensing_entity.type == "MassField":
+                mass_field_list = lensing_entity.mass_model
+                for mass_field_idx in mass_field_list:
 
                     kwargs_lens = kwargs_result['kwargs_lens'][idx_lens]
                     kwargs_lens_mcmc = None
-                    if (kwargs_mcmc is not None) & (shear_idx.type in available_profiles):
+                    if (kwargs_mcmc is not None) & (mass_field_idx.type in available_profiles):
                         kwargs_lens_mcmc = [arg[idx_lens] for arg in kwargs_mcmc['args_lens']]
 
-                    if shear_idx.type == 'ExternalShear':
-                        update.shear_update(shear_idx, kwargs_lens, kwargs_lens_mcmc)
+                    if mass_field_idx.type == 'ExternalShear':
+                        update.shear_update(mass_field_idx, kwargs_lens, kwargs_lens_mcmc)
                         idx_lens += 1
                     else:
-                        print(f"type of Shear {shear_idx.type} not implemented")
+                        print(f"type of Shear {mass_field_idx.type} not implemented")
 
             else:
                 print(f"Lensing entity of type {lensing_entity.type} is unknown.")

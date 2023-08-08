@@ -12,8 +12,8 @@
     "documentation": "The list of components that define the lensing system.\n    In COOLEST, a \"lensing entity\" means either a galaxy, or an external shear component.",
     "py/seq": [
       {
-        "py/object": "coolest.template.classes.external_shear.ExternalShear",
-        "type": "external_shear",
+        "py/object": "coolest.template.classes.mass_field.MassField",
+        "type": "MassField",
         "name": "my lovely external shear",
         "redshift": 0.5,
         "mass_model": {
@@ -51,7 +51,7 @@
                     "documentation": ""
                   },
                   "latex_str": "$\\gamma_{\\rm ext}$",
-                  "id": "extshear_model_0-ExternalShear_0-gamma_ext"
+                  "id": "0-massfield-mass-0-ExternalShear-gamma_ext"
                 },
                 "phi_ext": {
                   "py/object": "coolest.template.classes.parameter.NonLinearParameter",
@@ -80,11 +80,12 @@
                     "documentation": ""
                   },
                   "latex_str": "$\\phi_{\\rm ext}$",
-                  "id": "extshear_model_0-ExternalShear_0-phi_ext"
+                  "id": "0-massfield-mass-0-ExternalShear--phi_ext"
                 }
               },
-              "id": "extshear_model_0-ExternalShear_0"
-            }
+              "id": "0-massfield-mass-0-ExternalShear",
+              "documentation": "External shear defined with a strength and orientation.\n    \n    This profile is described by the following parameters:\n\n    - 'gamma_ext': strength of the shear field\n    - 'phi_ext': orientation of the shear field"
+           }
           ]
         },
         "documentation": ""
@@ -1334,16 +1335,5 @@
     "documentation": "Defines the cosmological model. \n    Currently, only FlatLambdaCDM from astropy is supported, based on H0 and Omega_m."
   },
   "standard": "COOLEST",
-  "meta": {},
-  "exclude_keys": [
-    "documentation",
-    "id",
-    "latex_str",
-    "units",
-    "fixed",
-    "definition_range",
-    "likelihoods",
-    "regularizations",
-    "exclude_keys"
-  ]
+  "meta": {}
 }

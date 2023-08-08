@@ -12,7 +12,7 @@
     "documentation": "The list of components that define the lensing system.\n    In COOLEST, a \"lensing entity\" means either a galaxy, or an external shear component.",
     "py/seq": [
       {
-        "py/object": "coolest.template.classes.external_shear.ExternalShear",
+                "py/object": "coolest.template.classes.mass_field.MassField",
         "type": "external_shearrrrr",
         "name": "my lovely external shear",
         "redshift": 0.5,
@@ -92,8 +92,8 @@
 
 
       {
-        "py/object": "coolest.template.classes.external_shear.ExternalShear",
-        "type": "external_shear",
+                "py/object": "coolest.template.classes.mass_field.MassField",
+        "type": "MassField",
         "name": "my lovely external shear",
         "redshift": 0.5,
         "mass_model": {
@@ -200,8 +200,8 @@
       },
 
       {
-        "py/object": "coolest.template.classes.external_shear.ExternalShear",
-        "type": "external_shear",
+                "py/object": "coolest.template.classes.mass_field.MassField",
+        "type": "MassField",
         "name": "my lovely external shear",
         "redshift": 0.5,
         "mass_model": {
@@ -1776,16 +1776,5 @@
     "documentation": "Defines the cosmological model. \n    Currently, only FlatLambdaCDM from astropy is supported, based on H0 and Omega_m."
   },
   "standard": "COOLEST",
-  "meta": {},
-  "exclude_keys": [
-    "documentation",
-    "id",
-    "latex_str",
-    "units",
-    "fixed",
-    "definition_range",
-    "likelihoods",
-    "regularizations",
-    "exclude_keys"
-  ]
+  "meta": {}
 }

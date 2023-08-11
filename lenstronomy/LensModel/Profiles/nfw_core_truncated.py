@@ -19,7 +19,7 @@ class TNFWC(LensProfileBase):
 
     When the core radius goes to zero and the truncation radius approaches infinity this profile reduces to an NFW profile
     with the squared term inside the parentheses.
-    
+
     TODO: add the gravitational potential for this profile
     TODO: add analytic solution for 3D mass
     """
@@ -71,7 +71,7 @@ class TNFWC(LensProfileBase):
         R = np.sqrt(x_ ** 2 + y_ ** 2)
         R = np.maximum(R, 0.00000001)
         kappa = self.density_2d(R, 0, Rs, rho0_input, r_core, r_trunc)
-        gamma1, gamma2 = self.nfwGamma(R, Rs, rho0_input, r_core, r_trunc, x_, y_)
+        gamma1, gamma2 = self.nfw_gamma(R, Rs, rho0_input, r_core, r_trunc, x_, y_)
         f_xx = kappa + gamma1
         f_yy = kappa - gamma1
         f_xy = gamma2
@@ -207,7 +207,7 @@ class TNFWC(LensProfileBase):
         a = 4 * rho0 * Rs * R * gx / x ** 2 / R
         return a * ax_x, a * ax_y
 
-    def nfwGamma(self, R, Rs, rho0, r_core, r_trunc, ax_x, ax_y):
+    def nfw_gamma(self, R, Rs, rho0, r_core, r_trunc, ax_x, ax_y):
         """
 
         shear gamma of NFW profile (times Sigma_crit) along the projection to coordinate 'axis'

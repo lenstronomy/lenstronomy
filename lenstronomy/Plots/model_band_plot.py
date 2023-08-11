@@ -257,18 +257,21 @@ class ModelBandPlot(ModelBand):
             plot_util.text_description(ax, self._frame_size, text=text,
                                        color="k", backgroundcolor='w', flipped=False,
                                        font_size=font_size)
-        divider = make_axes_locatable(ax)
-        cax = divider.append_axes("right", size="5%", pad=0.05)
-        cb = plt.colorbar(im, cax=cax)
-        cb.set_label(colorbar_label, fontsize=font_size)
-        ra_image, dec_image = self._bandmodel.PointSource.image_position(self._kwargs_ps_partial,
-                                                                         self._kwargs_lens_partial)
-        plot_util.image_position_plot(ax, self._coords, ra_image, dec_image, color='k', image_name_list=image_name_list)
 
         if with_critical_curves is True:
             ra_crit_list, dec_crit_list = self._critical_curves()
             plot_util.plot_line_set(ax, self._coords, ra_crit_list, dec_crit_list, color=crit_curve_color,
                                     points_only=self._caustic_points_only)
+
+        ra_image, dec_image = self._bandmodel.PointSource.image_position(self._kwargs_ps_partial,
+                                                                         self._kwargs_lens_partial)
+        plot_util.image_position_plot(ax, self._coords, ra_image, dec_image, color='k', image_name_list=image_name_list,
+                                      plot_out_of_image=False)
+
+        divider = make_axes_locatable(ax)
+        cax = divider.append_axes("right", size="5%", pad=0.05)
+        cb = plt.colorbar(im, cax=cax)
+        cb.set_label(colorbar_label, fontsize=font_size)
 
         return ax
 

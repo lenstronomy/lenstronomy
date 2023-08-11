@@ -8,6 +8,7 @@ from scipy.integrate import quad
 
 __all__ = ['TNFWC']
 
+
 class TNFWC(LensProfileBase):
     """
 
@@ -16,8 +17,13 @@ class TNFWC(LensProfileBase):
     .. math::
         \\rho(r) = \\frac{\\rho_0 r_s^\3}{\left(r^2+r_c^2\right)^{1/2} \left(r_s^2+r^2\right)} \left(\frac{r_t^2}{r^2+r_t^2}\right)
 
-    For r_c -> 0 and r_t -> infinity, this profile reduce to something like an NFW profile with the squared term in
-    the denominator appearing inside the parenthesis (i.e. (1 + r^2/r_s^2) instead of (1 + r/r_s)^2).
+    For
+    .. math::
+        \r_c \rightarrow 0
+        r_t -> infinity
+    this profile reduce to something like an NFW profile with the squared term in the denominator appearing inside the
+    parenthesis, i.e. .. math::
+        \\left(1 + r^2/r_s^2)\right)
 
     TODO: implement the gravitational potential for this profile
     TODO: implement analytic solution for 3D mass
@@ -48,7 +54,7 @@ class TNFWC(LensProfileBase):
         x_ = x - center_x
         y_ = y - center_y
         R = np.sqrt(x_ ** 2 + y_ ** 2)
-        f_x, f_y = self.nfwAlpha(R, Rs, rho0_input, r_core, r_trunc, x_, y_)
+        f_x, f_y = self.nfw_alpha(R, Rs, rho0_input, r_core, r_trunc, x_, y_)
         return f_x, f_y
 
     def hessian(self, x, y, Rs, alpha_Rs, r_core, r_trunc, center_x=0, center_y=0):
@@ -184,10 +190,10 @@ class TNFWC(LensProfileBase):
         m_2d = 4 * rho0 * Rs * R ** 2 * gx / x ** 2 * np.pi
         return m_2d
 
-    def nfwAlpha(self, R, Rs, rho0, r_core, r_trunc, ax_x, ax_y):
+    def nfw_alpha(self, R, Rs, rho0, r_core, r_trunc, ax_x, ax_y):
         """
 
-        deflection angel of NFW profile (times Sigma_crit D_OL) along the projection to coordinate 'axis'
+        deflection angle of the profile (times Sigma_crit D_OL) along the projection to coordinate 'axis'
 
         :param R: 3d radius
         :param Rs: scale radius
@@ -234,8 +240,8 @@ class TNFWC(LensProfileBase):
 
         :param X: R/Rs
         :type X: float >0
-        :param r_core: core radius [arcsec]
-        :param r_trunc: truncation radius [arcsec]
+        :param b: core radius divided by the scale radius
+        :param t: truncation radius divided by the scale radius
         :return: solution to the projection integral
         """
         prefactor = t ** 2 / (t ** 2 - 1)
@@ -247,8 +253,8 @@ class TNFWC(LensProfileBase):
 
         :param X: R/Rs
         :type X: float >0
-        :param r_core: core radius [arcsec]
-        :param r_trunc: truncation radius [arcsec]
+        :param b: core radius divided by the scale radius
+        :param t: truncation radius divided by the scale radius
         :return: solution of the integral over projected mass
         """
         if b == t:
@@ -260,8 +266,8 @@ class TNFWC(LensProfileBase):
     def _u1(x, b, t):
         """
         :param x: R/Rs
-        :param b: r_core/Rs
-        :param t: r_trunc/Rs
+        :param b: core radius divided by the scale radius
+        :param t: truncation radius divided by the scale radius
 
         """
         t2x2 = t ** 2 + x ** 2
@@ -278,8 +284,8 @@ class TNFWC(LensProfileBase):
     def _u2(self, x, b, t):
         """
         :param x: R/Rs
-        :param b: r_core/Rs
-        :param t: r_trunc/Rs
+        :param b: core radius divided by the scale radius
+        :param t: truncation radius divided by the scale radius
 
         """
         return (t ** 2 + x ** 2) * self._u1(x, b, t)
@@ -313,4 +319,4 @@ class TNFWC(LensProfileBase):
         :param r_trunc: truncation radius [arcsec]
         :return: deflection angle at RS
         """
-        return self.nfwAlpha(Rs, Rs, rho0, r_core, r_trunc, Rs, 0.0)[0]
+        return self.nfw_alpha(Rs, Rs, rho0, r_core, r_trunc, Rs, 0.0)[0]

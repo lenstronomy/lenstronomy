@@ -17,16 +17,11 @@ class TNFWC(LensProfileBase):
     .. math::
         \\rho(r) = \\frac{\\rho_0 r_s^\3}{\left(r^2+r_c^2\right)^{1/2} \left(r_s^2+r^2\right)} \left(\frac{r_t^2}{r^2+r_t^2}\right)
 
-    For
-    .. math::
-        \r_c \rightarrow 0
-        r_t -> infinity
-    this profile reduce to something like an NFW profile with the squared term in the denominator appearing inside the
-    parenthesis, i.e. .. math::
-        \\left(1 + r^2/r_s^2)\right)
+    For For :math:\\r_c \\rightarrow 0 and :math:\\r_t \\rightarrow \infty this profile reduce to something like an NFW 
+    profile with the squared term in the denominator appearing inside the parenthesis, i.e. .. math:: \\left(1 + r^2/r_s^2)\right)
 
-    TODO: implement the gravitational potential for this profile
-    TODO: implement analytic solution for 3D mass
+    TODO: add the gravitational potential for this profile
+    TODO: add analytic solution for 3D mass
     """
     profile_name = 'TNFWC'
     param_names = ['Rs', 'alpha_Rs', 'center_x', 'center_y', 'r_trunc', 'r_core']

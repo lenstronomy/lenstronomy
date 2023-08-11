@@ -15,11 +15,11 @@ class TNFWC(LensProfileBase):
     This class contains an pseudo NFW profile with a core radius and a truncation radius. The density in 3D is given by
 
     .. math::
-        \\rho(r) = \\frac{\\rho_0 r_s^\3}{\left(r^2+r_c^2\right)^{1/2} \left(r_s^2+r^2\right)} \left(\frac{r_t^2}{r^2+r_t^2}\right)
+        \\rho(r) = \\frac{\\rho_0 r_s^3}{\\left(r^2+r_c^2\\right)^{1/2} \\left(r_s^2+r^2\\right)} \\left(\\frac{r_t^2}{r^2+r_t^2}\\right)
 
-    For For :math:\\r_c \\rightarrow 0 and :math:\\r_t \\rightarrow \infty this profile reduce to something like an NFW 
-    profile with the squared term in the denominator appearing inside the parenthesis, i.e. .. math:: \\left(1 + r^2/r_s^2)\right)
-
+    When the core radius goes to zero and the truncation radius approaches infinity this profile reduces to an NFW profile
+    with the squared term inside the parentheses.
+    
     TODO: add the gravitational potential for this profile
     TODO: add analytic solution for 3D mass
     """

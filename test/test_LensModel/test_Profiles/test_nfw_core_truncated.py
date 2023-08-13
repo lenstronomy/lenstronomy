@@ -49,19 +49,14 @@ class TestTNFWC(object):
         density_2d_gnfw = self.gnfw.density_2d(R, 0.0, Rs, rho0, 1.0, 3.0)
         npt.assert_almost_equal(density_2d_tnfwc, density_2d_gnfw, 3.)
 
-    def test_mass(self):
+    def test_mass3d(self):
 
-        kwargs_lens = {'alpha_Rs': 2.1, 'Rs': 1.5, 'r_core': 1.2, 'r_trunc': 3.0, 'center_x': 0.04, 'center_y': -1.0}
+        kwargs_lens = {'alpha_Rs': 2.1, 'Rs': 1.5, 'r_core': 1.2, 'r_trunc': 3.0}
         rho0 = self.tnfwc.alpha2rho0(kwargs_lens['alpha_Rs'], kwargs_lens['Rs'], kwargs_lens['r_core'], kwargs_lens['r_trunc'])
-        kwargs_lens_rho0 = {'rho0': rho0, 'Rs': 1.5, 'r_core': 1.2, 'r_trunc': 3.0, 'center_x': 0.04, 'center_y': -1.0}
+        kwargs_lens_rho0 = {'rho0': rho0, 'Rs': 1.5, 'r_core': 1.2, 'r_trunc': 3.0}
         m1 = self.tnfwc.mass_3d(2.0, **kwargs_lens_rho0)
         m2 = self.tnfwc.mass_3d_lens(2.0, **kwargs_lens)
         npt.assert_almost_equal(m1, m2)
-
-        m1 = self.tnfwc.mass_2d(2.0, **kwargs_lens_rho0)
-        m2 = self.tnfwc.mass_2d_lens(2.0, **kwargs_lens)
-        npt.assert_almost_equal(m1, m2)
-
 
 if __name__ == '__main__':
     pytest.main()

@@ -145,7 +145,6 @@ class CNFW(LensProfileBase):
         b = r_core * Rs ** -1
         x = R * Rs ** -1
         Fx = self._F(x, b)
-
         return 2 * rho0 * Rs * Fx
 
     def mass_3d(self, R, Rs, rho0, r_core):

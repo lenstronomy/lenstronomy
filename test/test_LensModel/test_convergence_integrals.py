@@ -145,5 +145,31 @@ class TestConvergenceIntegrals(object):
         x1, y1 = 500, 550
         npt.assert_almost_equal(f_x[x1, y1], f_x_num[x1, y1], decimal=2)
 
+    def test_tnfwc(self):
+
+        from lenstronomy.LensModel.Profiles.nfw_core_truncated import TNFWC
+        tnfwc = TNFWC()
+        deltaPix = 0.005
+        numPix = 2000
+        x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
+
+        kwargs_lens = {'alpha_Rs': 1.2, 'Rs': 0.8, 'r_trunc': 3.5, 'r_core': 0.45}
+        f_xx, _, _, f_yy = tnfwc.hessian(x_grid, y_grid, **kwargs_lens)
+        f_x, f_y = tnfwc.derivatives(x_grid, y_grid, **kwargs_lens)
+        f_x = util.array2image(f_x)
+        kappa = util.array2image((f_xx + f_yy) / 2.)
+        f_x_num, f_y_num = convergence_integrals.deflection_from_kappa_grid(kappa, deltaPix)
+        x1, y1 = 500, 550
+        npt.assert_almost_equal(f_x[x1, y1], f_x_num[x1, y1], decimal=2)
+
+        kwargs_lens = {'alpha_Rs': 1.2, 'Rs': 0.8, 'r_trunc': 300.5, 'r_core': 0.45}
+        f_xx, _, _, f_yy = tnfwc.hessian(x_grid, y_grid, **kwargs_lens)
+        f_x, f_y = tnfwc.derivatives(x_grid, y_grid, **kwargs_lens)
+        f_x = util.array2image(f_x)
+        kappa = util.array2image((f_xx + f_yy) / 2.)
+        f_x_num, f_y_num = convergence_integrals.deflection_from_kappa_grid(kappa, deltaPix)
+        x1, y1 = 500, 550
+        npt.assert_almost_equal(f_x[x1, y1], f_x_num[x1, y1], decimal=2)
+
 if __name__ == '__main__':
     pytest.main()

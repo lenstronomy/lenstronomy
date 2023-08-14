@@ -58,5 +58,16 @@ class TestTNFWC(object):
         m2 = self.tnfwc.mass_3d_lens(2.0, **kwargs_lens)
         npt.assert_almost_equal(m1, m2)
 
+    def test_g(self):
+        x = 1.2
+        b = 1.5
+        t = 1.5
+        out1 = self.tnfwc._g(x, b, t)
+        b = 1.5001
+        out2 = self.tnfwc._g(x, b, t)
+        out3 = self.tnfwc._g(x, b, t+0.001)
+        npt.assert_almost_equal(out1, out2, 4)
+        npt.assert_almost_equal(out1, out3, 4)
+
 if __name__ == '__main__':
     pytest.main()

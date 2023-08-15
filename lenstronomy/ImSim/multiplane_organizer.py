@@ -17,7 +17,16 @@ class MultiPlaneOrganizer(object):
                  z_lens_convention,
                  z_source_convention, cosmo):
         """
-
+        :param lens_redshift_list: list of lens redshifts
+        :type lens_redshift_list: list
+        :param source_redshift_list: list of source redshifts
+        :type source_redshift_list: list
+        :param sorted_lens_redshift_index: sorted index of lens redshifts
+        :type sorted_lens_redshift_index: list
+        :param sorted_source_redshift_index: sorted index of source redshifts
+        :type sorted_source_redshift_index: list
+        :param z_lens_convention: lens convention redshift
+        :type z_lens_convention: float
         """
         self._lens_redshift_list = lens_redshift_list
         self._source_redshift_list = source_redshift_list
@@ -83,7 +92,10 @@ class MultiPlaneOrganizer(object):
 
     def _extract_a_b_factors(self, kwargs_special):
         """
-
+        Extracts the a and b factors from the kwargs_special dictionary.
+        :param kwargs_special: dictionary of special keyword arguments
+        :type kwargs_special: dict
+        :return: a_factors, b_factors
         """
         a_factors = []
         b_factors = [1.]
@@ -102,7 +114,11 @@ class MultiPlaneOrganizer(object):
 
     def update_lens_T_lists(self, lens_model, kwargs_special):
         """
-
+        Updates the lens model's `T_ij`, `T_ij_start`, `T_ij_stop`, and `T_z lists`.
+        :param lens_model: instance of LensModel class
+        :type lens_model: lenstronomy.LensModel.lens_model.LensModel
+        :param kwargs_special: dictionary of special keyword arguments
+        :type kwargs_special: dict
         """
         T_z_list, T_ij_list = self._get_lens_T_lists(kwargs_special)
         T_ij_start, T_ij_stop = self._transverse_distance_start_stop(0,
@@ -116,7 +132,11 @@ class MultiPlaneOrganizer(object):
     def update_source_mapping_T_lists(self, source_mapping_class,
                                       kwargs_special):
         """
-
+        Updates the source mapping class's `T_ij_start_list` and `T_ij_end_list`.
+        :param source_mapping_class: instance of SourceMapping class
+        :type source_mapping_class: lenstronomy.LensModel.Solver.source_mapping.SourceMapping
+        :param kwargs_special: dictionary of special keyword arguments
+        :type kwargs_special: dict
         """
         T_ij_start_list, T_ij_end_list = self._get_source_T_start_end_lists(
             kwargs_special)

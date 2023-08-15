@@ -29,9 +29,8 @@ class KinematicNN():
     def generate_map(self, input_p, verbose=False):
         """Generate velocity map given input parameters.
 
-        input_p: input parameters
-
-        Returns the velocity maps
+        :param input_p: vector of input parameters
+        :return: the velocity map associated with input_p
         """
         self.within_bounds = self.check_bounds(input_p, verbose)
         return self.generator.generate_map(input_p)
@@ -47,6 +46,7 @@ class KinematicNN():
     def check_bounds(self, input_p, same_orientation=True, verbose=False):
         """
         Checks to see if input parameters lie in bounds used for the training set
+
         :param input_p: input parameters to NN
         :param same_orientation: default True; confirms that mass and light have same position angles
         :param verbose: default False; if True prints statements when out of bounds

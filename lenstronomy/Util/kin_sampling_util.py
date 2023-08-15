@@ -15,6 +15,7 @@ class KinNNImageAlign(object):
     def __init__(self, muse_inputs, hst_inputs, kin_nn_inputs):
         """
         initialize input data
+
         :param muse_inputs: dictionary which encodes grid and transformation information for kinematic data
             (doesn't have to be MUSE)
             :'image': contains 2d image used to calculate grid coordinates
@@ -71,6 +72,7 @@ class KinNNImageAlign(object):
     def pix_coords(self, input_set, flatten=True):
         """
         simple function to give pixel coordinates of grid
+
         :param input_set: dictionary from above (e.g. muse_inputs) which completely describes grid transformation
         :boolean flatten: default True; if True, return 1D flattened output, if False, return 2D grid
         :return pixel coordinates of grid
@@ -86,6 +88,7 @@ class KinNNImageAlign(object):
     def radec_to_xy(self, ra, dec, xy_to_radec_matrix, ra_atxy0, dec_atxy0):
         """
         converts from radec to pixel coordinates
+
         :param ra: ra coordinate to transform
         :param dec: dec coordinate to transform
         :param xy_to_radec_matrix: transformation matrix to convert from pixel xy to ra/dec
@@ -102,6 +105,7 @@ class KinNNImageAlign(object):
     def xy_to_radec(self, x, y, xy_to_radec_matrix, ra_atxy0, dec_atxy0):
         """
         converts from pixel coordinates to radec
+
         :param x: x coordinate to transform
         :param y: y coordinate to transform
         :param xy_to_radec_matrix: transformation matrix to convert from pixel xy to ra/dec
@@ -118,6 +122,7 @@ class KinNNImageAlign(object):
                                offsetx=0, offsety=0):
         """
         rotates and rescales from the x,y HST coordinate system into the NN coordinate system
+
         :param hst_x: HST x coordinate to transform
         :param hst_y: HST y coordinate to transform
         :param ellipse_pa_to_hstx_angle: (radians) position angle of ellipse major axis relative to x
@@ -150,6 +155,7 @@ class KinNNImageAlign(object):
     def plot_contour_and_grid(self, xcoords, ycoords, orig_image, color, alpha=0.4):
         """
         plotting function for visualization of a grid with a single ellipse contour
+
         :param xcoords: grid x coordinates, flattened
         :param ycoords: grid y coordinates, flattened
         :param orig_image: original 2D image
@@ -164,6 +170,7 @@ class KinNNImageAlign(object):
     def musegrid_in_radec(self):
         """
         calculates ra and dec coordinates of MUSE input coordinate grid
+
         :return: ra and dec coordinates
         """
         muse_x, muse_y = self.pix_coords(self.muse_data, flatten=True)
@@ -174,6 +181,7 @@ class KinNNImageAlign(object):
     def musegrid_in_hstxy(self):
         """
         calculates x and y coordinates in the HST coordinate system of the original MUSE input grid
+
         :return: x and y coordinates
         """
         muse_ra, muse_dec = self.musegrid_in_radec()
@@ -186,6 +194,7 @@ class KinNNImageAlign(object):
     def musegrid_in_kin_nn_xy(self):
         """
         calculates x and y coordinates in the NN coordinate system of the original MUSE input grid
+
         :return: x and y coordinates
         """
         muse_coords_in_hst_x, muse_coords_in_hst_y = self.musegrid_in_hstxy()
@@ -200,6 +209,7 @@ class KinNNImageAlign(object):
     def interp_image(self):
         """
         interpolates kinNN image at the coordinates of the transformed MUSE grid
+
         :return: interpolated image which lines up with MUSE coordinates
         """
         muse_kin_nn_x, muse_kin_nn_y = self.musegrid_in_kin_nn_xy()

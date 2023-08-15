@@ -60,6 +60,7 @@ class KinLikelihood(object):
     def calc_vrms(self, kwargs_lens, kwargs_lens_light, kwargs_special, verbose=False):
         """
         Calculates binned vrms using SKiNN
+
         :param kwargs_lens: lens model kwargs list
         :param kwargs_lens_light: lens light kwargs list
         :param kwargs_special: cosmology and other kwargs
@@ -87,6 +88,7 @@ class KinLikelihood(object):
     def logL(self, kwargs_lens, kwargs_lens_light, kwargs_special, verbose=False):
         """
         Calculates Log likelihood from 2D kinematic likelihood
+
         :param kwargs_lens: lens model kwargs list
         :param kwargs_lens_light: lens light kwargs list
         :param kwargs_special: cosmology and other kwargs
@@ -112,10 +114,11 @@ class KinLikelihood(object):
     def convert_to_nn_params(self, kwargs_lens, kwargs_lens_light, kwargs_special):
         """
         converts lenstronomy kwargs into input vector for SKiNN, also returns whether or not mass and light are aligned
+
         :param kwargs_lens: lens model kwargs list
         :param kwargs_lens_light: lens light kwargs list
         :param kwargs_special: cosmology and other kwargs
-        return parameters in GLEE convention to be input into NN
+        :return: parameters in GLEE convention to be input into NN
         """
         # lenstronomy to GLEE conversion
         # orientation_mass,q_mass=param_util.ellipticity2phi_q(kwargs_lens[self._idx_lens]['e1'],
@@ -144,6 +147,7 @@ class KinLikelihood(object):
     def rescale_distance(self, image, kwargs_special):
         """
         rescales velocity map according to distance, requires lens redshift
+
         :param image: vrms image [km/s]
         :param kwargs_special: kwargs with cosmological distances for rescaling
         return rescaled vrms image [km/s]
@@ -156,6 +160,7 @@ class KinLikelihood(object):
     def kwargs_data2image_input(self, kwargs_data):
         """
         Creates the kwargs of the image needed for 2D kinematic likelihood
+
         :param kwargs_data: kwargs giving image and describing imaging data coordinate transformation
         :return kwargs: coordinate transformation kwargs as input for KinNNImageAlign class
         """
@@ -168,6 +173,7 @@ class KinLikelihood(object):
     def update_image_input(self, kwargs_lens):
         """
         Updates the image_input for rotation with the new values of orientation and center of the lens model.
+
         :param kwargs_lens: lens kwargs with center and PA positions to be used as input
         """
         orientation_ellipse = kwargs_lens[self._idx_lens]['phi']
@@ -181,6 +187,7 @@ class KinLikelihood(object):
     def auto_binning(self, rotated_map, light_map):
         """
         Function to convolve and bin the NN rotated output
+
         :param rotated_map: model vrms map [km/s] in data pixel coordinates
         :param light_map: model light map in data pixel coordinates for weighting
         :return: binned vrms [km/s] for comparison with data
@@ -208,6 +215,7 @@ class KinLikelihood(object):
     def _logL(self, vrms):
         """
         Calculates the log likelihood for a given binned model
+
         :param vrms: binned vrms [km/s] to compare with observed binned data
         :return: log likelihood
         """

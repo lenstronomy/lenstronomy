@@ -18,7 +18,7 @@ _SUPPORTED_MODELS = ['SHIFT', 'NIE_POTENTIAL', 'CONST_MAG', 'SHEAR', 'SHEAR_GAMM
                      'CORED_DENSITY', 'CORED_DENSITY_2', 'CORED_DENSITY_MST', 'CORED_DENSITY_2_MST', 'CORED_DENSITY_EXP',
                      'CORED_DENSITY_EXP_MST', 'TABULATED_DEFLECTIONS', 'MULTIPOLE', 'HESSIAN', 'ElliSLICE', 'ULDM','CORED_DENSITY_ULDM_MST',
                      'LOS', 'LOS_MINIMAL' , 'SYNTHESIS',
-                     'GNFW','CSE']
+                     'GNFW','CSE', 'TNFWC']
 
 
 class ProfileListBase(object):
@@ -330,6 +330,9 @@ class ProfileListBase(object):
         elif lens_type == 'SYNTHESIS':
             from lenstronomy.LensModel.Profiles.synthesis import SynthesisProfile
             return SynthesisProfile(**kwargs_synthesis)
+        elif lens_type == 'TNFWC':
+            from lenstronomy.LensModel.Profiles.nfw_core_truncated import TNFWC
+            return TNFWC()
         else:
             raise ValueError('%s is not a valid lens model. Supported are: %s.' % (lens_type, _SUPPORTED_MODELS))
 

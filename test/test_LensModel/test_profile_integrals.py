@@ -386,6 +386,23 @@ class TestNumerics(object):
         kwargs = {'alpha_Rs': 0.7, 'Rs': 0.3, 'gamma_inner': 0.5, 'gamma_outer': 2.6}
         self.assert_lens_integrals(Model, kwargs)
 
+    def test_tnfwc(self):
+
+        from lenstronomy.LensModel.Profiles.nfw_core_truncated import TNFWC as Model
+        kwargs = {'alpha_Rs': 4.0, 'Rs': 2.0, 'r_core': 0.1, 'r_trunc': 200.0}
+        self.assert_lens_integrals(Model, kwargs)
+
+        kwargs = {'alpha_Rs': 4.0, 'Rs': 2.0, 'r_core': 1.1, 'r_trunc': 100.0}
+        self.assert_lens_integrals(Model, kwargs)
+
+        kwargs = {'alpha_Rs': 4.0, 'Rs': 0.5, 'r_core': 0.1, 'r_trunc': 3.0}
+        self.assert_lens_integrals(Model, kwargs)
+
+        kwargs = {'alpha_Rs': 4.0, 'Rs': 0.5, 'r_core': 0.4, 'r_trunc': 3.0}
+        self.assert_lens_integrals(Model, kwargs)
+
+        kwargs = {'alpha_Rs': 4.0, 'Rs': 0.5, 'r_core': 0.9, 'r_trunc': 3.0}
+        self.assert_lens_integrals(Model, kwargs)
 
     """
     def test_sis(self):

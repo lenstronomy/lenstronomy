@@ -20,9 +20,10 @@ class Hernquist(LensProfileBase):
     >>> cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.05)
     >>> lens_cosmo = LensCosmo(z_lens=0.5, z_source=1.5, cosmo=cosmo)
 
-    Here we compute the angular scale of Rs on the sky (in arc seconds) and the deflection the normalization sigma0:
+    Here we compute the angular scale of Rs on the sky (in arc seconds) and the deflection the normalization sigma0 from
+    the total stellar mass in M_sol and Rs in [Mpc]:
 
-    >>> sigma0, rs_angle = lens_cosmo.hernquist_phys2angular(M=10**13, c=6)
+    >>> sigma0, rs_angle = lens_cosmo.hernquist_phys2angular(mass=10**11, rs=0.02)
 
     And here we perform the inverse calculation given Rs_angle and alpha_Rs to return the physical halo properties.
 

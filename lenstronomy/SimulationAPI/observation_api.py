@@ -160,7 +160,7 @@ class SingleBand(Instrument, Observation):
          'e-': (electrons assumed to be IID),
          'ADU': (analog-to-digital unit)
         :param background_noise: sqrt(variance of background) as a total contribution from readnoise,
-         sky brightness etc in units of the data_count_units (e- or ADU)
+         sky brightness etc. in units of the data_count_units (e- or ADU)
          If you set this parameter, it will use this value regardless of the values of read_noise, sky_brightness
         """
         Instrument.__init__(self, pixel_scale, read_noise, ccd_gain)  # read_noise and ccd_gain can be None

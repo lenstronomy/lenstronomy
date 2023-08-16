@@ -54,41 +54,6 @@ class NautilusSampler(NestedSampler):
 
         self._sampler = self._nautilus.Sampler(
             self.prior, self.log_likelihood, self.n_dims, **kwargs)
-        self._has_warned = False
-
-    def prior(self, u):
-        """
-        compute the mapping between the unit cube and parameter cube
-
-        :param u: unit hypercube, sampled by the algorithm
-        :return: hypercube in parameter space
-        """
-        if self.prior_type == 'gaussian':
-            p = utils.cube2args_gaussian(u, self.lowers, self.uppers,
-                                         self.means, self.sigmas, self.n_dims,
-                                         copy=True)
-        elif self.prior_type == 'uniform':
-            p = utils.cube2args_uniform(u, self.lowers, self.uppers,
-                                        self.n_dims, copy=True)
-        else:
-            raise ValueError(
-                'prior type %s not supported! Chose "gaussian" or "uniform".')
-        return p
-
-    def log_likelihood(self, x):
-        """
-        compute the log-likelihood given list of parameters
-
-        :param x: parameter values
-        :return: log-likelihood (from the likelihood module)
-        """
-        log_l = self._ll(x)
-        if not np.isfinite(log_l):
-            if not self._has_warned:
-                print("WARNING : logL is not finite : return very low value instead")
-            log_l = -1e15
-            self._has_warned = True
-        return float(log_l)
 
     def run(self, **kwargs):
         """
@@ -105,15 +70,10 @@ class NautilusSampler(NestedSampler):
         keys = [p.name for p in signature(
             self._sampler.run).parameters.values()]
         kwargs = {key: kwargs[key] for key in kwargs.keys() & keys}
-
-        self._sampler.run(**kwargs)
-
-        time_start = time.time()
         self._sampler.run(**kwargs)
         points, log_w, log_l = self._sampler.posterior()
         log_z = self._sampler.evidence()
-        time_end = time.time()
-        print(time_end - time_start, 'time taken for MCMC sampling')
+
         return points, log_w, log_l, log_z
 
     def _check_install(self):

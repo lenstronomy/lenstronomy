@@ -41,16 +41,6 @@ class TestNautilusSampler(object):
         assert len(points) == len(log_l)
         assert np.isfinite(log_z)
 
-    def test_prior(self):
-
-        num_param = 10
-        from nautilus import Prior
-        prior = Prior()
-
-        for i in range(num_param):
-            prior.add_parameter(dist=(0, 1))
-        assert num_param == prior.dimensionality()
-
 
 if __name__ == '__main__':
     pytest.main()

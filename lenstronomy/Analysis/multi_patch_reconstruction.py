@@ -82,9 +82,10 @@ class MultiPatchReconstruction(MultiBandImageReconstruction):
             # evaluate pixel of zero point with the base coordinate system
             ra0, dec0 = data_class_i.radec_at_xy_0
             x_min, y_min = pixel_grid.map_coord2pix(ra0, dec0)
+            y_min = int(y_min)
+            x_min = int(x_min)
             nx_i, ny_i = data_class_i.num_pixel_axes
             nx, ny = _update_frame_size(nx, ny, x_min, y_min, nx_i, ny_i)
-
             # select minimum in x- and y-axis
             # transform back in RA/DEC and make this the new zero point of the base coordinate system
             ra_at_xy_0_new, dec_at_xy_0_new = pixel_grid.map_pix2coord(np.minimum(x_min, 0), np.minimum(y_min, 0))
@@ -114,6 +115,8 @@ class MultiPatchReconstruction(MultiBandImageReconstruction):
                 # evaluate pixel of zero point with the base coordinate system
                 ra0, dec0 = data_class_i.radec_at_xy_0
                 x_min, y_min = self._pixel_grid_joint.map_coord2pix(ra0, dec0)
+                y_min = int(y_min)
+                x_min = int(x_min)
                 nx_i, ny_i = data_class_i.num_pixel_axes
                 image_joint[int(y_min):int(y_min + ny_i), int(x_min):int(x_min + nx_i)] = data_class_i.data
                 model_joint[int(y_min):int(y_min + ny_i), int(x_min):int(x_min + nx_i)] = model
@@ -145,6 +148,8 @@ class MultiPatchReconstruction(MultiBandImageReconstruction):
                 # evaluate pixel of zero point with the base coordinate system
                 ra0, dec0 = data_class_i.radec_at_xy_0
                 x_min, y_min = self._pixel_grid_joint.map_coord2pix(ra0, dec0)
+                y_min = int(y_min)
+                x_min = int(x_min)
                 nx_i, ny_i = data_class_i.num_pixel_axes
                 kappa_joint[int(y_min):int(y_min + ny_i), int(x_min):int(x_min + nx_i)] = kappa
                 magnification_joint[int(y_min):int(y_min + ny_i), int(x_min):int(x_min + nx_i)] = magnification

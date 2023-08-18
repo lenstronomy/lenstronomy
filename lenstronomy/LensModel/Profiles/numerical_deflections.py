@@ -1,8 +1,8 @@
-__author__ = 'dgilman'
+__author__ = "dgilman"
 
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
-__all__ = ['TabulatedDeflections']
+__all__ = ["TabulatedDeflections"]
 
 
 class TabulatedDeflections(LensProfileBase):
@@ -15,13 +15,12 @@ class TabulatedDeflections(LensProfileBase):
     a fixed lens model with no keyword arguments.
     """
 
-    profile_name = 'TABULATED_DEFLECTIONS'
+    profile_name = "TABULATED_DEFLECTIONS"
     param_names = []
     lower_limit_default = {}
     upper_limit_default = {}
 
     def __init__(self, custom_class):
-
         """
         :param custom_class: a user-defined class that has a __call___ method that returns deflection angles
 
@@ -29,7 +28,7 @@ class TabulatedDeflections(LensProfileBase):
 
         >>> custom_class = CustomLensingClass()
         >>> alpha_x, alpha_y = custom_class(x, y, **kwargs)
-        
+
         or equivalently:
 
         >>> from lenstronomy.LensModel.lens_model import LensModel
@@ -42,11 +41,9 @@ class TabulatedDeflections(LensProfileBase):
         super(TabulatedDeflections, self).__init__()
 
     def function(self, x, y, center_x=0, center_y=0, **kwargs):
-
-        raise Exception('no potential for this class.')
+        raise Exception("no potential for this class.")
 
     def derivatives(self, x, y, center_x=0, center_y=0, **kwargs):
-
         """
 
         :param x: x coordinate [arcsec]
@@ -75,10 +72,16 @@ class TabulatedDeflections(LensProfileBase):
         """
 
         diff = 1e-6
-        alpha_ra, alpha_dec = self.derivatives(x, y, center_x=center_x, center_y=center_y, **kwargs)
+        alpha_ra, alpha_dec = self.derivatives(
+            x, y, center_x=center_x, center_y=center_y, **kwargs
+        )
 
-        alpha_ra_dx, alpha_dec_dx = self.derivatives(x + diff, y, center_x=center_x, center_y=center_y, **kwargs)
-        alpha_ra_dy, alpha_dec_dy = self.derivatives(x, y + diff, center_x=center_x, center_y=center_y, **kwargs)
+        alpha_ra_dx, alpha_dec_dx = self.derivatives(
+            x + diff, y, center_x=center_x, center_y=center_y, **kwargs
+        )
+        alpha_ra_dy, alpha_dec_dy = self.derivatives(
+            x, y + diff, center_x=center_x, center_y=center_y, **kwargs
+        )
 
         dalpha_rara = (alpha_ra_dx - alpha_ra) / diff
         dalpha_radec = (alpha_ra_dy - alpha_ra) / diff

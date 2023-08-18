@@ -1,11 +1,11 @@
-__author__ = 'sibirrer'
+__author__ = "sibirrer"
 
 import numpy as np
 import lenstronomy.Util.util as util
 from lenstronomy.LensModel.Profiles.sersic_utils import SersicUtil
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
-__all__ = ['Sersic']
+__all__ = ["Sersic"]
 
 
 class Sersic(SersicUtil, LensProfileBase):
@@ -49,9 +49,22 @@ class Sersic(SersicUtil, LensProfileBase):
     >>> alpha_x, alpha_y = sersic.derivatives(x=1, y=1, k_eff=k_eff, R_sersic=R_sersic, center_x=0, center_y=0)
 
     """
-    param_names = ['k_eff', 'R_sersic', 'n_sersic', 'center_x', 'center_y']
-    lower_limit_default = {'k_eff': 0, 'R_sersic': 0, 'n_sersic': 0.5, 'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'k_eff': 10, 'R_sersic': 100, 'n_sersic': 8, 'center_x': 100, 'center_y': 100}
+
+    param_names = ["k_eff", "R_sersic", "n_sersic", "center_x", "center_y"]
+    lower_limit_default = {
+        "k_eff": 0,
+        "R_sersic": 0,
+        "n_sersic": 0.5,
+        "center_x": -100,
+        "center_y": -100,
+    }
+    upper_limit_default = {
+        "k_eff": 10,
+        "R_sersic": 100,
+        "n_sersic": 8,
+        "center_x": 100,
+        "center_y": 100,
+    }
 
     def function(self, x, y, n_sersic, R_sersic, k_eff, center_x=0, center_y=0):
         """
@@ -69,10 +82,12 @@ class Sersic(SersicUtil, LensProfileBase):
         n = n_sersic
         x_red = self._x_reduced(x, y, n, R_sersic, center_x, center_y)
         b = self.b_n(n)
-        #hyper2f2_b = util.hyper2F2_array(2*n, 2*n, 1+2*n, 1+2*n, -b)
-        hyper2f2_bx = util.hyper2F2_array(2*n, 2*n, 1+2*n, 1+2*n, -b*x_red)
-        f_eff = np.exp(b) * R_sersic ** 2 / 2. * k_eff# * hyper2f2_b
-        f_ = f_eff * x_red**(2*n) * hyper2f2_bx# / hyper2f2_b
+        # hyper2f2_b = util.hyper2F2_array(2*n, 2*n, 1+2*n, 1+2*n, -b)
+        hyper2f2_bx = util.hyper2F2_array(
+            2 * n, 2 * n, 1 + 2 * n, 1 + 2 * n, -b * x_red
+        )
+        f_eff = np.exp(b) * R_sersic**2 / 2.0 * k_eff  # * hyper2f2_b
+        f_ = f_eff * x_red ** (2 * n) * hyper2f2_bx  # / hyper2f2_b
         return f_
 
     def derivatives(self, x, y, n_sersic, R_sersic, k_eff, center_x=0, center_y=0):
@@ -102,11 +117,13 @@ class Sersic(SersicUtil, LensProfileBase):
             r = max(self._s, r)
         else:
             r[r < self._s] = self._s
-        d_alpha_dr = self.d_alpha_dr(x, y, n_sersic, R_sersic, k_eff, center_x, center_y)
+        d_alpha_dr = self.d_alpha_dr(
+            x, y, n_sersic, R_sersic, k_eff, center_x, center_y
+        )
         alpha = -self.alpha_abs(x, y, n_sersic, R_sersic, k_eff, center_x, center_y)
 
-        f_xx = -(d_alpha_dr/r + alpha/r**2) * x_**2/r + alpha/r
-        f_yy = -(d_alpha_dr/r + alpha/r**2) * y_**2/r + alpha/r
-        f_xy = -(d_alpha_dr/r + alpha/r**2) * x_*y_/r
+        f_xx = -(d_alpha_dr / r + alpha / r**2) * x_**2 / r + alpha / r
+        f_yy = -(d_alpha_dr / r + alpha / r**2) * y_**2 / r + alpha / r
+        f_xy = -(d_alpha_dr / r + alpha / r**2) * x_ * y_ / r
 
         return f_xx, f_xy, f_xy, f_yy

@@ -3,7 +3,7 @@ import copy
 from scipy.interpolate import interp1d
 from lenstronomy.LightModel.light_model import LightModel
 
-__all__ = ['LightProfile']
+__all__ = ["LightProfile"]
 
 
 class LightProfile(object):
@@ -17,8 +17,15 @@ class LightProfile(object):
      - 2d projected profiles within the 3d integration range (truncated)
 
     """
-    def __init__(self, profile_list, interpol_grid_num=2000, max_interpolate=1000, min_interpolate=0.001,
-                 max_draw=None):
+
+    def __init__(
+        self,
+        profile_list,
+        interpol_grid_num=2000,
+        max_interpolate=1000,
+        min_interpolate=0.001,
+        max_draw=None,
+    ):
         """
 
         :param profile_list: list of light profiles for LightModel module (must support light_3d() functionalities)
@@ -58,13 +65,20 @@ class LightProfile(object):
          (becomes valid with updated kwargs_list argument)
         :return: flux per 3d volume at radius r
         """
-        if not hasattr(self, '_f_light_3d') or new_compute is True:
-            r_array = np.logspace(np.log10(self._min_interpolate), np.log10(self._max_interpolate),
-                                  self._interp_grid_num)
+        if not hasattr(self, "_f_light_3d") or new_compute is True:
+            r_array = np.logspace(
+                np.log10(self._min_interpolate),
+                np.log10(self._max_interpolate),
+                self._interp_grid_num,
+            )
             light_3d_array = self.light_model.light_3d(r_array, kwargs_list)
             light_3d_array[light_3d_array < 10 ** (-1000)] = 10 ** (-1000)
-            f = interp1d(np.log(r_array), np.log(light_3d_array), fill_value=(np.log(light_3d_array[0]), -1000),
-                         bounds_error=False)  # "extrapolate"
+            f = interp1d(
+                np.log(r_array),
+                np.log(light_3d_array),
+                fill_value=(np.log(light_3d_array[0]), -1000),
+                bounds_error=False,
+            )  # "extrapolate"
             self._f_light_3d = f
         return np.exp(self._f_light_3d(np.log(r)))
 
@@ -86,15 +100,21 @@ class LightProfile(object):
         :return: circularized arguments
         """
         # TODO make sure averaging is done azimuthally
-        if not hasattr(self, '_kwargs_light_circularized'):
+        if not hasattr(self, "_kwargs_light_circularized"):
             kwargs_list_copy = copy.deepcopy(kwargs_list)
             kwargs_list_new = []
             for kwargs in kwargs_list_copy:
-                if 'e1' in kwargs:
-                    kwargs['e1'] = 0
-                if 'e2' in kwargs:
-                    kwargs['e2'] = 0
-                kwargs_list_new.append({k: v for k, v in kwargs.items() if k not in ['center_x', 'center_y']})
+                if "e1" in kwargs:
+                    kwargs["e1"] = 0
+                if "e2" in kwargs:
+                    kwargs["e2"] = 0
+                kwargs_list_new.append(
+                    {
+                        k: v
+                        for k, v in kwargs.items()
+                        if k not in ["center_x", "center_y"]
+                    }
+                )
             self._kwargs_light_circularized = kwargs_list_new
         return self._kwargs_light_circularized
 
@@ -109,8 +129,15 @@ class LightProfile(object):
         """
 
         # here we perform a logarithmic integral
-        stop = np.log10(np.maximum(np.sqrt(self._max_interpolate**2 - R**2), self._min_interpolate + 0.00001))
-        x = np.logspace(start=np.log10(self._min_interpolate), stop=stop, num=self._interp_grid_num)
+        stop = np.log10(
+            np.maximum(
+                np.sqrt(self._max_interpolate**2 - R**2),
+                self._min_interpolate + 0.00001,
+            )
+        )
+        x = np.logspace(
+            start=np.log10(self._min_interpolate), stop=stop, num=self._interp_grid_num
+        )
         r_array = np.sqrt(x**2 + R**2)
         flux_r = self.light_3d(r_array, kwargs_list)
         dlog_r = (np.log10(x[2]) - np.log10(x[1])) * np.log(10)
@@ -164,8 +191,10 @@ class LightProfile(object):
          (becomes valid with updated kwargs_list argument)
         :return: draw of projected radius for the given light profile distribution
         """
-        if not hasattr(self, '_light_cdf') or new_compute is True:
-            r_array = np.linspace(self._min_interpolate, self._max_draw, self._interp_grid_num)
+        if not hasattr(self, "_light_cdf") or new_compute is True:
+            r_array = np.linspace(
+                self._min_interpolate, self._max_draw, self._interp_grid_num
+            )
             cum_sum = np.zeros_like(r_array)
             sum_light = 0
             for i, r in enumerate(r_array):
@@ -174,10 +203,10 @@ class LightProfile(object):
                 else:
                     sum_light += self.light_2d(r, kwargs_list) * r
                     cum_sum[i] = copy.deepcopy(sum_light)
-            cum_sum_norm = cum_sum/cum_sum[-1]
+            cum_sum_norm = cum_sum / cum_sum[-1]
             f = interp1d(cum_sum_norm, r_array)
             self._light_cdf = f
-        cdf_draw = np.random.uniform(0., 1, n)
+        cdf_draw = np.random.uniform(0.0, 1, n)
         r_draw = self._light_cdf(cdf_draw)
         return r_draw
 
@@ -191,8 +220,12 @@ class LightProfile(object):
         :param new_compute: re-computes the interpolated CDF
         :return: realization of projected radius following the distribution of the light model
         """
-        if not hasattr(self, '_light_cdf_log') or new_compute is True:
-            r_array = np.logspace(np.log10(self._min_interpolate), np.log10(self._max_draw), self._interp_grid_num)
+        if not hasattr(self, "_light_cdf_log") or new_compute is True:
+            r_array = np.logspace(
+                np.log10(self._min_interpolate),
+                np.log10(self._max_draw),
+                self._interp_grid_num,
+            )
             cum_sum = np.zeros_like(r_array)
             sum_light = 0
             for i, r in enumerate(r_array):
@@ -201,10 +234,10 @@ class LightProfile(object):
                 else:
                     sum_light += self.light_2d(r, kwargs_list) * r * r
                     cum_sum[i] = copy.deepcopy(sum_light)
-            cum_sum_norm = cum_sum/cum_sum[-1]
+            cum_sum_norm = cum_sum / cum_sum[-1]
             f = interp1d(cum_sum_norm, np.log(r_array))
             self._light_cdf_log = f
-        cdf_draw = np.random.uniform(0., 1, n)
+        cdf_draw = np.random.uniform(0.0, 1, n)
         r_log_draw = self._light_cdf_log(cdf_draw)
         return np.exp(r_log_draw)
 
@@ -217,23 +250,34 @@ class LightProfile(object):
         :param new_compute: re-computes the interpolated CDF
         :return: realization of projected radius following the distribution of the light model
         """
-        if not hasattr(self, '_light_3d_cdf_log') or new_compute is True:
-            r_array = np.logspace(np.log10(self._min_interpolate), np.log10(self._max_draw), self._interp_grid_num)
+        if not hasattr(self, "_light_3d_cdf_log") or new_compute is True:
+            r_array = np.logspace(
+                np.log10(self._min_interpolate),
+                np.log10(self._max_draw),
+                self._interp_grid_num,
+            )
             dlog_r = np.log10(r_array[1]) - np.log10(r_array[0])
-            r_array_int = np.logspace(np.log10(self._min_interpolate) + dlog_r / 2, np.log10(self._max_draw) + dlog_r /
-                                      2, self._interp_grid_num)
+            r_array_int = np.logspace(
+                np.log10(self._min_interpolate) + dlog_r / 2,
+                np.log10(self._max_draw) + dlog_r / 2,
+                self._interp_grid_num,
+            )
             cum_sum = np.zeros_like(r_array)
             sum_light = 0
             for i, r in enumerate(r_array_int[:-1]):
                 # if i == 0:
                 #    cum_sum[i] = 0
                 # else:
-                sum_light += self.light_3d(r, kwargs_list) * r**2 * (r_array[i+1] - r_array[i])  # * r
-                cum_sum[i+1] = copy.deepcopy(sum_light)
-            cum_sum_norm = cum_sum/cum_sum[-1]
+                sum_light += (
+                    self.light_3d(r, kwargs_list)
+                    * r**2
+                    * (r_array[i + 1] - r_array[i])
+                )  # * r
+                cum_sum[i + 1] = copy.deepcopy(sum_light)
+            cum_sum_norm = cum_sum / cum_sum[-1]
             f = interp1d(cum_sum_norm, np.log(r_array))
             self._light_3d_cdf_log = f
-        cdf_draw = np.random.uniform(0., 1, n)
+        cdf_draw = np.random.uniform(0.0, 1, n)
         r_log_draw = self._light_3d_cdf_log(cdf_draw)
         return np.exp(r_log_draw)
 
@@ -243,11 +287,11 @@ class LightProfile(object):
 
         :return: None
         """
-        if hasattr(self, '_light_cdf_log'):
+        if hasattr(self, "_light_cdf_log"):
             del self._light_cdf_log
-        if hasattr(self, '_light_cdf'):
+        if hasattr(self, "_light_cdf"):
             del self._light_cdf
-        if hasattr(self, '_f_light_3d'):
+        if hasattr(self, "_f_light_3d"):
             del self._f_light_3d
-        if hasattr(self, '_kwargs_light_circularized'):
+        if hasattr(self, "_kwargs_light_circularized"):
             del self._kwargs_light_circularized

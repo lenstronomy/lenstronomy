@@ -3,7 +3,7 @@ from lenstronomy.GalKin.galkin_model import GalkinModel
 
 import numpy as np
 
-__all__ = ['Galkin']
+__all__ = ["Galkin"]
 
 
 class Galkin(GalkinModel, GalkinObservation):
@@ -47,8 +47,16 @@ class Galkin(GalkinModel, GalkinObservation):
     conservative to impact too much the computational cost. Reasonable values might depend on the specific problem.
 
     """
-    def __init__(self, kwargs_model, kwargs_aperture, kwargs_psf, kwargs_cosmo, kwargs_numerics=None,
-                 analytic_kinematics=False):
+
+    def __init__(
+        self,
+        kwargs_model,
+        kwargs_aperture,
+        kwargs_psf,
+        kwargs_cosmo,
+        kwargs_numerics=None,
+        analytic_kinematics=False,
+    ):
         """
 
         :param kwargs_model: keyword arguments describing the model components
@@ -59,11 +67,20 @@ class Galkin(GalkinModel, GalkinObservation):
         :param kwargs_numerics: numerics keyword arguments
         :param analytic_kinematics: bool, if True uses the analytic kinematic model
         """
-        GalkinModel.__init__(self, kwargs_model, kwargs_cosmo, kwargs_numerics=kwargs_numerics,
-                             analytic_kinematics=analytic_kinematics)
-        GalkinObservation.__init__(self, kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf)
+        GalkinModel.__init__(
+            self,
+            kwargs_model,
+            kwargs_cosmo,
+            kwargs_numerics=kwargs_numerics,
+            analytic_kinematics=analytic_kinematics,
+        )
+        GalkinObservation.__init__(
+            self, kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf
+        )
 
-    def dispersion(self, kwargs_mass, kwargs_light, kwargs_anisotropy, sampling_number=1000):
+    def dispersion(
+        self, kwargs_mass, kwargs_light, kwargs_anisotropy, sampling_number=1000
+    ):
         """
         computes the averaged LOS velocity dispersion in the slit (convolved)
 
@@ -77,15 +94,24 @@ class Galkin(GalkinModel, GalkinObservation):
         sigma2_IR_sum = 0
         IR_sum = 0
         for i in range(0, sampling_number):
-            sigma2_IR, IR = self._draw_one_sigma2(kwargs_mass, kwargs_light, kwargs_anisotropy)
+            sigma2_IR, IR = self._draw_one_sigma2(
+                kwargs_mass, kwargs_light, kwargs_anisotropy
+            )
             sigma2_IR_sum += sigma2_IR
             IR_sum += IR
         sigma_s2_average = sigma2_IR_sum / IR_sum
         # apply unit conversion from arc seconds and deflections to physical velocity dispersion in (km/s)
         self.numerics.delete_cache()
-        return np.sqrt(sigma_s2_average) / 1000.  # in units of km/s
+        return np.sqrt(sigma_s2_average) / 1000.0  # in units of km/s
 
-    def dispersion_map(self, kwargs_mass, kwargs_light, kwargs_anisotropy, num_kin_sampling=1000, num_psf_sampling=100):
+    def dispersion_map(
+        self,
+        kwargs_mass,
+        kwargs_light,
+        kwargs_anisotropy,
+        num_kin_sampling=1000,
+        num_psf_sampling=100,
+    ):
         """
         computes the velocity dispersion in each Integral Field Unit
 
@@ -108,7 +134,9 @@ class Galkin(GalkinModel, GalkinObservation):
 
         for i in range(0, num_kin_sampling):
             r, R, x, y = self.numerics.draw_light(kwargs_light)
-            sigma2_IR, IR = self.numerics.sigma_s2(r, R, kwargs_mass, kwargs_light, kwargs_anisotropy)
+            sigma2_IR, IR = self.numerics.sigma_s2(
+                r, R, kwargs_mass, kwargs_light, kwargs_anisotropy
+            )
             for k in range(0, num_psf_sampling):
                 x_, y_ = self.displace_psf(x, y)
                 bool_ap, ifu_index = self.aperture_select(x_, y_)
@@ -119,7 +147,7 @@ class Galkin(GalkinModel, GalkinObservation):
         sigma_s2_average = sigma2_IR_sum / count_draws
         # apply unit conversion from arc seconds and deflections to physical velocity dispersion in (km/s)
         self.numerics.delete_cache()
-        return np.sqrt(sigma_s2_average) / 1000.  # in units of km/s
+        return np.sqrt(sigma_s2_average) / 1000.0  # in units of km/s
 
     def _draw_one_sigma2(self, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """
@@ -137,5 +165,7 @@ class Galkin(GalkinModel, GalkinObservation):
             bool_ap, _ = self.aperture_select(x_, y_)
             if bool_ap is True:
                 break
-        sigma2_IR, IR = self.numerics.sigma_s2(r, R, kwargs_mass, kwargs_light, kwargs_anisotropy)
+        sigma2_IR, IR = self.numerics.sigma_s2(
+            r, R, kwargs_mass, kwargs_light, kwargs_anisotropy
+        )
         return sigma2_IR, IR

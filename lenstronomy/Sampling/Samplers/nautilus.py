@@ -4,11 +4,10 @@
 from lenstronomy.Sampling.Pool.pool import choose_pool
 import time
 
-__all__ = ['Nautilus']
+__all__ = ["Nautilus"]
 
 
 class Nautilus(object):
-
     def __init__(self, likelihood_module):
         """
         sampling with Nautilus [1]_
@@ -21,10 +20,20 @@ class Nautilus(object):
         """
         self._likelihood_module = likelihood_module
         self._num_param, _ = self._likelihood_module.param.num_param()
-        self._lower_limit, self._upper_limit = self._likelihood_module.param.param_limits()
+        (
+            self._lower_limit,
+            self._upper_limit,
+        ) = self._likelihood_module.param.param_limits()
 
-    def nautilus_sampling(self, prior_type='uniform', mpi=False, thread_count=1, verbose=True,
-                          one_step=False, **kwargs_nautilus):
+    def nautilus_sampling(
+        self,
+        prior_type="uniform",
+        mpi=False,
+        thread_count=1,
+        verbose=True,
+        one_step=False,
+        **kwargs_nautilus
+    ):
         """
 
         :param prior_type: string; prior type. Currently only 'uniform' supported
@@ -41,14 +50,22 @@ class Nautilus(object):
 
         prior = Prior()
         # TODO better prior integration with Nautilus
-        if prior_type == 'uniform':
+        if prior_type == "uniform":
             for i in range(self._num_param):
                 prior.add_parameter(dist=(self._lower_limit[i], self._upper_limit[i]))
         else:
-            raise ValueError('prior_type %s is not supported for Nautilus wrapper.' % prior_type)
+            raise ValueError(
+                "prior_type %s is not supported for Nautilus wrapper." % prior_type
+            )
         # loop through prior
         pool = choose_pool(mpi=mpi, processes=thread_count, use_dill=True)
-        sampler = Sampler(prior, likelihood=self.likelihood, pool=pool, pass_dict=False, **kwargs_nautilus)
+        sampler = Sampler(
+            prior,
+            likelihood=self.likelihood,
+            pool=pool,
+            pass_dict=False,
+            **kwargs_nautilus
+        )
         time_start = time.time()
         if one_step is True:
             sampler.add_bound()
@@ -59,7 +76,7 @@ class Nautilus(object):
         log_z = sampler.evidence()
         time_end = time.time()
         if pool.is_master():
-            print(time_end - time_start, 'time taken for MCMC sampling')
+            print(time_end - time_start, "time taken for MCMC sampling")
         return points, log_w, log_l, log_z
 
     def likelihood(self, args):

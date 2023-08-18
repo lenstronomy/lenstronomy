@@ -3,6 +3,7 @@ import numpy as np
 import lenstronomy.Util.util as util
 
 from lenstronomy.Util.package_util import exporter
+
 export, __all__ = exporter()
 
 
@@ -11,6 +12,7 @@ class Coordinates(object):
     """
     class to handle linear coordinate transformations of a square pixel image
     """
+
     def __init__(self, transform_pix2angle, ra_at_xy_0, dec_at_xy_0):
         """
         initialize the coordinate-to-pixel transform and their inverse
@@ -23,8 +25,9 @@ class Coordinates(object):
         self._Ma2pix = linalg.inv(self._Mpix2a)
         self._ra_at_xy_0 = ra_at_xy_0
         self._dec_at_xy_0 = dec_at_xy_0
-        self._x_at_radec_0, self._y_at_radec_0 = util.map_coord2pix(-self._ra_at_xy_0, -self._dec_at_xy_0, 0, 0,
-                                                                    self._Ma2pix)
+        self._x_at_radec_0, self._y_at_radec_0 = util.map_coord2pix(
+            -self._ra_at_xy_0, -self._dec_at_xy_0, 0, 0, self._Ma2pix
+        )
 
     @property
     def transform_angle2pix(self):
@@ -67,7 +70,9 @@ class Coordinates(object):
         :return: (x, y) pixel coordinates
         """
 
-        return util.map_coord2pix(ra, dec, self._x_at_radec_0, self._y_at_radec_0, self._Ma2pix)
+        return util.map_coord2pix(
+            ra, dec, self._x_at_radec_0, self._y_at_radec_0, self._Ma2pix
+        )
 
     def map_pix2coord(self, x, y):
         """
@@ -77,7 +82,9 @@ class Coordinates(object):
         :param y: pixel coordinate (can be 1d numpy array), defined in the center of the pixel
         :return: relative (RA, DEC) coordinates of the system
         """
-        return util.map_coord2pix(x, y, self._ra_at_xy_0, self._dec_at_xy_0, self._Mpix2a)
+        return util.map_coord2pix(
+            x, y, self._ra_at_xy_0, self._dec_at_xy_0, self._Mpix2a
+        )
 
     @property
     def pixel_area(self):
@@ -104,8 +111,9 @@ class Coordinates(object):
         :param ny: number of pixels in y-direction
         :return: 2d arrays with coordinates in RA/DEC with ra_coord[y-axis, x-axis]
         """
-        ra_coords, dec_coords = util.grid_from_coordinate_transform(nx, ny, self._Mpix2a, self._ra_at_xy_0,
-                                                                    self._dec_at_xy_0)
+        ra_coords, dec_coords = util.grid_from_coordinate_transform(
+            nx, ny, self._Mpix2a, self._ra_at_xy_0, self._dec_at_xy_0
+        )
         ra_coords = util.array2image(ra_coords, nx, ny)  # new
         dec_coords = util.array2image(dec_coords, nx, ny)  # new
         return ra_coords, dec_coords
@@ -135,13 +143,14 @@ class Coordinates(object):
             ra_shift, dec_shift = self.map_pix2coord(x_shift, y_shift)
             ra_shift -= self._ra_at_xy_0
             dec_shift -= self._dec_at_xy_0
-            print(ra_shift, dec_shift, 'test')
+            print(ra_shift, dec_shift, "test")
         else:
             ra_shift, dec_shift = x_shift, y_shift
         self._ra_at_xy_0 += ra_shift
         self._dec_at_xy_0 += dec_shift
-        self._x_at_radec_0, self._y_at_radec_0 = util.map_coord2pix(-self._ra_at_xy_0, -self._dec_at_xy_0, 0, 0,
-                                                                    self._Ma2pix)
+        self._x_at_radec_0, self._y_at_radec_0 = util.map_coord2pix(
+            -self._ra_at_xy_0, -self._dec_at_xy_0, 0, 0, self._Ma2pix
+        )
 
 
 @export
@@ -149,6 +158,7 @@ class Coordinates1D(Coordinates):
     """
     coordinate grid described in 1-d arrays
     """
+
     def coordinate_grid(self, nx, ny):
         """
 
@@ -156,6 +166,7 @@ class Coordinates1D(Coordinates):
         :param ny: number of pixels in y-direction
         :return: 2d arrays with coordinates in RA/DEC with ra_coord[y-axis, x-axis]
         """
-        ra_coords, dec_coords = util.grid_from_coordinate_transform(nx, ny, self._Mpix2a, self._ra_at_xy_0,
-                                                                    self._dec_at_xy_0)
+        ra_coords, dec_coords = util.grid_from_coordinate_transform(
+            nx, ny, self._Mpix2a, self._ra_at_xy_0, self._dec_at_xy_0
+        )
         return ra_coords, dec_coords

@@ -1,8 +1,8 @@
-__author__ = 'aymgal'
+__author__ = "aymgal"
 
 import lenstronomy.Util.sampling_util as utils
 
-__all__ = ['NestedSampler']
+__all__ = ["NestedSampler"]
 
 
 class NestedSampler(object):
@@ -10,8 +10,15 @@ class NestedSampler(object):
     Base class for nested samplers
     """
 
-    def __init__(self, likelihood_module, prior_type,
-                 prior_means, prior_sigmas, width_scale, sigma_scale):
+    def __init__(
+        self,
+        likelihood_module,
+        prior_type,
+        prior_means,
+        prior_sigmas,
+        width_scale,
+        sigma_scale,
+    ):
         """
         :param likelihood_module: likelihood_module like in likelihood.py (should be callable)
         :param prior_type: 'uniform' of 'gaussian', for converting the unit hypercube to param cube
@@ -29,12 +36,14 @@ class NestedSampler(object):
         else:
             self.lowers, self.uppers = lowers, uppers
 
-        if prior_type == 'gaussian':
+        if prior_type == "gaussian":
             if prior_means is None or prior_sigmas is None:
-                raise ValueError("For gaussian prior type, means and sigmas are required")
+                raise ValueError(
+                    "For gaussian prior type, means and sigmas are required"
+                )
             self.means, self.sigmas = prior_means, prior_sigmas * sigma_scale
             self.lowers, self.uppers = lowers, uppers
-        elif prior_type != 'uniform':
+        elif prior_type != "uniform":
             raise ValueError("Sampling type {} not supported".format(prior_type))
         self.prior_type = prior_type
         self._has_warned = False

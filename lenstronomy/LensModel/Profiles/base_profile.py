@@ -1,4 +1,4 @@
-__all__ = ['LensProfileBase']
+__all__ = ["LensProfileBase"]
 
 
 class LensProfileBase(object):
@@ -18,7 +18,9 @@ class LensProfileBase(object):
         :param kwargs: keywords of the profile
         :return: raise as definition is not defined
         """
-        raise ValueError('function definition is not defined in the profile you want to execute.')
+        raise ValueError(
+            "function definition is not defined in the profile you want to execute."
+        )
 
     def derivatives(self, *args, **kwargs):
         """
@@ -27,7 +29,9 @@ class LensProfileBase(object):
         :param kwargs: keywords of the profile
         :return: raise as definition is not defined
         """
-        raise ValueError('derivatives definition is not defined in the profile you want to execute.')
+        raise ValueError(
+            "derivatives definition is not defined in the profile you want to execute."
+        )
 
     def hessian(self, *args, **kwargs):
         """
@@ -36,7 +40,9 @@ class LensProfileBase(object):
         :param kwargs: keywords of the profile
         :return: raise as definition is not defined
         """
-        raise ValueError('hessian definition is not defined in the profile you want to execute.')
+        raise ValueError(
+            "hessian definition is not defined in the profile you want to execute."
+        )
 
     def density_lens(self, *args, **kwargs):
         """
@@ -50,7 +56,9 @@ class LensProfileBase(object):
         :param kwargs: keywords of the profile
         :return: raise as definition is not defined
         """
-        raise ValueError('density_lens definition is not defined in the profile you want to execute.')
+        raise ValueError(
+            "density_lens definition is not defined in the profile you want to execute."
+        )
 
     def mass_3d_lens(self, *args, **kwargs):
         """
@@ -61,7 +69,9 @@ class LensProfileBase(object):
         :param kwargs: keywords of the profile
         :return: raise as definition is not defined
         """
-        raise ValueError('mass_3d_lens definition is not defined in the profile you want to execute.')
+        raise ValueError(
+            "mass_3d_lens definition is not defined in the profile you want to execute."
+        )
 
     def mass_2d_lens(self, *args, **kwargs):
         """
@@ -83,7 +93,9 @@ class LensProfileBase(object):
         :param kwargs: keywords of the profile
         :return: raise as definition is not defined
         """
-        raise ValueError('mass_2d_lens definition is not defined in the profiel you want to execute.')
+        raise ValueError(
+            "mass_2d_lens definition is not defined in the profiel you want to execute."
+        )
 
     def set_static(self, **kwargs):
         """

@@ -1,10 +1,10 @@
-__author__ = 'sibirrer'
+__author__ = "sibirrer"
 
 from lenstronomy.LensModel.Profiles.spp import SPP
 from lenstronomy.LensModel.Profiles.spemd import SPEMD
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
-__all__ = ['PEMD']
+__all__ = ["PEMD"]
 
 
 class PEMD(LensProfileBase):
@@ -40,9 +40,24 @@ class PEMD(LensProfileBase):
 
 
     """
-    param_names = ['theta_E', 'gamma', 'e1', 'e2', 'center_x', 'center_y']
-    lower_limit_default = {'theta_E': 0, 'gamma': 1.5, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'theta_E': 100, 'gamma': 2.5, 'e1': 0.5, 'e2': 0.5, 'center_x': 100, 'center_y': 100}
+
+    param_names = ["theta_E", "gamma", "e1", "e2", "center_x", "center_y"]
+    lower_limit_default = {
+        "theta_E": 0,
+        "gamma": 1.5,
+        "e1": -0.5,
+        "e2": -0.5,
+        "center_x": -100,
+        "center_y": -100,
+    }
+    upper_limit_default = {
+        "theta_E": 100,
+        "gamma": 2.5,
+        "e1": 0.5,
+        "e2": 0.5,
+        "center_x": 100,
+        "center_y": 100,
+    }
 
     def __init__(self, suppress_fastell=False):
         """
@@ -67,7 +82,9 @@ class PEMD(LensProfileBase):
         :param center_y: y-position of lens center
         :return: lensing potential
         """
-        return self.spemd_smooth.function(x, y, theta_E, gamma, e1, e2, self._s_scale, center_x, center_y)
+        return self.spemd_smooth.function(
+            x, y, theta_E, gamma, e1, e2, self._s_scale, center_x, center_y
+        )
 
     def derivatives(self, x, y, theta_E, gamma, e1, e2, center_x=0, center_y=0):
         """
@@ -82,7 +99,9 @@ class PEMD(LensProfileBase):
         :param center_y: y-position of lens center
         :return: deflection angles alpha_x, alpha_y
         """
-        return self.spemd_smooth.derivatives(x, y, theta_E, gamma, e1, e2, self._s_scale, center_x, center_y)
+        return self.spemd_smooth.derivatives(
+            x, y, theta_E, gamma, e1, e2, self._s_scale, center_x, center_y
+        )
 
     def hessian(self, x, y, theta_E, gamma, e1, e2, center_x=0, center_y=0):
         """
@@ -97,7 +116,9 @@ class PEMD(LensProfileBase):
         :param center_y: y-position of lens center
         :return: Hessian components f_xx, f_xy, f_yx, f_yy
         """
-        return self.spemd_smooth.hessian(x, y, theta_E, gamma, e1, e2, self._s_scale, center_x, center_y)
+        return self.spemd_smooth.hessian(
+            x, y, theta_E, gamma, e1, e2, self._s_scale, center_x, center_y
+        )
 
     def mass_3d_lens(self, r, theta_E, gamma, e1=None, e2=None):
         """

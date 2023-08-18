@@ -3,11 +3,13 @@ import scipy.signal as scp
 from lenstronomy.Util import util
 from lenstronomy.Util import image_util
 from lenstronomy.Util import kernel_util
+
 """
 class to compute lensing potentials and deflection angles provided a convergence map
 """
 
 from lenstronomy.Util.package_util import exporter
+
 export, __all__ = exporter()
 
 
@@ -30,12 +32,14 @@ def potential_from_kappa_grid(kappa, grid_spacing):
     if num_pix % 2 == 0:
         num_pix += 1
     kernel = potential_kernel(num_pix, grid_spacing)
-    f_ = scp.fftconvolve(kappa, kernel, mode='same') / np.pi * grid_spacing ** 2
+    f_ = scp.fftconvolve(kappa, kernel, mode="same") / np.pi * grid_spacing**2
     return f_
 
 
 @export
-def potential_from_kappa_grid_adaptive(kappa_high_res, grid_spacing, low_res_factor, high_res_kernel_size):
+def potential_from_kappa_grid_adaptive(
+    kappa_high_res, grid_spacing, low_res_factor, high_res_kernel_size
+):
     """
     lensing potential on the convergence grid
     the computation is performed as a convolution of the Green's function with the convergence map using FFT
@@ -52,12 +56,21 @@ def potential_from_kappa_grid_adaptive(kappa_high_res, grid_spacing, low_res_fac
         num_pix += 1
     grid_spacing_low_res = grid_spacing * low_res_factor
     kernel = potential_kernel(num_pix, grid_spacing)
-    kernel_low_res, kernel_high_res = kernel_util.split_kernel(kernel, high_res_kernel_size, low_res_factor,
-                                                               normalized=False)
+    kernel_low_res, kernel_high_res = kernel_util.split_kernel(
+        kernel, high_res_kernel_size, low_res_factor, normalized=False
+    )
 
-    f_high_res = scp.fftconvolve(kappa_high_res, kernel_high_res, mode='same') / np.pi * grid_spacing ** 2
+    f_high_res = (
+        scp.fftconvolve(kappa_high_res, kernel_high_res, mode="same")
+        / np.pi
+        * grid_spacing**2
+    )
     f_high_res = image_util.re_size(f_high_res, low_res_factor)
-    f_low_res = scp.fftconvolve(kappa_low_res, kernel_low_res, mode='same') / np.pi * grid_spacing_low_res ** 2
+    f_low_res = (
+        scp.fftconvolve(kappa_low_res, kernel_low_res, mode="same")
+        / np.pi
+        * grid_spacing_low_res**2
+    )
     return f_high_res + f_low_res
 
 
@@ -81,13 +94,15 @@ def deflection_from_kappa_grid(kappa, grid_spacing):
     if num_pix % 2 == 0:
         num_pix += 1
     kernel_x, kernel_y = deflection_kernel(num_pix, grid_spacing)
-    f_x = scp.fftconvolve(kappa, kernel_x, mode='same') / np.pi * grid_spacing ** 2
-    f_y = scp.fftconvolve(kappa, kernel_y, mode='same') / np.pi * grid_spacing ** 2
+    f_x = scp.fftconvolve(kappa, kernel_x, mode="same") / np.pi * grid_spacing**2
+    f_y = scp.fftconvolve(kappa, kernel_y, mode="same") / np.pi * grid_spacing**2
     return f_x, f_y
 
 
 @export
-def deflection_from_kappa_grid_adaptive(kappa_high_res, grid_spacing, low_res_factor, high_res_kernel_size):
+def deflection_from_kappa_grid_adaptive(
+    kappa_high_res, grid_spacing, low_res_factor, high_res_kernel_size
+):
     """
     deflection angles on the convergence grid with adaptive FFT
     the computation is performed as a convolution of the Green's function with the convergence map using FFT
@@ -107,18 +122,36 @@ def deflection_from_kappa_grid_adaptive(kappa_high_res, grid_spacing, low_res_fa
     kernel_x, kernel_y = deflection_kernel(num_pix, grid_spacing)
     grid_spacing_low_res = grid_spacing * low_res_factor
 
-    kernel_low_res_x, kernel_high_res_x = kernel_util.split_kernel(kernel_x, high_res_kernel_size, low_res_factor,
-                                                                   normalized=False)
-    f_x_high_res = scp.fftconvolve(kappa_high_res, kernel_high_res_x, mode='same') / np.pi * grid_spacing ** 2
+    kernel_low_res_x, kernel_high_res_x = kernel_util.split_kernel(
+        kernel_x, high_res_kernel_size, low_res_factor, normalized=False
+    )
+    f_x_high_res = (
+        scp.fftconvolve(kappa_high_res, kernel_high_res_x, mode="same")
+        / np.pi
+        * grid_spacing**2
+    )
     f_x_high_res = image_util.re_size(f_x_high_res, low_res_factor)
-    f_x_low_res = scp.fftconvolve(kappa_low_res, kernel_low_res_x, mode='same') / np.pi * grid_spacing_low_res ** 2
+    f_x_low_res = (
+        scp.fftconvolve(kappa_low_res, kernel_low_res_x, mode="same")
+        / np.pi
+        * grid_spacing_low_res**2
+    )
     f_x = f_x_high_res + f_x_low_res
 
-    kernel_low_res_y, kernel_high_res_y = kernel_util.split_kernel(kernel_y, high_res_kernel_size, low_res_factor,
-                                                                   normalized=False)
-    f_y_high_res = scp.fftconvolve(kappa_high_res, kernel_high_res_y, mode='same') / np.pi * grid_spacing ** 2
+    kernel_low_res_y, kernel_high_res_y = kernel_util.split_kernel(
+        kernel_y, high_res_kernel_size, low_res_factor, normalized=False
+    )
+    f_y_high_res = (
+        scp.fftconvolve(kappa_high_res, kernel_high_res_y, mode="same")
+        / np.pi
+        * grid_spacing**2
+    )
     f_y_high_res = image_util.re_size(f_y_high_res, low_res_factor)
-    f_y_low_res = scp.fftconvolve(kappa_low_res, kernel_low_res_y, mode='same') / np.pi * grid_spacing_low_res ** 2
+    f_y_low_res = (
+        scp.fftconvolve(kappa_low_res, kernel_low_res_y, mode="same")
+        / np.pi
+        * grid_spacing_low_res**2
+    )
     f_y = f_y_high_res + f_y_low_res
     return f_x, f_y
 
@@ -133,10 +166,10 @@ def potential_kernel(num_pix, delta_pix):
     :return: kernel for lensing potential
     """
     x_shift, y_shift = util.make_grid(numPix=num_pix, deltapix=delta_pix)
-    r2 = x_shift ** 2 + y_shift ** 2
+    r2 = x_shift**2 + y_shift**2
     r2_max = np.max(r2)
     r2[r2 < (delta_pix / 2) ** 2] = (delta_pix / 2) ** 2
-    lnr = np.log(r2/r2_max) / 2.
+    lnr = np.log(r2 / r2_max) / 2.0
     kernel = util.array2image(lnr)
     return kernel
 
@@ -152,7 +185,7 @@ def deflection_kernel(num_pix, delta_pix):
     """
     x_shift, y_shift = util.make_grid(numPix=num_pix, deltapix=delta_pix)
     r2 = x_shift**2 + y_shift**2
-    r2[r2 < (delta_pix/2)**2] = (delta_pix/2) ** 2
+    r2[r2 < (delta_pix / 2) ** 2] = (delta_pix / 2) ** 2
 
     kernel_x = util.array2image(x_shift / r2)
     kernel_y = util.array2image(y_shift / r2)

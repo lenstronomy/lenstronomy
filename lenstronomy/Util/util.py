@@ -1,4 +1,4 @@
-__author__ = 'Simon Birrer'
+__author__ = "Simon Birrer"
 
 """
 this file contains standard routines
@@ -29,9 +29,9 @@ def approx_theta_E(ximg, yimg):
     dis = []
     xinds, yinds = [0, 0, 0, 1, 1, 2], [1, 2, 3, 2, 3, 3]
 
-    for (i, j) in zip(xinds, yinds):
+    for i, j in zip(xinds, yinds):
         dx, dy = ximg[i] - ximg[j], yimg[i] - yimg[j]
-        dr = (dx ** 2 + dy ** 2) ** 0.5
+        dr = (dx**2 + dy**2) ** 0.5
         dis.append(dr)
     dis = np.array(dis)
 
@@ -70,7 +70,7 @@ def sort_image_index(ximg, yimg, xref, yref):
         for j in range(0, int(len(x_self[0]))):
             dr += (x_self[i][j] - xref[j]) ** 2 + (y_self[i][j] - yref[j]) ** 2
 
-        delta_r.append(dr ** .5)
+        delta_r.append(dr**0.5)
 
     min_indexes = np.array(index_iterations[np.argmin(delta_r)])
 
@@ -87,7 +87,9 @@ def rotate(xcoords, ycoords, angle):
     :param angle: angle in radians
     :return: x points and y points rotated ccw by angle theta
     """
-    return xcoords * np.cos(angle) + ycoords * np.sin(angle), -xcoords * np.sin(angle) + ycoords * np.cos(angle)
+    return xcoords * np.cos(angle) + ycoords * np.sin(angle), -xcoords * np.sin(
+        angle
+    ) + ycoords * np.cos(angle)
 
 
 @export
@@ -120,8 +122,11 @@ def array2image(array, nx=0, ny=0):
     """
     if nx == 0 or ny == 0:
         n = int(np.sqrt(len(array)))
-        if n ** 2 != len(array):
-            raise ValueError("lenght of input array given as %s is not square of integer number!" % (len(array)))
+        if n**2 != len(array):
+            raise ValueError(
+                "lenght of input array given as %s is not square of integer number!"
+                % (len(array))
+            )
         nx, ny = n, n
     image = array.reshape(int(nx), int(ny))
     return image
@@ -157,8 +162,10 @@ def array2cube(array, n_1, n_23):
     :raises ValueError: when n_23 is not a perfect square
     """
     n = int(np.sqrt(n_23))
-    if n ** 2 != n_23:
-        raise ValueError("2nd and 3rd dims (%s) are not square of integer number!" % n_23)
+    if n**2 != n_23:
+        raise ValueError(
+            "2nd and 3rd dims (%s) are not square of integer number!" % n_23
+        )
     n_2, n_3 = n, n
     cube = array.reshape(n_1, n_2, n_3)
     return cube
@@ -215,7 +222,7 @@ def make_grid(numPix, deltapix, subgrid_res=1, left_lower=False):
     if left_lower is True:
         # Shift so (0, 0) is in the "lower left"
         # Note this does not shift when subgrid_res = 1
-        shift = -1. / 2 + 1. / (2 * subgrid_res) * np.array([1, 1])
+        shift = -1.0 / 2 + 1.0 / (2 * subgrid_res) * np.array([1, 1])
     else:
         # Shift so (0, 0) is centered
         shift = deltapix_eff * (numPix_eff - 1) / 2
@@ -238,8 +245,15 @@ def make_grid_transformed(numPix, Mpix2Angle):
 
 
 @export
-def make_grid_with_coordtransform(numPix, deltapix, subgrid_res=1, center_ra=0, center_dec=0, left_lower=False,
-                                  inverse=True):
+def make_grid_with_coordtransform(
+    numPix,
+    deltapix,
+    subgrid_res=1,
+    center_ra=0,
+    center_dec=0,
+    left_lower=False,
+    inverse=True,
+):
     """
     same as make_grid routine, but returns the transformation matrix and shift between coordinates and pixel
 
@@ -264,9 +278,9 @@ def make_grid_with_coordtransform(numPix, deltapix, subgrid_res=1, center_ra=0, 
         ra_grid = matrix[:, 0] * delta_x
         dec_grid = matrix[:, 1] * deltapix_eff
     else:
-        ra_grid = (matrix[:, 0] - (numPix_eff - 1) / 2.) * delta_x
-        dec_grid = (matrix[:, 1] - (numPix_eff - 1) / 2.) * deltapix_eff
-    shift = (subgrid_res - 1) / (2. * subgrid_res) * deltapix
+        ra_grid = (matrix[:, 0] - (numPix_eff - 1) / 2.0) * delta_x
+        dec_grid = (matrix[:, 1] - (numPix_eff - 1) / 2.0) * deltapix_eff
+    shift = (subgrid_res - 1) / (2.0 * subgrid_res) * deltapix
     ra_grid += -shift + center_ra
     dec_grid += -shift + center_dec
     ra_at_xy_0 = ra_grid[0]
@@ -274,8 +288,19 @@ def make_grid_with_coordtransform(numPix, deltapix, subgrid_res=1, center_ra=0, 
 
     Mpix2coord = np.array([[delta_x, 0], [0, deltapix_eff]])
     Mcoord2pix = np.linalg.inv(Mpix2coord)
-    x_at_radec_0, y_at_radec_0 = map_coord2pix(-ra_at_xy_0, -dec_at_xy_0, x_0=0, y_0=0, M=Mcoord2pix)
-    return ra_grid, dec_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix
+    x_at_radec_0, y_at_radec_0 = map_coord2pix(
+        -ra_at_xy_0, -dec_at_xy_0, x_0=0, y_0=0, M=Mcoord2pix
+    )
+    return (
+        ra_grid,
+        dec_grid,
+        ra_at_xy_0,
+        dec_at_xy_0,
+        x_at_radec_0,
+        y_at_radec_0,
+        Mpix2coord,
+        Mcoord2pix,
+    )
 
 
 @export
@@ -310,8 +335,11 @@ def get_axes(x, y):
     :return:
     """
     n = int(np.sqrt(len(x)))
-    if n ** 2 != len(x):
-        raise ValueError("lenght of input array given as %s is not square of integer number!" % (len(x)))
+    if n**2 != len(x):
+        raise ValueError(
+            "lenght of input array given as %s is not square of integer number!"
+            % (len(x))
+        )
     x_image = x.reshape(n, n)
     y_image = y.reshape(n, n)
     x_axes = x_image[0, :]
@@ -332,7 +360,11 @@ def averaging(grid, numGrid, numPix):
 
     Nbig = numGrid
     Nsmall = numPix
-    small = grid.reshape([int(Nsmall), int(Nbig / Nsmall), int(Nsmall), int(Nbig / Nsmall)]).mean(3).mean(1)
+    small = (
+        grid.reshape([int(Nsmall), int(Nbig / Nsmall), int(Nsmall), int(Nbig / Nsmall)])
+        .mean(3)
+        .mean(1)
+    )
     return small
 
 
@@ -354,7 +386,7 @@ def displaceAbs(x, y, sourcePos_x, sourcePos_y):
     """
     x_mapped = x - sourcePos_x
     y_mapped = y - sourcePos_y
-    absmapped = np.sqrt(x_mapped ** 2 + y_mapped ** 2)
+    absmapped = np.sqrt(x_mapped**2 + y_mapped**2)
     return absmapped
 
 
@@ -369,7 +401,7 @@ def get_distance(x_mins, y_mins, x_true, y_true):
     :return:
     """
     if len(x_mins) != len(x_true):
-        return 10 ** 10
+        return 10**10
     dist = 0
     x_true_list = np.array(x_true)
     y_true_list = np.array(y_true)
@@ -398,7 +430,7 @@ def compare_distance(x_mapped, y_mapped):
         for j in range(i + 1, len(x_mapped)):
             dx = x_mapped[i] - x_mapped[j]
             dy = y_mapped[i] - y_mapped[j]
-            X2 += dx ** 2 + dy ** 2
+            X2 += dx**2 + dy**2
     return X2
 
 
@@ -432,12 +464,14 @@ def selectBest(array, criteria, numSelect, highest=True):
     n = len(array)
     m = len(criteria)
     if n != m:
-        raise ValueError('Elements in array (%s) not equal to elements in criteria (%s)' % (n, m))
+        raise ValueError(
+            "Elements in array (%s) not equal to elements in criteria (%s)" % (n, m)
+        )
     if n < numSelect:
         return array
     array_sorted = array[criteria.argsort()]
     if highest:
-        result = array_sorted[n - numSelect:]
+        result = array_sorted[n - numSelect :]
     else:
         result = array_sorted[0:numSelect]
     return result[::-1]
@@ -456,14 +490,16 @@ def select_best(array, criteria, num_select, highest=True):
     n = len(array)
     m = len(criteria)
     if n != m:
-        raise ValueError('Elements in array (%s) not equal to elements in criteria (%s)' % (n, m))
+        raise ValueError(
+            "Elements in array (%s) not equal to elements in criteria (%s)" % (n, m)
+        )
     if n < num_select:
         return array
     array = np.array(array)
     if highest is True:
         indexes = criteria.argsort()[::-1][:num_select]
     else:
-        indexes = criteria.argsort()[::-1][n - num_select:]
+        indexes = criteria.argsort()[::-1][n - num_select :]
     return array[indexes]
 
 
@@ -480,10 +516,11 @@ def points_on_circle(radius, num_points, connect_ends=True):
     if connect_ends:
         angle = np.linspace(0, 2 * np.pi, num_points)
     else:
-        angle = np.linspace(0, 2 * np.pi * (1 - 1./num_points), num_points)
+        angle = np.linspace(0, 2 * np.pi * (1 - 1.0 / num_points), num_points)
     x_coord = np.cos(angle) * radius
     y_coord = np.sin(angle) * radius
     return x_coord, y_coord
+
 
 @export
 @jit()
@@ -506,14 +543,16 @@ def local_minima_2d(a, x, y):
     x_mins = []
     y_mins = []
     for i in range(dim + 1, len(a) - dim - 1):
-        if (a[i] < a[i - 1]
-                and a[i] < a[i + 1]
-                and a[i] < a[i - dim]
-                and a[i] < a[i + dim]
-                and a[i] < a[i - (dim - 1)]
-                and a[i] < a[i - (dim + 1)]
-                and a[i] < a[i + (dim - 1)]
-                and a[i] < a[i + (dim + 1)]):
+        if (
+            a[i] < a[i - 1]
+            and a[i] < a[i + 1]
+            and a[i] < a[i - dim]
+            and a[i] < a[i + dim]
+            and a[i] < a[i - (dim - 1)]
+            and a[i] < a[i - (dim + 1)]
+            and a[i] < a[i + (dim - 1)]
+            and a[i] < a[i + (dim + 1)]
+        ):
             x_mins.append(x[i])
             y_mins.append(y[i])
             values.append(a[i])
@@ -549,26 +588,30 @@ def neighborSelect(a, x, y):
     x_mins = []
     y_mins = []
     for i in range(dim + 1, len(a) - dim - 1):
-        if (a[i] < a[i - 1]
-                and a[i] < a[i + 1]
-                and a[i] < a[i - dim]
-                and a[i] < a[i + dim]
-                and a[i] < a[i - (dim - 1)]
-                and a[i] < a[i - (dim + 1)]
-                and a[i] < a[i + (dim - 1)]
-                and a[i] < a[i + (dim + 1)]):
-            if (a[i] < a[(i - 2 * dim - 1) % dim ** 2]
-                    and a[i] < a[(i - 2 * dim + 1) % dim ** 2]
-                    and a[i] < a[(i - dim - 2) % dim ** 2]
-                    and a[i] < a[(i - dim + 2) % dim ** 2]
-                    and a[i] < a[(i + dim - 2) % dim ** 2]
-                    and a[i] < a[(i + dim + 2) % dim ** 2]
-                    and a[i] < a[(i + 2 * dim - 1) % dim ** 2]
-                    and a[i] < a[(i + 2 * dim + 1) % dim ** 2]
-                    and a[i] < a[(i + 2 * dim) % dim ** 2]
-                    and a[i] < a[(i - 2 * dim) % dim ** 2]
-                    and a[i] < a[(i - 2) % dim ** 2]
-                    and a[i] < a[(i + 2) % dim ** 2]):
+        if (
+            a[i] < a[i - 1]
+            and a[i] < a[i + 1]
+            and a[i] < a[i - dim]
+            and a[i] < a[i + dim]
+            and a[i] < a[i - (dim - 1)]
+            and a[i] < a[i - (dim + 1)]
+            and a[i] < a[i + (dim - 1)]
+            and a[i] < a[i + (dim + 1)]
+        ):
+            if (
+                a[i] < a[(i - 2 * dim - 1) % dim**2]
+                and a[i] < a[(i - 2 * dim + 1) % dim**2]
+                and a[i] < a[(i - dim - 2) % dim**2]
+                and a[i] < a[(i - dim + 2) % dim**2]
+                and a[i] < a[(i + dim - 2) % dim**2]
+                and a[i] < a[(i + dim + 2) % dim**2]
+                and a[i] < a[(i + 2 * dim - 1) % dim**2]
+                and a[i] < a[(i + 2 * dim + 1) % dim**2]
+                and a[i] < a[(i + 2 * dim) % dim**2]
+                and a[i] < a[(i - 2 * dim) % dim**2]
+                and a[i] < a[(i - 2) % dim**2]
+                and a[i] < a[(i + 2) % dim**2]
+            ):
                 x_mins.append(x[i])
                 y_mins.append(y[i])
                 values.append(a[i])
@@ -642,14 +685,18 @@ def make_subgrid(ra_coord, dec_coord, subgrid_res=2):
     dec_array_new = np.zeros((n * subgrid_res, n * subgrid_res))
     for i in range(0, subgrid_res):
         for j in range(0, subgrid_res):
-            ra_array_new[i::subgrid_res, j::subgrid_res] = ra_array + d_ra_x * (
-                        -1 / 2. + 1 / (2. * subgrid_res) + j / float(subgrid_res)) + d_ra_y * (
-                                                                       -1 / 2. + 1 / (2. * subgrid_res) + i / float(
-                                                                   subgrid_res))
-            dec_array_new[i::subgrid_res, j::subgrid_res] = dec_array + d_dec_x * (
-                        -1 / 2. + 1 / (2. * subgrid_res) + j / float(subgrid_res)) + d_dec_y * (
-                                                                        -1 / 2. + 1 / (2. * subgrid_res) + i / float(
-                                                                    subgrid_res))
+            ra_array_new[i::subgrid_res, j::subgrid_res] = (
+                ra_array
+                + d_ra_x * (-1 / 2.0 + 1 / (2.0 * subgrid_res) + j / float(subgrid_res))
+                + d_ra_y * (-1 / 2.0 + 1 / (2.0 * subgrid_res) + i / float(subgrid_res))
+            )
+            dec_array_new[i::subgrid_res, j::subgrid_res] = (
+                dec_array
+                + d_dec_x
+                * (-1 / 2.0 + 1 / (2.0 * subgrid_res) + j / float(subgrid_res))
+                + d_dec_y
+                * (-1 / 2.0 + 1 / (2.0 * subgrid_res) + i / float(subgrid_res))
+            )
 
     ra_coords_sub = image2array(ra_array_new)
     dec_coords_sub = image2array(dec_array_new)
@@ -679,8 +726,10 @@ def convert_bool_list(n, k=None):
         bool_list = [False] * n
     elif isinstance(k[0], bool):
         if n != len(k):
-            raise ValueError('length of selected lens models in format of boolean list is %s '
-                             'and does not match the models of this class instance %s.' % (len(k), n))
+            raise ValueError(
+                "length of selected lens models in format of boolean list is %s "
+                "and does not match the models of this class instance %s." % (len(k), n)
+            )
         bool_list = k
     elif isinstance(k[0], (int, np.integer)):  # list of integers
         bool_list = [False] * n
@@ -691,9 +740,12 @@ def convert_bool_list(n, k=None):
                 if k_i < n:
                     bool_list[k_i] = True
                 else:
-                    raise ValueError("k as set by %s is not convertable in a bool string of length %s !" % (k, n))
+                    raise ValueError(
+                        "k as set by %s is not convertable in a bool string of length %s !"
+                        % (k, n)
+                    )
     else:
-        raise ValueError('input list k as %s not compatible' % k)
+        raise ValueError("input list k as %s not compatible" % k)
     return bool_list
 
 

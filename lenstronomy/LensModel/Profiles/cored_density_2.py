@@ -1,11 +1,11 @@
-__author__ = 'sibirrer'
+__author__ = "sibirrer"
 
 import numpy as np
 from scipy.integrate import quad
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 from lenstronomy.Util import derivative_util as calc_util
 
-__all__ = ['CoredDensity2']
+__all__ = ["CoredDensity2"]
 
 
 class CoredDensity2(LensProfileBase):
@@ -20,11 +20,21 @@ class CoredDensity2(LensProfileBase):
 
     """
 
-    model_name = 'CORED_DENSITY_2'
+    model_name = "CORED_DENSITY_2"
     _s = 0.000001  # numerical limit for minimal radius
-    param_names = ['sigma0', 'r_core', 'center_x', 'center_y']
-    lower_limit_default = {'sigma0': -1, 'r_core': 0, 'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'sigma0': 10, 'r_core': 100, 'center_x': 100, 'center_y': 100}
+    param_names = ["sigma0", "r_core", "center_x", "center_y"]
+    lower_limit_default = {
+        "sigma0": -1,
+        "r_core": 0,
+        "center_x": -100,
+        "center_y": -100,
+    }
+    upper_limit_default = {
+        "sigma0": 10,
+        "r_core": 100,
+        "center_x": 100,
+        "center_y": 100,
+    }
 
     def function(self, x, y, sigma0, r_core, center_x=0, center_y=0):
         """
@@ -40,7 +50,7 @@ class CoredDensity2(LensProfileBase):
         """
         x_ = x - center_x
         y_ = y - center_y
-        r = np.sqrt(x_ ** 2 + y_ ** 2)
+        r = np.sqrt(x_**2 + y_**2)
         r = np.maximum(r, self._s)
         if isinstance(r, int) or isinstance(r, float):
             return self._num_integral_potential(r, sigma0, r_core)
@@ -57,8 +67,10 @@ class CoredDensity2(LensProfileBase):
         :param r_core:
         :return:
         """
+
         def _integrand(x):
             return self.alpha_r(x, sigma0=sigma0, r_core=r_core)
+
         f_ = quad(_integrand, 0, r)[0]
         return f_
 
@@ -96,7 +108,7 @@ class CoredDensity2(LensProfileBase):
         """
         x_ = x - center_x
         y_ = y - center_y
-        r = np.sqrt(x_ ** 2 + y_ ** 2)
+        r = np.sqrt(x_**2 + y_**2)
         r = np.maximum(r, self._s)
         d_alpha_dr = self.d_alpha_dr(r, sigma0, r_core)
         alpha = self.alpha_r(r, sigma0, r_core)
@@ -117,7 +129,9 @@ class CoredDensity2(LensProfileBase):
         :param r_core: core radius
         :return: deflection angle
         """
-        return sigma0 * r_core ** 2 * np.log((r_core**2 + r**2) / r_core**2) / r  # this is mass_2d / (r * pi)
+        return (
+            sigma0 * r_core**2 * np.log((r_core**2 + r**2) / r_core**2) / r
+        )  # this is mass_2d / (r * pi)
 
     @staticmethod
     def d_alpha_dr(r, sigma0, r_core):
@@ -129,8 +143,14 @@ class CoredDensity2(LensProfileBase):
         :param r_core: core radius
         :return: dalpha/dr
         """
-        return sigma0 * r_core ** 2 * (-1./r**2 * np.log((r_core**2 + r**2) / r_core**2) + 1/r * r_core**2 /
-                                       (r**2 + r_core**2) * 2 * r/r_core**2)
+        return (
+            sigma0
+            * r_core**2
+            * (
+                -1.0 / r**2 * np.log((r_core**2 + r**2) / r_core**2)
+                + 1 / r * r_core**2 / (r**2 + r_core**2) * 2 * r / r_core**2
+            )
+        )
 
     @staticmethod
     def kappa_r(r, sigma0, r_core):
@@ -142,7 +162,7 @@ class CoredDensity2(LensProfileBase):
         :param r_core: core radius
         :return: convergence at r
         """
-        return sigma0 * r_core ** 2 / (r_core ** 2 + r ** 2)
+        return sigma0 * r_core**2 / (r_core**2 + r**2)
 
     @staticmethod
     def density(r, sigma0, r_core):
@@ -154,7 +174,7 @@ class CoredDensity2(LensProfileBase):
         :param r_core: core radius
         :return: density at radius r
         """
-        return 1./2 * sigma0 * r_core**2 * (r_core**2 + r**2) ** (-3./2)
+        return 1.0 / 2 * sigma0 * r_core**2 * (r_core**2 + r**2) ** (-3.0 / 2)
 
     def density_lens(self, r, sigma0, r_core):
         """
@@ -182,7 +202,7 @@ class CoredDensity2(LensProfileBase):
         """
         x_ = x - center_x
         y_ = y - center_y
-        r = np.sqrt(x_ ** 2 + y_ ** 2)
+        r = np.sqrt(x_**2 + y_**2)
         r = np.maximum(r, self._s)
         return self.kappa_r(r, sigma0, r_core)
 
@@ -196,7 +216,9 @@ class CoredDensity2(LensProfileBase):
         :param r_core: core radius
         :return: mass enclosed in cylinder of radius r
         """
-        return sigma0 * r_core ** 2 * np.pi * np.log((r_core**2 + r**2) / r_core**2)
+        return (
+            sigma0 * r_core**2 * np.pi * np.log((r_core**2 + r**2) / r_core**2)
+        )
 
     @staticmethod
     def mass_3d(r, sigma0, r_core):
@@ -209,7 +231,14 @@ class CoredDensity2(LensProfileBase):
         :return: mass enclosed 3d radius
         """
         r_ = np.sqrt(r**2 + r_core**2)
-        return 2 * np.pi * sigma0 * r_core**2 * (r_ * np.log(r_ + r) - np.log(r_core) * r_ - r) / r_
+        return (
+            2
+            * np.pi
+            * sigma0
+            * r_core**2
+            * (r_ * np.log(r_ + r) - np.log(r_core) * r_ - r)
+            / r_
+        )
 
     def mass_3d_lens(self, r, sigma0, r_core):
         """

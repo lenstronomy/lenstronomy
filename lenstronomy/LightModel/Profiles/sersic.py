@@ -1,4 +1,4 @@
-__author__ = 'sibirrer'
+__author__ = "sibirrer"
 
 #  this file contains a class to make a Sersic profile
 
@@ -6,6 +6,7 @@ import numpy as np
 from lenstronomy.LensModel.Profiles.sersic_utils import SersicUtil
 
 from lenstronomy.Util.package_util import exporter
+
 export, __all__ = exporter()
 
 
@@ -23,11 +24,25 @@ class Sersic(SersicUtil):
 
     """
 
-    param_names = ['amp', 'R_sersic', 'n_sersic', 'center_x', 'center_y']
-    lower_limit_default = {'amp': 0, 'R_sersic': 0, 'n_sersic': 0.5, 'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'amp': 100, 'R_sersic': 100, 'n_sersic': 8, 'center_x': 100, 'center_y': 100}
+    param_names = ["amp", "R_sersic", "n_sersic", "center_x", "center_y"]
+    lower_limit_default = {
+        "amp": 0,
+        "R_sersic": 0,
+        "n_sersic": 0.5,
+        "center_x": -100,
+        "center_y": -100,
+    }
+    upper_limit_default = {
+        "amp": 100,
+        "R_sersic": 100,
+        "n_sersic": 8,
+        "center_x": 100,
+        "center_y": 100,
+    }
 
-    def function(self, x, y, amp, R_sersic, n_sersic, center_x=0, center_y=0, max_R_frac=1000.0):
+    def function(
+        self, x, y, amp, R_sersic, n_sersic, center_x=0, center_y=0, max_R_frac=1000.0
+    ):
         """
 
         :param x:
@@ -40,7 +55,9 @@ class Sersic(SersicUtil):
         :param max_R_frac: maximum window outside which the mass is zeroed, in units of R_sersic (float)
         :return: Sersic profile value at (x, y)
         """
-        R = self.get_distance_from_center(x, y, e1=0, e2=0, center_x=center_x, center_y=center_y)
+        R = self.get_distance_from_center(
+            x, y, e1=0, e2=0, center_x=center_x, center_y=center_y
+        )
         result = self._r_sersic(R, R_sersic, n_sersic, max_R_frac)
         return amp * result
 
@@ -60,13 +77,40 @@ class SersicElliptic(SersicUtil):
     with :math:`b_{n}\\approx 1.999n-0.327`
 
     """
-    param_names = ['amp', 'R_sersic', 'n_sersic', 'e1', 'e2', 'center_x', 'center_y']
-    lower_limit_default = {'amp': 0, 'R_sersic': 0, 'n_sersic': 0.5, 'e1': -0.5, 'e2': -0.5, 'center_x': -100,
-                           'center_y': -100}
-    upper_limit_default = {'amp': 100, 'R_sersic': 100, 'n_sersic': 8, 'e1': 0.5, 'e2': 0.5, 'center_x': 100,
-                           'center_y': 100}
 
-    def function(self, x, y, amp, R_sersic, n_sersic, e1, e2, center_x=0, center_y=0, max_R_frac=1000.0):
+    param_names = ["amp", "R_sersic", "n_sersic", "e1", "e2", "center_x", "center_y"]
+    lower_limit_default = {
+        "amp": 0,
+        "R_sersic": 0,
+        "n_sersic": 0.5,
+        "e1": -0.5,
+        "e2": -0.5,
+        "center_x": -100,
+        "center_y": -100,
+    }
+    upper_limit_default = {
+        "amp": 100,
+        "R_sersic": 100,
+        "n_sersic": 8,
+        "e1": 0.5,
+        "e2": 0.5,
+        "center_x": 100,
+        "center_y": 100,
+    }
+
+    def function(
+        self,
+        x,
+        y,
+        amp,
+        R_sersic,
+        n_sersic,
+        e1,
+        e2,
+        center_x=0,
+        center_y=0,
+        max_R_frac=1000.0,
+    ):
         """
 
         :param x:
@@ -106,14 +150,55 @@ class CoreSersic(SersicUtil):
     where :math:`I_b` is the intensity at the break radius and :math:`R = \\sqrt{q \\theta^2_x + \\theta^2_y/q}`.
 
     """
-    param_names = ['amp', 'R_sersic', 'Rb', 'n_sersic', 'gamma', 'e1', 'e2', 'center_x', 'center_y']
-    lower_limit_default = {'amp': 0, 'Rb': 0, 'n_sersic': 0.5, 'gamma': 0, 'e1': -0.5, 'e2': -0.5, 'center_x': -100,
-                           'center_y': -100}
-    upper_limit_default = {'amp': 100, 'Rb': 100, 'n_sersic': 8, 'gamma': 10, 'e1': 0.5, 'e2': 0.5, 'center_x': 100,
-                           'center_y': 100}
 
-    def function(self, x, y, amp, R_sersic, Rb, n_sersic, gamma, e1, e2, center_x=0, center_y=0, alpha=3.0,
-                 max_R_frac=1000.0):
+    param_names = [
+        "amp",
+        "R_sersic",
+        "Rb",
+        "n_sersic",
+        "gamma",
+        "e1",
+        "e2",
+        "center_x",
+        "center_y",
+    ]
+    lower_limit_default = {
+        "amp": 0,
+        "Rb": 0,
+        "n_sersic": 0.5,
+        "gamma": 0,
+        "e1": -0.5,
+        "e2": -0.5,
+        "center_x": -100,
+        "center_y": -100,
+    }
+    upper_limit_default = {
+        "amp": 100,
+        "Rb": 100,
+        "n_sersic": 8,
+        "gamma": 10,
+        "e1": 0.5,
+        "e2": 0.5,
+        "center_x": 100,
+        "center_y": 100,
+    }
+
+    def function(
+        self,
+        x,
+        y,
+        amp,
+        R_sersic,
+        Rb,
+        n_sersic,
+        gamma,
+        e1,
+        e2,
+        center_x=0,
+        center_y=0,
+        alpha=3.0,
+        max_R_frac=1000.0,
+    ):
         """
         :param x:
         :param y:
@@ -134,6 +219,16 @@ class CoreSersic(SersicUtil):
         R_ = self.get_distance_from_center(x, y, e1, e2, center_x, center_y)
         R = self._R_stable(R_)
         bn = self.b_n(n_sersic)
-        result = amp * (1 + (Rb / R) ** alpha) ** (gamma / alpha) * \
-                 np.exp(-bn * (((R ** alpha + Rb ** alpha) / R_sersic ** alpha) ** (1. / (alpha * n_sersic)) - 1.))
+        result = (
+            amp
+            * (1 + (Rb / R) ** alpha) ** (gamma / alpha)
+            * np.exp(
+                -bn
+                * (
+                    ((R**alpha + Rb**alpha) / R_sersic**alpha)
+                    ** (1.0 / (alpha * n_sersic))
+                    - 1.0
+                )
+            )
+        )
         return np.nan_to_num(result)

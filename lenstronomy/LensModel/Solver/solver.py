@@ -2,7 +2,7 @@ from lenstronomy.LensModel.Solver.solver2point import Solver2Point
 from lenstronomy.LensModel.Solver.solver4point import Solver4Point
 import numpy as np
 
-__all__ = ['Solver']
+__all__ = ["Solver"]
 
 
 class Solver(object):
@@ -23,10 +23,12 @@ class Solver(object):
         self._lensModel = lensModel
         if self._num_images == 4:
             self._solver = Solver4Point(lensModel, solver_type=solver_type)
-        elif self. _num_images == 2:
+        elif self._num_images == 2:
             self._solver = Solver2Point(lensModel, solver_type=solver_type)
         else:
-            raise ValueError("%s number of images is not valid. Use 2 or 4!" % self._num_images)
+            raise ValueError(
+                "%s number of images is not valid. Use 2 or 4!" % self._num_images
+            )
 
     def constraint_lensmodel(self, x_pos, y_pos, kwargs_list, xtol=1.49012e-12):
         """
@@ -50,8 +52,10 @@ class Solver(object):
         """
 
         if not len(x_pos) == self._num_images:
-            raise ValueError("Point source number %s must be as specified by the solver with number of images %s" %
-                             (len(x_pos), self._num_images))
+            raise ValueError(
+                "Point source number %s must be as specified by the solver with number of images %s"
+                % (len(x_pos), self._num_images)
+            )
         kwargs_lens, precision = self.constraint_lensmodel(x_pos, y_pos, kwargs_lens)
         return kwargs_lens
 
@@ -77,5 +81,7 @@ class Solver(object):
         :return: updated kwargs_fixed_lens, added fixed parameters being added (and replaced later on) by the
          non-linear solver.
         """
-        kwargs_fixed_lens = self._solver.add_fixed_lens(kwargs_fixed_lens, kwargs_lens_init)
+        kwargs_fixed_lens = self._solver.add_fixed_lens(
+            kwargs_fixed_lens, kwargs_lens_init
+        )
         return kwargs_fixed_lens

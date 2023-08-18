@@ -1,4 +1,4 @@
-__author__ = 'sibirrer'
+__author__ = "sibirrer"
 
 import scipy.optimize
 import scipy.interpolate as interpolate
@@ -8,6 +8,7 @@ from astropy.cosmology import FlatLambdaCDM
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 
 from lenstronomy.Util.package_util import exporter
+
 export, __all__ = exporter()
 
 
@@ -21,12 +22,12 @@ def cosmo2angular_diameter_distances(H_0, omega_m, z_lens, z_source):
     :param z_source: source redshift
     :return: angular diameter distances Dd and Ds/Dds
     """
-    cosmo = FlatLambdaCDM(H0=H_0, Om0=omega_m, Ob0=0.)
+    cosmo = FlatLambdaCDM(H0=H_0, Om0=omega_m, Ob0=0.0)
     lensCosmo = LensCosmo(z_lens=z_lens, z_source=z_source, cosmo=cosmo)
     Dd = lensCosmo.dd
     Ds = lensCosmo.ds
     Dds = lensCosmo.dds
-    return Dd, Ds/Dds
+    return Dd, Ds / Dds
 
 
 @export
@@ -53,6 +54,7 @@ class SolverFlatLCDM(object):
     class to solve multidimensional non-linear equations to determine the cosmological parameters H0 and omega_m given
     the angular diameter distance relations
     """
+
     def __init__(self, z_d, z_s):
         self.z_d = z_d
         self.z_s = z_s
@@ -64,15 +66,19 @@ class SolverFlatLCDM(object):
         :return:
         """
         [H_0, omega_m] = x
-        omega_m = abs(omega_m)%1
-        Dd_new, Ds_Dds_new = cosmo2angular_diameter_distances(H_0, omega_m, self.z_d, self.z_s)
+        omega_m = abs(omega_m) % 1
+        Dd_new, Ds_Dds_new = cosmo2angular_diameter_distances(
+            H_0, omega_m, self.z_d, self.z_s
+        )
         y = np.zeros(2)
         y[0] = Dd - Dd_new
         y[1] = Ds_Dds - Ds_Dds_new
         return y
 
     def solve(self, init, dd, ds_dds):
-        x = scipy.optimize.fsolve(self.F, init, args=(dd, ds_dds), xtol=1.49012e-08, factor=0.1)
+        x = scipy.optimize.fsolve(
+            self.F, init, args=(dd, ds_dds), xtol=1.49012e-08, factor=0.1
+        )
         x[1] = abs(x[1]) % 1
         y = self.F(x, dd, ds_dds)
         if abs(y[0]) >= 0.1 or abs(y[1]) > 0.1:
@@ -85,6 +91,7 @@ class InvertCosmo(object):
     """
     class to do an interpolation and call the inverse of this interpolation to get H_0 and omega_m
     """
+
     def __init__(self, z_d, z_s, H0_range=None, omega_m_range=None):
         self.z_d = z_d
         self.z_s = z_s
@@ -101,20 +108,38 @@ class InvertCosmo(object):
 
         :return:
         """
-        grid2d = np.dstack(np.meshgrid(self._H0_range, self._omega_m_range)).reshape(-1, 2)
+        grid2d = np.dstack(np.meshgrid(self._H0_range, self._omega_m_range)).reshape(
+            -1, 2
+        )
         H0_grid = grid2d[:, 0]
         omega_m_grid = grid2d[:, 1]
         Dd_grid = np.zeros_like(H0_grid)
         Ds_Dds_grid = np.zeros_like(H0_grid)
         for i in range(len(H0_grid)):
-            Dd, Ds_Dds = cosmo2angular_diameter_distances(H0_grid[i], omega_m_grid[i], self.z_d, self.z_s)
+            Dd, Ds_Dds = cosmo2angular_diameter_distances(
+                H0_grid[i], omega_m_grid[i], self.z_d, self.z_s
+            )
             Dd_grid[i] = Dd
             Ds_Dds_grid[i] = Ds_Dds
-        self._f_H0 = interpolate.interp2d(Dd_grid, Ds_Dds_grid, H0_grid, kind='linear', copy=False, bounds_error=False,
-                                          fill_value=-1)
+        self._f_H0 = interpolate.interp2d(
+            Dd_grid,
+            Ds_Dds_grid,
+            H0_grid,
+            kind="linear",
+            copy=False,
+            bounds_error=False,
+            fill_value=-1,
+        )
         print("H0 interpolation done")
-        self._f_omega_m = interpolate.interp2d(Dd_grid, Ds_Dds_grid, omega_m_grid, kind='linear', copy=False,
-                                               bounds_error=False, fill_value=0)
+        self._f_omega_m = interpolate.interp2d(
+            Dd_grid,
+            Ds_Dds_grid,
+            omega_m_grid,
+            kind="linear",
+            copy=False,
+            bounds_error=False,
+            fill_value=0,
+        )
         print("omega_m interpolation done")
 
     def get_cosmo(self, Dd, Ds_Dds):
@@ -125,13 +150,15 @@ class InvertCosmo(object):
         :param Ds_Dds: float
         :return:
         """
-        if not hasattr(self, '_f_H0') or not hasattr(self, '_f_omega_m'):
+        if not hasattr(self, "_f_H0") or not hasattr(self, "_f_omega_m"):
             self._make_interpolation()
         H0 = self._f_H0(Dd, Ds_Dds)
-        print(H0, 'H0')
+        print(H0, "H0")
         omega_m = self._f_omega_m(Dd, Ds_Dds)
-        Dd_new, Ds_Dds_new = cosmo2angular_diameter_distances(H0[0], omega_m[0], self.z_d, self.z_s)
-        if abs(Dd - Dd_new)/Dd > 0.01 or abs(Ds_Dds - Ds_Dds_new)/Ds_Dds > 0.01:
+        Dd_new, Ds_Dds_new = cosmo2angular_diameter_distances(
+            H0[0], omega_m[0], self.z_d, self.z_s
+        )
+        if abs(Dd - Dd_new) / Dd > 0.01 or abs(Ds_Dds - Ds_Dds_new) / Ds_Dds > 0.01:
             return -1, -1
         else:
             return H0[0], omega_m[0]

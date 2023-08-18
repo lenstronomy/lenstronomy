@@ -1,7 +1,7 @@
 from lenstronomy.ImSim.MultiBand.multi_data_base import MultiDataBase
 from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModel
 
-__all__ = ['MultiLinear']
+__all__ = ["MultiLinear"]
 
 
 class MultiLinear(MultiDataBase):
@@ -23,8 +23,15 @@ class MultiLinear(MultiDataBase):
 
     """
 
-    def __init__(self, multi_band_list, kwargs_model, likelihood_mask_list=None, compute_bool=None,
-                 kwargs_pixelbased=None, linear_solver=True):
+    def __init__(
+        self,
+        multi_band_list,
+        kwargs_model,
+        likelihood_mask_list=None,
+        compute_bool=None,
+        kwargs_pixelbased=None,
+        linear_solver=True,
+    ):
         """
 
         :param multi_band_list: list of imaging band configurations [[kwargs_data, kwargs_psf, kwargs_numerics],[...], ...]
@@ -34,19 +41,34 @@ class MultiLinear(MultiDataBase):
         :param linear_solver: bool, if True (default) fixes the linear amplitude parameters 'amp' (avoid sampling) such
          that they get overwritten by the linear solver solution.
         """
-        self.type = 'multi-linear'
+        self.type = "multi-linear"
         imageModel_list = []
         if linear_solver is False and len(multi_band_list) > 1:
-            raise ValueError('Multi-linear mode with more than one band does not support "linear_solver" = False.')
+            raise ValueError(
+                'Multi-linear mode with more than one band does not support "linear_solver" = False.'
+            )
         for band_index in range(len(multi_band_list)):
-            imageModel = SingleBandMultiModel(multi_band_list, kwargs_model, likelihood_mask_list=likelihood_mask_list,
-                                              band_index=band_index, kwargs_pixelbased=kwargs_pixelbased,
-                                              linear_solver=linear_solver)
+            imageModel = SingleBandMultiModel(
+                multi_band_list,
+                kwargs_model,
+                likelihood_mask_list=likelihood_mask_list,
+                band_index=band_index,
+                kwargs_pixelbased=kwargs_pixelbased,
+                linear_solver=linear_solver,
+            )
             imageModel_list.append(imageModel)
         super(MultiLinear, self).__init__(imageModel_list, compute_bool=compute_bool)
 
-    def image_linear_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
-                           kwargs_extinction=None, kwargs_special=None, inv_bool=False):
+    def image_linear_solve(
+        self,
+        kwargs_lens=None,
+        kwargs_source=None,
+        kwargs_lens_light=None,
+        kwargs_ps=None,
+        kwargs_extinction=None,
+        kwargs_special=None,
+        inv_bool=False,
+    ):
         """
         computes the image (lens and source surface brightness with a given lens model).
         The linear parameters are computed with a weighted linear least square optimization
@@ -62,13 +84,17 @@ class MultiLinear(MultiDataBase):
         wls_list, error_map_list, cov_param_list, param_list = [], [], [], []
         for i in range(self._num_bands):
             if self._compute_bool[i] is True:
-                wls_model, error_map, cov_param, param = self._imageModel_list[i].image_linear_solve(kwargs_lens,
-                                                                                                     kwargs_source,
-                                                                                                     kwargs_lens_light,
-                                                                                                     kwargs_ps,
-                                                                                                     kwargs_extinction,
-                                                                                                     kwargs_special,
-                                                                                                     inv_bool=inv_bool)
+                wls_model, error_map, cov_param, param = self._imageModel_list[
+                    i
+                ].image_linear_solve(
+                    kwargs_lens,
+                    kwargs_source,
+                    kwargs_lens_light,
+                    kwargs_ps,
+                    kwargs_extinction,
+                    kwargs_special,
+                    inv_bool=inv_bool,
+                )
             else:
                 wls_model, error_map, cov_param, param = None, None, None, None
             wls_list.append(wls_model)
@@ -77,9 +103,18 @@ class MultiLinear(MultiDataBase):
             param_list.append(param)
         return wls_list, error_map_list, cov_param_list, param_list
 
-    def likelihood_data_given_model(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
-                                    kwargs_extinction=None, kwargs_special=None, source_marg=False, linear_prior=None,
-                                    check_positive_flux=False):
+    def likelihood_data_given_model(
+        self,
+        kwargs_lens=None,
+        kwargs_source=None,
+        kwargs_lens_light=None,
+        kwargs_ps=None,
+        kwargs_extinction=None,
+        kwargs_special=None,
+        source_marg=False,
+        linear_prior=None,
+        check_positive_flux=False,
+    ):
         """
         computes the likelihood of the data given a model
         This is specified with the non-linear parameters and a linear inversion and prior marginalisation.
@@ -98,10 +133,15 @@ class MultiLinear(MultiDataBase):
             linear_prior = [None for i in range(self._num_bands)]
         for i in range(self._num_bands):
             if self._compute_bool[i] is True:
-                logL += self._imageModel_list[i].likelihood_data_given_model(kwargs_lens, kwargs_source,
-                                                                             kwargs_lens_light, kwargs_ps,
-                                                                             kwargs_extinction, kwargs_special,
-                                                                             source_marg=source_marg,
-                                                                             linear_prior=linear_prior[i],
-                                                                             check_positive_flux=check_positive_flux)
+                logL += self._imageModel_list[i].likelihood_data_given_model(
+                    kwargs_lens,
+                    kwargs_source,
+                    kwargs_lens_light,
+                    kwargs_ps,
+                    kwargs_extinction,
+                    kwargs_special,
+                    source_marg=source_marg,
+                    linear_prior=linear_prior[i],
+                    check_positive_flux=check_positive_flux,
+                )
         return logL

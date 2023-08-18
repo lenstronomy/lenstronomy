@@ -3,7 +3,7 @@ import lenstronomy.ImSim.de_lens as de_lens
 
 import numpy as np
 
-__all__ = ['JointLinear']
+__all__ = ["JointLinear"]
 
 
 class JointLinear(MultiLinear):
@@ -13,19 +13,38 @@ class JointLinear(MultiLinear):
     brightness models to be called in all available images/bands
 
     """
-    def __init__(self, multi_band_list, kwargs_model, compute_bool=None, likelihood_mask_list=None):
+
+    def __init__(
+        self,
+        multi_band_list,
+        kwargs_model,
+        compute_bool=None,
+        likelihood_mask_list=None,
+    ):
         # TODO: make this raise statement valid
         # if kwargs_model.get('index_source_light_model_list', None) is not None or \
         #        kwargs_model.get('index_lens_light_model_list', None) is not None or \
         #        kwargs_model.get('index_point_source_model_list', None) is not None:
         #    raise ValueError('You are not allowed to set partial surface brightness models to individual bands in the '
         #                     'joint-linear mode. Your settings are: ', kwargs_model)
-        super(JointLinear, self).__init__(multi_band_list, kwargs_model=kwargs_model, compute_bool=compute_bool,
-                                          likelihood_mask_list=likelihood_mask_list)
-        self.type = 'joint-linear'
+        super(JointLinear, self).__init__(
+            multi_band_list,
+            kwargs_model=kwargs_model,
+            compute_bool=compute_bool,
+            likelihood_mask_list=likelihood_mask_list,
+        )
+        self.type = "joint-linear"
 
-    def image_linear_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
-                           kwargs_extinction=None, kwargs_special=None, inv_bool=False):
+    def image_linear_solve(
+        self,
+        kwargs_lens=None,
+        kwargs_source=None,
+        kwargs_lens_light=None,
+        kwargs_ps=None,
+        kwargs_extinction=None,
+        kwargs_special=None,
+        inv_bool=False,
+    ):
         """
         computes the image (lens and source surface brightness with a given lens model).
         The linear parameters are computed with a weighted linear least square optimization
@@ -38,15 +57,31 @@ class JointLinear(MultiLinear):
         :param inv_bool: if True, invert the full linear solver Matrix Ax = y for the purpose of the covariance matrix.
         :return: 1d array of surface brightness pixels of the optimal solution of the linear parameters to match the data
         """
-        A = self.linear_response_matrix(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_extinction, kwargs_special)
+        A = self.linear_response_matrix(
+            kwargs_lens,
+            kwargs_source,
+            kwargs_lens_light,
+            kwargs_ps,
+            kwargs_extinction,
+            kwargs_special,
+        )
         C_D_response, model_error_list = self.error_response(kwargs_lens, kwargs_ps)
         d = self.data_response
-        param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1 / C_D_response, d, inv_bool=inv_bool)
+        param, cov_param, wls_model = de_lens.get_param_WLS(
+            A.T, 1 / C_D_response, d, inv_bool=inv_bool
+        )
         wls_list = self._array2image_list(wls_model)
         return wls_list, model_error_list, cov_param, param
 
-    def linear_response_matrix(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
-                               kwargs_extinction=None, kwargs_special=None):
+    def linear_response_matrix(
+        self,
+        kwargs_lens=None,
+        kwargs_source=None,
+        kwargs_lens_light=None,
+        kwargs_ps=None,
+        kwargs_extinction=None,
+        kwargs_special=None,
+    ):
         """
         computes the linear response matrix (m x n), with n being the data size and m being the coefficients
 
@@ -59,8 +94,14 @@ class JointLinear(MultiLinear):
         A = []
         for i in range(self._num_bands):
             if self._compute_bool[i] is True:
-                A_i = self._imageModel_list[i].linear_response_matrix(kwargs_lens, kwargs_source, kwargs_lens_light,
-                                                                      kwargs_ps, kwargs_extinction, kwargs_special)
+                A_i = self._imageModel_list[i].linear_response_matrix(
+                    kwargs_lens,
+                    kwargs_source,
+                    kwargs_lens_light,
+                    kwargs_ps,
+                    kwargs_extinction,
+                    kwargs_special,
+                )
                 if len(A) == 0:
                     A = A_i
                 else:
@@ -96,7 +137,7 @@ class JointLinear(MultiLinear):
         for i in range(self._num_bands):
             if self._compute_bool[i] is True:
                 num_data = self.num_response_list[i]
-                array_i = array[k:k + num_data]
+                array_i = array[k : k + num_data]
                 image_i = self._imageModel_list[i].array_masked2image(array_i)
                 image_list.append(image_i)
                 k += num_data
@@ -111,7 +152,9 @@ class JointLinear(MultiLinear):
         C_D_response, model_error = [], []
         for i in range(self._num_bands):
             if self._compute_bool[i] is True:
-                C_D_response_i, model_error_i = self._imageModel_list[i].error_response(kwargs_lens, kwargs_ps, kwargs_special=kwargs_special)
+                C_D_response_i, model_error_i = self._imageModel_list[i].error_response(
+                    kwargs_lens, kwargs_ps, kwargs_special=kwargs_special
+                )
                 model_error.append(model_error_i)
                 if len(C_D_response) == 0:
                     C_D_response = C_D_response_i
@@ -119,9 +162,18 @@ class JointLinear(MultiLinear):
                     C_D_response = np.append(C_D_response, C_D_response_i)
         return C_D_response, model_error
 
-    def likelihood_data_given_model(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
-                                    kwargs_extinction=None, kwargs_special=None, source_marg=False, linear_prior=None,
-                                    check_positive_flux=False):
+    def likelihood_data_given_model(
+        self,
+        kwargs_lens=None,
+        kwargs_source=None,
+        kwargs_lens_light=None,
+        kwargs_ps=None,
+        kwargs_extinction=None,
+        kwargs_special=None,
+        source_marg=False,
+        linear_prior=None,
+        check_positive_flux=False,
+    ):
         """
         computes the likelihood of the data given a model
         This is specified with the non-linear parameters and a linear inversion and prior marginalisation.
@@ -135,22 +187,33 @@ class JointLinear(MultiLinear):
         :return: log likelihood (natural logarithm) (sum of the log likelihoods of the individual images)
         """
         # generate image
-        im_sim_list, model_error_list, cov_matrix, param = self.image_linear_solve(kwargs_lens, kwargs_source,
-                                                                                   kwargs_lens_light, kwargs_ps,
-                                                                                   kwargs_extinction, kwargs_special,
-                                                                                   inv_bool=source_marg)
+        im_sim_list, model_error_list, cov_matrix, param = self.image_linear_solve(
+            kwargs_lens,
+            kwargs_source,
+            kwargs_lens_light,
+            kwargs_ps,
+            kwargs_extinction,
+            kwargs_special,
+            inv_bool=source_marg,
+        )
         # compute X^2
         logL = 0
         index = 0
         for i in range(self._num_bands):
             if self._compute_bool[i] is True:
-                logL += self._imageModel_list[i].Data.log_likelihood(im_sim_list[index], self._imageModel_list[i].likelihood_mask, model_error_list[index])
+                logL += self._imageModel_list[i].Data.log_likelihood(
+                    im_sim_list[index],
+                    self._imageModel_list[i].likelihood_mask,
+                    model_error_list[index],
+                )
                 index += 1
         if cov_matrix is not None and source_marg:
             marg_const = de_lens.marginalization_new(cov_matrix, d_prior=linear_prior)
             logL += marg_const
         if check_positive_flux is True and self._num_bands > 0:
-            bool_ = self._imageModel_list[0].check_positive_flux(kwargs_source, kwargs_lens_light, kwargs_ps)
+            bool_ = self._imageModel_list[0].check_positive_flux(
+                kwargs_source, kwargs_lens_light, kwargs_ps
+            )
             if bool_ is False:
-                logL -= 10 ** 5
+                logL -= 10**5
         return logL

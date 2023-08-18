@@ -1,9 +1,10 @@
-__author__ = 'sibirrer'
+__author__ = "sibirrer"
 
 import numpy as np
 import sys
 
 from lenstronomy.Util.package_util import exporter
+
 export, __all__ = exporter()
 
 
@@ -20,14 +21,14 @@ def get_param_WLS(A, C_D_inv, d, inv_bool=True):
     """
     M = A.T.dot(np.multiply(C_D_inv, A.T).T)
     if inv_bool:
-        if np.linalg.cond(M) < 5/sys.float_info.epsilon:
+        if np.linalg.cond(M) < 5 / sys.float_info.epsilon:
             M_inv = _stable_inv(M)
         else:
             M_inv = np.zeros_like(M)
         R = A.T.dot(np.multiply(C_D_inv, d))
         B = M_inv.dot(R)
     else:
-        if np.linalg.cond(M) < 5/sys.float_info.epsilon:
+        if np.linalg.cond(M) < 5 / sys.float_info.epsilon:
             R = A.T.dot(np.multiply(C_D_inv, d))
             B = _solve_stable(M, R)
             # try:
@@ -52,8 +53,8 @@ def marginalisation_const(M_inv):
 
     sign, log_det = np.linalg.slogdet(M_inv)
     if sign == 0:
-        return -10**15
-    return sign * log_det/2
+        return -(10**15)
+    return sign * log_det / 2
 
 
 @export
@@ -73,9 +74,9 @@ def marginalization_new(M_inv, d_prior=None):
     v_abs[v_abs > d_prior**2] = d_prior**2
     log_det = np.sum(np.log(v_abs)) * np.prod(sign_v)
     if np.isnan(log_det):
-        return -10**15
+        return -(10**15)
     m = len(v)
-    return log_det / 2 + m/2. * np.log(np.pi/2.) - m * np.log(d_prior)
+    return log_det / 2 + m / 2.0 * np.log(np.pi / 2.0) - m * np.log(d_prior)
 
 
 def _stable_inv(m):

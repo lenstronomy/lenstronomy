@@ -3,7 +3,7 @@ import numpy as np
 from lenstronomy.Data.pixel_grid import PixelGrid
 from lenstronomy.Data.image_noise import ImageNoise
 
-__all__ = ['ImageData']
+__all__ = ["ImageData"]
 
 
 class ImageData(PixelGrid, ImageNoise):
@@ -47,9 +47,25 @@ class ImageData(PixelGrid, ImageNoise):
 
 
     """
-    def __init__(self, image_data, exposure_time=None, background_rms=None, noise_map=None, gradient_boost_factor=None,
-                 ra_at_xy_0=0, dec_at_xy_0=0, transform_pix2angle=None, ra_shift=0, dec_shift=0, phi_rot=0,
-                 log_likelihood_constant=0, antenna_primary_beam=None, likelihood_method='diagonal', flux_scaling=1):
+
+    def __init__(
+        self,
+        image_data,
+        exposure_time=None,
+        background_rms=None,
+        noise_map=None,
+        gradient_boost_factor=None,
+        ra_at_xy_0=0,
+        dec_at_xy_0=0,
+        transform_pix2angle=None,
+        ra_shift=0,
+        dec_shift=0,
+        phi_rot=0,
+        log_likelihood_constant=0,
+        antenna_primary_beam=None,
+        likelihood_method="diagonal",
+        flux_scaling=1,
+    ):
         """
 
         :param image_data: 2d numpy array of the image data
@@ -82,16 +98,36 @@ class ImageData(PixelGrid, ImageNoise):
         cos_phi, sin_phi = np.cos(phi_rot), np.sin(phi_rot)
         rot_matrix = np.array([[cos_phi, -sin_phi], [sin_phi, cos_phi]])
         transform_pix2angle_rot = np.dot(transform_pix2angle, rot_matrix)
-        PixelGrid.__init__(self, nx, ny, transform_pix2angle_rot, ra_at_xy_0 + ra_shift, dec_at_xy_0 + dec_shift,
-                           antenna_primary_beam)
-        ImageNoise.__init__(self, image_data, exposure_time=exposure_time, background_rms=background_rms,
-                            noise_map=noise_map, gradient_boost_factor=gradient_boost_factor, verbose=False,
-                            flux_scaling=flux_scaling)
+        PixelGrid.__init__(
+            self,
+            nx,
+            ny,
+            transform_pix2angle_rot,
+            ra_at_xy_0 + ra_shift,
+            dec_at_xy_0 + dec_shift,
+            antenna_primary_beam,
+        )
+        ImageNoise.__init__(
+            self,
+            image_data,
+            exposure_time=exposure_time,
+            background_rms=background_rms,
+            noise_map=noise_map,
+            gradient_boost_factor=gradient_boost_factor,
+            verbose=False,
+            flux_scaling=flux_scaling,
+        )
 
         self._logL_constant = log_likelihood_constant
         self._logL_method = likelihood_method
-        if self._logL_method != 'diagonal' and self._logL_method != 'interferometry_natwt':
-            raise ValueError("likelihood_method %s not supported! likelihood_method can only be 'diagonal' or 'interferometry_natwt'!" % self._logL_method)
+        if (
+            self._logL_method != "diagonal"
+            and self._logL_method != "interferometry_natwt"
+        ):
+            raise ValueError(
+                "likelihood_method %s not supported! likelihood_method can only be 'diagonal' or 'interferometry_natwt'!"
+                % self._logL_method
+            )
 
     def update_data(self, image_data):
         """
@@ -103,9 +139,12 @@ class ImageData(PixelGrid, ImageNoise):
         """
         nx, ny = np.shape(image_data)
         if not self._nx == nx and not self._ny == ny:
-            raise ValueError("shape of new data %s %s must equal old data %s %s!" % (nx, ny, self._nx, self._ny))
+            raise ValueError(
+                "shape of new data %s %s must equal old data %s %s!"
+                % (nx, ny, self._nx, self._ny)
+            )
         self._data = image_data
-        if hasattr(self, '_C_D') and self._noise_map is None:
+        if hasattr(self, "_C_D") and self._noise_map is None:
             del self._C_D
 
     @property
@@ -130,13 +169,13 @@ class ImageData(PixelGrid, ImageNoise):
         :return: the natural logarithm of the likelihood p(data|model)
         """
         # if the likelihood method is assigned to be 'interferometry_natwt', it will return logL computed using the interfermetric likelihood function
-        if self._logL_method == 'interferometry_natwt':
+        if self._logL_method == "interferometry_natwt":
             return self.log_likelihood_interferometry(model)
 
         c_d = self.C_D_model(model)
         chi2 = (model - self._data) ** 2 / (c_d + np.abs(additional_error_map)) * mask
         chi2 = np.array(chi2)
-        log_likelihood = - np.sum(chi2) / 2
+        log_likelihood = -np.sum(chi2) / 2
         return log_likelihood
 
     def log_likelihood_interferometry(self, model):
@@ -167,7 +206,7 @@ class ImageData(PixelGrid, ImageNoise):
 
         xd = np.sum(model[0] * self._data)
         xAx = np.sum(model[0] * model[1])
-        logL = - (xAx - 2 * xd) / (2 * self._background_rms ** 2) + self._logL_constant
+        logL = -(xAx - 2 * xd) / (2 * self._background_rms**2) + self._logL_constant
         return logL
 
     def likelihood_method(self):

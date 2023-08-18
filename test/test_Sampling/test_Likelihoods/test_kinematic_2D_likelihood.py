@@ -122,6 +122,10 @@ class TestKinLikelihood(object):
             sig_logL = sig_kin_likelihood.logL(kwargs_lens_close, kwargs_lens_light_close, self.kwargs_special,
                                                verbose=False)
             npt.assert_almost_equal(sig_logL, close_logL - 1 / 2, decimal=1)
+            kwargs_out_of_bounds=kwargs_lens_close.copy()
+            kwargs_out_of_bounds[0]['theta_E'] = 10
+            out_of_bounds_logL = self._KinLikelihood.logL(kwargs_lens_close, kwargs_lens_light_close, self.kwargs_special, verbose=False)
+            assert out_of_bounds_logL == -10**8
 
     def test_convert_to_nn_params(self):
         kwargs_lens_test = [{'theta_E': 2., 'gamma': 2., 'q': 1., 'phi': 0, 'center_x': 0, 'center_y': 0},

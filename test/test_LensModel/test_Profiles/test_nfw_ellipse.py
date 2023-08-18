@@ -1,4 +1,4 @@
-__author__ = 'sibirrer'
+__author__ = "sibirrer"
 
 
 from lenstronomy.LensModel.Profiles.nfw import NFW
@@ -14,6 +14,7 @@ class TestNFWELLIPSE(object):
     """
     tests the Gaussian methods
     """
+
     def setup_method(self):
         self.nfw = NFW()
         self.nfw_e = NFW_ELLIPSE()
@@ -21,9 +22,9 @@ class TestNFWELLIPSE(object):
     def test_function(self):
         x = np.array([1])
         y = np.array([2])
-        Rs = 1.
-        alpha_Rs = 1.
-        q = 1.
+        Rs = 1.0
+        alpha_Rs = 1.0
+        q = 1.0
         phi_G = 0
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         values = self.nfw.function(x, y, Rs, alpha_Rs)
@@ -32,14 +33,14 @@ class TestNFWELLIPSE(object):
         x = np.array([0])
         y = np.array([0])
 
-        q = .8
+        q = 0.8
         phi_G = 0
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
-        values = self.nfw_e.function(x, y, Rs, alpha_Rs,e1, e2)
+        values = self.nfw_e.function(x, y, Rs, alpha_Rs, e1, e2)
         npt.assert_almost_equal(values[0], 0, decimal=4)
 
-        x = np.array([2,3,4])
-        y = np.array([1,1,1])
+        x = np.array([2, 3, 4])
+        y = np.array([1, 1, 1])
         values = self.nfw_e.function(x, y, Rs, alpha_Rs, e1, e2)
         npt.assert_almost_equal(values[0], 1.8690403434928538, decimal=5)
         npt.assert_almost_equal(values[1], 2.6186971904371217, decimal=5)
@@ -48,9 +49,9 @@ class TestNFWELLIPSE(object):
     def test_derivatives(self):
         x = np.array([1])
         y = np.array([2])
-        Rs = 1.
-        alpha_Rs = 1.
-        q = 1.
+        Rs = 1.0
+        alpha_Rs = 1.0
+        q = 1.0
         phi_G = 0
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         f_x, f_y = self.nfw.derivatives(x, y, Rs, alpha_Rs)
@@ -64,10 +65,10 @@ class TestNFWELLIPSE(object):
         npt.assert_almost_equal(f_x[0], 0, decimal=5)
         npt.assert_almost_equal(f_y[0], 0, decimal=5)
 
-        x = np.array([1,3,4])
-        y = np.array([2,1,1])
-        alpha_Rs = 1.
-        q = .8
+        x = np.array([1, 3, 4])
+        y = np.array([2, 1, 1])
+        alpha_Rs = 1.0
+        q = 0.8
         phi_G = 0
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         values = self.nfw_e.derivatives(x, y, Rs, alpha_Rs, e1, e2)
@@ -79,9 +80,9 @@ class TestNFWELLIPSE(object):
     def test_hessian(self):
         x = np.array([1])
         y = np.array([2])
-        Rs = 1.
-        alpha_Rs = 1.
-        q = 1.
+        Rs = 1.0
+        alpha_Rs = 1.0
+        q = 1.0
         phi_G = 0
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         f_xx, f_xy, f_yx, f_yy = self.nfw.hessian(x, y, Rs, alpha_Rs)
@@ -91,9 +92,9 @@ class TestNFWELLIPSE(object):
         npt.assert_almost_equal(f_xy[0], f_xy_e[0], decimal=5)
         npt.assert_almost_equal(f_yx[0], f_yx_e[0], decimal=5)
 
-        x = np.array([1,3,4])
-        y = np.array([2,1,1])
-        q = .8
+        x = np.array([1, 3, 4])
+        y = np.array([2, 1, 1])
+        q = 0.8
         phi_G = 0
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         values = self.nfw_e.hessian(x, y, Rs, alpha_Rs, e1, e2)
@@ -112,5 +113,5 @@ class TestNFWELLIPSE(object):
         npt.assert_almost_equal(m_3d, 1.1573795105019022, decimal=8)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pytest.main()

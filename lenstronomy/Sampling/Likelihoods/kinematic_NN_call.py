@@ -1,6 +1,7 @@
 # import trained NN
 import numpy as np
 import matplotlib.pyplot as plt
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 import os
 import json
 
@@ -35,13 +36,15 @@ class KinematicNN():
         self.within_bounds = self.check_bounds(input_p, verbose)
         return self.generator.generate_map(input_p)
 
-    def plot_map(self, input_p):
+    def plot_map(self, ax, input_p):
         self.check_bounds(input_p)
-        plt.figure(figsize=(24, 6))
-        plt.subplot(131)
-        plt.imshow(self.generate_map(input_p))
-        plt.title('Prediction')
-        plt.colorbar()
+        im = ax.imshow(self.generate_map(input_p))
+        ax.set_title('Prediction')
+        divider = make_axes_locatable(ax)
+        cax = divider.append_axes("right", size="5%", pad=0.05)
+        cb = plt.colorbar(im, cax=cax)
+        cb.set_label(r'$v_{\rm rms}$ [km/s]')
+        return ax
 
     def check_bounds(self, input_p, same_orientation=True, verbose=False):
         """

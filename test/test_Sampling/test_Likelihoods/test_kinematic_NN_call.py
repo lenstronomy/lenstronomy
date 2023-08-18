@@ -50,6 +50,7 @@ class TestKinNNCall(object):
             assert (in_bounds is False)
 
     def test_plot_map(self):
-        f, ax = plt.subplots(1, 1, figsize=(4, 4))
-        ax = self.kinematic_NN.plot_map(ax=ax, input_p=self.example_input)
-        plt.close()
+        if self.kinematic_NN.SKiNN_installed:
+            f, ax = plt.subplots(1, 1, figsize=(4, 4))
+            ax = self.kinematic_NN.plot_map(ax=ax, input_p=self.example_input)
+            plt.close()

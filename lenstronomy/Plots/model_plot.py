@@ -9,13 +9,14 @@ __all__ = ["ModelPlot"]
 
 
 class ModelPlot(object):
-    """
-    class that manages the summary plots of a lens model
-    The class uses the same conventions as being used in the FittingSequence and interfaces with the ImSim module.
-    The linear inversion is re-done given the likelihood settings in the init of this class (make sure this is the same
-    as you perform the FittingSequence) to make sure the linear amplitude parameters are computed as they are not part
-    of the output of the FittingSequence results.
+    """Class that manages the summary plots of a lens model The class uses the same
+    conventions as being used in the FittingSequence and interfaces with the ImSim
+    module.
 
+    The linear inversion is re-done given the likelihood settings in the init of this
+    class (make sure this is the same as you perform the FittingSequence) to make sure
+    the linear amplitude parameters are computed as they are not part of the output of
+    the FittingSequence results.
     """
 
     def __init__(
@@ -189,8 +190,7 @@ class ModelPlot(object):
         return f, axes
 
     def data_plot(self, band_index=0, **kwargs):
-        """
-        illustrates data
+        """Illustrates data.
 
         :param band_index: index of band
         :param kwargs: arguments of plotting
@@ -200,8 +200,7 @@ class ModelPlot(object):
         return plot_band.data_plot(**kwargs)
 
     def model_plot(self, band_index=0, **kwargs):
-        """
-        illustrates model
+        """Illustrates model.
 
         :param band_index: index of band
         :param kwargs: arguments of plotting
@@ -211,8 +210,7 @@ class ModelPlot(object):
         return plot_band.model_plot(**kwargs)
 
     def convergence_plot(self, band_index=0, **kwargs):
-        """
-        illustrates lensing convergence in data frame
+        """Illustrates lensing convergence in data frame.
 
         :param band_index: index of band
         :param kwargs: arguments of plotting
@@ -222,8 +220,7 @@ class ModelPlot(object):
         return plot_band.convergence_plot(**kwargs)
 
     def substructure_plot(self, band_index=0, **kwargs):
-        """
-        illustrates substructure in the lens system
+        """Illustrates substructure in the lens system.
 
         :param band_index: index of band
         :param kwargs: arguments of plotting
@@ -233,8 +230,7 @@ class ModelPlot(object):
         return plot_band.substructure_plot(**kwargs)
 
     def normalized_residual_plot(self, band_index=0, **kwargs):
-        """
-        illustrates normalized residuals between data and model fit
+        """Illustrates normalized residuals between data and model fit.
 
         :param band_index: index of band
         :param kwargs: arguments of plotting
@@ -244,8 +240,7 @@ class ModelPlot(object):
         return plot_band.normalized_residual_plot(**kwargs)
 
     def absolute_residual_plot(self, band_index=0, **kwargs):
-        """
-        illustrates absolute residuals between data and model fit
+        """Illustrates absolute residuals between data and model fit.
 
         :param band_index: index of band
         :param kwargs: arguments of plotting
@@ -255,8 +250,7 @@ class ModelPlot(object):
         return plot_band.absolute_residual_plot(**kwargs)
 
     def source_plot(self, band_index=0, **kwargs):
-        """
-        illustrates reconstructed source (de-lensed de-convolved)
+        """Illustrates reconstructed source (de-lensed de-convolved)
 
         :param band_index: index of band
         :param kwargs: arguments of plotting
@@ -266,8 +260,8 @@ class ModelPlot(object):
         return plot_band.source_plot(**kwargs)
 
     def error_map_source_plot(self, band_index=0, **kwargs):
-        """
-        illustrates surface brightness variance in the reconstruction in the source plane
+        """Illustrates surface brightness variance in the reconstruction in the source
+        plane.
 
         :param band_index: index of band
         :param kwargs: arguments of plotting
@@ -277,8 +271,7 @@ class ModelPlot(object):
         return plot_band.error_map_source_plot(**kwargs)
 
     def magnification_plot(self, band_index=0, **kwargs):
-        """
-        illustrates lensing magnification in the field of view of the data frame
+        """Illustrates lensing magnification in the field of view of the data frame.
 
         :param band_index: index of band
         :param kwargs: arguments of plotting
@@ -288,8 +281,7 @@ class ModelPlot(object):
         return plot_band.magnification_plot(**kwargs)
 
     def deflection_plot(self, band_index=0, **kwargs):
-        """
-        illustrates lensing deflections on the field of view of the data frame
+        """Illustrates lensing deflections on the field of view of the data frame.
 
         :param band_index: index of band
         :param kwargs: arguments of plotting
@@ -299,8 +291,7 @@ class ModelPlot(object):
         return plot_band.deflection_plot(**kwargs)
 
     def decomposition_plot(self, band_index=0, **kwargs):
-        """
-        illustrates decomposition of model components
+        """Illustrates decomposition of model components.
 
         :param band_index: index of band
         :param kwargs: arguments of plotting
@@ -310,8 +301,7 @@ class ModelPlot(object):
         return plot_band.decomposition_plot(**kwargs)
 
     def subtract_from_data_plot(self, band_index=0, **kwargs):
-        """
-        subtracts individual model components from the data
+        """Subtracts individual model components from the data.
 
         :param band_index: index of band
         :param kwargs: arguments of plotting
@@ -321,8 +311,7 @@ class ModelPlot(object):
         return plot_band.subtract_from_data_plot(**kwargs)
 
     def plot_main(self, band_index=0, **kwargs):
-        """
-        plot a set of 'main' modelling diagnostics
+        """Plot a set of 'main' modelling diagnostics.
 
         :param band_index: index of band
         :param kwargs: arguments of plotting
@@ -332,8 +321,7 @@ class ModelPlot(object):
         return plot_band.plot_main(**kwargs)
 
     def plot_separate(self, band_index=0):
-        """
-        plot a set of 'main' modelling diagnostics
+        """Plot a set of 'main' modelling diagnostics.
 
         :param band_index: index of band
         :return: plot instance
@@ -342,8 +330,7 @@ class ModelPlot(object):
         return plot_band.plot_separate()
 
     def plot_subtract_from_data_all(self, band_index=0):
-        """
-        plot a set of 'main' modelling diagnostics
+        """Plot a set of 'main' modelling diagnostics.
 
         :param band_index: index of band
         :return: plot instance

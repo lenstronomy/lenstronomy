@@ -1,8 +1,6 @@
-"""
-Test the PSO module.
+"""Test the PSO module.
 
 Execute with py.test -v
-
 """
 import numpy as np
 import pytest
@@ -14,7 +12,7 @@ from lenstronomy.Sampling.Samplers.pso import Particle
 
 
 class TestParticleSwarmOptimizer(object):
-    """ """
+    """"""
 
     ctx = None
     params = np.array([[1, 2, 3], [4, 5, 6]])

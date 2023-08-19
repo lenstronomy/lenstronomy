@@ -7,9 +7,7 @@ import lenstronomy.Util.param_util as param_util
 
 
 class TestSIE(object):
-    """
-    tests the Gaussian methods
-    """
+    """Tests the Gaussian methods."""
 
     def setup_method(self):
         from lenstronomy.LensModel.Profiles.sie import SIE

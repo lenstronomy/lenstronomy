@@ -8,11 +8,10 @@ __all__ = ["HernquistEllipseCSE"]
 
 
 class HernquistEllipseCSE(Hernquist_Ellipse):
-    """
-    this class contains functions for the elliptical Hernquist profile. Ellipticity is defined in the convergence.
+    """This class contains functions for the elliptical Hernquist profile.
+
+    Ellipticity is defined in the convergence.
     Approximation with CSE profile introduced by Oguri 2021: https://arxiv.org/pdf/2106.11464.pdf
-
-
     """
 
     param_names = ["sigma0", "Rs", "e1", "e2", "center_x", "center_y"]
@@ -125,9 +124,7 @@ class HernquistEllipseCSE(Hernquist_Ellipse):
         super(HernquistEllipseCSE, self).__init__()
 
     def function(self, x, y, sigma0, Rs, e1, e2, center_x=0, center_y=0):
-        """
-        returns double integral of NFW profile
-        """
+        """Returns double integral of NFW profile."""
         phi_q, q = param_util.ellipticity2phi_q(e1, e2)
         # shift
         x_ = x - center_x
@@ -143,9 +140,7 @@ class HernquistEllipseCSE(Hernquist_Ellipse):
         return const * f_
 
     def derivatives(self, x, y, sigma0, Rs, e1, e2, center_x=0, center_y=0):
-        """
-        returns df/dx and df/dy of the function (integral of NFW)
-        """
+        """Returns df/dx and df/dy of the function (integral of NFW)"""
         phi_q, q = param_util.ellipticity2phi_q(e1, e2)
         # shift
         x_ = x - center_x
@@ -162,9 +157,8 @@ class HernquistEllipseCSE(Hernquist_Ellipse):
         return const * f_x, const * f_y
 
     def hessian(self, x, y, sigma0, Rs, e1, e2, center_x=0, center_y=0):
-        """
-        returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
-        """
+        """Returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx,
+        d^f/dy^2."""
         phi_q, q = param_util.ellipticity2phi_q(e1, e2)
         # shift
         x_ = x - center_x
@@ -190,8 +184,7 @@ class HernquistEllipseCSE(Hernquist_Ellipse):
 
     @staticmethod
     def _normalization(sigma0, Rs, q):
-        """
-        mapping to eqn 10 and 11 in Oguri 2021 from phenomenological definition
+        """Mapping to eqn 10 and 11 in Oguri 2021 from phenomenological definition.
 
         :param sigma0: sigma0 normalization
         :param Rs: scale radius

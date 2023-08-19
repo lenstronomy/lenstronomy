@@ -10,13 +10,13 @@ export, __all__ = exporter()
 
 @export
 def get_param_WLS(A, C_D_inv, d, inv_bool=True):
-    """
-    returns the parameter values given
+    """Returns the parameter values given.
 
     :param A: response matrix Nd x Ns (Nd = # data points, Ns = # parameters)
     :param C_D_inv: inverse covariance matrix of the data, Nd x Nd, diagonal form
     :param d: data array, 1-d Nd
-    :param inv_bool: boolean, whether returning also the inverse matrix or just solve the linear system
+    :param inv_bool: boolean, whether returning also the inverse matrix or just solve
+        the linear system
     :return: 1-d array of parameter values
     """
     M = A.T.dot(np.multiply(C_D_inv, A.T).T)
@@ -44,8 +44,7 @@ def get_param_WLS(A, C_D_inv, d, inv_bool=True):
 
 @export
 def marginalisation_const(M_inv):
-    """
-    get marginalisation constant 1/2 log(M_beta) for flat priors
+    """Get marginalisation constant 1/2 log(M_beta) for flat priors.
 
     :param M_inv: 2D covariance matrix
     :return: float
@@ -80,8 +79,7 @@ def marginalization_new(M_inv, d_prior=None):
 
 
 def _stable_inv(m):
-    """
-    stable linear inversion
+    """Stable linear inversion.
 
     :param m: square matrix to be inverted
     :return: inverse of M (or zeros)

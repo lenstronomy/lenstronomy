@@ -6,9 +6,8 @@ __all__ = ["CurvedArcSPP", "center_deflector"]
 
 
 class CurvedArcSPP(LensProfileBase):
-    """
-    lens model that describes a section of a highly magnified deflector region.
-    The parameterization is chosen to describe local observables efficient.
+    """Lens model that describes a section of a highly magnified deflector region. The
+    parameterization is chosen to describe local observables efficient.
 
     Observables are:
     - curvature radius (basically bending relative to the center of the profile)
@@ -21,7 +20,6 @@ class CurvedArcSPP(LensProfileBase):
     - Should work with other perturbative models without breaking its meaning (say when adding additional shear terms)
     - Must best reflect the observables in lensing
     - minimal covariances between the parameters, intuitive parameterization.
-
     """
 
     param_names = [
@@ -77,9 +75,8 @@ class CurvedArcSPP(LensProfileBase):
 
     @staticmethod
     def spp2stretch(theta_E, gamma, center_x_spp, center_y_spp, center_x, center_y):
-        """
-        turn Singular power-law lens model into stretch parameterization at position (center_x, center_y)
-        This is the inverse function of stretch2spp()
+        """Turn Singular power-law lens model into stretch parameterization at position
+        (center_x, center_y) This is the inverse function of stretch2spp()
 
         :param theta_E: Einstein radius of SPP model
         :param gamma: power-law slope

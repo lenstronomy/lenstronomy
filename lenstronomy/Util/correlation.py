@@ -11,8 +11,7 @@ export, __all__ = exporter()
 
 @export
 def correlation_2D(image):
-    """
-    #TODO document normalization output in units
+    """#TODO document normalization output in units
 
     :param image: 2d image
     :return: 2d fourier transform

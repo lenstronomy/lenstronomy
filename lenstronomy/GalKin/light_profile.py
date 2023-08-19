@@ -7,15 +7,13 @@ __all__ = ["LightProfile"]
 
 
 class LightProfile(object):
-    """
-    class to deal with the light distribution for GalKin
+    """Class to deal with the light distribution for GalKin.
 
     In particular, this class allows for:
      - (faster) interpolated calculation for a given profile (for a range that the Jeans equation is computed)
      - drawing 3d and 2d distributions from a given (spherical) profile
        (within bounds where the Jeans equation is expected to be accurate)
      - 2d projected profiles within the 3d integration range (truncated)
-
     """
 
     def __init__(
@@ -44,25 +42,26 @@ class LightProfile(object):
         self._max_draw = max_draw
 
     def light_3d(self, r, kwargs_list):
-        """
-        three-dimensional light profile
+        """Three-dimensional light profile.
 
         :param r: 3d radius
-        :param kwargs_list: list of keyword arguments of light profiles (see LightModule)
+        :param kwargs_list: list of keyword arguments of light profiles (see
+            LightModule)
         :return: flux per 3d volume at radius r
         """
         light_3d = self.light_model.light_3d(r, kwargs_list)
         return light_3d
 
     def light_3d_interp(self, r, kwargs_list, new_compute=False):
-        """
-        interpolated three-dimensional light profile within bounds [min_interpolate, max_interpolate]
-        in logarithmic units with interpol_grid_num numbers of interpolation steps
+        """Interpolated three-dimensional light profile within bounds [min_interpolate,
+        max_interpolate] in logarithmic units with interpol_grid_num numbers of
+        interpolation steps.
 
         :param r: 3d radius
-        :param kwargs_list: list of keyword arguments of light profiles (see LightModule)
-        :param new_compute: boolean, if True, re-computes the interpolation
-         (becomes valid with updated kwargs_list argument)
+        :param kwargs_list: list of keyword arguments of light profiles (see
+            LightModule)
+        :param new_compute: boolean, if True, re-computes the interpolation (becomes
+            valid with updated kwargs_list argument)
         :return: flux per 3d volume at radius r
         """
         if not hasattr(self, "_f_light_3d") or new_compute is True:
@@ -83,11 +82,11 @@ class LightProfile(object):
         return np.exp(self._f_light_3d(np.log(r)))
 
     def light_2d(self, R, kwargs_list):
-        """
-        projected light profile (integrated to infinity in the projected axis)
+        """Projected light profile (integrated to infinity in the projected axis)
 
         :param R: projected 2d radius
-        :param kwargs_list: list of keyword arguments of light profiles (see LightModule)
+        :param kwargs_list: list of keyword arguments of light profiles (see
+            LightModule)
         :return: projected surface brightness
         """
         kwargs_light_circularized = self._circularize_kwargs(kwargs_list)
@@ -119,12 +118,12 @@ class LightProfile(object):
         return self._kwargs_light_circularized
 
     def _light_2d_finite_single(self, R, kwargs_list):
-        """
-        projected light profile (integrated to FINITE 3d boundaries from the max_interpolate)
-        for a single float number of R
+        """Projected light profile (integrated to FINITE 3d boundaries from the
+        max_interpolate) for a single float number of R.
 
         :param R: projected 2d radius (between min_interpolate and max_interpolate)
-        :param kwargs_list: list of keyword arguments of light profiles (see LightModule)
+        :param kwargs_list: list of keyword arguments of light profiles (see
+            LightModule)
         :return: projected surface brightness
         """
 
@@ -162,11 +161,12 @@ class LightProfile(object):
         return flux_R * 2  # integral in both directions
 
     def light_2d_finite(self, R, kwargs_list):
-        """
-        projected light profile (integrated to FINITE 3d boundaries from the max_interpolate)
+        """Projected light profile (integrated to FINITE 3d boundaries from the
+        max_interpolate)
 
         :param R: projected 2d radius (between min_interpolate and max_interpolate
-        :param kwargs_list: list of keyword arguments of light profiles (see LightModule)
+        :param kwargs_list: list of keyword arguments of light profiles (see
+            LightModule)
         :return: projected surface brightness
         """
 
@@ -181,14 +181,14 @@ class LightProfile(object):
             return light_2d
 
     def draw_light_2d_linear(self, kwargs_list, n=1, new_compute=False):
-        """
-        constructs the CDF and draws from it random realizations of projected radii R
-        The interpolation of the CDF is done in linear projected radius space
+        """Constructs the CDF and draws from it random realizations of projected radii R
+        The interpolation of the CDF is done in linear projected radius space.
 
-        :param kwargs_list: list of keyword arguments of light profiles (see LightModule)
+        :param kwargs_list: list of keyword arguments of light profiles (see
+            LightModule)
         :param n: int; number of draws
-        :param new_compute: boolean, if True, re-computes the interpolation
-         (becomes valid with updated kwargs_list argument)
+        :param new_compute: boolean, if True, re-computes the interpolation (becomes
+            valid with updated kwargs_list argument)
         :return: draw of projected radius for the given light profile distribution
         """
         if not hasattr(self, "_light_cdf") or new_compute is True:
@@ -211,14 +211,14 @@ class LightProfile(object):
         return r_draw
 
     def draw_light_2d(self, kwargs_list, n=1, new_compute=False):
-        """
-        constructs the CDF and draws from it random realizations of projected radii R
-        CDF is constructed in logarithmic projected radius spacing
+        """Constructs the CDF and draws from it random realizations of projected radii R
+        CDF is constructed in logarithmic projected radius spacing.
 
         :param kwargs_list: light model keyword argument list
         :param n: int, number of draws per functino call
         :param new_compute: re-computes the interpolated CDF
-        :return: realization of projected radius following the distribution of the light model
+        :return: realization of projected radius following the distribution of the light
+            model
         """
         if not hasattr(self, "_light_cdf_log") or new_compute is True:
             r_array = np.logspace(
@@ -242,13 +242,13 @@ class LightProfile(object):
         return np.exp(r_log_draw)
 
     def draw_light_3d(self, kwargs_list, n=1, new_compute=False):
-        """
-        constructs the CDF and draws from it random realizations of 3D radii r
+        """Constructs the CDF and draws from it random realizations of 3D radii r.
 
         :param kwargs_list: light model keyword argument list
         :param n: int, number of draws per function call
         :param new_compute: re-computes the interpolated CDF
-        :return: realization of projected radius following the distribution of the light model
+        :return: realization of projected radius following the distribution of the light
+            model
         """
         if not hasattr(self, "_light_3d_cdf_log") or new_compute is True:
             r_array = np.logspace(
@@ -282,8 +282,8 @@ class LightProfile(object):
         return np.exp(r_log_draw)
 
     def delete_cache(self):
-        """
-        deletes cached interpolation function of the CDF for a specific light profile
+        """Deletes cached interpolation function of the CDF for a specific light
+        profile.
 
         :return: None
         """

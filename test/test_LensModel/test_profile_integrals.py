@@ -8,9 +8,7 @@ from lenstronomy.LensModel.profile_integrals import ProfileIntegrals
 
 
 class TestNumerics(object):
-    """
-    tests the second derivatives of various lens models
-    """
+    """Tests the second derivatives of various lens models."""
 
     def setup_method(self):
         pass
@@ -41,8 +39,8 @@ class TestNumerics(object):
         npt.assert_almost_equal(mass_3d / mass_3d_num, 1, decimal=2)
 
     def assert_lens_integrals(self, Model, kwargs, pi_convention=True):
-        """
-        checks whether the integral in projection of the density_lens() function is the convergence
+        """Checks whether the integral in projection of the density_lens() function is
+        the convergence.
 
         :param Model: lens model instance
         :param kwargs: keyword arguments of lens model
@@ -92,10 +90,8 @@ class TestNumerics(object):
         self.assert_integrals(Model, kwargs)
 
     def test_PJaffa_density_deflection(self):
-        """
-        tests whether the unit conversion between the lensing parameter 'sigma0' and the units in the density profile are ok
-        :return:
-        """
+        """Tests whether the unit conversion between the lensing parameter 'sigma0' and
+        the units in the density profile are ok :return:"""
 
         from lenstronomy.LensModel.Profiles.p_jaffe import PJaffe as Model
 
@@ -151,10 +147,8 @@ class TestNumerics(object):
         self.assert_lens_integrals(Model, kwargs_lens)
 
     def test_nfw_density_deflection(self):
-        """
-        tests whether the unit conversion between the lensing parameter 'sigma0' and the units in the density profile are ok
-        :return:
-        """
+        """Tests whether the unit conversion between the lensing parameter 'sigma0' and
+        the units in the density profile are ok :return:"""
 
         from lenstronomy.LensModel.Profiles.nfw import NFW as Model
 
@@ -191,10 +185,8 @@ class TestNumerics(object):
         self.assert_lens_integrals(Model, kwargs)
 
     def test_hernquist_density_deflection(self):
-        """
-        tests whether the unit conversion between the lensing parameter 'sigma0' and the units in the density profile are ok
-        :return:
-        """
+        """Tests whether the unit conversion between the lensing parameter 'sigma0' and
+        the units in the density profile are ok :return:"""
 
         from lenstronomy.LensModel.Profiles.hernquist import Hernquist as Model
 
@@ -219,10 +211,8 @@ class TestNumerics(object):
         self.assert_lens_integrals(Model, kwargs_lens, pi_convention=True)
 
     def test_sis_density_deflection(self):
-        """
-        tests whether the unit conversion between the lensing parameter 'sigma0' and the units in the density profile are ok
-        :return:
-        """
+        """Tests whether the unit conversion between the lensing parameter 'sigma0' and
+        the units in the density profile are ok :return:"""
 
         from lenstronomy.LensModel.Profiles.sis import SIS as Model
 
@@ -253,10 +243,8 @@ class TestNumerics(object):
         self.assert_lens_integrals(Model, kwargs_lens)
 
     def test_sie_density_deflection(self):
-        """
-        tests whether the unit conversion between the lensing parameter 'sigma0' and the units in the density profile are ok
-        :return:
-        """
+        """Tests whether the unit conversion between the lensing parameter 'sigma0' and
+        the units in the density profile are ok :return:"""
 
         from lenstronomy.LensModel.Profiles.sie import SIE as Model
 
@@ -283,10 +271,8 @@ class TestNumerics(object):
         self.assert_lens_integrals(Model, kwargs_lens)
 
     def test_spp_density_deflection(self):
-        """
-        tests whether the unit conversion between the lensing parameter 'sigma0' and the units in the density profile are ok
-        :return:
-        """
+        """Tests whether the unit conversion between the lensing parameter 'sigma0' and
+        the units in the density profile are ok :return:"""
 
         from lenstronomy.LensModel.Profiles.spp import SPP as Model
 
@@ -309,10 +295,8 @@ class TestNumerics(object):
         self.assert_integrals(Model, kwargs)
 
     def test_gaussian_density_deflection(self):
-        """
-        tests whether the unit conversion between the lensing parameter 'sigma0' and the units in the density profile are ok
-        :return:
-        """
+        """Tests whether the unit conversion between the lensing parameter 'sigma0' and
+        the units in the density profile are ok :return:"""
 
         from lenstronomy.LensModel.Profiles.gaussian_kappa import GaussianKappa as Model
 

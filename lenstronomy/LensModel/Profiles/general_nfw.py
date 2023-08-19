@@ -10,8 +10,8 @@ __all__ = ["GNFW"]
 
 
 class GNFW(LensProfileBase):
-    """
-    This class contains a double power law profile with flexible inner and outer logarithmic slopes g and n
+    """This class contains a double power law profile with flexible inner and outer
+    logarithmic slopes g and n.
 
     .. math::
         \\rho(r) = \\frac{\\rho_0}{r^{\\gamma}} \\frac{Rs^{n}}{\\left(r^2 + Rs^2 \\right)^{(n - \\gamma)/2}}
@@ -53,8 +53,7 @@ class GNFW(LensProfileBase):
     def derivatives(
         self, x, y, Rs, alpha_Rs, gamma_inner, gamma_outer, center_x=0, center_y=0
     ):
-        """
-        returns df/dx and df/dy of the function which are the deflection angles
+        """Returns df/dx and df/dy of the function which are the deflection angles.
 
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
@@ -105,8 +104,7 @@ class GNFW(LensProfileBase):
 
     @staticmethod
     def density(R, Rs, rho0, gamma_inner, gamma_outer):
-        """
-        three dimensional NFW profile
+        """Three dimensional NFW profile.
 
         :param R: radius of interest
         :type Rs: scale radius
@@ -120,9 +118,9 @@ class GNFW(LensProfileBase):
         return rho0 / (x**gamma_inner * (1 + x**2) ** outer_slope)
 
     def density_lens(self, r, Rs, alpha_Rs, gamma_inner, gamma_outer):
-        """
-        computes the density at 3d radius r given lens model parameterization.
-        The integral in the LOS projection of this quantity results in the convergence quantity.
+        """Computes the density at 3d radius r given lens model parameterization. The
+        integral in the LOS projection of this quantity results in the convergence
+        quantity.
 
         :param r: 3d radios
         :param Rs: scale radius
@@ -137,8 +135,7 @@ class GNFW(LensProfileBase):
     def density_2d(
         self, x, y, Rs, rho0, gamma_inner, gamma_outer, center_x=0, center_y=0
     ):
-        """
-        projected two dimensional profile
+        """Projected two dimensional profile.
 
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
@@ -159,8 +156,7 @@ class GNFW(LensProfileBase):
 
     @staticmethod
     def mass_3d(r, Rs, rho0, gamma_inner, gamma_outer):
-        """
-        mass enclosed a 3d sphere or radius r
+        """Mass enclosed a 3d sphere or radius r.
 
         :param r: 3d radius
         :param Rs: scale radius
@@ -184,9 +180,8 @@ class GNFW(LensProfileBase):
         return m_3d
 
     def mass_3d_lens(self, r, Rs, alpha_Rs, gamma_inner, gamma_outer):
-        """
-        mass enclosed a 3d sphere or radius r.
-        This function takes as input the lensing parameterization.
+        """Mass enclosed a 3d sphere or radius r. This function takes as input the
+        lensing parameterization.
 
         :param r: 3d radius
         :param Rs: scale radius
@@ -200,8 +195,7 @@ class GNFW(LensProfileBase):
         return m_3d
 
     def mass_2d(self, R, Rs, rho0, gamma_inner, gamma_outer):
-        """
-        mass enclosed a 2d cylinder or projected radius R
+        """Mass enclosed a 2d cylinder or projected radius R.
 
         :param R: 3d radius
         :param Rs: scale radius
@@ -217,9 +211,8 @@ class GNFW(LensProfileBase):
         return m_2d
 
     def nfwAlpha(self, R, Rs, rho0, gamma_inner, gamma_outer, ax_x, ax_y):
-        """
-
-        deflection angel of NFW profile (times Sigma_crit D_OL) along the projection to coordinate 'axis'
+        """Deflection angel of NFW profile (times Sigma_crit D_OL) along the projection
+        to coordinate 'axis'.
 
         :param R: 3d radius
         :param Rs: scale radius
@@ -237,9 +230,8 @@ class GNFW(LensProfileBase):
         return a * ax_x, a * ax_y
 
     def nfwGamma(self, R, Rs, rho0, gamma_inner, gamma_outer, ax_x, ax_y):
-        """
-
-        shear gamma of NFW profile (times Sigma_crit) along the projection to coordinate 'axis'
+        """Shear gamma of NFW profile (times Sigma_crit) along the projection to
+        coordinate 'axis'.
 
         :param R: 3d radius
         :param Rs: scale radius
@@ -261,8 +253,7 @@ class GNFW(LensProfileBase):
 
     @staticmethod
     def _f(X, g, n):
-        """
-        analytic solution of the projection integral
+        """Analytic solution of the projection integral.
 
         :param X: R/Rs
         :type X: float >0
@@ -278,8 +269,8 @@ class GNFW(LensProfileBase):
 
     @staticmethod
     def _g(X, g, n):
-        """
-        analytic solution of integral for NFW profile to compute deflection angel and gamma
+        """Analytic solution of integral for NFW profile to compute deflection angel and
+        gamma.
 
         :param X: R/Rs
         :type X: float >0
@@ -296,8 +287,7 @@ class GNFW(LensProfileBase):
         return 0.5 * (beta_term_1 - beta_term_2 * hyp2f1_term * xi ** ((3 - n) / 2))
 
     def alpha2rho0(self, alpha_Rs, Rs, gamma_inner, gamma_outer):
-        """
-        convert angle at Rs into rho0
+        """Convert angle at Rs into rho0.
 
         :param alpha_Rs: deflection angle at RS
         :param Rs: scale radius
@@ -311,8 +301,7 @@ class GNFW(LensProfileBase):
         return rho0
 
     def rho02alpha(self, rho0, Rs, gamma_inner, gamma_outer):
-        """
-        convert rho0 to angle at Rs
+        """Convert rho0 to angle at Rs.
 
         :param rho0: density normalization (characteristic density)
         :param Rs: scale radius

@@ -9,9 +9,7 @@ from lenstronomy.LensModel.Profiles.const_mag import ConstMag
 
 
 class TestCONST_MAG(object):
-    """
-    tests the CONST_MAG profile for different rotations
-    """
+    """Tests the CONST_MAG profile for different rotations."""
 
     def setup_method(self):
         self.const_mag = ConstMag()

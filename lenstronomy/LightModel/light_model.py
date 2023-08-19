@@ -7,18 +7,18 @@ __all__ = ["LightModel"]
 
 
 class LightModel(LinearBasis):
-    """
-    class to handle extended surface brightness profiles (for e.g. source and lens light)
+    """Class to handle extended surface brightness profiles (for e.g. source and lens
+    light)
 
-    all profiles come with a surface_brightness parameterization (in units per square angle and independent of
-    the pixel scale).
-    The parameter 'amp' is the linear scaling parameter of surface brightness.
-    Some functional forms come with a total_flux() definition that provide the integral of the surface brightness for a
-    given set of parameters.
+    all profiles come with a surface_brightness parameterization (in units per square
+    angle and independent of the pixel scale). The parameter 'amp' is the linear scaling
+    parameter of surface brightness. Some functional forms come with a total_flux()
+    definition that provide the integral of the surface brightness for a given set of
+    parameters.
 
-    The SimulationAPI module allows to use astronomical magnitudes to be used and translated into the surface brightness
-    conventions of this module given a magnitude zero point.
-
+    The SimulationAPI module allows to use astronomical magnitudes to be used and
+    translated into the surface brightness conventions of this module given a magnitude
+    zero point.
     """
 
     def __init__(

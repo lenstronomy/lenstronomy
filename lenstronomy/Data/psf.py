@@ -7,10 +7,11 @@ __all__ = ["PSF"]
 
 
 class PSF(object):
-    """
-    Point Spread Function class.
-    This class describes and manages products used to perform the PSF modeling (convolution for extended surface
-    brightness and painting of PSF's for point sources).
+    """Point Spread Function class.
+
+    This class describes and manages products used to perform the PSF modeling
+    (convolution for extended surface brightness and painting of PSF's for point
+    sources).
     """
 
     def __init__(
@@ -117,8 +118,8 @@ class PSF(object):
 
     @property
     def kernel_pixel(self):
-        """
-        returns the convolution kernel for a uniform surface brightness on a pixel size
+        """Returns the convolution kernel for a uniform surface brightness on a pixel
+        size.
 
         :return: 2d numpy array
         """
@@ -129,12 +130,14 @@ class PSF(object):
         return self._kernel_pixel
 
     def kernel_point_source_supersampled(self, supersampling_factor, updata_cache=True):
-        """
-        generates (if not already available) a supersampled PSF with ood numbers of pixels centered
+        """Generates (if not already available) a supersampled PSF with ood numbers of
+        pixels centered.
 
-        :param supersampling_factor: int >=1, supersampling factor relative to pixel resolution
-        :param updata_cache: boolean, if True, updates the cached supersampling PSF if generated.
-         Attention, this will overwrite a previously used supersampled PSF if the resolution is changing.
+        :param supersampling_factor: int >=1, supersampling factor relative to pixel
+            resolution
+        :param updata_cache: boolean, if True, updates the cached supersampling PSF if
+            generated. Attention, this will overwrite a previously used supersampled PSF
+            if the resolution is changing.
         :return: super-sampled PSF as 2d numpy array
         """
         if (
@@ -189,8 +192,7 @@ class PSF(object):
         return kernel_point_source_supersampled
 
     def set_pixel_size(self, deltaPix):
-        """
-        update pixel size
+        """Update pixel size.
 
         :param deltaPix: pixel size in angular units (arc seconds)
         :return: None
@@ -204,8 +206,8 @@ class PSF(object):
 
     @property
     def psf_error_map(self):
-        """
-        error variance of the normalized PSF.
+        """Error variance of the normalized PSF.
+
         This error will be added to the pixel error around the position of point sources as follows:
         sigma^2_i += 'psf_error_map'_j * <point source amplitude>**2
 

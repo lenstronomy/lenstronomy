@@ -9,9 +9,7 @@ from astropy.cosmology import FlatLambdaCDM
 
 
 class TestLensCosmo(object):
-    """
-    tests the UnitManager class routines
-    """
+    """Tests the UnitManager class routines."""
 
     def setup_method(self):
         cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.05)

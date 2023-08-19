@@ -25,12 +25,13 @@ except:
 
 
 class TestSinglePlaneLOS(object):
-    """
-    tests the SinglePlaneLOS routines
+    """Tests the SinglePlaneLOS routines.
 
-    these functions are the same as in TestLensModel but with the addition of LOS and LOS_MINIMAL as profiles.
-    with all params in self.kwargs_los set to zero, the results should be the same as the non-LOS cases originally tested
-    the test_los_vs_multiplane checks that a multiplane setup with three shear planes returns the same as the LOS and LOS MINIMAL models
+    these functions are the same as in TestLensModel but with the addition of LOS and
+    LOS_MINIMAL as profiles. with all params in self.kwargs_los set to zero, the results
+    should be the same as the non-LOS cases originally tested the test_los_vs_multiplane
+    checks that a multiplane setup with three shear planes returns the same as the LOS
+    and LOS MINIMAL models
     """
 
     def setup_method(self):
@@ -217,9 +218,8 @@ class TestSinglePlaneLOS(object):
         )
 
     def test_los_versus_multiplane(self):
-        """
-        this function asserts that the outcome from LOS and LOS MINIMAL is the same as MultiPlane
-        """
+        """This function asserts that the outcome from LOS and LOS MINIMAL is the same
+        as MultiPlane."""
         # set up the cosmology to convert between shears
         # the exact numbers don't matter because we are just doing a comparison
 
@@ -437,8 +437,7 @@ class TestSinglePlaneLOS(object):
 
 class TestRaise(unittest.TestCase):
     def test_raise(self):
-        """
-        check whether raises occurs if fastell4py is not installed
+        """Check whether raises occurs if fastell4py is not installed.
 
         :return:
         """

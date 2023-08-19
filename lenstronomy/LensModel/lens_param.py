@@ -5,10 +5,7 @@ __all__ = ["LensParam"]
 
 
 class LensParam(object):
-    """
-    class to handle the lens model parameter
-
-    """
+    """Class to handle the lens model parameter."""
 
     def __init__(
         self,

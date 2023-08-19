@@ -10,9 +10,7 @@ from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 
 
 class TestCurvedArcSISMST(object):
-    """
-    tests the source model routines
-    """
+    """Tests the source model routines."""
 
     def setup_method(self):
         self.model = CurvedArcSISMST()
@@ -286,9 +284,7 @@ class TestCurvedArcSISMST(object):
         npt.assert_almost_equal(mag, tangential_stretch * radial_stretch, decimal=8)
 
     def test_curved_arc_recovery(self):
-        """
-        test whether the curved arc parameters are satisfied in differential form
-        """
+        """Test whether the curved arc parameters are satisfied in differential form."""
 
         ext = LensModelExtensions(LensModel(lens_model_list=["CURVED_ARC_SIS_MST"]))
         center_x, center_y = (

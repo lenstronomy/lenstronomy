@@ -2,9 +2,8 @@ __all__ = ["MultiDataBase"]
 
 
 class MultiDataBase(object):
-    """
-    Base class with definitions that are shared among all variations of modelling multiple data sets
-    """
+    """Base class with definitions that are shared among all variations of modelling
+    multiple data sets."""
 
     def __init__(self, image_model_list, compute_bool=None):
         """
@@ -32,16 +31,14 @@ class MultiDataBase(object):
 
     @property
     def num_response_list(self):
-        """
-        list of number of data elements that are used in the minimization
+        """List of number of data elements that are used in the minimization.
 
         :return: list of integers
         """
         return self._num_response_list
 
     def reset_point_source_cache(self, cache=True):
-        """
-        deletes all the cache in the point source class and saves it from then on
+        """Deletes all the cache in the point source class and saves it from then on.
 
         :return:
         """

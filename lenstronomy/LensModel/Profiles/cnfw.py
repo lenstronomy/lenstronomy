@@ -35,7 +35,7 @@ class CNFW(LensProfileBase):
     }
 
     def __init__(self):
-        """ """
+        """"""
         self._nfw = NFW()
         super(CNFW, self).__init__()
 
@@ -96,9 +96,7 @@ class CNFW(LensProfileBase):
     def hessian(self, x, y, Rs, alpha_Rs, r_core, center_x=0, center_y=0):
         # raise Exception('Hessian for truncated nfw profile not yet implemented.')
 
-        """
-        returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
-        """
+        """Returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy."""
         rho0 = self._alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs, r_core=r_core)
         if Rs < 0.0001:
             Rs = 0.0001
@@ -114,8 +112,7 @@ class CNFW(LensProfileBase):
         return f_xx, f_xy, f_xy, f_yy
 
     def density(self, R, Rs, rho0, r_core):
-        """
-        three dimensional truncated NFW profile
+        """Three dimensional truncated NFW profile.
 
         :param R: radius of interest
         :type R: float/numpy array
@@ -130,17 +127,16 @@ class CNFW(LensProfileBase):
         return (M0 / 4 / np.pi) * ((r_core + R) * (R + Rs) ** 2) ** -1
 
     def density_lens(self, R, Rs, alpha_Rs, r_core):
-        """
-        computes the density at 3d radius r given lens model parameterization.
-        The integral in the LOS projection of this quantity results in the convergence quantity.
+        """Computes the density at 3d radius r given lens model parameterization.
 
+        The integral in the LOS projection of this quantity results in the convergence
+        quantity.
         """
         rho0 = self._alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs, r_core=r_core)
         return self.density(R, Rs, rho0, r_core)
 
     def density_2d(self, x, y, Rs, rho0, r_core, center_x=0, center_y=0):
-        """
-        projected two dimenstional NFW profile (kappa*Sigma_crit)
+        """Projected two dimenstional NFW profile (kappa*Sigma_crit)
 
         :param x: radius of interest
         :type x: float/numpy array
@@ -159,8 +155,7 @@ class CNFW(LensProfileBase):
         return 2 * rho0 * Rs * Fx
 
     def mass_3d(self, R, Rs, rho0, r_core):
-        """
-        mass enclosed a 3d sphere or radius r
+        """Mass enclosed a 3d sphere or radius r.
 
         :param R:
         :param Rs:
@@ -180,8 +175,8 @@ class CNFW(LensProfileBase):
         )
 
     def mass_3d_lens(self, R, Rs, alpha_Rs, r_core):
-        """
-        mass enclosed a 3d sphere or radius r given a lens parameterization with angular units
+        """Mass enclosed a 3d sphere or radius r given a lens parameterization with
+        angular units.
 
         :return:
         """
@@ -189,8 +184,7 @@ class CNFW(LensProfileBase):
         return self.mass_3d(R, Rs, rho0, r_core)
 
     def alpha_r(self, R, Rs, rho0, r_core):
-        """
-        deflection angel of NFW profile along the radial direction
+        """Deflection angel of NFW profile along the radial direction.
 
         :param R: radius of interest
         :type R: float/numpy array
@@ -208,9 +202,8 @@ class CNFW(LensProfileBase):
         return a
 
     def cnfwGamma(self, R, Rs, rho0, r_core, ax_x, ax_y):
-        """
-
-        shear gamma of NFW profile (times Sigma_crit) along the projection to coordinate 'axis'
+        """Shear gamma of NFW profile (times Sigma_crit) along the projection to
+        coordinate 'axis'.
 
         :param R: radius of interest
         :type R: float/numpy array
@@ -236,11 +229,7 @@ class CNFW(LensProfileBase):
         return a * (ax_y**2 - ax_x**2) / R**2, -a * 2 * (ax_x * ax_y) / R**2
 
     def mass_2d(self, R, Rs, rho0, r_core):
-        """
-        analytic solution of the projection integral
-        (convergence)
-
-        """
+        """Analytic solution of the projection integral (convergence)"""
 
         x = R / Rs
         b = r_core / Rs
@@ -264,11 +253,8 @@ class CNFW(LensProfileBase):
         return alpha
 
     def _nfw_func(self, x):
-        """
-        Classic NFW function in terms of arctanh and arctan
-        :param x: r/Rs
-        :return:
-        """
+        """Classic NFW function in terms of arctanh and arctan :param x: r/Rs
+        :return:"""
 
         # c = 0.000000001
 
@@ -297,8 +283,7 @@ class CNFW(LensProfileBase):
                 return (x**2 - 1) ** -0.5 * np.arctan((x**2 - 1) ** 0.5)
 
     def _F(self, X, b, c=0.001):
-        """
-        analytic solution of the projection integral
+        """Analytic solution of the projection integral.
 
         :param X: a dimensionless quantity, either r/rs or r/rc
         :type X: float >0
@@ -347,9 +332,8 @@ class CNFW(LensProfileBase):
         return output
 
     def _G(self, X, b, c=0.000001):
-        """
-
-        analytic solution of integral for NFW profile to compute deflection angel and gamma
+        """Analytic solution of integral for NFW profile to compute deflection angel and
+        gamma.
 
         :param X: R/Rs
         :type X: float >0

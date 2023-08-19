@@ -6,15 +6,13 @@ __all__ = ["Moffat"]
 
 
 class Moffat(object):
-    """
-    this class contains functions to evaluate a Moffat surface brightness profile
+    """This class contains functions to evaluate a Moffat surface brightness profile.
 
     .. math::
 
         I(r) = I_0 * (1 + (r/\\alpha)^2)^{-\\beta}
 
     with :math:`I_0 = amp`.
-
     """
 
     def __init__(self):
@@ -35,8 +33,7 @@ class Moffat(object):
         }
 
     def function(self, x, y, amp, alpha, beta, center_x=0, center_y=0):
-        """
-        2D Moffat profile
+        """2D Moffat profile.
 
         :param x: x-position (angle)
         :param y: y-position (angle)

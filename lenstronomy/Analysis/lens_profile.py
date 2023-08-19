@@ -10,9 +10,7 @@ __all__ = ["LensProfileAnalysis"]
 
 
 class LensProfileAnalysis(object):
-    """
-    class with analysis routines to compute derived properties of the lens model
-    """
+    """Class with analysis routines to compute derived properties of the lens model."""
 
     def __init__(self, lens_model):
         """
@@ -32,8 +30,7 @@ class LensProfileAnalysis(object):
         get_precision=False,
         verbose=True,
     ):
-        """
-        computes the radius with mean convergence=1 on a grid
+        """Computes the radius with mean convergence=1 on a grid.
 
         :param kwargs_lens: list of lens model keyword arguments
         :param center_x: position of the center (if not set, is attempting to find it from the parameters kwargs_lens)
@@ -75,12 +72,13 @@ class LensProfileAnalysis(object):
     def effective_einstein_radius(
         self, kwargs_lens, r_min=1e-3, r_max=1e1, num_points=30
     ):
-        """
-        Numerical estimate of the Einstein radius with integral approximation of radial convergence profile
+        """Numerical estimate of the Einstein radius with integral approximation of
+        radial convergence profile.
 
         :param kwargs_lens: list of lens model keyword arguments
         :param r_min: minimum radius of the convergence integrand
-        :param r_max: maximum radius of the convergence integrand (should be larger than Einstein radius)
+        :param r_max: maximum radius of the convergence integrand (should be larger than
+            Einstein radius)
         :param num_points: number of radial points in log spacing
         :return: estimate of the Einstein radius
         """
@@ -125,14 +123,14 @@ class LensProfileAnalysis(object):
     def local_lensing_effect(
         self, kwargs_lens, ra_pos=0, dec_pos=0, model_list_bool=None
     ):
-        """
-        computes deflection, shear and convergence at (ra_pos,dec_pos) for those part of the lens model not included
-        in the main deflector.
+        """Computes deflection, shear and convergence at (ra_pos,dec_pos) for those part
+        of the lens model not included in the main deflector.
 
         :param kwargs_lens: lens model keyword argument list
         :param ra_pos: RA position where to compute the external effect
         :param dec_pos: DEC position where to compute the external effect
-        :param model_list_bool: boolean list indicating which models effect to be added to the estimate
+        :param model_list_bool: boolean list indicating which models effect to be added
+            to the estimate
         :return: alpha_x, alpha_y, kappa, shear1, shear2
         """
         f_x, f_y = self._lens_model.alpha(
@@ -155,11 +153,12 @@ class LensProfileAnalysis(object):
         model_list_bool=None,
         num_points=10,
     ):
-        """
-        computes the logarithmic power-law slope of a profile. ATTENTION: this is not an observable!
+        """Computes the logarithmic power-law slope of a profile. ATTENTION: this is not
+        an observable!
 
         :param kwargs_lens: lens model keyword argument list
-        :param radius: radius from the center where to compute the logarithmic slope (angular units
+        :param radius: radius from the center where to compute the logarithmic slope
+            (angular units
         :param center_x: center of profile from where to compute the slope
         :param center_y: center of profile from where to compute the slope
         :param model_list_bool: bool list, indicate which part of the model to consider
@@ -194,8 +193,8 @@ class LensProfileAnalysis(object):
         model_list_bool=None,
         num_points=10,
     ):
-        """
-        Average of the radial stretch differential in radial direction, divided by the radial stretch factor.
+        """Average of the radial stretch differential in radial direction, divided by
+        the radial stretch factor.
 
         .. math::
             \\xi = \\frac{\\partial \\lambda_{\\rm rad}}{\\partial r} \\frac{1}{\\lambda_{\\rm rad}}
@@ -262,8 +261,7 @@ class LensProfileAnalysis(object):
     def multi_gaussian_lens(
         self, kwargs_lens, center_x=None, center_y=None, model_bool_list=None, n_comp=20
     ):
-        """
-        multi-gaussian lens model in convergence space
+        """Multi-gaussian lens model in convergence space.
 
         :param kwargs_lens:
         :param n_comp:
@@ -287,8 +285,8 @@ class LensProfileAnalysis(object):
     def mass_fraction_within_radius(
         self, kwargs_lens, center_x, center_y, theta_E, numPix=100
     ):
-        """
-        computes the mean convergence of all the different lens model components within a spherical aperture
+        """Computes the mean convergence of all the different lens model components
+        within a spherical aperture.
 
         :param kwargs_lens: lens model keyword argument list
         :param center_x: center of the aperture
@@ -316,8 +314,8 @@ class LensProfileAnalysis(object):
         center_x_init=0,
         center_y_init=0,
     ):
-        """
-        computes the maximal convergence position on a grid and returns its coordinate
+        """Computes the maximal convergence position on a grid and returns its
+        coordinate.
 
         :param kwargs_lens: lens model keyword argument list
         :param model_bool_list: bool list (optional) to include certain models or not
@@ -345,17 +343,19 @@ def einstein_radius_from_grid(
     get_precision=False,
     verbose=True,
 ):
-    """
-    computes the radius with mean convergence=1
+    """Computes the radius with mean convergence=1.
 
     :param kappa: convergence calculated on a grid
     :param x_grid: x-value of grid points
     :param y_grid: y-value of grid points
     :param grid_spacing: spacing of grid points
     :param grid_num: number of grid points
-    :param center_x: x-center of profile from where to measure circular averaged convergence
-    :param center_y: y-center of profile from where to measure circular averaged convergence
-    :param get_precision: if True, returns Einstein radius and expected numerical precision
+    :param center_x: x-center of profile from where to measure circular averaged
+        convergence
+    :param center_y: y-center of profile from where to measure circular averaged
+        convergence
+    :param get_precision: if True, returns Einstein radius and expected numerical
+        precision
     :param verbose: if True, indicates warning when Einstein radius can not be computed
     :type verbose: bool
     :return: einstein radius

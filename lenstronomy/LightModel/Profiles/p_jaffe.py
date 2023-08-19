@@ -4,9 +4,7 @@ __all__ = ["PJaffe", "PJaffeEllipse"]
 
 
 class PJaffe(object):
-    """
-    class for pseudo Jaffe lens light (2d projected light/mass distribution)
-    """
+    """Class for pseudo Jaffe lens light (2d projected light/mass distribution)"""
 
     param_names = ["amp", "Ra", "Rs", "center_x", "center_y"]
     lower_limit_default = {
@@ -58,9 +56,7 @@ class PJaffe(object):
 
 
 class PJaffeEllipse(object):
-    """
-    calss for elliptical pseudo Jaffe lens light
-    """
+    """Calss for elliptical pseudo Jaffe lens light."""
 
     param_names = ["amp", "Ra", "Rs", "e1", "e2", "center_x", "center_y"]
     lower_limit_default = {

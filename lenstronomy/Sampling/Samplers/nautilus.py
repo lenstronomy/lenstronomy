@@ -9,8 +9,7 @@ __all__ = ["Nautilus"]
 
 class Nautilus(object):
     def __init__(self, likelihood_module):
-        """
-        sampling with Nautilus [1]_
+        """Sampling with Nautilus [1]_
 
         References:
         -----------
@@ -80,8 +79,7 @@ class Nautilus(object):
         return points, log_w, log_l, log_z
 
     def likelihood(self, args):
-        """
-        log likelihood
+        """Log likelihood.
 
         :param args: ctype
         :return: log likelihood

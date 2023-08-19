@@ -67,9 +67,10 @@ def overload(
     fastmath=fastmath,
     error_model=error_model,
 ):
-    """
-    Wrapper around numba.generated_jit. Allows you to redirect a function to another based on its type
-     - see the Numba docs for more info
+    """Wrapper around numba.generated_jit.
+
+    Allows you to redirect a function to another based on its type
+    - see the Numba docs for more info
     """
     if numba_enabled:
 
@@ -97,10 +98,11 @@ def overload(
 
 @overload()
 def nan_to_num(x, posinf=1e10, neginf=-1e10, nan=0.0):
-    """
-    Implements a Numba equivalent to np.nan_to_num (with copy=False!) array or scalar in Numba.
-    Behaviour is the same as np.nan_to_num with copy=False, although it only supports 1-dimensional arrays and
-    scalar inputs.
+    """Implements a Numba equivalent to np.nan_to_num (with copy=False!) array or scalar
+    in Numba.
+
+    Behaviour is the same as np.nan_to_num with copy=False, although it only supports
+    1-dimensional arrays and scalar inputs.
     """
     # The generated_jit part is necessary because of the need to support both arrays and scalars for all input
     # functions.

@@ -8,12 +8,11 @@ __all__ = ["PEMD"]
 
 
 class PEMD(LensProfileBase):
-    """
-    class for power law ellipse mass density profile.
-    This class effectively calls the class SPEMD_SMOOTH with a fixed and very small central smoothing scale
-    to perform the numerical integral using the FASTELL code by Renan Barkana.
-    An alternative implementation of the same model using pure python with analytical functions is probided as 'EPL'
-    profile.
+    """Class for power law ellipse mass density profile. This class effectively calls
+    the class SPEMD_SMOOTH with a fixed and very small central smoothing scale to
+    perform the numerical integral using the FASTELL code by Renan Barkana. An
+    alternative implementation of the same model using pure python with analytical
+    functions is probided as 'EPL' profile.
 
     .. math::
         \\kappa(x, y) = \\frac{3-\\gamma}{2} \\left(\\frac{\\theta_{E}}{\\sqrt{q x^2 + y^2/q}} \\right)^{\\gamma-1}
@@ -37,8 +36,6 @@ class PEMD(LensProfileBase):
 
     .. math::
         \\left(\\frac{\\theta'_{\\rm E}}{\\theta_{\\rm E}}\\right)^{2} = \\frac{2q}{1+q^2}.
-
-
     """
 
     param_names = ["theta_E", "gamma", "e1", "e2", "center_x", "center_y"]
@@ -121,21 +118,21 @@ class PEMD(LensProfileBase):
         )
 
     def mass_3d_lens(self, r, theta_E, gamma, e1=None, e2=None):
-        """
-        computes the spherical power-law mass enclosed (with SPP routine)
-        :param r: radius within the mass is computed
+        """Computes the spherical power-law mass enclosed (with SPP routine) :param r:
+
+        radius within the mass is computed
         :param theta_E: Einstein radius
         :param gamma: power-law slope
         :param e1: eccentricity component (not used)
         :param e2: eccentricity component (not used)
-        :return: mass enclosed a 3D radius r
+        :return: mass enclosed a 3D radius r.
         """
         return self.spp.mass_3d_lens(r, theta_E, gamma)
 
     def density_lens(self, r, theta_E, gamma, e1=None, e2=None):
-        """
-        computes the density at 3d radius r given lens model parameterization.
-        The integral in the LOS projection of this quantity results in the convergence quantity.
+        """Computes the density at 3d radius r given lens model parameterization. The
+        integral in the LOS projection of this quantity results in the convergence
+        quantity.
 
         :param r: radius within the mass is computed
         :param theta_E: Einstein radius

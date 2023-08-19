@@ -9,9 +9,8 @@ export, __all__ = exporter()
 
 @export
 class PSF(object):
-    """
-    general class to handle the PSF in the GalKin module for rendering the displacement of photons/spectro
-    """
+    """General class to handle the PSF in the GalKin module for rendering the
+    displacement of photons/spectro."""
 
     def __init__(self, psf_type, **kwargs_psf):
         """
@@ -36,8 +35,7 @@ class PSF(object):
         return self._psf.displace_psf(x, y)
 
     def convolution_kernel(self, delta_pix, num_pix=21):
-        """
-        normalized convolution kernel
+        """Normalized convolution kernel.
 
         :param delta_pix: pixel scale of kernel
         :param num_pix: number of pixels per axis of the kernel
@@ -48,9 +46,7 @@ class PSF(object):
 
 @export
 class PSFGaussian(object):
-    """
-    Gaussian PSF
-    """
+    """Gaussian PSF."""
 
     def __init__(self, fwhm):
         """
@@ -69,8 +65,7 @@ class PSFGaussian(object):
         return velocity_util.displace_PSF_gaussian(x, y, self._fwhm)
 
     def convolution_kernel(self, delta_pix, num_pix=21):
-        """
-        normalized convolution kernel
+        """Normalized convolution kernel.
 
         :param delta_pix: pixel scale of kernel
         :param num_pix: number of pixels per axis of the kernel
@@ -83,9 +78,7 @@ class PSFGaussian(object):
 
 @export
 class PSFMoffat(object):
-    """
-    Moffat PSF
-    """
+    """Moffat PSF."""
 
     def __init__(self, fwhm, moffat_beta):
         """
@@ -106,8 +99,7 @@ class PSFMoffat(object):
         return velocity_util.displace_PSF_moffat(x, y, self._fwhm, self._moffat_beta)
 
     def convolution_kernel(self, delta_pix, num_pix=21):
-        """
-        normalized convolution kernel
+        """Normalized convolution kernel.
 
         :param delta_pix: pixel scale of kernel
         :param num_pix: number of pixels per axis of the kernel

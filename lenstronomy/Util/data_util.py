@@ -10,8 +10,8 @@ export, __all__ = exporter()
 def bkg_noise(
     readout_noise, exposure_time, sky_brightness, pixel_scale, num_exposures=1
 ):
-    """
-    computes the expected Gaussian background noise of a pixel in units of counts/second
+    """Computes the expected Gaussian background noise of a pixel in units of
+    counts/second.
 
     :param readout_noise: noise added per readout
     :param exposure_time: exposure time per exposure (in seconds)
@@ -30,11 +30,12 @@ def bkg_noise(
 
 @export
 def flux_noise(cps_pixel, exposure_time):
-    """
-    computes the variance of the shot noise Gaussian approximation of Poisson noise term
+    """Computes the variance of the shot noise Gaussian approximation of Poisson noise
+    term.
 
     :param cps_pixel: counts per second of the intensity per pixel unit
-    :param exposure_time: total exposure time (in units seconds or equivalent unit as cps_pixel)
+    :param exposure_time: total exposure time (in units seconds or equivalent unit as
+        cps_pixel)
     :return: sqrt(variance) of pixel value
     """
     return cps_pixel / np.sqrt(exposure_time)
@@ -42,8 +43,7 @@ def flux_noise(cps_pixel, exposure_time):
 
 @export
 def magnitude2cps(magnitude, magnitude_zero_point):
-    """
-    converts an apparent magnitude to counts per second
+    """Converts an apparent magnitude to counts per second.
 
     The zero point of an instrument, by definition, is the magnitude of an object that produces one count
     (or data number, DN) per second. The magnitude of an arbitrary object producing DN counts in an observation of
@@ -74,8 +74,7 @@ def cps2magnitude(cps, magnitude_zero_point):
 
 @export
 def absolute2apparent_magnitude(absolute_magnitude, d_parsec):
-    """
-    converts absolute to apparent magnitudes
+    """Converts absolute to apparent magnitudes.
 
     :param absolute_magnitude: absolute magnitude of object
     :param d_parsec: distance to object in units parsec
@@ -87,8 +86,7 @@ def absolute2apparent_magnitude(absolute_magnitude, d_parsec):
 
 @export
 def adu2electrons(adu, ccd_gain):
-    """
-    converts analog-to-digital units into electron counts
+    """Converts analog-to-digital units into electron counts.
 
     :param adu: counts in analog-to-digital unit
     :param ccd_gain: CCD gain, meaning how many electrons are counted per unit ADU
@@ -99,8 +97,7 @@ def adu2electrons(adu, ccd_gain):
 
 @export
 def electrons2adu(electrons, ccd_gain):
-    """
-    converts electron counts into analog-to-digital unit
+    """Converts electron counts into analog-to-digital unit.
 
     :param electrons: number of electrons received on detector
     :param ccd_gain: CCD gain, meaning how many electrons are counted per unit ADU
@@ -110,11 +107,12 @@ def electrons2adu(electrons, ccd_gain):
 
 
 def magnitude2amplitude(light_model_class, kwargs_light_mag, magnitude_zero_point):
-    """
-    translates astronomical magnitudes to lenstronomy linear 'amp' parameters for LightModel objects
+    """Translates astronomical magnitudes to lenstronomy linear 'amp' parameters for
+    LightModel objects.
 
     :param light_model_class: LightModel() class instance
-    :param kwargs_light_mag: list of light model parameter dictionary with 'magnitude' instead of 'amp'
+    :param kwargs_light_mag: list of light model parameter dictionary with 'magnitude'
+        instead of 'amp'
     :param magnitude_zero_point: magnitude zero point
     :return: list of light model parameter dictionary with 'amp'
     """

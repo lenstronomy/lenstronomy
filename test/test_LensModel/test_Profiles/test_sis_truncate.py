@@ -8,9 +8,7 @@ import pytest
 
 
 class TestSIS_truncate(object):
-    """
-    tests the Gaussian methods
-    """
+    """Tests the Gaussian methods."""
 
     def setup_method(self):
         self.SIS = SIS_truncate()

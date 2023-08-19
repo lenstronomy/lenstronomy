@@ -9,9 +9,7 @@ import pytest
 
 
 class TestCartShapelets(object):
-    """
-    tests the Gaussian methods
-    """
+    """Tests the Gaussian methods."""
 
     def setup_method(self):
         self.polarShapelets = PolarShapelets()

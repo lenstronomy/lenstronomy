@@ -12,8 +12,7 @@ __all__ = ["EPL", "EPLMajorAxis"]
 
 
 class EPL(LensProfileBase):
-    """
-    Elliptical Power Law mass profile
+    """Elliptical Power Law mass profile.
 
     .. math::
         \\kappa(x, y) = \\frac{3-\\gamma}{2} \\left(\\frac{\\theta_{E}}{\\sqrt{q x^2 + y^2/q}} \\right)^{\\gamma-1}
@@ -71,14 +70,13 @@ class EPL(LensProfileBase):
         super(EPL, self).__init__()
 
     def param_conv(self, theta_E, gamma, e1, e2):
-        """
-        converts parameters as defined in this class to the parameters used in the EPLMajorAxis() class
+        """Converts parameters as defined in this class to the parameters used in the
+        EPLMajorAxis() class.
 
         :param theta_E: Einstein radius as defined in the profile class
         :param gamma: negative power-law slope
         :param e1: eccentricity modulus
         :param e2: eccentricity modulus
-
         :return: b, t, q, phi_G
         """
         if self._static is True:
@@ -87,9 +85,8 @@ class EPL(LensProfileBase):
 
     @staticmethod
     def _param_conv(theta_E, gamma, e1, e2):
-        """
-        convert parameters from :math:`R = \\sqrt{q x^2 + y^2/q}` to
-        :math:`R = \\sqrt{q^2 x^2 + y^2}`
+        """Convert parameters from :math:`R = \\sqrt{q x^2 + y^2/q}` to :math:`R =
+        \\sqrt{q^2 x^2 + y^2}`
 
         :param gamma: power law slope
         :param theta_E: Einstein radius
@@ -219,21 +216,21 @@ class EPL(LensProfileBase):
         return f_xx, f_xy, f_xy, f_yy
 
     def mass_3d_lens(self, r, theta_E, gamma, e1=None, e2=None):
-        """
-        computes the spherical power-law mass enclosed (with SPP routine)
-        :param r: radius within the mass is computed
+        """Computes the spherical power-law mass enclosed (with SPP routine) :param r:
+
+        radius within the mass is computed
         :param theta_E: Einstein radius
         :param gamma: power-law slope
         :param e1: eccentricity component (not used)
         :param e2: eccentricity component (not used)
-        :return: mass enclosed a 3D radius r
+        :return: mass enclosed a 3D radius r.
         """
         return self.spp.mass_3d_lens(r, theta_E, gamma)
 
     def density_lens(self, r, theta_E, gamma, e1=None, e2=None):
-        """
-        computes the density at 3d radius r given lens model parameterization.
-        The integral in the LOS projection of this quantity results in the convergence quantity.
+        """Computes the density at 3d radius r given lens model parameterization. The
+        integral in the LOS projection of this quantity results in the convergence
+        quantity.
 
         :param r: radius within the mass is computed
         :param theta_E: Einstein radius
@@ -246,9 +243,7 @@ class EPL(LensProfileBase):
 
 
 class EPLMajorAxis(LensProfileBase):
-    """
-    This class contains the function and the derivatives of the
-    elliptical power law.
+    """This class contains the function and the derivatives of the elliptical power law.
 
     .. math::
         \\kappa = (2-t)/2 * \\left[\\frac{b}{\\sqrt{q^2 x^2 + y^2}}\\right]^t
@@ -265,8 +260,7 @@ class EPLMajorAxis(LensProfileBase):
         super(EPLMajorAxis, self).__init__()
 
     def function(self, x, y, b, t, q):
-        """
-        returns the lensing potential
+        """Returns the lensing potential.
 
         :param x: x-coordinate in image plane relative to center (major axis)
         :param y: y-coordinate in image plane relative to center (minor axis)
@@ -284,8 +278,7 @@ class EPLMajorAxis(LensProfileBase):
         return psi
 
     def derivatives(self, x, y, b, t, q):
-        """
-        returns the deflection angles
+        """Returns the deflection angles.
 
         :param x: x-coordinate in image plane relative to center (major axis)
         :param y: y-coordinate in image plane relative to center (minor axis)
@@ -314,8 +307,7 @@ class EPLMajorAxis(LensProfileBase):
         return alpha_real, alpha_imag
 
     def hessian(self, x, y, b, t, q):
-        """
-        Hessian matrix of the lensing potential
+        """Hessian matrix of the lensing potential.
 
         :param x: x-coordinate in image plane relative to center (major axis)
         :param y: y-coordinate in image plane relative to center (minor axis)

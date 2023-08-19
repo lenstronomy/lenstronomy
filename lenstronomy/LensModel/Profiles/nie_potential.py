@@ -9,8 +9,9 @@ __all__ = ["NIE_POTENTIAL", "NIEPotentialMajorAxis"]
 
 
 class NIE_POTENTIAL(LensProfileBase):
-    """
-    this class implements the elliptical potential of Eq. (67) of `LECTURES ON GRAVITATIONAL LENSING <https://arxiv.org/pdf/astro-ph/9606001.pdf>`_
+    """This class implements the elliptical potential of Eq.
+
+    (67) of `LECTURES ON GRAVITATIONAL LENSING <https://arxiv.org/pdf/astro-ph/9606001.pdf>`_
     and Eq. (1) of `Blandford & Kochanek 1987 <http://adsabs.harvard.edu/full/1987ApJ...321..658B>`_,
     mapped to Eq. (8) of `Barnaka1998 <https://iopscience.iop.org/article/10.1086/305950/fulltext/37798.text.html>`_
     to find the ellipticity bounds
@@ -49,15 +50,16 @@ class NIE_POTENTIAL(LensProfileBase):
         return self._param_conv(theta_E, theta_c, e1, e2)
 
     def _param_conv(self, theta_E, theta_c, e1, e2):
-        """
-        convert the spherical averaged Einstein radius to an elliptical (major axis) Einstein radius and
-        the individual eccentricities to the modulus of the eccentricity
+        """Convert the spherical averaged Einstein radius to an elliptical (major axis)
+        Einstein radius and the individual eccentricities to the modulus of the
+        eccentricity.
 
         :param theta_E: Einstein radius
         :param theta_c: core radius
         :param e1: eccentricity component
         :param e2: eccentricity component
-        :return: transformed Einstein radius, core radius, ellipticity modulus, orientation angle phi_G
+        :return: transformed Einstein radius, core radius, ellipticity modulus,
+            orientation angle phi_G
         """
 
         eps = np.sqrt(e1**2 + e2**2)
@@ -202,10 +204,9 @@ class NIE_POTENTIAL(LensProfileBase):
         return f_xx, f_xy, f_xy, f_yy
 
     def _theta_q_convert(self, theta_E, q):
-        """
-        converts a spherical averaged Einstein radius/core radius to an elliptical (major axis) Einstein radius.
-        This then follows the convention of the SPEMD profile in lenstronomy.
-        (theta_E / theta_E_gravlens) = sqrt[ (1+q^2) / (2 q) ]
+        """Converts a spherical averaged Einstein radius/core radius to an elliptical
+        (major axis) Einstein radius. This then follows the convention of the SPEMD
+        profile in lenstronomy. (theta_E / theta_E_gravlens) = sqrt[ (1+q^2) / (2 q) ]
 
         :param theta_E: Einstein radius in lenstronomy conventions
         :param q: axis ratio minor/major
@@ -216,8 +217,9 @@ class NIE_POTENTIAL(LensProfileBase):
 
 
 class NIEPotentialMajorAxis(LensProfileBase):
-    """
-    this class implements the elliptical potential of Eq. (67) of `LECTURES ON GRAVITATIONAL LENSING <https://arxiv.org/pdf/astro-ph/9606001.pdf>`_
+    """This class implements the elliptical potential of Eq.
+
+    (67) of `LECTURES ON GRAVITATIONAL LENSING <https://arxiv.org/pdf/astro-ph/9606001.pdf>`_
     and Eq. (1) of `Blandford & Kochanek 1987 <http://adsabs.harvard.edu/full/1987ApJ...321..658B>`_,
     mapped to Eq. (8) of `Barnaka1998 <https://iopscience.iop.org/article/10.1086/305950/fulltext/37798.text.html>`_
     to find the ellipticity bounds
@@ -234,18 +236,15 @@ class NIEPotentialMajorAxis(LensProfileBase):
         return f_
 
     def derivatives(self, x, y, theta_E, theta_c, eps):
-        """
-        returns df/dx and df/dy of the function
-        """
+        """Returns df/dx and df/dy of the function."""
         factor = np.sqrt(theta_c**2 + (1 - eps) * x**2 + (1 + eps) * y**2)
         f_x = (theta_E / factor) * (1 - eps) * x
         f_y = (theta_E / factor) * (1 + eps) * y
         return f_x, f_y
 
     def hessian(self, x, y, theta_E, theta_c, eps):
-        """
-        returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
-        """
+        """Returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx,
+        d^f/dy^2."""
         factor = np.sqrt(theta_c**2 + (1 - eps) * x**2 + (1 + eps) * y**2)
         f_xx = (1 - eps) * (theta_E / factor) - (theta_E / factor**3) * (
             1 - eps

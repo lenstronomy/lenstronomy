@@ -12,8 +12,9 @@ __all__ = ["MultiNestSampler"]
 
 
 class MultiNestSampler(NestedSampler):
-    """
-    Wrapper for nested sampling algorithm MultInest by F. Feroz & M. Hobson
+    """Wrapper for nested sampling algorithm MultInest by F.
+
+    Feroz & M. Hobson
     papers : arXiv:0704.3704, arXiv:0809.3437, arXiv:1306.2144
     pymultinest doc : https://johannesbuchner.github.io/PyMultiNest/pymultinest.html
     """
@@ -90,8 +91,7 @@ class MultiNestSampler(NestedSampler):
         self._has_warned = False
 
     def prior(self, cube, ndim, nparams):
-        """
-        compute the mapping between the unit cube and parameter cube (in-place)
+        """Compute the mapping between the unit cube and parameter cube (in-place)
 
         :param cube: unit hypercube, sampled by the algorithm
         :param ndim: number of sampled parameters
@@ -108,8 +108,7 @@ class MultiNestSampler(NestedSampler):
             cube[i] = cube_py[i]
 
     def log_likelihood(self, args, ndim, nparams):
-        """
-        compute the log-likelihood given list of parameters
+        """Compute the log-likelihood given list of parameters.
 
         :param args: parameter values
         :param ndim: number of sampled parameters
@@ -126,10 +125,10 @@ class MultiNestSampler(NestedSampler):
         return float(logL)
 
     def run(self, kwargs_run):
-        """
-        run the MultiNest nested sampler
+        """Run the MultiNest nested sampler.
 
-        see https://johannesbuchner.github.io/PyMultiNest/pymultinest.html for content of kwargs_run
+        see https://johannesbuchner.github.io/PyMultiNest/pymultinest.html for content
+        of kwargs_run
 
         :param kwargs_run: kwargs directly passed to pymultinest.run
         :return: samples, means, logZ, logZ_err, logL, stats
@@ -184,7 +183,7 @@ class MultiNestSampler(NestedSampler):
         return samples, means, logZ, logZ_err, logL, stats
 
     def _multinest2python(self, multinest_list, num_dims):
-        """convert ctypes list to standard python list"""
+        """Convert ctypes list to standard python list."""
         python_list = []
         for i in range(num_dims):
             python_list.append(multinest_list[i])

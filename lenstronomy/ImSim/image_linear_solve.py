@@ -8,12 +8,11 @@ __all__ = ["ImageLinearFit"]
 
 
 class ImageLinearFit(ImageModel):
-    """
-    linear version class, inherits ImageModel.
+    """Linear version class, inherits ImageModel.
 
-    When light models use pixel-based profile types, such as 'SLIT_STARLETS',
-    the WLS linear inversion is replaced by the regularized inversion performed by an external solver.
-    The current pixel-based solver is provided by the SLITronomy plug-in.
+    When light models use pixel-based profile types, such as 'SLIT_STARLETS', the WLS
+    linear inversion is replaced by the regularized inversion performed by an external
+    solver. The current pixel-based solver is provided by the SLITronomy plug-in.
     """
 
     def __init__(
@@ -90,18 +89,24 @@ class ImageLinearFit(ImageModel):
         kwargs_special=None,
         inv_bool=False,
     ):
-        """
+        """Computes the image (lens and source surface brightness with a given lens
+        model). The linear parameters are computed with a weighted linear least square
+        optimization (i.e. flux normalization of the brightness profiles) However in
+        case of pixel-based modelling, pixel values are constrained by an external
+        solver (e.g. SLITronomy).
 
-        computes the image (lens and source surface brightness with a given lens model).
-        The linear parameters are computed with a weighted linear least square optimization (i.e. flux normalization of the brightness profiles)
-        However in case of pixel-based modelling, pixel values are constrained by an external solver (e.g. SLITronomy).
-
-        :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
-        :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
-        :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
-        :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
-        :param inv_bool: if True, invert the full linear solver Matrix Ax = y for the purpose of the covariance matrix.
-        :return: 2d array of surface brightness pixels of the optimal solution of the linear parameters to match the data
+        :param kwargs_lens: list of keyword arguments corresponding to the superposition
+            of different lens profiles
+        :param kwargs_source: list of keyword arguments corresponding to the
+            superposition of different source light profiles
+        :param kwargs_lens_light: list of keyword arguments corresponding to different
+            lens light surface brightness profiles
+        :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as
+            external shear and point source image positions
+        :param inv_bool: if True, invert the full linear solver Matrix Ax = y for the
+            purpose of the covariance matrix.
+        :return: 2d array of surface brightness pixels of the optimal solution of the
+            linear parameters to match the data
         """
         return self._image_linear_solve(
             kwargs_lens,
@@ -123,19 +128,25 @@ class ImageLinearFit(ImageModel):
         kwargs_special=None,
         inv_bool=False,
     ):
-        """
+        """Computes the image (lens and source surface brightness with a given lens
+        model). By default, the linear parameters are computed with a weighted linear
+        least square optimization (i.e. flux normalization of the brightness profiles)
+        However in case of pixel-based modelling, pixel values are constrained by an
+        external solver (e.g. SLITronomy).
 
-        computes the image (lens and source surface brightness with a given lens model).
-        By default, the linear parameters are computed with a weighted linear least square optimization (i.e. flux normalization of the brightness profiles)
-        However in case of pixel-based modelling, pixel values are constrained by an external solver (e.g. SLITronomy).
-
-        :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
-        :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
-        :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
-        :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
-        :param inv_bool: if True, invert the full linear solver Matrix Ax = y for the purpose of the covariance matrix.
-         This has no impact in case of pixel-based modelling.
-        :return: 2d array of surface brightness pixels of the optimal solution of the linear parameters to match the data
+        :param kwargs_lens: list of keyword arguments corresponding to the superposition
+            of different lens profiles
+        :param kwargs_source: list of keyword arguments corresponding to the
+            superposition of different source light profiles
+        :param kwargs_lens_light: list of keyword arguments corresponding to different
+            lens light surface brightness profiles
+        :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as
+            external shear and point source image positions
+        :param inv_bool: if True, invert the full linear solver Matrix Ax = y for the
+            purpose of the covariance matrix. This has no impact in case of pixel-based
+            modelling.
+        :return: 2d array of surface brightness pixels of the optimal solution of the
+            linear parameters to match the data
         """
         if self._pixelbased_bool is True:
             model, model_error, cov_param, param = self.image_pixelbased_solve(
@@ -196,17 +207,22 @@ class ImageLinearFit(ImageModel):
         kwargs_special=None,
         init_lens_light_model=None,
     ):
-        """
-        computes the image (lens and source surface brightness with a given lens model) using the pixel-based solver.
+        """Computes the image (lens and source surface brightness with a given lens
+        model) using the pixel-based solver.
 
-        :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
-        :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
-        :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
+        :param kwargs_lens: list of keyword arguments corresponding to the superposition
+            of different lens profiles
+        :param kwargs_source: list of keyword arguments corresponding to the
+            superposition of different source light profiles
+        :param kwargs_lens_light: list of keyword arguments corresponding to different
+            lens light surface brightness profiles
         :param kwargs_ps: keyword arguments corresponding to point sources
         :param kwargs_extinction: keyword arguments corresponding to dust extinction
         :param kwargs_special: keyword arguments corresponding to "special" parameters
-        :param init_lens_light_model: optional initial guess for the lens surface brightness
-        :return: 2d array of surface brightness pixels of the optimal solution of the linear parameters to match the data
+        :param init_lens_light_model: optional initial guess for the lens surface
+            brightness
+        :return: 2d array of surface brightness pixels of the optimal solution of the
+            linear parameters to match the data
         """
         _, model_error = self._error_response(
             kwargs_lens, kwargs_ps, kwargs_special=kwargs_special
@@ -235,8 +251,8 @@ class ImageLinearFit(ImageModel):
         kwargs_extinction=None,
         kwargs_special=None,
     ):
-        """
-        computes the linear response matrix (m x n), with n being the data size and m being the coefficients
+        """Computes the linear response matrix (m x n), with n being the data size and m
+        being the coefficients.
 
         :param kwargs_lens: lens model keyword argument list
         :param kwargs_source: extended source model keyword argument list
@@ -258,8 +274,8 @@ class ImageLinearFit(ImageModel):
 
     @property
     def data_response(self):
-        """
-        returns the 1d array of the data element that is fitted for (including masking)
+        """Returns the 1d array of the data element that is fitted for (including
+        masking)
 
         :return: 1d numpy array
         """
@@ -267,20 +283,22 @@ class ImageLinearFit(ImageModel):
         return d
 
     def error_response(self, kwargs_lens, kwargs_ps, kwargs_special):
-        """
-        returns the 1d array of the error estimate corresponding to the data response
+        """Returns the 1d array of the error estimate corresponding to the data
+        response.
 
-        :return: 1d numpy array of response, 2d array of additional errors (e.g. point source uncertainties)
+        :return: 1d numpy array of response, 2d array of additional errors (e.g. point
+            source uncertainties)
         """
         return self._error_response(
             kwargs_lens, kwargs_ps, kwargs_special=kwargs_special
         )
 
     def _error_response(self, kwargs_lens, kwargs_ps, kwargs_special):
-        """
-        returns the 1d array of the error estimate corresponding to the data response
+        """Returns the 1d array of the error estimate corresponding to the data
+        response.
 
-        :return: 1d numpy array of response, 2d array of additional errors (e.g. point source uncertainties)
+        :return: 1d numpy array of response, 2d array of additional errors (e.g. point
+            source uncertainties)
         """
         model_error = self._error_map_model(
             kwargs_lens, kwargs_ps, kwargs_special=kwargs_special
@@ -302,23 +320,27 @@ class ImageLinearFit(ImageModel):
         check_positive_flux=False,
         linear_solver=True,
     ):
-        """
+        """Computes the likelihood of the data given a model This is specified with the
+        non-linear parameters and a linear inversion and prior marginalisation.
 
-        computes the likelihood of the data given a model
-        This is specified with the non-linear parameters and a linear inversion and prior marginalisation.
-
-        :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
-        :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
-        :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
-        :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
+        :param kwargs_lens: list of keyword arguments corresponding to the superposition
+            of different lens profiles
+        :param kwargs_source: list of keyword arguments corresponding to the
+            superposition of different source light profiles
+        :param kwargs_lens_light: list of keyword arguments corresponding to different
+            lens light surface brightness profiles
+        :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as
+            external shear and point source image positions
         :param kwargs_extinction:
         :param kwargs_special:
         :param source_marg: bool, performs a marginalization over the linear parameters
         :param linear_prior: linear prior width in eigenvalues
-        :param check_positive_flux: bool, if True, checks whether the linear inversion resulted in non-negative flux
-         components and applies a punishment in the likelihood if so.
-        :param linear_solver: bool, if True (default) fixes the linear amplitude parameters 'amp' (avoid sampling) such
-         that they get overwritten by the linear solver solution.
+        :param check_positive_flux: bool, if True, checks whether the linear inversion
+            resulted in non-negative flux components and applies a punishment in the
+            likelihood if so.
+        :param linear_solver: bool, if True (default) fixes the linear amplitude
+            parameters 'amp' (avoid sampling) such that they get overwritten by the
+            linear solver solution.
         :return: log likelihood (natural logarithm)
         """
         return self._likelihood_data_given_model(
@@ -347,21 +369,25 @@ class ImageLinearFit(ImageModel):
         check_positive_flux=False,
         linear_solver=True,
     ):
-        """
+        """Computes the likelihood of the data given a model This is specified with the
+        non-linear parameters and a linear inversion and prior marginalisation.
 
-        computes the likelihood of the data given a model
-        This is specified with the non-linear parameters and a linear inversion and prior marginalisation.
-
-        :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
-        :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
-        :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
-        :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
+        :param kwargs_lens: list of keyword arguments corresponding to the superposition
+            of different lens profiles
+        :param kwargs_source: list of keyword arguments corresponding to the
+            superposition of different source light profiles
+        :param kwargs_lens_light: list of keyword arguments corresponding to different
+            lens light surface brightness profiles
+        :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as
+            external shear and point source image positions
         :param source_marg: bool, performs a marginalization over the linear parameters
         :param linear_prior: linear prior width in eigenvalues
-        :param check_positive_flux: bool, if True, checks whether the linear inversion resulted in non-negative flux
-         components and applies a punishment in the likelihood if so.
-        :param linear_solver: bool, if True (default) fixes the linear amplitude parameters 'amp' (avoid sampling) such
-         that they get overwritten by the linear solver solution.
+        :param check_positive_flux: bool, if True, checks whether the linear inversion
+            resulted in non-negative flux components and applies a punishment in the
+            likelihood if so.
+        :param linear_solver: bool, if True (default) fixes the linear amplitude
+            parameters 'amp' (avoid sampling) such that they get overwritten by the
+            linear solver solution.
         :return: log likelihood (natural logarithm)
         """
         # generate image
@@ -440,9 +466,9 @@ class ImageLinearFit(ImageModel):
         kwargs_special=None,
         unconvolved=False,
     ):
-        """
+        """Computes the linear response matrix (m x n), with n being the data size and m
+        being the coefficients.
 
-        computes the linear response matrix (m x n), with n being the data size and m being the coefficients
         The calculation is done by
         - first (optional) computing differential extinctions
         - adding linear components of the lensed source(s)
@@ -517,9 +543,7 @@ class ImageLinearFit(ImageModel):
     def update_linear_kwargs(
         self, param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps
     ):
-        """
-
-        links linear parameters to kwargs arguments
+        """Links linear parameters to kwargs arguments.
 
         :param param: linear parameter vector corresponding to the response matrix
         :return: updated list of kwargs with linear parameter values
@@ -531,9 +555,7 @@ class ImageLinearFit(ImageModel):
     def _update_linear_kwargs(
         self, param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps
     ):
-        """
-
-        links linear parameters to kwargs arguments
+        """Links linear parameters to kwargs arguments.
 
         :param param: linear parameter vector corresponding to the response matrix
         :return: updated list of kwargs with linear parameter values
@@ -549,8 +571,8 @@ class ImageLinearFit(ImageModel):
         return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps
 
     def linear_param_from_kwargs(self, kwargs_source, kwargs_lens_light, kwargs_ps):
-        """
-        inverse function of update_linear() returning the linear amplitude list for the keyword argument list
+        """Inverse function of update_linear() returning the linear amplitude list for
+        the keyword argument list.
 
         :param kwargs_source:
         :param kwargs_lens_light:
@@ -562,8 +584,8 @@ class ImageLinearFit(ImageModel):
         )
 
     def _linear_param_from_kwargs(self, kwargs_source, kwargs_lens_light, kwargs_ps):
-        """
-        inverse function of update_linear() returning the linear amplitude list for the keyword argument list
+        """Inverse function of update_linear() returning the linear amplitude list for
+        the keyword argument list.
 
         :param kwargs_source:
         :param kwargs_lens_light:
@@ -577,13 +599,13 @@ class ImageLinearFit(ImageModel):
         return param
 
     def update_pixel_kwargs(self, kwargs_source, kwargs_lens_light):
-        """
+        """Update kwargs arguments for pixel-based profiles with fixed properties such
+        as their number of pixels, scale, and center coordinates (fixed to the origin).
 
-        Update kwargs arguments for pixel-based profiles with fixed properties
-        such as their number of pixels, scale, and center coordinates (fixed to the origin).
-
-        :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
-        :param kwargs_lens_light: list of keyword arguments corresponding to the superposition of different lens light profiles
+        :param kwargs_source: list of keyword arguments corresponding to the
+            superposition of different source light profiles
+        :param kwargs_lens_light: list of keyword arguments corresponding to the
+            superposition of different lens light profiles
         :return: updated kwargs_source and kwargs_lens_light
         """
         # in case the source plane grid size has changed, update the kwargs accordingly
@@ -618,22 +640,16 @@ class ImageLinearFit(ImageModel):
         return residual
 
     def reduced_chi2(self, model, error_map=0):
-        """
-        returns reduced chi2
-        :param model: 2d numpy array of a model predicted image
-        :param error_map: same format as model, additional error component (such as PSF errors)
-        :return: reduced chi2
-        """
+        """Returns reduced chi2 :param model: 2d numpy array of a model predicted image
+        :param error_map: same format as model, additional error component (such as PSF
+        errors) :return: reduced chi2."""
         norm_res = self.reduced_residuals(model, error_map)
         return np.sum(norm_res**2) / self.num_data_evaluate
 
     @property
     def num_data_evaluate(self):
-        """
-        number of data points to be used in the linear solver
-        :return: number of evaluated data points
-        :rtype: int
-        """
+        """Number of data points to be used in the linear solver :return: number of
+        evaluated data points :rtype: int."""
         return int(np.sum(self.likelihood_mask))
 
     def update_data(self, data_class):
@@ -646,11 +662,9 @@ class ImageLinearFit(ImageModel):
         self.ImageNumerics._PixelGrid = data_class
 
     def image2array_masked(self, image):
-        """
-        returns 1d array of values in image that are not masked out for the likelihood computation/linear minimization
-        :param image: 2d numpy array of full image
-        :return: 1d array
-        """
+        """Returns 1d array of values in image that are not masked out for the
+        likelihood computation/linear minimization :param image: 2d numpy array of full
+        image :return: 1d array."""
         array = util.image2array(image)
         return array[self._mask1d]
 
@@ -667,9 +681,9 @@ class ImageLinearFit(ImageModel):
         return grid2d
 
     def _error_map_model(self, kwargs_lens, kwargs_ps, kwargs_special=None):
-        """
-        noise estimate (variances as diagonal of the pixel covariance matrix) resulted from inherent model uncertainties
-        This term is currently the psf error map
+        """Noise estimate (variances as diagonal of the pixel covariance matrix)
+        resulted from inherent model uncertainties This term is currently the psf error
+        map.
 
         :param kwargs_lens: lens model keyword arguments
         :param kwargs_ps: point source keyword arguments
@@ -679,8 +693,8 @@ class ImageLinearFit(ImageModel):
         return self._error_map_psf(kwargs_lens, kwargs_ps, kwargs_special)
 
     def _error_map_psf(self, kwargs_lens, kwargs_ps, kwargs_special=None):
-        """
-        map of image with error terms (sigma**2) expected from inaccuracies in the PSF modeling
+        """Map of image with error terms (sigma**2) expected from inaccuracies in the
+        PSF modeling.
 
         :param kwargs_lens: lens model keyword arguments
         :param kwargs_ps: point source keyword arguments
@@ -708,10 +722,9 @@ class ImageLinearFit(ImageModel):
         return error_map
 
     def error_map_source(self, kwargs_source, x_grid, y_grid, cov_param):
-        """
-        variance of the linear source reconstruction in the source plane coordinates,
-        computed by the diagonal elements of the covariance matrix of the source reconstruction as a sum of the errors
-        of the basis set.
+        """Variance of the linear source reconstruction in the source plane coordinates,
+        computed by the diagonal elements of the covariance matrix of the source
+        reconstruction as a sum of the errors of the basis set.
 
         :param kwargs_source: keyword arguments of source model
         :param x_grid: x-axis of positions to compute error map
@@ -722,10 +735,9 @@ class ImageLinearFit(ImageModel):
         return self._error_map_source(kwargs_source, x_grid, y_grid, cov_param)
 
     def _error_map_source(self, kwargs_source, x_grid, y_grid, cov_param):
-        """
-        variance of the linear source reconstruction in the source plane coordinates,
-        computed by the diagonal elements of the covariance matrix of the source reconstruction as a sum of the errors
-        of the basis set.
+        """Variance of the linear source reconstruction in the source plane coordinates,
+        computed by the diagonal elements of the covariance matrix of the source
+        reconstruction as a sum of the errors of the basis set.
 
         :param kwargs_source: keyword arguments of source model
         :param x_grid: x-axis of positions to compute error map
@@ -783,8 +795,8 @@ class ImageLinearFit(ImageModel):
         return ra_pos, dec_pos, amp, n_points
 
     def check_positive_flux(self, kwargs_source, kwargs_lens_light, kwargs_ps):
-        """
-        checks whether the surface brightness profiles contain positive fluxes and returns bool if True
+        """Checks whether the surface brightness profiles contain positive fluxes and
+        returns bool if True.
 
         :param kwargs_source: source surface brightness keyword argument list
         :param kwargs_lens_light: lens surface brightness keyword argument list
@@ -822,15 +834,14 @@ class ImageLinearFit(ImageModel):
         kwargs_extinction=None,
         kwargs_special=None,
     ):
-        """
-        'interferometry_natwt' method does NOT support model_error, cov_param.
-        The interferometry linear solver just does the linear solving to get the optimal linear amplitudes
-        and apply the marginalized amplitudes to make the model images.
+        """'interferometry_natwt' method does NOT support model_error, cov_param. The
+        interferometry linear solver just does the linear solving to get the optimal
+        linear amplitudes and apply the marginalized amplitudes to make the model
+        images.
 
         :return: model, model_error, cov_param, param
         model and param are the same returns of self._image_linear_solve_interferometry_natwt_solving(A, d) function
         model_error =0 and cov_param = None for the interferometric method.
-
         """
         A = self._linear_response_matrix(
             kwargs_lens,
@@ -851,9 +862,8 @@ class ImageLinearFit(ImageModel):
         return model, model_error, cov_param, param
 
     def _image_linear_solve_interferometry_natwt_solving(self, A, d):
-        """
-        Linearly solve the amplitude of each light profile response to the natural weighting interferometry images,
-        based on (placeholder for Nan Zhang's paper).
+        """Linearly solve the amplitude of each light profile response to the natural
+        weighting interferometry images, based on (placeholder for Nan Zhang's paper).
 
         Theories:
             Suppose there are a set of light responses :math:`\\{x_i\\}`, we want to solve the set of amplitudes :math:`\\{\\alpha_i\\}`,
@@ -887,7 +897,6 @@ class ImageLinearFit(ImageModel):
         :return: [array1, array2], [amp_array]
         where the [array1, array2] are unconvolved and convolved model images with solved amplitudes
         and [amp_array] are the solved optimal amplitudes.
-
         """
         num_of_light, num_of_image_pixel = np.shape(A)
 

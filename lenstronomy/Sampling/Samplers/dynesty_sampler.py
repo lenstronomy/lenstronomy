@@ -9,8 +9,7 @@ __all__ = ["DynestySampler"]
 
 
 class DynestySampler(NestedSampler):
-    """
-    Wrapper for dynamical nested sampling algorithm Dynesty by J. Speagle
+    """Wrapper for dynamical nested sampling algorithm Dynesty by J. Speagle.
 
     paper : https://arxiv.org/abs/1904.02180
     doc : https://dynesty.readthedocs.io/
@@ -83,8 +82,7 @@ class DynestySampler(NestedSampler):
         self._has_warned = False
 
     def prior(self, u):
-        """
-        compute the mapping between the unit cube and parameter cube
+        """Compute the mapping between the unit cube and parameter cube.
 
         :param u: unit hypercube, sampled by the algorithm
         :return: hypercube in parameter space
@@ -110,8 +108,7 @@ class DynestySampler(NestedSampler):
         return p
 
     def log_likelihood(self, x):
-        """
-        compute the log-likelihood given list of parameters
+        """Compute the log-likelihood given list of parameters.
 
         :param x: parameter values
         :return: log-likelihood (from the likelihood module)
@@ -125,8 +122,7 @@ class DynestySampler(NestedSampler):
         return float(log_l)
 
     def run(self, kwargs_run):
-        """
-        run the Dynesty nested sampler
+        """Run the Dynesty nested sampler.
 
         see https://dynesty.readthedocs.io for content of kwargs_run
 

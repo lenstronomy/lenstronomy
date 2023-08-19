@@ -6,11 +6,9 @@ __all__ = ["NIE"]
 
 
 class NIE(LightProfileBase):
-    """
-    non-divergent isothermal ellipse (projected)
-    This is effectively the convergence profile of the NIE lens model with an amplitude 'amp' rather than an Einstein
-    radius 'theta_E'
-    """
+    """Non-divergent isothermal ellipse (projected) This is effectively the convergence
+    profile of the NIE lens model with an amplitude 'amp' rather than an Einstein radius
+    'theta_E'."""
 
     param_names = ["amp", "e1", "e2", "s_scale", "center_x", "center_y"]
     lower_limit_default = {
@@ -52,8 +50,7 @@ class NIE(LightProfileBase):
         return f_
 
     def light_3d(self, r, amp, e1, e2, s_scale, center_x=0, center_y=0):
-        """
-        3d light distribution (in spherical regime)
+        """3d light distribution (in spherical regime)
 
         :param r: 3d radius
         :param amp: surface brightness normalization
@@ -69,8 +66,8 @@ class NIE(LightProfileBase):
 
     @staticmethod
     def _amp2rho(amp):
-        """
-        converts surface brightness normalization 'amp' into 3d density normalization rho
+        """Converts surface brightness normalization 'amp' into 3d density normalization
+        rho.
 
         :param amp:
         :return: rho

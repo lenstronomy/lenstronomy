@@ -11,9 +11,8 @@ __all__ = ["GaussianKappa"]
 
 
 class GaussianKappa(LensProfileBase):
-    """
-    this class contains functions to evaluate a Gaussian function and calculates its derivative and hessian matrix
-    """
+    """This class contains functions to evaluate a Gaussian function and calculates its
+    derivative and hessian matrix."""
 
     param_names = ["amp", "sigma", "center_x", "center_y"]
     lower_limit_default = {"amp": 0, "sigma": 0, "center_x": -100, "center_y": -100}
@@ -25,9 +24,7 @@ class GaussianKappa(LensProfileBase):
         super(LensProfileBase, self).__init__()
 
     def function(self, x, y, amp, sigma, center_x=0, center_y=0):
-        """
-        returns Gaussian
-        """
+        """Returns Gaussian."""
         x_ = x - center_x
         y_ = y - center_y
         r = np.sqrt(x_**2 + y_**2)
@@ -47,19 +44,16 @@ class GaussianKappa(LensProfileBase):
 
     @staticmethod
     def _num_integral(r, c):
-        """
-        numerical integral (1-e^{-c*x^2})/x dx [0..r]
-        :param r: radius
-        :param c: 1/2sigma^2
+        """Numerical integral (1-e^{-c*x^2})/x dx [0..r] :param r: radius :param c:
+
+        1/2sigma^2
         :return:
         """
         out = integrate.quad(lambda x: (1 - np.exp(-c * x**2)) / x, 0, r)
         return out[0]
 
     def derivatives(self, x, y, amp, sigma, center_x=0, center_y=0):
-        """
-        returns df/dx and df/dy of the function
-        """
+        """Returns df/dx and df/dy of the function."""
         x_ = x - center_x
         y_ = y - center_y
         R = np.sqrt(x_**2 + y_**2)
@@ -72,9 +66,8 @@ class GaussianKappa(LensProfileBase):
         return alpha / R * x_, alpha / R * y_
 
     def hessian(self, x, y, amp, sigma, center_x=0, center_y=0):
-        """
-        returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
-        """
+        """Returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx,
+        d^f/dy^2."""
         x_ = x - center_x
         y_ = y - center_y
         r = np.sqrt(x_**2 + y_**2)
@@ -143,9 +136,8 @@ class GaussianKappa(LensProfileBase):
         return self.mass_2d(R, amp_density, sigma)
 
     def alpha_abs(self, R, amp, sigma):
-        """
-        absolute value of the deflection
-        :param R:
+        """Absolute value of the deflection :param R:
+
         :param amp:
         :param sigma:
         :return:
@@ -205,9 +197,8 @@ class GaussianKappa(LensProfileBase):
 
     @staticmethod
     def _amp3d_to_2d(amp, sigma_x, sigma_y):
-        """
-        converts 3d density into 2d density parameter
-        :param amp:
+        """Converts 3d density into 2d density parameter :param amp:
+
         :param sigma_x:
         :param sigma_y:
         :return:
@@ -216,9 +207,8 @@ class GaussianKappa(LensProfileBase):
 
     @staticmethod
     def _amp2d_to_3d(amp, sigma_x, sigma_y):
-        """
-        converts 3d density into 2d density parameter
-        :param amp:
+        """Converts 3d density into 2d density parameter :param amp:
+
         :param sigma_x:
         :param sigma_y:
         :return:

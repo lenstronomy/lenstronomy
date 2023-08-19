@@ -19,8 +19,9 @@ __all__ = ["MultiPool"]
 
 
 def _initializer_wrapper(actual_initializer, *rest):
-    """
-    We ignore SIGINT. It's up to our parent to kill us in the typical condition of this arising from ``^C`` on a
+    """We ignore SIGINT.
+
+    It's up to our parent to kill us in the typical condition of this arising from ``^C`` on a
     terminal. If someone is manually killing us with that signal, well... nothing will happen.
     """
     signal.signal(signal.SIGINT, signal.SIG_IGN)
@@ -38,9 +39,9 @@ class CallbackWrapper(object):
 
 
 class MultiPool(Pool):
-    """
-    A modified version of :class:`multiprocessing.pool.Pool` that has better
-    behavior with regard to ``KeyboardInterrupts`` in the :func:`map` method.
+    """A modified version of :class:`multiprocessing.pool.Pool` that has better behavior
+    with regard to ``KeyboardInterrupts`` in the :func:`map` method.
+
     (Original author: `Peter K. G. Williams <peter@newton.cx>`_)
     """
 
@@ -73,10 +74,8 @@ class MultiPool(Pool):
         return True
 
     def map(self, func, iterable, chunksize=None, callback=None):
-        """
-        Equivalent to the built-in ``map()`` function and
-        :meth:`multiprocessing.pool.Pool.map()`, without catching
-        ``KeyboardInterrupt``.
+        """Equivalent to the built-in ``map()`` function and
+        :meth:`multiprocessing.pool.Pool.map()`, without catching ``KeyboardInterrupt``.
 
         :param func: A function or callable object that is executed on each element of
             the specified ``tasks`` iterable. This object must be picklable

@@ -7,9 +7,8 @@ __all__ = ["LCDM"]
 
 
 class LCDM(object):
-    """
-    Flat LCDM cosmology background with free Hubble parameter and Omega_m at fixed lens redshift configuration
-    """
+    """Flat LCDM cosmology background with free Hubble parameter and Omega_m at fixed
+    lens redshift configuration."""
 
     def __init__(self, z_lens, z_source, flat=True):
         """
@@ -38,8 +37,7 @@ class LCDM(object):
         return lensCosmo
 
     def D_d(self, H_0, Om0, Ode0=None):
-        """
-        angular diameter to deflector
+        """Angular diameter to deflector.
 
         :param H_0: Hubble parameter [km/s/Mpc]
         :param Om0: normalized matter density at present time
@@ -49,8 +47,7 @@ class LCDM(object):
         return lensCosmo.dd
 
     def D_s(self, H_0, Om0, Ode0=None):
-        """
-        angular diameter to source
+        """Angular diameter to source.
 
         :param H_0: Hubble parameter [km/s/Mpc]
         :param Om0: normalized matter density at present time
@@ -60,8 +57,7 @@ class LCDM(object):
         return lensCosmo.ds
 
     def D_ds(self, H_0, Om0, Ode0=None):
-        """
-        angular diameter from deflector to source
+        """Angular diameter from deflector to source.
 
         :param H_0: Hubble parameter [km/s/Mpc]
         :param Om0: normalized matter density at present time
@@ -71,8 +67,7 @@ class LCDM(object):
         return lensCosmo.dds
 
     def D_dt(self, H_0, Om0, Ode0=None):
-        """
-        time-delay distance
+        """Time-delay distance.
 
         :param H_0: Hubble parameter [km/s/Mpc]
         :param Om0: normalized matter density at present time

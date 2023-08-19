@@ -5,9 +5,7 @@ __all__ = ["FluxRatioLikelihood"]
 
 
 class FluxRatioLikelihood(object):
-    """
-    likelihood class for magnification of multiply lensed images
-    """
+    """Likelihood class for magnification of multiply lensed images."""
 
     def __init__(
         self,

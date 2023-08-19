@@ -9,8 +9,7 @@ __all__ = ["NFW"]
 
 
 class NFW(LensProfileBase):
-    """
-    this class contains functions concerning the NFW profile
+    """This class contains functions concerning the NFW profile.
 
     relation are: R_200 = c * Rs
     The definition of 'Rs' is in angular (arc second) units and the normalization is put in with regard to a deflection
@@ -39,7 +38,6 @@ class NFW(LensProfileBase):
     >>> from lenstronomy.LensModel.Profiles.nfw import NFW
     >>> nfw = NFW()
     >>> alpha_x, alpha_y = nfw.derivatives(x=1, y=1, Rs=Rs_angle, alpha_Rs=alpha_Rs, center_x=0, center_y=0)
-
     """
 
     profile_name = "NFW"
@@ -81,8 +79,8 @@ class NFW(LensProfileBase):
         return f_
 
     def derivatives(self, x, y, Rs, alpha_Rs, center_x=0, center_y=0):
-        """
-        returns df/dx and df/dy of the function (integral of NFW), which are the deflection angles
+        """Returns df/dx and df/dy of the function (integral of NFW), which are the
+        deflection angles.
 
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
@@ -127,8 +125,7 @@ class NFW(LensProfileBase):
 
     @staticmethod
     def density(R, Rs, rho0):
-        """
-        three-dimensional NFW profile
+        """Three-dimensional NFW profile.
 
         :param R: radius of interest
         :type R: float/numpy array
@@ -141,9 +138,9 @@ class NFW(LensProfileBase):
         return rho0 / (R / Rs * (1 + R / Rs) ** 2)
 
     def density_lens(self, r, Rs, alpha_Rs):
-        """
-        computes the density at 3d radius r given lens model parameterization.
-        The integral in the LOS projection of this quantity results in the convergence quantity.
+        """Computes the density at 3d radius r given lens model parameterization. The
+        integral in the LOS projection of this quantity results in the convergence
+        quantity.
 
         :param r: 3d radios
         :param Rs: turn-over radius of NFW profile
@@ -154,8 +151,7 @@ class NFW(LensProfileBase):
         return self.density(r, Rs, rho0)
 
     def density_2d(self, x, y, Rs, rho0, center_x=0, center_y=0):
-        """
-        projected two-dimensional NFW profile (kappa)
+        """Projected two-dimensional NFW profile (kappa)
 
         :param x: x-coordinate
         :param y: y-coordinate
@@ -175,8 +171,7 @@ class NFW(LensProfileBase):
         return 2 * rho0 * Rs * Fx
 
     def mass_3d(self, r, Rs, rho0):
-        """
-        mass enclosed a 3d sphere or radius r
+        """Mass enclosed a 3d sphere or radius r.
 
         :param r: 3d radius
         :param Rs: scale radius
@@ -188,9 +183,8 @@ class NFW(LensProfileBase):
         return m_3d
 
     def mass_3d_lens(self, r, Rs, alpha_Rs):
-        """
-        mass enclosed a 3d sphere or radius r.
-        This function takes as input the lensing parameterization.
+        """Mass enclosed a 3d sphere or radius r. This function takes as input the
+        lensing parameterization.
 
         :param r: 3d radius
         :param Rs: scale radius
@@ -202,13 +196,9 @@ class NFW(LensProfileBase):
         return m_3d
 
     def mass_2d(self, R, Rs, rho0):
-        """
-        mass enclosed a 2d cylinder or projected radius R
-        :param R: projected radius
-        :param Rs: scale radius
-        :param rho0: density normalization (characteristic density)
-        :return: mass in cylinder
-        """
+        """Mass enclosed a 2d cylinder or projected radius R :param R: projected radius
+        :param Rs: scale radius :param rho0: density normalization (characteristic
+        density) :return: mass in cylinder."""
         x = R / Rs
         gx = self.g_(x)
         m_2d = 4 * rho0 * Rs * R**2 * gx / x**2 * np.pi
@@ -227,9 +217,7 @@ class NFW(LensProfileBase):
         return self.mass_2d(R, Rs=Rs, rho0=rho0)
 
     def nfwPot(self, R, Rs, rho0):
-        """
-
-        lensing potential of NFW profile (Sigma_crit D_OL**2)
+        """Lensing potential of NFW profile (Sigma_crit D_OL**2)
 
         :param R: radius of interest
         :type R: float/numpy array
@@ -244,9 +232,8 @@ class NFW(LensProfileBase):
         return 2 * rho0 * Rs**3 * hx
 
     def nfwAlpha(self, R, Rs, rho0, ax_x, ax_y):
-        """
-
-        deflection angel of NFW profile (times Sigma_crit D_OL) along the projection to coordinate 'axis'
+        """Deflection angel of NFW profile (times Sigma_crit D_OL) along the projection
+        to coordinate 'axis'.
 
         :param R: radius of interest
         :type R: float/numpy array
@@ -267,9 +254,8 @@ class NFW(LensProfileBase):
         return a * ax_x, a * ax_y
 
     def nfwGamma(self, R, Rs, rho0, ax_x, ax_y):
-        """
-
-        shear gamma of NFW profile (times Sigma_crit) along the projection to coordinate 'axis'
+        """Shear gamma of NFW profile (times Sigma_crit) along the projection to
+        coordinate 'axis'.
 
         :param R: radius of interest
         :type R: float/numpy array
@@ -294,8 +280,7 @@ class NFW(LensProfileBase):
         return a * (ax_y**2 - ax_x**2) / R**2, -a * 2 * (ax_x * ax_y) / R**2
 
     def F_(self, X):
-        """
-        computes h()
+        """Computes h()
 
         :param X:
         :return:
@@ -320,8 +305,7 @@ class NFW(LensProfileBase):
 
     @staticmethod
     def _F(X):
-        """
-        analytic solution of the projection integral
+        """Analytic solution of the projection integral.
 
         :param X: R/Rs
         :type X: float >0
@@ -385,8 +369,7 @@ class NFW(LensProfileBase):
         return a
 
     def g_(self, X):
-        """
-        computes h()
+        """Computes h()
 
         :param X: R/Rs
         :type X: float >0
@@ -412,9 +395,8 @@ class NFW(LensProfileBase):
 
     @staticmethod
     def _g(X):
-        """
-
-        analytic solution of integral for NFW profile to compute deflection angel and gamma
+        """Analytic solution of integral for NFW profile to compute deflection angel and
+        gamma.
 
         :param X: R/Rs
         :type X: float >0
@@ -440,8 +422,7 @@ class NFW(LensProfileBase):
         return a
 
     def h_(self, X):
-        """
-        computes h()
+        """Computes h()
 
         :param X: R/Rs
         :type X: float >0
@@ -467,9 +448,7 @@ class NFW(LensProfileBase):
 
     @staticmethod
     def _h(X):
-        """
-
-        analytic solution of integral for NFW profile to compute the potential
+        """Analytic solution of integral for NFW profile to compute the potential.
 
         :param X: R/Rs
         :type X: float >0
@@ -492,8 +471,7 @@ class NFW(LensProfileBase):
 
     @staticmethod
     def alpha2rho0(alpha_Rs, Rs):
-        """
-        convert angle at Rs into rho0
+        """Convert angle at Rs into rho0.
 
         :param alpha_Rs: deflection angle at RS
         :param Rs: scale radius
@@ -505,8 +483,7 @@ class NFW(LensProfileBase):
 
     @staticmethod
     def rho02alpha(rho0, Rs):
-        """
-        convert rho0 to angle at Rs
+        """Convert rho0 to angle at Rs.
 
         :param rho0: density normalization (characteristic density)
         :param Rs: scale radius

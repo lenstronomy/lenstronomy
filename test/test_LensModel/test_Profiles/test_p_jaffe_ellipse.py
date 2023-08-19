@@ -10,9 +10,7 @@ import pytest
 
 
 class TestP_JAFFW(object):
-    """
-    tests the Gaussian methods
-    """
+    """Tests the Gaussian methods."""
 
     def setup_method(self):
         self.profile = PJaffe_Ellipse()

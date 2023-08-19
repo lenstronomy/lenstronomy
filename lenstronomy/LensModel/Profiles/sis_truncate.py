@@ -7,9 +7,8 @@ __all__ = ["SIS_truncate"]
 
 
 class SIS_truncate(LensProfileBase):
-    """
-    this class contains the function and the derivatives of the Singular Isothermal Sphere
-    """
+    """This class contains the function and the derivatives of the Singular Isothermal
+    Sphere."""
 
     param_names = ["theta_E", "r_trunc", "center_x", "center_y"]
     lower_limit_default = {
@@ -51,9 +50,7 @@ class SIS_truncate(LensProfileBase):
         return f_
 
     def derivatives(self, x, y, theta_E, r_trunc, center_x=0, center_y=0):
-        """
-        returns df/dx and df/dy of the function
-        """
+        """Returns df/dx and df/dy of the function."""
         x_shift = x - center_x
         y_shift = y - center_y
 
@@ -64,9 +61,8 @@ class SIS_truncate(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, theta_E, r_trunc, center_x=0, center_y=0):
-        """
-        returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
-        """
+        """Returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx,
+        d^f/dy^2."""
         x_shift = x - center_x
         y_shift = y - center_y
         dphi_dr = self._dphi_dr(x_shift, y_shift, theta_E, r_trunc)
@@ -105,9 +101,8 @@ class SIS_truncate(LensProfileBase):
         return a
 
     def _d2phi_dr2(self, x, y, theta_E, r_trunc):
-        """
-        second derivative of the potential in radial direction
-        :param x:
+        """Second derivative of the potential in radial direction :param x:
+
         :param y:
         :param theta_E:
         :param r_trunc:
@@ -129,9 +124,8 @@ class SIS_truncate(LensProfileBase):
         return a
 
     def _dr_dx(self, x, y):
-        """
-        derivative of dr/dx, dr/dy
-        :param x:
+        """Derivative of dr/dx, dr/dy :param x:
+
         :param y:
         :return:
         """
@@ -146,9 +140,8 @@ class SIS_truncate(LensProfileBase):
 
     @staticmethod
     def _d2r_dx2(x, y):
-        """
-        second derivative
-        :param x:
+        """Second derivative :param x:
+
         :param y:
         :return:
         """

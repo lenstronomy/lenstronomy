@@ -262,7 +262,6 @@ class TestLightAnalysis(object):
         )
         flux_true = lightModel.surface_brightness(r_array, 0, kwargs_light)
         npt.assert_almost_equal(flux / flux_true, 1, decimal=2)
-
         """
         
         import matplotlib.pyplot as plt

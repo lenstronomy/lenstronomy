@@ -9,15 +9,13 @@ __all__ = ["CoredDensity2"]
 
 
 class CoredDensity2(LensProfileBase):
-    """
-    class for a uniform cored density dropping steep in the outskirts
-    credits for suggesting this profile goes to Kfir Blum
+    """Class for a uniform cored density dropping steep in the outskirts credits for
+    suggesting this profile goes to Kfir Blum.
 
     .. math::
       \\rho(r) = 2/\\pi * \\Sigma_{\\rm crit} R_c^2 * (R_c^2 + r^2)^{-3/2}
 
     This profile drops like an NFW profile as math:`\\rho(r)^{-3}`.
-
     """
 
     model_name = "CORED_DENSITY_2"
@@ -37,8 +35,7 @@ class CoredDensity2(LensProfileBase):
     }
 
     def function(self, x, y, sigma0, r_core, center_x=0, center_y=0):
-        """
-        potential of cored density profile
+        """Potential of cored density profile.
 
         :param x: x-coordinate in angular units
         :param y: y-coordinate in angular units
@@ -75,8 +72,7 @@ class CoredDensity2(LensProfileBase):
         return f_
 
     def derivatives(self, x, y, sigma0, r_core, center_x=0, center_y=0):
-        """
-        deflection angle of cored density profile
+        """Deflection angle of cored density profile.
 
         :param x: x-coordinate in angular units
         :param y: y-coordinate in angular units
@@ -121,8 +117,7 @@ class CoredDensity2(LensProfileBase):
 
     @staticmethod
     def alpha_r(r, sigma0, r_core):
-        """
-        radial deflection angle of the cored density profile
+        """Radial deflection angle of the cored density profile.
 
         :param r: radius (angular scale)
         :param sigma0: convergence in the core
@@ -135,8 +130,7 @@ class CoredDensity2(LensProfileBase):
 
     @staticmethod
     def d_alpha_dr(r, sigma0, r_core):
-        """
-        radial derivatives of the radial deflection angle
+        """Radial derivatives of the radial deflection angle.
 
         :param r: radius (angular scale)
         :param sigma0: convergence in the core
@@ -154,8 +148,7 @@ class CoredDensity2(LensProfileBase):
 
     @staticmethod
     def kappa_r(r, sigma0, r_core):
-        """
-        convergence of the cored density profile. This routine is also for testing
+        """Convergence of the cored density profile. This routine is also for testing.
 
         :param r: radius (angular scale)
         :param sigma0: convergence in the core
@@ -166,8 +159,7 @@ class CoredDensity2(LensProfileBase):
 
     @staticmethod
     def density(r, sigma0, r_core):
-        """
-        rho(r) =  2/pi * Sigma_crit R_c**3 * (R_c**2 + r**2)**(-3/2)
+        """Rho(r) =  2/pi * Sigma_crit R_c**3 * (R_c**2 + r**2)**(-3/2)
 
         :param r: radius (angular scale)
         :param sigma0: convergence in the core
@@ -177,9 +169,9 @@ class CoredDensity2(LensProfileBase):
         return 1.0 / 2 * sigma0 * r_core**2 * (r_core**2 + r**2) ** (-3.0 / 2)
 
     def density_lens(self, r, sigma0, r_core):
-        """
-        computes the density at 3d radius r given lens model parameterization.
-        The integral in the LOS projection of this quantity results in the convergence quantity.
+        """Computes the density at 3d radius r given lens model parameterization. The
+        integral in the LOS projection of this quantity results in the convergence
+        quantity.
 
         :param r: radius (angular scale)
         :param sigma0: convergence in the core
@@ -189,8 +181,7 @@ class CoredDensity2(LensProfileBase):
         return self.density(r, sigma0, r_core)
 
     def density_2d(self, x, y, sigma0, r_core, center_x=0, center_y=0):
-        """
-        projected density at projected radius r
+        """Projected density at projected radius r.
 
         :param x: x-coordinate in angular units
         :param y: y-coordinate in angular units
@@ -208,8 +199,7 @@ class CoredDensity2(LensProfileBase):
 
     @staticmethod
     def mass_2d(r, sigma0, r_core):
-        """
-        mass enclosed in cylinder of radius r
+        """Mass enclosed in cylinder of radius r.
 
         :param r: radius (angular scale)
         :param sigma0: convergence in the core
@@ -222,8 +212,7 @@ class CoredDensity2(LensProfileBase):
 
     @staticmethod
     def mass_3d(r, sigma0, r_core):
-        """
-        mass enclosed 3d radius
+        """Mass enclosed 3d radius.
 
         :param r: radius (angular scale)
         :param sigma0: convergence in the core
@@ -241,9 +230,8 @@ class CoredDensity2(LensProfileBase):
         )
 
     def mass_3d_lens(self, r, sigma0, r_core):
-        """
-        mass enclosed a 3d sphere or radius r given a lens parameterization with angular units
-        For this profile those are identical.
+        """Mass enclosed a 3d sphere or radius r given a lens parameterization with
+        angular units For this profile those are identical.
 
         :param r: radius (angular scale)
         :param sigma0: convergence in the core

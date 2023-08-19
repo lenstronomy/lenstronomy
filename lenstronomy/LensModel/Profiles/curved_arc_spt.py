@@ -7,11 +7,11 @@ __all__ = ["CurvedArcSPT"]
 
 
 class CurvedArcSPT(LensProfileBase):
-    """
-    Curved arc model based on SIS+MST with an additional non-linear shear distortions applied on the source coordinates
-    around the center.
-    This profile is effectively a Source Position Transform of a curved arc and a shear distortion.
+    """Curved arc model based on SIS+MST with an additional non-linear shear distortions
+    applied on the source coordinates around the center.
 
+    This profile is effectively a Source Position Transform of a curved arc and a shear
+    distortion.
     """
 
     param_names = [

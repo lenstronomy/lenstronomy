@@ -186,8 +186,7 @@ class NFW_ELLIPSE_CSE(NFW_ELLIPSE):
         super(NFW_ELLIPSE_CSE, self).__init__()
 
     def function(self, x, y, Rs, alpha_Rs, e1, e2, center_x=0, center_y=0):
-        """
-        returns elliptically distorted NFW lensing potential
+        """Returns elliptically distorted NFW lensing potential.
 
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
@@ -214,9 +213,8 @@ class NFW_ELLIPSE_CSE(NFW_ELLIPSE):
         return const * f_
 
     def derivatives(self, x, y, Rs, alpha_Rs, e1, e2, center_x=0, center_y=0):
-        """
-        returns df/dx and df/dy of the function, calculated as an elliptically distorted deflection angle of the
-        spherical NFW profile
+        """Returns df/dx and df/dy of the function, calculated as an elliptically
+        distorted deflection angle of the spherical NFW profile.
 
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
@@ -244,9 +242,8 @@ class NFW_ELLIPSE_CSE(NFW_ELLIPSE):
         return const * f_x, const * f_y
 
     def hessian(self, x, y, Rs, alpha_Rs, e1, e2, center_x=0, center_y=0):
-        """
-        returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
-        the calculation is performed as a numerical differential from the deflection field.
+        """Returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy the
+        calculation is performed as a numerical differential from the deflection field.
         Analytical relations are possible.
 
         :param x: angular position (normally in units of arc seconds)
@@ -283,8 +280,7 @@ class NFW_ELLIPSE_CSE(NFW_ELLIPSE):
         return const * f_xx, const * f_xy, const * f_xy, const * f_yy
 
     def _normalization(self, alpha_Rs, Rs, q):
-        """
-        applying to eqn 7 and 8 in Oguri 2021 from phenomenological definition
+        """Applying to eqn 7 and 8 in Oguri 2021 from phenomenological definition.
 
         :param alpha_Rs: deflection at Rs
         :param Rs: scale radius

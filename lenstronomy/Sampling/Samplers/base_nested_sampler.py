@@ -6,9 +6,7 @@ __all__ = ["NestedSampler"]
 
 
 class NestedSampler(object):
-    """
-    Base class for nested samplers
-    """
+    """Base class for nested samplers."""
 
     def __init__(
         self,
@@ -49,21 +47,19 @@ class NestedSampler(object):
         self._has_warned = False
 
     def prior(self, *args, **kwargs):
-        """
-        compute the mapping between the unit cube and parameter cube
+        """Compute the mapping between the unit cube and parameter cube.
 
         :return: hypercube in parameter space
         """
         raise NotImplementedError("Method not be implemented in base class")
 
     def log_likelihood(self, *args, **kwargs):
-        """
-        compute the log-likelihood given list of parameters
+        """Compute the log-likelihood given list of parameters.
 
         :return: log-likelihood (from the likelihood module)
         """
         raise NotImplementedError("Method not be implemented in base class")
 
     def run(self, kwargs_run):
-        """run the nested sampling algorithm"""
+        """Run the nested sampling algorithm."""
         raise NotImplementedError("Method not be implemented in base class")

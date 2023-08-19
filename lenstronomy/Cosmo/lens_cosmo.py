@@ -11,9 +11,8 @@ __all__ = ["LensCosmo"]
 
 
 class LensCosmo(object):
-    """
-    class to manage the physical units and distances present in a single plane lens with fixed input cosmology
-    """
+    """Class to manage the physical units and distances present in a single plane lens
+    with fixed input cosmology."""
 
     def __init__(self, z_lens, z_source, cosmo=None):
         """
@@ -66,8 +65,7 @@ class LensCosmo(object):
 
     @property
     def sigma_crit(self):
-        """
-        returns the critical projected lensing mass density in units of M_sun/Mpc^2
+        """Returns the critical projected lensing mass density in units of M_sun/Mpc^2.
 
         :return: critical projected lensing mass density
         """
@@ -84,9 +82,8 @@ class LensCosmo(object):
 
     @property
     def sigma_crit_angle(self):
-        """
-        returns the critical surface density in units of M_sun/arcsec^2 (in physical solar mass units)
-        when provided a physical mass per physical Mpc^2
+        """Returns the critical surface density in units of M_sun/arcsec^2 (in physical
+        solar mass units) when provided a physical mass per physical Mpc^2.
 
         :return: critical projected mass density
         """
@@ -102,8 +99,7 @@ class LensCosmo(object):
         return self._sigma_crit_arcsec
 
     def phys2arcsec_lens(self, phys):
-        """
-        convert physical Mpc into arc seconds
+        """Convert physical Mpc into arc seconds.
 
         :param phys: physical distance [Mpc]
         :return: angular diameter [arcsec]
@@ -111,8 +107,7 @@ class LensCosmo(object):
         return phys / self.dd / const.arcsec
 
     def arcsec2phys_lens(self, arcsec):
-        """
-        convert angular to physical quantities for lens plane
+        """Convert angular to physical quantities for lens plane.
 
         :param arcsec: angular size at lens plane [arcsec]
         :return: physical size at lens plane [Mpc]
@@ -120,8 +115,7 @@ class LensCosmo(object):
         return arcsec * const.arcsec * self.dd
 
     def arcsec2phys_source(self, arcsec):
-        """
-        convert angular to physical quantities for source plane
+        """Convert angular to physical quantities for source plane.
 
         :param arcsec: angular size at source plane [arcsec]
         :return: physical size at source plane [Mpc]
@@ -129,8 +123,7 @@ class LensCosmo(object):
         return arcsec * const.arcsec * self.ds
 
     def kappa2proj_mass(self, kappa):
-        """
-        convert convergence to projected mass M_sun/Mpc^2
+        """Convert convergence to projected mass M_sun/Mpc^2.
 
         :param kappa: lensing convergence
         :return: projected mass [M_sun/Mpc^2]
@@ -138,8 +131,7 @@ class LensCosmo(object):
         return kappa * self.sigma_crit
 
     def mass_in_theta_E(self, theta_E):
-        """
-        mass within Einstein radius (area * epsilon crit) [M_sun]
+        """Mass within Einstein radius (area * epsilon crit) [M_sun]
 
         :param theta_E: Einstein radius [arcsec]
         :return: mass within Einstein radius [M_sun]
@@ -186,8 +178,7 @@ class LensCosmo(object):
         return dt * const.c * const.day_s / D_dt / const.arcsec**2
 
     def nfw_angle2physical(self, Rs_angle, alpha_Rs):
-        """
-        converts the angular parameters into the physical ones for an NFW profile
+        """Converts the angular parameters into the physical ones for an NFW profile.
 
         :param alpha_Rs: observed bending angle at the scale radius in units of arcsec
         :param Rs_angle: scale radius in units of arcsec
@@ -203,12 +194,14 @@ class LensCosmo(object):
         return rho0, Rs, c, r200, M200
 
     def nfw_physical2angle(self, M, c):
-        """
-        converts the physical mass and concentration parameter of an NFW profile into the lensing quantities
+        """Converts the physical mass and concentration parameter of an NFW profile into
+        the lensing quantities.
 
-        :param M: mass enclosed 200 rho_crit in units of M_sun (physical units, meaning no little h)
+        :param M: mass enclosed 200 rho_crit in units of M_sun (physical units, meaning
+            no little h)
         :param c: NFW concentration parameter (r200/r_s)
-        :return: Rs_angle (angle at scale radius) (in units of arcsec), alpha_Rs (observed bending angle at the scale radius
+        :return: Rs_angle (angle at scale radius) (in units of arcsec), alpha_Rs
+            (observed bending angle at the scale radius
         """
         rho0, Rs, r200 = self.nfwParam_physical(M, c)
         Rs_angle = Rs / self.dd / const.arcsec  # Rs in arcsec
@@ -216,8 +209,7 @@ class LensCosmo(object):
         return Rs_angle, alpha_Rs / self.sigma_crit / self.dd / const.arcsec
 
     def nfwParam_physical(self, M, c):
-        """
-        returns the NFW parameters in physical units
+        """Returns the NFW parameters in physical units.
 
         :param M: physical mass in M_sun in definition m200
         :param c: concentration
@@ -233,8 +225,7 @@ class LensCosmo(object):
         return rho0, Rs, r200
 
     def nfw_M_theta_r200(self, M):
-        """
-        returns r200 radius in angular units of arc seconds on the sky
+        """Returns r200 radius in angular units of arc seconds on the sky.
 
         :param M: physical mass in M_sun
         :return: angle (in arc seconds) of the r200 radius
@@ -246,8 +237,7 @@ class LensCosmo(object):
         return theta_r200
 
     def sis_theta_E2sigma_v(self, theta_E):
-        """
-        converts the lensing Einstein radius into a physical velocity dispersion
+        """Converts the lensing Einstein radius into a physical velocity dispersion.
 
         :param theta_E: Einstein radius (in arcsec)
         :return: velocity dispersion in units (km/s)
@@ -256,8 +246,7 @@ class LensCosmo(object):
         return np.sqrt(v_sigma_c2) * const.c / 1000
 
     def sis_sigma_v2theta_E(self, v_sigma):
-        """
-        converts the velocity dispersion into an Einstein radius for a SIS profile
+        """Converts the velocity dispersion into an Einstein radius for a SIS profile.
 
         :param v_sigma: velocity dispersion (km/s)
         :return: theta_E (arcsec)
@@ -273,14 +262,14 @@ class LensCosmo(object):
         return theta_E
 
     def hernquist_phys2angular(self, mass, rs):
-        """
-        Translates physical mass definitions of the Hernquist profile to the angular units used in the Hernquist lens
-        profile of lenstronomy.
+        """Translates physical mass definitions of the Hernquist profile to the angular
+        units used in the Hernquist lens profile of lenstronomy.
 
-        'sigma0' is defined such that the deflection at projected RS leads to
-        alpha = 2./3 * Rs * sigma0
+        'sigma0' is defined such that the deflection at projected RS leads to alpha =
+        2./3 * Rs * sigma0
 
-        :param mass: A spherical overdensity mass in M_sun corresponding to the mass definition mdef at redshift z
+        :param mass: A spherical overdensity mass in M_sun corresponding to the mass
+            definition mdef at redshift z
         :param rs: rs in units of physical Mpc
         :return: sigma0, Rs_angle
         """
@@ -291,9 +280,8 @@ class LensCosmo(object):
         return sigma0, rs_angle
 
     def hernquist_angular2phys(self, sigma0, rs_angle):
-        """
-        'sigma0' is defined such that the deflection at projected RS leads to
-        alpha = 2./3 * Rs * sigma0
+        """'sigma0' is defined such that the deflection at projected RS leads to alpha =
+        2./3 * Rs * sigma0.
 
         :param sigma0: convergence normalization
         :param rs_angle: rs in angular units [arcseconds]
@@ -305,14 +293,14 @@ class LensCosmo(object):
         return m_tot, rs
 
     def uldm_angular2phys(self, kappa_0, theta_c):
-        """
-        converts the anguar parameters entering the LensModel Uldm() (Ultra Light
-        Dark Matter) class in physical masses, i.e. the total soliton mass and the
-        mass of the particle
+        """Converts the anguar parameters entering the LensModel Uldm() (Ultra Light
+        Dark Matter) class in physical masses, i.e. the total soliton mass and the mass
+        of the particle.
 
         :param kappa_0: central convergence of profile
         :param theta_c: core radius (in arcseconds)
-        :return: m_eV_log10, M_sol_log10, the log10 of the masses, m in eV and M in M_sun
+        :return: m_eV_log10, M_sol_log10, the log10 of the masses, m in eV and M in
+            M_sun
         """
         D_Lens = self.dd * 10**6  # in parsec
         Sigma_c = self.sigma_crit * 10 ** (-12)  # in M_sun / parsec^2
@@ -323,13 +311,13 @@ class LensCosmo(object):
         return m_log10, M_log10
 
     def uldm_mphys2angular(self, m_log10, M_log10):
-        """
-        converts physical ULDM mass in the ones, in angular units, that enter
-        the LensModel Uldm() class
+        """Converts physical ULDM mass in the ones, in angular units, that enter the
+        LensModel Uldm() class.
 
         :param m_log10: exponent of ULDM mass in eV
         :param M_log10: exponent of soliton mass in M_sun
-        :return: kappa_0, theta_c, the central convergence and core radius (in arcseconds)
+        :return: kappa_0, theta_c, the central convergence and core radius (in
+            arcseconds)
         """
         D_Lens = self.dd * 10**6  # in parsec
         Sigma_c = self.sigma_crit * 10 ** (-12)  # in M_sun/parsec^2
@@ -344,9 +332,8 @@ class LensCosmo(object):
         return kappa_0, theta_c
 
     def sersic_m_star2k_eff(self, m_star, R_sersic, n_sersic):
-        """
-        translates a total stellar mass into 'k_eff', the convergence at
-        'R_sersic' (effective radius or half-light radius) for a Sersic profile
+        """Translates a total stellar mass into 'k_eff', the convergence at 'R_sersic'
+        (effective radius or half-light radius) for a Sersic profile.
 
         :param m_star: total stellar mass in physical Msun
         :param R_sersic: half-light radius in arc seconds
@@ -367,8 +354,8 @@ class LensCosmo(object):
         return k_eff
 
     def sersic_k_eff2m_star(self, k_eff, R_sersic, n_sersic):
-        """
-        translates convergence at half-light radius to total integrated physical stellar mass for a Sersic profile
+        """Translates convergence at half-light radius to total integrated physical
+        stellar mass for a Sersic profile.
 
         :param k_eff: lensing convergence at half-light radius
         :param R_sersic: half-light radius in arc seconds

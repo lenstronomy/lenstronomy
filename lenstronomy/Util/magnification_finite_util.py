@@ -4,13 +4,15 @@ import numpy as np
 
 
 def auto_raytracing_grid_size(source_fwhm_parcsec, grid_size_scale=0.005, power=1.0):
-    """
-    This function returns the size of a ray tracing grid in units of arcsec appropriate for magnification computations
-    with finite-size background sources. This fit is calibrated for source sizes (interpreted as the FWHM of a Gaussian) in
-    the range 0.1 -100 pc.
+    """This function returns the size of a ray tracing grid in units of arcsec
+    appropriate for magnification computations with finite-size background sources. This
+    fit is calibrated for source sizes (interpreted as the FWHM of a Gaussian) in the
+    range 0.1 -100 pc.
 
-    :param source_fwhm_parcsec: the full width at half max of a Gaussian background source
-    :return: an appropriate grid size for finite-size background magnification computation
+    :param source_fwhm_parcsec: the full width at half max of a Gaussian background
+        source
+    :return: an appropriate grid size for finite-size background magnification
+        computation
     """
 
     grid_radius_arcsec = grid_size_scale * source_fwhm_parcsec**power
@@ -20,13 +22,16 @@ def auto_raytracing_grid_size(source_fwhm_parcsec, grid_size_scale=0.005, power=
 def auto_raytracing_grid_resolution(
     source_fwhm_parcsec, grid_resolution_scale=0.0002, ref=10.0, power=1.0
 ):
-    """
-    This function returns a resolution factor in units arcsec/pixel appropriate for magnification computations with
-    finite-size background sources. This fit is calibrated for source sizes (interpreted as the FWHM of a Gaussian) in
-    the range 0.1 -100 pc.
+    """This function returns a resolution factor in units arcsec/pixel appropriate for
+    magnification computations with finite-size background sources. This fit is.
 
-    :param source_fwhm_parcsec: the full width at half max of a Gaussian background source
-    :return: an appropriate grid resolution for finite-size background magnification computation
+    calibrated for source sizes (interpreted as the FWHM of a Gaussian) in the range 0.1
+    -100 pc.
+
+    :param source_fwhm_parcsec: the full width at half max of a Gaussian background
+        source
+    :return: an appropriate grid resolution for finite-size background magnification
+        computation
     """
 
     grid_resolution = grid_resolution_scale * (source_fwhm_parcsec / ref) ** power
@@ -48,30 +53,30 @@ def setup_mag_finite(
     amp_scale,
     size_scale,
 ):
-    """
-    Sets up the ray tracing grid and source light model for magnification_finite_adaptive and
-    plot_quasar_images routines
-    :param cosmo: (optional) an instance of astropy.cosmology; if not specified, a default cosmology will be used
-    :param lens_model: an instance of LensModel
-    :param grid_radius_arcsec: (optional) the size of the ray tracing region in arcsec; if not specified, an appropriate value
-    will be estimated from the source size
-    :param grid_resolution: the grid resolution in units arcsec/pixel; if not specified, an appropriate value will
-    be estimated from the source size
-    :param source_fwhm_parsec: the size of the background source [units parsec]
-    :param source_light_model: the model for background source light; currently implemented are 'SINGLE_GAUSSIAN' and
-    'DOUBLE_GAUSSIAN'.
+    """Sets up the ray tracing grid and source light model for
+    magnification_finite_adaptive and plot_quasar_images routines :param cosmo:
+    (optional) an instance of astropy.cosmology; if not specified, a default cosmology
+    will be used :param lens_model: an instance of LensModel :param grid_radius_arcsec:
+    (optional) the size of the ray tracing region in arcsec; if not specified, an
+    appropriate value will be estimated from the source size :param grid_resolution: the
+    grid resolution in units arcsec/pixel; if not specified, an appropriate value will
+    be estimated from the source size :param source_fwhm_parsec: the size of the
+    background source [units parsec] :param source_light_model: the model for background
+    source light; currently implemented are 'SINGLE_GAUSSIAN' and 'DOUBLE_GAUSSIAN'.
+
     :param z_source: source redshift
     :param source_x: source x position [arcsec]
     :param source_y: source y position [arcsec]
-    :param dx: used with source model 'DOUBLE_GAUSSIAN', the offset of the second source light profile from the first
-    [arcsec]
-    :param dy: used with source model 'DOUBLE_GAUSSIAN', the offset of the second source light profile from the first
-    [arcsec]
-    :param amp_scale: used with source model 'DOUBLE_GAUSSIAN', the peak brightness of the second source light profile
-    relative to the first
-    :param size_scale: used with source model 'DOUBLE_GAUSSIAN', the size of the second source light profile relative
-    to the first
-    :return: x coordinate grid, y coordinate grid, source light model, and keywords for the source light model
+    :param dx: used with source model 'DOUBLE_GAUSSIAN', the offset of the second source
+        light profile from the first [arcsec]
+    :param dy: used with source model 'DOUBLE_GAUSSIAN', the offset of the second source
+        light profile from the first [arcsec]
+    :param amp_scale: used with source model 'DOUBLE_GAUSSIAN', the peak brightness of
+        the second source light profile relative to the first
+    :param size_scale: used with source model 'DOUBLE_GAUSSIAN', the size of the second
+        source light profile relative to the first
+    :return: x coordinate grid, y coordinate grid, source light model, and keywords for
+        the source light model
     """
     if cosmo is None:
         cosmo = lens_model.cosmo

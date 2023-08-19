@@ -11,9 +11,8 @@ __all__ = ["CartShapelets"]
 
 
 class CartShapelets(LensProfileBase):
-    """
-    this class contains the function and the derivatives of the cartesian shapelets
-    """
+    """This class contains the function and the derivatives of the cartesian
+    shapelets."""
 
     param_names = ["coeffs", "beta", "center_x", "center_y"]
     lower_limit_default = {"coeffs": [0], "beta": 0, "center_x": -100, "center_y": -100}
@@ -36,9 +35,7 @@ class CartShapelets(LensProfileBase):
         return f_
 
     def derivatives(self, x, y, coeffs, beta, center_x=0, center_y=0):
-        """
-        returns df/dx and df/dy of the function
-        """
+        """Returns df/dx and df/dy of the function."""
         shapelets = self._createShapelet(coeffs)
         n_order = self._get_num_n(len(coeffs))
         dx_shapelets = self._dx_shapelets(shapelets, beta)
@@ -54,9 +51,8 @@ class CartShapelets(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, coeffs, beta, center_x=0, center_y=0):
-        """
-        returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
-        """
+        """Returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx,
+        d^f/dy^2."""
         shapelets = self._createShapelet(coeffs)
         n_order = self._get_num_n(len(coeffs))
         dxx_shapelets = self._dxx_shapelets(shapelets, beta)
@@ -75,14 +71,13 @@ class CartShapelets(LensProfileBase):
         return f_xx, f_xy, f_xy, f_yy
 
     def _createShapelet(self, coeffs):
-        """
-        returns a shapelet array out of the coefficients *a, up to order l
+        """Returns a shapelet array out of the coefficients *a, up to order l.
 
         :param num_l: order of shapelets
         :type num_l: int.
         :param coeff: shapelet coefficients
         :type coeff: floats
-        :returns:  complex array
+        :returns: complex array
         :raises: AttributeError, KeyError
         """
         n_coeffs = len(coeffs)
@@ -99,14 +94,13 @@ class CartShapelets(LensProfileBase):
         return shapelets
 
     def _shapeletOutput(self, x, y, beta, shapelets, precalc=True):
-        """
-        returns the the numerical values of a set of shapelets at polar coordinates
-        :param shapelets: set of shapelets [l=,r=,a_lr=]
-        :type shapelets: array of size (n,3)
-        :param coordPolar: set of coordinates in polar units
-        :type coordPolar: array of size (n,2)
-        :returns:  array of same size with coords [r,phi]
-        :raises: AttributeError, KeyError
+        """Returns the the numerical values of a set of shapelets at polar coordinates
+        :param shapelets: set of shapelets [l=,r=,a_lr=] :type shapelets: array of size
+        (n,3) :param coordPolar: set of coordinates in polar units :type coordPolar:
+
+        array of size (n,2)
+        :returns: array of same size with coords [r,phi]
+        :raises: AttributeError, KeyError.
         """
         n = len(np.atleast_1d(x))
         if n <= 1:
@@ -146,9 +140,8 @@ class CartShapelets(LensProfileBase):
         return amp * self.phi_n(n1, x_ / beta) * self.phi_n(n2, y_ / beta) / beta
 
     def _dx_shapelets(self, shapelets, beta):
-        """
-        computes the derivative d/dx of the shapelet coeffs
-        :param shapelets:
+        """Computes the derivative d/dx of the shapelet coeffs :param shapelets:
+
         :param beta:
         :return:
         """
@@ -163,9 +156,8 @@ class CartShapelets(LensProfileBase):
         return dx / beta
 
     def _dy_shapelets(self, shapelets, beta):
-        """
-        computes the derivative d/dx of the shapelet coeffs
-        :param shapelets:
+        """Computes the derivative d/dx of the shapelet coeffs :param shapelets:
+
         :param beta:
         :return:
         """
@@ -192,14 +184,13 @@ class CartShapelets(LensProfileBase):
         return self._dx_shapelets(dy_shapelets, beta)
 
     def H_n(self, n, x):
-        """
-        constructs the Hermite polynomial of order n at position x (dimensionless)
+        """Constructs the Hermite polynomial of order n at position x (dimensionless)
 
         :param n: The n'the basis function.
         :type name: int.
         :param x: 1-dim position (dimensionless)
         :type state: float or numpy array.
-        :returns:  array-- H_n(x).
+        :returns: array-- H_n(x).
         :raises: AttributeError, KeyError
         """
         n_array = np.zeros(n + 1)
@@ -209,23 +200,21 @@ class CartShapelets(LensProfileBase):
         )  # attention, this routine calculates every single hermite polynomial and multiplies it with zero (exept the right one)
 
     def phi_n(self, n, x):
-        """
-        constructs the 1-dim basis function (formula (1) in Refregier et al. 2001)
+        """Constructs the 1-dim basis function (formula (1) in Refregier et al. 2001)
 
         :param n: The n'the basis function.
         :type name: int.
         :param x: 1-dim position (dimensionless)
         :type state: float or numpy array.
-        :returns:  array-- phi_n(x).
+        :returns: array-- phi_n(x).
         :raises: AttributeError, KeyError
         """
         prefactor = 1.0 / np.sqrt(2**n * np.sqrt(np.pi) * math.factorial(n))
         return prefactor * self.H_n(n, x) * np.exp(-(x**2) / 2.0)
 
     def pre_calc(self, x, y, beta, n_order, center_x, center_y):
-        """
-        calculates the H_n(x) and H_n(y) for a given x-array and y-array
-        :param x:
+        """Calculates the H_n(x) and H_n(y) for a given x-array and y-array :param x:
+
         :param y:
         :param amp:
         :param beta:

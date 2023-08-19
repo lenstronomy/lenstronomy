@@ -7,13 +7,14 @@ __all__ = ["PointSourceVariability"]
 
 
 class PointSourceVariability(object):
-    """
-    This class enables to plug in a variable point source in the source plane to be added on top of a fixed lens and
-    extended surface brightness model. The class inherits SimAPI and additionally requires the lens and light model
-    parameters as well as a position in the source plane.
+    """This class enables to plug in a variable point source in the source plane to be
+    added on top of a fixed lens and extended surface brightness model. The class
+    inherits SimAPI and additionally requires the lens and light model parameters as
+    well as a position in the source plane.
 
-    The intrinsic source variability can be defined by the user and additional uncorrelated variability in the image
-    plane can be plugged in as well (e.g. due to micro-lensing)
+    The intrinsic source variability can be defined by the user and additional
+    uncorrelated variability in the image plane can be plugged in as well (e.g. due to
+    micro-lensing)
     """
 
     def __init__(

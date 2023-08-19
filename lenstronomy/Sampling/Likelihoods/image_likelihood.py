@@ -5,9 +5,7 @@ __all__ = ["ImageLikelihood"]
 
 
 class ImageLikelihood(object):
-    """
-    manages imaging data likelihoods
-    """
+    """Manages imaging data likelihoods."""
 
     def __init__(
         self,

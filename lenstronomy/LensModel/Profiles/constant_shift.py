@@ -7,9 +7,7 @@ __all__ = ["Shift"]
 
 
 class Shift(LensProfileBase):
-    """
-    Lens model with a constant shift of the deflection field
-    """
+    """Lens model with a constant shift of the deflection field."""
 
     param_names = ["alpha_x", "alpha_y"]
     lower_limit_default = {"alpha_x": -1000, "alpha_y": -1000}

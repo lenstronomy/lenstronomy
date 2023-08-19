@@ -15,9 +15,7 @@ from lenstronomy.Data.psf import PSF
 
 
 class TestSampler(object):
-    """
-    test the fitting sequences
-    """
+    """Test the fitting sequences."""
 
     def setup_method(self):
         # data specifics

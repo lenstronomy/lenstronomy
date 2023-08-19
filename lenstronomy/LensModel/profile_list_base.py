@@ -89,9 +89,9 @@ _SUPPORTED_MODELS = [
 
 
 class ProfileListBase(object):
-    """
-    class that manages the list of lens model class instances. This class is applicable for single plane and multi
-    plane lensing
+    """Class that manages the list of lens model class instances.
+
+    This class is applicable for single plane and multi plane lensing
     """
 
     def __init__(
@@ -569,12 +569,11 @@ class ProfileListBase(object):
             )
 
     def _bool_list(self, k=None):
-        """
-        returns a bool list of the length of the lens models
-        if k = None: returns bool list with True's
-        if k is int, returns bool list with False's but k'th is True
-        if k is a list of int, e.g. [0, 3, 5], returns a bool list with True's in the integers listed and False elsewhere
-        if k is a boolean list, checks for size to match the numbers of models and returns it
+        """Returns a bool list of the length of the lens models if k = None: returns
+        bool list with True's if k is int, returns bool list with False's but k'th is
+        True if k is a list of int, e.g. [0, 3, 5], returns a bool list with True's in
+        the integers listed and False elsewhere if k is a boolean list, checks for size
+        to match the numbers of models and returns it.
 
         :param k: None, int, or list of ints
         :return: bool list
@@ -592,9 +591,9 @@ class ProfileListBase(object):
         return kwargs_list
 
     def set_dynamic(self):
-        """
-        frees cache set by static model (if exists) and re-computes all lensing quantities each time a definition is
-        called assuming different parameters are executed. This is the default mode if not specified as set_static()
+        """Frees cache set by static model (if exists) and re-computes all lensing
+        quantities each time a definition is called assuming different parameters are
+        executed. This is the default mode if not specified as set_static()
 
         :return: None
         """

@@ -11,13 +11,12 @@ import lenstronomy.Util.class_creator as class_util
 
 
 def create_lenstronomy_from_coolest(file_name):
-    """
-    Creates lenstronomy typical kwargs from a COOLEST (JSON) file
+    """Creates lenstronomy typical kwargs from a COOLEST (JSON) file.
 
-    :param file_name: str, name (with path) of the .json file containing the COOLEST information
-
-    :return: return_dict, dictionary with typical lenstronomy kwarg (as kwargs_data, kwargs_psf, kwargs_params, kwargs_results, kwargs_model etc)
-
+    :param file_name: str, name (with path) of the .json file containing the COOLEST
+        information
+    :return: return_dict, dictionary with typical lenstronomy kwarg (as kwargs_data,
+        kwargs_psf, kwargs_params, kwargs_results, kwargs_model etc)
     """
     creation_lens_source_light = False
     creation_cosmo = False
@@ -411,8 +410,8 @@ def create_lenstronomy_from_coolest(file_name):
 def update_coolest_from_lenstronomy(
     file_name, kwargs_result, kwargs_mcmc=None, ending="_update"
 ):
-    """
-    Function to update a json file already containing a model with the results of this model fitting
+    """Function to update a json file already containing a model with the results of
+    this model fitting.
 
     :param file_name: str, name (with path) of the json file to update
     :param kwargs_results: dict, lenstronomy kwargs_results {'kwargs_lens': [{..},{..}], 'kwargs_source': [{..}],...}
@@ -638,8 +637,8 @@ def create_kwargs_mcmc_from_chain_list(
     idx_chain=-1,
     likelihood_threshold=None,
 ):
-    """
-    function to construct kwargs_mcmc in the right format for the "update_coolest_from_lenstronomy" function
+    """Function to construct kwargs_mcmc in the right format for the
+    "update_coolest_from_lenstronomy" function.
 
     :param chain_list: list, output of FittingSequence.fitting_sequence()
     :param kwargs_model: the usual lenstronomy kwargs
@@ -649,14 +648,14 @@ def create_kwargs_mcmc_from_chain_list(
     :param kwargs_numerics: the usual lenstronomy kwargs
     :param kwargs_constraints: the usual lenstronomy kwargs
     :param image_likelihood_mask: the usual lenstronomy kwargs
-    :param idx_chain: int, index of the MCMC chain in the chain_list, default is the last one.
-                    Can be useful if several PSO and MCMC are perfomed in the fitting sequence.
-    :param likelihood_threshold: float, likelihood limit (negative) underwhich the MCMC point is not considered.
-                                 Can be useful if a few chains are stucked in another (less good) minimum
-
-    :return: kwargs_mcmc, list containing all the relevant MCMC points in a userfriendly format
-                       (with linear parameters etc)
-
+    :param idx_chain: int, index of the MCMC chain in the chain_list, default is the
+        last one. Can be useful if several PSO and MCMC are perfomed in the fitting
+        sequence.
+    :param likelihood_threshold: float, likelihood limit (negative) underwhich the MCMC
+        point is not considered. Can be useful if a few chains are stucked in another
+        (less good) minimum
+    :return: kwargs_mcmc, list containing all the relevant MCMC points in a userfriendly
+        format (with linear parameters etc)
     """
     par_buf = chain_list[idx_chain][1]
     dist_buf = chain_list[idx_chain][3]
@@ -739,9 +738,9 @@ def create_kwargs_mcmc_from_chain_list(
 
 
 def create_redshift_info(lensing_entities_list):
-    """
-    Side fuction to create the minimum, maximum and whole redshift list of galaxies in the COOLEST template
-    Note that the redshifts helps knowing which galaxy is a lens, or a source, and if multiplane has to be considered
+    """Side fuction to create the minimum, maximum and whole redshift list of galaxies
+    in the COOLEST template Note that the redshifts helps knowing which galaxy is a
+    lens, or a source, and if multiplane has to be considered.
 
     :param lensing_entities_list: coolest.template.classes.lensing_entity_list.LensingEntityList object
     :return: min_redshift, max_redshift, redshift_list ; minimum, maximum and full list of lensing entities redshifts

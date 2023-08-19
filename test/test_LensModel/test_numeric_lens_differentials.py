@@ -9,9 +9,7 @@ from lenstronomy.Util import util
 
 
 class TestNumerics(object):
-    """
-    tests the source model routines
-    """
+    """Tests the source model routines."""
 
     def setup_method(self):
         self.lensModel = LensModel(["GAUSSIAN"])
@@ -79,9 +77,7 @@ class TestNumerics(object):
 
 
 class TestNumericsProfile(object):
-    """
-    tests the second derivatives of various lens models
-    """
+    """Tests the second derivatives of various lens models."""
 
     def setup_method(self):
         pass

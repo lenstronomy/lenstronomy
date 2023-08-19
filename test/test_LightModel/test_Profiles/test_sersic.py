@@ -10,9 +10,7 @@ import numpy.testing as npt
 
 
 class TestSersic(object):
-    """
-    tests the Gaussian methods
-    """
+    """Tests the Gaussian methods."""
 
     def setup_method(self):
         self.sersic = Sersic(smoothing=0.02)

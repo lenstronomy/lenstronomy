@@ -8,9 +8,8 @@ __all__ = ["PointMass"]
 
 
 class PointMass(LensProfileBase):
-    """
-    class to compute the physical deflection angle of a point mass, given as an Einstein radius
-    """
+    """Class to compute the physical deflection angle of a point mass, given as an
+    Einstein radius."""
 
     param_names = ["theta_E", "center_x", "center_y"]
     lower_limit_default = {"theta_E": 0, "center_x": -100, "center_y": -100}

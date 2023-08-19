@@ -7,10 +7,8 @@ export, __all__ = exporter()
 
 @export
 class Chameleon(object):
-    """
-    class of the Chameleon model (See Dutton+ 2011, Suyu+2014) an elliptical truncated double isothermal profile
-
-    """
+    """Class of the Chameleon model (See Dutton+ 2011, Suyu+2014) an elliptical
+    truncated double isothermal profile."""
 
     param_names = ["amp", "w_c", "w_t", "e1", "e2", "center_x", "center_y"]
     lower_limit_default = {
@@ -82,9 +80,9 @@ class Chameleon(object):
 
 @export
 class DoubleChameleon(object):
-    """
-    class of the double Chameleon model. See Dutton+2011, Suyu+2014 for the single Chameleon model.
+    """Class of the double Chameleon model.
 
+    See Dutton+2011, Suyu+2014 for the single Chameleon model.
     """
 
     param_names = [
@@ -220,10 +218,8 @@ class DoubleChameleon(object):
 
 @export
 class TripleChameleon(object):
-    """
-    class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile
-
-    """
+    """Class of the Chameleon model (See Suyu+2014) an elliptical truncated double
+    isothermal profile."""
 
     param_names = [
         "amp",

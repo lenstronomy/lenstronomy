@@ -9,9 +9,7 @@ __all__ = ["SPP"]
 
 
 class SPP(LensProfileBase):
-    """
-    class for circular power-law mass distribution
-    """
+    """Class for circular power-law mass distribution."""
 
     param_names = ["theta_E", "gamma", "center_x", "center_y"]
     lower_limit_default = {
@@ -107,8 +105,7 @@ class SPP(LensProfileBase):
 
     @staticmethod
     def rho2theta(rho0, gamma):
-        """
-        converts 3d density into 2d projected density parameter
+        """Converts 3d density into 2d projected density parameter.
 
         :param rho0:
         :param gamma:
@@ -129,8 +126,8 @@ class SPP(LensProfileBase):
 
     @staticmethod
     def theta2rho(theta_E, gamma):
-        """
-        converts projected density parameter (in units of deflection) into 3d density parameter
+        """Converts projected density parameter (in units of deflection) into 3d density
+        parameter.
 
         :param theta_E:
         :param gamma:
@@ -149,8 +146,7 @@ class SPP(LensProfileBase):
 
     @staticmethod
     def mass_3d(r, rho0, gamma):
-        """
-        mass enclosed a 3d sphere or radius r
+        """Mass enclosed a 3d sphere or radius r.
 
         :param r:
         :param rho0:
@@ -172,8 +168,7 @@ class SPP(LensProfileBase):
         return self.mass_3d(r, rho0, gamma)
 
     def mass_2d(self, r, rho0, gamma):
-        """
-        mass enclosed projected 2d sphere of radius r
+        """Mass enclosed projected 2d sphere of radius r.
 
         :param r:
         :param rho0:
@@ -204,8 +199,7 @@ class SPP(LensProfileBase):
         return self.mass_2d(r, rho0, gamma)
 
     def grav_pot(self, x, y, rho0, gamma, center_x=0, center_y=0):
-        """
-        gravitational potential (modulo 4 pi G and rho0 in appropriate units)
+        """Gravitational potential (modulo 4 pi G and rho0 in appropriate units)
 
         :param x:
         :param y:
@@ -224,8 +218,7 @@ class SPP(LensProfileBase):
 
     @staticmethod
     def density(r, rho0, gamma):
-        """
-        computes the density
+        """Computes the density.
 
         :param r:
         :param rho0:
@@ -236,18 +229,17 @@ class SPP(LensProfileBase):
         return rho
 
     def density_lens(self, r, theta_E, gamma):
-        """
-        computes the density at 3d radius r given lens model parameterization.
-        The integral in projected in units of angles (i.e. arc seconds) results in the convergence quantity.
+        """Computes the density at 3d radius r given lens model parameterization.
 
+        The integral in projected in units of angles (i.e. arc seconds) results in the
+        convergence quantity.
         """
         rho0 = self.theta2rho(theta_E, gamma)
         return self.density(r, rho0, gamma)
 
     @staticmethod
     def density_2d(x, y, rho0, gamma, center_x=0, center_y=0):
-        """
-        projected density
+        """Projected density.
 
         :param x:
         :param y:
@@ -271,8 +263,7 @@ class SPP(LensProfileBase):
 
     @staticmethod
     def _gamma_limit(gamma):
-        """
-        limits the power-law slope to certain bounds
+        """Limits the power-law slope to certain bounds.
 
         :param gamma: power-law slope
         :return: bounded power-law slopte

@@ -7,16 +7,13 @@ __all__ = ["SIS"]
 
 
 class SIS(LensProfileBase):
-    """
-    this class contains the function and the derivatives of the Singular Isothermal Sphere
-
+    """This class contains the function and the derivatives of the Singular Isothermal
+    Sphere.
 
     .. math::
         \\kappa(x, y) = \\frac{1}{2} \\left(\\frac{\\theta_{E}}{\\sqrt{x^2 + y^2}} \\right)
 
     with :math:`\\theta_{E}` is the Einstein radius,
-
-
     """
 
     param_names = ["theta_E", "center_x", "center_y"]
@@ -30,9 +27,7 @@ class SIS(LensProfileBase):
         return f_
 
     def derivatives(self, x, y, theta_E, center_x=0, center_y=0):
-        """
-        returns df/dx and df/dy of the function
-        """
+        """Returns df/dx and df/dy of the function."""
         x_shift = x - center_x
         y_shift = y - center_y
         R = np.sqrt(x_shift * x_shift + y_shift * y_shift)
@@ -48,9 +43,8 @@ class SIS(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, theta_E, center_x=0, center_y=0):
-        """
-        returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
-        """
+        """Returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx,
+        d^f/dy^2."""
         x_shift = x - center_x
         y_shift = y - center_y
         R = (x_shift * x_shift + y_shift * y_shift) ** (3.0 / 2)
@@ -69,9 +63,8 @@ class SIS(LensProfileBase):
 
     @staticmethod
     def rho2theta(rho0):
-        """
-        converts 3d density into 2d projected density parameter
-        :param rho0:
+        """Converts 3d density into 2d projected density parameter :param rho0:
+
         :return:
         """
         theta_E = np.pi * 2 * rho0
@@ -79,29 +72,22 @@ class SIS(LensProfileBase):
 
     @staticmethod
     def theta2rho(theta_E):
-        """
-        converts projected density parameter (in units of deflection) into 3d density parameter
-        :param theta_E: Einstein radius
-        :return:
-        """
+        """Converts projected density parameter (in units of deflection) into 3d density
+        parameter :param theta_E: Einstein radius :return:"""
         fac1 = np.pi * 2
         rho0 = theta_E / fac1
         return rho0
 
     @staticmethod
     def mass_3d(r, rho0):
-        """
-        mass enclosed a 3d sphere or radius r
-        :param r: radius in angular units
-        :param rho0: density at angle=1
-        :return: mass in angular units
-        """
+        """Mass enclosed a 3d sphere or radius r :param r: radius in angular units
+        :param rho0: density at angle=1 :return: mass in angular units."""
         mass_3d = 4 * np.pi * rho0 * r
         return mass_3d
 
     def mass_3d_lens(self, r, theta_E):
-        """
-        mass enclosed a 3d sphere or radius r given a lens parameterization with angular units
+        """Mass enclosed a 3d sphere or radius r given a lens parameterization with
+        angular units.
 
         :param r: radius in angular units
         :param theta_E: Einstein radius
@@ -112,9 +98,8 @@ class SIS(LensProfileBase):
 
     @staticmethod
     def mass_2d(r, rho0):
-        """
-        mass enclosed projected 2d sphere of radius r
-        :param r:
+        """Mass enclosed projected 2d sphere of radius r :param r:
+
         :param rho0:
         :return:
         """
@@ -133,9 +118,9 @@ class SIS(LensProfileBase):
         return self.mass_2d(r, rho0)
 
     def grav_pot(self, x, y, rho0, center_x=0, center_y=0):
-        """
-        gravitational potential (modulo 4 pi G and rho0 in appropriate units)
-        :param x:
+        """Gravitational potential (modulo 4 pi G and rho0 in appropriate units) :param
+        x:
+
         :param y:
         :param rho0:
         :param center_x:
@@ -151,19 +136,15 @@ class SIS(LensProfileBase):
 
     @staticmethod
     def density(r, rho0):
-        """
-        computes the density
-        :param r: radius in angles
-        :param rho0: density at angle=1
-        :return: density at r
-        """
+        """Computes the density :param r: radius in angles :param rho0: density at
+        angle=1 :return: density at r."""
         rho = rho0 / r**2
         return rho
 
     def density_lens(self, r, theta_E):
-        """
-        computes the density at 3d radius r given lens model parameterization.
-        The integral in projected in units of angles (i.e. arc seconds) results in the convergence quantity.
+        """Computes the density at 3d radius r given lens model parameterization. The
+        integral in projected in units of angles (i.e. arc seconds) results in the
+        convergence quantity.
 
         :param r: 3d radius
         :param theta_E: Einstein radius
@@ -174,9 +155,8 @@ class SIS(LensProfileBase):
 
     @staticmethod
     def density_2d(x, y, rho0, center_x=0, center_y=0):
-        """
-        projected density
-        :param x:
+        """Projected density :param x:
+
         :param y:
         :param rho0:
         :param center_x:

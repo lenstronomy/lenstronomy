@@ -9,15 +9,14 @@ __all__ = ["SourcePositions"]
 
 
 class SourcePositions(PSBase):
-    """
-    class of a single point source defined in the original source coordinate position that is lensed.
-    The lens equation is solved to compute the image positions for the specified source position.
+    """Class of a single point source defined in the original source coordinate position
+    that is lensed. The lens equation is solved to compute the image positions for the
+    specified source position.
 
     Name within the PointSource module: 'SOURCE_POSITION'
     parameters: ra_source, dec_source, source_amp, mag_pert (optional)
     If fixed_magnification=True, than 'source_amp' is a parameter instead of 'point_amp'
     mag_pert is a list of fractional magnification pertubations applied to point source images
-
     """
 
     def image_position(
@@ -28,16 +27,17 @@ class SourcePositions(PSBase):
         kwargs_lens_eqn_solver=None,
         **kwargs
     ):
-        """
-        on-sky image positions
+        """On-sky image positions.
 
         :param kwargs_ps: keyword arguments of the point source model
-        :param kwargs_lens: keyword argument list of the lens model(s), only used when requiring the lens equation
-         solver
-        :param magnification_limit: float >0 or None, if float is set and additional images are computed, only those
-         images will be computed that exceed the lensing magnification (absolute value) limit
-        :param kwargs_lens_eqn_solver: keyword arguments specifying the numerical settings for the lens equation solver
-         see LensEquationSolver() class for details
+        :param kwargs_lens: keyword argument list of the lens model(s), only used when
+            requiring the lens equation solver
+        :param magnification_limit: float >0 or None, if float is set and additional
+            images are computed, only those images will be computed that exceed the
+            lensing magnification (absolute value) limit
+        :param kwargs_lens_eqn_solver: keyword arguments specifying the numerical
+            settings for the lens equation solver see LensEquationSolver() class for
+            details
         :return: image positions in x, y as arrays
         """
         if kwargs_lens_eqn_solver is None:
@@ -53,8 +53,7 @@ class SourcePositions(PSBase):
         return ra_image, dec_image
 
     def source_position(self, kwargs_ps, **kwargs):
-        """
-        original source position (prior to lensing)
+        """Original source position (prior to lensing)
 
         :param kwargs_ps: point source keyword arguments
         :return: x, y position (as numpy arrays)
@@ -72,18 +71,19 @@ class SourcePositions(PSBase):
         magnification_limit=None,
         kwargs_lens_eqn_solver=None,
     ):
-        """
-        image brightness amplitudes
+        """Image brightness amplitudes.
 
         :param kwargs_ps: keyword arguments of the point source model
-        :param kwargs_lens: keyword argument list of the lens model(s), only ignored when providing image positions
-         directly
+        :param kwargs_lens: keyword argument list of the lens model(s), only ignored
+            when providing image positions directly
         :param x_pos: pre-computed image position (no lens equation solver applied)
         :param y_pos: pre-computed image position (no lens equation solver applied)
-        :param magnification_limit: float >0 or None, if float is set and additional images are computed, only those
-         images will be computed that exceed the lensing magnification (absolute value) limit
-        :param kwargs_lens_eqn_solver: keyword arguments specifying the numerical settings for the lens equation solver
-         see LensEquationSolver() class for details
+        :param magnification_limit: float >0 or None, if float is set and additional
+            images are computed, only those images will be computed that exceed the
+            lensing magnification (absolute value) limit
+        :param kwargs_lens_eqn_solver: keyword arguments specifying the numerical
+            settings for the lens equation solver see LensEquationSolver() class for
+            details
         :return: array of image amplitudes
         """
         if self._fixed_magnification:
@@ -110,14 +110,13 @@ class SourcePositions(PSBase):
         return np.array(point_amp)
 
     def source_amplitude(self, kwargs_ps, kwargs_lens=None):
-        """
-        intrinsic brightness amplitude of point source
-        When brightnesses are defined in magnified on-sky positions, the intrinsic brightness is computed as the mean
+        """Intrinsic brightness amplitude of point source When brightnesses are defined
+        in magnified on-sky positions, the intrinsic brightness is computed as the mean
         in the magnification corrected image position brightnesses.
 
         :param kwargs_ps: keyword arguments of the point source model
-        :param kwargs_lens: keyword argument list of the lens model(s), used when brightness are defined in
-         magnified on-sky positions
+        :param kwargs_lens: keyword argument list of the lens model(s), used when
+            brightness are defined in magnified on-sky positions
         :return: brightness amplitude (as numpy array)
         """
         if self._fixed_magnification:

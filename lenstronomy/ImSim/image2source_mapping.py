@@ -5,10 +5,10 @@ __all__ = ["Image2SourceMapping"]
 
 
 class Image2SourceMapping(object):
-    """
-    this class handles multiple source planes and performs the computation of predicted surface brightness at given
-    image positions.
-    The class is enable to deal with an arbitrary number of different source planes. There are two different settings:
+    """This class handles multiple source planes and performs the computation of
+    predicted surface brightness at given image positions. The class is enable to deal
+    with an arbitrary number of different source planes. There are two different
+    settings:
 
     Single lens plane modelling:
     In case of a single deflector, lenstronomy models the reduced deflection angles

@@ -10,8 +10,7 @@ export, __all__ = exporter()
 
 @export
 def transform(img, n_scales, second_gen=False):
-    """
-    Performs starlet decomposition of an 2D array.
+    """Performs starlet decomposition of an 2D array.
 
     :param img: input image
     :param n_scales: number of decomposition scales
@@ -78,11 +77,12 @@ def transform(img, n_scales, second_gen=False):
 
 @export
 def inverse_transform(wave, fast=True, second_gen=False):
-    """
-    Reconstructs an image fron its starlet decomposition coefficients
+    """Reconstructs an image fron its starlet decomposition coefficients.
 
-    :param wave: input coefficients, with shape (n_scales, np.sqrt(n_pixel), np.sqrt(n_pixel))
-    :param fast: if True, and only with second_gen is False, simply sums up all scales to reconstruct the image
+    :param wave: input coefficients, with shape (n_scales, np.sqrt(n_pixel),
+        np.sqrt(n_pixel))
+    :param fast: if True, and only with second_gen is False, simply sums up all scales
+        to reconstruct the image
     :param second_gen: if True, 'second generation' starlets are used
     """
     if fast and not second_gen:

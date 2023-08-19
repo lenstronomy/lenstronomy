@@ -6,9 +6,7 @@ import pytest
 
 
 class TestConvergenceIntegrals(object):
-    """
-    test angular to mass unit conversions
-    """
+    """Test angular to mass unit conversions."""
 
     def setup_method(self):
         pass

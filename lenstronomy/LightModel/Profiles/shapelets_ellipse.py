@@ -3,10 +3,7 @@ from lenstronomy.Util import param_util
 
 
 class ShapeletSetEllipse(object):
-    """
-    cartesian shapelets with elliptical axis ratios
-
-    """
+    """Cartesian shapelets with elliptical axis ratios."""
 
     param_names = ["amp", "n_max", "beta", "e1", "e2", "center_x", "center_y"]
     lower_limit_default = {
@@ -47,8 +44,7 @@ class ShapeletSetEllipse(object):
         return self._shapelet_set.function(x_, y_, amp, n_max, beta, center_x, center_y)
 
     def function_split(self, x, y, amp, n_max, beta, e1, e2, center_x=0, center_y=0):
-        """
-        splits shapelet set in list of individual shapelet basis function responses
+        """Splits shapelet set in list of individual shapelet basis function responses.
 
         :param x: x-coordinates
         :param y: y-coordinates

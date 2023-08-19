@@ -39,25 +39,28 @@ def lens_model_plot(
     fast_caustic=True,
     **kwargs
 ):
-    """
-    plots a lens model (convergence) and the critical curves and caustics
+    """Plots a lens model (convergence) and the critical curves and caustics.
 
     :param ax: matplotlib axis instance
     :param lensModel: LensModel() class instance
     :param kwargs_lens: lens model keyword argument list
     :param numPix: total number of pixels (for convergence map)
     :param deltaPix: width of pixel (total frame size is deltaPix x numPix)
-    :param sourcePos_x: float, x-position of point source (image positions computed by the lens equation)
-    :param sourcePos_y: float, y-position of point source (image positions computed by the lens equation)
-    :param point_source: bool, if True, illustrates and computes the image positions of the point source
-    :param with_caustics: bool, if True, illustrates the critical curve and caustics of the system
+    :param sourcePos_x: float, x-position of point source (image positions computed by
+        the lens equation)
+    :param sourcePos_y: float, y-position of point source (image positions computed by
+        the lens equation)
+    :param point_source: bool, if True, illustrates and computes the image positions of
+        the point source
+    :param with_caustics: bool, if True, illustrates the critical curve and caustics of
+        the system
     :param with_convergence: bool, if True, illustrates the convergence map
     :param coord_center_ra: float, x-coordinate of the center of the frame
     :param coord_center_dec: float, y-coordinate of the center of the frame
-    :param coord_inverse: bool, if True, inverts the x-coordinates to go from right-to-left
-     (effectively the RA definition)
-    :param fast_caustic: boolean, if True, uses faster but less precise caustic calculation
-     (might have troubles for the outer caustic (inner critical curve)
+    :param coord_inverse: bool, if True, inverts the x-coordinates to go from right-to-
+        left (effectively the RA definition)
+    :param fast_caustic: boolean, if True, uses faster but less precise caustic
+        calculation (might have troubles for the outer caustic (inner critical curve)
     :param with_convergence: boolean, if True, plots the convergence of the deflector
     :return:
     """
@@ -133,11 +136,11 @@ def convergence_plot(
     cmap="Greys",
     **kwargs
 ):
-    """
-    plot convergence
+    """Plot convergence.
 
     :param ax: matplotlib axis instance
-    :param pixel_grid: lenstronomy PixelGrid() instance (or class with inheritance of PixelGrid()
+    :param pixel_grid: lenstronomy PixelGrid() instance (or class with inheritance of
+        PixelGrid()
     :param lens_model: LensModel() class instance
     :param kwargs_lens: lens model keyword argument list
     :param extent: [[min, max] [min, max]] of frame
@@ -270,13 +273,13 @@ def point_source_plot(
     name_list=None,
     **kwargs
 ):
-    """
-    plots and illustrates images of a point source
-    The plotting routine orders the image labels according to the arrival time and illustrates a diamond shape of the
-    size of the magnification. The coordinates are chosen in pixel coordinates
+    """Plots and illustrates images of a point source The plotting routine orders the
+    image labels according to the arrival time and illustrates a diamond shape of the
+    size of the magnification. The coordinates are chosen in pixel coordinates.
 
     :param ax: matplotlib axis instance
-    :param pixel_grid: lenstronomy PixelGrid() instance (or class with inheritance of PixelGrid()
+    :param pixel_grid: lenstronomy PixelGrid() instance (or class with inheritance of
+        PixelGrid()
     :param lens_model: LensModel() class instance
     :param kwargs_lens: lens model keyword argument list
     :param source_x: x-position of source
@@ -828,8 +831,8 @@ def stretch_plot(
     max_stretch=np.inf,
     **patch_kwargs
 ):
-    """
-    Plots ellipses at each point on a grid, scaled corresponding to the local Jacobian eigenvalues
+    """Plots ellipses at each point on a grid, scaled corresponding to the local
+    Jacobian eigenvalues.
 
     :param ax: matplotib axis instance
     :param lens_model: LensModel instance
@@ -885,10 +888,9 @@ def shear_plot(
     max_stretch=np.inf,
     **kwargs
 ):
-    """
-    Plots combined internal+external shear at each point on a grid,
-    represented by pseudovectors in the direction of local shear
-    with length corresponding to shear magnitude.
+    """Plots combined internal+external shear at each point on a grid, represented by
+    pseudovectors in the direction of local shear with length corresponding to shear
+    magnitude.
 
     :param ax: matplotib axis instance
     :param lens_model: LensModel instance

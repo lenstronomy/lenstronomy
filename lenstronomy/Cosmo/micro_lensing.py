@@ -5,8 +5,7 @@ from lenstronomy.Util import constants
 
 
 def einstein_radius(mass, d_l, d_s):
-    """
-    Einstein radius for a given point mass and distances to lens and source
+    """Einstein radius for a given point mass and distances to lens and source.
 
     :param mass: point source mass [M_sun]
     :param d_l: distance to lens [pc]

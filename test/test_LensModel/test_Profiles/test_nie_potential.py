@@ -11,9 +11,7 @@ from lenstronomy.LensModel.Profiles.spep import SPEP
 
 
 class TestNIE_POTENTIAL(object):
-    """
-    tests the NIE_POTENTIAL profile for different rotations
-    """
+    """Tests the NIE_POTENTIAL profile for different rotations."""
 
     def setup_method(self):
         self.nie_potential = NIE_POTENTIAL()

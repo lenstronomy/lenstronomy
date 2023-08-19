@@ -12,9 +12,7 @@ from lenstronomy.Util import util
 
 
 class TestCurvedArcConst(object):
-    """
-    tests the source model routines
-    """
+    """Tests the source model routines."""
 
     def setup_method(self):
         self.arc_sis = CurvedArcSISMST()

@@ -8,9 +8,8 @@ export, __all__ = exporter()
 
 @export
 class Gaussian(object):
-    """
-    class for Gaussian light profile
-    The two-dimensional Gaussian profile amplitude is defined such that the 2D integral leads to the 'amp' value.
+    """Class for Gaussian light profile The two-dimensional Gaussian profile amplitude
+    is defined such that the 2D integral leads to the 'amp' value.
 
     profile name in LightModel module: 'GAUSSIAN'
     """
@@ -31,8 +30,7 @@ class Gaussian(object):
         }
 
     def function(self, x, y, amp, sigma, center_x=0, center_y=0):
-        """
-        surface brightness per angular unit
+        """Surface brightness per angular unit.
 
         :param x: coordinate on the sky
         :param y: coordinate on the sky
@@ -47,8 +45,7 @@ class Gaussian(object):
         return c * np.exp(-r2 / 2.0)
 
     def total_flux(self, amp, sigma, center_x=0, center_y=0):
-        """
-        integrated flux of the profile
+        """Integrated flux of the profile.
 
         :param amp: amplitude, such that 2D integral leads to this value
         :param sigma: sigma of Gaussian in each direction
@@ -59,8 +56,7 @@ class Gaussian(object):
         return amp
 
     def light_3d(self, r, amp, sigma):
-        """
-        3D brightness per angular volume element
+        """3D brightness per angular volume element.
 
         :param r: 3d distance from center of profile
         :param amp: amplitude, such that 2D integral leads to this value
@@ -74,8 +70,7 @@ class Gaussian(object):
 
 @export
 class GaussianEllipse(object):
-    """
-    class for Gaussian light profile with ellipticity
+    """Class for Gaussian light profile with ellipticity.
 
     profile name in LightModel module: 'GAUSSIAN_ELLIPSE'
     """
@@ -122,8 +117,7 @@ class GaussianEllipse(object):
     def total_flux(
         self, amp, sigma=None, e1=None, e2=None, center_x=None, center_y=None
     ):
-        """
-        total integrated flux of profile
+        """Total integrated flux of profile.
 
         :param amp: amplitude, such that 2D integral leads to this value
         :param sigma: sigma of Gaussian in each direction
@@ -136,8 +130,7 @@ class GaussianEllipse(object):
         return self.gaussian.total_flux(amp, sigma, center_x, center_y)
 
     def light_3d(self, r, amp, sigma, e1=0, e2=0):
-        """
-        3D brightness per angular volume element
+        """3D brightness per angular volume element.
 
         :param r: 3d distance from center of profile
         :param amp: amplitude, such that 2D integral leads to this value
@@ -151,8 +144,8 @@ class GaussianEllipse(object):
 
 @export
 class MultiGaussian(object):
-    """
-    class for elliptical pseudo Jaffe lens light (2d projected light/mass distribution
+    """Class for elliptical pseudo Jaffe lens light (2d projected light/mass
+    distribution.
 
     profile name in LightModel module: 'MULTI_GAUSSIAN'
     """
@@ -179,8 +172,7 @@ class MultiGaussian(object):
         self.gaussian = Gaussian()
 
     def function(self, x, y, amp, sigma, center_x=0, center_y=0):
-        """
-        surface brightness per angular unit
+        """Surface brightness per angular unit.
 
         :param x: coordinate on the sky
         :param y: coordinate on the sky
@@ -196,8 +188,7 @@ class MultiGaussian(object):
         return f_
 
     def total_flux(self, amp, sigma, center_x=0, center_y=0):
-        """
-        total integrated flux of profile
+        """Total integrated flux of profile.
 
         :param amp: list of amplitudes of individual Gaussian profiles
         :param sigma: list of widths of individual Gaussian profiles
@@ -211,8 +202,7 @@ class MultiGaussian(object):
         return flux
 
     def function_split(self, x, y, amp, sigma, center_x=0, center_y=0):
-        """
-        split surface brightness in individual components
+        """Split surface brightness in individual components.
 
         :param x: coordinate on the sky
         :param y: coordinate on the sky
@@ -230,8 +220,7 @@ class MultiGaussian(object):
         return f_list
 
     def light_3d(self, r, amp, sigma):
-        """
-        3D brightness per angular volume element
+        """3D brightness per angular volume element.
 
         :param r: 3d distance from center of profile
         :param amp: list of amplitudes of individual Gaussian profiles
@@ -246,8 +235,7 @@ class MultiGaussian(object):
 
 @export
 class MultiGaussianEllipse(object):
-    """
-    class for elliptical multi Gaussian profile
+    """Class for elliptical multi Gaussian profile.
 
     profile name in LightModel module: 'MULTI_GAUSSIAN_ELLIPSE'
     """
@@ -274,8 +262,7 @@ class MultiGaussianEllipse(object):
         self.gaussian = Gaussian()
 
     def function(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
-        """
-        surface brightness per angular unit
+        """Surface brightness per angular unit.
 
         :param x: coordinate on the sky
         :param y: coordinate on the sky
@@ -299,8 +286,7 @@ class MultiGaussianEllipse(object):
         return f_
 
     def total_flux(self, amp, sigma, e1, e2, center_x=0, center_y=0):
-        """
-        total integrated flux of profile
+        """Total integrated flux of profile.
 
         :param amp: list of amplitudes of individual Gaussian profiles
         :param sigma: list of widths of individual Gaussian profiles
@@ -316,8 +302,7 @@ class MultiGaussianEllipse(object):
         return flux
 
     def function_split(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
-        """
-        split surface brightness in individual components
+        """Split surface brightness in individual components.
 
         :param x: coordinate on the sky
         :param y: coordinate on the sky
@@ -340,8 +325,7 @@ class MultiGaussianEllipse(object):
         return f_list
 
     def light_3d(self, r, amp, sigma, e1=0, e2=0):
-        """
-        3D brightness per angular volume element
+        """3D brightness per angular volume element.
 
         :param r: 3d distance from center of profile
         :param amp: list of amplitudes of individual Gaussian profiles

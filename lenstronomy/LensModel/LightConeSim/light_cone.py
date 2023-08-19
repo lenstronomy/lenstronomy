@@ -9,11 +9,11 @@ __all__ = ["LightCone", "MassSlice"]
 
 
 class LightCone(object):
-    """
-    class to perform multi-plane ray-tracing from convergence maps at different redshifts
-    From the convergence maps the deflection angles and lensing potential are computed (from different settings)
-    and then an interpolated grid of all those quantities generate an instance of the lenstronomy LensModel multi-plane
-    instance. All features of the LensModel module are supported.
+    """Class to perform multi-plane ray-tracing from convergence maps at different
+    redshifts From the convergence maps the deflection angles and lensing potential are
+    computed (from different settings) and then an interpolated grid of all those
+    quantities generate an instance of the lenstronomy LensModel multi-plane instance.
+    All features of the LensModel module are supported.
 
     Improvements that can be made for accuracy and speed:
     1. adaptive mesh integral for the convergence map
@@ -67,9 +67,7 @@ class LightCone(object):
 
 
 class MassSlice(object):
-    """
-    class to describe a single mass slice
-    """
+    """Class to describe a single mass slice."""
 
     def __init__(self, mass_map, grid_spacing, redshift):
         """
@@ -101,15 +99,14 @@ class MassSlice(object):
         self._x_axes_mpc, self._y_axes_mpc = util.get_axes(x_grid, y_grid)
 
     def interpol_instance(self, z_source, cosmo):
-        """
-        scales the mass map integrals (with units of mass not convergence) into a convergence map for the given
-        cosmology and source redshift and returns the keyword arguments of the interpolated reduced deflection and
-        lensing potential.
+        """Scales the mass map integrals (with units of mass not convergence) into a
+        convergence map for the given cosmology and source redshift and returns the
+        keyword arguments of the interpolated reduced deflection and lensing potential.
 
         :param z_source: redshift of the source
         :param cosmo: astropy.cosmology instance
-        :return: keyword arguments of the interpolation instance with numerically computed deflection angles and lensing
-         potential
+        :return: keyword arguments of the interpolation instance with numerically
+            computed deflection angles and lensing potential
         """
         lens_cosmo = LensCosmo(z_lens=self._redshift, z_source=z_source, cosmo=cosmo)
         mpc2arcsec = lens_cosmo.dd * const.arcsec

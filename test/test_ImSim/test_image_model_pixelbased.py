@@ -25,9 +25,7 @@ _force_no_pysap = (
 
 
 class TestImageModel(object):
-    """
-    tests the source model routines
-    """
+    """Tests the source model routines."""
 
     def setup_method(self):
         # data specifics

@@ -28,12 +28,11 @@ def create_lenstronomy_from_coolest(file_name):
     lens_coolest = decoder.load()
 
     print(f'LENS COOLEST : {lens_coolest.mode}')
-    exclude_keys = lens_coolest.exclude_keys
 
     # IMAGE
 
     kwargs_data = {}
-    if "observation" not in exclude_keys:
+    if lens_coolest.observation is not None:
         lens_observation = lens_coolest.observation
         if lens_observation.pixels is not None:
             creation_data = True
@@ -59,7 +58,6 @@ def create_lenstronomy_from_coolest(file_name):
             print('Data creation')
 
     # NOISE
-    if "noise" not in exclude_keys:
         if lens_observation.noise is not None:
             if lens_observation.noise.type == "NoiseMap":
                 creation_data = True
@@ -84,43 +82,41 @@ def create_lenstronomy_from_coolest(file_name):
                 print(f"noise type {lens_observation.noise.type} is unknown")
 
     # PSF
-    if "instrument" not in exclude_keys:
+    if lens_coolest.instrument is not None:
         lens_instrument = lens_coolest.instrument
-        if lens_instrument is not None:
-            if lens_instrument.psf is not None:
-                if lens_instrument.psf.type == "PixelatedPSF":
-                    creation_instrument = True
-                    psf_path = lens_instrument.psf.pixels.fits_file.path
-                    try:
-                        psf = fits.open(psf_path)[0].data
-                    except:
-                        psf = psf_path
-                        print(f'could not find PSF file {psf_path}. Saving file name instead.')
-                    psf_pixel_size = lens_instrument.psf.pixels.pixel_size
-                    psf_nx = lens_instrument.psf.pixels.num_pix_x
-                    psf_ny = lens_instrument.psf.pixels.num_pix_y
-                    super_sampling_factor = 1
-                    if pixel_size != psf_pixel_size:
-                        super_sampling_factor = int(pixel_size / psf_pixel_size)
-                        print(f"PSF pixel size {psf_pixel_size} is different from image pixel size {pixel_size}. "
-                              f"Assuming super sampling factor of {super_sampling_factor}.")
+        if lens_instrument.psf is not None:
+            if lens_instrument.psf.type == "PixelatedPSF":
+                creation_instrument = True
+                psf_path = lens_instrument.psf.pixels.fits_file.path
+                try:
+                    psf = fits.open(psf_path)[0].data
+                except:
+                    psf = psf_path
+                    print(f'could not find PSF file {psf_path}. Saving file name instead.')
+                psf_pixel_size = lens_instrument.psf.pixels.pixel_size
+                psf_nx = lens_instrument.psf.pixels.num_pix_x
+                psf_ny = lens_instrument.psf.pixels.num_pix_y
+                super_sampling_factor = 1
+                if pixel_size != psf_pixel_size:
+                    super_sampling_factor = int(pixel_size / psf_pixel_size)
+                    print(f"PSF pixel size {psf_pixel_size} is different from image pixel size {pixel_size}. "
+                          f"Assuming super sampling factor of {super_sampling_factor}.")
 
-                    kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': psf,
-                                  'point_source_supersampling_factor': super_sampling_factor}
-                    print('PSF creation')
-                else:
-                    print(f"PSF type {lens_instrument.psf.type} is unknown")
+                kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': psf,
+                              'point_source_supersampling_factor': super_sampling_factor}
+                print('PSF creation')
+            else:
+                print(f"PSF type {lens_instrument.psf.type} is unknown")
 
     # COSMO
-    if "cosmology" not in exclude_keys:
+    if lens_coolest.cosmology is not None:
         lens_cosmo = lens_coolest.cosmology
-        if lens_cosmo is not None:
-            if lens_cosmo.astropy_name == "FlatLambdaCDM":
-                cosmo = FlatLambdaCDM(lens_cosmo.H0, lens_cosmo.Om0)
-                creation_cosmo = True
-                print("Cosmo class creation")
-            else:
-                print(f"Cosmology name {lens_cosmo.astropy_name} is unknown")
+        if lens_cosmo.astropy_name == "FlatLambdaCDM":
+            cosmo = FlatLambdaCDM(lens_cosmo.H0, lens_cosmo.Om0)
+            creation_cosmo = True
+            print("Cosmo class creation")
+        else:
+            print(f"Cosmology name {lens_cosmo.astropy_name} is unknown")
 
 #LIKELIHOODS not yet well supported by COOLEST
     # # LIKELIHOODS
@@ -137,123 +133,122 @@ def create_lenstronomy_from_coolest(file_name):
     #         print("kwargs_likelihood creation")
 
     # LENSING ENTITIES
-    if "lensing_entities" not in exclude_keys:
+    if lens_coolest.lensing_entities is not None:
         lensing_entities_list = lens_coolest.lensing_entities
-        if lensing_entities_list is not None:
 
-            lens_model_list = []
-            kwargs_lens = []
-            kwargs_lens_up = []
-            kwargs_lens_down = []
-            kwargs_lens_init = []
-            kwargs_lens_fixed = []
-            kwargs_lens_sigma = []
-            lens_light_model_list = []
-            kwargs_lens_light = []
-            kwargs_lens_light_up = []
-            kwargs_lens_light_down = []
-            kwargs_lens_light_init = []
-            kwargs_lens_light_fixed = []
-            kwargs_lens_light_sigma = []
-            source_model_list = []
-            kwargs_source = []
-            kwargs_source_up = []
-            kwargs_source_down = []
-            kwargs_source_init = []
-            kwargs_source_fixed = []
-            kwargs_source_sigma = []
-            ps_model_list = []
-            kwargs_ps = []
-            kwargs_ps_up = []
-            kwargs_ps_down = []
-            kwargs_ps_init = []
-            kwargs_ps_fixed = []
-            kwargs_ps_sigma = []
+        lens_model_list = []
+        kwargs_lens = []
+        kwargs_lens_up = []
+        kwargs_lens_down = []
+        kwargs_lens_init = []
+        kwargs_lens_fixed = []
+        kwargs_lens_sigma = []
+        lens_light_model_list = []
+        kwargs_lens_light = []
+        kwargs_lens_light_up = []
+        kwargs_lens_light_down = []
+        kwargs_lens_light_init = []
+        kwargs_lens_light_fixed = []
+        kwargs_lens_light_sigma = []
+        source_model_list = []
+        kwargs_source = []
+        kwargs_source_up = []
+        kwargs_source_down = []
+        kwargs_source_init = []
+        kwargs_source_fixed = []
+        kwargs_source_sigma = []
+        ps_model_list = []
+        kwargs_ps = []
+        kwargs_ps_up = []
+        kwargs_ps_down = []
+        kwargs_ps_init = []
+        kwargs_ps_fixed = []
+        kwargs_ps_sigma = []
 
-            creation_lens_source_light = True
-            multi_plane = False
-            creation_redshift_list = True
+        creation_lens_source_light = True
+        multi_plane = False
+        creation_redshift_list = True
 
-            min_redshift, max_redshift, redshift_list = create_redshift_info(lensing_entities_list)
+        min_redshift, max_redshift, redshift_list = create_redshift_info(lensing_entities_list)
 
-            for lensing_entity in lensing_entities_list:
-                if lensing_entity.type == "galaxy":
-                    galaxy = lensing_entity
-                    if galaxy.redshift > min_redshift:
-                        # SOURCE OF LIGHT
-                        light_list = galaxy.light_model
-                        for light in light_list:
-                            print('Source Light : ')
-                            if light.type == 'Sersic':
-                                read.update_kwargs_sersic(light, source_model_list, kwargs_source,
-                                       kwargs_source_init, kwargs_source_up,
-                                       kwargs_source_down, kwargs_source_fixed,
-                                       kwargs_source_sigma, cleaning=True)
-                            elif light.type == 'Shapelets':
-                                read.update_kwargs_shapelets(light, source_model_list, kwargs_source,
-                                          kwargs_source_init, kwargs_source_up,
-                                          kwargs_source_down, kwargs_source_fixed,
-                                          kwargs_source_sigma, cleaning=True)
-                            elif light.type == 'LensedPS':
-                                read.update_kwargs_lensed_ps(light, ps_model_list, kwargs_ps,
-                                                    kwargs_ps_init, kwargs_ps_up,
-                                                    kwargs_ps_down, kwargs_ps_fixed,
-                                                    kwargs_ps_sigma, cleaning=True)
-                            else:
-                                print(f'Light Type {light.type} not yet implemented.')
-
-                    if galaxy.redshift < max_redshift:
-                        # LENSING GALAXY
-                        if galaxy.redshift > min_redshift:
-                            multi_plane = True
-                            print('Multiplane lensing to consider.')
-                        mass_list = galaxy.mass_model
-                        for mass in mass_list:
-                            print('Lens Mass : ')
-                            if mass.type == 'PEMD':
-                                read.update_kwargs_pemd(mass, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens_up,
-                                     kwargs_lens_down, kwargs_lens_fixed, kwargs_lens_sigma, cleaning=True)
-                            elif mass.type == 'SIE':
-                                read.update_kwargs_sie(mass, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens_up,
-                                    kwargs_lens_down, kwargs_lens_fixed, kwargs_lens_sigma, cleaning=True)
-                            else:
-                                print(f'Mass Type {mass.type} not yet implemented.')
-
-                    if galaxy.redshift == min_redshift:
-                        # LENSING LIGHT GALAXY
-                        light_list = galaxy.light_model
-                        for light in light_list:
-                            print('Lens Light : ')
-                            if light.type == 'Sersic':
-                                read.update_kwargs_sersic(light, lens_light_model_list, kwargs_lens_light, kwargs_lens_light_init,
-                                       kwargs_lens_light_up, kwargs_lens_light_down, kwargs_lens_light_fixed,
-                                       kwargs_lens_light_sigma, cleaning=True)
-                            # elif light.type == 'LensedPS':
-                            #     read.update_kwargs_lensed_ps(light, ps_model_list, kwargs_ps, kwargs_ps_init, kwargs_ps_up,
-                            #                         kwargs_ps_down, kwargs_ps_fixed, kwargs_ps_sigma, cleaning=True)
-                            else:
-                                print(f'Light Type {light.type} not yet implemented.')
-
-                    # if (galaxy.redshift <= min_redshift) or (galaxy.redshift >= max_redshift):
-                    #     print(f'REDSHIFT {galaxy.redshift} is not in the range ] {min_red} , {max_red} [')
-
-
-                elif lensing_entity.type == "MassField":
-                    mass_field_list = lensing_entity.mass_model
-                    for mass_field_idx in mass_field_list:
-                        print('Shear : ')
-                        if mass_field_idx.type == 'ExternalShear':
-                            read.update_kwargs_shear(mass_field_idx, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens_up,
-                                  kwargs_lens_down, kwargs_lens_fixed, kwargs_lens_sigma, cleaning=True)
-
+        for lensing_entity in lensing_entities_list:
+            if lensing_entity.type == "galaxy":
+                galaxy = lensing_entity
+                if galaxy.redshift > min_redshift:
+                    # SOURCE OF LIGHT
+                    light_list = galaxy.light_model
+                    for light in light_list:
+                        print('Source Light : ')
+                        if light.type == 'Sersic':
+                            read.update_kwargs_sersic(light, source_model_list, kwargs_source,
+                                   kwargs_source_init, kwargs_source_up,
+                                   kwargs_source_down, kwargs_source_fixed,
+                                   kwargs_source_sigma, cleaning=True)
+                        elif light.type == 'Shapelets':
+                            read.update_kwargs_shapelets(light, source_model_list, kwargs_source,
+                                      kwargs_source_init, kwargs_source_up,
+                                      kwargs_source_down, kwargs_source_fixed,
+                                      kwargs_source_sigma, cleaning=True)
+                        elif light.type == 'LensedPS':
+                            read.update_kwargs_lensed_ps(light, ps_model_list, kwargs_ps,
+                                                kwargs_ps_init, kwargs_ps_up,
+                                                kwargs_ps_down, kwargs_ps_fixed,
+                                                kwargs_ps_sigma, cleaning=True)
                         else:
-                            print(f"type of Shear {mass_field_idx.type} not implemented")
+                            print(f'Light Type {light.type} not yet implemented.')
+
+                if galaxy.redshift < max_redshift:
+                    # LENSING GALAXY
+                    if galaxy.redshift > min_redshift:
+                        multi_plane = True
+                        print('Multiplane lensing to consider.')
+                    mass_list = galaxy.mass_model
+                    for mass in mass_list:
+                        print('Lens Mass : ')
+                        if mass.type == 'PEMD':
+                            read.update_kwargs_pemd(mass, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens_up,
+                                 kwargs_lens_down, kwargs_lens_fixed, kwargs_lens_sigma, cleaning=True)
+                        elif mass.type == 'SIE':
+                            read.update_kwargs_sie(mass, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens_up,
+                                kwargs_lens_down, kwargs_lens_fixed, kwargs_lens_sigma, cleaning=True)
+                        else:
+                            print(f'Mass Type {mass.type} not yet implemented.')
+
+                if galaxy.redshift == min_redshift:
+                    # LENSING LIGHT GALAXY
+                    light_list = galaxy.light_model
+                    for light in light_list:
+                        print('Lens Light : ')
+                        if light.type == 'Sersic':
+                            read.update_kwargs_sersic(light, lens_light_model_list, kwargs_lens_light, kwargs_lens_light_init,
+                                   kwargs_lens_light_up, kwargs_lens_light_down, kwargs_lens_light_fixed,
+                                   kwargs_lens_light_sigma, cleaning=True)
+                        # elif light.type == 'LensedPS':
+                        #     read.update_kwargs_lensed_ps(light, ps_model_list, kwargs_ps, kwargs_ps_init, kwargs_ps_up,
+                        #                         kwargs_ps_down, kwargs_ps_fixed, kwargs_ps_sigma, cleaning=True)
+                        else:
+                            print(f'Light Type {light.type} not yet implemented.')
+
+                # if (galaxy.redshift <= min_redshift) or (galaxy.redshift >= max_redshift):
+                #     print(f'REDSHIFT {galaxy.redshift} is not in the range ] {min_red} , {max_red} [')
+
+
+            elif lensing_entity.type == "MassField":
+                mass_field_list = lensing_entity.mass_model
+                for mass_field_idx in mass_field_list:
+                    print('Shear : ')
+                    if mass_field_idx.type == 'ExternalShear':
+                        read.update_kwargs_shear(mass_field_idx, lens_model_list, kwargs_lens, kwargs_lens_init, kwargs_lens_up,
+                              kwargs_lens_down, kwargs_lens_fixed, kwargs_lens_sigma, cleaning=True)
+
+                    else:
+                        print(f"type of Shear {mass_field_idx.type} not implemented")
 
 
 
 
-                else:
-                    print(f"lensing entity of type {lensing_entity.type} is unknown.")
+            else:
+                print(f"lensing entity of type {lensing_entity.type} is unknown.")
 
     return_dict = {}
     if creation_lens_source_light is True:
@@ -330,7 +325,8 @@ def update_coolest_from_lenstronomy(file_name, kwargs_result, kwargs_mcmc=None,
     if lens_coolest.mode == 'MAP':
         print(f'LENS COOLEST : {lens_coolest.mode}')
     else:
-        print(f'LENS COOLEST IS NOT MAP, BUT IS {lens_coolest.mode}')
+        print(f'LENS COOLEST IS NOT MAP, BUT IS {lens_coolest.mode}. CHANGING INTO MAP')
+        lens_coolest.mode ='MAP'
 
     lensing_entities_list = lens_coolest.lensing_entities
 

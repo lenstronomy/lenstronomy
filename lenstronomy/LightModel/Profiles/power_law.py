@@ -31,18 +31,10 @@ class PowerLaw(object):
         self.lens = SPP()
 
     def function(self, x, y, amp, gamma, e1, e2, center_x=0, center_y=0):
-        """
-
-        :param x: ra-coordinate
-        :param y: dec-coordinate
-        :param amp: amplitude of flux
-        :param gamma: projected power-law slope
-        :param e1: ellipticity
-        :param e2: ellipticity
-        :param center_x: center
-        :param center_y: center
-        :return: projected flux
-        """
+        """:param x: ra-coordinate :param y: dec-coordinate :param amp: amplitude of
+        flux :param gamma: projected power-law slope :param e1: ellipticity :param e2:
+        ellipticity :param center_x: center :param center_y: center :return: projected
+        flux."""
         x_, y_ = param_util.transform_e1e2_product_average(
             x, y, e1, e2, center_x, center_y
         )
@@ -53,13 +45,12 @@ class PowerLaw(object):
         return sigma
 
     def light_3d(self, r, amp, gamma, e1=0, e2=0):
-        """
+        """:param r:
 
-        :param r:
-        :param amp:
-        :param gamma:
-        :param e1:
-        :param e2:
+        :param amp: 
+        :param gamma: 
+        :param e1: 
+        :param e2: 
         :return:
         """
         rho0 = self._amp2rho(amp, gamma)
@@ -68,10 +59,9 @@ class PowerLaw(object):
 
     @staticmethod
     def _amp2rho(amp, gamma):
-        """
+        """:param amp:
 
-        :param amp:
-        :param gamma:
+        :param gamma: 
         :return:
         """
         factor = (

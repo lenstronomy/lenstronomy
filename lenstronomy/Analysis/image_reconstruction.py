@@ -31,13 +31,12 @@ class MultiBandImageReconstruction(object):
         kwargs_likelihood=None,
         verbose=True,
     ):
-        """
+        """:param multi_band_list: list of imaging data configuration [[kwargs_data,
+        kwargs_psf, kwargs_numerics], [...]] :param kwargs_model: model keyword argument
+        list :param kwargs_params: keyword arguments of the model parameters, same as
+        output of FittingSequence() 'kwargs_result' :param multi_band_type: string,
+        option when having multiple imaging data sets modelled simultaneously.
 
-        :param multi_band_list: list of imaging data configuration [[kwargs_data, kwargs_psf, kwargs_numerics], [...]]
-        :param kwargs_model: model keyword argument list
-        :param kwargs_params: keyword arguments of the model parameters, same as output of FittingSequence()
-         'kwargs_result'
-        :param multi_band_type: string, option when having multiple imaging data sets modelled simultaneously.
          Options are:
          - 'multi-linear': linear amplitudes are inferred on single data set
          - 'linear-joint': linear amplitudes ae jointly inferred
@@ -117,7 +116,7 @@ class MultiBandImageReconstruction(object):
         execute all the options of the ImSim core modules.
 
         :param band_index: integer (>=0) of imaging band in order of multi_band_list
-            input to this class
+                input to this class
         :return: ImageModel() instance and keyword arguments of the model
         """
         i = int(band_index)
@@ -149,21 +148,19 @@ class ModelBand(object):
         band_index=0,
         verbose=True,
     ):
-        """
-
-        :param multi_band_list: list of imaging data configuration [[kwargs_data, kwargs_psf, kwargs_numerics], [...]]
-        :param kwargs_model: model keyword argument list for the full multi-band modeling
-        :param model: 2d numpy array of modeled image for the specified band
-        :param error_map: 2d numpy array of size of the image, additional error in the pixels coming from PSF
-         uncertainties
-        :param cov_param: covariance matrix of the linear inversion
-        :param param: 1d numpy array of the linear coefficients of this imaging band
-        :param kwargs_params: keyword argument of keyword argument lists of the different model components selected for
-         the imaging band, NOT including linear amplitudes (not required as being overwritten by the param list)
-        :param image_likelihood_mask_list: list of 2d numpy arrays of likelihood masks (for all bands)
-        :param band_index: integer of the band to be considered in this class
-        :param verbose: if True (default), prints the reduced chi2 value for the current band.
-        """
+        """:param multi_band_list: list of imaging data configuration [[kwargs_data,
+        kwargs_psf, kwargs_numerics], [...]] :param kwargs_model: model keyword argument
+        list for the full multi-band modeling :param model: 2d numpy array of modeled
+        image for the specified band :param error_map: 2d numpy array of size of the
+        image, additional error in the pixels coming from PSF uncertainties :param
+        cov_param: covariance matrix of the linear inversion :param param: 1d numpy
+        array of the linear coefficients of this imaging band :param kwargs_params:
+        keyword argument of keyword argument lists of the different model components
+        selected for the imaging band, NOT including linear amplitudes (not required as
+        being overwritten by the param list) :param image_likelihood_mask_list: list of
+        2d numpy arrays of likelihood masks (for all bands) :param band_index: integer
+        of the band to be considered in this class :param verbose: if True (default),
+        prints the reduced chi2 value for the current band."""
 
         self._bandmodel = SingleBandMultiModel(
             multi_band_list,
@@ -209,18 +206,12 @@ class ModelBand(object):
 
     @property
     def model(self):
-        """
-
-        :return: model, 2d numpy array
-        """
+        """:return: model, 2d numpy array."""
         return self._model
 
     @property
     def norm_residuals(self):
-        """
-
-        :return: normalized residuals, 2d numpy array
-        """
+        """:return: normalized residuals, 2d numpy array."""
         return self._norm_residuals
 
     @property
@@ -234,10 +225,10 @@ class ModelBand(object):
 
     @property
     def kwargs_model(self):
-        """
+        """:return: keyword argument of keyword argument lists of the different model
+        components selected for the imaging band, including linear amplitudes.
 
-        :return: keyword argument of keyword argument lists of the different model components selected for the imaging
-         band, including linear amplitudes. These format matches the image_model_class() return
+        These format matches the image_model_class() return
         """
         kwargs_return = {
             "kwargs_lens": self._kwargs_lens_partial,
@@ -252,11 +243,8 @@ class ModelBand(object):
 
 @export
 def check_solver_error(image):
-    """
-
-    :param image: numpy array of modelled image from linear inversion
-    :return: bool, True if solver could not find a unique solution, False if solver works
-    """
+    """:param image: numpy array of modelled image from linear inversion :return: bool,
+    True if solver could not find a unique solution, False if solver works."""
     result = np.all(image == 0)
     if result:
         Warning(

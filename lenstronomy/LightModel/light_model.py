@@ -29,18 +29,19 @@ class LightModel(LinearBasis):
         smoothing=0.001,
         sersic_major_axis=None,
     ):
-        """
+        """:param light_model_list: list of light models :param deflection_scaling_list:
+        list of floats indicating a relative scaling of the deflection angle from the
+        reduced angles in the lens model definition (optional, only possible in single
+        lens plane with multiple source planes) :param source_redshift_list: list of
+        redshifts for the different light models (optional and only used in multi-plane
+        lensing in conjunction with a cosmology model) :param smoothing: smoothing
+        factor for certain models (deprecated) :param sersic_major_axis: boolean or
+        None, if True, uses the semi-major axis as the definition of the Sersic half-
+        light radius, if False, uses the product average of semi-major and semi-minor
+        axis.
 
-        :param light_model_list: list of light models
-        :param deflection_scaling_list: list of floats indicating a relative scaling of the deflection angle from the
-         reduced angles in the lens model definition (optional, only possible in single lens plane with multiple source
-         planes)
-        :param source_redshift_list: list of redshifts for the different light models
-         (optional and only used in multi-plane lensing in conjunction with a cosmology model)
-        :param smoothing: smoothing factor for certain models (deprecated)
-        :param sersic_major_axis: boolean or None, if True, uses the semi-major axis as the definition of the Sersic
-         half-light radius, if False, uses the product average of semi-major and semi-minor axis. If None, uses the
-         convention in the lenstronomy yaml setting (which by default is =False)
+        If None, uses the convention in the lenstronomy yaml setting (which by default
+        is =False)
         """
         super(LightModel, self).__init__(
             light_model_list=light_model_list,

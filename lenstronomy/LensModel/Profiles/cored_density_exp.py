@@ -38,15 +38,11 @@ class CoredDensityExp(LensProfileBase):
         return kappa_0 / (np.sqrt(np.pi) * theta_c)
 
     def function(self, x, y, kappa_0, theta_c, center_x=0, center_y=0):
-        """
-        :param x: angular position (normally in units of arc seconds)
-        :param y: angular position (normally in units of arc seconds)
-        :param kappa_0: central convergence of profile
-        :param theta_c: core radius (in arcsec)
-        :param center_x: center of halo (in angular units)
-        :param center_y: center of halo (in angular units)
-        :return: lensing potential (in arcsec^2)
-        """
+        """:param x: angular position (normally in units of arc seconds) :param y:
+        angular position (normally in units of arc seconds) :param kappa_0: central
+        convergence of profile :param theta_c: core radius (in arcsec) :param center_x:
+        center of halo (in angular units) :param center_y: center of halo (in angular
+        units) :return: lensing potential (in arcsec^2)"""
         x_ = x - center_x
         y_ = y - center_y
         r = np.sqrt(x_**2 + y_**2)
@@ -85,15 +81,12 @@ class CoredDensityExp(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, kappa_0, theta_c, center_x=0, center_y=0):
-        """
-        :param x: angular position (normally in units of arc seconds)
-        :param y: angular position (normally in units of arc seconds)
-        :param kappa_0: central convergence of profile
-        :param theta_c: core radius (in arcsec)
-        :param center_x: center of halo (in angular units)
-        :param center_y: center of halo (in angular units)
-        :return: Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
-        """
+        """:param x: angular position (normally in units of arc seconds) :param y:
+        angular position (normally in units of arc seconds) :param kappa_0: central
+        convergence of profile :param theta_c: core radius (in arcsec) :param center_x:
+        center of halo (in angular units) :param center_y: center of halo (in angular
+        units) :return: Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx,
+        d^f/dy^2."""
         x_ = x - center_x
         y_ = y - center_y
         R = np.sqrt(x_**2 + y_**2)

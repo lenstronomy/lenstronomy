@@ -75,17 +75,16 @@ def simulate_simple(
     lens_light_add=True,
     point_source_add=True,
 ):
-    """
+    """:param image_model_class:
 
-    :param image_model_class:
-    :param kwargs_lens:
-    :param kwargs_source:
-    :param kwargs_lens_light:
-    :param kwargs_ps:
-    :param no_noise:
-    :param source_add:
-    :param lens_light_add:
-    :param point_source_add:
+    :param kwargs_lens: 
+    :param kwargs_source: 
+    :param kwargs_lens_light: 
+    :param kwargs_ps: 
+    :param no_noise: 
+    :param source_add: 
+    :param lens_light_add: 
+    :param point_source_add: 
     :return:
     """
 

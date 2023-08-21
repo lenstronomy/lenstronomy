@@ -53,25 +53,24 @@ Y_band_obs = {
     "seeing": 0.9,
     "psf_type": "GAUSSIAN",
 }
-"""
-:keyword exposure_time: exposure time per image (in seconds)
-:keyword sky_brightness: sky brightness (in magnitude per square arcseconds in units of electrons)
-:keyword magnitude_zero_point: magnitude in which 1 count (e-) per second per arcsecond square is registered
-:keyword num_exposures: number of exposures that are combined (depends on coadd_years)  
-:keyword seeing: Full-Width-at-Half-Maximum (FWHM) of PSF
-:keyword psf_type: string, type of PSF ('GAUSSIAN' supported) 
-"""
+""":keyword exposure_time: exposure time per image (in seconds) :keyword sky_brightness:
+sky brightness (in magnitude per square arcseconds in units of electrons) :keyword
+magnitude_zero_point: magnitude in which 1 count (e-) per second per arcsecond square is
+registered :keyword num_exposures: number of exposures that are combined (depends on
+coadd_years) :keyword seeing: Full-Width-at-Half-Maximum (FWHM) of PSF :keyword
+psf_type: string, type of PSF ('GAUSSIAN' supported)"""
 
 
 class DES(object):
     """Class contains DES instrument and observation configurations."""
 
     def __init__(self, band="g", psf_type="GAUSSIAN", coadd_years=3):
-        """
+        """:param band: string, 'g', 'r', 'i', 'z', or 'Y' supported.
 
-        :param band: string, 'g', 'r', 'i', 'z', or 'Y' supported. Determines obs dictionary.
+        Determines obs dictionary.
         :param psf_type: string, type of PSF ('GAUSSIAN' supported).
-        :param coadd_years: int, number of years corresponding to num_exposures in obs dict. Currently supported: 1-6.
+        :param coadd_years: int, number of years corresponding to num_exposures in obs
+                dict. Currently supported: 1-6.
         """
         if band == "g":
             self.obs = g_band_obs
@@ -105,9 +104,6 @@ class DES(object):
         ccd_gain: electrons/ADU (analog-to-digital unit)."""
 
     def kwargs_single_band(self):
-        """
-
-        :return: merged kwargs from camera and obs dicts
-        """
+        """:return: merged kwargs from camera and obs dicts."""
         kwargs = util.merge_dicts(self.camera, self.obs)
         return kwargs

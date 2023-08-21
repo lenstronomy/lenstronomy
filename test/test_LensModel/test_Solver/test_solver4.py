@@ -11,10 +11,7 @@ import lenstronomy.Util.param_util as param_util
 
 class TestSolver4Point(object):
     def setup_method(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         pass
 
     def test_decoupling(self):

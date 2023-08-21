@@ -9,10 +9,7 @@ from lenstronomy.Sampling.Samplers.cobaya_sampler import CobayaSampler
 
 @pytest.fixture
 def import_fixture(simple_einstein_ring_likelihood):
-    """
-    :param simple_einstein_ring_likelihood_2d: fixture
-    :return:
-    """
+    """:param simple_einstein_ring_likelihood_2d: fixture :return:"""
     likelihood, kwargs_truths = simple_einstein_ring_likelihood
     means = likelihood.param.kwargs2args(**kwargs_truths)
     sigmas = np.ones_like(means) * 0.1

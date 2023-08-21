@@ -11,14 +11,11 @@ class Background(object):
     """Class to compute cosmological distances."""
 
     def __init__(self, cosmo=None, interp=False, **kwargs_interp):
-        """
-
-        :param cosmo: instance of astropy.cosmology
-        :param interp: boolean, if True, uses interpolated cosmology to evaluate specific redshifts
-        :param kwargs_interp: keyword arguments of CosmoInterp specifying the interpolation interval and maximum
-         redshift
-        :return: Background class with instance of astropy.cosmology
-        """
+        """:param cosmo: instance of astropy.cosmology :param interp: boolean, if True,
+        uses interpolated cosmology to evaluate specific redshifts :param kwargs_interp:
+        keyword arguments of CosmoInterp specifying the interpolation interval and
+        maximum redshift :return: Background class with instance of
+        astropy.cosmology."""
 
         if cosmo is None:
             from astropy.cosmology import default_cosmology
@@ -39,12 +36,8 @@ class Background(object):
         return 1.0 / (1 + z)
 
     def d_xy(self, z_observer, z_source):
-        """
-
-        :param z_observer: observer redshift
-        :param z_source: source redshift
-        :return: angular diameter distance in units of Mpc
-        """
+        """:param z_observer: observer redshift :param z_source: source redshift
+        :return: angular diameter distance in units of Mpc."""
         D_xy = self.cosmo.angular_diameter_distance_z1z2(z_observer, z_source)
         return D_xy.value
 
@@ -63,12 +56,8 @@ class Background(object):
         )
 
     def T_xy(self, z_observer, z_source):
-        """
-
-        :param z_observer: observer
-        :param z_source: source
-        :return: transverse comoving distance in units of Mpc
-        """
+        """:param z_observer: observer :param z_source: source :return: transverse
+        comoving distance in units of Mpc."""
         D_xy = self.d_xy(z_observer, z_source)
         T_xy = D_xy * (1 + z_source)
         return T_xy

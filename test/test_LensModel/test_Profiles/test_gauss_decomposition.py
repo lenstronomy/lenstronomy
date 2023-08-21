@@ -23,7 +23,7 @@ class TestSersicEllipseGaussDec(object):
         asserting that the numerical derivative of the computed potential matches with
         the analytical derivative values.
 
-        :return:
+        :return: 
         :rtype:
         """
         k_eff = 1.0
@@ -99,7 +99,7 @@ class TestSersicEllipseGaussDec(object):
         """Test the derivative function of Gauss-decomposed elliptical Sersic by
         matching with the spherical case.
 
-        :return:
+        :return: 
         :rtype:
         """
         k_eff = 1.0
@@ -147,7 +147,7 @@ class TestSersicEllipseGaussDec(object):
         """Test the Hessian function of Gauss-decomposed elliptical Sersic by matching
         with the spherical case.
 
-        :return:
+        :return: 
         :rtype:
         """
         k_eff = 1.0
@@ -194,7 +194,7 @@ class TestSersicEllipseGaussDec(object):
         """Test the density function of Gauss-decomposed elliptical Sersic by checking
         with the spherical case.
 
-        :return:
+        :return: 
         :rtype:
         """
         k_eff = 1.0
@@ -246,7 +246,7 @@ class TestSersicEllipseGaussDec(object):
         """Test that `gauss_decompose_sersic()` decomposes the Sersic profile within 1%
         Poission noise at R_sersic.
 
-        :return:
+        :return: 
         :rtype:
         """
         y = np.logspace(-1.0, 1.0, 100)
@@ -281,7 +281,7 @@ class TestCTNFWGaussDec(object):
     def test_gauss_decompose_ctnfw(self):
         """Test the Gaussian decomposition of core-truncated NFW profile.
 
-        :return:
+        :return: 
         :rtype:
         """
         rho_s = 5.0

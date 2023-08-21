@@ -45,13 +45,13 @@ class PointSourceCached(object):
 
         :param kwargs_ps: keyword arguments of the point source model
         :param kwargs_lens: keyword argument list of the lens model(s), only used when
-            requiring the lens equation solver
+                requiring the lens equation solver
         :param magnification_limit: float >0 or None, if float is set and additional
-            images are computed, only those images will be computed that exceed the
-            lensing magnification (absolute value) limit
+                images are computed, only those images will be computed that exceed the
+                lensing magnification (absolute value) limit
         :param kwargs_lens_eqn_solver: keyword arguments specifying the numerical
-            settings for the lens equation solver see LensEquationSolver() class for
-            details
+                settings for the lens equation solver see LensEquationSolver() class for
+                details
         :param additional_images: if True, solves the lens equation for additional
             images
         :type additional_images: bool
@@ -114,13 +114,13 @@ class PointSourceCached(object):
 
         :param kwargs_ps: keyword arguments of the point source model
         :param kwargs_lens: keyword argument list of the lens model(s), only used when
-            requiring the lens equation solver
+                requiring the lens equation solver
         :param magnification_limit: float >0 or None, if float is set and additional
-            images are computed, only those images will be computed that exceed the
-            lensing magnification (absolute value) limit
+                images are computed, only those images will be computed that exceed the
+                lensing magnification (absolute value) limit
         :param kwargs_lens_eqn_solver: keyword arguments specifying the numerical
-            settings for the lens equation solver see LensEquationSolver() class for
-            details
+                settings for the lens equation solver see LensEquationSolver() class for
+                details
         :return: array of image amplitudes
         """
         x_pos, y_pos = self.image_position(
@@ -138,7 +138,7 @@ class PointSourceCached(object):
 
         :param kwargs_ps: keyword arguments of the point source model
         :param kwargs_lens: keyword argument list of the lens model(s), only used when
-            positions are defined in image plane and have to be ray-traced back
+                positions are defined in image plane and have to be ray-traced back
         :return: brightness amplitude (as numpy array)
         """
         return self._model.source_amplitude(kwargs_ps, kwargs_lens=kwargs_lens)

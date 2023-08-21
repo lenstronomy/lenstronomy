@@ -64,11 +64,10 @@ class CurvedArcConstMST(LensProfileBase):
         center_x,
         center_y,
     ):
-        """
-        ATTENTION: there may not be a global lensing potential!
+        """ATTENTION: there may not be a global lensing potential!
 
-        :param x:
-        :param y:
+        :param x: 
+        :param y: 
         :param tangential_stretch: float, stretch of intrinsic source in tangential direction
         :param radial_stretch: float, stretch of intrinsic source in radial direction
         :param curvature: 1/curvature radius
@@ -92,10 +91,9 @@ class CurvedArcConstMST(LensProfileBase):
         center_x,
         center_y,
     ):
-        """
+        """:param x:
 
-        :param x:
-        :param y:
+        :param y: 
         :param tangential_stretch: float, stretch of intrinsic source in tangential direction
         :param radial_stretch: float, stretch of intrinsic source in radial direction
         :param curvature: 1/curvature radius
@@ -129,10 +127,9 @@ class CurvedArcConstMST(LensProfileBase):
         center_x,
         center_y,
     ):
-        """
+        """:param x:
 
-        :param x:
-        :param y:
+        :param y: 
         :param tangential_stretch: float, stretch of intrinsic source in tangential direction
         :param radial_stretch: float, stretch of intrinsic source in radial direction
         :param curvature: 1/curvature radius
@@ -186,11 +183,10 @@ class CurvedArcConst(LensProfileBase):
     def function(
         self, x, y, tangential_stretch, curvature, direction, center_x, center_y
     ):
-        """
-        ATTENTION: there may not be a global lensing potential!
+        """ATTENTION: there may not be a global lensing potential!
 
-        :param x:
-        :param y:
+        :param x: 
+        :param y: 
         :param tangential_stretch: float, stretch of intrinsic source in tangential direction
         :param curvature: 1/curvature radius
         :param direction: float, angle in radian
@@ -205,10 +201,9 @@ class CurvedArcConst(LensProfileBase):
     def derivatives(
         self, x, y, tangential_stretch, curvature, direction, center_x, center_y
     ):
-        """
+        """:param x:
 
-        :param x:
-        :param y:
+        :param y: 
         :param tangential_stretch: float, stretch of intrinsic source in tangential direction
         :param curvature: 1/curvature radius
         :param direction: float, angle in radian
@@ -250,10 +245,9 @@ class CurvedArcConst(LensProfileBase):
     def hessian(
         self, x, y, tangential_stretch, curvature, direction, center_x, center_y
     ):
-        """
+        """:param x:
 
-        :param x:
-        :param y:
+        :param y: 
         :param tangential_stretch: float, stretch of intrinsic source in tangential direction
         :param curvature: 1/curvature radius
         :param direction: float, angle in radian
@@ -276,10 +270,9 @@ class CurvedArcConst(LensProfileBase):
         f_xy = (alpha_ra_dy - alpha_ra) / diff
         f_yx = (alpha_dec_dx - alpha_dec) / diff
         f_yy = (alpha_dec_dy - alpha_dec) / diff
-        """
-        #TODO make rotational invariances of double derivates with curl
-        r = 1 / curvature
-        # deflection angle to allow for tangential stretch
+        """#TODO make rotational invariances of double derivates with curl r = 1 /
+        curvature # deflection angle to allow for tangential stretch
+
         # (ratio of source position around zero point relative to radius is tangential stretch)
         alpha = r * (1 / tangential_stretch + 1)
 
@@ -313,9 +306,8 @@ class CurvedArcConst(LensProfileBase):
 
     @staticmethod
     def _deflection(y, r, tangential_stretch):
-        """
+        """:param y: off-axis coordinate, require all entries to be <=r !
 
-        :param y: off-axis coordinate, require all entries to be <=r !
         :param r: curvature radius
         :param tangential_stretch: tangential stretch
         :return: deflections f_x, f_y

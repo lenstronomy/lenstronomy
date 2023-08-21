@@ -12,10 +12,7 @@ class LinearBasis(LightModelBase):
     """Class to handle source and lens light models."""
 
     def __init__(self, **kwargs):
-        """
-
-        :param kwargs: keyword arguments for LightModelBase class
-        """
+        """:param kwargs: keyword arguments for LightModelBase class."""
         super(LinearBasis, self).__init__(**kwargs)
 
     @property
@@ -114,12 +111,9 @@ class LinearBasis(LightModelBase):
         return response, n
 
     def num_param_linear(self, kwargs_list, list_return=False):
-        """
-
-        :param kwargs_list: list of keyword arguments of the light profiles
-        :param list_return: bool, if True returns list of individual number of parameters
-        :return: number of linear basis set coefficients
-        """
+        """:param kwargs_list: list of keyword arguments of the light profiles :param
+        list_return: bool, if True returns list of individual number of parameters
+        :return: number of linear basis set coefficients."""
         n_list = self.num_param_linear_list(kwargs_list)
         if not list_return:
             return np.sum(n_list)
@@ -181,14 +175,12 @@ class LinearBasis(LightModelBase):
         return n_list
 
     def update_linear(self, param, i, kwargs_list):
-        """
-
-        :param param: array of linear amplitude coefficients in the order of the linear minimization of the ImSim module
-        :param i: index of first coefficient to start reading out the linear parameters associated with the model
-         components of this class
-        :param kwargs_list: list of keyword arguments of the model components
-        :return: kwargs list with over-written or added 'amp' parameters according to the coefficients in param
-        """
+        """:param param: array of linear amplitude coefficients in the order of the
+        linear minimization of the ImSim module :param i: index of first coefficient to
+        start reading out the linear parameters associated with the model components of
+        this class :param kwargs_list: list of keyword arguments of the model components
+        :return: kwargs list with over-written or added 'amp' parameters according to
+        the coefficients in param."""
         for k, model in enumerate(self.profile_type_list):
             if model in [
                 "SERSIC",
@@ -240,11 +232,8 @@ class LinearBasis(LightModelBase):
         return kwargs_list, i
 
     def add_fixed_linear(self, kwargs_fixed_list):
-        """
-
-        :param kwargs_fixed_list: list of fixed keyword arguments
-        :return: updated kwargs_fixed_list with additional linear parameters being fixed.
-        """
+        """:param kwargs_fixed_list: list of fixed keyword arguments :return: updated
+        kwargs_fixed_list with additional linear parameters being fixed."""
         for k, model in enumerate(self.profile_type_list):
             kwargs_fixed = kwargs_fixed_list[k]
             param_names = self.param_name_list[k]

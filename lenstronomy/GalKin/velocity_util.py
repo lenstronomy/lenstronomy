@@ -19,13 +19,8 @@ def hyp_2F1(a, b, c, z):
 
 @export
 def displace_PSF_gaussian(x, y, FWHM):
-    """
-
-    :param x: x-coord (arc sec)
-    :param y: y-coord (arc sec)
-    :param FWHM: psf size (arc sec)
-    :return: x', y' random displaced according to psf
-    """
+    """:param x: x-coord (arc sec) :param y: y-coord (arc sec) :param FWHM: psf size
+    (arc sec) :return: x', y' random displaced according to psf."""
     sigma = FWHM / (2 * np.sqrt(2 * np.log(2)))
     sigma_one_direction = sigma
     x_ = x + np.random.normal() * sigma_one_direction
@@ -58,12 +53,8 @@ def moffat_fwhm_alpha(FWHM, beta):
 
 @export
 def draw_moffat_r(FWHM, beta):
-    """
-
-    :param FWHM: full width at half maximum
-    :param beta: Moffat beta parameter
-    :return: draw from radial Moffat distribution
-    """
+    """:param FWHM: full width at half maximum :param beta: Moffat beta parameter
+    :return: draw from radial Moffat distribution."""
     alpha = moffat_fwhm_alpha(FWHM, beta)
     y = draw_cdf_Y(beta)
     # equation B3 in Berge et al. paper
@@ -73,14 +64,9 @@ def draw_moffat_r(FWHM, beta):
 
 @export
 def displace_PSF_moffat(x, y, FWHM, beta):
-    """
-
-    :param x: x-coordinate of light ray
-    :param y: y-coordinate of light ray
-    :param FWHM: full width at half maximum
-    :param beta: Moffat beta parameter
-    :return: displaced ray by PSF
-    """
+    """:param x: x-coordinate of light ray :param y: y-coordinate of light ray :param
+    FWHM: full width at half maximum :param beta: Moffat beta parameter :return:
+    displaced ray by PSF."""
     X = draw_moffat_r(FWHM, beta)
     dx, dy = draw_xy(X)
     return x + dx, y + dy
@@ -100,7 +86,9 @@ def draw_cdf_Y(beta):
 @export
 def project2d_random(r):
     """Draws a random projection from radius r in 2d and 1d :param r: 3d radius :return:
-    R, x, y."""
+
+    R, x, y.
+    """
     size = len(np.atleast_1d(r))
     if size == 1:
         size = None
@@ -117,11 +105,7 @@ def project2d_random(r):
 
 @export
 def draw_xy(R):
-    """
-
-    :param R: projected radius
-    :return:
-    """
+    """:param R: projected radius :return:"""
     phi = np.random.uniform(0, 2 * np.pi)
     x = R * np.cos(phi)
     y = R * np.sin(phi)
@@ -130,11 +114,8 @@ def draw_xy(R):
 
 @export
 def draw_hernquist(a):
-    """
-
-    :param a: 0.551*r_eff
-    :return: realisation of radius of Hernquist luminosity weighting in 3d
-    """
+    """:param a: 0.551*r_eff :return: realisation of radius of Hernquist luminosity
+    weighting in 3d."""
     P = np.random.uniform()  # draws uniform between [0,1)
     r = (
         a * np.sqrt(P) * (np.sqrt(P) + 1) / (1 - P)

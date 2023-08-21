@@ -10,14 +10,12 @@ class SersicUtil(object):
     _s = 0.00001
 
     def __init__(self, smoothing=_s, sersic_major_axis=False):
-        """
-
-        :param smoothing: smoothing scale of the innermost part of the profile (for numerical reasons)
-        :param sersic_major_axis: boolean; if True, defines the half-light radius of the Sersic light profile along
-         the semi-major axis (which is the Galfit convention)
-         if False, uses the product average of semi-major and semi-minor axis as the convention
-         (default definition for all light profiles in lenstronomy other than the Sersic profile)
-        """
+        """:param smoothing: smoothing scale of the innermost part of the profile (for
+        numerical reasons) :param sersic_major_axis: boolean; if True, defines the half-
+        light radius of the Sersic light profile along the semi-major axis (which is the
+        Galfit convention) if False, uses the product average of semi-major and semi-
+        minor axis as the convention (default definition for all light profiles in
+        lenstronomy other than the Sersic profile)"""
         self._smoothing = smoothing
         self._sersic_major_axis = sersic_major_axis
 
@@ -52,7 +50,7 @@ class SersicUtil(object):
         """Get the distance from the center of Sersic, accounting for orientation and
         axis ratio :param x:
 
-        :param y:
+        :param y: 
         :param e1: eccentricity
         :param e2: eccentricity
         :param center_x: center x of sersic
@@ -79,9 +77,9 @@ class SersicUtil(object):
     def _x_reduced(self, x, y, n_sersic, r_eff, center_x, center_y):
         """Coordinate transform to normalized radius :param x:
 
-        :param y:
-        :param center_x:
-        :param center_y:
+        :param y: 
+        :param center_x: 
+        :param center_y: 
         :return:
         """
         x_ = x - center_x
@@ -97,8 +95,8 @@ class SersicUtil(object):
     def _alpha_eff(self, r_eff, n_sersic, k_eff):
         """Deflection angle at r_eff :param r_eff:
 
-        :param n_sersic:
-        :param k_eff:
+        :param n_sersic: 
+        :param k_eff: 
         :return:
         """
         b = self.b_n(n_sersic)
@@ -113,9 +111,8 @@ class SersicUtil(object):
         return -alpha_eff
 
     def alpha_abs(self, x, y, n_sersic, r_eff, k_eff, center_x=0, center_y=0):
-        """
+        """:param x:
 
-        :param x:
         :param y:
         :param n_sersic:
         :param r_eff:
@@ -132,9 +129,8 @@ class SersicUtil(object):
         return alpha
 
     def d_alpha_dr(self, x, y, n_sersic, r_eff, k_eff, center_x=0, center_y=0):
-        """
+        """:param x:
 
-        :param x:
         :param y:
         :param n_sersic:
         :param r_eff:
@@ -183,7 +179,7 @@ class SersicUtil(object):
         """Computes analytical integral to compute total flux of the Sersic profile.
 
         :param amp: amplitude parameter in Sersic function (surface brightness at
-            R_sersic
+                R_sersic
         :param R_sersic: half-light radius in semi-major axis
         :param n_sersic: Sersic index
         :param e1: eccentricity
@@ -201,20 +197,18 @@ class SersicUtil(object):
 
     def _R_stable(self, R):
         """Floor R_ at self._smoothing for numerical stability :param R: radius :return:
-        smoothed and stabilized radius."""
+
+        smoothed and stabilized radius.
+        """
         return np.maximum(self._smoothing, R)
 
     def _r_sersic(
         self, R, R_sersic, n_sersic, max_R_frac=1000.0, alpha=1.0, R_break=0.0
     ):
-        """
-
-        :param R: radius (array or float)
-        :param R_sersic: Sersic radius (half-light radius)
-        :param n_sersic: Sersic index (float)
-        :param max_R_frac: maximum window outside which the mass is zeroed, in units of R_sersic (float)
-        :return: kernel of the Sersic surface brightness at R
-        """
+        """:param R: radius (array or float) :param R_sersic: Sersic radius (half-light
+        radius) :param n_sersic: Sersic index (float) :param max_R_frac: maximum window
+        outside which the mass is zeroed, in units of R_sersic (float) :return: kernel
+        of the Sersic surface brightness at R."""
 
         R_ = self._R_stable(R)
         R_sersic_ = self._R_stable(R_sersic)

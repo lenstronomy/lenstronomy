@@ -46,13 +46,14 @@ class LightModelBase(object):
     """Class to handle source and lens light models."""
 
     def __init__(self, light_model_list, smoothing=0.001, sersic_major_axis=None):
-        """
+        """:param light_model_list: list of light models :param smoothing: smoothing
+        factor for certain models (deprecated) :param sersic_major_axis: boolean or
+        None, if True, uses the semi-major axis as the definition of the Sersic half-
+        light radius, if False, uses the product average of semi-major and semi-minor
+        axis.
 
-        :param light_model_list: list of light models
-        :param smoothing: smoothing factor for certain models (deprecated)
-        :param sersic_major_axis: boolean or None, if True, uses the semi-major axis as the definition of the Sersic
-         half-light radius, if False, uses the product average of semi-major and semi-minor axis. If None, uses the
-         convention in the lenstronomy yaml setting (which by default is =False)
+        If None, uses the convention in the lenstronomy yaml setting (which by default
+        is =False)
         """
         self.profile_type_list = light_model_list
         self.func_list = []
@@ -191,14 +192,11 @@ class LightModelBase(object):
         self._num_func = len(self.func_list)
 
     def surface_brightness(self, x, y, kwargs_list, k=None):
-        """
-        :param x: coordinate in units of arcsec relative to the center of the image
-        :type x: set or single 1d numpy array
-        :param y: coordinate in units of arcsec relative to the center of the image
-        :type y: set or single 1d numpy array
-        :param kwargs_list: keyword argument list of light profile
-        :param k: integer or list of integers for selecting subsets of light profiles
-        """
+        """:param x: coordinate in units of arcsec relative to the center of the image
+        :type x: set or single 1d numpy array :param y: coordinate in units of arcsec
+        relative to the center of the image :type y: set or single 1d numpy array :param
+        kwargs_list: keyword argument list of light profile :param k: integer or list of
+        integers for selecting subsets of light profiles."""
         kwargs_list_standard = self._transform_kwargs(kwargs_list)
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
@@ -258,7 +256,7 @@ class LightModelBase(object):
         associated noise properties (default is count/s).
 
         :param kwargs_list: list of keyword arguments corresponding to the light
-            profiles. The 'amp' parameter can be missing.
+                profiles. The 'amp' parameter can be missing.
         :param norm: bool, if True, computes the flux for amp=1
         :param k: int, if set, only evaluates the specific light model
         :return: list of (total) flux values attributed to each profile
@@ -305,11 +303,8 @@ class LightModelBase(object):
                 self.func_list[i].delete_cache()
 
     def _transform_kwargs(self, kwargs_list):
-        """
-
-        :param kwargs_list: keyword argument list as parameterised models
-        :return: keyword argument list as used in the individual models
-        """
+        """:param kwargs_list: keyword argument list as parameterised models :return:
+        keyword argument list as used in the individual models."""
         return kwargs_list
 
     def _bool_list(self, k=None):

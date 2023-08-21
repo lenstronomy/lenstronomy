@@ -27,29 +27,28 @@ class NumericsSubFrame(PointSourceRendering):
         convolution_type="fft_static",
         truncation=4,
     ):
-        """
+        """:param pixel_grid: PixelGrid() class instance :param psf: PSF() class
+        instance :param compute_mode: options are: 'regular', 'adaptive' :param
+        supersampling_factor: int, factor of higher resolution sub-pixel sampling of
+        surface brightness :param supersampling_convolution: bool, if True, performs
+        (part of) the convolution on the super-sampled grid/pixels :param
+        supersampling_kernel_size: int (odd number), size (in regular pixel units) of
+        the super-sampled convolution :param flux_evaluate_indexes: boolean 2d array of
+        size of image (or None, then initiated as gird of True's).
 
-        :param pixel_grid: PixelGrid() class instance
-        :param psf: PSF() class instance
-        :param compute_mode: options are: 'regular', 'adaptive'
-        :param supersampling_factor: int, factor of higher resolution sub-pixel sampling of surface brightness
-        :param supersampling_convolution: bool, if True, performs (part of) the convolution on the super-sampled
-        grid/pixels
-        :param supersampling_kernel_size: int (odd number), size (in regular pixel units) of the super-sampled
-        convolution
-        :param flux_evaluate_indexes: boolean 2d array of size of image (or None, then initiated as gird of True's).
-        Pixels indicated with True will be used to perform the surface brightness computation (and possible lensing
-        ray-shooting). Pixels marked as False will be assigned a flux value of zero (or ignored in the adaptive
-        convolution)
-        :param supersampled_indexes: 2d boolean array (only used in mode='adaptive') of pixels to be supersampled (in
-        surface brightness and if supersampling_convolution=True also in convolution)
-        :param compute_indexes: 2d boolean array (only used in mode='adaptive'), marks pixel that the resonse after
-        convolution is computed (all others =0). This can be set to likelihood_mask in the Likelihood module for
-        consistency.
+        Pixels indicated with True will be used to perform the surface brightness
+        computation (and possible lensing ray-shooting). Pixels marked as False will be
+        assigned a flux value of zero (or ignored in the adaptive convolution)
+        :param supersampled_indexes: 2d boolean array (only used in mode='adaptive') of
+                pixels to be supersampled (in         surface brightness and if
+                supersampling_convolution=True also in convolution)
+        :param compute_indexes: 2d boolean array (only used in mode='adaptive'), marks
+                pixel that the resonse after         convolution is computed (all others
+                =0). This can be set to likelihood_mask in the Likelihood module for
+                consistency.
         :param point_source_supersampling_factor: super-sampling resolution of the point source placing
-        :param convolution_kernel_size: int, odd number, size of convolution kernel. If None, takes size of
-        point_source_kernel
-
+        :param convolution_kernel_size: int, odd number, size of convolution kernel. If
+                None, takes size of         point_source_kernel
         """
         # if no super sampling, turn the supersampling convolution off
 
@@ -78,11 +77,9 @@ class NumericsSubFrame(PointSourceRendering):
         )
 
     def re_size_convolve(self, flux_array, unconvolved=False):
-        """
-
-        :param flux_array: 1d array, flux values corresponding to coordinates_evaluate
-        :return: convolved image on regular pixel grid, 2d array
-        """
+        """:param flux_array: 1d array, flux values corresponding to
+        coordinates_evaluate :return: convolved image on regular pixel grid, 2d
+        array."""
         # add supersampled region to lower resolution on
         image_sub_frame = self._numerics_subframe.re_size_convolve(
             flux_array, unconvolved=unconvolved
@@ -91,41 +88,30 @@ class NumericsSubFrame(PointSourceRendering):
 
     @property
     def grid_supersampling_factor(self):
-        """
-
-        :return: supersampling factor set for higher resolution sub-pixel sampling of surface brightness
-        """
+        """:return: supersampling factor set for higher resolution sub-pixel sampling of
+        surface brightness."""
         return self._numerics_subframe.grid_supersampling_factor
 
     @property
     def coordinates_evaluate(self):
-        """
-
-        :return: 1d array of all coordinates being evaluated to perform the image computation
-        """
+        """:return: 1d array of all coordinates being evaluated to perform the image
+        computation."""
         return self._numerics_subframe.coordinates_evaluate
 
     @property
     def convolution_class(self):
-        """
-
-        :return: convolution class (can be SubgridKernelConvolution, PixelKernelConvolution, MultiGaussianConvolution, ...)
-        """
+        """:return: convolution class (can be SubgridKernelConvolution,
+        PixelKernelConvolution, MultiGaussianConvolution, ...)"""
         return self._numerics_subframe.convolution_class
 
     @property
     def grid_class(self):
-        """
-
-        :return: grid class (can be RegularGrid, AdaptiveGrid)
-        """
+        """:return: grid class (can be RegularGrid, AdaptiveGrid)"""
         return self._numerics_subframe.grid_class
 
     def _complete_frame(self, image_sub_frame):
-        """
-        :param image_sub_frame: 2d numpy array of size of the sub-frame
-        :return: 2d numpy array of size of image with added zeros on their edges
-        """
+        """:param image_sub_frame: 2d numpy array of size of the sub-frame :return: 2d
+        numpy array of size of image with added zeros on their edges."""
         if self._subframe_calc is True:
             image = np.zeros((self._nx, self._ny))
             image[
@@ -150,11 +136,8 @@ class NumericsSubFrame(PointSourceRendering):
             self._y_max_sub = np.max(np.where(flux_evaluate_indexes)[1])
 
     def _cut_frame(self, image):
-        """
-
-        :param image: 2d array of full image size
-        :return: 2d array of the sub-frame
-        """
+        """:param image: 2d array of full image size :return: 2d array of the sub-
+        frame."""
         if self._subframe_calc is True and image is not None:
             return image[
                 self._x_min_sub : self._x_max_sub + 1,

@@ -29,18 +29,11 @@ class NIE(LightProfileBase):
     }
 
     def function(self, x, y, amp, e1, e2, s_scale, center_x=0, center_y=0):
-        """
-
-        :param x: x-coordinate
-        :param y: y-coordinate
-        :param amp: surface brightness normalization
-        :param e1: eccentricity component
-        :param e2: eccentricity component
-        :param s_scale: smoothing scale (square averaged of minor and major axis)
-        :param center_x: center of profile
-        :param center_y: center of profile
-        :return: surface brightness of NIE profile
-        """
+        """:param x: x-coordinate :param y: y-coordinate :param amp: surface brightness
+        normalization :param e1: eccentricity component :param e2: eccentricity
+        component :param s_scale: smoothing scale (square averaged of minor and major
+        axis) :param center_x: center of profile :param center_y: center of profile
+        :return: surface brightness of NIE profile."""
         # phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         # s = s_scale * np.sqrt((1 + q ** 2) / (2 * q ** 2))
         x__, y__ = param_util.transform_e1e2_product_average(
@@ -69,7 +62,7 @@ class NIE(LightProfileBase):
         """Converts surface brightness normalization 'amp' into 3d density normalization
         rho.
 
-        :param amp:
+        :param amp: 
         :return: rho
         """
         factor = np.pi

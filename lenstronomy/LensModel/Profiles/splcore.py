@@ -47,16 +47,12 @@ class SPLCORE(LensProfileBase):
         raise Exception("potential not implemented for this class")
 
     def derivatives(self, x, y, sigma0, r_core, gamma, center_x=0, center_y=0):
-        """
-        :param x: projected x position at which to evaluate function [arcsec]
-        :param y: projected y position at which to evaluate function [arcsec]
-        :param sigma0: convergence at r = 0
-        :param r_core: core radius [arcsec]
-        :param gamma: logarithmic slope at r -> infinity
-        :param center_x: x coordinate center of lens model [arcsec]
-        :param center_y: y coordinate center of lens model [arcsec]
-        :return: deflection angle alpha in x and y directions
-        """
+        """:param x: projected x position at which to evaluate function [arcsec] :param
+        y: projected y position at which to evaluate function [arcsec] :param sigma0:
+        convergence at r = 0 :param r_core: core radius [arcsec] :param gamma:
+        logarithmic slope at r -> infinity :param center_x: x coordinate center of lens
+        model [arcsec] :param center_y: y coordinate center of lens model [arcsec]
+        :return: deflection angle alpha in x and y directions."""
 
         x_ = x - center_x
         y_ = y - center_y
@@ -69,15 +65,12 @@ class SPLCORE(LensProfileBase):
         return alpha_r * cos, alpha_r * sin
 
     def hessian(self, x, y, sigma0, r_core, gamma, center_x=0, center_y=0):
-        """
-        :param x: projected x position at which to evaluate function [arcsec]
-        :param y: projected y position at which to evaluate function [arcsec]
-        :param sigma0: convergence at r = 0
-        :param r_core: core radius [arcsec]
-        :param gamma: logarithmic slope at r -> infinity
-        :param center_x: x coordinate center of lens model [arcsec]
-        :param center_y: y coordinate center of lens model [arcsec]
-        :return: hessian elements
+        """:param x: projected x position at which to evaluate function [arcsec] :param
+        y: projected y position at which to evaluate function [arcsec] :param sigma0:
+        convergence at r = 0 :param r_core: core radius [arcsec] :param gamma:
+        logarithmic slope at r -> infinity :param center_x: x coordinate center of lens
+        model [arcsec] :param center_y: y coordinate center of lens model [arcsec]
+        :return: hessian elements.
 
         alpha_(x/y) = alpha_r * cos/sin(x/y / r)
         """
@@ -182,8 +175,8 @@ class SPLCORE(LensProfileBase):
 
         :param r: radius [arcsec]
         :param rho0: density at r = 0 in units [rho_0_physical / sigma_crit] (which
-            should be equal to [arcsec]) where rho_0_physical is a physical density
-            normalization and sigma_crit is the critical density for lensing
+                should be equal to [arcsec]) where rho_0_physical is a physical density
+                normalization and sigma_crit is the critical density for lensing
         :param r_core: core radius [arcsec]
         :param gamma: logarithmic slope at r -> infinity
         :return: mass inside radius r
@@ -207,8 +200,9 @@ class SPLCORE(LensProfileBase):
 
         :param r: radius [arcsec]
         :param rho0: density at r = 0 in units [rho_0_physical / sigma_crit] (which
-            should be equal to [1/arcsec]) where rho_0_physical is a physical density
-            normalization and sigma_crit is the critical density for lensing
+                should be equal to [1/arcsec]) where rho_0_physical is a physical
+                density             normalization and sigma_crit is the critical density
+                for lensing
         :param r_core: core radius [arcsec]
         :param gamma: logarithmic slope at r -> infinity
         :return: projected mass inside disk of radius r
@@ -220,7 +214,7 @@ class SPLCORE(LensProfileBase):
 
         :param r: radius [arcsec]
         :param sigma0: convergence at r = 0 where rho_0_physical is a physical density
-            normalization and sigma_crit is the critical density for lensing
+                normalization and sigma_crit is the critical density for lensing
         :param r_core: core radius [arcsec]
         :param gamma: logarithmic slope at r -> infinity
         :return: projected mass inside disk of radius r

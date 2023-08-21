@@ -23,16 +23,15 @@ class MultiBandUpdateManager(UpdateManager):
         kwargs_params,
         num_bands=0,
     ):
-        """
+        """:param kwargs_model: keyword arguments to describe all model components used
+        in class_creator.create_class_instances() :param kwargs_constraints: keyword
+        arguments of the Param() class to handle parameter constraints during the
+        sampling (except upper and lower limits and sampling input mean and width)
+        :param kwargs_likelihood: keyword arguments of the Likelihood() class to handle
+        parameters and settings of the likelihood :param kwargs_params: setting of the
+        sampling bounds and initial guess mean and spread.
 
-        :param kwargs_model: keyword arguments to describe all model components used in
-         class_creator.create_class_instances()
-        :param kwargs_constraints: keyword arguments of the Param() class to handle parameter constraints during the
-         sampling (except upper and lower limits and sampling input mean and width)
-        :param kwargs_likelihood: keyword arguments of the Likelihood() class to handle parameters and settings of the
-         likelihood
-        :param kwargs_params: setting of the sampling bounds and initial guess mean and spread.
-         The argument is organized as:
+        The argument is organized as:
          'lens_model': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
          'source_model': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
          'lens_light_model': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
@@ -59,23 +58,17 @@ class MultiBandUpdateManager(UpdateManager):
         self._num_bands = num_bands
 
     def keep_frame_fixed(self, frame_list_fixed):
-        """
-
-        :param frame_list_fixed: list of indexes of frames whose lens models to be fixed
-        :return: updated fixed lens model parameter in the FittingSequence()
-        """
+        """:param frame_list_fixed: list of indexes of frames whose lens models to be
+        fixed :return: updated fixed lens model parameter in the FittingSequence()"""
         for j in frame_list_fixed:
             if self._index_lens_model_list[j] is not None:
                 for i in self._index_lens_model_list[j]:
                     self._lens_fixed[i] = self._kwargs_temp["kwargs_lens"][i]
 
     def undo_frame_fixed(self, frame_list):
-        """
-
-        :param frame_list: list of frame indexes to be set back to the parameters being fixed in the initial fix
-        parameters in the class creation
-        :return: updated fixed lens model parameter in the FittingSequence()
-        """
+        """:param frame_list: list of frame indexes to be set back to the parameters
+        being fixed in the initial fix parameters in the class creation :return: updated
+        fixed lens model parameter in the FittingSequence()"""
         for j in frame_list:
             if self._index_lens_model_list[j] is not None:
                 for i in self._index_lens_model_list[j]:
@@ -87,7 +80,7 @@ class MultiBandUpdateManager(UpdateManager):
         more automated fixing of parameters.
 
         :param free_bands: boolean list of length of the imaging bands, True indicates
-            that the lens model is being fitted for
+                that the lens model is being fitted for
         :return: None
         """
         undo_frame_list = []

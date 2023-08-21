@@ -21,8 +21,8 @@ class TabulatedDeflections(LensProfileBase):
     upper_limit_default = {}
 
     def __init__(self, custom_class):
-        """
-        :param custom_class: a user-defined class that has a __call___ method that returns deflection angles
+        """:param custom_class: a user-defined class that has a __call___ method that
+        returns deflection angles.
 
         Code example:
 
@@ -44,15 +44,9 @@ class TabulatedDeflections(LensProfileBase):
         raise Exception("no potential for this class.")
 
     def derivatives(self, x, y, center_x=0, center_y=0, **kwargs):
-        """
-
-        :param x: x coordinate [arcsec]
-        :param y: x coordinate [arcsec]
-        :param center_x: deflector x center [arcsec]
-        :param center_y: deflector y center [arcsec]
-        :param kwargs: keyword arguments for the custom profile
-        :return:
-        """
+        """:param x: x coordinate [arcsec] :param y: x coordinate [arcsec] :param
+        center_x: deflector x center [arcsec] :param center_y: deflector y center
+        [arcsec] :param kwargs: keyword arguments for the custom profile :return:"""
 
         x_ = x - center_x
         y_ = y - center_y

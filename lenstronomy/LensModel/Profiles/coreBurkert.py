@@ -27,16 +27,9 @@ class CoreBurkert(LensProfileBase):
     }
 
     def function(self, x, y, Rs, alpha_Rs, r_core, center_x=0, center_y=0):
-        """
-
-        :param x: angular position
-        :param y: angular position
-        :param Rs: angular turn over point
-        :param alpha_Rs: deflection angle at Rs
-        :param center_x: center of halo
-        :param center_y: center of halo
-        :return:
-        """
+        """:param x: angular position :param y: angular position :param Rs: angular turn
+        over point :param alpha_Rs: deflection angle at Rs :param center_x: center of
+        halo :param center_y: center of halo :return:"""
 
         rho0 = self._alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs, r_core=r_core)
 
@@ -53,7 +46,7 @@ class CoreBurkert(LensProfileBase):
         scale radius :param alpha_Rs: deflection angle at Rs :param r_core: core radius
         :param center_x:
 
-        :param center_y:
+        :param center_y: 
         :return:
         """
 
@@ -70,14 +63,10 @@ class CoreBurkert(LensProfileBase):
         return dx, dy
 
     def hessian(self, x, y, Rs, alpha_Rs, r_core, center_x=0, center_y=0):
-        """
-        :param x: x coordinate
-        :param y: y coordinate
-        :param Rs: scale radius
-        :param alpha_Rs: deflection angle at Rs
-        :param r_core: core radius
-        :param center_x:
-        :param center_y:
+        """:param x: x coordinate :param y: y coordinate :param Rs: scale radius :param
+        alpha_Rs: deflection angle at Rs :param r_core: core radius :param center_x:
+
+        :param center_y: 
         :return:
         """
 
@@ -169,12 +158,8 @@ class CoreBurkert(LensProfileBase):
         return 2 * rho0 * Rs * Fx
 
     def mass_3d(self, R, Rs, rho0, r_core):
-        """
-        :param R: projected distance
-        :param Rs: scale radius
-        :param rho0: central core density
-        :param r_core: core radius
-        """
+        """:param R: projected distance :param Rs: scale radius :param rho0: central
+        core density :param r_core: core radius."""
 
         Rs = float(Rs)
         b = r_core * Rs**-1
@@ -193,12 +178,8 @@ class CoreBurkert(LensProfileBase):
         )
 
     def cBurkPot(self, R, Rs, rho0, r_core):
-        """
-        :param R: projected distance
-        :param Rs: scale radius
-        :param rho0: central core density
-        :param r_core: core radius
-        """
+        """:param R: projected distance :param Rs: scale radius :param rho0: central
+        core density :param r_core: core radius."""
         x = R * Rs**-1
         p = Rs * r_core**-1
         hx = self._H(x, p)
@@ -206,16 +187,9 @@ class CoreBurkert(LensProfileBase):
         return 2 * rho0 * Rs**3 * hx
 
     def cBurkGamma(self, R, Rs, rho0, r_core, ax_x, ax_y):
-        """
-
-        :param R: projected distance
-        :param Rs: scale radius
-        :param rho0: central core density
-        :param r_core: core radius
-        :param ax_x: x coordinate
-        :param ax_y: y coordinate
-        :return:
-        """
+        """:param R: projected distance :param Rs: scale radius :param rho0: central
+        core density :param r_core: core radius :param ax_x: x coordinate :param ax_y: y
+        coordinate :return:"""
         c = 0.000001
 
         if isinstance(R, int) or isinstance(R, float):

@@ -75,11 +75,10 @@ class SIS_truncate(LensProfileBase):
         return f_xx, f_xy, f_xy, f_yy
 
     def _dphi_dr(self, x, y, theta_E, r_trunc):
-        """
+        """:param x:
 
-        :param x:
-        :param y:
-        :param r_trunc:
+        :param y: 
+        :param r_trunc: 
         :return:
         """
         r = np.sqrt(x * x + y * y)
@@ -103,9 +102,9 @@ class SIS_truncate(LensProfileBase):
     def _d2phi_dr2(self, x, y, theta_E, r_trunc):
         """Second derivative of the potential in radial direction :param x:
 
-        :param y:
-        :param theta_E:
-        :param r_trunc:
+        :param y: 
+        :param theta_E: 
+        :param r_trunc: 
         :return:
         """
         r = np.sqrt(x * x + y * y)
@@ -126,7 +125,7 @@ class SIS_truncate(LensProfileBase):
     def _dr_dx(self, x, y):
         """Derivative of dr/dx, dr/dy :param x:
 
-        :param y:
+        :param y: 
         :return:
         """
 
@@ -142,7 +141,7 @@ class SIS_truncate(LensProfileBase):
     def _d2r_dx2(x, y):
         """Second derivative :param x:
 
-        :param y:
+        :param y: 
         :return:
         """
         r = np.sqrt(x**2 + y**2)

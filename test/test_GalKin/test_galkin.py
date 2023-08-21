@@ -239,10 +239,7 @@ class TestGalkin(object):
         npt.assert_almost_equal(sigma_v_lin / sigma_v_log, 1, decimal=2)
 
     def test_projected_light_integral_hernquist(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         light_profile_list = ["HERNQUIST"]
         Rs = 1.0
         kwargs_light = [
@@ -259,10 +256,7 @@ class TestGalkin(object):
         npt.assert_almost_equal(light2d, out[0] * 2, decimal=3)
 
     def test_projected_light_integral_hernquist_ellipse(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         light_profile_list = ["HERNQUIST_ELLIPSE"]
         Rs = 1.0
         phi, q = 1, 0.8
@@ -281,10 +275,7 @@ class TestGalkin(object):
         npt.assert_almost_equal(light2d, out[0] * 2, decimal=3)
 
     def test_projected_light_integral_pjaffe(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         light_profile_list = ["PJAFFE"]
         kwargs_light = [
             {"Rs": 0.5, "Ra": 0.01, "amp": 1.0}

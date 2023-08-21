@@ -152,73 +152,102 @@ class Param(object):
         num_shapelet_lens=0,
         log_sampling_lens=[],
     ):
-        """
+        """:param kwargs_model: keyword arguments to describe all model components used
+        in class_creator.create_class_instances() :param kwargs_fixed_lens: fixed
+        parameters for lens model (keyword argument list) :param kwargs_fixed_source:
+        fixed parameters for source model (keyword argument list) :param
+        kwargs_fixed_lens_light: fixed parameters for lens light model (keyword argument
+        list) :param kwargs_fixed_ps: fixed parameters for point source model (keyword
+        argument list) :param kwargs_fixed_special: fixed parameters for special model
+        parameters (keyword arguments) :param kwargs_fixed_extinction: fixed parameters
+        for extinction model parameters (keyword argument list) :param
+        kwargs_lower_lens: lower limits for parameters of lens model (keyword argument
+        list) :param kwargs_lower_source: lower limits for parameters of source model
+        (keyword argument list) :param kwargs_lower_lens_light: lower limits for
+        parameters of lens light model (keyword argument list) :param kwargs_lower_ps:
+        lower limits for parameters of point source model (keyword argument list) :param
+        kwargs_lower_special: lower limits for parameters of special model parameters
+        (keyword arguments) :param kwargs_lower_extinction: lower limits for parameters
+        of extinction model (keyword argument list) :param kwargs_upper_lens: upper
+        limits for parameters of lens model (keyword argument list) :param
+        kwargs_upper_source: upper limits for parameters of source model (keyword
+        argument list) :param kwargs_upper_lens_light: upper limits for parameters of
+        lens light model (keyword argument list) :param kwargs_upper_ps: upper limits
+        for parameters of point source model (keyword argument list) :param
+        kwargs_upper_special: upper limits for parameters of special model parameters
+        (keyword arguments) :param kwargs_upper_extinction: upper limits for parameters
+        of extinction model (keyword argument list) :param kwargs_lens_init: initial
+        guess of lens model keyword arguments (only relevant as the starting point of
+        the non-linear solver) :param linear_solver: bool, if True; avoids sampling the
+        linear amplitude parameters 'amp' such that they get overwritten by the linear
+        solver solution.
 
-        :param kwargs_model: keyword arguments to describe all model components used in class_creator.create_class_instances()
-        :param kwargs_fixed_lens: fixed parameters for lens model (keyword argument list)
-        :param kwargs_fixed_source: fixed parameters for source model (keyword argument list)
-        :param kwargs_fixed_lens_light: fixed parameters for lens light model (keyword argument list)
-        :param kwargs_fixed_ps: fixed parameters for point source model (keyword argument list)
-        :param kwargs_fixed_special: fixed parameters for special model parameters (keyword arguments)
-        :param kwargs_fixed_extinction: fixed parameters for extinction model parameters (keyword argument list)
-        :param kwargs_lower_lens: lower limits for parameters of lens model (keyword argument list)
-        :param kwargs_lower_source: lower limits for parameters of source model (keyword argument list)
-        :param kwargs_lower_lens_light: lower limits for parameters of lens light model (keyword argument list)
-        :param kwargs_lower_ps: lower limits for parameters of point source model (keyword argument list)
-        :param kwargs_lower_special: lower limits for parameters of special model parameters (keyword arguments)
-        :param kwargs_lower_extinction: lower limits for parameters of extinction model (keyword argument list)
-        :param kwargs_upper_lens: upper limits for parameters of lens model (keyword argument list)
-        :param kwargs_upper_source: upper limits for parameters of source model (keyword argument list)
-        :param kwargs_upper_lens_light: upper limits for parameters of lens light model (keyword argument list)
-        :param kwargs_upper_ps: upper limits for parameters of point source model (keyword argument list)
-        :param kwargs_upper_special: upper limits for parameters of special model parameters (keyword arguments)
-        :param kwargs_upper_extinction: upper limits for parameters of extinction model (keyword argument list)
-        :param kwargs_lens_init: initial guess of lens model keyword arguments (only relevant as the starting point of
-         the non-linear solver)
-        :param linear_solver: bool, if True; avoids sampling the linear amplitude parameters 'amp' such that they
-         get overwritten by the linear solver solution.
-         Fixed 'amp' parameters will be overwritten if linear_solver = True.
-        :param joint_lens_with_lens: list [[i_lens, k_lens, ['param_name1', 'param_name2', ...]], [...], ...],
-         joint parameter between two lens models
-        :param joint_lens_light_with_lens_light: list [[i_lens_light, k_lens_light, ['param_name1', 'param_name2', ...]], [...], ...],
-         joint parameter between two lens light models, the second adopts the value of the first
-        :param joint_source_with_source: [[i_source, k_source, ['param_name1', 'param_name2', ...]], [...], ...],
-         joint parameter between two source surface brightness models, the second adopts the value of the first
-        :param joint_lens_with_light: list [[i_light, k_lens, ['param_name1', 'param_name2', ...]], [...], ...],
-         joint parameter between lens model and lens light model
-        :param joint_source_with_point_source: list [[i_point_source, k_source], [...], ...],
-         joint position parameter between lens model and source light model
-        :param joint_lens_light_with_point_source: list [[i_point_source, k_lens_light], [...], ...],
-         joint position parameter between lens model and lens light model
-        :param joint_extinction_with_lens_light: list [[i_lens_light, k_extinction, ['param_name1', 'param_name2', ...]], [...], ...],
-         joint parameters between the lens surface brightness and the optical depth models
-        :param joint_lens_with_source_light: [[i_source, k_lens, ['param_name1', 'param_name2', ...]], [...], ...],
-         joint parameter between lens model and source light model. Samples light model parameter only.
-        :param mass_scaling_list: boolean list of length of lens model list (optional) models with identical integers
-         will be scaled with the same additional scaling factor. First integer starts with 1 (not 0)
-        :param general_scaling: { 'param_1': [list of booleans/integers defining which model to fit], 'param_2': [..], ..}
-        :param point_source_offset: bool, if True, adds relative offsets ot the modeled image positions relative to the
-         time-delay and lens equation solver
+        Fixed 'amp' parameters will be overwritten if linear_solver = True.
+        :param joint_lens_with_lens: list [[i_lens, k_lens, ['param_name1',
+                'param_name2', ...]], [...], ...],          joint parameter between two
+                lens models
+        :param joint_lens_light_with_lens_light: list [[i_lens_light, k_lens_light,
+                ['param_name1', 'param_name2', ...]], [...], ...],          joint
+                parameter between two lens light models, the second adopts the value of
+                the first
+        :param joint_source_with_source: [[i_source, k_source, ['param_name1',
+                'param_name2', ...]], [...], ...],          joint parameter between two
+                source surface brightness models, the second adopts the value of the
+                first
+        :param joint_lens_with_light: list [[i_light, k_lens, ['param_name1',
+                'param_name2', ...]], [...], ...],          joint parameter between lens
+                model and lens light model
+        :param joint_source_with_point_source: list [[i_point_source, k_source], [...],
+                ...],          joint position parameter between lens model and source
+                light model
+        :param joint_lens_light_with_point_source: list [[i_point_source, k_lens_light],
+                [...], ...],          joint position parameter between lens model and
+                lens light model
+        :param joint_extinction_with_lens_light: list [[i_lens_light, k_extinction,
+                ['param_name1', 'param_name2', ...]], [...], ...],          joint
+                parameters between the lens surface brightness and the optical depth
+                models
+        :param joint_lens_with_source_light: [[i_source, k_lens, ['param_name1',
+                'param_name2', ...]], [...], ...],          joint parameter between lens
+                model and source light model. Samples light model parameter only.
+        :param mass_scaling_list: boolean list of length of lens model list (optional)
+                models with identical integers          will be scaled with the same
+                additional scaling factor. First integer starts with 1 (not 0)
+        :param general_scaling: { 'param_1': [list of booleans/integers defining which
+                model to fit], 'param_2': [..], ..}
+        :param point_source_offset: bool, if True, adds relative offsets ot the modeled
+                image positions relative to the          time-delay and lens equation
+                solver
         :param num_point_source_list: list of number of point sources per point source model class
-        :param image_plane_source_list: optional, list of booleans for the source_light components.
-         If a component is set =True it will parameterized the positions in the image plane and ray-trace the
-         parameters back to the source position on the fly during the fitting.
-        :param solver_type: string, option for specific solver type
-         see detailed instruction of the Solver4Point and Solver2Point classes
+        :param image_plane_source_list: optional, list of booleans for the source_light
+                components.          If a component is set =True it will parameterized
+                the positions in the image plane and ray-trace the          parameters
+                back to the source position on the fly during the fitting.
+        :param solver_type: string, option for specific solver type          see
+                detailed instruction of the Solver4Point and Solver2Point classes
         :param Ddt_sampling: bool, if True, samples the time-delay distance D_dt (in units of Mpc)
-        :param source_size: bool, if True, samples a source size parameters to be evaluated in the flux ratio likelihood
+        :param source_size: bool, if True, samples a source size parameters to be
+                evaluated in the flux ratio likelihood
         :param num_tau0: integer, number of different optical depth re-normalization factors
-        :param lens_redshift_sampling_indexes: list of integers corresponding to the lens model components whose redshifts
-         are a free parameter (only has an effect in multi-plane lensing) with same indexes indicating joint redshift,
-         in ascending numbering e.g. [-1, 0, 0, 1, 0, 2], -1 indicating not sampled fixed indexes
-        :param source_redshift_sampling_indexes: list of integers corresponding to the source model components whose redshifts
-         are a free parameter (only has an effect in multi-plane lensing) with same indexes indicating joint redshift,
-         in ascending numbering e.g. [-1, 0, 0, 1, 0, 2], -1 indicating not sampled fixed indexes. These indexes are
-         the sample as for the lens
-        :param source_grid_offset: optional, if True when using a pixel-based modelling (e.g. with STARLETS-like profiles),
-         adds two additional sampled parameters describing RA/Dec offsets between data coordinate grid and pixelated source plane coordinate grid.
-        :param num_shapelet_lens: number of shapelet coefficients in the 'SHAPELETS_CART' or 'SHAPELETS_POLAR' mass profile.
-        :param log_sampling_lens: Sample the log10 of the lens model parameters. Format : [[i_lens, ['param_name1', 'param_name2', ...]], [...], ...],
+        :param lens_redshift_sampling_indexes: list of integers corresponding to the
+                lens model components whose redshifts          are a free parameter
+                (only has an effect in multi-plane lensing) with same indexes indicating
+                joint redshift,          in ascending numbering e.g. [-1, 0, 0, 1, 0,
+                2], -1 indicating not sampled fixed indexes
+        :param source_redshift_sampling_indexes: list of integers corresponding to the
+                source model components whose redshifts          are a free parameter
+                (only has an effect in multi-plane lensing) with same indexes indicating
+                joint redshift,          in ascending numbering e.g. [-1, 0, 0, 1, 0,
+                2], -1 indicating not sampled fixed indexes. These indexes are
+                the sample as for the lens
+        :param source_grid_offset: optional, if True when using a pixel-based modelling
+                (e.g. with STARLETS-like profiles),          adds two additional sampled
+                parameters describing RA/Dec offsets between data coordinate grid and
+                pixelated source plane coordinate grid.
+        :param num_shapelet_lens: number of shapelet coefficients in the
+                'SHAPELETS_CART' or 'SHAPELETS_POLAR' mass profile.
+        :param log_sampling_lens: Sample the log10 of the lens model parameters. Format
+                : [[i_lens, ['param_name1', 'param_name2', ...]], [...], ...],
         """
 
         self._lens_model_list = kwargs_model.get("lens_model_list", [])
@@ -453,10 +482,7 @@ class Param(object):
 
     @property
     def num_point_source_images(self):
-        """
-
-        :return: total number of point source images
-        """
+        """:return: total number of point source images."""
         return self._num_images
 
     @property
@@ -468,13 +494,13 @@ class Param(object):
         return self._linear_solver
 
     def args2kwargs(self, args, bijective=False):
-        """
+        """:param args: tuple of parameter values (float, strings, ...) :param
+        bijective: boolean, if True (default) returns the parameters in the form as they
+        are sampled (e.g. if image_plane_source_list is set =True it returns the
+        position in the image plane coordinates), if False, returns the parameters in
+        the form to render a model (e.g. image_plane_source_list positions are ray-
+        traced back to the source plane).
 
-        :param args: tuple of parameter values (float, strings, ...)
-        :param bijective: boolean, if True (default) returns the parameters in the form as they are sampled
-         (e.g. if image_plane_source_list is set =True it returns the position in the image plane coordinates),
-         if False, returns the parameters in the form to render a model (e.g. image_plane_source_list positions are
-         ray-traced back to the source plane).
         :return: keyword arguments sorted in lenstronomy conventions
         """
         i = 0
@@ -560,10 +586,7 @@ class Param(object):
         return np.array(args, dtype=float)
 
     def param_limits(self):
-        """
-
-        :return: lower and upper limits of the arguments being sampled
-        """
+        """:return: lower and upper limits of the arguments being sampled."""
         lower_limit = self.kwargs2args(
             kwargs_lens=self.lensParams.lower_limit,
             kwargs_source=self.sourceParams.lower_limit,
@@ -583,10 +606,7 @@ class Param(object):
         return lower_limit, upper_limit
 
     def num_param(self):
-        """
-
-        :return: number of parameters involved (int), list of parameter names
-        """
+        """:return: number of parameters involved (int), list of parameter names."""
         num, name_list = self.lensParams.num_param()
         _num, _list = self.sourceParams.num_param()
         num += _num
@@ -606,10 +626,7 @@ class Param(object):
         return num, name_list
 
     def num_param_linear(self):
-        """
-
-        :return: number of linear basis set coefficients that are solved for
-        """
+        """:return: number of linear basis set coefficients that are solved for."""
         num = 0
         num += self.sourceParams.num_param_linear()
         num += self.lensLightParams.num_param_linear()
@@ -622,9 +639,9 @@ class Param(object):
         :param kwargs_source: source light model keyword argument list
         :param kwargs_lens: lens model keyword argument list
         :param image_plane: boolean, if True, does not up map image plane parameters to
-            source plane
+                source plane
         :return: source light model keyword arguments with mapped position arguments
-            from image to source plane
+                from image to source plane
         """
         kwargs_source_copy = copy.deepcopy(kwargs_source)
         for i, kwargs in enumerate(kwargs_source_copy):
@@ -698,14 +715,11 @@ class Param(object):
 
     @staticmethod
     def _update_joint_param(kwargs_list_1, kwargs_list_2, joint_setting_list):
-        """
-
-        :param kwargs_list_1: list of keyword arguments
-        :param kwargs_list_2: list of keyword arguments
-        :param joint_setting_list: [[i_1, k_2, ['param_name1', 'param_name2', ...]], [...], ...]
-                                     or: [[i_1, k_2, {'param_old1': 'param_new1', 'ra_0': 'center_x'}], [...], ...]
-        :return: updated kwargs_list_2 with arguments from kwargs_list_1 as defined in joint_setting_list
-        """
+        """:param kwargs_list_1: list of keyword arguments :param kwargs_list_2: list of
+        keyword arguments :param joint_setting_list: [[i_1, k_2, ['param_name1',
+        'param_name2', ...]], [...], ...] or: [[i_1, k_2, {'param_old1': 'param_new1',
+        'ra_0': 'center_x'}], [...], ...] :return: updated kwargs_list_2 with arguments
+        from kwargs_list_1 as defined in joint_setting_list."""
         for setting in joint_setting_list:
             i_1, k_2, param_list = setting
             if type(param_list) == list:
@@ -739,12 +753,10 @@ class Param(object):
 
     @staticmethod
     def _fix_joint_param(kwargs_list_2, joint_setting_list):
-        """
-
-        :param kwargs_list_2: list of keyword arguments
-        :param joint_setting_list: [[i_1, k_2, ['param_name1', 'param_name2', ...]], [...], ...]
-        :return: fixes entries in kwargs_list_2 that are joint with other kwargs_list as defined in joint_setting_list
-        """
+        """:param kwargs_list_2: list of keyword arguments :param joint_setting_list:
+        [[i_1, k_2, ['param_name1', 'param_name2', ...]], [...], ...] :return: fixes
+        entries in kwargs_list_2 that are joint with other kwargs_list as defined in
+        joint_setting_list."""
         kwargs_list_2_update = copy.deepcopy(kwargs_list_2)
         for setting in joint_setting_list:
             i_1, k_2, param_list = setting
@@ -758,7 +770,7 @@ class Param(object):
         :param kwargs_special: keyword arguments of the 'special' arguments
         :param kwargs_lens: lens model keyword argument list
         :param inverse: bool, if True, performs the inverse lens scaling for bijective
-            transforms
+                transforms
         :return: updated lens model keyword argument list
         """
         kwargs_lens_updated = copy.deepcopy(kwargs_lens)
@@ -822,7 +834,7 @@ class Param(object):
         """Updates model keyword arguments with redshifts being sampled.
 
         :param kwargs_special: keyword arguments from SpecialParam() class return of
-            sampling arguments
+                sampling arguments
         :return: kwargs_model, bool (True if kwargs_model has changed, else False)
         """
         if self._num_z_sampling == 0:
@@ -860,7 +872,7 @@ class Param(object):
         planes are made.
 
         :param kwargs_special: keyword arguments from SpecialParam() class return of
-            sampling arguments
+                sampling arguments
         :return: None, internal calls instance updated
         """
         kwargs_model, update_bool = self.update_kwargs_model(kwargs_special)

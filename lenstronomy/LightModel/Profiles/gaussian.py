@@ -97,18 +97,11 @@ class GaussianEllipse(object):
         self.gaussian = Gaussian()
 
     def function(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
-        """
-
-        :param x: coordinate on the sky
-        :param y: coordinate on the sky
-        :param amp: amplitude, such that 2D integral leads to this value
-        :param sigma: sigma of Gaussian in each direction
-        :param e1: eccentricity modulus
-        :param e2: eccentricity modulus
-        :param center_x: center of profile
-        :param center_y: center of profile
-        :return: surface brightness at (x, y)
-        """
+        """:param x: coordinate on the sky :param y: coordinate on the sky :param amp:
+        amplitude, such that 2D integral leads to this value :param sigma: sigma of
+        Gaussian in each direction :param e1: eccentricity modulus :param e2:
+        eccentricity modulus :param center_x: center of profile :param center_y: center
+        of profile :return: surface brightness at (x, y)"""
         x_, y_ = param_util.transform_e1e2_product_average(
             x, y, e1, e2, center_x, center_y
         )

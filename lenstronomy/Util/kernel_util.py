@@ -89,9 +89,8 @@ def center_kernel(kernel, iterations=20):
 
 @export
 def kernel_norm(kernel):
-    """
+    """:param kernel:
 
-    :param kernel:
     :return: normalisation of the psf kernel
     """
     norm = np.sum(np.array(kernel))
@@ -171,9 +170,9 @@ def subgrid_kernel(kernel, subgrid_res, odd=False, num_iter=100):
 def kernel_pixelsize_change(kernel, deltaPix_in, deltaPix_out):
     """Change the pixel size of a given kernel.
 
-    :param kernel:
-    :param deltaPix_in:
-    :param deltaPix_out:
+    :param kernel: 
+    :param deltaPix_in: 
+    :param deltaPix_out: 
     :return:
     """
     numPix = len(kernel)
@@ -212,8 +211,8 @@ def pixel_kernel(point_source_kernel, subgrid_res=7):
     """Converts a pixelised kernel of a point source to a kernel representing a uniform
     extended pixel.
 
-    :param point_source_kernel:
-    :param subgrid_res:
+    :param point_source_kernel: 
+    :param subgrid_res: 
     :return: convolution kernel for an extended pixel
     """
     kernel_subgrid = subgrid_kernel(point_source_kernel, subgrid_res, num_iter=10)
@@ -355,12 +354,10 @@ def split_kernel(
 
 @export
 def degrade_kernel(kernel_super, degrading_factor):
-    """
-
-    :param kernel_super: higher resolution kernel (odd number per axis)
-    :param degrading_factor: degrading factor (effectively the super-sampling resolution of the kernel given
-    :return: degraded kernel with odd axis number with the sum of the flux/values in the kernel being preserved
-    """
+    """:param kernel_super: higher resolution kernel (odd number per axis) :param
+    degrading_factor: degrading factor (effectively the super-sampling resolution of the
+    kernel given :return: degraded kernel with odd axis number with the sum of the
+    flux/values in the kernel being preserved."""
     if degrading_factor == 1:
         return kernel_super
     if degrading_factor % 2 == 0:
@@ -449,10 +446,10 @@ def cutout_source(x_pos, y_pos, image, kernelsize, shift=True):
     """Cuts out point source (e.g. PSF estimate) out of image and shift it to the center
     of a pixel.
 
-    :param x_pos:
-    :param y_pos:
-    :param image:
-    :param kernelsize:
+    :param x_pos: 
+    :param y_pos: 
+    :param image: 
+    :param kernelsize: 
     :return:
     """
     if kernelsize % 2 == 0:
@@ -488,9 +485,8 @@ def cutout_source(x_pos, y_pos, image, kernelsize, shift=True):
 
 @export
 def fwhm_kernel(kernel):
-    """
+    """:param kernel:
 
-    :param kernel:
     :return:
     """
     n = len(kernel)
@@ -514,10 +510,10 @@ def fwhm_kernel(kernel):
 def estimate_amp(data, x_pos, y_pos, psf_kernel):
     """Estimates the amplitude of a point source located at x_pos, y_pos.
 
-    :param data:
-    :param x_pos:
-    :param y_pos:
-    :param psf_kernel:
+    :param data: 
+    :param x_pos: 
+    :param y_pos: 
+    :param psf_kernel: 
     :return:
     """
     numPix_x, numPix_y = np.shape(data)

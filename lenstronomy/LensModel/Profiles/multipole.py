@@ -35,9 +35,9 @@ class Multipole(LensProfileBase):
     }
 
     def function(self, x, y, m, a_m, phi_m, center_x=0, center_y=0):
-        """
-        Lensing potential of multipole contribution (for 1 component with m>=2)
-        This uses the same definitions as Xu et al.(2013) in Appendix B3 https://arxiv.org/pdf/1307.4220.pdf
+        """Lensing potential of multipole contribution (for 1 component with m>=2) This
+        uses the same definitions as Xu et al.(2013) in Appendix B3
+        https://arxiv.org/pdf/1307.4220.pdf.
 
         :param x: x-coordinate to evaluate function
         :param y: y-coordinate to evaluate function
@@ -53,10 +53,9 @@ class Multipole(LensProfileBase):
         return f_
 
     def derivatives(self, x, y, m, a_m, phi_m, center_x=0, center_y=0):
-        """
-        Deflection of a multipole contribution (for 1 component with m>=2)
-        This uses the same definitions as Xu et al.(2013) in Appendix B3 https://arxiv.org/pdf/1307.4220.pdf
-        Equation B12
+        """Deflection of a multipole contribution (for 1 component with m>=2) This uses
+        the same definitions as Xu et al.(2013) in Appendix B3
+        https://arxiv.org/pdf/1307.4220.pdf Equation B12.
 
         :param x: x-coordinate to evaluate function
         :param y: y-coordinate to evaluate function
@@ -77,9 +76,9 @@ class Multipole(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, m, a_m, phi_m, center_x=0, center_y=0):
-        """
-        Hessian of a multipole contribution (for 1 component with m>=2)
-        This uses the same definitions as Xu et al.(2013) in Appendix B3 https://arxiv.org/pdf/1307.4220.pdf
+        """Hessian of a multipole contribution (for 1 component with m>=2) This uses the
+        same definitions as Xu et al.(2013) in Appendix B3
+        https://arxiv.org/pdf/1307.4220.pdf.
 
         :param x: x-coordinate to evaluate function
         :param y: y-coordinate to evaluate function

@@ -50,10 +50,7 @@ class TestCartShapelets(object):
         assert values[0] == 0
 
     def test_derivatives(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         beta = 1.0
         coeffs = [0, 0, 0, 1.0, 0, 0, 0, 0]
         kwargs_lens1 = {"coeffs": coeffs, "beta": beta}

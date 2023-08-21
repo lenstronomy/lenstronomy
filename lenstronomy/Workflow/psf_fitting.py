@@ -44,10 +44,7 @@ class PsfFitting(object):
     """
 
     def __init__(self, image_model_class):
-        """
-
-        :param image_model_class: ImageModel class instance
-        """
+        """:param image_model_class: ImageModel class instance."""
         self._image_model_class = image_model_class
 
     @staticmethod
@@ -60,7 +57,7 @@ class PsfFitting(object):
         :param kernelsize: int, size of kernel array
         :param psf_symmetry: int, the symmetry being imposed on the data
         :return: mask showing where the psf with symmetry n is incomplete due to
-            rotation.
+                rotation.
         """
         angle = 360.0 / psf_symmetry
 
@@ -84,19 +81,16 @@ class PsfFitting(object):
         verbose=True,
         **kwargs_psf_update
     ):
-        """
-
-        :param kwargs_psf: keyword arguments to construct the PSF() class
-        :param kwargs_params: keyword arguments of the parameters of the model components (e.g. 'kwargs_lens' etc)
-        :param num_iter: number of iterations in the PSF fitting and image fitting process
-        :param keep_psf_error_map: boolean, if True keeps previous psf_error_map
-        :param no_break: boolean, if True, runs until the end regardless of the next step getting worse, and then
-         reads out the overall best fit
-        :param verbose: print statements informing about progress of iterative procedure
-        :param kwargs_psf_update: keyword arguments providing the settings for a single iteration of the PSF, as being
-         passed to update_psf() method
-        :return: keyword argument of PSF constructor for PSF() class with updated PSF
-        """
+        """:param kwargs_psf: keyword arguments to construct the PSF() class :param
+        kwargs_params: keyword arguments of the parameters of the model components (e.g.
+        'kwargs_lens' etc) :param num_iter: number of iterations in the PSF fitting and
+        image fitting process :param keep_psf_error_map: boolean, if True keeps previous
+        psf_error_map :param no_break: boolean, if True, runs until the end regardless
+        of the next step getting worse, and then reads out the overall best fit :param
+        verbose: print statements informing about progress of iterative procedure :param
+        kwargs_psf_update: keyword arguments providing the settings for a single
+        iteration of the PSF, as being passed to update_psf() method :return: keyword
+        argument of PSF constructor for PSF() class with updated PSF."""
         self._image_model_class.PointSource.set_save_cache(True)
         if "kernel_point_source_init" not in kwargs_psf:
             kernel_point_source_init = copy.deepcopy(kwargs_psf["kernel_point_source"])
@@ -169,12 +163,12 @@ class PsfFitting(object):
         new_procedure=True,
         corner_symmetry=None,
     ):
-        """
+        """:param kwargs_psf: keyword arguments to construct the PSF() class :param
+        kwargs_params: keyword arguments of the parameters of the model components (e.g.
+        'kwargs_lens' etc) :param stacking_method: 'median', 'mean'; the different
+        estimates of the PSF are stacked and combined together.
 
-        :param kwargs_psf: keyword arguments to construct the PSF() class
-        :param kwargs_params: keyword arguments of the parameters of the model components (e.g. 'kwargs_lens' etc)
-        :param stacking_method: 'median', 'mean'; the different estimates of the PSF are stacked and combined together.
-         The choices are:
+        The choices are:
          'mean': mean of pixel values as the estimator (not robust to outliers)
          'median': median of pixel values as the estimator (outlier rejection robust but needs >2 point sources in the
          data
@@ -376,9 +370,8 @@ class PsfFitting(object):
 
     @staticmethod
     def _point_sources_list(image_model_class, kwargs_ps, kwargs_lens, k=None):
-        """
+        """:param kwargs_ps:
 
-        :param kwargs_ps:
         :return: list of images containing only single point sources
         """
         point_list = []
@@ -405,11 +398,9 @@ class PsfFitting(object):
         kernel_init,
         block_center_neighbour=0,
     ):
-        """
+        """:param ra_image: coordinate array of images in angles :param dec_image:
+        coordinate array of images in angles :param x: image position array in x-pixel.
 
-        :param ra_image: coordinate array of images in angles
-        :param dec_image: coordinate array of images in angles
-        :param x: image position array in x-pixel
         :param y: image position array in y-pixel
         :param image_list: list of images (i.e. data - all models subtracted, except a single point source)
         :param kernel_size: width in pixel of the kernel
@@ -448,10 +439,9 @@ class PsfFitting(object):
         supersampling_factor,
         block_center_neighbour,
     ):
-        """
+        """:param ra_image: list; position in angular units of the image :param
+        dec_image: list; position in angular units of the image.
 
-        :param ra_image: list; position in angular units of the image
-        :param dec_image: list; position in angular units of the image
         :param point_amp: list of model amplitudes of point sources
         :param residuals: data - model
         :param cutout_size: pixel size of cutout around single star/quasar to be considered for the psf reconstruction
@@ -528,7 +518,8 @@ class PsfFitting(object):
         :param x_pos: list of image positions in pixel units
         :param y_pos: list of image position in pixel units
         :param image_list: list of 2d numpy arrays with cleaned images, with all
-            contaminating sources removed except the point-like object to be cut out.
+                contaminating sources removed except the point-like object to be cut
+                out.
         :param cutout_size: odd integer, size of cutout.
         :return: list of cutouts
         """
@@ -545,9 +536,8 @@ class PsfFitting(object):
 
     @staticmethod
     def cutout_psf_single(x, y, image, mask, kernel_size, kernel_init):
-        """
+        """:param x: x-coordinate of point source.
 
-        :param x: x-coordinate of point source
         :param y: y-coordinate of point source
         :param image: image (i.e. data - all models subtracted, except a single point source)
         :param mask: mask of pixels in the image not to be considered in the PSF estimate (being replaced by kernel_init)
@@ -607,20 +597,22 @@ class PsfFitting(object):
         """Updates psf estimate based on old kernel and several new estimates.
 
         :param kernel_list_new: list of new PSF kernels estimated from the point sources
-            in the image (un-normalized)
+                in the image (un-normalized)
         :param kernel_old: old PSF kernel
         :param factor: weight of updated estimate based on new and old estimate,
-            factor=1 means new estimate, factor=0 means old estimate
+                factor=1 means new estimate, factor=0 means old estimate
         :param stacking_option: option of stacking, mean or median
         :param symmetry: imposed symmetry of PSF estimate
         :param corner_symmetry: int, if the imposed symmetry is an odd number, the edges
-            of the reconstructed PSF in its default form will be clipped at the corners.
-            corner_symmetry 1) tracks where the residuals are being clipped by the
-            imposed symmetry and then 2) creates a psf with symmetry=corner symmetry
-            which is either 1 or 360/symm = n*90. (e.g for a symmetry 6 psf you could
-            use symmetry 2 in the corners). 3) adds the corner_symmetry psf (which has
-            information at the corners) to the odd symmetry PSF, in the regions where
-            the odd-symmetry PSF does not have complete information.
+                of the reconstructed PSF in its default form will be clipped at the
+                corners.             corner_symmetry 1) tracks where the residuals are
+                being clipped by the             imposed symmetry and then 2) creates a
+                psf with symmetry=corner symmetry             which is either 1 or
+                360/symm = n*90. (e.g for a symmetry 6 psf you could             use
+                symmetry 2 in the corners). 3) adds the corner_symmetry psf (which has
+                information at the corners) to the odd symmetry PSF, in the regions
+                where             the odd-symmetry PSF does not have complete
+                information.
         :return: updated PSF estimate
         """
         ## keep_corners is a boolean which tracks whether to calc PSF separately in the corners for odd symmetry rotations.
@@ -712,7 +704,7 @@ class PsfFitting(object):
         :param supersampling_factor: super-sampling factor
         :param error_map_radius: radius (in angle) to cut the error map
         :return: psf error map such that square of the uncertainty gets boosted by
-            error_map * (psf * amp)**2
+                error_map * (psf * amp)**2
         """
         kernel_low = kernel_util.degrade_kernel(psf_kernel, supersampling_factor)
         error_map_list = np.zeros(
@@ -771,20 +763,21 @@ class PsfFitting(object):
 
         :param kernel: PSF kernel
         :param star_cutout_list: list of 2d arrays of cutouts of the point sources with
-            all other model components subtracted
+                all other model components subtracted
         :param amp: list of amplitudes of the estimated PSF kernel
         :param x_pos: pixel position (in original data unit, not in cutout) of the point
-            sources (same order as amp and star cutouts)
+                sources (same order as amp and star cutouts)
         :param y_pos: pixel position (in original data unit, not in cutout) of the point
-            sources (same order as amp and star cutouts)
+                sources (same order as amp and star cutouts)
         :param error_map_radius: float, radius (in arc seconds) of the outermost error
-            in the PSF estimate (e.g. to avoid double counting of overlapping PSF erros)
+                in the PSF estimate (e.g. to avoid double counting of overlapping PSF
+                erros)
         :param block_center_neighbour: angle, radius of neighbouring point sources
-            around their centers the estimates is ignored. Default is zero, meaning a
-            not optimal subtraction of the neighbouring point sources might contaminate
-            the estimate.
+                around their centers the estimates is ignored. Default is zero, meaning
+                a             not optimal subtraction of the neighbouring point sources
+                might contaminate             the estimate.
         :return: relative uncertainty in the psf model (in quadrature) per pixel based
-            on residuals achieved in the image
+                on residuals achieved in the image
         """
         error_map_list = np.zeros((len(star_cutout_list), len(kernel), len(kernel)))
         mask_list = np.zeros((len(star_cutout_list), len(kernel), len(kernel)))
@@ -841,16 +834,11 @@ class PsfFitting(object):
 
     @staticmethod
     def mask_point_source(x_pos, y_pos, x_grid, y_grid, radius, i=0):
-        """
-
-        :param x_pos: x-position of list of point sources
-        :param y_pos: y-position of list of point sources
-        :param x_grid: x-coordinates of grid
-        :param y_grid: y-coordinates of grid
-        :param i: index of point source not to mask out
-        :param radius: radius to mask out other point sources
-        :return: a mask of the size of the image with cutouts around the position
-        """
+        """:param x_pos: x-position of list of point sources :param y_pos: y-position of
+        list of point sources :param x_grid: x-coordinates of grid :param y_grid:
+        y-coordinates of grid :param i: index of point source not to mask out :param
+        radius: radius to mask out other point sources :return: a mask of the size of
+        the image with cutouts around the position."""
         mask = np.ones_like(x_grid)
         for k in range(len(x_pos)):
             if k != i:

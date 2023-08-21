@@ -26,18 +26,21 @@ class MultiPlaneBase(ProfileListBase):
         kwargs_interp=None,
         kwargs_synthesis=None,
     ):
-        """
-        A description of the recursive multi-plane formalism can be found e.g. here: https://arxiv.org/abs/1312.1536
+        """A description of the recursive multi-plane formalism can be found e.g. here:
+        https://arxiv.org/abs/1312.1536.
 
         :param lens_model_list: list of lens model strings
         :param lens_redshift_list: list of floats with redshifts of the lens models indicated in lens_model_list
-        :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens
-         models. If None, 'z_source' is used.
+        :param z_source_convention: float, redshift of a source to define the reduced
+                deflection angles of the lens          models. If None, 'z_source' is
+                used.
         :param cosmo: instance of astropy.cosmology
-        :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model
-         (see documentation in Profiles/numerical_alpha)
+        :param numerical_alpha_class: an instance of a custom class for use in
+                NumericalAlpha() lens model          (see documentation in
+                Profiles/numerical_alpha)
         :param kwargs_interp: interpolation keyword arguments specifying the numerics.
-         See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
+                See description in the Interpolate() class. Only applicable for
+                'INTERPOL' and 'INTERPOL_SCALED' models.
         :param kwargs_synthesis: keyword arguments for the 'SYNTHESIS' lens model, if applicable
         """
         if z_interp_stop is None:
@@ -183,7 +186,7 @@ class MultiPlaneBase(ProfileListBase):
         :param z_start: redshift of the start of the ray-tracing
         :param z_stop: stop of ray-tracing
         :param include_z_start: boolean, if True includes the computation of the
-            starting position if the first deflector is at z_start
+                starting position if the first deflector is at z_start
         :return: T_ij_start, T_ij_end
         """
         z_lens_last = z_start
@@ -215,7 +218,7 @@ class MultiPlaneBase(ProfileListBase):
         :param z_stop: redshift of the source to stop the backwards ray-tracing
         :param T_z_stop: optional, transversal angular distance from z=0 to z_stop
         :param T_ij_end: optional, transversal angular distance between the last lensing
-            plane and the source plane
+                plane and the source plane
         :return: dt_geo, dt_shapiro, [days]
         """
         dt_grav = np.zeros_like(theta_x, dtype=float)
@@ -268,11 +271,8 @@ class MultiPlaneBase(ProfileListBase):
 
     @staticmethod
     def _index_ordering(redshift_list):
-        """
-
-        :param redshift_list: list of redshifts
-        :return: indexes in ascending order to be evaluated (from z=0 to z=z_source)
-        """
+        """:param redshift_list: list of redshifts :return: indexes in ascending order
+        to be evaluated (from z=0 to z=z_source)"""
         redshift_list = np.array(redshift_list)
         # sort_index = np.argsort(redshift_list[redshift_list < z_source])
         sort_index = np.argsort(redshift_list)
@@ -291,15 +291,11 @@ class MultiPlaneBase(ProfileListBase):
         return alpha_reduced * factor
 
     def _gravitational_delay(self, x, y, kwargs_lens, index, z_lens):
-        """
-
-        :param x: co-moving coordinate at the lens plane
-        :param y: co-moving coordinate at the lens plane
-        :param kwargs_lens: lens model keyword arguments
-        :param z_lens: redshift of the deflector
-        :param index: index of the lens model in sorted redshfit convention
-        :return: gravitational delay in units of days as seen at z=0
-        """
+        """:param x: co-moving coordinate at the lens plane :param y: co-moving
+        coordinate at the lens plane :param kwargs_lens: lens model keyword arguments
+        :param z_lens: redshift of the deflector :param index: index of the lens model
+        in sorted redshfit convention :return: gravitational delay in units of days as
+        seen at z=0."""
         theta_x, theta_y = self._co_moving2angle(x, y, index)
         k = self._sorted_redshift_index[index]
         potential = self.func_list[k].function(theta_x, theta_y, **kwargs_lens[k])
@@ -310,17 +306,11 @@ class MultiPlaneBase(ProfileListBase):
 
     @staticmethod
     def _geometrical_delay(beta_i_x, beta_i_y, beta_j_x, beta_j_y, T_i, T_j, T_ij):
-        """
-
-        :param beta_i_x: angle on the sky at plane i
-        :param beta_i_y: angle on the sky at plane i
-        :param beta_j_x: angle on the sky at plane j
-        :param beta_j_y: angle on the sky at plane j
-        :param T_i: transverse diameter distance to z_i
-        :param T_j: transverse diameter distance to z_j
-        :param T_ij: transverse diameter distance from z_i to z_j
-        :return: excess delay relative to a straight line
-        """
+        """:param beta_i_x: angle on the sky at plane i :param beta_i_y: angle on the
+        sky at plane i :param beta_j_x: angle on the sky at plane j :param beta_j_y:
+        angle on the sky at plane j :param T_i: transverse diameter distance to z_i
+        :param T_j: transverse diameter distance to z_j :param T_ij: transverse diameter
+        distance from z_i to z_j :return: excess delay relative to a straight line."""
         d_beta_x = beta_j_x - beta_i_x
         d_beta_y = beta_j_y - beta_i_y
         tau_ij = (
@@ -397,9 +387,9 @@ class MultiPlaneBase(ProfileListBase):
         :param alpha_y: physical angle (radian) before the deflector plane
         :param kwargs_lens: lens model parameter kwargs
         :param index: index of the lens model to be added in sorted redshift list
-            convention
+                convention
         :return: updated physical deflection after deflector plane (in a backwards ray-
-            tracing perspective)
+                tracing perspective)
         """
         theta_x, theta_y = self._co_moving2angle(x, y, index)
         k = self._sorted_redshift_index[index]
@@ -412,13 +402,9 @@ class MultiPlaneBase(ProfileListBase):
 
     @staticmethod
     def _start_condition(inclusive, z_lens, z_start):
-        """
-
-        :param inclusive: boolean, if True selects z_lens including z_start, else only selects z_lens > z_start
-        :param z_lens: deflector redshift
-        :param z_start: starting redshift (lowest redshift)
-        :return: boolean of condition
-        """
+        """:param inclusive: boolean, if True selects z_lens including z_start, else
+        only selects z_lens > z_start :param z_lens: deflector redshift :param z_start:
+        starting redshift (lowest redshift) :return: boolean of condition."""
 
         if inclusive:
             return z_lens >= z_start

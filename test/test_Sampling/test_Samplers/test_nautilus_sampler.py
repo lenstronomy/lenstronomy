@@ -9,11 +9,7 @@ from lenstronomy.Sampling.Samplers.nautilus_sampler import NautilusSampler
 
 @pytest.fixture
 def import_fixture(simple_einstein_ring_likelihood_2d):
-    """
-
-    :param simple_einstein_ring_likelihood_2d: fixture
-    :return:
-    """
+    """:param simple_einstein_ring_likelihood_2d: fixture :return:"""
     likelihood, kwargs_truths = simple_einstein_ring_likelihood_2d
     sampler = NautilusSampler(likelihood_module=likelihood)
     return sampler, likelihood

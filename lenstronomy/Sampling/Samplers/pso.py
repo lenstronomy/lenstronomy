@@ -33,23 +33,17 @@ class ParticleSwarmOptimizer(object):
     def __init__(
         self, func, low, high, particle_count=25, pool=None, args=None, kwargs=None
     ):
-        """
+        """:param func: function to call to return log likelihood :type func: python
+        definition :param low: lower bound of the parameters :type low: numpy array
+        :param high: upper bound of the parameters :type high: numpy array :param
+        particle_count: number of particles in each iteration of the PSO :type
+        particle_count: int :param pool: MPI pool for mapping different processes :type
+        pool: None or MPI pool :param args: positional arguments to send to `func`.
 
-        :param func: function to call to return log likelihood
-        :type func: python definition
-        :param low: lower bound of the parameters
-        :type low: numpy array
-        :param high: upper bound of the parameters
-        :type high: numpy array
-        :param particle_count: number of particles in each iteration of the PSO
-        :type particle_count: int
-        :param pool: MPI pool for mapping different processes
-        :type pool: None or MPI pool
-        :param args: positional arguments to send to `func`. The function
-        will be called as `func(x, *args, **kwargs)`.
+        The function will be called as `func(x, *args, **kwargs)`.
         :type args: `list`
-        :param kwargs: keyword arguments to send to `func`. The function
-        will be called as `func(x, *args, **kwargs)`
+        :param kwargs: keyword arguments to send to `func`. The function         will be
+                called as `func(x, *args, **kwargs)`
         :type kwargs: `dict`
         """
         self.low = [l for l in low]
@@ -93,7 +87,7 @@ class ParticleSwarmOptimizer(object):
     def _init_swarm(self):
         """Initiate the swarm.
 
-        :return:
+        :return: 
         :rtype:
         """
         swarm = []
@@ -126,7 +120,7 @@ class ParticleSwarmOptimizer(object):
         :param p: stop criterion, percentage of particles to use
         :param m: stop criterion, difference between mean fitness and global best
         :param n: stop criterion, difference between norm of the particle vector and
-            norm of the global best
+                norm of the global best
         :param early_stop_tolerance: will terminate at the given value (should be
             specified as a chi^2)
         :param verbose: prints when it stopped
@@ -221,7 +215,7 @@ class ParticleSwarmOptimizer(object):
         :param p: stop criterion, percentage of particles to use
         :param m: stop criterion, difference between mean fitness and global best
         :param n: stop criterion, difference between norm of the particle
-         vector and norm of the global best
+                vector and norm of the global best
         :param early_stop_tolerance: will terminate at the given value (should be specified as a chi^2)
         """
         log_likelihood_list = []
@@ -246,7 +240,7 @@ class ParticleSwarmOptimizer(object):
 
         :param swarm: PSO state
         :type swarm: list of Particle() instances of the swarm
-        :return:
+        :return: 
         :rtype:
         """
         position = [particle.position for particle in swarm]
@@ -284,9 +278,8 @@ class ParticleSwarmOptimizer(object):
             return False
 
     def _converged_fit(self, it, p, m):
-        """
+        """:param it:
 
-        :param it:
         :type it:
         :param p:
         :type p:
@@ -304,9 +297,8 @@ class ParticleSwarmOptimizer(object):
         return abs(self.global_best.fitness - mean_fit) < m
 
     def _converged_space(self, it, p, m):
-        """
+        """:param it:
 
-        :param it:
         :type it:
         :param p:
         :type p:
@@ -329,11 +321,10 @@ class ParticleSwarmOptimizer(object):
         return abs(max_norm) < m
 
     def _converged_space2(self, p):
-        """
+        """:param p:
 
-        :param p:
-        :type p:
-        :return:
+        :type p: 
+        :return: 
         :rtype:
         """
         # Andres N. Ruiz et al.
@@ -352,7 +343,7 @@ class ParticleSwarmOptimizer(object):
     def is_master(self):
         """Check if the current processor is the master.
 
-        :return:
+        :return: 
         :rtype:
         """
         if self.pool is None:
@@ -378,12 +369,8 @@ class Particle(object):
     """
 
     def __init__(self, position, velocity, fitness=0):
-        """
-
-        :param position: parameter positions
-        :param velocity: parameter velocity
-        :param fitness:
-        """
+        """:param position: parameter positions :param velocity: parameter velocity
+        :param fitness:"""
         self.position = [p for p in position]
         self.velocity = [v for v in velocity]
 
@@ -393,9 +380,8 @@ class Particle(object):
 
     @property
     def personal_best(self):
-        """
+        """:return:
 
-        :return:
         :rtype:
         """
         if self._personal_best is None:
@@ -422,7 +408,7 @@ class Particle(object):
     def __str__(self):
         """Get a `str` object for the particle state.
 
-        :return:
+        :return: 
         :rtype:
         """
         return "{:f}, pos: {:s} velocity: {:s}".format(

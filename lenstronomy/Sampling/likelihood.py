@@ -240,16 +240,12 @@ class LikelihoodModule(object):
         kwargs_time_delay,
         kinematic_data,
     ):
-        """
-
-        :param kwargs_model: lenstronomy model keyword arguments
-        :param kwargs_imaging: keyword arguments for imaging likelihood
-        :param kwargs_position: keyword arguments for positional likelihood
-        :param kwargs_flux: keyword arguments for flux ratio likelihood
-        :param kwargs_time_delay: keyword arguments for time delay likelihood
-        :param kinematic_data: kinematic class for kinematic likelihood
-        :return: updated model instances of this class
-        """
+        """:param kwargs_model: lenstronomy model keyword arguments :param
+        kwargs_imaging: keyword arguments for imaging likelihood :param kwargs_position:
+        keyword arguments for positional likelihood :param kwargs_flux: keyword
+        arguments for flux ratio likelihood :param kwargs_time_delay: keyword arguments
+        for time delay likelihood :param kinematic_data: kinematic class for kinematic
+        likelihood :return: updated model instances of this class."""
 
         # TODO: in case lens model or point source models are only applied on partial images, then this current class
         # has ambiguities when it comes to position likelihood, time-delay likelihood and flux ratio likelihood
@@ -299,7 +295,7 @@ class LikelihoodModule(object):
         :param args: ordered parameter values that are being sampled
         :type args: tuple or list of floats
         :param verbose: if True, makes print statements about individual likelihood
-            components
+                components
         :type verbose: boolean
         :returns: log likelihood of the data given the model (natural logarithm)
         """
@@ -314,15 +310,11 @@ class LikelihoodModule(object):
         return self.log_likelihood(kwargs_return, verbose=verbose)
 
     def log_likelihood(self, kwargs_return, verbose=False):
-        """
-
-
-        :param kwargs_return: need to contain 'kwargs_lens', 'kwargs_source', 'kwargs_lens_light', 'kwargs_ps',
-         'kwargs_special'. These entries themselves are lists of keyword argument of the parameters entering the model
-         to be evaluated
-        :type kwargs_return: keyword arguments
-        :param verbose: if True, makes print statements about individual likelihood components
-        :type verbose: boolean
+        """:param kwargs_return: need to contain 'kwargs_lens', 'kwargs_source',
+        'kwargs_lens_light', 'kwargs_ps', 'kwargs_special'. These entries themselves are
+        lists of keyword argument of the parameters entering the model to be evaluated
+        :type kwargs_return: keyword arguments :param verbose: if True, makes print
+        statements about individual likelihood components :type verbose: boolean.
 
         :returns:
          - logL (float) log likelihood of the data given the model (natural logarithm)
@@ -406,10 +398,7 @@ class LikelihoodModule(object):
 
     @property
     def num_data(self):
-        """
-
-        :return: number of independent data points in the combined fitting
-        """
+        """:return: number of independent data points in the combined fitting."""
         num_data = 0
         if self._image_likelihood is True:
             num_data += self.image_likelihood.num_data
@@ -456,16 +445,12 @@ class LikelihoodModule(object):
         dec_image_list=None,
         kinematic_data=None,
     ):
-        """
-
-        :param multi_band_list: list of [[kwargs_data, kwargs_psf, kwargs_numerics], [], ...]
-        :param multi_band_type: string, type of multi-plane settings (multi-linear or joint-linear)
-        :param time_delays_measured: measured time delays (units of days)
-        :param time_delays_uncertainties: uncertainties in time-delay measurement
-        :param flux_ratios: flux ratios of point sources
-        :param flux_ratio_errors: error in flux ratio measurement
-        :return:
-        """
+        """:param multi_band_list: list of [[kwargs_data, kwargs_psf, kwargs_numerics],
+        [], ...] :param multi_band_type: string, type of multi-plane settings (multi-
+        linear or joint-linear) :param time_delays_measured: measured time delays (units
+        of days) :param time_delays_uncertainties: uncertainties in time-delay
+        measurement :param flux_ratios: flux ratios of point sources :param
+        flux_ratio_errors: error in flux ratio measurement :return:"""
         if multi_band_list is None:
             multi_band_list = []
         if ra_image_list is None:
@@ -496,7 +481,7 @@ class LikelihoodModule(object):
         planes are made.
 
         :param kwargs_special: keyword arguments from SpecialParam() class return of
-            sampling arguments
+                sampling arguments
         :return: None, all class instances updated to recent model
         """
         kwargs_model, update_bool = self.param.update_kwargs_model(kwargs_special)

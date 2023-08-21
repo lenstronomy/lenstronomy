@@ -12,26 +12,18 @@ class Slit(object):
     """Slit aperture description."""
 
     def __init__(self, length, width, center_ra=0, center_dec=0, angle=0):
-        """
-
-        :param length: length of slit
-        :param width: width of slit
-        :param center_ra: center of slit
-        :param center_dec: center of slit
-        :param angle: orientation angle of slit, angle=0 corresponds length in RA direction
-        """
+        """:param length: length of slit :param width: width of slit :param center_ra:
+        center of slit :param center_dec: center of slit :param angle: orientation angle
+        of slit, angle=0 corresponds length in RA direction."""
         self._length = length
         self._width = width
         self._center_ra, self._center_dec = center_ra, center_dec
         self._angle = angle
 
     def aperture_select(self, ra, dec):
-        """
-
-        :param ra: angular coordinate of photon/ray
-        :param dec: angular coordinate of photon/ray
-        :return: bool, True if photon/ray is within the slit, False otherwise
-        """
+        """:param ra: angular coordinate of photon/ray :param dec: angular coordinate of
+        photon/ray :return: bool, True if photon/ray is within the slit, False
+        otherwise."""
         return (
             slit_select(
                 ra,
@@ -56,17 +48,11 @@ class Slit(object):
 
 @export
 def slit_select(ra, dec, length, width, center_ra=0, center_dec=0, angle=0):
-    """
-
-    :param ra: angular coordinate of photon/ray
-    :param dec: angular coordinate of photon/ray
-    :param length: length of slit
-    :param width: width of slit
-    :param center_ra: center of slit
-    :param center_dec: center of slit
-    :param angle: orientation angle of slit, angle=0 corresponds length in RA direction
-    :return: bool, True if photon/ray is within the slit, False otherwise
-    """
+    """:param ra: angular coordinate of photon/ray :param dec: angular coordinate of
+    photon/ray :param length: length of slit :param width: width of slit :param
+    center_ra: center of slit :param center_dec: center of slit :param angle:
+    orientation angle of slit, angle=0 corresponds length in RA direction :return: bool,
+    True if photon/ray is within the slit, False otherwise."""
     ra_ = ra - center_ra
     dec_ = dec - center_dec
     x = np.cos(angle) * ra_ + np.sin(angle) * dec_
@@ -84,26 +70,19 @@ class Frame(object):
     frame."""
 
     def __init__(self, width_outer, width_inner, center_ra=0, center_dec=0, angle=0):
-        """
-
-        :param width_outer: width of box to the outer parts
-        :param width_inner: width of inner removed box
-        :param center_ra: center of slit
-        :param center_dec: center of slit
-        :param angle: orientation angle of slit, angle=0 corresponds length in RA direction
-        """
+        """:param width_outer: width of box to the outer parts :param width_inner: width
+        of inner removed box :param center_ra: center of slit :param center_dec: center
+        of slit :param angle: orientation angle of slit, angle=0 corresponds length in
+        RA direction."""
         self._width_outer = width_outer
         self._width_inner = width_inner
         self._center_ra, self._center_dec = center_ra, center_dec
         self._angle = angle
 
     def aperture_select(self, ra, dec):
-        """
-
-        :param ra: angular coordinate of photon/ray
-        :param dec: angular coordinate of photon/ray
-        :return: bool, True if photon/ray is within the slit, False otherwise
-        """
+        """:param ra: angular coordinate of photon/ray :param dec: angular coordinate of
+        photon/ray :return: bool, True if photon/ray is within the slit, False
+        otherwise."""
         return (
             frame_select(
                 ra,
@@ -128,17 +107,12 @@ class Frame(object):
 
 @export
 def frame_select(ra, dec, width_outer, width_inner, center_ra=0, center_dec=0, angle=0):
-    """
-
-    :param ra: angular coordinate of photon/ray
-    :param dec: angular coordinate of photon/ray
-    :param width_outer: width of box to the outer parts
-    :param width_inner: width of inner removed box
-    :param center_ra: center of slit
-    :param center_dec: center of slit
-    :param angle: orientation angle of slit, angle=0 corresponds length in RA direction
-    :return: bool, True if photon/ray is within the box with a hole, False otherwise
-    """
+    """:param ra: angular coordinate of photon/ray :param dec: angular coordinate of
+    photon/ray :param width_outer: width of box to the outer parts :param width_inner:
+    width of inner removed box :param center_ra: center of slit :param center_dec:
+    center of slit :param angle: orientation angle of slit, angle=0 corresponds length
+    in RA direction :return: bool, True if photon/ray is within the box with a hole,
+    False otherwise."""
     ra_ = ra - center_ra
     dec_ = dec - center_dec
     x = np.cos(angle) * ra_ + np.sin(angle) * dec_
@@ -156,23 +130,16 @@ class Shell(object):
     """Shell aperture."""
 
     def __init__(self, r_in, r_out, center_ra=0, center_dec=0):
-        """
-
-        :param r_in: innermost radius to be selected
-        :param r_out: outermost radius to be selected
-        :param center_ra: center of the sphere
-        :param center_dec: center of the sphere
-        """
+        """:param r_in: innermost radius to be selected :param r_out: outermost radius
+        to be selected :param center_ra: center of the sphere :param center_dec: center
+        of the sphere."""
         self._r_in, self._r_out = r_in, r_out
         self._center_ra, self._center_dec = center_ra, center_dec
 
     def aperture_select(self, ra, dec):
-        """
-
-        :param ra: angular coordinate of photon/ray
-        :param dec: angular coordinate of photon/ray
-        :return: bool, True if photon/ray is within the slit, False otherwise
-        """
+        """:param ra: angular coordinate of photon/ray :param dec: angular coordinate of
+        photon/ray :return: bool, True if photon/ray is within the slit, False
+        otherwise."""
         return (
             shell_select(
                 ra, dec, self._r_in, self._r_out, self._center_ra, self._center_dec
@@ -191,16 +158,11 @@ class Shell(object):
 
 @export
 def shell_select(ra, dec, r_in, r_out, center_ra=0, center_dec=0):
-    """
-
-    :param ra: angular coordinate of photon/ray
-    :param dec: angular coordinate of photon/ray
-    :param r_in: innermost radius to be selected
-    :param r_out: outermost radius to be selected
-    :param center_ra: center of the sphere
-    :param center_dec: center of the sphere
-    :return: boolean, True if within the radial range, False otherwise
-    """
+    """:param ra: angular coordinate of photon/ray :param dec: angular coordinate of
+    photon/ray :param r_in: innermost radius to be selected :param r_out: outermost
+    radius to be selected :param center_ra: center of the sphere :param center_dec:
+    center of the sphere :return: boolean, True if within the radial range, False
+    otherwise."""
     x = ra - center_ra
     y = dec - center_dec
     r = np.sqrt(x**2 + y**2)
@@ -216,10 +178,10 @@ class IFUShells(object):
     kinematics are measured."""
 
     def __init__(self, r_bins, center_ra=0, center_dec=0):
-        """
+        """:param r_bins: array of radial bins to average the dispersion spectra in
+        ascending order.
 
-        :param r_bins: array of radial bins to average the dispersion spectra in ascending order.
-         It starts with the innermost edge to the outermost edge.
+        It starts with the innermost edge to the outermost edge.
         :param center_ra: center of the sphere
         :param center_dec: center of the sphere
         """
@@ -227,12 +189,9 @@ class IFUShells(object):
         self._center_ra, self._center_dec = center_ra, center_dec
 
     def aperture_select(self, ra, dec):
-        """
-
-        :param ra: angular coordinate of photon/ray
-        :param dec: angular coordinate of photon/ray
-        :return: bool, True if photon/ray is within the slit, False otherwise, index of shell
-        """
+        """:param ra: angular coordinate of photon/ray :param dec: angular coordinate of
+        photon/ray :return: bool, True if photon/ray is within the slit, False
+        otherwise, index of shell."""
         return shell_ifu_select(
             ra, dec, self._r_bins, self._center_ra, self._center_dec
         )
@@ -246,12 +205,11 @@ class IFUShells(object):
 
 @export
 def shell_ifu_select(ra, dec, r_bin, center_ra=0, center_dec=0):
-    """
+    """:param ra: angular coordinate of photon/ray :param dec: angular coordinate of
+    photon/ray :param r_bin: array of radial bins to average the dispersion spectra in
+    ascending order.
 
-    :param ra: angular coordinate of photon/ray
-    :param dec: angular coordinate of photon/ray
-    :param r_bin: array of radial bins to average the dispersion spectra in ascending order.
-     It starts with the inner-most edge to the outermost edge.
+    It starts with the inner-most edge to the outermost edge.
     :param center_ra: center of the sphere
     :param center_dec: center of the sphere
     :return: boolean, True if within the radial range, False otherwise

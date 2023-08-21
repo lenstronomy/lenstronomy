@@ -16,10 +16,8 @@ class CosmoInterp(object):
     routines."""
 
     def __init__(self, cosmo):
-        """
-
-        :param cosmo: astropy.cosmology instance (version 4.0 as private functions need to be supported)
-        """
+        """:param cosmo: astropy.cosmology instance (version 4.0 as private functions
+        need to be supported)"""
         self._cosmo = cosmo
 
     def _integral_comoving_distance_z1z2(self, z1, z2):

@@ -172,24 +172,23 @@ class SpecialParam(object):
         source_grid_offset=False,
         kinematic_sampling=False,
     ):
-        """
+        """:param Ddt_sampling: bool, if True, samples the time-delay distance D_dt (in
+        units of Mpc) :param mass_scaling: bool, if True, samples a mass scaling factor
+        between different profiles :param num_scale_factor: int, number of independent
+        mass scaling factors being sampled :param kwargs_fixed: keyword arguments, fixed
+        parameters during sampling :param kwargs_lower: keyword arguments, lower bound
+        of parameters being sampled :param kwargs_upper: keyword arguments, upper bound
+        of parameters being sampled :param point_source_offset: bool, if True, adds
+        relative offsets ot the modeled image positions relative to the time-delay and
+        lens equation solver :param num_images: number of point source images such that
+        the point source offset parameters match their numbers :param source_size: bool,
+        if True, samples a source size parameters to be evaluated in the flux ratio
+        likelihood :param num_tau0: integer, number of different optical depth re-
+        normalization factors :param num_z_sampling: integer, number of different lens
+        redshifts to be sampled :param source_grid_offset: bool, if True, samples two
+        parameters (x, y) for the offset of the pixelated source plane grid coordinates.
 
-        :param Ddt_sampling: bool, if True, samples the time-delay distance D_dt (in units of Mpc)
-        :param mass_scaling: bool, if True, samples a mass scaling factor between different profiles
-        :param num_scale_factor: int, number of independent mass scaling factors being sampled
-        :param kwargs_fixed: keyword arguments, fixed parameters during sampling
-        :param kwargs_lower: keyword arguments, lower bound of parameters being sampled
-        :param kwargs_upper: keyword arguments, upper bound of parameters being sampled
-        :param point_source_offset: bool, if True, adds relative offsets ot the modeled image positions relative to the
-         time-delay and lens equation solver
-        :param num_images: number of point source images such that the point source offset parameters match their
-         numbers
-        :param source_size: bool, if True, samples a source size parameters to be evaluated in the flux ratio likelihood
-        :param num_tau0: integer, number of different optical depth re-normalization factors
-        :param num_z_sampling: integer, number of different lens redshifts to be sampled
-        :param source_grid_offset: bool, if True, samples two parameters (x, y) for the offset of the pixelated source
-         plane grid coordinates.
-         Warning: this is only defined for pixel-based source modelling (e.g. 'SLIT_STARLETS' light profile)
+        Warning: this is only defined for pixel-based source modelling (e.g. 'SLIT_STARLETS' light profile)
         :param kinematic_sampling: bool, if True, samples the kinematic parameters b_ani, incli, with cosmography
          D_dt (overrides _D_dt_sampling) and Dd
         """
@@ -231,13 +230,10 @@ class SpecialParam(object):
         self.upper_limit = kwargs_upper
 
     def get_params(self, args, i, impose_bound=False):
-        """
-
-        :param args: argument list
-        :param i: integer, list index to start the read out for this class
-        :param impose_bound: bool, if True, imposes the lower and upper limits on the sampled parameters
-        :return: keyword arguments related to args, index after reading out arguments of this class
-        """
+        """:param args: argument list :param i: integer, list index to start the read
+        out for this class :param impose_bound: bool, if True, imposes the lower and
+        upper limits on the sampled parameters :return: keyword arguments related to
+        args, index after reading out arguments of this class."""
         if impose_bound:
             result = ModelParamGroup.compose_get_params(
                 self._param_groups,
@@ -254,20 +250,15 @@ class SpecialParam(object):
         return result
 
     def set_params(self, kwargs_special):
-        """
-
-        :param kwargs_special: keyword arguments with parameter settings
-        :return: argument list of the sampled parameters extracted from kwargs_special
-        """
+        """:param kwargs_special: keyword arguments with parameter settings :return:
+        argument list of the sampled parameters extracted from kwargs_special."""
         return ModelParamGroup.compose_set_params(
             self._param_groups, kwargs_special, kwargs_fixed=self._kwargs_fixed
         )
 
     def num_param(self):
-        """
-
-        :return: integer, number of free parameters sampled (and managed) by this class, parameter names (list of strings)
-        """
+        """:return: integer, number of free parameters sampled (and managed) by this
+        class, parameter names (list of strings)"""
         return ModelParamGroup.compose_num_params(
             self._param_groups, kwargs_fixed=self._kwargs_fixed
         )

@@ -38,13 +38,11 @@ class NFW_ELLIPSE(LensProfileBase):
     }
 
     def __init__(self, interpol=False, num_interp_X=1000, max_interp_X=10):
-        """
-
-        :param interpol: bool, if True, interpolates the functions F(), g() and h()
-        :param num_interp_X: int (only considered if interpol=True), number of interpolation elements in units of r/r_s
-        :param max_interp_X: float (only considered if interpol=True), maximum r/r_s value to be interpolated
-         (returning zeros outside)
-        """
+        """:param interpol: bool, if True, interpolates the functions F(), g() and h()
+        :param num_interp_X: int (only considered if interpol=True), number of
+        interpolation elements in units of r/r_s :param max_interp_X: float (only
+        considered if interpol=True), maximum r/r_s value to be interpolated (returning
+        zeros outside)"""
         self.nfw = NFW(
             interpol=interpol, num_interp_X=num_interp_X, max_interp_X=max_interp_X
         )
@@ -141,13 +139,11 @@ class NFW_ELLIPSE(LensProfileBase):
         return f_xx, f_xy, f_yx, f_yy
 
     def mass_3d_lens(self, r, Rs, alpha_Rs, e1=1, e2=0):
-        """
+        """:param r: radius (in angular units) :param Rs:
 
-        :param r: radius (in angular units)
-        :param Rs:
-        :param alpha_Rs:
-        :param e1:
-        :param e2:
+        :param alpha_Rs: 
+        :param e1: 
+        :param e2: 
         :return:
         """
         return self.nfw.mass_3d_lens(r, Rs, alpha_Rs)

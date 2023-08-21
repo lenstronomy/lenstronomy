@@ -9,8 +9,8 @@ __all__ = ["Sersic"]
 
 
 class Sersic(SersicUtil, LensProfileBase):
-    """
-    this class contains functions to evaluate a Sersic mass profile: https://arxiv.org/pdf/astro-ph/0311559.pdf
+    """This class contains functions to evaluate a Sersic mass profile:
+    https://arxiv.org/pdf/astro-ph/0311559.pdf.
 
     .. math::
         \\kappa(R) = \\kappa_{\\rm eff} \\exp \\left[ -b_n (R/R_{\\rm Sersic})^{\\frac{1}{n}}\\right]
@@ -47,7 +47,6 @@ class Sersic(SersicUtil, LensProfileBase):
     >>> from lenstronomy.LensModel.Profiles.sersic import Sersic
     >>> sersic = Sersic()
     >>> alpha_x, alpha_y = sersic.derivatives(x=1, y=1, k_eff=k_eff, R_sersic=R_sersic, center_x=0, center_y=0)
-
     """
 
     param_names = ["k_eff", "R_sersic", "n_sersic", "center_x", "center_y"]
@@ -67,17 +66,9 @@ class Sersic(SersicUtil, LensProfileBase):
     }
 
     def function(self, x, y, n_sersic, R_sersic, k_eff, center_x=0, center_y=0):
-        """
-
-        :param x: x-coordinate
-        :param y: y-coordinate
-        :param n_sersic: Sersic index
-        :param R_sersic: half light radius
-        :param k_eff: convergence at half light radius
-        :param center_x: x-center
-        :param center_y: y-center
-        :return:
-        """
+        """:param x: x-coordinate :param y: y-coordinate :param n_sersic: Sersic index
+        :param R_sersic: half light radius :param k_eff: convergence at half light
+        radius :param center_x: x-center :param center_y: y-center :return:"""
 
         n = n_sersic
         x_red = self._x_reduced(x, y, n, R_sersic, center_x, center_y)

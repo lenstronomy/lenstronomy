@@ -68,11 +68,9 @@ class EPL_numba(LensProfileBase):
     @staticmethod
     @jit()
     def function(x, y, theta_E, gamma, e1, e2, center_x=0.0, center_y=0.0):
-        """
+        """:param x: x-coordinate (angle) :param y: y-coordinate (angle) :param theta_E:
+        Einstein radius (angle), pay attention to specific definition!
 
-        :param x: x-coordinate (angle)
-        :param y: y-coordinate (angle)
-        :param theta_E: Einstein radius (angle), pay attention to specific definition!
         :param gamma: logarithmic slope of the power-law profile. gamma=2 corresponds to isothermal
         :param e1: eccentricity component
         :param e2: eccentricity component
@@ -89,11 +87,9 @@ class EPL_numba(LensProfileBase):
     @staticmethod
     @jit()
     def derivatives(x, y, theta_E, gamma, e1, e2, center_x=0.0, center_y=0.0):
-        """
+        """:param x: x-coordinate (angle) :param y: y-coordinate (angle) :param theta_E:
+        Einstein radius (angle), pay attention to specific definition!
 
-        :param x: x-coordinate (angle)
-        :param y: y-coordinate (angle)
-        :param theta_E: Einstein radius (angle), pay attention to specific definition!
         :param gamma: logarithmic slope of the power-law profile. gamma=2 corresponds to isothermal
         :param e1: eccentricity component
         :param e2: eccentricity component
@@ -110,11 +106,9 @@ class EPL_numba(LensProfileBase):
     @staticmethod
     @jit()
     def hessian(x, y, theta_E, gamma, e1, e2, center_x=0.0, center_y=0.0):
-        """
+        """:param x: x-coordinate (angle) :param y: y-coordinate (angle) :param theta_E:
+        Einstein radius (angle), pay attention to specific definition!
 
-        :param x: x-coordinate (angle)
-        :param y: y-coordinate (angle)
-        :param theta_E: Einstein radius (angle), pay attention to specific definition!
         :param gamma: logarithmic slope of the power-law profile. gamma=2 corresponds to isothermal
         :param e1: eccentricity component
         :param e2: eccentricity component

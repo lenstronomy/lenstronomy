@@ -32,13 +32,11 @@ class ConstMag(LensProfileBase):
     }
 
     def function(self, x, y, mu_r, mu_t, parity, phi_G, center_x=0, center_y=0):
-        """
+        """:param x: x-coord (in angles) :param y: y-coord (in angles) :param mu_r:
+        radial magnification :param mu_t: tangential magnification :param parity: parity
+        side of the macromodel.
 
-        :param x: x-coord (in angles)
-        :param y: y-coord (in angles)
-        :param mu_r: radial magnification
-        :param mu_t: tangential magnification
-        :param parity: parity side of the macromodel. Either +1 (positive parity) or -1 (negative parity)
+        Either +1 (positive parity) or -1 (negative parity)
         :param phi_G: shear orientation angle (relative to the x-axis)
         :return: lensing potential
         """
@@ -72,13 +70,11 @@ class ConstMag(LensProfileBase):
         return f_
 
     def derivatives(self, x, y, mu_r, mu_t, parity, phi_G, center_x=0, center_y=0):
-        """
+        """:param x: x-coord (in angles) :param y: y-coord (in angles) :param mu_r:
+        radial magnification :param mu_t: tangential magnification :param parity: parity
+        of the side of the macromodel.
 
-        :param x: x-coord (in angles)
-        :param y: y-coord (in angles)
-        :param mu_r: radial magnification
-        :param mu_t: tangential magnification
-        :param parity: parity of the side of the macromodel. Either +1 (positive parity) or -1 (negative parity)
+        Either +1 (positive parity) or -1 (negative parity)
         :param phi_G: shear orientation angle (relative to the x-axis)
         :return: deflection angle (in angles)
         """
@@ -109,13 +105,11 @@ class ConstMag(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, mu_r, mu_t, parity, phi_G, center_x=0, center_y=0):
-        """
+        """:param x: x-coord (in angles) :param y: y-coord (in angles) :param mu_r:
+        radial magnification :param mu_t: tangential magnification :param parity: parity
+        of the side of the macromodel.
 
-        :param x: x-coord (in angles)
-        :param y: y-coord (in angles)
-        :param mu_r: radial magnification
-        :param mu_t: tangential magnification
-        :param parity: parity of the side of the macromodel. Either +1 (positive parity) or -1 (negative parity)
+        Either +1 (positive parity) or -1 (negative parity)
         :param phi_G: shear orientation angle (relative to the x-axis)
         :return: hessian matrix (in angles)
         """

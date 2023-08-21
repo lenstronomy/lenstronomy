@@ -46,29 +46,23 @@ class NFW(LensProfileBase):
     upper_limit_default = {"Rs": 100, "alpha_Rs": 10, "center_x": 100, "center_y": 100}
 
     def __init__(self, interpol=False, num_interp_X=1000, max_interp_X=10):
-        """
-
-        :param interpol: bool, if True, interpolates the functions F(), g() and h()
-        :param num_interp_X: int (only considered if interpol=True), number of interpolation elements in units of r/r_s
-        :param max_interp_X: float (only considered if interpol=True), maximum r/r_s value to be interpolated
-         (returning zeros outside)
-        """
+        """:param interpol: bool, if True, interpolates the functions F(), g() and h()
+        :param num_interp_X: int (only considered if interpol=True), number of
+        interpolation elements in units of r/r_s :param max_interp_X: float (only
+        considered if interpol=True), maximum r/r_s value to be interpolated (returning
+        zeros outside)"""
         self._interpol = interpol
         self._max_interp_X = max_interp_X
         self._num_interp_X = num_interp_X
         super(NFW, self).__init__()
 
     def function(self, x, y, Rs, alpha_Rs, center_x=0, center_y=0):
-        """
-
-        :param x: angular position (normally in units of arc seconds)
-        :param y: angular position (normally in units of arc seconds)
-        :param Rs: turn over point in the slope of the NFW profile in angular unit
-        :param alpha_Rs: deflection (angular units) at projected Rs
-        :param center_x: center of halo (in angular units)
-        :param center_y: center of halo (in angular units)
-        :return: lensing potential
-        """
+        """:param x: angular position (normally in units of arc seconds) :param y:
+        angular position (normally in units of arc seconds) :param Rs: turn over point
+        in the slope of the NFW profile in angular unit :param alpha_Rs: deflection
+        (angular units) at projected Rs :param center_x: center of halo (in angular
+        units) :param center_y: center of halo (in angular units) :return: lensing
+        potential."""
         rho0_input = self.alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs)
         if Rs < 0.0000001:
             Rs = 0.0000001
@@ -100,16 +94,12 @@ class NFW(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, Rs, alpha_Rs, center_x=0, center_y=0):
-        """
-
-        :param x: angular position (normally in units of arc seconds)
-        :param y: angular position (normally in units of arc seconds)
-        :param Rs: turn over point in the slope of the NFW profile in angular unit
-        :param alpha_Rs: deflection (angular units) at projected Rs
-        :param center_x: center of halo (in angular units)
-        :param center_y: center of halo (in angular units)
-        :return: Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
-        """
+        """:param x: angular position (normally in units of arc seconds) :param y:
+        angular position (normally in units of arc seconds) :param Rs: turn over point
+        in the slope of the NFW profile in angular unit :param alpha_Rs: deflection
+        (angular units) at projected Rs :param center_x: center of halo (in angular
+        units) :param center_y: center of halo (in angular units) :return: Hessian
+        matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2."""
         rho0_input = self.alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs)
         if Rs < 0.0000001:
             Rs = 0.0000001
@@ -205,13 +195,9 @@ class NFW(LensProfileBase):
         return m_2d
 
     def mass_2d_lens(self, R, Rs, alpha_Rs):
-        """
-
-        :param R: projected radius
-        :param Rs: scale radius
-        :param alpha_Rs: deflection (angular units) at projected Rs
-        :return: mass enclosed 2d cylinder <R
-        """
+        """:param R: projected radius :param Rs: scale radius :param alpha_Rs:
+        deflection (angular units) at projected Rs :return: mass enclosed 2d cylinder
+        <R."""
 
         rho0 = self.alpha2rho0(alpha_Rs, Rs)
         return self.mass_2d(R, Rs=Rs, rho0=rho0)
@@ -282,7 +268,7 @@ class NFW(LensProfileBase):
     def F_(self, X):
         """Computes h()
 
-        :param X:
+        :param X: 
         :return:
         """
         if self._interpol:

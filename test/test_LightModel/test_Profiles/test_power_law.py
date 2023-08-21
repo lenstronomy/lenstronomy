@@ -15,10 +15,7 @@ class TestPowerLaw(object):
         pass
 
     def test_function(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         profile = PowerLaw()
         spp = SPP()
         sis = SIS()

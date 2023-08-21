@@ -18,16 +18,12 @@ class PixelGrid(Coordinates, AngularSensitivity):
         dec_at_xy_0,
         antenna_primary_beam=None,
     ):
-        """
-
-        :param nx: number of pixels in x-axis
-        :param ny: number of pixels in y-axis
-        :param transform_pix2angle: 2x2 matrix, mapping of pixel to coordinate
-        :param ra_at_xy_0: ra coordinate at pixel (0,0)
-        :param dec_at_xy_0: dec coordinate at pixel (0,0)
-        :param antenna_primary_beam: 2d numpy array with the same size of imaga_data;
-         more descriptions of the primary beam can be found in the AngularSensitivity class
-        """
+        """:param nx: number of pixels in x-axis :param ny: number of pixels in y-axis
+        :param transform_pix2angle: 2x2 matrix, mapping of pixel to coordinate :param
+        ra_at_xy_0: ra coordinate at pixel (0,0) :param dec_at_xy_0: dec coordinate at
+        pixel (0,0) :param antenna_primary_beam: 2d numpy array with the same size of
+        imaga_data; more descriptions of the primary beam can be found in the
+        AngularSensitivity class."""
         super(PixelGrid, self).__init__(transform_pix2angle, ra_at_xy_0, dec_at_xy_0)
         self._nx = nx
         self._ny = ny
@@ -42,34 +38,22 @@ class PixelGrid(Coordinates, AngularSensitivity):
 
     @property
     def num_pixel(self):
-        """
-
-        :return: number of pixels in the data
-        """
+        """:return: number of pixels in the data."""
         return self._nx * self._ny
 
     @property
     def num_pixel_axes(self):
-        """
-
-        :return: number of pixels per axis, nx ny
-        """
+        """:return: number of pixels per axis, nx ny."""
         return self._nx, self._ny
 
     @property
     def width(self):
-        """
-
-        :return: width of data frame
-        """
+        """:return: width of data frame."""
         return self._nx * self.pixel_width, self._ny * self.pixel_width
 
     @property
     def center(self):
-        """
-
-        :return: center_x, center_y of coordinate system
-        """
+        """:return: center_x, center_y of coordinate system."""
         return np.mean(self._x_grid), np.mean(self._y_grid)
 
     def shift_coordinate_system(self, x_shift, y_shift, pixel_unit=False):
@@ -82,8 +66,5 @@ class PixelGrid(Coordinates, AngularSensitivity):
 
     @property
     def pixel_coordinates(self):
-        """
-
-        :return: RA coords, DEC coords
-        """
+        """:return: RA coords, DEC coords."""
         return self._x_grid, self._y_grid

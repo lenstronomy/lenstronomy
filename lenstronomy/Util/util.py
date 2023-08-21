@@ -1,7 +1,5 @@
 __author__ = "Simon Birrer"
-"""
-this file contains standard routines
-"""
+"""This file contains standard routines."""
 
 import numpy as np
 import itertools
@@ -44,14 +42,9 @@ def approx_theta_E(ximg, yimg):
 
 @export
 def sort_image_index(ximg, yimg, xref, yref):
-    """
-
-    :param ximg: x coordinates to sort
-    :param yimg: y coordinates to sort
-    :param xref: reference x coordinate
-    :param yref: reference y coordinate
-    :return: indexes such that ximg[indexes],yimg[indexes] matches xref,yref
-    """
+    """:param ximg: x coordinates to sort :param yimg: y coordinates to sort :param
+    xref: reference x coordinate :param yref: reference y coordinate :return: indexes
+    such that ximg[indexes],yimg[indexes] matches xref,yref."""
 
     assert len(xref) == len(ximg)
     ximg, yimg = np.array(ximg), np.array(yimg)
@@ -77,13 +70,8 @@ def sort_image_index(ximg, yimg, xref, yref):
 @export
 @jit()
 def rotate(xcoords, ycoords, angle):
-    """
-
-    :param xcoords: x points
-    :param ycoords: y points
-    :param angle: angle in radians
-    :return: x points and y points rotated ccw by angle theta
-    """
+    """:param xcoords: x points :param ycoords: y points :param angle: angle in radians
+    :return: x points and y points rotated ccw by angle theta."""
     return xcoords * np.cos(angle) + ycoords * np.sin(angle), -xcoords * np.sin(
         angle
     ) + ycoords * np.cos(angle)
@@ -321,8 +309,8 @@ def grid_from_coordinate_transform(nx, ny, Mpix2coord, ra_at_xy_0, dec_at_xy_0):
 def get_axes(x, y):
     """Computes the axis x and y of a given 2d grid.
 
-    :param x:
-    :param y:
+    :param x: 
+    :param y: 
     :return:
     """
     n = int(np.sqrt(len(x)))
@@ -382,12 +370,11 @@ def displaceAbs(x, y, sourcePos_x, sourcePos_y):
 
 @export
 def get_distance(x_mins, y_mins, x_true, y_true):
-    """
+    """:param x_mins:
 
-    :param x_mins:
-    :param y_mins:
-    :param x_true:
-    :param y_true:
+    :param y_mins: 
+    :param x_true: 
+    :param y_true: 
     :return:
     """
     if len(x_mins) != len(x_true):
@@ -409,12 +396,9 @@ def get_distance(x_mins, y_mins, x_true, y_true):
 
 @export
 def compare_distance(x_mapped, y_mapped):
-    """
-
-    :param x_mapped: array of x-positions of remapped catalogue image
-    :param y_mapped: array of y-positions of remapped catalogue image
-    :return: sum of distance square of positions
-    """
+    """:param x_mapped: array of x-positions of remapped catalogue image :param
+    y_mapped: array of y-positions of remapped catalogue image :return: sum of distance
+    square of positions."""
     X2 = 0
     for i in range(0, len(x_mapped) - 1):
         for j in range(i + 1, len(x_mapped)):
@@ -442,14 +426,9 @@ def min_square_dist(x_1, y_1, x_2, y_2):
 
 @export
 def selectBest(array, criteria, numSelect, highest=True):
-    """
-
-    :param array: numpy array to be selected from
-    :param criteria: criteria of selection
-    :param highest: bool, if false the lowest will be selected
-    :param numSelect: number of elements to be selected
-    :return:
-    """
+    """:param array: numpy array to be selected from :param criteria: criteria of
+    selection :param highest: bool, if false the lowest will be selected :param
+    numSelect: number of elements to be selected :return:"""
     n = len(array)
     m = len(criteria)
     if n != m:
@@ -468,14 +447,9 @@ def selectBest(array, criteria, numSelect, highest=True):
 
 @export
 def select_best(array, criteria, num_select, highest=True):
-    """
-
-    :param array: numpy array to be selected from
-    :param criteria: criteria of selection
-    :param highest: bool, if false the lowest will be selected
-    :param num_select: number of elements to be selected
-    :return:
-    """
+    """:param array: numpy array to be selected from :param criteria: criteria of
+    selection :param highest: bool, if false the lowest will be selected :param
+    num_select: number of elements to be selected :return:"""
     n = len(array)
     m = len(criteria)
     if n != m:
@@ -599,20 +573,15 @@ def neighborSelect(a, x, y):
 
 @export
 def fwhm2sigma(fwhm):
-    """
-
-    :param fwhm: full-width-half-max value
-    :return: gaussian sigma (sqrt(var))
-    """
+    """:param fwhm: full-width-half-max value :return: gaussian sigma (sqrt(var))"""
     sigma = fwhm / (2 * np.sqrt(2 * np.log(2)))
     return sigma
 
 
 @export
 def sigma2fwhm(sigma):
-    """
+    """:param sigma:
 
-    :param sigma:
     :return:
     """
     fwhm = sigma * (2 * np.sqrt(2 * np.log(2)))
@@ -621,9 +590,8 @@ def sigma2fwhm(sigma):
 
 @export
 def hyper2F2_array(a, b, c, d, x):
-    """
+    """:param a:
 
-    :param a:
     :param b:
     :param c:
     :param d:
@@ -646,9 +614,9 @@ def hyper2F2_array(a, b, c, d, x):
 def make_subgrid(ra_coord, dec_coord, subgrid_res=2):
     """Return a grid with subgrid resolution.
 
-    :param ra_coord:
-    :param dec_coord:
-    :param subgrid_res:
+    :param ra_coord: 
+    :param dec_coord: 
+    :param subgrid_res: 
     :return:
     """
     ra_array = array2image(ra_coord)

@@ -14,10 +14,7 @@ class ProfileIntegrals(object):
     """
 
     def __init__(self, profile_class):
-        """
-
-        :param profile_class: list of lens models
-        """
+        """:param profile_class: list of lens models."""
         self._profile = profile_class
 
     def mass_enclosed_3d(self, r, kwargs_profile, lens_param=False):
@@ -26,7 +23,7 @@ class ProfileIntegrals(object):
         :param r: radius (arcsec)
         :param kwargs_profile: keyword argument list with lens model parameters
         :param lens_param: boolean, if True uses the lens model parameterization in
-            computing the 3d density convention and the return is the convergence
+                computing the 3d density convention and the return is the convergence
         :return: 3d mass enclosed of r
         """
         kwargs = copy.deepcopy(kwargs_profile)
@@ -51,7 +48,7 @@ class ProfileIntegrals(object):
         :param r: radius (arcsec)
         :param kwargs_profile: keyword argument list with lens model parameters
         :param lens_param: boolean, if True uses the lens model parameterization in
-            computing the 3d density convention and the return is the convergence
+                computing the 3d density convention and the return is the convergence
         :return: 2d projected density at projected radius r
         """
         kwargs = copy.deepcopy(kwargs_profile)
@@ -74,12 +71,9 @@ class ProfileIntegrals(object):
         return out[0]
 
     def mass_enclosed_2d(self, r, kwargs_profile):
-        """
-        computes the mass enclosed the projected line-of-sight
-        :param r: radius (arcsec)
-        :param kwargs_profile: keyword argument list with lens model parameters
-        :return: projected mass enclosed radius r
-        """
+        """Computes the mass enclosed the projected line-of-sight :param r: radius
+        (arcsec) :param kwargs_profile: keyword argument list with lens model parameters
+        :return: projected mass enclosed radius r."""
         kwargs = copy.deepcopy(kwargs_profile)
         kwargs.pop("center_x", None)
         kwargs.pop("center_y", None)

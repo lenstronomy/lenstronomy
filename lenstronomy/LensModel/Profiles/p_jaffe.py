@@ -5,9 +5,8 @@ __all__ = ["PJaffe"]
 
 
 class PJaffe(LensProfileBase):
-    """
-    class to compute the DUAL PSEUDO ISOTHERMAL ELLIPTICAL MASS DISTRIBUTION
-    based on Eliasdottir (2007) https://arxiv.org/pdf/0710.5636.pdf Appendix A
+    """Class to compute the DUAL PSEUDO ISOTHERMAL ELLIPTICAL MASS DISTRIBUTION based on
+    Eliasdottir (2007) https://arxiv.org/pdf/0710.5636.pdf Appendix A.
 
     Module name: 'PJAFFE';
 
@@ -34,7 +33,6 @@ class PJaffe(LensProfileBase):
 
     .. math::
         \\sigma_0 = \\frac{\\Sigma_0}{\\Sigma_{\\rm crit}}
-
     """
 
     param_names = ["sigma0", "Ra", "Rs", "center_x", "center_y"]
@@ -198,7 +196,7 @@ class PJaffe(LensProfileBase):
         :param sigma0: sigma0/sigma_crit (see class documentation above)
         :param Ra: core radius (see class documentation above)
         :param Rs: transition radius from logarithmic slope -2 to -4 (see class
-            documentation above)
+                documentation above)
         :param center_x: center of profile
         :param center_y: center of profile
         :return: lensing potential
@@ -230,7 +228,7 @@ class PJaffe(LensProfileBase):
         :param sigma0: sigma0/sigma_crit (see class documentation above)
         :param Ra: core radius (see class documentation above)
         :param Rs: transition radius from logarithmic slope -2 to -4 (see class
-            documentation above)
+                documentation above)
         :param center_x: center of profile
         :param center_y: center of profile
         :return: f_x, f_y
@@ -256,7 +254,7 @@ class PJaffe(LensProfileBase):
         :param sigma0: sigma0/sigma_crit (see class documentation above)
         :param Ra: core radius (see class documentation above)
         :param Rs: transition radius from logarithmic slope -2 to -4 (see class
-            documentation above)
+                documentation above)
         :param center_x: center of profile
         :param center_y: center of profile
         :return: f_xx, f_xy, f_yx, f_yy
@@ -316,7 +314,7 @@ class PJaffe(LensProfileBase):
         :param rho0: density normalization
         :param Ra: core radius (see class documentation above)
         :param Rs: transition radius from logarithmic slope -2 to -4 (see class
-            documentation above)
+                documentation above)
         :return: projected density normalization
         """
         return np.pi * rho0 * Ra * Rs / (Rs + Ra)
@@ -327,7 +325,7 @@ class PJaffe(LensProfileBase):
         :param sigma0: projected density normalization
         :param Ra: core radius (see class documentation above)
         :param Rs: transition radius from logarithmic slope -2 to -4 (see class
-            documentation above)
+                documentation above)
         :return: 3D density normalization
         """
         return (Rs + Ra) / Ra / Rs / np.pi * sigma0
@@ -336,8 +334,8 @@ class PJaffe(LensProfileBase):
     def _sort_ra_rs(Ra, Rs):
         """Sorts Ra and Rs to make sure Rs > Ra.
 
-        :param Ra:
-        :param Rs:
+        :param Ra: 
+        :param Rs: 
         :return: Ra, Rs in conventions used
         """
         if Ra >= Rs:

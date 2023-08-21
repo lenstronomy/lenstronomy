@@ -31,18 +31,16 @@ class PointSourceVariability(object):
         kwargs_lens_light_mag=None,
         kwargs_ps_mag=None,
     ):
-        """
-
-        :param source_x: RA of source position
-        :param source_y: DEC of source position
-        :param variability_func: function that returns a brightness (in magnitude) as a function of time t
-        :param numpix: number of pixels per axis
+        """:param source_x: RA of source position :param source_y: DEC of source
+        position :param variability_func: function that returns a brightness (in
+        magnitude) as a function of time t :param numpix: number of pixels per axis
         :param kwargs_single_band:
-        :param kwargs_model:
-        :param kwargs_numerics:
-        :param kwargs_lens:
-        :param kwargs_source_mag:
-        :param kwargs_lens_light_mag:
+
+        :param kwargs_model: 
+        :param kwargs_numerics: 
+        :param kwargs_lens: 
+        :param kwargs_source_mag: 
+        :param kwargs_lens_light_mag: 
         :param kwargs_ps_mag:
         """
 
@@ -94,26 +92,18 @@ class PointSourceVariability(object):
 
     @property
     def delays(self):
-        """
-
-        :return: time delays
-        """
+        """:return: time delays."""
         return self._dt_days
 
     @property
     def image_bkg(self):
-        """
-
-        :return: 2d numpy array, image of the extended light components without the variable source
-        """
+        """:return: 2d numpy array, image of the extended light components without the
+        variable source."""
         return self._image_bkg
 
     def image_time(self, time=0):
-        """
-
-        :param time: time relative to the definition of t=0 for the first appearing image
-        :return: image with time variable source at given time
-        """
+        """:param time: time relative to the definition of t=0 for the first appearing
+        image :return: image with time variable source at given time."""
         kwargs_ps_time = self.point_source_time(time)
         point_source = self._image_model_ps.point_source(
             kwargs_ps_time, kwargs_lens=self._kwargs_lens
@@ -121,11 +111,8 @@ class PointSourceVariability(object):
         return point_source + self.image_bkg
 
     def point_source_time(self, t):
-        """
-
-        :param t: time (in units of days)
-        :return: image plane parameters of the point source observed at t
-        """
+        """:param t: time (in units of days) :return: image plane parameters of the
+        point source observed at t."""
         mag = np.zeros_like(self._dt_days)
         kwargs_ps = [{"ra_image": self._image_x, "dec_image": self._image_y}]
         for i, dt in enumerate(self._dt_days):

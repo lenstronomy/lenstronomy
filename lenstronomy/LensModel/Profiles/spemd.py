@@ -97,11 +97,9 @@ class SPEMD(LensProfileBase):
         super(SPEMD, self).__init__()
 
     def function(self, x, y, theta_E, gamma, e1, e2, s_scale, center_x=0, center_y=0):
-        """
+        """:param x: x-coordinate (angle) :param y: y-coordinate (angle) :param theta_E:
+        Einstein radius (angle), pay attention to specific definition!
 
-        :param x: x-coordinate (angle)
-        :param y: y-coordinate (angle)
-        :param theta_E: Einstein radius (angle), pay attention to specific definition!
         :param gamma: logarithmic slope of the power-law profile. gamma=2 corresponds to isothermal
         :param e1: eccentricity component
         :param e2: eccentricity component
@@ -127,11 +125,9 @@ class SPEMD(LensProfileBase):
     def derivatives(
         self, x, y, theta_E, gamma, e1, e2, s_scale, center_x=0, center_y=0
     ):
-        """
+        """:param x: x-coordinate (angle) :param y: y-coordinate (angle) :param theta_E:
+        Einstein radius (angle), pay attention to specific definition!
 
-        :param x: x-coordinate (angle)
-        :param y: y-coordinate (angle)
-        :param theta_E: Einstein radius (angle), pay attention to specific definition!
         :param gamma: logarithmic slope of the power-law profile. gamma=2 corresponds to isothermal
         :param e1: eccentricity component
         :param e2: eccentricity component
@@ -158,11 +154,9 @@ class SPEMD(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, theta_E, gamma, e1, e2, s_scale, center_x=0, center_y=0):
-        """
+        """:param x: x-coordinate (angle) :param y: y-coordinate (angle) :param theta_E:
+        Einstein radius (angle), pay attention to specific definition!
 
-        :param x: x-coordinate (angle)
-        :param y: y-coordinate (angle)
-        :param theta_E: Einstein radius (angle), pay attention to specific definition!
         :param gamma: logarithmic slope of the power-law profile. gamma=2 corresponds to isothermal
         :param e1: eccentricity component
         :param e2: eccentricity component
@@ -218,7 +212,7 @@ class SPEMD(LensProfileBase):
         :param y: y-coordinate (angle)
         :param theta_E: Einstein radius (angle), pay attention to specific definition!
         :param gamma: logarithmic slope of the power-law profile. gamma=2 corresponds to
-            isothermal
+                isothermal
         :param e1: eccentricity component
         :param e2: eccentricity component
         :param s_scale: smoothing scale in the center of the profile
@@ -260,7 +254,7 @@ class SPEMD(LensProfileBase):
         """Check if float or not an empty array.
 
         :return: True if x1 and x2 are either floats/ints or an non-empty array, False
-            if e.g. objects are []
+                if e.g. objects are []
         :rtype: bool
         """
         assert type(x1) == type(x2)

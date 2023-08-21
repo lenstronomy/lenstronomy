@@ -9,10 +9,7 @@ class TestMoffat(object):
         pass
 
     def test_function(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         profile = Moffat()
         output = profile.function(
             x=1.0, y=1.0, amp=1.0, alpha=2.0, beta=1.0, center_x=0, center_y=0

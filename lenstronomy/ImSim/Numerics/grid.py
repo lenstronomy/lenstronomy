@@ -23,17 +23,16 @@ class AdaptiveGrid(Coordinates1D):
         supersampling_factor,
         flux_evaluate_indexes=None,
     ):
-        """
+        """:param nx: number of pixels in x-axis :param ny: number of pixels in y-axis
+        :param transform_pix2angle: 2x2 matrix, mapping of pixel to coordinate :param
+        ra_at_xy_0: ra coordinate at pixel (0,0) :param dec_at_xy_0: dec coordinate at
+        pixel (0,0) :param supersampling_indexes: bool array of shape nx x ny,
+        corresponding to pixels being super_sampled :param supersampling_factor: int,
+        factor (per axis) of super-sampling :param flux_evaluate_indexes: bool array of
+        shape nx x ny, corresponding to pixels being evaluated (for both low and high
+        res).
 
-        :param nx: number of pixels in x-axis
-        :param ny: number of pixels in y-axis
-        :param transform_pix2angle: 2x2 matrix, mapping of pixel to coordinate
-        :param ra_at_xy_0: ra coordinate at pixel (0,0)
-        :param dec_at_xy_0: dec coordinate at pixel (0,0)
-        :param supersampling_indexes: bool array of shape nx x ny, corresponding to pixels being super_sampled
-        :param supersampling_factor: int, factor (per axis) of super-sampling
-        :param flux_evaluate_indexes: bool array of shape nx x ny, corresponding to pixels being evaluated
-         (for both low and high res). Default is None, replaced by setting all pixels to being evaluated.
+        Default is None, replaced by setting all pixels to being evaluated.
         """
         super(AdaptiveGrid, self).__init__(transform_pix2angle, ra_at_xy_0, dec_at_xy_0)
         self._nx = nx
@@ -54,10 +53,8 @@ class AdaptiveGrid(Coordinates1D):
 
     @property
     def coordinates_evaluate(self):
-        """
-
-        :return: 1d array of all coordinates being evaluated to perform the image computation
-        """
+        """:return: 1d array of all coordinates being evaluated to perform the image
+        computation."""
         ra_low, dec_low = self._x_low_res, self._y_low_res
         ra_high, dec_high = self._high_res_coordinates
         ra_joint = np.append(ra_low, ra_high)
@@ -65,13 +62,12 @@ class AdaptiveGrid(Coordinates1D):
         return ra_joint, dec_joint
 
     def flux_array2image_low_high(self, flux_array, high_res_return=True):
-        """
-
-        :param flux_array: 1d array of low and high resolution flux values corresponding to the coordinates_evaluate order
-        :param high_res_return: bool, if True also returns the high resolution image
-         (needs more computation and is only needed when convolution is performed on the supersampling level)
-        :return: 2d array, 2d array, corresponding to (partial) images in low and high resolution (to be convolved)
-        """
+        """:param flux_array: 1d array of low and high resolution flux values
+        corresponding to the coordinates_evaluate order :param high_res_return: bool, if
+        True also returns the high resolution image (needs more computation and is only
+        needed when convolution is performed on the supersampling level) :return: 2d
+        array, 2d array, corresponding to (partial) images in low and high resolution
+        (to be convolved)"""
         low_res_values = flux_array[0 : self._num_low_res]
         high_res_values = flux_array[self._num_low_res :]
         image_low_res = self._merge_low_high_res(low_res_values, high_res_values)
@@ -83,10 +79,7 @@ class AdaptiveGrid(Coordinates1D):
 
     @property
     def _high_res_coordinates(self):
-        """
-
-        :return: 1d arrays of subpixel grid coordinates
-        """
+        """:return: 1d arrays of subpixel grid coordinates."""
         if not hasattr(self, "_x_sub_grid"):
             self._subpixel_coordinates()
         return self._x_high_res, self._y_high_res
@@ -106,11 +99,9 @@ class AdaptiveGrid(Coordinates1D):
         return util.array2image(array)
 
     def _high_res_image(self, supersampled_values):
-        """
-
-        :param supersampled_values: 1d array of supersampled values corresponding to coordinates
-        :return: 2d array of supersampled image (zeros outside supersampled frame)
-        """
+        """:param supersampled_values: 1d array of supersampled values corresponding to
+        coordinates :return: 2d array of supersampled image (zeros outside supersampled
+        frame)"""
         high_res = np.zeros(
             (
                 self._nx * self._supersampling_factor,
@@ -128,10 +119,7 @@ class AdaptiveGrid(Coordinates1D):
         return high_res
 
     def _subpixel_coordinates(self):
-        """
-
-        :return: 1d arrays of subpixel grid coordinates
-        """
+        """:return: 1d arrays of subpixel grid coordinates."""
         x_grid_select = self._x_grid[self._high_res_indexes1d]
         y_grid_select = self._y_grid[self._high_res_indexes1d]
         x_sub_grid = np.zeros(len(x_grid_select) * self._num_sub)
@@ -193,16 +181,14 @@ class RegularGrid(Coordinates1D):
         supersampling_factor=1,
         flux_evaluate_indexes=None,
     ):
-        """
+        """:param nx: number of pixels in x-axis :param ny: number of pixels in y-axis
+        :param transform_pix2angle: 2x2 matrix, mapping of pixel to coordinate :param
+        ra_at_xy_0: ra coordinate at pixel (0,0) :param dec_at_xy_0: dec coordinate at
+        pixel (0,0) :param supersampling_factor: int, factor (per axis) of super-
+        sampling :param flux_evaluate_indexes: bool array of shape nx x ny,
+        corresponding to pixels being evaluated (for both low and high res).
 
-        :param nx: number of pixels in x-axis
-        :param ny: number of pixels in y-axis
-        :param transform_pix2angle: 2x2 matrix, mapping of pixel to coordinate
-        :param ra_at_xy_0: ra coordinate at pixel (0,0)
-        :param dec_at_xy_0: dec coordinate at pixel (0,0)
-        :param supersampling_factor: int, factor (per axis) of super-sampling
-        :param flux_evaluate_indexes: bool array of shape nx x ny, corresponding to pixels being evaluated
-         (for both low and high res). Default is None, replaced by setting all pixels to being evaluated.
+        Default is None, replaced by setting all pixels to being evaluated.
         """
         super(RegularGrid, self).__init__(transform_pix2angle, ra_at_xy_0, dec_at_xy_0)
         self._supersampling_factor = supersampling_factor
@@ -225,22 +211,24 @@ class RegularGrid(Coordinates1D):
 
     @property
     def coordinates_evaluate(self):
-        """
-
-        :return: 1d array of all coordinates being evaluated to perform the image computation
-        """
+        """:return: 1d array of all coordinates being evaluated to perform the image
+        computation."""
         return self._ra_subgrid, self._dec_subgrid
 
     @property
     def grid_points_spacing(self):
         """Effective spacing between coordinate points, after supersampling :return:
-        sqrt(pixel_area)/supersampling_factor."""
+
+        sqrt(pixel_area)/supersampling_factor.
+        """
         return self.pixel_width / self._supersampling_factor
 
     @property
     def num_grid_points_axes(self):
         """Effective number of points along each axes, after supersampling :return:
-        number of pixels per axis, nx*supersampling_factor ny*supersampling_factor."""
+
+        number of pixels per axis, nx*supersampling_factor ny*supersampling_factor.
+        """
         return (
             self._nx * self._supersampling_factor,
             self._ny * self._supersampling_factor,
@@ -248,17 +236,14 @@ class RegularGrid(Coordinates1D):
 
     @property
     def supersampling_factor(self):
-        """
-        :return: factor (per axis) of super-sampling relative to a pixel
-        """
+        """:return: factor (per axis) of super-sampling relative to a pixel."""
         return self._supersampling_factor
 
     def flux_array2image_low_high(self, flux_array, **kwargs):
-        """
-
-        :param flux_array: 1d array of low and high resolution flux values corresponding to the coordinates_evaluate order
-        :return: 2d array, 2d array, corresponding to (partial) images in low and high resolution (to be convolved)
-        """
+        """:param flux_array: 1d array of low and high resolution flux values
+        corresponding to the coordinates_evaluate order :return: 2d array, 2d array,
+        corresponding to (partial) images in low and high resolution (to be
+        convolved)"""
         image = self._array2image(flux_array)
         if self._supersampling_factor > 1:
             image_high_res = image
@@ -270,12 +255,8 @@ class RegularGrid(Coordinates1D):
 
     @staticmethod
     def _subgrid_index(idex_mask, subgrid_res, nx, ny):
-        """
-
-        :param idex_mask: 1d array of mask of data
-        :param subgrid_res: subgrid resolution
-        :return: 1d array of equivalent mask in subgrid resolution
-        """
+        """:param idex_mask: 1d array of mask of data :param subgrid_res: subgrid
+        resolution :return: 1d array of equivalent mask in subgrid resolution."""
         idex_sub = np.repeat(idex_mask, subgrid_res, axis=0)
         idex_sub = util.array2image(idex_sub, nx=nx, ny=ny * subgrid_res)
         idex_sub = np.repeat(idex_sub, subgrid_res, axis=0)

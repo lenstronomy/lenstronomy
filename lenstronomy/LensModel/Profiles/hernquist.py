@@ -94,7 +94,7 @@ class Hernquist(LensProfileBase):
         """Mass enclosed a 3d sphere or radius r.
 
         :param r: 3-d radius within the mass is integrated (same distance units as
-            density definition)
+                density definition)
         :param rho0: density normalization
         :param Rs: Hernquist radius
         :return: enclosed mass
@@ -143,7 +143,10 @@ class Hernquist(LensProfileBase):
     @staticmethod
     def mass_tot(rho0, Rs):
         """Total mass within the profile :param rho0: density normalization :param Rs:
-        Hernquist radius :return: total mass within profile."""
+
+        Hernquist radius
+        :return: total mass within profile.
+        """
         m_tot = 2 * np.pi * rho0 * Rs**3
         return m_tot
 
@@ -153,7 +156,7 @@ class Hernquist(LensProfileBase):
         :param x: x-coordinate position (units of angle)
         :param y: y-coordinate position (units of angle)
         :param sigma0: normalization parameter defined such that the deflection at
-            projected RS leads to alpha = 2./3 * Rs * sigma0
+                projected RS leads to alpha = 2./3 * Rs * sigma0
         :param Rs: Hernquist radius in units of angle
         :param center_x: x-center of the profile (units of angle)
         :param center_y: y-center of the profile (units of angle)
@@ -168,12 +171,11 @@ class Hernquist(LensProfileBase):
         return f_
 
     def derivatives(self, x, y, sigma0, Rs, center_x=0, center_y=0):
-        """
+        """:param x: x-coordinate position (units of angle) :param y: y-coordinate
+        position (units of angle)
 
-        :param x: x-coordinate position (units of angle)
-        :param y: y-coordinate position (units of angle)
-        :param sigma0: normalization parameter defined such that the deflection at projected RS leads to
-         alpha = 2./3 * Rs * sigma0
+        :param sigma0: normalization parameter defined such that the deflection at
+                projected RS leads to          alpha = 2./3 * Rs * sigma0
         :param Rs: Hernquist radius in units of angle
         :param center_x: x-center of the profile (units of angle)
         :param center_y: y-center of the profile (units of angle)
@@ -206,7 +208,7 @@ class Hernquist(LensProfileBase):
         :param x: x-coordinate position (units of angle)
         :param y: y-coordinate position (units of angle)
         :param sigma0: normalization parameter defined such that the deflection at
-            projected RS leads to alpha = 2./3 * Rs * sigma0
+                projected RS leads to alpha = 2./3 * Rs * sigma0
         :param Rs: Hernquist radius in units of angle
         :param center_x: x-center of the profile (units of angle)
         :param center_y: y-center of the profile (units of angle)
@@ -237,23 +239,25 @@ class Hernquist(LensProfileBase):
     def rho2sigma(rho0, Rs):
         """Converts 3d density into 2d projected density parameter :param rho0: 3d
         density normalization of Hernquist model :param Rs: Hernquist radius :return:
-        sigma0 defined quantity in projected units."""
+
+        sigma0 defined quantity in projected units.
+        """
         return rho0 * Rs
 
     @staticmethod
     def sigma2rho(sigma0, Rs):
         """Converts projected density parameter (in units of deflection) into 3d density
         parameter :param sigma0: density defined quantity in projected units :param Rs:
-        Hernquist radius :return: rho0 the 3d density normalization of Hernquist
-        model."""
+
+        Hernquist radius
+        :return: rho0 the 3d density normalization of Hernquist
+        model.
+        """
         return sigma0 / Rs
 
     def _F(self, X):
-        """
-        function 48 in https://arxiv.org/pdf/astro-ph/0102341.pdf
-        :param X: r/rs
-        :return: F(X)
-        """
+        """Function 48 in https://arxiv.org/pdf/astro-ph/0102341.pdf :param X: r/rs
+        :return: F(X)"""
         c = self._s
         if isinstance(X, int) or isinstance(X, float):
             X = max(X, c)

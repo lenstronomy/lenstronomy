@@ -48,9 +48,8 @@ class TestLensCosmo(object):
         npt.assert_almost_equal(Rs_, Rs, decimal=5)
 
     def test_against_colossus(self):
-        """
-        This test class asks to get the same parameters back as colossus: https://bdiemer.bitbucket.io/colossus/index.html
-        """
+        """This test class asks to get the same parameters back as colossus:
+        https://bdiemer.bitbucket.io/colossus/index.html."""
         cosmo = FlatLambdaCDM(H0=70, Om0=0.285, Ob0=0.05)
         nfw_param = NFWParam(cosmo=cosmo)
 

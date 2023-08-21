@@ -31,32 +31,40 @@ class LensModel(object):
         kwargs_interp=None,
         kwargs_synthesis=None,
     ):
-        """
+        """:param lens_model_list: list of strings with lens model names :param z_lens:
+        redshift of the deflector (only considered when operating in single plane mode).
 
-        :param lens_model_list: list of strings with lens model names
-        :param z_lens: redshift of the deflector (only considered when operating in single plane mode).
-         Is only needed for specific functions that require a cosmology.
+        Is only needed for specific functions that require a cosmology.
         :param z_source: redshift of the source: Needed in multi_plane option only,
-         not required for the core functionalities in the single plane mode.
-        :param lens_redshift_list: list of deflector redshift (corresponding to the lens model list),
-         only applicable in multi_plane mode.
-        :param cosmo: instance of the astropy cosmology class. If not specified, uses the default cosmology.
+                not required for the core functionalities in the single plane mode.
+        :param lens_redshift_list: list of deflector redshift (corresponding to the lens
+                model list),          only applicable in multi_plane mode.
+        :param cosmo: instance of the astropy cosmology class. If not specified, uses
+                the default cosmology.
         :param multi_plane: bool, if True, uses multi-plane mode. Default is False.
-        :param numerical_alpha_class: an instance of a custom class for use in TabulatedDeflections() lens model
-         (see documentation in Profiles/numerical_deflections)
+        :param numerical_alpha_class: an instance of a custom class for use in
+                TabulatedDeflections() lens model          (see documentation in
+                Profiles/numerical_deflections)
         :param kwargs_interp: interpolation keyword arguments specifying the numerics.
-         See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
-        :param observed_convention_index: a list of indices, corresponding to the lens_model_list element with same
-         index, where the 'center_x' and 'center_y' kwargs correspond to observed (lensed) positions, not physical
-         positions. The code will compute the physical locations when performing computations
-        :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens
-         models. If None, 'z_source' is used.
-        :param cosmo_interp: boolean (only employed in multi-plane mode), interpolates astropy.cosmology distances for
-         faster calls when accessing several lensing planes
-        :param z_interp_stop: (only in multi-plane with cosmo_interp=True); maximum redshift for distance interpolation
-         This number should be higher or equal the maximum of the source redshift and/or the z_source_convention
-        :param num_z_interp: (only in multi-plane with cosmo_interp=True); number of redshift bins for interpolating
-         distances
+                See description in the Interpolate() class. Only applicable for
+                'INTERPOL' and 'INTERPOL_SCALED' models.
+        :param observed_convention_index: a list of indices, corresponding to the
+                lens_model_list element with same          index, where the 'center_x'
+                and 'center_y' kwargs correspond to observed (lensed) positions, not
+                physical          positions. The code will compute the physical
+                locations when performing computations
+        :param z_source_convention: float, redshift of a source to define the reduced
+                deflection angles of the lens          models. If None, 'z_source' is
+                used.
+        :param cosmo_interp: boolean (only employed in multi-plane mode), interpolates
+                astropy.cosmology distances for          faster calls when accessing
+                several lensing planes
+        :param z_interp_stop: (only in multi-plane with cosmo_interp=True); maximum
+                redshift for distance interpolation          This number should be
+                higher or equal the maximum of the source redshift and/or the
+                z_source_convention
+        :param num_z_interp: (only in multi-plane with cosmo_interp=True); number of
+                redshift bins for interpolating          distances
         """
         self.lens_model_list = lens_model_list
         self.z_lens = z_lens
@@ -144,7 +152,7 @@ class LensModel(object):
         :param y: y-position (preferentially arcsec)
         :type y: numpy array
         :param kwargs: list of keyword arguments of lens model parameters matching the
-            lens model classes
+                lens model classes
         :param k: only evaluate the k-th lens model
         :return: source plane positions corresponding to (x, y) in the image plane
         """
@@ -163,9 +171,9 @@ class LensModel(object):
         :param x_source: source position
         :param y_source: source position
         :param kwargs_lens: list of keyword arguments of lens model parameters matching
-            the lens model classes
+                the lens model classes
         :return: fermat potential in arcsec**2 without geometry term (second part of Eqn
-            1 in Suyu et al. 2013) as a list
+                1 in Suyu et al. 2013) as a list
         """
         if hasattr(self.lens_model, "fermat_potential"):
             return self.lens_model.fermat_potential(
@@ -199,8 +207,8 @@ class LensModel(object):
         :param y_image: image position
         :param kwargs_lens: lens model parameter keyword argument list
         :param kappa_ext: external convergence contribution not accounted in the lens
-            model that leads to the same observables in position and relative fluxes but
-            rescales the time delays
+                model that leads to the same observables in position and relative fluxes
+                but             rescales the time delays
         :param x_source: source position (optional), otherwise computed with ray-tracing
         :param y_source: source position (optional), otherwise computed with ray-tracing
         :return: arrival time of image positions in units of days
@@ -227,7 +235,7 @@ class LensModel(object):
         :param y: y-position (preferentially arcsec)
         :type y: numpy array
         :param kwargs: list of keyword arguments of lens model parameters matching the
-            lens model classes
+                lens model classes
         :param k: only evaluate the k-th lens model
         :return: lensing potential in units of arcsec^2
         """
@@ -241,12 +249,12 @@ class LensModel(object):
         :param y: y-position (preferentially arcsec)
         :type y: numpy array
         :param kwargs: list of keyword arguments of lens model parameters matching the
-            lens model classes
+                lens model classes
         :param k: only evaluate the k-th lens model
         :param diff: None or float. If set, computes the deflection as a finite
-            numerical differential of the lensing potential. This differential is only
-            applicable in the single lensing plane where the form of the lensing
-            potential is analytically known
+                numerical differential of the lensing potential. This differential is
+                only             applicable in the single lensing plane where the form
+                of the lensing             potential is analytically known
         :return: deflection angles in units of arcsec
         """
         if diff is None:
@@ -267,12 +275,13 @@ class LensModel(object):
         :param y: y-position (preferentially arcsec)
         :type y: numpy array
         :param kwargs: list of keyword arguments of lens model parameters matching the
-            lens model classes
+                lens model classes
         :param k: only evaluate the k-th lens model
         :param diff: float, scale over which the finite numerical differential is
-            computed. If None, then using the exact (if available) differentials.
+                computed. If None, then using the exact (if available) differentials.
         :param diff_method: string, 'square' or 'cross', indicating whether finite
-            differentials are computed from a cross or a square of points around (x, y)
+                differentials are computed from a cross or a square of points around (x,
+                y)
         :return: f_xx, f_xy, f_yx, f_yy components
         """
         if diff is None:
@@ -295,12 +304,13 @@ class LensModel(object):
         :param y: y-position (preferentially arcsec)
         :type y: numpy array
         :param kwargs: list of keyword arguments of lens model parameters matching the
-            lens model classes
+                lens model classes
         :param k: only evaluate the k-th lens model
         :param diff: float, scale over which the finite numerical differential is
-            computed. If None, then using the exact (if available) differentials.
+                computed. If None, then using the exact (if available) differentials.
         :param diff_method: string, 'square' or 'cross', indicating whether finite
-            differentials are computed from a cross or a square of points around (x, y)
+                differentials are computed from a cross or a square of points around (x,
+                y)
         :return: lensing convergence
         """
 
@@ -390,12 +400,12 @@ class LensModel(object):
         :param y: y-position (preferentially arcsec)
         :type y: numpy array
         :param kwargs: list of keyword arguments of lens model parameters matching the
-            lens model classes
+                lens model classes
         :param k: int or None, if set, only evaluates the differential from one model
-            component
+                component
         :param diff: numerical differential length of Flexion
         :param hessian_diff: boolean, if true also computes the numerical differential
-            length of Hessian (optional)
+                length of Hessian (optional)
         :return: f_xxx, f_xxy, f_xyy, f_yyy
         """
         if hessian_diff is not True:
@@ -427,7 +437,7 @@ class LensModel(object):
 
         :param kwargs: lens model keyword argument list
         :return: kwargs_updated (in case of image position convention in multiplane
-            lensing this is changed)
+                lensing this is changed)
         """
         return self.lens_model.set_static(kwargs)
 
@@ -442,15 +452,9 @@ class LensModel(object):
         self.lens_model.set_dynamic()
 
     def _deflection_differential(self, x, y, kwargs, k=None, diff=0.00001):
-        """
-
-        :param x: x-coordinate
-        :param y: y-coordinate
-        :param kwargs: keyword argument list
-        :param k: int or None, if set, only evaluates the differential from one model component
-        :param diff: finite differential length
-        :return: f_x, f_y
-        """
+        """:param x: x-coordinate :param y: y-coordinate :param kwargs: keyword argument
+        list :param k: int or None, if set, only evaluates the differential from one
+        model component :param diff: finite differential length :return: f_x, f_y."""
         phi_dx = self.lens_model.potential(x + diff / 2, y, kwargs=kwargs, k=k)
         phi_dy = self.lens_model.potential(x, y + diff / 2, kwargs=kwargs, k=k)
         phi_dx_ = self.lens_model.potential(x - diff / 2, y, kwargs=kwargs, k=k)
@@ -468,9 +472,9 @@ class LensModel(object):
         :param y: y-coordinate
         :param kwargs: lens model keyword argument list
         :param k: int, list of bools or None, indicating a subset of lens models to be
-            evaluated
+                evaluated
         :param diff: float, scale of the finite differential (diff/2 in each direction
-            used to compute the differential
+                used to compute the differential
         :return: f_xx, f_xy, f_yx, f_yy
         """
         alpha_ra_dx, alpha_dec_dx = self.alpha(x + diff / 2, y, kwargs, k=k)
@@ -499,9 +503,9 @@ class LensModel(object):
         :param y: y-coordinate
         :param kwargs: lens model keyword argument list
         :param k: int, list of booleans or None, indicating a subset of lens models to
-            be evaluated
+                be evaluated
         :param diff: float, scale of the finite differential (diff/2 in each direction
-            used to compute the differential
+                used to compute the differential
         :return: f_xx, f_xy, f_yx, f_yy
         """
         alpha_ra_pp, alpha_dec_pp = self.alpha(x + diff / 2, y + diff / 2, kwargs, k=k)

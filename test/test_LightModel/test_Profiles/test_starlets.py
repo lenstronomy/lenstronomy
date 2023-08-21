@@ -54,10 +54,7 @@ class TestSLITStarlets(object):
         self.test_coeffs[2, :, :] = util.array2image(gaussian3)
 
     def test_reconstructions_2d(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         # PySAP requires call to decomposition once before anything else
         self.starlets.decomposition_2d(self.test_image, self.n_scales)
         self.starlets_fast.decomposition_2d(self.test_image, self.n_scales)
@@ -79,10 +76,7 @@ class TestSLITStarlets(object):
         assert np.all(image_2nd >= 0)
 
     def test_decompositions_2d(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         # test equality between fast and std transform (which are identical)
         coeffs = self.starlets.decomposition_2d(self.test_image, self.n_scales)
         coeffs_fast = self.starlets_fast.decomposition_2d(
@@ -97,10 +91,7 @@ class TestSLITStarlets(object):
         assert coeffs_2nd.shape == (self.n_scales, self.num_pix, self.num_pix)
 
     def test_function(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         # PySAP requires call to decomposition once before anything else
         self.starlets.decomposition(self.test_image, self.n_scales)
         self.starlets_fast.decomposition(self.test_image, self.n_scales)

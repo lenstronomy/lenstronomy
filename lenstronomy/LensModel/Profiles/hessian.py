@@ -28,36 +28,20 @@ class Hessian(LensProfileBase):
     }
 
     def function(self, x, y, f_xx, f_yy, f_xy, f_yx, ra_0=0, dec_0=0):
-        """
-
-        :param x: x-coordinate (angle)
-        :param y: y0-coordinate (angle)
-        :param f_xx: dalpha_x/dx
-        :param f_yy: dalpha_y/dy
-        :param f_xy: dalpha_x/dy
-        :param f_yx: dalpha_y/dx
-        :param ra_0: x/ra position where shear deflection is 0
-        :param dec_0: y/dec position where shear deflection is 0
-        :return: lensing potential
-        """
+        """:param x: x-coordinate (angle) :param y: y0-coordinate (angle) :param f_xx:
+        dalpha_x/dx :param f_yy: dalpha_y/dy :param f_xy: dalpha_x/dy :param f_yx:
+        dalpha_y/dx :param ra_0: x/ra position where shear deflection is 0 :param dec_0:
+        y/dec position where shear deflection is 0 :return: lensing potential."""
         x_ = x - ra_0
         y_ = y - dec_0
         f_ = 1 / 2.0 * (f_xx * x_ * x_ + (f_xy + f_yx) * x_ * y_ + f_yy * y_ * y_)
         return f_
 
     def derivatives(self, x, y, f_xx, f_yy, f_xy, f_yx, ra_0=0, dec_0=0):
-        """
-
-        :param x: x-coordinate (angle)
-        :param y: y0-coordinate (angle)
-        :param f_xx: dalpha_x/dx
-        :param f_yy: dalpha_y/dy
-        :param f_xy: dalpha_x/dy
-        :param f_yx: dalpha_y/dx
-        :param ra_0: x/ra position where shear deflection is 0
-        :param dec_0: y/dec position where shear deflection is 0
-        :return: deflection angles
-        """
+        """:param x: x-coordinate (angle) :param y: y0-coordinate (angle) :param f_xx:
+        dalpha_x/dx :param f_yy: dalpha_y/dy :param f_xy: dalpha_x/dy :param f_yx:
+        dalpha_y/dx :param ra_0: x/ra position where shear deflection is 0 :param dec_0:
+        y/dec position where shear deflection is 0 :return: deflection angles."""
         x_ = x - ra_0
         y_ = y - dec_0
         f_x = f_xx * x_ + f_xy * y_

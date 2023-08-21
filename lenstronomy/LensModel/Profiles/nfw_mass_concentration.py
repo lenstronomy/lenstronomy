@@ -36,13 +36,9 @@ class NFWMC(LensProfileBase):
     }
 
     def __init__(self, z_lens, z_source, cosmo=None, static=False):
-        """
-
-        :param z_lens: redshift of lens
-        :param z_source: redshift of source
-        :param cosmo: astropy cosmology instance
-        :param static: boolean, if True, only operates with fixed parameter values
-        """
+        """:param z_lens: redshift of lens :param z_source: redshift of source :param
+        cosmo: astropy cosmology instance :param static: boolean, if True, only operates
+        with fixed parameter values."""
         self._nfw = NFW()
         if cosmo is None:
             # TODO: print waring if these lines get executed
@@ -54,12 +50,9 @@ class NFWMC(LensProfileBase):
         super(NFWMC, self).__init__()
 
     def _m_c2deflections(self, logM, concentration):
-        """
-
-        :param logM: log10 mass in M200 stellar masses
-        :param concentration: halo concentration c = r_200 / r_s
-        :return: Rs (in arc seconds), alpha_Rs (in arc seconds)
-        """
+        """:param logM: log10 mass in M200 stellar masses :param concentration: halo
+        concentration c = r_200 / r_s :return: Rs (in arc seconds), alpha_Rs (in arc
+        seconds)"""
         if self._static is True:
             return self._Rs_static, self._alpha_Rs_static
         M = 10**logM
@@ -67,12 +60,11 @@ class NFWMC(LensProfileBase):
         return Rs, alpha_Rs
 
     def set_static(self, logM, concentration, center_x=0, center_y=0):
-        """
+        """:param logM:
 
-        :param logM:
-        :param concentration:
-        :param center_x:
-        :param center_y:
+        :param concentration: 
+        :param center_x: 
+        :param center_y: 
         :return:
         """
         self._static = True
@@ -82,10 +74,7 @@ class NFWMC(LensProfileBase):
         )
 
     def set_dynamic(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         self._static = False
         if hasattr(self, "_Rs_static"):
             del self._Rs_static
@@ -93,16 +82,9 @@ class NFWMC(LensProfileBase):
             del self._alpha_Rs_static
 
     def function(self, x, y, logM, concentration, center_x=0, center_y=0):
-        """
-
-        :param x: angular position
-        :param y: angular position
-        :param Rs: angular turn over point
-        :param alpha_Rs: deflection at Rs
-        :param center_x: center of halo
-        :param center_y: center of halo
-        :return:
-        """
+        """:param x: angular position :param y: angular position :param Rs: angular turn
+        over point :param alpha_Rs: deflection at Rs :param center_x: center of halo
+        :param center_y: center of halo :return:"""
         Rs, alpha_Rs = self._m_c2deflections(logM, concentration)
         return self._nfw.function(
             x, y, alpha_Rs=alpha_Rs, Rs=Rs, center_x=center_x, center_y=center_y

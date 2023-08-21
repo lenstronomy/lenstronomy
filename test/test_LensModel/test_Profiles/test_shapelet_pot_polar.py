@@ -48,10 +48,7 @@ class TestCartShapelets(object):
         npt.assert_almost_equal(values[0], 0, decimal=8)
 
     def test_derivatives(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         beta = 1.0
         coeffs = [1, 0, 0, 1.0, 0, 0, 0, 0]
         kwargs_lens1 = {"coeffs": coeffs, "beta": beta}

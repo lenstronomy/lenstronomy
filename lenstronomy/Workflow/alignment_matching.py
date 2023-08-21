@@ -52,13 +52,13 @@ class AlignmentFitting(object):
         """Returns the best fit for the lens model on catalogue basis with particle
         swarm optimizer.
 
-        :param n_particles:
-        :param n_iterations:
+        :param n_particles: 
+        :param n_iterations: 
         :param delta_shift: astrometric shift tolerance
         :param delta_rot: rotation angle tolerance [in radian]
-        :param threadCount:
-        :param mpi:
-        :param print_key:
+        :param threadCount: 
+        :param mpi: 
+        :param print_key: 
         :return:
         """
         init_pos = self.chain.get_args(self.chain.kwargs_data_init)
@@ -145,18 +145,15 @@ class AlignmentLikelihood(object):
         pass
 
     def update_multi_band(self, args):
-        """
-        :param args: list of parameters
-        :return: updated multi_band_list
-        """
+        """:param args: list of parameters :return: updated multi_band_list."""
         kwargs_data = self.update_data(args)
         multi_band_list = self._multi_band_list
         multi_band_list[self._band_index][0] = kwargs_data
         return multi_band_list
 
     def update_data(self, args):
-        """
-        :param args:
+        """:param args:
+
         :return:
         """
         k = 0
@@ -171,10 +168,8 @@ class AlignmentLikelihood(object):
         return kwargs_data
 
     def get_args(self, kwargs_data):
-        """
-        :param kwargs_data: keyword arguments for ImageData()
-        :return: arguments being sampled
-        """
+        """:param kwargs_data: keyword arguments for ImageData() :return: arguments
+        being sampled."""
         args = []
         if self._align_offset:
             args.append(kwargs_data.get("ra_shift", 0))
@@ -193,12 +188,8 @@ class AlignmentLikelihood(object):
         return n
 
     def lower_upper_limit(self, delta_shift, delta_rot):
-        """
-
-        :param delta_shift: astrometric shift tolerance
-        :param delta_rot: rotation angle tolerance [in radian]
-        :return: lower_limit, upper_limit
-        """
+        """:param delta_shift: astrometric shift tolerance :param delta_rot: rotation
+        angle tolerance [in radian] :return: lower_limit, upper_limit."""
         lower_limit, upper_limit = [], []
         if self._align_offset:
             lower_limit.append(-delta_shift)

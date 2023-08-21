@@ -11,10 +11,7 @@ class LightProfileAnalysis(object):
     """Class with analysis routines to compute derived properties of the lens model."""
 
     def __init__(self, light_model):
-        """
-
-        :param light_model: LightModel instance
-        """
+        """:param light_model: LightModel instance."""
         self._light_model = light_model
 
     def ellipticity(
@@ -33,14 +30,14 @@ class LightProfileAnalysis(object):
 
         :param kwargs_light: keyword argument list of profiles
         :param center_x: center of profile, if None takes it from the first profile in
-            kwargs_light
+                kwargs_light
         :param center_y: center of profile, if None takes it from the first profile in
-            kwargs_light
+                kwargs_light
         :param model_bool_list: list of booleans to select subsets of the profile
         :param grid_spacing: grid spacing over which the moments are computed
         :param grid_num: grid size over which the moments are computed
         :param iterative: if True iteratively adopts an eccentric mask to overcome edge
-            effects
+                effects
         :type iterative: boolean
         :param num_iterative: number of iterative changes in ellipticity
         :type num_iterative: int
@@ -82,9 +79,9 @@ class LightProfileAnalysis(object):
 
         :param kwargs_light: keyword argument list of profiles
         :param center_x: center of profile, if None takes it from the first profile in
-            kwargs_light
+                kwargs_light
         :param center_y: center of profile, if None takes it from the first profile in
-            kwargs_light
+                kwargs_light
         :param model_bool_list: list of booleans to select subsets of the profile
         :param grid_spacing: grid spacing over which the moments are computed
         :param grid_num: grid size over which the moments are computed
@@ -109,15 +106,11 @@ class LightProfileAnalysis(object):
     def radial_light_profile(
         self, r_list, kwargs_light, center_x=None, center_y=None, model_bool_list=None
     ):
-        """
-
-        :param r_list: list of radii to compute the spherically averaged lens light profile
-        :param center_x: center of the profile
-        :param center_y: center of the profile
-        :param kwargs_light: lens light parameter keyword argument list
-        :param model_bool_list: bool list or None, indicating which profiles to sum over
-        :return: flux amplitudes at r_list radii spherically averaged
-        """
+        """:param r_list: list of radii to compute the spherically averaged lens light
+        profile :param center_x: center of the profile :param center_y: center of the
+        profile :param kwargs_light: lens light parameter keyword argument list :param
+        model_bool_list: bool list or None, indicating which profiles to sum over
+        :return: flux amplitudes at r_list radii spherically averaged."""
         center_x, center_y = analysis_util.profile_center(
             kwargs_light, center_x, center_y
         )
@@ -145,16 +138,16 @@ class LightProfileAnalysis(object):
 
         :param kwargs_light: keyword argument list of profiles
         :param center_x: center of profile, if None takes it from the first profile in
-            kwargs_light
+                kwargs_light
         :param center_y: center of profile, if None takes it from the first profile in
-            kwargs_light
+                kwargs_light
         :param model_bool_list: list of booleans to select subsets of the profile
         :param grid_spacing: grid spacing over which the moments are computed for the
-            half-light radius
+                half-light radius
         :param grid_num: grid size over which the moments are computed
         :param n_comp: maximum number of Gaussian's in the MGE
         :param r_h: float, half light radius to be used for MGE (optional, otherwise
-            using a numerical grid)
+                using a numerical grid)
         :return: amplitudes, sigmas, center_x, center_y
         """
 
@@ -242,9 +235,9 @@ class LightProfileAnalysis(object):
     def flux_components(self, kwargs_light, grid_num=400, grid_spacing=0.01):
         """Computes the total flux in each component of the model.
 
-        :param kwargs_light:
-        :param grid_num:
-        :param grid_spacing:
+        :param kwargs_light: 
+        :param grid_num: 
+        :param grid_spacing: 
         :return:
         """
         flux_list = []

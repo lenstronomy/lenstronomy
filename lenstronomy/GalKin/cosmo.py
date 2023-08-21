@@ -8,12 +8,9 @@ class Cosmo(object):
     """Cosmological quantities."""
 
     def __init__(self, d_d, d_s, d_ds):
-        """
-
-        :param d_d: angular diameter distance to the deflector
-        :param d_s: angular diameter distance to the source
-        :param d_ds: angular diameter distance between deflector and source
-        """
+        """:param d_d: angular diameter distance to the deflector :param d_s: angular
+        diameter distance to the source :param d_ds: angular diameter distance between
+        deflector and source."""
         if d_ds <= 0 or d_s <= 0 or d_d <= 0:
             raise ValueError(
                 "input angular diameter distances Dd: %s, Ds: %s, Dds: %s are not suppored for a lens"

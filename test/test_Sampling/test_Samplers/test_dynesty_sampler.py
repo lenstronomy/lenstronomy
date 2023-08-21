@@ -9,11 +9,7 @@ from lenstronomy.Sampling.Samplers.dynesty_sampler import DynestySampler
 
 @pytest.fixture
 def import_fixture(simple_einstein_ring_likelihood):
-    """
-
-    :param simple_einstein_ring_likelihood: fixture
-    :return:
-    """
+    """:param simple_einstein_ring_likelihood: fixture :return:"""
     likelihood, kwargs_truths = simple_einstein_ring_likelihood
     prior_means = likelihood.param.kwargs2args(**kwargs_truths)
     prior_means *= 1.01

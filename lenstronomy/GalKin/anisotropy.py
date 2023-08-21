@@ -20,10 +20,7 @@ class Anisotropy(object):
     """
 
     def __init__(self, anisotropy_type):
-        """
-
-        :param anisotropy_type: string, anisotropy model type
-        """
+        """:param anisotropy_type: string, anisotropy model type."""
         self._type = anisotropy_type
         if self._type == "const":
             self._model = Const()
@@ -338,12 +335,8 @@ class GeneralizedOM(object):
         )
 
     def _F_12(self, z, beta_inf):
-        """
-
-        :param z: (R**2 - r**2) / (r_ani**2 + R**2)
-        :param beta_inf: anisotropy at infinity
-        :return: _F(1/2, z, beta_inf)
-        """
+        """:param z: (R**2 - r**2) / (r_ani**2 + R**2) :param beta_inf: anisotropy at
+        infinity :return: _F(1/2, z, beta_inf)"""
         if not hasattr(self, "_f_12_interp"):
             f_12_interp = self._F(1 / 2.0, self._z_interp, beta_inf)
             self._f_12_interp = interp1d(
@@ -352,12 +345,8 @@ class GeneralizedOM(object):
         return self._f_12_interp(z)
 
     def _F_32(self, z, beta_inf):
-        """
-
-        :param z: (R**2 - r**2) / (r_ani**2 + R**2)
-        :param beta_inf: anisotropy at infinity
-        :return: _F(3/2, z, beta_inf)
-        """
+        """:param z: (R**2 - r**2) / (r_ani**2 + R**2) :param beta_inf: anisotropy at
+        infinity :return: _F(3/2, z, beta_inf)"""
         if not hasattr(self, "_f_32_interp"):
             f_32_interp = self._F(3 / 2.0, self._z_interp, beta_inf)
             self._f_32_interp = interp1d(
@@ -369,8 +358,8 @@ class GeneralizedOM(object):
     def _j_beta(r, s, r_ani, beta_inf):
         """Equation (12) in Agnello et al. 2014.
 
-        :param r:
-        :param s:
+        :param r: 
+        :param s: 
         :param r_ani: :param beta_inf
         :return:
         """
@@ -380,8 +369,8 @@ class GeneralizedOM(object):
     def _F(a, z, beta_inf):
         """The hypergeometric function 2F1 (a, 1 +beta_inf, a + 1, z)
 
-        :param a:
-        :param z:
+        :param a: 
+        :param z: 
         :return:
         """
         if isinstance(z, int) or isinstance(z, float):

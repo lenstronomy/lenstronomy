@@ -18,17 +18,14 @@ class LightParam(object):
         param_type="light",
         linear_solver=True,
     ):
-        """
-
-        :param light_model_list: list of light models
-        :param kwargs_fixed: list of keyword arguments corresponding to parameters held fixed during sampling
-        :param kwargs_lower: list of keyword arguments indicating hard lower limit of the parameter space
-        :param kwargs_upper: list of keyword arguments indicating hard upper limit of the parameter space
-        :param param_type: string (optional), adding specifications in the output strings (such as lens light or
-         source light)
-        :param linear_solver: bool, if True fixes the linear amplitude parameters 'amp' (avoid sampling) such that they
-         get overwritten by the linear solver solution.
-        """
+        """:param light_model_list: list of light models :param kwargs_fixed: list of
+        keyword arguments corresponding to parameters held fixed during sampling :param
+        kwargs_lower: list of keyword arguments indicating hard lower limit of the
+        parameter space :param kwargs_upper: list of keyword arguments indicating hard
+        upper limit of the parameter space :param param_type: string (optional), adding
+        specifications in the output strings (such as lens light or source light) :param
+        linear_solver: bool, if True fixes the linear amplitude parameters 'amp' (avoid
+        sampling) such that they get overwritten by the linear solver solution."""
         self._lightModel = LightModel(light_model_list=light_model_list)
         self._param_name_list = self._lightModel.param_name_list
         self._type = param_type
@@ -58,13 +55,10 @@ class LightParam(object):
         return self._param_name_list
 
     def get_params(self, args, i):
-        """
-
-        :param args: list of floats corresponding ot the arguments being sampled
-        :param i: int, index of the first argument that is managed/read-out by this class
-        :return: keyword argument list of the light profile, index after reading out the arguments corresponding to
-         this class
-        """
+        """:param args: list of floats corresponding ot the arguments being sampled
+        :param i: int, index of the first argument that is managed/read-out by this
+        class :return: keyword argument list of the light profile, index after reading
+        out the arguments corresponding to this class."""
         kwargs_list = []
         for k, model in enumerate(self.model_list):
             kwargs = {}
@@ -121,12 +115,9 @@ class LightParam(object):
         return kwargs_list, i
 
     def set_params(self, kwargs_list):
-        """
-
-        :param kwargs_list: list of keyword arguments of the light profile (free parameter as well as optionally the
-         fixed ones)
-        :return: list of floats corresponding to the free parameters
-        """
+        """:param kwargs_list: list of keyword arguments of the light profile (free
+        parameter as well as optionally the fixed ones) :return: list of floats
+        corresponding to the free parameters."""
         args = []
         for k, model in enumerate(self.model_list):
             kwargs = kwargs_list[k]
@@ -195,10 +186,8 @@ class LightParam(object):
         return args
 
     def num_param(self, latex_style=False):
-        """
-        :param latex_style: boolena; if True, returns latex strings for plotting
-        :return: int, list of strings with param names
-        """
+        """:param latex_style: boolena; if True, returns latex strings for plotting
+        :return: int, list of strings with param names."""
         num = 0
         name_list = []
         for k, model in enumerate(self.model_list):
@@ -253,7 +242,5 @@ class LightParam(object):
         return num, name_list
 
     def num_param_linear(self):
-        """
-        :return: number of linear basis set coefficients
-        """
+        """:return: number of linear basis set coefficients."""
         return self._lightModel.num_param_linear(kwargs_list=self.kwargs_fixed)

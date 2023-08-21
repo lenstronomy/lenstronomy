@@ -10,15 +10,9 @@ export, __all__ = exporter()
 
 @export
 def half_light_radius(lens_light, x_grid, y_grid, center_x=0, center_y=0):
-    """
-
-    :param lens_light: array of surface brightness
-    :param x_grid: x-axis coordinates
-    :param y_grid: y-axis coordinates
-    :param center_x: center of light
-    :param center_y: center of light
-    :return:
-    """
+    """:param lens_light: array of surface brightness :param x_grid: x-axis coordinates
+    :param y_grid: y-axis coordinates :param center_x: center of light :param center_y:
+    center of light :return:"""
     lens_light[lens_light < 0] = 0
     total_flux_2 = np.sum(lens_light) / 2.0
     r_max = np.max(np.sqrt((x_grid - center_x) ** 2 + (y_grid - center_y) ** 2))
@@ -137,17 +131,11 @@ def _ellipticities(I_xy, x, y):
 def ellipticities(
     I_xy, x_grid, y_grid, num_iterative=30, iterative=False, center_x=0, center_y=0
 ):
-    """
-
-    :param I_xy: surface brightness I(x, y) as array
-    :param x_grid: x-coordinates in same shape as I_xy
-    :param y_grid: y-coordinates in same shape as I_xy
-    :param iterative: if True iteratively adopts an eccentric mask to overcome edge effects
-    :type iterative: boolean
-    :param num_iterative: number of iterative changes in ellipticity
-    :type num_iterative: int
-    :return: e1, e2 eccentricities
-    """
+    """:param I_xy: surface brightness I(x, y) as array :param x_grid: x-coordinates in
+    same shape as I_xy :param y_grid: y-coordinates in same shape as I_xy :param
+    iterative: if True iteratively adopts an eccentric mask to overcome edge effects
+    :type iterative: boolean :param num_iterative: number of iterative changes in
+    ellipticity :type num_iterative: int :return: e1, e2 eccentricities."""
     radius = (np.max(x_grid) - np.min(x_grid)) / 2.0
     mask = mask_util.mask_azimuthal(
         x_grid, y_grid, center_x=center_x, center_y=center_y, r=radius

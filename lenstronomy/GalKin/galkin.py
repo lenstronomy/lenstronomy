@@ -56,16 +56,13 @@ class Galkin(GalkinModel, GalkinObservation):
         kwargs_numerics=None,
         analytic_kinematics=False,
     ):
-        """
-
-        :param kwargs_model: keyword arguments describing the model components
-        :param kwargs_aperture: keyword arguments describing the spectroscopic aperture, see Aperture() class
-        :param kwargs_psf: keyword argument specifying the PSF of the observation
-        :param kwargs_cosmo: keyword arguments that define the cosmology in terms of the angular diameter distances
-         involved
-        :param kwargs_numerics: numerics keyword arguments
-        :param analytic_kinematics: bool, if True uses the analytic kinematic model
-        """
+        """:param kwargs_model: keyword arguments describing the model components :param
+        kwargs_aperture: keyword arguments describing the spectroscopic aperture, see
+        Aperture() class :param kwargs_psf: keyword argument specifying the PSF of the
+        observation :param kwargs_cosmo: keyword arguments that define the cosmology in
+        terms of the angular diameter distances involved :param kwargs_numerics:
+        numerics keyword arguments :param analytic_kinematics: bool, if True uses the
+        analytic kinematic model."""
         GalkinModel.__init__(
             self,
             kwargs_model,
@@ -85,10 +82,10 @@ class Galkin(GalkinModel, GalkinObservation):
         :param kwargs_mass: mass model parameters (following lenstronomy lens model
             conventions)
         :param kwargs_light: deflector light parameters (following lenstronomy light
-            model conventions)
+                model conventions)
         :param kwargs_anisotropy: anisotropy parameters, may vary according to
-            anisotropy type chosen. We refer to the Anisotropy() class for details on
-            the parameters.
+                anisotropy type chosen. We refer to the Anisotropy() class for details
+                on             the parameters.
         :param sampling_number: int, number of spectral sampling of the light
             distribution
         :return: integrated LOS velocity dispersion in units [km/s]
@@ -122,7 +119,7 @@ class Galkin(GalkinModel, GalkinObservation):
         :param num_kin_sampling: int, number of draws from a kinematic prediction of a
             LOS
         :param num_psf_sampling: int, number of displacements/render from a spectra to
-            be displaced on the IFU
+                be displaced on the IFU
         :return: ordered array of velocity dispersions [km/s] for each unit
         """
         # draw from light profile (3d and 2d option)
@@ -153,14 +150,15 @@ class Galkin(GalkinModel, GalkinObservation):
         return np.sqrt(sigma_s2_average) / 1000.0  # in units of km/s
 
     def _draw_one_sigma2(self, kwargs_mass, kwargs_light, kwargs_anisotropy):
-        """
+        """:param kwargs_mass: mass model parameters (following lenstronomy lens model
+        conventions) :param kwargs_light: deflector light parameters (following
+        lenstronomy light model conventions) :param kwargs_anisotropy: anisotropy
+        parameters, may vary according to anisotropy type chosen.
 
-        :param kwargs_mass: mass model parameters (following lenstronomy lens model conventions)
-        :param kwargs_light: deflector light parameters (following lenstronomy light model conventions)
-        :param kwargs_anisotropy: anisotropy parameters, may vary according to anisotropy type chosen.
-            We refer to the Anisotropy() class for details on the parameters.
-        :return: integrated LOS velocity dispersion in angular units for a single draw of the light distribution that
-         falls in the aperture after displacing with the seeing
+        We refer to the Anisotropy() class for details on the parameters.
+        :return: integrated LOS velocity dispersion in angular units for a single draw
+                of the light distribution that          falls in the aperture after
+                displacing with the seeing
         """
         while True:
             r, R, x, y = self.numerics.draw_light(kwargs_light)

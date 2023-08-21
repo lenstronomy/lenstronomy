@@ -34,10 +34,7 @@ class TestChameleon(object):
         assert theta_E_convert == 0
 
     def test_function(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         x = np.linspace(0.1, 10, 10)
         w_c, w_t = 0.5, 1.0
         phi_G, q = 0.3, 0.8
@@ -64,10 +61,7 @@ class TestChameleon(object):
         npt.assert_almost_equal(f_, (f_1 - f_2), decimal=5)
 
     def test_derivatives(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         x = np.linspace(0.1, 10, 10)
         w_c, w_t = 0.5, 1.0
         phi_G, q = 0.3, 0.8
@@ -97,10 +91,7 @@ class TestChameleon(object):
         npt.assert_almost_equal(f_x, 1, decimal=1)
 
     def test_hessian(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         x = np.linspace(0.1, 10, 10)
         w_c, w_t = 0.5, 1.0
         phi_G, q = 0.3, 0.8
@@ -156,10 +147,7 @@ class TestDoubleChameleon(object):
         assert names[0] == "alpha_1"
 
     def test_function(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         doublechameleon = DoubleChameleon()
         chameleon = Chameleon()
 
@@ -201,10 +189,7 @@ class TestDoubleChameleon(object):
         npt.assert_almost_equal(flux, flux1 + flux2, decimal=8)
 
     def test_derivatives(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         doublechameleon = DoubleChameleon()
         chameleon = Chameleon()
 
@@ -247,10 +232,7 @@ class TestDoubleChameleon(object):
         npt.assert_almost_equal(f_y, f_y1 + f_y2, decimal=8)
 
     def test_hessian(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         doublechameleon = DoubleChameleon()
         chameleon = Chameleon()
 
@@ -365,10 +347,7 @@ class TestDoubleChameleonPointMass(object):
         assert names[0] == "alpha_1"
 
     def test_function(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         doublechameleon = DoubleChameleonPointMass()
 
         phi_G, q = 0.3, 0.8
@@ -390,10 +369,7 @@ class TestDoubleChameleonPointMass(object):
         npt.assert_almost_equal(flux, 1.2602247653486218, decimal=4)
 
     def test_derivatives(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         doublechameleon = DoubleChameleonPointMass()
 
         phi_G, q = 0.3, 0.8
@@ -416,10 +392,7 @@ class TestDoubleChameleonPointMass(object):
         npt.assert_almost_equal(f_y, 0.4521464786719726, decimal=4)
 
     def test_hessian(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         doublechameleon = DoubleChameleonPointMass()
 
         phi_G, q = 0.3, 0.8
@@ -456,10 +429,7 @@ class TestTripleChameleon(object):
         assert names[0] == "alpha_1"
 
     def test_function(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         triplechameleon = TripleChameleon()
         chameleon = Chameleon()
 
@@ -499,10 +469,7 @@ class TestTripleChameleon(object):
         npt.assert_almost_equal(flux, flux1 + flux2 + flux3, decimal=8)
 
     def test_derivatives(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         triplechameleon = TripleChameleon()
         chameleon = Chameleon()
 
@@ -543,10 +510,7 @@ class TestTripleChameleon(object):
         npt.assert_almost_equal(f_y, f_y1 + f_y2 + f_y3, decimal=8)
 
     def test_hessian(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         triplechameleon = TripleChameleon()
         chameleon = Chameleon()
 

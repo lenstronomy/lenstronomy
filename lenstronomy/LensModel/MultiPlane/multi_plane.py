@@ -32,23 +32,26 @@ class MultiPlane(object):
         kwargs_interp=None,
         kwargs_synthesis=None,
     ):
-        """
+        """:param z_source: source redshift for default computation of reduced lensing
+        quantities :param lens_model_list: list of lens model strings :param
+        lens_redshift_list: list of floats with redshifts of the lens models indicated
+        in lens_model_list :param cosmo: instance of astropy.cosmology :param
+        numerical_alpha_class: an instance of a custom class for use in NumericalAlpha()
+        lens model (see documentation in Profiles/numerical_alpha) :param kwargs_interp:
+        interpolation keyword arguments specifying the numerics.
 
-        :param z_source: source redshift for default computation of reduced lensing quantities
-        :param lens_model_list: list of lens model strings
-        :param lens_redshift_list: list of floats with redshifts of the lens models indicated in lens_model_list
-        :param cosmo: instance of astropy.cosmology
-        :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model
-         (see documentation in Profiles/numerical_alpha)
-        :param kwargs_interp: interpolation keyword arguments specifying the numerics.
-         See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
-        :param observed_convention_index: a list of indices, corresponding to the lens_model_list element with same
-         index, where the 'center_x' and 'center_y' kwargs correspond to observed (lensed) positions, not physical
-         positions. The code will compute the physical locations when performing computations
-        :param ignore_observed_positions: bool, if True, will ignore the conversion between observed to physical
-         position of deflectors
-        :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens
-         models. If None, 'z_source' is used.
+        See description in the Interpolate() class. Only applicable for 'INTERPOL' and
+        'INTERPOL_SCALED' models.
+        :param observed_convention_index: a list of indices, corresponding to the
+                lens_model_list element with same          index, where the 'center_x'
+                and 'center_y' kwargs correspond to observed (lensed) positions, not
+                physical          positions. The code will compute the physical
+                locations when performing computations
+        :param ignore_observed_positions: bool, if True, will ignore the conversion
+                between observed to physical          position of deflectors
+        :param z_source_convention: float, redshift of a source to define the reduced
+                deflection angles of the lens          models. If None, 'z_source' is
+                used.
         :param kwargs_synthesis: keyword arguments for the 'SYNTHESIS' lens model, if applicable
         """
 
@@ -115,11 +118,9 @@ class MultiPlane(object):
         self._T_z_source = self._multi_plane_base._cosmo_bkg.T_xy(0, z_source)
 
     def observed2flat_convention(self, kwargs_lens):
-        """
-
-        :param kwargs_lens: keyword argument list of lens model parameters in the observed convention
-        :return: kwargs_lens positions mapped into angular position without lensing along its LOS
-        """
+        """:param kwargs_lens: keyword argument list of lens model parameters in the
+        observed convention :return: kwargs_lens positions mapped into angular position
+        without lensing along its LOS."""
         return self._convention(kwargs_lens)
 
     def ray_shooting(
@@ -128,9 +129,9 @@ class MultiPlane(object):
         """Ray-tracing (backwards light cone) to the default z_source redshift.
 
         :param theta_x: angle in x-direction on the image (usually arc seconds, in the
-            same convention as lensing deflection angles)
+                same convention as lensing deflection angles)
         :param theta_y: angle in y-direction on the image (usually arc seconds, in the
-            same convention as lensing deflection angles)
+                same convention as lensing deflection angles)
         :param kwargs_lens: lens model keyword argument list
         :param check_convention: flag to check the image position convention (leave this
             alone)
@@ -253,7 +254,7 @@ class MultiPlane(object):
         :param theta_y: angle in y-direction on the image
         :param kwargs_lens: lens model keyword argument list
         :param check_convention: boolean, if True goes through the lens model list and
-            checks whether the positional conventions are satisfied.
+                checks whether the positional conventions are satisfied.
         :return: geometric delay, gravitational delay [days]
         """
         if check_convention and not self.ignore_observed_positions:
@@ -304,10 +305,10 @@ class MultiPlane(object):
         :param theta_y: y-position (preferentially arcsec)
         :type theta_y: numpy array
         :param kwargs_lens: list of keyword arguments of lens model parameters matching
-            the lens model classes
+                the lens model classes
         :param diff: numerical differential step (float)
         :param check_convention: boolean, if True goes through the lens model list and
-            checks whether the positional conventions are satisfied.
+                checks whether the positional conventions are satisfied.
         :return: f_xx, f_xy, f_yx, f_yy
         """
         self._check_raise(k=k)
@@ -349,21 +350,15 @@ class MultiPlane(object):
         return theta_x, theta_y
 
     def set_static(self, kwargs):
-        """
-
-        :param kwargs: lens model keyword argument list
-        :return: lens model keyword argument list with positional parameters all in flat sky coordinates
-        """
+        """:param kwargs: lens model keyword argument list :return: lens model keyword
+        argument list with positional parameters all in flat sky coordinates."""
 
         kwargs = self.observed2flat_convention(kwargs)
         self.ignore_observed_positions = True
         return self._multi_plane_base.set_static(kwargs)
 
     def set_dynamic(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         self.ignore_observed_positions = False
         self._multi_plane_base.set_dynamic()
 
@@ -373,7 +368,7 @@ class MultiPlane(object):
         selected, as this feature is not yet supported in multi-plane.
 
         :param k: parameter that optionally indicates a sub-set of lens models being
-            executed for single plane
+                executed for single plane
         :return: None, optional raise
         """
         if k is not None:
@@ -399,11 +394,9 @@ class LensedLocation(object):
     position of the deflector without lensing contribution along the LOS."""
 
     def __init__(self, multiplane_instance, observed_convention_index):
-        """
-
-        :param multiplane_instance: instance of the MultiPlane class
-        :param observed_convention_index: list of lens model indexes to be modelled in the observed plane
-        """
+        """:param multiplane_instance: instance of the MultiPlane class :param
+        observed_convention_index: list of lens model indexes to be modelled in the
+        observed plane."""
 
         self._multiplane = multiplane_instance
 

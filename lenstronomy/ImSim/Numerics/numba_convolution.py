@@ -23,17 +23,16 @@ class NumbaConvolution(object):
         parallel=False,
         memory_raise=True,
     ):
-        """
-
-        :param kernel: convolution kernel in units of the image pixels provided, odd length per axis
-        :param conv_pixels: bool array same size as data, pixels to be convolved and their light to be blurred
-        :param compute_pixels: bool array of size of image, these pixels (if True) will get blurred light from other
-         pixels
+        """:param kernel: convolution kernel in units of the image pixels provided, odd
+        length per axis :param conv_pixels: bool array same size as data, pixels to be
+        convolved and their light to be blurred :param compute_pixels: bool array of
+        size of image, these pixels (if True) will get blurred light from other pixels
         :param nopython: bool, numba jit setting to use python or compiled.
+
         :param cache: bool, numba jit setting to use cache
         :param parallel: bool, numba jit setting to use parallel mode
-        :param memory_raise: bool, if True, checks whether memory required to store the convolution kernel is within
-         certain bounds
+        :param memory_raise: bool, if True, checks whether memory required to store the
+                convolution kernel is within          certain bounds
         """
         # numba_util.nopython = nopython
         # numba_util.cache = cache
@@ -114,12 +113,9 @@ class NumbaConvolution(object):
     @staticmethod
     @numba_util.jit()
     def _pre_compute_frame_kernel(image_index, kernel, mask, index_array):
-        """
+        """:param image_index: (int, int) index of pixels :param kernel: kernel, 2d
+        rectangular array :param mask: mask (size of full image) :return:
 
-        :param image_index: (int, int) index of pixels
-        :param kernel: kernel, 2d rectangular array
-        :param mask: mask (size of full image)
-        :return:
         frame_kernels: values of kernel
         frame_indexes: (int) 1d index corresponding to the pixel receiving the kernel value
         frame_counter: number of pixels with non-zero addition due to kernel convolution
@@ -155,14 +151,10 @@ class NumbaConvolution(object):
         image_frame_indexes,
         image_frame_lengths,
     ):
-        """
-
-        :param image_array: selected subset of image in 1d array conventions
-        :param num_data: number of 1d data that get convolved light and are output
-        :param image_frame_kernels: list of indexes that have a response for certain pixel (as a list
-        :param image_frame_lengths: length of image_frame_kernels
-        :return:
-        """
+        """:param image_array: selected subset of image in 1d array conventions :param
+        num_data: number of 1d data that get convolved light and are output :param
+        image_frame_kernels: list of indexes that have a response for certain pixel (as
+        a list :param image_frame_lengths: length of image_frame_kernels :return:"""
         conv_array = np.zeros(num_data)
         for image_index in range(
             len(image_array)
@@ -204,13 +196,14 @@ class SubgridNumbaConvolution(object):
         cache=True,
         parallel=False,
     ):
-        """
+        """:param kernel_super: convolution kernel in units of super sampled pixels
+        provided, odd length per axis :param supersampling_factor: factor of
+        supersampling relative to pixel grid :param conv_pixels: bool array same size as
+        data, pixels to be convolved and their light to be blurred :param
+        compute_pixels: bool array of size of image, these pixels (if True) will get
+        blurred light from other pixels :param nopython: bool, numba jit setting to use
+        python or compiled.
 
-        :param kernel_super: convolution kernel in units of super sampled pixels provided, odd length per axis
-        :param supersampling_factor: factor of supersampling relative to pixel grid
-        :param conv_pixels: bool array same size as data, pixels to be convolved and their light to be blurred
-        :param compute_pixels: bool array of size of image, these pixels (if True) will get blurred light from other pixels
-        :param nopython: bool, numba jit setting to use python or compiled.
         :param cache: bool, numba jit setting to use cache
         :param parallel: bool, numba jit setting to use parallel mode
         """
@@ -239,11 +232,8 @@ class SubgridNumbaConvolution(object):
                 self._numba_conv_list.append(numba_conv)
 
     def convolve2d(self, image_high_res):
-        """
-
-        :param image_high_res: supersampled image/model to be convolved and re-bined to regular resolution
-        :return: convolved and re-bind image
-        """
+        """:param image_high_res: supersampled image/model to be convolved and re-bined
+        to regular resolution :return: convolved and re-bind image."""
         conv_image = np.zeros((self._nx, self._ny))
         count = 0
         for i in range(self._supersampling_factor):
@@ -254,25 +244,19 @@ class SubgridNumbaConvolution(object):
         return conv_image
 
     def _partial_image(self, image_high_res, i, j):
-        """
-
-        :param image_high_res: 2d array supersampled
-        :param i: index of super-sampled position in first axis
-        :param j: index of super-sampled position in second axis
-        :return: 2d array only selected the specific supersampled position within a regular pixel
-        """
+        """:param image_high_res: 2d array supersampled :param i: index of super-sampled
+        position in first axis :param j: index of super-sampled position in second axis
+        :return: 2d array only selected the specific supersampled position within a
+        regular pixel."""
         return image_high_res[
             i :: self._supersampling_factor, j :: self._supersampling_factor
         ]
 
     def _partial_kernel(self, kernel_super, i, j):
-        """
-
-        :param kernel_super: supersampled kernel
-        :param i: index of super-sampled position in first axis
-        :param j: index of super-sampled position in second axis
-        :return: effective kernel rebinned to regular grid resulting from the subpersampled position (i,j)
-        """
+        """:param kernel_super: supersampled kernel :param i: index of super-sampled
+        position in first axis :param j: index of super-sampled position in second axis
+        :return: effective kernel rebinned to regular grid resulting from the
+        subpersampled position (i,j)"""
         n = len(kernel_super)
         kernel_size = int(round(n / float(self._supersampling_factor) + 1.5))
         if kernel_size % 2 == 0:

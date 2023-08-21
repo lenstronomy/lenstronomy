@@ -76,12 +76,12 @@ class NumericKinematics(Anisotropy):
         :param kwargs_mass: mass model parameters (following lenstronomy lens model
             conventions)
         :param kwargs_light: deflector light parameters (following lenstronomy light
-            model conventions)
+                model conventions)
         :param kwargs_anisotropy: anisotropy parameters, may vary according to
-            anisotropy type chosen. We refer to the Anisotropy() class for details on
-            the parameters.
+                anisotropy type chosen. We refer to the Anisotropy() class for details
+                on             the parameters.
         :return: weighted line-of-sight projected velocity dispersion at projected
-            radius R with weights I
+                radius R with weights I
         """
         if self._lum_weight_int_method is True:
             return self.sigma_s2_project(
@@ -101,10 +101,10 @@ class NumericKinematics(Anisotropy):
         :param kwargs_mass: mass model parameters (following lenstronomy lens model
             conventions)
         :param kwargs_light: deflector light parameters (following lenstronomy light
-            model conventions)
+                model conventions)
         :param kwargs_anisotropy: anisotropy parameters, may vary according to
-            anisotropy type chosen. We refer to the Anisotropy() class for details on
-            the parameters.
+                anisotropy type chosen. We refer to the Anisotropy() class for details
+                on             the parameters.
         :return: line-of-sight projected velocity dispersion at projected radius R
         """
         # nominator is numerically to a finite distance, so luminosity weighting might be off
@@ -126,12 +126,12 @@ class NumericKinematics(Anisotropy):
         :param kwargs_mass: mass model parameters (following lenstronomy lens model
             conventions)
         :param kwargs_light: deflector light parameters (following lenstronomy light
-            model conventions)
+                model conventions)
         :param kwargs_anisotropy: anisotropy parameters, may vary according to
-            anisotropy type chosen. We refer to the Anisotropy() class for details on
-            the parameters.
+                anisotropy type chosen. We refer to the Anisotropy() class for details
+                on             the parameters.
         :return: line-of-sight projected velocity dispersion at projected radius R from
-            3d radius r
+                3d radius r
         """
         beta = self.beta_r(r, **kwargs_anisotropy)
         return (1 - beta * R**2 / r**2) * self.sigma_r2(
@@ -139,9 +139,9 @@ class NumericKinematics(Anisotropy):
         )
 
     def sigma_r2(self, r, kwargs_mass, kwargs_light, kwargs_anisotropy):
-        """
-        computes numerically the solution of the Jeans equation for a specific 3d radius
-        E.g. Equation (A1) of Mamon & Lokas https://arxiv.org/pdf/astro-ph/0405491.pdf
+        """Computes numerically the solution of the Jeans equation for a specific 3d
+        radius E.g. Equation (A1) of Mamon & Lokas https://arxiv.org/pdf/astro-
+        ph/0405491.pdf.
 
         .. math::
             l(r) \\sigma_r(r) ^ 2 = 1/f(r) \\int_r^{\\infty} f(s) l(s) G M(s) / s^2 ds
@@ -196,7 +196,7 @@ class NumericKinematics(Anisotropy):
         """Gravitational potential in SI units.
 
         :param r: radius (arc seconds)
-        :param kwargs_mass:
+        :param kwargs_mass: 
         :return: gravitational potential
         """
         mass_dim = self.mass_3d(r, kwargs_mass)
@@ -204,11 +204,9 @@ class NumericKinematics(Anisotropy):
         return grav_pot
 
     def draw_light(self, kwargs_light):
-        """
-
-        :param kwargs_light: keyword argument (list) of the light model
-        :return: 3d radius (if possible), 2d projected radius, x-projected coordinate, y-projected coordinate
-        """
+        """:param kwargs_light: keyword argument (list) of the light model :return: 3d
+        radius (if possible), 2d projected radius, x-projected coordinate, y-projected
+        coordinate."""
         r = self.lightProfile.draw_light_3d(kwargs_light, n=1)[0]
         R, x, y = util.project2d_random(r)
         return r, R, x, y
@@ -236,10 +234,10 @@ class NumericKinematics(Anisotropy):
         :param kwargs_mass: mass model parameters (following lenstronomy lens model
             conventions)
         :param kwargs_light: deflector light parameters (following lenstronomy light
-            model conventions)
+                model conventions)
         :param kwargs_anisotropy: anisotropy parameters, may vary according to
-            anisotropy type chosen. We refer to the Anisotropy() class for details on
-            the parameters.
+                anisotropy type chosen. We refer to the Anisotropy() class for details
+                on             the parameters.
         :return: integral of A15 in Mamon&Lokas 2005
         """
         R = max(R, self._min_integrate)
@@ -326,10 +324,10 @@ class NumericKinematics(Anisotropy):
         :param kwargs_mass: mass model parameters (following lenstronomy lens model
             conventions)
         :param kwargs_light: deflector light parameters (following lenstronomy light
-            model conventions)
+                model conventions)
         :param kwargs_anisotropy: anisotropy parameters, may vary according to
-            anisotropy type chosen. We refer to the Anisotropy() class for details on
-            the parameters.
+                anisotropy type chosen. We refer to the Anisotropy() class for details
+                on             the parameters.
         :return: integrand
         """
         k_r = self.K(r, R, **kwargs_anisotropy)
@@ -397,13 +395,9 @@ class NumericKinematics(Anisotropy):
         return out
 
     def _mass_3d_interp(self, r, kwargs, new_compute=False):
-        """
-
-        :param r: in arc seconds
-        :param kwargs: lens model parameters in arc seconds
-        :param new_compute: bool, if True, recomputes the interpolation
-        :return: mass enclosed physical radius in kg
-        """
+        """:param r: in arc seconds :param kwargs: lens model parameters in arc seconds
+        :param new_compute: bool, if True, recomputes the interpolation :return: mass
+        enclosed physical radius in kg."""
         if not hasattr(self, "_log_mass_3d") or new_compute is True:
             r_array = np.logspace(
                 np.log10(self._min_interpolate),

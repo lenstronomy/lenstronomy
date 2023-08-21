@@ -113,12 +113,11 @@ class GaussianEllipseKappa(LensProfileBase):
             return np.array(f_)
 
     def _num_integral(self, x_, y_, amp_, sigma_, _p, q):
-        """
+        """:param x_:
 
-        :param x_:
-        :param y_:
-        :param _p:
-        :param q:
+        :param y_: 
+        :param _p: 
+        :param q: 
         :return:
         """
 

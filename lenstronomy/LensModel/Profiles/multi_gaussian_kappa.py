@@ -20,14 +20,13 @@ class MultiGaussianKappa(LensProfileBase):
         super(MultiGaussianKappa, self).__init__()
 
     def function(self, x, y, amp, sigma, center_x=0, center_y=0, scale_factor=1):
-        """
+        """:param x:
 
-        :param x:
-        :param y:
-        :param amp:
-        :param sigma:
-        :param center_x:
-        :param center_y:
+        :param y: 
+        :param amp: 
+        :param sigma: 
+        :param center_x: 
+        :param center_y: 
         :return:
         """
         f_ = np.zeros_like(x, dtype=float)
@@ -43,14 +42,13 @@ class MultiGaussianKappa(LensProfileBase):
         return f_
 
     def derivatives(self, x, y, amp, sigma, center_x=0, center_y=0, scale_factor=1):
-        """
+        """:param x:
 
-        :param x:
-        :param y:
-        :param amp:
-        :param sigma:
-        :param center_x:
-        :param center_y:
+        :param y: 
+        :param amp: 
+        :param sigma: 
+        :param center_x: 
+        :param center_y: 
         :return:
         """
         f_x, f_y = np.zeros_like(x, dtype=float), np.zeros_like(x, dtype=float)
@@ -68,14 +66,13 @@ class MultiGaussianKappa(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, amp, sigma, center_x=0, center_y=0, scale_factor=1):
-        """
+        """:param x:
 
-        :param x:
-        :param y:
-        :param amp:
-        :param sigma:
-        :param center_x:
-        :param center_y:
+        :param y: 
+        :param amp: 
+        :param sigma: 
+        :param center_x: 
+        :param center_y: 
         :return:
         """
         f_xx, f_yy, f_xy = (
@@ -98,11 +95,10 @@ class MultiGaussianKappa(LensProfileBase):
         return f_xx, f_xy, f_xy, f_yy
 
     def density(self, r, amp, sigma, scale_factor=1):
-        """
+        """:param r:
 
-        :param r:
-        :param amp:
-        :param sigma:
+        :param amp: 
+        :param sigma: 
         :return:
         """
         d_ = np.zeros_like(r, dtype=float)
@@ -111,12 +107,11 @@ class MultiGaussianKappa(LensProfileBase):
         return d_
 
     def density_2d(self, x, y, amp, sigma, center_x=0, center_y=0, scale_factor=1):
-        """
+        """:param R:
 
-        :param R:
-        :param am:
-        :param sigma_x:
-        :param sigma_y:
+        :param am: 
+        :param sigma_x: 
+        :param sigma_y: 
         :return:
         """
         d_3d = np.zeros_like(x, dtype=float)
@@ -127,11 +122,10 @@ class MultiGaussianKappa(LensProfileBase):
         return d_3d
 
     def mass_3d_lens(self, R, amp, sigma, scale_factor=1):
-        """
+        """:param R:
 
-        :param R:
-        :param amp:
-        :param sigma:
+        :param amp: 
+        :param sigma: 
         :return:
         """
         mass_3d = np.zeros_like(R, dtype=float)
@@ -170,14 +164,13 @@ class MultiGaussianKappaEllipse(LensProfileBase):
     def function(
         self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0, scale_factor=1
     ):
-        """
+        """:param x:
 
-        :param x:
-        :param y:
-        :param amp:
-        :param sigma:
-        :param center_x:
-        :param center_y:
+        :param y: 
+        :param amp: 
+        :param sigma: 
+        :param center_x: 
+        :param center_y: 
         :return:
         """
         f_ = np.zeros_like(x, dtype=float)
@@ -197,14 +190,13 @@ class MultiGaussianKappaEllipse(LensProfileBase):
     def derivatives(
         self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0, scale_factor=1
     ):
-        """
+        """:param x:
 
-        :param x:
-        :param y:
-        :param amp:
-        :param sigma:
-        :param center_x:
-        :param center_y:
+        :param y: 
+        :param amp: 
+        :param sigma: 
+        :param center_x: 
+        :param center_y: 
         :return:
         """
         f_x, f_y = np.zeros_like(x, dtype=float), np.zeros_like(x, dtype=float)
@@ -224,14 +216,13 @@ class MultiGaussianKappaEllipse(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0, scale_factor=1):
-        """
+        """:param x:
 
-        :param x:
-        :param y:
-        :param amp:
-        :param sigma:
-        :param center_x:
-        :param center_y:
+        :param y: 
+        :param amp: 
+        :param sigma: 
+        :param center_x: 
+        :param center_y: 
         :return:
         """
         f_xx, f_yy, f_xy = (
@@ -256,11 +247,10 @@ class MultiGaussianKappaEllipse(LensProfileBase):
         return f_xx, f_xy, f_xy, f_yy
 
     def density(self, r, amp, sigma, e1, e2, scale_factor=1):
-        """
+        """:param r:
 
-        :param r:
-        :param amp:
-        :param sigma:
+        :param amp: 
+        :param sigma: 
         :return:
         """
         d_ = np.zeros_like(r, dtype=float)
@@ -273,12 +263,11 @@ class MultiGaussianKappaEllipse(LensProfileBase):
     def density_2d(
         self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0, scale_factor=1
     ):
-        """
+        """:param R:
 
-        :param R:
-        :param am:
-        :param sigma_x:
-        :param sigma_y:
+        :param am: 
+        :param sigma_x: 
+        :param sigma_y: 
         :return:
         """
         d_3d = np.zeros_like(x, dtype=float)
@@ -289,11 +278,10 @@ class MultiGaussianKappaEllipse(LensProfileBase):
         return d_3d
 
     def mass_3d_lens(self, R, amp, sigma, e1, e2, scale_factor=1):
-        """
+        """:param R:
 
-        :param R:
-        :param amp:
-        :param sigma:
+        :param amp: 
+        :param sigma: 
         :return:
         """
         mass_3d = np.zeros_like(R, dtype=float)

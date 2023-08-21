@@ -8,9 +8,8 @@ __all__ = ["CoredDensity"]
 
 
 class CoredDensity(LensProfileBase):
-    """
-    class for a uniform cored density dropping steep in the outskirts
-    This profile is e.g. featured in Blum et al. 2020 https://arxiv.org/abs/2001.07182v1
+    """Class for a uniform cored density dropping steep in the outskirts This profile is
+    e.g. featured in Blum et al. 2020 https://arxiv.org/abs/2001.07182v1.
 
     ..math::
         \\rho_c(r) = \\frac{2}{\\pi} \\Sigma_{c} R_c^3 \\left(R_c^2 + r^2 \\right)^{-2}
@@ -24,8 +23,6 @@ class CoredDensity(LensProfileBase):
 
     ..math::
         \\kappa_{\\lambda_c}(\\theta) = \\lambda_c \\kappa(\\theta) + (1-\\lambda_c) \\kappa_c(\\theta).
-
-
     """
 
     _s = 0.000001  # numerical limit for minimal radius
@@ -86,16 +83,10 @@ class CoredDensity(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, sigma0, r_core, center_x=0, center_y=0):
-        """
-
-        :param x: x-coordinate in angular units
-        :param y: y-coordinate in angular units
-        :param sigma0: convergence in the core
-        :param r_core: core radius
-        :param center_x: center of the profile
-        :param center_y: center of the profile
-        :return: Hessian df/dxdx, df/dxdy, df/dydx, df/dydy at position (x, y)
-        """
+        """:param x: x-coordinate in angular units :param y: y-coordinate in angular
+        units :param sigma0: convergence in the core :param r_core: core radius :param
+        center_x: center of the profile :param center_y: center of the profile :return:
+        Hessian df/dxdx, df/dxdy, df/dydx, df/dydy at position (x, y)"""
         x_ = x - center_x
         y_ = y - center_y
         r = np.sqrt(x_**2 + y_**2)

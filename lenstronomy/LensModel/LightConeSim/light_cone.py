@@ -23,15 +23,10 @@ class LightCone(object):
     """
 
     def __init__(self, mass_map_list, grid_spacing_list, redshift_list):
-        """
-
-        :param mass_map_list: 2d numpy array of mass map
-         (in units physical Solar masses enclosed in each pixel/gird point of the map)
-        :param grid_spacing_list: list of grid spacing of the individual mass maps
-         in units of physical Mpc
-        :param redshift_list: list of redshifts of the mass maps
-
-        """
+        """:param mass_map_list: 2d numpy array of mass map (in units physical Solar
+        masses enclosed in each pixel/gird point of the map) :param grid_spacing_list:
+        list of grid spacing of the individual mass maps in units of physical Mpc :param
+        redshift_list: list of redshifts of the mass maps."""
         self._mass_slice_list = []
         for i in range(len(mass_map_list)):
             self._mass_slice_list.append(
@@ -42,13 +37,13 @@ class LightCone(object):
         self._redshift_list = redshift_list
 
     def cone_instance(self, z_source, cosmo, multi_plane=True, kwargs_interp=None):
-        """
+        """:param z_source: redshift to where lensing quantities are computed :param
+        cosmo: astropy.cosmology class :param multi_plane: boolean, if True, computes
+        multi-plane ray-tracing :param kwargs_interp: interpolation keyword arguments
+        specifying the numerics.
 
-        :param z_source: redshift to where lensing quantities are computed
-        :param cosmo: astropy.cosmology class
-        :param multi_plane: boolean, if True, computes multi-plane ray-tracing
-        :param kwargs_interp: interpolation keyword arguments specifying the numerics.
-         See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
+        See description in the Interpolate() class. Only applicable for 'INTERPOL' and
+        'INTERPOL_SCALED' models.
         :return: LensModel instance, keyword argument list of lens model
         """
         lens_model = LensModel(
@@ -70,12 +65,9 @@ class MassSlice(object):
     """Class to describe a single mass slice."""
 
     def __init__(self, mass_map, grid_spacing, redshift):
-        """
-
-        :param mass_map: 2d numpy array of mass map (in units physical Msol)
-        :param grid_spacing: grid spacing of the mass map (in units physical Mpc)
-        :param redshift: redshift
-        """
+        """:param mass_map: 2d numpy array of mass map (in units physical Msol) :param
+        grid_spacing: grid spacing of the mass map (in units physical Mpc) :param
+        redshift: redshift."""
         nx, ny = np.shape(mass_map)
         if nx != ny:
             raise ValueError(
@@ -106,7 +98,7 @@ class MassSlice(object):
         :param z_source: redshift of the source
         :param cosmo: astropy.cosmology instance
         :return: keyword arguments of the interpolation instance with numerically
-            computed deflection angles and lensing potential
+                computed deflection angles and lensing potential
         """
         lens_cosmo = LensCosmo(z_lens=self._redshift, z_source=z_source, cosmo=cosmo)
         mpc2arcsec = lens_cosmo.dd * const.arcsec

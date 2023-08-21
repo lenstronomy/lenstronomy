@@ -26,9 +26,8 @@ class TestParticleSwarmOptimizer(object):
         pass
 
     def test_particle(self):
-        """
+        """:return:
 
-        :return:
         :rtype:
         """
         particle = Particle.create(2)
@@ -50,9 +49,8 @@ class TestParticleSwarmOptimizer(object):
         assert particle.personal_best.fitness == 1
 
     def test_setup(self):
-        """
+        """:return:
 
-        :return:
         :rtype:
         """
         low = np.zeros(2)
@@ -76,9 +74,8 @@ class TestParticleSwarmOptimizer(object):
         assert pso.global_best.fitness == -np.inf
 
     def test_optimize(self):
-        """
+        """:return:
 
-        :return:
         :rtype:
         """
         low = np.zeros(2)
@@ -109,9 +106,8 @@ class TestParticleSwarmOptimizer(object):
         assert pso.global_best.fitness != -np.inf
 
     def test_sample(self):
-        """
+        """:return:
 
-        :return:
         :rtype:
         """
         np.random.seed(42)

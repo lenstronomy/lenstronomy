@@ -64,18 +64,13 @@ class TNFWC(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, Rs, alpha_Rs, r_core, r_trunc, center_x=0, center_y=0):
-        """
-
-        :param x: angular position (normally in units of arc seconds)
-        :param y: angular position (normally in units of arc seconds)
-        :param Rs: turn over point in the slope of the NFW profile in angular unit
-        :param alpha_Rs: deflection (angular units) at projected Rs
-        :param r_core: core radius [arcsec]
-        :param r_trunc: truncation radius [arcsec]
-        :param center_x: center of halo (in angular units)
-        :param center_y: center of halo (in angular units)
-        :return: Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
-        """
+        """:param x: angular position (normally in units of arc seconds) :param y:
+        angular position (normally in units of arc seconds) :param Rs: turn over point
+        in the slope of the NFW profile in angular unit :param alpha_Rs: deflection
+        (angular units) at projected Rs :param r_core: core radius [arcsec] :param
+        r_trunc: truncation radius [arcsec] :param center_x: center of halo (in angular
+        units) :param center_y: center of halo (in angular units) :return: Hessian
+        matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2."""
         rho0_input = self.alpha2rho0(alpha_Rs, Rs, r_core, r_trunc)
         x_ = x - center_x
         y_ = y - center_y
@@ -269,12 +264,8 @@ class TNFWC(LensProfileBase):
 
     @staticmethod
     def _u1(x, b, t):
-        """
-        :param x: R/Rs
-        :param b: core radius divided by the scale radius
-        :param t: truncation radius divided by the scale radius
-
-        """
+        """:param x: R/Rs :param b: core radius divided by the scale radius :param t:
+        truncation radius divided by the scale radius."""
         t2x2 = t**2 + x**2
         b2x2 = b**2 + x**2
         b2mt2 = b**2 - t**2
@@ -287,12 +278,8 @@ class TNFWC(LensProfileBase):
         return func(arg) / np.sqrt(t2x2 * b2mt2)
 
     def _u2(self, x, b, t):
-        """
-        :param x: R/Rs
-        :param b: core radius divided by the scale radius
-        :param t: truncation radius divided by the scale radius
-
-        """
+        """:param x: R/Rs :param b: core radius divided by the scale radius :param t:
+        truncation radius divided by the scale radius."""
         return (t**2 + x**2) * self._u1(x, b, t)
 
     def alpha2rho0(self, alpha_Rs, Rs, r_core, r_trunc):

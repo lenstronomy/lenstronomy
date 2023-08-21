@@ -10,10 +10,7 @@ from lenstronomy.LensModel.lens_model import LensModel
 
 class TestLensEquationSolver(object):
     def setup_method(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         pass
 
     def test_spep_sis(self):

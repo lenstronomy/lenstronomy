@@ -102,8 +102,11 @@ class PolarShapelets(LensProfileBase):
         """Returns the the numerical values of a set of shapelets at polar coordinates
         :param shapelets: set of shapelets [l=,r=,a_lr=] :type shapelets: array of size
         (n,3) :param coordPolar: set of coordinates in polar units :type coordPolar:
-        array of size (n,2) :returns:  array of same size with coords [r,phi] :raises:
-        AttributeError, KeyError."""
+
+        array of size (n,2)
+        :returns: array of same size with coords [r,phi]
+        :raises: AttributeError, KeyError.
+        """
         if (
             type(r) == float
             or type(r) == int
@@ -128,7 +131,7 @@ class PolarShapelets(LensProfileBase):
         :param nr: right basis
         :type nr: int
         :param beta: beta --the characteristic scale typically choosen to be close to
-            the size of the object.
+                the size of the object.
         :type beta: float.
         :param coord: coordinates [r,phi]
         :type coord: array(n,2)
@@ -239,10 +242,7 @@ class PolarShapelets(LensProfileBase):
 
     @staticmethod
     def _get_num_l(n_coeffs):
-        """
-
-        :param n_coeffs: number of coeffs
-        :return: number of n_l of order of the shapelets
-        """
+        """:param n_coeffs: number of coeffs :return: number of n_l of order of the
+        shapelets."""
         num_l = int(round((math.sqrt(8 * n_coeffs + 9) - 3) / 2 + 0.499))
         return num_l

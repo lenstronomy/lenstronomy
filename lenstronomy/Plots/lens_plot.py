@@ -180,24 +180,18 @@ def caustics_plot(
     *args,
     **kwargs
 ):
-    """
-
-    :param ax: matplotlib axis instance
-    :param pixel_grid: lenstronomy PixelGrid() instance (or class with inheritance of PixelGrid()
-    :param lens_model: LensModel() class instance
-    :param kwargs_lens: lens model keyword argument list
-    :param fast_caustic: boolean, if True, uses faster but less precise caustic calculation
-     (might have troubles for the outer caustic (inner critical curve)
-    :param coord_inverse: bool, if True, inverts the x-coordinates to go from right-to-left
-     (effectively the RA definition)
-    :param color_crit: string, color of critical curve
-    :param color_caustic: string, color of caustic curve
-    :param pixel_offset: boolean; if True (default plotting), the coordinates are shifted a half a pixel to match with
-     the matshow() command to center the coordinates in the pixel center
-    :param args: argument for plotting curve
-    :param kwargs: keyword arguments for plotting curves
-    :return: updated matplotlib axis instance
-    """
+    """:param ax: matplotlib axis instance :param pixel_grid: lenstronomy PixelGrid()
+    instance (or class with inheritance of PixelGrid() :param lens_model: LensModel()
+    class instance :param kwargs_lens: lens model keyword argument list :param
+    fast_caustic: boolean, if True, uses faster but less precise caustic calculation
+    (might have troubles for the outer caustic (inner critical curve) :param
+    coord_inverse: bool, if True, inverts the x-coordinates to go from right-to-left
+    (effectively the RA definition) :param color_crit: string, color of critical curve
+    :param color_caustic: string, color of caustic curve :param pixel_offset: boolean;
+    if True (default plotting), the coordinates are shifted a half a pixel to match with
+    the matshow() command to center the coordinates in the pixel center :param args:
+    argument for plotting curve :param kwargs: keyword arguments for plotting curves
+    :return: updated matplotlib axis instance."""
     lens_model_ext = LensModelExtensions(lens_model)
     pixel_width = pixel_grid.pixel_width
     frame_size = np.max(pixel_grid.width)
@@ -352,17 +346,14 @@ def arrival_time_surface(
     letter_font_size=20,
     name_list=None,
 ):
-    """
+    """:param ax: matplotlib axis instance :param lensModel: LensModel() class instance
+    :param kwargs_lens: lens model keyword argument list :param numPix:
 
-    :param ax: matplotlib axis instance
-    :param lensModel: LensModel() class instance
-    :param kwargs_lens: lens model keyword argument list
-    :param numPix:
-    :param deltaPix:
-    :param sourcePos_x:
-    :param sourcePos_y:
-    :param with_caustics:
-    :param point_source:
+    :param deltaPix: 
+    :param sourcePos_x: 
+    :param sourcePos_y: 
+    :param with_caustics: 
+    :param point_source: 
     :param name_list: list of names of images
     :type name_list: list of strings, longer or equal the number of point sources
     :return:
@@ -473,17 +464,12 @@ def arrival_time_surface(
 def curved_arc_illustration(
     ax, lensModel, kwargs_lens, with_centroid=True, stretch_scale=0.1, color="k"
 ):
-    """
-
-    :param ax: matplotlib axis instance
-    :param lensModel: LensModel() instance
-    :param kwargs_lens: list of lens model keyword arguments (only those of CURVED_ARC considered
-    :param with_centroid: plots the center of the curvature radius
-    :param stretch_scale: float, relative scale of banana to the tangential and radial stretches
-     (effectively intrinsic source size)
-    :param color: string, matplotlib color for plot
-    :return: matplotlib axis instance
-    """
+    """:param ax: matplotlib axis instance :param lensModel: LensModel() instance :param
+    kwargs_lens: list of lens model keyword arguments (only those of CURVED_ARC
+    considered :param with_centroid: plots the center of the curvature radius :param
+    stretch_scale: float, relative scale of banana to the tangential and radial
+    stretches (effectively intrinsic source size) :param color: string, matplotlib color
+    for plot :return: matplotlib axis instance."""
 
     # loop through lens models
     # check whether curved arc
@@ -529,24 +515,16 @@ def plot_arc(
     color="k",
     dtan_dtan=0,
 ):
-    """
-
-    :param ax: matplotlib.axes instance
-    :param tangential_stretch: float, stretch of intrinsic source in tangential direction
-    :param radial_stretch: float, stretch of intrinsic source in radial direction
-    :param curvature: 1/curvature radius
-    :param direction: float, angle in radian
-    :param center_x: center of source in image plane
-    :param center_y: center of source in image plane
-    :param with_centroid: plots the center of the curvature radius
-    :param stretch_scale: float, relative scale of banana to the tangential and radial stretches
-     (effectively intrinsic source size)
-    :param linewidth: linewidth
-    :param color: color
-    :type color: string in matplotlib color convention
-    :param dtan_dtan: tangential eigenvector differential in tangential direction (not implemented yet as illustration)
-    :return:
-    """
+    """:param ax: matplotlib.axes instance :param tangential_stretch: float, stretch of
+    intrinsic source in tangential direction :param radial_stretch: float, stretch of
+    intrinsic source in radial direction :param curvature: 1/curvature radius :param
+    direction: float, angle in radian :param center_x: center of source in image plane
+    :param center_y: center of source in image plane :param with_centroid: plots the
+    center of the curvature radius :param stretch_scale: float, relative scale of banana
+    to the tangential and radial stretches (effectively intrinsic source size) :param
+    linewidth: linewidth :param color: color :type color: string in matplotlib color
+    convention :param dtan_dtan: tangential eigenvector differential in tangential
+    direction (not implemented yet as illustration) :return:"""
     # plot line to centroid
     center_x_spp, center_y_spp = center_deflector(
         curvature, direction, center_x, center_y
@@ -619,18 +597,12 @@ def distortions(
     smoothing_scale=None,
     **kwargs
 ):
-    """
-
-    :param lensModel: LensModel instance
-    :param kwargs_lens: lens model keyword argument list
-    :param num_pix: number of pixels per axis
-    :param delta_pix: pixel scale per axis
-    :param center_ra: center of the grid
-    :param center_dec: center of the grid
-    :param differential_scale: scale of the finite derivative length in units of angles
-    :param smoothing_scale: float or None, Gaussian FWHM of a smoothing kernel applied before plotting
-    :return: matplotlib instance with different panels
-    """
+    """:param lensModel: LensModel instance :param kwargs_lens: lens model keyword
+    argument list :param num_pix: number of pixels per axis :param delta_pix: pixel
+    scale per axis :param center_ra: center of the grid :param center_dec: center of the
+    grid :param differential_scale: scale of the finite derivative length in units of
+    angles :param smoothing_scale: float or None, Gaussian FWHM of a smoothing kernel
+    applied before plotting :return: matplotlib instance with different panels."""
     kwargs_grid = sim_util.data_configure_simple(
         num_pix, delta_pix, center_ra=center_ra, center_dec=center_dec
     )
@@ -716,15 +688,9 @@ def distortions(
         )
 
     def _plot_frame(ax, frame, vmin, vmax, text_string):
-        """
-
-        :param ax: matplotlib.axis instance
-        :param frame: 2d array
-        :param vmin: minimum plotting scale
-        :param vmax: maximum plotting scale
-        :param text_string: string to describe the label
-        :return:
-        """
+        """:param ax: matplotlib.axis instance :param frame: 2d array :param vmin:
+        minimum plotting scale :param vmax: maximum plotting scale :param text_string:
+        string to describe the label :return:"""
         font_size = 10
         _arrow_size = 0.02
         im = ax.matshow(

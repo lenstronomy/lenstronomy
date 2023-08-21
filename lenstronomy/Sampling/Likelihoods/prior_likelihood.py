@@ -28,14 +28,12 @@ class PriorLikelihood(object):
         prior_special_lognormal=None,
         prior_extinction_lognormal=None,
     ):
-        """
-
-        :param prior_lens: list of [index_model, param_name, mean, 1-sigma priors]
+        """:param prior_lens: list of [index_model, param_name, mean, 1-sigma priors]
         :param prior_source: list of [index_model, param_name, mean, 1-sigma priors]
         :param prior_lens_light: list of [index_model, param_name, mean, 1-sigma priors]
-        :param prior_ps: list of [index_model, param_name, mean, 1-sigma priors]
-        :param prior_special: list of [param_name, mean, 1-sigma priors]
-        :param prior_extinction: list of [index_model, param_name, mean, 1-sigma priors]
+        :param prior_ps: list of [index_model, param_name, mean, 1-sigma priors] :param
+        prior_special: list of [param_name, mean, 1-sigma priors] :param
+        prior_extinction: list of [index_model, param_name, mean, 1-sigma priors]
 
         :param prior_lens_kde: list of [index_model, param_name, samples]
         :param prior_source_kde: list of [index_model, param_name, samples]
@@ -43,14 +41,12 @@ class PriorLikelihood(object):
         :param prior_ps_kde: list of [index_model, param_name, samples]
         :param prior_special_kde: list of [param_name, samples]
         :param prior_extinction_kde: list of [index_model, param_name, samples]
-
         :param prior_lens_lognormal: list of [index_model, param_name, mean, 1-sigma priors]
         :param prior_source_lognormal: list of [index_model, param_name, mean, 1-sigma priors]
         :param prior_lens_light_lognormal: list of [index_model, param_name, mean, 1-sigma priors]
         :param prior_ps_lognormal: list of [index_model, param_name, mean, 1-sigma priors]
         :param prior_special_lognormal: list of [param_name, mean, 1-sigma priors]
         :param prior_extinction_lognormal: list of [index_model, param_name, mean, 1-sigma priors]
-
         """
 
         (
@@ -98,11 +94,8 @@ class PriorLikelihood(object):
 
     @staticmethod
     def _init_kde(prior_list_kde):
-        """
-
-        :param prior_list_kde: list of [index_model, param_name, samples]
-        :return: list of initiated KDE's
-        """
+        """:param prior_list_kde: list of [index_model, param_name, samples] :return:
+        list of initiated KDE's."""
         if prior_list_kde is None:
             return 0
         kde_list = []
@@ -120,11 +113,8 @@ class PriorLikelihood(object):
         kwargs_special=None,
         kwargs_extinction=None,
     ):
-        """
-
-        :param kwargs_lens: lens model parameter list
-        :return: log likelihood of lens center
-        """
+        """:param kwargs_lens: lens model parameter list :return: log likelihood of lens
+        center."""
         logL = 0
         logL += self._prior_kwargs_list(kwargs_lens, self._prior_lens)
         logL += self._prior_kwargs_list(kwargs_source, self._prior_source)
@@ -164,10 +154,9 @@ class PriorLikelihood(object):
 
     @staticmethod
     def _prior_kde_list(kwargs_list, prior_list, kde_list):
-        """
+        """:param kwargs_list:
 
-        :param kwargs_list:
-        :param prior_list:
+        :param prior_list: 
         :return:
         """
         if prior_list is None:
@@ -182,12 +171,8 @@ class PriorLikelihood(object):
 
     @staticmethod
     def _prior_kwargs_list(kwargs_list, prior_list):
-        """
-
-        :param kwargs_list: keyword argument list
-        :param prior_list: prior list
-        :return: logL
-        """
+        """:param kwargs_list: keyword argument list :param prior_list: prior list
+        :return: logL."""
         if prior_list is None:
             return 0
         logL = 0
@@ -217,12 +202,8 @@ class PriorLikelihood(object):
 
     @staticmethod
     def _prior_lognormal_kwargs_list(kwargs_list, prior_list):
-        """
-
-        :param kwargs_list: keyword argument list
-        :param prior_list: prior list
-        :return: logL
-        """
+        """:param kwargs_list: keyword argument list :param prior_list: prior list
+        :return: logL."""
         if prior_list is None:
             return 0
         logL = 0

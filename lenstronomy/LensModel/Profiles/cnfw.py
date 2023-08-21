@@ -40,17 +40,10 @@ class CNFW(LensProfileBase):
         super(CNFW, self).__init__()
 
     def function(self, x, y, Rs, alpha_Rs, r_core, center_x=0, center_y=0):
-        """
-
-        :param x: angular position
-        :param y: angular position
-        :param Rs: angular turn over point
-        :param alpha_Rs: deflection at Rs (in the absence of a core
-        :param r_core: core radius
-        :param center_x: center of halo
-        :param center_y: center of halo
-        :return:
-        """
+        """:param x: angular position :param y: angular position :param Rs: angular turn
+        over point :param alpha_Rs: deflection at Rs (in the absence of a core :param
+        r_core: core radius :param center_x: center of halo :param center_y: center of
+        halo :return:"""
         x_ = x - center_x
         y_ = y - center_y
         r = np.sqrt(x_**2 + y_**2)
@@ -67,10 +60,9 @@ class CNFW(LensProfileBase):
             return np.array(f_)
 
     def _num_integral_potential(self, r, Rs, rho0, r_core):
-        """
+        """:param r:
 
-        :param r:
-        :param r_core:
+        :param r_core: 
         :return:
         """
 
@@ -157,10 +149,10 @@ class CNFW(LensProfileBase):
     def mass_3d(self, R, Rs, rho0, r_core):
         """Mass enclosed a 3d sphere or radius r.
 
-        :param R:
-        :param Rs:
-        :param rho0:
-        :param r_core:
+        :param R: 
+        :param Rs: 
+        :param rho0: 
+        :param r_core: 
         :return:
         """
         b = r_core * Rs**-1

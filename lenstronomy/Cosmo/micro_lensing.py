@@ -24,12 +24,8 @@ def einstein_radius(mass, d_l, d_s):
 
 
 def source_size(diameter, d_s):
-    """
-
-    :param diameter: diameter of the source in units of the solar diameter
-    :param d_s: distance to the source in [pc]
-    :return: diameter in [arc seconds]
-    """
+    """:param diameter: diameter of the source in units of the solar diameter :param
+    d_s: distance to the source in [pc] :return: diameter in [arc seconds]"""
     diameter_m = diameter * constants.r_sun * 2  # diameter in [m]
     diameter_arcsec = diameter_m / (d_s * constants.pc)  # diameter in [radian]
     diameter_arcsec /= constants.arcsec  # diameter in [arc seconds]

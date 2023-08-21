@@ -1,10 +1,9 @@
-"""
-this file is taken from schwimmbad (https://github.com/adrn/schwimmbad) and an explicit fork by Aymeric Galan
-to replace the multiprocessing with the multiprocess dependence as for multi-threading, multiprocessing is
-not supporting dill (only pickle) which is required.
+"""This file is taken from schwimmbad (https://github.com/adrn/schwimmbad) and an
+explicit fork by Aymeric Galan to replace the multiprocessing with the multiprocess
+dependence as for multi-threading, multiprocessing is not supporting dill (only pickle)
+which is required.
 
 The class also extends with a ``is_master()`` definition
-
 """
 
 
@@ -48,9 +47,9 @@ class MultiPool(Pool):
     wait_timeout = 3600
 
     def __init__(self, processes=None, initializer=None, initargs=(), **kwargs):
-        """
+        """:param processes: The number of worker processes to use; defaults to the
+        number of CPUs.
 
-        :param processes: The number of worker processes to use; defaults to the number of CPUs.
         :type processes: int, optional
         :param initializer: If specified, a callable that will be invoked by each worker process when it starts.
         :type initializer: callable, optional

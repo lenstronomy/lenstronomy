@@ -1,7 +1,5 @@
 __author__ = "sibirrer"
-"""
-this class contains physical constants and conversion factors between units
-"""
+"""This class contains physical constants and conversion factors between units."""
 import numpy as np
 
 __all__ = (

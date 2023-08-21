@@ -19,12 +19,8 @@ class Solver2Point(object):
     """
 
     def __init__(self, lensModel, solver_type="CENTER", decoupling=True):
-        """
-
-        :param lensModel: instance of LensModel class
-        :param solver_type: string
-        :param decoupling: bool
-        """
+        """:param lensModel: instance of LensModel class :param solver_type: string
+        :param decoupling: bool."""
         self.lensModel = lensModel
         self._lens_mode_list = lensModel.lens_model_list
         if solver_type not in [
@@ -66,7 +62,7 @@ class Solver2Point(object):
         :param kwargs_list: list of lens model kwargs
         :param xtol: tolerance level of solution when to stop the non-linear solver
         :return: updated lens model that satisfies the lens equation for the point
-            sources
+                sources
         """
         kwargs = copy.deepcopy(kwargs_list)
         init = self._extract_array(kwargs)
@@ -103,10 +99,9 @@ class Solver2Point(object):
 
     @staticmethod
     def _subtract_constraint(x_sub, y_sub):
-        """
+        """:param x_sub:
 
-        :param x_sub:
-        :param y_sub:
+        :param y_sub: 
         :return:
         """
         a = np.zeros(2)
@@ -115,12 +110,9 @@ class Solver2Point(object):
         return a
 
     def _update_kwargs(self, x, kwargs_list):
-        """
-
-        :param x: list of parameters corresponding to the free parameter of the first lens model in the list
-        :param kwargs_list: list of lens model kwargs
-        :return: updated kwargs_list
-        """
+        """:param x: list of parameters corresponding to the free parameter of the first
+        lens model in the list :param kwargs_list: list of lens model kwargs :return:
+        updated kwargs_list."""
         if self._solver_type == "CENTER":
             [center_x, center_y] = x
             kwargs_list[0]["center_x"] = center_x
@@ -161,7 +153,7 @@ class Solver2Point(object):
     def _extract_array(self, kwargs_list):
         """Inverse of _update_kwargs.
 
-        :param kwargs_list:
+        :param kwargs_list: 
         :return:
         """
         if self._solver_type == "CENTER":
@@ -195,10 +187,9 @@ class Solver2Point(object):
         return x
 
     def add_fixed_lens(self, kwargs_fixed_lens_list, kwargs_lens_init):
-        """
+        """:param kwargs_fixed_lens_list:
 
-        :param kwargs_fixed_lens_list:
-        :param kwargs_lens_init:
+        :param kwargs_lens_init: 
         :return:
         """
         kwargs_fixed = kwargs_fixed_lens_list[0]

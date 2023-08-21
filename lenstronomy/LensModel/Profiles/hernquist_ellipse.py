@@ -139,7 +139,7 @@ class Hernquist_Ellipse(LensProfileBase):
         """Mass enclosed a 3d sphere or radius r.
 
         :param r: 3-d radius within the mass is integrated (same distance units as
-            density definition)
+                density definition)
         :param rho0: density normalization
         :param Rs: Hernquist radius
         :return: enclosed mass
@@ -150,7 +150,7 @@ class Hernquist_Ellipse(LensProfileBase):
         """Mass enclosed a 3d sphere or radius r in lensing parameterization.
 
         :param r: 3-d radius within the mass is integrated (same distance units as
-            density definition)
+                density definition)
         :param sigma0: rho0 * Rs (units of projected density)
         :param Rs: Hernquist radius
         :return: enclosed mass

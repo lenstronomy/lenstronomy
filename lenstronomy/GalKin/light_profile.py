@@ -24,14 +24,13 @@ class LightProfile(object):
         min_interpolate=0.001,
         max_draw=None,
     ):
-        """
-
-        :param profile_list: list of light profiles for LightModel module (must support light_3d() functionalities)
-        :param interpol_grid_num: int; number of interpolation steps (logarithmically between min and max value)
-        :param max_interpolate: float; maximum interpolation of 3d light profile
-        :param min_interpolate: float; minimum interpolate (and also drawing of light profile)
-        :param max_draw: float; (optional) if set, draws up to this radius, else uses max_interpolate value
-        """
+        """:param profile_list: list of light profiles for LightModel module (must
+        support light_3d() functionalities) :param interpol_grid_num: int; number of
+        interpolation steps (logarithmically between min and max value) :param
+        max_interpolate: float; maximum interpolation of 3d light profile :param
+        min_interpolate: float; minimum interpolate (and also drawing of light profile)
+        :param max_draw: float; (optional) if set, draws up to this radius, else uses
+        max_interpolate value."""
 
         self.light_model = LightModel(light_model_list=profile_list)
         self._interp_grid_num = interpol_grid_num
@@ -61,7 +60,7 @@ class LightProfile(object):
         :param kwargs_list: list of keyword arguments of light profiles (see
             LightModule)
         :param new_compute: boolean, if True, re-computes the interpolation (becomes
-            valid with updated kwargs_list argument)
+                valid with updated kwargs_list argument)
         :return: flux per 3d volume at radius r
         """
         if not hasattr(self, "_f_light_3d") or new_compute is True:
@@ -93,11 +92,8 @@ class LightProfile(object):
         return self.light_model.surface_brightness(R, 0, kwargs_light_circularized)
 
     def _circularize_kwargs(self, kwargs_list):
-        """
-
-        :param kwargs_list: list of keyword arguments of light profiles (see LightModule)
-        :return: circularized arguments
-        """
+        """:param kwargs_list: list of keyword arguments of light profiles (see
+        LightModule) :return: circularized arguments."""
         # TODO make sure averaging is done azimuthally
         if not hasattr(self, "_kwargs_light_circularized"):
             kwargs_list_copy = copy.deepcopy(kwargs_list)
@@ -188,7 +184,7 @@ class LightProfile(object):
             LightModule)
         :param n: int; number of draws
         :param new_compute: boolean, if True, re-computes the interpolation (becomes
-            valid with updated kwargs_list argument)
+                valid with updated kwargs_list argument)
         :return: draw of projected radius for the given light profile distribution
         """
         if not hasattr(self, "_light_cdf") or new_compute is True:
@@ -218,7 +214,7 @@ class LightProfile(object):
         :param n: int, number of draws per functino call
         :param new_compute: re-computes the interpolated CDF
         :return: realization of projected radius following the distribution of the light
-            model
+                model
         """
         if not hasattr(self, "_light_cdf_log") or new_compute is True:
             r_array = np.logspace(
@@ -248,7 +244,7 @@ class LightProfile(object):
         :param n: int, number of draws per function call
         :param new_compute: re-computes the interpolated CDF
         :return: realization of projected radius following the distribution of the light
-            model
+                model
         """
         if not hasattr(self, "_light_3d_cdf_log") or new_compute is True:
             r_array = np.logspace(

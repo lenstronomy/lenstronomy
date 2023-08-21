@@ -9,16 +9,11 @@ export, __all__ = exporter()
 
 @export
 def mask_center_2d(center_x, center_y, r, x_grid, y_grid):
-    """
-
-    :param center_x: x-coordinate of center position of circular mask
-    :param center_y: y-coordinate of center position of circular mask
-    :param r: radius of mask in pixel values
-    :param x_grid: x-coordinate grid
-    :param y_grid: y-coordinate grid
-    :return: mask array of shape x_grid with =0 inside the radius and =1 outside
-    :rtype: array of size of input grid with integers 0 or 1
-    """
+    """:param center_x: x-coordinate of center position of circular mask :param
+    center_y: y-coordinate of center position of circular mask :param r: radius of mask
+    in pixel values :param x_grid: x-coordinate grid :param y_grid: y-coordinate grid
+    :return: mask array of shape x_grid with =0 inside the radius and =1 outside :rtype:
+    array of size of input grid with integers 0 or 1."""
     x_shift = x_grid - center_x
     y_shift = y_grid - center_y
     R = np.sqrt(x_shift * x_shift + y_shift * y_shift)
@@ -51,18 +46,10 @@ def mask_azimuthal(x, y, center_x, center_y, r):
 
 @export
 def mask_ellipse(x, y, center_x, center_y, a, b, angle):
-    """
-
-    :param x: x-coordinates of pixels
-    :param y: y-coordinates of pixels
-    :param center_x: center of mask
-    :param center_y: center of mask
-    :param a: major axis
-    :param b: minor axis
-    :param angle: angle of major axis
-    :return: mask (list of zeros and ones)
-    :rtype: array of size of input grid with integers 0 or 1
-    """
+    """:param x: x-coordinates of pixels :param y: y-coordinates of pixels :param
+    center_x: center of mask :param center_y: center of mask :param a: major axis :param
+    b: minor axis :param angle: angle of major axis :return: mask (list of zeros and
+    ones) :rtype: array of size of input grid with integers 0 or 1."""
     x_shift = x - center_x
     y_shift = y - center_y
     x_rot, y_rot = util.rotate(x_shift, y_shift, angle)
@@ -97,17 +84,16 @@ def mask_eccentric(x, y, center_x, center_y, e1, e2, r):
 
 @export
 def mask_half_moon(x, y, center_x, center_y, r_in, r_out, phi0=0, delta_phi=2 * np.pi):
-    """
+    """:param x:
 
-    :param x:
-    :param y:
-    :param center_x:
-    :param center_y:
-    :param r_in:
-    :param r_out:
-    :param phi0:
-    :param delta_phi:
-    :return:
+    :param y: 
+    :param center_x: 
+    :param center_y: 
+    :param r_in: 
+    :param r_out: 
+    :param phi0: 
+    :param delta_phi: 
+    :return: 
     :rtype: array of size of input grid with integers 0 or 1
     """
     x_shift = x - center_x

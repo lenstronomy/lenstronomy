@@ -38,14 +38,13 @@ class AnalyticKinematics(Anisotropy):
         max_integrate=100,
         min_integrate=0.001,
     ):
-        """
-
-        :param kwargs_cosmo: keyword argument with angular diameter distances entering the Galkin.cosmo class
-        :param interpol_grid_num: number of interpolations in radius to compute radial velocity dispersion
-        :param log_integration: perform numerical integration in logarithmic space
-        :param max_integrate: maximum radius of integration (in projected arc seconds)
-        :param min_integrate: minimum drawing/calculation of velocity dispersion (in projected arc seconds)
-        """
+        """:param kwargs_cosmo: keyword argument with angular diameter distances
+        entering the Galkin.cosmo class :param interpol_grid_num: number of
+        interpolations in radius to compute radial velocity dispersion :param
+        log_integration: perform numerical integration in logarithmic space :param
+        max_integrate: maximum radius of integration (in projected arc seconds) :param
+        min_integrate: minimum drawing/calculation of velocity dispersion (in projected
+        arc seconds)"""
 
         self._interp_grid_num = interpol_grid_num
         self._log_int = log_integration
@@ -77,11 +76,9 @@ class AnalyticKinematics(Anisotropy):
 
     @staticmethod
     def draw_light(kwargs_light):
-        """
-
-        :param kwargs_light: keyword argument (list) of the light model
-        :return: 3d radius (if possible), 2d projected radius, x-projected coordinate, y-projected coordinate
-        """
+        """:param kwargs_light: keyword argument (list) of the light model :return: 3d
+        radius (if possible), 2d projected radius, x-projected coordinate, y-projected
+        coordinate."""
         if "a" not in kwargs_light:
             kwargs_light["a"] = 0.551 * kwargs_light["r_eff"]
         a = kwargs_light["a"]
@@ -110,12 +107,12 @@ class AnalyticKinematics(Anisotropy):
         :param kwargs_mass: mass model parameters (following lenstronomy lens model
             conventions)
         :param kwargs_light: deflector light parameters (following lenstronomy light
-            model conventions)
+                model conventions)
         :param kwargs_anisotropy: anisotropy parameters, may vary according to
-            anisotropy type chosen. We refer to the Anisotropy() class for details on
-            the parameters.
+                anisotropy type chosen. We refer to the Anisotropy() class for details
+                on             the parameters.
         :return: line-of-sight projected velocity dispersion at projected radius R from
-            3d radius r
+                3d radius r
         """
         a, gamma, rho0_r0_gamma, r_ani = self._read_out_params(
             kwargs_mass, kwargs_light, kwargs_anisotropy
@@ -173,13 +170,12 @@ class AnalyticKinematics(Anisotropy):
         )
 
     def _sigma_r2_interp(self, r, a, gamma, rho0_r0_gamma, r_ani):
-        """
+        """:param r:
 
-        :param r:
-        :param a:
-        :param gamma:
-        :param rho0_r0_gamma:
-        :param r_ani:
+        :param a: 
+        :param gamma: 
+        :param rho0_r0_gamma: 
+        :param r_ani: 
         :return:
         """
         if not hasattr(self, "_interp_sigma_r2"):
@@ -200,7 +196,7 @@ class AnalyticKinematics(Anisotropy):
         """Gravitational potential in SI units.
 
         :param r: radius (arc seconds)
-        :param kwargs_mass:
+        :param kwargs_mass: 
         :return: gravitational potential
         """
         theta_E = kwargs_mass["theta_E"]

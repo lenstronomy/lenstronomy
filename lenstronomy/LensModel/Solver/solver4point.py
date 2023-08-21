@@ -56,14 +56,10 @@ class Solver4Point(object):
             self._decoupling = True
 
     def constraint_lensmodel(self, x_pos, y_pos, kwargs_list, xtol=1.49012e-12):
-        """
-
-        :param x_pos: list of image positions (x-axis)
-        :param y_pos: list of image position (y-axis)
-        :param xtol: numerical tolerance level
-        :param kwargs_list: list of lens model kwargs
-        :return: updated lens model that satisfies the lens equation for the point sources, accuracy
-        """
+        """:param x_pos: list of image positions (x-axis) :param y_pos: list of image
+        position (y-axis) :param xtol: numerical tolerance level :param kwargs_list:
+        list of lens model kwargs :return: updated lens model that satisfies the lens
+        equation for the point sources, accuracy."""
         kwargs = copy.deepcopy(kwargs_list)
         init = self._extract_array(kwargs)
         if self._decoupling:
@@ -117,10 +113,9 @@ class Solver4Point(object):
 
     @staticmethod
     def _subtract_constraint(x_sub, y_sub):
-        """
+        """:param x_sub:
 
-        :param x_sub:
-        :param y_sub:
+        :param y_sub: 
         :return:
         """
         a = np.zeros(6)
@@ -134,12 +129,9 @@ class Solver4Point(object):
         return a
 
     def _update_kwargs(self, x, kwargs_list):
-        """
-
-        :param x: list of parameters corresponding to the free parameter of the first lens model in the list
-        :param kwargs_list: list of lens model kwargs
-        :return: updated kwargs_list
-        """
+        """:param x: list of parameters corresponding to the free parameter of the first
+        lens model in the list :param kwargs_list: list of lens model kwargs :return:
+        updated kwargs_list."""
         if self._solver_type == "PROFILE_SHEAR_GAMMA_PSI":
             phi_G = x[5]  # % (2 * np.pi)
             kwargs_list[1]["psi_ext"] = phi_G
@@ -240,10 +232,9 @@ class Solver4Point(object):
         return x
 
     def add_fixed_lens(self, kwargs_fixed_lens_list, kwargs_lens_init):
-        """
+        """:param kwargs_fixed_lens_list:
 
-        :param kwargs_fixed_lens_list:
-        :param kwargs_lens_init:
+        :param kwargs_lens_init: 
         :return:
         """
 

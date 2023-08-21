@@ -34,10 +34,10 @@ class ModelPlot(object):
         fast_caustic=True,
         linear_solver=True,
     ):
-        """
+        """:param multi_band_list: list of [[kwargs_data, kwargs_psf, kwargs_numerics],
+        [], ..] :param multi_band_type: string, option when having multiple imaging data
+        sets modelled simultaneously.
 
-        :param multi_band_list: list of [[kwargs_data, kwargs_psf, kwargs_numerics], [], ..]
-        :param multi_band_type: string, option when having multiple imaging data sets modelled simultaneously.
          Options are:
          - 'multi-linear': linear amplitudes are inferred on single data set
          - 'linear-joint': linear amplitudes ae jointly inferred
@@ -149,11 +149,8 @@ class ModelPlot(object):
             index += 1
 
     def _select_band(self, band_index):
-        """
-
-        :param band_index: index of imaging band to be plotted
-        :return: bandplot() instance of selected band, raises when band is not computed
-        """
+        """:param band_index: index of imaging band to be plotted :return: bandplot()
+        instance of selected band, raises when band is not computed."""
         i = self._index_list[band_index]
         if i == -1:
             raise ValueError("band %s is not computed or out of range." % band_index)
@@ -161,12 +158,8 @@ class ModelPlot(object):
         return self._band_plot_list[i]
 
     def reconstruction_all_bands(self, **kwargs):
-        """
-
-        :param kwargs: arguments of plotting
-        :return: 3 x n_data plot with data, model, reduced residual plots of all the images/bands that are being modeled
-
-        """
+        """:param kwargs: arguments of plotting :return: 3 x n_data plot with data,
+        model, reduced residual plots of all the images/bands that are being modeled."""
         n_bands = len(self._band_plot_list)
         import matplotlib.pyplot as plt
 
@@ -339,21 +332,13 @@ class ModelPlot(object):
         return plot_band.plot_subtract_from_data_all()
 
     def plot_extinction_map(self, band_index=0, **kwargs):
-        """
-
-        :param band_index: index of band
-        :param kwargs: arguments of plotting
-        :return: plot instance of differential extinction map
-        """
+        """:param band_index: index of band :param kwargs: arguments of plotting
+        :return: plot instance of differential extinction map."""
         plot_band = self._select_band(band_index)
         return plot_band.plot_extinction_map(**kwargs)
 
     def source(self, band_index=0, **kwargs):
-        """
-
-        :param band_index: index of band
-        :param kwargs: keyword arguments accessible in model_band_plot.source()
-        :return: 2d array of source surface brightness
-        """
+        """:param band_index: index of band :param kwargs: keyword arguments accessible
+        in model_band_plot.source() :return: 2d array of source surface brightness."""
         plot_band = self._select_band(band_index)
         return plot_band.source(**kwargs)

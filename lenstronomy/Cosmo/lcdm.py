@@ -11,22 +11,17 @@ class LCDM(object):
     lens redshift configuration."""
 
     def __init__(self, z_lens, z_source, flat=True):
-        """
-
-        :param z_lens: redshift of lens
-        :param z_source: redshift of source
-        :param flat: bool, if True, flat universe is assumed
-        """
+        """:param z_lens: redshift of lens :param z_source: redshift of source :param
+        flat: bool, if True, flat universe is assumed."""
         self.z_lens = z_lens
         self.z_source = z_source
         self._flat = flat
 
     def _get_cosom(self, H_0, Om0, Ode0=None):
-        """
+        """:param H_0:
 
-        :param H_0:
-        :param Om0:
-        :param Ode0:
+        :param Om0: 
+        :param Ode0: 
         :return:
         """
         if self._flat is True:

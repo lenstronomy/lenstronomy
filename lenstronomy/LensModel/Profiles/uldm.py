@@ -9,9 +9,8 @@ __all__ = ["Uldm"]
 
 
 class Uldm(LensProfileBase):
-    """
-    This class contains functions concerning the ULDM soliton density profile,
-    whose good approximation is (see for example https://arxiv.org/pdf/1406.6586.pdf )
+    """This class contains functions concerning the ULDM soliton density profile, whose
+    good approximation is (see for example https://arxiv.org/pdf/1406.6586.pdf )
 
     .. math::
 
@@ -67,16 +66,12 @@ class Uldm(LensProfileBase):
         return kappa_0 * num_factor / theta_c
 
     def function(self, x, y, kappa_0, theta_c, center_x=0, center_y=0, slope=8):
-        """
-        :param x: angular position (normally in units of arc seconds)
-        :param y: angular position (normally in units of arc seconds)
-        :param kappa_0: central convergence of profile
-        :param theta_c: core radius (in arcsec)
-        :param slope: exponent entering the profile
-        :param center_x: center of halo (in angular units)
-        :param center_y: center of halo (in angular units)
-        :return: lensing potential (in arcsec^2)
-        """
+        """:param x: angular position (normally in units of arc seconds) :param y:
+        angular position (normally in units of arc seconds) :param kappa_0: central
+        convergence of profile :param theta_c: core radius (in arcsec) :param slope:
+        exponent entering the profile :param center_x: center of halo (in angular units)
+        :param center_y: center of halo (in angular units) :return: lensing potential
+        (in arcsec^2)"""
         from mpmath import hyp3f2
 
         x_ = x - center_x
@@ -148,16 +143,12 @@ class Uldm(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, kappa_0, theta_c, center_x=0, center_y=0, slope=8):
-        """
-        :param x: angular position (normally in units of arc seconds)
-        :param y: angular position (normally in units of arc seconds)
-        :param kappa_0: central convergence of profile
-        :param theta_c: core radius (in arcsec)
-        :param slope: exponent entering the profile
-        :param center_x: center of halo (in angular units)
-        :param center_y: center of halo (in angular units)
-        :return: Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
-        """
+        """:param x: angular position (normally in units of arc seconds) :param y:
+        angular position (normally in units of arc seconds) :param kappa_0: central
+        convergence of profile :param theta_c: core radius (in arcsec) :param slope:
+        exponent entering the profile :param center_x: center of halo (in angular units)
+        :param center_y: center of halo (in angular units) :return: Hessian matrix of
+        function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2."""
         x_ = x - center_x
         y_ = y - center_y
         R = np.sqrt(x_**2 + y_**2)

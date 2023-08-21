@@ -15,22 +15,24 @@ class KinNNImageAlign(object):
         """Initialize input data.
 
         :param spectra_inputs: dictionary which encodes grid and transformation
-            information for kinematic data :'image': contains 2d image used to calculate
-            grid coordinates :'transform_pix2angle': transformation matrix to convert
-            from pixel xy to ra/dec :'ra_at_xy0': ra coordinate at pixel (0,0)
-            :'dec_at_xy0': dec coordinate at pixel (0,0)
+                information for kinematic data :'image': contains 2d image used to
+                calculate             grid coordinates :'transform_pix2angle':
+                transformation matrix to convert             from pixel xy to ra/dec
+                :'ra_at_xy0': ra coordinate at pixel (0,0)             :'dec_at_xy0':
+                dec coordinate at pixel (0,0)
         :param imaging_inputs: dictionary which encodes grid and transformation
-            information for imaging data :'image': contains 2d image used to calculate
-            grid coordinates :'transform_pix2angle': transformation matrix to convert
-            from pixel xy to ra/dec :'ra_at_xy0': ra coordinate at pixel (0,0)
-            :'dec_at_xy0': dec coordinate at pixel (0,0) :'ellipse_PA': position angle
-            of ellipse axis relative to x direction :'offset_x': how many pixels to
-            offset the center of the grid to match the kinNN center (x-direction)
-            :'offset_y': how many pixels to offset the center of the grid to match the
-            kinNN center (y-direction)
+                information for imaging data :'image': contains 2d image used to
+                calculate             grid coordinates :'transform_pix2angle':
+                transformation matrix to convert             from pixel xy to ra/dec
+                :'ra_at_xy0': ra coordinate at pixel (0,0)             :'dec_at_xy0':
+                dec coordinate at pixel (0,0) :'ellipse_PA': position angle
+                of ellipse axis relative to x direction :'offset_x': how many pixels to
+                offset the center of the grid to match the kinNN center (x-direction)
+                :'offset_y': how many pixels to offset the center of the grid to match
+                the             kinNN center (y-direction)
         :param kin_nn_inputs: dictionary which encodes grid information for NN output
-            data :'image': contains 2d image used to calculate grid coordinates
-            :'deltaPix': pixel size
+                data :'image': contains 2d image used to calculate grid coordinates
+                :'deltaPix': pixel size
         """
         self.spectra_data = spectra_inputs
         self.imaging_data = imaging_inputs
@@ -71,9 +73,9 @@ class KinNNImageAlign(object):
         """Simple function to give pixel coordinates of grid.
 
         :param input_set: dictionary from above (e.g. spectra_inputs) which completely
-            describes grid transformation :boolean flatten: default True; if True,
-            return 1D flattened output, if False, return 2D grid :return pixel
-            coordinates of grid
+                describes grid transformation
+        :boolean flatten: default True; if True,             return 1D flattened output,
+                if False, return 2D grid :return pixel             coordinates of grid
         """
         x_grid = np.tile(np.arange(input_set["npix"]), input_set["npix"])
         y_grid = np.repeat(np.arange(input_set["npix"]), input_set["npix"])
@@ -132,15 +134,15 @@ class KinNNImageAlign(object):
         :param imaging_x: imaging x coordinate to transform
         :param imaging_y: imaging y coordinate to transform
         :param ellipse_pa_to_imagingx_angle: (radians) position angle of ellipse major
-            axis relative to x in the imaging coordinate system
+                axis relative to x in the imaging coordinate system
         :param deltapix_imaging: pixel size of imaging image
         :param deltapix_kin_nn: pixel size of NN image
         :param npix_imaging: number of pixels on a side of the imaging image
         :param npix_kin_nn: number of pixels on a side of the NN image
         :param offsetx: how many pixels to offset the center of the grid to match the
-            kinNN center (x-direction)
+                kinNN center (x-direction)
         :param offsety: how many pixels to offset the center of the grid to match the
-            kinNN center (y-direction)
+                kinNN center (y-direction)
         :return: x and y coordinates in NN coordinate system
         """
         # define rotation matrix to rotate back into alignment

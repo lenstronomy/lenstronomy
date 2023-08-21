@@ -51,17 +51,17 @@ class JointLinear(MultiLinear):
         optimization (i.e. flux normalization of the brightness profiles)
 
         :param kwargs_lens: list of keyword arguments corresponding to the superposition
-            of different lens profiles
+                of different lens profiles
         :param kwargs_source: list of keyword arguments corresponding to the
-            superposition of different source light profiles
+                superposition of different source light profiles
         :param kwargs_lens_light: list of keyword arguments corresponding to different
-            lens light surface brightness profiles
+                lens light surface brightness profiles
         :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as
-            external shear and point source image positions
+                external shear and point source image positions
         :param inv_bool: if True, invert the full linear solver Matrix Ax = y for the
-            purpose of the covariance matrix.
+                purpose of the covariance matrix.
         :return: 1d array of surface brightness pixels of the optimal solution of the
-            linear parameters to match the data
+                linear parameters to match the data
         """
         A = self.linear_response_matrix(
             kwargs_lens,
@@ -91,10 +91,10 @@ class JointLinear(MultiLinear):
         """Computes the linear response matrix (m x n), with n being the data size and m
         being the coefficients.
 
-        :param kwargs_lens:
-        :param kwargs_source:
-        :param kwargs_lens_light:
-        :param kwargs_ps:
+        :param kwargs_lens: 
+        :param kwargs_source: 
+        :param kwargs_lens_light: 
+        :param kwargs_ps: 
         :return:
         """
         A = []
@@ -153,7 +153,7 @@ class JointLinear(MultiLinear):
         response.
 
         :return: 1d numpy array of response, 2d array of additonal errors (e.g. point
-            source uncertainties)
+                source uncertainties)
         """
         C_D_response, model_error = [], []
         for i in range(self._num_bands):
@@ -183,15 +183,15 @@ class JointLinear(MultiLinear):
         """Computes the likelihood of the data given a model This is specified with the
         non-linear parameters and a linear inversion and prior marginalisation.
 
-        :param kwargs_lens:
-        :param kwargs_source:
-        :param kwargs_lens_light:
-        :param kwargs_ps:
+        :param kwargs_lens: 
+        :param kwargs_source: 
+        :param kwargs_lens_light: 
+        :param kwargs_ps: 
         :param check_positive_flux: bool, if True, checks whether the linear inversion
-            resulted in non-negative flux components and applies a punishment in the
-            likelihood if so.
+                resulted in non-negative flux components and applies a punishment in the
+                likelihood if so.
         :return: log likelihood (natural logarithm) (sum of the log likelihoods of the
-            individual images)
+                individual images)
         """
         # generate image
         im_sim_list, model_error_list, cov_matrix, param = self.image_linear_solve(

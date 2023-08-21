@@ -76,15 +76,12 @@ class EPL_BOXYDISKY(LensProfileBase):
         return kwargs_epl, kwargs_multipole
 
     def function(self, x, y, theta_E, gamma, e1, e2, a_m, center_x=0, center_y=0):
-        """
+        """:param x: x-coordinate in image plane :param y: y-coordinate in image plane
+        :param theta_E: Einstein radius :param gamma: power law slope :param e1:
+        eccentricity component :param e2: eccentricity component :param a_m: multipole
+        strength.
 
-        :param x: x-coordinate in image plane
-        :param y: y-coordinate in image plane
-        :param theta_E: Einstein radius
-        :param gamma: power law slope
-        :param e1: eccentricity component
-        :param e2: eccentricity component
-        :param a_m: multipole strength. The profile becomes disky when a_m>0 and boxy when a_m<0
+        The profile becomes disky when a_m>0 and boxy when a_m<0
         :param center_x: profile center
         :param center_y: profile center
         :return: lensing potential
@@ -97,15 +94,12 @@ class EPL_BOXYDISKY(LensProfileBase):
         return f_epl + f_multipole
 
     def derivatives(self, x, y, theta_E, gamma, e1, e2, a_m, center_x=0, center_y=0):
-        """
+        """:param x: x-coordinate in image plane :param y: y-coordinate in image plane
+        :param theta_E: Einstein radius :param gamma: power law slope :param e1:
+        eccentricity component :param e2: eccentricity component :param a_m: multipole
+        strength.
 
-        :param x: x-coordinate in image plane
-        :param y: y-coordinate in image plane
-        :param theta_E: Einstein radius
-        :param gamma: power law slope
-        :param e1: eccentricity component
-        :param e2: eccentricity component
-        :param a_m: multipole strength. The profile becomes disky when a_m>0 and boxy when a_m<0
+        The profile becomes disky when a_m>0 and boxy when a_m<0
         :param center_x: profile center
         :param center_y: profile center
         :return: alpha_x, alpha_y
@@ -122,15 +116,12 @@ class EPL_BOXYDISKY(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, theta_E, gamma, e1, e2, a_m, center_x=0, center_y=0):
-        """
+        """:param x: x-coordinate in image plane :param y: y-coordinate in image plane
+        :param theta_E: Einstein radius :param gamma: power law slope :param e1:
+        eccentricity component :param e2: eccentricity component :param a_m: multipole
+        strength.
 
-        :param x: x-coordinate in image plane
-        :param y: y-coordinate in image plane
-        :param theta_E: Einstein radius
-        :param gamma: power law slope
-        :param e1: eccentricity component
-        :param e2: eccentricity component
-        :param a_m: multipole strength. The profile becomes disky when a_m>0 and boxy when a_m<0
+        The profile becomes disky when a_m>0 and boxy when a_m<0
         :param center_x: profile center
         :param center_y: profile center
         :return: f_xx, f_xy, f_yx, f_yy

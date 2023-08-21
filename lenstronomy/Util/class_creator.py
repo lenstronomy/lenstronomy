@@ -46,54 +46,69 @@ def create_class_instances(
     sersic_major_axis=None,
     tabulated_deflection_angles=None,
 ):
-    """
+    """:param lens_model_list: list of strings indicating the type of lens models :param
+    z_lens: redshift of the deflector (for single lens plane mode, but only relevant
+    when computing physical quantities) :param z_source: redshift of source (for single
+    source plane mode, or for multiple source planes the redshift of the point source).
 
-    :param lens_model_list: list of strings indicating the type of lens models
-    :param z_lens: redshift of the deflector (for single lens plane mode, but only relevant when computing physical quantities)
-    :param z_source: redshift of source (for single source plane mode, or for multiple source planes the redshift of the point source). In regard to this redshift the reduced deflection angles are defined in the lens model.
-    :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens models.
-     If None, 'z_source' is used.
-    :param lens_redshift_list:
-    :param multi_plane:
+    In regard to this redshift the reduced deflection angles are defined in the lens
+    model.
+    :param z_source_convention: float, redshift of a source to define the reduced
+        deflection angles of the lens models.      If None, 'z_source' is used.
+    :param lens_redshift_list: 
+    :param multi_plane: 
     :param kwargs_interp: interpolation keyword arguments specifying the numerics.
-     See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
-    :param observed_convention_index:
-    :param source_light_model_list:
-    :param lens_light_model_list:
-    :param point_source_model_list:
-    :param fixed_magnification_list:
-    :param flux_from_point_source_list: list of bools (optional), if set, will only return image positions
-         (for imaging modeling) for the subset of the point source lists that =True. This option enables to model
-    :param point_source_frame_list: list of lists mirroring the structure of the image positions.
-     Integers correspond to the i'th list entry of index_lens_model_list indicating in which frame/band the image is
-     appearing
-    :param additional_images_list:
-    :param kwargs_lens_eqn_solver: keyword arguments specifying the numerical settings for the lens equation solver
-         see LensEquationSolver() class for details
-    :param source_deflection_scaling_list: List of floats for each source ligth model (optional, and only applicable
-     for single-plane lensing. The factors re-scale the reduced deflection angles described from the lens model.
-     =1 means identical source position as without this option. This option enables multiple source planes.
-     The geometric difference between the different source planes needs to be pre-computed and is cosmology dependent.
-    :param source_redshift_list:
+        See description in the Interpolate() class. Only applicable for 'INTERPOL' and
+        'INTERPOL_SCALED' models.
+    :param observed_convention_index: 
+    :param source_light_model_list: 
+    :param lens_light_model_list: 
+    :param point_source_model_list: 
+    :param fixed_magnification_list: 
+    :param flux_from_point_source_list: list of bools (optional), if set, will only
+        return image positions  (for imaging modeling) for the subset of the point
+        source lists that =True. This option enables to model
+    :param point_source_frame_list: list of lists mirroring the structure of the image
+        positions.      Integers correspond to the i'th list entry of
+        index_lens_model_list indicating in which frame/band the image is      appearing
+    :param additional_images_list: 
+    :param kwargs_lens_eqn_solver: keyword arguments specifying the numerical settings
+        for the lens equation solver  see LensEquationSolver() class for details
+    :param source_deflection_scaling_list: List of floats for each source ligth model
+        (optional, and only applicable      for single-plane lensing. The factors re-
+        scale the reduced deflection angles described from the lens model.      =1 means
+        identical source position as without this option. This option enables multiple
+        source planes.      The geometric difference between the different source planes
+        needs to be pre-computed and is cosmology dependent.
+    :param source_redshift_list: 
     :param cosmo: astropy.cosmology instance
-    :param index_lens_model_list:
-    :param index_source_light_model_list:
-    :param index_lens_light_model_list:
-    :param index_point_source_model_list:
-    :param optical_depth_model_list: list of strings indicating the optical depth model to compute (differential) extinctions from the source
-    :param index_optical_depth_model_list:
-    :param band_index: int, index of band to consider. Has an effect if only partial models are considered for a specific band
+    :param index_lens_model_list: 
+    :param index_source_light_model_list: 
+    :param index_lens_light_model_list: 
+    :param index_point_source_model_list: 
+    :param optical_depth_model_list: list of strings indicating the optical depth model
+        to compute (differential) extinctions from the source
+    :param index_optical_depth_model_list: 
+    :param band_index: int, index of band to consider. Has an effect if only partial
+        models are considered for a specific band
     :param tau0_index_list: list of integers of the specific extinction scaling parameter tau0 for each band
-    :param all_models: bool, if True, will make class instances of all models ignoring potential keywords that are excluding specific models as indicated.
-    :param point_source_magnification_limit: float >0 or None, if set and additional images are computed, then it will cut the point sources computed to the limiting (absolute) magnification
-    :param surface_brightness_smoothing: float, smoothing scale of light profile (minimal distance to the center of a profile)
-     this can help to avoid inaccuracies in the very center of a cuspy light profile
-    :param sersic_major_axis: boolean or None, if True, uses the semi-major axis as the definition of the Sersic
-     half-light radius, if False, uses the product average of semi-major and semi-minor axis. If None, uses the
-     convention in the lenstronomy yaml setting (which by default is =False)
-    :param tabulated_deflection_angles: a user-specified class with a call method that returns deflection angles given
-     (x, y) coordinates on the sky. This class gets passed to the lens model class TabulatedDeflections
-    :return: lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class
+    :param all_models: bool, if True, will make class instances of all models ignoring
+        potential keywords that are excluding specific models as indicated.
+    :param point_source_magnification_limit: float >0 or None, if set and additional
+        images are computed, then it will cut the point sources computed to the limiting
+        (absolute) magnification
+    :param surface_brightness_smoothing: float, smoothing scale of light profile
+        (minimal distance to the center of a profile)      this can help to avoid
+        inaccuracies in the very center of a cuspy light profile
+    :param sersic_major_axis: boolean or None, if True, uses the semi-major axis as the
+        definition of the Sersic      half-light radius, if False, uses the product
+        average of semi-major and semi-minor axis. If None, uses the      convention in
+        the lenstronomy yaml setting (which by default is =False)
+    :param tabulated_deflection_angles: a user-specified class with a call method that
+        returns deflection angles given      (x, y) coordinates on the sky. This class
+        gets passed to the lens model class TabulatedDeflections
+    :return: lens_model_class, source_model_class, lens_light_model_class,
+        point_source_class, extinction_class
     """
     if lens_model_list is None:
         lens_model_list = []
@@ -259,16 +274,11 @@ def create_class_instances(
 def create_image_model(
     kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, image_likelihood_mask=None
 ):
-    """
-
-    :param kwargs_data: ImageData keyword arguments
-    :param kwargs_psf: PSF keyword arguments
-    :param kwargs_numerics: numerics keyword arguments for Numerics() class
-    :param kwargs_model: model keyword arguments
-    :param image_likelihood_mask: image likelihood mask
-     (same size as image_data with 1 indicating being evaluated and 0 being left out)
-    :return: ImageLinearFit() instance
-    """
+    """:param kwargs_data: ImageData keyword arguments :param kwargs_psf: PSF keyword
+    arguments :param kwargs_numerics: numerics keyword arguments for Numerics() class
+    :param kwargs_model: model keyword arguments :param image_likelihood_mask: image
+    likelihood mask (same size as image_data with 1 indicating being evaluated and 0
+    being left out) :return: ImageLinearFit() instance."""
     data_class = ImageData(**kwargs_data)
     psf_class = PSF(**kwargs_psf)
     (
@@ -303,10 +313,9 @@ def create_im_sim(
     kwargs_pixelbased=None,
     linear_solver=True,
 ):
-    """
+    """:param multi_band_list: list of [[kwargs_data, kwargs_psf, kwargs_numerics], [],
+    ..]
 
-
-    :param multi_band_list: list of [[kwargs_data, kwargs_psf, kwargs_numerics], [], ..]
     :param multi_band_type: string, option when having multiple imaging data sets modelled simultaneously. Options are:
      - 'multi-linear': linear amplitudes are inferred on single data set
      - 'linear-joint': linear amplitudes ae jointly inferred

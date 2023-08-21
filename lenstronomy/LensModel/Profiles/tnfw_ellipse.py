@@ -140,16 +140,10 @@ class TNFW_ELLIPSE(LensProfileBase):
         return f_xx, f_xy, f_yx, f_yy
 
     def mass_3d_lens(self, r, Rs, alpha_Rs, r_trunc, e1=1, e2=0):
-        """
-
-        :param r: radius (in angular units)
-        :param Rs: turn-over radius of NFW profile
-        :param alpha_Rs: deflection at Rs
-        :param r_trunc: truncation radius
-        :param e1: eccentricity component in x-direction
-        :param e2: eccentricity component in y-direction
-        :return:
-        """
+        """:param r: radius (in angular units) :param Rs: turn-over radius of NFW
+        profile :param alpha_Rs: deflection at Rs :param r_trunc: truncation radius
+        :param e1: eccentricity component in x-direction :param e2: eccentricity
+        component in y-direction :return:"""
         return self.tnfw.mass_3d_lens(r, Rs, alpha_Rs, r_trunc)
 
     def density_lens(self, r, Rs, alpha_Rs, r_trunc, e1=1, e2=0):

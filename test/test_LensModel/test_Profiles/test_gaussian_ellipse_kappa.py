@@ -14,8 +14,8 @@ class TestGaussianEllipseKappa(object):
     """This class tests the methods for elliptical Gaussian convergence."""
 
     def setup_method(self):
-        """
-        :return:
+        """:return:
+
         :rtype:
         """
         self.gaussian_kappa = GaussianKappa()
@@ -24,7 +24,7 @@ class TestGaussianEllipseKappa(object):
     def test_function(self):
         """Test the `function()` method at the spherical limit.
 
-        :return:
+        :return: 
         :rtype:
         """
         # almost spherical case
@@ -59,7 +59,7 @@ class TestGaussianEllipseKappa(object):
     def test_derivatives(self):
         """Test the `derivatives()` method at the spherical limit.
 
-        :return:
+        :return: 
         :rtype:
         """
         # almost spherical case
@@ -86,7 +86,7 @@ class TestGaussianEllipseKappa(object):
     def test_hessian(self):
         """Test the `hessian()` method at the spherical limit.
 
-        :return:
+        :return: 
         :rtype:
         """
         # almost spherical case
@@ -123,7 +123,7 @@ class TestGaussianEllipseKappa(object):
     def test_density_2d(self):
         """Test the `density_2d()` method at the spherical limit.
 
-        :return:
+        :return: 
         :rtype:
         """
         # almost spherical case
@@ -144,7 +144,7 @@ class TestGaussianEllipseKappa(object):
         """Test the `w_f_approx()` method with values computed using
         `scipy.special.wofz()`.
 
-        :return:
+        :return: 
         :rtype:
         """
         x = np.logspace(-3.0, 3.0, 100)

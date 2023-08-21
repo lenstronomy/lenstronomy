@@ -49,12 +49,8 @@ def polar2cart(r, phi, center):
 
 @export
 def shear_polar2cartesian(phi, gamma):
-    """
-
-    :param phi: shear angle (radian)
-    :param gamma: shear strength
-    :return: shear components gamma1, gamma2
-    """
+    """:param phi: shear angle (radian) :param gamma: shear strength :return: shear
+    components gamma1, gamma2."""
     gamma1 = gamma * np.cos(2 * phi)
     gamma2 = gamma * np.sin(2 * phi)
     return gamma1, gamma2
@@ -62,11 +58,8 @@ def shear_polar2cartesian(phi, gamma):
 
 @export
 def shear_cartesian2polar(gamma1, gamma2):
-    """
-    :param gamma1: cartesian shear component
-    :param gamma2: cartesian shear component
-    :return: shear angle, shear strength
-    """
+    """:param gamma1: cartesian shear component :param gamma2: cartesian shear component
+    :return: shear angle, shear strength."""
     phi = np.arctan2(gamma2, gamma1) / 2
     gamma = np.sqrt(gamma1**2 + gamma2**2)
     return phi, gamma

@@ -15,10 +15,7 @@ class NFWParam(object):
     rhoc = 2.77536627e11  # critical density [h^2 M_sun Mpc^-3]
 
     def __init__(self, cosmo=None):
-        """
-
-        :param cosmo: astropy.cosmology instance
-        """
+        """:param cosmo: astropy.cosmology instance."""
         from astropy.cosmology import default_cosmology
 
         if cosmo is None:
@@ -26,11 +23,8 @@ class NFWParam(object):
         self.cosmo = cosmo
 
     def rhoc_z(self, z):
-        """
-
-        :param z: redshift
-        :return: critical density of the universe at redshift z in physical units [h^2 M_sun Mpc^-3]
-        """
+        """:param z: redshift :return: critical density of the universe at redshift z in
+        physical units [h^2 M_sun Mpc^-3]"""
         return self.rhoc * (self.cosmo.efunc(z)) ** 2
         # return self.rhoc*(1+z)**3
 
@@ -63,12 +57,8 @@ class NFWParam(object):
         return (3 * M / (4 * np.pi * self.rhoc_z(z) * 200)) ** (1.0 / 3.0)
 
     def M_r200(self, r200, z):
-        """
-
-        :param r200: r200 in physical Mpc/h
-        :param z: redshift
-        :return: M200 in M_sun/h
-        """
+        """:param r200: r200 in physical Mpc/h :param z: redshift :return: M200 in
+        M_sun/h."""
         return self.rhoc_z(z) * 200 * r200**3 * 4 * np.pi / 3.0
 
     def rho0_c(self, c, z):
@@ -100,9 +90,8 @@ class NFWParam(object):
 
     @staticmethod
     def c_M_z(M, z):
-        """
-        fitting function of http://moriond.in2p3.fr/J08/proceedings/duffy.pdf for the mass and redshift dependence of
-        the concentration parameter
+        """Fitting function of http://moriond.in2p3.fr/J08/proceedings/duffy.pdf for the
+        mass and redshift dependence of the concentration parameter.
 
         :param M: halo mass in M_sun/h
         :type M: float or numpy array

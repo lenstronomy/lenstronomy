@@ -359,10 +359,7 @@ class TestNumerics(object):
 
 
 def test_supersampling_simple():
-    """
-
-    :return:
-    """
+    """:return:"""
     from lenstronomy.Data.psf import PSF
     from lenstronomy.SimulationAPI.data_api import DataAPI
 

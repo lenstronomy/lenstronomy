@@ -22,14 +22,11 @@ class Image2SourceMapping(object):
     """
 
     def __init__(self, lensModel, sourceModel):
-        """
+        """:param lensModel: LensModel() class instance :param sourceModel: LightModel()
+        class instance. The lightModel includes:
 
-        :param lensModel: LensModel() class instance
-        :param sourceModel: LightModel() class instance.
-         The lightModel includes:
-
-         - source_scale_factor_list: list of floats corresponding to the rescaled deflection angles to the specific source components. None indicates that the list will be set to 1, meaning a single source plane model (in single lens plane mode).
-         - source_redshift_list: list of redshifts of the light components (in multi lens plane mode)
+        - source_scale_factor_list: list of floats corresponding to the rescaled deflection angles to the specific source components. None indicates that the list will be set to 1, meaning a single source plane model (in single lens plane mode).
+        - source_redshift_list: list of redshifts of the light components (in multi lens plane mode)
         """
 
         self._lightModel = sourceModel
@@ -126,15 +123,11 @@ class Image2SourceMapping(object):
         return x_source, y_source
 
     def image_flux_joint(self, x, y, kwargs_lens, kwargs_source, k=None):
-        """
-
-        :param x: coordinate in image plane
-        :param y: coordinate in image plane
-        :param kwargs_lens: lens model kwargs list
-        :param kwargs_source: source model kwargs list
-        :param k: None or int or list of int for partial evaluation of light models
-        :return: surface brightness of all joint light components at image position (x, y)
-        """
+        """:param x: coordinate in image plane :param y: coordinate in image plane
+        :param kwargs_lens: lens model kwargs list :param kwargs_source: source model
+        kwargs list :param k: None or int or list of int for partial evaluation of light
+        models :return: surface brightness of all joint light components at image
+        position (x, y)"""
         if self._multi_source_plane is False:
             x_source, y_source = self._lensModel.ray_shooting(x, y, kwargs_lens)
             return self._lightModel.surface_brightness(
@@ -192,14 +185,10 @@ class Image2SourceMapping(object):
             return flux
 
     def image_flux_split(self, x, y, kwargs_lens, kwargs_source):
-        """
-
-        :param x: coordinate in image plane
-        :param y: coordinate in image plane
-        :param kwargs_lens: lens model kwargs list
-        :param kwargs_source: source model kwargs list
-        :return: list of responses of every single basis component with default amplitude amp=1, in the same order as the light_model_list
-        """
+        """:param x: coordinate in image plane :param y: coordinate in image plane
+        :param kwargs_lens: lens model kwargs list :param kwargs_source: source model
+        kwargs list :return: list of responses of every single basis component with
+        default amplitude amp=1, in the same order as the light_model_list."""
         if self._multi_source_plane is False:
             x_source, y_source = self._lensModel.ray_shooting(x, y, kwargs_lens)
             return self._lightModel.functions_split(x_source, y_source, kwargs_source)
@@ -263,22 +252,16 @@ class Image2SourceMapping(object):
 
     @staticmethod
     def _index_ordering(redshift_list):
-        """
-
-        :param redshift_list: list of redshifts
-        :return: indexes in ascending order to be evaluated (from z=0 to z=z_source)
-        """
+        """:param redshift_list: list of redshifts :return: indexes in ascending order
+        to be evaluated (from z=0 to z=z_source)"""
         redshift_list = np.array(redshift_list)
         sort_index = np.argsort(redshift_list)
         return sort_index
 
     def _re_order_split(self, response, n_list):
-        """
-
-        :param response: splitted functions in order of redshifts
-        :param n_list: list of number of response vectors per model in order of the model list (not redshift ordered)
-        :return: reshuffled array in order of the function definition
-        """
+        """:param response: splitted functions in order of redshifts :param n_list: list
+        of number of response vectors per model in order of the model list (not redshift
+        ordered) :return: reshuffled array in order of the function definition."""
         counter_regular = 0
         n_sum_list_regular = []
 

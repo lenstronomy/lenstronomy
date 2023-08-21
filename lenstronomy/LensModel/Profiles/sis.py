@@ -100,7 +100,7 @@ class SIS(LensProfileBase):
     def mass_2d(r, rho0):
         """Mass enclosed projected 2d sphere of radius r :param r:
 
-        :param rho0:
+        :param rho0: 
         :return:
         """
         alpha = 2 * rho0 * np.pi**2
@@ -108,12 +108,8 @@ class SIS(LensProfileBase):
         return mass_2d
 
     def mass_2d_lens(self, r, theta_E):
-        """
-
-        :param r: radius
-        :param theta_E: Einstein radius
-        :return: mass within a radius in projection
-        """
+        """:param r: radius :param theta_E: Einstein radius :return: mass within a
+        radius in projection."""
         rho0 = self.theta2rho(theta_E)
         return self.mass_2d(r, rho0)
 
@@ -157,10 +153,10 @@ class SIS(LensProfileBase):
     def density_2d(x, y, rho0, center_x=0, center_y=0):
         """Projected density :param x:
 
-        :param y:
-        :param rho0:
-        :param center_x:
-        :param center_y:
+        :param y: 
+        :param rho0: 
+        :param center_x: 
+        :param center_y: 
         :return:
         """
         x_ = x - center_x

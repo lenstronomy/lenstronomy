@@ -15,17 +15,11 @@ class ArcPerturbations(LensProfileBase):
         self._2_pi = np.pi * 2
 
     def function(self, x, y, coeff, d_r, d_phi, center_x, center_y):
-        """
-
-        :param x: x-coordinate
-        :param y: y-coordinate
-        :param coeff: float, amplitude of basis
-        :param d_r: period of radial sinusoidal in units of angle
-        :param d_phi: period of tangential sinusoidal in radian
-        :param center_x: center of rotation for tangential basis
-        :param center_y: center of rotation for tangential basis
-        :return:
-        """
+        """:param x: x-coordinate :param y: y-coordinate :param coeff: float, amplitude
+        of basis :param d_r: period of radial sinusoidal in units of angle :param d_phi:
+        period of tangential sinusoidal in radian :param center_x: center of rotation
+        for tangential basis :param center_y: center of rotation for tangential basis
+        :return:"""
         r, phi = param_util.cart2polar(x, y, center_x=center_x, center_y=center_y)
         dphi_ = d_phi / self._2_pi
         phi_r = self._phi_r(r, d_r)
@@ -33,17 +27,11 @@ class ArcPerturbations(LensProfileBase):
         return phi_r * phi_theta * coeff
 
     def derivatives(self, x, y, coeff, d_r, d_phi, center_x, center_y):
-        """
-
-        :param x: x-coordinate
-        :param y: y-coordinate
-        :param coeff: float, amplitude of basis
-        :param d_r: period of radial sinusoidal in units of angle
-        :param d_phi: period of tangential sinusoidal in radian
-        :param center_x: center of rotation for tangential basis
-        :param center_y: center of rotation for tangential basis
-        :return: f_x, f_y
-        """
+        """:param x: x-coordinate :param y: y-coordinate :param coeff: float, amplitude
+        of basis :param d_r: period of radial sinusoidal in units of angle :param d_phi:
+        period of tangential sinusoidal in radian :param center_x: center of rotation
+        for tangential basis :param center_y: center of rotation for tangential basis
+        :return: f_x, f_y."""
         r, theta = param_util.cart2polar(x, y, center_x=center_x, center_y=center_y)
         dphi_ = d_phi / self._2_pi
         d_phi_dr = self._d_phi_r(r, d_r) * self._phi_theta(theta, dphi_)
@@ -59,17 +47,11 @@ class ArcPerturbations(LensProfileBase):
         return f_x * coeff, f_y * coeff
 
     def hessian(self, x, y, coeff, d_r, d_phi, center_x, center_y):
-        """
-
-        :param x: x-coordinate
-        :param y: y-coordinate
-        :param coeff: float, amplitude of basis
-        :param d_r: period of radial sinusoidal in units of angle
-        :param d_phi: period of tangential sinusoidal in radian
-        :param center_x: center of rotation for tangential basis
-        :param center_y: center of rotation for tangential basis
-        :return: f_xx, f_yy, f_xy
-        """
+        """:param x: x-coordinate :param y: y-coordinate :param coeff: float, amplitude
+        of basis :param d_r: period of radial sinusoidal in units of angle :param d_phi:
+        period of tangential sinusoidal in radian :param center_x: center of rotation
+        for tangential basis :param center_y: center of rotation for tangential basis
+        :return: f_xx, f_yy, f_xy."""
         r, theta = param_util.cart2polar(x, y, center_x=center_x, center_y=center_y)
         dphi_ = d_phi / self._2_pi
 
@@ -117,12 +99,8 @@ class ArcPerturbations(LensProfileBase):
 
     @staticmethod
     def _phi_r(r, d_r):
-        """
-
-        :param r: numpy array, radius
-        :param d_r: period of radial sinusoidal in units of angle
-        :return: radial component of the potential
-        """
+        """:param r: numpy array, radius :param d_r: period of radial sinusoidal in
+        units of angle :return: radial component of the potential."""
         return np.cos(r / d_r)
 
     @staticmethod
@@ -147,12 +125,9 @@ class ArcPerturbations(LensProfileBase):
 
     @staticmethod
     def _phi_theta(theta, d_theta):
-        """
-
-        :param theta: numpy array, orientation angle in 2pi convention
-        :param d_theta: period of tangential sinusoidal in radian
-        :return: tangential component of the potential
-        """
+        """:param theta: numpy array, orientation angle in 2pi convention :param
+        d_theta: period of tangential sinusoidal in radian :return: tangential component
+        of the potential."""
         return np.cos(theta / d_theta)
 
     @staticmethod

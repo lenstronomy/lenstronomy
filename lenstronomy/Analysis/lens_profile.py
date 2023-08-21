@@ -13,10 +13,7 @@ class LensProfileAnalysis(object):
     """Class with analysis routines to compute derived properties of the lens model."""
 
     def __init__(self, lens_model):
-        """
-
-        :param lens_model: LensModel instance
-        """
+        """:param lens_model: LensModel instance."""
         self._lens_model = lens_model
 
     def effective_einstein_radius_grid(
@@ -33,12 +30,14 @@ class LensProfileAnalysis(object):
         """Computes the radius with mean convergence=1 on a grid.
 
         :param kwargs_lens: list of lens model keyword arguments
-        :param center_x: position of the center (if not set, is attempting to find it from the parameters kwargs_lens)
-        :param center_y: position of the center (if not set, is attempting to find it from the parameters kwargs_lens)
-        :param model_bool_list: list of booleans indicating the addition (=True) of a model component in computing the
-         Einstein radius
-        :param grid_num: integer, number of grid points to numerically evaluate the convergence and estimate the
-         Einstein radius
+        :param center_x: position of the center (if not set, is attempting to find it
+                from the parameters kwargs_lens)
+        :param center_y: position of the center (if not set, is attempting to find it
+                from the parameters kwargs_lens)
+        :param model_bool_list: list of booleans indicating the addition (=True) of a
+                model component in computing the          Einstein radius
+        :param grid_num: integer, number of grid points to numerically evaluate the
+                convergence and estimate the          Einstein radius
         :param grid_spacing: spacing in angular units of the grid
         :param get_precision: If `True`, return the precision of estimated Einstein radius
         :param verbose: if True, indicates warning when Einstein radius can not be computed
@@ -78,7 +77,7 @@ class LensProfileAnalysis(object):
         :param kwargs_lens: list of lens model keyword arguments
         :param r_min: minimum radius of the convergence integrand
         :param r_max: maximum radius of the convergence integrand (should be larger than
-            Einstein radius)
+                Einstein radius)
         :param num_points: number of radial points in log spacing
         :return: estimate of the Einstein radius
         """
@@ -130,7 +129,7 @@ class LensProfileAnalysis(object):
         :param ra_pos: RA position where to compute the external effect
         :param dec_pos: DEC position where to compute the external effect
         :param model_list_bool: boolean list indicating which models effect to be added
-            to the estimate
+                to the estimate
         :return: alpha_x, alpha_y, kappa, shear1, shear2
         """
         f_x, f_y = self._lens_model.alpha(
@@ -158,7 +157,7 @@ class LensProfileAnalysis(object):
 
         :param kwargs_lens: lens model keyword argument list
         :param radius: radius from the center where to compute the logarithmic slope
-            (angular units
+                (angular units
         :param center_x: center of profile from where to compute the slope
         :param center_y: center of profile from where to compute the slope
         :param model_list_bool: bool list, indicate which part of the model to consider
@@ -237,15 +236,11 @@ class LensProfileAnalysis(object):
     def radial_lens_profile(
         self, r_list, kwargs_lens, center_x=None, center_y=None, model_bool_list=None
     ):
-        """
-
-        :param r_list: list of radii to compute the spherically averaged lens light profile
-        :param center_x: center of the profile
-        :param center_y: center of the profile
-        :param kwargs_lens: lens parameter keyword argument list
-        :param model_bool_list: bool list or None, indicating which profiles to sum over
-        :return: flux amplitudes at r_list radii azimuthally averaged
-        """
+        """:param r_list: list of radii to compute the spherically averaged lens light
+        profile :param center_x: center of the profile :param center_y: center of the
+        profile :param kwargs_lens: lens parameter keyword argument list :param
+        model_bool_list: bool list or None, indicating which profiles to sum over
+        :return: flux amplitudes at r_list radii azimuthally averaged."""
         center_x, center_y = analysis_util.profile_center(
             kwargs_lens, center_x, center_y
         )
@@ -263,8 +258,8 @@ class LensProfileAnalysis(object):
     ):
         """Multi-gaussian lens model in convergence space.
 
-        :param kwargs_lens:
-        :param n_comp:
+        :param kwargs_lens: 
+        :param n_comp: 
         :return:
         """
         center_x, center_y = analysis_util.profile_center(

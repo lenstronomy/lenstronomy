@@ -21,35 +21,44 @@ class PointSource(object):
         index_lens_model_list=None,
         point_source_frame_list=None,
     ):
-        """
+        """:param point_source_type_list: list of point source types :param lensModel:
+        instance of the LensModel() class :param fixed_magnification_list: list of
+        booleans (same length as point_source_type_list).
 
-        :param point_source_type_list: list of point source types
-        :param lensModel: instance of the LensModel() class
-        :param fixed_magnification_list: list of booleans (same length as point_source_type_list).
-         If True, magnification ratio of point sources is fixed to the one given by the lens model.
-         This option then requires to provide a 'source_amp' amplitude of the source brightness instead of
-         'point_amp' the list of image brightnesses.
-        :param additional_images_list: list of booleans (same length as point_source_type_list). If True, search for
-         additional images of the same source is conducted.
-        :param flux_from_point_source_list: list of booleans (optional), if set, will only return image positions
-         (for imaging modeling) for the subset of the point source lists that =True. This option enables to model
-         imaging data with transient point sources, when the point source positions are measured and present at a
-         different time than the imaging data
-        :param magnification_limit: float >0 or None, if float is set and additional images are computed, only those
-         images will be computed that exceed the lensing magnification (absolute value) limit
-        :param save_cache: bool, saves image positions and only if delete_cache is executed, a new solution of the lens
-         equation is conducted with the lens model parameters provided. This can increase the speed as multiple times
-         the image positions are requested for the same lens model. Attention in usage!
-        :param kwargs_lens_eqn_solver: keyword arguments specifying the numerical settings for the lens equation solver
-         see LensEquationSolver() class for details, such as:
-         min_distance=0.01, search_window=5, precision_limit=10**(-10), num_iter_max=100
-        :param index_lens_model_list: list (length of different patches/bands) of integer lists, e.g., [[0, 1], [2, 3]];
-         evaluating a subset of the lens models per individual bands. If this keyword is set, the image positions need
-         to have a specified band/frame assigned to it
-        :param point_source_frame_list: list of lists mirroring the structure of the image positions.
-         Integers correspond to the i'th list entry of index_lens_model_list indicating in which frame/band the image is
-         appearing, e.g., four images and four cutouts, you can do [[0], [1], [2], [3]] when the frames
-         (ordered as the list) are in the same order as the point sources (indices)
+        If True, magnification ratio of point sources is fixed to the one given by the
+        lens model.  This option then requires to provide a 'source_amp' amplitude of
+        the source brightness instead of  'point_amp' the list of image brightnesses.
+        :param additional_images_list: list of booleans (same length as
+                point_source_type_list). If True, search for          additional images
+                of the same source is conducted.
+        :param flux_from_point_source_list: list of booleans (optional), if set, will
+                only return image positions          (for imaging modeling) for the
+                subset of the point source lists that =True. This option enables to
+                model          imaging data with transient point sources, when the point
+                source positions are measured and present at a          different time
+                than the imaging data
+        :param magnification_limit: float >0 or None, if float is set and additional
+                images are computed, only those          images will be computed that
+                exceed the lensing magnification (absolute value) limit
+        :param save_cache: bool, saves image positions and only if delete_cache is
+                executed, a new solution of the lens          equation is conducted with
+                the lens model parameters provided. This can increase the speed as
+                multiple times          the image positions are requested for the same
+                lens model. Attention in usage!
+        :param kwargs_lens_eqn_solver: keyword arguments specifying the numerical
+                settings for the lens equation solver          see LensEquationSolver()
+                class for details, such as:          min_distance=0.01, search_window=5,
+                precision_limit=10**(-10), num_iter_max=100
+        :param index_lens_model_list: list (length of different patches/bands) of
+                integer lists, e.g., [[0, 1], [2, 3]];          evaluating a subset of
+                the lens models per individual bands. If this keyword is set, the image
+                positions need          to have a specified band/frame assigned to it
+        :param point_source_frame_list: list of lists mirroring the structure of the
+                image positions.          Integers correspond to the i'th list entry of
+                index_lens_model_list indicating in which frame/band the image is
+                appearing, e.g., four images and four cutouts, you can do [[0], [1],
+                [2], [3]] when the frames          (ordered as the list) are in the same
+                order as the point sources (indices)
         """
         if len(point_source_type_list) > 0:
             if index_lens_model_list is not None and point_source_frame_list is None:
@@ -131,7 +140,7 @@ class PointSource(object):
         """Update the search area for the lens equation solver.
 
         :param search_window: search_window: window size of the image position search
-            with the lens equation solver.
+                with the lens equation solver.
         :param x_center: center of search window
         :param y_center: center of search window
         :param min_distance: minimum search distance
@@ -161,11 +170,8 @@ class PointSource(object):
             self._kwargs_lens_eqn_solver["y_center"] = y_center
 
     def update_lens_model(self, lens_model_class):
-        """
-
-        :param lens_model_class: instance of LensModel class
-        :return: update instance of lens model class
-        """
+        """:param lens_model_class: instance of LensModel class :return: update instance
+        of lens model class."""
         self.delete_lens_model_cache()
         self._lensModel = lens_model_class
         for model in self._point_source_list:
@@ -184,7 +190,7 @@ class PointSource(object):
 
         :param save_cache: bool, if True, saves (or uses a previously saved) values
         :return: updated class and sub-class instances to either save or not save the
-            point source information in cache
+                point source information in cache
         """
         self._set_save_cache(save_cache)
         self._save_cache = save_cache
@@ -200,11 +206,8 @@ class PointSource(object):
             model.set_save_cache(save_cache)
 
     def k_list(self, k):
-        """
-
-        :param k: index of point source model
-        :return: list of lengths of images with corresponding lens models in the frame (or None if not multi-frame)
-        """
+        """:param k: index of point source model :return: list of lengths of images with
+        corresponding lens models in the frame (or None if not multi-frame)"""
         if self._index_lens_model_list is not None:
             k_list = []
             for point_source_frame in self._point_source_frame_list[k]:
@@ -242,11 +245,11 @@ class PointSource(object):
         :param kwargs_ps: point source parameter keyword argument list
         :param kwargs_lens: lens model keyword argument list
         :param k: None, int or boolean list; only returns a subset of the model
-            predictions
+                predictions
         :param original_position: boolean (only applies to 'LENSED_POSITION' models),
-            returns the image positions in the model parameters and does not re-compute
-            images (which might be differently ordered) in case of the lens equation
-            solver
+                returns the image positions in the model parameters and does not re-
+                compute             images (which might be differently ordered) in case
+                of the lens equation             solver
         :param additional_images: if True, solves the lens equation for additional
             images
         :type additional_images: bool
@@ -286,9 +289,9 @@ class PointSource(object):
         :param kwargs_ps: point source keyword argument list
         :param kwargs_lens: lens model keyword argument list
         :param k: None, int or list of int's to select a subset of the point source
-            models in the return
+                models in the return
         :param with_amp: bool, if False, ignores the amplitude parameters in the return
-            and instead provides ones for each point source image
+                and instead provides ones for each point source image
         :return: ra_array, dec_array, amp_array
         """
         # here we save the cache of the individual models but do not overwrite the class boolean variable to do so
@@ -336,7 +339,7 @@ class PointSource(object):
         :param kwargs_ps: point source keyword argument list
         :param kwargs_lens: lens model keyword argument list
         :param k: None, int or list of int's to select a subset of the point source
-            models in the return
+                models in the return
         :return: list of image amplitudes per model component
         """
         amp_list = []
@@ -369,14 +372,10 @@ class PointSource(object):
         return amp_list
 
     def linear_response_set(self, kwargs_ps, kwargs_lens=None, with_amp=False):
-        """
-
-        :param kwargs_ps: point source keyword argument list
-        :param kwargs_lens: lens model keyword argument list
-        :param with_amp: bool, if True returns the image amplitude derived from kwargs_ps,
-         otherwise the magnification of the lens model
-        :return: ra_pos, dec_pos, amp, n
-        """
+        """:param kwargs_ps: point source keyword argument list :param kwargs_lens: lens
+        model keyword argument list :param with_amp: bool, if True returns the image
+        amplitude derived from kwargs_ps, otherwise the magnification of the lens model
+        :return: ra_pos, dec_pos, amp, n."""
         ra_pos = []
         dec_pos = []
         amp = []
@@ -411,14 +410,11 @@ class PointSource(object):
         return ra_pos, dec_pos, amp, n
 
     def update_linear(self, param, i, kwargs_ps, kwargs_lens):
-        """
-
-        :param param: list of floats corresponding ot the parameters being sampled
-        :param i: index of the first parameter relevant for this class
-        :param kwargs_ps: point source keyword argument list
-        :param kwargs_lens: lens model keyword argument list
-        :return: kwargs_ps with updated linear parameters, index of the next parameter relevant for another class
-        """
+        """:param param: list of floats corresponding ot the parameters being sampled
+        :param i: index of the first parameter relevant for this class :param kwargs_ps:
+        point source keyword argument list :param kwargs_lens: lens model keyword
+        argument list :return: kwargs_ps with updated linear parameters, index of the
+        next parameter relevant for another class."""
         ra_pos_list, dec_pos_list = self.image_position(kwargs_ps, kwargs_lens)
         for k, model in enumerate(self._point_source_list):
             if self._flux_from_point_source_list[k]:
@@ -459,7 +455,7 @@ class PointSource(object):
         :param kwargs_ps: point source keyword argument list
         :param kwargs_lens: lens model keyword argument list
         :param tolerance: Euclidian distance between the source positions ray-traced
-            backwards to be tolerated
+                backwards to be tolerated
         :return: bool: True, if requirement on tolerance is fulfilled, False if not.
         """
         x_image_list, y_image_list = self.image_position(kwargs_ps, kwargs_lens)

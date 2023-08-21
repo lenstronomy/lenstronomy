@@ -82,25 +82,23 @@ class GaussianKappa(LensProfileBase):
         return f_xx, f_xy, f_xy, f_yy
 
     def density(self, r, amp, sigma):
-        """
+        """:param r:
 
-        :param r:
-        :param amp:
-        :param sigma:
+        :param amp: 
+        :param sigma: 
         :return:
         """
         sigma_x, sigma_y = sigma, sigma
         return self.gaussian.function(r, 0, amp, sigma_x, sigma_y)
 
     def density_2d(self, x, y, amp, sigma, center_x=0, center_y=0):
-        """
+        """:param x:
 
-        :param x:
-        :param y:
-        :param amp:
-        :param sigma:
-        :param center_x:
-        :param center_y:
+        :param y: 
+        :param amp: 
+        :param sigma: 
+        :param center_x: 
+        :param center_y: 
         :return:
         """
         sigma_x, sigma_y = sigma, sigma
@@ -108,11 +106,10 @@ class GaussianKappa(LensProfileBase):
         return self.gaussian.function(x, y, amp2d, sigma_x, sigma_y, center_x, center_y)
 
     def mass_2d(self, R, amp, sigma):
-        """
+        """:param R:
 
-        :param R:
-        :param amp:
-        :param sigma:
+        :param amp: 
+        :param sigma: 
         :return:
         """
         sigma_x, sigma_y = sigma, sigma
@@ -121,11 +118,10 @@ class GaussianKappa(LensProfileBase):
         return amp2d * 2 * np.pi * 1.0 / (2 * c) * (1.0 - np.exp(-c * R**2))
 
     def mass_2d_lens(self, R, amp, sigma):
-        """
+        """:param R:
 
-        :param R:
-        :param amp:
-        :param sigma:
+        :param amp: 
+        :param sigma: 
         :return:
         """
         sigma_x, sigma_y = sigma, sigma
@@ -135,8 +131,8 @@ class GaussianKappa(LensProfileBase):
     def alpha_abs(self, R, amp, sigma):
         """Absolute value of the deflection :param R:
 
-        :param amp:
-        :param sigma:
+        :param amp: 
+        :param sigma: 
         :return:
         """
         sigma_x, sigma_y = sigma, sigma
@@ -145,12 +141,11 @@ class GaussianKappa(LensProfileBase):
         return alpha
 
     def d_alpha_dr(self, R, amp, sigma_x, sigma_y):
-        """
+        """:param R:
 
-        :param R:
-        :param amp:
-        :param sigma_x:
-        :param sigma_y:
+        :param amp: 
+        :param sigma_x: 
+        :param sigma_y: 
         :return:
         """
         c = 1.0 / (2 * sigma_x * sigma_y)
@@ -160,11 +155,10 @@ class GaussianKappa(LensProfileBase):
         return 1.0 / R**2 * (-1 + (1 + 2 * c * R**2) * np.exp(-c * R**2)) * A
 
     def mass_3d(self, R, amp, sigma):
-        """
+        """:param R:
 
-        :param R:
-        :param amp:
-        :param sigma:
+        :param amp: 
+        :param sigma: 
         :return:
         """
         sigma_x, sigma_y = sigma, sigma
@@ -181,11 +175,10 @@ class GaussianKappa(LensProfileBase):
         return result * A * 4 * np.pi
 
     def mass_3d_lens(self, R, amp, sigma):
-        """
+        """:param R:
 
-        :param R:
-        :param amp:
-        :param sigma:
+        :param amp: 
+        :param sigma: 
         :return:
         """
         sigma_x, sigma_y = sigma, sigma
@@ -196,8 +189,8 @@ class GaussianKappa(LensProfileBase):
     def _amp3d_to_2d(amp, sigma_x, sigma_y):
         """Converts 3d density into 2d density parameter :param amp:
 
-        :param sigma_x:
-        :param sigma_y:
+        :param sigma_x: 
+        :param sigma_y: 
         :return:
         """
         return amp * np.sqrt(np.pi) * np.sqrt(sigma_x * sigma_y * 2)
@@ -206,8 +199,8 @@ class GaussianKappa(LensProfileBase):
     def _amp2d_to_3d(amp, sigma_x, sigma_y):
         """Converts 3d density into 2d density parameter :param amp:
 
-        :param sigma_x:
-        :param sigma_y:
+        :param sigma_x: 
+        :param sigma_y: 
         :return:
         """
         return amp / (np.sqrt(np.pi) * np.sqrt(sigma_x * sigma_y * 2))

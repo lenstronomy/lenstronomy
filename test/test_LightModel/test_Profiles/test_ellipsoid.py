@@ -11,10 +11,7 @@ class TestTorus(object):
         pass
 
     def test_function(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         output = torus.function(x=1, y=1, amp=1.0, sigma=2, center_x=0, center_y=0)
         assert output == 0.079577471545947673
 
@@ -24,10 +21,7 @@ class TestEllipsoid(object):
         pass
 
     def test_function(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         ellipsoid = Ellipsoid()
         output = ellipsoid.function(
             x=1, y=1, amp=1.0, radius=1, e1=0, e2=0, center_x=0, center_y=0

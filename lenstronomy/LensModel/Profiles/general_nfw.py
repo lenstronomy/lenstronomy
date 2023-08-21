@@ -76,18 +76,14 @@ class GNFW(LensProfileBase):
     def hessian(
         self, x, y, Rs, alpha_Rs, gamma_inner, gamma_outer, center_x=0, center_y=0
     ):
-        """
-
-        :param x: angular position (normally in units of arc seconds)
-        :param y: angular position (normally in units of arc seconds)
-        :param Rs: turn over point in the slope of the NFW profile in angular unit
-        :param alpha_Rs: deflection (angular units) at projected Rs
-        :param gamma_inner: logarithmic profile slope interior to Rs
-        :param gamma_outer: logarithmic profile slope outside Rs
-        :param center_x: center of halo (in angular units)
-        :param center_y: center of halo (in angular units)
-        :return: Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
-        """
+        """:param x: angular position (normally in units of arc seconds) :param y:
+        angular position (normally in units of arc seconds) :param Rs: turn over point
+        in the slope of the NFW profile in angular unit :param alpha_Rs: deflection
+        (angular units) at projected Rs :param gamma_inner: logarithmic profile slope
+        interior to Rs :param gamma_outer: logarithmic profile slope outside Rs :param
+        center_x: center of halo (in angular units) :param center_y: center of halo (in
+        angular units) :return: Hessian matrix of function d^2f/dx^2, d^2/dxdy,
+        d^2/dydx, d^f/dy^2."""
         rho0_input = self.alpha2rho0(alpha_Rs, Rs, gamma_inner, gamma_outer)
         x_ = x - center_x
         y_ = y - center_y

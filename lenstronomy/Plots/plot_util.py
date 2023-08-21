@@ -66,17 +66,10 @@ def text_description(
 
 @export
 def scale_bar(ax, d, dist=1.0, text='1"', color="w", font_size=15, flipped=False):
-    """
-
-    :param ax: matplotlib.axes instance
-    :param d: diameter of frame
-    :param dist: distance scale printed
-    :param text: string printed on scale bar
-    :param color: color of scale bar
-    :param font_size: font size
-    :param flipped: boolean
-    :return: None, updated ax instance
-    """
+    """:param ax: matplotlib.axes instance :param d: diameter of frame :param dist:
+    distance scale printed :param text: string printed on scale bar :param color: color
+    of scale bar :param font_size: font size :param flipped: boolean :return: None,
+    updated ax instance."""
     if flipped:
         p0 = d - d / 15.0 - dist
         p1 = d / 15.0
@@ -104,16 +97,10 @@ def scale_bar(ax, d, dist=1.0, text='1"', color="w", font_size=15, flipped=False
 
 @export
 def coordinate_arrows(ax, d, coords, color="w", font_size=15, arrow_size=0.05):
-    """
-
-    :param ax: matplotlib axes instance
-    :param d: diameter of frame in ax
-    :param coords: lenstronomy.Data.coord_transforms Coordinates() instance
-    :param color: color string
-    :param font_size: font size of length scale
-    :param arrow_size: size of arrow
-    :return: updated ax instance
-    """
+    """:param ax: matplotlib axes instance :param d: diameter of frame in ax :param
+    coords: lenstronomy.Data.coord_transforms Coordinates() instance :param color: color
+    string :param font_size: font size of length scale :param arrow_size: size of arrow
+    :return: updated ax instance."""
     d0 = d / 8.0
     p0 = d / 15.0
     pt = d / 9.0
@@ -249,22 +236,18 @@ def image_position_plot(
     pixel_offset=True,
     plot_out_of_image=True,
 ):
-    """
-
-    :param ax: matplotlib axis instance
-    :param coords: Coordinates() class instance or inherited class (such as PixelGrid(), or Data())
-    :param ra_image: Ra/x-coordinates of image positions (list of arrays in angular units)
-    :param dec_image: Dec/y-coordinates of image positions (list of arrays in angular units)
-    :param color: color of ticks and text
-    :param image_name_list: list of strings for names of the images in the same order as the positions
-    :param origin: [x0, y0], lower left pixel coordinate in the frame of the pixels
-    :param flipped_x: bool, if True, flips x-axis
-    :param pixel_offset: boolean; if True (default plotting), the coordinates are shifted a half a pixel to match with
-     the matshow() command to center the coordinates in the pixel center
-    :param plot_out_of_image: if True, plots images even appearing out of the Coordinate frame
-    :type plot_out_of_image: bool
-    :return: matplotlib axis instance with images plotted on
-    """
+    """:param ax: matplotlib axis instance :param coords: Coordinates() class instance
+    or inherited class (such as PixelGrid(), or Data()) :param ra_image:
+    Ra/x-coordinates of image positions (list of arrays in angular units) :param
+    dec_image: Dec/y-coordinates of image positions (list of arrays in angular units)
+    :param color: color of ticks and text :param image_name_list: list of strings for
+    names of the images in the same order as the positions :param origin: [x0, y0],
+    lower left pixel coordinate in the frame of the pixels :param flipped_x: bool, if
+    True, flips x-axis :param pixel_offset: boolean; if True (default plotting), the
+    coordinates are shifted a half a pixel to match with the matshow() command to center
+    the coordinates in the pixel center :param plot_out_of_image: if True, plots images
+    even appearing out of the Coordinate frame :type plot_out_of_image: bool :return:
+    matplotlib axis instance with images plotted on."""
     if origin is None:
         origin = [0, 0]
     pixel_width = coords.pixel_width
@@ -303,16 +286,11 @@ def image_position_plot(
 def source_position_plot(
     ax, coords, ra_source, dec_source, marker="*", markersize=10, **kwargs
 ):
-    """
-
-    :param ax: matplotlib axis instance
-    :param coords: Coordinates() class instance or inherited class (such as PixelGrid(), or Data())
-    :param ra_source: list of source position in angular units
-    :param dec_source: list of source position in angular units
-    :param marker: marker style for matplotlib
-    :param markersize: marker size for matplotlib
-    :return: matplotlib axis instance with images plotted on
-    """
+    """:param ax: matplotlib axis instance :param coords: Coordinates() class instance
+    or inherited class (such as PixelGrid(), or Data()) :param ra_source: list of source
+    position in angular units :param dec_source: list of source position in angular
+    units :param marker: marker style for matplotlib :param markersize: marker size for
+    matplotlib :return: matplotlib axis instance with images plotted on."""
     delta_pix = coords.pixel_width
     if len(ra_source) > 0:
         for ra, dec in zip(ra_source, dec_source):
@@ -329,14 +307,10 @@ def source_position_plot(
 
 @export
 def result_string(x, weights=None, title_fmt=".2f", label=None):
-    """
-
-    :param x: marginalized 1-d posterior
-    :param weights: weights of posteriors (optional)
-    :param title_fmt: format to what digit the results are presented
-    :param label: string of parameter label (optional)
-    :return: string with mean :math:`\\pm` quartile
-    """
+    """:param x: marginalized 1-d posterior :param weights: weights of posteriors
+    (optional) :param title_fmt: format to what digit the results are presented :param
+    label: string of parameter label (optional) :return: string with mean :math:`\\pm`
+    quartile."""
     from corner import quantile
 
     q_16, q_50, q_84 = quantile(x, [0.16, 0.5, 0.84], weights=weights)

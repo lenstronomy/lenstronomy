@@ -36,10 +36,7 @@ with open(conf_file) as file:
 
 
 def numba_conf():
-    """
-
-    :return: keyword arguments of numba configurations from yaml file
-    """
+    """:return: keyword arguments of numba configurations from yaml file."""
     with open(conf_file) as file:
         # The FullLoader parameter handles the conversion from YAML
         # scalar values to the Python the dictionary format
@@ -50,10 +47,7 @@ def numba_conf():
 
 
 def conventions_conf():
-    """
-
-    :return: convention keyword arguments
-    """
+    """:return: convention keyword arguments."""
     with open(conf_file) as file:
         conf = yaml.safe_load(file)
         conventions_conf = conf["conventions"]

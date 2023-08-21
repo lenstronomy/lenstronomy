@@ -44,7 +44,7 @@ class LensEquationSolver(object):
         :param x_center: center of search window
         :param y_center: center of search window
         :param num_random: number of random starting points of the non-linear solver in
-            the search window
+                the search window
         :return: x_image, y_image
         """
         kwargs_lens = self.lensModel.set_static(kwargs_lens)
@@ -79,14 +79,10 @@ class LensEquationSolver(object):
         return x_mins, y_mins
 
     def _root(self, x, kwargs_lens, source_x, source_y):
-        """
-
-        :param x: parameters [x-coord, y-coord]
-        :param kwargs_lens: list of keyword arguments of the lens model
-        :param source_x: source position
-        :param source_y: source position
-        :return: square distance between ray-traced image position and given source position
-        """
+        """:param x: parameters [x-coord, y-coord] :param kwargs_lens: list of keyword
+        arguments of the lens model :param source_x: source position :param source_y:
+        source position :return: square distance between ray-traced image position and
+        given source position."""
         x_, y_ = x
         beta_x, beta_y = self.lensModel.ray_shooting(x_, y_, kwargs_lens)
         return (beta_x - source_x) ** 2 + (beta_y - source_y) ** 2
@@ -111,12 +107,12 @@ class LensEquationSolver(object):
         :param min_distance: minimum separation to consider for two images in units of
             angle
         :param search_window: window size to be considered by the solver. Will not find
-            image position outside this window
+                image position outside this window
         :param verbose: bool, if True, prints some useful information for the user
         :param x_center: float, center of the window to search for point sources
         :param y_center: float, center of the window to search for point sources
         :returns: (approximate) angular position of (multiple) images ra_pos, dec_pos in
-            units of angles, related ray-traced source displacements and pixel width
+                units of angles, related ray-traced source displacements and pixel width
         :raises: AttributeError, KeyError
         """
         kwargs_lens = self.lensModel.set_static(kwargs_lens)
@@ -192,12 +188,12 @@ class LensEquationSolver(object):
         :param sourcePos_y: source position in units of angle
         :param kwargs_lens: lens model parameters as keyword arguments
         :param solver: which solver to use, can be 'lenstronomy' (default), 'analytical'
-            or 'stochastic'.
+                or 'stochastic'.
         :param kwargs: Any additional kwargs are passed to the chosen solver, see the
-            documentation of image_position_lenstronomy, image_position_analytical and
-            image_position_stochastic
+                documentation of image_position_lenstronomy, image_position_analytical
+                and             image_position_stochastic
         :returns: (exact) angular position of (multiple) images ra_pos, dec_pos in units
-            of angle
+                of angle
         """
         if solver == "lenstronomy":
             return self.image_position_lenstronomy(
@@ -242,26 +238,26 @@ class LensEquationSolver(object):
         :param min_distance: minimum separation to consider for two images in units of
             angle
         :param search_window: window size to be considered by the solver. Will not find
-            image position outside this window
+                image position outside this window
         :param precision_limit: required precision in the lens equation solver (in units
-            of angle in the source plane).
+                of angle in the source plane).
         :param num_iter_max: maximum iteration of lens-source mapping conducted by
-            solver to match the required precision
+                solver to match the required precision
         :param arrival_time_sort: bool, if True, sorts image position in arrival time
-            (first arrival photon first listed)
+                (first arrival photon first listed)
         :param initial_guess_cut: bool, if True, cuts initial local minima selected by
-            the grid search based on distance criteria from the source position
+                the grid search based on distance criteria from the source position
         :param verbose: bool, if True, prints some useful information for the user
         :param x_center: float, center of the window to search for point sources
         :param y_center: float, center of the window to search for point sources
         :param num_random: int, number of random positions within the search window to
-            be added to be starting positions for the gradient decent solver
+                be added to be starting positions for the gradient decent solver
         :param non_linear: bool, if True applies a non-linear solver not dependent on
-            Hessian computation
+                Hessian computation
         :param magnification_limit: None or float, if set will only return image
-            positions that have an abs(magnification) larger than this number
+                positions that have an abs(magnification) larger than this number
         :returns: (exact) angular position of (multiple) images ra_pos, dec_pos in units
-            of angle
+                of angle
         :raises: AttributeError, KeyError
         """
         # find pixels in the image plane possibly hosting a solution of the lens equation, related source distances and
@@ -365,11 +361,11 @@ class LensEquationSolver(object):
         :param num_iter_max: int, maximum number of iterations before the algorithm
             stops
         :param verbose: bool, if True inserts print statements about the behavior of the
-            solver
+                solver
         :param min_distance: maximum correction applied per step (to avoid over-shooting
-            in unstable regions)
+                in unstable regions)
         :param non_linear: bool, if True, uses scipy.miminize instead of the directly
-            implemented gradient decent approach.
+                implemented gradient decent approach.
         :return: x_position array, y_position array, error in the source plane array
         """
         num_candidates = len(x_min)
@@ -423,11 +419,11 @@ class LensEquationSolver(object):
         :param num_iter_max: int, maximum number of iterations before the algorithm
             stops
         :param max_step: maximum correction applied per step (to avoid over-shooting in
-            instable regions)
+                instable regions)
         :param non_linear: bool, if True, uses scipy.miminize instead of the directly
-            implemented gradient decent approach.
+                implemented gradient decent approach.
         :return: x_position, y_position, error in the source plane, steps required (for
-            gradient decent)
+                gradient decent)
         """
         l = 0
         if non_linear:
@@ -488,21 +484,17 @@ class LensEquationSolver(object):
         iter_num,
         num_iter_max,
     ):
-        """
-
-        :param x_guess: float, current best fit solution in the image plane
-        :param y_guess: float, current best fit solution in the image plane
-        :param source_x: float, source position to be matched
-        :param source_y: float, source position ot be matched
-        :param delta_init: current precision in the source plane of the mapped solution
-        :param image_plane_vector: correction vector in the image plane based on the Hessian operator and the deviation
-         in the source plane
-        :param kwargs_lens: lens model keyword argument list
-        :param iter_num: int, current iteration number
-        :param num_iter_max: int, maximum iteration number before aborting the process
-        :return: updated image position in x, updated image position in y, updated precision in the source plane,
-         total iterations done after this call
-        """
+        """:param x_guess: float, current best fit solution in the image plane :param
+        y_guess: float, current best fit solution in the image plane :param source_x:
+        float, source position to be matched :param source_y: float, source position ot
+        be matched :param delta_init: current precision in the source plane of the
+        mapped solution :param image_plane_vector: correction vector in the image plane
+        based on the Hessian operator and the deviation in the source plane :param
+        kwargs_lens: lens model keyword argument list :param iter_num: int, current
+        iteration number :param num_iter_max: int, maximum iteration number before
+        aborting the process :return: updated image position in x, updated image
+        position in y, updated precision in the source plane, total iterations done
+        after this call."""
         x_new = x_guess - image_plane_vector[0]
         y_new = y_guess - image_plane_vector[1]
         x_mapped, y_mapped = self.lensModel.ray_shooting(x_new, y_new, kwargs_lens)
@@ -549,25 +541,31 @@ class LensEquationSolver(object):
         initial_guess_cut=True,
         verbose=False,
     ):
-        """
+        """:param sourcePos_x: source position in units of angle :param sourcePos_y:
+        source position in units of angle :param kwargs_lens: lens model parameters as
+        keyword arguments :param min_distance: minimum separation to consider for two
+        images in units of angle :param search_window: window size to be considered by
+        the solver.
 
-        :param sourcePos_x: source position in units of angle
-        :param sourcePos_y: source position in units of angle
-        :param kwargs_lens: lens model parameters as keyword arguments
-        :param min_distance: minimum separation to consider for two images in units of angle
-        :param search_window: window size to be considered by the solver. Will not find image position outside this window
-        :param precision_limit: required precision in the lens equation solver (in units of angle in the source plane).
-        :param num_iter_max: maximum iteration of lens-source mapping conducted by solver to match the required precision
-        :param arrival_time_sort: bool, if True, sorts image position in arrival time (first arrival photon first listed)
-        :param initial_guess_cut: bool, if True, cuts initial local minima selected by the grid search based on distance criteria from the source position
+        Will not find image position outside this window
+        :param precision_limit: required precision in the lens equation solver (in units
+                of angle in the source plane).
+        :param num_iter_max: maximum iteration of lens-source mapping conducted by
+                solver to match the required precision
+        :param arrival_time_sort: bool, if True, sorts image position in arrival time
+                (first arrival photon first listed)
+        :param initial_guess_cut: bool, if True, cuts initial local minima selected by
+                the grid search based on distance criteria from the source position
         :param verbose: bool, if True, prints some useful information for the user
         :param x_center: float, center of the window to search for point sources
         :param y_center: float, center of the window to search for point sources
-        :param num_random: int, number of random positions within the search window to be added to be starting
-         positions for the gradient decent solver
+        :param num_random: int, number of random positions within the search window to
+                be added to be starting          positions for the gradient decent
+                solver
         :param non_linear: bool, if True applies a non-linear solver not dependent on Hessian computation
-        :param magnification_limit: None or float, if set will only return image positions that have an
-         abs(magnification) larger than this number
+        :param magnification_limit: None or float, if set will only return image
+                positions that have an          abs(magnification) larger than this
+                number
         :returns: (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle
         """
 

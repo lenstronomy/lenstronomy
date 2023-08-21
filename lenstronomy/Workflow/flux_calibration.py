@@ -17,7 +17,7 @@ class FluxCalibration(object):
         calibration fitting.
 
         :param kwargs_imaging: keyword argument related to imaging data and imaging
-            likelihood. Feeds into ImageLikelihood(**kwargs_imaging)
+                likelihood. Feeds into ImageLikelihood(**kwargs_imaging)
         :param kwargs_model: keyword argument of model components
         :param kwargs_params: keyword argument of model parameters
         :param calibrate_bands: state which bands the flux calibration is applied to
@@ -130,9 +130,8 @@ class CalibrationLikelihood(object):
         pass
 
     def update_data(self, args):
-        """
+        """:param args:
 
-        :param args:
         :return: updated multi_band_list
         """
         k = 0
@@ -144,11 +143,8 @@ class CalibrationLikelihood(object):
         return self.multi_band_list
 
     def get_args(self, multi_band_list):
-        """
-
-        :param multi_band_list: list of multi_band [[kwargs_data, kwargs_psf, kwargs_numeric], [...], ...]
-        :return:
-        """
+        """:param multi_band_list: list of multi_band [[kwargs_data, kwargs_psf,
+        kwargs_numeric], [...], ...] :return:"""
         args = []
         for i, band in enumerate(multi_band_list):
             if self._calibrate_bands[i]:

@@ -40,19 +40,12 @@ class ShapeletsPolar(object):
         pass
 
     def function(self, x, y, amp, beta, n, m, complex_bool, center_x, center_y):
-        """
-
-        :param x: x-coordinate, numpy array
-        :param y: y-ccordinate, numpy array
-        :param amp: amplitude normalization
-        :param beta: shaplet scale
-        :param n: order of polynomial
-        :param m: rotational invariance
-        :param complex_bool: boolean; if True uses complex value of function _chi_n_m()
-        :param center_x: center of shapelet
-        :param center_y: center of shapelet
-        :return: amplitude of shapelet at possition (x, y)
-        """
+        """:param x: x-coordinate, numpy array :param y: y-ccordinate, numpy array
+        :param amp: amplitude normalization :param beta: shaplet scale :param n: order
+        of polynomial :param m: rotational invariance :param complex_bool: boolean; if
+        True uses complex value of function _chi_n_m() :param center_x: center of
+        shapelet :param center_y: center of shapelet :return: amplitude of shapelet at
+        possition (x, y)"""
         r, phi = param_util.cart2polar(x, y, center_x, center_y)
         if complex_bool is True:
             return amp * self._chi_n_m(r, beta, n, m) * np.exp(-1j * m * phi).imag
@@ -61,14 +54,9 @@ class ShapeletsPolar(object):
 
     @staticmethod
     def _chi_n_m(r, beta, n, m):
-        """
-
-        :param r: radius / beta
-        :param beta: shapelet scale
-        :param n: non-negative integer
-        :param m: integer, running from -n to n in steps of two
-        :return: value of function (8) in Massey & Refregier, complex numbers
-        """
+        """:param r: radius / beta :param beta: shapelet scale :param n: non-negative
+        integer :param m: integer, running from -n to n in steps of two :return: value
+        of function (8) in Massey & Refregier, complex numbers."""
         m_abs = int(abs(m))
         p = int((n - m_abs) / 2)
         p2 = int((n + m_abs) / 2)
@@ -90,11 +78,7 @@ class ShapeletsPolar(object):
 
     @staticmethod
     def _index2n(index):
-        """
-
-        :param index: index of convention
-        :return: n order of Laguerre
-        """
+        """:param index: index of convention :return: n order of Laguerre."""
         n_float = (-3 + np.sqrt(9 + 8 * index)) / 2
         n_int = int(n_float)
         if n_int == n_float:
@@ -137,13 +121,9 @@ class ShapeletsPolar(object):
 
     @staticmethod
     def poly2index(n, m, complex_bool):
-        """
-
-        :param n: non-negative integer
-        :param m: integer, running from -n to n in steps of two
-        :param complex_bool: bool, if True, assigns complex part
-        :return:
-        """
+        """:param n: non-negative integer :param m: integer, running from -n to n in
+        steps of two :param complex_bool: bool, if True, assigns complex part
+        :return:"""
         index = n * (n + 1) / 2
         if complex_bool is True:
             if m == 0:
@@ -167,11 +147,8 @@ class ShapeletsPolar(object):
 
     @staticmethod
     def num_param(n_max):
-        """
-
-        :param n_max: maximal polynomial order
-        :return: number of basis components
-        """
+        """:param n_max: maximal polynomial order :return: number of basis
+        components."""
         return int((n_max + 1) * (n_max + 2) / 2)
 
 
@@ -206,19 +183,12 @@ class ShapeletsPolarExp(object):
         pass
 
     def function(self, x, y, amp, beta, n, m, complex_bool, center_x, center_y):
-        """
-
-        :param x: x-coordinate, numpy array
-        :param y: y-ccordinate, numpy array
-        :param amp: amplitude normalization
-        :param beta: shaplet scale
-        :param n: order of polynomial
-        :param m: rotational invariance
-        :param complex_bool: boolean; if True uses complex value of function _chi_n_m()
-        :param center_x: center of shapelet
-        :param center_y: center of shapelet
-        :return: amplitude of shapelet at possition (x, y)
-        """
+        """:param x: x-coordinate, numpy array :param y: y-ccordinate, numpy array
+        :param amp: amplitude normalization :param beta: shaplet scale :param n: order
+        of polynomial :param m: rotational invariance :param complex_bool: boolean; if
+        True uses complex value of function _chi_n_m() :param center_x: center of
+        shapelet :param center_y: center of shapelet :return: amplitude of shapelet at
+        possition (x, y)"""
         r, phi = param_util.cart2polar(x, y, center_x, center_y)
         if complex_bool is True:
             return amp * self._chi_n_m(r, beta, n, m) * np.exp(-1j * m * phi).imag
@@ -227,13 +197,11 @@ class ShapeletsPolarExp(object):
 
     @staticmethod
     def _chi_n_m(r, beta, n, m):
-        """
+        """:param r: radius :param beta: shapelet scale :param n: non-negative integer
+        :param m: integer, running from -n to n in steps of two :return: value of
+        function (20) in Berge et al.
 
-        :param r: radius
-        :param beta: shapelet scale
-        :param n: non-negative integer
-        :param m: integer, running from -n to n in steps of two
-        :return: value of function (20) in Berge et al. 2019 without complex coefficient
+        2019 without complex coefficient
         """
         m_abs = int(abs(m))
         p = int(n - m_abs)
@@ -257,20 +225,13 @@ class ShapeletsPolarExp(object):
 
     @staticmethod
     def num_param(n_max):
-        """
-
-        :param n_max: maximal polynomial order
-        :return: number of basis components
-        """
+        """:param n_max: maximal polynomial order :return: number of basis
+        components."""
         return int((n_max + 1) ** 2)
 
     @staticmethod
     def _index2n(index):
-        """
-
-        :param index: index convention
-        :return: n
-        """
+        """:param index: index convention :return: n."""
         n_float = np.sqrt(index + 1) - 1
         n_int = int(n_float)
         if n_int == n_float:
@@ -280,9 +241,8 @@ class ShapeletsPolarExp(object):
         return n
 
     def index2poly(self, index):
-        """
+        """:param index:
 
-        :param index:
         :return:
         """
         n = self._index2n(index)
@@ -298,11 +258,10 @@ class ShapeletsPolarExp(object):
 
     @staticmethod
     def poly2index(n, m, complex_bool):
-        """
+        """:param n:
 
-        :param n:
-        :param m:
-        :param complex_bool:
+        :param m: 
+        :param complex_bool: 
         :return: index convention, integer
         """
         index = n**2
@@ -328,9 +287,8 @@ class ShapeletSetPolar(object):
         self._exponential = exponential
 
     def function(self, x, y, amp, n_max, beta, center_x=0, center_y=0):
-        """
+        """:param x:
 
-        :param x:
         :param y:
         :param amp:
         :param n_max:
@@ -360,14 +318,13 @@ class ShapeletSetPolar(object):
         return A
 
     def _pre_calc(self, x, y, beta, n_max, center_x, center_y):
-        """
+        """:param x:
 
-        :param x:
-        :param y:
-        :param beta:
-        :param n_max:
-        :param center_x:
-        :param center_y:
+        :param y: 
+        :param beta: 
+        :param n_max: 
+        :param center_x: 
+        :param center_y: 
         :return:
         """
         L_list = []
@@ -437,9 +394,6 @@ class ShapeletSetPolar(object):
         return param_list
 
     def index2poly(self, index):
-        """
-
-        :param index: index of coefficient in the convention here
-        :return: n, m, complex_bool
-        """
+        """:param index: index of coefficient in the convention here :return: n, m,
+        complex_bool."""
         return self.shapelets.index2poly(index)

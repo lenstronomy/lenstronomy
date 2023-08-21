@@ -23,11 +23,11 @@ class MultiPatchPlot(MultiPatchReconstruction):
         verbose=True,
         cmap_string="gist_heat",
     ):
-        """
+        """:param multi_band_list: list of imaging data configuration [[kwargs_data,
+        kwargs_psf, kwargs_numerics], [...]] :param kwargs_model: model keyword argument
+        list :param kwargs_params: keyword arguments of the model parameters, same as
+        output of FittingSequence() 'kwargs_result'.
 
-        :param multi_band_list: list of imaging data configuration [[kwargs_data, kwargs_psf, kwargs_numerics], [...]]
-        :param kwargs_model: model keyword argument list
-        :param kwargs_params: keyword arguments of the model parameters, same as output of FittingSequence() 'kwargs_result'
         :param multi_band_type: string, option when having multiple imaging data sets modelled simultaneously. Options are:
             - 'multi-linear': linear amplitudes are inferred on single data set
             - 'linear-joint': linear amplitudes ae jointly inferred
@@ -130,7 +130,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         """Illustrates source.
 
         :param ax: matplotlib axis instance :param delta_pix scale of the pixel size of
-            the source plot
+                the source plot
         :param num_pix: number of pixels per axis of the source plot
         :param center: list with two entries [center_x, center_y] (optional)
         :param kwargs: plotting keyword arguments
@@ -287,14 +287,10 @@ class MultiPatchPlot(MultiPatchReconstruction):
         no_support=False,
         **kwargs
     ):
-        """
-
-        :param ax: matplotlib axis instance
-        :param image: 2d numpy array to be plotted
-        :param coords: Coordinate() instance with the coordinate system
-        :param white_on_black: boolean, if True, prints white text on black background, otherwise the opposite
-        :return: matplotlib axis instance
-        """
+        """:param ax: matplotlib axis instance :param image: 2d numpy array to be
+        plotted :param coords: Coordinate() instance with the coordinate system :param
+        white_on_black: boolean, if True, prints white text on black background,
+        otherwise the opposite :return: matplotlib axis instance."""
         if white_on_black:
             text_k = "w"
             bkg_k = "k"

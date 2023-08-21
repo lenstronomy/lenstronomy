@@ -12,11 +12,9 @@ class DifferentialExtinction(object):
     """
 
     def __init__(self, optical_depth_model=None, tau0_index=0):
-        """
-
-        :param optical_depth_model: list of strings naming the profiles (same convention as LightModel module)
-         describing the optical depth of the extinction
-        """
+        """:param optical_depth_model: list of strings naming the profiles (same
+        convention as LightModel module) describing the optical depth of the
+        extinction."""
         if optical_depth_model is None:
             optical_depth_model = []
         self._profile = LightModel(light_model_list=optical_depth_model)
@@ -28,20 +26,15 @@ class DifferentialExtinction(object):
 
     @property
     def compute_bool(self):
-        """
-        :return: True when a differential extinction is set, False otherwise
-        """
+        """:return: True when a differential extinction is set, False otherwise."""
         return self._compute_bool
 
     def extinction(self, x, y, kwargs_extinction=None, kwargs_special=None):
-        """
-
-        :param x: coordinate in image plane of flux intensity
-        :param y: coordinate in image plane of flux intensity
-        :param kwargs_extinction: keyword argument list matching the extinction profile
-        :param kwargs_special: keyword arguments hosting special parameters, here required 'tau0_list'
-        :return: extinction corrected flux
-        """
+        """:param x: coordinate in image plane of flux intensity :param y: coordinate in
+        image plane of flux intensity :param kwargs_extinction: keyword argument list
+        matching the extinction profile :param kwargs_special: keyword arguments hosting
+        special parameters, here required 'tau0_list' :return: extinction corrected
+        flux."""
         if self._compute_bool is False or kwargs_extinction is None:
             return 1
         tau = self._profile.surface_brightness(x, y, kwargs_list=kwargs_extinction)

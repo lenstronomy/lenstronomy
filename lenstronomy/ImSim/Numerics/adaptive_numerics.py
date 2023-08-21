@@ -34,15 +34,15 @@ class AdaptiveConvolution(object):
         cache=True,
         parallel=False,
     ):
-        """
-
-        :param kernel_super: convolution kernel in units of super sampled pixels provided, odd length per axis
-        :param supersampling_factor: factor of supersampling relative to pixel grid
-        :param conv_supersample_pixels: bool array same size as data, pixels to be convolved and their light to be blurred
-        :param supersampling_kernel_size: number of pixels (in units of the image pixels) that are convolved with the
-         supersampled kernel
-        :param compute_pixels: bool array of size of image, these pixels (if True) will get blurred light from other pixels
+        """:param kernel_super: convolution kernel in units of super sampled pixels
+        provided, odd length per axis :param supersampling_factor: factor of
+        supersampling relative to pixel grid :param conv_supersample_pixels: bool array
+        same size as data, pixels to be convolved and their light to be blurred :param
+        supersampling_kernel_size: number of pixels (in units of the image pixels) that
+        are convolved with the supersampled kernel :param compute_pixels: bool array of
+        size of image, these pixels (if True) will get blurred light from other pixels
         :param nopython: bool, numba jit setting to use python or compiled.
+
         :param cache: bool, numba jit setting to use cache
         :param parallel: bool, numba jit setting to use parallel mode
         """
@@ -82,12 +82,9 @@ class AdaptiveConvolution(object):
         self._supersampling_factor = supersampling_factor
 
     def re_size_convolve(self, image_low_res, image_high_res):
-        """
-
-        :param image_low_res: regular sampled image/model
-        :param image_high_res: supersampled image/model to be convolved on a regular pixel grid
-        :return: convolved and re-sized image
-        """
+        """:param image_low_res: regular sampled image/model :param image_high_res:
+        supersampled image/model to be convolved on a regular pixel grid :return:
+        convolved and re-sized image."""
         image_low_res_conv = self._low_res_conv.convolution2d(image_low_res)
         image_low_res_partial_conv = self._low_res_partial.convolve2d(image_low_res)
         image_high_res_partial_conv = self._hig_res_partial.convolve2d(image_high_res)
@@ -98,11 +95,8 @@ class AdaptiveConvolution(object):
         )
 
     def convolve2d(self, image_high_res):
-        """
-
-        :param image_high_res: supersampled image/model to be convolved on a regular pixel grid
-        :return: convolved and re-sized image
-        """
+        """:param image_high_res: supersampled image/model to be convolved on a regular
+        pixel grid :return: convolved and re-sized image."""
         image_low_res = image_util.re_size(
             image_high_res, factor=self._supersampling_factor
         )

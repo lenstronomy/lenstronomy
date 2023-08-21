@@ -17,25 +17,24 @@ VIS_obs = {
     "seeing": 0.16,
     "psf_type": "GAUSSIAN",
 }
-"""
-:keyword exposure_time: exposure time per image (in seconds)
-:keyword sky_brightness: sky brightness (in magnitude per square arcseconds in units of electrons)
-:keyword magnitude_zero_point: magnitude in which 1 count (e-) per second per arcsecond square is registered
-:keyword num_exposures: number of exposures that are combined (depends on coadd_years)  
-:keyword seeing: Full-Width-at-Half-Maximum (FWHM) of PSF
-:keyword psf_type: string, type of PSF ('GAUSSIAN' supported) 
-"""
+""":keyword exposure_time: exposure time per image (in seconds) :keyword sky_brightness:
+sky brightness (in magnitude per square arcseconds in units of electrons) :keyword
+magnitude_zero_point: magnitude in which 1 count (e-) per second per arcsecond square is
+registered :keyword num_exposures: number of exposures that are combined (depends on
+coadd_years) :keyword seeing: Full-Width-at-Half-Maximum (FWHM) of PSF :keyword
+psf_type: string, type of PSF ('GAUSSIAN' supported)"""
 
 
 class Euclid(object):
     """Class contains Euclid instrument and observation configurations."""
 
     def __init__(self, band="VIS", psf_type="GAUSSIAN", coadd_years=6):
-        """
+        """:param band: string, only 'VIS' supported.
 
-        :param band: string, only 'VIS' supported. Determines obs dictionary.
+        Determines obs dictionary.
         :param psf_type: string, type of PSF ('GAUSSIAN' supported).
-        :param coadd_years: int, number of years corresponding to num_exposures in obs dict. Currently supported: 2-6.
+        :param coadd_years: int, number of years corresponding to num_exposures in obs
+                dict. Currently supported: 2-6.
         """
         self.obs = VIS_obs
         if band != "VIS":
@@ -58,9 +57,6 @@ class Euclid(object):
         ccd_gain: electrons/ADU (analog-to-digital unit)."""
 
     def kwargs_single_band(self):
-        """
-
-        :return: merged kwargs from camera and obs dicts
-        """
+        """:return: merged kwargs from camera and obs dicts."""
         kwargs = util.merge_dicts(self.camera, self.obs)
         return kwargs

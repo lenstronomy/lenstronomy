@@ -20,14 +20,12 @@ class KinLikelihood(object):
         idx_lens=0,
         idx_lens_light=0,
     ):
-        """
-        :param kinematic_data_2d_class: KinBin class instance
-        :param lens_model_class: LensModel class instance
-        :param lens_light_model_class: LightModel class instance
-        :param kwargs_data: kwargs describing image rotation
-        :param idx_lens: int, index of the LensModel mass profile to consider for kinematics
-        :param idx_lens_light: int, index of the lens LightModel profile to consider for kinematics
-        """
+        """:param kinematic_data_2d_class: KinBin class instance :param
+        lens_model_class: LensModel class instance :param lens_light_model_class:
+        LightModel class instance :param kwargs_data: kwargs describing image rotation
+        :param idx_lens: int, index of the LensModel mass profile to consider for
+        kinematics :param idx_lens_light: int, index of the lens LightModel profile to
+        consider for kinematics."""
         self.lens_model_class = lens_model_class
         self.z_lens = self.lens_model_class.z_lens
         self.lens_light_model_class = lens_light_model_class
@@ -80,7 +78,7 @@ class KinLikelihood(object):
         :param kwargs_lens_light: lens light kwargs list
         :param kwargs_special: cosmology and other kwargs
         :param verbose: default False; if True print statements when out of bounds
-            return binned vrms [km/s]; if SKiNN not installed return nan
+                return binned vrms [km/s]; if SKiNN not installed return nan
         """
         self.update_image_input(kwargs_lens)
         self.light_map = self.lens_light_model_class.surface_brightness(
@@ -114,7 +112,7 @@ class KinLikelihood(object):
         :param kwargs_lens_light: lens light kwargs list
         :param kwargs_special: cosmology and other kwargs
         :param verbose: default False; if True print statements when out of bounds
-            return kinematics log likelihood
+                return kinematics log likelihood
         """
         if self.kinematic_NN.SKiNN_installed:
             self.update_image_input(kwargs_lens)
@@ -191,7 +189,7 @@ class KinLikelihood(object):
 
         :param image: vrms image [km/s]
         :param kwargs_special: kwargs with cosmological distances for rescaling return
-            rescaled vrms image [km/s]
+                rescaled vrms image [km/s]
         """
         new_scale = kwargs_special["D_dt"] / (kwargs_special["D_d"] * (1 + self.z_lens))
         factor = np.sqrt(
@@ -203,7 +201,7 @@ class KinLikelihood(object):
         """Creates the kwargs of the image needed for 2D kinematic likelihood.
 
         :param kwargs_data: kwargs giving image and describing imaging data coordinate
-            transformation
+                transformation
         :return kwargs: coordinate transformation kwargs as input for KinNNImageAlign
             class
         """

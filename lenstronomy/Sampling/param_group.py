@@ -59,13 +59,13 @@ class ModelParamGroup:
         each instance's `num_params()` method and combining the results.
 
         :param each_group: collection of parameter groups. Should each be subclasses of
-            ModelParamGroup.
+                ModelParamGroup.
         :type each_group: list
         :param args: Extra arguments to be passed to each call of `num_params()`
         :param kwargs: Extra keyword arguments to be passed to each call of
             `num_params()`
         :returns: As in each individual `num_params()`, a 2-tuple of (num params, list
-            of param names)
+                of param names)
         """
         tot_param = 0
         param_names = []
@@ -82,7 +82,7 @@ class ModelParamGroup:
         for a set of arbitrarily many parameter groups.
 
         :param each_group: collection of parameter groups. Should each be subclasses of
-            ModelParamGroup.
+                ModelParamGroup.
         :type each_group: list
         :param param_kwargs: the kwargs to process
         :type param_kwargs: dict
@@ -110,8 +110,8 @@ class ModelParamGroup:
         :type i: int
         :param args: Extra arguments to be passed to each call of `set_params()`
         :param kwargs: Extra keyword arguments to be passed to each call of `set_params()`
-
-        :returns: As in each individual `get_params()`, a 2-tuple of (dictionary of params, new index)
+        :returns: As in each individual `get_params()`, a 2-tuple of (dictionary of
+                params, new index)
         """
         output_kwargs = {}
         for group in each_group:
@@ -133,10 +133,7 @@ class SingleParam(ModelParamGroup):
     """
 
     def __init__(self, on):
-        """
-        :param on: Whether this paramter should be sampled
-        :type on: bool
-        """
+        """:param on: Whether this paramter should be sampled :type on: bool."""
         self._on = bool(on)
 
     def num_params(self, kwargs_fixed):
@@ -234,10 +231,7 @@ class ArrayParam(ModelParamGroup):
     """
 
     def __init__(self, on):
-        """
-        :param on: Whether this paramter should be sampled
-        :type on: bool
-        """
+        """:param on: Whether this paramter should be sampled :type on: bool."""
         self._on = bool(on)
 
     def num_params(self, kwargs_fixed):

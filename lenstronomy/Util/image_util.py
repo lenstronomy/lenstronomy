@@ -136,11 +136,11 @@ def re_size_array(x_in, y_in, input_values, x_out, y_out):
     """Resizes 2d array (i.e. image) to new coordinates. So far only works with square
     output aligned with coordinate axis.
 
-    :param x_in:
-    :param y_in:
-    :param input_values:
-    :param x_out:
-    :param y_out:
+    :param x_in: 
+    :param y_in: 
+    :param input_values: 
+    :param x_out: 
+    :param y_out: 
     :return:
     """
     # from skimage.transform import resize
@@ -155,8 +155,8 @@ def re_size_array(x_in, y_in, input_values, x_out, y_out):
 def symmetry_average(image, symmetry):
     """Symmetry averaged image.
 
-    :param image:
-    :param symmetry:
+    :param image: 
+    :param symmetry: 
     :return:
     """
     img_sym = np.zeros_like(image)

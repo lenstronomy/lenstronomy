@@ -47,14 +47,11 @@ class GalkinModel(object):
         kwargs_numerics=None,
         analytic_kinematics=False,
     ):
-        """
-
-        :param kwargs_model: keyword arguments describing the model components
-        :param kwargs_cosmo: keyword arguments that define the cosmology in terms of the angular diameter distances
-         involved
-        :param kwargs_numerics: numerics keyword arguments
-        :param analytic_kinematics: bool, if True uses the analytic kinematic model
-        """
+        """:param kwargs_model: keyword arguments describing the model components :param
+        kwargs_cosmo: keyword arguments that define the cosmology in terms of the
+        angular diameter distances involved :param kwargs_numerics: numerics keyword
+        arguments :param analytic_kinematics: bool, if True uses the analytic kinematic
+        model."""
         if kwargs_numerics is None:
             kwargs_numerics = {
                 "interpol_grid_num": 200,  # numerical interpolation, should converge -> infinity
@@ -79,10 +76,9 @@ class GalkinModel(object):
         self._analytic_kinematics = analytic_kinematics
 
     def check_df(self, r, kwargs_mass, kwargs_light, kwargs_anisotropy):
-        """
-        checks whether the phase space distribution function of a given anisotropy model is positive.
-        Currently this is implemented by the relation provided by Ciotti and Morganti 2010 equation (10)
-        https://arxiv.org/pdf/1006.2344.pdf
+        """Checks whether the phase space distribution function of a given anisotropy
+        model is positive. Currently this is implemented by the relation provided by
+        Ciotti and Morganti 2010 equation (10) https://arxiv.org/pdf/1006.2344.pdf.
 
         :param r: 3d radius to check slope-anisotropy constraint
         :param kwargs_mass: keyword arguments for mass (lens) profile

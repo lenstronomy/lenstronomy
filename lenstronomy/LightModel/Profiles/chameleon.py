@@ -35,12 +35,9 @@ class Chameleon(object):
         self._chameleonLens = ChameleonLens()
 
     def function(self, x, y, amp, w_c, w_t, e1, e2, center_x=0, center_y=0):
-        """
+        """:param x: ra-coordinate :param y: dec-coordinate :param w_c:
 
-        :param x: ra-coordinate
-        :param y: dec-coordinate
-        :param w_c:
-        :param w_t:
+        :param w_t: 
         :param amp: amplitude of first power-law flux
         :param e1: eccentricity parameter
         :param e2: eccentricity parameter
@@ -57,11 +54,9 @@ class Chameleon(object):
         return flux
 
     def light_3d(self, r, amp, w_c, w_t, e1, e2, center_x=0, center_y=0):
-        """
+        """:param r: 3d radius :param w_c:
 
-        :param r: 3d radius
-        :param w_c:
-        :param w_t:
+        :param w_t: 
         :param amp: amplitude of first power-law flux
         :param e1: eccentricity parameter
         :param e2: eccentricity parameter
@@ -148,9 +143,8 @@ class DoubleChameleon(object):
         center_x=0,
         center_y=0,
     ):
-        """
+        """:param x:
 
-        :param x:
         :param y:
         :param amp:
         :param ratio:
@@ -190,21 +184,19 @@ class DoubleChameleon(object):
         center_x=0,
         center_y=0,
     ):
-        """
+        """:param r: 3d radius :param amp:
 
-        :param r: 3d radius
-        :param amp:
         :param ratio: ratio of first to second amplitude of Chameleon surface brightness
-        :param w_c1:
-        :param w_t1:
-        :param e11:
-        :param e21:
-        :param w_c2:
-        :param w_t2:
-        :param e12:
-        :param e22:
-        :param center_x:
-        :param center_y:
+        :param w_c1: 
+        :param w_t1: 
+        :param e11: 
+        :param e21: 
+        :param w_c2: 
+        :param w_t2: 
+        :param e12: 
+        :param e22: 
+        :param center_x: 
+        :param center_y: 
         :return: 3d light density at radius r
         """
         f_1 = self.chameleon.light_3d(
@@ -304,27 +296,26 @@ class TripleChameleon(object):
         center_x=0,
         center_y=0,
     ):
-        """
+        """:param x:
 
-        :param x:
-        :param y:
-        :param amp:
+        :param y: 
+        :param amp: 
         :param ratio12: ratio of first to second amplitude
         :param ratio13: ratio of first to third amplitude
-        :param w_c1:
-        :param w_t1:
-        :param e11:
-        :param e21:
-        :param w_c2:
-        :param w_t2:
-        :param e12:
-        :param e22:
-        :param w_c3:
-        :param w_t3:
-        :param e13:
-        :param e23:
-        :param center_x:
-        :param center_y:
+        :param w_c1: 
+        :param w_t1: 
+        :param e11: 
+        :param e21: 
+        :param w_c2: 
+        :param w_t2: 
+        :param e12: 
+        :param e22: 
+        :param w_c3: 
+        :param w_t3: 
+        :param e13: 
+        :param e23: 
+        :param center_x: 
+        :param center_y: 
         :return:
         """
         amp1 = amp / (1.0 + 1.0 / ratio12 + 1.0 / ratio13)
@@ -362,26 +353,24 @@ class TripleChameleon(object):
         center_x=0,
         center_y=0,
     ):
-        """
+        """:param r: 3d light radius :param amp:
 
-        :param r: 3d light radius
-        :param amp:
         :param ratio12: ratio of first to second amplitude
         :param ratio13: ratio of first to third amplitude
-        :param w_c1:
-        :param w_t1:
-        :param e11:
-        :param e21:
-        :param w_c2:
-        :param w_t2:
-        :param e12:
-        :param e22:
-        :param w_c3:
-        :param w_t3:
-        :param e13:
-        :param e23:
-        :param center_x:
-        :param center_y:
+        :param w_c1: 
+        :param w_t1: 
+        :param e11: 
+        :param e21: 
+        :param w_c2: 
+        :param w_t2: 
+        :param e12: 
+        :param e22: 
+        :param w_c3: 
+        :param w_t3: 
+        :param e13: 
+        :param e23: 
+        :param center_x: 
+        :param center_y: 
         :return:
         """
         amp1 = amp / (1.0 + 1.0 / ratio12 + 1.0 / ratio13)

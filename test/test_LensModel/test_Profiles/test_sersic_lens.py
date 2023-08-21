@@ -173,10 +173,7 @@ class TestSersic(object):
         npt.assert_almost_equal(d_alpha_dr, d_alpha_dr_num, decimal=3)
 
     def test_mag_sym(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         r = 2.0
         angle1 = 0.0
         angle2 = 1.5

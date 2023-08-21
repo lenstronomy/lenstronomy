@@ -26,17 +26,17 @@ class PSF(object):
         kernel_point_source_init=None,
         kernel_point_source_normalisation=True,
     ):
-        """
+        """:param psf_type: string, type of PSF: options are 'NONE', 'PIXEL', 'GAUSSIAN'
+        :param fwhm: float, full width at half maximum, only required for 'GAUSSIAN'
+        model :param truncation: float, Gaussian truncation (in units of sigma), only
+        required for 'GAUSSIAN' model :param pixel_size: width of pixel (required for
+        Gaussian model, not required when using in combination with ImageModel modules)
+        :param kernel_point_source: 2d numpy array, odd length, centered PSF of a point
+        source (if not normalized, will be normalized) :param psf_error_map: uncertainty
+        in the PSF model per pixel (size of data, not super-sampled). 2d numpy array.
+        Size can be larger or smaller than the pixel-sized PSF model and if so, will be
+        matched.
 
-        :param psf_type: string, type of PSF: options are 'NONE', 'PIXEL', 'GAUSSIAN'
-        :param fwhm: float, full width at half maximum, only required for 'GAUSSIAN' model
-        :param truncation: float, Gaussian truncation (in units of sigma), only required for 'GAUSSIAN' model
-        :param pixel_size: width of pixel (required for Gaussian model, not required when using in combination with
-         ImageModel modules)
-        :param kernel_point_source: 2d numpy array, odd length, centered PSF of a point source
-         (if not normalized, will be normalized)
-        :param psf_error_map: uncertainty in the PSF model per pixel (size of data, not super-sampled). 2d numpy array.
-         Size can be larger or smaller than the pixel-sized PSF model and if so, will be matched.
          This error will be added to the pixel error around the position of point sources as follows:
          sigma^2_i += 'psf_error_map'_j * <point source amplitude>**2
         :param point_source_supersampling_factor: int, supersampling factor of kernel_point_source.
@@ -136,8 +136,8 @@ class PSF(object):
         :param supersampling_factor: int >=1, supersampling factor relative to pixel
             resolution
         :param updata_cache: boolean, if True, updates the cached supersampling PSF if
-            generated. Attention, this will overwrite a previously used supersampled PSF
-            if the resolution is changing.
+                generated. Attention, this will overwrite a previously used supersampled
+                PSF             if the resolution is changing.
         :return: super-sampled PSF as 2d numpy array
         """
         if (
@@ -220,10 +220,7 @@ class PSF(object):
 
     @property
     def fwhm(self):
-        """
-
-        :return: full width at half maximum of kernel (in units of pixel)
-        """
+        """:return: full width at half maximum of kernel (in units of pixel)"""
         if self.psf_type == "GAUSSIAN":
             return self._fwhm
         else:

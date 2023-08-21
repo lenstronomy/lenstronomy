@@ -29,7 +29,7 @@ class SkewGaussian(object):
     def pdf_skew(self, x, mu, sigma, skw):
         """Function with different parameterisation.
 
-        :param x:
+        :param x: 
         :param mu: mean
         :param sigma: sigma
         :param skw: skewness
@@ -42,28 +42,20 @@ class SkewGaussian(object):
         return pdf
 
     def _delta_skw(self, skw):
-        """
-
-        :param skw: skewness parameter
-        :return: delta
-        """
+        """:param skw: skewness parameter :return: delta."""
         skw_23 = np.abs(skw) ** (2.0 / 3)
         delta2 = skw_23 * np.pi / 2 / (skw_23 + ((4 - np.pi) / 2) ** (2.0 / 3))
         return np.sqrt(delta2) * skw / np.abs(skw)
 
     def _alpha_delta(self, delta):
-        """
-
-        :param delta: delta parameter
-        :return: alpha (a)
-        """
+        """:param delta: delta parameter :return: alpha (a)"""
         return delta / np.sqrt(1 - delta**2)
 
     def _w_sigma_delta(self, sigma, delta):
         """Invert variance.
 
-        :param sigma:
-        :param delta:
+        :param sigma: 
+        :param delta: 
         :return: w parameter
         """
         sigma2 = sigma**2
@@ -72,11 +64,10 @@ class SkewGaussian(object):
         return w
 
     def _e_mu_w_delta(self, mu, w, delta):
-        """
+        """:param mu:
 
-        :param mu:
-        :param w:
-        :param delta:
+        :param w: 
+        :param delta: 
         :return: epsilon (e)
         """
         e = mu - w * delta * np.sqrt(2 / np.pi)
@@ -102,19 +93,13 @@ class KDE1D(object):
     """Class that allows to compute likelihoods based on a 1-d posterior sample."""
 
     def __init__(self, values):
-        """
-
-        :param values: 1d numpy array of points representing a PDF
-        """
+        """:param values: 1d numpy array of points representing a PDF."""
         self._points = values
         self._kernel = stats.gaussian_kde(values)
 
     def likelihood(self, x):
-        """
-
-        :param x: position where to evaluate the density
-        :return: likelihood given the sample distribution
-        """
+        """:param x: position where to evaluate the density :return: likelihood given
+        the sample distribution."""
 
         dens = self._kernel.evaluate(points=x)
         return dens

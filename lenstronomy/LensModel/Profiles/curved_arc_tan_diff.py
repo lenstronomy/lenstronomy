@@ -67,17 +67,13 @@ class CurvedArcTanDiff(LensProfileBase):
         center_x,
         center_y,
     ):
-        """
-
-        :param tangential_stretch: float, stretch of intrinsic source in tangential direction
-        :param radial_stretch: float, stretch of intrinsic source in radial direction
-        :param curvature: 1/curvature radius
-        :param dtan_dtan: d(tangential_stretch) / d(tangential direction) / tangential stretch
-        :param direction: float, angle in radian
-        :param center_x: center of source in image plane
-        :param center_y: center of source in image plane
-        :return: parameters in terms of a spherical SIS + MST resulting in the same observables
-        """
+        """:param tangential_stretch: float, stretch of intrinsic source in tangential
+        direction :param radial_stretch: float, stretch of intrinsic source in radial
+        direction :param curvature: 1/curvature radius :param dtan_dtan:
+        d(tangential_stretch) / d(tangential direction) / tangential stretch :param
+        direction: float, angle in radian :param center_x: center of source in image
+        plane :param center_y: center of source in image plane :return: parameters in
+        terms of a spherical SIS + MST resulting in the same observables."""
         center_x_sis, center_y_sis = center_deflector(
             curvature, direction, center_x, center_y
         )
@@ -120,11 +116,10 @@ class CurvedArcTanDiff(LensProfileBase):
         center_x,
         center_y,
     ):
-        """
-        ATTENTION: there may not be a global lensing potential!
+        """ATTENTION: there may not be a global lensing potential!
 
-        :param x:
-        :param y:
+        :param x: 
+        :param y: 
         :param tangential_stretch: float, stretch of intrinsic source in tangential direction
         :param radial_stretch: float, stretch of intrinsic source in radial direction
         :param curvature: 1/curvature radius
@@ -173,10 +168,9 @@ class CurvedArcTanDiff(LensProfileBase):
         center_x,
         center_y,
     ):
-        """
+        """:param x:
 
-        :param x:
-        :param y:
+        :param y: 
         :param tangential_stretch: float, stretch of intrinsic source in tangential direction
         :param radial_stretch: float, stretch of intrinsic source in radial direction
         :param curvature: 1/curvature radius
@@ -228,10 +222,9 @@ class CurvedArcTanDiff(LensProfileBase):
         center_x,
         center_y,
     ):
-        """
+        """:param x:
 
-        :param x:
-        :param y:
+        :param y: 
         :param tangential_stretch: float, stretch of intrinsic source in tangential direction
         :param radial_stretch: float, stretch of intrinsic source in radial direction
         :param curvature: 1/curvature radius
@@ -273,14 +266,9 @@ class CurvedArcTanDiff(LensProfileBase):
 
 
 def center_deflector(curvature, direction, center_x, center_y):
-    """
-
-    :param curvature: 1/curvature radius
-    :param direction: float, angle in radian
-    :param center_x: center of source in image plane
-    :param center_y: center of source in image plane
-    :return: center_sis_x, center_sis_y
-    """
+    """:param curvature: 1/curvature radius :param direction: float, angle in radian
+    :param center_x: center of source in image plane :param center_y: center of source
+    in image plane :return: center_sis_x, center_sis_y."""
     center_x_sis = center_x - np.cos(direction) / curvature
     center_y_sis = center_y - np.sin(direction) / curvature
     return center_x_sis, center_y_sis

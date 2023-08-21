@@ -58,12 +58,9 @@ def marginalisation_const(M_inv):
 
 @export
 def marginalization_new(M_inv, d_prior=None):
-    """
-
-    :param M_inv: 2D covariance matrix
-    :param d_prior: maximum prior length of linear parameters
-    :return: log determinant with eigenvalues to be smaller or equal d_prior
-    """
+    """:param M_inv: 2D covariance matrix :param d_prior: maximum prior length of linear
+    parameters :return: log determinant with eigenvalues to be smaller or equal
+    d_prior."""
     if d_prior is None:
         return marginalisation_const(M_inv)
     v, w = np.linalg.eig(M_inv)
@@ -92,12 +89,7 @@ def _stable_inv(m):
 
 
 def _solve_stable(m, r):
-    """
-
-    :param m: matrix
-    :param r: vector
-    :return: solution for B = M x R
-    """
+    """:param m: matrix :param r: vector :return: solution for B = M x R."""
     try:
         b = np.linalg.solve(m, r).T
     except:

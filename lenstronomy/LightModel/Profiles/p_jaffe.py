@@ -28,9 +28,8 @@ class PJaffe(object):
         self.lens = PJaffe_lens()
 
     def function(self, x, y, amp, Ra, Rs, center_x=0, center_y=0):
-        """
+        """:param x:
 
-        :param x:
         :param y:
         :param amp:
         :param Ra:
@@ -43,12 +42,11 @@ class PJaffe(object):
         return self.lens.density_2d(x, y, rho0, Ra, Rs, center_x, center_y)
 
     def light_3d(self, r, amp, Ra, Rs):
-        """
+        """:param r:
 
-        :param r:
-        :param amp:
-        :param Rs:
-        :param Ra:
+        :param amp: 
+        :param Rs: 
+        :param Ra: 
         :return:
         """
         rho0 = self.lens.sigma2rho(amp, Ra, Rs)
@@ -85,9 +83,8 @@ class PJaffeEllipse(object):
         self.spherical = PJaffe()
 
     def function(self, x, y, amp, Ra, Rs, e1, e2, center_x=0, center_y=0):
-        """
+        """:param x:
 
-        :param x:
         :param y:
         :param amp:
         :param Ra:
@@ -102,12 +99,11 @@ class PJaffeEllipse(object):
         return self.spherical.function(x_, y_, amp, Ra, Rs)
 
     def light_3d(self, r, amp, Ra, Rs, e1=0, e2=0):
-        """
+        """:param r:
 
-        :param r:
-        :param amp:
-        :param Ra:
-        :param Rs:
+        :param amp: 
+        :param Ra: 
+        :param Rs: 
         :return:
         """
         return self.spherical.light_3d(r, amp, Ra, Rs)

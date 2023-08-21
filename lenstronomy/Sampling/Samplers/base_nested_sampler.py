@@ -18,14 +18,13 @@ class NestedSampler(object):
         width_scale,
         sigma_scale,
     ):
-        """
-        :param likelihood_module: likelihood_module like in likelihood.py (should be callable)
-        :param prior_type: 'uniform' of 'gaussian', for converting the unit hypercube to param cube
-        :param prior_means: if prior_type is 'gaussian', mean for each param
-        :param prior_sigmas: if prior_type is 'gaussian', std dev for each param
-        :param width_scale: scale the widths of the parameters space by this factor
-        :param sigma_scale: if prior_type is 'gaussian', scale the gaussian sigma by this factor
-        """
+        """:param likelihood_module: likelihood_module like in likelihood.py (should be
+        callable) :param prior_type: 'uniform' of 'gaussian', for converting the unit
+        hypercube to param cube :param prior_means: if prior_type is 'gaussian', mean
+        for each param :param prior_sigmas: if prior_type is 'gaussian', std dev for
+        each param :param width_scale: scale the widths of the parameters space by this
+        factor :param sigma_scale: if prior_type is 'gaussian', scale the gaussian sigma
+        by this factor."""
         self._ll = likelihood_module
         self.n_dims, self.param_names = self._ll.param.num_param()
 

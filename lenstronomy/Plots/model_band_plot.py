@@ -29,22 +29,21 @@ class ModelBandPlot(ModelBand):
         cmap_string="gist_heat",
         fast_caustic=True,
     ):
-        """
-
-        :param multi_band_list: list of imaging data configuration [[kwargs_data, kwargs_psf, kwargs_numerics], [...]]
-        :param kwargs_model: model keyword argument list for the full multi-band modeling
-        :param model: 2d numpy array of modeled image for the specified band
-        :param error_map: 2d numpy array of size of the image, additional error in the pixels coming from PSF uncertainties
-        :param cov_param: covariance matrix of the linear inversion
-        :param param: 1d numpy array of the linear coefficients of this imaging band
-        :param kwargs_params: keyword argument of keyword argument lists of the different model components selected for
-         the imaging band, NOT including linear amplitudes (not required as being overwritten by the param list)
-        :param likelihood_mask_list: list of 2d numpy arrays of likelihood masks (for all bands)
-        :param band_index: integer of the band to be considered in this class
-        :param arrow_size: size of the scale and orientation arrow
-        :param cmap_string: string of color map (or cmap matplotlib object)
-        :param fast_caustic: boolean; if True, uses fast (but less accurate) caustic calculation method
-        """
+        """:param multi_band_list: list of imaging data configuration [[kwargs_data,
+        kwargs_psf, kwargs_numerics], [...]] :param kwargs_model: model keyword argument
+        list for the full multi-band modeling :param model: 2d numpy array of modeled
+        image for the specified band :param error_map: 2d numpy array of size of the
+        image, additional error in the pixels coming from PSF uncertainties :param
+        cov_param: covariance matrix of the linear inversion :param param: 1d numpy
+        array of the linear coefficients of this imaging band :param kwargs_params:
+        keyword argument of keyword argument lists of the different model components
+        selected for the imaging band, NOT including linear amplitudes (not required as
+        being overwritten by the param list) :param likelihood_mask_list: list of 2d
+        numpy arrays of likelihood masks (for all bands) :param band_index: integer of
+        the band to be considered in this class :param arrow_size: size of the scale and
+        orientation arrow :param cmap_string: string of color map (or cmap matplotlib
+        object) :param fast_caustic: boolean; if True, uses fast (but less accurate)
+        caustic calculation method."""
         ModelBand.__init__(
             self,
             multi_band_list,
@@ -135,9 +134,8 @@ class ModelBandPlot(ModelBand):
         colorbar_label=r"log$_{10}$ flux",
         **kwargs
     ):
-        """
+        """:param ax:
 
-        :param ax:
         :return:
         """
         if v_min is None:
@@ -196,11 +194,9 @@ class ModelBandPlot(ModelBand):
         text="Reconstructed",
         **kwargs
     ):
-        """
+        """:param ax: matplotib axis instance :param v_min:
 
-        :param ax: matplotib axis instance
-        :param v_min:
-        :param v_max:
+        :param v_max: 
         :return:
         """
         if v_min is None:
@@ -271,11 +267,8 @@ class ModelBandPlot(ModelBand):
         colorbar_label=r"$\log_{10}\ \kappa$",
         **kwargs
     ):
-        """
-
-        :param ax: matplotib axis instance
-        :return: convergence plot in ax instance
-        """
+        """:param ax: matplotib axis instance :return: convergence plot in ax
+        instance."""
         if not "cmap" in kwargs:
             kwargs["cmap"] = self._cmap
 
@@ -340,9 +333,11 @@ class ModelBandPlot(ModelBand):
         specified lens models to more clearly show the presence of substructure.
 
         :param ax: matplotib axis instance
-        :param index_macromodel: a list of indexes corresponding to the lens models with convergence to be subtracted
+        :param index_macromodel: a list of indexes corresponding to the lens models with
+                convergence to be subtracted
         :param text: text appearing in frame
-        :param subtract_mean: bool; displays the substructure convergence relative to the mean convergence in the frame
+        :param subtract_mean: bool; displays the substructure convergence relative to
+                the mean convergence in the frame
         :param v_min: minimum color scale
         :param v_max: max color scale
         :param font_size: font size for text appearing in image
@@ -467,11 +462,10 @@ class ModelBandPlot(ModelBand):
         color_bar=True,
         **kwargs
     ):
-        """
+        """:param ax:
 
-        :param ax:
-        :param v_min:
-        :param v_max:
+        :param v_min: 
+        :param v_max: 
         :param kwargs: kwargs to send to matplotlib.pyplot.matshow()
         :param color_bar: Option to display the color bar
         :return:
@@ -525,9 +519,8 @@ class ModelBandPlot(ModelBand):
         text="Residuals",
         colorbar_label=r"(f$_{model}$-f$_{data}$)",
     ):
-        """
+        """:param ax:
 
-        :param ax:
         :return:
         """
         im = ax.matshow(
@@ -567,13 +560,10 @@ class ModelBandPlot(ModelBand):
         return ax
 
     def source(self, numPix, deltaPix, center=None, image_orientation=True):
-        """
-
-        :param numPix: number of pixels per axes
-        :param deltaPix: pixel size
-        :param image_orientation: bool, if True, uses frame in orientation of the image, otherwise in RA-DEC coordinates
-        :return: 2d surface brightness grid of the reconstructed source and Coordinates() instance of source grid
-        """
+        """:param numPix: number of pixels per axes :param deltaPix: pixel size :param
+        image_orientation: bool, if True, uses frame in orientation of the image,
+        otherwise in RA-DEC coordinates :return: 2d surface brightness grid of the
+        reconstructed source and Coordinates() instance of source grid."""
         if image_orientation is True:
             Mpix2coord = self._coords.transform_pix2angle * deltaPix / self._deltaPix
             x_grid_source, y_grid_source = util.make_grid_transformed(
@@ -632,18 +622,17 @@ class ModelBandPlot(ModelBand):
         point_source_position=True,
         **kwargs
     ):
-        """
+        """:param ax:
 
-        :param ax:
-        :param numPix:
-        :param deltaPix_source:
+        :param numPix: 
+        :param deltaPix_source: 
         :param center: [center_x, center_y], if specified, uses this as the center
-        :param v_min:
-        :param v_max:
-        :param caustic_color:
-        :param font_size:
+        :param v_min: 
+        :param v_max: 
+        :param caustic_color: 
+        :param font_size: 
         :param plot_scale: string, log or linear, scale of surface brightness plot
-        :param kwargs:
+        :param kwargs: 
         :return:
         """
         if v_min is None:
@@ -759,12 +748,12 @@ class ModelBandPlot(ModelBand):
         :param v_min: minimum plotting scale of the map
         :param v_max: maximum plotting scale of the map
         :param with_caustics: plot the caustics on top of the source reconstruction (may
-            take some time)
+                take some time)
         :param font_size: font size of labels
         :param point_source_position: boolean, if True, plots a point at the position of
             the point source
         :return: plot of source surface brightness errors in the reconstruction on the
-            axis instance
+                axis instance
         """
         x_grid_source, y_grid_source = util.make_grid_transformed(
             numPix, self._coords.transform_pix2angle * deltaPix_source / self._deltaPix
@@ -857,14 +846,9 @@ class ModelBandPlot(ModelBand):
         colorbar_label=r"$\det\ (\mathsf{A}^{-1})$",
         **kwargs
     ):
-        """
-
-        :param ax: matplotib axis instance
-        :param v_min: minimum range of plotting
-        :param v_max: maximum range of plotting
-        :param kwargs: kwargs to send to matplotlib.pyplot.matshow()
-        :return:
-        """
+        """:param ax: matplotib axis instance :param v_min: minimum range of plotting
+        :param v_max: maximum range of plotting :param kwargs: kwargs to send to
+        matplotlib.pyplot.matshow() :return:"""
         if "cmap" not in kwargs:
             kwargs["cmap"] = self._cmap
         if "alpha" not in kwargs:
@@ -935,10 +919,7 @@ class ModelBandPlot(ModelBand):
         font_size=15,
         colorbar_label=r"arcsec",
     ):
-        """
-
-        :return:
-        """
+        """:return:"""
 
         alpha1, alpha2 = self._lensModel.alpha(
             self._x_grid, self._y_grid, self._kwargs_lens_partial
@@ -1029,16 +1010,15 @@ class ModelBandPlot(ModelBand):
         lens_light_add=False,
         **kwargs
     ):
-        """
+        """:param ax:
 
-        :param ax:
-        :param text:
-        :param v_min:
-        :param v_max:
-        :param unconvolved:
-        :param point_source_add:
-        :param source_add:
-        :param lens_light_add:
+        :param text: 
+        :param v_min: 
+        :param v_max: 
+        :param unconvolved: 
+        :param point_source_add: 
+        :param source_add: 
+        :param lens_light_add: 
         :param kwargs: kwargs to send matplotlib.pyplot.matshow()
         :return:
         """
@@ -1244,11 +1224,10 @@ class ModelBandPlot(ModelBand):
         return f, axes
 
     def plot_extinction_map(self, ax, v_min=None, v_max=None, **kwargs):
-        """
+        """:param ax:
 
-        :param ax:
-        :param v_min:
-        :param v_max:
+        :param v_min: 
+        :param v_max: 
         :return:
         """
         model = self._bandmodel._extinction_map(

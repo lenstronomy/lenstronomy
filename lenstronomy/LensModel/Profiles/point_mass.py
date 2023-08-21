@@ -21,13 +21,8 @@ class PointMass(LensProfileBase):
         # alpha = 4*const.G * (mass*const.M_sun)/const.c**2/(r*const.Mpc)
 
     def function(self, x, y, theta_E, center_x=0, center_y=0):
-        """
-
-        :param x: x-coord (in angles)
-        :param y: y-coord (in angles)
-        :param theta_E: Einstein radius (in angles)
-        :return: lensing potential
-        """
+        """:param x: x-coord (in angles) :param y: y-coord (in angles) :param theta_E:
+        Einstein radius (in angles) :return: lensing potential."""
         x_ = x - center_x
         y_ = y - center_y
         a = np.sqrt(x_**2 + y_**2)
@@ -41,13 +36,8 @@ class PointMass(LensProfileBase):
         return phi
 
     def derivatives(self, x, y, theta_E, center_x=0, center_y=0):
-        """
-
-        :param x: x-coord (in angles)
-        :param y: y-coord (in angles)
-        :param theta_E: Einstein radius (in angles)
-        :return: deflection angle (in angles)
-        """
+        """:param x: x-coord (in angles) :param y: y-coord (in angles) :param theta_E:
+        Einstein radius (in angles) :return: deflection angle (in angles)"""
         x_ = x - center_x
         y_ = y - center_y
         a = np.sqrt(x_**2 + y_**2)
@@ -61,13 +51,8 @@ class PointMass(LensProfileBase):
         return alpha * x_ / r, alpha * y_ / r
 
     def hessian(self, x, y, theta_E, center_x=0, center_y=0):
-        """
-
-        :param x: x-coord (in angles)
-        :param y: y-coord (in angles)
-        :param theta_E: Einstein radius (in angles)
-        :return: hessian matrix (in angles)
-        """
+        """:param x: x-coord (in angles) :param y: y-coord (in angles) :param theta_E:
+        Einstein radius (in angles) :return: hessian matrix (in angles)"""
         x_ = x - center_x
         y_ = y - center_y
         C = theta_E**2

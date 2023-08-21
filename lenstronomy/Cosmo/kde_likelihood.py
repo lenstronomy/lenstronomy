@@ -11,11 +11,11 @@ class KDELikelihood(object):
     def __init__(
         self, D_d_sample, D_delta_t_sample, kde_type="scipy_gaussian", bandwidth=1
     ):
-        """
+        """:param D_d_sample: 1-d numpy array of angular diameter distances to the lens
+        plane :param D_delta_t_sample: 1-d numpy array of time-delay distances :param
+        kde_type: The kernel to use.
 
-        :param D_d_sample: 1-d numpy array of angular diameter distances to the lens plane
-        :param D_delta_t_sample: 1-d numpy array of time-delay distances
-        :param kde_type: The kernel to use.  Valid kernels are
+        Valid kernels are
          'scipy_gaussian' or
          ['gaussian'|'tophat'|'epanechnikov'|'exponential'|'linear'|'cosine']
          Default is 'gaussian'.

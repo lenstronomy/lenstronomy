@@ -38,18 +38,10 @@ class NIE(LensProfileBase):
         super(NIE, self).__init__()
 
     def function(self, x, y, theta_E, e1, e2, s_scale, center_x=0, center_y=0):
-        """
-
-        :param x: x-coordinate in image plane
-        :param y: y-coordinate in image plane
-        :param theta_E: Einstein radius
-        :param e1: eccentricity component
-        :param e2: eccentricity component
-        :param s_scale: smoothing scale
-        :param center_x: profile center
-        :param center_y: profile center
-        :return: lensing potential
-        """
+        """:param x: x-coordinate in image plane :param y: y-coordinate in image plane
+        :param theta_E: Einstein radius :param e1: eccentricity component :param e2:
+        eccentricity component :param s_scale: smoothing scale :param center_x: profile
+        center :param center_y: profile center :return: lensing potential."""
         b, s, q, phi_G = self.param_conv(theta_E, e1, e2, s_scale)
         # shift
         x_ = x - center_x
@@ -62,18 +54,10 @@ class NIE(LensProfileBase):
         return f_
 
     def derivatives(self, x, y, theta_E, e1, e2, s_scale, center_x=0, center_y=0):
-        """
-
-        :param x: x-coordinate in image plane
-        :param y: y-coordinate in image plane
-        :param theta_E: Einstein radius
-        :param e1: eccentricity component
-        :param e2: eccentricity component
-        :param s_scale: smoothing scale
-        :param center_x: profile center
-        :param center_y: profile center
-        :return: alpha_x, alpha_y
-        """
+        """:param x: x-coordinate in image plane :param y: y-coordinate in image plane
+        :param theta_E: Einstein radius :param e1: eccentricity component :param e2:
+        eccentricity component :param s_scale: smoothing scale :param center_x: profile
+        center :param center_y: profile center :return: alpha_x, alpha_y."""
         b, s, q, phi_G = self.param_conv(theta_E, e1, e2, s_scale)
         # shift
         x_ = x - center_x
@@ -87,18 +71,10 @@ class NIE(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, theta_E, e1, e2, s_scale, center_x=0, center_y=0):
-        """
-
-        :param x: x-coordinate in image plane
-        :param y: y-coordinate in image plane
-        :param theta_E: Einstein radius
-        :param e1: eccentricity component
-        :param e2: eccentricity component
-        :param s_scale: smoothing scale
-        :param center_x: profile center
-        :param center_y: profile center
-        :return: f_xx, f_xy, f_yx, f_yy
-        """
+        """:param x: x-coordinate in image plane :param y: y-coordinate in image plane
+        :param theta_E: Einstein radius :param e1: eccentricity component :param e2:
+        eccentricity component :param s_scale: smoothing scale :param center_x: profile
+        center :param center_y: profile center :return: f_xx, f_xy, f_yx, f_yy."""
         b, s, q, phi_G = self.param_conv(theta_E, e1, e2, s_scale)
         # shift
         x_ = x - center_x
@@ -157,10 +133,9 @@ class NIE(LensProfileBase):
         return self._param_conv(theta_E, e1, e2, s_scale)
 
     def _param_conv(self, theta_E, e1, e2, s_scale):
-        """
-        convert parameters from 2*kappa = bIE [s2IE + r2(1 − e *cos(2*phi)]−1/2 to
-        2*kappa=  b *(q2(s2 + x2) + y2􏰉)−1/2
-        see expressions after Equation 8 in Keeton and Kochanek 1998, https://arxiv.org/pdf/astro-ph/9705194.pdf
+        """Convert parameters from 2*kappa = bIE [s2IE + r2(1 − e *cos(2*phi)]−1/2 to
+        2*kappa=  b *(q2(s2 + x2) + y2􏰉)−1/2 see expressions after Equation 8 in Keeton
+        and Kochanek 1998, https://arxiv.org/pdf/astro-ph/9705194.pdf.
 
         :param theta_E: Einstein radius
         :param e1: eccentricity component
@@ -177,16 +152,9 @@ class NIE(LensProfileBase):
         return b, s, q, phi_G
 
     def set_static(self, theta_E, e1, e2, s_scale, center_x=0, center_y=0):
-        """
-
-        :param theta_E: Einstein radius
-        :param e1: eccentricity component
-        :param e2: eccentricity component
-        :param s_scale: smoothing scale
-        :param center_x: profile center
-        :param center_y: profile center
-        :return: self variables set
-        """
+        """:param theta_E: Einstein radius :param e1: eccentricity component :param e2:
+        eccentricity component :param s_scale: smoothing scale :param center_x: profile
+        center :param center_y: profile center :return: self variables set."""
         self._static = True
         (
             self._b_static,
@@ -196,10 +164,7 @@ class NIE(LensProfileBase):
         ) = self._param_conv(theta_E, e1, e2, s_scale)
 
     def set_dynamic(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         self._static = False
         if hasattr(self, "_b_static"):
             del self._b_static
@@ -229,13 +194,12 @@ class NIE(LensProfileBase):
 
 
 class NIEMajorAxis(LensProfileBase):
-    """
-    This class contains the function and the derivatives of the non-singular isothermal ellipse.
-    See Keeton and Kochanek 1998, https://arxiv.org/pdf/astro-ph/9705194.pdf
+    """This class contains the function and the derivatives of the non-singular
+    isothermal ellipse. See Keeton and Kochanek 1998, https://arxiv.org/pdf/astro-
+    ph/9705194.pdf.
 
     .. math::
         \\kappa =  b * (q2(s2 + x2) + y2􏰉)^{−1/2}`
-
     """
 
     param_names = ["b", "s", "q", "center_x", "center_y"]

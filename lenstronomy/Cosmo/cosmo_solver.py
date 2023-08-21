@@ -14,14 +14,9 @@ export, __all__ = exporter()
 
 @export
 def cosmo2angular_diameter_distances(H_0, omega_m, z_lens, z_source):
-    """
-
-    :param H_0: Hubble constant [km/s/Mpc]
-    :param omega_m: dimensionless matter density at z=0
-    :param z_lens: deflector redshift
-    :param z_source: source redshift
-    :return: angular diameter distances Dd and Ds/Dds
-    """
+    """:param H_0: Hubble constant [km/s/Mpc] :param omega_m: dimensionless matter
+    density at z=0 :param z_lens: deflector redshift :param z_source: source redshift
+    :return: angular diameter distances Dd and Ds/Dds."""
     cosmo = FlatLambdaCDM(H0=H_0, Om0=omega_m, Ob0=0.0)
     lensCosmo = LensCosmo(z_lens=z_lens, z_source=z_source, cosmo=cosmo)
     Dd = lensCosmo.dd
@@ -59,11 +54,7 @@ class SolverFlatLCDM(object):
         self.z_s = z_s
 
     def F(self, x, Dd, Ds_Dds):
-        """
-
-        :param x: array of parameters (H_0, omega_m)
-        :return:
-        """
+        """:param x: array of parameters (H_0, omega_m) :return:"""
         [H_0, omega_m] = x
         omega_m = abs(omega_m) % 1
         Dd_new, Ds_Dds_new = cosmo2angular_diameter_distances(

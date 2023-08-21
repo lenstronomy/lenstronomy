@@ -92,19 +92,17 @@ class GaussianEllipsePotential(LensProfileBase):
         return f_xx, f_xy, f_yx, f_yy
 
     def density(self, r, amp, sigma, e1, e2):
-        """
+        """:param r:
 
-        :param r:
-        :param amp:
-        :param sigma:
+        :param amp: 
+        :param sigma: 
         :return:
         """
         return self.spherical.density(r, amp, sigma)
 
     def density_2d(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
-        """
+        """:param x:
 
-        :param x:
         :param y:
         :param amp:
         :param sigma:
@@ -117,49 +115,45 @@ class GaussianEllipsePotential(LensProfileBase):
         return self.spherical.density_2d(x, y, amp, sigma, center_x, center_y)
 
     def mass_2d(self, R, amp, sigma, e1, e2):
-        """
+        """:param R:
 
-        :param R:
-        :param amp:
-        :param sigma:
-        :param e1:
-        :param e2:
+        :param amp: 
+        :param sigma: 
+        :param e1: 
+        :param e2: 
         :return:
         """
         return self.spherical.mass_2d(R, amp, sigma)
 
     def mass_3d(self, R, amp, sigma, e1, e2):
-        """
+        """:param R:
 
-        :param R:
-        :param amp:
-        :param sigma:
-        :param e1:
-        :param e2:
+        :param amp: 
+        :param sigma: 
+        :param e1: 
+        :param e2: 
         :return:
         """
         return self.spherical.mass_3d(R, amp, sigma)
 
     def mass_3d_lens(self, R, amp, sigma, e1, e2):
-        """
+        """:param R:
 
-        :param R:
-        :param amp:
-        :param sigma:
-        :param e1:
-        :param e2:
+        :param amp: 
+        :param sigma: 
+        :param e1: 
+        :param e2: 
         :return:
         """
         return self.spherical.mass_3d_lens(R, amp, sigma)
 
     def mass_2d_lens(self, R, amp, sigma, e1, e2):
-        """
+        """:param R:
 
-        :param R:
-        :param amp:
-        :param sigma:
-        :param e1:
-        :param e2:
+        :param amp: 
+        :param sigma: 
+        :param e1: 
+        :param e2: 
         :return:
         """
         return self.spherical.mass_2d_lens(R, amp, sigma)

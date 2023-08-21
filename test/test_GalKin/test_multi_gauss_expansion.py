@@ -292,10 +292,10 @@ class TestGalkin(object):
         npt.assert_almost_equal((sigma_v - sigma_v2) / sigma_v2, 0, decimal=2)
 
     def test_sersic_vs_hernquist_kinematics(self):
-        """
-        attention: this test only works for Sersic indices > \approx 2!
-        Lower n_sersic will result in different predictions with the Hernquist assumptions
-        replacing the correct Light model!
+        """Attention: this test only works for Sersic indices > \approx 2!
+
+        Lower n_sersic will result in different predictions with the Hernquist
+        assumptions replacing the correct Light model!
         :return:
         """
         # anisotropy profile

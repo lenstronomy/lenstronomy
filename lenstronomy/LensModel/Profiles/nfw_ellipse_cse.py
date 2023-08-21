@@ -42,11 +42,8 @@ class NFW_ELLIPSE_CSE(NFW_ELLIPSE):
     }
 
     def __init__(self, high_accuracy=True):
-        """
-
-        :param high_accuracy: if True uses a more accurate larger set of CSE profiles (see Oguri 2021)
-        :type high_accuracy: boolean
-        """
+        """:param high_accuracy: if True uses a more accurate larger set of CSE profiles
+        (see Oguri 2021) :type high_accuracy: boolean."""
         self.cse_major_axis_set = CSEProductAvgSet()
         self.nfw = NFW()
         if high_accuracy is True:

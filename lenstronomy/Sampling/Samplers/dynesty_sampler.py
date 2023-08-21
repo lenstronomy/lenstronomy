@@ -28,18 +28,16 @@ class DynestySampler(NestedSampler):
         use_mpi=False,
         use_pool=None,
     ):
-        """
-        :param likelihood_module: likelihood_module like in likelihood.py (should be callable)
-        :param prior_type: 'uniform' of 'gaussian', for converting the unit hypercube to param cube
-        :param prior_means: if prior_type is 'gaussian', mean for each param
-        :param prior_sigmas: if prior_type is 'gaussian', std dev for each param
-        :param width_scale: scale the widths of the parameters space by this factor
-        :param sigma_scale: if prior_type is 'gaussian', scale the gaussian sigma by this factor
-        :param bound: specific to Dynesty, see https://dynesty.readthedocs.io
-        :param sample: specific to Dynesty, see https://dynesty.readthedocs.io
-        :param use_mpi: Use MPI computing if `True`
-        :param use_pool: specific to Dynesty, see https://dynesty.readthedocs.io
-        """
+        """:param likelihood_module: likelihood_module like in likelihood.py (should be
+        callable) :param prior_type: 'uniform' of 'gaussian', for converting the unit
+        hypercube to param cube :param prior_means: if prior_type is 'gaussian', mean
+        for each param :param prior_sigmas: if prior_type is 'gaussian', std dev for
+        each param :param width_scale: scale the widths of the parameters space by this
+        factor :param sigma_scale: if prior_type is 'gaussian', scale the gaussian sigma
+        by this factor :param bound: specific to Dynesty, see
+        https://dynesty.readthedocs.io :param sample: specific to Dynesty, see
+        https://dynesty.readthedocs.io :param use_mpi: Use MPI computing if `True`
+        :param use_pool: specific to Dynesty, see https://dynesty.readthedocs.io."""
         self._check_install()
         super(DynestySampler, self).__init__(
             likelihood_module,

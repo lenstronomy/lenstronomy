@@ -99,16 +99,9 @@ class EPL(LensProfileBase):
         return b, t, q, phi_G
 
     def set_static(self, theta_E, gamma, e1, e2, center_x=0, center_y=0):
-        """
-
-        :param theta_E: Einstein radius
-        :param gamma: power law slope
-        :param e1: eccentricity component
-        :param e2: eccentricity component
-        :param center_x: profile center
-        :param center_y: profile center
-        :return: self variables set
-        """
+        """:param theta_E: Einstein radius :param gamma: power law slope :param e1:
+        eccentricity component :param e2: eccentricity component :param center_x:
+        profile center :param center_y: profile center :return: self variables set."""
         self._static = True
         (
             self._b_static,
@@ -118,10 +111,7 @@ class EPL(LensProfileBase):
         ) = self._param_conv(theta_E, gamma, e1, e2)
 
     def set_dynamic(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         self._static = False
         if hasattr(self, "_b_static"):
             del self._b_static
@@ -133,18 +123,10 @@ class EPL(LensProfileBase):
             del self._q_static
 
     def function(self, x, y, theta_E, gamma, e1, e2, center_x=0, center_y=0):
-        """
-
-        :param x: x-coordinate in image plane
-        :param y: y-coordinate in image plane
-        :param theta_E: Einstein radius
-        :param gamma: power law slope
-        :param e1: eccentricity component
-        :param e2: eccentricity component
-        :param center_x: profile center
-        :param center_y: profile center
-        :return: lensing potential
-        """
+        """:param x: x-coordinate in image plane :param y: y-coordinate in image plane
+        :param theta_E: Einstein radius :param gamma: power law slope :param e1:
+        eccentricity component :param e2: eccentricity component :param center_x:
+        profile center :param center_y: profile center :return: lensing potential."""
         b, t, q, phi_G = self.param_conv(theta_E, gamma, e1, e2)
         # shift
         x_ = x - center_x
@@ -157,18 +139,10 @@ class EPL(LensProfileBase):
         return f_
 
     def derivatives(self, x, y, theta_E, gamma, e1, e2, center_x=0, center_y=0):
-        """
-
-        :param x: x-coordinate in image plane
-        :param y: y-coordinate in image plane
-        :param theta_E: Einstein radius
-        :param gamma: power law slope
-        :param e1: eccentricity component
-        :param e2: eccentricity component
-        :param center_x: profile center
-        :param center_y: profile center
-        :return: alpha_x, alpha_y
-        """
+        """:param x: x-coordinate in image plane :param y: y-coordinate in image plane
+        :param theta_E: Einstein radius :param gamma: power law slope :param e1:
+        eccentricity component :param e2: eccentricity component :param center_x:
+        profile center :param center_y: profile center :return: alpha_x, alpha_y."""
         b, t, q, phi_G = self.param_conv(theta_E, gamma, e1, e2)
         # shift
         x_ = x - center_x
@@ -182,18 +156,11 @@ class EPL(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, theta_E, gamma, e1, e2, center_x=0, center_y=0):
-        """
-
-        :param x: x-coordinate in image plane
-        :param y: y-coordinate in image plane
-        :param theta_E: Einstein radius
-        :param gamma: power law slope
-        :param e1: eccentricity component
-        :param e2: eccentricity component
-        :param center_x: profile center
-        :param center_y: profile center
-        :return: f_xx, f_xy, f_yx, f_yy
-        """
+        """:param x: x-coordinate in image plane :param y: y-coordinate in image plane
+        :param theta_E: Einstein radius :param gamma: power law slope :param e1:
+        eccentricity component :param e2: eccentricity component :param center_x:
+        profile center :param center_y: profile center :return: f_xx, f_xy, f_yx,
+        f_yy."""
 
         b, t, q, phi_G = self.param_conv(theta_E, gamma, e1, e2)
         # shift
@@ -216,9 +183,14 @@ class EPL(LensProfileBase):
 
     def mass_3d_lens(self, r, theta_E, gamma, e1=None, e2=None):
         """Computes the spherical power-law mass enclosed (with SPP routine) :param r:
-        radius within the mass is computed :param theta_E: Einstein radius :param gamma:
-        power-law slope :param e1: eccentricity component (not used) :param e2:
-        eccentricity component (not used) :return: mass enclosed a 3D radius r."""
+
+        radius within the mass is computed
+        :param theta_E: Einstein radius
+        :param gamma: power-law slope
+        :param e1: eccentricity component (not used)
+        :param e2: eccentricity component (not used)
+        :return: mass enclosed a 3D radius r.
+        """
         return self.spp.mass_3d_lens(r, theta_E, gamma)
 
     def density_lens(self, r, theta_E, gamma, e1=None, e2=None):
@@ -364,58 +336,40 @@ class EPLQPhi(LensProfileBase):
         super(EPLQPhi, self).__init__()
 
     def function(self, x, y, theta_E, gamma, q, phi, center_x=0, center_y=0):
-        """
-
-        :param x: x-coordinate in image plane
-        :param y: y-coordinate in image plane
-        :param theta_E: Einstein radius
-        :param gamma: power law slope
-        :param q: axis ratio
-        :param phi: position angle
-        :param center_x: profile center
-        :param center_y: profile center
-        :return: lensing potential
-        """
+        """:param x: x-coordinate in image plane :param y: y-coordinate in image plane
+        :param theta_E: Einstein radius :param gamma: power law slope :param q: axis
+        ratio :param phi: position angle :param center_x: profile center :param
+        center_y: profile center :return: lensing potential."""
         e1, e2 = param_util.phi_q2_ellipticity(phi, q)
         return self._EPL.function(x, y, theta_E, gamma, e1, e2, center_x, center_y)
 
     def derivatives(self, x, y, theta_E, gamma, q, phi, center_x=0, center_y=0):
-        """
-
-        :param x: x-coordinate in image plane
-        :param y: y-coordinate in image plane
-        :param theta_E: Einstein radius
-        :param gamma: power law slope
-        :param q: axis ratio
-        :param phi: position angle
-        :param center_x: profile center
-        :param center_y: profile center
-        :return: alpha_x, alpha_y
-        """
+        """:param x: x-coordinate in image plane :param y: y-coordinate in image plane
+        :param theta_E: Einstein radius :param gamma: power law slope :param q: axis
+        ratio :param phi: position angle :param center_x: profile center :param
+        center_y: profile center :return: alpha_x, alpha_y."""
         e1, e2 = param_util.phi_q2_ellipticity(phi, q)
         return self._EPL.derivatives(x, y, theta_E, gamma, e1, e2, center_x, center_y)
 
     def hessian(self, x, y, theta_E, gamma, q, phi, center_x=0, center_y=0):
-        """
-
-        :param x: x-coordinate in image plane
-        :param y: y-coordinate in image plane
-        :param theta_E: Einstein radius
-        :param gamma: power law slope
-        :param q: axis ratio
-        :param phi: position angle
-        :param center_x: profile center
-        :param center_y: profile center
-        :return: f_xx, f_xy, f_yx, f_yy
-        """
+        """:param x: x-coordinate in image plane :param y: y-coordinate in image plane
+        :param theta_E: Einstein radius :param gamma: power law slope :param q: axis
+        ratio :param phi: position angle :param center_x: profile center :param
+        center_y: profile center :return: f_xx, f_xy, f_yx, f_yy."""
         e1, e2 = param_util.phi_q2_ellipticity(phi, q)
         return self._EPL.hessian(x, y, theta_E, gamma, e1, e2, center_x, center_y)
 
     def mass_3d_lens(self, r, theta_E, gamma, q=None, phi=None):
         """Computes the spherical power-law mass enclosed (with SPP routine) :param r:
-        radius within the mass is computed :param theta_E: Einstein radius :param gamma:
-        power-law slope :param q: axis ratio (not used) :param phi: position angle (not
-        used) :return: mass enclosed a 3D radius r."""
+
+        radius within the mass is computed
+        :param theta_E: Einstein radius
+        :param gamma: power-law slope
+        :param q: axis ratio (not used)
+        :param phi: position angle (not
+        used)
+        :return: mass enclosed a 3D radius r.
+        """
         return self._EPL.mass_3d_lens(r, theta_E, gamma)
 
     def density_lens(self, r, theta_E, gamma, q=None, phi=None):

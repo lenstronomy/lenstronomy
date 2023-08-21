@@ -30,10 +30,9 @@ class Ellipsoid(object):
         }
 
     def function(self, x, y, amp, radius, e1, e2, center_x, center_y):
-        """
+        """:param x:
 
-        :param x:
-        :param y:
+        :param y: 
         :param amp: surface brightness within the ellipsoid
         :param radius: radius (product average of semi-major and semi-minor axis) of the ellipsoid
         :param e1: eccentricity

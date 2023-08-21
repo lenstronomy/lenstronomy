@@ -14,8 +14,8 @@ class TestClass:
     def __call__(self, x, y, Rs, norm, center_x=0, center_y=0):
         """NFW profile :param x:
 
-        :param y:
-        :param kwargs:
+        :param y: 
+        :param kwargs: 
         :return:
         """
 

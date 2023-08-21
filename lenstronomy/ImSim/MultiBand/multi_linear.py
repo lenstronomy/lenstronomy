@@ -30,15 +30,14 @@ class MultiLinear(MultiDataBase):
         kwargs_pixelbased=None,
         linear_solver=True,
     ):
-        """
-
-        :param multi_band_list: list of imaging band configurations [[kwargs_data, kwargs_psf, kwargs_numerics],[...], ...]
-        :param kwargs_model: model option keyword arguments
-        :param likelihood_mask_list: list of likelihood masks (booleans with size of the individual images)
-        :param compute_bool: (optional), bool list to indicate which band to be included in the modeling
-        :param linear_solver: bool, if True (default) fixes the linear amplitude parameters 'amp' (avoid sampling) such
-         that they get overwritten by the linear solver solution.
-        """
+        """:param multi_band_list: list of imaging band configurations [[kwargs_data,
+        kwargs_psf, kwargs_numerics],[...], ...] :param kwargs_model: model option
+        keyword arguments :param likelihood_mask_list: list of likelihood masks
+        (booleans with size of the individual images) :param compute_bool: (optional),
+        bool list to indicate which band to be included in the modeling :param
+        linear_solver: bool, if True (default) fixes the linear amplitude parameters
+        'amp' (avoid sampling) such that they get overwritten by the linear solver
+        solution."""
         self.type = "multi-linear"
         imageModel_list = []
         if linear_solver is False and len(multi_band_list) > 1:
@@ -72,17 +71,17 @@ class MultiLinear(MultiDataBase):
         optimization (i.e. flux normalization of the brightness profiles)
 
         :param kwargs_lens: list of keyword arguments corresponding to the superposition
-            of different lens profiles
+                of different lens profiles
         :param kwargs_source: list of keyword arguments corresponding to the
-            superposition of different source light profiles
+                superposition of different source light profiles
         :param kwargs_lens_light: list of keyword arguments corresponding to different
-            lens light surface brightness profiles
+                lens light surface brightness profiles
         :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as
-            external shear and point source image positions
+                external shear and point source image positions
         :param inv_bool: if True, invert the full linear solver Matrix Ax = y for the
-            purpose of the covariance matrix.
+                purpose of the covariance matrix.
         :return: 1d array of surface brightness pixels of the optimal solution of the
-            linear parameters to match the data
+                linear parameters to match the data
         """
         wls_list, error_map_list, cov_param_list, param_list = [], [], [], []
         for i in range(self._num_bands):
@@ -121,15 +120,15 @@ class MultiLinear(MultiDataBase):
         """Computes the likelihood of the data given a model This is specified with the
         non-linear parameters and a linear inversion and prior marginalisation.
 
-        :param kwargs_lens:
-        :param kwargs_source:
-        :param kwargs_lens_light:
-        :param kwargs_ps:
+        :param kwargs_lens: 
+        :param kwargs_source: 
+        :param kwargs_lens_light: 
+        :param kwargs_ps: 
         :param check_positive_flux: bool, if True, checks whether the linear inversion
-            resulted in non-negative flux components and applies a punishment in the
-            likelihood if so.
+                resulted in non-negative flux components and applies a punishment in the
+                likelihood if so.
         :return: log likelihood (natural logarithm) (sum of the log likelihoods of the
-            individual images)
+                individual images)
         """
         # generate image
         logL = 0

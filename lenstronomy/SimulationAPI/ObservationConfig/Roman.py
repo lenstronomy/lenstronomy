@@ -55,21 +55,20 @@ F146_band_obs = {
     "magnitude_zero_point": 26.65,
     "seeing": 0.105,
 }
-"""
-:keyword sky_brightness: sky brightness (in magnitude per square arcseconds in units of electrons)
-:keyword magnitude_zero_point: magnitude in which 1 count (e-) per second per arcsecond square is registered
-:keyword seeing: Full-Width-at-Half-Maximum (FWHM) of PSF
-:keyword psf_type: string, type of PSF ('GAUSSIAN' supported)
-"""
+""":keyword sky_brightness: sky brightness (in magnitude per square arcseconds in units
+of electrons) :keyword magnitude_zero_point: magnitude in which 1 count (e-) per second
+per arcsecond square is registered :keyword seeing: Full-Width-at-Half-Maximum (FWHM) of
+PSF :keyword psf_type: string, type of PSF ('GAUSSIAN' supported)"""
 
 
 class Roman(object):
     """Class contains Roman instrument and observation configurations."""
 
     def __init__(self, band="F062", psf_type="GAUSSIAN", survey_mode="wide_area"):
-        """
+        """:param band: string, 'F062', 'F087', 'F106', 'F129', 'F158' , 'F184' or
+        'F146' supported.
 
-        :param band: string, 'F062', 'F087', 'F106', 'F129', 'F158' , 'F184' or 'F146' supported. Determines obs dictionary.
+        Determines obs dictionary.
         :param psf_type: string, type of PSF ('GAUSSIAN', 'PIXEL' supported).
         """
 
@@ -147,9 +146,6 @@ class Roman(object):
         ccd_gain: electrons/ADU (analog-to-digital unit)."""
 
     def kwargs_single_band(self):
-        """
-
-        :return: merged kwargs from camera and obs dicts
-        """
+        """:return: merged kwargs from camera and obs dicts."""
         kwargs = util.merge_dicts(self.camera, self.obs)
         return kwargs

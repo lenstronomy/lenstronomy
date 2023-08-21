@@ -24,12 +24,9 @@ class CosmoInterp(object):
     routines."""
 
     def __init__(self, cosmo, z_stop, num_interp):
-        """
-
-        :param cosmo: astropy.cosmology instance (version 4.0 as private functions need to be supported)
-        :param z_stop: maximum redshift for the interpolation
-        :param num_interp: int, number of interpolating steps
-        """
+        """:param cosmo: astropy.cosmology instance (version 4.0 as private functions
+        need to be supported) :param z_stop: maximum redshift for the interpolation
+        :param num_interp: int, number of interpolating steps."""
         self._cosmo = cosmo
         if float(astropy.__version__[0]) < 5.0:
             from lenstronomy.Cosmo._cosmo_interp_astropy_v4 import (
@@ -50,11 +47,8 @@ class CosmoInterp(object):
         )
 
     def _comoving_distance_interp(self, z):
-        """
-
-        :param z: redshift to which the comoving distance is calculated
-        :return: comoving distance in units Mpc
-        """
+        """:param z: redshift to which the comoving distance is calculated :return:
+        comoving distance in units Mpc."""
         return self._comoving_distance_interpolation_func(z) * units.Mpc
 
     def angular_diameter_distance(self, z):

@@ -32,17 +32,16 @@ class FittingSequence(object):
         mpi=False,
         verbose=True,
     ):
-        """
+        """:param kwargs_data_joint: keyword argument specifying the data according to
+        LikelihoodModule :param kwargs_model: keyword arguments to describe all model
+        components used in class_creator.create_class_instances() :param
+        kwargs_constraints: keyword arguments of the Param() class to handle parameter
+        constraints during the sampling (except upper and lower limits and sampling
+        input mean and width) :param kwargs_likelihood: keyword arguments of the
+        Likelihood() class to handle parameters and settings of the likelihood :param
+        kwargs_params: setting of the sampling bounds and initial guess mean and spread.
 
-        :param kwargs_data_joint: keyword argument specifying the data according to LikelihoodModule
-        :param kwargs_model: keyword arguments to describe all model components used in
-         class_creator.create_class_instances()
-        :param kwargs_constraints: keyword arguments of the Param() class to handle parameter constraints during the
-         sampling (except upper and lower limits and sampling input mean and width)
-        :param kwargs_likelihood: keyword arguments of the Likelihood() class to handle parameters and settings of the
-         likelihood
-        :param kwargs_params: setting of the sampling bounds and initial guess mean and spread.
-         The argument is organized as:
+        The argument is organized as:
          'lens_model': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
          'source_model': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
          'lens_light_model': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
@@ -76,12 +75,9 @@ class FittingSequence(object):
         return self._updateManager.fixed_kwargs
 
     def fit_sequence(self, fitting_list):
-        """
-
-        :param fitting_list: list of [['string', {kwargs}], ..] with 'string being the specific fitting option and
-         kwargs being the arguments passed to this option
-        :return: fitting results
-        """
+        """:param fitting_list: list of [['string', {kwargs}], ..] with 'string being
+        the specific fitting option and kwargs being the arguments passed to this option
+        :return: fitting results."""
         chain_list = []
         for i, fitting in enumerate(fitting_list):
             fitting_type = fitting[0]
@@ -180,9 +176,10 @@ class FittingSequence(object):
         return chain_list
 
     def best_fit(self, bijective=False):
-        """
+        """:param bijective: bool, if True, the mapping of image2source_plane and the
+        mass_scaling parameterisation are inverted.
 
-        :param bijective: bool, if True, the mapping of image2source_plane and the mass_scaling parameterisation are inverted. If you do not use those options, there is no effect.
+        If you do not use those options, there is no effect.
         :return: best fit model of the current state of the FittingSequence class
         """
 
@@ -224,18 +221,14 @@ class FittingSequence(object):
 
     @property
     def param_class(self):
-        """
-
-        :return: Param() class instance reflecting the current state of FittingSequence
-        """
+        """:return: Param() class instance reflecting the current state of
+        FittingSequence."""
         return self._updateManager.param_class
 
     @property
     def likelihoodModule(self):
-        """
-
-        :return: Likelihood() class instance reflecting the current state of FittingSequence
-        """
+        """:return: Likelihood() class instance reflecting the current state of
+        FittingSequence."""
         kwargs_model = self._updateManager.kwargs_model
         kwargs_likelihood = self._updateManager.kwargs_likelihood
         likelihoodModule = LikelihoodModule(
@@ -248,7 +241,7 @@ class FittingSequence(object):
 
         :param n_iterations: maximum number of iterations to perform
         :param method: the optimization method used, see documentation in
-            scipy.optimize.minimize
+                scipy.optimize.minimize
         :return: result of the best fit
         """
 
@@ -282,22 +275,26 @@ class FittingSequence(object):
         :param n_burn: number of burn in iterations (will not be saved)
         :param n_run: number of MCMC iterations that are saved
         :param walkerRatio: ratio of walkers/number of free parameters
-        :param n_walkers: integer, number of walkers of emcee (optional, if set, overwrites the walkerRatio input
-        :param sigma_scale: scaling of the initial parameter spread relative to the width in the initial settings
+        :param n_walkers: integer, number of walkers of emcee (optional, if set,
+                overwrites the walkerRatio input
+        :param sigma_scale: scaling of the initial parameter spread relative to the
+                width in the initial settings
         :param threadCount: number of CPU threads. If MPI option is set, threadCount=1
         :param init_samples: initial sample from where to start the MCMC process
-        :param re_use_samples: bool, if True, re-uses the samples described in init_samples.nOtherwise starts from
-         scratch.
+        :param re_use_samples: bool, if True, re-uses the samples described in
+                init_samples.nOtherwise starts from          scratch.
         :param sampler_type: string, which MCMC sampler to be used. Options are: 'EMCEE', 'ZEUS'
         :param progress: boolean, if True shows progress bar in EMCEE
-        :param backend_filename: name of the HDF5 file where sampling state is saved (through emcee backend engine)
+        :param backend_filename: name of the HDF5 file where sampling state is saved
+                (through emcee backend engine)
         :type backend_filename: string
-        :param start_from_backend: if True, start from the state saved in `backup_filename`.
-         O therwise, create a new backup file with name `backup_filename` (any already existing file is overwritten!).
+        :param start_from_backend: if True, start from the state saved in
+                `backup_filename`.          O therwise, create a new backup file with
+                name `backup_filename` (any already existing file is overwritten!).
         :type start_from_backend: bool
         :param kwargs_zeus: zeus-specific kwargs
-        :return: list of output arguments, e.g. MCMC samples, parameter names, logL distances of all samples specified
-         by the specific sampler used
+        :return: list of output arguments, e.g. MCMC samples, parameter names, logL
+                distances of all samples specified          by the specific sampler used
         """
 
         param_class = self.param_class
@@ -372,12 +369,12 @@ class FittingSequence(object):
         :param n_particles: number of particles in the Particle Swarm Optimization
         :param n_iterations: number of iterations in the optimization process
         :param sigma_scale: scaling of the initial parameter spread relative to the
-            width in the initial settings
+                width in the initial settings
         :param print_key: string, printed text when executing this routine
         :param threadCount: number of CPU threads. If MPI option is set, threadCount=1
         :return: result of the best fit, the PSO chain of the best fit parameter after
-            each iteration [lnlikelihood, parameters, velocities], list of parameters in
-            same order as in chain
+                each iteration [lnlikelihood, parameters, velocities], list of
+                parameters in             same order as in chain
         """
 
         param_class = self.param_class
@@ -536,9 +533,9 @@ class FittingSequence(object):
         """Iterative PSF reconstruction.
 
         :param compute_bands: bool list, if multiple bands, this process can be limited
-            to a subset of bands
+                to a subset of bands
         :param kwargs_psf_iter: keyword arguments as used or available in
-            PSFIteration.update_iterative() definition
+                PSFIteration.update_iterative() definition
         :return: 0, updated PSF is stored in self.multi_band_list
         """
         kwargs_model = self._updateManager.kwargs_model
@@ -590,8 +587,8 @@ class FittingSequence(object):
         :param delta_shift: astrometric shift tolerance
         :param delta_rot: rotation angle tolerance [in radian]
         :param compute_bands: bool list, if multiple bands, this process can be limited
-            to a subset of bands for which the coordinate system is being fit for best
-            alignment to the model parameters
+                to a subset of bands for which the coordinate system is being fit for
+                best             alignment to the model parameters
         :return: 0, updated coordinate system for the band(s)
         """
         kwargs_model = self._updateManager.kwargs_model
@@ -758,13 +755,13 @@ class FittingSequence(object):
         """Set a parameter to a specific value. `kwargs` are below.
 
         :param lens: [[i_model, ['param1', 'param2',...], [...]]
-        :type lens:
+        :type lens: 
         :param source: [[i_model, ['param1', 'param2',...], [...]]
-        :type source:
+        :type source: 
         :param lens_light: [[i_model, ['param1', 'param2',...], [...]]
-        :type lens_light:
+        :type lens_light: 
         :param ps: [[i_model, ['param1', 'param2',...], [...]]
-        :type ps:
+        :type ps: 
         :return: 0, the value of the param is overwritten
         :rtype:
         """
@@ -776,7 +773,7 @@ class FittingSequence(object):
         options.
 
         :param free_bands: bool list of length of imaging bands in order of imaging
-            bands, if False: set fixed lens model
+                bands, if False: set fixed lens model
         :return: None
         """
         self._updateManager.fix_not_computed(free_bands=free_bands)
@@ -796,20 +793,14 @@ class FittingSequence(object):
         return mean_start, sigma_start
 
     def _update_state(self, result):
-        """
-
-        :param result: array of parameters being sampled (e.g. result of MCMC chain)
-        :return: None, updates the parameter state of the class instance
-        """
+        """:param result: array of parameters being sampled (e.g. result of MCMC chain)
+        :return: None, updates the parameter state of the class instance."""
         kwargs_result = self.param_class.args2kwargs(result, bijective=True)
         self._updateManager.update_param_state(**kwargs_result)
 
     def _result_from_mcmc(self, mcmc_output):
-        """
-
-        :param mcmc_output: list returned by self.mcmc()
-        :return: kwargs_result like returned by self.pso(), from best logL MCMC sample
-        """
+        """:param mcmc_output: list returned by self.mcmc() :return: kwargs_result like
+        returned by self.pso(), from best logL MCMC sample."""
         _, samples, _, logL_values = mcmc_output
         return self.best_fit_from_samples(samples, logL_values)
 

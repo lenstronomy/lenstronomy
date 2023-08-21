@@ -28,34 +28,22 @@ class Coordinates(object):
 
     @property
     def transform_angle2pix(self):
-        """
-
-        :return: transformation matrix from angular to pixel coordinates
-        """
+        """:return: transformation matrix from angular to pixel coordinates."""
         return self._Ma2pix
 
     @property
     def transform_pix2angle(self):
-        """
-
-        :return: transformation matrix from pixel to angular coordinates
-        """
+        """:return: transformation matrix from pixel to angular coordinates."""
         return self._Mpix2a
 
     @property
     def xy_at_radec_0(self):
-        """
-
-        :return: pixel coordinate at angular (0,0) point
-        """
+        """:return: pixel coordinate at angular (0,0) point."""
         return self._x_at_radec_0, self._y_at_radec_0
 
     @property
     def radec_at_xy_0(self):
-        """
-
-        :return: RA, DEC coordinate at (0,0) pixel coordinate
-        """
+        """:return: RA, DEC coordinate at (0,0) pixel coordinate."""
         return self._ra_at_xy_0, self._dec_at_xy_0
 
     def map_coord2pix(self, ra, dec):
@@ -75,9 +63,9 @@ class Coordinates(object):
         """Maps the (x,y) pixel coordinates of the image into the system coordinates.
 
         :param x: pixel coordinate (can be 1d numpy array), defined in the center of the
-            pixel
+                pixel
         :param y: pixel coordinate (can be 1d numpy array), defined in the center of the
-            pixel
+                pixel
         :return: relative (RA, DEC) coordinates of the system
         """
         return util.map_coord2pix(
@@ -101,12 +89,9 @@ class Coordinates(object):
         return np.sqrt(self.pixel_area)
 
     def coordinate_grid(self, nx, ny):
-        """
-
-        :param nx: number of pixels in x-direction
-        :param ny: number of pixels in y-direction
-        :return: 2d arrays with coordinates in RA/DEC with ra_coord[y-axis, x-axis]
-        """
+        """:param nx: number of pixels in x-direction :param ny: number of pixels in
+        y-direction :return: 2d arrays with coordinates in RA/DEC with ra_coord[y-axis,
+        x-axis]"""
         ra_coords, dec_coords = util.grid_from_coordinate_transform(
             nx, ny, self._Mpix2a, self._ra_at_xy_0, self._dec_at_xy_0
         )
@@ -151,12 +136,9 @@ class Coordinates1D(Coordinates):
     """Coordinate grid described in 1-d arrays."""
 
     def coordinate_grid(self, nx, ny):
-        """
-
-        :param nx: number of pixels in x-direction
-        :param ny: number of pixels in y-direction
-        :return: 2d arrays with coordinates in RA/DEC with ra_coord[y-axis, x-axis]
-        """
+        """:param nx: number of pixels in x-direction :param ny: number of pixels in
+        y-direction :return: 2d arrays with coordinates in RA/DEC with ra_coord[y-axis,
+        x-axis]"""
         ra_coords, dec_coords = util.grid_from_coordinate_transform(
             nx, ny, self._Mpix2a, self._ra_at_xy_0, self._dec_at_xy_0
         )

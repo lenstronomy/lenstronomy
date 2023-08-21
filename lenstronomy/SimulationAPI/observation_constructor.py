@@ -8,12 +8,9 @@ __all__ = ["observation_constructor"]
 
 
 def observation_constructor(instrument_name, observation_name):
-    """
-
-    :param instrument_name: string, name of instrument referenced in this file
-    :param observation_name: string, name of observation referenced in this file
-    :return: instance of the SimulationAPI.data_type instance
-    """
+    """:param instrument_name: string, name of instrument referenced in this file :param
+    observation_name: string, name of observation referenced in this file :return:
+    instance of the SimulationAPI.data_type instance."""
 
     if instrument_name == "LSST":
         kwargs_instrument = LSST_camera

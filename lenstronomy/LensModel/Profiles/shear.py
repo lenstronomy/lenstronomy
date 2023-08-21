@@ -16,32 +16,20 @@ class Shear(LensProfileBase):
     upper_limit_default = {"gamma1": 0.5, "gamma2": 0.5, "ra_0": 100, "dec_0": 100}
 
     def function(self, x, y, gamma1, gamma2, ra_0=0, dec_0=0):
-        """
-
-        :param x: x-coordinate (angle)
-        :param y: y0-coordinate (angle)
-        :param gamma1: shear component
-        :param gamma2: shear component
-        :param ra_0: x/ra position where shear deflection is 0
-        :param dec_0: y/dec position where shear deflection is 0
-        :return: lensing potential
-        """
+        """:param x: x-coordinate (angle) :param y: y0-coordinate (angle) :param gamma1:
+        shear component :param gamma2: shear component :param ra_0: x/ra position where
+        shear deflection is 0 :param dec_0: y/dec position where shear deflection is 0
+        :return: lensing potential."""
         x_ = x - ra_0
         y_ = y - dec_0
         f_ = 1 / 2.0 * (gamma1 * x_ * x_ + 2 * gamma2 * x_ * y_ - gamma1 * y_ * y_)
         return f_
 
     def derivatives(self, x, y, gamma1, gamma2, ra_0=0, dec_0=0):
-        """
-
-        :param x: x-coordinate (angle)
-        :param y: y0-coordinate (angle)
-        :param gamma1: shear component
-        :param gamma2: shear component
-        :param ra_0: x/ra position where shear deflection is 0
-        :param dec_0: y/dec position where shear deflection is 0
-        :return: deflection angles
-        """
+        """:param x: x-coordinate (angle) :param y: y0-coordinate (angle) :param gamma1:
+        shear component :param gamma2: shear component :param ra_0: x/ra position where
+        shear deflection is 0 :param dec_0: y/dec position where shear deflection is 0
+        :return: deflection angles."""
         x_ = x - ra_0
         y_ = y - dec_0
         f_x = gamma1 * x_ + gamma2 * y_
@@ -49,16 +37,10 @@ class Shear(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, gamma1, gamma2, ra_0=0, dec_0=0):
-        """
-
-        :param x: x-coordinate (angle)
-        :param y: y0-coordinate (angle)
-        :param gamma1: shear component
-        :param gamma2: shear component
-        :param ra_0: x/ra position where shear deflection is 0
-        :param dec_0: y/dec position where shear deflection is 0
-        :return: f_xx, f_xy, f_yx, f_yy
-        """
+        """:param x: x-coordinate (angle) :param y: y0-coordinate (angle) :param gamma1:
+        shear component :param gamma2: shear component :param ra_0: x/ra position where
+        shear deflection is 0 :param dec_0: y/dec position where shear deflection is 0
+        :return: f_xx, f_xy, f_yx, f_yy."""
         gamma1 = gamma1
         gamma2 = gamma2
         kappa = 0
@@ -94,16 +76,10 @@ class ShearGammaPsi(LensProfileBase):
 
     @staticmethod
     def function(x, y, gamma_ext, psi_ext, ra_0=0, dec_0=0):
-        """
-
-        :param x: x-coordinate (angle)
-        :param y: y0-coordinate (angle)
-        :param gamma_ext: shear strength
-        :param psi_ext: shear angle (radian)
-        :param ra_0: x/ra position where shear deflection is 0
-        :param dec_0: y/dec position where shear deflection is 0
-        :return:
-        """
+        """:param x: x-coordinate (angle) :param y: y0-coordinate (angle) :param
+        gamma_ext: shear strength :param psi_ext: shear angle (radian) :param ra_0: x/ra
+        position where shear deflection is 0 :param dec_0: y/dec position where shear
+        deflection is 0 :return:"""
         # change to polar coordinate
         r, phi = param_util.cart2polar(x - ra_0, y - dec_0)
         f_ = 1.0 / 2 * gamma_ext * r**2 * np.cos(2 * (phi - psi_ext))
@@ -154,32 +130,20 @@ class ShearReduced(LensProfileBase):
         return kappa, gamma1_, gamma2_
 
     def function(self, x, y, gamma1, gamma2, ra_0=0, dec_0=0):
-        """
-
-        :param x: x-coordinate (angle)
-        :param y: y0-coordinate (angle)
-        :param gamma1: shear component
-        :param gamma2: shear component
-        :param ra_0: x/ra position where shear deflection is 0
-        :param dec_0: y/dec position where shear deflection is 0
-        :return: lensing potential
-        """
+        """:param x: x-coordinate (angle) :param y: y0-coordinate (angle) :param gamma1:
+        shear component :param gamma2: shear component :param ra_0: x/ra position where
+        shear deflection is 0 :param dec_0: y/dec position where shear deflection is 0
+        :return: lensing potential."""
         kappa, gamma1_, gamma2_ = self._kappa_reduced(gamma1, gamma2)
         f_shear = self._shear.function(x, y, gamma1_, gamma2_, ra_0, dec_0)
         f_kappa = self._convergence.function(x, y, kappa, ra_0, dec_0)
         return f_shear + f_kappa
 
     def derivatives(self, x, y, gamma1, gamma2, ra_0=0, dec_0=0):
-        """
-
-        :param x: x-coordinate (angle)
-        :param y: y0-coordinate (angle)
-        :param gamma1: shear component
-        :param gamma2: shear component
-        :param ra_0: x/ra position where shear deflection is 0
-        :param dec_0: y/dec position where shear deflection is 0
-        :return: deflection angles
-        """
+        """:param x: x-coordinate (angle) :param y: y0-coordinate (angle) :param gamma1:
+        shear component :param gamma2: shear component :param ra_0: x/ra position where
+        shear deflection is 0 :param dec_0: y/dec position where shear deflection is 0
+        :return: deflection angles."""
         kappa, gamma1_, gamma2_ = self._kappa_reduced(gamma1, gamma2)
         f_x_shear, f_y_shear = self._shear.derivatives(
             x, y, gamma1_, gamma2_, ra_0, dec_0
@@ -188,16 +152,10 @@ class ShearReduced(LensProfileBase):
         return f_x_shear + f_x_kappa, f_y_shear + f_y_kappa
 
     def hessian(self, x, y, gamma1, gamma2, ra_0=0, dec_0=0):
-        """
-
-        :param x: x-coordinate (angle)
-        :param y: y0-coordinate (angle)
-        :param gamma1: shear component
-        :param gamma2: shear component
-        :param ra_0: x/ra position where shear deflection is 0
-        :param dec_0: y/dec position where shear deflection is 0
-        :return: f_xx, f_xy, f_yx, f_yy
-        """
+        """:param x: x-coordinate (angle) :param y: y0-coordinate (angle) :param gamma1:
+        shear component :param gamma2: shear component :param ra_0: x/ra position where
+        shear deflection is 0 :param dec_0: y/dec position where shear deflection is 0
+        :return: f_xx, f_xy, f_yx, f_yy."""
         kappa, gamma1_, gamma2_ = self._kappa_reduced(gamma1, gamma2)
         f_xx_g, f_xy_g, f_yx_g, f_yy_g = self._shear.hessian(
             x, y, gamma1_, gamma2_, ra_0, dec_0

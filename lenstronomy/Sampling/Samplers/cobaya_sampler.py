@@ -19,16 +19,16 @@ class CobayaSampler(object):
 
         Torrado & Lewis,
         https://arxiv.org/abs/2005.05290
-        and https://ascl.net/1910.019
+         and https://ascl.net/1910.019
 
         For more information about Cobaya, see
         https://cobaya.readthedocs.io/en/latest/index.html
 
         :param likelihood_module: LikelihoodModule() instance
         :param mean_start: initial point for parameters are drawn from Gaussians with
-            these means
+                these means
         :param sigma_start: initial point for parameters are drawn from Gaussians with
-            these standard deviations
+                these standard deviations
         """
 
         # get the logL and parameter info from LikelihoodModule
@@ -43,8 +43,9 @@ class CobayaSampler(object):
         self._sigma_start = sigma_start
 
     def run(self, **kwargs):
-        """
-        :param kwargs: dictionary of keyword arguments for Cobaya. kwargs that can be passed are:
+        """:param kwargs: dictionary of keyword arguments for Cobaya.
+
+        kwargs that can be passed are:
         'proposal_widths' (standard deviation of the Gaussian from which initial point is drawn, list or dict),
         'latex' (list of LaTeX lables for params),
         'path' (where products will be saved, string),

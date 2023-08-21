@@ -52,10 +52,7 @@ class PowerLawParamManager(object):
     """
 
     def __init__(self, kwargs_lens_init):
-        """
-
-        :param kwargs_lens_init: the initial kwargs_lens before optimizing
-        """
+        """:param kwargs_lens_init: the initial kwargs_lens before optimizing."""
 
         self.kwargs_lens = kwargs_lens_init
 
@@ -73,6 +70,7 @@ class PowerLawParamManager(object):
         fixed.
 
         Note that this requires a specific ordering of lens_model_list
+
         :return:
         """
 
@@ -120,11 +118,8 @@ class PowerLawParamManager(object):
 
     @staticmethod
     def kwargs_to_args(kwargs):
-        """
-
-        :param kwargs: keyword arguments corresponding to the lens model parameters being optimized
-        :return: array of lens model parameters
-        """
+        """:param kwargs: keyword arguments corresponding to the lens model parameters
+        being optimized :return: array of lens model parameters."""
 
         thetaE = kwargs[0]["theta_E"]
         center_x = kwargs[0]["center_x"]
@@ -143,11 +138,8 @@ class PowerLawFreeShear(PowerLawParamManager):
     the power law slope allowed to vary."""
 
     def args_to_kwargs(self, args):
-        """
-
-        :param args: array of lens model parameters
-        :return: dictionary of lens model parameters
-        """
+        """:param args: array of lens model parameters :return: dictionary of lens model
+        parameters."""
 
         gamma = self.kwargs_lens[0]["gamma"]
         kwargs_epl = {
@@ -176,21 +168,15 @@ class PowerLawFixedShear(PowerLawParamManager):
     """
 
     def __init__(self, kwargs_lens_init, shear_strength):
-        """
-
-        :param kwargs_lens_init: the initial kwargs_lens before optimizing
-        :param shear_strength: the strenght of the external shear to be kept fixed
-        """
+        """:param kwargs_lens_init: the initial kwargs_lens before optimizing :param
+        shear_strength: the strenght of the external shear to be kept fixed."""
         self._shear_strength = shear_strength
 
         super(PowerLawFixedShear, self).__init__(kwargs_lens_init)
 
     def args_to_kwargs(self, args):
-        """
-
-        :param args: array of lens model parameters
-        :return: dictionary of lens model parameters with fixed shear = shear_strength
-        """
+        """:param args: array of lens model parameters :return: dictionary of lens model
+        parameters with fixed shear = shear_strength."""
 
         (thetaE, center_x, center_y, e1, e2, g1, g2) = args
         gamma = self.kwargs_lens[0]["gamma"]
@@ -233,6 +219,7 @@ class PowerLawFreeShearMultipole(PowerLawParamManager):
         fixed.
 
         Note that this requires a specific ordering of lens_model_list
+
         :return:
         """
 
@@ -284,6 +271,7 @@ class PowerLawFixedShearMultipole(PowerLawFixedShear):
         fixed.
 
         Note that this requires a specific ordering of lens_model_list
+
         :return:
         """
 

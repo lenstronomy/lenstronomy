@@ -76,7 +76,7 @@ class SinglePlaneLOS(SinglePlane):
 
         :param kwargs: the list of key-word arguments passed to lenstronomy
         :return: a list of kwargs corresponding to the lens and a list of kwargs
-            corresponding to the LOS effects
+                corresponding to the LOS effects
         """
 
         kwargs_los = copy.deepcopy(kwargs[self._index_los])
@@ -106,7 +106,7 @@ class SinglePlaneLOS(SinglePlane):
         :param x_source: source position
         :param y_source: source position
         :param kwargs_lens: list of keyword arguments of lens model parameters matching
-            the lens model classes
+                the lens model classes
         :return: fermat potential in arcsec**2 as a list
         """
 
@@ -202,7 +202,7 @@ class SinglePlaneLOS(SinglePlane):
         :param y: y-position (preferentially arcsec)
         :type y: numpy array
         :param kwargs: list of keyword arguments of lens model parameters matching the
-            lens model classes, including line-of-sight corrections
+                lens model classes, including line-of-sight corrections
         :param k: only evaluate the k-th lens model
         :return: deflection angles in units of arcsec
         """
@@ -256,7 +256,7 @@ class SinglePlaneLOS(SinglePlane):
         :param y: y-position (preferentially arcsec)
         :type y: numpy array
         :param kwargs: list of keyword arguments of lens model parameters matching the
-            lens model classes
+                lens model classes
         :param k: only evaluate the k-th lens model
         :return: f_xx, f_xy, f_yx, f_yy components
         """
@@ -315,7 +315,7 @@ class SinglePlaneLOS(SinglePlane):
 
         :param r: radius (in angular units)
         :param kwargs: list of keyword arguments of lens model parameters matching the
-            lens model classes
+                lens model classes
         :param bool_list: list of bools that are part of the output
         :return: mass (in angular units, modulo epsilon_crit)
         """
@@ -356,7 +356,7 @@ class SinglePlaneLOS(SinglePlane):
 
         :param r: radius (in angular units)
         :param kwargs: list of keyword arguments of lens model parameters matching the
-            lens model classes
+                lens model classes
         :param bool_list: list of bools that are part of the output
         :return: mass density at radius r (in angular units, modulo epsilon_crit)
         """
@@ -378,7 +378,7 @@ class SinglePlaneLOS(SinglePlane):
         :param y: y-position (preferentially arcsec)
         :type y: numpy array
         :param kwargs: list of keyword arguments of lens model parameters matching the
-            lens model classes
+                lens model classes
         :param k: only evaluate the k-th lens model
         :return: lensing potential in units of arcsec^2
         """

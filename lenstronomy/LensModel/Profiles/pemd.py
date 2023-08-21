@@ -59,21 +59,17 @@ class PEMD(LensProfileBase):
     }
 
     def __init__(self, suppress_fastell=False):
-        """
-
-        :param suppress_fastell: bool, if True, does not raise if fastell4py is not installed
-        """
+        """:param suppress_fastell: bool, if True, does not raise if fastell4py is not
+        installed."""
         self._s_scale = 0.0000001  # smoothing scale as used to numerically compute a power-law profile
         self.spp = SPP()
         self.spemd_smooth = SPEMD(suppress_fastell=suppress_fastell)
         super(PEMD, self).__init__()
 
     def function(self, x, y, theta_E, gamma, e1, e2, center_x=0, center_y=0):
-        """
+        """:param x: x-coordinate (angle) :param y: y-coordinate (angle) :param theta_E:
+        Einstein radius (angle), pay attention to specific definition!
 
-        :param x: x-coordinate (angle)
-        :param y: y-coordinate (angle)
-        :param theta_E: Einstein radius (angle), pay attention to specific definition!
         :param gamma: logarithmic slope of the power-law profile. gamma=2 corresponds to isothermal
         :param e1: eccentricity component
         :param e2: eccentricity component
@@ -86,11 +82,9 @@ class PEMD(LensProfileBase):
         )
 
     def derivatives(self, x, y, theta_E, gamma, e1, e2, center_x=0, center_y=0):
-        """
+        """:param x: x-coordinate (angle) :param y: y-coordinate (angle) :param theta_E:
+        Einstein radius (angle), pay attention to specific definition!
 
-        :param x: x-coordinate (angle)
-        :param y: y-coordinate (angle)
-        :param theta_E: Einstein radius (angle), pay attention to specific definition!
         :param gamma: logarithmic slope of the power-law profile. gamma=2 corresponds to isothermal
         :param e1: eccentricity component
         :param e2: eccentricity component
@@ -103,11 +97,9 @@ class PEMD(LensProfileBase):
         )
 
     def hessian(self, x, y, theta_E, gamma, e1, e2, center_x=0, center_y=0):
-        """
+        """:param x: x-coordinate (angle) :param y: y-coordinate (angle) :param theta_E:
+        Einstein radius (angle), pay attention to specific definition!
 
-        :param x: x-coordinate (angle)
-        :param y: y-coordinate (angle)
-        :param theta_E: Einstein radius (angle), pay attention to specific definition!
         :param gamma: logarithmic slope of the power-law profile. gamma=2 corresponds to isothermal
         :param e1: eccentricity component
         :param e2: eccentricity component
@@ -121,9 +113,14 @@ class PEMD(LensProfileBase):
 
     def mass_3d_lens(self, r, theta_E, gamma, e1=None, e2=None):
         """Computes the spherical power-law mass enclosed (with SPP routine) :param r:
-        radius within the mass is computed :param theta_E: Einstein radius :param gamma:
-        power-law slope :param e1: eccentricity component (not used) :param e2:
-        eccentricity component (not used) :return: mass enclosed a 3D radius r."""
+
+        radius within the mass is computed
+        :param theta_E: Einstein radius
+        :param gamma: power-law slope
+        :param e1: eccentricity component (not used)
+        :param e2: eccentricity component (not used)
+        :return: mass enclosed a 3D radius r.
+        """
         return self.spp.mass_3d_lens(r, theta_E, gamma)
 
     def density_lens(self, r, theta_E, gamma, e1=None, e2=None):

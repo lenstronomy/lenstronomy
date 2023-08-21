@@ -104,13 +104,14 @@ class ProfileListBase(object):
         kwargs_interp=None,
         kwargs_synthesis=None,
     ):
-        """
+        """:param lens_model_list: list of strings with lens model names :param
+        numerical_alpha_class: an instance of a custom class for use in NumericalAlpha()
+        lens model deflection angles as a lens model.
 
-        :param lens_model_list: list of strings with lens model names
-        :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model
-         deflection angles as a lens model. See the documentation in Profiles.numerical_deflections
+        See the documentation in Profiles.numerical_deflections
         :param kwargs_interp: interpolation keyword arguments specifying the numerics.
-         See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
+                See description in the Interpolate() class. Only applicable for
+                'INTERPOL' and 'INTERPOL_SCALED' models.
         :param kwargs_synthesis: keyword arguments for the 'SYNTHESIS' lens model, if applicable
         """
         self.func_list = self._load_model_instances(
@@ -188,14 +189,14 @@ class ProfileListBase(object):
         z_lens=None,
         z_source=None,
     ):
-        """
+        """:param lens_type: string, lens model type :param custom_class: custom class
+        :param z_lens: lens redshift  # currently only used in NFW_MC model as this is
+        redshift dependent :param z_source: source redshift  # currently only used in
+        NFW_MC model as this is redshift dependent :param kwargs_interp: interpolation
+        keyword arguments specifying the numerics.
 
-        :param lens_type: string, lens model type
-        :param custom_class: custom class
-        :param z_lens: lens redshift  # currently only used in NFW_MC model as this is redshift dependent
-        :param z_source: source redshift  # currently only used in NFW_MC model as this is redshift dependent
-        :param kwargs_interp: interpolation keyword arguments specifying the numerics.
-         See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
+        See description in the Interpolate() class. Only applicable for 'INTERPOL' and
+        'INTERPOL_SCALED' models.
         :return: class instance of the lens model type
         """
 
@@ -586,11 +587,8 @@ class ProfileListBase(object):
         return convert_bool_list(n=self._num_func, k=k)
 
     def set_static(self, kwargs_list):
-        """
-
-        :param kwargs_list: list of keyword arguments for each profile
-        :return: kwargs_list
-        """
+        """:param kwargs_list: list of keyword arguments for each profile :return:
+        kwargs_list."""
         for i, func in enumerate(self.func_list):
             func.set_static(**kwargs_list[i])
         return kwargs_list

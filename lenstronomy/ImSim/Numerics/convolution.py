@@ -28,11 +28,8 @@ class PixelKernelConvolution(object):
     """Class to compute convolutions for a given pixelized kernel (fft, grid)"""
 
     def __init__(self, kernel, convolution_type="fft_static"):
-        """
-
-        :param kernel: 2d array, convolution kernel
-        :param convolution_type: string, 'fft', 'grid', 'fft_static' mode of 2d convolution
-        """
+        """:param kernel: 2d array, convolution kernel :param convolution_type: string,
+        'fft', 'grid', 'fft_static' mode of 2d convolution."""
         self._kernel = kernel
         if convolution_type not in ["fft", "grid", "fft_static"]:
             raise ValueError("convolution_type %s not supported!" % convolution_type)
@@ -43,7 +40,7 @@ class PixelKernelConvolution(object):
         """Access pixelated kernel.
 
         :param num_pix: size of returned kernel (odd number per axis). If None, return
-            the original kernel.
+                the original kernel.
         :return: pixel kernel centered
         """
         if num_pix is not None:
@@ -51,18 +48,12 @@ class PixelKernelConvolution(object):
         return self._kernel
 
     def copy_transpose(self):
-        """
-
-        :return: copy of the class with kernel set to the transpose of original one
-        """
+        """:return: copy of the class with kernel set to the transpose of original
+        one."""
         return PixelKernelConvolution(self._kernel.T, convolution_type=self._type)
 
     def convolution2d(self, image):
-        """
-
-        :param image: 2d array (image) to be convolved
-        :return: fft convolution
-        """
+        """:param image: 2d array (image) to be convolved :return: fft convolution."""
         if self._type == "fft":
             image_conv = signal.fftconvolve(image, self._kernel, mode="same")
         elif self._type == "fft_static":
@@ -184,12 +175,9 @@ class PixelKernelConvolution(object):
         return s1, s2, complex_result, shape, fshape, fslice, sp2
 
     def re_size_convolve(self, image_low_res, image_high_res=None):
-        """
-
-        :param image_low_res: regular sampled image/model
-        :param image_high_res: supersampled image/model to be convolved on a regular pixel grid
-        :return: convolved and re-sized image
-        """
+        """:param image_low_res: regular sampled image/model :param image_high_res:
+        supersampled image/model to be convolved on a regular pixel grid :return:
+        convolved and re-sized image."""
         return self.convolution2d(image_low_res)
 
 
@@ -205,13 +193,10 @@ class SubgridKernelConvolution(object):
         supersampling_kernel_size=None,
         convolution_type="fft_static",
     ):
-        """
-
-        :param kernel_supersampled: kernel in supersampled pixels
-        :param supersampling_factor: supersampling factor relative to the image pixel grid
-        :param supersampling_kernel_size: number of pixels (in units of the image pixels) that are convolved with the
-         supersampled kernel
-        """
+        """:param kernel_supersampled: kernel in supersampled pixels :param
+        supersampling_factor: supersampling factor relative to the image pixel grid
+        :param supersampling_kernel_size: number of pixels (in units of the image
+        pixels) that are convolved with the supersampled kernel."""
         # n_high = len(kernel_supersampled)
         self._supersampling_factor = supersampling_factor
         # numPix = int(n_high / self._supersampling_factor)
@@ -237,11 +222,8 @@ class SubgridKernelConvolution(object):
         )
 
     def convolution2d(self, image):
-        """
-
-        :param image: 2d array (high resoluton image) to be convolved and re-sized
-        :return: convolved image
-        """
+        """:param image: 2d array (high resoluton image) to be convolved and re-sized
+        :return: convolved image."""
 
         image_high_res_conv = self._high_res_conv.convolution2d(image)
         image_resized_conv = image_util.re_size(
@@ -253,11 +235,8 @@ class SubgridKernelConvolution(object):
         return image_resized_conv
 
     def re_size_convolve(self, image_low_res, image_high_res):
-        """
-
-        :param image_high_res: supersampled image/model to be convolved on a regular pixel grid
-        :return: convolved and re-sized image
-        """
+        """:param image_high_res: supersampled image/model to be convolved on a regular
+        pixel grid :return: convolved and re-sized image."""
         image_high_res_conv = self._high_res_conv.convolution2d(image_high_res)
         image_resized_conv = image_util.re_size(
             image_high_res_conv, self._supersampling_factor
@@ -282,13 +261,12 @@ class MultiGaussianConvolution(object):
         supersampling_convolution=False,
         truncation=2,
     ):
-        """
+        """:param sigma_list: list of std value of Gaussian kernel :param fraction_list:
+        fraction of flux to be convoled with each Gaussian kernel :param pixel_scale:
+        scale of pixel width (to convert sigmas into units of pixels) :param truncation:
+        float.
 
-        :param sigma_list: list of std value of Gaussian kernel
-        :param fraction_list: fraction of flux to be convoled with each Gaussian kernel
-        :param pixel_scale: scale of pixel width (to convert sigmas into units of pixels)
-        :param truncation: float. Truncate the filter at this many standard deviations.
-         Default is 4.0.
+        Truncate the filter at this many standard deviations. Default is 4.0.
         """
         self._num_gaussians = len(sigma_list)
         self._sigmas_scaled = np.array(sigma_list) / pixel_scale
@@ -332,11 +310,8 @@ class MultiGaussianConvolution(object):
         return image_conv
 
     def re_size_convolve(self, image_low_res, image_high_res):
-        """
-
-        :param image_high_res: supersampled image/model to be convolved on a regular pixel grid
-        :return: convolved and re-sized image
-        """
+        """:param image_high_res: supersampled image/model to be convolved on a regular
+        pixel grid :return: convolved and re-sized image."""
         if self._supersampling_convolution is True:
             image_high_res_conv = self.convolution2d(image_high_res)
             image_resized_conv = image_util.re_size(
@@ -367,11 +342,8 @@ class FWHMGaussianConvolution(object):
     approximation."""
 
     def __init__(self, kernel, truncation=4):
-        """
-
-        :param kernel: 2d kernel
-        :param truncation: sigma scaling of kernel truncation
-        """
+        """:param kernel: 2d kernel :param truncation: sigma scaling of kernel
+        truncation."""
         fwhm = kernel_util.fwhm_kernel(kernel)
         self._sigma = util.fwhm2sigma(fwhm)
         self._truncation = truncation
@@ -394,11 +366,8 @@ class MGEConvolution(object):
     """Approximates a 2d kernel with an azimuthal Multi-Gaussian expansion."""
 
     def __init__(self, kernel, pixel_scale, order=1):
-        """
-
-        :param kernel: 2d convolution kernel (centered, odd axis number)
-        :param order: order of Multi-Gaussian Expansion
-        """
+        """:param kernel: 2d convolution kernel (centered, odd axis number) :param
+        order: order of Multi-Gaussian Expansion."""
         amps, sigmas, norm = kernel_util.mge_kernel(kernel, order=order)
         # make instance o MultiGaussian convolution kernel
         self._mge_conv = MultiGaussianConvolution(
@@ -411,17 +380,13 @@ class MGEConvolution(object):
         # store difference between MGE approximation and real kernel
 
     def convolution2d(self, image):
-        """
+        """:param image:
 
-        :param image:
         :return:
         """
         return self._mge_conv.convolution2d(image)
 
     def kernel_difference(self):
-        """
-
-        :return: difference between true kernel and MGE approximation
-        """
+        """:return: difference between true kernel and MGE approximation."""
         kernel_mge = self._mge_conv.pixel_kernel(num_pix=len(self._kernel))
         return self._kernel - kernel_mge

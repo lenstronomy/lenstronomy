@@ -16,26 +16,17 @@ export, __all__ = exporter()
 
 @export
 def gaussian(R, sigma, amp):
-    """
-
-    :param R: radius
-    :param sigma: gaussian sigma
-    :param amp: normalization
-    :return: Gaussian function
-    """
+    """:param R: radius :param sigma: gaussian sigma :param amp: normalization :return:
+    Gaussian function."""
     c = amp / (2 * np.pi * sigma**2)
     return c * np.exp(-((R / float(sigma)) ** 2) / 2.0)
 
 
 @export
 def mge_1d(r_array, flux_r, N=20, linspace=False):
-    """
-
-    :param r_array: list or radii (numpy array)
-    :param flux_r: list of flux values (numpy array)
-    :param N: number of Gaussians
-    :return: amplitudes and Gaussian sigmas for the best 1d flux profile
-    """
+    """:param r_array: list or radii (numpy array) :param flux_r: list of flux values
+    (numpy array) :param N: number of Gaussians :return: amplitudes and Gaussian sigmas
+    for the best 1d flux profile."""
     if N == 0:
         warnings.warn(
             "Number of MGE went down to zero! This should not happen!", Warning
@@ -54,11 +45,10 @@ def mge_1d(r_array, flux_r, N=20, linspace=False):
 
 @export
 def _mge_1d(r_array, flux_r, N=20, linspace=False):
-    """
+    """:param r_array:
 
-    :param r_array:
-    :param flux_r:
-    :param N:
+    :param flux_r: 
+    :param N: 
     :return:
     """
     if linspace is True:
@@ -81,7 +71,7 @@ def de_projection_3d(amplitudes, sigmas):
     """De-projects a gaussian (or list of multiple Gaussians from a 2d projected to a 3d
     profile) :param amplitudes:
 
-    :param sigmas:
+    :param sigmas: 
     :return:
     """
     amplitudes_3d = amplitudes / sigmas / np.sqrt(2 * np.pi)

@@ -9,25 +9,18 @@ class PointSourceRendering(object):
     """Numerics to compute the point source response on an image."""
 
     def __init__(self, pixel_grid, supersampling_factor, psf):
-        """
-
-        :param pixel_grid: PixelGrid() instance
-        :param supersampling_factor: int, factor of supersampling of point source
-        :param psf: PSF() instance
-        """
+        """:param pixel_grid: PixelGrid() instance :param supersampling_factor: int,
+        factor of supersampling of point source :param psf: PSF() instance."""
         self._pixel_grid = pixel_grid
         self._nx, self._ny = self._pixel_grid.num_pixel_axes
         self._supersampling_factor = supersampling_factor
         self._psf = psf
 
     def point_source_rendering(self, ra_pos, dec_pos, amp):
-        """
-
-        :param ra_pos: list of RA positions of point source(s)
-        :param dec_pos: list of DEC positions of point source(s)
-        :param amp: list of amplitudes of point source(s)
-        :return: 2d numpy array of size of the image with the point source(s) rendered
-        """
+        """:param ra_pos: list of RA positions of point source(s) :param dec_pos: list
+        of DEC positions of point source(s) :param amp: list of amplitudes of point
+        source(s) :return: 2d numpy array of size of the image with the point source(s)
+        rendered."""
         subgrid = self._supersampling_factor
         x_pos, y_pos = self._pixel_grid.map_coord2pix(ra_pos, dec_pos)
         # translate coordinates to higher resolution grid
@@ -64,15 +57,14 @@ class PointSourceRendering(object):
         return self._kernel_supersampled_instance
 
     def psf_error_map(self, ra_pos, dec_pos, amp, data, fix_psf_error_map=False):
-        """
+        """:param ra_pos: image positions of point sources :param dec_pos: image
+        positions of point sources :param amp: amplitude of modeled point sources :param
+        data: 2d numpy array of the data :param fix_psf_error_map: bool, if True,
+        estimates the error based on the input (modeled) amplitude, else uses the data
+        to do so.
 
-        :param ra_pos: image positions of point sources
-        :param dec_pos: image positions of point sources
-        :param amp: amplitude of modeled point sources
-        :param data: 2d numpy array of the data
-        :param fix_psf_error_map: bool, if True, estimates the error based on the input (modeled) amplitude, else uses
-         the data to do so.
-        :return: 2d array of size of the image with error terms (sigma**2) expected from inaccuracies in the PSF modeling
+        :return: 2d array of size of the image with error terms (sigma**2) expected from
+                inaccuracies in the PSF modeling
         """
         x_pos, y_pos = self._pixel_grid.map_coord2pix(ra_pos, dec_pos)
         psf_kernel = self._psf.kernel_point_source

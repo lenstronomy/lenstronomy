@@ -13,10 +13,7 @@ class TestNIE(object):
         pass
 
     def test_function(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         lens = NIE_lens()
         light = NIE_light()
 

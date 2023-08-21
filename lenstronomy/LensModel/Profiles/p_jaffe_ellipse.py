@@ -7,10 +7,9 @@ __all__ = ["PJaffe_Ellipse"]
 
 
 class PJaffe_Ellipse(LensProfileBase):
-    """
-    class to compute the DUAL PSEUDO ISOTHERMAL ELLIPTICAL MASS DISTRIBUTION
-    based on Eliasdottir (2007) https://arxiv.org/pdf/0710.5636.pdf Appendix A
-    with the ellipticity implemented in the potential
+    """Class to compute the DUAL PSEUDO ISOTHERMAL ELLIPTICAL MASS DISTRIBUTION based on
+    Eliasdottir (2007) https://arxiv.org/pdf/0710.5636.pdf Appendix A with the
+    ellipticity implemented in the potential.
 
     Module name: 'PJAFFE_ELLIPSE';
 
@@ -37,7 +36,6 @@ class PJaffe_Ellipse(LensProfileBase):
 
     .. math::
         \\sigma_0 = \\frac{\\Sigma_0}{\\Sigma_{\\rm crit}}
-
     """
 
     param_names = ["sigma0", "Ra", "Rs", "e1", "e2", "center_x", "center_y"]
@@ -113,9 +111,8 @@ class PJaffe_Ellipse(LensProfileBase):
         return f_xx, f_xy, f_yx, f_yy
 
     def mass_3d_lens(self, r, sigma0, Ra, Rs, e1=0, e2=0):
-        """
+        """:param r:
 
-        :param r:
         :param sigma0:
         :param Ra:
         :param Rs:

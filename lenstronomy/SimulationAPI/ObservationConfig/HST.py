@@ -30,25 +30,24 @@ TDLMC_F160W_band_obs = {
     "seeing": None,
     "psf_type": "PIXEL",  # note kernel_point_source (the PSF map) must be provided separately
 }
-"""
-:keyword exposure_time: exposure time per image (in seconds)
-:keyword sky_brightness: sky brightness (in magnitude per square arcseconds in units of electrons)
-:keyword magnitude_zero_point: magnitude in which 1 count (e-) per second per arcsecond square is registered
-:keyword num_exposures: number of exposures that are combined (depends on coadd_years)
-:keyword seeing: Full-Width-at-Half-Maximum (FWHM) of PSF
-:keyword psf_type: string, type of PSF ('GAUSSIAN' and 'PIXEL' supported)
-"""
+""":keyword exposure_time: exposure time per image (in seconds) :keyword sky_brightness:
+sky brightness (in magnitude per square arcseconds in units of electrons) :keyword
+magnitude_zero_point: magnitude in which 1 count (e-) per second per arcsecond square is
+registered :keyword num_exposures: number of exposures that are combined (depends on
+coadd_years) :keyword seeing: Full-Width-at-Half-Maximum (FWHM) of PSF :keyword
+psf_type: string, type of PSF ('GAUSSIAN' and 'PIXEL' supported)"""
 
 
 class HST(object):
     """Class contains HST instrument and observation configurations."""
 
     def __init__(self, band="TDLMC_F160W", psf_type="PIXEL", coadd_years=None):
-        """
+        """:param band: string, 'WFC3_F160W' or 'TDLMC_F160W' supported.
 
-        :param band: string, 'WFC3_F160W' or 'TDLMC_F160W' supported. Determines obs dictionary.
+        Determines obs dictionary.
         :param psf_type: string, type of PSF ('GAUSSIAN', 'PIXEL' supported).
-        :param coadd_years: int, number of years corresponding to num_exposures in obs dict. Currently supported: None.
+        :param coadd_years: int, number of years corresponding to num_exposures in obs
+                dict. Currently supported: None.
         """
 
         if band == "TDLMC_F160W":
@@ -84,9 +83,6 @@ class HST(object):
         ccd_gain: electrons/ADU (analog-to-digital unit)."""
 
     def kwargs_single_band(self):
-        """
-
-        :return: merged kwargs from camera and obs dicts
-        """
+        """:return: merged kwargs from camera and obs dicts."""
         kwargs = util.merge_dicts(self.camera, self.obs)
         return kwargs

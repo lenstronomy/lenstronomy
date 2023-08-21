@@ -13,10 +13,7 @@ class TestInterpol(object):
         pass
 
     def test_function(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         for len_x, len_y in [(20, 20), (14, 20)]:
             x, y = util.make_grid(numPix=(len_x, len_y), deltapix=1.0)
             gauss = Gaussian()

@@ -18,20 +18,17 @@ class LensParam(object):
         solver_type="NONE",
         num_shapelet_lens=0,
     ):
-        """
-
-        :param lens_model_list: list of strings of lens model names
-        :param kwargs_fixed: list of keyword arguments for model parameters to be held fixed
-        :param kwargs_lower: list of keyword arguments of the lower bounds of the model parameters
-        :param kwargs_upper: list of keyword arguments of the upper bounds of the model parameters
-        :param kwargs_logsampling: list of keyword arguments of parameters to be sampled in log10 space
-        :param num_images: number of images to be constrained by a non-linear solver
-         (only relevant when shapelet potential functions are used)
-        :param solver_type: string, type of non-linear solver
-         (only relevant in this class when 'SHAPELETS' is the solver type)
-        :param num_shapelet_lens: integer, number of shapelets in the lensing potential
-         (only relevant when 'SHAPELET' lens model is used)
-        """
+        """:param lens_model_list: list of strings of lens model names :param
+        kwargs_fixed: list of keyword arguments for model parameters to be held fixed
+        :param kwargs_lower: list of keyword arguments of the lower bounds of the model
+        parameters :param kwargs_upper: list of keyword arguments of the upper bounds of
+        the model parameters :param kwargs_logsampling: list of keyword arguments of
+        parameters to be sampled in log10 space :param num_images: number of images to
+        be constrained by a non-linear solver (only relevant when shapelet potential
+        functions are used) :param solver_type: string, type of non-linear solver (only
+        relevant in this class when 'SHAPELETS' is the solver type) :param
+        num_shapelet_lens: integer, number of shapelets in the lensing potential (only
+        relevant when 'SHAPELET' lens model is used)"""
 
         self.model_list = lens_model_list
         self.kwargs_fixed = kwargs_fixed
@@ -64,12 +61,10 @@ class LensParam(object):
         self.kwargs_logsampling = kwargs_logsampling
 
     def get_params(self, args, i):
-        """
-
-        :param args: tuple of individual floats of sampling argument
-        :param i: integer, index at the beginning of the tuple for read out to keyword argument convention
-        :return: kwargs_list, index at the end of read out of this model component
-        """
+        """:param args: tuple of individual floats of sampling argument :param i:
+        integer, index at the beginning of the tuple for read out to keyword argument
+        convention :return: kwargs_list, index at the end of read out of this model
+        component."""
 
         kwargs_list = []
         for k, model in enumerate(self.model_list):
@@ -137,11 +132,8 @@ class LensParam(object):
         return kwargs_list, i
 
     def set_params(self, kwargs_list):
-        """
-
-        :param kwargs_list: keyword argument list of lens model components
-        :return: tuple of arguments (floats) that are being sampled
-        """
+        """:param kwargs_list: keyword argument list of lens model components :return:
+        tuple of arguments (floats) that are being sampled."""
 
         args = []
         for k, model in enumerate(self.model_list):
@@ -198,10 +190,8 @@ class LensParam(object):
         return args
 
     def num_param(self):
-        """
-
-        :return: integer, number of free parameters being sampled from the lens model components
-        """
+        """:return: integer, number of free parameters being sampled from the lens model
+        components."""
         num = 0
         list = []
         type = "lens"

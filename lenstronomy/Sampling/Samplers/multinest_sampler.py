@@ -32,18 +32,16 @@ class MultiNestSampler(NestedSampler):
         remove_output_dir=False,
         use_mpi=False,
     ):
-        """
-        :param likelihood_module: likelihood_module like in likelihood.py (should be callable)
-        :param prior_type: 'uniform' of 'gaussian', for converting the unit hypercube to param cube
-        :param prior_means: if prior_type is 'gaussian', mean for each param
-        :param prior_sigmas: if prior_type is 'gaussian', std dev for each param
-        :param width_scale: scale the widths of the parameters space by this factor
-        :param sigma_scale: if prior_type is 'gaussian', scale the gaussian sigma by this factor
-        :param output_dir: name of the folder that will contain output files
-        :param output_basename: prefix for output files
-        :param remove_output_dir: remove the output_dir folder after completion
-        :param use_mpi: flag directly passed to MultInest sampler (NOT TESTED)
-        """
+        """:param likelihood_module: likelihood_module like in likelihood.py (should be
+        callable) :param prior_type: 'uniform' of 'gaussian', for converting the unit
+        hypercube to param cube :param prior_means: if prior_type is 'gaussian', mean
+        for each param :param prior_sigmas: if prior_type is 'gaussian', std dev for
+        each param :param width_scale: scale the widths of the parameters space by this
+        factor :param sigma_scale: if prior_type is 'gaussian', scale the gaussian sigma
+        by this factor :param output_dir: name of the folder that will contain output
+        files :param output_basename: prefix for output files :param remove_output_dir:
+        remove the output_dir folder after completion :param use_mpi: flag directly
+        passed to MultInest sampler (NOT TESTED)"""
         self._check_install()
         super(MultiNestSampler, self).__init__(
             likelihood_module,

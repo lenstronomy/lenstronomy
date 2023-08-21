@@ -70,16 +70,13 @@ class PointSourceParam(object):
         kwargs_lower=None,
         kwargs_upper=None,
     ):
-        """
-
-        :param model_list: list of point source model names
-        :param kwargs_fixed: list of keyword arguments with parameters to be held fixed
-        :param num_point_source_list: list of number of point sources per point source model class
-        :param linear_solver: bool, if True, does not return linear parameters for the sampler
-         (will be solved linearly instead)
-        :param fixed_magnification_list: list of booleans, if entry is True, keeps one overall scaling among the
-         point sources in this class
-        """
+        """:param model_list: list of point source model names :param kwargs_fixed: list
+        of keyword arguments with parameters to be held fixed :param
+        num_point_source_list: list of number of point sources per point source model
+        class :param linear_solver: bool, if True, does not return linear parameters for
+        the sampler (will be solved linearly instead) :param fixed_magnification_list:
+        list of booleans, if entry is True, keeps one overall scaling among the point
+        sources in this class."""
         self.model_list = model_list
         if num_point_source_list is None:
             num_point_source_list = [1] * len(model_list)
@@ -133,12 +130,10 @@ class PointSourceParam(object):
         self.upper_limit = kwargs_upper
 
     def get_params(self, args, i):
-        """
-
-        :param args: sorted list of floats corresponding to the parameters being sampled
-        :param i: int, index of first entry relevant for being managed by this class
-        :return: keyword argument list of point sources, index relevant for the next class
-        """
+        """:param args: sorted list of floats corresponding to the parameters being
+        sampled :param i: int, index of first entry relevant for being managed by this
+        class :return: keyword argument list of point sources, index relevant for the
+        next class."""
         kwargs_list = []
         for k, param_group in enumerate(self.param_groups):
             kwargs, i = ModelParamGroup.compose_get_params(
@@ -148,11 +143,8 @@ class PointSourceParam(object):
         return kwargs_list, i
 
     def set_params(self, kwargs_list):
-        """
-
-        :param kwargs_list: keyword argument list
-        :return: sorted list of parameters being sampled extracted from kwargs_list
-        """
+        """:param kwargs_list: keyword argument list :return: sorted list of parameters
+        being sampled extracted from kwargs_list."""
         args = []
         for k, param_group in enumerate(self.param_groups):
             kwargs = kwargs_list[k]
@@ -195,10 +187,7 @@ class PointSourceParam(object):
         return kwargs_fixed
 
     def num_param_linear(self):
-        """
-
-        :return: number of linear parameters
-        """
+        """:return: number of linear parameters."""
         num = 0
         if self._linear_solver is True:
             for k, model in enumerate(self.model_list):

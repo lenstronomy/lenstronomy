@@ -95,13 +95,11 @@ class LensProfileBase(object):
 
         :param kwargs: lens model parameters
         :return: no return, for certain lens model some private self variables are
-            initiated
+                initiated
         """
         pass
 
     def set_dynamic(self):
-        """
-
-        :return: no return, deletes pre-computed variables for certain lens models
-        """
+        """:return: no return, deletes pre-computed variables for certain lens
+        models."""
         pass

@@ -45,17 +45,10 @@ class TNFW(LensProfileBase):
         super(LensProfileBase, self).__init__()
 
     def function(self, x, y, Rs, alpha_Rs, r_trunc, center_x=0, center_y=0):
-        """
-
-        :param x: angular position
-        :param y: angular position
-        :param Rs: angular turn over point
-        :param alpha_Rs: deflection at Rs
-        :param r_trunc: truncation radius
-        :param center_x: center of halo
-        :param center_y: center of halo
-        :return: lensing potential
-        """
+        """:param x: angular position :param y: angular position :param Rs: angular turn
+        over point :param alpha_Rs: deflection at Rs :param r_trunc: truncation radius
+        :param center_x: center of halo :param center_y: center of halo :return: lensing
+        potential."""
         rho0_input = self.alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs)
         x_ = x - center_x
         y_ = y - center_y

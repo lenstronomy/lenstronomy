@@ -34,21 +34,17 @@ class TDCosmography(KinematicsAPI):
         anisotropy_model=None,
         **kwargs_kin_api
     ):
-        """
-
-        :param z_lens: redshift of deflector
-        :param z_source: redshift of source
-        :param kwargs_model: model configurations (according to FittingSequence)
-        :param cosmo_fiducial: fiducial cosmology used to compute angular diameter distances where required
-        :param lens_model_kinematics_bool: (optional) bool list, corresponding to lens models being included into the
-         kinematics modeling
-        :param light_model_kinematics_bool: (optional) bool list, corresponding to lens light models being included
-         into the kinematics modeling
-        :param kwargs_seeing: seeing conditions (see observation class in Galkin)
-        :param kwargs_aperture: aperture keyword arguments (see aperture class in Galkin)
-        :param anisotropy_model: string, anisotropy model type
-        :param kwargs_kin_api: additional keyword arguments for KinematicsAPI class instance
-        """
+        """:param z_lens: redshift of deflector :param z_source: redshift of source
+        :param kwargs_model: model configurations (according to FittingSequence) :param
+        cosmo_fiducial: fiducial cosmology used to compute angular diameter distances
+        where required :param lens_model_kinematics_bool: (optional) bool list,
+        corresponding to lens models being included into the kinematics modeling :param
+        light_model_kinematics_bool: (optional) bool list, corresponding to lens light
+        models being included into the kinematics modeling :param kwargs_seeing: seeing
+        conditions (see observation class in Galkin) :param kwargs_aperture: aperture
+        keyword arguments (see aperture class in Galkin) :param anisotropy_model:
+        string, anisotropy model type :param kwargs_kin_api: additional keyword
+        arguments for KinematicsAPI class instance."""
 
         if cosmo_fiducial is None:
             cosmo_fiducial = default_cosmology.get()
@@ -93,9 +89,9 @@ class TDCosmography(KinematicsAPI):
         :param kwargs_ps: point source parameters
         :param kappa_ext: external convergence (optional)
         :param original_ps_position: boolean (only applies when first point source model
-            is of type 'LENSED_POSITION'), uses the image positions in the model
-            parameters and does not re-compute images (which might be differently
-            ordered) in case of the lens equation solver
+                is of type 'LENSED_POSITION'), uses the image positions in the model
+                parameters and does not re-compute images (which might be differently
+                ordered) in case of the lens equation solver
         :return: time delays at image positions for the fixed cosmology in units of days
         """
         fermat_pot = self.fermat_potential(
@@ -110,11 +106,11 @@ class TDCosmography(KinematicsAPI):
         :param kwargs_lens: lens model keyword argument list
         :param kwargs_ps: point source keyword argument list
         :param original_ps_position: boolean (only applies when first point source model
-            is of type 'LENSED_POSITION'), uses the image positions in the model
-            parameters and does not re-compute images (which might be differently
-            ordered) in case of the lens equation solver
+                is of type 'LENSED_POSITION'), uses the image positions in the model
+                parameters and does not re-compute images (which might be differently
+                ordered) in case of the lens equation solver
         :return: Fermat potential of all the image positions in the first point source
-            list entry
+                list entry
         """
         ra_pos, dec_pos = self.PointSource.image_position(
             kwargs_ps, kwargs_lens, original_position=original_ps_position
@@ -221,7 +217,7 @@ class TDCosmography(KinematicsAPI):
         measured time delay from an image pair.
 
         :param d_fermat_model: relative Fermat potential between two images from the
-            same source in units arcsec^2
+                same source in units arcsec^2
         :param dt_measured: measured time delay between the same image pair in units of
             days
         :param kappa_s: external convergence from observer to source
@@ -263,17 +259,13 @@ class TDCosmography(KinematicsAPI):
         kappa_ds=0,
         kappa_d=0,
     ):
-        """
-
-        :param d_fermat_model: relative Fermat potential in units arcsec^2
-        :param dt_measured: measured relative time delay [days]
-        :param sigma_v_measured: 1-sigma Gaussian uncertainty in the measured velocity dispersion
-        :param J: modeled dimensionless kinematic estimate
-        :param kappa_s: LOS convergence from observer to source
-        :param kappa_ds: LOS convergence from deflector to source
-        :param kappa_d: LOS convergence from observer to deflector
-        :return: D_dt, D_d
-        """
+        """:param d_fermat_model: relative Fermat potential in units arcsec^2 :param
+        dt_measured: measured relative time delay [days] :param sigma_v_measured:
+        1-sigma Gaussian uncertainty in the measured velocity dispersion :param J:
+        modeled dimensionless kinematic estimate :param kappa_s: LOS convergence from
+        observer to source :param kappa_ds: LOS convergence from deflector to source
+        :param kappa_d: LOS convergence from observer to deflector :return: D_dt,
+        D_d."""
         ddt = self.ddt_from_time_delay(
             d_fermat_model,
             dt_measured,

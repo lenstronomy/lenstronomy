@@ -41,19 +41,11 @@ class Chameleon(LensProfileBase):
         self._static = static
 
     def function(self, x, y, alpha_1, w_c, w_t, e1, e2, center_x=0, center_y=0):
-        """
-
-        :param x: ra-coordinate
-        :param y: dec-coordinate
-        :param alpha_1: deflection angle at 1 (arcseconds) from the center
-        :param w_c: see Suyu+2014
-        :param w_t: see Suyu+2014
-        :param e1: ellipticity parameter
-        :param e2: ellipticity parameter
-        :param center_x: ra center
-        :param center_y: dec center
-        :return: lensing potential
-        """
+        """:param x: ra-coordinate :param y: dec-coordinate :param alpha_1: deflection
+        angle at 1 (arcseconds) from the center :param w_c: see Suyu+2014 :param w_t:
+        see Suyu+2014 :param e1: ellipticity parameter :param e2: ellipticity parameter
+        :param center_x: ra center :param center_y: dec center :return: lensing
+        potential."""
 
         theta_E_conv, w_c, w_t, s_scale_1, s_scale_2 = self.param_convert(
             alpha_1, w_c, w_t, e1, e2
@@ -68,19 +60,11 @@ class Chameleon(LensProfileBase):
         return f_
 
     def derivatives(self, x, y, alpha_1, w_c, w_t, e1, e2, center_x=0, center_y=0):
-        """
-
-        :param x: ra-coordinate
-        :param y: dec-coordinate
-        :param alpha_1: deflection angle at 1 (arcseconds) from the center
-        :param w_c: see Suyu+2014
-        :param w_t: see Suyu+2014
-        :param e1: ellipticity parameter
-        :param e2: ellipticity parameter
-        :param center_x: ra center
-        :param center_y: dec center
-        :return: deflection angles (RA, DEC)
-        """
+        """:param x: ra-coordinate :param y: dec-coordinate :param alpha_1: deflection
+        angle at 1 (arcseconds) from the center :param w_c: see Suyu+2014 :param w_t:
+        see Suyu+2014 :param e1: ellipticity parameter :param e2: ellipticity parameter
+        :param center_x: ra center :param center_y: dec center :return: deflection
+        angles (RA, DEC)"""
         theta_E_conv, w_c, w_t, s_scale_1, s_scale_2 = self.param_convert(
             alpha_1, w_c, w_t, e1, e2
         )
@@ -95,19 +79,11 @@ class Chameleon(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, alpha_1, w_c, w_t, e1, e2, center_x=0, center_y=0):
-        """
-
-        :param x: ra-coordinate
-        :param y: dec-coordinate
-        :param alpha_1: deflection angle at 1 (arcseconds) from the center
-        :param w_c: see Suyu+2014
-        :param w_t: see Suyu+2014
-        :param e1: ellipticity parameter
-        :param e2: ellipticity parameter
-        :param center_x: ra center
-        :param center_y: dec center
-        :return: second derivatives of the lensing potential (Hessian: f_xx, f_xy, f_yx, f_yy)
-        """
+        """:param x: ra-coordinate :param y: dec-coordinate :param alpha_1: deflection
+        angle at 1 (arcseconds) from the center :param w_c: see Suyu+2014 :param w_t:
+        see Suyu+2014 :param e1: ellipticity parameter :param e2: ellipticity parameter
+        :param center_x: ra center :param center_y: dec center :return: second
+        derivatives of the lensing potential (Hessian: f_xx, f_xy, f_yx, f_yy)"""
         theta_E_conv, w_c, w_t, s_scale_1, s_scale_2 = self.param_convert(
             alpha_1, w_c, w_t, e1, e2
         )
@@ -214,9 +190,8 @@ class Chameleon(LensProfileBase):
         return theta_E_convert, w_c, w_t, s_scale_1, s_scale_2
 
     def set_static(self, alpha_1, w_c, w_t, e1, e2, center_x=0, center_y=0):
-        """
+        """:param alpha_1:
 
-        :param alpha_1:
         :param w_c:
         :param w_t:
         :param e1:
@@ -251,10 +226,7 @@ class Chameleon(LensProfileBase):
         )
 
     def set_dynamic(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         self._static = False
         if hasattr(self, "_theta_convert_static"):
             del self._theta_convert_static
@@ -340,23 +312,15 @@ class DoubleChameleon(LensProfileBase):
         center_x=0,
         center_y=0,
     ):
-        """
-        :param x: ra-coordinate
-        :param y: dec-coordinate
-        :param alpha_1: deflection angle at 1 (arcseconds) from the center
-        :param ratio: ratio of deflection amplitude at radius = 1 of the first to second Chameleon profile
-        :param w_c1: Suyu+2014 for first profile
-        :param w_t1: Suyu+2014 for first profile
-        :param e11: ellipticity parameter for first profile
-        :param e21: ellipticity parameter for first profile
-        :param w_c2: Suyu+2014 for second profile
-        :param w_t2: Suyu+2014 for second profile
-        :param e12: ellipticity parameter for second profile
-        :param e22: ellipticity parameter for second profile
-        :param center_x: ra center
-        :param center_y: dec center
-        :return: lensing potential
-        """
+        """:param x: ra-coordinate :param y: dec-coordinate :param alpha_1: deflection
+        angle at 1 (arcseconds) from the center :param ratio: ratio of deflection
+        amplitude at radius = 1 of the first to second Chameleon profile :param w_c1:
+        Suyu+2014 for first profile :param w_t1: Suyu+2014 for first profile :param e11:
+        ellipticity parameter for first profile :param e21: ellipticity parameter for
+        first profile :param w_c2: Suyu+2014 for second profile :param w_t2: Suyu+2014
+        for second profile :param e12: ellipticity parameter for second profile :param
+        e22: ellipticity parameter for second profile :param center_x: ra center :param
+        center_y: dec center :return: lensing potential."""
 
         f_1 = self._chameleon_1.function(
             x,
@@ -391,23 +355,15 @@ class DoubleChameleon(LensProfileBase):
         center_x=0,
         center_y=0,
     ):
-        """
-        :param x: ra-coordinate
-        :param y: dec-coordinate
-        :param alpha_1: deflection angle at 1 (arcseconds) from the center
-        :param ratio: ratio of deflection amplitude at radius = 1 of the first to second Chameleon profile
-        :param w_c1: Suyu+2014 for first profile
-        :param w_t1: Suyu+2014 for first profile
-        :param e11: ellipticity parameter for first profile
-        :param e21: ellipticity parameter for first profile
-        :param w_c2: Suyu+2014 for second profile
-        :param w_t2: Suyu+2014 for second profile
-        :param e12: ellipticity parameter for second profile
-        :param e22: ellipticity parameter for second profile^V
-        :param center_x: ra center
-        :param center_y: dec center
-        :return: deflection angles (RA, DEC)
-        """
+        """:param x: ra-coordinate :param y: dec-coordinate :param alpha_1: deflection
+        angle at 1 (arcseconds) from the center :param ratio: ratio of deflection
+        amplitude at radius = 1 of the first to second Chameleon profile :param w_c1:
+        Suyu+2014 for first profile :param w_t1: Suyu+2014 for first profile :param e11:
+        ellipticity parameter for first profile :param e21: ellipticity parameter for
+        first profile :param w_c2: Suyu+2014 for second profile :param w_t2: Suyu+2014
+        for second profile :param e12: ellipticity parameter for second profile :param
+        e22: ellipticity parameter for second profile^V :param center_x: ra center
+        :param center_y: dec center :return: deflection angles (RA, DEC)"""
         f_x1, f_y1 = self._chameleon_1.derivatives(
             x,
             y,
@@ -441,23 +397,16 @@ class DoubleChameleon(LensProfileBase):
         center_x=0,
         center_y=0,
     ):
-        """
-        :param x: ra-coordinate
-        :param y: dec-coordinate
-        :param alpha_1: deflection angle at 1 (arcseconds) from the center
-        :param ratio: ratio of deflection amplitude at radius = 1 of the first to second Chameleon profile
-        :param w_c1: Suyu+2014 for first profile
-        :param w_t1: Suyu+2014 for first profile
-        :param e11: ellipticity parameter for first profile
-        :param e21: ellipticity parameter for first profile
-        :param w_c2: Suyu+2014 for second profile
-        :param w_t2: Suyu+2014 for second profile
-        :param e12: ellipticity parameter for second profile
-        :param e22: ellipticity parameter for second profile
-        :param center_x: ra center
-        :param center_y: dec center
-        :return: second derivatives of the lensing potential (Hessian: f_xx, f_yy, f_xy)
-        """
+        """:param x: ra-coordinate :param y: dec-coordinate :param alpha_1: deflection
+        angle at 1 (arcseconds) from the center :param ratio: ratio of deflection
+        amplitude at radius = 1 of the first to second Chameleon profile :param w_c1:
+        Suyu+2014 for first profile :param w_t1: Suyu+2014 for first profile :param e11:
+        ellipticity parameter for first profile :param e21: ellipticity parameter for
+        first profile :param w_c2: Suyu+2014 for second profile :param w_t2: Suyu+2014
+        for second profile :param e12: ellipticity parameter for second profile :param
+        e22: ellipticity parameter for second profile :param center_x: ra center :param
+        center_y: dec center :return: second derivatives of the lensing potential
+        (Hessian: f_xx, f_yy, f_xy)"""
         (
             f_xx1,
             f_xy1,
@@ -495,22 +444,15 @@ class DoubleChameleon(LensProfileBase):
         center_x=0,
         center_y=0,
     ):
-        """
-        :param r: 3d radius
-        :param alpha_1: deflection angle at 1 (arcseconds) from the center
-        :param ratio: ratio of deflection amplitude at radius = 1 of the first to second Chameleon profile
-        :param w_c1: Suyu+2014 for first profile
-        :param w_t1: Suyu+2014 for first profile
-        :param e11: ellipticity parameter for first profile
-        :param e21: ellipticity parameter for first profile
-        :param w_c2: Suyu+2014 for second profile
-        :param w_t2: Suyu+2014 for second profile
-        :param e12: ellipticity parameter for second profile
-        :param e22: ellipticity parameter for second profile
-        :param center_x: ra center
-        :param center_y: dec center
-        :return: 3d density at radius r
-        """
+        """:param r: 3d radius :param alpha_1: deflection angle at 1 (arcseconds) from
+        the center :param ratio: ratio of deflection amplitude at radius = 1 of the
+        first to second Chameleon profile :param w_c1: Suyu+2014 for first profile
+        :param w_t1: Suyu+2014 for first profile :param e11: ellipticity parameter for
+        first profile :param e21: ellipticity parameter for first profile :param w_c2:
+        Suyu+2014 for second profile :param w_t2: Suyu+2014 for second profile :param
+        e12: ellipticity parameter for second profile :param e22: ellipticity parameter
+        for second profile :param center_x: ra center :param center_y: dec center
+        :return: 3d density at radius r."""
 
         f_1 = self._chameleon_1.density_lens(
             r, alpha_1 / (1.0 + 1.0 / ratio), w_c1, w_t1, e11, e21, center_x, center_y
@@ -536,22 +478,15 @@ class DoubleChameleon(LensProfileBase):
         center_x=0,
         center_y=0,
     ):
-        """
-        :param r: 3d radius
-        :param alpha_1: deflection angle at 1 (arcseconds) from the center
-        :param ratio: ratio of deflection amplitude at radius = 1 of the first to second Chameleon profile
-        :param w_c1: Suyu+2014 for first profile
-        :param w_t1: Suyu+2014 for first profile
-        :param e11: ellipticity parameter for first profile
-        :param e21: ellipticity parameter for first profile
-        :param w_c2: Suyu+2014 for second profile
-        :param w_t2: Suyu+2014 for second profile
-        :param e12: ellipticity parameter for second profile
-        :param e22: ellipticity parameter for second profile
-        :param center_x: ra center
-        :param center_y: dec center
-        :return: mass enclosed 3d radius
-        """
+        """:param r: 3d radius :param alpha_1: deflection angle at 1 (arcseconds) from
+        the center :param ratio: ratio of deflection amplitude at radius = 1 of the
+        first to second Chameleon profile :param w_c1: Suyu+2014 for first profile
+        :param w_t1: Suyu+2014 for first profile :param e11: ellipticity parameter for
+        first profile :param e21: ellipticity parameter for first profile :param w_c2:
+        Suyu+2014 for second profile :param w_t2: Suyu+2014 for second profile :param
+        e12: ellipticity parameter for second profile :param e22: ellipticity parameter
+        for second profile :param center_x: ra center :param center_y: dec center
+        :return: mass enclosed 3d radius."""
 
         m_1 = self._chameleon_1.mass_3d_lens(
             r, alpha_1 / (1.0 + 1.0 / ratio), w_c1, w_t1, e11, e21, center_x, center_y
@@ -659,13 +594,9 @@ class TripleChameleon(LensProfileBase):
 
     @staticmethod
     def _ratio_definition(alpha_1, ratio12, ratio13):
-        """
-
-        :param alpha_1: deflection angle at 1 arcsecond
-        :param ratio12: ratio of first to second amplitude
-        :param ratio13: ratio of first to third amplitude
-        :return: amplitudes of individual chameleon profiles
-        """
+        """:param alpha_1: deflection angle at 1 arcsecond :param ratio12: ratio of
+        first to second amplitude :param ratio13: ratio of first to third amplitude
+        :return: amplitudes of individual chameleon profiles."""
         amp1 = alpha_1 / (1.0 + 1.0 / ratio12 + 1.0 / ratio13)
         amp2 = amp1 / ratio12
         amp3 = amp1 / ratio13
@@ -693,21 +624,20 @@ class TripleChameleon(LensProfileBase):
         center_x=0,
         center_y=0,
     ):
-        """
+        """:param alpha_1:
 
-        :param alpha_1:
         :param ratio12: ratio of first to second amplitude
         :param ratio13: ratio of first to third amplitude
-        :param w_c1:
-        :param w_t1:
-        :param e11:
-        :param e21:
-        :param w_c2:
-        :param w_t2:
-        :param e12:
-        :param e22:
-        :param center_x:
-        :param center_y:
+        :param w_c1: 
+        :param w_t1: 
+        :param e11: 
+        :param e21: 
+        :param w_c2: 
+        :param w_t2: 
+        :param e12: 
+        :param e22: 
+        :param center_x: 
+        :param center_y: 
         :return:
         """
         amp1, amp2, amp3 = self._ratio_definition(alpha_1, ratio12, ratio13)
@@ -744,21 +674,20 @@ class TripleChameleon(LensProfileBase):
         center_x=0,
         center_y=0,
     ):
-        """
+        """:param alpha_1:
 
-        :param alpha_1:
         :param ratio12: ratio of first to second amplitude
         :param ratio13: ratio of first to third amplidute
-        :param w_c1:
-        :param w_t1:
-        :param e11:
-        :param e21:
-        :param w_c2:
-        :param w_t2:
-        :param e12:
-        :param e22:
-        :param center_x:
-        :param center_y:
+        :param w_c1: 
+        :param w_t1: 
+        :param e11: 
+        :param e21: 
+        :param w_c2: 
+        :param w_t2: 
+        :param e12: 
+        :param e22: 
+        :param center_x: 
+        :param center_y: 
         :return:
         """
         amp1, amp2, amp3 = self._ratio_definition(alpha_1, ratio12, ratio13)
@@ -795,21 +724,20 @@ class TripleChameleon(LensProfileBase):
         center_x=0,
         center_y=0,
     ):
-        """
+        """:param alpha_1:
 
-        :param alpha_1:
         :param ratio12: ratio of first to second amplitude
         :param ratio13: ratio of first to third amplidute
-        :param w_c1:
-        :param w_t1:
-        :param e11:
-        :param e21:
-        :param w_c2:
-        :param w_t2:
-        :param e12:
-        :param e22:
-        :param center_x:
-        :param center_y:
+        :param w_c1: 
+        :param w_t1: 
+        :param e11: 
+        :param e21: 
+        :param w_c2: 
+        :param w_t2: 
+        :param e12: 
+        :param e22: 
+        :param center_x: 
+        :param center_y: 
         :return:
         """
         amp1, amp2, amp3 = self._ratio_definition(alpha_1, ratio12, ratio13)
@@ -850,22 +778,20 @@ class TripleChameleon(LensProfileBase):
         center_x=0,
         center_y=0,
     ):
-        """
+        """:param r: 3d radius :param alpha_1:
 
-        :param r: 3d radius
-        :param alpha_1:
         :param ratio12: ratio of first to second amplitude
         :param ratio13: ratio of first to third amplitude
-        :param w_c1:
-        :param w_t1:
-        :param e11:
-        :param e21:
-        :param w_c2:
-        :param w_t2:
-        :param e12:
-        :param e22:
-        :param center_x:
-        :param center_y:
+        :param w_c1: 
+        :param w_t1: 
+        :param e11: 
+        :param e21: 
+        :param w_c2: 
+        :param w_t2: 
+        :param e12: 
+        :param e22: 
+        :param center_x: 
+        :param center_y: 
         :return: density at radius r (spherical average)
         """
         amp1, amp2, amp3 = self._ratio_definition(alpha_1, ratio12, ratio13)
@@ -901,22 +827,20 @@ class TripleChameleon(LensProfileBase):
         center_x=0,
         center_y=0,
     ):
-        """
+        """:param r: 3d radius :param alpha_1:
 
-        :param r: 3d radius
-        :param alpha_1:
         :param ratio12: ratio of first to second amplitude
         :param ratio13: ratio of first to third amplitude
-        :param w_c1:
-        :param w_t1:
-        :param e11:
-        :param e21:
-        :param w_c2:
-        :param w_t2:
-        :param e12:
-        :param e22:
-        :param center_x:
-        :param center_y:
+        :param w_c1: 
+        :param w_t1: 
+        :param e11: 
+        :param e21: 
+        :param w_c2: 
+        :param w_t2: 
+        :param e12: 
+        :param e22: 
+        :param center_x: 
+        :param center_y: 
         :return: mass enclosed 3d radius
         """
         amp1, amp2, amp3 = self._ratio_definition(alpha_1, ratio12, ratio13)
@@ -1043,7 +967,7 @@ class DoubleChameleonPointMass(LensProfileBase):
         :param y: dec-coordinate
         :param alpha_1: deflection angle at 1 (arcseconds) from the center
         :param ratio_pointmass: ratio of point source Einstein radius to combined
-            Chameleon deflection angle at r=1
+                Chameleon deflection angle at r=1
         :param ratio_chameleon: ratio in deflection angles at r=1 for the two Chameleon
             profiles
         :param w_c1: Suyu+2014 for first profile
@@ -1097,12 +1021,12 @@ class DoubleChameleonPointMass(LensProfileBase):
         center_x=0,
         center_y=0,
     ):
-        """
+        """:param x:
 
-        :param x:
-        :param y:
-        :param alpha_1:
-        :param ratio_pointmass: ratio of point source Einstein radius to combined Chameleon deflection angle at r=1
+        :param y: 
+        :param alpha_1: 
+        :param ratio_pointmass: ratio of point source Einstein radius to combined
+                Chameleon deflection angle at r=1
         :param ratio_chameleon: ratio in deflection angles at r=1 for the two Chameleon profiles
         :param w_c1: Suyu+2014 for first profile
         :param w_t1: Suyu+2014 for first profile
@@ -1155,12 +1079,12 @@ class DoubleChameleonPointMass(LensProfileBase):
         center_x=0,
         center_y=0,
     ):
-        """
+        """:param x:
 
-        :param x:
-        :param y:
-        :param alpha_1:
-        :param ratio_pointmass: ratio of point source Einstein radius to combined Chameleon deflection angle at r=1
+        :param y: 
+        :param alpha_1: 
+        :param ratio_pointmass: ratio of point source Einstein radius to combined
+                Chameleon deflection angle at r=1
         :param ratio_chameleon: ratio in deflection angles at r=1 for the two Chameleon profiles
         :param w_c1: Suyu+2014 for first profile
         :param w_t1: Suyu+2014 for first profile

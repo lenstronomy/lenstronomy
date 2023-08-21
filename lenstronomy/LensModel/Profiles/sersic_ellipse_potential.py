@@ -10,9 +10,8 @@ __all__ = ["SersicEllipse"]
 
 
 class SersicEllipse(LensProfileBase):
-    """
-    this class contains functions to evaluate a Sersic mass profile: https://arxiv.org/pdf/astro-ph/0311559.pdf
-    """
+    """This class contains functions to evaluate a Sersic mass profile:
+    https://arxiv.org/pdf/astro-ph/0311559.pdf."""
 
     param_names = ["k_eff", "R_sersic", "n_sersic", "e1", "e2", "center_x", "center_y"]
     lower_limit_default = {

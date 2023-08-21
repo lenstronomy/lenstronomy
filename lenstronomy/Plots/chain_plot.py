@@ -109,12 +109,8 @@ def plot_mcmc_behaviour(ax, samples_mcmc, param_mcmc, dist_mcmc=None, num_averag
 
 @export
 def psf_iteration_compare(kwargs_psf, **kwargs):
-    """
-
-    :param kwargs_psf: keyword arguments that initiate a PSF() class
-    :param kwargs: kwargs to send to matplotlib.pyplot.matshow()
-    :return:
-    """
+    """:param kwargs_psf: keyword arguments that initiate a PSF() class :param kwargs:
+    kwargs to send to matplotlib.pyplot.matshow() :return:"""
     psf_out = kwargs_psf["kernel_point_source"]
     psf_in = kwargs_psf["kernel_point_source_init"]
     # psf_error_map = kwargs_psf.get('psf_error_map', None)

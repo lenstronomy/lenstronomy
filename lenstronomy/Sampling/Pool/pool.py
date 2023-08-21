@@ -1,8 +1,8 @@
 # coding: utf-8
-"""
-this file is taken from schwimmbad (https://github.com/adrn/schwimmbad) and an explicit fork by Aymeric Galan
-to replace the multiprocessing with the multiprocess dependence as for multi-threading, multiprocessing is
-not supporting dill (only pickle) which is required.
+"""This file is taken from schwimmbad (https://github.com/adrn/schwimmbad) and an
+explicit fork by Aymeric Galan to replace the multiprocessing with the multiprocess
+dependence as for multi-threading, multiprocessing is not supporting dill (only pickle)
+which is required.
 
 Tests show that the MPI mode works with Python 3.7.2 but not with Python 3.7.0 on a specific system due to mpi4py
 dependencies and configurations.
@@ -20,7 +20,6 @@ Implementations of four different types of processing pools:
     - MPIPool: An MPI pool.
     - MultiPool: A multiprocessing for local parallelization.
     - SerialPool: A serial pool, which uses the built-in `map` function
-
 """
 
 __version__ = "0.3.0"

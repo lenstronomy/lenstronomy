@@ -15,12 +15,8 @@ class LensCosmo(object):
     with fixed input cosmology."""
 
     def __init__(self, z_lens, z_source, cosmo=None):
-        """
-
-        :param z_lens: redshift of lens
-        :param z_source: redshift of source
-        :param cosmo: astropy.cosmology instance
-        """
+        """:param z_lens: redshift of lens :param z_source: redshift of source :param
+        cosmo: astropy.cosmology instance."""
 
         self.z_lens = z_lens
         self.z_source = z_source
@@ -33,34 +29,22 @@ class LensCosmo(object):
 
     @property
     def dd(self):
-        """
-
-        :return: angular diameter distance to the deflector [Mpc]
-        """
+        """:return: angular diameter distance to the deflector [Mpc]"""
         return self.background.d_xy(0, self.z_lens)
 
     @property
     def ds(self):
-        """
-
-        :return: angular diameter distance to the source [Mpc]
-        """
+        """:return: angular diameter distance to the source [Mpc]"""
         return self.background.d_xy(0, self.z_source)
 
     @property
     def dds(self):
-        """
-
-        :return: angular diameter distance from deflector to source [Mpc]
-        """
+        """:return: angular diameter distance from deflector to source [Mpc]"""
         return self.background.d_xy(self.z_lens, self.z_source)
 
     @property
     def ddt(self):
-        """
-
-        :return: time delay distance [Mpc]
-        """
+        """:return: time delay distance [Mpc]"""
         return (1 + self.z_lens) * self.dd * self.ds / self.dds
 
     @property
@@ -140,11 +124,8 @@ class LensCosmo(object):
         return mass
 
     def mass_in_coin(self, theta_E):
-        """
-
-        :param theta_E: Einstein radius [arcsec]
-        :return: mass in coin calculated in mean density of the universe
-        """
+        """:param theta_E: Einstein radius [arcsec] :return: mass in coin calculated in
+        mean density of the universe."""
         chi_L = self.background.T_xy(0, self.z_lens)
         chi_S = self.background.T_xy(0, self.z_source)
         return (
@@ -157,23 +138,17 @@ class LensCosmo(object):
         )  # [M_sun/Mpc**3]
 
     def time_delay_units(self, fermat_pot, kappa_ext=0):
-        """
-
-        :param fermat_pot: in units of arcsec^2 (e.g. Fermat potential)
-        :param kappa_ext: unit-less external shear not accounted for in the Fermat potential
-        :return: time delay in days
-        """
+        """:param fermat_pot: in units of arcsec^2 (e.g. Fermat potential) :param
+        kappa_ext: unit-less external shear not accounted for in the Fermat potential
+        :return: time delay in days."""
         D_dt = self.ddt * (1.0 - kappa_ext) * const.Mpc  # eqn 7 in Suyu et al.
         return (
             D_dt / const.c * fermat_pot / const.day_s * const.arcsec**2
         )  # * self.arcsec2phys_lens(1.)**2
 
     def time_delay2fermat_pot(self, dt):
-        """
-
-        :param dt: time delay in units of days
-        :return: Fermat potential in units arcsec**2 for a given cosmology
-        """
+        """:param dt: time delay in units of days :return: Fermat potential in units
+        arcsec**2 for a given cosmology."""
         D_dt = self.ddt * const.Mpc
         return dt * const.c * const.day_s / D_dt / const.arcsec**2
 
@@ -198,10 +173,10 @@ class LensCosmo(object):
         the lensing quantities.
 
         :param M: mass enclosed 200 rho_crit in units of M_sun (physical units, meaning
-            no little h)
+                no little h)
         :param c: NFW concentration parameter (r200/r_s)
         :return: Rs_angle (angle at scale radius) (in units of arcsec), alpha_Rs
-            (observed bending angle at the scale radius
+                (observed bending angle at the scale radius
         """
         rho0, Rs, r200 = self.nfwParam_physical(M, c)
         Rs_angle = Rs / self.dd / const.arcsec  # Rs in arcsec
@@ -300,7 +275,7 @@ class LensCosmo(object):
         :param kappa_0: central convergence of profile
         :param theta_c: core radius (in arcseconds)
         :return: m_eV_log10, M_sol_log10, the log10 of the masses, m in eV and M in
-            M_sun
+                M_sun
         """
         D_Lens = self.dd * 10**6  # in parsec
         Sigma_c = self.sigma_crit * 10 ** (-12)  # in M_sun / parsec^2
@@ -317,7 +292,7 @@ class LensCosmo(object):
         :param m_log10: exponent of ULDM mass in eV
         :param M_log10: exponent of soliton mass in M_sun
         :return: kappa_0, theta_c, the central convergence and core radius (in
-            arcseconds)
+                arcseconds)
         """
         D_Lens = self.dd * 10**6  # in parsec
         Sigma_c = self.sigma_crit * 10 ** (-12)  # in M_sun/parsec^2

@@ -24,13 +24,12 @@ class GalkinMultiObservation(GalkinModel):
         kwargs_numerics=None,
         analytic_kinematics=False,
     ):
-        """
+        """:param kwargs_model: keyword arguments describing the model components :param
+        kwargs_aperture_list: list of keyword arguments describing the spectroscopic
+        aperture, see Aperture() class :param kwargs_psf_list: list of keyword argument
+        specifying the PSF of the observation :param kwargs_cosmo: keyword arguments
+        that define the cosmology in terms of the angular diameter distances.
 
-        :param kwargs_model: keyword arguments describing the model components
-        :param kwargs_aperture_list: list of keyword arguments describing the spectroscopic aperture, see Aperture()
-         class
-        :param kwargs_psf_list: list of keyword argument specifying the PSF of the observation
-        :param kwargs_cosmo: keyword arguments that define the cosmology in terms of the angular diameter distances
          involved
         :param kwargs_numerics: numerics keyword arguments - see GalkinModel
         :param analytic_kinematics: bool, if True uses the analytic kinematic model
@@ -68,7 +67,7 @@ class GalkinMultiObservation(GalkinModel):
         :param num_kin_sampling: int, number of draws from a kinematic prediction of a
             LOS
         :param num_psf_sampling: int, number of displacements/render from a spectra to
-            be displaced on the IFU
+                be displaced on the IFU
         :return: ordered array of velocity dispersions [km/s] for each observation
         """
         # draw from light profile (3d and 2d option)

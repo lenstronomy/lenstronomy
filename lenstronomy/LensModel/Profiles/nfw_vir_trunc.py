@@ -12,20 +12,15 @@ __all__ = ["NFWVirTrunc"]
 
 
 class NFWVirTrunc(LensProfileBase):
-    """
-    this class contains functions concerning the NFW profile that is sharply truncated at the virial radius
-    https://arxiv.org/pdf/astro-ph/0304034.pdf
+    """This class contains functions concerning the NFW profile that is sharply
+    truncated at the virial radius https://arxiv.org/pdf/astro-ph/0304034.pdf.
 
     relation are: R_200 = c * Rs
     """
 
     def __init__(self, z_lens, z_source, cosmo=None):
-        """
-
-        :param z_lens: redshift of lens
-        :param z_source: redshift of source
-        :param cosmo: astropy cosmology instance
-        """
+        """:param z_lens: redshift of lens :param z_source: redshift of source :param
+        cosmo: astropy cosmology instance."""
 
         if cosmo is None:
             from astropy.cosmology import FlatLambdaCDM
@@ -58,8 +53,7 @@ class NFWVirTrunc(LensProfileBase):
         )
 
     def _G(self, x, c):
-        """
-        # G(x) https://arxiv.org/pdf/astro-ph/0209167.pdf equation 27
+        """# G(x) https://arxiv.org/pdf/astro-ph/0209167.pdf equation 27
 
         :param x: scaled projected radius with c * theta / theta_r200
         :param c: oncentration of the halo; r_200 = c * r_s
@@ -99,11 +93,7 @@ class NFWVirTrunc(LensProfileBase):
         return a
 
     def _f(self, c):
-        """
-
-        :param c: concentration
-        :return: dimensionless normalization of Halo mass
-        """
+        """:param c: concentration :return: dimensionless normalization of Halo mass."""
         return 1.0 / (np.log(1 + c) - c / (1 + c))
 
 

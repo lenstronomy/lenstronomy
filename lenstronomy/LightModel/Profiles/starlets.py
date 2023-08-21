@@ -57,12 +57,12 @@ class SLIT_Starlets(object):
 
         :param thread_count: number of threads used for pySAP computations
         :param fast_inverse: if True, reconstruction is simply the sum of each scale
-            (only for 1st generation starlet transform)
+                (only for 1st generation starlet transform)
         :param second_gen: if True, uses the second generation of starlet transform
         :param show_pysap_plots: if True, displays pySAP plots when calling the
             decomposition method
         :param force_no_pysap: if True, does not load pySAP and computes starlet
-            transforms in python.
+                transforms in python.
         """
         self.use_pysap, pysap = self._load_pysap(force_no_pysap)
         if self.use_pysap:
@@ -95,8 +95,8 @@ class SLIT_Starlets(object):
         Follows lenstronomy conventions for light profiles.
 
         :param amp: decomposition coefficients ('amp' to follow conventions in other
-            light profile) This is an ndarray with shape (n_scales, sqrt(n_pixels),
-            sqrt(n_pixels)) or (n_scales*n_pixels,)
+                light profile) This is an ndarray with shape (n_scales, sqrt(n_pixels),
+                sqrt(n_pixels)) or (n_scales*n_pixels,)
         :param n_scales: number of decomposition scales
         :param n_pixels: number of pixels in a single scale
         :return: reconstructed signal as 1D array of shape (n_pixels,)
@@ -126,10 +126,10 @@ class SLIT_Starlets(object):
         """2D inverse starlet transform from starlet coefficients stored in coeffs.
 
         :param coeffs: decomposition coefficients, ndarray with shape (n_scales,
-            sqrt(n_pixels), sqrt(n_pixels))
+                sqrt(n_pixels), sqrt(n_pixels))
         :param n_scales: number of decomposition scales
         :return: reconstructed signal as 2D array of shape (sqrt(n_pixels),
-            sqrt(n_pixels))
+                sqrt(n_pixels))
         """
         if self.use_pysap and not self._second_gen:
             return self._inverse_transform(coeffs, n_scales, n_pixels)
@@ -142,7 +142,7 @@ class SLIT_Starlets(object):
         """1D starlet transform from starlet coefficients stored in coeffs.
 
         :param image: 2D image to be decomposed, ndarray with shape (sqrt(n_pixels),
-            sqrt(n_pixels))
+                sqrt(n_pixels))
         :param n_scales: number of decomposition scales
         :return: reconstructed signal as 1D array of shape (n_scales*n_pixels,)
         """
@@ -160,10 +160,10 @@ class SLIT_Starlets(object):
         """2D starlet transform from starlet coefficients stored in coeffs.
 
         :param image: 2D image to be decomposed, ndarray with shape (sqrt(n_pixels),
-            sqrt(n_pixels))
+                sqrt(n_pixels))
         :param n_scales: number of decomposition scales
         :return: reconstructed signal as 2D array of shape (n_scales, sqrt(n_pixels),
-            sqrt(n_pixels))
+                sqrt(n_pixels))
         """
         if self.use_pysap and not self._second_gen:
             coeffs = self._transform(image, n_scales)

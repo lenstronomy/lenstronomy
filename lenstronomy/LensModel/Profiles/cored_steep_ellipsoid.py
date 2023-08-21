@@ -62,18 +62,10 @@ class CSE(LensProfileBase):
         super(CSE, self).__init__()
 
     def function(self, x, y, a, s, e1, e2, center_x, center_y):
-        """
-
-        :param x: coordinate in image plane (angle)
-        :param y: coordinate in image plane (angle)
-        :param a: lensing strength
-        :param s: core radius
-        :param e1: eccentricity
-        :param e2: eccentricity
-        :param center_x: center of profile
-        :param center_y: center of profile
-        :return: lensing potential
-        """
+        """:param x: coordinate in image plane (angle) :param y: coordinate in image
+        plane (angle) :param a: lensing strength :param s: core radius :param e1:
+        eccentricity :param e2: eccentricity :param center_x: center of profile :param
+        center_y: center of profile :return: lensing potential."""
         phi_q, q = param_util.ellipticity2phi_q(e1, e2)
         # shift
         x_ = x - center_x
@@ -86,18 +78,10 @@ class CSE(LensProfileBase):
         return f_
 
     def derivatives(self, x, y, a, s, e1, e2, center_x, center_y):
-        """
-
-        :param x: coordinate in image plane (angle)
-        :param y: coordinate in image plane (angle)
-        :param a: lensing strength
-        :param s: core radius
-        :param e1: eccentricity
-        :param e2: eccentricity
-        :param center_x: center of profile
-        :param center_y: center of profile
-        :return: deflection in x- and y-direction
-        """
+        """:param x: coordinate in image plane (angle) :param y: coordinate in image
+        plane (angle) :param a: lensing strength :param s: core radius :param e1:
+        eccentricity :param e2: eccentricity :param center_x: center of profile :param
+        center_y: center of profile :return: deflection in x- and y-direction."""
         phi_q, q = param_util.ellipticity2phi_q(e1, e2)
         # shift
         x_ = x - center_x
@@ -112,18 +96,10 @@ class CSE(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, a, s, e1, e2, center_x, center_y):
-        """
-
-        :param x: coordinate in image plane (angle)
-        :param y: coordinate in image plane (angle)
-        :param a: lensing strength
-        :param s: core radius
-        :param e1: eccentricity
-        :param e2: eccentricity
-        :param center_x: center of profile
-        :param center_y: center of profile
-        :return: hessian elements f_xx, f_xy, f_yx, f_yy
-        """
+        """:param x: coordinate in image plane (angle) :param y: coordinate in image
+        plane (angle) :param a: lensing strength :param s: core radius :param e1:
+        eccentricity :param e2: eccentricity :param center_x: center of profile :param
+        center_y: center of profile :return: hessian elements f_xx, f_xy, f_yx, f_yy."""
         phi_q, q = param_util.ellipticity2phi_q(e1, e2)
         # shift
         x_ = x - center_x
@@ -181,15 +157,9 @@ class CSEMajorAxis(LensProfileBase):
     }
 
     def function(self, x, y, a, s, q):
-        """
-
-        :param x: coordinate in image plane (angle)
-        :param y: coordinate in image plane (angle)
-        :param a: lensing strength
-        :param s: core radius
-        :param q: axis ratio
-        :return: lensing potential
-        """
+        """:param x: coordinate in image plane (angle) :param y: coordinate in image
+        plane (angle) :param a: lensing strength :param s: core radius :param q: axis
+        ratio :return: lensing potential."""
 
         # potential calculation
         psi = np.sqrt(q**2 * (s**2 + x**2) + y**2)
@@ -198,15 +168,9 @@ class CSEMajorAxis(LensProfileBase):
         return a * phi
 
     def derivatives(self, x, y, a, s, q):
-        """
-
-        :param x: coordinate in image plane (angle)
-        :param y: coordinate in image plane (angle)
-        :param a: lensing strength
-        :param s: core radius
-        :param q: axis ratio
-        :return: deflection in x- and y-direction
-        """
+        """:param x: coordinate in image plane (angle) :param y: coordinate in image
+        plane (angle) :param a: lensing strength :param s: core radius :param q: axis
+        ratio :return: deflection in x- and y-direction."""
 
         psi = np.sqrt(q**2 * (s**2 + x**2) + y**2)
         Phi = (psi + s) ** 2 + (1 - q**2) * x**2
@@ -216,15 +180,9 @@ class CSEMajorAxis(LensProfileBase):
         return a * f_x, a * f_y
 
     def hessian(self, x, y, a, s, q):
-        """
-
-        :param x: coordinate in image plane (angle)
-        :param y: coordinate in image plane (angle)
-        :param a: lensing strength
-        :param s: core radius
-        :param q: axis ratio
-        :return: hessian elements f_xx, f_xy, f_yx, f_yy
-        """
+        """:param x: coordinate in image plane (angle) :param y: coordinate in image
+        plane (angle) :param a: lensing strength :param s: core radius :param q: axis
+        ratio :return: hessian elements f_xx, f_xy, f_yx, f_yy."""
 
         # equations 21-23 in Oguri 2021
         psi = np.sqrt(q**2 * (s**2 + x**2) + y**2)
@@ -269,30 +227,18 @@ class CSEMajorAxisSet(LensProfileBase):
         super(CSEMajorAxisSet, self).__init__()
 
     def function(self, x, y, a_list, s_list, q):
-        """
-
-        :param x: coordinate in image plane (angle)
-        :param y: coordinate in image plane (angle)
-        :param a_list: list of lensing strength
-        :param s_list: list of core radius
-        :param q: axis ratio
-        :return: lensing potential
-        """
+        """:param x: coordinate in image plane (angle) :param y: coordinate in image
+        plane (angle) :param a_list: list of lensing strength :param s_list: list of
+        core radius :param q: axis ratio :return: lensing potential."""
         f_ = np.zeros_like(x)
         for a, s in zip(a_list, s_list):
             f_ += self.major_axis_model.function(x, y, a, s, q)
         return f_
 
     def derivatives(self, x, y, a_list, s_list, q):
-        """
-
-        :param x: coordinate in image plane (angle)
-        :param y: coordinate in image plane (angle)
-        :param a_list: list of lensing strength
-        :param s_list: list of core radius
-        :param q: axis ratio
-        :return: deflection in x- and y-direction
-        """
+        """:param x: coordinate in image plane (angle) :param y: coordinate in image
+        plane (angle) :param a_list: list of lensing strength :param s_list: list of
+        core radius :param q: axis ratio :return: deflection in x- and y-direction."""
         f_x, f_y = np.zeros_like(x), np.zeros_like(y)
         for a, s in zip(a_list, s_list):
             f_x_, f_y_ = self.major_axis_model.derivatives(x, y, a, s, q)
@@ -301,15 +247,10 @@ class CSEMajorAxisSet(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, a_list, s_list, q):
-        """
-
-        :param x: coordinate in image plane (angle)
-        :param y: coordinate in image plane (angle)
-        :param a_list: list of lensing strength
-        :param s_list: list of core radius
-        :param q: axis ratio
-        :return: hessian elements f_xx, f_xy, f_yx, f_yy
-        """
+        """:param x: coordinate in image plane (angle) :param y: coordinate in image
+        plane (angle) :param a_list: list of lensing strength :param s_list: list of
+        core radius :param q: axis ratio :return: hessian elements f_xx, f_xy, f_yx,
+        f_yy."""
         f_xx, f_xy, f_yy = np.zeros_like(x), np.zeros_like(x), np.zeros_like(x)
         for a, s in zip(a_list, s_list):
             f_xx_, f_xy_, _, f_yy_ = self.major_axis_model.hessian(x, y, a, s, q)
@@ -371,40 +312,25 @@ class CSEProductAvg(LensProfileBase):
         return x, y, a, s, q
 
     def function(self, x, y, a, s, q):
-        """
-        :param x: coordinate in image plane (angle)
-        :param y: coordinate in image plane (angle)
-        :param a: lensing strength
-        :param s: core radius
-        :param q: axis ratio
-        :return: lensing potential
-        """
+        """:param x: coordinate in image plane (angle) :param y: coordinate in image
+        plane (angle) :param a: lensing strength :param s: core radius :param q: axis
+        ratio :return: lensing potential."""
         x, y, a, s, q = self._convert2prodavg(x, y, a, s, q)
         return self.MA_class.function(x, y, a, s, q)
 
     def derivatives(self, x, y, a, s, q):
-        """
-        :param x: coordinate in image plane (angle)
-        :param y: coordinate in image plane (angle)
-        :param a: lensing strength
-        :param s: core radius
-        :param q: axis ratio
-        :return: deflection in x- and y-direction
-        """
+        """:param x: coordinate in image plane (angle) :param y: coordinate in image
+        plane (angle) :param a: lensing strength :param s: core radius :param q: axis
+        ratio :return: deflection in x- and y-direction."""
         x, y, a, s, q = self._convert2prodavg(x, y, a, s, q)
         af_x, af_y = self.MA_class.derivatives(x, y, a, s, q)
         # extra sqrt(q) factor from taking derivative of transformed coordinate
         return np.sqrt(q) * af_x, np.sqrt(q) * af_y
 
     def hessian(self, x, y, a, s, q):
-        """
-        :param x: coordinate in image plane (angle)
-        :param y: coordinate in image plane (angle)
-        :param a: lensing strength
-        :param s: core radius
-        :param q: axis ratio
-        :return: hessian elements f_xx, f_xy, f_yx, f_yy
-        """
+        """:param x: coordinate in image plane (angle) :param y: coordinate in image
+        plane (angle) :param a: lensing strength :param s: core radius :param q: axis
+        ratio :return: hessian elements f_xx, f_xy, f_yx, f_yy."""
         x, y, a, s, q = self._convert2prodavg(x, y, a, s, q)
         af_xx, af_xy, af_xy, af_yy = self.MA_class.hessian(x, y, a, s, q)
         # two sqrt(q) factors from taking derivatives of transformed coordinate
@@ -419,30 +345,18 @@ class CSEProductAvgSet(LensProfileBase):
         super(CSEProductAvgSet, self).__init__()
 
     def function(self, x, y, a_list, s_list, q):
-        """
-
-        :param x: coordinate in image plane (angle)
-        :param y: coordinate in image plane (angle)
-        :param a_list: list of lensing strength
-        :param s_list: list of core radius
-        :param q: axis ratio
-        :return: lensing potential
-        """
+        """:param x: coordinate in image plane (angle) :param y: coordinate in image
+        plane (angle) :param a_list: list of lensing strength :param s_list: list of
+        core radius :param q: axis ratio :return: lensing potential."""
         f_ = np.zeros_like(x)
         for a, s in zip(a_list, s_list):
             f_ += self.major_axis_model.function(x, y, a, s, q)
         return f_
 
     def derivatives(self, x, y, a_list, s_list, q):
-        """
-
-        :param x: coordinate in image plane (angle)
-        :param y: coordinate in image plane (angle)
-        :param a_list: list of lensing strength
-        :param s_list: list of core radius
-        :param q: axis ratio
-        :return: deflection in x- and y-direction
-        """
+        """:param x: coordinate in image plane (angle) :param y: coordinate in image
+        plane (angle) :param a_list: list of lensing strength :param s_list: list of
+        core radius :param q: axis ratio :return: deflection in x- and y-direction."""
         f_x, f_y = np.zeros_like(x), np.zeros_like(y)
         for a, s in zip(a_list, s_list):
             f_x_, f_y_ = self.major_axis_model.derivatives(x, y, a, s, q)
@@ -451,15 +365,10 @@ class CSEProductAvgSet(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, a_list, s_list, q):
-        """
-
-        :param x: coordinate in image plane (angle)
-        :param y: coordinate in image plane (angle)
-        :param a_list: list of lensing strength
-        :param s_list: list of core radius
-        :param q: axis ratio
-        :return: hessian elements f_xx, f_xy, f_yx, f_yy
-        """
+        """:param x: coordinate in image plane (angle) :param y: coordinate in image
+        plane (angle) :param a_list: list of lensing strength :param s_list: list of
+        core radius :param q: axis ratio :return: hessian elements f_xx, f_xy, f_yx,
+        f_yy."""
         f_xx, f_xy, f_yy = np.zeros_like(x), np.zeros_like(x), np.zeros_like(x)
         for a, s in zip(a_list, s_list):
             f_xx_, f_xy_, _, f_yy_ = self.major_axis_model.hessian(x, y, a, s, q)

@@ -21,21 +21,15 @@ class SimAPI(DataAPI, ModelAPI):
     """
 
     def __init__(self, numpix, kwargs_single_band, kwargs_model):
-        """
-
-        :param numpix: number of pixels per axis
-        :param kwargs_single_band: keyword arguments specifying the class instance of DataAPI
-        :param kwargs_model: keyword arguments specifying the class instance of ModelAPI
-        """
+        """:param numpix: number of pixels per axis :param kwargs_single_band: keyword
+        arguments specifying the class instance of DataAPI :param kwargs_model: keyword
+        arguments specifying the class instance of ModelAPI."""
         DataAPI.__init__(self, numpix, **kwargs_single_band)
         ModelAPI.__init__(self, **kwargs_model)
 
     def image_model_class(self, kwargs_numerics=None):
-        """
-
-        :param kwargs_numerics: keyword arguments list of Numerics module
-        :return: instance of the ImageModel class with all the specified configurations
-        """
+        """:param kwargs_numerics: keyword arguments list of Numerics module :return:
+        instance of the ImageModel class with all the specified configurations."""
         return ImageModel(
             self.data_class,
             self.psf_class,
@@ -53,14 +47,15 @@ class SimAPI(DataAPI, ModelAPI):
         intrinsic!
 
         :param kwargs_lens_light_mag: keyword argument list as for LightModel module
-            except that 'amp' parameters are 'magnitude' parameters.
+                except that 'amp' parameters are 'magnitude' parameters.
         :param kwargs_source_mag: keyword argument list as for LightModel module except
-            that 'amp' parameters are 'magnitude' parameters.
+                that 'amp' parameters are 'magnitude' parameters.
         :param kwargs_ps_mag: keyword argument list as for PointSource module except
-            that 'amp' parameters are 'magnitude' parameters.
+                that 'amp' parameters are 'magnitude' parameters.
         :return: value of the lenstronomy 'amp' parameter such that the total flux of
-            the profile type results in this magnitude for all the light models. These
-            keyword arguments conform with the lenstronomy LightModel syntax.
+                the profile type results in this magnitude for all the light models.
+                These             keyword arguments conform with the lenstronomy
+                LightModel syntax.
         """
 
         kwargs_lens_light = copy.deepcopy(kwargs_lens_light_mag)

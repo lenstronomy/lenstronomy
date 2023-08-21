@@ -47,9 +47,9 @@ class SIE(LensProfileBase):
     }
 
     def __init__(self, NIE=True):
-        """
+        """:param NIE: bool, if True, is using the NIE analytic model.
 
-        :param NIE: bool, if True, is using the NIE analytic model. Otherwise it uses PEMD with gamma=2 from fastell4py
+        Otherwise it uses PEMD with gamma=2 from fastell4py
         """
         self._nie = NIE
         if NIE:
@@ -65,17 +65,9 @@ class SIE(LensProfileBase):
         super(SIE, self).__init__()
 
     def function(self, x, y, theta_E, e1, e2, center_x=0, center_y=0):
-        """
-
-        :param x: x-coordinate (angular coordinates)
-        :param y: y-coordinate (angular coordinates)
-        :param theta_E: Einstein radius
-        :param e1: eccentricity
-        :param e2: eccentricity
-        :param center_x: centroid
-        :param center_y: centroid
-        :return:
-        """
+        """:param x: x-coordinate (angular coordinates) :param y: y-coordinate (angular
+        coordinates) :param theta_E: Einstein radius :param e1: eccentricity :param e2:
+        eccentricity :param center_x: centroid :param center_y: centroid :return:"""
         if self._nie:
             return self.profile.function(
                 x, y, theta_E, e1, e2, self._s_scale, center_x, center_y
@@ -86,17 +78,9 @@ class SIE(LensProfileBase):
             )
 
     def derivatives(self, x, y, theta_E, e1, e2, center_x=0, center_y=0):
-        """
-
-        :param x: x-coordinate (angular coordinates)
-        :param y: y-coordinate (angular coordinates)
-        :param theta_E: Einstein radius
-        :param e1: eccentricity
-        :param e2: eccentricity
-        :param center_x: centroid
-        :param center_y: centroid
-        :return:
-        """
+        """:param x: x-coordinate (angular coordinates) :param y: y-coordinate (angular
+        coordinates) :param theta_E: Einstein radius :param e1: eccentricity :param e2:
+        eccentricity :param center_x: centroid :param center_y: centroid :return:"""
         if self._nie:
             return self.profile.derivatives(
                 x, y, theta_E, e1, e2, self._s_scale, center_x, center_y
@@ -107,17 +91,9 @@ class SIE(LensProfileBase):
             )
 
     def hessian(self, x, y, theta_E, e1, e2, center_x=0, center_y=0):
-        """
-
-        :param x: x-coordinate (angular coordinates)
-        :param y: y-coordinate (angular coordinates)
-        :param theta_E: Einstein radius
-        :param e1: eccentricity
-        :param e2: eccentricity
-        :param center_x: centroid
-        :param center_y: centroid
-        :return:
-        """
+        """:param x: x-coordinate (angular coordinates) :param y: y-coordinate (angular
+        coordinates) :param theta_E: Einstein radius :param e1: eccentricity :param e2:
+        eccentricity :param center_x: centroid :param center_y: centroid :return:"""
         if self._nie:
             return self.profile.hessian(
                 x, y, theta_E, e1, e2, self._s_scale, center_x, center_y
@@ -132,7 +108,7 @@ class SIE(LensProfileBase):
         """Converts projected density parameter (in units of deflection) into 3d density
         parameter.
 
-        :param theta_E:
+        :param theta_E: 
         :return:
         """
         fac1 = np.pi * 2
@@ -175,12 +151,11 @@ class SIE(LensProfileBase):
         return mass_2d
 
     def mass_2d_lens(self, r, theta_E, e1=0, e2=0):
-        """
+        """:param r:
 
-        :param r:
-        :param theta_E:
-        :param e1:
-        :param e2:
+        :param theta_E: 
+        :param e1: 
+        :param e2: 
         :return:
         """
         rho0 = self.theta2rho(theta_E)

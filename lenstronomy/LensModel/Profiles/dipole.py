@@ -94,9 +94,7 @@ class DipoleUtil(object):
 
     @staticmethod
     def com(center1_x, center1_y, center2_x, center2_y, Fm):
-        """
-        :return: center of mass
-        """
+        """:return: center of mass."""
         com_x = (Fm * center1_x + center2_x) / (Fm + 1.0)
         com_y = (Fm * center1_y + center2_y) / (Fm + 1.0)
         return com_x, com_y
@@ -106,7 +104,7 @@ class DipoleUtil(object):
         """Computes mass ration of the two clumps with given Einstein radius and power
         law slope (clump1/sub-clump) :param theta_E:
 
-        :param theta_E_sub:
+        :param theta_E_sub: 
         :return:
         """
         return (theta_E / theta_E_sub) ** 2

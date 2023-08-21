@@ -9,10 +9,7 @@ class TestShapelet(object):
         pass
 
     def test_function(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         uniform = Uniform()
         output = uniform.function(x=1, y=1, amp=0.1)
         assert output == 0.1

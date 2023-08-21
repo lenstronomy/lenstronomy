@@ -19,11 +19,6 @@ class Uniform(object):
         pass
 
     def function(self, x, y, amp):
-        """
-
-        :param x: x-coordinate
-        :param y: y-coordinate
-        :param amp: surface brightness
-        :return: constant flux
-        """
+        """:param x: x-coordinate :param y: y-coordinate :param amp: surface brightness
+        :return: constant flux."""
         return np.ones_like(x) * amp

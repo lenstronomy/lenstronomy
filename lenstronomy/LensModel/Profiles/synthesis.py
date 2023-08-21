@@ -26,11 +26,12 @@ class SynthesisProfile(LensProfileBase):
     def __init__(
         self, target_lens_model, component_lens_model, kwargs_list, lin_fit_hyperparams
     ):
-        """
-        :param target_lens_model: name of target profile
-        :param component_lens_model: name of component profile
-        :param kwargs_list: list of kwargs of component profile, length of list corresponds to number of components used to fit.
-                            The normalization (must be nonzero) will be effectively overridden by the linear weights
+        """:param target_lens_model: name of target profile :param component_lens_model:
+        name of component profile :param kwargs_list: list of kwargs of component
+        profile, length of list corresponds to number of components used to fit.
+
+        The normalization (must be nonzero) will be effectively overridden by the linear
+        weights
         :param lin_fit_hyperparams: kwargs indicating range of fit, number of points to evaluate fit, etc.
         """
         super(SynthesisProfile, self).__init__()
@@ -51,8 +52,9 @@ class SynthesisProfile(LensProfileBase):
 
         :param kwargs_target: kwargs of target profile to be approximated
         :param kwargs_list: list of kwargs of component profile, length of list
-            corresponds to number of components used to fit. The normalization (must be
-            nonzero) will be effectively overridden by the linear weights
+                corresponds to number of components used to fit. The normalization (must
+                be             nonzero) will be effectively overridden by the linear
+                weights
         """
         self.set_limits(kwargs_list, self.lin_fit_hyperparams)
         kwargs_target_centered = [self.circular_centered_kwargs(kwargs_target[0])]
@@ -92,8 +94,9 @@ class SynthesisProfile(LensProfileBase):
             del self._linear_weights
 
     def circular_centered_kwargs(self, kwargs):
-        """
-        :param kwargs: kwargs to remove center and ellipticity for linear fit. These are re-added when functions are called
+        """:param kwargs: kwargs to remove center and ellipticity for linear fit.
+
+        These are re-added when functions are called
         """
         kwargs_new = copy.deepcopy(kwargs)
         if "e1" in kwargs_new:
@@ -107,13 +110,14 @@ class SynthesisProfile(LensProfileBase):
         return kwargs_new
 
     def set_limits(self, kwargs_list, lin_fit_hyperparams):
-        """
-        :param kwargs_list: list of kwargs of component profile
-        :param lin_fit_hyperparams: kwargs indicating range of fit, number of points to evaluate fit, etc.
-            'lower_log_bound': log10 innermost radius of fit
-            'upper_log_bound': log10 outermost radius of fit
-            'num_r_evals': number of locations to evaluate fit to minimize chi2, must be larger than the number of components
-            'sigma': used to evaluate chi2. default is 1%
+        """:param kwargs_list: list of kwargs of component profile :param
+        lin_fit_hyperparams: kwargs indicating range of fit, number of points to
+        evaluate fit, etc.
+
+        'lower_log_bound': log10 innermost radius of fit 'upper_log_bound': log10
+        outermost radius of fit 'num_r_evals': number of locations to evaluate fit to
+        minimize chi2, must be larger than the number of components 'sigma': used to
+        evaluate chi2. default is 1%
         """
         self.num_components = len(kwargs_list)
         if "lower_log_bound" not in lin_fit_hyperparams:
@@ -140,8 +144,8 @@ class SynthesisProfile(LensProfileBase):
         """Returns lensing potential.
 
         :param x: angular position (normally in units of arc seconds)
-        :param y: angular position (normally in units of arc seconds) :kwargs_target:
-            kwargs of target profile to be approximated
+        :param y: angular position (normally in units of arc seconds)
+        :kwargs_target: kwargs of target profile to be approximated
         """
         weight_list = self.linear_weight_mle_fit([kwargs_target], self.kwargs_list)
         f_ = np.zeros_like(x)
@@ -159,8 +163,8 @@ class SynthesisProfile(LensProfileBase):
         """Returns df/dx and df/dy of the function which are the deflection angles.
 
         :param x: angular position (normally in units of arc seconds)
-        :param y: angular position (normally in units of arc seconds) :kwargs_target:
-            kwargs of target profile to be approximated
+        :param y: angular position (normally in units of arc seconds)
+        :kwargs_target: kwargs of target profile to be approximated
         """
         weight_list = self.linear_weight_mle_fit([kwargs_target], self.kwargs_list)
         f_x, f_y = np.zeros_like(x), np.zeros_like(y)
@@ -174,8 +178,8 @@ class SynthesisProfile(LensProfileBase):
         """Returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy.
 
         :param x: angular position (normally in units of arc seconds)
-        :param y: angular position (normally in units of arc seconds) :kwargs_target:
-            kwargs of target profile to be approximated
+        :param y: angular position (normally in units of arc seconds)
+        :kwargs_target: kwargs of target profile to be approximated
         """
         weight_list = self.linear_weight_mle_fit([kwargs_target], self.kwargs_list)
         f_xx, f_xy, f_yx, f_yy = (

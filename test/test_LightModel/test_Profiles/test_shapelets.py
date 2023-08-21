@@ -15,10 +15,7 @@ class TestShapeletSet(object):
         self.x, self.y = util.make_grid(10, 0.1, 1)
 
     def test_shapelet_set(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         n_max = 2
         beta = 1.0
         amp = [1, 0, 0, 0, 0, 0]
@@ -62,10 +59,7 @@ class TestShapeletSet(object):
         npt.assert_almost_equal(kernel_list[0][4, 4], 0.4393912894677224, decimal=9)
 
     def test_decomposition(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         n_max = 2
         beta = 10.0
         deltaPix = 1

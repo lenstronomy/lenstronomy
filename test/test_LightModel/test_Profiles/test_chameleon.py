@@ -24,10 +24,7 @@ class TestChameleon(object):
         assert names[0] == "amp"
 
     def test_function(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         chameleon = Chameleon()
         nie = NIE()
 
@@ -83,10 +80,7 @@ class TestDoubleChameleon(object):
         assert names[0] == "amp"
 
     def test_function(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         chameleon = Chameleon()
         doublechameleon = DoubleChameleon()
 
@@ -139,10 +133,7 @@ class TestTripleChameleon(object):
         assert names[0] == "amp"
 
     def test_function(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         chameleon = Chameleon()
         triplechameleon = TripleChameleon()
 

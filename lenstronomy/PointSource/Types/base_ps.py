@@ -15,18 +15,20 @@ class PSBase(object):
         index_lens_model_list=None,
         point_source_frame_list=None,
     ):
-        """
+        """:param lens_model: instance of the LensModel() class :param
+        fixed_magnification: bool.
 
-        :param lens_model: instance of the LensModel() class
-        :param fixed_magnification: bool. If True, magnification
-         ratio of point sources is fixed to the one given by the lens model
+        If True, magnification  ratio of point sources is fixed to the one given by the
+        lens model
         :param additional_images: bool. If True, search for additional images of the same source is conducted.
-        :param index_lens_model_list: list (length of different patches/bands) of integer lists, e.g., [[0, 1], [2, 3]];
-         evaluating a subset of the lens models per individual bands. If this keyword is set, the image positions need
-         to have a specified band/frame assigned to it
-        :param point_source_frame_list: list of lists mirroring the structure of the image positions.
-         Integers correspond to the i'th list entry of index_lens_model_list indicating in which frame/band the image is
-         appearing
+        :param index_lens_model_list: list (length of different patches/bands) of
+                integer lists, e.g., [[0, 1], [2, 3]];          evaluating a subset of
+                the lens models per individual bands. If this keyword is set, the image
+                positions need          to have a specified band/frame assigned to it
+        :param point_source_frame_list: list of lists mirroring the structure of the
+                image positions.          Integers correspond to the i'th list entry of
+                index_lens_model_list indicating in which frame/band the image is
+                appearing
         """
         self._lens_model = lens_model
         if index_lens_model_list is not None:
@@ -85,7 +87,7 @@ class PSBase(object):
 
         :param kwargs_ps: keyword argument of point source model
         :param kwargs: keyword arguments of function call (which are not used for this
-            object
+                object
         :return: numpy array of amplitudes
         """
         raise ValueError(
@@ -106,12 +108,8 @@ class PSBase(object):
 
 
 def _expand_to_array(array, num):
-    """
-
-    :param array: float/int or numpy array
-    :param num: number of array entries expected in array
-    :return: array of size num
-    """
+    """:param array: float/int or numpy array :param num: number of array entries
+    expected in array :return: array of size num."""
     if np.isscalar(array):
         return np.ones(num) * array
     elif len(array) < num:
@@ -123,11 +121,8 @@ def _expand_to_array(array, num):
 
 
 def _shrink_array(array, num):
-    """
-    :param array: float/int or numpy array
-    :param num: number of array entries expected in array
-    :return: array of size num, or scalar if array is a scalar
-    """
+    """:param array: float/int or numpy array :param num: number of array entries
+    expected in array :return: array of size num, or scalar if array is a scalar."""
     if np.isscalar(array):
         return array
     elif len(array) > num:

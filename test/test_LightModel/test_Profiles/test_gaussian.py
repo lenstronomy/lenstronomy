@@ -17,10 +17,7 @@ class TestMultiGaussian(object):
         pass
 
     def test_function_split(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         profile = MultiGaussian()
         output = profile.function_split(
             x=1.0, y=1.0, amp=[1.0, 2], sigma=[1, 2], center_x=0, center_y=0
@@ -51,10 +48,7 @@ class TestGaussianEllipse(object):
         pass
 
     def test_function_split(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         multiGaussian = MultiGaussian()
         multiGaussianEllipse = MultiGaussianEllipse()
         output = multiGaussian.function_split(

@@ -41,16 +41,16 @@ class KinematicsAPI(object):
         num_kin_sampling=1000,
         num_psf_sampling=100,
     ):
-        """
+        """:param z_lens: redshift of lens :param z_source: redshift of source :param
+        kwargs_model: model keyword arguments, needs 'lens_model_list',
+        'lens_light_model_list' :param kwargs_aperture: spectroscopic aperture keyword
+        arguments, see lenstronomy.Galkin.aperture for options :param kwargs_seeing:
+        seeing condition of spectroscopic observation, corresponds to kwargs_psf in the
+        GalKin module specified in lenstronomy.GalKin.psf :param cosmo:
+        astropy.cosmology instance, if None then will be set to the default cosmology
+        :param lens_model_kinematics_bool: bool list of length of the lens model.
 
-        :param z_lens: redshift of lens
-        :param z_source: redshift of source
-        :param kwargs_model: model keyword arguments, needs 'lens_model_list', 'lens_light_model_list'
-        :param kwargs_aperture: spectroscopic aperture keyword arguments, see lenstronomy.Galkin.aperture for options
-        :param kwargs_seeing: seeing condition of spectroscopic observation, corresponds to kwargs_psf in the GalKin
-         module specified in lenstronomy.GalKin.psf
-        :param cosmo: astropy.cosmology instance, if None then will be set to the default cosmology
-        :param lens_model_kinematics_bool: bool list of length of the lens model. Only takes a subset of all the models
+        Only takes a subset of all the models
             as part of the kinematics computation (can be used to ignore substructure, shear etc that do not describe the
             main deflector potential
         :param light_model_kinematics_bool: bool list of length of the light model. Only takes a subset of all the models
@@ -151,8 +151,8 @@ class KinematicsAPI(object):
         :param kwargs_lens_light: lens light model keyword arguments
         :param kwargs_anisotropy: stellar anisotropy keyword arguments
         :param r_eff: projected half-light radius of the stellar light associated with
-            the deflector galaxy, optional, if set to None will be computed in this
-            function with default settings that may not be accurate.
+                the deflector galaxy, optional, if set to None will be computed in this
+                function with default settings that may not be accurate.
         :param theta_E: Einstein radius (optional)
         :param gamma: power-law slope (optional)
         :param kappa_ext: external convergence (optional)
@@ -187,10 +187,11 @@ class KinematicsAPI(object):
         :param kwargs_lens_light: lens light model keyword arguments
         :param kwargs_anisotropy: stellar anisotropy keyword arguments
         :param r_eff: projected half-light radius of the stellar light associated with
-            the deflector galaxy, optional, if set to None will be computed in this
-            function with default settings that may not be accurate.
+                the deflector galaxy, optional, if set to None will be computed in this
+                function with default settings that may not be accurate.
         :param theta_E: circularized Einstein radius, optional, if not provided will
-            either be computed in this function with default settings or not required
+                either be computed in this function with default settings or not
+                required
         :param gamma: power-law slope at the Einstein radius, optional
         :param kappa_ext: external convergence
         :return: velocity dispersion [km/s]
@@ -246,15 +247,11 @@ class KinematicsAPI(object):
     def galkin_settings(
         self, kwargs_lens, kwargs_lens_light, r_eff=None, theta_E=None, gamma=None
     ):
-        """
-
-        :param kwargs_lens: lens model keyword argument list
-        :param kwargs_lens_light: deflector light keyword argument list
-        :param r_eff: half-light radius (optional)
-        :param theta_E: Einstein radius (optional)
-        :param gamma: local power-law slope at the Einstein radius (optional)
-        :return: Galkin() instance and mass and light profiles configured for the Galkin module
-        """
+        """:param kwargs_lens: lens model keyword argument list :param
+        kwargs_lens_light: deflector light keyword argument list :param r_eff: half-
+        light radius (optional) :param theta_E: Einstein radius (optional) :param gamma:
+        local power-law slope at the Einstein radius (optional) :return: Galkin()
+        instance and mass and light profiles configured for the Galkin module."""
         if r_eff is None:
             r_eff = self._lensLightProfile.half_light_radius(
                 kwargs_lens_light,
@@ -358,15 +355,15 @@ class KinematicsAPI(object):
         :param kwargs_lens: lens model parameters
         :param MGE_fit: bool, if true performs the MGE for the mass distribution
         :param model_kinematics_bool: bool list of length of the lens model. Only takes
-            a subset of all the models as part of the kinematics computation (can be
-            used to ignore substructure, shear etc that do not describe the main
-            deflector potential
+                a subset of all the models as part of the kinematics computation (can be
+                used to ignore substructure, shear etc that do not describe the main
+                deflector potential
         :param theta_E: (optional float) estimate of the Einstein radius. If present,
-            does not numerically compute this quantity in this routine numerically
+                does not numerically compute this quantity in this routine numerically
         :param gamma: local power-law slope at the Einstein radius (optional)
         :param kwargs_mge: keyword arguments that go into the MGE decomposition routine
         :param analytic_kinematics: bool, if True, solves the Jeans equation
-            analytically for the power-law mass profile with Hernquist light profile
+                analytically for the power-law mass profile with Hernquist light profile
         :return: mass_profile_list, keyword argument list
         """
         if analytic_kinematics is True:
@@ -453,18 +450,18 @@ class KinematicsAPI(object):
 
         :param kwargs_lens_light: deflector light model keyword argument list
         :param r_eff: (optional float, else=None) Pre-calculated projected half-light
-            radius of the deflector profile. If not provided, numerical calculation is
-            done in this routine if required.
+                radius of the deflector profile. If not provided, numerical calculation
+                is             done in this routine if required.
         :param MGE_fit: boolean, if True performs a Multi-Gaussian expansion of the
-            radial light profile and returns this solution.
+                radial light profile and returns this solution.
         :param model_kinematics_bool: list of booleans to indicate a subset of light
-            profiles to be part of the physical deflector light.
+                profiles to be part of the physical deflector light.
         :param Hernquist_approx: boolean, if True replaces the actual light profile(s)
-            with a Hernquist model with matched half-light radius.
+                with a Hernquist model with matched half-light radius.
         :param kwargs_mge: keyword arguments that go into the MGE decomposition routine
         :param analytic_kinematics: bool, if True, solves the Jeans equation
-            analytically for the power-law mass profile with Hernquist light profile and
-            adjust the settings accordingly
+                analytically for the power-law mass profile with Hernquist light profile
+                and             adjust the settings accordingly
         :return: deflector type list, keyword arguments list
         """
         if analytic_kinematics is True:
@@ -531,9 +528,9 @@ class KinematicsAPI(object):
         num_kin_sampling=1000,
         num_psf_sampling=100,
     ):
-        """
+        """:param anisotropy_model: type of stellar anisotropy model.
 
-        :param anisotropy_model: type of stellar anisotropy model. See details in MamonLokasAnisotropy() class of lenstronomy.GalKin.anisotropy
+        See details in MamonLokasAnisotropy() class of lenstronomy.GalKin.anisotropy
         :param analytic_kinematics: boolean, if True, used the analytic JAM modeling for a power-law profile on top of a Hernquist light profile
          ATTENTION: This may not be accurate for your specific problem!
         :param Hernquist_approx: bool, if True, uses a Hernquist light profile matched to the half light radius of the deflector light profile to compute the kinematics
@@ -574,11 +571,8 @@ class KinematicsAPI(object):
 
     @staticmethod
     def transform_kappa_ext(sigma_v, kappa_ext=0):
-        """
-
-        :param sigma_v: velocity dispersion estimate of the lensing deflector without considering external convergence
-        :param kappa_ext: external convergence to be used in the mass-sheet degeneracy
-        :return: transformed velocity dispersion
-        """
+        """:param sigma_v: velocity dispersion estimate of the lensing deflector without
+        considering external convergence :param kappa_ext: external convergence to be
+        used in the mass-sheet degeneracy :return: transformed velocity dispersion."""
         sigma_v_mst = sigma_v * np.sqrt(1 - kappa_ext)
         return sigma_v_mst

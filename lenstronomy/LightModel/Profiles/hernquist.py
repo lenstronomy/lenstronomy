@@ -25,25 +25,23 @@ class Hernquist(object):
         }
 
     def function(self, x, y, amp, Rs, center_x=0, center_y=0):
-        """
+        """:param x:
 
-        :param x:
-        :param y:
-        :param amp:
+        :param y: 
+        :param amp: 
         :param Rs: scale radius: half-light radius = Rs / 0.551
-        :param center_x:
-        :param center_y:
+        :param center_x: 
+        :param center_y: 
         :return:
         """
         rho0 = self.lens.sigma2rho(amp, Rs)
         return self.lens.density_2d(x, y, rho0, Rs, center_x, center_y)
 
     def light_3d(self, r, amp, Rs):
-        """
+        """:param r:
 
-        :param r:
-        :param amp:
-        :param Rs:
+        :param amp: 
+        :param Rs: 
         :return:
         """
         rho0 = self.lens.sigma2rho(amp, Rs)
@@ -79,9 +77,8 @@ class HernquistEllipse(object):
         self.spherical = Hernquist()
 
     def function(self, x, y, amp, Rs, e1, e2, center_x=0, center_y=0):
-        """
+        """:param x:
 
-        :param x:
         :param y:
         :param amp:
         :param Rs:
@@ -97,9 +94,8 @@ class HernquistEllipse(object):
         return self.spherical.function(x_, y_, amp, Rs)
 
     def light_3d(self, r, amp, Rs, e1=0, e2=0):
-        """
+        """:param r:
 
-        :param r:
         :param amp:
         :param Rs:
         :param e1:

@@ -21,21 +21,15 @@ class Sampler(object):
     """
 
     def __init__(self, likelihoodModule):
-        """
-
-        :param likelihoodModule: instance of LikelihoodModule class
-        """
+        """:param likelihoodModule: instance of LikelihoodModule class."""
         self.chain = likelihoodModule
         self.lower_limit, self.upper_limit = self.chain.param_limits
 
     def simplex(self, init_pos, n_iterations, method, print_key="SIMPLEX"):
-        """
-
-        :param init_pos: starting point for the optimization
-        :param n_iterations: maximum number of iterations
-        :param method: the optimization method, default is 'Nelder-Mead'
-        :return: the best fit for the lens model using the optimization routine specified by method
-        """
+        """:param init_pos: starting point for the optimization :param n_iterations:
+        maximum number of iterations :param method: the optimization method, default is
+        'Nelder-Mead' :return: the best fit for the lens model using the optimization
+        routine specified by method."""
         print("Performing the optimization using algorithm:", method)
         time_start = time.time()
 
@@ -84,16 +78,16 @@ class Sampler(object):
         :param n_particles: number of particles in the sampling process
         :param n_iterations: number of iterations of the swarm
         :param lower_start: numpy array, lower end parameter of the values of the
-            starting particles
+                starting particles
         :param upper_start: numpy array, upper end parameter of the values of the
-            starting particles
+                starting particles
         :param threadCount: number of threads in the computation (only applied if
             mpi=False)
         :param init_pos: numpy array, position of the initial best guess model
         :param mpi: bool, if True, makes instance of MPIPool to allow for MPI execution
         :param print_key: string, prints the process name in the progress bar (optional)
         :return: kwargs_result (of best fit), [lnlikelihood of samples, positions of
-            samples, velocity of samples])
+                samples, velocity of samples])
         """
         if lower_start is None or upper_start is None:
             lower_start, upper_start = np.array(self.lower_limit), np.array(
@@ -173,7 +167,8 @@ class Sampler(object):
         :type n_burn: integer
         :param mean_start: mean of the parameter position of the initialising sample
         :type mean_start: numpy array of length the number of parameters
-        :param sigma_start: spread of the parameter values (uncorrelated in each dimension) of the initialising sample
+        :param sigma_start: spread of the parameter values (uncorrelated in each
+                dimension) of the initialising sample
         :type sigma_start: numpy array of length the number of parameters
         :param mpi: if True, initializes an MPIPool to allow for MPI execution of the sampler
         :type mpi: bool
@@ -183,10 +178,12 @@ class Sampler(object):
         :type threadCount: integer
         :param initpos: initial walker position to start sampling (optional)
         :type initpos: numpy array of size num param x num walkser
-        :param backend_filename: name of the HDF5 file where sampling state is saved (through emcee backend engine)
+        :param backend_filename: name of the HDF5 file where sampling state is saved
+                (through emcee backend engine)
         :type backend_filename: string
-        :param start_from_backend: if True, start from the state saved in `backup_filename`.
-         Otherwise, create a new backup file with name `backup_filename` (any already existing file is overwritten!).
+        :param start_from_backend: if True, start from the state saved in
+                `backup_filename`.          Otherwise, create a new backup file with
+                name `backup_filename` (any already existing file is overwritten!).
         :type start_from_backend: bool
         :return: samples, ln likelihood value of samples
         :rtype: numpy 2d array, numpy 1d array
@@ -263,12 +260,13 @@ class Sampler(object):
         backend_filename=None,
         **kwargs_zeus
     ):
-        """
-        Lightning fast MCMC with zeus: https://github.com/minaskar/zeus
+        """Lightning fast MCMC with zeus: https://github.com/minaskar/zeus.
 
-        For the full list of arguments for the EnsembleSampler and callbacks, see see `the zeus docs <https://zeus-mcmc.readthedocs.io/en/latest/api/sampler.html>`_.
+        For the full list of arguments for the EnsembleSampler and callbacks, see see
+        `the zeus docs <https://zeus-mcmc.readthedocs.io/en/latest/api/sampler.html>`_.
 
-        If you use the zeus sampler, you should cite the following papers: 2105.03468, 2002.06212.
+        If you use the zeus sampler, you should cite the following papers: 2105.03468,
+        2002.06212.
 
         :param n_walkers: number of walkers per parameter
         :type n_walkers: integer
@@ -278,15 +276,17 @@ class Sampler(object):
         :type n_burn: integer
         :param mean_start: mean of the parameter position of the initialising sample
         :type mean_start: numpy array of length the number of parameters
-        :param sigma_start: spread of the parameter values (uncorrelated in each dimension) of the initialising sample
+        :param sigma_start: spread of the parameter values (uncorrelated in each
+                dimension) of the initialising sample
         :type sigma_start: numpy array of length the number of parameters
         :param mpi: if True, initializes an MPIPool to allow for MPI execution of the sampler
         :type mpi: bool
-        :param progress:
+        :param progress: 
         :type progress: bool
         :param initpos: initial walker position to start sampling (optional)
         :type initpos: numpy array of size num param x num walkser
-        :param backend_filename: name of the HDF5 file where sampling state is saved (through zeus callback function)
+        :param backend_filename: name of the HDF5 file where sampling state is saved
+                (through zeus callback function)
         :type backend_filename: string
         :return: samples, ln likelihood value of samples
         :rtype: numpy 2d array, numpy 1d array

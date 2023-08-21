@@ -42,10 +42,9 @@ class Sersic(SersicUtil):
     def function(
         self, x, y, amp, R_sersic, n_sersic, center_x=0, center_y=0, max_R_frac=1000.0
     ):
-        """
+        """:param x:
 
-        :param x:
-        :param y:
+        :param y: 
         :param amp: surface brightness/amplitude value at the half light radius
         :param R_sersic: semi-major axis half light radius
         :param n_sersic: Sersic index
@@ -108,12 +107,12 @@ class SersicElliptic(SersicUtil):
         center_y=0,
         max_R_frac=1000.0,
     ):
-        """
+        """:param x:
 
-        :param x:
-        :param y:
+        :param y: 
         :param amp: surface brightness/amplitude value at the half light radius
-        :param R_sersic: half light radius (either semi-major axis or product average of semi-major and semi-minor axis)
+        :param R_sersic: half light radius (either semi-major axis or product average of
+                semi-major and semi-minor axis)
         :param n_sersic: Sersic index
         :param e1: eccentricity parameter e1
         :param e2: eccentricity parameter e2
@@ -170,12 +169,12 @@ class SersicElliptic_qPhi(SersicUtil):
         center_y=0,
         max_R_frac=100.0,
     ):
-        """
+        """:param x:
 
-        :param x:
-        :param y:
+        :param y: 
         :param amp: surface brightness/amplitude value at the half light radius
-        :param R_sersic: half light radius (either semi-major axis or product average of semi-major and semi-minor axis)
+        :param R_sersic: half light radius (either semi-major axis or product average of
+                semi-major and semi-minor axis)
         :param n_sersic: Sersic index
         :param q: axis ratio
         :param phi: position angle (radians)
@@ -257,11 +256,12 @@ class CoreSersic(SersicUtil):
         alpha=3.0,
         max_R_frac=1000.0,
     ):
-        """
-        :param x:
-        :param y:
+        """:param x:
+
+        :param y: 
         :param amp: surface brightness/amplitude value at the half light radius
-        :param R_sersic: half light radius (either semi-major axis or product average of semi-major and semi-minor axis)
+        :param R_sersic: half light radius (either semi-major axis or product average of
+                semi-major and semi-minor axis)
         :param Rb: "break" core radius
         :param n_sersic: Sersic index
         :param gamma: inner power-law exponent
@@ -269,7 +269,8 @@ class CoreSersic(SersicUtil):
         :param e2: eccentricity parameter e2
         :param center_x: center in x-coordinate
         :param center_y: center in y-coordinate
-        :param alpha: sharpness of the transition between the cusp and the outer Sersic profile (float)
+        :param alpha: sharpness of the transition between the cusp and the outer Sersic
+                profile (float)
         :param max_R_frac: maximum window outside which the mass is zeroed, in units of R_sersic (float)
         :return: Cored Sersic profile value at (x, y)
         """

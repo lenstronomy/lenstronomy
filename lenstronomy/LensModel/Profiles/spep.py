@@ -36,18 +36,16 @@ class SPEP(LensProfileBase):
         super(SPEP, self).__init__()
 
     def function(self, x, y, theta_E, gamma, e1, e2, center_x=0, center_y=0):
-        """
-        :param x: set of x-coordinates
-        :type x: array of size (n)
-        :param theta_E: Einstein radius of lense
-        :type theta_E: float.
+        """:param x: set of x-coordinates :type x: array of size (n) :param theta_E:
+        Einstein radius of lense :type theta_E: float.
+
         :param gamma: power law slope of mass profifle
         :type gamma: <2 float
         :param e1: eccentricity
         :type e1: -1<e1<1
         :param e2: eccentricity
         :type e2: -1<e1<1
-        :returns:  function
+        :returns: function
         :raises: AttributeError, KeyError
         """
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
@@ -196,8 +194,8 @@ class SPEP(LensProfileBase):
     def _param_bounds(gamma, q):
         """Bounds parameters.
 
-        :param gamma:
-        :param q:
+        :param gamma: 
+        :param q: 
         :return:
         """
         if gamma < 1.4:

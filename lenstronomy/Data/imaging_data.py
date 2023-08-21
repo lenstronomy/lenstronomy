@@ -64,31 +64,37 @@ class ImageData(PixelGrid, ImageNoise):
         likelihood_method="diagonal",
         flux_scaling=1,
     ):
-        """
+        """:param image_data: 2d numpy array of the image data :param exposure_time: int
+        or array of size the data; exposure time (common for all pixels or individually
+        for each individual pixel) :param background_rms: root-mean-square value of
+        Gaussian background noise in units counts per second :param noise_map: int or
+        array of size the data; joint noise sqrt(variance) of each individual pixel.
 
-        :param image_data: 2d numpy array of the image data
-        :param exposure_time: int or array of size the data; exposure time
-         (common for all pixels or individually for each individual pixel)
-        :param background_rms: root-mean-square value of Gaussian background noise in units counts per second
-        :param noise_map: int or array of size the data; joint noise sqrt(variance) of each individual pixel.
-        :param gradient_boost_factor: None or float, variance terms added in quadrature scaling with
-         gradient^2 * gradient_boost_factor
+        :param gradient_boost_factor: None or float, variance terms added in quadrature
+                scaling with          gradient^2 * gradient_boost_factor
         :param transform_pix2angle: 2x2 matrix, mapping of pixel to coordinate
         :param ra_at_xy_0: ra coordinate at pixel (0,0)
         :param dec_at_xy_0: dec coordinate at pixel (0,0)
         :param ra_shift: RA shift of pixel grid
         :param dec_shift: DEC shift of pixel grid
-        :param log_likelihood_constant: float, allows user to input a constant that will be added to the log likelihood. Note that, as for now, this variable is ONLY used for interferometric mode.
+        :param log_likelihood_constant: float, allows user to input a constant that will
+                be added to the log likelihood. Note that, as for now, this variable is
+                ONLY used for interferometric mode.
         :param antenna_primary_beam: 2d numpy array with the same size of imaga_data;
         :param phi_rot: rotation angle in regard to pixel coordinate transform_pix2angle
         :param antenna_primary_beam: 2d numpy array with the same size of image_data;
-         more descriptions of the primary beam can be found in the AngularSensitivity class
-        :param likelihood_method: string, type of method of log_likelihood computation: options are 'diagonal', 'interferometry_natwt'.
-         The default option 'diagonal' uses a diagonal covariance matrix, which is the case for CCD images.
-         The 'interferometry_natwt' option uses our special interferometric likelihood function based on natural weighting images.
-        :param flux_scaling: scales the model amplitudes to match the imaging data units. This can be used, for example,
-         when modeling multiple exposures that have different magnitude zero points (or flux normalizations) but demand
-         the same model normalization
+                more descriptions of the primary beam can be found in the
+                AngularSensitivity class
+        :param likelihood_method: string, type of method of log_likelihood computation:
+                options are 'diagonal', 'interferometry_natwt'.          The default
+                option 'diagonal' uses a diagonal covariance matrix, which is the case
+                for CCD images.          The 'interferometry_natwt' option uses our
+                special interferometric likelihood function based on natural weighting
+                images.
+        :param flux_scaling: scales the model amplitudes to match the imaging data
+                units. This can be used, for example,          when modeling multiple
+                exposures that have different magnitude zero points (or flux
+                normalizations) but demand          the same model normalization
         """
         nx, ny = np.shape(image_data)
         if transform_pix2angle is None:
@@ -146,10 +152,7 @@ class ImageData(PixelGrid, ImageNoise):
 
     @property
     def data(self):
-        """
-
-        :return: 2d numpy array of data
-        """
+        """:return: 2d numpy array of data."""
         return self._data
 
     def log_likelihood(self, model, mask, additional_error_map=0):
@@ -160,9 +163,9 @@ class ImageData(PixelGrid, ImageNoise):
 
         :param model: the model (same dimensions and units as data)
         :param mask: bool (1, 0) values per pixel. If =0, the pixel is ignored in the
-            likelihood
+                likelihood
         :param additional_error_map: additional error term (in same units as covariance
-            matrix). This can e.g. come from model errors in the PSF estimation.
+                matrix). This can e.g. come from model errors in the PSF estimation.
         :return: the natural logarithm of the likelihood p(data|model)
         """
         # if the likelihood method is assigned to be 'interferometry_natwt', it will return logL computed using the interfermetric likelihood function

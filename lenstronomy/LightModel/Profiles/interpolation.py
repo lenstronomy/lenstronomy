@@ -41,20 +41,15 @@ class Interpol(object):
     def function(
         self, x, y, image=None, amp=1, center_x=0, center_y=0, phi_G=0, scale=1
     ):
-        """
-
-        :param x: x-coordinate to evaluate surface brightness
-        :param y: y-coordinate to evaluate surface brightness
-        :param image: pixelized surface brightness (an image) to be used to interpolate in units of surface brightness
-         (flux per square arc seconds, not flux per pixel!)
-        :type image: 2d numpy array
-        :param amp: amplitude of surface brightness scaling in respect of original input image
-        :param center_x: center of interpolated image
-        :param center_y: center of interpolated image
-        :param phi_G: rotation angle of simulated image in respect to input gird
-        :param scale: pixel scale (in angular units) of the simulated image
-        :return: surface brightness from the model at coordinates (x, y)
-        """
+        """:param x: x-coordinate to evaluate surface brightness :param y: y-coordinate
+        to evaluate surface brightness :param image: pixelized surface brightness (an
+        image) to be used to interpolate in units of surface brightness (flux per square
+        arc seconds, not flux per pixel!) :type image: 2d numpy array :param amp:
+        amplitude of surface brightness scaling in respect of original input image
+        :param center_x: center of interpolated image :param center_y: center of
+        interpolated image :param phi_G: rotation angle of simulated image in respect to
+        input gird :param scale: pixel scale (in angular units) of the simulated image
+        :return: surface brightness from the model at coordinates (x, y)"""
         x_, y_ = self.coord2image_pixel(x, y, center_x, center_y, phi_G, scale)
         return amp * self.image_interp(x_, y_, image)
 
@@ -83,10 +78,10 @@ class Interpol(object):
         brightness at the coordinate of the pixel) times pixel area.
 
         :param image: pixelized surface brightness used to interpolate in units of
-            surface brightness (flux per square arc seconds, not flux per pixel!)
+                surface brightness (flux per square arc seconds, not flux per pixel!)
         :param scale: scale of the pixel in units of angle
         :param amp: linear scaling parameter of the surface brightness multiplicative
-            with the initial image
+                with the initial image
         :param center_x: center of image in angular coordinates
         :param center_y: center of image in angular coordinates
         :param phi_G: rotation angle
@@ -96,16 +91,10 @@ class Interpol(object):
 
     @staticmethod
     def coord2image_pixel(ra, dec, center_x, center_y, phi_G, scale):
-        """
-
-        :param ra: angular coordinate
-        :param dec: angular coordinate
-        :param center_x: center of image in angular coordinates
-        :param center_y: center of image in angular coordinates
-        :param phi_G: rotation angle
-        :param scale: pixel scale of image
-        :return: pixel coordinates
-        """
+        """:param ra: angular coordinate :param dec: angular coordinate :param center_x:
+        center of image in angular coordinates :param center_y: center of image in
+        angular coordinates :param phi_G: rotation angle :param scale: pixel scale of
+        image :return: pixel coordinates."""
         ra_ = ra - center_x
         dec_ = dec - center_y
         x_ = ra_ / scale

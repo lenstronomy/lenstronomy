@@ -97,8 +97,11 @@ class CartShapelets(LensProfileBase):
         """Returns the the numerical values of a set of shapelets at polar coordinates
         :param shapelets: set of shapelets [l=,r=,a_lr=] :type shapelets: array of size
         (n,3) :param coordPolar: set of coordinates in polar units :type coordPolar:
-        array of size (n,2) :returns:  array of same size with coords [r,phi] :raises:
-        AttributeError, KeyError."""
+
+        array of size (n,2)
+        :returns: array of same size with coords [r,phi]
+        :raises: AttributeError, KeyError.
+        """
         n = len(np.atleast_1d(x))
         if n <= 1:
             values = 0.0
@@ -120,16 +123,9 @@ class CartShapelets(LensProfileBase):
         return values
 
     def _function(self, x, y, amp, beta, n1, n2, center_x=0, center_y=0, precalc=False):
-        """
-
-        :param amp: amplitude of shapelet
-        :param beta: scale factor of shapelet
-        :param n1: x-order
-        :param n2: y-order
-        :param center_x: center in x
-        :param center_y: center in y
-        :return:
-        """
+        """:param amp: amplitude of shapelet :param beta: scale factor of shapelet
+        :param n1: x-order :param n2: y-order :param center_x: center in x :param
+        center_y: center in y :return:"""
         if precalc:
             return amp * x[n1] * y[n2] / beta
         x_ = x - center_x
@@ -139,7 +135,7 @@ class CartShapelets(LensProfileBase):
     def _dx_shapelets(self, shapelets, beta):
         """Computes the derivative d/dx of the shapelet coeffs :param shapelets:
 
-        :param beta:
+        :param beta: 
         :return:
         """
         num_n = len(shapelets)
@@ -155,7 +151,7 @@ class CartShapelets(LensProfileBase):
     def _dy_shapelets(self, shapelets, beta):
         """Computes the derivative d/dx of the shapelet coeffs :param shapelets:
 
-        :param beta:
+        :param beta: 
         :return:
         """
         num_n = len(shapelets)
@@ -212,12 +208,12 @@ class CartShapelets(LensProfileBase):
     def pre_calc(self, x, y, beta, n_order, center_x, center_y):
         """Calculates the H_n(x) and H_n(y) for a given x-array and y-array :param x:
 
-        :param y:
-        :param amp:
-        :param beta:
-        :param n_order:
-        :param center_x:
-        :param center_y:
+        :param y: 
+        :param amp: 
+        :param beta: 
+        :param n_order: 
+        :param center_x: 
+        :param center_y: 
         :return: list of H_n(x) and H_n(y)
         """
 
@@ -243,10 +239,7 @@ class CartShapelets(LensProfileBase):
         return H_x, H_y
 
     def _get_num_n(self, n_coeffs):
-        """
-
-        :param n_coeffs: number of coeffs
-        :return: number of n_l of order of the shapelets
-        """
+        """:param n_coeffs: number of coeffs :return: number of n_l of order of the
+        shapelets."""
         num_n = round((math.sqrt(8 * n_coeffs + 1) - 1) / 2.0 + 0.499)
         return int(num_n)

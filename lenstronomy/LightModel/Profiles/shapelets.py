@@ -69,15 +69,15 @@ class Shapelets(object):
         n<= 150.
 
         :param interpolation: boolean; if True, uses interpolated pre-calculated
-            shapelets in the evaluation
+                shapelets in the evaluation
         :param precalc: boolean; if True interprets as input (x, y) as pre-calculated
-            normalized shapelets
+                normalized shapelets
         :param stable_cut: boolean; if True, sets the values outside of
-            :math:`\\sqrt\\left(n_{\\rm max} + 1 \\right) \\beta s_{\\rm cut scale} =
-            0`.
+        :math: `\\sqrt\\left(n_{\\rm max} + 1 \\right) \\beta s_{\\rm cut scale} =
+                0`.
         :param cut_scale: float, scaling parameter where to cut the shapelets. This is
-            for numerical reasons such that the polynomials in the Hermite function do
-            not get unstable.
+                for numerical reasons such that the polynomials in the Hermite function
+                do             not get unstable.
         """
 
         self._interpolation = interpolation
@@ -214,17 +214,11 @@ class ShapeletSet(object):
         self.shapelets = Shapelets(precalc=True)
 
     def function(self, x, y, amp, n_max, beta, center_x=0, center_y=0):
-        """
-
-        :param x: x-coordinates
-        :param y: y-coordinates
-        :param amp: array of amplitudes in pre-defined order of shapelet basis functions
-        :param beta: shapelet scale
-        :param n_max: maximum polynomial order in Hermite polynomial
-        :param center_x: shapelet center
-        :param center_y: shapelet center
-        :return: surface brightness of combined shapelet set
-        """
+        """:param x: x-coordinates :param y: y-coordinates :param amp: array of
+        amplitudes in pre-defined order of shapelet basis functions :param beta:
+        shapelet scale :param n_max: maximum polynomial order in Hermite polynomial
+        :param center_x: shapelet center :param center_y: shapelet center :return:
+        surface brightness of combined shapelet set."""
         num_param = int((n_max + 1) * (n_max + 2) / 2)
         f_ = np.zeros(len(np.atleast_1d(x)))
         n1 = 0
@@ -291,13 +285,9 @@ class ShapeletSet(object):
     def shapelet_basis_2d(
         self, num_order, beta, numPix, deltaPix=1, center_x=0, center_y=0
     ):
-        """
-
-        :param num_order: max shapelet order
-        :param beta: shapelet scale
-        :param numPix: number of pixel of the grid
-        :return: list of shapelets drawn on pixel grid, centered.
-        """
+        """:param num_order: max shapelet order :param beta: shapelet scale :param
+        numPix: number of pixel of the grid :return: list of shapelets drawn on pixel
+        grid, centered."""
         num_param = int((num_order + 2) * (num_order + 1) / 2)
         kernel_list = []
         x_grid, y_grid = util.make_grid(numPix, deltapix=deltaPix, subgrid_res=1)

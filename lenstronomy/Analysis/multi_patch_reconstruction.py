@@ -22,11 +22,11 @@ class MultiPatchReconstruction(MultiBandImageReconstruction):
         kwargs_pixel_grid=None,
         verbose=True,
     ):
-        """
+        """:param multi_band_list: list of imaging data configuration [[kwargs_data,
+        kwargs_psf, kwargs_numerics], [...]] :param kwargs_model: model keyword argument
+        list :param kwargs_params: keyword arguments of the model parameters, same as
+        output of FittingSequence() 'kwargs_result'.
 
-        :param multi_band_list: list of imaging data configuration [[kwargs_data, kwargs_psf, kwargs_numerics], [...]]
-        :param kwargs_model: model keyword argument list
-        :param kwargs_params: keyword arguments of the model parameters, same as output of FittingSequence() 'kwargs_result'
         :param multi_band_type: string, option when having multiple imaging data sets modelled simultaneously. Options are:
             - 'multi-linear': linear amplitudes are inferred on single data set
             - 'linear-joint': linear amplitudes ae jointly inferred
@@ -60,10 +60,8 @@ class MultiPatchReconstruction(MultiBandImageReconstruction):
 
     @property
     def pixel_grid_joint(self):
-        """
-
-        :return: PixelGrid() class instance covering the entire window of the sky including all individual patches
-        """
+        """:return: PixelGrid() class instance covering the entire window of the sky
+        including all individual patches."""
         return self._pixel_grid_joint
 
     @staticmethod
@@ -71,8 +69,10 @@ class MultiPatchReconstruction(MultiBandImageReconstruction):
         """Joint PixelGrid() class instance. This routine only works when the individual
         patches have the same coordinate system orientation and pixel scale.
 
-        :param multi_band_list: list of imaging data configuration [[kwargs_data, kwargs_psf, kwargs_numerics], [...]]
-        :return: PixelGrid() class instance covering the entire window of the sky including all individual patches
+        :param multi_band_list: list of imaging data configuration [[kwargs_data,
+                kwargs_psf, kwargs_numerics], [...]]
+        :return: PixelGrid() class instance covering the entire window of the sky
+                including all individual patches
         """
 
         nx, ny = 0, 0
@@ -152,7 +152,7 @@ class MultiPatchReconstruction(MultiBandImageReconstruction):
         """Patch together the individual patches of the lens model (can be discontinues)
 
         :return: 2d numpy arrays of kappa_joint, magnification_joint, alpha_x_joint,
-            alpha_y_joint
+                alpha_y_joint
         """
         nx, ny = self._pixel_grid_joint.num_pixel_axes
         kappa_joint = np.zeros((ny, nx))
@@ -197,7 +197,7 @@ class MultiPatchReconstruction(MultiBandImageReconstruction):
         :param delta_pix: pixel size
         :param center: list with two entries [center_x, center_y] (optional)
         :return: 2d surface brightness grid of the reconstructed source and PixelGrid()
-            instance of source grid
+                instance of source grid
         """
         Mpix2coord = (
             self._pixel_grid_joint.transform_pix2angle
@@ -239,16 +239,11 @@ class MultiPatchReconstruction(MultiBandImageReconstruction):
 
 
 def _update_frame_size(nx, ny, x_min, y_min, nx_i, ny_i):
-    """
-
-    :param nx: x-axis frame size prior to addition of subframe
-    :param ny: y-axis frame size prior to addition of subframe
-    :param x_min: lower left pixel coordinate in the prior frame coordinates of the new subframe
-    :param y_min: lower left pixel coordinate in the prior frame coordinates of the new subframe
-    :param nx_i: x-size of new subframe
-    :param ny_i: y-size of new subframe
-    :return:
-    """
+    """:param nx: x-axis frame size prior to addition of subframe :param ny: y-axis
+    frame size prior to addition of subframe :param x_min: lower left pixel coordinate
+    in the prior frame coordinates of the new subframe :param y_min: lower left pixel
+    coordinate in the prior frame coordinates of the new subframe :param nx_i: x-size of
+    new subframe :param ny_i: y-size of new subframe :return:"""
     if x_min < 0:
         nx += int(abs(x_min))
     else:

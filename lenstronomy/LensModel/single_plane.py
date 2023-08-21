@@ -14,8 +14,11 @@ class SinglePlane(ProfileListBase):
         (preferentially arcsec) :type x: numpy array :param y: y-position
         (preferentially arcsec) :type y: numpy array :param kwargs: list of keyword
         arguments of lens model parameters matching the lens model classes :param k:
-        only evaluate the k-th lens model :return: source plane positions corresponding
-        to (x, y) in the image plane."""
+
+        only evaluate the k-th lens model
+        :return: source plane positions corresponding
+        to (x, y) in the image plane.
+        """
 
         dx, dy = self.alpha(x, y, kwargs, k=k)
         return x - dx, y - dy
@@ -30,10 +33,10 @@ class SinglePlane(ProfileListBase):
         :param x_source: source position
         :param y_source: source position
         :param kwargs_lens: list of keyword arguments of lens model parameters matching
-            the lens model classes
-        :param k:
+                the lens model classes
+        :param k: 
         :return: fermat potential in arcsec**2 without geometry term (second part of Eqn
-            1 in Suyu et al. 2013) as a list
+                1 in Suyu et al. 2013) as a list
         """
 
         potential = self.potential(x_image, y_image, kwargs_lens, k=k)
@@ -119,7 +122,7 @@ class SinglePlane(ProfileListBase):
 
         :param r: radius (in angular units)
         :param kwargs: list of keyword arguments of lens model parameters matching the
-            lens model classes
+                lens model classes
         :param bool_list: list of bools that are part of the output
         :return: mass (in angular units, modulo epsilon_crit)
         """
@@ -170,7 +173,7 @@ class SinglePlane(ProfileListBase):
 
         :param r: radius (in angular units)
         :param kwargs: list of keyword arguments of lens model parameters matching the
-            lens model classes
+                lens model classes
         :param bool_list: list of bools that are part of the output
         :return: mass density at radius r (in angular units, modulo epsilon_crit)
         """

@@ -17,13 +17,10 @@ class DataAPI(SingleBand):
     """
 
     def __init__(self, numpix, kwargs_pixel_grid=None, **kwargs_single_band):
-        """
-
-        :param numpix: number of pixels per axis in the simulation to be modelled
-        :param kwargs_pixel_grid: if None, uses default pixel grid option
-            if defined, must contain keyword arguments PixelGrid() class
-        :param kwargs_single_band: keyword arguments used to create instance of SingleBand class
-        """
+        """:param numpix: number of pixels per axis in the simulation to be modelled
+        :param kwargs_pixel_grid: if None, uses default pixel grid option if defined,
+        must contain keyword arguments PixelGrid() class :param kwargs_single_band:
+        keyword arguments used to create instance of SingleBand class."""
         self.numpix = numpix
         if kwargs_pixel_grid is not None:
             required_keys = ["ra_at_xy_0", "dec_at_xy_0", "transform_pix2angle"]
@@ -46,10 +43,7 @@ class DataAPI(SingleBand):
 
     @property
     def kwargs_data(self):
-        """
-
-        :return: keyword arguments for ImageData class instance
-        """
+        """:return: keyword arguments for ImageData class instance."""
         # default pixel grid
         if self._kwargs_pixel_grid is None:
             (

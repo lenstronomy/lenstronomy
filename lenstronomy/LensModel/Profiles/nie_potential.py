@@ -59,7 +59,7 @@ class NIE_POTENTIAL(LensProfileBase):
         :param e1: eccentricity component
         :param e2: eccentricity component
         :return: transformed Einstein radius, core radius, ellipticity modulus,
-            orientation angle phi_G
+                orientation angle phi_G
         """
 
         eps = np.sqrt(e1**2 + e2**2)
@@ -69,18 +69,10 @@ class NIE_POTENTIAL(LensProfileBase):
         return theta_E_conv, theta_c_conv, eps, phi_G
 
     def set_static(self, theta_E, theta_c, e1, e2, center_x=0, center_y=0):
-        """
-
-        :param x: x-coordinate in image plane
-        :param y: y-coordinate in image plane
-        :param theta_E: Einstein radius
-        :param theta_c: core radius
-        :param e1: eccentricity component
-        :param e2: eccentricity component
-        :param center_x: profile center
-        :param center_y: profile center
-        :return: self variables set
-        """
+        """:param x: x-coordinate in image plane :param y: y-coordinate in image plane
+        :param theta_E: Einstein radius :param theta_c: core radius :param e1:
+        eccentricity component :param e2: eccentricity component :param center_x:
+        profile center :param center_y: profile center :return: self variables set."""
         self._static = True
         (
             self._thetaE_transf_static,
@@ -90,10 +82,7 @@ class NIE_POTENTIAL(LensProfileBase):
         ) = self._param_conv(theta_E, theta_c, e1, e2)
 
     def set_dynamic(self):
-        """
-
-        :return:
-        """
+        """:return:"""
         self._static = False
         if hasattr(self, "_thetaE_transf_static"):
             del self._thetaE_transf_static
@@ -105,16 +94,10 @@ class NIE_POTENTIAL(LensProfileBase):
             del self._phi_G_static
 
     def function(self, x, y, theta_E, theta_c, e1, e2, center_x=0, center_y=0):
-        """
-
-        :param x: x-coord (in angles)
-        :param y: y-coord (in angles)
-        :param theta_E: Einstein radius (in angles)
-        :param theta_c: core radius  (in angles)
-        :param e1: eccentricity component, x direction(dimensionless)
-        :param e2: eccentricity component, y direction (dimensionless)
-        :return: lensing potential
-        """
+        """:param x: x-coord (in angles) :param y: y-coord (in angles) :param theta_E:
+        Einstein radius (in angles) :param theta_c: core radius  (in angles) :param e1:
+        eccentricity component, x direction(dimensionless) :param e2: eccentricity
+        component, y direction (dimensionless) :return: lensing potential."""
         theta_E_conv, theta_c_conv, eps, phi_G = self.param_conv(
             theta_E, theta_c, e1, e2
         )
@@ -135,16 +118,10 @@ class NIE_POTENTIAL(LensProfileBase):
         return f_
 
     def derivatives(self, x, y, theta_E, theta_c, e1, e2, center_x=0, center_y=0):
-        """
-
-        :param x: x-coord (in angles)
-        :param y: y-coord (in angles)
-        :param theta_E: Einstein radius (in angles)
-        :param theta_c: core radius  (in angles)
-        :param e1: eccentricity component, x direction(dimensionless)
-        :param e2: eccentricity component, y direction (dimensionless)
-        :return: deflection angle (in angles)
-        """
+        """:param x: x-coord (in angles) :param y: y-coord (in angles) :param theta_E:
+        Einstein radius (in angles) :param theta_c: core radius  (in angles) :param e1:
+        eccentricity component, x direction(dimensionless) :param e2: eccentricity
+        component, y direction (dimensionless) :return: deflection angle (in angles)"""
         theta_E_conv, theta_c_conv, eps, phi_G = self.param_conv(
             theta_E, theta_c, e1, e2
         )
@@ -166,16 +143,10 @@ class NIE_POTENTIAL(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, theta_E, theta_c, e1, e2, center_x=0, center_y=0):
-        """
-
-        :param x: x-coord (in angles)
-        :param y: y-coord (in angles)
-        :param theta_E: Einstein radius (in angles)
-        :param theta_c: core radius  (in angles)
-        :param e1: eccentricity component, x direction(dimensionless)
-        :param e2: eccentricity component, y direction (dimensionless)
-        :return: hessian matrix (in angles)
-        """
+        """:param x: x-coord (in angles) :param y: y-coord (in angles) :param theta_E:
+        Einstein radius (in angles) :param theta_c: core radius  (in angles) :param e1:
+        eccentricity component, x direction(dimensionless) :param e2: eccentricity
+        component, y direction (dimensionless) :return: hessian matrix (in angles)"""
         theta_E_conv, theta_c_conv, eps, phi_G = self.param_conv(
             theta_E, theta_c, e1, e2
         )

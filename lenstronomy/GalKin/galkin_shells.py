@@ -17,16 +17,13 @@ class GalkinShells(Galkin):
         kwargs_numerics=None,
         analytic_kinematics=False,
     ):
-        """
-
-        :param kwargs_model: keyword arguments describing the model components
-        :param kwargs_aperture: keyword arguments describing the spectroscopic aperture, see Aperture() class
-        :param kwargs_psf: keyword argument specifying the PSF of the observation
-        :param kwargs_cosmo: keyword arguments that define the cosmology in terms of the angular diameter distances
-         involved
-        :param kwargs_numerics: numerics keyword arguments
-        :param analytic_kinematics: bool, if True uses the analytic kinematic model
-        """
+        """:param kwargs_model: keyword arguments describing the model components :param
+        kwargs_aperture: keyword arguments describing the spectroscopic aperture, see
+        Aperture() class :param kwargs_psf: keyword argument specifying the PSF of the
+        observation :param kwargs_cosmo: keyword arguments that define the cosmology in
+        terms of the angular diameter distances involved :param kwargs_numerics:
+        numerics keyword arguments :param analytic_kinematics: bool, if True uses the
+        analytic kinematic model."""
         Galkin.__init__(
             self,
             kwargs_model=kwargs_model,
@@ -50,12 +47,12 @@ class GalkinShells(Galkin):
         self._r_grid = np.sqrt(x_grid**2 + y_grid**2)
 
     def dispersion_map(self, kwargs_mass, kwargs_light, kwargs_anisotropy, **kwargs):
-        """
+        """:param kwargs_mass: mass model parameters (following lenstronomy lens model
+        conventions) :param kwargs_light: deflector light parameters (following
+        lenstronomy light model conventions) :param kwargs_anisotropy: anisotropy
+        parameters, may vary according to anisotropy type chosen.
 
-        :param kwargs_mass: mass model parameters (following lenstronomy lens model conventions)
-        :param kwargs_light: deflector light parameters (following lenstronomy light model conventions)
-        :param kwargs_anisotropy: anisotropy parameters, may vary according to anisotropy type chosen.
-         We refer to the Anisotropy() class for details on the parameters.
+        We refer to the Anisotropy() class for details on the parameters.
         :return: array of velocity dispersion for each IFU shell [km/s]
         """
         I_R_sigma2, IR = self.numerics._I_R_sigma2_interp(

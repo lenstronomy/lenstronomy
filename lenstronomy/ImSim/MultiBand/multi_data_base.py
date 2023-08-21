@@ -6,11 +6,9 @@ class MultiDataBase(object):
     multiple data sets."""
 
     def __init__(self, image_model_list, compute_bool=None):
-        """
-
-        :param image_model_list: list of ImageModel instances (supporting linear inversions)
-        :param compute_bool: list of booleans for each imaging band indicating whether to model it or not.
-        """
+        """:param image_model_list: list of ImageModel instances (supporting linear
+        inversions) :param compute_bool: list of booleans for each imaging band
+        indicating whether to model it or not."""
         self._num_bands = len(image_model_list)
         if compute_bool is None:
             compute_bool = [True] * self._num_bands
@@ -56,10 +54,8 @@ class MultiDataBase(object):
     def num_param_linear(
         self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps
     ):
-        """
-
-        :return: number of linear coefficients to be solved for in the linear inversion
-        """
+        """:return: number of linear coefficients to be solved for in the linear
+        inversion."""
         num = 0
         for i in range(self._num_bands):
             if self._compute_bool[i] is True:
@@ -69,12 +65,8 @@ class MultiDataBase(object):
         return num
 
     def reduced_residuals(self, model_list, error_map_list=None):
-        """
-
-        :param model_list: list of models
-        :param error_map_list: list of error maps
-        :return:
-        """
+        """:param model_list: list of models :param error_map_list: list of error maps
+        :return:"""
         residual_list = []
         if error_map_list is None:
             error_map_list = [[] for _ in range(self._num_bands)]

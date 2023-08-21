@@ -27,11 +27,8 @@ def correlation_2D(image):
 
 @export
 def power_spectrum_2d(image):
-    """
-
-    :param image: 2d numpy array
-    :return: 2d power spectrum in frequency units of the pixels
-    """
+    """:param image: 2d numpy array :return: 2d power spectrum in frequency units of the
+    pixels."""
     nx, ny = np.shape(image)
     corr2d = correlation_2D(image)
     return (corr2d / nx / ny) ** 2
@@ -39,11 +36,8 @@ def power_spectrum_2d(image):
 
 @export
 def power_spectrum_1d(image):
-    """
-
-    :param image: 2d numpy array
-    :return: 1d radially averaged power spectrum of image in frequency units of pixels, radius in units of pixels
-    """
+    """:param image: 2d numpy array :return: 1d radially averaged power spectrum of
+    image in frequency units of pixels, radius in units of pixels."""
     psd2D = power_spectrum_2d(image)
     # Calculate the azimuthally averaged 1D power spectrum
     psd1D, r = analysis_util.azimuthalAverage(psd2D)

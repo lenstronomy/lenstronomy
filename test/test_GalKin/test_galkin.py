@@ -1,6 +1,4 @@
-"""
-Tests for `galkin` module.
-"""
+"""Tests for `galkin` module."""
 import pytest
 import unittest
 import copy
@@ -19,8 +17,9 @@ class TestGalkin(object):
         np.random.seed(42)
 
     def test_compare_power_law(self):
-        """
-        compare power-law profiles analytical vs. numerical
+        """Compare power-law profiles analytical vs.
+
+        numerical
         :return:
         """
         # light profile
@@ -86,10 +85,10 @@ class TestGalkin(object):
         npt.assert_almost_equal(sigma_v_num_lin_proj / sigma_v_analytic, 1, decimal=2)
 
     def test_log_vs_linear_integral(self):
-        """
-        here we test logarithmic vs linear integral in an end-to-end fashion.
-        We do not demand the highest level of precisions here!!!
-        We are using the luminosity-weighted velocity dispersion integration calculation in this test.
+        """Here we test logarithmic vs linear integral in an end-to-end fashion.
+
+        We do not demand the highest level of precisions here!!! We are using the
+        luminosity-weighted velocity dispersion integration calculation in this test.
         """
 
         # light profile
@@ -183,10 +182,7 @@ class TestGalkin(object):
         npt.assert_almost_equal(light2d/(out[0]*2), 1., decimal=3)
 
     def test_realistic_0(self):
-        """
-        realistic test example
-        :return:
-        """
+        """Realistic test example :return:"""
         light_profile_list = ['HERNQUIST']
         kwargs_light = [{'Rs': 0.10535462602138289, 'center_x': -0.02678473951679429, 'center_y': 0.88691126347462712,
                          'amp': 3.7114695634960109}]
@@ -198,10 +194,7 @@ class TestGalkin(object):
         npt.assert_almost_equal(light2d/(out[0]*2), 1., decimal=3)
 
     def test_realistic_1(self):
-        """
-        realistic test example
-        :return:
-        """
+        """Realistic test example :return:"""
         light_profile_list = ['HERNQUIST_ELLIPSE']
         phi, q = 0.74260706384506325, 0.46728323131925864
         e1, e2 = param_util.phi_q2_ellipticity(phi, q)
@@ -215,10 +208,7 @@ class TestGalkin(object):
         npt.assert_almost_equal(light2d/(out[0]*2), 1., decimal=3)
 
     def test_realistic(self):
-        """
-        realistic test example
-        :return:
-        """
+        """Realistic test example :return:"""
         light_profile_list = ['HERNQUIST_ELLIPSE', 'PJAFFE_ELLIPSE']
         phi, q = 0.74260706384506325, 0.46728323131925864
         e1, e2 = param_util.phi_q2_ellipticity(phi, q)
@@ -235,9 +225,7 @@ class TestGalkin(object):
         npt.assert_almost_equal(light2d/(out[0]*2), 1., decimal=3)
 
     def test_dispersion_map(self):
-        """
-        tests whether the old and new version provide the same answer
-        """
+        """Tests whether the old and new version provide the same answer."""
         # light profile
         light_profile_list = ['HERNQUIST']
         r_eff = 1.5

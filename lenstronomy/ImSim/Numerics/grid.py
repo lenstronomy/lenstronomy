@@ -9,9 +9,7 @@ export, __all__ = exporter()
 
 @export
 class AdaptiveGrid(Coordinates1D):
-    """
-    manages a super-sampled grid on the partial image
-    """
+    """Manages a super-sampled grid on the partial image."""
     def __init__(self, nx, ny, transform_pix2angle, ra_at_xy_0, dec_at_xy_0, supersampling_indexes,
                  supersampling_factor, flux_evaluate_indexes=None):
         """
@@ -81,8 +79,7 @@ class AdaptiveGrid(Coordinates1D):
         return self._x_high_res, self._y_high_res
 
     def _merge_low_high_res(self, low_res_values, supersampled_values):
-        """
-        adds/overwrites the supersampled values on the image
+        """Adds/overwrites the supersampled values on the image.
 
         :param low_res_values: 1d array of image with low resolution
         :param supersampled_values: values of the supersampled sub-pixels
@@ -134,8 +131,7 @@ class AdaptiveGrid(Coordinates1D):
         self._y_high_res = y_sub_grid
 
     def _average_subgrid(self, subgrid_values):
-        """
-        averages the values over a pixel
+        """Averages the values over a pixel.
 
         :param subgrid_values: values (e.g. flux) of subgrid coordinates
         :return: 1d array of size of the supersampled pixels
@@ -144,11 +140,8 @@ class AdaptiveGrid(Coordinates1D):
         return np.mean(values_2d, axis=1)
 
     def _array2image_subset(self, array):
-        """
-        maps a 1d array into a (nx, ny) 2d grid with array populating the idex_mask indices
-        :param array: 1d array
-        :return: 2d array
-        """
+        """Maps a 1d array into a (nx, ny) 2d grid with array populating the idex_mask
+        indices :param array: 1d array :return: 2d array."""
         grid1d = np.zeros(self._nx * self._ny)
         grid1d[self._high_res_indexes1d] = array
         grid2d = util.array2image(grid1d, self._nx, self._ny)
@@ -157,9 +150,7 @@ class AdaptiveGrid(Coordinates1D):
 
 @export
 class RegularGrid(Coordinates1D):
-    """
-    manages a super-sampled grid on the partial image
-    """
+    """Manages a super-sampled grid on the partial image."""
     def __init__(self, nx, ny, transform_pix2angle, ra_at_xy_0, dec_at_xy_0, supersampling_factor=1,
                  flux_evaluate_indexes=None):
         """
@@ -198,18 +189,14 @@ class RegularGrid(Coordinates1D):
 
     @property
     def grid_points_spacing(self):
-        """
-        effective spacing between coordinate points, after supersampling
-        :return: sqrt(pixel_area)/supersampling_factor
-        """
+        """Effective spacing between coordinate points, after supersampling :return:
+        sqrt(pixel_area)/supersampling_factor."""
         return self.pixel_width / self._supersampling_factor
 
     @property
     def num_grid_points_axes(self):
-        """
-        effective number of points along each axes, after supersampling
-        :return: number of pixels per axis, nx*supersampling_factor ny*supersampling_factor
-        """
+        """Effective number of points along each axes, after supersampling :return:
+        number of pixels per axis, nx*supersampling_factor ny*supersampling_factor."""
         return self._nx * self._supersampling_factor, self._ny * self._supersampling_factor
 
     @property
@@ -249,8 +236,8 @@ class RegularGrid(Coordinates1D):
         return idex_sub
 
     def _array2image(self, array):
-        """
-        maps a 1d array into a (nx, ny) 2d grid with array populating the idex_mask indices
+        """Maps a 1d array into a (nx, ny) 2d grid with array populating the idex_mask
+        indices.
 
         :param array: 1d array
         :return:

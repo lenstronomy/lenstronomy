@@ -59,19 +59,22 @@ class Sampler(object):
 
     def pso(self, n_particles, n_iterations, lower_start=None, upper_start=None,
             threadCount=1, init_pos=None, mpi=False, print_key='PSO'):
-        """
-        Return the best fit for the lens model on catalogue basis with
-        particle swarm optimizer.
+        """Return the best fit for the lens model on catalogue basis with particle swarm
+        optimizer.
 
         :param n_particles: number of particles in the sampling process
         :param n_iterations: number of iterations of the swarm
-        :param lower_start: numpy array, lower end parameter of the values of the starting particles
-        :param upper_start: numpy array, upper end parameter of the values of the starting particles
-        :param threadCount: number of threads in the computation (only applied if mpi=False)
+        :param lower_start: numpy array, lower end parameter of the values of the
+            starting particles
+        :param upper_start: numpy array, upper end parameter of the values of the
+            starting particles
+        :param threadCount: number of threads in the computation (only applied if
+            mpi=False)
         :param init_pos: numpy array, position of the initial best guess model
         :param mpi: bool, if True, makes instance of MPIPool to allow for MPI execution
         :param print_key: string, prints the process name in the progress bar (optional)
-        :return: kwargs_result (of best fit), [lnlikelihood of samples, positions of samples, velocity of samples])
+        :return: kwargs_result (of best fit), [lnlikelihood of samples, positions of
+            samples, velocity of samples])
         """
         if lower_start is None or upper_start is None:
             lower_start, upper_start = np.array(self.lower_limit), np.array(self.upper_limit)
@@ -121,9 +124,8 @@ class Sampler(object):
     def mcmc_emcee(self, n_walkers, n_run, n_burn, mean_start, sigma_start,
                    mpi=False, progress=False, threadCount=1,
                    initpos=None, backend_filename=None, start_from_backend=False):
-        """
-        Run MCMC with emcee.
-        For details, please have a look at the documentation of the emcee packager.
+        """Run MCMC with emcee. For details, please have a look at the documentation of
+        the emcee packager.
 
         :param n_walkers: number of walkers in the emcee process
         :type n_walkers: integer

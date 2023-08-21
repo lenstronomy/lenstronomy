@@ -40,8 +40,7 @@ class Uldm(LensProfileBase):
 
     @staticmethod
     def rhotilde(kappa_0, theta_c, slope=8):
-        """
-        Computes the central density in angular units
+        """Computes the central density in angular units.
 
         :param kappa_0: central convergence of profile
         :param theta_c: core radius (in arcsec)
@@ -80,8 +79,7 @@ class Uldm(LensProfileBase):
 
     @staticmethod
     def alpha_radial(r, kappa_0, theta_c, slope=8):
-        """
-        returns the radial part of the deflection angle
+        """Returns the radial part of the deflection angle.
 
         :param kappa_0: central convergence of profile
         :param theta_c: core radius (in arcsec)
@@ -95,8 +93,8 @@ class Uldm(LensProfileBase):
         return prefactor/r * (1 - 1/denominator_factor)
 
     def derivatives(self, x, y, kappa_0, theta_c, center_x=0, center_y=0, slope=8):
-        """
-        returns df/dx and df/dy of the function (lensing potential), which are the deflection angles
+        """Returns df/dx and df/dy of the function (lensing potential), which are the
+        deflection angles.
 
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
@@ -142,9 +140,8 @@ class Uldm(LensProfileBase):
         return f_xx, f_xy, f_xy, f_yy
 
     def density(self, R, kappa_0, theta_c, slope=8):
-        """
-        three dimensional ULDM profile in angular units
-        (rho0_physical = rho0_angular Sigma_crit / D_lens)
+        """Three dimensional ULDM profile in angular units (rho0_physical = rho0_angular
+        Sigma_crit / D_lens)
 
         :param R: radius of interest
         :param kappa_0: central convergence of profile
@@ -157,10 +154,9 @@ class Uldm(LensProfileBase):
         return rhotilde/(1 + a_factor * (R/theta_c)**2)**slope
 
     def density_lens(self, r, kappa_0, theta_c, slope=8):
-        """
-        computes the density at 3d radius r given lens model parameterization.
-        The integral in the LOS projection of this quantity results in the
-        convergence quantity.
+        """Computes the density at 3d radius r given lens model parameterization. The
+        integral in the LOS projection of this quantity results in the convergence
+        quantity.
 
         :param r: 3d radius
         :param kappa_0: central convergence of profile
@@ -172,8 +168,7 @@ class Uldm(LensProfileBase):
 
     @staticmethod
     def kappa_r(R, kappa_0, theta_c, slope=8):
-        """
-        convergence of the cored density profile. This routine is also for testing
+        """Convergence of the cored density profile. This routine is also for testing.
 
         :param R: radius (angular scale)
         :param kappa_0: convergence in the core
@@ -185,9 +180,8 @@ class Uldm(LensProfileBase):
         return kappa_0 * (1 + a_factor * (R/theta_c)**2)**(1./2 - slope)
 
     def density_2d(self, x, y, kappa_0, theta_c, center_x=0, center_y=0, slope=8):
-        """
-        projected two dimensional ULDM profile (convergence * Sigma_crit), but
-        given our units convention for rho0, it is basically the convergence
+        """Projected two dimensional ULDM profile (convergence * Sigma_crit), but given
+        our units convention for rho0, it is basically the convergence.
 
         :param x: x-coordinate
         :param y: y-coordinate
@@ -202,8 +196,7 @@ class Uldm(LensProfileBase):
         return self.kappa_r(R, kappa_0, theta_c, slope)
 
     def _mass_integral(self, x, slope=8):
-        """
-        Returns the analytic result of the integral appearing in mass expression
+        """Returns the analytic result of the integral appearing in mass expression.
 
         :param slope: exponent entering the profile
         :return: integral result
@@ -212,8 +205,7 @@ class Uldm(LensProfileBase):
         return 1./3 * x**3 * hypF
 
     def mass_3d(self, R, kappa_0, theta_c, slope=8):
-        """
-        mass enclosed a 3d sphere or radius r
+        """Mass enclosed a 3d sphere or radius r.
 
         :param R: radius in arcseconds
         :param kappa_0: central convergence of profile
@@ -229,8 +221,7 @@ class Uldm(LensProfileBase):
         return m_3d
 
     def mass_3d_lens(self, r, kappa_0, theta_c, slope=8):
-        """
-        mass enclosed a 3d sphere or radius r
+        """Mass enclosed a 3d sphere or radius r.
 
         :param r: radius over which the mass is computed
         :param kappa_0: central convergence of profile
@@ -242,8 +233,7 @@ class Uldm(LensProfileBase):
         return m_3d
 
     def mass_2d(self, R, kappa_0, theta_c, slope=8):
-        """
-        mass enclosed a 2d sphere or radius r
+        """Mass enclosed a 2d sphere or radius r.
 
         :param R: radius over which the mass is computed
         :param kappa_0: central convergence of profile

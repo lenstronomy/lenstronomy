@@ -7,9 +7,7 @@ from lenstronomy.LightModel.Profiles.shapelets import Shapelets, ShapeletSet
 
 
 class TestShapeletSet(object):
-    """
-    class to test Shapelets
-    """
+    """Class to test Shapelets."""
     def setup_method(self):
         self.shapeletSet = ShapeletSet()
         self.shapelets = Shapelets(precalc=False)

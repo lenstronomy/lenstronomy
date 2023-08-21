@@ -5,10 +5,8 @@ __all__ = ['KDELikelihood']
 
 
 class KDELikelihood(object):
-    """
-    class that samples the cosmographic likelihood given a distribution of points in the 2-dimensional distribution
-    of D_d and D_delta_t
-    """
+    """Class that samples the cosmographic likelihood given a distribution of points in
+    the 2-dimensional distribution of D_d and D_delta_t."""
     def __init__(self, D_d_sample, D_delta_t_sample, kde_type='scipy_gaussian', bandwidth=1):
         """
 
@@ -32,9 +30,8 @@ class KDELikelihood(object):
         self._kde_type = kde_type
 
     def logLikelihood(self, D_d, D_delta_t):
-        """
-        likelihood of the data (represented in the distribution of this class) given a model with predicted angular
-        diameter distances.
+        """Likelihood of the data (represented in the distribution of this class) given
+        a model with predicted angular diameter distances.
 
         :param D_d: model predicted angular diameter distance
         :param D_delta_t: model predicted time-delay distance

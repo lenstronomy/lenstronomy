@@ -8,9 +8,7 @@ __all__ = ['LightProfileAnalysis']
 
 
 class LightProfileAnalysis(object):
-    """
-    class with analysis routines to compute derived properties of the lens model
-    """
+    """Class with analysis routines to compute derived properties of the lens model."""
     def __init__(self, light_model):
         """
 
@@ -20,16 +18,19 @@ class LightProfileAnalysis(object):
 
     def ellipticity(self, kwargs_light, grid_spacing, grid_num, center_x=None, center_y=None, model_bool_list=None,
                     num_iterative=10, iterative=False):
-        """
-        make sure that the window covers all the light, otherwise the moments may give a too low answers.
+        """Make sure that the window covers all the light, otherwise the moments may
+        give a too low answers.
 
         :param kwargs_light: keyword argument list of profiles
-        :param center_x: center of profile, if None takes it from the first profile in kwargs_light
-        :param center_y: center of profile, if None takes it from the first profile in kwargs_light
+        :param center_x: center of profile, if None takes it from the first profile in
+            kwargs_light
+        :param center_y: center of profile, if None takes it from the first profile in
+            kwargs_light
         :param model_bool_list: list of booleans to select subsets of the profile
         :param grid_spacing: grid spacing over which the moments are computed
         :param grid_num: grid size over which the moments are computed
-        :param iterative: if True iteratively adopts an eccentric mask to overcome edge effects
+        :param iterative: if True iteratively adopts an eccentric mask to overcome edge
+            effects
         :type iterative: boolean
         :param num_iterative: number of iterative changes in ellipticity
         :type num_iterative: int
@@ -47,12 +48,14 @@ class LightProfileAnalysis(object):
         return e1, e2
 
     def half_light_radius(self, kwargs_light, grid_spacing, grid_num, center_x=None, center_y=None, model_bool_list=None):
-        """
-        computes numerically the half-light-radius of the deflector light and the total photon flux
+        """Computes numerically the half-light-radius of the deflector light and the
+        total photon flux.
 
         :param kwargs_light: keyword argument list of profiles
-        :param center_x: center of profile, if None takes it from the first profile in kwargs_light
-        :param center_y: center of profile, if None takes it from the first profile in kwargs_light
+        :param center_x: center of profile, if None takes it from the first profile in
+            kwargs_light
+        :param center_y: center of profile, if None takes it from the first profile in
+            kwargs_light
         :param model_bool_list: list of booleans to select subsets of the profile
         :param grid_spacing: grid spacing over which the moments are computed
         :param grid_num: grid size over which the moments are computed
@@ -88,17 +91,20 @@ class LightProfileAnalysis(object):
 
     def multi_gaussian_decomposition(self, kwargs_light, model_bool_list=None, n_comp=20, center_x=None, center_y=None,
                                      r_h=None, grid_spacing=0.02, grid_num=200):
-        """
-        multi-gaussian decomposition of the lens light profile (in 1-dimension)
+        """Multi-gaussian decomposition of the lens light profile (in 1-dimension)
 
         :param kwargs_light: keyword argument list of profiles
-        :param center_x: center of profile, if None takes it from the first profile in kwargs_light
-        :param center_y: center of profile, if None takes it from the first profile in kwargs_light
+        :param center_x: center of profile, if None takes it from the first profile in
+            kwargs_light
+        :param center_y: center of profile, if None takes it from the first profile in
+            kwargs_light
         :param model_bool_list: list of booleans to select subsets of the profile
-        :param grid_spacing: grid spacing over which the moments are computed for the half-light radius
+        :param grid_spacing: grid spacing over which the moments are computed for the
+            half-light radius
         :param grid_num: grid size over which the moments are computed
         :param n_comp: maximum number of Gaussian's in the MGE
-        :param r_h: float, half light radius to be used for MGE (optional, otherwise using a numerical grid)
+        :param r_h: float, half light radius to be used for MGE (optional, otherwise
+            using a numerical grid)
         :return: amplitudes, sigmas, center_x, center_y
         """
 
@@ -146,8 +152,7 @@ class LightProfileAnalysis(object):
         return kwargs_mge
 
     def flux_components(self, kwargs_light, grid_num=400, grid_spacing=0.01):
-        """
-        computes the total flux in each component of the model
+        """Computes the total flux in each component of the model.
 
         :param kwargs_light:
         :param grid_num:

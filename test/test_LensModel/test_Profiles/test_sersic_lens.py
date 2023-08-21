@@ -12,9 +12,7 @@ import numpy.testing as npt
 
 
 class TestSersic(object):
-    """
-    tests the Gaussian methods
-    """
+    """Tests the Gaussian methods."""
     def setup_method(self):
 
         self.sersic_2 = SersicEllipseKappa()
@@ -183,10 +181,8 @@ class TestSersic(object):
         npt.assert_almost_equal(A_1, A_2, decimal=10)
 
     def test_convergernce(self):
-        """
-        test the convergence and compares it with the original Sersic profile
-        :return:
-        """
+        """Test the convergence and compares it with the original Sersic profile
+        :return:"""
         x = np.array([0, 0, 0, 0, 0])
         y = np.array([0.5, 1, 1.5, 2, 2.5])
         n_sersic = 4.5

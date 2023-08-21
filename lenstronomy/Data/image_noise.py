@@ -8,9 +8,7 @@ export, __all__ = exporter()
 
 @export
 class ImageNoise(object):
-    """
-    class that deals with noise properties of imaging data
-    """
+    """Class that deals with noise properties of imaging data."""
 
     def __init__(self, image_data, exposure_time=None, background_rms=None, noise_map=None,
                  gradient_boost_factor=None, verbose=True, flux_scaling=1):
@@ -108,8 +106,8 @@ class ImageNoise(object):
 
 @export
 def covariance_matrix(data, background_rms, exposure_map, gradient_boost_factor=None):
-    """
-    returns a diagonal matrix for the covariance estimation which describes the error
+    """Returns a diagonal matrix for the covariance estimation which describes the
+    error.
 
     Notes:
 

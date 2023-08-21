@@ -13,8 +13,7 @@ __all__ = ['AnalyticKinematics']
 
 
 class AnalyticKinematics(Anisotropy):
-    """
-    class to compute eqn 20 in Suyu+2010 with a Monte-Carlo from rendering from the
+    """Class to compute eqn 20 in Suyu+2010 with a Monte-Carlo from rendering from the
     light profile distribution and displacing them with a Gaussian seeing convolution.
 
     This class assumes spherical symmetry in light and mass distribution and
@@ -29,7 +28,6 @@ class AnalyticKinematics(Anisotropy):
 
     All units are meant to be in angular arc seconds. The physical units are fold in through the angular diameter
     distances
-
     """
     def __init__(self, kwargs_cosmo, interpol_grid_num=100, log_integration=False, max_integrate=100,
                  min_integrate=0.001):
@@ -73,37 +71,36 @@ class AnalyticKinematics(Anisotropy):
         return r, R, x, y
 
     def _sigma_s2(self, r, R, r_ani, a, gamma, rho0_r0_gamma):
-        """
-        projected velocity dispersion
-        :param r: 3d radius of the light tracer particle
-        :param R: 2d projected radius of the light tracer particle
-        :param r_ani: anisotropy radius
-        :param a: scale of the Hernquist light profile
-        :param gamma: power-law slope of the mass profile
-        :param rho0_r0_gamma: combination of Einstein radius and power-law slope as equation (14) in Suyu+ 2010
-        :return: projected velocity dispersion
-        """
+        """Projected velocity dispersion :param r: 3d radius of the light tracer
+        particle :param R: 2d projected radius of the light tracer particle :param
+        r_ani: anisotropy radius :param a: scale of the Hernquist light profile :param
+        gamma: power-law slope of the mass profile :param rho0_r0_gamma: combination of
+        Einstein radius and power-law slope as equation (14) in Suyu+ 2010 :return:
+        projected velocity dispersion."""
         beta = self.beta_r(r, **{'r_ani': r_ani})
         return (1 - beta * R**2/r**2) * self._sigma_r2_interp(r, a, gamma, rho0_r0_gamma, r_ani)
 
     def sigma_s2(self, r, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
-        """
-        returns unweighted los velocity dispersion for a specified projected radius, with weight 1
+        """Returns unweighted los velocity dispersion for a specified projected radius,
+        with weight 1.
 
         :param r: 3d radius (not needed for this calculation)
         :param R: 2d projected radius (in angular units of arcsec)
-        :param kwargs_mass: mass model parameters (following lenstronomy lens model conventions)
-        :param kwargs_light: deflector light parameters (following lenstronomy light model conventions)
-        :param kwargs_anisotropy: anisotropy parameters, may vary according to anisotropy type chosen.
-            We refer to the Anisotropy() class for details on the parameters.
-        :return: line-of-sight projected velocity dispersion at projected radius R from 3d radius r
+        :param kwargs_mass: mass model parameters (following lenstronomy lens model
+            conventions)
+        :param kwargs_light: deflector light parameters (following lenstronomy light
+            model conventions)
+        :param kwargs_anisotropy: anisotropy parameters, may vary according to
+            anisotropy type chosen. We refer to the Anisotropy() class for details on
+            the parameters.
+        :return: line-of-sight projected velocity dispersion at projected radius R from
+            3d radius r
         """
         a, gamma, rho0_r0_gamma, r_ani = self._read_out_params(kwargs_mass, kwargs_light, kwargs_anisotropy)
         return self._sigma_s2(r, R, r_ani, a, gamma, rho0_r0_gamma), 1
 
     def sigma_r2(self, r, kwargs_mass, kwargs_light, kwargs_anisotropy):
-        """
-        equation (19) in Suyu+ 2010
+        """Equation (19) in Suyu+ 2010.
 
         :param r: 3d radius
         :param kwargs_mass: mass profile keyword arguments
@@ -115,9 +112,8 @@ class AnalyticKinematics(Anisotropy):
         return self._sigma_r2(r, a, gamma, rho0_r0_gamma, r_ani)
 
     def _read_out_params(self, kwargs_mass, kwargs_light, kwargs_anisotropy):
-        """
-        reads the relevant parameters out of the keyword arguments and transforms them to the conventions used in this
-        class
+        """Reads the relevant parameters out of the keyword arguments and transforms
+        them to the conventions used in this class.
 
         :param kwargs_mass: mass profile keyword arguments
         :param kwargs_light: light profile keyword arguments
@@ -135,9 +131,7 @@ class AnalyticKinematics(Anisotropy):
         return a, gamma, rho0_r0_gamma, r_ani
 
     def _sigma_r2(self, r, a, gamma, rho0_r0_gamma, r_ani):
-        """
-        equation (19) in Suyu+ 2010
-        """
+        """Equation (19) in Suyu+ 2010."""
         # first term
         prefac1 = 4*np.pi * const.G * a**(-gamma) * rho0_r0_gamma / (3-gamma)
         prefac2 = r * (r + a)**3/(r**2 + r_ani**2)
@@ -168,8 +162,7 @@ class AnalyticKinematics(Anisotropy):
         return self._interp_sigma_r2(np.log(r))
 
     def grav_potential(self, r, kwargs_mass):
-        """
-        Gravitational potential in SI units
+        """Gravitational potential in SI units.
 
         :param r: radius (arc seconds)
         :param kwargs_mass:
@@ -184,8 +177,7 @@ class AnalyticKinematics(Anisotropy):
         return grav_pot
 
     def delete_cache(self):
-        """
-        deletes temporary cache tight to a specific model
+        """Deletes temporary cache tight to a specific model.
 
         :return:
         """

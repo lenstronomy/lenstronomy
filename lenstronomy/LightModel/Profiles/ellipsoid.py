@@ -8,9 +8,7 @@ __all__ = ['Ellipsoid']
 
 
 class Ellipsoid(object):
-    """
-    class for an universal surface brightness within an ellipsoid
-    """
+    """Class for an universal surface brightness within an ellipsoid."""
     def __init__(self):
         self.param_names = ['amp', 'radius', 'e1', 'e2', 'center_x', 'center_y']
         self.lower_limit_default = {'amp': 0, 'radius': 0, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}
@@ -38,9 +36,7 @@ class Ellipsoid(object):
 
 
 def function(x, y, amp, sigma, center_x, center_y):
-    """
-    returns torus (ellipse with constant surface brightness) profile
-    """
+    """Returns torus (ellipse with constant surface brightness) profile."""
     x_shift = x - center_x
     y_shift = y - center_y
     area = np.pi * sigma**2

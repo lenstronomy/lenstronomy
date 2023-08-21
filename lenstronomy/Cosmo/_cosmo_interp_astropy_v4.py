@@ -9,10 +9,9 @@ from scipy.integrate import quad
 
 
 class CosmoInterp(object):
-    """
-    class which interpolates the comoving transfer distance and then computes angular diameter distances from it
-    This class is modifying the astropy.cosmology routines
-    """
+    """Class which interpolates the comoving transfer distance and then computes angular
+    diameter distances from it This class is modifying the astropy.cosmology
+    routines."""
     def __init__(self, cosmo):
         """
 
@@ -21,8 +20,8 @@ class CosmoInterp(object):
         self._cosmo = cosmo
 
     def _integral_comoving_distance_z1z2(self, z1, z2):
-        """ Comoving line-of-sight distance in Mpc between objects at
-        redshifts z1 and z2.
+        """Comoving line-of-sight distance in Mpc between objects at redshifts z1 and
+        z2.
 
         The comoving distance along the line-of-sight between two
         objects remains constant with time for objects in the Hubble

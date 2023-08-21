@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
-"""
-This module defines ``class GaussianEllipseKappa`` to compute the lensing
-properties of an elliptical Gaussian profile with ellipticity in the
-convergence using the formulae from Shajib (2019).
-"""
+"""This module defines ``class GaussianEllipseKappa`` to compute the lensing properties
+of an elliptical Gaussian profile with ellipticity in the convergence using the formulae
+from Shajib (2019)."""
 
 __author__ = 'ajshajib'
 
@@ -19,9 +17,8 @@ __all__ = ['GaussianEllipseKappa']
 
 
 class GaussianEllipseKappa(LensProfileBase):
-    """
-    This class contains functions to evaluate the derivative and hessian matrix
-    of the deflection potential for an elliptical Gaussian convergence.
+    """This class contains functions to evaluate the derivative and hessian matrix of
+    the deflection potential for an elliptical Gaussian convergence.
 
     The formulae are from Shajib (2019).
     """
@@ -32,9 +29,8 @@ class GaussianEllipseKappa(LensProfileBase):
                            'center_x': 100, 'center_y': 100}
 
     def __init__(self, use_scipy_wofz=True, min_ellipticity=1e-5):
-        """
-        Setup which method to use the Faddeeva function and the
-        ellipticity limit for spherical approximation.
+        """Setup which method to use the Faddeeva function and the ellipticity limit for
+        spherical approximation.
 
         :param use_scipy_wofz: If ``True``, use ``scipy.special.wofz``.
         :type use_scipy_wofz: ``bool``
@@ -51,8 +47,7 @@ class GaussianEllipseKappa(LensProfileBase):
         super(GaussianEllipseKappa, self).__init__()
 
     def function(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
-        """
-        Compute the potential function for elliptical Gaussian convergence.
+        """Compute the potential function for elliptical Gaussian convergence.
 
         :param x: x coordinate
         :type x: ``float`` or ``numpy.array``
@@ -134,9 +129,8 @@ class GaussianEllipseKappa(LensProfileBase):
         return pot_on_real_line + pot_on_imag_parallel
 
     def derivatives(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
-        """
-        Compute the derivatives of function angles :math:`\\partial
-        f/\\partial x`, :math:`\\partial f/\\partial y` at :math:`x,\\ y`.
+        """Compute the derivatives of function angles :math:`\\partial f/\\partial x`,
+        :math:`\\partial f/\\partial y` at :math:`x,\\ y`.
 
         :param x: x coordinate
         :type x: ``float`` or ``numpy.array``
@@ -197,10 +191,8 @@ class GaussianEllipseKappa(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
-        """
-        Compute Hessian matrix of function :math:`\\partial^2f/\\partial x^2`,
-        :math:`\\partial^2 f/\\partial y^2`, :math:`\\partial^2/\\partial
-        x\\partial y`.
+        """Compute Hessian matrix of function :math:`\\partial^2f/\\partial x^2`,
+        :math:`\\partial^2 f/\\partial y^2`, :math:`\\partial^2/\\partial x\\partial y`.
 
         :param x: x coordinate
         :type x: ``float`` or ``numpy.array``
@@ -265,9 +257,8 @@ class GaussianEllipseKappa(LensProfileBase):
         return f_xx, f_xy, f_xy, f_yy
 
     def density_2d(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
-        """
-        Compute the density of elliptical Gaussian :math:`A/(2 \\pi
-        \\sigma^2) \\exp(-(x^2+y^2/q^2)/2\\sigma^2)`.
+        """Compute the density of elliptical Gaussian :math:`A/(2 \\pi \\sigma^2)
+        \\exp(-(x^2+y^2/q^2)/2\\sigma^2)`.
 
         :param x: x coordinate.
         :type x: ``float`` or ``numpy.array``
@@ -293,9 +284,9 @@ class GaussianEllipseKappa(LensProfileBase):
 
     @staticmethod
     def sgn(z):
-        """
-        Compute the sign function :math:`\\mathrm{sgn}(z)` factor for
-        deflection as sugggested by Bray (1984). For current implementation, returning 1 is sufficient.
+        """Compute the sign function :math:`\\mathrm{sgn}(z)` factor for deflection as
+        sugggested by Bray (1984). For current implementation, returning 1 is
+        sufficient.
 
         :param z: Complex variable :math:`z = x + \\mathrm{i}y`
         :type z: ``complex``
@@ -312,9 +303,8 @@ class GaussianEllipseKappa(LensProfileBase):
         # return np.where(z.real == 0, np.sign(z.real), np.sign(z.imag))
 
     def sigma_function(self, x, y, q):
-        r"""
-        Compute the function :math:`\varsigma (z; q)` from equation (4.12)
-        of Shajib (2019).
+        r"""Compute the function :math:`\varsigma (z; q)` from equation (4.12) of Shajib
+        (2019).
 
         :param x: Real part of complex variable, :math:`x = \mathrm{Re}(z)`
         :type x: ``float`` or ``numpy.array``
@@ -343,8 +333,7 @@ class GaussianEllipseKappa(LensProfileBase):
 
     @staticmethod
     def w_f_approx(z):
-        """
-        Compute the Faddeeva function :math:`w_{\\mathrm F}(z)` using the
+        """Compute the Faddeeva function :math:`w_{\\mathrm F}(z)` using the
         approximation given in Zaghloul (2017).
 
         :param z: complex number

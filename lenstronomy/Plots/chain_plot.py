@@ -11,9 +11,9 @@ export, __all__ = exporter()
 
 @export
 def plot_chain_list(chain_list, index=0, num_average=100):
-    """
-    plots the output of a chain of samples (MCMC or PSO) with the some diagnostics of convergence.
-    This routine is an example and more tests might be appropriate to analyse a specific chain.
+    """Plots the output of a chain of samples (MCMC or PSO) with the some diagnostics of
+    convergence. This routine is an example and more tests might be appropriate to
+    analyse a specific chain.
 
     :param chain_list: list of chains with arguments [type string, samples etc...]
     :param index: index of chain to be plotted
@@ -67,14 +67,14 @@ def plot_chain(chain, param_list):
 
 @export
 def plot_mcmc_behaviour(ax, samples_mcmc, param_mcmc, dist_mcmc=None, num_average=100):
-    """
-    plots the MCMC behaviour and looks for convergence of the chain
+    """Plots the MCMC behaviour and looks for convergence of the chain.
 
     :param ax: matplotlib.axis instance
     :param samples_mcmc: parameters sampled 2d numpy array
     :param param_mcmc: list of parameters
     :param dist_mcmc: log likelihood of the chain
-    :param num_average: number of samples to average (should coincide with the number of samples in the emcee process)
+    :param num_average: number of samples to average (should coincide with the number of
+        samples in the emcee process)
     :return:
     """
     num_samples = len(samples_mcmc[:, 0])

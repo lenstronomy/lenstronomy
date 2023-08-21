@@ -11,9 +11,7 @@ import pytest
 
 
 class TestNFWELLIPSE(object):
-    """
-    tests the Gaussian methods
-    """
+    """Tests the Gaussian methods."""
     def setup_method(self):
         self.nfw = NFW()
         self.nfw_cse = NFW_ELLIPSE_CSE(high_accuracy=True)
@@ -70,9 +68,8 @@ class TestNFWELLIPSE(object):
         npt.assert_almost_equal(m_3d_nfw, m_3d_cse, decimal=8)
 
     def test_ellipticity(self):
-        """
-        test the definition of the ellipticity normalization (along major axis or product averaged axes)
-        """
+        """Test the definition of the ellipticity normalization (along major axis or
+        product averaged axes)"""
         x, y = np.linspace(start=0.001, stop=10, num=100), np.zeros(100)
         kwargs_round = {'alpha_Rs': 0.5, 'Rs': 2, 'center_x': 0, 'center_y': 0, 'e1': 0, 'e2': 0}
         kwargs = {'alpha_Rs': 0.5, 'Rs': 2, 'center_x': 0, 'center_y': 0, 'e1': 0.3, 'e2': 0}
@@ -97,9 +94,8 @@ class TestNFWELLIPSE(object):
         # plt.legend()
         # plt.show()
     def test_einstein_rad(self):
-        """
-         test that the Einstein radius doesn't change significantly with ellipticity
-         """
+        """Test that the Einstein radius doesn't change significantly with
+        ellipticity."""
         kwargs_round = {'alpha_Rs': 0.5, 'Rs': 2, 'center_x': 0, 'center_y': 0, 'e1': 0, 'e2': 0}
         kwargs = {'alpha_Rs': 0.5, 'Rs': 2, 'center_x': 0, 'center_y': 0, 'e1': 0.3, 'e2': 0}
         LensMod = LensModel(['NFW_ELLIPSE_CSE'])

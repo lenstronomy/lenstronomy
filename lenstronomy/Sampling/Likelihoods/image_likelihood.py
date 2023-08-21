@@ -5,9 +5,7 @@ __all__ = ['ImageLikelihood']
 
 
 class ImageLikelihood(object):
-    """
-    manages imaging data likelihoods
-    """
+    """Manages imaging data likelihoods."""
 
     def __init__(self, multi_band_list, multi_band_type, kwargs_model, bands_compute=None,
                  image_likelihood_mask_list=None, source_marg=False, linear_prior=None, check_positive_flux=False,

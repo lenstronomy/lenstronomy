@@ -8,8 +8,7 @@ __all__ = ['NumbaConvolution']
 
 
 class NumbaConvolution(object):
-    """
-    class to convolve explicit pixels only
+    """Class to convolve explicit pixels only.
 
     the convolution is inspired by pyautolens: https://github.com/Jammy2211/PyAutoLens
     """
@@ -68,8 +67,7 @@ class NumbaConvolution(object):
                     image_index += 1
 
     def convolve2d(self, image):
-        """
-        2d convolution
+        """2d convolution.
 
         :param image: 2d numpy array, image to be convolved
         :return: convolved image, 2d numpy array
@@ -142,10 +140,9 @@ class NumbaConvolution(object):
 
 
 class SubgridNumbaConvolution(object):
-    """
-    class that inputs a supersampled grid and convolution kernel and computes the response on the regular grid
-    This makes use of the regualr NumbaConvolution class as a loop through the different sub-pixel positions
-    """
+    """Class that inputs a supersampled grid and convolution kernel and computes the
+    response on the regular grid This makes use of the regualr NumbaConvolution class as
+    a loop through the different sub-pixel positions."""
 
     def __init__(self, kernel_super, supersampling_factor, conv_pixels, compute_pixels=None, kernel_size=None, nopython=True, cache=True, parallel=False):
         """

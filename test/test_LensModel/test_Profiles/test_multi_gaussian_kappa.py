@@ -12,9 +12,7 @@ import pytest
 
 
 class TestGaussianKappa(object):
-    """
-    test the Gaussian with Gaussian kappa
-    """
+    """Test the Gaussian with Gaussian kappa."""
     def setup_method(self):
         self.gaussian_kappa = MultiGaussianKappa()
         self.gaussian = Gaussian()
@@ -70,9 +68,7 @@ class TestGaussianKappa(object):
 
 
 class TestGaussianKappaEllipse(object):
-    """
-    test the Gaussian with Gaussian kappa
-    """
+    """Test the Gaussian with Gaussian kappa."""
     def setup_method(self):
         self.multi = MultiGaussianKappaEllipse()
         self.single = GaussianEllipsePotential()

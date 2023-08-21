@@ -9,8 +9,7 @@ __all__ = ['DynestySampler']
 
 
 class DynestySampler(NestedSampler):
-    """
-    Wrapper for dynamical nested sampling algorithm Dynesty by J. Speagle
+    """Wrapper for dynamical nested sampling algorithm Dynesty by J. Speagle.
 
     paper : https://arxiv.org/abs/1904.02180
     doc : https://dynesty.readthedocs.io/
@@ -57,8 +56,7 @@ class DynestySampler(NestedSampler):
                 ndim=self.n_dims, bound=bound, sample=sample)
 
     def run(self, kwargs_run):
-        """
-        run the Dynesty nested sampler
+        """Run the Dynesty nested sampler.
 
         see https://dynesty.readthedocs.io for content of kwargs_run
 

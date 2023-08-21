@@ -13,9 +13,7 @@ from lenstronomy.Data.psf import PSF
 
 
 class TestLikelihoodModule(object):
-    """
-    test the fitting sequences
-    """
+    """Test the fitting sequences."""
 
     def setup_method(self):
         np.random.seed(42)

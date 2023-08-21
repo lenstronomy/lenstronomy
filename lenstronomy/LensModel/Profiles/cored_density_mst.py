@@ -11,15 +11,17 @@ __all__ = ['CoredDensityMST']
 
 
 class CoredDensityMST(LensProfileBase):
-    """
-    approximate mass-sheet transform of a density core. This routine takes the parameters of the density core and
-    subtracts a mass-sheet that approximates the cored profile in it's center to counter-act (in approximation) this
-    model. This allows for better sampling of the mass-sheet transformed quantities that do not have strong covariances.
-    The subtraction of the mass-sheet is done such that the sampler returns the real central convergence of the original
-    model (but be careful, the output of quantities like the Einstein angle of the main deflector are still the
-    not-scaled one).
-    Attention!!! The interpretation of the result is that the mass sheet as 'CONVERGENCE' that is present needs to be
-    subtracted in post-processing.
+    """Approximate mass-sheet transform of a density core.
+
+    This routine takes the parameters of the density core and subtracts a mass-sheet
+    that approximates the cored profile in it's center to counter-act (in approximation)
+    this model. This allows for better sampling of the mass-sheet transformed quantities
+    that do not have strong covariances. The subtraction of the mass-sheet is done such
+    that the sampler returns the real central convergence of the original model (but be
+    careful, the output of quantities like the Einstein angle of the main deflector are
+    still the not-scaled one). Attention!!! The interpretation of the result is that the
+    mass sheet as 'CONVERGENCE' that is present needs to be subtracted in post-
+    processing.
     """
     param_names = ['lambda_approx', 'r_core', 'center_x', 'center_y']
     lower_limit_default = {'lambda_approx': -1, 'r_core': 0, 'center_x': -100, 'center_y': -100}
@@ -42,8 +44,7 @@ class CoredDensityMST(LensProfileBase):
         super(CoredDensityMST, self).__init__()
 
     def function(self, x, y, lambda_approx, r_core, center_x=0, center_y=0):
-        """
-        lensing potential of approximate mass-sheet correction
+        """Lensing potential of approximate mass-sheet correction.
 
         :param x: x-coordinate
         :param y: y-coordinate
@@ -59,8 +60,7 @@ class CoredDensityMST(LensProfileBase):
         return f_cored_density - f_ms
 
     def derivatives(self, x, y, lambda_approx, r_core, center_x=0, center_y=0):
-        """
-        deflection angles of approximate mass-sheet correction
+        """Deflection angles of approximate mass-sheet correction.
 
         :param x: x-coordinate
         :param y: y-coordinate
@@ -76,8 +76,7 @@ class CoredDensityMST(LensProfileBase):
         return f_x_cd - f_x_ms, f_y_cd - f_y_ms
 
     def hessian(self, x, y, lambda_approx, r_core, center_x=0, center_y=0):
-        """
-        Hessian terms of approximate mass-sheet correction
+        """Hessian terms of approximate mass-sheet correction.
 
         :param x: x-coordinate
         :param y: y-coordinate

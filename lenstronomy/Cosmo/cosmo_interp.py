@@ -15,10 +15,9 @@ from scipy.interpolate import interp1d
 
 
 class CosmoInterp(object):
-    """
-    class which interpolates the comoving transfer distance and then computes angular diameter distances from it
-    This class is modifying the astropy.cosmology routines
-    """
+    """Class which interpolates the comoving transfer distance and then computes angular
+    diameter distances from it This class is modifying the astropy.cosmology
+    routines."""
     def __init__(self, cosmo, z_stop, num_interp):
         """
 
@@ -45,7 +44,7 @@ class CosmoInterp(object):
         return self._comoving_distance_interpolation_func(z) * units.Mpc
 
     def angular_diameter_distance(self, z):
-        """ Angular diameter distance in Mpc at a given redshift.
+        """Angular diameter distance in Mpc at a given redshift.
 
         This gives the proper (sometimes called 'physical') transverse
         distance corresponding to an angle of 1 radian for an object
@@ -71,8 +70,8 @@ class CosmoInterp(object):
         return self.comoving_transverse_distance(z) / (1. + z)
 
     def angular_diameter_distance_z1z2(self, z1, z2):
-        """ Angular diameter distance between objects at 2 redshifts.
-        Useful for gravitational lensing.
+        """Angular diameter distance between objects at 2 redshifts. Useful for
+        gravitational lensing.
 
         Parameters
         ----------
@@ -84,7 +83,6 @@ class CosmoInterp(object):
         d : `~astropy.units.Quantity`, shape (N,) or single if input scalar
           The angular diameter distance between each input redshift
           pair.
-
         """
 
         z1 = np.asanyarray(z1)
@@ -92,7 +90,7 @@ class CosmoInterp(object):
         return self._comoving_transverse_distance_z1z2(z1, z2) / (1. + z2)
 
     def comoving_transverse_distance(self, z):
-        """ Comoving transverse distance in Mpc at a given redshift.
+        """Comoving transverse distance in Mpc at a given redshift.
 
         This value is the transverse comoving distance at redshift ``z``
         corresponding to an angular separation of 1 radian. This is
@@ -140,7 +138,6 @@ class CosmoInterp(object):
         -----
         This quantity is also called the 'proper motion distance' in
         some texts.
-
         """
 
         Ok0 = self._cosmo._Ok0
@@ -155,8 +152,8 @@ class CosmoInterp(object):
             return dh / sqrtOk0 * np.sin(sqrtOk0 * dc.value / dh.value)
 
     def _comoving_distance_z1z2(self, z1, z2):
-        """ Comoving line-of-sight distance in Mpc between objects at
-        redshifts z1 and z2.
+        """Comoving line-of-sight distance in Mpc between objects at redshifts z1 and
+        z2.
 
         The comoving distance along the line-of-sight between two
         objects remains constant with time for objects in the Hubble
@@ -175,8 +172,7 @@ class CosmoInterp(object):
         return self._comoving_distance_interp(z2) - self._comoving_distance_interp(z1)
 
     def _interpolate_comoving_distance(self, z_start, z_stop, num_interp):
-        """
-        interpolates the comoving distance
+        """Interpolates the comoving distance.
 
         :param z_start: starting redshift range (should be zero)
         :param z_stop: highest redshift to which to compute the comoving distance

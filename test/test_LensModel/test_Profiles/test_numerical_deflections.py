@@ -13,10 +13,8 @@ import pytest
 class TestClass():
 
     def __call__(self, x, y, Rs, norm, center_x = 0, center_y = 0):
+        """NFW profile :param x:
 
-        """
-        NFW profile
-        :param x:
         :param y:
         :param kwargs:
         :return:
@@ -37,9 +35,8 @@ class TestClass():
         return a * cos, a * sin
 
     def _g(self, X):
-        """
-
-        analytic solution of integral for NFW profile to compute deflection angel and gamma
+        """Analytic solution of integral for NFW profile to compute deflection angel and
+        gamma.
 
         :param x: R/Rs
         :type x: float >0
@@ -66,19 +63,14 @@ class TestClass():
         return a
 
     def _alpha2rho0(self, alpha_Rs, Rs):
-
-        """
-        convert angle at Rs into rho0
-        """
+        """Convert angle at Rs into rho0."""
 
         rho0 = alpha_Rs / (4. * Rs ** 2 * (1. + np.log(1. / 2.)))
         return rho0
 
 
 class TestNumericalAlpha(object):
-    """
-    tests the Gaussian methods
-    """
+    """Tests the Gaussian methods."""
     def setup_method(self):
 
         self.numerical_alpha = TabulatedDeflections(custom_class=TestClass())

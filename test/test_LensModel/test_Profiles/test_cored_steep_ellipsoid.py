@@ -8,9 +8,7 @@ from lenstronomy.Util import param_util
 
 
 class TestCSP(object):
-    """
-    tests the cored steep ellipsoid (CSE)
-    """
+    """Tests the cored steep ellipsoid (CSE)"""
     def setup_method(self):
         from lenstronomy.LensModel.Profiles.cored_steep_ellipsoid import CSE
         self.CSP = CSE(axis='product_avg')
@@ -45,9 +43,8 @@ class TestCSP(object):
         npt.assert_almost_equal(f_yy, [-0.03315,  0.27639], decimal=5)
 
     def test_ellipticity(self):
-        """
-        test the definition of the ellipticity normalization (along major axis or product averaged axes)
-        """
+        """Test the definition of the ellipticity normalization (along major axis or
+        product averaged axes)"""
         x, y = np.linspace(start=0.001, stop=10, num=100), np.zeros(100)
         kwargs_round = {'a': 2, 's': 1, 'e1': 0., 'e2': 0., 'center_x': 0, 'center_y': 0}
         phi_q, q = param_util.ellipticity2phi_q(0.3, 0)

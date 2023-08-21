@@ -1,6 +1,4 @@
-"""
-Tests for `galkin` module.
-"""
+"""Tests for `galkin` module."""
 import pytest
 import numpy.testing as npt
 import lenstronomy.Util.multi_gauss_expansion as mge
@@ -17,8 +15,9 @@ class TestGalkin(object):
         pass
 
     def test_mge_hernquist_light(self):
-        """
-        compare power-law profiles analytical vs. numerical
+        """Compare power-law profiles analytical vs.
+
+        numerical
         :return:
         """
         # anisotropy profile
@@ -77,8 +76,9 @@ class TestGalkin(object):
         npt.assert_almost_equal((sigma_v-sigma_v2)/sigma_v2, 0, decimal=2)
 
     def test_mge_power_law_lens(self):
-        """
-        compare power-law profiles analytical vs. numerical
+        """Compare power-law profiles analytical vs.
+
+        numerical
         :return:
         """
         # anisotropy profile

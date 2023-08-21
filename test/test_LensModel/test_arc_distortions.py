@@ -13,9 +13,7 @@ from lenstronomy.Util import param_util
 
 
 class TestArcDistortions(object):
-    """
-    tests the source model routines
-    """
+    """Tests the source model routines."""
     def setup_method(self):
         pass
 
@@ -267,8 +265,7 @@ class TestArcDistortions(object):
             npt.assert_almost_equal(center_y_spp_arc, 0, decimal=3)
 
     def test_analytic_differentials_spp(self):
-        """
-        test the analytical differentials of the spherical power-law mass profile
+        """Test the analytical differentials of the spherical power-law mass profile.
 
         :return:
         """
@@ -283,8 +280,7 @@ class TestArcDistortions(object):
         lambda_rad, lambda_tan, orientation_angle, dlambda_tan_dtan, dlambda_tan_drad, dlambda_rad_drad, dlambda_rad_dtan, dphi_tan_dtan, dphi_tan_drad, dphi_rad_drad, dphi_rad_dtan = ext.radial_tangential_differentials(x, y, kwargs_lens)
 
         def _lambda_t_analytic(r, theta_E, gamma):
-            """
-            analytic expression for lambda_tan
+            """Analytic expression for lambda_tan.
 
             :param r: radius
             :return:
@@ -295,8 +291,7 @@ class TestArcDistortions(object):
         npt.assert_almost_equal(lambda_tan_analytic, lambda_tan, decimal=5)
 
         def _lambda_r_analytic(r, theta_E, gamma):
-            """
-            analytic expression for lambda_rad
+            """Analytic expression for lambda_rad.
 
             :param r: radius
             :return:
@@ -307,8 +302,7 @@ class TestArcDistortions(object):
         npt.assert_almost_equal(lambda_rad_analytic, lambda_rad, decimal=5)
 
         def _lambda_t_dr_analytic(r, theta_E, gamma):
-            """
-            analytic expression for  d(lambda_tan) / dr
+            """Analytic expression for  d(lambda_tan) / dr.
 
             :param r: radius
             :return:
@@ -319,8 +313,7 @@ class TestArcDistortions(object):
         npt.assert_almost_equal(dlambda_tan_drad_analytic / dlambda_tan_drad, 1, decimal=2)
 
         def _lambda_r_dr_analytic(r, theta_E, gamma):
-            """
-            analytic expression for  d(lambda_tan) / dr
+            """Analytic expression for  d(lambda_tan) / dr.
 
             :param r: radius
             :return:
@@ -342,8 +335,7 @@ class TestArcDistortions(object):
         y = np.zeros_like(x)
 
         def _dlambda_t_dr_analytic(r, theta_E, gamma):
-            """
-            analytic expression for  d(lambda_tan) / dr
+            """Analytic expression for  d(lambda_tan) / dr.
 
             :param r: circularized radius
             :return:

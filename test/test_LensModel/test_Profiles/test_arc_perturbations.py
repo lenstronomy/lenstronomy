@@ -9,9 +9,7 @@ import pytest
 
 
 class TestArcPerturbations(object):
-    """
-    tests the Gaussian methods
-    """
+    """Tests the Gaussian methods."""
     def setup_method(self):
         self.model = ArcPerturbations()
         self.kwargs_lens = {'coeff': 2, 'd_r': 0.2, 'd_phi': np.pi, 'center_x': 0, 'center_y': 0}

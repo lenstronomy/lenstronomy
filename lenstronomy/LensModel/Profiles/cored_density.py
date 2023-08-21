@@ -33,8 +33,7 @@ class CoredDensity(LensProfileBase):
     upper_limit_default = {'sigma0': 10, 'r_core': 100, 'center_x': 100, 'center_y': 100}
 
     def function(self, x, y, sigma0, r_core, center_x=0, center_y=0):
-        """
-        potential of cored density profile
+        """Potential of cored density profile.
 
         :param x: x-coordinate in angular units
         :param y: y-coordinate in angular units
@@ -51,8 +50,7 @@ class CoredDensity(LensProfileBase):
         return 2 * sigma0 * r_core ** 2 * (2 * np.log(r) - np.log(np.sqrt(r**2 + r_core**2) - r_core))
 
     def derivatives(self, x, y, sigma0, r_core, center_x=0, center_y=0):
-        """
-        deflection angle of cored density profile
+        """Deflection angle of cored density profile.
 
         :param x: x-coordinate in angular units
         :param y: y-coordinate in angular units
@@ -97,8 +95,7 @@ class CoredDensity(LensProfileBase):
 
     @staticmethod
     def alpha_r(r, sigma0, r_core):
-        """
-        radial deflection angle of the cored density profile
+        """Radial deflection angle of the cored density profile.
 
         :param r: radius (angular scale)
         :param sigma0: convergence in the core
@@ -109,8 +106,7 @@ class CoredDensity(LensProfileBase):
 
     @staticmethod
     def d_alpha_dr(r, sigma0, r_core):
-        """
-        radial derivatives of the radial deflection angle
+        """Radial derivatives of the radial deflection angle.
 
         :param r: radius (angular scale)
         :param sigma0: convergence in the core
@@ -121,8 +117,7 @@ class CoredDensity(LensProfileBase):
 
     @staticmethod
     def kappa_r(r, sigma0, r_core):
-        """
-        convergence of the cored density profile. This routine is also for testing
+        """Convergence of the cored density profile. This routine is also for testing.
 
         :param r: radius (angular scale)
         :param sigma0: convergence in the core
@@ -133,8 +128,7 @@ class CoredDensity(LensProfileBase):
 
     @staticmethod
     def density(r, sigma0, r_core):
-        """
-        rho(r) =  2/pi * Sigma_crit R_c**3 * (R_c**2 + r**2)**(-2)
+        """Rho(r) =  2/pi * Sigma_crit R_c**3 * (R_c**2 + r**2)**(-2)
 
         :param r: radius (angular scale)
         :param sigma0: convergence in the core
@@ -144,9 +138,9 @@ class CoredDensity(LensProfileBase):
         return 2/np.pi * sigma0 * r_core**3 * (r_core**2 + r**2) ** (-2)
 
     def density_lens(self, r, sigma0, r_core):
-        """
-        computes the density at 3d radius r given lens model parameterization.
-        The integral in the LOS projection of this quantity results in the convergence quantity.
+        """Computes the density at 3d radius r given lens model parameterization. The
+        integral in the LOS projection of this quantity results in the convergence
+        quantity.
 
         :param r: radius (angular scale)
         :param sigma0: convergence in the core
@@ -156,8 +150,7 @@ class CoredDensity(LensProfileBase):
         return self.density(r, sigma0, r_core)
 
     def density_2d(self, x, y, sigma0, r_core, center_x=0, center_y=0):
-        """
-        projected density at projected radius r
+        """Projected density at projected radius r.
 
         :param x: x-coordinate in angular units
         :param y: y-coordinate in angular units
@@ -174,8 +167,7 @@ class CoredDensity(LensProfileBase):
         return self.kappa_r(r, sigma0, r_core)
 
     def mass_2d(self, r, sigma0, r_core):
-        """
-        mass enclosed in cylinder of radius r
+        """Mass enclosed in cylinder of radius r.
 
         :param r: radius (angular scale)
         :param sigma0: convergence in the core
@@ -186,8 +178,7 @@ class CoredDensity(LensProfileBase):
 
     @staticmethod
     def mass_3d(r, sigma0, r_core):
-        """
-        mass enclosed 3d radius
+        """Mass enclosed 3d radius.
 
         :param r: radius (angular scale)
         :param sigma0: convergence in the core
@@ -197,9 +188,8 @@ class CoredDensity(LensProfileBase):
         return 8 * sigma0 * r_core**3 * (np.arctan(r/r_core)/(2*r_core) - r / (2 * (r**2 + r_core**2)))
 
     def mass_3d_lens(self, r, sigma0, r_core):
-        """
-        mass enclosed a 3d sphere or radius r given a lens parameterization with angular units
-        For this profile those are identical.
+        """Mass enclosed a 3d sphere or radius r given a lens parameterization with
+        angular units For this profile those are identical.
 
         :param r: radius (angular scale)
         :param sigma0: convergence in the core

@@ -19,7 +19,6 @@ def sqrt(inputArray, scale_min=None, scale_max=None):
     :param scale_max: maximum data value
     :rtype: numpy array
     :return: image data array
-
     """
 
     imageData = np.array(inputArray, copy=True)
@@ -112,23 +111,25 @@ def coordinate_arrows(ax, d, coords, color='w', font_size=15, arrow_size=0.05):
 @export
 def plot_line_set(ax, coords, line_set_list_x, line_set_list_y, origin=None, flipped_x=False, points_only=False,
                   pixel_offset=True, *args, **kwargs):
-    """
-    plotting a line set on a matplotlib instance where the coordinates are defined in pixel units with the lower left
-    corner (defined as origin) is by default (0, 0). The coordinates are moved by 0.5 pixels to be placed in the center
-    of the pixel in accordance with the matplotlib.matshow() routine.
+    """Plotting a line set on a matplotlib instance where the coordinates are defined in
+    pixel units with the lower left corner (defined as origin) is by default (0, 0). The
+    coordinates are moved by 0.5 pixels to be placed in the center of the pixel in
+    accordance with the matplotlib.matshow() routine.
 
     :param ax: matplotlib.axis instance
     :param coords: Coordinates() class instance
     :param origin: [x0, y0], lower left pixel coordinate in the frame of the pixels
-    :param line_set_list_x: numpy arrays corresponding of different disconnected regions of the line
-     (e.g. caustic or critical curve)
-    :param line_set_list_y: numpy arrays corresponding of different disconnected regions of the line
-     (e.g. caustic or critical curve)
+    :param line_set_list_x: numpy arrays corresponding of different disconnected regions
+        of the line (e.g. caustic or critical curve)
+    :param line_set_list_y: numpy arrays corresponding of different disconnected regions
+        of the line (e.g. caustic or critical curve)
     :param color: string with matplotlib color
     :param flipped_x: bool, if True, flips x-axis
-    :param points_only: bool, if True, sets plotting keywords to plot single points without connecting lines
-    :param pixel_offset: boolean; if True (default plotting), the coordinates are shifted a half a pixel to match with
-     the matshow() command to center the coordinates in the pixel center
+    :param points_only: bool, if True, sets plotting keywords to plot single points
+        without connecting lines
+    :param pixel_offset: boolean; if True (default plotting), the coordinates are
+        shifted a half a pixel to match with the matshow() command to center the
+        coordinates in the pixel center
     :return: plot with line sets on matplotlib axis in pixel coordinates
     """
     if origin is None:
@@ -258,8 +259,7 @@ def result_string(x, weights=None, title_fmt=".2f", label=None):
 
 @export
 def cmap_conf(cmap_string):
-    """
-    configures matplotlib color map
+    """Configures matplotlib color map.
 
     :param cmap_string: string of cmap name, or cmap instance
     :return: cmap instance with setting for bad pixels and values below the threshold

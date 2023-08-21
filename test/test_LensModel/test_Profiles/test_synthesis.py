@@ -9,9 +9,7 @@ import numpy.testing as npt
 import pytest
 
 class TestSynthesis(object):
-    """
-    tests the synthesis model's ability to approximate several profiles
-    """
+    """Tests the synthesis model's ability to approximate several profiles."""
     def setup_method(self):
         self.lin_fit_hyperparams = {'num_r_evals': 100}
         self.s_list = np.logspace(-6., 3., 30)

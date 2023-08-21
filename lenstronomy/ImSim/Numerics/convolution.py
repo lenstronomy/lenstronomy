@@ -24,9 +24,7 @@ def _centered(arr, newshape):
 
 @export
 class PixelKernelConvolution(object):
-    """
-    class to compute convolutions for a given pixelized kernel (fft, grid)
-    """
+    """Class to compute convolutions for a given pixelized kernel (fft, grid)"""
     def __init__(self, kernel, convolution_type='fft_static'):
         """
 
@@ -40,10 +38,10 @@ class PixelKernelConvolution(object):
         self._pre_computed = False
 
     def pixel_kernel(self, num_pix=None):
-        """
-        access pixelated kernel
+        """Access pixelated kernel.
 
-        :param num_pix: size of returned kernel (odd number per axis). If None, return the original kernel.
+        :param num_pix: size of returned kernel (odd number per axis). If None, return
+            the original kernel.
         :return: pixel kernel centered
         """
         if num_pix is not None:
@@ -74,8 +72,7 @@ class PixelKernelConvolution(object):
         return image_conv
 
     def _static_fft(self, image, mode='same'):
-        """
-        scipy fft convolution with saved static fft kernel
+        """Scipy fft convolution with saved static fft kernel.
 
         :param image: 2d numpy array to be convolved
         :return:
@@ -129,8 +126,8 @@ class PixelKernelConvolution(object):
                              " 'same', or 'full'.")
 
     def _static_pre_compute(self, image):
-        """
-        pre-compute Fourier transformed kernel and shape quantities to speed up convolution
+        """Pre-compute Fourier transformed kernel and shape quantities to speed up
+        convolution.
 
         :param image: 2d numpy array
         :return:
@@ -180,9 +177,8 @@ class PixelKernelConvolution(object):
 
 @export
 class SubgridKernelConvolution(object):
-    """
-    class to compute the convolution on a supersampled grid with partial convolution computed on the regular grid
-    """
+    """Class to compute the convolution on a supersampled grid with partial convolution
+    computed on the regular grid."""
     def __init__(self, kernel_supersampled, supersampling_factor, supersampling_kernel_size=None, convolution_type='fft_static'):
         """
 
@@ -237,11 +233,9 @@ class SubgridKernelConvolution(object):
 
 @export
 class MultiGaussianConvolution(object):
-    """
-    class to perform a convolution consisting of multiple 2d Gaussians
-    This is aimed to lead to a speed-up without significant loss of accuracy do to the simplified convolution kernel
-    relative to a pixelized kernel.
-    """
+    """Class to perform a convolution consisting of multiple 2d Gaussians This is aimed
+    to lead to a speed-up without significant loss of accuracy do to the simplified
+    convolution kernel relative to a pixelized kernel."""
 
     def __init__(self, sigma_list, fraction_list, pixel_scale, supersampling_factor=1, supersampling_convolution=False,
                  truncation=2):
@@ -265,8 +259,7 @@ class MultiGaussianConvolution(object):
         self._supersampling_convolution = supersampling_convolution
 
     def convolution2d(self, image):
-        """
-        2d convolution
+        """2d convolution.
 
         :param image: 2d numpy array, image to be convolved
         :return: convolved image, 2d numpy array
@@ -295,8 +288,7 @@ class MultiGaussianConvolution(object):
         return image_resized_conv
 
     def pixel_kernel(self, num_pix):
-        """
-        computes a pixelized kernel from the MGE parameters
+        """Computes a pixelized kernel from the MGE parameters.
 
         :param num_pix: int, size of kernel (odd number per axis)
         :return: pixel kernel centered
@@ -311,9 +303,8 @@ class MultiGaussianConvolution(object):
 
 @export
 class FWHMGaussianConvolution(object):
-    """
-    uses a two-dimensional Gaussian function with same FWHM of given kernel as approximation
-    """
+    """Uses a two-dimensional Gaussian function with same FWHM of given kernel as
+    approximation."""
     def __init__(self, kernel, truncation=4):
         """
 
@@ -325,8 +316,7 @@ class FWHMGaussianConvolution(object):
         self._truncation = truncation
 
     def convolution2d(self, image):
-        """
-        2d convolution
+        """2d convolution.
 
         :param image: 2d numpy array, image to be convolved
         :return: convolved image, 2d numpy array
@@ -338,9 +328,7 @@ class FWHMGaussianConvolution(object):
 
 @export
 class MGEConvolution(object):
-    """
-    approximates a 2d kernel with an azimuthal Multi-Gaussian expansion
-    """
+    """Approximates a 2d kernel with an azimuthal Multi-Gaussian expansion."""
     def __init__(self, kernel, pixel_scale, order=1):
         """
 

@@ -15,10 +15,8 @@ __all__ = ['KinematicsAPI']
 
 
 class KinematicsAPI(object):
-    """
-    this class contains routines to compute time delays, magnification ratios, line of sight velocity dispersions etc
-    for a given lens model
-    """
+    """This class contains routines to compute time delays, magnification ratios, line
+    of sight velocity dispersions etc for a given lens model."""
 
     def __init__(self, z_lens, z_source, kwargs_model, kwargs_aperture, kwargs_seeing, anisotropy_model, cosmo=None,
                  lens_model_kinematics_bool=None, light_model_kinematics_bool=None, multi_observations=False,
@@ -103,16 +101,16 @@ class KinematicsAPI(object):
 
     def velocity_dispersion(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, r_eff=None, theta_E=None,
                             gamma=None, kappa_ext=0):
-        """
-        API for both, analytic and numerical JAM to compute the velocity dispersion [km/s]
-        This routine uses the galkin_setting() routine for the Galkin configurations (see there what options and input
-        is relevant.
+        """API for both, analytic and numerical JAM to compute the velocity dispersion
+        [km/s] This routine uses the galkin_setting() routine for the Galkin
+        configurations (see there what options and input is relevant.
 
         :param kwargs_lens: lens model keyword arguments
         :param kwargs_lens_light: lens light model keyword arguments
         :param kwargs_anisotropy: stellar anisotropy keyword arguments
-        :param r_eff: projected half-light radius of the stellar light associated with the deflector galaxy, optional,
-         if set to None will be computed in this function with default settings that may not be accurate.
+        :param r_eff: projected half-light radius of the stellar light associated with
+            the deflector galaxy, optional, if set to None will be computed in this
+            function with default settings that may not be accurate.
         :param theta_E: Einstein radius (optional)
         :param gamma: power-law slope (optional)
         :param kappa_ext: external convergence (optional)
@@ -127,16 +125,17 @@ class KinematicsAPI(object):
 
     def velocity_dispersion_map(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, r_eff=None, theta_E=None,
                                 gamma=None, kappa_ext=0):
-        """
-        API for both, analytic and numerical JAM to compute the velocity dispersion map with IFU data [km/s]
+        """API for both, analytic and numerical JAM to compute the velocity dispersion
+        map with IFU data [km/s]
 
         :param kwargs_lens: lens model keyword arguments
         :param kwargs_lens_light: lens light model keyword arguments
         :param kwargs_anisotropy: stellar anisotropy keyword arguments
-        :param r_eff: projected half-light radius of the stellar light associated with the deflector galaxy, optional,
-         if set to None will be computed in this function with default settings that may not be accurate.
-        :param theta_E: circularized Einstein radius, optional, if not provided will either be computed in this
-         function with default settings or not required
+        :param r_eff: projected half-light radius of the stellar light associated with
+            the deflector galaxy, optional, if set to None will be computed in this
+            function with default settings that may not be accurate.
+        :param theta_E: circularized Einstein radius, optional, if not provided will
+            either be computed in this function with default settings or not required
         :param gamma: power-law slope at the Einstein radius, optional
         :param kappa_ext: external convergence
         :return: velocity dispersion [km/s]
@@ -150,10 +149,10 @@ class KinematicsAPI(object):
         return sigma_v_map
 
     def velocity_dispersion_analytical(self, theta_E, gamma, r_eff, r_ani, kappa_ext=0):
-        """
-        computes the LOS velocity dispersion of the lens within a slit of size R_slit x dR_slit and seeing psf_fwhm.
-        The assumptions are a Hernquist light profile and the spherical power-law lens model at the first position and
-        an Osipkov and Merritt ('OM') stellar anisotropy distribution.
+        """Computes the LOS velocity dispersion of the lens within a slit of size R_slit
+        x dR_slit and seeing psf_fwhm. The assumptions are a Hernquist light profile and
+        the spherical power-law lens model at the first position and an Osipkov and
+        Merritt ('OM') stellar anisotropy distribution.
 
         Further information can be found in the AnalyticKinematics() class.
 
@@ -229,24 +228,23 @@ class KinematicsAPI(object):
 
     def kinematic_lens_profiles(self, kwargs_lens, MGE_fit=False, model_kinematics_bool=None, theta_E=None, gamma=None,
                                 kwargs_mge=None, analytic_kinematics=False):
-        """
-        translates the lenstronomy lens and mass profiles into a (sub) set of profiles that are compatible with the
-        GalKin module to compute the kinematics thereof.
-        The requirement is that the
-        profiles are centered at (0, 0) and that for all profile types there exists a 3d de-projected analytical
-        representation.
+        """Translates the lenstronomy lens and mass profiles into a (sub) set of
+        profiles that are compatible with the GalKin module to compute the kinematics
+        thereof. The requirement is that the profiles are centered at (0, 0) and that
+        for all profile types there exists a 3d de-projected analytical representation.
 
         :param kwargs_lens: lens model parameters
         :param MGE_fit: bool, if true performs the MGE for the mass distribution
-        :param model_kinematics_bool: bool list of length of the lens model. Only takes a subset of all the models
-            as part of the kinematics computation (can be used to ignore substructure, shear etc that do not describe the
-            main deflector potential
-        :param theta_E: (optional float) estimate of the Einstein radius. If present, does not numerically compute this
-         quantity in this routine numerically
+        :param model_kinematics_bool: bool list of length of the lens model. Only takes
+            a subset of all the models as part of the kinematics computation (can be
+            used to ignore substructure, shear etc that do not describe the main
+            deflector potential
+        :param theta_E: (optional float) estimate of the Einstein radius. If present,
+            does not numerically compute this quantity in this routine numerically
         :param gamma: local power-law slope at the Einstein radius (optional)
         :param kwargs_mge: keyword arguments that go into the MGE decomposition routine
-        :param analytic_kinematics: bool, if True, solves the Jeans equation analytically for the
-         power-law mass profile with Hernquist light profile
+        :param analytic_kinematics: bool, if True, solves the Jeans equation
+            analytically for the power-law mass profile with Hernquist light profile
         :return: mass_profile_list, keyword argument list
         """
         if analytic_kinematics is True:
@@ -294,23 +292,24 @@ class KinematicsAPI(object):
 
     def kinematic_light_profile(self, kwargs_lens_light, r_eff=None, MGE_fit=False, model_kinematics_bool=None,
                                 Hernquist_approx=False, kwargs_mge=None, analytic_kinematics=False):
-        """
-        setting up of the light profile to compute the kinematics in the GalKin module. The requirement is that the
-        profiles are centered at (0, 0) and that for all profile types there exists a 3d de-projected analytical
-        representation.
+        """Setting up of the light profile to compute the kinematics in the GalKin
+        module. The requirement is that the profiles are centered at (0, 0) and that for
+        all profile types there exists a 3d de-projected analytical representation.
 
         :param kwargs_lens_light: deflector light model keyword argument list
-        :param r_eff: (optional float, else=None) Pre-calculated projected half-light radius of the deflector profile.
-         If not provided, numerical calculation is done in this routine if required.
-        :param MGE_fit: boolean, if True performs a Multi-Gaussian expansion of the radial light profile and returns
-         this solution.
-        :param model_kinematics_bool: list of booleans to indicate a subset of light profiles to be part of the physical
-          deflector light.
-        :param Hernquist_approx: boolean, if True replaces the actual light profile(s) with a Hernquist model with
-         matched half-light radius.
+        :param r_eff: (optional float, else=None) Pre-calculated projected half-light
+            radius of the deflector profile. If not provided, numerical calculation is
+            done in this routine if required.
+        :param MGE_fit: boolean, if True performs a Multi-Gaussian expansion of the
+            radial light profile and returns this solution.
+        :param model_kinematics_bool: list of booleans to indicate a subset of light
+            profiles to be part of the physical deflector light.
+        :param Hernquist_approx: boolean, if True replaces the actual light profile(s)
+            with a Hernquist model with matched half-light radius.
         :param kwargs_mge: keyword arguments that go into the MGE decomposition routine
-        :param analytic_kinematics: bool, if True, solves the Jeans equation analytically for the
-         power-law mass profile with Hernquist light profile and adjust the settings accordingly
+        :param analytic_kinematics: bool, if True, solves the Jeans equation
+            analytically for the power-law mass profile with Hernquist light profile and
+            adjust the settings accordingly
         :return: deflector type list, keyword arguments list
         """
         if analytic_kinematics is True:

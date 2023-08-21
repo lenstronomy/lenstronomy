@@ -1,5 +1,4 @@
 __author__ = 'sibirrer'
-
 """
 Tests for `prob_density` module.
 """

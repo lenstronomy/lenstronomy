@@ -6,10 +6,8 @@ __all__ = ['Hessian']
 
 
 class Hessian(LensProfileBase):
-    """
-    class for constant Hessian distortion (second order)
-    The input is in the same convention as the LensModel.hessian() output.
-    """
+    """Class for constant Hessian distortion (second order) The input is in the same
+    convention as the LensModel.hessian() output."""
     param_names = ['f_xx', 'f_yy', 'f_xy', 'f_yx', 'ra_0', 'dec_0']
     lower_limit_default = {'f_xx': -100, 'f_yy': -100, 'f_xy': -100, 'f_yx': -100, 'ra_0': -100, 'dec_0': -100}
     upper_limit_default = {'f_xx': 100, 'f_yy': 100, 'f_xy': 100, 'f_yx': 100, 'ra_0': 100, 'dec_0': 100}
@@ -52,8 +50,7 @@ class Hessian(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, f_xx, f_yy, f_xy, f_yx, ra_0=0, dec_0=0):
-        """
-        Hessian. Attention: If f_xy != f_yx then this function is not accurate!
+        """Hessian. Attention: If f_xy != f_yx then this function is not accurate!
 
         :param x: x-coordinate (angle)
         :param y: y0-coordinate (angle)

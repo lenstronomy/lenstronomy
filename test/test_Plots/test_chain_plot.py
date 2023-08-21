@@ -22,9 +22,7 @@ import numpy as np
 
 
 class TestChainPlots(object):
-    """
-    test the fitting sequences
-    """
+    """Test the fitting sequences."""
     def setup_method(self):
         # data specifics
         deltaPix = 0.5  # pixel size in arcsec (area per pixel = deltaPix**2)

@@ -5,9 +5,7 @@ __all__ = ['PositionLikelihood']
 
 
 class PositionLikelihood(object):
-    """
-    likelihood of positions of multiply imaged point sources
-    """
+    """Likelihood of positions of multiply imaged point sources."""
     def __init__(self, point_source_class, image_position_uncertainty=0.005, astrometric_likelihood=False,
                  image_position_likelihood=False, ra_image_list=None, dec_image_list=None,
                  source_position_likelihood=False, check_matched_source_position=False, source_position_tolerance=0.001,
@@ -110,12 +108,13 @@ class PositionLikelihood(object):
         return logL
 
     def check_additional_images(self, kwargs_ps, kwargs_lens):
-        """
-        checks whether additional images have been found and placed in kwargs_ps of the first point source model
+        """Checks whether additional images have been found and placed in kwargs_ps of
+        the first point source model.
 
         :param kwargs_ps: point source kwargs
         :param kwargs_lens: lens model keyword arguments
-        :return: bool, True if more image positions are found than originally been assigned
+        :return: bool, True if more image positions are found than originally been
+            assigned
         """
         ra_image_list, dec_image_list = self._pointSource.image_position(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens,
                                                                          additional_images=True)
@@ -127,15 +126,16 @@ class PositionLikelihood(object):
 
     @staticmethod
     def astrometric_likelihood(kwargs_ps, kwargs_special, sigma):
-        """
-        evaluates the astrometric uncertainty of the model plotted point sources (only available for 'LENSED_POSITION'
-        point source model) and predicted image position by the lens model including an astrometric correction term.
+        """Evaluates the astrometric uncertainty of the model plotted point sources
+        (only available for 'LENSED_POSITION' point source model) and predicted image
+        position by the lens model including an astrometric correction term.
 
         :param kwargs_ps: point source model kwargs list
-        :param kwargs_special: kwargs list, should include the astrometric corrections 'delta_x', 'delta_y'
+        :param kwargs_special: kwargs list, should include the astrometric corrections
+            'delta_x', 'delta_y'
         :param sigma: 1-sigma Gaussian uncertainty in the astrometry
-        :return: log likelihood of the astrometirc correction between predicted image positions and model placement of
-         the point sources
+        :return: log likelihood of the astrometirc correction between predicted image
+            positions and model placement of the point sources
         """
         if not len(kwargs_ps) > 0:
             return 0
@@ -152,15 +152,16 @@ class PositionLikelihood(object):
             return 0
 
     def image_position_likelihood(self, kwargs_ps, kwargs_lens, sigma):
-        """
-        computes the likelihood of the model predicted image position relative to measured image positions with an
-        astrometric error.
-        This routine requires the 'ra_image_list' and 'dec_image_list' being declared in the initiation of the class
+        """Computes the likelihood of the model predicted image position relative to
+        measured image positions with an astrometric error. This routine requires the
+        'ra_image_list' and 'dec_image_list' being declared in the initiation of the
+        class.
 
         :param kwargs_ps: point source keyword argument list
         :param kwargs_lens: lens model keyword argument list
         :param sigma: 1-sigma uncertainty in the measured position of the images
-        :return: log likelihood of the model predicted image positions given the data/measured image positions.
+        :return: log likelihood of the model predicted image positions given the
+            data/measured image positions.
         """
         ra_image_list, dec_image_list = self._pointSource.image_position(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens,
                                                                          original_position=True)
@@ -172,19 +173,19 @@ class PositionLikelihood(object):
         return logL
 
     def source_position_likelihood(self, kwargs_lens, kwargs_ps, sigma, hard_bound_rms=None, verbose=False):
-        """
-        computes a likelihood/punishing factor of how well the source positions of multiple images match given the image
-        position and a lens model.
-        The likelihood level is computed in respect of a displacement in the image plane and transposed through the
-        Hessian into the source plane.
+        """Computes a likelihood/punishing factor of how well the source positions of
+        multiple images match given the image position and a lens model. The likelihood
+        level is computed in respect of a displacement in the image plane and transposed
+        through the Hessian into the source plane.
 
         :param kwargs_lens: lens model keyword argument list
         :param kwargs_ps: point source keyword argument list
         :param sigma: 1-sigma Gaussian uncertainty in the image plane
-        :param hard_bound_rms: hard bound deviation between the mapping of the images back to the source plane
-         (in source frame)
+        :param hard_bound_rms: hard bound deviation between the mapping of the images
+            back to the source plane (in source frame)
         :param verbose: bool, if True provides print statements with useful information.
-        :return: log likelihood of the model reproducing the correct image positions given an image position uncertainty
+        :return: log likelihood of the model reproducing the correct image positions
+            given an image position uncertainty
         """
         if len(kwargs_ps) < 1:
             return 0

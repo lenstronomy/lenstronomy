@@ -12,9 +12,7 @@ from astropy.cosmology import FlatLambdaCDM
 
 
 class TestLensModelExtensions(object):
-    """
-    tests the source model routines
-    """
+    """Tests the source model routines."""
     def setup_method(self):
 
         self.cosmo = FlatLambdaCDM(H0=70, Om0=0.3)

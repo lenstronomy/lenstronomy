@@ -9,10 +9,8 @@ import copy
 
 
 class MultiPatchReconstruction(MultiBandImageReconstruction):
-    """
-    this class illustrates the model of disconnected multi-patch modeling with 'joint-linear' option in one single
-    array.
-    """
+    """This class illustrates the model of disconnected multi-patch modeling with
+    'joint-linear' option in one single array."""
 
     def __init__(self, multi_band_list, kwargs_model, kwargs_params, multi_band_type='joint-linear',
                  kwargs_likelihood=None, kwargs_pixel_grid=None, verbose=True):
@@ -54,9 +52,8 @@ class MultiPatchReconstruction(MultiBandImageReconstruction):
 
     @staticmethod
     def _joint_pixel_grid(multi_band_list):
-        """
-        Joint PixelGrid() class instance.
-        This routine only works when the individual patches have the same coordinate system orientation and pixel scale.
+        """Joint PixelGrid() class instance. This routine only works when the individual
+        patches have the same coordinate system orientation and pixel scale.
 
         :param multi_band_list: list of imaging data configuration [[kwargs_data, kwargs_psf, kwargs_numerics], [...]]
         :return: PixelGrid() class instance covering the entire window of the sky including all individual patches
@@ -97,8 +94,7 @@ class MultiPatchReconstruction(MultiBandImageReconstruction):
         return pixel_grid
 
     def image_joint(self):
-        """
-        patch together the individual patches of data and models
+        """Patch together the individual patches of data and models.
 
         :return: image_joint, model_joint, norm_residuals_joint
         """
@@ -124,10 +120,10 @@ class MultiPatchReconstruction(MultiBandImageReconstruction):
         return image_joint, model_joint, norm_residuals_joint
 
     def lens_model_joint(self):
-        """
-        patch together the individual patches of the lens model (can be discontinues)
+        """Patch together the individual patches of the lens model (can be discontinues)
 
-        :return: 2d numpy arrays of kappa_joint, magnification_joint, alpha_x_joint, alpha_y_joint
+        :return: 2d numpy arrays of kappa_joint, magnification_joint, alpha_x_joint,
+            alpha_y_joint
         """
         nx, ny = self._pixel_grid_joint.num_pixel_axes
         kappa_joint = np.zeros((ny, nx))
@@ -158,13 +154,13 @@ class MultiPatchReconstruction(MultiBandImageReconstruction):
         return kappa_joint, magnification_joint, alpha_x_joint, alpha_y_joint
 
     def source(self, num_pix, delta_pix, center=None):
-        """
-        source in the same coordinate system as the image
+        """Source in the same coordinate system as the image.
 
         :param num_pix: number of pixels per axes
         :param delta_pix: pixel size
         :param center: list with two entries [center_x, center_y] (optional)
-        :return: 2d surface brightness grid of the reconstructed source and PixelGrid() instance of source grid
+        :return: 2d surface brightness grid of the reconstructed source and PixelGrid()
+            instance of source grid
         """
         Mpix2coord = self._pixel_grid_joint.transform_pix2angle * delta_pix / self._pixel_grid_joint.pixel_width
         x_grid_source, y_grid_source = util.make_grid_transformed(num_pix, Mpix2Angle=Mpix2coord)

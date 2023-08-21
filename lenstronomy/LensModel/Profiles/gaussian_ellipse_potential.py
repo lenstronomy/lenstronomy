@@ -10,12 +10,10 @@ __all__ = ['GaussianEllipsePotential']
 
 
 class GaussianEllipsePotential(LensProfileBase):
-    """
-    this class contains functions to evaluate a Gaussian function and calculates its derivative and hessian matrix
-    with ellipticity in the convergence
+    """This class contains functions to evaluate a Gaussian function and calculates its
+    derivative and hessian matrix with ellipticity in the convergence.
 
     the calculation follows Glenn van de Ven et al. 2009
-
     """
     param_names = ['amp', 'sigma', 'e1', 'e2', 'center_x', 'center_y']
     lower_limit_default = {'amp': 0, 'sigma': 0, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}
@@ -27,9 +25,7 @@ class GaussianEllipsePotential(LensProfileBase):
         super(GaussianEllipsePotential, self).__init__()
 
     def function(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
-        """
-        returns Gaussian
-        """
+        """Returns Gaussian."""
 
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         x_shift = x - center_x
@@ -43,9 +39,7 @@ class GaussianEllipsePotential(LensProfileBase):
         return f_
 
     def derivatives(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
-        """
-        returns df/dx and df/dy of the function
-        """
+        """Returns df/dx and df/dy of the function."""
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         x_shift = x - center_x
         y_shift = y - center_y
@@ -63,9 +57,8 @@ class GaussianEllipsePotential(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
-        """
-        returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
-        """
+        """Returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx,
+        d^f/dy^2."""
         alpha_ra, alpha_dec = self.derivatives(x, y, amp, sigma, e1, e2, center_x, center_y)
         diff = self._diff
         alpha_ra_dx, alpha_dec_dx = self.derivatives(x + diff, y, amp, sigma, e1, e2, center_x, center_y)

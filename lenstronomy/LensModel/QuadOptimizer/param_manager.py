@@ -45,14 +45,13 @@ import numpy as np
 
 
 class PowerLawParamManager(object):
+    """Base class for handling the translation between key word arguments and parameter
+    arrays for EPL mass models.
 
-    """
-    Base class for handling the translation between key word arguments and parameter arrays for
-    EPL mass models. This class is intended for use in modeling galaxy-scale lenses
+    This class is intended for use in modeling galaxy-scale lenses
     """
 
     def __init__(self, kwargs_lens_init):
-
         """
 
         :param kwargs_lens_init: the initial kwargs_lens before optimizing
@@ -66,13 +65,13 @@ class PowerLawParamManager(object):
 
     @property
     def to_vary_index(self):
+        """The number of lens models being varied in this routine. This is set to 2
+        because the first three lens models are EPL and SHEAR, and their parameters are
+        being optimized.
 
-        """
-        The number of lens models being varied in this routine. This is set to 2 because the first three lens models
-        are EPL and SHEAR, and their parameters are being optimized.
-
-        The kwargs_list is split at to to_vary_index with indicies < to_vary_index accessed in this class,
-        and lens models with indicies > to_vary_index kept fixed.
+        The kwargs_list is split at to to_vary_index with indicies < to_vary_index
+        accessed in this class, and lens models with indicies > to_vary_index kept
+        fixed.
 
         Note that this requires a specific ordering of lens_model_list
         :return:
@@ -81,9 +80,7 @@ class PowerLawParamManager(object):
         return 2
 
     def bounds(self, re_optimize, scale=1.):
-
-        """
-        Sets the low/high parameter bounds for the particle swarm optimization
+        """Sets the low/high parameter bounds for the particle swarm optimization.
 
         NOTE: The low/high values specified here are intended for galaxy-scale lenses. If you want to use this
         for a different size system you should create a new ParamClass with different settings
@@ -114,7 +111,6 @@ class PowerLawParamManager(object):
 
     @staticmethod
     def kwargs_to_args(kwargs):
-
         """
 
         :param kwargs: keyword arguments corresponding to the lens model parameters being optimized
@@ -134,12 +130,9 @@ class PowerLawParamManager(object):
 
 
 class PowerLawFreeShear(PowerLawParamManager):
-
-    """
-    This class implements a fit of EPL + external shear with every parameter except the power law slope allowed to vary
-    """
+    """This class implements a fit of EPL + external shear with every parameter except
+    the power law slope allowed to vary."""
     def args_to_kwargs(self, args):
-
         """
 
         :param args: array of lens model parameters
@@ -159,15 +152,14 @@ class PowerLawFreeShear(PowerLawParamManager):
 
 
 class PowerLawFixedShear(PowerLawParamManager):
+    """This class implements a fit of EPL + external shear with every parameter except
+    the power law slope AND the shear strength allowed to vary.
 
-    """
-    This class implements a fit of EPL + external shear with every parameter except the power law slope AND the
-    shear strength allowed to vary. The user should specify shear_strengh in the args_param_class keyword when
-    creating the Optimizer class
+    The user should specify shear_strengh in the args_param_class keyword when creating
+    the Optimizer class
     """
 
     def __init__(self, kwargs_lens_init, shear_strength):
-
         """
 
         :param kwargs_lens_init: the initial kwargs_lens before optimizing
@@ -178,7 +170,6 @@ class PowerLawFixedShear(PowerLawParamManager):
         super(PowerLawFixedShear, self).__init__(kwargs_lens_init)
 
     def args_to_kwargs(self, args):
-
         """
 
         :param args: array of lens model parameters
@@ -202,23 +193,22 @@ class PowerLawFixedShear(PowerLawParamManager):
 
 
 class PowerLawFreeShearMultipole(PowerLawParamManager):
+    """This class implements a fit of EPL + external shear + a multipole term with every
+    parameter except the power law slope and multipole moment free to vary.
 
-    """
-    This class implements a fit of EPL + external shear + a multipole term with every parameter except the
-    power law slope and multipole moment free to vary. The mass centroid and orientation of the multipole term are
-    fixed to that of the EPL profile
-
+    The mass centroid and orientation of the multipole term are fixed to that of the EPL
+    profile
     """
 
     @property
     def to_vary_index(self):
+        """The number of lens models being varied in this routine. This is set to 3
+        because the first three lens models are EPL, SHEAR, and MULTIPOLE, and their
+        parameters are being optimized.
 
-        """
-        The number of lens models being varied in this routine. This is set to 3 because the first three lens models
-        are EPL, SHEAR, and MULTIPOLE, and their parameters are being optimized.
-
-        The kwargs_list is split at to to_vary_index with indicies < to_vary_index accessed in this class,
-        and lens models with indicies > to_vary_index kept fixed.
+        The kwargs_list is split at to to_vary_index with indicies < to_vary_index
+        accessed in this class, and lens models with indicies > to_vary_index kept
+        fixed.
 
         Note that this requires a specific ordering of lens_model_list
         :return:
@@ -248,21 +238,23 @@ class PowerLawFreeShearMultipole(PowerLawParamManager):
 
 
 class PowerLawFixedShearMultipole(PowerLawFixedShear):
-    """
-    This class implements a fit of EPL + external shear + a multipole term with every parameter except the
-    power law slope, shear strength, and multipole moment free to vary. The mass centroid and orientation of the
-    multipole term are fixed to that of the EPL profile
+    """This class implements a fit of EPL + external shear + a multipole term with every
+    parameter except the power law slope, shear strength, and multipole moment free to
+    vary.
+
+    The mass centroid and orientation of the multipole term are fixed to that of the EPL
+    profile
     """
 
     @property
     def to_vary_index(self):
+        """The number of lens models being varied in this routine. This is set to 3
+        because the first three lens models are EPL, SHEAR, and MULTIPOLE, and their
+        parameters are being optimized.
 
-        """
-        The number of lens models being varied in this routine. This is set to 3 because the first three lens models
-        are EPL, SHEAR, and MULTIPOLE, and their parameters are being optimized.
-
-        The kwargs_list is split at to to_vary_index with indicies < to_vary_index accessed in this class,
-        and lens models with indicies > to_vary_index kept fixed.
+        The kwargs_list is split at to to_vary_index with indicies < to_vary_index
+        accessed in this class, and lens models with indicies > to_vary_index kept
+        fixed.
 
         Note that this requires a specific ordering of lens_model_list
         :return:

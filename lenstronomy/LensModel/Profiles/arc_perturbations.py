@@ -7,9 +7,8 @@ __all__ = ['ArcPerturbations']
 
 
 class ArcPerturbations(LensProfileBase):
-    """
-    uses radial and tangential fourier modes within a specific range in both directions to perturb a lensing potential
-    """
+    """Uses radial and tangential fourier modes within a specific range in both
+    directions to perturb a lensing potential."""
     def __init__(self):
         super(ArcPerturbations, self).__init__()
         self._2_pi = np.pi * 2
@@ -108,8 +107,7 @@ class ArcPerturbations(LensProfileBase):
 
     @staticmethod
     def _d_phi_r(r, d_r):
-        """
-        radial derivatives
+        """Radial derivatives.
 
         :param r: numpy array, radius
         :param d_r: period of radial sinusoidal in units of angle
@@ -119,8 +117,7 @@ class ArcPerturbations(LensProfileBase):
 
     @staticmethod
     def _d_phi_r2(r, d_r):
-        """
-        radial second derivatives
+        """Radial second derivatives.
 
         :param r: numpy array, radius
         :param d_r: period of radial sinusoidal in units of angle
@@ -140,8 +137,7 @@ class ArcPerturbations(LensProfileBase):
 
     @staticmethod
     def _d_phi_theta(theta, d_theta):
-        """
-        tangential derivatives
+        """Tangential derivatives.
 
         :param theta: numpy array, angle
         :param d_theta: period of tangential sinusoidal in radian
@@ -151,8 +147,7 @@ class ArcPerturbations(LensProfileBase):
 
     @staticmethod
     def _d_phi_theta2(r, d_theta):
-        """
-        tangential derivatives
+        """Tangential derivatives.
 
         :param r: numpy array, radius
         :param d_theta: period of tangential sinusoidal in radian

@@ -6,9 +6,7 @@ from lenstronomy.LightModel.Profiles.ellipsoid import Ellipsoid
 
 
 class TestTorus(object):
-    """
-    class to test Shapelets
-    """
+    """Class to test Shapelets."""
     def setup_method(self):
         pass
 

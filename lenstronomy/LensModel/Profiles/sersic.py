@@ -76,9 +76,7 @@ class Sersic(SersicUtil, LensProfileBase):
         return f_
 
     def derivatives(self, x, y, n_sersic, R_sersic, k_eff, center_x=0, center_y=0):
-        """
-        returns df/dx and df/dy of the function
-        """
+        """Returns df/dx and df/dy of the function."""
         x_ = x - center_x
         y_ = y - center_y
         r = np.sqrt(x_**2 + y_**2)
@@ -92,9 +90,8 @@ class Sersic(SersicUtil, LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, n_sersic, R_sersic, k_eff, center_x=0, center_y=0):
-        """
-        returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
-        """
+        """Returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx,
+        d^f/dy^2."""
         x_ = x - center_x
         y_ = y - center_y
         r = np.sqrt(x_**2 + y_**2)

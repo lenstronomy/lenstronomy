@@ -1,6 +1,4 @@
-"""
-Tests for `Galkin` module.
-"""
+"""Tests for `Galkin` module."""
 import pytest
 import numpy as np
 import numpy.testing as npt
@@ -27,9 +25,9 @@ class TestMassProfile(object):
         npt.assert_almost_equal(mass_3d/mass_3d_exact, 1., decimal=3)
 
     def test_sigma_r2(self):
-        """
-        tests the solution of the Jeans equation for sigma**2(r), where r is the 3d radius.
-        Test is compared to analytic OM solution with power-law and Hernquist light profile
+        """Tests the solution of the Jeans equation for sigma**2(r), where r is the 3d
+        radius. Test is compared to analytic OM solution with power-law and Hernquist
+        light profile.
 
         :return:
         """
@@ -75,9 +73,8 @@ class TestMassProfile(object):
         print(np.array(sigma_r_num_array) / np.array(sigma_r_analytic_array))
 
     def test_sigma_s2(self):
-        """
-        test LOS projected velocity dispersion at 3d ratios (numerical Jeans equation solution vs analytic one)
-        """
+        """Test LOS projected velocity dispersion at 3d ratios (numerical Jeans equation
+        solution vs analytic one)"""
         light_profile_list = ['HERNQUIST']
         r_eff = 0.5
         Rs = 0.551 * r_eff
@@ -200,10 +197,7 @@ class TestMassProfile(object):
         #assert 1 == 0
 
     def test_I_R_sigma(self):
-        """
-        test numerical integral against quad integrator
-        :return:
-        """
+        """Test numerical integral against quad integrator :return:"""
         light_profile_list = ['HERNQUIST']
         Rs = .5
         kwargs_light = [{'Rs': Rs, 'amp': 1.}]  # effective half light radius (2d projected) in arcsec

@@ -13,10 +13,7 @@ __all__ = ['ModelBandPlot']
 
 
 class ModelBandPlot(ModelBand):
-    """
-    class to plot a single band given the modeling results
-
-    """
+    """Class to plot a single band given the modeling results."""
     def __init__(self, multi_band_list, kwargs_model, model, error_map, cov_param, param, kwargs_params,
                  likelihood_mask_list=None, band_index=0, arrow_size=0.02, cmap_string="gist_heat",
                  fast_caustic=True):
@@ -197,10 +194,8 @@ class ModelBandPlot(ModelBand):
                           v_min=-0.05, v_max=0.05, font_size=15, colorbar_label=r'$\kappa - \kappa_{\rm{macro}}$',
                           cmap='bwr',  with_critical_curves=False, crit_curve_color='k', image_name_list=None,
                           **kwargs):
-        """
-
-        Plots the convergence of a full lens model minus the convergence from a few specified lens models to
-        more clearly show the presence of substructure
+        """Plots the convergence of a full lens model minus the convergence from a few
+        specified lens models to more clearly show the presence of substructure.
 
         :param ax: matplotib axis instance
         :param index_macromodel: a list of indexes corresponding to the lens models with convergence to be subtracted
@@ -437,21 +432,26 @@ class ModelBandPlot(ModelBand):
 
     def error_map_source_plot(self, ax, numPix, deltaPix_source, v_min=None, v_max=None, with_caustics=False,
                               font_size=15, point_source_position=True):
-        """
-        plots the uncertainty in the surface brightness in the source from the linear inversion by taking the diagonal
-        elements of the covariance matrix of the inversion of the basis set to be propagated to the source plane.
-        #TODO illustration of the uncertainties in real space with the full covariance matrix is subtle.
-        # The best way is probably to draw realizations from the covariance matrix.
+        """Plots the uncertainty in the surface brightness in the source from the linear
+        inversion by taking the diagonal elements of the covariance matrix of the
+        inversion of the basis set to be propagated to the source plane. #TODO
+        illustration of the uncertainties in real space with the full covariance matrix
+        is subtle. # The best way is probably to draw realizations from the covariance
+        matrix.
 
         :param ax: matplotlib axis instance
         :param numPix: number of pixels in plot per axis
-        :param deltaPix_source: pixel spacing in the source resolution illustrated in plot
+        :param deltaPix_source: pixel spacing in the source resolution illustrated in
+            plot
         :param v_min: minimum plotting scale of the map
         :param v_max: maximum plotting scale of the map
-        :param with_caustics: plot the caustics on top of the source reconstruction (may take some time)
+        :param with_caustics: plot the caustics on top of the source reconstruction (may
+            take some time)
         :param font_size: font size of labels
-        :param point_source_position: boolean, if True, plots a point at the position of the point source
-        :return: plot of source surface brightness errors in the reconstruction on the axis instance
+        :param point_source_position: boolean, if True, plots a point at the position of
+            the point source
+        :return: plot of source surface brightness errors in the reconstruction on the
+            axis instance
         """
         x_grid_source, y_grid_source = util.make_grid_transformed(numPix,
                                                                   self._coords.transform_pix2angle * deltaPix_source / self._deltaPix)
@@ -634,8 +634,7 @@ class ModelBandPlot(ModelBand):
         return ax
 
     def plot_main(self, with_caustics=False):
-        """
-        print the main plots together in a joint frame
+        """Print the main plots together in a joint frame.
 
         :return:
         """
@@ -652,8 +651,7 @@ class ModelBandPlot(ModelBand):
         return f, axes
 
     def plot_separate(self):
-        """
-        plot the different model components separately
+        """Plot the different model components separately.
 
         :return:
         """
@@ -672,8 +670,7 @@ class ModelBandPlot(ModelBand):
         return f, axes
 
     def plot_subtract_from_data_all(self):
-        """
-        subtract model components from data
+        """Subtract model components from data.
 
         :return:
         """

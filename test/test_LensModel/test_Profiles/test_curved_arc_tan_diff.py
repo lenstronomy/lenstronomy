@@ -11,18 +11,14 @@ from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 
 
 class TestCurvedArcTanDiff(object):
-    """
-    tests the source model routines
-    """
+    """Tests the source model routines."""
     def setup_method(self):
         self.model = CurvedArcTanDiff()
         self.sie = SIE()
         self.mst = Convergence()
 
     def test_curved_arc_round_recovery(self):
-        """
-        test whether the curved arc parameters are satisfied in differential form
-        """
+        """Test whether the curved arc parameters are satisfied in differential form."""
 
         center_x, center_y = 2, 0.  # test works except at (0,0) where the direction angle is not well defined
         tangential_stretch = 4.
@@ -44,9 +40,7 @@ class TestCurvedArcTanDiff(object):
         self._test_curved_arc_recovery(kwargs_lens)
 
     def test_curved_arc_recovery(self):
-        """
-        test whether the curved arc parameters are satisfied in differential form
-        """
+        """Test whether the curved arc parameters are satisfied in differential form."""
 
         center_x, center_y = 3, 0  # test works except at (0,0) where the direction angle is not well defined
 

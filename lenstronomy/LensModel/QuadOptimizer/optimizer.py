@@ -10,11 +10,11 @@ __all__ = ['Optimizer']
 
 
 class Optimizer(object):
-    """
-    class which executes the optimization routines. Currently implemented as a particle swarm optimization followed by
-    a downhill simplex routine.
+    """Class which executes the optimization routines. Currently implemented as a
+    particle swarm optimization followed by a downhill simplex routine.
 
-    Particle swarm optimizer is modified from the CosmoHammer particle swarm routine with different convergence criteria implemented.
+    Particle swarm optimizer is modified from the CosmoHammer particle swarm routine
+    with different convergence criteria implemented.
     """
 
     def __init__(self, x_image, y_image, lens_model_list, redshift_list, z_lens, z_source,
@@ -65,7 +65,6 @@ class Optimizer(object):
         self._re_optimize_scale = re_optimize_scale
 
     def optimize(self, n_particles=50, n_iterations=250, verbose=False, threadCount=1):
-
         """
 
         :param n_particles: number of PSO particles, will be ignored if self._particle_swarm is False
@@ -100,10 +99,7 @@ class Optimizer(object):
         return kwargs_lens_final, [source_x, source_y]
 
     def _fit_pso(self, n_particles, n_iterations, pool, verbose):
-
-        """
-        Executes the PSO
-        """
+        """Executes the PSO."""
 
         low_bounds, high_bounds = self._param_class.bounds(self._re_optimize, self._re_optimize_scale)
 
@@ -122,10 +118,7 @@ class Optimizer(object):
         return kwargs
 
     def _fit_amoeba(self, kwargs, verbose):
-
-        """
-        Executes the downhill simplex
-        """
+        """Executes the downhill simplex."""
 
         args_init = self._param_class.kwargs_to_args(kwargs)
 

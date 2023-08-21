@@ -11,9 +11,7 @@ import pytest
 
 
 class TestNFW(object):
-    """
-    tests the Gaussian methods
-    """
+    """Tests the Gaussian methods."""
     def setup_method(self):
         z_lens = 0.55
         z_source = 2.5

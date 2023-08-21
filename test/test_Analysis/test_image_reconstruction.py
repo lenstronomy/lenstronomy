@@ -17,9 +17,7 @@ from lenstronomy.Analysis.image_reconstruction import MultiBandImageReconstructi
 
 
 class TestMultiBandImageReconstruction(object):
-    """
-    test the fitting sequences
-    """
+    """Test the fitting sequences."""
     def setup_method(self):
 
         # data specifics
@@ -124,10 +122,7 @@ class TestMultiBandImageReconstruction(object):
 class TestRaises(unittest.TestCase):
 
     def test_no_band(self):
-        """
-        test raise statements if band is not evaluated
-
-        """
+        """Test raise statements if band is not evaluated."""
         sigma_bkg = 0.05  # background noise per pixel
         exp_time = 100  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)
         numPix = 10  # cutout pixel size

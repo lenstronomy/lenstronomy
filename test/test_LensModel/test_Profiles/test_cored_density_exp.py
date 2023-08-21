@@ -8,9 +8,7 @@ import pytest
 
 
 class TestCoredDensityExp(object):
-    """
-    tests the Gaussian methods
-    """
+    """Tests the Gaussian methods."""
     def setup_method(self):
         self.model = CoredDensityExp()
 

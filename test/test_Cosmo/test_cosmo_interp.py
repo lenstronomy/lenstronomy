@@ -5,9 +5,7 @@ from lenstronomy.Cosmo.cosmo_interp import CosmoInterp
 
 
 class TestCosmoInterp(object):
-    """
-
-    """
+    """"""
     def setup_method(self):
         self.H0_true = 70
         self.omega_m_true = 0.3

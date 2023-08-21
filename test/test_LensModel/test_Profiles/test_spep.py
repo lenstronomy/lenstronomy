@@ -10,9 +10,7 @@ import pytest
 import numpy.testing as npt
 
 class TestSPEP(object):
-    """
-    tests the Gaussian methods
-    """
+    """Tests the Gaussian methods."""
     def setup_method(self):
         self.SPEP = SPEP()
         self.SIE = SIE()

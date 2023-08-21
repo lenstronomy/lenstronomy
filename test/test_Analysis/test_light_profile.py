@@ -152,7 +152,6 @@ class TestLightAnalysis(object):
         flux = mge.function(r_array, 0, amp=amplitudes, sigma=sigmas, center_x=center_x, center_y=center_y)
         flux_true = lightModel.surface_brightness(r_array, 0, kwargs_light)
         npt.assert_almost_equal(flux / flux_true, 1, decimal=2)
-
         """
         
         import matplotlib.pyplot as plt

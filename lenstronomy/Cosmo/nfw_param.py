@@ -4,11 +4,12 @@ __all__ = ['NFWParam']
 
 
 class NFWParam(object):
-    """
-    class which contains a halo model parameters dependent on cosmology for NFW profile
-    All distances are given in physical units. Mass definitions are relative to 200 crit including redshift evolution.
-    The redshift evolution is cosmology dependent (dark energy).
-    The H0 dependence is propagated into the input and return units.
+    """Class which contains a halo model parameters dependent on cosmology for NFW
+    profile All distances are given in physical units.
+
+    Mass definitions are relative to 200 crit including redshift evolution. The redshift
+    evolution is cosmology dependent (dark energy). The H0 dependence is propagated into
+    the input and return units.
     """
 
     rhoc = 2.77536627e11  # critical density [h^2 M_sun Mpc^-3]
@@ -35,8 +36,7 @@ class NFWParam(object):
 
     @staticmethod
     def M200(rs, rho0, c):
-        """
-        Calculation of the mass enclosed r_200 for NFW profile defined as
+        """Calculation of the mass enclosed r_200 for NFW profile defined as.
 
         .. math::
             M_{200} = 4 \\pi \\rho_0^{3} * \\left(\\log(1+c) - c / (1 + c)  \\right))
@@ -52,8 +52,7 @@ class NFWParam(object):
         return 4 * np.pi * rho0 * rs ** 3 * (np.log(1. + c) - c / (1. + c))
 
     def r200_M(self, M, z):
-        """
-        computes the radius R_200 crit of a halo of mass M in physical mass M/h
+        """Computes the radius R_200 crit of a halo of mass M in physical mass M/h.
 
         :param M: halo mass in M_sun/h
         :type M: float or numpy array
@@ -73,8 +72,7 @@ class NFWParam(object):
         return self.rhoc_z(z)*200 * r200**3 * 4*np.pi/3.
 
     def rho0_c(self, c, z):
-        """
-        computes density normalization as a function of concentration parameter
+        """Computes density normalization as a function of concentration parameter.
 
         :param c: concentration
         :param z: redshift
@@ -83,8 +81,8 @@ class NFWParam(object):
         return 200./3*self.rhoc_z(z)*c**3/(np.log(1.+c)-c/(1.+c))
 
     def c_rho0(self, rho0, z):
-        """
-        computes the concentration given density normalization rho_0 in h^2/Mpc^3 (physical) (inverse of function rho0_c)
+        """Computes the concentration given density normalization rho_0 in h^2/Mpc^3
+        (physical) (inverse of function rho0_c)
 
         :param rho0: density normalization in h^2/Mpc^3 (physical)
         :param z: redshift
@@ -118,12 +116,9 @@ class NFWParam(object):
         return A*(M/M_pivot)**B*(1+z)**C
 
     def nfw_Mz(self, M, z):
-        """
-        returns all needed parameter (in physical units modulo h) to draw the profile of the main halo
-        r200 in physical Mpc/h
-        rho_s in  h^2/Mpc^3 (physical)
-        Rs in Mpc/h physical
-        c unit less
+        """Returns all needed parameter (in physical units modulo h) to draw the profile
+        of the main halo r200 in physical Mpc/h rho_s in  h^2/Mpc^3 (physical) Rs in
+        Mpc/h physical c unit less.
 
         :param M: Mass in physical M_sun/h
         :param z: redshift

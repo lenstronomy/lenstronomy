@@ -4,9 +4,7 @@ from lenstronomy.LightModel.Profiles.moffat import Moffat
 
 
 class TestMoffat(object):
-    """
-    class to test the Moffat profile
-    """
+    """Class to test the Moffat profile."""
     def setup_method(self):
         pass
 

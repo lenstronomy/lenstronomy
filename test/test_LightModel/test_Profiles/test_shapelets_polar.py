@@ -176,9 +176,7 @@ class TestShapeletsPolarExp(object):
 
 
 class TestShapeletSetPolar(object):
-    """
-    class to test Shapelets
-    """
+    """Class to test Shapelets."""
 
     def setup_method(self):
         self.shapeletSet = ShapeletSetPolar()
@@ -240,9 +238,7 @@ class TestShapeletSetPolar(object):
 
 
 class TestShapeletSetPolarExp(object):
-    """
-    class to test Shapelets
-    """
+    """Class to test Shapelets."""
 
     def setup_method(self):
         self.shapeletSet = ShapeletSetPolar(exponential=True)
@@ -250,10 +246,7 @@ class TestShapeletSetPolarExp(object):
         self.x, self.y = util.make_grid(10, 0.1, 1)
 
     def test_shapelet_set(self):
-        """
-
-        #:return:
-        """
+        """#:return:"""
         n_max = 2
         beta = 1.
         amp = [1, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -274,10 +267,7 @@ class TestShapeletSetPolarExp(object):
         assert output == 0
 
     def test_decomposition(self):
-        """
-
-        #:return:
-        """
+        """#:return:"""
         scale = 10
         n_max = 2
         beta = 1. * scale

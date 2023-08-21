@@ -1,6 +1,4 @@
-"""
-Tests for `galkin` module.
-"""
+"""Tests for `galkin` module."""
 import pytest
 import numpy.testing as npt
 import numpy as np

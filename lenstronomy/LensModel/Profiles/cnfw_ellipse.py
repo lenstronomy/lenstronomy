@@ -12,8 +12,7 @@ __all__ = ['CNFW_ELLIPSE']
 
 
 class CNFW_ELLIPSE(LensProfileBase):
-    """
-    this class contains functions concerning the NFW profile
+    """This class contains functions concerning the NFW profile.
 
     relation are: R_200 = c * Rs
     """
@@ -27,9 +26,7 @@ class CNFW_ELLIPSE(LensProfileBase):
         super(CNFW_ELLIPSE, self).__init__()
 
     def function(self, x, y, Rs, alpha_Rs, r_core, e1, e2, center_x=0, center_y=0):
-        """
-        returns double integral of NFW profile
-        """
+        """Returns double integral of NFW profile."""
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         x_shift = x - center_x
         y_shift = y - center_y
@@ -43,9 +40,7 @@ class CNFW_ELLIPSE(LensProfileBase):
         return f_
 
     def derivatives(self, x, y, Rs, alpha_Rs, r_core, e1, e2, center_x=0, center_y=0):
-        """
-        returns df/dx and df/dy of the function (integral of NFW)
-        """
+        """Returns df/dx and df/dy of the function (integral of NFW)"""
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         x_shift = x - center_x
         y_shift = y - center_y
@@ -63,9 +58,7 @@ class CNFW_ELLIPSE(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, Rs, alpha_Rs, r_core, e1, e2, center_x=0, center_y=0):
-        """
-        returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
-        """
+        """Returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy."""
         diff = 0.0000001
         alpha_ra_dx, alpha_dec_dx = self.derivatives(x + diff, y, Rs, alpha_Rs, r_core, e1, e2, center_x, center_y)
         alpha_ra_dy, alpha_dec_dy = self.derivatives(x, y + diff, Rs, alpha_Rs, r_core, e1, e2, center_x, center_y)
@@ -85,17 +78,17 @@ class CNFW_ELLIPSE(LensProfileBase):
         return f_xx, f_xy, f_yx, f_yy
 
     def mass_3d_lens(self, R, Rs, alpha_Rs, r_core, e1=0, e2=0):
-        """
-        mass enclosed a 3d sphere or radius r given a lens parameterization with angular units
+        """Mass enclosed a 3d sphere or radius r given a lens parameterization with
+        angular units.
 
         :return:
         """
         return self.cnfw.mass_3d_lens(R, Rs, alpha_Rs, r_core)
 
     def density_lens(self, R, Rs, alpha_Rs, r_core, e1=0, e2=0):
-        """
-        computes the density at 3d radius r given lens model parameterization.
-        The integral in the LOS projection of this quantity results in the convergence quantity.
+        """Computes the density at 3d radius r given lens model parameterization.
 
+        The integral in the LOS projection of this quantity results in the convergence
+        quantity.
         """
         return self.cnfw.density_lens(R, Rs, alpha_Rs, r_core)

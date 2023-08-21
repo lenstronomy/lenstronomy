@@ -8,9 +8,7 @@ from lenstronomy.Util import util
 
 
 class TestNIE(object):
-    """
-    class to test the NIE profile
-    """
+    """Class to test the NIE profile."""
     def setup_method(self):
         pass
 

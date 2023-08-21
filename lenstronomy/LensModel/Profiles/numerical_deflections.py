@@ -6,13 +6,13 @@ __all__ = ['TabulatedDeflections']
 
 
 class TabulatedDeflections(LensProfileBase):
+    """A user-defined class that returns deflection angles given a set of observed
+    coordinates on the sky (x, y).
 
-    """
-    A user-defined class that returns deflection angles given a set of observed coordinates on the sky (x, y).
-
-    This class has similar functionality as INTERPOL, with the difference being that the interpolation for this class is
-    done prior to class creation. When used with routines in the lenstronomy.Sampling, this class effectively acts as
-    a fixed lens model with no keyword arguments.
+    This class has similar functionality as INTERPOL, with the difference being that the
+    interpolation for this class is done prior to class creation. When used with
+    routines in the lenstronomy.Sampling, this class effectively acts as a fixed lens
+    model with no keyword arguments.
     """
 
     profile_name = 'TABULATED_DEFLECTIONS'
@@ -21,7 +21,6 @@ class TabulatedDeflections(LensProfileBase):
     upper_limit_default = {}
 
     def __init__(self, custom_class):
-
         """
         :param custom_class: a user-defined class that has a __call___ method that returns deflection angles
 
@@ -46,7 +45,6 @@ class TabulatedDeflections(LensProfileBase):
         raise Exception('no potential for this class.')
 
     def derivatives(self, x, y, center_x=0, center_y=0, **kwargs):
-
         """
 
         :param x: x coordinate [arcsec]
@@ -64,15 +62,11 @@ class TabulatedDeflections(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, center_x=0, center_y=0, **kwargs):
-        """
-        Returns the components of the hessian matrix
-        :param x: x coordinate [arcsec]
-        :param y: y coordinate [arcsec]
-        :param center_x: the deflector x coordinate
-        :param center_y: the deflector y coordinate
-        :param kwargs: keyword arguments for the profile
-        :return: the derivatives of the deflection angles that make up the hessian matrix
-        """
+        """Returns the components of the hessian matrix :param x: x coordinate [arcsec]
+        :param y: y coordinate [arcsec] :param center_x: the deflector x coordinate
+        :param center_y: the deflector y coordinate :param kwargs: keyword arguments for
+        the profile :return: the derivatives of the deflection angles that make up the
+        hessian matrix."""
 
         diff = 1e-6
         alpha_ra, alpha_dec = self.derivatives(x, y, center_x=center_x, center_y=center_y, **kwargs)

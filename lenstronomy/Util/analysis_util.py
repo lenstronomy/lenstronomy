@@ -32,8 +32,7 @@ def half_light_radius(lens_light, x_grid, y_grid, center_x=0, center_y=0):
 
 @export
 def radial_profile(light_grid, x_grid, y_grid, center_x=0, center_y=0, n=None):
-    """
-    computes radial profile
+    """Computes radial profile.
 
     :param light_grid: array of surface brightness
     :param x_grid: x-axis coordinates
@@ -59,9 +58,7 @@ def radial_profile(light_grid, x_grid, y_grid, center_x=0, center_y=0, n=None):
 
 @export
 def azimuthalAverage(image, center=None):
-    """
-
-    Calculate the azimuthally averaged radial profile.
+    """Calculate the azimuthally averaged radial profile.
 
     image - The 2D image
     center - The [x,y] pixel coordinates used as the center. The default is None, which then uses the center of the
@@ -99,8 +96,7 @@ def azimuthalAverage(image, center=None):
 
 @export
 def moments(I_xy_input, x, y):
-    """
-    compute quadrupole moments from a light distribution
+    """Compute quadrupole moments from a light distribution.
 
     :param I_xy_input: light distribution
     :param x: x-coordinates of I_xy
@@ -122,8 +118,7 @@ def moments(I_xy_input, x, y):
 
 @export
 def _ellipticities(I_xy, x, y):
-    """
-    compute ellipticities of a light distribution
+    """Compute ellipticities of a light distribution.
 
     :param I_xy: surface brightness I(x, y) as array
     :param x: x-coordinates in same shape as I_xy
@@ -163,8 +158,7 @@ def ellipticities(I_xy, x_grid, y_grid, num_iterative=30, iterative=False, cente
 
 @export
 def bic_model(logL, num_data, num_param):
-    """
-    Bayesian information criteria
+    """Bayesian information criteria.
 
     :param logL: log likelihood value
     :param num_data: numbers of data
@@ -177,8 +171,7 @@ def bic_model(logL, num_data, num_param):
 
 @export
 def profile_center(kwargs_list, center_x=None, center_y=None):
-    """
-    utility routine that results in the centroid estimate for the profile estimates
+    """Utility routine that results in the centroid estimate for the profile estimates.
 
     :param kwargs_list: light parameter keyword argument list (can be light or mass)
     :param center_x: None or center

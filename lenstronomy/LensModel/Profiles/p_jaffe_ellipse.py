@@ -49,17 +49,13 @@ class PJaffe_Ellipse(LensProfileBase):
         super(PJaffe_Ellipse, self).__init__()
 
     def function(self, x, y, sigma0, Ra, Rs, e1, e2, center_x=0, center_y=0):
-        """
-        returns double integral of NFW profile
-        """
+        """Returns double integral of NFW profile."""
         x_, y_ = param_util.transform_e1e2_square_average(x, y, e1, e2, center_x, center_y)
         f_ = self.spherical.function(x_, y_, sigma0, Ra, Rs)
         return f_
 
     def derivatives(self, x, y, sigma0, Ra, Rs, e1, e2, center_x=0, center_y=0):
-        """
-        returns df/dx and df/dy of the function (integral of NFW)
-        """
+        """Returns df/dx and df/dy of the function (integral of NFW)"""
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         x_, y_ = param_util.transform_e1e2_square_average(x, y, e1, e2, center_x, center_y)
         e = param_util.q2e(q)
@@ -73,9 +69,8 @@ class PJaffe_Ellipse(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, sigma0, Ra, Rs, e1, e2, center_x=0, center_y=0):
-        """
-        returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
-        """
+        """Returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx,
+        d^f/dy^2."""
         alpha_ra, alpha_dec = self.derivatives(x, y, sigma0, Ra, Rs, e1, e2, center_x, center_y)
         diff = self._diff
         alpha_ra_dx, alpha_dec_dx = self.derivatives(x + diff, y, sigma0, Ra, Rs, e1, e2, center_x, center_y)

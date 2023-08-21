@@ -9,9 +9,7 @@ __all__ = ['Shear', 'ShearGammaPsi', 'ShearReduced']
 
 
 class Shear(LensProfileBase):
-    """
-    class for external shear gamma1, gamma2 expression
-    """
+    """Class for external shear gamma1, gamma2 expression."""
     param_names = ['gamma1', 'gamma2', 'ra_0', 'dec_0']
     lower_limit_default = {'gamma1': -0.5, 'gamma2': -0.5, 'ra_0': -100, 'dec_0': -100}
     upper_limit_default = {'gamma1': 0.5, 'gamma2': 0.5, 'ra_0': 100, 'dec_0': 100}
@@ -115,10 +113,9 @@ class ShearGammaPsi(LensProfileBase):
 
 
 class ShearReduced(LensProfileBase):
-    """
-    reduced shear distortions :math:`\\gamma' = \\gamma / (1-\\kappa)`.
-    This distortion keeps the magnification as unity and, thus, does not change the size of apparent objects.
-    To keep the magnification at unity, it requires
+    """Reduced shear distortions :math:`\\gamma' = \\gamma / (1-\\kappa)`. This
+    distortion keeps the magnification as unity and, thus, does not change the size of
+    apparent objects. To keep the magnification at unity, it requires.
 
     .. math::
         (1-\\kappa)^2) - \\gamma_1^2 - \\gamma_2^ = 1
@@ -137,8 +134,7 @@ class ShearReduced(LensProfileBase):
 
     @staticmethod
     def _kappa_reduced(gamma1, gamma2):
-        """
-        compute convergence such that magnification is unity
+        """Compute convergence such that magnification is unity.
 
         :param gamma1: reduced shear
         :param gamma2: reduced shear

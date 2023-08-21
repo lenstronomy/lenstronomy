@@ -4,8 +4,9 @@ __all__ = ['LightParam']
 
 
 class LightParam(object):
-    """
-    class manages the parameters corresponding to the LightModel() module. Also manages linear parameter handling.
+    """Class manages the parameters corresponding to the LightModel() module.
+
+    Also manages linear parameter handling.
     """
 
     def __init__(self, light_model_list, kwargs_fixed, kwargs_lower=None, kwargs_upper=None, param_type='light',

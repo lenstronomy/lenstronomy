@@ -39,8 +39,7 @@ __all__ = ['choose_pool']
 
 
 def choose_pool(mpi=False, processes=1, **kwargs):
-    """
-    Extends the capabilities of the schwimmbad.choose_pool method.
+    """Extends the capabilities of the schwimmbad.choose_pool method.
 
     It handles the `use_dill` parameters in kwargs, that would otherwise raise an error when processes > 1.
     Any thread in the returned multiprocessing pool (e.g. processes > 1) also default

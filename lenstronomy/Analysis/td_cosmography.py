@@ -12,14 +12,13 @@ __all__ = ['TDCosmography']
 
 
 class TDCosmography(KinematicsAPI):
-    """
-    class equipped to perform a cosmographic analysis from a lens model with added measurements of time delays and
-    kinematics.
-    This class does not require any cosmological knowledge and can return angular diameter distance estimates
-    self-consistently integrating the kinematics routines and time delay estimates in the lens modeling.
-    This description follows Birrer et al. 2016, 2019.
+    """Class equipped to perform a cosmographic analysis from a lens model with added
+    measurements of time delays and kinematics.
 
-
+    This class does not require any cosmological knowledge and can return angular
+    diameter distance estimates self-consistently integrating the kinematics routines
+    and time delay estimates in the lens modeling. This description follows Birrer et
+    al. 2016, 2019.
     """
     def __init__(self, z_lens, z_source, kwargs_model, cosmo_fiducial=None, lens_model_kinematics_bool=None,
                  light_model_kinematics_bool=None, kwargs_seeing=None, kwargs_aperture=None, anisotropy_model=None,
@@ -58,17 +57,17 @@ class TDCosmography(KinematicsAPI):
                                             anisotropy_model=anisotropy_model, **kwargs_kin_api)
 
     def time_delays(self, kwargs_lens, kwargs_ps, kappa_ext=0, original_ps_position=False):
-        """
-        predicts the time delays of the image positions given the fiducial cosmology relative to a straight line
-        without lensing.
-        Negative values correspond to images arriving earlier, and positive signs correspond to images arriving later.
+        """Predicts the time delays of the image positions given the fiducial cosmology
+        relative to a straight line without lensing. Negative values correspond to
+        images arriving earlier, and positive signs correspond to images arriving later.
 
         :param kwargs_lens: lens model parameters
         :param kwargs_ps: point source parameters
         :param kappa_ext: external convergence (optional)
-        :param original_ps_position: boolean (only applies when first point source model is of type 'LENSED_POSITION'),
-         uses the image positions in the model parameters and does not re-compute images (which might be differently ordered) 
-         in case of the lens equation solver
+        :param original_ps_position: boolean (only applies when first point source model
+            is of type 'LENSED_POSITION'), uses the image positions in the model
+            parameters and does not re-compute images (which might be differently
+            ordered) in case of the lens equation solver
         :return: time delays at image positions for the fixed cosmology in units of days
         """
         fermat_pot = self.fermat_potential(kwargs_lens, kwargs_ps, original_ps_position=original_ps_position)
@@ -76,15 +75,16 @@ class TDCosmography(KinematicsAPI):
         return time_delay
 
     def fermat_potential(self, kwargs_lens, kwargs_ps, original_ps_position=False):
-        """
-        Fermat potential (negative sign means earlier arrival time)
+        """Fermat potential (negative sign means earlier arrival time)
 
         :param kwargs_lens: lens model keyword argument list
         :param kwargs_ps: point source keyword argument list
-        :param original_ps_position: boolean (only applies when first point source model is of type 'LENSED_POSITION'),
-         uses the image positions in the model parameters and does not re-compute images (which might be differently ordered) 
-         in case of the lens equation solver
-        :return: Fermat potential of all the image positions in the first point source list entry
+        :param original_ps_position: boolean (only applies when first point source model
+            is of type 'LENSED_POSITION'), uses the image positions in the model
+            parameters and does not re-compute images (which might be differently
+            ordered) in case of the lens equation solver
+        :return: Fermat potential of all the image positions in the first point source
+            list entry
         """
         ra_pos, dec_pos = self.PointSource.image_position(kwargs_ps, kwargs_lens, original_position=original_ps_position)
         ra_pos = ra_pos[0]
@@ -102,17 +102,18 @@ class TDCosmography(KinematicsAPI):
 
     def velocity_dispersion_dimension_less(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, r_eff=None,
                                            theta_E=None, gamma=None):
-        """
-        sigma**2 = Dd/Dds * c**2 * J(kwargs_lens, kwargs_light, anisotropy)
-        (Equation 4.11 in Birrer et al. 2016 or Equation 6 in Birrer et al. 2019) J() is a dimensionless and
-        cosmological independent quantity only depending on angular units. This function returns J given the lens
-        and light parameters and the anisotropy choice without an external mass sheet correction.
+        """Sigma**2 = Dd/Dds * c**2 * J(kwargs_lens, kwargs_light, anisotropy) (Equation
+        4.11 in Birrer et al. 2016 or Equation 6 in Birrer et al. 2019) J() is a
+        dimensionless and cosmological independent quantity only depending on angular
+        units. This function returns J given the lens and light parameters and the
+        anisotropy choice without an external mass sheet correction.
 
         :param kwargs_lens: lens model keyword arguments
         :param kwargs_lens_light: lens light model keyword arguments
         :param kwargs_anisotropy: stellar anisotropy keyword arguments
-        :param r_eff: projected half-light radius of the stellar light associated with the deflector galaxy, optional,
-         if set to None will be computed in this function with default settings that may not be accurate.
+        :param r_eff: projected half-light radius of the stellar light associated with
+            the deflector galaxy, optional, if set to None will be computed in this
+            function with default settings that may not be accurate.
         :param theta_E: pre-computed Einstein radius (optional)
         :param gamma: pre-computed power-law slope of mass profile
         :return: dimensionless velocity dispersion (see e.g. Birrer et al. 2016, 2019)
@@ -126,18 +127,19 @@ class TDCosmography(KinematicsAPI):
 
     def velocity_dispersion_map_dimension_less(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, r_eff=None,
                                                theta_E=None, gamma=None):
-        """
-        sigma**2 = Dd/Dds * c**2 * J(kwargs_lens, kwargs_light, anisotropy)
-        (Equation 4.11 in Birrer et al. 2016 or Equation 6 in Birrer et al. 2019) J() is a dimensionless and
-        cosmological independent quantity only depending on angular units. This function returns J given the lens
-        and light parameters and the anisotropy choice without an external mass sheet correction.
-        This routine computes the IFU map of the kinematic quantities.
+        """Sigma**2 = Dd/Dds * c**2 * J(kwargs_lens, kwargs_light, anisotropy) (Equation
+        4.11 in Birrer et al. 2016 or Equation 6 in Birrer et al. 2019) J() is a
+        dimensionless and cosmological independent quantity only depending on angular
+        units. This function returns J given the lens and light parameters and the
+        anisotropy choice without an external mass sheet correction. This routine
+        computes the IFU map of the kinematic quantities.
 
         :param kwargs_lens: lens model keyword arguments
         :param kwargs_lens_light: lens light model keyword arguments
         :param kwargs_anisotropy: stellar anisotropy keyword arguments
-        :param r_eff: projected half-light radius of the stellar light associated with the deflector galaxy, optional,
-         if set to None will be computed in this function with default settings that may not be accurate.
+        :param r_eff: projected half-light radius of the stellar light associated with
+            the deflector galaxy, optional, if set to None will be computed in this
+            function with default settings that may not be accurate.
         :return: dimensionless velocity dispersion (see e.g. Birrer et al. 2016, 2019)
         """
         sigma_v_map = self.velocity_dispersion_map(kwargs_lens=kwargs_lens, kwargs_lens_light=kwargs_lens_light,
@@ -149,11 +151,13 @@ class TDCosmography(KinematicsAPI):
 
     @staticmethod
     def ddt_from_time_delay(d_fermat_model, dt_measured, kappa_s=0, kappa_ds=0, kappa_d=0):
-        """
-        Time-delay distance in units of Mpc from the modeled Fermat potential and measured time delay from an image pair.
+        """Time-delay distance in units of Mpc from the modeled Fermat potential and
+        measured time delay from an image pair.
 
-        :param d_fermat_model: relative Fermat potential between two images from the same source in units arcsec^2
-        :param dt_measured: measured time delay between the same image pair in units of days
+        :param d_fermat_model: relative Fermat potential between two images from the
+            same source in units arcsec^2
+        :param dt_measured: measured time delay between the same image pair in units of
+            days
         :param kappa_s: external convergence from observer to source
         :param kappa_ds: external convergence from lens to source
         :param kappa_d: external convergence form observer to lens
@@ -165,9 +169,8 @@ class TDCosmography(KinematicsAPI):
 
     @staticmethod
     def ds_dds_from_kinematics(sigma_v, J, kappa_s=0, kappa_ds=0):
-        """
-        computes the estimate of the ratio of angular diameter distances Ds/Dds from the kinematic estimate of the lens
-        and the measured dispersion.
+        """Computes the estimate of the ratio of angular diameter distances Ds/Dds from
+        the kinematic estimate of the lens and the measured dispersion.
 
         :param sigma_v: velocity dispersion [km/s]
         :param J: dimensionless kinematic constraint (see Birrer et al. 2016, 2019)

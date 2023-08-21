@@ -10,9 +10,7 @@ import unittest
 
 
 class TestLensModel(object):
-    """
-    tests the source model routines
-    """
+    """Tests the source model routines."""
     def setup_method(self):
         self.lensModel = LensModel(['GAUSSIAN'])
         self.kwargs = [{'amp': 1., 'sigma_x': 2., 'sigma_y': 2., 'center_x': 0., 'center_y': 0.}]
@@ -134,9 +132,8 @@ class TestLensModel(object):
         assert curl != 0
 
     def test_hessian_differentials(self):
-        """
-        routine to test the private numerical differentials, both cross and square methods in the infinitesimal regime
-        """
+        """Routine to test the private numerical differentials, both cross and square
+        methods in the infinitesimal regime."""
         lens_model = LensModel(lens_model_list=['SIS'])
         kwargs = [{'theta_E': 1, 'center_x': 0.01, 'center_y': 0}]
         x, y = make_grid(numPix=10, deltapix=0.2)

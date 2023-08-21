@@ -7,11 +7,8 @@ __all__ = ['CoreBurkert']
 
 
 class CoreBurkert(LensProfileBase):
-    """
-    lensing properties of a modified Burkert profile with variable core size
-    normalized by rho0, the central core density
-
-    """
+    """Lensing properties of a modified Burkert profile with variable core size
+    normalized by rho0, the central core density."""
 
     param_names = ['Rs', 'alpha_Rs', 'r_core', 'center_x', 'center_y']
     lower_limit_default = {'Rs': 1, 'alpha_Rs': 0, 'r_core': 0.5, 'center_x': -100, 'center_y': -100}
@@ -40,14 +37,10 @@ class CoreBurkert(LensProfileBase):
         return f_
 
     def derivatives(self, x, y, Rs, alpha_Rs, r_core, center_x=0, center_y=0):
-        """
-        deflection angles
-        :param x: x coordinate
-        :param y: y coordinate
-        :param Rs: scale radius
-        :param alpha_Rs: deflection angle at Rs
-        :param r_core: core radius
+        """Deflection angles :param x: x coordinate :param y: y coordinate :param Rs:
+        scale radius :param alpha_Rs: deflection angle at Rs :param r_core: core radius
         :param center_x:
+
         :param center_y:
         :return:
         """
@@ -65,7 +58,6 @@ class CoreBurkert(LensProfileBase):
         return dx, dy
 
     def hessian(self, x, y, Rs, alpha_Rs, r_core, center_x=0, center_y=0):
-
         """
         :param x: x coordinate
         :param y: y coordinate
@@ -94,10 +86,7 @@ class CoreBurkert(LensProfileBase):
         return f_xx, f_xy, f_xy, f_yy
 
     def mass_2d(self, R, Rs, rho0, r_core):
-
-        """
-        analytic solution of the projection integral
-        (convergence)
+        """Analytic solution of the projection integral (convergence)
 
         :param R: projected distance
         :param Rs: scale radius
@@ -114,8 +103,7 @@ class CoreBurkert(LensProfileBase):
         return m_2d
 
     def coreBurkAlpha(self, R, Rs, rho0, r_core, ax_x, ax_y):
-        """
-        deflection angle
+        """Deflection angle.
 
         :param R:
         :param Rs:
@@ -135,8 +123,7 @@ class CoreBurkert(LensProfileBase):
         return a * ax_x / R, a * ax_y / R
 
     def density(self, R, Rs, rho0, r_core):
-        """
-        three dimensional cored Burkert profile
+        """Three dimensional cored Burkert profile.
 
         :param R: radius of interest
         :type R: float/numpy array
@@ -152,8 +139,7 @@ class CoreBurkert(LensProfileBase):
         return (M0 / (4*np.pi)) * ((r_core + R) * (Rs ** 2 + R ** 2)) ** -1
 
     def density_2d(self, x, y, Rs, rho0, r_core, center_x=0, center_y=0):
-        """
-        projected two dimenstional core Burkert profile (kappa*Sigma_crit)
+        """Projected two dimenstional core Burkert profile (kappa*Sigma_crit)
 
         :param x: x coordinate
         :param y: y coordinate
@@ -187,7 +173,6 @@ class CoreBurkert(LensProfileBase):
         return M0 * (1+b**2) ** -1 * (0.5*np.log(1+c**2) + b**2*np.log(c*b**-1 + 1) - b*np.arctan(c))
 
     def cBurkPot(self, R, Rs, rho0, r_core):
-
         """
         :param R: projected distance
         :param Rs: scale radius
@@ -316,14 +301,8 @@ class CoreBurkert(LensProfileBase):
         return prefactor * func
 
     def _F(self, x, p):
-
-        """
-        solution of the projection integal (kappa)
-        arctanh / arctan function
-        :param x: r/Rs
-        :param p: r_core / Rs
-        :return:
-        """
+        """Solution of the projection integal (kappa) arctanh / arctan function :param
+        x: r/Rs :param p: r_core / Rs :return:"""
         prefactor = 0.5 * (1 + p ** 2) ** -1 * p
 
         if isinstance(x, np.ndarray):

@@ -5,10 +5,9 @@ __all__ = ['GalkinModel']
 
 
 class GalkinModel(object):
-    """
-    this class handles all the kinematic modeling aspects of Galkin
-    Excluded are observational conditions (seeing, aperture etc)
-    Major class to compute velocity dispersion measurements given light and mass models
+    """This class handles all the kinematic modeling aspects of Galkin Excluded are
+    observational conditions (seeing, aperture etc) Major class to compute velocity
+    dispersion measurements given light and mass models.
 
     The class supports any mass and light distribution (and superposition thereof) that has a 3d correspondance in their
     2d lens model distribution. For models that do not have this correspondence, you may want to apply a
@@ -39,7 +38,6 @@ class GalkinModel(object):
 
     These numerical options should be chosen to allow for a converged result (within your tolerance) but not too
     conservative to impact too much the computational cost. Reasonable values might depend on the specific problem.
-
     """
     def __init__(self, kwargs_model, kwargs_cosmo, kwargs_numerics=None, analytic_kinematics=False):
         """

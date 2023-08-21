@@ -9,16 +9,13 @@ __all__ = ['Solver2Point']
 
 
 class Solver2Point(object):
-    """
-    class to solve a constraint lens model with two point source positions
+    """Class to solve a constraint lens model with two point source positions.
 
     options are:
     'CENTER': solves for 'center_x', 'center_y' parameters of the first lens model
     'ELLIPSE': solves for 'e1', 'e2' of the first lens  (can also be shear)
     'SHAPELETS': solves for shapelet coefficients c01, c10
     'THETA_E_PHI: solves for Einstein radius of first lens model and shear angle of second model
-
-
     """
     def __init__(self, lensModel, solver_type='CENTER', decoupling=True):
         """
@@ -45,15 +42,15 @@ class Solver2Point(object):
             self._decoupling = decoupling
 
     def constraint_lensmodel(self, x_pos, y_pos, kwargs_list, xtol=1.49012e-12):
-        """
-        constrains lens model parameters by demanding the solution to match the image positions to a single source
-        position
+        """Constrains lens model parameters by demanding the solution to match the image
+        positions to a single source position.
 
         :param x_pos: list of image positions (x-axis)
         :param y_pos: list of image position (y-axis)
         :param kwargs_list: list of lens model kwargs
         :param xtol: tolerance level of solution when to stop the non-linear solver
-        :return: updated lens model that satisfies the lens equation for the point sources
+        :return: updated lens model that satisfies the lens equation for the point
+            sources
         """
         kwargs = copy.deepcopy(kwargs_list)
         init = self._extract_array(kwargs)
@@ -138,8 +135,7 @@ class Solver2Point(object):
         return kwargs_list
 
     def _extract_array(self, kwargs_list):
-        """
-        inverse of _update_kwargs
+        """Inverse of _update_kwargs.
 
         :param kwargs_list:
         :return:

@@ -11,9 +11,7 @@ import pytest
 
 
 class TestNFWELLIPSE(object):
-    """
-    tests the Gaussian methods
-    """
+    """Tests the Gaussian methods."""
     def setup_method(self):
         self.tnfw = TNFW()
         self.nfw_e = NFW_ELLIPSE()

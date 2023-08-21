@@ -9,12 +9,10 @@ __all__ = ['NIE', 'NIEMajorAxis']
 
 
 class NIE(LensProfileBase):
-    """
-    Non-singular isothermal ellipsoid (NIE)
+    """Non-singular isothermal ellipsoid (NIE)
 
     .. math::
      \\kappa = \\theta_E/2 \\left[s^2_{scale} + qx^2 + y^2/q]−1/2
-
     """
     param_names = ['theta_E', 'e1', 'e2', 's_scale', 'center_x', 'center_y']
     lower_limit_default = {'theta_E': 0, 'e1': -0.5, 'e2': -0.5, 's_scale': 0, 'center_x': -100, 'center_y': -100}
@@ -106,8 +104,8 @@ class NIE(LensProfileBase):
         return f_xx, f_xy, f_xy, f_yy
 
     def density_lens(self, r, theta_E, e1, e2, s_scale, center_x=0, center_y=0):
-        """
-        3d mass density at 3d radius r. This function assumes spherical symmetry/ignoring the eccentricity.
+        """3d mass density at 3d radius r. This function assumes spherical
+        symmetry/ignoring the eccentricity.
 
         :param r: 3d radius
         :param theta_E: Einstein radius
@@ -123,8 +121,8 @@ class NIE(LensProfileBase):
         return rho0 / (r**2 + s_scale**2)
 
     def mass_3d_lens(self, r, theta_E, e1, e2, s_scale, center_x=0, center_y=0):
-        """
-        mass enclosed a 3d radius r. This function assumes spherical symmetry/ignoring the eccentricity.
+        """Mass enclosed a 3d radius r. This function assumes spherical
+        symmetry/ignoring the eccentricity.
 
         :param r: 3d radius
         :param theta_E: Einstein radius
@@ -194,10 +192,9 @@ class NIE(LensProfileBase):
 
     @staticmethod
     def _theta_E_prod_average2major_axis(theta_E, q):
-        """
-        Converts a product averaged Einstein radius (of semi-minor and semi-major axis) to a major axis Einstein radius
-        for an Isothermal ellipse.
-        The standard lenstronomy conventions are product averaged Einstein radii while other codes
+        """Converts a product averaged Einstein radius (of semi-minor and semi-major
+        axis) to a major axis Einstein radius for an Isothermal ellipse. The standard
+        lenstronomy conventions are product averaged Einstein radii while other codes
         (such as e.g. gravlens) use the semi-major axis convention.
 
         .. math::
@@ -234,9 +231,7 @@ class NIEMajorAxis(LensProfileBase):
         return f_
 
     def derivatives(self, x, y, b, s, q):
-        """
-        returns df/dx and df/dy of the function
-        """
+        """Returns df/dx and df/dy of the function."""
         if q >= 1:
             q = 0.99999999
         psi = self._psi(x, y, q, s)
@@ -245,9 +240,8 @@ class NIEMajorAxis(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, b, s, q):
-        """
-        returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
-        """
+        """Returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx,
+        d^f/dy^2."""
         alpha_ra, alpha_dec = self.derivatives(x, y, b, s, q)
         diff = self._diff
         alpha_ra_dx, alpha_dec_dx = self.derivatives(x + diff, y, b, s, q)
@@ -261,8 +255,7 @@ class NIEMajorAxis(LensProfileBase):
 
     @staticmethod
     def kappa(x, y, b, s, q):
-        """
-        convergence
+        """convergence.
 
         :param x: major axis coordinate
         :param y: minor axis coordinate
@@ -276,8 +269,7 @@ class NIEMajorAxis(LensProfileBase):
 
     @staticmethod
     def _psi(x, y, q, s):
-        """
-        expression after equation (8) in Keeton&Kochanek 1998
+        """Expression after equation (8) in Keeton&Kochanek 1998.
 
         :param x: semi-major axis coordinate
         :param y: semi-minor axis coordinate

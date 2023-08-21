@@ -3,11 +3,8 @@ import numpy.testing as npt
 from lenstronomy.Data.imaging_data import ImageData
 
 def test_interferometry_likelihood():
-    """
-    
-    test interferometry natural weighting likelihood function, test likelihood_method function output
-
-    """
+    """Test interferometry natural weighting likelihood function, test likelihood_method
+    function output."""
     
     test_data = np.zeros((5,5))
     test_data[0,:] = 1
@@ -24,4 +21,3 @@ def test_interferometry_likelihood():
     
     assert data_class.likelihood_method() == 'interferometry_natwt'
     npt.assert_almost_equal(data_class.log_likelihood([model_unconvolved,model_convolved],mask), -0.712, decimal=8)
-    

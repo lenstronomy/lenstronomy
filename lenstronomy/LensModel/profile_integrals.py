@@ -20,13 +20,12 @@ class ProfileIntegrals(object):
         self._profile = profile_class
 
     def mass_enclosed_3d(self, r, kwargs_profile, lens_param=False):
-        """
-        computes the mass enclosed within a sphere of radius r
+        """Computes the mass enclosed within a sphere of radius r.
 
         :param r: radius (arcsec)
         :param kwargs_profile: keyword argument list with lens model parameters
-        :param lens_param: boolean, if True uses the lens model parameterization in computing the 3d density convention
-         and the return is the convergence
+        :param lens_param: boolean, if True uses the lens model parameterization in
+            computing the 3d density convention and the return is the convergence
         :return: 3d mass enclosed of r
         """
         kwargs = copy.deepcopy(kwargs_profile)
@@ -40,13 +39,12 @@ class ProfileIntegrals(object):
         return out[0]
 
     def density_2d(self, r, kwargs_profile, lens_param=False):
-        """
-        computes the projected density along the line-of-sight
+        """Computes the projected density along the line-of-sight.
 
         :param r: radius (arcsec)
         :param kwargs_profile: keyword argument list with lens model parameters
-        :param lens_param: boolean, if True uses the lens model parameterization in computing the 3d density convention
-         and the return is the convergence
+        :param lens_param: boolean, if True uses the lens model parameterization in
+            computing the 3d density convention and the return is the convergence
         :return: 2d projected density at projected radius r
         """
         kwargs = copy.deepcopy(kwargs_profile)

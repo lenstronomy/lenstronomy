@@ -10,9 +10,7 @@ from lenstronomy.LightModel.Profiles.gaussian import MultiGaussian
 import pytest
 
 class TestMGE(object):
-    """
-    tests the Gaussian methods
-    """
+    """Tests the Gaussian methods."""
     def setup_method(self):
         self.sersic = Sersic()
         self.multiGaussian = MultiGaussian()

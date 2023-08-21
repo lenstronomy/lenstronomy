@@ -4,9 +4,7 @@ __all__ = ['Flexion']
 
 
 class Flexion(LensProfileBase):
-    """
-    class for flexion
-    """
+    """Class for flexion."""
     param_names = ['g1', 'g2', 'g3', 'g4', 'ra_0', 'dec_0']
     lower_limit_default = {'g1': -0.1, 'g2': -0.1, 'g3': -0.1, 'g4': -0.1, 'ra_0': -100, 'dec_0': -100}
     upper_limit_default = {'g1': 0.1, 'g2': 0.1, 'g3': 0.1, 'g4': 0.1, 'ra_0': 100, 'dec_0': 100}

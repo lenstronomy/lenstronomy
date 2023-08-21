@@ -11,9 +11,7 @@ __all__ = ['SPEP']
 
 
 class SPEP(LensProfileBase):
-    """
-    class for Softened power-law elliptical potential (SPEP)
-    """
+    """Class for Softened power-law elliptical potential (SPEP)"""
     param_names = ['theta_E', 'gamma', 'e1', 'e2', 'center_x', 'center_y']
     lower_limit_default = {'theta_E': 0, 'gamma': 0, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}
     upper_limit_default = {'theta_E': 100, 'gamma': 100, 'e1': 0.5, 'e2': 0.5, 'center_x': 100, 'center_y': 100}
@@ -128,8 +126,7 @@ class SPEP(LensProfileBase):
         return f_xx, f_xy, f_xy, f_yy
 
     def mass_3d_lens(self, r, theta_E, gamma, e1=None, e2=None):
-        """
-        computes the spherical power-law mass enclosed (with SPP routine)
+        """Computes the spherical power-law mass enclosed (with SPP routine)
 
         :param r: radius within the mass is computed
         :param theta_E: Einstein radius
@@ -141,9 +138,9 @@ class SPEP(LensProfileBase):
         return self.spp.mass_3d_lens(r, theta_E, gamma)
 
     def density_lens(self, r, theta_E, gamma, e1=None, e2=None):
-        """
-        computes the density at 3d radius r given lens model parameterization.
-        The integral in the LOS projection of this quantity results in the convergence quantity.
+        """Computes the density at 3d radius r given lens model parameterization. The
+        integral in the LOS projection of this quantity results in the convergence
+        quantity.
 
         :param r: radius within the mass is computed
         :param theta_E: Einstein radius
@@ -156,8 +153,7 @@ class SPEP(LensProfileBase):
 
     @staticmethod
     def _param_bounds(gamma, q):
-        """
-        bounds parameters
+        """Bounds parameters.
 
         :param gamma:
         :param q:

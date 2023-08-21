@@ -8,9 +8,7 @@ __all__ = ['Dipole', 'DipoleUtil']
 
 
 class Dipole(LensProfileBase):
-    """
-    class for dipole response of two massive bodies (experimental)
-    """
+    """Class for dipole response of two massive bodies (experimental)"""
     param_names = ['com_x', 'com_y', 'phi_dipole', 'coupling']
     lower_limit_default = {'com_x': -100, 'com_y': -100, 'phi_dipole': -10, 'coupling': -10}
     upper_limit_default = {'com_x': 100, 'com_y': 100, 'phi_dipole': 10, 'coupling': 10}
@@ -82,9 +80,7 @@ class Dipole(LensProfileBase):
 
 
 class DipoleUtil(object):
-    """
-    pre-calculation of dipole properties
-    """
+    """Pre-calculation of dipole properties."""
 
     @staticmethod
     def com(center1_x, center1_y, center2_x, center2_y, Fm):
@@ -97,9 +93,9 @@ class DipoleUtil(object):
 
     @staticmethod
     def mass_ratio(theta_E, theta_E_sub):
-        """
-        computes mass ration of the two clumps with given Einstein radius and power law slope (clump1/sub-clump)
-        :param theta_E:
+        """Computes mass ration of the two clumps with given Einstein radius and power
+        law slope (clump1/sub-clump) :param theta_E:
+
         :param theta_E_sub:
         :return:
         """
@@ -107,9 +103,6 @@ class DipoleUtil(object):
 
     @staticmethod
     def angle(center1_x, center1_y, center2_x, center2_y):
-        """
-        compute the rotation angle of the dipole
-        :return:
-        """
+        """Compute the rotation angle of the dipole :return:"""
         phi_G = np.arctan2(center2_y - center1_y, center2_x - center1_x)
         return phi_G

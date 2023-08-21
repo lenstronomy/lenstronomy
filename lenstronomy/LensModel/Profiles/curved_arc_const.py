@@ -7,9 +7,8 @@ __all__ = ['CurvedArcConstMST', 'CurvedArcConst']
 
 
 class CurvedArcConstMST(LensProfileBase):
-    """
-    lens model that describes a section of a highly magnified deflector region.
-    The parameterization is chosen to describe local observables efficient.
+    """Lens model that describes a section of a highly magnified deflector region. The
+    parameterization is chosen to describe local observables efficient.
 
     Observables are:
     - curvature radius (basically bending relative to the center of the profile)
@@ -22,7 +21,6 @@ class CurvedArcConstMST(LensProfileBase):
     - Should work with other perturbative models without breaking its meaning (say when adding additional shear terms)
     - Must best reflect the observables in lensing
     - minimal covariances between the parameters, intuitive parameterization.
-
     """
     param_names = ['tangential_stretch', 'radial_stretch', 'curvature', 'direction', 'center_x', 'center_y']
     lower_limit_default = {'tangential_stretch': -100, 'radial_stretch': -5, 'curvature': 0.000001, 'direction': -np.pi, 'center_x': -100, 'center_y': -100}
@@ -98,10 +96,8 @@ class CurvedArcConstMST(LensProfileBase):
 
 
 class CurvedArcConst(LensProfileBase):
-    """
-    curved arc lensing with orientation of curvature perpendicular to the x-axis with unity radial stretch
-
-    """
+    """Curved arc lensing with orientation of curvature perpendicular to the x-axis with
+    unity radial stretch."""
     param_names = ['tangential_stretch', 'curvature', 'direction', 'center_x', 'center_y']
     lower_limit_default = {'tangential_stretch': -100, 'curvature': 0.000001, 'direction': -np.pi,
                            'center_x': -100, 'center_y': -100}
@@ -187,7 +183,6 @@ class CurvedArcConst(LensProfileBase):
         f_xy = (alpha_ra_dy - alpha_ra) / diff
         f_yx = (alpha_dec_dx - alpha_dec) / diff
         f_yy = (alpha_dec_dy - alpha_dec) / diff
-
         """
         #TODO make rotational invariances of double derivates with curl
         r = 1 / curvature

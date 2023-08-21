@@ -5,9 +5,7 @@ __all__ = ['PSBase', '_expand_to_array', '_shrink_array']
 
 
 class PSBase(object):
-    """
-    base point source type class
-    """
+    """Base point source type class."""
     def __init__(self, lens_model=None, fixed_magnification=False, additional_images=False, index_lens_model_list=None,
                  point_source_frame_list=None):
         """
@@ -42,8 +40,7 @@ class PSBase(object):
                     'current computation. If you see this warning, please approach the developers.')
 
     def image_position(self, kwargs_ps, **kwargs):
-        """
-        on-sky position
+        """On-sky position.
 
         :param kwargs_ps: keyword argument of point source model
         :return: numpy array of x, y image positions
@@ -51,8 +48,7 @@ class PSBase(object):
         raise ValueError('image_position definition is not defined in the profile you want to execute.')
 
     def source_position(self, kwargs_ps, **kwargs):
-        """
-        original unlensed position
+        """Original unlensed position.
 
         :param kwargs_ps: keyword argument of point source model
         :return: numpy array of x, y source positions
@@ -60,8 +56,7 @@ class PSBase(object):
         raise ValueError('source_position definition is not defined in the profile you want to execute.')
 
     def image_amplitude(self, kwargs_ps, *args, **kwargs):
-        """
-        amplitudes as observed on the sky
+        """Amplitudes as observed on the sky.
 
         :param kwargs_ps: keyword argument of point source model
         :param kwargs: keyword arguments of function call
@@ -70,18 +65,18 @@ class PSBase(object):
         raise ValueError('source_position definition is not defined in the profile you want to execute.')
 
     def source_amplitude(self, kwargs_ps, **kwargs):
-        """
-        intrinsic source amplitudes (without lensing magnification, but still apparent)
+        """Intrinsic source amplitudes (without lensing magnification, but still
+        apparent)
 
         :param kwargs_ps: keyword argument of point source model
-        :param kwargs: keyword arguments of function call (which are not used for this object
+        :param kwargs: keyword arguments of function call (which are not used for this
+            object
         :return: numpy array of amplitudes
         """
         raise ValueError('source_position definition is not defined in the profile you want to execute.')
 
     def update_lens_model(self, lens_model_class):
-        """
-        update LensModel() and LensEquationSolver() instance
+        """Update LensModel() and LensEquationSolver() instance.
 
         :param lens_model_class: LensModel() class instance
         :return: internal lensModel class updated

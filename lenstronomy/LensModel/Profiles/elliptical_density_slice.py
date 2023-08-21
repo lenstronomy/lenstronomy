@@ -42,8 +42,7 @@ class ElliSLICE (LensProfileBase):
     upper_limit_default = {'a': 100., 'b': 100., 'psi': 90. / 180. * np.pi, 'center_x': 100., 'center_y': 100.}
 
     def function(self, x, y, a, b, psi, sigma_0, center_x=0., center_y=0.):
-        """
-        lensing potential
+        """Lensing potential.
 
         :param a: float, semi-major axis, must be positive
         :param b: float, semi-minor axis, must be positive
@@ -51,7 +50,6 @@ class ElliSLICE (LensProfileBase):
         :param sigma_0: float, surface mass density, must be positive
         :param center_x: float, center on the x axis
         :param center_y: float, center on the y axis
-
         """
         kwargs_slice = {'center_x': center_x, 'center_y': center_y, 'a': a, 'b': b, 'psi': psi, 'sigma_0': sigma_0}
         x_ = x - center_x
@@ -71,8 +69,7 @@ class ElliSLICE (LensProfileBase):
             return f
 
     def derivatives(self, x, y, a, b, psi, sigma_0, center_x=0., center_y=0.):
-        """
-        lensing deflection angle
+        """Lensing deflection angle.
 
         :param a: float, semi-major axis, must be positive
         :param b: float, semi-minor axis, must be positive
@@ -80,7 +77,6 @@ class ElliSLICE (LensProfileBase):
         :param sigma_0: float, surface mass density, must be positive
         :param center_x: float, center on the x axis
         :param center_y: float, center on the y axis
-
         """
         kwargs_slice = {'center_x': center_x, 'center_y': center_y, 'a': a, 'b': b, 'psi': psi, 'sigma_0': sigma_0}
         x_ = x - center_x
@@ -100,8 +96,7 @@ class ElliSLICE (LensProfileBase):
             return defl[:, 0], defl[:, 1]
 
     def hessian(self, x, y, a, b, psi, sigma_0, center_x=0., center_y=0.):
-        """
-        lensing second derivatives
+        """Lensing second derivatives.
 
         :param a: float, semi-major axis, must be positive
         :param b: float, semi-minor axis, must be positive
@@ -109,7 +104,6 @@ class ElliSLICE (LensProfileBase):
         :param sigma_0: float, surface mass density, must be positive
         :param center_x: float, center on the x axis
         :param center_y: float, center on the y axis
-
         """
 
         diff = 0.000000001
@@ -125,11 +119,9 @@ class ElliSLICE (LensProfileBase):
 
     @staticmethod
     def sign(z):
-        """
-        sign function
+        """Sign function.
 
         :param z: complex
-
         """
         x = z.real
         y = z.imag
@@ -139,11 +131,10 @@ class ElliSLICE (LensProfileBase):
             return -1
 
     def alpha_in(self, x, y, kwargs_slice):
-        """
-        deflection angle for (x,y) inside the elliptical slice
+        """Deflection angle for (x,y) inside the elliptical slice.
 
-        :param kwargs_slice: dict, dictionary with  the slice definition (a,b,psi,sigma_0)
-
+        :param kwargs_slice: dict, dictionary with the slice definition
+            (a,b,psi,sigma_0)
         """
         z = complex(x, y)
         zb = z.conjugate()
@@ -155,11 +146,10 @@ class ElliSLICE (LensProfileBase):
         return I_in.real, I_in.imag
 
     def alpha_ext(self, x, y, kwargs_slice):
-        """
-        deflection angle for (x,y) outside the elliptical slice
+        """Deflection angle for (x,y) outside the elliptical slice.
 
-        :param kwargs_slice: dict, dictionary with  the slice definition (a,b,psi,sigma_0)
-
+        :param kwargs_slice: dict, dictionary with the slice definition
+            (a,b,psi,sigma_0)
         """
         z = complex(x, y)
         r, phi = param_util.cart2polar(x, y)
@@ -211,11 +201,10 @@ class ElliSLICE (LensProfileBase):
 
     @staticmethod
     def pot_in(x, y, kwargs_slice):
-        """
-        lensing potential for (x,y) inside the elliptical slice
+        """Lensing potential for (x,y) inside the elliptical slice.
 
-        :param kwargs_slice: dict, dictionary with  the slice definition (a,b,psi,sigma_0)
-
+        :param kwargs_slice: dict, dictionary with the slice definition
+            (a,b,psi,sigma_0)
         """
         psi = kwargs_slice['psi']
         a = kwargs_slice['a']
@@ -229,11 +218,10 @@ class ElliSLICE (LensProfileBase):
         return pot_in + cst
 
     def pot_ext(self, x, y, kwargs_slice):
-        """
-        lensing potential for (x,y) outside the elliptical slice
+        """Lensing potential for (x,y) outside the elliptical slice.
 
-        :param kwargs_slice: dict, dictionary with  the slice definition (a,b,psi,sigma_0)
-
+        :param kwargs_slice: dict, dictionary with the slice definition
+            (a,b,psi,sigma_0)
         """
         z = complex(x, y)
         # zb = z.conjugate()

@@ -10,9 +10,8 @@ from lenstronomy.LensModel.Profiles.multipole import Multipole
 __all__ = ['EPL_BOXYDISKY']
 
 class EPL_BOXYDISKY(LensProfileBase):
-    """"
-    EPL (Elliptical Power Law) mass profile combined with Multipole with m=4, so that it's either purely boxy or
-    disky with EPL's axis and Multipole's axis aligned.
+    """ " EPL (Elliptical Power Law) mass profile combined with Multipole with m=4, so
+    that it's either purely boxy or disky with EPL's axis and Multipole's axis aligned.
 
     Reference to the implementation: https://ui.adsabs.harvard.edu/abs/2022A%26A...659A.127V/abstract
 

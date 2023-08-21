@@ -13,9 +13,7 @@ _force_no_pysap = True  # if issues on Travis-CI to install pysap, force use pyt
 
 
 class TestSLITStarlets(object):
-    """
-    class to test SLIT_Starlets light profile
-    """
+    """Class to test SLIT_Starlets light profile."""
     def setup_method(self):
         # different versions of Starlet transforms
         self.starlets = SLIT_Starlets(fast_inverse=False, second_gen=False, force_no_pysap=_force_no_pysap)
@@ -101,8 +99,7 @@ class TestSLITStarlets(object):
         assert image_1d_2nd.shape == (self.num_pix**2,)
 
     def test_identity_operations_fast(self):
-        """
-        test the decomposition/reconstruction 
+        """Test the decomposition/reconstruction.
 
         :return:
         """
@@ -111,8 +108,7 @@ class TestSLITStarlets(object):
         npt.assert_almost_equal(self.test_image, test_image_recon, decimal=5)
 
     def test_identity_operations_2nd(self):
-        """
-        test the decomposition/reconstruction 
+        """Test the decomposition/reconstruction.
 
         :return:
         """

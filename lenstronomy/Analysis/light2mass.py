@@ -7,9 +7,9 @@ __all__ = ['light2mass_interpol']
 
 def light2mass_interpol(lens_light_model_list, kwargs_lens_light, numPix=100, deltaPix=0.05, subgrid_res=5,
                         center_x=0, center_y=0):
-    """
-    takes a lens light model and turns it numerically in a lens model
-    (with all lensmodel quantities computed on a grid). Then provides an interpolated grid for the quantities.
+    """Takes a lens light model and turns it numerically in a lens model (with all
+    lensmodel quantities computed on a grid). Then provides an interpolated grid for the
+    quantities.
 
     :param kwargs_lens_light: lens light keyword argument list
     :param numPix: number of pixels per axis for the return interpolation

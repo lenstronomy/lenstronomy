@@ -73,9 +73,9 @@ def _mge_1d(r_array, flux_r, N=20, linspace=False):
 
 @export
 def de_projection_3d(amplitudes, sigmas):
-    """
-    de-projects a gaussian (or list of multiple Gaussians from a 2d projected to a 3d profile)
-    :param amplitudes:
+    """De-projects a gaussian (or list of multiple Gaussians from a 2d projected to a 3d
+    profile) :param amplitudes:
+
     :param sigmas:
     :return:
     """

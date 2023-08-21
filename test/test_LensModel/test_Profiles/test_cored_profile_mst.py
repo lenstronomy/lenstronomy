@@ -10,9 +10,7 @@ import unittest
 
 
 class TestMassSheet(object):
-    """
-    tests the Gaussian methods
-    """
+    """Tests the Gaussian methods."""
     def setup_method(self):
         self.profile1 = CoredDensityMST(profile_type='CORED_DENSITY')
         self.profile2 = CoredDensityMST(profile_type='CORED_DENSITY_2')

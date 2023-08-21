@@ -33,8 +33,7 @@ class NFWVirTrunc(LensProfileBase):
         super(NFWVirTrunc, self).__init__()
 
     def kappa(self, theta, logM, c):
-        """
-        projected surface brightness
+        """Projected surface brightness.
 
         :param theta: radial angle from the center of the profile
         :param logM: log_10 halo mass in physical units of M_sun

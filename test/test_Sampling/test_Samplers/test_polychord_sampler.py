@@ -50,9 +50,7 @@ def import_fixture(simple_einstein_ring_likelihood):
 
 
 class TestDyPolyChordSampler(object):
-    """
-    test the fitting sequences
-    """
+    """Test the fitting sequences."""
 
     def setup_method(self):
 

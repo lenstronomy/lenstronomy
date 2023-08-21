@@ -7,17 +7,14 @@ __all__ = ['Convergence']
 
 
 class Convergence(LensProfileBase):
-    """
-    a single mass sheet (external convergence)
-    """
+    """A single mass sheet (external convergence)"""
     model_name = 'CONVERGENCE'
     param_names = ['kappa', 'ra_0', 'dec_0']
     lower_limit_default = {'kappa': -10, 'ra_0': -100, 'dec_0': -100}
     upper_limit_default = {'kappa': 10, 'ra_0': 100, 'dec_0': 100}
 
     def function(self, x, y, kappa, ra_0=0, dec_0=0):
-        """
-        lensing potential
+        """Lensing potential.
 
         :param x: x-coordinate
         :param y: y-coordinate
@@ -29,8 +26,7 @@ class Convergence(LensProfileBase):
         return f_
 
     def derivatives(self, x, y, kappa, ra_0=0, dec_0=0):
-        """
-        deflection angle
+        """Deflection angle.
 
         :param x: x-coordinate
         :param y: y-coordinate
@@ -44,8 +40,7 @@ class Convergence(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, kappa, ra_0=0, dec_0=0):
-        """
-        Hessian matrix
+        """Hessian matrix.
 
         :param x: x-coordinate
         :param y: y-coordinate

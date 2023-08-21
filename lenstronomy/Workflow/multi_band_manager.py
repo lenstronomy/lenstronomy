@@ -7,10 +7,12 @@ __all__ = ['MultiBandUpdateManager']
 
 
 class MultiBandUpdateManager(UpdateManager):
-    """
-    specific Manager to deal with multiple images with disjoint lens model parameterization. The class inherits the
-    UpdateManager() class and adds functionalities to hold and relieve fixed all lens model parameters of a specific
-    frame/image for more convenient use of the FittingSequence.
+    """Specific Manager to deal with multiple images with disjoint lens model
+    parameterization.
+
+    The class inherits the UpdateManager() class and adds functionalities to hold and
+    relieve fixed all lens model parameters of a specific frame/image for more
+    convenient use of the FittingSequence.
     """
     def __init__(self, kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params, num_bands=0):
         """
@@ -66,12 +68,12 @@ class MultiBandUpdateManager(UpdateManager):
                     self._lens_fixed[i] = copy.deepcopy(self._kwargs_lens_fixed_init[i])
 
     def fix_not_computed(self, free_bands):
-        """
-        fix all the lens models that are part of a imaging band that is not set to be computed. Free those that are
-        modeled.
-        #TODO check for overlapping models for more automated fixing of parameters
+        """Fix all the lens models that are part of a imaging band that is not set to be
+        computed. Free those that are modeled. #TODO check for overlapping models for
+        more automated fixing of parameters.
 
-        :param free_bands: boolean list of length of the imaging bands, True indicates that the lens model is being fitted for
+        :param free_bands: boolean list of length of the imaging bands, True indicates
+            that the lens model is being fitted for
         :return: None
         """
         undo_frame_list = []

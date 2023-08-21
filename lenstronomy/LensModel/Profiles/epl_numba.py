@@ -131,7 +131,8 @@ class EPL_numba(LensProfileBase):
 
 @jit()
 def param_transform(x, y, theta_E, gamma, e1, e2, center_x=0., center_y=0.):
-    """Converts the parameters from lenstronomy definitions (as defined in PEMD) to the definitions of Tessore+ (2015)"""
+    """Converts the parameters from lenstronomy definitions (as defined in PEMD) to the
+    definitions of Tessore+ (2015)"""
     t = gamma-1
     phi_G, q = param_util.ellipticity2phi_q(e1, e2)
     x_shift = x - center_x
@@ -143,8 +144,7 @@ def param_transform(x, y, theta_E, gamma, e1, e2, center_x=0., center_y=0.):
 
 @jit()
 def alpha(x, y, b, q, t, Omega=None):
-    """
-    Calculates the complex deflection
+    """Calculates the complex deflection.
 
     :param x: x-coordinate (angle)
     :param y: y-coordinate (angle)

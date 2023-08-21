@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-"""
-This module contains the class to compute lensing properties of any
-elliptical profile using Shajib (2019)'s Gauss decomposition.
-"""
+"""This module contains the class to compute lensing properties of any elliptical
+profile using Shajib (2019)'s Gauss decomposition."""
 
 __author__ = 'ajshajib'
 
@@ -22,10 +20,8 @@ _SQRT_2PI = np.sqrt(2*np.pi)
 
 @export
 class GaussianEllipseKappaSet(LensProfileBase):
-    """
-    This class computes the lensing properties of a set of concentric
-    elliptical Gaussian convergences.
-    """
+    """This class computes the lensing properties of a set of concentric elliptical
+    Gaussian convergences."""
     param_names = ['amp', 'sigma', 'e1', 'e2', 'center_x', 'center_y']
     lower_limit_default = {'amp': 0, 'sigma': 0, 'e1': -0.5, 'e2': -0.5,
                            'center_x': -100, 'center_y': -100}
@@ -46,9 +42,8 @@ class GaussianEllipseKappaSet(LensProfileBase):
         super(GaussianEllipseKappaSet, self).__init__()
 
     def function(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
-        """
-        Compute the potential function for a set of concentric elliptical
-        Gaussian convergence profiles.
+        """Compute the potential function for a set of concentric elliptical Gaussian
+        convergence profiles.
 
         :param x: x coordinate
         :type x: ``float`` or ``numpy.array``
@@ -81,10 +76,9 @@ class GaussianEllipseKappaSet(LensProfileBase):
         return function
 
     def derivatives(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
-        """
-        Compute the derivatives of function angles :math:`\\partial
-        f/\\partial x`, :math:`\\partial f/\\partial y` at :math:`x,\\ y` for a
-        set of concentric elliptic Gaussian convergence profiles.
+        """Compute the derivatives of function angles :math:`\\partial f/\\partial x`,
+        :math:`\\partial f/\\partial y` at :math:`x,\\ y` for a set of concentric
+        elliptic Gaussian convergence profiles.
 
         :param x: x coordinate
         :type x: ``float`` or ``numpy.array``
@@ -117,11 +111,9 @@ class GaussianEllipseKappaSet(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
-        """
-        Compute Hessian matrix of function :math:`\\partial^2f/\\partial x^2`,
-        :math:`\\partial^2 f/\\partial y^2`, :math:`\\partial^2 f/\\partial
-        x\\partial y` for a set of concentric elliptic Gaussian convergence
-        profiles.
+        """Compute Hessian matrix of function :math:`\\partial^2f/\\partial x^2`,
+        :math:`\\partial^2 f/\\partial y^2`, :math:`\\partial^2 f/\\partial x\\partial
+        y` for a set of concentric elliptic Gaussian convergence profiles.
 
         :param x: x coordinate
         :type x: ``float`` or ``numpy.array``
@@ -158,10 +150,8 @@ class GaussianEllipseKappaSet(LensProfileBase):
         return f_xx, f_xy, f_xy, f_yy
 
     def density_2d(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
-        """
-        Compute the density of a set of concentric elliptical Gaussian
-        convergence profiles :math:`\\sum A/(2\\pi \\sigma^2) \\exp(-(
-        x^2+y^2/q^2)/2\\sigma^2)`.
+        """Compute the density of a set of concentric elliptical Gaussian convergence
+        profiles :math:`\\sum A/(2\\pi \\sigma^2) \\exp(-( x^2+y^2/q^2)/2\\sigma^2)`.
 
         :param x: x coordinate
         :type x: ``float`` or ``numpy.array``
@@ -193,15 +183,12 @@ class GaussianEllipseKappaSet(LensProfileBase):
 
 @export
 class GaussDecompositionAbstract(metaclass=abc.ABCMeta):
-    """
-    This abstract class sets up a template for computing lensing properties of
-    an elliptical convergence through Shajib (2019)'s Gauss decomposition.
-    """
+    """This abstract class sets up a template for computing lensing properties of an
+    elliptical convergence through Shajib (2019)'s Gauss decomposition."""
     def __init__(self, n_sigma=15, sigma_start_mult=0.02, sigma_end_mult=15.,
                  precision=10, use_scipy_wofz=True, min_ellipticity=1e-5):
-        """
-        Set up settings for the Gaussian decomposition. For more details about
-        the decomposition parameters, see Shajib (2019).
+        """Set up settings for the Gaussian decomposition. For more details about the
+        decomposition parameters, see Shajib (2019).
 
         :param n_sigma: Number of Gaussian components
         :type n_sigma: ``int``
@@ -243,10 +230,9 @@ class GaussDecompositionAbstract(metaclass=abc.ABCMeta):
         self.etas = (-1.) ** kes * epsilons * 10. ** (p / 3.) * 2. * _SQRT_2PI
 
     def gauss_decompose(self, **kwargs):
-        r"""
-        Compute the amplitudes and sigmas of Gaussian components using the
-        integral transform with Gaussian kernel from Shajib (2019). The
-        returned values are in the convention of eq. (2.13).
+        r"""Compute the amplitudes and sigmas of Gaussian components using the integral
+        transform with Gaussian kernel from Shajib (2019). The returned values are in
+        the convention of eq. (2.13).
 
         :param kwargs: Keyword arguments to send to ``func``
         :return: Amplitudes and standard deviations of the Gaussian components
@@ -272,9 +258,8 @@ class GaussDecompositionAbstract(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def get_scale(self, **kwargs):
-        """
-        Abstract method to identify the keyword argument for the scale size
-        among the profile parameters of the child class' convergence profile.
+        """Abstract method to identify the keyword argument for the scale size among the
+        profile parameters of the child class' convergence profile.
 
         :param kwargs: Keyword arguments
         :return: Scale size
@@ -283,9 +268,8 @@ class GaussDecompositionAbstract(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def get_kappa_1d(self, y, **kwargs):
-        r"""
-        Abstract method to compute the spherical Sersic profile at y.
-        The concrete method has to defined by the child class.
+        r"""Abstract method to compute the spherical Sersic profile at y. The concrete
+        method has to defined by the child class.
 
         :param y: y coordinate
         :type y: ``float`` or ``numpy.array``
@@ -294,9 +278,7 @@ class GaussDecompositionAbstract(metaclass=abc.ABCMeta):
 
     def function(self, x, y, e1=0., e2=0., center_x=0.,
                  center_y=0., **kwargs):
-        r"""
-        Compute the deflection potential of a Gauss-decomposed
-        elliptic convergence.
+        r"""Compute the deflection potential of a Gauss-decomposed elliptic convergence.
 
         :param x: x coordinate
         :type x: ``float``
@@ -323,10 +305,9 @@ class GaussDecompositionAbstract(metaclass=abc.ABCMeta):
 
     def derivatives(self, x, y, e1=0., e2=0., center_x=0.,
                     center_y=0., **kwargs):
-        r"""
-        Compute the derivatives of the deflection potential :math:`\partial
-        f/\partial x`, :math:`\partial f/\partial y` for a Gauss-decomposed
-        elliptic convergence.
+        r"""Compute the derivatives of the deflection potential :math:`\partial
+        f/\partial x`, :math:`\partial f/\partial y` for a Gauss-decomposed elliptic
+        convergence.
 
         :param x: x coordinate
         :type x: ``float`` or ``numpy.array``
@@ -353,11 +334,9 @@ class GaussDecompositionAbstract(metaclass=abc.ABCMeta):
 
     def hessian(self, x, y, e1=0., e2=0., center_x=0.,
                 center_y=0., **kwargs):
-        r"""
-        Compute the Hessian of the deflection potential
-        :math:`\partial^2f/\partial x^2`, :math:`\partial^2 f/ \partial
-        y^2`, :math:`\partial^2 f/\partial x\partial y` of a Gauss-decomposed
-        elliptic Sersic convergence.
+        r"""Compute the Hessian of the deflection potential :math:`\partial^2f/\partial
+        x^2`, :math:`\partial^2 f/ \partial y^2`, :math:`\partial^2 f/\partial x\partial
+        y` of a Gauss-decomposed elliptic Sersic convergence.
 
         :param x: x coordinate
         :type x: ``float`` or ``numpy.array``
@@ -384,8 +363,7 @@ class GaussDecompositionAbstract(metaclass=abc.ABCMeta):
 
     def density_2d(self, x, y, e1=0., e2=0., center_x=0.,
                    center_y=0., **kwargs):
-        r"""
-        Compute the convergence profile for Gauss-decomposed elliptic Sersic profile.
+        r"""Compute the convergence profile for Gauss-decomposed elliptic Sersic profile.
 
         :param x: x coordinate
         :type x: ``float`` or ``numpy.array``
@@ -413,10 +391,8 @@ class GaussDecompositionAbstract(metaclass=abc.ABCMeta):
 
 @export
 class SersicEllipseGaussDec(GaussDecompositionAbstract):
-    """
-    This class computes the lensing properties of an elliptical Sersic
-    profile using the Shajib (2019)'s Gauss decomposition method.
-    """
+    """This class computes the lensing properties of an elliptical Sersic profile using
+    the Shajib (2019)'s Gauss decomposition method."""
     param_names = ['k_eff', 'R_sersic', 'n_sersic', 'e1', 'e2', 'center_x',
                    'center_y']
     lower_limit_default = {'k_eff': 0., 'R_sersic': 0., 'n_sersic': 0.5,
@@ -427,8 +403,7 @@ class SersicEllipseGaussDec(GaussDecompositionAbstract):
                            'center_y': 100.}
 
     def get_kappa_1d(self, y, **kwargs):
-        r"""
-        Compute the spherical Sersic profile at y.
+        r"""Compute the spherical Sersic profile at y.
 
         :param y: y coordinate
         :type y: ``float``
@@ -454,8 +429,7 @@ class SersicEllipseGaussDec(GaussDecompositionAbstract):
         return k_eff * np.exp(-bn * (y / R_sersic) ** (1. / n_sersic) + bn)
 
     def get_scale(self, **kwargs):
-        """
-        Identify the scale size from the keyword arguments.
+        """Identify the scale size from the keyword arguments.
 
         :param kwargs: Keyword arguments
 
@@ -475,10 +449,8 @@ class SersicEllipseGaussDec(GaussDecompositionAbstract):
 
 @export
 class NFWEllipseGaussDec(GaussDecompositionAbstract):
-    """
-    This class computes the lensing properties of an elliptical, projected NFW
-    profile using Shajib (2019)'s Gauss decomposition method.
-    """
+    """This class computes the lensing properties of an elliptical, projected NFW
+    profile using Shajib (2019)'s Gauss decomposition method."""
     param_names = ['Rs', 'alpha_Rs', 'e1', 'e2', 'center_x', 'center_y']
     lower_limit_default = {'Rs': 0, 'alpha_Rs': 0, 'e1': -0.5, 'e2': -0.5,
                            'center_x': -100, 'center_y': -100}
@@ -487,9 +459,8 @@ class NFWEllipseGaussDec(GaussDecompositionAbstract):
 
     def __init__(self, n_sigma=15, sigma_start_mult=0.005, sigma_end_mult=50.,
                  precision=10, use_scipy_wofz=True, min_ellipticity=1e-5):
-        """
-        Set up settings for the Gaussian decomposition. For more details about
-        the decomposition parameters, see Shajib (2019).
+        """Set up settings for the Gaussian decomposition. For more details about the
+        decomposition parameters, see Shajib (2019).
 
         :param n_sigma: Number of Gaussian components
         :type n_sigma: ``int``
@@ -512,8 +483,7 @@ class NFWEllipseGaussDec(GaussDecompositionAbstract):
                                                  min_ellipticity=min_ellipticity)
 
     def get_kappa_1d(self, y, **kwargs):
-        r"""
-        Compute the spherical projected NFW profile at y.
+        r"""Compute the spherical projected NFW profile at y.
 
         :param y: y coordinate
         :type y: ``float``
@@ -557,8 +527,7 @@ class NFWEllipseGaussDec(GaussDecompositionAbstract):
         return 2 * kappa_s * f
 
     def get_scale(self, **kwargs):
-        """
-        Identify the scale size from the keyword arguments.
+        """Identify the scale size from the keyword arguments.
 
         :param kwargs: Keyword arguments
 
@@ -576,16 +545,13 @@ class NFWEllipseGaussDec(GaussDecompositionAbstract):
 
 @export
 class GaussDecompositionAbstract3D(GaussDecompositionAbstract):
-    """
-    This abstract class sets up a template for computing lensing properties of
-    a convergence from 3D spherical profile through Shajib (2019)'s Gauss
-    decomposition.
-    """
+    """This abstract class sets up a template for computing lensing properties of a
+    convergence from 3D spherical profile through Shajib (2019)'s Gauss
+    decomposition."""
     def gauss_decompose(self, **kwargs):
-        r"""
-        Compute the amplitudes and sigmas of Gaussian components using the
-        integral transform with Gaussian kernel from Shajib (2019). The
-        returned values are in the convention of eq. (2.13).
+        r"""Compute the amplitudes and sigmas of Gaussian components using the integral
+        transform with Gaussian kernel from Shajib (2019). The returned values are in
+        the convention of eq. (2.13).
 
         :param kwargs: Keyword arguments to send to ``func``
         :return: Amplitudes and standard deviations of the Gaussian components
@@ -600,11 +566,8 @@ class GaussDecompositionAbstract3D(GaussDecompositionAbstract):
 
 @export
 class CTNFWGaussDec(GaussDecompositionAbstract3D):
-    """
-    This class computes the lensing properties of an projection from a
-    spherical cored-truncated NFW profile using Shajib (2019)'s Gauss
-    decomposition method.
-    """
+    """This class computes the lensing properties of an projection from a spherical
+    cored-truncated NFW profile using Shajib (2019)'s Gauss decomposition method."""
     param_names = ['r_s', 'r_core', 'r_trunc', 'a', 'rho_s', 'center_x' 
                    'center_y']
     lower_limit_default = {'r_s': 0, 'r_core': 0, 'r_trunc': 0, 'a': 0.,
@@ -614,9 +577,8 @@ class CTNFWGaussDec(GaussDecompositionAbstract3D):
 
     def __init__(self, n_sigma=15, sigma_start_mult=0.01, sigma_end_mult=20.,
                  precision=10, use_scipy_wofz=True):
-        """
-        Set up settings for the Gaussian decomposition. For more details about
-        the decomposition parameters, see Shajib (2019).
+        """Set up settings for the Gaussian decomposition. For more details about the
+        decomposition parameters, see Shajib (2019).
 
         :param n_sigma: Number of Gaussian components
         :type n_sigma: ``int``
@@ -634,8 +596,7 @@ class CTNFWGaussDec(GaussDecompositionAbstract3D):
                                             use_scipy_wofz=use_scipy_wofz)
 
     def get_kappa_1d(self, y, **kwargs):
-        r"""
-        Compute the spherical cored-truncated NFW profile at y.
+        r"""Compute the spherical cored-truncated NFW profile at y.
 
         :param y: y coordinate
         :type y: ``float``
@@ -671,8 +632,7 @@ class CTNFWGaussDec(GaussDecompositionAbstract3D):
                 1./a) / (1. + x)**2
 
     def get_scale(self, **kwargs):
-        """
-        Identify the scale size from the keyword arguments.
+        """Identify the scale size from the keyword arguments.
 
         :param kwargs: Keyword arguments
 

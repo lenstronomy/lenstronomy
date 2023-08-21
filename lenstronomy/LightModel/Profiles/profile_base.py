@@ -3,9 +3,7 @@ __all__ = ['LightProfileBase']
 
 
 class LightProfileBase(object):
-    """
-    base class of all light profiles
-    """
+    """Base class of all light profiles."""
     def __init__(self):
         pass
 

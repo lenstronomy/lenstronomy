@@ -6,9 +6,7 @@ __all__ = ['PointSourceRendering']
 
 
 class PointSourceRendering(object):
-    """
-    numerics to compute the point source response on an image
-    """
+    """Numerics to compute the point source response on an image."""
     def __init__(self, pixel_grid, supersampling_factor, psf):
         """
 

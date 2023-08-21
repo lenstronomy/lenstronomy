@@ -9,9 +9,7 @@ import numpy.testing as npt
 import pytest
 
 class TestFlexionfg(object):
-    """
-    tests the Gaussian methods
-    """
+    """Tests the Gaussian methods."""
     def setup_method(self):
         self.flex = Flexionfg()
         F1, F2, G1, G2= 0.02, 0.03, -0.04, -0.05

@@ -7,12 +7,12 @@ __all__ = ['GalkinMultiObservation']
 
 
 class GalkinMultiObservation(GalkinModel):
-    """
-    class to efficiently model the velocity dispersion measurement of a set of different observations
-    with individual apertures and seeing conditions for a given lens
+    """Class to efficiently model the velocity dispersion measurement of a set of
+    different observations with individual apertures and seeing conditions for a given
+    lens.
 
-    The main difference to the Galkin main class is that it feeds in list of observational settings.
-    Does not work with IFU observations (yet)
+    The main difference to the Galkin main class is that it feeds in list of
+    observational settings. Does not work with IFU observations (yet)
     """
     def __init__(self, kwargs_model, kwargs_aperture_list, kwargs_psf_list, kwargs_cosmo, kwargs_numerics=None,
                  analytic_kinematics=False):
@@ -36,14 +36,15 @@ class GalkinMultiObservation(GalkinModel):
                                                             kwargs_psf=kwargs_psf_list[i]))
 
     def dispersion_map(self, kwargs_mass, kwargs_light, kwargs_anisotropy, num_kin_sampling=1000, num_psf_sampling=100):
-        """
-        computes the velocity dispersion in each Integral Field Unit
+        """Computes the velocity dispersion in each Integral Field Unit.
 
         :param kwargs_mass: keyword arguments of the mass model
         :param kwargs_light: keyword argument of the light model
         :param kwargs_anisotropy: anisotropy keyword arguments
-        :param num_kin_sampling: int, number of draws from a kinematic prediction of a LOS
-        :param num_psf_sampling: int, number of displacements/render from a spectra to be displaced on the IFU
+        :param num_kin_sampling: int, number of draws from a kinematic prediction of a
+            LOS
+        :param num_psf_sampling: int, number of displacements/render from a spectra to
+            be displaced on the IFU
         :return: ordered array of velocity dispersions [km/s] for each observation
         """
         # draw from light profile (3d and 2d option)

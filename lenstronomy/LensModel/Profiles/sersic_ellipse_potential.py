@@ -23,9 +23,7 @@ class SersicEllipse(LensProfileBase):
         super(SersicEllipse, self).__init__()
 
     def function(self, x, y, n_sersic, R_sersic, k_eff, e1, e2, center_x=0, center_y=0):
-        """
-        returns Gaussian
-        """
+        """Returns Gaussian."""
         # phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         x_, y_ = param_util.transform_e1e2_square_average(x, y, e1, e2, center_x, center_y)
         # x_, y_ = self._coord_transf(x, y, q, phi_G, center_x, center_y)
@@ -33,9 +31,7 @@ class SersicEllipse(LensProfileBase):
         return f_
 
     def derivatives(self, x, y, n_sersic, R_sersic, k_eff, e1, e2, center_x=0, center_y=0):
-        """
-        returns df/dx and df/dy of the function
-        """
+        """Returns df/dx and df/dy of the function."""
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         e = param_util.q2e(q)
         # e = abs(1. - q)
@@ -51,9 +47,8 @@ class SersicEllipse(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, n_sersic, R_sersic, k_eff, e1, e2, center_x=0, center_y=0):
-        """
-        returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
-        """
+        """Returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx,
+        d^f/dy^2."""
         alpha_ra, alpha_dec = self.derivatives(x, y, n_sersic, R_sersic, k_eff, e1, e2, center_x, center_y)
         diff = self._diff
         alpha_ra_dx, alpha_dec_dx = self.derivatives(x + diff, y, n_sersic, R_sersic, k_eff, e1, e2, center_x, center_y)

@@ -6,17 +6,14 @@ from lenstronomy.Sampling.param_group import ModelParamGroup, SingleParam, Array
 
 
 class SourcePositionParam(SingleParam):
-    """
-    Source position parameter, ra_source and dec_source
-    """
+    """Source position parameter, ra_source and dec_source."""
     param_names = ['ra_source', 'dec_source']
     _kwargs_lower = {'ra_source': -100, 'dec_source': -100}
     _kwargs_upper = {'ra_source': 100, 'dec_source': 100}
 
 
 class LensedPosition(ArrayParam):
-    """
-    Represents lensed positions, possibly many. ra_image and dec_image
+    """Represents lensed positions, possibly many. ra_image and dec_image.
 
     :param num_images: integer. The number of lensed positions to model.
     """
@@ -29,20 +26,18 @@ class LensedPosition(ArrayParam):
 
 
 class SourceAmp(SingleParam):
-    """
-    Source amplification
-    """
+    """Source amplification."""
     param_names = ['source_amp']
     _kwargs_lower = {'source_amp': 0}
     _kwargs_upper = {'source_amp': 100}
 
 
 class ImageAmp(ArrayParam):
-    """
-    Observed amplification of lensed images of a point source. Can model
-    arbitrarily many magnified images
+    """Observed amplification of lensed images of a point source. Can model arbitrarily
+    many magnified images.
 
-    :param num_point_sources: integer. The number of lensed images without fixed magnification.
+    :param num_point_sources: integer. The number of lensed images without fixed
+        magnification.
     """
     _kwargs_lower = {'point_amp': 0}
     _kwargs_upper = {'point_amp': 100}
@@ -53,9 +48,7 @@ class ImageAmp(ArrayParam):
 
 
 class PointSourceParam(object):
-    """
-    Point source parameters
-    """
+    """Point source parameters."""
 
     def __init__(self, model_list, kwargs_fixed, num_point_source_list=None, linear_solver=True,
                  fixed_magnification_list=None, kwargs_lower=None, kwargs_upper=None):
@@ -149,8 +142,7 @@ class PointSourceParam(object):
         return args
 
     def num_param(self):
-        """
-        number of parameters and their names
+        """Number of parameters and their names.
 
         :return: int, list of parameter names
         """
@@ -164,8 +156,7 @@ class PointSourceParam(object):
         return num, name_list
 
     def add_fix_linear(self, kwargs_fixed):
-        """
-        updates fixed keyword argument list with linear parameters
+        """Updates fixed keyword argument list with linear parameters.
 
         :param kwargs_fixed: list of keyword arguments held fixed during sampling
         :return: updated keyword argument list

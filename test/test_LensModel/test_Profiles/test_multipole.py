@@ -9,9 +9,7 @@ import numpy.testing as npt
 
 
 class TestMultipole(object):
-    """
-    tests the Gaussian methods
-    """
+    """Tests the Gaussian methods."""
     def setup_method(self):
         self.Multipole = Multipole()
 

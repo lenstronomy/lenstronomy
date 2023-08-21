@@ -7,9 +7,7 @@ import numpy as np
 
 
 class TestInterpol(object):
-    """
-    class to test Shapelets
-    """
+    """Class to test Shapelets."""
     def setup_method(self):
         pass
 

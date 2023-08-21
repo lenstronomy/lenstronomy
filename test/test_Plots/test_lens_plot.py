@@ -11,9 +11,7 @@ import matplotlib.pyplot as plt
 
 
 class TestLensPlot(object):
-    """
-    test the fitting sequences
-    """
+    """Test the fitting sequences."""
     def setup_method(self):
         pass
 

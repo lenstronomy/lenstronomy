@@ -1,6 +1,4 @@
 __author__ = 'sibirrer'
-
-
 """
 this class contains physical constants and conversion factors between units
 """
@@ -32,10 +30,10 @@ F_ES = G * M_sun * M_earth / AU**2
 
 
 def delay_arcsec2days(delay_arcsec, ddt):
-    """
-    given a delay in arcsec^2 and a Delay distance, the delay is computed in days
+    """Given a delay in arcsec^2 and a Delay distance, the delay is computed in days.
 
-    :param delay_arcsec: gravitational delay in units of arcsec^2 (e.g. Fermat potential)
+    :param delay_arcsec: gravitational delay in units of arcsec^2 (e.g. Fermat
+        potential)
     :param ddt: Time delay distance (in units of Mpc)
     :return: time-delay in units of days
     """

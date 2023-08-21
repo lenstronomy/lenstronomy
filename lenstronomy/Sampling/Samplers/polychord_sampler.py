@@ -13,9 +13,8 @@ __all__ = ['DyPolyChordSampler']
 
 
 class DyPolyChordSampler(NestedSampler):
-    """
-    Wrapper for dynamical nested sampling algorithm DyPolyChord
-    by E. Higson, M. Hobson, W. Handley, A. Lasenby
+    """Wrapper for dynamical nested sampling algorithm DyPolyChord by E. Higson, M.
+    Hobson, W. Handley, A. Lasenby.
 
     papers : arXiv:1704.03459, arXiv:1804.06406
     doc : https://dypolychord.readthedocs.io
@@ -88,8 +87,7 @@ class DyPolyChordSampler(NestedSampler):
         self._has_warned = False
 
     def run(self, dynamic_goal, kwargs_run):
-        """
-        run the DyPolyChord dynamical nested sampler
+        """Run the DyPolyChord dynamical nested sampler.
 
         see https://dypolychord.readthedocs.io for content of kwargs_run
 
@@ -146,8 +144,7 @@ class DyPolyChordSampler(NestedSampler):
             sys.exit(0)
 
     def log_likelihood(self, args):
-        """
-        compute the log-likelihood given list of parameters
+        """Compute the log-likelihood given list of parameters.
 
         :param args: parameter values
         :return: log-likelihood (from the likelihood module)
@@ -155,10 +152,8 @@ class DyPolyChordSampler(NestedSampler):
         return super().log_likelihood(args), []
 
     def _get_equal_weight_samples(self):
-        """
-        Inspired by pymultinest's Analyzer,
-        because DyPolyChord has more or less the same output conventions as MultiNest
-        """
+        """Inspired by pymultinest's Analyzer, because DyPolyChord has more or less the
+        same output conventions as MultiNest."""
         file_name = '{}_equal_weights.txt'.format(self._output_basename)
         file_path = os.path.join(self._output_dir, file_name)
         data = np.loadtxt(file_path, ndmin=2)

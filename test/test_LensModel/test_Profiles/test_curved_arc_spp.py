@@ -9,9 +9,7 @@ from lenstronomy.LensModel.lens_model import LensModel
 
 
 class TestCurvedArc(object):
-    """
-    tests the source model routines
-    """
+    """Tests the source model routines."""
     def setup_method(self):
         self.model = CurvedArcSPP()
         self.spp = SPP()

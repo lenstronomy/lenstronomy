@@ -10,9 +10,7 @@ from lenstronomy.Util import util
 
 
 class TestChameleon(object):
-    """
-    class to test the Moffat profile
-    """
+    """Class to test the Moffat profile."""
     def setup_method(self):
         pass
 
@@ -43,10 +41,8 @@ class TestChameleon(object):
         npt.assert_almost_equal(flux, flux1 - flux2, decimal=5)
 
     def test_lens_model_correspondence(self):
-        """
-        here we test the proportionality of the convergence of the lens model with the surface brightness of the light
-        model
-        """
+        """Here we test the proportionality of the convergence of the lens model with
+        the surface brightness of the light model."""
         chameleon_lens = ChameleonLens()
         chameleon = Chameleon()
 
@@ -66,9 +62,7 @@ class TestChameleon(object):
 
 
 class TestDoubleChameleon(object):
-    """
-    class to test the Moffat profile
-    """
+    """Class to test the Moffat profile."""
     def setup_method(self):
         pass
 
@@ -100,9 +94,7 @@ class TestDoubleChameleon(object):
 
 
 class TestTripleChameleon(object):
-    """
-    class to test the Moffat profile
-    """
+    """Class to test the Moffat profile."""
     def setup_method(self):
         pass
 

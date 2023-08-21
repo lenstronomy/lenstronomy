@@ -17,12 +17,10 @@ __all__ = ['FittingSequence']
 
 
 class FittingSequence(object):
-    """
-    class to define a sequence of fitting applied, inherit the Fitting class
-    this is a Workflow manager that allows to update model configurations before executing another step in the modelling
-    The user can take this module as an example of how to create their own workflows or build their own around the
-    FittingSequence
-    """
+    """Class to define a sequence of fitting applied, inherit the Fitting class this is
+    a Workflow manager that allows to update model configurations before executing
+    another step in the modelling The user can take this module as an example of how to
+    create their own workflows or build their own around the FittingSequence."""
     def __init__(self, kwargs_data_joint, kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params, mpi=False,
                  verbose=True):
         """
@@ -57,8 +55,7 @@ class FittingSequence(object):
 
     @property
     def kwargs_fixed(self):
-        """
-        Returns the updated kwargs_fixed from the update manager.
+        """Returns the updated kwargs_fixed from the update manager.
 
         :return: list of fixed kwargs, see UpdateManager()
         """
@@ -175,8 +172,7 @@ class FittingSequence(object):
         return self._updateManager.best_fit(bijective=bijective)
 
     def update_state(self, kwargs_update):
-        """
-        updates current best fit state to the input model keywords specified.
+        """Updates current best fit state to the input model keywords specified.
 
         :param kwargs_update: format of kwargs_result
         :return: None
@@ -185,8 +181,8 @@ class FittingSequence(object):
 
     @property
     def best_fit_likelihood(self):
-        """
-        returns the log likelihood of the best fit model of the current state of this class
+        """Returns the log likelihood of the best fit model of the current state of this
+        class.
 
         :return: log likelihood, float
         """
@@ -198,8 +194,7 @@ class FittingSequence(object):
 
     @property
     def bic(self):
-        """
-        Bayesian information criterion (BIC) of the model.
+        """Bayesian information criterion (BIC) of the model.
 
         :return: bic value, float
         """
@@ -230,11 +225,11 @@ class FittingSequence(object):
         return likelihoodModule
 
     def simplex(self, n_iterations, method='Nelder-Mead'):
-        """
-        Downhill simplex optimization using the Nelder-Mead algorithm.
+        """Downhill simplex optimization using the Nelder-Mead algorithm.
 
         :param n_iterations: maximum number of iterations to perform
-        :param method: the optimization method used, see documentation in scipy.optimize.minimize
+        :param method: the optimization method used, see documentation in
+            scipy.optimize.minimize
         :return: result of the best fit
         """
 
@@ -250,8 +245,7 @@ class FittingSequence(object):
     def mcmc(self, n_burn, n_run, walkerRatio=None, n_walkers=None, sigma_scale=1, threadCount=1, init_samples=None,
              re_use_samples=True, sampler_type='EMCEE', progress=True, backend_filename=None, start_from_backend=False,
              **kwargs_zeus):
-        """
-        MCMC routine
+        """MCMC routine.
 
         :param n_burn: number of burn in iterations (will not be saved)
         :param n_run: number of MCMC iterations that are saved
@@ -318,16 +312,17 @@ class FittingSequence(object):
         return output
 
     def pso(self, n_particles, n_iterations, sigma_scale=1, print_key='PSO', threadCount=1):
-        """
-        Particle Swarm Optimization
+        """Particle Swarm Optimization.
 
         :param n_particles: number of particles in the Particle Swarm Optimization
         :param n_iterations: number of iterations in the optimization process
-        :param sigma_scale: scaling of the initial parameter spread relative to the width in the initial settings
+        :param sigma_scale: scaling of the initial parameter spread relative to the
+            width in the initial settings
         :param print_key: string, printed text when executing this routine
         :param threadCount: number of CPU threads. If MPI option is set, threadCount=1
-        :return: result of the best fit, the PSO chain of the best fit parameter after each iteration
-         [lnlikelihood, parameters, velocities], list of parameters in same order as in chain
+        :return: result of the best fit, the PSO chain of the best fit parameter after
+            each iteration [lnlikelihood, parameters, velocities], list of parameters in
+            same order as in chain
         """
 
         param_class = self.param_class
@@ -354,22 +349,43 @@ class FittingSequence(object):
                         dypolychord_seed_increment=200,
                         output_dir="nested_sampling_chains",
                         dynesty_bound='multi', dynesty_sample='auto'):
-        """
-        Run (Dynamic) Nested Sampling algorithms, depending on the type of algorithm.
+        """Run (Dynamic) Nested Sampling algorithms, depending on the type of algorithm.
 
+        :param sampler_type: 'MULTINEST', 'DYPOLYCHORD', 'DYNESTY' :param kwargs_run:
+        keywords passed to the core sampling method :param prior_type: 'uniform' of
+        'gaussian', for converting the unit hypercube to param cube :param width_scale:
+        scale the width (lower/upper limits) of the parameters space by this factor
+        :param sigma_scale: if prior_type is 'gaussian', scale the gaussian sigma by
+        this factor :param output_basename: name of the folder in which the core
+        MultiNest/PolyChord code will save output files :param remove_output_dir: if
+        True, the above folder is removed after completion :param
+        dypolychord_dynamic_goal: dynamic goal for DyPolyChord (trade-off between
+        evidence (0) and posterior (1) computation) :param polychord_settings: settings
+        dictionary to send to pypolychord. Check dypolychord documentation for details.
+        :param dypolychord_seed_increment: seed increment for dypolychord with MPI.
+        Check dypolychord documentation for details. :param dynesty_bound: see
+        https://dynesty.readthedocs.io
         :param sampler_type: 'MULTINEST', 'DYPOLYCHORD', 'DYNESTY'
         :param kwargs_run: keywords passed to the core sampling method
-        :param prior_type: 'uniform' of 'gaussian', for converting the unit hypercube to param cube
-        :param width_scale: scale the width (lower/upper limits) of the parameters space by this factor
-        :param sigma_scale: if prior_type is 'gaussian', scale the gaussian sigma by this factor
-        :param output_basename: name of the folder in which the core MultiNest/PolyChord code will save output files
+        :param prior_type: 'uniform' of 'gaussian', for converting the unit hypercube to
+            param cube
+        :param width_scale: scale the width (lower/upper limits) of the parameters space
+            by this factor
+        :param sigma_scale: if prior_type is 'gaussian', scale the gaussian sigma by
+            this factor
+        :param output_basename: name of the folder in which the core MultiNest/PolyChord
+            code will save output files
         :param remove_output_dir: if True, the above folder is removed after completion
-        :param dypolychord_dynamic_goal: dynamic goal for DyPolyChord (trade-off between evidence (0) and posterior (1) computation)
-        :param polychord_settings: settings dictionary to send to pypolychord. Check dypolychord documentation for details.
-        :param dypolychord_seed_increment: seed increment for dypolychord with MPI. Check dypolychord documentation for details.
+        :param dypolychord_dynamic_goal: dynamic goal for DyPolyChord (trade-off between
+            evidence (0) and posterior (1) computation)
+        :param polychord_settings: settings dictionary to send to pypolychord. Check
+            dypolychord documentation for details.
+        :param dypolychord_seed_increment: seed increment for dypolychord with MPI.
+            Check dypolychord documentation for details.
         :param dynesty_bound: see https://dynesty.readthedocs.io for details
         :param dynesty_sample: see https://dynesty.readthedocs.io for details
-        :return: list of output arguments : samples, mean inferred values, log-likelihood, log-evidence, error on log-evidence for each sample
+        :return: list of output arguments : samples, mean inferred values, log-
+            likelihood, log-evidence, error on log-evidence for each sample
         """
         mean_start, sigma_start = self._prepare_sampling(prior_type)
 
@@ -427,11 +443,12 @@ class FittingSequence(object):
         return output
 
     def psf_iteration(self, compute_bands=None, **kwargs_psf_iter):
-        """
-        iterative PSF reconstruction
+        """Iterative PSF reconstruction.
 
-        :param compute_bands: bool list, if multiple bands, this process can be limited to a subset of bands
-        :param kwargs_psf_iter: keyword arguments as used or available in PSFIteration.update_iterative() definition
+        :param compute_bands: bool list, if multiple bands, this process can be limited
+            to a subset of bands
+        :param kwargs_psf_iter: keyword arguments as used or available in
+            PSFIteration.update_iterative() definition
         :return: 0, updated PSF is stored in self.multi_band_list
         """
         kwargs_model = self._updateManager.kwargs_model
@@ -455,9 +472,9 @@ class FittingSequence(object):
 
     def align_images(self, n_particles=10, n_iterations=10, align_offset=True, align_rotation=False, threadCount=1,
                      compute_bands=None, delta_shift=0.2, delta_rot=0.1):
-        """
-        aligns the coordinate systems of different exposures within a fixed model parameterisation by executing a PSO
-        with relative coordinate shifts as free parameters
+        """Aligns the coordinate systems of different exposures within a fixed model
+        parameterisation by executing a PSO with relative coordinate shifts as free
+        parameters.
 
         :param n_particles: number of particles in the Particle Swarm Optimization
         :param n_iterations: number of iterations in the optimization process
@@ -467,8 +484,9 @@ class FittingSequence(object):
         :type align_rotation: boolean
         :param delta_shift: astrometric shift tolerance
         :param delta_rot: rotation angle tolerance [in radian]
-        :param compute_bands: bool list, if multiple bands, this process can be limited to a subset of bands for which
-         the coordinate system is being fit for best alignment to the model parameters
+        :param compute_bands: bool list, if multiple bands, this process can be limited
+            to a subset of bands for which the coordinate system is being fit for best
+            alignment to the model parameters
         :return: 0, updated coordinate system for the band(s)
         """
         kwargs_model = self._updateManager.kwargs_model
@@ -498,9 +516,8 @@ class FittingSequence(object):
 
     def flux_calibration(self, n_particles=10, n_iterations=10, threadCount=1, calibrate_bands=None,
                          scaling_lower_limit=0, scaling_upper_limit=1000):
-        """
-        calibrates flux_scaling between multiple images. This routine only works in 'join-linear' model when fluxes
-        are meant to be identical for different bands
+        """Calibrates flux_scaling between multiple images. This routine only works in
+        'join-linear' model when fluxes are meant to be identical for different bands.
 
         :param n_particles: number of particles in the Particle Swarm Optimization
         :param n_iterations: number of iterations in the optimization process
@@ -535,8 +552,7 @@ class FittingSequence(object):
                         change_source_lower_limit=None, change_source_upper_limit=None,
                         change_lens_lower_limit=None, change_lens_upper_limit=None,
                         change_sigma_lens=None, change_sigma_source=None, change_sigma_lens_light=None):
-        """
-        updates lenstronomy settings "on the fly"
+        """Updates lenstronomy settings "on the fly".
 
         :param kwargs_model: kwargs, specified keyword arguments overwrite the existing ones
         :param kwargs_constraints: kwargs, specified keyword arguments overwrite the existing ones
@@ -571,8 +587,7 @@ class FittingSequence(object):
         return 0
 
     def set_param_value(self, **kwargs):
-        """
-        Set a parameter to a specific value. `kwargs` are below.
+        """Set a parameter to a specific value. `kwargs` are below.
 
         :param lens: [[i_model, ['param1', 'param2',...], [...]]
         :type lens:
@@ -588,11 +603,12 @@ class FittingSequence(object):
         self._updateManager.update_param_value(**kwargs)
 
     def fix_not_computed(self, free_bands):
-        """
-        fixes lens model parameters of imaging bands/frames that are not computed and frees the parameters of the other
-        lens models to the initial kwargs_fixed options
+        """Fixes lens model parameters of imaging bands/frames that are not computed and
+        frees the parameters of the other lens models to the initial kwargs_fixed
+        options.
 
-        :param free_bands: bool list of length of imaging bands in order of imaging bands, if False: set fixed lens model
+        :param free_bands: bool list of length of imaging bands in order of imaging
+            bands, if False: set fixed lens model
         :return: None
         """
         self._updateManager.fix_not_computed(free_bands=free_bands)
@@ -626,8 +642,7 @@ class FittingSequence(object):
         return self.best_fit_from_samples(samples, logL_values)
 
     def best_fit_from_samples(self, samples, logl):
-        """
-        return best fit (max likelihood) value of samples in lenstronomy conventions
+        """Return best fit (max likelihood) value of samples in lenstronomy conventions.
 
         :param samples: samples of multi-dimensional parameter space
         :param logl: likelihood values for each sample

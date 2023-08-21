@@ -8,9 +8,8 @@ __all__ = ['SinglePlaneLOS']
 
 
 class SinglePlaneLOS(SinglePlane):
-    """
-    This class is based on the 'SinglePlane' class, modified to include
-    line-of-sight effects as presented by Fleury et al. in 2104.08883.
+    """This class is based on the 'SinglePlane' class, modified to include line-of-sight
+    effects as presented by Fleury et al. in 2104.08883.
 
     Are modified:
     - init (to include a new attribute, self.los)
@@ -61,13 +60,13 @@ class SinglePlaneLOS(SinglePlane):
                                       kwargs_synthesis=kwargs_synthesis)
 
     def split_lens_los(self, kwargs):
-        """
-        This function splits the list of key-word arguments given to the lens
-        model into those that correspond to the lens itself (kwargs_main), and
-        those that correspond to the line-of-sight corrections (kwargs_los).
+        """This function splits the list of key-word arguments given to the lens model
+        into those that correspond to the lens itself (kwargs_main), and those that
+        correspond to the line-of-sight corrections (kwargs_los).
 
         :param kwargs: the list of key-word arguments passed to lenstronomy
-        :return: a list of kwargs corresponding to the lens and a list of kwargs corresponding to the LOS effects
+        :return: a list of kwargs corresponding to the lens and a list of kwargs
+            corresponding to the LOS effects
         """
 
         kwargs_los = copy.deepcopy(kwargs[self._index_los])
@@ -89,14 +88,14 @@ class SinglePlaneLOS(SinglePlane):
         return kwargs_main, kwargs_los
 
     def fermat_potential(self, x_image, y_image, kwargs_lens, x_source=None, y_source=None, k=None):
-        """
-        Calculates the Fermat Potential with LOS corrections in the tidal regime
+        """Calculates the Fermat Potential with LOS corrections in the tidal regime.
 
         :param x_image: image position
         :param y_image: image position
         :param x_source: source position
         :param y_source: source position
-        :param kwargs_lens: list of keyword arguments of lens model parameters matching the lens model classes
+        :param kwargs_lens: list of keyword arguments of lens model parameters matching
+            the lens model classes
         :return: fermat potential in arcsec**2 as a list
         """
 
@@ -156,15 +155,14 @@ class SinglePlaneLOS(SinglePlane):
         return geometry - effective_potential
 
     def alpha(self, x, y, kwargs, k=None):
-        """
-        Displacement angle including the line-of-sight corrections
+        """Displacement angle including the line-of-sight corrections.
 
         :param x: x-position (preferentially arcsec)
         :type x: numpy array
         :param y: y-position (preferentially arcsec)
         :type y: numpy array
-        :param kwargs: list of keyword arguments of lens model parameters
-         matching the lens model classes, including line-of-sight corrections
+        :param kwargs: list of keyword arguments of lens model parameters matching the
+            lens model classes, including line-of-sight corrections
         :param k: only evaluate the k-th lens model
         :return: deflection angles in units of arcsec
         """
@@ -202,14 +200,14 @@ class SinglePlaneLOS(SinglePlane):
         return f_x, f_y
 
     def hessian(self, x, y, kwargs, k=None):
-        """
-        Hessian matrix
+        """Hessian matrix.
 
         :param x: x-position (preferentially arcsec)
         :type x: numpy array
         :param y: y-position (preferentially arcsec)
         :type y: numpy array
-        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
+        :param kwargs: list of keyword arguments of lens model parameters matching the
+            lens model classes
         :param k: only evaluate the k-th lens model
         :return: f_xx, f_xy, f_yx, f_yy components
         """
@@ -251,11 +249,11 @@ class SinglePlaneLOS(SinglePlane):
         return f_xx, f_xy, f_yx, f_yy
 
     def mass_3d(self, r, kwargs, bool_list=None):
-        """
-        Computes the mass within a 3d sphere of radius r *for the main lens only*
+        """Computes the mass within a 3d sphere of radius r *for the main lens only*
 
         :param r: radius (in angular units)
-        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
+        :param kwargs: list of keyword arguments of lens model parameters matching the
+            lens model classes
         :param bool_list: list of bools that are part of the output
         :return: mass (in angular units, modulo epsilon_crit)
         """
@@ -268,8 +266,7 @@ class SinglePlaneLOS(SinglePlane):
         return mass_3d
 
     def mass_2d(self, r, kwargs, bool_list=None):
-        """
-        Computes the mass enclosed a projected (2d) radius r *for the main lens only*
+        """Computes the mass enclosed a projected (2d) radius r *for the main lens only*
 
         The mass definition is such that:
 
@@ -292,12 +289,12 @@ class SinglePlaneLOS(SinglePlane):
         return mass_2d
 
     def density(self, r, kwargs, bool_list=None):
-        """
-        3d mass density at radius r *for the main lens only*
-        The integral in the LOS projection of this quantity results in the convergence quantity.
+        """3d mass density at radius r *for the main lens only* The integral in the LOS
+        projection of this quantity results in the convergence quantity.
 
         :param r: radius (in angular units)
-        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
+        :param kwargs: list of keyword arguments of lens model parameters matching the
+            lens model classes
         :param bool_list: list of bools that are part of the output
         :return: mass density at radius r (in angular units, modulo epsilon_crit)
         """
@@ -310,16 +307,16 @@ class SinglePlaneLOS(SinglePlane):
         return density
 
     def potential(self, x, y, kwargs, k=None):
-        """
-        Lensing potential *of the main lens only*
-        In the presence of LOS corrections, the system generally does not admit
-        a potential, in the sense that the curl of alpha is generally non-zero
+        """Lensing potential *of the main lens only* In the presence of LOS corrections,
+        the system generally does not admit a potential, in the sense that the curl of
+        alpha is generally non-zero.
 
         :param x: x-position (preferentially arcsec)
         :type x: numpy array
         :param y: y-position (preferentially arcsec)
         :type y: numpy array
-        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
+        :param kwargs: list of keyword arguments of lens model parameters matching the
+            lens model classes
         :param k: only evaluate the k-th lens model
         :return: lensing potential in units of arcsec^2
         """

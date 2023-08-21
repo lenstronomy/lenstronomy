@@ -16,9 +16,7 @@ from lenstronomy.Data.psf import PSF
 
 
 class TestFittingSequence(object):
-    """
-    test the fitting sequences
-    """
+    """Test the fitting sequences."""
 
     def setup_method(self):
 

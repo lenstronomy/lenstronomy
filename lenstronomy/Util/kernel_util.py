@@ -1,6 +1,4 @@
-"""
-routines that manipulate convolution kernels
-"""
+"""Routines that manipulate convolution kernels."""
 import numpy as np
 import copy
 from scipy import ndimage
@@ -17,19 +15,24 @@ export, __all__ = exporter()
 
 @export
 def de_shift_kernel(kernel, shift_x, shift_y, iterations=20, fractional_step_size=1):
-    """
-    de-shifts a shifted kernel to the center of a pixel. This is performed iteratively.
+    """De-shifts a shifted kernel to the center of a pixel. This is performed
+    iteratively.
 
-    The input kernel is the solution of a linear interpolated shift of a sharper kernel centered in the middle of the
-    pixel. To find the de-shifted kernel, we perform an iterative correction of proposed de-shifted kernels and compare
-    its shifted version with the input kernel.
+    The input kernel is the solution of a linear interpolated shift of a sharper kernel
+    centered in the middle of the pixel. To find the de-shifted kernel, we perform an
+    iterative correction of proposed de-shifted kernels and compare its shifted version
+    with the input kernel.
 
-    :param kernel: (shifted) kernel, e.g. a star in an image that is not centered in the pixel grid
+    :param kernel: (shifted) kernel, e.g. a star in an image that is not centered in the
+        pixel grid
     :param shift_x: x-offset relative to the center of the pixel (sub-pixel shift)
     :param shift_y: y-offset relative to the center of the pixel (sub-pixel shift)
-    :param iterations: number of repeated iterations of shifting a new de-shifted kernel and apply corrections
-    :param fractional_step_size: float (0, 1] correction factor relative to previous proposal (can be used for stability
-    :return: de-shifted kernel such that the interpolated shift boy (shift_x, shift_y) results in the input kernel
+    :param iterations: number of repeated iterations of shifting a new de-shifted kernel
+        and apply corrections
+    :param fractional_step_size: float (0, 1] correction factor relative to previous
+        proposal (can be used for stability
+    :return: de-shifted kernel such that the interpolated shift boy (shift_x, shift_y)
+        results in the input kernel
     """
     nx, ny = np.shape(kernel)
     kernel_new = np.zeros((nx+2, ny+2)) + (kernel[0, 0] + kernel[0, -1] + kernel[-1, 0] + kernel[-1, -1]) / 4.
@@ -52,9 +55,9 @@ def de_shift_kernel(kernel, shift_x, shift_y, iterations=20, fractional_step_siz
 
 @export
 def center_kernel(kernel, iterations=20):
-    """
-    given a kernel that might not be perfectly centered, this routine computes its light weighted center and then
-    moves the center in an iterative process such that it is centered
+    """Given a kernel that might not be perfectly centered, this routine computes its
+    light weighted center and then moves the center in an iterative process such that it
+    is centered.
 
     :param kernel: 2d array (odd numbers)
     :param iterations: int, number of iterations
@@ -88,9 +91,8 @@ def kernel_norm(kernel):
 
 @export
 def subgrid_kernel(kernel, subgrid_res, odd=False, num_iter=100):
-    """
-    creates a higher resolution kernel with subgrid resolution as an interpolation of the original kernel in an
-    iterative approach
+    """Creates a higher resolution kernel with subgrid resolution as an interpolation of
+    the original kernel in an iterative approach.
 
     :param kernel: initial kernel
     :type kernel: 2d numpy array with square odd size
@@ -155,8 +157,7 @@ def subgrid_kernel(kernel, subgrid_res, odd=False, num_iter=100):
 
 @export
 def kernel_pixelsize_change(kernel, deltaPix_in, deltaPix_out):
-    """
-    change the pixel size of a given kernel
+    """Change the pixel size of a given kernel.
 
     :param kernel:
     :param deltaPix_in:
@@ -176,8 +177,7 @@ def kernel_pixelsize_change(kernel, deltaPix_in, deltaPix_out):
 
 @export
 def cut_psf(psf_data, psf_size, normalisation=True):
-    """
-    cut the psf properly
+    """Cut the psf properly.
 
     :param psf_data: image of PSF
     :param psf_size: size of psf
@@ -191,8 +191,8 @@ def cut_psf(psf_data, psf_size, normalisation=True):
 
 @export
 def pixel_kernel(point_source_kernel, subgrid_res=7):
-    """
-    converts a pixelised kernel of a point source to a kernel representing a uniform extended pixel
+    """Converts a pixelised kernel of a point source to a kernel representing a uniform
+    extended pixel.
 
     :param point_source_kernel:
     :param subgrid_res:
@@ -212,8 +212,8 @@ def pixel_kernel(point_source_kernel, subgrid_res=7):
 
 @export
 def kernel_average_pixel(kernel_super, supersampling_factor):
-    """
-    computes the effective convolution kernel assuming a uniform surface brightness on the scale of a pixel
+    """Computes the effective convolution kernel assuming a uniform surface brightness
+    on the scale of a pixel.
 
     :param kernel_super: supersampled PSF of a point source (odd number per axis
     :param supersampling_factor: supersampling factor (int)
@@ -243,8 +243,7 @@ def kernel_average_pixel(kernel_super, supersampling_factor):
 
 @export
 def kernel_gaussian(num_pix, delta_pix, fwhm):
-    """
-    Gaussian kernel
+    """Gaussian kernel.
 
     :param num_pix: number of pixels
     :param delta_pix: pixel scale
@@ -263,8 +262,7 @@ def kernel_gaussian(num_pix, delta_pix, fwhm):
 
 
 def kernel_moffat(num_pix, delta_pix, fwhm, moffat_beta):
-    """
-    Moffat kernel
+    """Moffat kernel.
 
     :param delta_pix: pixel scale of kernel
     :param num_pix: number of pixels per axis of the kernel
@@ -282,14 +280,14 @@ def kernel_moffat(num_pix, delta_pix, fwhm, moffat_beta):
 
 @export
 def split_kernel(kernel_super, supersampling_kernel_size, supersampling_factor, normalized=True):
-    """
-    pixel kernel and subsampling kernel such that the convolution of both applied on an image can be
-    performed, i.e. smaller subsampling PSF and hole in larger PSF
+    """Pixel kernel and subsampling kernel such that the convolution of both applied on
+    an image can be performed, i.e. smaller subsampling PSF and hole in larger PSF.
 
     :param kernel_super: super-sampled kernel
-    :param supersampling_kernel_size: size of super-sampled PSF in units of degraded pixels
-    :param normalized: boolean, if True returns a split kernel that is area normalized=1 representing a convolution
-     kernel
+    :param supersampling_kernel_size: size of super-sampled PSF in units of degraded
+        pixels
+    :param normalized: boolean, if True returns a split kernel that is area normalized=1
+        representing a convolution kernel
     :return: degraded kernel with hole and super-sampled kernel
     """
     if supersampling_factor <= 1:
@@ -341,9 +339,7 @@ def degrade_kernel(kernel_super, degrading_factor):
 
 
 def averaging_odd_kernel(kernel_super, degrading_factor):
-    """
-
-    """
+    """"""
     n_kernel = len(kernel_super)
     numPix = int(round(n_kernel / degrading_factor + 0.5))
     if numPix % 2 == 0:
@@ -359,11 +355,11 @@ def averaging_odd_kernel(kernel_super, degrading_factor):
 
 @export
 def averaging_even_kernel(kernel_high_res, subgrid_res):
-    """
-    makes a lower resolution kernel based on the kernel_high_res (odd numbers) and the subgrid_res (even number), both
-    meant to be centered.
+    """Makes a lower resolution kernel based on the kernel_high_res (odd numbers) and
+    the subgrid_res (even number), both meant to be centered.
 
-    :param kernel_high_res: high resolution kernel with even subsampling resolution, centered
+    :param kernel_high_res: high resolution kernel with even subsampling resolution,
+        centered
     :param subgrid_res: subsampling resolution (even number)
     :return: averaged undersampling kernel
     """
@@ -406,8 +402,8 @@ def averaging_even_kernel(kernel_high_res, subgrid_res):
 
 @export
 def cutout_source(x_pos, y_pos, image, kernelsize, shift=True):
-    """
-    cuts out point source (e.g. PSF estimate) out of image and shift it to the center of a pixel
+    """Cuts out point source (e.g. PSF estimate) out of image and shift it to the center
+    of a pixel.
 
     :param x_pos:
     :param y_pos:
@@ -470,8 +466,7 @@ def fwhm_kernel(kernel):
 
 @export
 def estimate_amp(data, x_pos, y_pos, psf_kernel):
-    """
-    estimates the amplitude of a point source located at x_pos, y_pos
+    """Estimates the amplitude of a point source located at x_pos, y_pos.
 
     :param data:
     :param x_pos:
@@ -496,8 +491,7 @@ def estimate_amp(data, x_pos, y_pos, psf_kernel):
 
 @export
 def mge_kernel(kernel, order=5):
-    """
-    azimutal Multi-Gaussian expansion of a pixelized kernel
+    """Azimutal Multi-Gaussian expansion of a pixelized kernel.
 
     :param kernel: 2d numpy array
     :return:
@@ -515,13 +509,13 @@ def mge_kernel(kernel, order=5):
 
 @export
 def match_kernel_size(image, size):
-    """
-    matching kernel/image to a dedicated size by either expanding the image with zeros at the edges or chopping of the
-    edges.
+    """Matching kernel/image to a dedicated size by either expanding the image with
+    zeros at the edges or chopping of the edges.
 
     :param image: 2d array (square with odd number of pixels)
     :param size: integer (odd number)
-    :return: image with matched size, either by cutting or by adding zeros in the outskirts
+    :return: image with matched size, either by cutting or by adding zeros in the
+        outskirts
     """
     n = len(image)
     if n == size:

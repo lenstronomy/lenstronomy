@@ -9,9 +9,7 @@ export, __all__ = exporter()
 
 @export
 class SkewGaussian(object):
-    """
-    class for the Skew Gaussian distribution
-    """
+    """Class for the Skew Gaussian distribution."""
     def pdf(self, x, e=0., w=1., a=0.):
         """
         probability density function
@@ -27,8 +25,7 @@ class SkewGaussian(object):
         return 2. / w * stats.norm.pdf(t) * stats.norm.cdf(a*t)
 
     def pdf_skew(self, x, mu, sigma, skw):
-        """
-        function with different parameterisation
+        """Function with different parameterisation.
 
         :param x:
         :param mu: mean
@@ -61,8 +58,7 @@ class SkewGaussian(object):
         return delta/np.sqrt(1-delta**2)
 
     def _w_sigma_delta(self, sigma, delta):
-        """
-        invert variance
+        """Invert variance.
 
         :param sigma:
         :param delta:
@@ -85,8 +81,7 @@ class SkewGaussian(object):
         return e
 
     def map_mu_sigma_skw(self, mu, sigma, skw):
-        """
-        map to parameters e, w, a
+        """Map to parameters e, w, a.
 
         :param mu: mean
         :param sigma: standard deviation
@@ -102,9 +97,7 @@ class SkewGaussian(object):
 
 @export
 class KDE1D(object):
-    """
-    class that allows to compute likelihoods based on a 1-d posterior sample
-    """
+    """Class that allows to compute likelihoods based on a 1-d posterior sample."""
     def __init__(self, values):
         """
 
@@ -126,9 +119,8 @@ class KDE1D(object):
 
 @export
 def compute_lower_upper_errors(sample, num_sigma=1):
-    """
-    computes the upper and lower sigma from the median value.
-    This functions gives good error estimates for skewed pdf's
+    """Computes the upper and lower sigma from the median value. This functions gives
+    good error estimates for skewed pdf's.
 
     :param sample: 1-D sample
     :param num_sigma: integer, number of sigmas to be returned

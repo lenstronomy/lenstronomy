@@ -9,16 +9,14 @@ __all__ = ['Interpol']
 
 
 class Interpol(object):
-    """
-    class which uses an interpolation of an image to compute the surface brightness
+    """Class which uses an interpolation of an image to compute the surface brightness.
 
-    parameters are
-    'image': 2d numpy array of surface brightness per square arc second (not integrated flux per pixel!)
-    'center_x': coordinate of center of image in angular units (i.e. arc seconds)
-    'center_y': coordinate of center of image in angular units (i.e. arc seconds)
-    'phi_G': rotation of image relative to the rectangular ra-to-dec orientation
-    'scale': arcseconds per pixel of the image to be interpolated
-
+    parameters are 'image': 2d numpy array of surface brightness per square arc second
+    (not integrated flux per pixel!) 'center_x': coordinate of center of image in
+    angular units (i.e. arc seconds) 'center_y': coordinate of center of image in
+    angular units (i.e. arc seconds) 'phi_G': rotation of image relative to the
+    rectangular ra-to-dec orientation 'scale': arcseconds per pixel of the image to be
+    interpolated
     """
     param_names = ['image', 'amp', 'center_x', 'center_y', 'phi_G', 'scale']
     lower_limit_default = {'amp': 0, 'center_x': -1000, 'center_y': -1000, 'scale': 0.000000001, 'phi_G': -np.pi}
@@ -64,14 +62,14 @@ class Interpol(object):
 
     @staticmethod
     def total_flux(image, scale, amp=1, center_x=0, center_y=0, phi_G=0):
-        """
-        sums up all the image surface brightness (image pixels defined in surface brightness at the coordinate of the
-         pixel) times pixel area
+        """Sums up all the image surface brightness (image pixels defined in surface
+        brightness at the coordinate of the pixel) times pixel area.
 
-        :param image: pixelized surface brightness used to interpolate in units of surface brightness
-         (flux per square arc seconds, not flux per pixel!)
+        :param image: pixelized surface brightness used to interpolate in units of
+            surface brightness (flux per square arc seconds, not flux per pixel!)
         :param scale: scale of the pixel in units of angle
-        :param amp: linear scaling parameter of the surface brightness multiplicative with the initial image
+        :param amp: linear scaling parameter of the surface brightness multiplicative
+            with the initial image
         :param center_x: center of image in angular coordinates
         :param center_y: center of image in angular coordinates
         :param phi_G: rotation angle
@@ -99,6 +97,6 @@ class Interpol(object):
         return x, y
 
     def delete_cache(self):
-        """delete the cached interpolated image"""
+        """Delete the cached interpolated image."""
         if hasattr(self, '_image_interp'):
             del self._image_interp

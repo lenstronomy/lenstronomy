@@ -8,9 +8,7 @@ import numpy.testing as npt
 import pytest
 
 class TestDipole(object):
-    """
-    tests the Gaussian methods
-    """
+    """Tests the Gaussian methods."""
     def setup_method(self):
         self.dipole = Dipole()
         self.dipole_util = DipoleUtil()

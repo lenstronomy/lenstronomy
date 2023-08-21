@@ -8,12 +8,9 @@ export, __all__ = exporter()
 
 @export
 class Coordinates(object):
-    """
-    class to handle linear coordinate transformations of a square pixel image
-    """
+    """Class to handle linear coordinate transformations of a square pixel image."""
     def __init__(self, transform_pix2angle, ra_at_xy_0, dec_at_xy_0):
-        """
-        initialize the coordinate-to-pixel transform and their inverse
+        """Initialize the coordinate-to-pixel transform and their inverse.
 
         :param transform_pix2angle: 2x2 matrix, mapping of pixel to coordinate
         :param ra_at_xy_0: ra coordinate at pixel (0,0)
@@ -59,8 +56,8 @@ class Coordinates(object):
         return self._ra_at_xy_0, self._dec_at_xy_0
 
     def map_coord2pix(self, ra, dec):
-        """
-        maps the (ra,dec) coordinates of the system into the pixel coordinate of the image
+        """Maps the (ra,dec) coordinates of the system into the pixel coordinate of the
+        image.
 
         :param ra: relative RA coordinate as defined by the coordinate frame
         :param dec: relative DEC coordinate as defined by the coordinate frame
@@ -70,19 +67,19 @@ class Coordinates(object):
         return util.map_coord2pix(ra, dec, self._x_at_radec_0, self._y_at_radec_0, self._Ma2pix)
 
     def map_pix2coord(self, x, y):
-        """
-        maps the (x,y) pixel coordinates of the image into the system coordinates
+        """Maps the (x,y) pixel coordinates of the image into the system coordinates.
 
-        :param x: pixel coordinate (can be 1d numpy array), defined in the center of the pixel
-        :param y: pixel coordinate (can be 1d numpy array), defined in the center of the pixel
+        :param x: pixel coordinate (can be 1d numpy array), defined in the center of the
+            pixel
+        :param y: pixel coordinate (can be 1d numpy array), defined in the center of the
+            pixel
         :return: relative (RA, DEC) coordinates of the system
         """
         return util.map_coord2pix(x, y, self._ra_at_xy_0, self._dec_at_xy_0, self._Mpix2a)
 
     @property
     def pixel_area(self):
-        """
-        angular area of a pixel in the image
+        """Angular area of a pixel in the image.
 
         :return: area [arcsec^2]
         """
@@ -90,8 +87,7 @@ class Coordinates(object):
 
     @property
     def pixel_width(self):
-        """
-        size of pixel
+        """Size of pixel.
 
         :return: sqrt(pixel_area)
         """
@@ -111,8 +107,7 @@ class Coordinates(object):
         return ra_coords, dec_coords
 
     def shift_coordinate_system(self, x_shift, y_shift, pixel_unit=False):
-        """
-        shifts the coordinate system
+        """Shifts the coordinate system.
 
         :param x_shift: shift in x (or RA)
         :param y_shift: shift in y (or DEC)
@@ -122,9 +117,7 @@ class Coordinates(object):
         self._shift_coordinates(x_shift, y_shift, pixel_unit)
 
     def _shift_coordinates(self, x_shift, y_shift, pixel_unit=False):
-        """
-
-        shifts the coordinate system
+        """Shifts the coordinate system.
 
         :param x_shift: shift in x (or RA)
         :param y_shift: shift in y (or DEC)
@@ -146,9 +139,7 @@ class Coordinates(object):
 
 @export
 class Coordinates1D(Coordinates):
-    """
-    coordinate grid described in 1-d arrays
-    """
+    """Coordinate grid described in 1-d arrays."""
     def coordinate_grid(self, nx, ny):
         """
 

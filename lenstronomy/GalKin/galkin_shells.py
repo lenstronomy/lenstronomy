@@ -6,9 +6,7 @@ from scipy import signal
 
 
 class GalkinShells(Galkin):
-    """
-    class to calculate velocity dispersion for radial shells in a fast way
-    """
+    """Class to calculate velocity dispersion for radial shells in a fast way."""
 
     def __init__(self, kwargs_model, kwargs_aperture, kwargs_psf, kwargs_cosmo, kwargs_numerics=None,
                  analytic_kinematics=False):

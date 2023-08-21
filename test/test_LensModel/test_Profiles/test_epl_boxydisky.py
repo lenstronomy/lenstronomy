@@ -7,9 +7,7 @@ import lenstronomy.Util.param_util as param_util
 from lenstronomy.Util import util
 
 class TestEPL_BOXYDISKY(object):
-    """
-    Test EPL_BOXYDISKY vs EPL + MULTIPOLE values.
-    """
+    """Test EPL_BOXYDISKY vs EPL + MULTIPOLE values."""
     def setup(self):
         from lenstronomy.LensModel.Profiles.epl import EPL
         self.epl = EPL()

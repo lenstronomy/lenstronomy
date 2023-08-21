@@ -5,9 +5,7 @@ from lenstronomy.GalKin import velocity_util
 
 
 class TestVelocityUtil(object):
-    """
-
-    """
+    """"""
 
     def setup_method(self):
         pass

@@ -7,11 +7,9 @@ __all__ = ['NumericsSubFrame']
 
 
 class NumericsSubFrame(PointSourceRendering):
-    """
-    This class finds the optimal rectangular sub-frame of a data to be modelled that contains all the
-    flux_evaluate_indexes and performs the numerical calculations only in this frame and then patches zeros around it
-    to match the full data size.
-    """
+    """This class finds the optimal rectangular sub-frame of a data to be modelled that
+    contains all the flux_evaluate_indexes and performs the numerical calculations only
+    in this frame and then patches zeros around it to match the full data size."""
     def __init__(self, pixel_grid, psf, supersampling_factor=1, compute_mode='regular', supersampling_convolution=False,
                  supersampling_kernel_size=5, flux_evaluate_indexes=None, supersampled_indexes=None,
                  compute_indexes=None, point_source_supersampling_factor=1, convolution_kernel_size=None,
@@ -113,10 +111,7 @@ class NumericsSubFrame(PointSourceRendering):
         return image
 
     def _init_sub_frame(self, flux_evaluate_indexes):
-        """
-        smaller frame that encloses all the idex_mask
-        :return:
-        """
+        """Smaller frame that encloses all the idex_mask :return:"""
         if flux_evaluate_indexes is None:
             self._subframe_calc = False
             self._x_min_sub, self._y_min_sub = 0, 0
@@ -140,8 +135,7 @@ class NumericsSubFrame(PointSourceRendering):
             return image
 
     def _sub_pixel_grid(self, pixel_grid):
-        """
-        creates a PixelGrid instance covering the sub-frame area only
+        """Creates a PixelGrid instance covering the sub-frame area only.
 
         :param pixel_grid: PixelGrid instance of the full image
         :return: PixelGrid instance

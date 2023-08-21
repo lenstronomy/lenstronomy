@@ -5,9 +5,7 @@ __all__ = ['FluxRatioLikelihood']
 
 
 class FluxRatioLikelihood(object):
-    """
-    likelihood class for magnification of multiply lensed images
-    """
+    """Likelihood class for magnification of multiply lensed images."""
 
     def __init__(self, lens_model_class, flux_ratios, flux_ratio_errors,
                  source_type='INF', window_size=0.1, grid_number=100, polar_grid=False, aspect_ratio=0.5):

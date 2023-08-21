@@ -8,10 +8,7 @@ class TestGOM(object):
         np.random.seed(2)
 
     def test_OMvsGOM(self):
-        """
-        test OsivkopMerrit vs generalized OM model
-        :return:
-        """
+        """Test OsivkopMerrit vs generalized OM model :return:"""
         light_profile_list = ['HERNQUIST']
         r_eff = 1.5
         kwargs_light = [{'Rs':  r_eff, 'amp': 1.}]  # effective half light radius (2d projected) in arcsec

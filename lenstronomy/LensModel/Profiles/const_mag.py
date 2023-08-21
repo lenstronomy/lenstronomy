@@ -7,8 +7,9 @@ __all__ = ['ConstMag']
 
 
 class ConstMag(LensProfileBase):
-    """
-    this class implements the macromodel potential of `Diego et al. <https://www.aanda.org/articles/aa/pdf/2019/07/aa35490-19.pdf>`_
+    """This class implements the macromodel potential of `Diego et al.
+
+    <https://www.aanda.org/articles/aa/pdf/2019/07/aa35490-19.pdf>`_
     Convergence and shear are computed according to `Diego2018 <arXiv:1706.10281v2>`_
     """
     

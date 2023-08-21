@@ -10,10 +10,8 @@ export, __all__ = exporter()
 
 @export
 class Chameleon(LensProfileBase):
-    """
-    class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile
-
-    """
+    """Class of the Chameleon model (See Suyu+2014) an elliptical truncated double
+    isothermal profile."""
     param_names = ['alpha_1', 'w_c', 'w_t', 'e1', 'e2', 'center_x', 'center_y']
     lower_limit_default = {'alpha_1': 0, 'w_c': 0, 'w_t': 0, 'e1': -0.8, 'e2': -0.8, 'center_x': -100, 'center_y': -100}
     upper_limit_default = {'alpha_1': 100, 'w_c': 100, 'w_t': 100, 'e1': 0.8, 'e2': 0.8, 'center_x': 100, 'center_y': 100}
@@ -90,8 +88,7 @@ class Chameleon(LensProfileBase):
         return f_xx, f_xy, f_yx, f_yy
 
     def density_lens(self, r, alpha_1, w_c, w_t, e1=0, e2=0, center_x=0, center_y=0):
-        """
-        spherical average density as a function of 3d radius
+        """Spherical average density as a function of 3d radius.
 
         :param r: 3d radius
         :param alpha_1: deflection angle at 1 (arcseconds) from the center
@@ -110,8 +107,7 @@ class Chameleon(LensProfileBase):
         return f_
 
     def mass_3d_lens(self, r, alpha_1, w_c, w_t, e1=0, e2=0, center_x=0, center_y=0):
-        """
-        mass enclosed 3d radius
+        """Mass enclosed 3d radius.
 
         :param r: 3d radius
         :param alpha_1: deflection angle at 1 (arcseconds) from the center
@@ -130,9 +126,8 @@ class Chameleon(LensProfileBase):
         return m_
 
     def param_convert(self, alpha_1, w_c, w_t, e1, e2):
-        """
-        convert the parameter alpha_1 (deflection angle one arcsecond from the center) into the
-        "Einstein radius" scale parameter of the two NIE profiles
+        """Convert the parameter alpha_1 (deflection angle one arcsecond from the
+        center) into the "Einstein radius" scale parameter of the two NIE profiles.
 
         :param alpha_1: deflection angle at 1 (arcseconds) from the center
         :param w_c: see Suyu+2014
@@ -199,10 +194,8 @@ class Chameleon(LensProfileBase):
 
 @export
 class DoubleChameleon(LensProfileBase):
-    """
-    class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile
-
-    """
+    """Class of the Chameleon model (See Suyu+2014) an elliptical truncated double
+    isothermal profile."""
     param_names = ['alpha_1', 'ratio', 'w_c1', 'w_t1', 'e11', 'e21', 'w_c2', 'w_t2', 'e12', 'e22', 'center_x', 'center_y']
     lower_limit_default = {'alpha_1': 0, 'ratio': 0, 'w_c1': 0, 'w_t1': 0, 'e11': -0.8, 'e21': -0.8,
                            'w_c2': 0, 'w_t2': 0, 'e12': -0.8, 'e22': -0.8,
@@ -338,10 +331,8 @@ class DoubleChameleon(LensProfileBase):
 
 @export
 class TripleChameleon(LensProfileBase):
-    """
-    class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile
-
-    """
+    """Class of the Chameleon model (See Suyu+2014) an elliptical truncated double
+    isothermal profile."""
     param_names = ['alpha_1', 'ratio12', 'ratio13', 'w_c1', 'w_t1', 'e11', 'e21', 'w_c2', 'w_t2', 'e12', 'e22', 'w_c3', 'w_t3', 'e13',
                    'e23', 'center_x', 'center_y']
     lower_limit_default = {'alpha_1': 0, 'ratio12': 0, 'ratio13': 0, 'w_c1': 0, 'w_t1': 0, 'e11': -0.8, 'e21': -0.8,
@@ -515,10 +506,8 @@ class TripleChameleon(LensProfileBase):
 
 @export
 class DoubleChameleonPointMass(LensProfileBase):
-    """
-    class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile
-
-    """
+    """Class of the Chameleon model (See Suyu+2014) an elliptical truncated double
+    isothermal profile."""
     param_names = ['alpha_1', 'ratio_chameleon', 'ratio_pointmass', 'w_c1', 'w_t1', 'e11', 'e21', 'w_c2', 'w_t2',
                    'e12', 'e22', 'center_x', 'center_y']
     lower_limit_default = {'alpha_1': 0, 'ratio_chameleon': 0, 'ratio_pointmass': 0, 'w_c1': 0, 'w_t1': 0, 'e11': -0.8,
@@ -535,14 +524,16 @@ class DoubleChameleonPointMass(LensProfileBase):
 
     def function(self, x, y, alpha_1, ratio_pointmass, ratio_chameleon, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22,
                  center_x=0, center_y=0):
-        """
-        #TODO chose better parameterization for combining point mass and Chameleon profiles
+        """#TODO chose better parameterization for combining point mass and Chameleon
+        profiles
 
         :param x: ra-coordinate
         :param y: dec-coordinate
         :param alpha_1: deflection angle at 1 (arcseconds) from the center
-        :param ratio_pointmass: ratio of point source Einstein radius to combined Chameleon deflection angle at r=1
-        :param ratio_chameleon: ratio in deflection angles at r=1 for the two Chameleon profiles
+        :param ratio_pointmass: ratio of point source Einstein radius to combined
+            Chameleon deflection angle at r=1
+        :param ratio_chameleon: ratio in deflection angles at r=1 for the two Chameleon
+            profiles
         :param w_c1: Suyu+2014 for first profile
         :param w_t1: Suyu+2014 for first profile
         :param e11: ellipticity parameter for first profile

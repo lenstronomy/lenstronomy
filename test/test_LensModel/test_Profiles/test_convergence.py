@@ -9,9 +9,7 @@ import pytest
 
 
 class TestConvergence(object):
-    """
-    tests the Gaussian methods
-    """
+    """Tests the Gaussian methods."""
     def setup_method(self):
         self.profile = Convergence()
         self.kwargs_lens = {'kappa': 0.1}

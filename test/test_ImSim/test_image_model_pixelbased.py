@@ -23,9 +23,7 @@ _force_no_pysap = True  # if issues on Travis-CI to install pysap, force use pyt
 
 
 class TestImageModel(object):
-    """
-    tests the source model routines
-    """
+    """Tests the source model routines."""
     def setup_method(self):
         # data specifics
         sigma_bkg = .05  # background noise per pixel

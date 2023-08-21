@@ -10,13 +10,10 @@ __all__ = ['AlignmentFitting', 'AlignmentLikelihood']
 
 
 class AlignmentFitting(object):
-    """
-    class which executes the different sampling  methods
-    """
+    """Class which executes the different sampling  methods."""
     def __init__(self, multi_band_list, kwargs_model, kwargs_params, band_index=0, likelihood_mask_list=None,
                  align_offset=True, align_rotation=False):
-        """
-        initialise the classes of the chain and for parameter options
+        """Initialise the classes of the chain and for parameter options.
 
         :param align_offset: aligns shift in Ra and Dec
         :type align_offset: boolean
@@ -28,8 +25,8 @@ class AlignmentFitting(object):
 
     def pso(self, n_particles=10, n_iterations=10, delta_shift=0.2, delta_rot=0.1, threadCount=1, mpi=False,
             print_key='default'):
-        """
-        returns the best fit for the lens model on catalogue basis with particle swarm optimizer
+        """Returns the best fit for the lens model on catalogue basis with particle
+        swarm optimizer.
 
         :param n_particles:
         :param n_iterations:
@@ -70,8 +67,7 @@ class AlignmentLikelihood(object):
 
     def __init__(self, multi_band_list, kwargs_model, kwargs_params, band_index=0, likelihood_mask_list=None,
                  align_offset=True, align_rotation=False):
-        """
-        initializes all the classes needed for the chain
+        """Initializes all the classes needed for the chain.
 
         :param align_offset: aligns shift in Ra and Dec
         :type align_offset: boolean
@@ -92,9 +88,7 @@ class AlignmentLikelihood(object):
         self._kwargs_params = kwargs_params
 
     def _likelihood(self, args):
-        """
-        routine to compute X2 given variable parameters for a MCMC/PSO chainF
-        """
+        """Routine to compute X2 given variable parameters for a MCMC/PSO chainF."""
         # generate image and computes likelihood
         multi_band_list = self.update_multi_band(args)
         image_model = SingleBandMultiModel(multi_band_list, self._kwargs_model,

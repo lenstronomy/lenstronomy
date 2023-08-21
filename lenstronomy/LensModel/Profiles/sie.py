@@ -5,8 +5,7 @@ __all__ = ['SIE']
 
 
 class SIE(LensProfileBase):
-    """
-    class for singular isothermal ellipsoid (SIS with ellipticity)
+    """Class for singular isothermal ellipsoid (SIS with ellipticity)
 
     .. math::
         \\kappa(x, y) = \\frac{1}{2} \\left(\\frac{\\theta_{E}}{\\sqrt{q x^2 + y^2/q}} \\right)
@@ -29,7 +28,6 @@ class SIE(LensProfileBase):
 
     .. math::
         \\left(\\frac{\\theta'_{\\rm E}}{\\theta_{\\rm E}}\\right)^{2} = \\frac{2q}{1+q^2}.
-
     """
     param_names = ['theta_E', 'e1', 'e2', 'center_x', 'center_y']
     lower_limit_default = {'theta_E': 0, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}
@@ -104,8 +102,8 @@ class SIE(LensProfileBase):
 
     @staticmethod
     def theta2rho(theta_E):
-        """
-        converts projected density parameter (in units of deflection) into 3d density parameter
+        """Converts projected density parameter (in units of deflection) into 3d density
+        parameter.
 
         :param theta_E:
         :return:
@@ -116,8 +114,7 @@ class SIE(LensProfileBase):
 
     @staticmethod
     def mass_3d(r, rho0, e1=0, e2=0):
-        """
-        mass enclosed a 3d sphere or radius r
+        """Mass enclosed a 3d sphere or radius r.
 
         :param r: radius in angular units
         :param rho0: density at angle=1
@@ -127,8 +124,8 @@ class SIE(LensProfileBase):
         return mass_3d
 
     def mass_3d_lens(self, r, theta_E, e1=0, e2=0):
-        """
-        mass enclosed a 3d sphere or radius r given a lens parameterization with angular units
+        """Mass enclosed a 3d sphere or radius r given a lens parameterization with
+        angular units.
 
         :param r: radius in angular units
         :param theta_E: Einstein radius
@@ -138,8 +135,7 @@ class SIE(LensProfileBase):
         return self.mass_3d(r, rho0)
 
     def mass_2d(self, r, rho0, e1=0, e2=0):
-        """
-        mass enclosed projected 2d sphere of radius r
+        """Mass enclosed projected 2d sphere of radius r.
 
         :param r:
         :param rho0:
@@ -164,8 +160,7 @@ class SIE(LensProfileBase):
         return self.mass_2d(r, rho0)
 
     def grav_pot(self, x, y, rho0, e1=0, e2=0, center_x=0, center_y=0):
-        """
-        gravitational potential (modulo 4 pi G and rho0 in appropriate units)
+        """Gravitational potential (modulo 4 pi G and rho0 in appropriate units)
 
         :param x:
         :param y:
@@ -184,9 +179,9 @@ class SIE(LensProfileBase):
         return pot
 
     def density_lens(self, r, theta_E, e1=0, e2=0):
-        """
-        computes the density at 3d radius r given lens model parameterization.
-        The integral in the LOS projection of this quantity results in the convergence quantity.
+        """Computes the density at 3d radius r given lens model parameterization. The
+        integral in the LOS projection of this quantity results in the convergence
+        quantity.
 
         :param r: radius in angles
         :param theta_E: Einstein radius
@@ -199,8 +194,7 @@ class SIE(LensProfileBase):
 
     @staticmethod
     def density(r, rho0, e1=0, e2=0):
-        """
-        computes the density
+        """Computes the density.
 
         :param r: radius in angles
         :param rho0: density at angle=1
@@ -211,8 +205,7 @@ class SIE(LensProfileBase):
 
     @staticmethod
     def density_2d(x, y, rho0, e1=0, e2=0, center_x=0, center_y=0):
-        """
-        projected density
+        """Projected density.
 
         :param x:
         :param y:

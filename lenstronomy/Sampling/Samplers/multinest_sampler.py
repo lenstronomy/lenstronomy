@@ -18,7 +18,7 @@ class MultiNestSampler(NestedSampler):
     pymultinest doc : https://johannesbuchner.github.io/PyMultiNest/pymultinest.html
     """
 
-    def __init__(self, likelihood_module, prior_type='uniform', 
+    def __init__(self, likelihood_module, prior_type='uniform',
                  prior_means=None, prior_sigmas=None, width_scale=1, sigma_scale=1,
                  output_dir=None, output_basename='-',
                  remove_output_dir=False, use_mpi=False):
@@ -35,7 +35,7 @@ class MultiNestSampler(NestedSampler):
         :param use_mpi: flag directly passed to MultInest sampler (NOT TESTED)
         """
         self._check_install()
-        super(MultiNestSampler, self).__init__(likelihood_module, prior_type, 
+        super(MultiNestSampler, self).__init__(likelihood_module, prior_type,
                                                prior_means, prior_sigmas,
                                                width_scale, sigma_scale)
 
@@ -72,42 +72,6 @@ class MultiNestSampler(NestedSampler):
                 json.dump(self.param_names, file, indent=2)
 
         self._rm_output = remove_output_dir
-        self._has_warned = False
-
-    def prior(self, cube, ndim, nparams):
-        """
-        compute the mapping between the unit cube and parameter cube (in-place)
-
-        :param cube: unit hypercube, sampled by the algorithm
-        :param ndim: number of sampled parameters
-        :param nparams: total number of parameters
-        """
-        cube_py = self._multinest2python(cube, ndim)
-        if self.prior_type == 'gaussian':
-            utils.cube2args_gaussian(cube_py, self.lowers, self.uppers, 
-                                     self.means, self.sigmas, self.n_dims)
-        elif self.prior_type == 'uniform':
-            utils.cube2args_uniform(cube_py, self.lowers, self.uppers, self.n_dims)
-        for i in range(self.n_dims):
-            cube[i] = cube_py[i]
-
-    def log_likelihood(self, args, ndim, nparams):
-        """
-        compute the log-likelihood given list of parameters
-
-        :param args: parameter values
-        :param ndim: number of sampled parameters
-        :param nparams: total number of parameters
-        :return: log-likelihood (from the likelihood module)
-        """
-        args_py = self._multinest2python(args, ndim)
-        logL = self._ll(args_py)
-        if not np.isfinite(logL):
-            if not self._has_warned:
-                print("WARNING : logL is not finite : return very low value instead")
-            logL = -1e15
-            self._has_warned = True
-        return float(logL)
 
     def run(self, kwargs_run):
         """
@@ -120,14 +84,15 @@ class MultiNestSampler(NestedSampler):
         """
         print("prior type :", self.prior_type)
         print("parameter names :", self.param_names)
-        
+
         if self._pymultinest_installed:
             self._pymultinest.run(self.log_likelihood, self.prior, self.n_dims,
                                   outputfiles_basename=self.files_basename,
                                   resume=False, verbose=True,
                                   init_MPI=self._use_mpi, **kwargs_run)
 
-            analyzer = self._Analyzer(self.n_dims, outputfiles_basename=self.files_basename)
+            analyzer = self._Analyzer(
+                self.n_dims, outputfiles_basename=self.files_basename)
             samples = analyzer.get_equal_weighted_posterior()[:, :-1]
             data = analyzer.get_data()  # gets data from the *.txt output file
             stats = analyzer.get_stats()
@@ -145,7 +110,8 @@ class MultiNestSampler(NestedSampler):
         logL = -0.5 * data[:, 1]  # since the second data column is -2*logL
         logZ = stats['global evidence']
         logZ_err = stats['global evidence error']
-        means = stats['modes'][0]['mean']  # or better to use stats['marginals'][:]['median'] ???
+        # or better to use stats['marginals'][:]['median'] ???
+        means = stats['modes'][0]['mean']
 
         print("MultiNest output files have been saved to {}*"
               .format(self.files_basename))
@@ -153,15 +119,8 @@ class MultiNestSampler(NestedSampler):
         if self._rm_output and self._is_master:
             shutil.rmtree(self._output_dir, ignore_errors=True)
             print("MultiNest output directory removed")
-            
-        return samples, means, logZ, logZ_err, logL, stats
 
-    def _multinest2python(self, multinest_list, num_dims):
-        """convert ctypes list to standard python list"""
-        python_list = []
-        for i in range(num_dims):
-            python_list.append(multinest_list[i])
-        return python_list
+        return samples, means, logZ, logZ_err, logL, stats
 
     def _check_install(self):
         try:

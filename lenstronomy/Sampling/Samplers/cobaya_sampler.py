@@ -12,14 +12,11 @@ class CobayaSampler(object):
 
         If you use this sampler, you must cite the following works:
 
-        Lewis & Bridle,
-        https://arxiv.org/abs/astro-ph/0205436
+        Lewis & Bridle, https://arxiv.org/abs/astro-ph/0205436
 
         Lewis, https://arxiv.org/abs/1304.4473
 
-        Torrado & Lewis,
-        https://arxiv.org/abs/2005.05290
-        and https://ascl.net/1910.019
+        Torrado & Lewis, https://arxiv.org/abs/2005.05290 and https://ascl.net/1910.019
 
         For more information about Cobaya, see
         https://cobaya.readthedocs.io/en/latest/index.html

@@ -1,7 +1,5 @@
 __author__ = "sibirrer"
-"""
-Tests for `prob_density` module.
-"""
+"""Tests for `prob_density` module."""
 
 from lenstronomy.Util.prob_density import SkewGaussian, KDE1D
 import lenstronomy.Util.prob_density as prob_density

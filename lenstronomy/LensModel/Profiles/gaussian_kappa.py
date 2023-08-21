@@ -44,8 +44,12 @@ class GaussianKappa(LensProfileBase):
 
     @staticmethod
     def _num_integral(r, c):
-        """Numerical integral (1-e^{-c*x^2})/x dx [0..r] :param r: radius :param c:
-        1/2sigma^2 :return:"""
+        """Numerical integral (1-e^{-c*x^2})/x dx [0..r]
+
+        :param r: radius
+        :param c: 1/2sigma^2
+        :return:
+        """
         out = integrate.quad(lambda x: (1 - np.exp(-c * x**2)) / x, 0, r)
         return out[0]
 
@@ -133,8 +137,9 @@ class GaussianKappa(LensProfileBase):
         return self.mass_2d(R, amp_density, sigma)
 
     def alpha_abs(self, R, amp, sigma):
-        """Absolute value of the deflection :param R:
+        """Absolute value of the deflection
 
+        :param R:
         :param amp:
         :param sigma:
         :return:
@@ -194,8 +199,9 @@ class GaussianKappa(LensProfileBase):
 
     @staticmethod
     def _amp3d_to_2d(amp, sigma_x, sigma_y):
-        """Converts 3d density into 2d density parameter :param amp:
+        """Converts 3d density into 2d density parameter
 
+        :param amp:
         :param sigma_x:
         :param sigma_y:
         :return:
@@ -204,8 +210,9 @@ class GaussianKappa(LensProfileBase):
 
     @staticmethod
     def _amp2d_to_3d(amp, sigma_x, sigma_y):
-        """Converts 3d density into 2d density parameter :param amp:
+        """Converts 3d density into 2d density parameter
 
+        :param amp:
         :param sigma_x:
         :param sigma_y:
         :return:

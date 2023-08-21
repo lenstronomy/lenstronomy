@@ -94,11 +94,15 @@ class CartShapelets(LensProfileBase):
         return shapelets
 
     def _shapeletOutput(self, x, y, beta, shapelets, precalc=True):
-        """Returns the the numerical values of a set of shapelets at polar coordinates
-        :param shapelets: set of shapelets [l=,r=,a_lr=] :type shapelets: array of size
-        (n,3) :param coordPolar: set of coordinates in polar units :type coordPolar:
-        array of size (n,2) :returns:  array of same size with coords [r,phi] :raises:
-        AttributeError, KeyError."""
+        """Returns the numerical values of a set of shapelets at polar coordinates.
+
+        :param shapelets: set of shapelets [l=,r=,a_lr=]
+        :type shapelets: array of size (n,3)
+        :param coordPolar: set of coordinates in polar units
+        :type coordPolar: array of size (n,2)
+        :returns:  array of same size with coords [r,phi]
+        :raises: AttributeError, KeyError
+        """
         n = len(np.atleast_1d(x))
         if n <= 1:
             values = 0.0

@@ -201,7 +201,9 @@ class SersicUtil(object):
 
     def _R_stable(self, R):
         """Floor R_ at self._smoothing for numerical stability :param R: radius :return:
-        smoothed and stabilized radius."""
+
+        smoothed and stabilized radius.
+        """
         return np.maximum(self._smoothing, R)
 
     def _r_sersic(

@@ -23,7 +23,8 @@ def auto_raytracing_grid_resolution(
     source_fwhm_parcsec, grid_resolution_scale=0.0002, ref=10.0, power=1.0
 ):
     """This function returns a resolution factor in units arcsec/pixel appropriate for
-    magnification computations with finite-size background sources. This fit is
+    magnification computations with finite-size background sources. This fit is.
+
     calibrated for source sizes (interpreted as the FWHM of a Gaussian) in the range 0.1
     -100 pc.
 

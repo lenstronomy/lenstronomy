@@ -45,7 +45,10 @@ class GaussianKappa(LensProfileBase):
     @staticmethod
     def _num_integral(r, c):
         """Numerical integral (1-e^{-c*x^2})/x dx [0..r] :param r: radius :param c:
-        1/2sigma^2 :return:"""
+
+        1/2sigma^2
+        :return:
+        """
         out = integrate.quad(lambda x: (1 - np.exp(-c * x**2)) / x, 0, r)
         return out[0]
 

@@ -14,8 +14,10 @@ class SinglePlane(ProfileListBase):
         (preferentially arcsec) :type x: numpy array :param y: y-position
         (preferentially arcsec) :type y: numpy array :param kwargs: list of keyword
         arguments of lens model parameters matching the lens model classes :param k:
-        only evaluate the k-th lens model :return: source plane positions corresponding
-        to (x, y) in the image plane."""
+
+        only evaluate the k-th lens model
+        :return: source plane positions corresponding to (x, y) in the image plane.
+        """
 
         dx, dy = self.alpha(x, y, kwargs, k=k)
         return x - dx, y - dy

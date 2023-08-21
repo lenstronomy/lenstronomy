@@ -55,12 +55,10 @@ F146_band_obs = {
     "magnitude_zero_point": 26.65,
     "seeing": 0.105,
 }
-"""
-:keyword sky_brightness: sky brightness (in magnitude per square arcseconds in units of electrons)
-:keyword magnitude_zero_point: magnitude in which 1 count (e-) per second per arcsecond square is registered
-:keyword seeing: Full-Width-at-Half-Maximum (FWHM) of PSF
-:keyword psf_type: string, type of PSF ('GAUSSIAN' supported)
-"""
+""":keyword sky_brightness: sky brightness (in magnitude per square arcseconds in units
+of electrons) :keyword magnitude_zero_point: magnitude in which 1 count (e-) per second
+per arcsecond square is registered :keyword seeing: Full-Width-at-Half-Maximum (FWHM) of
+PSF :keyword psf_type: string, type of PSF ('GAUSSIAN' supported)"""
 
 
 class Roman(object):

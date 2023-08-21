@@ -17,14 +17,12 @@ VIS_obs = {
     "seeing": 0.16,
     "psf_type": "GAUSSIAN",
 }
-"""
-:keyword exposure_time: exposure time per image (in seconds)
-:keyword sky_brightness: sky brightness (in magnitude per square arcseconds in units of electrons)
-:keyword magnitude_zero_point: magnitude in which 1 count (e-) per second per arcsecond square is registered
-:keyword num_exposures: number of exposures that are combined (depends on coadd_years)  
-:keyword seeing: Full-Width-at-Half-Maximum (FWHM) of PSF
-:keyword psf_type: string, type of PSF ('GAUSSIAN' supported) 
-"""
+""":keyword exposure_time: exposure time per image (in seconds) :keyword sky_brightness:
+sky brightness (in magnitude per square arcseconds in units of electrons) :keyword
+magnitude_zero_point: magnitude in which 1 count (e-) per second per arcsecond square is
+registered :keyword num_exposures: number of exposures that are combined (depends on
+coadd_years) :keyword seeing: Full-Width-at-Half-Maximum (FWHM) of PSF :keyword
+psf_type: string, type of PSF ('GAUSSIAN' supported)"""
 
 
 class Euclid(object):

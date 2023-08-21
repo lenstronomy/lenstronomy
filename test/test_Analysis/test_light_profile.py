@@ -262,15 +262,8 @@ class TestLightAnalysis(object):
         )
         flux_true = lightModel.surface_brightness(r_array, 0, kwargs_light)
         npt.assert_almost_equal(flux / flux_true, 1, decimal=2)
-        """
-        
-        import matplotlib.pyplot as plt
-        plt.loglog(r_array, flux, label='mge')
-        plt.loglog(r_array, flux_true, label='true')
-        plt.legend()
-        plt.show()
-        
-        """
+        """Import matplotlib.pyplot as plt plt.loglog(r_array, flux, label='mge')
+        plt.loglog(r_array, flux_true, label='true') plt.legend() plt.show()"""
 
     def test_multi_gaussian_decomposition_ellipse(self):
         Rs = 1.0

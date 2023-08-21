@@ -52,8 +52,11 @@ class Flexionfg(LensProfileBase):
         """Deflection angle :param x: x-coordinate :param y: y-coordinate :param F1: F1
         flexion, derivative of kappa in x direction :param F2: F2 flexion, derivative of
         kappa in y direction :param G1: G1 flexion :param G2: G2 flexion :param ra_0:
-        center x-coordinate :param dec_0: center x-coordinate :return: deflection
-        angle."""
+
+        center x-coordinate
+        :param dec_0: center x-coordinate
+        :return: deflection angle.
+        """
         _g1, _g2, _g3, _g4 = self.transform_fg(F1, F2, G1, G2)
         return self.flexion_cart.derivatives(x, y, _g1, _g2, _g3, _g4, ra_0, dec_0)
 
@@ -61,8 +64,11 @@ class Flexionfg(LensProfileBase):
         """Hessian matrix :param x: x-coordinate :param y: y-coordinate :param F1: F1
         flexion, derivative of kappa in x direction :param F2: F2 flexion, derivative of
         kappa in y direction :param G1: G1 flexion :param G2: G2 flexion :param ra_0:
-        center x-coordinate :param dec_0: center y-coordinate :return: second order
-        derivatives f_xx, f_yy, f_xy."""
+
+        center x-coordinate
+        :param dec_0: center y-coordinate
+        :return: second order derivatives f_xx, f_yy, f_xy.
+        """
         _g1, _g2, _g3, _g4 = self.transform_fg(F1, F2, G1, G2)
         return self.flexion_cart.hessian(x, y, _g1, _g2, _g3, _g4, ra_0, dec_0)
 

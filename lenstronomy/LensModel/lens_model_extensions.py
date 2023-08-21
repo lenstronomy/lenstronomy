@@ -258,10 +258,13 @@ class LensModelExtensions(object):
         """Returns the magnification of an extended source with Gaussian light profile
         :param x_pos: x-axis positons of point sources :param y_pos: y-axis position of
         point sources :param kwargs_lens: lens model kwargs :param source_sigma:
-        Gaussian sigma in arc sec in source :param window_size: size of window to
-        compute the finite flux :param grid_number: number of grid cells per axis in the
-        window to numerically compute the flux :return: numerically computed brightness
-        of the sources."""
+
+        Gaussian sigma in arc sec in source
+        :param window_size: size of window to compute the finite flux
+        :param grid_number: number of grid cells per axis in the window to numerically
+            compute the flux
+        :return: numerically computed brightness of the sources.
+        """
 
         mag_finite = np.zeros_like(x_pos)
         deltaPix = float(window_size) / grid_number

@@ -143,7 +143,10 @@ class Hernquist(LensProfileBase):
     @staticmethod
     def mass_tot(rho0, Rs):
         """Total mass within the profile :param rho0: density normalization :param Rs:
-        Hernquist radius :return: total mass within profile."""
+
+        Hernquist radius
+        :return: total mass within profile.
+        """
         m_tot = 2 * np.pi * rho0 * Rs**3
         return m_tot
 
@@ -237,15 +240,19 @@ class Hernquist(LensProfileBase):
     def rho2sigma(rho0, Rs):
         """Converts 3d density into 2d projected density parameter :param rho0: 3d
         density normalization of Hernquist model :param Rs: Hernquist radius :return:
-        sigma0 defined quantity in projected units."""
+
+        sigma0 defined quantity in projected units.
+        """
         return rho0 * Rs
 
     @staticmethod
     def sigma2rho(sigma0, Rs):
         """Converts projected density parameter (in units of deflection) into 3d density
         parameter :param sigma0: density defined quantity in projected units :param Rs:
-        Hernquist radius :return: rho0 the 3d density normalization of Hernquist
-        model."""
+
+        Hernquist radius
+        :return: rho0 the 3d density normalization of Hernquist model.
+        """
         return sigma0 / Rs
 
     def _F(self, X):

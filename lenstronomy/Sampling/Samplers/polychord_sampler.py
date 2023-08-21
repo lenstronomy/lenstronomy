@@ -1,4 +1,4 @@
-__author__ = 'aymgal'
+__author__ = 'aymgal, johannesulf'
 
 import os
 import shutil
@@ -21,12 +21,12 @@ class DyPolyChordSampler(NestedSampler):
     doc : https://dypolychord.readthedocs.io
     """
 
-    def __init__(self, likelihood_module, prior_type='uniform', 
+    def __init__(self, likelihood_module, prior_type='uniform',
                  prior_means=None, prior_sigmas=None, width_scale=1, sigma_scale=1,
                  output_dir=None, output_basename='-',
                  resume_dyn_run=False,
                  polychord_settings=None,
-                 remove_output_dir=False, use_mpi=False): #, num_mpi_procs=1):
+                 remove_output_dir=False, use_mpi=False):  # , num_mpi_procs=1):
         """
         :param likelihood_module: likelihood_module like in likelihood.py (should be callable)
         :param prior_type: 'uniform' of 'gaussian', for converting the unit hypercube to param cube
@@ -42,7 +42,7 @@ class DyPolyChordSampler(NestedSampler):
         :param use_mpi: Use MPI computing if `True`
         """
         self._check_install()
-        super(DyPolyChordSampler, self).__init__(likelihood_module, prior_type, 
+        super(DyPolyChordSampler, self).__init__(likelihood_module, prior_type,
                                                  prior_means, prior_sigmas,
                                                  width_scale, sigma_scale)
 
@@ -54,7 +54,7 @@ class DyPolyChordSampler(NestedSampler):
             polychord_settings = {}
         self._use_mpi = use_mpi
 
-        self._output_dir= output_dir
+        self._output_dir = output_dir
         self._is_master = True
 
         if self._use_mpi:
@@ -87,42 +87,6 @@ class DyPolyChordSampler(NestedSampler):
         self._rm_output = remove_output_dir
         self._has_warned = False
 
-    def prior(self, cube):
-        """
-        compute the mapping between the unit cube and parameter cube
-
-        'copy=True' below because cube can not be modified in-place (read-only)
-
-        :param cube: unit hypercube, sampled by the algorithm
-        :return: hypercube in parameter space
-        """
-        if self.prior_type == 'gaussian':
-            p = utils.cube2args_gaussian(cube, self.lowers, self.uppers,
-                                         self.means, self.sigmas, self.n_dims,
-                                         copy=True)
-        elif self.prior_type == 'uniform':
-            p = utils.cube2args_uniform(cube, self.lowers, self.uppers, 
-                                        self.n_dims, copy=True)
-        else:
-            raise ValueError("Variable prior_type with entry %s not supported!" % self.prior_type)
-        return p
-
-    def log_likelihood(self, args):
-        """
-        compute the log-likelihood given list of parameters
-
-        :param args: parameter values
-        :return: log-likelihood (from the likelihood module)
-        """
-        phi = []
-        logL = self._ll.likelihood(args)
-        if not np.isfinite(logL):
-            if not self._has_warned:
-                print("WARNING : logL is not finite : return very low value instead")
-            logL = -1e15
-            self._has_warned = True
-        return float(logL), phi
-
     def run(self, dynamic_goal, kwargs_run):
         """
         run the DyPolyChord dynamical nested sampler
@@ -146,7 +110,7 @@ class DyPolyChordSampler(NestedSampler):
 
             if self._is_master:
                 ns_run = self._ns_process_run(self._settings['file_root'],
-                                           self._settings['base_dir'])
+                                              self._settings['base_dir'])
 
         else:
             # in case DyPolyChord or NestCheck was not compiled properly, for unit tests
@@ -180,6 +144,15 @@ class DyPolyChordSampler(NestedSampler):
             return samples, means, logZ, logZ_err, logL, ns_run
         else:
             sys.exit(0)
+
+    def log_likelihood(self, args):
+        """
+        compute the log-likelihood given list of parameters
+
+        :param args: parameter values
+        :return: log-likelihood (from the likelihood module)
+        """
+        return super().log_likelihood(args), []
 
     def _get_equal_weight_samples(self):
         """

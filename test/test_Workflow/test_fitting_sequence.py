@@ -424,17 +424,18 @@ class TestFittingSequence(object):
     def test_nautilus(self):
         np.random.seed(42)
         kwargs_params = copy.deepcopy(self.kwargs_params)
-        fittingSequence = FittingSequence(self.kwargs_data_joint, self.kwargs_model, self.kwargs_constraints,
-                                          self.kwargs_likelihood, kwargs_params)
+        fittingSequence = FittingSequence(
+            self.kwargs_data_joint, self.kwargs_model, self.kwargs_constraints,
+            self.kwargs_likelihood, kwargs_params)
 
         fitting_list = []
         kwargs_nautilus = {
             'prior_type': 'uniform',
-            'thread_count': 1,
             'verbose': True,
-            'one_step': True,
+            'f_live': 1.0,
+            'n_eff': 0.0,
             'n_live': 2,
-            'random_state': 42
+            'seed': 42
         }
 
         fitting_list.append(['Nautilus', kwargs_nautilus])

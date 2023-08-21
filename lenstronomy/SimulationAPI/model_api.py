@@ -42,7 +42,7 @@ class ModelAPI(object):
          models. If None, 'z_source' is used.
         :param tabulated_deflection_angles: a class that returns deflection angles given a set of (x, y) coordinates.
          Effectively a fixed lens model. See documentation in Profiles.numerical_alpha
-        :param observed_convention_index: a list of indicies that correspond to lens models where the center_x,center_y
+        :param observed_convention_index: a list of indices that correspond to lens models where the center_x,center_y
          values correspond to the observed (lensed positions), not the physical positions in space
         """
         if lens_model_list is None:

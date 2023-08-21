@@ -31,7 +31,8 @@ class KinematicsAPI(object):
         :param z_source: redshift of source
         :param kwargs_model: model keyword arguments, needs 'lens_model_list', 'lens_light_model_list'
         :param kwargs_aperture: spectroscopic aperture keyword arguments, see lenstronomy.Galkin.aperture for options
-        :param kwargs_seeing: seeing condition of spectroscopic observation, corresponds to kwargs_psf in the GalKin module specified in lenstronomy.GalKin.psf
+        :param kwargs_seeing: seeing condition of spectroscopic observation, corresponds to kwargs_psf in the GalKin
+         module specified in lenstronomy.GalKin.psf
         :param cosmo: astropy.cosmology instance, if None then will be set to the default cosmology
         :param lens_model_kinematics_bool: bool list of length of the lens model. Only takes a subset of all the models
             as part of the kinematics computation (can be used to ignore substructure, shear etc that do not describe the
@@ -42,10 +43,13 @@ class KinematicsAPI(object):
         :param multi_observations: bool, if True uses multi-observation to predict a set of different observations with
             the GalkinMultiObservation() class. kwargs_aperture and kwargs_seeing require to be lists of the individual
             observations.
-        :param anisotropy_model: type of stellar anisotropy model. See details in MamonLokasAnisotropy() class of lenstronomy.GalKin.anisotropy
-        :param analytic_kinematics: boolean, if True, used the analytic JAM modeling for a power-law profile on top of a Hernquist light profile
+        :param anisotropy_model: type of stellar anisotropy model. See details in MamonLokasAnisotropy() class of
+         lenstronomy.GalKin.anisotropy
+        :param analytic_kinematics: boolean, if True, used the analytic JAM modeling for a power-law profile on top of
+         a Hernquist light profile
          ATTENTION: This may not be accurate for your specific problem!
-        :param Hernquist_approx: bool, if True, uses a Hernquist light profile matched to the half light radius of the deflector light profile to compute the kinematics
+        :param Hernquist_approx: bool, if True, uses a Hernquist light profile matched to the half light radius of the
+         deflector light profile to compute the kinematics
         :param MGE_light: bool, if true performs the MGE for the light distribution
         :param MGE_mass: bool, if true performs the MGE for the mass distribution
         :param kwargs_numerics_galkin: numerical settings for the integrated line-of-sight velocity dispersion
@@ -76,7 +80,7 @@ class KinematicsAPI(object):
 
         if kwargs_mge_mass is None:
             self._kwargs_mge_mass = {'n_comp': 20}
-        else :
+        else:
             self._kwargs_mge_mass = kwargs_mge_mass
 
         if kwargs_mge_light is None:

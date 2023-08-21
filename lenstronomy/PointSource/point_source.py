@@ -40,7 +40,8 @@ class PointSource(object):
          to have a specified band/frame assigned to it
         :param point_source_frame_list: list of lists mirroring the structure of the image positions.
          Integers correspond to the i'th list entry of index_lens_model_list indicating in which frame/band the image is
-         appearing
+         appearing, e.g., four images and four cutouts, you can do [[0], [1], [2], [3]] when the frames
+         (ordered as the list) are in the same order as the point sources (indices)
         """
         if len(point_source_type_list) > 0:
             if index_lens_model_list is not None and point_source_frame_list is None:

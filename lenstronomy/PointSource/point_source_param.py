@@ -1,75 +1,64 @@
 import numpy as np
 
-__all__ = ["PointSourceParam"]
+__all__ = ['PointSourceParam']
 
 from lenstronomy.Sampling.param_group import ModelParamGroup, SingleParam, ArrayParam
 
 
 class SourcePositionParam(SingleParam):
-    """Source position parameter, ra_source and dec_source."""
-
-    param_names = ["ra_source", "dec_source"]
-    _kwargs_lower = {"ra_source": -100, "dec_source": -100}
-    _kwargs_upper = {"ra_source": 100, "dec_source": 100}
+    """
+    Source position parameter, ra_source and dec_source
+    """
+    param_names = ['ra_source', 'dec_source']
+    _kwargs_lower = {'ra_source': -100, 'dec_source': -100}
+    _kwargs_upper = {'ra_source': 100, 'dec_source': 100}
 
 
 class LensedPosition(ArrayParam):
-    """Represents lensed positions, possibly many. ra_image and dec_image.
+    """
+    Represents lensed positions, possibly many. ra_image and dec_image
 
     :param num_images: integer. The number of lensed positions to model.
     """
-
-    _kwargs_lower = {
-        "ra_image": -100,
-        "dec_image": -100,
-    }
-    _kwargs_upper = {
-        "ra_image": 100,
-        "dec_image": 100,
-    }
+    _kwargs_lower = {'ra_image': -100, 'dec_image': -100, }
+    _kwargs_upper = {'ra_image': 100, 'dec_image': 100, }
 
     def __init__(self, num_images):
         ArrayParam.__init__(self, int(num_images) > 0)
-        self.param_names = {"ra_image": int(num_images), "dec_image": int(num_images)}
+        self.param_names = {'ra_image': int(num_images), 'dec_image': int(num_images)}
 
 
 class SourceAmp(SingleParam):
-    """Source amplification."""
-
-    param_names = ["source_amp"]
-    _kwargs_lower = {"source_amp": 0}
-    _kwargs_upper = {"source_amp": 100}
+    """
+    Source amplification
+    """
+    param_names = ['source_amp']
+    _kwargs_lower = {'source_amp': 0}
+    _kwargs_upper = {'source_amp': 100}
 
 
 class ImageAmp(ArrayParam):
-    """Observed amplification of lensed images of a point source. Can model arbitrarily
-    many magnified images.
-
-    :param num_point_sources: integer. The number of lensed images without fixed
-        magnification.
     """
+    Observed amplification of lensed images of a point source. Can model
+    arbitrarily many magnified images
 
-    _kwargs_lower = {"point_amp": 0}
-    _kwargs_upper = {"point_amp": 100}
+    :param num_point_sources: integer. The number of lensed images without fixed magnification.
+    """
+    _kwargs_lower = {'point_amp': 0}
+    _kwargs_upper = {'point_amp': 100}
 
     def __init__(self, num_point_sources):
         ArrayParam.__init__(self, int(num_point_sources) > 0)
-        self.param_names = {"point_amp": int(num_point_sources)}
+        self.param_names = {'point_amp': int(num_point_sources)}
 
 
 class PointSourceParam(object):
-    """Point source parameters."""
+    """
+    Point source parameters
+    """
 
-    def __init__(
-        self,
-        model_list,
-        kwargs_fixed,
-        num_point_source_list=None,
-        linear_solver=True,
-        fixed_magnification_list=None,
-        kwargs_lower=None,
-        kwargs_upper=None,
-    ):
+    def __init__(self, model_list, kwargs_fixed, num_point_source_list=None, linear_solver=True,
+                 fixed_magnification_list=None, kwargs_lower=None, kwargs_upper=None):
         """
 
         :param model_list: list of point source model names
@@ -96,17 +85,14 @@ class PointSourceParam(object):
         for i, model in enumerate(self.model_list):
             params = []
             num = num_point_source_list[i]
-            if model in ["LENSED_POSITION", "UNLENSED"]:
+            if model in ['LENSED_POSITION', 'UNLENSED']:
                 params.append(LensedPosition(num))
-            elif model == "SOURCE_POSITION":
+            elif model == 'SOURCE_POSITION':
                 params.append(SourcePositionParam(True))
             else:
                 raise ValueError("%s not a valid point source model" % model)
 
-            if fixed_magnification_list[i] and model in [
-                "LENSED_POSITION",
-                "SOURCE_POSITION",
-            ]:
+            if fixed_magnification_list[i] and model in ['LENSED_POSITION', 'SOURCE_POSITION']:
                 params.append(SourceAmp(True))
             else:
                 params.append(ImageAmp(num))
@@ -157,15 +143,14 @@ class PointSourceParam(object):
         for k, param_group in enumerate(self.param_groups):
             kwargs = kwargs_list[k]
             kwargs_fixed = self.kwargs_fixed[k]
-            args.extend(
-                ModelParamGroup.compose_set_params(
-                    param_group, kwargs, kwargs_fixed=kwargs_fixed
-                )
-            )
+            args.extend(ModelParamGroup.compose_set_params(
+                param_group, kwargs, kwargs_fixed=kwargs_fixed
+            ))
         return args
 
     def num_param(self):
-        """Number of parameters and their names.
+        """
+        number of parameters and their names
 
         :return: int, list of parameter names
         """
@@ -179,19 +164,17 @@ class PointSourceParam(object):
         return num, name_list
 
     def add_fix_linear(self, kwargs_fixed):
-        """Updates fixed keyword argument list with linear parameters.
+        """
+        updates fixed keyword argument list with linear parameters
 
         :param kwargs_fixed: list of keyword arguments held fixed during sampling
         :return: updated keyword argument list
         """
         for k, model in enumerate(self.model_list):
-            if self._fixed_magnification_list[k] is True and model in [
-                "LENSED_POSITION",
-                "SOURCE_POSITION",
-            ]:
-                kwargs_fixed[k]["source_amp"] = 1
+            if self._fixed_magnification_list[k] is True and model in ['LENSED_POSITION', 'SOURCE_POSITION']:
+                kwargs_fixed[k]['source_amp'] = 1
             else:
-                kwargs_fixed[k]["point_amp"] = np.ones(self._num_point_sources_list[k])
+                kwargs_fixed[k]['point_amp'] = np.ones(self._num_point_sources_list[k])
         return kwargs_fixed
 
     def num_param_linear(self):
@@ -202,10 +185,7 @@ class PointSourceParam(object):
         num = 0
         if self._linear_solver is True:
             for k, model in enumerate(self.model_list):
-                if self._fixed_magnification_list[k] is True and model in [
-                    "LENSED_POSITION",
-                    "SOURCE_POSITION",
-                ]:
+                if self._fixed_magnification_list[k] is True and model in ['LENSED_POSITION', 'SOURCE_POSITION']:
                     num += 1
                 else:
                     num += self._num_point_sources_list[k]

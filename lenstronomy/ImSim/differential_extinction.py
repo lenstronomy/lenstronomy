@@ -1,14 +1,13 @@
 from lenstronomy.LightModel.light_model import LightModel
 import numpy as np
 
-__all__ = ["DifferentialExtinction"]
+__all__ = ['DifferentialExtinction']
 
 
 class DifferentialExtinction(object):
-    """Class to compute an extinction (for a specific band/wavelength).
-
-    This class uses the functionality available in the LightModel module to describe an
-    optical depth tau_ext to compute the extinction on the sky/image.
+    """
+    class to compute an extinction (for a specific band/wavelength). This class uses the functionality available in
+    the LightModel module to describe an optical depth tau_ext to compute the extinction on the sky/image.
     """
 
     def __init__(self, optical_depth_model=None, tau0_index=0):
@@ -29,7 +28,7 @@ class DifferentialExtinction(object):
     @property
     def compute_bool(self):
         """
-        :return: True when a differential extinction is set, False otherwise
+        :return: True when a differential extinction is set, False otherwise 
         """
         return self._compute_bool
 
@@ -45,7 +44,7 @@ class DifferentialExtinction(object):
         if self._compute_bool is False or kwargs_extinction is None:
             return 1
         tau = self._profile.surface_brightness(x, y, kwargs_list=kwargs_extinction)
-        tau0_list = kwargs_special.get("tau0_list", None)
+        tau0_list = kwargs_special.get('tau0_list', None)
         if tau0_list is not None:
             tau0 = tau0_list[self._tau0_index]
         else:

@@ -3,12 +3,12 @@ from lenstronomy.GalKin.galkin_model import GalkinModel
 
 import numpy as np
 
-__all__ = ["Galkin"]
+__all__ = ['Galkin']
 
 
 class Galkin(GalkinModel, GalkinObservation):
-    """Major class to compute velocity dispersion measurements given light and mass
-    models.
+    """
+    Major class to compute velocity dispersion measurements given light and mass models
 
     The class supports any mass and light distribution (and superposition thereof) that has a 3d correspondance in their
     2d lens model distribution. For models that do not have this correspondance, you may want to apply a
@@ -45,17 +45,10 @@ class Galkin(GalkinModel, GalkinObservation):
 
     These numerical options should be chosen to allow for a converged result (within your tolerance) but not too
     conservative to impact too much the computational cost. Reasonable values might depend on the specific problem.
-    """
 
-    def __init__(
-        self,
-        kwargs_model,
-        kwargs_aperture,
-        kwargs_psf,
-        kwargs_cosmo,
-        kwargs_numerics=None,
-        analytic_kinematics=False,
-    ):
+    """
+    def __init__(self, kwargs_model, kwargs_aperture, kwargs_psf, kwargs_cosmo, kwargs_numerics=None,
+                 analytic_kinematics=False):
         """
 
         :param kwargs_model: keyword arguments describing the model components
@@ -66,63 +59,41 @@ class Galkin(GalkinModel, GalkinObservation):
         :param kwargs_numerics: numerics keyword arguments
         :param analytic_kinematics: bool, if True uses the analytic kinematic model
         """
-        GalkinModel.__init__(
-            self,
-            kwargs_model,
-            kwargs_cosmo,
-            kwargs_numerics=kwargs_numerics,
-            analytic_kinematics=analytic_kinematics,
-        )
-        GalkinObservation.__init__(
-            self, kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf
-        )
+        GalkinModel.__init__(self, kwargs_model, kwargs_cosmo, kwargs_numerics=kwargs_numerics,
+                             analytic_kinematics=analytic_kinematics)
+        GalkinObservation.__init__(self, kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf)
 
-    def dispersion(
-        self, kwargs_mass, kwargs_light, kwargs_anisotropy, sampling_number=1000
-    ):
-        """Computes the averaged LOS velocity dispersion in the slit (convolved)
+    def dispersion(self, kwargs_mass, kwargs_light, kwargs_anisotropy, sampling_number=1000):
+        """
+        computes the averaged LOS velocity dispersion in the slit (convolved)
 
-        :param kwargs_mass: mass model parameters (following lenstronomy lens model
-            conventions)
-        :param kwargs_light: deflector light parameters (following lenstronomy light
-            model conventions)
-        :param kwargs_anisotropy: anisotropy parameters, may vary according to
-            anisotropy type chosen. We refer to the Anisotropy() class for details on
-            the parameters.
-        :param sampling_number: int, number of spectral sampling of the light
-            distribution
+        :param kwargs_mass: mass model parameters (following lenstronomy lens model conventions)
+        :param kwargs_light: deflector light parameters (following lenstronomy light model conventions)
+        :param kwargs_anisotropy: anisotropy parameters, may vary according to anisotropy type chosen.
+         We refer to the Anisotropy() class for details on the parameters.
+        :param sampling_number: int, number of spectral sampling of the light distribution
         :return: integrated LOS velocity dispersion in units [km/s]
         """
         sigma2_IR_sum = 0
         IR_sum = 0
         for i in range(0, sampling_number):
-            sigma2_IR, IR = self._draw_one_sigma2(
-                kwargs_mass, kwargs_light, kwargs_anisotropy
-            )
+            sigma2_IR, IR = self._draw_one_sigma2(kwargs_mass, kwargs_light, kwargs_anisotropy)
             sigma2_IR_sum += sigma2_IR
             IR_sum += IR
         sigma_s2_average = sigma2_IR_sum / IR_sum
         # apply unit conversion from arc seconds and deflections to physical velocity dispersion in (km/s)
         self.numerics.delete_cache()
-        return np.sqrt(sigma_s2_average) / 1000.0  # in units of km/s
+        return np.sqrt(sigma_s2_average) / 1000.  # in units of km/s
 
-    def dispersion_map(
-        self,
-        kwargs_mass,
-        kwargs_light,
-        kwargs_anisotropy,
-        num_kin_sampling=1000,
-        num_psf_sampling=100,
-    ):
-        """Computes the velocity dispersion in each Integral Field Unit.
+    def dispersion_map(self, kwargs_mass, kwargs_light, kwargs_anisotropy, num_kin_sampling=1000, num_psf_sampling=100):
+        """
+        computes the velocity dispersion in each Integral Field Unit
 
         :param kwargs_mass: keyword arguments of the mass model
         :param kwargs_light: keyword argument of the light model
         :param kwargs_anisotropy: anisotropy keyword arguments
-        :param num_kin_sampling: int, number of draws from a kinematic prediction of a
-            LOS
-        :param num_psf_sampling: int, number of displacements/render from a spectra to
-            be displaced on the IFU
+        :param num_kin_sampling: int, number of draws from a kinematic prediction of a LOS
+        :param num_psf_sampling: int, number of displacements/render from a spectra to be displaced on the IFU
         :return: ordered array of velocity dispersions [km/s] for each unit
         """
         # draw from light profile (3d and 2d option)
@@ -137,9 +108,7 @@ class Galkin(GalkinModel, GalkinObservation):
 
         for i in range(0, num_kin_sampling):
             r, R, x, y = self.numerics.draw_light(kwargs_light)
-            sigma2_IR, IR = self.numerics.sigma_s2(
-                r, R, kwargs_mass, kwargs_light, kwargs_anisotropy
-            )
+            sigma2_IR, IR = self.numerics.sigma_s2(r, R, kwargs_mass, kwargs_light, kwargs_anisotropy)
             for k in range(0, num_psf_sampling):
                 x_, y_ = self.displace_psf(x, y)
                 bool_ap, ifu_index = self.aperture_select(x_, y_)
@@ -150,7 +119,7 @@ class Galkin(GalkinModel, GalkinObservation):
         sigma_s2_average = sigma2_IR_sum / count_draws
         # apply unit conversion from arc seconds and deflections to physical velocity dispersion in (km/s)
         self.numerics.delete_cache()
-        return np.sqrt(sigma_s2_average) / 1000.0  # in units of km/s
+        return np.sqrt(sigma_s2_average) / 1000.  # in units of km/s
 
     def _draw_one_sigma2(self, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """
@@ -168,7 +137,5 @@ class Galkin(GalkinModel, GalkinObservation):
             bool_ap, _ = self.aperture_select(x_, y_)
             if bool_ap is True:
                 break
-        sigma2_IR, IR = self.numerics.sigma_s2(
-            r, R, kwargs_mass, kwargs_light, kwargs_anisotropy
-        )
+        sigma2_IR, IR = self.numerics.sigma_s2(r, R, kwargs_mass, kwargs_light, kwargs_anisotropy)
         return sigma2_IR, IR

@@ -1,9 +1,11 @@
-__all__ = ["LightProfileBase"]
+
+__all__ = ['LightProfileBase']
 
 
 class LightProfileBase(object):
-    """Base class of all light profiles."""
-
+    """
+    base class of all light profiles
+    """
     def __init__(self):
         pass
 
@@ -15,7 +17,7 @@ class LightProfileBase(object):
         :param kwargs: keyword arguments of profile
         :return: surface brightness, raise as definition is not defined
         """
-        raise ValueError("function definition not defined in the light profile.")
+        raise ValueError('function definition not defined in the light profile.')
 
     def light_3d(self, *args, **kwargs):
         """
@@ -24,4 +26,4 @@ class LightProfileBase(object):
         :param kwargs:  keyword arguments of profile
         :return: 3d light profile, raise as definition is not defined
         """
-        raise ValueError("light_3d definition not defined in the light profile.")
+        raise ValueError('light_3d definition not defined in the light profile.')

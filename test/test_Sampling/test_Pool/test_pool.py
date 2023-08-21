@@ -4,12 +4,12 @@ from lenstronomy.Sampling.Pool.multiprocessing import MultiPool
 
 
 class TestPool(object):
+
     def setup_method(self):
         pass
 
     def test_choose_pool(self):
         import schwimmbad
-
         pool = choose_pool(mpi=False, processes=1, use_dill=True)
         assert pool.is_master() is True
         assert isinstance(pool, schwimmbad.serial.SerialPool)
@@ -24,5 +24,5 @@ class TestPool(object):
         # assert isinstance(pool, schwimmbad.mpi.MPIPool)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     pytest.main()

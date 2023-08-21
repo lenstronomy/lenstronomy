@@ -9,8 +9,6 @@ help:
 	@echo "coverage - check code coverage quickly with the default Python"
 	@echo "docs - generate Sphinx HTML documentation, including API docs"
 	@echo "sdist - package"
-	@echo "black - run black formatter"
-	@echo "docformatter - run docformatter"
 
 clean: clean-build clean-pyc
 
@@ -28,8 +26,6 @@ clean-pyc:
 
 lint:
 	flake8 lenstronomy test
-	black .
-	docformatter -r ./* --black --in-place
 
 test:
 	py.test

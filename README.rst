@@ -25,6 +25,15 @@
 .. image:: https://img.shields.io/badge/arXiv-1803.09746%20-yellowgreen.svg
     :target: https://arxiv.org/abs/1803.09746
 
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+    :target: https://github.com/psf/black
+
+.. image:: https://img.shields.io/badge/%20formatter-docformatter-fedcba.svg
+    :target: https://github.com/PyCQA/docformatter
+
+.. image:: https://img.shields.io/badge/%20style-sphinx-0a507a.svg
+    :target: https://www.sphinx-doc.org/en/master/usage/index.html
+
 ..
     .. image:: https://raw.githubusercontent.com/lenstronomy/lenstronomy/main/docs/figures/readme_fig.png
         :target: https://raw.githubusercontent.com/lenstronomy/lenstronomy/main/docs/figures/readme_fig.png

@@ -10,12 +10,17 @@ class SinglePlane(ProfileListBase):
     """Class to handle an arbitrary list of lens models in a single lensing plane."""
 
     def ray_shooting(self, x, y, kwargs, k=None):
-        """Maps image to source position (inverse deflection) :param x: x-position
-        (preferentially arcsec) :type x: numpy array :param y: y-position
-        (preferentially arcsec) :type y: numpy array :param kwargs: list of keyword
-        arguments of lens model parameters matching the lens model classes :param k:
-        only evaluate the k-th lens model :return: source plane positions corresponding
-        to (x, y) in the image plane."""
+        """Maps image to source position (inverse deflection).
+
+        :param x: x-position (preferentially arcsec)
+        :type x: numpy array
+        :param y: y-position (preferentially arcsec)
+        :type y: numpy array
+        :param kwargs: list of keyword arguments of lens model parameters matching the
+            lens model classes
+        :param k: only evaluate the k-th lens model
+        :return: source plane positions corresponding to (x, y) in the image plane
+        """
 
         dx, dy = self.alpha(x, y, kwargs, k=k)
         return x - dx, y - dy
@@ -43,11 +48,17 @@ class SinglePlane(ProfileListBase):
         return geometry - potential
 
     def potential(self, x, y, kwargs, k=None):
-        """Lensing potential :param x: x-position (preferentially arcsec) :type x: numpy
-        array :param y: y-position (preferentially arcsec) :type y: numpy array :param
-        kwargs: list of keyword arguments of lens model parameters matching the lens
-        model classes :param k: only evaluate the k-th lens model :return: lensing
-        potential in units of arcsec^2."""
+        """Lensing potential.
+
+        :param x: x-position (preferentially arcsec)
+        :type x: numpy array
+        :param y: y-position (preferentially arcsec)
+        :type y: numpy array
+        :param kwargs: list of keyword arguments of lens model parameters matching the
+            lens model classes
+        :param k: only evaluate the k-th lens model
+        :return: lensing potential in units of arcsec^2
+        """
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
         if isinstance(k, int):
@@ -60,12 +71,17 @@ class SinglePlane(ProfileListBase):
         return potential
 
     def alpha(self, x, y, kwargs, k=None):
-        """Deflection angles :param x: x-position (preferentially arcsec) :type x: numpy
-        array :param y: y-position (preferentially arcsec) :type y: numpy array :param
-        kwargs: list of keyword arguments of lens model parameters matching the lens
-        model classes :param k: only evaluate the k-th lens model :return: deflection
-        angles in units of arcsec."""
+        """Deflection angles.
 
+        :param x: x-position (preferentially arcsec)
+        :type x: numpy array
+        :param y: y-position (preferentially arcsec)
+        :type y: numpy array
+        :param kwargs: list of keyword arguments of lens model parameters matching the
+            lens model classes
+        :param k: only evaluate the k-th lens model
+        :return: deflectionangles in units of arcsec
+        """
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
 
@@ -82,11 +98,17 @@ class SinglePlane(ProfileListBase):
         return f_x, f_y
 
     def hessian(self, x, y, kwargs, k=None):
-        """Hessian matrix :param x: x-position (preferentially arcsec) :type x: numpy
-        array :param y: y-position (preferentially arcsec) :type y: numpy array :param
-        kwargs: list of keyword arguments of lens model parameters matching the lens
-        model classes :param k: only evaluate the k-th lens model :return: f_xx, f_xy,
-        f_yx, f_yy components."""
+        """Hessian matrix.
+
+        :param x: x-position (preferentially arcsec)
+        :type x: numpy array
+        :param y: y-position (preferentially arcsec)
+        :type y: numpy array
+        :param kwargs: list of keyword arguments of lens model parameters matching the
+            lens model classes
+        :param k: only evaluate the k-th lens model
+        :return: f_xx, f_xy, f_yx, f_yy components
+        """
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
         if isinstance(k, int):
@@ -147,7 +169,8 @@ class SinglePlane(ProfileListBase):
         with alpha is the deflection angle
 
         :param r: radius (in angular units)
-        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
+        :param kwargs: list of keyword arguments of lens model parameters matching the
+            lens model classes
         :param bool_list: list of bools that are part of the output
         :return: projected mass (in angular units, modulo epsilon_crit)
         """

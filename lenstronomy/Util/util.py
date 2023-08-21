@@ -1,7 +1,5 @@
 __author__ = "Simon Birrer"
-"""
-this file contains standard routines
-"""
+"""This file contains standard routines."""
 
 import numpy as np
 import itertools

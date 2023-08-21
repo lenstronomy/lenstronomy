@@ -215,10 +215,15 @@ class EPL(LensProfileBase):
         return f_xx, f_xy, f_xy, f_yy
 
     def mass_3d_lens(self, r, theta_E, gamma, e1=None, e2=None):
-        """Computes the spherical power-law mass enclosed (with SPP routine) :param r:
-        radius within the mass is computed :param theta_E: Einstein radius :param gamma:
-        power-law slope :param e1: eccentricity component (not used) :param e2:
-        eccentricity component (not used) :return: mass enclosed a 3D radius r."""
+        """Computes the spherical power-law mass enclosed (with SPP routine)
+
+        :param r: radius within the mass is computed
+        :param theta_E: Einstein radius
+        :param gamma: power-law slope
+        :param e1: eccentricity component (not used)
+        :param e2: eccentricity component (not used)
+        :return: mass enclosed a 3D radius r.
+        """
         return self.spp.mass_3d_lens(r, theta_E, gamma)
 
     def density_lens(self, r, theta_E, gamma, e1=None, e2=None):
@@ -412,10 +417,15 @@ class EPLQPhi(LensProfileBase):
         return self._EPL.hessian(x, y, theta_E, gamma, e1, e2, center_x, center_y)
 
     def mass_3d_lens(self, r, theta_E, gamma, q=None, phi=None):
-        """Computes the spherical power-law mass enclosed (with SPP routine) :param r:
-        radius within the mass is computed :param theta_E: Einstein radius :param gamma:
-        power-law slope :param q: axis ratio (not used) :param phi: position angle (not
-        used) :return: mass enclosed a 3D radius r."""
+        """Computes the spherical power-law mass enclosed (with SPP routine).
+
+        :param r: radius within the mass is computed
+        :param theta_E: Einstein radius
+        :param gamma: power-law slope
+        :param q: axis ratio (not used)
+        :param phi: position angle (not used)
+        :return: mass enclosed a 3D radius r.
+        """
         return self._EPL.mass_3d_lens(r, theta_E, gamma)
 
     def density_lens(self, r, theta_E, gamma, q=None, phi=None):

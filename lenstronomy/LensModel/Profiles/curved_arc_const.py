@@ -276,39 +276,39 @@ class CurvedArcConst(LensProfileBase):
         f_xy = (alpha_ra_dy - alpha_ra) / diff
         f_yx = (alpha_dec_dx - alpha_dec) / diff
         f_yy = (alpha_dec_dy - alpha_dec) / diff
-        """
-        #TODO make rotational invariances of double derivates with curl
-        r = 1 / curvature
-        # deflection angle to allow for tangential stretch
-        # (ratio of source position around zero point relative to radius is tangential stretch)
-        alpha = r * (1 / tangential_stretch + 1)
 
-        # shift
-        x_ = x - center_x
-        y_ = y - center_y
-        # rotate
-        x__, y__ = util.rotate(x_, y_, direction)
-        f__xx = 0
-        f__xy = -alpha * curvature * np.sin(y__ * curvature)
-        f__yx = 0
-        f__yy = alpha * curvature * np.cos(y__ * curvature)
-        # transform back
-        phi_G = direction
-        kappa = 1. / 2 * (f__xx + f__yy)
-        gamma1__ = 1. / 2 * (f__xx - f__yy)
-        gamma2__ = f__xy
-        gamma1 = np.cos(2 * phi_G) * gamma1__ - np.sin(2 * phi_G) * gamma2__
-        gamma2 = +np.sin(2 * phi_G) * gamma1__ + np.cos(2 * phi_G) * gamma2__
-        f_xx = kappa + gamma1
-        f_yy = kappa - gamma1
+        # # TODO make rotational invariances of double derivates with curl r = 1 /curvature
+        # # deflection angle to allow for tangential stretch
+        #
+        # # (ratio of source position around zero point relative to radius is tangential stretch)
+        # alpha = r * (1 / tangential_stretch + 1)
+        #
+        # # shift
+        # x_ = x - center_x
+        # y_ = y - center_y
+        # # rotate
+        # x__, y__ = util.rotate(x_, y_, direction)
+        # f__xx = 0
+        # f__xy = -alpha * curvature * np.sin(y__ * curvature)
+        # f__yx = 0
+        # f__yy = alpha * curvature * np.cos(y__ * curvature)
+        # # transform back
+        # phi_G = direction
+        # kappa = 1. / 2 * (f__xx + f__yy)
+        # gamma1__ = 1. / 2 * (f__xx - f__yy)
+        # gamma2__ = f__xy
+        # gamma1 = np.cos(2 * phi_G) * gamma1__ - np.sin(2 * phi_G) * gamma2__
+        # gamma2 = +np.sin(2 * phi_G) * gamma1__ + np.cos(2 * phi_G) * gamma2__
+        # f_xx = kappa + gamma1
+        # f_yy = kappa - gamma1
+        #
+        # #f_xx = np.cos(2*direction) * f__xx - np.sin(2*direction) * f__yy
+        # #f_yy = -np.sin(2*direction) * f__xx + np.cos(2*direction) * f__yy
+        #
+        # f_xy = np.cos(2 * direction) * f__xy - np.sin(2 * direction) * f__yx
+        # f_yx = -np.sin(2 * direction) * f__xy + np.cos(2 * direction) * f__yx
+        # return f_xx, f_xy, f_yx, f_yy
 
-        #f_xx = np.cos(2*direction) * f__xx - np.sin(2*direction) * f__yy
-        #f_yy = -np.sin(2*direction) * f__xx + np.cos(2*direction) * f__yy
-
-        f_xy = np.cos(2 * direction) * f__xy - np.sin(2 * direction) * f__yx
-        f_yx = -np.sin(2 * direction) * f__xy + np.cos(2 * direction) * f__yx
-        return f_xx, f_xy, f_yx, f_yy
-        """
         return f_xx, f_xy, f_yx, f_yy
 
     @staticmethod

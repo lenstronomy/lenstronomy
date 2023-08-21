@@ -200,8 +200,11 @@ class SersicUtil(object):
         return self._total_flux(r_eff=r_eff, I_eff=amp, n_sersic=n_sersic)
 
     def _R_stable(self, R):
-        """Floor R_ at self._smoothing for numerical stability :param R: radius :return:
-        smoothed and stabilized radius."""
+        """Floor R_ at self._smoothing for numerical stability.
+
+        :param R: radius
+        :return: smoothed and stabilized radius
+        """
         return np.maximum(self._smoothing, R)
 
     def _r_sersic(

@@ -233,14 +233,19 @@ class RegularGrid(Coordinates1D):
 
     @property
     def grid_points_spacing(self):
-        """Effective spacing between coordinate points, after supersampling :return:
-        sqrt(pixel_area)/supersampling_factor."""
+        """Effective spacing between coordinate points, after supersampling.
+
+        :return: sqrt(pixel_area)/supersampling_factor.
+        """
         return self.pixel_width / self._supersampling_factor
 
     @property
     def num_grid_points_axes(self):
-        """Effective number of points along each axes, after supersampling :return:
-        number of pixels per axis, nx*supersampling_factor ny*supersampling_factor."""
+        """Effective number of points along each axes, after supersampling.
+
+        :return: number of pixels per axis, nx*supersampling_factor
+            ny*supersampling_factor
+        """
         return (
             self._nx * self._supersampling_factor,
             self._ny * self._supersampling_factor,
@@ -256,8 +261,10 @@ class RegularGrid(Coordinates1D):
     def flux_array2image_low_high(self, flux_array, **kwargs):
         """
 
-        :param flux_array: 1d array of low and high resolution flux values corresponding to the coordinates_evaluate order
-        :return: 2d array, 2d array, corresponding to (partial) images in low and high resolution (to be convolved)
+        :param flux_array: 1d array of low and high resolution flux values corresponding
+            to the coordinates_evaluate order
+        :return: 2d array, 2d array, corresponding to (partial) images in low and high
+            resolution (to be convolved)
         """
         image = self._array2image(flux_array)
         if self._supersampling_factor > 1:

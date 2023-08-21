@@ -145,7 +145,7 @@ General Guidelines
 ^^^^^^^^^^^^^^^^^^
 
 - lenstronomy is compatible with Python>=3.7 (see `setup.cfg <https://github.com/lenstronomy/lenstronomy/blob/main/setup.cfg>`_). lenstronomy *does not* support backwards compatibility with Python 2.x; `six`, `__future__` and `2to3` should not be used.
-- All contributions should follow the `PEP8 Style Guide for Python Code <https://www.python.org/dev/peps/pep-0008/>`_. We recommend using `flake8 <https://flake8.pycqa.org/>`__ to check your code for PEP8 compliance. *One exception to the PEP8 guidelines is that the maximum allowed line length is 120 characters.*
+- All contributions should follow the `PEP8 Style Guide for Python Code <https://www.python.org/dev/peps/pep-0008/>`_. We recommend using `flake8 <https://flake8.pycqa.org/>`__ to check your code for PEP8 compliance. *One exception to the PEP8 guidelines is that the maximum allowed line length is 88 characters (following `black` style).*
 - Importing lenstronomy should only depend on having `NumPy <https://www.numpy.org>`_, `SciPy <https://www.scipy.org/>`_ and `Astropy <https://www.astropy.org/>`__ installed.
 - Code is grouped into submodules based e.g. `LensModel <https://lenstronomy.readthedocs.io/en/latest/lenstronomy.LensModel.html>`_, `LightModel <https://lenstronomy.readthedocs.io/en/stable/lenstronomy.LightModel.html>`_ or  `ImSim <https://lenstronomy.readthedocs.io/en/latest/lenstronomy.ImSim.html>`_. There is also a `Util <https://lenstronomy.readthedocs.io/en/stable/lenstronomy/Util.html>`_ submodule for general utility functions.
 - For more information, see the `Astropy Coding Guidelines <http://docs.astropy.org/en/latest/development/codeguide.html>`_.

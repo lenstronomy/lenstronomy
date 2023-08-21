@@ -13,8 +13,8 @@ export, __all__ = exporter()
 
 @export
 def add_layer2image(grid2d, x_pos, y_pos, kernel, order=1):
-    """
-    adds a kernel on the grid2d image at position x_pos, y_pos with an interpolated subgrid pixel shift of order=order
+    """Adds a kernel on the grid2d image at position x_pos, y_pos with an interpolated
+    subgrid pixel shift of order=order.
 
     :param grid2d: 2d pixel grid (i.e. image)
     :param x_pos: x-position center (pixel coordinate) of the layer to be added
@@ -34,8 +34,8 @@ def add_layer2image(grid2d, x_pos, y_pos, kernel, order=1):
 
 @export
 def add_layer2image_int(grid2d, x_pos, y_pos, kernel):
-    """
-    adds a kernel on the grid2d image at position x_pos, y_pos at integer positions of pixel
+    """Adds a kernel on the grid2d image at position x_pos, y_pos at integer positions
+    of pixel.
 
     :param grid2d: 2d pixel grid (i.e. image)
     :param x_pos: x-position center (pixel coordinate) of the layer to be added
@@ -81,10 +81,8 @@ def add_layer2image_int(grid2d, x_pos, y_pos, kernel):
 
 @export
 def add_background(image, sigma_bkd):
-    """
-    Generates background noise to image.
-    To generate a noisy image with background noise, generate
-    image_noisy = image + add_background(image, sigma_bkd)
+    """Generates background noise to image. To generate a noisy image with background
+    noise, generate image_noisy = image + add_background(image, sigma_bkd)
 
     :param image: pixel values of image
     :param sigma_bkd: background noise (sigma)
@@ -97,9 +95,9 @@ def add_background(image, sigma_bkd):
 
 @export
 def add_poisson(image, exp_time):
-    """
-    Generates a poison (or Gaussian) distributed noise with mean given by surface brightness.
-    To generate a noisy image with Poisson noise, perform image_noisy = image + add_poisson(image, exp_time)
+    """Generates a poison (or Gaussian) distributed noise with mean given by surface
+    brightness. To generate a noisy image with Poisson noise, perform image_noisy =
+    image + add_poisson(image, exp_time)
 
     :param image: pixel values (photon counts per unit exposure time)
     :param exp_time: exposure time
@@ -115,21 +113,15 @@ def add_poisson(image, exp_time):
 
 @export
 def rotateImage(img, angle):
-    """
-
-    querries scipy.ndimage.rotate routine
-    :param img: image to be rotated
-    :param angle: angle to be rotated (radian)
-    :return: rotated image
-    """
+    """Querries scipy.ndimage.rotate routine :param img: image to be rotated :param
+    angle: angle to be rotated (radian) :return: rotated image."""
     imgR = ndimage.rotate(img, angle, reshape=False)
     return imgR
 
 
 @export
 def shift_image(img, shift):
-    """
-    queries scipy.ndimage.shift routine
+    """Queries scipy.ndimage.shift routine.
 
     :param img: image to be shifted
     :param shift: sequence containing x and y shift in pixels
@@ -141,8 +133,8 @@ def shift_image(img, shift):
 
 @export
 def re_size_array(x_in, y_in, input_values, x_out, y_out):
-    """
-    resizes 2d array (i.e. image) to new coordinates. So far only works with square output aligned with coordinate axis.
+    """Resizes 2d array (i.e. image) to new coordinates. So far only works with square
+    output aligned with coordinate axis.
 
     :param x_in:
     :param y_in:
@@ -161,8 +153,7 @@ def re_size_array(x_in, y_in, input_values, x_out, y_out):
 
 @export
 def symmetry_average(image, symmetry):
-    """
-    symmetry averaged image
+    """Symmetry averaged image.
 
     :param image:
     :param symmetry:
@@ -178,10 +169,8 @@ def symmetry_average(image, symmetry):
 
 @export
 def findOverlap(x_mins, y_mins, min_distance):
-    """
-    finds overlapping solutions, deletes multiples and deletes non-solutions and if it is not a solution,
-    deleted as well
-    """
+    """Finds overlapping solutions, deletes multiples and deletes non-solutions and if
+    it is not a solution, deleted as well."""
     n = len(x_mins)
     idex = []
     for i in range(n):
@@ -226,8 +215,7 @@ def coordInImage(x_coord, y_coord, num_pix, deltapix):
 
 @export
 def re_size(image, factor=1):
-    """
-    re-sizes image with nx x ny to nx/factor x ny/factor
+    """Re-sizes image with nx x ny to nx/factor x ny/factor.
 
     :param image: 2d image with shape (nx,ny)
     :param factor: integer >=1
@@ -250,8 +238,7 @@ def re_size(image, factor=1):
 
 @export
 def rebin_image(bin_size, image, wht_map, sigma_bkg, ra_coords, dec_coords, idex_mask):
-    """
-    re-bins pixels, updates cutout image, wht_map, sigma_bkg, coordinates, PSF
+    """Re-bins pixels, updates cutout image, wht_map, sigma_bkg, coordinates, PSF.
 
     :param bin_size: number of pixels (per axis) to merge
     :return:
@@ -283,10 +270,8 @@ def rebin_image(bin_size, image, wht_map, sigma_bkg, ra_coords, dec_coords, idex
 
 @export
 def rebin_coord_transform(factor, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix):
-    """
-    adopt coordinate system and transformation between angular and pixel coordinates of a re-binned image
-
-    """
+    """Adopt coordinate system and transformation between angular and pixel coordinates
+    of a re-binned image."""
     factor = int(factor)
     Mcoord2pix_resized = Mcoord2pix / factor
     Mpix2coord_resized = Mpix2coord * factor
@@ -307,8 +292,7 @@ def rebin_coord_transform(factor, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord
 
 @export
 def stack_images(image_list, wht_list, sigma_list):
-    """
-    stacks images and saves new image as a fits file
+    """Stacks images and saves new image as a fits file.
 
     :return:
     """
@@ -327,9 +311,8 @@ def stack_images(image_list, wht_list, sigma_list):
 
 @export
 def cut_edges(image, num_pix):
-    """
-    cuts out the edges of a 2d image and returns re-sized image to numPix
-    center is well defined for odd pixel sizes.
+    """Cuts out the edges of a 2d image and returns re-sized image to numPix center is
+    well defined for odd pixel sizes.
 
     :param image: 2d numpy array
     :param num_pix: square size of cut out image
@@ -361,8 +344,7 @@ def cut_edges(image, num_pix):
 
 @export
 def radial_profile(data, center):
-    """
-    computes radial profile
+    """Computes radial profile.
 
     :param data: 2d numpy array
     :param center: center [x, y] from which pixel to compute the radial profile
@@ -380,8 +362,7 @@ def radial_profile(data, center):
 
 @export
 def gradient_map(image):
-    """
-    computes gradients of images with the sobel transform
+    """Computes gradients of images with the sobel transform.
 
     :param image: 2d numpy array
     :return: array of same size as input, with gradients between neighboring pixels

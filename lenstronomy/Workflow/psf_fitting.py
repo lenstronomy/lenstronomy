@@ -12,12 +12,12 @@ __all__ = ["PsfFitting"]
 
 
 class PsfFitting(object):
-    """
-    class to find subsequently a better psf
-    The method make use of a model and subtracts all the non-point source components of the model from the data.
-    If the model is sufficient, then the data will be a (better) representation of the actual PSF. The method cuts out
-    those point sources and combines them to update the estimate of the PSF. This is done in an iterative procedure as
-    the model components of the extended features is PSF-dependent (hopefully not too much).
+    """Class to find subsequently a better psf The method make use of a model and
+    subtracts all the non-point source components of the model from the data. If the
+    model is sufficient, then the data will be a (better) representation of the actual
+    PSF. The method cuts out those point sources and combines them to update the
+    estimate of the PSF. This is done in an iterative procedure as the model components
+    of the extended features is PSF-dependent (hopefully not too much).
 
     Various options can be chosen. There is no guarantee that the method works for specific data and models.
 
@@ -52,15 +52,15 @@ class PsfFitting(object):
 
     @staticmethod
     def calc_cornermask(kernelsize, psf_symmetry):
-        """
-
-        calculate the completeness numerically when rotational symmetry is imposed. This is the simplest 'mask' which throws away
-        anywhere the rotations are not fully complete ->e.g. in the corners. This ONLY accounts for information loss in
+        """Calculate the completeness numerically when rotational symmetry is imposed.
+        This is the simplest 'mask' which throws away anywhere the rotations are not
+        fully complete ->e.g. in the corners. This ONLY accounts for information loss in
         corners, not due e.g. to losses at the edges of the images.
 
         :param kernelsize: int, size of kernel array
         :param psf_symmetry: int, the symmetry being imposed on the data
-        :return: mask showing where the psf with symmetry n is incomplete due to rotation.
+        :return: mask showing where the psf with symmetry n is incomplete due to
+            rotation.
         """
         angle = 360.0 / psf_symmetry
 
@@ -348,11 +348,12 @@ class PsfFitting(object):
         return kwargs_psf_new, logL_after, error_map
 
     def image_single_point_source(self, image_model_class, kwargs_params):
-        """
-        return model without including the point source contributions as a list (for each point source individually)
+        """Return model without including the point source contributions as a list (for
+        each point source individually)
 
         :param image_model_class: ImageModel class instance
-        :param kwargs_params: keyword arguments of model component keyword argument lists
+        :param kwargs_params: keyword arguments of model component keyword argument
+            lists
         :return: list of images with point source isolated
         """
         # reconstructed model with given psf
@@ -522,13 +523,12 @@ class PsfFitting(object):
 
     @staticmethod
     def point_like_source_cutouts(x_pos, y_pos, image_list, cutout_size):
-        """
-        cutouts of point-like objects
+        """Cutouts of point-like objects.
 
         :param x_pos: list of image positions in pixel units
         :param y_pos: list of image position in pixel units
-        :param image_list: list of 2d numpy arrays with cleaned images, with all contaminating sources removed except
-         the point-like object to be cut out.
+        :param image_list: list of 2d numpy arrays with cleaned images, with all
+            contaminating sources removed except the point-like object to be cut out.
         :param cutout_size: odd integer, size of cutout.
         :return: list of cutouts
         """
@@ -604,21 +604,23 @@ class PsfFitting(object):
         corner_mask=None,
     ):
         ## TODO: Account for image edges/masked pixels.
-        """
-        updates psf estimate based on old kernel and several new estimates
+        """Updates psf estimate based on old kernel and several new estimates.
 
-        :param kernel_list_new: list of new PSF kernels estimated from the point sources in the image (un-normalized)
+        :param kernel_list_new: list of new PSF kernels estimated from the point sources
+            in the image (un-normalized)
         :param kernel_old: old PSF kernel
-        :param factor: weight of updated estimate based on new and old estimate, factor=1 means new estimate,
-         factor=0 means old estimate
+        :param factor: weight of updated estimate based on new and old estimate,
+            factor=1 means new estimate, factor=0 means old estimate
         :param stacking_option: option of stacking, mean or median
         :param symmetry: imposed symmetry of PSF estimate
-        :param corner_symmetry: int, if the imposed symmetry is an odd number, the edges of the reconstructed PSF in its default form will be
-         clipped at the corners. corner_symmetry
-         1) tracks where the residuals are being clipped by the imposed symmetry and then
-         2) creates a psf with symmetry=corner symmetry which is either 1 or 360/symm = n*90. (e.g for a symmetry 6 psf you could use symmetry 2 in the corners).
-         3) adds the corner_symmetry psf (which has information at the corners) to the odd symmetry PSF, in the regions
-         where the odd-symmetry PSF does not have complete information.
+        :param corner_symmetry: int, if the imposed symmetry is an odd number, the edges
+            of the reconstructed PSF in its default form will be clipped at the corners.
+            corner_symmetry 1) tracks where the residuals are being clipped by the
+            imposed symmetry and then 2) creates a psf with symmetry=corner symmetry
+            which is either 1 or 360/symm = n*90. (e.g for a symmetry 6 psf you could
+            use symmetry 2 in the corners). 3) adds the corner_symmetry psf (which has
+            information at the corners) to the odd symmetry PSF, in the regions where
+            the odd-symmetry PSF does not have complete information.
         :return: updated PSF estimate
         """
         ## keep_corners is a boolean which tracks whether to calc PSF separately in the corners for odd symmetry rotations.
@@ -699,8 +701,8 @@ class PsfFitting(object):
         supersampling_factor,
         error_map_radius=None,
     ):
-        """
-        relative uncertainty in the psf model (in quadrature) per pixel based on residuals achieved in the image
+        """Relative uncertainty in the psf model (in quadrature) per pixel based on
+        residuals achieved in the image.
 
         :param psf_kernel: PSF kernel (super-sampled)
         :param psf_kernel_list: list of individual best PSF kernel estimates
@@ -709,7 +711,8 @@ class PsfFitting(object):
         :param point_amp: image amplitude
         :param supersampling_factor: super-sampling factor
         :param error_map_radius: radius (in angle) to cut the error map
-        :return: psf error map such that square of the uncertainty gets boosted by error_map * (psf * amp)**2
+        :return: psf error map such that square of the uncertainty gets boosted by
+            error_map * (psf * amp)**2
         """
         kernel_low = kernel_util.degrade_kernel(psf_kernel, supersampling_factor)
         error_map_list = np.zeros(
@@ -763,20 +766,25 @@ class PsfFitting(object):
         error_map_radius=None,
         block_center_neighbour=0,
     ):
-        """
-        provides a psf_error_map based on the goodness of fit of the given PSF kernel on the point source cutouts,
-        their estimated amplitudes and positions
+        """Provides a psf_error_map based on the goodness of fit of the given PSF kernel
+        on the point source cutouts, their estimated amplitudes and positions.
 
         :param kernel: PSF kernel
-        :param star_cutout_list: list of 2d arrays of cutouts of the point sources with all other model components subtracted
+        :param star_cutout_list: list of 2d arrays of cutouts of the point sources with
+            all other model components subtracted
         :param amp: list of amplitudes of the estimated PSF kernel
-        :param x_pos: pixel position (in original data unit, not in cutout) of the point sources (same order as amp and star cutouts)
-        :param y_pos: pixel position (in original data unit, not in cutout) of the point sources (same order as amp and star cutouts)
-        :param error_map_radius: float, radius (in arc seconds) of the outermost error in the PSF estimate (e.g. to avoid double counting of overlapping PSF erros)
-        :param block_center_neighbour: angle, radius of neighbouring point sources around their centers the estimates
-         is ignored. Default is zero, meaning a not optimal subtraction of the neighbouring point sources might
-         contaminate the estimate.
-        :return: relative uncertainty in the psf model (in quadrature) per pixel based on residuals achieved in the image
+        :param x_pos: pixel position (in original data unit, not in cutout) of the point
+            sources (same order as amp and star cutouts)
+        :param y_pos: pixel position (in original data unit, not in cutout) of the point
+            sources (same order as amp and star cutouts)
+        :param error_map_radius: float, radius (in arc seconds) of the outermost error
+            in the PSF estimate (e.g. to avoid double counting of overlapping PSF erros)
+        :param block_center_neighbour: angle, radius of neighbouring point sources
+            around their centers the estimates is ignored. Default is zero, meaning a
+            not optimal subtraction of the neighbouring point sources might contaminate
+            the estimate.
+        :return: relative uncertainty in the psf model (in quadrature) per pixel based
+            on residuals achieved in the image
         """
         error_map_list = np.zeros((len(star_cutout_list), len(kernel), len(kernel)))
         mask_list = np.zeros((len(star_cutout_list), len(kernel), len(kernel)))

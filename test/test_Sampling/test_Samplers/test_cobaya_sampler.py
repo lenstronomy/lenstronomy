@@ -23,17 +23,13 @@ def import_fixture(simple_einstein_ring_likelihood):
 
 
 class TestCobayaSampler(object):
-    """
-    test cobaya
-    """
+    """Test cobaya."""
 
     def setup_method(self):
         pass
 
     def test_sampler(self, import_fixture):
-        """
-        function to test the sampler
-        """
+        """Function to test the sampler."""
         # test the sampler
         sampler, likelihood, means, sigmas = import_fixture
 

@@ -4,17 +4,15 @@ __all__ = ["LOS"]
 
 
 class LOS(object):
-    """
-    Class allowing one to add tidal line-of-sight effects (convergence and
-    shear) to single-plane lensing. Stricly speaking, this is not a profile,
-    but when present in list of lens models, it is automatically recognised by
-    ModelAPI(), which sets the flag los_effects to True, and thereby leads
-    LensModel to use SinglePlaneLOS() instead of SinglePlane(). It is however
-    incompatible with MultiPlane().
+    """Class allowing one to add tidal line-of-sight effects (convergence and shear) to
+    single-plane lensing. Stricly speaking, this is not a profile, but when present in
+    list of lens models, it is automatically recognised by ModelAPI(), which sets the
+    flag los_effects to True, and thereby leads LensModel to use SinglePlaneLOS()
+    instead of SinglePlane(). It is however incompatible with MultiPlane().
 
-    The key-word arguments are the three line-of-sight convergences, the
-    two components of the three line-of-sight shears, and the three
-    line-of-sight rotations, all defined with the convention of
+    The key-word arguments are the three line-of-sight convergences, the two components
+    of the three line-of-sight shears, and the three line-of-sight rotations, all
+    defined with the convention of
     https://arxiv.org/abs/2104.08883:
     kappa_od, kappa_os, kappa_ds, gamma1_od, gamma2_od, gamma1_os, gamma2_os,
     gamma1_ds, gamma2_ds, omega_od, omega_os, omega_ds
@@ -48,9 +46,8 @@ class LOS(object):
 
     @staticmethod
     def distort_vector(x, y, kappa=0, gamma1=0, gamma2=0, omega=0):
-        """
-        This function applies a distortion matrix to a vector (x, y) and
-        returns (x', y') as follows:
+        """This function applies a distortion matrix to a vector (x, y) and returns (x',
+        y') as follows:
 
         .. math::
             \\begin{pmatrix}
@@ -86,9 +83,8 @@ class LOS(object):
 
     @staticmethod
     def left_multiply(f_xx, f_xy, f_yx, f_yy, kappa=0, gamma1=0, gamma2=0, omega=0):
-        """
-        Left-multiplies the Hessian matrix of a lens with a distortion matrix
-        with convergence kappa, shear gamma1, gamma2, and rotation omega:
+        """Left-multiplies the Hessian matrix of a lens with a distortion matrix with
+        convergence kappa, shear gamma1, gamma2, and rotation omega:
 
         .. math::
             \\mathsf{H}'
@@ -120,9 +116,8 @@ class LOS(object):
 
     @staticmethod
     def right_multiply(f_xx, f_xy, f_yx, f_yy, kappa=0, gamma1=0, gamma2=0, omega=0):
-        """
-        Right-multiplies the Hessian matrix of a lens with a distortion matrix
-        with convergence kappa and shear gamma1, gamma2:
+        """Right-multiplies the Hessian matrix of a lens with a distortion matrix with
+        convergence kappa and shear gamma1, gamma2:
 
         .. math::
             \\mathsf{H}'
@@ -153,12 +148,12 @@ class LOS(object):
         return f__xx, f__xy, f__yx, f__yy
 
     def set_static(self, **kwargs):
-        """
-        pre-computes certain computations that do only relate to the lens model parameters and not to the specific
-        position where to evaluate the lens model
+        """Pre-computes certain computations that do only relate to the lens model
+        parameters and not to the specific position where to evaluate the lens model.
 
         :param kwargs: lens model parameters
-        :return: no return, for certain lens model some private self variables are initiated
+        :return: no return, for certain lens model some private self variables are
+            initiated
         """
         pass
 

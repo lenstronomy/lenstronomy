@@ -5,10 +5,7 @@ __all__ = ["PriorLikelihood"]
 
 
 class PriorLikelihood(object):
-    """
-    class containing additional Gaussian priors to be folded into the likelihood
-
-    """
+    """Class containing additional Gaussian priors to be folded into the likelihood."""
 
     def __init__(
         self,
@@ -203,8 +200,7 @@ class PriorLikelihood(object):
 
     @staticmethod
     def _prior_kwargs(kwargs, prior_list):
-        """
-        prior computation for a keyword argument (not list thereof)
+        """Prior computation for a keyword argument (not list thereof)
 
         :param kwargs: keyword argument
         :return: logL
@@ -239,8 +235,7 @@ class PriorLikelihood(object):
 
     @staticmethod
     def _prior_lognormal_kwargs(kwargs, prior_list):
-        """
-        prior computation for a keyword argument (not list thereof)
+        """Prior computation for a keyword argument (not list thereof)
 
         :param kwargs: keyword argument
         :return: logL

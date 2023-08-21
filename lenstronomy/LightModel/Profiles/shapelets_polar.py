@@ -13,9 +13,7 @@ export, __all__ = exporter()
 
 @export
 class ShapeletsPolar(object):
-    """
-    2D polar Shapelets, see Massey & Refregier 2005
-    """
+    """2D polar Shapelets, see Massey & Refregier 2005."""
 
     param_names = ["amp", "beta", "n", "m", "center_x", "center_y"]
     param_names_latex = {r"$I_0$", r"$\beta$", r"$n$", r"$m$", r"$x_0$", r"$y_0$"}
@@ -37,10 +35,8 @@ class ShapeletsPolar(object):
     }
 
     def __init__(self):
-        """
-        load interpolation of the Hermite polynomials in a range [-30,30] in order n<= 150
-        :return:
-        """
+        """Load interpolation of the Hermite polynomials in a range [-30,30] in order
+        n<= 150 :return:"""
         pass
 
     def function(self, x, y, amp, beta, n, m, complex_bool, center_x, center_y):
@@ -108,8 +104,8 @@ class ShapeletsPolar(object):
         return n
 
     def index2poly(self, index):
-        """
-        manages the convention from an iterative index to the specific polynomial n, m, (real/imaginary part)
+        """Manages the convention from an iterative index to the specific polynomial n,
+        m, (real/imaginary part)
 
         :param index: int, index of list
         :return: n, m bool
@@ -181,8 +177,9 @@ class ShapeletsPolar(object):
 
 @export
 class ShapeletsPolarExp(object):
-    """
-    2D exponential shapelets, Berge et al. 2019
+    """2D exponential shapelets, Berge et al.
+
+    2019
     """
 
     param_names = ["amp", "beta", "n", "m", "center_x", "center_y"]
@@ -204,10 +201,8 @@ class ShapeletsPolarExp(object):
     }
 
     def __init__(self):
-        """
-        load interpolation of the Hermite polynomials in a range [-30,30] in order n<= 150
-        :return:
-        """
+        """Load interpolation of the Hermite polynomials in a range [-30,30] in order
+        n<= 150 :return:"""
         pass
 
     def function(self, x, y, amp, beta, n, m, complex_bool, center_x, center_y):
@@ -319,9 +314,7 @@ class ShapeletsPolarExp(object):
 
 @export
 class ShapeletSetPolar(object):
-    """
-    class to operate on entire shapelet set
-    """
+    """Class to operate on entire shapelet set."""
 
     param_names = ["amp", "n_max", "beta", "center_x", "center_y"]
     lower_limit_default = {"beta": 0, "center_x": -100, "center_y": -100}
@@ -409,8 +402,8 @@ class ShapeletSetPolar(object):
 
     @staticmethod
     def _pre_calc_function(L_list, i):
-        """
-        evaluates the shapelet function based on the pre-calculated components in _pre_calc()
+        """Evaluates the shapelet function based on the pre-calculated components in
+        _pre_calc()
 
         :param L_list: pre-calculated components
         :param i: index conventions of the sequence of basis components
@@ -419,9 +412,9 @@ class ShapeletSetPolar(object):
         return L_list[i]
 
     def decomposition(self, image, x, y, n_max, beta, deltaPix, center_x=0, center_y=0):
-        """
-        decomposes an image into the shapelet coefficients in same order as for the function call
-        :param image:
+        """Decomposes an image into the shapelet coefficients in same order as for the
+        function call :param image:
+
         :param x:
         :param y:
         :param n_max:

@@ -18,9 +18,7 @@ except:
 
 
 class TestSPEMD(object):
-    """
-    tests the Gaussian methods
-    """
+    """Tests the Gaussian methods."""
 
     def setup_method(self):
         from lenstronomy.LensModel.Profiles.pemd import PEMD

@@ -11,9 +11,7 @@ import pytest
 
 
 class TestGaussianEllipseKappa(object):
-    """
-    This class tests the methods for elliptical Gaussian convergence.
-    """
+    """This class tests the methods for elliptical Gaussian convergence."""
 
     def setup_method(self):
         """
@@ -24,8 +22,7 @@ class TestGaussianEllipseKappa(object):
         self.gaussian_kappa_ellipse = GaussianEllipseKappa()
 
     def test_function(self):
-        """
-        Test the `function()` method at the spherical limit.
+        """Test the `function()` method at the spherical limit.
 
         :return:
         :rtype:
@@ -60,8 +57,7 @@ class TestGaussianEllipseKappa(object):
         npt.assert_almost_equal(f_, f_sphere, decimal=4)
 
     def test_derivatives(self):
-        """
-        Test the `derivatives()` method at the spherical limit.
+        """Test the `derivatives()` method at the spherical limit.
 
         :return:
         :rtype:
@@ -88,8 +84,7 @@ class TestGaussianEllipseKappa(object):
         npt.assert_almost_equal(f_y, f_y_sphere, decimal=4)
 
     def test_hessian(self):
-        """
-        Test the `hessian()` method at the spherical limit.
+        """Test the `hessian()` method at the spherical limit.
 
         :return:
         :rtype:
@@ -126,8 +121,7 @@ class TestGaussianEllipseKappa(object):
         npt.assert_almost_equal(f_xy, f_xy_sphere, decimal=4)
 
     def test_density_2d(self):
-        """
-        Test the `density_2d()` method at the spherical limit.
+        """Test the `density_2d()` method at the spherical limit.
 
         :return:
         :rtype:
@@ -147,8 +141,7 @@ class TestGaussianEllipseKappa(object):
         npt.assert_almost_equal(f_, f_sphere, decimal=4)
 
     def test_w_f_approx(self):
-        """
-        Test the `w_f_approx()` method with values computed using
+        """Test the `w_f_approx()` method with values computed using
         `scipy.special.wofz()`.
 
         :return:

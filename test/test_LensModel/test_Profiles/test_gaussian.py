@@ -9,9 +9,7 @@ import pytest
 
 
 class TestGaussian(object):
-    """
-    tests the Gaussian methods
-    """
+    """Tests the Gaussian methods."""
 
     def setup_method(self):
         self.Gaussian = Gaussian()
@@ -80,9 +78,7 @@ class TestGaussian(object):
 
 
 class TestGaussianKappa(object):
-    """
-    test the Gaussian with Gaussian kappa
-    """
+    """Test the Gaussian with Gaussian kappa."""
 
     def setup_method(self):
         self.gaussian_kappa = GaussianKappa()

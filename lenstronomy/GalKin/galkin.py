@@ -7,8 +7,8 @@ __all__ = ["Galkin"]
 
 
 class Galkin(GalkinModel, GalkinObservation):
-    """
-    Major class to compute velocity dispersion measurements given light and mass models
+    """Major class to compute velocity dispersion measurements given light and mass
+    models.
 
     The class supports any mass and light distribution (and superposition thereof) that has a 3d correspondance in their
     2d lens model distribution. For models that do not have this correspondance, you may want to apply a
@@ -45,7 +45,6 @@ class Galkin(GalkinModel, GalkinObservation):
 
     These numerical options should be chosen to allow for a converged result (within your tolerance) but not too
     conservative to impact too much the computational cost. Reasonable values might depend on the specific problem.
-
     """
 
     def __init__(
@@ -81,14 +80,17 @@ class Galkin(GalkinModel, GalkinObservation):
     def dispersion(
         self, kwargs_mass, kwargs_light, kwargs_anisotropy, sampling_number=1000
     ):
-        """
-        computes the averaged LOS velocity dispersion in the slit (convolved)
+        """Computes the averaged LOS velocity dispersion in the slit (convolved)
 
-        :param kwargs_mass: mass model parameters (following lenstronomy lens model conventions)
-        :param kwargs_light: deflector light parameters (following lenstronomy light model conventions)
-        :param kwargs_anisotropy: anisotropy parameters, may vary according to anisotropy type chosen.
-         We refer to the Anisotropy() class for details on the parameters.
-        :param sampling_number: int, number of spectral sampling of the light distribution
+        :param kwargs_mass: mass model parameters (following lenstronomy lens model
+            conventions)
+        :param kwargs_light: deflector light parameters (following lenstronomy light
+            model conventions)
+        :param kwargs_anisotropy: anisotropy parameters, may vary according to
+            anisotropy type chosen. We refer to the Anisotropy() class for details on
+            the parameters.
+        :param sampling_number: int, number of spectral sampling of the light
+            distribution
         :return: integrated LOS velocity dispersion in units [km/s]
         """
         sigma2_IR_sum = 0
@@ -112,14 +114,15 @@ class Galkin(GalkinModel, GalkinObservation):
         num_kin_sampling=1000,
         num_psf_sampling=100,
     ):
-        """
-        computes the velocity dispersion in each Integral Field Unit
+        """Computes the velocity dispersion in each Integral Field Unit.
 
         :param kwargs_mass: keyword arguments of the mass model
         :param kwargs_light: keyword argument of the light model
         :param kwargs_anisotropy: anisotropy keyword arguments
-        :param num_kin_sampling: int, number of draws from a kinematic prediction of a LOS
-        :param num_psf_sampling: int, number of displacements/render from a spectra to be displaced on the IFU
+        :param num_kin_sampling: int, number of draws from a kinematic prediction of a
+            LOS
+        :param num_psf_sampling: int, number of displacements/render from a spectra to
+            be displaced on the IFU
         :return: ordered array of velocity dispersions [km/s] for each unit
         """
         # draw from light profile (3d and 2d option)

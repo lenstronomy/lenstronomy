@@ -7,21 +7,15 @@ __all__ = ["SinglePlane"]
 
 
 class SinglePlane(ProfileListBase):
-    """
-    class to handle an arbitrary list of lens models in a single lensing plane
-    """
+    """Class to handle an arbitrary list of lens models in a single lensing plane."""
 
     def ray_shooting(self, x, y, kwargs, k=None):
-        """
-        maps image to source position (inverse deflection)
-        :param x: x-position (preferentially arcsec)
-        :type x: numpy array
-        :param y: y-position (preferentially arcsec)
-        :type y: numpy array
-        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
-        :param k: only evaluate the k-th lens model
-        :return: source plane positions corresponding to (x, y) in the image plane
-        """
+        """Maps image to source position (inverse deflection) :param x: x-position
+        (preferentially arcsec) :type x: numpy array :param y: y-position
+        (preferentially arcsec) :type y: numpy array :param kwargs: list of keyword
+        arguments of lens model parameters matching the lens model classes :param k:
+        only evaluate the k-th lens model :return: source plane positions corresponding
+        to (x, y) in the image plane."""
 
         dx, dy = self.alpha(x, y, kwargs, k=k)
         return x - dx, y - dy
@@ -29,16 +23,17 @@ class SinglePlane(ProfileListBase):
     def fermat_potential(
         self, x_image, y_image, kwargs_lens, x_source=None, y_source=None, k=None
     ):
-        """
-        fermat potential (negative sign means earlier arrival time)
+        """Fermat potential (negative sign means earlier arrival time)
 
         :param x_image: image position
         :param y_image: image position
         :param x_source: source position
         :param y_source: source position
-        :param kwargs_lens: list of keyword arguments of lens model parameters matching the lens model classes
+        :param kwargs_lens: list of keyword arguments of lens model parameters matching
+            the lens model classes
         :param k:
-        :return: fermat potential in arcsec**2 without geometry term (second part of Eqn 1 in Suyu et al. 2013) as a list
+        :return: fermat potential in arcsec**2 without geometry term (second part of Eqn
+            1 in Suyu et al. 2013) as a list
         """
 
         potential = self.potential(x_image, y_image, kwargs_lens, k=k)
@@ -48,16 +43,11 @@ class SinglePlane(ProfileListBase):
         return geometry - potential
 
     def potential(self, x, y, kwargs, k=None):
-        """
-        lensing potential
-        :param x: x-position (preferentially arcsec)
-        :type x: numpy array
-        :param y: y-position (preferentially arcsec)
-        :type y: numpy array
-        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
-        :param k: only evaluate the k-th lens model
-        :return: lensing potential in units of arcsec^2
-        """
+        """Lensing potential :param x: x-position (preferentially arcsec) :type x: numpy
+        array :param y: y-position (preferentially arcsec) :type y: numpy array :param
+        kwargs: list of keyword arguments of lens model parameters matching the lens
+        model classes :param k: only evaluate the k-th lens model :return: lensing
+        potential in units of arcsec^2."""
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
         if isinstance(k, int):
@@ -70,16 +60,11 @@ class SinglePlane(ProfileListBase):
         return potential
 
     def alpha(self, x, y, kwargs, k=None):
-        """
-        deflection angles
-        :param x: x-position (preferentially arcsec)
-        :type x: numpy array
-        :param y: y-position (preferentially arcsec)
-        :type y: numpy array
-        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
-        :param k: only evaluate the k-th lens model
-        :return: deflection angles in units of arcsec
-        """
+        """Deflection angles :param x: x-position (preferentially arcsec) :type x: numpy
+        array :param y: y-position (preferentially arcsec) :type y: numpy array :param
+        kwargs: list of keyword arguments of lens model parameters matching the lens
+        model classes :param k: only evaluate the k-th lens model :return: deflection
+        angles in units of arcsec."""
 
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
@@ -97,16 +82,11 @@ class SinglePlane(ProfileListBase):
         return f_x, f_y
 
     def hessian(self, x, y, kwargs, k=None):
-        """
-        hessian matrix
-        :param x: x-position (preferentially arcsec)
-        :type x: numpy array
-        :param y: y-position (preferentially arcsec)
-        :type y: numpy array
-        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
-        :param k: only evaluate the k-th lens model
-        :return: f_xx, f_xy, f_yx, f_yy components
-        """
+        """Hessian matrix :param x: x-position (preferentially arcsec) :type x: numpy
+        array :param y: y-position (preferentially arcsec) :type y: numpy array :param
+        kwargs: list of keyword arguments of lens model parameters matching the lens
+        model classes :param k: only evaluate the k-th lens model :return: f_xx, f_xy,
+        f_yx, f_yy components."""
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
         if isinstance(k, int):
@@ -130,15 +110,16 @@ class SinglePlane(ProfileListBase):
         return f_xx, f_xy, f_yx, f_yy
 
     def mass_3d(self, r, kwargs, bool_list=None):
-        """
-        computes the mass within a 3d sphere of radius r
+        """Computes the mass within a 3d sphere of radius r.
 
         if you want to have physical units of kg, you need to multiply by this factor:
-        const.arcsec ** 2 * self._cosmo.dd * self._cosmo.ds / self._cosmo.dds * const.Mpc * const.c ** 2 / (4 * np.pi * const.G)
-        grav_pot = -const.G * mass_dim / (r * const.arcsec * self._cosmo.dd * const.Mpc)
+        const.arcsec ** 2 * self._cosmo.dd * self._cosmo.ds / self._cosmo.dds *
+        const.Mpc * const.c ** 2 / (4 * np.pi * const.G) grav_pot = -const.G * mass_dim
+        / (r * const.arcsec * self._cosmo.dd * const.Mpc)
 
         :param r: radius (in angular units)
-        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
+        :param kwargs: list of keyword arguments of lens model parameters matching the
+            lens model classes
         :param bool_list: list of bools that are part of the output
         :return: mass (in angular units, modulo epsilon_crit)
         """
@@ -156,8 +137,7 @@ class SinglePlane(ProfileListBase):
         return mass_3d
 
     def mass_2d(self, r, kwargs, bool_list=None):
-        """
-        computes the mass enclosed a projected (2d) radius r
+        """Computes the mass enclosed a projected (2d) radius r.
 
         The mass definition is such that:
 
@@ -185,12 +165,12 @@ class SinglePlane(ProfileListBase):
         return mass_2d
 
     def density(self, r, kwargs, bool_list=None):
-        """
-        3d mass density at radius r
-        The integral in the LOS projection of this quantity results in the convergence quantity.
+        """3d mass density at radius r The integral in the LOS projection of this
+        quantity results in the convergence quantity.
 
         :param r: radius (in angular units)
-        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
+        :param kwargs: list of keyword arguments of lens model parameters matching the
+            lens model classes
         :param bool_list: list of bools that are part of the output
         :return: mass density at radius r (in angular units, modulo epsilon_crit)
         """

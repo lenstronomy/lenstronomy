@@ -7,9 +7,7 @@ import json
 
 
 class KinematicNN:
-    """
-    Class to call the NN to emulate JAM kinematics
-    """
+    """Class to call the NN to emulate JAM kinematics."""
 
     def __init__(self):
         current_directory = os.path.dirname(os.path.abspath(__file__))
@@ -50,11 +48,11 @@ class KinematicNN:
         return ax
 
     def check_bounds(self, input_p, same_orientation=True, verbose=False):
-        """
-        Checks to see if input parameters lie in bounds used for the training set
+        """Checks to see if input parameters lie in bounds used for the training set.
 
         :param input_p: input parameters to NN
-        :param same_orientation: default True; confirms that mass and light have same position angles
+        :param same_orientation: default True; confirms that mass and light have same
+            position angles
         :param verbose: default False; if True prints statements when out of bounds
         """
         within_bounds = True

@@ -4,9 +4,7 @@ __all__ = ["Hernquist", "HernquistEllipse"]
 
 
 class Hernquist(object):
-    """
-    class for pseudo Jaffe lens light (2d projected light/mass distribution
-    """
+    """Class for pseudo Jaffe lens light (2d projected light/mass distribution."""
 
     def __init__(self):
         from lenstronomy.LensModel.Profiles.hernquist import Hernquist as Hernquist_lens
@@ -53,9 +51,8 @@ class Hernquist(object):
 
 
 class HernquistEllipse(object):
-    """
-    class for elliptical pseudo Jaffe lens light (2d projected light/mass distribution
-    """
+    """Class for elliptical pseudo Jaffe lens light (2d projected light/mass
+    distribution."""
 
     param_names = ["amp", "Rs", "e1", "e2", "center_x", "center_y"]
     lower_limit_default = {

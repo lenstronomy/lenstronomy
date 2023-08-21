@@ -7,9 +7,7 @@ import scipy.integrate as integrate
 
 
 class TestNumerics(object):
-    """
-    tests the second derivatives of various lens models
-    """
+    """Tests the second derivatives of various lens models."""
 
     def setup_method(self):
         pass

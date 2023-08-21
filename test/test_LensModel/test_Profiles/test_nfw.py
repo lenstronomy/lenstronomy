@@ -10,9 +10,7 @@ import pytest
 
 
 class TestNFW(object):
-    """
-    tests the Gaussian methods
-    """
+    """Tests the Gaussian methods."""
 
     def setup_method(self):
         self.nfw = NFW()
@@ -309,9 +307,7 @@ class TestNFW(object):
 
 
 class TestMassAngleConversion(object):
-    """
-    test angular to mass unit conversions
-    """
+    """Test angular to mass unit conversions."""
 
     def setup_method(self):
         self.nfw = NFW()

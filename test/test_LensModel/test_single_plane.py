@@ -16,9 +16,7 @@ except:
 
 
 class TestLensModel(object):
-    """
-    tests the source model routines
-    """
+    """Tests the source model routines."""
 
     def setup_method(self):
         self.lensModel = SinglePlane(["GAUSSIAN"])
@@ -102,8 +100,7 @@ class TestLensModel(object):
 
 class TestRaise(unittest.TestCase):
     def test_raise(self):
-        """
-        check whether raises occurs if fastell4py is not installed
+        """Check whether raises occurs if fastell4py is not installed.
 
         :return:
         """

@@ -8,8 +8,8 @@ export, __all__ = exporter()
 
 @export
 def cart2polar(x, y, center_x=0, center_y=0):
-    """
-    transforms cartesian coords [x,y] into polar coords [r,phi] in the frame of the lens center
+    """Transforms cartesian coords [x,y] into polar coords [r,phi] in the frame of the
+    lens center.
 
     :param x: set of x-coordinates
     :type x: array of size (n)
@@ -19,7 +19,7 @@ def cart2polar(x, y, center_x=0, center_y=0):
     :type center_x: float
     :param center_y: rotation point
     :type center_y: float
-    :returns:  array of same size with coords [r,phi]
+    :returns: array of same size with coords [r,phi]
     """
     coord_shift_x = x - center_x
     coord_shift_y = y - center_y
@@ -30,8 +30,8 @@ def cart2polar(x, y, center_x=0, center_y=0):
 
 @export
 def polar2cart(r, phi, center):
-    """
-    transforms polar coords [r,phi] into cartesian coords [x,y] in the frame of the lense center
+    """Transforms polar coords [r,phi] into cartesian coords [x,y] in the frame of the
+    lense center.
 
     :param r: radial coordinate (distance) to the center
     :type r: array of size n or float
@@ -39,7 +39,7 @@ def polar2cart(r, phi, center):
     :type phi: array of size n or float
     :param center: rotation point
     :type center: array of size (2)
-    :returns:  array of same size with coords [x,y]
+    :returns: array of same size with coords [x,y]
     :raises: AttributeError, KeyError
     """
     x = r * np.cos(phi)
@@ -75,8 +75,8 @@ def shear_cartesian2polar(gamma1, gamma2):
 @export
 @jit()
 def phi_q2_ellipticity(phi, q):
-    """
-    transforms orientation angle and axis ratio into complex ellipticity moduli e1, e2
+    """Transforms orientation angle and axis ratio into complex ellipticity moduli e1,
+    e2.
 
     :param phi: angle of orientation (in radian)
     :param q: axis ratio minor axis / major axis
@@ -90,8 +90,7 @@ def phi_q2_ellipticity(phi, q):
 @export
 @jit()
 def ellipticity2phi_q(e1, e2):
-    """
-    transforms complex ellipticity moduli in orientation angle and axis ratio
+    """Transforms complex ellipticity moduli in orientation angle and axis ratio.
 
     :param e1: eccentricity in x-direction
     :param e2: eccentricity in xy-direction
@@ -106,9 +105,8 @@ def ellipticity2phi_q(e1, e2):
 
 @export
 def transform_e1e2_product_average(x, y, e1, e2, center_x, center_y):
-    """
-    maps the coordinates x, y with eccentricities e1 e2 into a new elliptical coordinate system
-    such that R = sqrt(R_major * R_minor)
+    """Maps the coordinates x, y with eccentricities e1 e2 into a new elliptical
+    coordinate system such that R = sqrt(R_major * R_minor)
 
     :param x: x-coordinate
     :param y: y-coordinate
@@ -132,9 +130,8 @@ def transform_e1e2_product_average(x, y, e1, e2, center_x, center_y):
 
 @export
 def transform_e1e2_square_average(x, y, e1, e2, center_x, center_y):
-    """
-    maps the coordinates x, y with eccentricities e1 e2 into a new elliptical coordinate system
-    such that R = sqrt(R_major**2 + R_minor**2)
+    """Maps the coordinates x, y with eccentricities e1 e2 into a new elliptical
+    coordinate system such that R = sqrt(R_major**2 + R_minor**2)
 
     :param x: x-coordinate
     :param y: y-coordinate
@@ -156,8 +153,7 @@ def transform_e1e2_square_average(x, y, e1, e2, center_x, center_y):
 
 
 def q2e(q):
-    """
-    computes
+    """computes.
 
     .. math::
         e = \\equic \\frac{1 - q^2}{1 + q^2}

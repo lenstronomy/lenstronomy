@@ -9,9 +9,7 @@ __all__ = ["LinearBasis"]
 
 
 class LinearBasis(LightModelBase):
-    """
-    class to handle source and lens light models
-    """
+    """Class to handle source and lens light models."""
 
     def __init__(self, **kwargs):
         """
@@ -22,8 +20,7 @@ class LinearBasis(LightModelBase):
 
     @property
     def param_name_list(self):
-        """
-        returns the list of all parameter names
+        """Returns the list of all parameter names.
 
         :return: list of list of strings (for each light model separately)
         """
@@ -34,8 +31,7 @@ class LinearBasis(LightModelBase):
 
     @property
     def param_name_list_latex(self):
-        """
-        returns the list of all parameter names in LateX style
+        """Returns the list of all parameter names in LateX style.
 
         :return: list of list of strings (for each light model separately)
         """
@@ -48,8 +44,7 @@ class LinearBasis(LightModelBase):
         return name_list
 
     def functions_split(self, x, y, kwargs_list, k=None):
-        """
-        split model in different components
+        """Split model in different components.
 
         :param x: coordinate in units of arcsec relative to the center of the image
         :param y: coordinate in units of arcsec relative to the center of the image
@@ -131,8 +126,8 @@ class LinearBasis(LightModelBase):
         return n_list
 
     def num_param_linear_list(self, kwargs_list):
-        """
-        returns the list (in order of the light profiles) of the number of linear components per model
+        """Returns the list (in order of the light profiles) of the number of linear
+        components per model.
 
         :param kwargs_list: list of keyword arguments of the light profiles
         :return: number of linear basis set coefficients
@@ -259,8 +254,8 @@ class LinearBasis(LightModelBase):
         return kwargs_fixed_list
 
     def linear_param_from_kwargs(self, kwargs_list):
-        """
-        inverse function of update_linear() returning the linear amplitude list for the keyword argument list
+        """Inverse function of update_linear() returning the linear amplitude list for
+        the keyword argument list.
 
         :param kwargs_list: model parameters including the linear amplitude parameters
         :type kwargs_list: list of keyword arguments
@@ -279,9 +274,8 @@ class LinearBasis(LightModelBase):
         return param
 
     def check_positive_flux_profile(self, kwargs_list):
-        """
-        check whether linear amplitude parameter are non-negative for specified list of lens models that have a
-         physical amplitude interpretation
+        """Check whether linear amplitude parameter are non-negative for specified list
+        of lens models that have a physical amplitude interpretation.
 
         :param kwargs_list: light model parameter keyword argument list
         :return: bool, if True, no specified model has negative flux

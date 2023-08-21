@@ -17,9 +17,7 @@ from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 
 
 class TestJointLinear(object):
-    """
-    tests the source model routines
-    """
+    """Tests the source model routines."""
 
     def setup_method(self):
         # data specifics

@@ -12,8 +12,7 @@ __all__ = ["NautilusSampler"]
 
 
 class NautilusSampler(NestedSampler):
-    """
-    Wrapper for the nautilus sampler by Johannes U. Lange.
+    """Wrapper for the nautilus sampler by Johannes U. Lange.
 
     paper : https://arxiv.org/abs/2306.16923
     doc : https://nautilus-sampler.readthedocs.io
@@ -69,8 +68,7 @@ class NautilusSampler(NestedSampler):
         )
 
     def run(self, **kwargs):
-        """
-        run the nautilus nested sampler
+        """Run the nautilus nested sampler.
 
         see https://nautilus-sampler.readthedocs.io for content of kwargs
 

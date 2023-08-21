@@ -10,9 +10,8 @@ __all__ = ["SersicEllipseKappa"]
 
 
 class SersicEllipseKappa(LensProfileBase):
-    """
-    this class contains the function and the derivatives of an elliptical sersic profile
-    with the ellipticity introduced in the convergence (not the potential).
+    """This class contains the function and the derivatives of an elliptical sersic
+    profile with the ellipticity introduced in the convergence (not the potential).
 
     This requires the use of numerical integrals (Keeton 2004)
     """
@@ -133,9 +132,8 @@ class SersicEllipseKappa(LensProfileBase):
         return alpha_x, alpha_y
 
     def hessian(self, x, y, n_sersic, R_sersic, k_eff, e1, e2, center_x=0, center_y=0):
-        """
-        returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
-        """
+        """Returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx,
+        d^f/dy^2."""
         alpha_ra, alpha_dec = self.derivatives(
             x, y, n_sersic, R_sersic, k_eff, e1, e2, center_x, center_y
         )

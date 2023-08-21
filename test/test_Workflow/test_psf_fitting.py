@@ -17,9 +17,7 @@ from lenstronomy.Data.psf import PSF
 
 
 class TestPSFIteration(object):
-    """
-    tests the source model routines
-    """
+    """Tests the source model routines."""
 
     def setup_method(self):
         # data specifics
@@ -295,9 +293,7 @@ class TestPSFIteration(object):
 
 
 class TestPSFIterationOld(object):
-    """
-    tests the source model routines
-    """
+    """Tests the source model routines."""
 
     def setup_method(self):
         # data specifics

@@ -21,10 +21,10 @@ def plot_quasar_images(
     size_scale=None,
     amp_scale=None,
 ):
-    """
-    This function plots the surface brightness in the image plane of a background source modeled as either a single
-    Gaussian or two Gaussian light profiles. The flux is computed inside a circular aperture with radius
-    grid_radius_arcsec. If grid_radius_arcsec is not specified a default value will be assumed.
+    """This function plots the surface brightness in the image plane of a background
+    source modeled as either a single Gaussian or two Gaussian light profiles. The flux
+    is computed inside a circular aperture with radius grid_radius_arcsec. If
+    grid_radius_arcsec is not specified a default value will be assumed.
 
     :param lens_model: an instance of LensModel
     :param x_image: a list or array of x coordinates [units arcsec]
@@ -32,21 +32,22 @@ def plot_quasar_images(
     :param kwargs_lens: keyword arguments for the lens model
     :param source_fwhm_parsec: the size of the background source [units parsec]
     :param z_source: the source redshift
-    :param cosmo: (optional) an instance of astropy.cosmology; if not specified, a default cosmology will be used
-    :param grid_resolution: the grid resolution in units arcsec/pixel; if not specified, an appropriate value will
-     be estimated from the source size
-    :param grid_radius_arcsec: (optional) the size of the ray tracing region in arcsec; if not specified, an appropriate value
-     will be estimated from the source size
-    :param source_light_model: the model for background source light; currently implemented are 'SINGLE_GAUSSIAN' and
-     'DOUBLE_GAUSSIAN'.
-    :param dx: used with source model 'DOUBLE_GAUSSIAN', the offset of the second source light profile from the first
-     [arcsec]
-    :param dy: used with source model 'DOUBLE_GAUSSIAN', the offset of the second source light profile from the first
-     [arcsec]
-    :param size_scale: used with source model 'DOUBLE_GAUSSIAN', the size of the second source light profile relative
-     to the first
-    :param amp_scale: used with source model 'DOUBLE_GAUSSIAN', the peak brightness of the second source light profile
-     relative to the first
+    :param cosmo: (optional) an instance of astropy.cosmology; if not specified, a
+        default cosmology will be used
+    :param grid_resolution: the grid resolution in units arcsec/pixel; if not specified,
+        an appropriate value will be estimated from the source size
+    :param grid_radius_arcsec: (optional) the size of the ray tracing region in arcsec;
+        if not specified, an appropriate value will be estimated from the source size
+    :param source_light_model: the model for background source light; currently
+        implemented are 'SINGLE_GAUSSIAN' and 'DOUBLE_GAUSSIAN'.
+    :param dx: used with source model 'DOUBLE_GAUSSIAN', the offset of the second source
+        light profile from the first [arcsec]
+    :param dy: used with source model 'DOUBLE_GAUSSIAN', the offset of the second source
+        light profile from the first [arcsec]
+    :param size_scale: used with source model 'DOUBLE_GAUSSIAN', the size of the second
+        source light profile relative to the first
+    :param amp_scale: used with source model 'DOUBLE_GAUSSIAN', the peak brightness of
+        the second source light profile relative to the first
     :return: Four images of the background source in the image plane
     """
 

@@ -9,9 +9,7 @@ export, __all__ = exporter()
 
 @export
 class Slit(object):
-    """
-    Slit aperture description
-    """
+    """Slit aperture description."""
 
     def __init__(self, length, width, center_ra=0, center_dec=0, angle=0):
         """
@@ -49,8 +47,7 @@ class Slit(object):
 
     @property
     def num_segments(self):
-        """
-        number of segments with separate measurements of the velocity dispersion
+        """Number of segments with separate measurements of the velocity dispersion.
 
         :return: int
         """
@@ -83,9 +80,8 @@ def slit_select(ra, dec, length, width, center_ra=0, center_dec=0, angle=0):
 
 @export
 class Frame(object):
-    """
-    rectangular box with a hole in the middle (also rectangular), effectively a frame
-    """
+    """Rectangular box with a hole in the middle (also rectangular), effectively a
+    frame."""
 
     def __init__(self, width_outer, width_inner, center_ra=0, center_dec=0, angle=0):
         """
@@ -123,8 +119,7 @@ class Frame(object):
 
     @property
     def num_segments(self):
-        """
-        number of segments with separate measurements of the velocity dispersion
+        """Number of segments with separate measurements of the velocity dispersion.
 
         :return: int
         """
@@ -158,9 +153,7 @@ def frame_select(ra, dec, width_outer, width_inner, center_ra=0, center_dec=0, a
 
 @export
 class Shell(object):
-    """
-    Shell aperture
-    """
+    """Shell aperture."""
 
     def __init__(self, r_in, r_out, center_ra=0, center_dec=0):
         """
@@ -189,8 +182,7 @@ class Shell(object):
 
     @property
     def num_segments(self):
-        """
-        number of segments with separate measurements of the velocity dispersion
+        """Number of segments with separate measurements of the velocity dispersion.
 
         :return: int
         """
@@ -220,9 +212,8 @@ def shell_select(ra, dec, r_in, r_out, center_ra=0, center_dec=0):
 
 @export
 class IFUShells(object):
-    """
-    class for an Integral Field Unit spectrograph with azimuthal shells where the kinematics are measured
-    """
+    """Class for an Integral Field Unit spectrograph with azimuthal shells where the
+    kinematics are measured."""
 
     def __init__(self, r_bins, center_ra=0, center_dec=0):
         """
@@ -248,10 +239,8 @@ class IFUShells(object):
 
     @property
     def num_segments(self):
-        """
-        number of segments with separate measurements of the velocity dispersion
-        :return: int
-        """
+        """Number of segments with separate measurements of the velocity dispersion
+        :return: int."""
         return len(self._r_bins) - 1
 
 

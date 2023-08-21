@@ -5,9 +5,8 @@ __all__ = ["Hernquist"]
 
 
 class Hernquist(LensProfileBase):
-    """
-    class to compute the Hernquist 1990 model, which is in 3d:
-    rho(r) = rho0 / (r/Rs * (1 + (r/Rs))**3)
+    """Class to compute the Hernquist 1990 model, which is in 3d: rho(r) = rho0 / (r/Rs
+    * (1 + (r/Rs))**3)
 
     in lensing terms, the normalization parameter 'sigma0' is defined such that the deflection at projected RS leads to
     alpha = 2./3 * Rs * sigma0
@@ -34,8 +33,6 @@ class Hernquist(LensProfileBase):
     >>> from lenstronomy.LensModel.Profiles.hernquist import Hernquist
     >>> hernquist = Hernquist()
     >>> alpha_x, alpha_y = hernquist.derivatives(x=1, y=1, Rs=rs_angle, sigma0=sigma0, center_x=0, center_y=0)
-
-
     """
 
     _diff = 0.00001
@@ -46,8 +43,7 @@ class Hernquist(LensProfileBase):
 
     @staticmethod
     def density(r, rho0, Rs):
-        """
-        computes the 3-d density
+        """Computes the 3-d density.
 
         :param r: 3-d radius
         :param rho0: density normalization
@@ -58,9 +54,8 @@ class Hernquist(LensProfileBase):
         return rho
 
     def density_lens(self, r, sigma0, Rs):
-        """
-        Density as a function of 3d radius in lensing parameters
-        This function converts the lensing definition sigma0 into the 3d density
+        """Density as a function of 3d radius in lensing parameters This function
+        converts the lensing definition sigma0 into the 3d density.
 
         :param r: 3d radius
         :param sigma0: rho0 * Rs (units of projected density)
@@ -71,8 +66,7 @@ class Hernquist(LensProfileBase):
         return self.density(r, rho0, Rs)
 
     def density_2d(self, x, y, rho0, Rs, center_x=0, center_y=0):
-        """
-        projected density along the line of sight at coordinate (x, y)
+        """Projected density along the line of sight at coordinate (x, y)
 
         :param x: x-coordinate
         :param y: y-coordinate
@@ -97,10 +91,10 @@ class Hernquist(LensProfileBase):
 
     @staticmethod
     def mass_3d(r, rho0, Rs):
-        """
-        mass enclosed a 3d sphere or radius r
+        """Mass enclosed a 3d sphere or radius r.
 
-        :param r: 3-d radius within the mass is integrated (same distance units as density definition)
+        :param r: 3-d radius within the mass is integrated (same distance units as
+            density definition)
         :param rho0: density normalization
         :param Rs: Hernquist radius
         :return: enclosed mass
@@ -109,9 +103,8 @@ class Hernquist(LensProfileBase):
         return mass_3d
 
     def mass_3d_lens(self, r, sigma0, Rs):
-        """
-        mass enclosed a 3d sphere or radius r for lens parameterisation
-        This function converts the lensing definition sigma0 into the 3d density
+        """Mass enclosed a 3d sphere or radius r for lens parameterisation This function
+        converts the lensing definition sigma0 into the 3d density.
 
         :param r: radius
         :param sigma0: rho0 * Rs (units of projected density)
@@ -122,8 +115,7 @@ class Hernquist(LensProfileBase):
         return self.mass_3d(r, rho0, Rs)
 
     def mass_2d(self, r, rho0, Rs):
-        """
-        mass enclosed projected 2d sphere of radius r
+        """Mass enclosed projected 2d sphere of radius r.
 
         :param r: projected radius
         :param rho0: density normalization
@@ -135,9 +127,9 @@ class Hernquist(LensProfileBase):
         return self.mass_2d_lens(r, sigma0, Rs)
 
     def mass_2d_lens(self, r, sigma0, Rs):
-        """
-        mass enclosed projected 2d sphere of radius r
-        Same as mass_2d but with input normalization in units of projected density
+        """Mass enclosed projected 2d sphere of radius r Same as mass_2d but with input
+        normalization in units of projected density.
+
         :param r: projected radius
         :param sigma0: rho0 * Rs (units of projected density)
         :param Rs: Hernquist radius
@@ -150,23 +142,18 @@ class Hernquist(LensProfileBase):
 
     @staticmethod
     def mass_tot(rho0, Rs):
-        """
-        total mass within the profile
-        :param rho0: density normalization
-        :param Rs: Hernquist radius
-        :return: total mass within profile
-        """
+        """Total mass within the profile :param rho0: density normalization :param Rs:
+        Hernquist radius :return: total mass within profile."""
         m_tot = 2 * np.pi * rho0 * Rs**3
         return m_tot
 
     def function(self, x, y, sigma0, Rs, center_x=0, center_y=0):
-        """
-        lensing potential
+        """Lensing potential.
 
         :param x: x-coordinate position (units of angle)
         :param y: y-coordinate position (units of angle)
-        :param sigma0: normalization parameter defined such that the deflection at projected RS leads to
-         alpha = 2./3 * Rs * sigma0
+        :param sigma0: normalization parameter defined such that the deflection at
+            projected RS leads to alpha = 2./3 * Rs * sigma0
         :param Rs: Hernquist radius in units of angle
         :param center_x: x-center of the profile (units of angle)
         :param center_y: y-center of the profile (units of angle)
@@ -214,13 +201,12 @@ class Hernquist(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, sigma0, Rs, center_x=0, center_y=0):
-        """
-        Hessian terms of the function
+        """Hessian terms of the function.
 
         :param x: x-coordinate position (units of angle)
         :param y: y-coordinate position (units of angle)
-        :param sigma0: normalization parameter defined such that the deflection at projected RS leads to
-         alpha = 2./3 * Rs * sigma0
+        :param sigma0: normalization parameter defined such that the deflection at
+            projected RS leads to alpha = 2./3 * Rs * sigma0
         :param Rs: Hernquist radius in units of angle
         :param center_x: x-center of the profile (units of angle)
         :param center_y: y-center of the profile (units of angle)
@@ -249,22 +235,17 @@ class Hernquist(LensProfileBase):
 
     @staticmethod
     def rho2sigma(rho0, Rs):
-        """
-        converts 3d density into 2d projected density parameter
-        :param rho0: 3d density normalization of Hernquist model
-        :param Rs: Hernquist radius
-        :return: sigma0 defined quantity in projected units
-        """
+        """Converts 3d density into 2d projected density parameter :param rho0: 3d
+        density normalization of Hernquist model :param Rs: Hernquist radius :return:
+        sigma0 defined quantity in projected units."""
         return rho0 * Rs
 
     @staticmethod
     def sigma2rho(sigma0, Rs):
-        """
-        converts projected density parameter (in units of deflection) into 3d density parameter
-        :param sigma0: density defined quantity in projected units
-        :param Rs: Hernquist radius
-        :return: rho0 the 3d density normalization of Hernquist model
-        """
+        """Converts projected density parameter (in units of deflection) into 3d density
+        parameter :param sigma0: density defined quantity in projected units :param Rs:
+        Hernquist radius :return: rho0 the 3d density normalization of Hernquist
+        model."""
         return sigma0 / Rs
 
     def _F(self, X):
@@ -300,8 +281,7 @@ class Hernquist(LensProfileBase):
         return a
 
     def grav_pot(self, x, y, rho0, Rs, center_x=0, center_y=0):
-        """
-        #TODO decide whether these functions are needed or not
+        """#TODO decide whether these functions are needed or not
 
         gravitational potential (modulo 4 pi G and rho0 in appropriate units)
         :param x: x-coordinate position (units of angle)

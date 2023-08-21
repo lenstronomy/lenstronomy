@@ -5,9 +5,7 @@ __all__ = ["TimeDelayLikelihood"]
 
 
 class TimeDelayLikelihood(object):
-    """
-    class to compute the likelihood of a model given a measurement of time delays
-    """
+    """Class to compute the likelihood of a model given a measurement of time delays."""
 
     def __init__(
         self,
@@ -40,13 +38,10 @@ class TimeDelayLikelihood(object):
         self._pointSource = point_source_class
 
     def logL(self, kwargs_lens, kwargs_ps, kwargs_cosmo):
-        """
-        routine to compute the log likelihood of the time delay distance
-        :param kwargs_lens: lens model kwargs list
-        :param kwargs_ps: point source kwargs list
-        :param kwargs_cosmo: cosmology and other kwargs
-        :return: log likelihood of the model given the time delay data
-        """
+        """Routine to compute the log likelihood of the time delay distance :param
+        kwargs_lens: lens model kwargs list :param kwargs_ps: point source kwargs list
+        :param kwargs_cosmo: cosmology and other kwargs :return: log likelihood of the
+        model given the time delay data."""
         x_pos, y_pos = self._pointSource.image_position(
             kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens, original_position=True
         )
@@ -59,11 +54,12 @@ class TimeDelayLikelihood(object):
 
     @staticmethod
     def _logL_delays(delays_model, delays_measured, delays_errors):
-        """
-        log likelihood of modeled delays vs measured time delays under considerations of errors
+        """Log likelihood of modeled delays vs measured time delays under considerations
+        of errors.
 
         :param delays_model: n delays of the model (not relative delays)
-        :param delays_measured: relative delays (1-2,1-3,1-4) relative to the first in the list
+        :param delays_measured: relative delays (1-2,1-3,1-4) relative to the first in
+            the list
         :param delays_errors: gaussian errors on the measured delays
         :return: log likelihood of data given model
         """

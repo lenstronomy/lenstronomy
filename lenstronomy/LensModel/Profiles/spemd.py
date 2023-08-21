@@ -8,10 +8,10 @@ __all__ = ["SPEMD"]
 
 
 class SPEMD(LensProfileBase):
-    """
-    class for smooth power law ellipse mass density profile (SPEMD). This class effectively performs the FASTELL calculations
-    by Renan Barkana. The parameters are changed and represent a spherically averaged Einstein radius an a logarithmic
-    3D mass profile slope.
+    """Class for smooth power law ellipse mass density profile (SPEMD). This class
+    effectively performs the FASTELL calculations by Renan Barkana. The parameters are
+    changed and represent a spherically averaged Einstein radius an a logarithmic 3D
+    mass profile slope.
 
     The SPEMD mass profile is defined as follow:
 
@@ -48,7 +48,6 @@ class SPEMD(LensProfileBase):
 
     .. math::
         s2_{fastell} = s_{lenstronomy}^2 * q
-
     """
 
     param_names = ["theta_E", "gamma", "e1", "e2", "s_scale", "center_x", "center_y"]
@@ -72,7 +71,7 @@ class SPEMD(LensProfileBase):
     }
 
     def __init__(self, suppress_fastell=False):
-        """ """
+        """"""
         try:
             from fastell4py import fastell4py
 
@@ -213,13 +212,13 @@ class SPEMD(LensProfileBase):
     def param_transform(
         self, x, y, theta_E, gamma, e1, e2, s_scale, center_x=0, center_y=0
     ):
-        """
-        transforms parameters in the format of fastell4py
+        """Transforms parameters in the format of fastell4py.
 
         :param x: x-coordinate (angle)
         :param y: y-coordinate (angle)
         :param theta_E: Einstein radius (angle), pay attention to specific definition!
-        :param gamma: logarithmic slope of the power-law profile. gamma=2 corresponds to isothermal
+        :param gamma: logarithmic slope of the power-law profile. gamma=2 corresponds to
+            isothermal
         :param e1: eccentricity component
         :param e2: eccentricity component
         :param s_scale: smoothing scale in the center of the profile
@@ -242,8 +241,8 @@ class SPEMD(LensProfileBase):
 
     @staticmethod
     def convert_params(theta_E, gamma, q, s_scale):
-        """
-        converts parameter definitions into quantities used by the FASTELL fortran library
+        """Converts parameter definitions into quantities used by the FASTELL fortran
+        library.
 
         :param theta_E: Einstein radius
         :param gamma: 3D power-law slope of mass profile
@@ -258,10 +257,10 @@ class SPEMD(LensProfileBase):
 
     @staticmethod
     def is_not_empty(x1, x2):
-        """
-        Check if float or not an empty array
+        """Check if float or not an empty array.
 
-        :return: True if x1 and x2 are either floats/ints or an non-empty array, False if e.g. objects are []
+        :return: True if x1 and x2 are either floats/ints or an non-empty array, False
+            if e.g. objects are []
         :rtype: bool
         """
         assert type(x1) == type(x2)
@@ -276,8 +275,7 @@ class SPEMD(LensProfileBase):
 
     @staticmethod
     def _parameter_constraints(q_fastell, gam, s2, q):
-        """
-        sets bounds to parameters due to numerical stability
+        """Sets bounds to parameters due to numerical stability.
 
         FASTELL has the following definitons:
         The parameters are position (x1,x2), overall factor

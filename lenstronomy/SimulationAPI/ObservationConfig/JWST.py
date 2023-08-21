@@ -28,7 +28,6 @@ NIRCAM_F356W_band_obs = {
     "seeing": None,
     "psf_type": "PIXEL",  # note kernel_point_source (the PSF map) must be provided separately
 }
-
 """
 :keyword exposure_time: exposure time per image (in seconds)
 :keyword sky_brightness: sky brightness (in magnitude per square arcseconds in units of electrons)
@@ -40,9 +39,7 @@ NIRCAM_F356W_band_obs = {
 
 
 class JWST(object):
-    """
-    class contains JWST instrument and observation configurations
-    """
+    """Class contains JWST instrument and observation configurations."""
 
     def __init__(self, band="F200W", psf_type="PIXEL", coadd_years=None):
         """

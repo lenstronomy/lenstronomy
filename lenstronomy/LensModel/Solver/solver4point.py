@@ -10,9 +10,7 @@ __all__ = ["Solver4Point"]
 
 
 class Solver4Point(object):
-    """
-    class to make the constraints for the solver
-    """
+    """Class to make the constraints for the solver."""
 
     def __init__(self, lensModel, solver_type="PROFILE"):
         self._solver_type = solver_type  # supported:
@@ -189,9 +187,8 @@ class Solver4Point(object):
         return kwargs_list
 
     def _extract_array(self, kwargs_list):
-        """
-        inverse of _update_kwargs
-        :param kwargs_list:
+        """Inverse of _update_kwargs :param kwargs_list:
+
         :return:
         """
         if self._solver_type == "PROFILE_SHEAR_GAMMA_PSI":

@@ -10,11 +10,13 @@ __all__ = ["ModelAPI"]
 
 
 class ModelAPI(object):
-    """
-    This class manages the model choices. The role is to return instances of the lenstronomy LightModel, LensModel,
-    PointSource modules according to the options chosen by the user.
-    Currently, all other model choices are equivalent to the ones provided by LightModel, LensModel, PointSource.
-    The current options of the class instance only describe a subset of possibilities.
+    """This class manages the model choices.
+
+    The role is to return instances of the lenstronomy LightModel, LensModel,
+    PointSource modules according to the options chosen by the user. Currently, all
+    other model choices are equivalent to the ones provided by LightModel, LensModel,
+    PointSource. The current options of the class instance only describe a subset of
+    possibilities.
     """
 
     def __init__(
@@ -32,30 +34,36 @@ class ModelAPI(object):
         tabulated_deflection_angles=None,
         observed_convention_index=None,
     ):
-        """
-        # TODO: make inputs follow the kwargs_model of the class_creator instances of 'kwargs_model',
-        # i.e. multi-plane options, perhaps others
+        """# TODO: make inputs follow the kwargs_model of the class_creator instances of
+        'kwargs_model', # i.e. multi-plane options, perhaps others
 
         :param lens_model_list: list of strings with lens model names
-        :param z_lens: redshift of the deflector (only considered when operating in single plane mode).
-         Is only needed for specific functions that require a cosmology.
-        :param z_source: redshift of the source: Needed in multi_plane option only,
-         not required for the core functionalities in the single plane mode. This will be the redshift of the source
-         plane (if not further specified the 'source_redshift_list') and the point source redshift
-         (regardless of 'source_redshift_list')
-        :param lens_redshift_list: list of deflector redshift (corresponding to the lens model list),
-         only applicable in multi_plane mode.
-        :param source_light_model_list: list of strings with source light model names (lensed light profiles)
-        :param lens_light_model_list: list of strings with lens light model names (not lensed light profiles)
+        :param z_lens: redshift of the deflector (only considered when operating in
+            single plane mode). Is only needed for specific functions that require a
+            cosmology.
+        :param z_source: redshift of the source: Needed in multi_plane option only, not
+            required for the core functionalities in the single plane mode. This will be
+            the redshift of the source plane (if not further specified the
+            'source_redshift_list') and the point source redshift (regardless of
+            'source_redshift_list')
+        :param lens_redshift_list: list of deflector redshift (corresponding to the lens
+            model list), only applicable in multi_plane mode.
+        :param source_light_model_list: list of strings with source light model names
+            (lensed light profiles)
+        :param lens_light_model_list: list of strings with lens light model names (not
+            lensed light profiles)
         :param point_source_model_list: list of strings with point source model names
         :param source_redshift_list: list of redshifts of the source profiles (optional)
-        :param cosmo: instance of the astropy cosmology class. If not specified, uses the default cosmology.
-        :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens
-         models. If None, 'z_source' is used.
-        :param tabulated_deflection_angles: a class that returns deflection angles given a set of (x, y) coordinates.
-         Effectively a fixed lens model. See documentation in Profiles.numerical_alpha
-        :param observed_convention_index: a list of indices that correspond to lens models where the center_x,center_y
-         values correspond to the observed (lensed positions), not the physical positions in space
+        :param cosmo: instance of the astropy cosmology class. If not specified, uses
+            the default cosmology.
+        :param z_source_convention: float, redshift of a source to define the reduced
+            deflection angles of the lens models. If None, 'z_source' is used.
+        :param tabulated_deflection_angles: a class that returns deflection angles given
+            a set of (x, y) coordinates. Effectively a fixed lens model. See
+            documentation in Profiles.numerical_alpha
+        :param observed_convention_index: a list of indices that correspond to lens
+            models where the center_x,center_y values correspond to the observed (lensed
+            positions), not the physical positions in space
         """
         if lens_model_list is None:
             lens_model_list = []

@@ -18,9 +18,7 @@ import lenstronomy.Util.param_util as param_util
 
 
 class TestChameleon(object):
-    """
-    class to test the Moffat profile
-    """
+    """Class to test the Moffat profile."""
 
     def setup_method(self):
         self.chameleon = Chameleon()
@@ -147,9 +145,7 @@ class TestChameleon(object):
 
 
 class TestDoubleChameleon(object):
-    """
-    class to test the Moffat profile
-    """
+    """Class to test the Moffat profile."""
 
     def setup_method(self):
         pass
@@ -358,9 +354,7 @@ class TestDoubleChameleon(object):
 
 
 class TestDoubleChameleonPointMass(object):
-    """
-    class to test the Moffat profile
-    """
+    """Class to test the Moffat profile."""
 
     def setup_method(self):
         pass
@@ -451,9 +445,7 @@ class TestDoubleChameleonPointMass(object):
 
 
 class TestTripleChameleon(object):
-    """
-    class to test the Moffat profile
-    """
+    """Class to test the Moffat profile."""
 
     def setup_method(self):
         pass

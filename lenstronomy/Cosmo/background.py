@@ -8,9 +8,7 @@ __all__ = ["Background"]
 
 
 class Background(object):
-    """
-    class to compute cosmological distances
-    """
+    """Class to compute cosmological distances."""
 
     def __init__(self, cosmo=None, interp=False, **kwargs_interp):
         """
@@ -33,8 +31,7 @@ class Background(object):
 
     @staticmethod
     def a_z(z):
-        """
-        returns scale factor (a_0 = 1) for given redshift
+        """Returns scale factor (a_0 = 1) for given redshift.
 
         :param z: redshift
         :return: scale factor
@@ -52,8 +49,7 @@ class Background(object):
         return D_xy.value
 
     def ddt(self, z_lens, z_source):
-        """
-        time-delay distance
+        """Time-delay distance.
 
         :param z_lens: redshift of lens
         :param z_source: redshift of source
@@ -79,8 +75,7 @@ class Background(object):
 
     @property
     def rho_crit(self):
-        """
-        critical density
+        """Critical density.
 
         :return: value in M_sol/Mpc^3
         """

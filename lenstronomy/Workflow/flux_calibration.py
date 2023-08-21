@@ -10,16 +10,14 @@ __all__ = ["FluxCalibration", "CalibrationLikelihood"]
 
 
 class FluxCalibration(object):
-    """
-    class to fit coordinate system alignment and flux amplitude calibrations
-    """
+    """Class to fit coordinate system alignment and flux amplitude calibrations."""
 
     def __init__(self, kwargs_imaging, kwargs_model, kwargs_params, calibrate_bands):
-        """
-        initialise the classes of the chain and for parameter options for the flux calibration fitting
+        """Initialise the classes of the chain and for parameter options for the flux
+        calibration fitting.
 
-        :param kwargs_imaging: keyword argument related to imaging data and imaging likelihood.
-         Feeds into ImageLikelihood(**kwargs_imaging)
+        :param kwargs_imaging: keyword argument related to imaging data and imaging
+            likelihood. Feeds into ImageLikelihood(**kwargs_imaging)
         :param kwargs_model: keyword argument of model components
         :param kwargs_params: keyword argument of model parameters
         :param calibrate_bands: state which bands the flux calibration is applied to
@@ -52,8 +50,8 @@ class FluxCalibration(object):
         scaling_upper_limit=1000,
         print_key="flux calibration",
     ):
-        """
-        returns the best fit for the lens model on catalogue basis with particle swarm optimizer
+        """Returns the best fit for the lens model on catalogue basis with particle
+        swarm optimizer.
 
         :param n_particles: number of particles in the PSO
         :param n_iterations: number of iterations of the PSO
@@ -96,8 +94,7 @@ class FluxCalibration(object):
 
 class CalibrationLikelihood(object):
     def __init__(self, kwargs_model, kwargs_params, calibrate_bands, kwargs_imaging):
-        """
-        initializes all the classes needed for the chain
+        """Initializes all the classes needed for the chain.
 
         :param kwargs_model: keyword argument of model components
         :param kwargs_params: keyword argument of model parameters
@@ -112,9 +109,7 @@ class CalibrationLikelihood(object):
         self.multi_band_list = self._kwargs_imaging_likelihood["multi_band_list"]
 
     def _likelihood(self, args):
-        """
-        routine to compute X2 given variable parameters for a MCMC/PSO chainF
-        """
+        """Routine to compute X2 given variable parameters for a MCMC/PSO chainF."""
         # generate image and computes likelihood
         multi_band_list = self.update_data(args)
         self._kwargs_imaging_likelihood["multi_band_list"] = multi_band_list

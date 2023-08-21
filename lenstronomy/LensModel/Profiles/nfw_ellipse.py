@@ -9,9 +9,9 @@ __all__ = ["NFW_ELLIPSE"]
 
 
 class NFW_ELLIPSE(LensProfileBase):
-    """
-    this class contains functions concerning the NFW profile with an ellipticity defined in the potential
-    parameterization of alpha_Rs and Rs is the same as for the spherical NFW profile
+    """This class contains functions concerning the NFW profile with an ellipticity
+    defined in the potential parameterization of alpha_Rs and Rs is the same as for the
+    spherical NFW profile.
 
     from Glose & Kneib: https://cds.cern.ch/record/529584/files/0112138.pdf
 
@@ -52,8 +52,7 @@ class NFW_ELLIPSE(LensProfileBase):
         super(NFW_ELLIPSE, self).__init__()
 
     def function(self, x, y, Rs, alpha_Rs, e1, e2, center_x=0, center_y=0):
-        """
-        returns elliptically distorted NFW lensing potential
+        """Returns elliptically distorted NFW lensing potential.
 
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
@@ -76,9 +75,8 @@ class NFW_ELLIPSE(LensProfileBase):
         return f_
 
     def derivatives(self, x, y, Rs, alpha_Rs, e1, e2, center_x=0, center_y=0):
-        """
-        returns df/dx and df/dy of the function, calculated as an elliptically distorted deflection angle of the
-        spherical NFW profile
+        """Returns df/dx and df/dy of the function, calculated as an elliptically
+        distorted deflection angle of the spherical NFW profile.
 
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
@@ -110,10 +108,9 @@ class NFW_ELLIPSE(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, Rs, alpha_Rs, e1, e2, center_x=0, center_y=0):
-        """
-        returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
-        the calculation is performed as a numerical differential from the deflection field. Analytical relations are
-        possible
+        """Returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy the
+        calculation is performed as a numerical differential from the deflection field.
+        Analytical relations are possible.
 
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
@@ -156,9 +153,9 @@ class NFW_ELLIPSE(LensProfileBase):
         return self.nfw.mass_3d_lens(r, Rs, alpha_Rs)
 
     def density_lens(self, r, Rs, alpha_Rs, e1=1, e2=0):
-        """
-        computes the density at 3d radius r given lens model parameterization.
-        The integral in the LOS projection of this quantity results in the convergence quantity.
+        """Computes the density at 3d radius r given lens model parameterization. The
+        integral in the LOS projection of this quantity results in the convergence
+        quantity.
 
         :param r: 3d radios
         :param Rs: turn-over radius of NFW profile

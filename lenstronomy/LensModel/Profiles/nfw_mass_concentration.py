@@ -109,15 +109,12 @@ class NFWMC(LensProfileBase):
         )
 
     def derivatives(self, x, y, logM, concentration, center_x=0, center_y=0):
-        """
-        returns df/dx and df/dy of the function (integral of NFW)
-        """
+        """Returns df/dx and df/dy of the function (integral of NFW)"""
         Rs, alpha_Rs = self._m_c2deflections(logM, concentration)
         return self._nfw.derivatives(x, y, Rs, alpha_Rs, center_x, center_y)
 
     def hessian(self, x, y, logM, concentration, center_x=0, center_y=0):
-        """
-        returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
-        """
+        """Returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx,
+        d^f/dy^2."""
         Rs, alpha_Rs = self._m_c2deflections(logM, concentration)
         return self._nfw.hessian(x, y, Rs, alpha_Rs, center_x, center_y)

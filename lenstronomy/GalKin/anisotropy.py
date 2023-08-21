@@ -41,8 +41,7 @@ class Anisotropy(object):
             raise ValueError("anisotropy type %s not supported!" % self._type)
 
     def beta_r(self, r, **kwargs):
-        """
-        returns the anisotropy parameter at a given radius
+        """Returns the anisotropy parameter at a given radius.
 
         :param r: 3d radius
         :param kwargs: parameters of the specified anisotropy model
@@ -51,8 +50,7 @@ class Anisotropy(object):
         return self._model.beta_r(r, **kwargs)
 
     def K(self, r, R, **kwargs):
-        """
-        equation A16 im Mamon & Lokas for Osipkov&Merrit anisotropy
+        """Equation A16 im Mamon & Lokas for Osipkov&Merrit anisotropy.
 
         :param r: 3d radius
         :param R: projected 2d radius
@@ -62,9 +60,7 @@ class Anisotropy(object):
         return self._model.K(r, R, **kwargs)
 
     def anisotropy_solution(self, r, **kwargs):
-        """
-        the solution to
-        d ln(f)/ d ln(r) = 2 beta(r)
+        """The solution to d ln(f)/ d ln(r) = 2 beta(r)
 
         :param r: 3d radius
         :param kwargs: parameters of the specified anisotropy model
@@ -73,8 +69,7 @@ class Anisotropy(object):
         return self._model.anisotropy_solution(r, **kwargs)
 
     def delete_anisotropy_cache(self):
-        """
-        deletes cached interpolations for a fixed anisotropy model
+        """Deletes cached interpolations for a fixed anisotropy model.
 
         :return: None
         """
@@ -84,18 +79,14 @@ class Anisotropy(object):
 
 @export
 class Const(object):
-    """
-    constant anisotropy model class
-    See Mamon & Lokas 2005 for details
-    """
+    """Constant anisotropy model class See Mamon & Lokas 2005 for details."""
 
     def __init__(self):
         pass
 
     @staticmethod
     def K(r, R, beta):
-        """
-        equation A16 im Mamon & Lokas for constant anisotropy
+        """Equation A16 im Mamon & Lokas for constant anisotropy.
 
         :param r: 3d radius
         :param R: projected 2d radius
@@ -116,8 +107,7 @@ class Const(object):
 
     @staticmethod
     def beta_r(r, beta):
-        """
-        anisotropy as a function of radius
+        """Anisotropy as a function of radius.
 
         :param r: 3d radius
         :param beta: anisotropy
@@ -126,9 +116,7 @@ class Const(object):
         return beta
 
     def anisotropy_solution(self, r, **kwargs):
-        """
-        the solution to
-        d ln(f)/ d ln(r) = 2 beta(r)
+        """The solution to d ln(f)/ d ln(r) = 2 beta(r)
 
         :param r: 3d radius
         :param kwargs: parameters of the specified anisotropy model
@@ -139,18 +127,15 @@ class Const(object):
 
 @export
 class Isotropic(object):
-    """
-    class for isotropic (beta=0) stellar orbits
-    See Mamon & Lokas 2005 for details
-    """
+    """Class for isotropic (beta=0) stellar orbits See Mamon & Lokas 2005 for
+    details."""
 
     def __init__(self):
         pass
 
     @staticmethod
     def K(r, R):
-        """
-        equation A16 im Mamon & Lokas for constant anisotropy
+        """Equation A16 im Mamon & Lokas for constant anisotropy.
 
         :param r: 3d radius
         :param R: projected 2d radius
@@ -162,8 +147,7 @@ class Isotropic(object):
 
     @staticmethod
     def beta_r(r):
-        """
-        anisotropy as a function of radius
+        """Anisotropy as a function of radius.
 
         :param r: 3d radius
         :return: beta
@@ -172,10 +156,7 @@ class Isotropic(object):
 
     @staticmethod
     def anisotropy_solution(r, **kwargs):
-        """
-        the solution to
-        d ln(f)/ d ln(r) = 2 beta(r)
-        See e.g. A3 in Mamon & Lokas
+        """The solution to d ln(f)/ d ln(r) = 2 beta(r) See e.g. A3 in Mamon & Lokas.
 
         :param r: 3d radius
         :param kwargs: parameters of the specified anisotropy model
@@ -186,18 +167,14 @@ class Isotropic(object):
 
 @export
 class Radial(object):
-    """
-    class for radial (beta=1) stellar orbits
-    See Mamon & Lokas 2005 for details
-    """
+    """Class for radial (beta=1) stellar orbits See Mamon & Lokas 2005 for details."""
 
     def __init__(self):
         pass
 
     @staticmethod
     def K(r, R):
-        """
-        equation A16 im Mamon & Lokas for constant anisotropy
+        """Equation A16 im Mamon & Lokas for constant anisotropy.
 
         :param r: 3d radius
         :param R: projected 2d radius
@@ -213,8 +190,7 @@ class Radial(object):
 
     @staticmethod
     def beta_r(r):
-        """
-        anisotropy as a function of radius
+        """Anisotropy as a function of radius.
 
         :param r: 3d radius
         :return: beta
@@ -223,10 +199,7 @@ class Radial(object):
 
     @staticmethod
     def anisotropy_solution(r):
-        """
-        the solution to
-        d ln(f)/ d ln(r) = 2 beta(r)
-        See e.g. A4 in Mamon & Lokas
+        """The solution to d ln(f)/ d ln(r) = 2 beta(r) See e.g. A4 in Mamon & Lokas.
 
         :param r: 3d radius
         :return: f(r)
@@ -236,18 +209,14 @@ class Radial(object):
 
 @export
 class OsipkovMerritt(object):
-    """
-    class for Osipkov&Merrit stellar orbits
-    See Mamon & Lokas 2005 for details
-    """
+    """Class for Osipkov&Merrit stellar orbits See Mamon & Lokas 2005 for details."""
 
     def __init__(self):
         pass
 
     @staticmethod
     def K(r, R, r_ani):
-        """
-        equation A16 im Mamon & Lokas 2005 for Osipkov&Merrit anisotropy
+        """Equation A16 im Mamon & Lokas 2005 for Osipkov&Merrit anisotropy.
 
         :param r: 3d radius
         :param R: projected 2d radius
@@ -267,8 +236,7 @@ class OsipkovMerritt(object):
 
     @staticmethod
     def beta_r(r, r_ani):
-        """
-        anisotropy as a function of radius
+        """Anisotropy as a function of radius.
 
         :param r: 3d radius
         :param r_ani: anisotropy radius
@@ -278,10 +246,7 @@ class OsipkovMerritt(object):
 
     @staticmethod
     def anisotropy_solution(r, r_ani):
-        """
-        the solution to
-        d ln(f)/ d ln(r) = 2 beta(r)
-        See e.g. A5 in Mamon & Lokas
+        """The solution to d ln(f)/ d ln(r) = 2 beta(r) See e.g. A5 in Mamon & Lokas.
 
         :param r: 3d radius
         :param r_ani: anisotropy radius
@@ -292,8 +257,8 @@ class OsipkovMerritt(object):
 
 @export
 class GeneralizedOM(object):
-    """
-    generalized Osipkov&Merrit profile
+    """Generalized Osipkov&Merrit profile.
+
     see Agnello et al. 2014 https://arxiv.org/pdf/1401.4462.pdf
     b(r) = beta_inf * r^2 / (r^2 + r_ani^2)
     """
@@ -304,8 +269,7 @@ class GeneralizedOM(object):
 
     @staticmethod
     def beta_r(r, r_ani, beta_inf):
-        """
-        anisotropy as a function of radius
+        """Anisotropy as a function of radius.
 
         :param r: 3d radius
         :param r_ani: anisotropy radius
@@ -329,10 +293,8 @@ class GeneralizedOM(object):
 
     @staticmethod
     def anisotropy_solution(r, r_ani, beta_inf):
-        """
-        the solution to
-        d ln(f)/ d ln(r) = 2 beta(r)
-        See e.g. A5 in Mamon & Lokas with a scaling (nominator of Agnello et al. 2014 Equation (12)
+        """The solution to d ln(f)/ d ln(r) = 2 beta(r) See e.g. A5 in Mamon & Lokas
+        with a scaling (nominator of Agnello et al. 2014 Equation (12)
 
         :param r: 3d radius
         :param r_ani: anisotropy radius
@@ -342,8 +304,8 @@ class GeneralizedOM(object):
         return (r**2 + r_ani**2) ** beta_inf
 
     def delete_cache(self):
-        """
-        deletes the interpolation function of the hypergeometic function for a specific beta_inf
+        """Deletes the interpolation function of the hypergeometic function for a
+        specific beta_inf.
 
         :return: deleted self variables
         """
@@ -405,21 +367,18 @@ class GeneralizedOM(object):
 
     @staticmethod
     def _j_beta(r, s, r_ani, beta_inf):
-        """
-        equation (12) in Agnello et al. 2014
+        """Equation (12) in Agnello et al. 2014.
 
         :param r:
         :param s:
-        :param r_ani:
-        :param beta_inf
+        :param r_ani: :param beta_inf
         :return:
         """
         return ((s**2 + r_ani**2) / (r**2 + r_ani**2)) ** beta_inf
 
     @staticmethod
     def _F(a, z, beta_inf):
-        """
-        the hypergeometric function 2F1 (a, 1 +beta_inf, a + 1, z)
+        """The hypergeometric function 2F1 (a, 1 +beta_inf, a + 1, z)
 
         :param a:
         :param z:
@@ -438,9 +397,9 @@ class GeneralizedOM(object):
 
 @export
 class Colin(object):
-    """
-    class for stellar orbits anisotropy parameter based on Colin et al. (2000)
-    See Mamon & Lokas 2005 for details
+    """Class for stellar orbits anisotropy parameter based on Colin et al.
+
+    (2000) See Mamon & Lokas 2005 for details
     """
 
     def __init__(self):
@@ -448,8 +407,7 @@ class Colin(object):
 
     @staticmethod
     def K(r, R, r_ani):
-        """
-        equation A16 im Mamon & Lokas for Osipkov&Merrit anisotropy
+        """Equation A16 im Mamon & Lokas for Osipkov&Merrit anisotropy.
 
         :param r: 3d radius
         :param R: projected 2d radius
@@ -492,8 +450,7 @@ class Colin(object):
 
     @staticmethod
     def beta_r(r, r_ani):
-        """
-        anisotropy as a function of radius
+        """Anisotropy as a function of radius.
 
         :param r: 3d radius
         :param r_ani: anisotropy radius

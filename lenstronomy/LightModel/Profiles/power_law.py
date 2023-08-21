@@ -7,10 +7,7 @@ __all__ = ["PowerLaw"]
 
 
 class PowerLaw(object):
-    """
-    class for power-law elliptical light distribution
-
-    """
+    """Class for power-law elliptical light distribution."""
 
     param_names = ["amp", "gamma", "e1", "e2", "center_x", "center_y"]
     lower_limit_default = {

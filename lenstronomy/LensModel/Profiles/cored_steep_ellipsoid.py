@@ -262,9 +262,7 @@ class CSEMajorAxis(LensProfileBase):
 
 
 class CSEMajorAxisSet(LensProfileBase):
-    """
-    a set of CSE profiles along a joint center and axis
-    """
+    """A set of CSE profiles along a joint center and axis."""
 
     def __init__(self):
         self.major_axis_model = CSEMajorAxis()
@@ -322,9 +320,8 @@ class CSEMajorAxisSet(LensProfileBase):
 
 
 class CSEProductAvg(LensProfileBase):
-    """
-    Cored steep ellipsoid (CSE) evaluated at the product-averaged radius sqrt(ab),
-    such that mass is not changed when increasing ellipticity
+    """Cored steep ellipsoid (CSE) evaluated at the product-averaged radius sqrt(ab),
+    such that mass is not changed when increasing ellipticity.
 
     Same as CSEMajorAxis but evaluated at r=sqrt(q)*r_original
 
@@ -338,9 +335,6 @@ class CSEProductAvg(LensProfileBase):
 
     .. math::
         \\xi(x, y) = \\sqrt{qx^2 + \\frac{y^2}{q}}
-
-
-
     """
 
     param_names = ["A", "s", "q", "center_x", "center_y"]
@@ -366,8 +360,10 @@ class CSEProductAvg(LensProfileBase):
 
     @staticmethod
     def _convert2prodavg(x, y, a, s, q):
-        """
-        converts coordinates and re-normalizes major-axis parameterization to instead be wrt. product-averaged
+        """Converts coordinates and re-normalizes major-axis parameterization to instead
+        be wrt.
+
+        product-averaged
         """
         a = a / q
         x = x * np.sqrt(q)
@@ -416,9 +412,7 @@ class CSEProductAvg(LensProfileBase):
 
 
 class CSEProductAvgSet(LensProfileBase):
-    """
-    a set of CSE profiles along a joint center and axis
-    """
+    """A set of CSE profiles along a joint center and axis."""
 
     def __init__(self):
         self.major_axis_model = CSEProductAvg()

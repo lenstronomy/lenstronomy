@@ -15,8 +15,8 @@ export, __all__ = exporter()
 
 @export
 def potential_from_kappa_grid(kappa, grid_spacing):
-    """
-    Lensing potential :math:`\\psi ({\\vec {\\theta }})` on the convergence grid :math:`\\kappa`.
+    """Lensing potential :math:`\\psi ({\\vec {\\theta }})` on the convergence grid
+    :math:`\\kappa`.
 
     .. math::
         \\psi ({\\vec {\\theta }})={\\frac {1}{\\pi }}\\int d^{2}\\theta ^{\\prime }
@@ -40,14 +40,14 @@ def potential_from_kappa_grid(kappa, grid_spacing):
 def potential_from_kappa_grid_adaptive(
     kappa_high_res, grid_spacing, low_res_factor, high_res_kernel_size
 ):
-    """
-    lensing potential on the convergence grid
-    the computation is performed as a convolution of the Green's function with the convergence map using FFT
+    """Lensing potential on the convergence grid the computation is performed as a
+    convolution of the Green's function with the convergence map using FFT.
 
     :param kappa_high_res: 2d grid of convergence values
     :param grid_spacing: scale of an individual pixel (per axis) of grid
     :param low_res_factor: lower resolution factor of larger scale kernel.
-    :param high_res_kernel_size: int, size of high resolution kernel in units of degraded pixels
+    :param high_res_kernel_size: int, size of high resolution kernel in units of
+        degraded pixels
     :return: lensing potential in a 2d grid at positions x_grid, y_grid
     """
     kappa_low_res = image_util.re_size(kappa_high_res, factor=low_res_factor)
@@ -76,8 +76,8 @@ def potential_from_kappa_grid_adaptive(
 
 @export
 def deflection_from_kappa_grid(kappa, grid_spacing):
-    """
-    Deflection angle :math:`\\vec {\\alpha }}` from a convergence grid :math:`\\kappa`.
+    """Deflection angle :math:`\\vec {\\alpha }}` from a convergence grid
+    :math:`\\kappa`.
 
     .. math::
         {\\vec {\\alpha }}({\\vec {\\theta }})={\\frac {1}{\\pi }}
@@ -103,15 +103,15 @@ def deflection_from_kappa_grid(kappa, grid_spacing):
 def deflection_from_kappa_grid_adaptive(
     kappa_high_res, grid_spacing, low_res_factor, high_res_kernel_size
 ):
-    """
-    deflection angles on the convergence grid with adaptive FFT
-    the computation is performed as a convolution of the Green's function with the convergence map using FFT
-    The grid is returned in the lower resolution grid
+    """Deflection angles on the convergence grid with adaptive FFT the computation is
+    performed as a convolution of the Green's function with the convergence map using
+    FFT The grid is returned in the lower resolution grid.
 
     :param kappa_high_res: convergence values for each pixel (2-d array)
     :param grid_spacing: pixel size of high resolution grid
     :param low_res_factor: lower resolution factor of larger scale kernel.
-    :param high_res_kernel_size: int, size of high resolution kernel in units of degraded pixels
+    :param high_res_kernel_size: int, size of high resolution kernel in units of
+        degraded pixels
     :return: numerical deflection angles in x- and y- direction
     """
     kappa_low_res = image_util.re_size(kappa_high_res, factor=low_res_factor)
@@ -158,8 +158,8 @@ def deflection_from_kappa_grid_adaptive(
 
 @export
 def potential_kernel(num_pix, delta_pix):
-    """
-    numerical gridded integration kernel for convergence to lensing kernel with given pixel size
+    """Numerical gridded integration kernel for convergence to lensing kernel with given
+    pixel size.
 
     :param num_pix: integer; number of pixels of kernel per axis
     :param delta_pix: pixel size (per dimension in units of angle)
@@ -176,10 +176,11 @@ def potential_kernel(num_pix, delta_pix):
 
 @export
 def deflection_kernel(num_pix, delta_pix):
-    """
-    numerical gridded integration kernel for convergence to deflection angle with given pixel size
+    """Numerical gridded integration kernel for convergence to deflection angle with
+    given pixel size.
 
-    :param num_pix: integer; number of pixels of kernel per axis, should be odd number to have a defined center
+    :param num_pix: integer; number of pixels of kernel per axis, should be odd number
+        to have a defined center
     :param delta_pix: pixel size (per dimension in units of angle)
     :return: kernel for x-direction and kernel of y-direction deflection angles
     """

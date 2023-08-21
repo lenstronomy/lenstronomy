@@ -12,9 +12,7 @@ from .param_group import ModelParamGroup, SingleParam, ArrayParam
 
 
 class DdtSamplingParam(SingleParam):
-    """
-    Time delay parameter
-    """
+    """Time delay parameter."""
 
     param_names = ["D_dt"]
     _kwargs_lower = {"D_dt": 0}
@@ -22,9 +20,7 @@ class DdtSamplingParam(SingleParam):
 
 
 class DdSamplingParam(SingleParam):
-    """
-    Deflector distance parameter
-    """
+    """Deflector distance parameter."""
 
     param_names = ["D_d"]
     _kwargs_lower = {"D_d": 0}
@@ -32,9 +28,7 @@ class DdSamplingParam(SingleParam):
 
 
 class BetaAnisotropyParam(SingleParam):
-    """
-    Cylindrical anisotropy parameter
-    """
+    """Cylindrical anisotropy parameter."""
 
     param_names = ["b_ani"]
     _kwargs_lower = {"b_ani": -1}
@@ -42,9 +36,7 @@ class BetaAnisotropyParam(SingleParam):
 
 
 class InclinationParam(SingleParam):
-    """
-    Inclination parameter (radians)
-    """
+    """Inclination parameter (radians)"""
 
     param_names = ["incli"]
     _kwargs_lower = {"incli": 0}
@@ -52,9 +44,7 @@ class InclinationParam(SingleParam):
 
 
 class SourceSizeParam(SingleParam):
-    """
-    Source size parameter
-    """
+    """Source size parameter."""
 
     param_names = ["source_size"]
     _kwargs_lower = {"source_size": 0}
@@ -62,9 +52,7 @@ class SourceSizeParam(SingleParam):
 
 
 class SourceGridOffsetParam(SingleParam):
-    """
-    Source grid offset, both x and y.
-    """
+    """Source grid offset, both x and y."""
 
     param_names = ["delta_x_source_grid", "delta_y_source_grid"]
     _kwargs_lower = {"delta_x_source_grid": -100, "delta_y_source_grid": -100}
@@ -72,8 +60,9 @@ class SourceGridOffsetParam(SingleParam):
 
 
 class MassScalingParam(ArrayParam):
-    """
-    Mass scaling. Can scale the masses of arbitrary subsets of lens models
+    """Mass scaling.
+
+    Can scale the masses of arbitrary subsets of lens models
     """
 
     _kwargs_lower = {"scale_factor": 0}
@@ -85,9 +74,7 @@ class MassScalingParam(ArrayParam):
 
 
 class PointSourceOffsetParam(ArrayParam):
-    """
-    Point source offset, both x and y
-    """
+    """Point source offset, both x and y."""
 
     _kwargs_lower = {"delta_x_image": -1, "delta_y_image": -1}
     _kwargs_upper = {"delta_x_image": 1, "delta_y_image": 1}
@@ -101,9 +88,7 @@ class PointSourceOffsetParam(ArrayParam):
 
 
 class Tau0ListParam(ArrayParam):
-    """
-    Optical depth renormalization parameters
-    """
+    """Optical depth renormalization parameters."""
 
     _kwargs_lower = {"tau0_list": 0}
     _kwargs_upper = {"tau0_list": 1000}
@@ -114,9 +99,7 @@ class Tau0ListParam(ArrayParam):
 
 
 class ZSamplingParam(ArrayParam):
-    """
-    Redshift sampling.
-    """
+    """Redshift sampling."""
 
     _kwargs_lower = {"z_sampling": 0}
     _kwargs_upper = {"z_sampling": 1000}
@@ -127,12 +110,11 @@ class ZSamplingParam(ArrayParam):
 
 
 class GeneralScalingParam(ArrayParam):
-    """
-    General lens scaling.
+    """General lens scaling.
 
     For each scaled lens parameter, adds a `{param}_scale_factor` and
-    `{param}_scale_pow` special parameter, and updates the scaled param
-    as `param = param_scale_factor * param**param_scale_pow`.
+    `{param}_scale_pow` special parameter, and updates the scaled param as `param =
+    param_scale_factor * param**param_scale_pow`.
     """
 
     def __init__(self, params: dict):
@@ -166,9 +148,11 @@ class GeneralScalingParam(ArrayParam):
 
 
 class SpecialParam(object):
-    """
-    class that handles special parameters that are not directly part of a specific model component.
-    These includes cosmology relevant parameters, astrometric errors and overall scaling parameters.
+    """Class that handles special parameters that are not directly part of a specific
+    model component.
+
+    These includes cosmology relevant parameters, astrometric errors and overall scaling
+    parameters.
     """
 
     def __init__(

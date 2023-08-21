@@ -30,8 +30,7 @@ def mask_center_2d(center_x, center_y, r, x_grid, y_grid):
 
 @export
 def mask_azimuthal(x, y, center_x, center_y, r):
-    """
-    azimuthal mask with =1 inside radius and =0 outside
+    """Azimuthal mask with =1 inside radius and =0 outside.
 
     :param x: x-coordinates (1d or 2d array numpy array)
     :param y: y-coordinates (1d or 2d array numpy array)
@@ -76,8 +75,7 @@ def mask_ellipse(x, y, center_x, center_y, a, b, angle):
 
 @export
 def mask_eccentric(x, y, center_x, center_y, e1, e2, r):
-    """
-    elliptical mask with eccentricities as input
+    """Elliptical mask with eccentricities as input.
 
     :param x: x-coordinate array
     :param y: y-coordinate array
@@ -128,8 +126,7 @@ def mask_half_moon(x, y, center_x, center_y, r_in, r_out, phi0=0, delta_phi=2 * 
 
 
 def mask_shell(x, y, center_x, center_y, r_in, r_out):
-    """
-    ring mask
+    """Ring mask.
 
     :param x: x-coordinate grid
     :param y: y-coordinate grid

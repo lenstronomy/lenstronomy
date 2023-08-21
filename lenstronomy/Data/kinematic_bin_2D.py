@@ -6,8 +6,7 @@ __all__ = ["KinBin"]
 
 
 class KinBin(object):
-    """
-    Class that summarizes the binned kinematic data.
+    """Class that summarizes the binned kinematic data.
 
     The KinBin() class is initialized with :
      - The information about the bins (bin values, and bin covariances, which pixels belong to which bin):
@@ -15,7 +14,6 @@ class KinBin(object):
      - The information about the associated intial shape of the unbinned kinematic map: bin_mask gives the index of
     corresponding bin for each pixel), and ra_at_xy_0,dec_at_xy_0,transform_pix2angle,ra_shift,dec_shift are the usual
     PixelGrid characteritics.
-
     """
 
     def __init__(
@@ -60,8 +58,7 @@ class KinBin(object):
 
     @staticmethod
     def binned_image(data, bin_mask):
-        """
-        Creates the binned image of the data
+        """Creates the binned image of the data.
 
         :param data: data value in each bin
         :param bin_mask: mask indicating which pixels belong to which bin
@@ -72,9 +69,7 @@ class KinBin(object):
         return binned_image
 
     def kin_bin2kwargs(self):
-        """
-        Creates the kwargs needed for the 2D kinematic likelihood
-        """
+        """Creates the kwargs needed for the 2D kinematic likelihood."""
         kwargs = {
             "image": self.binned_image(self.data, self.bin_mask),
             "deltaPix": self.PixelGrid.pixel_width,
@@ -85,8 +80,6 @@ class KinBin(object):
         return kwargs
 
     def kin_grid(self):
-        """
-        Creates a pixel grid that satisfy the kinematics coordinates system
-        """
+        """Creates a pixel grid that satisfy the kinematics coordinates system."""
         x_grid, y_grid = self.PixelGrid.pixel_coordinates
         return x_grid, y_grid

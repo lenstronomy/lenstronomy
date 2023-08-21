@@ -8,23 +8,27 @@ from cobaya.run import run as crun
 
 class CobayaSampler(object):
     def __init__(self, likelihood_module, mean_start, sigma_start):
-        """
-        Wrapper for pure Metropolis--Hastings MCMC sampling with Cobaya.
+        """Wrapper for pure Metropolis--Hastings MCMC sampling with Cobaya.
 
         If you use this sampler, you must cite the following works:
 
-        Lewis & Bridle, https://arxiv.org/abs/astro-ph/0205436
+        Lewis & Bridle,
+        https://arxiv.org/abs/astro-ph/0205436
 
         Lewis, https://arxiv.org/abs/1304.4473
 
-        Torrado & Lewis, https://arxiv.org/abs/2005.05290 and https://ascl.net/1910.019
+        Torrado & Lewis,
+        https://arxiv.org/abs/2005.05290
+        and https://ascl.net/1910.019
 
-        For more information about Cobaya, see https://cobaya.readthedocs.io/en/latest/index.html
+        For more information about Cobaya, see
+        https://cobaya.readthedocs.io/en/latest/index.html
 
         :param likelihood_module: LikelihoodModule() instance
-        :param mean_start: initial point for parameters are drawn from Gaussians with these means
-        :param sigma_start: initial point for parameters are drawn from Gaussians with these standard deviations
-
+        :param mean_start: initial point for parameters are drawn from Gaussians with
+            these means
+        :param sigma_start: initial point for parameters are drawn from Gaussians with
+            these standard deviations
         """
 
         # get the logL and parameter info from LikelihoodModule
@@ -136,9 +140,9 @@ class CobayaSampler(object):
             ]
 
         def likelihood_for_cobaya(**kwargs):
-            """
-            We define a function to return the log-likelihood; this function is passed to Cobaya.
-            The function must be nested within the run() function for it to work properly.
+            """We define a function to return the log-likelihood; this function is
+            passed to Cobaya. The function must be nested within the run() function for
+            it to work properly.
 
             :param kwargs: dictionary of keyword arguments
             """

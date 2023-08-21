@@ -4,8 +4,9 @@ __all__ = ["Uniform"]
 
 
 class Uniform(object):
-    """
-    uniform light profile. This profile can also compensate for an inaccurate background subtraction.
+    """Uniform light profile.
+
+    This profile can also compensate for an inaccurate background subtraction.
     name for profile: 'UNIFORM'
     """
 

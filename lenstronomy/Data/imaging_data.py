@@ -7,8 +7,8 @@ __all__ = ["ImageData"]
 
 
 class ImageData(PixelGrid, ImageNoise):
-    """
-    class to handle the data, coordinate system and masking, including convolution with various numerical precisions
+    """Class to handle the data, coordinate system and masking, including convolution
+    with various numerical precisions.
 
     The Data() class is initialized with keyword arguments:
 
@@ -44,8 +44,6 @@ class ImageData(PixelGrid, ImageNoise):
     the likelihood for the data given model P(data|model) is defined in the function below. Please make sure that
     your definitions and units of 'exposure_map', 'background_rms' and 'image_data' are in accordance with the
     likelihood function. In particular, make sure that the Poisson noise contribution is defined in the count rate.
-
-
     """
 
     def __init__(
@@ -130,9 +128,8 @@ class ImageData(PixelGrid, ImageNoise):
             )
 
     def update_data(self, image_data):
-        """
-
-        update the data as well as the error matrix estimated from it when done so using the data
+        """Update the data as well as the error matrix estimated from it when done so
+        using the data.
 
         :param image_data: 2d numpy array of same size as nx, ny
         :return: None
@@ -156,16 +153,16 @@ class ImageData(PixelGrid, ImageNoise):
         return self._data
 
     def log_likelihood(self, model, mask, additional_error_map=0):
-        """
-
-        computes the likelihood of the data given the model p(data|model)
-        The Gaussian errors are estimated with the covariance matrix, based on the model image. The errors include the
-        background rms value and the exposure time to compute the Poisson noise level (in Gaussian approximation).
+        """Computes the likelihood of the data given the model p(data|model) The
+        Gaussian errors are estimated with the covariance matrix, based on the model
+        image. The errors include the background rms value and the exposure time to
+        compute the Poisson noise level (in Gaussian approximation).
 
         :param model: the model (same dimensions and units as data)
-        :param mask: bool (1, 0) values per pixel. If =0, the pixel is ignored in the likelihood
-        :param additional_error_map: additional error term (in same units as covariance matrix).
-            This can e.g. come from model errors in the PSF estimation.
+        :param mask: bool (1, 0) values per pixel. If =0, the pixel is ignored in the
+            likelihood
+        :param additional_error_map: additional error term (in same units as covariance
+            matrix). This can e.g. come from model errors in the PSF estimation.
         :return: the natural logarithm of the likelihood p(data|model)
         """
         # if the likelihood method is assigned to be 'interferometry_natwt', it will return logL computed using the interfermetric likelihood function
@@ -179,9 +176,8 @@ class ImageData(PixelGrid, ImageNoise):
         return log_likelihood
 
     def log_likelihood_interferometry(self, model):
-        """
-        log_likelihood function for natural weighting interferometric images,
-        based on (placeholder for Nan Zhang's paper).
+        """log_likelihood function for natural weighting interferometric images, based
+        on (placeholder for Nan Zhang's paper).
 
         For the interferometry case, the model should be in the form [array1, array2],
         where array1 and array2 are unconvolved and convolved model images respectively.
@@ -210,10 +206,9 @@ class ImageData(PixelGrid, ImageNoise):
         return logL
 
     def likelihood_method(self):
-        """
+        """Pass the likelihood_method to the ImageModel and will be used to identify the
+        method of likelihood computation in ImageLinearFit.
 
-        pass the likelihood_method to the ImageModel and will be used to identify the method of
-        likelihood computation in ImageLinearFit.
         :return: string, likelihood method
         """
         return self._logL_method

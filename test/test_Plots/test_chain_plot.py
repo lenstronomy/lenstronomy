@@ -23,9 +23,7 @@ import numpy as np
 
 
 class TestChainPlots(object):
-    """
-    test the fitting sequences
-    """
+    """Test the fitting sequences."""
 
     def setup_method(self):
         # data specifics

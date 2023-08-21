@@ -11,9 +11,7 @@ from lenstronomy.LightModel.Profiles.gaussian import Gaussian
 
 
 class TestLightModel(object):
-    """
-    tests the source model routines
-    """
+    """Tests the source model routines."""
 
     def setup_method(self):
         self.light_model_list = [

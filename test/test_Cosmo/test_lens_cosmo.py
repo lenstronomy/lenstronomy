@@ -9,9 +9,7 @@ from lenstronomy.Util import util
 
 
 class TestLensCosmo(object):
-    """
-    tests the UnitManager class routines
-    """
+    """Tests the UnitManager class routines."""
 
     def setup_method(self):
         z_L = 0.8

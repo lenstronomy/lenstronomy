@@ -1,5 +1,4 @@
-"""
-Created on Dec 2, 2013
+"""Created on Dec 2, 2013.
 
 @author: jakeret
 """

@@ -7,10 +7,9 @@ __all__ = ["SingleBandMultiModel"]
 
 
 class SingleBandMultiModel(ImageLinearFit):
-    """
-    class to simulate/reconstruct images in multi-band option.
-    This class calls functions of image_model.py with different bands with
-    decoupled linear parameters and the option to pass/select different light models for the different bands
+    """Class to simulate/reconstruct images in multi-band option. This class calls
+    functions of image_model.py with different bands with decoupled linear parameters
+    and the option to pass/select different light models for the different bands.
 
     the class supports keyword arguments 'index_lens_model_list', 'index_source_light_model_list',
     'index_lens_light_model_list', 'index_point_source_model_list', 'index_optical_depth_model_list' in kwargs_model
@@ -22,7 +21,6 @@ class SingleBandMultiModel(ImageLinearFit):
     - set index_lens_light_model_list = [[0], [1]]
     - (optional) for now all the parameters between the two light profiles are independent in the model. You have
     the possibility to join a subset of model parameters (e.g. joint centroid). See the Param() class for documentation.
-
     """
 
     def __init__(
@@ -110,15 +108,18 @@ class SingleBandMultiModel(ImageLinearFit):
         lens_light_add=True,
         point_source_add=True,
     ):
-        """
+        """Make an image with a realisation of linear parameter values "param".
 
-        make an image with a realisation of linear parameter values "param"
-
-        :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
-        :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
-        :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
-        :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
-        :param unconvolved: if True: returns the unconvolved light distribution (prefect seeing)
+        :param kwargs_lens: list of keyword arguments corresponding to the superposition
+            of different lens profiles
+        :param kwargs_source: list of keyword arguments corresponding to the
+            superposition of different source light profiles
+        :param kwargs_lens_light: list of keyword arguments corresponding to different
+            lens light surface brightness profiles
+        :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as
+            external shear and point source image positions
+        :param unconvolved: if True: returns the unconvolved light distribution (prefect
+            seeing)
         :param source_add: if True, compute source, otherwise without
         :param lens_light_add: if True, compute lens light, otherwise without
         :param point_source_add: if True, add point sources, otherwise without
@@ -157,15 +158,17 @@ class SingleBandMultiModel(ImageLinearFit):
         k=None,
         update_pixelbased_mapping=True,
     ):
-        """
+        """Computes the source surface brightness distribution.
 
-        computes the source surface brightness distribution
-
-        :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
-        :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
+        :param kwargs_source: list of keyword arguments corresponding to the
+            superposition of different source light profiles
+        :param kwargs_lens: list of keyword arguments corresponding to the superposition
+            of different lens profiles
         :param kwargs_extinction: list of keyword arguments of extinction model
-        :param unconvolved: if True: returns the unconvolved light distribution (prefect seeing)
-        :param de_lensed: if True: returns the un-lensed source surface brightness profile, otherwise the lensed.
+        :param unconvolved: if True: returns the unconvolved light distribution (prefect
+            seeing)
+        :param de_lensed: if True: returns the un-lensed source surface brightness
+            profile, otherwise the lensed.
         :param k: integer, if set, will only return the model of the specific index
         :return: 2d array of surface brightness pixels
         """
@@ -188,12 +191,12 @@ class SingleBandMultiModel(ImageLinearFit):
         )
 
     def lens_surface_brightness(self, kwargs_lens_light, unconvolved=False, k=None):
-        """
+        """Computes the lens surface brightness distribution.
 
-        computes the lens surface brightness distribution
-
-        :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
-        :param unconvolved: if True, returns unconvolved surface brightness (perfect seeing), otherwise convolved with PSF kernel
+        :param kwargs_lens_light: list of keyword arguments corresponding to different
+            lens light surface brightness profiles
+        :param unconvolved: if True, returns unconvolved surface brightness (perfect
+            seeing), otherwise convolved with PSF kernel
         :return: 2d array of surface brightness pixels
         """
         _, _, kwargs_lens_light_i, kwargs_ps_i, _ = self.select_kwargs(
@@ -215,9 +218,7 @@ class SingleBandMultiModel(ImageLinearFit):
         unconvolved=False,
         k=None,
     ):
-        """
-
-        computes the point source positions and paints PSF convolutions on them
+        """Computes the point source positions and paints PSF convolutions on them.
 
         :param kwargs_ps:
         :param kwargs_lens:
@@ -251,15 +252,23 @@ class SingleBandMultiModel(ImageLinearFit):
         kwargs_special=None,
         inv_bool=False,
     ):
-        """
-        computes the image (lens and source surface brightness with a given lens model).
-        The linear parameters are computed with a weighted linear least square optimization (i.e. flux normalization of the brightness profiles)
-        :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
-        :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
-        :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
-        :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
-        :param inv_bool: if True, invert the full linear solver Matrix Ax = y for the purpose of the covariance matrix.
-        :return: 1d array of surface brightness pixels of the optimal solution of the linear parameters to match the data
+        """Computes the image (lens and source surface brightness with a given lens
+        model).
+
+        The linear parameters are computed with a weighted linear least square
+        optimization (i.e. flux normalization of the brightness profiles)
+        :param kwargs_lens: list of keyword arguments corresponding to the superposition
+            of different lens profiles
+        :param kwargs_source: list of keyword arguments corresponding to the
+            superposition of different source light profiles
+        :param kwargs_lens_light: list of keyword arguments corresponding to different
+            lens light surface brightness profiles
+        :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as
+            external shear and point source image positions
+        :param inv_bool: if True, invert the full linear solver Matrix Ax = y for the
+            purpose of the covariance matrix.
+        :return: 1d array of surface brightness pixels of the optimal solution of the
+            linear parameters to match the data
         """
         (
             kwargs_lens_i,
@@ -298,17 +307,18 @@ class SingleBandMultiModel(ImageLinearFit):
         check_positive_flux=False,
         linear_solver=True,
     ):
-        """
-        computes the likelihood of the data given a model
-        This is specified with the non-linear parameters and a linear inversion and prior marginalisation.
+        """Computes the likelihood of the data given a model This is specified with the
+        non-linear parameters and a linear inversion and prior marginalisation.
 
         :param kwargs_lens:
         :param kwargs_source:
         :param kwargs_lens_light:
         :param kwargs_ps:
-        :param check_positive_flux: bool, if True, checks whether the linear inversion resulted in non-negative flux
-         components and applies a punishment in the likelihood if so.
-        :return: log likelihood (natural logarithm) (sum of the log likelihoods of the individual images)
+        :param check_positive_flux: bool, if True, checks whether the linear inversion
+            resulted in non-negative flux components and applies a punishment in the
+            likelihood if so.
+        :return: log likelihood (natural logarithm) (sum of the log likelihoods of the
+            individual images)
         """
         # generate image
         (
@@ -367,8 +377,8 @@ class SingleBandMultiModel(ImageLinearFit):
         kwargs_extinction=None,
         kwargs_special=None,
     ):
-        """
-        computes the linear response matrix (m x n), with n beeing the data size and m being the coefficients
+        """Computes the linear response matrix (m x n), with n beeing the data size and
+        m being the coefficients.
 
         :param kwargs_lens:
         :param kwargs_source:
@@ -398,17 +408,17 @@ class SingleBandMultiModel(ImageLinearFit):
     def error_map_source(
         self, kwargs_source, x_grid, y_grid, cov_param, model_index_select=True
     ):
-        """
-        variance of the linear source reconstruction in the source plane coordinates,
-        computed by the diagonal elements of the covariance matrix of the source reconstruction as a sum of the errors
-        of the basis set.
+        """Variance of the linear source reconstruction in the source plane coordinates,
+        computed by the diagonal elements of the covariance matrix of the source
+        reconstruction as a sum of the errors of the basis set.
 
         :param kwargs_source: keyword arguments of source model
         :param x_grid: x-axis of positions to compute error map
         :param y_grid: y-axis of positions to compute error map
         :param cov_param: covariance matrix of liner inversion parameters
-        :param model_index_select: boolean, if True, selects the model components of this band (default). If False,
-         assumes input kwargs_source is already selected list.
+        :param model_index_select: boolean, if True, selects the model components of
+            this band (default). If False, assumes input kwargs_source is already
+            selected list.
         :return: diagonal covariance errors at the positions (x_grid, y_grid)
         """
         if self._index_source is None or model_index_select is False:
@@ -418,10 +428,11 @@ class SingleBandMultiModel(ImageLinearFit):
         return self._error_map_source(kwargs_source_i, x_grid, y_grid, cov_param)
 
     def error_response(self, kwargs_lens, kwargs_ps, kwargs_special):
-        """
-        returns the 1d array of the error estimate corresponding to the data response
+        """Returns the 1d array of the error estimate corresponding to the data
+        response.
 
-        :return: 1d numpy array of response, 2d array of additional errors (e.g. point source uncertainties)
+        :return: 1d numpy array of response, 2d array of additional errors (e.g. point
+            source uncertainties)
         """
         (
             kwargs_lens_i,
@@ -470,10 +481,10 @@ class SingleBandMultiModel(ImageLinearFit):
         )
 
     def extinction_map(self, kwargs_extinction=None, kwargs_special=None):
-        """
-        differential extinction per pixel
+        """Differential extinction per pixel.
 
-        :param kwargs_extinction: list of keyword arguments corresponding to the optical depth models tau, such that extinction is exp(-tau)
+        :param kwargs_extinction: list of keyword arguments corresponding to the optical
+            depth models tau, such that extinction is exp(-tau)
         :param kwargs_special: keyword arguments, additional parameter to the extinction
         :return: 2d array of size of the image
         """
@@ -483,8 +494,8 @@ class SingleBandMultiModel(ImageLinearFit):
         return self._extinction_map(kwargs_extinction_i, kwargs_special)
 
     def linear_param_from_kwargs(self, kwargs_source, kwargs_lens_light, kwargs_ps):
-        """
-        inverse function of update_linear() returning the linear amplitude list for the keyword argument list
+        """Inverse function of update_linear() returning the linear amplitude list for
+        the keyword argument list.
 
         :param kwargs_source:
         :param kwargs_lens_light:
@@ -511,8 +522,7 @@ class SingleBandMultiModel(ImageLinearFit):
         kwargs_extinction=None,
         kwargs_special=None,
     ):
-        """
-        select subset of kwargs lists referenced to this imaging band
+        """Select subset of kwargs lists referenced to this imaging band.
 
         :param kwargs_lens:
         :param kwargs_source:

@@ -10,9 +10,8 @@ __all__ = ["TNFWC"]
 
 
 class TNFWC(LensProfileBase):
-    """
-
-    This class contains an pseudo NFW profile with a core radius and a truncation radius. The density in 3D is given by
+    """This class contains an pseudo NFW profile with a core radius and a truncation
+    radius. The density in 3D is given by.
 
     .. math::
         \\rho(r) = \\frac{\\rho_0 r_s^3}{\\left(r^2+r_c^2\\right)^{1/2} \\left(r_s^2+r^2\\right)} \\left(\\frac{r_t^2}{r^2+r_t^2}\\right)
@@ -44,8 +43,7 @@ class TNFWC(LensProfileBase):
     }
 
     def derivatives(self, x, y, Rs, alpha_Rs, r_core, r_trunc, center_x=0, center_y=0):
-        """
-        returns df/dx and df/dy of the function which are the deflection angles
+        """Returns df/dx and df/dy of the function which are the deflection angles.
 
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
@@ -92,8 +90,7 @@ class TNFWC(LensProfileBase):
 
     @staticmethod
     def density(R, Rs, rho0, r_core, r_trunc):
-        """
-        3D density profile
+        """3D density profile.
 
         :param R: radius of interest
         :type Rs: scale radius
@@ -112,9 +109,9 @@ class TNFWC(LensProfileBase):
         return rho0 / denom
 
     def density_lens(self, r, Rs, alpha_Rs, r_core, r_trunc):
-        """
-        computes the density at 3d radius r given lens model parameterization.
-        The integral in the LOS projection of this quantity results in the convergence quantity.
+        """Computes the density at 3d radius r given lens model parameterization. The
+        integral in the LOS projection of this quantity results in the convergence
+        quantity.
 
         :param r: 3d radios
         :param Rs: scale radius
@@ -127,8 +124,7 @@ class TNFWC(LensProfileBase):
         return self.density(r, Rs, rho0, r_core, r_trunc)
 
     def density_2d(self, x, y, Rs, rho0, r_core, r_trunc, center_x=0, center_y=0):
-        """
-        2D (projected) density profile
+        """2D (projected) density profile.
 
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
@@ -150,8 +146,7 @@ class TNFWC(LensProfileBase):
         return 2 * rho0 * Rs * Fx
 
     def mass_3d(self, r, Rs, rho0, r_core, r_trunc):
-        """
-        mass enclosed a 3d sphere or radius r
+        """Mass enclosed a 3d sphere or radius r.
 
         :param r: 3d radius
         :param Rs: scale radius
@@ -164,9 +159,8 @@ class TNFWC(LensProfileBase):
         return 4 * np.pi * quad(integrand, 0, r)[0]
 
     def mass_3d_lens(self, r, Rs, alpha_Rs, r_core, r_trunc):
-        """
-        mass enclosed a 3d sphere or radius r.
-        This function takes as input the lensing parameterization.
+        """Mass enclosed a 3d sphere or radius r. This function takes as input the
+        lensing parameterization.
 
         :param r: 3d radius
         :param Rs: scale radius
@@ -180,8 +174,7 @@ class TNFWC(LensProfileBase):
         return m_3d
 
     def mass_2d(self, R, Rs, rho0, r_core, r_trunc):
-        """
-        mass enclosed a 2d cylinder or projected radius R
+        """Mass enclosed a 2d cylinder or projected radius R.
 
         :param R: 3d radius
         :param Rs: scale radius
@@ -199,9 +192,8 @@ class TNFWC(LensProfileBase):
         return m_2d
 
     def nfw_alpha(self, R, Rs, rho0, r_core, r_trunc, ax_x, ax_y):
-        """
-
-        deflection angle of the profile (times Sigma_crit D_OL) along the projection to coordinate 'axis'
+        """Deflection angle of the profile (times Sigma_crit D_OL) along the projection
+        to coordinate 'axis'.
 
         :param R: 3d radius
         :param Rs: scale radius
@@ -221,9 +213,8 @@ class TNFWC(LensProfileBase):
         return a * ax_x, a * ax_y
 
     def nfw_gamma(self, R, Rs, rho0, r_core, r_trunc, ax_x, ax_y):
-        """
-
-        shear gamma of NFW profile (times Sigma_crit) along the projection to coordinate 'axis'
+        """Shear gamma of NFW profile (times Sigma_crit) along the projection to
+        coordinate 'axis'.
 
         :param R: 3d radius
         :param Rs: scale radius
@@ -245,8 +236,7 @@ class TNFWC(LensProfileBase):
         return a * (ax_y**2 - ax_x**2) / R**2, -a * 2 * (ax_x * ax_y) / R**2
 
     def _f(self, x, b, t):
-        """
-        analytic solution of the projection integral
+        """Analytic solution of the projection integral.
 
         :param X: R/Rs
         :type X: float >0
@@ -258,8 +248,8 @@ class TNFWC(LensProfileBase):
         return prefactor * (self._u1(x, b, 1.0) - self._u1(x, b, t))
 
     def _g(self, x, b, t):
-        """
-        analytic solution of integral for NFW profile to compute deflection angle and gamma
+        """Analytic solution of integral for NFW profile to compute deflection angle and
+        gamma.
 
         :param X: R/Rs
         :type X: float >0
@@ -306,8 +296,7 @@ class TNFWC(LensProfileBase):
         return (t**2 + x**2) * self._u1(x, b, t)
 
     def alpha2rho0(self, alpha_Rs, Rs, r_core, r_trunc):
-        """
-        convert angle at Rs into rho0
+        """Convert angle at Rs into rho0.
 
         :param alpha_Rs: deflection angle at RS
         :param Rs: scale radius
@@ -323,8 +312,7 @@ class TNFWC(LensProfileBase):
         return rho0
 
     def rho02alpha(self, rho0, Rs, r_core, r_trunc):
-        """
-        convert rho0 to angle at Rs
+        """Convert rho0 to angle at Rs.
 
         :param rho0: density normalization
         :param Rs: scale radius

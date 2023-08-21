@@ -9,9 +9,7 @@ from lenstronomy.LensModel.Profiles.epl import EPL
 
 
 class TestPowerLaw(object):
-    """
-    class to test the Moffat profile
-    """
+    """Class to test the Moffat profile."""
 
     def setup_method(self):
         pass

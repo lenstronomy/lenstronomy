@@ -63,10 +63,7 @@ def test_pixelsize_change():
 
 
 def test_cutout_source():
-    """
-    test whether a shifted psf can be reproduced sufficiently well
-    :return:
-    """
+    """Test whether a shifted psf can be reproduced sufficiently well :return:"""
     kernel_size = 5
     image = np.zeros((10, 10))
     kernel = np.zeros((kernel_size, kernel_size))
@@ -186,10 +183,7 @@ def test_deshift_subgrid():
 
 
 def test_shift_long_dist():
-    """
-    input is a shifted kernel by more than 1 pixel
-    :return:
-    """
+    """Input is a shifted kernel by more than 1 pixel :return:"""
 
     kernel_size = 9
     kernel = np.zeros((kernel_size, kernel_size))

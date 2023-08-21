@@ -16,9 +16,7 @@ import lenstronomy.Util.kernel_util as kernel_util
 
 
 class TestLikelihoodModule(object):
-    """
-    test the fitting sequences
-    """
+    """Test the fitting sequences."""
 
     def setup_method(self):
         np.random.seed(42)

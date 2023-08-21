@@ -6,35 +6,31 @@ import matplotlib.pyplot as plt
 
 
 class KinNNImageAlign(object):
-    """
-    class to rotate and interpolate SKiNN image (which is built along x-axis) to be
-        on the grid of the spectral data (e.g., MUSE), rotated to match light distribution as defined by the lens model
-    main function is interp_image() which will output a 2D image interpolated on the spectra grid
-    """
+    """Class to rotate and interpolate SKiNN image (which is built along x-axis) to be
+    on the grid of the spectral data (e.g., MUSE), rotated to match light distribution
+    as defined by the lens model main function is interp_image() which will output a 2D
+    image interpolated on the spectra grid."""
 
     def __init__(self, spectra_inputs, imaging_inputs, kin_nn_inputs):
-        """
-        initialize input data
+        """Initialize input data.
 
-        :param spectra_inputs: dictionary which encodes grid and transformation information for kinematic data
-            :'image': contains 2d image used to calculate grid coordinates
-            :'transform_pix2angle': transformation matrix to convert from pixel xy to ra/dec
-            :'ra_at_xy0': ra coordinate at pixel (0,0)
+        :param spectra_inputs: dictionary which encodes grid and transformation
+            information for kinematic data :'image': contains 2d image used to calculate
+            grid coordinates :'transform_pix2angle': transformation matrix to convert
+            from pixel xy to ra/dec :'ra_at_xy0': ra coordinate at pixel (0,0)
             :'dec_at_xy0': dec coordinate at pixel (0,0)
-
-        :param imaging_inputs: dictionary which encodes grid and transformation information for imaging data
-            :'image': contains 2d image used to calculate grid coordinates
-            :'transform_pix2angle': transformation matrix to convert from pixel xy to ra/dec
-            :'ra_at_xy0': ra coordinate at pixel (0,0)
-            :'dec_at_xy0': dec coordinate at pixel (0,0)
-            :'ellipse_PA': position angle of ellipse axis relative to x direction
-            :'offset_x': how many pixels to offset the center of the grid to match the kinNN center (x-direction)
-            :'offset_y': how many pixels to offset the center of the grid to match the kinNN center (y-direction)
-
-        :param kin_nn_inputs: dictionary which encodes grid information for NN output data
-            :'image': contains 2d image used to calculate grid coordinates
+        :param imaging_inputs: dictionary which encodes grid and transformation
+            information for imaging data :'image': contains 2d image used to calculate
+            grid coordinates :'transform_pix2angle': transformation matrix to convert
+            from pixel xy to ra/dec :'ra_at_xy0': ra coordinate at pixel (0,0)
+            :'dec_at_xy0': dec coordinate at pixel (0,0) :'ellipse_PA': position angle
+            of ellipse axis relative to x direction :'offset_x': how many pixels to
+            offset the center of the grid to match the kinNN center (x-direction)
+            :'offset_y': how many pixels to offset the center of the grid to match the
+            kinNN center (y-direction)
+        :param kin_nn_inputs: dictionary which encodes grid information for NN output
+            data :'image': contains 2d image used to calculate grid coordinates
             :'deltaPix': pixel size
-
         """
         self.spectra_data = spectra_inputs
         self.imaging_data = imaging_inputs
@@ -51,9 +47,7 @@ class KinNNImageAlign(object):
         kin_nn_inputs=None,
         update_npix=False,
     ):
-        """
-        Update with inputs
-        """
+        """Update with inputs."""
         if spectra_inputs is not None:
             self.spectra_data = spectra_inputs
         if imaging_inputs is not None:
@@ -64,9 +58,7 @@ class KinNNImageAlign(object):
             self.write_npix()
 
     def write_npix(self):
-        """
-        Check that images are squared and write the keyword 'npix'
-        """
+        """Check that images are squared and write the keyword 'npix'."""
         for input_set in [self.spectra_data, self.imaging_data, self.kinNN_data]:
             # make sure each image is square and add npix to each dictionary
             if "image" in input_set.keys():
@@ -76,12 +68,12 @@ class KinNNImageAlign(object):
                 input_set["npix"] = npix
 
     def pix_coords(self, input_set, flatten=True):
-        """
-        simple function to give pixel coordinates of grid
+        """Simple function to give pixel coordinates of grid.
 
-        :param input_set: dictionary from above (e.g. spectra_inputs) which completely describes grid transformation
-        :boolean flatten: default True; if True, return 1D flattened output, if False, return 2D grid
-        :return pixel coordinates of grid
+        :param input_set: dictionary from above (e.g. spectra_inputs) which completely
+            describes grid transformation :boolean flatten: default True; if True,
+            return 1D flattened output, if False, return 2D grid :return pixel
+            coordinates of grid
         """
         x_grid = np.tile(np.arange(input_set["npix"]), input_set["npix"])
         y_grid = np.repeat(np.arange(input_set["npix"]), input_set["npix"])
@@ -93,15 +85,14 @@ class KinNNImageAlign(object):
             )
 
     def radec_to_xy(self, ra, dec, xy_to_radec_matrix, ra_atxy0, dec_atxy0):
-        """
-        converts from radec to pixel coordinates
+        """Converts from radec to pixel coordinates.
 
         :param ra: ra coordinate to transform
         :param dec: dec coordinate to transform
-        :param xy_to_radec_matrix: transformation matrix to convert from pixel xy to ra/dec
+        :param xy_to_radec_matrix: transformation matrix to convert from pixel xy to
+            ra/dec
         :param ra_atxy0: ra coordinate at pixel (0,0)
         :param dec_atxy0: dec coordinate at pixel (0,0)
-
         :return: x and y coordinates
         """
         ra = ra - ra_atxy0
@@ -110,15 +101,14 @@ class KinNNImageAlign(object):
         return x, y
 
     def xy_to_radec(self, x, y, xy_to_radec_matrix, ra_atxy0, dec_atxy0):
-        """
-        converts from pixel coordinates to radec
+        """Converts from pixel coordinates to radec.
 
         :param x: x coordinate to transform
         :param y: y coordinate to transform
-        :param xy_to_radec_matrix: transformation matrix to convert from pixel xy to ra/dec
+        :param xy_to_radec_matrix: transformation matrix to convert from pixel xy to
+            ra/dec
         :param ra_atxy0: ra coordinate at pixel (0,0)
         :param dec_atxy0: dec coordinate at pixel (0,0)
-
         :return: ra and dec coordinates
         """
         ra, dec = xy_to_radec_matrix.dot(np.array([x, y]))
@@ -136,20 +126,21 @@ class KinNNImageAlign(object):
         offsetx=0,
         offsety=0,
     ):
-        """
-        rotates and rescales from the x,y imaging coordinate system into the NN coordinate system
+        """Rotates and rescales from the x,y imaging coordinate system into the NN
+        coordinate system.
 
         :param imaging_x: imaging x coordinate to transform
         :param imaging_y: imaging y coordinate to transform
-        :param ellipse_pa_to_imagingx_angle: (radians) position angle of ellipse major axis relative to x
-            in the imaging coordinate system
+        :param ellipse_pa_to_imagingx_angle: (radians) position angle of ellipse major
+            axis relative to x in the imaging coordinate system
         :param deltapix_imaging: pixel size of imaging image
         :param deltapix_kin_nn: pixel size of NN image
         :param npix_imaging: number of pixels on a side of the imaging image
         :param npix_kin_nn: number of pixels on a side of the NN image
-        :param offsetx: how many pixels to offset the center of the grid to match the kinNN center (x-direction)
-        :param offsety: how many pixels to offset the center of the grid to match the kinNN center (y-direction)
-
+        :param offsetx: how many pixels to offset the center of the grid to match the
+            kinNN center (x-direction)
+        :param offsety: how many pixels to offset the center of the grid to match the
+            kinNN center (y-direction)
         :return: x and y coordinates in NN coordinate system
         """
         # define rotation matrix to rotate back into alignment
@@ -187,8 +178,7 @@ class KinNNImageAlign(object):
         )
 
     def plot_contour_and_grid(self, xcoords, ycoords, orig_image, color, alpha=0.4):
-        """
-        plotting function for visualization of a grid with a single ellipse contour
+        """Plotting function for visualization of a grid with a single ellipse contour.
 
         :param xcoords: grid x coordinates, flattened
         :param ycoords: grid y coordinates, flattened
@@ -204,8 +194,7 @@ class KinNNImageAlign(object):
         plt.scatter(xcoords, ycoords, color=color, alpha=alpha, s=1)
 
     def spectragrid_in_radec(self):
-        """
-        calculates ra and dec coordinates of spectra input coordinate grid
+        """Calculates ra and dec coordinates of spectra input coordinate grid.
 
         :return: ra and dec coordinates
         """
@@ -220,8 +209,8 @@ class KinNNImageAlign(object):
         return spectra_ra, spectra_dec
 
     def spectragrid_in_imagingxy(self):
-        """
-        calculates x and y coordinates in the imaging coordinate system of the original spectra input grid
+        """Calculates x and y coordinates in the imaging coordinate system of the
+        original spectra input grid.
 
         :return: x and y coordinates
         """
@@ -236,8 +225,8 @@ class KinNNImageAlign(object):
         return spectra_coords_in_imaging_x, spectra_coords_in_imaging_y
 
     def spectragrid_in_kin_nn_xy(self):
-        """
-        calculates x and y coordinates in the NN coordinate system of the original spectra input grid
+        """Calculates x and y coordinates in the NN coordinate system of the original
+        spectra input grid.
 
         :return: x and y coordinates
         """
@@ -259,8 +248,7 @@ class KinNNImageAlign(object):
         return kin_nn_x, kin_nn_y
 
     def interp_image(self):
-        """
-        interpolates kinNN image at the coordinates of the transformed spectra grid
+        """Interpolates kinNN image at the coordinates of the transformed spectra grid.
 
         :return: interpolated image which lines up with spectra coordinates
         """

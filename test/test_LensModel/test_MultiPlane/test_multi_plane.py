@@ -15,9 +15,7 @@ import lenstronomy.Util.constants as const
 
 
 class TestMultiPlane(object):
-    """
-    tests the source model routines
-    """
+    """Tests the source model routines."""
 
     def setup_method(self):
         pass

@@ -1,7 +1,7 @@
-"""
-This module provides helper classes for managing sample parameters. This is
-for internal use, if you are not modifying lenstronomy sampling to include
-new parameters you can safely ignore this.
+"""This module provides helper classes for managing sample parameters.
+
+This is for internal use, if you are not modifying lenstronomy sampling to include new
+parameters you can safely ignore this.
 """
 
 __author__ = "jhodonnell"
@@ -11,42 +11,38 @@ import numpy as np
 
 
 class ModelParamGroup:
-    """
-    This abstract class represents any lenstronomy fitting parameters used
-    in the Param class.
+    """This abstract class represents any lenstronomy fitting parameters used in the
+    Param class.
 
-    Subclasses should implement num_params(), set_params(), and get_params()
-    to convert parameters from lenstronomy's semantic dictionary format to a
-    flattened array format and back.
+    Subclasses should implement num_params(), set_params(), and get_params() to convert
+    parameters from lenstronomy's semantic dictionary format to a flattened array format
+    and back.
 
-    This class also contains three static methods to easily aggregate groups
-    of parameter classes, called `compose_num_params()`, `compose_set_params()`,
-    and `compose_get_params()`.
+    This class also contains three static methods to easily aggregate groups of
+    parameter classes, called `compose_num_params()`, `compose_set_params()`, and
+    `compose_get_params()`.
     """
 
     def num_params(self):
-        """
-        Tells the number of parameters that this group samples and their names.
+        """Tells the number of parameters that this group samples and their names.
 
         :returns: 2-tuple of (num param, list of names)
         """
         raise NotImplementedError
 
     def set_params(self, kwargs):
-        """
-        Converts lenstronomy semantic parameters in dictionary format into a
+        """Converts lenstronomy semantic parameters in dictionary format into a
         flattened array of parameters.
 
-        The flattened array is for use in optimization algorithms, e.g. MCMC,
-        Particle swarm, etc.
+        The flattened array is for use in optimization algorithms, e.g. MCMC, Particle
+        swarm, etc.
 
         :returns: flattened array of parameters as floats
         """
         raise NotImplementedError
 
     def get_params(self, args, i):
-        """
-        Converts a flattened array of parameters back into a lenstronomy dictionary,
+        """Converts a flattened array of parameters back into a lenstronomy dictionary,
         starting at index i.
 
         :param args: flattened arguments to convert to lenstronomy format
@@ -59,16 +55,17 @@ class ModelParamGroup:
 
     @staticmethod
     def compose_num_params(each_group, *args, **kwargs):
-        """
-        Aggregates the number of parameters for a group of parameter groups,
-        calling each instance's `num_params()` method and combining the results
+        """Aggregates the number of parameters for a group of parameter groups, calling
+        each instance's `num_params()` method and combining the results.
 
-        :param each_group: collection of parameter groups. Should each be subclasses of ModelParamGroup.
+        :param each_group: collection of parameter groups. Should each be subclasses of
+            ModelParamGroup.
         :type each_group: list
         :param args: Extra arguments to be passed to each call of `num_params()`
-        :param kwargs: Extra keyword arguments to be passed to each call of `num_params()`
-
-        :returns: As in each individual `num_params()`, a 2-tuple of (num params, list of param names)
+        :param kwargs: Extra keyword arguments to be passed to each call of
+            `num_params()`
+        :returns: As in each individual `num_params()`, a 2-tuple of (num params, list
+            of param names)
         """
         tot_param = 0
         param_names = []
@@ -80,18 +77,18 @@ class ModelParamGroup:
 
     @staticmethod
     def compose_set_params(each_group, param_kwargs, *args, **kwargs):
-        """
-        Converts lenstronomy semantic arguments in dictionary format to a
-        flattened list of floats for use in optimization/fitting algorithms.
-        Combines the results for a set of arbitrarily many parameter groups.
+        """Converts lenstronomy semantic arguments in dictionary format to a flattened
+        list of floats for use in optimization/fitting algorithms. Combines the results
+        for a set of arbitrarily many parameter groups.
 
-        :param each_group: collection of parameter groups. Should each be subclasses of ModelParamGroup.
+        :param each_group: collection of parameter groups. Should each be subclasses of
+            ModelParamGroup.
         :type each_group: list
         :param param_kwargs: the kwargs to process
         :type param_kwargs: dict
         :param args: Extra arguments to be passed to each call of `set_params()`
-        :param kwargs: Extra keyword arguments to be passed to each call of `set_params()`
-
+        :param kwargs: Extra keyword arguments to be passed to each call of
+            `set_params()`
         :returns: As in each individual `set_params()`, a list of floats
         """
         output_args = []
@@ -101,10 +98,9 @@ class ModelParamGroup:
 
     @staticmethod
     def compose_get_params(each_group, flat_args, i, *args, **kwargs):
-        """
-        Converts a flattened array of parameters to lenstronomy semantic
-        parameters in dictionary format.
-        Combines the results for a set of arbitrarily many parameter groups.
+        """Converts a flattened array of parameters to lenstronomy semantic parameters
+        in dictionary format. Combines the results for a set of arbitrarily many
+        parameter groups.
 
         :param each_group: collection of parameter groups. Should each be subclasses of ModelParamGroup.
         :type each_group: list
@@ -125,8 +121,7 @@ class ModelParamGroup:
 
 
 class SingleParam(ModelParamGroup):
-    """
-    Helper for handling parameters which are a single float.
+    """Helper for handling parameters which are a single float.
 
     Subclasses should define:
 
@@ -145,12 +140,10 @@ class SingleParam(ModelParamGroup):
         self._on = bool(on)
 
     def num_params(self, kwargs_fixed):
-        """
-        Tells the number of parameters that this group samples and their names.
+        """Tells the number of parameters that this group samples and their names.
 
         :param kwargs_fixed: Dictionary of fixed arguments
         :type kwargs_fixed: dict
-
         :returns: 2-tuple of (num param, list of names)
         """
         if self.on:
@@ -163,18 +156,16 @@ class SingleParam(ModelParamGroup):
         return 0, []
 
     def set_params(self, kwargs, kwargs_fixed):
-        """
-        Converts lenstronomy semantic parameters in dictionary format into a
+        """Converts lenstronomy semantic parameters in dictionary format into a
         flattened array of parameters.
 
-        The flattened array is for use in optimization algorithms, e.g. MCMC,
-        Particle swarm, etc.
+        The flattened array is for use in optimization algorithms, e.g. MCMC, Particle
+        swarm, etc.
 
         :param kwargs: lenstronomy parameters to flatten
         :type kwargs: dict
         :param kwargs_fixed: Dictionary of fixed arguments
         :type kwargs_fixed: dict
-
         :returns: flattened array of parameters as floats
         """
         if self.on:
@@ -186,8 +177,7 @@ class SingleParam(ModelParamGroup):
         return []
 
     def get_params(self, args, i, kwargs_fixed, kwargs_upper=None, kwargs_lower=None):
-        """
-        Converts a flattened array of parameters back into a lenstronomy dictionary,
+        """Converts a flattened array of parameters back into a lenstronomy dictionary,
         starting at index i.
 
         :param args: flattened arguments to convert to lenstronomy format
@@ -196,7 +186,6 @@ class SingleParam(ModelParamGroup):
         :type i: int
         :param kwargs_fixed: Dictionary of fixed arguments
         :type kwargs_fixed: dict
-
         :returns: dictionary of parameters
         """
         out = {}
@@ -231,10 +220,9 @@ class SingleParam(ModelParamGroup):
 
 
 class ArrayParam(ModelParamGroup):
-    """
-    Helper for handling parameters which are an array of values. Examples
-    include mass_scaling, which is an array of scaling parameters, and wavelet
-    or gaussian decompositions which have different coefficients for each mode.
+    """Helper for handling parameters which are an array of values. Examples include
+    mass_scaling, which is an array of scaling parameters, and wavelet or gaussian
+    decompositions which have different coefficients for each mode.
 
     Subclasses should define:
 
@@ -253,12 +241,10 @@ class ArrayParam(ModelParamGroup):
         self._on = bool(on)
 
     def num_params(self, kwargs_fixed):
-        """
-        Tells the number of parameters that this group samples and their names.
+        """Tells the number of parameters that this group samples and their names.
 
         :param kwargs_fixed: Dictionary of fixed arguments
         :type kwargs_fixed: dict
-
         :returns: 2-tuple of (num param, list of names)
         """
         if not self.on:
@@ -274,18 +260,16 @@ class ArrayParam(ModelParamGroup):
         return npar, names
 
     def set_params(self, kwargs, kwargs_fixed):
-        """
-        Converts lenstronomy semantic parameters in dictionary format into a
+        """Converts lenstronomy semantic parameters in dictionary format into a
         flattened array of parameters.
 
-        The flattened array is for use in optimization algorithms, e.g. MCMC,
-        Particle swarm, etc.
+        The flattened array is for use in optimization algorithms, e.g. MCMC, Particle
+        swarm, etc.
 
         :param kwargs: lenstronomy parameters to flatten
         :type kwargs: dict
         :param kwargs_fixed: Dictionary of fixed arguments
         :type kwargs_fixed: dict
-
         :returns: flattened array of parameters as floats
         """
         if not self.on:
@@ -298,8 +282,7 @@ class ArrayParam(ModelParamGroup):
         return args
 
     def get_params(self, args, i, kwargs_fixed, kwargs_lower=None, kwargs_upper=None):
-        """
-        Converts a flattened array of parameters back into a lenstronomy dictionary,
+        """Converts a flattened array of parameters back into a lenstronomy dictionary,
         starting at index i.
 
         :param args: flattened arguments to convert to lenstronomy format

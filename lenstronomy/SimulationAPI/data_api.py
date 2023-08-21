@@ -7,12 +7,13 @@ __all__ = ["DataAPI"]
 
 
 class DataAPI(SingleBand):
-    """
-    This class is a wrapper of the general description of data in SingleBand() to translate those quantities into
-    configurations in the core lenstronomy Data modules to simulate images according to those quantities.
-    This class is meant to be an example of a wrapper. More possibilities in terms of PSF and data type
-    options are available. Have a look in the specific modules if you are interested in.
+    """This class is a wrapper of the general description of data in SingleBand() to
+    translate those quantities into configurations in the core lenstronomy Data modules
+    to simulate images according to those quantities.
 
+    This class is meant to be an example of a wrapper. More possibilities in terms of
+    PSF and data type options are available. Have a look in the specific modules if you
+    are interested in.
     """
 
     def __init__(self, numpix, kwargs_pixel_grid=None, **kwargs_single_band):
@@ -35,8 +36,8 @@ class DataAPI(SingleBand):
 
     @property
     def data_class(self):
-        """
-        creates a Data() instance of lenstronomy based on knowledge of the observation
+        """Creates a Data() instance of lenstronomy based on knowledge of the
+        observation.
 
         :return: instance of Data() class
         """

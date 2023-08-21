@@ -10,8 +10,8 @@ __all__ = ["Interpol", "InterpolScaled"]
 
 
 class Interpol(LensProfileBase):
-    """
-    class which uses an interpolation of a lens model and its first and second order derivatives
+    """Class which uses an interpolation of a lens model and its first and second order
+    derivatives.
 
     See also the tests in lenstronomy.test.test_LensModel.test_Profiles.test_interpol.py for example use cases
     as checks against known analytic models.
@@ -110,19 +110,26 @@ class Interpol(LensProfileBase):
         f_yy=None,
         f_xy=None,
     ):
-        """
-        returns df/dx and df/dy of the function
+        """Returns df/dx and df/dy of the function.
 
         :param x: x-coordinate (angular position), float or numpy array
         :param y: y-coordinate (angular position), float or numpy array
-        :param grid_interp_x: numpy array (ascending) to mark the x-direction of the interpolation grid
-        :param grid_interp_y: numpy array (ascending) to mark the y-direction of the interpolation grid
-        :param f_: 2d numpy array of lensing potential, matching the grids in grid_interp_x and grid_interp_y
-        :param f_x: 2d numpy array of deflection in x-direction, matching the grids in grid_interp_x and grid_interp_y
-        :param f_y: 2d numpy array of deflection in y-direction, matching the grids in grid_interp_x and grid_interp_y
-        :param f_xx: 2d numpy array of df/dxx, matching the grids in grid_interp_x and grid_interp_y
-        :param f_yy: 2d numpy array of df/dyy, matching the grids in grid_interp_x and grid_interp_y
-        :param f_xy: 2d numpy array of df/dxy, matching the grids in grid_interp_x and grid_interp_y
+        :param grid_interp_x: numpy array (ascending) to mark the x-direction of the
+            interpolation grid
+        :param grid_interp_y: numpy array (ascending) to mark the y-direction of the
+            interpolation grid
+        :param f_: 2d numpy array of lensing potential, matching the grids in
+            grid_interp_x and grid_interp_y
+        :param f_x: 2d numpy array of deflection in x-direction, matching the grids in
+            grid_interp_x and grid_interp_y
+        :param f_y: 2d numpy array of deflection in y-direction, matching the grids in
+            grid_interp_x and grid_interp_y
+        :param f_xx: 2d numpy array of df/dxx, matching the grids in grid_interp_x and
+            grid_interp_y
+        :param f_yy: 2d numpy array of df/dyy, matching the grids in grid_interp_x and
+            grid_interp_y
+        :param f_xy: 2d numpy array of df/dxy, matching the grids in grid_interp_x and
+            grid_interp_y
         :return: f_x, f_y at interpolated positions (x, y)
         """
         n = len(np.atleast_1d(x))
@@ -161,19 +168,26 @@ class Interpol(LensProfileBase):
         f_yy=None,
         f_xy=None,
     ):
-        """
-        returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
+        """Returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2.
 
         :param x: x-coordinate (angular position), float or numpy array
         :param y: y-coordinate (angular position), float or numpy array
-        :param grid_interp_x: numpy array (ascending) to mark the x-direction of the interpolation grid
-        :param grid_interp_y: numpy array (ascending) to mark the y-direction of the interpolation grid
-        :param f_: 2d numpy array of lensing potential, matching the grids in grid_interp_x and grid_interp_y
-        :param f_x: 2d numpy array of deflection in x-direction, matching the grids in grid_interp_x and grid_interp_y
-        :param f_y: 2d numpy array of deflection in y-direction, matching the grids in grid_interp_x and grid_interp_y
-        :param f_xx: 2d numpy array of df/dxx, matching the grids in grid_interp_x and grid_interp_y
-        :param f_yy: 2d numpy array of df/dyy, matching the grids in grid_interp_x and grid_interp_y
-        :param f_xy: 2d numpy array of df/dxy, matching the grids in grid_interp_x and grid_interp_y
+        :param grid_interp_x: numpy array (ascending) to mark the x-direction of the
+            interpolation grid
+        :param grid_interp_y: numpy array (ascending) to mark the y-direction of the
+            interpolation grid
+        :param f_: 2d numpy array of lensing potential, matching the grids in
+            grid_interp_x and grid_interp_y
+        :param f_x: 2d numpy array of deflection in x-direction, matching the grids in
+            grid_interp_x and grid_interp_y
+        :param f_y: 2d numpy array of deflection in y-direction, matching the grids in
+            grid_interp_x and grid_interp_y
+        :param f_xx: 2d numpy array of df/dxx, matching the grids in grid_interp_x and
+            grid_interp_y
+        :param f_yy: 2d numpy array of df/dyy, matching the grids in grid_interp_x and
+            grid_interp_y
+        :param f_xy: 2d numpy array of df/dxy, matching the grids in grid_interp_x and
+            grid_interp_y
         :return: f_xx, f_xy, f_yx, f_yy at interpolated positions (x, y)
         """
         if not (hasattr(self, "_f_xx_interp")) and (
@@ -336,8 +350,9 @@ class Interpol(LensProfileBase):
 
 
 class InterpolScaled(LensProfileBase):
-    """
-    class for handling an interpolated lensing map and has the freedom to scale its lensing effect.
+    """Class for handling an interpolated lensing map and has the freedom to scale its
+    lensing effect.
+
     Applications are e.g. mass to light ratio.
     """
 

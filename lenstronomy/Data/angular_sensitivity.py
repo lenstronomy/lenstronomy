@@ -2,13 +2,13 @@ __all__ = ["AngularSensitivity"]
 
 
 class AngularSensitivity(object):
-    """
-    Telescope Angular Sensitivity class.
-    This class provides functions describing the EM radiation sensitivity along different directions of
-    some specific telescopes, including radio antennae of an interferometric array.
+    """Telescope Angular Sensitivity class. This class provides functions describing the
+    EM radiation sensitivity along different directions of some specific telescopes,
+    including radio antennae of an interferometric array.
 
     A general reference of telescope angular sensitivity can be found in Section 5.4 of
-    Bradt, H. (2004). Astronomy methods: A physical approach to astronomical observations. Cambridge University Press.
+    Bradt, H. (2004). Astronomy methods: A physical approach to astronomical
+    observations. Cambridge University Press.
     """
 
     def __init__(self, antenna_primary_beam=None):

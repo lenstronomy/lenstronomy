@@ -9,8 +9,9 @@ __all__ = ["LensModel"]
 
 
 class LensModel(object):
-    """
-    class to handle an arbitrary list of lens models. This is the main lenstronomy LensModel API for all other modules.
+    """Class to handle an arbitrary list of lens models.
+
+    This is the main lenstronomy LensModel API for all other modules.
     """
 
     def __init__(
@@ -136,14 +137,14 @@ class LensModel(object):
             self._lensCosmo = LensCosmo(z_lens, z_source, cosmo=cosmo)
 
     def ray_shooting(self, x, y, kwargs, k=None):
-        """
-        maps image to source position (inverse deflection)
+        """Maps image to source position (inverse deflection)
 
         :param x: x-position (preferentially arcsec)
         :type x: numpy array
         :param y: y-position (preferentially arcsec)
         :type y: numpy array
-        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
+        :param kwargs: list of keyword arguments of lens model parameters matching the
+            lens model classes
         :param k: only evaluate the k-th lens model
         :return: source plane positions corresponding to (x, y) in the image plane
         """
@@ -152,17 +153,19 @@ class LensModel(object):
     def fermat_potential(
         self, x_image, y_image, kwargs_lens, x_source=None, y_source=None
     ):
-        """
-        Fermat potential (negative sign means earlier arrival time)
-        for Multi-plane lensing, it computes the effective Fermat potential (derived from the arrival time and
-        subtracted off the time-delay distance for the given cosmology). The units are given in arcsecond square.
+        """Fermat potential (negative sign means earlier arrival time) for Multi-plane
+        lensing, it computes the effective Fermat potential (derived from the arrival
+        time and subtracted off the time-delay distance for the given cosmology). The
+        units are given in arcsecond square.
 
         :param x_image: image position
         :param y_image: image position
         :param x_source: source position
         :param y_source: source position
-        :param kwargs_lens: list of keyword arguments of lens model parameters matching the lens model classes
-        :return: fermat potential in arcsec**2 without geometry term (second part of Eqn 1 in Suyu et al. 2013) as a list
+        :param kwargs_lens: list of keyword arguments of lens model parameters matching
+            the lens model classes
+        :return: fermat potential in arcsec**2 without geometry term (second part of Eqn
+            1 in Suyu et al. 2013) as a list
         """
         if hasattr(self.lens_model, "fermat_potential"):
             return self.lens_model.fermat_potential(
@@ -188,15 +191,16 @@ class LensModel(object):
     def arrival_time(
         self, x_image, y_image, kwargs_lens, kappa_ext=0, x_source=None, y_source=None
     ):
-        """
-        Arrival time of images relative to a straight line without lensing.
-        Negative values correspond to images arriving earlier, and positive signs correspond to images arriving later.
+        """Arrival time of images relative to a straight line without lensing. Negative
+        values correspond to images arriving earlier, and positive signs correspond to
+        images arriving later.
 
         :param x_image: image position
         :param y_image: image position
         :param kwargs_lens: lens model parameter keyword argument list
-        :param kappa_ext: external convergence contribution not accounted in the lens model that leads to the same
-         observables in position and relative fluxes but rescales the time delays
+        :param kappa_ext: external convergence contribution not accounted in the lens
+            model that leads to the same observables in position and relative fluxes but
+            rescales the time delays
         :param x_source: source position (optional), otherwise computed with ray-tracing
         :param y_source: source position (optional), otherwise computed with ray-tracing
         :return: arrival time of image positions in units of days
@@ -216,32 +220,33 @@ class LensModel(object):
         return arrival_time
 
     def potential(self, x, y, kwargs, k=None):
-        """
-        lensing potential
+        """Lensing potential.
 
         :param x: x-position (preferentially arcsec)
         :type x: numpy array
         :param y: y-position (preferentially arcsec)
         :type y: numpy array
-        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
+        :param kwargs: list of keyword arguments of lens model parameters matching the
+            lens model classes
         :param k: only evaluate the k-th lens model
         :return: lensing potential in units of arcsec^2
         """
         return self.lens_model.potential(x, y, kwargs, k=k)
 
     def alpha(self, x, y, kwargs, k=None, diff=None):
-        """
-        deflection angles
+        """Deflection angles.
 
         :param x: x-position (preferentially arcsec)
         :type x: numpy array
         :param y: y-position (preferentially arcsec)
         :type y: numpy array
-        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
+        :param kwargs: list of keyword arguments of lens model parameters matching the
+            lens model classes
         :param k: only evaluate the k-th lens model
-        :param diff: None or float. If set, computes the deflection as a finite numerical differential of the lensing
-         potential. This differential is only applicable in the single lensing plane where the form of the lensing
-         potential is analytically known
+        :param diff: None or float. If set, computes the deflection as a finite
+            numerical differential of the lensing potential. This differential is only
+            applicable in the single lensing plane where the form of the lensing
+            potential is analytically known
         :return: deflection angles in units of arcsec
         """
         if diff is None:
@@ -255,19 +260,19 @@ class LensModel(object):
             )
 
     def hessian(self, x, y, kwargs, k=None, diff=None, diff_method="square"):
-        """
-        hessian matrix
+        """Hessian matrix.
 
         :param x: x-position (preferentially arcsec)
         :type x: numpy array
         :param y: y-position (preferentially arcsec)
         :type y: numpy array
-        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
+        :param kwargs: list of keyword arguments of lens model parameters matching the
+            lens model classes
         :param k: only evaluate the k-th lens model
-        :param diff: float, scale over which the finite numerical differential is computed. If None, then using the
-         exact (if available) differentials.
-        :param diff_method: string, 'square' or 'cross', indicating whether finite differentials are computed from a
-         cross or a square of points around (x, y)
+        :param diff: float, scale over which the finite numerical differential is
+            computed. If None, then using the exact (if available) differentials.
+        :param diff_method: string, 'square' or 'cross', indicating whether finite
+            differentials are computed from a cross or a square of points around (x, y)
         :return: f_xx, f_xy, f_yx, f_yy components
         """
         if diff is None:
@@ -283,19 +288,19 @@ class LensModel(object):
             )
 
     def kappa(self, x, y, kwargs, k=None, diff=None, diff_method="square"):
-        """
-        lensing convergence k = 1/2 laplacian(phi)
+        """Lensing convergence k = 1/2 laplacian(phi)
 
         :param x: x-position (preferentially arcsec)
         :type x: numpy array
         :param y: y-position (preferentially arcsec)
         :type y: numpy array
-        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
+        :param kwargs: list of keyword arguments of lens model parameters matching the
+            lens model classes
         :param k: only evaluate the k-th lens model
-        :param diff: float, scale over which the finite numerical differential is computed. If None, then using the
-         exact (if available) differentials.
-        :param diff_method: string, 'square' or 'cross', indicating whether finite differentials are computed from a
-         cross or a square of points around (x, y)
+        :param diff: float, scale over which the finite numerical differential is
+            computed. If None, then using the exact (if available) differentials.
+        :param diff_method: string, 'square' or 'cross', indicating whether finite
+            differentials are computed from a cross or a square of points around (x, y)
         :return: lensing convergence
         """
 
@@ -353,8 +358,8 @@ class LensModel(object):
         return gamma1, gamma2
 
     def magnification(self, x, y, kwargs, k=None, diff=None, diff_method="square"):
-        """
-        magnification
+        """magnification.
+
         mag = 1/det(A)
         A = 1 - d^2phi/d_ij
 
@@ -378,17 +383,19 @@ class LensModel(object):
         return 1.0 / det_A  # attention, if dividing by zero
 
     def flexion(self, x, y, kwargs, k=None, diff=0.000001, hessian_diff=True):
-        """
-        third derivatives (flexion)
+        """Third derivatives (flexion)
 
         :param x: x-position (preferentially arcsec)
         :type x: numpy array
         :param y: y-position (preferentially arcsec)
         :type y: numpy array
-        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
-        :param k: int or None, if set, only evaluates the differential from one model component
+        :param kwargs: list of keyword arguments of lens model parameters matching the
+            lens model classes
+        :param k: int or None, if set, only evaluates the differential from one model
+            component
         :param diff: numerical differential length of Flexion
-        :param hessian_diff: boolean, if true also computes the numerical differential length of Hessian (optional)
+        :param hessian_diff: boolean, if true also computes the numerical differential
+            length of Hessian (optional)
         :return: f_xxx, f_xxy, f_xyy, f_yyy
         """
         if hessian_diff is not True:
@@ -414,20 +421,21 @@ class LensModel(object):
         return f_xxx, f_xxy, f_xyy, f_yyy
 
     def set_static(self, kwargs):
-        """
-        set this instance to a static lens model. This can improve the speed in evaluating lensing quantities at
-        different positions but must not be used with different lens model parameters!
+        """Set this instance to a static lens model. This can improve the speed in
+        evaluating lensing quantities at different positions but must not be used with
+        different lens model parameters!
 
         :param kwargs: lens model keyword argument list
-        :return: kwargs_updated (in case of image position convention in multiplane lensing this is changed)
+        :return: kwargs_updated (in case of image position convention in multiplane
+            lensing this is changed)
         """
         return self.lens_model.set_static(kwargs)
 
     def set_dynamic(self):
-        """
-        deletes cache for static setting and makes sure the observed convention in the position of lensing profiles in
-        the multi-plane setting is enabled. Dynamic is the default setting of this class enabling an accurate computation
-        of lensing quantities with different parameters in the lensing profiles.
+        """Deletes cache for static setting and makes sure the observed convention in
+        the position of lensing profiles in the multi-plane setting is enabled. Dynamic
+        is the default setting of this class enabling an accurate computation of lensing
+        quantities with different parameters in the lensing profiles.
 
         :return: None
         """
@@ -452,15 +460,17 @@ class LensModel(object):
         return f_x, f_y
 
     def _hessian_differential_cross(self, x, y, kwargs, k=None, diff=0.00001):
-        """
-        computes the numerical differentials over a finite range for f_xx, f_yy, f_xy from f_x and f_y
-        The differentials are computed along the cross centered at (x, y).
+        """Computes the numerical differentials over a finite range for f_xx, f_yy, f_xy
+        from f_x and f_y The differentials are computed along the cross centered at (x,
+        y).
 
         :param x: x-coordinate
         :param y: y-coordinate
         :param kwargs: lens model keyword argument list
-        :param k: int, list of bools or None, indicating a subset of lens models to be evaluated
-        :param diff: float, scale of the finite differential (diff/2 in each direction used to compute the differential
+        :param k: int, list of bools or None, indicating a subset of lens models to be
+            evaluated
+        :param diff: float, scale of the finite differential (diff/2 in each direction
+            used to compute the differential
         :return: f_xx, f_xy, f_yx, f_yy
         """
         alpha_ra_dx, alpha_dec_dx = self.alpha(x + diff / 2, y, kwargs, k=k)
@@ -481,15 +491,17 @@ class LensModel(object):
         return f_xx, f_xy, f_yx, f_yy
 
     def _hessian_differential_square(self, x, y, kwargs, k=None, diff=0.00001):
-        """
-        computes the numerical differentials over a finite range for f_xx, f_yy, f_xy from f_x and f_y
-        The differentials are computed on the square around (x, y). This minimizes curl.
+        """Computes the numerical differentials over a finite range for f_xx, f_yy, f_xy
+        from f_x and f_y The differentials are computed on the square around (x, y).
+        This minimizes curl.
 
         :param x: x-coordinate
         :param y: y-coordinate
         :param kwargs: lens model keyword argument list
-        :param k: int, list of booleans or None, indicating a subset of lens models to be evaluated
-        :param diff: float, scale of the finite differential (diff/2 in each direction used to compute the differential
+        :param k: int, list of booleans or None, indicating a subset of lens models to
+            be evaluated
+        :param diff: float, scale of the finite differential (diff/2 in each direction
+            used to compute the differential
         :return: f_xx, f_xy, f_yx, f_yy
         """
         alpha_ra_pp, alpha_dec_pp = self.alpha(x + diff / 2, y + diff / 2, kwargs, k=k)

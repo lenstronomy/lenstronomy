@@ -13,9 +13,7 @@ import pytest
 
 
 class TestShear(object):
-    """
-    tests the Gaussian methods
-    """
+    """Tests the Gaussian methods."""
 
     def setup_method(self):
         self.extShear = Shear()

@@ -8,9 +8,7 @@ import pytest
 
 
 class TestUldm(object):
-    """
-    tests the Gaussian methods
-    """
+    """Tests the Gaussian methods."""
 
     def setup_method(self):
         self.model = Uldm()

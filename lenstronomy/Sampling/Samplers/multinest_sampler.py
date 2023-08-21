@@ -12,8 +12,9 @@ __all__ = ["MultiNestSampler"]
 
 
 class MultiNestSampler(NestedSampler):
-    """
-    Wrapper for nested sampling algorithm MultInest by F. Feroz & M. Hobson
+    """Wrapper for nested sampling algorithm MultInest by F.
+
+    Feroz & M. Hobson
     papers : arXiv:0704.3704, arXiv:0809.3437, arXiv:1306.2144
     pymultinest doc : https://johannesbuchner.github.io/PyMultiNest/pymultinest.html
     """
@@ -89,10 +90,10 @@ class MultiNestSampler(NestedSampler):
         self._rm_output = remove_output_dir
 
     def run(self, kwargs_run):
-        """
-        run the MultiNest nested sampler
+        """Run the MultiNest nested sampler.
 
-        see https://johannesbuchner.github.io/PyMultiNest/pymultinest.html for content of kwargs_run
+        see https://johannesbuchner.github.io/PyMultiNest/pymultinest.html for content
+        of kwargs_run
 
         :param kwargs_run: kwargs directly passed to pymultinest.run
         :return: samples, means, logZ, logZ_err, logL, stats

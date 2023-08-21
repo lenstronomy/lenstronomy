@@ -5,10 +5,9 @@ __all__ = ["MultiLinear"]
 
 
 class MultiLinear(MultiDataBase):
-    """
-    class to simulate/reconstruct images in multi-band option.
-    This class calls functions of image_model.py with different bands with
-    joint non-linear parameters and decoupled linear parameters.
+    """Class to simulate/reconstruct images in multi-band option. This class calls
+    functions of image_model.py with different bands with joint non-linear parameters
+    and decoupled linear parameters.
 
     the class supports keyword arguments 'index_lens_model_list', 'index_source_light_model_list',
     'index_lens_light_model_list', 'index_point_source_model_list', 'index_optical_depth_model_list' in kwargs_model
@@ -20,7 +19,6 @@ class MultiLinear(MultiDataBase):
     - set index_lens_light_model_list = [[0], [1]]
     - (optional) for now all the parameters between the two light profiles are independent in the model. You have
     the possibility to join a subset of model parameters (e.g. joint centroid). See the Param() class for documentation.
-
     """
 
     def __init__(
@@ -69,17 +67,22 @@ class MultiLinear(MultiDataBase):
         kwargs_special=None,
         inv_bool=False,
     ):
-        """
-        computes the image (lens and source surface brightness with a given lens model).
-        The linear parameters are computed with a weighted linear least square optimization
-        (i.e. flux normalization of the brightness profiles)
+        """Computes the image (lens and source surface brightness with a given lens
+        model). The linear parameters are computed with a weighted linear least square
+        optimization (i.e. flux normalization of the brightness profiles)
 
-        :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
-        :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
-        :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
-        :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
-        :param inv_bool: if True, invert the full linear solver Matrix Ax = y for the purpose of the covariance matrix.
-        :return: 1d array of surface brightness pixels of the optimal solution of the linear parameters to match the data
+        :param kwargs_lens: list of keyword arguments corresponding to the superposition
+            of different lens profiles
+        :param kwargs_source: list of keyword arguments corresponding to the
+            superposition of different source light profiles
+        :param kwargs_lens_light: list of keyword arguments corresponding to different
+            lens light surface brightness profiles
+        :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as
+            external shear and point source image positions
+        :param inv_bool: if True, invert the full linear solver Matrix Ax = y for the
+            purpose of the covariance matrix.
+        :return: 1d array of surface brightness pixels of the optimal solution of the
+            linear parameters to match the data
         """
         wls_list, error_map_list, cov_param_list, param_list = [], [], [], []
         for i in range(self._num_bands):
@@ -115,17 +118,18 @@ class MultiLinear(MultiDataBase):
         linear_prior=None,
         check_positive_flux=False,
     ):
-        """
-        computes the likelihood of the data given a model
-        This is specified with the non-linear parameters and a linear inversion and prior marginalisation.
+        """Computes the likelihood of the data given a model This is specified with the
+        non-linear parameters and a linear inversion and prior marginalisation.
 
         :param kwargs_lens:
         :param kwargs_source:
         :param kwargs_lens_light:
         :param kwargs_ps:
-        :param check_positive_flux: bool, if True, checks whether the linear inversion resulted in non-negative flux
-         components and applies a punishment in the likelihood if so.
-        :return: log likelihood (natural logarithm) (sum of the log likelihoods of the individual images)
+        :param check_positive_flux: bool, if True, checks whether the linear inversion
+            resulted in non-negative flux components and applies a punishment in the
+            likelihood if so.
+        :return: log likelihood (natural logarithm) (sum of the log likelihoods of the
+            individual images)
         """
         # generate image
         logL = 0

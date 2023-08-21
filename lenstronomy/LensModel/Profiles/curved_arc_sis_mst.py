@@ -7,9 +7,8 @@ __all__ = ["CurvedArcSISMST"]
 
 
 class CurvedArcSISMST(LensProfileBase):
-    """
-    lens model that describes a section of a highly magnified deflector region.
-    The parameterization is chosen to describe local observables efficient.
+    """Lens model that describes a section of a highly magnified deflector region. The
+    parameterization is chosen to describe local observables efficient.
 
     Observables are:
     - curvature radius (basically bending relative to the center of the profile)
@@ -22,7 +21,6 @@ class CurvedArcSISMST(LensProfileBase):
     - Should work with other perturbative models without breaking its meaning (say when adding additional shear terms)
     - Must best reflect the observables in lensing
     - minimal covariances between the parameters, intuitive parameterization.
-
     """
 
     param_names = [
@@ -82,9 +80,8 @@ class CurvedArcSISMST(LensProfileBase):
     def sis_mst2stretch(
         theta_E, kappa_ext, center_x_sis, center_y_sis, center_x, center_y
     ):
-        """
-        turn Singular power-law lens model into stretch parameterization at position (center_x, center_y)
-        This is the inverse function of stretch2spp()
+        """Turn Singular power-law lens model into stretch parameterization at position
+        (center_x, center_y) This is the inverse function of stretch2spp()
 
         :param theta_E: Einstein radius of SIS profile
         :param kappa_ext: external convergence (MST factor 1 - kappa_ext)

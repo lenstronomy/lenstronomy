@@ -13,8 +13,7 @@ export, __all__ = exporter()
 
 @export
 class Sersic(SersicUtil):
-    """
-    this class contains functions to evaluate a spherical Sersic function
+    """This class contains functions to evaluate a spherical Sersic function.
 
     .. math::
         I(R) = I_0 \\exp \\left[ -b_n (R/R_{\\rm Sersic})^{\\frac{1}{n}}\\right]
@@ -22,7 +21,6 @@ class Sersic(SersicUtil):
     with :math:`I_0 = amp`
     and
     with :math:`b_{n}\\approx 1.999n-0.327`
-
     """
 
     param_names = ["amp", "R_sersic", "n_sersic", "center_x", "center_y"]
@@ -65,8 +63,7 @@ class Sersic(SersicUtil):
 
 @export
 class SersicElliptic(SersicUtil):
-    """
-    this class contains functions to evaluate an elliptical Sersic function
+    """This class contains functions to evaluate an elliptical Sersic function.
 
     .. math::
 
@@ -76,7 +73,6 @@ class SersicElliptic(SersicUtil):
     :math:`R = \\sqrt{q \\theta^2_x + \\theta^2_y/q}`
     and
     with :math:`b_{n}\\approx 1.999n-0.327`
-
     """
 
     param_names = ["amp", "R_sersic", "n_sersic", "e1", "e2", "center_x", "center_y"]
@@ -135,10 +131,8 @@ class SersicElliptic(SersicUtil):
 
 @export
 class SersicElliptic_qPhi(SersicUtil):
-    """
-    this class is the same as SersicElliptic except sampling over q and phi instead of e1 and e2
-
-    """
+    """This class is the same as SersicElliptic except sampling over q and phi instead
+    of e1 and e2."""
 
     param_names = ["amp", "R_sersic", "n_sersic", "q", "phi", "center_x", "center_y"]
     lower_limit_default = {
@@ -199,8 +193,8 @@ class SersicElliptic_qPhi(SersicUtil):
 
 @export
 class CoreSersic(SersicUtil):
-    """
-    this class contains the Core-Sersic function introduced by e.g. Trujillo et al. 2004
+    """This class contains the Core-Sersic function introduced by e.g. Trujillo et al.
+    2004.
 
     .. math::
 
@@ -213,7 +207,6 @@ class CoreSersic(SersicUtil):
         I' = I_b 2^{-\\gamma/ \\alpha} \\exp \\left[b_n 2^{1 / (n\\alpha)} (R_b/R_e)^{1/n}  \\right]
 
     where :math:`I_b` is the intensity at the break radius and :math:`R = \\sqrt{q \\theta^2_x + \\theta^2_y/q}`.
-
     """
 
     param_names = [

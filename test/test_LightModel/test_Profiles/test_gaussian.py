@@ -11,9 +11,7 @@ from lenstronomy.LightModel.Profiles.gaussian import (
 
 
 class TestMultiGaussian(object):
-    """
-    class to test the Gaussian profile
-    """
+    """Class to test the Gaussian profile."""
 
     def setup_method(self):
         pass

@@ -9,9 +9,7 @@ import numpy.testing as npt
 
 
 class TestElliSLICE(object):
-    """
-    tests the elliptical slice lens model
-    """
+    """Tests the elliptical slice lens model."""
 
     def setup_method(self):
         self.ElliSLICE = ElliSLICE()

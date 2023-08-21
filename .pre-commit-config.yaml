@@ -18,5 +18,5 @@ repos:
     hooks:
       - id: docformatter
         additional_dependencies: [tomli]
-        args: [-r, ./*, --black, --in-place]
+        args: ["-r ./*", --black, --in-place]
 

@@ -20,7 +20,7 @@ class EPL(LensProfileBase):
     with :math:`\\theta_{E}` is the (circularized) Einstein radius,
     :math:`\\gamma` is the negative power-law slope of the 3D mass distributions,
     :math:`q` is the minor/major axis ratio,
-    and :math:`x` and :math:`y` are defined in a coordinate sys- tem aligned with the major and minor axis of the lens.
+    and :math:`x` and :math:`y` are defined in a coordinate system aligned with the major and minor axis of the lens.
 
     In terms of eccentricities, this profile is defined as
 

@@ -491,5 +491,28 @@ class TestNumericsProfile(object):
         lens_model = ['HERNQUIST_ELLIPSE_CSE']
         self.assert_differentials(lens_model, kwargs, potential=True)
 
+    def test_TNFWC(self):
+
+        kwargs = {'alpha_Rs': 4.0, 'Rs': 2.0, 'r_core': 0.1, 'r_trunc': 200.0}
+        lens_model = ['TNFWC']
+        self.assert_differentials(lens_model, kwargs, potential=False)
+
+        kwargs = {'alpha_Rs': 4.0, 'Rs': 2.0, 'r_core': 0.1, 'r_trunc': 5.0}
+        lens_model = ['TNFWC']
+        self.assert_differentials(lens_model, kwargs, potential=False)
+
+        kwargs = {'alpha_Rs': 4.0, 'Rs': 2.0, 'r_core': 0.9, 'r_trunc': 5.0}
+        lens_model = ['TNFWC']
+        self.assert_differentials(lens_model, kwargs, potential=False)
+
+        kwargs = {'alpha_Rs': 4.0, 'Rs': 2.0, 'r_core': 2.1, 'r_trunc': 5.0}
+        lens_model = ['TNFWC']
+        self.assert_differentials(lens_model, kwargs, potential=False)
+
+        kwargs = {'alpha_Rs': 4.0, 'Rs': 2.0, 'r_core': 12.1, 'r_trunc': 5.0}
+        lens_model = ['TNFWC']
+        self.assert_differentials(lens_model, kwargs, potential=False)
+
+
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

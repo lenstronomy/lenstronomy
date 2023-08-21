@@ -50,8 +50,8 @@ class TestDynestySampler(object):
         sampler, likelihood = import_fixture
         try:
             sampler = DynestySampler(likelihood, prior_type='gaussian',
-                                     prior_means=None, # will raise an Error
-                                     prior_sigmas=None) # will raise an Error
+                                     prior_means=None,  # will raise an Error
+                                     prior_sigmas=None)  # will raise an Error
         except Exception as e:
             assert isinstance(e, ValueError)
         try:
@@ -71,20 +71,14 @@ class TestDynestySampler(object):
         cube_upp = sampler.prior(cube_upp)
         npt.assert_equal(cube_upp, sampler.uppers)
 
-        cube_mid = 0.5 * np.ones(n_dims)
-        self.prior_type = 'gaussian'
-        sampler.prior(cube_mid)
-        cube_gauss = np.array([0.5])
-        npt.assert_equal(cube_mid, cube_gauss)
-
     def test_log_likelihood(self, import_fixture):
         sampler, likelihood = import_fixture
         n_dims = sampler.n_dims
         args = np.nan * np.ones(n_dims)
         logL = sampler.log_likelihood(args)
         assert logL < 0
-        #npt.assert_almost_equal(logL, -47.167446538898204)
-        #assert logL == -1e15
+        # npt.assert_almost_equal(logL, -47.167446538898204)
+        # assert logL == -1e15
 
 
 if __name__ == '__main__':

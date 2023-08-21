@@ -1,15 +1,20 @@
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 import numpy as np
 
-__all__ = ['PSBase', '_expand_to_array', '_shrink_array']
+__all__ = ["PSBase", "_expand_to_array", "_shrink_array"]
 
 
 class PSBase(object):
-    """
-    base point source type class
-    """
-    def __init__(self, lens_model=None, fixed_magnification=False, additional_images=False, index_lens_model_list=None,
-                 point_source_frame_list=None):
+    """Base point source type class."""
+
+    def __init__(
+        self,
+        lens_model=None,
+        fixed_magnification=False,
+        additional_images=False,
+        index_lens_model_list=None,
+        point_source_frame_list=None,
+    ):
         """
 
         :param lens_model: instance of the LensModel() class
@@ -38,50 +43,57 @@ class PSBase(object):
         self._fixed_magnification = fixed_magnification
         self.additional_images = additional_images
         if fixed_magnification is True and additional_images is True:
-            Warning('The combination of fixed_magnification=True and additional_image=True is not optimal for the '
-                    'current computation. If you see this warning, please approach the developers.')
+            Warning(
+                "The combination of fixed_magnification=True and additional_image=True is not optimal for the "
+                "current computation. If you see this warning, please approach the developers."
+            )
 
     def image_position(self, kwargs_ps, **kwargs):
-        """
-        on-sky position
+        """On-sky position.
 
         :param kwargs_ps: keyword argument of point source model
         :return: numpy array of x, y image positions
         """
-        raise ValueError('image_position definition is not defined in the profile you want to execute.')
+        raise ValueError(
+            "image_position definition is not defined in the profile you want to execute."
+        )
 
     def source_position(self, kwargs_ps, **kwargs):
-        """
-        original unlensed position
+        """Original unlensed position.
 
         :param kwargs_ps: keyword argument of point source model
         :return: numpy array of x, y source positions
         """
-        raise ValueError('source_position definition is not defined in the profile you want to execute.')
+        raise ValueError(
+            "source_position definition is not defined in the profile you want to execute."
+        )
 
     def image_amplitude(self, kwargs_ps, *args, **kwargs):
-        """
-        amplitudes as observed on the sky
+        """Amplitudes as observed on the sky.
 
         :param kwargs_ps: keyword argument of point source model
         :param kwargs: keyword arguments of function call
         :return: numpy array of amplitudes
         """
-        raise ValueError('source_position definition is not defined in the profile you want to execute.')
+        raise ValueError(
+            "source_position definition is not defined in the profile you want to execute."
+        )
 
     def source_amplitude(self, kwargs_ps, **kwargs):
-        """
-        intrinsic source amplitudes (without lensing magnification, but still apparent)
+        """Intrinsic source amplitudes (without lensing magnification, but still
+        apparent)
 
         :param kwargs_ps: keyword argument of point source model
-        :param kwargs: keyword arguments of function call (which are not used for this object
+        :param kwargs: keyword arguments of function call (which are not used for this
+            object
         :return: numpy array of amplitudes
         """
-        raise ValueError('source_position definition is not defined in the profile you want to execute.')
+        raise ValueError(
+            "source_position definition is not defined in the profile you want to execute."
+        )
 
     def update_lens_model(self, lens_model_class):
-        """
-        update LensModel() and LensEquationSolver() instance
+        """Update LensModel() and LensEquationSolver() instance.
 
         :param lens_model_class: LensModel() class instance
         :return: internal lensModel class updated
@@ -104,7 +116,7 @@ def _expand_to_array(array, num):
         return np.ones(num) * array
     elif len(array) < num:
         out = np.zeros(num)
-        out[0:len(array)] = array
+        out[0 : len(array)] = array
         return out
     else:
         return array
@@ -122,7 +134,9 @@ def _shrink_array(array, num):
         array_return = array[:num]
         return array_return
     elif len(array) < num:
-        raise ValueError("the length of the array (%s) needs to be larger or equal than the designated length %s "
-                         % (len(array), num))
-    else: 
+        raise ValueError(
+            "the length of the array (%s) needs to be larger or equal than the designated length %s "
+            % (len(array), num)
+        )
+    else:
         return array

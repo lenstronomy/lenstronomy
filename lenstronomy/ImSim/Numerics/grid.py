@@ -4,16 +4,25 @@ from lenstronomy.Util import image_util
 from lenstronomy.Data.coord_transforms import Coordinates1D
 
 from lenstronomy.Util.package_util import exporter
+
 export, __all__ = exporter()
 
 
 @export
 class AdaptiveGrid(Coordinates1D):
-    """
-    manages a super-sampled grid on the partial image
-    """
-    def __init__(self, nx, ny, transform_pix2angle, ra_at_xy_0, dec_at_xy_0, supersampling_indexes,
-                 supersampling_factor, flux_evaluate_indexes=None):
+    """Manages a super-sampled grid on the partial image."""
+
+    def __init__(
+        self,
+        nx,
+        ny,
+        transform_pix2angle,
+        ra_at_xy_0,
+        dec_at_xy_0,
+        supersampling_indexes,
+        supersampling_factor,
+        flux_evaluate_indexes=None,
+    ):
         """
 
         :param nx: number of pixels in x-axis
@@ -34,7 +43,9 @@ class AdaptiveGrid(Coordinates1D):
             flux_evaluate_indexes = np.ones_like(self._x_grid, dtype=bool)
         supersampled_indexes1d = util.image2array(supersampling_indexes)
         self._high_res_indexes1d = (supersampled_indexes1d) & (flux_evaluate_indexes)
-        self._low_res_indexes1d = (np.invert(supersampled_indexes1d)) & (flux_evaluate_indexes)
+        self._low_res_indexes1d = (np.invert(supersampled_indexes1d)) & (
+            flux_evaluate_indexes
+        )
         self._supersampling_factor = supersampling_factor
         self._num_sub = supersampling_factor * supersampling_factor
         self._x_low_res = self._x_grid[self._low_res_indexes1d]
@@ -61,8 +72,8 @@ class AdaptiveGrid(Coordinates1D):
          (needs more computation and is only needed when convolution is performed on the supersampling level)
         :return: 2d array, 2d array, corresponding to (partial) images in low and high resolution (to be convolved)
         """
-        low_res_values = flux_array[0:self._num_low_res]
-        high_res_values = flux_array[self._num_low_res:]
+        low_res_values = flux_array[0 : self._num_low_res]
+        high_res_values = flux_array[self._num_low_res :]
         image_low_res = self._merge_low_high_res(low_res_values, high_res_values)
         if high_res_return is True:
             image_high_res_partial = self._high_res_image(high_res_values)
@@ -76,13 +87,12 @@ class AdaptiveGrid(Coordinates1D):
 
         :return: 1d arrays of subpixel grid coordinates
         """
-        if not hasattr(self, '_x_sub_grid'):
+        if not hasattr(self, "_x_sub_grid"):
             self._subpixel_coordinates()
         return self._x_high_res, self._y_high_res
 
     def _merge_low_high_res(self, low_res_values, supersampled_values):
-        """
-        adds/overwrites the supersampled values on the image
+        """Adds/overwrites the supersampled values on the image.
 
         :param low_res_values: 1d array of image with low resolution
         :param supersampled_values: values of the supersampled sub-pixels
@@ -101,13 +111,19 @@ class AdaptiveGrid(Coordinates1D):
         :param supersampled_values: 1d array of supersampled values corresponding to coordinates
         :return: 2d array of supersampled image (zeros outside supersampled frame)
         """
-        high_res = np.zeros((self._nx * self._supersampling_factor, self._ny * self._supersampling_factor))
+        high_res = np.zeros(
+            (
+                self._nx * self._supersampling_factor,
+                self._ny * self._supersampling_factor,
+            )
+        )
         count = 0
         for i in range(self._supersampling_factor):
             for j in range(self._supersampling_factor):
-                selected = supersampled_values[count::self._num_sub]
-                high_res[i::self._supersampling_factor, j::self._supersampling_factor] = self._array2image_subset(
-                    selected)
+                selected = supersampled_values[count :: self._num_sub]
+                high_res[
+                    i :: self._supersampling_factor, j :: self._supersampling_factor
+                ] = self._array2image_subset(selected)
                 count += 1
         return high_res
 
@@ -123,19 +139,30 @@ class AdaptiveGrid(Coordinates1D):
         count = 0
         for i in range(self._supersampling_factor):
             for j in range(self._supersampling_factor):
-                x_ij = 1. / self._supersampling_factor / 2. + j / float(self._supersampling_factor) - 1. / 2
-                y_ij = 1. / self._supersampling_factor / 2. + i / float(self._supersampling_factor) - 1. / 2
+                x_ij = (
+                    1.0 / self._supersampling_factor / 2.0
+                    + j / float(self._supersampling_factor)
+                    - 1.0 / 2
+                )
+                y_ij = (
+                    1.0 / self._supersampling_factor / 2.0
+                    + i / float(self._supersampling_factor)
+                    - 1.0 / 2
+                )
                 delta_ra, delta_dec = self.map_pix2coord(x_ij, y_ij)
                 delta_ra0, delta_dec_0 = self.map_pix2coord(0, 0)
-                x_sub_grid[count::self._num_sub] = x_grid_select + delta_ra - delta_ra0
-                y_sub_grid[count::self._num_sub] = y_grid_select + delta_dec - delta_dec_0
+                x_sub_grid[count :: self._num_sub] = (
+                    x_grid_select + delta_ra - delta_ra0
+                )
+                y_sub_grid[count :: self._num_sub] = (
+                    y_grid_select + delta_dec - delta_dec_0
+                )
                 count += 1
         self._x_high_res = x_sub_grid
         self._y_high_res = y_sub_grid
 
     def _average_subgrid(self, subgrid_values):
-        """
-        averages the values over a pixel
+        """Averages the values over a pixel.
 
         :param subgrid_values: values (e.g. flux) of subgrid coordinates
         :return: 1d array of size of the supersampled pixels
@@ -144,11 +171,8 @@ class AdaptiveGrid(Coordinates1D):
         return np.mean(values_2d, axis=1)
 
     def _array2image_subset(self, array):
-        """
-        maps a 1d array into a (nx, ny) 2d grid with array populating the idex_mask indices
-        :param array: 1d array
-        :return: 2d array
-        """
+        """Maps a 1d array into a (nx, ny) 2d grid with array populating the idex_mask
+        indices :param array: 1d array :return: 2d array."""
         grid1d = np.zeros(self._nx * self._ny)
         grid1d[self._high_res_indexes1d] = array
         grid2d = util.array2image(grid1d, self._nx, self._ny)
@@ -157,11 +181,18 @@ class AdaptiveGrid(Coordinates1D):
 
 @export
 class RegularGrid(Coordinates1D):
-    """
-    manages a super-sampled grid on the partial image
-    """
-    def __init__(self, nx, ny, transform_pix2angle, ra_at_xy_0, dec_at_xy_0, supersampling_factor=1,
-                 flux_evaluate_indexes=None):
+    """Manages a super-sampled grid on the partial image."""
+
+    def __init__(
+        self,
+        nx,
+        ny,
+        transform_pix2angle,
+        ra_at_xy_0,
+        dec_at_xy_0,
+        supersampling_factor=1,
+        flux_evaluate_indexes=None,
+    ):
         """
 
         :param nx: number of pixels in x-axis
@@ -182,9 +213,13 @@ class RegularGrid(Coordinates1D):
             flux_evaluate_indexes = np.ones_like(self._x_grid, dtype=bool)
         else:
             flux_evaluate_indexes = util.image2array(flux_evaluate_indexes)
-        self._compute_indexes = self._subgrid_index(flux_evaluate_indexes, self._supersampling_factor, self._nx, self._ny)
+        self._compute_indexes = self._subgrid_index(
+            flux_evaluate_indexes, self._supersampling_factor, self._nx, self._ny
+        )
 
-        x_grid_sub, y_grid_sub = util.make_subgrid(self._x_grid, self._y_grid, self._supersampling_factor)
+        x_grid_sub, y_grid_sub = util.make_subgrid(
+            self._x_grid, self._y_grid, self._supersampling_factor
+        )
         self._ra_subgrid = x_grid_sub[self._compute_indexes]
         self._dec_subgrid = y_grid_sub[self._compute_indexes]
 
@@ -198,19 +233,18 @@ class RegularGrid(Coordinates1D):
 
     @property
     def grid_points_spacing(self):
-        """
-        effective spacing between coordinate points, after supersampling
-        :return: sqrt(pixel_area)/supersampling_factor
-        """
+        """Effective spacing between coordinate points, after supersampling :return:
+        sqrt(pixel_area)/supersampling_factor."""
         return self.pixel_width / self._supersampling_factor
 
     @property
     def num_grid_points_axes(self):
-        """
-        effective number of points along each axes, after supersampling
-        :return: number of pixels per axis, nx*supersampling_factor ny*supersampling_factor
-        """
-        return self._nx * self._supersampling_factor, self._ny * self._supersampling_factor
+        """Effective number of points along each axes, after supersampling :return:
+        number of pixels per axis, nx*supersampling_factor ny*supersampling_factor."""
+        return (
+            self._nx * self._supersampling_factor,
+            self._ny * self._supersampling_factor,
+        )
 
     @property
     def supersampling_factor(self):
@@ -243,19 +277,22 @@ class RegularGrid(Coordinates1D):
         :return: 1d array of equivalent mask in subgrid resolution
         """
         idex_sub = np.repeat(idex_mask, subgrid_res, axis=0)
-        idex_sub = util.array2image(idex_sub, nx=nx, ny=ny*subgrid_res)
+        idex_sub = util.array2image(idex_sub, nx=nx, ny=ny * subgrid_res)
         idex_sub = np.repeat(idex_sub, subgrid_res, axis=0)
         idex_sub = util.image2array(idex_sub)
         return idex_sub
 
     def _array2image(self, array):
-        """
-        maps a 1d array into a (nx, ny) 2d grid with array populating the idex_mask indices
+        """Maps a 1d array into a (nx, ny) 2d grid with array populating the idex_mask
+        indices.
 
         :param array: 1d array
         :return:
         """
-        nx, ny = self._nx * self._supersampling_factor, self._ny * self._supersampling_factor
+        nx, ny = (
+            self._nx * self._supersampling_factor,
+            self._ny * self._supersampling_factor,
+        )
         grid1d = np.zeros((nx * ny))
         grid1d[self._compute_indexes] = array
         grid2d = util.array2image(grid1d, nx, ny)

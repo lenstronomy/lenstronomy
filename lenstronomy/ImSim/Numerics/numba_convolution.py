@@ -4,17 +4,25 @@ from lenstronomy.Util import numba_util
 from lenstronomy.ImSim.Numerics.partial_image import PartialImage
 from lenstronomy.Util import image_util
 
-__all__ = ['NumbaConvolution']
+__all__ = ["NumbaConvolution"]
 
 
 class NumbaConvolution(object):
-    """
-    class to convolve explicit pixels only
+    """Class to convolve explicit pixels only.
 
     the convolution is inspired by pyautolens: https://github.com/Jammy2211/PyAutoLens
     """
-    def __init__(self, kernel, conv_pixels, compute_pixels=None, nopython=True, cache=True, parallel=False,
-                 memory_raise=True):
+
+    def __init__(
+        self,
+        kernel,
+        conv_pixels,
+        compute_pixels=None,
+        nopython=True,
+        cache=True,
+        parallel=False,
+        memory_raise=True,
+    ):
         """
 
         :param kernel: convolution kernel in units of the image pixels provided, odd length per axis
@@ -47,20 +55,39 @@ class NumbaConvolution(object):
         self.kernel_max_size = kernel_shape[0] * kernel_shape[1]
 
         image_index = 0
-        if self._partialInput.num_partial * self.kernel_max_size > 10 ** 9 and self._memory_raise is True:
-            raise ValueError("kernel length %s combined with data size %s requires %s memory elements, which might"
-                             "exceed the memory limit and thus gives a raise. If you wish to ignore this raise, set"
-                             " memory_raise=False" % (self.kernel_max_size, self._partialInput.num_partial, self._partialInput.num_partial * self.kernel_max_size))
-        self._image_frame_indexes = np.zeros((self._partialInput.num_partial, self.kernel_max_size), dtype='int')
-        self._image_frame_psfs = np.zeros((self._partialInput.num_partial, self.kernel_max_size))
-        self._image_frame_lengths = np.zeros((self._partialInput.num_partial), dtype='int')
+        if (
+            self._partialInput.num_partial * self.kernel_max_size > 10**9
+            and self._memory_raise is True
+        ):
+            raise ValueError(
+                "kernel length %s combined with data size %s requires %s memory elements, which might"
+                "exceed the memory limit and thus gives a raise. If you wish to ignore this raise, set"
+                " memory_raise=False"
+                % (
+                    self.kernel_max_size,
+                    self._partialInput.num_partial,
+                    self._partialInput.num_partial * self.kernel_max_size,
+                )
+            )
+        self._image_frame_indexes = np.zeros(
+            (self._partialInput.num_partial, self.kernel_max_size), dtype="int"
+        )
+        self._image_frame_psfs = np.zeros(
+            (self._partialInput.num_partial, self.kernel_max_size)
+        )
+        self._image_frame_lengths = np.zeros(
+            (self._partialInput.num_partial), dtype="int"
+        )
         for x in range(index_array_input.shape[0]):
             for y in range(index_array_input.shape[1]):
                 if conv_pixels[x][y]:
-                    image_frame_psfs, image_frame_indexes, frame_length = self._pre_compute_frame_kernel((x, y),
-                                                                                                        self._kernel[:, :],
-                                                                                                         compute_pixels,
-                                                                                                         index_array_out)
+                    (
+                        image_frame_psfs,
+                        image_frame_indexes,
+                        frame_length,
+                    ) = self._pre_compute_frame_kernel(
+                        (x, y), self._kernel[:, :], compute_pixels, index_array_out
+                    )
 
                     self._image_frame_indexes[image_index, :] = image_frame_indexes
                     self._image_frame_psfs[image_index, :] = image_frame_psfs
@@ -68,17 +95,19 @@ class NumbaConvolution(object):
                     image_index += 1
 
     def convolve2d(self, image):
-        """
-        2d convolution
+        """2d convolution.
 
         :param image: 2d numpy array, image to be convolved
         :return: convolved image, 2d numpy array
         """
         image_array_partial = self._partialInput.partial_array(image)
-        conv_array = self._convolve_jit(image_array_partial, num_data=self._partialOutput.num_partial,
-                                        image_frame_kernels=self._image_frame_psfs,
-                                        image_frame_indexes=self._image_frame_indexes,
-                                        image_frame_lengths=self._image_frame_lengths)
+        conv_array = self._convolve_jit(
+            image_array_partial,
+            num_data=self._partialOutput.num_partial,
+            image_frame_kernels=self._image_frame_psfs,
+            image_frame_indexes=self._image_frame_indexes,
+            image_frame_lengths=self._image_frame_lengths,
+        )
         conv_image = self._partialOutput.image_from_partial(conv_array)
         return conv_image
 
@@ -103,8 +132,8 @@ class NumbaConvolution(object):
         kx2 = int((kx - 1) / 2)
         ky2 = int((ky - 1) / 2)
         frame_counter = 0
-        frame_kernels = np.zeros(kx*ky)
-        frame_indexes = np.zeros(kx*ky)
+        frame_kernels = np.zeros(kx * ky)
+        frame_indexes = np.zeros(kx * ky)
 
         for i in range(kx):
             for j in range(ky):
@@ -119,7 +148,13 @@ class NumbaConvolution(object):
 
     @staticmethod
     @numba_util.jit()
-    def _convolve_jit(image_array, num_data, image_frame_kernels, image_frame_indexes, image_frame_lengths):
+    def _convolve_jit(
+        image_array,
+        num_data,
+        image_frame_kernels,
+        image_frame_indexes,
+        image_frame_lengths,
+    ):
         """
 
         :param image_array: selected subset of image in 1d array conventions
@@ -129,25 +164,46 @@ class NumbaConvolution(object):
         :return:
         """
         conv_array = np.zeros(num_data)
-        for image_index in range(len(image_array)):  # loop through pixels that are to be blurred
+        for image_index in range(
+            len(image_array)
+        ):  # loop through pixels that are to be blurred
             value = image_array[image_index]  # value of pixel that gets blurred
-            frame_length = image_frame_lengths[image_index]  # number of pixels that gets assigned a fraction of the convolution
-            frame_indexes = image_frame_indexes[image_index]  # list of 1d indexes that get added flux from the blurred image
-            frame_kernels = image_frame_kernels[image_index]  # values of kernel for each frame indexes
-            for kernel_index in range(frame_length):  # loop through all pixels that are impacted by the kernel of the pixel being blurred
-                vector_index = frame_indexes[kernel_index]  # 1d coordinate of pixel to be added value
+            frame_length = image_frame_lengths[
+                image_index
+            ]  # number of pixels that gets assigned a fraction of the convolution
+            frame_indexes = image_frame_indexes[
+                image_index
+            ]  # list of 1d indexes that get added flux from the blurred image
+            frame_kernels = image_frame_kernels[
+                image_index
+            ]  # values of kernel for each frame indexes
+            for kernel_index in range(
+                frame_length
+            ):  # loop through all pixels that are impacted by the kernel of the pixel being blurred
+                vector_index = frame_indexes[
+                    kernel_index
+                ]  # 1d coordinate of pixel to be added value
                 kernel = frame_kernels[kernel_index]  # kernel response of pixel
                 conv_array[vector_index] += value * kernel  # ad value to pixel
         return conv_array
 
 
 class SubgridNumbaConvolution(object):
-    """
-    class that inputs a supersampled grid and convolution kernel and computes the response on the regular grid
-    This makes use of the regualr NumbaConvolution class as a loop through the different sub-pixel positions
-    """
+    """Class that inputs a supersampled grid and convolution kernel and computes the
+    response on the regular grid This makes use of the regualr NumbaConvolution class as
+    a loop through the different sub-pixel positions."""
 
-    def __init__(self, kernel_super, supersampling_factor, conv_pixels, compute_pixels=None, kernel_size=None, nopython=True, cache=True, parallel=False):
+    def __init__(
+        self,
+        kernel_super,
+        supersampling_factor,
+        conv_pixels,
+        compute_pixels=None,
+        kernel_size=None,
+        nopython=True,
+        cache=True,
+        parallel=False,
+    ):
         """
 
         :param kernel_super: convolution kernel in units of super sampled pixels provided, odd length per axis
@@ -172,7 +228,14 @@ class SubgridNumbaConvolution(object):
                 kernel = self._partial_kernel(kernel_super, i, j)
                 if kernel_size is not None:
                     kernel = image_util.cut_edges(kernel, kernel_size)
-                numba_conv = NumbaConvolution(kernel, conv_pixels, compute_pixels=compute_pixels, nopython=nopython, cache=cache, parallel=parallel)
+                numba_conv = NumbaConvolution(
+                    kernel,
+                    conv_pixels,
+                    compute_pixels=compute_pixels,
+                    nopython=nopython,
+                    cache=cache,
+                    parallel=parallel,
+                )
                 self._numba_conv_list.append(numba_conv)
 
     def convolve2d(self, image_high_res):
@@ -198,7 +261,9 @@ class SubgridNumbaConvolution(object):
         :param j: index of super-sampled position in second axis
         :return: 2d array only selected the specific supersampled position within a regular pixel
         """
-        return image_high_res[i::self._supersampling_factor, j::self._supersampling_factor]
+        return image_high_res[
+            i :: self._supersampling_factor, j :: self._supersampling_factor
+        ]
 
     def _partial_kernel(self, kernel_super, i, j):
         """
@@ -217,7 +282,9 @@ class SubgridNumbaConvolution(object):
         delta = int((n_match - n - self._supersampling_factor) / 2) + 1
         i0 = delta  # index where to start kernel for i=0
         j0 = delta  # index where to start kernel for j=0  (should be symmetric)
-        kernel_super_match[i0 + i:i0 + i + n, j0 + j:j0 + j + n] = kernel_super
-        #kernel_super_match = image_util.cut_edges(kernel_super_match, numPix=n)
-        kernel = image_util.re_size(kernel_super_match, factor=self._supersampling_factor)
+        kernel_super_match[i0 + i : i0 + i + n, j0 + j : j0 + j + n] = kernel_super
+        # kernel_super_match = image_util.cut_edges(kernel_super_match, numPix=n)
+        kernel = image_util.re_size(
+            kernel_super_match, factor=self._supersampling_factor
+        )
         return kernel

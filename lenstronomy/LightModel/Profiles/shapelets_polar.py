@@ -1,4 +1,4 @@
-__author__ = 'sibirrer'
+__author__ = "sibirrer"
 
 import numpy as np
 import math
@@ -7,24 +7,36 @@ import scipy.special
 import lenstronomy.Util.param_util as param_util
 
 from lenstronomy.Util.package_util import exporter
+
 export, __all__ = exporter()
 
 
 @export
 class ShapeletsPolar(object):
-    """
-    2D polar Shapelets, see Massey & Refregier 2005
-    """
-    param_names = ['amp', 'beta', 'n', 'm', 'center_x', 'center_y']
-    param_names_latex = {r'$I_0$', r'$\beta$', r'$n$', r'$m$', r'$x_0$', r'$y_0$'}
-    lower_limit_default = {'amp': 0, 'beta': 0, 'n': 0, 'm': 0, 'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'amp': 100, 'beta': 100, 'n': 150, 'm': 150, 'center_x': 100, 'center_y': 100}
+    """2D polar Shapelets, see Massey & Refregier 2005."""
+
+    param_names = ["amp", "beta", "n", "m", "center_x", "center_y"]
+    param_names_latex = {r"$I_0$", r"$\beta$", r"$n$", r"$m$", r"$x_0$", r"$y_0$"}
+    lower_limit_default = {
+        "amp": 0,
+        "beta": 0,
+        "n": 0,
+        "m": 0,
+        "center_x": -100,
+        "center_y": -100,
+    }
+    upper_limit_default = {
+        "amp": 100,
+        "beta": 100,
+        "n": 150,
+        "m": 150,
+        "center_x": 100,
+        "center_y": 100,
+    }
 
     def __init__(self):
-        """
-        load interpolation of the Hermite polynomials in a range [-30,30] in order n<= 150
-        :return:
-        """
+        """Load interpolation of the Hermite polynomials in a range [-30,30] in order
+        n<= 150 :return:"""
         pass
 
     def function(self, x, y, amp, beta, n, m, complex_bool, center_x, center_y):
@@ -58,17 +70,23 @@ class ShapeletsPolar(object):
         :return: value of function (8) in Massey & Refregier, complex numbers
         """
         m_abs = int(abs(m))
-        p = int((n - m_abs)/2)
-        p2 = int((n + m_abs)/2)
+        p = int((n - m_abs) / 2)
+        p2 = int((n + m_abs) / 2)
         if p % 2 == 0:  # if p is even
             prefac = 1
         else:
             prefac = -1
-        prefactor = prefac/beta**(m_abs + 1)*np.sqrt(math.factorial(p)/(np.pi*math.factorial(p2)))
-        poly = scipy.special.genlaguerre(n=p, alpha=m_abs)  # lower part, upper part of definition in Massey & Refregier
-        r_ = (r/beta)**2
+        prefactor = (
+            prefac
+            / beta ** (m_abs + 1)
+            * np.sqrt(math.factorial(p) / (np.pi * math.factorial(p2)))
+        )
+        poly = scipy.special.genlaguerre(
+            n=p, alpha=m_abs
+        )  # lower part, upper part of definition in Massey & Refregier
+        r_ = (r / beta) ** 2
         l_n_alpha = poly(r_)
-        return prefactor*r**m_abs*l_n_alpha*np.exp(-(r/beta)**2/2)
+        return prefactor * r**m_abs * l_n_alpha * np.exp(-((r / beta) ** 2) / 2)
 
     @staticmethod
     def _index2n(index):
@@ -86,8 +104,8 @@ class ShapeletsPolar(object):
         return n
 
     def index2poly(self, index):
-        """
-        manages the convention from an iterative index to the specific polynomial n, m, (real/imaginary part)
+        """Manages the convention from an iterative index to the specific polynomial n,
+        m, (real/imaginary part)
 
         :param index: int, index of list
         :return: n, m bool
@@ -129,7 +147,7 @@ class ShapeletsPolar(object):
         index = n * (n + 1) / 2
         if complex_bool is True:
             if m == 0:
-                raise ValueError('m=0 can not have imaginary part!')
+                raise ValueError("m=0 can not have imaginary part!")
         if n % 2 == 0:
             if m % 2 == 0:
                 if m == 0:
@@ -139,7 +157,7 @@ class ShapeletsPolar(object):
                 if complex_bool is True:
                     index += 1
             else:
-                raise ValueError('m needs to be even for even n!')
+                raise ValueError("m needs to be even for even n!")
         else:
             if complex_bool is True:
                 index += m + 1
@@ -154,23 +172,37 @@ class ShapeletsPolar(object):
         :param n_max: maximal polynomial order
         :return: number of basis components
         """
-        return int((n_max+1)*(n_max+2)/2)
+        return int((n_max + 1) * (n_max + 2) / 2)
 
 
 @export
 class ShapeletsPolarExp(object):
+    """2D exponential shapelets, Berge et al.
+
+    2019
     """
-    2D exponential shapelets, Berge et al. 2019
-    """
-    param_names = ['amp', 'beta', 'n', 'm', 'center_x', 'center_y']
-    lower_limit_default = {'amp': 0, 'beta': 0, 'n': 0, 'm': 0, 'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'amp': 100, 'beta': 100, 'n': 150, 'm': 150, 'center_x': 100, 'center_y': 100}
+
+    param_names = ["amp", "beta", "n", "m", "center_x", "center_y"]
+    lower_limit_default = {
+        "amp": 0,
+        "beta": 0,
+        "n": 0,
+        "m": 0,
+        "center_x": -100,
+        "center_y": -100,
+    }
+    upper_limit_default = {
+        "amp": 100,
+        "beta": 100,
+        "n": 150,
+        "m": 150,
+        "center_x": 100,
+        "center_y": 100,
+    }
 
     def __init__(self):
-        """
-        load interpolation of the Hermite polynomials in a range [-30,30] in order n<= 150
-        :return:
-        """
+        """Load interpolation of the Hermite polynomials in a range [-30,30] in order
+        n<= 150 :return:"""
         pass
 
     def function(self, x, y, amp, beta, n, m, complex_bool, center_x, center_y):
@@ -210,11 +242,18 @@ class ShapeletsPolarExp(object):
             prefac = 1
         else:
             prefac = -1
-        prefactor = prefac * np.sqrt(2./(beta*np.pi * (2*n + 1)**3) * math.factorial(p) / math.factorial(p2))
-        poly = scipy.special.genlaguerre(n=p, alpha=2*m_abs)  # lower part, upper part of definition in Massey & Refregier
-        x_ = 2. * r / (beta * (2*n + 1))
+        prefactor = prefac * np.sqrt(
+            2.0
+            / (beta * np.pi * (2 * n + 1) ** 3)
+            * math.factorial(p)
+            / math.factorial(p2)
+        )
+        poly = scipy.special.genlaguerre(
+            n=p, alpha=2 * m_abs
+        )  # lower part, upper part of definition in Massey & Refregier
+        x_ = 2.0 * r / (beta * (2 * n + 1))
         l_n_alpha = poly(x_)
-        return prefactor * x_**m_abs * l_n_alpha * np.exp(-x_/2) / np.sqrt(beta)
+        return prefactor * x_**m_abs * l_n_alpha * np.exp(-x_ / 2) / np.sqrt(beta)
 
     @staticmethod
     def num_param(n_max):
@@ -223,7 +262,7 @@ class ShapeletsPolarExp(object):
         :param n_max: maximal polynomial order
         :return: number of basis components
         """
-        return int((n_max + 1)**2)
+        return int((n_max + 1) ** 2)
 
     @staticmethod
     def _index2n(index):
@@ -253,7 +292,7 @@ class ShapeletsPolarExp(object):
             m = int((delta - 1) / 2)
             complex_bool = False
         else:
-            m = int(delta/2)
+            m = int(delta / 2)
             complex_bool = True
         return n, m, complex_bool
 
@@ -267,7 +306,7 @@ class ShapeletsPolarExp(object):
         :return: index convention, integer
         """
         index = n**2
-        index += 2*m
+        index += 2 * m
         if complex_bool is True:
             index -= 1
         return int(index)
@@ -275,12 +314,11 @@ class ShapeletsPolarExp(object):
 
 @export
 class ShapeletSetPolar(object):
-    """
-    class to operate on entire shapelet set
-    """
-    param_names = ['amp', 'n_max', 'beta', 'center_x', 'center_y']
-    lower_limit_default = {'beta': 0, 'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'beta': 100, 'center_x': 100, 'center_y': 100}
+    """Class to operate on entire shapelet set."""
+
+    param_names = ["amp", "n_max", "beta", "center_x", "center_y"]
+    lower_limit_default = {"beta": 0, "center_x": -100, "center_y": -100}
+    upper_limit_default = {"beta": 100, "center_x": 100, "center_y": 100}
 
     def __init__(self, exponential=False):
         if exponential is True:
@@ -347,8 +385,8 @@ class ShapeletSetPolar(object):
 
         # compute the Laguerre polynomials in n, m
         chi_n_m_list = [[0 for _ in range(n_max + 1)] for _ in range(n_max + 1)]
-        for n in range(n_max+1):
-            for m in range(n+1):
+        for n in range(n_max + 1):
+            for m in range(n + 1):
                 if (n - m) % 2 == 0 or self._exponential is True:
                     chi_n_m_list[n][m] = self.shapelets._chi_n_m(r, beta, n, m)
 
@@ -364,8 +402,8 @@ class ShapeletSetPolar(object):
 
     @staticmethod
     def _pre_calc_function(L_list, i):
-        """
-        evaluates the shapelet function based on the pre-calculated components in _pre_calc()
+        """Evaluates the shapelet function based on the pre-calculated components in
+        _pre_calc()
 
         :param L_list: pre-calculated components
         :param i: index conventions of the sequence of basis components
@@ -374,9 +412,9 @@ class ShapeletSetPolar(object):
         return L_list[i]
 
     def decomposition(self, image, x, y, n_max, beta, deltaPix, center_x=0, center_y=0):
-        """
-        decomposes an image into the shapelet coefficients in same order as for the function call
-        :param image:
+        """Decomposes an image into the shapelet coefficients in same order as for the
+        function call :param image:
+
         :param x:
         :param y:
         :param n_max:
@@ -387,11 +425,11 @@ class ShapeletSetPolar(object):
         """
         num_param = self.shapelets.num_param(n_max)
         param_list = np.zeros(num_param)
-        amp_norm = 1. * deltaPix**2
+        amp_norm = 1.0 * deltaPix**2
         L_list = self._pre_calc(x, y, beta, n_max, center_x, center_y)
         for i in range(num_param):
             base = self._pre_calc_function(L_list, i) * amp_norm
-            param = np.sum(image*base)
+            param = np.sum(image * base)
             n, m, complex_bool = self.shapelets.index2poly(i)
             if m != 0:
                 param *= 2

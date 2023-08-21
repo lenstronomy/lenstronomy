@@ -1,4 +1,4 @@
-__author__ = 'ntessore'
+__author__ = "ntessore"
 
 import numpy as np
 import lenstronomy.Util.util as util
@@ -8,12 +8,11 @@ from lenstronomy.LensModel.Profiles.spp import SPP
 from scipy.special import hyp2f1
 
 
-__all__ = ['EPL', 'EPLMajorAxis']
+__all__ = ["EPL", "EPLMajorAxis"]
 
 
 class EPL(LensProfileBase):
-    """
-    Elliptical Power Law mass profile
+    """Elliptical Power Law mass profile.
 
     .. math::
         \\kappa(x, y) = \\frac{3-\\gamma}{2} \\left(\\frac{\\theta_{E}}{\\sqrt{q x^2 + y^2/q}} \\right)^{\\gamma-1}
@@ -46,9 +45,24 @@ class EPL(LensProfileBase):
     scheme. An alternative implementation of the same model using a fortran code FASTELL is implemented as 'PEMD'
     profile.
     """
-    param_names = ['theta_E', 'gamma', 'e1', 'e2', 'center_x', 'center_y']
-    lower_limit_default = {'theta_E': 0, 'gamma': 1.5, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'theta_E': 100, 'gamma': 2.5, 'e1': 0.5, 'e2': 0.5, 'center_x': 100, 'center_y': 100}
+
+    param_names = ["theta_E", "gamma", "e1", "e2", "center_x", "center_y"]
+    lower_limit_default = {
+        "theta_E": 0,
+        "gamma": 1.5,
+        "e1": -0.5,
+        "e2": -0.5,
+        "center_x": -100,
+        "center_y": -100,
+    }
+    upper_limit_default = {
+        "theta_E": 100,
+        "gamma": 2.5,
+        "e1": 0.5,
+        "e2": 0.5,
+        "center_x": 100,
+        "center_y": 100,
+    }
 
     def __init__(self):
         self.epl_major_axis = EPLMajorAxis()
@@ -56,14 +70,13 @@ class EPL(LensProfileBase):
         super(EPL, self).__init__()
 
     def param_conv(self, theta_E, gamma, e1, e2):
-        """
-        converts parameters as defined in this class to the parameters used in the EPLMajorAxis() class
+        """Converts parameters as defined in this class to the parameters used in the
+        EPLMajorAxis() class.
 
         :param theta_E: Einstein radius as defined in the profile class
         :param gamma: negative power-law slope
         :param e1: eccentricity modulus
         :param e2: eccentricity modulus
-
         :return: b, t, q, phi_G
         """
         if self._static is True:
@@ -72,9 +85,8 @@ class EPL(LensProfileBase):
 
     @staticmethod
     def _param_conv(theta_E, gamma, e1, e2):
-        """
-        convert parameters from :math:`R = \\sqrt{q x^2 + y^2/q}` to
-        :math:`R = \\sqrt{q^2 x^2 + y^2}`
+        """Convert parameters from :math:`R = \\sqrt{q x^2 + y^2/q}` to :math:`R =
+        \\sqrt{q^2 x^2 + y^2}`
 
         :param gamma: power law slope
         :param theta_E: Einstein radius
@@ -99,7 +111,12 @@ class EPL(LensProfileBase):
         :return: self variables set
         """
         self._static = True
-        self._b_static, self._t_static, self._q_static, self._phi_G_static = self._param_conv(theta_E, gamma, e1, e2)
+        (
+            self._b_static,
+            self._t_static,
+            self._q_static,
+            self._phi_G_static,
+        ) = self._param_conv(theta_E, gamma, e1, e2)
 
     def set_dynamic(self):
         """
@@ -107,13 +124,13 @@ class EPL(LensProfileBase):
         :return:
         """
         self._static = False
-        if hasattr(self, '_b_static'):
+        if hasattr(self, "_b_static"):
             del self._b_static
-        if hasattr(self, '_t_static'):
+        if hasattr(self, "_t_static"):
             del self._t_static
-        if hasattr(self, '_phi_G_static'):
+        if hasattr(self, "_phi_G_static"):
             del self._phi_G_static
-        if hasattr(self, '_q_static'):
+        if hasattr(self, "_q_static"):
             del self._q_static
 
     def function(self, x, y, theta_E, gamma, e1, e2, center_x=0, center_y=0):
@@ -188,8 +205,8 @@ class EPL(LensProfileBase):
         # evaluate
         f__xx, f__xy, f__yx, f__yy = self.epl_major_axis.hessian(x__, y__, b, t, q)
         # rotate back
-        kappa = 1./2 * (f__xx + f__yy)
-        gamma1__ = 1./2 * (f__xx - f__yy)
+        kappa = 1.0 / 2 * (f__xx + f__yy)
+        gamma1__ = 1.0 / 2 * (f__xx - f__yy)
         gamma2__ = f__xy
         gamma1 = np.cos(2 * phi_G) * gamma1__ - np.sin(2 * phi_G) * gamma2__
         gamma2 = +np.sin(2 * phi_G) * gamma1__ + np.cos(2 * phi_G) * gamma2__
@@ -199,21 +216,16 @@ class EPL(LensProfileBase):
         return f_xx, f_xy, f_xy, f_yy
 
     def mass_3d_lens(self, r, theta_E, gamma, e1=None, e2=None):
-        """
-        computes the spherical power-law mass enclosed (with SPP routine)
-        :param r: radius within the mass is computed
-        :param theta_E: Einstein radius
-        :param gamma: power-law slope
-        :param e1: eccentricity component (not used)
-        :param e2: eccentricity component (not used)
-        :return: mass enclosed a 3D radius r
-        """
+        """Computes the spherical power-law mass enclosed (with SPP routine) :param r:
+        radius within the mass is computed :param theta_E: Einstein radius :param gamma:
+        power-law slope :param e1: eccentricity component (not used) :param e2:
+        eccentricity component (not used) :return: mass enclosed a 3D radius r."""
         return self.spp.mass_3d_lens(r, theta_E, gamma)
 
     def density_lens(self, r, theta_E, gamma, e1=None, e2=None):
-        """
-        computes the density at 3d radius r given lens model parameterization.
-        The integral in the LOS projection of this quantity results in the convergence quantity.
+        """Computes the density at 3d radius r given lens model parameterization. The
+        integral in the LOS projection of this quantity results in the convergence
+        quantity.
 
         :param r: radius within the mass is computed
         :param theta_E: Einstein radius
@@ -226,9 +238,7 @@ class EPL(LensProfileBase):
 
 
 class EPLMajorAxis(LensProfileBase):
-    """
-    This class contains the function and the derivatives of the
-    elliptical power law.
+    """This class contains the function and the derivatives of the elliptical power law.
 
     .. math::
         \\kappa = (2-t)/2 * \\left[\\frac{b}{\\sqrt{q^2 x^2 + y^2}}\\right]^t
@@ -238,15 +248,14 @@ class EPLMajorAxis(LensProfileBase):
 
     Tessore & Metcalf (2015), https://arxiv.org/abs/1507.01819
     """
-    param_names = ['b', 't', 'q', 'center_x', 'center_y']
+
+    param_names = ["b", "t", "q", "center_x", "center_y"]
 
     def __init__(self):
-
         super(EPLMajorAxis, self).__init__()
 
     def function(self, x, y, b, t, q):
-        """
-        returns the lensing potential
+        """Returns the lensing potential.
 
         :param x: x-coordinate in image plane relative to center (major axis)
         :param y: y-coordinate in image plane relative to center (minor axis)
@@ -259,13 +268,12 @@ class EPLMajorAxis(LensProfileBase):
         alpha_x, alpha_y = self.derivatives(x, y, b, t, q)
 
         # deflection potential, eq. (15)
-        psi = (x*alpha_x + y*alpha_y)/(2 - t)
+        psi = (x * alpha_x + y * alpha_y) / (2 - t)
 
         return psi
 
     def derivatives(self, x, y, b, t, q):
-        """
-        returns the deflection angles
+        """Returns the deflection angles.
 
         :param x: x-coordinate in image plane relative to center (major axis)
         :param y: y-coordinate in image plane relative to center (minor axis)
@@ -276,26 +284,25 @@ class EPLMajorAxis(LensProfileBase):
         """
         # elliptical radius, eq. (5)
         Z = np.empty(np.shape(x), dtype=complex)
-        Z.real = q*x
+        Z.real = q * x
         Z.imag = y
         R = np.abs(Z)
         R = np.maximum(R, 0.000000001)
 
         # angular dependency with extra factor of R, eq. (23)
-        R_omega = Z*hyp2f1(1, t/2, 2-t/2, -(1-q)/(1+q)*(Z/Z.conj()))
+        R_omega = Z * hyp2f1(1, t / 2, 2 - t / 2, -(1 - q) / (1 + q) * (Z / Z.conj()))
 
         # deflection, eq. (22)
-        alpha = 2/(1+q)*(b/R)**t*R_omega
+        alpha = 2 / (1 + q) * (b / R) ** t * R_omega
 
         # return real and imaginary part
-        alpha_real = np.nan_to_num(alpha.real, posinf=10**10, neginf=-10**10)
-        alpha_imag = np.nan_to_num(alpha.imag, posinf=10**10, neginf=-10**10)
+        alpha_real = np.nan_to_num(alpha.real, posinf=10**10, neginf=-(10**10))
+        alpha_imag = np.nan_to_num(alpha.imag, posinf=10**10, neginf=-(10**10))
 
         return alpha_real, alpha_imag
 
     def hessian(self, x, y, b, t, q):
-        """
-        Hessian matrix of the lensing potential
+        """Hessian matrix of the lensing potential.
 
         :param x: x-coordinate in image plane relative to center (major axis)
         :param y: y-coordinate in image plane relative to center (minor axis)
@@ -304,25 +311,25 @@ class EPLMajorAxis(LensProfileBase):
         :param q: axis ratio
         :return: f_xx, f_yy, f_xy
         """
-        R = np.hypot(q*x, y)
+        R = np.hypot(q * x, y)
         R = np.maximum(R, 0.00000001)
         r = np.hypot(x, y)
 
-        cos, sin = x/r, y/r
-        cos2, sin2 = cos*cos*2 - 1, sin*cos*2
+        cos, sin = x / r, y / r
+        cos2, sin2 = cos * cos * 2 - 1, sin * cos * 2
 
         # convergence, eq. (2)
-        kappa = (2 - t)/2*(b/R)**t
-        kappa = np.nan_to_num(kappa, posinf=10**10, neginf=-10**10)
+        kappa = (2 - t) / 2 * (b / R) ** t
+        kappa = np.nan_to_num(kappa, posinf=10**10, neginf=-(10**10))
 
         # deflection via method
         alpha_x, alpha_y = self.derivatives(x, y, b, t, q)
 
         # shear, eq. (17), corrected version from arXiv/corrigendum
-        gamma_1 = (1-t)*(alpha_x*cos - alpha_y*sin)/r - kappa*cos2
-        gamma_2 = (1-t)*(alpha_y*cos + alpha_x*sin)/r - kappa*sin2
-        gamma_1 = np.nan_to_num(gamma_1, posinf=10**10, neginf=-10**10)
-        gamma_2 = np.nan_to_num(gamma_2, posinf=10**10, neginf=-10**10)
+        gamma_1 = (1 - t) * (alpha_x * cos - alpha_y * sin) / r - kappa * cos2
+        gamma_2 = (1 - t) * (alpha_y * cos + alpha_x * sin) / r - kappa * sin2
+        gamma_1 = np.nan_to_num(gamma_1, posinf=10**10, neginf=-(10**10))
+        gamma_2 = np.nan_to_num(gamma_2, posinf=10**10, neginf=-(10**10))
 
         # second derivatives from convergence and shear
         f_xx = kappa + gamma_1

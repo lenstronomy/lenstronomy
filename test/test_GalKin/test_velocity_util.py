@@ -5,9 +5,7 @@ from lenstronomy.GalKin import velocity_util
 
 
 class TestVelocityUtil(object):
-    """
-
-    """
+    """"""
 
     def setup_method(self):
         pass
@@ -41,11 +39,11 @@ class TestVelocityUtil(object):
 
         x_ = x_array[1:] - x_array[1] + x_array[0]
         f_moffat = velocity_util.moffat_r(x_, alpha=alpha, beta=beta) * x_
-        #import matplotlib.pyplot as plt
-        #plt.plot(x_, f_moffat, label='moffat')
-        #plt.plot(x_, r_hist, label='sampled')
-        #plt.legend()
-        #plt.show()
+        # import matplotlib.pyplot as plt
+        # plt.plot(x_, f_moffat, label='moffat')
+        # plt.plot(x_, r_hist, label='sampled')
+        # plt.legend()
+        # plt.show()
         npt.assert_almost_equal(r_hist, f_moffat, decimal=1)
 
     def test_displace_PSF_moffat(self):
@@ -66,14 +64,14 @@ class TestVelocityUtil(object):
         r = np.ones(num)
         R, x, y = velocity_util.project2d_random(r=r)
         assert len(R) == num
-        #import matplotlib.pyplot as plt
-        #bins = np.linspace(0., 1, 100)
-        #hist, bins_hist = np.histogram(R, bins=bins, density=True)
-        #bins_plot = (bins_hist[1:] + bins_hist[:-1]) / 2.
-        #plt.plot(bins_plot, hist, label='regular')
-        #plt.legend()
-        #plt.show()
+        # import matplotlib.pyplot as plt
+        # bins = np.linspace(0., 1, 100)
+        # hist, bins_hist = np.histogram(R, bins=bins, density=True)
+        # bins_plot = (bins_hist[1:] + bins_hist[:-1]) / 2.
+        # plt.plot(bins_plot, hist, label='regular')
+        # plt.legend()
+        # plt.show()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pytest.main()

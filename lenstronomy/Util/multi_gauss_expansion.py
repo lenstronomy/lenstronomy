@@ -8,7 +8,6 @@ from scipy.optimize import nnls
 import warnings
 from lenstronomy.Util.package_util import exporter
 from lenstronomy.LightModel.Profiles.gaussian import Gaussian
-
 gaussian_func = Gaussian()
 
 export, __all__ = exporter()
@@ -24,7 +23,7 @@ def gaussian(R, sigma, amp):
     :return: Gaussian function
     """
     c = amp / (2 * np.pi * sigma**2)
-    return c * np.exp(-((R / float(sigma)) ** 2) / 2.0)
+    return c * np.exp(-(R/float(sigma))**2/2.)
 
 
 @export
@@ -37,9 +36,7 @@ def mge_1d(r_array, flux_r, N=20, linspace=False):
     :return: amplitudes and Gaussian sigmas for the best 1d flux profile
     """
     if N == 0:
-        warnings.warn(
-            "Number of MGE went down to zero! This should not happen!", Warning
-        )
+        warnings.warn('Number of MGE went down to zero! This should not happen!', Warning)
         amplitudes = [0]
         sigmas = [1]
         norm = 0
@@ -64,25 +61,23 @@ def _mge_1d(r_array, flux_r, N=20, linspace=False):
     if linspace is True:
         sigmas = np.linspace(r_array[0], r_array[-1] / 2, N + 2)[1:-1]
     else:
-        sigmas = np.logspace(
-            np.log10(r_array[0]), np.log10((r_array[-1] + 0.0000001) / 2.0), N + 2
-        )[1:-1]
+        sigmas = np.logspace(np.log10(r_array[0]), np.log10((r_array[-1] + 0.0000001) / 2.), N + 2)[1:-1]
     # sigmas = np.linspace(r_array[0], r_array[-1]/2, N + 2)[1:-1]
 
     A = np.zeros((len(flux_r), N))
     for j in np.arange(A.shape[1]):
-        A[:, j] = gaussian(r_array, sigmas[j], 1.0)
+        A[:, j] = gaussian(r_array, sigmas[j], 1.)
     amplitudes, norm = nnls(A, flux_r)
     return amplitudes, sigmas, norm
 
 
 @export
 def de_projection_3d(amplitudes, sigmas):
-    """De-projects a gaussian (or list of multiple Gaussians from a 2d projected to a 3d
-    profile) :param amplitudes:
-
+    """
+    de-projects a gaussian (or list of multiple Gaussians from a 2d projected to a 3d profile)
+    :param amplitudes:
     :param sigmas:
     :return:
     """
-    amplitudes_3d = amplitudes / sigmas / np.sqrt(2 * np.pi)
+    amplitudes_3d = amplitudes / sigmas / np.sqrt(2*np.pi)
     return amplitudes_3d, sigmas

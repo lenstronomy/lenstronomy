@@ -1,4 +1,4 @@
-__author__ = "sibirrer"
+__author__ = 'sibirrer'
 
 import numpy as np
 import numpy.testing as npt
@@ -7,6 +7,7 @@ import pytest
 
 
 class TestPartialImage(object):
+
     def setup_method(self):
         self.num = 10
         partial_read_bools = np.zeros((self.num, self.num), dtype=bool)
@@ -30,5 +31,5 @@ class TestPartialImage(object):
         assert self._partialImage.num_partial == 2
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     pytest.main()

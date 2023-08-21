@@ -1,4 +1,6 @@
-"""Created on Sep 30, 2013 modified on March 3-7, 2020.
+"""
+Created on Sep 30, 2013
+modified on March 3-7, 2020
 
 @authors: J. Akeret, S. Birrer, A. Shajib
 """
@@ -8,11 +10,12 @@ from math import floor
 import math
 import numpy as np
 
-__all__ = ["ParticleSwarmOptimizer"]
+__all__ = ['ParticleSwarmOptimizer']
 
 
 class ParticleSwarmOptimizer(object):
-    """Optimizer using a swarm of particles.
+    """
+    Optimizer using a swarm of particles
 
     :param func:
         A function that takes a vector in the parameter space as input and
@@ -28,11 +31,11 @@ class ParticleSwarmOptimizer(object):
         object provided by ``pool`` is used for all parallelization. It
         can be any object with a ``map`` method that follows the same
         calling sequence as the built-in ``map`` function.
+
     """
 
-    def __init__(
-        self, func, low, high, particle_count=25, pool=None, args=None, kwargs=None
-    ):
+    def __init__(self, func, low, high, particle_count=25,
+                 pool=None, args=None, kwargs=None):
         """
 
         :param func: function to call to return log likelihood
@@ -65,8 +68,10 @@ class ParticleSwarmOptimizer(object):
         self.func = _FunctionWrapper(func, args, kwargs)
 
     def __getstate__(self):
-        """In order to be generally pickleable, we need to discard the pool object
-        before trying."""
+        """
+        In order to be generally pickleable, we need to discard the pool
+        object before trying.
+        """
         d = self.__dict__
         d["pool"] = None
         return d
@@ -75,7 +80,8 @@ class ParticleSwarmOptimizer(object):
         self.__dict__ = state
 
     def set_global_best(self, position, velocity, fitness):
-        """Set the global best particle.
+        """
+        Set the global best particle.
 
         :param position: position of the new global best
         :type position: `list` or `ndarray`
@@ -91,7 +97,8 @@ class ParticleSwarmOptimizer(object):
         self.global_best.fitness = fitness
 
     def _init_swarm(self):
-        """Initiate the swarm.
+        """
+        Initiate the swarm.
 
         :return:
         :rtype:
@@ -99,36 +106,25 @@ class ParticleSwarmOptimizer(object):
         swarm = []
         for _ in range(self.particleCount):
             swarm.append(
-                Particle(
-                    np.random.uniform(self.low, self.high, size=self.param_count),
-                    np.zeros(self.param_count),
-                )
-            )
+                Particle(np.random.uniform(self.low, self.high,
+                                           size=self.param_count),
+                         np.zeros(self.param_count)))
 
         return swarm
 
-    def sample(
-        self,
-        max_iter=1000,
-        c1=1.193,
-        c2=1.193,
-        p=0.7,
-        m=1e-3,
-        n=1e-2,
-        early_stop_tolerance=None,
-        verbose=True,
-    ):
-        """Launches the PSO. Yields the complete swarm per iteration.
+    def sample(self, max_iter=1000, c1=1.193, c2=1.193, p=0.7, m=1e-3, n=1e-2, early_stop_tolerance=None,
+               verbose=True):
+        """
+        Launches the PSO. Yields the complete swarm per iteration
 
         :param max_iter: maximum iterations
         :param c1: cognitive weight
         :param c2: social weight
         :param p: stop criterion, percentage of particles to use
         :param m: stop criterion, difference between mean fitness and global best
-        :param n: stop criterion, difference between norm of the particle vector and
-            norm of the global best
-        :param early_stop_tolerance: will terminate at the given value (should be
-            specified as a chi^2)
+        :param n: stop criterion, difference between norm of the particle
+         vector and norm of the global best
+        :param early_stop_tolerance: will terminate at the given value (should be specified as a chi^2)
         :param verbose: prints when it stopped
         :type verbose: boolean
         """
@@ -156,11 +152,8 @@ class ParticleSwarmOptimizer(object):
                 if self.is_master():
                     if verbose:
                         print("Converged after {} iterations!".format(i))
-                        print(
-                            "Best fit found: ",
-                            self.global_best.fitness,
-                            self.global_best.position,
-                        )
+                        print("Best fit found: ", self.global_best.fitness,
+                              self.global_best.position)
                 return
 
             if early_stop_tolerance is not None:
@@ -171,26 +164,15 @@ class ParticleSwarmOptimizer(object):
                 w = 0.5 + np.random.uniform(0, 1, size=self.param_count) / 2
                 # w=0.72
                 part_vel = w * np.array(particle.velocity)
-                cog_vel = (
-                    c1
-                    * np.random.uniform(0, 1, size=self.param_count)
-                    * (
-                        np.array(particle.personal_best.position)
-                        - np.array(particle.position)
-                    )
-                )
-                soc_vel = (
-                    c2
-                    * np.random.uniform(0, 1, size=self.param_count)
-                    * (
-                        np.array(self.global_best.position)
-                        - np.array(particle.position)
-                    )
-                )
+                cog_vel = c1 * np.random.uniform(0, 1, size=self.param_count) \
+                    * (np.array(particle.personal_best.position) -
+                       np.array(particle.position))
+                soc_vel = c2 * np.random.uniform(0, 1, size=self.param_count) \
+                    * (np.array(self.global_best.position) -
+                       np.array(particle.position))
                 particle.velocity = (part_vel + cog_vel + soc_vel).tolist()
-                particle.position = (
-                    np.array(particle.position) + np.array(particle.velocity)
-                ).tolist()
+                particle.position = (np.array(particle.position) +
+                                     np.array(particle.velocity)).tolist()
 
             self._get_fitness(self.swarm)
 
@@ -201,18 +183,10 @@ class ParticleSwarmOptimizer(object):
 
             i += 1
 
-    def optimize(
-        self,
-        max_iter=1000,
-        verbose=True,
-        c1=1.193,
-        c2=1.193,
-        p=0.7,
-        m=1e-3,
-        n=1e-2,
-        early_stop_tolerance=None,
-    ):
-        """Run the optimization and return a full list of optimization outputs.
+    def optimize(self, max_iter=1000, verbose=True, c1=1.193, c2=1.193,
+                 p=0.7, m=1e-3, n=1e-2, early_stop_tolerance=None):
+        """
+        Run the optimization and return a full list of optimization outputs.
 
         :param max_iter: maximum iterations
         :param verbose: if `True`, print a message every 10 iterations
@@ -242,7 +216,8 @@ class ParticleSwarmOptimizer(object):
         return self.global_best.position, [log_likelihood_list, pos_list, vel_list]
 
     def _get_fitness(self, swarm):
-        """Set fitness (probability) of the particles in swarm.
+        """
+        Set fitness (probability) of the particles in swarm.
 
         :param swarm: PSO state
         :type swarm: list of Particle() instances of the swarm
@@ -261,7 +236,8 @@ class ParticleSwarmOptimizer(object):
             particle.position = position[i]
 
     def _converged(self, it, p, m, n):
-        """Check for convergence.
+        """
+        Check for convergence.
 
         :param it:
         :type it:
@@ -295,10 +271,9 @@ class ParticleSwarmOptimizer(object):
         :return:
         :rtype:
         """
-        best_sort = np.sort(
-            [particle.personal_best.fitness for particle in self.swarm]
-        )[::-1]
-        mean_fit = np.mean(best_sort[1 : int(math.floor(self.particleCount * p))])
+        best_sort = np.sort([particle.personal_best.fitness for particle in
+                             self.swarm])[::-1]
+        mean_fit = np.mean(best_sort[1:int(math.floor(self.particleCount * p))])
         # print( "best %f, mean_fit %f, ration %f"%( self.global_best[0],
         # mean_fit, abs((self.global_best[0]-mean_fit))))
         return abs(self.global_best.fitness - mean_fit) < m
@@ -317,13 +292,12 @@ class ParticleSwarmOptimizer(object):
         """
         sorted_swarm = [particle for particle in self.swarm]
         sorted_swarm.sort()
-        best_of_best = sorted_swarm[0 : int(floor(self.particleCount * p))]
+        best_of_best = sorted_swarm[0:int(floor(self.particleCount * p))]
 
         diffs = []
         for particle in best_of_best:
-            diffs.append(
-                np.array(self.global_best.position) - np.array(particle.position)
-            )
+            diffs.append(np.array(self.global_best.position) -
+                         np.array(particle.position))
 
         max_norm = max(list(map(np.linalg.norm, diffs)))
         return abs(max_norm) < m
@@ -339,18 +313,17 @@ class ParticleSwarmOptimizer(object):
         # Andres N. Ruiz et al.
         sorted_swarm = [particle for particle in self.swarm]
         sorted_swarm.sort()
-        best_of_best = sorted_swarm[0 : int(floor(self.particleCount * p))]
+        best_of_best = sorted_swarm[0:int(floor(self.particleCount * p))]
 
         positions = [particle.position for particle in best_of_best]
         means = np.mean(positions, axis=0)
-        delta = np.mean(
-            (means - np.array(self.global_best.position))
-            / np.array(self.global_best.position)
-        )
+        delta = np.mean((means - np.array(self.global_best.position)) /
+                        np.array(self.global_best.position))
         return np.log10(delta) < -3.0
 
     def is_master(self):
-        """Check if the current processor is the master.
+        """
+        Check if the current processor is the master.
 
         :return:
         :rtype:
@@ -361,6 +334,7 @@ class ParticleSwarmOptimizer(object):
             return self.pool.is_master()
 
     def _acceptable_convergence(self, chi_square_tolerance):
+
         chi_square = -2 * self.global_best.fitness
 
         if np.min(chi_square) < chi_square_tolerance:
@@ -370,13 +344,14 @@ class ParticleSwarmOptimizer(object):
 
 
 class Particle(object):
-    """Implementation of a single particle.
+    """
+    Implementation of a single particle
 
     :param position: the position of the particle in the parameter space
     :param velocity: the velocity of the particle
     :param fitness: the current fitness of the particle
-    """
 
+    """
     def __init__(self, position, velocity, fitness=0):
         """
 
@@ -405,29 +380,35 @@ class Particle(object):
 
     @classmethod
     def create(cls, param_count):
-        """Creates a new particle without position, velocity and -inf as fitness."""
+        """
+        Creates a new particle without position, velocity and -inf as fitness
+        """
 
-        return Particle(
-            np.array([[]] * param_count), np.array([[]] * param_count), -np.Inf
-        )
+        return Particle(np.array([[]] * param_count),
+                        np.array([[]] * param_count),
+                        -np.Inf)
 
     def update_personal_best(self):
-        """Sets the current particle representation as personal best."""
+        """
+        Sets the current particle representation as personal best
+        """
         self._personal_best = self.copy()
 
     def copy(self):
-        """Creates a copy of itself."""
+        """
+        Creates a copy of itself
+        """
         return Particle(copy(self.position), copy(self.velocity), self.fitness)
 
     def __str__(self):
-        """Get a `str` object for the particle state.
-
+        """
+        Get a `str` object for the particle state.
         :return:
         :rtype:
         """
-        return "{:f}, pos: {:s} velocity: {:s}".format(
-            self.fitness, self.position, self.velocity
-        )
+        return "{:f}, pos: {:s} velocity: {:s}".format(self.fitness,
+                                                       self.position,
+                                                       self.velocity)
 
     def __lt__(self, other):
         return self.fitness > other.fitness
@@ -443,10 +424,9 @@ class Particle(object):
 
 
 class _FunctionWrapper(object):
-    """This is a hack to make the likelihood function pickleable when ``args`` or
-    ``kwargs`` are also included.
-
-    This hack is copied from
+    """
+    This is a hack to make the likelihood function pickleable when ``args``
+    or ``kwargs`` are also included. This hack is copied from
     emcee: https://github.com/dfm/emcee/.
     """
 

@@ -1,4 +1,4 @@
-__author__ = "sibirrer"
+__author__ = 'sibirrer'
 
 import numpy as np
 import numpy.testing as npt
@@ -7,6 +7,7 @@ import pytest
 
 
 class TestDeLens(object):
+
     def setup_method(self):
         pass
 
@@ -19,9 +20,7 @@ class TestDeLens(object):
         npt.assert_almost_equal(result[1], 0, decimal=8)
         npt.assert_almost_equal(image[0], d[0], decimal=8)
 
-        result_new, cov_error_new, image_new = de_lens.get_param_WLS(
-            A, C_D_inv, d, inv_bool=False
-        )
+        result_new, cov_error_new, image_new = de_lens.get_param_WLS(A, C_D_inv, d, inv_bool=False)
         npt.assert_almost_equal(result_new[0], result[0], decimal=10)
         npt.assert_almost_equal(result_new[1], result[1], decimal=10)
         npt.assert_almost_equal(image_new[0], image[0], decimal=10)
@@ -44,7 +43,7 @@ class TestDeLens(object):
         npt.assert_almost_equal(image[0], 0, decimal=8)
 
         C_D_inv = np.array([1, 1, 1])
-        A = np.array([[1.0, 2.0, 1.0 + 10 ** (-8.9)], [1.0, 2.0, 1.0]]).T
+        A = np.array([[1., 2., 1. + 10**(-8.9)], [1., 2., 1.]]).T
         d = np.array([1, 2, 3])
         result, cov_error, image = de_lens.get_param_WLS(A, C_D_inv, d, inv_bool=False)
         result, cov_error, image = de_lens.get_param_WLS(A, C_D_inv, d, inv_bool=True)
@@ -53,34 +52,34 @@ class TestDeLens(object):
         npt.assert_almost_equal(image[0], 0, decimal=8)
 
     def test_marginalisation_const(self):
-        A = np.array([[1, 2, 3], [3, 2, 1]]).T
-        C_D_inv = np.array([1, 1, 1])
-        d = np.array([1, 2, 3])
+        A = np.array([[1,2,3],[3,2,1]]).T
+        C_D_inv = np.array([1,1,1])
+        d = np.array([1,2,3])
         result, cov_error, image = de_lens.get_param_WLS(A, C_D_inv, d)
         logL_marg = de_lens.marginalisation_const(cov_error)
         npt.assert_almost_equal(logL_marg, -2.2821740957339181, decimal=8)
 
-        M_inv = np.array([[1, 0], [0, 1]])
+        M_inv = np.array([[1,0],[0,1]])
         marg_const = de_lens.marginalisation_const(M_inv)
         assert marg_const == 0
 
     def test_margnialization_new(self):
-        M_inv = np.array([[1, -0.5, 1], [-0.5, 3, 0], [1, 0, 2]])
+        M_inv = np.array([[1, -0.5, 1],
+                          [-0.5, 3, 0],
+                          [1, 0, 2]])
         d_prior = 1000
         m = len(M_inv)
         log_det = de_lens.marginalization_new(M_inv, d_prior=d_prior)
         log_det_old = de_lens.marginalisation_const(M_inv)
-        npt.assert_almost_equal(
-            log_det,
-            log_det_old + m / 2.0 * np.log(np.pi / 2.0) - m * np.log(d_prior),
-            decimal=9,
-        )
+        npt.assert_almost_equal(log_det, log_det_old + m/2. * np.log(np.pi/2.) - m * np.log(d_prior), decimal=9)
 
-        M_inv = np.array([[1, 1, 1], [0.0, 1.0, 0.0], [1.0, 2.0, 1.0]])
+        M_inv = np.array([[1, 1, 1],
+                          [0., 1., 0.],
+                          [1., 2., 1.]])
         log_det = de_lens.marginalization_new(M_inv, d_prior=10)
         log_det_old = de_lens.marginalisation_const(M_inv)
         npt.assert_almost_equal(log_det, log_det_old, decimal=9)
-        npt.assert_almost_equal(log_det, -(10 ** (15)), decimal=10)
+        npt.assert_almost_equal(log_det, -10**(15), decimal=10)
 
         log_det = de_lens.marginalization_new(M_inv, d_prior=None)
         log_det_old = de_lens.marginalisation_const(M_inv)
@@ -110,5 +109,5 @@ class TestDeLens(object):
         assert np.shape(b_none) == np.shape(b)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     pytest.main()

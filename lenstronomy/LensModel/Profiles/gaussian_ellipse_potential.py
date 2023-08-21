@@ -1,38 +1,25 @@
-__author__ = "sibirrer"
-# this file contains a class to make a gaussian
+__author__ = 'sibirrer'
+#this file contains a class to make a gaussian
 
 import numpy as np
 from lenstronomy.LensModel.Profiles.gaussian_kappa import GaussianKappa
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
-__all__ = ["GaussianEllipsePotential"]
+__all__ = ['GaussianEllipsePotential']
 
 
 class GaussianEllipsePotential(LensProfileBase):
-    """This class contains functions to evaluate a Gaussian function and calculates its
-    derivative and hessian matrix with ellipticity in the convergence.
+    """
+    this class contains functions to evaluate a Gaussian function and calculates its derivative and hessian matrix
+    with ellipticity in the convergence
 
     the calculation follows Glenn van de Ven et al. 2009
-    """
 
-    param_names = ["amp", "sigma", "e1", "e2", "center_x", "center_y"]
-    lower_limit_default = {
-        "amp": 0,
-        "sigma": 0,
-        "e1": -0.5,
-        "e2": -0.5,
-        "center_x": -100,
-        "center_y": -100,
-    }
-    upper_limit_default = {
-        "amp": 100,
-        "sigma": 100,
-        "e1": 0.5,
-        "e2": 0.5,
-        "center_x": 100,
-        "center_y": 100,
-    }
+    """
+    param_names = ['amp', 'sigma', 'e1', 'e2', 'center_x', 'center_y']
+    lower_limit_default = {'amp': 0, 'sigma': 0, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'amp': 100, 'sigma': 100, 'e1': 0.5, 'e2': 0.5, 'center_x': 100, 'center_y': 100}
 
     def __init__(self):
         self.spherical = GaussianKappa()
@@ -40,7 +27,9 @@ class GaussianEllipsePotential(LensProfileBase):
         super(GaussianEllipsePotential, self).__init__()
 
     def function(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
-        """Returns Gaussian."""
+        """
+        returns Gaussian
+        """
 
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         x_shift = x - center_x
@@ -54,7 +43,9 @@ class GaussianEllipsePotential(LensProfileBase):
         return f_
 
     def derivatives(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
-        """Returns df/dx and df/dy of the function."""
+        """
+        returns df/dx and df/dy of the function
+        """
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         x_shift = x - center_x
         y_shift = y - center_y
@@ -72,18 +63,13 @@ class GaussianEllipsePotential(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
-        """Returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx,
-        d^f/dy^2."""
-        alpha_ra, alpha_dec = self.derivatives(
-            x, y, amp, sigma, e1, e2, center_x, center_y
-        )
+        """
+        returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
+        """
+        alpha_ra, alpha_dec = self.derivatives(x, y, amp, sigma, e1, e2, center_x, center_y)
         diff = self._diff
-        alpha_ra_dx, alpha_dec_dx = self.derivatives(
-            x + diff, y, amp, sigma, e1, e2, center_x, center_y
-        )
-        alpha_ra_dy, alpha_dec_dy = self.derivatives(
-            x, y + diff, amp, sigma, e1, e2, center_x, center_y
-        )
+        alpha_ra_dx, alpha_dec_dx = self.derivatives(x + diff, y, amp, sigma, e1, e2, center_x, center_y)
+        alpha_ra_dy, alpha_dec_dy = self.derivatives(x, y + diff, amp, sigma, e1, e2, center_x, center_y)
 
         f_xx = (alpha_ra_dx - alpha_ra) / diff
         f_xy = (alpha_ra_dy - alpha_ra) / diff

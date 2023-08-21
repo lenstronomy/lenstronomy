@@ -1,4 +1,4 @@
-__author__ = "sibirrer"
+__author__ = 'sibirrer'
 
 from lenstronomy.LensModel.Profiles.cored_density import CoredDensity
 
@@ -8,8 +8,9 @@ import pytest
 
 
 class TestCoredDensity(object):
-    """Tests the Gaussian methods."""
-
+    """
+    tests the Gaussian methods
+    """
     def setup_method(self):
         self.model = CoredDensity()
 
@@ -30,9 +31,9 @@ class TestCoredDensity(object):
     def test_dalpha_dr(self):
         x = np.array([1, 3, 4])
         y = np.array([2, 1, 1])
-        r = np.sqrt(x**2 + y**2)
+        r = np.sqrt(x ** 2 + y ** 2)
         sigma0 = 0.1
-        r_core = 7.0
+        r_core = 7.
         dalpha_dr = self.model.d_alpha_dr(r, sigma0, r_core)
         alpha_r = self.model.alpha_r(r, sigma0, r_core)
         delta = 0.00001
@@ -47,7 +48,7 @@ class TestCoredDensity(object):
         sigma0 = 0.1
         r_core = 7
         f_xx, f_xy, f_yx, f_yy = self.model.hessian(x, y, sigma0, r_core)
-        kappa = 1.0 / 2 * (f_xx + f_yy)
+        kappa = 1./2 * (f_xx + f_yy)
         kappa_direct = self.model.kappa_r(r, sigma0, r_core)
         npt.assert_almost_equal(kappa, kappa_direct, decimal=5)
         npt.assert_almost_equal(f_xy, f_yx, decimal=8)
@@ -55,7 +56,7 @@ class TestCoredDensity(object):
     def test_mass_3d(self):
         x = np.array([1, 3, 4])
         y = np.array([2, 1, 1])
-        r = np.sqrt(x**2 + y**2)
+        r = np.sqrt(x ** 2 + y ** 2)
         sigma0 = 0.1
         r_core = 7
         m3d = self.model.mass_3d(r, sigma0, r_core)
@@ -63,5 +64,5 @@ class TestCoredDensity(object):
         npt.assert_almost_equal(m3d, m3d_lens, decimal=8)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     pytest.main()

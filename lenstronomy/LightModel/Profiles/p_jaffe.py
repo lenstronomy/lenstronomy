@@ -1,30 +1,18 @@
 import lenstronomy.Util.param_util as param_util
 
-__all__ = ["PJaffe", "PJaffeEllipse"]
+__all__ = ['PJaffe', 'PJaffeEllipse']
 
 
 class PJaffe(object):
-    """Class for pseudo Jaffe lens light (2d projected light/mass distribution)"""
-
-    param_names = ["amp", "Ra", "Rs", "center_x", "center_y"]
-    lower_limit_default = {
-        "amp": 0,
-        "Ra": 0,
-        "Rs": 0,
-        "center_x": -100,
-        "center_y": -100,
-    }
-    upper_limit_default = {
-        "amp": 100,
-        "Ra": 100,
-        "Rs": 100,
-        "center_x": 100,
-        "center_y": 100,
-    }
+    """
+    class for pseudo Jaffe lens light (2d projected light/mass distribution)
+    """
+    param_names = ['amp', 'Ra', 'Rs', 'center_x', 'center_y']
+    lower_limit_default = {'amp': 0, 'Ra': 0, 'Rs': 0, 'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'amp': 100, 'Ra': 100, 'Rs': 100, 'center_x': 100, 'center_y': 100}
 
     def __init__(self):
         from lenstronomy.LensModel.Profiles.p_jaffe import PJaffe as PJaffe_lens
-
         self.lens = PJaffe_lens()
 
     def function(self, x, y, amp, Ra, Rs, center_x=0, center_y=0):
@@ -56,31 +44,15 @@ class PJaffe(object):
 
 
 class PJaffeEllipse(object):
-    """Calss for elliptical pseudo Jaffe lens light."""
-
-    param_names = ["amp", "Ra", "Rs", "e1", "e2", "center_x", "center_y"]
-    lower_limit_default = {
-        "amp": 0,
-        "Ra": 0,
-        "Rs": 0,
-        "e1": -0.5,
-        "e2": -0.5,
-        "center_x": -100,
-        "center_y": -100,
-    }
-    upper_limit_default = {
-        "amp": 100,
-        "Ra": 100,
-        "Rs": 100,
-        "e1": 0.5,
-        "e2": 0.5,
-        "center_x": 100,
-        "center_y": 100,
-    }
+    """
+    calss for elliptical pseudo Jaffe lens light
+    """
+    param_names = ['amp', 'Ra', 'Rs', 'e1', 'e2', 'center_x', 'center_y']
+    lower_limit_default = {'amp': 0, 'Ra': 0, 'Rs': 0, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'amp': 100, 'Ra': 100, 'Rs': 100, 'e1': 0.5, 'e2': 0.5, 'center_x': 100, 'center_y': 100}
 
     def __init__(self):
         from lenstronomy.LensModel.Profiles.p_jaffe import PJaffe as PJaffe_lens
-
         self.lens = PJaffe_lens()
         self.spherical = PJaffe()
 
@@ -96,9 +68,7 @@ class PJaffeEllipse(object):
         :param center_y:
         :return:
         """
-        x_, y_ = param_util.transform_e1e2_square_average(
-            x, y, e1, e2, center_x, center_y
-        )
+        x_, y_ = param_util.transform_e1e2_square_average(x, y, e1, e2, center_x, center_y)
         return self.spherical.function(x_, y_, amp, Ra, Rs)
 
     def light_3d(self, r, amp, Ra, Rs, e1=0, e2=0):

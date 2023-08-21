@@ -1,18 +1,18 @@
-__author__ = "sibirrer"
+__author__ = 'sibirrer'
 
 from scipy import stats
 import numpy as np
 
 from lenstronomy.Util.package_util import exporter
-
 export, __all__ = exporter()
 
 
 @export
 class SkewGaussian(object):
-    """Class for the Skew Gaussian distribution."""
-
-    def pdf(self, x, e=0.0, w=1.0, a=0.0):
+    """
+    class for the Skew Gaussian distribution
+    """
+    def pdf(self, x, e=0., w=1., a=0.):
         """
         probability density function
         see: https://en.wikipedia.org/wiki/Skew_normal_distribution
@@ -23,11 +23,12 @@ class SkewGaussian(object):
         :param a:
         :return:
         """
-        t = (x - e) / w
-        return 2.0 / w * stats.norm.pdf(t) * stats.norm.cdf(a * t)
+        t = (x-e) / w
+        return 2. / w * stats.norm.pdf(t) * stats.norm.cdf(a*t)
 
     def pdf_skew(self, x, mu, sigma, skw):
-        """Function with different parameterisation.
+        """
+        function with different parameterisation
 
         :param x:
         :param mu: mean
@@ -47,9 +48,9 @@ class SkewGaussian(object):
         :param skw: skewness parameter
         :return: delta
         """
-        skw_23 = np.abs(skw) ** (2.0 / 3)
-        delta2 = skw_23 * np.pi / 2 / (skw_23 + ((4 - np.pi) / 2) ** (2.0 / 3))
-        return np.sqrt(delta2) * skw / np.abs(skw)
+        skw_23 = np.abs(skw)**(2./3)
+        delta2 = skw_23*np.pi/2 / (skw_23 + ((4-np.pi)/2)**(2./3))
+        return np.sqrt(delta2)*skw/np.abs(skw)
 
     def _alpha_delta(self, delta):
         """
@@ -57,17 +58,18 @@ class SkewGaussian(object):
         :param delta: delta parameter
         :return: alpha (a)
         """
-        return delta / np.sqrt(1 - delta**2)
+        return delta/np.sqrt(1-delta**2)
 
     def _w_sigma_delta(self, sigma, delta):
-        """Invert variance.
+        """
+        invert variance
 
         :param sigma:
         :param delta:
         :return: w parameter
         """
-        sigma2 = sigma**2
-        w2 = sigma2 / (1 - 2 * delta**2 / np.pi)
+        sigma2=sigma**2
+        w2 = sigma2/(1-2*delta**2/np.pi)
         w = np.sqrt(w2)
         return w
 
@@ -79,11 +81,12 @@ class SkewGaussian(object):
         :param delta:
         :return: epsilon (e)
         """
-        e = mu - w * delta * np.sqrt(2 / np.pi)
+        e = mu - w*delta*np.sqrt(2/np.pi)
         return e
 
     def map_mu_sigma_skw(self, mu, sigma, skw):
-        """Map to parameters e, w, a.
+        """
+        map to parameters e, w, a
 
         :param mu: mean
         :param sigma: standard deviation
@@ -99,8 +102,9 @@ class SkewGaussian(object):
 
 @export
 class KDE1D(object):
-    """Class that allows to compute likelihoods based on a 1-d posterior sample."""
-
+    """
+    class that allows to compute likelihoods based on a 1-d posterior sample
+    """
     def __init__(self, values):
         """
 
@@ -122,44 +126,37 @@ class KDE1D(object):
 
 @export
 def compute_lower_upper_errors(sample, num_sigma=1):
-    """Computes the upper and lower sigma from the median value. This functions gives
-    good error estimates for skewed pdf's.
+    """
+    computes the upper and lower sigma from the median value.
+    This functions gives good error estimates for skewed pdf's
 
     :param sample: 1-D sample
     :param num_sigma: integer, number of sigmas to be returned
     :return: median, lower_sigma, upper_sigma
     """
     if num_sigma > 3:
-        raise ValueError(
-            "Number of sigma-constraints restricted to three. %s not valid" % num_sigma
-        )
+        raise ValueError("Number of sigma-constraints restricted to three. %s not valid" % num_sigma)
     num = len(sample)
-    num_threshold1 = int(round((num - 1) * 0.841345))
-    num_threshold2 = int(round((num - 1) * 0.977249868))
-    num_threshold3 = int(round((num - 1) * 0.998650102))
+    num_threshold1 = int(round((num-1)*0.841345))
+    num_threshold2 = int(round((num-1)*0.977249868))
+    num_threshold3 = int(round((num-1)*0.998650102))
 
     median = np.median(sample)
     sorted_sample = np.sort(sample)
     if num_sigma > 0:
-        upper_sigma1 = sorted_sample[num_threshold1 - 1]
-        lower_sigma1 = sorted_sample[num - num_threshold1 - 1]
+        upper_sigma1 = sorted_sample[num_threshold1-1]
+        lower_sigma1 = sorted_sample[num-num_threshold1-1]
     else:
         return median, [[]]
     if num_sigma > 1:
-        upper_sigma2 = sorted_sample[num_threshold2 - 1]
-        lower_sigma2 = sorted_sample[num - num_threshold2 - 1]
+        upper_sigma2 = sorted_sample[num_threshold2-1]
+        lower_sigma2 = sorted_sample[num-num_threshold2-1]
     else:
-        return median, [[median - lower_sigma1, upper_sigma1 - median]]
+        return median, [[median-lower_sigma1, upper_sigma1-median]]
     if num_sigma > 2:
-        upper_sigma3 = sorted_sample[num_threshold3 - 1]
-        lower_sigma3 = sorted_sample[num - num_threshold3 - 1]
-        return median, [
-            [median - lower_sigma1, upper_sigma1 - median],
-            [median - lower_sigma2, upper_sigma2 - median],
-            [median - lower_sigma3, upper_sigma3 - median],
-        ]
+        upper_sigma3 = sorted_sample[num_threshold3-1]
+        lower_sigma3 = sorted_sample[num-num_threshold3-1]
+        return median, [[median-lower_sigma1, upper_sigma1-median], [median-lower_sigma2, upper_sigma2-median],
+                      [median-lower_sigma3, upper_sigma3-median]]
     else:
-        return median, [
-            [median - lower_sigma1, upper_sigma1 - median],
-            [median - lower_sigma2, upper_sigma2 - median],
-        ]
+        return median, [[median-lower_sigma1, upper_sigma1-median], [median-lower_sigma2, upper_sigma2-median]]

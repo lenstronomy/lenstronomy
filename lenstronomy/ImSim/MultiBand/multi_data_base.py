@@ -1,9 +1,10 @@
-__all__ = ["MultiDataBase"]
+__all__ = ['MultiDataBase']
 
 
 class MultiDataBase(object):
-    """Base class with definitions that are shared among all variations of modelling
-    multiple data sets."""
+    """
+    Base class with definitions that are shared among all variations of modelling multiple data sets
+    """
 
     def __init__(self, image_model_list, compute_bool=None):
         """
@@ -16,9 +17,7 @@ class MultiDataBase(object):
             compute_bool = [True] * self._num_bands
         else:
             if not len(compute_bool) == self._num_bands:
-                raise ValueError(
-                    "compute_bool statement has not the same range as number of bands available!"
-                )
+                raise ValueError('compute_bool statement has not the same range as number of bands available!')
         self._compute_bool = compute_bool
         self._imageModel_list = image_model_list
         self._num_response_list = []
@@ -31,14 +30,16 @@ class MultiDataBase(object):
 
     @property
     def num_response_list(self):
-        """List of number of data elements that are used in the minimization.
+        """
+        list of number of data elements that are used in the minimization
 
         :return: list of integers
         """
         return self._num_response_list
 
     def reset_point_source_cache(self, cache=True):
-        """Deletes all the cache in the point source class and saves it from then on.
+        """
+        deletes all the cache in the point source class and saves it from then on
 
         :return:
         """
@@ -53,9 +54,7 @@ class MultiDataBase(object):
                 num += self._imageModel_list[i].num_data_evaluate
         return num
 
-    def num_param_linear(
-        self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps
-    ):
+    def num_param_linear(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
         """
 
         :return: number of linear coefficients to be solved for in the linear inversion
@@ -63,9 +62,8 @@ class MultiDataBase(object):
         num = 0
         for i in range(self._num_bands):
             if self._compute_bool[i] is True:
-                num += self._imageModel_list[i].num_param_linear(
-                    kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps
-                )
+                num += self._imageModel_list[i].num_param_linear(kwargs_lens, kwargs_source, kwargs_lens_light,
+                                                                 kwargs_ps)
         return num
 
     def reduced_residuals(self, model_list, error_map_list=None):
@@ -81,10 +79,7 @@ class MultiDataBase(object):
         index = 0
         for i in range(self._num_bands):
             if self._compute_bool[i] is True:
-                residual_list.append(
-                    self._imageModel_list[i].reduced_residuals(
-                        model_list[index], error_map=error_map_list[index]
-                    )
-                )
+                residual_list.append(self._imageModel_list[i].reduced_residuals(model_list[index],
+                                                                                error_map=error_map_list[index]))
                 index += 1
         return residual_list

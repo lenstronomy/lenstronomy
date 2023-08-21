@@ -4,6 +4,7 @@ import pytest
 
 
 class TestImageLikelihood(object):
+
     def setup_method(self):
         pass
 
@@ -11,5 +12,5 @@ class TestImageLikelihood(object):
         pass
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     pytest.main()

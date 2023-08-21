@@ -3,6 +3,7 @@ import unittest
 
 
 class TestBaseProfile(object):
+
     def setup_method(self):
         pass
 
@@ -13,6 +14,7 @@ class TestBaseProfile(object):
 
 
 class TestRaise(unittest.TestCase):
+
     def test_raise(self):
         base = LensProfileBase()
         with self.assertRaises(ValueError):

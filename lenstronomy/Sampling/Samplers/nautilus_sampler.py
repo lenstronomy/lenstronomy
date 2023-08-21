@@ -1,4 +1,4 @@
-__author__ = "aymgal, johannesulf"
+__author__ = 'aymgal, johannesulf'
 
 import numpy as np
 import lenstronomy.Util.sampling_util as utils
@@ -8,27 +8,20 @@ from inspect import signature
 from lenstronomy.Sampling.Samplers.base_nested_sampler import NestedSampler
 
 
-__all__ = ["NautilusSampler"]
+__all__ = ['NautilusSampler']
 
 
 class NautilusSampler(NestedSampler):
-    """Wrapper for the nautilus sampler by Johannes U. Lange.
+    """
+    Wrapper for the nautilus sampler by Johannes U. Lange.
 
     paper : https://arxiv.org/abs/2306.16923
     doc : https://nautilus-sampler.readthedocs.io
     """
 
-    def __init__(
-        self,
-        likelihood_module,
-        prior_type="uniform",
-        prior_means=None,
-        prior_sigmas=None,
-        width_scale=1,
-        sigma_scale=1,
-        mpi=False,
-        **kwargs
-    ):
+    def __init__(self, likelihood_module, prior_type='uniform',
+                 prior_means=None, prior_sigmas=None, width_scale=1,
+                 sigma_scale=1, mpi=False, **kwargs):
         """
         :param likelihood_module: likelihood_module like in likelihood.py (should be callable)
         :param prior_type: 'uniform' of 'gaussian', for converting the unit hypercube to param cube
@@ -40,14 +33,9 @@ class NautilusSampler(NestedSampler):
         :param kwargs: kwargs directly passed to Sampler
         """
         self._check_install()
-        super(NautilusSampler, self).__init__(
-            likelihood_module,
-            prior_type,
-            prior_means,
-            prior_sigmas,
-            width_scale,
-            sigma_scale,
-        )
+        super(NautilusSampler, self).__init__(likelihood_module, prior_type,
+                                              prior_means, prior_sigmas,
+                                              width_scale, sigma_scale)
 
         if mpi:
             from schwimmbad import MPIPool
@@ -58,17 +46,18 @@ class NautilusSampler(NestedSampler):
             if not pool.is_master():
                 pool.wait()
                 sys.exit(0)
-            kwargs["pool"] = pool
+            kwargs['pool'] = pool
 
-        keys = [p.name for p in signature(self._nautilus.Sampler).parameters.values()]
+        keys = [p.name for p in signature(
+            self._nautilus.Sampler).parameters.values()]
         kwargs = {key: kwargs[key] for key in kwargs.keys() & keys}
 
         self._sampler = self._nautilus.Sampler(
-            self.prior, self.log_likelihood, self.n_dims, **kwargs
-        )
+            self.prior, self.log_likelihood, self.n_dims, **kwargs)
 
     def run(self, **kwargs):
-        """Run the nautilus nested sampler.
+        """
+        run the nautilus nested sampler
 
         see https://nautilus-sampler.readthedocs.io for content of kwargs
 
@@ -78,7 +67,8 @@ class NautilusSampler(NestedSampler):
         print("prior type :", self.prior_type)
         print("parameter names :", self.param_names)
 
-        keys = [p.name for p in signature(self._sampler.run).parameters.values()]
+        keys = [p.name for p in signature(
+            self._sampler.run).parameters.values()]
         kwargs = {key: kwargs[key] for key in kwargs.keys() & keys}
         self._sampler.run(**kwargs)
         points, log_w, log_l = self._sampler.posterior()
@@ -90,9 +80,7 @@ class NautilusSampler(NestedSampler):
         try:
             import nautilus
         except ImportError:
-            print(
-                "Warning : nautilus not properly installed. \
-                  You can get it with $pip install nautilus-sampler."
-            )
+            print("Warning : nautilus not properly installed. \
+                  You can get it with $pip install nautilus-sampler.")
         else:
             self._nautilus = nautilus

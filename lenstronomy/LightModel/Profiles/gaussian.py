@@ -2,35 +2,25 @@ import numpy as np
 import lenstronomy.Util.param_util as param_util
 
 from lenstronomy.Util.package_util import exporter
-
 export, __all__ = exporter()
 
 
 @export
 class Gaussian(object):
-    """Class for Gaussian light profile The two-dimensional Gaussian profile amplitude
-    is defined such that the 2D integral leads to the 'amp' value.
+    """
+    class for Gaussian light profile
+    The two-dimensional Gaussian profile amplitude is defined such that the 2D integral leads to the 'amp' value.
 
     profile name in LightModel module: 'GAUSSIAN'
     """
-
     def __init__(self):
-        self.param_names = ["amp", "sigma", "center_x", "center_y"]
-        self.lower_limit_default = {
-            "amp": 0,
-            "sigma": 0,
-            "center_x": -100,
-            "center_y": -100,
-        }
-        self.upper_limit_default = {
-            "amp": 1000,
-            "sigma": 100,
-            "center_x": 100,
-            "center_y": 100,
-        }
+        self.param_names = ['amp', 'sigma', 'center_x', 'center_y']
+        self.lower_limit_default = {'amp': 0, 'sigma': 0, 'center_x': -100, 'center_y': -100}
+        self.upper_limit_default = {'amp': 1000, 'sigma': 100, 'center_x': 100, 'center_y': 100}
 
     def function(self, x, y, amp, sigma, center_x=0, center_y=0):
-        """Surface brightness per angular unit.
+        """
+        surface brightness per angular unit
 
         :param x: coordinate on the sky
         :param y: coordinate on the sky
@@ -42,10 +32,11 @@ class Gaussian(object):
         """
         c = amp / (2 * np.pi * sigma**2)
         r2 = (x - center_x) ** 2 / sigma**2 + (y - center_y) ** 2 / sigma**2
-        return c * np.exp(-r2 / 2.0)
+        return c * np.exp(-r2 / 2.)
 
     def total_flux(self, amp, sigma, center_x=0, center_y=0):
-        """Integrated flux of the profile.
+        """
+        integrated flux of the profile
 
         :param amp: amplitude, such that 2D integral leads to this value
         :param sigma: sigma of Gaussian in each direction
@@ -56,7 +47,8 @@ class Gaussian(object):
         return amp
 
     def light_3d(self, r, amp, sigma):
-        """3D brightness per angular volume element.
+        """
+        3D brightness per angular volume element
 
         :param r: 3d distance from center of profile
         :param amp: amplitude, such that 2D integral leads to this value
@@ -70,28 +62,14 @@ class Gaussian(object):
 
 @export
 class GaussianEllipse(object):
-    """Class for Gaussian light profile with ellipticity.
+    """
+    class for Gaussian light profile with ellipticity
 
     profile name in LightModel module: 'GAUSSIAN_ELLIPSE'
     """
-
-    param_names = ["amp", "sigma", "e1", "e2", "center_x", "center_y"]
-    lower_limit_default = {
-        "amp": 0,
-        "sigma": 0,
-        "e1": -0.5,
-        "e2": -0.5,
-        "center_x": -100,
-        "center_y": -100,
-    }
-    upper_limit_default = {
-        "amp": 1000,
-        "sigma": 100,
-        "e1": -0.5,
-        "e2": -0.5,
-        "center_x": 100,
-        "center_y": 100,
-    }
+    param_names = ['amp', 'sigma', 'e1', 'e2', 'center_x', 'center_y']
+    lower_limit_default = {'amp': 0, 'sigma': 0, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'amp': 1000, 'sigma': 100, 'e1': -0.5, 'e2': -0.5, 'center_x': 100, 'center_y': 100}
 
     def __init__(self):
         self.gaussian = Gaussian()
@@ -109,15 +87,12 @@ class GaussianEllipse(object):
         :param center_y: center of profile
         :return: surface brightness at (x, y)
         """
-        x_, y_ = param_util.transform_e1e2_product_average(
-            x, y, e1, e2, center_x, center_y
-        )
+        x_, y_ = param_util.transform_e1e2_product_average(x, y, e1, e2, center_x, center_y)
         return self.gaussian.function(x_, y_, amp, sigma, center_x=0, center_y=0)
 
-    def total_flux(
-        self, amp, sigma=None, e1=None, e2=None, center_x=None, center_y=None
-    ):
-        """Total integrated flux of profile.
+    def total_flux(self, amp, sigma=None, e1=None, e2=None, center_x=None, center_y=None):
+        """
+        total integrated flux of profile
 
         :param amp: amplitude, such that 2D integral leads to this value
         :param sigma: sigma of Gaussian in each direction
@@ -130,7 +105,8 @@ class GaussianEllipse(object):
         return self.gaussian.total_flux(amp, sigma, center_x, center_y)
 
     def light_3d(self, r, amp, sigma, e1=0, e2=0):
-        """3D brightness per angular volume element.
+        """
+        3D brightness per angular volume element
 
         :param r: 3d distance from center of profile
         :param amp: amplitude, such that 2D integral leads to this value
@@ -144,35 +120,21 @@ class GaussianEllipse(object):
 
 @export
 class MultiGaussian(object):
-    """Class for elliptical pseudo Jaffe lens light (2d projected light/mass
-    distribution.
+    """
+    class for elliptical pseudo Jaffe lens light (2d projected light/mass distribution
 
     profile name in LightModel module: 'MULTI_GAUSSIAN'
     """
-
-    param_names = ["amp", "sigma", "center_x", "center_y"]
-    lower_limit_default = {
-        "amp": 0,
-        "sigma": 0,
-        "e1": -0.5,
-        "e2": -0.5,
-        "center_x": -100,
-        "center_y": -100,
-    }
-    upper_limit_default = {
-        "amp": 1000,
-        "sigma": 100,
-        "e1": -0.5,
-        "e2": -0.5,
-        "center_x": 100,
-        "center_y": 100,
-    }
+    param_names = ['amp', 'sigma', 'center_x', 'center_y']
+    lower_limit_default = {'amp': 0, 'sigma': 0, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'amp': 1000, 'sigma': 100, 'e1': -0.5, 'e2': -0.5, 'center_x': 100, 'center_y': 100}
 
     def __init__(self):
         self.gaussian = Gaussian()
 
     def function(self, x, y, amp, sigma, center_x=0, center_y=0):
-        """Surface brightness per angular unit.
+        """
+        surface brightness per angular unit
 
         :param x: coordinate on the sky
         :param y: coordinate on the sky
@@ -188,7 +150,8 @@ class MultiGaussian(object):
         return f_
 
     def total_flux(self, amp, sigma, center_x=0, center_y=0):
-        """Total integrated flux of profile.
+        """
+        total integrated flux of profile
 
         :param amp: list of amplitudes of individual Gaussian profiles
         :param sigma: list of widths of individual Gaussian profiles
@@ -202,7 +165,8 @@ class MultiGaussian(object):
         return flux
 
     def function_split(self, x, y, amp, sigma, center_x=0, center_y=0):
-        """Split surface brightness in individual components.
+        """
+        split surface brightness in individual components
 
         :param x: coordinate on the sky
         :param y: coordinate on the sky
@@ -214,13 +178,12 @@ class MultiGaussian(object):
         """
         f_list = []
         for i in range(len(amp)):
-            f_list.append(
-                self.gaussian.function(x, y, amp[i], sigma[i], center_x, center_y)
-            )
+            f_list.append(self.gaussian.function(x, y, amp[i], sigma[i], center_x, center_y))
         return f_list
 
     def light_3d(self, r, amp, sigma):
-        """3D brightness per angular volume element.
+        """
+        3D brightness per angular volume element
 
         :param r: 3d distance from center of profile
         :param amp: list of amplitudes of individual Gaussian profiles
@@ -235,34 +198,21 @@ class MultiGaussian(object):
 
 @export
 class MultiGaussianEllipse(object):
-    """Class for elliptical multi Gaussian profile.
+    """
+    class for elliptical multi Gaussian profile
 
     profile name in LightModel module: 'MULTI_GAUSSIAN_ELLIPSE'
     """
-
-    param_names = ["amp", "sigma", "e1", "e2", "center_x", "center_y"]
-    lower_limit_default = {
-        "amp": 0,
-        "sigma": 0,
-        "e1": -0.5,
-        "e2": -0.5,
-        "center_x": -100,
-        "center_y": -100,
-    }
-    upper_limit_default = {
-        "amp": 1000,
-        "sigma": 100,
-        "e1": -0.5,
-        "e2": -0.5,
-        "center_x": 100,
-        "center_y": 100,
-    }
+    param_names = ['amp', 'sigma', 'e1', 'e2', 'center_x', 'center_y']
+    lower_limit_default = {'amp': 0, 'sigma': 0, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'amp': 1000, 'sigma': 100, 'e1': -0.5, 'e2': -0.5, 'center_x': 100, 'center_y': 100}
 
     def __init__(self):
         self.gaussian = Gaussian()
 
     def function(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
-        """Surface brightness per angular unit.
+        """
+        surface brightness per angular unit
 
         :param x: coordinate on the sky
         :param y: coordinate on the sky
@@ -274,19 +224,16 @@ class MultiGaussianEllipse(object):
         :param center_y: center of profile
         :return: surface brightness at (x, y)
         """
-        x_, y_ = param_util.transform_e1e2_product_average(
-            x, y, e1, e2, center_x, center_y
-        )
+        x_, y_ = param_util.transform_e1e2_product_average(x, y, e1, e2, center_x, center_y)
 
         f_ = np.zeros_like(x)
         for i in range(len(amp)):
-            f_ += self.gaussian.function(
-                x_, y_, amp[i], sigma[i], center_x=0, center_y=0
-            )
+            f_ += self.gaussian.function(x_, y_, amp[i], sigma[i], center_x=0, center_y=0)
         return f_
 
     def total_flux(self, amp, sigma, e1, e2, center_x=0, center_y=0):
-        """Total integrated flux of profile.
+        """
+        total integrated flux of profile
 
         :param amp: list of amplitudes of individual Gaussian profiles
         :param sigma: list of widths of individual Gaussian profiles
@@ -302,7 +249,8 @@ class MultiGaussianEllipse(object):
         return flux
 
     def function_split(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
-        """Split surface brightness in individual components.
+        """
+        split surface brightness in individual components
 
         :param x: coordinate on the sky
         :param y: coordinate on the sky
@@ -314,18 +262,15 @@ class MultiGaussianEllipse(object):
         :param center_y: center of profile
         :return: list of arrays of surface brightness
         """
-        x_, y_ = param_util.transform_e1e2_product_average(
-            x, y, e1, e2, center_x, center_y
-        )
+        x_, y_ = param_util.transform_e1e2_product_average(x, y, e1, e2, center_x, center_y)
         f_list = []
         for i in range(len(amp)):
-            f_list.append(
-                self.gaussian.function(x_, y_, amp[i], sigma[i], center_x=0, center_y=0)
-            )
+            f_list.append(self.gaussian.function(x_, y_, amp[i], sigma[i], center_x=0, center_y=0))
         return f_list
 
     def light_3d(self, r, amp, sigma, e1=0, e2=0):
-        """3D brightness per angular volume element.
+        """
+        3D brightness per angular volume element
 
         :param r: 3d distance from center of profile
         :param amp: list of amplitudes of individual Gaussian profiles

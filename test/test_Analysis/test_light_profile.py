@@ -269,7 +269,6 @@ class TestLightAnalysis(object):
         # plt.legend()
         # plt.show()
 
-
     def test_multi_gaussian_decomposition_ellipse(self):
         Rs = 1.0
         kwargs_light = [{"Rs": Rs, "amp": 1.0, "center_x": 0, "center_y": 0}]

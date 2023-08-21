@@ -100,7 +100,7 @@ class CartShapelets(LensProfileBase):
         :type shapelets: array of size (n,3)
         :param coordPolar: set of coordinates in polar units
         :type coordPolar: array of size (n,2)
-        :returns:  array of same size with coords [r,phi]
+        :returns: array of same size with coords [r,phi]
         :raises: AttributeError, KeyError
         """
         n = len(np.atleast_1d(x))

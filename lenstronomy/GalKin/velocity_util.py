@@ -99,7 +99,7 @@ def draw_cdf_Y(beta):
 
 @export
 def project2d_random(r):
-    """Draws a random projection from radius r in 2d and 1d
+    """Draws a random projection from radius r in 2d and 1d.
 
     :param r: 3d radius
     :return: R, x, y

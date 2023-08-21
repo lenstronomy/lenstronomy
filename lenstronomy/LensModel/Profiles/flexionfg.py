@@ -72,7 +72,8 @@ class Flexionfg(LensProfileBase):
         :param y: y-coordinate
         :param F1: F1 flexion, derivative of kappa in x direction
         :param F2: F2 flexion, derivative of kappa in y direction
-        :param G1: G1 flexion :param G2: G2 flexion
+        :param G1: G1 flexion
+        :param G2: G2 flexion
         :param ra_0: center x-coordinate
         :param dec_0: center y-coordinate
         :return: second order derivatives f_xx, f_yy, f_xy

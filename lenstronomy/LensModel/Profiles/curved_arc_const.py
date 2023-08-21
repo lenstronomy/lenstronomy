@@ -276,10 +276,9 @@ class CurvedArcConst(LensProfileBase):
         f_xy = (alpha_ra_dy - alpha_ra) / diff
         f_yx = (alpha_dec_dx - alpha_dec) / diff
         f_yy = (alpha_dec_dy - alpha_dec) / diff
-        """
-        #TODO make rotational invariances of double derivates with curl
-        r = 1 / curvature
-        # deflection angle to allow for tangential stretch
+        """#TODO make rotational invariances of double derivates with curl r = 1 /
+        curvature # deflection angle to allow for tangential stretch
+
         # (ratio of source position around zero point relative to radius is tangential stretch)
         alpha = r * (1 / tangential_stretch + 1)
 

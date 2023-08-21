@@ -137,7 +137,7 @@ class GaussianKappa(LensProfileBase):
         return self.mass_2d(R, amp_density, sigma)
 
     def alpha_abs(self, R, amp, sigma):
-        """Absolute value of the deflection
+        """Absolute value of the deflection.
 
         :param R:
         :param amp:
@@ -199,7 +199,7 @@ class GaussianKappa(LensProfileBase):
 
     @staticmethod
     def _amp3d_to_2d(amp, sigma_x, sigma_y):
-        """Converts 3d density into 2d density parameter
+        """Converts 3d density into 2d density parameter.
 
         :param amp:
         :param sigma_x:
@@ -210,7 +210,7 @@ class GaussianKappa(LensProfileBase):
 
     @staticmethod
     def _amp2d_to_3d(amp, sigma_x, sigma_y):
-        """Converts 3d density into 2d density parameter
+        """Converts 3d density into 2d density parameter.
 
         :param amp:
         :param sigma_x:

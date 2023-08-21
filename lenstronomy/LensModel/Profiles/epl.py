@@ -221,7 +221,8 @@ class EPL(LensProfileBase):
         :param theta_E: Einstein radius
         :param gamma: power-law slope
         :param e1: eccentricity component (not used)
-        :param e2: eccentricity component (not used) :return: mass enclosed a 3D radius r.
+        :param e2: eccentricity component (not used)
+        :return: mass enclosed a 3D radius r.
         """
         return self.spp.mass_3d_lens(r, theta_E, gamma)
 
@@ -420,7 +421,8 @@ class EPLQPhi(LensProfileBase):
 
         :param r: radius within the mass is computed
         :param theta_E: Einstein radius
-        :param gamma: power-law slope :param q: axis ratio (not used)
+        :param gamma: power-law slope
+        :param q: axis ratio (not used)
         :param phi: position angle (not used)
         :return: mass enclosed a 3D radius r.
         """

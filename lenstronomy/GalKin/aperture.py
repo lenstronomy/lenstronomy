@@ -3,7 +3,7 @@ __author__ = "sibirrer"
 from lenstronomy.GalKin.aperture_types import Shell, Slit, IFUShells, Frame
 
 __all__ = ["Aperture"]
-"""Class that defines the aperture of the measurement (e.g. slit, integral field 
+"""Class that defines the aperture of the measurement (e.g. slit, integral field
 spectroscopy regions etc).
 
 Available aperture types:

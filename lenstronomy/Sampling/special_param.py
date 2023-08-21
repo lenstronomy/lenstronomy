@@ -19,6 +19,29 @@ class DdtSamplingParam(SingleParam):
     _kwargs_lower = {'D_dt': 0}
     _kwargs_upper = {'D_dt': 100000}
 
+class DdSamplingParam(SingleParam):
+    '''
+    Deflector distance parameter
+    '''
+    param_names = ['D_d']
+    _kwargs_lower = {'D_d': 0}
+    _kwargs_upper = {'D_d': 100000}
+
+class BetaAnisotropyParam(SingleParam):
+    '''
+    Cylindrical anisotropy parameter
+    '''
+    param_names = ['b_ani']
+    _kwargs_lower = {'b_ani': -1}
+    _kwargs_upper = {'b_ani': 1}
+
+class InclinationParam(SingleParam):
+    '''
+    Inclination parameter (radians)
+    '''
+    param_names = ['incli']
+    _kwargs_lower = {'incli': 0}
+    _kwargs_upper = {'incli': np.pi/2}
 
 class SourceSizeParam(SingleParam):
     '''
@@ -139,7 +162,7 @@ class SpecialParam(object):
     def __init__(self, Ddt_sampling=False, mass_scaling=False, num_scale_factor=1,
                  general_scaling_params=None, kwargs_fixed=None, kwargs_lower=None,
                  kwargs_upper=None, point_source_offset=False, source_size=False, num_images=0, num_tau0=0,
-                 num_z_sampling=0, source_grid_offset=False):
+                 num_z_sampling=0, source_grid_offset=False, kinematic_sampling=False):
         """
 
         :param Ddt_sampling: bool, if True, samples the time-delay distance D_dt (in units of Mpc)
@@ -158,9 +181,16 @@ class SpecialParam(object):
         :param source_grid_offset: bool, if True, samples two parameters (x, y) for the offset of the pixelated source
          plane grid coordinates.
          Warning: this is only defined for pixel-based source modelling (e.g. 'SLIT_STARLETS' light profile)
+        :param kinematic_sampling: bool, if True, samples the kinematic parameters b_ani, incli, with cosmography
+         D_dt (overrides _D_dt_sampling) and Dd
         """
 
-        self._D_dt_sampling = DdtSamplingParam(Ddt_sampling)
+
+        self._D_dt_sampling = DdtSamplingParam(Ddt_sampling or kinematic_sampling)
+
+        self._D_d_sampling = DdSamplingParam(kinematic_sampling)
+        self._b_ani_sampling = BetaAnisotropyParam(kinematic_sampling)
+        self._incli_sampling = InclinationParam(kinematic_sampling)
         if not mass_scaling:
             num_scale_factor = 0
         self._mass_scaling = MassScalingParam(num_scale_factor)
@@ -233,6 +263,9 @@ class SpecialParam(object):
     @property
     def _param_groups(self):
         return [self._D_dt_sampling,
+                self._D_d_sampling,
+                self._b_ani_sampling,
+                self._incli_sampling,
                 self._mass_scaling,
                 self._general_scaling,
                 self._point_source_offset,

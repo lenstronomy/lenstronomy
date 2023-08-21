@@ -3,13 +3,15 @@ __author__ = 'sibirrer'
 from lenstronomy.LensModel.Profiles.spp import SPP
 from lenstronomy.LensModel.Profiles.spemd import SPEMD
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
+import lenstronomy.Util.param_util as param_util
+import numpy as np
 
 __all__ = ['PEMD']
 
 
 class PEMD(LensProfileBase):
     """
-    class for power law ellipse mass density profile.
+    class for power law ellipse mass density profile (PEMD).
     This class effectively calls the class SPEMD_SMOOTH with a fixed and very small central smoothing scale
     to perform the numerical integral using the FASTELL code by Renan Barkana.
     An alternative implementation of the same model using pure python with analytical functions is probided as 'EPL'

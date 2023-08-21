@@ -282,6 +282,11 @@ class TestNumericsProfile(object):
         lens_model = ['EPL']
         self.assert_differentials(lens_model, kwargs)
 
+    def test_EPL_Q_PHI(self):
+        kwargs = {'theta_E': 2., 'q': 0.9, 'phi': 0.1, 'gamma': 2.13}
+        lens_model = ['EPL_Q_PHI']
+        self.assert_differentials(lens_model, kwargs)
+
     def test_EPL_BOXYDISKY(self):
         kwargs = {'theta_E': 2., 'e1': 0.1, 'e2': 0.2, 'gamma': 2.13, 'a_m': 0.1}
         lens_model = ['EPL_BOXYDISKY']

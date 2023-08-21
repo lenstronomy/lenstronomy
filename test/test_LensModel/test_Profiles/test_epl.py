@@ -193,6 +193,39 @@ class TestEPLvsPEMD(object):
                             npt.assert_almost_equal(f_x, f_x_pemd, decimal=4)
                             npt.assert_almost_equal(f_y, f_y_pemd, decimal=4)
 
+class TestEPLQPhi(object):
+    """
+    tests if EPL and EPL_Q_PHI return same values
+    """
+
+    def setup_method(self):
+        from lenstronomy.LensModel.Profiles.epl import EPL
+        self.epl = EPL()
+        from lenstronomy.LensModel.Profiles.epl import EPLQPhi
+        self.epl_qphi = EPLQPhi()
+
+
+    def test_epl_eplqphi(self):
+
+        x, y = util.make_grid(numPix=10, deltapix=0.2)
+
+        theta_E_list = [0.5, 1, 2]
+        gamma_list = [1.8, 2., 2.2]
+        e1_list = [-0.2, 0., 0.2]
+        e2_list = [-0.2, 0., 0.2]
+        for gamma in gamma_list:
+            for e1 in e1_list:
+                for e2 in e2_list:
+                    phi, q = param_util.ellipticity2phi_q(e1, e2)
+                    for theta_E in theta_E_list:
+                        kwargs = {'theta_E': theta_E, 'gamma': gamma, 'e1': e1, 'e2': e2, 'center_x': 0, 'center_y': 0}
+                        f_x, f_y = self.epl.derivatives(x, y, **kwargs)
+                        kwargs_qphi = {'theta_E': theta_E, 'gamma': gamma, 'q': q, 'phi': phi, 'center_x': 0,
+                                       'center_y': 0}
+                        f_x_qphi, f_y_qphi = self.epl_qphi.derivatives(x, y, **kwargs_qphi)
+
+                        npt.assert_almost_equal(f_x, f_x_qphi, decimal=4)
+                        npt.assert_almost_equal(f_y, f_y_qphi, decimal=4)
 
 if __name__ == '__main__':
     pytest.main()

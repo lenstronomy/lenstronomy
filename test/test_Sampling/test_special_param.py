@@ -11,12 +11,12 @@ class TestParam(object):
     def setup_method(self):
         self.param = SpecialParam(Ddt_sampling=True, kwargs_fixed=None, point_source_offset=True, num_images=2,
                                   source_size=True, num_tau0=2, num_z_sampling=3, source_grid_offset=True,
-                                  kwargs_lower={'z_sampling': [0.05, 0.1, 0.5]},
-                                  kwargs_upper={'z_sampling': [0.2, 1., 1.]}
+				  kinematic_sampling=True, 
+				  kwargs_lower={'z_sampling': [0.05, 0.1, 0.5]}, kwargs_upper={'z_sampling': [0.2, 1., 1.]}
                                   )
         self.kwargs = {'D_dt': 1988, 'delta_x_image': [0, 0], 'delta_y_image': [0, 0], 'source_size': 0.1,
                        'tau0_list': [0, 1], 'z_sampling': np.array([0.1, 0.5, 2]),
-                       'delta_x_source_grid': 0, 'delta_y_source_grid': 0}
+                       'delta_x_source_grid': 0, 'delta_y_source_grid': 0, 'b_ani':0.1, 'incli':0.,'D_d':2000}
 
     def test_get_setParams(self):
         args = self.param.set_params(self.kwargs)
@@ -26,9 +26,12 @@ class TestParam(object):
             npt.assert_almost_equal(args[k], args_new[k], decimal=8)
 
         param_fixed = SpecialParam(Ddt_sampling=True, kwargs_fixed=self.kwargs, point_source_offset=True, num_images=2,
-                                   source_size=True, num_z_sampling=3, num_tau0=2)
+                                   source_size=True, num_z_sampling=3, num_tau0=2,kinematic_sampling=True)
         kwargs_new, i = param_fixed.get_params(args=[], i=0)
         kwargs_new['D_dt'] = self.kwargs['D_dt']
+        kwargs_new['b_ani'] = self.kwargs['b_ani']
+        kwargs_new['incli'] = self.kwargs['incli']
+        kwargs_new['D_d'] = self.kwargs['D_d']
 
         special_param = SpecialParam(num_z_sampling=1, kwargs_lower={'z_sampling': [0.1]},
                                      kwargs_upper={'z_sampling': [0.2]})
@@ -38,7 +41,7 @@ class TestParam(object):
 
     def test_num_params(self):
         num, list = self.param.num_param()
-        assert num == 13
+        assert num == 16
 
     def test_mass_scaling(self):
         kwargs_fixed = {}

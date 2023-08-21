@@ -1,7 +1,7 @@
 __author__ = 'sibirrer'
 
 
-from lenstronomy.LightModel.Profiles.sersic import Sersic, SersicElliptic, CoreSersic
+from lenstronomy.LightModel.Profiles.sersic import Sersic, SersicElliptic, SersicElliptic_qPhi, CoreSersic
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.Util import util
 import numpy as np
@@ -16,6 +16,7 @@ class TestSersic(object):
     def setup_method(self):
         self.sersic = Sersic(smoothing=0.02)
         self.sersic_elliptic = SersicElliptic(smoothing=0.02, sersic_major_axis=True)
+        self.sersic_elliptic_qphi = SersicElliptic_qPhi(smoothing=0.02, sersic_major_axis=True)
         self.core_sersic = CoreSersic(smoothing=0.02, sersic_major_axis=True)
 
     def test_sersic(self):
@@ -148,6 +149,20 @@ class TestSersic(object):
         flux_numeric_ell = np.sum(flux_grid) * deltapix ** 2
         npt.assert_almost_equal(flux_numeric_ell / flux_analytic_ell, 1, decimal=2)
 
+    def test_qphi(self):
+        x = np.array([1])
+        y = np.array([2])
+        I0_sersic = 1
+        R_sersic = 1
+        n_sersic = 1
+        phi_G = 1
+        q = 0.9
+        e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
+        center_x = 0
+        center_y = 0
+        values = self.sersic_elliptic.function(x, y, I0_sersic, R_sersic, n_sersic, e1, e2, center_x, center_y)
+        values_qphi=self.sersic_elliptic_qphi.function(x, y, I0_sersic, R_sersic, n_sersic, q, phi_G, center_x, center_y)
+        npt.assert_almost_equal(values, values_qphi, decimal=6)
 
 if __name__ == '__main__':
     pytest.main()

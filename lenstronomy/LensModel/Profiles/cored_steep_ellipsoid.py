@@ -1,11 +1,17 @@
-__author__ = 'sibirrer'
+__author__ = "sibirrer"
 
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 import numpy as np
 from lenstronomy.Util import param_util
 from lenstronomy.Util import util
 
-__all__ = ['CSE', 'CSEMajorAxis', 'CSEMajorAxisSet', 'CSEProductAvg', 'CSEProductAvgSet']
+__all__ = [
+    "CSE",
+    "CSEMajorAxis",
+    "CSEMajorAxisSet",
+    "CSEProductAvg",
+    "CSEProductAvgSet",
+]
 
 
 class CSE(LensProfileBase):
@@ -25,17 +31,34 @@ class CSE(LensProfileBase):
         \\xi(x, y) = \\sqrt{x^2 + \\frac{y^2}{q^2}}
 
     """
-    param_names = ['A', 's', 'e1', 'e2', 'center_x', 'center_y']
-    lower_limit_default = {'A': -1000, 's': 0, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'A': 1000, 's': 10000, 'e1': 0.5, 'e2': 0.5, 'center_x': -100, 'center_y': -100}
 
-    def __init__(self, axis='product_avg'):
-        if axis == 'major':
+    param_names = ["A", "s", "e1", "e2", "center_x", "center_y"]
+    lower_limit_default = {
+        "A": -1000,
+        "s": 0,
+        "e1": -0.5,
+        "e2": -0.5,
+        "center_x": -100,
+        "center_y": -100,
+    }
+    upper_limit_default = {
+        "A": 1000,
+        "s": 10000,
+        "e1": 0.5,
+        "e2": 0.5,
+        "center_x": -100,
+        "center_y": -100,
+    }
+
+    def __init__(self, axis="product_avg"):
+        if axis == "major":
             self.major_axis_model = CSEMajorAxis()
-        elif axis == 'product_avg':
+        elif axis == "product_avg":
             self.major_axis_model = CSEProductAvg()
         else:
-            raise ValueError("axis must be set to 'major' or 'product_avg'. Input is %s ." % axis)
+            raise ValueError(
+                "axis must be set to 'major' or 'product_avg'. Input is %s ." % axis
+            )
         super(CSE, self).__init__()
 
     def function(self, x, y, a, s, e1, e2, center_x, center_y):
@@ -111,8 +134,8 @@ class CSE(LensProfileBase):
         f__xx, f__xy, __, f__yy = self.major_axis_model.hessian(x__, y__, a, s, q)
 
         # rotate back
-        kappa = 1. / 2 * (f__xx + f__yy)
-        gamma1__ = 1. / 2 * (f__xx - f__yy)
+        kappa = 1.0 / 2 * (f__xx + f__yy)
+        gamma1__ = 1.0 / 2 * (f__xx - f__yy)
         gamma2__ = f__xy
         gamma1 = np.cos(2 * phi_q) * gamma1__ - np.sin(2 * phi_q) * gamma2__
         gamma2 = +np.sin(2 * phi_q) * gamma1__ + np.cos(2 * phi_q) * gamma2__
@@ -139,9 +162,23 @@ class CSEMajorAxis(LensProfileBase):
         \\xi(x, y) = \\sqrt{x^2 + \\frac{y^2}{q^2}}
 
     """
-    param_names = ['A', 's', 'q', 'center_x', 'center_y']
-    lower_limit_default = {'A': -1000, 's': 0, 'q': 0.001, 'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'A': 1000, 's': 10000, 'q': 0.99999, 'e2': 0.5, 'center_x': -100, 'center_y': -100}
+
+    param_names = ["A", "s", "q", "center_x", "center_y"]
+    lower_limit_default = {
+        "A": -1000,
+        "s": 0,
+        "q": 0.001,
+        "center_x": -100,
+        "center_y": -100,
+    }
+    upper_limit_default = {
+        "A": 1000,
+        "s": 10000,
+        "q": 0.99999,
+        "e2": 0.5,
+        "center_x": -100,
+        "center_y": -100,
+    }
 
     def function(self, x, y, a, s, q):
         """
@@ -155,9 +192,9 @@ class CSEMajorAxis(LensProfileBase):
         """
 
         # potential calculation
-        psi = np.sqrt(q**2*(s**2 + x**2) + y**2)
-        Phi = (psi + s)**2 + (1-q**2) * x**2
-        phi = q/(2*s) * np.log(Phi) - q/s * np.log((1+q) * s)
+        psi = np.sqrt(q**2 * (s**2 + x**2) + y**2)
+        Phi = (psi + s) ** 2 + (1 - q**2) * x**2
+        phi = q / (2 * s) * np.log(Phi) - q / s * np.log((1 + q) * s)
         return a * phi
 
     def derivatives(self, x, y, a, s, q):
@@ -171,9 +208,9 @@ class CSEMajorAxis(LensProfileBase):
         :return: deflection in x- and y-direction
         """
 
-        psi = np.sqrt(q ** 2 * (s ** 2 + x ** 2) + y ** 2)
-        Phi = (psi + s) ** 2 + (1 - q ** 2) * x ** 2
-        f_x = q * x * (psi + q**2*s) / (s * psi * Phi)
+        psi = np.sqrt(q**2 * (s**2 + x**2) + y**2)
+        Phi = (psi + s) ** 2 + (1 - q**2) * x**2
+        f_x = q * x * (psi + q**2 * s) / (s * psi * Phi)
         f_y = q * y * (psi + s) / (s * psi * Phi)
 
         return a * f_x, a * f_y
@@ -190,19 +227,42 @@ class CSEMajorAxis(LensProfileBase):
         """
 
         # equations 21-23 in Oguri 2021
-        psi = np.sqrt(q ** 2 * (s ** 2 + x ** 2) + y ** 2)
-        Phi = (psi + s) ** 2 + (1 - q ** 2) * x ** 2
-        f_xx = q/(s * Phi) * (1 + q**2*s*(q**2 * s**2 + y**2)/psi**3 - 2*x**2*(psi + q**2*s)**2/(psi**2 * Phi))
-        f_yy = q/(s * Phi) * (1 + q**2 * s * (s**2 + x**2)/psi**3 - 2*y**2*(psi + s)**2/(psi**2 * Phi))
-        f_xy = - q * x*y / (s * Phi) * (q**2 * s / psi**3 + 2 * (psi + q**2*s) * (psi + s) / (psi**2 * Phi))
+        psi = np.sqrt(q**2 * (s**2 + x**2) + y**2)
+        Phi = (psi + s) ** 2 + (1 - q**2) * x**2
+        f_xx = (
+            q
+            / (s * Phi)
+            * (
+                1
+                + q**2 * s * (q**2 * s**2 + y**2) / psi**3
+                - 2 * x**2 * (psi + q**2 * s) ** 2 / (psi**2 * Phi)
+            )
+        )
+        f_yy = (
+            q
+            / (s * Phi)
+            * (
+                1
+                + q**2 * s * (s**2 + x**2) / psi**3
+                - 2 * y**2 * (psi + s) ** 2 / (psi**2 * Phi)
+            )
+        )
+        f_xy = (
+            -q
+            * x
+            * y
+            / (s * Phi)
+            * (
+                q**2 * s / psi**3
+                + 2 * (psi + q**2 * s) * (psi + s) / (psi**2 * Phi)
+            )
+        )
 
         return a * f_xx, a * f_xy, a * f_xy, a * f_yy
 
 
 class CSEMajorAxisSet(LensProfileBase):
-    """
-    a set of CSE profiles along a joint center and axis
-    """
+    """A set of CSE profiles along a joint center and axis."""
 
     def __init__(self):
         self.major_axis_model = CSEMajorAxis()
@@ -260,9 +320,8 @@ class CSEMajorAxisSet(LensProfileBase):
 
 
 class CSEProductAvg(LensProfileBase):
-    """
-    Cored steep ellipsoid (CSE) evaluated at the product-averaged radius sqrt(ab),
-    such that mass is not changed when increasing ellipticity
+    """Cored steep ellipsoid (CSE) evaluated at the product-averaged radius sqrt(ab),
+    such that mass is not changed when increasing ellipticity.
 
     Same as CSEMajorAxis but evaluated at r=sqrt(q)*r_original
 
@@ -276,13 +335,24 @@ class CSEProductAvg(LensProfileBase):
 
     .. math::
         \\xi(x, y) = \\sqrt{qx^2 + \\frac{y^2}{q}}
-
-
-
     """
-    param_names = ['A', 's', 'q', 'center_x', 'center_y']
-    lower_limit_default = {'A': -1000, 's': 0, 'q': 0.001, 'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'A': 1000, 's': 10000, 'q': 0.99999, 'e2': 0.5, 'center_x': -100, 'center_y': -100}
+
+    param_names = ["A", "s", "q", "center_x", "center_y"]
+    lower_limit_default = {
+        "A": -1000,
+        "s": 0,
+        "q": 0.001,
+        "center_x": -100,
+        "center_y": -100,
+    }
+    upper_limit_default = {
+        "A": 1000,
+        "s": 10000,
+        "q": 0.99999,
+        "e2": 0.5,
+        "center_x": -100,
+        "center_y": -100,
+    }
 
     def __init__(self):
         super(CSEProductAvg, self).__init__()
@@ -290,8 +360,10 @@ class CSEProductAvg(LensProfileBase):
 
     @staticmethod
     def _convert2prodavg(x, y, a, s, q):
-        """
-        converts coordinates and re-normalizes major-axis parameterization to instead be wrt. product-averaged
+        """Converts coordinates and re-normalizes major-axis parameterization to instead
+        be wrt.
+
+        product-averaged
         """
         a = a / q
         x = x * np.sqrt(q)
@@ -340,9 +412,7 @@ class CSEProductAvg(LensProfileBase):
 
 
 class CSEProductAvgSet(LensProfileBase):
-    """
-    a set of CSE profiles along a joint center and axis
-    """
+    """A set of CSE profiles along a joint center and axis."""
 
     def __init__(self):
         self.major_axis_model = CSEProductAvg()

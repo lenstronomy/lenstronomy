@@ -1,16 +1,15 @@
-__author__ = 'sibirrer'
+__author__ = "sibirrer"
 
 import numpy as np
 import lenstronomy.Util.constants as const
 from lenstronomy.Cosmo.cosmo_interp import CosmoInterp
 
-__all__ = ['Background']
+__all__ = ["Background"]
 
 
 class Background(object):
-    """
-    class to compute cosmological distances
-    """
+    """Class to compute cosmological distances."""
+
     def __init__(self, cosmo=None, interp=False, **kwargs_interp):
         """
 
@@ -23,6 +22,7 @@ class Background(object):
 
         if cosmo is None:
             from astropy.cosmology import default_cosmology
+
             cosmo = default_cosmology.get()
         if interp:
             self.cosmo = CosmoInterp(cosmo, **kwargs_interp)
@@ -31,13 +31,12 @@ class Background(object):
 
     @staticmethod
     def a_z(z):
-        """
-        returns scale factor (a_0 = 1) for given redshift
+        """Returns scale factor (a_0 = 1) for given redshift.
 
         :param z: redshift
         :return: scale factor
         """
-        return 1./(1+z)
+        return 1.0 / (1 + z)
 
     def d_xy(self, z_observer, z_source):
         """
@@ -50,14 +49,18 @@ class Background(object):
         return D_xy.value
 
     def ddt(self, z_lens, z_source):
-        """
-        time-delay distance
+        """Time-delay distance.
 
         :param z_lens: redshift of lens
         :param z_source: redshift of source
         :return: time-delay distance in units of proper Mpc
         """
-        return self.d_xy(0, z_lens) * self.d_xy(0, z_source) / self.d_xy(z_lens, z_source) * (1 + z_lens)
+        return (
+            self.d_xy(0, z_lens)
+            * self.d_xy(0, z_source)
+            / self.d_xy(z_lens, z_source)
+            * (1 + z_lens)
+        )
 
     def T_xy(self, z_observer, z_source):
         """
@@ -72,10 +75,9 @@ class Background(object):
 
     @property
     def rho_crit(self):
-        """
-        critical density
+        """Critical density.
 
         :return: value in M_sol/Mpc^3
         """
-        h = self.cosmo.H(0).value / 100.
-        return 3 * h ** 2 / (8 * np.pi * const.G) * 10 ** 10 * const.Mpc / const.M_sun
+        h = self.cosmo.H(0).value / 100.0
+        return 3 * h**2 / (8 * np.pi * const.G) * 10**10 * const.Mpc / const.M_sun

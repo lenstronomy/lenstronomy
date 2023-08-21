@@ -1,4 +1,4 @@
-__author__ = 'sibirrer'
+__author__ = "sibirrer"
 
 import time
 import copy
@@ -6,40 +6,52 @@ from lenstronomy.Sampling.Pool.pool import choose_pool
 from lenstronomy.Sampling.Likelihoods.image_likelihood import ImageLikelihood
 from lenstronomy.Sampling.Samplers.pso import ParticleSwarmOptimizer
 
-__all__ = ['FluxCalibration', 'CalibrationLikelihood']
+__all__ = ["FluxCalibration", "CalibrationLikelihood"]
 
 
 class FluxCalibration(object):
-    """
-    class to fit coordinate system alignment and flux amplitude calibrations
-    """
-    def __init__(self, kwargs_imaging, kwargs_model, kwargs_params, calibrate_bands):
-        """
-        initialise the classes of the chain and for parameter options for the flux calibration fitting
+    """Class to fit coordinate system alignment and flux amplitude calibrations."""
 
-        :param kwargs_imaging: keyword argument related to imaging data and imaging likelihood.
-         Feeds into ImageLikelihood(**kwargs_imaging)
+    def __init__(self, kwargs_imaging, kwargs_model, kwargs_params, calibrate_bands):
+        """Initialise the classes of the chain and for parameter options for the flux
+        calibration fitting.
+
+        :param kwargs_imaging: keyword argument related to imaging data and imaging
+            likelihood. Feeds into ImageLikelihood(**kwargs_imaging)
         :param kwargs_model: keyword argument of model components
         :param kwargs_params: keyword argument of model parameters
         :param calibrate_bands: state which bands the flux calibration is applied to
         :type calibrate_bands: list of booleans of length of the imaging bands
         """
-        multi_band_list = kwargs_imaging['multi_band_list']
-        multi_band_type = kwargs_imaging['multi_band_type']
+        multi_band_list = kwargs_imaging["multi_band_list"]
+        multi_band_type = kwargs_imaging["multi_band_type"]
 
         if calibrate_bands is None:
             calibrate_bands = [False] * len(multi_band_list)
-        if multi_band_type != 'joint-linear':
-            raise ValueError('flux calibration should only be done with join-linear data model!')
+        if multi_band_type != "joint-linear":
+            raise ValueError(
+                "flux calibration should only be done with join-linear data model!"
+            )
         self._calibrate_bands = calibrate_bands
-        self.chain = CalibrationLikelihood(kwargs_model, kwargs_params,
-                                           calibrate_bands=calibrate_bands,
-                                           kwargs_imaging=kwargs_imaging)
+        self.chain = CalibrationLikelihood(
+            kwargs_model,
+            kwargs_params,
+            calibrate_bands=calibrate_bands,
+            kwargs_imaging=kwargs_imaging,
+        )
 
-    def pso(self, n_particles=10, n_iterations=10, threadCount=1, mpi=False, scaling_lower_limit=0,
-            scaling_upper_limit=1000, print_key='flux calibration'):
-        """
-        returns the best fit for the lens model on catalogue basis with particle swarm optimizer
+    def pso(
+        self,
+        n_particles=10,
+        n_iterations=10,
+        threadCount=1,
+        mpi=False,
+        scaling_lower_limit=0,
+        scaling_upper_limit=1000,
+        print_key="flux calibration",
+    ):
+        """Returns the best fit for the lens model on catalogue basis with particle
+        swarm optimizer.
 
         :param n_particles: number of particles in the PSO
         :param n_iterations: number of iterations of the PSO
@@ -56,11 +68,15 @@ class FluxCalibration(object):
         lower_limit = [scaling_lower_limit] * num_param
         upper_limit = [scaling_upper_limit] * num_param
 
-        pso = ParticleSwarmOptimizer(self.chain, lower_limit, upper_limit, n_particles, pool=pool)
-        pso.set_global_best(init_pos, [0]*len(init_pos), self.chain.likelihood(init_pos))
+        pso = ParticleSwarmOptimizer(
+            self.chain, lower_limit, upper_limit, n_particles, pool=pool
+        )
+        pso.set_global_best(
+            init_pos, [0] * len(init_pos), self.chain.likelihood(init_pos)
+        )
 
         if pool.is_master():
-            print('Computing the %s ...' % print_key)
+            print("Computing the %s ..." % print_key)
 
         time_start = time.time()
 
@@ -71,16 +87,14 @@ class FluxCalibration(object):
         if pool.is_master():
             time_end = time.time()
             print("parameters found: ", result)
-            print(time_end - time_start, 'time used for ', print_key)
-            print('Calibration completed for bands %s.' % self._calibrate_bands)
+            print(time_end - time_start, "time used for ", print_key)
+            print("Calibration completed for bands %s." % self._calibrate_bands)
         return multi_band_list, [chi2_list, pos_list, vel_list]
 
 
 class CalibrationLikelihood(object):
-
     def __init__(self, kwargs_model, kwargs_params, calibrate_bands, kwargs_imaging):
-        """
-        initializes all the classes needed for the chain
+        """Initializes all the classes needed for the chain.
 
         :param kwargs_model: keyword argument of model components
         :param kwargs_params: keyword argument of model parameters
@@ -92,17 +106,17 @@ class CalibrationLikelihood(object):
         self._kwargs_model = kwargs_model
         self._kwargs_params = kwargs_params
         self._kwargs_imaging_likelihood = copy.deepcopy(kwargs_imaging)
-        self.multi_band_list = self._kwargs_imaging_likelihood['multi_band_list']
+        self.multi_band_list = self._kwargs_imaging_likelihood["multi_band_list"]
 
     def _likelihood(self, args):
-        """
-        routine to compute X2 given variable parameters for a MCMC/PSO chainF
-        """
+        """Routine to compute X2 given variable parameters for a MCMC/PSO chainF."""
         # generate image and computes likelihood
         multi_band_list = self.update_data(args)
-        self._kwargs_imaging_likelihood['multi_band_list'] = multi_band_list
+        self._kwargs_imaging_likelihood["multi_band_list"] = multi_band_list
         # this line is redundant since the self.multi_band_list variable got already updated
-        image_likelihood = ImageLikelihood(kwargs_model=self._kwargs_model, **self._kwargs_imaging_likelihood)
+        image_likelihood = ImageLikelihood(
+            kwargs_model=self._kwargs_model, **self._kwargs_imaging_likelihood
+        )
         log_likelihood = image_likelihood.logL(**self._kwargs_params)
         return log_likelihood
 
@@ -125,7 +139,7 @@ class CalibrationLikelihood(object):
         for i, band in enumerate(self.multi_band_list):
             if self._calibrate_bands[i]:
                 kwargs_data = band[0]
-                kwargs_data['flux_scaling'] = args[k]
+                kwargs_data["flux_scaling"] = args[k]
                 k += 1
         return self.multi_band_list
 
@@ -138,7 +152,7 @@ class CalibrationLikelihood(object):
         args = []
         for i, band in enumerate(multi_band_list):
             if self._calibrate_bands[i]:
-                args.append(band[0].get('flux_scaling', 1))
+                args.append(band[0].get("flux_scaling", 1))
         return args
 
     @property

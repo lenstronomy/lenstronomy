@@ -7,7 +7,6 @@ from lenstronomy.Util import param_util, util
 
 
 class TestShapeletSetEllipse(object):
-
     def setup(self):
         self.ellipse = ShapeletSetEllipse()
         self.spherical = ShapeletSet()
@@ -19,11 +18,19 @@ class TestShapeletSetEllipse(object):
         n_max = 3
         num_param = int((n_max + 1) * (n_max + 2) / 2)
         amp_list = np.ones(num_param)
-        x_, y_ = param_util.transform_e1e2_product_average(x, y, e1, e2, center_x=0, center_y=0)
-        kwargs_spherical = {'amp': amp_list, 'beta': 1, 'n_max': 3, 'center_x': 1, 'center_y': -1}
+        x_, y_ = param_util.transform_e1e2_product_average(
+            x, y, e1, e2, center_x=0, center_y=0
+        )
+        kwargs_spherical = {
+            "amp": amp_list,
+            "beta": 1,
+            "n_max": 3,
+            "center_x": 1,
+            "center_y": -1,
+        }
         kwargs_ellipse = copy.deepcopy(kwargs_spherical)
-        kwargs_ellipse['e1'] = e1
-        kwargs_ellipse['e2'] = e2
+        kwargs_ellipse["e1"] = e1
+        kwargs_ellipse["e2"] = e2
 
         flux_ellipse = self.ellipse.function(x, y, **kwargs_ellipse)
         flux_spherical = self.spherical.function(x_, y_, **kwargs_spherical)
@@ -36,11 +43,19 @@ class TestShapeletSetEllipse(object):
         n_max = 3
         num_param = int((n_max + 1) * (n_max + 2) / 2)
         amp_list = np.ones(num_param)
-        x_, y_ = param_util.transform_e1e2_product_average(x, y, e1, e2, center_x=0, center_y=0)
-        kwargs_spherical = {'amp': amp_list, 'beta': 1, 'n_max': 3, 'center_x': 1, 'center_y': -1}
+        x_, y_ = param_util.transform_e1e2_product_average(
+            x, y, e1, e2, center_x=0, center_y=0
+        )
+        kwargs_spherical = {
+            "amp": amp_list,
+            "beta": 1,
+            "n_max": 3,
+            "center_x": 1,
+            "center_y": -1,
+        }
         kwargs_ellipse = copy.deepcopy(kwargs_spherical)
-        kwargs_ellipse['e1'] = e1
-        kwargs_ellipse['e2'] = e2
+        kwargs_ellipse["e1"] = e1
+        kwargs_ellipse["e2"] = e2
 
         flux_ellipse = self.ellipse.function_split(x, y, **kwargs_ellipse)
         flux_spherical = self.spherical.function_split(x_, y_, **kwargs_spherical)

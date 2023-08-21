@@ -1,16 +1,18 @@
 import numpy as np
 import numpy.testing as npt
 import pytest
+
 # import lenstronomy module dealing with cosmological quantities in a lens system
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
+
 # import KDELikelihood module
 from lenstronomy.Cosmo.kde_likelihood import KDELikelihood
+
 # import astropy.cosmology class
 from astropy.cosmology import FlatLambdaCDM
 
 
 class TestKDELikelihood(object):
-
     def setup_method(self):
         # set up seed
         np.random.seed(seed=41)
@@ -41,7 +43,9 @@ class TestKDELikelihood(object):
         D_d_samples = np.random.normal(Dd_true, sigma_Dd, num_samples)
 
         # initialize a KDELikelihood class with the posterior sample
-        kdeLikelihood = KDELikelihood(D_d_samples, D_dt_samples, kde_type='scipy_gaussian',  bandwidth=2)
+        kdeLikelihood = KDELikelihood(
+            D_d_samples, D_dt_samples, kde_type="scipy_gaussian", bandwidth=2
+        )
         # evaluate the maximum likelihood (arbitrary normalization!)
         logL_max = kdeLikelihood.logLikelihood(Dd_true, D_dt_true)
         # evaluate the likelihood 1-sigma away from Dd
@@ -60,7 +64,9 @@ class TestKDELikelihood(object):
         npt.assert_almost_equal(delta_log, 0.5, decimal=2)
 
         # initialize a KDELikelihood class with the posterior sample
-        kdeLikelihood = KDELikelihood(D_d_samples, D_dt_samples, kde_type='gaussian', bandwidth=20)
+        kdeLikelihood = KDELikelihood(
+            D_d_samples, D_dt_samples, kde_type="gaussian", bandwidth=20
+        )
         # evaluate the maximum likelihood (arbitrary normalization!)
         logL_max = kdeLikelihood.logLikelihood(Dd_true, D_dt_true)
         # evaluate the likelihood 1-sigma away from Dd
@@ -79,5 +85,5 @@ class TestKDELikelihood(object):
         npt.assert_almost_equal(delta_log, 0.5, decimal=2)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pytest.main()

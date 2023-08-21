@@ -4,8 +4,8 @@ This is for internal use, if you are not modifying lenstronomy sampling to inclu
 parameters you can safely ignore this.
 """
 
-__author__ = 'jhodonnell'
-__all__ = ['ModelParamGroup', 'SingleParam', 'ArrayParam']
+__author__ = "jhodonnell"
+__all__ = ["ModelParamGroup", "SingleParam", "ArrayParam"]
 
 import numpy as np
 
@@ -22,6 +22,7 @@ class ModelParamGroup:
     parameter classes, called `compose_num_params()`, `compose_set_params()`, and
     `compose_get_params()`.
     """
+
     def num_params(self):
         """Tells the number of parameters that this group samples and their names.
 
@@ -130,11 +131,12 @@ class SingleParam(ModelParamGroup):
     :param _kwargs_lower: Dictionary. Lower bounds of each parameter
     :param _kwargs_upper: Dictionary. Upper bounds of each parameter
     """
+
     def __init__(self, on):
-        '''
+        """
         :param on: Whether this paramter should be sampled
         :type on: bool
-        '''
+        """
         self._on = bool(on)
 
     def num_params(self, kwargs_fixed):
@@ -230,11 +232,12 @@ class ArrayParam(ModelParamGroup):
     :param _kwargs_lower: Dictionary. Lower bounds of each parameter
     :param _kwargs_upper: Dictionary. Upper bounds of each parameter
     """
+
     def __init__(self, on):
-        '''
+        """
         :param on: Whether this paramter should be sampled
         :type on: bool
-        '''
+        """
         self._on = bool(on)
 
     def num_params(self, kwargs_fixed):
@@ -300,7 +303,7 @@ class ArrayParam(ModelParamGroup):
         params = {}
         for name, count in self.param_names.items():
             if name not in kwargs_fixed:
-                params[name] = args[i:i + count]
+                params[name] = args[i : i + count]
 
                 if kwargs_lower is not None:
                     for j in range(len(params[name])):

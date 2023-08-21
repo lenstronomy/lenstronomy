@@ -1,4 +1,4 @@
-__author__ = 'lynevdv'
+__author__ = "lynevdv"
 
 
 from lenstronomy.LensModel.Profiles.multipole import Multipole
@@ -10,6 +10,7 @@ import numpy.testing as npt
 
 class TestMultipole(object):
     """Tests the Gaussian methods."""
+
     def setup_method(self):
         self.Multipole = Multipole()
 
@@ -18,7 +19,7 @@ class TestMultipole(object):
         y = 2
         m = 4
         a_m = 0.05
-        phi_m = 25*np.pi/180.
+        phi_m = 25 * np.pi / 180.0
         values = self.Multipole.function(x, y, m, a_m, phi_m)
         npt.assert_almost_equal(values, 0.006684307, decimal=6)
         x = np.array([0])
@@ -38,7 +39,7 @@ class TestMultipole(object):
         y = 2
         m = 4
         a_m = 0.05
-        phi_m = 25 * np.pi / 180.
+        phi_m = 25 * np.pi / 180.0
         f_x, f_y = self.Multipole.derivatives(x, y, m, a_m, phi_m)
         npt.assert_almost_equal(f_x, -0.003939644, decimal=6)
         npt.assert_almost_equal(f_y, 0.005311976, decimal=6)
@@ -64,7 +65,7 @@ class TestMultipole(object):
         y = 2
         m = 4
         a_m = 0.05
-        phi_m = 25 * np.pi / 180.
+        phi_m = 25 * np.pi / 180.0
         f_xx, f_xy, f_yx, f_yy = self.Multipole.hessian(x, y, m, a_m, phi_m)
         npt.assert_almost_equal(f_xx, -0.016042338, decimal=6)
         npt.assert_almost_equal(f_yy, -0.004010584, decimal=6)
@@ -76,8 +77,8 @@ class TestMultipole(object):
         npt.assert_almost_equal(f_xx[0], -0.016042338, decimal=6)
         npt.assert_almost_equal(f_yy[0], -0.004010584, decimal=6)
         npt.assert_almost_equal(f_xy[0], 0.008021169, decimal=6)
-        x = np.array([1,3,4])
-        y = np.array([2,1,1])
+        x = np.array([1, 3, 4])
+        y = np.array([2, 1, 1])
         values = self.Multipole.hessian(x, y, m, a_m, phi_m)
         npt.assert_almost_equal(values[0][0], -0.016042338, decimal=6)
         npt.assert_almost_equal(values[3][0], -0.004010584, decimal=6)
@@ -87,5 +88,5 @@ class TestMultipole(object):
         npt.assert_almost_equal(values[1][1], -0.004253867, decimal=6)
 
 
-if __name__ == '__main__':
-   pytest.main()
+if __name__ == "__main__":
+    pytest.main()

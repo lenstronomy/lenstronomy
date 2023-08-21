@@ -3,13 +3,24 @@ import numpy as np
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 
 
-def plot_quasar_images(lens_model, x_image, y_image, source_x, source_y, kwargs_lens,
-                       source_fwhm_parsec, z_source,
-                       cosmo=None, grid_resolution=None,
-                       grid_radius_arcsec=None,
-                       source_light_model='SINGLE_GAUSSIAN',
-                       dx=None, dy=None, size_scale=None, amp_scale=None
-                       ):
+def plot_quasar_images(
+    lens_model,
+    x_image,
+    y_image,
+    source_x,
+    source_y,
+    kwargs_lens,
+    source_fwhm_parsec,
+    z_source,
+    cosmo=None,
+    grid_resolution=None,
+    grid_radius_arcsec=None,
+    source_light_model="SINGLE_GAUSSIAN",
+    dx=None,
+    dy=None,
+    size_scale=None,
+    amp_scale=None,
+):
     """This function plots the surface brightness in the image plane of a background
     source modeled as either a single Gaussian or two Gaussian light profiles. The flux
     is computed inside a circular aperture with radius grid_radius_arcsec. If
@@ -45,9 +56,28 @@ def plot_quasar_images(lens_model, x_image, y_image, source_x, source_y, kwargs_
     magnifications = []
     images = []
 
-    grid_x_0, grid_y_0, source_model, kwargs_source, grid_resolution, grid_radius_arcsec = \
-        setup_mag_finite(cosmo, lens_model, grid_radius_arcsec, grid_resolution, source_fwhm_parsec,
-                         source_light_model, z_source, source_x, source_y, dx, dy, amp_scale, size_scale)
+    (
+        grid_x_0,
+        grid_y_0,
+        source_model,
+        kwargs_source,
+        grid_resolution,
+        grid_radius_arcsec,
+    ) = setup_mag_finite(
+        cosmo,
+        lens_model,
+        grid_radius_arcsec,
+        grid_resolution,
+        source_fwhm_parsec,
+        source_light_model,
+        z_source,
+        source_x,
+        source_y,
+        dx,
+        dy,
+        amp_scale,
+        size_scale,
+    )
     shape0 = grid_x_0.shape
     grid_x_0, grid_y_0 = grid_x_0.ravel(), grid_y_0.ravel()
 
@@ -56,25 +86,55 @@ def plot_quasar_images(lens_model, x_image, y_image, source_x, source_y, kwargs_
         r_min = 0
         r_max = grid_radius_arcsec
         grid_r = np.hypot(grid_x_0, grid_y_0)
-        flux_array = lens_model_extension._magnification_adaptive_iteration(flux_array, xi, yi, grid_x_0, grid_y_0, grid_r,
-                                                            r_min, r_max, lens_model, kwargs_lens,
-                                                            source_model, kwargs_source)
-        m = np.sum(flux_array) * grid_resolution ** 2
+        flux_array = lens_model_extension._magnification_adaptive_iteration(
+            flux_array,
+            xi,
+            yi,
+            grid_x_0,
+            grid_y_0,
+            grid_r,
+            r_min,
+            r_max,
+            lens_model,
+            kwargs_lens,
+            source_model,
+            kwargs_source,
+        )
+        m = np.sum(flux_array) * grid_resolution**2
         magnifications.append(m)
         images.append(flux_array.reshape(shape0))
 
     magnifications = np.array(magnifications)
     flux_ratios = magnifications / max(magnifications)
     import matplotlib.pyplot as plt
+
     fig = plt.figure(1)
     fig.set_size_inches(16, 6)
     N = len(images)
     for i, (image, mag, fr) in enumerate(zip(images, magnifications, flux_ratios)):
         ax = plt.subplot(1, N, i + 1)
-        ax.imshow(image, origin='lower',
-                  extent=[-grid_radius_arcsec, grid_radius_arcsec, -grid_radius_arcsec, grid_radius_arcsec])
-        ax.annotate('magnification: ' + str(np.round(mag, 3)), xy=(0.05, 0.9), xycoords='axes fraction', color='w',
-                    fontsize=12)
-        ax.annotate('flux ratio: ' + str(np.round(fr, 3)), xy=(0.05, 0.8), xycoords='axes fraction', color='w',
-                    fontsize=12)
+        ax.imshow(
+            image,
+            origin="lower",
+            extent=[
+                -grid_radius_arcsec,
+                grid_radius_arcsec,
+                -grid_radius_arcsec,
+                grid_radius_arcsec,
+            ],
+        )
+        ax.annotate(
+            "magnification: " + str(np.round(mag, 3)),
+            xy=(0.05, 0.9),
+            xycoords="axes fraction",
+            color="w",
+            fontsize=12,
+        )
+        ax.annotate(
+            "flux ratio: " + str(np.round(fr, 3)),
+            xy=(0.05, 0.8),
+            xycoords="axes fraction",
+            color="w",
+            fontsize=12,
+        )
     plt.show()

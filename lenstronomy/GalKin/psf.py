@@ -3,6 +3,7 @@ from lenstronomy.Util import kernel_util
 
 
 from lenstronomy.Util.package_util import exporter
+
 export, __all__ = exporter()
 
 
@@ -10,18 +11,19 @@ export, __all__ = exporter()
 class PSF(object):
     """General class to handle the PSF in the GalKin module for rendering the
     displacement of photons/spectro."""
+
     def __init__(self, psf_type, **kwargs_psf):
         """
 
         :param psf_type: string, point spread function type, current support for 'GAUSSIAN' and 'MOFFAT'
         :param kwargs_psf: keyword argument describing the relevant parameters of the PSF.
         """
-        if psf_type == 'GAUSSIAN':
+        if psf_type == "GAUSSIAN":
             self._psf = PSFGaussian(**kwargs_psf)
-        elif psf_type == 'MOFFAT':
+        elif psf_type == "MOFFAT":
             self._psf = PSFMoffat(**kwargs_psf)
         else:
-            raise ValueError('psf_type %s not supported for convolution!' % psf_type)
+            raise ValueError("psf_type %s not supported for convolution!" % psf_type)
 
     def displace_psf(self, x, y):
         """
@@ -45,6 +47,7 @@ class PSF(object):
 @export
 class PSFGaussian(object):
     """Gaussian PSF."""
+
     def __init__(self, fwhm):
         """
 
@@ -103,6 +106,10 @@ class PSFMoffat(object):
         :return: 2d numpy array of kernel
         """
 
-        kernel = kernel_util.kernel_moffat(num_pix=num_pix, delta_pix=delta_pix, fwhm=self._fwhm,
-                                           moffat_beta=self._moffat_beta)
+        kernel = kernel_util.kernel_moffat(
+            num_pix=num_pix,
+            delta_pix=delta_pix,
+            fwhm=self._fwhm,
+            moffat_beta=self._moffat_beta,
+        )
         return kernel

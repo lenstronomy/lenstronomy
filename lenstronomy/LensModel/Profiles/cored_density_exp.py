@@ -1,10 +1,10 @@
-__author__ = 'lucateo'
+__author__ = "lucateo"
 
 import numpy as np
 from scipy.special import exp1, erf
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
-__all__ = ['CoredDensityExp']
+__all__ = ["CoredDensityExp"]
 
 
 class CoredDensityExp(LensProfileBase):
@@ -14,10 +14,21 @@ class CoredDensityExp(LensProfileBase):
     ..math::
         \\rho(r) = \\rho_0 \\exp(- (\\theta / \\theta_c)^2)
     """
+
     _s = 0.000001  # numerical limit for minimal radius
-    param_names = ['kappa_0', 'theta_c', 'center_x', 'center_y']
-    lower_limit_default = {'kappa_0': 0, 'theta_c': 0, 'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'kappa_0': 10, 'theta_c': 100, 'center_x': 100, 'center_y': 100}
+    param_names = ["kappa_0", "theta_c", "center_x", "center_y"]
+    lower_limit_default = {
+        "kappa_0": 0,
+        "theta_c": 0,
+        "center_x": -100,
+        "center_y": -100,
+    }
+    upper_limit_default = {
+        "kappa_0": 10,
+        "theta_c": 100,
+        "center_x": 100,
+        "center_y": 100,
+    }
 
     @staticmethod
     def rhotilde(kappa_0, theta_c):
@@ -38,9 +49,9 @@ class CoredDensityExp(LensProfileBase):
         """
         x_ = x - center_x
         y_ = y - center_y
-        r = np.sqrt(x_ ** 2 + y_ ** 2)
+        r = np.sqrt(x_**2 + y_**2)
         r = np.maximum(r, self._s)
-        Integral_factor = 0.5 * exp1((r/theta_c)**2) + np.log((r/theta_c))
+        Integral_factor = 0.5 * exp1((r / theta_c) ** 2) + np.log((r / theta_c))
         function = kappa_0 * theta_c**2 * Integral_factor
         return function
 
@@ -51,7 +62,7 @@ class CoredDensityExp(LensProfileBase):
         profile :param theta_c: core radius (in arcsec) :return: radial deflection
         angle."""
         prefactor = kappa_0 * theta_c**2 / r
-        return prefactor * (1 - np.exp(- (r/theta_c)**2))
+        return prefactor * (1 - np.exp(-((r / theta_c) ** 2)))
 
     def derivatives(self, x, y, kappa_0, theta_c, center_x=0, center_y=0):
         """Returns df/dx and df/dy of the function (lensing potential), which are the
@@ -88,12 +99,12 @@ class CoredDensityExp(LensProfileBase):
         R = np.sqrt(x_**2 + y_**2)
         R = np.maximum(R, 0.00000001)
         prefactor = kappa_0 * theta_c**2
-        expFactor = np.exp(- (R/theta_c)**2)
-        factor1 = (1 - expFactor)/R**4
-        factor2 = 2/(R**2 * theta_c**2) * expFactor
+        expFactor = np.exp(-((R / theta_c) ** 2))
+        factor1 = (1 - expFactor) / R**4
+        factor2 = 2 / (R**2 * theta_c**2) * expFactor
         f_xx = prefactor * (factor1 * (y_**2 - x_**2) + factor2 * x_**2)
         f_yy = prefactor * (factor1 * (x_**2 - y_**2) + factor2 * y_**2)
-        f_xy = prefactor * (- factor1 * 2 * x_ * y_ + factor2 * x_*y_)
+        f_xy = prefactor * (-factor1 * 2 * x_ * y_ + factor2 * x_ * y_)
         return f_xx, f_xy, f_xy, f_yy
 
     def density(self, R, kappa_0, theta_c):
@@ -106,7 +117,7 @@ class CoredDensityExp(LensProfileBase):
         :return: rho(R) density
         """
         rhotilde = self.rhotilde(kappa_0, theta_c)
-        return rhotilde * np.exp(-(R/theta_c)**2)
+        return rhotilde * np.exp(-((R / theta_c) ** 2))
 
     def density_lens(self, r, kappa_0, theta_c):
         """Computes the density at 3d radius r given lens model parameterization. The
@@ -129,7 +140,7 @@ class CoredDensityExp(LensProfileBase):
         :param theta_c: core radius
         :return: convergence at r
         """
-        expFactor = np.exp(- (R/theta_c)**2)
+        expFactor = np.exp(-((R / theta_c) ** 2))
         return kappa_0 * expFactor
 
     def density_2d(self, x, y, kappa_0, theta_c, center_x=0, center_y=0):
@@ -152,7 +163,9 @@ class CoredDensityExp(LensProfileBase):
         """Mass enclosed a 3d sphere or radius r :param kappa_0: central convergence of
         profile :param theta_c: core radius (in arcsec) :param R: radius in arcseconds
         :return: mass of soliton in angular units."""
-        integral_factor = np.sqrt(np.pi) * erf(R/theta_c)/2 - R/theta_c * np.exp(-(R/theta_c)**2)
+        integral_factor = np.sqrt(np.pi) * erf(R / theta_c) / 2 - R / theta_c * np.exp(
+            -((R / theta_c) ** 2)
+        )
         m_3d = 2 * np.sqrt(np.pi) * kappa_0 * theta_c**2 * integral_factor
         return m_3d
 

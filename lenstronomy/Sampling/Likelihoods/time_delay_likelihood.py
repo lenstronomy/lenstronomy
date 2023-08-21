@@ -1,12 +1,19 @@
 import numpy as np
 import lenstronomy.Util.constants as const
 
-__all__ = ['TimeDelayLikelihood']
+__all__ = ["TimeDelayLikelihood"]
 
 
 class TimeDelayLikelihood(object):
     """Class to compute the likelihood of a model given a measurement of time delays."""
-    def __init__(self, time_delays_measured, time_delays_uncertainties, lens_model_class, point_source_class):
+
+    def __init__(
+        self,
+        time_delays_measured,
+        time_delays_uncertainties,
+        lens_model_class,
+        point_source_class,
+    ):
         """
 
         :param time_delays_measured: relative time delays (in days) in respect to the first image of the point source
@@ -18,9 +25,13 @@ class TimeDelayLikelihood(object):
         """
 
         if time_delays_measured is None:
-            raise ValueError("time_delay_measured need to be specified to evaluate the time-delay likelihood.")
+            raise ValueError(
+                "time_delay_measured need to be specified to evaluate the time-delay likelihood."
+            )
         if time_delays_uncertainties is None:
-            raise ValueError("time_delay_uncertainties need to be specified to evaluate the time-delay likelihood.")
+            raise ValueError(
+                "time_delay_uncertainties need to be specified to evaluate the time-delay likelihood."
+            )
         self._delays_measured = np.array(time_delays_measured)
         self._delays_errors = np.array(time_delays_uncertainties)
         self._lensModel = lens_model_class
@@ -31,10 +42,12 @@ class TimeDelayLikelihood(object):
         kwargs_lens: lens model kwargs list :param kwargs_ps: point source kwargs list
         :param kwargs_cosmo: cosmology and other kwargs :return: log likelihood of the
         model given the time delay data."""
-        x_pos, y_pos = self._pointSource.image_position(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens, original_position=True)
+        x_pos, y_pos = self._pointSource.image_position(
+            kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens, original_position=True
+        )
         x_pos, y_pos = x_pos[0], y_pos[0]
         delay_arcsec = self._lensModel.fermat_potential(x_pos, y_pos, kwargs_lens)
-        D_dt_model = kwargs_cosmo['D_dt']
+        D_dt_model = kwargs_cosmo["D_dt"]
         delay_days = const.delay_arcsec2days(delay_arcsec, D_dt_model)
         logL = self._logL_delays(delay_days, self._delays_measured, self._delays_errors)
         return logL
@@ -50,17 +63,23 @@ class TimeDelayLikelihood(object):
         :param delays_errors: gaussian errors on the measured delays
         :return: log likelihood of data given model
         """
-        if len(delays_model)-1 != len(delays_measured):
-            return -10**15
+        if len(delays_model) - 1 != len(delays_measured):
+            return -(10**15)
         delta_t_model = np.array(delays_model[1:]) - delays_model[0]
         if delays_errors.ndim <= 1:
-            logL = np.sum(-(delta_t_model - delays_measured) ** 2 / (2 * delays_errors ** 2))
+            logL = np.sum(
+                -((delta_t_model - delays_measured) ** 2) / (2 * delays_errors**2)
+            )
         elif delays_errors.ndim == 2:
             D = delta_t_model - delays_measured
-            logL = -1/2 * D @ np.linalg.inv(delays_errors) @ D  # TODO: only calculate the inverse once
+            logL = (
+                -1 / 2 * D @ np.linalg.inv(delays_errors) @ D
+            )  # TODO: only calculate the inverse once
         else:
-            raise ValueError('Dimension of time delay error needs to be either one- or two-dimensional, not %s'
-                             % delays_errors.ndim)
+            raise ValueError(
+                "Dimension of time delay error needs to be either one- or two-dimensional, not %s"
+                % delays_errors.ndim
+            )
         return logL
 
     @property

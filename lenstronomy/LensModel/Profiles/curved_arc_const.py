@@ -3,7 +3,7 @@ from lenstronomy.LensModel.Profiles.convergence import Convergence
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 from lenstronomy.Util import util
 
-__all__ = ['CurvedArcConstMST', 'CurvedArcConst']
+__all__ = ["CurvedArcConstMST", "CurvedArcConst"]
 
 
 class CurvedArcConstMST(LensProfileBase):
@@ -22,16 +22,48 @@ class CurvedArcConstMST(LensProfileBase):
     - Must best reflect the observables in lensing
     - minimal covariances between the parameters, intuitive parameterization.
     """
-    param_names = ['tangential_stretch', 'radial_stretch', 'curvature', 'direction', 'center_x', 'center_y']
-    lower_limit_default = {'tangential_stretch': -100, 'radial_stretch': -5, 'curvature': 0.000001, 'direction': -np.pi, 'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'tangential_stretch': 100, 'radial_stretch': 5, 'curvature': 100, 'direction': np.pi, 'center_x': 100, 'center_y': 100}
+
+    param_names = [
+        "tangential_stretch",
+        "radial_stretch",
+        "curvature",
+        "direction",
+        "center_x",
+        "center_y",
+    ]
+    lower_limit_default = {
+        "tangential_stretch": -100,
+        "radial_stretch": -5,
+        "curvature": 0.000001,
+        "direction": -np.pi,
+        "center_x": -100,
+        "center_y": -100,
+    }
+    upper_limit_default = {
+        "tangential_stretch": 100,
+        "radial_stretch": 5,
+        "curvature": 100,
+        "direction": np.pi,
+        "center_x": 100,
+        "center_y": 100,
+    }
 
     def __init__(self):
         self._mst = Convergence()
         self._curve = CurvedArcConst()
         super(CurvedArcConstMST, self).__init__()
 
-    def function(self, x, y, tangential_stretch, radial_stretch, curvature, direction, center_x, center_y):
+    def function(
+        self,
+        x,
+        y,
+        tangential_stretch,
+        radial_stretch,
+        curvature,
+        direction,
+        center_x,
+        center_y,
+    ):
         """
         ATTENTION: there may not be a global lensing potential!
 
@@ -45,9 +77,21 @@ class CurvedArcConstMST(LensProfileBase):
         :param center_y: center of source in image plane
         :return:
         """
-        raise NotImplemented('lensing potential for regularly curved arc is not implemented')
+        raise NotImplemented(
+            "lensing potential for regularly curved arc is not implemented"
+        )
 
-    def derivatives(self, x, y, tangential_stretch, radial_stretch, curvature, direction, center_x, center_y):
+    def derivatives(
+        self,
+        x,
+        y,
+        tangential_stretch,
+        radial_stretch,
+        curvature,
+        direction,
+        center_x,
+        center_y,
+    ):
         """
 
         :param x:
@@ -60,17 +104,31 @@ class CurvedArcConstMST(LensProfileBase):
         :param center_y: center of source in image plane
         :return:
         """
-        lambda_mst = 1. / radial_stretch
+        lambda_mst = 1.0 / radial_stretch
         kappa_ext = 1 - lambda_mst
         curve_stretch = tangential_stretch / radial_stretch
 
-        f_x_curve, f_y_curve = self._curve.derivatives(x, y, curve_stretch, curvature, direction, center_x, center_y)
-        f_x_mst, f_y_mst = self._mst.derivatives(x, y, kappa_ext, ra_0=center_x, dec_0=center_y)
+        f_x_curve, f_y_curve = self._curve.derivatives(
+            x, y, curve_stretch, curvature, direction, center_x, center_y
+        )
+        f_x_mst, f_y_mst = self._mst.derivatives(
+            x, y, kappa_ext, ra_0=center_x, dec_0=center_y
+        )
         f_x = lambda_mst * f_x_curve + f_x_mst
         f_y = lambda_mst * f_y_curve + f_y_mst
         return f_x, f_y
 
-    def hessian(self, x, y, tangential_stretch, radial_stretch, curvature, direction, center_x, center_y):
+    def hessian(
+        self,
+        x,
+        y,
+        tangential_stretch,
+        radial_stretch,
+        curvature,
+        direction,
+        center_x,
+        center_y,
+    ):
         """
 
         :param x:
@@ -83,11 +141,15 @@ class CurvedArcConstMST(LensProfileBase):
         :param center_y: center of source in image plane
         :return:
         """
-        lambda_mst = 1. / radial_stretch
+        lambda_mst = 1.0 / radial_stretch
         kappa_ext = 1 - lambda_mst
         curve_stretch = tangential_stretch / radial_stretch
-        f_xx_c, f_xy_c, f_yx_c, f_yy_c = self._curve.hessian(x, y, curve_stretch, curvature, direction, center_x, center_y)
-        f_xx_mst, f_xy_mst, f_yx_mst, f_yy_mst = self._mst.hessian(x, y, kappa_ext, ra_0=center_x, dec_0=center_y)
+        f_xx_c, f_xy_c, f_yx_c, f_yy_c = self._curve.hessian(
+            x, y, curve_stretch, curvature, direction, center_x, center_y
+        )
+        f_xx_mst, f_xy_mst, f_yx_mst, f_yy_mst = self._mst.hessian(
+            x, y, kappa_ext, ra_0=center_x, dec_0=center_y
+        )
         f_xx = lambda_mst * f_xx_c + f_xx_mst
         f_xy = lambda_mst * f_xy_c + f_xy_mst
         f_yx = lambda_mst * f_yx_c + f_yx_mst
@@ -98,13 +160,32 @@ class CurvedArcConstMST(LensProfileBase):
 class CurvedArcConst(LensProfileBase):
     """Curved arc lensing with orientation of curvature perpendicular to the x-axis with
     unity radial stretch."""
-    param_names = ['tangential_stretch', 'curvature', 'direction', 'center_x', 'center_y']
-    lower_limit_default = {'tangential_stretch': -100, 'curvature': 0.000001, 'direction': -np.pi,
-                           'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'tangential_stretch': 100, 'curvature': 100, 'direction': np.pi,
-                           'center_x': 100, 'center_y': 100}
 
-    def function(self, x, y, tangential_stretch, curvature, direction, center_x, center_y):
+    param_names = [
+        "tangential_stretch",
+        "curvature",
+        "direction",
+        "center_x",
+        "center_y",
+    ]
+    lower_limit_default = {
+        "tangential_stretch": -100,
+        "curvature": 0.000001,
+        "direction": -np.pi,
+        "center_x": -100,
+        "center_y": -100,
+    }
+    upper_limit_default = {
+        "tangential_stretch": 100,
+        "curvature": 100,
+        "direction": np.pi,
+        "center_x": 100,
+        "center_y": 100,
+    }
+
+    def function(
+        self, x, y, tangential_stretch, curvature, direction, center_x, center_y
+    ):
         """
         ATTENTION: there may not be a global lensing potential!
 
@@ -117,9 +198,13 @@ class CurvedArcConst(LensProfileBase):
         :param center_y: center of source in image plane
         :return:
         """
-        raise NotImplemented('lensing potential for regularly curved arc is not implemented')
+        raise NotImplemented(
+            "lensing potential for regularly curved arc is not implemented"
+        )
 
-    def derivatives(self, x, y, tangential_stretch, curvature, direction, center_x, center_y):
+    def derivatives(
+        self, x, y, tangential_stretch, curvature, direction, center_x, center_y
+    ):
         """
 
         :param x:
@@ -135,7 +220,7 @@ class CurvedArcConst(LensProfileBase):
         r = 1 / curvature
         # deflection angle to allow for tangential stretch
         # (ratio of source position around zero point relative to radius is tangential stretch)
-        alpha = r * (1/tangential_stretch + 1)
+        alpha = r * (1 / tangential_stretch + 1)
 
         # shift
         x_ = x - center_x
@@ -162,7 +247,9 @@ class CurvedArcConst(LensProfileBase):
         f_x, f_y = util.rotate(f__x, f__y, -direction)
         return f_x, f_y
 
-    def hessian(self, x, y, tangential_stretch, curvature, direction, center_x, center_y):
+    def hessian(
+        self, x, y, tangential_stretch, curvature, direction, center_x, center_y
+    ):
         """
 
         :param x:
@@ -174,10 +261,16 @@ class CurvedArcConst(LensProfileBase):
         :param center_y: center of source in image plane
         :return:
         """
-        alpha_ra, alpha_dec = self.derivatives(x, y, tangential_stretch, curvature, direction, center_x, center_y)
+        alpha_ra, alpha_dec = self.derivatives(
+            x, y, tangential_stretch, curvature, direction, center_x, center_y
+        )
         diff = 0.0000001
-        alpha_ra_dx, alpha_dec_dx = self.derivatives(x + diff, y, tangential_stretch, curvature, direction, center_x, center_y)
-        alpha_ra_dy, alpha_dec_dy = self.derivatives(x, y + diff, tangential_stretch, curvature, direction, center_x, center_y)
+        alpha_ra_dx, alpha_dec_dx = self.derivatives(
+            x + diff, y, tangential_stretch, curvature, direction, center_x, center_y
+        )
+        alpha_ra_dy, alpha_dec_dy = self.derivatives(
+            x, y + diff, tangential_stretch, curvature, direction, center_x, center_y
+        )
 
         f_xx = (alpha_ra_dx - alpha_ra) / diff
         f_xy = (alpha_ra_dy - alpha_ra) / diff
@@ -228,7 +321,7 @@ class CurvedArcConst(LensProfileBase):
         :return: deflections f_x, f_y
         """
 
-        x_r = np.sqrt(r ** 2 - y ** 2)
+        x_r = np.sqrt(r**2 - y**2)
         f_x = x_r - r
         # move y-coordinate circle length / tangential stretch up from x-axis
         phi = np.arcsin(y / r)

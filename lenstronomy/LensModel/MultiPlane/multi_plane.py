@@ -3,6 +3,7 @@ from copy import deepcopy
 from lenstronomy.LensModel.MultiPlane.multi_plane_base import MultiPlaneBase
 
 from lenstronomy.Util.package_util import exporter
+
 export, __all__ = exporter()
 
 
@@ -15,9 +16,22 @@ class MultiPlane(object):
     specified redshift of the lens to the source redshift of the class instance.
     """
 
-    def __init__(self, z_source, lens_model_list, lens_redshift_list, cosmo=None, numerical_alpha_class=None,
-                 observed_convention_index=None, ignore_observed_positions=False, z_source_convention=None,
-                 cosmo_interp=False, z_interp_stop=None, num_z_interp=100, kwargs_interp=None,  kwargs_synthesis=None):
+    def __init__(
+        self,
+        z_source,
+        lens_model_list,
+        lens_redshift_list,
+        cosmo=None,
+        numerical_alpha_class=None,
+        observed_convention_index=None,
+        ignore_observed_positions=False,
+        z_source_convention=None,
+        cosmo_interp=False,
+        z_interp_stop=None,
+        num_z_interp=100,
+        kwargs_interp=None,
+        kwargs_synthesis=None,
+    ):
         """
 
         :param z_source: source redshift for default computation of reduced lensing quantities
@@ -43,14 +57,23 @@ class MultiPlane(object):
         if z_interp_stop is None:
             z_interp_stop = max(z_source, z_source_convention)
         if z_interp_stop < max(z_source, z_source_convention):
-            raise ValueError('z_interp_stop= %s needs to be larger or equal the maximum of z_source=%s and '
-                             'z_source_convention=%s' % (z_interp_stop, z_source, z_source_convention))
-        self._multi_plane_base = MultiPlaneBase(lens_model_list=lens_model_list,
-                                                lens_redshift_list=lens_redshift_list, cosmo=cosmo,
-                                                numerical_alpha_class=numerical_alpha_class,
-                                                z_source_convention=z_source_convention, cosmo_interp=cosmo_interp,
-                                                z_interp_stop=z_interp_stop, num_z_interp=num_z_interp,
-                                                kwargs_interp=kwargs_interp,  kwargs_synthesis=kwargs_synthesis)
+            raise ValueError(
+                "z_interp_stop= %s needs to be larger or equal the maximum of z_source=%s and "
+                "z_source_convention=%s"
+                % (z_interp_stop, z_source, z_source_convention)
+            )
+        self._multi_plane_base = MultiPlaneBase(
+            lens_model_list=lens_model_list,
+            lens_redshift_list=lens_redshift_list,
+            cosmo=cosmo,
+            numerical_alpha_class=numerical_alpha_class,
+            z_source_convention=z_source_convention,
+            cosmo_interp=cosmo_interp,
+            z_interp_stop=z_interp_stop,
+            num_z_interp=num_z_interp,
+            kwargs_interp=kwargs_interp,
+            kwargs_synthesis=kwargs_synthesis,
+        )
 
         self._set_source_distances(z_source)
         self._observed_convention_index = observed_convention_index
@@ -58,7 +81,9 @@ class MultiPlane(object):
             self._convention = PhysicalLocation()
         else:
             assert isinstance(observed_convention_index, list)
-            self._convention = LensedLocation(self._multi_plane_base, observed_convention_index)
+            self._convention = LensedLocation(
+                self._multi_plane_base, observed_convention_index
+            )
         self.ignore_observed_positions = ignore_observed_positions
 
     def update_source_redshift(self, z_source):
@@ -81,9 +106,12 @@ class MultiPlane(object):
         :return: self variables
         """
         self._z_source = z_source
-        self._T_ij_start, self._T_ij_stop = self._multi_plane_base.transverse_distance_start_stop(z_start=0,
-                                                                                                  z_stop=z_source,
-                                                                                                  include_z_start=False)
+        (
+            self._T_ij_start,
+            self._T_ij_stop,
+        ) = self._multi_plane_base.transverse_distance_start_stop(
+            z_start=0, z_stop=z_source, include_z_start=False
+        )
         self._T_z_source = self._multi_plane_base._cosmo_bkg.T_xy(0, z_source)
 
     def observed2flat_convention(self, kwargs_lens):
@@ -94,7 +122,9 @@ class MultiPlane(object):
         """
         return self._convention(kwargs_lens)
 
-    def ray_shooting(self, theta_x, theta_y, kwargs_lens, check_convention=True, k=None):
+    def ray_shooting(
+        self, theta_x, theta_y, kwargs_lens, check_convention=True, k=None
+    ):
         """Ray-tracing (backwards light cone) to the default z_source redshift.
 
         :param theta_x: angle in x-direction on the image (usually arc seconds, in the
@@ -113,16 +143,35 @@ class MultiPlane(object):
         y = np.zeros_like(theta_y, dtype=float)
         alpha_x = np.array(theta_x)
         alpha_y = np.array(theta_y)
-        x, y, _, _ = self._multi_plane_base.ray_shooting_partial(x, y, alpha_x, alpha_y, z_start=0,
-                                                                 z_stop=self._z_source,
-                                                                 kwargs_lens=kwargs_lens, T_ij_start=self._T_ij_start,
-                                                                 T_ij_end=self._T_ij_stop)
+        x, y, _, _ = self._multi_plane_base.ray_shooting_partial(
+            x,
+            y,
+            alpha_x,
+            alpha_y,
+            z_start=0,
+            z_stop=self._z_source,
+            kwargs_lens=kwargs_lens,
+            T_ij_start=self._T_ij_start,
+            T_ij_end=self._T_ij_stop,
+        )
         beta_x, beta_y = self.co_moving2angle_source(x, y)
 
         return beta_x, beta_y
 
-    def ray_shooting_partial(self, x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens, include_z_start=False,
-                             check_convention=True, T_ij_start=None, T_ij_end=None):
+    def ray_shooting_partial(
+        self,
+        x,
+        y,
+        alpha_x,
+        alpha_y,
+        z_start,
+        z_stop,
+        kwargs_lens,
+        include_z_start=False,
+        check_convention=True,
+        T_ij_start=None,
+        T_ij_end=None,
+    ):
         """Ray-tracing through parts of the coin, starting with (x,y) co-moving
         distances and angles (alpha_x, alpha_y) at redshift z_start and then backwards
         to redshift z_stop.
@@ -154,9 +203,18 @@ class MultiPlane(object):
         if check_convention and not self.ignore_observed_positions:
             kwargs_lens = self._convention(kwargs_lens)
 
-        return self._multi_plane_base.ray_shooting_partial(x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
-                                                           include_z_start=include_z_start, T_ij_start=T_ij_start,
-                                                           T_ij_end=T_ij_end)
+        return self._multi_plane_base.ray_shooting_partial(
+            x,
+            y,
+            alpha_x,
+            alpha_y,
+            z_start,
+            z_stop,
+            kwargs_lens,
+            include_z_start=include_z_start,
+            T_ij_start=T_ij_start,
+            T_ij_end=T_ij_end,
+        )
 
     def transverse_distance_start_stop(self, z_start, z_stop, include_z_start=False):
         """Computes the transverse distance (T_ij) that is required by the ray-tracing
@@ -168,7 +226,9 @@ class MultiPlane(object):
         :param include_z_start: bool, i
         :return: T_ij_start, T_ij_end
         """
-        return self._multi_plane_base.transverse_distance_start_stop(z_start, z_stop, include_z_start)
+        return self._multi_plane_base.transverse_distance_start_stop(
+            z_start, z_stop, include_z_start
+        )
 
     def arrival_time(self, theta_x, theta_y, kwargs_lens, check_convention=True):
         """Light travel time relative to a straight path through the coordinate (0,0)
@@ -179,7 +239,9 @@ class MultiPlane(object):
         :param kwargs_lens: lens model keyword argument list
         :return: travel time in unit of days
         """
-        dt_geo, dt_grav = self.geo_shapiro_delay(theta_x, theta_y, kwargs_lens, check_convention=check_convention)
+        dt_geo, dt_grav = self.geo_shapiro_delay(
+            theta_x, theta_y, kwargs_lens, check_convention=check_convention
+        )
         return dt_geo + dt_grav
 
     def geo_shapiro_delay(self, theta_x, theta_y, kwargs_lens, check_convention=True):
@@ -196,8 +258,14 @@ class MultiPlane(object):
         """
         if check_convention and not self.ignore_observed_positions:
             kwargs_lens = self._convention(kwargs_lens)
-        return self._multi_plane_base.geo_shapiro_delay(theta_x, theta_y, kwargs_lens, z_stop=self._z_source,
-                                                        T_z_stop=self._T_z_source, T_ij_end=self._T_ij_stop)
+        return self._multi_plane_base.geo_shapiro_delay(
+            theta_x,
+            theta_y,
+            kwargs_lens,
+            z_stop=self._z_source,
+            T_z_stop=self._T_z_source,
+            T_ij_end=self._T_ij_stop,
+        )
 
     def alpha(self, theta_x, theta_y, kwargs_lens, check_convention=True, k=None):
         """Reduced deflection angle.
@@ -210,14 +278,24 @@ class MultiPlane(object):
         :return: deflection angles in x and y directions
         """
         self._check_raise(k=k)
-        beta_x, beta_y = self.ray_shooting(theta_x, theta_y, kwargs_lens, check_convention=check_convention)
+        beta_x, beta_y = self.ray_shooting(
+            theta_x, theta_y, kwargs_lens, check_convention=check_convention
+        )
 
         alpha_x = theta_x - beta_x
         alpha_y = theta_y - beta_y
 
         return alpha_x, alpha_y
 
-    def hessian(self, theta_x, theta_y, kwargs_lens, k=None, diff=0.00000001, check_convention=True):
+    def hessian(
+        self,
+        theta_x,
+        theta_y,
+        kwargs_lens,
+        k=None,
+        diff=0.00000001,
+        check_convention=True,
+    ):
         """Computes the hessian components f_xx, f_yy, f_xy from f_x and f_y with
         numerical differentiation.
 
@@ -236,10 +314,16 @@ class MultiPlane(object):
         if check_convention and not self.ignore_observed_positions:
             kwargs_lens = self._convention(kwargs_lens)
 
-        alpha_ra, alpha_dec = self.alpha(theta_x, theta_y, kwargs_lens, check_convention=False)
+        alpha_ra, alpha_dec = self.alpha(
+            theta_x, theta_y, kwargs_lens, check_convention=False
+        )
 
-        alpha_ra_dx, alpha_dec_dx = self.alpha(theta_x + diff, theta_y, kwargs_lens, check_convention=False)
-        alpha_ra_dy, alpha_dec_dy = self.alpha(theta_x, theta_y + diff, kwargs_lens, check_convention=False)
+        alpha_ra_dx, alpha_dec_dx = self.alpha(
+            theta_x + diff, theta_y, kwargs_lens, check_convention=False
+        )
+        alpha_ra_dy, alpha_dec_dy = self.alpha(
+            theta_x, theta_y + diff, kwargs_lens, check_convention=False
+        )
 
         dalpha_rara = (alpha_ra_dx - alpha_ra) / diff
         dalpha_radec = (alpha_ra_dy - alpha_ra) / diff
@@ -293,8 +377,10 @@ class MultiPlane(object):
         :return: None, optional raise
         """
         if k is not None:
-            raise ValueError('no specific selection of a subset of lens models supported in multi-plane mode. Please'
-                             'use single plane mode or generate new instance of LensModel of the subset of profiles.')
+            raise ValueError(
+                "no specific selection of a subset of lens models supported in multi-plane mode. Please"
+                "use single plane mode or generate new instance of LensModel of the subset of profiles."
+            )
 
 
 @export
@@ -335,17 +421,25 @@ class LensedLocation(object):
             self._inds = inds[sort]
 
     def __call__(self, kwargs_lens):
-
         new_kwargs = deepcopy(kwargs_lens)
 
         for ind in self._inds:
-            theta_x = kwargs_lens[ind]['center_x']
-            theta_y = kwargs_lens[ind]['center_y']
+            theta_x = kwargs_lens[ind]["center_x"]
+            theta_y = kwargs_lens[ind]["center_y"]
             zstop = self._multiplane._lens_redshift_list[ind]
-            x, y, _, _ = self._multiplane.ray_shooting_partial(0, 0, theta_x, theta_y, 0, zstop, new_kwargs,
-                                                               T_ij_start=None, T_ij_end=None)
+            x, y, _, _ = self._multiplane.ray_shooting_partial(
+                0,
+                0,
+                theta_x,
+                theta_y,
+                0,
+                zstop,
+                new_kwargs,
+                T_ij_start=None,
+                T_ij_end=None,
+            )
 
             T = self._multiplane._T_z_list[ind]
-            new_kwargs[ind]['center_x'] = x / T
-            new_kwargs[ind]['center_y'] = y / T
+            new_kwargs[ind]["center_x"] = x / T
+            new_kwargs[ind]["center_y"] = y / T
         return new_kwargs

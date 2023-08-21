@@ -2,11 +2,14 @@ import numpy as np
 import copy
 
 from lenstronomy.Util.package_util import exporter
+
 export, __all__ = exporter()
 
 
 @export
-def bkg_noise(readout_noise, exposure_time, sky_brightness, pixel_scale, num_exposures=1):
+def bkg_noise(
+    readout_noise, exposure_time, sky_brightness, pixel_scale, num_exposures=1
+):
     """Computes the expected Gaussian background noise of a pixel in units of
     counts/second.
 
@@ -18,8 +21,8 @@ def bkg_noise(readout_noise, exposure_time, sky_brightness, pixel_scale, num_exp
     :return: estimated Gaussian noise sqrt(variance)
     """
     exposure_time_tot = num_exposures * exposure_time
-    readout_noise_tot = num_exposures * readout_noise ** 2  # square of readout noise
-    sky_per_pixel = sky_brightness * pixel_scale ** 2
+    readout_noise_tot = num_exposures * readout_noise**2  # square of readout noise
+    sky_per_pixel = sky_brightness * pixel_scale**2
     sky_brightness_tot = exposure_time_tot * sky_per_pixel
     sigma_bkg = np.sqrt(readout_noise_tot + sky_brightness_tot) / exposure_time_tot
     return sigma_bkg
@@ -52,7 +55,7 @@ def magnitude2cps(magnitude, magnitude_zero_point):
     :return: counts per second of astronomical object
     """
     delta_m = magnitude - magnitude_zero_point
-    counts = 10**(-delta_m / 2.5)
+    counts = 10 ** (-delta_m / 2.5)
     return counts
 
 
@@ -117,11 +120,12 @@ def magnitude2amplitude(light_model_class, kwargs_light_mag, magnitude_zero_poin
     if kwargs_light_mag is not None:
         for i, kwargs_mag in enumerate(kwargs_light_mag):
             kwargs_new = kwargs_light_amp[i]
-            del kwargs_new['magnitude']
-            cps_norm = light_model_class.total_flux(kwargs_list=kwargs_light_amp, norm=True, k=i)[0]
-            magnitude = kwargs_mag['magnitude']
+            del kwargs_new["magnitude"]
+            cps_norm = light_model_class.total_flux(
+                kwargs_list=kwargs_light_amp, norm=True, k=i
+            )[0]
+            magnitude = kwargs_mag["magnitude"]
             cps = magnitude2cps(magnitude, magnitude_zero_point=magnitude_zero_point)
             amp = cps / cps_norm
-            kwargs_new['amp'] = amp
+            kwargs_new["amp"] = amp
     return kwargs_light_amp
-

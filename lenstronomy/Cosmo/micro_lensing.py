@@ -16,7 +16,9 @@ def einstein_radius(mass, d_l, d_s):
     dl_m = d_l * constants.pc
     ds_m = d_s * constants.pc
     # Einstein radius in radian
-    theta_e = np.sqrt(4 * constants.G * mass_kg / constants.c**2 * (ds_m - dl_m)/(ds_m * dl_m))
+    theta_e = np.sqrt(
+        4 * constants.G * mass_kg / constants.c**2 * (ds_m - dl_m) / (ds_m * dl_m)
+    )
     theta_e /= constants.arcsec  # arc seconds
     return theta_e
 

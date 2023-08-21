@@ -2,6 +2,7 @@ import numpy as np
 
 from lenstronomy.Util.numba_util import jit
 from lenstronomy.Util.package_util import exporter
+
 export, __all__ = exporter()
 
 
@@ -22,7 +23,7 @@ def cart2polar(x, y, center_x=0, center_y=0):
     """
     coord_shift_x = x - center_x
     coord_shift_y = y - center_y
-    r = np.sqrt(coord_shift_x**2+coord_shift_y**2)
+    r = np.sqrt(coord_shift_x**2 + coord_shift_y**2)
     phi = np.arctan2(coord_shift_y, coord_shift_x)
     return r, phi
 
@@ -41,8 +42,8 @@ def polar2cart(r, phi, center):
     :returns: array of same size with coords [x,y]
     :raises: AttributeError, KeyError
     """
-    x = r*np.cos(phi)
-    y = r*np.sin(phi)
+    x = r * np.cos(phi)
+    y = r * np.sin(phi)
     return x - center[0], y - center[1]
 
 
@@ -54,8 +55,8 @@ def shear_polar2cartesian(phi, gamma):
     :param gamma: shear strength
     :return: shear components gamma1, gamma2
     """
-    gamma1 = gamma*np.cos(2*phi)
-    gamma2 = gamma*np.sin(2*phi)
+    gamma1 = gamma * np.cos(2 * phi)
+    gamma2 = gamma * np.sin(2 * phi)
     return gamma1, gamma2
 
 
@@ -67,7 +68,7 @@ def shear_cartesian2polar(gamma1, gamma2):
     :return: shear angle, shear strength
     """
     phi = np.arctan2(gamma2, gamma1) / 2
-    gamma = np.sqrt(gamma1 ** 2 + gamma2 ** 2)
+    gamma = np.sqrt(gamma1**2 + gamma2**2)
     return phi, gamma
 
 
@@ -81,8 +82,8 @@ def phi_q2_ellipticity(phi, q):
     :param q: axis ratio minor axis / major axis
     :return: eccentricities e1 and e2 in complex ellipticity moduli
     """
-    e1 = (1. - q) / (1. + q) * np.cos(2 * phi)
-    e2 = (1. - q) / (1. + q) * np.sin(2 * phi)
+    e1 = (1.0 - q) / (1.0 + q) * np.cos(2 * phi)
+    e2 = (1.0 - q) / (1.0 + q) * np.sin(2 * phi)
     return e1, e2
 
 
@@ -95,10 +96,10 @@ def ellipticity2phi_q(e1, e2):
     :param e2: eccentricity in xy-direction
     :return: angle in radian, axis ratio (minor/major)
     """
-    phi = np.arctan2(e2, e1)/2
-    c = np.sqrt(e1**2+e2**2)
+    phi = np.arctan2(e2, e1) / 2
+    c = np.sqrt(e1**2 + e2**2)
     c = np.minimum(c, 0.9999)
-    q = (1-c)/(1+c)
+    q = (1 - c) / (1 + c)
     return phi, q
 
 
@@ -160,5 +161,5 @@ def q2e(q):
     :param q: axis ratio of minor to major axis
     :return: ellipticity e
     """
-    e = abs(1 - q ** 2) / (1 + q ** 2)
+    e = abs(1 - q**2) / (1 + q**2)
     return e

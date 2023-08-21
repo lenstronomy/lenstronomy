@@ -3,7 +3,7 @@ from lenstronomy.LightModel.light_model import LightModel
 import numpy as np
 
 
-def auto_raytracing_grid_size(source_fwhm_parcsec, grid_size_scale=0.005, power=1.):
+def auto_raytracing_grid_size(source_fwhm_parcsec, grid_size_scale=0.005, power=1.0):
     """This function returns the size of a ray tracing grid in units of arcsec
     appropriate for magnification computations with finite-size background sources. This
     fit is calibrated for source sizes (interpreted as the FWHM of a Gaussian) in the
@@ -15,11 +15,13 @@ def auto_raytracing_grid_size(source_fwhm_parcsec, grid_size_scale=0.005, power=
         computation
     """
 
-    grid_radius_arcsec = grid_size_scale * source_fwhm_parcsec ** power
+    grid_radius_arcsec = grid_size_scale * source_fwhm_parcsec**power
     return grid_radius_arcsec
 
 
-def auto_raytracing_grid_resolution(source_fwhm_parcsec, grid_resolution_scale=0.0002, ref=10., power=1.):
+def auto_raytracing_grid_resolution(
+    source_fwhm_parcsec, grid_resolution_scale=0.0002, ref=10.0, power=1.0
+):
     """This function returns a resolution factor in units arcsec/pixel appropriate for
     magnification computations with finite-size background sources. This fit is
     calibrated for source sizes (interpreted as the FWHM of a Gaussian) in the range 0.1
@@ -34,9 +36,22 @@ def auto_raytracing_grid_resolution(source_fwhm_parcsec, grid_resolution_scale=0
     grid_resolution = grid_resolution_scale * (source_fwhm_parcsec / ref) ** power
     return grid_resolution
 
-def setup_mag_finite(cosmo, lens_model, grid_radius_arcsec, grid_resolution, source_fwhm_parsec, source_light_model, z_source,
-                     source_x, source_y, dx, dy, amp_scale, size_scale):
 
+def setup_mag_finite(
+    cosmo,
+    lens_model,
+    grid_radius_arcsec,
+    grid_resolution,
+    source_fwhm_parsec,
+    source_light_model,
+    z_source,
+    source_x,
+    source_y,
+    dx,
+    dy,
+    amp_scale,
+    size_scale,
+):
     """Sets up the ray tracing grid and source light model for
     magnification_finite_adaptive and plot_quasar_images routines :param cosmo:
     (optional) an instance of astropy.cosmology; if not specified, a default cosmology
@@ -74,27 +89,54 @@ def setup_mag_finite(cosmo, lens_model, grid_radius_arcsec, grid_resolution, sou
     source_fwhm_arcsec = source_fwhm_parsec / pc_per_arcsec
     source_sigma_arcsec = fwhm2sigma(source_fwhm_arcsec)
 
-    if source_light_model == 'SINGLE_GAUSSIAN':
-        kwargs_source = [{'amp': 1., 'center_x': source_x, 'center_y': source_y, 'sigma': source_sigma_arcsec}]
-        source_model = LightModel(['GAUSSIAN'])
-    elif source_light_model == 'DOUBLE_GAUSSIAN':
-        amp_1 = 1.
-        kwargs_source_1 = [{'amp': amp_1, 'center_x': source_x, 'center_y': source_y, 'sigma': source_sigma_arcsec}]
+    if source_light_model == "SINGLE_GAUSSIAN":
+        kwargs_source = [
+            {
+                "amp": 1.0,
+                "center_x": source_x,
+                "center_y": source_y,
+                "sigma": source_sigma_arcsec,
+            }
+        ]
+        source_model = LightModel(["GAUSSIAN"])
+    elif source_light_model == "DOUBLE_GAUSSIAN":
+        amp_1 = 1.0
+        kwargs_source_1 = [
+            {
+                "amp": amp_1,
+                "center_x": source_x,
+                "center_y": source_y,
+                "sigma": source_sigma_arcsec,
+            }
+        ]
         # c = amp / (2 * np.pi * sigma**2)
-        amp_2 = amp_1 * amp_scale * size_scale ** 2
-        kwargs_source_2 = [{'amp': amp_2, 'center_x': source_x + dx, 'center_y': source_y + dy,
-                            'sigma': source_sigma_arcsec * size_scale}]
+        amp_2 = amp_1 * amp_scale * size_scale**2
+        kwargs_source_2 = [
+            {
+                "amp": amp_2,
+                "center_x": source_x + dx,
+                "center_y": source_y + dy,
+                "sigma": source_sigma_arcsec * size_scale,
+            }
+        ]
         kwargs_source = kwargs_source_1 + kwargs_source_2
-        source_model = LightModel(['GAUSSIAN'] * 2)
+        source_model = LightModel(["GAUSSIAN"] * 2)
     else:
-        raise Exception('source light model must be specified, currently implemented models are  SINGLE_GAUSSIAN '
-                        'and DOUBLE_GAUSSIAN')
+        raise Exception(
+            "source light model must be specified, currently implemented models are  SINGLE_GAUSSIAN "
+            "and DOUBLE_GAUSSIAN"
+        )
 
     npix = int(2 * grid_radius_arcsec / grid_resolution)
     _grid_x = np.linspace(-grid_radius_arcsec, grid_radius_arcsec, npix)
     _grid_y = np.linspace(-grid_radius_arcsec, grid_radius_arcsec, npix)
     grid_x_0, grid_y_0 = np.meshgrid(_grid_x, _grid_y)
 
-    return grid_x_0, grid_y_0, source_model, kwargs_source, grid_resolution, grid_radius_arcsec
-
-
+    return (
+        grid_x_0,
+        grid_y_0,
+        source_model,
+        kwargs_source,
+        grid_resolution,
+        grid_radius_arcsec,
+    )

@@ -12,12 +12,12 @@ If on super computer:
 """
 
 numba_conf = config_loader.numba_conf()
-nopython = numba_conf['nopython']
-cache = numba_conf['cache']
-parallel = numba_conf['parallel']
-numba_enabled = numba_conf['enable'] and not environ.get("NUMBA_DISABLE_JIT", False)
-fastmath = numba_conf['fastmath']
-error_model = numba_conf['error_model']
+nopython = numba_conf["nopython"]
+cache = numba_conf["cache"]
+parallel = numba_conf["parallel"]
+numba_enabled = numba_conf["enable"] and not environ.get("NUMBA_DISABLE_JIT", False)
+fastmath = numba_conf["fastmath"]
+error_model = numba_conf["error_model"]
 
 if numba_enabled:
     try:
@@ -28,21 +28,45 @@ if numba_enabled:
         numba = None
         extending = None
 
-__all__ = ['jit', 'overload', 'nan_to_num', 'nan_to_num_arr', 'nan_to_num_single']
+__all__ = ["jit", "overload", "nan_to_num", "nan_to_num_arr", "nan_to_num_single"]
 
 
-def jit(nopython=nopython, cache=cache, parallel=parallel, fastmath=fastmath, error_model=error_model, inline='never'):
+def jit(
+    nopython=nopython,
+    cache=cache,
+    parallel=parallel,
+    fastmath=fastmath,
+    error_model=error_model,
+    inline="never",
+):
     if numba_enabled:
+
         def wrapper(func):
-            return numba.jit(func, nopython=nopython, cache=cache, parallel=parallel, fastmath=fastmath,
-                             error_model=error_model, inline=inline)
+            return numba.jit(
+                func,
+                nopython=nopython,
+                cache=cache,
+                parallel=parallel,
+                fastmath=fastmath,
+                error_model=error_model,
+                inline=inline,
+            )
+
     else:
+
         def wrapper(func):
             return func
+
     return wrapper
 
 
-def overload(nopython=nopython, cache=cache, parallel=parallel, fastmath=fastmath, error_model=error_model):
+def overload(
+    nopython=nopython,
+    cache=cache,
+    parallel=parallel,
+    fastmath=fastmath,
+    error_model=error_model,
+):
     """Wrapper around numba.generated_jit.
 
     Allows you to redirect a function to another based on its type
@@ -52,12 +76,20 @@ def overload(nopython=nopython, cache=cache, parallel=parallel, fastmath=fastmat
 
         def wrapper(func):
             # TODO change to overload, but currently breaks tests with nopython
-            return numba.generated_jit(func, nopython=nopython, cache=cache, parallel=parallel, fastmath=fastmath,
-                                       error_model=error_model)
+            return numba.generated_jit(
+                func,
+                nopython=nopython,
+                cache=cache,
+                parallel=parallel,
+                fastmath=fastmath,
+                error_model=error_model,
+            )
             # return extending.overload(func, jit_options={'nopython': nopython, 'cache': cache,
             #                                             'parallel': parallel,
             #                                             'fastmath': fastmath, 'error_model': error_model})
+
     else:
+
         def wrapper(func):
             return func
 
@@ -65,7 +97,7 @@ def overload(nopython=nopython, cache=cache, parallel=parallel, fastmath=fastmat
 
 
 @overload()
-def nan_to_num(x, posinf=1e10, neginf=-1e10, nan=0.):
+def nan_to_num(x, posinf=1e10, neginf=-1e10, nan=0.0):
     """Implements a Numba equivalent to np.nan_to_num (with copy=False!) array or scalar
     in Numba.
 
@@ -74,14 +106,23 @@ def nan_to_num(x, posinf=1e10, neginf=-1e10, nan=0.):
     """
     # The generated_jit part is necessary because of the need to support both arrays and scalars for all input
     # functions.
-    if ((numba_enabled and isinstance(x, numba.types.Array)) or isinstance(x, np.ndarray)) and x.ndim > 0:
-        return nan_to_num_arr if numba_enabled else nan_to_num_arr(x, posinf, neginf, nan)
+    if (
+        (numba_enabled and isinstance(x, numba.types.Array))
+        or isinstance(x, np.ndarray)
+    ) and x.ndim > 0:
+        return (
+            nan_to_num_arr if numba_enabled else nan_to_num_arr(x, posinf, neginf, nan)
+        )
     else:
-        return nan_to_num_single if numba_enabled else nan_to_num_single(x, posinf, neginf, nan)
+        return (
+            nan_to_num_single
+            if numba_enabled
+            else nan_to_num_single(x, posinf, neginf, nan)
+        )
 
 
 @jit()
-def nan_to_num_arr(x, posinf=1e10, neginf=-1e10, nan=0.):
+def nan_to_num_arr(x, posinf=1e10, neginf=-1e10, nan=0.0):
     """Part of the Numba implementation of np.nan_to_num - see nan_to_num"""
     for i in range(len(x)):
         if np.isnan(x[i]):
@@ -95,7 +136,7 @@ def nan_to_num_arr(x, posinf=1e10, neginf=-1e10, nan=0.):
 
 
 @jit()
-def nan_to_num_single(x, posinf=1e10, neginf=-1e10, nan=0.):
+def nan_to_num_single(x, posinf=1e10, neginf=-1e10, nan=0.0):
     """Part of the Numba implementation of np.nan_to_num - see nan_to_num"""
     if np.isnan(x):
         return nan

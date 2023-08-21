@@ -1,7 +1,11 @@
 import numpy as np
-from lenstronomy.PointSource.Types.base_ps import PSBase, _expand_to_array, _shrink_array
+from lenstronomy.PointSource.Types.base_ps import (
+    PSBase,
+    _expand_to_array,
+    _shrink_array,
+)
 
-__all__ = ['SourcePositions']
+__all__ = ["SourcePositions"]
 
 
 class SourcePositions(PSBase):
@@ -15,8 +19,14 @@ class SourcePositions(PSBase):
     mag_pert is a list of fractional magnification pertubations applied to point source images
     """
 
-    def image_position(self, kwargs_ps, kwargs_lens=None, magnification_limit=None, kwargs_lens_eqn_solver=None,
-                       **kwargs):
+    def image_position(
+        self,
+        kwargs_ps,
+        kwargs_lens=None,
+        magnification_limit=None,
+        kwargs_lens_eqn_solver=None,
+        **kwargs
+    ):
         """On-sky image positions.
 
         :param kwargs_ps: keyword arguments of the point source model
@@ -33,9 +43,13 @@ class SourcePositions(PSBase):
         if kwargs_lens_eqn_solver is None:
             kwargs_lens_eqn_solver = {}
         ra_source, dec_source = self.source_position(kwargs_ps)
-        ra_image, dec_image = self._solver.image_position_from_source(ra_source, dec_source, kwargs_lens,
-                                                                      magnification_limit=magnification_limit,
-                                                                      **kwargs_lens_eqn_solver)
+        ra_image, dec_image = self._solver.image_position_from_source(
+            ra_source,
+            dec_source,
+            kwargs_lens,
+            magnification_limit=magnification_limit,
+            **kwargs_lens_eqn_solver
+        )
         return ra_image, dec_image
 
     def source_position(self, kwargs_ps, **kwargs):
@@ -44,12 +58,19 @@ class SourcePositions(PSBase):
         :param kwargs_ps: point source keyword arguments
         :return: x, y position (as numpy arrays)
         """
-        ra_source = kwargs_ps['ra_source']
-        dec_source = kwargs_ps['dec_source']
+        ra_source = kwargs_ps["ra_source"]
+        dec_source = kwargs_ps["dec_source"]
         return np.array(ra_source), np.array(dec_source)
 
-    def image_amplitude(self, kwargs_ps, kwargs_lens=None, x_pos=None, y_pos=None, magnification_limit=None,
-                        kwargs_lens_eqn_solver=None):
+    def image_amplitude(
+        self,
+        kwargs_ps,
+        kwargs_lens=None,
+        x_pos=None,
+        y_pos=None,
+        magnification_limit=None,
+        kwargs_lens_eqn_solver=None,
+    ):
         """Image brightness amplitudes.
 
         :param kwargs_ps: keyword arguments of the point source model
@@ -71,16 +92,19 @@ class SourcePositions(PSBase):
             else:
                 if kwargs_lens_eqn_solver is None:
                     kwargs_lens_eqn_solver = {}
-                ra_image, dec_image = self.image_position(kwargs_ps, kwargs_lens=kwargs_lens,
-                                                          magnification_limit=magnification_limit,
-                                                          **kwargs_lens_eqn_solver)
+                ra_image, dec_image = self.image_position(
+                    kwargs_ps,
+                    kwargs_lens=kwargs_lens,
+                    magnification_limit=magnification_limit,
+                    **kwargs_lens_eqn_solver
+                )
             mag = self._lens_model.magnification(ra_image, dec_image, kwargs_lens)
-            point_amp = kwargs_ps['source_amp'] * np.abs(mag)
+            point_amp = kwargs_ps["source_amp"] * np.abs(mag)
         else:
-            point_amp = kwargs_ps['point_amp']
+            point_amp = kwargs_ps["point_amp"]
             if x_pos is not None:
                 point_amp = _expand_to_array(point_amp, len(x_pos))
-        mag_pert = kwargs_ps.get('mag_pert', 1)
+        mag_pert = kwargs_ps.get("mag_pert", 1)
         mag_pert = _shrink_array(mag_pert, len(point_amp))
         point_amp *= np.array(mag_pert)
         return np.array(point_amp)
@@ -96,10 +120,10 @@ class SourcePositions(PSBase):
         :return: brightness amplitude (as numpy array)
         """
         if self._fixed_magnification:
-            source_amp = kwargs_ps['source_amp']
+            source_amp = kwargs_ps["source_amp"]
         else:
             ra_image, dec_image = self.image_position(kwargs_ps, kwargs_lens)
             mag = self._lens_model.magnification(ra_image, dec_image, kwargs_lens)
-            point_amp = kwargs_ps['point_amp']
+            point_amp = kwargs_ps["point_amp"]
             source_amp = np.mean(np.array(point_amp) / np.array(mag))
         return np.array(source_amp)

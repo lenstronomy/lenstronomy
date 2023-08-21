@@ -13,6 +13,7 @@ from lenstronomy.Sampling.Samplers.pso import Particle
 
 class TestParticleSwarmOptimizer(object):
     """"""
+
     ctx = None
     params = np.array([[1, 2, 3], [4, 5, 6]])
 
@@ -118,10 +119,11 @@ class TestParticleSwarmOptimizer(object):
         n_iterations = 100
 
         def ln_probability(x):
-            return -np.array(x)**2
+            return -np.array(x) ** 2
 
-        pso = ParticleSwarmOptimizer(func=ln_probability, low=[-10], high=[10],
-                                     particle_count=n_particle)
+        pso = ParticleSwarmOptimizer(
+            func=ln_probability, low=[-10], high=[10], particle_count=n_particle
+        )
 
         init_pos = np.array([1])
         pso.global_best.position = init_pos
@@ -133,7 +135,7 @@ class TestParticleSwarmOptimizer(object):
         time_start = time.time()
 
         if pso.is_master():
-            print('Computing the PSO...')
+            print("Computing the PSO...")
 
         num_iter = 0
 
@@ -154,5 +156,5 @@ class TestParticleSwarmOptimizer(object):
         npt.assert_almost_equal(result[0], 0, decimal=6)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pytest.main()

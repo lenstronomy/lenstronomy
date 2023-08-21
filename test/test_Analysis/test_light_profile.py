@@ -12,42 +12,89 @@ import lenstronomy.Util.util as util
 
 
 class TestLightAnalysis(object):
-
     def setup_method(self):
         pass
 
     def test_ellipticity(self):
-
         # GAUSSIAN
         e1_in = 0.1
         e2_in = 0
-        kwargs_light = [{'amp': 1, 'sigma': 1., 'center_x': 0, 'center_y': 0, 'e1': e1_in, 'e2': e2_in}]
-        light_model_list = ['GAUSSIAN_ELLIPSE']
-        lensAnalysis = LightProfileAnalysis(LightModel(light_model_list=light_model_list))
-        e1, e2 = lensAnalysis.ellipticity(kwargs_light, center_x=0, center_y=0, model_bool_list=None, grid_spacing=0.1,
-                                          grid_num=200)
+        kwargs_light = [
+            {
+                "amp": 1,
+                "sigma": 1.0,
+                "center_x": 0,
+                "center_y": 0,
+                "e1": e1_in,
+                "e2": e2_in,
+            }
+        ]
+        light_model_list = ["GAUSSIAN_ELLIPSE"]
+        lensAnalysis = LightProfileAnalysis(
+            LightModel(light_model_list=light_model_list)
+        )
+        e1, e2 = lensAnalysis.ellipticity(
+            kwargs_light,
+            center_x=0,
+            center_y=0,
+            model_bool_list=None,
+            grid_spacing=0.1,
+            grid_num=200,
+        )
         npt.assert_almost_equal(e1, e1_in, decimal=4)
         npt.assert_almost_equal(e2, e2_in, decimal=4)
 
         # off-centered
         e1_in = 0.1
         e2_in = 0
-        kwargs_light = [{'amp': 1, 'sigma': 1., 'center_x': .2, 'center_y': 0, 'e1': e1_in, 'e2': e2_in}]
-        light_model_list = ['GAUSSIAN_ELLIPSE']
-        lensAnalysis = LightProfileAnalysis(LightModel(light_model_list=light_model_list))
-        e1, e2 = lensAnalysis.ellipticity(kwargs_light, model_bool_list=None, grid_spacing=0.1,
-                                          grid_num=200)
+        kwargs_light = [
+            {
+                "amp": 1,
+                "sigma": 1.0,
+                "center_x": 0.2,
+                "center_y": 0,
+                "e1": e1_in,
+                "e2": e2_in,
+            }
+        ]
+        light_model_list = ["GAUSSIAN_ELLIPSE"]
+        lensAnalysis = LightProfileAnalysis(
+            LightModel(light_model_list=light_model_list)
+        )
+        e1, e2 = lensAnalysis.ellipticity(
+            kwargs_light, model_bool_list=None, grid_spacing=0.1, grid_num=200
+        )
         npt.assert_almost_equal(e1, e1_in, decimal=4)
         npt.assert_almost_equal(e2, e2_in, decimal=4)
 
-        #SERSIC
+        # SERSIC
         e1_in = 0.1
         e2_in = 0
-        kwargs_light = [{'amp': 1, 'n_sersic': 2., 'R_sersic': 1, 'center_x': 0,'center_y': 0, 'e1': e1_in, 'e2': e2_in}]
-        light_model_list = ['SERSIC_ELLIPSE']
-        lensAnalysis =  LightProfileAnalysis(LightModel(light_model_list=light_model_list))
-        e1, e2 = lensAnalysis.ellipticity(kwargs_light, center_x=0, center_y=0, model_bool_list=None, grid_spacing=0.2,
-                                          grid_num=400, iterative=True, num_iterative=30)
+        kwargs_light = [
+            {
+                "amp": 1,
+                "n_sersic": 2.0,
+                "R_sersic": 1,
+                "center_x": 0,
+                "center_y": 0,
+                "e1": e1_in,
+                "e2": e2_in,
+            }
+        ]
+        light_model_list = ["SERSIC_ELLIPSE"]
+        lensAnalysis = LightProfileAnalysis(
+            LightModel(light_model_list=light_model_list)
+        )
+        e1, e2 = lensAnalysis.ellipticity(
+            kwargs_light,
+            center_x=0,
+            center_y=0,
+            model_bool_list=None,
+            grid_spacing=0.2,
+            grid_num=400,
+            iterative=True,
+            num_iterative=30,
+        )
         print(e1, e2)
         npt.assert_almost_equal(e1, e1_in, decimal=3)
         npt.assert_almost_equal(e2, e2_in, decimal=3)
@@ -55,101 +102,164 @@ class TestLightAnalysis(object):
         # Power-law
         e1_in = 0.3
         e2_in = 0
-        center_x, center_y = 0., 0
+        center_x, center_y = 0.0, 0
         kwargs_light = [
-            {'gamma': 2., 'amp': 1, 'center_x': center_x, 'center_y': center_y, 'e1': e1_in, 'e2': e2_in}]
-        light_model_list = ['POWER_LAW']
-        lensAnalysis = LightProfileAnalysis(LightModel(light_model_list=light_model_list))
-        e1, e2 = lensAnalysis.ellipticity(kwargs_light, center_x=center_x, center_y=center_y, model_bool_list=None,
-                                          grid_spacing=0.05, grid_num=401, iterative=True, num_iterative=30)
+            {
+                "gamma": 2.0,
+                "amp": 1,
+                "center_x": center_x,
+                "center_y": center_y,
+                "e1": e1_in,
+                "e2": e2_in,
+            }
+        ]
+        light_model_list = ["POWER_LAW"]
+        lensAnalysis = LightProfileAnalysis(
+            LightModel(light_model_list=light_model_list)
+        )
+        e1, e2 = lensAnalysis.ellipticity(
+            kwargs_light,
+            center_x=center_x,
+            center_y=center_y,
+            model_bool_list=None,
+            grid_spacing=0.05,
+            grid_num=401,
+            iterative=True,
+            num_iterative=30,
+        )
         print(e1, e2)
         npt.assert_almost_equal(e1, e1_in, decimal=2)
         npt.assert_almost_equal(e2, e2_in, decimal=3)
 
     def test_half_light_radius(self):
-        Rs = 1.
-        kwargs_profile = [{'Rs': Rs, 'amp': 1., 'center_x': 0, 'center_y': 0}]
-        kwargs_options = {'light_model_list': ['HERNQUIST']}
+        Rs = 1.0
+        kwargs_profile = [{"Rs": Rs, "amp": 1.0, "center_x": 0, "center_y": 0}]
+        kwargs_options = {"light_model_list": ["HERNQUIST"]}
         lensAnalysis = LightProfileAnalysis(LightModel(**kwargs_options))
         r_eff_true = Rs / 0.551
-        r_eff = lensAnalysis.half_light_radius(kwargs_profile, grid_num=500, grid_spacing=0.2)
-        npt.assert_almost_equal(r_eff/r_eff_true, 1, 2)
+        r_eff = lensAnalysis.half_light_radius(
+            kwargs_profile, grid_num=500, grid_spacing=0.2
+        )
+        npt.assert_almost_equal(r_eff / r_eff_true, 1, 2)
 
         # now we shift the center
-        Rs = 1.
-        kwargs_profile = [{'Rs': Rs, 'amp': 1., 'center_x': 1., 'center_y': 0}]
-        kwargs_options = {'light_model_list': ['HERNQUIST']}
+        Rs = 1.0
+        kwargs_profile = [{"Rs": Rs, "amp": 1.0, "center_x": 1.0, "center_y": 0}]
+        kwargs_options = {"light_model_list": ["HERNQUIST"]}
         lensAnalysis = LightProfileAnalysis(LightModel(**kwargs_options))
         r_eff_true = Rs / 0.551
-        r_eff = lensAnalysis.half_light_radius(kwargs_profile, grid_num=500, grid_spacing=0.2)
+        r_eff = lensAnalysis.half_light_radius(
+            kwargs_profile, grid_num=500, grid_spacing=0.2
+        )
         npt.assert_almost_equal(r_eff / r_eff_true, 1, 2)
 
         # now we add ellipticity
-        Rs = 1.
-        kwargs_profile = [{'Rs': Rs, 'amp': 1., 'e1': 0.1, 'e2': -0.1, 'center_x': 0., 'center_y': 0}]
-        kwargs_options = {'light_model_list': ['HERNQUIST_ELLIPSE']}
+        Rs = 1.0
+        kwargs_profile = [
+            {
+                "Rs": Rs,
+                "amp": 1.0,
+                "e1": 0.1,
+                "e2": -0.1,
+                "center_x": 0.0,
+                "center_y": 0,
+            }
+        ]
+        kwargs_options = {"light_model_list": ["HERNQUIST_ELLIPSE"]}
         lensAnalysis = LightProfileAnalysis(LightModel(**kwargs_options))
         r_eff_true = Rs / 0.551
-        r_eff = lensAnalysis.half_light_radius(kwargs_profile, grid_num=500, grid_spacing=0.2)
+        r_eff = lensAnalysis.half_light_radius(
+            kwargs_profile, grid_num=500, grid_spacing=0.2
+        )
         npt.assert_almost_equal(r_eff / r_eff_true, 1, 2)
 
     def test_radial_profile(self):
-        Rs = 1.
-        kwargs_light = [{'Rs': Rs, 'amp': 1., 'center_x': 0, 'center_y': 0}]
-        kwargs_options = {'light_model_list': ['HERNQUIST']}
+        Rs = 1.0
+        kwargs_light = [{"Rs": Rs, "amp": 1.0, "center_x": 0, "center_y": 0}]
+        kwargs_options = {"light_model_list": ["HERNQUIST"]}
         lightModel = LightModel(**kwargs_options)
         profile = LightProfileAnalysis(light_model=lightModel)
         r_list = np.linspace(start=0.01, stop=10, num=10)
-        I_r = profile.radial_light_profile(r_list, kwargs_light, center_x=None, center_y=None, model_bool_list=None)
+        I_r = profile.radial_light_profile(
+            r_list, kwargs_light, center_x=None, center_y=None, model_bool_list=None
+        )
         I_r_true = lightModel.surface_brightness(r_list, 0, kwargs_light)
         npt.assert_almost_equal(I_r, I_r_true, decimal=5)
 
         # test off-center
-        Rs = 1.
-        kwargs_light = [{'Rs': Rs, 'amp': 1., 'center_x': 1., 'center_y': 0}]
-        kwargs_options = {'light_model_list': ['HERNQUIST']}
+        Rs = 1.0
+        kwargs_light = [{"Rs": Rs, "amp": 1.0, "center_x": 1.0, "center_y": 0}]
+        kwargs_options = {"light_model_list": ["HERNQUIST"]}
         lightModel = LightModel(**kwargs_options)
         profile = LightProfileAnalysis(light_model=lightModel)
         r_list = np.linspace(start=0.01, stop=10, num=10)
-        I_r = profile.radial_light_profile(r_list, kwargs_light, center_x=None, center_y=None, model_bool_list=None)
+        I_r = profile.radial_light_profile(
+            r_list, kwargs_light, center_x=None, center_y=None, model_bool_list=None
+        )
         I_r_true = lightModel.surface_brightness(r_list + 1, 0, kwargs_light)
         npt.assert_almost_equal(I_r, I_r_true, decimal=5)
 
     def test_multi_gaussian_decomposition(self):
-        Rs = 1.
-        kwargs_light = [{'Rs': Rs, 'amp': 1., 'center_x': 0, 'center_y': 0}]
-        kwargs_options = {'light_model_list': ['HERNQUIST']}
+        Rs = 1.0
+        kwargs_light = [{"Rs": Rs, "amp": 1.0, "center_x": 0, "center_y": 0}]
+        kwargs_options = {"light_model_list": ["HERNQUIST"]}
         lightModel = LightModel(**kwargs_options)
         profile = LightProfileAnalysis(light_model=lightModel)
 
-        amplitudes, sigmas, center_x, center_y = profile.multi_gaussian_decomposition(kwargs_light, grid_spacing=0.01, grid_num=100, model_bool_list=None, n_comp=20,
-                                                                                      center_x=None, center_y=None)
+        amplitudes, sigmas, center_x, center_y = profile.multi_gaussian_decomposition(
+            kwargs_light,
+            grid_spacing=0.01,
+            grid_num=100,
+            model_bool_list=None,
+            n_comp=20,
+            center_x=None,
+            center_y=None,
+        )
         mge = MultiGaussian()
         r_array = np.logspace(start=-2, stop=0.5, num=10)
-        print(r_array, 'test r_array')
-        flux = mge.function(r_array, 0, amp=amplitudes, sigma=sigmas, center_x=center_x, center_y=center_y)
+        print(r_array, "test r_array")
+        flux = mge.function(
+            r_array,
+            0,
+            amp=amplitudes,
+            sigma=sigmas,
+            center_x=center_x,
+            center_y=center_y,
+        )
         flux_true = lightModel.surface_brightness(r_array, 0, kwargs_light)
         npt.assert_almost_equal(flux / flux_true, 1, decimal=2)
 
         # test off-center
 
-        Rs = 1.
-        offset = 1.
-        kwargs_light = [{'Rs': Rs, 'amp': 1., 'center_x': offset, 'center_y': 0}]
-        kwargs_options = {'light_model_list': ['HERNQUIST']}
+        Rs = 1.0
+        offset = 1.0
+        kwargs_light = [{"Rs": Rs, "amp": 1.0, "center_x": offset, "center_y": 0}]
+        kwargs_options = {"light_model_list": ["HERNQUIST"]}
         lightModel = LightModel(**kwargs_options)
         profile = LightProfileAnalysis(light_model=lightModel)
 
-        amplitudes, sigmas, center_x, center_y = profile.multi_gaussian_decomposition(kwargs_light, grid_spacing=0.01,
-                                                                                      grid_num=100, model_bool_list=None,
-                                                                                      n_comp=20,
-                                                                                      center_x=None, center_y=None)
+        amplitudes, sigmas, center_x, center_y = profile.multi_gaussian_decomposition(
+            kwargs_light,
+            grid_spacing=0.01,
+            grid_num=100,
+            model_bool_list=None,
+            n_comp=20,
+            center_x=None,
+            center_y=None,
+        )
         assert center_x == offset
         assert center_y == 0
         mge = MultiGaussian()
         r_array = np.logspace(start=-2, stop=0.5, num=10)
-        print(r_array, 'test r_array')
-        flux = mge.function(r_array, 0, amp=amplitudes, sigma=sigmas, center_x=center_x, center_y=center_y)
+        print(r_array, "test r_array")
+        flux = mge.function(
+            r_array,
+            0,
+            amp=amplitudes,
+            sigma=sigmas,
+            center_x=center_x,
+            center_y=center_y,
+        )
         flux_true = lightModel.surface_brightness(r_array, 0, kwargs_light)
         npt.assert_almost_equal(flux / flux_true, 1, decimal=2)
         """
@@ -163,16 +273,21 @@ class TestLightAnalysis(object):
         """
 
     def test_multi_gaussian_decomposition_ellipse(self):
-        Rs = 1.
-        kwargs_light = [{'Rs': Rs, 'amp': 1., 'center_x': 0, 'center_y': 0}]
-        kwargs_options = {'light_model_list': ['HERNQUIST']}
+        Rs = 1.0
+        kwargs_light = [{"Rs": Rs, "amp": 1.0, "center_x": 0, "center_y": 0}]
+        kwargs_options = {"light_model_list": ["HERNQUIST"]}
         lightModel = LightModel(**kwargs_options)
         profile = LightProfileAnalysis(light_model=lightModel)
 
-        kwargs_mge = profile.multi_gaussian_decomposition_ellipse(kwargs_light, grid_spacing=0.01,
-                                                                  grid_num=100, model_bool_list=None,
-                                                                  n_comp=20,
-                                                                  center_x=None, center_y=None)
+        kwargs_mge = profile.multi_gaussian_decomposition_ellipse(
+            kwargs_light,
+            grid_spacing=0.01,
+            grid_num=100,
+            model_bool_list=None,
+            n_comp=20,
+            center_x=None,
+            center_y=None,
+        )
         mge = MultiGaussianEllipse()
         r_array = np.logspace(start=-2, stop=0.5, num=10)
         flux = mge.function(r_array, 0, **kwargs_mge)
@@ -181,18 +296,25 @@ class TestLightAnalysis(object):
 
         # elliptic
 
-        Rs = 1.
-        kwargs_light = [{'Rs': Rs, 'amp': 1., 'e1': 0.1, 'e2': 0, 'center_x': 0, 'center_y': 0}]
-        kwargs_options = {'light_model_list': ['HERNQUIST_ELLIPSE']}
+        Rs = 1.0
+        kwargs_light = [
+            {"Rs": Rs, "amp": 1.0, "e1": 0.1, "e2": 0, "center_x": 0, "center_y": 0}
+        ]
+        kwargs_options = {"light_model_list": ["HERNQUIST_ELLIPSE"]}
         lightModel = LightModel(**kwargs_options)
         profile = LightProfileAnalysis(light_model=lightModel)
 
-        kwargs_mge = profile.multi_gaussian_decomposition_ellipse(kwargs_light, grid_spacing=0.1,
-                                                                  grid_num=400, model_bool_list=None,
-                                                                  n_comp=20,
-                                                                  center_x=None, center_y=None)
+        kwargs_mge = profile.multi_gaussian_decomposition_ellipse(
+            kwargs_light,
+            grid_spacing=0.1,
+            grid_num=400,
+            model_bool_list=None,
+            n_comp=20,
+            center_x=None,
+            center_y=None,
+        )
 
-        print(kwargs_mge['e1'])
+        print(kwargs_mge["e1"])
         mge = MultiGaussianEllipse()
         r_array = np.logspace(start=-2, stop=0.5, num=10)
         flux = mge.function(r_array, 0, **kwargs_mge)
@@ -202,16 +324,18 @@ class TestLightAnalysis(object):
 
     def test_flux_components(self):
         amp = 1
-        kwargs_profile = [{'amp': amp}]
-        kwargs_options = {'light_model_list': ['UNIFORM']}
+        kwargs_profile = [{"amp": amp}]
+        kwargs_options = {"light_model_list": ["UNIFORM"]}
         lightModel = LightModel(**kwargs_options)
         profile = LightProfileAnalysis(light_model=lightModel)
         grid_num = 40
         grid_spacing = 0.1
-        flux_list, R_h_list = profile.flux_components(kwargs_profile, grid_num=grid_num, grid_spacing=grid_spacing)
+        flux_list, R_h_list = profile.flux_components(
+            kwargs_profile, grid_num=grid_num, grid_spacing=grid_spacing
+        )
         assert len(flux_list) == 1
-        area = (grid_num * grid_spacing)**2
-        npt.assert_almost_equal(flux_list[0], area*amp, decimal=8)
+        area = (grid_num * grid_spacing) ** 2
+        npt.assert_almost_equal(flux_list[0], area * amp, decimal=8)
 
         phi, q = -0.37221683730659516, 0.70799587973181288
         e1, e2 = param_util.phi_q2_ellipticity(phi, q)
@@ -219,21 +343,35 @@ class TestLightAnalysis(object):
         phi2, q2 = 0.14944144075912402, 0.4105628122365978
         e12, e22 = param_util.phi_q2_ellipticity(phi2, q2)
 
-        kwargs_profile = [{'Rs': 0.16350224766074103, 'e1': e12, 'e2': e22, 'center_x': -0.019983826426838536,
-                           'center_y': 0.90000011282957304, 'amp': 1.3168943578511678},
-                          {'Rs': 0.29187068596715743, 'e1': e1, 'e2': e2, 'center_x': 0.020568531548241405,
-                           'center_y': 0.036038490364800925, 'Ra': 0.020000382843298824,
-                           'amp': 85.948773973262391}]
-        kwargs_options = {'light_model_list': ['HERNQUIST_ELLIPSE', 'PJAFFE_ELLIPSE']}
+        kwargs_profile = [
+            {
+                "Rs": 0.16350224766074103,
+                "e1": e12,
+                "e2": e22,
+                "center_x": -0.019983826426838536,
+                "center_y": 0.90000011282957304,
+                "amp": 1.3168943578511678,
+            },
+            {
+                "Rs": 0.29187068596715743,
+                "e1": e1,
+                "e2": e2,
+                "center_x": 0.020568531548241405,
+                "center_y": 0.036038490364800925,
+                "Ra": 0.020000382843298824,
+                "amp": 85.948773973262391,
+            },
+        ]
+        kwargs_options = {"light_model_list": ["HERNQUIST_ELLIPSE", "PJAFFE_ELLIPSE"]}
         lightModel = LightModel(**kwargs_options)
         profile = LightProfileAnalysis(light_model=lightModel)
 
-        flux_list, R_h_list = profile.flux_components(kwargs_profile, grid_num=400, grid_spacing=0.01)
+        flux_list, R_h_list = profile.flux_components(
+            kwargs_profile, grid_num=400, grid_spacing=0.01
+        )
         assert len(flux_list) == 2
         npt.assert_almost_equal(flux_list[0], 0.1940428118053717, decimal=6)
         npt.assert_almost_equal(flux_list[1], 3.0964046927612707, decimal=6)
-
-
 
 
 """
@@ -323,11 +461,10 @@ class TestLightAnalysis(object):
 
 
 class TestRaise(unittest.TestCase):
-
     def test_raise(self):
         with self.assertRaises(ValueError):
             raise ValueError()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pytest.main()

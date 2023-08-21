@@ -3,11 +3,10 @@ import numpy as np
 import scipy
 from lenstronomy.Util import param_util
 
-__all__ = ['SersicUtil']
+__all__ = ["SersicUtil"]
 
 
 class SersicUtil(object):
-
     _s = 0.00001
 
     def __init__(self, smoothing=_s, sersic_major_axis=False):
@@ -26,13 +25,13 @@ class SersicUtil(object):
         """Returns normalisation of the sersic profile such that Re is the half light
         radius given n_sersic slope."""
         bn = self.b_n(n)
-        k = bn*Re**(-1./n)
+        k = bn * Re ** (-1.0 / n)
         return k, bn
 
     def k_Re(self, n, k):
         """"""
         bn = self.b_n(n)
-        Re = (bn/k)**n
+        Re = (bn / k) ** n
         return Re
 
     @staticmethod
@@ -43,8 +42,10 @@ class SersicUtil(object):
         :param n: the sersic index
         :return: b(n)
         """
-        bn = 1.9992*n - 0.3271
-        bn = np.maximum(bn, 0.00001)  # make sure bn is strictly positive as a save guard for very low n_sersic
+        bn = 1.9992 * n - 0.3271
+        bn = np.maximum(
+            bn, 0.00001
+        )  # make sure bn is strictly positive as a save guard for very low n_sersic
         return bn
 
     def get_distance_from_center(self, x, y, e1, e2, center_x, center_y):
@@ -64,12 +65,14 @@ class SersicUtil(object):
             y_shift = y - center_y
             cos_phi = np.cos(phi_G)
             sin_phi = np.sin(phi_G)
-            xt1 = cos_phi*x_shift+sin_phi*y_shift
-            xt2 = -sin_phi*x_shift+cos_phi*y_shift
-            xt2difq2 = xt2/(q*q)
-            r = np.sqrt(xt1*xt1+xt2*xt2difq2)
+            xt1 = cos_phi * x_shift + sin_phi * y_shift
+            xt2 = -sin_phi * x_shift + cos_phi * y_shift
+            xt2difq2 = xt2 / (q * q)
+            r = np.sqrt(xt1 * xt1 + xt2 * xt2difq2)
         else:
-            x_, y_ = param_util.transform_e1e2_product_average(x, y, e1, e2, center_x, center_y)
+            x_, y_ = param_util.transform_e1e2_product_average(
+                x, y, e1, e2, center_x, center_y
+            )
             r = np.sqrt(x_**2 + y_**2)
         return r
 
@@ -88,7 +91,7 @@ class SersicUtil(object):
             r = max(self._s, r)
         else:
             r[r < self._s] = self._s
-        x_reduced = (r/r_eff)**(1./n_sersic)
+        x_reduced = (r / r_eff) ** (1.0 / n_sersic)
         return x_reduced
 
     def _alpha_eff(self, r_eff, n_sersic, k_eff):
@@ -99,7 +102,14 @@ class SersicUtil(object):
         :return:
         """
         b = self.b_n(n_sersic)
-        alpha_eff = n_sersic * r_eff * k_eff * b**(-2*n_sersic) * np.exp(b) * special.gamma(2*n_sersic)
+        alpha_eff = (
+            n_sersic
+            * r_eff
+            * k_eff
+            * b ** (-2 * n_sersic)
+            * np.exp(b)
+            * special.gamma(2 * n_sersic)
+        )
         return -alpha_eff
 
     def alpha_abs(self, x, y, n_sersic, r_eff, k_eff, center_x=0, center_y=0):
@@ -118,7 +128,7 @@ class SersicUtil(object):
         x_red = self._x_reduced(x, y, n_sersic, r_eff, center_x, center_y)
         b = self.b_n(n_sersic)
         a_eff = self._alpha_eff(r_eff, n_sersic, k_eff)
-        alpha = 2. * a_eff * x_red ** (-n) * (special.gammainc(2 * n, b * x_red))
+        alpha = 2.0 * a_eff * x_red ** (-n) * (special.gammainc(2 * n, b * x_red))
         return alpha
 
     def d_alpha_dr(self, x, y, n_sersic, r_eff, k_eff, center_x=0, center_y=0):
@@ -138,14 +148,16 @@ class SersicUtil(object):
         y_ = y - center_y
         r = np.sqrt(x_**2 + y_**2)
         alpha = self.alpha_abs(r, 0, n_sersic, r_eff, k_eff)
-        alpha_dr = self.alpha_abs(r+_dr, 0, n_sersic, r_eff, k_eff)
-        d_alpha_dr = (alpha_dr - alpha)/_dr
+        alpha_dr = self.alpha_abs(r + _dr, 0, n_sersic, r_eff, k_eff)
+        d_alpha_dr = (alpha_dr - alpha) / _dr
         return d_alpha_dr
 
     def density(self, x, y, n_sersic, r_eff, k_eff, center_x=0, center_y=0):
         """De-projection of the Sersic profile based on Prugniel & Simien (1997)
         :return:"""
-        raise ValueError("not implemented! Use a Multi-Gaussian-component decomposition.")
+        raise ValueError(
+            "not implemented! Use a Multi-Gaussian-component decomposition."
+        )
 
     def _total_flux(self, r_eff, I_eff, n_sersic):
         """Computes total flux of a round Sersic profile.
@@ -156,7 +168,16 @@ class SersicUtil(object):
         :return: integrated flux to infinity
         """
         bn = self.b_n(n_sersic)
-        return I_eff * r_eff**2 * 2 * np.pi * n_sersic * np.exp(bn) / bn**(2*n_sersic) * scipy.special.gamma(2*n_sersic)
+        return (
+            I_eff
+            * r_eff**2
+            * 2
+            * np.pi
+            * n_sersic
+            * np.exp(bn)
+            / bn ** (2 * n_sersic)
+            * scipy.special.gamma(2 * n_sersic)
+        )
 
     def total_flux(self, amp, R_sersic, n_sersic, e1=0, e2=0, **kwargs):
         """Computes analytical integral to compute total flux of the Sersic profile.
@@ -183,7 +204,9 @@ class SersicUtil(object):
         smoothed and stabilized radius."""
         return np.maximum(self._smoothing, R)
 
-    def _r_sersic(self, R, R_sersic, n_sersic, max_R_frac=1000.0, alpha=1.0, R_break=0.0):
+    def _r_sersic(
+        self, R, R_sersic, n_sersic, max_R_frac=1000.0, alpha=1.0, R_break=0.0
+    ):
         """
 
         :param R: radius (array or float)
@@ -201,11 +224,11 @@ class SersicUtil(object):
             if R_frac > max_R_frac:
                 result = 0
             else:
-                exponent = -bn * (R_frac ** (1. / n_sersic) - 1.)
+                exponent = -bn * (R_frac ** (1.0 / n_sersic) - 1.0)
                 result = np.exp(exponent)
         else:
             R_frac_real = R_frac[R_frac <= max_R_frac]
-            exponent = -bn * (R_frac_real ** (1. / n_sersic) - 1.)
+            exponent = -bn * (R_frac_real ** (1.0 / n_sersic) - 1.0)
             result = np.zeros_like(R_)
             result[R_frac <= max_R_frac] = np.exp(exponent)
         return np.nan_to_num(result)

@@ -4,6 +4,7 @@ import lenstronomy.Util.mask_util as mask_util
 from lenstronomy.Util import param_util
 
 from lenstronomy.Util.package_util import exporter
+
 export, __all__ = exporter()
 
 
@@ -19,12 +20,12 @@ def half_light_radius(lens_light, x_grid, y_grid, center_x=0, center_y=0):
     :return:
     """
     lens_light[lens_light < 0] = 0
-    total_flux_2 = np.sum(lens_light)/2.
-    r_max = np.max(np.sqrt((x_grid-center_x)**2 + (y_grid-center_y)**2))
+    total_flux_2 = np.sum(lens_light) / 2.0
+    r_max = np.max(np.sqrt((x_grid - center_x) ** 2 + (y_grid - center_y) ** 2))
     for i in range(1000):
-        r = i/500. * r_max
+        r = i / 500.0 * r_max
         mask = mask_util.mask_azimuthal(x_grid, y_grid, center_x, center_y, r)
-        flux_enclosed = np.sum(np.array(lens_light)*mask)
+        flux_enclosed = np.sum(np.array(lens_light) * mask)
         if flux_enclosed > total_flux_2:
             return r
     return -1
@@ -42,15 +43,15 @@ def radial_profile(light_grid, x_grid, y_grid, center_x=0, center_y=0, n=None):
     :param n: number of discrete steps
     :return: I(r), r with r in units of the coordinate grid
     """
-    r_max = np.max(np.sqrt((x_grid-center_x)**2 + (y_grid-center_y)**2))
+    r_max = np.max(np.sqrt((x_grid - center_x) ** 2 + (y_grid - center_y) ** 2))
     if n is None:
         n = int(np.sqrt(len(x_grid)))
     I_r = np.zeros(n)
     I_enclosed = 0
-    r = np.linspace(1./n*r_max, r_max, n)
+    r = np.linspace(1.0 / n * r_max, r_max, n)
     for i, r_i in enumerate(r):
         mask = mask_util.mask_azimuthal(x_grid, y_grid, center_x, center_y, r_i)
-        flux_enclosed = np.sum(np.array(light_grid)*mask)
+        flux_enclosed = np.sum(np.array(light_grid) * mask)
         I_r[i] = flux_enclosed - I_enclosed
         I_enclosed = flux_enclosed
     return I_r, r
@@ -69,7 +70,7 @@ def azimuthalAverage(image, center=None):
     y, x = np.indices(image.shape)
 
     if not center:
-        center = np.array([(x.max()-x.min())/2.0, (x.max()-x.min())/2.0])
+        center = np.array([(x.max() - x.min()) / 2.0, (x.max() - x.min()) / 2.0])
 
     r = np.hypot(x - center[0], y - center[1])
 
@@ -83,8 +84,8 @@ def azimuthalAverage(image, center=None):
 
     # Find all pixels that fall within each radial bin.
     deltar = r_int[1:] - r_int[:-1]  # Assumes all radii represented
-    rind = np.where(deltar)[0]       # location of changed radius
-    nr = rind[1:] - rind[:-1]        # number of radius bin
+    rind = np.where(deltar)[0]  # location of changed radius
+    nr = rind[1:] - rind[:-1]  # number of radius bin
 
     # Cumulative sum to figure out sums for each radius bin
     csim = np.cumsum(i_sorted, dtype=float)
@@ -108,7 +109,7 @@ def moments(I_xy_input, x, y):
     I_xy -= background
     x_ = np.sum(I_xy * x)
     y_ = np.sum(I_xy * y)
-    r = (np.max(x) - np.min(x)) / 3.
+    r = (np.max(x) - np.min(x)) / 3.0
     mask = mask_util.mask_azimuthal(x, y, center_x=x_, center_y=y_, r=r)
     Q_xx = np.sum(I_xy * mask * (x - x_) ** 2)
     Q_xy = np.sum(I_xy * mask * (x - x_) * (y - y_))
@@ -126,13 +127,16 @@ def _ellipticities(I_xy, x, y):
     :return: reduced shear moments g1, g2
     """
     Q_xx, Q_xy, Q_yy, bkg = moments(I_xy, x, y)
-    norm = Q_xx + Q_yy + 2 * np.sqrt(Q_xx*Q_yy - Q_xy**2)
+    norm = Q_xx + Q_yy + 2 * np.sqrt(Q_xx * Q_yy - Q_xy**2)
     e1 = (Q_xx - Q_yy) / norm
     e2 = 2 * Q_xy / norm
-    return e1 / (1+bkg), e2 / (1+bkg)
+    return e1 / (1 + bkg), e2 / (1 + bkg)
+
 
 @export
-def ellipticities(I_xy, x_grid, y_grid, num_iterative=30, iterative=False, center_x=0, center_y=0):
+def ellipticities(
+    I_xy, x_grid, y_grid, num_iterative=30, iterative=False, center_x=0, center_y=0
+):
     """
 
     :param I_xy: surface brightness I(x, y) as array
@@ -144,13 +148,17 @@ def ellipticities(I_xy, x_grid, y_grid, num_iterative=30, iterative=False, cente
     :type num_iterative: int
     :return: e1, e2 eccentricities
     """
-    radius = (np.max(x_grid) - np.min(x_grid)) / 2.
-    mask = mask_util.mask_azimuthal(x_grid, y_grid, center_x=center_x, center_y=center_y, r=radius)
+    radius = (np.max(x_grid) - np.min(x_grid)) / 2.0
+    mask = mask_util.mask_azimuthal(
+        x_grid, y_grid, center_x=center_x, center_y=center_y, r=radius
+    )
     e1, e2 = _ellipticities(I_xy * mask, x_grid - center_x, y_grid - center_y)
     phi, q = param_util.ellipticity2phi_q(e1, e2)
     if iterative:
         for i in range(num_iterative):
-            mask = mask_util.mask_eccentric(x_grid, y_grid, center_x, center_y, e1, e2, r=radius * q / np.sqrt(2))
+            mask = mask_util.mask_eccentric(
+                x_grid, y_grid, center_x, center_y, e1, e2, r=radius * q / np.sqrt(2)
+            )
             e1, e2 = _ellipticities(I_xy * mask, x_grid - center_x, y_grid - center_y)
             phi, q = param_util.ellipticity2phi_q(e1, e2)
     return e1, e2
@@ -179,10 +187,12 @@ def profile_center(kwargs_list, center_x=None, center_y=None):
     :return: center_x, center_y
     """
     if center_x is None or center_y is None:
-        if 'center_x' in kwargs_list[0]:
-            center_x = kwargs_list[0]['center_x']
-            center_y = kwargs_list[0]['center_y']
+        if "center_x" in kwargs_list[0]:
+            center_x = kwargs_list[0]["center_x"]
+            center_y = kwargs_list[0]["center_y"]
         else:
-            raise ValueError('The center has to be provided as a function argument or the first profile in the list'
-                             ' must come with a center.')
+            raise ValueError(
+                "The center has to be provided as a function argument or the first profile in the list"
+                " must come with a center."
+            )
     return center_x, center_y

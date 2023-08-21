@@ -1,4 +1,4 @@
-__author__ = 'sibirrer'
+__author__ = "sibirrer"
 
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 from lenstronomy.LensModel.Profiles.cored_density import CoredDensity
@@ -7,7 +7,7 @@ from lenstronomy.LensModel.Profiles.cored_density_exp import CoredDensityExp
 from lenstronomy.LensModel.Profiles.uldm import Uldm
 from lenstronomy.LensModel.Profiles.convergence import Convergence
 
-__all__ = ['CoredDensityMST']
+__all__ = ["CoredDensityMST"]
 
 
 class CoredDensityMST(LensProfileBase):
@@ -23,23 +23,37 @@ class CoredDensityMST(LensProfileBase):
     mass sheet as 'CONVERGENCE' that is present needs to be subtracted in post-
     processing.
     """
-    param_names = ['lambda_approx', 'r_core', 'center_x', 'center_y']
-    lower_limit_default = {'lambda_approx': -1, 'r_core': 0, 'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'lambda_approx': 10, 'r_core': 100, 'center_x': 100, 'center_y': 100}
 
-    def __init__(self, profile_type='CORED_DENSITY'):
-        if profile_type == 'CORED_DENSITY':
+    param_names = ["lambda_approx", "r_core", "center_x", "center_y"]
+    lower_limit_default = {
+        "lambda_approx": -1,
+        "r_core": 0,
+        "center_x": -100,
+        "center_y": -100,
+    }
+    upper_limit_default = {
+        "lambda_approx": 10,
+        "r_core": 100,
+        "center_x": 100,
+        "center_y": 100,
+    }
+
+    def __init__(self, profile_type="CORED_DENSITY"):
+        if profile_type == "CORED_DENSITY":
             self._profile = CoredDensity()
-        elif profile_type == 'CORED_DENSITY_2':
+        elif profile_type == "CORED_DENSITY_2":
             self._profile = CoredDensity2()
-        elif profile_type == 'CORED_DENSITY_EXP':
+        elif profile_type == "CORED_DENSITY_EXP":
             self._profile = CoredDensityExp()
         # Due to parameters name conventions/positioning, right now only the free soliton with
-        # the default value of slope = 8 is supported 
-        elif profile_type == 'CORED_DENSITY_ULDM':
+        # the default value of slope = 8 is supported
+        elif profile_type == "CORED_DENSITY_ULDM":
             self._profile = Uldm()
         else:
-            raise ValueError('profile_type %s not supported for CoredDensityMST instance.' % profile_type)
+            raise ValueError(
+                "profile_type %s not supported for CoredDensityMST instance."
+                % profile_type
+            )
         self._convergence = Convergence()
         super(CoredDensityMST, self).__init__()
 
@@ -54,8 +68,10 @@ class CoredDensityMST(LensProfileBase):
         :param center_y: y-center of the profile
         :return: lensing potential correction
         """
-        kappa_ext = (1 - lambda_approx)/lambda_approx
-        f_cored_density = self._profile.function(x, y, kappa_ext, r_core, center_x, center_y)
+        kappa_ext = (1 - lambda_approx) / lambda_approx
+        f_cored_density = self._profile.function(
+            x, y, kappa_ext, r_core, center_x, center_y
+        )
         f_ms = self._convergence.function(x, y, kappa_ext, center_x, center_y)
         return f_cored_density - f_ms
 
@@ -70,9 +86,13 @@ class CoredDensityMST(LensProfileBase):
         :param center_y: y-center of the profile
         :return: alpha_x, alpha_y
         """
-        kappa_ext = (1 - lambda_approx)/lambda_approx
-        f_x_cd, f_y_cd = self._profile.derivatives(x, y, kappa_ext, r_core, center_x, center_y)
-        f_x_ms, f_y_ms = self._convergence.derivatives(x, y, kappa_ext, center_x, center_y)
+        kappa_ext = (1 - lambda_approx) / lambda_approx
+        f_x_cd, f_y_cd = self._profile.derivatives(
+            x, y, kappa_ext, r_core, center_x, center_y
+        )
+        f_x_ms, f_y_ms = self._convergence.derivatives(
+            x, y, kappa_ext, center_x, center_y
+        )
         return f_x_cd - f_x_ms, f_y_cd - f_y_ms
 
     def hessian(self, x, y, lambda_approx, r_core, center_x=0, center_y=0):
@@ -86,7 +106,16 @@ class CoredDensityMST(LensProfileBase):
         :param center_y: y-center of the profile
         :return: df/dxx, df/dxy, df/dyx, df/dyy
         """
-        kappa_ext = (1 - lambda_approx)/lambda_approx
-        f_xx_cd, f_xy_cd, f_yx_cd, f_yy_cd = self._profile.hessian(x, y, kappa_ext, r_core, center_x, center_y)
-        f_xx_ms, f_xy_ms, f_yx_ms, f_yy_ms = self._convergence.hessian(x, y, kappa_ext, center_x, center_y)
-        return f_xx_cd - f_xx_ms, f_xy_cd - f_xy_ms, f_yx_cd - f_yx_ms, f_yy_cd - f_yy_ms 
+        kappa_ext = (1 - lambda_approx) / lambda_approx
+        f_xx_cd, f_xy_cd, f_yx_cd, f_yy_cd = self._profile.hessian(
+            x, y, kappa_ext, r_core, center_x, center_y
+        )
+        f_xx_ms, f_xy_ms, f_yx_ms, f_yy_ms = self._convergence.hessian(
+            x, y, kappa_ext, center_x, center_y
+        )
+        return (
+            f_xx_cd - f_xx_ms,
+            f_xy_cd - f_xy_ms,
+            f_yx_cd - f_yx_ms,
+            f_yy_cd - f_yy_ms,
+        )

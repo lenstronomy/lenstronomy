@@ -1,4 +1,4 @@
-__author__ = 'sibirrer'
+__author__ = "sibirrer"
 
 from lenstronomy.LensModel.Profiles.spep import SPEP
 from lenstronomy.LensModel.Profiles.spp import SPP
@@ -9,8 +9,10 @@ import numpy as np
 import numpy.testing as npt
 import pytest
 
+
 class TestSPEP(object):
     """Tests the Gaussian methods."""
+
     def setup_method(self):
         self.SPEP = SPEP()
         self.SPP = SPP()
@@ -19,12 +21,12 @@ class TestSPEP(object):
     def test_function(self):
         x = np.array([1])
         y = np.array([2])
-        phi_E = 1.
+        phi_E = 1.0
         gamma = 1.9
         q = 1
-        phi_G = 0.
+        phi_G = 0.0
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
-        E = phi_E / (((3-gamma)/2.)**(1./(1-gamma))*np.sqrt(q))
+        E = phi_E / (((3 - gamma) / 2.0) ** (1.0 / (1 - gamma)) * np.sqrt(q))
         values_spep = self.SPEP.function(x, y, E, gamma, e1, e2)
         values_spp = self.SPP.function(x, y, E, gamma)
         assert values_spep[0] == values_spp[0]
@@ -34,8 +36,8 @@ class TestSPEP(object):
         values_spp = self.SPP.function(x, y, E, gamma)
         assert values_spep[0] == values_spp[0]
 
-        x = np.array([2,3,4])
-        y = np.array([1,1,1])
+        x = np.array([2, 3, 4])
+        y = np.array([1, 1, 1])
         values_spep = self.SPEP.function(x, y, E, gamma, e1, e2)
         values_spp = self.SPP.function(x, y, E, gamma)
         assert values_spep[0] == values_spp[0]
@@ -45,12 +47,12 @@ class TestSPEP(object):
     def test_derivatives(self):
         x = np.array([1])
         y = np.array([2])
-        phi_E = 1.
+        phi_E = 1.0
         gamma = 1.9
         q = 1
-        phi_G = 0.
+        phi_G = 0.0
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
-        E = phi_E / (((3-gamma)/2.)**(1./(1-gamma))*np.sqrt(q))
+        E = phi_E / (((3 - gamma) / 2.0) ** (1.0 / (1 - gamma)) * np.sqrt(q))
         f_x_spep, f_y_spep = self.SPEP.derivatives(x, y, E, gamma, e1, e2)
         f_x_spp, f_y_spp = self.SPP.derivatives(x, y, E, gamma)
         npt.assert_almost_equal(f_x_spep, f_x_spp, decimal=9)
@@ -62,8 +64,8 @@ class TestSPEP(object):
         npt.assert_almost_equal(f_x_spep, f_x_spp, decimal=9)
         npt.assert_almost_equal(f_y_spep, f_y_spp, decimal=9)
 
-        x = np.array([1,3,4])
-        y = np.array([2,1,1])
+        x = np.array([1, 3, 4])
+        y = np.array([2, 1, 1])
         f_x_spep, f_y_spep = self.SPEP.derivatives(x, y, E, gamma, e1, e2)
         f_x_spp, f_y_spp = self.SPP.derivatives(x, y, E, gamma)
         npt.assert_almost_equal(f_x_spep, f_x_spp, decimal=9)
@@ -72,21 +74,25 @@ class TestSPEP(object):
     def test_hessian(self):
         x = np.array([1])
         y = np.array([2])
-        phi_E = 1.
+        phi_E = 1.0
         gamma = 1.9
-        q = 1.
-        phi_G = 0.
+        q = 1.0
+        phi_G = 0.0
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
-        E = phi_E / (((3-gamma)/2.)**(1./(1-gamma))*np.sqrt(q))
-        f_xx_spep, f_xy_spep, f_yx_spep, f_yy_spep = self.SPEP.hessian(x, y, E, gamma, e1, e2)
+        E = phi_E / (((3 - gamma) / 2.0) ** (1.0 / (1 - gamma)) * np.sqrt(q))
+        f_xx_spep, f_xy_spep, f_yx_spep, f_yy_spep = self.SPEP.hessian(
+            x, y, E, gamma, e1, e2
+        )
         f_xx_spp, f_xy_spp, f_yx_spp, f_yy_spp = self.SPP.hessian(x, y, E, gamma)
         assert f_xx_spep[0] == f_xx_spp[0]
         assert f_yy_spep[0] == f_yy_spp[0]
         assert f_xy_spep[0] == f_xy_spp[0]
         assert f_yx_spep[0] == f_yx_spp[0]
-        x = np.array([1,3,4])
-        y = np.array([2,1,1])
-        f_xx_spep, f_xy_spep, f_yx_spep, f_yy_spep = self.SPEP.hessian(x, y, E, gamma, e1, e2)
+        x = np.array([1, 3, 4])
+        y = np.array([2, 1, 1])
+        f_xx_spep, f_xy_spep, f_yx_spep, f_yy_spep = self.SPEP.hessian(
+            x, y, E, gamma, e1, e2
+        )
         f_xx_spp, f_xy_spp, f_yx_spp, f_yy_spp = self.SPP.hessian(x, y, E, gamma)
         assert f_xx_spep[0] == f_xx_spp[0]
         assert f_yy_spep[0] == f_yy_spp[0]
@@ -101,8 +107,8 @@ class TestSPEP(object):
     def test_compare_sis(self):
         x = np.array([1])
         y = np.array([2])
-        theta_E = 1.
-        gamma = 2.
+        theta_E = 1.0
+        gamma = 2.0
         f_sis = self.SIS.function(x, y, theta_E)
         f_spp = self.SPP.function(x, y, theta_E, gamma)
         f_x_sis, f_y_sis = self.SIS.derivatives(x, y, theta_E)
@@ -117,7 +123,7 @@ class TestSPEP(object):
         npt.assert_almost_equal(f_xy_sis[0], f_xy_spp[0], decimal=7)
 
     def test_unit_conversion(self):
-        theta_E = 2.
+        theta_E = 2.0
         gamma = 2.2
         rho0 = self.SPP.theta2rho(theta_E, gamma)
         theta_E_out = self.SPP.rho2theta(rho0, gamma)
@@ -138,5 +144,5 @@ class TestSPEP(object):
         npt.assert_almost_equal(grav_pot, 12.566370614359172, decimal=8)
 
 
-if __name__ == '__main__':
-   pytest.main()
+if __name__ == "__main__":
+    pytest.main()

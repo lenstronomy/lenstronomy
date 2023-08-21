@@ -1,16 +1,23 @@
-__author__ = 'aymgal, johannesulf'
+__author__ = "aymgal, johannesulf"
 
 import lenstronomy.Util.sampling_util as utils
 import numpy as np
 
-__all__ = ['NestedSampler']
+__all__ = ["NestedSampler"]
 
 
 class NestedSampler(object):
     """Base class for nested samplers."""
 
-    def __init__(self, likelihood_module, prior_type,
-                 prior_means, prior_sigmas, width_scale, sigma_scale):
+    def __init__(
+        self,
+        likelihood_module,
+        prior_type,
+        prior_means,
+        prior_sigmas,
+        width_scale,
+        sigma_scale,
+    ):
         """
         :param likelihood_module: likelihood_module like in likelihood.py (should be callable)
         :param prior_type: 'uniform' of 'gaussian', for converting the unit hypercube to param cube
@@ -24,20 +31,19 @@ class NestedSampler(object):
 
         lowers, uppers = self._ll.param_limits
         if width_scale < 1:
-            self.lowers, self.uppers = utils.scale_limits(
-                lowers, uppers, width_scale)
+            self.lowers, self.uppers = utils.scale_limits(lowers, uppers, width_scale)
         else:
             self.lowers, self.uppers = lowers, uppers
 
-        if prior_type == 'gaussian':
+        if prior_type == "gaussian":
             if prior_means is None or prior_sigmas is None:
                 raise ValueError(
-                    "For gaussian prior type, means and sigmas are required")
+                    "For gaussian prior type, means and sigmas are required"
+                )
             self.means, self.sigmas = prior_means, prior_sigmas * sigma_scale
             self.lowers, self.uppers = lowers, uppers
-        elif prior_type != 'uniform':
-            raise ValueError(
-                "Sampling type {} not supported".format(prior_type))
+        elif prior_type != "uniform":
+            raise ValueError("Sampling type {} not supported".format(prior_type))
         self.prior_type = prior_type
         self._has_warned = False
 
@@ -53,16 +59,24 @@ class NestedSampler(object):
         u_orig = u
         u = np.array([u[i] for i in range(self.n_dims)])
 
-        if self.prior_type == 'gaussian':
-            p = utils.cube2args_gaussian(u, self.lowers, self.uppers,
-                                         self.means, self.sigmas, self.n_dims,
-                                         copy=True)
-        elif self.prior_type == 'uniform':
-            p = utils.cube2args_uniform(u, self.lowers, self.uppers,
-                                        self.n_dims, copy=True)
+        if self.prior_type == "gaussian":
+            p = utils.cube2args_gaussian(
+                u,
+                self.lowers,
+                self.uppers,
+                self.means,
+                self.sigmas,
+                self.n_dims,
+                copy=True,
+            )
+        elif self.prior_type == "uniform":
+            p = utils.cube2args_uniform(
+                u, self.lowers, self.uppers, self.n_dims, copy=True
+            )
         else:
             raise ValueError(
-                'prior type %s not supported! Chose "gaussian" or "uniform".')
+                'prior type %s not supported! Chose "gaussian" or "uniform".'
+            )
 
         # MultiNest expects that we modify the origal array instead of
         # returning the transformed parameters.

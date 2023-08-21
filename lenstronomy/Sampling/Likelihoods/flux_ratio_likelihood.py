@@ -1,14 +1,23 @@
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 import numpy as np
 
-__all__ = ['FluxRatioLikelihood']
+__all__ = ["FluxRatioLikelihood"]
 
 
 class FluxRatioLikelihood(object):
     """Likelihood class for magnification of multiply lensed images."""
 
-    def __init__(self, lens_model_class, flux_ratios, flux_ratio_errors,
-                 source_type='INF', window_size=0.1, grid_number=100, polar_grid=False, aspect_ratio=0.5):
+    def __init__(
+        self,
+        lens_model_class,
+        flux_ratios,
+        flux_ratio_errors,
+        source_type="INF",
+        window_size=0.1,
+        grid_number=100,
+        polar_grid=False,
+        aspect_ratio=0.5,
+    ):
         """
 
         :param lens_model_class: LensModel class instance
@@ -40,17 +49,24 @@ class FluxRatioLikelihood(object):
         :param kwargs_special: dictionary of 'special' keyword parameters
         :return: log likelihood of the measured flux ratios given a model
         """
-        if self._source_type == 'INF':
-            mag = np.abs(self._lens_model_class.magnification(x_pos, y_pos, kwargs_lens))
+        if self._source_type == "INF":
+            mag = np.abs(
+                self._lens_model_class.magnification(x_pos, y_pos, kwargs_lens)
+            )
         else:
-            source_sigma = kwargs_special['source_size']
-            mag = self._lens_model_extensions.magnification_finite(x_pos, y_pos, kwargs_lens, source_sigma=source_sigma,
-                                                                   window_size=self._window_size,
-                                                                   grid_number=self._gird_number,
-                                                                   polar_grid=self._polar_grid,
-                                                                   aspect_ratio=self._aspect_ratio)
-        if len(mag)-1 != len(self._flux_ratios):
-            return -10**15
+            source_sigma = kwargs_special["source_size"]
+            mag = self._lens_model_extensions.magnification_finite(
+                x_pos,
+                y_pos,
+                kwargs_lens,
+                source_sigma=source_sigma,
+                window_size=self._window_size,
+                grid_number=self._gird_number,
+                polar_grid=self._polar_grid,
+                aspect_ratio=self._aspect_ratio,
+            )
+        if len(mag) - 1 != len(self._flux_ratios):
+            return -(10**15)
         mag_ratio = mag[1:] / mag[0]
         return self._logL(mag_ratio)
 
@@ -62,19 +78,27 @@ class FluxRatioLikelihood(object):
         :return: log likelihood fo the measured flux ratios given a model
         """
         if not np.isfinite(flux_ratios).any():
-            return -10 ** 15
+            return -(10**15)
         if self._flux_ratio_errors.ndim <= 1:
-            dist = (flux_ratios - self._flux_ratios) ** 2 / self._flux_ratio_errors ** 2 / 2
+            dist = (
+                (flux_ratios - self._flux_ratios) ** 2
+                / self._flux_ratio_errors**2
+                / 2
+            )
             logL = -np.sum(dist)
         elif self._flux_ratio_errors.ndim == 2:
             # Assume covariance matrix is in ln units!
             D = np.log(flux_ratios) - np.log(self._flux_ratios)
-            logL = -1/2 * D @ np.linalg.inv(self._flux_ratio_errors) @ D  # TODO: only calculate the inverse once
+            logL = (
+                -1 / 2 * D @ np.linalg.inv(self._flux_ratio_errors) @ D
+            )  # TODO: only calculate the inverse once
         else:
-            raise ValueError('flux_ratio_errors need dimension of 1 or 2. Current dimensions are %s'
-                             % self._flux_ratio_errors.ndim)
+            raise ValueError(
+                "flux_ratio_errors need dimension of 1 or 2. Current dimensions are %s"
+                % self._flux_ratio_errors.ndim
+            )
         if not np.isfinite(logL):
-            return -10 ** 15
+            return -(10**15)
         return logL
 
     @property

@@ -1,18 +1,19 @@
-__author__ = 'sibirrer'
+__author__ = "sibirrer"
 
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 from lenstronomy.LensModel.Profiles.convergence import Convergence
 import numpy as np
 
-__all__ = ['Shear', 'ShearGammaPsi', 'ShearReduced']
+__all__ = ["Shear", "ShearGammaPsi", "ShearReduced"]
 
 
 class Shear(LensProfileBase):
     """Class for external shear gamma1, gamma2 expression."""
-    param_names = ['gamma1', 'gamma2', 'ra_0', 'dec_0']
-    lower_limit_default = {'gamma1': -0.5, 'gamma2': -0.5, 'ra_0': -100, 'dec_0': -100}
-    upper_limit_default = {'gamma1': 0.5, 'gamma2': 0.5, 'ra_0': 100, 'dec_0': 100}
+
+    param_names = ["gamma1", "gamma2", "ra_0", "dec_0"]
+    lower_limit_default = {"gamma1": -0.5, "gamma2": -0.5, "ra_0": -100, "dec_0": -100}
+    upper_limit_default = {"gamma1": 0.5, "gamma2": 0.5, "ra_0": 100, "dec_0": 100}
 
     def function(self, x, y, gamma1, gamma2, ra_0=0, dec_0=0):
         """
@@ -27,7 +28,7 @@ class Shear(LensProfileBase):
         """
         x_ = x - ra_0
         y_ = y - dec_0
-        f_ = 1/2. * (gamma1 * x_ * x_ + 2 * gamma2 * x_ * y_ - gamma1 * y_ * y_)
+        f_ = 1 / 2.0 * (gamma1 * x_ * x_ + 2 * gamma2 * x_ * y_ - gamma1 * y_ * y_)
         return f_
 
     def derivatives(self, x, y, gamma1, gamma2, ra_0=0, dec_0=0):
@@ -77,9 +78,15 @@ class ShearGammaPsi(LensProfileBase):
         \\gamma_2 = \\gamma_{ext} \\sin(2 \\phi_{ext})
 
     """
-    param_names = ['gamma_ext', 'psi_ext', 'ra_0', 'dec_0']
-    lower_limit_default = {'gamma_ext': 0, 'psi_ext': -np.pi, 'ra_0': -100, 'dec_0': -100}
-    upper_limit_default = {'gamma_ext': 1, 'psi_ext': np.pi, 'ra_0': 100, 'dec_0': 100}
+
+    param_names = ["gamma_ext", "psi_ext", "ra_0", "dec_0"]
+    lower_limit_default = {
+        "gamma_ext": 0,
+        "psi_ext": -np.pi,
+        "ra_0": -100,
+        "dec_0": -100,
+    }
+    upper_limit_default = {"gamma_ext": 1, "psi_ext": np.pi, "ra_0": 100, "dec_0": 100}
 
     def __init__(self):
         self._shear_e1e2 = Shear()
@@ -98,8 +105,8 @@ class ShearGammaPsi(LensProfileBase):
         :return:
         """
         # change to polar coordinate
-        r, phi = param_util.cart2polar(x-ra_0, y-dec_0)
-        f_ = 1. / 2 * gamma_ext * r ** 2 * np.cos(2 * (phi - psi_ext))
+        r, phi = param_util.cart2polar(x - ra_0, y - dec_0)
+        f_ = 1.0 / 2 * gamma_ext * r**2 * np.cos(2 * (phi - psi_ext))
         return f_
 
     def derivatives(self, x, y, gamma_ext, psi_ext, ra_0=0, dec_0=0):
@@ -123,9 +130,10 @@ class ShearReduced(LensProfileBase):
     Thus, for given pair of reduced shear :math:`(\\gamma'_1, \\gamma'_2)`, an additional convergence term is calculated
     and added to the lensing distortions.
     """
-    param_names = ['gamma1', 'gamma2', 'ra_0', 'dec_0']
-    lower_limit_default = {'gamma1': -0.5, 'gamma2': -0.5, 'ra_0': -100, 'dec_0': -100}
-    upper_limit_default = {'gamma1': 0.5, 'gamma2': 0.5, 'ra_0': 100, 'dec_0': 100}
+
+    param_names = ["gamma1", "gamma2", "ra_0", "dec_0"]
+    lower_limit_default = {"gamma1": -0.5, "gamma2": -0.5, "ra_0": -100, "dec_0": -100}
+    upper_limit_default = {"gamma1": 0.5, "gamma2": 0.5, "ra_0": 100, "dec_0": 100}
 
     def __init__(self):
         self._shear = Shear()
@@ -140,9 +148,9 @@ class ShearReduced(LensProfileBase):
         :param gamma2: reduced shear
         :return: kappa
         """
-        kappa = 1 - 1. / np.sqrt(1 - gamma1**2 - gamma2**2)
-        gamma1_ = (1-kappa) * gamma1
-        gamma2_ = (1-kappa) * gamma2
+        kappa = 1 - 1.0 / np.sqrt(1 - gamma1**2 - gamma2**2)
+        gamma1_ = (1 - kappa) * gamma1
+        gamma2_ = (1 - kappa) * gamma2
         return kappa, gamma1_, gamma2_
 
     def function(self, x, y, gamma1, gamma2, ra_0=0, dec_0=0):
@@ -173,7 +181,9 @@ class ShearReduced(LensProfileBase):
         :return: deflection angles
         """
         kappa, gamma1_, gamma2_ = self._kappa_reduced(gamma1, gamma2)
-        f_x_shear, f_y_shear = self._shear.derivatives(x, y, gamma1_, gamma2_, ra_0, dec_0)
+        f_x_shear, f_y_shear = self._shear.derivatives(
+            x, y, gamma1_, gamma2_, ra_0, dec_0
+        )
         f_x_kappa, f_y_kappa = self._convergence.derivatives(x, y, kappa, ra_0, dec_0)
         return f_x_shear + f_x_kappa, f_y_shear + f_y_kappa
 
@@ -189,8 +199,12 @@ class ShearReduced(LensProfileBase):
         :return: f_xx, f_xy, f_yx, f_yy
         """
         kappa, gamma1_, gamma2_ = self._kappa_reduced(gamma1, gamma2)
-        f_xx_g, f_xy_g, f_yx_g, f_yy_g = self._shear.hessian(x, y, gamma1_, gamma2_, ra_0, dec_0)
-        f_xx_k, f_xy_k, f_yx_k, f_yy_k = self._convergence.hessian(x, y, kappa, ra_0, dec_0)
+        f_xx_g, f_xy_g, f_yx_g, f_yy_g = self._shear.hessian(
+            x, y, gamma1_, gamma2_, ra_0, dec_0
+        )
+        f_xx_k, f_xy_k, f_yx_k, f_yy_k = self._convergence.hessian(
+            x, y, kappa, ra_0, dec_0
+        )
         f_xx = f_xx_g + f_xx_k
         f_yy = f_yy_g + f_yy_k
         f_xy = f_xy_g + f_xy_k

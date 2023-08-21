@@ -1,7 +1,7 @@
 from lenstronomy.GalKin.numeric_kinematics import NumericKinematics
 from lenstronomy.GalKin.analytic_kinematics import AnalyticKinematics
 
-__all__ = ['GalkinModel']
+__all__ = ["GalkinModel"]
 
 
 class GalkinModel(object):
@@ -39,7 +39,14 @@ class GalkinModel(object):
     These numerical options should be chosen to allow for a converged result (within your tolerance) but not too
     conservative to impact too much the computational cost. Reasonable values might depend on the specific problem.
     """
-    def __init__(self, kwargs_model, kwargs_cosmo, kwargs_numerics=None, analytic_kinematics=False):
+
+    def __init__(
+        self,
+        kwargs_model,
+        kwargs_cosmo,
+        kwargs_numerics=None,
+        analytic_kinematics=False,
+    ):
         """
 
         :param kwargs_model: keyword arguments describing the model components
@@ -49,18 +56,26 @@ class GalkinModel(object):
         :param analytic_kinematics: bool, if True uses the analytic kinematic model
         """
         if kwargs_numerics is None:
-            kwargs_numerics = {'interpol_grid_num': 200,  # numerical interpolation, should converge -> infinity
-                               'log_integration': True,
-                               # log or linear interpolation of surface brightness and mass models
-                               'max_integrate': 100,
-                               'min_integrate': 0.001}  # lower/upper bound of numerical integrals
+            kwargs_numerics = {
+                "interpol_grid_num": 200,  # numerical interpolation, should converge -> infinity
+                "log_integration": True,
+                # log or linear interpolation of surface brightness and mass models
+                "max_integrate": 100,
+                "min_integrate": 0.001,
+            }  # lower/upper bound of numerical integrals
         if analytic_kinematics is True:
-            anisotropy_model = kwargs_model.get('anisotropy_model')
-            if not anisotropy_model == 'OM':
-                raise ValueError('analytic kinematics only available for OsipkovMerritt ("OM") anisotropy model.')
-            self.numerics = AnalyticKinematics(kwargs_cosmo=kwargs_cosmo, **kwargs_numerics)
+            anisotropy_model = kwargs_model.get("anisotropy_model")
+            if not anisotropy_model == "OM":
+                raise ValueError(
+                    'analytic kinematics only available for OsipkovMerritt ("OM") anisotropy model.'
+                )
+            self.numerics = AnalyticKinematics(
+                kwargs_cosmo=kwargs_cosmo, **kwargs_numerics
+            )
         else:
-            self.numerics = NumericKinematics(kwargs_model=kwargs_model, kwargs_cosmo=kwargs_cosmo, **kwargs_numerics)
+            self.numerics = NumericKinematics(
+                kwargs_model=kwargs_model, kwargs_cosmo=kwargs_cosmo, **kwargs_numerics
+            )
         self._analytic_kinematics = analytic_kinematics
 
     def check_df(self, r, kwargs_mass, kwargs_light, kwargs_anisotropy):
@@ -78,8 +93,12 @@ class GalkinModel(object):
         dr = 0.01  # finite differential in radial direction
         r_dr = r + dr
 
-        sigmar2 = self.numerics.sigma_r2(r, kwargs_mass, kwargs_light, kwargs_anisotropy)
-        sigmar2_dr = self.numerics.sigma_r2(r_dr, kwargs_mass, kwargs_light, kwargs_anisotropy)
+        sigmar2 = self.numerics.sigma_r2(
+            r, kwargs_mass, kwargs_light, kwargs_anisotropy
+        )
+        sigmar2_dr = self.numerics.sigma_r2(
+            r_dr, kwargs_mass, kwargs_light, kwargs_anisotropy
+        )
         grav_pot = self.numerics.grav_potential(r, kwargs_mass)
         grav_pot_dr = self.numerics.grav_potential(r_dr, kwargs_mass)
         self.numerics.delete_cache()

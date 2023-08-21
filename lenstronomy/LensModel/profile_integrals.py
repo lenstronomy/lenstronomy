@@ -2,7 +2,7 @@ import copy
 import scipy.integrate as integrate
 import numpy as np
 
-__all__ = ['ProfileIntegrals']
+__all__ = ["ProfileIntegrals"]
 
 
 class ProfileIntegrals(object):
@@ -12,6 +12,7 @@ class ProfileIntegrals(object):
     - enclosed densities
     - projected enclosed densities
     """
+
     def __init__(self, profile_class):
         """
 
@@ -29,13 +30,19 @@ class ProfileIntegrals(object):
         :return: 3d mass enclosed of r
         """
         kwargs = copy.deepcopy(kwargs_profile)
-        kwargs.pop('center_x', None)
-        kwargs.pop('center_y', None)
+        kwargs.pop("center_x", None)
+        kwargs.pop("center_y", None)
         # integral of self._profile.density(x)* 4*np.pi * x^2 *dx, 0,r
         if lens_param is True:
-            out = integrate.quad(lambda x: self._profile.density_lens(x, **kwargs) * 4 * np.pi * x ** 2, 0, r)
+            out = integrate.quad(
+                lambda x: self._profile.density_lens(x, **kwargs) * 4 * np.pi * x**2,
+                0,
+                r,
+            )
         else:
-            out = integrate.quad(lambda x: self._profile.density(x, **kwargs)*4*np.pi*x**2, 0, r)
+            out = integrate.quad(
+                lambda x: self._profile.density(x, **kwargs) * 4 * np.pi * x**2, 0, r
+            )
         return out[0]
 
     def density_2d(self, r, kwargs_profile, lens_param=False):
@@ -48,13 +55,22 @@ class ProfileIntegrals(object):
         :return: 2d projected density at projected radius r
         """
         kwargs = copy.deepcopy(kwargs_profile)
-        kwargs.pop('center_x', None)
-        kwargs.pop('center_y', None)
+        kwargs.pop("center_x", None)
+        kwargs.pop("center_y", None)
         # integral of self._profile.density(np.sqrt(x^2+r^2))* dx, 0, infty
         if lens_param is True:
-            out = integrate.quad(lambda x: 2 * self._profile.density_lens(np.sqrt(x ** 2 + r ** 2), **kwargs), 0, 100)
+            out = integrate.quad(
+                lambda x: 2
+                * self._profile.density_lens(np.sqrt(x**2 + r**2), **kwargs),
+                0,
+                100,
+            )
         else:
-            out = integrate.quad(lambda x: 2*self._profile.density(np.sqrt(x**2+r**2), **kwargs), 0, 100)
+            out = integrate.quad(
+                lambda x: 2 * self._profile.density(np.sqrt(x**2 + r**2), **kwargs),
+                0,
+                100,
+            )
         return out[0]
 
     def mass_enclosed_2d(self, r, kwargs_profile):
@@ -65,8 +81,8 @@ class ProfileIntegrals(object):
         :return: projected mass enclosed radius r
         """
         kwargs = copy.deepcopy(kwargs_profile)
-        kwargs.pop('center_x', None)
-        kwargs.pop('center_y', None)
+        kwargs.pop("center_x", None)
+        kwargs.pop("center_y", None)
         # integral of self.density_2d(x)* 2*np.pi * x *dx, 0, r
-        out = integrate.quad(lambda x: self.density_2d(x, kwargs)*2*np.pi*x, 0, r)
+        out = integrate.quad(lambda x: self.density_2d(x, kwargs) * 2 * np.pi * x, 0, r)
         return out[0]

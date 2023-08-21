@@ -1,11 +1,11 @@
-__author__ = 'sibirrer'
+__author__ = "sibirrer"
 
 import scipy.interpolate
 import numpy as np
 
 import lenstronomy.Util.util as util
 
-__all__ = ['Interpol']
+__all__ = ["Interpol"]
 
 
 class Interpol(object):
@@ -18,14 +18,29 @@ class Interpol(object):
     rectangular ra-to-dec orientation 'scale': arcseconds per pixel of the image to be
     interpolated
     """
-    param_names = ['image', 'amp', 'center_x', 'center_y', 'phi_G', 'scale']
-    lower_limit_default = {'amp': 0, 'center_x': -1000, 'center_y': -1000, 'scale': 0.000000001, 'phi_G': -np.pi}
-    upper_limit_default = {'amp': 1000000, 'center_x': 1000, 'center_y': 1000, 'scale': 10000000000, 'phi_G': np.pi}
+
+    param_names = ["image", "amp", "center_x", "center_y", "phi_G", "scale"]
+    lower_limit_default = {
+        "amp": 0,
+        "center_x": -1000,
+        "center_y": -1000,
+        "scale": 0.000000001,
+        "phi_G": -np.pi,
+    }
+    upper_limit_default = {
+        "amp": 1000000,
+        "center_x": 1000,
+        "center_y": 1000,
+        "scale": 10000000000,
+        "phi_G": np.pi,
+    }
 
     def __init__(self):
         pass
 
-    def function(self, x, y, image=None, amp=1, center_x=0, center_y=0, phi_G=0, scale=1):
+    def function(
+        self, x, y, image=None, amp=1, center_x=0, center_y=0, phi_G=0, scale=1
+    ):
         """
 
         :param x: x-coordinate to evaluate surface brightness
@@ -44,7 +59,7 @@ class Interpol(object):
         return amp * self.image_interp(x_, y_, image)
 
     def image_interp(self, x, y, image):
-        if not hasattr(self, '_image_interp'):
+        if not hasattr(self, "_image_interp"):
             # Setup the interpolator.
             # Note that 'x' and 'y' in this block only refer to first and second
             # image array axes. Outside this block it is more complicated.
@@ -54,7 +69,9 @@ class Interpol(object):
             image_bounds[1:-1, 1:-1] = image
             x_grid = np.linspace(start=-(nx0 - 1) / 2, stop=(nx0 - 1) / 2, num=nx0)
             y_grid = np.linspace(start=-(ny0 - 1) / 2, stop=(ny0 - 1) / 2, num=ny0)
-            self._image_interp = scipy.interpolate.RectBivariateSpline(x_grid, y_grid, image_bounds, kx=1, ky=1, s=0)
+            self._image_interp = scipy.interpolate.RectBivariateSpline(
+                x_grid, y_grid, image_bounds, kx=1, ky=1, s=0
+            )
 
         # y and x must be flipped in call to interpolator
         # (try reversing, the unit tests will fail)
@@ -98,5 +115,5 @@ class Interpol(object):
 
     def delete_cache(self):
         """Delete the cached interpolated image."""
-        if hasattr(self, '_image_interp'):
+        if hasattr(self, "_image_interp"):
             del self._image_interp

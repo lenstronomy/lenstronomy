@@ -1,4 +1,4 @@
-__author__ = 'sibirrer'
+__author__ = "sibirrer"
 
 import lenstronomy.Util.derivative_util as calc_util
 import pytest
@@ -10,6 +10,7 @@ import numpy as np
 
 class TestCalcUtil(object):
     """Tests the Gaussian methods."""
+
     def setup_method(self):
         pass
 
@@ -83,7 +84,7 @@ class TestCalcUtil(object):
         assert out == 0
 
     def test_d_phi_dx(self):
-        x, y = np.array([1., 0., -1.]), np.array([1., 1., -1.])
+        x, y = np.array([1.0, 0.0, -1.0]), np.array([1.0, 1.0, -1.0])
         dx, dy = 0.0001, 0.0001
         r, phi = param_util.cart2polar(x, y, center_x=0, center_y=0)
 
@@ -137,5 +138,5 @@ class TestCalcUtil(object):
         npt.assert_almost_equal(d_r_dxy_num, d_r_dxy, decimal=1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pytest.main()

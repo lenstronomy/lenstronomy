@@ -1,9 +1,13 @@
 import astropy
+
 if float(astropy.__version__[0]) < 5.0:
     from astropy.cosmology.core import isiterable
-    DeprecationWarning('Astropy<5 is going to be deprecated soon. This is in combination with Python version<3.8.'
-                       'We recommend you to update astropy to the latest versionbut keep supporting your settings for '
-                       'the time being.')
+
+    DeprecationWarning(
+        "Astropy<5 is going to be deprecated soon. This is in combination with Python version<3.8."
+        "We recommend you to update astropy to the latest versionbut keep supporting your settings for "
+        "the time being."
+    )
 else:
     from astropy.cosmology.utils import isiterable
 #
@@ -18,6 +22,7 @@ class CosmoInterp(object):
     """Class which interpolates the comoving transfer distance and then computes angular
     diameter distances from it This class is modifying the astropy.cosmology
     routines."""
+
     def __init__(self, cosmo, z_stop, num_interp):
         """
 
@@ -27,13 +32,22 @@ class CosmoInterp(object):
         """
         self._cosmo = cosmo
         if float(astropy.__version__[0]) < 5.0:
-            from lenstronomy.Cosmo._cosmo_interp_astropy_v4 import CosmoInterp as CosmoInterp_
+            from lenstronomy.Cosmo._cosmo_interp_astropy_v4 import (
+                CosmoInterp as CosmoInterp_,
+            )
+
             self._comoving_interp = CosmoInterp_(cosmo)
         else:
-            from lenstronomy.Cosmo._cosmo_interp_astropy_v5 import CosmoInterp as CosmoInterp_
+            from lenstronomy.Cosmo._cosmo_interp_astropy_v5 import (
+                CosmoInterp as CosmoInterp_,
+            )
+
             self._comoving_interp = CosmoInterp_(cosmo)
-        self._comoving_distance_interpolation_func = self._interpolate_comoving_distance(z_start=0, z_stop=z_stop,
-                                                                                         num_interp=num_interp)
+        self._comoving_distance_interpolation_func = (
+            self._interpolate_comoving_distance(
+                z_start=0, z_stop=z_stop, num_interp=num_interp
+            )
+        )
 
     def _comoving_distance_interp(self, z):
         """
@@ -67,7 +81,7 @@ class CosmoInterp(object):
         if isiterable(z):
             z = np.asarray(z)
 
-        return self.comoving_transverse_distance(z) / (1. + z)
+        return self.comoving_transverse_distance(z) / (1.0 + z)
 
     def angular_diameter_distance_z1z2(self, z1, z2):
         """Angular diameter distance between objects at 2 redshifts. Useful for
@@ -87,7 +101,7 @@ class CosmoInterp(object):
 
         z1 = np.asanyarray(z1)
         z2 = np.asanyarray(z2)
-        return self._comoving_transverse_distance_z1z2(z1, z2) / (1. + z2)
+        return self._comoving_transverse_distance_z1z2(z1, z2) / (1.0 + z2)
 
     def comoving_transverse_distance(self, z):
         """Comoving transverse distance in Mpc at a given redshift.
@@ -179,11 +193,13 @@ class CosmoInterp(object):
         :param num_interp: number of steps uniformly spread in redshift
         :return: interpolation object in this class
         """
-        z_steps = np.linspace(start=z_start, stop=z_stop, num=num_interp+1)
+        z_steps = np.linspace(start=z_start, stop=z_stop, num=num_interp + 1)
         running_dist = 0
-        ang_dist = np.zeros(num_interp+1)
+        ang_dist = np.zeros(num_interp + 1)
         for i in range(num_interp):
-            delta_dist = self._comoving_interp._integral_comoving_distance_z1z2(z_steps[i], z_steps[i+1])
+            delta_dist = self._comoving_interp._integral_comoving_distance_z1z2(
+                z_steps[i], z_steps[i + 1]
+            )
             running_dist += delta_dist.value
-            ang_dist[i+1] = copy.deepcopy(running_dist)
+            ang_dist[i + 1] = copy.deepcopy(running_dist)
         return interp1d(z_steps, ang_dist)

@@ -1,4 +1,4 @@
-__author__ = 'sibirrer'
+__author__ = "sibirrer"
 
 
 import numpy as np
@@ -8,27 +8,32 @@ import lenstronomy.Util.param_util as param_util
 
 try:
     import fastell4py
+
     fastell4py_bool = True
 except:
-    print("Warning: fastell4py not available, tests will be trivially fulfilled without giving the right answer!")
+    print(
+        "Warning: fastell4py not available, tests will be trivially fulfilled without giving the right answer!"
+    )
     fastell4py_bool = False
 
 
 class TestSPEMD(object):
     """Tests the Gaussian methods."""
+
     def setup_method(self):
         from lenstronomy.LensModel.Profiles.pemd import PEMD
         from lenstronomy.LensModel.Profiles.spep import SPEP
+
         self.PEMD = PEMD(suppress_fastell=True)
         self.SPEP = SPEP()
 
     def test_function(self):
-        phi_E = 1.
+        phi_E = 1.0
         gamma = 1.9
         q = 0.9
-        phi_G = 1.
+        phi_G = 1.0
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
-        x = np.array([1.])
+        x = np.array([1.0])
         y = np.array([2])
         a = np.zeros_like(x)
         values = self.PEMD.function(x, y, phi_E, gamma, e1, e2)
@@ -37,8 +42,8 @@ class TestSPEMD(object):
         else:
             assert values == 0
         a += values
-        x = np.array(1.)
-        y = np.array(2.)
+        x = np.array(1.0)
+        y = np.array(2.0)
         a = np.zeros_like(x)
         values = self.PEMD.function(x, y, phi_E, gamma, e1, e2)
         print(x, values)
@@ -64,10 +69,10 @@ class TestSPEMD(object):
     def test_derivatives(self):
         x = np.array([1])
         y = np.array([2])
-        phi_E = 1.
+        phi_E = 1.0
         gamma = 1.9
         q = 0.9
-        phi_G = 1.
+        phi_G = 1.0
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         f_x, f_y = self.PEMD.derivatives(x, y, phi_E, gamma, e1, e2)
         if fastell4py_bool:
@@ -77,8 +82,8 @@ class TestSPEMD(object):
             npt.assert_almost_equal(f_x[0], 0, decimal=7)
             npt.assert_almost_equal(f_y[0], 0, decimal=7)
 
-        x = np.array([1., 3, 4])
-        y = np.array([2., 1, 1])
+        x = np.array([1.0, 3, 4])
+        y = np.array([2.0, 1, 1])
         a = np.zeros_like(x)
         values = self.PEMD.derivatives(x, y, phi_E, gamma, e1, e2)
         if fastell4py_bool:
@@ -92,12 +97,12 @@ class TestSPEMD(object):
             npt.assert_almost_equal(values[0][1], 0, decimal=7)
             npt.assert_almost_equal(values[1][1], 0, decimal=7)
         a += values[0]
-        x = 1.
-        y = 2.
-        phi_E = 1.
+        x = 1.0
+        y = 2.0
+        phi_E = 1.0
         gamma = 1.9
         q = 0.9
-        phi_G = 1.
+        phi_G = 1.0
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         f_x, f_y = self.PEMD.derivatives(x, y, phi_E, gamma, e1, e2)
         if fastell4py_bool:
@@ -106,19 +111,19 @@ class TestSPEMD(object):
         else:
             npt.assert_almost_equal(f_x, 0, decimal=7)
             npt.assert_almost_equal(f_y, 0, decimal=7)
-        x = 0.
-        y = 0.
+        x = 0.0
+        y = 0.0
         f_x, f_y = self.PEMD.derivatives(x, y, phi_E, gamma, e1, e2)
-        assert f_x == 0.
-        assert f_y == 0.
+        assert f_x == 0.0
+        assert f_y == 0.0
 
     def test_hessian(self):
         x = np.array([1])
         y = np.array([2])
-        phi_E = 1.
+        phi_E = 1.0
         gamma = 1.9
         q = 0.9
-        phi_G = 1.
+        phi_G = 1.0
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         f_xx, f_xy, f_yx, f_yy = self.PEMD.hessian(x, y, phi_E, gamma, e1, e2)
         if fastell4py_bool:
@@ -131,12 +136,12 @@ class TestSPEMD(object):
             npt.assert_almost_equal(f_xy, 0, decimal=7)
         npt.assert_almost_equal(f_xy, f_yx, decimal=8)
 
-        x = 1.
-        y = 2.
-        phi_E = 1.
+        x = 1.0
+        y = 2.0
+        phi_E = 1.0
         gamma = 1.9
         q = 0.9
-        phi_G = 1.
+        phi_G = 1.0
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         a = np.zeros_like(x)
         f_xx, f_xy, f_yx, f_yy = self.PEMD.hessian(x, y, phi_E, gamma, e1, e2)
@@ -149,10 +154,10 @@ class TestSPEMD(object):
             npt.assert_almost_equal(f_yy, 0, decimal=7)
             npt.assert_almost_equal(f_xy, 0, decimal=7)
         a += f_xx
-        x = np.array([1,3,4])
-        y = np.array([2,1,1])
+        x = np.array([1, 3, 4])
+        y = np.array([2, 1, 1])
         values = self.PEMD.hessian(x, y, phi_E, gamma, e1, e2)
-        print(values, 'values')
+        print(values, "values")
         if fastell4py_bool:
             npt.assert_almost_equal(values[0][0], 0.41789957732890953, decimal=5)
             npt.assert_almost_equal(values[3][0], 0.14047593655054141, decimal=5)
@@ -166,10 +171,10 @@ class TestSPEMD(object):
     def test_spep_spemd(self):
         x = np.array([1])
         y = np.array([0])
-        phi_E = 1.
-        gamma = 2.
-        q = 1.
-        phi_G = 1.
+        phi_E = 1.0
+        gamma = 2.0
+        q = 1.0
+        phi_G = 1.0
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         f_x, f_y = self.PEMD.derivatives(x, y, phi_E, gamma, e1, e2)
         f_x_spep, f_y_spep = self.SPEP.derivatives(x, y, phi_E, gamma, e1, e2)
@@ -178,10 +183,10 @@ class TestSPEMD(object):
         else:
             pass
 
-        theta_E = 2.
-        gamma = 2.
-        q = 1.
-        phi_G = 1.
+        theta_E = 2.0
+        gamma = 2.0
+        q = 1.0
+        phi_G = 1.0
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         f_x, f_y = self.PEMD.derivatives(x, y, theta_E, gamma, e1, e2)
         f_x_spep, f_y_spep = self.SPEP.derivatives(x, y, theta_E, gamma, e1, e2)
@@ -190,10 +195,10 @@ class TestSPEMD(object):
         else:
             pass
 
-        theta_E = 2.
+        theta_E = 2.0
         gamma = 1.7
-        q = 1.
-        phi_G = 1.
+        q = 1.0
+        phi_G = 1.0
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         f_x, f_y = self.PEMD.derivatives(x, y, theta_E, gamma, e1, e2)
         f_x_spep, f_y_spep = self.SPEP.derivatives(x, y, theta_E, gamma, e1, e2)
@@ -202,6 +207,7 @@ class TestSPEMD(object):
 
     def test_bounds(self):
         from lenstronomy.LensModel.Profiles.spemd import SPEMD
+
         profile = SPEMD(suppress_fastell=True)
         compute_bool = profile._parameter_constraints(q_fastell=-1, gam=-1, s2=-1, q=-1)
         assert compute_bool is False
@@ -218,11 +224,11 @@ class TestSPEMD(object):
 
     def test_density_lens(self):
         r = 1
-        kwargs = {'theta_E': 1, 'gamma': 2, 'e1': 0, 'e2': 0}
+        kwargs = {"theta_E": 1, "gamma": 2, "e1": 0, "e2": 0}
         rho = self.PEMD.density_lens(r, **kwargs)
         rho_spep = self.SPEP.density_lens(r, **kwargs)
         npt.assert_almost_equal(rho, rho_spep, decimal=7)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pytest.main()

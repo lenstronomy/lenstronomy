@@ -10,6 +10,7 @@ import lenstronomy.Util.multi_gauss_expansion as mge
 from lenstronomy.GalKin import velocity_util
 
 from lenstronomy.Util.package_util import exporter
+
 export, __all__ = exporter()
 
 
@@ -35,18 +36,25 @@ def de_shift_kernel(kernel, shift_x, shift_y, iterations=20, fractional_step_siz
         results in the input kernel
     """
     nx, ny = np.shape(kernel)
-    kernel_new = np.zeros((nx+2, ny+2)) + (kernel[0, 0] + kernel[0, -1] + kernel[-1, 0] + kernel[-1, -1]) / 4.
+    kernel_new = (
+        np.zeros((nx + 2, ny + 2))
+        + (kernel[0, 0] + kernel[0, -1] + kernel[-1, 0] + kernel[-1, -1]) / 4.0
+    )
     kernel_new[1:-1, 1:-1] = kernel
     int_shift_x = int(round(shift_x))
     frac_x_shift = shift_x - int_shift_x
     int_shift_y = int(round(shift_y))
     frac_y_shift = shift_y - int_shift_y
     kernel_init = copy.deepcopy(kernel_new)
-    kernel_init_shifted = copy.deepcopy(ndimage.shift(kernel_init, shift=[int_shift_y, int_shift_x], order=1))
+    kernel_init_shifted = copy.deepcopy(
+        ndimage.shift(kernel_init, shift=[int_shift_y, int_shift_x], order=1)
+    )
     kernel_new = ndimage.shift(kernel_new, shift=[int_shift_y, int_shift_x], order=1)
     norm = np.sum(kernel_init_shifted)
     for i in range(iterations):
-        kernel_shifted_inv = ndimage.shift(kernel_new, shift=[-frac_y_shift, -frac_x_shift], order=1)
+        kernel_shifted_inv = ndimage.shift(
+            kernel_new, shift=[-frac_y_shift, -frac_x_shift], order=1
+        )
         delta = kernel_init_shifted - kernel_norm(kernel_shifted_inv) * norm
         kernel_new += delta * fractional_step_size
         kernel_new = kernel_norm(kernel_new) * norm
@@ -73,7 +81,9 @@ def center_kernel(kernel, iterations=20):
     x_w = np.sum(kernel * util.array2image(x_grid))
     y_w = np.sum(kernel * util.array2image(y_grid))
     # de-shift kernel
-    kernel_centered = de_shift_kernel(kernel, shift_x=-x_w, shift_y=-y_w, iterations=iterations)
+    kernel_centered = de_shift_kernel(
+        kernel, shift_x=-x_w, shift_y=-y_w, iterations=iterations
+    )
     return kernel_norm(kernel_centered)
 
 
@@ -109,10 +119,10 @@ def subgrid_kernel(kernel, subgrid_res, odd=False, num_iter=100):
     if subgrid_res == 1:
         return kernel
     nx, ny = np.shape(kernel)
-    d_x = 1. / nx
-    x_in = np.linspace(d_x/2, 1-d_x/2, nx)
-    d_y = 1. / nx
-    y_in = np.linspace(d_y/2, 1-d_y/2, ny)
+    d_x = 1.0 / nx
+    x_in = np.linspace(d_x / 2, 1 - d_x / 2, nx)
+    d_y = 1.0 / nx
+    y_in = np.linspace(d_y / 2, 1 - d_y / 2, ny)
     nx_new = nx * subgrid_res
     ny_new = ny * subgrid_res
     if odd is True:
@@ -121,10 +131,10 @@ def subgrid_kernel(kernel, subgrid_res, odd=False, num_iter=100):
         if ny_new % 2 == 0:
             ny_new -= 1
 
-    d_x_new = 1. / nx_new
-    d_y_new = 1. / ny_new
-    x_out = np.linspace(d_x_new/2., 1-d_x_new/2., nx_new)
-    y_out = np.linspace(d_y_new/2., 1-d_y_new/2., ny_new)
+    d_x_new = 1.0 / nx_new
+    d_y_new = 1.0 / ny_new
+    x_out = np.linspace(d_x_new / 2.0, 1 - d_x_new / 2.0, nx_new)
+    y_out = np.linspace(d_y_new / 2.0, 1 - d_y_new / 2.0, ny_new)
     kernel_input = copy.deepcopy(kernel)
     kernel_subgrid = image_util.re_size_array(x_in, y_in, kernel_input, x_out, y_out)
     kernel_subgrid = kernel_norm(kernel_subgrid)
@@ -136,7 +146,9 @@ def subgrid_kernel(kernel, subgrid_res, odd=False, num_iter=100):
             kernel_pixel = util.averaging(kernel_subgrid, numGrid=nx_new, numPix=nx)
         delta = kernel - kernel_pixel
         temp_kernel = kernel_input + delta
-        kernel_subgrid = image_util.re_size_array(x_in, y_in, temp_kernel, x_out, y_out)#/norm_subgrid
+        kernel_subgrid = image_util.re_size_array(
+            x_in, y_in, temp_kernel, x_out, y_out
+        )  # /norm_subgrid
         kernel_subgrid = kernel_norm(kernel_subgrid)
         kernel_input = temp_kernel
 
@@ -151,7 +163,7 @@ def subgrid_kernel(kernel, subgrid_res, odd=False, num_iter=100):
     kernel_pixel = kernel_norm(kernel_pixel)
     delta_kernel = kernel_pixel - kernel_norm(kernel)
     id = np.ones((subgrid_res, subgrid_res))
-    delta_kernel_sub = np.kron(delta_kernel, id)/subgrid_res**2
+    delta_kernel_sub = np.kron(delta_kernel, id) / subgrid_res**2
     return kernel_norm(kernel_subgrid - delta_kernel_sub)
 
 
@@ -165,11 +177,17 @@ def kernel_pixelsize_change(kernel, deltaPix_in, deltaPix_out):
     :return:
     """
     numPix = len(kernel)
-    numPix_new = int(round(numPix * deltaPix_in/deltaPix_out))
+    numPix_new = int(round(numPix * deltaPix_in / deltaPix_out))
     if numPix_new % 2 == 0:
         numPix_new -= 1
-    x_in = np.linspace(-(numPix-1)/2*deltaPix_in, (numPix-1)/2*deltaPix_in, numPix)
-    x_out = np.linspace(-(numPix_new-1)/2*deltaPix_out, (numPix_new-1)/2*deltaPix_out, numPix_new)
+    x_in = np.linspace(
+        -(numPix - 1) / 2 * deltaPix_in, (numPix - 1) / 2 * deltaPix_in, numPix
+    )
+    x_out = np.linspace(
+        -(numPix_new - 1) / 2 * deltaPix_out,
+        (numPix_new - 1) / 2 * deltaPix_out,
+        numPix_new,
+    )
     kernel_out = image_util.re_size_array(x_in, x_in, kernel, x_out, x_out)
     kernel_out = kernel_norm(kernel_out)
     return kernel_out
@@ -200,13 +218,17 @@ def pixel_kernel(point_source_kernel, subgrid_res=7):
     """
     kernel_subgrid = subgrid_kernel(point_source_kernel, subgrid_res, num_iter=10)
     kernel_size = len(point_source_kernel)
-    kernel_pixel = np.zeros((kernel_size*subgrid_res, kernel_size*subgrid_res))
+    kernel_pixel = np.zeros((kernel_size * subgrid_res, kernel_size * subgrid_res))
     for i in range(subgrid_res):
-        k_x = int((kernel_size-1) / 2 * subgrid_res + i)
+        k_x = int((kernel_size - 1) / 2 * subgrid_res + i)
         for j in range(subgrid_res):
-            k_y = int((kernel_size-1) / 2 * subgrid_res + j)
-            kernel_pixel = image_util.add_layer2image(kernel_pixel, k_x, k_y, kernel_subgrid)
-    kernel_pixel = util.averaging(kernel_pixel, numGrid=kernel_size*subgrid_res, numPix=kernel_size)
+            k_y = int((kernel_size - 1) / 2 * subgrid_res + j)
+            kernel_pixel = image_util.add_layer2image(
+                kernel_pixel, k_x, k_y, kernel_subgrid
+            )
+    kernel_pixel = util.averaging(
+        kernel_pixel, numGrid=kernel_size * subgrid_res, numPix=kernel_size
+    )
     return kernel_norm(kernel_pixel)
 
 
@@ -220,10 +242,10 @@ def kernel_average_pixel(kernel_super, supersampling_factor):
     :return:
     """
     kernel_sum = np.sum(kernel_super)
-    kernel_size = int(round(len(kernel_super)/float(supersampling_factor) + 0.5))
+    kernel_size = int(round(len(kernel_super) / float(supersampling_factor) + 0.5))
     if kernel_size % 2 == 0:
         kernel_size += 1
-    n_high = kernel_size*supersampling_factor
+    n_high = kernel_size * supersampling_factor
     if n_high % 2 == 0:
         n_high += 1
     kernel_pixel = np.zeros((n_high, n_high))
@@ -231,7 +253,9 @@ def kernel_average_pixel(kernel_super, supersampling_factor):
         k_x = int((kernel_size - 1) / 2 * supersampling_factor + i)
         for j in range(supersampling_factor):
             k_y = int((kernel_size - 1) / 2 * supersampling_factor + j)
-            kernel_pixel = image_util.add_layer2image(kernel_pixel, k_x, k_y, kernel_super)
+            kernel_pixel = image_util.add_layer2image(
+                kernel_pixel, k_x, k_y, kernel_super
+            )
 
     if supersampling_factor % 2 == 0:
         kernel_pixel = averaging_even_kernel(kernel_pixel, supersampling_factor)
@@ -255,7 +279,9 @@ def kernel_gaussian(num_pix, delta_pix, fwhm):
     #    kernel_numPix += 1
     x_grid, y_grid = util.make_grid(num_pix, delta_pix)
     gaussian = Gaussian()
-    kernel = gaussian.function(x_grid, y_grid, amp=1., sigma=sigma, center_x=0, center_y=0)
+    kernel = gaussian.function(
+        x_grid, y_grid, amp=1.0, sigma=sigma, center_x=0, center_y=0
+    )
     kernel /= np.sum(kernel)
     kernel = util.array2image(kernel)
     return kernel
@@ -278,8 +304,11 @@ def kernel_moffat(num_pix, delta_pix, fwhm, moffat_beta):
     kernel = util.array2image(kernel)
     return kernel
 
+
 @export
-def split_kernel(kernel_super, supersampling_kernel_size, supersampling_factor, normalized=True):
+def split_kernel(
+    kernel_super, supersampling_kernel_size, supersampling_factor, normalized=True
+):
     """Pixel kernel and subsampling kernel such that the convolution of both applied on
     an image can be performed, i.e. smaller subsampling PSF and hole in larger PSF.
 
@@ -291,9 +320,12 @@ def split_kernel(kernel_super, supersampling_kernel_size, supersampling_factor, 
     :return: degraded kernel with hole and super-sampled kernel
     """
     if supersampling_factor <= 1:
-        raise ValueError('To split a kernel, the supersampling_factor needs to be > 1, given %s' % supersampling_factor)
+        raise ValueError(
+            "To split a kernel, the supersampling_factor needs to be > 1, given %s"
+            % supersampling_factor
+        )
     if supersampling_kernel_size % 2 == 0:
-        raise ValueError('supersampling_kernel_size needs to be an odd number!')
+        raise ValueError("supersampling_kernel_size needs to be an odd number!")
     n_super = len(kernel_super)
     n_sub = supersampling_kernel_size * supersampling_factor
     if n_sub % 2 == 0:
@@ -302,20 +334,22 @@ def split_kernel(kernel_super, supersampling_kernel_size, supersampling_factor, 
         n_sub = n_super
 
     kernel_hole = copy.deepcopy(kernel_super)
-    n_min = int((n_super-1) / 2 - (n_sub - 1) / 2)
-    n_max = int((n_super-1) / 2 + (n_sub - 1) / 2 + 1)
+    n_min = int((n_super - 1) / 2 - (n_sub - 1) / 2)
+    n_max = int((n_super - 1) / 2 + (n_sub - 1) / 2 + 1)
     kernel_hole[n_min:n_max, n_min:n_max] = 0
-    kernel_hole_resized = degrade_kernel(kernel_hole, degrading_factor=supersampling_factor)
+    kernel_hole_resized = degrade_kernel(
+        kernel_hole, degrading_factor=supersampling_factor
+    )
     kernel_subgrid_cut = kernel_super[n_min:n_max, n_min:n_max]
     if normalized is True:
         flux_subsampled = np.sum(kernel_subgrid_cut)
         flux_hole = np.sum(kernel_hole_resized)
         if flux_hole > 0:
-            kernel_hole_resized *= (1. - flux_subsampled) / np.sum(kernel_hole_resized)
+            kernel_hole_resized *= (1.0 - flux_subsampled) / np.sum(kernel_hole_resized)
         else:
             kernel_subgrid_cut /= np.sum(kernel_subgrid_cut)
     else:
-        kernel_hole_resized /= supersampling_factor ** 2
+        kernel_hole_resized /= supersampling_factor**2
     return kernel_hole_resized, kernel_subgrid_cut
 
 
@@ -334,7 +368,7 @@ def degrade_kernel(kernel_super, degrading_factor):
     else:
         kernel_low_res = averaging_odd_kernel(kernel_super, degrading_factor)
     # degrading_factor**2  # multiplicative factor added when providing flux conservation
-    kernel_low_res *= degrading_factor ** 2
+    kernel_low_res *= degrading_factor**2
     return kernel_low_res
 
 
@@ -348,7 +382,9 @@ def averaging_odd_kernel(kernel_super, degrading_factor):
 
     kernel_super_ = np.zeros((n_high, n_high))
     i_start = int((n_high - n_kernel) / 2)
-    kernel_super_[i_start:i_start + n_kernel, i_start:i_start + n_kernel] = kernel_super
+    kernel_super_[
+        i_start : i_start + n_kernel, i_start : i_start + n_kernel
+    ] = kernel_super
     kernel_low_res = util.averaging(kernel_super_, numGrid=n_high, numPix=numPix)
     return kernel_low_res
 
@@ -377,18 +413,26 @@ def averaging_even_kernel(kernel_high_res, subgrid_res):
         kernel_high_res_edges[i_start:-i_start, i_start:-i_start] = kernel_high_res
     kernel_low_res = np.zeros((n_low, n_low))
     # adding pixels that are fully within a single re-binned pixel
-    for i in range(subgrid_res-1):
-        for j in range(subgrid_res-1):
+    for i in range(subgrid_res - 1):
+        for j in range(subgrid_res - 1):
             kernel_low_res += kernel_high_res_edges[i::subgrid_res, j::subgrid_res]
     # adding half of a pixel that has over-lap with two pixels
     i = subgrid_res - 1
     for j in range(subgrid_res - 1):
-        kernel_low_res[1:, :] += kernel_high_res_edges[i::subgrid_res, j::subgrid_res] / 2
-        kernel_low_res[:-1, :] += kernel_high_res_edges[i::subgrid_res, j::subgrid_res] / 2
+        kernel_low_res[1:, :] += (
+            kernel_high_res_edges[i::subgrid_res, j::subgrid_res] / 2
+        )
+        kernel_low_res[:-1, :] += (
+            kernel_high_res_edges[i::subgrid_res, j::subgrid_res] / 2
+        )
     j = subgrid_res - 1
     for i in range(subgrid_res - 1):
-        kernel_low_res[:, 1:] += kernel_high_res_edges[i::subgrid_res, j::subgrid_res] / 2
-        kernel_low_res[:, :-1] += kernel_high_res_edges[i::subgrid_res, j::subgrid_res] / 2
+        kernel_low_res[:, 1:] += (
+            kernel_high_res_edges[i::subgrid_res, j::subgrid_res] / 2
+        )
+        kernel_low_res[:, :-1] += (
+            kernel_high_res_edges[i::subgrid_res, j::subgrid_res] / 2
+        )
     # adding a quarter of a pixel value that is at the boarder of four pixels
     i = subgrid_res - 1
     j = subgrid_res - 1
@@ -397,7 +441,7 @@ def averaging_even_kernel(kernel_high_res, subgrid_res):
     kernel_low_res[:-1, 1:] += kernel_edge / 4
     kernel_low_res[1:, :-1] += kernel_edge / 4
     kernel_low_res[:-1, :-1] += kernel_edge / 4
-    return kernel_low_res / subgrid_res ** 2
+    return kernel_low_res / subgrid_res**2
 
 
 @export
@@ -416,7 +460,7 @@ def cutout_source(x_pos, y_pos, image, kernelsize, shift=True):
     x_int = int(round(x_pos))
     y_int = int(round(y_pos))
     n = len(image)
-    d = (kernelsize - 1)/2
+    d = (kernelsize - 1) / 2
     x_max = int(np.minimum(x_int + d + 1, n))
     x_min = int(np.maximum(x_int - d, 0))
     y_max = int(np.minimum(y_int + d + 1, n))
@@ -450,18 +494,20 @@ def fwhm_kernel(kernel):
     :return:
     """
     n = len(kernel)
-    center = (n - 1) / 2.
+    center = (n - 1) / 2.0
     I_r = image_util.radial_profile(kernel, center=[center, center])
     if n % 2 == 0:
-        raise ValueError('only works with odd number of pixels in kernel!')
-    max_flux = kernel[int((n-1)/2), int((n-1)/2)]
-    I_2 = max_flux / 2.
+        raise ValueError("only works with odd number of pixels in kernel!")
+    max_flux = kernel[int((n - 1) / 2), int((n - 1) / 2)]
+    I_2 = max_flux / 2.0
     r = np.linspace(0, (n - 1) / 2, int((n + 1) / 2)) + 0.33
     for i in range(1, len(I_r)):
         if I_r[i] < I_2:
             fwhm_2 = (I_2 - I_r[i - 1]) / (I_r[i] - I_r[i - 1]) + r[i - 1]
             return fwhm_2 * 2
-    raise ValueError('The kernel did not drop to half the max value - fwhm not determined!')
+    raise ValueError(
+        "The kernel did not drop to half the max value - fwhm not determined!"
+    )
 
 
 @export
@@ -475,15 +521,17 @@ def estimate_amp(data, x_pos, y_pos, psf_kernel):
     :return:
     """
     numPix_x, numPix_y = np.shape(data)
-    x_int = int(round(x_pos-0.49999))
-    y_int = int(round(y_pos-0.49999))
+    x_int = int(round(x_pos - 0.49999))
+    y_int = int(round(y_pos - 0.49999))
     # TODO: make amplitude estimate not sucebtible to rounding effects on which pixels to chose to estimate the amplitude
-    if x_int > 2 and x_int < numPix_x-2 and y_int > 2 and y_int < numPix_y-2:
-        mean_image = max(np.sum(data[y_int - 2:y_int+3, x_int-2:x_int+3]), 0)
+    if x_int > 2 and x_int < numPix_x - 2 and y_int > 2 and y_int < numPix_y - 2:
+        mean_image = max(np.sum(data[y_int - 2 : y_int + 3, x_int - 2 : x_int + 3]), 0)
         num = len(psf_kernel)
-        center = int((num-0.5)/2)
-        mean_kernel = np.sum(psf_kernel[center-2:center+3, center-2:center+3])
-        amp_estimated = mean_image/mean_kernel
+        center = int((num - 0.5) / 2)
+        mean_kernel = np.sum(
+            psf_kernel[center - 2 : center + 3, center - 2 : center + 3]
+        )
+        amp_estimated = mean_image / mean_kernel
     else:
         amp_estimated = 0
     return amp_estimated
@@ -498,11 +546,11 @@ def mge_kernel(kernel, order=5):
     """
     # radial average
     n = len(kernel)
-    center = (n - 1) / 2.
+    center = (n - 1) / 2.0
     psf_r = image_util.radial_profile(kernel, center=[center, center])
     # MGE of radial average
     n_r = len(psf_r)
-    r_array = np.linspace(start=0., stop=n_r - 1, num=n_r)
+    r_array = np.linspace(start=0.0, stop=n_r - 1, num=n_r)
     amps, sigmas, norm = mge.mge_1d(r_array, psf_r, N=order, linspace=True)
     return amps, sigmas, norm
 
@@ -522,8 +570,14 @@ def match_kernel_size(image, size):
         return image
     image_copy = copy.deepcopy(image)
     if n > size:
-        return image_copy[int((n-size)/2): int(n - (n-size)/2), int((n-size)/2): int(n - (n-size)/2)]
+        return image_copy[
+            int((n - size) / 2) : int(n - (n - size) / 2),
+            int((n - size) / 2) : int(n - (n - size) / 2),
+        ]
     else:
         image_add = np.zeros((size, size))
-        image_add[int((size - n)/2): int(size - (size - n)/2), int((size - n)/2): int(size - (size - n)/2)] = image_copy
+        image_add[
+            int((size - n) / 2) : int(size - (size - n) / 2),
+            int((size - n) / 2) : int(size - (size - n) / 2),
+        ] = image_copy
         return image_add

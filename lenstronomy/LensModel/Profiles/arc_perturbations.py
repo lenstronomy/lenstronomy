@@ -3,12 +3,13 @@ from lenstronomy.Util import param_util
 from lenstronomy.Util import derivative_util
 import numpy as np
 
-__all__ = ['ArcPerturbations']
+__all__ = ["ArcPerturbations"]
 
 
 class ArcPerturbations(LensProfileBase):
     """Uses radial and tangential fourier modes within a specific range in both
     directions to perturb a lensing potential."""
+
     def __init__(self):
         super(ArcPerturbations, self).__init__()
         self._2_pi = np.pi * 2
@@ -90,9 +91,28 @@ class ArcPerturbations(LensProfileBase):
         d_theta_dyy = derivative_util.d_phi_dyy(x_, y_)
         d_theta_dxy = derivative_util.d_phi_dxy(x_, y_)
 
-        f_xx = d_phi_dr2 * dr_dx**2 + d_phi_dr * dr_dxx + d_phi_d_theta2 * d_theta_dx**2 + d_phi_d_theta * d_theta_dxx + 2 * d_phi_dr_dtheta * dr_dx * d_theta_dx
-        f_yy = d_phi_dr2 * dr_dy**2 + d_phi_dr * dr_dyy + d_phi_d_theta2 * d_theta_dy**2 + d_phi_d_theta * d_theta_dyy + 2 * d_phi_dr_dtheta * dr_dy * d_theta_dy
-        f_xy = d_phi_dr2 * dr_dx * dr_dy + d_phi_dr * dr_dxy + d_phi_d_theta2 * d_theta_dx * d_theta_dy + d_phi_d_theta * d_theta_dxy + d_phi_dr_dtheta * dr_dx * d_theta_dy + d_phi_dr_dtheta * dr_dy * d_theta_dx
+        f_xx = (
+            d_phi_dr2 * dr_dx**2
+            + d_phi_dr * dr_dxx
+            + d_phi_d_theta2 * d_theta_dx**2
+            + d_phi_d_theta * d_theta_dxx
+            + 2 * d_phi_dr_dtheta * dr_dx * d_theta_dx
+        )
+        f_yy = (
+            d_phi_dr2 * dr_dy**2
+            + d_phi_dr * dr_dyy
+            + d_phi_d_theta2 * d_theta_dy**2
+            + d_phi_d_theta * d_theta_dyy
+            + 2 * d_phi_dr_dtheta * dr_dy * d_theta_dy
+        )
+        f_xy = (
+            d_phi_dr2 * dr_dx * dr_dy
+            + d_phi_dr * dr_dxy
+            + d_phi_d_theta2 * d_theta_dx * d_theta_dy
+            + d_phi_d_theta * d_theta_dxy
+            + d_phi_dr_dtheta * dr_dx * d_theta_dy
+            + d_phi_dr_dtheta * dr_dy * d_theta_dx
+        )
         return f_xx * coeff, f_xy * coeff, f_xy * coeff, f_yy * coeff
 
     @staticmethod
@@ -103,7 +123,7 @@ class ArcPerturbations(LensProfileBase):
         :param d_r: period of radial sinusoidal in units of angle
         :return: radial component of the potential
         """
-        return np.cos(r/d_r)
+        return np.cos(r / d_r)
 
     @staticmethod
     def _d_phi_r(r, d_r):

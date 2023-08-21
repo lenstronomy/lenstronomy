@@ -1,4 +1,4 @@
-__author__ = 'sibirrer'
+__author__ = "sibirrer"
 
 import lenstronomy.Util.param_util as param_util
 
@@ -6,32 +6,51 @@ import scipy.optimize
 import numpy as np
 import copy
 
-__all__ = ['Solver4Point']
+__all__ = ["Solver4Point"]
 
 
 class Solver4Point(object):
     """Class to make the constraints for the solver."""
-    def __init__(self, lensModel, solver_type='PROFILE'):
+
+    def __init__(self, lensModel, solver_type="PROFILE"):
         self._solver_type = solver_type  # supported:
-        if not lensModel.lens_model_list[0] in ['SPEP', 'SPEMD', 'PEMD', 'SIE', 'NIE', 'NFW_ELLIPSE', 'NFW_ELLIPSE_CSE',
-                                                'SHAPELETS_CART', 'CNFW_ELLIPSE', 'EPL', 'EPL_BOXYDISKY']:
-            raise ValueError("first lens model must be supported by the solver: 'SPEP', 'SPEMD', 'PEMD',"
-                             " 'SIE', 'NIE', 'EPL', 'EPL_BOXYDISKY', 'NFW_ELLIPSE', 'NFW_ELLIPSE_CSE', "
-                             "'SHAPELETS_CART', 'CNFW_ELLIPSE'."
-                             "Your choice was %s" % lensModel.lens_model_list[0])
-        if solver_type not in ['PROFILE', 'PROFILE_SHEAR']:
-            raise ValueError("solver_type %s not supported! Choose from 'PROFILE', 'PROFILE_SHEAR'"
-                             % solver_type)
-        if solver_type in ['PROFILE_SHEAR']:
-            if lensModel.lens_model_list[1] == 'SHEAR':
-                self._solver_type = 'PROFILE_SHEAR'
-            elif lensModel.lens_model_list[1] == 'SHEAR_GAMMA_PSI':
-                self._solver_type = 'PROFILE_SHEAR_GAMMA_PSI'
+        if not lensModel.lens_model_list[0] in [
+            "SPEP",
+            "SPEMD",
+            "PEMD",
+            "SIE",
+            "NIE",
+            "NFW_ELLIPSE",
+            "NFW_ELLIPSE_CSE",
+            "SHAPELETS_CART",
+            "CNFW_ELLIPSE",
+            "EPL",
+            "EPL_BOXYDISKY",
+        ]:
+            raise ValueError(
+                "first lens model must be supported by the solver: 'SPEP', 'SPEMD', 'PEMD',"
+                " 'SIE', 'NIE', 'EPL', 'EPL_BOXYDISKY', 'NFW_ELLIPSE', 'NFW_ELLIPSE_CSE', "
+                "'SHAPELETS_CART', 'CNFW_ELLIPSE'."
+                "Your choice was %s" % lensModel.lens_model_list[0]
+            )
+        if solver_type not in ["PROFILE", "PROFILE_SHEAR"]:
+            raise ValueError(
+                "solver_type %s not supported! Choose from 'PROFILE', 'PROFILE_SHEAR'"
+                % solver_type
+            )
+        if solver_type in ["PROFILE_SHEAR"]:
+            if lensModel.lens_model_list[1] == "SHEAR":
+                self._solver_type = "PROFILE_SHEAR"
+            elif lensModel.lens_model_list[1] == "SHEAR_GAMMA_PSI":
+                self._solver_type = "PROFILE_SHEAR_GAMMA_PSI"
             else:
-                raise ValueError("second lens model must be SHEAR_GAMMA_PSI or SHEAR to enable solver type %s!" % solver_type)
+                raise ValueError(
+                    "second lens model must be SHEAR_GAMMA_PSI or SHEAR to enable solver type %s!"
+                    % solver_type
+                )
         self.lensModel = lensModel
         self._lens_mode_list = lensModel.lens_model_list
-        if lensModel.multi_plane is True or 'FOREGROUND_SHEAR' in self._lens_mode_list:
+        if lensModel.multi_plane is True or "FOREGROUND_SHEAR" in self._lens_mode_list:
             self._decoupling = False
         else:
             self._decoupling = True
@@ -50,8 +69,10 @@ class Solver4Point(object):
         if self._decoupling:
             alpha_0_x, alpha_0_y = self.lensModel.alpha(x_pos, y_pos, kwargs)
             alpha_1_x, alpha_1_y = self.lensModel.alpha(x_pos, y_pos, kwargs, k=0)
-            if self._solver_type in ['PROFILE_SHEAR', 'PROFILE_SHEAR_GAMMA_PSI']:
-                alpha_shear_x, alpha_shear_y = self.lensModel.alpha(x_pos, y_pos, kwargs, k=1)
+            if self._solver_type in ["PROFILE_SHEAR", "PROFILE_SHEAR_GAMMA_PSI"]:
+                alpha_shear_x, alpha_shear_y = self.lensModel.alpha(
+                    x_pos, y_pos, kwargs, k=1
+                )
                 alpha_1_x += alpha_shear_x
                 alpha_1_y += alpha_shear_y
             x_sub = alpha_1_x - alpha_0_x
@@ -66,15 +87,19 @@ class Solver4Point(object):
         return kwargs, accuracy
 
     def solve(self, x_pos, y_pos, init, kwargs_list, a, xtol=1.49012e-10):
-        x = scipy.optimize.fsolve(self._F, init, args=(x_pos, y_pos, kwargs_list, a), xtol=xtol)  # , factor=0.1)
+        x = scipy.optimize.fsolve(
+            self._F, init, args=(x_pos, y_pos, kwargs_list, a), xtol=xtol
+        )  # , factor=0.1)
         return x
 
     def _F(self, x, x_pos, y_pos, kwargs_list, a=np.zeros(6)):
         kwargs_list = self._update_kwargs(x, kwargs_list)
         if self._decoupling:
             alpha_x, alpha_y = self.lensModel.alpha(x_pos, y_pos, kwargs_list, k=0)
-            if self._solver_type in ['PROFILE_SHEAR', 'PROFILE_SHEAR_GAMMA_PSI']:
-                alpha_x_shear, alpha_y_shear = self.lensModel.alpha(x_pos, y_pos, kwargs_list, k=1)
+            if self._solver_type in ["PROFILE_SHEAR", "PROFILE_SHEAR_GAMMA_PSI"]:
+                alpha_x_shear, alpha_y_shear = self.lensModel.alpha(
+                    x_pos, y_pos, kwargs_list, k=1
+                )
                 alpha_x += alpha_x_shear
                 alpha_y += alpha_y_shear
             beta_x = x_pos - alpha_x
@@ -100,12 +125,12 @@ class Solver4Point(object):
         """
         a = np.zeros(6)
 
-        a[0] = - x_sub[0] + x_sub[1]
-        a[1] = - x_sub[0] + x_sub[2]
-        a[2] = - x_sub[0] + x_sub[3]
-        a[3] = - y_sub[0] + y_sub[1]
-        a[4] = - y_sub[0] + y_sub[2]
-        a[5] = - y_sub[0] + y_sub[3]
+        a[0] = -x_sub[0] + x_sub[1]
+        a[1] = -x_sub[0] + x_sub[2]
+        a[2] = -x_sub[0] + x_sub[3]
+        a[3] = -y_sub[0] + y_sub[1]
+        a[4] = -y_sub[0] + y_sub[2]
+        a[5] = -y_sub[0] + y_sub[3]
         return a
 
     def _update_kwargs(self, x, kwargs_list):
@@ -115,38 +140,50 @@ class Solver4Point(object):
         :param kwargs_list: list of lens model kwargs
         :return: updated kwargs_list
         """
-        if self._solver_type == 'PROFILE_SHEAR_GAMMA_PSI':
+        if self._solver_type == "PROFILE_SHEAR_GAMMA_PSI":
             phi_G = x[5]  # % (2 * np.pi)
-            kwargs_list[1]['psi_ext'] = phi_G
-        if self._solver_type == 'PROFILE_SHEAR':
+            kwargs_list[1]["psi_ext"] = phi_G
+        if self._solver_type == "PROFILE_SHEAR":
             phi_G = x[5] % np.pi
-            phi_G_no_sense, gamma_ext = param_util.shear_cartesian2polar(kwargs_list[1]['gamma1'], kwargs_list[1]['gamma2'])
+            phi_G_no_sense, gamma_ext = param_util.shear_cartesian2polar(
+                kwargs_list[1]["gamma1"], kwargs_list[1]["gamma2"]
+            )
             gamma1, gamma2 = param_util.shear_polar2cartesian(phi_G, gamma_ext)
-            kwargs_list[1]['gamma1'] = gamma1
-            kwargs_list[1]['gamma2'] = gamma2
+            kwargs_list[1]["gamma1"] = gamma1
+            kwargs_list[1]["gamma2"] = gamma2
         lens_model = self._lens_mode_list[0]
-        if lens_model in ['SPEP', 'SPEMD', 'SIE', 'NIE', 'PEMD', 'EPL', 'EPL_BOXYDISKY']:
+        if lens_model in [
+            "SPEP",
+            "SPEMD",
+            "SIE",
+            "NIE",
+            "PEMD",
+            "EPL",
+            "EPL_BOXYDISKY",
+        ]:
             [theta_E, e1, e2, center_x, center_y, _] = x
-            kwargs_list[0]['theta_E'] = theta_E
-            kwargs_list[0]['e1'] = e1
-            kwargs_list[0]['e2'] = e2
-            kwargs_list[0]['center_x'] = center_x
-            kwargs_list[0]['center_y'] = center_y
+            kwargs_list[0]["theta_E"] = theta_E
+            kwargs_list[0]["e1"] = e1
+            kwargs_list[0]["e2"] = e2
+            kwargs_list[0]["center_x"] = center_x
+            kwargs_list[0]["center_y"] = center_y
 
-        elif lens_model in ['NFW_ELLIPSE', 'CNFW_ELLIPSE', 'NFW_ELLIPSE_CSE']:
+        elif lens_model in ["NFW_ELLIPSE", "CNFW_ELLIPSE", "NFW_ELLIPSE_CSE"]:
             [alpha_Rs, e1, e2, center_x, center_y, _] = x
-            kwargs_list[0]['alpha_Rs'] = alpha_Rs
-            kwargs_list[0]['e1'] = e1
-            kwargs_list[0]['e2'] = e2
-            kwargs_list[0]['center_x'] = center_x
-            kwargs_list[0]['center_y'] = center_y
-        elif lens_model in ['SHAPELETS_CART']:
+            kwargs_list[0]["alpha_Rs"] = alpha_Rs
+            kwargs_list[0]["e1"] = e1
+            kwargs_list[0]["e2"] = e2
+            kwargs_list[0]["center_x"] = center_x
+            kwargs_list[0]["center_y"] = center_y
+        elif lens_model in ["SHAPELETS_CART"]:
             [c10, c01, c20, c11, c02, _] = x
-            coeffs = list(kwargs_list[0]['coeffs'])
-            coeffs[1: 6] = [c10, c01, c20, c11, c02]
-            kwargs_list[0]['coeffs'] = coeffs
+            coeffs = list(kwargs_list[0]["coeffs"])
+            coeffs[1:6] = [c10, c01, c20, c11, c02]
+            kwargs_list[0]["coeffs"] = coeffs
         else:
-            raise ValueError("Lens model %s not supported for 4-point solver!" % lens_model)
+            raise ValueError(
+                "Lens model %s not supported for 4-point solver!" % lens_model
+            )
         return kwargs_list
 
     def _extract_array(self, kwargs_list):
@@ -154,14 +191,14 @@ class Solver4Point(object):
 
         :return:
         """
-        if self._solver_type == 'PROFILE_SHEAR_GAMMA_PSI':
-            phi_ext = kwargs_list[1]['psi_ext']  # % (np.pi)
+        if self._solver_type == "PROFILE_SHEAR_GAMMA_PSI":
+            phi_ext = kwargs_list[1]["psi_ext"]  # % (np.pi)
             # e1 = kwargs_list[1]['e1']
             # e2 = kwargs_list[1]['e2']
             # phi_ext, gamma_ext = param_util.ellipticity2phi_gamma(e1, e2)
-        elif self._solver_type == 'PROFILE_SHEAR':
-            gamma1 = kwargs_list[1]['gamma1']
-            gamma2 = kwargs_list[1]['gamma2']
+        elif self._solver_type == "PROFILE_SHEAR":
+            gamma1 = kwargs_list[1]["gamma1"]
+            gamma2 = kwargs_list[1]["gamma2"]
             phi_ext, gamma_ext = param_util.shear_cartesian2polar(gamma1, gamma2)
             # phi_G_no_sense, gamma_ext = param_util.ellipticity2phi_gamma(kwargs_list[1]['e1'], kwargs_list[1]['e2'])
             # e1, e2 = param_util.phi_gamma_ellipticity(phi_G, gamma_ext)
@@ -169,27 +206,37 @@ class Solver4Point(object):
         else:
             phi_ext = 0
         lens_model = self._lens_mode_list[0]
-        if lens_model in ['SPEP', 'SPEMD', 'SIE', 'NIE', 'PEMD', 'EPL', 'EPL_BOXYDISKY']:
-            e1 = kwargs_list[0]['e1']
-            e2 = kwargs_list[0]['e2']
-            center_x = kwargs_list[0]['center_x']
-            center_y = kwargs_list[0]['center_y']
-            theta_E = kwargs_list[0]['theta_E']
+        if lens_model in [
+            "SPEP",
+            "SPEMD",
+            "SIE",
+            "NIE",
+            "PEMD",
+            "EPL",
+            "EPL_BOXYDISKY",
+        ]:
+            e1 = kwargs_list[0]["e1"]
+            e2 = kwargs_list[0]["e2"]
+            center_x = kwargs_list[0]["center_x"]
+            center_y = kwargs_list[0]["center_y"]
+            theta_E = kwargs_list[0]["theta_E"]
             x = [theta_E, e1, e2, center_x, center_y, phi_ext]
 
-        elif lens_model in ['NFW_ELLIPSE', 'CNFW_ELLIPSE', 'NFW_ELLIPSE_CSE']:
-            e1 = kwargs_list[0]['e1']
-            e2 = kwargs_list[0]['e2']
-            center_x = kwargs_list[0]['center_x']
-            center_y = kwargs_list[0]['center_y']
-            alpha_Rs = kwargs_list[0]['alpha_Rs']
+        elif lens_model in ["NFW_ELLIPSE", "CNFW_ELLIPSE", "NFW_ELLIPSE_CSE"]:
+            e1 = kwargs_list[0]["e1"]
+            e2 = kwargs_list[0]["e2"]
+            center_x = kwargs_list[0]["center_x"]
+            center_y = kwargs_list[0]["center_y"]
+            alpha_Rs = kwargs_list[0]["alpha_Rs"]
             x = [alpha_Rs, e1, e2, center_x, center_y, phi_ext]
-        elif lens_model in ['SHAPELETS_CART']:
-            coeffs = list(kwargs_list[0]['coeffs'])
-            [c10, c01, c20, c11, c02] = coeffs[1: 6]
+        elif lens_model in ["SHAPELETS_CART"]:
+            coeffs = list(kwargs_list[0]["coeffs"])
+            [c10, c01, c20, c11, c02] = coeffs[1:6]
             x = [c10, c01, c20, c11, c02, phi_ext]
         else:
-            raise ValueError("Lens model %s not supported for 4-point solver!" % lens_model)
+            raise ValueError(
+                "Lens model %s not supported for 4-point solver!" % lens_model
+            )
         return x
 
     def add_fixed_lens(self, kwargs_fixed_lens_list, kwargs_lens_init):
@@ -203,24 +250,34 @@ class Solver4Point(object):
         lens_model = self.lensModel.lens_model_list[0]
         kwargs_fixed = kwargs_fixed_lens_list[0]
         kwargs_lens = kwargs_lens_init[0]
-        if self._solver_type in ['PROFILE_SHEAR', 'PROFILE_SHEAR_GAMMA_PSI']:
+        if self._solver_type in ["PROFILE_SHEAR", "PROFILE_SHEAR_GAMMA_PSI"]:
             pass
             # kwargs_fixed_lens_list[1]['psi_ext'] = kwargs_lens_init[1]['psi_ext']
-        if lens_model in ['SPEP', 'SPEMD', 'SIE', 'NIE', 'PEMD', 'EPL', 'EPL_BOXYDISKY']:
-            kwargs_fixed['theta_E'] = kwargs_lens['theta_E']
-            kwargs_fixed['e1'] = kwargs_lens['e1']
-            kwargs_fixed['e2'] = kwargs_lens['e2']
-            kwargs_fixed['center_x'] = kwargs_lens['center_x']
-            kwargs_fixed['center_y'] = kwargs_lens['center_y']
-        elif lens_model in ['NFW_ELLIPSE', 'CNFW_ELLIPSE', 'NFW_ELLIPSE_CSE']:
-            kwargs_fixed['alpha_Rs'] = kwargs_lens['alpha_Rs']
-            kwargs_fixed['e1'] = kwargs_lens['e1']
-            kwargs_fixed['e2'] = kwargs_lens['e2']
-            kwargs_fixed['center_x'] = kwargs_lens['center_x']
-            kwargs_fixed['center_y'] = kwargs_lens['center_y']
-        elif lens_model in ['SHAPELETS_CART']:
+        if lens_model in [
+            "SPEP",
+            "SPEMD",
+            "SIE",
+            "NIE",
+            "PEMD",
+            "EPL",
+            "EPL_BOXYDISKY",
+        ]:
+            kwargs_fixed["theta_E"] = kwargs_lens["theta_E"]
+            kwargs_fixed["e1"] = kwargs_lens["e1"]
+            kwargs_fixed["e2"] = kwargs_lens["e2"]
+            kwargs_fixed["center_x"] = kwargs_lens["center_x"]
+            kwargs_fixed["center_y"] = kwargs_lens["center_y"]
+        elif lens_model in ["NFW_ELLIPSE", "CNFW_ELLIPSE", "NFW_ELLIPSE_CSE"]:
+            kwargs_fixed["alpha_Rs"] = kwargs_lens["alpha_Rs"]
+            kwargs_fixed["e1"] = kwargs_lens["e1"]
+            kwargs_fixed["e2"] = kwargs_lens["e2"]
+            kwargs_fixed["center_x"] = kwargs_lens["center_x"]
+            kwargs_fixed["center_y"] = kwargs_lens["center_y"]
+        elif lens_model in ["SHAPELETS_CART"]:
             pass
         else:
             raise ValueError(
-                "%s is not a valid option. Choose from 'PROFILE', 'PROFILE_SHEAR', 'SHAPELETS'" % self._solver_type)
+                "%s is not a valid option. Choose from 'PROFILE', 'PROFILE_SHEAR', 'SHAPELETS'"
+                % self._solver_type
+            )
         return kwargs_fixed_lens_list

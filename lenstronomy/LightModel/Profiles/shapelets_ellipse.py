@@ -4,9 +4,22 @@ from lenstronomy.Util import param_util
 
 class ShapeletSetEllipse(object):
     """Cartesian shapelets with elliptical axis ratios."""
-    param_names = ['amp', 'n_max', 'beta', 'e1', 'e2', 'center_x', 'center_y']
-    lower_limit_default = {'beta': 0.01, 'e1': -0.6, 'e2': -0.6, 'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'beta': 100, 'e1': 0.6, 'e2': 0.6, 'center_x': 100, 'center_y': 100}
+
+    param_names = ["amp", "n_max", "beta", "e1", "e2", "center_x", "center_y"]
+    lower_limit_default = {
+        "beta": 0.01,
+        "e1": -0.6,
+        "e2": -0.6,
+        "center_x": -100,
+        "center_y": -100,
+    }
+    upper_limit_default = {
+        "beta": 100,
+        "e1": 0.6,
+        "e2": 0.6,
+        "center_x": 100,
+        "center_y": 100,
+    }
 
     def __init__(self):
         self._shapelet_set = ShapeletSet()
@@ -25,7 +38,9 @@ class ShapeletSetEllipse(object):
         :param center_y: shapelet center y
         :return: surface brightness of combined shapelet set
         """
-        x_, y_ = param_util.transform_e1e2_product_average(x, y, e1, e2, center_x=0, center_y=0)
+        x_, y_ = param_util.transform_e1e2_product_average(
+            x, y, e1, e2, center_x=0, center_y=0
+        )
         return self._shapelet_set.function(x_, y_, amp, n_max, beta, center_x, center_y)
 
     def function_split(self, x, y, amp, n_max, beta, e1, e2, center_x=0, center_y=0):
@@ -42,5 +57,9 @@ class ShapeletSetEllipse(object):
         :param center_y: shapelet center y
         :return: list of individual shapelet basis function responses
         """
-        x_, y_ = param_util.transform_e1e2_product_average(x, y, e1, e2, center_x=0, center_y=0)
-        return self._shapelet_set.function_split(x_, y_, amp, n_max, beta, center_x, center_y)
+        x_, y_ = param_util.transform_e1e2_product_average(
+            x, y, e1, e2, center_x=0, center_y=0
+        )
+        return self._shapelet_set.function_split(
+            x_, y_, amp, n_max, beta, center_x, center_y
+        )

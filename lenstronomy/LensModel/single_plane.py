@@ -1,9 +1,9 @@
-__author__ = 'sibirrer'
+__author__ = "sibirrer"
 
 import numpy as np
 from lenstronomy.LensModel.profile_list_base import ProfileListBase
 
-__all__ = ['SinglePlane']
+__all__ = ["SinglePlane"]
 
 
 class SinglePlane(ProfileListBase):
@@ -20,7 +20,9 @@ class SinglePlane(ProfileListBase):
         dx, dy = self.alpha(x, y, kwargs, k=k)
         return x - dx, y - dy
 
-    def fermat_potential(self, x_image, y_image, kwargs_lens, x_source=None, y_source=None, k=None):
+    def fermat_potential(
+        self, x_image, y_image, kwargs_lens, x_source=None, y_source=None, k=None
+    ):
         """Fermat potential (negative sign means earlier arrival time)
 
         :param x_image: image position
@@ -37,7 +39,7 @@ class SinglePlane(ProfileListBase):
         potential = self.potential(x_image, y_image, kwargs_lens, k=k)
         if x_source is None or y_source is None:
             x_source, y_source = self.ray_shooting(x_image, y_image, kwargs_lens, k=k)
-        geometry = ((x_image - x_source)**2 + (y_image - y_source)**2) / 2.
+        geometry = ((x_image - x_source) ** 2 + (y_image - y_source) ** 2) / 2.0
         return geometry - potential
 
     def potential(self, x, y, kwargs, k=None):
@@ -92,7 +94,12 @@ class SinglePlane(ProfileListBase):
             return f_xx, f_xy, f_yx, f_yy
 
         bool_list = self._bool_list(k)
-        f_xx, f_xy, f_yx, f_yy = np.zeros_like(x), np.zeros_like(x), np.zeros_like(x), np.zeros_like(x)
+        f_xx, f_xy, f_yx, f_yy = (
+            np.zeros_like(x),
+            np.zeros_like(x),
+            np.zeros_like(x),
+            np.zeros_like(x),
+        )
         for i, func in enumerate(self.func_list):
             if bool_list[i] is True:
                 f_xx_i, f_xy_i, f_yx_i, f_yy_i = func.hessian(x, y, **kwargs[i])
@@ -120,7 +127,11 @@ class SinglePlane(ProfileListBase):
         mass_3d = 0
         for i, func in enumerate(self.func_list):
             if bool_list[i] is True:
-                kwargs_i = {k: v for k, v in kwargs[i].items() if k not in ['center_x', 'center_y']}
+                kwargs_i = {
+                    k: v
+                    for k, v in kwargs[i].items()
+                    if k not in ["center_x", "center_y"]
+                }
                 mass_3d_i = func.mass_3d_lens(r, **kwargs_i)
                 mass_3d += mass_3d_i
         return mass_3d
@@ -144,7 +155,11 @@ class SinglePlane(ProfileListBase):
         mass_2d = 0
         for i, func in enumerate(self.func_list):
             if bool_list[i] is True:
-                kwargs_i = {k: v for k, v in kwargs[i].items() if k not in ['center_x', 'center_y']}
+                kwargs_i = {
+                    k: v
+                    for k, v in kwargs[i].items()
+                    if k not in ["center_x", "center_y"]
+                }
                 mass_2d_i = func.mass_2d_lens(r, **kwargs_i)
                 mass_2d += mass_2d_i
         return mass_2d
@@ -163,7 +178,11 @@ class SinglePlane(ProfileListBase):
         density = 0
         for i, func in enumerate(self.func_list):
             if bool_list[i] is True:
-                kwargs_i = {k: v for k, v in kwargs[i].items() if k not in ['center_x', 'center_y']}
+                kwargs_i = {
+                    k: v
+                    for k, v in kwargs[i].items()
+                    if k not in ["center_x", "center_y"]
+                }
                 density_i = func.density_lens(r, **kwargs_i)
                 density += density_i
         return density

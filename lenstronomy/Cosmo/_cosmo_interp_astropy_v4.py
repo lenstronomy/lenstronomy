@@ -1,9 +1,12 @@
 import astropy
+
 if float(astropy.__version__[0]) < 5.0:
     from astropy.cosmology.core import vectorize_if_needed
 else:
-    Warning('This routines are only supported for astropy version <5. Current version is %s.'
-                  % astropy.__version__)
+    Warning(
+        "This routines are only supported for astropy version <5. Current version is %s."
+        % astropy.__version__
+    )
 #
 from scipy.integrate import quad
 
@@ -12,6 +15,7 @@ class CosmoInterp(object):
     """Class which interpolates the comoving transfer distance and then computes angular
     diameter distances from it This class is modifying the astropy.cosmology
     routines."""
+
     def __init__(self, cosmo):
         """
 
@@ -38,5 +42,10 @@ class CosmoInterp(object):
           Comoving distance in Mpc between each input redshift.
         """
 
-        f = lambda z1, z2: quad(self._cosmo._inv_efunc_scalar, z1, z2, args=self._cosmo._inv_efunc_scalar_args)[0]
+        f = lambda z1, z2: quad(
+            self._cosmo._inv_efunc_scalar,
+            z1,
+            z2,
+            args=self._cosmo._inv_efunc_scalar_args,
+        )[0]
         return self._cosmo._hubble_distance * vectorize_if_needed(f, z1, z2)

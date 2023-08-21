@@ -1,10 +1,10 @@
-__author__ = 'sibirrer'
+__author__ = "sibirrer"
 
 import numpy as np
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
-__all__ = ['SPEMD']
+__all__ = ["SPEMD"]
 
 
 class SPEMD(LensProfileBase):
@@ -49,27 +49,51 @@ class SPEMD(LensProfileBase):
     .. math::
         s2_{fastell} = s_{lenstronomy}^2 * q
     """
-    param_names = ['theta_E', 'gamma', 'e1', 'e2', 's_scale', 'center_x', 'center_y']
-    lower_limit_default = {'theta_E': 0, 'gamma': 0, 'e1': -0.5, 'e2': -0.5, 's_scale': 0, 'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'theta_E': 100, 'gamma': 100, 'e1': 0.5, 'e2': 0.5, 's_scale': 100, 'center_x': 100, 'center_y': 100}
+
+    param_names = ["theta_E", "gamma", "e1", "e2", "s_scale", "center_x", "center_y"]
+    lower_limit_default = {
+        "theta_E": 0,
+        "gamma": 0,
+        "e1": -0.5,
+        "e2": -0.5,
+        "s_scale": 0,
+        "center_x": -100,
+        "center_y": -100,
+    }
+    upper_limit_default = {
+        "theta_E": 100,
+        "gamma": 100,
+        "e1": 0.5,
+        "e2": 0.5,
+        "s_scale": 100,
+        "center_x": 100,
+        "center_y": 100,
+    }
 
     def __init__(self, suppress_fastell=False):
         """"""
         try:
             from fastell4py import fastell4py
+
             self._fastell4py_bool = True
             self.fastell4py = fastell4py
         except:
             self._fastell4py_bool = False
             if suppress_fastell:
-                ImportWarning("module fastell4py not installed. You can get it from here: "
-                              "https://github.com/sibirrer/fastell4py "
-                              "Make sure you have a fortran compiler such that the installation works properly.")
-                Warning("SPEMD model outputs are replaced by zeros as fastell4py package is not installed!")
+                ImportWarning(
+                    "module fastell4py not installed. You can get it from here: "
+                    "https://github.com/sibirrer/fastell4py "
+                    "Make sure you have a fortran compiler such that the installation works properly."
+                )
+                Warning(
+                    "SPEMD model outputs are replaced by zeros as fastell4py package is not installed!"
+                )
             else:
-                raise ImportError("module fastell4py not installed. You can get it from here: "
-                                  "https://github.com/sibirrer/fastell4py "
-                                  "Make sure you have a fortran compiler such that the installation works properly.")
+                raise ImportError(
+                    "module fastell4py not installed. You can get it from here: "
+                    "https://github.com/sibirrer/fastell4py "
+                    "Make sure you have a fortran compiler such that the installation works properly."
+                )
         super(SPEMD, self).__init__()
 
     def function(self, x, y, theta_E, gamma, e1, e2, s_scale, center_x=0, center_y=0):
@@ -86,8 +110,9 @@ class SPEMD(LensProfileBase):
         :param center_y: y-position of lens center
         :return: lensing potential
         """
-        x1, x2, q_fastell, gam, s2, q, phi_G = self.param_transform(x, y, theta_E, gamma, e1, e2, s_scale, center_x,
-                                                                    center_y)
+        x1, x2, q_fastell, gam, s2, q, phi_G = self.param_transform(
+            x, y, theta_E, gamma, e1, e2, s_scale, center_x, center_y
+        )
         compute_bool = self._parameter_constraints(q_fastell, gam, s2, q)
         if self._fastell4py_bool and self.is_not_empty(x1, x2) and compute_bool:
             potential = self.fastell4py.ellipphi(x1, x2, q_fastell, gam, arat=q, s2=s2)
@@ -99,7 +124,9 @@ class SPEMD(LensProfileBase):
             potential = np.zeros_like(x1)
         return potential
 
-    def derivatives(self, x, y, theta_E, gamma, e1, e2, s_scale, center_x=0, center_y=0):
+    def derivatives(
+        self, x, y, theta_E, gamma, e1, e2, s_scale, center_x=0, center_y=0
+    ):
         """
 
         :param x: x-coordinate (angle)
@@ -113,18 +140,21 @@ class SPEMD(LensProfileBase):
         :param center_y: y-position of lens center
         :return: deflection angles alpha_x, alpha_y
         """
-        x1, x2, q_fastell, gam, s2, q, phi_G = self.param_transform(x, y, theta_E, gamma, e1, e2, s_scale, center_x,
-                                                                    center_y)
+        x1, x2, q_fastell, gam, s2, q, phi_G = self.param_transform(
+            x, y, theta_E, gamma, e1, e2, s_scale, center_x, center_y
+        )
         compute_bool = self._parameter_constraints(q_fastell, gam, s2, q)
         if self._fastell4py_bool and self.is_not_empty(x1, x2) and compute_bool:
-            f_x_prim, f_y_prim = self.fastell4py.fastelldefl(x1, x2, q_fastell, gam, arat=q, s2=s2)
+            f_x_prim, f_y_prim = self.fastell4py.fastelldefl(
+                x1, x2, q_fastell, gam, arat=q, s2=s2
+            )
         else:
             f_x_prim, f_y_prim = np.zeros_like(x1), np.zeros_like(x1)
         cos_phi = np.cos(phi_G)
         sin_phi = np.sin(phi_G)
 
-        f_x = cos_phi*f_x_prim - sin_phi*f_y_prim
-        f_y = sin_phi*f_x_prim + cos_phi*f_y_prim
+        f_x = cos_phi * f_x_prim - sin_phi * f_y_prim
+        f_y = sin_phi * f_x_prim + cos_phi * f_y_prim
         return f_x, f_y
 
     def hessian(self, x, y, theta_E, gamma, e1, e2, s_scale, center_x=0, center_y=0):
@@ -141,31 +171,47 @@ class SPEMD(LensProfileBase):
         :param center_y: y-position of lens center
         :return: Hessian components f_xx, f_xy, f_yx, f_yy
         """
-        x1, x2, q_fastell, gam, s2, q, phi_G = self.param_transform(x, y, theta_E, gamma, e1, e2, s_scale, center_x, center_y)
+        x1, x2, q_fastell, gam, s2, q, phi_G = self.param_transform(
+            x, y, theta_E, gamma, e1, e2, s_scale, center_x, center_y
+        )
         compute_bool = self._parameter_constraints(q_fastell, gam, s2, q)
         if self._fastell4py_bool and self.is_not_empty(x1, x2) and compute_bool:
-            f_x_prim, f_y_prim, f_xx_prim, f_yy_prim, f_xy_prim = self.fastell4py.fastellmag(x1, x2, q_fastell, gam,
-                                                                                             arat=q, s2=s2)
+            (
+                f_x_prim,
+                f_y_prim,
+                f_xx_prim,
+                f_yy_prim,
+                f_xy_prim,
+            ) = self.fastell4py.fastellmag(x1, x2, q_fastell, gam, arat=q, s2=s2)
             n = len(np.atleast_1d(x))
             if n <= 1:
                 if np.shape(x) == ():
-                    f_xx_prim, f_yy_prim, f_xy_prim = np.array(f_xx_prim[0]), np.array(f_yy_prim[0]), np.array(
-                        f_xy_prim[0])
+                    f_xx_prim, f_yy_prim, f_xy_prim = (
+                        np.array(f_xx_prim[0]),
+                        np.array(f_yy_prim[0]),
+                        np.array(f_xy_prim[0]),
+                    )
         else:
-            f_xx_prim, f_yy_prim, f_xy_prim = np.zeros_like(x1), np.zeros_like(x1), np.zeros_like(x1)
-        kappa = (f_xx_prim + f_yy_prim)/2
-        gamma1_value = (f_xx_prim - f_yy_prim)/2
+            f_xx_prim, f_yy_prim, f_xy_prim = (
+                np.zeros_like(x1),
+                np.zeros_like(x1),
+                np.zeros_like(x1),
+            )
+        kappa = (f_xx_prim + f_yy_prim) / 2
+        gamma1_value = (f_xx_prim - f_yy_prim) / 2
         gamma2_value = f_xy_prim
 
-        gamma1 = np.cos(2*phi_G)*gamma1_value-np.sin(2*phi_G)*gamma2_value
-        gamma2 = +np.sin(2*phi_G)*gamma1_value+np.cos(2*phi_G)*gamma2_value
+        gamma1 = np.cos(2 * phi_G) * gamma1_value - np.sin(2 * phi_G) * gamma2_value
+        gamma2 = +np.sin(2 * phi_G) * gamma1_value + np.cos(2 * phi_G) * gamma2_value
 
         f_xx = kappa + gamma1
         f_yy = kappa - gamma1
         f_xy = gamma2
         return f_xx, f_xy, f_xy, f_yy
 
-    def param_transform(self, x, y, theta_E, gamma, e1, e2, s_scale, center_x=0, center_y=0):
+    def param_transform(
+        self, x, y, theta_E, gamma, e1, e2, s_scale, center_x=0, center_y=0
+    ):
         """Transforms parameters in the format of fastell4py.
 
         :param x: x-coordinate (angle)
@@ -204,9 +250,9 @@ class SPEMD(LensProfileBase):
         :param s_scale: float, smoothing scale in the core
         :return: pre-factors to SPEMP profile for FASTELL
         """
-        gam = (gamma-1)/2.
-        q_fastell = (3-gamma)/2. * (theta_E ** 2 / q) ** gam
-        s2 = s_scale ** 2 * q
+        gam = (gamma - 1) / 2.0
+        q_fastell = (3 - gamma) / 2.0 * (theta_E**2 / q) ** gam
+        s2 = s_scale**2 * q
         return q_fastell, gam, s2
 
     @staticmethod
@@ -245,7 +291,13 @@ class SPEMD(LensProfileBase):
         :param s2: square of smoothing scale of the core
         :return: bool of whether or not to let the fastell provide to be evaluated or instead return zero(s)
         """
-        if q_fastell <= 0 or q > 1 or q < 0.01 or gam > 0.999 or gam < 0.001 or \
-                not np.isfinite(q_fastell):
+        if (
+            q_fastell <= 0
+            or q > 1
+            or q < 0.01
+            or gam > 0.999
+            or gam < 0.001
+            or not np.isfinite(q_fastell)
+        ):
             return False
         return True

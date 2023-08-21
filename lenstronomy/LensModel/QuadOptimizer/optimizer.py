@@ -1,4 +1,4 @@
-__author__ = 'dgilman'
+__author__ = "dgilman"
 
 from scipy.optimize import minimize
 import numpy as np
@@ -6,7 +6,7 @@ from lenstronomy.Sampling.Samplers.pso import ParticleSwarmOptimizer
 from lenstronomy.LensModel.QuadOptimizer.multi_plane_fast import MultiplaneFast
 from lenstronomy.Sampling.Pool.pool import choose_pool
 
-__all__ = ['Optimizer']
+__all__ = ["Optimizer"]
 
 
 class Optimizer(object):
@@ -17,12 +17,26 @@ class Optimizer(object):
     with different convergence criteria implemented.
     """
 
-    def __init__(self, x_image, y_image, lens_model_list, redshift_list, z_lens, z_source,
-                 parameter_class, astropy_instance=None, numerical_alpha_class=None,
-                 particle_swarm=True, re_optimize=False, re_optimize_scale=1.,
-                 pso_convergence_mean=50000, foreground_rays=None,
-                 tol_source=1e-5, tol_simplex_func=1e-3, simplex_n_iterations=400):
-
+    def __init__(
+        self,
+        x_image,
+        y_image,
+        lens_model_list,
+        redshift_list,
+        z_lens,
+        z_source,
+        parameter_class,
+        astropy_instance=None,
+        numerical_alpha_class=None,
+        particle_swarm=True,
+        re_optimize=False,
+        re_optimize_scale=1.0,
+        pso_convergence_mean=50000,
+        foreground_rays=None,
+        tol_source=1e-5,
+        tol_simplex_func=1e-3,
+        simplex_n_iterations=400,
+    ):
         """
 
         :param x_image: x_image to fit (should be length 4)
@@ -45,9 +59,19 @@ class Optimizer(object):
         :param simplex_n_iterations: number of iterations per dimension for the downhill simplex optimization
         """
 
-        self.fast_rayshooting = MultiplaneFast(x_image, y_image, z_lens, z_source,
-                                                 lens_model_list, redshift_list, astropy_instance, parameter_class,
-                                                 foreground_rays, tol_source, numerical_alpha_class)
+        self.fast_rayshooting = MultiplaneFast(
+            x_image,
+            y_image,
+            z_lens,
+            z_source,
+            lens_model_list,
+            redshift_list,
+            astropy_instance,
+            parameter_class,
+            foreground_rays,
+            tol_source,
+            numerical_alpha_class,
+        )
 
         self._tol_source = tol_source
 
@@ -75,7 +99,6 @@ class Optimizer(object):
         """
 
         if self._particle_swarm:
-
             if threadCount > 1:
                 pool = choose_pool(mpi=False, processes=threadCount)
             else:
@@ -89,29 +112,44 @@ class Optimizer(object):
         kwargs_lens_final, source_penalty = self._fit_amoeba(kwargs, verbose)
 
         args_lens_final = self._param_class.kwargs_to_args(kwargs_lens_final)
-        source_x_array, source_y_array = self.fast_rayshooting.ray_shooting_fast(args_lens_final)
+        source_x_array, source_y_array = self.fast_rayshooting.ray_shooting_fast(
+            args_lens_final
+        )
         source_x, source_y = np.mean(source_x_array), np.mean(source_y_array)
 
         if verbose:
-            print('optimization done.')
-            print('Recovered source position: ', (source_x_array, source_y_array))
+            print("optimization done.")
+            print("Recovered source position: ", (source_x_array, source_y_array))
 
         return kwargs_lens_final, [source_x, source_y]
 
     def _fit_pso(self, n_particles, n_iterations, pool, verbose):
         """Executes the PSO."""
 
-        low_bounds, high_bounds = self._param_class.bounds(self._re_optimize, self._re_optimize_scale)
+        low_bounds, high_bounds = self._param_class.bounds(
+            self._re_optimize, self._re_optimize_scale
+        )
 
-        pso = ParticleSwarmOptimizer(self.fast_rayshooting.logL, low_bounds, high_bounds, n_particles,
-                                     pool, args=[self._tol_source])
+        pso = ParticleSwarmOptimizer(
+            self.fast_rayshooting.logL,
+            low_bounds,
+            high_bounds,
+            n_particles,
+            pool,
+            args=[self._tol_source],
+        )
 
-        best, info = pso.optimize(n_iterations, verbose, early_stop_tolerance=self._pso_convergence_mean)
+        best, info = pso.optimize(
+            n_iterations, verbose, early_stop_tolerance=self._pso_convergence_mean
+        )
 
         if verbose:
-            print('PSO done... ')
-            print('source plane chi^2: ', self.fast_rayshooting.source_plane_chi_square(best))
-            print('total chi^2: ', self.fast_rayshooting.chi_square(best))
+            print("PSO done... ")
+            print(
+                "source plane chi^2: ",
+                self.fast_rayshooting.source_plane_chi_square(best),
+            )
+            print("total chi^2: ", self.fast_rayshooting.chi_square(best))
 
         kwargs = self._param_class.args_to_kwargs(best)
 
@@ -122,18 +160,25 @@ class Optimizer(object):
 
         args_init = self._param_class.kwargs_to_args(kwargs)
 
-        options = {'adaptive': True, 'fatol': self._tol_simplex_func,
-                   'maxiter': self._simplex_n_iterations * len(args_init)}
+        options = {
+            "adaptive": True,
+            "fatol": self._tol_simplex_func,
+            "maxiter": self._simplex_n_iterations * len(args_init),
+        }
 
-        method = 'Nelder-Mead'
+        method = "Nelder-Mead"
 
         if verbose:
-            print('starting amoeba... ')
+            print("starting amoeba... ")
 
-        opt = minimize(self.fast_rayshooting.chi_square, x0=args_init,
-                       method=method, options=options)
+        opt = minimize(
+            self.fast_rayshooting.chi_square,
+            x0=args_init,
+            method=method,
+            options=options,
+        )
 
-        kwargs = self._param_class.args_to_kwargs(opt['x'])
-        source_penalty = opt['fun']
+        kwargs = self._param_class.args_to_kwargs(opt["x"])
+        source_penalty = opt["fun"]
 
         return kwargs, source_penalty

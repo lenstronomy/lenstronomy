@@ -1,14 +1,23 @@
 from lenstronomy.LensModel.single_plane import SinglePlane
 import numpy as np
 
-__all__ = ['LensParam']
+__all__ = ["LensParam"]
 
 
 class LensParam(object):
     """Class to handle the lens model parameter."""
-    def __init__(self, lens_model_list, kwargs_fixed,
-                 kwargs_lower=None, kwargs_upper=None, kwargs_logsampling=None,
-                 num_images=0, solver_type='NONE', num_shapelet_lens=0):
+
+    def __init__(
+        self,
+        lens_model_list,
+        kwargs_fixed,
+        kwargs_lower=None,
+        kwargs_upper=None,
+        kwargs_logsampling=None,
+        num_images=0,
+        solver_type="NONE",
+        num_shapelet_lens=0,
+    ):
         """
 
         :param lens_model_list: list of strings of lens model names
@@ -70,33 +79,49 @@ class LensParam(object):
             param_names = self._param_name_list[k]
             for name in param_names:
                 if name not in kwargs_fixed:
-                    if model in ['SHAPELETS_POLAR', 'SHAPELETS_CART'] and name == 'coeffs':
+                    if (
+                        model in ["SHAPELETS_POLAR", "SHAPELETS_CART"]
+                        and name == "coeffs"
+                    ):
                         num_coeffs = self._num_shapelet_lens
-                        if self._solver_type == 'SHAPELETS' and k == 0:
+                        if self._solver_type == "SHAPELETS" and k == 0:
                             if self._num_images == 4:
                                 num_coeffs -= 6
-                                coeffs = args[i:i + num_coeffs]
+                                coeffs = args[i : i + num_coeffs]
                                 coeffs = [0, 0, 0, 0, 0, 0] + list(coeffs[0:])
                             elif self._num_images == 2:
                                 num_coeffs -= 3
-                                coeffs = args[i:i + num_coeffs]
+                                coeffs = args[i : i + num_coeffs]
                                 coeffs = [0, 0, 0] + list(coeffs[0:])
                             else:
                                 raise ValueError("Option for solver_type not valid!")
-                            kwargs['coeffs'] = coeffs
+                            kwargs["coeffs"] = coeffs
                         else:
-                            kwargs['coeffs'] = args[i:i + num_coeffs]
+                            kwargs["coeffs"] = args[i : i + num_coeffs]
                         i += num_coeffs
-                    elif model in ['MULTI_GAUSSIAN_KAPPA', 'MULTI_GAUSSIAN_KAPPA_ELLIPSE'] and name == 'amp':
-                        if 'sigma' in kwargs_fixed:
-                            num_param = len(kwargs_fixed['sigma'])
+                    elif (
+                        model
+                        in ["MULTI_GAUSSIAN_KAPPA", "MULTI_GAUSSIAN_KAPPA_ELLIPSE"]
+                        and name == "amp"
+                    ):
+                        if "sigma" in kwargs_fixed:
+                            num_param = len(kwargs_fixed["sigma"])
                         else:
-                            num_param = len(kwargs['sigma'])
-                        kwargs['amp'] = args[i:i + num_param]
+                            num_param = len(kwargs["sigma"])
+                        kwargs["amp"] = args[i : i + num_param]
                         i += num_param
-                    elif model in ['MULTI_GAUSSIAN_KAPPA', 'MULTI_GAUSSIAN_KAPPA_ELLIPSE'] and name == 'sigma':
+                    elif (
+                        model
+                        in ["MULTI_GAUSSIAN_KAPPA", "MULTI_GAUSSIAN_KAPPA_ELLIPSE"]
+                        and name == "sigma"
+                    ):
                         raise ValueError("%s must have fixed 'sigma' list!" % model)
-                    elif model in ['INTERPOL', 'INTERPOL_SCALED'] and name in ['f_', 'f_xx', 'f_xy', 'f_yy']:
+                    elif model in ["INTERPOL", "INTERPOL_SCALED"] and name in [
+                        "f_",
+                        "f_xx",
+                        "f_xy",
+                        "f_yy",
+                    ]:
                         pass
                     else:
                         kwargs[name] = args[i]
@@ -105,7 +130,7 @@ class LensParam(object):
                     kwargs[name] = kwargs_fixed[name]
 
                 if name in kwargs_logsampling and name not in kwargs_fixed:
-                    kwargs[name] = 10**(kwargs[name])
+                    kwargs[name] = 10 ** (kwargs[name])
 
             kwargs_list.append(kwargs)
 
@@ -127,20 +152,36 @@ class LensParam(object):
             param_names = self._param_name_list[k]
             for name in param_names:
                 if name not in kwargs_fixed:
-                    if model in ['SHAPELETS_POLAR', 'SHAPELETS_CART'] and name == 'coeffs':
-                        coeffs = kwargs['coeffs']
-                        if self._solver_type == 'SHAPELETS' and k == 0:
+                    if (
+                        model in ["SHAPELETS_POLAR", "SHAPELETS_CART"]
+                        and name == "coeffs"
+                    ):
+                        coeffs = kwargs["coeffs"]
+                        if self._solver_type == "SHAPELETS" and k == 0:
                             if self._num_images == 4:
                                 coeffs = coeffs[6:]
                             elif self._num_images == 2:
                                 coeffs = coeffs[3:]
                         args += list(coeffs)
-                    elif model in ['MULTI_GAUSSIAN_KAPPA', 'MULTI_GAUSSIAN_KAPPA_ELLIPSE'] and name == 'amp':
-                        amp = kwargs['amp']
+                    elif (
+                        model
+                        in ["MULTI_GAUSSIAN_KAPPA", "MULTI_GAUSSIAN_KAPPA_ELLIPSE"]
+                        and name == "amp"
+                    ):
+                        amp = kwargs["amp"]
                         args += list(amp)
-                    elif model in ['MULTI_GAUSSIAN_KAPPA', 'MULTI_GAUSSIAN_KAPPA_ELLIPSE'] and name == 'sigma':
+                    elif (
+                        model
+                        in ["MULTI_GAUSSIAN_KAPPA", "MULTI_GAUSSIAN_KAPPA_ELLIPSE"]
+                        and name == "sigma"
+                    ):
                         raise ValueError("%s must have fixed 'sigma' list!" % model)
-                    elif model in ['INTERPOL', 'INTERPOL_SCALED'] and name in ['f_', 'f_xx', 'f_xy', 'f_yy']:
+                    elif model in ["INTERPOL", "INTERPOL_SCALED"] and name in [
+                        "f_",
+                        "f_xx",
+                        "f_xy",
+                        "f_yy",
+                    ]:
                         pass
                     # elif self._solver_type == 'PROFILE_SHEAR' and k == 1:
                     #    if name == 'e1':
@@ -163,31 +204,49 @@ class LensParam(object):
         """
         num = 0
         list = []
-        type = 'lens'
+        type = "lens"
         for k, model in enumerate(self.model_list):
             kwargs_fixed = self.kwargs_fixed[k]
             param_names = self._param_name_list[k]
             for name in param_names:
                 if name not in kwargs_fixed:
-                    if model in ['SHAPELETS_POLAR', 'SHAPELETS_CART'] and name == 'coeffs':
+                    if (
+                        model in ["SHAPELETS_POLAR", "SHAPELETS_CART"]
+                        and name == "coeffs"
+                    ):
                         num_coeffs = self._num_shapelet_lens
-                        if self._solver_type == 'SHAPELETS' and k == 0:
+                        if self._solver_type == "SHAPELETS" and k == 0:
                             if self._num_images == 4:
                                 num_coeffs -= 6
                             elif self._num_images == 2:
                                 num_coeffs -= 3
                         num += num_coeffs
-                        list += [str(name + '_' + type + str(k))] * num_coeffs
-                    elif model in ['MULTI_GAUSSIAN_KAPPA', 'MULTI_GAUSSIAN_KAPPA_ELLIPSE'] and name == 'amp':
-                        num_param = len(kwargs_fixed['sigma'])
+                        list += [str(name + "_" + type + str(k))] * num_coeffs
+                    elif (
+                        model
+                        in ["MULTI_GAUSSIAN_KAPPA", "MULTI_GAUSSIAN_KAPPA_ELLIPSE"]
+                        and name == "amp"
+                    ):
+                        num_param = len(kwargs_fixed["sigma"])
                         num += num_param
                         for i in range(num_param):
-                            list.append(str(name + '_' + type + str(k)))
-                    elif model in ['MULTI_GAUSSIAN_KAPPA', 'MULTI_GAUSSIAN_KAPPA_ELLIPSE'] and name == 'sigma':
-                        raise ValueError("'sigma' must be a fixed keyword argument for MULTI_GAUSSIAN")
-                    elif model in ['INTERPOL', 'INTERPOL_SCALED'] and name in ['f_', 'f_xx', 'f_xy', 'f_yy']:
+                            list.append(str(name + "_" + type + str(k)))
+                    elif (
+                        model
+                        in ["MULTI_GAUSSIAN_KAPPA", "MULTI_GAUSSIAN_KAPPA_ELLIPSE"]
+                        and name == "sigma"
+                    ):
+                        raise ValueError(
+                            "'sigma' must be a fixed keyword argument for MULTI_GAUSSIAN"
+                        )
+                    elif model in ["INTERPOL", "INTERPOL_SCALED"] and name in [
+                        "f_",
+                        "f_xx",
+                        "f_xy",
+                        "f_yy",
+                    ]:
                         pass
                     else:
                         num += 1
-                        list.append(str(name + '_' + type + str(k)))
+                        list.append(str(name + "_" + type + str(k)))
         return num, list

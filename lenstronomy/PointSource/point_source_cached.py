@@ -1,4 +1,4 @@
-__all__ = ['PointSourceCached']
+__all__ = ["PointSourceCached"]
 
 
 class PointSourceCached(object):
@@ -8,22 +8,23 @@ class PointSourceCached(object):
     This speeds-up repeated calls for the same source and lens model and avoids duplicating the lens equation solving.
     Attention: cache needs to be deleted before calling functions with different lens and point source parameters.
     """
+
     def __init__(self, point_source_model, save_cache=False):
         self._model = point_source_model
         self._save_cache = save_cache
 
     def delete_lens_model_cache(self):
-        if hasattr(self, '_x_image'):
+        if hasattr(self, "_x_image"):
             del self._x_image
-        if hasattr(self, '_y_image'):
+        if hasattr(self, "_y_image"):
             del self._y_image
-        if hasattr(self, '_x_image_add'):
+        if hasattr(self, "_x_image_add"):
             del self._x_image_add
-        if hasattr(self, '_y_image_add'):
+        if hasattr(self, "_y_image_add"):
             del self._y_image_add
-        if hasattr(self, '_x_source'):
+        if hasattr(self, "_x_source"):
             del self._x_source
-        if hasattr(self, '_y_source'):
+        if hasattr(self, "_y_source"):
             del self._y_source
 
     def set_save_cache(self, save_bool):
@@ -32,8 +33,14 @@ class PointSourceCached(object):
     def update_lens_model(self, lens_model_class):
         self._model.update_lens_model(lens_model_class)
 
-    def image_position(self, kwargs_ps, kwargs_lens=None, magnification_limit=None, kwargs_lens_eqn_solver=None,
-                       additional_images=False):
+    def image_position(
+        self,
+        kwargs_ps,
+        kwargs_lens=None,
+        magnification_limit=None,
+        kwargs_lens_eqn_solver=None,
+        additional_images=False,
+    ):
         """On-sky image positions.
 
         :param kwargs_ps: keyword arguments of the point source model
@@ -52,17 +59,31 @@ class PointSourceCached(object):
         """
         if additional_images and not self._model.additional_images:
             # ignore cached parts if additional images
-            if not self._save_cache or not hasattr(self, '_x_image_add') or not hasattr(self, '_y_image_add'):
-                self._x_image_add, self._y_image_add = self._model.image_position(kwargs_ps, kwargs_lens=kwargs_lens,
-                                                                                  magnification_limit=magnification_limit,
-                                                                                  kwargs_lens_eqn_solver=kwargs_lens_eqn_solver,
-                                                                                  additional_images=additional_images)
+            if (
+                not self._save_cache
+                or not hasattr(self, "_x_image_add")
+                or not hasattr(self, "_y_image_add")
+            ):
+                self._x_image_add, self._y_image_add = self._model.image_position(
+                    kwargs_ps,
+                    kwargs_lens=kwargs_lens,
+                    magnification_limit=magnification_limit,
+                    kwargs_lens_eqn_solver=kwargs_lens_eqn_solver,
+                    additional_images=additional_images,
+                )
             return self._x_image_add, self._y_image_add
-        if not self._save_cache or not hasattr(self, '_x_image') or not hasattr(self, '_y_image'):
-            self._x_image, self._y_image = self._model.image_position(kwargs_ps, kwargs_lens=kwargs_lens,
-                                                                      magnification_limit=magnification_limit,
-                                                                      kwargs_lens_eqn_solver=kwargs_lens_eqn_solver,
-                                                                      additional_images=additional_images)
+        if (
+            not self._save_cache
+            or not hasattr(self, "_x_image")
+            or not hasattr(self, "_y_image")
+        ):
+            self._x_image, self._y_image = self._model.image_position(
+                kwargs_ps,
+                kwargs_lens=kwargs_lens,
+                magnification_limit=magnification_limit,
+                kwargs_lens_eqn_solver=kwargs_lens_eqn_solver,
+                additional_images=additional_images,
+            )
         return self._x_image, self._y_image
 
     def source_position(self, kwargs_ps, kwargs_lens=None):
@@ -72,11 +93,23 @@ class PointSourceCached(object):
         :param kwargs_lens: lens model keyword argument list (only used when required)
         :return: x, y position
         """
-        if not self._save_cache or not hasattr(self, '_x_source') or not hasattr(self, '_y_source'):
-            self._x_source, self._y_source = self._model.source_position(kwargs_ps, kwargs_lens=kwargs_lens)
+        if (
+            not self._save_cache
+            or not hasattr(self, "_x_source")
+            or not hasattr(self, "_y_source")
+        ):
+            self._x_source, self._y_source = self._model.source_position(
+                kwargs_ps, kwargs_lens=kwargs_lens
+            )
         return self._x_source, self._y_source
 
-    def image_amplitude(self, kwargs_ps, kwargs_lens=None, magnification_limit=None, kwargs_lens_eqn_solver=None):
+    def image_amplitude(
+        self,
+        kwargs_ps,
+        kwargs_lens=None,
+        magnification_limit=None,
+        kwargs_lens_eqn_solver=None,
+    ):
         """Image brightness amplitudes.
 
         :param kwargs_ps: keyword arguments of the point source model
@@ -90,9 +123,15 @@ class PointSourceCached(object):
             details
         :return: array of image amplitudes
         """
-        x_pos, y_pos = self.image_position(kwargs_ps, kwargs_lens, magnification_limit=magnification_limit,
-                                           kwargs_lens_eqn_solver=kwargs_lens_eqn_solver)
-        return self._model.image_amplitude(kwargs_ps, kwargs_lens=kwargs_lens, x_pos=x_pos, y_pos=y_pos)
+        x_pos, y_pos = self.image_position(
+            kwargs_ps,
+            kwargs_lens,
+            magnification_limit=magnification_limit,
+            kwargs_lens_eqn_solver=kwargs_lens_eqn_solver,
+        )
+        return self._model.image_amplitude(
+            kwargs_ps, kwargs_lens=kwargs_lens, x_pos=x_pos, y_pos=y_pos
+        )
 
     def source_amplitude(self, kwargs_ps, kwargs_lens=None):
         """Intrinsic brightness amplitude of point source.

@@ -5,7 +5,7 @@ from lenstronomy.ImSim.image_model import ImageModel
 import copy
 import numpy as np
 
-__all__ = ['SimAPI']
+__all__ = ["SimAPI"]
 
 
 class SimAPI(DataAPI, ModelAPI):
@@ -17,12 +17,13 @@ class SimAPI(DataAPI, ModelAPI):
     the optical quantities being used in the lenstronomy LensModel module.
     All other model choices are equivalent to the ones provided by LightModel, LensModel, PointSource modules
     """
+
     def __init__(self, numpix, kwargs_single_band, kwargs_model):
         """
-        
+
         :param numpix: number of pixels per axis
-        :param kwargs_single_band: keyword arguments specifying the class instance of DataAPI 
-        :param kwargs_model: keyword arguments specifying the class instance of ModelAPI 
+        :param kwargs_single_band: keyword arguments specifying the class instance of DataAPI
+        :param kwargs_model: keyword arguments specifying the class instance of ModelAPI
         """
         DataAPI.__init__(self, numpix, **kwargs_single_band)
         ModelAPI.__init__(self, **kwargs_model)
@@ -33,10 +34,19 @@ class SimAPI(DataAPI, ModelAPI):
         :param kwargs_numerics: keyword arguments list of Numerics module
         :return: instance of the ImageModel class with all the specified configurations
         """
-        return ImageModel(self.data_class, self.psf_class, self.lens_model_class, self.source_model_class,
-                          self.lens_light_model_class, self.point_source_model_class, kwargs_numerics=kwargs_numerics)
+        return ImageModel(
+            self.data_class,
+            self.psf_class,
+            self.lens_model_class,
+            self.source_model_class,
+            self.lens_light_model_class,
+            self.point_source_model_class,
+            kwargs_numerics=kwargs_numerics,
+        )
 
-    def magnitude2amplitude(self, kwargs_lens_light_mag=None, kwargs_source_mag=None, kwargs_ps_mag=None):
+    def magnitude2amplitude(
+        self, kwargs_lens_light_mag=None, kwargs_source_mag=None, kwargs_ps_mag=None
+    ):
         """
         'magnitude' definition are in APPARENT magnitudes as observed on the sky, not intrinsic!
 
@@ -54,34 +64,40 @@ class SimAPI(DataAPI, ModelAPI):
         if kwargs_lens_light_mag is not None:
             for i, kwargs_mag in enumerate(kwargs_lens_light_mag):
                 kwargs_new = kwargs_lens_light[i]
-                del kwargs_new['magnitude']
-                cps_norm = self.lens_light_model_class.total_flux(kwargs_list=kwargs_lens_light, norm=True, k=i)[0]
-                magnitude = kwargs_mag['magnitude']
+                del kwargs_new["magnitude"]
+                cps_norm = self.lens_light_model_class.total_flux(
+                    kwargs_list=kwargs_lens_light, norm=True, k=i
+                )[0]
+                magnitude = kwargs_mag["magnitude"]
                 cps = self.magnitude2cps(magnitude)
                 amp = cps / cps_norm
-                kwargs_new['amp'] = amp
+                kwargs_new["amp"] = amp
 
         kwargs_source = copy.deepcopy(kwargs_source_mag)
         if kwargs_source_mag is not None:
             for i, kwargs_mag in enumerate(kwargs_source_mag):
                 kwargs_new = kwargs_source[i]
-                del kwargs_new['magnitude']
-                cps_norm = self.source_model_class.total_flux(kwargs_list=kwargs_source, norm=True, k=i)[0]
-                magnitude = kwargs_mag['magnitude']
+                del kwargs_new["magnitude"]
+                cps_norm = self.source_model_class.total_flux(
+                    kwargs_list=kwargs_source, norm=True, k=i
+                )[0]
+                magnitude = kwargs_mag["magnitude"]
                 cps = self.magnitude2cps(magnitude)
                 amp = cps / cps_norm
-                kwargs_new['amp'] = amp
+                kwargs_new["amp"] = amp
 
         kwargs_ps = copy.deepcopy(kwargs_ps_mag)
         if kwargs_ps_mag is not None:
             amp_list = []
             for i, kwargs_mag in enumerate(kwargs_ps_mag):
                 kwargs_new = kwargs_ps[i]
-                del kwargs_new['magnitude']
+                del kwargs_new["magnitude"]
                 cps_norm = 1
-                magnitude = np.array(kwargs_mag['magnitude'])
+                magnitude = np.array(kwargs_mag["magnitude"])
                 cps = self.magnitude2cps(magnitude)
                 amp = cps / cps_norm
                 amp_list.append(amp)
-            kwargs_ps = self.point_source_model_class.set_amplitudes(amp_list, kwargs_ps)
+            kwargs_ps = self.point_source_model_class.set_amplitudes(
+                amp_list, kwargs_ps
+            )
         return kwargs_lens_light, kwargs_source, kwargs_ps

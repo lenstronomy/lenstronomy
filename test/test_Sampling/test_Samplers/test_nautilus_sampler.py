@@ -30,11 +30,11 @@ class TestNautilusSampler(object):
     def test_sampler(self, import_fixture):
         sampler, likelihood = import_fixture
         kwargs = {
-            'mpi': False,
-            'verbose': True,
-            'f_live': 1.0,
-            'n_eff': 0.0,
-            'seed': 42,
+            "mpi": False,
+            "verbose": True,
+            "f_live": 1.0,
+            "n_eff": 0.0,
+            "seed": 42,
         }
         points, log_w, log_l, log_z = sampler.run(**kwargs)
         assert len(points) == len(log_w)
@@ -42,5 +42,5 @@ class TestNautilusSampler(object):
         assert np.isfinite(log_z)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pytest.main()

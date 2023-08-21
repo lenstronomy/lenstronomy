@@ -1,10 +1,11 @@
-__author__ = 'sibirrer'
+__author__ = "sibirrer"
 
 from scipy import fftpack
 import numpy as np
 import lenstronomy.Util.analysis_util as analysis_util
 
 from lenstronomy.Util.package_util import exporter
+
 export, __all__ = exporter()
 
 

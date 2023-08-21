@@ -1,7 +1,7 @@
 from lenstronomy.LensModel.Profiles.flexion import Flexion
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
-__all__ = ['Flexionfg']
+__all__ = ["Flexionfg"]
 
 
 class Flexionfg(LensProfileBase):
@@ -9,9 +9,24 @@ class Flexionfg(LensProfileBase):
     Flexion consist of basis F flexion and G flexion (F1,F2,G1,G2),
     see formulas 2.54, 2.55 in Massimo Meneghetti 2017 - "Introduction to Gravitational Lensing".
     """
-    param_names = ['F1', 'F2', 'G1', 'G2', 'ra_0', 'dec_0']
-    lower_limit_default = {'F1': -0.1, 'F2': -0.1, 'G1': -0.1, 'G2': -0.1, 'ra_0': -100, 'dec_0': -100}
-    upper_limit_default = {'F1': 0.1, 'F2': 0.1, 'G1': 0.1, 'G2': 0.1, 'ra_0': 100, 'dec_0': 100}
+
+    param_names = ["F1", "F2", "G1", "G2", "ra_0", "dec_0"]
+    lower_limit_default = {
+        "F1": -0.1,
+        "F2": -0.1,
+        "G1": -0.1,
+        "G2": -0.1,
+        "ra_0": -100,
+        "dec_0": -100,
+    }
+    upper_limit_default = {
+        "F1": 0.1,
+        "F2": 0.1,
+        "G1": 0.1,
+        "G2": 0.1,
+        "ra_0": 100,
+        "dec_0": 100,
+    }
 
     def __init__(self):
         self.flexion_cart = Flexion()
@@ -76,8 +91,8 @@ class Flexionfg(LensProfileBase):
         :param G2: G2 flexion
         :return: g1,g2,g3,g4 (phi_xxx, phi_xxy, phi_xyy, phi_yyy)
         """
-        g1 = (3*F1 + G1) * 0.5
-        g2 = (3*F2 + G2) * 0.5
+        g1 = (3 * F1 + G1) * 0.5
+        g2 = (3 * F2 + G2) * 0.5
         g3 = (F1 - G1) * 0.5
         g4 = (F2 - G2) * 0.5
         return g1, g2, g3, g4

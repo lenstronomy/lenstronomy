@@ -1,8 +1,9 @@
-__author__ = 'sibirrer'
+__author__ = "sibirrer"
 
 import numpy as np
 
 from lenstronomy.Util.package_util import exporter
+
 export, __all__ = exporter()
 
 
@@ -33,7 +34,18 @@ class Slit(object):
         :param dec: angular coordinate of photon/ray
         :return: bool, True if photon/ray is within the slit, False otherwise
         """
-        return slit_select(ra, dec, self._length, self._width, self._center_ra, self._center_dec, self._angle), 0
+        return (
+            slit_select(
+                ra,
+                dec,
+                self._length,
+                self._width,
+                self._center_ra,
+                self._center_dec,
+                self._angle,
+            ),
+            0,
+        )
 
     @property
     def num_segments(self):
@@ -61,9 +73,9 @@ def slit_select(ra, dec, length, width, center_ra=0, center_dec=0, angle=0):
     ra_ = ra - center_ra
     dec_ = dec - center_dec
     x = np.cos(angle) * ra_ + np.sin(angle) * dec_
-    y = - np.sin(angle) * ra_ + np.cos(angle) * dec_
+    y = -np.sin(angle) * ra_ + np.cos(angle) * dec_
 
-    if abs(x) < length / 2. and abs(y) < width / 2.:
+    if abs(x) < length / 2.0 and abs(y) < width / 2.0:
         return True
     else:
         return False
@@ -96,7 +108,18 @@ class Frame(object):
         :param dec: angular coordinate of photon/ray
         :return: bool, True if photon/ray is within the slit, False otherwise
         """
-        return frame_select(ra, dec, self._width_outer, self._width_inner, self._center_ra, self._center_dec, self._angle), 0
+        return (
+            frame_select(
+                ra,
+                dec,
+                self._width_outer,
+                self._width_inner,
+                self._center_ra,
+                self._center_dec,
+                self._angle,
+            ),
+            0,
+        )
 
     @property
     def num_segments(self):
@@ -124,9 +147,9 @@ def frame_select(ra, dec, width_outer, width_inner, center_ra=0, center_dec=0, a
     ra_ = ra - center_ra
     dec_ = dec - center_dec
     x = np.cos(angle) * ra_ + np.sin(angle) * dec_
-    y = - np.sin(angle) * ra_ + np.cos(angle) * dec_
-    if abs(x) < width_outer / 2. and abs(y) < width_outer / 2.:
-        if abs(x) < width_inner / 2. and abs(y) < width_inner / 2.:
+    y = -np.sin(angle) * ra_ + np.cos(angle) * dec_
+    if abs(x) < width_outer / 2.0 and abs(y) < width_outer / 2.0:
+        if abs(x) < width_inner / 2.0 and abs(y) < width_inner / 2.0:
             return False
         else:
             return True
@@ -157,7 +180,12 @@ class Shell(object):
         :param dec: angular coordinate of photon/ray
         :return: bool, True if photon/ray is within the slit, False otherwise
         """
-        return shell_select(ra, dec, self._r_in, self._r_out, self._center_ra, self._center_dec), 0
+        return (
+            shell_select(
+                ra, dec, self._r_in, self._r_out, self._center_ra, self._center_dec
+            ),
+            0,
+        )
 
     @property
     def num_segments(self):
@@ -183,7 +211,7 @@ def shell_select(ra, dec, r_in, r_out, center_ra=0, center_dec=0):
     """
     x = ra - center_ra
     y = dec - center_dec
-    r = np.sqrt(x ** 2 + y ** 2)
+    r = np.sqrt(x**2 + y**2)
     if (r >= r_in) and (r < r_out):
         return True
     else:
@@ -195,6 +223,7 @@ class IFUShells(object):
     """
     class for an Integral Field Unit spectrograph with azimuthal shells where the kinematics are measured
     """
+
     def __init__(self, r_bins, center_ra=0, center_dec=0):
         """
 
@@ -213,7 +242,9 @@ class IFUShells(object):
         :param dec: angular coordinate of photon/ray
         :return: bool, True if photon/ray is within the slit, False otherwise, index of shell
         """
-        return shell_ifu_select(ra, dec, self._r_bins, self._center_ra, self._center_dec)
+        return shell_ifu_select(
+            ra, dec, self._r_bins, self._center_ra, self._center_dec
+        )
 
     @property
     def num_segments(self):
@@ -238,8 +269,8 @@ def shell_ifu_select(ra, dec, r_bin, center_ra=0, center_dec=0):
     """
     x = ra - center_ra
     y = dec - center_dec
-    r = np.sqrt(x ** 2 + y ** 2)
+    r = np.sqrt(x**2 + y**2)
     for i in range(0, len(r_bin) - 1):
-        if (r >= r_bin[i]) and (r < r_bin[i+1]):
+        if (r >= r_bin[i]) and (r < r_bin[i + 1]):
             return True, i
     return False, None

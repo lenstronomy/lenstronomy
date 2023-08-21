@@ -1,4 +1,4 @@
-__author__ = 'sibirrer'
+__author__ = "sibirrer"
 
 
 from lenstronomy.LensModel.Profiles.constant_shift import Shift
@@ -12,11 +12,12 @@ class TestShift(object):
     """
     tests the Gaussian methods
     """
+
     def setup_method(self):
         self.shift = Shift()
 
-        alpha_x, alpha_y = 10., 0.1
-        self.kwargs_lens = {'alpha_x': alpha_x, 'alpha_y': alpha_y}
+        alpha_x, alpha_y = 10.0, 0.1
+        self.kwargs_lens = {"alpha_x": alpha_x, "alpha_y": alpha_y}
 
     def test_function(self):
         x = np.array([1])
@@ -31,7 +32,7 @@ class TestShift(object):
         x = np.array([2, 3, 4])
         y = np.array([1, 1, 1])
         values = self.shift.function(x, y, **self.kwargs_lens)
-        npt.assert_almost_equal(values[0],  0, decimal=5)
+        npt.assert_almost_equal(values[0], 0, decimal=5)
         npt.assert_almost_equal(values[1], 0, decimal=5)
 
     def test_derivatives(self):
@@ -57,5 +58,5 @@ class TestShift(object):
         npt.assert_almost_equal(f_yx, 0, decimal=5)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pytest.main()

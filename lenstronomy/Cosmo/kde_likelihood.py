@@ -1,7 +1,7 @@
 import numpy as np
 from scipy import stats
 
-__all__ = ['KDELikelihood']
+__all__ = ["KDELikelihood"]
 
 
 class KDELikelihood(object):
@@ -9,7 +9,10 @@ class KDELikelihood(object):
     class that samples the cosmographic likelihood given a distribution of points in the 2-dimensional distribution
     of D_d and D_delta_t
     """
-    def __init__(self, D_d_sample, D_delta_t_sample, kde_type='scipy_gaussian', bandwidth=1):
+
+    def __init__(
+        self, D_d_sample, D_delta_t_sample, kde_type="scipy_gaussian", bandwidth=1
+    ):
         """
 
         :param D_d_sample: 1-d numpy array of angular diameter distances to the lens plane
@@ -22,10 +25,11 @@ class KDELikelihood(object):
         :param bandwidth: width of kernel (in same units as the angular diameter quantities)
         """
         values = np.vstack([D_d_sample, D_delta_t_sample])
-        if kde_type == 'scipy_gaussian':
+        if kde_type == "scipy_gaussian":
             self._PDF_kernel = stats.gaussian_kde(values)
         else:
             from sklearn.neighbors import KernelDensity
+
             self._kde = KernelDensity(bandwidth=bandwidth, kernel=kde_type)
             values = np.vstack([D_d_sample, D_delta_t_sample])
             self._kde.fit(values.T)
@@ -40,7 +44,7 @@ class KDELikelihood(object):
         :param D_delta_t: model predicted time-delay distance
         :return: loglikelihood (log of KDE value)
         """
-        if self._kde_type == 'scipy_gaussian':
+        if self._kde_type == "scipy_gaussian":
             density = self._PDF_kernel([D_d, D_delta_t])
             logL = np.log(density)
         else:

@@ -4,6 +4,7 @@ routines to compute derivatives of spherical functions
 import numpy as np
 
 from lenstronomy.Util.package_util import exporter
+
 export, __all__ = exporter()
 
 
@@ -38,7 +39,7 @@ def d_r_dxx(x, y):
     :param y:
     :return:
     """
-    return y**2 / (x**2 + y**2)**(3./2)
+    return y**2 / (x**2 + y**2) ** (3.0 / 2)
 
 
 @export
@@ -49,7 +50,7 @@ def d_r_dyy(x, y):
     :param y:
     :return:
     """
-    return x**2 / (x**2 + y**2)**(3./2)
+    return x**2 / (x**2 + y**2) ** (3.0 / 2)
 
 
 @export
@@ -60,7 +61,7 @@ def d_r_dxy(x, y):
     :param y:
     :return:
     """
-    return -x * y / (x ** 2 + y ** 2) ** (3 / 2.)
+    return -x * y / (x**2 + y**2) ** (3 / 2.0)
 
 
 @export
@@ -96,7 +97,7 @@ def d_phi_dxx(x, y):
     :param y:
     :return:
     """
-    return 2 * x * y / (x**2 + y**2)**2
+    return 2 * x * y / (x**2 + y**2) ** 2
 
 
 @export
@@ -108,7 +109,7 @@ def d_phi_dyy(x, y):
     :param y:
     :return:
     """
-    return -2 * x * y / (x ** 2 + y ** 2) ** 2
+    return -2 * x * y / (x**2 + y**2) ** 2
 
 
 @export
@@ -120,7 +121,7 @@ def d_phi_dxy(x, y):
     :param y:
     :return:
     """
-    return (-x**2 + y**2) / (x ** 2 + y ** 2) ** 2
+    return (-(x**2) + y**2) / (x**2 + y**2) ** 2
 
 
 @export
@@ -133,7 +134,7 @@ def d_x_diffr_dx(x, y):
     :param y:
     :return:
     """
-    return y**2 / (x**2 + y**2)**(3/2.)
+    return y**2 / (x**2 + y**2) ** (3 / 2.0)
 
 
 @export
@@ -146,7 +147,7 @@ def d_y_diffr_dy(x, y):
     :param y:
     :return:
     """
-    return x**2 / (x**2 + y**2)**(3/2.)
+    return x**2 / (x**2 + y**2) ** (3 / 2.0)
 
 
 @export
@@ -159,7 +160,7 @@ def d_y_diffr_dx(x, y):
     :param y:
     :return:
     """
-    return -x*y / (x**2 + y**2)**(3/2.)
+    return -x * y / (x**2 + y**2) ** (3 / 2.0)
 
 
 @export
@@ -172,4 +173,4 @@ def d_x_diffr_dy(x, y):
     :param y:
     :return:
     """
-    return -x*y / (x**2 + y**2)**(3/2.)
+    return -x * y / (x**2 + y**2) ** (3 / 2.0)

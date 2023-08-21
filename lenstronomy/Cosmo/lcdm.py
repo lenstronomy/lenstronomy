@@ -1,9 +1,9 @@
-__author__ = 'sibirrer'
+__author__ = "sibirrer"
 
 from astropy.cosmology import FlatLambdaCDM, LambdaCDM
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 
-__all__ = ['LCDM']
+__all__ = ["LCDM"]
 
 
 class LCDM(object):

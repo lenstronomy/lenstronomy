@@ -1,11 +1,11 @@
-__author__ = 'sibirrer'
+__author__ = "sibirrer"
 
 # this file contains a class which describes the surface brightness of the light models
 
 import numpy as np
 from lenstronomy.LightModel.light_model_base import LightModelBase
 
-__all__ = ['LinearBasis']
+__all__ = ["LinearBasis"]
 
 
 class LinearBasis(LightModelBase):
@@ -41,7 +41,7 @@ class LinearBasis(LightModelBase):
         """
         name_list = []
         for i, func in enumerate(self.func_list):
-            if hasattr(func, 'param_names_latex'):
+            if hasattr(func, "param_names_latex"):
                 name_list.append(func.param_names_latex)
             else:
                 name_list.append(func.param_names)
@@ -61,39 +61,61 @@ class LinearBasis(LightModelBase):
         bool_list = self._bool_list(k=k)
         for i, model in enumerate(self.profile_type_list):
             if bool_list[i] is True:
-                if model in ['SERSIC', 'SERSIC_ELLIPSE', 'SERSIC_ELLIPSE_Q_PHI', 'CORE_SERSIC',
-                             'HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE',
-                             'PJAFFE_ELLIPSE', 'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON',
-                             'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'UNIFORM', 'INTERPOL', 'ELLIPSOID']:
+                if model in [
+                    "SERSIC",
+                    "SERSIC_ELLIPSE",
+                    "SERSIC_ELLIPSE_Q_PHI",
+                    "CORE_SERSIC",
+                    "HERNQUIST",
+                    "HERNQUIST_ELLIPSE",
+                    "PJAFFE",
+                    "PJAFFE_ELLIPSE",
+                    "GAUSSIAN",
+                    "GAUSSIAN_ELLIPSE",
+                    "POWER_LAW",
+                    "NIE",
+                    "CHAMELEON",
+                    "DOUBLE_CHAMELEON",
+                    "TRIPLE_CHAMELEON",
+                    "UNIFORM",
+                    "INTERPOL",
+                    "ELLIPSOID",
+                ]:
                     kwargs_new = kwargs_list[i].copy()
-                    new = {'amp': 1}
+                    new = {"amp": 1}
                     kwargs_new.update(new)
                     response += [self.func_list[i].function(x, y, **kwargs_new)]
                     n += 1
-                elif model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE']:
-                    num = len(kwargs_list[i]['amp'])
-                    new = {'amp': np.ones(num)}
+                elif model in ["MULTI_GAUSSIAN", "MULTI_GAUSSIAN_ELLIPSE"]:
+                    num = len(kwargs_list[i]["amp"])
+                    new = {"amp": np.ones(num)}
                     kwargs_new = kwargs_list[i].copy()
                     kwargs_new.update(new)
                     response += self.func_list[i].function_split(x, y, **kwargs_new)
                     n += num
-                elif model in ['SHAPELETS', 'SHAPELETS_POLAR', 'SHAPELETS_POLAR_EXP',
-                               'SHAPELETS_ELLIPSE']:
+                elif model in [
+                    "SHAPELETS",
+                    "SHAPELETS_POLAR",
+                    "SHAPELETS_POLAR_EXP",
+                    "SHAPELETS_ELLIPSE",
+                ]:
                     kwargs = kwargs_list[i]
-                    n_max = kwargs['n_max']
-                    if model in ['SHAPELETS_POLAR_EXP']:
-                        num_param = int((n_max+1)**2)
+                    n_max = kwargs["n_max"]
+                    if model in ["SHAPELETS_POLAR_EXP"]:
+                        num_param = int((n_max + 1) ** 2)
                     else:
                         num_param = int((n_max + 1) * (n_max + 2) / 2)
-                    new = {'amp': np.ones(num_param)}
+                    new = {"amp": np.ones(num_param)}
                     kwargs_new = kwargs_list[i].copy()
                     kwargs_new.update(new)
                     response += self.func_list[i].function_split(x, y, **kwargs_new)
                     n += num_param
-                elif model in ['SLIT_STARLETS', 'SLIT_STARLETS_GEN2']:
-                    raise ValueError("'{}' model does not support function split".format(model))
+                elif model in ["SLIT_STARLETS", "SLIT_STARLETS_GEN2"]:
+                    raise ValueError(
+                        "'{}' model does not support function split".format(model)
+                    )
                 else:
-                    raise ValueError('model type %s not valid!' % model)
+                    raise ValueError("model type %s not valid!" % model)
         return response, n
 
     def num_param_linear(self, kwargs_list, list_return=False):
@@ -117,28 +139,50 @@ class LinearBasis(LightModelBase):
         """
         n_list = []
         for i, model in enumerate(self.profile_type_list):
-            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC', 'HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE',
-                         'PJAFFE_ELLIPSE', 'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON',
-                         'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'UNIFORM', 'INTERPOL', 'ELLIPSOID']:
+            if model in [
+                "SERSIC",
+                "SERSIC_ELLIPSE",
+                "CORE_SERSIC",
+                "HERNQUIST",
+                "HERNQUIST_ELLIPSE",
+                "PJAFFE",
+                "PJAFFE_ELLIPSE",
+                "GAUSSIAN",
+                "GAUSSIAN_ELLIPSE",
+                "POWER_LAW",
+                "NIE",
+                "CHAMELEON",
+                "DOUBLE_CHAMELEON",
+                "TRIPLE_CHAMELEON",
+                "UNIFORM",
+                "INTERPOL",
+                "ELLIPSOID",
+            ]:
                 n_list += [1]
-            elif model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE']:
-                num = len(kwargs_list[i]['sigma'])
+            elif model in ["MULTI_GAUSSIAN", "MULTI_GAUSSIAN_ELLIPSE"]:
+                num = len(kwargs_list[i]["sigma"])
                 n_list += [num]
-            elif model in ['SHAPELETS', 'SHAPELETS_POLAR', 'SHAPELETS_POLAR_EXP',
-                           'SHAPELETS_ELLIPSE']:
-                n_max = kwargs_list[i]['n_max']
-                if model in ['SHAPELETS_POLAR_EXP']:
-                    num_param = int((n_max+1)**2)
+            elif model in [
+                "SHAPELETS",
+                "SHAPELETS_POLAR",
+                "SHAPELETS_POLAR_EXP",
+                "SHAPELETS_ELLIPSE",
+            ]:
+                n_max = kwargs_list[i]["n_max"]
+                if model in ["SHAPELETS_POLAR_EXP"]:
+                    num_param = int((n_max + 1) ** 2)
                 else:
                     num_param = int((n_max + 1) * (n_max + 2) / 2)
                 n_list += [num_param]
-            elif model in ['SLIT_STARLETS', 'SLIT_STARLETS_GEN2']:
-                n_scales = kwargs_list[i]['n_scales']
-                n_pixels = kwargs_list[i]['n_pixels']
+            elif model in ["SLIT_STARLETS", "SLIT_STARLETS_GEN2"]:
+                n_scales = kwargs_list[i]["n_scales"]
+                n_pixels = kwargs_list[i]["n_pixels"]
                 num_param = int(n_scales * n_pixels)
-                n_list += [num_param]  # TODO : find a way to make it the number of source pixels
+                n_list += [
+                    num_param
+                ]  # TODO : find a way to make it the number of source pixels
             else:
-                raise ValueError('model type %s not valid!' % model)
+                raise ValueError("model type %s not valid!" % model)
         return n_list
 
     def update_linear(self, param, i, kwargs_list):
@@ -151,33 +195,53 @@ class LinearBasis(LightModelBase):
         :return: kwargs list with over-written or added 'amp' parameters according to the coefficients in param
         """
         for k, model in enumerate(self.profile_type_list):
-            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'SERSIC_ELLIPSE_Q_PHI', 'CORE_SERSIC',
-                         'HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE',
-                         'HERNQUIST_ELLIPSE', 'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON',
-                         'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'UNIFORM', 'INTERPOL', 'ELLIPSOID']:
-                kwargs_list[k]['amp'] = param[i]
+            if model in [
+                "SERSIC",
+                "SERSIC_ELLIPSE",
+                "SERSIC_ELLIPSE_Q_PHI",
+                "CORE_SERSIC",
+                "HERNQUIST",
+                "PJAFFE",
+                "PJAFFE_ELLIPSE",
+                "HERNQUIST_ELLIPSE",
+                "GAUSSIAN",
+                "GAUSSIAN_ELLIPSE",
+                "POWER_LAW",
+                "NIE",
+                "CHAMELEON",
+                "DOUBLE_CHAMELEON",
+                "TRIPLE_CHAMELEON",
+                "UNIFORM",
+                "INTERPOL",
+                "ELLIPSOID",
+            ]:
+                kwargs_list[k]["amp"] = param[i]
                 i += 1
-            elif model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE']:
-                num_param = len(kwargs_list[k]['sigma'])
-                kwargs_list[k]['amp'] = param[i:i + num_param]
+            elif model in ["MULTI_GAUSSIAN", "MULTI_GAUSSIAN_ELLIPSE"]:
+                num_param = len(kwargs_list[k]["sigma"])
+                kwargs_list[k]["amp"] = param[i : i + num_param]
                 i += num_param
-            elif model in ['SHAPELETS', 'SHAPELETS_POLAR', 'SHAPELETS_POLAR_EXP',
-                           'SHAPELETS_ELLIPSE']:
-                n_max = kwargs_list[k]['n_max']
-                if model in ['SHAPELETS_POLAR_EXP']:
-                    num_param = int((n_max+1)**2)
+            elif model in [
+                "SHAPELETS",
+                "SHAPELETS_POLAR",
+                "SHAPELETS_POLAR_EXP",
+                "SHAPELETS_ELLIPSE",
+            ]:
+                n_max = kwargs_list[k]["n_max"]
+                if model in ["SHAPELETS_POLAR_EXP"]:
+                    num_param = int((n_max + 1) ** 2)
                 else:
                     num_param = int((n_max + 1) * (n_max + 2) / 2)
-                kwargs_list[k]['amp'] = param[i:i+num_param]
+                kwargs_list[k]["amp"] = param[i : i + num_param]
                 i += num_param
-            elif model in ['SLIT_STARLETS', 'SLIT_STARLETS_GEN2']:
-                n_scales = kwargs_list[k]['n_scales']
-                n_pixels = kwargs_list[k]['n_pixels']
+            elif model in ["SLIT_STARLETS", "SLIT_STARLETS_GEN2"]:
+                n_scales = kwargs_list[k]["n_scales"]
+                n_pixels = kwargs_list[k]["n_pixels"]
                 num_param = int(n_scales * n_pixels)
-                kwargs_list[k]['amp'] = param[i:i+num_param]
+                kwargs_list[k]["amp"] = param[i : i + num_param]
                 i += num_param
             else:
-                raise ValueError('model type %s not valid!' % model)
+                raise ValueError("model type %s not valid!" % model)
         return kwargs_list, i
 
     def add_fixed_linear(self, kwargs_fixed_list):
@@ -189,9 +253,9 @@ class LinearBasis(LightModelBase):
         for k, model in enumerate(self.profile_type_list):
             kwargs_fixed = kwargs_fixed_list[k]
             param_names = self.param_name_list[k]
-            if 'amp' in param_names:
-                if 'amp' not in kwargs_fixed:
-                    kwargs_fixed['amp'] = 1
+            if "amp" in param_names:
+                if "amp" not in kwargs_fixed:
+                    kwargs_fixed["amp"] = 1
         return kwargs_fixed_list
 
     def linear_param_from_kwargs(self, kwargs_list):
@@ -207,8 +271,8 @@ class LinearBasis(LightModelBase):
         for k, model in enumerate(self.profile_type_list):
             kwargs_ = kwargs_list[k]
             param_names = self.param_name_list[k]
-            if 'amp' in param_names:
-                amp = kwargs_['amp']
+            if "amp" in param_names:
+                amp = kwargs_["amp"]
                 amp_list = np.atleast_1d(amp)
                 for a in amp_list:
                     param.append(a)
@@ -224,11 +288,23 @@ class LinearBasis(LightModelBase):
         """
         pos_bool = True
         for k, model in enumerate(self.profile_type_list):
-            if 'amp' in kwargs_list[k]:
-                if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC', 'HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE',
-                             'HERNQUIST_ELLIPSE', 'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON',
-                             'DOUBLE_CHAMELEON']:
-                    if kwargs_list[k]['amp'] < 0:
+            if "amp" in kwargs_list[k]:
+                if model in [
+                    "SERSIC",
+                    "SERSIC_ELLIPSE",
+                    "CORE_SERSIC",
+                    "HERNQUIST",
+                    "PJAFFE",
+                    "PJAFFE_ELLIPSE",
+                    "HERNQUIST_ELLIPSE",
+                    "GAUSSIAN",
+                    "GAUSSIAN_ELLIPSE",
+                    "POWER_LAW",
+                    "NIE",
+                    "CHAMELEON",
+                    "DOUBLE_CHAMELEON",
+                ]:
+                    if kwargs_list[k]["amp"] < 0:
                         pos_bool = False
                         break
         return pos_bool

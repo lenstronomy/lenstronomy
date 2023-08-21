@@ -3,7 +3,7 @@ from lenstronomy.GalKin.galkin_model import GalkinModel
 
 import numpy as np
 
-__all__ = ['GalkinMultiObservation']
+__all__ = ["GalkinMultiObservation"]
 
 
 class GalkinMultiObservation(GalkinModel):
@@ -14,8 +14,16 @@ class GalkinMultiObservation(GalkinModel):
     The main difference to the Galkin main class is that it feeds in list of observational settings.
     Does not work with IFU observations (yet)
     """
-    def __init__(self, kwargs_model, kwargs_aperture_list, kwargs_psf_list, kwargs_cosmo, kwargs_numerics=None,
-                 analytic_kinematics=False):
+
+    def __init__(
+        self,
+        kwargs_model,
+        kwargs_aperture_list,
+        kwargs_psf_list,
+        kwargs_cosmo,
+        kwargs_numerics=None,
+        analytic_kinematics=False,
+    ):
         """
 
         :param kwargs_model: keyword arguments describing the model components
@@ -27,15 +35,31 @@ class GalkinMultiObservation(GalkinModel):
         :param kwargs_numerics: numerics keyword arguments - see GalkinModel
         :param analytic_kinematics: bool, if True uses the analytic kinematic model
         """
-        GalkinModel.__init__(self, kwargs_model, kwargs_cosmo, kwargs_numerics=kwargs_numerics,
-                             analytic_kinematics=analytic_kinematics)
+        GalkinModel.__init__(
+            self,
+            kwargs_model,
+            kwargs_cosmo,
+            kwargs_numerics=kwargs_numerics,
+            analytic_kinematics=analytic_kinematics,
+        )
         self._observation_list = []
         self._num_observations = len(kwargs_aperture_list)
         for i in range(self._num_observations):
-            self._observation_list.append(GalkinObservation(kwargs_aperture=kwargs_aperture_list[i],
-                                                            kwargs_psf=kwargs_psf_list[i]))
+            self._observation_list.append(
+                GalkinObservation(
+                    kwargs_aperture=kwargs_aperture_list[i],
+                    kwargs_psf=kwargs_psf_list[i],
+                )
+            )
 
-    def dispersion_map(self, kwargs_mass, kwargs_light, kwargs_anisotropy, num_kin_sampling=1000, num_psf_sampling=100):
+    def dispersion_map(
+        self,
+        kwargs_mass,
+        kwargs_light,
+        kwargs_anisotropy,
+        num_kin_sampling=1000,
+        num_psf_sampling=100,
+    ):
         """
         computes the velocity dispersion in each Integral Field Unit
 
@@ -57,7 +81,9 @@ class GalkinMultiObservation(GalkinModel):
 
         for i in range(0, num_kin_sampling):
             r, R, x, y = self.numerics.draw_light(kwargs_light)
-            sigma2_IR, IR = self.numerics.sigma_s2(r, R, kwargs_mass, kwargs_light, kwargs_anisotropy)
+            sigma2_IR, IR = self.numerics.sigma_s2(
+                r, R, kwargs_mass, kwargs_light, kwargs_anisotropy
+            )
             for obs_index, observation in enumerate(self._observation_list):
                 for k in range(0, num_psf_sampling):
                     x_, y_ = observation.displace_psf(x, y)
@@ -69,4 +95,4 @@ class GalkinMultiObservation(GalkinModel):
         sigma_s2_average = sigma2_R_sum / count_draws
         # apply unit conversion from arc seconds and deflections to physical velocity dispersion in (km/s)
         self.numerics.delete_cache()
-        return np.sqrt(sigma_s2_average) / 1000.  # in units of km/s
+        return np.sqrt(sigma_s2_average) / 1000.0  # in units of km/s

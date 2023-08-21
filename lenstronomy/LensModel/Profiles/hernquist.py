@@ -1,7 +1,7 @@
 import numpy as np
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
-__all__ = ['Hernquist']
+__all__ = ["Hernquist"]
 
 
 class Hernquist(LensProfileBase):
@@ -37,11 +37,12 @@ class Hernquist(LensProfileBase):
 
 
     """
+
     _diff = 0.00001
     _s = 0.00001
-    param_names = ['sigma0', 'Rs', 'center_x', 'center_y']
-    lower_limit_default = {'sigma0': 0, 'Rs': 0, 'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'sigma0': 100, 'Rs': 100, 'center_x': 100, 'center_y': 100}
+    param_names = ["sigma0", "Rs", "center_x", "center_y"]
+    lower_limit_default = {"sigma0": 0, "Rs": 0, "center_x": -100, "center_y": -100}
+    upper_limit_default = {"sigma0": 100, "Rs": 100, "center_x": 100, "center_y": 100}
 
     @staticmethod
     def density(r, rho0, Rs):
@@ -53,7 +54,7 @@ class Hernquist(LensProfileBase):
         :param Rs: Hernquist radius
         :return: density at radius r
         """
-        rho = rho0 / (r/Rs * (1 + (r/Rs))**3)
+        rho = rho0 / (r / Rs * (1 + (r / Rs)) ** 3)
         return rho
 
     def density_lens(self, r, sigma0, Rs):
@@ -84,14 +85,14 @@ class Hernquist(LensProfileBase):
         x_ = x - center_x
         y_ = y - center_y
         r = np.sqrt(x_**2 + y_**2)
-        X = r/Rs
+        X = r / Rs
         sigma0 = self.rho2sigma(rho0, Rs)
         if isinstance(X, int) or isinstance(X, float):
             if X == 1:
                 X = 1.000001
         else:
             X[X == 1] = 1.000001
-        sigma = sigma0 / (X**2-1)**2 * (-3 + (2+X**2)*self._F(X))
+        sigma = sigma0 / (X**2 - 1) ** 2 * (-3 + (2 + X**2) * self._F(X))
         return sigma
 
     @staticmethod
@@ -104,7 +105,7 @@ class Hernquist(LensProfileBase):
         :param Rs: Hernquist radius
         :return: enclosed mass
         """
-        mass_3d = 2*np.pi*Rs**3*rho0 * r**2/(r + Rs)**2
+        mass_3d = 2 * np.pi * Rs**3 * rho0 * r**2 / (r + Rs) ** 2
         return mass_3d
 
     def mass_3d_lens(self, r, sigma0, Rs):
@@ -142,8 +143,8 @@ class Hernquist(LensProfileBase):
         :param Rs: Hernquist radius
         :return: mass enclosed 2d projected radius
         """
-        X = r/Rs
-        alpha_r = 2*sigma0 * Rs * X * (1-self._F(X)) / (X**2-1)
+        X = r / Rs
+        alpha_r = 2 * sigma0 * Rs * X * (1 - self._F(X)) / (X**2 - 1)
         mass_2d = alpha_r * r * np.pi
         return mass_2d
 
@@ -155,7 +156,7 @@ class Hernquist(LensProfileBase):
         :param Rs: Hernquist radius
         :return: total mass within profile
         """
-        m_tot = 2*np.pi*rho0*Rs**3
+        m_tot = 2 * np.pi * rho0 * Rs**3
         return m_tot
 
     def function(self, x, y, sigma0, Rs, center_x=0, center_y=0):
@@ -176,7 +177,7 @@ class Hernquist(LensProfileBase):
         r = np.sqrt(x_**2 + y_**2)
         r = np.maximum(r, self._s)
         X = r / Rs
-        f_ = sigma0 * Rs ** 2 * (np.log(X ** 2 / 4.) + 2 * self._F(X))
+        f_ = sigma0 * Rs**2 * (np.log(X**2 / 4.0) + 2 * self._F(X))
         return f_
 
     def derivatives(self, x, y, sigma0, Rs, center_x=0, center_y=0):
@@ -195,21 +196,21 @@ class Hernquist(LensProfileBase):
         y_ = y - center_y
         r = np.sqrt(x_**2 + y_**2)
         r = np.maximum(r, self._s)
-        X = r/Rs
+        X = r / Rs
         if isinstance(r, int) or isinstance(r, float):
             # f = (1 - self._F(X)) / (X ** 2 - 1)  # this expression is 1/3 for X=1
             if X == 1:
-                f = 1./3
+                f = 1.0 / 3
             else:
-                f = (1 - self._F(X)) / (X ** 2 - 1)
+                f = (1 - self._F(X)) / (X**2 - 1)
         else:
             f = np.empty_like(X)
-            f[X == 1] = 1./3
+            f[X == 1] = 1.0 / 3
             X_ = X[X != 1]
-            f[X != 1] = (1 - self._F(X_)) / (X_ ** 2 - 1)
+            f[X != 1] = (1 - self._F(X_)) / (X_**2 - 1)
         alpha_r = 2 * sigma0 * Rs * f * X
-        f_x = alpha_r * x_/r
-        f_y = alpha_r * y_/r
+        f_x = alpha_r * x_ / r
+        f_y = alpha_r * y_ / r
         return f_x, f_y
 
     def hessian(self, x, y, sigma0, Rs, center_x=0, center_y=0):
@@ -226,11 +227,19 @@ class Hernquist(LensProfileBase):
         :return: df/dxdx, df/dxdy, df/dydx, df/dydy
         """
         diff = self._diff
-        alpha_ra_dx, alpha_dec_dx = self.derivatives(x + diff / 2, y, sigma0, Rs, center_x, center_y)
-        alpha_ra_dy, alpha_dec_dy = self.derivatives(x, y + diff / 2, sigma0, Rs, center_x, center_y)
+        alpha_ra_dx, alpha_dec_dx = self.derivatives(
+            x + diff / 2, y, sigma0, Rs, center_x, center_y
+        )
+        alpha_ra_dy, alpha_dec_dy = self.derivatives(
+            x, y + diff / 2, sigma0, Rs, center_x, center_y
+        )
 
-        alpha_ra_dx_, alpha_dec_dx_ = self.derivatives(x - diff / 2, y, sigma0, Rs, center_x, center_y)
-        alpha_ra_dy_, alpha_dec_dy_ = self.derivatives(x, y - diff / 2, sigma0, Rs, center_x, center_y)
+        alpha_ra_dx_, alpha_dec_dx_ = self.derivatives(
+            x - diff / 2, y, sigma0, Rs, center_x, center_y
+        )
+        alpha_ra_dy_, alpha_dec_dy_ = self.derivatives(
+            x, y - diff / 2, sigma0, Rs, center_x, center_y
+        )
 
         f_xx = (alpha_ra_dx - alpha_ra_dx_) / diff
         f_xy = (alpha_ra_dy - alpha_ra_dy_) / diff
@@ -268,25 +277,25 @@ class Hernquist(LensProfileBase):
         if isinstance(X, int) or isinstance(X, float):
             X = max(X, c)
             if 0 < X < 1:
-                a = 1. / np.sqrt(1 - X ** 2) * np.arctanh(np.sqrt(1 - X**2))
+                a = 1.0 / np.sqrt(1 - X**2) * np.arctanh(np.sqrt(1 - X**2))
             elif X == 1:
-                a = 1.
+                a = 1.0
             elif X > 1:
-                a = 1. / np.sqrt(X ** 2 - 1) * np.arctan(np.sqrt(X**2 - 1))
+                a = 1.0 / np.sqrt(X**2 - 1) * np.arctan(np.sqrt(X**2 - 1))
             else:  # X == 0:
-                a = 1. / np.sqrt(1 - c ** 2) * np.arctanh(np.sqrt((1 - c ** 2)))
+                a = 1.0 / np.sqrt(1 - c**2) * np.arctanh(np.sqrt((1 - c**2)))
 
         else:
             a = np.empty_like(X)
             X[X < c] = c
             x = X[X < 1]
-            a[X < 1] = 1 / np.sqrt(1 - x ** 2) * np.arctanh(np.sqrt((1 - x**2)))
+            a[X < 1] = 1 / np.sqrt(1 - x**2) * np.arctanh(np.sqrt((1 - x**2)))
 
             # x = X[X == 1]
-            a[X == 1] = 1.
+            a[X == 1] = 1.0
 
             x = X[X > 1]
-            a[X > 1] = 1 / np.sqrt(x ** 2 - 1) * np.arctan(np.sqrt(x**2 - 1))
+            a[X > 1] = 1 / np.sqrt(x**2 - 1) * np.arctan(np.sqrt(x**2 - 1))
             # a[X>y] = 0
         return a
 

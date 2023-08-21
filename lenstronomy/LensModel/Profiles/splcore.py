@@ -1,11 +1,11 @@
-__author__ = 'dangilman'
+__author__ = "dangilman"
 
 import numpy as np
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 from scipy.special import hyp2f1
 from scipy.special import gamma as gamma_func
 
-__all__ = ['SPLCORE']
+__all__ = ["SPLCORE"]
 
 
 class SPLCORE(LensProfileBase):
@@ -28,13 +28,24 @@ class SPLCORE(LensProfileBase):
     This class is defined for all gamma > 1
     """
 
-    param_names = ['sigma0', 'center_x', 'center_y', 'r_core', 'gamma']
-    lower_limit_default = {'sigma0': 0, 'center_x': -100, 'center_y': -100, 'r_core': 1e-6, 'gamma': 1.+1e-6}
-    upper_limit_default = {'sigma0': 1e+12, 'center_x': 100, 'center_y': 100, 'r_core': 100, 'gamma': 5.}
+    param_names = ["sigma0", "center_x", "center_y", "r_core", "gamma"]
+    lower_limit_default = {
+        "sigma0": 0,
+        "center_x": -100,
+        "center_y": -100,
+        "r_core": 1e-6,
+        "gamma": 1.0 + 1e-6,
+    }
+    upper_limit_default = {
+        "sigma0": 1e12,
+        "center_x": 100,
+        "center_y": 100,
+        "r_core": 100,
+        "gamma": 5.0,
+    }
 
     def function(self, x, y, sigma0, r_core, gamma, center_x=0, center_y=0):
-
-        raise Exception('potential not implemented for this class')
+        raise Exception("potential not implemented for this class")
 
     def derivatives(self, x, y, sigma0, r_core, gamma, center_x=0, center_y=0):
         """
@@ -54,8 +65,8 @@ class SPLCORE(LensProfileBase):
         r = self._safe_r_division(r, r_core)
 
         alpha_r = self.alpha(r, sigma0, r_core, gamma)
-        cos = x_/r
-        sin = y_/r
+        cos = x_ / r
+        sin = y_ / r
         return alpha_r * cos, alpha_r * sin
 
     def hessian(self, x, y, sigma0, r_core, gamma, center_x=0, center_y=0):
@@ -79,9 +90,9 @@ class SPLCORE(LensProfileBase):
 
         rho0 = self._sigma2rho0(sigma0, r_core)
         kappa = self.density_2d(x_, y_, rho0, r_core, gamma)
-        gamma_tot = m2d / r ** 2 - kappa
-        sin_2phi = -2*x_*y_/r**2
-        cos_2phi = (y_**2 - x_**2)/r**2
+        gamma_tot = m2d / r**2 - kappa
+        sin_2phi = -2 * x_ * y_ / r**2
+        cos_2phi = (y_**2 - x_**2) / r**2
 
         gamma1 = cos_2phi * gamma_tot
         gamma2 = sin_2phi * gamma_tot
@@ -92,7 +103,6 @@ class SPLCORE(LensProfileBase):
         return f_xx, f_xy, f_xy, f_yy
 
     def alpha(self, r, sigma0, r_core, gamma):
-
         """
         Returns the deflection angle at r
 
@@ -116,7 +126,7 @@ class SPLCORE(LensProfileBase):
         :param gamma: logarithmic slope at r -> infinity
         :return: density at r
         """
-        return rho0 * r_core ** gamma / (r_core**2 + r**2) ** (gamma/2)
+        return rho0 * r_core**gamma / (r_core**2 + r**2) ** (gamma / 2)
 
     def density_lens(self, r, sigma0, r_core, gamma):
         """
@@ -129,7 +139,7 @@ class SPLCORE(LensProfileBase):
         :return: density at r
         """
         rho0 = self._sigma2rho0(sigma0, r_core)
-        return rho0 * r_core ** gamma / (r_core**2 + r**2) ** (gamma/2)
+        return rho0 * r_core**gamma / (r_core**2 + r**2) ** (gamma / 2)
 
     def _density_2d_r(self, r, rho0, r_core, gamma):
         """
@@ -143,14 +153,19 @@ class SPLCORE(LensProfileBase):
         """
         sigma0 = self._rho02sigma(rho0, r_core)
         if gamma == 3:
-            return 2 * r_core ** 2 * sigma0 / (r ** 2 + r_core ** 2)
+            return 2 * r_core**2 * sigma0 / (r**2 + r_core**2)
         elif gamma == 2:
-            return np.pi * r_core * sigma0 / (r_core ** 2 + r ** 2) ** 0.5
+            return np.pi * r_core * sigma0 / (r_core**2 + r**2) ** 0.5
         else:
             x = r / r_core
             exponent = (1 - gamma) / 2
-            return sigma0 * np.sqrt(np.pi) * gamma_func(0.5 * (gamma - 1)) / gamma_func(0.5 * gamma) * (
-                        1 + x ** 2) ** exponent
+            return (
+                sigma0
+                * np.sqrt(np.pi)
+                * gamma_func(0.5 * (gamma - 1))
+                / gamma_func(0.5 * gamma)
+                * (1 + x**2) ** exponent
+            )
 
     def density_2d(self, x, y, rho0, r_core, gamma):
         """
@@ -179,7 +194,7 @@ class SPLCORE(LensProfileBase):
         :param gamma: logarithmic slope at r -> infinity
         :return: mass inside radius r
         """
-        return 4 * np.pi * r_core ** 3 * rho0 * self._g(r/r_core, gamma)
+        return 4 * np.pi * r_core**3 * rho0 * self._g(r / r_core, gamma)
 
     def mass_3d_lens(self, r, sigma0, r_core, gamma):
         """
@@ -205,7 +220,7 @@ class SPLCORE(LensProfileBase):
         :param gamma: logarithmic slope at r -> infinity
         :return: projected mass inside disk of radius r
         """
-        return 4 * np.pi * r_core ** 3 * rho0 * self._f(r/r_core, gamma)
+        return 4 * np.pi * r_core**3 * rho0 * self._f(r / r_core, gamma)
 
     def mass_2d_lens(self, r, sigma0, r_core, gamma):
         """
@@ -274,13 +289,13 @@ class SPLCORE(LensProfileBase):
         :return: a number
         """
         if gamma == 3:
-            return 0.5 * np.log(x ** 2 + 1)
+            return 0.5 * np.log(x**2 + 1)
         elif gamma == 2:
-            return np.pi/2 * ((x**2 + 1)**0.5 - 1)
+            return np.pi / 2 * ((x**2 + 1) ** 0.5 - 1)
         else:
             gamma_func_term = gamma_func(0.5 * (gamma - 1)) / gamma_func(0.5 * gamma)
             prefactor = np.sqrt(np.pi) * gamma_func_term / (2 * (gamma - 3))
-            term = (1 - (1 + x ** 2) ** ((3 - gamma) / 2))
+            term = 1 - (1 + x**2) ** ((3 - gamma) / 2)
             return prefactor * term
 
     @staticmethod
@@ -299,11 +314,12 @@ class SPLCORE(LensProfileBase):
         """
 
         if gamma == 3:
-            return np.arcsinh(x) - x / (1 + x ** 2) ** 0.5
+            return np.arcsinh(x) - x / (1 + x**2) ** 0.5
         elif gamma == 2:
             return x - np.arctan(x)
         else:
             prefactor = 1 / ((gamma - 3) * (gamma - 1)) / x
-            term = hyp2f1(-0.5, gamma / 2, 0.5, -x ** 2) - (1 + x ** 2) ** ((2 - gamma) / 2) * (
-                        1 + x ** 2 * (gamma - 1))
+            term = hyp2f1(-0.5, gamma / 2, 0.5, -(x**2)) - (1 + x**2) ** (
+                (2 - gamma) / 2
+            ) * (1 + x**2 * (gamma - 1))
             return prefactor * term

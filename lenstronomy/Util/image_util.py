@@ -1,4 +1,4 @@
-__author__ = 'sibirrer'
+__author__ = "sibirrer"
 
 import numpy as np
 from scipy import ndimage
@@ -7,6 +7,7 @@ import copy
 import lenstronomy.Util.util as util
 
 from lenstronomy.Util.package_util import exporter
+
 export, __all__ = exporter()
 
 
@@ -54,16 +55,23 @@ def add_layer2image_int(grid2d, x_pos, y_pos, kernel):
     k_l2_x = int((k_x - 1) / 2)
     k_l2_y = int((k_y - 1) / 2)
 
-    min_x = np.maximum(0, x_int-k_l2_x)
-    min_y = np.maximum(0, y_int-k_l2_y)
-    max_x = np.minimum(num_x, x_int+k_l2_x + 1)
-    max_y = np.minimum(num_y, y_int+k_l2_y + 1)
+    min_x = np.maximum(0, x_int - k_l2_x)
+    min_y = np.maximum(0, y_int - k_l2_y)
+    max_x = np.minimum(num_x, x_int + k_l2_x + 1)
+    max_y = np.minimum(num_y, y_int + k_l2_y + 1)
 
     min_xk = np.maximum(0, -x_int + k_l2_x)
     min_yk = np.maximum(0, -y_int + k_l2_y)
     max_xk = np.minimum(k_x, -x_int + k_l2_x + num_x)
     max_yk = np.minimum(k_y, -y_int + k_l2_y + num_y)
-    if min_x >= max_x or min_y >= max_y or min_xk >= max_xk or min_yk >= max_yk or (max_x-min_x != max_xk-min_xk) or (max_y-min_y != max_yk-min_yk):
+    if (
+        min_x >= max_x
+        or min_y >= max_y
+        or min_xk >= max_xk
+        or min_yk >= max_yk
+        or (max_x - min_x != max_xk - min_xk)
+        or (max_y - min_y != max_yk - min_yk)
+    ):
         return grid2d
     kernel_re_sized = kernel[min_yk:max_yk, min_xk:max_xk]
     new = grid2d.copy()
@@ -99,7 +107,7 @@ def add_poisson(image, exp_time):
     """
 
     # Gaussian approximation for Poisson distribution, normalized to exposure time
-    sigma = np.sqrt(np.abs(image)/exp_time)
+    sigma = np.sqrt(np.abs(image) / exp_time)
     nx, ny = np.shape(image)
     poisson = np.random.randn(nx, ny) * sigma
     return poisson
@@ -117,6 +125,7 @@ def rotateImage(img, angle):
     imgR = ndimage.rotate(img, angle, reshape=False)
     return imgR
 
+
 @export
 def shift_image(img, shift):
     """
@@ -128,6 +137,7 @@ def shift_image(img, shift):
     """
     img_s = ndimage.shift(img, shift)
     return img_s
+
 
 @export
 def re_size_array(x_in, y_in, input_values, x_out, y_out):
@@ -143,7 +153,7 @@ def re_size_array(x_in, y_in, input_values, x_out, y_out):
     """
     # from skimage.transform import resize
     # resize(input_values)
-    interp_2d = interpolate.interp2d(x_in, y_in, input_values, kind='linear')
+    interp_2d = interpolate.interp2d(x_in, y_in, input_values, kind="linear")
     # interp_2d = scipy.interpolate.RectBivariateSpline(x_in, y_in, input_values, kx=1, ky=1)
     out_values = interp_2d.__call__(x_out, y_out)
     return out_values
@@ -159,9 +169,9 @@ def symmetry_average(image, symmetry):
     :return:
     """
     img_sym = np.zeros_like(image)
-    angle = 360./symmetry
+    angle = 360.0 / symmetry
     for i in range(symmetry):
-        img_sym += rotateImage(image, angle*i)
+        img_sym += rotateImage(image, angle * i)
     img_sym /= symmetry
     return img_sym
 
@@ -179,7 +189,10 @@ def findOverlap(x_mins, y_mins, min_distance):
             pass
         else:
             for j in range(0, i):
-                if abs(x_mins[i] - x_mins[j] < min_distance and abs(y_mins[i] - y_mins[j]) < min_distance):
+                if abs(
+                    x_mins[i] - x_mins[j] < min_distance
+                    and abs(y_mins[i] - y_mins[j]) < min_distance
+                ):
                     idex.append(i)
                     break
     x_mins = np.delete(x_mins, idex, axis=0)
@@ -199,7 +212,12 @@ def coordInImage(x_coord, y_coord, num_pix, deltapix):
     min_ = -deltapix * num_pix / 2
     max_ = deltapix * num_pix / 2
     for i in range(len(x_coord)):  # sum over image positions
-        if x_coord[i] < min_ or x_coord[i] > max_ or y_coord[i] < min_ or y_coord[i] > max_:
+        if (
+            x_coord[i] < min_
+            or x_coord[i] > max_
+            or y_coord[i] < min_
+            or y_coord[i] > max_
+        ):
             idex.append(i)
     x_coord = np.delete(x_coord, idex, axis=0)
     y_coord = np.delete(y_coord, idex, axis=0)
@@ -216,16 +234,18 @@ def re_size(image, factor=1):
     :return:
     """
     if factor < 1:
-        raise ValueError('scaling factor in re-sizing %s < 1' % factor)
+        raise ValueError("scaling factor in re-sizing %s < 1" % factor)
     elif factor == 1:
         return image
     f = int(factor)
     nx, ny = np.shape(image)
-    if int(nx/f) == nx/f and int(ny/f) == ny/f:
-        small = image.reshape([int(nx/f), f, int(ny/f), f]).mean(3).mean(1)
+    if int(nx / f) == nx / f and int(ny / f) == ny / f:
+        small = image.reshape([int(nx / f), f, int(ny / f), f]).mean(3).mean(1)
         return small
     else:
-        raise ValueError("scaling with factor %s is not possible with grid size %s, %s" % (f, nx, ny))
+        raise ValueError(
+            "scaling with factor %s is not possible with grid size %s, %s" % (f, nx, ny)
+        )
 
 
 @export
@@ -236,9 +256,9 @@ def rebin_image(bin_size, image, wht_map, sigma_bkg, ra_coords, dec_coords, idex
     :param bin_size: number of pixels (per axis) to merge
     :return:
     """
-    numPix = int(len(image)/bin_size)
+    numPix = int(len(image) / bin_size)
     numPix_precut = numPix * bin_size
-    factor = int(len(image)/numPix)
+    factor = int(len(image) / numPix)
     if not numPix * bin_size == len(image):
         image_precut = image[0:numPix_precut, 0:numPix_precut]
     else:
@@ -246,12 +266,19 @@ def rebin_image(bin_size, image, wht_map, sigma_bkg, ra_coords, dec_coords, idex
     image_resized = re_size(image_precut, factor)
     image_resized *= bin_size**2
     wht_map_resized = re_size(wht_map[0:numPix_precut, 0:numPix_precut], factor)
-    sigma_bkg_resized = bin_size*sigma_bkg
+    sigma_bkg_resized = bin_size * sigma_bkg
     ra_coords_resized = re_size(ra_coords[0:numPix_precut, 0:numPix_precut], factor)
     dec_coords_resized = re_size(dec_coords[0:numPix_precut, 0:numPix_precut], factor)
     idex_mask_resized = re_size(idex_mask[0:numPix_precut, 0:numPix_precut], factor)
     idex_mask_resized[idex_mask_resized > 0] = 1
-    return image_resized, wht_map_resized, sigma_bkg_resized, ra_coords_resized, dec_coords_resized, idex_mask_resized
+    return (
+        image_resized,
+        wht_map_resized,
+        sigma_bkg_resized,
+        ra_coords_resized,
+        dec_coords_resized,
+        idex_mask_resized,
+    )
 
 
 @export
@@ -265,9 +292,17 @@ def rebin_coord_transform(factor, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord
     Mpix2coord_resized = Mpix2coord * factor
     x_at_radec_0_resized = (x_at_radec_0 + 0.5) / factor - 0.5
     y_at_radec_0_resized = (y_at_radec_0 + 0.5) / factor - 0.5
-    ra_at_xy_0_resized, dec_at_xy_0_resized = util.map_coord2pix(-x_at_radec_0_resized, -y_at_radec_0_resized, 0, 0,
-                                                                 Mpix2coord_resized)
-    return ra_at_xy_0_resized, dec_at_xy_0_resized, x_at_radec_0_resized, y_at_radec_0_resized, Mpix2coord_resized, Mcoord2pix_resized
+    ra_at_xy_0_resized, dec_at_xy_0_resized = util.map_coord2pix(
+        -x_at_radec_0_resized, -y_at_radec_0_resized, 0, 0, Mpix2coord_resized
+    )
+    return (
+        ra_at_xy_0_resized,
+        dec_at_xy_0_resized,
+        x_at_radec_0_resized,
+        y_at_radec_0_resized,
+        Mpix2coord_resized,
+        Mcoord2pix_resized,
+    )
 
 
 @export
@@ -279,10 +314,10 @@ def stack_images(image_list, wht_list, sigma_list):
     """
     image_stacked = np.zeros_like(image_list[0])
     wht_stacked = np.zeros_like(image_stacked)
-    sigma_stacked = 0.
+    sigma_stacked = 0.0
     for i in range(len(image_list)):
-        image_stacked += image_list[i]*wht_list[i]
-        sigma_stacked += sigma_list[i]**2 * np.median(wht_list[i])
+        image_stacked += image_list[i] * wht_list[i]
+        sigma_stacked += sigma_list[i] ** 2 * np.median(wht_list[i])
         wht_stacked += wht_list[i]
     image_stacked /= wht_stacked
     sigma_stacked /= np.median(wht_stacked)
@@ -302,12 +337,19 @@ def cut_edges(image, num_pix):
     """
     nx, ny = image.shape
     if nx < num_pix or ny < num_pix:
-        raise ValueError('image can not be resized, in routine cut_edges with image shape (%s %s) '
-                         'and desired new shape (%s %s)' % (nx, ny, num_pix, num_pix))
+        raise ValueError(
+            "image can not be resized, in routine cut_edges with image shape (%s %s) "
+            "and desired new shape (%s %s)" % (nx, ny, num_pix, num_pix)
+        )
     if (nx % 2 == 0 and ny % 2 == 1) or (nx % 2 == 1 and ny % 2 == 0):
-        raise ValueError('image with odd and even axis (%s %s) not supported for re-sizing' % (nx, ny))
+        raise ValueError(
+            "image with odd and even axis (%s %s) not supported for re-sizing"
+            % (nx, ny)
+        )
     if (nx % 2 == 0 and num_pix % 2 == 1) or (nx % 2 == 1 and num_pix % 2 == 0):
-        raise ValueError('image can only be re-sized from even to even or odd to odd number.')
+        raise ValueError(
+            "image can only be re-sized from even to even or odd to odd number."
+        )
 
     x_min = int((nx - num_pix) / 2)
     y_min = int((ny - num_pix) / 2)
@@ -327,7 +369,7 @@ def radial_profile(data, center):
     :return: radial profile (in units pixel)
     """
     y, x = np.indices(data.shape)
-    r = np.sqrt((x - center[0])**2 + (y - center[1])**2)
+    r = np.sqrt((x - center[0]) ** 2 + (y - center[1]) ** 2)
     r = r.astype(int)
 
     tbin = np.bincount(r.ravel(), data.ravel())
@@ -345,4 +387,5 @@ def gradient_map(image):
     :return: array of same size as input, with gradients between neighboring pixels
     """
     from skimage import filters
+
     return filters.sobel(image)

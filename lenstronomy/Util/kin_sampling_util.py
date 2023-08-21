@@ -1,4 +1,4 @@
-__author__ = 'Matt Gomer'
+__author__ = "Matt Gomer"
 
 import numpy as np
 from scipy.interpolate import RectBivariateSpline
@@ -38,11 +38,19 @@ class KinNNImageAlign(object):
         """
         self.spectra_data = spectra_inputs
         self.imaging_data = imaging_inputs
-        self.imaging_deltapix = np.sqrt(np.abs(np.linalg.det(self.imaging_data['transform_pix2angle'])))
+        self.imaging_deltapix = np.sqrt(
+            np.abs(np.linalg.det(self.imaging_data["transform_pix2angle"]))
+        )
         self.kinNN_data = kin_nn_inputs
         self.write_npix()
 
-    def update(self, spectra_inputs=None, imaging_inputs=None, kin_nn_inputs=None, update_npix=False):
+    def update(
+        self,
+        spectra_inputs=None,
+        imaging_inputs=None,
+        kin_nn_inputs=None,
+        update_npix=False,
+    ):
         """
         Update with inputs
         """
@@ -61,11 +69,11 @@ class KinNNImageAlign(object):
         """
         for input_set in [self.spectra_data, self.imaging_data, self.kinNN_data]:
             # make sure each image is square and add npix to each dictionary
-            if 'image' in input_set.keys():
-                if np.shape(input_set['image'])[0] != np.shape(input_set['image'])[1]:
-                    raise ValueError('current version only works for square images')
-                npix = np.shape(input_set['image'])[0]
-                input_set['npix'] = npix
+            if "image" in input_set.keys():
+                if np.shape(input_set["image"])[0] != np.shape(input_set["image"])[1]:
+                    raise ValueError("current version only works for square images")
+                npix = np.shape(input_set["image"])[0]
+                input_set["npix"] = npix
 
     def pix_coords(self, input_set, flatten=True):
         """
@@ -75,13 +83,14 @@ class KinNNImageAlign(object):
         :boolean flatten: default True; if True, return 1D flattened output, if False, return 2D grid
         :return pixel coordinates of grid
         """
-        x_grid = np.tile(np.arange(input_set['npix']), input_set['npix'])
-        y_grid = np.repeat(np.arange(input_set['npix']), input_set['npix'])
+        x_grid = np.tile(np.arange(input_set["npix"]), input_set["npix"])
+        y_grid = np.repeat(np.arange(input_set["npix"]), input_set["npix"])
         if flatten is True:
             return x_grid, y_grid
         else:
-            return x_grid.reshape(input_set['npix'], input_set['npix']), y_grid.reshape(input_set['npix'],
-                                                                                        input_set['npix'])
+            return x_grid.reshape(input_set["npix"], input_set["npix"]), y_grid.reshape(
+                input_set["npix"], input_set["npix"]
+            )
 
     def radec_to_xy(self, ra, dec, xy_to_radec_matrix, ra_atxy0, dec_atxy0):
         """
@@ -115,9 +124,18 @@ class KinNNImageAlign(object):
         ra, dec = xy_to_radec_matrix.dot(np.array([x, y]))
         return ra + ra_atxy0, dec + dec_atxy0
 
-    def rotate_imaging_into_kin_nn(self, imaging_x, imaging_y, ellipse_pa_to_imagingx_angle,
-                                   deltapix_imaging, deltapix_kin_nn, npix_imaging, npix_kin_nn,
-                                   offsetx=0, offsety=0):
+    def rotate_imaging_into_kin_nn(
+        self,
+        imaging_x,
+        imaging_y,
+        ellipse_pa_to_imagingx_angle,
+        deltapix_imaging,
+        deltapix_kin_nn,
+        npix_imaging,
+        npix_kin_nn,
+        offsetx=0,
+        offsety=0,
+    ):
         """
         rotates and rescales from the x,y imaging coordinate system into the NN coordinate system
 
@@ -141,14 +159,32 @@ class KinNNImageAlign(object):
         cd2_1 = np.sin(counterrotation)
         cd2_2 = np.cos(counterrotation)
         # rotation matrix, applied to matching centers ()
-        rotation_by_ellipse_angle = np.array([[cd1_1, cd1_2], [cd2_1, cd2_2]]) * (deltapix_imaging / deltapix_kin_nn)
+        rotation_by_ellipse_angle = np.array([[cd1_1, cd1_2], [cd2_1, cd2_2]]) * (
+            deltapix_imaging / deltapix_kin_nn
+        )
 
-        kin_nn_x_at_imagingcenter, kin_nn_y_at_imagingcenter = rotation_by_ellipse_angle.dot(
-            np.array([-npix_imaging / 2 - offsetx / deltapix_imaging, -npix_imaging / 2 - offsety / deltapix_imaging])) + [
-                                                           npix_kin_nn / 2, npix_kin_nn / 2]
+        (
+            kin_nn_x_at_imagingcenter,
+            kin_nn_y_at_imagingcenter,
+        ) = rotation_by_ellipse_angle.dot(
+            np.array(
+                [
+                    -npix_imaging / 2 - offsetx / deltapix_imaging,
+                    -npix_imaging / 2 - offsety / deltapix_imaging,
+                ]
+            )
+        ) + [
+            npix_kin_nn / 2,
+            npix_kin_nn / 2,
+        ]
 
-        kin_nn_x, kin_nn_y = rotation_by_ellipse_angle.dot(np.array([imaging_x, imaging_y]))
-        return kin_nn_x + kin_nn_x_at_imagingcenter, kin_nn_y + kin_nn_y_at_imagingcenter
+        kin_nn_x, kin_nn_y = rotation_by_ellipse_angle.dot(
+            np.array([imaging_x, imaging_y])
+        )
+        return (
+            kin_nn_x + kin_nn_x_at_imagingcenter,
+            kin_nn_y + kin_nn_y_at_imagingcenter,
+        )
 
     def plot_contour_and_grid(self, xcoords, ycoords, orig_image, color, alpha=0.4):
         """
@@ -162,7 +198,9 @@ class KinNNImageAlign(object):
         """
         ell_cond_2d = np.isclose(orig_image, 0.1, rtol=5e-02)
         ell_cond = ell_cond_2d.flatten()
-        plt.scatter(xcoords[ell_cond], ycoords[ell_cond], color=color, alpha=alpha, s=10)
+        plt.scatter(
+            xcoords[ell_cond], ycoords[ell_cond], color=color, alpha=alpha, s=10
+        )
         plt.scatter(xcoords, ycoords, color=color, alpha=alpha, s=1)
 
     def spectragrid_in_radec(self):
@@ -172,8 +210,13 @@ class KinNNImageAlign(object):
         :return: ra and dec coordinates
         """
         spectra_x, spectra_y = self.pix_coords(self.spectra_data, flatten=True)
-        spectra_ra, spectra_dec = self.xy_to_radec(spectra_x, spectra_y, self.spectra_data['transform_pix2angle'],
-                                             self.spectra_data['ra_at_xy0'], self.spectra_data['dec_at_xy0'])
+        spectra_ra, spectra_dec = self.xy_to_radec(
+            spectra_x,
+            spectra_y,
+            self.spectra_data["transform_pix2angle"],
+            self.spectra_data["ra_at_xy0"],
+            self.spectra_data["dec_at_xy0"],
+        )
         return spectra_ra, spectra_dec
 
     def spectragrid_in_imagingxy(self):
@@ -183,10 +226,13 @@ class KinNNImageAlign(object):
         :return: x and y coordinates
         """
         spectra_ra, spectra_dec = self.spectragrid_in_radec()
-        spectra_coords_in_imaging_x, spectra_coords_in_imaging_y = self.radec_to_xy(spectra_ra, spectra_dec,
-                                                                      self.imaging_data['transform_pix2angle'],
-                                                                      self.imaging_data['ra_at_xy0'],
-                                                                      self.imaging_data['dec_at_xy0'])
+        spectra_coords_in_imaging_x, spectra_coords_in_imaging_y = self.radec_to_xy(
+            spectra_ra,
+            spectra_dec,
+            self.imaging_data["transform_pix2angle"],
+            self.imaging_data["ra_at_xy0"],
+            self.imaging_data["dec_at_xy0"],
+        )
         return spectra_coords_in_imaging_x, spectra_coords_in_imaging_y
 
     def spectragrid_in_kin_nn_xy(self):
@@ -195,13 +241,21 @@ class KinNNImageAlign(object):
 
         :return: x and y coordinates
         """
-        spectra_coords_in_imaging_x, spectra_coords_in_imaging_y = self.spectragrid_in_imagingxy()
-        kin_nn_x, kin_nn_y = self.rotate_imaging_into_kin_nn(spectra_coords_in_imaging_x, spectra_coords_in_imaging_y,
-                                                             self.imaging_data['ellipse_PA'], self.imaging_deltapix,
-                                                             self.kinNN_data['deltaPix'], self.imaging_data['npix'],
-                                                             self.kinNN_data['npix'],
-                                                             offsetx=self.imaging_data['offset_x'],
-                                                             offsety=self.imaging_data['offset_y'])
+        (
+            spectra_coords_in_imaging_x,
+            spectra_coords_in_imaging_y,
+        ) = self.spectragrid_in_imagingxy()
+        kin_nn_x, kin_nn_y = self.rotate_imaging_into_kin_nn(
+            spectra_coords_in_imaging_x,
+            spectra_coords_in_imaging_y,
+            self.imaging_data["ellipse_PA"],
+            self.imaging_deltapix,
+            self.kinNN_data["deltaPix"],
+            self.imaging_data["npix"],
+            self.kinNN_data["npix"],
+            offsetx=self.imaging_data["offset_x"],
+            offsety=self.imaging_data["offset_y"],
+        )
         return kin_nn_x, kin_nn_y
 
     def interp_image(self):
@@ -211,10 +265,11 @@ class KinNNImageAlign(object):
         :return: interpolated image which lines up with spectra coordinates
         """
         spectra_kin_nn_x, spectra_kin_nn_y = self.spectragrid_in_kin_nn_xy()
-        x_axis = np.arange(self.kinNN_data['npix'])
-        y_axis = np.arange(self.kinNN_data['npix'])
-        interp_fcn = RectBivariateSpline(x_axis, y_axis, self.kinNN_data['image'])
+        x_axis = np.arange(self.kinNN_data["npix"])
+        y_axis = np.arange(self.kinNN_data["npix"])
+        interp_fcn = RectBivariateSpline(x_axis, y_axis, self.kinNN_data["image"])
         # y and x are flipped in RectBivariateSpline call:
-        flux_interp = interp_fcn.ev(spectra_kin_nn_y, spectra_kin_nn_x).reshape(self.spectra_data['npix'],
-                                                                          self.spectra_data['npix'])
+        flux_interp = interp_fcn.ev(spectra_kin_nn_y, spectra_kin_nn_x).reshape(
+            self.spectra_data["npix"], self.spectra_data["npix"]
+        )
         return flux_interp

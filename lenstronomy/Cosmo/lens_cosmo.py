@@ -1,4 +1,4 @@
-__author__ = 'sibirrer'
+__author__ = "sibirrer"
 
 # this file contains a class to convert lensing and physical units
 
@@ -7,13 +7,14 @@ import lenstronomy.Util.constants as const
 from lenstronomy.Cosmo.background import Background
 from lenstronomy.Cosmo.nfw_param import NFWParam
 
-__all__ = ['LensCosmo']
+__all__ = ["LensCosmo"]
 
 
 class LensCosmo(object):
     """
     class to manage the physical units and distances present in a single plane lens with fixed input cosmology
     """
+
     def __init__(self, z_lens, z_source, cosmo=None):
         """
 
@@ -29,7 +30,7 @@ class LensCosmo(object):
 
     @property
     def h(self):
-        return self.background.cosmo.H(0).value / 100.
+        return self.background.cosmo.H(0).value / 100.0
 
     @property
     def dd(self):
@@ -70,11 +71,15 @@ class LensCosmo(object):
 
         :return: critical projected lensing mass density
         """
-        if not hasattr(self, '_sigma_crit_mpc'):
-            const_SI = const.c ** 2 / (4 * np.pi * const.G)  # c^2/(4*pi*G) in units of [kg/m]
+        if not hasattr(self, "_sigma_crit_mpc"):
+            const_SI = const.c**2 / (
+                4 * np.pi * const.G
+            )  # c^2/(4*pi*G) in units of [kg/m]
             conversion = const.Mpc / const.M_sun  # converts [kg/m] to [M_sun/Mpc]
-            factor = const_SI*conversion  # c^2/(4*pi*G) in units of [M_sun/Mpc]
-            self._sigma_crit_mpc = self.ds / (self.dd * self.dds) * factor  # [M_sun/Mpc^2]
+            factor = const_SI * conversion  # c^2/(4*pi*G) in units of [M_sun/Mpc]
+            self._sigma_crit_mpc = (
+                self.ds / (self.dd * self.dds) * factor
+            )  # [M_sun/Mpc^2]
         return self._sigma_crit_mpc
 
     @property
@@ -85,11 +90,15 @@ class LensCosmo(object):
 
         :return: critical projected mass density
         """
-        if not hasattr(self, '_sigma_crit_arcsec'):
-            const_SI = const.c ** 2 / (4 * np.pi * const.G)  # c^2/(4*pi*G) in units of [kg/m]
+        if not hasattr(self, "_sigma_crit_arcsec"):
+            const_SI = const.c**2 / (
+                4 * np.pi * const.G
+            )  # c^2/(4*pi*G) in units of [kg/m]
             conversion = const.Mpc / const.M_sun  # converts [kg/m] to [M_sun/Mpc]
             factor = const_SI * conversion  # c^2/(4*pi*G) in units of [M_sun/Mpc]
-            self._sigma_crit_arcsec = self.ds / (self.dd * self.dds) * factor * (self.dd * const.arcsec) ** 2  # [M_sun/arcsec^2]
+            self._sigma_crit_arcsec = (
+                self.ds / (self.dd * self.dds) * factor * (self.dd * const.arcsec) ** 2
+            )  # [M_sun/arcsec^2]
         return self._sigma_crit_arcsec
 
     def phys2arcsec_lens(self, phys):
@@ -146,7 +155,14 @@ class LensCosmo(object):
         """
         chi_L = self.background.T_xy(0, self.z_lens)
         chi_S = self.background.T_xy(0, self.z_source)
-        return 1./3 * np.pi * (chi_L * theta_E * const.arcsec) ** 2 * chi_S * self.background.rho_crit  #[M_sun/Mpc**3]
+        return (
+            1.0
+            / 3
+            * np.pi
+            * (chi_L * theta_E * const.arcsec) ** 2
+            * chi_S
+            * self.background.rho_crit
+        )  # [M_sun/Mpc**3]
 
     def time_delay_units(self, fermat_pot, kappa_ext=0):
         """
@@ -155,8 +171,10 @@ class LensCosmo(object):
         :param kappa_ext: unit-less external shear not accounted for in the Fermat potential
         :return: time delay in days
         """
-        D_dt = self.ddt * (1. - kappa_ext) * const.Mpc  # eqn 7 in Suyu et al.
-        return D_dt / const.c * fermat_pot / const.day_s * const.arcsec ** 2  # * self.arcsec2phys_lens(1.)**2
+        D_dt = self.ddt * (1.0 - kappa_ext) * const.Mpc  # eqn 7 in Suyu et al.
+        return (
+            D_dt / const.c * fermat_pot / const.day_s * const.arcsec**2
+        )  # * self.arcsec2phys_lens(1.)**2
 
     def time_delay2fermat_pot(self, dt):
         """
@@ -165,7 +183,7 @@ class LensCosmo(object):
         :return: Fermat potential in units arcsec**2 for a given cosmology
         """
         D_dt = self.ddt * const.Mpc
-        return dt * const.c * const.day_s / D_dt / const.arcsec ** 2
+        return dt * const.c * const.day_s / D_dt / const.arcsec**2
 
     def nfw_angle2physical(self, Rs_angle, alpha_Rs):
         """
@@ -177,7 +195,7 @@ class LensCosmo(object):
         """
         Rs = Rs_angle * const.arcsec * self.dd
         theta_scaled = alpha_Rs * self.sigma_crit * self.dd * const.arcsec
-        rho0 = theta_scaled / (4 * Rs ** 2 * (1 + np.log(1. / 2.)))
+        rho0 = theta_scaled / (4 * Rs**2 * (1 + np.log(1.0 / 2.0)))
         rho0_com = rho0 / self.h**2
         c = self.nfw_param.c_rho0(rho0_com, self.z_lens)
         r200 = c * Rs
@@ -194,7 +212,7 @@ class LensCosmo(object):
         """
         rho0, Rs, r200 = self.nfwParam_physical(M, c)
         Rs_angle = Rs / self.dd / const.arcsec  # Rs in arcsec
-        alpha_Rs = rho0 * (4 * Rs ** 2 * (1 + np.log(1. / 2.)))
+        alpha_Rs = rho0 * (4 * Rs**2 * (1 + np.log(1.0 / 2.0)))
         return Rs_angle, alpha_Rs / self.sigma_crit / self.dd / const.arcsec
 
     def nfwParam_physical(self, M, c):
@@ -205,9 +223,13 @@ class LensCosmo(object):
         :param c: concentration
         :return: rho0 [Msun/Mpc^3], Rs [Mpc], r200 [Mpc]
         """
-        r200 = self.nfw_param.r200_M(M * self.h, self.z_lens) / self.h  # physical radius r200
-        rho0 = self.nfw_param.rho0_c(c, self.z_lens) * self.h**2  # physical density in M_sun/Mpc**3
-        Rs = r200/c
+        r200 = (
+            self.nfw_param.r200_M(M * self.h, self.z_lens) / self.h
+        )  # physical radius r200
+        rho0 = (
+            self.nfw_param.rho0_c(c, self.z_lens) * self.h**2
+        )  # physical density in M_sun/Mpc**3
+        Rs = r200 / c
         return rho0, Rs, r200
 
     def nfw_M_theta_r200(self, M):
@@ -217,7 +239,9 @@ class LensCosmo(object):
         :param M: physical mass in M_sun
         :return: angle (in arc seconds) of the r200 radius
         """
-        r200 = self.nfw_param.r200_M(M * self.h, self.z_lens) / self.h  # physical radius r200
+        r200 = (
+            self.nfw_param.r200_M(M * self.h, self.z_lens) / self.h
+        )  # physical radius r200
         theta_r200 = r200 / self.dd / const.arcsec
         return theta_r200
 
@@ -228,8 +252,8 @@ class LensCosmo(object):
         :param theta_E: Einstein radius (in arcsec)
         :return: velocity dispersion in units (km/s)
         """
-        v_sigma_c2 = theta_E * const.arcsec / (4*np.pi) * self.ds / self.dds
-        return np.sqrt(v_sigma_c2)*const.c / 1000
+        v_sigma_c2 = theta_E * const.arcsec / (4 * np.pi) * self.ds / self.dds
+        return np.sqrt(v_sigma_c2) * const.c / 1000
 
     def sis_sigma_v2theta_E(self, v_sigma):
         """
@@ -238,7 +262,14 @@ class LensCosmo(object):
         :param v_sigma: velocity dispersion (km/s)
         :return: theta_E (arcsec)
         """
-        theta_E = 4 * np.pi * (v_sigma * 1000./const.c) ** 2 * self.dds / self.ds / const.arcsec
+        theta_E = (
+            4
+            * np.pi
+            * (v_sigma * 1000.0 / const.c) ** 2
+            * self.dds
+            / self.ds
+            / const.arcsec
+        )
         return theta_E
 
     def hernquist_phys2angular(self, mass, rs):
@@ -254,7 +285,7 @@ class LensCosmo(object):
         :return: sigma0, Rs_angle
         """
         rs_angle = rs / self.dd / const.arcsec  # Rs in arcsec
-        rhos = mass / (2 * np.pi) / rs ** 3  # units of M_sun / Mpc^3
+        rhos = mass / (2 * np.pi) / rs**3  # units of M_sun / Mpc^3
         sigma0 = rhos * rs  # units of M_sun / Mpc^2
         sigma0 /= self.sigma_crit
         return sigma0, rs_angle
@@ -270,7 +301,7 @@ class LensCosmo(object):
         """
         rs = rs_angle * self.dd * const.arcsec  # units of Mpc
         rhos = sigma0 / rs * self.sigma_crit
-        m_tot = 2*np.pi*rhos*rs**3
+        m_tot = 2 * np.pi * rhos * rs**3
         return m_tot, rs
 
     def uldm_angular2phys(self, kappa_0, theta_c):
@@ -283,11 +314,11 @@ class LensCosmo(object):
         :param theta_c: core radius (in arcseconds)
         :return: m_eV_log10, M_sol_log10, the log10 of the masses, m in eV and M in M_sun
         """
-        D_Lens = self.dd * 10**6 # in parsec
-        Sigma_c = self.sigma_crit * 10**(-12) # in M_sun / parsec^2
+        D_Lens = self.dd * 10**6  # in parsec
+        Sigma_c = self.sigma_crit * 10 ** (-12)  # in M_sun / parsec^2
         r_c = theta_c * const.arcsec * D_Lens
         rho0 = 2048 * np.sqrt(0.091) * kappa_0 * Sigma_c / (429 * np.pi * r_c)
-        m_log10 = -22 + 0.5*np.log10(190 / rho0 * (r_c / 100)**(-4))
+        m_log10 = -22 + 0.5 * np.log10(190 / rho0 * (r_c / 100) ** (-4))
         M_log10 = 9 + np.log10(160 * 1.4 / r_c) - 2 * (m_log10 + 22)
         return m_log10, M_log10
 
@@ -300,12 +331,14 @@ class LensCosmo(object):
         :param M_log10: exponent of soliton mass in M_sun
         :return: kappa_0, theta_c, the central convergence and core radius (in arcseconds)
         """
-        D_Lens = self.dd * 10**6 # in parsec
-        Sigma_c = self.sigma_crit * 10**(-12) # in M_sun/parsec^2
-        m22 = 10**(m_log10 + 22)
-        M9 = 10**(M_log10 -9)
-        r_c = 160 * 1.4 * m22**(-2) * M9**(-1) # core radius in parsec
-        rho0 = 190 * m22**(-2) * (r_c / 100)**(-4) # central density in M_sun/parsec^3
+        D_Lens = self.dd * 10**6  # in parsec
+        Sigma_c = self.sigma_crit * 10 ** (-12)  # in M_sun/parsec^2
+        m22 = 10 ** (m_log10 + 22)
+        M9 = 10 ** (M_log10 - 9)
+        r_c = 160 * 1.4 * m22 ** (-2) * M9 ** (-1)  # core radius in parsec
+        rho0 = (
+            190 * m22 ** (-2) * (r_c / 100) ** (-4)
+        )  # central density in M_sun/parsec^3
         kappa_0 = 429 * np.pi * rho0 * r_c / (2048 * np.sqrt(0.091) * Sigma_c)
         theta_c = r_c / D_Lens / const.arcsec
         return kappa_0, theta_c
@@ -322,8 +355,11 @@ class LensCosmo(object):
         """
         # compute mass integral
         from lenstronomy.LensModel.Profiles.sersic_utils import SersicUtil
+
         sersic_util = SersicUtil()
-        norm_integral = sersic_util.total_flux(amp=1, R_sersic=R_sersic, n_sersic=n_sersic)
+        norm_integral = sersic_util.total_flux(
+            amp=1, R_sersic=R_sersic, n_sersic=n_sersic
+        )
         # compute total kappa normalization and re
         k_eff = m_star / self.sigma_crit_angle
         # renormalize
@@ -340,7 +376,10 @@ class LensCosmo(object):
         :return: stellar mass in physical Msun
         """
         from lenstronomy.LensModel.Profiles.sersic_utils import SersicUtil
+
         sersic_util = SersicUtil()
-        norm_integral = sersic_util.total_flux(amp=1, R_sersic=R_sersic, n_sersic=n_sersic)
-        m_star = k_eff *self.sigma_crit_angle * norm_integral
+        norm_integral = sersic_util.total_flux(
+            amp=1, R_sersic=R_sersic, n_sersic=n_sersic
+        )
+        m_star = k_eff * self.sigma_crit_angle * norm_integral
         return m_star

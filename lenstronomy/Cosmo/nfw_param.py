@@ -1,6 +1,6 @@
 import numpy as np
 
-__all__ = ['NFWParam']
+__all__ = ["NFWParam"]
 
 
 class NFWParam(object):
@@ -49,7 +49,7 @@ class NFWParam(object):
         :type c: float [4,40]
         :return: M(R_200) mass in units of rho0 * rs^3
         """
-        return 4 * np.pi * rho0 * rs ** 3 * (np.log(1. + c) - c / (1. + c))
+        return 4 * np.pi * rho0 * rs**3 * (np.log(1.0 + c) - c / (1.0 + c))
 
     def r200_M(self, M, z):
         """
@@ -61,7 +61,7 @@ class NFWParam(object):
         :type z: float
         :return: radius R_200 in physical Mpc/h
         """
-        return (3*M/(4*np.pi*self.rhoc_z(z)*200))**(1./3.)
+        return (3 * M / (4 * np.pi * self.rhoc_z(z) * 200)) ** (1.0 / 3.0)
 
     def M_r200(self, r200, z):
         """
@@ -70,7 +70,7 @@ class NFWParam(object):
         :param z: redshift
         :return: M200 in M_sun/h
         """
-        return self.rhoc_z(z)*200 * r200**3 * 4*np.pi/3.
+        return self.rhoc_z(z) * 200 * r200**3 * 4 * np.pi / 3.0
 
     def rho0_c(self, c, z):
         """
@@ -80,7 +80,7 @@ class NFWParam(object):
         :param z: redshift
         :return: density normalization in h^2/Mpc^3 (physical)
         """
-        return 200./3*self.rhoc_z(z)*c**3/(np.log(1.+c)-c/(1.+c))
+        return 200.0 / 3 * self.rhoc_z(z) * c**3 / (np.log(1.0 + c) - c / (1.0 + c))
 
     def c_rho0(self, rho0, z):
         """
@@ -90,12 +90,14 @@ class NFWParam(object):
         :param z: redshift
         :return: concentration parameter c
         """
-        if not hasattr(self, '_c_rho0_interp'):
+        if not hasattr(self, "_c_rho0_interp"):
             c_array = np.linspace(0.1, 30, 100)
             rho0_array = self.rho0_c(c_array, z)
             from scipy import interpolate
-            self._c_rho0_interp = interpolate.InterpolatedUnivariateSpline(rho0_array, c_array, w=None,
-                                                                           bbox=[None, None], k=3)
+
+            self._c_rho0_interp = interpolate.InterpolatedUnivariateSpline(
+                rho0_array, c_array, w=None, bbox=[None, None], k=3
+            )
         return self._c_rho0_interp(rho0)
 
     @staticmethod
@@ -114,8 +116,8 @@ class NFWParam(object):
         A = 5.22
         B = -0.072
         C = -0.42
-        M_pivot = 2.*10**12
-        return A*(M/M_pivot)**B*(1+z)**C
+        M_pivot = 2.0 * 10**12
+        return A * (M / M_pivot) ** B * (1 + z) ** C
 
     def nfw_Mz(self, M, z):
         """
@@ -131,5 +133,5 @@ class NFWParam(object):
         c = self.c_M_z(M, z)
         r200 = self.r200_M(M, z)
         rho0 = self.rho0_c(c, z)
-        Rs = r200/c
+        Rs = r200 / c
         return r200, rho0, c, Rs

@@ -4,6 +4,7 @@ from lenstronomy.GalKin import velocity_util
 from scipy.interpolate import interp1d
 
 from lenstronomy.Util.package_util import exporter
+
 export, __all__ = exporter()
 
 
@@ -24,20 +25,20 @@ class Anisotropy(object):
         :param anisotropy_type: string, anisotropy model type
         """
         self._type = anisotropy_type
-        if self._type == 'const':
+        if self._type == "const":
             self._model = Const()
-        elif self._type == 'radial':
+        elif self._type == "radial":
             self._model = Radial()
-        elif self._type == 'isotropic':
+        elif self._type == "isotropic":
             self._model = Isotropic()
-        elif self._type == 'OM':
+        elif self._type == "OM":
             self._model = OsipkovMerritt()
-        elif self._type == 'GOM':
+        elif self._type == "GOM":
             self._model = GeneralizedOM()
-        elif self._type == 'Colin':
+        elif self._type == "Colin":
             self._model = Colin()
         else:
-            raise ValueError('anisotropy type %s not supported!' % self._type)
+            raise ValueError("anisotropy type %s not supported!" % self._type)
 
     def beta_r(self, r, **kwargs):
         """
@@ -77,7 +78,7 @@ class Anisotropy(object):
 
         :return: None
         """
-        if hasattr(self._model, 'delete_cache'):
+        if hasattr(self._model, "delete_cache"):
             self._model.delete_cache()
 
 
@@ -87,6 +88,7 @@ class Const(object):
     constant anisotropy model class
     See Mamon & Lokas 2005 for details
     """
+
     def __init__(self):
         pass
 
@@ -101,9 +103,15 @@ class Const(object):
         :return: K(r, R, beta)
         """
         u = r / R
-        k = np.sqrt(1 - 1. / u ** 2) / (1. - 2 * beta) + np.sqrt(np.pi) / 2 * special.gamma(
-            beta - 1. / 2) / special.gamma(beta) \
-            * (3. / 2 - beta) * u ** (2 * beta - 1.) * (1 - special.betainc(beta + 1. / 2, 1. / 2, 1. / u ** 2))
+        k = np.sqrt(1 - 1.0 / u**2) / (1.0 - 2 * beta) + np.sqrt(
+            np.pi
+        ) / 2 * special.gamma(beta - 1.0 / 2) / special.gamma(beta) * (
+            3.0 / 2 - beta
+        ) * u ** (
+            2 * beta - 1.0
+        ) * (
+            1 - special.betainc(beta + 1.0 / 2, 1.0 / 2, 1.0 / u**2)
+        )
         return k
 
     @staticmethod
@@ -126,7 +134,7 @@ class Const(object):
         :param kwargs: parameters of the specified anisotropy model
         :return: f(r)
         """
-        raise ValueError('routine not supported yet for constant anisotropy model!')
+        raise ValueError("routine not supported yet for constant anisotropy model!")
 
 
 @export
@@ -135,6 +143,7 @@ class Isotropic(object):
     class for isotropic (beta=0) stellar orbits
     See Mamon & Lokas 2005 for details
     """
+
     def __init__(self):
         pass
 
@@ -148,7 +157,7 @@ class Isotropic(object):
         :return: K(r, R)
         """
         u = r / R
-        k = np.sqrt(1 - 1. / u ** 2)
+        k = np.sqrt(1 - 1.0 / u**2)
         return k
 
     @staticmethod
@@ -159,7 +168,7 @@ class Isotropic(object):
         :param r: 3d radius
         :return: beta
         """
-        return 0.
+        return 0.0
 
     @staticmethod
     def anisotropy_solution(r, **kwargs):
@@ -181,6 +190,7 @@ class Radial(object):
     class for radial (beta=1) stellar orbits
     See Mamon & Lokas 2005 for details
     """
+
     def __init__(self):
         pass
 
@@ -194,7 +204,11 @@ class Radial(object):
         :return: K(r, R)
         """
         u = r / R
-        k = np.pi / 4 * u - 1. / 2 * np.sqrt(1 - 1. / u ** 2) - u / 2. * np.arcsin(1. / u)
+        k = (
+            np.pi / 4 * u
+            - 1.0 / 2 * np.sqrt(1 - 1.0 / u**2)
+            - u / 2.0 * np.arcsin(1.0 / u)
+        )
         return k
 
     @staticmethod
@@ -205,7 +219,7 @@ class Radial(object):
         :param r: 3d radius
         :return: beta
         """
-        return 1.
+        return 1.0
 
     @staticmethod
     def anisotropy_solution(r):
@@ -226,6 +240,7 @@ class OsipkovMerritt(object):
     class for Osipkov&Merrit stellar orbits
     See Mamon & Lokas 2005 for details
     """
+
     def __init__(self):
         pass
 
@@ -241,8 +256,13 @@ class OsipkovMerritt(object):
         """
         u = r / R
         ua = r_ani / R
-        k = (ua ** 2 + 1. / 2) / (ua ** 2 + 1) ** (3. / 2) * (u ** 2 + ua ** 2) / u * np.arctan(
-            np.sqrt((u ** 2 - 1) / (ua ** 2 + 1))) - 1. / 2 / (ua ** 2 + 1) * np.sqrt(1 - 1. / u ** 2)
+        k = (ua**2 + 1.0 / 2) / (ua**2 + 1) ** (3.0 / 2) * (
+            u**2 + ua**2
+        ) / u * np.arctan(np.sqrt((u**2 - 1) / (ua**2 + 1))) - 1.0 / 2 / (
+            ua**2 + 1
+        ) * np.sqrt(
+            1 - 1.0 / u**2
+        )
         return k
 
     @staticmethod
@@ -254,7 +274,7 @@ class OsipkovMerritt(object):
         :param r_ani: anisotropy radius
         :return: beta
         """
-        return r**2/(r_ani**2 + r**2)
+        return r**2 / (r_ani**2 + r**2)
 
     @staticmethod
     def anisotropy_solution(r, r_ani):
@@ -277,8 +297,9 @@ class GeneralizedOM(object):
     see Agnello et al. 2014 https://arxiv.org/pdf/1401.4462.pdf
     b(r) = beta_inf * r^2 / (r^2 + r_ani^2)
     """
+
     def __init__(self):
-        self._z_interp = np.append(-np.flip(np.logspace(-1, 3, 200)**2), 0)
+        self._z_interp = np.append(-np.flip(np.logspace(-1, 3, 200) ** 2), 0)
         # self._z_interp = -np.linspace(-200, 0, 200)**2  # z = (R**2 - r**2) / (r_ani**2 + R**2)
 
     @staticmethod
@@ -291,7 +312,7 @@ class GeneralizedOM(object):
         :param beta_inf: anisotropy at infinity
         :return: beta
         """
-        return beta_inf * r**2/(r_ani**2 + r**2)
+        return beta_inf * r**2 / (r_ani**2 + r**2)
 
     def K(self, r, R, r_ani, beta_inf):
         """
@@ -326,9 +347,9 @@ class GeneralizedOM(object):
 
         :return: deleted self variables
         """
-        if hasattr(self, '_f_12_interp'):
+        if hasattr(self, "_f_12_interp"):
             del self._f_12_interp
-        if hasattr(self, '_f_32_interp'):
+        if hasattr(self, "_f_32_interp"):
             del self._f_32_interp
 
     def _k_beta(self, r, R, r_ani, beta_inf):
@@ -344,8 +365,15 @@ class GeneralizedOM(object):
         """
         z = (R**2 - r**2) / (r_ani**2 + R**2)
         # ((r**2 + r_ani**2) / (R**2 + r_ani**2)) ** beta_inf
-        return - self.beta_r(R, r_ani, beta_inf) * self._j_beta(R, r, r_ani, beta_inf) *\
-            np.sqrt(r**2 - R**2) * (self._F_12(z, beta_inf) + 2. * (1 - r**2/R**2) / 3 * self._F_32(z, beta_inf))
+        return (
+            -self.beta_r(R, r_ani, beta_inf)
+            * self._j_beta(R, r, r_ani, beta_inf)
+            * np.sqrt(r**2 - R**2)
+            * (
+                self._F_12(z, beta_inf)
+                + 2.0 * (1 - r**2 / R**2) / 3 * self._F_32(z, beta_inf)
+            )
+        )
 
     def _F_12(self, z, beta_inf):
         """
@@ -354,9 +382,11 @@ class GeneralizedOM(object):
         :param beta_inf: anisotropy at infinity
         :return: _F(1/2, z, beta_inf)
         """
-        if not hasattr(self, '_f_12_interp'):
-            f_12_interp = self._F(1 / 2., self._z_interp, beta_inf)
-            self._f_12_interp = interp1d(self._z_interp, f_12_interp, kind='cubic', fill_value="extrapolate")
+        if not hasattr(self, "_f_12_interp"):
+            f_12_interp = self._F(1 / 2.0, self._z_interp, beta_inf)
+            self._f_12_interp = interp1d(
+                self._z_interp, f_12_interp, kind="cubic", fill_value="extrapolate"
+            )
         return self._f_12_interp(z)
 
     def _F_32(self, z, beta_inf):
@@ -366,9 +396,11 @@ class GeneralizedOM(object):
         :param beta_inf: anisotropy at infinity
         :return: _F(3/2, z, beta_inf)
         """
-        if not hasattr(self, '_f_32_interp'):
-            f_32_interp = self._F(3 / 2., self._z_interp, beta_inf)
-            self._f_32_interp = interp1d(self._z_interp, f_32_interp, kind='cubic', fill_value="extrapolate")
+        if not hasattr(self, "_f_32_interp"):
+            f_32_interp = self._F(3 / 2.0, self._z_interp, beta_inf)
+            self._f_32_interp = interp1d(
+                self._z_interp, f_32_interp, kind="cubic", fill_value="extrapolate"
+            )
         return self._f_32_interp(z)
 
     @staticmethod
@@ -394,11 +426,13 @@ class GeneralizedOM(object):
         :return:
         """
         if isinstance(z, int) or isinstance(z, float):
-            return velocity_util.hyp_2F1(a=a, b=1+beta_inf, c=a+1, z=z)
+            return velocity_util.hyp_2F1(a=a, b=1 + beta_inf, c=a + 1, z=z)
         else:
             _F_array = []
             for z_i in z:
-                _F_array.append(velocity_util.hyp_2F1(a=a, b=1+beta_inf, c=a+1, z=z_i))
+                _F_array.append(
+                    velocity_util.hyp_2F1(a=a, b=1 + beta_inf, c=a + 1, z=z_i)
+                )
             return np.array(_F_array, dtype=float)
 
 
@@ -408,6 +442,7 @@ class Colin(object):
     class for stellar orbits anisotropy parameter based on Colin et al. (2000)
     See Mamon & Lokas 2005 for details
     """
+
     def __init__(self):
         pass
 
@@ -423,16 +458,36 @@ class Colin(object):
         """
         u = r / R
         if np.min(u) < 1:
-            raise ValueError("3d radius is smaller than projected radius! Does not make sense.")
+            raise ValueError(
+                "3d radius is smaller than projected radius! Does not make sense."
+            )
         ua = r_ani / R
         if ua == 1:
-            k = (1 + 1. / u) * np.arccosh(u) - 1. / 6 * (8. / u + 7) * np.sqrt((u - 1.) / (u + 1.))
+            k = (1 + 1.0 / u) * np.arccosh(u) - 1.0 / 6 * (8.0 / u + 7) * np.sqrt(
+                (u - 1.0) / (u + 1.0)
+            )
         elif ua > 1:
-            k = 0.5 / (ua ** 2 - 1) * np.sqrt(1 - 1. / u ** 2) + (1. + ua / u) * np.arccosh(u) - np.sign(ua - 1) * ua *\
-                (ua ** 2 - 0.5) / np.abs(ua ** 2 - 1) ** (3. / 2) * (1. + ua / u) * np.arccosh((ua * u + 1) / (u + ua))
+            k = (
+                0.5 / (ua**2 - 1) * np.sqrt(1 - 1.0 / u**2)
+                + (1.0 + ua / u) * np.arccosh(u)
+                - np.sign(ua - 1)
+                * ua
+                * (ua**2 - 0.5)
+                / np.abs(ua**2 - 1) ** (3.0 / 2)
+                * (1.0 + ua / u)
+                * np.arccosh((ua * u + 1) / (u + ua))
+            )
         else:  # ua < 1
-            k = 0.5 / (ua ** 2 - 1) * np.sqrt(1 - 1. / u ** 2) + (1. + ua / u) * np.arccosh(u) - np.sign(ua - 1) * ua *\
-                (ua ** 2 - 0.5) / np.abs(ua ** 2 - 1) ** (3. / 2) * (1. + ua / u) * np.arccos((ua * u + 1) / (u + ua))
+            k = (
+                0.5 / (ua**2 - 1) * np.sqrt(1 - 1.0 / u**2)
+                + (1.0 + ua / u) * np.arccosh(u)
+                - np.sign(ua - 1)
+                * ua
+                * (ua**2 - 0.5)
+                / np.abs(ua**2 - 1) ** (3.0 / 2)
+                * (1.0 + ua / u)
+                * np.arccos((ua * u + 1) / (u + ua))
+            )
         return k
 
     @staticmethod
@@ -444,4 +499,4 @@ class Colin(object):
         :param r_ani: anisotropy radius
         :return: beta
         """
-        return 1./2 * r / (r + r_ani)
+        return 1.0 / 2 * r / (r + r_ani)

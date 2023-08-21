@@ -1,11 +1,11 @@
-__author__ = 'sibirrer'
+__author__ = "sibirrer"
 
 # this file contains a class to compute the Navaro-Frank-White function in mass/kappa space
 from lenstronomy.LensModel.Profiles.nfw import NFW
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
-__all__ = ['NFWMC']
+__all__ = ["NFWMC"]
 
 
 class NFWMC(LensProfileBase):
@@ -20,9 +20,20 @@ class NFWMC(LensProfileBase):
     recommended to use the default NFW lensing profile parameterized in reduced deflection angles.
 
     """
-    param_names = ['logM', 'concentration', 'center_x', 'center_y']
-    lower_limit_default = {'logM': 0, 'concentration': 0.01, 'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'logM': 16, 'concentration': 1000, 'center_x': 100, 'center_y': 100}
+
+    param_names = ["logM", "concentration", "center_x", "center_y"]
+    lower_limit_default = {
+        "logM": 0,
+        "concentration": 0.01,
+        "center_x": -100,
+        "center_y": -100,
+    }
+    upper_limit_default = {
+        "logM": 16,
+        "concentration": 1000,
+        "center_x": 100,
+        "center_y": 100,
+    }
 
     def __init__(self, z_lens, z_source, cosmo=None, static=False):
         """
@@ -36,6 +47,7 @@ class NFWMC(LensProfileBase):
         if cosmo is None:
             # TODO: print waring if these lines get executed
             from astropy.cosmology import FlatLambdaCDM
+
             cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.05)
         self._lens_cosmo = LensCosmo(z_lens=z_lens, z_source=z_source, cosmo=cosmo)
         self._static = static
@@ -50,7 +62,7 @@ class NFWMC(LensProfileBase):
         """
         if self._static is True:
             return self._Rs_static, self._alpha_Rs_static
-        M = 10 ** logM
+        M = 10**logM
         Rs, alpha_Rs = self._lens_cosmo.nfw_physical2angle(M, concentration)
         return Rs, alpha_Rs
 
@@ -64,8 +76,10 @@ class NFWMC(LensProfileBase):
         :return:
         """
         self._static = True
-        M = 10 ** logM
-        self._Rs_static, self._alpha_Rs_static = self._lens_cosmo.nfw_physical2angle(M, concentration)
+        M = 10**logM
+        self._Rs_static, self._alpha_Rs_static = self._lens_cosmo.nfw_physical2angle(
+            M, concentration
+        )
 
     def set_dynamic(self):
         """
@@ -73,9 +87,9 @@ class NFWMC(LensProfileBase):
         :return:
         """
         self._static = False
-        if hasattr(self, '_Rs_static'):
+        if hasattr(self, "_Rs_static"):
             del self._Rs_static
-        if hasattr(self, '_alpha_Rs_static'):
+        if hasattr(self, "_alpha_Rs_static"):
             del self._alpha_Rs_static
 
     def function(self, x, y, logM, concentration, center_x=0, center_y=0):
@@ -90,7 +104,9 @@ class NFWMC(LensProfileBase):
         :return:
         """
         Rs, alpha_Rs = self._m_c2deflections(logM, concentration)
-        return self._nfw.function(x, y, alpha_Rs=alpha_Rs, Rs=Rs, center_x=center_x, center_y=center_y)
+        return self._nfw.function(
+            x, y, alpha_Rs=alpha_Rs, Rs=Rs, center_x=center_x, center_y=center_y
+        )
 
     def derivatives(self, x, y, logM, concentration, center_x=0, center_y=0):
         """

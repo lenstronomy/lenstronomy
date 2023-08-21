@@ -15,7 +15,7 @@ import functools
 import multiprocess
 from multiprocess.pool import Pool
 
-__all__ = ['MultiPool']
+__all__ = ["MultiPool"]
 
 
 def _initializer_wrapper(actual_initializer, *rest):
@@ -29,7 +29,6 @@ def _initializer_wrapper(actual_initializer, *rest):
 
 
 class CallbackWrapper(object):
-
     def __init__(self, callback):
         self.callback = callback
 
@@ -44,6 +43,7 @@ class MultiPool(Pool):
     behavior with regard to ``KeyboardInterrupts`` in the :func:`map` method.
     (Original author: `Peter K. G. Williams <peter@newton.cx>`_)
     """
+
     wait_timeout = 3600
 
     def __init__(self, processes=None, initializer=None, initargs=(), **kwargs):
@@ -58,8 +58,7 @@ class MultiPool(Pool):
         :param kwargs: Extra arguments passed to the :class:`multiprocessing.pool.Pool` superclass.
         """
         new_initializer = functools.partial(_initializer_wrapper, initializer)
-        super(MultiPool, self).__init__(processes, new_initializer,
-                                        initargs, **kwargs)
+        super(MultiPool, self).__init__(processes, new_initializer, initargs, **kwargs)
         self.size = self._processes
         self.rank = 0
 
@@ -104,7 +103,9 @@ class MultiPool(Pool):
 
         # The key magic is that we must call r.get() with a timeout, because
         # a Condition.wait() without a timeout swallows KeyboardInterrupts.
-        r = self.map_async(func, iterable, chunksize=chunksize, callback=callbackwrapper)
+        r = self.map_async(
+            func, iterable, chunksize=chunksize, callback=callbackwrapper
+        )
 
         while True:
             try:

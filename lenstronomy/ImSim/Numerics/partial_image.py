@@ -1,7 +1,7 @@
 import numpy as np
 import lenstronomy.Util.util as util
 
-__all__ = ['PartialImage']
+__all__ = ["PartialImage"]
 
 
 class PartialImage(object):
@@ -9,6 +9,7 @@ class PartialImage(object):
     class to deal with the use of partial slicing of a 2d data array, to be used for various computations where only
     a subset of pixels need to be know.
     """
+
     def __init__(self, partial_read_bools):
         """
 
@@ -34,9 +35,11 @@ class PartialImage(object):
 
         :return: 2d array with indexes (integers) corresponding to the 1d array, -1 when masked
         """
-        if not hasattr(self, '_index_array'):
+        if not hasattr(self, "_index_array"):
             full_array = -1 * np.ones(len(self._partial_read_bools_array))
-            num_array = np.linspace(start=0, stop=self.num_partial-1, num=self.num_partial)
+            num_array = np.linspace(
+                start=0, stop=self.num_partial - 1, num=self.num_partial
+            )
             full_array[self._partial_read_bools_array] = num_array
             self._index_array = util.array2image(full_array, nx=self._nx, ny=self._ny)
         return self._index_array

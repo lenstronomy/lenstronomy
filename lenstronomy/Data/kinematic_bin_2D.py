@@ -2,7 +2,7 @@ import numpy as np
 import lenstronomy.Util.util as util
 from lenstronomy.Data.pixel_grid import PixelGrid
 
-__all__ = ['KinBin']
+__all__ = ["KinBin"]
 
 
 class KinBin(object):
@@ -18,8 +18,18 @@ class KinBin(object):
 
     """
 
-    def __init__(self, bin_data, bin_cov, bin_mask, ra_at_xy_0, dec_at_xy_0,
-                 transform_pix2angle, psf_class, ra_shift=0, dec_shift=0):
+    def __init__(
+        self,
+        bin_data,
+        bin_cov,
+        bin_mask,
+        ra_at_xy_0,
+        dec_at_xy_0,
+        transform_pix2angle,
+        psf_class,
+        ra_shift=0,
+        dec_shift=0,
+    ):
         """
         :param bin_data: list, kinematic value of each bin, ordered by bin index.
         :param bin_cov: 2D array (nbins x nbins), vrms covariance matrix associated to each bin, ordered by bin index
@@ -37,7 +47,9 @@ class KinBin(object):
         nx, ny = np.shape(bin_mask)
         self._nx = nx
         self._ny = ny
-        self.PixelGrid = PixelGrid(nx, ny, transform_pix2angle, ra_at_xy_0 + ra_shift, dec_at_xy_0 + dec_shift)
+        self.PixelGrid = PixelGrid(
+            nx, ny, transform_pix2angle, ra_at_xy_0 + ra_shift, dec_at_xy_0 + dec_shift
+        )
 
         self.data = bin_data
         self.covariance = bin_cov
@@ -63,10 +75,13 @@ class KinBin(object):
         """
         Creates the kwargs needed for the 2D kinematic likelihood
         """
-        kwargs = {'image': self.binned_image(self.data, self.bin_mask),
-                  'deltaPix': self.PixelGrid.pixel_width,
-                  'transform_pix2angle': self._pix2a, 'ra_at_xy0': self._ra_at_xy_0,
-                  'dec_at_xy0': self._dec_at_xy_0}
+        kwargs = {
+            "image": self.binned_image(self.data, self.bin_mask),
+            "deltaPix": self.PixelGrid.pixel_width,
+            "transform_pix2angle": self._pix2a,
+            "ra_at_xy0": self._ra_at_xy_0,
+            "dec_at_xy0": self._dec_at_xy_0,
+        }
         return kwargs
 
     def kin_grid(self):

@@ -1,7 +1,7 @@
 import numpy as np
 from lenstronomy.PointSource.Types.base_ps import PSBase, _expand_to_array
 
-__all__ = ['LensedPositions']
+__all__ = ["LensedPositions"]
 
 
 class LensedPositions(PSBase):
@@ -12,12 +12,19 @@ class LensedPositions(PSBase):
     If fixed_magnification=True, than 'source_amp' is a parameter instead of 'point_amp'
 
     """
+
     # def __init__(self, lens_model=None, fixed_magnification=False, additional_image=False):
     #    super(LensedPositions, self).__init__(lens_model=lens_model, fixed_magnification=fixed_magnification,
     #                                          additional_image=additional_image)
 
-    def image_position(self, kwargs_ps, kwargs_lens=None, magnification_limit=None, kwargs_lens_eqn_solver=None,
-                       additional_images=False):
+    def image_position(
+        self,
+        kwargs_ps,
+        kwargs_lens=None,
+        magnification_limit=None,
+        kwargs_lens_eqn_solver=None,
+        additional_images=False,
+    ):
         """
         on-sky image positions
 
@@ -37,12 +44,16 @@ class LensedPositions(PSBase):
                 kwargs_lens_eqn_solver = {}
             ra_source, dec_source = self.source_position(kwargs_ps, kwargs_lens)
             # TODO: this solver does not distinguish between different frames/bands with partial lens models
-            ra_image, dec_image = self._solver.image_position_from_source(ra_source, dec_source, kwargs_lens,
-                                                                          magnification_limit=magnification_limit,
-                                                                          **kwargs_lens_eqn_solver)
+            ra_image, dec_image = self._solver.image_position_from_source(
+                ra_source,
+                dec_source,
+                kwargs_lens,
+                magnification_limit=magnification_limit,
+                **kwargs_lens_eqn_solver
+            )
         else:
-            ra_image = kwargs_ps['ra_image']
-            dec_image = kwargs_ps['dec_image']
+            ra_image = kwargs_ps["ra_image"]
+            dec_image = kwargs_ps["dec_image"]
         return np.array(ra_image), np.array(dec_image)
 
     def source_position(self, kwargs_ps, kwargs_lens=None):
@@ -53,23 +64,34 @@ class LensedPositions(PSBase):
         :param kwargs_lens: lens model keyword argument list (required to ray-trace back in the source plane)
         :return: x, y position (as numpy arrays)
         """
-        ra_image = kwargs_ps['ra_image']
-        dec_image = kwargs_ps['dec_image']
+        ra_image = kwargs_ps["ra_image"]
+        dec_image = kwargs_ps["dec_image"]
 
         if self.k_list is None:
-            x_source, y_source = self._lens_model.ray_shooting(ra_image, dec_image, kwargs_lens)
+            x_source, y_source = self._lens_model.ray_shooting(
+                ra_image, dec_image, kwargs_lens
+            )
         else:
             x_source, y_source = [], []
             for i in range(len(ra_image)):
-                x, y = self._lens_model.ray_shooting(ra_image[i], dec_image[i], kwargs_lens, k=self.k_list[i])
+                x, y = self._lens_model.ray_shooting(
+                    ra_image[i], dec_image[i], kwargs_lens, k=self.k_list[i]
+                )
                 x_source.append(x)
                 y_source.append(y)
         x_source = np.mean(x_source)
         y_source = np.mean(y_source)
         return np.array(x_source), np.array(y_source)
 
-    def image_amplitude(self, kwargs_ps, kwargs_lens=None, x_pos=None, y_pos=None, magnification_limit=None,
-                        kwargs_lens_eqn_solver=None):
+    def image_amplitude(
+        self,
+        kwargs_ps,
+        kwargs_lens=None,
+        x_pos=None,
+        y_pos=None,
+        magnification_limit=None,
+        kwargs_lens_eqn_solver=None,
+    ):
         """
         image brightness amplitudes
 
@@ -88,19 +110,26 @@ class LensedPositions(PSBase):
             if x_pos is not None and y_pos is not None:
                 ra_image, dec_image = x_pos, y_pos
             else:
-                ra_image, dec_image = self.image_position(kwargs_ps, kwargs_lens,
-                                                          magnification_limit=magnification_limit,
-                                                          kwargs_lens_eqn_solver=kwargs_lens_eqn_solver)
+                ra_image, dec_image = self.image_position(
+                    kwargs_ps,
+                    kwargs_lens,
+                    magnification_limit=magnification_limit,
+                    kwargs_lens_eqn_solver=kwargs_lens_eqn_solver,
+                )
 
             if self.k_list is None:
                 mag = self._lens_model.magnification(ra_image, dec_image, kwargs_lens)
             else:
                 mag = []
                 for i in range(len(ra_image)):
-                    mag.append(self._lens_model.magnification(ra_image, dec_image, kwargs_lens, k=self.k_list[i]))
-            point_amp = kwargs_ps['source_amp'] * np.abs(mag)
+                    mag.append(
+                        self._lens_model.magnification(
+                            ra_image, dec_image, kwargs_lens, k=self.k_list[i]
+                        )
+                    )
+            point_amp = kwargs_ps["source_amp"] * np.abs(mag)
         else:
-            point_amp = kwargs_ps['point_amp']
+            point_amp = kwargs_ps["point_amp"]
             if x_pos is not None:
                 point_amp = _expand_to_array(point_amp, len(x_pos))
         return np.array(point_amp)
@@ -117,15 +146,19 @@ class LensedPositions(PSBase):
         :return: brightness amplitude (as numpy array)
         """
         if self._fixed_magnification:
-            source_amp = kwargs_ps['source_amp']
+            source_amp = kwargs_ps["source_amp"]
         else:
-            ra_image, dec_image = kwargs_ps['ra_image'], kwargs_ps['dec_image']
+            ra_image, dec_image = kwargs_ps["ra_image"], kwargs_ps["dec_image"]
             if self.k_list is None:
                 mag = self._lens_model.magnification(ra_image, dec_image, kwargs_lens)
             else:
                 mag = []
                 for i in range(len(ra_image)):
-                    mag.append(self._lens_model.magnification(ra_image, dec_image, kwargs_lens, k=self.k_list[i]))
-            point_amp = kwargs_ps['point_amp']
+                    mag.append(
+                        self._lens_model.magnification(
+                            ra_image, dec_image, kwargs_lens, k=self.k_list[i]
+                        )
+                    )
+            point_amp = kwargs_ps["point_amp"]
             source_amp = np.mean(np.array(point_amp) / np.array(np.abs(mag)))
         return np.array(source_amp)

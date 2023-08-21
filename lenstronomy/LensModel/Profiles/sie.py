@@ -1,7 +1,7 @@
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 import numpy as np
 
-__all__ = ['SIE']
+__all__ = ["SIE"]
 
 
 class SIE(LensProfileBase):
@@ -31,9 +31,22 @@ class SIE(LensProfileBase):
         \\left(\\frac{\\theta'_{\\rm E}}{\\theta_{\\rm E}}\\right)^{2} = \\frac{2q}{1+q^2}.
 
     """
-    param_names = ['theta_E', 'e1', 'e2', 'center_x', 'center_y']
-    lower_limit_default = {'theta_E': 0, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'theta_E': 100, 'e1': 0.5, 'e2': 0.5, 'center_x': 100, 'center_y': 100}
+
+    param_names = ["theta_E", "e1", "e2", "center_x", "center_y"]
+    lower_limit_default = {
+        "theta_E": 0,
+        "e1": -0.5,
+        "e2": -0.5,
+        "center_x": -100,
+        "center_y": -100,
+    }
+    upper_limit_default = {
+        "theta_E": 100,
+        "e1": 0.5,
+        "e2": 0.5,
+        "center_x": 100,
+        "center_y": 100,
+    }
 
     def __init__(self, NIE=True):
         """
@@ -43,9 +56,11 @@ class SIE(LensProfileBase):
         self._nie = NIE
         if NIE:
             from lenstronomy.LensModel.Profiles.nie import NIE
+
             self.profile = NIE()
         else:
             from lenstronomy.LensModel.Profiles.epl import EPL
+
             self.profile = EPL()
         self._s_scale = 0.0000000001
         self._gamma = 2
@@ -64,9 +79,13 @@ class SIE(LensProfileBase):
         :return:
         """
         if self._nie:
-            return self.profile.function(x, y, theta_E, e1, e2, self._s_scale, center_x, center_y)
+            return self.profile.function(
+                x, y, theta_E, e1, e2, self._s_scale, center_x, center_y
+            )
         else:
-            return self.profile.function(x, y, theta_E, self._gamma, e1, e2, center_x, center_y)
+            return self.profile.function(
+                x, y, theta_E, self._gamma, e1, e2, center_x, center_y
+            )
 
     def derivatives(self, x, y, theta_E, e1, e2, center_x=0, center_y=0):
         """
@@ -81,9 +100,13 @@ class SIE(LensProfileBase):
         :return:
         """
         if self._nie:
-            return self.profile.derivatives(x, y, theta_E, e1, e2, self._s_scale, center_x, center_y)
+            return self.profile.derivatives(
+                x, y, theta_E, e1, e2, self._s_scale, center_x, center_y
+            )
         else:
-            return self.profile.derivatives(x, y, theta_E, self._gamma, e1, e2, center_x, center_y)
+            return self.profile.derivatives(
+                x, y, theta_E, self._gamma, e1, e2, center_x, center_y
+            )
 
     def hessian(self, x, y, theta_E, e1, e2, center_x=0, center_y=0):
         """
@@ -98,9 +121,13 @@ class SIE(LensProfileBase):
         :return:
         """
         if self._nie:
-            return self.profile.hessian(x, y, theta_E, e1, e2, self._s_scale, center_x, center_y)
+            return self.profile.hessian(
+                x, y, theta_E, e1, e2, self._s_scale, center_x, center_y
+            )
         else:
-            return self.profile.hessian(x, y, theta_E, self._gamma, e1, e2, center_x, center_y)
+            return self.profile.hessian(
+                x, y, theta_E, self._gamma, e1, e2, center_x, center_y
+            )
 
     @staticmethod
     def theta2rho(theta_E):
@@ -147,7 +174,7 @@ class SIE(LensProfileBase):
         :param e2:
         :return:
         """
-        alpha = 2 * rho0 * np.pi ** 2
+        alpha = 2 * rho0 * np.pi**2
         mass_2d = alpha * r
         return mass_2d
 
@@ -180,7 +207,7 @@ class SIE(LensProfileBase):
         y_ = y - center_y
         r = np.sqrt(x_**2 + y_**2)
         mass_3d = self.mass_3d(r, rho0)
-        pot = mass_3d/r
+        pot = mass_3d / r
         return pot
 
     def density_lens(self, r, theta_E, e1=0, e2=0):

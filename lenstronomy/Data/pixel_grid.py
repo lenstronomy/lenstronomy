@@ -2,7 +2,7 @@ import numpy as np
 from lenstronomy.Data.coord_transforms import Coordinates
 from lenstronomy.Data.angular_sensitivity import AngularSensitivity
 
-__all__ = ['PixelGrid']
+__all__ = ["PixelGrid"]
 
 
 class PixelGrid(Coordinates, AngularSensitivity):
@@ -10,7 +10,15 @@ class PixelGrid(Coordinates, AngularSensitivity):
     class that manages a specified pixel grid (rectangular at the moment) and its coordinates
     """
 
-    def __init__(self, nx, ny, transform_pix2angle, ra_at_xy_0, dec_at_xy_0, antenna_primary_beam=None):
+    def __init__(
+        self,
+        nx,
+        ny,
+        transform_pix2angle,
+        ra_at_xy_0,
+        dec_at_xy_0,
+        antenna_primary_beam=None,
+    ):
         """
 
         :param nx: number of pixels in x-axis
@@ -28,7 +36,9 @@ class PixelGrid(Coordinates, AngularSensitivity):
         if antenna_primary_beam is not None:
             pbx, pby = np.shape(antenna_primary_beam)
             if (pbx, pby) != (nx, ny):
-                raise ValueError("The primary beam should have the same size with the image data!")
+                raise ValueError(
+                    "The primary beam should have the same size with the image data!"
+                )
         AngularSensitivity.__init__(self, antenna_primary_beam)
 
     @property

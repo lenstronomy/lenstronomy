@@ -1,4 +1,4 @@
-__author__ = 'ntessore'
+__author__ = "ntessore"
 
 import numpy as np
 import lenstronomy.Util.util as util
@@ -7,7 +7,7 @@ from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 from lenstronomy.LensModel.Profiles.spp import SPP
 from scipy.special import hyp2f1
 
-__all__ = ['EPL', 'EPLMajorAxis', 'EPLQPhi']
+__all__ = ["EPL", "EPLMajorAxis", "EPLQPhi"]
 
 
 class EPL(LensProfileBase):
@@ -45,9 +45,24 @@ class EPL(LensProfileBase):
     scheme. An alternative implementation of the same model using a fortran code FASTELL is implemented as 'PEMD'
     profile.
     """
-    param_names = ['theta_E', 'gamma', 'e1', 'e2', 'center_x', 'center_y']
-    lower_limit_default = {'theta_E': 0, 'gamma': 1.5, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'theta_E': 100, 'gamma': 2.5, 'e1': 0.5, 'e2': 0.5, 'center_x': 100, 'center_y': 100}
+
+    param_names = ["theta_E", "gamma", "e1", "e2", "center_x", "center_y"]
+    lower_limit_default = {
+        "theta_E": 0,
+        "gamma": 1.5,
+        "e1": -0.5,
+        "e2": -0.5,
+        "center_x": -100,
+        "center_y": -100,
+    }
+    upper_limit_default = {
+        "theta_E": 100,
+        "gamma": 2.5,
+        "e1": 0.5,
+        "e2": 0.5,
+        "center_x": 100,
+        "center_y": 100,
+    }
 
     def __init__(self):
         self.epl_major_axis = EPLMajorAxis()
@@ -98,7 +113,12 @@ class EPL(LensProfileBase):
         :return: self variables set
         """
         self._static = True
-        self._b_static, self._t_static, self._q_static, self._phi_G_static = self._param_conv(theta_E, gamma, e1, e2)
+        (
+            self._b_static,
+            self._t_static,
+            self._q_static,
+            self._phi_G_static,
+        ) = self._param_conv(theta_E, gamma, e1, e2)
 
     def set_dynamic(self):
         """
@@ -106,13 +126,13 @@ class EPL(LensProfileBase):
         :return:
         """
         self._static = False
-        if hasattr(self, '_b_static'):
+        if hasattr(self, "_b_static"):
             del self._b_static
-        if hasattr(self, '_t_static'):
+        if hasattr(self, "_t_static"):
             del self._t_static
-        if hasattr(self, '_phi_G_static'):
+        if hasattr(self, "_phi_G_static"):
             del self._phi_G_static
-        if hasattr(self, '_q_static'):
+        if hasattr(self, "_q_static"):
             del self._q_static
 
     def function(self, x, y, theta_E, gamma, e1, e2, center_x=0, center_y=0):
@@ -187,8 +207,8 @@ class EPL(LensProfileBase):
         # evaluate
         f__xx, f__xy, f__yx, f__yy = self.epl_major_axis.hessian(x__, y__, b, t, q)
         # rotate back
-        kappa = 1. / 2 * (f__xx + f__yy)
-        gamma1__ = 1. / 2 * (f__xx - f__yy)
+        kappa = 1.0 / 2 * (f__xx + f__yy)
+        gamma1__ = 1.0 / 2 * (f__xx - f__yy)
         gamma2__ = f__xy
         gamma1 = np.cos(2 * phi_G) * gamma1__ - np.sin(2 * phi_G) * gamma2__
         gamma2 = +np.sin(2 * phi_G) * gamma1__ + np.cos(2 * phi_G) * gamma2__
@@ -237,7 +257,8 @@ class EPLMajorAxis(LensProfileBase):
 
     Tessore & Metcalf (2015), https://arxiv.org/abs/1507.01819
     """
-    param_names = ['b', 't', 'q', 'center_x', 'center_y']
+
+    param_names = ["b", "t", "q", "center_x", "center_y"]
 
     def __init__(self):
         super(EPLMajorAxis, self).__init__()
@@ -286,8 +307,8 @@ class EPLMajorAxis(LensProfileBase):
         alpha = 2 / (1 + q) * (b / R) ** t * R_omega
 
         # return real and imaginary part
-        alpha_real = np.nan_to_num(alpha.real, posinf=10 ** 10, neginf=-10 ** 10)
-        alpha_imag = np.nan_to_num(alpha.imag, posinf=10 ** 10, neginf=-10 ** 10)
+        alpha_real = np.nan_to_num(alpha.real, posinf=10**10, neginf=-(10**10))
+        alpha_imag = np.nan_to_num(alpha.imag, posinf=10**10, neginf=-(10**10))
 
         return alpha_real, alpha_imag
 
@@ -311,7 +332,7 @@ class EPLMajorAxis(LensProfileBase):
 
         # convergence, eq. (2)
         kappa = (2 - t) / 2 * (b / R) ** t
-        kappa = np.nan_to_num(kappa, posinf=10 ** 10, neginf=-10 ** 10)
+        kappa = np.nan_to_num(kappa, posinf=10**10, neginf=-(10**10))
 
         # deflection via method
         alpha_x, alpha_y = self.derivatives(x, y, b, t, q)
@@ -319,8 +340,8 @@ class EPLMajorAxis(LensProfileBase):
         # shear, eq. (17), corrected version from arXiv/corrigendum
         gamma_1 = (1 - t) * (alpha_x * cos - alpha_y * sin) / r - kappa * cos2
         gamma_2 = (1 - t) * (alpha_y * cos + alpha_x * sin) / r - kappa * sin2
-        gamma_1 = np.nan_to_num(gamma_1, posinf=10 ** 10, neginf=-10 ** 10)
-        gamma_2 = np.nan_to_num(gamma_2, posinf=10 ** 10, neginf=-10 ** 10)
+        gamma_1 = np.nan_to_num(gamma_1, posinf=10**10, neginf=-(10**10))
+        gamma_2 = np.nan_to_num(gamma_2, posinf=10**10, neginf=-(10**10))
 
         # second derivatives from convergence and shear
         f_xx = kappa + gamma_1
@@ -335,9 +356,24 @@ class EPLQPhi(LensProfileBase):
     class to model a EPL sampling over q and phi instead of e1 and e2.
 
     """
-    param_names = ['theta_E', 'gamma', 'q', 'phi', 'center_x', 'center_y']
-    lower_limit_default = {'theta_E': 0, 'gamma': 1.5, 'q': 0, 'phi': -np.pi, 'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'theta_E': 100, 'gamma': 2.5, 'q': 1, 'phi': np.pi, 'center_x': 100, 'center_y': 100}
+
+    param_names = ["theta_E", "gamma", "q", "phi", "center_x", "center_y"]
+    lower_limit_default = {
+        "theta_E": 0,
+        "gamma": 1.5,
+        "q": 0,
+        "phi": -np.pi,
+        "center_x": -100,
+        "center_y": -100,
+    }
+    upper_limit_default = {
+        "theta_E": 100,
+        "gamma": 2.5,
+        "q": 1,
+        "phi": np.pi,
+        "center_x": 100,
+        "center_y": 100,
+    }
 
     def __init__(self):
         self._EPL = EPL()

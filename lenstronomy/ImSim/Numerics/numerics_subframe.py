@@ -3,7 +3,7 @@ from lenstronomy.ImSim.Numerics.numerics import Numerics
 from lenstronomy.ImSim.Numerics.point_source_rendering import PointSourceRendering
 from lenstronomy.Data.pixel_grid import PixelGrid
 
-__all__ = ['NumericsSubFrame']
+__all__ = ["NumericsSubFrame"]
 
 
 class NumericsSubFrame(PointSourceRendering):
@@ -12,10 +12,23 @@ class NumericsSubFrame(PointSourceRendering):
     flux_evaluate_indexes and performs the numerical calculations only in this frame and then patches zeros around it
     to match the full data size.
     """
-    def __init__(self, pixel_grid, psf, supersampling_factor=1, compute_mode='regular', supersampling_convolution=False,
-                 supersampling_kernel_size=5, flux_evaluate_indexes=None, supersampled_indexes=None,
-                 compute_indexes=None, point_source_supersampling_factor=1, convolution_kernel_size=None,
-                 convolution_type='fft_static', truncation=4):
+
+    def __init__(
+        self,
+        pixel_grid,
+        psf,
+        supersampling_factor=1,
+        compute_mode="regular",
+        supersampling_convolution=False,
+        supersampling_kernel_size=5,
+        flux_evaluate_indexes=None,
+        supersampled_indexes=None,
+        compute_indexes=None,
+        point_source_supersampling_factor=1,
+        convolution_kernel_size=None,
+        convolution_type="fft_static",
+        truncation=4,
+    ):
         """
 
         :param pixel_grid: PixelGrid() class instance
@@ -45,18 +58,26 @@ class NumericsSubFrame(PointSourceRendering):
         self._nx, self._ny = pixel_grid.num_pixel_axes
         self._init_sub_frame(flux_evaluate_indexes)
         pixel_grid_sub = self._sub_pixel_grid(pixel_grid)
-        self._numerics_subframe = Numerics(pixel_grid=pixel_grid_sub, psf=psf,
-                                           supersampling_factor=supersampling_factor, compute_mode=compute_mode,
-                                           supersampling_convolution=supersampling_convolution,
-                                           supersampling_kernel_size=supersampling_kernel_size,
-                                           flux_evaluate_indexes=self._cut_frame(flux_evaluate_indexes),
-                                           supersampled_indexes=self._cut_frame(supersampled_indexes),
-                                           compute_indexes=self._cut_frame(compute_indexes),
-                                           point_source_supersampling_factor=point_source_supersampling_factor,
-                                           convolution_kernel_size=convolution_kernel_size,
-                                           convolution_type=convolution_type, truncation=truncation)
-        super(NumericsSubFrame, self).__init__(pixel_grid=pixel_grid, supersampling_factor=point_source_supersampling_factor,
-                                       psf=psf)
+        self._numerics_subframe = Numerics(
+            pixel_grid=pixel_grid_sub,
+            psf=psf,
+            supersampling_factor=supersampling_factor,
+            compute_mode=compute_mode,
+            supersampling_convolution=supersampling_convolution,
+            supersampling_kernel_size=supersampling_kernel_size,
+            flux_evaluate_indexes=self._cut_frame(flux_evaluate_indexes),
+            supersampled_indexes=self._cut_frame(supersampled_indexes),
+            compute_indexes=self._cut_frame(compute_indexes),
+            point_source_supersampling_factor=point_source_supersampling_factor,
+            convolution_kernel_size=convolution_kernel_size,
+            convolution_type=convolution_type,
+            truncation=truncation,
+        )
+        super(NumericsSubFrame, self).__init__(
+            pixel_grid=pixel_grid,
+            supersampling_factor=point_source_supersampling_factor,
+            psf=psf,
+        )
 
     def re_size_convolve(self, flux_array, unconvolved=False):
         """
@@ -65,7 +86,9 @@ class NumericsSubFrame(PointSourceRendering):
         :return: convolved image on regular pixel grid, 2d array
         """
         # add supersampled region to lower resolution on
-        image_sub_frame = self._numerics_subframe.re_size_convolve(flux_array, unconvolved=unconvolved)
+        image_sub_frame = self._numerics_subframe.re_size_convolve(
+            flux_array, unconvolved=unconvolved
+        )
         return self._complete_frame(image_sub_frame)
 
     @property
@@ -107,7 +130,10 @@ class NumericsSubFrame(PointSourceRendering):
         """
         if self._subframe_calc is True:
             image = np.zeros((self._nx, self._ny))
-            image[self._x_min_sub:self._x_max_sub + 1, self._y_min_sub:self._y_max_sub + 1] = image_sub_frame
+            image[
+                self._x_min_sub : self._x_max_sub + 1,
+                self._y_min_sub : self._y_max_sub + 1,
+            ] = image_sub_frame
         else:
             image = image_sub_frame
         return image
@@ -135,7 +161,10 @@ class NumericsSubFrame(PointSourceRendering):
         :return: 2d array of the sub-frame
         """
         if self._subframe_calc is True and image is not None:
-            return image[self._x_min_sub:self._x_max_sub + 1, self._y_min_sub:self._y_max_sub + 1]
+            return image[
+                self._x_min_sub : self._x_max_sub + 1,
+                self._y_min_sub : self._y_max_sub + 1,
+            ]
         else:
             return image
 
@@ -150,9 +179,16 @@ class NumericsSubFrame(PointSourceRendering):
             transform_pix2angle = pixel_grid.transform_pix2angle
             nx_sub = self._x_max_sub - self._x_min_sub + 1
             ny_sub = self._y_max_sub - self._y_min_sub + 1
-            ra_at_xy_0_sub, dec_at_xy_0_sub = pixel_grid.map_pix2coord(self._x_min_sub, self._y_min_sub)
-            pixel_grid_sub = PixelGrid(nx=nx_sub, ny=ny_sub, transform_pix2angle=transform_pix2angle,
-                                       ra_at_xy_0=ra_at_xy_0_sub, dec_at_xy_0=dec_at_xy_0_sub)
+            ra_at_xy_0_sub, dec_at_xy_0_sub = pixel_grid.map_pix2coord(
+                self._x_min_sub, self._y_min_sub
+            )
+            pixel_grid_sub = PixelGrid(
+                nx=nx_sub,
+                ny=ny_sub,
+                transform_pix2angle=transform_pix2angle,
+                ra_at_xy_0=ra_at_xy_0_sub,
+                dec_at_xy_0=dec_at_xy_0_sub,
+            )
         else:
             pixel_grid_sub = pixel_grid
         return pixel_grid_sub

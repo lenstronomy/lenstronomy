@@ -46,20 +46,25 @@ class KinBin(object):
         self._ra_at_xy_0 = ra_at_xy_0
         self._dec_at_xy_0 = dec_at_xy_0
 
-    def binned_image(self):
+    @staticmethod
+    def binned_image(data, bin_mask):
         """
-        Creates the binned image of the kinemmatic
+        Creates the binned image of the data
+
+        :param data: data value in each bin
+        :param bin_mask: mask indicating which pixels belong to which bin
         """
-        binned_image = np.zeros_like(self.bin_mask)
-        for idx, value in enumerate(self.data):
-            binned_image[self.bin_mask == idx] = value
+        binned_image = np.zeros_like(bin_mask)
+        for idx, value in enumerate(data):
+            binned_image[bin_mask == idx] = value
         return binned_image
 
     def kin_bin2kwargs(self):
         """
         Creates the kwargs needed for the 2D kinematic likelihood
         """
-        kwargs = {'image': self.binned_image(), 'deltaPix': self.PixelGrid.pixel_width,
+        kwargs = {'image': self.binned_image(self.data, self.bin_mask),
+                  'deltaPix': self.PixelGrid.pixel_width,
                   'transform_pix2angle': self._pix2a, 'ra_at_xy0': self._ra_at_xy_0,
                   'dec_at_xy0': self._dec_at_xy_0}
         return kwargs

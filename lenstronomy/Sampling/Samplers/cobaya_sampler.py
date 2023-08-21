@@ -19,7 +19,7 @@ class CobayaSampler(object):
 
         Torrado & Lewis,
         https://arxiv.org/abs/2005.05290
-        and https://ascl.net/1910.019
+         and https://ascl.net/1910.019
 
         For more information about Cobaya, see
         https://cobaya.readthedocs.io/en/latest/index.html

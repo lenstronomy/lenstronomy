@@ -41,9 +41,10 @@ class EPL_BOXYDISKY(LensProfileBase):
     def param_split(self, theta_E, gamma, e1, e2, a_m, center_x=0, center_y=0):
         # this function converts a given parameter set of EPL_BOXYDISKY into two parameter sets; one for EPL and the
         # other for Multipole with m=4.
-        phi, _ = param_util.ellipticity2phi_q(e1, e2)
+        phi, q = param_util.ellipticity2phi_q(e1, e2)
+        rescale_am = theta_E / np.sqrt(q)
         kwargs_epl = {'theta_E': theta_E, 'gamma': gamma, 'e1': e1, 'e2': e2, 'center_x': center_x, 'center_y': center_y}
-        kwargs_multipole = {'m': self._m, 'a_m': a_m, 'phi_m': phi, 'center_x': center_x, 'center_y': center_y}
+        kwargs_multipole = {'m': self._m, 'a_m': a_m * rescale_am, 'phi_m': phi, 'center_x': center_x, 'center_y': center_y}
 
         return kwargs_epl, kwargs_multipole
 

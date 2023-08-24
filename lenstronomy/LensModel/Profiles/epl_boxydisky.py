@@ -54,13 +54,15 @@ class EPL_BOXYDISKY(LensProfileBase):
         super(EPL_BOXYDISKY, self).__init__()
 
     def _param_split(self, theta_E, gamma, e1, e2, a_m, center_x=0, center_y=0):
-        """This function splits the keyword arguments for the EPL and multipole profiles.
-        
-        :param theta_E: Einstein radius :param gamma: log-slope of EPL mass profile
+        """This function splits the keyword arguments for the EPL and multipole
+        profiles.
+
+        :param theta_E: Einstein radius
+        :param gamma: log-slope of EPL mass profile
         :param e1: ellipticity of EPL profile (along 1st axis)
-        :param e2: ellipticity of EPL profile (along 2nd axis) 
+        :param e2: ellipticity of EPL profile (along 2nd axis)
         :param a_m: amplitude of the multipole mass profile
-        :param center_x: center of the profile 
+        :param center_x: center of the profile
         :param center_y: center of the profile
         :return: the keyword arguments for the joint profile
         """

@@ -1,8 +1,5 @@
-__author__ = 'Simon Birrer'
-
-"""
-this file contains standard routines
-"""
+__author__ = "Simon Birrer"
+"""This file contains standard routines."""
 
 import numpy as np
 import itertools
@@ -14,10 +11,8 @@ export, __all__ = exporter()
 
 @export
 def merge_dicts(*dict_args):
-    """
-    Given any number of dicts, shallow copy and merge into a new dict,
-    precedence goes to key value pairs in latter dicts.
-    """
+    """Given any number of dicts, shallow copy and merge into a new dict, precedence
+    goes to key value pairs in latter dicts."""
     result = {}
     for dictionary in dict_args:
         result.update(dictionary)
@@ -29,9 +24,9 @@ def approx_theta_E(ximg, yimg):
     dis = []
     xinds, yinds = [0, 0, 0, 1, 1, 2], [1, 2, 3, 2, 3, 3]
 
-    for (i, j) in zip(xinds, yinds):
+    for i, j in zip(xinds, yinds):
         dx, dy = ximg[i] - ximg[j], yimg[i] - yimg[j]
-        dr = (dx ** 2 + dy ** 2) ** 0.5
+        dr = (dx**2 + dy**2) ** 0.5
         dis.append(dr)
     dis = np.array(dis)
 
@@ -70,7 +65,7 @@ def sort_image_index(ximg, yimg, xref, yref):
         for j in range(0, int(len(x_self[0]))):
             dr += (x_self[i][j] - xref[j]) ** 2 + (y_self[i][j] - yref[j]) ** 2
 
-        delta_r.append(dr ** .5)
+        delta_r.append(dr**0.5)
 
     min_indexes = np.array(index_iterations[np.argmin(delta_r)])
 
@@ -87,14 +82,15 @@ def rotate(xcoords, ycoords, angle):
     :param angle: angle in radians
     :return: x points and y points rotated ccw by angle theta
     """
-    return xcoords * np.cos(angle) + ycoords * np.sin(angle), -xcoords * np.sin(angle) + ycoords * np.cos(angle)
+    return xcoords * np.cos(angle) + ycoords * np.sin(angle), -xcoords * np.sin(
+        angle
+    ) + ycoords * np.cos(angle)
 
 
 @export
 def map_coord2pix(ra, dec, x_0, y_0, M):
-    """
-    this routines performs a linear transformation between two coordinate systems. Mainly used to transform angular
-    into pixel coordinates in an image
+    """This routines performs a linear transformation between two coordinate systems.
+    Mainly used to transform angular into pixel coordinates in an image.
 
     :param ra: ra coordinates
     :param dec: dec coordinates
@@ -109,19 +105,21 @@ def map_coord2pix(ra, dec, x_0, y_0, M):
 
 @export
 def array2image(array, nx=0, ny=0):
-    """
-    returns the information contained in a 1d array into an n*n 2d array
-    (only works when length of array is n**2, or nx and ny are provided)
+    """Returns the information contained in a 1d array into an n*n 2d array (only works
+    when length of array is n**2, or nx and ny are provided)
 
     :param array: image values
     :type array: array of size n**2
-    :returns:  2d array
+    :returns: 2d array
     :raises: AttributeError, KeyError
     """
     if nx == 0 or ny == 0:
         n = int(np.sqrt(len(array)))
-        if n ** 2 != len(array):
-            raise ValueError("lenght of input array given as %s is not square of integer number!" % (len(array)))
+        if n**2 != len(array):
+            raise ValueError(
+                "lenght of input array given as %s is not square of integer number!"
+                % (len(array))
+            )
         nx, ny = n, n
     image = array.reshape(int(nx), int(ny))
     return image
@@ -129,12 +127,11 @@ def array2image(array, nx=0, ny=0):
 
 @export
 def image2array(image):
-    """
-    returns the information contained in a 2d array into an n*n 1d array
+    """Returns the information contained in a 2d array into an n*n 1d array.
 
     :param image: image values
     :type image: array of size (n,n)
-    :returns:  1d array
+    :returns: 1d array
     :raises: AttributeError, KeyError
     """
     nx, ny = image.shape  # find the size of the array
@@ -144,8 +141,8 @@ def image2array(image):
 
 @export
 def array2cube(array, n_1, n_23):
-    """
-    returns the information contained in a 1d array of shape (n_1*n_23*n_23) into 3d array with shape (n_1, sqrt(n_23), sqrt(n_23))
+    """Returns the information contained in a 1d array of shape (n_1*n_23*n_23) into 3d
+    array with shape (n_1, sqrt(n_23), sqrt(n_23))
 
     :param array: image values
     :type array: 1d array
@@ -157,8 +154,10 @@ def array2cube(array, n_1, n_23):
     :raises ValueError: when n_23 is not a perfect square
     """
     n = int(np.sqrt(n_23))
-    if n ** 2 != n_23:
-        raise ValueError("2nd and 3rd dims (%s) are not square of integer number!" % n_23)
+    if n**2 != n_23:
+        raise ValueError(
+            "2nd and 3rd dims (%s) are not square of integer number!" % n_23
+        )
     n_2, n_3 = n, n
     cube = array.reshape(n_1, n_2, n_3)
     return cube
@@ -166,8 +165,8 @@ def array2cube(array, n_1, n_23):
 
 @export
 def cube2array(cube):
-    """
-    returns the information contained in a 3d array of shape (n_1, n_2, n_3) into 1d array with shape (n_1*n_2*n_3)
+    """Returns the information contained in a 3d array of shape (n_1, n_2, n_3) into 1d
+    array with shape (n_1*n_2*n_3)
 
     :param cube: image values
     :type cube: 3d array
@@ -180,13 +179,11 @@ def cube2array(cube):
 
 @export
 def make_grid(numPix, deltapix, subgrid_res=1, left_lower=False):
-    """
-    creates pixel grid (in 1d arrays of x- and y- positions)
-    default coordinate frame is such that (0,0) is in the center of the coordinate grid
+    """Creates pixel grid (in 1d arrays of x- and y- positions) default coordinate frame
+    is such that (0,0) is in the center of the coordinate grid.
 
-    :param numPix: number of pixels per axis
-        Give an integers for a square grid, or a 2-length sequence
-        (first, second axis length) for a non-square grid.
+    :param numPix: number of pixels per axis Give an integers for a square grid, or a
+        2-length sequence (first, second axis length) for a non-square grid.
     :param deltapix: pixel size
     :param subgrid_res: sub-pixel resolution (default=1)
     :return: x, y position information in two 1d arrays
@@ -215,7 +212,7 @@ def make_grid(numPix, deltapix, subgrid_res=1, left_lower=False):
     if left_lower is True:
         # Shift so (0, 0) is in the "lower left"
         # Note this does not shift when subgrid_res = 1
-        shift = -1. / 2 + 1. / (2 * subgrid_res) * np.array([1, 1])
+        shift = -1.0 / 2 + 1.0 / (2 * subgrid_res) * np.array([1, 1])
     else:
         # Shift so (0, 0) is centered
         shift = deltapix_eff * (numPix_eff - 1) / 2
@@ -225,8 +222,7 @@ def make_grid(numPix, deltapix, subgrid_res=1, left_lower=False):
 
 @export
 def make_grid_transformed(numPix, Mpix2Angle):
-    """
-    returns grid with linear transformation (deltaPix and rotation)
+    """Returns grid with linear transformation (deltaPix and rotation)
 
     :param numPix: number of Pixels
     :param Mpix2Angle: 2-by-2 matrix to mat a pixel to a coordinate
@@ -238,10 +234,17 @@ def make_grid_transformed(numPix, Mpix2Angle):
 
 
 @export
-def make_grid_with_coordtransform(numPix, deltapix, subgrid_res=1, center_ra=0, center_dec=0, left_lower=False,
-                                  inverse=True):
-    """
-    same as make_grid routine, but returns the transformation matrix and shift between coordinates and pixel
+def make_grid_with_coordtransform(
+    numPix,
+    deltapix,
+    subgrid_res=1,
+    center_ra=0,
+    center_dec=0,
+    left_lower=False,
+    inverse=True,
+):
+    """Same as make_grid routine, but returns the transformation matrix and shift
+    between coordinates and pixel.
 
     :param numPix: number of pixels per axis
     :param deltapix: pixel scale per axis
@@ -250,7 +253,8 @@ def make_grid_with_coordtransform(numPix, deltapix, subgrid_res=1, center_ra=0, 
     :param center_dec: center of the grid
     :param left_lower: sets the zero point at the lower left corner of the pixels
     :param inverse: bool, if true sets East as left, otherwise East is righrt
-    :return: ra_grid, dec_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix
+    :return: ra_grid, dec_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0,
+        Mpix2coord, Mcoord2pix
     """
     numPix_eff = numPix * subgrid_res
     deltapix_eff = deltapix / float(subgrid_res)
@@ -264,9 +268,9 @@ def make_grid_with_coordtransform(numPix, deltapix, subgrid_res=1, center_ra=0, 
         ra_grid = matrix[:, 0] * delta_x
         dec_grid = matrix[:, 1] * deltapix_eff
     else:
-        ra_grid = (matrix[:, 0] - (numPix_eff - 1) / 2.) * delta_x
-        dec_grid = (matrix[:, 1] - (numPix_eff - 1) / 2.) * deltapix_eff
-    shift = (subgrid_res - 1) / (2. * subgrid_res) * deltapix
+        ra_grid = (matrix[:, 0] - (numPix_eff - 1) / 2.0) * delta_x
+        dec_grid = (matrix[:, 1] - (numPix_eff - 1) / 2.0) * deltapix_eff
+    shift = (subgrid_res - 1) / (2.0 * subgrid_res) * deltapix
     ra_grid += -shift + center_ra
     dec_grid += -shift + center_dec
     ra_at_xy_0 = ra_grid[0]
@@ -274,18 +278,29 @@ def make_grid_with_coordtransform(numPix, deltapix, subgrid_res=1, center_ra=0, 
 
     Mpix2coord = np.array([[delta_x, 0], [0, deltapix_eff]])
     Mcoord2pix = np.linalg.inv(Mpix2coord)
-    x_at_radec_0, y_at_radec_0 = map_coord2pix(-ra_at_xy_0, -dec_at_xy_0, x_0=0, y_0=0, M=Mcoord2pix)
-    return ra_grid, dec_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix
+    x_at_radec_0, y_at_radec_0 = map_coord2pix(
+        -ra_at_xy_0, -dec_at_xy_0, x_0=0, y_0=0, M=Mcoord2pix
+    )
+    return (
+        ra_grid,
+        dec_grid,
+        ra_at_xy_0,
+        dec_at_xy_0,
+        x_at_radec_0,
+        y_at_radec_0,
+        Mpix2coord,
+        Mcoord2pix,
+    )
 
 
 @export
 def grid_from_coordinate_transform(nx, ny, Mpix2coord, ra_at_xy_0, dec_at_xy_0):
-    """
-    return a grid in x and y coordinates that satisfy the coordinate system
+    """Return a grid in x and y coordinates that satisfy the coordinate system.
 
     :param nx: number of pixels in x-axis
     :param ny: number of pixels in y-axis
-    :param Mpix2coord: transformation matrix (2x2) of pixels into coordinate displacements
+    :param Mpix2coord: transformation matrix (2x2) of pixels into coordinate
+        displacements
     :param ra_at_xy_0: RA coordinate at (x,y) = (0,0)
     :param dec_at_xy_0: DEC coordinate at (x,y) = (0,0)
     :return: RA coordinate grid, DEC coordinate grid
@@ -302,16 +317,18 @@ def grid_from_coordinate_transform(nx, ny, Mpix2coord, ra_at_xy_0, dec_at_xy_0):
 
 @export
 def get_axes(x, y):
-    """
-    computes the axis x and y of a given 2d grid
+    """Computes the axis x and y of a given 2d grid.
 
     :param x:
     :param y:
     :return:
     """
     n = int(np.sqrt(len(x)))
-    if n ** 2 != len(x):
-        raise ValueError("lenght of input array given as %s is not square of integer number!" % (len(x)))
+    if n**2 != len(x):
+        raise ValueError(
+            "lenght of input array given as %s is not square of integer number!"
+            % (len(x))
+        )
     x_image = x.reshape(n, n)
     y_image = y.reshape(n, n)
     x_axes = x_image[0, :]
@@ -321,25 +338,28 @@ def get_axes(x, y):
 
 @export
 def averaging(grid, numGrid, numPix):
-    """
-    resize 2d pixel grid with numGrid to numPix and averages over the pixels
+    """Resize 2d pixel grid with numGrid to numPix and averages over the pixels.
 
     :param grid: higher resolution pixel grid
     :param numGrid: number of pixels per axis in the high resolution input image
-    :param numPix: lower number of pixels per axis in the output image (numGrid/numPix is integer number)
+    :param numPix: lower number of pixels per axis in the output image (numGrid/numPix
+        is integer number)
     :return: averaged pixel grid
     """
 
     Nbig = numGrid
     Nsmall = numPix
-    small = grid.reshape([int(Nsmall), int(Nbig / Nsmall), int(Nsmall), int(Nbig / Nsmall)]).mean(3).mean(1)
+    small = (
+        grid.reshape([int(Nsmall), int(Nbig / Nsmall), int(Nsmall), int(Nbig / Nsmall)])
+        .mean(3)
+        .mean(1)
+    )
     return small
 
 
 @export
 def displaceAbs(x, y, sourcePos_x, sourcePos_y):
-    """
-    calculates a grid of distances to the observer in angel
+    """Calculates a grid of distances to the observer in angel.
 
     :param x: cartesian coordinates
     :type x: numpy array
@@ -349,12 +369,12 @@ def displaceAbs(x, y, sourcePos_x, sourcePos_y):
     :type sourcePos_x: float
     :param sourcePos_y: source position
     :type sourcePos_y: float
-    :returns:  array of displacement
+    :returns: array of displacement
     :raises: AttributeError, KeyError
     """
     x_mapped = x - sourcePos_x
     y_mapped = y - sourcePos_y
-    absmapped = np.sqrt(x_mapped ** 2 + y_mapped ** 2)
+    absmapped = np.sqrt(x_mapped**2 + y_mapped**2)
     return absmapped
 
 
@@ -369,7 +389,7 @@ def get_distance(x_mins, y_mins, x_true, y_true):
     :return:
     """
     if len(x_mins) != len(x_true):
-        return 10 ** 10
+        return 10**10
     dist = 0
     x_true_list = np.array(x_true)
     y_true_list = np.array(y_true)
@@ -398,14 +418,13 @@ def compare_distance(x_mapped, y_mapped):
         for j in range(i + 1, len(x_mapped)):
             dx = x_mapped[i] - x_mapped[j]
             dy = y_mapped[i] - y_mapped[j]
-            X2 += dx ** 2 + dy ** 2
+            X2 += dx**2 + dy**2
     return X2
 
 
 @export
 def min_square_dist(x_1, y_1, x_2, y_2):
-    """
-    return minimum of quadratic distance of pairs (x1, y1) to pairs (x2, y2)
+    """Return minimum of quadratic distance of pairs (x1, y1) to pairs (x2, y2)
 
     :param x_1:
     :param y_1:
@@ -432,12 +451,14 @@ def selectBest(array, criteria, numSelect, highest=True):
     n = len(array)
     m = len(criteria)
     if n != m:
-        raise ValueError('Elements in array (%s) not equal to elements in criteria (%s)' % (n, m))
+        raise ValueError(
+            "Elements in array (%s) not equal to elements in criteria (%s)" % (n, m)
+        )
     if n < numSelect:
         return array
     array_sorted = array[criteria.argsort()]
     if highest:
-        result = array_sorted[n - numSelect:]
+        result = array_sorted[n - numSelect :]
     else:
         result = array_sorted[0:numSelect]
     return result[::-1]
@@ -456,21 +477,22 @@ def select_best(array, criteria, num_select, highest=True):
     n = len(array)
     m = len(criteria)
     if n != m:
-        raise ValueError('Elements in array (%s) not equal to elements in criteria (%s)' % (n, m))
+        raise ValueError(
+            "Elements in array (%s) not equal to elements in criteria (%s)" % (n, m)
+        )
     if n < num_select:
         return array
     array = np.array(array)
     if highest is True:
         indexes = criteria.argsort()[::-1][:num_select]
     else:
-        indexes = criteria.argsort()[::-1][n - num_select:]
+        indexes = criteria.argsort()[::-1][n - num_select :]
     return array[indexes]
 
 
 @export
 def points_on_circle(radius, num_points, connect_ends=True):
-    """
-    returns a set of uniform points around a circle
+    """Returns a set of uniform points around a circle.
 
     :param radius: radius of the circle
     :param num_points: number of points on the circle
@@ -480,17 +502,17 @@ def points_on_circle(radius, num_points, connect_ends=True):
     if connect_ends:
         angle = np.linspace(0, 2 * np.pi, num_points)
     else:
-        angle = np.linspace(0, 2 * np.pi * (1 - 1./num_points), num_points)
+        angle = np.linspace(0, 2 * np.pi * (1 - 1.0 / num_points), num_points)
     x_coord = np.cos(angle) * radius
     y_coord = np.sin(angle) * radius
     return x_coord, y_coord
 
+
 @export
 @jit()
 def local_minima_2d(a, x, y):
-    """
-    finds (local) minima in a 2d grid
-    applies less rigid criteria for maximum without second-order tangential minima criteria
+    """Finds (local) minima in a 2d grid applies less rigid criteria for maximum without
+    second-order tangential minima criteria.
 
     :param a: 1d array of displacements from the source positions
     :type a: numpy array with length numPix**2 in float
@@ -498,7 +520,7 @@ def local_minima_2d(a, x, y):
     :type x: numpy array with length numPix**2 in float
     :param y: 1d coordinate grid in x-direction
     :type y: numpy array with length numPix**2 in float
-    :returns:  array of indices of local minima, values of those minima
+    :returns: array of indices of local minima, values of those minima
     :raises: AttributeError, KeyError
     """
     dim = int(np.sqrt(len(a)))
@@ -506,14 +528,16 @@ def local_minima_2d(a, x, y):
     x_mins = []
     y_mins = []
     for i in range(dim + 1, len(a) - dim - 1):
-        if (a[i] < a[i - 1]
-                and a[i] < a[i + 1]
-                and a[i] < a[i - dim]
-                and a[i] < a[i + dim]
-                and a[i] < a[i - (dim - 1)]
-                and a[i] < a[i - (dim + 1)]
-                and a[i] < a[i + (dim - 1)]
-                and a[i] < a[i + (dim + 1)]):
+        if (
+            a[i] < a[i - 1]
+            and a[i] < a[i + 1]
+            and a[i] < a[i - dim]
+            and a[i] < a[i + dim]
+            and a[i] < a[i - (dim - 1)]
+            and a[i] < a[i - (dim + 1)]
+            and a[i] < a[i + (dim - 1)]
+            and a[i] < a[i + (dim + 1)]
+        ):
             x_mins.append(x[i])
             y_mins.append(y[i])
             values.append(a[i])
@@ -523,25 +547,17 @@ def local_minima_2d(a, x, y):
 @export
 @jit()
 def neighborSelect(a, x, y):
-    """
-    #TODO replace by from scipy.signal import argrelextrema for speed up
-    >>> from scipy.signal import argrelextrema
-    >>> x = np.array([2, 1, 2, 3, 2, 0, 1, 0])
-    >>> argrelextrema(x, np.greater)
-    (array([3, 6]),)
-    >>> y = np.array([[1, 2, 1, 2],
-    ...               [2, 2, 0, 0],
-    ...               [5, 3, 4, 4]])
-    ...
-    >>> argrelextrema(y, np.less, axis=1)
-    (array([0, 2]), array([2, 1]))
-
+    """#TODO replace by from scipy.signal import argrelextrema for speed up >>> from
+    scipy.signal import argrelextrema >>> x = np.array([2, 1, 2, 3, 2, 0, 1, 0]) >>>
+    argrelextrema(x, np.greater) (array([3, 6]),) >>> y = np.array([[1, 2, 1, 2], ...
+    [2, 2, 0, 0], ...               [5, 3, 4, 4]]) ... >>> argrelextrema(y, np.less,
+    axis=1) (array([0, 2]), array([2, 1]))
 
     finds (local) minima in a 2d grid
 
     :param a: 1d array of displacements from the source positions
     :type a: numpy array with length numPix**2 in float
-    :returns:  array of indices of local minima, values of those minima
+    :returns: array of indices of local minima, values of those minima
     :raises: AttributeError, KeyError
     """
     dim = int(np.sqrt(len(a)))
@@ -549,26 +565,30 @@ def neighborSelect(a, x, y):
     x_mins = []
     y_mins = []
     for i in range(dim + 1, len(a) - dim - 1):
-        if (a[i] < a[i - 1]
-                and a[i] < a[i + 1]
-                and a[i] < a[i - dim]
-                and a[i] < a[i + dim]
-                and a[i] < a[i - (dim - 1)]
-                and a[i] < a[i - (dim + 1)]
-                and a[i] < a[i + (dim - 1)]
-                and a[i] < a[i + (dim + 1)]):
-            if (a[i] < a[(i - 2 * dim - 1) % dim ** 2]
-                    and a[i] < a[(i - 2 * dim + 1) % dim ** 2]
-                    and a[i] < a[(i - dim - 2) % dim ** 2]
-                    and a[i] < a[(i - dim + 2) % dim ** 2]
-                    and a[i] < a[(i + dim - 2) % dim ** 2]
-                    and a[i] < a[(i + dim + 2) % dim ** 2]
-                    and a[i] < a[(i + 2 * dim - 1) % dim ** 2]
-                    and a[i] < a[(i + 2 * dim + 1) % dim ** 2]
-                    and a[i] < a[(i + 2 * dim) % dim ** 2]
-                    and a[i] < a[(i - 2 * dim) % dim ** 2]
-                    and a[i] < a[(i - 2) % dim ** 2]
-                    and a[i] < a[(i + 2) % dim ** 2]):
+        if (
+            a[i] < a[i - 1]
+            and a[i] < a[i + 1]
+            and a[i] < a[i - dim]
+            and a[i] < a[i + dim]
+            and a[i] < a[i - (dim - 1)]
+            and a[i] < a[i - (dim + 1)]
+            and a[i] < a[i + (dim - 1)]
+            and a[i] < a[i + (dim + 1)]
+        ):
+            if (
+                a[i] < a[(i - 2 * dim - 1) % dim**2]
+                and a[i] < a[(i - 2 * dim + 1) % dim**2]
+                and a[i] < a[(i - dim - 2) % dim**2]
+                and a[i] < a[(i - dim + 2) % dim**2]
+                and a[i] < a[(i + dim - 2) % dim**2]
+                and a[i] < a[(i + dim + 2) % dim**2]
+                and a[i] < a[(i + 2 * dim - 1) % dim**2]
+                and a[i] < a[(i + 2 * dim + 1) % dim**2]
+                and a[i] < a[(i + 2 * dim) % dim**2]
+                and a[i] < a[(i - 2 * dim) % dim**2]
+                and a[i] < a[(i - 2) % dim**2]
+                and a[i] < a[(i + 2) % dim**2]
+            ):
                 x_mins.append(x[i])
                 y_mins.append(y[i])
                 values.append(a[i])
@@ -622,8 +642,7 @@ def hyper2F2_array(a, b, c, d, x):
 
 @export
 def make_subgrid(ra_coord, dec_coord, subgrid_res=2):
-    """
-    return a grid with subgrid resolution
+    """Return a grid with subgrid resolution.
 
     :param ra_coord:
     :param dec_coord:
@@ -642,14 +661,18 @@ def make_subgrid(ra_coord, dec_coord, subgrid_res=2):
     dec_array_new = np.zeros((n * subgrid_res, n * subgrid_res))
     for i in range(0, subgrid_res):
         for j in range(0, subgrid_res):
-            ra_array_new[i::subgrid_res, j::subgrid_res] = ra_array + d_ra_x * (
-                        -1 / 2. + 1 / (2. * subgrid_res) + j / float(subgrid_res)) + d_ra_y * (
-                                                                       -1 / 2. + 1 / (2. * subgrid_res) + i / float(
-                                                                   subgrid_res))
-            dec_array_new[i::subgrid_res, j::subgrid_res] = dec_array + d_dec_x * (
-                        -1 / 2. + 1 / (2. * subgrid_res) + j / float(subgrid_res)) + d_dec_y * (
-                                                                        -1 / 2. + 1 / (2. * subgrid_res) + i / float(
-                                                                    subgrid_res))
+            ra_array_new[i::subgrid_res, j::subgrid_res] = (
+                ra_array
+                + d_ra_x * (-1 / 2.0 + 1 / (2.0 * subgrid_res) + j / float(subgrid_res))
+                + d_ra_y * (-1 / 2.0 + 1 / (2.0 * subgrid_res) + i / float(subgrid_res))
+            )
+            dec_array_new[i::subgrid_res, j::subgrid_res] = (
+                dec_array
+                + d_dec_x
+                * (-1 / 2.0 + 1 / (2.0 * subgrid_res) + j / float(subgrid_res))
+                + d_dec_y
+                * (-1 / 2.0 + 1 / (2.0 * subgrid_res) + i / float(subgrid_res))
+            )
 
     ra_coords_sub = image2array(ra_array_new)
     dec_coords_sub = image2array(dec_array_new)
@@ -658,13 +681,12 @@ def make_subgrid(ra_coord, dec_coord, subgrid_res=2):
 
 @export
 def convert_bool_list(n, k=None):
-    """
-    returns a bool list of the length of the lens models
+    """Returns a bool list of the length of the lens models.
 
-    if k = None: returns bool list with True's
-    if k is int, returns bool list with False's but k'th is True
-    if k is a list of int, e.g. [0, 3, 5], returns a bool list with True's in the integers listed and False elsewhere
-    if k is a boolean list, checks for size to match the numbers of models and returns it
+    if k = None: returns bool list with True's if k is int, returns bool list with
+    False's but k'th is True if k is a list of int, e.g. [0, 3, 5], returns a bool list
+    with True's in the integers listed and False elsewhere if k is a boolean list,
+    checks for size to match the numbers of models and returns it
 
     :param n: integer, total length of output boolean list
     :param k: None, int, or list of ints
@@ -679,8 +701,10 @@ def convert_bool_list(n, k=None):
         bool_list = [False] * n
     elif isinstance(k[0], bool):
         if n != len(k):
-            raise ValueError('length of selected lens models in format of boolean list is %s '
-                             'and does not match the models of this class instance %s.' % (len(k), n))
+            raise ValueError(
+                "length of selected lens models in format of boolean list is %s "
+                "and does not match the models of this class instance %s." % (len(k), n)
+            )
         bool_list = k
     elif isinstance(k[0], (int, np.integer)):  # list of integers
         bool_list = [False] * n
@@ -691,15 +715,17 @@ def convert_bool_list(n, k=None):
                 if k_i < n:
                     bool_list[k_i] = True
                 else:
-                    raise ValueError("k as set by %s is not convertable in a bool string of length %s !" % (k, n))
+                    raise ValueError(
+                        "k as set by %s is not convertable in a bool string of length %s !"
+                        % (k, n)
+                    )
     else:
-        raise ValueError('input list k as %s not compatible' % k)
+        raise ValueError("input list k as %s not compatible" % k)
     return bool_list
 
 
 def area(vs):
-    """
-    Use Green's theorem to compute the area enclosed by the given contour.
+    """Use Green's theorem to compute the area enclosed by the given contour.
 
     param vs: 2d array of vertices of a contour line
     return: area within contour line

@@ -2,17 +2,25 @@ import numpy as np
 import copy
 from lenstronomy.PointSource.point_source_cached import PointSourceCached
 
-__all__ = ['PointSource']
+__all__ = ["PointSource"]
 
-_SUPPORTED_MODELS = ['UNLENSED', 'LENSED_POSITION', 'SOURCE_POSITION']
+_SUPPORTED_MODELS = ["UNLENSED", "LENSED_POSITION", "SOURCE_POSITION"]
 
 
 class PointSource(object):
-
-    def __init__(self, point_source_type_list, lensModel=None, fixed_magnification_list=None,
-                 additional_images_list=None, flux_from_point_source_list=None, magnification_limit=None,
-                 save_cache=False, kwargs_lens_eqn_solver=None, index_lens_model_list=None,
-                 point_source_frame_list=None):
+    def __init__(
+        self,
+        point_source_type_list,
+        lensModel=None,
+        fixed_magnification_list=None,
+        additional_images_list=None,
+        flux_from_point_source_list=None,
+        magnification_limit=None,
+        save_cache=False,
+        kwargs_lens_eqn_solver=None,
+        index_lens_model_list=None,
+        point_source_frame_list=None,
+    ):
         """
 
         :param point_source_type_list: list of point source types
@@ -40,12 +48,15 @@ class PointSource(object):
          to have a specified band/frame assigned to it
         :param point_source_frame_list: list of lists mirroring the structure of the image positions.
          Integers correspond to the i'th list entry of index_lens_model_list indicating in which frame/band the image is
-         appearing
+         appearing, e.g., four images and four cutouts, you can do [[0], [1], [2], [3]] when the frames
+         (ordered as the list) are in the same order as the point sources (indices)
         """
         if len(point_source_type_list) > 0:
             if index_lens_model_list is not None and point_source_frame_list is None:
-                raise ValueError('with specified index_lens_model_list a specified point_source_frame_list argument is '
-                                 'required')
+                raise ValueError(
+                    "with specified index_lens_model_list a specified point_source_frame_list argument is "
+                    "required"
+                )
             if index_lens_model_list is None:
                 point_source_frame_list = [None] * len(point_source_type_list)
         self._index_lens_model_list = index_lens_model_list
@@ -62,53 +73,92 @@ class PointSource(object):
             flux_from_point_source_list = [True] * len(point_source_type_list)
         self._flux_from_point_source_list = flux_from_point_source_list
         for i, model in enumerate(point_source_type_list):
-            if model == 'UNLENSED':
+            if model == "UNLENSED":
                 from lenstronomy.PointSource.Types.unlensed import Unlensed
-                self._point_source_list.append(PointSourceCached(Unlensed(), save_cache=save_cache))
-            elif model == 'LENSED_POSITION':
-                from lenstronomy.PointSource.Types.lensed_position import LensedPositions
-                self._point_source_list.append(PointSourceCached(LensedPositions(lensModel,
-                    fixed_magnification=fixed_magnification_list[i],
-                     additional_images=additional_images_list[i],
-                     index_lens_model_list=index_lens_model_list,
-                     point_source_frame_list=point_source_frame_list[i]),
-                                                save_cache=save_cache))
-            elif model == 'SOURCE_POSITION':
-                from lenstronomy.PointSource.Types.source_position import SourcePositions
-                self._point_source_list.append(PointSourceCached(SourcePositions(lensModel,
-                                                                 fixed_magnification=fixed_magnification_list[i]),
-                                                                 save_cache=save_cache))
+
+                self._point_source_list.append(
+                    PointSourceCached(Unlensed(), save_cache=save_cache)
+                )
+            elif model == "LENSED_POSITION":
+                from lenstronomy.PointSource.Types.lensed_position import (
+                    LensedPositions,
+                )
+
+                self._point_source_list.append(
+                    PointSourceCached(
+                        LensedPositions(
+                            lensModel,
+                            fixed_magnification=fixed_magnification_list[i],
+                            additional_images=additional_images_list[i],
+                            index_lens_model_list=index_lens_model_list,
+                            point_source_frame_list=point_source_frame_list[i],
+                        ),
+                        save_cache=save_cache,
+                    )
+                )
+            elif model == "SOURCE_POSITION":
+                from lenstronomy.PointSource.Types.source_position import (
+                    SourcePositions,
+                )
+
+                self._point_source_list.append(
+                    PointSourceCached(
+                        SourcePositions(
+                            lensModel, fixed_magnification=fixed_magnification_list[i]
+                        ),
+                        save_cache=save_cache,
+                    )
+                )
             else:
-                raise ValueError("Point-source model %s not available. Supported models are %s ."
-                                 % (model, _SUPPORTED_MODELS))
+                raise ValueError(
+                    "Point-source model %s not available. Supported models are %s ."
+                    % (model, _SUPPORTED_MODELS)
+                )
         if kwargs_lens_eqn_solver is None:
             kwargs_lens_eqn_solver = {}
         self._kwargs_lens_eqn_solver = kwargs_lens_eqn_solver
         self._magnification_limit = magnification_limit
         self._save_cache = save_cache
 
-    def update_search_window(self, search_window, x_center, y_center, min_distance=None, only_from_unspecified=False):
-        """
-        update the search area for the lens equation solver
+    def update_search_window(
+        self,
+        search_window,
+        x_center,
+        y_center,
+        min_distance=None,
+        only_from_unspecified=False,
+    ):
+        """Update the search area for the lens equation solver.
 
-        :param search_window: search_window: window size of the image position search with the lens equation solver.
+        :param search_window: search_window: window size of the image position search
+            with the lens equation solver.
         :param x_center: center of search window
         :param y_center: center of search window
         :param min_distance: minimum search distance
-        :param only_from_unspecified: bool, if True, only sets keywords that previously have not been set
+        :param only_from_unspecified: bool, if True, only sets keywords that previously
+            have not been set
         :return: updated self instances
         """
-        if min_distance is not None and 'min_distance' not in self._kwargs_lens_eqn_solver and only_from_unspecified:
-            self._kwargs_lens_eqn_solver['min_distance'] = min_distance
+        if (
+            min_distance is not None
+            and "min_distance" not in self._kwargs_lens_eqn_solver
+            and only_from_unspecified
+        ):
+            self._kwargs_lens_eqn_solver["min_distance"] = min_distance
         if only_from_unspecified:
-            self._kwargs_lens_eqn_solver['search_window'] = self._kwargs_lens_eqn_solver.get('search_window',
-                                                                                             search_window)
-            self._kwargs_lens_eqn_solver['x_center'] = self._kwargs_lens_eqn_solver.get('x_center', x_center)
-            self._kwargs_lens_eqn_solver['y_center'] = self._kwargs_lens_eqn_solver.get('y_center', y_center)
+            self._kwargs_lens_eqn_solver[
+                "search_window"
+            ] = self._kwargs_lens_eqn_solver.get("search_window", search_window)
+            self._kwargs_lens_eqn_solver["x_center"] = self._kwargs_lens_eqn_solver.get(
+                "x_center", x_center
+            )
+            self._kwargs_lens_eqn_solver["y_center"] = self._kwargs_lens_eqn_solver.get(
+                "y_center", y_center
+            )
         else:
-            self._kwargs_lens_eqn_solver['search_window'] = search_window
-            self._kwargs_lens_eqn_solver['x_center'] = x_center
-            self._kwargs_lens_eqn_solver['y_center'] = y_center
+            self._kwargs_lens_eqn_solver["search_window"] = search_window
+            self._kwargs_lens_eqn_solver["x_center"] = x_center
+            self._kwargs_lens_eqn_solver["y_center"] = y_center
 
     def update_lens_model(self, lens_model_class):
         """
@@ -122,8 +172,7 @@ class PointSource(object):
             model.update_lens_model(lens_model_class=lens_model_class)
 
     def delete_lens_model_cache(self):
-        """
-        deletes the variables saved for a specific lens model
+        """Deletes the variables saved for a specific lens model.
 
         :return: None
         """
@@ -131,19 +180,18 @@ class PointSource(object):
             model.delete_lens_model_cache()
 
     def set_save_cache(self, save_cache):
-        """
-        set the save cache boolean to new value
+        """Set the save cache boolean to new value.
 
         :param save_cache: bool, if True, saves (or uses a previously saved) values
-        :return: updated class and sub-class instances to either save or not save the point source information in cache
+        :return: updated class and sub-class instances to either save or not save the
+            point source information in cache
         """
         self._set_save_cache(save_cache)
         self._save_cache = save_cache
 
     def _set_save_cache(self, save_cache):
-        """
-        set the save cache boolean to new value. This function is for use within this class for temporarily set the
-        cache within a single routine.
+        """Set the save cache boolean to new value. This function is for use within this
+        class for temporarily set the cache within a single routine.
 
         :param save_cache: bool, if True, saves (or uses a previously saved) values
         :return: None
@@ -166,8 +214,7 @@ class PointSource(object):
         return k_list
 
     def source_position(self, kwargs_ps, kwargs_lens):
-        """
-        intrinsic source positions of the point sources
+        """Intrinsic source positions of the point sources.
 
         :param kwargs_ps: keyword argument list of point source models
         :param kwargs_lens: keyword argument list of lens models
@@ -182,17 +229,26 @@ class PointSource(object):
             y_source_list.append(y_source)
         return x_source_list, y_source_list
 
-    def image_position(self, kwargs_ps, kwargs_lens, k=None, original_position=False, additional_images=False):
-        """
-        image positions as observed on the sky of the point sources
+    def image_position(
+        self,
+        kwargs_ps,
+        kwargs_lens,
+        k=None,
+        original_position=False,
+        additional_images=False,
+    ):
+        """Image positions as observed on the sky of the point sources.
 
         :param kwargs_ps: point source parameter keyword argument list
         :param kwargs_lens: lens model keyword argument list
-        :param k: None, int or boolean list; only returns a subset of the model predictions
-        :param original_position: boolean (only applies to 'LENSED_POSITION' models), returns the image positions in
-         the model parameters and does not re-compute images (which might be differently ordered) in case of the lens
-         equation solver
-        :param additional_images: if True, solves the lens equation for additional images
+        :param k: None, int or boolean list; only returns a subset of the model
+            predictions
+        :param original_position: boolean (only applies to 'LENSED_POSITION' models),
+            returns the image positions in the model parameters and does not re-compute
+            images (which might be differently ordered) in case of the lens equation
+            solver
+        :param additional_images: if True, solves the lens equation for additional
+            images
         :type additional_images: bool
         :return: list of: list of image positions per point source model component
         """
@@ -201,29 +257,38 @@ class PointSource(object):
         for i, model in enumerate(self._point_source_list):
             if k is None or k == i:
                 kwargs = kwargs_ps[i]
-                x_image, y_image = model.image_position(kwargs, kwargs_lens,
-                                                        magnification_limit=self._magnification_limit,
-                                                        kwargs_lens_eqn_solver=self._kwargs_lens_eqn_solver,
-                                                        additional_images=additional_images)
+                x_image, y_image = model.image_position(
+                    kwargs,
+                    kwargs_lens,
+                    magnification_limit=self._magnification_limit,
+                    kwargs_lens_eqn_solver=self._kwargs_lens_eqn_solver,
+                    additional_images=additional_images,
+                )
                 # this takes action when new images are computed not necessary in order
-                if original_position is True and additional_images is True and\
-                        self.point_source_type_list[i] == 'LENSED_POSITION':
-                    x_o, y_o = kwargs['ra_image'], kwargs['dec_image']
-                    x_image, y_image = _sort_position_by_original(x_o, y_o, x_image, y_image)
+                if (
+                    original_position is True
+                    and additional_images is True
+                    and self.point_source_type_list[i] == "LENSED_POSITION"
+                ):
+                    x_o, y_o = kwargs["ra_image"], kwargs["dec_image"]
+                    x_image, y_image = _sort_position_by_original(
+                        x_o, y_o, x_image, y_image
+                    )
 
                 x_image_list.append(x_image)
                 y_image_list.append(y_image)
         return x_image_list, y_image_list
 
     def point_source_list(self, kwargs_ps, kwargs_lens, k=None, with_amp=True):
-        """
-        returns the coordinates and amplitudes of all point sources in a single array
+        """Returns the coordinates and amplitudes of all point sources in a single
+        array.
 
         :param kwargs_ps: point source keyword argument list
         :param kwargs_lens: lens model keyword argument list
-        :param k: None, int or list of int's to select a subset of the point source models in the return
-        :param with_amp: bool, if False, ignores the amplitude parameters in the return and instead provides ones for
-         each point source image
+        :param k: None, int or list of int's to select a subset of the point source
+            models in the return
+        :param with_amp: bool, if False, ignores the amplitude parameters in the return
+            and instead provides ones for each point source image
         :return: ra_array, dec_array, amp_array
         """
         # here we save the cache of the individual models but do not overwrite the class boolean variable to do so
@@ -249,8 +314,7 @@ class PointSource(object):
         return ra_array, dec_array, amp_array
 
     def num_basis(self, kwargs_ps, kwargs_lens):
-        """
-        number of basis functions for linear inversion
+        """Number of basis functions for linear inversion.
 
         :param kwargs_ps: point source keyword argument list
         :param kwargs_lens: lens model keyword argument list
@@ -267,24 +331,28 @@ class PointSource(object):
         return n
 
     def image_amplitude(self, kwargs_ps, kwargs_lens, k=None):
-        """
-        returns the image amplitudes
+        """Returns the image amplitudes.
 
         :param kwargs_ps: point source keyword argument list
         :param kwargs_lens: lens model keyword argument list
-        :param k: None, int or list of int's to select a subset of the point source models in the return
+        :param k: None, int or list of int's to select a subset of the point source
+            models in the return
         :return: list of image amplitudes per model component
         """
         amp_list = []
         for i, model in enumerate(self._point_source_list):
             if (k is None or k == i) and self._flux_from_point_source_list[i]:
-                amp_list.append(model.image_amplitude(kwargs_ps=kwargs_ps[i], kwargs_lens=kwargs_lens,
-                                                      kwargs_lens_eqn_solver=self._kwargs_lens_eqn_solver))
+                amp_list.append(
+                    model.image_amplitude(
+                        kwargs_ps=kwargs_ps[i],
+                        kwargs_lens=kwargs_lens,
+                        kwargs_lens_eqn_solver=self._kwargs_lens_eqn_solver,
+                    )
+                )
         return amp_list
 
     def source_amplitude(self, kwargs_ps, kwargs_lens):
-        """
-        intrinsic (unlensed) point source amplitudes
+        """Intrinsic (unlensed) point source amplitudes.
 
         :param kwargs_ps: point source keyword argument list
         :param kwargs_lens: lens model keyword argument list
@@ -293,7 +361,11 @@ class PointSource(object):
         amp_list = []
         for i, model in enumerate(self._point_source_list):
             if self._flux_from_point_source_list[i]:
-                amp_list.append(model.source_amplitude(kwargs_ps=kwargs_ps[i], kwargs_lens=kwargs_lens))
+                amp_list.append(
+                    model.source_amplitude(
+                        kwargs_ps=kwargs_ps[i], kwargs_lens=kwargs_lens
+                    )
+                )
         return amp_list
 
     def linear_response_set(self, kwargs_ps, kwargs_lens=None, with_amp=False):
@@ -352,17 +424,17 @@ class PointSource(object):
             if self._flux_from_point_source_list[k]:
                 kwargs = kwargs_ps[k]
                 if self._fixed_magnification_list[k]:
-                    kwargs['source_amp'] = param[i]
+                    kwargs["source_amp"] = param[i]
                     i += 1
                 else:
                     n_points = len(ra_pos_list[k])
-                    kwargs['point_amp'] = np.array(param[i:i + n_points])
+                    kwargs["point_amp"] = np.array(param[i : i + n_points])
                     i += n_points
         return kwargs_ps, i
 
     def linear_param_from_kwargs(self, kwargs_list):
-        """
-        inverse function of update_linear() returning the linear amplitude list for the keyword argument list
+        """Inverse function of update_linear() returning the linear amplitude list for
+        the keyword argument list.
 
         :param kwargs_list: model parameters including the linear amplitude parameters
         :type kwargs_list: list of keyword arguments
@@ -374,37 +446,41 @@ class PointSource(object):
             if self._flux_from_point_source_list[k]:
                 kwargs = kwargs_list[k]
                 if self._fixed_magnification_list[k]:
-                    param.append(kwargs['source_amp'])
+                    param.append(kwargs["source_amp"])
                 else:
-                    for a in kwargs['point_amp']:
+                    for a in kwargs["point_amp"]:
                         param.append(a)
         return param
 
     def check_image_positions(self, kwargs_ps, kwargs_lens, tolerance=0.001):
-        """
-        checks whether the point sources in kwargs_ps satisfy the lens equation with a tolerance
-        (computed by ray-tracing in the source plane)
+        """Checks whether the point sources in kwargs_ps satisfy the lens equation with
+        a tolerance (computed by ray-tracing in the source plane)
 
         :param kwargs_ps: point source keyword argument list
         :param kwargs_lens: lens model keyword argument list
-        :param tolerance: Euclidian distance between the source positions ray-traced backwards to be tolerated
+        :param tolerance: Euclidian distance between the source positions ray-traced
+            backwards to be tolerated
         :return: bool: True, if requirement on tolerance is fulfilled, False if not.
         """
         x_image_list, y_image_list = self.image_position(kwargs_ps, kwargs_lens)
         for i, model in enumerate(self.point_source_type_list):
-            if model in ['LENSED_POSITION', 'SOURCE_POSITION']:
+            if model in ["LENSED_POSITION", "SOURCE_POSITION"]:
                 x_pos = x_image_list[i]
                 y_pos = y_image_list[i]
-                x_source, y_source = self._lensModel.ray_shooting(x_pos, y_pos, kwargs_lens)
-                dist = np.sqrt((x_source - x_source[0]) ** 2 + (y_source - y_source[0]) ** 2)
+                x_source, y_source = self._lensModel.ray_shooting(
+                    x_pos, y_pos, kwargs_lens
+                )
+                dist = np.sqrt(
+                    (x_source - x_source[0]) ** 2 + (y_source - y_source[0]) ** 2
+                )
                 if np.max(dist) > tolerance:
                     return False
         return True
 
     def set_amplitudes(self, amp_list, kwargs_ps):
-        """
-        translates the amplitude parameters into the convention of the keyword argument list
-        currently only used in SimAPI to transform magnitudes to amplitudes in the lenstronomy conventions
+        """Translates the amplitude parameters into the convention of the keyword
+        argument list currently only used in SimAPI to transform magnitudes to
+        amplitudes in the lenstronomy conventions.
 
         :param amp_list: list of model amplitudes for each point source model
         :param kwargs_ps: list of point source keywords
@@ -414,32 +490,31 @@ class PointSource(object):
         for i, model in enumerate(self.point_source_type_list):
             if self._flux_from_point_source_list[i]:
                 amp = amp_list[i]
-                if model == 'UNLENSED':
-                    kwargs_list[i]['point_amp'] = amp
-                elif model in ['LENSED_POSITION', 'SOURCE_POSITION']:
+                if model == "UNLENSED":
+                    kwargs_list[i]["point_amp"] = amp
+                elif model in ["LENSED_POSITION", "SOURCE_POSITION"]:
                     if self._fixed_magnification_list[i] is True:
-                        kwargs_list[i]['source_amp'] = amp
+                        kwargs_list[i]["source_amp"] = amp
                     else:
-                        kwargs_list[i]['point_amp'] = amp
+                        kwargs_list[i]["point_amp"] = amp
         return kwargs_list
 
     @classmethod
     def check_positive_flux(cls, kwargs_ps):
-        """
-        check whether inferred linear parameters are positive
+        """Check whether inferred linear parameters are positive.
 
         :param kwargs_ps: point source keyword argument list
         :return: bool, True, if all 'point_amp' parameters are positive semi-definite
         """
         pos_bool = True
         for kwargs in kwargs_ps:
-            if 'point_amp' in kwargs:
-                point_amp = kwargs['point_amp']
+            if "point_amp" in kwargs:
+                point_amp = kwargs["point_amp"]
                 if not np.all(point_amp >= 0):
                     pos_bool = False
                     break
-            if 'source_amp' in kwargs:
-                point_amp = kwargs['source_amp']
+            if "source_amp" in kwargs:
+                point_amp = kwargs["source_amp"]
                 if not np.all(point_amp >= 0):
                     pos_bool = False
                     break
@@ -447,15 +522,16 @@ class PointSource(object):
 
 
 def _sort_position_by_original(x_o, y_o, x_solved, y_solved):
-    """
-    sorting new image positions such that the old order is best preserved
+    """Sorting new image positions such that the old order is best preserved.
 
     :param x_o: numpy array; original image positions
     :param y_o: numpy array; original image positions
-    :param x_solved: numpy array; solved image positions with potentially more or fewer images
-    :param y_solved: numpy array; solved image positions with potentially more or fewer images
-    :return: sorted new image positions with the order best matching the original positions first,
-     and then all other images in the same order as solved for
+    :param x_solved: numpy array; solved image positions with potentially more or fewer
+        images
+    :param y_solved: numpy array; solved image positions with potentially more or fewer
+        images
+    :return: sorted new image positions with the order best matching the original
+        positions first, and then all other images in the same order as solved for
     """
     if len(x_o) > len(x_solved):
         # if new images are less , then return the original images (no sorting required)

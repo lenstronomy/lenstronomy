@@ -1,18 +1,28 @@
-__author__ = 'sibirrer'
+__author__ = "sibirrer"
 
 from lenstronomy.Workflow.update_manager import UpdateManager
 import copy
 
-__all__ = ['MultiBandUpdateManager']
+__all__ = ["MultiBandUpdateManager"]
 
 
 class MultiBandUpdateManager(UpdateManager):
+    """Specific Manager to deal with multiple images with disjoint lens model
+    parameterization.
+
+    The class inherits the UpdateManager() class and adds functionalities to hold and
+    relieve fixed all lens model parameters of a specific frame/image for more
+    convenient use of the FittingSequence.
     """
-    specific Manager to deal with multiple images with disjoint lens model parameterization. The class inherits the
-    UpdateManager() class and adds functionalities to hold and relieve fixed all lens model parameters of a specific
-    frame/image for more convenient use of the FittingSequence.
-    """
-    def __init__(self, kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params, num_bands=0):
+
+    def __init__(
+        self,
+        kwargs_model,
+        kwargs_constraints,
+        kwargs_likelihood,
+        kwargs_params,
+        num_bands=0,
+    ):
         """
 
         :param kwargs_model: keyword arguments to describe all model components used in
@@ -31,15 +41,21 @@ class MultiBandUpdateManager(UpdateManager):
          'special': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
         :param num_bands: integer, number of image bands
         """
-        super(MultiBandUpdateManager, self).__init__(kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params)
+        super(MultiBandUpdateManager, self).__init__(
+            kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params
+        )
         kwargs_lens_fixed_init, _, _, _, _, _ = self.fixed_kwargs
         self._kwargs_lens_fixed_init = copy.deepcopy(kwargs_lens_fixed_init)
 
-        self._index_lens_model_list = kwargs_model.get('index_lens_model_list', [None for i in range(num_bands)])
-        self._index_source_list = kwargs_model.get('index_source_light_model_list',
-                                             [None for i in range(num_bands)])
-        self._index_lens_light_list = kwargs_model.get('index_lens_light_model_list',
-                                                 [None for i in range(num_bands)])
+        self._index_lens_model_list = kwargs_model.get(
+            "index_lens_model_list", [None for i in range(num_bands)]
+        )
+        self._index_source_list = kwargs_model.get(
+            "index_source_light_model_list", [None for i in range(num_bands)]
+        )
+        self._index_lens_light_list = kwargs_model.get(
+            "index_lens_light_model_list", [None for i in range(num_bands)]
+        )
         self._num_bands = num_bands
 
     def keep_frame_fixed(self, frame_list_fixed):
@@ -51,7 +67,7 @@ class MultiBandUpdateManager(UpdateManager):
         for j in frame_list_fixed:
             if self._index_lens_model_list[j] is not None:
                 for i in self._index_lens_model_list[j]:
-                    self._lens_fixed[i] = self._kwargs_temp['kwargs_lens'][i]
+                    self._lens_fixed[i] = self._kwargs_temp["kwargs_lens"][i]
 
     def undo_frame_fixed(self, frame_list):
         """
@@ -66,12 +82,12 @@ class MultiBandUpdateManager(UpdateManager):
                     self._lens_fixed[i] = copy.deepcopy(self._kwargs_lens_fixed_init[i])
 
     def fix_not_computed(self, free_bands):
-        """
-        fix all the lens models that are part of a imaging band that is not set to be computed. Free those that are
-        modeled.
-        #TODO check for overlapping models for more automated fixing of parameters
+        """Fix all the lens models that are part of a imaging band that is not set to be
+        computed. Free those that are modeled. #TODO check for overlapping models for
+        more automated fixing of parameters.
 
-        :param free_bands: boolean list of length of the imaging bands, True indicates that the lens model is being fitted for
+        :param free_bands: boolean list of length of the imaging bands, True indicates
+            that the lens model is being fitted for
         :return: None
         """
         undo_frame_list = []

@@ -1,7 +1,7 @@
 __author__ = "ajshajib"
 
 
-from lenstronomy.LensModel.Profiles.nfw_ellipse import NFW_ELLIPSE
+from lenstronomy.LensModel.Profiles.nfw_ellipse_cse import NFW_ELLIPSE_CSE
 from lenstronomy.LensModel.Profiles.nfw_mass_concentration_ellipse import NFWMCEllipse
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 
@@ -17,7 +17,7 @@ class TestNFWMCEllipse(object):
         from astropy.cosmology import FlatLambdaCDM
 
         cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.05)
-        self.nfw = NFW_ELLIPSE()
+        self.nfw = NFW_ELLIPSE_CSE()
         self.nfwmc = NFWMCEllipse(
             z_source=self.z_source, z_lens=self.z_lens, cosmo=cosmo
         )

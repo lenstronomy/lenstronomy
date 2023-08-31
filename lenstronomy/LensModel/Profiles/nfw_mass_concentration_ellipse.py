@@ -4,7 +4,7 @@ in mass/kappa space."""
 __author__ = "ajshajib"
 
 from lenstronomy.LensModel.Profiles.nfw_mass_concentration import NFWMC
-from lenstronomy.LensModel.Profiles.nfw_ellipse import NFW_ELLIPSE
+from lenstronomy.LensModel.Profiles.nfw_ellipse_cse import NFW_ELLIPSE_CSE
 
 
 class NFWMCEllipse(NFWMC):
@@ -47,7 +47,7 @@ class NFWMCEllipse(NFWMC):
         :param static: boolean, if True, only operates with fixed parameter values
         """
         super(NFWMCEllipse, self).__init__(z_lens, z_source, cosmo, static)
-        self._nfw = NFW_ELLIPSE()
+        self._nfw = NFW_ELLIPSE_CSE()
 
     def function(self, x, y, logM, concentration, e1, e2, center_x=0, center_y=0):
         """Compute the lensing potential of the NFW profile with ellipticity.

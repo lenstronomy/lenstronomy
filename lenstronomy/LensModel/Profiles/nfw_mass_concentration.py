@@ -1,6 +1,5 @@
 """This module contains a class to compute the Navarro-Frank-White function in
-mass/kappa space.
-"""
+mass/kappa space."""
 
 __author__ = "sibirrer"
 

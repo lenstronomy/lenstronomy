@@ -18,8 +18,9 @@ class TestNFWMCEllipse(object):
 
         cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.05)
         self.nfw = NFW_ELLIPSE()
-        self.nfwmc = NFWMCEllipse(z_source=self.z_source, z_lens=self.z_lens,
-                                  cosmo=cosmo)
+        self.nfwmc = NFWMCEllipse(
+            z_source=self.z_source, z_lens=self.z_lens, cosmo=cosmo
+        )
         self.lensCosmo = LensCosmo(
             z_lens=self.z_lens, z_source=self.z_source, cosmo=cosmo
         )
@@ -29,8 +30,9 @@ class TestNFWMCEllipse(object):
         e1, e2 = 0.05, 0.05
         logM = 12
         concentration = 10
-        f_mc = self.nfwmc.function(x, y, logM, concentration, e1, e2, center_x=0,
-                                   center_y=0)
+        f_mc = self.nfwmc.function(
+            x, y, logM, concentration, e1, e2, center_x=0, center_y=0
+        )
         Rs, alpha_Rs = self.lensCosmo.nfw_physical2angle(10**logM, concentration)
         f_ = self.nfw.function(x, y, Rs, alpha_Rs, e1, e2, center_x=0, center_y=0)
         npt.assert_almost_equal(f_mc, f_, decimal=8)
@@ -44,8 +46,9 @@ class TestNFWMCEllipse(object):
             x, y, logM, concentration, e1, e2, center_x=0, center_y=0
         )
         Rs, alpha_Rs = self.lensCosmo.nfw_physical2angle(10**logM, concentration)
-        f_x, f_y = self.nfw.derivatives(x, y, Rs, alpha_Rs, e1, e2, center_x=0, \
-            center_y=0)
+        f_x, f_y = self.nfw.derivatives(
+            x, y, Rs, alpha_Rs, e1, e2, center_x=0, center_y=0
+        )
         npt.assert_almost_equal(f_x_mc, f_x, decimal=8)
         npt.assert_almost_equal(f_y_mc, f_y, decimal=8)
 
@@ -71,14 +74,16 @@ class TestNFWMCEllipse(object):
         e1, e2 = 0.05, 0.05
         logM = 12
         concentration = 10
-        f_ = self.nfwmc.function(x, y, logM, concentration, e1, e2, center_x=0,
-                                 center_y=0)
+        f_ = self.nfwmc.function(
+            x, y, logM, concentration, e1, e2, center_x=0, center_y=0
+        )
         self.nfwmc.set_static(logM, concentration)
         f_static = self.nfwmc.function(x, y, 0, 0, e1, e2, center_x=0, center_y=0)
         npt.assert_almost_equal(f_, f_static, decimal=8)
         self.nfwmc.set_dynamic()
         f_dyn = self.nfwmc.function(x, y, 11, 20, e1, e2, center_x=0, center_y=0)
         assert f_dyn != f_static
+
 
 if __name__ == "__main__":
     pytest.main()

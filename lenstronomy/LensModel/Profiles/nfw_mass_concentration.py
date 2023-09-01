@@ -68,7 +68,7 @@ class NFWMC(LensProfileBase):
         Rs, alpha_Rs = self._lens_cosmo.nfw_physical2angle(M, concentration)
         return Rs, alpha_Rs
 
-    def set_static(self, logM, concentration, center_x=0, center_y=0):
+    def set_static(self, logM, concentration, *args, **kwargs):
         """
 
         :param logM:

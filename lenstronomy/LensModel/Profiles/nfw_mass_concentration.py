@@ -1,6 +1,8 @@
+"""This module contains a class to compute the Navarro-Frank-White function in
+mass/kappa space."""
+
 __author__ = "sibirrer"
 
-# this file contains a class to compute the Navaro-Frank-White function in mass/kappa space
 from lenstronomy.LensModel.Profiles.nfw import NFW
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
@@ -45,7 +47,7 @@ class NFWMC(LensProfileBase):
         """
         self._nfw = NFW()
         if cosmo is None:
-            # TODO: print waring if these lines get executed
+            # TODO: print warning if these lines get executed
             from astropy.cosmology import FlatLambdaCDM
 
             cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.05)
@@ -66,13 +68,13 @@ class NFWMC(LensProfileBase):
         Rs, alpha_Rs = self._lens_cosmo.nfw_physical2angle(M, concentration)
         return Rs, alpha_Rs
 
-    def set_static(self, logM, concentration, center_x=0, center_y=0):
+    def set_static(self, logM, concentration, *args, **kwargs):
         """
 
-        :param logM:
-        :param concentration:
-        :param center_x:
-        :param center_y:
+        :param logM: log10(M200)
+        :param concentration: halo concentration c = r_200 / r_s
+        :param *args: not used
+        :param **kwargs: not used
         :return:
         """
         self._static = True

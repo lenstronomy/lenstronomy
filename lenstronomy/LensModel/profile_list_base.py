@@ -148,6 +148,7 @@ class ProfileListBase(object):
             # interpolated.
             if lens_type in [
                 "NFW_MC",
+                "NFW_MC_ELLIPSE",
                 "CHAMELEON",
                 "DOUBLE_CHAMELEON",
                 "TRIPLE_CHAMELEON",

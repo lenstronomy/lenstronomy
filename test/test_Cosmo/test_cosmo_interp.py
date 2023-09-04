@@ -1,3 +1,4 @@
+import numpy as np
 import pytest
 import numpy.testing as npt
 from astropy.cosmology import FlatLambdaCDM, LambdaCDM
@@ -31,6 +32,25 @@ class TestCosmoInterp(object):
             cosmo=self.cosmo_ok_neg, z_stop=3, num_interp=100
         )
 
+        # input interpolation classes
+        z_list = np.linspace(start=0.01, stop=3, num=100)
+
+        ang_dist_list = self.cosmo_ok.angular_diameter_distance(z_list).value
+        Ok0 = self.cosmo_ok._Ok0
+        dh = self.cosmo_ok._hubble_distance
+        K = - Ok0 / dh ** 2
+        self.cosmo_ok_input = CosmoInterp(cosmo=None, z_stop=None, num_interp=None,
+                                          ang_dist_list=ang_dist_list, z_list=z_list,
+                                          Ok0=Ok0, K=K.value)
+
+        ang_dist_list = self.cosmo_ok_neg.angular_diameter_distance(z_list).value
+        Ok0 = self.cosmo_ok_neg._Ok0
+        dh = self.cosmo_ok_neg._hubble_distance
+        K = - Ok0 / dh ** 2
+        self.cosmo_ok_neg_input = CosmoInterp(cosmo=None, z_stop=None, num_interp=None,
+                                          ang_dist_list=ang_dist_list, z_list=z_list,
+                                          Ok0=Ok0, K=K.value)
+
     def test_angular_diameter_distance(self):
         z = 1.0
         da = self.cosmo.angular_diameter_distance(z=[z])
@@ -43,8 +63,17 @@ class TestCosmoInterp(object):
         npt.assert_almost_equal(da_interp / da, 1, decimal=3)
         assert da.unit == da_interp.unit
 
+        da_interp = self.cosmo_ok_input.angular_diameter_distance(z=z)
+        npt.assert_almost_equal(da_interp / da, 1, decimal=3)
+        assert da.unit == da_interp.unit
+
         da = self.cosmo_ok_neg.angular_diameter_distance(z=z)
         da_interp = self.cosmo_interp_ok_neg.angular_diameter_distance(z=z)
+        npt.assert_almost_equal(da_interp / da, 1, decimal=3)
+        assert da.unit == da_interp.unit
+
+        da_interp = self.cosmo_ok_neg_input.angular_diameter_distance(z=z)
+        print(da_interp, da, 'test')
         npt.assert_almost_equal(da_interp / da, 1, decimal=3)
         assert da.unit == da_interp.unit
 
@@ -76,6 +105,14 @@ class TestCosmoInterp(object):
         delta_a_interp = self.cosmo_interp_ok.angular_diameter_distance_z1z2(
             z1=z1, z2=z2
         )
+        npt.assert_almost_equal(delta_a_interp / delta_a, 1, decimal=3)
+        assert delta_a.unit == delta_a_interp.unit
+
+        delta_a_interp = self.cosmo_ok_input.angular_diameter_distance_z1z2(
+            z1=z1, z2=z2
+        )
+        print(delta_a_interp, 'test delta_a_interp')
+        print(delta_a, 'test delta_a')
         npt.assert_almost_equal(delta_a_interp / delta_a, 1, decimal=3)
         assert delta_a.unit == delta_a_interp.unit
 

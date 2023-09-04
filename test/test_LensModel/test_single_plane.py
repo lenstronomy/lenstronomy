@@ -90,6 +90,7 @@ class TestLensModel(object):
             "SHEAR_GAMMA_PSI",
             "CURVED_ARC_CONST",
             "NFW_MC",
+            "NFW_MC_ELLIPSE",
             "ARC_PERT",
             "MULTIPOLE",
             "CURVED_ARC_SPP",

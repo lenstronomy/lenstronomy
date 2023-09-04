@@ -48,7 +48,7 @@ class CosmoInterp(object):
                 Ok0 = 0
                 K = 0
             self.Ok0 = Ok0
-            self.k = K / units.Mpc ** 2  # in units inverse Mpc^2
+            self.k = K / units.Mpc**2  # in units inverse Mpc^2
             self._comoving_distance_interpolation_func = self._interpolate_ang_dist(
                 ang_dist_list, z_list, self.Ok0, self.k.value
             )

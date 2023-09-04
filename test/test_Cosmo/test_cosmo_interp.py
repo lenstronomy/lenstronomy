@@ -38,18 +38,30 @@ class TestCosmoInterp(object):
         ang_dist_list = self.cosmo_ok.angular_diameter_distance(z_list).value
         Ok0 = self.cosmo_ok._Ok0
         dh = self.cosmo_ok._hubble_distance
-        K = - Ok0 / dh ** 2
-        self.cosmo_ok_input = CosmoInterp(cosmo=None, z_stop=None, num_interp=None,
-                                          ang_dist_list=ang_dist_list, z_list=z_list,
-                                          Ok0=Ok0, K=K.value)
+        K = -Ok0 / dh**2
+        self.cosmo_ok_input = CosmoInterp(
+            cosmo=None,
+            z_stop=None,
+            num_interp=None,
+            ang_dist_list=ang_dist_list,
+            z_list=z_list,
+            Ok0=Ok0,
+            K=K.value,
+        )
 
         ang_dist_list = self.cosmo_ok_neg.angular_diameter_distance(z_list).value
         Ok0 = self.cosmo_ok_neg._Ok0
         dh = self.cosmo_ok_neg._hubble_distance
-        K = - Ok0 / dh ** 2
-        self.cosmo_ok_neg_input = CosmoInterp(cosmo=None, z_stop=None, num_interp=None,
-                                          ang_dist_list=ang_dist_list, z_list=z_list,
-                                          Ok0=Ok0, K=K.value)
+        K = -Ok0 / dh**2
+        self.cosmo_ok_neg_input = CosmoInterp(
+            cosmo=None,
+            z_stop=None,
+            num_interp=None,
+            ang_dist_list=ang_dist_list,
+            z_list=z_list,
+            Ok0=Ok0,
+            K=K.value,
+        )
 
     def test_angular_diameter_distance(self):
         z = 1.0
@@ -73,7 +85,7 @@ class TestCosmoInterp(object):
         assert da.unit == da_interp.unit
 
         da_interp = self.cosmo_ok_neg_input.angular_diameter_distance(z=z)
-        print(da_interp, da, 'test')
+        print(da_interp, da, "test")
         npt.assert_almost_equal(da_interp / da, 1, decimal=3)
         assert da.unit == da_interp.unit
 
@@ -111,8 +123,8 @@ class TestCosmoInterp(object):
         delta_a_interp = self.cosmo_ok_input.angular_diameter_distance_z1z2(
             z1=z1, z2=z2
         )
-        print(delta_a_interp, 'test delta_a_interp')
-        print(delta_a, 'test delta_a')
+        print(delta_a_interp, "test delta_a_interp")
+        print(delta_a, "test delta_a")
         npt.assert_almost_equal(delta_a_interp / delta_a, 1, decimal=3)
         assert delta_a.unit == delta_a_interp.unit
 

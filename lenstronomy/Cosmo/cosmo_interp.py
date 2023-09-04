@@ -1,5 +1,6 @@
 import astropy
 
+
 if float(astropy.__version__[0]) < 5.0:
     from astropy.cosmology.core import isiterable
 
@@ -12,7 +13,6 @@ else:
     from astropy.cosmology.utils import isiterable
 #
 from astropy import units
-from math import sqrt
 import numpy as np
 import copy
 from scipy.interpolate import interp1d
@@ -23,31 +23,60 @@ class CosmoInterp(object):
     diameter distances from it This class is modifying the astropy.cosmology
     routines."""
 
-    def __init__(self, cosmo, z_stop, num_interp):
+    def __init__(
+        self,
+        cosmo=None,
+        z_stop=None,
+        num_interp=None,
+        ang_dist_list=None,
+        z_list=None,
+        Ok0=None,
+        K=None,
+    ):
         """
 
         :param cosmo: astropy.cosmology instance (version 4.0 as private functions need to be supported)
         :param z_stop: maximum redshift for the interpolation
         :param num_interp: int, number of interpolating steps
+        :param ang_dist_list: array of angular diameter distances in Mpc to be interpolated (optional)
+        :param z_list: list of redshifts corresponding to ang_dist_list (optional)
+        :param Ok0: Omega_k(z=0)
+        :param K: Omega_k / (hubble distance)^2  in Mpc^-2
         """
-        self._cosmo = cosmo
-        if float(astropy.__version__[0]) < 5.0:
-            from lenstronomy.Cosmo._cosmo_interp_astropy_v4 import (
-                CosmoInterp as CosmoInterp_,
+        if cosmo is None:
+            if Ok0 is None:
+                Ok0 = 0
+                K = 0
+            self.Ok0 = Ok0
+            self.k = K / units.Mpc**2  # in units inverse Mpc^2
+            self._comoving_distance_interpolation_func = self._interpolate_ang_dist(
+                ang_dist_list, z_list, self.Ok0, self.k.value
             )
 
-            self._comoving_interp = CosmoInterp_(cosmo)
         else:
-            from lenstronomy.Cosmo._cosmo_interp_astropy_v5 import (
-                CosmoInterp as CosmoInterp_,
-            )
+            self._cosmo = cosmo
+            self.Ok0 = self._cosmo._Ok0
+            dh = self._cosmo._hubble_distance
+            self.k = -self.Ok0 / dh**2
 
-            self._comoving_interp = CosmoInterp_(cosmo)
-        self._comoving_distance_interpolation_func = (
-            self._interpolate_comoving_distance(
-                z_start=0, z_stop=z_stop, num_interp=num_interp
+            if float(astropy.__version__[0]) < 5.0:
+                from lenstronomy.Cosmo._cosmo_interp_astropy_v4 import (
+                    CosmoInterp as CosmoInterp_,
+                )
+
+                self._comoving_interp = CosmoInterp_(cosmo)
+            else:
+                from lenstronomy.Cosmo._cosmo_interp_astropy_v5 import (
+                    CosmoInterp as CosmoInterp_,
+                )
+
+                self._comoving_interp = CosmoInterp_(cosmo)
+            self._comoving_distance_interpolation_func = (
+                self._interpolate_comoving_distance(
+                    z_start=0, z_stop=z_stop, num_interp=num_interp
+                )
             )
-        )
+        self._abs_sqrt_k = np.sqrt(abs(self.k))
 
     def _comoving_distance_interp(self, z):
         """
@@ -154,16 +183,13 @@ class CosmoInterp(object):
         some texts.
         """
 
-        Ok0 = self._cosmo._Ok0
         dc = self._comoving_distance_z1z2(z1, z2)
-        if Ok0 == 0:
+        if np.fabs(self.Ok0) < 1.0e-6:
             return dc
-        sqrtOk0 = sqrt(abs(Ok0))
-        dh = self._cosmo._hubble_distance
-        if Ok0 > 0:
-            return dh / sqrtOk0 * np.sinh(sqrtOk0 * dc.value / dh.value)
+        elif self.k < 0:
+            return 1.0 / self._abs_sqrt_k * np.sinh(self._abs_sqrt_k.value * dc.value)
         else:
-            return dh / sqrtOk0 * np.sin(sqrtOk0 * dc.value / dh.value)
+            return 1.0 / self._abs_sqrt_k * np.sin(self._abs_sqrt_k.value * dc.value)
 
     def _comoving_distance_z1z2(self, z1, z2):
         """Comoving line-of-sight distance in Mpc between objects at redshifts z1 and
@@ -203,3 +229,31 @@ class CosmoInterp(object):
             running_dist += delta_dist.value
             ang_dist[i + 1] = copy.deepcopy(running_dist)
         return interp1d(z_steps, ang_dist)
+
+    def _interpolate_ang_dist(self, ang_dist_list, z_list, Ok0, K):
+        """Translates angular diameter distances to transversal comoving distances.
+
+        :param ang_dist_list: angular diameter distances in units Mpc
+        :type ang_dist_list: numpy array
+        :param z_list: redshifts corresponding to ang_dist_list
+        :type z_list: numpy array
+        :param Ok0: Omega_k(z=0)
+        :param K: Omega_k / (hubble distance)^2 in Mpc^-2
+        :return: interpolation function of transversal comoving diameter distance [Mpc]
+        """
+        ang_dist_list = np.asanyarray(ang_dist_list)
+        z_list = np.asanyarray(z_list)
+        if z_list[0] > 0:  # if redshift zero is not in input, add it
+            z_list = np.append(0, z_list)
+            ang_dist_list = np.append(0, ang_dist_list)
+        if np.fabs(Ok0) < 1.0e-6:
+            comoving_dist_list = ang_dist_list * (1.0 + z_list)
+        elif K < 0:
+            comoving_dist_list = np.arcsinh(
+                ang_dist_list * (1.0 + z_list) * np.sqrt(-K)
+            ) / np.sqrt(-K)
+        else:
+            comoving_dist_list = np.arcsin(
+                ang_dist_list * (1.0 + z_list) * np.sqrt(K)
+            ) / np.sqrt(K)
+        return interp1d(z_list, comoving_dist_list)

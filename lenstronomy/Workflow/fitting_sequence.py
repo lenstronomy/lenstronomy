@@ -422,20 +422,22 @@ class FittingSequence(object):
     ):
         """Run (Dynamic) Nested Sampling algorithms, depending on the type of algorithm.
 
-        :param sampler_type: 'MULTINEST', 'DYPOLYCHORD', 'DYNESTY' :param kwargs_run:
-        keywords passed to the core sampling method :param prior_type: 'uniform' of
-        'gaussian', for converting the unit hypercube to param cube :param width_scale:
-        scale the width (lower/upper limits) of the parameters space by this factor
+        :param sampler_type: 'MULTINEST', 'DYPOLYCHORD', 'DYNESTY'
+        :param kwargs_run: keywords passed to the core sampling method
+        :param prior_type: 'uniform' of
+            'gaussian', for converting the unit hypercube to param cube :param width_scale:
+            scale the width (lower/upper limits) of the parameters space by this factor
         :param sigma_scale: if prior_type is 'gaussian', scale the gaussian sigma by
-        this factor :param output_basename: name of the folder in which the core
-        MultiNest/PolyChord code will save output files :param remove_output_dir: if
-        True, the above folder is removed after completion :param
-        dypolychord_dynamic_goal: dynamic goal for DyPolyChord (trade-off between
-        evidence (0) and posterior (1) computation) :param polychord_settings: settings
-        dictionary to send to pypolychord. Check dypolychord documentation for details.
+            this factor
+        :param output_basename: name of the folder in which the core
+            MultiNest/PolyChord code will save output files
+        :param remove_output_dir: if True, the above folder is removed after completion
+        :param dypolychord_dynamic_goal: dynamic goal for DyPolyChord (trade-off between
+            evidence (0) and posterior (1) computation) :param polychord_settings: settings
+            dictionary to send to pypolychord. Check dypolychord documentation for details.
         :param dypolychord_seed_increment: seed increment for dypolychord with MPI.
-        Check dypolychord documentation for details. :param dynesty_bound: see
-        https://dynesty.readthedocs.io
+            Check dypolychord documentation for details.
+        :param dynesty_bound: see https://dynesty.readthedocs.io
         :param sampler_type: 'MULTINEST', 'DYPOLYCHORD', 'DYNESTY'
         :param kwargs_run: keywords passed to the core sampling method
         :param prior_type: 'uniform' of 'gaussian', for converting the unit hypercube to

@@ -257,6 +257,7 @@ class SingleBandMultiModel(ImageLinearFit):
 
         The linear parameters are computed with a weighted linear least square
         optimization (i.e. flux normalization of the brightness profiles)
+
         :param kwargs_lens: list of keyword arguments corresponding to the superposition
             of different lens profiles
         :param kwargs_source: list of keyword arguments corresponding to the

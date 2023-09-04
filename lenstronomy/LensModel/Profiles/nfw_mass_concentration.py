@@ -73,8 +73,6 @@ class NFWMC(LensProfileBase):
 
         :param logM: log10(M200)
         :param concentration: halo concentration c = r_200 / r_s
-        :param *args: not used
-        :param **kwargs: not used
         :return:
         """
         self._static = True

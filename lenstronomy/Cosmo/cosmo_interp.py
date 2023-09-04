@@ -23,7 +23,8 @@ class CosmoInterp(object):
     diameter distances from it This class is modifying the astropy.cosmology
     routines."""
 
-    def __init__(self, cosmo, z_stop, num_interp, ang_dist_list=None, z_list=None, Ok0=None, K=None):
+    def __init__(self, cosmo=None, z_stop=None, num_interp=None,
+                 ang_dist_list=None, z_list=None, Ok0=None, K=None):
         """
 
         :param cosmo: astropy.cosmology instance (version 4.0 as private functions need to be supported)

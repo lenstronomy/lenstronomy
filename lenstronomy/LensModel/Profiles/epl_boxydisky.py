@@ -24,10 +24,12 @@ class EPL_BOXYDISKY(LensProfileBase):
     :param e2: eccentricity. For details, read lenstronomy.Util.param_util.phi_q2_ellipticity document.
     :param center_x: center of distortion
     :param center_y: center of distortion
-    :param a_m: multipole strength. The profile becomes disky when a_m>0 and boxy when a_m<0
+    :param a4_a: Strength of the deviation of multipole order 4 of the elliptical isodensity contours,
+    which is translated into the multipole strength from the MULTIPOLE class through a rescaling by theta_E / sqrt(q).
+    Profile is disky when a4_a>0 and boxy when a4_a<0.
     """
 
-    param_names = ["theta_E", "gamma", "e1", "e2", "center_x", "center_y", "a_m"]
+    param_names = ["theta_E", "gamma", "e1", "e2", "center_x", "center_y", "a4_a"]
     lower_limit_default = {
         "theta_E": 0,
         "gamma": 1.5,
@@ -35,7 +37,7 @@ class EPL_BOXYDISKY(LensProfileBase):
         "e2": -0.5,
         "center_x": -100,
         "center_y": -100,
-        "a_m": -0.1,
+        "a4_a": -0.1,
     }
     upper_limit_default = {
         "theta_E": 100,
@@ -44,7 +46,7 @@ class EPL_BOXYDISKY(LensProfileBase):
         "e2": 0.5,
         "center_x": 100,
         "center_y": 100,
-        "a_m": +0.1,
+        "a4_a": +0.1,
     }
 
     def __init__(self):
@@ -53,7 +55,7 @@ class EPL_BOXYDISKY(LensProfileBase):
         self._m = int(4)
         super(EPL_BOXYDISKY, self).__init__()
 
-    def _param_split(self, theta_E, gamma, e1, e2, a_m, center_x=0, center_y=0):
+    def _param_split(self, theta_E, gamma, e1, e2, a4_a, center_x=0, center_y=0):
         """This function splits the keyword arguments for the EPL and multipole
         profiles.
 
@@ -61,13 +63,11 @@ class EPL_BOXYDISKY(LensProfileBase):
         :param gamma: log-slope of EPL mass profile
         :param e1: ellipticity of EPL profile (along 1st axis)
         :param e2: ellipticity of EPL profile (along 2nd axis)
-        :param a_m: amplitude of the multipole mass profile
+        :param a4_a: amplitude of the multipole mass profile
         :param center_x: center of the profile
         :param center_y: center of the profile
         :return: the keyword arguments for the joint profile
         """
-        # this function converts a given parameter set of EPL_BOXYDISKY into two parameter sets; one for EPL and the
-        # other for Multipole with m=4.
 
         phi, q = param_util.ellipticity2phi_q(e1, e2)
         rescale_am = theta_E / np.sqrt(q)
@@ -81,14 +81,14 @@ class EPL_BOXYDISKY(LensProfileBase):
         }
         kwargs_multipole = {
             "m": self._m,
-            "a_m": a_m * rescale_am,
+            "a_m": a4_a * rescale_am,
             "phi_m": phi,
             "center_x": center_x,
             "center_y": center_y,
         }
         return kwargs_epl, kwargs_multipole
 
-    def function(self, x, y, theta_E, gamma, e1, e2, a_m, center_x=0, center_y=0):
+    def function(self, x, y, theta_E, gamma, e1, e2, a4_a, center_x=0, center_y=0):
         """
 
         :param x: x-coordinate in image plane
@@ -97,19 +97,19 @@ class EPL_BOXYDISKY(LensProfileBase):
         :param gamma: power law slope
         :param e1: eccentricity component
         :param e2: eccentricity component
-        :param a_m: multipole strength. The profile becomes disky when a_m>0 and boxy when a_m<0
+        :param a4_a: multipole strength. The profile becomes disky when a4_a>0 and boxy when a4_a<0
         :param center_x: profile center
         :param center_y: profile center
         :return: lensing potential
         """
         kwargs_epl, kwargs_multipole = self._param_split(
-            theta_E, gamma, e1, e2, a_m, center_x=center_x, center_y=center_y
+            theta_E, gamma, e1, e2, a4_a, center_x=center_x, center_y=center_y
         )
         f_epl = self._epl.function(x, y, **kwargs_epl)
         f_multipole = self._multipole.function(x, y, **kwargs_multipole)
         return f_epl + f_multipole
 
-    def derivatives(self, x, y, theta_E, gamma, e1, e2, a_m, center_x=0, center_y=0):
+    def derivatives(self, x, y, theta_E, gamma, e1, e2, a4_a, center_x=0, center_y=0):
         """
 
         :param x: x-coordinate in image plane
@@ -118,13 +118,13 @@ class EPL_BOXYDISKY(LensProfileBase):
         :param gamma: power law slope
         :param e1: eccentricity component
         :param e2: eccentricity component
-        :param a_m: multipole strength. The profile becomes disky when a_m>0 and boxy when a_m<0
+        :param a4_a: multipole strength. The profile becomes disky when a4_a>0 and boxy when a4_a<0
         :param center_x: profile center
         :param center_y: profile center
         :return: alpha_x, alpha_y
         """
         kwargs_epl, kwargs_multipole = self._param_split(
-            theta_E, gamma, e1, e2, a_m, center_x=center_x, center_y=center_y
+            theta_E, gamma, e1, e2, a4_a, center_x=center_x, center_y=center_y
         )
         f_x_epl, f_y_epl = self._epl.derivatives(x, y, **kwargs_epl)
         f_x_multipole, f_y_multipole = self._multipole.derivatives(
@@ -134,7 +134,7 @@ class EPL_BOXYDISKY(LensProfileBase):
         f_y = f_y_epl + f_y_multipole
         return f_x, f_y
 
-    def hessian(self, x, y, theta_E, gamma, e1, e2, a_m, center_x=0, center_y=0):
+    def hessian(self, x, y, theta_E, gamma, e1, e2, a4_a, center_x=0, center_y=0):
         """
 
         :param x: x-coordinate in image plane
@@ -143,13 +143,13 @@ class EPL_BOXYDISKY(LensProfileBase):
         :param gamma: power law slope
         :param e1: eccentricity component
         :param e2: eccentricity component
-        :param a_m: multipole strength. The profile becomes disky when a_m>0 and boxy when a_m<0
+        :param a4_a: multipole strength. The profile becomes disky when a4_a>0 and boxy when a4_a<0
         :param center_x: profile center
         :param center_y: profile center
         :return: f_xx, f_xy, f_yx, f_yy
         """
         kwargs_epl, kwargs_multipole = self._param_split(
-            theta_E, gamma, e1, e2, a_m, center_x=center_x, center_y=center_y
+            theta_E, gamma, e1, e2, a4_a, center_x=center_x, center_y=center_y
         )
         f_xx_epl, f_xy_epl, f_yx_epl, f_yy_epl = self._epl.hessian(x, y, **kwargs_epl)
         (

@@ -172,7 +172,7 @@ class MultiPlane(object):
         T_ij_start=None,
         T_ij_end=None,
     ):
-        """Ray-tracing through parts of the coin, starting with (x,y) co-moving
+        """Ray-tracing through parts of the cone, starting with (x,y) co-moving
         distances and angles (alpha_x, alpha_y) at redshift z_start and then backwards
         to redshift z_stop.
 

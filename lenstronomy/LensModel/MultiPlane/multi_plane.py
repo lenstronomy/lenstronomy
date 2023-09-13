@@ -172,7 +172,7 @@ class MultiPlane(object):
         T_ij_start=None,
         T_ij_end=None,
     ):
-        """Ray-tracing through parts of the coin, starting with (x,y) co-moving
+        """Ray-tracing through parts of the cone, starting with (x,y) co-moving
         distances and angles (alpha_x, alpha_y) at redshift z_start and then backwards
         to redshift z_stop.
 
@@ -335,6 +335,99 @@ class MultiPlane(object):
         f_xy = dalpha_radec
         f_yx = dalpha_decra
         return f_xx, f_xy, f_yx, f_yy
+
+    def hessian_z1z2(self, z1, z2, theta_x, theta_y, kwargs_lens, diff=0.00000001):
+        """Computes Hessian matrix when Observed at z1 with rays going to z2 with z1 <
+        z2.
+
+        :param z1: Observer redshift
+        :param z2: source redshift
+        :param theta_x: angular position and direction of the ray
+        :param theta_y: angular position and direction of the ray
+        :param kwargs_lens: list of keyword arguments of lens model parameters matching
+            the lens model classes
+        :param diff: numerical differential step (float)
+        :return: f_xx, f_xy, f_yx, f_yy
+        """
+
+        T_0z1 = self._multi_plane_base._cosmo_bkg.T_xy(0, z1)
+        x = theta_x * T_0z1
+        y = theta_x * T_0z1
+        x_s0, y_s0, _, _ = self.ray_shooting_partial(
+            x=x,
+            y=y,
+            alpha_x=theta_x,
+            alpha_y=theta_y,
+            z_start=z1,
+            z_stop=z2,
+            kwargs_lens=kwargs_lens,
+            include_z_start=False,
+            check_convention=True,
+            T_ij_start=None,
+            T_ij_end=None,
+        )
+        beta_x0, beta_y0 = self.co_moving2angle_z1_z2(x_s0, y_s0, z1=z1, z2=z2)
+        alpha_ra = theta_x - beta_x0
+        alpha_dec = theta_y - beta_y0
+
+        x_s_dx, y_s_dx, _, _ = self.ray_shooting_partial(
+            x=x,
+            y=y,
+            alpha_x=theta_x + diff,
+            alpha_y=theta_y,
+            z_start=z1,
+            z_stop=z2,
+            kwargs_lens=kwargs_lens,
+            include_z_start=False,
+            check_convention=True,
+            T_ij_start=None,
+            T_ij_end=None,
+        )
+        beta_x_dx, beta_y_dx = self.co_moving2angle_z1_z2(x_s_dx, y_s_dx, z1=z1, z2=z2)
+        alpha_ra_dx = theta_x + diff - beta_x_dx
+        alpha_dec_dx = theta_y - beta_y_dx
+
+        x_s_dy, y_s_dy, _, _ = self.ray_shooting_partial(
+            x=x,
+            y=y,
+            alpha_x=theta_x,
+            alpha_y=theta_y + diff,
+            z_start=z1,
+            z_stop=z2,
+            kwargs_lens=kwargs_lens,
+            include_z_start=False,
+            check_convention=True,
+            T_ij_start=None,
+            T_ij_end=None,
+        )
+        beta_x_dy, beta_y_dy = self.co_moving2angle_z1_z2(x_s_dy, y_s_dy, z1=z1, z2=z2)
+        alpha_ra_dy = theta_x - beta_x_dy
+        alpha_dec_dy = theta_y + diff - beta_y_dy
+
+        dalpha_rara = (alpha_ra_dx - alpha_ra) / diff
+        dalpha_radec = (alpha_ra_dy - alpha_ra) / diff
+        dalpha_decra = (alpha_dec_dx - alpha_dec) / diff
+        dalpha_decdec = (alpha_dec_dy - alpha_dec) / diff
+
+        f_xx = dalpha_rara
+        f_yy = dalpha_decdec
+        f_xy = dalpha_radec
+        f_yx = dalpha_decra
+        return f_xx, f_xy, f_yx, f_yy
+
+    def co_moving2angle_z1_z2(self, x, y, z1, z2):
+        """Computes angle for co-moving distance at z=z2 when seen from z=z1.
+
+        :param x: co-moving distance at z=z2
+        :param y: co-moving distance at z=z2
+        :param z1: redshift of observer
+        :param z2: redshift of source
+        :return: theta_z, theta_y
+        """
+        T_z1_z2 = self._multi_plane_base._cosmo_bkg.T_xy(z1, z2)
+        theta_x = x / T_z1_z2
+        theta_y = y / T_z1_z2
+        return theta_x, theta_y
 
     def co_moving2angle_source(self, x, y):
         """Special case of the co_moving2angle definition at the source redshift.

@@ -524,6 +524,50 @@ class TestMultiPlane(object):
             npt.assert_almost_equal(betax1, betax2)
             npt.assert_almost_equal(betay1, betay2)
 
+    def test_co_moving2angle_z1_z2(self):
+        z_source = 1.5
+        lens_model_list = ["SIS"]
+        kwargs_lens = [{"theta_E": 1}]
+        redshift_list = [0.5]
+        lensModelMutli = MultiPlane(
+            z_source=z_source,
+            lens_model_list=lens_model_list,
+            lens_redshift_list=redshift_list,
+            z_interp_stop=3,
+            cosmo_interp=False,
+        )
+        z1 = 0.5
+        z2 = 1.5
+        x, y = 1, 0
+        beta_x, beta_y = lensModelMutli.co_moving2angle_z1_z2(x=x, y=y, z1=z1, z2=z2)
+        T_ij_end = lensModelMutli._multi_plane_base._cosmo_bkg.T_xy(
+            z_observer=z1, z_source=z2
+        )
+        npt.assert_almost_equal(beta_x, x / T_ij_end, decimal=7)
+        npt.assert_almost_equal(beta_y, y / T_ij_end, decimal=7)
+
+    def test_hessian_z1z2(self):
+        z_source = 1.5
+        lens_model_list = ["SIS"]
+        kwargs_lens = [{"theta_E": 1}]
+        redshift_list = [0.5]
+        multi_plane = MultiPlane(
+            z_source=z_source,
+            lens_model_list=lens_model_list,
+            lens_redshift_list=redshift_list,
+            z_interp_stop=3,
+            cosmo_interp=False,
+        )
+        z1, z2 = 0, z_source
+        theta_x, theta_y = np.linspace(start=-1, stop=1, num=10), np.linspace(start=-1, stop=1, num=10)
+        f_xx_z12, f_xy_z12, f_yx_z12, f_yy_z12 = multi_plane.hessian_z1z2(z1, z2, theta_x, theta_y,
+                                                                          kwargs_lens, diff=0.00000001)
+        f_xx, f_xy, f_yx, f_yy = multi_plane.hessian(theta_x, theta_y, kwargs_lens, diff=0.00000001)
+        npt.assert_almost_equal(f_xx_z12, f_xx)
+        npt.assert_almost_equal(f_xy_z12, f_xy)
+        npt.assert_almost_equal(f_yx_z12, f_yx)
+        npt.assert_almost_equal(f_yy_z12, f_yy)
+
 
 class TestRaise(unittest.TestCase):
     def test_raise(self):

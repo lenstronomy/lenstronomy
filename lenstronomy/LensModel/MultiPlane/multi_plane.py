@@ -337,8 +337,8 @@ class MultiPlane(object):
         return f_xx, f_xy, f_yx, f_yy
 
     def hessian_z1z2(self, z1, z2, theta_x, theta_y, kwargs_lens, diff=0.00000001):
-        """
-        computes Hessian matrix when Observed at z1 with rays going to z2 with z1 < z2
+        """Computes Hessian matrix when Observed at z1 with rays going to z2 with z1 <
+        z2.
 
         :param z1: Observer redshift
         :param z2: source redshift
@@ -416,9 +416,7 @@ class MultiPlane(object):
         return f_xx, f_xy, f_yx, f_yy
 
     def co_moving2angle_z1_z2(self, x, y, z1, z2):
-        """
-        computes angle for co-moving distance at z=z2 when seen
-        from z=z1
+        """Computes angle for co-moving distance at z=z2 when seen from z=z1.
 
         :param x: co-moving distance at z=z2
         :param y: co-moving distance at z=z2

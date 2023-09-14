@@ -96,8 +96,7 @@ class TestMassProfile(object):
         print(np.array(sigma_r_num_array) / np.array(sigma_r_analytic_array))
 
     def test_lum_weighted_vel_disp(self):
-        """Test luminosity weighted velocity dispersion
-        """
+        """Test luminosity weighted velocity dispersion."""
         light_profile_list = ["HERNQUIST"]
         r_eff = 0.5
         Rs = 0.551 * r_eff
@@ -135,7 +134,9 @@ class TestMassProfile(object):
         numeric_kin = NumericKinematics(kwargs_model, kwargs_cosmo, **kwargs_numerics)
 
         R = 1
-        vel_disp = numeric_kin.lum_weighted_vel_disp(R, kwargs_mass, kwargs_light, kwargs_anisotropy)
+        vel_disp = numeric_kin.lum_weighted_vel_disp(
+            R, kwargs_mass, kwargs_light, kwargs_anisotropy
+        )
         npt.assert_almost_equal(vel_disp, 78, decimal=-1)
 
     def test_sigma_s2(self):

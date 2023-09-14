@@ -67,7 +67,7 @@ class NumericKinematics(Anisotropy):
         self._lum_weight_int_method = lum_weight_int_method
 
     def lum_weighted_vel_disp(self, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
-        """Luminosity-weighted line-of-sight velocity dispersion within a radius R
+        """Luminosity-weighted line-of-sight velocity dispersion within a radius R.
 
         :param R: 2d projected radius (in angular units of arcsec)
         :param kwargs_mass: mass model parameters (following lenstronomy lens model
@@ -81,7 +81,9 @@ class NumericKinematics(Anisotropy):
         """
         # bins in I_R
         r_rad = np.linspace(0.0001, R, num=50)
-        I_R_sigma2_rad, I_R_rad = self._I_R_sigma2_interp(r_rad, kwargs_mass, kwargs_light, kwargs_anisotropy)
+        I_R_sigma2_rad, I_R_rad = self._I_R_sigma2_interp(
+            r_rad, kwargs_mass, kwargs_light, kwargs_anisotropy
+        )
         # azimuthal averaging
         I_R_sigma2 = np.sum(I_R_sigma2_rad * r_rad)
         I_R = np.sum(I_R_rad)

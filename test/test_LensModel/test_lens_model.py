@@ -213,17 +213,21 @@ class TestLensModel(object):
         lens_model_list = ["SIS"]
         kwargs_lens = [{"theta_E": 1}]
         redshift_list = [0.5]
-        lensModel = LensModel(lens_model_list=lens_model_list,
-                              multi_plane=True,
-                              lens_redshift_list=redshift_list,
-                              z_source=z_source)
+        lensModel = LensModel(
+            lens_model_list=lens_model_list,
+            multi_plane=True,
+            lens_redshift_list=redshift_list,
+            z_source=z_source,
+        )
         z1, z2 = 0.5, 1.5
         theta_x, theta_y = np.linspace(start=-1, stop=1, num=10), np.linspace(
             start=-1, stop=1, num=10
         )
         diff = 0.0000001
 
-        f_xx, f_xy, f_yx, f_yy = lensModel.hessian_z1z2(z1, z2, theta_x, theta_y, kwargs_lens, diff=diff)
+        f_xx, f_xy, f_yx, f_yy = lensModel.hessian_z1z2(
+            z1, z2, theta_x, theta_y, kwargs_lens, diff=diff
+        )
         # Use the method in multi_plane.hessian_z1z2 as a comparison
         multi_plane = MultiPlane(
             z_source=1.5,
@@ -232,12 +236,19 @@ class TestLensModel(object):
             z_interp_stop=3,
             cosmo_interp=False,
         )
-        f_xx_expected, f_xy_expected, f_yx_expected, f_yy_expected = multi_plane.hessian_z1z2(z1=z1,
-                                                                                              z2=z2,
-                                                                                              theta_x=theta_x,
-                                                                                              theta_y=theta_y,
-                                                                                              kwargs_lens=kwargs_lens,
-                                                                                              diff=diff)
+        (
+            f_xx_expected,
+            f_xy_expected,
+            f_yx_expected,
+            f_yy_expected,
+        ) = multi_plane.hessian_z1z2(
+            z1=z1,
+            z2=z2,
+            theta_x=theta_x,
+            theta_y=theta_y,
+            kwargs_lens=kwargs_lens,
+            diff=diff,
+        )
         npt.assert_almost_equal(f_xx, f_xx_expected, decimal=5)
         npt.assert_almost_equal(f_xy, f_xy_expected, decimal=5)
         npt.assert_almost_equal(f_yx, f_yx_expected, decimal=5)
@@ -315,6 +326,7 @@ class TestRaise(unittest.TestCase):
             lensModel.hessian_z1z2(1.5, 1.5, 1, 1, kwargs)
         with self.assertRaises(ValueError):
             lensModel.hessian_z1z2(2.0, 1.5, 1, 1, kwargs)
+
 
 if __name__ == "__main__":
     pytest.main("-k TestLensModel")

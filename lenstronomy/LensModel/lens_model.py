@@ -539,6 +539,8 @@ class LensModel(object):
         if z1 >= z2:
             raise ValueError("z1 needs to be smaller than z2")
 
-        f_xx, f_xy, f_yx, f_yy = self.lens_model.hessian_z1z2(z1, z2, theta_x, theta_y, kwargs_lens, diff=diff)
+        f_xx, f_xy, f_yx, f_yy = self.lens_model.hessian_z1z2(
+            z1, z2, theta_x, theta_y, kwargs_lens, diff=diff
+        )
 
         return f_xx, f_xy, f_yx, f_yy

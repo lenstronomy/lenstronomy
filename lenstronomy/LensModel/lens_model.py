@@ -516,3 +516,29 @@ class LensModel(object):
         f_yy = (alpha_dec_pp - alpha_dec_pn + alpha_dec_np - alpha_dec_nn) / diff / 2
 
         return f_xx, f_xy, f_yx, f_yy
+
+    def hessian_z1z2(self, z1, z2, theta_x, theta_y, kwargs_lens, diff=0.00000001):
+        """Computes Hessian matrix when Observed at z1 with rays going to z2 with z1 <
+        z2 for multi_plane.
+
+        :param z1: Observer redshift
+        :param z2: source redshift
+        :param theta_x: angular position and direction of the ray
+        :param theta_y: angular position and direction of the ray
+        :param kwargs_lens: list of keyword arguments of lens model parameters matching
+            the lens model classes
+        :param diff: numerical differential step (float)
+        :return: f_xx, f_xy, f_yx, f_yy
+        """
+        if diff is None:
+            raise ValueError(
+                "diff needs to be set to compute the numerical differential"
+            )
+        if self.multi_plane is False:
+            raise ValueError("Hessian z1z2 need to be compute in multi-plane mode")
+        if z1 >= z2:
+            raise ValueError("z1 needs to be smaller than z2")
+
+        f_xx, f_xy, f_yx, f_yy = self.lens_model.hessian_z1z2(z1, z2, theta_x, theta_y, kwargs_lens, diff=diff)
+
+        return f_xx, f_xy, f_yx, f_yy

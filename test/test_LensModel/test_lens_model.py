@@ -4,6 +4,7 @@ import numpy as np
 import numpy.testing as npt
 import pytest
 from lenstronomy.LensModel.lens_model import LensModel
+from lenstronomy.LensModel.MultiPlane.multi_plane import MultiPlane
 from lenstronomy.LensModel.Profiles.nfw import NFW
 from lenstronomy.Util.util import make_grid
 import unittest
@@ -207,6 +208,46 @@ class TestLensModel(object):
         npt.assert_almost_equal(f_yx_sq, f_yx, decimal=5)
         npt.assert_almost_equal(f_yy_sq, f_yy, decimal=5)
 
+    def test_hessian_z1z2(self):
+        z_source = 1.5
+        lens_model_list = ["SIS"]
+        kwargs_lens = [{"theta_E": 1}]
+        redshift_list = [0.5]
+        lensModel = LensModel(
+            lens_model_list=lens_model_list,
+            multi_plane=True,
+            lens_redshift_list=redshift_list,
+            z_source=z_source,
+        )
+        z1, z2 = 0.5, 1.5
+        theta_x, theta_y = np.linspace(start=-1, stop=1, num=10), np.linspace(
+            start=-1, stop=1, num=10
+        )
+
+        f_xx, f_xy, f_yx, f_yy = lensModel.hessian_z1z2(
+            z1, z2, theta_x, theta_y, kwargs_lens
+        )
+        # Use the method in multi_plane.hessian_z1z2 as a comparison
+        multi_plane = MultiPlane(
+            z_source=1.5,
+            lens_model_list=lens_model_list,
+            lens_redshift_list=redshift_list,
+            z_interp_stop=3,
+            cosmo_interp=False,
+        )
+        (
+            f_xx_expected,
+            f_xy_expected,
+            f_yx_expected,
+            f_yy_expected,
+        ) = multi_plane.hessian_z1z2(
+            z1=z1, z2=z2, theta_x=theta_x, theta_y=theta_y, kwargs_lens=kwargs_lens
+        )
+        npt.assert_almost_equal(f_xx, f_xx_expected, decimal=5)
+        npt.assert_almost_equal(f_xy, f_xy_expected, decimal=5)
+        npt.assert_almost_equal(f_yx, f_yx_expected, decimal=5)
+        npt.assert_almost_equal(f_yy, f_yy_expected, decimal=5)
+
 
 class TestRaise(unittest.TestCase):
     def test_raise(self):
@@ -250,6 +291,31 @@ class TestRaise(unittest.TestCase):
                 multi_plane=True,
                 z_source=1.0,
             )
+
+    def test_hessian_z1z2_raise(self):
+        lensModel = LensModel(
+            lens_model_list=["SIS"],
+            multi_plane=True,
+            lens_redshift_list=[1],
+            z_source=2,
+        )
+        kwargs = [{"theta_E": 1, "center_x": 0, "center_y": 0}]
+
+        # Test when the model is not in multi-plane mode
+        lensModel_non_multi = LensModel(
+            lens_model_list=["SIS"],
+            multi_plane=False,
+            lens_redshift_list=[1],
+            z_source=2,
+        )
+        with self.assertRaises(ValueError):
+            lensModel_non_multi.hessian_z1z2(0.5, 1.5, 1, 1, kwargs)
+
+        # Test when z1 >= z2
+        with self.assertRaises(ValueError):
+            lensModel.hessian_z1z2(1.5, 1.5, 1, 1, kwargs)
+        with self.assertRaises(ValueError):
+            lensModel.hessian_z1z2(2.0, 1.5, 1, 1, kwargs)
 
 
 if __name__ == "__main__":

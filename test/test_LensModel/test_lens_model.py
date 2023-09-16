@@ -223,10 +223,9 @@ class TestLensModel(object):
         theta_x, theta_y = np.linspace(start=-1, stop=1, num=10), np.linspace(
             start=-1, stop=1, num=10
         )
-        diff = 0.0000001
 
         f_xx, f_xy, f_yx, f_yy = lensModel.hessian_z1z2(
-            z1, z2, theta_x, theta_y, kwargs_lens, diff=diff
+            z1, z2, theta_x, theta_y, kwargs_lens
         )
         # Use the method in multi_plane.hessian_z1z2 as a comparison
         multi_plane = MultiPlane(
@@ -246,8 +245,7 @@ class TestLensModel(object):
             z2=z2,
             theta_x=theta_x,
             theta_y=theta_y,
-            kwargs_lens=kwargs_lens,
-            diff=diff,
+            kwargs_lens=kwargs_lens
         )
         npt.assert_almost_equal(f_xx, f_xx_expected, decimal=5)
         npt.assert_almost_equal(f_xy, f_xy_expected, decimal=5)
@@ -306,10 +304,6 @@ class TestRaise(unittest.TestCase):
             z_source=2,
         )
         kwargs = [{"theta_E": 1, "center_x": 0, "center_y": 0}]
-
-        # Test when diff is None
-        with self.assertRaises(ValueError):
-            lensModel.hessian_z1z2(0.5, 1.5, 1, 1, kwargs, diff=None)
 
         # Test when the model is not in multi-plane mode
         lensModel_non_multi = LensModel(

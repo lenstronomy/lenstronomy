@@ -530,10 +530,6 @@ class LensModel(object):
         :param diff: numerical differential step (float)
         :return: f_xx, f_xy, f_yx, f_yy
         """
-        if diff is None:
-            raise ValueError(
-                "diff needs to be set to compute the numerical differential"
-            )
         if self.multi_plane is False:
             raise ValueError("Hessian z1z2 need to be compute in multi-plane mode")
         if z1 >= z2:

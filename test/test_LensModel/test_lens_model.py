@@ -241,11 +241,7 @@ class TestLensModel(object):
             f_yx_expected,
             f_yy_expected,
         ) = multi_plane.hessian_z1z2(
-            z1=z1,
-            z2=z2,
-            theta_x=theta_x,
-            theta_y=theta_y,
-            kwargs_lens=kwargs_lens
+            z1=z1, z2=z2, theta_x=theta_x, theta_y=theta_y, kwargs_lens=kwargs_lens
         )
         npt.assert_almost_equal(f_xx, f_xx_expected, decimal=5)
         npt.assert_almost_equal(f_xy, f_xy_expected, decimal=5)

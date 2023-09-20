@@ -3,7 +3,6 @@ __author__ = "nataliehogg"
 # man with one sampling method always knows his posterior distribution; man with two never certain.
 
 import numpy as np
-from cobaya.run import run as crun
 
 
 class CobayaSampler(object):
@@ -32,6 +31,7 @@ class CobayaSampler(object):
         """
 
         # get the logL and parameter info from LikelihoodModule
+        self._check_install()
         self._likelihood_module = likelihood_module
         self._num_params, self._param_names = self._likelihood_module.param.num_param()
         (
@@ -219,6 +219,8 @@ class CobayaSampler(object):
         # run the sampler
         # we wrap the call to crun to make sure any MPI exceptions are caught properly
         # this ensures the entire run will be terminated if any individual process breaks
+        from cobaya.run import run as crun
+
         if kwargs["mpi"] == True:
             from mpi4py import MPI
             from cobaya.log import LoggedError
@@ -249,3 +251,15 @@ class CobayaSampler(object):
         best_fit_values = best_fit_series[keys].values.tolist()
 
         return updated_info, sampler, best_fit_values
+
+    @staticmethod
+    def _check_install():
+        try:
+            import cobaya
+        except ImportError:
+            print(
+                "Warning : cobaya not properly installed. \
+                    You can get it with $pip install cobaya."
+            )
+        else:
+            pass

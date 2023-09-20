@@ -1,8 +1,5 @@
 __author__ = "aymgal, johannesulf"
 
-import numpy as np
-import lenstronomy.Util.sampling_util as utils
-import time
 
 from inspect import signature
 from lenstronomy.Sampling.Samplers.base_nested_sampler import NestedSampler

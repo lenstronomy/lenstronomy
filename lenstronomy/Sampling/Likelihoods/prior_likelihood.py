@@ -1,23 +1,33 @@
 import numpy as np
 from lenstronomy.Util.prob_density import KDE1D
 
-__all__ = ['PriorLikelihood']
+__all__ = ["PriorLikelihood"]
 
 
 class PriorLikelihood(object):
-    """
-    class containing additional Gaussian priors to be folded into the likelihood
+    """Class containing additional Gaussian priors to be folded into the likelihood."""
 
-    """
-    def __init__(self, prior_lens=None, prior_source=None, prior_lens_light=None, prior_ps=None, prior_special=None,
-                 prior_extinction=None, prior_lens_kde=None, prior_source_kde=None, prior_lens_light_kde=None,
-                 prior_ps_kde=None,
-                 prior_special_kde=None, prior_extinction_kde=None,
-                 prior_lens_lognormal=None, prior_source_lognormal=None,
-                 prior_lens_light_lognormal=None,
-                 prior_ps_lognormal=None, prior_special_lognormal=None,
-                 prior_extinction_lognormal=None,
-                 ):
+    def __init__(
+        self,
+        prior_lens=None,
+        prior_source=None,
+        prior_lens_light=None,
+        prior_ps=None,
+        prior_special=None,
+        prior_extinction=None,
+        prior_lens_kde=None,
+        prior_source_kde=None,
+        prior_lens_light_kde=None,
+        prior_ps_kde=None,
+        prior_special_kde=None,
+        prior_extinction_kde=None,
+        prior_lens_lognormal=None,
+        prior_source_lognormal=None,
+        prior_lens_light_lognormal=None,
+        prior_ps_lognormal=None,
+        prior_special_lognormal=None,
+        prior_extinction_lognormal=None,
+    ):
         """
 
         :param prior_lens: list of [index_model, param_name, mean, 1-sigma priors]
@@ -43,19 +53,42 @@ class PriorLikelihood(object):
 
         """
 
-        self._prior_lens, self._prior_source, self._prior_lens_light, self._prior_ps, self._prior_special, self._prior_extinction = \
-            prior_lens, prior_source, prior_lens_light, prior_ps, prior_special, prior_extinction
-        self._prior_lens_kde, self._prior_source_kde, self._prior_lens_light_kde, self._prior_ps_kde = prior_lens_kde, \
-                                                                                                       prior_source_kde, \
-                                                                                                       prior_lens_light_kde, \
-                                                                                                       prior_ps_kde
-        self._prior_lens_lognormal, self._prior_source_lognormal, \
-        self._prior_lens_light_lognormal, \
-        self._prior_ps_lognormal, self._prior_special_lognormal, \
-        self._prior_extinction_lognormal = \
-            prior_lens_lognormal, prior_source_lognormal, \
-            prior_lens_light_lognormal, prior_ps_lognormal, \
-            prior_special_lognormal, prior_extinction_lognormal
+        (
+            self._prior_lens,
+            self._prior_source,
+            self._prior_lens_light,
+            self._prior_ps,
+            self._prior_special,
+            self._prior_extinction,
+        ) = (
+            prior_lens,
+            prior_source,
+            prior_lens_light,
+            prior_ps,
+            prior_special,
+            prior_extinction,
+        )
+        (
+            self._prior_lens_kde,
+            self._prior_source_kde,
+            self._prior_lens_light_kde,
+            self._prior_ps_kde,
+        ) = (prior_lens_kde, prior_source_kde, prior_lens_light_kde, prior_ps_kde)
+        (
+            self._prior_lens_lognormal,
+            self._prior_source_lognormal,
+            self._prior_lens_light_lognormal,
+            self._prior_ps_lognormal,
+            self._prior_special_lognormal,
+            self._prior_extinction_lognormal,
+        ) = (
+            prior_lens_lognormal,
+            prior_source_lognormal,
+            prior_lens_light_lognormal,
+            prior_ps_lognormal,
+            prior_special_lognormal,
+            prior_extinction_lognormal,
+        )
 
         self._kde_lens_list = self._init_kde(prior_lens_kde)
         self._kde_source_list = self._init_kde(prior_source_kde)
@@ -78,8 +111,16 @@ class PriorLikelihood(object):
             kde_list.append(KDE1D(values=samples))
         return kde_list
 
-    def logL(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None, kwargs_special=None,
-             kwargs_extinction=None, kwargs_tracer_source=None):
+    def logL(
+        self,
+        kwargs_lens=None,
+        kwargs_source=None,
+        kwargs_lens_light=None,
+        kwargs_ps=None,
+        kwargs_special=None,
+        kwargs_extinction=None,
+        kwargs_tracer_source=None,
+    ):
         """
 
         :param kwargs_lens: lens model parameter list
@@ -93,19 +134,32 @@ class PriorLikelihood(object):
         logL += self._prior_kwargs(kwargs_special, self._prior_special)
         logL += self._prior_kwargs_list(kwargs_extinction, self._prior_extinction)
 
-        logL += self._prior_lognormal_kwargs_list(kwargs_lens,
-                                                  self._prior_lens_lognormal)
-        logL += self._prior_lognormal_kwargs_list(kwargs_source, self._prior_source_lognormal)
-        logL += self._prior_lognormal_kwargs_list(kwargs_lens_light,
-                                        self._prior_lens_light_lognormal)
+        logL += self._prior_lognormal_kwargs_list(
+            kwargs_lens, self._prior_lens_lognormal
+        )
+        logL += self._prior_lognormal_kwargs_list(
+            kwargs_source, self._prior_source_lognormal
+        )
+        logL += self._prior_lognormal_kwargs_list(
+            kwargs_lens_light, self._prior_lens_light_lognormal
+        )
         logL += self._prior_lognormal_kwargs_list(kwargs_ps, self._prior_ps_lognormal)
-        logL += self._prior_lognormal_kwargs(kwargs_special, self._prior_special_lognormal)
-        logL += self._prior_lognormal_kwargs_list(kwargs_extinction,
-                                        self._prior_extinction_lognormal)
+        logL += self._prior_lognormal_kwargs(
+            kwargs_special, self._prior_special_lognormal
+        )
+        logL += self._prior_lognormal_kwargs_list(
+            kwargs_extinction, self._prior_extinction_lognormal
+        )
 
-        logL += self._prior_kde_list(kwargs_lens, self._prior_lens_kde, self._kde_lens_list)
-        logL += self._prior_kde_list(kwargs_source, self._prior_source_kde, self._kde_source_list)
-        logL += self._prior_kde_list(kwargs_lens_light, self._prior_lens_light_kde, self._kde_lens_light_list)
+        logL += self._prior_kde_list(
+            kwargs_lens, self._prior_lens_kde, self._kde_lens_list
+        )
+        logL += self._prior_kde_list(
+            kwargs_source, self._prior_source_kde, self._kde_source_list
+        )
+        logL += self._prior_kde_list(
+            kwargs_lens_light, self._prior_lens_light_kde, self._kde_lens_light_list
+        )
         logL += self._prior_kde_list(kwargs_ps, self._prior_ps_kde, self._kde_ps_list)
         return logL
 
@@ -141,14 +195,13 @@ class PriorLikelihood(object):
         for i in range(len(prior_list)):
             index, param_name, value, sigma = prior_list[i]
             model_value = kwargs_list[index][param_name]
-            dist = (model_value - value) ** 2 / sigma ** 2 / 2
+            dist = (model_value - value) ** 2 / sigma**2 / 2
             logL -= np.sum(dist)
         return logL
 
     @staticmethod
     def _prior_kwargs(kwargs, prior_list):
-        """
-        prior computation for a keyword argument (not list thereof)
+        """Prior computation for a keyword argument (not list thereof)
 
         :param kwargs: keyword argument
         :return: logL
@@ -159,7 +212,7 @@ class PriorLikelihood(object):
         for i in range(len(prior_list)):
             param_name, value, sigma = prior_list[i]
             model_value = kwargs[param_name]
-            dist = (model_value - value) ** 2 / sigma ** 2 / 2
+            dist = (model_value - value) ** 2 / sigma**2 / 2
             logL -= np.sum(dist)
         return logL
 
@@ -177,14 +230,13 @@ class PriorLikelihood(object):
         for i in range(len(prior_list)):
             index, param_name, value, sigma = prior_list[i]
             model_value = kwargs_list[index][param_name]
-            dist = (np.log(model_value) - value) ** 2 / sigma ** 2 / 2 + model_value
+            dist = (np.log(model_value) - value) ** 2 / sigma**2 / 2 + model_value
             logL -= np.sum(dist)
         return logL
 
     @staticmethod
     def _prior_lognormal_kwargs(kwargs, prior_list):
-        """
-        prior computation for a keyword argument (not list thereof)
+        """Prior computation for a keyword argument (not list thereof)
 
         :param kwargs: keyword argument
         :return: logL
@@ -195,6 +247,6 @@ class PriorLikelihood(object):
         for i in range(len(prior_list)):
             param_name, value, sigma = prior_list[i]
             model_value = kwargs[param_name]
-            dist = (np.log(model_value) - value) ** 2 / sigma ** 2 / 2 + model_value
+            dist = (np.log(model_value) - value) ** 2 / sigma**2 / 2 + model_value
             logL -= np.sum(dist)
         return logL

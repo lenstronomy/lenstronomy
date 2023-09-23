@@ -7,13 +7,15 @@ import numpy as np
 def test_absolute2apparent_magnitude():
     absolute_magnitude = 0
     d_parsec = 10
-    apparent_magnitude = data_util.absolute2apparent_magnitude(absolute_magnitude, d_parsec)
+    apparent_magnitude = data_util.absolute2apparent_magnitude(
+        absolute_magnitude, d_parsec
+    )
     npt.assert_almost_equal(apparent_magnitude, 0, decimal=8)
 
 
 def test_adu_electron_conversion():
-    adu = 1.
-    gain = 4.
+    adu = 1.0
+    gain = 4.0
     e_ = data_util.adu2electrons(adu, ccd_gain=gain)
     adu_new = data_util.electrons2adu(e_, ccd_gain=gain)
     npt.assert_almost_equal(adu_new, adu, decimal=9)
@@ -28,17 +30,22 @@ def test_magnitude2cps():
 
 
 def test_bkg_noise():
-
     readout_noise = 2
     exposure_time = 100
     sky_brightness = 0.01
     pixel_scale = 0.05
     num_exposures = 10
-    sigma_bkg = data_util.bkg_noise(readout_noise, exposure_time, sky_brightness, pixel_scale, num_exposures=num_exposures)
+    sigma_bkg = data_util.bkg_noise(
+        readout_noise,
+        exposure_time,
+        sky_brightness,
+        pixel_scale,
+        num_exposures=num_exposures,
+    )
 
     exposure_time_tot = num_exposures * exposure_time
-    readout_noise_tot = num_exposures * readout_noise ** 2  # square of readout noise
-    sky_per_pixel = sky_brightness * pixel_scale ** 2
+    readout_noise_tot = num_exposures * readout_noise**2  # square of readout noise
+    sky_per_pixel = sky_brightness * pixel_scale**2
     sky_brightness_tot = exposure_time_tot * sky_per_pixel
     sigma_bkg_ = np.sqrt(readout_noise_tot + sky_brightness_tot) / exposure_time_tot
     npt.assert_almost_equal(sigma_bkg_, sigma_bkg, decimal=8)
@@ -49,5 +56,17 @@ def test_flux_noise():
     npt.assert_almost_equal(noise, 1, decimal=5)
 
 
-if __name__ == '__main__':
+def test_magnitude2amplitude():
+    from lenstronomy.LightModel.light_model import LightModel
+
+    light_model_class = LightModel(["GAUSSIAN"])
+    kwargs_light_mag = [{"magnitude": 0, "sigma": 2, "center_x": 0, "center_y": 0}]
+    magnitude_zero_point = 2.5
+    kwargs_light_amp = data_util.magnitude2amplitude(
+        light_model_class, kwargs_light_mag, magnitude_zero_point
+    )
+    npt.assert_almost_equal(kwargs_light_amp[0]["amp"], 10, decimal=5)
+
+
+if __name__ == "__main__":
     pytest.main()

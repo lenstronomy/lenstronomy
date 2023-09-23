@@ -310,3 +310,42 @@ History
 * line of sight lensing module
 * documentation improvements
 * lens equation solver numerics improved
+
+1.11.1 (2023-03-07)
++++++++++++++++++++
+* psf_error_map definition changed
+* added JWST configurations
+* minor change in Sersic light profile
+* simplified LensCosmo class
+* NFW c-rho0 inversion extended in range
+* added stretch_plot and shear_plot to lens_plot
+* minor bug fix for critical_curve_caustic
+* enable the change of kwargs_sigma initial guess parameters in FittingSequence
+* improve zeus and nautilus sampler implementations
+* added EPL_boxydisky lens profile
+* added primary beam to image simulation (for interferrometic data)
+
+1.11.2 (2023-05-30)
++++++++++++++++++++
+* COOLEST standard utilities
+* minor bug fixed in LSST data configuration
+* point source positions with multi-frame enabled
+* check additional images without imaging data enabled
+* Galkin Shells class
+* elliptical shapelets
+* Hernquist functionalities to turn mass into profile parameters
+* ellipticity measurement update
+* stellar micro-lensing routines
+* PSF fitting accounts for corners
+
+1.11.3 (2023-09-04)
++++++++++++++++++++
+* reformatting with black
+* CosmoInterp class with generic interpolation input possible
+* elliptical NFW m-c profile
+* updated nautilus and nested sampler interfaces
+* COOLEST interface
+* cored truncated NFW profile
+* SkiNN interface
+* faster and more reliable Einstein radius computation
+* Cobaya interface

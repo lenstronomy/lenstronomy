@@ -100,12 +100,12 @@ class ModelPlot(object):
             )
         else:
             # overwrite the keyword list with the linear solved 'amp' values
-            for key in kwargs_params.keys():
+            for key in kwargs_params_copy.keys():
                 kwargs_params[key] = kwargs_params_copy[key]
 
         check_solver_error(param)
         log_l, _ = self._imageModel.likelihood_data_given_model(
-            source_marg=source_marg, linear_prior=linear_prior, **kwargs_params
+            source_marg=source_marg, linear_prior=linear_prior, **kwargs_params_copy
         )
 
         n_data = self._imageModel.num_data_evaluate

@@ -238,6 +238,16 @@ class LikelihoodModule(object):
                               kinematic_data=self.kinematic_data,
                               kwargs_tracer=self._kwargs_tracer,)
 
+    @property
+    def kwargs_imaging(self):
+        """
+        dictionary of imaging model keyword arguments
+
+        :return: kwargs_imaging
+        """
+        kwargs_imaging = {**self._kwargs_image_likelihood, **self._kwargs_image_sim}
+        return kwargs_imaging
+
     def _class_instances(self, kwargs_model, kwargs_image_sim, kwargs_image_likelihood, kwargs_position, kwargs_flux,
                          kwargs_time_delay, kinematic_data, kwargs_tracer):
         """

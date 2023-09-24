@@ -345,9 +345,16 @@ class SingleBandMultiModel(ImageLinearFit):
         )
         return logL, param
 
-    def update_linear_kwargs(self, param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, model_band=None):
-        """
-        links linear parameters to kwargs arguments
+    def update_linear_kwargs(
+        self,
+        param,
+        kwargs_lens,
+        kwargs_source,
+        kwargs_lens_light,
+        kwargs_ps,
+        model_band=None,
+    ):
+        """Links linear parameters to kwargs arguments.
 
         :param param: linear parameter vector corresponding to the response matrix
         :param kwargs_lens:
@@ -356,14 +363,23 @@ class SingleBandMultiModel(ImageLinearFit):
         :param kwargs_ps:
         :return: updated list of kwargs with linear parameter values
         """
-        kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i, _ = self.select_kwargs(
+        (
+            kwargs_lens_i,
+            kwargs_source_i,
+            kwargs_lens_light_i,
+            kwargs_ps_i,
+            _,
+        ) = self.select_kwargs(
             kwargs_lens,
             kwargs_source,
             kwargs_lens_light,
             kwargs_ps,
-            kwargs_extinction=None)
+            kwargs_extinction=None,
+        )
         if self._linear_solver is True:
-            self._update_linear_kwargs(param, kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i)
+            self._update_linear_kwargs(
+                param, kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i
+            )
         return kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i
 
     def num_param_linear(

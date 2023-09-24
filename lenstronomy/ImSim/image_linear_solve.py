@@ -415,15 +415,35 @@ class ImageLinearFit(ImageModel):
                 inv_bool=source_marg,
             )
         # compute X^2
-        logL = self.likelihood_data_given_model_solution(im_sim, model_error, cov_matrix, param, kwargs_lens,
-                                                         kwargs_source, kwargs_lens_light, kwargs_ps,
-                                                         source_marg=source_marg, linear_prior=linear_prior,
-                                                         check_positive_flux=check_positive_flux)
+        logL = self.likelihood_data_given_model_solution(
+            im_sim,
+            model_error,
+            cov_matrix,
+            param,
+            kwargs_lens,
+            kwargs_source,
+            kwargs_lens_light,
+            kwargs_ps,
+            source_marg=source_marg,
+            linear_prior=linear_prior,
+            check_positive_flux=check_positive_flux,
+        )
         return logL, param
 
-    def likelihood_data_given_model_solution(self, model, model_error, cov_matrix, param, kwargs_lens, kwargs_source,
-                                             kwargs_lens_light, kwargs_ps, source_marg=False, linear_prior=None,
-                                             check_positive_flux=False):
+    def likelihood_data_given_model_solution(
+        self,
+        model,
+        model_error,
+        cov_matrix,
+        param,
+        kwargs_lens,
+        kwargs_source,
+        kwargs_lens_light,
+        kwargs_ps,
+        source_marg=False,
+        linear_prior=None,
+        check_positive_flux=False,
+    ):
         """
 
         :param model:
@@ -449,12 +469,14 @@ class ImageLinearFit(ImageModel):
                 )
                 logL += marg_const
         if check_positive_flux is True:
-            _, _, _, _ = self.update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+            _, _, _, _ = self.update_linear_kwargs(
+                param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps
+            )
             bool_ = self.check_positive_flux(
                 kwargs_source, kwargs_lens_light, kwargs_ps
             )
             if bool_ is False:
-                logL -= 10 ** 8
+                logL -= 10**8
         return logL
 
     def num_param_linear(

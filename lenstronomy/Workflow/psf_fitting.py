@@ -112,8 +112,10 @@ class PsfFitting(object):
         psf_class = PSF(**kwargs_psf)
         self._image_model_class.update_psf(psf_class)
         _kwargs_params = copy.deepcopy(kwargs_params)
-        _kwargs_params.pop('kwargs_tracer_source', None)
-        logL_before, _ = self._image_model_class.likelihood_data_given_model(**_kwargs_params)
+        _kwargs_params.pop("kwargs_tracer_source", None)
+        logL_before, _ = self._image_model_class.likelihood_data_given_model(
+            **_kwargs_params
+        )
         logL_best = copy.deepcopy(logL_before)
         i_best = 0
 

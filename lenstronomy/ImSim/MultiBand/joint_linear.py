@@ -225,7 +225,15 @@ class JointLinear(MultiLinear):
                 logL -= 10**5
         return logL, param
 
-    def update_linear_kwargs(self, param, model_band, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
+    def update_linear_kwargs(
+        self,
+        param,
+        model_band,
+        kwargs_lens,
+        kwargs_source,
+        kwargs_lens_light,
+        kwargs_ps,
+    ):
         """
 
         :param param:
@@ -239,4 +247,6 @@ class JointLinear(MultiLinear):
         model_band = self._imageModel_list[model_band]
         # TODO: this might not work if certain linear parameters are only used in certain imaging bands and
         #  the param array does not match
-        return model_band.update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+        return model_band.update_linear_kwargs(
+            param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps
+        )

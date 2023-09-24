@@ -105,24 +105,57 @@ class Param(object):
     Sample the log10 of the lens model parameters.
     """
 
-    def __init__(self, kwargs_model,
-                 kwargs_fixed_lens=None, kwargs_fixed_source=None, kwargs_fixed_lens_light=None, kwargs_fixed_ps=None,
-                 kwargs_fixed_special=None, kwargs_fixed_extinction=None, kwargs_fixed_tracer_source=None,
-                 kwargs_lower_lens=None, kwargs_lower_source=None, kwargs_lower_lens_light=None, kwargs_lower_ps=None,
-                 kwargs_lower_special=None, kwargs_lower_extinction=None, kwargs_lower_tracer_source=None,
-                 kwargs_upper_lens=None, kwargs_upper_source=None, kwargs_upper_lens_light=None, kwargs_upper_ps=None,
-                 kwargs_upper_special=None, kwargs_upper_extinction=None, kwargs_upper_tracer_source=None,
-                 kwargs_lens_init=None, linear_solver=True, joint_lens_with_lens=[], joint_lens_light_with_lens_light=[],
-                 joint_source_with_source=[], joint_lens_with_light=[], joint_source_with_point_source=[],
-                 joint_lens_light_with_point_source=[], joint_extinction_with_lens_light=[],
-                 joint_lens_with_source_light=[], joint_source_light_with_tracer=None,
-                 mass_scaling_list=None, point_source_offset=False, general_scaling=None,
-                 num_point_source_list=None, image_plane_source_list=None, solver_type='NONE', Ddt_sampling=None,
-                 source_size=False, num_tau0=0, lens_redshift_sampling_indexes=None,
-                 source_redshift_sampling_indexes=None, source_grid_offset=False,
-                 kinematic_sampling=None,
-                 num_shapelet_lens=0,
-                 log_sampling_lens=[]):
+    def __init__(
+        self,
+        kwargs_model,
+        kwargs_fixed_lens=None,
+        kwargs_fixed_source=None,
+        kwargs_fixed_lens_light=None,
+        kwargs_fixed_ps=None,
+        kwargs_fixed_special=None,
+        kwargs_fixed_extinction=None,
+        kwargs_fixed_tracer_source=None,
+        kwargs_lower_lens=None,
+        kwargs_lower_source=None,
+        kwargs_lower_lens_light=None,
+        kwargs_lower_ps=None,
+        kwargs_lower_special=None,
+        kwargs_lower_extinction=None,
+        kwargs_lower_tracer_source=None,
+        kwargs_upper_lens=None,
+        kwargs_upper_source=None,
+        kwargs_upper_lens_light=None,
+        kwargs_upper_ps=None,
+        kwargs_upper_special=None,
+        kwargs_upper_extinction=None,
+        kwargs_upper_tracer_source=None,
+        kwargs_lens_init=None,
+        linear_solver=True,
+        joint_lens_with_lens=[],
+        joint_lens_light_with_lens_light=[],
+        joint_source_with_source=[],
+        joint_lens_with_light=[],
+        joint_source_with_point_source=[],
+        joint_lens_light_with_point_source=[],
+        joint_extinction_with_lens_light=[],
+        joint_lens_with_source_light=[],
+        joint_source_light_with_tracer=None,
+        mass_scaling_list=None,
+        point_source_offset=False,
+        general_scaling=None,
+        num_point_source_list=None,
+        image_plane_source_list=None,
+        solver_type="NONE",
+        Ddt_sampling=None,
+        source_size=False,
+        num_tau0=0,
+        lens_redshift_sampling_indexes=None,
+        source_redshift_sampling_indexes=None,
+        source_grid_offset=False,
+        kinematic_sampling=None,
+        num_shapelet_lens=0,
+        log_sampling_lens=[],
+    ):
         """
 
         :param kwargs_model: keyword arguments to describe all model components used in class_creator.create_class_instances()
@@ -197,14 +230,6 @@ class Param(object):
         :param log_sampling_lens: Sample the log10 of the lens model parameters. Format : [[i_lens, ['param_name1', 'param_name2', ...]], [...], ...],
         """
 
-        self._lens_model_list = kwargs_model.get('lens_model_list', [])
-        self._lens_redshift_list = kwargs_model.get('lens_redshift_list', None)
-        self._source_light_model_list = kwargs_model.get('source_light_model_list', [])
-        self._source_redshift_list = kwargs_model.get('source_redshift_list', None)
-        self._lens_light_model_list = kwargs_model.get('lens_light_model_list', [])
-        self._point_source_model_list = kwargs_model.get('point_source_model_list', [])
-        self._optical_depth_model_list = kwargs_model.get('optical_depth_model_list', [])
-        self._tracer_source_model_list = kwargs_model.get('tracer_source_model_list', [])
         self._lens_model_list = kwargs_model.get("lens_model_list", [])
         self._lens_redshift_list = kwargs_model.get("lens_redshift_list", None)
         self._source_light_model_list = kwargs_model.get("source_light_model_list", [])
@@ -214,7 +239,21 @@ class Param(object):
         self._optical_depth_model_list = kwargs_model.get(
             "optical_depth_model_list", []
         )
-        self._tracer_source_model_list = kwargs_model.get('tracer_source_model_list', [])
+        self._tracer_source_model_list = kwargs_model.get(
+            "tracer_source_model_list", []
+        )
+        self._lens_model_list = kwargs_model.get("lens_model_list", [])
+        self._lens_redshift_list = kwargs_model.get("lens_redshift_list", None)
+        self._source_light_model_list = kwargs_model.get("source_light_model_list", [])
+        self._source_redshift_list = kwargs_model.get("source_redshift_list", None)
+        self._lens_light_model_list = kwargs_model.get("lens_light_model_list", [])
+        self._point_source_model_list = kwargs_model.get("point_source_model_list", [])
+        self._optical_depth_model_list = kwargs_model.get(
+            "optical_depth_model_list", []
+        )
+        self._tracer_source_model_list = kwargs_model.get(
+            "tracer_source_model_list", []
+        )
         self._kwargs_model = kwargs_model
 
         # check how many redshifts need to be sampled
@@ -258,7 +297,9 @@ class Param(object):
         if kwargs_fixed_ps is None:
             kwargs_fixed_ps = [{} for _ in range(len(self._point_source_model_list))]
         if kwargs_fixed_tracer_source is None:
-            kwargs_fixed_tracer_source = [{} for _ in range(len(self._tracer_source_model_list))]
+            kwargs_fixed_tracer_source = [
+                {} for _ in range(len(self._tracer_source_model_list))
+            ]
         if kwargs_fixed_special is None:
             kwargs_fixed_special = {}
 
@@ -268,7 +309,9 @@ class Param(object):
 
         self._joint_lens_with_light = joint_lens_with_light
         self._joint_lens_with_source_light = joint_lens_with_source_light
-        self._joint_source_with_point_source = copy.deepcopy(joint_source_with_point_source)
+        self._joint_source_with_point_source = copy.deepcopy(
+            joint_source_with_point_source
+        )
         if joint_source_light_with_tracer is None:
             joint_source_light_with_tracer = []
         self._joint_source_light_with_tracer = joint_source_light_with_tracer
@@ -364,42 +407,82 @@ class Param(object):
             kwargs_fixed_extinction, self._joint_extinction_with_lens_light
         )
         # fix parameters joint with other model types
-        kwargs_fixed_lens_updated = self._fix_joint_param(kwargs_fixed_lens_updated, self._joint_lens_with_light)
-        kwargs_fixed_source_updated = self._fix_joint_param(kwargs_fixed_source_updated, self._joint_source_with_point_source)
-        kwargs_fixed_lens_light_updated = self._fix_joint_param(kwargs_fixed_lens_light_updated,
-                                                                self._joint_lens_light_with_point_source)
-        kwargs_fixed_tracer_source_updated = self._fix_joint_param(kwargs_fixed_tracer_source,
-                                                                   self._joint_source_light_with_tracer)
-        self.lensParams = LensParam(self._lens_model_list, kwargs_fixed_lens_updated,
-                                    kwargs_logsampling=kwargs_logsampling_lens,
-                                    num_images=self._num_images,
-                                    solver_type=self._solver_type, kwargs_lower=kwargs_lower_lens,
-                                    kwargs_upper=kwargs_upper_lens, num_shapelet_lens=num_shapelet_lens)
-        self.lensLightParams = LightParam(self._lens_light_model_list, kwargs_fixed_lens_light_updated, param_type='lens_light',
-                                          linear_solver=linear_solver, kwargs_lower=kwargs_lower_lens_light,
-                                          kwargs_upper=kwargs_upper_lens_light)
-        self.sourceParams = LightParam(self._source_light_model_list, kwargs_fixed_source_updated, param_type='source_light',
-                                       linear_solver=linear_solver, kwargs_lower=kwargs_lower_source,
-                                       kwargs_upper=kwargs_upper_source)
-        self.pointSourceParams = PointSourceParam(self._point_source_model_list, kwargs_fixed_ps_updated,
-                                                  num_point_source_list=num_point_source_list,
-                                                  linear_solver=linear_solver, kwargs_lower=kwargs_lower_ps,
-                                                  kwargs_upper=kwargs_upper_ps)
-        self.extinctionParams = LightParam(self._optical_depth_model_list, kwargs_fixed_extinction_updated,
-                                           kwargs_lower=kwargs_lower_extinction, kwargs_upper=kwargs_upper_extinction,
-                                           linear_solver=False)
-        self.specialParams = SpecialParam(Ddt_sampling=Ddt_sampling, mass_scaling=self._mass_scaling,
-                                          general_scaling_params=self._general_scaling_masks,
-                                          kwargs_fixed=kwargs_fixed_special, num_scale_factor=self._num_scale_factor,
-                                          kwargs_lower=kwargs_lower_special, kwargs_upper=kwargs_upper_special,
-                                          point_source_offset=self._point_source_offset, num_images=self._num_images,
-                                          source_size=source_size, num_tau0=num_tau0, num_z_sampling=num_z_sampling,
-                                          source_grid_offset=source_grid_offset,
-                                          kinematic_sampling=kinematic_sampling,)
-        self.tracerSourceParams = LightParam(self._tracer_source_model_list, kwargs_fixed_tracer_source_updated,
-                                             kwargs_lower=kwargs_lower_tracer_source,
-                                             kwargs_upper=kwargs_upper_tracer_source,
-                                             linear_solver=False)
+        kwargs_fixed_lens_updated = self._fix_joint_param(
+            kwargs_fixed_lens_updated, self._joint_lens_with_light
+        )
+        kwargs_fixed_source_updated = self._fix_joint_param(
+            kwargs_fixed_source_updated, self._joint_source_with_point_source
+        )
+        kwargs_fixed_lens_light_updated = self._fix_joint_param(
+            kwargs_fixed_lens_light_updated, self._joint_lens_light_with_point_source
+        )
+        kwargs_fixed_tracer_source_updated = self._fix_joint_param(
+            kwargs_fixed_tracer_source, self._joint_source_light_with_tracer
+        )
+        self.lensParams = LensParam(
+            self._lens_model_list,
+            kwargs_fixed_lens_updated,
+            kwargs_logsampling=kwargs_logsampling_lens,
+            num_images=self._num_images,
+            solver_type=self._solver_type,
+            kwargs_lower=kwargs_lower_lens,
+            kwargs_upper=kwargs_upper_lens,
+            num_shapelet_lens=num_shapelet_lens,
+        )
+        self.lensLightParams = LightParam(
+            self._lens_light_model_list,
+            kwargs_fixed_lens_light_updated,
+            param_type="lens_light",
+            linear_solver=linear_solver,
+            kwargs_lower=kwargs_lower_lens_light,
+            kwargs_upper=kwargs_upper_lens_light,
+        )
+        self.sourceParams = LightParam(
+            self._source_light_model_list,
+            kwargs_fixed_source_updated,
+            param_type="source_light",
+            linear_solver=linear_solver,
+            kwargs_lower=kwargs_lower_source,
+            kwargs_upper=kwargs_upper_source,
+        )
+        self.pointSourceParams = PointSourceParam(
+            self._point_source_model_list,
+            kwargs_fixed_ps_updated,
+            num_point_source_list=num_point_source_list,
+            linear_solver=linear_solver,
+            kwargs_lower=kwargs_lower_ps,
+            kwargs_upper=kwargs_upper_ps,
+        )
+        self.extinctionParams = LightParam(
+            self._optical_depth_model_list,
+            kwargs_fixed_extinction_updated,
+            kwargs_lower=kwargs_lower_extinction,
+            kwargs_upper=kwargs_upper_extinction,
+            linear_solver=False,
+        )
+        self.specialParams = SpecialParam(
+            Ddt_sampling=Ddt_sampling,
+            mass_scaling=self._mass_scaling,
+            general_scaling_params=self._general_scaling_masks,
+            kwargs_fixed=kwargs_fixed_special,
+            num_scale_factor=self._num_scale_factor,
+            kwargs_lower=kwargs_lower_special,
+            kwargs_upper=kwargs_upper_special,
+            point_source_offset=self._point_source_offset,
+            num_images=self._num_images,
+            source_size=source_size,
+            num_tau0=num_tau0,
+            num_z_sampling=num_z_sampling,
+            source_grid_offset=source_grid_offset,
+            kinematic_sampling=kinematic_sampling,
+        )
+        self.tracerSourceParams = LightParam(
+            self._tracer_source_model_list,
+            kwargs_fixed_tracer_source_updated,
+            kwargs_lower=kwargs_lower_tracer_source,
+            kwargs_upper=kwargs_upper_tracer_source,
+            linear_solver=False,
+        )
         for lens_source_joint in self._joint_lens_with_source_light:
             i_source = lens_source_joint[0]
             if i_source in self._image_plane_source_list:
@@ -480,8 +563,9 @@ class Param(object):
         kwargs_source = self._update_joint_param(
             kwargs_source, kwargs_source, self._joint_source_with_source
         )
-        kwargs_tracer_source = self._update_joint_param(kwargs_source, kwargs_tracer_source,
-                                                        self._joint_source_light_with_tracer)
+        kwargs_tracer_source = self._update_joint_param(
+            kwargs_source, kwargs_tracer_source, self._joint_source_light_with_tracer
+        )
         # optional revert lens_scaling for bijective
         if bijective is True:
             kwargs_lens = self.update_lens_scaling(
@@ -494,13 +578,21 @@ class Param(object):
             "kwargs_ps": kwargs_ps,
             "kwargs_special": kwargs_special,
             "kwargs_extinction": kwargs_extinction,
-            "kwargs_tracer_source": kwargs_tracer_source
+            "kwargs_tracer_source": kwargs_tracer_source,
         }
         return kwargs_return
 
-    def kwargs2args(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
-                    kwargs_special=None, kwargs_extinction=None, kwargs_tracer_source=None):
-        """Inverse of getParam function
+    def kwargs2args(
+        self,
+        kwargs_lens=None,
+        kwargs_source=None,
+        kwargs_lens_light=None,
+        kwargs_ps=None,
+        kwargs_special=None,
+        kwargs_extinction=None,
+        kwargs_tracer_source=None,
+    ):
+        """Inverse of getParam function.
 
         :param kwargs_lens: keyword arguments depending on model options
         :param kwargs_source: keyword arguments depending on model options
@@ -526,20 +618,24 @@ class Param(object):
 
         :return: lower and upper limits of the arguments being sampled
         """
-        lower_limit = self.kwargs2args(kwargs_lens=self.lensParams.lower_limit,
-                                       kwargs_source=self.sourceParams.lower_limit,
-                                       kwargs_lens_light=self.lensLightParams.lower_limit,
-                                       kwargs_ps=self.pointSourceParams.lower_limit,
-                                       kwargs_special=self.specialParams.lower_limit,
-                                       kwargs_extinction=self.extinctionParams.lower_limit,
-                                       kwargs_tracer_source=self.tracerSourceParams.lower_limit)
-        upper_limit = self.kwargs2args(kwargs_lens=self.lensParams.upper_limit,
-                                       kwargs_source=self.sourceParams.upper_limit,
-                                       kwargs_lens_light=self.lensLightParams.upper_limit,
-                                       kwargs_ps=self.pointSourceParams.upper_limit,
-                                       kwargs_special=self.specialParams.upper_limit,
-                                       kwargs_extinction=self.extinctionParams.upper_limit,
-                                       kwargs_tracer_source=self.tracerSourceParams.upper_limit)
+        lower_limit = self.kwargs2args(
+            kwargs_lens=self.lensParams.lower_limit,
+            kwargs_source=self.sourceParams.lower_limit,
+            kwargs_lens_light=self.lensLightParams.lower_limit,
+            kwargs_ps=self.pointSourceParams.lower_limit,
+            kwargs_special=self.specialParams.lower_limit,
+            kwargs_extinction=self.extinctionParams.lower_limit,
+            kwargs_tracer_source=self.tracerSourceParams.lower_limit,
+        )
+        upper_limit = self.kwargs2args(
+            kwargs_lens=self.lensParams.upper_limit,
+            kwargs_source=self.sourceParams.upper_limit,
+            kwargs_lens_light=self.lensLightParams.upper_limit,
+            kwargs_ps=self.pointSourceParams.upper_limit,
+            kwargs_special=self.specialParams.upper_limit,
+            kwargs_extinction=self.extinctionParams.upper_limit,
+            kwargs_tracer_source=self.tracerSourceParams.upper_limit,
+        )
         return lower_limit, upper_limit
 
     def num_param(self):
@@ -887,7 +983,10 @@ class Param(object):
             "Joint lens light with point source:",
             self._joint_lens_light_with_point_source,
         )
-        print("Joint source light with tracer source:", self._joint_source_light_with_tracer)
+        print(
+            "Joint source light with tracer source:",
+            self._joint_source_light_with_tracer,
+        )
         print("Mass scaling:", self._num_scale_factor, "groups")
         print("General lens scaling:", self._general_scaling_masks)
         print("===================")

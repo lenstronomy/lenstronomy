@@ -840,8 +840,9 @@ class TestFittingSequence(object):
         fitting_list.append(["MCMC", kwargs_mcmc])
 
         def custom_likelihood(kwargs_lens, **kwargs):
-            theta_E = kwargs_lens[0]['theta_E']
-            return -(theta_E - 1.)**2 / 0.1**2 / 2
+            theta_E = kwargs_lens[0]["theta_E"]
+            return -((theta_E - 1.0) ** 2) / 0.1**2 / 2
+
         kwargs_likelihood = {"custom_logL_addition": custom_likelihood}
 
         kwargs_data_joint = {"multi_band_list": []}

@@ -718,7 +718,7 @@ def create_kwargs_mcmc_from_chain_list(
             if dist_buf[w] < likelihood_threshold:
                 pass
         kwargs_return = param_class.args2kwargs(par_buf[w])
-        kwargs_return.pop('kwargs_tracer_source', None)
+        kwargs_return.pop("kwargs_tracer_source", None)
         image_linear.image_linear_solve(**kwargs_return)
         args_lens.append(kwargs_return["kwargs_lens"])
         args_source.append(kwargs_return["kwargs_source"])

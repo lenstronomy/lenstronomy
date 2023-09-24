@@ -1,4 +1,4 @@
-__author__ = 'sibirrer'
+__author__ = "sibirrer"
 
 import lenstronomy.Util.util as util
 
@@ -9,7 +9,6 @@ import unittest
 
 
 def test_estimate_theta_E():
-
     x = np.array([-0.45328229, 0.57461556, 0.53757501, -0.42312438])
     y = np.array([0.69582971, -0.51226356, 0.37577509, -0.40245467])
 
@@ -18,10 +17,9 @@ def test_estimate_theta_E():
 
 
 def test_sort_img_index():
+    ximg, yimg = np.array([1, 2, 3, 4]), np.array([0, 0, 1, 2])
 
-    ximg,yimg = np.array([1,2,3,4]),np.array([0,0,1,2])
-
-    xref,yref = np.array([2,3,1,4]),np.array([0,1,0,2])
+    xref, yref = np.array([2, 3, 1, 4]), np.array([0, 1, 0, 2])
 
     indexes = util.sort_image_index(ximg, yimg, xref, yref)
 
@@ -32,7 +30,7 @@ def test_sort_img_index():
 
     indexes = util.sort_image_index(xref, yref, xref, yref)
 
-    npt.assert_allclose(np.array(indexes),[0,1,2,3])
+    npt.assert_allclose(np.array(indexes), [0, 1, 2, 3])
 
 
 def test_map_coord2pix():
@@ -60,28 +58,28 @@ def test_map_coord2pix():
 
 def test_make_grid():
     numPix = 11
-    deltapix = 1.
+    deltapix = 1.0
 
     grid = util.make_grid(numPix, deltapix)
     assert grid[0][0] == -5
-    assert np.sum(grid[0]) == 0.
+    assert np.sum(grid[0]) == 0.0
 
-    x_grid, y_grid = util.make_grid(numPix, deltapix, subgrid_res=2.)
-    assert np.sum(x_grid) == 0.
+    x_grid, y_grid = util.make_grid(numPix, deltapix, subgrid_res=2.0)
+    assert np.sum(x_grid) == 0.0
     assert x_grid[0] == -5.25
 
     x_grid, y_grid = util.make_grid(numPix, deltapix, subgrid_res=1, left_lower=True)
-    assert x_grid[0] == 0.
-    assert y_grid[0] == 0.
+    assert x_grid[0] == 0.0
+    assert y_grid[0] == 0.0
 
     # Similar tests for a non-rectangular grid
 
     x_grid, y_grid = util.make_grid((numPix, numPix - 1), deltapix)
-    assert x_grid[0] == -5.
+    assert x_grid[0] == -5.0
     assert y_grid[0] == -4.5
     assert np.sum(x_grid) == np.sum(y_grid) == 0
 
-    x_grid, y_grid = util.make_grid(numPix, deltapix, subgrid_res=2.)
+    x_grid, y_grid = util.make_grid(numPix, deltapix, subgrid_res=2.0)
     assert np.sum(x_grid) == np.sum(y_grid) == 0
     assert x_grid[0] == -5.25
 
@@ -94,7 +92,10 @@ def test_make_grid_transform():
     numPix = 11
     theta = np.pi / 2
     deltaPix = 0.05
-    Mpix2coord = np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]]) * deltaPix
+    Mpix2coord = (
+        np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])
+        * deltaPix
+    )
     ra_coord, dec_coord = util.make_grid_transformed(numPix, Mpix2coord)
     ra2d = util.array2image(ra_coord)
     assert ra2d[5, 5] == 0
@@ -104,8 +105,19 @@ def test_make_grid_transform():
 
 def test_grid_with_coords():
     numPix = 11
-    deltaPix = 1.
-    x_grid, y_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix = util.make_grid_with_coordtransform(numPix, deltaPix, subgrid_res=1, left_lower=False)
+    deltaPix = 1.0
+    (
+        x_grid,
+        y_grid,
+        ra_at_xy_0,
+        dec_at_xy_0,
+        x_at_radec_0,
+        y_at_radec_0,
+        Mpix2coord,
+        Mcoord2pix,
+    ) = util.make_grid_with_coordtransform(
+        numPix, deltaPix, subgrid_res=1, left_lower=False
+    )
     ra = 0
     dec = 0
     x, y = util.map_coord2pix(ra, dec, x_at_radec_0, y_at_radec_0, Mcoord2pix)
@@ -113,8 +125,19 @@ def test_grid_with_coords():
     assert y == 5
 
     numPix = 11
-    deltaPix = .1
-    x_grid, y_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix = util.make_grid_with_coordtransform(numPix, deltaPix, subgrid_res=1, left_lower=False)
+    deltaPix = 0.1
+    (
+        x_grid,
+        y_grid,
+        ra_at_xy_0,
+        dec_at_xy_0,
+        x_at_radec_0,
+        y_at_radec_0,
+        Mpix2coord,
+        Mcoord2pix,
+    ) = util.make_grid_with_coordtransform(
+        numPix, deltaPix, subgrid_res=1, left_lower=False
+    )
     ra = 0
     dec = 0
     x, y = util.map_coord2pix(ra, dec, x_at_radec_0, y_at_radec_0, Mcoord2pix)
@@ -122,46 +145,99 @@ def test_grid_with_coords():
     assert y == 5
 
     numPix = 11
-    deltaPix = 1.
-    x_grid, y_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix = util.make_grid_with_coordtransform(numPix, deltaPix, subgrid_res=1, left_lower=False, inverse=True)
+    deltaPix = 1.0
+    (
+        x_grid,
+        y_grid,
+        ra_at_xy_0,
+        dec_at_xy_0,
+        x_at_radec_0,
+        y_at_radec_0,
+        Mpix2coord,
+        Mcoord2pix,
+    ) = util.make_grid_with_coordtransform(
+        numPix, deltaPix, subgrid_res=1, left_lower=False, inverse=True
+    )
     x_, y_ = 0, 0
     ra, dec = util.map_coord2pix(x_, y_, ra_at_xy_0, dec_at_xy_0, Mpix2coord)
     assert ra == 5
     assert dec == -5
 
     numPix = 11
-    deltaPix = 1.
-    x_grid, y_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix = util.make_grid_with_coordtransform(
-        numPix, deltaPix, subgrid_res=1, left_lower=False, inverse=False)
+    deltaPix = 1.0
+    (
+        x_grid,
+        y_grid,
+        ra_at_xy_0,
+        dec_at_xy_0,
+        x_at_radec_0,
+        y_at_radec_0,
+        Mpix2coord,
+        Mcoord2pix,
+    ) = util.make_grid_with_coordtransform(
+        numPix, deltaPix, subgrid_res=1, left_lower=False, inverse=False
+    )
     x_, y_ = 0, 0
     ra, dec = util.map_coord2pix(x_, y_, ra_at_xy_0, dec_at_xy_0, Mpix2coord)
     assert ra == -5
     assert dec == -5
 
     numPix = 11
-    deltaPix = .1
-    x_grid, y_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix = util.make_grid_with_coordtransform(numPix, deltaPix, subgrid_res=1, left_lower=False)
+    deltaPix = 0.1
+    (
+        x_grid,
+        y_grid,
+        ra_at_xy_0,
+        dec_at_xy_0,
+        x_at_radec_0,
+        y_at_radec_0,
+        Mpix2coord,
+        Mcoord2pix,
+    ) = util.make_grid_with_coordtransform(
+        numPix, deltaPix, subgrid_res=1, left_lower=False
+    )
     x_, y_ = 0, 0
     ra, dec = util.map_coord2pix(x_, y_, ra_at_xy_0, dec_at_xy_0, Mpix2coord)
-    assert ra == .5
-    assert dec == -.5
+    assert ra == 0.5
+    assert dec == -0.5
     x__, y__ = util.map_coord2pix(ra, dec, x_at_radec_0, y_at_radec_0, Mcoord2pix)
     assert x__ == x_
     assert y__ == y_
 
     numPix = 11
-    deltaPix = .1
-    x_grid, y_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix = util.make_grid_with_coordtransform(
-        numPix, deltaPix, subgrid_res=1, left_lower=True)
+    deltaPix = 0.1
+    (
+        x_grid,
+        y_grid,
+        ra_at_xy_0,
+        dec_at_xy_0,
+        x_at_radec_0,
+        y_at_radec_0,
+        Mpix2coord,
+        Mcoord2pix,
+    ) = util.make_grid_with_coordtransform(
+        numPix, deltaPix, subgrid_res=1, left_lower=True
+    )
     assert ra_at_xy_0 == 0
     assert dec_at_xy_0 == 0
 
     numPix = 11
-    deltaPix = .1
-    x_grid, y_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix = util.make_grid_with_coordtransform(
-        numPix, deltaPix, subgrid_res=1, left_lower=True, center_ra=2, center_dec=3)
+    deltaPix = 0.1
+    (
+        x_grid,
+        y_grid,
+        ra_at_xy_0,
+        dec_at_xy_0,
+        x_at_radec_0,
+        y_at_radec_0,
+        Mpix2coord,
+        Mcoord2pix,
+    ) = util.make_grid_with_coordtransform(
+        numPix, deltaPix, subgrid_res=1, left_lower=True, center_ra=2, center_dec=3
+    )
     assert ra_at_xy_0 == 2
     assert dec_at_xy_0 == 3
+
 
 def test_array2image():
     array = np.linspace(1, 100, 100)
@@ -171,8 +247,8 @@ def test_array2image():
 
 
 def test_image2array():
-    image = np.zeros((10,10))
-    image[1,2] = 1
+    image = np.zeros((10, 10))
+    image[1, 2] = 1
     array = util.image2array(image)
     assert array[12] == 1
 
@@ -204,7 +280,7 @@ def test_cube2array2cube():
     cube = np.zeros((2, 10, 10))
     ns, nx, ny = np.shape(cube)
     assert nx == ny  # condition required
-    nxy = nx*ny
+    nxy = nx * ny
     cube[1, 2, 2] = 1
     array = util.cube2array(cube)
     cube_new = util.array2cube(array, ns, nxy)
@@ -227,15 +303,15 @@ def test_get_axes():
 
 
 def test_symmetry():
-    array = np.linspace(0,10,100)
+    array = np.linspace(0, 10, 100)
     image = util.array2image(array)
     array_new = util.image2array(image)
     assert array_new[42] == array[42]
 
 
 def test_displaceAbs():
-    x = np.array([0,1,2])
-    y = np.array([3,2,1])
+    x = np.array([0, 1, 2])
+    y = np.array([3, 2, 1])
     sourcePos_x = 1
     sourcePos_y = 2
     result = util.displaceAbs(x, y, sourcePos_x, sourcePos_y)
@@ -244,38 +320,38 @@ def test_displaceAbs():
 
 
 def test_get_distance():
-    x_mins = np.array([1.])
-    y_mins = np.array([1.])
-    x_true = np.array([0.])
-    y_true = np.array([0.])
+    x_mins = np.array([1.0])
+    y_mins = np.array([1.0])
+    x_true = np.array([0.0])
+    y_true = np.array([0.0])
     dist = util.get_distance(x_mins, y_mins, x_true, y_true)
     assert dist == 2
 
-    x_mins = np.array([1.,2])
-    y_mins = np.array([1.,1])
-    x_true = np.array([0.])
-    y_true = np.array([0.])
+    x_mins = np.array([1.0, 2])
+    y_mins = np.array([1.0, 1])
+    x_true = np.array([0.0])
+    y_true = np.array([0.0])
     dist = util.get_distance(x_mins, y_mins, x_true, y_true)
     assert dist == 10000000000
 
-    x_mins = np.array([1.,2])
-    y_mins = np.array([1.,1])
-    x_true = np.array([0.,1])
-    y_true = np.array([0.,2])
+    x_mins = np.array([1.0, 2])
+    y_mins = np.array([1.0, 1])
+    x_true = np.array([0.0, 1])
+    y_true = np.array([0.0, 2])
     dist = util.get_distance(x_mins, y_mins, x_true, y_true)
     assert dist == 6
 
-    x_mins = np.array([1.,2,0])
-    y_mins = np.array([1.,1,0])
-    x_true = np.array([0.,1,1])
-    y_true = np.array([0.,2,1])
+    x_mins = np.array([1.0, 2, 0])
+    y_mins = np.array([1.0, 1, 0])
+    x_true = np.array([0.0, 1, 1])
+    y_true = np.array([0.0, 2, 1])
     dist = util.get_distance(x_mins, y_mins, x_true, y_true)
     assert dist == 2
 
 
 def test_selectBest():
-    array = np.array([4,3,6,1,3])
-    select = np.array([2,4,7,3,3])
+    array = np.array([4, 3, 6, 1, 3])
+    select = np.array([2, 4, 7, 3, 3])
     numSelect = 4
     array_select = util.selectBest(array, select, numSelect, highest=True)
     assert array_select[0] == 6
@@ -307,8 +383,8 @@ def test_select_best():
 
 
 def test_compare_distance():
-    x_mapped = np.array([4,3,6,1,3])
-    y_mapped = np.array([2,4,7,3,3])
+    x_mapped = np.array([4, 3, 6, 1, 3])
+    y_mapped = np.array([2, 4, 7, 3, 3])
     X2 = util.compare_distance(x_mapped, y_mapped)
     assert X2 == 140
 
@@ -351,7 +427,7 @@ def test_make_subgrid():
     x_grid, y_grid = util.make_grid(numPix, deltapix, subgrid_res=1)
     x_sub_grid, y_sub_grid = util.make_subgrid(x_grid, y_grid, subgrid_res=2)
     assert np.sum(x_grid) == 0
-    assert len(x_grid) == 101*101
+    assert len(x_grid) == 101 * 101
     assert x_sub_grid[0] == -50.25
     assert y_sub_grid[17] == -50.25
 
@@ -362,7 +438,7 @@ def test_make_subgrid():
 def test_fwhm2sigma():
     fwhm = 0.5
     sigma = util.fwhm2sigma(fwhm)
-    assert sigma == fwhm/ (2 * np.sqrt(2 * np.log(2)))
+    assert sigma == fwhm / (2 * np.sqrt(2 * np.log(2)))
 
 
 def test_points_on_circle():
@@ -372,7 +448,7 @@ def test_points_on_circle():
     assert ra[0] == 1
     assert dec[0] == 0
 
-    ra_, dec_ = util.points_on_circle(radius, points-1, connect_ends=False)
+    ra_, dec_ = util.points_on_circle(radius, points - 1, connect_ends=False)
     npt.assert_almost_equal(ra[:-1], ra_, decimal=8)
     npt.assert_almost_equal(dec[:-1], dec_, decimal=8)
 
@@ -413,7 +489,6 @@ def test_area():
 
 
 class TestRaise(unittest.TestCase):
-
     def test_raise(self):
         with self.assertRaises(ValueError):
             array = np.ones(5)
@@ -425,9 +500,13 @@ class TestRaise(unittest.TestCase):
             x, y = np.ones(6), np.ones(6)
             util.get_axes(x, y)
         with self.assertRaises(ValueError):
-            util.selectBest(array=np.ones(6), criteria=np.ones(5), numSelect=1, highest=True)
+            util.selectBest(
+                array=np.ones(6), criteria=np.ones(5), numSelect=1, highest=True
+            )
         with self.assertRaises(ValueError):
-            util.select_best(array=np.ones(6), criteria=np.ones(5), num_select=1, highest=True)
+            util.select_best(
+                array=np.ones(6), criteria=np.ones(5), num_select=1, highest=True
+            )
         with self.assertRaises(ValueError):
             util.convert_bool_list(n=2, k=[3, 7])
         with self.assertRaises(ValueError):
@@ -442,5 +521,5 @@ class TestRaise(unittest.TestCase):
             util.make_grid(numPix=[1.1, 1], deltapix=1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pytest.main()

@@ -177,7 +177,7 @@ class TestLikelihoodModule(object):
             kwargs_data_joint=self.kwargs_data,
             kwargs_model=kwargs_model,
             param_class=self.param_class,
-            **kwargs_likelihood
+            **kwargs_likelihood,
         )
         self.kwargs_band = kwargs_band
         self.kwargs_psf = kwargs_psf
@@ -204,7 +204,7 @@ class TestLikelihoodModule(object):
             kwargs_data_joint=self.kwargs_data,
             kwargs_model=self.kwargs_model,
             param_class=self.param_class,
-            **kwargs_likelihood
+            **kwargs_likelihood,
         )
         args = self.param_class.kwargs2args(
             kwargs_lens=self.kwargs_lens,
@@ -264,7 +264,7 @@ class TestLikelihoodModule(object):
                 kwargs_data_joint=self.kwargs_data,
                 kwargs_model=kwargs_model,
                 param_class=param_class,
-                **kwargs_likelihood
+                **kwargs_likelihood,
             )
             kwargs_cosmo = {
                 "D_dt": 2000,
@@ -332,7 +332,7 @@ class TestLikelihoodModule(object):
                 kwargs_data_joint=kwargs_data_kin,
                 kwargs_model=kwargs_model,
                 param_class=param_class,
-                **kwargs_likelihood
+                **kwargs_likelihood,
             )
             args = param_class.kwargs2args(
                 kwargs_lens=kwargs_lens,
@@ -412,14 +412,14 @@ class TestLikelihoodModule(object):
             kwargs_model,
             kwargs_fixed_source=kwargs_fixed_source,
             kwargs_fixed_lens_light=kwargs_fixed_lens_light,
-            **kwargs_constraints
+            **kwargs_constraints,
         )
 
         likelihood = LikelihoodModule(
             kwargs_data_joint=kwargs_data,
             kwargs_model=kwargs_model,
             param_class=param_class,
-            **kwargs_likelihood
+            **kwargs_likelihood,
         )
 
         kwargs_source = [{"amp": np.ones(n_scales * numPix_source**2)}]

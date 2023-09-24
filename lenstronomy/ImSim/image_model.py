@@ -252,24 +252,38 @@ class ImageModel(object):
         :param k: integer, if set, will only return the model of the specific index
         :return: 2d array of surface brightness pixels
         """
-        source_light = self._source_surface_brightness_analytical_numerics(kwargs_source, kwargs_lens,
-                                                                           kwargs_extinction,
-                                                                           kwargs_special=kwargs_special,
-                                                                           de_lensed=de_lensed, k=k)
+        source_light = self._source_surface_brightness_analytical_numerics(
+            kwargs_source,
+            kwargs_lens,
+            kwargs_extinction,
+            kwargs_special=kwargs_special,
+            de_lensed=de_lensed,
+            k=k,
+        )
 
-        source_light_final = self.ImageNumerics.re_size_convolve(source_light, unconvolved=unconvolved)
+        source_light_final = self.ImageNumerics.re_size_convolve(
+            source_light, unconvolved=unconvolved
+        )
         return source_light_final
 
-    def _source_surface_brightness_analytical_numerics(self, kwargs_source, kwargs_lens=None, kwargs_extinction=None,
-                                                       kwargs_special=None, de_lensed=False, k=None):
-        """
+    def _source_surface_brightness_analytical_numerics(
+        self,
+        kwargs_source,
+        kwargs_lens=None,
+        kwargs_extinction=None,
+        kwargs_special=None,
+        de_lensed=False,
+        k=None,
+    ):
+        """Computes the source surface brightness distribution.
 
-        computes the source surface brightness distribution
-
-        :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
-        :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
+        :param kwargs_source: list of keyword arguments corresponding to the
+            superposition of different source light profiles
+        :param kwargs_lens: list of keyword arguments corresponding to the superposition
+            of different lens profiles
         :param kwargs_extinction: list of keyword arguments of extinction model
-        :param de_lensed: if True: returns the un-lensed source surface brightness profile, otherwise the lensed.
+        :param de_lensed: if True: returns the un-lensed source surface brightness
+            profile, otherwise the lensed.
         :param k: integer, if set, will only return the model of the specific index
         :return: 2d array of surface brightness pixels
         """
@@ -279,14 +293,20 @@ class ImageModel(object):
                 ra_grid, dec_grid, kwargs_source, k=k
             )
         else:
-            source_light = self.source_mapping.image_flux_joint(ra_grid, dec_grid, kwargs_lens, kwargs_source, k=k)
-            source_light *= self._extinction.extinction(ra_grid, dec_grid, kwargs_extinction=kwargs_extinction,
-                                                        kwargs_special=kwargs_special)
+            source_light = self.source_mapping.image_flux_joint(
+                ra_grid, dec_grid, kwargs_lens, kwargs_source, k=k
+            )
+            source_light *= self._extinction.extinction(
+                ra_grid,
+                dec_grid,
+                kwargs_extinction=kwargs_extinction,
+                kwargs_special=kwargs_special,
+            )
 
         # multiply with primary beam before convolution
         if self._pb is not None:
             source_light *= self._pb_1d
-        return source_light  * self._flux_scaling
+        return source_light * self._flux_scaling
 
     def _source_surface_brightness_pixelbased(
         self,

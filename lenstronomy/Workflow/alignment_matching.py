@@ -119,7 +119,7 @@ class AlignmentLikelihood(object):
         self._band_index = band_index
         self._likelihood_mask_list = likelihood_mask_list
         self._kwargs_params = copy.deepcopy(kwargs_params)
-        self._kwargs_params.pop('kwargs_tracer_source', None)
+        self._kwargs_params.pop("kwargs_tracer_source", None)
 
     def _likelihood(self, args):
         """Routine to compute X2 given variable parameters for a MCMC/PSO chainF."""

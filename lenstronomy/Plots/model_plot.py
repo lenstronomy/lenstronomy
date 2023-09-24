@@ -71,7 +71,7 @@ class ModelPlot(object):
         )
 
         kwargs_params_copy = copy.deepcopy(kwargs_params)
-        kwargs_params_copy.pop('kwargs_tracer_source', None)
+        kwargs_params_copy.pop("kwargs_tracer_source", None)
         model, error_map, cov_param, param = self._imageModel.image_linear_solve(
             inv_bool=True, **kwargs_params_copy
         )

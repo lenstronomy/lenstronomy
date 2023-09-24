@@ -314,7 +314,7 @@ class TestCOOLESTinterface(object):
             kwargs_out["kwargs_model"],
             kwargs_result,
         )
-        kwargs_result.pop('kwargs_tracer_source', None)
+        kwargs_result.pop("kwargs_tracer_source", None)
         modelPlot._imageModel.image_linear_solve(inv_bool=True, **kwargs_result)
         # the last 2 lines are meant for solving the linear parameters
 

@@ -7,14 +7,24 @@ import numpy as np
 
 
 class TracerModelSource(ImageModel):
-    """
-    Tracer model class, inherits ImageModel.
+    """Tracer model class, inherits ImageModel."""
 
-    """
-    def __init__(self, data_class, psf_class=None, lens_model_class=None, source_model_class=None,
-                 lens_light_model_class=None, point_source_class=None, extinction_class=None,
-                 tracer_source_class=None, kwargs_numerics=None, likelihood_mask=None,
-                 psf_error_map_bool_list=None, kwargs_pixelbased=None, tracer_partition=None):
+    def __init__(
+        self,
+        data_class,
+        psf_class=None,
+        lens_model_class=None,
+        source_model_class=None,
+        lens_light_model_class=None,
+        point_source_class=None,
+        extinction_class=None,
+        tracer_source_class=None,
+        kwargs_numerics=None,
+        likelihood_mask=None,
+        psf_error_map_bool_list=None,
+        kwargs_pixelbased=None,
+        tracer_partition=None,
+    ):
         """
 
         :param data_class: ImageData() instance
@@ -42,26 +52,42 @@ class TracerModelSource(ImageModel):
         if tracer_partition is None:
             tracer_partition = [[None, None]]
         self._tracer_partition = tracer_partition
-        super(TracerModelSource, self).__init__(data_class, psf_class=psf_class, lens_model_class=lens_model_class,
-                                                source_model_class=source_model_class,
-                                                lens_light_model_class=lens_light_model_class,
-                                                point_source_class=point_source_class, extinction_class=extinction_class,
-                                                kwargs_numerics=kwargs_numerics, kwargs_pixelbased=kwargs_pixelbased)
+        super(TracerModelSource, self).__init__(
+            data_class,
+            psf_class=psf_class,
+            lens_model_class=lens_model_class,
+            source_model_class=source_model_class,
+            lens_light_model_class=lens_light_model_class,
+            point_source_class=point_source_class,
+            extinction_class=extinction_class,
+            kwargs_numerics=kwargs_numerics,
+            kwargs_pixelbased=kwargs_pixelbased,
+        )
         if psf_error_map_bool_list is None:
-            psf_error_map_bool_list = [True] * len(self.PointSource.point_source_type_list)
+            psf_error_map_bool_list = [True] * len(
+                self.PointSource.point_source_type_list
+            )
         self._psf_error_map_bool_list = psf_error_map_bool_list
         if tracer_source_class is None:
             tracer_source_class = LightModel(light_model_list=[])
         if lens_model_class is None:
             lens_model_class = LensModel(lens_model_list=[])
-        self.tracer_mapping = Image2SourceMapping(lensModel=lens_model_class, sourceModel=tracer_source_class)
+        self.tracer_mapping = Image2SourceMapping(
+            lensModel=lens_model_class, sourceModel=tracer_source_class
+        )
         self.tracer_source_class = tracer_source_class
 
-    def tracer_model(self, kwargs_tracer_source, kwargs_lens, kwargs_source, kwargs_extinction=None, kwargs_special=None,
-                     de_lensed=False):
-        """
-        tracer model as a convolved surface brightness weighted quantity
-        conv(tracer * surface brightness) / conv(surface brightness)
+    def tracer_model(
+        self,
+        kwargs_tracer_source,
+        kwargs_lens,
+        kwargs_source,
+        kwargs_extinction=None,
+        kwargs_special=None,
+        de_lensed=False,
+    ):
+        """Tracer model as a convolved surface brightness weighted quantity conv(tracer
+        * surface brightness) / conv(surface brightness)
 
         :param kwargs_tracer_source:
         :param kwargs_lens:
@@ -71,19 +97,31 @@ class TracerModelSource(ImageModel):
         tracer_brightness_conv = np.zeros_like(self.Data.data)
         source_light_conv = np.zeros_like(self.Data.data)
         for [k_light, k_tracer] in self._tracer_partition:
-            source_light_k = self._source_surface_brightness_analytical_numerics(kwargs_source, kwargs_lens,
-                                                                               kwargs_extinction,
-                                                                               kwargs_special=kwargs_special,
-                                                                               de_lensed=de_lensed, k=k_light)
-            source_light_conv_k = self.ImageNumerics.re_size_convolve(source_light_k, unconvolved=False)
+            source_light_k = self._source_surface_brightness_analytical_numerics(
+                kwargs_source,
+                kwargs_lens,
+                kwargs_extinction,
+                kwargs_special=kwargs_special,
+                de_lensed=de_lensed,
+                k=k_light,
+            )
+            source_light_conv_k = self.ImageNumerics.re_size_convolve(
+                source_light_k, unconvolved=False
+            )
             source_light_conv_k[source_light_conv_k < 10 ** (-20)] = 10 ** (-20)
-            tracer_k = self._tracer_model_source(kwargs_tracer_source, kwargs_lens, de_lensed=de_lensed, k=k_tracer)
-            tracer_brightness_conv_k = self.ImageNumerics.re_size_convolve(tracer_k * source_light_k, unconvolved=False)
+            tracer_k = self._tracer_model_source(
+                kwargs_tracer_source, kwargs_lens, de_lensed=de_lensed, k=k_tracer
+            )
+            tracer_brightness_conv_k = self.ImageNumerics.re_size_convolve(
+                tracer_k * source_light_k, unconvolved=False
+            )
             tracer_brightness_conv += tracer_brightness_conv_k
             source_light_conv += source_light_conv_k
         return tracer_brightness_conv / source_light_conv
 
-    def _tracer_model_source(self, kwargs_tracer_source, kwargs_lens, de_lensed=False, k=None):
+    def _tracer_model_source(
+        self, kwargs_tracer_source, kwargs_lens, de_lensed=False, k=None
+    ):
         """
 
         :param kwargs_tracer_source:
@@ -92,21 +130,36 @@ class TracerModelSource(ImageModel):
         """
         ra_grid, dec_grid = self.ImageNumerics.coordinates_evaluate
         if de_lensed is True:
-            source_light = self.tracer_source_class.surface_brightness(ra_grid, dec_grid, kwargs_tracer_source, k=k)
+            source_light = self.tracer_source_class.surface_brightness(
+                ra_grid, dec_grid, kwargs_tracer_source, k=k
+            )
         else:
-            source_light = self.tracer_mapping.image_flux_joint(ra_grid, dec_grid, kwargs_lens, kwargs_tracer_source, k=k)
+            source_light = self.tracer_mapping.image_flux_joint(
+                ra_grid, dec_grid, kwargs_lens, kwargs_tracer_source, k=k
+            )
         return source_light
 
-    def likelihood_data_given_model(self, kwargs_tracer_source, kwargs_lens, kwargs_source, kwargs_extinction=None,
-                                    kwargs_special=None):
-        model = self.tracer_model(kwargs_tracer_source, kwargs_lens, kwargs_source, kwargs_extinction, kwargs_special)
-        log_likelihood = self.Data.log_likelihood(model, self.likelihood_mask, additional_error_map=0)
+    def likelihood_data_given_model(
+        self,
+        kwargs_tracer_source,
+        kwargs_lens,
+        kwargs_source,
+        kwargs_extinction=None,
+        kwargs_special=None,
+    ):
+        model = self.tracer_model(
+            kwargs_tracer_source,
+            kwargs_lens,
+            kwargs_source,
+            kwargs_extinction,
+            kwargs_special,
+        )
+        log_likelihood = self.Data.log_likelihood(
+            model, self.likelihood_mask, additional_error_map=0
+        )
         return log_likelihood
 
     @property
     def num_data_evaluate(self):
-        """
-        number of data points to be used in the linear solver
-        :return:
-        """
+        """Number of data points to be used in the linear solver :return:"""
         return int(np.sum(self.likelihood_mask))

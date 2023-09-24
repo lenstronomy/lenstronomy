@@ -174,7 +174,7 @@ class ModelBand(object):
         self._kwargs_special_partial = kwargs_params.get("kwargs_special", None)
         self._kwargs_lens = kwargs_params.get("kwargs_lens", None)
         kwargs_params_copy = copy.deepcopy(kwargs_params)
-        kwargs_params_copy.pop('kwargs_tracer_source', None)
+        kwargs_params_copy.pop("kwargs_tracer_source", None)
         (
             kwarks_lens_partial,
             kwargs_source_partial,

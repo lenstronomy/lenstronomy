@@ -71,10 +71,10 @@ class TracerPlot(object):
         ) = self.image_model.update_linear_kwargs(
             param,
             model_band=self._tracer_light_model_band,
-            kwargs_lens=kwargs_params["kwargs_lens"],
-            kwargs_source=kwargs_params["kwargs_source"],
-            kwargs_lens_light=kwargs_params["kwargs_lens_light"],
-            kwargs_ps=kwargs_params["kwargs_ps"],
+            kwargs_lens=kwargs_params.get("kwargs_lens", None),
+            kwargs_source=kwargs_params.get("kwargs_source", None),
+            kwargs_lens_light=kwargs_params.get("kwargs_lens_light", None),
+            kwargs_ps=kwargs_params.get("kwargs_ps", None),
         )
         self._kwargs_tracer_source = kwargs_params["kwargs_tracer_source"]
         self._kwargs_special = kwargs_params.get("kwargs_special", None)

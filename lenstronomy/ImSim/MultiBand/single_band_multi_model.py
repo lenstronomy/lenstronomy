@@ -491,7 +491,7 @@ class SingleBandMultiModel(ImageLinearFit):
         )
 
     def update_linear_kwargs(
-        self, param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps
+        self, param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, model_band=None,
     ):
         """
 

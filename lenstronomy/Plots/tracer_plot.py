@@ -551,7 +551,6 @@ class TracerPlot(object):
             v_max = self._v_max_default
         d_s = numPix * deltaPix_source
         source, coords_source = self.source(numPix, deltaPix_source, center=center)
-        print(np.sum(source), "test source")
         if plot_scale == "log":
             source[source < 10**v_min] = 10 ** (
                 v_min

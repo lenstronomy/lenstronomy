@@ -349,3 +349,8 @@ History
 * SkiNN interface
 * faster and more reliable Einstein radius computation
 * Cobaya interface
+
+1.11.4 (2023-09-27)
++++++++++++++++++++
+* Cobaya not required to run FittingSequence
+* Galkin with luminosity-weighted velocity dispersion calculation

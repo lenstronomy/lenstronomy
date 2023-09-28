@@ -354,3 +354,8 @@ History
 +++++++++++++++++++
 * Cobaya not required to run FittingSequence
 * Galkin with luminosity-weighted velocity dispersion calculation
+
+1.11.5 (2023-09-28)
++++++++++++++++++++
+* bug fix in findOverlap function
+* bug fix in luminosity-0weighted celocity dispersion calculation

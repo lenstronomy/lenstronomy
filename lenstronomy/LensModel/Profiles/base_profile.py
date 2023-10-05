@@ -21,8 +21,6 @@ class LensProfileBase(object):
 
     With that, you should be good to go and import and use it for any purpose.
     Further definitions in the class are optional and only used for certain applications (such as kinematics)
-
-
     """
 
     def __init__(self, *args, **kwargs):

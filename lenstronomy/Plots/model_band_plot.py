@@ -78,6 +78,7 @@ class ModelBandPlot(ModelBand):
         self._fast_caustic = fast_caustic
 
     def _critical_curves(self):
+        # TODO: add option for more accurate caustics
         if not hasattr(self, "_ra_crit_list") or not hasattr(self, "_dec_crit_list"):
             # self._ra_crit_list, self._dec_crit_list, self._ra_caustic_list, self._dec_caustic_list = self._lensModelExt.critical_curve_caustics(
             #    self._kwargs_lens_partial, compute_window=self._frame_size, grid_scale=self._deltaPix / 5.,

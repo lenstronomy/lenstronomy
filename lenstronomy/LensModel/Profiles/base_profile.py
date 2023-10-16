@@ -18,6 +18,7 @@ class LensProfileBase(object):
         lower_limit_default = {"param1": value, "param2: value, ...}
         upper_limit_default = {"param1": value, "param2: value, ...}
     5. give the new profile a meaningful name and add it in the LensModel.profile_list_base class
+    6. write test functions in the test/test_LensModel/test_Profiles folder with a new file with test_<profile name>.py
 
     With that, you should be good to go and import and use it for any purpose.
     Further definitions in the class are optional and only used for certain applications (such as kinematics)

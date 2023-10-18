@@ -31,6 +31,7 @@ Contributors (alphabetic)
 * Tyler Hughes
 * Daniel Johnson `DanJohnson98 <https://github.com/DanJohnson98>`_
 * Felix A. Kuhn
+* Johannes U. Lange `johannesulf <https://github.com/johannesulf>`_
 * Zhiyuan Ma `Jerry-Ma <https://github.com/Jerry-Ma/>`_
 * Felix Mayor
 * Martin Millon `martin-millon <https://github.com/martin-millon/>`_

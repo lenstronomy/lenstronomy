@@ -1,4 +1,4 @@
-__author__ = ['sibirrer', 'ajshajib', 'dgilman', 'nataliehogg']
+__author__ = ["sibirrer", "ajshajib", "dgilman", "nataliehogg"]
 
 import time
 
@@ -8,7 +8,7 @@ from lenstronomy.Util import sampling_util
 from lenstronomy.Sampling.Pool.pool import choose_pool
 from scipy.optimize import minimize
 
-__all__ = ['Sampler']
+__all__ = ["Sampler"]
 
 
 class Sampler(object):
@@ -19,6 +19,7 @@ class Sampler(object):
     Feel free to sample with your convenient sampler!
 
     """
+
     def __init__(self, likelihoodModule):
         """
 
@@ -27,7 +28,7 @@ class Sampler(object):
         self.chain = likelihoodModule
         self.lower_limit, self.upper_limit = self.chain.param_limits
 
-    def simplex(self, init_pos, n_iterations, method, print_key='SIMPLEX'):
+    def simplex(self, init_pos, n_iterations, method, print_key="SIMPLEX"):
         """
 
         :param init_pos: starting point for the optimization
@@ -35,46 +36,69 @@ class Sampler(object):
         :param method: the optimization method, default is 'Nelder-Mead'
         :return: the best fit for the lens model using the optimization routine specified by method
         """
-        print('Performing the optimization using algorithm:', method)
+        print("Performing the optimization using algorithm:", method)
         time_start = time.time()
 
-        result = minimize(self.chain.negativelogL, x0=init_pos, method=method,
-                          options={'maxiter': n_iterations, 'disp': True})
-        logL = self.chain.logL(result['x'])
-        kwargs_return = self.chain.param.args2kwargs(result['x'])
-        print(-logL * 2 / (max(self.chain.effective_num_data_points(**kwargs_return), 1)),
-              'reduced X^2 of best position')
-        print(logL, 'log likelihood')
-        print(self.chain.effective_num_data_points(**kwargs_return), 'effective number of data points')
-        print(kwargs_return.get('kwargs_lens', None), 'lens result')
-        print(kwargs_return.get('kwargs_source', None), 'source result')
-        print(kwargs_return.get('kwargs_lens_light', None), 'lens light result')
-        print(kwargs_return.get('kwargs_ps', None), 'point source result')
-        print(kwargs_return.get('kwargs_special', None), 'special param result')
+        result = minimize(
+            self.chain.negativelogL,
+            x0=init_pos,
+            method=method,
+            options={"maxiter": n_iterations, "disp": True},
+        )
+        logL = self.chain.logL(result["x"])
+        kwargs_return = self.chain.param.args2kwargs(result["x"])
+        print(
+            -logL * 2 / (max(self.chain.effective_num_data_points(**kwargs_return), 1)),
+            "reduced X^2 of best position",
+        )
+        print(logL, "log likelihood")
+        print(
+            self.chain.effective_num_data_points(**kwargs_return),
+            "effective number of data points",
+        )
+        print(kwargs_return.get("kwargs_lens", None), "lens result")
+        print(kwargs_return.get("kwargs_source", None), "source result")
+        print(kwargs_return.get("kwargs_lens_light", None), "lens light result")
+        print(kwargs_return.get("kwargs_ps", None), "point source result")
+        print(kwargs_return.get("kwargs_special", None), "special param result")
         time_end = time.time()
-        print(time_end - time_start, 'time used for ', print_key)
-        print('===================')
+        print(time_end - time_start, "time used for ", print_key)
+        print("===================")
 
-        return result['x']
+        return result["x"]
 
-    def pso(self, n_particles, n_iterations, lower_start=None, upper_start=None,
-            threadCount=1, init_pos=None, mpi=False, print_key='PSO'):
-        """
-        Return the best fit for the lens model on catalogue basis with
-        particle swarm optimizer.
+    def pso(
+        self,
+        n_particles,
+        n_iterations,
+        lower_start=None,
+        upper_start=None,
+        threadCount=1,
+        init_pos=None,
+        mpi=False,
+        print_key="PSO",
+    ):
+        """Return the best fit for the lens model on catalogue basis with particle swarm
+        optimizer.
 
         :param n_particles: number of particles in the sampling process
         :param n_iterations: number of iterations of the swarm
-        :param lower_start: numpy array, lower end parameter of the values of the starting particles
-        :param upper_start: numpy array, upper end parameter of the values of the starting particles
-        :param threadCount: number of threads in the computation (only applied if mpi=False)
+        :param lower_start: numpy array, lower end parameter of the values of the
+            starting particles
+        :param upper_start: numpy array, upper end parameter of the values of the
+            starting particles
+        :param threadCount: number of threads in the computation (only applied if
+            mpi=False)
         :param init_pos: numpy array, position of the initial best guess model
         :param mpi: bool, if True, makes instance of MPIPool to allow for MPI execution
         :param print_key: string, prints the process name in the progress bar (optional)
-        :return: kwargs_result (of best fit), [lnlikelihood of samples, positions of samples, velocity of samples])
+        :return: kwargs_result (of best fit), [lnlikelihood of samples, positions of
+            samples, velocity of samples])
         """
         if lower_start is None or upper_start is None:
-            lower_start, upper_start = np.array(self.lower_limit), np.array(self.upper_limit)
+            lower_start, upper_start = np.array(self.lower_limit), np.array(
+                self.upper_limit
+            )
             print("PSO initialises its particles with default values")
         else:
             lower_start = np.maximum(lower_start, self.lower_limit)
@@ -83,20 +107,19 @@ class Sampler(object):
         pool = choose_pool(mpi=mpi, processes=threadCount, use_dill=True)
 
         if mpi is True and pool.is_master():
-            print('MPI option chosen for PSO.')
+            print("MPI option chosen for PSO.")
 
-        pso = ParticleSwarmOptimizer(self.chain.logL,
-                                     lower_start, upper_start, n_particles,
-                                     pool=pool)
+        pso = ParticleSwarmOptimizer(
+            self.chain.logL, lower_start, upper_start, n_particles, pool=pool
+        )
 
         if init_pos is None:
             init_pos = (upper_start - lower_start) / 2 + lower_start
 
-        pso.set_global_best(init_pos, [0]*len(init_pos),
-                            self.chain.logL(init_pos))
+        pso.set_global_best(init_pos, [0] * len(init_pos), self.chain.logL(init_pos))
 
         if pool.is_master():
-            print('Computing the %s ...' % print_key)
+            print("Computing the %s ..." % print_key)
 
         time_start = time.time()
 
@@ -104,26 +127,43 @@ class Sampler(object):
 
         if pool.is_master():
             kwargs_return = self.chain.param.args2kwargs(result)
-            print(pso.global_best.fitness * 2 / (max(
-                self.chain.effective_num_data_points(**kwargs_return), 1)), 'reduced X^2 of best position')
-            print(pso.global_best.fitness, 'log likelihood')
-            print(self.chain.effective_num_data_points(**kwargs_return), 'effective number of data points')
-            print(kwargs_return.get('kwargs_lens', None), 'lens result')
-            print(kwargs_return.get('kwargs_source', None), 'source result')
-            print(kwargs_return.get('kwargs_lens_light', None), 'lens light result')
-            print(kwargs_return.get('kwargs_ps', None), 'point source result')
-            print(kwargs_return.get('kwargs_special', None), 'special param result')
+            print(
+                pso.global_best.fitness
+                * 2
+                / (max(self.chain.effective_num_data_points(**kwargs_return), 1)),
+                "reduced X^2 of best position",
+            )
+            print(pso.global_best.fitness, "log likelihood")
+            print(
+                self.chain.effective_num_data_points(**kwargs_return),
+                "effective number of data points",
+            )
+            print(kwargs_return.get("kwargs_lens", None), "lens result")
+            print(kwargs_return.get("kwargs_source", None), "source result")
+            print(kwargs_return.get("kwargs_lens_light", None), "lens light result")
+            print(kwargs_return.get("kwargs_ps", None), "point source result")
+            print(kwargs_return.get("kwargs_special", None), "special param result")
             time_end = time.time()
-            print(time_end - time_start, 'time used for ', print_key)
-            print('===================')
+            print(time_end - time_start, "time used for ", print_key)
+            print("===================")
         return result, [log_likelihood_list, pos_list, vel_list]
 
-    def mcmc_emcee(self, n_walkers, n_run, n_burn, mean_start, sigma_start,
-                   mpi=False, progress=False, threadCount=1,
-                   initpos=None, backend_filename=None, start_from_backend=False):
-        """
-        Run MCMC with emcee.
-        For details, please have a look at the documentation of the emcee packager.
+    def mcmc_emcee(
+        self,
+        n_walkers,
+        n_run,
+        n_burn,
+        mean_start,
+        sigma_start,
+        mpi=False,
+        progress=False,
+        threadCount=1,
+        initpos=None,
+        backend_filename=None,
+        start_from_backend=False,
+    ):
+        """Run MCMC with emcee. For details, please have a look at the documentation of
+        the emcee packager.
 
         :param n_walkers: number of walkers in the emcee process
         :type n_walkers: integer
@@ -155,15 +195,26 @@ class Sampler(object):
 
         num_param, _ = self.chain.param.num_param()
         if initpos is None:
-            initpos = sampling_util.sample_ball_truncated(mean_start, sigma_start, self.lower_limit, self.upper_limit,
-                                                          size=n_walkers)
+            initpos = sampling_util.sample_ball_truncated(
+                mean_start,
+                sigma_start,
+                self.lower_limit,
+                self.upper_limit,
+                size=n_walkers,
+            )
 
         pool = choose_pool(mpi=mpi, processes=threadCount, use_dill=True)
 
         if backend_filename is not None:
-            backend = emcee.backends.HDFBackend(backend_filename, name="lenstronomy_mcmc_emcee")
+            backend = emcee.backends.HDFBackend(
+                backend_filename, name="lenstronomy_mcmc_emcee"
+            )
             if pool.is_master():
-                print("Warning: All samples (including burn-in) will be saved in backup file '{}'.".format(backend_filename))
+                print(
+                    "Warning: All samples (including burn-in) will be saved in backup file '{}'.".format(
+                        backend_filename
+                    )
+                )
             if start_from_backend:
                 initpos = None
                 n_run_eff = n_run
@@ -171,32 +222,47 @@ class Sampler(object):
                 n_run_eff = n_burn + n_run
                 backend.reset(n_walkers, num_param)
                 if pool.is_master():
-                    print("Warning: backup file '{}' has been reset!".format(backend_filename))
+                    print(
+                        "Warning: backup file '{}' has been reset!".format(
+                            backend_filename
+                        )
+                    )
         else:
             backend = None
             n_run_eff = n_burn + n_run
 
         time_start = time.time()
 
-        sampler = emcee.EnsembleSampler(n_walkers, num_param, self.chain.logL, pool=pool, backend=backend)
+        sampler = emcee.EnsembleSampler(
+            n_walkers, num_param, self.chain.logL, pool=pool, backend=backend
+        )
 
         sampler.run_mcmc(initpos, n_run_eff, progress=progress)
         flat_samples = sampler.get_chain(discard=n_burn, thin=1, flat=True)
         dist = sampler.get_log_prob(flat=True, discard=n_burn, thin=1)
         if pool.is_master():
-            print('Computing the MCMC...')
-            print('Number of walkers = ', n_walkers)
-            print('Burn-in iterations: ', n_burn)
-            print('Sampling iterations (in current run):', n_run_eff)
+            print("Computing the MCMC...")
+            print("Number of walkers = ", n_walkers)
+            print("Burn-in iterations: ", n_burn)
+            print("Sampling iterations (in current run):", n_run_eff)
             time_end = time.time()
-            print(time_end - time_start, 'time taken for MCMC sampling')
+            print(time_end - time_start, "time taken for MCMC sampling")
         return flat_samples, dist
 
-    def mcmc_zeus(self, n_walkers, n_run, n_burn, mean_start, sigma_start,
-                  mpi=False, threadCount=1,
-                  progress=False, initpos=None, backend_filename=None,
-                  **kwargs_zeus):
-
+    def mcmc_zeus(
+        self,
+        n_walkers,
+        n_run,
+        n_burn,
+        mean_start,
+        sigma_start,
+        mpi=False,
+        threadCount=1,
+        progress=False,
+        initpos=None,
+        backend_filename=None,
+        **kwargs_zeus
+    ):
         """
         Lightning fast MCMC with zeus: https://github.com/minaskar/zeus
 
@@ -227,62 +293,82 @@ class Sampler(object):
         """
         import zeus
 
-        print('Using zeus to perform the MCMC.')
+        print("Using zeus to perform the MCMC.")
 
         num_param, _ = self.chain.param.num_param()
 
         # zeus kwargs; checks the dict for the key and if not present returns the given value
-        moves = kwargs_zeus.get('moves')
-        tune = kwargs_zeus.get('tune', True)
-        tolerance = kwargs_zeus.get('tolerance', 0.05)
-        patience = kwargs_zeus.get('patience', 5)
-        maxsteps = kwargs_zeus.get('maxsteps', 10000)
-        mu = kwargs_zeus.get('mu', 1.0)
-        maxiter = kwargs_zeus.get('maxiter', 10000)
-        pool = kwargs_zeus.get('pool', None)
-        vectorize = kwargs_zeus.get('vectorize', False)
-        blobs_dtype = kwargs_zeus.get('blobs_dtype')
-        verbose = kwargs_zeus.get('verbose', True)
-        check_walkers = kwargs_zeus.get('check_walkers', True)
-        shuffle_ensemble = kwargs_zeus.get('shuffle_ensemble', True)
-        light_mode = kwargs_zeus.get('light_mode', False)
+        moves = kwargs_zeus.get("moves")
+        tune = kwargs_zeus.get("tune", True)
+        tolerance = kwargs_zeus.get("tolerance", 0.05)
+        patience = kwargs_zeus.get("patience", 5)
+        maxsteps = kwargs_zeus.get("maxsteps", 10000)
+        mu = kwargs_zeus.get("mu", 1.0)
+        maxiter = kwargs_zeus.get("maxiter", 10000)
+        pool = kwargs_zeus.get("pool", None)
+        vectorize = kwargs_zeus.get("vectorize", False)
+        blobs_dtype = kwargs_zeus.get("blobs_dtype")
+        verbose = kwargs_zeus.get("verbose", True)
+        check_walkers = kwargs_zeus.get("check_walkers", True)
+        shuffle_ensemble = kwargs_zeus.get("shuffle_ensemble", True)
+        light_mode = kwargs_zeus.get("light_mode", False)
 
         # kwargs specifically for the callbacks
-        autocorrelation_callback = kwargs_zeus.get('autocorrelation_callback', False)
-        ncheck = kwargs_zeus.get('ncheck', 1)
-        dact = kwargs_zeus.get('dact', 0.01)
-        nact = kwargs_zeus.get('nact', 50)
-        discard = kwargs_zeus.get('discard', 0.5)
-        trigger = kwargs_zeus.get('trigger', True)
-        method = kwargs_zeus.get('method', 'mk')
-        splitr_callback = kwargs_zeus.get('splitr_callback', False)
-        epsilon = kwargs_zeus.get('epsilon', 0.01)
-        nsplits = kwargs_zeus.get('nsplits', 2)
-        miniter_callback=kwargs_zeus.get('miniter_callback', False)
-        nmin = kwargs_zeus.get('nmin', 1000)
+        autocorrelation_callback = kwargs_zeus.get("autocorrelation_callback", False)
+        ncheck = kwargs_zeus.get("ncheck", 1)
+        dact = kwargs_zeus.get("dact", 0.01)
+        nact = kwargs_zeus.get("nact", 50)
+        discard = kwargs_zeus.get("discard", 0.5)
+        trigger = kwargs_zeus.get("trigger", True)
+        method = kwargs_zeus.get("method", "mk")
+        splitr_callback = kwargs_zeus.get("splitr_callback", False)
+        epsilon = kwargs_zeus.get("epsilon", 0.01)
+        nsplits = kwargs_zeus.get("nsplits", 2)
+        miniter_callback = kwargs_zeus.get("miniter_callback", False)
+        nmin = kwargs_zeus.get("nmin", 1000)
 
         if initpos is None:
-            initpos = sampling_util.sample_ball_truncated(mean_start, sigma_start, self.lower_limit, self.upper_limit,
-                                                          size=n_walkers)
+            initpos = sampling_util.sample_ball_truncated(
+                mean_start,
+                sigma_start,
+                self.lower_limit,
+                self.upper_limit,
+                size=n_walkers,
+            )
 
         n_run_eff = n_burn + n_run
 
         callback_list = []
 
         if backend_filename is not None:
-            backend = zeus.callbacks.SaveProgressCallback(filename=backend_filename, ncheck=ncheck)
+            backend = zeus.callbacks.SaveProgressCallback(
+                filename=backend_filename, ncheck=ncheck
+            )
             callback_list.append(backend)
         else:
             pass
 
         if autocorrelation_callback == True:
-            autocorrelation = zeus.callbacks.AutocorrelationCallback(ncheck=ncheck, dact=dact, nact=nact, discard=discard, trigger=trigger, method=method)
+            autocorrelation = zeus.callbacks.AutocorrelationCallback(
+                ncheck=ncheck,
+                dact=dact,
+                nact=nact,
+                discard=discard,
+                trigger=trigger,
+                method=method,
+            )
             callback_list.append(autocorrelation)
         else:
             pass
 
         if splitr_callback == True:
-            splitr = zeus.callbacks.SplitRCallback(ncheck=ncheck, epsilon=epsilon, nsplits=nsplits, discard=discard, trigger=trigger)
+            splitr = zeus.callbacks.SplitRCallback(
+                ncheck=ncheck,
+                epsilon=epsilon,
+                nsplits=nsplits,
+                discard=discard,
+                trigger=trigger,
+            )
             callback_list.append(splitr)
         else:
             pass
@@ -295,12 +381,25 @@ class Sampler(object):
 
         pool = choose_pool(mpi=mpi, processes=threadCount, use_dill=True)
 
-        sampler = zeus.EnsembleSampler(nwalkers=n_walkers, ndim=num_param, logprob_fn=self.chain.logL,
-                                       moves=moves, tune=tune, tolerance=tolerance, patience=patience,
-                                       maxsteps=maxsteps, mu=mu, maxiter=maxiter, pool=pool, vectorize=vectorize,
-                                       blobs_dtype=blobs_dtype, verbose=verbose, check_walkers=check_walkers,
-                                       shuffle_ensemble=shuffle_ensemble, light_mode=light_mode
-                                       )
+        sampler = zeus.EnsembleSampler(
+            nwalkers=n_walkers,
+            ndim=num_param,
+            logprob_fn=self.chain.logL,
+            moves=moves,
+            tune=tune,
+            tolerance=tolerance,
+            patience=patience,
+            maxsteps=maxsteps,
+            mu=mu,
+            maxiter=maxiter,
+            pool=pool,
+            vectorize=vectorize,
+            blobs_dtype=blobs_dtype,
+            verbose=verbose,
+            check_walkers=check_walkers,
+            shuffle_ensemble=shuffle_ensemble,
+            light_mode=light_mode,
+        )
 
         sampler.run_mcmc(initpos, n_run_eff, progress=progress, callbacks=callback_list)
 

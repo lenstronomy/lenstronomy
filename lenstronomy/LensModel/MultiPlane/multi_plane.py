@@ -1,7 +1,9 @@
 import numpy as np
 from copy import deepcopy
 from lenstronomy.LensModel.MultiPlane.multi_plane_base import MultiPlaneBase
-from lenstronomy.LensModel.MultiPlane.multi_plane_base_decoupled import MultiPlaneDecoupled
+from lenstronomy.LensModel.MultiPlane.multi_plane_base_decoupled import (
+    MultiPlaneDecoupled,
+)
 
 from lenstronomy.Util.package_util import exporter
 
@@ -33,7 +35,7 @@ class MultiPlane(object):
         kwargs_interp=None,
         kwargs_synthesis=None,
         decouple_multi_plane=False,
-        kwargs_multiplane_model=None
+        kwargs_multiplane_model=None,
     ):
         """
 

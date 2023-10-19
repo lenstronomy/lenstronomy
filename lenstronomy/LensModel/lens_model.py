@@ -30,6 +30,8 @@ class LensModel(object):
         num_z_interp=100,
         kwargs_interp=None,
         kwargs_synthesis=None,
+        decouple_multi_plane=False,
+        kwargs_multiplane_model=None
     ):
         """
 
@@ -111,6 +113,8 @@ class LensModel(object):
                 num_z_interp=num_z_interp,
                 kwargs_interp=kwargs_interp,
                 kwargs_synthesis=kwargs_synthesis,
+                decouple_multi_plane=decouple_multi_plane,
+                kwargs_multiplane_model=kwargs_multiplane_model
             )
         else:
             if los_effects is True:

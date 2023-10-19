@@ -1,6 +1,7 @@
 import numpy as np
 from copy import deepcopy
 from lenstronomy.LensModel.MultiPlane.multi_plane_base import MultiPlaneBase
+from lenstronomy.LensModel.MultiPlane.multi_plane_base_decoupled import MultiPlaneDecoupled
 
 from lenstronomy.Util.package_util import exporter
 
@@ -31,6 +32,8 @@ class MultiPlane(object):
         num_z_interp=100,
         kwargs_interp=None,
         kwargs_synthesis=None,
+        decouple_multi_plane=False,
+        kwargs_multiplane_model=None
     ):
         """
 
@@ -50,6 +53,7 @@ class MultiPlane(object):
         :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens
          models. If None, 'z_source' is used.
         :param kwargs_synthesis: keyword arguments for the 'SYNTHESIS' lens model, if applicable
+        :param kwargs_multiplane_model: keyword arguments for the MultiPlaneDecoupled class, if specified
         """
 
         if z_source_convention is None:
@@ -62,18 +66,33 @@ class MultiPlane(object):
                 "z_source_convention=%s"
                 % (z_interp_stop, z_source, z_source_convention)
             )
-        self._multi_plane_base = MultiPlaneBase(
-            lens_model_list=lens_model_list,
-            lens_redshift_list=lens_redshift_list,
-            cosmo=cosmo,
-            numerical_alpha_class=numerical_alpha_class,
-            z_source_convention=z_source_convention,
-            cosmo_interp=cosmo_interp,
-            z_interp_stop=z_interp_stop,
-            num_z_interp=num_z_interp,
-            kwargs_interp=kwargs_interp,
-            kwargs_synthesis=kwargs_synthesis,
-        )
+        if decouple_multi_plane:
+            self._multi_plane_base = MultiPlaneDecoupled(
+                lens_model_list=lens_model_list,
+                lens_redshift_list=lens_redshift_list,
+                cosmo=cosmo,
+                numerical_alpha_class=numerical_alpha_class,
+                z_source_convention=z_source_convention,
+                cosmo_interp=cosmo_interp,
+                z_interp_stop=z_interp_stop,
+                num_z_interp=num_z_interp,
+                kwargs_interp=kwargs_interp,
+                kwargs_synthesis=kwargs_synthesis,
+                **kwargs_multiplane_model
+            )
+        else:
+            self._multi_plane_base = MultiPlaneBase(
+                lens_model_list=lens_model_list,
+                lens_redshift_list=lens_redshift_list,
+                cosmo=cosmo,
+                numerical_alpha_class=numerical_alpha_class,
+                z_source_convention=z_source_convention,
+                cosmo_interp=cosmo_interp,
+                z_interp_stop=z_interp_stop,
+                num_z_interp=num_z_interp,
+                kwargs_interp=kwargs_interp,
+                kwargs_synthesis=kwargs_synthesis,
+            )
 
         self._set_source_distances(z_source)
         self._observed_convention_index = observed_convention_index

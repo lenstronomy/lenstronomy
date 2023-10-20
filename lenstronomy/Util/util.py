@@ -234,9 +234,8 @@ def make_grid_transformed(numPix, Mpix2Angle):
 
 
 def centered_coordinate_system(num_pix, transform_pix2angle):
-    """returns dictionary for Coordinate Grid such that (0,0) is centered
-    with given input orientation coordinate transformation matrix
-
+    """Returns dictionary for Coordinate Grid such that (0,0) is centered with given
+    input orientation coordinate transformation matrix.
 
     :param num_pix: number of pixels
     :type num_pix: int
@@ -245,14 +244,19 @@ def centered_coordinate_system(num_pix, transform_pix2angle):
     :return: dict with ra_at_xy_0, dec_at_xy_0, transfrom_pix2angle
     """
     pix_center = (num_pix - 1) / 2
-    ra_center = pix_center * transform_pix2angle[0, 0] + pix_center * transform_pix2angle[1, 0]
-    dec_center = pix_center * transform_pix2angle[0, 1] + pix_center * transform_pix2angle[1, 1]
+    ra_center = (
+        pix_center * transform_pix2angle[0, 0] + pix_center * transform_pix2angle[1, 0]
+    )
+    dec_center = (
+        pix_center * transform_pix2angle[0, 1] + pix_center * transform_pix2angle[1, 1]
+    )
 
-    kwargs_grid = {"ra_at_xy_0": -ra_center,
-                   "dec_at_xy_0": -dec_center,
-                   "transform_pix2angle": transform_pix2angle}
+    kwargs_grid = {
+        "ra_at_xy_0": -ra_center,
+        "dec_at_xy_0": -dec_center,
+        "transform_pix2angle": transform_pix2angle,
+    }
     return kwargs_grid
-
 
 
 @export

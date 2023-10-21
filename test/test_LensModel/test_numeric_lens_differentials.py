@@ -82,8 +82,9 @@ class TestNumericsProfile(object):
     def setup_method(self):
         pass
 
-    def assert_differentials(self, lens_model, kwargs, potential=True, diff=0.000001, decimal=3):
-
+    def assert_differentials(
+        self, lens_model, kwargs, potential=True, diff=0.000001, decimal=3
+    ):
         x = np.linspace(start=0.1, stop=5.5, num=10)
         y = np.zeros_like(x)
 
@@ -257,8 +258,8 @@ class TestNumericsProfile(object):
         self.assert_differentials(lens_model, kwargs)
 
     def test_radial_interpolation(self):
-        lens_model =["RADIAL_INTERPOL"]
-        mass_sheet = LensModel(lens_model_list=['CONVERGENCE'])
+        lens_model = ["RADIAL_INTERPOL"]
+        mass_sheet = LensModel(lens_model_list=["CONVERGENCE"])
         kwargs_convergence = [{"kappa": 0.5}]
         r_bin = np.linspace(start=0, stop=10, num=100)
         kappa_r_sis = mass_sheet.kappa(r_bin, 0, kwargs=kwargs_convergence)

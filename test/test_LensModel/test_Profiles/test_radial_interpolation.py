@@ -6,17 +6,15 @@ import numpy.testing as npt
 
 
 class TestRadialInterpolation(object):
-    """
-    testing radial interpolation class
-    test case is a SIS profile and a constant mass sheet
+    """Testing radial interpolation class test case is a SIS profile and a constant mass
+    sheet."""
 
-    """
     def setup_method(self):
         self.rad_interp = RadialInterpolate()
 
     def test_sis(self):
         interp_profile = LensModel(lens_model_list=["RADIAL_INTERPOL"])
-        sis = LensModel(lens_model_list=['SIS'])
+        sis = LensModel(lens_model_list=["SIS"])
         kwargs_sis = [{"theta_E": 1, "center_x": 0, "center_y": 0}]
         r_bin_log = np.logspace(-4, 1, 200)
         kappa_r_sis = sis.kappa(r_bin_log, 0, kwargs=kwargs_sis)
@@ -25,12 +23,14 @@ class TestRadialInterpolation(object):
         x, y = util.make_grid(numPix=10, deltapix=0.1)
 
         # hessian
-        f_xx_int, f_xy_int, f_yx_int, f_yy_int = interp_profile.hessian(x, y, kwargs_interp)
+        f_xx_int, f_xy_int, f_yx_int, f_yy_int = interp_profile.hessian(
+            x, y, kwargs_interp
+        )
         f_xx, f_xy, f_yx, f_yy = sis.hessian(x, y, kwargs_sis)
-        kappa_int = 1/2 * (f_xx_int + f_yy_int)
-        kappa = 1/2 * (f_xx + f_yy)
+        kappa_int = 1 / 2 * (f_xx_int + f_yy_int)
+        kappa = 1 / 2 * (f_xx + f_yy)
 
-        gamma1 = 1/2 * (f_xx - f_yy)
+        gamma1 = 1 / 2 * (f_xx - f_yy)
         gamma1_int = 1 / 2 * (f_xx_int - f_yy_int)
 
         npt.assert_almost_equal(kappa_int / kappa, 1, decimal=3)
@@ -52,7 +52,7 @@ class TestRadialInterpolation(object):
 
     def test_mass_sheet(self):
         interp_profile = LensModel(lens_model_list=["RADIAL_INTERPOL"])
-        mass_sheet = LensModel(lens_model_list=['CONVERGENCE'])
+        mass_sheet = LensModel(lens_model_list=["CONVERGENCE"])
         kwargs_convergence = [{"kappa": 0.5}]
         r_bin = np.linspace(start=0, stop=1, num=100)
         kappa_r_sis = mass_sheet.kappa(r_bin, 0, kwargs=kwargs_convergence)
@@ -61,7 +61,9 @@ class TestRadialInterpolation(object):
         x, y = util.make_grid(numPix=10, deltapix=0.1)
 
         # hessian
-        f_xx_int, f_xy_int, f_yx_int, f_yy_int = interp_profile.hessian(x, y, kwargs_interp)
+        f_xx_int, f_xy_int, f_yx_int, f_yy_int = interp_profile.hessian(
+            x, y, kwargs_interp
+        )
         f_xx, f_xy, f_yx, f_yy = mass_sheet.hessian(x, y, kwargs_convergence)
         kappa_int = 1 / 2 * (f_xx_int + f_yy_int)
         kappa = 1 / 2 * (f_xx + f_yy)

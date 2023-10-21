@@ -239,6 +239,58 @@ def test_grid_with_coords():
     assert dec_at_xy_0 == 3
 
 
+def test_centered_coordinate_system():
+    num_pix = 51
+    delta_pix = 0.1
+
+    (
+        x_grid,
+        y_grid,
+        ra_at_xy_0,
+        dec_at_xy_0,
+        x_at_radec_0,
+        y_at_radec_0,
+        transform_pix2angle,
+        Mcoord2pix,
+    ) = util.make_grid_with_coordtransform(
+        num_pix, delta_pix, subgrid_res=1, left_lower=False, inverse=False
+    )
+    kwargs_grid = util.centered_coordinate_system(num_pix, transform_pix2angle)
+    npt.assert_almost_equal(kwargs_grid["ra_at_xy_0"], ra_at_xy_0, decimal=7)
+    npt.assert_almost_equal(kwargs_grid["dec_at_xy_0"], dec_at_xy_0, decimal=7)
+
+    (
+        x_grid,
+        y_grid,
+        ra_at_xy_0,
+        dec_at_xy_0,
+        x_at_radec_0,
+        y_at_radec_0,
+        transform_pix2angle,
+        Mcoord2pix,
+    ) = util.make_grid_with_coordtransform(
+        num_pix, delta_pix, subgrid_res=1, left_lower=False, inverse=True
+    )
+    kwargs_grid = util.centered_coordinate_system(num_pix, transform_pix2angle)
+    npt.assert_almost_equal(kwargs_grid["ra_at_xy_0"], ra_at_xy_0, decimal=7)
+    npt.assert_almost_equal(kwargs_grid["dec_at_xy_0"], dec_at_xy_0, decimal=7)
+
+    from lenstronomy.Data.coord_transforms import Coordinates
+
+    theta = 50 / 360 * 2 * np.pi
+    transform_pix2angle = np.array(
+        [
+            [np.cos(theta) * delta_pix, -np.sin(theta) * delta_pix],
+            [np.sin(theta) * delta_pix, np.cos(theta) * delta_pix],
+        ]
+    )
+    kwargs_grid = util.centered_coordinate_system(num_pix, transform_pix2angle)
+    coords = Coordinates(**kwargs_grid)
+    x, y = coords.map_coord2pix(ra=0, dec=0)
+    npt.assert_almost_equal(x, (num_pix - 1) / 2, decimal=7)
+    npt.assert_almost_equal(y, (num_pix - 1) / 2, decimal=7)
+
+
 def test_array2image():
     array = np.linspace(1, 100, 100)
     image = util.array2image(array)

@@ -276,13 +276,18 @@ def test_centered_coordinate_system():
     npt.assert_almost_equal(kwargs_grid["dec_at_xy_0"], dec_at_xy_0, decimal=7)
 
     from lenstronomy.Data.coord_transforms import Coordinates
-    theta = 50 / 360 * 2*np.pi
-    transform_pix2angle = np.array([[np.cos(theta) * delta_pix, -np.sin(theta) * delta_pix],
-                                    [np.sin(theta) * delta_pix, np.cos(theta) * delta_pix]])
+
+    theta = 50 / 360 * 2 * np.pi
+    transform_pix2angle = np.array(
+        [
+            [np.cos(theta) * delta_pix, -np.sin(theta) * delta_pix],
+            [np.sin(theta) * delta_pix, np.cos(theta) * delta_pix],
+        ]
+    )
     kwargs_grid = util.centered_coordinate_system(num_pix, transform_pix2angle)
     coords = Coordinates(**kwargs_grid)
     x, y = coords.map_coord2pix(ra=0, dec=0)
-    npt.assert_almost_equal(x, (num_pix - 1)/ 2, decimal=7)
+    npt.assert_almost_equal(x, (num_pix - 1) / 2, decimal=7)
     npt.assert_almost_equal(y, (num_pix - 1) / 2, decimal=7)
 
 

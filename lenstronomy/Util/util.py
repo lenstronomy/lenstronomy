@@ -245,10 +245,10 @@ def centered_coordinate_system(num_pix, transform_pix2angle):
     """
     pix_center = (num_pix - 1) / 2
     ra_center = (
-        pix_center * transform_pix2angle[0, 0] + pix_center * transform_pix2angle[1, 0]
+        pix_center * transform_pix2angle[0, 0] + pix_center * transform_pix2angle[0, 1]
     )
     dec_center = (
-        pix_center * transform_pix2angle[0, 1] + pix_center * transform_pix2angle[1, 1]
+        pix_center * transform_pix2angle[1, 0] + pix_center * transform_pix2angle[1, 1]
     )
 
     kwargs_grid = {

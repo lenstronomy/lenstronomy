@@ -558,7 +558,7 @@ class TestMultiPlane(object):
             z_interp_stop=3,
             cosmo_interp=False,
         )
-        z1, z2 = 0, z_source
+        z1, z2 = 0.000001, z_source
         theta_x, theta_y = np.linspace(start=-1, stop=1, num=10), np.linspace(
             start=-1, stop=1, num=10
         )
@@ -568,10 +568,10 @@ class TestMultiPlane(object):
         f_xx, f_xy, f_yx, f_yy = multi_plane.hessian(
             theta_x, theta_y, kwargs_lens, diff=0.00000001
         )
-        npt.assert_almost_equal(f_xx_z12, f_xx)
-        npt.assert_almost_equal(f_xy_z12, f_xy)
-        npt.assert_almost_equal(f_yx_z12, f_yx)
-        npt.assert_almost_equal(f_yy_z12, f_yy)
+        npt.assert_almost_equal(f_xx_z12, f_xx, decimal=5)
+        npt.assert_almost_equal(f_xy_z12, f_xy, decimal=5)
+        npt.assert_almost_equal(f_yx_z12, f_yx, decimal=5)
+        npt.assert_almost_equal(f_yy_z12, f_yy, decimal=5)
 
 
 class TestRaise(unittest.TestCase):

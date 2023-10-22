@@ -1,7 +1,6 @@
 # import main simulation class of lenstronomy
 import lenstronomy.Util.simulation_util as sim_util
 from lenstronomy.Data.imaging_data import ImageData
-from lenstronomy.Data.psf import PSF
 import pytest
 
 

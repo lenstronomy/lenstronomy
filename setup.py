@@ -75,13 +75,13 @@ PACKAGE_PATH = os.path.abspath(os.path.join(__file__, os.pardir))
 
 setup(
     name="lenstronomy",
-    version="1.11.3",
+    version="1.11.5",
     description="Strong lens modeling package.",
     long_description=desc,
     author="lenstronomy developers",
     author_email="lenstronomy-dev@googlegroups.com",
     url="https://github.com/lenstronomy/lenstronomy",
-    download_url="https://github.com/lenstronomy/lenstronomy/archive/1.11.3.tar.gz",
+    download_url="https://github.com/lenstronomy/lenstronomy/archive/1.11.5.tar.gz",
     packages=find_packages(PACKAGE_PATH, "test"),
     package_dir={"lenstronomy": "lenstronomy"},
     include_package_data=True,

@@ -86,7 +86,7 @@ class NumericKinematics(Anisotropy):
         )
         # azimuthal averaging
         I_R_sigma2 = np.sum(I_R_sigma2_rad * r_rad)
-        I_R = np.sum(I_R_rad)
+        I_R = np.sum(I_R_rad * r_rad)
         # return in units km/s
         sigma_s2 = I_R_sigma2 / I_R
         sigma = np.sqrt(sigma_s2) / 1000.0

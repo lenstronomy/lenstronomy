@@ -137,7 +137,7 @@ class TestMassProfile(object):
         vel_disp = numeric_kin.lum_weighted_vel_disp(
             R, kwargs_mass, kwargs_light, kwargs_anisotropy
         )
-        npt.assert_almost_equal(vel_disp, 78, decimal=-1)
+        npt.assert_almost_equal(vel_disp, 244, decimal=-1)
 
     def test_sigma_s2(self):
         """Test LOS projected velocity dispersion at 3d ratios (numerical Jeans equation

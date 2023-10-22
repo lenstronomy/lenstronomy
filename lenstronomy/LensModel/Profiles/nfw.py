@@ -250,7 +250,7 @@ class NFW(LensProfileBase):
         R = np.maximum(R, 0.00000001)
         x = R / Rs
         gx = self.g_(x)
-        a = 4 * rho0 * Rs * R * gx / x**2 / R
+        a = 4 * rho0 * Rs * gx / x**2
         return a * ax_x, a * ax_y
 
     def nfwGamma(self, R, Rs, rho0, ax_x, ax_y):

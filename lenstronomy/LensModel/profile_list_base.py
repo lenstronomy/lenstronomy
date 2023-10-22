@@ -45,7 +45,7 @@ _SUPPORTED_MODELS = [
     "HESSIAN",
     "INTERPOL",
     "INTERPOL_SCALED",
-    "LOS",
+    "RADIAL_INTERPOL" "LOS",
     "LOS_MINIMAL",
     "MULTIPOLE",
     "MULTI_GAUSSIAN_KAPPA",
@@ -156,7 +156,7 @@ class ProfileListBase(object):
                 "CTNFW_GAUSS_DEC",
                 "INTERPOL",
                 "INTERPOL_SCALED",
-                "NIE",
+                "RADIAL_INTERPOL" "NIE",
                 "NIE_SIMPLE",
             ]:
                 lensmodel_class = self._import_class(
@@ -447,6 +447,14 @@ class ProfileListBase(object):
             from lenstronomy.LensModel.Profiles.interpol import InterpolScaled
 
             return InterpolScaled(**kwargs_interp)
+
+        elif lens_type == "RADIAL_INTERPOL":
+            from lenstronomy.LensModel.Profiles.radial_interpolated import (
+                RadialInterpolate,
+            )
+
+            return RadialInterpolate()
+
         elif lens_type == "SHAPELETS_POLAR":
             from lenstronomy.LensModel.Profiles.shapelet_pot_polar import PolarShapelets
 

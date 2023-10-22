@@ -180,8 +180,8 @@ def findOverlap(x_mins, y_mins, min_distance):
             pass
         else:
             for j in range(0, i):
-                if abs(
-                    x_mins[i] - x_mins[j] < min_distance
+                if (
+                    abs(x_mins[i] - x_mins[j]) < min_distance
                     and abs(y_mins[i] - y_mins[j]) < min_distance
                 ):
                     idex.append(i)

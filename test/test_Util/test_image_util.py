@@ -80,8 +80,8 @@ def test_add_poisson():
 
 
 def test_findOverlap():
-    x_mins = [0, 1, 0]
-    y_mins = [1, 2, 1]
+    x_mins = [0, 1, 0, -0.1, 0.1]
+    y_mins = [1, 2, 1, 1.1, 1.1]
     deltapix = 0.5
     x_mins, y_mins = image_util.findOverlap(x_mins, y_mins, deltapix)
     print(x_mins, y_mins)

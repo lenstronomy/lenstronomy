@@ -156,7 +156,7 @@ class ProfileListBase(object):
                 "CTNFW_GAUSS_DEC",
                 "INTERPOL",
                 "INTERPOL_SCALED",
-                "RADIAL_INTERPOL" "NIE",
+                "RADIAL_INTERPOL", "NIE",
                 "NIE_SIMPLE",
             ]:
                 lensmodel_class = self._import_class(

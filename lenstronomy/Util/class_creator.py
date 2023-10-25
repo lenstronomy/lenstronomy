@@ -50,7 +50,7 @@ def create_class_instances(
     kwargs_multiplane_model=None,
     tracer_source_model_list=None,
     tracer_source_band=0,
-    tracer_partition=None
+    tracer_partition=None,
 ):
     """
 
@@ -151,7 +151,7 @@ def create_class_instances(
         kwargs_interp=kwargs_interp,
         numerical_alpha_class=tabulated_deflection_angles,
         decouple_multi_plane=decouple_multi_plane,
-        kwargs_multiplane_model=kwargs_multiplane_model
+        kwargs_multiplane_model=kwargs_multiplane_model,
     )
 
     lens_model_class_all = LensModel(
@@ -166,7 +166,7 @@ def create_class_instances(
         kwargs_interp=kwargs_interp,
         numerical_alpha_class=tabulated_deflection_angles,
         decouple_multi_plane=decouple_multi_plane,
-        kwargs_multiplane_model=kwargs_multiplane_model
+        kwargs_multiplane_model=kwargs_multiplane_model,
     )
 
     if index_source_light_model_list is None or all_models is True:

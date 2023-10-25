@@ -127,8 +127,8 @@ class TestSingleBandMultiModel(object):
         )
 
     def test_likelihood_data_given_model(self):
-        logl = self.single_band.likelihood_data_given_model(**self.kwargs_params)
-        logl_no_linear = self.single_band_no_linear.likelihood_data_given_model(
+        logl, _ = self.single_band.likelihood_data_given_model(**self.kwargs_params)
+        logl_no_linear, param = self.single_band_no_linear.likelihood_data_given_model(
             **self.kwargs_params
         )
         npt.assert_almost_equal(logl / logl_no_linear, 1, decimal=4)

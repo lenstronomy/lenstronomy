@@ -76,7 +76,7 @@ class MultiBandImageReconstruction(object):
         check_solver_error(param)
 
         if verbose:
-            logL = self._imageModel.likelihood_data_given_model(
+            logL, _ = self._imageModel.likelihood_data_given_model(
                 source_marg=source_marg, linear_prior=linear_prior, **kwargs_params
             )
             n_data = self._imageModel.num_data_evaluate
@@ -173,13 +173,15 @@ class ModelBand(object):
         )
         self._kwargs_special_partial = kwargs_params.get("kwargs_special", None)
         self._kwargs_lens = kwargs_params.get("kwargs_lens", None)
+        kwargs_params_copy = copy.deepcopy(kwargs_params)
+        kwargs_params_copy.pop("kwargs_tracer_source", None)
         (
             kwarks_lens_partial,
             kwargs_source_partial,
             kwargs_lens_light_partial,
             kwargs_ps_partial,
             self._kwargs_extinction_partial,
-        ) = self._bandmodel.select_kwargs(**kwargs_params)
+        ) = self._bandmodel.select_kwargs(**kwargs_params_copy)
         (
             self._kwargs_lens_partial,
             self._kwargs_source_partial,

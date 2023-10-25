@@ -2,6 +2,7 @@ __author__ = "sibirrer"
 
 from lenstronomy.Sampling.Likelihoods.time_delay_likelihood import TimeDelayLikelihood
 from lenstronomy.Sampling.Likelihoods.image_likelihood import ImageLikelihood
+from lenstronomy.Sampling.Likelihoods.tracer_likelihood import TracerLikelihood
 from lenstronomy.Sampling.Likelihoods.position_likelihood import PositionLikelihood
 from lenstronomy.Sampling.Likelihoods.flux_ratio_likelihood import FluxRatioLikelihood
 from lenstronomy.Sampling.Likelihoods.prior_likelihood import PriorLikelihood
@@ -72,6 +73,8 @@ class LikelihoodModule(object):
         kinematic_2d_likelihood=False,
         kin_lens_idx=0,
         kin_lens_light_idx=0,
+        tracer_likelihood=False,
+        tracer_likelihood_mask=None,
     ):
         """Initializing class.
 
@@ -119,7 +122,9 @@ class LikelihoodModule(object):
         :param kwargs_pixelbased: keyword arguments with various settings related to the
             pixel-based solver (see SLITronomy documentation)
         :param kinematic_2d_likelihood: bool, option to compute the kinematic likelihood
+        :param tracer_likelihood: option to perform likelihood on tracer quantity derived from imaging or spectroscopy
         """
+        # TODO unpack also tracer model from kwargs_data
         (
             multi_band_list,
             multi_band_type,
@@ -130,6 +135,7 @@ class LikelihoodModule(object):
             ra_image_list,
             dec_image_list,
             kinematic_data,
+            tracer_data,
         ) = self._unpack_data(**kwargs_data_joint)
         if len(multi_band_list) == 0:
             image_likelihood = False
@@ -159,6 +165,7 @@ class LikelihoodModule(object):
         self._time_delay_likelihood = time_delay_likelihood
         self._image_likelihood = image_likelihood
         self._flux_ratio_likelihood = flux_ratio_likelihood
+        self._tracer_likelihood = tracer_likelihood
         self._kinematic_2D_likelihood = kinematic_2d_likelihood
         if kwargs_flux_compute is None:
             kwargs_flux_compute = {}
@@ -170,16 +177,18 @@ class LikelihoodModule(object):
             "time_delays_measured": time_delays_measured,
             "time_delays_uncertainties": time_delays_uncertainties,
         }
-        self.kwargs_imaging = {
-            "multi_band_list": multi_band_list,
-            "multi_band_type": multi_band_type,
-            "bands_compute": bands_compute,
-            "image_likelihood_mask_list": image_likelihood_mask_list,
+        self._kwargs_image_likelihood = {
             "source_marg": source_marg,
             "linear_prior": linear_prior,
             "check_positive_flux": check_positive_flux,
             "kwargs_pixelbased": kwargs_pixelbased,
             "linear_solver": linear_solver,
+        }
+        self._kwargs_image_sim = {
+            "multi_band_list": multi_band_list,
+            "multi_band_type": multi_band_type,
+            "bands_compute": bands_compute,
+            "image_likelihood_mask_list": image_likelihood_mask_list,
         }
         self._kwargs_position = {
             "astrometric_likelihood": astrometric_likelihood,
@@ -194,6 +203,11 @@ class LikelihoodModule(object):
             "force_no_add_image": force_no_add_image,
             "restrict_image_number": restrict_image_number,
             "max_num_images": max_num_images,
+        }
+        self._kwargs_tracer = {
+            "tracer_data": tracer_data,
+            "tracer_likelihood_mask": tracer_likelihood_mask,
+            "linear_solver": linear_solver,
         }
         self._kwargs_flux = {
             "flux_ratios": flux_ratios,
@@ -221,24 +235,36 @@ class LikelihoodModule(object):
                 )
             self._kin_lens_idx = kin_lens_idx
             self._kin_lens_light_idx = kin_lens_light_idx
-
         self._class_instances(
             kwargs_model=kwargs_model,
-            kwargs_imaging=self.kwargs_imaging,
+            kwargs_image_sim=self._kwargs_image_sim,
+            kwargs_image_likelihood=self._kwargs_image_likelihood,
             kwargs_position=self._kwargs_position,
             kwargs_flux=self._kwargs_flux,
             kwargs_time_delay=self._kwargs_time_delay,
             kinematic_data=self.kinematic_data,
+            kwargs_tracer=self._kwargs_tracer,
         )
+
+    @property
+    def kwargs_imaging(self):
+        """Dictionary of imaging model keyword arguments.
+
+        :return: kwargs_imaging
+        """
+        kwargs_imaging = {**self._kwargs_image_likelihood, **self._kwargs_image_sim}
+        return kwargs_imaging
 
     def _class_instances(
         self,
         kwargs_model,
-        kwargs_imaging,
+        kwargs_image_sim,
+        kwargs_image_likelihood,
         kwargs_position,
         kwargs_flux,
         kwargs_time_delay,
         kinematic_data,
+        kwargs_tracer,
     ):
         """
 
@@ -270,8 +296,15 @@ class LikelihoodModule(object):
             )
 
         if self._image_likelihood is True:
+            kwargs_imaging = {**kwargs_image_likelihood, **kwargs_image_sim}
             self.image_likelihood = ImageLikelihood(
                 kwargs_model=kwargs_model, **kwargs_imaging
+            )
+        if self._tracer_likelihood is True:
+            self.tracer_likelihood = TracerLikelihood(
+                kwargs_model=kwargs_model,
+                kwargs_imaging=kwargs_image_sim,
+                **kwargs_tracer
             )
         self._position_likelihood = PositionLikelihood(
             point_source_class, **kwargs_position
@@ -281,6 +314,7 @@ class LikelihoodModule(object):
                 lens_model_class, **kwargs_flux
             )
         if self._kinematic_2D_likelihood is True:
+            kwargs_imaging = {**kwargs_image_likelihood, **kwargs_image_sim}
             self.kinematic_2D_likelihood = KinLikelihood(
                 kinematic_data,
                 lens_model_class,
@@ -334,6 +368,7 @@ class LikelihoodModule(object):
             kwargs_return["kwargs_ps"],
             kwargs_return["kwargs_special"],
         )
+        kwargs_tracer_source = kwargs_return["kwargs_tracer_source"]
         # update model instance in case of changes affecting it (i.e. redshift sampling in multi-plane)
         self._update_model(kwargs_special)
         # generate image and computes likelihood
@@ -341,10 +376,12 @@ class LikelihoodModule(object):
         logL = 0
 
         if self._image_likelihood is True:
-            logL_image = self.image_likelihood.logL(**kwargs_return)
+            logL_image, param = self.image_likelihood.logL(**kwargs_return)
             logL += logL_image
             if verbose is True:
                 print("image logL = %s" % logL_image)
+        else:
+            param = None
         if self._time_delay_likelihood is True:
             logL_time_delay = self.time_delay_likelihood.logL(
                 kwargs_lens, kwargs_ps, kwargs_special
@@ -373,6 +410,11 @@ class LikelihoodModule(object):
         logL += self._position_likelihood.logL(
             kwargs_lens, kwargs_ps, kwargs_special, verbose=verbose
         )
+        if self._tracer_likelihood is True:
+            logL_tracer = self.tracer_likelihood.logL(param=param, **kwargs_return)
+            if verbose is True:
+                print("tracer logL = %s" % logL_tracer)
+            logL += logL_tracer
         logL_prior = self._prior_likelihood.logL(**kwargs_return)
         logL += logL_prior
         if verbose is True:
@@ -418,6 +460,8 @@ class LikelihoodModule(object):
         if self._flux_ratio_likelihood is True:
             num_data += self.flux_ratio_likelihood.num_data
         num_data += self._position_likelihood.num_data
+        if self._tracer_likelihood is True:
+            num_data += self.tracer_likelihood.num_data
         return num_data
 
     @property
@@ -455,6 +499,7 @@ class LikelihoodModule(object):
         ra_image_list=None,
         dec_image_list=None,
         kinematic_data=None,
+        tracer_data=None,
     ):
         """
 
@@ -482,6 +527,7 @@ class LikelihoodModule(object):
             ra_image_list,
             dec_image_list,
             kinematic_data,
+            tracer_data,
         )
 
     def _reset_point_source_cache(self, bool_input=True):
@@ -489,6 +535,8 @@ class LikelihoodModule(object):
         self.PointSource.set_save_cache(bool_input)
         if self._image_likelihood is True:
             self.image_likelihood.reset_point_source_cache(bool_input)
+        if self._tracer_likelihood is True:
+            self.tracer_likelihood.reset_point_source_cache(bool_input)
 
     def _update_model(self, kwargs_special):
         """Updates lens model instance of this class (and all class instances related to
@@ -503,10 +551,12 @@ class LikelihoodModule(object):
         if update_bool is True:
             self._class_instances(
                 kwargs_model=kwargs_model,
-                kwargs_imaging=self.kwargs_imaging,
+                kwargs_image_sim=self._kwargs_image_sim,
+                kwargs_image_likelihood=self._kwargs_image_likelihood,
                 kwargs_position=self._kwargs_position,
                 kwargs_flux=self._kwargs_flux,
                 kwargs_time_delay=self._kwargs_time_delay,
                 kinematic_data=self.kinematic_data,
+                kwargs_tracer=self._kwargs_tracer,
             )
         # TODO remove redundancies with Param() calls updates

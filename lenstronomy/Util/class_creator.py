@@ -5,6 +5,7 @@ from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.ImSim.differential_extinction import DifferentialExtinction
 from lenstronomy.ImSim.image_linear_solve import ImageLinearFit
+from lenstronomy.ImSim.tracer_model import TracerModelSource
 
 from lenstronomy.Util.package_util import exporter
 
@@ -47,6 +48,9 @@ def create_class_instances(
     tabulated_deflection_angles=None,
     decouple_multi_plane=False,
     kwargs_multiplane_model=None
+    tracer_source_model_list=None,
+    tracer_source_band=0,
+    tracer_partition=None
 ):
     """
 
@@ -80,7 +84,7 @@ def create_class_instances(
     :param cosmo: astropy.cosmology instance
     :param index_lens_model_list:
     :param index_source_light_model_list:
-    :param index_lens_light_model_list:
+    :param index_lens_light_model_list: optional, list of list of all model indexes for each modeled band
     :param index_point_source_model_list:
     :param optical_depth_model_list: list of strings indicating the optical depth model to compute (differential) extinctions from the source
     :param index_optical_depth_model_list:
@@ -95,6 +99,11 @@ def create_class_instances(
      convention in the lenstronomy yaml setting (which by default is =False)
     :param tabulated_deflection_angles: a user-specified class with a call method that returns deflection angles given
      (x, y) coordinates on the sky. This class gets passed to the lens model class TabulatedDeflections
+    :param tracer_source_model_list: list of tracer source models (not used in this function)
+    :param tracer_source_band: integer, list index of source surface brightness band to apply tracer model to
+    :param tracer_partition: in case of tracer models for specific sub-parts of the surface brightness model
+     [[list of light profiles, list of tracer profiles], [list of light profiles, list of tracer profiles], [...], ...]
+    :type tracer_partition: None or list
     :return: lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class
     """
     if lens_model_list is None:
@@ -372,3 +381,45 @@ def create_im_sim(
     else:
         raise ValueError("type %s is not supported!" % multi_band_type)
     return multiband
+
+
+def create_tracer_model(tracer_data, kwargs_model, tracer_likelihood_mask=None):
+    """
+
+    :param tracer_data:
+    :param kwargs_model:
+    :param tracer_likelihood_mask_list:
+
+    :return:
+    """
+    tracer_source_band = kwargs_model.get("tracer_source_band", 0)
+    tracer_source_class = LightModel(
+        light_model_list=kwargs_model.get("tracer_source_model_list", [])
+    )
+    tracer_partition = kwargs_model.get("tracer_partition", None)
+    kwargs_data, kwargs_psf, kwargs_numerics = tracer_data
+    (
+        lens_model_class,
+        source_model_class,
+        lens_light_model_class,
+        point_source_class,
+        extinction_class,
+    ) = create_class_instances(band_index=tracer_source_band, **kwargs_model)
+    data_class = ImageData(**kwargs_data)
+    psf_class = PSF(**kwargs_psf)
+    tracer_model = TracerModelSource(
+        data_class,
+        psf_class=psf_class,
+        lens_model_class=lens_model_class,
+        source_model_class=source_model_class,
+        lens_light_model_class=lens_light_model_class,
+        point_source_class=point_source_class,
+        extinction_class=extinction_class,
+        tracer_source_class=tracer_source_class,
+        kwargs_numerics=kwargs_numerics,
+        likelihood_mask=tracer_likelihood_mask,
+        psf_error_map_bool_list=None,
+        kwargs_pixelbased=None,
+        tracer_partition=tracer_partition,
+    )
+    return tracer_model

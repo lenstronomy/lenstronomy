@@ -45,6 +45,8 @@ def create_class_instances(
     surface_brightness_smoothing=0.001,
     sersic_major_axis=None,
     tabulated_deflection_angles=None,
+    decouple_multi_plane=False,
+    kwargs_multiplane_model=None
 ):
     """
 
@@ -127,7 +129,17 @@ def create_class_instances(
                 counter += 1
         else:
             observed_convention_index_i = observed_convention_index
-    lens_model_class = LensModel(
+
+    if decouple_multi_plane and kwargs_multiplane_model is not None:
+        lens_model_class = LensModel(
+            **kwargs_multiplane_model
+        )
+
+        lens_model_class_all = LensModel(
+            **kwargs_multiplane_model
+        )
+    else:
+        lens_model_class = LensModel(
         lens_model_list=lens_model_list_i,
         z_lens=z_lens,
         z_source=z_source,
@@ -138,9 +150,10 @@ def create_class_instances(
         observed_convention_index=observed_convention_index_i,
         kwargs_interp=kwargs_interp,
         numerical_alpha_class=tabulated_deflection_angles,
+        decouple_multi_plane=decouple_multi_plane
     )
 
-    lens_model_class_all = LensModel(
+        lens_model_class_all = LensModel(
         lens_model_list=lens_model_list,
         z_lens=z_lens,
         z_source=z_source,
@@ -151,6 +164,7 @@ def create_class_instances(
         observed_convention_index=observed_convention_index,
         kwargs_interp=kwargs_interp,
         numerical_alpha_class=tabulated_deflection_angles,
+        decouple_multi_plane=decouple_multi_plane
     )
 
     if index_source_light_model_list is None or all_models is True:

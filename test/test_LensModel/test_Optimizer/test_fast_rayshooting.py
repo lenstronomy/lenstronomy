@@ -122,7 +122,7 @@ class TestFastRayShooting(object):
         )
 
         #xfast, yfast = fast_rayshooting_new.ray_shooting_fast(args_lens)
-        xfast, yfast = fast_rayshooting_new.ray_shooting_fast(self.kwargs_epl)
+        xfast, yfast = fast_rayshooting_new.ray_shooting_fast(None, None, self.kwargs_epl)
 
         npt.assert_almost_equal(xfast, x)
         npt.assert_almost_equal(yfast, y)

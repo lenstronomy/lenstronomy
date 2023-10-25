@@ -1,8 +1,9 @@
-import numpy as np
-from lenstronomy.Cosmo.background import Background
+__author__ = "dangilman"
+
 from lenstronomy.LensModel.MultiPlane.multi_plane import MultiPlane
 
 __all__ = ["MultiPlaneDecoupled"]
+
 
 class MultiPlaneDecoupled(MultiPlane):
 

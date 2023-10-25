@@ -1,3 +1,5 @@
+__author__ = "dangilman"
+
 from lenstronomy.LensModel.lens_model import LensModel
 import numpy as np
 

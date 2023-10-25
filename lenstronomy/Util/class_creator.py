@@ -47,7 +47,7 @@ def create_class_instances(
     sersic_major_axis=None,
     tabulated_deflection_angles=None,
     decouple_multi_plane=False,
-    kwargs_multiplane_model=None
+    kwargs_multiplane_model=None,
     tracer_source_model_list=None,
     tracer_source_band=0,
     tracer_partition=None

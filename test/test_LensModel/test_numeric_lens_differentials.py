@@ -261,10 +261,11 @@ class TestNumericsProfile(object):
         lens_model = ["RADIAL_INTERPOL"]
         mass_sheet = LensModel(lens_model_list=["CONVERGENCE"])
         kwargs_convergence = [{"kappa": 0.5}]
-        r_bin = np.linspace(start=0, stop=10, num=100)
+        r_bin = np.linspace(start=0, stop=6, num=100)
+        r_bin = np.logspace(start=-3, stop=1, num=100)
         kappa_r_sis = mass_sheet.kappa(r_bin, 0, kwargs=kwargs_convergence)
         kwargs = {"r_bin": r_bin, "kappa_r": kappa_r_sis}
-        self.assert_differentials(lens_model, kwargs, diff=1, decimal=2)
+        self.assert_differentials(lens_model, kwargs, diff=0.01, decimal=3)
 
     def test_sersic(self):
         kwargs = {"n_sersic": 0.5, "R_sersic": 1.5, "k_eff": 0.3}

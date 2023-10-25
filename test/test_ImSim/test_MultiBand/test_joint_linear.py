@@ -148,7 +148,7 @@ class TestJointLinear(object):
         assert len(wls_list) == 2
 
     def test_likelihood_data_given_model(self):
-        logL = self.imageModel.likelihood_data_given_model(
+        logL, param = self.imageModel.likelihood_data_given_model(
             self.kwargs_lens,
             self.kwargs_source,
             self.kwargs_lens_light,

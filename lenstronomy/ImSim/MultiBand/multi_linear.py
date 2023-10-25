@@ -133,11 +133,12 @@ class MultiLinear(MultiDataBase):
         """
         # generate image
         logL = 0
+        param_list = []
         if linear_prior is None:
             linear_prior = [None for i in range(self._num_bands)]
         for i in range(self._num_bands):
             if self._compute_bool[i] is True:
-                logL += self._imageModel_list[i].likelihood_data_given_model(
+                logL_i, param_i = self._imageModel_list[i].likelihood_data_given_model(
                     kwargs_lens,
                     kwargs_source,
                     kwargs_lens_light,
@@ -148,4 +149,33 @@ class MultiLinear(MultiDataBase):
                     linear_prior=linear_prior[i],
                     check_positive_flux=check_positive_flux,
                 )
-        return logL
+                logL += logL_i
+                param_list.append(param_i)
+            else:
+                param_list.append(None)
+        return logL, param_list
+
+    def update_linear_kwargs(
+        self,
+        param,
+        model_band,
+        kwargs_lens,
+        kwargs_source,
+        kwargs_lens_light,
+        kwargs_ps,
+    ):
+        """Links linear parameters to kwargs arguments.
+
+        :param param: linear parameter vector corresponding to the response matrix
+        :type param: list of array
+        :param model_band: for which band the model parameters need to be retrieved
+        :param kwargs_lens:
+        :param kwargs_source:
+        :param kwargs_lens_light:
+        :param kwargs_ps:
+        :return: updated list of kwargs with linear parameter values for specific band
+        """
+        model_band = self._imageModel_list[model_band]
+        return model_band.update_linear_kwargs(
+            param[model_band], kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps
+        )

@@ -50,56 +50,94 @@ def plot_quasar_images(
         the second source light profile relative to the first
     :return: Four images of the background source in the image plane
     """
-
-    lens_model_extension = LensModelExtensions(lens_model)
-
     magnifications = []
     images = []
 
-    (
-        grid_x_0,
-        grid_y_0,
-        source_model,
-        kwargs_source,
-        grid_resolution,
-        grid_radius_arcsec,
-    ) = setup_mag_finite(
-        cosmo,
-        lens_model,
-        grid_radius_arcsec,
-        grid_resolution,
-        source_fwhm_parsec,
-        source_light_model,
-        z_source,
-        source_x,
-        source_y,
-        dx,
-        dy,
-        amp_scale,
-        size_scale,
-    )
+    if isinstance(lens_model, list):
+        (
+            grid_x_0,
+            grid_y_0,
+            source_model,
+            kwargs_source,
+            grid_resolution,
+            grid_radius_arcsec,
+        ) = setup_mag_finite(
+            cosmo,
+            lens_model[0],
+            grid_radius_arcsec,
+            grid_resolution,
+            source_fwhm_parsec,
+            source_light_model,
+            z_source,
+            source_x,
+            source_y,
+            dx,
+            dy,
+            amp_scale,
+            size_scale,
+        )
+    else:
+        (
+            grid_x_0,
+            grid_y_0,
+            source_model,
+            kwargs_source,
+            grid_resolution,
+            grid_radius_arcsec,
+        ) = setup_mag_finite(
+            cosmo,
+            lens_model,
+            grid_radius_arcsec,
+            grid_resolution,
+            source_fwhm_parsec,
+            source_light_model,
+            z_source,
+            source_x,
+            source_y,
+            dx,
+            dy,
+            amp_scale,
+            size_scale,
+        )
     shape0 = grid_x_0.shape
     grid_x_0, grid_y_0 = grid_x_0.ravel(), grid_y_0.ravel()
-
-    for xi, yi in zip(x_image, y_image):
+    for k, (xi, yi) in enumerate(zip(x_image, y_image)):
         flux_array = np.zeros_like(grid_x_0)
         r_min = 0
         r_max = grid_radius_arcsec
         grid_r = np.hypot(grid_x_0, grid_y_0)
-        flux_array = lens_model_extension._magnification_adaptive_iteration(
-            flux_array,
-            xi,
-            yi,
-            grid_x_0,
-            grid_y_0,
-            grid_r,
-            r_min,
-            r_max,
-            lens_model,
-            kwargs_lens,
-            source_model,
-            kwargs_source,
-        )
+        if isinstance(lens_model, list):
+            lens_model_extension = LensModelExtensions(lens_model[k])
+            flux_array = lens_model_extension._magnification_adaptive_iteration(
+                flux_array,
+                xi,
+                yi,
+                grid_x_0,
+                grid_y_0,
+                grid_r,
+                r_min,
+                r_max,
+                lens_model[k],
+                kwargs_lens,
+                source_model,
+                kwargs_source,
+            )
+        else:
+            lens_model_extension = LensModelExtensions(lens_model)
+            flux_array = lens_model_extension._magnification_adaptive_iteration(
+                flux_array,
+                xi,
+                yi,
+                grid_x_0,
+                grid_y_0,
+                grid_r,
+                r_min,
+                r_max,
+                lens_model,
+                kwargs_lens,
+                source_model,
+                kwargs_source,
+            )
         m = np.sum(flux_array) * grid_resolution**2
         magnifications.append(m)
         images.append(flux_array.reshape(shape0))

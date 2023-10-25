@@ -139,8 +139,11 @@ class RadialInterpolate(LensProfileBase):
         """
         if not hasattr(self, "_interp_kappa"):
             self._interp_kappa = interp1d(
-                r_bin, kappa_r, fill_value=(kappa_r[0], kappa_r[-1]), bounds_error=False,
-                kind="linear"
+                r_bin,
+                kappa_r,
+                fill_value=(kappa_r[0], kappa_r[-1]),
+                bounds_error=False,
+                kind="linear",
             )
         return self._interp_kappa(r)
 
@@ -163,7 +166,7 @@ class RadialInterpolate(LensProfileBase):
         return self._interp_m_enclosed(r)
 
     def _mass_enclosed_over_r(self, r, r_bin, kappa_r):
-        """Convergence enclosed a radius divided by r
+        """Convergence enclosed a radius divided by r.
 
         :param r: radius
         :param r_bin: radial bins for which convergence values are provided
@@ -174,9 +177,12 @@ class RadialInterpolate(LensProfileBase):
         """
         if not hasattr(self, "_interp_m_enclosed_over_r"):
             m_r = self._m_r(r_bin, kappa_r)
-            r_bin_ = np.maximum(r_bin, 10**(-10))
+            r_bin_ = np.maximum(r_bin, 10 ** (-10))
             self._interp_m_enclosed_over_r = interp1d(
-                r_bin, m_r/r_bin_, fill_value=(0, m_r[-1]/r_bin_[-1]), bounds_error=False,
+                r_bin,
+                m_r / r_bin_,
+                fill_value=(0, m_r[-1] / r_bin_[-1]),
+                bounds_error=False,
                 kind="linear",
             )
         return self._interp_m_enclosed_over_r(r)
@@ -190,6 +196,7 @@ class RadialInterpolate(LensProfileBase):
         :type kappa_r: array of same size as r_bin
         :return: integrated convergence within radius <r
         """
+
         def _integrand(x):
             return x * 2 * np.pi * self._kappa_r_interp(x, r_bin, kappa_r)
 
@@ -224,8 +231,11 @@ class RadialInterpolate(LensProfileBase):
                 pot_slice_list.append(pot_slice)
                 r_min = r_
             pot_r = np.cumsum(pot_slice_list)
-            r_bin_ = np.maximum(r_bin, 10**(-10))
+            r_bin_ = np.maximum(r_bin, 10 ** (-10))
             self._interp_potential_over_r2 = interp1d(
-                r_bin, pot_r/r_bin_**2, fill_value=(0, pot_r[-1]), bounds_error=False
+                r_bin,
+                pot_r / r_bin_**2,
+                fill_value=(0, pot_r[-1]),
+                bounds_error=False,
             )
         return self._interp_potential_over_r2(r) * r**2

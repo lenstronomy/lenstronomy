@@ -6,7 +6,12 @@ from lenstronomy.Sampling.Samplers.pso import ParticleSwarmOptimizer
 from lenstronomy.LensModel.QuadOptimizer.multi_plane_fast import MultiplaneFast
 from lenstronomy.Sampling.Pool.pool import choose_pool
 from lenstronomy.LensModel.lens_model import LensModel
-from lenstronomy.LensModel.Util.decouple_multi_plane_util import coordinates_and_deflections, class_setup, setup_lens_model
+from lenstronomy.LensModel.Util.decouple_multi_plane_util import (
+    coordinates_and_deflections,
+    class_setup,
+    setup_lens_model,
+)
+
 __all__ = ["Optimizer"]
 
 
@@ -18,9 +23,20 @@ class Optimizer(object):
     with different convergence criteria implemented.
     """
 
-    def __init__(self, x_image, y_image, ray_shooting_class, parameter_class, tol_source=1e-5, tol_simplex_func=1e-3,
-                 simplex_n_iterations=400, pso_convergence_mean=50000, particle_swarm=True, re_optimize=False,
-                 re_optimize_scale=1.0):
+    def __init__(
+        self,
+        x_image,
+        y_image,
+        ray_shooting_class,
+        parameter_class,
+        tol_source=1e-5,
+        tol_simplex_func=1e-3,
+        simplex_n_iterations=400,
+        pso_convergence_mean=50000,
+        particle_swarm=True,
+        re_optimize=False,
+        re_optimize_scale=1.0,
+    ):
         """
 
         :param x_image: x-coordinate of image positions
@@ -52,7 +68,9 @@ class Optimizer(object):
         self._re_optimize_scale = re_optimize_scale
 
     @classmethod
-    def decoupled_multiplane(cls, x_image,
+    def decoupled_multiplane(
+        cls,
+        x_image,
         y_image,
         lens_model,
         kwargs_lens_model,
@@ -64,7 +82,8 @@ class Optimizer(object):
         pso_convergence_mean=50000,
         tol_source=1e-5,
         tol_simplex_func=1e-3,
-        simplex_n_iterations=400):
+        simplex_n_iterations=400,
+    ):
         """
 
         :param x_image:
@@ -83,32 +102,69 @@ class Optimizer(object):
         :return:
         """
 
-        lens_model_fixed, lens_model_free, kwargs_lens_fixed, kwargs_lens_free, z_source, \
-        z_split, cosmo_bkg = setup_lens_model(lens_model, kwargs_lens_model, index_lens_split)
-        x, y, alpha_x_foreground, alpha_y_foreground, alpha_beta_subx, alpha_beta_suby = \
-            coordinates_and_deflections(lens_model_fixed,
-                                        lens_model_free,
-                                        kwargs_lens_fixed,
-                                        kwargs_lens_free,
-                                        x_image,
-                                        y_image,
-                                        z_split,
-                                        z_source,
-                                        cosmo_bkg)
+        (
+            lens_model_fixed,
+            lens_model_free,
+            kwargs_lens_fixed,
+            kwargs_lens_free,
+            z_source,
+            z_split,
+            cosmo_bkg,
+        ) = setup_lens_model(lens_model, kwargs_lens_model, index_lens_split)
+        (
+            x,
+            y,
+            alpha_x_foreground,
+            alpha_y_foreground,
+            alpha_beta_subx,
+            alpha_beta_suby,
+        ) = coordinates_and_deflections(
+            lens_model_fixed,
+            lens_model_free,
+            kwargs_lens_fixed,
+            kwargs_lens_free,
+            x_image,
+            y_image,
+            z_split,
+            z_source,
+            cosmo_bkg,
+        )
         npix, interp_points = None, None
-        coordinate_type = 'MULTIPLE_IMAGES'
-        kwargs_decoupled = class_setup(lens_model_free, x, y, alpha_x_foreground, alpha_y_foreground, alpha_beta_subx,
-                        alpha_beta_suby, z_split, coordinate_type, interp_points,
-                        x_image, y_image)
+        coordinate_type = "MULTIPLE_IMAGES"
+        kwargs_decoupled = class_setup(
+            lens_model_free,
+            x,
+            y,
+            alpha_x_foreground,
+            alpha_y_foreground,
+            alpha_beta_subx,
+            alpha_beta_suby,
+            z_split,
+            coordinate_type,
+            interp_points,
+            x_image,
+            y_image,
+        )
         lens_model_decoupled = LensModel(**kwargs_decoupled)
         # we have to reset the keyword arguments of the parameter class here
         parameter_class.kwargs_lens = kwargs_lens_free
-        return Optimizer(x_image, y_image, lens_model_decoupled, parameter_class, tol_source, tol_simplex_func,
-                 simplex_n_iterations, pso_convergence_mean, particle_swarm, re_optimize,
-                 re_optimize_scale)
+        return Optimizer(
+            x_image,
+            y_image,
+            lens_model_decoupled,
+            parameter_class,
+            tol_source,
+            tol_simplex_func,
+            simplex_n_iterations,
+            pso_convergence_mean,
+            particle_swarm,
+            re_optimize,
+            re_optimize_scale,
+        )
 
     @classmethod
-    def full_raytracing(cls,
+    def full_raytracing(
+        cls,
         x_image,
         y_image,
         lens_model_list,
@@ -125,7 +181,7 @@ class Optimizer(object):
         foreground_rays=None,
         tol_source=1e-5,
         tol_simplex_func=1e-3,
-        simplex_n_iterations=400
+        simplex_n_iterations=400,
     ):
         """
 
@@ -150,21 +206,31 @@ class Optimizer(object):
         """
 
         fast_rayshooting = MultiplaneFast(
-                x_image,
-                y_image,
-                z_lens,
-                z_source,
-                lens_model_list,
-                redshift_list,
-                astropy_instance,
-                parameter_class,
-                foreground_rays,
-                tol_source,
-                numerical_alpha_class,
-            )
-        return Optimizer(x_image, y_image, fast_rayshooting, parameter_class, tol_source, tol_simplex_func,
-                 simplex_n_iterations, pso_convergence_mean, particle_swarm, re_optimize,
-                 re_optimize_scale)
+            x_image,
+            y_image,
+            z_lens,
+            z_source,
+            lens_model_list,
+            redshift_list,
+            astropy_instance,
+            parameter_class,
+            foreground_rays,
+            tol_source,
+            numerical_alpha_class,
+        )
+        return Optimizer(
+            x_image,
+            y_image,
+            fast_rayshooting,
+            parameter_class,
+            tol_source,
+            tol_simplex_func,
+            simplex_n_iterations,
+            pso_convergence_mean,
+            particle_swarm,
+            re_optimize,
+            re_optimize_scale,
+        )
 
     def optimize(self, n_particles=50, n_iterations=250, verbose=False, threadCount=1):
         """
@@ -187,8 +253,7 @@ class Optimizer(object):
             kwargs = self._param_class.kwargs_lens
         kwargs_lens_final, source_penalty = self._fit_amoeba(kwargs, verbose)
         source_x_array, source_y_array = self.ray_shooting_method(
-            self.x_image, self.y_image,
-            kwargs
+            self.x_image, self.y_image, kwargs
         )
         source_x, source_y = np.mean(source_x_array), np.mean(source_y_array)
 
@@ -260,12 +325,9 @@ class Optimizer(object):
         return -0.5 * chi_square
 
     def _penalty_function(self, args_lens, *args, **kwargs):
-
-        """
-        This function evaluates a metric that determines goodness of fit
-        :param args_lens: array of parameters that will be turned into keyword arguments
-        :return: log-likelihood
-        """
+        """This function evaluates a metric that determines goodness of fit :param
+        args_lens: array of parameters that will be turned into keyword arguments
+        :return: log-likelihood."""
         source_plane_chi2 = self.source_plane_penalty(args_lens)
         param_penalty = self._param_class.param_chi_square_penalty(args_lens)
         return source_plane_chi2 + param_penalty

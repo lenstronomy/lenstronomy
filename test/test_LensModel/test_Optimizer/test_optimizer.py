@@ -12,6 +12,7 @@ from copy import deepcopy
 from lenstronomy.LensModel.QuadOptimizer.optimizer import Optimizer
 import numpy.testing as npt
 
+
 class TestOptimizer(object):
     def setup_method(self):
         self.zlens, self.zsource = 0.5, 1.5
@@ -320,7 +321,6 @@ class TestOptimizer(object):
         npt.assert_almost_equal(np.sum(beta_y) - 4 * np.mean(beta_y), 0)
 
     def test_penalty_functions(self):
-
         param_class = PowerLawFreeShear(self.kwargs_epl)
         args = param_class.kwargs_to_args(self.kwargs_epl)
         optimizer = Optimizer.full_raytracing(
@@ -346,15 +346,17 @@ class TestOptimizer(object):
         npt.assert_almost_equal(chi_square_total, chi_square_source)
 
     def test_decoupled(self):
-
         kwargs_lens_model = deepcopy(self.kwargs_epl)
-        kwargs_lens_model[0]['gamma'] = 2.03
-        kwargs_lens_model[0]['e1'] = 0.3
-        kwargs_lens_model[0]['theta_E'] = 1.2
+        kwargs_lens_model[0]["gamma"] = 2.03
+        kwargs_lens_model[0]["e1"] = 0.3
+        kwargs_lens_model[0]["theta_E"] = 1.2
 
-        lens_model = LensModel(self.lens_model_list_epl,
-                               lens_redshift_list=self.zlist_epl,
-                               multi_plane=True, z_source=self.zsource)
+        lens_model = LensModel(
+            self.lens_model_list_epl,
+            lens_redshift_list=self.zlist_epl,
+            multi_plane=True,
+            z_source=self.zsource,
+        )
         index_lens_split = [0, 1]
         param_class = PowerLawFixedShear(self.kwargs_epl, 0.06)
         optimizer = Optimizer.decoupled_multiplane(
@@ -363,20 +365,33 @@ class TestOptimizer(object):
             lens_model,
             self.kwargs_epl,
             index_lens_split,
-            param_class
+            param_class,
         )
-        beta_x, beta_y = optimizer.ray_shooting_method(self.x_image, self.y_image, self.kwargs_epl[0:2])
-        beta_x_true, beta_y_true = lens_model.ray_shooting(self.x_image, self.y_image, self.kwargs_epl)
+        beta_x, beta_y = optimizer.ray_shooting_method(
+            self.x_image, self.y_image, self.kwargs_epl[0:2]
+        )
+        beta_x_true, beta_y_true = lens_model.ray_shooting(
+            self.x_image, self.y_image, self.kwargs_epl
+        )
         npt.assert_almost_equal(beta_x, beta_x_true)
         npt.assert_almost_equal(beta_y, beta_y_true)
 
         kwargs_final, source = optimizer.optimize(50, 100, verbose=True)
-        npt.assert_equal(len(kwargs_final),2)
+        npt.assert_equal(len(kwargs_final), 2)
 
-        beta_x, beta_y = optimizer.ray_shooting_method(self.x_image, self.y_image, kwargs_final)
-        npt.assert_allclose([beta_x[0], beta_x[0], beta_x[0]], [beta_x[1], beta_x[2], beta_x[3]], 5)
-        npt.assert_allclose([beta_y[0], beta_y[0], beta_y[0]], [beta_y[1], beta_y[2], beta_y[3]], 5)
-        npt.assert_almost_equal(np.hypot(kwargs_final[1]['gamma1'], kwargs_final[1]['gamma2']), 0.06)
+        beta_x, beta_y = optimizer.ray_shooting_method(
+            self.x_image, self.y_image, kwargs_final
+        )
+        npt.assert_allclose(
+            [beta_x[0], beta_x[0], beta_x[0]], [beta_x[1], beta_x[2], beta_x[3]], 5
+        )
+        npt.assert_allclose(
+            [beta_y[0], beta_y[0], beta_y[0]], [beta_y[1], beta_y[2], beta_y[3]], 5
+        )
+        npt.assert_almost_equal(
+            np.hypot(kwargs_final[1]["gamma1"], kwargs_final[1]["gamma2"]), 0.06
+        )
+
 
 if __name__ == "__main__":
     pytest.main()

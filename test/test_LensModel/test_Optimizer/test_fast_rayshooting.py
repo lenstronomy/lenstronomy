@@ -8,7 +8,6 @@ import pytest
 
 
 class TestFastRayShooting(object):
-
     def setup_method(self):
         self.zlens, self.zsource = 0.5, 1.5
         epl_kwargs = {
@@ -92,7 +91,7 @@ class TestFastRayShooting(object):
         npt.assert_almost_equal(x_fore, xtrue)
         npt.assert_almost_equal(y_fore, ytrue)
 
-        #args_lens = self.param_class.kwargs_to_args(self.kwargs_epl)
+        # args_lens = self.param_class.kwargs_to_args(self.kwargs_epl)
         xfast, yfast = fast_rayshooting.ray_shooting_fast(None, None, self.kwargs_epl)
         x, y = self.lensModel.ray_shooting(x_image_true, y_image_true, self.kwargs_epl)
 
@@ -121,11 +120,14 @@ class TestFastRayShooting(object):
             numerical_alpha_class=None,
         )
 
-        #xfast, yfast = fast_rayshooting_new.ray_shooting_fast(args_lens)
-        xfast, yfast = fast_rayshooting_new.ray_shooting_fast(None, None, self.kwargs_epl)
+        # xfast, yfast = fast_rayshooting_new.ray_shooting_fast(args_lens)
+        xfast, yfast = fast_rayshooting_new.ray_shooting_fast(
+            None, None, self.kwargs_epl
+        )
 
         npt.assert_almost_equal(xfast, x)
         npt.assert_almost_equal(yfast, y)
+
 
 if __name__ == "__main__":
     pytest.main()

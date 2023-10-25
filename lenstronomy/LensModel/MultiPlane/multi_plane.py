@@ -29,7 +29,7 @@ class MultiPlane(object):
         z_interp_stop=None,
         num_z_interp=100,
         kwargs_interp=None,
-        kwargs_synthesis=None
+        kwargs_synthesis=None,
     ):
         """
 
@@ -63,17 +63,17 @@ class MultiPlane(object):
             )
 
         self._multi_plane_base = MultiPlaneBase(
-                lens_model_list=lens_model_list,
-                lens_redshift_list=lens_redshift_list,
-                cosmo=cosmo,
-                numerical_alpha_class=numerical_alpha_class,
-                z_source_convention=z_source_convention,
-                cosmo_interp=cosmo_interp,
-                z_interp_stop=z_interp_stop,
-                num_z_interp=num_z_interp,
-                kwargs_interp=kwargs_interp,
-                kwargs_synthesis=kwargs_synthesis,
-            )
+            lens_model_list=lens_model_list,
+            lens_redshift_list=lens_redshift_list,
+            cosmo=cosmo,
+            numerical_alpha_class=numerical_alpha_class,
+            z_source_convention=z_source_convention,
+            cosmo_interp=cosmo_interp,
+            z_interp_stop=z_interp_stop,
+            num_z_interp=num_z_interp,
+            kwargs_interp=kwargs_interp,
+            kwargs_synthesis=kwargs_synthesis,
+        )
 
         self._set_source_distances(z_source)
         self._observed_convention_index = observed_convention_index

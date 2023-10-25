@@ -39,6 +39,8 @@ _MODELS_SUPPORTED = [
     "INTERPOL",
     "SLIT_STARLETS",
     "SLIT_STARLETS_GEN2",
+    "LINEAR",
+    "LINEAR_ELLIPSE",
 ]
 
 
@@ -183,6 +185,14 @@ class LightModelBase(object):
                 from lenstronomy.LightModel.Profiles.starlets import SLIT_Starlets
 
                 self.func_list.append(SLIT_Starlets(second_gen=True))
+            elif profile_type == "LINEAR":
+                from lenstronomy.LightModel.Profiles.linear import Linear
+
+                self.func_list.append(Linear())
+            elif profile_type == "LINEAR_ELLIPSE":
+                from lenstronomy.LightModel.Profiles.linear import LinearEllipse
+
+                self.func_list.append(LinearEllipse())
             else:
                 raise ValueError(
                     "No light model of type %s found! Supported are the following models: %s"

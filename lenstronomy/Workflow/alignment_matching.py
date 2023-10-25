@@ -118,7 +118,8 @@ class AlignmentLikelihood(object):
         self._source_marg = False
         self._band_index = band_index
         self._likelihood_mask_list = likelihood_mask_list
-        self._kwargs_params = kwargs_params
+        self._kwargs_params = copy.deepcopy(kwargs_params)
+        self._kwargs_params.pop("kwargs_tracer_source", None)
 
     def _likelihood(self, args):
         """Routine to compute X2 given variable parameters for a MCMC/PSO chainF."""
@@ -130,7 +131,7 @@ class AlignmentLikelihood(object):
             likelihood_mask_list=self._likelihood_mask_list,
             band_index=self._band_index,
         )
-        log_likelihood = image_model.likelihood_data_given_model(
+        log_likelihood, _ = image_model.likelihood_data_given_model(
             source_marg=self._source_marg, **self._kwargs_params
         )
         return log_likelihood

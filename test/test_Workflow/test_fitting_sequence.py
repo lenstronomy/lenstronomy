@@ -329,6 +329,7 @@ class TestFittingSequence(object):
             ps_fixed,
             special_fixed,
             extinction_fixed,
+            tracer_source_fixed,
         ) = fittingSequence._updateManager.fixed_kwargs
         kwargs_result = fittingSequence.best_fit(bijective=False)
         npt.assert_almost_equal(
@@ -838,14 +839,7 @@ class TestFittingSequence(object):
         )
         fitting_list.append(["MCMC", kwargs_mcmc])
 
-        def custom_likelihood(
-            kwargs_lens,
-            kwargs_source=None,
-            kwargs_lens_light=None,
-            kwargs_ps=None,
-            kwargs_special=None,
-            kwargs_extinction=None,
-        ):
+        def custom_likelihood(kwargs_lens, **kwargs):
             theta_E = kwargs_lens[0]["theta_E"]
             return -((theta_E - 1.0) ** 2) / 0.1**2 / 2
 

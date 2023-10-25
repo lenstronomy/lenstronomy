@@ -208,7 +208,7 @@ class TestImageModel(object):
         npt.assert_almost_equal(chi2_reduced, 1, decimal=1)
 
     def test_likelihood_data_given_model(self):
-        logL = self.imageModel.likelihood_data_given_model(
+        logL, param = self.imageModel.likelihood_data_given_model(
             self.kwargs_lens,
             self.kwargs_source,
             self.kwargs_lens_light,
@@ -217,7 +217,7 @@ class TestImageModel(object):
         )
         npt.assert_almost_equal(logL, -5000, decimal=-3)
 
-        logLmarg = self.imageModel.likelihood_data_given_model(
+        logLmarg, _ = self.imageModel.likelihood_data_given_model(
             self.kwargs_lens,
             self.kwargs_source,
             self.kwargs_lens_light,

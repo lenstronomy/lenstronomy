@@ -49,6 +49,7 @@ class FittingSequence(object):
          'point_source_model': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
          'extinction_model': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
          'special': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
+         'tracer_source_model': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
         :param mpi: MPI option (bool), if True, will launch an MPI Pool job for the steps in the fitting sequence where
          possible
         :param verbose: bool, if True prints temporary results and indicators of the fitting process
@@ -691,11 +692,13 @@ class FittingSequence(object):
         lens_light_add_fixed=None,
         ps_add_fixed=None,
         special_add_fixed=None,
+        tracer_source_add_fixed=None,
         lens_remove_fixed=None,
         source_remove_fixed=None,
         lens_light_remove_fixed=None,
         ps_remove_fixed=None,
         special_remove_fixed=None,
+        tracer_source_remove_fixed=None,
         change_source_lower_limit=None,
         change_source_upper_limit=None,
         change_lens_lower_limit=None,
@@ -714,11 +717,15 @@ class FittingSequence(object):
         :param lens_light_add_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param ps_add_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param special_add_fixed: ['param1', 'param2',...]
+        :param special_add_fixed: ['param1', 'param2',...]
+        :param tracer_source_add_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param lens_remove_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param source_remove_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param lens_light_remove_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param ps_remove_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param special_remove_fixed: ['param1', 'param2',...]
+        :param special_remove_fixed: ['param1', 'param2',...]
+        :param tracer_source_remove_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param change_lens_lower_limit: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
         :param change_lens_upper_limit: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
         :param change_source_lower_limit: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
@@ -737,11 +744,13 @@ class FittingSequence(object):
             lens_light_add_fixed,
             ps_add_fixed,
             special_add_fixed,
+            tracer_source_add_fixed,
             lens_remove_fixed,
             source_remove_fixed,
             lens_light_remove_fixed,
             ps_remove_fixed,
             special_remove_fixed,
+            tracer_source_remove_fixed,
         )
         self._updateManager.update_limits(
             change_source_lower_limit,

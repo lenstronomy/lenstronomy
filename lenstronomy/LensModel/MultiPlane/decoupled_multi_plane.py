@@ -1,7 +1,8 @@
 __author__ = "dangilman"
 
 from lenstronomy.LensModel.MultiPlane.multi_plane import MultiPlane
-
+from lenstronomy.LensModel.single_plane import SinglePlane
+from lenstronomy.Cosmo.background import Background
 __all__ = ["MultiPlaneDecoupled"]
 
 
@@ -35,7 +36,7 @@ class MultiPlaneDecoupled(MultiPlane):
         by a group of deflectors at redshift Z from deflections produced by halos at
         redshift< Z.
 
-        This class effectively breaks the recursive nature of the multi-plane lens
+        This class breaks the recursive nature of the multi-plane lens
         equation, and can significantly speed up computations with a large number of
         line-of-sight halos.
 
@@ -85,7 +86,9 @@ class MultiPlaneDecoupled(MultiPlane):
             kwargs_interp,
             kwargs_synthesis,
         )
-        cosmo_bkg = self._multi_plane_base._cosmo_bkg
+        if z_interp_stop is None:
+            z_interp_stop = z_source_convention
+        cosmo_bkg = Background(cosmo)
         d_xy_source = cosmo_bkg.d_xy(0, z_source)
         d_xy_lens_source = cosmo_bkg.d_xy(self._z_split, z_source)
         self._reduced_to_phys = d_xy_source / d_xy_lens_source
@@ -94,6 +97,7 @@ class MultiPlaneDecoupled(MultiPlane):
         self._Ts = cosmo_bkg.T_xy(0, z_source)
         self._Td = cosmo_bkg.T_xy(0, z_split)
         self._Tds = cosmo_bkg.T_xy(self._z_split, z_source)
+        self._main_deflector = SinglePlane(lens_model_list)
 
     def geo_shapiro_delay(*args, **kwargs):
         raise Exception(
@@ -109,43 +113,45 @@ class MultiPlaneDecoupled(MultiPlane):
         (x,y) co-moving distance passed through the x0_interp and y0_interp functions,
         then starts multi-plane ray-tracing through all subsequent lens planes.
 
-        :param x: co-moving position [Mpc]
-        :param y: co-moving position [Mpc]
-        :param alpha_x: ray angle at z_start [arcsec]
-        :param alpha_y: ray angle at z_start [arcsec]
-        :param z_start: redshift of start of computation
-        :param z_stop: redshift where output is computed
-        :param kwargs_lens: lens model keyword argument list
-        :return: co-moving position and angles at redshift z_stop
+        :param theta_x: angular coordinate on the sky
+        :param theta_y: angular coordinate on the sky
+        :param keyword arguments for the main deflector
+        :return: coordinates on the source plane
         """
         coordinates = (theta_x, theta_y)
+        # here we use an interpolation function to compute the comoving coordinates of the light rays
+        # where they hit the main lens plane at redshift z = z_main
         x = self._x0_interp(coordinates)
         y = self._y0_interp(coordinates)
-        alpha_x_foreground = self._alphax_interp_foreground(coordinates)
-        alpha_y_foreground = self._alphay_interp_foreground(coordinates)
-        alpha_beta_subx = self._alphax_interp_background(coordinates)
-        alpha_beta_suby = self._alphay_interp_background(coordinates)
-        alpha_x_main = 0.0
-        alpha_y_main = 0.0
-        theta_x_main = x / self._Td
+        theta_x_main = x / self._Td # the angular coordinates of the ray positions
         theta_y_main = y / self._Td
-        for k in range(0, len(kwargs_lens)):
-            alpha_x_reduced, alpha_y_reduced = self._multi_plane_base.func_list[
-                k
-            ].derivatives(theta_x_main, theta_y_main, **kwargs_lens[k])
-            alpha_x_main += self._reduced_to_phys * alpha_x_reduced
-            alpha_y_main += self._reduced_to_phys * alpha_y_reduced
-        alpha_x, alpha_y = (
-            alpha_x_foreground - alpha_x_main,
-            alpha_y_foreground - alpha_y_main,
-        )
+
+        # now we compute (via the interpolation functions) the deflection angles from all deflectors at z <= z_main, \
+        # exlucding the main deflector
+        deflection_x_foreground = self._alphax_interp_foreground(coordinates)
+        deflection_y_foreground = self._alphay_interp_foreground(coordinates)
+
+        # compute the deflection angles from the main deflector
+        deflection_x_main, deflection_y_main = self._main_deflector.alpha(theta_x_main, theta_y_main, kwargs_lens)
+        deflection_x_main *= self._reduced_to_phys
+        deflection_y_main *= self._reduced_to_phys
+
+        # add the main deflector to the deflection field
+        alpha_x = deflection_x_foreground - deflection_x_main
+        alpha_y = deflection_y_foreground - deflection_y_main
+
+        # now we compute (via the interpolation functions) the deflection angles from all deflectors at z > z_main
+        deflection_x_background = self._alphax_interp_background(coordinates)
+        deflection_y_background = self._alphay_interp_background(coordinates)
+
+        # ray propagation to the source plane with the small angle approximation
         beta_x = (
-            alpha_beta_subx * self._Tds / self._Ts
+            deflection_x_background * self._Tds / self._Ts
             + x / self._Ts
             + alpha_x * self._Tds / self._Ts
         )
         beta_y = (
-            alpha_beta_suby * self._Tds / self._Ts
+            deflection_y_background * self._Tds / self._Ts
             + y / self._Ts
             + alpha_y * self._Tds / self._Ts
         )

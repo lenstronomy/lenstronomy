@@ -48,6 +48,7 @@ def create_class_instances(
     tabulated_deflection_angles=None,
     decouple_multi_plane=False,
     kwargs_multiplane_model=None,
+    kwargs_multiplane_model_point_source=None,
     tracer_source_model_list=None,
     tracer_source_band=0,
     tracer_partition=None,
@@ -99,6 +100,10 @@ def create_class_instances(
      convention in the lenstronomy yaml setting (which by default is =False)
     :param tabulated_deflection_angles: a user-specified class with a call method that returns deflection angles given
      (x, y) coordinates on the sky. This class gets passed to the lens model class TabulatedDeflections
+    :param decouple_multi_plane: bool; if True, creates an instance of MultiPlaneDecoupled
+    :param kwargs_multiplane_model: keyword arguments for MultiPlaneDecoupled if decouple_multi_plane is True
+    :param kwargs_multiplane_model_point_source: keyword arguments for an optional separte lensed point source
+    lens model class
     :param tracer_source_model_list: list of tracer source models (not used in this function)
     :param tracer_source_band: integer, list index of source surface brightness band to apply tracer model to
     :param tracer_partition: in case of tracer models for specific sub-parts of the surface brightness model
@@ -154,20 +159,23 @@ def create_class_instances(
         kwargs_multiplane_model=kwargs_multiplane_model,
     )
 
-    lens_model_class_all = LensModel(
-        lens_model_list=lens_model_list,
-        z_lens=z_lens,
-        z_source=z_source,
-        z_source_convention=z_source_convention,
-        lens_redshift_list=lens_redshift_list,
-        multi_plane=multi_plane,
-        cosmo=cosmo,
-        observed_convention_index=observed_convention_index,
-        kwargs_interp=kwargs_interp,
-        numerical_alpha_class=tabulated_deflection_angles,
-        decouple_multi_plane=decouple_multi_plane,
-        kwargs_multiplane_model=kwargs_multiplane_model,
-    )
+    if kwargs_multiplane_model_point_source is not None:
+        lens_model_class_point_source = LensModel(
+            lens_model_list=lens_model_list,
+            z_lens=z_lens,
+            z_source=z_source,
+            z_source_convention=z_source_convention,
+            lens_redshift_list=lens_redshift_list,
+            multi_plane=multi_plane,
+            cosmo=cosmo,
+            observed_convention_index=observed_convention_index,
+            kwargs_interp=kwargs_interp,
+            numerical_alpha_class=tabulated_deflection_angles,
+            decouple_multi_plane=decouple_multi_plane,
+            kwargs_multiplane_model=kwargs_multiplane_model_point_source,
+        )
+    else:
+        lens_model_class_point_source = lens_model_class
 
     if index_source_light_model_list is None or all_models is True:
         source_light_model_list_i = source_light_model_list
@@ -239,7 +247,7 @@ def create_class_instances(
             ]
     point_source_class = PointSource(
         point_source_type_list=point_source_model_list_i,
-        lensModel=lens_model_class_all,
+        lensModel=lens_model_class_point_source,
         fixed_magnification_list=fixed_magnification_list_i,
         flux_from_point_source_list=flux_from_point_source_list,
         additional_images_list=additional_images_list_i,

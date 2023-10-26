@@ -3,6 +3,7 @@ __author__ = "dangilman"
 from lenstronomy.LensModel.MultiPlane.multi_plane import MultiPlane
 from lenstronomy.LensModel.single_plane import SinglePlane
 from lenstronomy.Cosmo.background import Background
+
 __all__ = ["MultiPlaneDecoupled"]
 
 
@@ -36,9 +37,8 @@ class MultiPlaneDecoupled(MultiPlane):
         by a group of deflectors at redshift Z from deflections produced by halos at
         redshift< Z.
 
-        This class breaks the recursive nature of the multi-plane lens
-        equation, and can significantly speed up computations with a large number of
-        line-of-sight halos.
+        This class breaks the recursive nature of the multi-plane lens equation, and can
+        significantly speed up computations with a large number of line-of-sight halos.
 
         :param lens_model_list: list of lens model strings
         :param lens_redshift_list: list of floats with redshifts of the lens models
@@ -114,8 +114,8 @@ class MultiPlaneDecoupled(MultiPlane):
         then starts multi-plane ray-tracing through all subsequent lens planes.
 
         :param theta_x: angular coordinate on the sky
-        :param theta_y: angular coordinate on the sky
-        :param keyword arguments for the main deflector
+        :param theta_y: angular coordinate on the sky :param keyword arguments for the
+            main deflector
         :return: coordinates on the source plane
         """
         coordinates = (theta_x, theta_y)
@@ -123,7 +123,7 @@ class MultiPlaneDecoupled(MultiPlane):
         # where they hit the main lens plane at redshift z = z_main
         x = self._x0_interp(coordinates)
         y = self._y0_interp(coordinates)
-        theta_x_main = x / self._Td # the angular coordinates of the ray positions
+        theta_x_main = x / self._Td  # the angular coordinates of the ray positions
         theta_y_main = y / self._Td
 
         # now we compute (via the interpolation functions) the deflection angles from all deflectors at z <= z_main, \
@@ -132,7 +132,9 @@ class MultiPlaneDecoupled(MultiPlane):
         deflection_y_foreground = self._alphay_interp_foreground(coordinates)
 
         # compute the deflection angles from the main deflector
-        deflection_x_main, deflection_y_main = self._main_deflector.alpha(theta_x_main, theta_y_main, kwargs_lens)
+        deflection_x_main, deflection_y_main = self._main_deflector.alpha(
+            theta_x_main, theta_y_main, kwargs_lens
+        )
         deflection_x_main *= self._reduced_to_phys
         deflection_y_main *= self._reduced_to_phys
 

@@ -48,7 +48,6 @@ class TestMultiPlaneDecoupled(object):
         npt.assert_raises(Exception, setup_lens_model, args)
 
     def test_setup_lens_model(self):
-
         index_lens_split = [0]
         (
             lens_model_fixed,

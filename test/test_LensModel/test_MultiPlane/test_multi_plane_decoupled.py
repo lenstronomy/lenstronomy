@@ -6,7 +6,7 @@ from lenstronomy.LensModel.Util.decouple_multi_plane_util import (
     setup_lens_model,
     setup_grids,
     coordinates_and_deflections,
-    class_setup,setup_multi_grid
+    class_setup, setup_multi_grid
 )
 import numpy as np
 import pytest
@@ -73,14 +73,28 @@ class TestMultiPlaneDecoupled(object):
     def test_setup_grids(self):
         grid_size = 2.0
         grid_resolution = 0.001
-        xx, yy, interp_points, npixels = setup_grids(grid_size, grid_resolution)
+        ximg = 0.5
+        yimg = -0.2
+        xx, yy, interp_points, npixels = setup_grids(grid_size, grid_resolution, coordinate_center_x=ximg,
+                                                     coordinate_center_y=yimg)
         npt.assert_equal(npixels, grid_size / grid_resolution)
-        npt.assert_equal(xx[0], -1)
-        npt.assert_equal(yy[0], -1)
-        npt.assert_equal(interp_points[0][0], -1)
-        npt.assert_equal(interp_points[1][0], -1)
-        npt.assert_equal(interp_points[0][-1], 1)
-        npt.assert_equal(interp_points[1][-1], 1)
+        npt.assert_equal(xx[0], -1 + ximg)
+        npt.assert_equal(yy[0], -1 + yimg)
+        npt.assert_equal(interp_points[0][0], -1 + ximg)
+        npt.assert_equal(interp_points[1][0], -1 + yimg)
+        npt.assert_equal(interp_points[0][-1], 1 + ximg)
+        npt.assert_equal(interp_points[1][-1], 1 + yimg)
+
+        xx_multigrid, yy_multigrid, _ = setup_multi_grid([ximg], [yimg], grid_size, grid_resolution, cut_radius=None)
+        npt.assert_allclose(xx, xx_multigrid)
+        npt.assert_allclose(yy, yy_multigrid)
+
+        cut_radius = 0.25
+        xx_multigrid, yy_multigrid, _ = setup_multi_grid([ximg], [yimg], grid_size, grid_resolution,
+                                                         cut_radius=cut_radius)
+        dr = np.hypot(xx_multigrid - ximg, yy_multigrid - yimg)
+        rr_max = np.max(dr)
+        npt.assert_equal(rr_max < cut_radius, True)
 
     def test_coordinates_and_deflections(self):
         index_lens_split = [0]

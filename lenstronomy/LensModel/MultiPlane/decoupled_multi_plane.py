@@ -86,8 +86,6 @@ class MultiPlaneDecoupled(MultiPlane):
             kwargs_interp,
             kwargs_synthesis,
         )
-        if z_interp_stop is None:
-            z_interp_stop = z_source_convention
         cosmo_bkg = Background(cosmo)
         d_xy_source = cosmo_bkg.d_xy(0, z_source)
         d_xy_lens_source = cosmo_bkg.d_xy(self._z_split, z_source)
@@ -98,6 +96,14 @@ class MultiPlaneDecoupled(MultiPlane):
         self._Td = cosmo_bkg.T_xy(0, z_split)
         self._Tds = cosmo_bkg.T_xy(self._z_split, z_source)
         self._main_deflector = SinglePlane(lens_model_list)
+        # useful to have these saved to access later outside the class
+        self.kwargs_multiplane_model = {'x0_interp': self._x0_interp,
+                                        'y0_interp': self._y0_interp,
+                                        'alpha_x_interp_foreground': self._alphax_interp_foreground,
+                                        'alpha_y_interp_foreground': self._alphay_interp_foreground,
+                                        'alpha_x_interp_background': self._alphax_interp_background,
+                                        'alpha_y_interp_background': self._alphay_interp_background,
+                                        'z_split': self._z_split}
 
     def geo_shapiro_delay(*args, **kwargs):
         raise Exception(

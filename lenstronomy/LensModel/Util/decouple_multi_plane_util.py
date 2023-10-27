@@ -91,19 +91,26 @@ def setup_grids(
 
     return xx.ravel(), yy.ravel(), interp_points, npix
 
-def setup_multi_grid(x_image, y_image, grid_size, grid_resolution):
-    """Creates grids for use in the decoupled multiplane model; this setups up a seris of small grids centerd at
+def setup_multi_grid(x_image, y_image, grid_size, grid_resolution, cut_radius=None):
+    """Creates grids for use in the decoupled multiplane model; this setups up a series of small grids centerd at
     coordinates x_image, y_image.
     :param x_image: coordinate center in arcsec
     :param y_image: coordinate center in arcsec
     :param grid_size: grid size in arcsec
     :param grid_resolution: grid resolution in arcsec/pixel
+    :param cut_radius: removes coordinates displaced from (coordinate_center_x, coordinate_center_y) by more
+    than cut_radius
     :return:
     """
     grid_x = np.array([])
     grid_y = np.array([])
     for (xi, yi) in zip(x_image, y_image):
         grid_x_image, grid_y_image, _, _ = setup_grids(grid_size, grid_resolution, xi, yi)
+        if cut_radius is not None:
+            dr = np.sqrt((grid_x_image - xi) ** 2 + (grid_y_image - yi)**2)
+            inds_keep = np.where(dr < cut_radius)[0]
+            grid_x_image = grid_x_image[inds_keep]
+            grid_y_image = grid_y_image[inds_keep]
         grid_x = np.append(grid_x, grid_x_image)
         grid_y = np.append(grid_y, grid_y_image)
     interp_points = (grid_x, grid_y)

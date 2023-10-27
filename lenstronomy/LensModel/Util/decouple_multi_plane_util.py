@@ -82,6 +82,9 @@ def setup_grids(
         number of pixels per axis
     """
     npix = int(grid_size / grid_resolution)
+    if npix%2==0:
+        # we make sure this is odd so that grids include the center point
+        npix += 1
     x = np.linspace(-grid_size / 2, grid_size / 2, npix)
     y = np.linspace(-grid_size / 2, grid_size / 2, npix)
     x += coordinate_center_x

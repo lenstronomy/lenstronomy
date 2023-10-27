@@ -3,6 +3,7 @@ __author__ = "dangilman"
 from lenstronomy.LensModel.MultiPlane.multi_plane import MultiPlane
 from lenstronomy.LensModel.single_plane import SinglePlane
 from lenstronomy.Cosmo.background import Background
+
 __all__ = ["MultiPlaneDecoupled"]
 
 
@@ -36,9 +37,14 @@ class MultiPlaneDecoupled(MultiPlane):
         by a group of deflectors at redshift Z from deflections produced by halos at
         redshift< Z.
 
+<<<<<<< HEAD
         This class breaks the recursive nature of the multi-plane lens
         equation, and can significantly speed up computations with a large number of
         line-of-sight halos.
+=======
+        This class breaks the recursive nature of the multi-plane lens equation, and can
+        significantly speed up computations with a large number of line-of-sight halos.
+>>>>>>> decoupled_multi_plane
 
         :param lens_model_list: list of lens model strings
         :param lens_redshift_list: list of floats with redshifts of the lens models
@@ -86,8 +92,7 @@ class MultiPlaneDecoupled(MultiPlane):
             kwargs_interp,
             kwargs_synthesis,
         )
-        if z_interp_stop is None:
-            z_interp_stop = z_source_convention
+
         cosmo_bkg = Background(cosmo)
         d_xy_source = cosmo_bkg.d_xy(0, z_source)
         d_xy_lens_source = cosmo_bkg.d_xy(self._z_split, z_source)
@@ -98,6 +103,14 @@ class MultiPlaneDecoupled(MultiPlane):
         self._Td = cosmo_bkg.T_xy(0, z_split)
         self._Tds = cosmo_bkg.T_xy(self._z_split, z_source)
         self._main_deflector = SinglePlane(lens_model_list)
+        # useful to have these saved to access later outside the class
+        self.kwargs_multiplane_model = {'x0_interp': self._x0_interp,
+                                        'y0_interp': self._y0_interp,
+                                        'alpha_x_interp_foreground': self._alphax_interp_foreground,
+                                        'alpha_y_interp_foreground': self._alphay_interp_foreground,
+                                        'alpha_x_interp_background': self._alphax_interp_background,
+                                        'alpha_y_interp_background': self._alphay_interp_background,
+                                        'z_split': self._z_split}
 
     def geo_shapiro_delay(*args, **kwargs):
         raise Exception(
@@ -115,7 +128,7 @@ class MultiPlaneDecoupled(MultiPlane):
 
         :param theta_x: angular coordinate on the sky
         :param theta_y: angular coordinate on the sky
-        :param keyword arguments for the main deflector
+        :param kwargs_lens: keyword arguments for the main deflector
         :return: coordinates on the source plane
         """
         coordinates = (theta_x, theta_y)
@@ -123,8 +136,9 @@ class MultiPlaneDecoupled(MultiPlane):
         # where they hit the main lens plane at redshift z = z_main
         x = self._x0_interp(coordinates)
         y = self._y0_interp(coordinates)
+
         theta_x_main = x / self._Td # the angular coordinates of the ray positions
-        theta_y_main = y / self._Td
+        theta_y_main = y / self._Td  # the angular coordinates of the ray positions
 
         # now we compute (via the interpolation functions) the deflection angles from all deflectors at z <= z_main, \
         # exlucding the main deflector
@@ -132,7 +146,10 @@ class MultiPlaneDecoupled(MultiPlane):
         deflection_y_foreground = self._alphay_interp_foreground(coordinates)
 
         # compute the deflection angles from the main deflector
-        deflection_x_main, deflection_y_main = self._main_deflector.alpha(theta_x_main, theta_y_main, kwargs_lens)
+        deflection_x_main, deflection_y_main = self._main_deflector.alpha(
+            theta_x_main, theta_y_main, kwargs_lens
+        )
+
         deflection_x_main *= self._reduced_to_phys
         deflection_y_main *= self._reduced_to_phys
 

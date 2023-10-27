@@ -74,7 +74,6 @@ def setup_grids(
     grid_size, grid_resolution, coordinate_center_x=0.0, coordinate_center_y=0.0
 ):
     """Creates grids for use in the decoupled multiplane model.
-
     :param grid_size: The size (diameter of inscribed circle) of the grid
     :param grid_resolution: pixel scale (units arcsec / pixel)
     :param coordinate_center_x: center of the coordinate grid in arcsec
@@ -92,6 +91,30 @@ def setup_grids(
 
     return xx.ravel(), yy.ravel(), interp_points, npix
 
+def setup_multi_grid(x_image, y_image, grid_size, grid_resolution, cut_radius=None):
+    """Creates grids for use in the decoupled multiplane model; this setups up a series of small grids centerd at
+    coordinates x_image, y_image.
+    :param x_image: coordinate center in arcsec
+    :param y_image: coordinate center in arcsec
+    :param grid_size: grid size in arcsec
+    :param grid_resolution: grid resolution in arcsec/pixel
+    :param cut_radius: removes coordinates displaced from (coordinate_center_x, coordinate_center_y) by more
+    than cut_radius
+    :return:
+    """
+    grid_x = np.array([])
+    grid_y = np.array([])
+    for (xi, yi) in zip(x_image, y_image):
+        grid_x_image, grid_y_image, _, _ = setup_grids(grid_size, grid_resolution, xi, yi)
+        if cut_radius is not None:
+            dr = np.sqrt((grid_x_image - xi) ** 2 + (grid_y_image - yi)**2)
+            inds_keep = np.where(dr < cut_radius)[0]
+            grid_x_image = grid_x_image[inds_keep]
+            grid_y_image = grid_y_image[inds_keep]
+        grid_x = np.append(grid_x, grid_x_image)
+        grid_y = np.append(grid_y, grid_y_image)
+    interp_points = (grid_x, grid_y)
+    return grid_x, grid_y, interp_points
 
 def coordinates_and_deflections(
     lens_model_fixed,
@@ -189,7 +212,7 @@ def class_setup(
     coordinate_type="POINT",
     interp_points=None,
     x_image=None,
-    y_image=None,
+    y_image=None
 ):
     """This funciton creates the keyword arguments for a LensModel instance that is the
     decoupled multi-plane approxiamtion for the specified lens model :param
@@ -256,9 +279,9 @@ def class_setup(
         interp_foreground_alpha_y = lambda *args: alpha_y_foreground
         interp_deltabeta_x = lambda *args: alpha_beta_subx
         interp_deltabeta_y = lambda *args: alpha_beta_suby
+
     elif coordinate_type == "MULTIPLE_IMAGES":
         from scipy.interpolate import NearestNDInterpolator
-
         interp_points = list(zip(x_image, y_image))
         interp_xD = NearestNDInterpolator(interp_points, x)
         interp_yD = NearestNDInterpolator(interp_points, y)
@@ -270,9 +293,34 @@ def class_setup(
         )
         interp_deltabeta_x = NearestNDInterpolator(interp_points, alpha_beta_subx)
         interp_deltabeta_y = NearestNDInterpolator(interp_points, alpha_beta_suby)
+
+    elif coordinate_type == 'MULTIPLE_IMAGES_GRID':
+        from scipy.interpolate import LinearNDInterpolator
+        interp_xD = LinearNDInterpolator(
+            interp_points, x
+        )
+        interp_yD = LinearNDInterpolator(
+            interp_points, y
+        )
+        interp_foreground_alpha_x = LinearNDInterpolator(
+            interp_points,
+            alpha_x_foreground
+        )
+        interp_foreground_alpha_y = LinearNDInterpolator(
+            interp_points,
+            alpha_y_foreground
+        )
+        interp_deltabeta_x = LinearNDInterpolator(
+            interp_points,
+            alpha_beta_subx
+        )
+        interp_deltabeta_y = LinearNDInterpolator(
+            interp_points,
+            alpha_beta_suby
+        )
     else:
         raise Exception(
-            "coordinate type must be either GRID, POINT, or MULTIPLE_IMAGES"
+            "coordinate type must be either GRID, POINT, MULTIPLE_IMAGES, or MULTIPLE_IMAGES_GRID"
         )
 
     kwargs_decoupled_lens_model = {

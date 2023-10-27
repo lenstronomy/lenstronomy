@@ -52,7 +52,10 @@ class TestPlotQuasarImages(object):
         )
         plt.close()
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> decoupled_multi_plane
 
 if __name__ == "__main__":
     pytest.main()

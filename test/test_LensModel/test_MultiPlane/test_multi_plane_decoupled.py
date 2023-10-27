@@ -6,7 +6,7 @@ from lenstronomy.LensModel.Util.decouple_multi_plane_util import (
     setup_lens_model,
     setup_grids,
     coordinates_and_deflections,
-    class_setup,
+    class_setup, setup_multi_grid
 )
 import numpy as np
 import pytest
@@ -74,14 +74,28 @@ class TestMultiPlaneDecoupled(object):
     def test_setup_grids(self):
         grid_size = 2.0
         grid_resolution = 0.001
-        xx, yy, interp_points, npixels = setup_grids(grid_size, grid_resolution)
+        ximg = 0.5
+        yimg = -0.2
+        xx, yy, interp_points, npixels = setup_grids(grid_size, grid_resolution, coordinate_center_x=ximg,
+                                                     coordinate_center_y=yimg)
         npt.assert_equal(npixels, grid_size / grid_resolution)
-        npt.assert_equal(xx[0], -1)
-        npt.assert_equal(yy[0], -1)
-        npt.assert_equal(interp_points[0][0], -1)
-        npt.assert_equal(interp_points[1][0], -1)
-        npt.assert_equal(interp_points[0][-1], 1)
-        npt.assert_equal(interp_points[1][-1], 1)
+        npt.assert_equal(xx[0], -1 + ximg)
+        npt.assert_equal(yy[0], -1 + yimg)
+        npt.assert_equal(interp_points[0][0], -1 + ximg)
+        npt.assert_equal(interp_points[1][0], -1 + yimg)
+        npt.assert_equal(interp_points[0][-1], 1 + ximg)
+        npt.assert_equal(interp_points[1][-1], 1 + yimg)
+
+        xx_multigrid, yy_multigrid, _ = setup_multi_grid([ximg], [yimg], grid_size, grid_resolution, cut_radius=None)
+        npt.assert_allclose(xx, xx_multigrid)
+        npt.assert_allclose(yy, yy_multigrid)
+
+        cut_radius = 0.25
+        xx_multigrid, yy_multigrid, _ = setup_multi_grid([ximg], [yimg], grid_size, grid_resolution,
+                                                         cut_radius=cut_radius)
+        dr = np.hypot(xx_multigrid - ximg, yy_multigrid - yimg)
+        rr_max = np.max(dr)
+        npt.assert_equal(rr_max < cut_radius, True)
 
     def test_coordinates_and_deflections(self):
         index_lens_split = [0]
@@ -218,8 +232,8 @@ class TestMultiPlaneDecoupled(object):
             z_split,
             coordinate_type,
         )
-        lens_model_decoupled = LensModel(**kwargs_class_setup)
-        beta_x_point, beta_y_point = lens_model_decoupled.ray_shooting(
+        lens_model_decoupled_point = LensModel(**kwargs_class_setup)
+        beta_x_point, beta_y_point = lens_model_decoupled_point.ray_shooting(
             x_coordinate_arcsec_point, y_coordinate_arcsec_point, kwargs_lens_free
         )
         npt.assert_almost_equal(beta_x_point, source_x_true)
@@ -263,14 +277,14 @@ class TestMultiPlaneDecoupled(object):
             coordinate_type,
             interp_points=interp_points,
         )
-        lens_model_decoupled = LensModel(**kwargs_class_setup)
-        beta_x, beta_y = lens_model_decoupled.ray_shooting(
+        lens_model_decoupled_grid = LensModel(**kwargs_class_setup)
+        beta_x_grid, beta_y_grid = lens_model_decoupled_grid.ray_shooting(
             x_coordinate_arcsec_point, y_coordinate_arcsec_point, kwargs_lens_free
         )
-        npt.assert_almost_equal(beta_x, beta_x_point, 5)
-        npt.assert_almost_equal(beta_y, beta_y_point, 5)
+        npt.assert_almost_equal(beta_x_grid, beta_x_point, 5)
+        npt.assert_almost_equal(beta_y_grid, beta_y_point, 5)
 
-        beta_x_grid, beta_y_grid = lens_model_decoupled.ray_shooting(
+        beta_x_grid, beta_y_grid = lens_model_decoupled_grid.ray_shooting(
             xgrid, ygrid, kwargs_lens_free
         )
         npt.assert_allclose(beta_x_grid, source_x_true, 5)
@@ -314,18 +328,18 @@ class TestMultiPlaneDecoupled(object):
             x_image=x_image,
             y_image=y_image,
         )
-        lens_model_decoupled = LensModel(**kwargs_class_setup)
+        lens_model_decoupled_multiple_images = LensModel(**kwargs_class_setup)
         (
             beta_x_multiple_images_array,
             beta_y_multiple_images_array,
-        ) = lens_model_decoupled.ray_shooting(x_image, y_image, kwargs_lens_free)
+        ) = lens_model_decoupled_multiple_images.ray_shooting(x_image, y_image, kwargs_lens_free)
         npt.assert_allclose(beta_x_multiple_images_array, source_x_true, 5)
         npt.assert_allclose(beta_y_multiple_images_array, source_y_true, 5)
 
         (
             beta_x_multiple_images,
             beta_y_multiple_images,
-        ) = lens_model_decoupled.ray_shooting(
+        ) = lens_model_decoupled_multiple_images.ray_shooting(
             x_image[1] + 0.05, y_image[1] - 0.1, kwargs_lens_free
         )
         npt.assert_almost_equal(beta_x_multiple_images, beta_x_multiple_images_array[1])
@@ -333,6 +347,57 @@ class TestMultiPlaneDecoupled(object):
         npt.assert_almost_equal(beta_y_multiple_images, beta_y_multiple_images_array[1])
         npt.assert_almost_equal(beta_y_multiple_images, beta_y_point)
 
+        # TEST MULTIPLE IMAGES GRID
+        coordinate_type = "MULTIPLE_IMAGES_GRID"
+        x_image = np.array([1.0, x_coordinate_arcsec_point, -0.8, 0.0])
+        y_image = np.array([0.2, y_coordinate_arcsec_point, 0.9, 2.0])
+        x_grid, y_grid, interp_points = setup_multi_grid(x_image, y_image, 0.05, 0.001)
+        (
+            x,
+            y,
+            alpha_x_foreground,
+            alpha_y_foreground,
+            alpha_beta_subx,
+            alpha_beta_suby,
+        ) = coordinates_and_deflections(
+            lens_model_fixed,
+            lens_model_free,
+            kwargs_lens_fixed,
+            kwargs_lens_free,
+            x_grid,
+            y_grid,
+            z_split,
+            z_source,
+            cosmo_bkg,
+        )
+        kwargs_class_setup = class_setup(
+            lens_model_free,
+            x,
+            y,
+            alpha_x_foreground,
+            alpha_y_foreground,
+            alpha_beta_subx,
+            alpha_beta_suby,
+            z_split,
+            coordinate_type,
+            interp_points=interp_points
+        )
+        lens_model_decoupled_multiple_images_grid = LensModel(**kwargs_class_setup)
+        (
+            beta_x_multiple_images_grid,
+            beta_y_multiple_images_grid,
+        ) = lens_model_decoupled_multiple_images_grid.ray_shooting(x_image, y_image, kwargs_lens_free)
+        npt.assert_allclose(beta_x_multiple_images_grid, source_x_true, 5)
+        npt.assert_allclose(beta_y_multiple_images_grid, source_y_true, 5)
+
+        test_grid_x, test_grid_y, _, _ = setup_grids(0.05, 0.01, x_image[1], y_image[1])
+        (
+            beta_x_multiple_images_grid,
+            beta_y_multiple_images_grid,
+        ) = lens_model_decoupled_multiple_images_grid.ray_shooting(test_grid_x, test_grid_y, kwargs_lens_free)
+        beta_x_grid, beta_y_grid = lens_model_decoupled_grid.ray_shooting(test_grid_x, test_grid_y, kwargs_lens_free)
+        npt.assert_allclose(beta_x_multiple_images_grid, beta_x_grid, 5)
+        npt.assert_allclose(beta_y_multiple_images_grid, beta_y_grid, 5)
 
 if __name__ == "__main__":
     pytest.main("-k TestLensModel")

@@ -6,12 +6,16 @@ __all__ = ["PJaffe"]
 
 class PJaffe(LensProfileBase):
     """
-    class to compute the DUAL PSEUDO ISOTHERMAL ELLIPTICAL MASS DISTRIBUTION
+    class to compute the DUAL PSEUDO ISOTHERMAL MASS DISTRIBUTION
     based on Eliasdottir (2007) https://arxiv.org/pdf/0710.5636.pdf Appendix A
 
     Module name: 'PJAFFE';
 
-    An alternative name is dPIED.
+    An alternative name is dPIED (in the elliptical scenario)
+
+    This profile is for the spherical case. For an elliptical version, use
+    "PJAFFE_ELLIPSE" (ellipticitly in the potential)
+    # TODO: add/revise name once ellipticity in the mass is available
 
     The 3D density distribution is
 

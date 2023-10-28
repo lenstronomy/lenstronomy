@@ -1,6 +1,7 @@
 __author__ = ["nataliehogg", "pierrefleury", "danjohnson98"]
 
 from lenstronomy.LensModel.single_plane import SinglePlane
+from lenstronomy.LensModel.profile_list_base import lens_class
 import numpy as np
 import copy
 
@@ -49,7 +50,7 @@ class SinglePlaneLOS(SinglePlane):
         # Extract the los model and import its class
         self._index_los = index_los
         self._los_model = lens_model_list[index_los]
-        self.los = self._import_class(
+        self.los = lens_class(
             self._los_model,
             custom_class=None,
             kwargs_interp=None,

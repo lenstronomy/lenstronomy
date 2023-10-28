@@ -182,7 +182,6 @@ class ProfileListBase(object):
             func_list.append(lensmodel_class)
         return func_list
 
-
     def _bool_list(self, k=None):
         """Returns a bool list of the length of the lens models if k = None: returns
         bool list with True's if k is int, returns bool list with False's but k'th is
@@ -223,119 +222,154 @@ def lens_class(
     kwargs_synthesis=None,
     z_lens=None,
     z_source=None,
-    ):
-    """
-    Generate class instance of single lens
+):
+    """Generate class instance of single lens.
 
     :param lens_type: string, lens model type
     :param custom_class: custom class
-    :param z_lens: lens redshift  # currently only used in NFW_MC model as this is redshift dependent
-    :param z_source: source redshift  # currently only used in NFW_MC model as this is redshift dependent
-    :param kwargs_interp: interpolation keyword arguments specifying the numerics.
-     See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
+    :param z_lens: lens redshift # currently only used in NFW_MC model as this is
+        redshift dependent
+    :param z_source: source redshift # currently only used in NFW_MC model as this is
+        redshift dependent
+    :param kwargs_interp: interpolation keyword arguments specifying the numerics. See
+        description in the Interpolate() class. Only applicable for 'INTERPOL' and
+        'INTERPOL_SCALED' models.
     :return: class instance of the lens model type
     """
 
     if lens_type == "SHIFT":
         from lenstronomy.LensModel.Profiles.constant_shift import Shift
+
         return Shift()
     elif lens_type == "NIE_POTENTIAL":
         from lenstronomy.LensModel.Profiles.nie_potential import NIE_POTENTIAL
+
         return NIE_POTENTIAL()
     elif lens_type == "CONST_MAG":
         from lenstronomy.LensModel.Profiles.const_mag import ConstMag
+
         return ConstMag()
     elif lens_type == "SHEAR":
         from lenstronomy.LensModel.Profiles.shear import Shear
+
         return Shear()
     elif lens_type == "SHEAR_GAMMA_PSI":
         from lenstronomy.LensModel.Profiles.shear import ShearGammaPsi
+
         return ShearGammaPsi()
     elif lens_type == "SHEAR_REDUCED":
         from lenstronomy.LensModel.Profiles.shear import ShearReduced
+
         return ShearReduced()
     elif lens_type == "CONVERGENCE":
         from lenstronomy.LensModel.Profiles.convergence import Convergence
+
         return Convergence()
     elif lens_type == "HESSIAN":
         from lenstronomy.LensModel.Profiles.hessian import Hessian
+
         return Hessian()
     elif lens_type == "FLEXION":
         from lenstronomy.LensModel.Profiles.flexion import Flexion
+
         return Flexion()
     elif lens_type == "FLEXIONFG":
         from lenstronomy.LensModel.Profiles.flexionfg import Flexionfg
+
         return Flexionfg()
     elif lens_type == "POINT_MASS":
         from lenstronomy.LensModel.Profiles.point_mass import PointMass
+
         return PointMass()
     elif lens_type == "SIS":
         from lenstronomy.LensModel.Profiles.sis import SIS
+
         return SIS()
     elif lens_type == "SIS_TRUNCATED":
         from lenstronomy.LensModel.Profiles.sis_truncate import SIS_truncate
+
         return SIS_truncate()
     elif lens_type == "SIE":
         from lenstronomy.LensModel.Profiles.sie import SIE
+
         return SIE()
     elif lens_type == "SPP":
         from lenstronomy.LensModel.Profiles.spp import SPP
+
         return SPP()
     elif lens_type == "NIE":
         from lenstronomy.LensModel.Profiles.nie import NIE
+
         return NIE()
     elif lens_type == "NIE_SIMPLE":
         from lenstronomy.LensModel.Profiles.nie import NIEMajorAxis
+
         return NIEMajorAxis()
     elif lens_type == "CHAMELEON":
         from lenstronomy.LensModel.Profiles.chameleon import Chameleon
+
         return Chameleon()
     elif lens_type == "DOUBLE_CHAMELEON":
         from lenstronomy.LensModel.Profiles.chameleon import DoubleChameleon
+
         return DoubleChameleon()
     elif lens_type == "TRIPLE_CHAMELEON":
         from lenstronomy.LensModel.Profiles.chameleon import TripleChameleon
+
         return TripleChameleon()
     elif lens_type == "SPEP":
         from lenstronomy.LensModel.Profiles.spep import SPEP
+
         return SPEP()
     elif lens_type == "PEMD":
         from lenstronomy.LensModel.Profiles.pemd import PEMD
+
         return PEMD()
     elif lens_type == "SPEMD":
         from lenstronomy.LensModel.Profiles.spemd import SPEMD
+
         return SPEMD()
     elif lens_type == "EPL":
         from lenstronomy.LensModel.Profiles.epl import EPL
+
         return EPL()
     elif lens_type == "EPL_Q_PHI":
         from lenstronomy.LensModel.Profiles.epl import EPLQPhi
+
         return EPLQPhi()
     elif lens_type == "EPL_NUMBA":
         from lenstronomy.LensModel.Profiles.epl_numba import EPL_numba
+
         return EPL_numba()
     elif lens_type == "EPL_BOXYDISKY":
         from lenstronomy.LensModel.Profiles.epl_boxydisky import EPL_BOXYDISKY
+
         return EPL_BOXYDISKY()
     elif lens_type == "SPL_CORE":
         from lenstronomy.LensModel.Profiles.splcore import SPLCORE
+
         return SPLCORE()
     elif lens_type == "NFW":
         from lenstronomy.LensModel.Profiles.nfw import NFW
+
         return NFW()
     elif lens_type == "NFW_ELLIPSE":
         from lenstronomy.LensModel.Profiles.nfw_ellipse import NFW_ELLIPSE
+
         return NFW_ELLIPSE()
     elif lens_type == "NFW_ELLIPSE_GAUSS_DEC":
         from lenstronomy.LensModel.Profiles.gauss_decomposition import (
             NFWEllipseGaussDec,
         )
+
         return NFWEllipseGaussDec()
     elif lens_type == "NFW_ELLIPSE_CSE":
         from lenstronomy.LensModel.Profiles.nfw_ellipse_cse import NFW_ELLIPSE_CSE
+
         return NFW_ELLIPSE_CSE()
     elif lens_type == "TNFW":
         from lenstronomy.LensModel.Profiles.tnfw import TNFW
+
         return TNFW()
     elif lens_type == "TNFW_ELLIPSE":
         from lenstronomy.LensModel.Profiles.tnfw_ellipse import TNFW_ELLIPSE
@@ -343,9 +377,11 @@ def lens_class(
         return TNFW_ELLIPSE()
     elif lens_type == "CNFW":
         from lenstronomy.LensModel.Profiles.cnfw import CNFW
+
         return CNFW()
     elif lens_type == "CNFW_ELLIPSE":
         from lenstronomy.LensModel.Profiles.cnfw_ellipse import CNFW_ELLIPSE
+
         return CNFW_ELLIPSE()
     elif lens_type == "CTNFW_GAUSS_DEC":
         from lenstronomy.LensModel.Profiles.gauss_decomposition import CTNFWGaussDec

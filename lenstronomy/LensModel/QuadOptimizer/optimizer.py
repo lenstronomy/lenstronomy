@@ -101,7 +101,6 @@ class Optimizer(object):
         :param simplex_n_iterations:
         :return:
         """
-
         (
             lens_model_fixed,
             lens_model_free,
@@ -148,6 +147,7 @@ class Optimizer(object):
         lens_model_decoupled = LensModel(**kwargs_decoupled)
         # we have to reset the keyword arguments of the parameter class here
         parameter_class.kwargs_lens = kwargs_lens_free
+
         return Optimizer(
             x_image,
             y_image,

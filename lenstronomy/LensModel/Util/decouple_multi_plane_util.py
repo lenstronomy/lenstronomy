@@ -157,20 +157,13 @@ def coordinates_and_deflections(
     # get to the source plane
     alpha_x = alpha_x_foreground - alpha_x_main
     alpha_y = alpha_y_foreground - alpha_y_main
-
     x_source, y_source, _, _ = lens_model_fixed.lens_model.ray_shooting_partial(
         x_main_deflector, y_main_deflector, alpha_x, alpha_y, z_split, z_source, kwargs_lens_fixed
     )
 
     # compute the effective deflection field for background halos
-    # x_source = x_main_deflector + alpha_x * Tds
-    # x_source = x_main_deflector + (alpha_x_foreground - alpha_x_main + alpha_x_background) * Tds
-    # alpha_x_background  =x_source / Tds - x_main / Tds + (alpha_x_main - alpha_x_foreground)
-    # alpha_x_background = (x_source - x_main) / Tds + - alpha_x
-    # alpha_x = alpha_x_foreground - alpha_x_main
-    alpha_x_background = -alpha_x + (x_source - x_main_deflector) / Tds
-    alpha_y_background = -alpha_y + (y_source - y_main_deflector) / Tds
-
+    alpha_x_background = (x_source - x_main_deflector) / Tds - alpha_x
+    alpha_y_background = (y_source - y_main_deflector) / Tds - alpha_y
     return (
         x_main_deflector,
         y_main_deflector,
@@ -192,7 +185,8 @@ def class_setup(
     coordinate_type="POINT",
     interp_points=None,
     x_image=None,
-    y_image=None
+    y_image=None,
+    method='linear',
 ):
     """This funciton creates the keyword arguments for a LensModel instance that is the
     decoupled multi-plane approxiamtion for the specified lens model :param
@@ -211,52 +205,53 @@ def class_setup(
     to compute the interpolation GRID specifies the interpolation on a regular grid
     MULTIPLE_IMAGES does interpolation on an array using the NEAREST method.
     :param lens_model_free:
-    :param x:
-    :param y:
-    :param alpha_x_foreground:
-    :param alpha_y_foreground:
-    :param alpha_beta_subx:
-    :param alpha_beta_suby:
-    :param z_split:
-    :param coordinate_type:
-    :param interp_points:
-    :param x_image:
-    :param y_image:
-    :return:
+    :param x: transverse comoving distance in x direction of the light rays at the main deflector
+    :param y: transverse comoving distance in y direction of the light rays at the main deflector
+    :param alpha_x_foreground: deflection angles from halos at redshift z<=z_split
+    :param alpha_y_foreground: deflection angles from halos at redshift z<=z_split
+    :param alpha_beta_subx: deflection angles from halos at redshift z > z_lens
+    :param alpha_beta_suby: deflection angles from halos at redshift z > z_lens
+    :param z_split: the redshift where foreground and background halos are split
+    :param coordinate_type: a string specifying the type of coordinate of x. Options are GRID, POINT, and MULTIPLE_IMAGES
+    :param interp_points: optional keyword argument passed to GRID method that specifies the interpolation grid
+    :param x_image: optional keyword argument passed to multiple images argument that specifies the image coordinates
+    :param y_image: optional keyword argument passed to multiple images argument that specifies the image coordinates
+    :param method: the interpolation method used by RegularGridInterpolator if coordinate_type=='GRID'
+    :return: keyword arguments that can be passed into a LensModel class to create a decoupled-multiplane lens model
     """
     if coordinate_type == "GRID":
         from scipy.interpolate import RegularGridInterpolator
 
         npix = int(len(x) ** 0.5)
         interp_xD = RegularGridInterpolator(
-            interp_points, x.reshape(npix, npix).T, bounds_error=False, fill_value=None
+            interp_points, x.reshape(npix, npix).T, bounds_error=False, fill_value=None, method=method
         )
         interp_yD = RegularGridInterpolator(
-            interp_points, y.reshape(npix, npix).T, bounds_error=False, fill_value=None
+            interp_points, y.reshape(npix, npix).T, bounds_error=False, fill_value=None, method=method
         )
         interp_foreground_alpha_x = RegularGridInterpolator(
             interp_points,
             alpha_x_foreground.reshape(npix, npix).T,
             bounds_error=False,
-            fill_value=None,
+            fill_value=None, method=method
         )
         interp_foreground_alpha_y = RegularGridInterpolator(
             interp_points,
             alpha_y_foreground.reshape(npix, npix).T,
             bounds_error=False,
-            fill_value=None,
+            fill_value=None, method=method
         )
         interp_deltabeta_x = RegularGridInterpolator(
             interp_points,
             alpha_beta_subx.reshape(npix, npix).T,
             bounds_error=False,
-            fill_value=None,
+            fill_value=None, method=method
         )
         interp_deltabeta_y = RegularGridInterpolator(
             interp_points,
             alpha_beta_suby.reshape(npix, npix).T,
             bounds_error=False,
-            fill_value=None,
+            fill_value=None, method=method
         )
     elif coordinate_type == "POINT":
         interp_xD = lambda *args: x
@@ -305,7 +300,8 @@ def class_setup(
     }
     return kwargs_lens_model
 
-def setup_raytracing_lensmodels(x_image, y_image, lens_model, kwargs_lens, index_lens_split, grid_size, grid_resolution):
+def setup_raytracing_lensmodels(x_image, y_image, lens_model, kwargs_lens, index_lens_split,
+                                grid_size, grid_resolution):
     """
 
     :param x_image:
@@ -317,6 +313,7 @@ def setup_raytracing_lensmodels(x_image, y_image, lens_model, kwargs_lens, index
     :param grid_resolution:
     :return:
     """
+
     lens_model_fixed, lens_model_free, kwargs_lens_fixed, kwargs_lens_free, z_source, z_split, cosmo_bkg = setup_lens_model(
         lens_model, kwargs_lens, index_lens_split)
     kwargs_multiplane_lens_model_list = []

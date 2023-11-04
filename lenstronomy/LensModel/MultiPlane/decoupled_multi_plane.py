@@ -161,15 +161,12 @@ class MultiPlaneDecoupled(MultiPlane):
         deflection_x_background = self._alphax_interp_background(coordinates)
         deflection_y_background = self._alphay_interp_background(coordinates)
 
+        # combine deflections
+        alpha_background_x = alpha_x + deflection_x_background
+        alpha_background_y = alpha_y + deflection_y_background
+
         # ray propagation to the source plane with the small angle approximation
-        beta_x = (
-            deflection_x_background * self._Tds / self._Ts
-            + x / self._Ts
-            + alpha_x * self._Tds / self._Ts
-        )
-        beta_y = (
-            deflection_y_background * self._Tds / self._Ts
-            + y / self._Ts
-            + alpha_y * self._Tds / self._Ts
-        )
+        beta_x = x / self._Ts + alpha_background_x * self._Tds / self._Ts
+        beta_y = y / self._Ts + alpha_background_y * self._Tds / self._Ts
+
         return beta_x, beta_y

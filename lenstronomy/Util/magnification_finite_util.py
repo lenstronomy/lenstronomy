@@ -79,7 +79,6 @@ def setup_mag_finite(
     """
     if cosmo is None:
         cosmo = lens_model.cosmo
-
     if grid_radius_arcsec is None:
         grid_radius_arcsec = auto_raytracing_grid_size(source_fwhm_parsec)
     if grid_resolution is None:

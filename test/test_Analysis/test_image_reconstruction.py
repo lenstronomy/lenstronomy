@@ -184,6 +184,17 @@ class TestMultiBandImageReconstruction(object):
         bool = check_solver_error(image=np.array([0, 0.1]))
         assert bool == 0
 
+    def test_point_source_residuals(self):
+        multi_band_list = [[self.kwargs_data, self.kwargs_psf, self.kwargs_numerics]]
+        multi_band = MultiBandImageReconstruction(
+            multi_band_list,
+            self.kwargs_model,
+            self.kwargs_params,
+            multi_band_type="single-band",
+        )
+        residual_list = multi_band.model_band_list[0].point_source_residuals(aperture_radius=0.2)
+        assert len(residual_list) == 4
+
 
 class TestRaises(unittest.TestCase):
     def test_no_band(self):

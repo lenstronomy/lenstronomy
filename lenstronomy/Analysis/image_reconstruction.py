@@ -5,6 +5,7 @@ import lenstronomy.Util.class_creator as class_creator
 from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModel
 
 from lenstronomy.Util.package_util import exporter
+from lenstronomy.Util import mask_util
 
 export, __all__ = exporter()
 
@@ -250,6 +251,35 @@ class ModelBand(object):
             "kwargs_extinction": self._kwargs_extinction_partial,
         }
         return kwargs_return
+
+    def point_source_residuals(self, aperture_radius):
+        """Computes integrated residuals within circular apertures around point sources.
+        This routine can assess the accuracy of point source flux measurements.
+
+        :param aperture_radius: radius of the aperture considering the residuals around the point sources
+        :return: list of integrated flux residuals (data - model) within the apertures around the point sources
+        """
+        # get point source image positions
+        ra_pos, dec_pos, amp = self._bandmodel.PointSource.point_source_list(
+            kwargs_ps=self._kwargs_ps_partial, kwargs_lens=self._kwargs_lens_partial
+        )
+
+        # query model and data
+        data = self._bandmodel.Data.data
+        model = self._model
+        residuals = data - model
+        aperture_diff_list = []
+        # cut out aperture lists for each point source
+        x_grid, y_grid = self._bandmodel.Data.pixel_coordinates
+        for k in range(len(ra_pos)):
+            mask = mask_util.mask_azimuthal(
+                x_grid, y_grid, ra_pos[k], dec_pos[k], aperture_radius
+            )
+            # calculate integrated aperture residual flux
+            aperture_diff = np.sum(residuals * mask)
+            aperture_diff_list.append(aperture_diff)
+        return aperture_diff_list
+
 
 
 @export

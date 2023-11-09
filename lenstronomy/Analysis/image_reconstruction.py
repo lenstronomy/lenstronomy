@@ -278,8 +278,7 @@ class ModelBand(object):
             # calculate integrated aperture residual flux
             aperture_diff = np.sum(residuals * mask)
             aperture_diff_list.append(aperture_diff)
-        return aperture_diff_list
-
+        return np.array(aperture_diff_list)
 
 
 @export

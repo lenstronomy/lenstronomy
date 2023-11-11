@@ -192,7 +192,9 @@ class TestMultiBandImageReconstruction(object):
             self.kwargs_params,
             multi_band_type="single-band",
         )
-        residual_list = multi_band.model_band_list[0].point_source_residuals(aperture_radius=0.2)
+        residual_list = multi_band.model_band_list[0].point_source_residuals(
+            aperture_radius=0.2
+        )
         assert len(residual_list) == 4
 
 

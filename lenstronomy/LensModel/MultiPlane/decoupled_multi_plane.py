@@ -37,14 +37,8 @@ class MultiPlaneDecoupled(MultiPlane):
         by a group of deflectors at redshift Z from deflections produced by halos at
         redshift< Z.
 
-<<<<<<< HEAD
-        This class breaks the recursive nature of the multi-plane lens
-        equation, and can significantly speed up computations with a large number of
-        line-of-sight halos.
-=======
         This class breaks the recursive nature of the multi-plane lens equation, and can
         significantly speed up computations with a large number of line-of-sight halos.
->>>>>>> decoupled_multi_plane
 
         :param lens_model_list: list of lens model strings
         :param lens_redshift_list: list of floats with redshifts of the lens models

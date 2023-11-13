@@ -69,6 +69,7 @@ class Sampler(object):
         init_pos=None,
         mpi=False,
         print_key="PSO",
+        verbose=True
     ):
         """Return the best fit for the lens model on catalogue basis with particle swarm
         optimizer.
@@ -84,6 +85,7 @@ class Sampler(object):
         :param init_pos: numpy array, position of the initial best guess model
         :param mpi: bool, if True, makes instance of MPIPool to allow for MPI execution
         :param print_key: string, prints the process name in the progress bar (optional)
+        :param verbose: suppress or turn on print statements
         :return: kwargs_result (of best fit), [lnlikelihood of samples, positions of
             samples, velocity of samples])
         """
@@ -110,26 +112,27 @@ class Sampler(object):
 
         pso.set_global_best(init_pos, [0] * len(init_pos), self.chain.logL(init_pos))
 
-        if pool.is_master():
+        if pool.is_master() and verbose:
             print("Computing the %s ..." % print_key)
 
         time_start = time.time()
 
-        result, [log_likelihood_list, pos_list, vel_list] = pso.optimize(n_iterations)
+        result, [log_likelihood_list, pos_list, vel_list] = pso.optimize(n_iterations, verbose=verbose)
 
         if pool.is_master():
             kwargs_return = self.chain.param.args2kwargs(result)
-            print(
+            if verbose:
+                print(
                 pso.global_best.fitness
                 * 2
                 / (max(self.chain.effective_num_data_points(**kwargs_return), 1)),
                 "reduced X^2 of best position",
-            )
-            print(pso.global_best.fitness, "log likelihood")
-            self._print_result(result=result)
-            time_end = time.time()
-            print(time_end - time_start, "time used for ", print_key)
-            print("===================")
+                )
+                print(pso.global_best.fitness, "log likelihood")
+                self._print_result(result=result)
+                time_end = time.time()
+                print(time_end - time_start, "time used for ", print_key)
+                print("===================")
         return result, [log_likelihood_list, pos_list, vel_list]
 
     def mcmc_emcee(

@@ -550,6 +550,7 @@ class Param(object):
         kwargs_lens = self._update_joint_param(
             kwargs_lens, kwargs_lens, self._joint_lens_with_lens
         )
+
         kwargs_lens = self.update_lens_scaling(kwargs_special, kwargs_lens)
         # update point source constraint solver
         if self._solver is True:

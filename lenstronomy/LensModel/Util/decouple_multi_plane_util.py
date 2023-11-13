@@ -30,7 +30,6 @@ def setup_lens_model(lens_model, kwargs_lens, index_lens_split):
     lens_model_list_fixed = []
     lens_redshift_list_fixed = []
     kwargs_lens_fixed = []
-
     for i in range(0, len(lens_model_list)):
         if i in index_lens_split:
             lens_model_list_free.append(lens_model_list[i])
@@ -187,6 +186,8 @@ def class_setup(
     x_image=None,
     y_image=None,
     method='linear',
+    bounds_error=False,
+    fill_value=None
 ):
     """This funciton creates the keyword arguments for a LensModel instance that is the
     decoupled multi-plane approxiamtion for the specified lens model :param
@@ -217,41 +218,44 @@ def class_setup(
     :param x_image: optional keyword argument passed to multiple images argument that specifies the image coordinates
     :param y_image: optional keyword argument passed to multiple images argument that specifies the image coordinates
     :param method: the interpolation method used by RegularGridInterpolator if coordinate_type=='GRID'
+    :param bounds_error: passed to RegularGridInterpolater, see documentation there
+    :param fill_value: passed to RegularGridInterpolator, see documentation there
     :return: keyword arguments that can be passed into a LensModel class to create a decoupled-multiplane lens model
     """
     if coordinate_type == "GRID":
         from scipy.interpolate import RegularGridInterpolator
-
         npix = int(len(x) ** 0.5)
         interp_xD = RegularGridInterpolator(
-            interp_points, x.reshape(npix, npix).T, bounds_error=False, fill_value=None, method=method
+            interp_points, x.reshape(npix, npix).T, bounds_error=bounds_error,
+            fill_value=fill_value, method=method
         )
         interp_yD = RegularGridInterpolator(
-            interp_points, y.reshape(npix, npix).T, bounds_error=False, fill_value=None, method=method
+            interp_points, y.reshape(npix, npix).T, bounds_error=bounds_error,
+            fill_value=fill_value, method=method
         )
         interp_foreground_alpha_x = RegularGridInterpolator(
             interp_points,
             alpha_x_foreground.reshape(npix, npix).T,
-            bounds_error=False,
-            fill_value=None, method=method
+            bounds_error=bounds_error,
+            fill_value=fill_value, method=method
         )
         interp_foreground_alpha_y = RegularGridInterpolator(
             interp_points,
             alpha_y_foreground.reshape(npix, npix).T,
-            bounds_error=False,
-            fill_value=None, method=method
+            bounds_error=bounds_error,
+            fill_value=fill_value, method=method
         )
         interp_deltabeta_x = RegularGridInterpolator(
             interp_points,
             alpha_beta_subx.reshape(npix, npix).T,
-            bounds_error=False,
-            fill_value=None, method=method
+            bounds_error=bounds_error,
+            fill_value=fill_value, method=method
         )
         interp_deltabeta_y = RegularGridInterpolator(
             interp_points,
             alpha_beta_suby.reshape(npix, npix).T,
-            bounds_error=False,
-            fill_value=None, method=method
+            bounds_error=bounds_error,
+            fill_value=fill_value, method=method
         )
     elif coordinate_type == "POINT":
         interp_xD = lambda *args: x

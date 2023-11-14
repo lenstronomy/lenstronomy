@@ -22,7 +22,8 @@ class LensModelExtensions(object):
 
         """
         self._lensModel = lensModel
-
+        
+#
     def magnification_finite_adaptive(self, x_image, y_image, source_x, source_y, kwargs_lens,
                                       source_fwhm_parsec, z_source,
                                       cosmo=None, grid_resolution=None,
@@ -30,6 +31,8 @@ class LensModelExtensions(object):
                                       tol=0.001, step_size=0.05,
                                       use_largest_eigenvalue=True,
                                       source_light_model='SINGLE_GAUSSIAN',
+                                      source_light_object = None,
+                                      source_light_object_kwargs = None,
                                       dx=None, dy=None, size_scale=None, amp_scale=None,
                                       fixed_aperture_size=False):
         """
@@ -52,7 +55,7 @@ class LensModelExtensions(object):
 
         The default settings for the grid resolution and ray tracing window size work well for sources with fwhm between
         0.5 - 100 pc.
-
+      
         :param x_image: a list or array of x coordinates [units arcsec]
         :param y_image: a list or array of y coordinates [units arcsec]
         :param source_x: float, source position
@@ -74,6 +77,8 @@ class LensModelExtensions(object):
          will be aligned with the eigenvector corresponding to the largest eigenvalue of the hessian matrix
         :param source_light_model: the model for backgourn source light; currently implemented are 'SINGLE_GAUSSIAN' and
          'DOUBLE_GAUSSIAN'.
+        :param source_light_object: pass an instance of source light class object to the function
+        :param source_light_object_kwargs: pass the keyword arguments of an instance of source light class object to the function
         :param dx: used with source model 'DOUBLE_GAUSSIAN', the offset of the second source light profile from the first
          [arcsec]
         :param dy: used with source model 'DOUBLE_GAUSSIAN', the offset of the second source light profile from the first
@@ -98,7 +103,8 @@ class LensModelExtensions(object):
                                                                                                                 source_y,
                                                                                                                 dx, dy,
                                                                                                                 amp_scale,
-                                                                                                                size_scale)
+                                                                                                                size_scale,
+                                                                                                                source_light_object, source_light_object_kwargs)
         grid_x_0, grid_y_0 = grid_x_0.ravel(), grid_y_0.ravel()
 
         minimum_magnification = 1e-5

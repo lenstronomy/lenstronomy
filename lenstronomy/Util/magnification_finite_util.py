@@ -37,23 +37,24 @@ def auto_raytracing_grid_resolution(
     return grid_resolution
 
 
-def setup_mag_finite(grid_radius_arcsec, grid_resolution, source_model, kwargs_source, source_size_parsec):
+def setup_mag_finite(
+    grid_radius_arcsec, grid_resolution, source_model, kwargs_source, source_size_parsec
+):
+    """Sets up the ray tracing grid and source light model for
+    magnification_finite_adaptive and plot_quasar_images routines. This new updates
+    allows for more flexibility in the source.
 
+    :param grid_radius_arcsec: (optional) the size of the ray tracing region in arcsec;
+        if not specified, an appropriate value will be estimated from the source size
+    :param grid_resolution: the grid resolution in units arcsec/pixel; if not specified,
+        an appropriate value will be estimated from the source size
+    :param source_light_model: instance of LightModel :kwargs_source: keyword arguments
+        for the light profile (corresponding to the desired light model) (list of
+        dictionary) :source_size_parsec: the size of the background source [units of
+        parsec]
     """
 
-    Sets up the ray tracing grid and source light model for magnification_finite_adaptive and plot_quasar_images routines.
-    This new updates allows for more flexibility in the source.
-
-    :param grid_radius_arcsec:(optional) the size of the ray tracing region in arcsec; if not specified, an appropriate value will be estimated from the source size
-    :param grid_resolution:the
-    grid resolution in units arcsec/pixel; if not specified, an appropriate value will be estimated from the source size
-    :param source_light_model: instance of LightModel
-    :kwargs_source: keyword arguments for the light profile (corresponding to the desired light model) (list of dictionary)
-    :source_size_parsec: the size of the background source [units of parsec]
-
-    """
-
-     # even more general, already pass in an instance of light model and its keyword arguments, this allows for multiple sources and a light model of choice
+    # even more general, already pass in an instance of light model and its keyword arguments, this allows for multiple sources and a light model of choice
     # basically doing the setup outside
     # source_model = LightModel([source_light_model])
     # kwargs_source = [kwargs_light_source]
@@ -66,11 +67,17 @@ def setup_mag_finite(grid_radius_arcsec, grid_resolution, source_model, kwargs_s
     if grid_resolution is None:
         grid_resolution = auto_raytracing_grid_resolution(source_size_parsec)
 
-
     # setup the grid
     npix = int(2 * grid_radius_arcsec / grid_resolution)
     _grid_x = np.linspace(-grid_radius_arcsec, grid_radius_arcsec, npix)
     _grid_y = np.linspace(-grid_radius_arcsec, grid_radius_arcsec, npix)
     grid_x_0, grid_y_0 = np.meshgrid(_grid_x, _grid_y)
 
-    return (grid_x_0, grid_y_0, source_model, kwargs_source, grid_resolution, grid_radius_arcsec)
+    return (
+        grid_x_0,
+        grid_y_0,
+        source_model,
+        kwargs_source,
+        grid_resolution,
+        grid_radius_arcsec,
+    )

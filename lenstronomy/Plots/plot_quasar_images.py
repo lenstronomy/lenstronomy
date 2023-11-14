@@ -2,17 +2,22 @@ from lenstronomy.Util.magnification_finite_util import setup_mag_finite
 import numpy as np
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 
+
 def plot_quasar_images(
     lens_model,
     x_image,
     y_image,
     kwargs_lens,
-    source_size, source_light_model, kwargs_light_source,
+    source_size,
+    source_light_model,
+    kwargs_light_source,
     grid_resolution=None,
-    grid_radius_arcsec=None, 
+    grid_radius_arcsec=None,
 ):
     """This function plots the surface brightness in the image plane of a background
-    source. The flux is computed inside a circular aperture with radius grid_radius_arcsec. If grid_radius_arcsec is not specified a default value will be assumed.
+    source. The flux is computed inside a circular aperture with radius
+    grid_radius_arcsec. If grid_radius_arcsec is not specified a default value will be
+    assumed.
 
     :param lens_model: an instance of LensModel
     :param x_image: a list or array of x coordinates [units arcsec]
@@ -21,8 +26,8 @@ def plot_quasar_images(
     :param source_size: the size of the background source [units parsec]
     :param source_light_model: the model for background source light
     :param source_light_kwargs: the keyword arguments for the source light
-    :param grid_resolution: (optional) the grid resolution in units arcsec/pixel; if not specified,
-        an appropriate value will be estimated from the source size
+    :param grid_resolution: (optional) the grid resolution in units arcsec/pixel; if not
+        specified, an appropriate value will be estimated from the source size
     :param grid_radius_arcsec: (optional) the size of the ray tracing region in arcsec;
         if not specified, an appropriate value will be estimated from the source size
     """
@@ -42,8 +47,9 @@ def plot_quasar_images(
     ) = setup_mag_finite(
         grid_radius_arcsec,
         grid_resolution,
-        source_light_model, kwargs_light_source, source_size
-    
+        source_light_model,
+        kwargs_light_source,
+        source_size,
     )
     shape0 = grid_x_0.shape
     grid_x_0, grid_y_0 = grid_x_0.ravel(), grid_y_0.ravel()

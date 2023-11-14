@@ -5,15 +5,15 @@ from lenstronomy.Util import constants as const
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 from lenstronomy.LensModel.lens_model import LensModel
 
-__all__ = ['LightCone', 'MassSlice']
+__all__ = ["LightCone", "MassSlice"]
 
 
 class LightCone(object):
-    """
-    class to perform multi-plane ray-tracing from convergence maps at different redshifts
-    From the convergence maps the deflection angles and lensing potential are computed (from different settings)
-    and then an interpolated grid of all those quantities generate an instance of the lenstronomy LensModel multi-plane
-    instance. All features of the LensModel module are supported.
+    """Class to perform multi-plane ray-tracing from convergence maps at different
+    redshifts From the convergence maps the deflection angles and lensing potential are
+    computed (from different settings) and then an interpolated grid of all those
+    quantities generate an instance of the lenstronomy LensModel multi-plane instance.
+    All features of the LensModel module are supported.
 
     Improvements that can be made for accuracy and speed:
     1. adaptive mesh integral for the convergence map
@@ -25,14 +25,18 @@ class LightCone(object):
     def __init__(self, mass_map_list, grid_spacing_list, redshift_list):
         """
 
-        :param mass_map_list: 2d numpy array of mass map (in units Msol)
+        :param mass_map_list: 2d numpy array of mass map
+         (in units physical Solar masses enclosed in each pixel/gird point of the map)
         :param grid_spacing_list: list of grid spacing of the individual mass maps
+         in units of physical Mpc
         :param redshift_list: list of redshifts of the mass maps
 
         """
         self._mass_slice_list = []
         for i in range(len(mass_map_list)):
-            self._mass_slice_list.append(MassSlice(mass_map_list[i], grid_spacing_list[i], redshift_list[i]))
+            self._mass_slice_list.append(
+                MassSlice(mass_map_list[i], grid_spacing_list[i], redshift_list[i])
+            )
         self._mass_map_list = mass_map_list
         self._grid_spacing_list = grid_spacing_list
         self._redshift_list = redshift_list
@@ -47,10 +51,15 @@ class LightCone(object):
          See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
         :return: LensModel instance, keyword argument list of lens model
         """
-        lens_model = LensModel(lens_model_list=['INTERPOL'] * len(self._mass_map_list),
-                               lens_redshift_list=self._redshift_list, multi_plane=multi_plane,
-                               z_source_convention=z_source, cosmo=cosmo, z_source=z_source,
-                               kwargs_interp=kwargs_interp)
+        lens_model = LensModel(
+            lens_model_list=["INTERPOL"] * len(self._mass_map_list),
+            lens_redshift_list=self._redshift_list,
+            multi_plane=multi_plane,
+            z_source_convention=z_source,
+            cosmo=cosmo,
+            z_source=z_source,
+            kwargs_interp=kwargs_interp,
+        )
         kwargs_lens = []
         for mass_slice in self._mass_slice_list:
             kwargs_lens.append(mass_slice.interpol_instance(z_source, cosmo))
@@ -58,9 +67,8 @@ class LightCone(object):
 
 
 class MassSlice(object):
-    """
-    class to describe a single mass slice
-    """
+    """Class to describe a single mass slice."""
+
     def __init__(self, mass_map, grid_spacing, redshift):
         """
 
@@ -70,34 +78,59 @@ class MassSlice(object):
         """
         nx, ny = np.shape(mass_map)
         if nx != ny:
-            raise ValueError('Shape of mass map needs to be square!, set as %s %s' % (nx, ny))
+            raise ValueError(
+                "Shape of mass map needs to be square!, set as %s %s" % (nx, ny)
+            )
         self._mass_map = mass_map
         self._grid_spacing = grid_spacing
         self._redshift = redshift
-        self._f_x_mass, self._f_y_mass = convergence_integrals.deflection_from_kappa_grid(self._mass_map,
-                                                                                          self._grid_spacing)
-        self._f_mass = convergence_integrals.potential_from_kappa_grid(self._mass_map, self._grid_spacing)
-        x_grid, y_grid = util.make_grid(numPix=len(self._mass_map), deltapix=self._grid_spacing)
+        (
+            self._f_x_mass,
+            self._f_y_mass,
+        ) = convergence_integrals.deflection_from_kappa_grid(
+            self._mass_map, self._grid_spacing
+        )
+        self._f_mass = convergence_integrals.potential_from_kappa_grid(
+            self._mass_map, self._grid_spacing
+        )
+        x_grid, y_grid = util.make_grid(
+            numPix=len(self._mass_map), deltapix=self._grid_spacing
+        )
         self._x_axes_mpc, self._y_axes_mpc = util.get_axes(x_grid, y_grid)
 
     def interpol_instance(self, z_source, cosmo):
-        """
-        scales the mass map integrals (with units of mass not convergence) into a convergence map for the given
-        cosmology and source redshift and returns the keyword arguments of the interpolated reduced deflection and
-        lensing potential.
+        """Scales the mass map integrals (with units of mass not convergence) into a
+        convergence map for the given cosmology and source redshift and returns the
+        keyword arguments of the interpolated reduced deflection and lensing potential.
 
         :param z_source: redshift of the source
         :param cosmo: astropy.cosmology instance
-        :return: keyword arguments of the interpolation instance with numerically computed deflection angles and lensing
-         potential
+        :return: keyword arguments of the interpolation instance with numerically
+            computed deflection angles and lensing potential
         """
         lens_cosmo = LensCosmo(z_lens=self._redshift, z_source=z_source, cosmo=cosmo)
         mpc2arcsec = lens_cosmo.dd * const.arcsec
         x_axes = self._x_axes_mpc / mpc2arcsec  # units of arc seconds in grid spacing
         y_axes = self._y_axes_mpc / mpc2arcsec  # units of arc seconds in grid spacing
 
-        f_ = self._f_mass / lens_cosmo.sigma_crit_angle / self._grid_spacing ** 2
-        f_x = self._f_x_mass / lens_cosmo.sigma_crit_angle / self._grid_spacing ** 2 * mpc2arcsec
-        f_y = self._f_y_mass / lens_cosmo.sigma_crit_angle / self._grid_spacing ** 2 * mpc2arcsec
-        kwargs_interp = {'grid_interp_x': x_axes, 'grid_interp_y': y_axes, 'f_': f_, 'f_x': f_x, 'f_y': f_y}
+        f_ = self._f_mass / lens_cosmo.sigma_crit_angle / self._grid_spacing**2
+        f_x = (
+            self._f_x_mass
+            / lens_cosmo.sigma_crit_angle
+            / self._grid_spacing**2
+            * mpc2arcsec
+        )
+        f_y = (
+            self._f_y_mass
+            / lens_cosmo.sigma_crit_angle
+            / self._grid_spacing**2
+            * mpc2arcsec
+        )
+        kwargs_interp = {
+            "grid_interp_x": x_axes,
+            "grid_interp_y": y_axes,
+            "f_": f_,
+            "f_x": f_x,
+            "f_y": f_y,
+        }
         return kwargs_interp

@@ -1,6 +1,8 @@
-__author__ = 'sibirrer'
+__author__ = "sibirrer"
 
-from lenstronomy.LensModel.Profiles.gaussian_ellipse_potential import GaussianEllipsePotential
+from lenstronomy.LensModel.Profiles.gaussian_ellipse_potential import (
+    GaussianEllipsePotential,
+)
 from lenstronomy.LensModel.Profiles.gaussian_kappa import GaussianKappa
 
 import numpy as np
@@ -9,10 +11,9 @@ import pytest
 
 
 class TestGaussianKappaPot(object):
-    """
-    test the Gaussian with Gaussian kappa
-    """
-    def setup(self):
+    """Test the Gaussian with Gaussian kappa."""
+
+    def setup_method(self):
         self.gaussian_kappa = GaussianKappa()
         self.ellipse = GaussianEllipsePotential()
 
@@ -33,7 +34,9 @@ class TestGaussianKappaPot(object):
         sigma = 1
         amp = 1
         f_x, f_y = self.ellipse.derivatives(x, y, amp, sigma, e1, e2)
-        f_x_sphere, f_y_sphere = self.gaussian_kappa.derivatives(x, y, amp=amp, sigma=sigma)
+        f_x_sphere, f_y_sphere = self.gaussian_kappa.derivatives(
+            x, y, amp=amp, sigma=sigma
+        )
         npt.assert_almost_equal(f_x, f_x_sphere, decimal=8)
         npt.assert_almost_equal(f_y, f_y_sphere, decimal=8)
 
@@ -44,7 +47,12 @@ class TestGaussianKappaPot(object):
         sigma = 1
         amp = 1
         f_xx, f_xy, f_yx, f_yy = self.ellipse.hessian(x, y, amp, sigma, e1, e2)
-        f_xx_sphere, f_xy_sphere, f_yx_sphere, f_yy_sphere = self.gaussian_kappa.hessian(x, y, amp=amp, sigma=sigma)
+        (
+            f_xx_sphere,
+            f_xy_sphere,
+            f_yx_sphere,
+            f_yy_sphere,
+        ) = self.gaussian_kappa.hessian(x, y, amp=amp, sigma=sigma)
         npt.assert_almost_equal(f_xx, f_xx_sphere, decimal=5)
         npt.assert_almost_equal(f_yy, f_yy_sphere, decimal=5)
         npt.assert_almost_equal(f_xy, f_xy_sphere, decimal=5)
@@ -79,5 +87,5 @@ class TestGaussianKappaPot(object):
         npt.assert_almost_equal(f_, f_sphere, decimal=8)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pytest.main()

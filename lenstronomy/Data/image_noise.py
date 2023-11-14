@@ -3,27 +3,38 @@ from lenstronomy.Util import image_util
 
 
 from lenstronomy.Util.package_util import exporter
+
 export, __all__ = exporter()
 
 
 @export
 class ImageNoise(object):
-    """
-    class that deals with noise properties of imaging data
-    """
+    """Class that deals with noise properties of imaging data."""
 
-    def __init__(self, image_data, exposure_time=None, background_rms=None, noise_map=None,
-                 gradient_boost_factor=None, verbose=True):
+    def __init__(
+        self,
+        image_data,
+        exposure_time=None,
+        background_rms=None,
+        noise_map=None,
+        gradient_boost_factor=None,
+        verbose=True,
+        flux_scaling=1,
+    ):
         """
 
         :param image_data: numpy array, pixel data values
         :param exposure_time: int or array of size the data; exposure time
-        (common for all pixels or individually for each individual pixel)
+         (common for all pixels or individually for each individual pixel)
         :param background_rms: root-mean-square value of Gaussian background noise
         :param noise_map: int or array of size the data; joint noise sqrt(variance) of each individual pixel.
-        Overwrites meaning of background_rms and exposure_time.
+         Overwrites meaning of background_rms and exposure_time.
         :param gradient_boost_factor: None or float, variance terms added in quadrature scaling with
          gradient^2 * gradient_boost_factor
+        :param flux_scaling: scales the model amplitudes to match the imaging data units. This can be used, for example,
+         when modeling multiple exposures that have different magnitude zero points (or flux normalizations) but demand
+         the same model normalization
+        :type flux_scaling: float or int (default=1)
         """
         if exposure_time is not None:
             # make sure no negative exposure values are present no dividing by zero
@@ -35,15 +46,17 @@ class ImageNoise(object):
         self._exp_map = exposure_time
         self._background_rms = background_rms
         self._noise_map = noise_map
+        self.flux_scaling = flux_scaling
         if noise_map is not None:
             assert np.shape(noise_map) == np.shape(image_data)
         else:
             if background_rms is not None and exposure_time is not None:
-                if np.any(background_rms * exposure_time) < 1 and \
-                        verbose is True:
-                    print("WARNING! sigma_b*f %s < 1 count may introduce unstable error estimates with a Gaussian"
-                          " error function for a Poisson distribution with mean < 1." % (
-                           background_rms * np.max(exposure_time)))
+                if np.any(background_rms * exposure_time) < 1 and verbose is True:
+                    print(
+                        "WARNING! sigma_b*f %s < 1 count may introduce unstable error estimates with a Gaussian"
+                        " error function for a Poisson distribution with mean < 1."
+                        % (background_rms * np.max(exposure_time))
+                    )
         self._data = image_data
         self._gradient_boost_factor = gradient_boost_factor
 
@@ -55,7 +68,9 @@ class ImageNoise(object):
         """
         if self._background_rms is None:
             if self._noise_map is None:
-                raise ValueError("rms background value as 'background_rms' not specified!")
+                raise ValueError(
+                    "rms background value as 'background_rms' not specified!"
+                )
             self._background_rms = np.median(self._noise_map)
         return self._background_rms
 
@@ -69,7 +84,9 @@ class ImageNoise(object):
         """
         if self._exp_map is None:
             if self._noise_map is None:
-                raise ValueError("Exposure map has not been specified in Noise() class!")
+                raise ValueError(
+                    "Exposure map has not been specified in Noise() class!"
+                )
         return self._exp_map
 
     @property
@@ -81,12 +98,16 @@ class ImageNoise(object):
 
         :return: covariance matrix of all pixel values in 2d numpy array (only diagonal component).
         """
-        if not hasattr(self, '_C_D'):
+        if not hasattr(self, "_C_D"):
             if self._noise_map is not None:
-                self._C_D = self._noise_map ** 2
+                self._C_D = self._noise_map**2
             else:
-                self._C_D = covariance_matrix(self._data, self.background_rms, self.exposure_map,
-                                              self._gradient_boost_factor)
+                self._C_D = covariance_matrix(
+                    self._data,
+                    self.background_rms,
+                    self.exposure_map,
+                    self._gradient_boost_factor,
+                )
         return self._C_D
 
     def C_D_model(self, model):
@@ -96,15 +117,17 @@ class ImageNoise(object):
         :return: estimate of the noise per pixel based on the model flux
         """
         if self._noise_map is not None:
-            return self._noise_map ** 2
+            return self._noise_map**2
         else:
-            return covariance_matrix(model, self._background_rms, self._exp_map, self._gradient_boost_factor)
+            return covariance_matrix(
+                model, self._background_rms, self._exp_map, self._gradient_boost_factor
+            )
 
 
 @export
 def covariance_matrix(data, background_rms, exposure_map, gradient_boost_factor=None):
-    """
-    returns a diagonal matrix for the covariance estimation which describes the error
+    """Returns a diagonal matrix for the covariance estimation which describes the
+    error.
 
     Notes:
 
@@ -128,5 +151,5 @@ def covariance_matrix(data, background_rms, exposure_map, gradient_boost_factor=
         gradient_map = 0
     d_pos = np.zeros_like(data)
     d_pos[data >= 0] = data[data >= 0]
-    sigma = d_pos / exposure_map + background_rms ** 2 + gradient_map ** 2
+    sigma = d_pos / exposure_map + background_rms**2 + gradient_map**2
     return sigma

@@ -1,25 +1,36 @@
-__author__ = 'sibirrer'
+__author__ = "sibirrer"
 
 
 import numpy as np
 import scipy.special as special
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
-__all__ = ['SPP']
+__all__ = ["SPP"]
 
 
 class SPP(LensProfileBase):
-    """
-    class for circular power-law mass distribution
-    """
-    param_names = ['theta_E', 'gamma', 'center_x', 'center_y']
-    lower_limit_default = {'theta_E': 0, 'gamma': 1.5, 'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'theta_E': 100, 'gamma': 2.5, 'center_x': 100, 'center_y': 100}
+    """Class for circular power-law mass distribution."""
+
+    param_names = ["theta_E", "gamma", "center_x", "center_y"]
+    lower_limit_default = {
+        "theta_E": 0,
+        "gamma": 1.5,
+        "center_x": -100,
+        "center_y": -100,
+    }
+    upper_limit_default = {
+        "theta_E": 100,
+        "gamma": 2.5,
+        "center_x": 100,
+        "center_y": 100,
+    }
 
     def function(self, x, y, theta_E, gamma, center_x=0, center_y=0):
         """
         :param x: set of x-coordinates
         :type x: array of size (n)
+        :param y: set of y-coordinates
+        :type y: array of size (n)
         :param theta_E: Einstein radius of lens
         :type theta_E: float.
         :param gamma: power law slope of mass profile
@@ -31,50 +42,61 @@ class SPP(LensProfileBase):
 
         x_ = x - center_x
         y_ = y - center_y
-        E = theta_E / ((3. - gamma) / 2.) ** (1. / (1. - gamma))
+        E = theta_E / ((3.0 - gamma) / 2.0) ** (1.0 / (1.0 - gamma))
         # E = phi_E_spp
-        eta= -gamma + 3
+        eta = -gamma + 3
 
-        p2 = x_**2+y_**2
-        s2 = 0. # softening
-        return 2 * E**2/eta**2 * ((p2 + s2)/E**2)**(eta/2)
+        p2 = x_**2 + y_**2
+        s2 = 0.0  # softening
+        return 2 * E**2 / eta**2 * ((p2 + s2) / E**2) ** (eta / 2)
 
-    def derivatives(self, x, y, theta_E, gamma, center_x=0., center_y=0.):
-
+    def derivatives(self, x, y, theta_E, gamma, center_x=0.0, center_y=0.0):
         gamma = self._gamma_limit(gamma)
 
         xt1 = x - center_x
         xt2 = y - center_y
 
-        r2 = xt1*xt1+xt2*xt2
+        r2 = xt1 * xt1 + xt2 * xt2
         a = np.maximum(r2, 0.000001)
         r = np.sqrt(a)
-        alpha = theta_E * (r2/theta_E**2) ** (1 - gamma/2.)
-        fac = alpha/r
-        f_x = fac*xt1
-        f_y = fac*xt2
+        alpha = theta_E * (r2 / theta_E**2) ** (1 - gamma / 2.0)
+        fac = alpha / r
+        f_x = fac * xt1
+        f_y = fac * xt2
         return f_x, f_y
 
-    def hessian(self, x, y, theta_E, gamma, center_x=0., center_y=0.):
+    def hessian(self, x, y, theta_E, gamma, center_x=0.0, center_y=0.0):
         gamma = self._gamma_limit(gamma)
         xt1 = x - center_x
         xt2 = y - center_y
-        E = theta_E / ((3. - gamma) / 2.) ** (1. / (1. - gamma))
+        E = theta_E / ((3.0 - gamma) / 2.0) ** (1.0 / (1.0 - gamma))
         # E = phi_E_spp
-        eta = -gamma + 3.
+        eta = -gamma + 3.0
 
-        P2 = xt1**2+xt2**2
+        P2 = xt1**2 + xt2**2
         if isinstance(P2, int) or isinstance(P2, float):
-            a = max(0.000001,P2)
+            a = max(0.000001, P2)
         else:
-            a=np.empty_like(P2)
-            p2 = P2[P2>0]  #in the SIS regime
-            a[P2==0] = 0.000001
-            a[P2>0] = p2
+            a = np.empty_like(P2)
+            p2 = P2[P2 > 0]  # in the SIS regime
+            a[P2 == 0] = 0.000001
+            a[P2 > 0] = p2
 
-        kappa = 1./eta*(a/E**2)**(eta/2-1)*((eta-2)*(xt1**2+xt2**2)/a+(1+1))
-        gamma1 = 1./eta*(a/E**2)**(eta/2-1)*((eta/2-1)*(2*xt1**2-2*xt2**2)/a)
-        gamma2 = 4*xt1*xt2*(1./2-1/eta)*(a/E**2)**(eta/2-2)/E**2
+        kappa = (
+            1.0
+            / eta
+            * (a / E**2) ** (eta / 2 - 1)
+            * ((eta - 2) * (xt1**2 + xt2**2) / a + (1 + 1))
+        )
+        gamma1 = (
+            1.0
+            / eta
+            * (a / E**2) ** (eta / 2 - 1)
+            * ((eta / 2 - 1) * (2 * xt1**2 - 2 * xt2**2) / a)
+        )
+        gamma2 = (
+            4 * xt1 * xt2 * (1.0 / 2 - 1 / eta) * (a / E**2) ** (eta / 2 - 2) / E**2
+        )
 
         f_xx = kappa + gamma1
         f_yy = kappa - gamma1
@@ -83,41 +105,55 @@ class SPP(LensProfileBase):
 
     @staticmethod
     def rho2theta(rho0, gamma):
-        """
-        converts 3d density into 2d projected density parameter
+        """Converts 3d density into 2d projected density parameter.
+
         :param rho0:
         :param gamma:
         :return:
         """
-        fac = np.sqrt(np.pi) * special.gamma(1. / 2 * (-1 + gamma)) / special.gamma(gamma / 2.) * 2 / (3 - gamma) * rho0
+        fac = (
+            np.sqrt(np.pi)
+            * special.gamma(1.0 / 2 * (-1 + gamma))
+            / special.gamma(gamma / 2.0)
+            * 2
+            / (3 - gamma)
+            * rho0
+        )
 
-        #fac = theta_E**(gamma - 1)
-        theta_E = fac**(1. / (gamma - 1))
+        # fac = theta_E**(gamma - 1)
+        theta_E = fac ** (1.0 / (gamma - 1))
         return theta_E
 
     @staticmethod
     def theta2rho(theta_E, gamma):
-        """
-        converts projected density parameter (in units of deflection) into 3d density parameter
+        """Converts projected density parameter (in units of deflection) into 3d density
+        parameter.
+
         :param theta_E:
         :param gamma:
         :return:
         """
-        fac1 = np.sqrt(np.pi) * special.gamma(1. / 2 * (-1 + gamma)) / special.gamma(gamma / 2.) * 2 / (3 - gamma)
-        fac2 = theta_E**(gamma - 1)
+        fac1 = (
+            np.sqrt(np.pi)
+            * special.gamma(1.0 / 2 * (-1 + gamma))
+            / special.gamma(gamma / 2.0)
+            * 2
+            / (3 - gamma)
+        )
+        fac2 = theta_E ** (gamma - 1)
         rho0 = fac2 / fac1
         return rho0
 
     @staticmethod
     def mass_3d(r, rho0, gamma):
-        """
-        mass enclosed a 3d sphere or radius r
+        """Mass enclosed a 3d sphere or radius r.
+
         :param r:
-        :param a:
-        :param s:
+        :param rho0:
+        :param gamma:
         :return:
         """
-        mass_3d = 4 * np.pi * rho0 /(-gamma + 3) * r ** (-gamma + 3)
+        mass_3d = 4 * np.pi * rho0 / (-gamma + 3) * r ** (-gamma + 3)
         return mass_3d
 
     def mass_3d_lens(self, r, theta_E, gamma):
@@ -132,16 +168,23 @@ class SPP(LensProfileBase):
         return self.mass_3d(r, rho0, gamma)
 
     def mass_2d(self, r, rho0, gamma):
-        """
-        mass enclosed projected 2d sphere of radius r
+        """Mass enclosed projected 2d sphere of radius r.
+
         :param r:
         :param rho0:
-        :param a:
-        :param s:
+        :param gamma:
         :return:
         """
-        alpha = np.sqrt(np.pi) * special.gamma(1. / 2 * (-1 + gamma)) / special.gamma(gamma / 2.) * r ** (2 - gamma)/(3 - gamma) *np.pi * 2 * rho0
-        mass_2d = alpha*r
+        alpha = (
+            np.sqrt(np.pi)
+            * special.gamma(1.0 / 2 * (-1 + gamma))
+            / special.gamma(gamma / 2.0)
+            * r ** (2 - gamma)
+            / (3 - gamma)
+            * 2
+            * rho0
+        )
+        mass_2d = alpha * r * np.pi
         return mass_2d
 
     def mass_2d_lens(self, r, theta_E, gamma):
@@ -156,13 +199,12 @@ class SPP(LensProfileBase):
         return self.mass_2d(r, rho0, gamma)
 
     def grav_pot(self, x, y, rho0, gamma, center_x=0, center_y=0):
-        """
-        gravitational potential (modulo 4 pi G and rho0 in appropriate units)
+        """Gravitational potential (modulo 4 pi G and rho0 in appropriate units)
+
         :param x:
         :param y:
         :param rho0:
-        :param a:
-        :param s:
+        :param gamma:
         :param center_x:
         :param center_y:
         :return:
@@ -171,41 +213,38 @@ class SPP(LensProfileBase):
         y_ = y - center_y
         r = np.sqrt(x_**2 + y_**2)
         mass_3d = self.mass_3d(r, rho0, gamma)
-        pot = mass_3d/r
+        pot = mass_3d / r
         return pot
 
     @staticmethod
     def density(r, rho0, gamma):
-        """
-        computes the density
-        :param x:
-        :param y:
+        """Computes the density.
+
+        :param r:
         :param rho0:
-        :param a:
-        :param s:
+        :param gamma:
         :return:
         """
         rho = rho0 / r**gamma
         return rho
 
     def density_lens(self, r, theta_E, gamma):
-        """
-        computes the density at 3d radius r given lens model parameterization.
-        The integral in projected in units of angles (i.e. arc seconds) results in the convergence quantity.
+        """Computes the density at 3d radius r given lens model parameterization.
 
+        The integral in projected in units of angles (i.e. arc seconds) results in the
+        convergence quantity.
         """
         rho0 = self.theta2rho(theta_E, gamma)
         return self.density(r, rho0, gamma)
 
     @staticmethod
     def density_2d(x, y, rho0, gamma, center_x=0, center_y=0):
-        """
-        projected density
+        """Projected density.
+
         :param x:
         :param y:
         :param rho0:
-        :param a:
-        :param s:
+        :param gamma:
         :param center_x:
         :param center_y:
         :return:
@@ -213,13 +252,18 @@ class SPP(LensProfileBase):
         x_ = x - center_x
         y_ = y - center_y
         r = np.sqrt(x_**2 + y_**2)
-        sigma = np.sqrt(np.pi) * special.gamma(1./2*(-1+gamma))/special.gamma(gamma/2.) * r**(1-gamma) * rho0
+        sigma = (
+            np.sqrt(np.pi)
+            * special.gamma(1.0 / 2 * (-1 + gamma))
+            / special.gamma(gamma / 2.0)
+            * r ** (1 - gamma)
+            * rho0
+        )
         return sigma
 
     @staticmethod
     def _gamma_limit(gamma):
-        """
-        limits the power-law slope to certain bounds
+        """Limits the power-law slope to certain bounds.
 
         :param gamma: power-law slope
         :return: bounded power-law slopte

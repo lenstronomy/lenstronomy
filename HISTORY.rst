@@ -218,7 +218,7 @@ History
 * short-hand class imports
 
 
-1.8.0 (2020-03-21)
+1.8.0 (2021-03-21)
 ++++++++++++++++++
 * EPL numba version
 * numba configuration variables can be set globally with configuration file
@@ -231,13 +231,13 @@ History
 * multi-patch illustration class and plotting routines
 * updated PSF iteration procedure with more settings
 
-1.8.1 (2020-04-19)
+1.8.1 (2021-04-19)
 ++++++++++++++++++
 * illustration plots for curved arcs updated
 * documentation of elliptical lens models updated
 
 
-1.8.2 (2020-06-08)
+1.8.2 (2021-06-08)
 ++++++++++++++++++
 * JOSS paper added
 * improved testing documentation and tox compatibility
@@ -245,7 +245,7 @@ History
 * ULDM lens model implemented
 
 
-1.9.0 (2020-07-15)
+1.9.0 (2021-07-15)
 ++++++++++++++++++
 * re-defined half light radius in Sersic profile
 * re-named parameter in 'CONVERGENCE' profile
@@ -253,13 +253,13 @@ History
 * configuration import design changed
 
 
-1.9.1 (2020-08-27)
+1.9.1 (2021-08-27)
 ++++++++++++++++++
 * re-defined amplitude normalization in NIE and CHAMELEON light profiles
 * bug fix in sky brightness errors (SimulationAPI)
 
 
-1.9.2 (2020-12-12)
+1.9.2 (2021-12-12)
 ++++++++++++++++++
 * support for astropy v5
 * new PSF iteration procedure implemented
@@ -268,7 +268,7 @@ History
 * analytic point source solver for SIE+shear
 
 
-1.9.3 (2020-12-22)
+1.9.3 (2021-12-22)
 ++++++++++++++++++
 * changed syntax to be compatible with python3 version <3.9
 
@@ -293,3 +293,69 @@ History
 +++++++++++++++++++
 * class_creator update
 * conda-forge linked and installation updated
+
+1.10.4 (2022-07-25)
++++++++++++++++++++
+* Zeus sampler implemented
+* Nautilus sampler implemented
+* Roman telescope configuration added
+* double power-law mass profile
+* generalized NFW profile
+* enabled to turn off linear solver in fitting
+
+1.11.0 (2022-09-26)
++++++++++++++++++++
+* transitioning to project repository
+* logo update
+* line of sight lensing module
+* documentation improvements
+* lens equation solver numerics improved
+
+1.11.1 (2023-03-07)
++++++++++++++++++++
+* psf_error_map definition changed
+* added JWST configurations
+* minor change in Sersic light profile
+* simplified LensCosmo class
+* NFW c-rho0 inversion extended in range
+* added stretch_plot and shear_plot to lens_plot
+* minor bug fix for critical_curve_caustic
+* enable the change of kwargs_sigma initial guess parameters in FittingSequence
+* improve zeus and nautilus sampler implementations
+* added EPL_boxydisky lens profile
+* added primary beam to image simulation (for interferrometic data)
+
+1.11.2 (2023-05-30)
++++++++++++++++++++
+* COOLEST standard utilities
+* minor bug fixed in LSST data configuration
+* point source positions with multi-frame enabled
+* check additional images without imaging data enabled
+* Galkin Shells class
+* elliptical shapelets
+* Hernquist functionalities to turn mass into profile parameters
+* ellipticity measurement update
+* stellar micro-lensing routines
+* PSF fitting accounts for corners
+
+1.11.3 (2023-09-04)
++++++++++++++++++++
+* reformatting with black
+* CosmoInterp class with generic interpolation input possible
+* elliptical NFW m-c profile
+* updated nautilus and nested sampler interfaces
+* COOLEST interface
+* cored truncated NFW profile
+* SkiNN interface
+* faster and more reliable Einstein radius computation
+* Cobaya interface
+
+1.11.4 (2023-09-27)
++++++++++++++++++++
+* Cobaya not required to run FittingSequence
+* Galkin with luminosity-weighted velocity dispersion calculation
+
+1.11.5 (2023-09-28)
++++++++++++++++++++
+* bug fix in findOverlap function
+* bug fix in luminosity-0weighted celocity dispersion calculation

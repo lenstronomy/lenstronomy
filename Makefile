@@ -9,6 +9,8 @@ help:
 	@echo "coverage - check code coverage quickly with the default Python"
 	@echo "docs - generate Sphinx HTML documentation, including API docs"
 	@echo "sdist - package"
+	@echo "black - autoformat code"
+	@echo "docformatter - autoformat docstrings"
 
 clean: clean-build clean-pyc
 
@@ -16,6 +18,7 @@ clean-build:
 	rm -fr build/
 	rm -fr dist/
 	rm -fr *.egg-info
+	rm -fr docs/_build
 
 clean-pyc:
 	find . -name '*.pyc' -exec rm -f {} +
@@ -25,6 +28,8 @@ clean-pyc:
 
 lint:
 	flake8 lenstronomy test
+	black .
+	docformatter -r ./* --black --in-place
 
 test:
 	py.test
@@ -57,4 +62,4 @@ pypi-upload:
 	twine upload dist/*
 
 conda-upload:
-    grayskull pypi lenstronomy
+	grayskull pypi lenstronomy

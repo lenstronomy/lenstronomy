@@ -45,6 +45,14 @@ lenstronomy.Sampling.special\_param module
     :undoc-members:
     :show-inheritance:
 
+lenstronomy.Sampling.param\_group module
+------------------------------------------
+
+.. automodule:: lenstronomy.Sampling.param_group
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 
 Module contents
 ---------------

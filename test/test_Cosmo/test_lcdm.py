@@ -1,13 +1,13 @@
-__author__ = 'sibirrer'
+__author__ = "sibirrer"
 
 import numpy.testing as npt
 import pytest
 
-from lenstronomy.Cosmo.lcdm import  LCDM
+from lenstronomy.Cosmo.lcdm import LCDM
 
 
 class TestFlatLCDM(object):
-    def setup(self):
+    def setup_method(self):
         self.cosmo = LCDM(z_lens=0.5, z_source=1.5, flat=True)
         self.cosmo_k = LCDM(z_lens=0.5, z_source=1.5, flat=False)
 
@@ -37,5 +37,5 @@ class TestFlatLCDM(object):
         npt.assert_almost_equal(D_dt, D_dt_k, decimal=8)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pytest.main()

@@ -29,18 +29,18 @@ __author__ = "Adrian Price-Whelan <adrianmpw@gmail.com>"
 # Standard library
 import sys
 import logging
+
 log = logging.getLogger(__name__)
 _VERBOSE = 5
 
 # from schwimmbad.multiprocessing import MultiPool
 # from schwimmbad.jl import JoblibPool
 
-__all__ = ['choose_pool']
+__all__ = ["choose_pool"]
 
 
 def choose_pool(mpi=False, processes=1, **kwargs):
-    """
-    Extends the capabilities of the schwimmbad.choose_pool method.
+    """Extends the capabilities of the schwimmbad.choose_pool method.
 
     It handles the `use_dill` parameters in kwargs, that would otherwise raise an error when processes > 1.
     Any thread in the returned multiprocessing pool (e.g. processes > 1) also default
@@ -50,18 +50,16 @@ def choose_pool(mpi=False, processes=1, **kwargs):
 
     Choose between the different pools given options from, e.g., argparse.
 
-    Parameters
-    ----------
-    mpi : bool, optional
-        Use the MPI processing pool, :class:`~schwimmbad.mpi.MPIPool`. By
+
+    :param mpi: Use the MPI processing pool, :class:`~schwimmbad.mpi.MPIPool`. By
         default, ``False``, will use the :class:`~schwimmbad.serial.SerialPool`.
-    processes : int, optional
-        Use the multiprocessing pool,
+    :type mpi: bool, optional
+    :param processes: Use the multiprocessing pool,
         :class:`~schwimmbad.multiprocessing.MultiPool`, with this number of
         processes. By default, ``processes=1``, will use them:class:`~schwimmbad.serial.SerialPool`.
-
-    Any additional kwargs are passed in to the pool class initializer selected by the arguments.
-
+    :type processes: int, optional
+    :param kwargs: Any additional kwargs are passed in to the pool class initializer selected by the arguments.
+    :type kwargs: keyword arguments
     """
     # Imports moved here to avoid crashing at import time if dependencies
     # are missing
@@ -75,10 +73,12 @@ def choose_pool(mpi=False, processes=1, **kwargs):
         try:
             pool = MPIPool(**kwargs)
         except:
-            raise ImportError('MPIPool of schwimmbad can not be generated. lenstronomy uses a specific branch of '
-                              'schwimmbad specified in the requirements.txt. Make sure you are using the correct '
-                              'version of schwimmbad. In particular the "use_dill" argument is not supported in the '
-                              'pypi version 0.3.0.')
+            raise ImportError(
+                "MPIPool of schwimmbad can not be generated. lenstronomy uses a specific branch of "
+                "schwimmbad specified in the requirements.txt. Make sure you are using the correct "
+                'version of schwimmbad. In particular the "use_dill" argument is not supported in the '
+                "pypi version 0.3.0."
+            )
         if not pool.is_master():
             pool.wait()
             sys.exit(0)
@@ -87,9 +87,9 @@ def choose_pool(mpi=False, processes=1, **kwargs):
         return pool
 
     elif processes != 1 and MultiPool.enabled():
-        if 'use_dill' in kwargs:
+        if "use_dill" in kwargs:
             # schwimmbad MultiPool does not support dill so we remove this option from the kwargs
-            _ = kwargs.pop('use_dill')
+            _ = kwargs.pop("use_dill")
         log.info("Running with MultiPool on {0} cores".format(processes))
         return MultiPool(processes=processes, **kwargs)
 

@@ -2,7 +2,6 @@ from lenstronomy.Util.magnification_finite_util import setup_mag_finite
 import numpy as np
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 
-
 def plot_quasar_images(
     lens_model,
     x_image,

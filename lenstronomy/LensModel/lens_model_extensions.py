@@ -26,7 +26,8 @@ class LensModelExtensions(object):
         x_image,
         y_image,
         kwargs_lens,
-        source_model, kwargs_source, 
+        source_model,
+        kwargs_source,
         source_size_parsec,
         grid_resolution=None,
         grid_radius_arcsec=None,
@@ -37,11 +38,11 @@ class LensModelExtensions(object):
         fixed_aperture_size=False,
     ):
         """This method computes image magnifications with a finite-size background
-        source. It can be
-        much faster that magnification_finite for lens models with many deflectors and a
-        compact source. This is because most pixels in a rectangular window around a
-        lensed image of a compact source do not map onto the source, and therefore don't
-        contribute to the integrated flux in the image plane.
+        source. It can be much faster that magnification_finite for lens models with
+        many deflectors and a compact source. This is because most pixels in a
+        rectangular window around a lensed image of a compact source do not map onto the
+        source, and therefore don't contribute to the integrated flux in the image
+        plane.
 
         Rather than ray tracing through a rectangular grid, this routine accelerates the computation of image
         magnifications with finite-size sources by ray tracing through an elliptical region oriented such that
@@ -79,8 +80,6 @@ class LensModelExtensions(object):
         :return: an array of image magnifications
         """
 
-
-
         (
             grid_x_0,
             grid_y_0,
@@ -88,7 +87,13 @@ class LensModelExtensions(object):
             kwargs_source,
             grid_resolution,
             grid_radius_arcsec,
-        )= setup_mag_finite(grid_radius_arcsec, grid_resolution, source_model, kwargs_source, source_size_parsec)
+        ) = setup_mag_finite(
+            grid_radius_arcsec,
+            grid_resolution,
+            source_model,
+            kwargs_source,
+            source_size_parsec,
+        )
 
         grid_x_0, grid_y_0 = grid_x_0.ravel(), grid_y_0.ravel()
 

@@ -1,5 +1,3 @@
-"'""Notebook to edit the source"""
-
 from lenstronomy.Util.util import fwhm2sigma
 from lenstronomy.LightModel.light_model import LightModel
 import numpy as np
@@ -54,16 +52,20 @@ def setup_mag_finite(grid_radius_arcsec, grid_resolution, source_model, kwargs_s
     :source_size_parsec: the size of the background source [units of parsec]
 
     """
-    # how to setup the grid if it has multiple sources.....
+
+     # even more general, already pass in an instance of light model and its keyword arguments, this allows for multiple sources and a light model of choice
+    # basically doing the setup outside
+    # source_model = LightModel([source_light_model])
+    # kwargs_source = [kwargs_light_source]
+
+    # But how to setup the grid if it has multiple sources...
+    # Leave for now
+
     if grid_radius_arcsec is None:
         grid_radius_arcsec = auto_raytracing_grid_size(source_size_parsec)
     if grid_resolution is None:
         grid_resolution = auto_raytracing_grid_resolution(source_size_parsec)
 
-    # even more general, already pass in an instance of light model and its keyword arguments, this allows for multiple sources and a light model of choice
-    # basically doing the setup outside
-    # source_model = LightModel([source_light_model])
-    # kwargs_source = [kwargs_light_source]
 
     # setup the grid
     npix = int(2 * grid_radius_arcsec / grid_resolution)

@@ -7,10 +7,9 @@ def plot_quasar_images(
     x_image,
     y_image,
     kwargs_lens,
-    source_size,
+    source_size, source_light_model, kwargs_light_source,
     grid_resolution=None,
-    grid_radius_arcsec=None,
-    source_light_model, kwargs_light_source
+    grid_radius_arcsec=None, 
 ):
     """This function plots the surface brightness in the image plane of a background
     source. The flux is computed inside a circular aperture with radius grid_radius_arcsec. If grid_radius_arcsec is not specified a default value will be assumed.

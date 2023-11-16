@@ -98,13 +98,15 @@ class MultiPlaneDecoupled(MultiPlane):
         self._Tds = cosmo_bkg.T_xy(self._z_split, z_source)
         self._main_deflector = SinglePlane(lens_model_list)
         # useful to have these saved to access later outside the class
-        self.kwargs_multiplane_model = {'x0_interp': self._x0_interp,
-                                        'y0_interp': self._y0_interp,
-                                        'alpha_x_interp_foreground': self._alphax_interp_foreground,
-                                        'alpha_y_interp_foreground': self._alphay_interp_foreground,
-                                        'alpha_x_interp_background': self._alphax_interp_background,
-                                        'alpha_y_interp_background': self._alphay_interp_background,
-                                        'z_split': self._z_split}
+        self.kwargs_multiplane_model = {
+            "x0_interp": self._x0_interp,
+            "y0_interp": self._y0_interp,
+            "alpha_x_interp_foreground": self._alphax_interp_foreground,
+            "alpha_y_interp_foreground": self._alphay_interp_foreground,
+            "alpha_x_interp_background": self._alphax_interp_background,
+            "alpha_y_interp_background": self._alphay_interp_background,
+            "z_split": self._z_split,
+        }
 
     def geo_shapiro_delay(*args, **kwargs):
         raise Exception(
@@ -131,7 +133,7 @@ class MultiPlaneDecoupled(MultiPlane):
         x = self._x0_interp(coordinates)
         y = self._y0_interp(coordinates)
 
-        theta_x_main = x / self._Td # the angular coordinates of the ray positions
+        theta_x_main = x / self._Td  # the angular coordinates of the ray positions
         theta_y_main = y / self._Td  # the angular coordinates of the ray positions
 
         # now we compute (via the interpolation functions) the deflection angles from all deflectors at z <= z_main, \

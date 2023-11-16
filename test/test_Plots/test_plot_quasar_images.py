@@ -6,7 +6,6 @@ import pytest
 
 
 class TestPlotQuasarImages(object):
-
     def test_plot_quasar_images(self):
         lens_model_list = ["EPL", "SHEAR"]
         z_source = 1.5
@@ -51,6 +50,7 @@ class TestPlotQuasarImages(object):
             z_source,
         )
         plt.close()
+
 
 if __name__ == "__main__":
     pytest.main()

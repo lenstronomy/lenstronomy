@@ -16,7 +16,7 @@ class Solver4Point(object):
     def __init__(self, lensModel, solver_type='PROFILE'):
         self._solver_type = solver_type  # supported:
         if not lensModel.lens_model_list[0] in ['SPEP', 'SPEMD', 'PEMD', 'SIE', 'NIE', 'NFW_ELLIPSE',
-                                                'SHAPELETS_CART', 'CNFW_ELLIPSE', 'EPL']:
+                                                'SHAPELETS_CART', 'CNFW_ELLIPSE', 'EPL', 'EPL_MULTIPOLE_M3M4']:
             raise ValueError("first lens model must be supported by the solver: 'SPEP', 'SPEMD', 'PEMD',"
                              " 'SIE', 'NIE', 'EPL', 'NFW_ELLIPSE', 'SHAPELETS_CART', 'CNFW_ELLIPSE'. "
                              "Your choice was %s" % lensModel.lens_model_list[0])

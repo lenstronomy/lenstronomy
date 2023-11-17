@@ -1,3 +1,5 @@
+__author__ = "dangilman"
+
 import numpy as np
 import pytest
 import numpy.testing as npt
@@ -141,5 +143,3 @@ class TestEPL_MULTIPOLE_M3M4(object):
 
 if __name__ == "__main__":
     pytest.main()
-
-__author__ = "dangilman"

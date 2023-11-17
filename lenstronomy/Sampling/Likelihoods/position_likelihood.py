@@ -55,7 +55,7 @@ class PositionLikelihood(object):
         self._image_position_sigma = image_position_uncertainty
         self._source_position_sigma = source_position_sigma
         self._check_matched_source_position = check_matched_source_position
-        self._bound_source_position_scatter = source_position_tolerance
+        self._source_position_tolerance = source_position_tolerance
         self._force_no_add_image = force_no_add_image
         self._restrict_number_images = restrict_image_number
         self._source_position_likelihood = source_position_likelihood
@@ -94,7 +94,7 @@ class PositionLikelihood(object):
                 kwargs_lens,
                 kwargs_ps,
                 self._source_position_sigma,
-                hard_bound_rms=self._bound_source_position_scatter,
+                hard_bound_rms=self._source_position_tolerance,
                 verbose=verbose,
             )
             logL += logL_source_scatter

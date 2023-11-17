@@ -89,8 +89,7 @@ class EPL_BOXYDISKY(LensProfileBase):
         return kwargs_epl, kwargs_multipole
 
     def function(self, x, y, theta_E, gamma, e1, e2, a4_a, center_x=0, center_y=0):
-        """
-
+        """Computes the gravitational potential in units of theta_E^2
         :param x: x-coordinate in image plane
         :param y: y-coordinate in image plane
         :param theta_E: Einstein radius
@@ -110,8 +109,7 @@ class EPL_BOXYDISKY(LensProfileBase):
         return f_epl + f_multipole
 
     def derivatives(self, x, y, theta_E, gamma, e1, e2, a4_a, center_x=0, center_y=0):
-        """
-
+        """Computes derivatives of the potential in units of theta_E
         :param x: x-coordinate in image plane
         :param y: y-coordinate in image plane
         :param theta_E: Einstein radius
@@ -135,8 +133,7 @@ class EPL_BOXYDISKY(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, theta_E, gamma, e1, e2, a4_a, center_x=0, center_y=0):
-        """
-
+        """Computes the components of the hessian matrix (second derivatives of the potential)
         :param x: x-coordinate in image plane
         :param y: y-coordinate in image plane
         :param theta_E: Einstein radius

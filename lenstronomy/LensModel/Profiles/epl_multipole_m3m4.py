@@ -148,17 +148,18 @@ class EPL_MULTIPOLE_M3M4(LensProfileBase):
         center_x=0,
         center_y=0,
     ):
-        """Computes the gravitational potential in units of theta_E^2 :param x: x
-        angular coordinate :param y: y angular coordinate :param theta_E: Einstein
-        radius :param gamma: log-slope of EPL mass profile :param e1: ellipticity of EPL
-        profile (along 1st axis) :param e2: ellipticity of EPL profile (along 2nd axis)
-        :param a3_a: amplitude of the m=3 multiple deviation from pure elliptical shape
-        related to the physical amplitude of the MULTIPOLE profile by a scaling theta_E
-        / sqrt(q) :param delta_phi_m3: orientation of the m=3 profile relative to the
-        position angle of the EPL profile :param a4_a: amplitude of the m=4 multipole
-        deviation from pure elliptical shape related to the physical amplitude of the
-        MULTIPOLE profile by a scaling theta_E / sqrt(q) :param delta_phi_m4:
-        orientation of the m=4 profile relative to the position angle of the EPL profile
+        """Computes the gravitational potential in units of theta_E^2 
+        
+        :param x: x angular coordinate 
+        :param y: y angular coordinate 
+        :param theta_E: Einstein radius 
+        :param gamma: log-slope of EPL mass profile 
+        :param e1: ellipticity of EPL profile (along 1st axis) 
+        :param e2: ellipticity of EPL profile (along 2nd axis)
+        :param a3_a: amplitude of the m=3 multiple deviation from pure elliptical shape related to the physical amplitude of the MULTIPOLE profile by a scaling theta_E / sqrt(q) 
+        :param delta_phi_m3: orientation of the m=3 profile relative to the position angle of the EPL profile 
+        :param a4_a: amplitude of the m=4 multipole deviation from pure elliptical shape related to the physical amplitude of the MULTIPOLE profile by a scaling theta_E / sqrt(q) 
+        :param delta_phi_m4: orientation of the m=4 profile relative to the position angle of the EPL profile
         :param center_x: center of the profile :param center_y: center of the profile
         :return: gravitational potential in units of theta_E^2."""
         kwargs_epl, kwargs_multipole3, kwargs_multipole4 = self._param_split(

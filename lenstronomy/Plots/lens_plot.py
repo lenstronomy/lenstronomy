@@ -62,7 +62,7 @@ def lens_model_plot(
     :param fast_caustic: boolean, if True, uses faster but less precise caustic
         calculation (might have troubles for the outer caustic (inner critical curve)
     :param with_convergence: boolean, if True, plots the convergence of the deflector
-    :return:
+    :return: matplotlib axis instance with plot
     """
     kwargs_data = sim_util.data_configure_simple(
         numPix,
@@ -76,9 +76,13 @@ def lens_model_plot(
     _frame_size = numPix * deltaPix
 
     ra0, dec0 = data.radec_at_xy_0
+    # shift half a pixel such that pixel is in the center
+    dec0 -= deltaPix / 2
     if coord_inverse:
+        ra0 += deltaPix / 2
         extent = [ra0, ra0 - _frame_size, dec0, dec0 + _frame_size]
     else:
+        ra0 -= deltaPix / 2
         extent = [ra0, ra0 + _frame_size, dec0, dec0 + _frame_size]
 
     if with_convergence:
@@ -100,7 +104,7 @@ def lens_model_plot(
             kwargs_lens=kwargs_lens,
             fast_caustic=fast_caustic,
             coord_inverse=coord_inverse,
-            pixel_offset=True,
+            pixel_offset=False,
             **kwargs_caustics
         )
     if point_source:
@@ -319,16 +323,16 @@ def point_source_plot(
     if name_list is None:
         name_list = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"]
     for i in range(len(x_image)):
-        x_ = (x_image[i] + 0.5) * delta_pix_x + origin[0]
-        y_ = (y_image[i] + 0.5) * delta_pix + origin[1]
+        x_ = (x_image[i]) * delta_pix_x + origin[0]
+        y_ = (y_image[i]) * delta_pix + origin[1]
         ax.plot(
             x_, y_, "dk", markersize=4 * (1 + np.log(np.abs(mag_images[i]))), alpha=0.5
         )
         ax.text(x_, y_, name_list[i], fontsize=20, color="k")
     x_source, y_source = pixel_grid.map_coord2pix(source_x, source_y)
     ax.plot(
-        (x_source + 0.5) * delta_pix_x + origin[0],
-        (y_source + 0.5) * delta_pix + origin[1],
+        x_source * delta_pix_x + origin[0],
+        y_source * delta_pix + origin[1],
         "*k",
         markersize=10,
     )
@@ -455,7 +459,7 @@ def arrival_time_surface(
         vmin = np.min(fermat_surface)
         vmax = np.max(fermat_surface)
         levels = np.linspace(start=vmin, stop=vmax, num=n_levels)
-        im = ax.contour(
+        _ = ax.contour(
             x_grid,
             y_grid,
             fermat_surface,

@@ -78,8 +78,12 @@ class ModelBandPlot(ModelBand):
         self._arrow_size = arrow_size
         self._fast_caustic = fast_caustic
 
-        self._image_extent = [-self._deltaPix/2, self._width_x - self._deltaPix/2,
-                              - self._deltaPix/2, self._width_y - self._deltaPix/2]
+        self._image_extent = [
+            -self._deltaPix / 2,
+            self._width_x - self._deltaPix / 2,
+            -self._deltaPix / 2,
+            self._width_y - self._deltaPix / 2,
+        ]
 
     def _critical_curves(self):
         if not hasattr(self, "_ra_crit_list") or not hasattr(self, "_dec_crit_list"):
@@ -671,8 +675,12 @@ class ModelBandPlot(ModelBand):
         im = ax.matshow(
             source_scale,
             origin="lower",
-            extent=[-deltaPix_source/2, d_s - deltaPix_source/2,
-                    -deltaPix_source/2, d_s - deltaPix_source/2],
+            extent=[
+                -deltaPix_source / 2,
+                d_s - deltaPix_source / 2,
+                -deltaPix_source / 2,
+                d_s - deltaPix_source / 2,
+            ],
             cmap=self._cmap,
             vmin=v_min,
             vmax=v_max,
@@ -795,8 +803,12 @@ class ModelBandPlot(ModelBand):
         im = ax.matshow(
             error_map_source,
             origin="lower",
-            extent=[-deltaPix_source / 2, d_s - deltaPix_source / 2,
-                    -deltaPix_source / 2, d_s - deltaPix_source / 2],
+            extent=[
+                -deltaPix_source / 2,
+                d_s - deltaPix_source / 2,
+                -deltaPix_source / 2,
+                d_s - deltaPix_source / 2,
+            ],
             cmap=self._cmap,
             vmin=v_min,
             vmax=v_max,

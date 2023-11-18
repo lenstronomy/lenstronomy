@@ -114,7 +114,7 @@ def coordinate_arrows(ax, d, coords, color="w", font_size=15, arrow_size=0.05):
     :param arrow_size: size of arrow
     :return: updated ax instance
     """
-    d0 = d / 6.0 # from right side of plot
+    d0 = d / 6.0  # from right side of plot
     p0 = d / 15.0
     pt = d / 10.0
     deltaPix = coords.pixel_width

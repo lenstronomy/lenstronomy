@@ -80,7 +80,6 @@ class TestPlotUtil(object):
             origin=None,
             color="g",
             flipped_x=True,
-            pixel_offset=False,
         )
         plt.close()
 
@@ -93,7 +92,6 @@ class TestPlotUtil(object):
             origin=[1, 1],
             color="g",
             flipped_x=False,
-            pixel_offset=True,
         )
         plt.close()
 
@@ -147,7 +145,6 @@ class TestPlotUtil(object):
             image_name_list=None,
             origin=None,
             flipped_x=False,
-            pixel_offset=False,
         )
         plt.close()
         ax = plot_util.image_position_plot(
@@ -159,7 +156,6 @@ class TestPlotUtil(object):
             image_name_list=["A", "B"],
             origin=[1, 1],
             flipped_x=True,
-            pixel_offset=True,
         )
         plt.close()
 

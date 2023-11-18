@@ -104,7 +104,6 @@ def lens_model_plot(
             kwargs_lens=kwargs_lens,
             fast_caustic=fast_caustic,
             coord_inverse=coord_inverse,
-            pixel_offset=False,
             **kwargs_caustics
         )
     if point_source:
@@ -180,7 +179,6 @@ def caustics_plot(
     coord_inverse=False,
     color_crit="r",
     color_caustic="g",
-    pixel_offset=False,
     *args,
     **kwargs
 ):
@@ -196,8 +194,6 @@ def caustics_plot(
      (effectively the RA definition)
     :param color_crit: string, color of critical curve
     :param color_caustic: string, color of caustic curve
-    :param pixel_offset: boolean; if True (default plotting), the coordinates are shifted a half a pixel to match with
-     the matshow() command to center the coordinates in the pixel center
     :param args: argument for plotting curve
     :param kwargs: keyword arguments for plotting curves
     :return: updated matplotlib axis instance
@@ -247,7 +243,6 @@ def caustics_plot(
         origin=origin,
         flipped_x=coord_inverse,
         points_only=points_only,
-        pixel_offset=pixel_offset,
         *args,
         **kwargs
     )
@@ -260,7 +255,6 @@ def caustics_plot(
         origin=origin,
         flipped_x=coord_inverse,
         points_only=points_only,
-        pixel_offset=pixel_offset,
         *args,
         **kwargs
     )

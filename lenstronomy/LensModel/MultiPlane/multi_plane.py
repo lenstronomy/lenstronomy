@@ -1,7 +1,6 @@
 import numpy as np
 from copy import deepcopy
 from lenstronomy.LensModel.MultiPlane.multi_plane_base import MultiPlaneBase
-
 from lenstronomy.Util.package_util import exporter
 
 export, __all__ = exporter()
@@ -50,8 +49,8 @@ class MultiPlane(object):
         :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens
          models. If None, 'z_source' is used.
         :param kwargs_synthesis: keyword arguments for the 'SYNTHESIS' lens model, if applicable
+        :param kwargs_multiplane_model: keyword arguments for the MultiPlaneDecoupled class, if specified
         """
-
         if z_source_convention is None:
             z_source_convention = z_source
         if z_interp_stop is None:
@@ -62,6 +61,7 @@ class MultiPlane(object):
                 "z_source_convention=%s"
                 % (z_interp_stop, z_source, z_source_convention)
             )
+
         self._multi_plane_base = MultiPlaneBase(
             lens_model_list=lens_model_list,
             lens_redshift_list=lens_redshift_list,

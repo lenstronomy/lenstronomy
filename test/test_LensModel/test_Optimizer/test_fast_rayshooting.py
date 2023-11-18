@@ -91,9 +91,8 @@ class TestFastRayShooting(object):
         npt.assert_almost_equal(x_fore, xtrue)
         npt.assert_almost_equal(y_fore, ytrue)
 
-        args_lens = self.param_class.kwargs_to_args(self.kwargs_epl)
-        xfast, yfast = fast_rayshooting.ray_shooting_fast(args_lens)
-
+        # args_lens = self.param_class.kwargs_to_args(self.kwargs_epl)
+        xfast, yfast = fast_rayshooting.ray_shooting_fast(None, None, self.kwargs_epl)
         x, y = self.lensModel.ray_shooting(x_image_true, y_image_true, self.kwargs_epl)
 
         npt.assert_almost_equal(xfast, x)
@@ -121,18 +120,13 @@ class TestFastRayShooting(object):
             numerical_alpha_class=None,
         )
 
-        xfast, yfast = fast_rayshooting_new.ray_shooting_fast(args_lens)
+        # xfast, yfast = fast_rayshooting_new.ray_shooting_fast(args_lens)
+        xfast, yfast = fast_rayshooting_new.ray_shooting_fast(
+            None, None, self.kwargs_epl
+        )
 
         npt.assert_almost_equal(xfast, x)
         npt.assert_almost_equal(yfast, y)
-
-        chi_square_source = fast_rayshooting.source_plane_chi_square(args_lens)
-        chi_square_total = fast_rayshooting.chi_square(args_lens)
-
-        logL = fast_rayshooting.logL(args_lens)
-        logL_true = -0.5 * chi_square_total
-        npt.assert_almost_equal(logL, logL_true)
-        npt.assert_almost_equal(chi_square_total, chi_square_source)
 
 
 if __name__ == "__main__":

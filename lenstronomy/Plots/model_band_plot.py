@@ -362,6 +362,7 @@ class ModelBandPlot(ModelBand):
         :param kwargs: any additional keyword arguments
         :return: matplotib axis
         """
+
         kwargs_lens_macro = []
         lens_model_list_macro = []
         multi_plane = self._lensModel.multi_plane

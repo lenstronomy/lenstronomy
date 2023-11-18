@@ -150,7 +150,6 @@ class UpdateManager(object):
                 self._special_lower,
                 self._special_upper,
             ) = ({}, {}, {}, {}, {})
-
         self._kwargs_temp = self.init_kwargs
 
     # TODO: check compatibility with number of point sources provided as well as other parameter labeling

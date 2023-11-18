@@ -972,11 +972,11 @@ def lens_class(
 
         return TNFWC()
     elif lens_type == "EPL_MULTIPOLE_M3M4":
-            from lenstronomy.LensModel.Profiles.epl_multipole_m3m4 import (
-                EPL_MULTIPOLE_M3M4,
-            )
+        from lenstronomy.LensModel.Profiles.epl_multipole_m3m4 import (
+            EPL_MULTIPOLE_M3M4,
+        )
 
-            return EPL_MULTIPOLE_M3M4()
+        return EPL_MULTIPOLE_M3M4()
     else:
         raise ValueError(
             "%s is not a valid lens model. Supported are: %s."

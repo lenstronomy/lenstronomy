@@ -24,13 +24,9 @@ class EPL_MULTIPOLE_M3M4(LensProfileBase):
     :param e2: eccentricity. For details, read lenstronomy.Util.param_util.phi_q2_ellipticity document.
     :param center_x: center of distortion
     :param center_y: center of distortion
-    :param a3_a: Strength of the deviation from elliptical isodensity contours caused by the multipole term of order 3. For details regarding the multipole mass profile see documentation in the class lenstronomy/LensModel/Profiles/multipole.py.
-    The multipole amplitude set by a3_a is translated into the multipole strength from the MULTIPOLE class through a rescaling by theta_E / sqrt(q). This rescaling
-    preserves the shape of the isodensity contours such that a3_a produces the same shape regardless of theta_E or q.
+    :param a3_a: Strength of the deviation from elliptical isodensity contours caused by the multipole term of order 3. For details regarding the multipole mass profile see documentation in the class lenstronomy/LensModel/Profiles/multipole.py. The multipole amplitude set by a3_a is translated into the multipole strength from the MULTIPOLE class through a rescaling by theta_E / sqrt(q). This rescaling preserves the shape of the isodensity contours such that a3_a produces the same shape regardless of theta_E or q.
     :param delta_phi_m3: angle of the m=3 multipole profile relative to the position angle of the EPL profile
-    :param a4_a: Strength of the deviation from elliptical isodensity contours caused by the multipole term of order 4. For details regarding the multipole mass profile see documentation in the class lenstronomy/LensModel/Profiles/multipole.py.
-    The multipole amplitude set by a4_a is translated into the multipole strength from the MULTIPOLE class through a rescaling by theta_E / sqrt(q).
-    This profile is disky when a4_a>0 and boxy when a4_a<0 for phi_m_a4a=0.0.
+    :param a4_a: Strength of the deviation from elliptical isodensity contours caused by the multipole term of order 4. For details regarding the multipole mass profile see documentation in the class lenstronomy/LensModel/Profiles/multipole.py. The multipole amplitude set by a4_a is translated into the multipole strength from the MULTIPOLE class through a rescaling by theta_E / sqrt(q). This profile is disky when a4_a>0 and boxy when a4_a<0 for phi_m_a4a=0.0.
     :param delta_phi_m4: angle of the m=4 multipole profile relative to the position angle of the EPL profile
     """
 

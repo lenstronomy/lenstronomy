@@ -10,8 +10,8 @@ __all__ = ["EPL_MULTIPOLE_M3M4"]
 
 
 class EPL_MULTIPOLE_M3M4(LensProfileBase):
-    """EPL (Elliptical Power Law) mass profile combined with two multipole terms of order
-    m=3 and m=4.
+    """EPL (Elliptical Power Law) mass profile combined with two multipole terms of
+    order m=3 and m=4.
 
     Reference to the implementation: https://ui.adsabs.harvard.edu/abs/2022A%26A...659A.127V/abstract
 
@@ -152,27 +152,19 @@ class EPL_MULTIPOLE_M3M4(LensProfileBase):
         center_x=0,
         center_y=0,
     ):
-        """Computes the gravitational potential in units of theta_E^2
-        :param x: x angular coordinate
-        :param y: y angular coordinate
-        :param theta_E: Einstein radius
-        :param gamma: log-slope of EPL mass profile
-        :param e1: ellipticity of EPL profile (along 1st axis)
-        :param e2: ellipticity of EPL profile (along 2nd axis)
+        """Computes the gravitational potential in units of theta_E^2 :param x: x
+        angular coordinate :param y: y angular coordinate :param theta_E: Einstein
+        radius :param gamma: log-slope of EPL mass profile :param e1: ellipticity of EPL
+        profile (along 1st axis) :param e2: ellipticity of EPL profile (along 2nd axis)
         :param a3_a: amplitude of the m=3 multiple deviation from pure elliptical shape
-            related to the physical amplitude of the MULTIPOLE profile by a scaling
-            theta_E / sqrt(q)
-        :param delta_phi_m3: orientation of the m=3 profile relative to the position
-            angle of the EPL profile
-        :param a4_a: amplitude of the m=4 multipole deviation from pure elliptical shape
-            related to the physical amplitude of the MULTIPOLE profile by a scaling
-            theta_E / sqrt(q)
-        :param delta_phi_m4: orientation of the m=4 profile relative to the position
-            angle of the EPL profile
-        :param center_x: center of the profile
-        :param center_y: center of the profile
-        :return: gravitational potential in units of theta_E^2
-        """
+        related to the physical amplitude of the MULTIPOLE profile by a scaling theta_E
+        / sqrt(q) :param delta_phi_m3: orientation of the m=3 profile relative to the
+        position angle of the EPL profile :param a4_a: amplitude of the m=4 multipole
+        deviation from pure elliptical shape related to the physical amplitude of the
+        MULTIPOLE profile by a scaling theta_E / sqrt(q) :param delta_phi_m4:
+        orientation of the m=4 profile relative to the position angle of the EPL profile
+        :param center_x: center of the profile :param center_y: center of the profile
+        :return: gravitational potential in units of theta_E^2."""
         kwargs_epl, kwargs_multipole3, kwargs_multipole4 = self._param_split(
             theta_E,
             gamma,
@@ -205,27 +197,19 @@ class EPL_MULTIPOLE_M3M4(LensProfileBase):
         center_x=0,
         center_y=0,
     ):
-        """Compute the derivatives of the potential in units of theta_E
-        :param x: x angular coordinate
-        :param y: y angular coordinate
-        :param theta_E: Einstein radius
-        :param gamma: log-slope of EPL mass profile
-        :param e1: ellipticity of EPL profile (along 1st axis)
-        :param e2: ellipticity of EPL profile (along 2nd axis)
+        """Compute the derivatives of the potential in units of theta_E :param x: x
+        angular coordinate :param y: y angular coordinate :param theta_E: Einstein
+        radius :param gamma: log-slope of EPL mass profile :param e1: ellipticity of EPL
+        profile (along 1st axis) :param e2: ellipticity of EPL profile (along 2nd axis)
         :param a3_a: amplitude of the m=3 multiple deviation from pure elliptical shape
-            related to the physical amplitude of the MULTIPOLE profile by a scaling
-            theta_E / sqrt(q)
-        :param delta_phi_m3: orientation of the m=3 profile relative to the position
-            angle of the EPL profile
-        :param a4_a: amplitude of the m=4 multipole deviation from pure elliptical shape
-            related to the physical amplitude of the MULTIPOLE profile by a scaling
-            theta_E / sqrt(q)
-        :param delta_phi_m4: orientation of the m=4 profile relative to the position
-            angle of the EPL profile
-        :param center_x: center of the profile
-        :param center_y: center of the profile
-        :return: deflection angles in units of theta_E
-        """
+        related to the physical amplitude of the MULTIPOLE profile by a scaling theta_E
+        / sqrt(q) :param delta_phi_m3: orientation of the m=3 profile relative to the
+        position angle of the EPL profile :param a4_a: amplitude of the m=4 multipole
+        deviation from pure elliptical shape related to the physical amplitude of the
+        MULTIPOLE profile by a scaling theta_E / sqrt(q) :param delta_phi_m4:
+        orientation of the m=4 profile relative to the position angle of the EPL profile
+        :param center_x: center of the profile :param center_y: center of the profile
+        :return: deflection angles in units of theta_E."""
         kwargs_epl, kwargs_multipole3, kwargs_multipole4 = self._param_split(
             theta_E,
             gamma,
@@ -265,26 +249,18 @@ class EPL_MULTIPOLE_M3M4(LensProfileBase):
         center_y=0,
     ):
         """Compute the second derivatives of the potential that enter the Hessian matrix
-        :param x: x angular coordinate 
-        :param y: y angular coordinate
-        :param theta_E: Einstein radius
-        :param gamma: log-slope of EPL mass profile
-        :param e1: ellipticity of EPL profile (along 1st axis)
-        :param e2: ellipticity of EPL profile (along 2nd axis)
-        :param a3_a: amplitude of the m=3 multiple deviation from pure elliptical shape
-            related to the physical amplitude of the MULTIPOLE profile by a scaling
-            theta_E / sqrt(q)
-        :param delta_phi_m3: orientation of the m=3 profile relative to the position
-            angle of the EPL profile
-        :param a4_a: amplitude of the m=4 multipole deviation from pure elliptical shape
-            related to the physical amplitude of the MULTIPOLE profile by a scaling
-            theta_E / sqrt(q)
+        :param x: x angular coordinate :param y: y angular coordinate :param theta_E:
+        Einstein radius :param gamma: log-slope of EPL mass profile :param e1:
+        ellipticity of EPL profile (along 1st axis) :param e2: ellipticity of EPL
+        profile (along 2nd axis) :param a3_a: amplitude of the m=3 multiple deviation
+        from pure elliptical shape related to the physical amplitude of the MULTIPOLE
+        profile by a scaling theta_E / sqrt(q) :param delta_phi_m3: orientation of the
+        m=3 profile relative to the position angle of the EPL profile :param a4_a:
+        amplitude of the m=4 multipole deviation from pure elliptical shape related to
+        the physical amplitude of the MULTIPOLE profile by a scaling theta_E / sqrt(q)
         :param delta_phi_m4: orientation of the m=4 profile relative to the position
-            angle of the EPL profile
-        :param center_x: center of the profile
-        :param center_y: center of the profile
-        :return: components of the hessian matrix
-        """
+        angle of the EPL profile :param center_x: center of the profile :param center_y:
+        center of the profile :return: components of the hessian matrix."""
         kwargs_epl, kwargs_multipole3, kwargs_multipole4 = self._param_split(
             theta_E,
             gamma,

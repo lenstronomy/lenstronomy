@@ -17,6 +17,9 @@ applications:
 - `deeplenstronomy <https://github.com/deepskies/deeplenstronomy>`_: Tool for simulating large datasets for applying deep learning to strong gravitational lensing.
 - `pyHalo <https://github.com/dangilman/pyHalo>`_: Tool for rendering full substructure mass distributions for gravitational lensing simulations.
 - `GaLight <https://github.com/dartoon/galight>`_: Tool to perform two-dimensional model fitting of optical and near-infrared images to characterize surface brightness distributions.
+- `paltas <https://github.com/swagnercarena/paltas>`_: Package for conducting simulation-based inference on strong gravitational lensing images.
+- `LensingETC <https://github.com/ajshajib/LensingETC>`_: A Python package to select an optimal observing strategy for multi-filter imaging campaigns of strong lensing systems. This package simulates imaging data corresponding to provided instrument specifications and extract lens model parameter uncertainties from the simulated images.
+- `PSF-r <https://github.com/sibirrer/psfr>`_: Package for Point Spread Function (PSF) reconstruction for astronomical ground- and space-based imaging data. PSF-r makes use the PSF iteration functionality of lenstronomy in a re-packaged form.
 
 
 

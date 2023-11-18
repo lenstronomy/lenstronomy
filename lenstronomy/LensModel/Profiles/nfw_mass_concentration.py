@@ -1,11 +1,13 @@
-__author__ = 'sibirrer'
+"""This module contains a class to compute the Navarro-Frank-White function in
+mass/kappa space."""
 
-# this file contains a class to compute the Navaro-Frank-White function in mass/kappa space
+__author__ = "sibirrer"
+
 from lenstronomy.LensModel.Profiles.nfw import NFW
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
-__all__ = ['NFWMC']
+__all__ = ["NFWMC"]
 
 
 class NFWMC(LensProfileBase):
@@ -20,9 +22,20 @@ class NFWMC(LensProfileBase):
     recommended to use the default NFW lensing profile parameterized in reduced deflection angles.
 
     """
-    param_names = ['logM', 'concentration', 'center_x', 'center_y']
-    lower_limit_default = {'logM': 0, 'concentration': 0.01, 'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'logM': 16, 'concentration': 1000, 'center_x': 100, 'center_y': 100}
+
+    param_names = ["logM", "concentration", "center_x", "center_y"]
+    lower_limit_default = {
+        "logM": 0,
+        "concentration": 0.01,
+        "center_x": -100,
+        "center_y": -100,
+    }
+    upper_limit_default = {
+        "logM": 16,
+        "concentration": 1000,
+        "center_x": 100,
+        "center_y": 100,
+    }
 
     def __init__(self, z_lens, z_source, cosmo=None, static=False):
         """
@@ -34,7 +47,9 @@ class NFWMC(LensProfileBase):
         """
         self._nfw = NFW()
         if cosmo is None:
+            # TODO: print warning if these lines get executed
             from astropy.cosmology import FlatLambdaCDM
+
             cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.05)
         self._lens_cosmo = LensCosmo(z_lens=z_lens, z_source=z_source, cosmo=cosmo)
         self._static = static
@@ -49,22 +64,22 @@ class NFWMC(LensProfileBase):
         """
         if self._static is True:
             return self._Rs_static, self._alpha_Rs_static
-        M = 10 ** logM
+        M = 10**logM
         Rs, alpha_Rs = self._lens_cosmo.nfw_physical2angle(M, concentration)
         return Rs, alpha_Rs
 
-    def set_static(self, logM, concentration, center_x=0, center_y=0):
+    def set_static(self, logM, concentration, *args, **kwargs):
         """
 
-        :param logM:
-        :param concentration:
-        :param center_x:
-        :param center_y:
+        :param logM: log10(M200)
+        :param concentration: halo concentration c = r_200 / r_s
         :return:
         """
         self._static = True
-        M = 10 ** logM
-        self._Rs_static, self._alpha_Rs_static = self._lens_cosmo.nfw_physical2angle(M, concentration)
+        M = 10**logM
+        self._Rs_static, self._alpha_Rs_static = self._lens_cosmo.nfw_physical2angle(
+            M, concentration
+        )
 
     def set_dynamic(self):
         """
@@ -72,9 +87,9 @@ class NFWMC(LensProfileBase):
         :return:
         """
         self._static = False
-        if hasattr(self, '_Rs_static'):
+        if hasattr(self, "_Rs_static"):
             del self._Rs_static
-        if hasattr(self, '_alpha_Rs_static'):
+        if hasattr(self, "_alpha_Rs_static"):
             del self._alpha_Rs_static
 
     def function(self, x, y, logM, concentration, center_x=0, center_y=0):
@@ -89,18 +104,17 @@ class NFWMC(LensProfileBase):
         :return:
         """
         Rs, alpha_Rs = self._m_c2deflections(logM, concentration)
-        return self._nfw.function(x, y, alpha_Rs=alpha_Rs, Rs=Rs, center_x=center_x, center_y=center_y)
+        return self._nfw.function(
+            x, y, alpha_Rs=alpha_Rs, Rs=Rs, center_x=center_x, center_y=center_y
+        )
 
     def derivatives(self, x, y, logM, concentration, center_x=0, center_y=0):
-        """
-        returns df/dx and df/dy of the function (integral of NFW)
-        """
+        """Returns df/dx and df/dy of the function (integral of NFW)"""
         Rs, alpha_Rs = self._m_c2deflections(logM, concentration)
         return self._nfw.derivatives(x, y, Rs, alpha_Rs, center_x, center_y)
 
     def hessian(self, x, y, logM, concentration, center_x=0, center_y=0):
-        """
-        returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
-        """
+        """Returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx,
+        d^f/dy^2."""
         Rs, alpha_Rs = self._m_c2deflections(logM, concentration)
         return self._nfw.hessian(x, y, Rs, alpha_Rs, center_x, center_y)

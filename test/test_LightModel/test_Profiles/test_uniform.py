@@ -1,13 +1,11 @@
-
 import pytest
 from lenstronomy.LightModel.Profiles.uniform import Uniform
 
 
 class TestShapelet(object):
-    """
-    class to test Shapelets
-    """
-    def setup(self):
+    """Class to test Shapelets."""
+
+    def setup_method(self):
         pass
 
     def test_function(self):
@@ -20,5 +18,5 @@ class TestShapelet(object):
         assert output == 0.1
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pytest.main()

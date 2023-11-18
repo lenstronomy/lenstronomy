@@ -1,80 +1,125 @@
 import pytest
 import numpy as np
 import numpy.testing as npt
-from lenstronomy.LensModel.QuadOptimizer.param_manager import PowerLawFixedShear, \
-    PowerLawFixedShearMultipole, PowerLawFreeShear, PowerLawFreeShearMultipole
+from lenstronomy.LensModel.QuadOptimizer.param_manager import (
+    PowerLawFixedShear,
+    PowerLawFixedShearMultipole,
+    PowerLawFreeShear,
+    PowerLawFreeShearMultipole,
+)
+
 
 class TestParamClasses(object):
-
-    def setup(self):
-
+    def setup_method(self):
         self.zlens, self.zsource = 0.5, 1.5
-        epl_kwargs = {'theta_E': 1., 'center_x': 0., 'center_y': 0., 'e1': 0.2, 'e2': 0.1, 'gamma': 2.05}
-        shear_kwargs = {'gamma1': 0.05, 'gamma2': -0.04}
+        epl_kwargs = {
+            "theta_E": 1.0,
+            "center_x": 0.0,
+            "center_y": 0.0,
+            "e1": 0.2,
+            "e2": 0.1,
+            "gamma": 2.05,
+        }
+        shear_kwargs = {"gamma1": 0.05, "gamma2": -0.04}
         kwargs_macro = [epl_kwargs, shear_kwargs]
 
         self.x_image = np.array([0.65043538, -0.31109505, 0.78906059, -0.86222271])
         self.y_image = np.array([-0.89067493, 0.94851787, 0.52882605, -0.25403778])
 
-        halo_list = ['SIS', 'SIS', 'SIS']
+        halo_list = ["SIS", "SIS", "SIS"]
         halo_z = [self.zlens - 0.1, self.zlens, self.zlens + 0.4]
-        halo_kwargs = [{'theta_E': 0.1, 'center_x': 0.3, 'center_y': -0.9},
-                       {'theta_E': 0.15, 'center_x': 1.3, 'center_y': -0.5},
-                       {'theta_E': 0.06, 'center_x': -0.4, 'center_y': -0.4}]
+        halo_kwargs = [
+            {"theta_E": 0.1, "center_x": 0.3, "center_y": -0.9},
+            {"theta_E": 0.15, "center_x": 1.3, "center_y": -0.5},
+            {"theta_E": 0.06, "center_x": -0.4, "center_y": -0.4},
+        ]
 
         self.kwargs_epl = kwargs_macro + halo_kwargs
         self.zlist_epl = [self.zlens, self.zlens] + halo_z
-        self.lens_model_list_epl = ['EPL', 'SHEAR'] + halo_list
+        self.lens_model_list_epl = ["EPL", "SHEAR"] + halo_list
 
-        kwargs_multi = [{'m': 4, 'a_m': -0.04, 'phi_m': -0.2, 'center_x': 0.1, 'center_y': -0.1}]
+        kwargs_multi = [
+            {"m": 4, "a_m": -0.04, "phi_m": -0.2, "center_x": 0.1, "center_y": -0.1}
+        ]
         self.kwargs_multipole = kwargs_macro + kwargs_multi + halo_kwargs
         self.zlist_multipole = [self.zlens, self.zlens, self.zlens] + halo_z
-        self.lens_model_list_multipole = ['EPL', 'SHEAR'] + ['MULTIPOLE'] + halo_list
+        self.lens_model_list_multipole = ["EPL", "SHEAR"] + ["MULTIPOLE"] + halo_list
 
     def test_param_penalty(self):
-
         param_class = PowerLawFreeShear(self.kwargs_epl)
         args = param_class.kwargs_to_args(self.kwargs_epl)
         param_penalty = param_class.param_chi_square_penalty(args)
         npt.assert_almost_equal(0, param_penalty)
 
     def test_plaw_free_shear(self):
-
         param_class = PowerLawFreeShear(self.kwargs_epl)
-        npt.assert_(param_class.to_vary_index==2)
-        kwargs_in = [{'theta_E': 1., 'center_x': 0., 'center_y': 0.3, 'e1': 0.25, 'e2': 0.1, 'gamma': 2.05},
-                     {'gamma1': 0.05, 'gamma2': -0.01}, {'theta_E': -0.3, 'center_x': 0., 'center_y': 0.04}]
+        npt.assert_(param_class.to_vary_index == 2)
+        kwargs_in = [
+            {
+                "theta_E": 1.0,
+                "center_x": 0.0,
+                "center_y": 0.3,
+                "e1": 0.25,
+                "e2": 0.1,
+                "gamma": 2.05,
+            },
+            {"gamma1": 0.05, "gamma2": -0.01},
+            {"theta_E": -0.3, "center_x": 0.0, "center_y": 0.04},
+        ]
         args_epl = param_class.kwargs_to_args(kwargs_in)
         npt.assert_almost_equal(args_epl, [1, 0, 0.3, 0.25, 0.1, 0.05, -0.01])
         kwargs_out = param_class.args_to_kwargs(args_epl)
-        npt.assert_almost_equal(kwargs_out[0]['gamma'], 2.05)
+        npt.assert_almost_equal(kwargs_out[0]["gamma"], 2.05)
         for key in kwargs_out[-1].keys():
             npt.assert_almost_equal(kwargs_out[-1][key], self.kwargs_epl[-1][key])
 
     def test_plaw_fixed_shear(self):
         param_class = PowerLawFixedShear(self.kwargs_epl, 0.12)
         npt.assert_(param_class.to_vary_index == 2)
-        kwargs_in = [{'theta_E': 1., 'center_x': 0., 'center_y': 0.3, 'e1': 0.25, 'e2': 0.1, 'gamma': 2.05},
-                     {'gamma1': 0.05, 'gamma2': -0.01}, {'theta_E': -0.3, 'center_x': 0., 'center_y': 0.04}]
+        kwargs_in = [
+            {
+                "theta_E": 1.0,
+                "center_x": 0.0,
+                "center_y": 0.3,
+                "e1": 0.25,
+                "e2": 0.1,
+                "gamma": 2.05,
+            },
+            {"gamma1": 0.05, "gamma2": -0.01},
+            {"theta_E": -0.3, "center_x": 0.0, "center_y": 0.04},
+        ]
         args_epl = param_class.kwargs_to_args(kwargs_in)
         npt.assert_almost_equal(args_epl[0:5], [1, 0, 0.3, 0.25, 0.1])
         kwargs_out = param_class.args_to_kwargs(args_epl)
-        npt.assert_almost_equal(kwargs_out[0]['gamma'], 2.05)
-        npt.assert_almost_equal(kwargs_out[1]['gamma1'] ** 2 + kwargs_out[1]['gamma2']**2, 0.12 ** 2)
+        npt.assert_almost_equal(kwargs_out[0]["gamma"], 2.05)
+        npt.assert_almost_equal(
+            kwargs_out[1]["gamma1"] ** 2 + kwargs_out[1]["gamma2"] ** 2, 0.12**2
+        )
         for key in kwargs_out[-1].keys():
             npt.assert_almost_equal(kwargs_out[-1][key], self.kwargs_epl[-1][key])
 
     def test_plawboxydisky_fixed_shear(self):
-
         param_class = PowerLawFixedShearMultipole(self.kwargs_multipole, 0.12)
         npt.assert_(param_class.to_vary_index == 3)
-        kwargs_in = [{'theta_E': 1., 'center_x': 0., 'center_y': 0.3, 'e1': 0.25, 'e2': 0.1, 'gamma': 2.05},
-                     {'gamma1': 0.05, 'gamma2': -0.01}, {'theta_E': -0.3, 'center_x': 0., 'center_y': 0.04}]
+        kwargs_in = [
+            {
+                "theta_E": 1.0,
+                "center_x": 0.0,
+                "center_y": 0.3,
+                "e1": 0.25,
+                "e2": 0.1,
+                "gamma": 2.05,
+            },
+            {"gamma1": 0.05, "gamma2": -0.01},
+            {"theta_E": -0.3, "center_x": 0.0, "center_y": 0.04},
+        ]
         args_epl = param_class.kwargs_to_args(kwargs_in)
         npt.assert_almost_equal(args_epl[0:5], [1, 0, 0.3, 0.25, 0.1])
         kwargs_out = param_class.args_to_kwargs(args_epl)
-        npt.assert_almost_equal(kwargs_out[0]['gamma'], 2.05)
-        npt.assert_almost_equal(kwargs_out[1]['gamma1'] ** 2 + kwargs_out[1]['gamma2']**2, 0.12 ** 2)
+        npt.assert_almost_equal(kwargs_out[0]["gamma"], 2.05)
+        npt.assert_almost_equal(
+            kwargs_out[1]["gamma1"] ** 2 + kwargs_out[1]["gamma2"] ** 2, 0.12**2
+        )
         for key in kwargs_out[-1].keys():
             npt.assert_almost_equal(kwargs_out[-1][key], self.kwargs_multipole[-1][key])
 
@@ -82,15 +127,24 @@ class TestParamClasses(object):
             npt.assert_almost_equal(kwargs_out[2][key], self.kwargs_multipole[2][key])
 
     def test_plawboxydisky_fixed_shear(self):
-
         param_class = PowerLawFreeShearMultipole(self.kwargs_multipole)
         npt.assert_(param_class.to_vary_index == 3)
-        kwargs_in = [{'theta_E': 1., 'center_x': 0., 'center_y': 0.3, 'e1': 0.25, 'e2': 0.1, 'gamma': 2.05},
-                     {'gamma1': 0.05, 'gamma2': -0.01}, {'theta_E': -0.3, 'center_x': 0., 'center_y': 0.04}]
+        kwargs_in = [
+            {
+                "theta_E": 1.0,
+                "center_x": 0.0,
+                "center_y": 0.3,
+                "e1": 0.25,
+                "e2": 0.1,
+                "gamma": 2.05,
+            },
+            {"gamma1": 0.05, "gamma2": -0.01},
+            {"theta_E": -0.3, "center_x": 0.0, "center_y": 0.04},
+        ]
         args_epl = param_class.kwargs_to_args(kwargs_in)
         npt.assert_almost_equal(args_epl, [1, 0, 0.3, 0.25, 0.1, 0.05, -0.01])
         kwargs_out = param_class.args_to_kwargs(args_epl)
-        npt.assert_almost_equal(kwargs_out[0]['gamma'], 2.05)
+        npt.assert_almost_equal(kwargs_out[0]["gamma"], 2.05)
         for key in kwargs_out[-1].keys():
             npt.assert_almost_equal(kwargs_out[-1][key], self.kwargs_multipole[-1][key])
 
@@ -98,31 +152,30 @@ class TestParamClasses(object):
             npt.assert_almost_equal(kwargs_out[2][key], self.kwargs_multipole[2][key])
 
     def test_bounds(self):
-
-        param_names = ['theta_E', 'center_x', 'center_y', 'e1', 'e2']
+        param_names = ["theta_E", "center_x", "center_y", "e1", "e2"]
         args = [self.kwargs_epl[0][param_name] for param_name in param_names]
-        param_names = ['gamma1', 'gamma2']
+        param_names = ["gamma1", "gamma2"]
         args += [self.kwargs_epl[1][param_name] for param_name in param_names]
 
-        shift = np.array([0.25, 0.2, 0.2, 0.2, 0.2, 0.05, 0.05])
+        shift = np.array([0.1, 0.05, 0.05, 0.1, 0.1, 0.025, 0.025])
         param_class = PowerLawFixedShear(self.kwargs_epl, 0.12)
         bounds = param_class.bounds(re_optimize=False)
         npt.assert_almost_equal(bounds[0], np.array(args) - shift)
         npt.assert_almost_equal(bounds[1], np.array(args) + shift)
 
-        shift = np.array([0.005, 0.01, 0.01, 0.05, 0.05, 0.025, 0.025])
+        shift = np.array([0.005, 0.025, 0.025, 0.05, 0.05, 0.01, 0.01])
         param_class = PowerLawFixedShear(self.kwargs_epl, 0.12)
         bounds = param_class.bounds(re_optimize=True)
         npt.assert_almost_equal(bounds[0], np.array(args) - shift)
         npt.assert_almost_equal(bounds[1], np.array(args) + shift)
 
         scale = 0.7
-        shift = scale * np.array([0.005, 0.01, 0.01, 0.05, 0.05, 0.025, 0.025])
+        shift = scale * shift
         param_class = PowerLawFixedShear(self.kwargs_epl, 0.12)
         bounds = param_class.bounds(re_optimize=True, scale=scale)
         npt.assert_almost_equal(bounds[0], np.array(args) - shift)
         npt.assert_almost_equal(bounds[1], np.array(args) + shift)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pytest.main()

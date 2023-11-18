@@ -2,6 +2,14 @@
 Installation
 ============
 
+This page outlines how to install one of the officially distributed lenstronomy releases and its dependencies,
+or install and test the latest development version.
+
+From PyPI
+---------
+
+All lenstronomy releases are distributed through the Python Package Index (PyPI). To install the latest version use pip:
+
 At the command line with pip::
 
     $ pip install lenstronomy
@@ -10,6 +18,14 @@ Or, if you have virtualenvwrapper installed::
 
     $ mkvirtualenv lenstronomy
     $ pip install lenstronomy
+
+From conda-forge
+----------------
+
+All lenstronomy releases are also distributed for conda through the conda-forge channel. To install the latest version for your active conda environment::
+
+    $ conda install -c conda-forge lenstronomy
+
 
 You can also clone the github repository for development purposes.
 

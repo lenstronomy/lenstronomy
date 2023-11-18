@@ -1,24 +1,37 @@
-__author__ = 'sibirrer'
+__author__ = "sibirrer"
 
 import numpy as np
 import lenstronomy.Util.util as util
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
-__all__ = ['NIE', 'NIEMajorAxis']
+__all__ = ["NIE", "NIEMajorAxis"]
 
 
 class NIE(LensProfileBase):
-    """
-    Non-singular isothermal ellipsoid (NIE)
+    """Non-singular isothermal ellipsoid (NIE)
 
     .. math::
-     \\kappa = \\theta_E/2 \\left[s_{scale} + qx^2 + y^2/q]−1/2
-
+     \\kappa = \\theta_E/2 \\left[s^2_{scale} + qx^2 + y^2/q]−1/2
     """
-    param_names = ['theta_E', 'e1', 'e2', 's_scale', 'center_x', 'center_y']
-    lower_limit_default = {'theta_E': 0, 'e1': -0.5, 'e2': -0.5, 's_scale': 0, 'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'theta_E': 10, 'e1': 0.5, 'e2': 0.5, 's_scale': 100, 'center_x': 100, 'center_y': 100}
+
+    param_names = ["theta_E", "e1", "e2", "s_scale", "center_x", "center_y"]
+    lower_limit_default = {
+        "theta_E": 0,
+        "e1": -0.5,
+        "e2": -0.5,
+        "s_scale": 0,
+        "center_x": -100,
+        "center_y": -100,
+    }
+    upper_limit_default = {
+        "theta_E": 10,
+        "e1": 0.5,
+        "e2": 0.5,
+        "s_scale": 100,
+        "center_x": 100,
+        "center_y": 100,
+    }
 
     def __init__(self):
         self.nie_major_axis = NIEMajorAxis()
@@ -95,8 +108,8 @@ class NIE(LensProfileBase):
         # evaluate
         f__xx, f__xy, _, f__yy = self.nie_major_axis.hessian(x__, y__, b, s, q)
         # rotate back
-        kappa = 1./2 * (f__xx + f__yy)
-        gamma1__ = 1./2 * (f__xx - f__yy)
+        kappa = 1.0 / 2 * (f__xx + f__yy)
+        gamma1__ = 1.0 / 2 * (f__xx - f__yy)
         gamma2__ = f__xy
         gamma1 = np.cos(2 * phi_G) * gamma1__ - np.sin(2 * phi_G) * gamma2__
         gamma2 = +np.sin(2 * phi_G) * gamma1__ + np.cos(2 * phi_G) * gamma2__
@@ -106,8 +119,8 @@ class NIE(LensProfileBase):
         return f_xx, f_xy, f_xy, f_yy
 
     def density_lens(self, r, theta_E, e1, e2, s_scale, center_x=0, center_y=0):
-        """
-        3d mass density at 3d radius r. This function assumes spherical symmetry/ignoring the eccentricity.
+        """3d mass density at 3d radius r. This function assumes spherical
+        symmetry/ignoring the eccentricity.
 
         :param r: 3d radius
         :param theta_E: Einstein radius
@@ -123,8 +136,8 @@ class NIE(LensProfileBase):
         return rho0 / (r**2 + s_scale**2)
 
     def mass_3d_lens(self, r, theta_E, e1, e2, s_scale, center_x=0, center_y=0):
-        """
-        mass enclosed a 3d radius r. This function assumes spherical symmetry/ignoring the eccentricity.
+        """Mass enclosed a 3d radius r. This function assumes spherical
+        symmetry/ignoring the eccentricity.
 
         :param r: 3d radius
         :param theta_E: Einstein radius
@@ -136,7 +149,7 @@ class NIE(LensProfileBase):
         :return: 3d mass density at 3d radius r
         """
         rho0 = 1 / 2 * theta_E / np.pi
-        return rho0 * 4 * np.pi * (r - s_scale * np.arctan(r/s_scale))
+        return rho0 * 4 * np.pi * (r - s_scale * np.arctan(r / s_scale))
 
     def param_conv(self, theta_E, e1, e2, s_scale):
         if self._static is True:
@@ -158,16 +171,14 @@ class NIE(LensProfileBase):
 
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         theta_E_conv = self._theta_E_prod_average2major_axis(theta_E, q)
-        b = theta_E_conv * np.sqrt((1 + q**2)/2)
+        b = theta_E_conv * np.sqrt((1 + q**2) / 2)
         s = s_scale / np.sqrt(q)
-        #s = s_scale * np.sqrt((1 + q**2) / (2*q**2))
+        # s = s_scale * np.sqrt((1 + q**2) / (2*q**2))
         return b, s, q, phi_G
 
     def set_static(self, theta_E, e1, e2, s_scale, center_x=0, center_y=0):
         """
 
-        :param x: x-coordinate in image plane
-        :param y: y-coordinate in image plane
         :param theta_E: Einstein radius
         :param e1: eccentricity component
         :param e2: eccentricity component
@@ -177,7 +188,12 @@ class NIE(LensProfileBase):
         :return: self variables set
         """
         self._static = True
-        self._b_static, self._s_static, self._q_static, self._phi_G_static = self._param_conv(theta_E, e1, e2, s_scale)
+        (
+            self._b_static,
+            self._s_static,
+            self._q_static,
+            self._phi_G_static,
+        ) = self._param_conv(theta_E, e1, e2, s_scale)
 
     def set_dynamic(self):
         """
@@ -185,21 +201,20 @@ class NIE(LensProfileBase):
         :return:
         """
         self._static = False
-        if hasattr(self, '_b_static'):
+        if hasattr(self, "_b_static"):
             del self._b_static
-        if hasattr(self, '_s_static'):
+        if hasattr(self, "_s_static"):
             del self._s_static
-        if hasattr(self, '_phi_G_static'):
+        if hasattr(self, "_phi_G_static"):
             del self._phi_G_static
-        if hasattr(self, '_q_static'):
+        if hasattr(self, "_q_static"):
             del self._q_static
 
     @staticmethod
     def _theta_E_prod_average2major_axis(theta_E, q):
-        """
-        Converts a product averaged Einstein radius (of semi-minor and semi-major axis) to a major axis Einstein radius
-        for an Isothermal ellipse.
-        The standard lenstronomy conventions are product averaged Einstein radii while other codes
+        """Converts a product averaged Einstein radius (of semi-minor and semi-major
+        axis) to a major axis Einstein radius for an Isothermal ellipse. The standard
+        lenstronomy conventions are product averaged Einstein radii while other codes
         (such as e.g. gravlens) use the semi-major axis convention.
 
         .. math::
@@ -209,7 +224,7 @@ class NIE(LensProfileBase):
         :param q: axis ratio minor/major
         :return: theta_E in convention of kappa= b *(q^2(s^2 + x^2) + y^2􏰉)^{−1/2} (major axis)
         """
-        theta_E_major_axis = theta_E / (np.sqrt((1.+q**2) / (2. * q)))
+        theta_E_major_axis = theta_E / (np.sqrt((1.0 + q**2) / (2.0 * q)))
         return theta_E_major_axis
 
 
@@ -223,7 +238,7 @@ class NIEMajorAxis(LensProfileBase):
 
     """
 
-    param_names = ['b', 's', 'q', 'center_x', 'center_y']
+    param_names = ["b", "s", "q", "center_x", "center_y"]
 
     def __init__(self, diff=0.0000000001):
         self._diff = diff
@@ -232,24 +247,31 @@ class NIEMajorAxis(LensProfileBase):
     def function(self, x, y, b, s, q):
         psi = self._psi(x, y, q, s)
         alpha_x, alpha_y = self.derivatives(x, y, b, s, q)
-        f_ = x * alpha_x + y * alpha_y - b * s * 1. / 2. * np.log((psi + s) ** 2 + (1. - q ** 2) * x ** 2)
+        f_ = (
+            x * alpha_x
+            + y * alpha_y
+            - b * s * 1.0 / 2.0 * np.log((psi + s) ** 2 + (1.0 - q**2) * x**2)
+        )
         return f_
 
     def derivatives(self, x, y, b, s, q):
-        """
-        returns df/dx and df/dy of the function
-        """
+        """Returns df/dx and df/dy of the function."""
         if q >= 1:
             q = 0.99999999
         psi = self._psi(x, y, q, s)
-        f_x = b / np.sqrt(1. - q ** 2) * np.arctan(np.sqrt(1. - q ** 2) * x / (psi + s))
-        f_y = b / np.sqrt(1. - q ** 2) * np.arctanh(np.sqrt(1. - q ** 2) * y / (psi + q ** 2 * s))
+        f_x = (
+            b / np.sqrt(1.0 - q**2) * np.arctan(np.sqrt(1.0 - q**2) * x / (psi + s))
+        )
+        f_y = (
+            b
+            / np.sqrt(1.0 - q**2)
+            * np.arctanh(np.sqrt(1.0 - q**2) * y / (psi + q**2 * s))
+        )
         return f_x, f_y
 
     def hessian(self, x, y, b, s, q):
-        """
-        returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
-        """
+        """Returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx,
+        d^f/dy^2."""
         alpha_ra, alpha_dec = self.derivatives(x, y, b, s, q)
         diff = self._diff
         alpha_ra_dx, alpha_dec_dx = self.derivatives(x + diff, y, b, s, q)
@@ -263,8 +285,7 @@ class NIEMajorAxis(LensProfileBase):
 
     @staticmethod
     def kappa(x, y, b, s, q):
-        """
-        convergence
+        """convergence.
 
         :param x: major axis coordinate
         :param y: minor axis coordinate
@@ -273,13 +294,12 @@ class NIEMajorAxis(LensProfileBase):
         :param q: axis ratio
         :return: convergence
         """
-        kappa = b/2. * (q**2 * (s**2 + x**2) + y**2)**(-1./2)
+        kappa = b / 2.0 * (q**2 * (s**2 + x**2) + y**2) ** (-1.0 / 2)
         return kappa
 
     @staticmethod
     def _psi(x, y, q, s):
-        """
-        expression after equation (8) in Keeton&Kochanek 1998
+        """Expression after equation (8) in Keeton&Kochanek 1998.
 
         :param x: semi-major axis coordinate
         :param y: semi-minor axis coordinate

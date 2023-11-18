@@ -1,4 +1,4 @@
-__author__ = 'sibirrer'
+__author__ = "sibirrer"
 
 
 from lenstronomy.LensModel.Profiles.arc_perturbations import ArcPerturbations
@@ -9,19 +9,24 @@ import pytest
 
 
 class TestArcPerturbations(object):
-    """
-    tests the Gaussian methods
-    """
-    def setup(self):
+    """Tests the Gaussian methods."""
+
+    def setup_method(self):
         self.model = ArcPerturbations()
-        self.kwargs_lens = {'coeff': 2, 'd_r': 0.2, 'd_phi': np.pi, 'center_x': 0, 'center_y': 0}
+        self.kwargs_lens = {
+            "coeff": 2,
+            "d_r": 0.2,
+            "d_phi": np.pi,
+            "center_x": 0,
+            "center_y": 0,
+        }
 
     def test_function(self):
         x, y = util.make_grid(numPix=100, deltapix=0.1)
         values = self.model.function(x, y, **self.kwargs_lens)
-        #import matplotlib.pyplot as plt
-        #plt.matshow(util.array2image(values))
-        #plt.show()
+        # import matplotlib.pyplot as plt
+        # plt.matshow(util.array2image(values))
+        # plt.show()
         npt.assert_almost_equal(values[0], 0, decimal=5)
 
     def test_derivatives(self):
@@ -53,5 +58,5 @@ class TestArcPerturbations(object):
         npt.assert_almost_equal(f_xy_num, f_xy, decimal=2)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pytest.main()

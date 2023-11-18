@@ -3,8 +3,7 @@ import unittest
 
 
 class TestBaseProfile(object):
-
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_base_functions(self):
@@ -14,7 +13,6 @@ class TestBaseProfile(object):
 
 
 class TestRaise(unittest.TestCase):
-
     def test_raise(self):
         base = LensProfileBase()
         with self.assertRaises(ValueError):
@@ -27,3 +25,5 @@ class TestRaise(unittest.TestCase):
             base.density_lens()
         with self.assertRaises(ValueError):
             base.mass_3d_lens()
+        with self.assertRaises(ValueError):
+            base.mass_2d_lens()

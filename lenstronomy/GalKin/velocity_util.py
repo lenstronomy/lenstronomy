@@ -1,8 +1,9 @@
-__author__ = 'sibirrer'
+__author__ = "sibirrer"
 
 import numpy as np
 
 from lenstronomy.Util.package_util import exporter
+
 export, __all__ = exporter()
 
 
@@ -34,27 +35,25 @@ def displace_PSF_gaussian(x, y, FWHM):
 
 @export
 def moffat_r(r, alpha, beta):
-    """
-    Moffat profile
+    """Moffat profile.
 
     :param r: radial coordinate
     :param alpha: Moffat parameter
     :param beta: exponent
     :return: Moffat profile
     """
-    return 2. * (beta - 1) / alpha ** 2 * (1 + (r/alpha) ** 2) ** (-beta)
+    return 2.0 * (beta - 1) / alpha**2 * (1 + (r / alpha) ** 2) ** (-beta)
 
 
 @export
 def moffat_fwhm_alpha(FWHM, beta):
-    """
-    computes alpha parameter from FWHM and beta for a Moffat profile
+    """Computes alpha parameter from FWHM and beta for a Moffat profile.
 
     :param FWHM: full width at half maximum
     :param beta: beta parameter of Moffat profile
     :return: alpha parameter of Moffat profile
     """
-    return FWHM / (2 * np.sqrt(2 ** (1. / beta) - 1))
+    return FWHM / (2 * np.sqrt(2 ** (1.0 / beta) - 1))
 
 
 @export
@@ -89,20 +88,19 @@ def displace_PSF_moffat(x, y, FWHM, beta):
 
 @export
 def draw_cdf_Y(beta):
-    """
-    Draw c.d.f for Moffat function according to Berge et al. Ufig paper, equation B2
+    """Draw c.d.f for Moffat function according to Berge et al. Ufig paper, equation B2
     cdf(Y) = 1-Y**(1-beta)
 
     :return:
     """
     x = np.random.uniform(0, 1)
-    return (1-x) ** (1./(1-beta))
+    return (1 - x) ** (1.0 / (1 - beta))
 
 
 @export
 def project2d_random(r):
-    """
-    draws a random projection from radius r in 2d and 1d
+    """Draws a random projection from radius r in 2d and 1d.
+
     :param r: 3d radius
     :return: R, x, y
     """
@@ -111,10 +109,10 @@ def project2d_random(r):
         size = None
     u1 = np.random.uniform(0, 1, size=size)
     u2 = np.random.uniform(0, 1, size=size)
-    l = np.arccos(2*u1 - 1) - np.pi / 2
+    eta = np.arccos(2 * u1 - 1) - np.pi / 2
     phi = 2 * np.pi * u2
-    x = r * np.cos(l) * np.cos(phi)
-    y = r * np.cos(l) * np.sin(phi)
+    x = r * np.cos(eta) * np.cos(phi)
+    y = r * np.cos(eta) * np.sin(phi)
     # z = r * np.sin(l)
     R = np.sqrt(x**2 + y**2)
     return R, x, y
@@ -141,5 +139,7 @@ def draw_hernquist(a):
     :return: realisation of radius of Hernquist luminosity weighting in 3d
     """
     P = np.random.uniform()  # draws uniform between [0,1)
-    r = a*np.sqrt(P)*(np.sqrt(P)+1)/(1-P)  # solves analytically to r from P(r)
+    r = (
+        a * np.sqrt(P) * (np.sqrt(P) + 1) / (1 - P)
+    )  # solves analytically to r from P(r)
     return r

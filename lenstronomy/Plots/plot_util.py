@@ -42,8 +42,8 @@ def sqrt(inputArray, scale_min=None, scale_max=None):
 def text_description(
     ax, d, text, color="w", backgroundcolor="k", flipped=False, font_size=15
 ):
-    c_vertical = 1 / 15.0  # + font_size / d / 10.**2
-    c_horizontal = 1.0 / 30
+    c_vertical = 1 / 13.0  # + font_size / d / 10.**2
+    c_horizontal = 1.0 / 50
     if flipped:
         ax.text(
             d - d * c_horizontal,
@@ -114,9 +114,9 @@ def coordinate_arrows(ax, d, coords, color="w", font_size=15, arrow_size=0.05):
     :param arrow_size: size of arrow
     :return: updated ax instance
     """
-    d0 = d / 8.0
+    d0 = d / 6.0  # from right side of plot
     p0 = d / 15.0
-    pt = d / 9.0
+    pt = d / 10.0
     deltaPix = coords.pixel_width
     ra0, dec0 = coords.map_pix2coord((d - d0) / deltaPix, d0 / deltaPix)
     xx_, yy_ = coords.map_coord2pix(ra0, dec0)
@@ -174,7 +174,6 @@ def plot_line_set(
     origin=None,
     flipped_x=False,
     points_only=False,
-    pixel_offset=True,
     *args,
     **kwargs
 ):
@@ -194,9 +193,6 @@ def plot_line_set(
     :param flipped_x: bool, if True, flips x-axis
     :param points_only: bool, if True, sets plotting keywords to plot single points
         without connecting lines
-    :param pixel_offset: boolean; if True (default plotting), the coordinates are
-        shifted a half a pixel to match with the matshow() command to center the
-        coordinates in the pixel center
     :return: plot with line sets on matplotlib axis in pixel coordinates
     """
     if origin is None:
@@ -212,24 +208,20 @@ def plot_line_set(
             kwargs["markersize"] = 0.01
     if flipped_x:
         pixel_width_x = -pixel_width
-    if pixel_offset is True:
-        shift = 0.5
-    else:
-        shift = 0
     if isinstance(line_set_list_x, list):
         for i in range(len(line_set_list_x)):
             x_c, y_c = coords.map_coord2pix(line_set_list_x[i], line_set_list_y[i])
             ax.plot(
-                (x_c + shift) * pixel_width_x + origin[0],
-                (y_c + shift) * pixel_width + origin[1],
+                x_c * pixel_width_x + origin[0],
+                y_c * pixel_width + origin[1],
                 *args,
                 **kwargs
             )
     else:
         x_c, y_c = coords.map_coord2pix(line_set_list_x, line_set_list_y)
         ax.plot(
-            (x_c + shift) * pixel_width_x + origin[0],
-            (y_c + shift) * pixel_width + origin[1],
+            x_c * pixel_width_x + origin[0],
+            y_c * pixel_width + origin[1],
             *args,
             **kwargs
         )
@@ -246,7 +238,6 @@ def image_position_plot(
     image_name_list=None,
     origin=None,
     flipped_x=False,
-    pixel_offset=True,
     plot_out_of_image=True,
 ):
     """
@@ -259,8 +250,6 @@ def image_position_plot(
     :param image_name_list: list of strings for names of the images in the same order as the positions
     :param origin: [x0, y0], lower left pixel coordinate in the frame of the pixels
     :param flipped_x: bool, if True, flips x-axis
-    :param pixel_offset: boolean; if True (default plotting), the coordinates are shifted a half a pixel to match with
-     the matshow() command to center the coordinates in the pixel center
     :param plot_out_of_image: if True, plots images even appearing out of the Coordinate frame
     :type plot_out_of_image: bool
     :return: matplotlib axis instance with images plotted on
@@ -278,10 +267,6 @@ def image_position_plot(
         ra_image_, dec_image_ = [ra_image], [dec_image]
     else:
         ra_image_, dec_image_ = ra_image, dec_image
-    if pixel_offset is True:
-        shift = 0.5
-    else:
-        shift = 0
     try:
         nx, ny = coords.num_pixel_axes
     except:
@@ -292,8 +277,8 @@ def image_position_plot(
         for i in range(len(x_image)):
             if not plot_out_of_image:
                 if 0 < x_image[i] < nx and 0 < y_image[i] < ny:
-                    x_ = (x_image[i] + shift) * pixel_width_x + origin[0]
-                    y_ = (y_image[i] + shift) * pixel_width + origin[1]
+                    x_ = x_image[i] * pixel_width_x + origin[0]
+                    y_ = y_image[i] * pixel_width + origin[1]
                     ax.plot(x_, y_, "o", color=color)
                     ax.text(x_, y_, image_name_list[i], fontsize=20, color=color)
     return ax
@@ -318,8 +303,8 @@ def source_position_plot(
         for ra, dec in zip(ra_source, dec_source):
             x_source, y_source = coords.map_coord2pix(ra, dec)
             ax.plot(
-                (x_source + 0.5) * delta_pix,
-                (y_source + 0.5) * delta_pix,
+                x_source * delta_pix,
+                y_source + 0.5 * delta_pix,
                 marker=marker,
                 markersize=markersize,
                 **kwargs

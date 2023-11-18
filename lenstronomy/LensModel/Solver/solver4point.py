@@ -26,6 +26,7 @@ class Solver4Point(object):
             "CNFW_ELLIPSE",
             "EPL",
             "EPL_BOXYDISKY",
+            "EPL_MULTIPOLE_M3M4"
         ]:
             raise ValueError(
                 "first lens model must be supported by the solver: 'SPEP', 'SPEMD', 'PEMD',"

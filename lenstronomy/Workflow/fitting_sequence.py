@@ -120,7 +120,6 @@ class FittingSequence(object):
                 chain_list.append([self.fitting_type, kwargs_result])
 
             elif fitting_type in ["MCMC", "emcee", "zeus"]:
-                # == 'MCMC' or fitting_type == 'emcee' or fitting_type == 'zeus'):
                 if fitting_type == "MCMC":
                     print("MCMC selected. Sampling with default option emcee.")
                     fitting_type = "emcee"

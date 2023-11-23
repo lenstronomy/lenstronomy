@@ -530,7 +530,7 @@ class FittingSequence(object):
         self._update_state(samples[-1])
 
         output = [
-            fitting_type,
+            sampler_type,
             samples,
             sampler.param_names,
             logL,

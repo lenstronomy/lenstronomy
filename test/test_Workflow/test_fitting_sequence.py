@@ -373,8 +373,8 @@ class TestFittingSequence(object):
         with t.assertRaises(ValueError):
             # should raise a value error for n_walkers = walkerRatio = None
             fitting_list_three = []
-            kwargs_test = {'n_burn': 10, 'n_run': 10}
-            fitting_list_three.append(['emcee', kwargs_test])
+            kwargs_test = {"n_burn": 10, "n_run": 10}
+            fitting_list_three.append(["emcee", kwargs_test])
             fittingSequence.fit_sequence(fitting_list_three)
 
     def test_cobaya(self):
@@ -494,8 +494,7 @@ class TestFittingSequence(object):
             "force_overwrite": True,
         }
 
-        chain_list = fittingSequence.fit_sequence([['Cobaya', kwargs_cobaya]])
-
+        chain_list = fittingSequence.fit_sequence([["Cobaya", kwargs_cobaya]])
 
     def test_zeus(self):
         np.random.seed(42)
@@ -669,9 +668,14 @@ class TestFittingSequence(object):
 
         fitting_list = []
 
-        kwargs_zeus = {'n_burn': 2, 'n_run': 2, 'walkerRatio': 4, 'backend_filename': 'test_mcmc_zeus.h5'}
+        kwargs_zeus = {
+            "n_burn": 2,
+            "n_run": 2,
+            "walkerRatio": 4,
+            "backend_filename": "test_mcmc_zeus.h5",
+        }
 
-        fitting_list.append(['zeus', kwargs_zeus])
+        fitting_list.append(["zeus", kwargs_zeus])
 
         chain_list = fittingSequence.fit_sequence(fitting_list)
 
@@ -712,18 +716,18 @@ class TestFittingSequence(object):
         }
         fitting_list.append(["update_settings", kwargs_update])
         kwargs_multinest = {
-            'kwargs_run': {
-                'n_live_points': 10,
-                'evidence_tolerance': 0.5,
-                'sampling_efficiency': 0.8,  # 1 for posterior-only, 0 for evidence-only
-                'importance_nested_sampling': False,
-                'multimodal': True,
-                'const_efficiency_mode': False,   # reduce sampling_efficiency to 5% when True
+            "kwargs_run": {
+                "n_live_points": 10,
+                "evidence_tolerance": 0.5,
+                "sampling_efficiency": 0.8,  # 1 for posterior-only, 0 for evidence-only
+                "importance_nested_sampling": False,
+                "multimodal": True,
+                "const_efficiency_mode": False,  # reduce sampling_efficiency to 5% when True
             },
             "remove_output_dir": True,
         }
 
-        fitting_list.append(['MultiNest', kwargs_multinest])
+        fitting_list.append(["MultiNest", kwargs_multinest])
 
         chain_list2 = fittingSequence.fit_sequence(fitting_list)
         kwargs_fixed = fittingSequence._updateManager.fixed_kwargs
@@ -751,16 +755,15 @@ class TestFittingSequence(object):
 
         fitting_list = []
         kwargs_dynesty = {
-
-            'kwargs_run': {
-                'dlogz_init': 0.01,
-                'nlive_init': 20,
-                'nlive_batch': 20,
-                'maxbatch': 1,
+            "kwargs_run": {
+                "dlogz_init": 0.01,
+                "nlive_init": 20,
+                "nlive_batch": 20,
+                "maxbatch": 1,
             },
         }
 
-        fitting_list.append(['dynesty', kwargs_dynesty])
+        fitting_list.append(["dynesty", kwargs_dynesty])
 
         chain_list = fittingSequence.fit_sequence(fitting_list)
 
@@ -798,9 +801,9 @@ class TestFittingSequence(object):
         )
         fitting_list = []
         kwargs_dypolychord = {
-            'kwargs_run': {
-                'ninit': 8,
-                'nlive_const': 10,
+            "kwargs_run": {
+                "ninit": 8,
+                "nlive_const": 10,
                 #'seed_increment': 1,
                 "resume_dyn_run": False,
                 #'init_step': 10,
@@ -813,7 +816,7 @@ class TestFittingSequence(object):
             "remove_output_dir": True,
         }
 
-        fitting_list.append(['dyPolyChord', kwargs_dypolychord])
+        fitting_list.append(["dyPolyChord", kwargs_dypolychord])
 
         chain_list = fittingSequence.fit_sequence(fitting_list)
 
@@ -823,17 +826,19 @@ class TestFittingSequence(object):
 
         fitting_list = []
 
-        kwargs_simplex = {'n_iterations': n_i, 'method': 'Nelder-Mead'}
-        fitting_list.append(['SIMPLEX', kwargs_simplex])
-        kwargs_simplex = {'n_iterations': n_i, 'method': 'Powell'}
-        fitting_list.append(['SIMPLEX', kwargs_simplex])
-        kwargs_pso = {'sigma_scale': 1, 'n_particles': n_p, 'n_iterations': n_i}
-        fitting_list.append(['PSO', kwargs_pso])
-        kwargs_mcmc = {'sigma_scale': 1, 'n_burn': 1, 'n_run': 1, 'n_walkers': 10}
-        fitting_list.append(['emcee', kwargs_mcmc])
-        kwargs_mcmc['re_use_samples'] = True
-        kwargs_mcmc['init_samples'] = np.array([[np.random.normal(1, 0.001)] for i in range(100)])
-        fitting_list.append(['emcee', kwargs_mcmc])
+        kwargs_simplex = {"n_iterations": n_i, "method": "Nelder-Mead"}
+        fitting_list.append(["SIMPLEX", kwargs_simplex])
+        kwargs_simplex = {"n_iterations": n_i, "method": "Powell"}
+        fitting_list.append(["SIMPLEX", kwargs_simplex])
+        kwargs_pso = {"sigma_scale": 1, "n_particles": n_p, "n_iterations": n_i}
+        fitting_list.append(["PSO", kwargs_pso])
+        kwargs_mcmc = {"sigma_scale": 1, "n_burn": 1, "n_run": 1, "n_walkers": 10}
+        fitting_list.append(["emcee", kwargs_mcmc])
+        kwargs_mcmc["re_use_samples"] = True
+        kwargs_mcmc["init_samples"] = np.array(
+            [[np.random.normal(1, 0.001)] for i in range(100)]
+        )
+        fitting_list.append(["emcee", kwargs_mcmc])
 
         def custom_likelihood(kwargs_lens, **kwargs):
             theta_E = kwargs_lens[0]["theta_E"]

@@ -119,23 +119,22 @@ class FittingSequence(object):
                 self._updateManager.update_param_state(**kwargs_result)
                 chain_list.append([self.fitting_type, kwargs_result])
 
-
             elif fitting_type in ["MCMC", "emcee", "zeus"]:
-                  #== 'MCMC' or fitting_type == 'emcee' or fitting_type == 'zeus'):
-                if fitting_type == 'MCMC':
-                    print('MCMC selected. Sampling with default option emcee.')
-                    fitting_type = 'emcee'
-                if 'init_samples' not in kwargs:
-                    kwargs['init_samples'] = self._mcmc_init_samples
-                elif kwargs['init_samples'] is None:
-                    kwargs['init_samples'] = self._mcmc_init_samples
+                # == 'MCMC' or fitting_type == 'emcee' or fitting_type == 'zeus'):
+                if fitting_type == "MCMC":
+                    print("MCMC selected. Sampling with default option emcee.")
+                    fitting_type = "emcee"
+                if "init_samples" not in kwargs:
+                    kwargs["init_samples"] = self._mcmc_init_samples
+                elif kwargs["init_samples"] is None:
+                    kwargs["init_samples"] = self._mcmc_init_samples
                 mcmc_output = self.mcmc(**kwargs, sampler_type=fitting_type)
                 kwargs_result = self._result_from_mcmc(mcmc_output)
                 self._updateManager.update_param_state(**kwargs_result)
                 chain_list.append(mcmc_output)
 
-            elif fitting_type == 'Cobaya':
-                print('Using the Metropolis--Hastings MCMC sampler in Cobaya.')
+            elif fitting_type == "Cobaya":
+                print("Using the Metropolis--Hastings MCMC sampler in Cobaya.")
                 param_class = self.param_class
                 kwargs_temp = self._updateManager.parameter_state
                 mean_start = param_class.kwargs2args(**kwargs_temp)
@@ -146,13 +145,19 @@ class FittingSequence(object):
                 # run the sampler
                 updated_info, sampler_type, best_fit_values = sampler.run(**kwargs)
                 # change the best-fit values returned by cobaya into lenstronomy kwargs format
-                best_fit_kwargs = self.param_class.args2kwargs(best_fit_values, bijective=True)
+                best_fit_kwargs = self.param_class.args2kwargs(
+                    best_fit_values, bijective=True
+                )
                 # collect the products
                 mh_output = [updated_info, sampler_type, best_fit_kwargs]
                 # append the products to the chain list
                 chain_list.append(mh_output)
 
-            elif fitting_type == 'dynesty' or fitting_type == 'dyPolyChord' or fitting_type == 'MultiNest':
+            elif (
+                fitting_type == "dynesty"
+                or fitting_type == "dyPolyChord"
+                or fitting_type == "MultiNest"
+            ):
                 ns_output = self.nested_sampling(**kwargs, sampler_type=fitting_type)
                 chain_list.append(ns_output)
 
@@ -169,11 +174,13 @@ class FittingSequence(object):
                 self._updateManager.update_param_state(**kwargs_result)
 
             else:
-                raise ValueError("fitting_sequence {} is not supported. Please use: 'PSO', 'SIMPLEX', "
-                                 "'MCMC' or 'emcee', 'zeus', 'Cobaya', "
-                                 "'dynesty', 'dyPolyChord',  'Multinest', 'Nautilus, '"
-                                 "'psf_iteration', 'restart', 'update_settings', 'calibrate_images' or "
-                                 "'align_images'".format(self.fitting_type))
+                raise ValueError(
+                    "fitting_sequence {} is not supported. Please use: 'PSO', 'SIMPLEX', "
+                    "'MCMC' or 'emcee', 'zeus', 'Cobaya', "
+                    "'dynesty', 'dyPolyChord',  'Multinest', 'Nautilus, '"
+                    "'psf_iteration', 'restart', 'update_settings', 'calibrate_images' or "
+                    "'align_images'".format(self.fitting_type)
+                )
 
         return chain_list
 
@@ -259,7 +266,6 @@ class FittingSequence(object):
         kwargs_result = param_class.args2kwargs(result, bijective=True)
         return kwargs_result
 
-
     def mcmc(
         self,
         n_burn,
@@ -326,19 +332,37 @@ class FittingSequence(object):
         else:
             initpos = None
 
-        if sampler_type == 'zeus':
+        if sampler_type == "zeus":
             # check if zeus is specified, if not default to emcee
-            samples, dist = mcmc_class.mcmc_zeus(n_walkers, n_run, n_burn, mean_start, sigma_start,
-                                                 mpi=self._mpi, threadCount=threadCount,
-                                                 progress=progress, initpos = initpos, backend_filename = backend_filename,
-                                                 **kwargs_zeus)
+            samples, dist = mcmc_class.mcmc_zeus(
+                n_walkers,
+                n_run,
+                n_burn,
+                mean_start,
+                sigma_start,
+                mpi=self._mpi,
+                threadCount=threadCount,
+                progress=progress,
+                initpos=initpos,
+                backend_filename=backend_filename,
+                **kwargs_zeus
+            )
             output = [sampler_type, samples, param_list, dist]
         else:
             # sample with emcee
-            samples, dist = mcmc_class.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=self._mpi,
-                                                  threadCount=threadCount, progress=progress, initpos=initpos,
-                                                  backend_filename=backend_filename,
-                                                  start_from_backend=start_from_backend)
+            samples, dist = mcmc_class.mcmc_emcee(
+                n_walkers,
+                n_run,
+                n_burn,
+                mean_start,
+                sigma_start,
+                mpi=self._mpi,
+                threadCount=threadCount,
+                progress=progress,
+                initpos=initpos,
+                backend_filename=backend_filename,
+                start_from_backend=start_from_backend,
+            )
             output = [sampler_type, samples, param_list, dist]
 
         self._mcmc_init_samples = samples  # overwrites previous samples to continue from there in the next MCMC run
@@ -442,54 +466,73 @@ class FittingSequence(object):
         """
         mean_start, sigma_start = self._prepare_sampling(prior_type)
 
-        if sampler_type == 'dyPolyChord':
-            if 'resume_dyn_run' in kwargs_run and kwargs_run['resume_dyn_run'] is True:
+        if sampler_type == "dyPolyChord":
+            if "resume_dyn_run" in kwargs_run and kwargs_run["resume_dyn_run"] is True:
                 resume_dyn_run = True
             else:
                 resume_dyn_run = False
-            sampler = DyPolyChordSampler(self.likelihoodModule,
-                                         prior_type=prior_type,
-                                         prior_means=mean_start,
-                                         prior_sigmas=sigma_start,
-                                         width_scale=width_scale,
-                                         sigma_scale=sigma_scale,
-                                         output_dir=output_dir,
-                                         output_basename=output_basename,
-                                         polychord_settings=polychord_settings,
-                                         remove_output_dir=remove_output_dir,
-                                         resume_dyn_run=resume_dyn_run,
-                                         use_mpi=self._mpi)
-            samples, means, logZ, logZ_err, logL, results_object = sampler.run(dypolychord_dynamic_goal, kwargs_run)
+            sampler = DyPolyChordSampler(
+                self.likelihoodModule,
+                prior_type=prior_type,
+                prior_means=mean_start,
+                prior_sigmas=sigma_start,
+                width_scale=width_scale,
+                sigma_scale=sigma_scale,
+                output_dir=output_dir,
+                output_basename=output_basename,
+                polychord_settings=polychord_settings,
+                remove_output_dir=remove_output_dir,
+                resume_dyn_run=resume_dyn_run,
+                use_mpi=self._mpi,
+            )
+            samples, means, logZ, logZ_err, logL, results_object = sampler.run(
+                dypolychord_dynamic_goal, kwargs_run
+            )
 
-        elif sampler_type == 'MultiNest':
-            sampler = MultiNestSampler(self.likelihoodModule,
-                                       prior_type=prior_type,
-                                       prior_means=mean_start,
-                                       prior_sigmas=sigma_start,
-                                       width_scale=width_scale,
-                                       sigma_scale=sigma_scale,
-                                       output_dir=output_dir,
-                                       output_basename=output_basename,
-                                       remove_output_dir=remove_output_dir,
-                                       use_mpi=self._mpi)
-            samples, means, logZ, logZ_err, logL, results_object = sampler.run(kwargs_run)
+        elif sampler_type == "MultiNest":
+            sampler = MultiNestSampler(
+                self.likelihoodModule,
+                prior_type=prior_type,
+                prior_means=mean_start,
+                prior_sigmas=sigma_start,
+                width_scale=width_scale,
+                sigma_scale=sigma_scale,
+                output_dir=output_dir,
+                output_basename=output_basename,
+                remove_output_dir=remove_output_dir,
+                use_mpi=self._mpi,
+            )
+            samples, means, logZ, logZ_err, logL, results_object = sampler.run(
+                kwargs_run
+            )
         else:
-            sampler = DynestySampler(self.likelihoodModule,
-                                     prior_type=prior_type,
-                                     prior_means=mean_start,
-                                     prior_sigmas=sigma_start,
-                                     width_scale=width_scale,
-                                     sigma_scale=sigma_scale,
-                                     bound=dynesty_bound,
-                                     sample=dynesty_sample,
-                                     use_mpi=self._mpi)
-            samples, means, logZ, logZ_err, logL, results_object = sampler.run(kwargs_run)
+            sampler = DynestySampler(
+                self.likelihoodModule,
+                prior_type=prior_type,
+                prior_means=mean_start,
+                prior_sigmas=sigma_start,
+                width_scale=width_scale,
+                sigma_scale=sigma_scale,
+                bound=dynesty_bound,
+                sample=dynesty_sample,
+                use_mpi=self._mpi,
+            )
+            samples, means, logZ, logZ_err, logL, results_object = sampler.run(
+                kwargs_run
+            )
 
         # update current best fit values
         self._update_state(samples[-1])
 
-        output = [self.fitting_type, samples, sampler.param_names, logL,
-                  logZ, logZ_err, results_object]
+        output = [
+            self.fitting_type,
+            samples,
+            sampler.param_names,
+            logL,
+            logZ,
+            logZ_err,
+            results_object,
+        ]
 
         return output
 

@@ -80,10 +80,11 @@ class TestChainPlots(object):
         samples_mcmc = np.random.random((10, 1000))
         dist_mcmc = np.random.random(1000)
 
-        chain_list = [['PSO', chain, param],
-                      ['emcee', samples_mcmc, param, dist_mcmc],
-                      ['MultiNest', samples_mcmc, param, dist_mcmc]
-                      ]
+        chain_list = [
+            ["PSO", chain, param],
+            ["emcee", samples_mcmc, param, dist_mcmc],
+            ["MultiNest", samples_mcmc, param, dist_mcmc],
+        ]
 
         chain_plot.plot_chain_list(chain_list, index=0)
         plt.close()

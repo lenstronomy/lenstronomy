@@ -152,11 +152,7 @@ class FittingSequence(object):
                 # append the products to the chain list
                 chain_list.append(mh_output)
 
-            elif (
-                fitting_type == "dynesty"
-                or fitting_type == "dyPolyChord"
-                or fitting_type == "MultiNest"
-            ):
+            elif fitting_type in ["dynesty", "dyPolyChord", "MultiNest"]:
                 ns_output = self.nested_sampling(**kwargs, sampler_type=fitting_type)
                 chain_list.append(ns_output)
 

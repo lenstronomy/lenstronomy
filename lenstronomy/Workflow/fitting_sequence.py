@@ -320,7 +320,7 @@ class FittingSequence(object):
                                                   threadCount=threadCount, progress=progress, initpos=initpos,
                                                   backend_filename=backend_filename,
                                                   start_from_backend=start_from_backend)
-            output = [self.fitting_type, samples, param_list, dist]
+            output = [sampler_type, samples, param_list, dist]
 
         self._mcmc_init_samples = samples  # overwrites previous samples to continue from there in the next MCMC run
         return output

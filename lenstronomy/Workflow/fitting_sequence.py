@@ -307,7 +307,7 @@ class FittingSequence(object):
         else:
             initpos = None
 
-        if self.fitting_type == 'zeus':
+        if sampler_type == 'zeus':
             # check if zeus is specified, if not default to emcee
             samples, dist = mcmc_class.mcmc_zeus(n_walkers, n_run, n_burn, mean_start, sigma_start,
                                                  mpi=self._mpi, threadCount=threadCount,

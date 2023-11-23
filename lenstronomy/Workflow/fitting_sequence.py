@@ -73,36 +73,36 @@ class FittingSequence(object):
         """
         chain_list = []
         for i, fitting in enumerate(fitting_list):
-            self.fitting_type = fitting[0]
+            fitting_type = fitting[0]
             kwargs = fitting[1]
 
-            if self.fitting_type == 'restart':
+            if fitting_type == 'restart':
                 self._updateManager.set_init_state()
 
-            elif self.fitting_type == 'update_settings':
+            elif fitting_type == 'update_settings':
                 self.update_settings(**kwargs)
 
-            elif self.fitting_type == 'set_param_value':
+            elif fitting_type == 'set_param_value':
                 self.set_param_value(**kwargs)
 
-            elif self.fitting_type == 'fix_not_computed':
+            elif fitting_type == 'fix_not_computed':
                 self.fix_not_computed(**kwargs)
 
-            elif self.fitting_type == 'psf_iteration':
+            elif fitting_type == 'psf_iteration':
                 self.psf_iteration(**kwargs)
 
-            elif self.fitting_type == 'align_images':
+            elif fitting_type == 'align_images':
                 self.align_images(**kwargs)
 
-            elif self.fitting_type == 'calibrate_images':
+            elif fitting_type == 'calibrate_images':
                 self.flux_calibration(**kwargs)
 
-            elif self.fitting_type == 'PSO':
+            elif fitting_type == 'PSO':
                 kwargs_result, chain, param = self.pso(**kwargs)
                 self._updateManager.update_param_state(**kwargs_result)
                 chain_list.append([self.fitting_type, chain, param])
 
-            elif self.fitting_type == 'SIMPLEX':
+            elif fitting_type == 'SIMPLEX':
                 kwargs_result = self.simplex(**kwargs)
                 self._updateManager.update_param_state(**kwargs_result)
                 chain_list.append([self.fitting_type, kwargs_result])
@@ -112,19 +112,19 @@ class FittingSequence(object):
 
             # furthermore the samplers are sorted by type and then alphabetically
 
-            elif self.fitting_type == 'MCMC' or self.fitting_type == 'emcee' or self.fitting_type == 'zeus':
-                if self.fitting_type == 'MCMC':
+            elif fitting_type == 'MCMC' or fitting_type == 'emcee' or fitting_type == 'zeus':
+                if fitting_type == 'MCMC':
                     print('MCMC selected. Sampling with default option (emcee).')
                 if 'init_samples' not in kwargs:
                     kwargs['init_samples'] = self._mcmc_init_samples
                 elif kwargs['init_samples'] is None:
                     kwargs['init_samples'] = self._mcmc_init_samples
-                mcmc_output = self.mcmc(**kwargs)
+                mcmc_output = self.mcmc(**kwargs, sampler_type=fitting_type)
                 kwargs_result = self._result_from_mcmc(mcmc_output)
                 self._updateManager.update_param_state(**kwargs_result)
                 chain_list.append(mcmc_output)
 
-            elif self.fitting_type == 'Cobaya':
+            elif fitting_type == 'Cobaya':
                 print('Using the Metropolis--Hastings MCMC sampler in Cobaya.')
                 param_class = self.param_class
                 kwargs_temp = self._updateManager.parameter_state
@@ -142,8 +142,8 @@ class FittingSequence(object):
                 # append the products to the chain list
                 chain_list.append(mh_output)
 
-            elif self.fitting_type == 'dynesty' or self.fitting_type == 'dyPolyChord' or self.fitting_type == 'MultiNest':
-                ns_output = self.nested_sampling(**kwargs)
+            elif fitting_type == 'dynesty' or fitting_type == 'dyPolyChord' or fitting_type == 'MultiNest':
+                ns_output = self.nested_sampling(**kwargs, sampler_type=fitting_type)
                 chain_list.append(ns_output)
 
             elif self.fitting_type == 'Nautilus':
@@ -264,8 +264,7 @@ class FittingSequence(object):
         :param init_samples: initial sample from where to start the MCMC process
         :param re_use_samples: bool, if True, re-uses the samples described in init_samples.nOtherwise starts from
          scratch.
-        :param sampler_type: string, which MCMC sampler to be used.
-        This option is deprecated in favour of passing the sampler type as the first item in the fitting_kwargs_list.
+        :param sampler_type: string, which MCMC sampler to be used. Options are 'emcee' and 'zeus'
         :param progress: boolean, if True shows progress bar in EMCEE
         :param backend_filename: name of the HDF5 file where sampling state is saved (through emcee backend engine)
         :type backend_filename: string
@@ -276,13 +275,6 @@ class FittingSequence(object):
         :return: list of output arguments, e.g. MCMC samples, parameter names, logL distances of all samples specified
          by the specific sampler used
         """
-
-        if sampler_type is not None:
-            # NH: is there a better way to do this? I didn't want to remove the kwarg immediately
-            # since that will also create a backards compatibility issue
-            print("""The sampler_type keyword argument is deprecated.
-                     The sampler type should now be passed as the first item in fitting_kwargs_list.""")
-
         param_class = self.param_class
         # run PSO
         mcmc_class = Sampler(likelihoodModule=self.likelihoodModule)
@@ -355,7 +347,7 @@ class FittingSequence(object):
         return kwargs_result, chain, param_list
 
     def nested_sampling(self,
-                        sampler_type='MULTINEST', # NH: can eventually be removed
+                        sampler_type='MULTINEST',
                          kwargs_run={},
                         prior_type='uniform', width_scale=1, sigma_scale=1,
                         output_basename='chain', remove_output_dir=True,
@@ -383,13 +375,8 @@ class FittingSequence(object):
         """
         mean_start, sigma_start = self._prepare_sampling(prior_type)
 
-        if sampler_type is not None:
-            # NH: as above
-            print("""The sampler_type keyword argument is deprecated.
-                     The sampler type should now be passed as the first item in fitting_kwargs_list.""")
-
         # NH: reordered to make MultiNest the default
-        if self.fitting_type == 'dynesty':
+        if sampler_type == 'dynesty':
             sampler = DynestySampler(self.likelihoodModule,
                                      prior_type=prior_type,
                                      prior_means=mean_start,
@@ -400,7 +387,7 @@ class FittingSequence(object):
                                      sample=dynesty_sample,
                                      use_mpi=self._mpi)
             samples, means, logZ, logZ_err, logL, results_object = sampler.run(kwargs_run)
-        elif self.fitting_type == 'dyPolyChord':
+        elif sampler_type == 'dyPolyChord':
             if 'resume_dyn_run' in kwargs_run and kwargs_run['resume_dyn_run'] is True:
                 resume_dyn_run = True
             else:

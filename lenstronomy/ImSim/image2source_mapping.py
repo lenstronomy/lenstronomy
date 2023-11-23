@@ -1,14 +1,14 @@
 import numpy as np
 from lenstronomy.Cosmo.background import Background
 
-__all__ = ['Image2SourceMapping']
+__all__ = ["Image2SourceMapping"]
 
 
 class Image2SourceMapping(object):
-    """
-    this class handles multiple source planes and performs the computation of predicted surface brightness at given
-    image positions.
-    The class is enable to deal with an arbitrary number of different source planes. There are two different settings:
+    """This class handles multiple source planes and performs the computation of
+    predicted surface brightness at given image positions. The class is enable to deal
+    with an arbitrary number of different source planes. There are two different
+    settings:
 
     Single lens plane modelling:
     In case of a single deflector, lenstronomy models the reduced deflection angles
@@ -42,18 +42,26 @@ class Image2SourceMapping(object):
 
         if self._multi_lens_plane is True:
             if self._deflection_scaling_list is not None:
-                raise ValueError('deflection scaling for different source planes not possible in combination of '
-                                 'multi-lens plane modeling. You have to specify the redshifts of the sources instead.')
+                raise ValueError(
+                    "deflection scaling for different source planes not possible in combination of "
+                    "multi-lens plane modeling. You have to specify the redshifts of the sources instead."
+                )
             self._bkg_cosmo = Background(lensModel.cosmo)
             if self._source_redshift_list is None:
                 self._multi_source_plane = False
             elif len(self._source_redshift_list) != len(light_model_list):
-                raise ValueError("length of redshift_list must correspond to length of light_model_list")
+                raise ValueError(
+                    "length of redshift_list must correspond to length of light_model_list"
+                )
             elif np.max(self._source_redshift_list) > self._lensModel.z_source:
-                raise ValueError("redshift of source_redshift_list have to be smaler or equal to the one specified in "
-                                 "the lens model.")
+                raise ValueError(
+                    "redshift of source_redshift_list have to be smaler or equal to the one specified in "
+                    "the lens model."
+                )
             else:
-                self._sorted_source_redshift_index = self._index_ordering(self._source_redshift_list)
+                self._sorted_source_redshift_index = self._index_ordering(
+                    self._source_redshift_list
+                )
                 self._T0z_list = []
                 for z_stop in self._source_redshift_list:
                     self._T0z_list.append(self._bkg_cosmo.T_xy(0, z_stop))
@@ -62,7 +70,12 @@ class Image2SourceMapping(object):
                 self._T_ij_end_list = []
                 for i, index_source in enumerate(self._sorted_source_redshift_index):
                     z_stop = self._source_redshift_list[index_source]
-                    T_ij_start, T_ij_end = self._lensModel.lens_model.transverse_distance_start_stop(z_start, z_stop, include_z_start=False)
+                    (
+                        T_ij_start,
+                        T_ij_end,
+                    ) = self._lensModel.lens_model.transverse_distance_start_stop(
+                        z_start, z_stop, include_z_start=False
+                    )
                     self._T_ij_start_list.append(T_ij_start)
                     self._T_ij_end_list.append(T_ij_end)
                     z_start = z_stop
@@ -70,7 +83,9 @@ class Image2SourceMapping(object):
             if self._deflection_scaling_list is None:
                 self._multi_source_plane = False
             elif len(self._deflection_scaling_list) != len(light_model_list):
-                raise ValueError('length of scale_factor_list must correspond to length of light_model_list!')
+                raise ValueError(
+                    "length of scale_factor_list must correspond to length of light_model_list!"
+                )
 
     def image2source(self, x, y, kwargs_lens, index_source):
         """
@@ -96,10 +111,14 @@ class Image2SourceMapping(object):
                 z_stop = self._source_redshift_list[index_source]
                 x_ = np.zeros_like(x)
                 y_ = np.zeros_like(y)
-                x_comov, y_comov, alpha_x, alpha_y = self._lensModel.lens_model.ray_shooting_partial(x_, y_, x, y,
-                                                                                                     0, z_stop,
-                                                                                                     kwargs_lens,
-                                                                                                     include_z_start=False)
+                (
+                    x_comov,
+                    y_comov,
+                    alpha_x,
+                    alpha_y,
+                ) = self._lensModel.lens_model.ray_shooting_partial(
+                    x_, y_, x, y, 0, z_stop, kwargs_lens, include_z_start=False
+                )
 
                 T_z = self._T0z_list[index_source]
                 x_source = x_comov / T_z
@@ -118,7 +137,9 @@ class Image2SourceMapping(object):
         """
         if self._multi_source_plane is False:
             x_source, y_source = self._lensModel.ray_shooting(x, y, kwargs_lens)
-            return self._lightModel.surface_brightness(x_source, y_source, kwargs_source, k=k)
+            return self._lightModel.surface_brightness(
+                x_source, y_source, kwargs_source, k=k
+            )
         else:
             flux = np.zeros_like(x)
             if self._multi_lens_plane is False:
@@ -127,8 +148,10 @@ class Image2SourceMapping(object):
                     scale_factor = self._deflection_scaling_list[i]
                     x_source = x - x_alpha * scale_factor
                     y_source = y - y_alpha * scale_factor
-                    if k is None or k ==i:
-                        flux += self._lightModel.surface_brightness(x_source, y_source, kwargs_source, k=i)
+                    if k is None or k == i:
+                        flux += self._lightModel.surface_brightness(
+                            x_source, y_source, kwargs_source, k=i
+                        )
             else:
                 x_comov = np.zeros_like(x)
                 y_comov = np.zeros_like(y)
@@ -140,15 +163,31 @@ class Image2SourceMapping(object):
                     if z_stop > z_start:
                         T_ij_start = self._T_ij_start_list[i]
                         T_ij_end = self._T_ij_end_list[i]
-                        x_comov, y_comov, alpha_x, alpha_y = self._lensModel.lens_model.ray_shooting_partial(x_comov, y_comov, alpha_x, alpha_y, z_start, z_stop,
-                                                                        kwargs_lens, include_z_start=False,
-                                                                        T_ij_start=T_ij_start, T_ij_end=T_ij_end)
+                        (
+                            x_comov,
+                            y_comov,
+                            alpha_x,
+                            alpha_y,
+                        ) = self._lensModel.lens_model.ray_shooting_partial(
+                            x_comov,
+                            y_comov,
+                            alpha_x,
+                            alpha_y,
+                            z_start,
+                            z_stop,
+                            kwargs_lens,
+                            include_z_start=False,
+                            T_ij_start=T_ij_start,
+                            T_ij_end=T_ij_end,
+                        )
 
                         T_z = self._T0z_list[index_source]
                         x_source = x_comov / T_z
                         y_source = y_comov / T_z
                     if k is None or k == i:
-                        flux += self._lightModel.surface_brightness(x_source, y_source, kwargs_source, k=index_source)
+                        flux += self._lightModel.surface_brightness(
+                            x_source, y_source, kwargs_source, k=index_source
+                        )
                     z_start = z_stop
             return flux
 
@@ -173,7 +212,9 @@ class Image2SourceMapping(object):
                     scale_factor = self._deflection_scaling_list[i]
                     x_source = x - x_alpha * scale_factor
                     y_source = y - y_alpha * scale_factor
-                    response_i, n_i = self._lightModel.functions_split(x_source, y_source, kwargs_source, k=i)
+                    response_i, n_i = self._lightModel.functions_split(
+                        x_source, y_source, kwargs_source, k=i
+                    )
                     response += response_i
                     n += n_i
             else:
@@ -188,14 +229,29 @@ class Image2SourceMapping(object):
                     if z_stop > z_start:
                         T_ij_start = self._T_ij_start_list[i]
                         T_ij_end = self._T_ij_end_list[i]
-                        x_comov, y_comov, alpha_x, alpha_y = self._lensModel.lens_model.ray_shooting_partial(x_comov,
-                                                                y_comov, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
-                                                                include_z_start=False, T_ij_start=T_ij_start,
-                                                                T_ij_end=T_ij_end)
+                        (
+                            x_comov,
+                            y_comov,
+                            alpha_x,
+                            alpha_y,
+                        ) = self._lensModel.lens_model.ray_shooting_partial(
+                            x_comov,
+                            y_comov,
+                            alpha_x,
+                            alpha_y,
+                            z_start,
+                            z_stop,
+                            kwargs_lens,
+                            include_z_start=False,
+                            T_ij_start=T_ij_start,
+                            T_ij_end=T_ij_end,
+                        )
                         T_z = self._T0z_list[index_source]
                         x_source = x_comov / T_z
                         y_source = y_comov / T_z
-                    response_i, n_i = self._lightModel.functions_split(x_source, y_source, kwargs_source, k=index_source)
+                    response_i, n_i = self._lightModel.functions_split(
+                        x_source, y_source, kwargs_source, k=index_source
+                    )
                     n_i_list.append(n_i)
                     response += response_i
                     n += n_i
@@ -235,6 +291,8 @@ class Image2SourceMapping(object):
         for i, index in enumerate(self._sorted_source_redshift_index):
             n_i = n_list[index]
             n_sum = n_sum_list_regular[index]
-            reshuffled[n_sum:n_sum + n_i] = response[n_sum_sorted:n_sum_sorted + n_i]
+            reshuffled[n_sum : n_sum + n_i] = response[
+                n_sum_sorted : n_sum_sorted + n_i
+            ]
             n_sum_sorted += n_i
         return reshuffled

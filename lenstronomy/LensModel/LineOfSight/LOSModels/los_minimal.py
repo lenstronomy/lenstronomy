@@ -1,8 +1,8 @@
-__author__ = ['nataliehogg', 'pierrefleury']
+__author__ = ["nataliehogg", "pierrefleury"]
 
 from lenstronomy.LensModel.LineOfSight.LOSModels.los import LOS
 
-__all__ = ['LOSMinimal']
+__all__ = ["LOSMinimal"]
 
 
 class LOSMinimal(LOS):
@@ -15,7 +15,15 @@ class LOSMinimal(LOS):
     gamma2_los, omega_los.
     """
 
-    param_names = ['kappa_od', 'gamma1_od', 'gamma2_od', 'omega_od',
-                   'kappa_los', 'gamma1_los', 'gamma2_los', 'omega_los']
+    param_names = [
+        "kappa_od",
+        "gamma1_od",
+        "gamma2_od",
+        "omega_od",
+        "kappa_los",
+        "gamma1_los",
+        "gamma2_los",
+        "omega_los",
+    ]
     lower_limit_default = {pert: -0.5 for pert in param_names}
     upper_limit_default = {pert: 0.5 for pert in param_names}

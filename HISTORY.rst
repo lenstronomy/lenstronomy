@@ -337,3 +337,25 @@ History
 * ellipticity measurement update
 * stellar micro-lensing routines
 * PSF fitting accounts for corners
+
+1.11.3 (2023-09-04)
++++++++++++++++++++
+* reformatting with black
+* CosmoInterp class with generic interpolation input possible
+* elliptical NFW m-c profile
+* updated nautilus and nested sampler interfaces
+* COOLEST interface
+* cored truncated NFW profile
+* SkiNN interface
+* faster and more reliable Einstein radius computation
+* Cobaya interface
+
+1.11.4 (2023-09-27)
++++++++++++++++++++
+* Cobaya not required to run FittingSequence
+* Galkin with luminosity-weighted velocity dispersion calculation
+
+1.11.5 (2023-09-28)
++++++++++++++++++++
+* bug fix in findOverlap function
+* bug fix in luminosity-0weighted celocity dispersion calculation

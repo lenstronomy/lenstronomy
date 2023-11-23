@@ -1,19 +1,20 @@
-__author__ = 'sibirrer'
+__author__ = "sibirrer"
 
 from lenstronomy.LensModel.Profiles.spp import SPP
 from lenstronomy.LensModel.Profiles.spemd import SPEMD
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
+import lenstronomy.Util.param_util as param_util
+import numpy as np
 
-__all__ = ['PEMD']
+__all__ = ["PEMD"]
 
 
 class PEMD(LensProfileBase):
-    """
-    class for power law ellipse mass density profile.
-    This class effectively calls the class SPEMD_SMOOTH with a fixed and very small central smoothing scale
-    to perform the numerical integral using the FASTELL code by Renan Barkana.
-    An alternative implementation of the same model using pure python with analytical functions is probided as 'EPL'
-    profile.
+    """Class for power law ellipse mass density profile (PEMD). This class effectively
+    calls the class SPEMD_SMOOTH with a fixed and very small central smoothing scale to
+    perform the numerical integral using the FASTELL code by Renan Barkana. An
+    alternative implementation of the same model using pure python with analytical
+    functions is probided as 'EPL' profile.
 
     .. math::
         \\kappa(x, y) = \\frac{3-\\gamma}{2} \\left(\\frac{\\theta_{E}}{\\sqrt{q x^2 + y^2/q}} \\right)^{\\gamma-1}
@@ -37,12 +38,25 @@ class PEMD(LensProfileBase):
 
     .. math::
         \\left(\\frac{\\theta'_{\\rm E}}{\\theta_{\\rm E}}\\right)^{2} = \\frac{2q}{1+q^2}.
-
-
     """
-    param_names = ['theta_E', 'gamma', 'e1', 'e2', 'center_x', 'center_y']
-    lower_limit_default = {'theta_E': 0, 'gamma': 1.5, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'theta_E': 100, 'gamma': 2.5, 'e1': 0.5, 'e2': 0.5, 'center_x': 100, 'center_y': 100}
+
+    param_names = ["theta_E", "gamma", "e1", "e2", "center_x", "center_y"]
+    lower_limit_default = {
+        "theta_E": 0,
+        "gamma": 1.5,
+        "e1": -0.5,
+        "e2": -0.5,
+        "center_x": -100,
+        "center_y": -100,
+    }
+    upper_limit_default = {
+        "theta_E": 100,
+        "gamma": 2.5,
+        "e1": 0.5,
+        "e2": 0.5,
+        "center_x": 100,
+        "center_y": 100,
+    }
 
     def __init__(self, suppress_fastell=False):
         """
@@ -67,7 +81,9 @@ class PEMD(LensProfileBase):
         :param center_y: y-position of lens center
         :return: lensing potential
         """
-        return self.spemd_smooth.function(x, y, theta_E, gamma, e1, e2, self._s_scale, center_x, center_y)
+        return self.spemd_smooth.function(
+            x, y, theta_E, gamma, e1, e2, self._s_scale, center_x, center_y
+        )
 
     def derivatives(self, x, y, theta_E, gamma, e1, e2, center_x=0, center_y=0):
         """
@@ -82,7 +98,9 @@ class PEMD(LensProfileBase):
         :param center_y: y-position of lens center
         :return: deflection angles alpha_x, alpha_y
         """
-        return self.spemd_smooth.derivatives(x, y, theta_E, gamma, e1, e2, self._s_scale, center_x, center_y)
+        return self.spemd_smooth.derivatives(
+            x, y, theta_E, gamma, e1, e2, self._s_scale, center_x, center_y
+        )
 
     def hessian(self, x, y, theta_E, gamma, e1, e2, center_x=0, center_y=0):
         """
@@ -97,11 +115,13 @@ class PEMD(LensProfileBase):
         :param center_y: y-position of lens center
         :return: Hessian components f_xx, f_xy, f_yx, f_yy
         """
-        return self.spemd_smooth.hessian(x, y, theta_E, gamma, e1, e2, self._s_scale, center_x, center_y)
+        return self.spemd_smooth.hessian(
+            x, y, theta_E, gamma, e1, e2, self._s_scale, center_x, center_y
+        )
 
     def mass_3d_lens(self, r, theta_E, gamma, e1=None, e2=None):
-        """
-        computes the spherical power-law mass enclosed (with SPP routine)
+        """Computes the spherical power-law mass enclosed (with SPP routine).
+
         :param r: radius within the mass is computed
         :param theta_E: Einstein radius
         :param gamma: power-law slope
@@ -112,9 +132,9 @@ class PEMD(LensProfileBase):
         return self.spp.mass_3d_lens(r, theta_E, gamma)
 
     def density_lens(self, r, theta_E, gamma, e1=None, e2=None):
-        """
-        computes the density at 3d radius r given lens model parameterization.
-        The integral in the LOS projection of this quantity results in the convergence quantity.
+        """Computes the density at 3d radius r given lens model parameterization. The
+        integral in the LOS projection of this quantity results in the convergence
+        quantity.
 
         :param r: radius within the mass is computed
         :param theta_E: Einstein radius

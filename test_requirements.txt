@@ -1,3 +1,4 @@
 # requirements for tests
 colossus
-git+https://github.com/aymgal/coolest@main#egg=coolest
+git+https://github.com/mattgomer/SKiNN@main#egg=SKiNN
+git+https://github.com/aymgal/coolest@v0.1.0

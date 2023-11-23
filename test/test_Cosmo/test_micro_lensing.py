@@ -4,7 +4,6 @@ import numpy.testing as npt
 
 
 def test_einstein_radius():
-
     # from Wikipedia, a 60 M_jupiter mass object at 4000 pc with a source at 8000pc results in an Einstein radius of
     # about 0.00024 arc seconds
     mass = 60 * constants.M_jupiter / constants.M_sun

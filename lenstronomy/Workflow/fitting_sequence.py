@@ -112,12 +112,12 @@ class FittingSequence(object):
             elif fitting_type == "PSO":
                 kwargs_result, chain, param = self.pso(**kwargs)
                 self._updateManager.update_param_state(**kwargs_result)
-                chain_list.append([self.fitting_type, chain, param])
+                chain_list.append([fitting_type, chain, param])
 
             elif fitting_type == "SIMPLEX":
                 kwargs_result = self.simplex(**kwargs)
                 self._updateManager.update_param_state(**kwargs_result)
-                chain_list.append([self.fitting_type, kwargs_result])
+                chain_list.append([fitting_type, kwargs_result])
 
             elif fitting_type in ["MCMC", "emcee", "zeus"]:
                 if fitting_type == "MCMC":
@@ -178,7 +178,7 @@ class FittingSequence(object):
                     "'MCMC' or 'emcee', 'zeus', 'Cobaya', "
                     "'dynesty', 'dyPolyChord',  'Multinest', 'Nautilus, '"
                     "'psf_iteration', 'restart', 'update_settings', 'calibrate_images' or "
-                    "'align_images'".format(self.fitting_type)
+                    "'align_images'".format(fitting_type)
                 )
 
         return chain_list
@@ -524,7 +524,7 @@ class FittingSequence(object):
         self._update_state(samples[-1])
 
         output = [
-            self.fitting_type,
+            fitting_type,
             samples,
             sampler.param_names,
             logL,

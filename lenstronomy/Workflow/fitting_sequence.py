@@ -249,7 +249,7 @@ class FittingSequence(object):
 
     def mcmc(self,
              n_burn, n_run, walkerRatio=None, n_walkers=None, sigma_scale=1, threadCount=1, init_samples=None, re_use_samples=True,
-             sampler_type='EMCEE', # NH: eventually this can be removed
+             sampler_type='EMCEE',
              progress=True, backend_filename=None, start_from_backend=False,
              **kwargs_zeus):
         """

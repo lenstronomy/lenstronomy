@@ -313,7 +313,7 @@ class FittingSequence(object):
                                                  mpi=self._mpi, threadCount=threadCount,
                                                  progress=progress, initpos = initpos, backend_filename = backend_filename,
                                                  **kwargs_zeus)
-            output = [self.fitting_type, samples, param_list, dist]
+            output = [sampler_type, samples, param_list, dist]
         else:
             # sample with emcee
             samples, dist = mcmc_class.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=self._mpi,

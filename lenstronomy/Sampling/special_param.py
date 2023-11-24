@@ -181,6 +181,10 @@ class SpecialParam(object):
         self._source_grid_offset = SourceGridOffsetParam(source_grid_offset)
 
         if self._distance_ratio_sampling:
+            if Ddt_sampling:
+                print("Warning: Ddt_sampling is turned off as distance_ratio_sampling is True.")
+            if num_z_sampling:
+                print("Warning: num_z_sampling is turned off as distance_ratio_sampling is True.")
             self._D_dt_sampling = False
             self._z_sampling = False
             self._num_lens_planes = num_lens_planes

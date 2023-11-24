@@ -78,26 +78,45 @@ class MultiPlaneBase(ProfileListBase):
 
     @property
     def z_source_convention(self):
+        """
+        Redshift of the source to define the reduced deflection angles of the lens
+        models.
+        """
         return self._z_source_convention
 
     @property
     def sorted_redshift_index(self):
+        """
+        list of lens indices in the sorted redshift order
+        """
         return self._sorted_redshift_index
 
     @property
     def T_z_list(self):
+        """
+        list of transverse angular diameter distances between the observer and the lens planes
+        """
         return self._T_z_list
 
     @T_z_list.setter
     def T_z_list(self, T_z_list):
+        """
+        list of transverse angular diameter distances between the observer and the lens planes
+        """
         self._T_z_list = T_z_list
 
     @property
     def T_ij_list(self):
+        """
+        list of transverse angular diameter distances between the lens planes
+        """
         return self._T_ij_list
 
     @T_ij_list.setter
     def T_ij_list(self, T_ij_list):
+        """
+        list of transverse angular diameter distances between the lens planes
+        """
         self._T_ij_list = T_ij_list
 
     def ray_shooting_partial_comoving(self, x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,

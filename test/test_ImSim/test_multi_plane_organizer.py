@@ -46,6 +46,9 @@ class TestMultiPlaneOrganizer(object):
 
 
     def test_distance_computations(self):
+        """
+
+        """
         kwargs_lens = [
             {'center_x': 0, 'center_y': 0, 'theta_E': 1.},
             {'center_x': 0, 'center_y': 0, 'theta_E': 0.},

@@ -102,11 +102,11 @@ class MultiPlaneOrganizer(object):
 
         for i in range(1, self._num_lens_planes+1):
             a_factors.append(
-                kwargs_special['a_{}'.format(i)]
+                kwargs_special['a_factor_{}'.format(i)]
             )
         for i in range(2, self._num_lens_planes):
             b_factors.append(
-                kwargs_special['b_{}'.format(i)]
+                kwargs_special['b_factor_{}'.format(i)]
             )
         b_factors.append(a_factors[-1])
 

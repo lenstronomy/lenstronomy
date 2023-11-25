@@ -122,7 +122,8 @@ class MultiPlaneBase(ProfileListBase):
     def ray_shooting_partial_comoving(self, x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
                                       include_z_start=False, T_ij_start=None, T_ij_end=None):
         """
-        ray-tracing through parts of the coin, starting with (x,y) co-moving distances and angles (alpha_x, alpha_y)
+        ray-tracing through parts of the cone, starting with (x,y) co-moving
+        distances and angles (alpha_x, alpha_y)
         at redshift z_start and then backwards to redshift z_stop
 
         :param x: co-moving position [Mpc]

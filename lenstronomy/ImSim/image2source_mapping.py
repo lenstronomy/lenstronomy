@@ -102,18 +102,30 @@ class Image2SourceMapping(object):
 
     @property
     def T_ij_start_list(self):
+        """
+        list of transverse distances from the observer to the start of the source plane
+        """
         return self._T_ij_start_list
 
     @T_ij_start_list.setter
     def T_ij_start_list(self, T_ij_start_list):
+        """
+        list of transverse distances from the observer to the start of the source plane
+        """
         self._T_ij_start_list = T_ij_start_list
 
     @property
     def T_ij_end_list(self):
+        """
+        list of transverse distances from the observer to the end of the source plane
+        """
         return self._T_ij_end_list
 
     @T_ij_end_list.setter
     def T_ij_end_list(self, T_ij_end_list):
+        """
+        list of transverse distances from the observer to the end of the source plane
+        """
         self._T_ij_end_list = T_ij_end_list
 
     def image2source(self, x, y, kwargs_lens, index_source,
@@ -157,6 +169,7 @@ class Image2SourceMapping(object):
     def image_flux_joint(self, x, y, kwargs_lens, kwargs_source,
                          kwargs_special=None, k=None):
         """
+        computes the surface brightness of all light components at image position (x, y)
 
         :param x: coordinate in image plane
         :param y: coordinate in image plane
@@ -205,6 +218,7 @@ class Image2SourceMapping(object):
     def image_flux_split(self, x, y, kwargs_lens, kwargs_source,
                          kwargs_special=None):
         """
+        computes the surface brightness of all light components at image position (x, y)
 
         :param x: coordinate in image plane
         :param y: coordinate in image plane
@@ -260,6 +274,7 @@ class Image2SourceMapping(object):
     @staticmethod
     def _index_ordering(redshift_list):
         """
+        orders the redshifts in ascending order
 
         :param redshift_list: list of redshifts
         :return: indexes in ascending order to be evaluated (from z=0 to z=z_source)
@@ -270,6 +285,7 @@ class Image2SourceMapping(object):
 
     def _re_order_split(self, response, n_list):
         """
+        reshuffles the response array in order of the function definition
 
         :param response: splitted functions in order of redshifts
         :param n_list: list of number of response vectors per model in order of the model list (not redshift ordered)

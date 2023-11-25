@@ -19,9 +19,21 @@ class ModelPlot(object):
     the FittingSequence results.
     """
 
-    def __init__(self, multi_band_list, kwargs_model, kwargs_params, image_likelihood_mask_list=None,
-                 bands_compute=None, multi_band_type='multi-linear', source_marg=False, linear_prior=None,
-                 arrow_size=0.02, cmap_string="gist_heat", fast_caustic=True, linear_solver=True):
+    def __init__(
+        self,
+        multi_band_list,
+        kwargs_model,
+        kwargs_params,
+        image_likelihood_mask_list=None,
+        bands_compute=None,
+        multi_band_type="multi-linear",
+        source_marg=False,
+        linear_prior=None,
+        arrow_size=0.02,
+        cmap_string="gist_heat",
+        fast_caustic=True,
+        linear_solver=True,
+    ):
         """
 
         :param multi_band_list: list of [[kwargs_data, kwargs_psf, kwargs_numerics], [], ..]

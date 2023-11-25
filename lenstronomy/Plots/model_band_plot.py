@@ -1060,11 +1060,17 @@ class ModelBandPlot(ModelBand):
         :param kwargs: kwargs to send matplotlib.pyplot.matshow()
         :return:
         """
-        model = self._bandmodel.image(self._kwargs_lens_partial, self._kwargs_source_partial, self._kwargs_lens_light_partial,
-                                      self._kwargs_ps_partial,
-                                      kwargs_special=self._kwargs_special_partial,
-                                      unconvolved=unconvolved, source_add=source_add,
-                                      lens_light_add=lens_light_add, point_source_add=point_source_add)
+        model = self._bandmodel.image(
+            self._kwargs_lens_partial,
+            self._kwargs_source_partial,
+            self._kwargs_lens_light_partial,
+            self._kwargs_ps_partial,
+            kwargs_special=self._kwargs_special_partial,
+            unconvolved=unconvolved,
+            source_add=source_add,
+            lens_light_add=lens_light_add,
+            point_source_add=point_source_add,
+        )
 
         if v_min is None:
             v_min = self._v_min_default
@@ -1102,16 +1108,28 @@ class ModelBandPlot(ModelBand):
         cb.set_label(r"log$_{10}$ flux", fontsize=font_size)
         return ax
 
-    def subtract_from_data_plot(self, ax, text='Subtracted', v_min=None,
-                                v_max=None, point_source_add=False,
-                                source_add=False, lens_light_add=False,
-                                font_size=15
-                                ):
-        model = self._bandmodel.image(self._kwargs_lens_partial, self._kwargs_source_partial, self._kwargs_lens_light_partial,
-                                      self._kwargs_ps_partial,
-                                      kwargs_special=self._kwargs_special_partial,
-                                      unconvolved=False, source_add=source_add,
-                                      lens_light_add=lens_light_add, point_source_add=point_source_add)
+    def subtract_from_data_plot(
+        self,
+        ax,
+        text="Subtracted",
+        v_min=None,
+        v_max=None,
+        point_source_add=False,
+        source_add=False,
+        lens_light_add=False,
+        font_size=15,
+    ):
+        model = self._bandmodel.image(
+            self._kwargs_lens_partial,
+            self._kwargs_source_partial,
+            self._kwargs_lens_light_partial,
+            self._kwargs_ps_partial,
+            kwargs_special=self._kwargs_special_partial,
+            unconvolved=False,
+            source_add=source_add,
+            lens_light_add=lens_light_add,
+            point_source_add=point_source_add,
+        )
         if v_min is None:
             v_min = self._v_min_default
         if v_max is None:

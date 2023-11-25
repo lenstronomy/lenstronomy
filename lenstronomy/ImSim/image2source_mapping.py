@@ -44,16 +44,22 @@ class Image2SourceMapping(object):
 
             if self._lensModel.lens_model.distance_ratio_sampling:
                 self._distance_ratio_sampling = True
-                self._joint_unique_redshift_list = list(set(list(
-                    self._source_redshift_list) + list(self._lens_redshift_list)))
+                self._joint_unique_redshift_list = list(
+                    set(
+                        list(self._source_redshift_list)
+                        + list(self._lens_redshift_list)
+                    )
+                )
 
         self._deflection_scaling_list = sourceModel.deflection_scaling_list
         self._multi_source_plane = True
 
         if self._multi_lens_plane is True:
             if self._deflection_scaling_list is not None:
-                raise ValueError('deflection scaling for different source planes not possible in combination of '
-                                 'multi-lens plane modeling. You have to specify the redshifts of the sources instead.')
+                raise ValueError(
+                    "deflection scaling for different source planes not possible in combination of "
+                    "multi-lens plane modeling. You have to specify the redshifts of the sources instead."
+                )
 
             self._bkg_cosmo = Background(lensModel.cosmo)
 
@@ -112,39 +118,34 @@ class Image2SourceMapping(object):
                 self._sorted_source_redshift_index,
                 self._lensModel.lens_model.z_lens_convention,
                 self._lensModel.lens_model.z_source_convention,
-                self._bkg_cosmo
+                self._bkg_cosmo,
             )
 
     @property
     def T_ij_start_list(self):
-        """
-        list of transverse distances from the observer to the start of the source plane
-        """
+        """List of transverse distances from the observer to the start of the source
+        plane."""
         return self._T_ij_start_list
 
     @T_ij_start_list.setter
     def T_ij_start_list(self, T_ij_start_list):
-        """
-        list of transverse distances from the observer to the start of the source plane
-        """
+        """List of transverse distances from the observer to the start of the source
+        plane."""
         self._T_ij_start_list = T_ij_start_list
 
     @property
     def T_ij_end_list(self):
-        """
-        list of transverse distances from the observer to the end of the source plane
-        """
+        """List of transverse distances from the observer to the end of the source
+        plane."""
         return self._T_ij_end_list
 
     @T_ij_end_list.setter
     def T_ij_end_list(self, T_ij_end_list):
-        """
-        list of transverse distances from the observer to the end of the source plane
-        """
+        """List of transverse distances from the observer to the end of the source
+        plane."""
         self._T_ij_end_list = T_ij_end_list
 
-    def image2source(self, x, y, kwargs_lens, index_source,
-                     kwargs_special=None):
+    def image2source(self, x, y, kwargs_lens, index_source, kwargs_special=None):
         """
         mapping of image plane to source plane coordinates
         WARNING: for multi lens plane computations and multi source planes, this computation can be slow and should be
@@ -158,9 +159,11 @@ class Image2SourceMapping(object):
         """
         if self._distance_ratio_sampling:
             self.multi_plane_organizer.update_lens_T_lists(
-                self._lensModel, kwargs_special)
-            self.multi_plane_organizer.update_source_mapping_T_lists(self,
-                                                                kwargs_special)
+                self._lensModel, kwargs_special
+            )
+            self.multi_plane_organizer.update_source_mapping_T_lists(
+                self, kwargs_special
+            )
 
         if self._multi_source_plane is False:
             x_source, y_source = self._lensModel.ray_shooting(x, y, kwargs_lens)
@@ -175,30 +178,45 @@ class Image2SourceMapping(object):
 
                 x_source = np.zeros_like(x)
                 y_source = np.zeros_like(y)
-                x_source, y_source, alpha_x, alpha_y = self._lensModel.lens_model.ray_shooting_partial(x_source, y_source, x, y,
-                                                                                                     0, z_stop,
-                                                                                                     kwargs_lens,
-                                                                                                     include_z_start=False)
+                (
+                    x_source,
+                    y_source,
+                    alpha_x,
+                    alpha_y,
+                ) = self._lensModel.lens_model.ray_shooting_partial(
+                    x_source,
+                    y_source,
+                    x,
+                    y,
+                    0,
+                    z_stop,
+                    kwargs_lens,
+                    include_z_start=False,
+                )
 
         return x_source, y_source
 
-    def image_flux_joint(self, x, y, kwargs_lens, kwargs_source,
-                         kwargs_special=None, k=None):
-        """
-        computes the surface brightness of all light components at image position (x, y)
+    def image_flux_joint(
+        self, x, y, kwargs_lens, kwargs_source, kwargs_special=None, k=None
+    ):
+        """Computes the surface brightness of all light components at image position (x,
+        y)
 
         :param x: coordinate in image plane
         :param y: coordinate in image plane
         :param kwargs_lens: lens model kwargs list
         :param kwargs_source: source model kwargs list
         :param k: None or int or list of int for partial evaluation of light models
-        :return: surface brightness of all joint light components at image position (x, y)
+        :return: surface brightness of all joint light components at image position (x,
+            y)
         """
         if self._distance_ratio_sampling:
             self.multi_plane_organizer.update_lens_T_lists(
-                self._lensModel, kwargs_special)
-            self.multi_plane_organizer.update_source_mapping_T_lists(self,
-                                                                kwargs_special)
+                self._lensModel, kwargs_special
+            )
+            self.multi_plane_organizer.update_source_mapping_T_lists(
+                self, kwargs_special
+            )
 
         if self._multi_source_plane is False:
             x_source, y_source = self._lensModel.ray_shooting(x, y, kwargs_lens)
@@ -227,9 +245,23 @@ class Image2SourceMapping(object):
                         T_ij_start = self._T_ij_start_list[i]
                         T_ij_end = self._T_ij_end_list[i]
 
-                        x_source, y_source, alpha_x, alpha_y = self._lensModel.lens_model.ray_shooting_partial(x_source, y_source, alpha_x, alpha_y, z_start, z_stop,
-                                                                        kwargs_lens, include_z_start=False,
-                                                                        T_ij_start=T_ij_start, T_ij_end=T_ij_end)
+                        (
+                            x_source,
+                            y_source,
+                            alpha_x,
+                            alpha_y,
+                        ) = self._lensModel.lens_model.ray_shooting_partial(
+                            x_source,
+                            y_source,
+                            alpha_x,
+                            alpha_y,
+                            z_start,
+                            z_stop,
+                            kwargs_lens,
+                            include_z_start=False,
+                            T_ij_start=T_ij_start,
+                            T_ij_end=T_ij_end,
+                        )
 
                     if k is None or k == i:
                         flux += self._lightModel.surface_brightness(
@@ -238,22 +270,24 @@ class Image2SourceMapping(object):
                     z_start = z_stop
             return flux
 
-    def image_flux_split(self, x, y, kwargs_lens, kwargs_source,
-                         kwargs_special=None):
-        """
-        computes the surface brightness of all light components at image position (x, y)
+    def image_flux_split(self, x, y, kwargs_lens, kwargs_source, kwargs_special=None):
+        """Computes the surface brightness of all light components at image position (x,
+        y)
 
         :param x: coordinate in image plane
         :param y: coordinate in image plane
         :param kwargs_lens: lens model kwargs list
         :param kwargs_source: source model kwargs list
-        :return: list of responses of every single basis component with default amplitude amp=1, in the same order as the light_model_list
+        :return: list of responses of every single basis component with default
+            amplitude amp=1, in the same order as the light_model_list
         """
         if self._distance_ratio_sampling:
             self.multi_plane_organizer.update_lens_T_lists(
-                self._lensModel, kwargs_special)
-            self.multi_plane_organizer.update_source_mapping_T_lists(self,
-                                                                kwargs_special)
+                self._lensModel, kwargs_special
+            )
+            self.multi_plane_organizer.update_source_mapping_T_lists(
+                self, kwargs_special
+            )
         if self._multi_source_plane is False:
             x_source, y_source = self._lensModel.ray_shooting(x, y, kwargs_lens)
             return self._lightModel.functions_split(x_source, y_source, kwargs_source)
@@ -282,12 +316,27 @@ class Image2SourceMapping(object):
                         T_ij_start = self._T_ij_start_list[i]
                         T_ij_end = self._T_ij_end_list[i]
 
-                        x_source, y_source, alpha_x, alpha_y = self._lensModel.lens_model.ray_shooting_partial(x_source,
-                                                                y_source, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
-                                                                include_z_start=False, T_ij_start=T_ij_start,
-                                                                T_ij_end=T_ij_end)
+                        (
+                            x_source,
+                            y_source,
+                            alpha_x,
+                            alpha_y,
+                        ) = self._lensModel.lens_model.ray_shooting_partial(
+                            x_source,
+                            y_source,
+                            alpha_x,
+                            alpha_y,
+                            z_start,
+                            z_stop,
+                            kwargs_lens,
+                            include_z_start=False,
+                            T_ij_start=T_ij_start,
+                            T_ij_end=T_ij_end,
+                        )
 
-                    response_i, n_i = self._lightModel.functions_split(x_source, y_source, kwargs_source, k=index_source)
+                    response_i, n_i = self._lightModel.functions_split(
+                        x_source, y_source, kwargs_source, k=index_source
+                    )
 
                     n_i_list.append(n_i)
                     response += response_i
@@ -300,8 +349,7 @@ class Image2SourceMapping(object):
 
     @staticmethod
     def _index_ordering(redshift_list):
-        """
-        orders the redshifts in ascending order
+        """Orders the redshifts in ascending order.
 
         :param redshift_list: list of redshifts
         :return: indexes in ascending order to be evaluated (from z=0 to z=z_source)
@@ -311,11 +359,11 @@ class Image2SourceMapping(object):
         return sort_index
 
     def _re_order_split(self, response, n_list):
-        """
-        reshuffles the response array in order of the function definition
+        """Reshuffles the response array in order of the function definition.
 
         :param response: splitted functions in order of redshifts
-        :param n_list: list of number of response vectors per model in order of the model list (not redshift ordered)
+        :param n_list: list of number of response vectors per model in order of the
+            model list (not redshift ordered)
         :return: reshuffled array in order of the function definition
         """
         counter_regular = 0

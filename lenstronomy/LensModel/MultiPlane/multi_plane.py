@@ -31,7 +31,7 @@ class MultiPlane(object):
         num_z_interp=100,
         kwargs_interp=None,
         kwargs_synthesis=None,
-        distance_ratio_sampling=False
+        distance_ratio_sampling=False,
     ):
         """
 
@@ -63,20 +63,29 @@ class MultiPlane(object):
         if z_interp_stop is None:
             z_interp_stop = max(z_source, z_source_convention)
         if z_interp_stop < max(z_source, z_source_convention):
-            raise ValueError('z_interp_stop= %s needs to be larger or equal the maximum of z_source=%s and '
-                             'z_source_convention=%s' % (z_interp_stop, z_source, z_source_convention))
+            raise ValueError(
+                "z_interp_stop= %s needs to be larger or equal the maximum of z_source=%s and "
+                "z_source_convention=%s"
+                % (z_interp_stop, z_source, z_source_convention)
+            )
         self._z_source_convention = z_source_convention
         if z_lens_convention is None:
             self._z_lens_convention = np.min(lens_redshift_list)
         else:
             self._z_lens_convention = z_lens_convention
         self.distance_ratio_sampling = distance_ratio_sampling
-        self._multi_plane_base = MultiPlaneBase(lens_model_list=lens_model_list,
-                                                lens_redshift_list=lens_redshift_list, cosmo=cosmo,
-                                                numerical_alpha_class=numerical_alpha_class,
-                                                z_source_convention=z_source_convention, cosmo_interp=cosmo_interp,
-                                                z_interp_stop=z_interp_stop, num_z_interp=num_z_interp,
-                                                kwargs_interp=kwargs_interp, kwargs_synthesis=kwargs_synthesis)
+        self._multi_plane_base = MultiPlaneBase(
+            lens_model_list=lens_model_list,
+            lens_redshift_list=lens_redshift_list,
+            cosmo=cosmo,
+            numerical_alpha_class=numerical_alpha_class,
+            z_source_convention=z_source_convention,
+            cosmo_interp=cosmo_interp,
+            z_interp_stop=z_interp_stop,
+            num_z_interp=num_z_interp,
+            kwargs_interp=kwargs_interp,
+            kwargs_synthesis=kwargs_synthesis,
+        )
 
         self._set_source_distances(z_source)
         self._observed_convention_index = observed_convention_index
@@ -179,21 +188,39 @@ class MultiPlane(object):
         alpha_x = np.array(theta_x)
         alpha_y = np.array(theta_y)
 
-        x, y, _, _ = self._multi_plane_base.ray_shooting_partial_comoving(x, y, alpha_x, alpha_y, z_start=0,
-                                                                 z_stop=self._z_source,
-                                                                 kwargs_lens=kwargs_lens, T_ij_start=self._T_ij_start,
-                                                                 T_ij_end=self._T_ij_stop)
+        x, y, _, _ = self._multi_plane_base.ray_shooting_partial_comoving(
+            x,
+            y,
+            alpha_x,
+            alpha_y,
+            z_start=0,
+            z_stop=self._z_source,
+            kwargs_lens=kwargs_lens,
+            T_ij_start=self._T_ij_start,
+            T_ij_end=self._T_ij_stop,
+        )
 
         beta_x, beta_y = self.co_moving2angle_source(x, y)
 
         return beta_x, beta_y
 
-    def ray_shooting_partial(self, theta_x, theta_y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
-                             include_z_start=False, T_ij_start=None, T_ij_end=None, check_convention=True):
-        """
-        ray-tracing through parts of the cone, starting with (x,y) in angular units
-        as seen on the sky without lensing
-         and angles (alpha_x, alpha_y) as seen at redshift z_start and then backwards to redshift z_stop
+    def ray_shooting_partial(
+        self,
+        theta_x,
+        theta_y,
+        alpha_x,
+        alpha_y,
+        z_start,
+        z_stop,
+        kwargs_lens,
+        include_z_start=False,
+        T_ij_start=None,
+        T_ij_end=None,
+        check_convention=True,
+    ):
+        """Ray-tracing through parts of the cone, starting with (x,y) in angular units
+        as seen on the sky without lensing and angles (alpha_x, alpha_y) as seen at
+        redshift z_start and then backwards to redshift z_stop.
 
         :param theta_x: angular position on the sky [arcsec]
         :param theta_y: angular position on the sky [arcsec]
@@ -202,27 +229,53 @@ class MultiPlane(object):
         :param z_start: redshift of start of computation
         :param z_stop: redshift where output is computed
         :param kwargs_lens: lens model keyword argument list
-        :param include_z_start: bool, if True, includes the computation of the deflection angle at the same redshift as
-         the start of the ray-tracing. ATTENTION: deflection angles at the same redshift as z_stop will be computed always!
-         This can lead to duplications in the computation of deflection angles.
-        :param T_ij_start: transverse angular distance between the starting redshift to the first lens plane to follow.
-         If not set, will compute the distance each time this function gets executed.
-        :param T_ij_end: transverse angular distance between the last lens plane being computed and z_end.
-         If not set, will compute the distance each time this function gets executed.
-        :param check_convention: flag to check the image position convention (leave this alone)
+        :param include_z_start: bool, if True, includes the computation of the
+            deflection angle at the same redshift as the start of the ray-tracing.
+            ATTENTION: deflection angles at the same redshift as z_stop will be computed
+            always! This can lead to duplications in the computation of deflection
+            angles.
+        :param T_ij_start: transverse angular distance between the starting redshift to
+            the first lens plane to follow. If not set, will compute the distance each
+            time this function gets executed.
+        :param T_ij_end: transverse angular distance between the last lens plane being
+            computed and z_end. If not set, will compute the distance each time this
+            function gets executed.
+        :param check_convention: flag to check the image position convention (leave this
+            alone)
         :return: angular position and angles at redshift z_stop
         """
         if check_convention and not self.ignore_observed_positions:
             kwargs_lens = self._convention(kwargs_lens)
-        return self._multi_plane_base.ray_shooting_partial(theta_x, theta_y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
-                                                           include_z_start=include_z_start, T_ij_start=T_ij_start,
-                                                           T_ij_end=T_ij_end)
+        return self._multi_plane_base.ray_shooting_partial(
+            theta_x,
+            theta_y,
+            alpha_x,
+            alpha_y,
+            z_start,
+            z_stop,
+            kwargs_lens,
+            include_z_start=include_z_start,
+            T_ij_start=T_ij_start,
+            T_ij_end=T_ij_end,
+        )
 
-    def ray_shooting_partial_comoving(self, x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens, include_z_start=False,
-                                      check_convention=True, T_ij_start=None, T_ij_end=None):
-        """
-        ray-tracing through parts of the coin, starting with (x,y) co-moving distances and angles (alpha_x, alpha_y) at
-        redshift z_start and then backwards to redshift z_stop
+    def ray_shooting_partial_comoving(
+        self,
+        x,
+        y,
+        alpha_x,
+        alpha_y,
+        z_start,
+        z_stop,
+        kwargs_lens,
+        include_z_start=False,
+        check_convention=True,
+        T_ij_start=None,
+        T_ij_end=None,
+    ):
+        """Ray-tracing through parts of the coin, starting with (x,y) co-moving
+        distances and angles (alpha_x, alpha_y) at redshift z_start and then backwards
+        to redshift z_stop.
 
         :param x: co-moving position [Mpc] / angle definition
         :param y: co-moving position [Mpc] / angle definition
@@ -251,9 +304,18 @@ class MultiPlane(object):
         if check_convention and not self.ignore_observed_positions:
             kwargs_lens = self._convention(kwargs_lens)
 
-        return self._multi_plane_base.ray_shooting_partial_comoving(x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
-                                                           include_z_start=include_z_start, T_ij_start=T_ij_start,
-                                                           T_ij_end=T_ij_end)
+        return self._multi_plane_base.ray_shooting_partial_comoving(
+            x,
+            y,
+            alpha_x,
+            alpha_y,
+            z_start,
+            z_stop,
+            kwargs_lens,
+            include_z_start=include_z_start,
+            T_ij_start=T_ij_start,
+            T_ij_end=T_ij_end,
+        )
 
     def transverse_distance_start_stop(self, z_start, z_stop, include_z_start=False):
         """Computes the transverse distance (T_ij) that is required by the ray-tracing
@@ -560,18 +622,20 @@ class LensedLocation(object):
             theta_y = kwargs_lens[ind]["center_y"]
             zstop = self._multiplane._lens_redshift_list[ind]
 
-            x, y, _, _ = self._multiplane.ray_shooting_partial_comoving(0, 0,
-                                                                theta_x,
-                                                                theta_y,
-                                                                0,
-                                                                zstop,
-                                                                new_kwargs,
-                                                                T_ij_start=None,
-                                                                T_ij_end=None)
-
+            x, y, _, _ = self._multiplane.ray_shooting_partial_comoving(
+                0,
+                0,
+                theta_x,
+                theta_y,
+                0,
+                zstop,
+                new_kwargs,
+                T_ij_start=None,
+                T_ij_end=None,
+            )
 
             T = self._multiplane.T_z_list[ind]
-            new_kwargs[ind]['center_x'] = x / T
-            new_kwargs[ind]['center_y'] = y / T
+            new_kwargs[ind]["center_x"] = x / T
+            new_kwargs[ind]["center_y"] = y / T
 
         return new_kwargs

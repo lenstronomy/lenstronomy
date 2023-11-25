@@ -30,7 +30,7 @@ class LensModel(object):
         num_z_interp=100,
         kwargs_interp=None,
         kwargs_synthesis=None,
-        distance_ratio_sampling=False
+        distance_ratio_sampling=False,
     ):
         """
 

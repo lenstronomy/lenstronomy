@@ -289,31 +289,62 @@ class TestMultiPlane(object):
 
         theta_x, theta_y = 1.0, 1.0
 
-        x_subs, y_subs, alpha_x_subs, alpha_y_subs = lensModel.ray_shooting_partial_comoving(x=0, y=0, alpha_x=theta_x,
-                                                                                alpha_y=theta_y, z_start=0,
-                                                                                z_stop=zmacro,
-                                                                                kwargs_lens=kwargs_lens)
+        (
+            x_subs,
+            y_subs,
+            alpha_x_subs,
+            alpha_y_subs,
+        ) = lensModel.ray_shooting_partial_comoving(
+            x=0,
+            y=0,
+            alpha_x=theta_x,
+            alpha_y=theta_y,
+            z_start=0,
+            z_stop=zmacro,
+            kwargs_lens=kwargs_lens,
+        )
 
-        x_out, y_out, alpha_x_out, alpha_y_out = lensModel_macro.ray_shooting_partial_comoving(x_subs, y_subs, alpha_x_subs, alpha_y_subs,
-                                                                                zmacro, zmacro, kwargs_macro,
-                                                                                include_z_start=True)
+        (
+            x_out,
+            y_out,
+            alpha_x_out,
+            alpha_y_out,
+        ) = lensModel_macro.ray_shooting_partial_comoving(
+            x_subs,
+            y_subs,
+            alpha_x_subs,
+            alpha_y_subs,
+            zmacro,
+            zmacro,
+            kwargs_macro,
+            include_z_start=True,
+        )
         npt.assert_almost_equal(x_subs, x_out)
         npt.assert_almost_equal(y_subs, y_out)
 
-        x_full, y_full, alpha_x_full, alpha_y_full = lensModel_full.ray_shooting_partial_comoving(0, 0, theta_x, theta_y, 0, zmacro,
-                                                                                         kwargs_lens_full)
+        (
+            x_full,
+            y_full,
+            alpha_x_full,
+            alpha_y_full,
+        ) = lensModel_full.ray_shooting_partial_comoving(
+            0, 0, theta_x, theta_y, 0, zmacro, kwargs_lens_full
+        )
 
         npt.assert_almost_equal(x_full, x_out)
         npt.assert_almost_equal(y_full, y_out)
         npt.assert_almost_equal(alpha_x_full, alpha_x_out)
         npt.assert_almost_equal(alpha_y_full, alpha_y_out)
 
-        x_src, y_src, _, _ = lensModel_full.ray_shooting_partial_comoving(x=x_out, y=y_out, alpha_x=alpha_x_out,
-                                                                                alpha_y=alpha_y_out,
-                                                                                z_start=zmacro,
-                                                                                z_stop=z_source,
-                                                                                kwargs_lens=kwargs_lens_full)
-
+        x_src, y_src, _, _ = lensModel_full.ray_shooting_partial_comoving(
+            x=x_out,
+            y=y_out,
+            alpha_x=alpha_x_out,
+            alpha_y=alpha_y_out,
+            z_start=zmacro,
+            z_stop=z_source,
+            kwargs_lens=kwargs_lens_full,
+        )
 
         beta_x, beta_y = lensModel.co_moving2angle_source(x_src, y_src)
         beta_x_true, beta_y_true = lensModel_full.ray_shooting(
@@ -356,18 +387,38 @@ class TestMultiPlane(object):
         ]
 
         for lensmodel_class in [lensModel, multiplane_2]:
-            x_out, y_out, alpha_x_out, alpha_y_out = lensmodel_class.ray_shooting_partial_comoving(x=0, y=0, alpha_x=theta_x,
-                                                alpha_y=theta_y, z_start=0, z_stop=z_intermediate, kwargs_lens=kwargs_lens)
-
+            (
+                x_out,
+                y_out,
+                alpha_x_out,
+                alpha_y_out,
+            ) = lensmodel_class.ray_shooting_partial_comoving(
+                x=0,
+                y=0,
+                alpha_x=theta_x,
+                alpha_y=theta_y,
+                z_start=0,
+                z_stop=z_intermediate,
+                kwargs_lens=kwargs_lens,
+            )
 
             x_out_full_0 = x_out
             y_out_full_0 = y_out
 
-            x_out, y_out, alpha_x_out, alpha_y_out = lensmodel_class.ray_shooting_partial_comoving(x=x_out, y=y_out, alpha_x=alpha_x_out,
-                                                                                alpha_y=alpha_y_out, z_start=z_intermediate,
-                                                                                    z_stop=z_source,
-                                                                                    kwargs_lens=kwargs_lens)
-
+            (
+                x_out,
+                y_out,
+                alpha_x_out,
+                alpha_y_out,
+            ) = lensmodel_class.ray_shooting_partial_comoving(
+                x=x_out,
+                y=y_out,
+                alpha_x=alpha_x_out,
+                alpha_y=alpha_y_out,
+                z_start=z_intermediate,
+                z_stop=z_source,
+                kwargs_lens=kwargs_lens,
+            )
 
             beta_x, beta_y = lensModel.co_moving2angle_source(x_out, y_out)
             beta_x_true, beta_y_true = lensmodel_class.ray_shooting(
@@ -376,11 +427,28 @@ class TestMultiPlane(object):
             npt.assert_almost_equal(beta_x, beta_x_true, decimal=8)
             npt.assert_almost_equal(beta_y, beta_y_true, decimal=8)
 
-            T_ij_start = lensModel._multi_plane_base._cosmo_bkg.T_xy(z_observer=0, z_source=0.1)
-            T_ij_end = lensModel._multi_plane_base._cosmo_bkg.T_xy(z_observer=0.7, z_source=1.5)
-            x_out, y_out, alpha_x_out, alpha_y_out = lensmodel_class.ray_shooting_partial_comoving(x=0, y=0, alpha_x=theta_x,
-                                                alpha_y=theta_y, z_start=0, z_stop=z_source, kwargs_lens=kwargs_lens,
-                                                                                    T_ij_start=T_ij_start, T_ij_end=T_ij_end)
+            T_ij_start = lensModel._multi_plane_base._cosmo_bkg.T_xy(
+                z_observer=0, z_source=0.1
+            )
+            T_ij_end = lensModel._multi_plane_base._cosmo_bkg.T_xy(
+                z_observer=0.7, z_source=1.5
+            )
+            (
+                x_out,
+                y_out,
+                alpha_x_out,
+                alpha_y_out,
+            ) = lensmodel_class.ray_shooting_partial_comoving(
+                x=0,
+                y=0,
+                alpha_x=theta_x,
+                alpha_y=theta_y,
+                z_start=0,
+                z_stop=z_source,
+                kwargs_lens=kwargs_lens,
+                T_ij_start=T_ij_start,
+                T_ij_end=T_ij_end,
+            )
 
             beta_x, beta_y = x_out / Tzsrc, y_out / Tzsrc
             npt.assert_almost_equal(beta_x, beta_x_true, decimal=8)

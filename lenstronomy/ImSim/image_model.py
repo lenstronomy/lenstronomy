@@ -293,11 +293,20 @@ class ImageModel(object):
                 ra_grid, dec_grid, kwargs_source, k=k
             )
         else:
-            source_light = self.source_mapping.image_flux_joint(ra_grid, dec_grid, kwargs_lens, kwargs_source,
-                                                                kwargs_special=kwargs_special,
-                                                                k=k)
-            source_light *= self._extinction.extinction(ra_grid, dec_grid, kwargs_extinction=kwargs_extinction,
-                                                        kwargs_special=kwargs_special)
+            source_light = self.source_mapping.image_flux_joint(
+                ra_grid,
+                dec_grid,
+                kwargs_lens,
+                kwargs_source,
+                kwargs_special=kwargs_special,
+                k=k,
+            )
+            source_light *= self._extinction.extinction(
+                ra_grid,
+                dec_grid,
+                kwargs_extinction=kwargs_extinction,
+                kwargs_special=kwargs_special,
+            )
 
         # multiply with primary beam before convolution
         if self._pb is not None:

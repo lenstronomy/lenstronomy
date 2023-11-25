@@ -67,10 +67,26 @@ class TestFastRayShooting(object):
             numerical_alpha_class=None,
         )
 
-        x_fore, y_fore, alpha_x_fore, alpha_y_fore = fast_rayshooting._ray_shooting_fast_foreground()
-        xtrue, ytrue, alpha_xtrue, alpha_ytrue = self.lensModel.lens_model.\
-            ray_shooting_partial_comoving(np.zeros_like(x_image_true), np.zeros_like(y_image_true), x_image_true, y_image_true, 0.,
-                                 self.zlens, self.kwargs_epl)
+        (
+            x_fore,
+            y_fore,
+            alpha_x_fore,
+            alpha_y_fore,
+        ) = fast_rayshooting._ray_shooting_fast_foreground()
+        (
+            xtrue,
+            ytrue,
+            alpha_xtrue,
+            alpha_ytrue,
+        ) = self.lensModel.lens_model.ray_shooting_partial_comoving(
+            np.zeros_like(x_image_true),
+            np.zeros_like(y_image_true),
+            x_image_true,
+            y_image_true,
+            0.0,
+            self.zlens,
+            self.kwargs_epl,
+        )
 
         npt.assert_almost_equal(x_fore, xtrue)
         npt.assert_almost_equal(y_fore, ytrue)

@@ -166,13 +166,34 @@ class MultiplaneFast(object):
         kwargs_lens = kw[0:index]
         # evaluate main deflector deflection angles
 
-        x, y, alpha_x, alpha_y = self.lens_model_to_vary.lens_model.ray_shooting_partial_comoving(
-            x, y, alpha_x, alpha_y, self._z_lens, self._z_lens, kwargs_lens, include_z_start=True)
+        (
+            x,
+            y,
+            alpha_x,
+            alpha_y,
+        ) = self.lens_model_to_vary.lens_model.ray_shooting_partial_comoving(
+            x,
+            y,
+            alpha_x,
+            alpha_y,
+            self._z_lens,
+            self._z_lens,
+            kwargs_lens,
+            include_z_start=True,
+        )
 
         # ray trace through background halos
         kwargs_lens = kw[index:]
         x, y, _, _ = self.lens_model_fixed.lens_model.ray_shooting_partial_comoving(
-            x, y, alpha_x, alpha_y, self._z_lens, self._z_source, kwargs_lens, check_convention=False)
+            x,
+            y,
+            alpha_x,
+            alpha_y,
+            self._z_lens,
+            self._z_source,
+            kwargs_lens,
+            check_convention=False,
+        )
 
         beta_x, beta_y = self.lens_model_fixed.lens_model.co_moving2angle_source(x, y)
 
@@ -189,10 +210,20 @@ class MultiplaneFast(object):
 
             x0, y0 = np.zeros_like(self._x_image), np.zeros_like(self._y_image)
 
-            x, y, alpha_x, alpha_y = self.lens_model_fixed.lens_model.ray_shooting_partial_comoving(
-                x0, y0, self._x_image, self._y_image, z_start=0.,
-                                                         z_stop=self._z_lens, kwargs_lens=kwargs_lens)
-
+            (
+                x,
+                y,
+                alpha_x,
+                alpha_y,
+            ) = self.lens_model_fixed.lens_model.ray_shooting_partial_comoving(
+                x0,
+                y0,
+                self._x_image,
+                self._y_image,
+                z_start=0.0,
+                z_stop=self._z_lens,
+                kwargs_lens=kwargs_lens,
+            )
 
             self._foreground_rays = (x, y, alpha_x, alpha_y)
 

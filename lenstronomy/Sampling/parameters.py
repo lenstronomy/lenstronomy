@@ -258,8 +258,8 @@ class Param(object):
         )
         self._kwargs_model = kwargs_model
 
-        if 'distance_ratio_sampling' in self._kwargs_model:
-            distance_ratio_sampling = self._kwargs_model['distance_ratio_sampling']
+        if "distance_ratio_sampling" in self._kwargs_model:
+            distance_ratio_sampling = self._kwargs_model["distance_ratio_sampling"]
         else:
             distance_ratio_sampling = None
 
@@ -417,39 +417,75 @@ class Param(object):
             kwargs_fixed_extinction, self._joint_extinction_with_lens_light
         )
         # fix parameters joint with other model types
-        kwargs_fixed_lens_updated = self._fix_joint_param(kwargs_fixed_lens_updated, self._joint_lens_with_light)
-        kwargs_fixed_source_updated = self._fix_joint_param(kwargs_fixed_source_updated, self._joint_source_with_point_source)
-        kwargs_fixed_lens_light_updated = self._fix_joint_param(kwargs_fixed_lens_light_updated,
-                                                            self._joint_lens_light_with_point_source)
+        kwargs_fixed_lens_updated = self._fix_joint_param(
+            kwargs_fixed_lens_updated, self._joint_lens_with_light
+        )
+        kwargs_fixed_source_updated = self._fix_joint_param(
+            kwargs_fixed_source_updated, self._joint_source_with_point_source
+        )
+        kwargs_fixed_lens_light_updated = self._fix_joint_param(
+            kwargs_fixed_lens_light_updated, self._joint_lens_light_with_point_source
+        )
         kwargs_fixed_tracer_source_updated = self._fix_joint_param(
             kwargs_fixed_tracer_source, self._joint_source_light_with_tracer
         )
-        self.lensParams = LensParam(self._lens_model_list, kwargs_fixed_lens_updated,
-                                    kwargs_logsampling=kwargs_logsampling_lens,
-                                    num_images=self._num_images,
-                                    solver_type=self._solver_type, kwargs_lower=kwargs_lower_lens,
-                                    kwargs_upper=kwargs_upper_lens, num_shapelet_lens=num_shapelet_lens)
-        self.lensLightParams = LightParam(self._lens_light_model_list, kwargs_fixed_lens_light_updated, param_type='lens_light',
-                                          linear_solver=linear_solver, kwargs_lower=kwargs_lower_lens_light,
-                                          kwargs_upper=kwargs_upper_lens_light)
-        self.sourceParams = LightParam(self._source_light_model_list, kwargs_fixed_source_updated, param_type='source_light',
-                                       linear_solver=linear_solver, kwargs_lower=kwargs_lower_source,
-                                       kwargs_upper=kwargs_upper_source)
-        self.pointSourceParams = PointSourceParam(self._point_source_model_list, kwargs_fixed_ps_updated,
-                                                  num_point_source_list=num_point_source_list,
-                                                  linear_solver=linear_solver, kwargs_lower=kwargs_lower_ps,
-                                                  kwargs_upper=kwargs_upper_ps)
-        self.extinctionParams = LightParam(self._optical_depth_model_list, kwargs_fixed_extinction_updated,
-                                           kwargs_lower=kwargs_lower_extinction, kwargs_upper=kwargs_upper_extinction,
-                                           linear_solver=False)
-        self.specialParams = SpecialParam(Ddt_sampling=Ddt_sampling, mass_scaling=self._mass_scaling,
-                                          distance_ratio_sampling=distance_ratio_sampling,
-                                          num_lens_planes=num_lens_planes,
-                                          kwargs_fixed=kwargs_fixed_special, num_scale_factor=self._num_scale_factor,
-                                          kwargs_lower=kwargs_lower_special, kwargs_upper=kwargs_upper_special,
-                                          point_source_offset=self._point_source_offset, num_images=self._num_images,
-                                          source_size=source_size, num_tau0=num_tau0, num_z_sampling=num_z_sampling,
-                                          source_grid_offset=source_grid_offset)
+        self.lensParams = LensParam(
+            self._lens_model_list,
+            kwargs_fixed_lens_updated,
+            kwargs_logsampling=kwargs_logsampling_lens,
+            num_images=self._num_images,
+            solver_type=self._solver_type,
+            kwargs_lower=kwargs_lower_lens,
+            kwargs_upper=kwargs_upper_lens,
+            num_shapelet_lens=num_shapelet_lens,
+        )
+        self.lensLightParams = LightParam(
+            self._lens_light_model_list,
+            kwargs_fixed_lens_light_updated,
+            param_type="lens_light",
+            linear_solver=linear_solver,
+            kwargs_lower=kwargs_lower_lens_light,
+            kwargs_upper=kwargs_upper_lens_light,
+        )
+        self.sourceParams = LightParam(
+            self._source_light_model_list,
+            kwargs_fixed_source_updated,
+            param_type="source_light",
+            linear_solver=linear_solver,
+            kwargs_lower=kwargs_lower_source,
+            kwargs_upper=kwargs_upper_source,
+        )
+        self.pointSourceParams = PointSourceParam(
+            self._point_source_model_list,
+            kwargs_fixed_ps_updated,
+            num_point_source_list=num_point_source_list,
+            linear_solver=linear_solver,
+            kwargs_lower=kwargs_lower_ps,
+            kwargs_upper=kwargs_upper_ps,
+        )
+        self.extinctionParams = LightParam(
+            self._optical_depth_model_list,
+            kwargs_fixed_extinction_updated,
+            kwargs_lower=kwargs_lower_extinction,
+            kwargs_upper=kwargs_upper_extinction,
+            linear_solver=False,
+        )
+        self.specialParams = SpecialParam(
+            Ddt_sampling=Ddt_sampling,
+            mass_scaling=self._mass_scaling,
+            distance_ratio_sampling=distance_ratio_sampling,
+            num_lens_planes=num_lens_planes,
+            kwargs_fixed=kwargs_fixed_special,
+            num_scale_factor=self._num_scale_factor,
+            kwargs_lower=kwargs_lower_special,
+            kwargs_upper=kwargs_upper_special,
+            point_source_offset=self._point_source_offset,
+            num_images=self._num_images,
+            source_size=source_size,
+            num_tau0=num_tau0,
+            num_z_sampling=num_z_sampling,
+            source_grid_offset=source_grid_offset,
+        )
         self.tracerSourceParams = LightParam(
             self._tracer_source_model_list,
             kwargs_fixed_tracer_source_updated,
@@ -650,10 +686,10 @@ class Param(object):
         num += self.pointSourceParams.num_param_linear()
         return num
 
-    def image2source_plane(self, kwargs_source, kwargs_lens,
-                           kwargs_special=None, image_plane=False):
-        """
-        maps the image plane position definition of the source plane
+    def image2source_plane(
+        self, kwargs_source, kwargs_lens, kwargs_special=None, image_plane=False
+    ):
+        """Maps the image plane position definition of the source plane.
 
         :param kwargs_source: source light model keyword argument list
         :param kwargs_lens: lens model keyword argument list
@@ -665,17 +701,27 @@ class Param(object):
         kwargs_source_copy = copy.deepcopy(kwargs_source)
         for i, kwargs in enumerate(kwargs_source_copy):
             if self._image_plane_source_list[i] is True and not image_plane:
-                if 'center_x' in kwargs:
-                    x_mapped, y_mapped = self._image2SourceMapping.image2source(kwargs['center_x'], kwargs['center_y'],
-                                                                                kwargs_lens, index_source=i,
-                                                                                kwargs_special=kwargs_special)
-                    kwargs['center_x'] = x_mapped
-                    kwargs['center_y'] = y_mapped
+                if "center_x" in kwargs:
+                    x_mapped, y_mapped = self._image2SourceMapping.image2source(
+                        kwargs["center_x"],
+                        kwargs["center_y"],
+                        kwargs_lens,
+                        index_source=i,
+                        kwargs_special=kwargs_special,
+                    )
+                    kwargs["center_x"] = x_mapped
+                    kwargs["center_y"] = y_mapped
         return kwargs_source_copy
 
-    def _update_source_joint_with_point_source(self, kwargs_lens_list, kwargs_source_list, kwargs_ps, kwargs_special, image_plane=False):
-        """
-        Update the source light model parameters with the point source position
+    def _update_source_joint_with_point_source(
+        self,
+        kwargs_lens_list,
+        kwargs_source_list,
+        kwargs_ps,
+        kwargs_special,
+        image_plane=False,
+    ):
+        """Update the source light model parameters with the point source position.
 
         :param kwargs_lens_list: lens model keyword argument list
         :param kwargs_source_list: source light model keyword argument list
@@ -685,9 +731,12 @@ class Param(object):
             source plane
         :return: updated source light model keyword arguments
         """
-        kwargs_source_list = self.image2source_plane(kwargs_source_list,
-                                                     kwargs_lens_list,
-                                                     image_plane=image_plane, kwargs_special=kwargs_special)
+        kwargs_source_list = self.image2source_plane(
+            kwargs_source_list,
+            kwargs_lens_list,
+            image_plane=image_plane,
+            kwargs_special=kwargs_special,
+        )
 
         for setting in self._joint_source_with_point_source:
             i_point_source, k_source, param_list = setting
@@ -700,9 +749,13 @@ class Param(object):
                     kwargs_ps[i_point_source]["dec_image"],
                 )
                 # x_pos, y_pos = self.real_image_positions(x_pos, y_pos, kwargs_special)
-                x_mapped, y_mapped = self._image2SourceMapping.image2source(x_pos, y_pos, kwargs_lens_list,
-                                                                            index_source=k_source,
-                                                                            kwargs_special=kwargs_special)
+                x_mapped, y_mapped = self._image2SourceMapping.image2source(
+                    x_pos,
+                    y_pos,
+                    kwargs_lens_list,
+                    index_source=k_source,
+                    kwargs_special=kwargs_special,
+                )
 
             for param_name in param_list:
                 if param_name == "center_x":

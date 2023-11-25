@@ -1,24 +1,25 @@
-__author__ = 'ajshajib'
+__author__ = "ajshajib"
 
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 import numpy as np
 
-__all__ = ['BlankPlane']
+__all__ = ["BlankPlane"]
 
 
 class BlankPlane(LensProfileBase):
+    """Class for a blank lens plane.
+
+    This is needed to a create a blank plane that has a source without any lensing
+    effect, when distance ratios are sampled in multi-lens-plane and multi-source plane
+    case.
     """
-    Class for a blank lens plane. This is needed to a create a blank plane
-    that has a source without any lensing effect, when distance ratios are
-    sampled in multi-lens-plane and multi-source plane case.
-    """
+
     param_names = []
     lower_limit_default = {}
     upper_limit_default = {}
 
     def function(self, x, y):
-        """
-        """
+        """"""
         return np.zeros_like(x)
 
     def derivatives(self, x, y):

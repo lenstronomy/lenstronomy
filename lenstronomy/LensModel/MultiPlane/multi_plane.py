@@ -274,7 +274,7 @@ class MultiPlane(object):
         T_ij_start=None,
         T_ij_end=None,
     ):
-        """Ray-tracing through parts of the coin, starting with (x,y) co-moving
+        """Ray-tracing through parts of the cone, starting with (x,y) co-moving
         distances and angles (alpha_x, alpha_y) at redshift z_start and then backwards
         to redshift z_stop.
 
@@ -456,8 +456,8 @@ class MultiPlane(object):
         x = theta_x * T_0z1
         y = theta_x * T_0z1
         x_s0, y_s0, _, _ = self.ray_shooting_partial(
-            x=x,
-            y=y,
+            theta_x=x,
+            theta_y=y,
             alpha_x=theta_x,
             alpha_y=theta_y,
             z_start=z1,
@@ -473,8 +473,8 @@ class MultiPlane(object):
         alpha_dec = theta_y - beta_y0
 
         x_s_dx, y_s_dx, _, _ = self.ray_shooting_partial(
-            x=x,
-            y=y,
+            theta_x=x,
+            theta_y=y,
             alpha_x=theta_x + diff,
             alpha_y=theta_y,
             z_start=z1,
@@ -490,8 +490,8 @@ class MultiPlane(object):
         alpha_dec_dx = theta_y - beta_y_dx
 
         x_s_dy, y_s_dy, _, _ = self.ray_shooting_partial(
-            x=x,
-            y=y,
+            theta_x=x,
+            theta_y=y,
             alpha_x=theta_x,
             alpha_y=theta_y + diff,
             z_start=z1,

@@ -151,6 +151,17 @@ class ModelPlot(object):
                 self._index_list.append(-1)
             index += 1
 
+    def _select_band(self, band_index):
+        """
+        :param band_index: index of imaging band to be plotted
+        :return: bandplot() instance of selected band, raises when band is not computed
+        """
+        i = self._index_list[band_index]
+        if i == -1:
+            raise ValueError("band %s is not computed or out of range." % band_index)
+        i = int(i)
+        return self._band_plot_list[i]
+
     def reconstruction_all_bands(self, **kwargs):
         """
 

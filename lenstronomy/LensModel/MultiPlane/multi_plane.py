@@ -26,6 +26,7 @@ class MultiPlane(object):
         observed_convention_index=None,
         ignore_observed_positions=False,
         z_source_convention=None,
+        z_lens_convention=None,
         cosmo_interp=False,
         z_interp_stop=None,
         num_z_interp=100,

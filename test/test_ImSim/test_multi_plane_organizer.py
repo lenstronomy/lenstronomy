@@ -65,12 +65,12 @@ class TestMultiPlaneOrganizer(object):
     def test_extract_a_b_factors(self):
         """Test MultiPlaneOrganizer._extract_a_b_factors()"""
         kwargs_special = {
-            "a_factor_1": 1.0,
-            "a_factor_2": 2.0,
-            "a_factor_3": 3.0,
-            "a_factor_4": 4.0,
-            "b_factor_2": 5.0,
-            "b_factor_3": 6.0,
+            "factor_a_1": 1.0,
+            "factor_a_2": 2.0,
+            "factor_a_3": 3.0,
+            "factor_a_4": 4.0,
+            "factor_b_2": 5.0,
+            "factor_b_3": 6.0,
         }
 
         a_factor_list, b_factor_list = self.multi_plane_organizer._extract_a_b_factors(
@@ -82,12 +82,12 @@ class TestMultiPlaneOrganizer(object):
     def test_update_lens_T_lists(self):
         """Test MultiPlaneOrganizer.update_lens_T_lists()"""
         kwargs_special = {
-            "a_factor_1": 1.0,
-            "a_factor_2": 1.0,
-            "a_factor_3": 1.0,
-            "a_factor_4": 1.0,
-            "b_factor_2": 1.0,
-            "b_factor_3": 1.0,
+            "factor_a_1": 1.0,
+            "factor_a_2": 1.0,
+            "factor_a_3": 1.0,
+            "factor_a_4": 1.0,
+            "factor_b_2": 1.0,
+            "factor_b_3": 1.0,
         }
 
         fiducial_T_z_list = copy.deepcopy(
@@ -121,12 +121,12 @@ class TestMultiPlaneOrganizer(object):
     def test_update_source_mapping_T_lists(self):
         """Test MultiPlaneOrganizer.update_source_T_lists()"""
         kwargs_special = {
-            "a_factor_1": 1.0,
-            "a_factor_2": 1.0,
-            "a_factor_3": 1.0,
-            "a_factor_4": 1.0,
-            "b_factor_2": 1.0,
-            "b_factor_3": 1.0,
+            "factor_a_1": 1.0,
+            "factor_a_2": 1.0,
+            "factor_a_3": 1.0,
+            "factor_a_4": 1.0,
+            "factor_b_2": 1.0,
+            "factor_b_3": 1.0,
         }
 
         fiducial_T_ij_start_list = copy.deepcopy(self.mapping.T_ij_start_list)
@@ -158,12 +158,12 @@ class TestMultiPlaneOrganizer(object):
     def test_get_lens_T_lists(self):
         """Test MultiPlaneOrganizer._get_lens_T_lists()"""
         kwargs_special = {
-            "a_factor_1": 1.0,
-            "a_factor_2": 1.0,
-            "a_factor_3": 1.0,
-            "a_factor_4": 1.0,
-            "b_factor_2": 1.0,
-            "b_factor_3": 1.0,
+            "factor_a_1": 1.0,
+            "factor_a_2": 1.0,
+            "factor_a_3": 1.0,
+            "factor_a_4": 1.0,
+            "factor_b_2": 1.0,
+            "factor_b_3": 1.0,
         }
 
         T_z_list, T_ij_list = self.multi_plane_organizer._get_lens_T_lists(
@@ -193,12 +193,12 @@ class TestMultiPlaneOrganizer(object):
     def test_get_D_ij(self):
         """Test MultiPlaneOrganizer._get_D_ij()"""
         kwargs_special = {
-            "a_factor_1": 1.0,
-            "a_factor_2": 1.0,
-            "a_factor_3": 1.0,
-            "a_factor_4": 1.0,
-            "b_factor_2": 1.0,
-            "b_factor_3": 1.0,
+            "factor_a_1": 1.0,
+            "factor_a_2": 1.0,
+            "factor_a_3": 1.0,
+            "factor_a_4": 1.0,
+            "factor_b_2": 1.0,
+            "factor_b_3": 1.0,
         }
 
         D_ij = self.multi_plane_organizer._get_D_ij(
@@ -224,12 +224,12 @@ class TestMultiPlaneOrganizer(object):
     def test_get_D_i(self):
         """Test MultiPlaneOrganizer._get_D_i()"""
         kwargs_special = {
-            "a_factor_1": 1.0,
-            "a_factor_2": 1.0,
-            "a_factor_3": 1.0,
-            "a_factor_4": 1.0,
-            "b_factor_2": 1.0,
-            "b_factor_3": 1.0,
+            "factor_a_1": 1.0,
+            "factor_a_2": 1.0,
+            "factor_a_3": 1.0,
+            "factor_a_4": 1.0,
+            "factor_b_2": 1.0,
+            "factor_b_3": 1.0,
         }
 
         D_i = self.multi_plane_organizer._get_D_i(
@@ -257,12 +257,12 @@ class TestMultiPlaneOrganizer(object):
     def test_transver_distance_start_stop(self):
         """Test MultiPlaneOrganizer._transverse_distance_start_stop()"""
         kwargs_special = {
-            "a_factor_1": 1.0,
-            "a_factor_2": 1.0,
-            "a_factor_3": 1.0,
-            "a_factor_4": 1.0,
-            "b_factor_2": 1.0,
-            "b_factor_3": 1.0,
+            "factor_a_1": 1.0,
+            "factor_a_2": 1.0,
+            "factor_a_3": 1.0,
+            "factor_a_4": 1.0,
+            "factor_b_2": 1.0,
+            "factor_b_3": 1.0,
         }
 
         (
@@ -278,12 +278,12 @@ class TestMultiPlaneOrganizer(object):
     def test_get_source_T_start_end_lists(self):
         """Test MultiPlaneOrganizer._get_source_T_start_end_lists()"""
         kwargs_special = {
-            "a_factor_1": 1.0,
-            "a_factor_2": 1.0,
-            "a_factor_3": 1.0,
-            "a_factor_4": 1.0,
-            "b_factor_2": 1.0,
-            "b_factor_3": 1.0,
+            "factor_a_1": 1.0,
+            "factor_a_2": 1.0,
+            "factor_a_3": 1.0,
+            "factor_a_4": 1.0,
+            "factor_b_2": 1.0,
+            "factor_b_3": 1.0,
         }
 
         (
@@ -322,12 +322,12 @@ class TestMultiPlaneOrganizer(object):
         ]
 
         kwargs_special = {
-            "a_factor_1": 1.0,
-            "a_factor_2": 1.0,
-            "a_factor_3": 1.0,
-            "a_factor_4": 1.0,
-            "b_factor_2": 1.0,
-            "b_factor_3": 1.0,
+            "factor_a_1": 1.0,
+            "factor_a_2": 1.0,
+            "factor_a_3": 1.0,
+            "factor_a_4": 1.0,
+            "factor_b_2": 1.0,
+            "factor_b_3": 1.0,
         }
 
         x, y = np.meshgrid(np.arange(-4, 4, 0.05), np.arange(-4, 4, 0.05))

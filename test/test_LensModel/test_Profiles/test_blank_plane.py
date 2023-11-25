@@ -28,7 +28,7 @@ class TestBlankPlane(object):
         x = np.linspace(0.1, 10, 10)
         f_x_1, f_y_1 = self.blank.derivatives(x, x)
         npt.assert_almost_equal(f_x_1, x*0, decimal=5)
-        npt.assert_almost_equal(f_y_1, x*0, decimal=5
+        npt.assert_almost_equal(f_y_1, x*0, decimal=5)
 
     def test_hessian(self):
         """

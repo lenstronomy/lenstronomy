@@ -281,7 +281,10 @@ class Param(object):
         )
 
         # check how many lens planes
-        num_lens_planes = len(list(set(self._lens_redshift_list)))
+        if self._lens_redshift_list is None:
+            num_lens_planes = 0
+        else:
+            num_lens_planes = len(list(set(self._lens_redshift_list)))
 
         (
             self._lens_model_class,

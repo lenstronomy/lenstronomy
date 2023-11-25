@@ -476,6 +476,7 @@ class Param(object):
         self.specialParams = SpecialParam(
             Ddt_sampling=Ddt_sampling,
             mass_scaling=self._mass_scaling,
+            general_scaling_params=self._general_scaling_masks,
             distance_ratio_sampling=distance_ratio_sampling,
             num_lens_planes=num_lens_planes,
             kwargs_fixed=kwargs_fixed_special,
@@ -488,6 +489,7 @@ class Param(object):
             num_tau0=num_tau0,
             num_z_sampling=num_z_sampling,
             source_grid_offset=source_grid_offset,
+            kinematic_sampling=kinematic_sampling,
         )
         self.tracerSourceParams = LightParam(
             self._tracer_source_model_list,

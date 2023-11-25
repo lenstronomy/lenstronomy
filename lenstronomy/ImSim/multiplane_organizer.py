@@ -17,6 +17,8 @@ class MultiPlaneOrganizer(object):
                  z_lens_convention,
                  z_source_convention, cosmo):
         """
+        Initialize the `MultiPlaneOrganizer` class.
+
         :param lens_redshift_list: list of lens redshifts
         :type lens_redshift_list: list
         :param source_redshift_list: list of source redshifts
@@ -27,6 +29,10 @@ class MultiPlaneOrganizer(object):
         :type sorted_source_redshift_index: list
         :param z_lens_convention: lens convention redshift
         :type z_lens_convention: float
+        :param z_source_convention: source convention redshift
+        :type z_source_convention: float
+        :param cosmo: instance of Background class
+        :type cosmo: lenstronomy.Cosmo.background.Background
         """
         self._lens_redshift_list = lens_redshift_list
         self._source_redshift_list = source_redshift_list
@@ -96,6 +102,7 @@ class MultiPlaneOrganizer(object):
         :param kwargs_special: dictionary of special keyword arguments
         :type kwargs_special: dict
         :return: a_factors, b_factors
+        :rtype: list, list
         """
         a_factors = []
         b_factors = [1.]
@@ -115,10 +122,13 @@ class MultiPlaneOrganizer(object):
     def update_lens_T_lists(self, lens_model, kwargs_special):
         """
         Updates the lens model's `T_ij`, `T_ij_start`, `T_ij_stop`, and `T_z lists`.
+
         :param lens_model: instance of LensModel class
         :type lens_model: lenstronomy.LensModel.lens_model.LensModel
         :param kwargs_special: dictionary of special keyword arguments
         :type kwargs_special: dict
+        :return: None
+        :rtype: None
         """
         T_z_list, T_ij_list = self._get_lens_T_lists(kwargs_special)
         T_ij_start, T_ij_stop = self._transverse_distance_start_stop(0,
@@ -133,6 +143,7 @@ class MultiPlaneOrganizer(object):
                                       kwargs_special):
         """
         Updates the source mapping class's `T_ij_start_list` and `T_ij_end_list`.
+
         :param source_mapping_class: instance of SourceMapping class
         :type source_mapping_class: lenstronomy.LensModel.Solver.source_mapping.SourceMapping
         :param kwargs_special: dictionary of special keyword arguments
@@ -145,13 +156,28 @@ class MultiPlaneOrganizer(object):
 
     def _get_element_index(self, arr, element):
         """
+        Returns the index of an element in an array.
 
+        :param arr: array
+        :type arr: list
+        :param element: element to find
+        :type element: float
+        :return: index of element in array
+        :rtype: int
         """
-        return int(np.where(np.array(arr) == element)[0][0])
+        if element not in arr:
+            raise ValueError("The element is not in the array!")
+        index = int(np.where(np.array(arr) == element)[0][0])
+
+        return index
 
     def _get_lens_T_lists(self, kwargs_special):
         """
+        Retreive the lens model's `T_ij` and `T_z` lists for a given set of a_factors
+        and b_factors.
 
+        :param kwargs_special: dictionary of special keyword arguments
+        :type kwargs_special: dict
         """
         T_ij_list = []
         T_z_list = []
@@ -175,7 +201,17 @@ class MultiPlaneOrganizer(object):
 
     def _get_D_ij(self, z_i, z_j, kwargs_special):
         """
+        Returns the transverse distance between two redshifts for a given set of
+        a_factors and b_factors.
 
+        :param z_i: redshift of first plane
+        :type z_i: float
+        :param z_j: redshift of second plane
+        :type z_j: float
+        :param kwargs_special: dictionary of special keyword arguments
+        :type kwargs_special: dict
+        :return: transverse distance between two redshifts
+        :rtype: float
         """
         if z_i == 0:
             return self._get_D_i(z_j, kwargs_special)
@@ -291,6 +327,7 @@ class MultiPlaneOrganizer(object):
     @staticmethod
     def _start_condition(inclusive, z_lens, z_start):
         """
+        boolean condition if the starting redshift is met
 
         :param inclusive: boolean, if True selects z_lens including z_start, else only selects z_lens > z_start
         :param z_lens: deflector redshift

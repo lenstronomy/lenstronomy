@@ -71,7 +71,10 @@ class MultiPlane(object):
             )
         self._z_source_convention = z_source_convention
         if z_lens_convention is None:
-            self._z_lens_convention = np.min(lens_redshift_list)
+            if len(lens_redshift_list) > 0:
+                self._z_lens_convention = np.min(lens_redshift_list)
+            else:
+                self._z_lens_convention = 0
         else:
             self._z_lens_convention = z_lens_convention
         self.distance_ratio_sampling = distance_ratio_sampling
@@ -455,9 +458,9 @@ class MultiPlane(object):
         T_0z1 = self._multi_plane_base._cosmo_bkg.T_xy(0, z1)
         x = theta_x * T_0z1
         y = theta_x * T_0z1
-        x_s0, y_s0, _, _ = self.ray_shooting_partial(
-            theta_x=x,
-            theta_y=y,
+        x_s0, y_s0, _, _ = self.ray_shooting_partial_comoving(
+            x=x,
+            y=y,
             alpha_x=theta_x,
             alpha_y=theta_y,
             z_start=z1,
@@ -472,9 +475,9 @@ class MultiPlane(object):
         alpha_ra = theta_x - beta_x0
         alpha_dec = theta_y - beta_y0
 
-        x_s_dx, y_s_dx, _, _ = self.ray_shooting_partial(
-            theta_x=x,
-            theta_y=y,
+        x_s_dx, y_s_dx, _, _ = self.ray_shooting_partial_comoving(
+            x=x,
+            y=y,
             alpha_x=theta_x + diff,
             alpha_y=theta_y,
             z_start=z1,
@@ -489,9 +492,9 @@ class MultiPlane(object):
         alpha_ra_dx = theta_x + diff - beta_x_dx
         alpha_dec_dx = theta_y - beta_y_dx
 
-        x_s_dy, y_s_dy, _, _ = self.ray_shooting_partial(
-            theta_x=x,
-            theta_y=y,
+        x_s_dy, y_s_dy, _, _ = self.ray_shooting_partial_comoving(
+            x=x,
+            y=y,
             alpha_x=theta_x,
             alpha_y=theta_y + diff,
             z_start=z1,

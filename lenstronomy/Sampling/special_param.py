@@ -164,13 +164,13 @@ class DistanceRatioABParam(SingleParam):
         for i in range(num_lens_plane):
             num_param = np.max(array)
 
-            param_name = f"a_factor_{i+1}"
+            param_name = f"factor_a_{i+1}"
             self.param_names[param_name] = 1
             self._kwargs_lower[param_name] = 0
             self._kwargs_upper[param_name] = 1000
 
         for i in range(1, num_lens_plane - 1):
-            param_name = f"b_factor_{i + 1}"
+            param_name = f"factor_b_{i + 1}"
             self.param_names[param_name] = 1
             self._kwargs_lower[param_name] = 0
             self._kwargs_upper[param_name] = 1000

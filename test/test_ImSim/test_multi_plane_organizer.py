@@ -27,7 +27,7 @@ class TestMultiPlaneOrganizer(object):
         )
 
         lens_model_fiducial = LensModel(
-            ['SIS', 'SIS', 'SIS', 'BLANK_PLANE'],
+            ['SIS', 'SIS', 'SIS', 'SIS'],
             z_source=1.2,
             lens_redshift_list=[0.2, 0.4, 0.6, 1.],
             multi_plane=True,
@@ -53,7 +53,7 @@ class TestMultiPlaneOrganizer(object):
             {'center_x': 0, 'center_y': 0, 'theta_E': 1.},
             {'center_x': 0, 'center_y': 0, 'theta_E': 0.},
             {'center_x': 0, 'center_y': 0, 'theta_E': 1.},
-            {}
+            {},
         ]
 
         kwargs_source = [
@@ -63,8 +63,9 @@ class TestMultiPlaneOrganizer(object):
             {'center_x': 0, 'center_y': 0, 'amp': 1, 'sigma': 0.1}  #
         ]
 
-        kwargs_special = {'a_1': 1., 'a_2': 1., 'a_3': 1., 'a_4': 1.,
-                          'b_2': 1., 'b_3': 1.}
+        kwargs_special = {'a_factor_1': 1., 'a_factor_2': 1.,
+                          'a_factor_3': 1., 'a_factor_4': 1.,
+                          'b_factor_2': 1., 'b_factor_3': 1.}
 
         x, y = np.meshgrid(np.arange(-4, 4, 0.05), np.arange(-4, 4, 0.05))
 

@@ -9,8 +9,8 @@ __all__ = ['BlankPlane']
 class BlankPlane(LensProfileBase):
     """
     Class for a blank lens plane. This is needed to a create a blank plane
-    that has a source, when distance ratios are sampled in multi-lens-plane
-    and multi-source plane case.
+    that has a source without any lensing effect, when distance ratios are
+    sampled in multi-lens-plane and multi-source plane case.
     """
     param_names = []
     lower_limit_default = {}
@@ -19,7 +19,6 @@ class BlankPlane(LensProfileBase):
     def function(self, x, y):
         """
         """
-
         return np.zeros_like(x)
 
     def derivatives(self, x, y):

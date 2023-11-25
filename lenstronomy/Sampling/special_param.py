@@ -235,8 +235,9 @@ class SpecialParam(object):
         sampled
         """
         self._num_lens_planes = num_lens_planes
-        self._distance_ratio_sampling = DistanceRatioABParam(distance_ratio_sampling,
-                                                             num_lens_planes)
+        self._distance_ratio_sampling = DistanceRatioABParam(
+            distance_ratio_sampling, num_lens_planes
+        )
 
         if distance_ratio_sampling:
             if Ddt_sampling:

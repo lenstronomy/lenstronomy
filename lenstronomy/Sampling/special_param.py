@@ -148,7 +148,7 @@ class GeneralScalingParam(ArrayParam):
 class DistanceRatioABParam(SingleParam):
     """Distance ratio a and b factors."""
 
-    def __init__(self, num_lens_plane: int):
+    def __init__(self, on, num_lens_plane: int):
         """
         :param num_lens_plane: number of lens planes
         :type num_lens_plane: int
@@ -157,11 +157,13 @@ class DistanceRatioABParam(SingleParam):
         self._kwargs_lower = {}
         self._kwargs_upper = {}
 
-        super().__init__(params)
+        super().__init__(on)
+        self.num_lens_plane = num_lens_plane
+
         if not self.on:
             return
 
-        for i in range(num_lens_plane):
+        for i in range(self.num_lens_plane):
             num_param = np.max(array)
 
             param_name = f"factor_a_{i+1}"
@@ -169,7 +171,7 @@ class DistanceRatioABParam(SingleParam):
             self._kwargs_lower[param_name] = 0
             self._kwargs_upper[param_name] = 1000
 
-        for i in range(1, num_lens_plane - 1):
+        for i in range(1, self.num_lens_plane - 1):
             param_name = f"factor_b_{i + 1}"
             self.param_names[param_name] = 1
             self._kwargs_lower[param_name] = 0
@@ -232,6 +234,26 @@ class SpecialParam(object):
         :param num_lens_planes: integer, number of lens planes when `distance_ratio_sampling` is True
         sampled
         """
+        self._num_lens_planes = num_lens_planes
+        self._distance_ratio_sampling = DistanceRatioABParam(distance_ratio_sampling,
+                                                             num_lens_planes)
+
+        if distance_ratio_sampling:
+            if Ddt_sampling:
+                warnings.warn(
+                    "Ddt_sampling is turned off when distance_ratio_sampling is True."
+                )
+                Ddt_sampling = False
+            if num_z_sampling > 0:
+                warnings.warn(
+                    "num_z_sampling is turned off when distance_ratio_sampling is True."
+                )
+                num_z_sampling = 0
+            if kinematic_sampling:
+                warnings.warn(
+                    "kinematic_sampling is turned off when distance_ratio_sampling is True."
+                )
+                kinematic_sampling = False
 
         self._D_dt_sampling = DdtSamplingParam(Ddt_sampling or kinematic_sampling)
 
@@ -257,22 +279,6 @@ class SpecialParam(object):
         self._tau0 = Tau0ListParam(num_tau0)
         self._z_sampling = ZSamplingParam(num_z_sampling)
         self._source_grid_offset = SourceGridOffsetParam(source_grid_offset)
-
-        if distance_ratio_sampling:
-            self._num_lens_planes = num_lens_planes
-            self._distance_ratio_sampling = DistanceRatioABParam(num_lens_planes)
-
-            if Ddt_sampling:
-                warnings.warn(
-                    "Ddt_sampling is turned off when distance_ratio_sampling is True."
-                )
-            if num_z_sampling > 0:
-                warnings.warn(
-                    "num_z_sampling is turned off when distance_ratio_sampling is True."
-                )
-
-            self._D_dt_sampling = DdtSamplingParam(False)
-            self._z_sampling = ZSamplingParam(False)
 
         if kwargs_fixed is None:
             kwargs_fixed = {}

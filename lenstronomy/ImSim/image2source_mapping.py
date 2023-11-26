@@ -22,27 +22,41 @@ class Image2SourceMapping(object):
     the mapping between source to image plane.
     """
 
-    def __init__(self, lensModel, sourceModel):
+    def __init__(self, lens_model, source_model):
         """
 
-        :param lensModel: LensModel() class instance
-        :param sourceModel: LightModel() class instance.
+        :param lens_model: LensModel() class instance
+        :param source_model: LightModel() class instance.
          The lightModel includes:
 
          - source_scale_factor_list: list of floats corresponding to the rescaled deflection angles to the specific source components. None indicates that the list will be set to 1, meaning a single source plane model (in single lens plane mode).
          - source_redshift_list: list of redshifts of the light components (in multi lens plane mode)
         """
 
-        self._lightModel = sourceModel
-        self._lensModel = lensModel
-        light_model_list = sourceModel.profile_type_list
-        self._multi_lens_plane = lensModel.multi_plane
+        self._light_model = source_model
+        self._lens_model = lens_model
+        light_model_list = source_model.profile_type_list
+        self._multi_lens_plane = lens_model.multi_plane
         self._distance_ratio_sampling = False
-        if self._multi_lens_plane:
-            self._source_redshift_list = sourceModel.redshift_list
-            self._lens_redshift_list = self._lensModel.redshift_list
 
-            if self._lensModel.lens_model.distance_ratio_sampling:
+        if self._lens_model.z_source and self._light_model.redshift_list:
+            if len(self._light_model.redshift_list) == 1:
+                if (self._lens_model.z_source !=
+                        self._light_model.redshift_list[0]):
+                    raise ValueError(
+                        "Source redshifts have to match in single lens plane mode "
+                        "between lens model and source light model.")
+
+        # sort out source redshifts in the multi-lens-plane case
+        if self._multi_lens_plane:
+            if source_model.redshift_list is None:
+                self._source_redshift_list = [self._lens_model.z_source for _ in
+                                              light_model_list]
+            else:
+                self._source_redshift_list = source_model.redshift_list
+            self._lens_redshift_list = self._lens_model.redshift_list
+
+            if self._lens_model.lens_model.distance_ratio_sampling:
                 self._distance_ratio_sampling = True
                 self._joint_unique_redshift_list = list(
                     set(
@@ -51,7 +65,7 @@ class Image2SourceMapping(object):
                     )
                 )
 
-        self._deflection_scaling_list = sourceModel.deflection_scaling_list
+        self._deflection_scaling_list = source_model.deflection_scaling_list
         self._multi_source_plane = True
 
         if self._multi_lens_plane is True:
@@ -61,18 +75,19 @@ class Image2SourceMapping(object):
                     "multi-lens plane modeling. You have to specify the redshifts of the sources instead."
                 )
 
-            self._bkg_cosmo = Background(lensModel.cosmo)
+            self._bkg_cosmo = Background(lens_model.cosmo)
 
-            if self._source_redshift_list is None:
+            if len(list(set(self._source_redshift_list))) == 1:
                 self._multi_source_plane = False
+                self._sorted_source_redshift_index = [0]
             elif len(self._source_redshift_list) != len(light_model_list):
                 raise ValueError(
                     "length of redshift_list must correspond to length of light_model_list"
                 )
-            elif np.max(self._source_redshift_list) > self._lensModel.z_source:
+            elif np.max(self._source_redshift_list) > self._lens_model.z_source:
                 raise ValueError(
-                    "redshift of source_redshift_list have to be smaler or equal to the one specified in "
-                    "the lens model."
+                    "redshift of source_redshift_list have to be smaller or equal to "
+                    "the one specified in the lens model."
                 )
             else:
                 self._sorted_source_redshift_index = self._index_ordering(
@@ -91,7 +106,7 @@ class Image2SourceMapping(object):
                     (
                         T_ij_start,
                         T_ij_end,
-                    ) = self._lensModel.lens_model.transverse_distance_start_stop(
+                    ) = self._lens_model.lens_model.transverse_distance_start_stop(
                         z_start, z_stop, include_z_start=False
                     )
 
@@ -107,17 +122,17 @@ class Image2SourceMapping(object):
                 )
 
         if self._distance_ratio_sampling:
-            if self._multi_source_plane is False:
-                self._source_redshift_list = [self._lensModel.z_source]
-                self._sorted_source_redshift_index = [0]
+            # if self._multi_source_plane is False:
+            #     self._source_redshift_list = [self._lens_model.z_source]
+            #     self._sorted_source_redshift_index = [0]
 
             self.multi_plane_organizer = MultiPlaneOrganizer(
                 self._lens_redshift_list,
                 self._source_redshift_list,
-                self._lensModel.lens_model.multi_plane_base.sorted_redshift_index,
+                self._lens_model.lens_model.multi_plane_base.sorted_redshift_index,
                 self._sorted_source_redshift_index,
-                self._lensModel.lens_model.z_lens_convention,
-                self._lensModel.lens_model.z_source_convention,
+                self._lens_model.lens_model.z_lens_convention,
+                self._lens_model.lens_model.z_source_convention,
                 self._bkg_cosmo,
             )
 
@@ -159,17 +174,17 @@ class Image2SourceMapping(object):
         """
         if self._distance_ratio_sampling:
             self.multi_plane_organizer.update_lens_T_lists(
-                self._lensModel, kwargs_special
+                self._lens_model, kwargs_special
             )
             self.multi_plane_organizer.update_source_mapping_T_lists(
                 self, kwargs_special
             )
 
         if self._multi_source_plane is False:
-            x_source, y_source = self._lensModel.ray_shooting(x, y, kwargs_lens)
+            x_source, y_source = self._lens_model.ray_shooting(x, y, kwargs_lens)
         else:
             if self._multi_lens_plane is False:
-                x_alpha, y_alpha = self._lensModel.alpha(x, y, kwargs_lens)
+                x_alpha, y_alpha = self._lens_model.alpha(x, y, kwargs_lens)
                 scale_factor = self._deflection_scaling_list[index_source]
                 x_source = x - x_alpha * scale_factor
                 y_source = y - y_alpha * scale_factor
@@ -183,7 +198,7 @@ class Image2SourceMapping(object):
                     y_source,
                     alpha_x,
                     alpha_y,
-                ) = self._lensModel.lens_model.ray_shooting_partial(
+                ) = self._lens_model.lens_model.ray_shooting_partial(
                     x_source,
                     y_source,
                     x,
@@ -212,27 +227,27 @@ class Image2SourceMapping(object):
         """
         if self._distance_ratio_sampling:
             self.multi_plane_organizer.update_lens_T_lists(
-                self._lensModel, kwargs_special
+                self._lens_model, kwargs_special
             )
             self.multi_plane_organizer.update_source_mapping_T_lists(
                 self, kwargs_special
             )
 
         if self._multi_source_plane is False:
-            x_source, y_source = self._lensModel.ray_shooting(x, y, kwargs_lens)
-            return self._lightModel.surface_brightness(
+            x_source, y_source = self._lens_model.ray_shooting(x, y, kwargs_lens)
+            return self._light_model.surface_brightness(
                 x_source, y_source, kwargs_source, k=k
             )
         else:
             flux = np.zeros_like(x)
             if self._multi_lens_plane is False:
-                x_alpha, y_alpha = self._lensModel.alpha(x, y, kwargs_lens)
+                x_alpha, y_alpha = self._lens_model.alpha(x, y, kwargs_lens)
                 for i in range(len(self._deflection_scaling_list)):
                     scale_factor = self._deflection_scaling_list[i]
                     x_source = x - x_alpha * scale_factor
                     y_source = y - y_alpha * scale_factor
                     if k is None or k == i:
-                        flux += self._lightModel.surface_brightness(
+                        flux += self._light_model.surface_brightness(
                             x_source, y_source, kwargs_source, k=i
                         )
             else:
@@ -250,7 +265,7 @@ class Image2SourceMapping(object):
                             y_source,
                             alpha_x,
                             alpha_y,
-                        ) = self._lensModel.lens_model.ray_shooting_partial(
+                        ) = self._lens_model.lens_model.ray_shooting_partial(
                             x_source,
                             y_source,
                             alpha_x,
@@ -264,7 +279,7 @@ class Image2SourceMapping(object):
                         )
 
                     if k is None or k == i:
-                        flux += self._lightModel.surface_brightness(
+                        flux += self._light_model.surface_brightness(
                             x_source, y_source, kwargs_source, k=index_source
                         )
                     z_start = z_stop
@@ -283,24 +298,24 @@ class Image2SourceMapping(object):
         """
         if self._distance_ratio_sampling:
             self.multi_plane_organizer.update_lens_T_lists(
-                self._lensModel, kwargs_special
+                self._lens_model, kwargs_special
             )
             self.multi_plane_organizer.update_source_mapping_T_lists(
                 self, kwargs_special
             )
         if self._multi_source_plane is False:
-            x_source, y_source = self._lensModel.ray_shooting(x, y, kwargs_lens)
-            return self._lightModel.functions_split(x_source, y_source, kwargs_source)
+            x_source, y_source = self._lens_model.ray_shooting(x, y, kwargs_lens)
+            return self._light_model.functions_split(x_source, y_source, kwargs_source)
         else:
             response = []
             n = 0
             if self._multi_lens_plane is False:
-                x_alpha, y_alpha = self._lensModel.alpha(x, y, kwargs_lens)
+                x_alpha, y_alpha = self._lens_model.alpha(x, y, kwargs_lens)
                 for i in range(len(self._deflection_scaling_list)):
                     scale_factor = self._deflection_scaling_list[i]
                     x_source = x - x_alpha * scale_factor
                     y_source = y - y_alpha * scale_factor
-                    response_i, n_i = self._lightModel.functions_split(
+                    response_i, n_i = self._light_model.functions_split(
                         x_source, y_source, kwargs_source, k=i
                     )
                     response += response_i
@@ -321,7 +336,7 @@ class Image2SourceMapping(object):
                             y_source,
                             alpha_x,
                             alpha_y,
-                        ) = self._lensModel.lens_model.ray_shooting_partial(
+                        ) = self._lens_model.lens_model.ray_shooting_partial(
                             x_source,
                             y_source,
                             alpha_x,
@@ -334,7 +349,7 @@ class Image2SourceMapping(object):
                             T_ij_end=T_ij_end,
                         )
 
-                    response_i, n_i = self._lightModel.functions_split(
+                    response_i, n_i = self._light_model.functions_split(
                         x_source, y_source, kwargs_source, k=index_source
                     )
 
@@ -342,7 +357,7 @@ class Image2SourceMapping(object):
                     response += response_i
                     n += n_i
                     z_start = z_stop
-                n_list = self._lightModel.num_param_linear_list(kwargs_source)
+                n_list = self._light_model.num_param_linear_list(kwargs_source)
                 response = self._re_order_split(response, n_list)
 
             return response, n

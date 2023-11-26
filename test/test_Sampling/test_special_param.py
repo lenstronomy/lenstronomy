@@ -71,6 +71,51 @@ class TestParam(object):
         num, list = self.param.num_param()
         assert num == 16
 
+    def test_distance_ratio_factors_ab(self):
+        kwargs_fixed = {}
+        param = SpecialParam(
+            distance_ratio_sampling=True,
+            Ddt_sampling=True,
+            kinematic_sampling=True,
+            kwargs_fixed=kwargs_fixed,
+            num_z_sampling=3,
+            num_lens_planes=2,
+        )
+        kwargs = {"factor_a_1": 1, "factor_a_2": 1}
+
+        args = param.set_params(kwargs)
+        assert len(args) == 2
+        num_param, param_list = param.num_param()
+        assert num_param == 2
+        kwargs_new, _ = param.get_params(args, i=0)
+        assert kwargs_new["factor_a_1"] == 1
+        assert kwargs_new["factor_a_2"] == 1
+
+        kwargs_fixed = {"factor_a_3": 1}
+        param = SpecialParam(
+            distance_ratio_sampling=True,
+            Ddt_sampling=False,
+            kinematic_sampling=False,
+            kwargs_fixed=kwargs_fixed,
+            num_z_sampling=3,
+            num_lens_planes=3,
+        )
+        kwargs = {"factor_a_1": 1, "factor_a_2": 1,
+                  "factor_a_3": 1, "factor_b_2": 1,
+                  }
+
+        args = param.set_params(kwargs)
+        assert len(args) == 3
+        num_param, param_list = param.num_param()
+        assert num_param == 3
+        assert param_list == ["factor_a_1", "factor_a_2", "factor_b_2"]
+        kwargs_new, _ = param.get_params(args, i=0)
+        assert kwargs_new["factor_a_1"] == 1
+        assert kwargs_new["factor_a_2"] == 1
+        assert kwargs_new["factor_a_3"] == 1
+        assert kwargs_new["factor_b_2"] == 1
+
+
     def test_mass_scaling(self):
         kwargs_fixed = {}
         param = SpecialParam(

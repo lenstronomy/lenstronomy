@@ -337,8 +337,8 @@ class TestMultiPlaneOrganizer(object):
         )
 
         npt.assert_almost_equal(
-            self.mapping._lensModel.lens_model.multi_plane_base.T_ij_list,
-            self.mapping_fiducial._lensModel.lens_model.multi_plane_base._T_ij_list,
+            self.mapping._lens_model.lens_model.multi_plane_base.T_ij_list,
+            self.mapping_fiducial._lens_model.lens_model.multi_plane_base._T_ij_list,
         )
 
         array_1 = np.where(
@@ -358,6 +358,6 @@ class TestMultiPlaneOrganizer(object):
         )
 
         npt.assert_almost_equal(
-            self.mapping._lensModel.lens_model.multi_plane_base.T_z_list,
-            self.mapping_fiducial._lensModel.lens_model.multi_plane_base._T_z_list,
+            self.mapping._lens_model.lens_model.multi_plane_base.T_z_list,
+            self.mapping_fiducial._lens_model.lens_model.multi_plane_base._T_z_list,
         )

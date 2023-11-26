@@ -145,7 +145,7 @@ class GeneralScalingParam(ArrayParam):
                 self._kwargs_upper[pow_name] = 10
 
 
-class DistanceRatioABParam(SingleParam):
+class DistanceRatioFactorsAB(SingleParam):
     """Distance ratio a and b factors."""
 
     def __init__(self, on, num_lens_plane: int):
@@ -164,7 +164,7 @@ class DistanceRatioABParam(SingleParam):
             return
 
         for i in range(self.num_lens_plane):
-            num_param = np.max(array)
+            num_param = 2 * self.num_lens_plane - 2
 
             param_name = f"factor_a_{i+1}"
             self.param_names[param_name] = 1
@@ -235,7 +235,7 @@ class SpecialParam(object):
         sampled
         """
         self._num_lens_planes = num_lens_planes
-        self._distance_ratio_sampling = DistanceRatioABParam(
+        self._distance_ratio_sampling = DistanceRatioFactorsAB(
             distance_ratio_sampling, num_lens_planes
         )
 

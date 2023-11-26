@@ -96,7 +96,7 @@ class PSBase(object):
         """Update LensModel() and LensEquationSolver() instance.
 
         :param lens_model_class: LensModel() class instance
-        :return: internal lensModel class updated
+        :return: internal lens_model class updated
         """
         self._lens_model = lens_model_class
         if lens_model_class is None:

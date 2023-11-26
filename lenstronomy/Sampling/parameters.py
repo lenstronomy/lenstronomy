@@ -294,7 +294,7 @@ class Param(object):
             _,
         ) = class_creator.create_class_instances(all_models=True, **kwargs_model)
         self._image2SourceMapping = Image2SourceMapping(
-            lensModel=self._lens_model_class, sourceModel=self._source_model_class
+            lens_model=self._lens_model_class, source_model=self._source_model_class
         )
 
         if kwargs_fixed_lens is None:
@@ -971,7 +971,7 @@ class Param(object):
                 _,
             ) = class_creator.create_class_instances(all_models=True, **kwargs_model)
             self._image2SourceMapping = Image2SourceMapping(
-                lensModel=self._lens_model_class, sourceModel=self._source_model_class
+                lens_model=self._lens_model_class, source_model=self._source_model_class
             )
 
     def check_solver(self, kwargs_lens, kwargs_ps):

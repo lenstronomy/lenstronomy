@@ -111,7 +111,7 @@ class ImageModel(object):
             self.source_mapping = None  # handled with pixelated operator
         else:
             self.source_mapping = Image2SourceMapping(
-                lensModel=lens_model_class, sourceModel=source_model_class
+                lens_model=lens_model_class, source_model=source_model_class
             )
 
         self._pb = data_class.primary_beam

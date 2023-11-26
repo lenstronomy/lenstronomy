@@ -190,6 +190,19 @@ class TestMultiPlaneOrganizer(object):
             ],
         )
 
+        multi_plane_organizer = MultiPlaneOrganizer(
+            lens_redshift_list=[0.2, 0.2, 0.6, 1.0],
+            source_redshift_list=[0.6, 1.0, 1.0, 1.2],
+            sorted_lens_redshift_index=[0, 1, 2, 3],
+            sorted_source_redshift_index=[0, 1, 2, 3],
+            z_lens_convention=0.2,
+            z_source_convention=1.2,
+            cosmo=Background(cosmo=self.cosmo),
+        )
+
+        T_z, T_ij = multi_plane_organizer._get_lens_T_lists(kwargs_special)
+        assert T_ij[1] == 0
+
     def test_get_D_ij(self):
         """Test MultiPlaneOrganizer._get_D_ij()"""
         kwargs_special = {

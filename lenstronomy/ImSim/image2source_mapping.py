@@ -41,17 +41,18 @@ class Image2SourceMapping(object):
 
         if self._lens_model.z_source and self._light_model.redshift_list:
             if len(self._light_model.redshift_list) == 1:
-                if (self._lens_model.z_source !=
-                        self._light_model.redshift_list[0]):
+                if self._lens_model.z_source != self._light_model.redshift_list[0]:
                     raise ValueError(
                         "Source redshifts have to match in single lens plane mode "
-                        "between lens model and source light model.")
+                        "between lens model and source light model."
+                    )
 
         # sort out source redshifts in the multi-lens-plane case
         if self._multi_lens_plane:
             if source_model.redshift_list is None:
-                self._source_redshift_list = [self._lens_model.z_source for _ in
-                                              light_model_list]
+                self._source_redshift_list = [
+                    self._lens_model.z_source for _ in light_model_list
+                ]
             else:
                 self._source_redshift_list = source_model.redshift_list
             self._lens_redshift_list = self._lens_model.redshift_list

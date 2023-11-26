@@ -100,9 +100,12 @@ class TestParam(object):
             num_z_sampling=3,
             num_lens_planes=3,
         )
-        kwargs = {"factor_a_1": 1, "factor_a_2": 1,
-                  "factor_a_3": 1, "factor_b_2": 1,
-                  }
+        kwargs = {
+            "factor_a_1": 1,
+            "factor_a_2": 1,
+            "factor_a_3": 1,
+            "factor_b_2": 1,
+        }
 
         args = param.set_params(kwargs)
         assert len(args) == 3
@@ -114,7 +117,6 @@ class TestParam(object):
         assert kwargs_new["factor_a_2"] == 1
         assert kwargs_new["factor_a_3"] == 1
         assert kwargs_new["factor_b_2"] == 1
-
 
     def test_mass_scaling(self):
         kwargs_fixed = {}

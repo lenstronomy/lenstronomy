@@ -38,7 +38,7 @@ class TestMultiSourcePlane(object):
             z_source=2,
             lens_redshift_list=[0.2, 0.5],
             cosmo=None,
-            distance_ratio_sampling=True
+            distance_ratio_sampling=True,
         )
 
         light_model_list = ["SERSIC", "SERSIC"]
@@ -126,7 +126,6 @@ class TestMultiSourcePlane(object):
                 source_redshift_list=None,
             ),
         )
-
 
     def test_pseudo_multi_ray_tracing(self):
         x, y = util.make_grid(numPix=10, deltapix=0.5)

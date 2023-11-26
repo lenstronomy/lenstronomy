@@ -85,9 +85,7 @@ class MultiPlaneOrganizer(object):
         if z_lens_convention != np.min(lens_redshift_list):
             raise ValueError("z_lens_convention needs to be the first lens plane!")
         if z_source_convention != np.max(source_redshift_list):
-            raise ValueError(
-                "z_source_convention needs to be the last source plane!"
-            )
+            raise ValueError("z_source_convention needs to be the last source plane!")
         self.z_lens_convention = z_lens_convention
         self.z_source_convention = z_source_convention
 

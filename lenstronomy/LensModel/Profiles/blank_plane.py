@@ -9,9 +9,8 @@ __all__ = ["BlankPlane"]
 class BlankPlane(LensProfileBase):
     """Class for a blank lens plane.
 
-    This is needed to create a blank plane that has a source without any lensing
-    effect, when distance ratios are sampled in multi-lens-plane and multi-source plane
-    case.
+    This is needed to create a blank plane that has a source without any lensing effect,
+    when distance ratios are sampled in multi-lens-plane and multi-source plane case.
     """
 
     param_names = []

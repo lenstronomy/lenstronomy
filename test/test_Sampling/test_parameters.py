@@ -21,6 +21,7 @@ class TestParam(object):
             "lens_redshift_list": [0.5],
             "z_source": 2,
             "source_redshift_list": [0.5],
+            "distance_ratio_sampling": None
         }
         kwargs_param = {
             "num_point_source_list": [2],

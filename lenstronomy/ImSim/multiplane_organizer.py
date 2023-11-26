@@ -7,7 +7,28 @@ __all__ = ["MultiPlaneOrganizer"]
 
 class MultiPlaneOrganizer(object):
     """This class organizes the lens and source planes in multi-lens plane and multi-
-    source plane setting."""
+    source plane setting.
+
+    In the multi-lens-plane setting with $P$ lens planes (and the last source plane
+    being the $P+1$-th plane), the effective Fermat potential is defined as (eq. 9 of Shajib et al. 2020):
+
+    .. math::
+    \phi^{\rm eff} (\theta) \equiv \sum_{i=1}^{P} \frac{1+z_i}{1+z_{\rm d}} \frac{D_i D_{i+1} D_{\rm ds}}{D_{\rm d} D_{\rm s}D_{i\ i+1} } \left[ \frac{(\theta_{i} - \theta_{ i+1})^2}{2} - \zeta_{i,i+1} \psi_{i}(\theta_{i})  \right].
+
+    Then, the $a_i$ and $b_i$ distance ratios are defined as:
+
+    .. math::
+    a_i \equiv \frac{D_i D_{i+1} D_{1\ P+1}}{D_{\rm 1} D_{P+1}D_{i\ i+1} } = \frac{D_i D_{i+1}}{D_{i\ i+1} D_{\Delta t}^{\rm eff}}
+    b_i \equiv \frac{D_i D_{1\ P+1}}{D_1 D_{i\ P+1}} = \frac{D_i D_{P+1}}{D_{i\ P+1} D_{\Delta t}^{\rm eff}}.
+
+    This class converts the $a_i$ and $b_i$ ratios to the relevant cosmological
+    distances needed for ray-tracing. However, instead of using $a_i$ and $b_i$,
+    lenstronomy uses factor_a and factor_b parameters that are defined using a
+    fiducial cosmology as follows:
+
+    factor_a_i = a_i / a_i_fiducial
+    factor_b_i = b_i / b_i_fiducial
+    """
 
     def __init__(
         self,

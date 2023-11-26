@@ -146,8 +146,12 @@ class GeneralScalingParam(ArrayParam):
 
 
 class DistanceRatioFactorsAB(SingleParam):
-    """Distance ratio a and b factors."""
-
+    """Distance ratio a and b factors. If there are P lens planes, then there are P
+    factor_a and P-2 factor_b parameters. The parameter to be defined by the user are
+    "factor_a_1", "factor_a_2, ..., factor_a_P, factor_b_2, ..., factor_b_{P-1}". For
+    further definitions of factor_a and factor_b parameters, see the documentation of
+    `lesnstronomy.ImSim.multiplane_organizer.MultiplaneOrganizer()` class.
+    """
     def __init__(self, on, num_lens_plane: int):
         """
         :param num_lens_plane: number of lens planes
@@ -164,8 +168,6 @@ class DistanceRatioFactorsAB(SingleParam):
             return
 
         for i in range(self.num_lens_plane):
-            num_param = 2 * self.num_lens_plane - 2
-
             param_name = f"factor_a_{i+1}"
             self.param_names[param_name] = 1
             self._kwargs_lower[param_name] = 0

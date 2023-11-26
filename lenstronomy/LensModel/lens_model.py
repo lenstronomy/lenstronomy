@@ -93,6 +93,10 @@ class LensModel(object):
         # Multi-plane or single-plane lensing?
         self.multi_plane = multi_plane
         if multi_plane is True:
+            if lens_redshift_list is None:
+                raise ValueError(
+                    "In multi-plane lensing, you need to specify the redshifts of the lensing planes."
+                )
             if z_source is None:
                 raise ValueError(
                     "z_source needs to be set for multi-plane lens modelling."

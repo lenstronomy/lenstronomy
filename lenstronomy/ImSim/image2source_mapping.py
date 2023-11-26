@@ -39,14 +39,6 @@ class Image2SourceMapping(object):
         self._multi_lens_plane = lens_model.multi_plane
         self._distance_ratio_sampling = False
 
-        if self._lens_model.z_source and self._light_model.redshift_list:
-            if len(self._light_model.redshift_list) == 1:
-                if self._lens_model.z_source != self._light_model.redshift_list[0]:
-                    raise ValueError(
-                        "Source redshifts have to match in single lens plane mode "
-                        "between lens model and source light model."
-                    )
-
         # sort out source redshifts in the multi-lens-plane case
         if self._multi_lens_plane:
             if source_model.redshift_list is None:
@@ -78,18 +70,21 @@ class Image2SourceMapping(object):
 
             self._bkg_cosmo = Background(lens_model.cosmo)
 
-            if len(list(set(self._source_redshift_list))) == 1:
-                self._multi_source_plane = False
-                self._sorted_source_redshift_index = [0]
-            elif len(self._source_redshift_list) != len(light_model_list):
+            if len(self._source_redshift_list) != len(light_model_list):
                 raise ValueError(
                     "length of redshift_list must correspond to length of light_model_list"
                 )
-            elif np.max(self._source_redshift_list) > self._lens_model.z_source:
+
+            if np.max(self._source_redshift_list) > self._lens_model.z_source:
                 raise ValueError(
                     "redshift of source_redshift_list have to be smaller or equal to "
                     "the one specified in the lens model."
                 )
+
+            # turn off multi source plane if all sources are at the same redshift
+            if len(list(set(self._source_redshift_list))) == 1:
+                self._multi_source_plane = False
+                self._sorted_source_redshift_index = [0]
             else:
                 self._sorted_source_redshift_index = self._index_ordering(
                     self._source_redshift_list

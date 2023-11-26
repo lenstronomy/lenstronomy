@@ -25,7 +25,7 @@ class TestPositionLikelihood(object):
 
         point_source_class = PointSource(
             point_source_type_list=["LENSED_POSITION"],
-            lensModel=lensModel,
+            lens_model=lensModel,
             kwargs_lens_eqn_solver=self.kwargs_lens_eqn_solver,
         )
         self.likelihood = PositionLikelihood(
@@ -108,7 +108,7 @@ class TestPositionLikelihood(object):
         point_source_class = PointSource(
             point_source_type_list=["LENSED_POSITION"],
             additional_images_list=[True],
-            lensModel=LensModel(lens_model_list=["SIE"]),
+            lens_model=LensModel(lens_model_list=["SIE"]),
             kwargs_lens_eqn_solver=self.kwargs_lens_eqn_solver,
         )
         likelihood = PositionLikelihood(point_source_class)

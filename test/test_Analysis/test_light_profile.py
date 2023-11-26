@@ -422,13 +422,13 @@ class TestLightAnalysis(object):
         x_image, y_image = lensAnalysis.PointSource.image_position(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens)
         from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
         from lenstronomy.LensModel.lens_model import LensModel
-        lensModel = LensModel(lens_model_list=['SPEMD', 'SHEAR_GAMMA_PSI'])
+        lens_model = LensModel(lens_model_list=['SPEMD', 'SHEAR_GAMMA_PSI'])
         from lenstronomy.PointSource.point_source import PointSource
-        ps = PointSource(point_source_type_list=['SOURCE_POSITION'], lensModel=lensModel)
+        ps = PointSource(point_source_type_list=['SOURCE_POSITION'], lens_model=lens_model)
         x_image_new, y_image_new = ps.image_position(kwargs_ps, kwargs_lens)
         npt.assert_almost_equal(x_image_new[0], x_image[0], decimal=7)
 
-        solver = LensEquationSolver(lensModel=lensModel)
+        solver = LensEquationSolver(lens_model=lens_model)
 
         x_image_true, y_image_true = solver.image_position_from_source(source_x, source_y, kwargs_lens, min_distance=0.01, search_window=5,
                                    precision_limit=10**(-10), num_iter_max=100, arrival_time_sort=True,

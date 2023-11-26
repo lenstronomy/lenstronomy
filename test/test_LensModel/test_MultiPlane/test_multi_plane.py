@@ -31,10 +31,10 @@ class TestMultiPlane(object):
             lens_redshift_list=redshift_list,
             z_interp_stop=3,
             cosmo_interp=True,
-            z_lens_convention=0.5
+            z_lens_convention=0.5,
         )
         dt_geo, dt_grav = lens_model_multi._multi_plane_base.geo_shapiro_delay(
-            1, 0, kwargs_lens, z_stop=1.
+            1, 0, kwargs_lens, z_stop=1.0
         )
 
     def test_update_source_redshift(self):
@@ -48,7 +48,7 @@ class TestMultiPlane(object):
             lens_redshift_list=redshift_list,
             z_interp_stop=3,
             cosmo_interp=True,
-            z_lens_convention=0.5
+            z_lens_convention=0.5,
         )
         assert lens_model_multi.z_source_convention == 1.5
         assert lens_model_multi._multi_plane_base.z_source_convention == 1.5
@@ -99,11 +99,10 @@ class TestMultiPlane(object):
             lens_redshift_list=redshift_list,
             z_interp_stop=3,
             cosmo_interp=True,
-            z_lens_convention=0.5
+            z_lens_convention=0.5,
         )
         lens_model_mutli.T_ij_stop = 1000
         assert lens_model_mutli.T_ij_stop == 1000
-
 
     def test_sis_ray_tracing(self):
         z_source = 1.5
@@ -661,16 +660,16 @@ class TestRaise(unittest.TestCase):
                 z_source=1,
                 lens_model_list=["SIS"],
                 lens_redshift_list=[0.5],
-                z_source_convention=.8,
-                z_interp_stop=.9,
+                z_source_convention=0.8,
+                z_interp_stop=0.9,
             )
         with self.assertRaises(ValueError):
             lens_model = MultiPlane(
-                z_source=.8,
+                z_source=0.8,
                 lens_model_list=["SIS"],
                 lens_redshift_list=[0.5],
                 z_source_convention=1,
-                z_interp_stop=.9,
+                z_interp_stop=0.9,
             )
 
 

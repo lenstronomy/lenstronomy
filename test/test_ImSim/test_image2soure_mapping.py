@@ -134,8 +134,11 @@ class TestMultiSourcePlane(object):
         }
         x, y = np.arange(10), np.arange(10)
         source_x, source_y = self.multi_free_multi.image2source(
-            x, y, kwargs_lens=self.kwargs_lens, index_source=0,
-            kwargs_special=kwargs_special
+            x,
+            y,
+            kwargs_lens=self.kwargs_lens,
+            index_source=0,
+            kwargs_special=kwargs_special,
         )
         assert len(source_x) == 10
         assert len(source_y) == 10
@@ -147,8 +150,11 @@ class TestMultiSourcePlane(object):
         }
         x, y = np.arange(10), np.arange(10)
         flux, n = self.multi_free_multi.image_flux_split(
-            x, y, kwargs_lens=self.kwargs_lens, kwargs_source=self.kwargs_light,
-            kwargs_special=kwargs_special
+            x,
+            y,
+            kwargs_lens=self.kwargs_lens,
+            kwargs_source=self.kwargs_light,
+            kwargs_special=kwargs_special,
         )
         assert len(flux) == 2
         assert len(flux[0]) == 10

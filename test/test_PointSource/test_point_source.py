@@ -32,7 +32,7 @@ class TestPointSource(object):
         )
         self.PointSource = PointSource(
             point_source_type_list=["LENSED_POSITION", "UNLENSED", "SOURCE_POSITION"],
-            lensModel=lensModel,
+            lens_model=lensModel,
             fixed_magnification_list=[False] * 3,
             additional_images_list=[False] * 4,
             flux_from_point_source_list=[True, True, True],
@@ -155,7 +155,7 @@ class TestPointSource(object):
 
         point_source = PointSource(
             point_source_type_list=["LENSED_POSITION"],
-            lensModel=None,
+            lens_model=None,
             kwargs_lens_eqn_solver={},
         )
 
@@ -172,7 +172,7 @@ class TestPointSource(object):
 
         point_source = PointSource(
             point_source_type_list=["LENSED_POSITION"],
-            lensModel=None,
+            lens_model=None,
             kwargs_lens_eqn_solver={},
         )
 
@@ -195,7 +195,7 @@ class TestPointSource(object):
         }
         point_source = PointSource(
             point_source_type_list=["LENSED_POSITION"],
-            lensModel=None,
+            lens_model=None,
             kwargs_lens_eqn_solver=kwargs_lens_eqn_solver,
         )
         point_source.update_search_window(
@@ -247,7 +247,7 @@ class TestPointSourceFixedMag(object):
         )
         self.PointSource = PointSource(
             point_source_type_list=["LENSED_POSITION", "UNLENSED", "SOURCE_POSITION"],
-            lensModel=lensModel,
+            lens_model=lensModel,
             fixed_magnification_list=[True] * 4,
             additional_images_list=[False] * 4,
         )

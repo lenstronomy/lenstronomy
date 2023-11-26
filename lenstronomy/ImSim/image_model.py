@@ -61,7 +61,7 @@ class ImageModel(object):
         if point_source_class is None:
             point_source_class = PointSource(point_source_type_list=[])
         self.PointSource = point_source_class
-        if self.PointSource._lensModel is None:
+        if self.PointSource._lens_model is None:
             self.PointSource.update_lens_model(lens_model_class=lens_model_class)
         x_center, y_center = self.Data.center
         self.PointSource.update_search_window(

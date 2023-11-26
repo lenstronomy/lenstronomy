@@ -5,7 +5,7 @@ from lenstronomy.LensModel.Profiles.blank_plane import BlankPlane
 
 
 class TestBlankPlane(object):
-    """Class to test the Moffat profile."""
+    """Class to test the "BLANK_PLANE" lens model."""
 
     def setup_method(self):
         self.blank = BlankPlane()

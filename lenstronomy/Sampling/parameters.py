@@ -215,8 +215,6 @@ class Param(object):
         :param solver_type: string, option for specific solver type
          see detailed instruction of the Solver4Point and Solver2Point classes
         :param Ddt_sampling: bool, if True, samples the time-delay distance D_dt (in units of Mpc)
-        # :param distance_ratio_sampling: bool, if True, samples the distance ratios in multi-lens-plane,
-        # will override redshift sampling through  `lens_redshift_sampling_indexes` and `source_redshift_sampling_indexes`
         :param source_size: bool, if True, samples a source size parameters to be evaluated in the flux ratio likelihood
         :param num_tau0: integer, number of different optical depth re-normalization factors
         :param lens_redshift_sampling_indexes: list of integers corresponding to the lens model components whose redshifts

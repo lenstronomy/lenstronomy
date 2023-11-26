@@ -1,4 +1,4 @@
-__author__ = "sibirrer"
+__author__ = "ajshajib"
 
 import numpy as np
 import numpy.testing as npt
@@ -361,3 +361,26 @@ class TestMultiPlaneOrganizer(object):
             self.mapping._lens_model.lens_model.multi_plane_base.T_z_list,
             self.mapping_fiducial._lens_model.lens_model.multi_plane_base._T_z_list,
         )
+
+    def test_raise(self):
+        with pytest.raises(ValueError):
+            MultiPlaneOrganizer(
+                lens_redshift_list=[0.2, 0.4, 0.6, 1.0],
+                source_redshift_list=[0.6, 1.0, 1.0, 1.2],
+                sorted_lens_redshift_index=[0, 1, 2, 3],
+                sorted_source_redshift_index=[0, 1, 2, 3],
+                z_lens_convention=0.1,
+                z_source_convention=1.2,
+                cosmo=Background(cosmo=self.cosmo),
+            )
+
+        with pytest.raises(ValueError):
+            MultiPlaneOrganizer(
+                lens_redshift_list=[0.2, 0.4, 0.6, 1.0],
+                source_redshift_list=[0.6, 1.0, 1.0, 1.2],
+                sorted_lens_redshift_index=[0, 1, 2, 3],
+                sorted_source_redshift_index=[0, 1, 2, 3],
+                z_lens_convention=0.2,
+                z_source_convention=1.0,
+                cosmo=Background(cosmo=self.cosmo),
+            )

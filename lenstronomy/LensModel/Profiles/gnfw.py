@@ -32,14 +32,14 @@ class GNFW(LensProfileBase):
     lower_limit_default = {
         "Rs": 0,
         "kappa_s": 0,
-        "gamma_in": 0.,
+        "gamma_in": 0.0,
         "center_x": -100,
         "center_y": -100,
     }
     upper_limit_default = {
         "Rs": 100,
-        "kappa_s": 1000.,
-        "gamma_in": 3.,
+        "kappa_s": 1000.0,
+        "gamma_in": 3.0,
         "center_x": 100,
         "center_y": 100,
     }
@@ -50,8 +50,7 @@ class GNFW(LensProfileBase):
         self._integration_steps = 100
 
     def function(self, x, y, Rs, kappa_s, gamma_in, center_x=0, center_y=0):
-        """
-        Potential of gNFW profile.
+        """Potential of gNFW profile.
 
         :param x: angular position
         :type x: float/numpy array
@@ -86,8 +85,7 @@ class GNFW(LensProfileBase):
             return np.array(f_)
 
     def _num_integral_potential(self, r, Rs, kappa_s, gamma_in):
-        """
-        Compute the numerical integral of the potential.
+        """Compute the numerical integral of the potential.
 
         :param r: radius of interest
         :type r: float
@@ -106,7 +104,7 @@ class GNFW(LensProfileBase):
         return quad(_integrand, a=0, b=r)[0]
 
     def derivatives(self, x, y, Rs, kappa_s, gamma_in, center_x=0, center_y=0):
-        """Returns df/dx and df/dy of the function
+        """Returns df/dx and df/dy of the function.
 
         :param x: angular position
         :type x: float/numpy array
@@ -191,10 +189,11 @@ class GNFW(LensProfileBase):
         :return: rho(R) density
         :rtype: float
         """
-        return rho0 * (R / Rs)**-gamma_in * (1 + R / Rs)**(gamma_in - 3)
+        return rho0 * (R / Rs) ** -gamma_in * (1 + R / Rs) ** (gamma_in - 3)
 
     def density_lens(self, R, Rs, kappa_s, gamma_in):
-        """Computes the density at 3d radius r given lens model parameterization. The integral in the LOS projection of this quantity results in the convergence
+        """Computes the density at 3d radius r given lens model parameterization. The
+        integral in the LOS projection of this quantity results in the convergence
         quantity.
 
         :param R: radius of interest
@@ -253,8 +252,11 @@ class GNFW(LensProfileBase):
         """
         M_0 = 4 * np.pi * rho0 * Rs**3 / (3 - gamma_in)
         x = R / Rs
-        return M_0 * x**(3 - gamma_in) * hyp2f1(3- gamma_in, 3 - gamma_in, 4 - gamma_in,
-                                                -x)
+        return (
+            M_0
+            * x ** (3 - gamma_in)
+            * hyp2f1(3 - gamma_in, 3 - gamma_in, 4 - gamma_in, -x)
+        )
 
     def mass_3d_lens(self, R, Rs, kappa_s, gamma_in):
         """Mass enclosed a 3d sphere or radius r given a lens parameterization with
@@ -301,7 +303,9 @@ class GNFW(LensProfileBase):
         else:
             ys = np.repeat(y[:, np.newaxis], len([x]), axis=1)
 
-            integral = np.sum(func(ys, x, gamma_in) * dy * weights[:, np.newaxis], axis=0)
+            integral = np.sum(
+                func(ys, x, gamma_in) * dy * weights[:, np.newaxis], axis=0
+            )
 
         return integral
 
@@ -316,7 +320,7 @@ class GNFW(LensProfileBase):
         :type gamma_in: float
         :return: integrand of the deflection angel integral
         """
-        return (y + x)**(gamma_in - 3) * (1 - np.sqrt(1 - y**2)) / y
+        return (y + x) ** (gamma_in - 3) * (1 - np.sqrt(1 - y**2)) / y
 
     def _kappa_integrand(self, y, x, gamma_in):
         """Integrand of the deflection angel integral in eq. (57) of Keeton 2001.
@@ -329,7 +333,7 @@ class GNFW(LensProfileBase):
         :type gamma_in: float
         :return: integrand of the deflection angel integral
         """
-        return (y + x)**(gamma_in - 4) * (1 - np.sqrt(1 - y**2))
+        return (y + x) ** (gamma_in - 4) * (1 - np.sqrt(1 - y**2))
 
     def alpha(self, R, Rs, kappa_s, gamma_in):
         """Deflection angel of gNFW profile along the radial direction.
@@ -351,17 +355,21 @@ class GNFW(LensProfileBase):
 
         integral = self._trapezoidal_integrate(self._alpha_integrand, x, gamma_in)
 
-        alpha = 4 * kappa_s * Rs * x**(2 - gamma_in) * (hyp2f1(3-gamma_in,
-                                                               3-gamma_in,
-                                                               4-gamma_in,
-                                                               -x) / (3-gamma_in) +
-                                                        integral)
+        alpha = (
+            4
+            * kappa_s
+            * Rs
+            * x ** (2 - gamma_in)
+            * (
+                hyp2f1(3 - gamma_in, 3 - gamma_in, 4 - gamma_in, -x) / (3 - gamma_in)
+                + integral
+            )
+        )
 
         return alpha
 
     def kappa(self, R, Rs, kappa_s, gamma_in):
-        """
-        Convergence of gNFW profile along the radial direction.
+        """Convergence of gNFW profile along the radial direction.
 
         :param R: radius of interest
         :type R: float/numpy array
@@ -379,14 +387,19 @@ class GNFW(LensProfileBase):
 
         integral = self._trapezoidal_integrate(self._kappa_integrand, x, gamma_in)
 
-        kappa = 2 * kappa_s * Rs * x ** (1 - gamma_in) * ((1 + x)**(gamma_in - 3) +
-                                                           (3 - gamma_in) * integral)
+        kappa = (
+            2
+            * kappa_s
+            * Rs
+            * x ** (1 - gamma_in)
+            * ((1 + x) ** (gamma_in - 3) + (3 - gamma_in) * integral)
+        )
 
         return kappa
 
     @staticmethod
     def rho02kappa_s(rho0, Rs, gamma_in):
-        """convenience function to compute rho0 from alpha_Rs
+        """Convenience function to compute rho0 from alpha_Rs.
 
         :param rho0: density normalization (characteristic density)
         :type rho0: float
@@ -399,11 +412,9 @@ class GNFW(LensProfileBase):
         """
         return rho0 * Rs
 
-
     @staticmethod
     def kappa_s2rho0(kappa_s, Rs, gamma_in):
-        """
-        convenience function to compute rho0 from kappa_s. The returned rho_0 is
+        """Convenience function to compute rho0 from kappa_s. The returned rho_0 is
         normalized with $\Sigma_crit$.
 
         :param kappa_s: convergence correspoding to rho0

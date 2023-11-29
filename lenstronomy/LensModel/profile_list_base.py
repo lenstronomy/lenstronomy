@@ -508,7 +508,9 @@ def lens_class(
 
         return PointMass()
     elif lens_type == "PSEUDO_DPL":
-        from lenstronomy.LensModel.Profiles.pseudo_double_powerlaw import PseudoDoublePowerlaw
+        from lenstronomy.LensModel.Profiles.pseudo_double_powerlaw import (
+            PseudoDoublePowerlaw,
+        )
 
         return PseudoDoublePowerlaw()
     elif lens_type == "RADIAL_INTERPOL":

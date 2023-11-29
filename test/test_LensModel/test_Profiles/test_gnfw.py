@@ -10,19 +10,16 @@ import pytest
 
 
 class TestGNFW(object):
-    """
-    This class tests the generalized NFW profile.
-    """
+    """This class tests the generalized NFW profile."""
+
     def setup_method(self):
         self.nfw = NFW()
         self.gnfw = GNFW()
 
     def test_function(self):
-        """
-        Tests `GNFW.function()`
-        """
-        x = np.array([1., 1])
-        y = np.array([2., 2])
+        """Tests `GNFW.function()`"""
+        x = np.array([1.0, 1])
+        y = np.array([2.0, 2])
         Rs = 1.0
         rho0 = 1
         gamma_in = 1
@@ -35,9 +32,7 @@ class TestGNFW(object):
         npt.assert_almost_equal(values_nfw, values_gnfw, decimal=3)
 
     def test_derivatives(self):
-        """
-        Tests `GNFW.derivatives()`
-        """
+        """Tests `GNFW.derivatives()`"""
         x = np.array([1])
         y = np.array([2])
         Rs = 1.0
@@ -54,9 +49,7 @@ class TestGNFW(object):
         npt.assert_almost_equal(f_y_nfw, f_y_gnfw, decimal=3)
 
     def test_hessian(self):
-        """
-        Tests `GNFW.hessian()`
-        """
+        """Tests `GNFW.hessian()`"""
         x = 1
         y = 2
         Rs = 1.0
@@ -67,17 +60,16 @@ class TestGNFW(object):
         f_xx_nfw, f_xy_nfw, _, f_yy_nfw = self.nfw.hessian(x, y, Rs, alpha_Rs)
 
         kappa_s = self.gnfw.rho02kappa_s(rho0, Rs, gamma_in)
-        f_xx_gnfw, f_xy_gnfw, _, f_yy_gnfw = self.gnfw.hessian(x, y, Rs, kappa_s,
-                                                              gamma_in)
+        f_xx_gnfw, f_xy_gnfw, _, f_yy_gnfw = self.gnfw.hessian(
+            x, y, Rs, kappa_s, gamma_in
+        )
 
         npt.assert_almost_equal(f_xx_nfw, f_xx_gnfw, decimal=3)
         npt.assert_almost_equal(f_yy_nfw, f_yy_gnfw, decimal=3)
         npt.assert_almost_equal(f_xy_nfw, f_xy_gnfw, decimal=3)
 
     def test_density(self):
-        """
-        Tests `GNFW.density()`
-        """
+        """Tests `GNFW.density()`"""
         R = 1
         Rs = 1.0
         rho0 = 1
@@ -89,9 +81,7 @@ class TestGNFW(object):
         npt.assert_almost_equal(density_nfw, density_gnfw, decimal=6)
 
     def test_density_lens(self):
-        """
-        Tests `GNFW.density_lens()`
-        """
+        """Tests `GNFW.density_lens()`"""
         R = 1
         Rs = 1.0
         rho0 = 1
@@ -106,9 +96,7 @@ class TestGNFW(object):
         npt.assert_almost_equal(density_nfw, density_gnfw, decimal=6)
 
     def test_density_2d(self):
-        """
-        Tests `GNFW.density_2d_lens()`
-        """
+        """Tests `GNFW.density_2d_lens()`"""
         x = np.array([1])
         y = np.array([2])
         Rs = 1.0
@@ -121,9 +109,7 @@ class TestGNFW(object):
         npt.assert_almost_equal(kappa_nfw, kappa_gnfw, decimal=3)
 
     def test_mass_3d(self):
-        """
-        Tests `GNFW.mass_3d()`
-        """
+        """Tests `GNFW.mass_3d()`"""
         r = 1
         Rs = 1.0
         rho0 = 1
@@ -135,9 +121,7 @@ class TestGNFW(object):
         npt.assert_almost_equal(mass_3d_nfw, mass_3d_gnfw, decimal=10)
 
     def test_mass_3d_lens(self):
-        """
-        Tests `GNFW.mass_3d_lens()`
-        """
+        """Tests `GNFW.mass_3d_lens()`"""
         r = 1
         Rs = 1.0
         rho0 = 1

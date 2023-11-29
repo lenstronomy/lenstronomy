@@ -93,9 +93,7 @@ class PseudoDoublePowerlaw(LensProfileBase):
         R = np.sqrt(x_**2 + y_**2)
         R = np.maximum(R, 0.00000001)
         kappa = self.density_2d(R, 0, Rs, rho0_input, gamma_inner, gamma_outer)
-        gamma1, gamma2 = self.gamma(
-            R, Rs, rho0_input, gamma_inner, gamma_outer, x_, y_
-        )
+        gamma1, gamma2 = self.gamma(R, Rs, rho0_input, gamma_inner, gamma_outer, x_, y_)
         f_xx = kappa + gamma1
         f_yy = kappa - gamma1
         f_xy = gamma2

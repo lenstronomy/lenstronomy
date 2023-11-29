@@ -37,6 +37,13 @@ class TestGNFW(object):
         )
         npt.assert_almost_equal(values_nfw, values_gnfw_trapezoidal, decimal=4)
 
+        # test for array of values
+        x = np.linspace(0.5, 10, 10)
+        y = np.ones_like(x)
+        values_nfw = self.nfw.function(x, y, Rs, alpha_Rs)
+        values_gnfw = self.gnfw.function(x, y, Rs, kappa_s, gamma_in)
+        npt.assert_almost_equal(values_nfw, values_gnfw, decimal=5)
+
     def test_derivatives(self):
         """Tests `GNFW.derivatives()`"""
         x = np.array([1])
@@ -59,6 +66,13 @@ class TestGNFW(object):
         )
         npt.assert_almost_equal(f_x_nfw, f_x_gnfwt, decimal=5)
         npt.assert_almost_equal(f_y_nfw, f_y_gnfwt, decimal=5)
+
+        # test for really small Rs
+        Rs = 0.00000001
+        f_x_nfw, f_y_nfw = self.nfw.derivatives(x, y, Rs, alpha_Rs)
+        f_x_gnfw, f_y_gnfw = self.gnfw.derivatives(x, y, Rs, kappa_s, gamma_in)
+        npt.assert_almost_equal(f_x_nfw, f_x_gnfw, decimal=3)
+        npt.assert_almost_equal(f_y_nfw, f_y_gnfw, decimal=3)
 
     def test_hessian(self):
         """Tests `GNFW.hessian()`"""
@@ -86,6 +100,15 @@ class TestGNFW(object):
         npt.assert_almost_equal(f_xx_nfw, f_xx_gnfwt, decimal=4)
         npt.assert_almost_equal(f_yy_nfw, f_yy_gnfwt, decimal=4)
         npt.assert_almost_equal(f_xy_nfw, f_xy_gnfwt, decimal=4)
+
+        # test for really small Rs
+        Rs = 0.00000001
+        f_xx_nfw, f_xy_nfw, _, f_yy_nfw = self.nfw.hessian(x, y, Rs, alpha_Rs)
+        f_xx_gnfw, f_xy_gnfw, _, f_yy_gnfw = self.gnfw.hessian(x, y, Rs, kappa_s, gamma_in)
+
+        npt.assert_almost_equal(f_xx_nfw, f_xx_gnfw, decimal=2)
+        npt.assert_almost_equal(f_yy_nfw, f_yy_gnfw, decimal=2)
+        npt.assert_almost_equal(f_xy_nfw, f_xy_gnfw, decimal=2)
 
     def test_density(self):
         """Tests `GNFW.density()`"""

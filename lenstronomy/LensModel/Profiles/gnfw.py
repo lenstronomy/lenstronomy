@@ -47,6 +47,7 @@ class GNFW(LensProfileBase):
     def __init__(self):
         """"""
         super(GNFW, self).__init__()
+        self._integration_steps = 100
 
     def function(self, x, y, Rs, kappa_s, gamma_in, center_x=0, center_y=0):
         """
@@ -80,8 +81,8 @@ class GNFW(LensProfileBase):
             # TODO: currently the numerical integral is done one by one. More efficient is sorting the radial list and
             # then perform one numerical integral reading out to the radial points
             f_ = []
-            for i in range(len(r)):
-                f_.append(self._num_integral_potential(r[i], Rs, kappa_s, gamma_in))
+            for _r in r:
+                f_.append(self._num_integral_potential(_r, Rs, kappa_s, gamma_in))
             return np.array(f_)
 
     def _num_integral_potential(self, r, Rs, kappa_s, gamma_in):
@@ -102,8 +103,7 @@ class GNFW(LensProfileBase):
         def _integrand(x):
             return self.alpha(x, Rs, kappa_s, gamma_in)
 
-        return quad(_integrand, 0, r)[0]
-
+        return quad(_integrand, a=0, b=r)[0]
 
     def derivatives(self, x, y, Rs, kappa_s, gamma_in, center_x=0, center_y=0):
         """Returns df/dx and df/dy of the function
@@ -158,7 +158,6 @@ class GNFW(LensProfileBase):
         :return: f_xx, f_xy, f_xy, f_yy
         :rtype: float, float, float, float
         """
-        rho0 = self.kappa_s2rho0(kappa_s=kappa_s, Rs=Rs, gamma_in=gamma_in)
         if Rs < 0.0001:
             Rs = 0.0001
         x_ = x - center_x
@@ -169,12 +168,12 @@ class GNFW(LensProfileBase):
         f_r = self.alpha(R, Rs, kappa_s, gamma_in)
         f_rr = 2 * kappa - f_r / R
 
-        cost = x_ / R
-        sint = y_ / R
+        cos_t = x_ / R
+        sin_t = y_ / R
 
-        f_xx = cost**2 * f_rr - sint * cost * f_r / R
-        f_yy = sint**2 * f_rr + sint * cost * f_r / R
-        f_xy = sint * cost * f_rr + cost**2 * f_r
+        f_xx = cos_t**2 * f_rr + sin_t**2 / R * f_r
+        f_yy = sin_t**2 * f_rr + cos_t**2 / R * f_r
+        f_xy = cos_t * sin_t * f_rr - cos_t * sin_t / R * f_r
 
         return f_xx, f_xy, f_xy, f_yy
 
@@ -209,7 +208,7 @@ class GNFW(LensProfileBase):
         :return: density at radius R
         :rtype: float
         """
-        rho0 = self.kappa2rho(kappa_s=kappa_s, Rs=Rs, gamma_in=gamma_in)
+        rho0 = self.kappa_s2rho0(kappa_s=kappa_s, Rs=Rs, gamma_in=gamma_in)
         return self.density(R, Rs, rho0, gamma_in)
 
     def density_2d(self, x, y, Rs, rho0, gamma_in, center_x=0, center_y=0):
@@ -275,7 +274,7 @@ class GNFW(LensProfileBase):
         rho0 = self.kappa_s2rho0(kappa_s=kappa_s, Rs=Rs, gamma_in=gamma_in)
         return self.mass_3d(R, Rs, rho0, gamma_in)
 
-    def _trapezoid_integrate(self, func, x, gamma_in, steps=100):
+    def _trapezoidal_integrate(self, func, x, gamma_in):
         """Integrate a function using the trapezoid rule.
 
         :param func: function to integrate
@@ -289,37 +288,45 @@ class GNFW(LensProfileBase):
         :return: integral
         :rtype: float
         """
+        steps = self._integration_steps
         y = np.linspace(1e-10, 1 - 1e-10, steps)
         dy = y[1] - y[0]
-        ys = np.repeat(y[:, np.newaxis], len(x), axis=1)
 
         weights = np.ones(steps)
         weights[0] = 0.5
         weights[-1] = 0.5
 
-        integral = np.sum(func(ys, x) * dy * weights[:, np.newaxis], axis=0)
+        if isinstance(x, int) or isinstance(x, float):
+            integral = np.sum(func(y, x, gamma_in) * dy * weights)
+        else:
+            ys = np.repeat(y[:, np.newaxis], len([x]), axis=1)
+
+            integral = np.sum(func(ys, x, gamma_in) * dy * weights[:, np.newaxis], axis=0)
 
         return integral
 
-
-    def _alpha_integrand(self, y, x):
+    def _alpha_integrand(self, y, x, gamma_in):
         """Integrand of the deflection angel integral.
 
         :param y: integration variable
         :type y: np.array
         :param x: x = R/Rs
         :type x: float
+        :param gamma_in: inner slope
+        :type gamma_in: float
         :return: integrand of the deflection angel integral
         """
         return (y + x)**(gamma_in - 3) * (1 - np.sqrt(1 - y**2)) / y
 
-    def _kappa_integrand(self, y, x):
+    def _kappa_integrand(self, y, x, gamma_in):
         """Integrand of the deflection angel integral in eq. (57) of Keeton 2001.
 
         :param y: integration variable
         :type y: np.array
         :param x: x = R/Rs
         :type x: float
+        :param gamma_in: inner slope
+        :type gamma_in: float
         :return: integrand of the deflection angel integral
         """
         return (y + x)**(gamma_in - 4) * (1 - np.sqrt(1 - y**2))
@@ -342,7 +349,7 @@ class GNFW(LensProfileBase):
         x = R / Rs
         x = np.maximum(x, self._s)
 
-        integral = self._trapezoid_integrate(self._alpha_integrand, x, gamma_in)
+        integral = self._trapezoidal_integrate(self._alpha_integrand, x, gamma_in)
 
         alpha = 4 * kappa_s * Rs * x**(2 - gamma_in) * (hyp2f1(3-gamma_in,
                                                                3-gamma_in,
@@ -370,7 +377,7 @@ class GNFW(LensProfileBase):
         x = R / Rs
         x = np.maximum(x, self._s)
 
-        integral = self._trapezoid_integrate(self._kappa_r_integrand, x, gamma_in)
+        integral = self._trapezoidal_integrate(self._kappa_integrand, x, gamma_in)
 
         kappa = 2 * kappa_s * Rs * x ** (1 - gamma_in) * ((1 + x)**(gamma_in - 3) +
                                                            (3 - gamma_in) * integral)

@@ -39,6 +39,7 @@ _SUPPORTED_MODELS = [
     "GAUSSIAN_ELLIPSE_KAPPA",
     "GAUSSIAN_ELLIPSE_POTENTIAL",
     "GAUSSIAN_KAPPA",
+    "GNFW",
     "HERNQUIST",
     "HERNQUIST_ELLIPSE",
     "HERNQUIST_ELLIPSE_CSE",
@@ -392,6 +393,10 @@ def lens_class(
         from lenstronomy.LensModel.Profiles.gaussian_kappa import GaussianKappa
 
         return GaussianKappa()
+    elif lens_type == "GNFW":
+        from lenstronomy.LensModel.Profiles.gnfw import GNFW
+
+        return GNFW()
     elif lens_type == "HERNQUIST":
         from lenstronomy.LensModel.Profiles.hernquist import Hernquist
 

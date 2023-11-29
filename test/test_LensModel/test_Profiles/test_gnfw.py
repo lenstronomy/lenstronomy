@@ -104,7 +104,9 @@ class TestGNFW(object):
         # test for really small Rs
         Rs = 0.00000001
         f_xx_nfw, f_xy_nfw, _, f_yy_nfw = self.nfw.hessian(x, y, Rs, alpha_Rs)
-        f_xx_gnfw, f_xy_gnfw, _, f_yy_gnfw = self.gnfw.hessian(x, y, Rs, kappa_s, gamma_in)
+        f_xx_gnfw, f_xy_gnfw, _, f_yy_gnfw = self.gnfw.hessian(
+            x, y, Rs, kappa_s, gamma_in
+        )
 
         npt.assert_almost_equal(f_xx_nfw, f_xx_gnfw, decimal=2)
         npt.assert_almost_equal(f_yy_nfw, f_yy_gnfw, decimal=2)

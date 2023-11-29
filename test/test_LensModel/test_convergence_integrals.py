@@ -142,7 +142,7 @@ class TestConvergenceIntegrals(object):
         npt.assert_almost_equal(f_ - f_00, f_num[x1, y1] - f_num[x0, y0], decimal=2)
 
     def test_gnfw(self):
-        from lenstronomy.LensModel.Profiles.general_nfw import GNFW
+        from lenstronomy.LensModel.Profiles.pseudo_double_powerlaw import GNFW
 
         gnfw = GNFW()
         deltaPix = 0.005

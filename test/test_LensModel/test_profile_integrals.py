@@ -443,7 +443,7 @@ class TestNumerics(object):
         self.assert_lens_integrals(Model, kwargs)
 
     def test_gnfw(self):
-        from lenstronomy.LensModel.Profiles.general_nfw import GNFW as Model
+        from lenstronomy.LensModel.Profiles.pseudo_double_powerlaw import GNFW as Model
 
         kwargs = {"alpha_Rs": 0.7, "Rs": 0.3, "gamma_inner": 1.0, "gamma_outer": 3.2}
         self.assert_lens_integrals(Model, kwargs)

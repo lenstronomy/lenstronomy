@@ -39,7 +39,6 @@ _SUPPORTED_MODELS = [
     "GAUSSIAN_ELLIPSE_KAPPA",
     "GAUSSIAN_ELLIPSE_POTENTIAL",
     "GAUSSIAN_KAPPA",
-    "GNFW",
     "HERNQUIST",
     "HERNQUIST_ELLIPSE",
     "HERNQUIST_ELLIPSE_CSE",
@@ -64,6 +63,7 @@ _SUPPORTED_MODELS = [
     "PJAFFE",
     "PJAFFE_ELLIPSE",
     "POINT_MASS",
+    "PSEUDO_DPL",
     "SERSIC",
     "SERSIC_ELLIPSE_GAUSS_DEC",
     "SERSIC_ELLIPSE_KAPPA",
@@ -392,10 +392,6 @@ def lens_class(
         from lenstronomy.LensModel.Profiles.gaussian_kappa import GaussianKappa
 
         return GaussianKappa()
-    elif lens_type == "GNFW":
-        from lenstronomy.LensModel.Profiles.general_nfw import GNFW
-
-        return GNFW()
     elif lens_type == "HERNQUIST":
         from lenstronomy.LensModel.Profiles.hernquist import Hernquist
 
@@ -506,6 +502,10 @@ def lens_class(
         from lenstronomy.LensModel.Profiles.point_mass import PointMass
 
         return PointMass()
+    elif lens_type == "PSEUDO_DPL":
+        from lenstronomy.LensModel.Profiles.pseudo_double_powerlaw import PseudoDoublePowerlaw
+
+        return PseudoDoublePowerlaw()
     elif lens_type == "RADIAL_INTERPOL":
         from lenstronomy.LensModel.Profiles.radial_interpolated import (
             RadialInterpolate,

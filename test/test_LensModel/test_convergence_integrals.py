@@ -142,7 +142,9 @@ class TestConvergenceIntegrals(object):
         npt.assert_almost_equal(f_ - f_00, f_num[x1, y1] - f_num[x0, y0], decimal=2)
 
     def test_pdpl(self):
-        from lenstronomy.LensModel.Profiles.pseudo_double_powerlaw import PseudoDoublePowerlaw
+        from lenstronomy.LensModel.Profiles.pseudo_double_powerlaw import (
+            PseudoDoublePowerlaw,
+        )
 
         pdpl = PseudoDoublePowerlaw()
         deltaPix = 0.005

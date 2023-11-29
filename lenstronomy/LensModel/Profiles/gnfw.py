@@ -1,4 +1,4 @@
-__author__ = "ajshajib"
+__author__ = "ajshajib", "dgilman", "sibirrer"
 
 import numpy as np
 from scipy.integrate import quad
@@ -44,10 +44,19 @@ class GNFW(LensProfileBase):
         "center_y": 100,
     }
 
-    def __init__(self):
-        """"""
+    def __init__(self, trapezoidal_integration=False, integration_steps=1000):
+        """
+        :param trapezoidal_integrate: bool, if True, the numerical integral is performed
+            with the trapezoidal rule, otherwise with scipy.integrate.quad
+        :param integration_steps: number of steps in the trapezoidal integral
+        """
         super(GNFW, self).__init__()
-        self._integration_steps = 100
+        self._integration_steps = integration_steps
+        if trapezoidal_integration:
+            self._integrate = self._trapezoidal_integrate
+        else:
+            self._integrate = self._quad_integrate
+
 
     def function(self, x, y, Rs, kappa_s, gamma_in, center_x=0, center_y=0):
         """
@@ -305,6 +314,30 @@ class GNFW(LensProfileBase):
 
         return integral
 
+    def _quad_integrate(self, func, x, gamma_in):
+        """Integrate a function using the trapezoid rule.
+
+        :param func: function to integrate
+        :type func: function
+        :param x: x = R/Rs
+        :type x: float
+        :param gamma_in: inner slope
+        :type gamma_in: float
+        :param steps: number of steps
+        :type steps: int
+        :return: integral
+        :rtype: float
+        """
+        if isinstance(x, int) or isinstance(x, float):
+            integral = quad(func, a=0, b=1, args=(x, gamma_in))[0]
+        else:
+            integral = np.zeros_like(x)
+
+            for i in range(len(x)):
+                integral[i] = quad(func, a=0, b=1, args=(x[i], gamma_in))[0]
+
+        return integral
+
     def _alpha_integrand(self, y, x, gamma_in):
         """Integrand of the deflection angel integral.
 
@@ -349,7 +382,7 @@ class GNFW(LensProfileBase):
         x = R / Rs
         x = np.maximum(x, self._s)
 
-        integral = self._trapezoidal_integrate(self._alpha_integrand, x, gamma_in)
+        integral = self._integrate(self._alpha_integrand, x, gamma_in)
 
         alpha = 4 * kappa_s * Rs * x**(2 - gamma_in) * (hyp2f1(3-gamma_in,
                                                                3-gamma_in,
@@ -377,7 +410,7 @@ class GNFW(LensProfileBase):
         x = R / Rs
         x = np.maximum(x, self._s)
 
-        integral = self._trapezoidal_integrate(self._kappa_integrand, x, gamma_in)
+        integral = self._integrate(self._kappa_integrand, x, gamma_in)
 
         kappa = 2 * kappa_s * Rs * x ** (1 - gamma_in) * ((1 + x)**(gamma_in - 3) +
                                                            (3 - gamma_in) * integral)

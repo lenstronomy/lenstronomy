@@ -16,13 +16,14 @@ class TestGNFW(object):
     def setup_method(self):
         self.nfw = NFW()
         self.gnfw = GNFW()
+        self.gnfw_trapezoidal = GNFW(trapezoidal_integration=True)
 
     def test_function(self):
         """
         Tests `GNFW.function()`
         """
-        x = np.array([1., 1])
-        y = np.array([2., 2])
+        x = 1
+        y = 2
         Rs = 1.0
         rho0 = 1
         gamma_in = 1
@@ -32,7 +33,10 @@ class TestGNFW(object):
 
         kappa_s = self.gnfw.rho02kappa_s(rho0, Rs, gamma_in)
         values_gnfw = self.gnfw.function(x, y, Rs, kappa_s, gamma_in)
-        npt.assert_almost_equal(values_nfw, values_gnfw, decimal=3)
+        npt.assert_almost_equal(values_nfw, values_gnfw, decimal=5)
+
+        values_gnfw_trapezoidal = self.gnfw_trapezoidal.function(x, y, Rs, kappa_s, gamma_in)
+        npt.assert_almost_equal(values_nfw, values_gnfw_trapezoidal, decimal=4)
 
     def test_derivatives(self):
         """
@@ -50,15 +54,19 @@ class TestGNFW(object):
         kappa_s = self.gnfw.rho02kappa_s(rho0, Rs, gamma_in)
         f_x_gnfw, f_y_gnfw = self.gnfw.derivatives(x, y, Rs, kappa_s, gamma_in)
 
-        npt.assert_almost_equal(f_x_nfw, f_x_gnfw, decimal=3)
-        npt.assert_almost_equal(f_y_nfw, f_y_gnfw, decimal=3)
+        npt.assert_almost_equal(f_x_nfw, f_x_gnfw, decimal=10)
+        npt.assert_almost_equal(f_y_nfw, f_y_gnfw, decimal=10)
+
+        f_x_gnfwt, f_y_gnfwt = self.gnfw_trapezoidal.derivatives(x, y, Rs, kappa_s, gamma_in)
+        npt.assert_almost_equal(f_x_nfw, f_x_gnfwt, decimal=5)
+        npt.assert_almost_equal(f_y_nfw, f_y_gnfwt, decimal=5)
 
     def test_hessian(self):
         """
         Tests `GNFW.hessian()`
         """
-        x = 1
-        y = 2
+        x = np.linspace(0.5, 10, 10)
+        y = x * 0.
         Rs = 1.0
         rho0 = 1
         gamma_in = 1
@@ -70,9 +78,16 @@ class TestGNFW(object):
         f_xx_gnfw, f_xy_gnfw, _, f_yy_gnfw = self.gnfw.hessian(x, y, Rs, kappa_s,
                                                               gamma_in)
 
-        npt.assert_almost_equal(f_xx_nfw, f_xx_gnfw, decimal=3)
-        npt.assert_almost_equal(f_yy_nfw, f_yy_gnfw, decimal=3)
-        npt.assert_almost_equal(f_xy_nfw, f_xy_gnfw, decimal=3)
+        npt.assert_almost_equal(f_xx_nfw, f_xx_gnfw, decimal=10)
+        npt.assert_almost_equal(f_yy_nfw, f_yy_gnfw, decimal=10)
+        npt.assert_almost_equal(f_xy_nfw, f_xy_gnfw, decimal=10)
+
+        f_xx_gnfwt, f_xy_gnfwt, _, f_yy_gnfwt = self.gnfw_trapezoidal.hessian(x, y, Rs,
+                                                              kappa_s,
+                                                              gamma_in)
+        npt.assert_almost_equal(f_xx_nfw, f_xx_gnfwt, decimal=4)
+        npt.assert_almost_equal(f_yy_nfw, f_yy_gnfwt, decimal=4)
+        npt.assert_almost_equal(f_xy_nfw, f_xy_gnfwt, decimal=4)
 
     def test_density(self):
         """
@@ -85,8 +100,10 @@ class TestGNFW(object):
 
         density_nfw = self.nfw.density(R, Rs, rho0)
         density_gnfw = self.gnfw.density(R, Rs, rho0, gamma_in)
+        density_gnfwt = self.gnfw_trapezoidal.density(R, Rs, rho0, gamma_in)
 
-        npt.assert_almost_equal(density_nfw, density_gnfw, decimal=6)
+        npt.assert_almost_equal(density_nfw, density_gnfw, decimal=10)
+        npt.assert_almost_equal(density_nfw, density_gnfwt, decimal=6)
 
     def test_density_lens(self):
         """
@@ -102,8 +119,10 @@ class TestGNFW(object):
 
         kappa_s = self.gnfw.rho02kappa_s(rho0, Rs, gamma_in)
         density_gnfw = self.gnfw.density_lens(R, Rs, kappa_s, gamma_in)
+        density_gnfwt = self.gnfw_trapezoidal.density_lens(R, Rs, kappa_s, gamma_in)
 
-        npt.assert_almost_equal(density_nfw, density_gnfw, decimal=6)
+        npt.assert_almost_equal(density_nfw, density_gnfw, decimal=10)
+        npt.assert_almost_equal(density_nfw, density_gnfwt, decimal=6)
 
     def test_density_2d(self):
         """
@@ -117,8 +136,11 @@ class TestGNFW(object):
 
         kappa_nfw = self.nfw.density_2d(x, y, Rs, rho0)
         kappa_gnfw = self.gnfw.density_2d(x, y, Rs, rho0, gamma_in)
+        kappa_gnfwt = self.gnfw_trapezoidal.density_2d(x, y, Rs, rho0, gamma_in)
+        npt.assert_almost_equal(kappa_nfw, kappa_gnfw, decimal=10)
+        npt.assert_almost_equal(kappa_nfw, kappa_gnfwt, decimal=5)
 
-        npt.assert_almost_equal(kappa_nfw, kappa_gnfw, decimal=3)
+
 
     def test_mass_3d(self):
         """

@@ -141,10 +141,10 @@ class TestConvergenceIntegrals(object):
         f_00 = sersic_lens.function(x_grid2d[x0, y0], y_grid2d[x0, y0], **kwargs_lens)
         npt.assert_almost_equal(f_ - f_00, f_num[x1, y1] - f_num[x0, y0], decimal=2)
 
-    def test_gnfw(self):
-        from lenstronomy.LensModel.Profiles.pseudo_double_powerlaw import GNFW
+    def test_pdpl(self):
+        from lenstronomy.LensModel.Profiles.pseudo_double_powerlaw import PseudoDoublePowerlaw
 
-        gnfw = GNFW()
+        pdpl = PseudoDoublePowerlaw()
         deltaPix = 0.005
         numPix = 2000
         x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
@@ -155,8 +155,8 @@ class TestConvergenceIntegrals(object):
             "gamma_inner": 1.5,
             "gamma_outer": 3.4,
         }
-        f_xx, _, _, f_yy = gnfw.hessian(x_grid, y_grid, **kwargs_lens)
-        f_x, f_y = gnfw.derivatives(x_grid, y_grid, **kwargs_lens)
+        f_xx, _, _, f_yy = pdpl.hessian(x_grid, y_grid, **kwargs_lens)
+        f_x, f_y = pdpl.derivatives(x_grid, y_grid, **kwargs_lens)
         f_x = util.array2image(f_x)
         kappa = util.array2image((f_xx + f_yy) / 2.0)
         f_x_num, f_y_num = convergence_integrals.deflection_from_kappa_grid(
@@ -171,8 +171,8 @@ class TestConvergenceIntegrals(object):
             "gamma_inner": 2.3,
             "gamma_outer": 3.45,
         }
-        f_xx, _, _, f_yy = gnfw.hessian(x_grid, y_grid, **kwargs_lens)
-        f_x, f_y = gnfw.derivatives(x_grid, y_grid, **kwargs_lens)
+        f_xx, _, _, f_yy = pdpl.hessian(x_grid, y_grid, **kwargs_lens)
+        f_x, f_y = pdpl.derivatives(x_grid, y_grid, **kwargs_lens)
         f_x = util.array2image(f_x)
         kappa = util.array2image((f_xx + f_yy) / 2.0)
         f_x_num, f_y_num = convergence_integrals.deflection_from_kappa_grid(

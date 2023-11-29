@@ -5,7 +5,7 @@ from scipy.special import hyp2f1
 from scipy.special import beta
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
-__all__ = ["PSEUDO_DPL"]
+__all__ = ["PseudoDoublePowerlaw"]
 
 
 class PseudoDoublePowerlaw(LensProfileBase):

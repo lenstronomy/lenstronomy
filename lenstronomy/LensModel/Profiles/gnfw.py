@@ -57,7 +57,6 @@ class GNFW(LensProfileBase):
         else:
             self._integrate = self._quad_integrate
 
-
     def function(self, x, y, Rs, kappa_s, gamma_in, center_x=0, center_y=0):
         """Potential of gNFW profile.
 

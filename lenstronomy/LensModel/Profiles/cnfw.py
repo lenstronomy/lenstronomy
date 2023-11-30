@@ -105,7 +105,7 @@ class CNFW(LensProfileBase):
         R = np.sqrt(x_**2 + y_**2)
 
         kappa = self.density_2d(x_, y_, Rs, rho0, r_core)
-        gamma1, gamma2 = self.cnfwGamma(R, Rs, rho0, r_core, x_, y_)
+        gamma1, gamma2 = self.cnfw_gamma(R, Rs, rho0, r_core, x_, y_)
         f_xx = kappa + gamma1
         f_yy = kappa - gamma1
         f_xy = gamma2
@@ -201,7 +201,7 @@ class CNFW(LensProfileBase):
         a = 4 * rho0 * Rs**2 * gx / x
         return a
 
-    def cnfwGamma(self, R, Rs, rho0, r_core, ax_x, ax_y):
+    def cnfw_gamma(self, R, Rs, rho0, r_core, ax_x, ax_y):
         """Shear gamma of NFW profile (times Sigma_crit) along the projection to
         coordinate 'axis'.
 

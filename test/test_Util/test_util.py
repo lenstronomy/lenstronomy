@@ -17,6 +17,7 @@ def test_isiterable():
     boolean = util.isiterable(z)
     assert boolean is False
 
+
 def test_estimate_theta_E():
     x = np.array([-0.45328229, 0.57461556, 0.53757501, -0.42312438])
     y = np.array([0.69582971, -0.51226356, 0.37577509, -0.40245467])

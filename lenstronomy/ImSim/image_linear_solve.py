@@ -531,8 +531,9 @@ class ImageLinearFit(ImageModel):
         :return: response matrix (m x n)
         """
         x_grid, y_grid = self.ImageNumerics.coordinates_evaluate
+
         source_light_response, n_source = self.source_mapping.image_flux_split(
-            x_grid, y_grid, kwargs_lens, kwargs_source
+            x_grid, y_grid, kwargs_lens, kwargs_source, kwargs_special
         )
         extinction = self._extinction.extinction(
             x_grid,

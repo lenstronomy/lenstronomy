@@ -93,11 +93,13 @@ class ModelPlot(object):
             # overwrite model with initial input without linear solver applied
             model[0] = im_sim.image(**kwargs_params_copy)
             # retrieve amplitude parameters directly from kwargs_list
+
             param[0] = im_sim.linear_param_from_kwargs(
                 kwargs_params["kwargs_source"],
                 kwargs_params["kwargs_lens_light"],
                 kwargs_params["kwargs_ps"],
             )
+
         else:
             # overwrite the keyword list with the linear solved 'amp' values
             for key in kwargs_params_copy.keys():
@@ -151,7 +153,6 @@ class ModelPlot(object):
 
     def _select_band(self, band_index):
         """
-
         :param band_index: index of imaging band to be plotted
         :return: bandplot() instance of selected band, raises when band is not computed
         """

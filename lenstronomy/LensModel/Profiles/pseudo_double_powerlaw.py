@@ -208,7 +208,7 @@ class PseudoDoublePowerlaw(LensProfileBase):
         return m_2d
 
     def alpha(self, R, Rs, rho0, gamma_inner, gamma_outer, ax_x, ax_y):
-        """Deflection angel of NFW profile (times Sigma_crit D_OL) along the projection
+        """Deflection angle of NFW profile (times Sigma_crit D_OL) along the projection
         to coordinate 'axis'.
 
         :param R: 3d radius

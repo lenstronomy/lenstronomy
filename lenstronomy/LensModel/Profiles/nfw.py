@@ -237,7 +237,7 @@ class NFW(LensProfileBase):
         return 2 * rho0 * Rs**3 * hx
 
     def nfw_alpha(self, R, Rs, rho0, ax_x, ax_y):
-        """Deflection angel of NFW profile (times Sigma_crit D_OL) along the projection
+        """Deflection angle of NFW profile (times Sigma_crit D_OL) along the projection
         to coordinate 'axis'.
 
         :param R: radius of interest

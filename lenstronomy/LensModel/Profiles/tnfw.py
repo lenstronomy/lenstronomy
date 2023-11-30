@@ -243,7 +243,7 @@ class TNFW(LensProfileBase):
         return 2 * rho0 * Rs**3 * hx
 
     def nfw_alpha(self, R, Rs, rho0, r_trunc, ax_x, ax_y):
-        """Deflection angel of NFW profile along the projection to coordinate axis.
+        """Deflection angle of NFW profile along the projection to coordinate axis.
 
         :param R: radius of interest
         :type R: float/numpy array

@@ -81,8 +81,6 @@ class LensModelExtensions(object):
         :return: an array of image magnifications
         """
 
-
-
         (
             grid_x_0,
             grid_y_0,

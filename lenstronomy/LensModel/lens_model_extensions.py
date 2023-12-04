@@ -27,9 +27,8 @@ class LensModelExtensions(object):
         y_image,
         kwargs_lens,
         source_model, kwargs_source, 
-        source_size_parsec,
-        grid_resolution=None,
-        grid_radius_arcsec=None,
+        grid_resolution,
+        grid_radius_arcsec,
         axis_ratio=0.5,
         tol=0.001,
         step_size=0.05,
@@ -37,7 +36,11 @@ class LensModelExtensions(object):
         fixed_aperture_size=False,
     ):
         """This method computes image magnifications with a finite-size background
-        source. It can be
+        source. 
+        
+        This new updates allows for more flexibility in the source light model by requiring the user to specify the source light mode, grid size and grid resolution before calling the function. 
+    
+        The functions auto_raytrracing_grid_size and auto_raytracing_grid_resolution give good estimates for appropriate parameter choices for grid_radius_arcsec and grid_resolution. It can be
         much faster that magnification_finite for lens models with many deflectors and a
         compact source. This is because most pixels in a rectangular window around a
         lensed image of a compact source do not map onto the source, and therefore don't
@@ -60,12 +63,11 @@ class LensModelExtensions(object):
         :param x_image: a list or array of x coordinates [units arcsec]
         :param y_image: a list or array of y coordinates [units arcsec]
         :param kwargs_lens: keyword arguments for the lens model
-        :param source_light_model: instance of LightModel
-        :kwargs_source: keyword arguments for the light profile (corresponding to the desired light model) (list of dictionary)
-        :source_size_parsec: the size of the background source [units of parsec]
-        :param grid_resolution: (optional) the grid resolution in units arcsec/pixel; if not specified, an appropriate value will
+        :param source_model: instance of LightModel for the source
+        :kwargs_source: keyword arguments for the light profile of the source (list of dictionary)
+        :param grid_resolution: the grid resolution in units arcsec/pixel; if not specified, an appropriate value will
          be estimated from the source size
-        :param grid_radius_arcsec: (optional) the size of the ray tracing region in arcsec; if not specified, an appropriate value
+        :param grid_radius_arcsec: the size of the ray tracing region in arcsec; if not specified, an appropriate value
          will be estimated from the source size
         :param axis_ratio: the axis ratio of the ellipse used for ray tracing; if axis_ratio = 0, then the eigenvalues
          the hessian matrix will be used to estimate an appropriate axis ratio. Be warned: if the image is highly
@@ -88,7 +90,7 @@ class LensModelExtensions(object):
             kwargs_source,
             grid_resolution,
             grid_radius_arcsec,
-        )= setup_mag_finite(grid_radius_arcsec, grid_resolution, source_model, kwargs_source, source_size_parsec)
+        )= setup_mag_finite(grid_radius_arcsec, grid_resolution, source_model, kwargs_source)
 
         grid_x_0, grid_y_0 = grid_x_0.ravel(), grid_y_0.ravel()
 

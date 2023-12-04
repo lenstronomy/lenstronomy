@@ -11,18 +11,22 @@ def plot_quasar_images(
     source_light_model,
     kwargs_light_source,
     grid_resolution,
-    grid_radius_arcsec
+    grid_radius_arcsec,
 ):
     """This function plots the surface brightness in the image plane of a background
     source. The flux is computed inside a circular aperture with radius
-    grid_radius_arcsec. This new updates allows for more flexibility in the source light model by requiring the user to specify the source light mode, grid size and grid resolution before calling the function. The functions auto_raytrracing_grid_size and auto_raytracing_grid_resolution give good estimates for appropriate parameter choices for grid_radius_arcsec and grid_resolution. 
+    grid_radius_arcsec. This new updates allows for more flexibility in the source light
+    model by requiring the user to specify the source light mode, grid size and grid
+    resolution before calling the function. The functions auto_raytrracing_grid_size and
+    auto_raytracing_grid_resolution give good estimates for appropriate parameter
+    choices for grid_radius_arcsec and grid_resolution.
 
     :param lens_model: an instance of LensModel
     :param x_image: a list or array of x coordinates [units arcsec]
     :param y_image: a list or array of y coordinates [units arcsec]
     :param kwargs_lens: keyword arguments for the lens model
     :param source_size: the size of the background source [units parsec]
-    :param source_light_model:  instance of LightModel for the source
+    :param source_light_model: instance of LightModel for the source
     :param source_light_kwargs: the keyword arguments for the source light
     :param grid_resolution: the grid resolution in units arcsec/pixel
     :param grid_radius_arcsec: the size of the ray tracing region in arcsec
@@ -41,10 +45,7 @@ def plot_quasar_images(
         grid_resolution,
         grid_radius_arcsec,
     ) = setup_mag_finite(
-        grid_radius_arcsec,
-        grid_resolution,
-        source_light_model,
-        kwargs_light_source
+        grid_radius_arcsec, grid_resolution, source_light_model, kwargs_light_source
     )
     shape0 = grid_x_0.shape
     grid_x_0, grid_y_0 = grid_x_0.ravel(), grid_y_0.ravel()

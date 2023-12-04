@@ -26,7 +26,8 @@ class LensModelExtensions(object):
         x_image,
         y_image,
         kwargs_lens,
-        source_model, kwargs_source, 
+        source_model,
+        kwargs_source,
         grid_resolution,
         grid_radius_arcsec,
         axis_ratio=0.5,
@@ -36,10 +37,10 @@ class LensModelExtensions(object):
         fixed_aperture_size=False,
     ):
         """This method computes image magnifications with a finite-size background
-        source. 
-        
-        This new updates allows for more flexibility in the source light model by requiring the user to specify the source light mode, grid size and grid resolution before calling the function. 
-    
+        source.
+
+        This new updates allows for more flexibility in the source light model by requiring the user to specify the source light mode, grid size and grid resolution before calling the function.
+
         The functions auto_raytrracing_grid_size and auto_raytracing_grid_resolution give good estimates for appropriate parameter choices for grid_radius_arcsec and grid_resolution. It can be
         much faster that magnification_finite for lens models with many deflectors and a
         compact source. This is because most pixels in a rectangular window around a
@@ -88,7 +89,9 @@ class LensModelExtensions(object):
             kwargs_source,
             grid_resolution,
             grid_radius_arcsec,
-        )= setup_mag_finite(grid_radius_arcsec, grid_resolution, source_model, kwargs_source)
+        ) = setup_mag_finite(
+            grid_radius_arcsec, grid_resolution, source_model, kwargs_source
+        )
 
         grid_x_0, grid_y_0 = grid_x_0.ravel(), grid_y_0.ravel()
 

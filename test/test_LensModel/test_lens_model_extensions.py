@@ -12,6 +12,7 @@ from lenstronomy.Util.magnification_finite_util import (
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LightModel.light_model import LightModel
 from astropy.cosmology import FlatLambdaCDM
+
 # from lenstronomy.Util.util import fwhm2sigma
 
 
@@ -200,7 +201,7 @@ class TestLensModelExtensions(object):
         # provide parameters for magnification_finite_adaptive
         # required to provide light model and kwargs for source
 
-        source_model = LightModel(['GAUSSIAN'])
+        source_model = LightModel(["GAUSSIAN"])
         kwargs_source = [
             {
                 "amp": 1.0,
@@ -230,9 +231,9 @@ class TestLensModelExtensions(object):
             x_image,
             y_image,
             kwargs_lens,
-            source_model, 
-            kwargs_source, 
-            grid_resolution, 
+            source_model,
+            kwargs_source,
+            grid_resolution,
             grid_radius_arcsec=grid_size,
         )
         flux_ratios_adaptive_grid = mag_adaptive_grid / max(mag_adaptive_grid)
@@ -241,8 +242,10 @@ class TestLensModelExtensions(object):
             x_image,
             y_image,
             kwargs_lens,
-            source_model, kwargs_source,
-            grid_resolution,grid_radius_arcsec=0.2,
+            source_model,
+            kwargs_source,
+            grid_resolution,
+            grid_radius_arcsec=0.2,
             fixed_aperture_size=True,
         )
         flux_ratios_fixed_aperture_size = mag_adaptive_grid_fixed_aperture_size / max(
@@ -253,9 +256,9 @@ class TestLensModelExtensions(object):
             x_image,
             y_image,
             kwargs_lens,
-            source_model, 
-            kwargs_source, 
-            grid_resolution, 
+            source_model,
+            kwargs_source,
+            grid_resolution,
             grid_radius_arcsec=grid_size,
             axis_ratio=0,
         )
@@ -263,9 +266,9 @@ class TestLensModelExtensions(object):
             x_image,
             y_image,
             kwargs_lens,
-            source_model, 
-            kwargs_source, 
-            grid_resolution, 
+            source_model,
+            kwargs_source,
+            grid_resolution,
             grid_radius_arcsec=grid_size,
             axis_ratio=1,
         )
@@ -278,9 +281,9 @@ class TestLensModelExtensions(object):
             x_image,
             y_image,
             kwargs_lens,
-            source_model, 
-            kwargs_source, 
-            grid_resolution, 
+            source_model,
+            kwargs_source,
+            grid_resolution,
             grid_radius_arcsec=grid_size,
             tol=0.0001,
         )
@@ -290,9 +293,9 @@ class TestLensModelExtensions(object):
             x_image,
             y_image,
             kwargs_lens,
-            source_model, 
-            kwargs_source, 
-            grid_resolution, 
+            source_model,
+            kwargs_source,
+            grid_resolution,
             grid_radius_arcsec=grid_size,
             tol=0.0001,
             use_largest_eigenvalue=False,
@@ -303,9 +306,9 @@ class TestLensModelExtensions(object):
             x_image,
             y_image,
             kwargs_lens,
-            source_model, 
-            kwargs_source, 
-            grid_resolution, 
+            source_model,
+            kwargs_source,
+            grid_resolution,
             grid_radius_arcsec=grid_size,
             tol=0.0001,
             step_size=1000,
@@ -362,12 +365,12 @@ class TestLensModelExtensions(object):
         #     amp_scale=1.0,
         #     size_scale=1.0,
         # )
-        
-        dx=0.0
-        dy=0.0
-        amp_scale=1.0
-        size_scale=1.0
-        
+
+        dx = 0.0
+        dy = 0.0
+        amp_scale = 1.0
+        size_scale = 1.0
+
         amp_1 = 1.0
         kwargs_source_1 = [
             {
@@ -379,7 +382,7 @@ class TestLensModelExtensions(object):
         ]
         # c = amp / (2 * np.pi * sigma**2)
         amp_2 = amp_1 * amp_scale * size_scale**2
-    
+
         kwargs_source_2 = [
             {
                 "amp": amp_2,
@@ -395,13 +398,12 @@ class TestLensModelExtensions(object):
             x_image,
             y_image,
             kwargs_lens,
-            source_model, 
-            kwargs_source, 
-            grid_resolution, 
-            grid_radius_arcsec=grid_size
-
+            source_model,
+            kwargs_source,
+            grid_resolution,
+            grid_radius_arcsec=grid_size,
         )
-        
+
         npt.assert_almost_equal(magnification_double_gaussian, 2 * mag_adaptive_grid)
 
         grid_radius = 0.3
@@ -435,7 +437,8 @@ class TestLensModelExtensions(object):
                 [x_image[i]],
                 [y_image[i]],
                 kwargs_lens,
-                source_light_model, kwargs_source,
+                source_light_model,
+                kwargs_source,
                 grid_resolution=resolution,
                 grid_radius_arcsec=grid_radius,
                 axis_ratio=1.0,

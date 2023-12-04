@@ -30,8 +30,7 @@ class TestMagnificationFiniteUtil(object):
         grid_radius_arcsec = 0.05
         source_light_model = ["GAUSSIAN"]
         source_model = LightModel(source_light_model)
-        kwargs_source = [{'amp': 1, 'sigma': 0.0408 ,'center_x': 0, 'center_y':0}]
-
+        kwargs_source = [{"amp": 1, "sigma": 0.0408, "center_x": 0, "center_y": 0}]
 
         npt.assert_equal(True, grid_resolution is not None)
         npt.assert_equal(True, grid_radius_arcsec is not None)
@@ -47,12 +46,8 @@ class TestMagnificationFiniteUtil(object):
             grid_resolution,
             grid_radius_arcsec,
         ) = setup_mag_finite(
-            grid_radius_arcsec,
-            grid_resolution,
-            source_model,
-            kwargs_source
+            grid_radius_arcsec, grid_resolution, source_model, kwargs_source
         )
-
 
 
 if __name__ == "__main__":

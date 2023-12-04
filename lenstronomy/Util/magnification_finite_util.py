@@ -37,26 +37,26 @@ def auto_raytracing_grid_resolution(
     return grid_resolution
 
 
-def setup_mag_finite(
-    grid_radius_arcsec, grid_resolution, source_model, kwargs_source
-):
+def setup_mag_finite(grid_radius_arcsec, grid_resolution, source_model, kwargs_source):
     """Sets up the ray tracing grid and source light model for
-    magnification_finite_adaptive and plot_quasar_images routines. 
-    
-    This new updates allows for more flexibility in the source light model by requiring the user to specify the source light mode, grid size and grid resolution before calling the function. 
-    
-    The functions auto_raytrracing_grid_size and auto_raytracing_grid_resolution give good estimates for appropriate parameter choices for grid_radius_arcsec and grid_resolution. 
+    magnification_finite_adaptive and plot_quasar_images routines.
 
-    :param grid_radius_arcsec: the size of the ray tracing region in arcsec;
-        if not specified, an appropriate value will be estimated from the source size
+    This new updates allows for more flexibility in the source light model by requiring
+    the user to specify the source light mode, grid size and grid resolution before
+    calling the function.
+
+    The functions auto_raytrracing_grid_size and auto_raytracing_grid_resolution give
+    good estimates for appropriate parameter choices for grid_radius_arcsec and
+    grid_resolution.
+
+    :param grid_radius_arcsec: the size of the ray tracing region in arcsec; if not
+        specified, an appropriate value will be estimated from the source size
     :param grid_resolution: the grid resolution in units arcsec/pixel; if not specified,
         an appropriate value will be estimated from the source size
-    :param source_model: instance of LightModel for the source
-    :kwargs_source: keyword arguments
-        for the light profile corresponding to the desired LightModel instance 
+    :param source_model: instance of LightModel for the source :kwargs_source: keyword
+        arguments for the light profile corresponding to the desired LightModel instance
     """
-    
-  
+
     # setup the grid
     npix = int(2 * grid_radius_arcsec / grid_resolution)
     _grid_x = np.linspace(-grid_radius_arcsec, grid_radius_arcsec, npix)

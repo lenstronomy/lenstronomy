@@ -1,7 +1,10 @@
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 from lenstronomy.Plots.plot_quasar_images import plot_quasar_images
-from lenstronomy.Util.magnification_finite_util import (auto_raytracing_grid_resolution, auto_raytracing_grid_size)
+from lenstronomy.Util.magnification_finite_util import (
+    auto_raytracing_grid_resolution,
+    auto_raytracing_grid_size,
+)
 from lenstronomy.LightModel.light_model import LightModel
 import matplotlib.pyplot as plt
 import pytest
@@ -33,7 +36,9 @@ class TestPlotQuasarImages(object):
 
         source_light_model = ["GAUSSIAN"]
         source_model = LightModel(source_light_model)
-        kwargs_light_source = [{'amp': 1, 'sigma': 0.0408 ,'center_x': 0, 'center_y':0}]
+        kwargs_light_source = [
+            {"amp": 1, "sigma": 0.0408, "center_x": 0, "center_y": 0}
+        ]
 
         plot_quasar_images(
             lensmodel,
@@ -43,7 +48,7 @@ class TestPlotQuasarImages(object):
             source_model,
             kwargs_light_source,
             grid_resolution,
-            grid_radius_arcsec
+            grid_radius_arcsec,
         )
         plt.close()
 

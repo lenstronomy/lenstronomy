@@ -7,3 +7,4 @@ comment:                  # this is a top-level key
 ignore:
   - "setup.py"
   - "test/*"
+  - "test/**/*.py"

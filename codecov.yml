@@ -8,4 +8,3 @@ ignore:
   - "setup.py"
   - "test/*"
   - "test/**/*.py"
-  - "test/**/**/*.py"

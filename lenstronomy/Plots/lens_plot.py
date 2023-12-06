@@ -62,7 +62,7 @@ def lens_model_plot(
     :param fast_caustic: boolean, if True, uses faster but less precise caustic
         calculation (might have troubles for the outer caustic (inner critical curve)
     :param with_convergence: boolean, if True, plots the convergence of the deflector
-    :return:
+    :return: matplotlib axis instance with plot
     """
     kwargs_data = sim_util.data_configure_simple(
         numPix,
@@ -76,9 +76,13 @@ def lens_model_plot(
     _frame_size = numPix * deltaPix
 
     ra0, dec0 = data.radec_at_xy_0
+    # shift half a pixel such that pixel is in the center
+    dec0 -= deltaPix / 2
     if coord_inverse:
+        ra0 += deltaPix / 2
         extent = [ra0, ra0 - _frame_size, dec0, dec0 + _frame_size]
     else:
+        ra0 -= deltaPix / 2
         extent = [ra0, ra0 + _frame_size, dec0, dec0 + _frame_size]
 
     if with_convergence:
@@ -100,7 +104,6 @@ def lens_model_plot(
             kwargs_lens=kwargs_lens,
             fast_caustic=fast_caustic,
             coord_inverse=coord_inverse,
-            pixel_offset=True,
             **kwargs_caustics
         )
     if point_source:
@@ -176,7 +179,6 @@ def caustics_plot(
     coord_inverse=False,
     color_crit="r",
     color_caustic="g",
-    pixel_offset=False,
     *args,
     **kwargs
 ):
@@ -192,8 +194,6 @@ def caustics_plot(
      (effectively the RA definition)
     :param color_crit: string, color of critical curve
     :param color_caustic: string, color of caustic curve
-    :param pixel_offset: boolean; if True (default plotting), the coordinates are shifted a half a pixel to match with
-     the matshow() command to center the coordinates in the pixel center
     :param args: argument for plotting curve
     :param kwargs: keyword arguments for plotting curves
     :return: updated matplotlib axis instance
@@ -243,7 +243,6 @@ def caustics_plot(
         origin=origin,
         flipped_x=coord_inverse,
         points_only=points_only,
-        pixel_offset=pixel_offset,
         *args,
         **kwargs
     )
@@ -256,7 +255,6 @@ def caustics_plot(
         origin=origin,
         flipped_x=coord_inverse,
         points_only=points_only,
-        pixel_offset=pixel_offset,
         *args,
         **kwargs
     )
@@ -319,16 +317,16 @@ def point_source_plot(
     if name_list is None:
         name_list = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"]
     for i in range(len(x_image)):
-        x_ = (x_image[i] + 0.5) * delta_pix_x + origin[0]
-        y_ = (y_image[i] + 0.5) * delta_pix + origin[1]
+        x_ = (x_image[i]) * delta_pix_x + origin[0]
+        y_ = (y_image[i]) * delta_pix + origin[1]
         ax.plot(
             x_, y_, "dk", markersize=4 * (1 + np.log(np.abs(mag_images[i]))), alpha=0.5
         )
         ax.text(x_, y_, name_list[i], fontsize=20, color="k")
     x_source, y_source = pixel_grid.map_coord2pix(source_x, source_y)
     ax.plot(
-        (x_source + 0.5) * delta_pix_x + origin[0],
-        (y_source + 0.5) * delta_pix + origin[1],
+        x_source * delta_pix_x + origin[0],
+        y_source * delta_pix + origin[1],
         "*k",
         markersize=10,
     )
@@ -423,7 +421,7 @@ def arrival_time_surface(
             levels=np.sort(fermat_pot_images),
             **kwargs_contours
         )
-        # mag_images = lensModel.magnification(theta_x, theta_y, kwargs_lens)
+        # mag_images = lens_model.magnification(theta_x, theta_y, kwargs_lens)
         x_image, y_image = _coords.map_coord2pix(theta_x, theta_y)
         if name_list is None:
             name_list = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"]
@@ -455,7 +453,7 @@ def arrival_time_surface(
         vmin = np.min(fermat_surface)
         vmax = np.max(fermat_surface)
         levels = np.linspace(start=vmin, stop=vmax, num=n_levels)
-        im = ax.contour(
+        _ = ax.contour(
             x_grid,
             y_grid,
             fermat_surface,

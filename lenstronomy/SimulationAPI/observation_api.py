@@ -183,7 +183,7 @@ class SingleBand(Instrument, Observation):
         :param exposure_time: exposure time per image (in seconds)
         :param sky_brightness: sky brightness (in magnitude per square arcseconds in units of electrons)
         :param seeing: Full-Width-at-Half-Maximum (FWHM) of PSF
-        :param magnitude_zero_point: magnitude in which 1 count (e-) per second per arcsecond square is registered
+        :param magnitude_zero_point: magnitude corresponding to 1 electron per second
         :param num_exposures: number of exposures that are combined
         :param point_source_supersampling_factor: int, supersampling factor of kernel_point_source
          (optional when psf_type='PIXEL' is chosen)

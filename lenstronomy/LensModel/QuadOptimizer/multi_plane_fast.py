@@ -165,12 +165,13 @@ class MultiplaneFast(object):
         index = self._param_class.to_vary_index
         kwargs_lens = kw[0:index]
         # evaluate main deflector deflection angles
+
         (
             x,
             y,
             alpha_x,
             alpha_y,
-        ) = self.lens_model_to_vary.lens_model.ray_shooting_partial(
+        ) = self.lens_model_to_vary.lens_model.ray_shooting_partial_comoving(
             x,
             y,
             alpha_x,
@@ -183,7 +184,7 @@ class MultiplaneFast(object):
 
         # ray trace through background halos
         kwargs_lens = kw[index:]
-        x, y, _, _ = self.lens_model_fixed.lens_model.ray_shooting_partial(
+        x, y, _, _ = self.lens_model_fixed.lens_model.ray_shooting_partial_comoving(
             x,
             y,
             alpha_x,
@@ -208,12 +209,13 @@ class MultiplaneFast(object):
             kwargs_lens = kw[index:]
 
             x0, y0 = np.zeros_like(self._x_image), np.zeros_like(self._y_image)
+
             (
                 x,
                 y,
                 alpha_x,
                 alpha_y,
-            ) = self.lens_model_fixed.lens_model.ray_shooting_partial(
+            ) = self.lens_model_fixed.lens_model.ray_shooting_partial_comoving(
                 x0,
                 y0,
                 self._x_image,

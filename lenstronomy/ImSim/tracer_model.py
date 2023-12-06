@@ -73,7 +73,7 @@ class TracerModelSource(ImageModel):
         if lens_model_class is None:
             lens_model_class = LensModel(lens_model_list=[])
         self.tracer_mapping = Image2SourceMapping(
-            lensModel=lens_model_class, sourceModel=tracer_source_class
+            lens_model=lens_model_class, source_model=tracer_source_class
         )
         self.tracer_source_class = tracer_source_class
 

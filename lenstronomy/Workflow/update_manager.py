@@ -270,7 +270,9 @@ class UpdateManager(object):
             lens_temp = self.param_class.update_lens_scaling(
                 special_temp, lens_temp, inverse=False
             )
-            source_temp = self.param_class.image2source_plane(source_temp, lens_temp)
+            source_temp = self.param_class.image2source_plane(
+                source_temp, lens_temp, special_temp
+            )
         return {
             "kwargs_lens": lens_temp,
             "kwargs_source": source_temp,

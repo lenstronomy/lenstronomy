@@ -21,6 +21,7 @@ def create_class_instances(
     lens_redshift_list=None,
     kwargs_interp=None,
     multi_plane=False,
+    distance_ratio_sampling=False,
     observed_convention_index=None,
     source_light_model_list=None,
     lens_light_model_list=None,
@@ -58,7 +59,8 @@ def create_class_instances(
     :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens models.
      If None, 'z_source' is used.
     :param lens_redshift_list:
-    :param multi_plane:
+    :param multi_plane: bool, if True, computes the lensing quantities in multi-plane mode
+    :param distance_ratio_sampling: bool, if True, samples the distance ratios in multi-lens-plane
     :param kwargs_interp: interpolation keyword arguments specifying the numerics.
      See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
     :param observed_convention_index:
@@ -136,6 +138,7 @@ def create_class_instances(
                 counter += 1
         else:
             observed_convention_index_i = observed_convention_index
+
     lens_model_class = LensModel(
         lens_model_list=lens_model_list_i,
         z_lens=z_lens,
@@ -144,6 +147,7 @@ def create_class_instances(
         lens_redshift_list=lens_redshift_list_i,
         multi_plane=multi_plane,
         cosmo=cosmo,
+        distance_ratio_sampling=distance_ratio_sampling,
         observed_convention_index=observed_convention_index_i,
         kwargs_interp=kwargs_interp,
         numerical_alpha_class=tabulated_deflection_angles,
@@ -157,6 +161,7 @@ def create_class_instances(
         lens_redshift_list=lens_redshift_list,
         multi_plane=multi_plane,
         cosmo=cosmo,
+        distance_ratio_sampling=distance_ratio_sampling,
         observed_convention_index=observed_convention_index,
         kwargs_interp=kwargs_interp,
         numerical_alpha_class=tabulated_deflection_angles,
@@ -232,7 +237,7 @@ def create_class_instances(
             ]
     point_source_class = PointSource(
         point_source_type_list=point_source_model_list_i,
-        lensModel=lens_model_class_all,
+        lens_model=lens_model_class_all,
         fixed_magnification_list=fixed_magnification_list_i,
         flux_from_point_source_list=flux_from_point_source_list,
         additional_images_list=additional_images_list_i,

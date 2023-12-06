@@ -33,7 +33,7 @@ class TestPlotUtil(object):
         lensModel = LensModel(lens_model_list=["SIS"])
         ps = PointSource(
             point_source_type_list=["UNLENSED", "LENSED_POSITION", "SOURCE_POSITION"],
-            lensModel=lensModel,
+            lens_model=lensModel,
         )
         kwargs_lens = [{"theta_E": 1.0, "center_x": 0, "center_y": 0}]
         kwargs_ps = [
@@ -80,7 +80,6 @@ class TestPlotUtil(object):
             origin=None,
             color="g",
             flipped_x=True,
-            pixel_offset=False,
         )
         plt.close()
 
@@ -93,7 +92,6 @@ class TestPlotUtil(object):
             origin=[1, 1],
             color="g",
             flipped_x=False,
-            pixel_offset=True,
         )
         plt.close()
 
@@ -147,7 +145,6 @@ class TestPlotUtil(object):
             image_name_list=None,
             origin=None,
             flipped_x=False,
-            pixel_offset=False,
         )
         plt.close()
         ax = plot_util.image_position_plot(
@@ -159,7 +156,6 @@ class TestPlotUtil(object):
             image_name_list=["A", "B"],
             origin=[1, 1],
             flipped_x=True,
-            pixel_offset=True,
         )
         plt.close()
 

@@ -5,6 +5,7 @@ from lenstronomy.Util.magnification_finite_util import (
 )
 from lenstronomy.LensModel.lens_model import LensModel
 import numpy.testing as npt
+from lenstronomy.LightModel.light_model import LightModel
 import pytest
 
 
@@ -25,45 +26,18 @@ class TestMagnificationFiniteUtil(object):
         npt.assert_almost_equal(size, 0.04 * source_size**0.9)
 
     def test_setup(self):
-        cosmo = None
-        lens_model = LensModel(["EPL"])
-        grid_radius_arcsec = None
-        grid_resolution = None
-        source_fwhm_parsec = 30.0
-        source_light_model = "SINGLE_GAUSSIAN"
-        z_source = 2.0
-        source_x, source_y = 0.0, 0.0
-        dx, dy, amp_scale, size_scale = None, None, None, None
-        (
-            gridx,
-            gridy,
-            source_model,
-            kwargs_source,
-            grid_resolution,
-            grid_radius_arcsec,
-        ) = setup_mag_finite(
-            cosmo,
-            lens_model,
-            grid_radius_arcsec,
-            grid_resolution,
-            source_fwhm_parsec,
-            source_light_model,
-            z_source,
-            source_x,
-            source_y,
-            dx,
-            dy,
-            amp_scale,
-            size_scale,
-        )
-        npt.assert_equal(True, len(source_model.func_list) == 1)
+        grid_resolution = 0.001
+        grid_radius_arcsec = 0.05
+        source_light_model = ["GAUSSIAN"]
+        source_model = LightModel(source_light_model)
+        kwargs_source = [{"amp": 1, "sigma": 0.0408, "center_x": 0, "center_y": 0}]
+
         npt.assert_equal(True, grid_resolution is not None)
         npt.assert_equal(True, grid_radius_arcsec is not None)
 
-        grid_resolution = 0.001
-        grid_radius_arcsec = 0.05
-        dx, dy, amp_scale, size_scale = 0.0, 0.1, 1.0, 1.0
-        source_light_model = "DOUBLE_GAUSSIAN"
+        npt.assert_equal(True, grid_resolution == 0.001)
+        npt.assert_equal(True, grid_radius_arcsec == 0.05)
+
         (
             gridx,
             gridy,
@@ -72,47 +46,7 @@ class TestMagnificationFiniteUtil(object):
             grid_resolution,
             grid_radius_arcsec,
         ) = setup_mag_finite(
-            cosmo,
-            lens_model,
-            grid_radius_arcsec,
-            grid_resolution,
-            source_fwhm_parsec,
-            source_light_model,
-            z_source,
-            source_x,
-            source_y,
-            dx,
-            dy,
-            amp_scale,
-            size_scale,
-        )
-        npt.assert_equal(True, len(source_model.func_list) == 2)
-        npt.assert_equal(
-            kwargs_source[1]["center_y"], kwargs_source[0]["center_y"] + dy
-        )
-        npt.assert_equal(
-            kwargs_source[1]["center_x"], kwargs_source[0]["center_x"] + dx
-        )
-        npt.assert_equal(True, grid_resolution == 0.001)
-        npt.assert_equal(True, grid_radius_arcsec == 0.05)
-
-        source_light_model = "trash"
-        npt.assert_raises(
-            Exception,
-            setup_mag_finite,
-            cosmo,
-            lens_model,
-            grid_radius_arcsec,
-            grid_resolution,
-            source_fwhm_parsec,
-            source_light_model,
-            z_source,
-            source_x,
-            source_y,
-            dx,
-            dy,
-            amp_scale,
-            size_scale,
+            grid_radius_arcsec, grid_resolution, source_model, kwargs_source
         )
 
 

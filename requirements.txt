@@ -15,11 +15,12 @@ pyyaml
 pyxdg
 h5py
 zeus-mcmc
-nautilus-sampler>=0.2.1
+cobaya
+nautilus-sampler>=0.7
 
 
-schwimmbad
-# schwimmbad version that is supporting dill, which was not implemented yet in the pip release version
+schwimmbad>=0.3.2
+# schwimmbad version that is supporting dill, which was not implemented yet in the pip release version at or before 0.3.0
 # -e git://github.com/adrn/schwimmbad.git@master#egg=schwimmbad
 multiprocess>=0.70.8
 # fastell is not a direct requirement as it needs a fortran compiler and is optional

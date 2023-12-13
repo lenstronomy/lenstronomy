@@ -9,8 +9,8 @@
         :target: http://lenstronomy.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
 
-.. image:: https://coveralls.io/repos/github/lenstronomy/lenstronomy/badge.svg?branch=main
-        :target: https://coveralls.io/github/lenstronomy/lenstronomy?branch=main
+.. image:: https://codecov.io/gh/lenstronomy/lenstronomy/graph/badge.svg?token=Pk1FmwQ4Ek 
+        :target: https://codecov.io/gh/lenstronomy/lenstronomy
 
 .. image:: https://img.shields.io/badge/License-BSD_3--Clause-blue.svg
     :target: https://github.com/lenstronomy/lenstronomy/blob/main/LICENSE
@@ -24,6 +24,15 @@
 
 .. image:: https://img.shields.io/badge/arXiv-1803.09746%20-yellowgreen.svg
     :target: https://arxiv.org/abs/1803.09746
+
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+    :target: https://github.com/psf/black
+
+.. image:: https://img.shields.io/badge/%20formatter-docformatter-fedcba.svg
+    :target: https://github.com/PyCQA/docformatter
+
+.. image:: https://img.shields.io/badge/%20style-sphinx-0a507a.svg
+    :target: https://www.sphinx-doc.org/en/master/usage/index.html
 
 ..
     .. image:: https://raw.githubusercontent.com/lenstronomy/lenstronomy/main/docs/figures/readme_fig.png
@@ -112,6 +121,8 @@ If you encounter errors or problems with ``lenstronomy``, please let us know!
 
 Contribution
 ------------
+We welcome EVERY contribution from EVERYONE! See our `code of conduct <https://github.com/lenstronomy/lenstronomy/blob/main/CODE_OF_CONDUCT.rst>`_.
+
 Check out the `contributing page <https://lenstronomy.readthedocs.io/en/latest/contributing.html>`_
 and become an author of ``lenstronomy``! A big shout-out to the current `list of contributors and developers <https://lenstronomy.readthedocs.io/en/latest/authors.html>`_!
 

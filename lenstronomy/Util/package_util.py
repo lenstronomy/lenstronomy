@@ -7,7 +7,7 @@ def exporter(export_self=False):
     """
     all_ = []
     if export_self:
-        all_.append('exporter')
+        all_.append("exporter")
 
     def decorator(obj):
         all_.append(obj.__name__)
@@ -55,18 +55,19 @@ def short(_laconic=False):
     for loader, module_name, is_pkg in pkgutil.walk_packages(lenstronomy.__path__):
         # This deep internal module relies heavily on 'multiprocessing',
         # which may not be installed
-        if module_name == 'Sampling.Pool.multiprocessing':
+        if module_name == "Sampling.Pool.multiprocessing":
             continue
 
         # Load the module
-        module = all_modules[module_name] = \
-            loader.find_module(module_name).load_module(module_name)
+        module = all_modules[module_name] = loader.find_module(module_name).load_module(
+            module_name
+        )
 
-        if '.' in module_name:
+        if "." in module_name:
             # Submodule, e.g. Data.psf
             # Monkeypatch the parent module to make it accessible
-            fragments = module_name.split('.')
-            parent_module_name, child_name = '.'.join(fragments[:-1]), fragments[-1]
+            fragments = module_name.split(".")
+            parent_module_name, child_name = ".".join(fragments[:-1]), fragments[-1]
             setattr(all_modules[parent_module_name], child_name, module)
         else:
             # Top-level module, e.g. Data: add as lenstronomy attribute
@@ -75,14 +76,14 @@ def short(_laconic=False):
         if _laconic:
             # If the module defines an __all__, load its symbols as well.
             # (unlike import *, we do not just load everything if __all__ is missing)
-            if hasattr(module, '__all__'):
+            if hasattr(module, "__all__"):
                 for symbol in module.__all__:
                     symbol_name = symbol
                     if isinstance(to_add.get(symbol), types.ModuleType):
                         # Key class clashing with module name
                         # (Cosmo, LensModel, LightModel, PointSource)
                         # Try to add the symbol as LensModel_:
-                        symbol_name = symbol + '_'
+                        symbol_name = symbol + "_"
                     if symbol_name in to_add:
                         # Name clash! Do not add the symbol
                         # or the one it clashed with.

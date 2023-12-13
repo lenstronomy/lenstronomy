@@ -7,8 +7,7 @@ import numpy.testing as npt
 
 
 class TestAnalyticKinematics(object):
-
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_sigma_s2(self):
@@ -91,6 +90,5 @@ class TestAnalyticKinematics(object):
                                analytic_vel_dis)/numeric_vel_dis,
                                0.01*np.ones_like(numeric_vel_dis))
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     pytest.main()

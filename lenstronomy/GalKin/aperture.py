@@ -1,26 +1,22 @@
-__author__ = 'sibirrer'
+__author__ = "sibirrer"
 
 from lenstronomy.GalKin.aperture_types import Shell, Slit, IFUShells, Frame, IFUGrid
 
-__all__ = ['Aperture']
-
-
-"""
-class that defines the aperture of the measurement (e.g. slit, integral field spectroscopy regions etc)
+__all__ = ["Aperture"]
+"""Class that defines the aperture of the measurement (e.g. slit, integral field
+spectroscopy regions etc).
 
 Available aperture types:
 -------------------------
 
 'slit': length, width, center_ra, center_dec, angle
 'shell': r_in, r_out, center_ra, center_dec
-
 """
 
 
 class Aperture(object):
-    """
-    defines mask(s) of spectra, can handle IFU and single slit/box type data.
-    """
+    """Defines mask(s) of spectra, can handle IFU and single slit/box type data."""
+
     def __init__(self, aperture_type, **kwargs_aperture):
         """
 
@@ -28,19 +24,22 @@ class Aperture(object):
         :param kwargs_aperture: keyword arguments reflecting the aperture type chosen.
          We refer to the specific class instances for documentation.
         """
-        if aperture_type == 'slit':
+        if aperture_type == "slit":
             self._aperture = Slit(**kwargs_aperture)
-        elif aperture_type == 'shell':
+        elif aperture_type == "shell":
             self._aperture = Shell(**kwargs_aperture)
-        elif aperture_type == 'IFU_shells':
+        elif aperture_type == "IFU_shells":
             self._aperture = IFUShells(**kwargs_aperture)
-        elif aperture_type == 'frame':
+        elif aperture_type == "frame":
             self._aperture = Frame(**kwargs_aperture)
         elif aperture_type == 'IFU_grid':
             self._aperture = IFUGrid(**kwargs_aperture)
         else:
-            raise ValueError("aperture type %s not implemented! Available are 'slit', 'shell', 'IFU_shells'. "
-                             % aperture_type)
+            raise ValueError(
+                "aperture type %s not implemented! Available are 'slit', 'shell', 'IFU_shells'. "
+                % aperture_type
+            )
+        self.aperture_type = aperture_type
 
     def aperture_select(self, ra, dec):
         """

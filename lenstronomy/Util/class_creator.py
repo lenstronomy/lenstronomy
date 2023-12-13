@@ -5,24 +5,52 @@ from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.ImSim.differential_extinction import DifferentialExtinction
 from lenstronomy.ImSim.image_linear_solve import ImageLinearFit
+from lenstronomy.ImSim.tracer_model import TracerModelSource
 
 from lenstronomy.Util.package_util import exporter
+
 export, __all__ = exporter()
 
 
 @export
-def create_class_instances(lens_model_list=None, z_lens=None, z_source=None, z_source_convention=None,
-                           lens_redshift_list=None, kwargs_interp=None,
-                           multi_plane=False, observed_convention_index=None, source_light_model_list=None,
-                           lens_light_model_list=None, point_source_model_list=None, fixed_magnification_list=None,
-                           flux_from_point_source_list=None,
-                           additional_images_list=None, kwargs_lens_eqn_solver=None,
-                           source_deflection_scaling_list=None, source_redshift_list=None, cosmo=None,
-                           index_lens_model_list=None, index_source_light_model_list=None,
-                           index_lens_light_model_list=None, index_point_source_model_list=None,
-                           optical_depth_model_list=None, index_optical_depth_model_list=None,
-                           band_index=0, tau0_index_list=None, all_models=False, point_source_magnification_limit=None,
-                           surface_brightness_smoothing=0.001, sersic_major_axis=None):
+def create_class_instances(
+    lens_model_list=None,
+    z_lens=None,
+    z_source=None,
+    z_source_convention=None,
+    lens_redshift_list=None,
+    kwargs_interp=None,
+    multi_plane=False,
+    distance_ratio_sampling=False,
+    observed_convention_index=None,
+    source_light_model_list=None,
+    lens_light_model_list=None,
+    point_source_model_list=None,
+    fixed_magnification_list=None,
+    flux_from_point_source_list=None,
+    point_source_frame_list=None,
+    additional_images_list=None,
+    kwargs_lens_eqn_solver=None,
+    source_deflection_scaling_list=None,
+    source_redshift_list=None,
+    cosmo=None,
+    index_lens_model_list=None,
+    index_source_light_model_list=None,
+    index_lens_light_model_list=None,
+    index_point_source_model_list=None,
+    optical_depth_model_list=None,
+    index_optical_depth_model_list=None,
+    band_index=0,
+    tau0_index_list=None,
+    all_models=False,
+    point_source_magnification_limit=None,
+    surface_brightness_smoothing=0.001,
+    sersic_major_axis=None,
+    tabulated_deflection_angles=None,
+    tracer_source_model_list=None,
+    tracer_source_band=0,
+    tracer_partition=None,
+):
     """
 
     :param lens_model_list: list of strings indicating the type of lens models
@@ -31,7 +59,8 @@ def create_class_instances(lens_model_list=None, z_lens=None, z_source=None, z_s
     :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens models.
      If None, 'z_source' is used.
     :param lens_redshift_list:
-    :param multi_plane:
+    :param multi_plane: bool, if True, computes the lensing quantities in multi-plane mode
+    :param distance_ratio_sampling: bool, if True, samples the distance ratios in multi-lens-plane
     :param kwargs_interp: interpolation keyword arguments specifying the numerics.
      See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
     :param observed_convention_index:
@@ -41,6 +70,9 @@ def create_class_instances(lens_model_list=None, z_lens=None, z_source=None, z_s
     :param fixed_magnification_list:
     :param flux_from_point_source_list: list of bools (optional), if set, will only return image positions
          (for imaging modeling) for the subset of the point source lists that =True. This option enables to model
+    :param point_source_frame_list: list of lists mirroring the structure of the image positions.
+     Integers correspond to the i'th list entry of index_lens_model_list indicating in which frame/band the image is
+     appearing
     :param additional_images_list:
     :param kwargs_lens_eqn_solver: keyword arguments specifying the numerical settings for the lens equation solver
          see LensEquationSolver() class for details
@@ -52,7 +84,7 @@ def create_class_instances(lens_model_list=None, z_lens=None, z_source=None, z_s
     :param cosmo: astropy.cosmology instance
     :param index_lens_model_list:
     :param index_source_light_model_list:
-    :param index_lens_light_model_list:
+    :param index_lens_light_model_list: optional, list of list of all model indexes for each modeled band
     :param index_point_source_model_list:
     :param optical_depth_model_list: list of strings indicating the optical depth model to compute (differential) extinctions from the source
     :param index_optical_depth_model_list:
@@ -65,7 +97,14 @@ def create_class_instances(lens_model_list=None, z_lens=None, z_source=None, z_s
     :param sersic_major_axis: boolean or None, if True, uses the semi-major axis as the definition of the Sersic
      half-light radius, if False, uses the product average of semi-major and semi-minor axis. If None, uses the
      convention in the lenstronomy yaml setting (which by default is =False)
-    :return:
+    :param tabulated_deflection_angles: a user-specified class with a call method that returns deflection angles given
+     (x, y) coordinates on the sky. This class gets passed to the lens model class TabulatedDeflections
+    :param tracer_source_model_list: list of tracer source models (not used in this function)
+    :param tracer_source_band: integer, list index of source surface brightness band to apply tracer model to
+    :param tracer_partition: in case of tracer models for specific sub-parts of the surface brightness model
+     [[list of light profiles, list of tracer profiles], [list of light profiles, list of tracer profiles], [...], ...]
+    :type tracer_partition: None or list
+    :return: lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class
     """
     if lens_model_list is None:
         lens_model_list = []
@@ -81,9 +120,13 @@ def create_class_instances(lens_model_list=None, z_lens=None, z_source=None, z_s
         lens_redshift_list_i = lens_redshift_list
         observed_convention_index_i = observed_convention_index
     else:
-        lens_model_list_i = [lens_model_list[k] for k in index_lens_model_list[band_index]]
+        lens_model_list_i = [
+            lens_model_list[k] for k in index_lens_model_list[band_index]
+        ]
         if lens_redshift_list is not None:
-            lens_redshift_list_i = [lens_redshift_list[k] for k in index_lens_model_list[band_index]]
+            lens_redshift_list_i = [
+                lens_redshift_list[k] for k in index_lens_model_list[band_index]
+            ]
         else:
             lens_redshift_list_i = lens_redshift_list
         if observed_convention_index is not None:
@@ -95,68 +138,141 @@ def create_class_instances(lens_model_list=None, z_lens=None, z_source=None, z_s
                 counter += 1
         else:
             observed_convention_index_i = observed_convention_index
-    lens_model_class = LensModel(lens_model_list=lens_model_list_i, z_lens=z_lens, z_source=z_source,
-                                 z_source_convention=z_source_convention,
-                                 lens_redshift_list=lens_redshift_list_i,
-                                 multi_plane=multi_plane, cosmo=cosmo,
-                                 observed_convention_index=observed_convention_index_i, kwargs_interp=kwargs_interp)
+
+    lens_model_class = LensModel(
+        lens_model_list=lens_model_list_i,
+        z_lens=z_lens,
+        z_source=z_source,
+        z_source_convention=z_source_convention,
+        lens_redshift_list=lens_redshift_list_i,
+        multi_plane=multi_plane,
+        cosmo=cosmo,
+        distance_ratio_sampling=distance_ratio_sampling,
+        observed_convention_index=observed_convention_index_i,
+        kwargs_interp=kwargs_interp,
+        numerical_alpha_class=tabulated_deflection_angles,
+    )
+
+    lens_model_class_all = LensModel(
+        lens_model_list=lens_model_list,
+        z_lens=z_lens,
+        z_source=z_source,
+        z_source_convention=z_source_convention,
+        lens_redshift_list=lens_redshift_list,
+        multi_plane=multi_plane,
+        cosmo=cosmo,
+        distance_ratio_sampling=distance_ratio_sampling,
+        observed_convention_index=observed_convention_index,
+        kwargs_interp=kwargs_interp,
+        numerical_alpha_class=tabulated_deflection_angles,
+    )
 
     if index_source_light_model_list is None or all_models is True:
         source_light_model_list_i = source_light_model_list
         source_deflection_scaling_list_i = source_deflection_scaling_list
         source_redshift_list_i = source_redshift_list
     else:
-        source_light_model_list_i = [source_light_model_list[k] for k in index_source_light_model_list[band_index]]
+        source_light_model_list_i = [
+            source_light_model_list[k]
+            for k in index_source_light_model_list[band_index]
+        ]
         if source_deflection_scaling_list is None:
             source_deflection_scaling_list_i = source_deflection_scaling_list
         else:
-            source_deflection_scaling_list_i = [source_deflection_scaling_list[k] for k in index_source_light_model_list[band_index]]
+            source_deflection_scaling_list_i = [
+                source_deflection_scaling_list[k]
+                for k in index_source_light_model_list[band_index]
+            ]
         if source_redshift_list is None:
             source_redshift_list_i = source_redshift_list
         else:
-            source_redshift_list_i = [source_redshift_list[k] for k in index_source_light_model_list[band_index]]
-    source_model_class = LightModel(light_model_list=source_light_model_list_i,
-                                    deflection_scaling_list=source_deflection_scaling_list_i,
-                                    source_redshift_list=source_redshift_list_i, smoothing=surface_brightness_smoothing,
-                                    sersic_major_axis=sersic_major_axis)
+            source_redshift_list_i = [
+                source_redshift_list[k]
+                for k in index_source_light_model_list[band_index]
+            ]
+    source_model_class = LightModel(
+        light_model_list=source_light_model_list_i,
+        deflection_scaling_list=source_deflection_scaling_list_i,
+        source_redshift_list=source_redshift_list_i,
+        smoothing=surface_brightness_smoothing,
+        sersic_major_axis=sersic_major_axis,
+    )
 
     if index_lens_light_model_list is None or all_models is True:
         lens_light_model_list_i = lens_light_model_list
     else:
-        lens_light_model_list_i = [lens_light_model_list[k] for k in index_lens_light_model_list[band_index]]
-    lens_light_model_class = LightModel(light_model_list=lens_light_model_list_i,
-                                        smoothing=surface_brightness_smoothing, sersic_major_axis=sersic_major_axis)
+        lens_light_model_list_i = [
+            lens_light_model_list[k] for k in index_lens_light_model_list[band_index]
+        ]
+    lens_light_model_class = LightModel(
+        light_model_list=lens_light_model_list_i,
+        smoothing=surface_brightness_smoothing,
+        sersic_major_axis=sersic_major_axis,
+    )
 
     point_source_model_list_i = point_source_model_list
     fixed_magnification_list_i = fixed_magnification_list
     additional_images_list_i = additional_images_list
+    point_source_frame_list_i = point_source_frame_list
 
     if index_point_source_model_list is not None and not all_models:
-        point_source_model_list_i = [point_source_model_list[k] for k in index_point_source_model_list[band_index]]
+        point_source_model_list_i = [
+            point_source_model_list[k]
+            for k in index_point_source_model_list[band_index]
+        ]
         if fixed_magnification_list is not None:
-            fixed_magnification_list_i = [fixed_magnification_list[k] for k in index_point_source_model_list[band_index]]
+            fixed_magnification_list_i = [
+                fixed_magnification_list[k]
+                for k in index_point_source_model_list[band_index]
+            ]
         if additional_images_list is not None:
-            additional_images_list_i = [additional_images_list[k] for k in index_point_source_model_list[band_index]]
-    point_source_class = PointSource(point_source_type_list=point_source_model_list_i, lensModel=lens_model_class,
-                                     fixed_magnification_list=fixed_magnification_list_i,
-                                     flux_from_point_source_list=flux_from_point_source_list,
-                                     additional_images_list=additional_images_list_i,
-                                     magnification_limit=point_source_magnification_limit,
-                                     kwargs_lens_eqn_solver=kwargs_lens_eqn_solver)
+            additional_images_list_i = [
+                additional_images_list[k]
+                for k in index_point_source_model_list[band_index]
+            ]
+        if point_source_frame_list is not None:
+            point_source_frame_list_i = [
+                point_source_frame_list[k]
+                for k in index_point_source_model_list[band_index]
+            ]
+    point_source_class = PointSource(
+        point_source_type_list=point_source_model_list_i,
+        lens_model=lens_model_class_all,
+        fixed_magnification_list=fixed_magnification_list_i,
+        flux_from_point_source_list=flux_from_point_source_list,
+        additional_images_list=additional_images_list_i,
+        magnification_limit=point_source_magnification_limit,
+        kwargs_lens_eqn_solver=kwargs_lens_eqn_solver,
+        point_source_frame_list=point_source_frame_list_i,
+        index_lens_model_list=index_lens_model_list,
+    )
     if tau0_index_list is None:
         tau0_index = 0
     else:
         tau0_index = tau0_index_list[band_index]
     if index_optical_depth_model_list is not None:
-        optical_depth_model_list_i = [optical_depth_model_list[k] for k in index_optical_depth_model_list[band_index]]
+        optical_depth_model_list_i = [
+            optical_depth_model_list[k]
+            for k in index_optical_depth_model_list[band_index]
+        ]
     else:
         optical_depth_model_list_i = optical_depth_model_list
-    extinction_class = DifferentialExtinction(optical_depth_model=optical_depth_model_list_i, tau0_index=tau0_index)
-    return lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class
+    extinction_class = DifferentialExtinction(
+        optical_depth_model=optical_depth_model_list_i, tau0_index=tau0_index
+    )
+    return (
+        lens_model_class,
+        source_model_class,
+        lens_light_model_class,
+        point_source_class,
+        extinction_class,
+    )
 
 
 @export
-def create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, image_likelihood_mask=None):
+def create_image_model(
+    kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, image_likelihood_mask=None
+):
     """
 
     :param kwargs_data: ImageData keyword arguments
@@ -169,15 +285,38 @@ def create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, i
     """
     data_class = ImageData(**kwargs_data)
     psf_class = PSF(**kwargs_psf)
-    lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class = create_class_instances(**kwargs_model)
-    imageModel = ImageLinearFit(data_class, psf_class, lens_model_class, source_model_class, lens_light_model_class,
-                                point_source_class, extinction_class, kwargs_numerics, likelihood_mask=image_likelihood_mask)
+    (
+        lens_model_class,
+        source_model_class,
+        lens_light_model_class,
+        point_source_class,
+        extinction_class,
+    ) = create_class_instances(**kwargs_model)
+    imageModel = ImageLinearFit(
+        data_class,
+        psf_class,
+        lens_model_class,
+        source_model_class,
+        lens_light_model_class,
+        point_source_class,
+        extinction_class,
+        kwargs_numerics,
+        likelihood_mask=image_likelihood_mask,
+    )
     return imageModel
 
 
 @export
-def create_im_sim(multi_band_list, multi_band_type, kwargs_model, bands_compute=None, image_likelihood_mask_list=None,
-                  band_index=0, kwargs_pixelbased=None, linear_solver=True):
+def create_im_sim(
+    multi_band_list,
+    multi_band_type,
+    kwargs_model,
+    bands_compute=None,
+    image_likelihood_mask_list=None,
+    band_index=0,
+    kwargs_pixelbased=None,
+    linear_solver=True,
+):
     """
 
 
@@ -196,23 +335,89 @@ def create_im_sim(multi_band_list, multi_band_type, kwargs_model, bands_compute=
      that they get overwritten by the linear solver solution.
     :return: MultiBand class instance
     """
-    if linear_solver is False and multi_band_type not in ['single-band', 'multi-linear']:
-        raise ValueError('setting "linear_solver" to False is only supported in "single-band" mode '
-                         'or if "multi-linear" model has only one band.')
+    if linear_solver is False and multi_band_type not in [
+        "single-band",
+        "multi-linear",
+    ]:
+        raise ValueError(
+            'setting "linear_solver" to False is only supported in "single-band" mode '
+            'or if "multi-linear" model has only one band.'
+        )
 
-    if multi_band_type == 'multi-linear':
+    if multi_band_type == "multi-linear":
         from lenstronomy.ImSim.MultiBand.multi_linear import MultiLinear
-        multiband = MultiLinear(multi_band_list, kwargs_model, compute_bool=bands_compute,
-                                likelihood_mask_list=image_likelihood_mask_list, linear_solver=linear_solver)
-    elif multi_band_type == 'joint-linear':
+
+        multiband = MultiLinear(
+            multi_band_list,
+            kwargs_model,
+            compute_bool=bands_compute,
+            likelihood_mask_list=image_likelihood_mask_list,
+            linear_solver=linear_solver,
+        )
+    elif multi_band_type == "joint-linear":
         from lenstronomy.ImSim.MultiBand.joint_linear import JointLinear
-        multiband = JointLinear(multi_band_list, kwargs_model, compute_bool=bands_compute,
-                                likelihood_mask_list=image_likelihood_mask_list)
-    elif multi_band_type == 'single-band':
-        from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModel
-        multiband = SingleBandMultiModel(multi_band_list, kwargs_model, likelihood_mask_list=image_likelihood_mask_list,
-                                         band_index=band_index, kwargs_pixelbased=kwargs_pixelbased,
-                                         linear_solver=linear_solver)
+
+        multiband = JointLinear(
+            multi_band_list,
+            kwargs_model,
+            compute_bool=bands_compute,
+            likelihood_mask_list=image_likelihood_mask_list,
+        )
+    elif multi_band_type == "single-band":
+        from lenstronomy.ImSim.MultiBand.single_band_multi_model import (
+            SingleBandMultiModel,
+        )
+
+        multiband = SingleBandMultiModel(
+            multi_band_list,
+            kwargs_model,
+            likelihood_mask_list=image_likelihood_mask_list,
+            band_index=band_index,
+            kwargs_pixelbased=kwargs_pixelbased,
+            linear_solver=linear_solver,
+        )
     else:
         raise ValueError("type %s is not supported!" % multi_band_type)
     return multiband
+
+
+def create_tracer_model(tracer_data, kwargs_model, tracer_likelihood_mask=None):
+    """
+
+    :param tracer_data:
+    :param kwargs_model:
+    :param tracer_likelihood_mask_list:
+
+    :return:
+    """
+    tracer_source_band = kwargs_model.get("tracer_source_band", 0)
+    tracer_source_class = LightModel(
+        light_model_list=kwargs_model.get("tracer_source_model_list", [])
+    )
+    tracer_partition = kwargs_model.get("tracer_partition", None)
+    kwargs_data, kwargs_psf, kwargs_numerics = tracer_data
+    (
+        lens_model_class,
+        source_model_class,
+        lens_light_model_class,
+        point_source_class,
+        extinction_class,
+    ) = create_class_instances(band_index=tracer_source_band, **kwargs_model)
+    data_class = ImageData(**kwargs_data)
+    psf_class = PSF(**kwargs_psf)
+    tracer_model = TracerModelSource(
+        data_class,
+        psf_class=psf_class,
+        lens_model_class=lens_model_class,
+        source_model_class=source_model_class,
+        lens_light_model_class=lens_light_model_class,
+        point_source_class=point_source_class,
+        extinction_class=extinction_class,
+        tracer_source_class=tracer_source_class,
+        kwargs_numerics=kwargs_numerics,
+        likelihood_mask=tracer_likelihood_mask,
+        psf_error_map_bool_list=None,
+        kwargs_pixelbased=None,
+        tracer_partition=tracer_partition,
+    )
+    return tracer_model

@@ -1,4 +1,4 @@
-__author__ = 'sibirrer'
+__author__ = "sibirrer"
 
 
 from lenstronomy.LensModel.Profiles.spep import SPEP
@@ -9,21 +9,21 @@ import numpy as np
 import pytest
 import numpy.testing as npt
 
+
 class TestSPEP(object):
-    """
-    tests the Gaussian methods
-    """
-    def setup(self):
+    """Tests the Gaussian methods."""
+
+    def setup_method(self):
         self.SPEP = SPEP()
         self.SIE = SIE()
 
     def test_function(self):
         x = 1
         y = 2
-        phi_E = 1.
+        phi_E = 1.0
         gamma = 1.9
         q = 0.9
-        phi_G = 1.
+        phi_G = 1.0
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         values = self.SPEP.function(x, y, phi_E, gamma, e1, e2)
         npt.assert_almost_equal(values, 2.104213947346917, decimal=7)
@@ -42,10 +42,10 @@ class TestSPEP(object):
     def test_derivatives(self):
         x = np.array([1])
         y = np.array([2])
-        phi_E = 1.
+        phi_E = 1.0
         gamma = 1.9
         q = 0.9
-        phi_G = 1.
+        phi_G = 1.0
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         f_x, f_y = self.SPEP.derivatives(x, y, phi_E, gamma, e1, e2)
         npt.assert_almost_equal(f_x[0], 0.43989645846696634, decimal=7)
@@ -67,10 +67,10 @@ class TestSPEP(object):
 
         x = 1
         y = 2
-        phi_E = 1.
+        phi_E = 1.0
         gamma = 1.9
         q = 0.9
-        phi_G = 1.
+        phi_G = 1.0
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         f_x, f_y = self.SPEP.derivatives(x, y, phi_E, gamma, e1, e2)
         npt.assert_almost_equal(f_x, 0.43989645846696634, decimal=7)
@@ -84,18 +84,18 @@ class TestSPEP(object):
     def test_hessian(self):
         x = np.array([1])
         y = np.array([2])
-        phi_E = 1.
+        phi_E = 1.0
         gamma = 1.9
         q = 0.9
-        phi_G = 1.
+        phi_G = 1.0
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         f_xx, f_xy, f_yx, f_yy = self.SPEP.hessian(x, y, phi_E, gamma, e1, e2)
         npt.assert_almost_equal(f_xx[0], 0.46312881977317422, decimal=7)
         npt.assert_almost_equal(f_yy[0], 0.15165326557198552, decimal=7)
         npt.assert_almost_equal(f_xy[0], -0.20956958696323871, decimal=7)
         npt.assert_almost_equal(f_xy, f_yx, decimal=8)
-        x = np.array([1,3,4])
-        y = np.array([2,1,1])
+        x = np.array([1, 3, 4])
+        y = np.array([2, 1, 1])
         values = self.SPEP.hessian(x, y, phi_E, gamma, e1, e2)
         npt.assert_almost_equal(values[0][0], 0.46312881977317422, decimal=7)
         npt.assert_almost_equal(values[3][0], 0.15165326557198552, decimal=7)
@@ -105,12 +105,12 @@ class TestSPEP(object):
         npt.assert_almost_equal(values[1][1], -0.10270375656049677, decimal=7)
 
     def test_spep_sie_conventions(self):
-        x = np.array([1., 2., 0.])
-        y = np.array([2, 1., 1.])
-        phi_E = 1.
+        x = np.array([1.0, 2.0, 0.0])
+        y = np.array([2, 1.0, 1.0])
+        phi_E = 1.0
         gamma = 2
         q = 0.9999
-        phi_G = 1.
+        phi_G = 1.0
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         f_xx, f_xy, f_yx, f_yy = self.SPEP.hessian(x, y, phi_E, gamma, e1, e2)
         f_xx_sie, f_xy_sie, f_yx_sie, f_yy_sie = self.SIE.hessian(x, y, phi_E, e1, e2)
@@ -120,6 +120,5 @@ class TestSPEP(object):
         npt.assert_almost_equal(f_yx, f_yx_sie, decimal=4)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pytest.main()
-

@@ -557,7 +557,7 @@ class KinematicsAPI(object):
             if r_eff is None:
                 raise ValueError(
                     'half light radius "r_eff" needs to be set to allow for analytic '
-                    'kinematics to be computed!'
+                    "kinematics to be computed!"
                 )
             return None, {"r_eff": r_eff}
         light_profile_list = []

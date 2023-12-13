@@ -73,7 +73,7 @@ class NumericKinematics(Anisotropy):
 
     @property
     def min_integrate(self):
-        """Get the maximum range of integration."""
+        """Get the minimum range of integration."""
         return self._min_integrate
 
     def lum_weighted_vel_disp(self, R, kwargs_mass, kwargs_light, kwargs_anisotropy):

@@ -78,7 +78,7 @@ class AnalyticKinematics(Anisotropy):
 
     @property
     def min_integrate(self):
-        """Get the maximum range of integration."""
+        """Get the minimum range of integration."""
         return self._min_integrate
 
     def _rho0_r0_gamma(self, theta_E, gamma):

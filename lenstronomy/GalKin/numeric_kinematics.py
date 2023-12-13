@@ -292,6 +292,9 @@ class NumericKinematics(Anisotropy):
             )
             dlog_r = (np.log10(r_array[2]) - np.log10(r_array[1])) * np.log(10)
 
+            IR_sigma2_ = self._integrand_A15(
+                r_array, R, kwargs_mass, kwargs_light, kwargs_anisotropy
+            )
             IR_sigma2_dr = IR_sigma2_ * dlog_r * r_array
         else:
             r_array = np.linspace(

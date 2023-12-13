@@ -68,16 +68,12 @@ class NumericKinematics(Anisotropy):
 
     @property
     def max_integrate(self):
-        """
-        Get the maximum range of integration
-        """
+        """Get the maximum range of integration."""
         return self._max_integrate
 
     @property
     def min_integrate(self):
-        """
-        Get the maximum range of integration
-        """
+        """Get the maximum range of integration."""
         return self._min_integrate
 
     def lum_weighted_vel_disp(self, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
@@ -283,7 +279,9 @@ class NumericKinematics(Anisotropy):
         :return: integral of A15 in Mamon&Lokas 2005
         """
         R = max(R, self._min_integrate)
-        max_integrate = self._max_integrate # make sure the integration of the Jeans equation is performed further out than the interpolation
+        max_integrate = (
+            self._max_integrate
+        )  # make sure the integration of the Jeans equation is performed further out than the interpolation
 
         if self._log_int is True:
             min_log = np.log10(R)
@@ -312,9 +310,8 @@ class NumericKinematics(Anisotropy):
         return IR_sigma2 * 2 * const.G / (const.arcsec * self.cosmo.dd * const.Mpc), IR
 
     def I_R_sigma2_and_IR(self, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
-        """
-        Return I(R)*sigma^2 equation A15 in Mamon&Lokas 2005 as interpolation
-        in log space, and I(R)
+        """Return I(R)*sigma^2 equation A15 in Mamon&Lokas 2005 as interpolation in log
+        space, and I(R)
 
         :param R: projected radius
         :param kwargs_mass: mass profile keyword arguments

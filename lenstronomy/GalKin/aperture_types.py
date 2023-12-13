@@ -246,10 +246,9 @@ class IFUShells(object):
 
 @export
 class IFUGrid(object):
-    """
-    class for an Integral Field Unit spectrograph with rectangular grid where
-    the kinematics are measured
-    """
+    """Class for an Integral Field Unit spectrograph with rectangular grid where the
+    kinematics are measured."""
+
     def __init__(self, x_grid, y_grid):
         """
 
@@ -270,10 +269,8 @@ class IFUGrid(object):
 
     @property
     def num_segments(self):
-        """
-        number of segments with separate measurements of the velocity dispersion
-        :return: int
-        """
+        """Number of segments with separate measurements of the velocity dispersion
+        :return: int."""
         return (self._x_grid.shape[0], self._x_grid.shape[1])
 
 

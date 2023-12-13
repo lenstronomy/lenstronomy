@@ -57,16 +57,20 @@ class GalkinModel(object):
         """
         if kwargs_numerics is None:
             if analytic_kinematics:
-                kwargs_numerics = {'interpol_grid_num': 2000,  # numerical interpolation, should converge -> infinity
-                                   'log_integration': True, # log or linear interpolation of surface brightness and mass models
-                                   'max_integrate': 100,
-                                   'min_integrate': 1e-4}  # lower/upper bound
+                kwargs_numerics = {
+                    "interpol_grid_num": 2000,  # numerical interpolation, should converge -> infinity
+                    "log_integration": True,  # log or linear interpolation of surface brightness and mass models
+                    "max_integrate": 100,
+                    "min_integrate": 1e-4,
+                }  # lower/upper bound
                 # of numerical integrals
             else:
-                kwargs_numerics = {'interpol_grid_num': 1000, # numerical interpolation, should converge -> infinity
-                                   'log_integration': True, # log or linear interpolation of surface brightness and mass models
-                                   'max_integrate': 100,
-                                   'min_integrate': 1e-4}  # lower/upper bound
+                kwargs_numerics = {
+                    "interpol_grid_num": 1000,  # numerical interpolation, should converge -> infinity
+                    "log_integration": True,  # log or linear interpolation of surface brightness and mass models
+                    "max_integrate": 100,
+                    "min_integrate": 1e-4,
+                }  # lower/upper bound
                 # of numerical integrals
         if analytic_kinematics is True:
             anisotropy_model = kwargs_model.get("anisotropy_model")

@@ -175,9 +175,18 @@ class TDCosmography(KinematicsAPI):
         J = sigma_v**2 * self._lens_cosmo.dds / self._lens_cosmo.ds / const.c**2
         return J
 
-    def velocity_dispersion_map_dimension_less(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, r_eff=None,
-                                           theta_E=None, gamma=None, direct_convolve=False,
-                                           supersampling_factor=1, voronoi_bins=None):
+    def velocity_dispersion_map_dimension_less(
+        self,
+        kwargs_lens,
+        kwargs_lens_light,
+        kwargs_anisotropy,
+        r_eff=None,
+        theta_E=None,
+        gamma=None,
+        direct_convolve=False,
+        supersampling_factor=1,
+        voronoi_bins=None,
+    ):
         """Sigma**2 = Dd/Dds * c**2 * J(kwargs_lens, kwargs_light, anisotropy) (Equation
         4.11 in Birrer et al. 2016 or Equation 6 in Birrer et al. 2019) J() is a
         dimensionless and cosmological independent quantity only depending on angular
@@ -195,10 +204,17 @@ class TDCosmography(KinematicsAPI):
         :param voronoi_bins: mapping of the voronoi bins, -1 values for  pixels not binned
         :return: dimensionless velocity dispersion (see e.g. Birrer et al. 2016, 2019)
         """
-        sigma_v_map = self.velocity_dispersion_map(kwargs_lens=kwargs_lens, kwargs_lens_light=kwargs_lens_light,
-                                               kwargs_anisotropy=kwargs_anisotropy, r_eff=r_eff, theta_E=theta_E,
-                                               gamma=gamma, direct_convolve=direct_convolve,
-                                               supersampling_factor=supersampling_factor, voronoi_bins=voronoi_bins)
+        sigma_v_map = self.velocity_dispersion_map(
+            kwargs_lens=kwargs_lens,
+            kwargs_lens_light=kwargs_lens_light,
+            kwargs_anisotropy=kwargs_anisotropy,
+            r_eff=r_eff,
+            theta_E=theta_E,
+            gamma=gamma,
+            direct_convolve=direct_convolve,
+            supersampling_factor=supersampling_factor,
+            voronoi_bins=voronoi_bins,
+        )
         sigma_v_map *= 1000  # convert from [km/s] to  [m/s]
         J_map = (
             sigma_v_map**2 * self._lens_cosmo.dds / self._lens_cosmo.ds / const.c**2

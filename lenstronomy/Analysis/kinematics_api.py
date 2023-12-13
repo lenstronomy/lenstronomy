@@ -121,16 +121,20 @@ class KinematicsAPI(object):
             self._kwargs_mge_light = kwargs_mge_light
         if kwargs_numerics_galkin is None:
             if analytic_kinematics:
-                kwargs_numerics_galkin = {'interpol_grid_num': 2000, # numerical interpolation, should converge -> infinity
-                                          'log_integration': True, # log or linear interpolation of surface brightness and mass models
-                                          'max_integrate': 100,
-                                          'min_integrate': 1e-4}  # lower/upper
+                kwargs_numerics_galkin = {
+                    "interpol_grid_num": 2000,  # numerical interpolation, should converge -> infinity
+                    "log_integration": True,  # log or linear interpolation of surface brightness and mass models
+                    "max_integrate": 100,
+                    "min_integrate": 1e-4,
+                }  # lower/upper
                 # bound of numerical integrals
             else:
-                kwargs_numerics_galkin = {'interpol_grid_num': 1000, # numerical interpolation, should converge -> infinity
-                                          'log_integration': True, # log or linear interpolation of surface brightness and mass models
-                                          'max_integrate': 100,
-                                          'min_integrate': 1e-4}  # lower/upper
+                kwargs_numerics_galkin = {
+                    "interpol_grid_num": 1000,  # numerical interpolation, should converge -> infinity
+                    "log_integration": True,  # log or linear interpolation of surface brightness and mass models
+                    "max_integrate": 100,
+                    "min_integrate": 1e-4,
+                }  # lower/upper
                 # bound of numerical integrals
 
         self._kwargs_numerics_kin = kwargs_numerics_galkin
@@ -178,12 +182,20 @@ class KinematicsAPI(object):
         sigma_v = self.transform_kappa_ext(sigma_v, kappa_ext=kappa_ext)
         return sigma_v
 
-    def velocity_dispersion_map(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, r_eff=None, theta_E=None,
-                                gamma=None, kappa_ext=0,
-                                direct_convolve=False,
-                                supersampling_factor=1, voronoi_bins=None,
-                                get_IR_map=False
-                                ):
+    def velocity_dispersion_map(
+        self,
+        kwargs_lens,
+        kwargs_lens_light,
+        kwargs_anisotropy,
+        r_eff=None,
+        theta_E=None,
+        gamma=None,
+        kappa_ext=0,
+        direct_convolve=False,
+        supersampling_factor=1,
+        voronoi_bins=None,
+        get_IR_map=False,
+    ):
         """API for both, analytic and numerical JAM to compute the velocity dispersion
         map with IFU data [km/s]
 
@@ -203,39 +215,49 @@ class KinematicsAPI(object):
         :param get_IR_map: if True, will return the pixelized IR maps to use for Voronoi binning in post-processing
         :return: velocity dispersion map in specified bins or grid in `kwargs_aperture`, in [km/s] unit
         """
-        galkin, kwargs_profile, kwargs_light = self.galkin_settings(kwargs_lens, kwargs_lens_light, r_eff=r_eff,
-                                                                    theta_E=theta_E, gamma=gamma
-                                                                    )
+        galkin, kwargs_profile, kwargs_light = self.galkin_settings(
+            kwargs_lens, kwargs_lens_light, r_eff=r_eff, theta_E=theta_E, gamma=gamma
+        )
         if direct_convolve:
-            if self._kwargs_aperture_kin['aperture_type'] != 'IFU_grid':
-                raise ValueError('direct_convolve=True is not supported if '
-                                 'aperture type is not "IFU_grid"!')
+            if self._kwargs_aperture_kin["aperture_type"] != "IFU_grid":
+                raise ValueError(
+                    "direct_convolve=True is not supported if "
+                    'aperture type is not "IFU_grid"!'
+                )
 
             sigma_v_map = galkin.dispersion_map_grid_convolved(
-                kwargs_profile, kwargs_light,
+                kwargs_profile,
+                kwargs_light,
                 kwargs_anisotropy,
                 supersampling_factor=supersampling_factor,
                 voronoi_bins=voronoi_bins,
                 get_IR_map=get_IR_map
-                #num_kin_sampling=self._num_kin_sampling,
-                #num_psf_sampling=self._num_psf_sampling
+                # num_kin_sampling=self._num_kin_sampling,
+                # num_psf_sampling=self._num_psf_sampling
             )
 
             if get_IR_map:
-                sigma_v_map = (self.transform_kappa_ext(sigma_v_map[0], kappa_ext=kappa_ext),
-                               sigma_v_map[1])
+                sigma_v_map = (
+                    self.transform_kappa_ext(sigma_v_map[0], kappa_ext=kappa_ext),
+                    sigma_v_map[1],
+                )
             else:
                 sigma_v_map = self.transform_kappa_ext(sigma_v_map, kappa_ext=kappa_ext)
 
             return sigma_v_map
         else:
-            if self._kwargs_aperture_kin['aperture_type'] == 'IFU_grid':
-                warnings.warn('direct_convolve=False may be slow with aperture type "IFU_grid", '
-                              'you may want to use direct_convolve=True instead.')
+            if self._kwargs_aperture_kin["aperture_type"] == "IFU_grid":
+                warnings.warn(
+                    'direct_convolve=False may be slow with aperture type "IFU_grid", '
+                    "you may want to use direct_convolve=True instead."
+                )
             sigma_v_map = galkin.dispersion_map(
-                kwargs_profile, kwargs_light, kwargs_anisotropy,
+                kwargs_profile,
+                kwargs_light,
+                kwargs_anisotropy,
                 num_kin_sampling=self._num_kin_sampling,
-                num_psf_sampling=self._num_psf_sampling)
+                num_psf_sampling=self._num_psf_sampling,
+            )
             sigma_v_map = self.transform_kappa_ext(sigma_v_map, kappa_ext=kappa_ext)
             return sigma_v_map
 
@@ -361,24 +383,29 @@ class KinematicsAPI(object):
                 analytic_kinematics=self._analytic_kinematics,
             )
         else:
-            galkin = Galkin(kwargs_model=kwargs_model, kwargs_aperture=self._kwargs_aperture_kin,
-                            kwargs_psf=self._kwargs_psf_kin, kwargs_cosmo=self._kwargs_cosmo,
-                            kwargs_numerics=self._kwargs_numerics_kin, analytic_kinematics=self._analytic_kinematics)
+            galkin = Galkin(
+                kwargs_model=kwargs_model,
+                kwargs_aperture=self._kwargs_aperture_kin,
+                kwargs_psf=self._kwargs_psf_kin,
+                kwargs_cosmo=self._kwargs_cosmo,
+                kwargs_numerics=self._kwargs_numerics_kin,
+                analytic_kinematics=self._analytic_kinematics,
+            )
 
         if self._analytic_kinematics:
-            if 'center_x' not in kwargs_profile and 'center_x' in kwargs_lens[0]:
-                kwargs_profile['center_x'] = kwargs_lens[0]['center_x']
-                kwargs_profile['center_y'] = kwargs_lens[0]['center_y']
-            if 'center_x' not in kwargs_light and 'center_x' in kwargs_lens_light[0]:
-                kwargs_light['center_x'] = kwargs_lens_light[0]['center_x']
-                kwargs_light['center_y'] = kwargs_lens_light[0]['center_y']
+            if "center_x" not in kwargs_profile and "center_x" in kwargs_lens[0]:
+                kwargs_profile["center_x"] = kwargs_lens[0]["center_x"]
+                kwargs_profile["center_y"] = kwargs_lens[0]["center_y"]
+            if "center_x" not in kwargs_light and "center_x" in kwargs_lens_light[0]:
+                kwargs_light["center_x"] = kwargs_lens_light[0]["center_x"]
+                kwargs_light["center_y"] = kwargs_lens_light[0]["center_y"]
         else:
-            if 'center_x' not in kwargs_profile and 'center_x' in kwargs_lens[0]:
-                kwargs_profile[0]['center_x'] = kwargs_lens[0]['center_x']
-                kwargs_profile[0]['center_y'] = kwargs_lens[0]['center_y']
-            if 'center_x' not in kwargs_light and 'center_x' in kwargs_lens_light[0]:
-                kwargs_light[0]['center_x'] = kwargs_lens_light[0]['center_x']
-                kwargs_light[0]['center_y'] = kwargs_lens_light[0]['center_y']
+            if "center_x" not in kwargs_profile and "center_x" in kwargs_lens[0]:
+                kwargs_profile[0]["center_x"] = kwargs_lens[0]["center_x"]
+                kwargs_profile[0]["center_y"] = kwargs_lens[0]["center_y"]
+            if "center_x" not in kwargs_light and "center_x" in kwargs_lens_light[0]:
+                kwargs_light[0]["center_x"] = kwargs_lens_light[0]["center_x"]
+                kwargs_light[0]["center_y"] = kwargs_lens_light[0]["center_y"]
 
         return galkin, kwargs_profile, kwargs_light
 

@@ -8,6 +8,7 @@ export, __all__ = exporter()
 
 import numpy as np
 
+
 @export
 class PSF(object):
     """General class to handle the PSF in the GalKin module for rendering the
@@ -83,14 +84,12 @@ class PSFGaussian(object):
         :return: psf value at x and y grid positions
         """
         sigma = self._fwhm / 2 / np.sqrt(2 * np.log(2))
-        return np.exp( - (x**2 + y**2) / 2 / sigma**2) / (2 * np.pi * sigma**2)
+        return np.exp(-(x**2 + y**2) / 2 / sigma**2) / (2 * np.pi * sigma**2)
 
     @property
     def fwhm(self):
-        """
-        Retrieve FWHM of PSF if stored as a private variable
-        """
-        if hasattr(self, '_fwhm'):
+        """Retrieve FWHM of PSF if stored as a private variable."""
+        if hasattr(self, "_fwhm"):
             return self._fwhm
         else:
             return None

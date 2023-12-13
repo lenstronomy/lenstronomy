@@ -32,7 +32,7 @@ class Aperture(object):
             self._aperture = IFUShells(**kwargs_aperture)
         elif aperture_type == "frame":
             self._aperture = Frame(**kwargs_aperture)
-        elif aperture_type == 'IFU_grid':
+        elif aperture_type == "IFU_grid":
             self._aperture = IFUGrid(**kwargs_aperture)
         else:
             raise ValueError(

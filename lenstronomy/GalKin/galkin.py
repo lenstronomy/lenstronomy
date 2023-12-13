@@ -154,21 +154,26 @@ class Galkin(GalkinModel, GalkinObservation):
         self.numerics.delete_cache()
         return np.sqrt(sigma_s2_average) / 1000.0  # in units of km/s
 
-    def dispersion_map_grid_convolved(self, kwargs_mass, kwargs_light,
-                                      kwargs_anisotropy,
-                                      supersampling_factor=1,
-                                      voronoi_bins=None,
-                                      get_IR_map=False
-                                      ):
-        """
-        computes the velocity dispersion in each Integral Field Unit
+    def dispersion_map_grid_convolved(
+        self,
+        kwargs_mass,
+        kwargs_light,
+        kwargs_anisotropy,
+        supersampling_factor=1,
+        voronoi_bins=None,
+        get_IR_map=False,
+    ):
+        """Computes the velocity dispersion in each Integral Field Unit.
 
         :param kwargs_mass: keyword arguments of the mass model
         :param kwargs_light: keyword argument of the light model
         :param kwargs_anisotropy: anisotropy keyword arguments
-        :param supersampling_factor: sampling factor for the grid to do the 2D convolution on
-        :param voronoi_bins: mapping of the voronoi bins, bin indices should start from 0, -1 values for pixels not binned
-        :param get_IR_map: if True, will return the pixelized IR maps to use for Voronoi binning in post-processing
+        :param supersampling_factor: sampling factor for the grid to do the 2D
+            convolution on
+        :param voronoi_bins: mapping of the voronoi bins, bin indices should start from
+            0, -1 values for pixels not binned
+        :param get_IR_map: if True, will return the pixelized IR maps to use for Voronoi
+            binning in post-processing
         :return: ordered array of velocity dispersions [km/s] for each unit
         """
         # draw from light profile (3d and 2d option)
@@ -177,36 +182,36 @@ class Galkin(GalkinModel, GalkinObservation):
         # add it and keep track of how many draws are added on each segment
         # compute average in each segment
         # return value per segment
-        if hasattr(self, 'lum_weight_int_method'):
+        if hasattr(self, "lum_weight_int_method"):
             if not self.lum_weight_int_method:
                 raise ValueError("False for 'lum_weight_int_method' is not supported!")
 
         if not isinstance(kwargs_mass, dict):
-            if 'center_x' in kwargs_mass[0]:
-                mass_center_x = kwargs_mass[0]['center_x']
-                mass_center_y = kwargs_mass[0]['center_y']
+            if "center_x" in kwargs_mass[0]:
+                mass_center_x = kwargs_mass[0]["center_x"]
+                mass_center_y = kwargs_mass[0]["center_y"]
             else:
                 mass_center_x = 0
                 mass_center_y = 0
         else:
-            if 'center_x' in kwargs_mass:
-                mass_center_x = kwargs_mass['center_x']
-                mass_center_y = kwargs_mass['center_y']
+            if "center_x" in kwargs_mass:
+                mass_center_x = kwargs_mass["center_x"]
+                mass_center_y = kwargs_mass["center_y"]
             else:
                 mass_center_x = 0
                 mass_center_y = 0
 
         if not isinstance(kwargs_light, dict):
-            if 'center_x' in kwargs_light[0]:
-                light_center_x = kwargs_light[0]['center_x']
-                light_center_y = kwargs_light[0]['center_y']
+            if "center_x" in kwargs_light[0]:
+                light_center_x = kwargs_light[0]["center_x"]
+                light_center_y = kwargs_light[0]["center_y"]
             else:
                 light_center_x = 0
                 light_center_y = 0
         else:
-            if 'center_x' in kwargs_light:
-                light_center_x = kwargs_light['center_x']
-                light_center_y = kwargs_light['center_y']
+            if "center_x" in kwargs_light:
+                light_center_x = kwargs_light["center_x"]
+                light_center_y = kwargs_light["center_y"]
             else:
                 light_center_x = 0
                 light_center_y = 0
@@ -215,63 +220,86 @@ class Galkin(GalkinModel, GalkinObservation):
         x_grid = self._aperture._x_grid
         y_grid = self._aperture._y_grid
 
-        delta_x = (x_grid[0, 1] - x_grid[0, 0])
-        delta_y = (y_grid[1, 0] - y_grid[0, 0])
+        delta_x = x_grid[0, 1] - x_grid[0, 0]
+        delta_y = y_grid[1, 0] - y_grid[0, 0]
         assert np.abs(delta_x) == np.abs(delta_y)
 
         new_delta_x = delta_x / supersampling_factor
         new_delta_y = delta_y / supersampling_factor
-        x_start = x_grid[0, 0] - delta_x / 2. * (1 - 1 / supersampling_factor)
-        x_end = x_grid[0, -1] + delta_x / 2. * (1 - 1 / supersampling_factor)
-        y_start = y_grid[0, 0] - delta_y / 2. * (1 - 1 / supersampling_factor)
-        y_end = y_grid[-1, 0] + delta_y /2. * (1 - 1 / supersampling_factor)
+        x_start = x_grid[0, 0] - delta_x / 2.0 * (1 - 1 / supersampling_factor)
+        x_end = x_grid[0, -1] + delta_x / 2.0 * (1 - 1 / supersampling_factor)
+        y_start = y_grid[0, 0] - delta_y / 2.0 * (1 - 1 / supersampling_factor)
+        y_end = y_grid[-1, 0] + delta_y / 2.0 * (1 - 1 / supersampling_factor)
 
-        xs = np.arange(x_start, x_end*(1+1e-6), new_delta_x)
-        ys = np.arange(y_start, y_end*(1+1e-6), new_delta_y)
+        xs = np.arange(x_start, x_end * (1 + 1e-6), new_delta_x)
+        ys = np.arange(y_start, y_end * (1 + 1e-6), new_delta_y)
 
         x_grid_supersampled, y_grid_supersmapled = np.meshgrid(xs, ys)
 
         if voronoi_bins is not None:
-            supersampled_voronoi_bins = voronoi_bins.repeat(supersampling_factor, axis=0).repeat(
-                                                                    supersampling_factor, axis=1)
-        R_max = np.sqrt((xs - mass_center_x)**2 + (ys - mass_center_y)**2).max()
+            supersampled_voronoi_bins = voronoi_bins.repeat(
+                supersampling_factor, axis=0
+            ).repeat(supersampling_factor, axis=1)
+        R_max = np.sqrt((xs - mass_center_x) ** 2 + (ys - mass_center_y) ** 2).max()
 
-        Rs = np.logspace(np.log10(self.numerics.min_integrate), np.log10(R_max+0.1), 300)
+        Rs = np.logspace(
+            np.log10(self.numerics.min_integrate), np.log10(R_max + 0.1), 300
+        )
 
         sigma2_IRs = np.zeros_like(Rs)
         IRs = np.zeros_like(Rs)
 
         for i, R in enumerate(Rs):
-            sigma2_IRs[i], IRs[i] = self.numerics.I_R_sigma2_and_IR(R, kwargs_mass, kwargs_light,
-                                                                    kwargs_anisotropy)
+            sigma2_IRs[i], IRs[i] = self.numerics.I_R_sigma2_and_IR(
+                R, kwargs_mass, kwargs_light, kwargs_anisotropy
+            )
 
         log10_Rs = np.log10(Rs)
         log10_sigma2_IRs = np.log10(sigma2_IRs)
         log10_IRs = np.log10(IRs)
 
-        log10_sigma2_interp = interp1d(log10_Rs, log10_sigma2_IRs, kind='linear', bounds_error=False,
-                                       fill_value=(log10_sigma2_IRs[0], log10_sigma2_IRs[-1]),
-                                       assume_sorted=True)
-        log10_IR_interp = interp1d(log10_Rs, log10_IRs, kind='linear', bounds_error=False,
-                                   fill_value=(log10_IRs[0], log10_IRs[-1]), assume_sorted=True)
+        log10_sigma2_interp = interp1d(
+            log10_Rs,
+            log10_sigma2_IRs,
+            kind="linear",
+            bounds_error=False,
+            fill_value=(log10_sigma2_IRs[0], log10_sigma2_IRs[-1]),
+            assume_sorted=True,
+        )
+        log10_IR_interp = interp1d(
+            log10_Rs,
+            log10_IRs,
+            kind="linear",
+            bounds_error=False,
+            fill_value=(log10_IRs[0], log10_IRs[-1]),
+            assume_sorted=True,
+        )
 
-        log10_radial_distance_from_center = np.log10(np.sqrt((x_grid_supersampled - mass_center_x)**2
-                                                   + (y_grid_supersmapled - mass_center_y)**2))
-        sigma2_IR_grid = 10**log10_sigma2_interp(log10_radial_distance_from_center)
-        IR_grid = 10**log10_IR_interp(log10_radial_distance_from_center)
+        log10_radial_distance_from_center = np.log10(
+            np.sqrt(
+                (x_grid_supersampled - mass_center_x) ** 2
+                + (y_grid_supersmapled - mass_center_y) ** 2
+            )
+        )
+        sigma2_IR_grid = 10 ** log10_sigma2_interp(log10_radial_distance_from_center)
+        IR_grid = 10 ** log10_IR_interp(log10_radial_distance_from_center)
 
         fwhm_factor = 3
-        psf_x = np.arange(-fwhm_factor*self._psf.fwhm,
-                          fwhm_factor * self._psf.fwhm+np.abs(delta_x)/(supersampling_factor+1),
-                          np.abs(delta_x)/supersampling_factor)
-        psf_y = np.arange(-fwhm_factor * self._psf.fwhm,
-                          fwhm_factor * self._psf.fwhm + np.abs(delta_y)/(supersampling_factor + 1),
-                          np.abs(delta_y) / supersampling_factor)
+        psf_x = np.arange(
+            -fwhm_factor * self._psf.fwhm,
+            fwhm_factor * self._psf.fwhm + np.abs(delta_x) / (supersampling_factor + 1),
+            np.abs(delta_x) / supersampling_factor,
+        )
+        psf_y = np.arange(
+            -fwhm_factor * self._psf.fwhm,
+            fwhm_factor * self._psf.fwhm + np.abs(delta_y) / (supersampling_factor + 1),
+            np.abs(delta_y) / supersampling_factor,
+        )
         psf_x_grid, psf_y_grid = np.meshgrid(psf_x, psf_y)
         psf_kernel = self.get_psf_kernel(psf_x_grid, psf_y_grid)
 
-        sigma2_IR_convolved = convolve2d(sigma2_IR_grid, psf_kernel, mode='same')
-        IR_convolved = convolve2d(IR_grid, psf_kernel, mode='same')
+        sigma2_IR_convolved = convolve2d(sigma2_IR_grid, psf_kernel, mode="same")
+        IR_convolved = convolve2d(IR_grid, psf_kernel, mode="same")
 
         if voronoi_bins is not None:
             n_bins = int(np.max(voronoi_bins)) + 1
@@ -279,23 +307,34 @@ class Galkin(GalkinModel, GalkinObservation):
             sigma_IR_integrated = np.zeros(n_bins)
             IR_integrated = np.zeros(n_bins)
             for n in range(n_bins):
-                sigma_IR_integrated[n] = np.sum(sigma2_IR_convolved[supersampled_voronoi_bins == n])
+                sigma_IR_integrated[n] = np.sum(
+                    sigma2_IR_convolved[supersampled_voronoi_bins == n]
+                )
                 IR_integrated[n] = np.sum(IR_convolved[supersampled_voronoi_bins == n])
         else:
-            sigma_IR_integrated = sigma2_IR_convolved.reshape(len(x_grid), supersampling_factor,
-                                                              len(y_grid), supersampling_factor
-                                                              ).sum(3).sum(1)
+            sigma_IR_integrated = (
+                sigma2_IR_convolved.reshape(
+                    len(x_grid), supersampling_factor, len(y_grid), supersampling_factor
+                )
+                .sum(3)
+                .sum(1)
+            )
 
-            IR_integrated = IR_convolved.reshape(len(x_grid), supersampling_factor,
-                                                 len(y_grid), supersampling_factor).sum(3).sum(1)
+            IR_integrated = (
+                IR_convolved.reshape(
+                    len(x_grid), supersampling_factor, len(y_grid), supersampling_factor
+                )
+                .sum(3)
+                .sum(1)
+            )
 
         sigma2_grid = sigma_IR_integrated / IR_integrated
 
         # apply unit conversion from arc seconds and deflections to physical velocity dispersion in (km/s)
         if get_IR_map:
-            return np.sqrt(sigma2_grid) / 1000., IR_integrated  # in units of km/s
+            return np.sqrt(sigma2_grid) / 1000.0, IR_integrated  # in units of km/s
         else:
-            return np.sqrt(sigma2_grid) / 1000.  # in units of km/s
+            return np.sqrt(sigma2_grid) / 1000.0  # in units of km/s
 
     def _draw_one_sigma2(self, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """

@@ -296,10 +296,10 @@ class Galkin(GalkinModel, GalkinObservation):
             np.abs(delta_y) / supersampling_factor,
         )
         psf_x_grid, psf_y_grid = np.meshgrid(psf_x, psf_y)
-        psf_kernel = self.get_psf_kernel(psf_x_grid, psf_y_grid)
+        convolution_kernel = self.convolution_kernel(psf_x_grid, psf_y_grid)
 
-        sigma2_IR_convolved = convolve2d(sigma2_IR_grid, psf_kernel, mode="same")
-        IR_convolved = convolve2d(IR_grid, psf_kernel, mode="same")
+        sigma2_IR_convolved = convolve2d(sigma2_IR_grid, convolution_kernel, mode="same")
+        IR_convolved = convolve2d(IR_grid, convolution_kernel, mode="same")
 
         if voronoi_bins is not None:
             n_bins = int(np.max(voronoi_bins)) + 1

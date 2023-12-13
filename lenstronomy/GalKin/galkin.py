@@ -298,7 +298,9 @@ class Galkin(GalkinModel, GalkinObservation):
         psf_x_grid, psf_y_grid = np.meshgrid(psf_x, psf_y)
         convolution_kernel = self.convolution_kernel(psf_x_grid, psf_y_grid)
 
-        sigma2_IR_convolved = convolve2d(sigma2_IR_grid, convolution_kernel, mode="same")
+        sigma2_IR_convolved = convolve2d(
+            sigma2_IR_grid, convolution_kernel, mode="same"
+        )
         IR_convolved = convolve2d(IR_grid, convolution_kernel, mode="same")
 
         if voronoi_bins is not None:

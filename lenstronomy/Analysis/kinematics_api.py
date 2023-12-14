@@ -391,22 +391,24 @@ class KinematicsAPI(object):
                 analytic_kinematics=self._analytic_kinematics,
             )
 
-        if self._analytic_kinematics:
-            if "center_x" not in kwargs_profile and "center_x" in kwargs_lens[0]:
-                kwargs_profile["center_x"] = kwargs_lens[0]["center_x"]
-                kwargs_profile["center_y"] = kwargs_lens[0]["center_y"]
-            if "center_x" not in kwargs_light and "center_x" in kwargs_lens_light[0]:
-                kwargs_light["center_x"] = kwargs_lens_light[0]["center_x"]
-                kwargs_light["center_y"] = kwargs_lens_light[0]["center_y"]
-        else:
-            if "center_x" not in kwargs_profile and "center_x" in kwargs_lens[0]:
-                kwargs_profile[0]["center_x"] = kwargs_lens[0]["center_x"]
-                kwargs_profile[0]["center_y"] = kwargs_lens[0]["center_y"]
-            if "center_x" not in kwargs_light and "center_x" in kwargs_lens_light[0]:
-                kwargs_light[0]["center_x"] = kwargs_lens_light[0]["center_x"]
-                kwargs_light[0]["center_y"] = kwargs_lens_light[0]["center_y"]
-
         return galkin, kwargs_profile, kwargs_light
+
+    def _copy_centers(self, kwargs_1, kwargs_2):
+        """
+        Fills the centers of the kwargs_1 with the centers of kwargs_2.
+
+        :param kwargs_1: target
+        :param kwargs_2: source
+        :return: kwargs_1 with filled centers
+        """
+        if "center_x" in kwargs_1 and "center_y" in kwargs_1:
+            if self._analytic_kinematics:
+                kwargs_1["center_x"] = kwargs_2[0]["center_x"]
+                kwargs_1["center_y"] = kwargs_2[0]["center_y"]
+            else:
+                kwargs_1[0]["center_x"] = kwargs_2[0]["center_x"]
+                kwargs_1[0]["center_y"] = kwargs_2[0]["center_y"]
+        return kwargs_1
 
     def kinematic_lens_profiles(
         self,
@@ -504,6 +506,8 @@ class KinematicsAPI(object):
             mass_profile_list = ["MULTI_GAUSSIAN_KAPPA"]
             kwargs_profile = [{"amp": amps, "sigma": sigmas}]
 
+        kwargs_profile = self._copy_centers(kwargs_profile, kwargs_lens)
+
         return mass_profile_list, kwargs_profile
 
     def kinematic_light_profile(
@@ -585,6 +589,9 @@ class KinematicsAPI(object):
             )
             light_profile_list = ["MULTI_GAUSSIAN"]
             kwargs_light = [{"amp": amps, "sigma": sigmas}]
+
+        kwargs_light = self._copy_centers(kwargs_light, kwargs_lens_light)
+
         return light_profile_list, kwargs_light
 
     def kinematics_modeling_settings(

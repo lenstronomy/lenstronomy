@@ -75,8 +75,8 @@ class TestGalkin(object):
             "anisotropy_model": "OM",
         }
         x_grid, y_grid = np.meshgrid(
-            np.arange(-.45, .5, 0.1),
-            np.arange(-.45, .5, 0.1),
+            np.arange(-0.45, 0.5, 0.1),
+            np.arange(-0.45, 0.5, 0.1),
         )
 
         kwargs_aperture = {
@@ -867,9 +867,7 @@ class TestGalkin(object):
         npt.assert_almost_equal(sigma_v_3d / v_sigma_true, 1, decimal=2)
 
     def test_get_convolution_kernel(self):
-        """
-        test the PSF kernel.
-        """
+        """Test the PSF kernel."""
         psf = self.galkin_ifu_grid._get_convolution_kernel(supersampling_factor=1)
         assert psf.shape == (61, 61)
 
@@ -898,8 +896,8 @@ class TestGalkin(object):
     def test_delta_pix_xy(self):
         """"""
         delta_x, delta_y = self.galkin_ifu_grid._delta_pix_xy()
-        npt.assert_almost_equal(delta_x, .1, decimal=5)
-        npt.assert_almost_equal(delta_y, .1, decimal=5)
+        npt.assert_almost_equal(delta_x, 0.1, decimal=5)
+        npt.assert_almost_equal(delta_y, 0.1, decimal=5)
 
 
 if __name__ == "__main__":

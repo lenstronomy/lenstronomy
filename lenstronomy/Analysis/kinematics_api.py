@@ -394,8 +394,7 @@ class KinematicsAPI(object):
         return galkin, kwargs_profile, kwargs_light
 
     def _copy_centers(self, kwargs_1, kwargs_2):
-        """
-        Fills the centers of the kwargs_1 with the centers of kwargs_2.
+        """Fills the centers of the kwargs_1 with the centers of kwargs_2.
 
         :param kwargs_1: target
         :param kwargs_2: source

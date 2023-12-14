@@ -424,98 +424,96 @@ class TestKinematicsAPI(object):
 
         .. code-block:: python
 
-        import numpy as np
-        from astropy.cosmology import FlatLambdaCDM
-        from lenstronomy.LightModel.light_model import LightModel
-        from lenstronomy.LensModel.lens_model import LensModel
-        from jampy.jam_axi_proj import jam_axi_proj
-        from mgefit.mge_fit_1d import mge_fit_1d
+            import numpy as np
+            from astropy.cosmology import FlatLambdaCDM
+            from lenstronomy.LightModel.light_model import LightModel
+            from lenstronomy.LensModel.lens_model import LensModel
+            from jampy.jam_axi_proj import jam_axi_proj
+            from mgefit.mge_fit_1d import mge_fit_1d
 
-        z_l = 0.3
-        z_s = 0.7
+            z_l = 0.3
+            z_s = 0.7
 
-        pixel_size = 0.1457
-        x_grid, y_grid = np.meshgrid(
-            np.arange(-3.0597, 3.1597, pixel_size),
-            np.arange(-3.0597, 3.1597, pixel_size),
-        )
-        psf_fwhm = 0.7
+            pixel_size = 0.1457
+            x_grid, y_grid = np.meshgrid(
+                np.arange(-3.0597, 3.1597, pixel_size),
+                np.arange(-3.0597, 3.1597, pixel_size),
+            )
+            psf_fwhm = 0.7
 
-        light_model = LightModel(["SERSIC"])
-        kwargs_lens_light = [
-            {
-                "amp": 0.09,
-                "R_sersic": 1.2,
-                "n_sersic": 0.9,
-                "center_x": 0.0,
-                "center_y": 0.0,
-            }
-        ]
-        rs = np.logspace(-2.5, 2, 300)
-        flux_r = light_model.surface_brightness(rs, 0 * rs, kwargs_lens_light)
+            light_model = LightModel(["SERSIC"])
+            kwargs_lens_light = [
+                {
+                    "amp": 0.09,
+                    "R_sersic": 1.2,
+                    "n_sersic": 0.9,
+                    "center_x": 0.0,
+                    "center_y": 0.0,
+                }
+            ]
 
-        mge_fit = mge_fit_1d(rs, flux_r, ngauss=20, quiet=True)
+            rs = np.logspace(-2.5, 2, 300)
+            flux_r = light_model.surface_brightness(rs, 0 * rs, kwargs_lens_light)
 
-        sigma_lum = mge_fit.sol[1]
-        surf_lum = mge_fit.sol[0] / (np.sqrt(2 * np.pi) * sigma_lum)
-        qobs_lum = np.ones_like(sigma_lum)
+            mge_fit = mge_fit_1d(rs, flux_r, ngauss=20, quiet=True)
+            sigma_lum = mge_fit.sol[1]
+            surf_lum = mge_fit.sol[0] / (np.sqrt(2 * np.pi) * sigma_lum)
+            qobs_lum = np.ones_like(sigma_lum)
 
 
-        lens_model = LensModel(["EPL"])
-        kwargs_lens = [
-            {
-                "theta_E": 1.63,
-                "gamma": 2.02,
-                "e1": 0.0,
-                "e2": 0.0,
-                "center_x": 0.0,
-                "center_y": 0.0,
-            }
-        ]
-        mass_r = lens_model.kappa(rs, rs * 0, kwargs_lens)
+            lens_model = LensModel(["EPL"])
+            kwargs_lens = [
+                {
+                    "theta_E": 1.63,
+                    "gamma": 2.02,
+                    "e1": 0.0,
+                    "e2": 0.0,
+                    "center_x": 0.0,
+                    "center_y": 0.0,
+                }
+            ]
 
-        mass_mge = mge_fit_1d(rs, mass_r, ngauss=20, quiet=True, plot=False)
+            mass_r = lens_model.kappa(rs, rs * 0, kwargs_lens)
+            mass_mge = mge_fit_1d(rs, mass_r, ngauss=20, quiet=True, plot=False)
 
-        cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.05)
+            cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.05)
+            D_d = cosmo.angular_diameter_distance(z_l).value
+            D_s = cosmo.angular_diameter_distance(z_s).value
+            D_ds = cosmo.angular_diameter_distance_z1z2(z_l, z_s).value
+            c2_4piG = 1.6624541593797972e6
+            sigma_crit = c2_4piG * D_s / D_ds / D_d
 
-        D_d = cosmo.angular_diameter_distance(z_l).value
-        D_s = cosmo.angular_diameter_distance(z_s).value
-        D_ds = cosmo.angular_diameter_distance_z1z2(z_l, z_s).value
+            sigma_pot = mass_mge.sol[1]
+            surf_pot = mass_mge.sol[0] / (np.sqrt(2 * np.pi) * sigma_pot) * sigma_crit
+            qobs_pot = np.ones_like(sigma_pot)
 
-        c2_4piG = 1.6624541593797972e6
-        sigma_crit = c2_4piG * D_s / D_ds / D_d
+            bs = np.ones_like(surf_lum) * 0.25
 
-        sigma_pot = mass_mge.sol[1]
-        surf_pot = mass_mge.sol[0] / (np.sqrt(2 * np.pi) * sigma_pot) * sigma_crit
-        qobs_pot = np.ones_like(sigma_pot)
+            jam = jam_axi_proj(
+                surf_lum,
+                sigma_lum,
+                qobs_lum,
+                surf_pot,
+                sigma_pot,
+                qobs_pot,
+                inc=90,
+                mbh=0,
+                distance=D_d,
+                xbin=x_grid.flatten(),
+                ybin=y_grid.flatten(),
+                plot=False,
+                pixsize=pixel_size,
+                pixang=0,
+                quiet=1,
+                sigmapsf=psf_fwhm / 2.355,
+                normpsf=1,
+                moment="zz",
+                align="sph",
+                beta=bs,
+                ml=1,
+            ).model
 
-        bs = np.ones_like(surf_lum) * 0.25
-
-        jam = jam_axi_proj(
-            surf_lum,
-            sigma_lum,
-            qobs_lum,
-            surf_pot,
-            sigma_pot,
-            qobs_pot,
-            inc=90,
-            mbh=0,
-            distance=D_d,
-            xbin=x_grid.flatten(),
-            ybin=y_grid.flatten(),
-            plot=False,
-            pixsize=pixel_size,
-            pixang=0,
-            quiet=1,
-            sigmapsf=psf_fwhm / 2.355,
-            normpsf=1,
-            moment="zz",
-            align="sph",
-            beta=bs,
-            ml=1,
-        ).model
-
-        jampy_vel_dis = jam.reshape(x_grid.shape)[14:28, 14:28]
+            jampy_vel_dis = jam.reshape(x_grid.shape)[14:28, 14:28]
         """
         z_l = 0.3
         z_s = 0.7

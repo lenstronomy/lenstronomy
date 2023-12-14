@@ -131,23 +131,6 @@ class KinematicsAPI(object):
             }
         else:
             self._kwargs_mge_light = kwargs_mge_light
-        if kwargs_numerics_galkin is None:
-            if analytic_kinematics:
-                kwargs_numerics_galkin = {
-                    "interpol_grid_num": 2000,  # numerical interpolation, should converge -> infinity
-                    "log_integration": True,  # log or linear interpolation of surface brightness and mass models
-                    "max_integrate": 100,
-                    "min_integrate": 1e-4,
-                }  # lower/upper
-                # bound of numerical integrals
-            else:
-                kwargs_numerics_galkin = {
-                    "interpol_grid_num": 1000,  # numerical interpolation, should converge -> infinity
-                    "log_integration": True,  # log or linear interpolation of surface brightness and mass models
-                    "max_integrate": 100,
-                    "min_integrate": 1e-4,
-                }  # lower/upper
-                # bound of numerical integrals
 
         self._kwargs_numerics_kin = kwargs_numerics_galkin
         self._anisotropy_model = anisotropy_model

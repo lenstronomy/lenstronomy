@@ -60,8 +60,8 @@ class GalkinModel(object):
                 "interpol_grid_num": 200,  # numerical interpolation, should converge -> infinity
                 "log_integration": True,  # log or linear interpolation of surface brightness and mass models
                 # setting False may lead to less accurate results
-                "max_integrate": 100, # upper bound of numerical integrals
-                "min_integrate": 1e-4, # lower bound of numerical integrals
+                "max_integrate": 100,  # upper bound of numerical integrals
+                "min_integrate": 1e-4,  # lower bound of numerical integrals
             }
 
         if analytic_kinematics is True:

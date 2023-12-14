@@ -681,9 +681,7 @@ class TestGalkin(object):
         npt.assert_almost_equal(sigma_v, sigma_v_ifu[0], decimal=-1)
 
     def test_extract_center(self):
-        """
-        Test the extraction of the center of the IFU map.
-        """
+        """Test the extraction of the center of the IFU map."""
         assert Galkin._extract_center([{"center_x": 1, "center_y": 2}]) == (1, 2)
         assert Galkin._extract_center([{}]) == (0, 0)
         assert Galkin._extract_center({"center_x": 1, "center_y": 2}) == (1, 2)
@@ -866,39 +864,40 @@ class TestGalkin(object):
         npt.assert_almost_equal(sigma_v_3d / v_sigma_true, 1, decimal=2)
 
     def test_get_psf_kernel(self):
-        """
-        test the PSF kernel.
-        """
+        """Test the PSF kernel."""
         factor = 3
         s_mult = 5
         psf = self.galkin_ifu_grid._get_convolution_kernel(supersampling_factor=factor)
         psf_s = self.galkin_ifu_grid._get_convolution_kernel(
-            supersampling_factor=factor*factor)
+            supersampling_factor=factor * factor
+        )
 
         assert (psf.shape[0] - 1) * s_mult == psf_s.shape[0] - 1
 
     def test_get_grid(self):
-        """
-
-        """
+        """"""
         kwargs_mass = [{"theta_E": 1.2, "gamma": 2}]
 
-        x_grid, y_grid, log10_radial_distance_from_center = self.galkin_ifu_grid._get_grid(kwargs_mass,
-                                                        supersampling_factor=1)
+        (
+            x_grid,
+            y_grid,
+            log10_radial_distance_from_center,
+        ) = self.galkin_ifu_grid._get_grid(kwargs_mass, supersampling_factor=1)
 
         assert x_grid.shape == (2, 2)
         assert y_grid.shape == (2, 2)
 
-        x_grid, y_grid, log10_radial_distance_from_center = self.galkin_ifu_grid._get_grid(kwargs_mass,
-                                                        supersampling_factor=3)
+        (
+            x_grid,
+            y_grid,
+            log10_radial_distance_from_center,
+        ) = self.galkin_ifu_grid._get_grid(kwargs_mass, supersampling_factor=3)
 
         assert x_grid.shape == (6, 6)
         assert y_grid.shape == (6, 6)
 
     def test_delta_pix_xy(self):
-        """
-
-        """
+        """"""
         delta_x, delta_y = self.galkin_ifu_grid._delta_pix_xy()
         assert delta_x == 2
         assert delta_y == 2

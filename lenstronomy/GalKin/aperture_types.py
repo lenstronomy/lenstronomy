@@ -269,7 +269,7 @@ class IFUGrid(object):
 
     @property
     def num_segments(self):
-        """Number of segments with separate measurements of the velocity dispersion
+        """Number of segments with separate measurements of the velocity dispersion.
 
         :return: int
         """
@@ -277,12 +277,12 @@ class IFUGrid(object):
 
     @property
     def x_grid(self):
-        """x coordinates of the grid"""
+        """X coordinates of the grid."""
         return self._x_grid
 
     @property
     def y_grid(self):
-        """y coordinates of the grid"""
+        """Y coordinates of the grid."""
         return self._y_grid
 
 

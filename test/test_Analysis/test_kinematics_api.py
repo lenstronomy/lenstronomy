@@ -1096,11 +1096,15 @@ class TestKinematicsAPI(object):
         kwargs_lens_light = [{"Rs": 1, "amp": 1, "center_x": 0, "center_y": 0}]
         kwargs_anisotropy = {"r_ani": 1}
 
-        assert kinematicAPI._copy_centers({}, kwargs_lens) == {"center_x": 0, "center_y": 0}
+        assert kinematicAPI._copy_centers({}, kwargs_lens) == {
+            "center_x": 0,
+            "center_y": 0,
+        }
 
         kinematicAPI._analytic_kinematics = False
-        assert kinematicAPI._copy_centers([{}], kwargs_lens_light) == [{"center_x": 0,
-                                                                      "center_y": 0}]
+        assert kinematicAPI._copy_centers([{}], kwargs_lens_light) == [
+            {"center_x": 0, "center_y": 0}
+        ]
 
 
 class TestRaise(unittest.TestCase):

@@ -97,10 +97,7 @@ class PSFGaussian(object):
     @property
     def fwhm(self):
         """Retrieve FWHM of PSF if stored as a private variable."""
-        if hasattr(self, "_fwhm"):
-            return self._fwhm
-        else:
-            return None
+        return self._fwhm
 
 
 @export

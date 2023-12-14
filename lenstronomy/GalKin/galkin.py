@@ -154,6 +154,19 @@ class Galkin(GalkinModel, GalkinObservation):
         self.numerics.delete_cache()
         return np.sqrt(sigma_s2_average) / 1000.0  # in units of km/s
 
+    @staticmethod
+    def _extract_center(kwargs):
+        if not isinstance(kwargs, dict):
+            if "center_x" in kwargs[0]:
+                return kwargs[0]["center_x"], kwargs[0]["center_y"]
+            else:
+                return 0, 0
+        else:
+            if "center_x" in kwargs:
+                return kwargs["center_x"], kwargs["center_y"]
+            else:
+                return 0, 0
+
     def dispersion_map_grid_convolved(
         self,
         kwargs_mass,
@@ -182,41 +195,13 @@ class Galkin(GalkinModel, GalkinObservation):
         # add it and keep track of how many draws are added on each segment
         # compute average in each segment
         # return value per segment
-        if hasattr(self, "lum_weight_int_method"):
-            if not self.lum_weight_int_method:
-                raise ValueError("False for 'lum_weight_int_method' is not supported!")
 
-        if not isinstance(kwargs_mass, dict):
-            if "center_x" in kwargs_mass[0]:
-                mass_center_x = kwargs_mass[0]["center_x"]
-                mass_center_y = kwargs_mass[0]["center_y"]
-            else:
-                mass_center_x = 0
-                mass_center_y = 0
-        else:
-            if "center_x" in kwargs_mass:
-                mass_center_x = kwargs_mass["center_x"]
-                mass_center_y = kwargs_mass["center_y"]
-            else:
-                mass_center_x = 0
-                mass_center_y = 0
+        if hasattr(self.numerics, "lum_weight_int_method"):
+            if not self.numerics.lum_weight_int_method:
+                raise ValueError("'lum_weight_int_method' must be True!")
 
-        if not isinstance(kwargs_light, dict):
-            if "center_x" in kwargs_light[0]:
-                light_center_x = kwargs_light[0]["center_x"]
-                light_center_y = kwargs_light[0]["center_y"]
-            else:
-                light_center_x = 0
-                light_center_y = 0
-        else:
-            if "center_x" in kwargs_light:
-                light_center_x = kwargs_light["center_x"]
-                light_center_y = kwargs_light["center_y"]
-            else:
-                light_center_x = 0
-                light_center_y = 0
+        mass_center_x, mass_center_y = self._extract_center(kwargs_mass)
 
-        num_segments = self.num_segments
         x_grid = self._aperture._x_grid
         y_grid = self._aperture._y_grid
 
@@ -236,10 +221,6 @@ class Galkin(GalkinModel, GalkinObservation):
 
         x_grid_supersampled, y_grid_supersmapled = np.meshgrid(xs, ys)
 
-        if voronoi_bins is not None:
-            supersampled_voronoi_bins = voronoi_bins.repeat(
-                supersampling_factor, axis=0
-            ).repeat(supersampling_factor, axis=1)
         R_max = np.sqrt((xs - mass_center_x) ** 2 + (ys - mass_center_y) ** 2).max()
 
         Rs = np.logspace(
@@ -308,6 +289,11 @@ class Galkin(GalkinModel, GalkinObservation):
 
             sigma_IR_integrated = np.zeros(n_bins)
             IR_integrated = np.zeros(n_bins)
+
+            supersampled_voronoi_bins = voronoi_bins.repeat(
+                supersampling_factor, axis=0
+            ).repeat(supersampling_factor, axis=1)
+
             for n in range(n_bins):
                 sigma_IR_integrated[n] = np.sum(
                     sigma2_IR_convolved[supersampled_voronoi_bins == n]

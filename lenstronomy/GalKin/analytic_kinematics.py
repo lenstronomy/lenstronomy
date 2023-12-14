@@ -96,11 +96,10 @@ class AnalyticKinematics(Anisotropy):
         )
 
     @staticmethod
-    def draw_light(kwargs_light):
+    def _get_a(kwargs_light):
         """
 
-        :param kwargs_light: keyword argument (list) of the light model
-        :return: 3d radius (if possible), 2d projected radius, x-projected coordinate, y-projected coordinate
+        :param kwargs_light: keyword arguments of the light profile
         """
         if "a" not in kwargs_light:
             if "Rs" in kwargs_light:
@@ -113,6 +112,17 @@ class AnalyticKinematics(Anisotropy):
                 )
         else:
             a = kwargs_light["a"]
+
+        return a
+
+    @classmethod
+    def draw_light(cls, kwargs_light):
+        """
+
+        :param kwargs_light: keyword argument (list) of the light model
+        :return: 3d radius (if possible), 2d projected radius, x-projected coordinate, y-projected coordinate
+        """
+        a = cls._get_a(kwargs_light)
 
         r = vel_util.draw_hernquist(a)
         R, x, y = vel_util.project2d_random(r)

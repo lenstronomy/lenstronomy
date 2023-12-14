@@ -10,6 +10,62 @@ from lenstronomy.GalKin.light_profile import LightProfile
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.Util import constants as const
 
+class TestRaise(unittest.TestCase):
+    def test_raise(self):
+        with self.assertRaises(ValueError):
+            kwargs_model = {"anisotropy_model": "const"}
+            kwargs_aperture = {
+                "center_ra": 0,
+                "width": 1,
+                "length": 1,
+                "angle": 0,
+                "center_dec": 0,
+                "aperture_type": "slit",
+            }
+            kwargs_cosmo = {"d_d": 1000, "d_s": 1500, "d_ds": 800}
+            kwargs_psf = {"psf_type": "GAUSSIAN", "fwhm": 1}
+            Galkin(
+                kwargs_model,
+                kwargs_aperture,
+                kwargs_psf,
+                kwargs_cosmo,
+                kwargs_numerics={},
+                analytic_kinematics=True,
+            )
+
+        with self.assertRaises(ValueError):
+            kwargs_model = {
+                "mass_profile_list": ["SIS"],
+                "light_profile_list": ["HERNQUIST"],
+                "anisotropy_model": "OM"
+            }
+            x_grid, y_grid = np.meshgrid(
+                np.linspace(-1, 1, 2),
+                np.linspace(-1, 1, 2)
+            )
+
+            kwargs_aperture = {
+                "x_grid": x_grid,
+                "y_grid": y_grid,
+                "aperture_type": "IFU_grid",
+            }
+            kwargs_cosmo = {"d_d": 1000, "d_s": 1500, "d_ds": 800}
+            kwargs_psf = {"psf_type": "GAUSSIAN", "fwhm": 1}
+            galkin = Galkin(
+                kwargs_model,
+                kwargs_aperture,
+                kwargs_psf,
+                kwargs_cosmo,
+                kwargs_numerics={"lum_weight_int_method": False},
+                analytic_kinematics=False,
+            )
+            galkin.dispersion_map_grid_convolved(
+                kwargs_mass=[{"theta_E": 1}],
+                kwargs_light=[{"amp": 1, "Rs": 1}],
+                kwargs_anisotropy={"r_ani": 1},
+                supersampling_factor=1,
+            )
+
 
 class TestGalkin(object):
     def setup_method(self):
@@ -617,6 +673,13 @@ class TestGalkin(object):
 
         npt.assert_almost_equal(sigma_v, sigma_v_ifu[0], decimal=-1)
 
+    def test_get_center(self):
+        assert Galkin._extract_center([{"center_x": 1, "center_y": 2}]) == (1, 2)
+        assert Galkin._extract_center([{}]) == (0, 0)
+        assert Galkin._extract_center({"center_x": 1, "center_y": 2}) == (1, 2)
+        assert Galkin._extract_center({}) == (0, 0)
+
+
     def test_projected_integral_vs_3d_rendering(self):
         lum_weight_int_method = True
 
@@ -795,30 +858,6 @@ class TestGalkin(object):
         )
         npt.assert_almost_equal(sigma_v_2d / v_sigma_true, 1, decimal=2)
         npt.assert_almost_equal(sigma_v_3d / v_sigma_true, 1, decimal=2)
-
-
-class TestRaise(unittest.TestCase):
-    def test_raise(self):
-        with self.assertRaises(ValueError):
-            kwargs_model = {"anisotropy_model": "const"}
-            kwargs_aperture = {
-                "center_ra": 0,
-                "width": 1,
-                "length": 1,
-                "angle": 0,
-                "center_dec": 0,
-                "aperture_type": "slit",
-            }
-            kwargs_cosmo = {"d_d": 1000, "d_s": 1500, "d_ds": 800}
-            kwargs_psf = {"psf_type": "GAUSSIAN", "fwhm": 1}
-            Galkin(
-                kwargs_model,
-                kwargs_aperture,
-                kwargs_psf,
-                kwargs_cosmo,
-                kwargs_numerics={},
-                analytic_kinematics=True,
-            )
 
 
 if __name__ == "__main__":

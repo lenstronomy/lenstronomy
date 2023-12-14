@@ -67,6 +67,11 @@ class NumericKinematics(Anisotropy):
         self._lum_weight_int_method = lum_weight_int_method
 
     @property
+    def lum_weight_int_method(self):
+        """Get the luminosity weighted integration method."""
+        return self._lum_weight_int_method
+
+    @property
     def max_integrate(self):
         """Get the maximum range of integration."""
         return self._max_integrate

@@ -38,6 +38,75 @@ class TestAnalyticKinematics(object):
         )
         npt.assert_almost_equal(sigma_s2[0], 70885880558.5913, decimal=3)
 
+    def test_properties(self):
+        kwargs_aperture = {
+            "center_ra": 0,
+            "width": 1,
+            "length": 1,
+            "angle": 0,
+            "center_dec": 0,
+            "aperture_type": "slit",
+        }
+        kwargs_cosmo = {"d_d": 1000, "d_s": 1500, "d_ds": 800}
+        kwargs_psf = {"psf_type": "GAUSSIAN", "fwhm": 1}
+        kin = AnalyticKinematics(
+            kwargs_cosmo,
+            interpol_grid_num=2000,
+            log_integration=True,
+            max_integrate=150,
+            min_integrate=5e-6,
+        )
+
+        assert kin.max_integrate == 150
+        assert kin.min_integrate == 5e-6
+
+    def test_draw_light(self):
+        kin = AnalyticKinematics
+        assert kin._get_a({"a": 1}) == 1
+        assert kin._get_a({"Rs": 2}) == 2
+        assert kin._get_a({"r_eff": 4}) == 4 * 0.551
+
+        with pytest.raises(ValueError):
+            kin._get_a({"not_Rs": 1})
+
+    def test_I_R_sigma2_and_IR(self):
+        kwargs_aperture = {
+            "center_ra": 0,
+            "width": 1,
+            "length": 1,
+            "angle": 0,
+            "center_dec": 0,
+            "aperture_type": "slit",
+        }
+        kwargs_cosmo = {"d_d": 1000, "d_s": 1500, "d_ds": 800}
+        kwargs_psf = {"psf_type": "GAUSSIAN", "fwhm": 1}
+        kin = AnalyticKinematics(
+            kwargs_cosmo,
+            interpol_grid_num=10000,
+            log_integration=False,
+            max_integrate=100,
+            min_integrate=1e-4,
+        )
+        kwargs_mass = {"theta_E": 1, "gamma": 2}
+        kwargs_light = {"r_eff": 1}
+        kwargs_ani = {"r_ani": 1}
+        IR_sigma2, IR = kin._I_R_sigma2(
+            R=1,
+            kwargs_mass=kwargs_mass,
+            kwargs_light=kwargs_light,
+            kwargs_anisotropy=kwargs_ani,
+        )
+
+        kin._log_int = True
+        kin._interp_grid_num = 1000
+        IR_sigma2_2, IR_2 = kin._I_R_sigma2(
+            R=1,
+            kwargs_mass=kwargs_mass,
+            kwargs_light=kwargs_light,
+            kwargs_anisotropy=kwargs_ani,
+        )
+        assert IR_sigma2 - IR_sigma2_2 < 10
+
     def test_against_numeric_profile(self):
         z_d = 0.295
         z_s = 0.657
@@ -64,7 +133,9 @@ class TestAnalyticKinematics(object):
             min_integrate=1e-4,
         )
         analytic_kin = AnalyticKinematics(
-            kwargs_cosmo, interpol_grid_num=2000, max_integrate=100, min_integrate=1e-4
+            kwargs_cosmo, interpol_grid_num=2000,
+            log_integration=True,
+            max_integrate=100, min_integrate=1e-4
         )
 
         R = np.logspace(-5, np.log10(6), 100)

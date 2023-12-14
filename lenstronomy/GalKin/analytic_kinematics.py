@@ -184,17 +184,7 @@ class AnalyticKinematics(Anisotropy):
         :param kwargs_anisotropy: anisotropy keyword arguments
         :return: a (Rs of Hernquist profile), gamma, rho0_r0_gamma, r_ani
         """
-        if "a" not in kwargs_light:
-            if "Rs" in kwargs_light:
-                a = kwargs_light["Rs"]
-            elif "r_eff" in kwargs_light:
-                a = 0.551 * kwargs_light["r_eff"]
-            else:
-                raise ValueError(
-                    "Hernquist half-light radius can not be " "determined!"
-                )
-        else:
-            a = kwargs_light["a"]
+        a = self._get_a(kwargs_light)
 
         if "rho0_r0_gamma" not in kwargs_mass:
             kwargs_mass["rho0_r0_gamma"] = self._rho0_r0_gamma(

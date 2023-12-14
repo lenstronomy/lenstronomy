@@ -1079,13 +1079,15 @@ class TestRaise(unittest.TestCase):
             }
 
             kwargs_aperture = {
-                "aperture_type": "IFU_slit",
+                "aperture_type": "slit",
+                "length": 1,
+                "width": 1,
             }
             kinematicAPI = KinematicsAPI(
                 z_lens,
                 z_source,
                 kwargs_model,
-                kwargs_seeing={},
+                kwargs_seeing={"psf_type": "GAUSSIAN", "fwhm": 0.7},
                 kwargs_aperture=kwargs_aperture,
                 anisotropy_model="OM",
             )

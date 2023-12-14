@@ -1066,6 +1066,43 @@ class TestKinematicsAPI(object):
         # use as kinematic constraints
         # compare with MGE Sersic kinematic estimate
 
+    def test_copy_centers(self):
+        z_lens = 0.5
+        z_source = 1.5
+        kwargs_model = {
+            "lens_model_list": ["SIS"],
+            "lens_light_model_list": ["HERNQUIST"],
+        }
+        kwargs_aperture = {
+            "aperture_type": "slit",
+            "center_ra": 0,
+            "width": 1,
+            "length": 1,
+            "angle": 0,
+            "center_dec": 0,
+        }
+        psf_fwhm = 0.7
+        kwargs_seeing = {"psf_type": "GAUSSIAN", "fwhm": psf_fwhm}
+        anisotropy_model = "OM"
+        kinematicAPI = KinematicsAPI(
+            z_lens,
+            z_source,
+            kwargs_model,
+            kwargs_seeing,
+            kwargs_aperture,
+            anisotropy_model=anisotropy_model,
+            analytic_kinematics=True,
+        )
+        kwargs_lens = [{"theta_E": 1, "center_x": 0, "center_y": 0}]
+        kwargs_lens_light = [{"Rs": 1, "amp": 1, "center_x": 0, "center_y": 0}]
+        kwargs_anisotropy = {"r_ani": 1}
+
+        assert kinematicAPI._copy_centers({}, kwargs_lens) == {"center_x": 0, "center_y": 0}
+
+        kinematicAPI._analytic_kinematics = False
+        assert kinematicAPI._copy_centers([{}], kwargs_lens_light) == [{"center_x": 0,
+                                                                      "center_y": 0}]
+
 
 class TestRaise(unittest.TestCase):
     def test_raise(self):

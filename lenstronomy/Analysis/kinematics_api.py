@@ -400,7 +400,7 @@ class KinematicsAPI(object):
         :param kwargs_2: source
         :return: kwargs_1 with filled centers
         """
-        if "center_x" in kwargs_1 and "center_y" in kwargs_1:
+        if "center_x" in kwargs_2[0] and "center_y" in kwargs_2[0]:
             if self._analytic_kinematics:
                 kwargs_1["center_x"] = kwargs_2[0]["center_x"]
                 kwargs_1["center_y"] = kwargs_2[0]["center_y"]

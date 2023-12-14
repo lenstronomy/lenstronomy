@@ -10,6 +10,7 @@ from lenstronomy.GalKin.light_profile import LightProfile
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.Util import constants as const
 
+
 class TestRaise(unittest.TestCase):
     def test_raise(self):
         with self.assertRaises(ValueError):
@@ -37,12 +38,9 @@ class TestRaise(unittest.TestCase):
             kwargs_model = {
                 "mass_profile_list": ["SIS"],
                 "light_profile_list": ["HERNQUIST"],
-                "anisotropy_model": "OM"
+                "anisotropy_model": "OM",
             }
-            x_grid, y_grid = np.meshgrid(
-                np.linspace(-1, 1, 2),
-                np.linspace(-1, 1, 2)
-            )
+            x_grid, y_grid = np.meshgrid(np.linspace(-1, 1, 2), np.linspace(-1, 1, 2))
 
             kwargs_aperture = {
                 "x_grid": x_grid,
@@ -678,7 +676,6 @@ class TestGalkin(object):
         assert Galkin._extract_center([{}]) == (0, 0)
         assert Galkin._extract_center({"center_x": 1, "center_y": 2}) == (1, 2)
         assert Galkin._extract_center({}) == (0, 0)
-
 
     def test_projected_integral_vs_3d_rendering(self):
         lum_weight_int_method = True

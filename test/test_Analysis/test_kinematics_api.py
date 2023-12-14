@@ -955,7 +955,8 @@ class TestKinematicsAPI(object):
             [{"theta_E": 1, "center_x": 0, "center_y": 0}],
             [{"Rs": 1, "amp": 1, "center_x": 0, "center_y": 0}],
             {"r_ani": 1},
-            direct_convolve=False)
+            direct_convolve=False,
+        )
 
         kin_api.velocity_dispersion_map(
             [{"theta_E": 1, "center_x": 0, "center_y": 0}],
@@ -1087,13 +1088,13 @@ class TestRaise(unittest.TestCase):
                 kwargs_seeing={},
                 kwargs_aperture=kwargs_aperture,
                 anisotropy_model="OM",
-
             )
             kinematicAPI.velocity_dispersion_map(
                 [{"theta_E": 1, "center_x": 0, "center_y": 0}],
                 [{"Rs": 1, "amp": 1, "center_x": 0, "center_y": 0}],
                 {"r_ani": 1},
-                direct_convolve=True)
+                direct_convolve=True,
+            )
 
         with self.assertRaises(ValueError):
             z_lens = 0.5

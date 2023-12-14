@@ -28,7 +28,6 @@ class TestPSF(object):
         kernel = psf.convolution_kernel(delta_pix=0.3, num_pix=21)
         npt.assert_almost_equal(np.sum(kernel), 1, decimal=5)
 
-
         psf = PSF(psf_type="MOFFAT", fwhm=1, moffat_beta=2.6)
         kernel = psf.convolution_kernel(delta_pix=0.3, num_pix=21)
         npt.assert_almost_equal(np.sum(kernel), 1, decimal=5)
@@ -37,6 +36,7 @@ class TestPSF(object):
         kerne_direct = psf.convolution_kernel_grid(x, y)
 
         npt.assert_equal(kernel, kerne_direct)
+
 
 class TestRaise(unittest.TestCase):
     def test_raise(self):

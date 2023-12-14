@@ -133,9 +133,11 @@ class TestAnalyticKinematics(object):
             min_integrate=1e-4,
         )
         analytic_kin = AnalyticKinematics(
-            kwargs_cosmo, interpol_grid_num=2000,
+            kwargs_cosmo,
+            interpol_grid_num=2000,
             log_integration=True,
-            max_integrate=100, min_integrate=1e-4
+            max_integrate=100,
+            min_integrate=1e-4,
         )
 
         R = np.logspace(-5, np.log10(6), 100)

@@ -167,47 +167,35 @@ class Galkin(GalkinModel, GalkinObservation):
             else:
                 return 0, 0
 
-    def dispersion_map_grid_convolved(
-        self,
-        kwargs_mass,
-        kwargs_light,
-        kwargs_anisotropy,
-        supersampling_factor=1,
-        voronoi_bins=None,
-        get_IR_map=False,
-    ):
-        """Computes the velocity dispersion in each Integral Field Unit.
-
-        :param kwargs_mass: keyword arguments of the mass model
-        :param kwargs_light: keyword argument of the light model
-        :param kwargs_anisotropy: anisotropy keyword arguments
-        :param supersampling_factor: sampling factor for the grid to do the 2D
-            convolution on
-        :param voronoi_bins: mapping of the voronoi bins, bin indices should start from
-            0, -1 values for pixels not binned
-        :param get_IR_map: if True, will return the pixelized IR maps to use for Voronoi
-            binning in post-processing
-        :return: ordered array of velocity dispersions [km/s] for each unit
+    def _delta_pix_xy(self):
         """
-        # draw from light profile (3d and 2d option)
-        # compute kinematics of it (analytic or numerical)
-        # displace it n-times
-        # add it and keep track of how many draws are added on each segment
-        # compute average in each segment
-        # return value per segment
+        Get the pixel scale of the grid.
 
-        if hasattr(self.numerics, "lum_weight_int_method"):
-            if not self.numerics.lum_weight_int_method:
-                raise ValueError("'lum_weight_int_method' must be True!")
-
-        mass_center_x, mass_center_y = self._extract_center(kwargs_mass)
-
-        x_grid = self._aperture._x_grid
-        y_grid = self._aperture._y_grid
-
+        :return: delta_x, delta_y
+        """
+        x_grid = self._aperture.x_grid
+        y_grid = self._aperture.y_grid
         delta_x = x_grid[0, 1] - x_grid[0, 0]
         delta_y = y_grid[1, 0] - y_grid[0, 0]
+
+        return delta_x, delta_y
+
+    def _get_grid(self, kwargs_mass, supersampling_factor=1):
+        """
+        Compute the grid to compute the dispersion map on.
+
+        :param kwargs_mass: keyword arguments of the mass model
+        :param supersampling_factor: sampling factor for the grid to do the 2D
+            convolution on
+        :return: x_grid, y_grid, log10_radial_distance_from_center
+        """
+        mass_center_x, mass_center_y = self._extract_center(kwargs_mass)
+
+        delta_x, delta_y = self._delta_pix_xy()
         assert np.abs(delta_x) == np.abs(delta_y)
+
+        x_grid = self._aperture.x_grid
+        y_grid = self._aperture.y_grid
 
         new_delta_x = delta_x / supersampling_factor
         new_delta_y = delta_y / supersampling_factor
@@ -221,12 +209,76 @@ class Galkin(GalkinModel, GalkinObservation):
 
         x_grid_supersampled, y_grid_supersmapled = np.meshgrid(xs, ys)
 
-        R_max = np.sqrt((xs - mass_center_x) ** 2 + (ys - mass_center_y) ** 2).max()
+        log10_radial_distance_from_center = np.log10(
+            np.sqrt(
+                (x_grid_supersampled - mass_center_x) ** 2
+                + (y_grid_supersmapled - mass_center_y) ** 2
+            )
+        )
 
+        return x_grid_supersampled, y_grid_supersmapled, log10_radial_distance_from_center
+
+    def _get_convolution_kernel(self, fwhm_factor=3, supersampling_factor=1):
+        """Normalized convolution kernel.
+
+        :param delta_x: pixel scale of kernel
+        :param delta_y: pixel scale of kernel
+        :param fwhm_factor: number of FWHM to compute the kernel on
+        :param supersampling_factor: number of sub-pixels to compute the kernel on
+        """
+        delta_x, delta_y = self._delta_pix_xy()
+        psf_x = np.arange(
+            -fwhm_factor * self._psf.fwhm,
+            fwhm_factor * self._psf.fwhm + np.abs(delta_x) / (supersampling_factor + 1),
+            np.abs(delta_x) / supersampling_factor,
+        )
+        psf_y = np.arange(
+            -fwhm_factor * self._psf.fwhm,
+            fwhm_factor * self._psf.fwhm + np.abs(delta_y) / (supersampling_factor + 1),
+            np.abs(delta_y) / supersampling_factor,
+        )
+
+        psf_x_grid, psf_y_grid = np.meshgrid(psf_x, psf_y)
+
+        return self.convolution_kernel_grid(psf_x_grid, psf_y_grid)
+
+    def dispersion_map_grid_convolved(
+        self,
+        kwargs_mass,
+        kwargs_light,
+        kwargs_anisotropy,
+        supersampling_factor=1,
+        voronoi_bins=None,
+    ):
+        """Computes the velocity dispersion in each Integral Field Unit.
+
+        :param kwargs_mass: keyword arguments of the mass model
+        :param kwargs_light: keyword argument of the light model
+        :param kwargs_anisotropy: anisotropy keyword arguments
+        :param supersampling_factor: sampling factor for the grid to do the 2D
+            convolution on
+        :param voronoi_bins: mapping of the voronoi bins, bin indices should start from
+            0, -1 values for pixels not binned
+        :return: ordered array of velocity dispersions [km/s] for each unit
+        """
+        if hasattr(self.numerics, "lum_weight_int_method"):
+            if not self.numerics.lum_weight_int_method:
+                raise ValueError("'lum_weight_int_method' must be True!")
+
+        x_grid_supersmapled, y_grid_supersmapled, log10_radial_distance_from_center =\
+            self._get_grid(
+            kwargs_mass, supersampling_factor=supersampling_factor
+        )
+
+        x_grid = self._aperture.x_grid
+        y_grid = self._aperture.y_grid
+
+        mass_center_x, mass_center_y = self._extract_center(kwargs_mass)
+        R_max = np.sqrt((x_grid_supersmapled - mass_center_x) ** 2 + (y_grid_supersmapled -
+                                                                      mass_center_y) ** 2).max()
         Rs = np.logspace(
             np.log10(self.numerics.min_integrate), np.log10(R_max + 0.1), 300
         )
-
         sigma2_IRs = np.zeros_like(Rs)
         IRs = np.zeros_like(Rs)
 
@@ -256,28 +308,11 @@ class Galkin(GalkinModel, GalkinObservation):
             assume_sorted=True,
         )
 
-        log10_radial_distance_from_center = np.log10(
-            np.sqrt(
-                (x_grid_supersampled - mass_center_x) ** 2
-                + (y_grid_supersmapled - mass_center_y) ** 2
-            )
-        )
         sigma2_IR_grid = 10 ** log10_sigma2_interp(log10_radial_distance_from_center)
         IR_grid = 10 ** log10_IR_interp(log10_radial_distance_from_center)
 
-        fwhm_factor = 3
-        psf_x = np.arange(
-            -fwhm_factor * self._psf.fwhm,
-            fwhm_factor * self._psf.fwhm + np.abs(delta_x) / (supersampling_factor + 1),
-            np.abs(delta_x) / supersampling_factor,
-        )
-        psf_y = np.arange(
-            -fwhm_factor * self._psf.fwhm,
-            fwhm_factor * self._psf.fwhm + np.abs(delta_y) / (supersampling_factor + 1),
-            np.abs(delta_y) / supersampling_factor,
-        )
-        psf_x_grid, psf_y_grid = np.meshgrid(psf_x, psf_y)
-        convolution_kernel = self.convolution_kernel_grid(psf_x_grid, psf_y_grid)
+        convolution_kernel = self._get_convolution_kernel(
+            fwhm_factor=3, supersampling_factor=supersampling_factor)
 
         sigma2_IR_convolved = convolve2d(
             sigma2_IR_grid, convolution_kernel, mode="same"
@@ -307,7 +342,6 @@ class Galkin(GalkinModel, GalkinObservation):
                 .sum(3)
                 .sum(1)
             )
-
             IR_integrated = (
                 IR_convolved.reshape(
                     len(x_grid), supersampling_factor, len(y_grid), supersampling_factor
@@ -318,11 +352,9 @@ class Galkin(GalkinModel, GalkinObservation):
 
         sigma2_grid = sigma_IR_integrated / IR_integrated
 
-        # apply unit conversion from arc seconds and deflections to physical velocity dispersion in (km/s)
-        if get_IR_map:
-            return np.sqrt(sigma2_grid) / 1000.0, IR_integrated  # in units of km/s
-        else:
-            return np.sqrt(sigma2_grid) / 1000.0  # in units of km/s
+        # apply unit conversion from arc seconds and deflections to physical velocity
+        # dispersion in (km/s)
+        return np.sqrt(sigma2_grid) / 1000.0  # in units of km/s
 
     def _draw_one_sigma2(self, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """

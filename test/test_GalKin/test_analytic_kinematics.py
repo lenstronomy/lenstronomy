@@ -62,12 +62,12 @@ class TestAnalyticKinematics(object):
 
     def test_draw_light(self):
         kin = AnalyticKinematics
-        assert kin._get_a({"a": 1}) == 1
-        assert kin._get_a({"Rs": 2}) == 2
-        assert kin._get_a({"r_eff": 4}) == 4 * 0.551
+        assert kin._get_hernquist_scale_radius({"a": 1}) == 1
+        assert kin._get_hernquist_scale_radius({"Rs": 2}) == 2
+        assert kin._get_hernquist_scale_radius({"r_eff": 4}) == 4 * 0.551
 
         with pytest.raises(ValueError):
-            kin._get_a({"not_Rs": 1})
+            kin._get_hernquist_scale_radius({"not_Rs": 1})
 
     def test_I_R_sigma2_and_IR(self):
         kwargs_aperture = {

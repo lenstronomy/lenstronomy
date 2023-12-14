@@ -602,7 +602,7 @@ class TestKinematicsAPI(object):
 
         kwargs_anisotropy = {"beta": beta}
 
-        vel_dis, IR_map = kinematics_api.velocity_dispersion_map(
+        vel_dis = kinematics_api.velocity_dispersion_map(
             kwargs_lens,
             kwargs_lens_light,
             kwargs_anisotropy,
@@ -613,7 +613,6 @@ class TestKinematicsAPI(object):
             direct_convolve=True,
             supersampling_factor=5,
             voronoi_bins=None,
-            get_IR_map=True,
         )
 
         jampy_vel_dis = np.array(

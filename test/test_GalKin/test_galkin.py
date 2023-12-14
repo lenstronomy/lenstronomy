@@ -69,6 +69,29 @@ class TestGalkin(object):
     def setup_method(self):
         np.random.seed(42)
 
+        kwargs_model = {
+            "mass_profile_list": ["SIS"],
+            "light_profile_list": ["HERNQUIST"],
+            "anisotropy_model": "OM",
+        }
+        x_grid, y_grid = np.meshgrid(np.linspace(-1, 1, 2), np.linspace(-1, 1, 2))
+
+        kwargs_aperture = {
+            "x_grid": x_grid,
+            "y_grid": y_grid,
+            "aperture_type": "IFU_grid",
+        }
+        kwargs_cosmo = {"d_d": 1000, "d_s": 1500, "d_ds": 800}
+        kwargs_psf = {"psf_type": "GAUSSIAN", "fwhm": 1}
+        self.galkin_ifu_grid = Galkin(
+            kwargs_model,
+            kwargs_aperture,
+            kwargs_psf,
+            kwargs_cosmo,
+            kwargs_numerics={"lum_weight_int_method": True},
+            analytic_kinematics=False,
+        )
+
     def test_compare_power_law(self):
         """Compare power-law profiles analytical vs.
 
@@ -149,11 +172,6 @@ class TestGalkin(object):
             kwargs_profile, kwargs_light, kwargs_anisotropy, sampling_number=1000
         )
 
-        print(
-            sigma_v_analytic,
-            sigma_v_num_3d,
-            "sigma_v Galkin 3d numerics, sigma_v analytic",
-        )
         npt.assert_almost_equal(sigma_v_num_3d / sigma_v_analytic, 1, decimal=2)
 
         # 2d projected integral calculation
@@ -193,12 +211,6 @@ class TestGalkin(object):
         )
         sigma_v_num_lin_proj = galkin_num_lin_proj.dispersion(
             kwargs_profile, kwargs_light, kwargs_anisotropy, sampling_number=1000
-        )
-
-        print(
-            sigma_v_num_log_proj / sigma_v_analytic,
-            sigma_v_num_lin_proj / sigma_v_analytic,
-            "log proj, lin proj",
         )
 
         npt.assert_almost_equal(sigma_v_num_log_proj / sigma_v_analytic, 1, decimal=2)
@@ -287,8 +299,6 @@ class TestGalkin(object):
         sigma_v_log = galkin_log.dispersion(
             kwargs_profile, kwargs_light, kwargs_anisotropy, sampling_number=1000
         )
-        print(sigma_v_lin, sigma_v_log, "sigma_v linear, sigma_v log")
-        print((sigma_v_lin / sigma_v_log) ** 2)
 
         npt.assert_almost_equal(sigma_v_lin / sigma_v_log, 1, decimal=2)
 
@@ -351,7 +361,7 @@ class TestGalkin(object):
             0,
             100,
         )
-        print(out, "out")
+
         npt.assert_almost_equal(light2d / (out[0] * 2), 1.0, decimal=3)
 
     def test_realistic_0(self):
@@ -373,7 +383,7 @@ class TestGalkin(object):
             0,
             100,
         )
-        print(out, "out")
+
         npt.assert_almost_equal(light2d / (out[0] * 2), 1.0, decimal=3)
 
     def test_realistic_1(self):
@@ -399,7 +409,7 @@ class TestGalkin(object):
             0,
             100,
         )
-        print(out, "out")
+
         npt.assert_almost_equal(light2d / (out[0] * 2), 1.0, decimal=3)
 
     def test_realistic(self):
@@ -429,15 +439,15 @@ class TestGalkin(object):
                 "amp": 967.00280526319796,
             },
         ]
-        lightProfile = LightProfile(light_profile_list)
+        light_profile = LightProfile(light_profile_list)
         R = 0.01
-        light2d = lightProfile.light_2d(R=R, kwargs_list=kwargs_light)
+        light2d = light_profile.light_2d(R=R, kwargs_list=kwargs_light)
         out = integrate.quad(
-            lambda x: lightProfile.light_3d(np.sqrt(R**2 + x**2), kwargs_light),
+            lambda x: light_profile.light_3d(np.sqrt(R**2 + x**2), kwargs_light),
             0,
             100,
         )
-        print(out, "out")
+
         npt.assert_almost_equal(light2d / (out[0] * 2), 1.0, decimal=3)
 
     def test_dispersion_map(self):
@@ -615,7 +625,6 @@ class TestGalkin(object):
             for j in range(9, 12):
                 kwargs_aperture["center_ra"] = x_grid[i, j]
                 kwargs_aperture["center_dec"] = y_grid[i, j]
-                print(kwargs_aperture)
                 galkin = Galkin(
                     kwargs_model,
                     kwargs_aperture,
@@ -671,7 +680,10 @@ class TestGalkin(object):
 
         npt.assert_almost_equal(sigma_v, sigma_v_ifu[0], decimal=-1)
 
-    def test_get_center(self):
+    def test_extract_center(self):
+        """
+        Test the extraction of the center of the IFU map.
+        """
         assert Galkin._extract_center([{"center_x": 1, "center_y": 2}]) == (1, 2)
         assert Galkin._extract_center([{}]) == (0, 0)
         assert Galkin._extract_center({"center_x": 1, "center_y": 2}) == (1, 2)
@@ -837,14 +849,11 @@ class TestGalkin(object):
                 kwargs_mass, kwargs_light, kwargs_anisotropy
             )
             sigma_draw_list.append(sigma_v_draw)
-            # print(np.sqrt(sigma_v_draw)/ 1000)
 
         # import matplotlib.pyplot as plt
         # plt.plot(np.sqrt(sigma_draw_list) / 1000 / v_sigma_true)
         # plt.show()
 
-        print(np.sqrt(np.mean(sigma_draw_list)) / 1000, "mean draw")
-        print("truth = ", v_sigma_true)
         # assert 1 == 0
 
         sigma_v_2d = galkin2d.dispersion(
@@ -855,6 +864,44 @@ class TestGalkin(object):
         )
         npt.assert_almost_equal(sigma_v_2d / v_sigma_true, 1, decimal=2)
         npt.assert_almost_equal(sigma_v_3d / v_sigma_true, 1, decimal=2)
+
+    def test_get_psf_kernel(self):
+        """
+        test the PSF kernel.
+        """
+        factor = 3
+        s_mult = 5
+        psf = self.galkin_ifu_grid._get_convolution_kernel(supersampling_factor=factor)
+        psf_s = self.galkin_ifu_grid._get_convolution_kernel(
+            supersampling_factor=factor*factor)
+
+        assert (psf.shape[0] - 1) * s_mult == psf_s.shape[0] - 1
+
+    def test_get_grid(self):
+        """
+
+        """
+        kwargs_mass = [{"theta_E": 1.2, "gamma": 2}]
+
+        x_grid, y_grid, log10_radial_distance_from_center = self.galkin_ifu_grid._get_grid(kwargs_mass,
+                                                        supersampling_factor=1)
+
+        assert x_grid.shape == (2, 2)
+        assert y_grid.shape == (2, 2)
+
+        x_grid, y_grid, log10_radial_distance_from_center = self.galkin_ifu_grid._get_grid(kwargs_mass,
+                                                        supersampling_factor=3)
+
+        assert x_grid.shape == (6, 6)
+        assert y_grid.shape == (6, 6)
+
+    def test_delta_pix_xy(self):
+        """
+
+        """
+        delta_x, delta_y = self.galkin_ifu_grid._delta_pix_xy()
+        assert delta_x == 2
+        assert delta_y == 2
 
 
 if __name__ == "__main__":

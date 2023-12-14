@@ -201,6 +201,7 @@ def make_grid(numPix, deltapix, subgrid_res=1, left_lower=False):
 
     # Check numPix is an integer, or 2-sequence of integers
     if isinstance(numPix, (tuple, list, np.ndarray)):
+        print(numPix)
         assert len(numPix) == 2
         if any(x != round(x) for x in numPix):
             raise ValueError("numPix contains non-integers: %s" % numPix)

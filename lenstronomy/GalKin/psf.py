@@ -1,6 +1,6 @@
 from lenstronomy.GalKin import velocity_util
 from lenstronomy.Util import kernel_util
-
+import lenstronomy.Util.util as util
 
 from lenstronomy.Util.package_util import exporter
 
@@ -45,6 +45,14 @@ class PSF(object):
         """
         return self._psf.convolution_kernel(delta_pix, num_pix)
 
+    def convolution_kernel_grid(self, x, y):
+        """
+        :param x: x-coordinate of light ray
+        :param y: y-coordinate of light ray
+        :return: psf value at x and y grid positions
+        """
+        return self._psf.convolution_kernel_grid(x, y)
+
 
 @export
 class PSFGaussian(object):
@@ -77,14 +85,14 @@ class PSFGaussian(object):
         kernel = kernel_util.kernel_gaussian(num_pix, delta_pix, self._fwhm)
         return kernel
 
-    def get_psf_kernel(self, x, y):
+    def convolution_kernel_grid(self, x, y):
         """
         :param x: x-coordinate of light ray
         :param y: y-coordinate of light ray
         :return: psf value at x and y grid positions
         """
-        sigma = self._fwhm / 2 / np.sqrt(2 * np.log(2))
-        return np.exp(-(x**2 + y**2) / 2 / sigma**2) / (2 * np.pi * sigma**2)
+        sigma = util.fwhm2sigma(self._fwhm)
+        return kernel_util.kernel_gaussian_grid(x, y, sigma)
 
     @property
     def fwhm(self):
@@ -132,3 +140,11 @@ class PSFMoffat(object):
             moffat_beta=self._moffat_beta,
         )
         return kernel
+
+    def convolution_kernel_grid(self, x, y):
+        """
+        :param x: x-coordinate of light ray
+        :param y: y-coordinate of light ray
+        :return: psf value at x and y grid positions
+        """
+        return kernel_util.kernel_moffat_grid(x, y, self._fwhm, self._moffat_beta)

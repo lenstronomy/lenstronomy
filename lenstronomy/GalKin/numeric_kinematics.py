@@ -16,9 +16,9 @@ class NumericKinematics(Anisotropy):
         self,
         kwargs_model,
         kwargs_cosmo,
-        interpol_grid_num=1000,
+        interpol_grid_num=200,
         log_integration=True,
-        max_integrate=1000,
+        max_integrate=100,
         min_integrate=0.0001,
         max_light_draw=None,
         lum_weight_int_method=True,
@@ -30,9 +30,9 @@ class NumericKinematics(Anisotropy):
 
         :param interpol_grid_num: number of interpolation bins for integrand and interpolated functions
         :param log_integration: bool, if True, performs the numerical integral in log space distance (adviced)
-         (only applies for lum_weight_int_method=True)
+            (only applies for lum_weight_int_method=True). If set to False, may lead to less accurate results
         :param max_integrate: maximum radius (in arc seconds) of the Jeans equation integral
-         (assumes zero tracer particles outside this radius)
+            (assumes zero tracer particles outside this radius)
         :param max_light_draw: float; (optional) if set, draws up to this radius, else uses max_interpolate value
         :param lum_weight_int_method: bool, luminosity weighted dispersion integral to calculate LOS projected Jean's
          solution. ATTENTION: currently less accurate than 3d solution

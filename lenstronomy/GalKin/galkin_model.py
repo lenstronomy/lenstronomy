@@ -56,20 +56,14 @@ class GalkinModel(object):
         :param analytic_kinematics: bool, if True uses the analytic kinematic model
         """
         if kwargs_numerics is None:
-            if analytic_kinematics:
-                kwargs_numerics = {
-                    "interpol_grid_num": 2000,  # numerical interpolation, should converge -> infinity
-                    "log_integration": True,  # log or linear interpolation of surface brightness and mass models
-                    "max_integrate": 100, # upper bound of numerical integrals
-                    "min_integrate": 1e-4, # lower bound of numerical integrals
-                }
-            else:
-                kwargs_numerics = {
-                    "interpol_grid_num": 1000,  # numerical interpolation, should converge -> infinity
-                    "log_integration": True,  # log or linear interpolation of surface brightness and mass models
-                    "max_integrate": 100, # upper bound of numerical integrals
-                    "min_integrate": 1e-4, # lower bound of numerical integrals
-                }
+            kwargs_numerics = {
+                "interpol_grid_num": 200,  # numerical interpolation, should converge -> infinity
+                "log_integration": True,  # log or linear interpolation of surface brightness and mass models
+                # setting False may lead to less accurate results
+                "max_integrate": 100, # upper bound of numerical integrals
+                "min_integrate": 1e-4, # lower bound of numerical integrals
+            }
+
         if analytic_kinematics is True:
             anisotropy_model = kwargs_model.get("anisotropy_model")
             if not anisotropy_model == "OM":

@@ -35,7 +35,7 @@ class AnalyticKinematics(Anisotropy):
     def __init__(
         self,
         kwargs_cosmo,
-        interpol_grid_num=2000,
+        interpol_grid_num=200,
         log_integration=True,
         max_integrate=100,
         min_integrate=1e-4,
@@ -44,7 +44,8 @@ class AnalyticKinematics(Anisotropy):
 
         :param kwargs_cosmo: keyword argument with angular diameter distances entering the Galkin.cosmo class
         :param interpol_grid_num: number of interpolations in radius to compute radial velocity dispersion
-        :param log_integration: perform numerical integration in logarithmic space
+        :param log_integration: perform numerical integration in logarithmic space,
+            setting False may lead to less accurate results
         :param max_integrate: maximum radius of integration (in projected arc seconds)
         :param min_integrate: minimum drawing/calculation of velocity dispersion (in projected arc seconds)
         """

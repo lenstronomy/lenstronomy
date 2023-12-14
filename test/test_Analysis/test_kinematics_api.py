@@ -1352,7 +1352,7 @@ class TestRaise(unittest.TestCase):
 
             kwargs_anisotropy = {"r_ani": a_ani * r_eff}
 
-            vel_dis, ir = kinematics_api.velocity_dispersion_map(
+            vel_dis = kinematics_api.velocity_dispersion_map(
                 kwargs_mass,
                 kwargs_light,
                 kwargs_anisotropy,
@@ -1363,13 +1363,12 @@ class TestRaise(unittest.TestCase):
                 direct_convolve=True,
                 supersampling_factor=5,
                 voronoi_bins=None,
-                get_IR_map=True,
             )
 
-            return vel_dis, ir
+            return vel_dis
 
-        analytic_sigma, analytic_ir = get_v_rms(theta_e, gamma, r_eff, analytic=True)
-        numeric_sigma, numeric_ir = get_v_rms(theta_e, gamma, r_eff, analytic=False)
+        analytic_sigma = get_v_rms(theta_e, gamma, r_eff, analytic=True)
+        numeric_sigma = get_v_rms(theta_e, gamma, r_eff, analytic=False)
 
         # check if values match within 1%
         npt.assert_array_less(

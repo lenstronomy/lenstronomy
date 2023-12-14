@@ -189,7 +189,6 @@ class KinematicsAPI(object):
         direct_convolve=False,
         supersampling_factor=1,
         voronoi_bins=None,
-        get_IR_map=False,
     ):
         """API for both, analytic and numerical JAM to compute the velocity dispersion
         map with IFU data [km/s]
@@ -208,8 +207,6 @@ class KinematicsAPI(object):
         :param supersampling_factor: supersampling factor for 2D integration grid
         :param voronoi_bins: mapping of the voronoi bins, -1 values for  pixels not
             binned
-        :param get_IR_map: if True, will return the pixelized IR maps to use for Voronoi
-            binning in post-processing
         :return: velocity dispersion map in specified bins or grid in `kwargs_aperture`,
             in [km/s] unit
         """
@@ -229,18 +226,9 @@ class KinematicsAPI(object):
                 kwargs_anisotropy,
                 supersampling_factor=supersampling_factor,
                 voronoi_bins=voronoi_bins,
-                get_IR_map=get_IR_map
-                # num_kin_sampling=self._num_kin_sampling,
-                # num_psf_sampling=self._num_psf_sampling
             )
 
-            if get_IR_map:
-                sigma_v_map = (
-                    self.transform_kappa_ext(sigma_v_map[0], kappa_ext=kappa_ext),
-                    sigma_v_map[1],
-                )
-            else:
-                sigma_v_map = self.transform_kappa_ext(sigma_v_map, kappa_ext=kappa_ext)
+            sigma_v_map = self.transform_kappa_ext(sigma_v_map, kappa_ext=kappa_ext)
 
             return sigma_v_map
         else:

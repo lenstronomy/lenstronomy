@@ -74,7 +74,10 @@ class TestGalkin(object):
             "light_profile_list": ["HERNQUIST"],
             "anisotropy_model": "OM",
         }
-        x_grid, y_grid = np.meshgrid(np.linspace(-1, 1, 2), np.linspace(-1, 1, 2))
+        x_grid, y_grid = np.meshgrid(
+            np.arange(-.45, .5, 0.1),
+            np.arange(-.45, .5, 0.1),
+        )
 
         kwargs_aperture = {
             "x_grid": x_grid,
@@ -865,17 +868,12 @@ class TestGalkin(object):
         npt.assert_almost_equal(sigma_v_2d / v_sigma_true, 1, decimal=2)
         npt.assert_almost_equal(sigma_v_3d / v_sigma_true, 1, decimal=2)
 
-    def test_get_psf_kernel(self):
+    def test_get_convolution_kernel(self):
         """
         test the PSF kernel.
         """
-        factor = 3
-        s_mult = 5
-        psf = self.galkin_ifu_grid._get_convolution_kernel(supersampling_factor=factor)
-        psf_s = self.galkin_ifu_grid._get_convolution_kernel(
-            supersampling_factor=factor*factor)
-
-        assert (psf.shape[0] - 1) * s_mult == psf_s.shape[0] - 1
+        psf = self.galkin_ifu_grid._get_convolution_kernel(supersampling_factor=1)
+        assert psf.shape == (61, 61)
 
     def test_get_grid(self):
         """
@@ -886,22 +884,22 @@ class TestGalkin(object):
         x_grid, y_grid, log10_radial_distance_from_center = self.galkin_ifu_grid._get_grid(kwargs_mass,
                                                         supersampling_factor=1)
 
-        assert x_grid.shape == (2, 2)
-        assert y_grid.shape == (2, 2)
+        assert x_grid.shape == (10, 10)
+        assert y_grid.shape == (10, 10)
 
         x_grid, y_grid, log10_radial_distance_from_center = self.galkin_ifu_grid._get_grid(kwargs_mass,
                                                         supersampling_factor=3)
 
-        assert x_grid.shape == (6, 6)
-        assert y_grid.shape == (6, 6)
+        assert x_grid.shape == (30, 30)
+        assert y_grid.shape == (30, 30)
 
     def test_delta_pix_xy(self):
         """
 
         """
         delta_x, delta_y = self.galkin_ifu_grid._delta_pix_xy()
-        assert delta_x == 2
-        assert delta_y == 2
+        npt.assert_almost_equal(delta_x, .1, decimal=5)
+        npt.assert_almost_equal(delta_y, .1, decimal=5)
 
 
 if __name__ == "__main__":

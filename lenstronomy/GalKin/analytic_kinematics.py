@@ -97,8 +97,7 @@ class AnalyticKinematics(Anisotropy):
 
     @staticmethod
     def _get_hernquist_scale_radius(kwargs_light):
-        """
-        Returns the scale of the Hernquist light profile.
+        """Returns the scale of the Hernquist light profile.
 
         :param kwargs_light: keyword arguments of the light profile
         """
@@ -108,9 +107,7 @@ class AnalyticKinematics(Anisotropy):
             elif "r_eff" in kwargs_light:
                 a = 0.551 * kwargs_light["r_eff"]
             else:
-                raise ValueError(
-                    "Hernquist half-light radius can not be determined!"
-                )
+                raise ValueError("Hernquist half-light radius can not be determined!")
         else:
             a = kwargs_light["a"]
 
@@ -118,11 +115,11 @@ class AnalyticKinematics(Anisotropy):
 
     @classmethod
     def draw_light(cls, kwargs_light):
-        """
-        Draws a random light tracer particle from the Hernquist light profile.
+        """Draws a random light tracer particle from the Hernquist light profile.
 
         :param kwargs_light: keyword argument (list) of the light model
-        :return: 3d radius (if possible), 2d projected radius, x-projected coordinate, y-projected coordinate
+        :return: 3d radius (if possible), 2d projected radius, x-projected coordinate,
+            y-projected coordinate
         """
         a = cls._get_hernquist_scale_radius(kwargs_light)
 

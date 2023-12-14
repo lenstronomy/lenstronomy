@@ -168,8 +168,7 @@ class Galkin(GalkinModel, GalkinObservation):
                 return 0, 0
 
     def _delta_pix_xy(self):
-        """
-        Get the pixel scale of the grid.
+        """Get the pixel scale of the grid.
 
         :return: delta_x, delta_y
         """
@@ -181,8 +180,7 @@ class Galkin(GalkinModel, GalkinObservation):
         return delta_x, delta_y
 
     def _get_grid(self, kwargs_mass, supersampling_factor=1):
-        """
-        Compute the grid to compute the dispersion map on.
+        """Compute the grid to compute the dispersion map on.
 
         :param kwargs_mass: keyword arguments of the mass model
         :param supersampling_factor: sampling factor for the grid to do the 2D
@@ -216,7 +214,11 @@ class Galkin(GalkinModel, GalkinObservation):
             )
         )
 
-        return x_grid_supersampled, y_grid_supersmapled, log10_radial_distance_from_center
+        return (
+            x_grid_supersampled,
+            y_grid_supersmapled,
+            log10_radial_distance_from_center,
+        )
 
     def _get_convolution_kernel(self, fwhm_factor=3, supersampling_factor=1):
         """Normalized convolution kernel.
@@ -265,17 +267,20 @@ class Galkin(GalkinModel, GalkinObservation):
             if not self.numerics.lum_weight_int_method:
                 raise ValueError("'lum_weight_int_method' must be True!")
 
-        x_grid_supersmapled, y_grid_supersmapled, log10_radial_distance_from_center =\
-            self._get_grid(
-            kwargs_mass, supersampling_factor=supersampling_factor
-        )
+        (
+            x_grid_supersmapled,
+            y_grid_supersmapled,
+            log10_radial_distance_from_center,
+        ) = self._get_grid(kwargs_mass, supersampling_factor=supersampling_factor)
 
         x_grid = self._aperture.x_grid
         y_grid = self._aperture.y_grid
 
         mass_center_x, mass_center_y = self._extract_center(kwargs_mass)
-        R_max = np.sqrt((x_grid_supersmapled - mass_center_x) ** 2 + (y_grid_supersmapled -
-                                                                      mass_center_y) ** 2).max()
+        R_max = np.sqrt(
+            (x_grid_supersmapled - mass_center_x) ** 2
+            + (y_grid_supersmapled - mass_center_y) ** 2
+        ).max()
         Rs = np.logspace(
             np.log10(self.numerics.min_integrate), np.log10(R_max + 0.1), 300
         )
@@ -312,7 +317,8 @@ class Galkin(GalkinModel, GalkinObservation):
         IR_grid = 10 ** log10_IR_interp(log10_radial_distance_from_center)
 
         convolution_kernel = self._get_convolution_kernel(
-            fwhm_factor=3, supersampling_factor=supersampling_factor)
+            fwhm_factor=3, supersampling_factor=supersampling_factor
+        )
 
         sigma2_IR_convolved = convolve2d(
             sigma2_IR_grid, convolution_kernel, mode="same"

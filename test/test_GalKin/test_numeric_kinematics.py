@@ -71,6 +71,10 @@ class TestMassProfile(object):
         }
         analytic_kin = AnalyticKinematics(kwargs_cosmo, **kwargs_numerics)
         numeric_kin = NumericKinematics(kwargs_model, kwargs_cosmo, **kwargs_numerics)
+
+        assert numeric_kin.max_integrate == 4000
+        assert numeric_kin.min_integrate == 0.001
+
         rho0_r0_gamma = analytic_kin._rho0_r0_gamma(theta_E, gamma)
         r_array = np.logspace(-2.9, 2.9, 100)
         sigma_r_analytic_array = []
@@ -93,7 +97,6 @@ class TestMassProfile(object):
             1,
             decimal=-2,
         )
-        print(np.array(sigma_r_num_array) / np.array(sigma_r_analytic_array))
 
     def test_lum_weighted_vel_disp(self):
         """Test luminosity weighted velocity dispersion."""

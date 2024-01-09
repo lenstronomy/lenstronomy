@@ -109,7 +109,7 @@ class ModelAPI(object):
                 fixed_magnification[i] = True
         self._point_source_model_class = PointSource(
             point_source_type_list=point_source_model_list,
-            lensModel=self._lens_model_class,
+            lens_model=self._lens_model_class,
             fixed_magnification_list=fixed_magnification,
         )
         self._cosmo = cosmo
@@ -155,7 +155,7 @@ class ModelAPI(object):
         :param kwargs_mass: list of keyword arguments of all the lens models. Einstein radius 'theta_E' are replaced by
          'sigma_v', velocity dispersion in km/s, 'alpha_Rs' and 'Rs' of NFW profiles are replaced by 'M200' and
          'concentration'
-        :return: kwargs_lens in reduced deflection angles compatible with the lensModel instance of this module
+        :return: kwargs_lens in reduced deflection angles compatible with the `LensModel` instance of this module
         """
         kwargs_lens = copy.deepcopy(kwargs_mass)
         for i in range(len(kwargs_mass)):

@@ -30,6 +30,7 @@ class LensModel(object):
         num_z_interp=100,
         kwargs_interp=None,
         kwargs_synthesis=None,
+        distance_ratio_sampling=False,
     ):
         """
 
@@ -56,7 +57,9 @@ class LensModel(object):
         :param z_interp_stop: (only in multi-plane with cosmo_interp=True); maximum redshift for distance interpolation
          This number should be higher or equal the maximum of the source redshift and/or the z_source_convention
         :param num_z_interp: (only in multi-plane with cosmo_interp=True); number of redshift bins for interpolating
-         distances
+        distances
+        :param distance_ratio_sampling: bool, if True, will use sampled
+        distance ratios to update T_ij value in multi-lens plane computation.
         """
         self.lens_model_list = lens_model_list
         self.z_lens = z_lens
@@ -90,6 +93,10 @@ class LensModel(object):
         # Multi-plane or single-plane lensing?
         self.multi_plane = multi_plane
         if multi_plane is True:
+            if lens_redshift_list is None:
+                raise ValueError(
+                    "In multi-plane lensing, you need to specify the redshifts of the lensing planes."
+                )
             if z_source is None:
                 raise ValueError(
                     "z_source needs to be set for multi-plane lens modelling."
@@ -111,6 +118,7 @@ class LensModel(object):
                 num_z_interp=num_z_interp,
                 kwargs_interp=kwargs_interp,
                 kwargs_synthesis=kwargs_synthesis,
+                distance_ratio_sampling=distance_ratio_sampling,
             )
         else:
             if los_effects is True:

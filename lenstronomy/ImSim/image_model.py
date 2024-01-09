@@ -61,7 +61,7 @@ class ImageModel(object):
         if point_source_class is None:
             point_source_class = PointSource(point_source_type_list=[])
         self.PointSource = point_source_class
-        if self.PointSource._lensModel is None:
+        if self.PointSource._lens_model is None:
             self.PointSource.update_lens_model(lens_model_class=lens_model_class)
         x_center, y_center = self.Data.center
         self.PointSource.update_search_window(
@@ -111,7 +111,7 @@ class ImageModel(object):
             self.source_mapping = None  # handled with pixelated operator
         else:
             self.source_mapping = Image2SourceMapping(
-                lensModel=lens_model_class, sourceModel=source_model_class
+                lens_model=lens_model_class, source_model=source_model_class
             )
 
         self._pb = data_class.primary_beam
@@ -252,6 +252,41 @@ class ImageModel(object):
         :param k: integer, if set, will only return the model of the specific index
         :return: 2d array of surface brightness pixels
         """
+        source_light = self._source_surface_brightness_analytical_numerics(
+            kwargs_source,
+            kwargs_lens,
+            kwargs_extinction,
+            kwargs_special=kwargs_special,
+            de_lensed=de_lensed,
+            k=k,
+        )
+
+        source_light_final = self.ImageNumerics.re_size_convolve(
+            source_light, unconvolved=unconvolved
+        )
+        return source_light_final
+
+    def _source_surface_brightness_analytical_numerics(
+        self,
+        kwargs_source,
+        kwargs_lens=None,
+        kwargs_extinction=None,
+        kwargs_special=None,
+        de_lensed=False,
+        k=None,
+    ):
+        """Computes the source surface brightness distribution.
+
+        :param kwargs_source: list of keyword arguments corresponding to the
+            superposition of different source light profiles
+        :param kwargs_lens: list of keyword arguments corresponding to the superposition
+            of different lens profiles
+        :param kwargs_extinction: list of keyword arguments of extinction model
+        :param de_lensed: if True: returns the un-lensed source surface brightness
+            profile, otherwise the lensed.
+        :param k: integer, if set, will only return the model of the specific index
+        :return: 2d array of surface brightness pixels
+        """
         ra_grid, dec_grid = self.ImageNumerics.coordinates_evaluate
         if de_lensed is True:
             source_light = self.SourceModel.surface_brightness(
@@ -259,7 +294,12 @@ class ImageModel(object):
             )
         else:
             source_light = self.source_mapping.image_flux_joint(
-                ra_grid, dec_grid, kwargs_lens, kwargs_source, k=k
+                ra_grid,
+                dec_grid,
+                kwargs_lens,
+                kwargs_source,
+                kwargs_special=kwargs_special,
+                k=k,
             )
             source_light *= self._extinction.extinction(
                 ra_grid,
@@ -271,11 +311,7 @@ class ImageModel(object):
         # multiply with primary beam before convolution
         if self._pb is not None:
             source_light *= self._pb_1d
-
-        source_light_final = self.ImageNumerics.re_size_convolve(
-            source_light, unconvolved=unconvolved
-        )
-        return source_light_final * self._flux_scaling
+        return source_light * self._flux_scaling
 
     def _source_surface_brightness_pixelbased(
         self,

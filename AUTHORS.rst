@@ -34,6 +34,7 @@ Contributors (alphabetic)
 * Johannes U. Lange `johannesulf <https://github.com/johannesulf>`_
 * Zhiyuan Ma `Jerry-Ma <https://github.com/Jerry-Ma/>`_
 * Felix Mayor
+* Benjamin Metha `benmetha <https://github.com/benmetha/>`_
 * Martin Millon `martin-millon <https://github.com/martin-millon/>`_
 * Robert Morgan `rmorgan10 <https://github.com/rmorgan10/>`_
 * Anna Nierenberg `amn3142 <https://github.com/amn3142/>`_
@@ -44,6 +45,7 @@ Contributors (alphabetic)
 * Ji Won Park `jiwoncpark <https://github.com/jiwoncpark/>`_
 * Thomas Schmidt `Thomas-01 <https://github.com/Thomas-01/>`_
 * Dominique Sluse
+* Xiangzhe Tang `trivialTZ <https://github.com/trivialTZ/>`_
 * Luca Teodori `lucateo <https://github.com/lucateo/>`_
 * Nicolas Tessore `ntessore <https://github.com/ntessore/>`_
 * Madison Ueland `mueland <https://github.com/mueland/>`_

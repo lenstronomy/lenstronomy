@@ -5,6 +5,7 @@ from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.ImSim.differential_extinction import DifferentialExtinction
 from lenstronomy.ImSim.image_linear_solve import ImageLinearFit
+from lenstronomy.ImSim.tracer_model import TracerModelSource
 
 from lenstronomy.Util.package_util import exporter
 
@@ -20,6 +21,7 @@ def create_class_instances(
     lens_redshift_list=None,
     kwargs_interp=None,
     multi_plane=False,
+    distance_ratio_sampling=False,
     observed_convention_index=None,
     source_light_model_list=None,
     lens_light_model_list=None,
@@ -45,6 +47,9 @@ def create_class_instances(
     surface_brightness_smoothing=0.001,
     sersic_major_axis=None,
     tabulated_deflection_angles=None,
+    tracer_source_model_list=None,
+    tracer_source_band=0,
+    tracer_partition=None,
 ):
     """
 
@@ -54,7 +59,8 @@ def create_class_instances(
     :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens models.
      If None, 'z_source' is used.
     :param lens_redshift_list:
-    :param multi_plane:
+    :param multi_plane: bool, if True, computes the lensing quantities in multi-plane mode
+    :param distance_ratio_sampling: bool, if True, samples the distance ratios in multi-lens-plane
     :param kwargs_interp: interpolation keyword arguments specifying the numerics.
      See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
     :param observed_convention_index:
@@ -78,7 +84,7 @@ def create_class_instances(
     :param cosmo: astropy.cosmology instance
     :param index_lens_model_list:
     :param index_source_light_model_list:
-    :param index_lens_light_model_list:
+    :param index_lens_light_model_list: optional, list of list of all model indexes for each modeled band
     :param index_point_source_model_list:
     :param optical_depth_model_list: list of strings indicating the optical depth model to compute (differential) extinctions from the source
     :param index_optical_depth_model_list:
@@ -93,6 +99,11 @@ def create_class_instances(
      convention in the lenstronomy yaml setting (which by default is =False)
     :param tabulated_deflection_angles: a user-specified class with a call method that returns deflection angles given
      (x, y) coordinates on the sky. This class gets passed to the lens model class TabulatedDeflections
+    :param tracer_source_model_list: list of tracer source models (not used in this function)
+    :param tracer_source_band: integer, list index of source surface brightness band to apply tracer model to
+    :param tracer_partition: in case of tracer models for specific sub-parts of the surface brightness model
+     [[list of light profiles, list of tracer profiles], [list of light profiles, list of tracer profiles], [...], ...]
+    :type tracer_partition: None or list
     :return: lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class
     """
     if lens_model_list is None:
@@ -127,6 +138,7 @@ def create_class_instances(
                 counter += 1
         else:
             observed_convention_index_i = observed_convention_index
+
     lens_model_class = LensModel(
         lens_model_list=lens_model_list_i,
         z_lens=z_lens,
@@ -135,6 +147,7 @@ def create_class_instances(
         lens_redshift_list=lens_redshift_list_i,
         multi_plane=multi_plane,
         cosmo=cosmo,
+        distance_ratio_sampling=distance_ratio_sampling,
         observed_convention_index=observed_convention_index_i,
         kwargs_interp=kwargs_interp,
         numerical_alpha_class=tabulated_deflection_angles,
@@ -148,6 +161,7 @@ def create_class_instances(
         lens_redshift_list=lens_redshift_list,
         multi_plane=multi_plane,
         cosmo=cosmo,
+        distance_ratio_sampling=distance_ratio_sampling,
         observed_convention_index=observed_convention_index,
         kwargs_interp=kwargs_interp,
         numerical_alpha_class=tabulated_deflection_angles,
@@ -223,7 +237,7 @@ def create_class_instances(
             ]
     point_source_class = PointSource(
         point_source_type_list=point_source_model_list_i,
-        lensModel=lens_model_class_all,
+        lens_model=lens_model_class_all,
         fixed_magnification_list=fixed_magnification_list_i,
         flux_from_point_source_list=flux_from_point_source_list,
         additional_images_list=additional_images_list_i,
@@ -365,3 +379,45 @@ def create_im_sim(
     else:
         raise ValueError("type %s is not supported!" % multi_band_type)
     return multiband
+
+
+def create_tracer_model(tracer_data, kwargs_model, tracer_likelihood_mask=None):
+    """
+
+    :param tracer_data:
+    :param kwargs_model:
+    :param tracer_likelihood_mask_list:
+
+    :return:
+    """
+    tracer_source_band = kwargs_model.get("tracer_source_band", 0)
+    tracer_source_class = LightModel(
+        light_model_list=kwargs_model.get("tracer_source_model_list", [])
+    )
+    tracer_partition = kwargs_model.get("tracer_partition", None)
+    kwargs_data, kwargs_psf, kwargs_numerics = tracer_data
+    (
+        lens_model_class,
+        source_model_class,
+        lens_light_model_class,
+        point_source_class,
+        extinction_class,
+    ) = create_class_instances(band_index=tracer_source_band, **kwargs_model)
+    data_class = ImageData(**kwargs_data)
+    psf_class = PSF(**kwargs_psf)
+    tracer_model = TracerModelSource(
+        data_class,
+        psf_class=psf_class,
+        lens_model_class=lens_model_class,
+        source_model_class=source_model_class,
+        lens_light_model_class=lens_light_model_class,
+        point_source_class=point_source_class,
+        extinction_class=extinction_class,
+        tracer_source_class=tracer_source_class,
+        kwargs_numerics=kwargs_numerics,
+        likelihood_mask=tracer_likelihood_mask,
+        psf_error_map_bool_list=None,
+        kwargs_pixelbased=None,
+        tracer_partition=tracer_partition,
+    )
+    return tracer_model

@@ -68,7 +68,7 @@ class ImageModel(object):
             search_window=np.max(self.Data.width),
             x_center=x_center,
             y_center=y_center,
-            min_distance=self.Data.pixel_width,
+            min_distance=self.Data.pixel_width/4.,
             only_from_unspecified=True,
         )
         self._psf_error_map = self.PSF.psf_error_map_bool

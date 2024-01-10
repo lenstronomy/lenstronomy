@@ -36,6 +36,7 @@ class Optimizer(object):
         particle_swarm=True,
         re_optimize=False,
         re_optimize_scale=1.0,
+        kwargs_multiplane_model=None
     ):
         """
 
@@ -50,6 +51,7 @@ class Optimizer(object):
         :param particle_swarm:
         :param re_optimize:
         :param re_optimize_scale:
+        :param kwargs_multiplane_model:
         """
         self.x_image = x_image
         self.y_image = y_image
@@ -66,6 +68,7 @@ class Optimizer(object):
         self._particle_swarm = particle_swarm
         self._re_optimize = re_optimize
         self._re_optimize_scale = re_optimize_scale
+        self._kwargs_multiplane_model = kwargs_multiplane_model
 
     @classmethod
     def decoupled_multiplane(
@@ -160,6 +163,7 @@ class Optimizer(object):
             particle_swarm,
             re_optimize,
             re_optimize_scale,
+            kwargs_decoupled['kwargs_multiplane_model']
         )
 
     @classmethod
@@ -231,6 +235,17 @@ class Optimizer(object):
             re_optimize,
             re_optimize_scale,
         )
+
+    @property
+    def kwargs_multiplane_model(self):
+        """
+
+        :return: the keyword arguments for the decoupled multi-plane class if it is specified
+        """
+        if hasattr(self, '_kwargs_multiplane_model'):
+            return self._kwargs_multiplane_model
+        else:
+            raise Exception('optimizer class was not set up for use with the decoupled multi-plane formalism')
 
     def optimize(self, n_particles=50, n_iterations=250, verbose=False, threadCount=1):
         """

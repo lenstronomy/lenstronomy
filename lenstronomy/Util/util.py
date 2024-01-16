@@ -18,6 +18,7 @@ def merge_dicts(*dict_args):
         result.update(dictionary)
     return result
 
+
 @export
 def isiterable(obj):
     """Returns `True` if the given object is iterable."""

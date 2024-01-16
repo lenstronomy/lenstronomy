@@ -10,9 +10,9 @@ if float(astropy.__version__[0]) < 5.0:
         "We recommend you to update astropy to the latest versionbut keep supporting your settings for "
         "the time being."
     )
-#elif float(astropy.__version__[0]) < 6.0:
+# elif float(astropy.__version__[0]) < 6.0:
 #    from astropy.cosmology.utils import isiterable
-#else:
+# else:
 #    from astropy.cosmology.utils.misc import isiterable
 #
 from astropy import units

@@ -421,7 +421,7 @@ def arrival_time_surface(
             levels=np.sort(fermat_pot_images),
             **kwargs_contours
         )
-        # mag_images = lensModel.magnification(theta_x, theta_y, kwargs_lens)
+        # mag_images = lens_model.magnification(theta_x, theta_y, kwargs_lens)
         x_image, y_image = _coords.map_coord2pix(theta_x, theta_y)
         if name_list is None:
             name_list = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"]

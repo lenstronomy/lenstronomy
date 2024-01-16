@@ -197,7 +197,7 @@ class NFW(LensProfileBase):
         return m_3d
 
     def mass_2d(self, R, Rs, rho0):
-        """Mass enclosed a 2d cylinder or projected radius R
+        """Mass enclosed a 2d cylinder or projected radius R.
 
         :param R: projected radius
         :param Rs: scale radius

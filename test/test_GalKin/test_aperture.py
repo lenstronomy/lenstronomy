@@ -2,6 +2,7 @@ from lenstronomy.GalKin.aperture import Aperture
 
 import pytest
 import unittest
+import numpy as np
 
 
 class TestAperture(object):
@@ -45,6 +46,19 @@ class TestAperture(object):
         bool, i = frame.aperture_select(ra=0.2, dec=0)
         assert bool is False
         assert frame.num_segments == 1
+
+        x_grid, y_grid = np.meshgrid(
+            np.arange(-0.9, 0.95, 0.20),  # x-axis points to negative RA
+            np.arange(-0.9, 0.95, 0.20),
+        )
+        kwargs_ifugrid = {"x_grid": x_grid, "y_grid": y_grid}
+        frame = Aperture(aperture_type="IFU_grid", **kwargs_ifugrid)
+        bool, i = frame.aperture_select(ra=0.95, dec=0.95)
+        assert bool is True
+        assert i == (9, 9)
+        bool, i = frame.aperture_select(ra=5, dec=5)
+        assert bool is False
+        assert frame.num_segments == (10, 10)
 
 
 class TestRaise(unittest.TestCase):

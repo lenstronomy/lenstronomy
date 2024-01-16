@@ -245,6 +245,75 @@ class IFUShells(object):
 
 
 @export
+class IFUGrid(object):
+    """Class for an Integral Field Unit spectrograph with rectangular grid where the
+    kinematics are measured."""
+
+    def __init__(self, x_grid, y_grid):
+        """
+
+        :param x_grid: x coordinates of the grid
+        :param y_grid: y coordinates of the grid
+        """
+        self._x_grid = x_grid
+        self._y_grid = y_grid
+
+    def aperture_select(self, ra, dec):
+        """
+
+        :param ra: angular coordinate of photon/ray
+        :param dec: angular coordinate of photon/ray
+        :return: bool, True if photon/ray is within the slit, False otherwise, index of shell
+        """
+        return grid_ifu_select(ra, dec, self._x_grid, self._y_grid)
+
+    @property
+    def num_segments(self):
+        """Number of segments with separate measurements of the velocity dispersion.
+
+        :return: int
+        """
+        return self._x_grid.shape[0], self._x_grid.shape[1]
+
+    @property
+    def x_grid(self):
+        """X coordinates of the grid."""
+        return self._x_grid
+
+    @property
+    def y_grid(self):
+        """Y coordinates of the grid."""
+        return self._y_grid
+
+
+@export
+def grid_ifu_select(ra, dec, x_grid, y_grid):
+    """
+
+    :param ra: angular coordinate of photon/ray
+    :param dec: angular coordinate of photon/ray
+    :param x_grid: array of x_grid bins
+    :param y_grid: array of y_grid bins
+    :return: boolean, True if within the grid range, False otherwise
+    """
+    x_pixel_size = x_grid[0, 1] - x_grid[0, 0]
+    y_pixel_size = y_grid[1, 0] - y_grid[0, 0]
+
+    for i in range(x_grid.shape[0]):
+        for j in range(x_grid.shape[1]):
+            x_down = x_grid[i, j] - x_pixel_size / 2
+            x_up = x_grid[i, j] + x_pixel_size / 2
+
+            y_down = y_grid[i, j] - y_pixel_size / 2
+            y_up = y_grid[i, j] + y_pixel_size / 2
+
+            if (x_down <= ra <= x_up) and (y_down <= dec <= y_up):
+                return True, (i, j)
+
+    return False, None
+
+
+@export
 def shell_ifu_select(ra, dec, r_bin, center_ra=0, center_dec=0):
     """
 

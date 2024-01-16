@@ -13,7 +13,7 @@ class Sersic(SersicUtil, LensProfileBase):
     this class contains functions to evaluate a Sersic mass profile: https://arxiv.org/pdf/astro-ph/0311559.pdf
 
     .. math::
-        \\kappa(R) = \\kappa_{\\rm eff} \\exp \\left[ -b_n (R/R_{\\rm Sersic})^{\\frac{1}{n}}\\right]
+        \\kappa(R) = \\kappa_{\\rm eff} \\exp \\left[ -b_n \\left[(R/R_{\\rm Sersic})^{\\frac{1}{n}}-1\\right]\\right]
 
     with :math:`b_{n}\\approx 1.999n-0.327`
 

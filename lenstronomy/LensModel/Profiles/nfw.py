@@ -196,9 +196,13 @@ class NFW(LensProfileBase):
         return m_3d
 
     def mass_2d(self, R, Rs, rho0):
-        """Mass enclosed a 2d cylinder or projected radius R :param R: projected radius
-        :param Rs: scale radius :param rho0: density normalization (characteristic
-        density) :return: mass in cylinder."""
+        """Mass enclosed a 2d cylinder or projected radius R
+
+        :param R: projected radius
+        :param Rs: scale radius
+        :param rho0: density normalization (characteristic density)
+        :return: mass in cylinder.
+        """
         x = R / Rs
         gx = self.g_(x)
         m_2d = 4 * rho0 * Rs * R**2 * gx / x**2 * np.pi

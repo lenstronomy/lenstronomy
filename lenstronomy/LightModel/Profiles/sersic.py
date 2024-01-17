@@ -16,7 +16,7 @@ class Sersic(SersicUtil):
     """This class contains functions to evaluate a spherical Sersic function.
 
     .. math::
-        I(R) = I_{\\rm e} \\exp \\left[ -b_n \\left[(R/R_{\\rm Sersic})^{\\frac{1}{n}}-1\\right]\\right]
+        I(R) = I_{\\rm e} \\exp \\left( -b_n \\left[(R/R_{\\rm Sersic})^{\\frac{1}{n}}-1\\right]\\right)
 
     with :math:`I_0 = amp`
     and

@@ -67,7 +67,7 @@ class SersicElliptic(SersicUtil):
 
     .. math::
 
-        I(R) = I_{\\rm e} \\exp \\left[ -b_n \\left[(R/R_{\\rm Sersic})^{\\frac{1}{n}}-1\\right]\\right]
+        I(R) = I_{\\rm e} \\exp \\left( -b_n \\left[(R/R_{\\rm Sersic})^{\\frac{1}{n}}-1\\right]\\right)
 
     with :math:`I_0 = amp`,
     :math:`R = \\sqrt{q \\theta^2_x + \\theta^2_y/q}`

@@ -74,7 +74,7 @@ class LensProfileBase(object):
         )
 
     def mass_3d_lens(self, *args, **kwargs):
-        """Mass enclosed a 3d sphere or radius r given a lens parameterization with
+        """Mass enclosed within a 3D sphere or radius r given a lens parameterization with
         angular units. The input parameter are identical as for the derivatives
         definition. (optional definition)
 

@@ -469,7 +469,7 @@ class ImageLinearFit(ImageModel):
                 )
                 logL += marg_const
         if check_positive_flux is True:
-            _, _, _, _ = self.update_linear_kwargs(
+            _, _, _, _ = self._update_linear_kwargs(
                 param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps
             )
             bool_ = self.check_positive_flux(

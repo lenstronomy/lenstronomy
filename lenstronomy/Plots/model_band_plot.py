@@ -1060,7 +1060,7 @@ class ModelBandPlot(ModelBand):
         :param kwargs: kwargs to send matplotlib.pyplot.matshow()
         :return:
         """
-        model = self._bandmodel._image(
+        model = self._bandmodel.image(
             self._kwargs_lens_partial,
             self._kwargs_source_partial,
             self._kwargs_lens_light_partial,
@@ -1119,7 +1119,7 @@ class ModelBandPlot(ModelBand):
         lens_light_add=False,
         font_size=15,
     ):
-        model = self._bandmodel._image(
+        model = self._bandmodel.image(
             self._kwargs_lens_partial,
             self._kwargs_source_partial,
             self._kwargs_lens_light_partial,

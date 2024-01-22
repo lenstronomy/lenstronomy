@@ -58,8 +58,8 @@ class MultiBandImageReconstruction(object):
         source_marg = kwargs_likelihood.get("source_marg", False)
         linear_prior = kwargs_likelihood.get("linear_prior", None)
         bands_compute = kwargs_likelihood.get("bands_compute", None)
-        # pop out the tracer_source arguments as they should not be passed to linear inversion routines
-        kwargs_tracer_source_temp = kwargs_params.pop("kwargs_tracer_source", None)
+        kwargs_params_copy = copy.deepcopy(kwargs_params)
+        kwargs_params_copy.pop("kwargs_tracer_source", None)
         if bands_compute is None:
             bands_compute = [True] * len(multi_band_list)
         if multi_band_type == "single-band":
@@ -74,13 +74,13 @@ class MultiBandImageReconstruction(object):
 
         # here we perform the (joint) linear inversion with all data
         model, error_map, cov_param, param = self._imageModel.image_linear_solve(
-            inv_bool=True, **kwargs_params
+            inv_bool=True, **kwargs_params_copy
         )
         check_solver_error(param)
 
         if verbose:
             logL, _ = self._imageModel.likelihood_data_given_model(
-                source_marg=source_marg, linear_prior=linear_prior, **kwargs_params
+                source_marg=source_marg, linear_prior=linear_prior, **kwargs_params_copy
             )
             n_data = self._imageModel.num_data_evaluate
             if n_data > 0:
@@ -114,9 +114,6 @@ class MultiBandImageReconstruction(object):
                 self.model_band_list.append(model_band)
             else:
                 self.model_band_list.append(None)
-
-        # add back the unchanged tracer_source arguments
-        kwargs_params["kwargs_tracer_source"] = kwargs_tracer_source_temp
 
     def band_setup(self, band_index=0):
         """ImageModel() instance and keyword arguments of the model components to

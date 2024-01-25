@@ -13,16 +13,16 @@ class GNFW(LensProfileBase):
     This class computes the lensing quantities of a generalized NFW profile:
 
     .. math::
-    \rho(r) = \frac{\rho_{\rm s}} { (r/r_{\rm s}})^{\gamma_{\rm in}} * (1 + r/r_{\rm
-    s})^{3 - {\gamma_{\rm in}}}
+        \\rho(r) = \\frac{\\rho_{\\rm s}} { (r/r_{\\rm s}})^{\\gamma_{\\rm in}} * (1 + r/r_{\\rm
+        s})^{3 - {\\gamma_{\\rm in}}}
 
     This class uses the normalization parameter `kappa_s` defined as:
 
     .. math::
-    kappas_{\rm s} = \frac{\rho_{\rm s} r_{\rm s}}{\Sigma_{\rm crit}}
+        kappas_{\\rm s} = \\frac{\\rho_{\\rm s} r_{\\rm s}}{\\Sigma_{\\rm crit}}
 
-    Some expressions are obtained from Keeton 2001 (
-    https://ui.adsabs.harvard.edu/abs/2001astro.ph..2341K/abstract). See and cite the
+    Some expressions are obtained from Keeton 2001
+    https://ui.adsabs.harvard.edu/abs/2001astro.ph..2341K/abstract. See and cite the
     references therein.
     """
 
@@ -46,8 +46,9 @@ class GNFW(LensProfileBase):
 
     def __init__(self, trapezoidal_integration=False, integration_steps=1000):
         """
+
         :param trapezoidal_integrate: bool, if True, the numerical integral is performed
-            with the trapezoidal rule, otherwise with scipy.integrate.quad
+         with the trapezoidal rule, otherwise with ~scipy.integrate.quad
         :param integration_steps: number of steps in the trapezoidal integral
         """
         super(GNFW, self).__init__()

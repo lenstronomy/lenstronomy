@@ -50,13 +50,13 @@ class MultiPlane(object):
         :param ignore_observed_positions: bool, if True, will ignore the conversion between observed to physical
          position of deflectors
         :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens
-        models. If None, 'z_source' is used.
+         models. If None, 'z_source' is used.
         :param z_lens_convention: float, redshift of a lens plane to define the
-        effective time-delay distance. Only needed if distance ratios are
-        sampled. If None, the first lens redshift is used.
+         effective time-delay distance. Only needed if distance ratios are
+         sampled. If None, the first lens redshift is used.
         :param kwargs_synthesis: keyword arguments for the 'SYNTHESIS' lens model, if applicable
         :param distance_ratio_sampling: bool, if True, will use sampled
-        distance ratios to update T_ij value in multi-lens plane computation.
+         distance ratios to update T_ij value in multi-lens plane computation.
         """
 
         if z_source_convention is None:

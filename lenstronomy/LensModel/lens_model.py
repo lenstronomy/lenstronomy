@@ -57,9 +57,9 @@ class LensModel(object):
         :param z_interp_stop: (only in multi-plane with cosmo_interp=True); maximum redshift for distance interpolation
          This number should be higher or equal the maximum of the source redshift and/or the z_source_convention
         :param num_z_interp: (only in multi-plane with cosmo_interp=True); number of redshift bins for interpolating
-        distances
+         distances
         :param distance_ratio_sampling: bool, if True, will use sampled
-        distance ratios to update T_ij value in multi-lens plane computation.
+         distance ratios to update T_ij value in multi-lens plane computation.
         """
         self.lens_model_list = lens_model_list
         self.z_lens = z_lens

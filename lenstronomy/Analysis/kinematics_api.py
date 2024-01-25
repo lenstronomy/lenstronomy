@@ -52,7 +52,7 @@ class KinematicsAPI(object):
             lenstronomy.Galkin.aperture for options
         :param kwargs_seeing: seeing condition of spectroscopic observation, corresponds
             to kwargs_psf in the GalKin module specified in lenstronomy.GalKin.psf
-        :param cosmo: astropy.cosmology instance, if None then will be set to the
+        :param cosmo: ~astropy.cosmology instance, if None then will be set to the
             default cosmology
         :param lens_model_kinematics_bool: bool list of length of the lens model. Only
             takes a subset of all the models as part of the kinematics computation (
@@ -60,7 +60,7 @@ class KinematicsAPI(object):
             main deflector potential
         :param light_model_kinematics_bool: bool list of length of the light model. Only
             takes a subset of all the models as part of the kinematics computation (can
-            be used to ignore light components that do not describe the main deflector
+            be used to ignore light components that do not describe the main deflector)
         :param multi_observations: bool, if True uses multi-observation to predict a set
             of different observations with the GalkinMultiObservation() class.
             kwargs_aperture and kwargs_seeing require to be lists of the individual
@@ -69,7 +69,7 @@ class KinematicsAPI(object):
             MamonLokasAnisotropy() class of lenstronomy.GalKin.anisotropy
         :param analytic_kinematics: boolean, if True, used the analytic JAM modeling for
             a power-law profile on top of a Hernquist light profile
-         ATTENTION: This may not be accurate for your specific problem!
+            ATTENTION: This may not be accurate for your specific problem!
         :param Hernquist_approx: bool, if True, uses a Hernquist light profile matched
             to the half light radius of the deflector light profile to compute the
             kinematics

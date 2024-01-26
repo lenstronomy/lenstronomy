@@ -969,7 +969,7 @@ class ImageLinearFit(ImageModel):
         for i in range(num_of_light):
             b[i] = np.sum(A[i] * (d))
 
-        param_amps = np.linalg.lstsq(M, b)[0]
+        param_amps = np.linalg.lstsq(M, b, rcond=None)[0]
 
         clean_temp = np.zeros((num_of_image_pixel))
         dirty_temp = np.zeros((num_of_image_pixel))

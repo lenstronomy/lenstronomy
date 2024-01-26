@@ -5,7 +5,7 @@ import lenstronomy.Util.util as util
 
 
 class TestLSST(unittest.TestCase):
-    def setup_method(self):
+    def setUp(self):
         self.u = LSST(band="u")
         self.g = LSST()  # default is g_band
         self.r = LSST(band="r")

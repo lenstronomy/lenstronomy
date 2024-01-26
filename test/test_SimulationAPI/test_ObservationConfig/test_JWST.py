@@ -5,7 +5,7 @@ import lenstronomy.Util.util as util
 
 
 class TestJWST(unittest.TestCase):
-    def setup_method(self):
+    def setUp(self):
         self.F200W = JWST()  # default is F200W
         self.F356W = JWST(band="F356W")
         self.F356W2 = JWST(band="F356W", psf_type="GAUSSIAN")

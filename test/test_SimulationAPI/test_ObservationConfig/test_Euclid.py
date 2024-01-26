@@ -5,7 +5,7 @@ import lenstronomy.Util.util as util
 
 
 class TestEuclid(unittest.TestCase):
-    def setup_method(self):
+    def setUp(self):
         self.VIS = Euclid()
 
         kwargs_VIS = self.VIS.kwargs_single_band()

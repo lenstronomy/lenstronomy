@@ -7,7 +7,7 @@ import astropy.io.fits as pyfits
 
 
 class TestRoman(unittest.TestCase):
-    def setup_method(self):
+    def setUp(self):
         self.F062 = Roman()  # default is F062
         self.F087 = Roman(band="F087", survey_mode="microlensing")
         self.F106 = Roman(band="F106", psf_type="GAUSSIAN")

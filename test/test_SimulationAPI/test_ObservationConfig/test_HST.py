@@ -5,7 +5,7 @@ import lenstronomy.Util.util as util
 
 
 class TestHST(unittest.TestCase):
-    def setUp(self):
+    def setup_method(self):
         self.TDLMC_F160W = HST()  # default is TDLMC_F160W
         self.F160W = HST(band="F160W")
         self.F160W2 = HST(band="F160W", psf_type="GAUSSIAN")

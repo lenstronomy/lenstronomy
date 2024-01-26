@@ -5,7 +5,7 @@ import lenstronomy.Util.util as util
 
 
 class TestDES(unittest.TestCase):
-    def setUp(self):
+    def setup_method(self):
         self.g = DES()  # default is g_band
         self.r = DES(band="r")
         self.i = DES(band="i")

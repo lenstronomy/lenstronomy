@@ -7,7 +7,7 @@ from lenstronomy.Util import param_util, util
 
 
 class TestShapeletSetEllipse(object):
-    def setup(self):
+    def setup_method(self):
         self.ellipse = ShapeletSetEllipse()
         self.spherical = ShapeletSet()
 

@@ -5,7 +5,7 @@ import lenstronomy.Util.util as util
 
 
 class TestZTF(unittest.TestCase):
-    def setUp(self):
+    def setup_method(self):
         self.g = ZTF()  # default is g_band
         self.r = ZTF(band="r")
         self.i = ZTF(band="i")

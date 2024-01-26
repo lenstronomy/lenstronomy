@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 
 class TestKinNNCall(object):
-    def setup(self):
+    def setup_method(self):
         self.example_input = np.array(
             [
                 8.56306356e-01,

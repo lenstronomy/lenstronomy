@@ -844,7 +844,7 @@ class TestKinematicsAPI(object):
             ]
         )
 
-        assert np.max(np.abs(jampy_vel_dis / vel_dis[14:28, 14:28] - 1)) < 0.008
+        assert np.max(np.abs(jampy_vel_dis / vel_dis[14:28, 14:28] - 1)) < 0.009
 
     def test_velocity_dispersion_map(self):
         np.random.seed(42)

@@ -120,15 +120,13 @@ class InvertCosmo(object):
             Dd_grid[i] = Dd
             Ds_Dds_grid[i] = Ds_Dds
         self._f_H0 = interpolate.LinearNDInterpolator(
-            (Dd_grid,
-            Ds_Dds_grid),
+            (Dd_grid, Ds_Dds_grid),
             H0_grid,
             fill_value=-1,
         )
         print("H0 interpolation done")
         self._f_omega_m = interpolate.LinearNDInterpolator(
-            (Dd_grid,
-            Ds_Dds_grid),
+            (Dd_grid, Ds_Dds_grid),
             omega_m_grid,
             fill_value=0,
         )

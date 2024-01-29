@@ -10,7 +10,7 @@ from lenstronomy.Sampling.parameters import Param
 import lenstronomy.Util.class_creator as class_util
 
 
-def create_lenstronomy_from_coolest(file_name, use_epl=False):
+def create_lenstronomy_from_coolest(file_name, use_epl=True):
     """Creates lenstronomy typical kwargs from a COOLEST (JSON) file.
 
     :param file_name: str, name (with path) of the .json file containing the COOLEST

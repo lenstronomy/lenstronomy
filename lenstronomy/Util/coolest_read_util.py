@@ -243,7 +243,7 @@ def update_kwargs_pemd(
     kwargs_lens_fixed,
     kwargs_lens_sigma,
     cleaning=False,
-    use_epl=False,
+    use_epl=True,
 ):
     """Update the lens list and kwargs with PEMD mass model.
 

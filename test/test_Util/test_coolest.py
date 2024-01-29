@@ -542,13 +542,14 @@ class TestCOOLESTinterface(object):
         )
 
         return
-    
+
     def test_pemd_via_epl(self):
         path = os.getcwd()
         if path[-11:] == "lenstronomy":
             path += "/test/test_Util"
-        kwargs_out = create_lenstronomy_from_coolest(path + "/coolest_template_pemd",
-                                                     use_epl=True)
+        kwargs_out = create_lenstronomy_from_coolest(
+            path + "/coolest_template_pemd", use_epl=True
+        )
         print(kwargs_out)
         assert kwargs_out["kwargs_model"]["lens_model_list"][0] == "EPL"
         # the rest of the test would identical to test_pemd()

@@ -257,8 +257,8 @@ def update_kwargs_pemd(
     :param kwargs_lens_sigma: the usual lenstronomy kwargs
     :param cleaning: bool, if True, will update the empty fields with default values +
         cleans the kwargs_fixed
-    :param use_epl: bool, if True the elliptical power-law profile is 'EPL' 
-        instead of 'PEMD'
+    :param use_epl: bool, if True the elliptical power-law profile is 'EPL' instead of
+        'PEMD'
     :return: updated list and kwargs
     """
     profile_name = "EPL" if use_epl else "PEMD"

@@ -15,8 +15,8 @@ def create_lenstronomy_from_coolest(file_name, use_epl=True):
 
     :param file_name: str, name (with path) of the .json file containing the COOLEST
         information
-    :param use_epl: bool, if True the elliptical power-law profile is 'EPL' 
-        instead of 'PEMD'
+    :param use_epl: bool, if True the elliptical power-law profile is 'EPL' instead of
+        'PEMD'
     :return: return_dict, dictionary with typical lenstronomy kwarg (as kwargs_data,
         kwargs_psf, kwargs_params, kwargs_results, kwargs_model etc)
     """

@@ -281,9 +281,9 @@ class SingleBand(Instrument, Observation):
         if isinstance(variance, int) or isinstance(variance, float):
             variance = max(variance, 0)
         else:
-            variance[
-                flux_iid < 0
-            ] = 0  # make sure negative pixels do not lead to variances (or nans) in the return
+            variance[flux_iid < 0] = (
+                0  # make sure negative pixels do not lead to variances (or nans) in the return
+            )
         noise = np.sqrt(variance) / self.exposure_time
         if self._data_count_unit == "ADU":
             noise /= self.ccd_gain

@@ -77,11 +77,10 @@ def plot_quasar_images(
     flux_ratios = magnifications / max(magnifications)
     import matplotlib.pyplot as plt
 
-    fig = plt.figure(1)
-    fig.set_size_inches(16, 6)
     N = len(images)
+    fig, axes = plt.subplots(N, 1, figsize=(16, 6))
     for i, (image, mag, fr) in enumerate(zip(images, magnifications, flux_ratios)):
-        ax = plt.subplot(1, N, i + 1)
+        ax = axes[i]
         ax.imshow(
             image,
             origin="lower",

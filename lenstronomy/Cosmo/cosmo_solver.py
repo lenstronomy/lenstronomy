@@ -119,23 +119,15 @@ class InvertCosmo(object):
             )
             Dd_grid[i] = Dd
             Ds_Dds_grid[i] = Ds_Dds
-        self._f_H0 = interpolate.interp2d(
-            Dd_grid,
-            Ds_Dds_grid,
+        self._f_H0 = interpolate.LinearNDInterpolator(
+            (Dd_grid, Ds_Dds_grid),
             H0_grid,
-            kind="linear",
-            copy=False,
-            bounds_error=False,
             fill_value=-1,
         )
         print("H0 interpolation done")
-        self._f_omega_m = interpolate.interp2d(
-            Dd_grid,
-            Ds_Dds_grid,
+        self._f_omega_m = interpolate.LinearNDInterpolator(
+            (Dd_grid, Ds_Dds_grid),
             omega_m_grid,
-            kind="linear",
-            copy=False,
-            bounds_error=False,
             fill_value=0,
         )
         print("omega_m interpolation done")
@@ -153,9 +145,9 @@ class InvertCosmo(object):
         print(H0, "H0")
         omega_m = self._f_omega_m(Dd, Ds_Dds)
         Dd_new, Ds_Dds_new = cosmo2angular_diameter_distances(
-            H0[0], omega_m[0], self.z_d, self.z_s
+            H0, omega_m, self.z_d, self.z_s
         )
         if abs(Dd - Dd_new) / Dd > 0.01 or abs(Ds_Dds - Ds_Dds_new) / Ds_Dds > 0.01:
             return -1, -1
         else:
-            return H0[0], omega_m[0]
+            return H0, omega_m

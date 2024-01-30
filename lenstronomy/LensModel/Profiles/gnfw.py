@@ -448,9 +448,9 @@ class GNFW(LensProfileBase):
     @staticmethod
     def kappa_s2rho0(kappa_s, Rs, gamma_in):
         """Convenience function to compute rho0 from kappa_s. The returned rho_0 is
-        normalized with $\Sigma_crit$.
+        normalized with $\\Sigma_{\\rm crit}$.
 
-        :param kappa_s: convergence correspoding to rho0
+        :param kappa_s: convergence corresponding to rho0
         :type kappa_s: float
         :param Rs: scale radius
         :type Rs: float

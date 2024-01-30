@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 
 class TestKinSamplingUtil(object):
-    def setup_method(self):
+    def __init__(self):
         self.image = np.array(
             [
                 [0, 1, 0, 0, 0],

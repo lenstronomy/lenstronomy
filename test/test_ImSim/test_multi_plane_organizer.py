@@ -16,7 +16,7 @@ import copy
 class TestMultiPlaneOrganizer(object):
     """"""
 
-    def __init__(self):
+    def setup_method(self, method):
         """"""
         self.lens_redshift_list = [0.2, 0.4, 0.6, 1.0]
         self.source_redshift_list = [0.6, 1.0, 1.0, 1.2]

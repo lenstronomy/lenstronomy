@@ -11,7 +11,7 @@ from lenstronomy.Sampling.Likelihoods import kinematic_NN_call
 
 
 class TestKinLikelihood(object):
-    def setup(self):
+    def setup_method(self, method):
         self.kinematic_NN = kinematic_NN_call.KinematicNN().SKiNN_installed
         # initialize KinLikelihood class and calculate example vrms for testing
         major_axis_pa = 30 * np.pi / 180

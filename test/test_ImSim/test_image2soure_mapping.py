@@ -17,88 +17,148 @@ class TestMultiSourcePlane(object):
             {"theta_E": 1, "center_x": 0, "center_y": 0},
             {"theta_E": 0.5, "center_x": 1, "center_y": 1},
         ]
-        singlePlane = LensModel(lens_model_list=lens_model_list)
-        multiPlane = LensModel(
+        single_plane = LensModel(lens_model_list=lens_model_list)
+        multi_plane = LensModel(
             lens_model_list=lens_model_list,
             multi_plane=True,
             z_source=3,
             lens_redshift_list=[0.2, 0.5],
             cosmo=None,
         )
-        pseudoMultiPlane = LensModel(
+        pseudo_multi_plane = LensModel(
             lens_model_list=lens_model_list,
             multi_plane=True,
             z_source=3,
             lens_redshift_list=[0.5, 0.5],
             cosmo=None,
         )
-        # test single plane single source
-
-        # test single plane multi source
-
-        # test pseudo multi plane single source
+        multi_plane_free_distance = LensModel(
+            lens_model_list=lens_model_list,
+            multi_plane=True,
+            z_source=2,
+            lens_redshift_list=[0.2, 0.5],
+            cosmo=None,
+            distance_ratio_sampling=True,
+        )
 
         light_model_list = ["SERSIC", "SERSIC"]
         self.kwargs_light = [
             {"amp": 1, "R_sersic": 1, "n_sersic": 2, "center_x": 0, "center_y": 0},
             {"amp": 2, "R_sersic": 0.5, "n_sersic": 1, "center_x": 1, "center_y": 1},
         ]
+
+        # test single lens plane, single source plane
         self.singlePlane_singlePlane = Image2SourceMapping(
-            singlePlane,
+            single_plane,
             LightModel(
                 light_model_list,
                 deflection_scaling_list=None,
                 source_redshift_list=None,
             ),
         )
+
+        # test single lens plane, single source plane with deflection list given
         self.singlePlane_pseudoMulti = Image2SourceMapping(
-            singlePlane,
+            single_plane,
             LightModel(
                 light_model_list,
                 deflection_scaling_list=[1, 1],
                 source_redshift_list=None,
             ),
         )
+
+        # test pseudo multi plane, single source plane
         self.pseudoMulti_pseudoMulti = Image2SourceMapping(
-            pseudoMultiPlane,
+            pseudo_multi_plane,
             LightModel(
                 light_model_list,
                 deflection_scaling_list=None,
                 source_redshift_list=[3, 3],
             ),
         )
+
+        # test pseudo multi plane, single source plane
         self.pseudoMulti_single = Image2SourceMapping(
-            pseudoMultiPlane,
+            pseudo_multi_plane,
             LightModel(
                 light_model_list,
                 deflection_scaling_list=None,
                 source_redshift_list=None,
             ),
         )
+
+        # test multi lens plane, single source plane
         self.multi_single = Image2SourceMapping(
-            multiPlane,
+            multi_plane,
             LightModel(
                 light_model_list,
                 deflection_scaling_list=None,
                 source_redshift_list=None,
             ),
         )
+
+        # test multi lens plane, single source plane with source redshift list given
         self.multi_pseudoMulti = Image2SourceMapping(
-            multiPlane,
+            multi_plane,
             LightModel(
                 light_model_list,
                 deflection_scaling_list=None,
                 source_redshift_list=[3, 3],
             ),
         )
+
+        # test multi lens plane, multi source plane
         self.multi_multi = Image2SourceMapping(
-            multiPlane,
+            multi_plane,
             LightModel(
                 light_model_list,
                 deflection_scaling_list=None,
                 source_redshift_list=[0.3, 2],
             ),
         )
+
+        # test multi lens plane with distance sampling, single source plane
+        self.multi_free_multi = Image2SourceMapping(
+            multi_plane_free_distance,
+            LightModel(
+                light_model_list,
+                deflection_scaling_list=None,
+                source_redshift_list=None,
+            ),
+        )
+
+    def test_image_2_source(self):
+        kwargs_special = {
+            "factor_a_1": 1,
+            "factor_a_2": 1,
+        }
+        x, y = np.arange(10), np.arange(10)
+        source_x, source_y = self.multi_free_multi.image2source(
+            x,
+            y,
+            kwargs_lens=self.kwargs_lens,
+            index_source=0,
+            kwargs_special=kwargs_special,
+        )
+        assert len(source_x) == 10
+        assert len(source_y) == 10
+
+    def test_image_flux_split(self):
+        kwargs_special = {
+            "factor_a_1": 1,
+            "factor_a_2": 1,
+        }
+        x, y = np.arange(10), np.arange(10)
+        flux, n = self.multi_free_multi.image_flux_split(
+            x,
+            y,
+            kwargs_lens=self.kwargs_lens,
+            kwargs_source=self.kwargs_light,
+            kwargs_special=kwargs_special,
+        )
+        assert len(flux) == 2
+        assert len(flux[0]) == 10
+        assert n == 2
 
     def test_pseudo_multi_ray_tracing(self):
         x, y = util.make_grid(numPix=10, deltapix=0.5)
@@ -225,14 +285,14 @@ class TestMultiSourcePlane(object):
         npt.assert_almost_equal(beta_x0, beta_x, decimal=10)
 
     def test__re_order_split(self):
-        lensModel = LensModel(
+        lens_model = LensModel(
             lens_model_list=["SIS", "SIS"],
             multi_plane=True,
             lens_redshift_list=[0.5, 0.4],
             z_source=3,
         )
         mapping = Image2SourceMapping(
-            lensModel,
+            lens_model,
             LightModel(
                 light_model_list=["SERSIC", "SHAPELETS"],
                 deflection_scaling_list=None,
@@ -250,58 +310,58 @@ class TestMultiSourcePlane(object):
 class TestRaise(unittest.TestCase):
     def test_raise(self):
         with self.assertRaises(ValueError):
-            lensModel = LensModel(
+            lens_model = LensModel(
                 lens_model_list=["SIS"],
                 multi_plane=True,
                 z_source=3,
                 lens_redshift_list=[0.2],
                 cosmo=None,
             )
-            lightModel = LightModel(
+            light_model = LightModel(
                 light_model_list=["UNIFORM"],
                 deflection_scaling_list=[1.0],
                 source_redshift_list=None,
             )
-            class_instance = Image2SourceMapping(lensModel, lightModel)
+            class_instance = Image2SourceMapping(lens_model, light_model)
 
         with self.assertRaises(ValueError):
-            lensModel = LensModel(
+            lens_model = LensModel(
                 lens_model_list=["SIS"],
                 multi_plane=True,
                 z_source=3,
                 lens_redshift_list=[0.2],
                 cosmo=None,
             )
-            lightModel = LightModel(
+            light_model = LightModel(
                 light_model_list=["UNIFORM"],
                 deflection_scaling_list=None,
                 source_redshift_list=[0, 1, 2],
             )
-            class_instance = Image2SourceMapping(lensModel, lightModel)
+            class_instance = Image2SourceMapping(lens_model, light_model)
 
         with self.assertRaises(ValueError):
-            lensModel = LensModel(
+            lens_model = LensModel(
                 lens_model_list=["SIS"],
                 multi_plane=True,
                 z_source=0.5,
                 lens_redshift_list=[0.2],
                 cosmo=None,
             )
-            lightModel = LightModel(
+            light_model = LightModel(
                 light_model_list=["UNIFORM"],
                 deflection_scaling_list=None,
                 source_redshift_list=[1],
             )
-            class_instance = Image2SourceMapping(lensModel, lightModel)
+            class_instance = Image2SourceMapping(lens_model, light_model)
 
         with self.assertRaises(ValueError):
-            lensModel = LensModel(
+            lens_model = LensModel(
                 lens_model_list=["SIS"], multi_plane=False, z_source=0.5, cosmo=None
             )
-            lightModel = LightModel(
+            light_model = LightModel(
                 light_model_list=["UNIFORM"], deflection_scaling_list=[1, 1]
             )
-            class_instance = Image2SourceMapping(lensModel, lightModel)
+            class_instance = Image2SourceMapping(lens_model, light_model)
 
 
 if __name__ == "__main__":

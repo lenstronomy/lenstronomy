@@ -8,6 +8,16 @@ import numpy.testing as npt
 import unittest
 
 
+def test_isiterable():
+    z = np.array([0, 1])
+    boolean = util.isiterable(z)
+    assert boolean is True
+
+    z = 1
+    boolean = util.isiterable(z)
+    assert boolean is False
+
+
 def test_estimate_theta_E():
     x = np.array([-0.45328229, 0.57461556, 0.53757501, -0.42312438])
     y = np.array([0.69582971, -0.51226356, 0.37577509, -0.40245467])
@@ -237,6 +247,58 @@ def test_grid_with_coords():
     )
     assert ra_at_xy_0 == 2
     assert dec_at_xy_0 == 3
+
+
+def test_centered_coordinate_system():
+    num_pix = 51
+    delta_pix = 0.1
+
+    (
+        x_grid,
+        y_grid,
+        ra_at_xy_0,
+        dec_at_xy_0,
+        x_at_radec_0,
+        y_at_radec_0,
+        transform_pix2angle,
+        Mcoord2pix,
+    ) = util.make_grid_with_coordtransform(
+        num_pix, delta_pix, subgrid_res=1, left_lower=False, inverse=False
+    )
+    kwargs_grid = util.centered_coordinate_system(num_pix, transform_pix2angle)
+    npt.assert_almost_equal(kwargs_grid["ra_at_xy_0"], ra_at_xy_0, decimal=7)
+    npt.assert_almost_equal(kwargs_grid["dec_at_xy_0"], dec_at_xy_0, decimal=7)
+
+    (
+        x_grid,
+        y_grid,
+        ra_at_xy_0,
+        dec_at_xy_0,
+        x_at_radec_0,
+        y_at_radec_0,
+        transform_pix2angle,
+        Mcoord2pix,
+    ) = util.make_grid_with_coordtransform(
+        num_pix, delta_pix, subgrid_res=1, left_lower=False, inverse=True
+    )
+    kwargs_grid = util.centered_coordinate_system(num_pix, transform_pix2angle)
+    npt.assert_almost_equal(kwargs_grid["ra_at_xy_0"], ra_at_xy_0, decimal=7)
+    npt.assert_almost_equal(kwargs_grid["dec_at_xy_0"], dec_at_xy_0, decimal=7)
+
+    from lenstronomy.Data.coord_transforms import Coordinates
+
+    theta = 50 / 360 * 2 * np.pi
+    transform_pix2angle = np.array(
+        [
+            [np.cos(theta) * delta_pix, -np.sin(theta) * delta_pix],
+            [np.sin(theta) * delta_pix, np.cos(theta) * delta_pix],
+        ]
+    )
+    kwargs_grid = util.centered_coordinate_system(num_pix, transform_pix2angle)
+    coords = Coordinates(**kwargs_grid)
+    x, y = coords.map_coord2pix(ra=0, dec=0)
+    npt.assert_almost_equal(x, (num_pix - 1) / 2, decimal=7)
+    npt.assert_almost_equal(y, (num_pix - 1) / 2, decimal=7)
 
 
 def test_array2image():

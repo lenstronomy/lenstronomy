@@ -117,7 +117,7 @@ class CalibrationLikelihood(object):
         image_likelihood = ImageLikelihood(
             kwargs_model=self._kwargs_model, **self._kwargs_imaging_likelihood
         )
-        log_likelihood = image_likelihood.logL(**self._kwargs_params)
+        log_likelihood, _ = image_likelihood.logL(**self._kwargs_params)
         return log_likelihood
 
     def __call__(self, a):

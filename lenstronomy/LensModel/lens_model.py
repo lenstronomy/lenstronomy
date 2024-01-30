@@ -30,6 +30,7 @@ class LensModel(object):
         num_z_interp=100,
         kwargs_interp=None,
         kwargs_synthesis=None,
+        distance_ratio_sampling=False,
     ):
         """
 
@@ -57,6 +58,8 @@ class LensModel(object):
          This number should be higher or equal the maximum of the source redshift and/or the z_source_convention
         :param num_z_interp: (only in multi-plane with cosmo_interp=True); number of redshift bins for interpolating
          distances
+        :param distance_ratio_sampling: bool, if True, will use sampled
+         distance ratios to update T_ij value in multi-lens plane computation.
         """
         self.lens_model_list = lens_model_list
         self.z_lens = z_lens
@@ -90,6 +93,10 @@ class LensModel(object):
         # Multi-plane or single-plane lensing?
         self.multi_plane = multi_plane
         if multi_plane is True:
+            if lens_redshift_list is None:
+                raise ValueError(
+                    "In multi-plane lensing, you need to specify the redshifts of the lensing planes."
+                )
             if z_source is None:
                 raise ValueError(
                     "z_source needs to be set for multi-plane lens modelling."
@@ -111,6 +118,7 @@ class LensModel(object):
                 num_z_interp=num_z_interp,
                 kwargs_interp=kwargs_interp,
                 kwargs_synthesis=kwargs_synthesis,
+                distance_ratio_sampling=distance_ratio_sampling,
             )
         else:
             if los_effects is True:
@@ -514,5 +522,29 @@ class LensModel(object):
         f_xy = (alpha_ra_pp - alpha_ra_pn + alpha_ra_np - alpha_ra_nn) / diff / 2
         f_yx = (alpha_dec_pp - alpha_dec_np + alpha_dec_pn - alpha_dec_nn) / diff / 2
         f_yy = (alpha_dec_pp - alpha_dec_pn + alpha_dec_np - alpha_dec_nn) / diff / 2
+
+        return f_xx, f_xy, f_yx, f_yy
+
+    def hessian_z1z2(self, z1, z2, theta_x, theta_y, kwargs_lens, diff=0.00000001):
+        """Computes Hessian matrix when Observed at z1 with rays going to z2 with z1 <
+        z2 for multi_plane.
+
+        :param z1: Observer redshift
+        :param z2: source redshift
+        :param theta_x: angular position and direction of the ray
+        :param theta_y: angular position and direction of the ray
+        :param kwargs_lens: list of keyword arguments of lens model parameters matching
+            the lens model classes
+        :param diff: numerical differential step (float)
+        :return: f_xx, f_xy, f_yx, f_yy
+        """
+        if self.multi_plane is False:
+            raise ValueError("Hessian z1z2 need to be compute in multi-plane mode")
+        if z1 >= z2:
+            raise ValueError("z1 needs to be smaller than z2")
+
+        f_xx, f_xy, f_yx, f_yy = self.lens_model.hessian_z1z2(
+            z1, z2, theta_x, theta_y, kwargs_lens, diff=diff
+        )
 
         return f_xx, f_xy, f_yx, f_yy

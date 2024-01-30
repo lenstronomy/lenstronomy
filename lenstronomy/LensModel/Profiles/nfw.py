@@ -12,10 +12,11 @@ class NFW(LensProfileBase):
     """This class contains functions concerning the NFW profile.
 
     relation are: R_200 = c * Rs
-    The definition of 'Rs' is in angular (arc second) units and the normalization is put in with regard to a deflection
-    angle at 'Rs' - 'alpha_Rs'. To convert a physical mass and concentration definition into those lensing quantities
-    for a specific redshift configuration and cosmological model, you can find routines in
-    lenstronomy.Cosmo.lens_cosmo.py
+    The definition of 'Rs' is in angular (arc second) units and the normalization is put
+    in with regard to a deflection angle at 'Rs' - 'alpha_Rs'. To convert a physical
+    mass and concentration definition into those lensing quantities for a specific
+    redshift configuration and cosmological model, you can find routines in
+    `lenstronomy.Cosmo.lens_cosmo.py`
 
     Examples for converting angular to physical mass units
     ------------------------------------------------------
@@ -75,7 +76,7 @@ class NFW(LensProfileBase):
         x_ = x - center_x
         y_ = y - center_y
         R = np.sqrt(x_**2 + y_**2)
-        f_ = self.nfwPot(R, Rs, rho0_input)
+        f_ = self.nfw_potential(R, Rs, rho0_input)
         return f_
 
     def derivatives(self, x, y, Rs, alpha_Rs, center_x=0, center_y=0):
@@ -96,7 +97,7 @@ class NFW(LensProfileBase):
         x_ = x - center_x
         y_ = y - center_y
         R = np.sqrt(x_**2 + y_**2)
-        f_x, f_y = self.nfwAlpha(R, Rs, rho0_input, x_, y_)
+        f_x, f_y = self.nfw_alpha(R, Rs, rho0_input, x_, y_)
         return f_x, f_y
 
     def hessian(self, x, y, Rs, alpha_Rs, center_x=0, center_y=0):
@@ -117,7 +118,7 @@ class NFW(LensProfileBase):
         y_ = y - center_y
         R = np.sqrt(x_**2 + y_**2)
         kappa = self.density_2d(R, 0, Rs, rho0_input)
-        gamma1, gamma2 = self.nfwGamma(R, Rs, rho0_input, x_, y_)
+        gamma1, gamma2 = self.nfw_gamma(R, Rs, rho0_input, x_, y_)
         f_xx = kappa + gamma1
         f_yy = kappa - gamma1
         f_xy = gamma2
@@ -196,9 +197,13 @@ class NFW(LensProfileBase):
         return m_3d
 
     def mass_2d(self, R, Rs, rho0):
-        """Mass enclosed a 2d cylinder or projected radius R :param R: projected radius
-        :param Rs: scale radius :param rho0: density normalization (characteristic
-        density) :return: mass in cylinder."""
+        """Mass enclosed a 2d cylinder or projected radius R.
+
+        :param R: projected radius
+        :param Rs: scale radius
+        :param rho0: density normalization (characteristic density)
+        :return: mass in cylinder.
+        """
         x = R / Rs
         gx = self.g_(x)
         m_2d = 4 * rho0 * Rs * R**2 * gx / x**2 * np.pi
@@ -216,7 +221,7 @@ class NFW(LensProfileBase):
         rho0 = self.alpha2rho0(alpha_Rs, Rs)
         return self.mass_2d(R, Rs=Rs, rho0=rho0)
 
-    def nfwPot(self, R, Rs, rho0):
+    def nfw_potential(self, R, Rs, rho0):
         """Lensing potential of NFW profile (Sigma_crit D_OL**2)
 
         :param R: radius of interest
@@ -231,8 +236,8 @@ class NFW(LensProfileBase):
         hx = self.h_(x)
         return 2 * rho0 * Rs**3 * hx
 
-    def nfwAlpha(self, R, Rs, rho0, ax_x, ax_y):
-        """Deflection angel of NFW profile (times Sigma_crit D_OL) along the projection
+    def nfw_alpha(self, R, Rs, rho0, ax_x, ax_y):
+        """Deflection angle of NFW profile (times Sigma_crit D_OL) along the projection
         to coordinate 'axis'.
 
         :param R: radius of interest
@@ -250,10 +255,10 @@ class NFW(LensProfileBase):
         R = np.maximum(R, 0.00000001)
         x = R / Rs
         gx = self.g_(x)
-        a = 4 * rho0 * Rs * R * gx / x**2 / R
+        a = 4 * rho0 * Rs * gx / x**2
         return a * ax_x, a * ax_y
 
-    def nfwGamma(self, R, Rs, rho0, ax_x, ax_y):
+    def nfw_gamma(self, R, Rs, rho0, ax_x, ax_y):
         """Shear gamma of NFW profile (times Sigma_crit) along the projection to
         coordinate 'axis'.
 

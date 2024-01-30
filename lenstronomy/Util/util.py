@@ -20,6 +20,16 @@ def merge_dicts(*dict_args):
 
 
 @export
+def isiterable(obj):
+    """Returns `True` if the given object is iterable."""
+    try:
+        iter(obj)
+        return True
+    except TypeError:
+        return False
+
+
+@export
 def approx_theta_E(ximg, yimg):
     dis = []
     xinds, yinds = [0, 0, 0, 1, 1, 2], [1, 2, 3, 2, 3, 3]
@@ -231,6 +241,32 @@ def make_grid_transformed(numPix, Mpix2Angle):
     x_grid, y_grid = make_grid(numPix, deltapix=1)
     ra_grid, dec_grid = map_coord2pix(x_grid, y_grid, 0, 0, Mpix2Angle)
     return ra_grid, dec_grid
+
+
+def centered_coordinate_system(num_pix, transform_pix2angle):
+    """Returns dictionary for Coordinate Grid such that (0,0) is centered with given
+    input orientation coordinate transformation matrix.
+
+    :param num_pix: number of pixels
+    :type num_pix: int
+    :param transform_pix2angle: transformation matrix (2x2) of pixels into coordinate
+        displacements
+    :return: dict with ra_at_xy_0, dec_at_xy_0, transfrom_pix2angle
+    """
+    pix_center = (num_pix - 1) / 2
+    ra_center = (
+        pix_center * transform_pix2angle[0, 0] + pix_center * transform_pix2angle[0, 1]
+    )
+    dec_center = (
+        pix_center * transform_pix2angle[1, 0] + pix_center * transform_pix2angle[1, 1]
+    )
+
+    kwargs_grid = {
+        "ra_at_xy_0": -ra_center,
+        "dec_at_xy_0": -dec_center,
+        "transform_pix2angle": transform_pix2angle,
+    }
+    return kwargs_grid
 
 
 @export

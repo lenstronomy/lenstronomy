@@ -4,7 +4,27 @@ __all__ = ["LensProfileBase"]
 class LensProfileBase(object):
     """This class acts as the base class of all lens model functions and indicates raise
     statements and default outputs if these functions are not defined in the specific
-    lens model class."""
+    lens model class.
+
+    To implement a new lens model profile you should:
+    1. make a new python file in this folder
+    2. create a class inheriting this class; YourModel(LensProfileBase)
+    3. write new definitions following the same input and output conventions as this base class
+    - function(x, y, <other parameters>)
+    - derivatives(x, y, <other parameters>)
+    - hessian(x, y, <other parameters>)
+    4. set the variables for sampling the new profile
+
+        param_names = ["param1", "param2", ...]
+        lower_limit_default = {"param1": value, "param2: value, ...}
+        upper_limit_default = {"param1": value, "param2: value, ...}
+
+    5. give the new profile a meaningful name and add it in the LensModel.profile_list_base class
+    6. write test functions in the test/test_LensModel/test_Profiles folder with a new file with test_<profile name>.py
+
+    With that, you should be good to go and import and use it for any purpose.
+    Further definitions in the class are optional and only used for certain applications (such as kinematics)
+    """
 
     def __init__(self, *args, **kwargs):
         self._static = False
@@ -56,8 +76,8 @@ class LensProfileBase(object):
         )
 
     def mass_3d_lens(self, *args, **kwargs):
-        """Mass enclosed a 3d sphere or radius r given a lens parameterization with
-        angular units The input parameter are identical as for the derivatives
+        """Mass enclosed within a 3D sphere or radius r given a lens parameterization
+        with angular units. The input parameter are identical as for the derivatives
         definition. (optional definition)
 
         :param kwargs: keywords of the profile

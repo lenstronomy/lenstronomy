@@ -349,3 +349,23 @@ History
 * SkiNN interface
 * faster and more reliable Einstein radius computation
 * Cobaya interface
+
+1.11.4 (2023-09-27)
++++++++++++++++++++
+* Cobaya not required to run FittingSequence
+* Galkin with luminosity-weighted velocity dispersion calculation
+
+1.11.5 (2023-09-28)
++++++++++++++++++++
+* bug fix in findOverlap function
+* bug fix in luminosity-0weighted velocity dispersion calculation
+
+1.11.6 (2024-01-24)
++++++++++++++++++++
+* bug fix with partial kwargs in kwargs_tracer mode
+* stability and documentation improvements
+* name change from GNFW -> PSEUDO_DPL
+* improved plotting of point sources and caustics on top of pixelated images
+* RADIAL_INTERPOL lens profile
+* improved description of how to add new lenses
+* Debug findOverlap parantheses of image_util.py

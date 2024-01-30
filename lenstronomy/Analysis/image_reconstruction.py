@@ -5,6 +5,7 @@ import lenstronomy.Util.class_creator as class_creator
 from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModel
 
 from lenstronomy.Util.package_util import exporter
+from lenstronomy.Util import mask_util
 
 export, __all__ = exporter()
 
@@ -57,6 +58,8 @@ class MultiBandImageReconstruction(object):
         source_marg = kwargs_likelihood.get("source_marg", False)
         linear_prior = kwargs_likelihood.get("linear_prior", None)
         bands_compute = kwargs_likelihood.get("bands_compute", None)
+        # pop out the tracer_source arguments as they should not be passed to linear inversion routines
+        kwargs_tracer_source_temp = kwargs_params.pop("kwargs_tracer_source", None)
         if bands_compute is None:
             bands_compute = [True] * len(multi_band_list)
         if multi_band_type == "single-band":
@@ -76,7 +79,7 @@ class MultiBandImageReconstruction(object):
         check_solver_error(param)
 
         if verbose:
-            logL = self._imageModel.likelihood_data_given_model(
+            logL, _ = self._imageModel.likelihood_data_given_model(
                 source_marg=source_marg, linear_prior=linear_prior, **kwargs_params
             )
             n_data = self._imageModel.num_data_evaluate
@@ -111,6 +114,9 @@ class MultiBandImageReconstruction(object):
                 self.model_band_list.append(model_band)
             else:
                 self.model_band_list.append(None)
+
+        # add back the unchanged tracer_source arguments
+        kwargs_params["kwargs_tracer_source"] = kwargs_tracer_source_temp
 
     def band_setup(self, band_index=0):
         """ImageModel() instance and keyword arguments of the model components to
@@ -173,13 +179,15 @@ class ModelBand(object):
         )
         self._kwargs_special_partial = kwargs_params.get("kwargs_special", None)
         self._kwargs_lens = kwargs_params.get("kwargs_lens", None)
+        kwargs_params_copy = copy.deepcopy(kwargs_params)
+        kwargs_params_copy.pop("kwargs_tracer_source", None)
         (
             kwarks_lens_partial,
             kwargs_source_partial,
             kwargs_lens_light_partial,
             kwargs_ps_partial,
             self._kwargs_extinction_partial,
-        ) = self._bandmodel.select_kwargs(**kwargs_params)
+        ) = self._bandmodel.select_kwargs(**kwargs_params_copy)
         (
             self._kwargs_lens_partial,
             self._kwargs_source_partial,
@@ -248,6 +256,34 @@ class ModelBand(object):
             "kwargs_extinction": self._kwargs_extinction_partial,
         }
         return kwargs_return
+
+    def point_source_residuals(self, aperture_radius):
+        """Computes integrated residuals within circular apertures around point sources.
+        This routine can assess the accuracy of point source flux measurements.
+
+        :param aperture_radius: radius of the aperture considering the residuals around the point sources
+        :return: list of integrated flux residuals (data - model) within the apertures around the point sources
+        """
+        # get point source image positions
+        ra_pos, dec_pos, amp = self._bandmodel.PointSource.point_source_list(
+            kwargs_ps=self._kwargs_ps_partial, kwargs_lens=self._kwargs_lens_partial
+        )
+
+        # query model and data
+        data = self._bandmodel.Data.data
+        model = self._model
+        residuals = data - model
+        aperture_diff_list = []
+        # cut out aperture lists for each point source
+        x_grid, y_grid = self._bandmodel.Data.pixel_coordinates
+        for k in range(len(ra_pos)):
+            mask = mask_util.mask_azimuthal(
+                x_grid, y_grid, ra_pos[k], dec_pos[k], aperture_radius
+            )
+            # calculate integrated aperture residual flux
+            aperture_diff = np.sum(residuals * mask)
+            aperture_diff_list.append(aperture_diff)
+        return np.array(aperture_diff_list)
 
 
 @export

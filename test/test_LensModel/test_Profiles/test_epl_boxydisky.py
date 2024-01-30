@@ -10,7 +10,7 @@ from lenstronomy.Util import util
 class TestEPL_BOXYDISKY(object):
     """Test EPL_BOXYDISKY vs EPL + MULTIPOLE values."""
 
-    def setup(self):
+    def setup_method(self):
         from lenstronomy.LensModel.Profiles.epl import EPL
 
         self.epl = EPL()
@@ -26,28 +26,32 @@ class TestEPL_BOXYDISKY(object):
         self.gamma_list = [1.8, 2.0, 2.2]
         self.e1_list = [-0.2, 0.0, 0.2]
         self.e2_list = [-0.2, 0.0, 0.2]
-        self.a_m_list = [0.0, 0.05, -0.05]
+        self.a4_a_list = [0.0, 0.05, -0.05]
 
     def test_function(self):
         for gamma in self.gamma_list:
             for e1 in self.e1_list:
                 for e2 in self.e2_list:
                     for theta_E in self.theta_E_list:
-                        for a_m in self.a_m_list:
+                        for a4_a in self.a4_a_list:
                             kwargs_epl = {
                                 "theta_E": theta_E,
                                 "gamma": gamma,
                                 "e1": e1,
                                 "e2": e2,
                             }
-                            phi, _ = param_util.ellipticity2phi_q(e1, e2)
-                            kwargs_multipole = {"m": 4, "a_m": a_m, "phi_m": phi}
+                            phi, q = param_util.ellipticity2phi_q(e1, e2)
+                            kwargs_multipole = {
+                                "m": 4,
+                                "a_m": a4_a * theta_E / np.sqrt(q),
+                                "phi_m": phi,
+                            }
                             kwargs_epl_boxydisky = {
                                 "theta_E": theta_E,
                                 "gamma": gamma,
                                 "e1": e1,
                                 "e2": e2,
-                                "a_m": a_m,
+                                "a4_a": a4_a,
                             }
                             value1 = self.epl.function(
                                 self.x, self.y, **kwargs_epl
@@ -64,21 +68,25 @@ class TestEPL_BOXYDISKY(object):
             for e1 in self.e1_list:
                 for e2 in self.e2_list:
                     for theta_E in self.theta_E_list:
-                        for a_m in self.a_m_list:
+                        for a4_a in self.a4_a_list:
                             kwargs_epl = {
                                 "theta_E": theta_E,
                                 "gamma": gamma,
                                 "e1": e1,
                                 "e2": e2,
                             }
-                            phi, _ = param_util.ellipticity2phi_q(e1, e2)
-                            kwargs_multipole = {"m": 4, "a_m": a_m, "phi_m": phi}
+                            phi, q = param_util.ellipticity2phi_q(e1, e2)
+                            kwargs_multipole = {
+                                "m": 4,
+                                "a_m": a4_a * theta_E / np.sqrt(q),
+                                "phi_m": phi,
+                            }
                             kwargs_epl_boxydisky = {
                                 "theta_E": theta_E,
                                 "gamma": gamma,
                                 "e1": e1,
                                 "e2": e2,
-                                "a_m": a_m,
+                                "a4_a": a4_a,
                             }
 
                             f_x1, f_y1 = self.epl.derivatives(
@@ -101,21 +109,25 @@ class TestEPL_BOXYDISKY(object):
             for e1 in self.e1_list:
                 for e2 in self.e2_list:
                     for theta_E in self.theta_E_list:
-                        for a_m in self.a_m_list:
+                        for a4_a in self.a4_a_list:
                             kwargs_epl = {
                                 "theta_E": theta_E,
                                 "gamma": gamma,
                                 "e1": e1,
                                 "e2": e2,
                             }
-                            phi, _ = param_util.ellipticity2phi_q(e1, e2)
-                            kwargs_multipole = {"m": 4, "a_m": a_m, "phi_m": phi}
+                            phi, q = param_util.ellipticity2phi_q(e1, e2)
+                            kwargs_multipole = {
+                                "m": 4,
+                                "a_m": a4_a * theta_E / np.sqrt(q),
+                                "phi_m": phi,
+                            }
                             kwargs_epl_boxydisky = {
                                 "theta_E": theta_E,
                                 "gamma": gamma,
                                 "e1": e1,
                                 "e2": e2,
-                                "a_m": a_m,
+                                "a4_a": a4_a,
                             }
                             f_xx1, f_xy1, f_yx1, f_yy1 = self.epl.hessian(
                                 self.x, self.y, **kwargs_epl
@@ -130,6 +142,7 @@ class TestEPL_BOXYDISKY(object):
                             f_xx_, f_xy_, f_yx_, f_yy_ = self.epl_boxydisky.hessian(
                                 self.x, self.y, **kwargs_epl_boxydisky
                             )
+
                             npt.assert_almost_equal(f_xx, f_xx_, decimal=10)
                             npt.assert_almost_equal(f_xy, f_xy_, decimal=10)
                             npt.assert_almost_equal(f_yx, f_yx_, decimal=10)

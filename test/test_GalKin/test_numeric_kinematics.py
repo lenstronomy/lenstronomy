@@ -71,6 +71,10 @@ class TestMassProfile(object):
         }
         analytic_kin = AnalyticKinematics(kwargs_cosmo, **kwargs_numerics)
         numeric_kin = NumericKinematics(kwargs_model, kwargs_cosmo, **kwargs_numerics)
+
+        assert numeric_kin.max_integrate == 4000
+        assert numeric_kin.min_integrate == 0.001
+
         rho0_r0_gamma = analytic_kin._rho0_r0_gamma(theta_E, gamma)
         r_array = np.logspace(-2.9, 2.9, 100)
         sigma_r_analytic_array = []
@@ -93,7 +97,50 @@ class TestMassProfile(object):
             1,
             decimal=-2,
         )
-        print(np.array(sigma_r_num_array) / np.array(sigma_r_analytic_array))
+
+    def test_lum_weighted_vel_disp(self):
+        """Test luminosity weighted velocity dispersion."""
+        light_profile_list = ["HERNQUIST"]
+        r_eff = 0.5
+        Rs = 0.551 * r_eff
+        kwargs_light = [
+            {"Rs": Rs, "amp": 1.0}
+        ]  # effective half light radius (2d projected) in arcsec
+        # 0.551 *
+        # mass profile
+        mass_profile_list = ["SPP"]
+        theta_E = 1.2
+        gamma = 1.95
+        kwargs_mass = [
+            {"theta_E": theta_E, "gamma": gamma}
+        ]  # Einstein radius (arcsec) and power-law slope
+
+        # anisotropy profile
+        anisotropy_type = "OM"
+        r_ani = 0.5
+        kwargs_anisotropy = {"r_ani": r_ani}  # anisotropy radius [arcsec]
+
+        kwargs_cosmo = {"d_d": 1000, "d_s": 1500, "d_ds": 800}
+        kwargs_numerics = {
+            "interpol_grid_num": 2000,
+            "log_integration": True,
+            "max_integrate": 4000,
+            "min_integrate": 0.001,
+        }
+
+        kwargs_model = {
+            "mass_profile_list": mass_profile_list,
+            "light_profile_list": light_profile_list,
+            "anisotropy_model": anisotropy_type,
+        }
+        # analytic_kin = AnalyticKinematics(kwargs_cosmo, **kwargs_numerics)
+        numeric_kin = NumericKinematics(kwargs_model, kwargs_cosmo, **kwargs_numerics)
+
+        R = 1
+        vel_disp = numeric_kin.lum_weighted_vel_disp(
+            R, kwargs_mass, kwargs_light, kwargs_anisotropy
+        )
+        npt.assert_almost_equal(vel_disp, 244, decimal=-1)
 
     def test_sigma_s2(self):
         """Test LOS projected velocity dispersion at 3d ratios (numerical Jeans equation

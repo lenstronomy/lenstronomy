@@ -65,6 +65,7 @@ class ModelBandPlot(ModelBand):
         self._v_min_default = max(np.min(log_model), -5)
         self._v_max_default = min(np.max(log_model), 10)
         self._coords = self._bandmodel.Data
+        self._width_x, self._width_y = self._coords.width
         self._data = self._coords.data
         self._deltaPix = self._coords.pixel_width
         self._frame_size = np.max(self._coords.width)
@@ -76,6 +77,13 @@ class ModelBandPlot(ModelBand):
         self._cmap = plot_util.cmap_conf(cmap_string)
         self._arrow_size = arrow_size
         self._fast_caustic = fast_caustic
+
+        self._image_extent = [
+            -self._deltaPix / 2,
+            self._width_x - self._deltaPix / 2,
+            -self._deltaPix / 2,
+            self._width_y - self._deltaPix / 2,
+        ]
 
     def _critical_curves(self):
         if not hasattr(self, "_ra_crit_list") or not hasattr(self, "_dec_crit_list"):
@@ -147,7 +155,7 @@ class ModelBandPlot(ModelBand):
         im = ax.matshow(
             np.log10(self._data),
             origin="lower",
-            extent=[0, self._frame_size, 0, self._frame_size],
+            extent=self._image_extent,
             cmap=self._cmap,
             vmin=v_min,
             vmax=v_max,
@@ -212,7 +220,7 @@ class ModelBandPlot(ModelBand):
             origin="lower",
             vmin=v_min,
             vmax=v_max,
-            extent=[0, self._frame_size, 0, self._frame_size],
+            extent=self._image_extent,
             cmap=self._cmap,
         )
         ax.get_xaxis().set_visible(False)
@@ -285,7 +293,7 @@ class ModelBandPlot(ModelBand):
         im = ax.matshow(
             np.log10(kappa_result),
             origin="lower",
-            extent=[0, self._frame_size, 0, self._frame_size],
+            extent=self._image_extent,
             cmap=kwargs["cmap"],
             vmin=v_min,
             vmax=v_max,
@@ -396,7 +404,7 @@ class ModelBandPlot(ModelBand):
             origin="lower",
             vmin=v_min,
             vmax=v_max,
-            extent=[0, self._frame_size, 0, self._frame_size],
+            extent=self._image_extent,
             cmap=cmap,
         )
         ax.get_xaxis().set_visible(False)
@@ -482,7 +490,7 @@ class ModelBandPlot(ModelBand):
             self._norm_residuals,
             vmin=v_min,
             vmax=v_max,
-            extent=[0, self._frame_size, 0, self._frame_size],
+            extent=self._image_extent,
             origin="lower",
             **kwargs
         )
@@ -534,7 +542,7 @@ class ModelBandPlot(ModelBand):
             self._model - self._data,
             vmin=v_min,
             vmax=v_max,
-            extent=[0, self._frame_size, 0, self._frame_size],
+            extent=self._image_extent,
             cmap="bwr",
             origin="lower",
         )
@@ -667,7 +675,12 @@ class ModelBandPlot(ModelBand):
         im = ax.matshow(
             source_scale,
             origin="lower",
-            extent=[0, d_s, 0, d_s],
+            extent=[
+                -deltaPix_source / 2,
+                d_s - deltaPix_source / 2,
+                -deltaPix_source / 2,
+                d_s - deltaPix_source / 2,
+            ],
             cmap=self._cmap,
             vmin=v_min,
             vmax=v_max,
@@ -790,7 +803,12 @@ class ModelBandPlot(ModelBand):
         im = ax.matshow(
             error_map_source,
             origin="lower",
-            extent=[0, d_s, 0, d_s],
+            extent=[
+                -deltaPix_source / 2,
+                d_s - deltaPix_source / 2,
+                -deltaPix_source / 2,
+                d_s - deltaPix_source / 2,
+            ],
             cmap=self._cmap,
             vmin=v_min,
             vmax=v_max,
@@ -877,7 +895,7 @@ class ModelBandPlot(ModelBand):
         im = ax.matshow(
             mag_result,
             origin="lower",
-            extent=[0, self._frame_size, 0, self._frame_size],
+            extent=self._image_extent,
             vmin=v_min,
             vmax=v_max,
             **kwargs
@@ -952,7 +970,7 @@ class ModelBandPlot(ModelBand):
         im = ax.matshow(
             alpha,
             origin="lower",
-            extent=[0, self._frame_size, 0, self._frame_size],
+            extent=self._image_extent,
             vmin=v_min,
             vmax=v_max,
             cmap=self._cmap,
@@ -1047,11 +1065,13 @@ class ModelBandPlot(ModelBand):
             self._kwargs_source_partial,
             self._kwargs_lens_light_partial,
             self._kwargs_ps_partial,
+            kwargs_special=self._kwargs_special_partial,
             unconvolved=unconvolved,
             source_add=source_add,
             lens_light_add=lens_light_add,
             point_source_add=point_source_add,
         )
+
         if v_min is None:
             v_min = self._v_min_default
         if v_max is None:
@@ -1063,7 +1083,7 @@ class ModelBandPlot(ModelBand):
             origin="lower",
             vmin=v_min,
             vmax=v_max,
-            extent=[0, self._frame_size, 0, self._frame_size],
+            extent=self._image_extent,
             **kwargs
         )
         ax.get_xaxis().set_visible(False)
@@ -1104,6 +1124,7 @@ class ModelBandPlot(ModelBand):
             self._kwargs_source_partial,
             self._kwargs_lens_light_partial,
             self._kwargs_ps_partial,
+            kwargs_special=self._kwargs_special_partial,
             unconvolved=False,
             source_add=source_add,
             lens_light_add=lens_light_add,
@@ -1118,7 +1139,7 @@ class ModelBandPlot(ModelBand):
             origin="lower",
             vmin=v_min,
             vmax=v_max,
-            extent=[0, self._frame_size, 0, self._frame_size],
+            extent=self._image_extent,
             cmap=self._cmap,
         )
         ax.get_xaxis().set_visible(False)
@@ -1264,7 +1285,7 @@ class ModelBandPlot(ModelBand):
             origin="lower",
             vmin=v_min,
             vmax=v_max,
-            extent=[0, self._frame_size, 0, self._frame_size],
+            extent=self._image_extent,
             **kwargs
         )
         return ax

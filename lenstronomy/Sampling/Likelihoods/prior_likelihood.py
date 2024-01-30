@@ -119,6 +119,7 @@ class PriorLikelihood(object):
         kwargs_ps=None,
         kwargs_special=None,
         kwargs_extinction=None,
+        kwargs_tracer_source=None,
     ):
         """
 

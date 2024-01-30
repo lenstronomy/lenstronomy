@@ -82,11 +82,9 @@ class TestNumericsProfile(object):
     def setup_method(self):
         pass
 
-    def assert_differentials(self, lens_model, kwargs, potential=True):
-        # lensModelNum = NumericLens(lens_model)
-        diff = 0.000001
-        # x, y = 1., 2.
-
+    def assert_differentials(
+        self, lens_model, kwargs, potential=True, diff=0.000001, decimal=3
+    ):
         x = np.linspace(start=0.1, stop=5.5, num=10)
         y = np.zeros_like(x)
 
@@ -96,16 +94,16 @@ class TestNumericsProfile(object):
             x, y, [kwargs], diff=diff
         )
 
-        npt.assert_almost_equal(f_xx, f_xx_num, decimal=3)
-        npt.assert_almost_equal(f_yy, f_yy_num, decimal=3)
-        npt.assert_almost_equal(f_xy, f_xy_num, decimal=3)
+        npt.assert_almost_equal(f_xx, f_xx_num, decimal=decimal)
+        npt.assert_almost_equal(f_yy, f_yy_num, decimal=decimal)
+        npt.assert_almost_equal(f_xy, f_xy_num, decimal=decimal)
 
         if potential is True:
             f_x, f_y = lensModel.alpha(x, y, [kwargs])
             f_x_num, f_y_num = lensModel.alpha(x, y, [kwargs], diff=diff)
 
-            npt.assert_almost_equal(f_x, f_x_num, decimal=3)
-            npt.assert_almost_equal(f_y, f_y_num, decimal=3)
+            npt.assert_almost_equal(f_x, f_x_num, decimal=decimal)
+            npt.assert_almost_equal(f_y, f_y_num, decimal=decimal)
 
         y = np.linspace(start=0.1, stop=5.5, num=10)
         x = np.zeros_like(y)
@@ -116,16 +114,16 @@ class TestNumericsProfile(object):
             x, y, [kwargs], diff=diff
         )
 
-        npt.assert_almost_equal(f_xx, f_xx_num, decimal=3)
-        npt.assert_almost_equal(f_yy, f_yy_num, decimal=3)
-        npt.assert_almost_equal(f_xy, f_xy_num, decimal=3)
+        npt.assert_almost_equal(f_xx, f_xx_num, decimal=decimal)
+        npt.assert_almost_equal(f_yy, f_yy_num, decimal=decimal)
+        npt.assert_almost_equal(f_xy, f_xy_num, decimal=decimal)
 
         if potential is True:
             f_x, f_y = lensModel.alpha(x, y, [kwargs])
             f_x_num, f_y_num = lensModel.alpha(x, y, [kwargs], diff=diff)
 
-            npt.assert_almost_equal(f_x, f_x_num, decimal=3)
-            npt.assert_almost_equal(f_y, f_y_num, decimal=3)
+            npt.assert_almost_equal(f_x, f_x_num, decimal=decimal)
+            npt.assert_almost_equal(f_y, f_y_num, decimal=decimal)
 
     def test_gaussian(self):
         lens_model = ["GAUSSIAN"]
@@ -259,6 +257,16 @@ class TestNumericsProfile(object):
         lens_model = ["POINT_MASS"]
         self.assert_differentials(lens_model, kwargs)
 
+    def test_radial_interpolation(self):
+        lens_model = ["RADIAL_INTERPOL"]
+        mass_sheet = LensModel(lens_model_list=["CONVERGENCE"])
+        kwargs_convergence = [{"kappa": 0.5}]
+        r_bin = np.linspace(start=0, stop=6, num=100)
+        r_bin = np.logspace(start=-3, stop=1, num=100)
+        kappa_r_sis = mass_sheet.kappa(r_bin, 0, kwargs=kwargs_convergence)
+        kwargs = {"r_bin": r_bin, "kappa_r": kappa_r_sis}
+        self.assert_differentials(lens_model, kwargs, diff=0.01, decimal=3)
+
     def test_sersic(self):
         kwargs = {"n_sersic": 0.5, "R_sersic": 1.5, "k_eff": 0.3}
         lens_model = ["SERSIC"]
@@ -341,7 +349,7 @@ class TestNumericsProfile(object):
         self.assert_differentials(lens_model, kwargs)
 
     def test_EPL_BOXYDISKY(self):
-        kwargs = {"theta_E": 2.0, "e1": 0.1, "e2": 0.2, "gamma": 2.13, "a_m": 0.1}
+        kwargs = {"theta_E": 2.0, "e1": 0.1, "e2": 0.2, "gamma": 2.13, "a4_a": 0.1}
         lens_model = ["EPL_BOXYDISKY"]
         self.assert_differentials(lens_model, kwargs)
 
@@ -584,13 +592,13 @@ class TestNumericsProfile(object):
         lens_model = ["SPL_CORE"]
         self.assert_differentials(lens_model, kwargs, potential=False)
 
-    def test_gnfw(self):
+    def test_pdpl(self):
         kwargs = {"alpha_Rs": 1.2, "Rs": 0.8, "gamma_inner": 2.3, "gamma_outer": 3.15}
-        lens_model = ["GNFW"]
+        lens_model = ["PSEUDO_DPL"]
         self.assert_differentials(lens_model, kwargs, potential=False)
 
         kwargs = {"alpha_Rs": 1.2, "Rs": 0.8, "gamma_inner": 0.3, "gamma_outer": 3.15}
-        lens_model = ["GNFW"]
+        lens_model = ["PSEUDO_DPL"]
         self.assert_differentials(lens_model, kwargs, potential=False)
 
     def test_cse(self):

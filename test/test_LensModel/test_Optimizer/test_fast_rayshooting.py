@@ -78,7 +78,7 @@ class TestFastRayShooting(object):
             ytrue,
             alpha_xtrue,
             alpha_ytrue,
-        ) = self.lensModel.lens_model.ray_shooting_partial(
+        ) = self.lensModel.lens_model.ray_shooting_partial_comoving(
             np.zeros_like(x_image_true),
             np.zeros_like(y_image_true),
             x_image_true,

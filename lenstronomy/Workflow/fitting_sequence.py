@@ -49,6 +49,7 @@ class FittingSequence(object):
          'point_source_model': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
          'extinction_model': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
          'special': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
+         'tracer_source_model': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
         :param mpi: MPI option (bool), if True, will launch an MPI Pool job for the steps in the fitting sequence where
          possible
         :param verbose: bool, if True prints temporary results and indicators of the fitting process
@@ -111,6 +112,7 @@ class FittingSequence(object):
             elif fitting_type == "PSO":
                 kwargs_result, chain, param = self.pso(**kwargs)
                 self._updateManager.update_param_state(**kwargs_result)
+
                 chain_list.append([fitting_type, chain, param])
 
             elif fitting_type == "SIMPLEX":
@@ -118,15 +120,52 @@ class FittingSequence(object):
                 self._updateManager.update_param_state(**kwargs_result)
                 chain_list.append([fitting_type, kwargs_result])
 
-            elif fitting_type == "MCMC":
+            elif fitting_type in ["MCMC", "emcee", "zeus"]:
+                if fitting_type == "MCMC":
+                    print("MCMC selected. Sampling with default option emcee.")
+                    fitting_type = "emcee"
                 if "init_samples" not in kwargs:
                     kwargs["init_samples"] = self._mcmc_init_samples
                 elif kwargs["init_samples"] is None:
                     kwargs["init_samples"] = self._mcmc_init_samples
-                mcmc_output = self.mcmc(**kwargs)
+                mcmc_output = self.mcmc(**kwargs, sampler_type=fitting_type)
                 kwargs_result = self._result_from_mcmc(mcmc_output)
                 self._updateManager.update_param_state(**kwargs_result)
                 chain_list.append(mcmc_output)
+
+            elif fitting_type == "Cobaya":
+                print("Using the Metropolis--Hastings MCMC sampler in Cobaya.")
+                param_class = self.param_class
+                kwargs_temp = self._updateManager.parameter_state
+                mean_start = param_class.kwargs2args(**kwargs_temp)
+                kwargs_sigma = self._updateManager.sigma_kwargs
+                sigma_start = np.array(param_class.kwargs2args(**kwargs_sigma))
+                # pass the likelihood and starting info to the sampler
+                sampler = CobayaSampler(self.likelihoodModule, mean_start, sigma_start)
+                # run the sampler
+                updated_info, sampler_type, best_fit_values = sampler.run(**kwargs)
+                # change the best-fit values returned by cobaya into lenstronomy kwargs format
+                best_fit_kwargs = self.param_class.args2kwargs(
+                    best_fit_values, bijective=True
+                )
+                # collect the products
+                mh_output = [updated_info, sampler_type, best_fit_kwargs]
+                # append the products to the chain list
+                chain_list.append(mh_output)
+
+            elif fitting_type in [
+                "dynesty",
+                "dyPolyChord",
+                "MultiNest",
+                "nested_sampling",
+            ]:
+                if fitting_type == "nested_sampling":
+                    print(
+                        "Nested sampling selected. Sampling with default option dynesty."
+                    )
+                    fitting_type = "dynesty"
+                ns_output = self.nested_sampling(**kwargs, sampler_type=fitting_type)
+                chain_list.append(ns_output)
 
             elif fitting_type == "Nautilus":
                 # do importance nested sampling with Nautilus
@@ -140,43 +179,15 @@ class FittingSequence(object):
                 kwargs_result = self.best_fit_from_samples(points, log_l)
                 self._updateManager.update_param_state(**kwargs_result)
 
-            elif fitting_type == "nested_sampling":
-                ns_output = self.nested_sampling(**kwargs)
-                chain_list.append(ns_output)
-
-            elif fitting_type == "metropolis_hastings":
-                print("Using the Metropolis--Hastings MCMC sampler in Cobaya.")
-
-                param_class = self.param_class
-
-                kwargs_temp = self._updateManager.parameter_state
-                mean_start = param_class.kwargs2args(**kwargs_temp)
-                kwargs_sigma = self._updateManager.sigma_kwargs
-                sigma_start = np.array(param_class.kwargs2args(**kwargs_sigma))
-
-                # pass the likelihood and starting info to the sampler
-                sampler = CobayaSampler(self.likelihoodModule, mean_start, sigma_start)
-
-                # run the sampler
-                updated_info, sampler_type, best_fit_values = sampler.run(**kwargs)
-
-                # change the best-fit values returned by cobaya into lenstronomy kwargs format
-                best_fit_kwargs = self.param_class.args2kwargs(
-                    best_fit_values, bijective=True
-                )
-
-                # collect the products
-                mh_output = [updated_info, sampler_type, best_fit_kwargs]
-
-                # append the products to the chain list
-                chain_list.append(mh_output)
-
             else:
                 raise ValueError(
-                    "fitting_sequence {} is not supported. Please use: 'PSO', 'SIMPLEX', 'MCMC', 'metropolis_hastings', "
-                    "'Nautilus', 'nested_sampling', 'psf_iteration', 'restart', 'update_settings', 'calibrate_images' or "
+                    "fitting_sequence {} is not supported. Please use: 'PSO', 'SIMPLEX', "
+                    "'MCMC' or 'emcee', 'zeus', 'Cobaya', "
+                    "'dynesty', 'dyPolyChord',  'Multinest', 'Nautilus, '"
+                    "'psf_iteration', 'restart', 'update_settings', 'calibrate_images' or "
                     "'align_images'".format(fitting_type)
                 )
+
         return chain_list
 
     def best_fit(self, bijective=False):
@@ -288,7 +299,7 @@ class FittingSequence(object):
         :param init_samples: initial sample from where to start the MCMC process
         :param re_use_samples: bool, if True, re-uses the samples described in init_samples.nOtherwise starts from
          scratch.
-        :param sampler_type: string, which MCMC sampler to be used. Options are: 'EMCEE', 'ZEUS'
+        :param sampler_type: string, which MCMC sampler to be used. Options are 'emcee' and 'zeus'
         :param progress: boolean, if True shows progress bar in EMCEE
         :param backend_filename: name of the HDF5 file where sampling state is saved (through emcee backend engine)
         :type backend_filename: string
@@ -299,7 +310,6 @@ class FittingSequence(object):
         :return: list of output arguments, e.g. MCMC samples, parameter names, logL distances of all samples specified
          by the specific sampler used
         """
-
         param_class = self.param_class
         # run PSO
         mcmc_class = Sampler(likelihoodModule=self.likelihoodModule)
@@ -328,23 +338,8 @@ class FittingSequence(object):
         else:
             initpos = None
 
-        if sampler_type == "EMCEE":
-            samples, dist = mcmc_class.mcmc_emcee(
-                n_walkers,
-                n_run,
-                n_burn,
-                mean_start,
-                sigma_start,
-                mpi=self._mpi,
-                threadCount=threadCount,
-                progress=progress,
-                initpos=initpos,
-                backend_filename=backend_filename,
-                start_from_backend=start_from_backend,
-            )
-            output = [sampler_type, samples, param_list, dist]
-
-        elif sampler_type == "ZEUS":
+        if sampler_type == "zeus":
+            # check if zeus is specified, if not default to emcee
             samples, dist = mcmc_class.mcmc_zeus(
                 n_walkers,
                 n_run,
@@ -360,7 +355,22 @@ class FittingSequence(object):
             )
             output = [sampler_type, samples, param_list, dist]
         else:
-            raise ValueError("sampler_type %s not supported!" % sampler_type)
+            # sample with emcee
+            samples, dist = mcmc_class.mcmc_emcee(
+                n_walkers,
+                n_run,
+                n_burn,
+                mean_start,
+                sigma_start,
+                mpi=self._mpi,
+                threadCount=threadCount,
+                progress=progress,
+                initpos=initpos,
+                backend_filename=backend_filename,
+                start_from_backend=start_from_backend,
+            )
+            output = [sampler_type, samples, param_list, dist]
+
         self._mcmc_init_samples = samples  # overwrites previous samples to continue from there in the next MCMC run
         return output
 
@@ -406,7 +416,7 @@ class FittingSequence(object):
 
     def nested_sampling(
         self,
-        sampler_type="MULTINEST",
+        sampler_type="dynesty",
         kwargs_run={},
         prior_type="uniform",
         width_scale=1,
@@ -462,24 +472,7 @@ class FittingSequence(object):
         """
         mean_start, sigma_start = self._prepare_sampling(prior_type)
 
-        if sampler_type == "MULTINEST":
-            sampler = MultiNestSampler(
-                self.likelihoodModule,
-                prior_type=prior_type,
-                prior_means=mean_start,
-                prior_sigmas=sigma_start,
-                width_scale=width_scale,
-                sigma_scale=sigma_scale,
-                output_dir=output_dir,
-                output_basename=output_basename,
-                remove_output_dir=remove_output_dir,
-                use_mpi=self._mpi,
-            )
-            samples, means, logZ, logZ_err, logL, results_object = sampler.run(
-                kwargs_run
-            )
-
-        elif sampler_type == "DYPOLYCHORD":
+        if sampler_type == "dyPolyChord":
             if "resume_dyn_run" in kwargs_run and kwargs_run["resume_dyn_run"] is True:
                 resume_dyn_run = True
             else:
@@ -502,7 +495,23 @@ class FittingSequence(object):
                 dypolychord_dynamic_goal, kwargs_run
             )
 
-        elif sampler_type == "DYNESTY":
+        elif sampler_type == "MultiNest":
+            sampler = MultiNestSampler(
+                self.likelihoodModule,
+                prior_type=prior_type,
+                prior_means=mean_start,
+                prior_sigmas=sigma_start,
+                width_scale=width_scale,
+                sigma_scale=sigma_scale,
+                output_dir=output_dir,
+                output_basename=output_basename,
+                remove_output_dir=remove_output_dir,
+                use_mpi=self._mpi,
+            )
+            samples, means, logZ, logZ_err, logL, results_object = sampler.run(
+                kwargs_run
+            )
+        else:
             sampler = DynestySampler(
                 self.likelihoodModule,
                 prior_type=prior_type,
@@ -518,8 +527,6 @@ class FittingSequence(object):
                 kwargs_run
             )
 
-        else:
-            raise ValueError("Sampler type %s not supported." % sampler_type)
         # update current best fit values
         self._update_state(samples[-1])
 
@@ -532,6 +539,7 @@ class FittingSequence(object):
             logZ_err,
             results_object,
         ]
+
         return output
 
     def psf_iteration(self, compute_bands=None, **kwargs_psf_iter):
@@ -691,11 +699,13 @@ class FittingSequence(object):
         lens_light_add_fixed=None,
         ps_add_fixed=None,
         special_add_fixed=None,
+        tracer_source_add_fixed=None,
         lens_remove_fixed=None,
         source_remove_fixed=None,
         lens_light_remove_fixed=None,
         ps_remove_fixed=None,
         special_remove_fixed=None,
+        tracer_source_remove_fixed=None,
         change_source_lower_limit=None,
         change_source_upper_limit=None,
         change_lens_lower_limit=None,
@@ -714,11 +724,15 @@ class FittingSequence(object):
         :param lens_light_add_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param ps_add_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param special_add_fixed: ['param1', 'param2',...]
+        :param special_add_fixed: ['param1', 'param2',...]
+        :param tracer_source_add_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param lens_remove_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param source_remove_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param lens_light_remove_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param ps_remove_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param special_remove_fixed: ['param1', 'param2',...]
+        :param special_remove_fixed: ['param1', 'param2',...]
+        :param tracer_source_remove_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param change_lens_lower_limit: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
         :param change_lens_upper_limit: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
         :param change_source_lower_limit: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
@@ -737,11 +751,13 @@ class FittingSequence(object):
             lens_light_add_fixed,
             ps_add_fixed,
             special_add_fixed,
+            tracer_source_add_fixed,
             lens_remove_fixed,
             source_remove_fixed,
             lens_light_remove_fixed,
             ps_remove_fixed,
             special_remove_fixed,
+            tracer_source_remove_fixed,
         )
         self._updateManager.update_limits(
             change_source_lower_limit,

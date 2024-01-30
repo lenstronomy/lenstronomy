@@ -15,6 +15,7 @@ from lenstronomy.Data.psf import PSF
 class TestImageCalibration(object):
     def __init__(self):
         np.random.seed(41)
+
         # data specifics
         sigma_bkg = 0.01  # background noise per pixel
         exp_time = 1000  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)

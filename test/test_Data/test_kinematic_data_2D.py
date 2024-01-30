@@ -11,7 +11,7 @@ import lenstronomy.Util.kernel_util as kernel_util
 
 
 class TestKinBin(object):
-    def setup_method(self):
+    def __init__(self):
         self.numPix = 10
         self.num_bin = 4
         kwargs_kin = {

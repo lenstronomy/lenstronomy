@@ -13,7 +13,7 @@ from lenstronomy.Data.psf import PSF
 
 
 class TestImageCalibration(object):
-    def __init__(self):
+    def setup_method(self, method):
         np.random.seed(41)
         # data specifics
         sigma_bkg = 0.01  # background noise per pixel

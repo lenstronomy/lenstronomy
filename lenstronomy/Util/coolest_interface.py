@@ -198,7 +198,7 @@ def create_lenstronomy_from_coolest(file_name, use_epl=True):
         )
 
         for lensing_entity in lensing_entities_list:
-            if lensing_entity.type == "galaxy":
+            if lensing_entity.type == "Galaxy":
                 galaxy = lensing_entity
                 if galaxy.redshift > min_redshift:
                     # SOURCE OF LIGHT
@@ -488,7 +488,7 @@ def update_coolest_from_lenstronomy(
         )
 
         for lensing_entity in lensing_entities_list:
-            if lensing_entity.type == "galaxy":
+            if lensing_entity.type == "Galaxy":
                 galaxy = lensing_entity
 
                 if galaxy.redshift > min_redshift:

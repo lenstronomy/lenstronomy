@@ -24,7 +24,7 @@ def create_lenstronomy_from_coolest(file_name, use_epl=True):
     creation_cosmo = False
     creation_data = False
     creation_instrument = False
-    creation_redshift_list = False
+    creation_redshift_list = False 
     creation_kwargs_likelihood = False
 
     decoder = JSONSerializer(file_name, indent=2)
@@ -198,7 +198,7 @@ def create_lenstronomy_from_coolest(file_name, use_epl=True):
         )
 
         for lensing_entity in lensing_entities_list:
-            if lensing_entity.type == "galaxy":
+            if lensing_entity.type == "Galaxy":
                 galaxy = lensing_entity
                 if galaxy.redshift > min_redshift:
                     # SOURCE OF LIGHT
@@ -488,7 +488,7 @@ def update_coolest_from_lenstronomy(
         )
 
         for lensing_entity in lensing_entities_list:
-            if lensing_entity.type == "galaxy":
+            if lensing_entity.type == "Galaxy":
                 galaxy = lensing_entity
 
                 if galaxy.redshift > min_redshift:

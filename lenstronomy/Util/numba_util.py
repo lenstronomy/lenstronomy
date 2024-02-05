@@ -76,17 +76,17 @@ def overload(
 
         def wrapper(func):
             # TODO change to overload, but currently breaks tests with nopython
-            return numba.generated_jit(
-                func,
-                nopython=nopython,
-                cache=cache,
-                parallel=parallel,
-                fastmath=fastmath,
-                error_model=error_model,
-            )
-            # return extending.overload(func, jit_options={'nopython': nopython, 'cache': cache,
-            #                                             'parallel': parallel,
-            #                                             'fastmath': fastmath, 'error_model': error_model})
+            #return numba.generated_jit(
+            #    func,
+            #    nopython=nopython,
+            #    cache=cache,
+            #    parallel=parallel,
+            #    fastmath=fastmath,
+            #    error_model=error_model,
+            # )
+            return extending.overload(func, jit_options={'nopython': nopython, 'cache': cache,
+                                                         'parallel': parallel,
+                                                         'fastmath': fastmath, 'error_model': error_model})
 
     else:
 

@@ -1,4 +1,5 @@
 """Tests for `Galkin` module."""
+
 import pytest
 import numpy as np
 import numpy.testing as npt

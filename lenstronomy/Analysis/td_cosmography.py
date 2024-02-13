@@ -218,9 +218,7 @@ class TDCosmography(KinematicsAPI):
             voronoi_bins=voronoi_bins,
         )
         sigma_v_map *= 1000  # convert from [km/s] to  [m/s]
-        J_map = (
-            sigma_v_map**2 * self._lens_cosmo.dds / self._lens_cosmo.ds / const.c**2
-        )
+        J_map = sigma_v_map**2 * self._lens_cosmo.dds / self._lens_cosmo.ds / const.c**2
         return J_map
 
     @staticmethod

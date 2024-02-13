@@ -1,4 +1,5 @@
 """Tests for `galkin` module."""
+
 import pytest
 import unittest
 import copy

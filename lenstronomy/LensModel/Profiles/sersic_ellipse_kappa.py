@@ -176,9 +176,7 @@ class SersicEllipseKappa(LensProfileBase):
             ellip_coord, 0, n_sersic, R_sersic, keff, centerx, centery
         )
 
-        return (
-            ellip_coord * def_angle_circular * (1 - (1 - q**2) * u) ** -0.5 * u**-1
-        )
+        return ellip_coord * def_angle_circular * (1 - (1 - q**2) * u) ** -0.5 * u**-1
 
     def _compute_derivative_atcoord(
         self, x, y, n_sersic, R_sersic, k_eff, phi_G, q, center_x=0, center_y=0

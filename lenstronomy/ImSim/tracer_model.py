@@ -24,6 +24,7 @@ class TracerModelSource(ImageModel):
         psf_error_map_bool_list=None,
         kwargs_pixelbased=None,
         tracer_partition=None,
+        tracer_type='LINEAR',
     ):
         """
 
@@ -44,6 +45,9 @@ class TracerModelSource(ImageModel):
         :param tracer_partition: in case of tracer models for specific sub-parts of the surface brightness model
          [[list of light profiles, list of tracer profiles], [list of light profiles, list of tracer profiles], [...], ...]
         :type tracer_partition: None or list
+        :param tracer_type: LINEAR or METALLICITY; to determine how tracers are summed between components, as metallicities
+         which use log units should not be added linearly.
+        :type tracer_partition: str
         """
         if likelihood_mask is None:
             likelihood_mask = np.ones_like(data_class.data)
@@ -52,6 +56,9 @@ class TracerModelSource(ImageModel):
         if tracer_partition is None:
             tracer_partition = [[None, None]]
         self._tracer_partition = tracer_partition
+        if tracer_type not in ['LINEAR', 'METALLICITY']:
+            raise Exception("Only two tracer types are currently supported: LINEAR and METALLICITY. (Input tracer_type: {0})".format(tracer_type))
+        self._tracer_type = tracer_type
         super(TracerModelSource, self).__init__(
             data_class,
             psf_class=psf_class,
@@ -112,12 +119,23 @@ class TracerModelSource(ImageModel):
             tracer_k = self._tracer_model_source(
                 kwargs_tracer_source, kwargs_lens, de_lensed=de_lensed, k=k_tracer
             )
-            tracer_brightness_conv_k = self.ImageNumerics.re_size_convolve(
-                tracer_k * source_light_k, unconvolved=False
-            )
-            tracer_brightness_conv += tracer_brightness_conv_k
+            if self._tracer_type == 'LINEAR':
+                tracer_brightness_conv_k = self.ImageNumerics.re_size_convolve(
+                    tracer_k * source_light_k, unconvolved=False
+                )
+                tracer_brightness_conv += tracer_brightness_conv_k
+            if self._tracer_type == 'METALLICITY':
+                lin_tracer_k = 10**(tracer_k - 12)
+                lin_tracer_brightness_conv_k = self.ImageNumerics.re_size_convolve(
+                    lin_tracer_k * source_light_k, unconvolved=False
+                )
+                tracer_brightness_conv += lin_tracer_brightness_conv_k 
+
             source_light_conv += source_light_conv_k
-        return tracer_brightness_conv / source_light_conv
+        if self._tracer_type == 'LINEAR':
+            return tracer_brightness_conv / source_light_conv
+        if self._tracer_type == 'METALLICITY':
+            return np.log10(tracer_brightness_conv / source_light_conv) + 12
 
     def _tracer_model_source(
         self, kwargs_tracer_source, kwargs_lens, de_lensed=False, k=None

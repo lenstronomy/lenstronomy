@@ -50,7 +50,7 @@ def create_class_instances(
     tracer_source_model_list=None,
     tracer_source_band=0,
     tracer_partition=None,
-    tracer_type='LINEAR'
+    tracer_type="LINEAR",
 ):
     """
 

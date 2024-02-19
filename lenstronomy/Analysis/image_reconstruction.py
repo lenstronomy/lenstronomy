@@ -204,10 +204,10 @@ class ModelBand(object):
             kwargs_params_copy.get("kwargs_source", None),
             kwargs_params_copy.get("kwargs_lens_light", None),
             kwargs_params_copy.get("kwargs_ps", None),
-            #kwargs_lens_partial
-            #kwargs_source_partial,
-            #kwargs_lens_light_partial,
-            #kwargs_ps_partial,
+            # kwargs_lens_partial
+            # kwargs_source_partial,
+            # kwargs_lens_light_partial,
+            # kwargs_ps_partial,
         )
         # this is an (out-commented) example of how to re-create the model in this band
         # model_new = self.bandmodel.image(self._kwargs_lens_partial, self._kwargs_source_partial, self._kwargs_lens_light_partial, self._kwargs_ps_partial, self._kwargs_special_partial, self._kwargs_extinction_partial)

@@ -146,9 +146,9 @@ class PointSource(object):
         ):
             self._kwargs_lens_eqn_solver["min_distance"] = min_distance
         if only_from_unspecified:
-            self._kwargs_lens_eqn_solver[
-                "search_window"
-            ] = self._kwargs_lens_eqn_solver.get("search_window", search_window)
+            self._kwargs_lens_eqn_solver["search_window"] = (
+                self._kwargs_lens_eqn_solver.get("search_window", search_window)
+            )
             self._kwargs_lens_eqn_solver["x_center"] = self._kwargs_lens_eqn_solver.get(
                 "x_center", x_center
             )

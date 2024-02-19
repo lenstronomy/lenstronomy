@@ -422,9 +422,7 @@ class MultiPlaneBase(ProfileListBase):
         """
         d_beta_x = beta_j_x - beta_i_x
         d_beta_y = beta_j_y - beta_i_y
-        tau_ij = (
-            T_i * T_j / T_ij * const.Mpc / const.c / const.day_s * const.arcsec**2
-        )
+        tau_ij = T_i * T_j / T_ij * const.Mpc / const.c / const.day_s * const.arcsec**2
         return tau_ij * (d_beta_x**2 + d_beta_y**2) / 2
 
     def _lensing_potential2time_delay(self, potential, z_lens, z_source):

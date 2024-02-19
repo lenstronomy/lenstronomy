@@ -139,7 +139,7 @@ class TracerModelSource(ImageModel):
         if self._tracer_type == "LINEAR":
             return tracer_brightness_conv / source_light_conv
         if self._tracer_type == "LOG":
-            return np.log10(tracer_brightness_conv / source_light_conv) 
+            return np.log10(tracer_brightness_conv / source_light_conv)
 
     def _tracer_model_source(
         self, kwargs_tracer_source, kwargs_lens, de_lensed=False, k=None

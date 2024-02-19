@@ -70,6 +70,7 @@ class MultiBandImageReconstruction(object):
             kwargs_model,
             bands_compute=bands_compute,
             image_likelihood_mask_list=image_likelihood_mask_list,
+            linear_solver=True,
         )
 
         # here we perform the (joint) linear inversion with all data
@@ -154,6 +155,7 @@ class ModelBand(object):
         image_likelihood_mask_list=None,
         band_index=0,
         verbose=True,
+        linear_solver=True,
     ):
         """
 
@@ -169,6 +171,8 @@ class ModelBand(object):
         :param image_likelihood_mask_list: list of 2d numpy arrays of likelihood masks (for all bands)
         :param band_index: integer of the band to be considered in this class
         :param verbose: if True (default), prints the reduced chi2 value for the current band.
+        :param linear_solver: bool, if True (default) fixes the linear amplitude parameters 'amp' (avoid sampling) such
+         that they get overwritten by the linear solver solution.
         """
 
         self._bandmodel = SingleBandMultiModel(
@@ -176,6 +180,7 @@ class ModelBand(object):
             kwargs_model,
             likelihood_mask_list=image_likelihood_mask_list,
             band_index=band_index,
+            linear_solver=linear_solver,
         )
         self._kwargs_special_partial = kwargs_params.get("kwargs_special", None)
         self._kwargs_lens = kwargs_params.get("kwargs_lens", None)
@@ -193,12 +198,16 @@ class ModelBand(object):
             self._kwargs_source_partial,
             self._kwargs_lens_light_partial,
             self._kwargs_ps_partial,
-        ) = self._bandmodel._update_linear_kwargs(
+        ) = self._bandmodel.update_linear_kwargs(
             param,
-            kwarks_lens_partial,
-            kwargs_source_partial,
-            kwargs_lens_light_partial,
-            kwargs_ps_partial,
+            kwargs_params_copy.get("kwargs_lens", None),
+            kwargs_params_copy.get("kwargs_source", None),
+            kwargs_params_copy.get("kwargs_lens_light", None),
+            kwargs_params_copy.get("kwargs_ps", None),
+            #kwargs_lens_partial
+            #kwargs_source_partial,
+            #kwargs_lens_light_partial,
+            #kwargs_ps_partial,
         )
         # this is an (out-commented) example of how to re-create the model in this band
         # model_new = self.bandmodel.image(self._kwargs_lens_partial, self._kwargs_source_partial, self._kwargs_lens_light_partial, self._kwargs_ps_partial, self._kwargs_special_partial, self._kwargs_extinction_partial)

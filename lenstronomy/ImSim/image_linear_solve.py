@@ -498,10 +498,12 @@ class ImageLinearFit(ImageModel):
         :return: number of linear coefficients to be solved for in the linear inversion
         """
         num = 0
-        if self._pixelbased_bool is False:
+
+        if self._pixelbased_bool is False and self._linear_solver is True:
             num += self.SourceModel.num_param_linear(kwargs_source)
             num += self.LensLightModel.num_param_linear(kwargs_lens_light)
-        num += self.PointSource.num_basis(kwargs_ps, kwargs_lens)
+        if self._linear_solver is True:
+            num += self.PointSource.num_basis(kwargs_ps, kwargs_lens)
         return num
 
     def _linear_response_matrix(
@@ -609,14 +611,15 @@ class ImageLinearFit(ImageModel):
         :param param: linear parameter vector corresponding to the response matrix
         :return: updated list of kwargs with linear parameter values
         """
-        i = 0
-        kwargs_source, i = self.SourceModel.update_linear(
-            param, i, kwargs_list=kwargs_source
-        )
-        kwargs_lens_light, i = self.LensLightModel.update_linear(
-            param, i, kwargs_list=kwargs_lens_light
-        )
-        kwargs_ps, i = self.PointSource.update_linear(param, i, kwargs_ps, kwargs_lens)
+        if self._linear_solver is True:
+            i = 0
+            kwargs_source, i = self.SourceModel.update_linear(
+                param, i, kwargs_list=kwargs_source
+            )
+            kwargs_lens_light, i = self.LensLightModel.update_linear(
+                param, i, kwargs_list=kwargs_lens_light
+            )
+            kwargs_ps, i = self.PointSource.update_linear(param, i, kwargs_ps, kwargs_lens)
         return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps
 
     def linear_param_from_kwargs(self, kwargs_source, kwargs_lens_light, kwargs_ps):
@@ -642,9 +645,10 @@ class ImageLinearFit(ImageModel):
         :return: list of linear coefficients
         """
         param = []
-        param += self.SourceModel.linear_param_from_kwargs(kwargs_source)
-        param += self.LensLightModel.linear_param_from_kwargs(kwargs_lens_light)
-        param += self.PointSource.linear_param_from_kwargs(kwargs_ps)
+        if self._linear_solver is True:
+            param += self.SourceModel.linear_param_from_kwargs(kwargs_source)
+            param += self.LensLightModel.linear_param_from_kwargs(kwargs_lens_light)
+            param += self.PointSource.linear_param_from_kwargs(kwargs_ps)
         return param
 
     def update_pixel_kwargs(self, kwargs_source, kwargs_lens_light):

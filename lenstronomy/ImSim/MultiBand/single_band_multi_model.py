@@ -376,9 +376,8 @@ class SingleBandMultiModel(ImageLinearFit):
             kwargs_ps,
             kwargs_extinction=None,
         )
-        if self._linear_solver is True:
-            self._update_linear_kwargs(
-                param, kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i
+        self._update_linear_kwargs(
+            param, kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i
             )
         return kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i
 
@@ -393,8 +392,6 @@ class SingleBandMultiModel(ImageLinearFit):
 
         :return: number of linear coefficients to be solved for in the linear inversion
         """
-        if self._linear_solver is False:
-            return 0
         (
             kwargs_lens_i,
             kwargs_source_i,

@@ -389,7 +389,7 @@ def create_tracer_model(tracer_data, kwargs_model, tracer_likelihood_mask=None):
 
     :param tracer_data:
     :param kwargs_model:
-    :param tracer_likelihood_mask_list:
+    :param tracer_likelihood_mask:
 
     :return:
     """

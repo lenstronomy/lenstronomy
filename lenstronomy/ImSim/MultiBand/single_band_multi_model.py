@@ -487,41 +487,6 @@ class SingleBandMultiModel(ImageLinearFit):
             kwargs_lens_i, kwargs_ps_i, kwargs_special=kwargs_special
         )
 
-    def update_linear_kwargs(
-        self,
-        param,
-        kwargs_lens,
-        kwargs_source,
-        kwargs_lens_light,
-        kwargs_ps,
-        model_band=None,
-    ):
-        """
-
-        links linear parameters to kwargs arguments
-        ATTENTION: this function requires input dictionary lists to be already contracted to the ones applied to the
-        specific band
-
-        :param param: linear parameter vector corresponding to the response matrix
-        :return: updated list of kwargs with linear parameter values
-        """
-        (
-            kwargs_lens_i,
-            kwargs_source_i,
-            kwargs_lens_light_i,
-            kwargs_ps_i,
-            kwargs_extinction_i,
-        ) = self.select_kwargs(
-            kwargs_lens,
-            kwargs_source,
-            kwargs_lens_light,
-            kwargs_ps,
-            kwargs_extinction=None,
-        )
-        return self._update_linear_kwargs(
-            param, kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i
-        )
-
     def extinction_map(self, kwargs_extinction=None, kwargs_special=None):
         """Differential extinction per pixel.
 

@@ -50,6 +50,7 @@ def create_class_instances(
     tracer_source_model_list=None,
     tracer_source_band=0,
     tracer_partition=None,
+    tracer_type="LINEAR",
 ):
     """
 
@@ -104,6 +105,8 @@ def create_class_instances(
     :param tracer_partition: in case of tracer models for specific sub-parts of the surface brightness model
      [[list of light profiles, list of tracer profiles], [list of light profiles, list of tracer profiles], [...], ...]
     :type tracer_partition: None or list
+    :param tracer_type: 'LINEAR' or 'LOG', to determine how tracers are summed between components
+    :type tracer_type: string
     :return: lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class
     """
     if lens_model_list is None:

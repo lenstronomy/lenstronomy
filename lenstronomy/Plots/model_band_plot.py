@@ -661,9 +661,7 @@ class ModelBandPlot(ModelBand):
         d_s = numPix * deltaPix_source
         source, coords_source = self.source(numPix, deltaPix_source, center=center)
         if plot_scale == "log":
-            source[source < 10**v_min] = 10 ** (
-                v_min
-            )  # to remove weird shadow in plot
+            source[source < 10**v_min] = 10 ** (v_min)  # to remove weird shadow in plot
             source_scale = np.log10(source)
         elif plot_scale == "linear":
             source_scale = source

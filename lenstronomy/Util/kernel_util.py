@@ -410,9 +410,9 @@ def averaging_odd_kernel(kernel_super, degrading_factor):
 
     kernel_super_ = np.zeros((n_high, n_high))
     i_start = int((n_high - n_kernel) / 2)
-    kernel_super_[
-        i_start : i_start + n_kernel, i_start : i_start + n_kernel
-    ] = kernel_super
+    kernel_super_[i_start : i_start + n_kernel, i_start : i_start + n_kernel] = (
+        kernel_super
+    )
     kernel_low_res = util.averaging(kernel_super_, numGrid=n_high, numPix=numPix)
     return kernel_low_res
 

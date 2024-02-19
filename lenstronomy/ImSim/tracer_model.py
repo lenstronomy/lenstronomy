@@ -45,8 +45,8 @@ class TracerModelSource(ImageModel):
         :param tracer_partition: in case of tracer models for specific sub-parts of the surface brightness model
          [[list of light profiles, list of tracer profiles], [list of light profiles, list of tracer profiles], [...], ...]
         :type tracer_partition: None or list
-        :param tracer_type: LINEAR or METALLICITY; to determine how tracers are summed between components, as metallicities
-         which use log units should not be added linearly.
+        :param tracer_type: LINEAR or LOG. If the tracer is in log units, it is converted to linear units, summed,
+         and then converted back to log units.
         :type tracer_partition: str
         """
         if likelihood_mask is None:
@@ -56,9 +56,9 @@ class TracerModelSource(ImageModel):
         if tracer_partition is None:
             tracer_partition = [[None, None]]
         self._tracer_partition = tracer_partition
-        if tracer_type not in ["LINEAR", "METALLICITY"]:
+        if tracer_type not in ["LINEAR", "LOG"]:
             raise Exception(
-                "Only two tracer types are currently supported: LINEAR and METALLICITY. (Input tracer_type: {0})".format(
+                "Unknown input tracer_type: {0}. Only two tracer types are currently supported: LINEAR and LOG. Please convert your tracer to linear/log units.".format(
                     tracer_type
                 )
             )
@@ -128,8 +128,8 @@ class TracerModelSource(ImageModel):
                     tracer_k * source_light_k, unconvolved=False
                 )
                 tracer_brightness_conv += tracer_brightness_conv_k
-            if self._tracer_type == "METALLICITY":
-                lin_tracer_k = 10 ** (tracer_k - 12)
+            if self._tracer_type == "LOG":
+                lin_tracer_k = 10 ** (tracer_k)
                 lin_tracer_brightness_conv_k = self.ImageNumerics.re_size_convolve(
                     lin_tracer_k * source_light_k, unconvolved=False
                 )
@@ -138,8 +138,8 @@ class TracerModelSource(ImageModel):
             source_light_conv += source_light_conv_k
         if self._tracer_type == "LINEAR":
             return tracer_brightness_conv / source_light_conv
-        if self._tracer_type == "METALLICITY":
-            return np.log10(tracer_brightness_conv / source_light_conv) + 12
+        if self._tracer_type == "LOG":
+            return np.log10(tracer_brightness_conv / source_light_conv) 
 
     def _tracer_model_source(
         self, kwargs_tracer_source, kwargs_lens, de_lensed=False, k=None

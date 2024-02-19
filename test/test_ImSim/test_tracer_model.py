@@ -71,77 +71,98 @@ class TestTracerModel(object):
             "supersampling_factor": 2,
             "supersampling_convolution": False,
         }
-        self.tracerModel = TracerModelSource(
+        self.linearTracerModel = TracerModelSource(
             data_class,
             psf_class=psf_class,
             lens_model_class=lens_model_class,
             source_model_class=source_model_class,
             tracer_source_class=tracer_source_class,
             kwargs_numerics=kwargs_numerics,
+            tracer_type='LINEAR'
+        )
+        self.logTracerModel = TracerModelSource(
+            data_class,
+            psf_class=psf_class,
+            lens_model_class=lens_model_class,
+            source_model_class=source_model_class,
+            tracer_source_class=tracer_source_class,
+            kwargs_numerics=kwargs_numerics,
+            tracer_type='LOG'
         )
 
-    def test_tracer_model(self):
-        tracer_model = self.tracerModel.tracer_model(
+    def test_linear_tracer_model(self):
+        tracer_model = self.linearTracerModel.tracer_model(
             self.kwargs_tracer,
             kwargs_lens=self.kwargs_lens,
             kwargs_source=self.kwargs_source_light,
-            tracer_type="LINEAR",
         )
 
-        light_unconvolved = self.tracerModel.source_surface_brightness(
+        light_unconvolved = self.linearTracerModel.source_surface_brightness(
             kwargs_source=self.kwargs_source_light,
             kwargs_lens=self.kwargs_lens,
             unconvolved=True,
         )
 
-        light_convolved = self.tracerModel.source_surface_brightness(
+        light_convolved = self.linearTracerModel.source_surface_brightness(
             kwargs_source=self.kwargs_source_light,
             kwargs_lens=self.kwargs_lens,
             unconvolved=False,
         )
 
         source_light_num = (
-            self.tracerModel._source_surface_brightness_analytical_numerics(
+            self.linearTracerModel._source_surface_brightness_analytical_numerics(
                 self.kwargs_source_light, self.kwargs_lens, de_lensed=False
             )
         )
-        tracer = self.tracerModel._tracer_model_source(
+        tracer = self.linearTracerModel._tracer_model_source(
             self.kwargs_tracer, self.kwargs_lens, de_lensed=False
         )
-        tracer_brightness_conv = self.tracerModel.ImageNumerics.re_size_convolve(
+        tracer_brightness_conv = self.linearTracerModel.ImageNumerics.re_size_convolve(
             tracer * source_light_num, unconvolved=False
         )
         tracer_model_2 = tracer_brightness_conv / light_convolved
         npt.assert_almost_equal(tracer_model_2, tracer_model, decimal=5)
-
-    def test_log_and_linear_tracer_modes(self):
+        
+    def test_log_tracer_model(self):
         """Convolve a tracer with log units with a surface brightness profile in two ways:
-        (1) using the tracer_type="LOG" argument
-        (2) converting units to linear ones, using tracer_type="LINEAR", and
-        converting back to log units."""
-        tracer = self.tracerModel._tracer_model_source(
+         (1) using the tracer_type="LOG" argument
+         (2) converting units to linear ones, using tracer_type="LINEAR", and 
+         converting back to log units."""
+        tracer = self.logTracerModel._tracer_model_source(
             self.kwargs_tracer, self.kwargs_lens, de_lensed=False
         )
-
+        
         source_light_num = (
-            self.tracerModel._source_surface_brightness_analytical_numerics(
+            self.logTracerModel._source_surface_brightness_analytical_numerics(
                 self.kwargs_source_light, self.kwargs_lens, de_lensed=False
             )
         )
+        
+        light_unconvolved = self.linearTracerModel.source_surface_brightness(
+            kwargs_source=self.kwargs_source_light,
+            kwargs_lens=self.kwargs_lens,
+            unconvolved=True,
+        )
 
+        light_convolved = self.linearTracerModel.source_surface_brightness(
+            kwargs_source=self.kwargs_source_light,
+            kwargs_lens=self.kwargs_lens,
+            unconvolved=False,
+        )
+        
         # Uses tracer_type='LOG'
-        tracer_model_1 = self.tracerModel.tracer_model(
+        tracer_model_1 = self.logTracerModel.tracer_model(
             self.kwargs_tracer,
             kwargs_lens=self.kwargs_lens,
-            kwargs_source=self.kwargs_source_light,
-            tracer_type="LOG",
+            kwargs_source=self.kwargs_source_light
         )
-
+        
         # Converts to linear units; convolves; converts back.
-        linear_tracer = np.power(10, tracer)
-        linear_tracer_brightness_conv = self.tracerModel.ImageNumerics.re_size_convolve(
-            linear_tracer * source_light_num, unconvolved=False
+        linearized_tracer = np.power(10, tracer)
+        linearized_tracer_brightness_conv = self.logTracerModel.ImageNumerics.re_size_convolve(
+            linearized_tracer * source_light_num, unconvolved=False
         )
-        tracer_model_2 = np.log10(linear_tracer_brightness_conv)
-
+        tracer_model_2 = np.log10(linearized_tracer_brightness_conv/ light_convolved)
+        
         npt.assert_almost_equal(tracer_model_1, tracer_model_2, decimal=5)
+        

@@ -115,11 +115,10 @@ class TestTracerModel(object):
         npt.assert_almost_equal(tracer_model_2, tracer_model, decimal=5)
         
     def test_log_and_linear_tracer_modes(self):
-    	"""Convolve a tracer with log units with a surface brightness profile in two ways:
-
+    """Convolve a tracer with log units with a surface brightness profile in two ways:
      (1) using the tracer_type="LOG" argument
      (2) converting units to linear ones, using tracer_type="LINEAR", and 
-         converting back to log units.
+     converting back to log units.
      """
     	tracer = self.tracerModel._tracer_model_source(
             self.kwargs_tracer, self.kwargs_lens, de_lensed=False

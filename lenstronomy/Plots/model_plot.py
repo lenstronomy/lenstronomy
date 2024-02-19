@@ -143,6 +143,7 @@ class ModelPlot(object):
                     arrow_size=arrow_size,
                     cmap_string=cmap_string,
                     fast_caustic=fast_caustic,
+                    linear_solver=linear_solver,
                 )
 
                 self._band_plot_list.append(bandplot)

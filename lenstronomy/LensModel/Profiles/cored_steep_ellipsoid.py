@@ -252,10 +252,7 @@ class CSEMajorAxis(LensProfileBase):
             * x
             * y
             / (s * Phi)
-            * (
-                q**2 * s / psi**3
-                + 2 * (psi + q**2 * s) * (psi + s) / (psi**2 * Phi)
-            )
+            * (q**2 * s / psi**3 + 2 * (psi + q**2 * s) * (psi + s) / (psi**2 * Phi))
         )
 
         return a * f_xx, a * f_xy, a * f_xy, a * f_yy

@@ -134,9 +134,7 @@ class TestGaussianEllipseKappa(object):
         amp = 2.0
         f_ = self.gaussian_kappa_ellipse.density_2d(x, y, amp, sigma, e1, e2)
         f_sphere = (
-            amp
-            / (2.0 * np.pi * sigma**2)
-            * np.exp(-(x * x + y * y) / 2.0 / sigma**2)
+            amp / (2.0 * np.pi * sigma**2) * np.exp(-(x * x + y * y) / 2.0 / sigma**2)
         )
         npt.assert_almost_equal(f_, f_sphere, decimal=4)
 

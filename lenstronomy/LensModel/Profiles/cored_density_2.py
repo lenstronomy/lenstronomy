@@ -206,7 +206,9 @@ class CoredDensity2(LensProfileBase):
         :param r_core: core radius
         :return: mass enclosed in cylinder of radius r
         """
-        return sigma0 * r_core**2 * np.pi * np.log((r_core**2 + r**2) / r_core**2)
+        return (
+            sigma0 * r_core**2 * np.pi * np.log((r_core**2 + r**2) / r_core**2)
+        )
 
     @staticmethod
     def mass_3d(r, sigma0, r_core):

@@ -30,7 +30,12 @@ class Flexion(LensProfileBase):
         f_ = (
             1.0
             / 6
-            * (g1 * x_**3 + 3 * g2 * x_**2 * y_ + 3 * g3 * x_ * y_**2 + g4 * y_**3)
+            * (
+                g1 * x_**3
+                + 3 * g2 * x_**2 * y_
+                + 3 * g3 * x_ * y_**2
+                + g4 * y_**3
+            )
         )
         return f_
 

@@ -185,7 +185,11 @@ class CoreBurkert(LensProfileBase):
         return (
             M0
             * (1 + b**2) ** -1
-            * (0.5 * np.log(1 + c**2) + b**2 * np.log(c * b**-1 + 1) - b * np.arctan(c))
+            * (
+                0.5 * np.log(1 + c**2)
+                + b**2 * np.log(c * b**-1 + 1)
+                - b * np.arctan(c)
+            )
         )
 
     def cBurkPot(self, R, Rs, rho0, r_core):
@@ -337,7 +341,11 @@ class CoreBurkert(LensProfileBase):
                     - np.pi * p * np.log(1 + self._u(x))
                     + (0.3068528194400547 + 0.25 * np.log(p**2)) * np.log(p**2)
                     + np.log(x)
-                    * (0.6137056388801094 + 0.6137056388801094 * p**2 + np.log(p**2))
+                    * (
+                        0.6137056388801094
+                        + 0.6137056388801094 * p**2
+                        + np.log(p**2)
+                    )
                 )
             elif x * p > 1:
                 func = (
@@ -359,7 +367,11 @@ class CoreBurkert(LensProfileBase):
                     - np.pi * p * np.log(1 + self._u(x))
                     + (0.3068528194400547 + 0.25 * np.log(p**2)) * np.log(p**2)
                     + np.log(x)
-                    * (0.6137056388801094 + 0.6137056388801094 * p**2 + np.log(p**2))
+                    * (
+                        0.6137056388801094
+                        + 0.6137056388801094 * p**2
+                        + np.log(p**2)
+                    )
                 )
             else:
                 func = (
@@ -378,7 +390,11 @@ class CoreBurkert(LensProfileBase):
                     - np.pi * p * np.log(1 + self._u(x))
                     + (0.3068528194400547 + 0.25 * np.log(p**2)) * np.log(p**2)
                     + np.log(x)
-                    * (0.6137056388801094 + 0.6137056388801094 * p**2 + np.log(p**2))
+                    * (
+                        0.6137056388801094
+                        + 0.6137056388801094 * p**2
+                        + np.log(p**2)
+                    )
                 )
 
         return prefactor * func

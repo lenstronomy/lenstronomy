@@ -259,7 +259,9 @@ class NIEMajorAxis(LensProfileBase):
         if q >= 1:
             q = 0.99999999
         psi = self._psi(x, y, q, s)
-        f_x = b / np.sqrt(1.0 - q**2) * np.arctan(np.sqrt(1.0 - q**2) * x / (psi + s))
+        f_x = (
+            b / np.sqrt(1.0 - q**2) * np.arctan(np.sqrt(1.0 - q**2) * x / (psi + s))
+        )
         f_y = (
             b
             / np.sqrt(1.0 - q**2)

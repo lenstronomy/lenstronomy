@@ -301,7 +301,9 @@ class TestKinLikelihood(object):
         rescaled_map = self._KinLikelihood.rescale_distance(
             self.image_data, kwargs_special
         )
-        npt.assert_allclose(1 / np.sqrt(2) * self.image_data, rescaled_map, atol=10**-4)
+        npt.assert_allclose(
+            1 / np.sqrt(2) * self.image_data, rescaled_map, atol=10**-4
+        )
 
     def test_convert_kwargs_to_kinnalign_input(self):
         self._KinLikelihood.update_image_input(

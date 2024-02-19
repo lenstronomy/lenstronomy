@@ -118,7 +118,9 @@ class CoredDensity(LensProfileBase):
         :param r_core: core radius
         :return: deflection angle
         """
-        return 2 * sigma0 * r_core**2 / r * (1 - (1 + (r / r_core) ** 2) ** (-1.0 / 2))
+        return (
+            2 * sigma0 * r_core**2 / r * (1 - (1 + (r / r_core) ** 2) ** (-1.0 / 2))
+        )
 
     @staticmethod
     def d_alpha_dr(r, sigma0, r_core):

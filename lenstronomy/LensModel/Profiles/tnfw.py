@@ -214,7 +214,9 @@ class TNFW(LensProfileBase):
                 - 2 * (1 + x) * (-1 + r_trunc**2) * np.log(Rs)
                 + 2 * (1 + x) * (-1 + r_trunc**2) * np.log(Rs * (1 + x))
                 + 2 * (1 + x) * (-1 + r_trunc**2) * np.log(Rs * r_trunc)
-                - (1 + x) * (-1 + r_trunc**2) * np.log(Rs**2 * (x**2 + r_trunc**2))
+                - (1 + x)
+                * (-1 + r_trunc**2)
+                * np.log(Rs**2 * (x**2 + r_trunc**2))
             )
         ) / (2.0 * (1 + x) * (1 + r_trunc**2) ** 2)
 

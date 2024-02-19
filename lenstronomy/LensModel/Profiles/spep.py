@@ -142,7 +142,11 @@ class SPEP(LensProfileBase):
             1.0
             / eta
             * (a / E**2) ** (eta / 2 - 1)
-            * (1 - 1 / q**2 + (eta / 2 - 1) * (2 * xt1**2 - 2 * xt2**2 / q**4) / a)
+            * (
+                1
+                - 1 / q**2
+                + (eta / 2 - 1) * (2 * xt1**2 - 2 * xt2**2 / q**4) / a
+            )
         )
         gamma2_value = (
             4

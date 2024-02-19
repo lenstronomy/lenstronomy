@@ -322,7 +322,9 @@ class NFW(LensProfileBase):
                     / (X**2 - 1)
                     * (
                         1
-                        - 2 / np.sqrt(1 - X**2) * np.arctanh(np.sqrt((1 - X) / (1 + X)))
+                        - 2
+                        / np.sqrt(1 - X**2)
+                        * np.arctanh(np.sqrt((1 - X) / (1 + X)))
                     )
                 )
             elif X == 1:
@@ -333,7 +335,9 @@ class NFW(LensProfileBase):
                     / (X**2 - 1)
                     * (
                         1
-                        - 2 / np.sqrt(X**2 - 1) * np.arctan(np.sqrt((X - 1) / (1 + X)))
+                        - 2
+                        / np.sqrt(X**2 - 1)
+                        * np.arctan(np.sqrt((X - 1) / (1 + X)))
                     )
                 )
             else:  # X == 0:

@@ -30,7 +30,11 @@ class TestHessian(object):
         f_true = (
             1
             / 2.0
-            * (self.f_xx * x**2 + (self.f_xy + self.f_yx) * x * y + self.f_yy * y**2)
+            * (
+                self.f_xx * x**2
+                + (self.f_xy + self.f_yx) * x * y
+                + self.f_yy * y**2
+            )
         )
         npt.assert_almost_equal(values, f_true, decimal=5)
         x = np.array([0])

@@ -296,9 +296,15 @@ class GaussianEllipseKappa(LensProfileBase):
         f_xy_ = shear.imag
 
         # rotate back to the original frame
-        f_xx = f_xx_ * cos_phi**2 + f_yy_ * sin_phi**2 - 2 * sin_phi * cos_phi * f_xy_
-        f_yy = f_xx_ * sin_phi**2 + f_yy_ * cos_phi**2 + 2 * sin_phi * cos_phi * f_xy_
-        f_xy = sin_phi * cos_phi * (f_xx_ - f_yy_) + (cos_phi**2 - sin_phi**2) * f_xy_
+        f_xx = (
+            f_xx_ * cos_phi**2 + f_yy_ * sin_phi**2 - 2 * sin_phi * cos_phi * f_xy_
+        )
+        f_yy = (
+            f_xx_ * sin_phi**2 + f_yy_ * cos_phi**2 + 2 * sin_phi * cos_phi * f_xy_
+        )
+        f_xy = (
+            sin_phi * cos_phi * (f_xx_ - f_yy_) + (cos_phi**2 - sin_phi**2) * f_xy_
+        )
 
         return f_xx, f_xy, f_xy, f_yy
 

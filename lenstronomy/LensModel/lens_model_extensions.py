@@ -743,7 +743,9 @@ class LensModelExtensions(object):
         cos_dphi_tan_dtan = (
             v1_tan * v1_tan_dtan + v2_tan * v2_tan_dtan
         )  # / (np.sqrt(v1_tan**2 + v2_tan**2) * np.sqrt(v1_tan_dtan**2 + v2_tan_dtan**2))
-        norm = np.sqrt(v1_tan**2 + v2_tan**2) * np.sqrt(v1_tan_dtan**2 + v2_tan_dtan**2)
+        norm = np.sqrt(v1_tan**2 + v2_tan**2) * np.sqrt(
+            v1_tan_dtan**2 + v2_tan_dtan**2
+        )
         cos_dphi_tan_dtan /= norm
         arc_cos_dphi_tan_dtan = np.arccos(np.abs(np.minimum(cos_dphi_tan_dtan, 1)))
         dphi_tan_dtan = arc_cos_dphi_tan_dtan / smoothing_3rd
@@ -751,7 +753,9 @@ class LensModelExtensions(object):
         cos_dphi_tan_drad = (
             v1_tan * v1_tan_drad + v2_tan * v2_tan_drad
         )  # / (np.sqrt(v1_tan ** 2 + v2_tan ** 2) * np.sqrt(v1_tan_drad ** 2 + v2_tan_drad ** 2))
-        norm = np.sqrt(v1_tan**2 + v2_tan**2) * np.sqrt(v1_tan_drad**2 + v2_tan_drad**2)
+        norm = np.sqrt(v1_tan**2 + v2_tan**2) * np.sqrt(
+            v1_tan_drad**2 + v2_tan_drad**2
+        )
         cos_dphi_tan_drad /= norm
         arc_cos_dphi_tan_drad = np.arccos(np.abs(np.minimum(cos_dphi_tan_drad, 1)))
         dphi_tan_drad = arc_cos_dphi_tan_drad / smoothing_3rd
@@ -759,7 +763,9 @@ class LensModelExtensions(object):
         cos_dphi_rad_drad = (
             v1_rad * v1_rad_drad + v2_rad * v2_rad_drad
         )  # / (np.sqrt(v1_rad**2 + v2_rad**2) * np.sqrt(v1_rad_drad**2 + v2_rad_drad**2))
-        norm = np.sqrt(v1_rad**2 + v2_rad**2) * np.sqrt(v1_rad_drad**2 + v2_rad_drad**2)
+        norm = np.sqrt(v1_rad**2 + v2_rad**2) * np.sqrt(
+            v1_rad_drad**2 + v2_rad_drad**2
+        )
         cos_dphi_rad_drad /= norm
         cos_dphi_rad_drad = np.minimum(cos_dphi_rad_drad, 1)
         dphi_rad_drad = np.arccos(cos_dphi_rad_drad) / smoothing_3rd
@@ -767,7 +773,9 @@ class LensModelExtensions(object):
         cos_dphi_rad_dtan = (
             v1_rad * v1_rad_dtan + v2_rad * v2_rad_dtan
         )  # / (np.sqrt(v1_rad ** 2 + v2_rad ** 2) * np.sqrt(v1_rad_dtan ** 2 + v2_rad_dtan ** 2))
-        norm = np.sqrt(v1_rad**2 + v2_rad**2) * np.sqrt(v1_rad_dtan**2 + v2_rad_dtan**2)
+        norm = np.sqrt(v1_rad**2 + v2_rad**2) * np.sqrt(
+            v1_rad_dtan**2 + v2_rad_dtan**2
+        )
         cos_dphi_rad_dtan /= norm
         cos_dphi_rad_dtan = np.minimum(cos_dphi_rad_dtan, 1)
         dphi_rad_dtan = np.arccos(cos_dphi_rad_dtan) / smoothing_3rd

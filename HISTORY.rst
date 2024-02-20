@@ -369,3 +369,10 @@ History
 * RADIAL_INTERPOL lens profile
 * improved description of how to add new lenses
 * Debug findOverlap parantheses of image_util.py
+
+1.11.7 (2024-02-19)
++++++++++++++++++++
+* numba compatibility improved
+* updated interface with COOLEST
+* updated tracer_model
+* minor deprecation fixes

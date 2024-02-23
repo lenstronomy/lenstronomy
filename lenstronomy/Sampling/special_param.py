@@ -4,7 +4,7 @@ __all__ = ["SpecialParam"]
 
 import numpy as np
 from .param_group import ModelParamGroup, SingleParam, ArrayParam
-
+import warnings
 
 # ==================================== #
 # == Defining individual parameters == #
@@ -118,7 +118,10 @@ class GeneralScalingParam(ArrayParam):
     """
 
     def __init__(self, params: dict):
-        # params is a dictionary
+        """
+        :param params: dictionary of parameters to be scaled
+        :type params: dict
+        """
         self.param_names = {}
         self._kwargs_lower = {}
         self._kwargs_upper = {}
@@ -142,6 +145,44 @@ class GeneralScalingParam(ArrayParam):
                 self._kwargs_upper[pow_name] = 10
 
 
+class DistanceRatioFactorsAB(SingleParam):
+    """Distance ratio a and b factors.
+
+    If there are P lens planes, then there are P
+    factor_a and P-2 factor_b parameters. The parameter to be defined by the user are
+    "factor_a_1", "factor_a_2, ..., factor_a_P, factor_b_2, ..., factor_b_{P-1}". For
+    further definitions of factor_a and factor_b parameters, see the documentation of
+    `lesnstronomy.ImSim.multiplane_organizer.MultiplaneOrganizer()` class.
+    """
+
+    def __init__(self, on, num_lens_plane: int):
+        """
+        :param num_lens_plane: number of lens planes
+        :type num_lens_plane: int
+        """
+        self.param_names = {}
+        self._kwargs_lower = {}
+        self._kwargs_upper = {}
+
+        super().__init__(on)
+        self.num_lens_plane = num_lens_plane
+
+        if not self.on:
+            return
+
+        for i in range(self.num_lens_plane):
+            param_name = f"factor_a_{i+1}"
+            self.param_names[param_name] = 1
+            self._kwargs_lower[param_name] = 0
+            self._kwargs_upper[param_name] = 1000
+
+        for i in range(1, self.num_lens_plane - 1):
+            param_name = f"factor_b_{i + 1}"
+            self.param_names[param_name] = 1
+            self._kwargs_lower[param_name] = 0
+            self._kwargs_upper[param_name] = 1000
+
+
 # ======================================== #
 # == All together: Composing into class == #
 # ======================================== #
@@ -151,7 +192,7 @@ class SpecialParam(object):
     """Class that handles special parameters that are not directly part of a specific
     model component.
 
-    These includes cosmology relevant parameters, astrometric errors and overall scaling
+    These include cosmology relevant parameters, astrometric errors and overall scaling
     parameters.
     """
 
@@ -171,6 +212,8 @@ class SpecialParam(object):
         num_z_sampling=0,
         source_grid_offset=False,
         kinematic_sampling=False,
+        distance_ratio_sampling=False,
+        num_lens_planes=1,
     ):
         """
 
@@ -192,7 +235,33 @@ class SpecialParam(object):
          Warning: this is only defined for pixel-based source modelling (e.g. 'SLIT_STARLETS' light profile)
         :param kinematic_sampling: bool, if True, samples the kinematic parameters b_ani, incli, with cosmography
          D_dt (overrides _D_dt_sampling) and Dd
+        :param distance_ratio_sampling: bool, if True, the distance ratios will be sampled.
+         Only applicable for multi-plane case, will turn-off Ddt_sampling by default as Ddt will be sampled as a
+         ratio with a fiducial value in this option.
+        :param num_lens_planes: integer, number of lens planes when `distance_ratio_sampling` is True
+         sampled
         """
+        self._num_lens_planes = num_lens_planes
+        self._distance_ratio_sampling = DistanceRatioFactorsAB(
+            distance_ratio_sampling, num_lens_planes
+        )
+
+        if distance_ratio_sampling:
+            if Ddt_sampling:
+                warnings.warn(
+                    "Ddt_sampling is turned off when distance_ratio_sampling is True."
+                )
+                Ddt_sampling = False
+            if num_z_sampling > 0:
+                warnings.warn(
+                    "num_z_sampling is turned off when distance_ratio_sampling is True."
+                )
+                num_z_sampling = 0
+            if kinematic_sampling:
+                warnings.warn(
+                    "kinematic_sampling is turned off when distance_ratio_sampling is True."
+                )
+                kinematic_sampling = False
 
         self._D_dt_sampling = DdtSamplingParam(Ddt_sampling or kinematic_sampling)
 
@@ -204,6 +273,11 @@ class SpecialParam(object):
         self._mass_scaling = MassScalingParam(num_scale_factor)
 
         self._general_scaling = GeneralScalingParam(general_scaling_params or dict())
+
+        self._num_scale_factor = num_scale_factor
+        self._num_images = num_images
+        self._num_tau0 = num_tau0
+        self._num_z_sampling = num_z_sampling
 
         if point_source_offset:
             self._point_source_offset = PointSourceOffsetParam(True, num_images)
@@ -286,4 +360,5 @@ class SpecialParam(object):
             self._tau0,
             self._z_sampling,
             self._source_grid_offset,
+            self._distance_ratio_sampling,
         ]

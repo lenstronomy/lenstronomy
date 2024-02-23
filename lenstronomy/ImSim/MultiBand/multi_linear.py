@@ -129,7 +129,7 @@ class MultiLinear(MultiDataBase):
             resulted in non-negative flux components and applies a punishment in the
             likelihood if so.
         :return: log likelihood (natural logarithm) (sum of the log likelihoods of the
-            individual images)
+            individual images), linear parameters
         """
         # generate image
         logL = 0

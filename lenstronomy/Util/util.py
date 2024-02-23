@@ -20,6 +20,16 @@ def merge_dicts(*dict_args):
 
 
 @export
+def isiterable(obj):
+    """Returns `True` if the given object is iterable."""
+    try:
+        iter(obj)
+        return True
+    except TypeError:
+        return False
+
+
+@export
 def approx_theta_E(ximg, yimg):
     dis = []
     xinds, yinds = [0, 0, 0, 1, 1, 2], [1, 2, 3, 2, 3, 3]

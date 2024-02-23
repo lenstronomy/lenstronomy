@@ -592,13 +592,13 @@ class TestNumericsProfile(object):
         lens_model = ["SPL_CORE"]
         self.assert_differentials(lens_model, kwargs, potential=False)
 
-    def test_gnfw(self):
+    def test_pdpl(self):
         kwargs = {"alpha_Rs": 1.2, "Rs": 0.8, "gamma_inner": 2.3, "gamma_outer": 3.15}
-        lens_model = ["GNFW"]
+        lens_model = ["PSEUDO_DPL"]
         self.assert_differentials(lens_model, kwargs, potential=False)
 
         kwargs = {"alpha_Rs": 1.2, "Rs": 0.8, "gamma_inner": 0.3, "gamma_outer": 3.15}
-        lens_model = ["GNFW"]
+        lens_model = ["PSEUDO_DPL"]
         self.assert_differentials(lens_model, kwargs, potential=False)
 
     def test_cse(self):

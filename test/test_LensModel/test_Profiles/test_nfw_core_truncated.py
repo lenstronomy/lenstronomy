@@ -2,7 +2,7 @@ __author__ = "dgilman"
 
 import unittest
 from lenstronomy.LensModel.Profiles.nfw_core_truncated import TNFWC
-from lenstronomy.LensModel.Profiles.general_nfw import GNFW
+from lenstronomy.LensModel.Profiles.pseudo_double_powerlaw import PseudoDoublePowerlaw
 import numpy as np
 import numpy.testing as npt
 import pytest
@@ -11,7 +11,7 @@ import pytest
 class TestTNFWC(object):
     def setup_method(self):
         self.tnfwc = TNFWC()
-        self.gnfw = GNFW()
+        self.pdpl = PseudoDoublePowerlaw()
 
     def test_alphaRs(self):
         kwargs_lens = {
@@ -61,13 +61,13 @@ class TestTNFWC(object):
         r_trunc = 1000 * Rs
 
         alpha_tnfwc = self.tnfwc.derivatives(R, 0.0, Rs, alpha_Rs, r_core, r_trunc)
-        alpha_gnfw = self.gnfw.derivatives(R, 0.0, Rs, alpha_Rs, 1.0, 3.0)
+        alpha_gnfw = self.pdpl.derivatives(R, 0.0, Rs, alpha_Rs, 1.0, 3.0)
         npt.assert_almost_equal(alpha_gnfw, alpha_tnfwc, 3.0)
 
         rho0 = self.tnfwc.alpha2rho0(alpha_Rs, Rs, r_core, r_trunc)
         density_2d_tnfwc = self.tnfwc.density_2d(R, 0.0, Rs, rho0, r_core, r_trunc)
-        rho0 = self.gnfw.alpha2rho0(alpha_Rs, Rs, 1.0, 3.0)
-        density_2d_gnfw = self.gnfw.density_2d(R, 0.0, Rs, rho0, 1.0, 3.0)
+        rho0 = self.pdpl.alpha2rho0(alpha_Rs, Rs, 1.0, 3.0)
+        density_2d_gnfw = self.pdpl.density_2d(R, 0.0, Rs, rho0, 1.0, 3.0)
         npt.assert_almost_equal(density_2d_tnfwc, density_2d_gnfw, 3.0)
 
     def test_mass3d(self):

@@ -1,15 +1,14 @@
 __author__ = "dgilman"
 
-# this file contains a class to compute the Navaro-Frenk-White profile
 import numpy as np
 from scipy.special import hyp2f1
 from scipy.special import beta
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
-__all__ = ["GNFW"]
+__all__ = ["PseudoDoublePowerlaw"]
 
 
-class GNFW(LensProfileBase):
+class PseudoDoublePowerlaw(LensProfileBase):
     """This class contains a double power law profile with flexible inner and outer
     logarithmic slopes g and n.
 
@@ -24,7 +23,7 @@ class GNFW(LensProfileBase):
     TODO: implement the gravitational potential for this profile
     """
 
-    profile_name = "GNFW"
+    profile_name = "PSEUDO_DPL"
     param_names = [
         "Rs",
         "alpha_Rs",
@@ -70,7 +69,7 @@ class GNFW(LensProfileBase):
         x_ = x - center_x
         y_ = y - center_y
         R = np.sqrt(x_**2 + y_**2)
-        f_x, f_y = self.nfwAlpha(R, Rs, rho0_input, gamma_inner, gamma_outer, x_, y_)
+        f_x, f_y = self.alpha(R, Rs, rho0_input, gamma_inner, gamma_outer, x_, y_)
         return f_x, f_y
 
     def hessian(
@@ -94,9 +93,7 @@ class GNFW(LensProfileBase):
         R = np.sqrt(x_**2 + y_**2)
         R = np.maximum(R, 0.00000001)
         kappa = self.density_2d(R, 0, Rs, rho0_input, gamma_inner, gamma_outer)
-        gamma1, gamma2 = self.nfwGamma(
-            R, Rs, rho0_input, gamma_inner, gamma_outer, x_, y_
-        )
+        gamma1, gamma2 = self.gamma(R, Rs, rho0_input, gamma_inner, gamma_outer, x_, y_)
         f_xx = kappa + gamma1
         f_yy = kappa - gamma1
         f_xy = gamma2
@@ -210,8 +207,8 @@ class GNFW(LensProfileBase):
         m_2d = 4 * rho0 * Rs * R**2 * gx / x**2 * np.pi
         return m_2d
 
-    def nfwAlpha(self, R, Rs, rho0, gamma_inner, gamma_outer, ax_x, ax_y):
-        """Deflection angel of NFW profile (times Sigma_crit D_OL) along the projection
+    def alpha(self, R, Rs, rho0, gamma_inner, gamma_outer, ax_x, ax_y):
+        """Deflection angle of NFW profile (times Sigma_crit D_OL) along the projection
         to coordinate 'axis'.
 
         :param R: 3d radius
@@ -229,7 +226,7 @@ class GNFW(LensProfileBase):
         a = 4 * rho0 * Rs * R * gx / x**2 / R
         return a * ax_x, a * ax_y
 
-    def nfwGamma(self, R, Rs, rho0, gamma_inner, gamma_outer, ax_x, ax_y):
+    def gamma(self, R, Rs, rho0, gamma_inner, gamma_outer, ax_x, ax_y):
         """Shear gamma of NFW profile (times Sigma_crit) along the projection to
         coordinate 'axis'.
 

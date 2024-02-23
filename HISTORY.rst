@@ -358,4 +358,21 @@ History
 1.11.5 (2023-09-28)
 +++++++++++++++++++
 * bug fix in findOverlap function
-* bug fix in luminosity-0weighted celocity dispersion calculation
+* bug fix in luminosity-0weighted velocity dispersion calculation
+
+1.11.6 (2024-01-24)
++++++++++++++++++++
+* bug fix with partial kwargs in kwargs_tracer mode
+* stability and documentation improvements
+* name change from GNFW -> PSEUDO_DPL
+* improved plotting of point sources and caustics on top of pixelated images
+* RADIAL_INTERPOL lens profile
+* improved description of how to add new lenses
+* Debug findOverlap parantheses of image_util.py
+
+1.11.7 (2024-02-19)
++++++++++++++++++++
+* numba compatibility improved
+* updated interface with COOLEST
+* updated tracer_model
+* minor deprecation fixes

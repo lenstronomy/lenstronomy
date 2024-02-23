@@ -8,6 +8,8 @@ from lenstronomy.GalKin.anisotropy import Anisotropy
 from lenstronomy.LensModel.Profiles.spp import SPP
 import lenstronomy.Util.constants as const
 import math
+from lenstronomy.GalKin.light_profile import LightProfile
+from copy import deepcopy
 
 __all__ = ["AnalyticKinematics"]
 
@@ -33,20 +35,20 @@ class AnalyticKinematics(Anisotropy):
     def __init__(
         self,
         kwargs_cosmo,
-        interpol_grid_num=100,
-        log_integration=False,
+        interpol_grid_num=200,
+        log_integration=True,
         max_integrate=100,
-        min_integrate=0.001,
+        min_integrate=1e-4,
     ):
         """
 
         :param kwargs_cosmo: keyword argument with angular diameter distances entering the Galkin.cosmo class
         :param interpol_grid_num: number of interpolations in radius to compute radial velocity dispersion
-        :param log_integration: perform numerical integration in logarithmic space
+        :param log_integration: perform numerical integration in logarithmic space,
+            setting False may lead to less accurate results
         :param max_integrate: maximum radius of integration (in projected arc seconds)
         :param min_integrate: minimum drawing/calculation of velocity dispersion (in projected arc seconds)
         """
-
         self._interp_grid_num = interpol_grid_num
         self._log_int = log_integration
         self._max_integrate = (
@@ -60,7 +62,25 @@ class AnalyticKinematics(Anisotropy):
 
         self._cosmo = Cosmo(**kwargs_cosmo)
         self._spp = SPP()
+
+        self.light_profile = LightProfile(
+            ["HERNQUIST"],
+            interpol_grid_num=interpol_grid_num,
+            max_interpolate=max_integrate,
+            min_interpolate=min_integrate,
+            max_draw=max_integrate,
+        )
         Anisotropy.__init__(self, anisotropy_type="OM")
+
+    @property
+    def max_integrate(self):
+        """Get the maximum range of integration."""
+        return self._max_integrate
+
+    @property
+    def min_integrate(self):
+        """Get the minimum range of integration."""
+        return self._min_integrate
 
     def _rho0_r0_gamma(self, theta_E, gamma):
         # equation (14) in Suyu+ 2010
@@ -76,15 +96,33 @@ class AnalyticKinematics(Anisotropy):
         )
 
     @staticmethod
-    def draw_light(kwargs_light):
-        """
+    def _get_hernquist_scale_radius(kwargs_light):
+        """Returns the scale of the Hernquist light profile.
 
-        :param kwargs_light: keyword argument (list) of the light model
-        :return: 3d radius (if possible), 2d projected radius, x-projected coordinate, y-projected coordinate
+        :param kwargs_light: keyword arguments of the light profile
         """
         if "a" not in kwargs_light:
-            kwargs_light["a"] = 0.551 * kwargs_light["r_eff"]
-        a = kwargs_light["a"]
+            if "Rs" in kwargs_light:
+                a = kwargs_light["Rs"]
+            elif "r_eff" in kwargs_light:
+                a = 0.551 * kwargs_light["r_eff"]
+            else:
+                raise ValueError("Hernquist half-light radius can not be determined!")
+        else:
+            a = kwargs_light["a"]
+
+        return a
+
+    @classmethod
+    def draw_light(cls, kwargs_light):
+        """Draws a random light tracer particle from the Hernquist light profile.
+
+        :param kwargs_light: keyword argument (list) of the light model
+        :return: 3d radius (if possible), 2d projected radius, x-projected coordinate,
+            y-projected coordinate
+        """
+        a = cls._get_hernquist_scale_radius(kwargs_light)
+
         r = vel_util.draw_hernquist(a)
         R, x, y = vel_util.project2d_random(r)
         return r, R, x, y
@@ -145,16 +183,17 @@ class AnalyticKinematics(Anisotropy):
         :param kwargs_anisotropy: anisotropy keyword arguments
         :return: a (Rs of Hernquist profile), gamma, rho0_r0_gamma, r_ani
         """
-        if "a" not in kwargs_light:
-            kwargs_light["a"] = 0.551 * kwargs_light["r_eff"]
+        a = self._get_hernquist_scale_radius(kwargs_light)
+
         if "rho0_r0_gamma" not in kwargs_mass:
             kwargs_mass["rho0_r0_gamma"] = self._rho0_r0_gamma(
                 kwargs_mass["theta_E"], kwargs_mass["gamma"]
             )
-        a = kwargs_light["a"]
+
         gamma = kwargs_mass["gamma"]
         rho0_r0_gamma = kwargs_mass["rho0_r0_gamma"]
         r_ani = kwargs_anisotropy["r_ani"]
+
         return a, gamma, rho0_r0_gamma, r_ani
 
     def _sigma_r2(self, r, a, gamma, rho0_r0_gamma, r_ani):
@@ -195,6 +234,105 @@ class AnalyticKinematics(Anisotropy):
                 np.log(r_array), np.array(I_R_sigma2_array), fill_value="extrapolate"
             )
         return self._interp_sigma_r2(np.log(r))
+
+    def _I_R_sigma2(self, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
+        """Equation A15 in Mamon&Lokas 2005 as a logarithmic numerical integral (if
+        option is chosen)
+
+        :param R: 2d projected radius (in angular units)
+        :param kwargs_mass: mass model parameters (following lenstronomy lens model
+            conventions)
+        :param kwargs_light: deflector light parameters (following lenstronomy light
+            model conventions)
+        :param kwargs_anisotropy: anisotropy parameters, may vary according to
+            anisotropy type chosen. See the Anisotropy() class for details on the
+            parameters.
+        :return: integral of A15 in Mamon&Lokas 2005
+        """
+        R = max(R, self._min_integrate)
+        max_integrate = (
+            self._max_integrate
+        )  # make sure the integration of the Jeans equation is performed further out than the interpolation
+
+        if self._log_int is True:
+            min_log = np.log(R)
+            max_log = np.log(max_integrate)
+            dlogr = (max_log - min_log) / (self._interp_grid_num - 1)
+            r_array = np.logspace(
+                min_log + dlogr / 2.0,
+                max_log + dlogr / 2.0,
+                self._interp_grid_num,
+                base=np.e,
+            )
+            dlog_r = np.log(r_array[2]) - np.log(r_array[1])
+            IR_sigma2_ = self._integrand_suyu10_eq21(
+                r_array, R, kwargs_mass, kwargs_light, kwargs_anisotropy
+            )
+            IR_sigma2_dr = IR_sigma2_ * dlog_r * r_array
+        else:
+            r_array = np.linspace(
+                start=R, stop=self._max_interpolate, num=self._interp_grid_num
+            )
+            dr = r_array[2] - r_array[1]
+            IR_sigma2_ = self._integrand_suyu10_eq21(
+                r_array + dr / 2.0, R, kwargs_mass, kwargs_light, kwargs_anisotropy
+            )
+            IR_sigma2_dr = IR_sigma2_ * dr
+
+        IR_sigma2 = 2 * np.sum(IR_sigma2_dr)  # integral from angle to
+
+        kwargs_light_copy = deepcopy(kwargs_light)
+        if "r_eff" in kwargs_light_copy:
+            kwargs_light_copy["Rs"] = kwargs_light_copy["r_eff"] * 0.551
+            kwargs_light_copy["amp"] = 1
+            kwargs_light_copy.pop("r_eff")
+        IR = self.light_profile.light_2d_finite(R, [kwargs_light_copy])
+
+        return IR_sigma2, IR
+
+    def _integrand_suyu10_eq21(
+        self, r, R, kwargs_mass, kwargs_light, kwargs_anisotropy
+    ):
+        """Compute the integrand of Eq. 21 from Suyu et al. (2010).
+
+        :param r: 3d radius (not needed for this calculation)
+        :param R: 2d projected radius (in angular units of arcsec)
+        :param kwargs_mass: mass model parameters (following lenstronomy lens model
+            conventions)
+        :param kwargs_light: deflector light parameters (following lenstronomy light
+            model conventions)
+        :param kwargs_anisotropy: anisotropy parameters, may vary according to
+            anisotropy type chosen. We refer to the Anisotropy() class for details on
+            the parameters.
+        :return: integrand of Eq. 21 from Suyu et al. (2010)
+        """
+        a, gamma, rho0_r0_gamma, r_ani = self._read_out_params(
+            kwargs_mass, kwargs_light, kwargs_anisotropy
+        )
+        kwargs_light_copy = deepcopy(kwargs_light)
+        if "r_eff" in kwargs_light_copy:
+            kwargs_light_copy["Rs"] = kwargs_light_copy["r_eff"] * 0.551
+            kwargs_light_copy["amp"] = 1
+            kwargs_light_copy.pop("r_eff")
+
+        return (
+            self._sigma_s2(r, R, r_ani, a, gamma, rho0_r0_gamma)
+            * r
+            / np.sqrt(r**2 - R**2)
+            * self.light_profile.light_3d(r, [kwargs_light_copy])
+        )
+
+    def I_R_sigma2_and_IR(self, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
+        """Return I(R)*sigma^2 equation 20 in Suyu 2010 as interpolation in log space,
+        and I(R)
+
+        :param R: projected radius
+        :param kwargs_mass: mass profile keyword arguments
+        :param kwargs_light: light model keyword arguments
+        :param kwargs_anisotropy: stellar anisotropy keyword arguments
+        :return:
+        """
+        return self._I_R_sigma2(R, kwargs_mass, kwargs_light, kwargs_anisotropy)
 
     def grav_potential(self, r, kwargs_mass):
         """Gravitational potential in SI units.

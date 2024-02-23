@@ -82,8 +82,8 @@ class TestChainPlots(object):
 
         chain_list = [
             ["PSO", chain, param],
-            ["EMCEE", samples_mcmc, param, dist_mcmc],
-            ["MULTINEST", samples_mcmc, param, dist_mcmc],
+            ["emcee", samples_mcmc, param, dist_mcmc],
+            ["MultiNest", samples_mcmc, param, dist_mcmc],
         ]
 
         chain_plot.plot_chain_list(chain_list, index=0)

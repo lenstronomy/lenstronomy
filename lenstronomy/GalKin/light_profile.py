@@ -269,9 +269,7 @@ class LightProfile(object):
                 #    cum_sum[i] = 0
                 # else:
                 sum_light += (
-                    self.light_3d(r, kwargs_list)
-                    * r**2
-                    * (r_array[i + 1] - r_array[i])
+                    self.light_3d(r, kwargs_list) * r**2 * (r_array[i + 1] - r_array[i])
                 )  # * r
                 cum_sum[i + 1] = copy.deepcopy(sum_light)
             cum_sum_norm = cum_sum / cum_sum[-1]

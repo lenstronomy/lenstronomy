@@ -243,6 +243,7 @@ def update_kwargs_pemd(
     kwargs_lens_fixed,
     kwargs_lens_sigma,
     cleaning=False,
+    use_epl=True,
 ):
     """Update the lens list and kwargs with PEMD mass model.
 
@@ -256,9 +257,12 @@ def update_kwargs_pemd(
     :param kwargs_lens_sigma: the usual lenstronomy kwargs
     :param cleaning: bool, if True, will update the empty fields with default values +
         cleans the kwargs_fixed
+    :param use_epl: bool, if True the elliptical power-law profile is 'EPL' instead of
+        'PEMD'
     :return: updated list and kwargs
     """
-    lens_model_list.append("PEMD")
+    profile_name = "EPL" if use_epl else "PEMD"
+    lens_model_list.append(profile_name)
     for mass_name, mass_param in mass.parameters.items():
         if mass_name == "theta_E":
             te = getattr(mass_param.point_estimate, "value")
@@ -396,7 +400,7 @@ def update_kwargs_pemd(
         }
     )
 
-    print("\t PEMD correctly added")
+    print(f"\t {profile_name} correctly added")
 
     return
 

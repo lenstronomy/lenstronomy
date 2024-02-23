@@ -59,9 +59,9 @@ def test_image_linear_solve_with_primary_beam_and_interferometry_psf():
     kwargs_data["ra_at_xy_0"] = -(40) * deltaPix
     kwargs_data["dec_at_xy_0"] = -(40) * deltaPix
     kwargs_data["antenna_primary_beam"] = primary_beam
-    kwargs_data[
-        "likelihood_method"
-    ] = "interferometry_natwt"  # testing just for interferometry natwt method
+    kwargs_data["likelihood_method"] = (
+        "interferometry_natwt"  # testing just for interferometry natwt method
+    )
     data_class = ImageData(**kwargs_data)
 
     kernel_cut = kernel_util.cut_psf(psf_test, kernel_size, normalisation=False)
@@ -158,7 +158,7 @@ def test_image_linear_solve_with_primary_beam_and_interferometry_psf():
     b[0] = np.sum(A0 * sim_data)
     b[1] = np.sum(A1 * sim_data)
 
-    amps0 = np.linalg.lstsq(M, b)[0]
+    amps0 = np.linalg.lstsq(M, b, rcond=None)[0]
     clean_model = amps0[0] * A0 + amps0[1] * A1
     dirty_model = amps0[0] * A0c + amps0[1] * A1c
 

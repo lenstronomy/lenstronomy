@@ -353,6 +353,10 @@ def lens_class(
         from lenstronomy.LensModel.Profiles.epl_boxydisky import EPL_BOXYDISKY
 
         return EPL_BOXYDISKY()
+    elif lens_type == "EPL_MULTIPOLE_M3M4":
+        from lenstronomy.LensModel.Profiles.epl_multipole_m3m4 import EPL_MULTIPOLE_M3M4
+
+        return EPL_MULTIPOLE_M3M4()
     elif lens_type == "EPL_NUMBA":
         from lenstronomy.LensModel.Profiles.epl_numba import EPL_numba
 

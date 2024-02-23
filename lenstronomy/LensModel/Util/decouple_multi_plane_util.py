@@ -138,7 +138,7 @@ def coordinates_and_deflections(
         y_main_deflector,
         alpha_x_foreground,
         alpha_y_foreground,
-    ) = lens_model_fixed.lens_model.ray_shooting_partial(
+    ) = lens_model_fixed.lens_model.ray_shooting_partial_comoving(
         np.zeros_like(x_coordinate_arcsec),
         np.zeros_like(y_coordinate_arcsec),
         x_coordinate_arcsec,
@@ -158,7 +158,7 @@ def coordinates_and_deflections(
     # get to the source plane
     angle_x = alpha_x_foreground - alpha_x_main
     angle_y = alpha_y_foreground - alpha_y_main
-    x_source, y_source, _, _ = lens_model_fixed.lens_model.ray_shooting_partial(
+    x_source, y_source, _, _ = lens_model_fixed.lens_model.ray_shooting_partial_comoving(
         x_main_deflector,
         y_main_deflector,
         angle_x,

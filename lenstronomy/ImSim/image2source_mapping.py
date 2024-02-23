@@ -202,7 +202,7 @@ class Image2SourceMapping(object):
                     0,
                     z_stop,
                     kwargs_lens,
-                    include_z_start=False
+                    include_z_start=False,
                 )
 
         return x_source, y_source

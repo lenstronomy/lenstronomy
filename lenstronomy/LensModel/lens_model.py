@@ -33,7 +33,7 @@ class LensModel(object):
         kwargs_synthesis=None,
         decouple_multi_plane=False,
         kwargs_multiplane_model=None,
-        distance_ratio_sampling=False
+        distance_ratio_sampling=False,
     ):
         """
 
@@ -108,7 +108,7 @@ class LensModel(object):
                 raise ValueError(
                     "LOS effects and multi-plane lensing are incompatible."
                 )
-                
+
             if decouple_multi_plane:
                 self.lens_model = MultiPlaneDecoupled(
                     z_source,
@@ -139,7 +139,7 @@ class LensModel(object):
                     num_z_interp=num_z_interp,
                     kwargs_interp=kwargs_interp,
                     kwargs_synthesis=kwargs_synthesis,
-                    distance_ratio_sampling=distance_ratio_sampling
+                    distance_ratio_sampling=distance_ratio_sampling,
                 )
 
         else:

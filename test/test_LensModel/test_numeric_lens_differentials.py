@@ -730,10 +730,19 @@ class TestNumericsProfile(object):
 
     def test_epl_m3m4(self):
 
-        kwargs = {"theta_E": 2.0, "e1": 0.1, "e2": 0.2, "gamma": 2.13,
-                  "a4_a": 0.1, "delta_phi_m4": 0.2, "a3_a": -0.2, "delta_phi_m3": -0.3}
+        kwargs = {
+            "theta_E": 2.0,
+            "e1": 0.1,
+            "e2": 0.2,
+            "gamma": 2.13,
+            "a4_a": 0.1,
+            "delta_phi_m4": 0.2,
+            "a3_a": -0.2,
+            "delta_phi_m3": -0.3,
+        }
         lens_model = ["EPL_MULTIPOLE_M3M4"]
         self.assert_differentials(lens_model, kwargs)
+
 
 if __name__ == "__main__":
     pytest.main("-k TestLensModel")

@@ -326,7 +326,6 @@ class TestMultiPlane(object):
 
         theta_x, theta_y = 1.0, 1.0
 
-
         (
             x_subs,
             y_subs,

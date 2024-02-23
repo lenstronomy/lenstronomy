@@ -186,12 +186,12 @@ class TestMultiPlaneDecoupled(object):
     def test_point_deflection_model(self):
 
         # the true source coordinate
-        x_source_true, y_source_true, _, _ = self.lens_model_true.lens_model.ray_shooting_partial(0.0, 0.0,
-                                                                                                  self.x_point,
-                                                                                                  self.y_point,
-                                                                                                  0.0,
-                                                                                                  self.z_source,
-                                                                                                  self.kwargs_lens_true)
+        x_source_true, y_source_true, _, _ = self.lens_model_true.lens_model.ray_shooting_partial_comoving(0.0, 0.0,
+                                                                                                           self.x_point,
+                                                                                                           self.y_point,
+                                                                                                           0.0,
+                                                                                                           self.z_source,
+                                                                                                           self.kwargs_lens_true)
         beta_x_true, beta_y_true = x_source_true / self.Ts, y_source_true / self.Ts
         npt.assert_almost_equal(beta_x_true, self.lens_model_true.ray_shooting(self.x_point,
                                                                                self.y_point,
@@ -203,7 +203,7 @@ class TestMultiPlaneDecoupled(object):
         kwargs_lens_free_no_macromodel[1]['theta_E'] = 0.0
 
         # show that the x0, y0, and ray angles are as expected
-        x0_true, y0_true, alphax_fore_true, alphay_fore_true = self.lens_model_true.lens_model.ray_shooting_partial(
+        x0_true, y0_true, alphax_fore_true, alphay_fore_true = self.lens_model_true.lens_model.ray_shooting_partial_comoving(
             0.0, 0.0, self.x_point, self.y_point, 0.0, self.zlens, kwargs_lens_free_no_macromodel
         )
         npt.assert_almost_equal(self.x0_point, x0_true)
@@ -214,7 +214,7 @@ class TestMultiPlaneDecoupled(object):
         npt.assert_almost_equal(self.alphay_foreground_point, alphay_fore_true)
 
         # compute the true ray angles at the main lens plane
-        x0_true, y0_true, alphax_fore_true, alphay_fore_true = self.lens_model_true.lens_model.ray_shooting_partial(
+        x0_true, y0_true, alphax_fore_true, alphay_fore_true = self.lens_model_true.lens_model.ray_shooting_partial_comoving(
             0.0, 0.0, self.x_point, self.y_point, 0.0, self.zlens, self.kwargs_lens_true
         )
         npt.assert_almost_equal(self.x0_point, x0_true)
@@ -272,13 +272,13 @@ class TestMultiPlaneDecoupled(object):
     def test_grid_deflection_model(self):
 
         # the true source coordinate
-        x_source_true, y_source_true, _, _ = self.lens_model_true.lens_model.ray_shooting_partial(np.zeros_like(self.grid_x),
-                                                                                                  np.zeros_like(self.grid_y),
-                                                                                                  self.grid_x,
-                                                                                                  self.grid_y,
-                                                                                                  0.0,
-                                                                                                  self.z_source,
-                                                                                                  self.kwargs_lens_true)
+        x_source_true, y_source_true, _, _ = self.lens_model_true.lens_model.ray_shooting_partial_comoving(np.zeros_like(self.grid_x),
+                                                                                                           np.zeros_like(self.grid_y),
+                                                                                                           self.grid_x,
+                                                                                                           self.grid_y,
+                                                                                                           0.0,
+                                                                                                           self.z_source,
+                                                                                                           self.kwargs_lens_true)
 
         # create new dictionary with the macromodel effectively removed
         kwargs_lens_free_no_macromodel = deepcopy(self.kwargs_lens_true)
@@ -286,7 +286,7 @@ class TestMultiPlaneDecoupled(object):
         kwargs_lens_free_no_macromodel[1]['theta_E'] = 0.0
 
         # show that the x0, y0, and ray angles are as expected
-        x0_true, y0_true, alphax_fore_true, alphay_fore_true = self.lens_model_true.lens_model.ray_shooting_partial(
+        x0_true, y0_true, alphax_fore_true, alphay_fore_true = self.lens_model_true.lens_model.ray_shooting_partial_comoving(
             np.zeros_like(self.grid_x), np.zeros_like(self.grid_y), self.grid_x, self.grid_y, 0.0, self.zlens, kwargs_lens_free_no_macromodel
         )
         npt.assert_almost_equal(self.x0_grid, x0_true)
@@ -295,7 +295,7 @@ class TestMultiPlaneDecoupled(object):
         npt.assert_almost_equal(self.alphay_foreground_grid, alphay_fore_true)
 
         # compute the true ray angles at the main lens plane
-        x0_true, y0_true, alphax_fore_true, alphay_fore_true = self.lens_model_true.lens_model.ray_shooting_partial(
+        x0_true, y0_true, alphax_fore_true, alphay_fore_true = self.lens_model_true.lens_model.ray_shooting_partial_comoving(
             np.zeros_like(self.grid_x), np.zeros_like(self.grid_y), self.grid_x, self.grid_y, 0.0, self.zlens, self.kwargs_lens_true
         )
         npt.assert_almost_equal(self.x0_grid, x0_true)
@@ -338,13 +338,13 @@ class TestMultiPlaneDecoupled(object):
     def test_multiple_images_deflection_model(self):
 
         # the true source coordinate
-        x_source_true, y_source_true, _, _ = self.lens_model_true.lens_model.ray_shooting_partial(np.zeros_like(self.x_image),
-                                                                                                  np.zeros_like(self.y_image),
-                                                                                                  self.x_image,
-                                                                                                  self.y_image,
-                                                                                                  0.0,
-                                                                                                  self.z_source,
-                                                                                                  self.kwargs_lens_true)
+        x_source_true, y_source_true, _, _ = self.lens_model_true.lens_model.ray_shooting_partial_comoving(np.zeros_like(self.x_image),
+                                                                                                           np.zeros_like(self.y_image),
+                                                                                                           self.x_image,
+                                                                                                           self.y_image,
+                                                                                                           0.0,
+                                                                                                           self.z_source,
+                                                                                                           self.kwargs_lens_true)
 
         # create new dictionary with the macromodel effectively removed
         kwargs_lens_free_no_macromodel = deepcopy(self.kwargs_lens_true)
@@ -352,7 +352,7 @@ class TestMultiPlaneDecoupled(object):
         kwargs_lens_free_no_macromodel[1]['theta_E'] = 0.0
 
         # show that the x0, y0, and ray angles are as expected
-        x0_true, y0_true, alphax_fore_true, alphay_fore_true = self.lens_model_true.lens_model.ray_shooting_partial(
+        x0_true, y0_true, alphax_fore_true, alphay_fore_true = self.lens_model_true.lens_model.ray_shooting_partial_comoving(
             np.zeros_like(self.y_image), np.zeros_like(self.x_image), self.x_image, self.y_image, 0.0, self.zlens, kwargs_lens_free_no_macromodel
         )
         npt.assert_almost_equal(self.x0_MI, x0_true)
@@ -361,7 +361,7 @@ class TestMultiPlaneDecoupled(object):
         npt.assert_almost_equal(self.alphay_foreground_MI, alphay_fore_true)
 
         # compute the true ray angles at the main lens plane
-        x0_true, y0_true, alphax_fore_true, alphay_fore_true = self.lens_model_true.lens_model.ray_shooting_partial(
+        x0_true, y0_true, alphax_fore_true, alphay_fore_true = self.lens_model_true.lens_model.ray_shooting_partial_comoving(
             np.zeros_like(self.y_image), np.zeros_like(self.x_image), self.x_image, self.y_image, 0.0, self.zlens, self.kwargs_lens_true
         )
         npt.assert_almost_equal(self.x0_MI, x0_true)

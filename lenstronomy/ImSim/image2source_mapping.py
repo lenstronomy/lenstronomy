@@ -116,7 +116,7 @@ class Image2SourceMapping(object):
                     y_comov,
                     alpha_x,
                     alpha_y,
-                ) = self._lensModel.lens_model.ray_shooting_partial(
+                ) = self._lensModel.lens_model.ray_shooting_partial_comoving(
                     x_, y_, x, y, 0, z_stop, kwargs_lens, include_z_start=False
                 )
 
@@ -168,7 +168,7 @@ class Image2SourceMapping(object):
                             y_comov,
                             alpha_x,
                             alpha_y,
-                        ) = self._lensModel.lens_model.ray_shooting_partial(
+                        ) = self._lensModel.lens_model.ray_shooting_partial_comoving(
                             x_comov,
                             y_comov,
                             alpha_x,
@@ -234,7 +234,7 @@ class Image2SourceMapping(object):
                             y_comov,
                             alpha_x,
                             alpha_y,
-                        ) = self._lensModel.lens_model.ray_shooting_partial(
+                        ) = self._lensModel.lens_model.ray_shooting_partial_comoving(
                             x_comov,
                             y_comov,
                             alpha_x,

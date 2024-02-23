@@ -289,7 +289,7 @@ class TestMultiPlane(object):
 
         theta_x, theta_y = 1.0, 1.0
 
-        x_subs, y_subs, alpha_x_subs, alpha_y_subs = lensModel.ray_shooting_partial(
+        x_subs, y_subs, alpha_x_subs, alpha_y_subs = lensModel.ray_shooting_partial_comoving(
             x=0,
             y=0,
             alpha_x=theta_x,
@@ -299,7 +299,7 @@ class TestMultiPlane(object):
             kwargs_lens=kwargs_lens,
         )
 
-        x_out, y_out, alpha_x_out, alpha_y_out = lensModel_macro.ray_shooting_partial(
+        x_out, y_out, alpha_x_out, alpha_y_out = lensModel_macro.ray_shooting_partial_comoving(
             x_subs,
             y_subs,
             alpha_x_subs,
@@ -317,7 +317,7 @@ class TestMultiPlane(object):
             y_full,
             alpha_x_full,
             alpha_y_full,
-        ) = lensModel_full.ray_shooting_partial(
+        ) = lensModel_full.ray_shooting_partial_comoving(
             0, 0, theta_x, theta_y, 0, zmacro, kwargs_lens_full
         )
         npt.assert_almost_equal(x_full, x_out)
@@ -325,7 +325,7 @@ class TestMultiPlane(object):
         npt.assert_almost_equal(alpha_x_full, alpha_x_out)
         npt.assert_almost_equal(alpha_y_full, alpha_y_out)
 
-        x_src, y_src, _, _ = lensModel_full.ray_shooting_partial(
+        x_src, y_src, _, _ = lensModel_full.ray_shooting_partial_comoving(
             x=x_out,
             y=y_out,
             alpha_x=alpha_x_out,
@@ -381,7 +381,7 @@ class TestMultiPlane(object):
                 y_out,
                 alpha_x_out,
                 alpha_y_out,
-            ) = lensmodel_class.ray_shooting_partial(
+            ) = lensmodel_class.ray_shooting_partial_comoving(
                 x=0,
                 y=0,
                 alpha_x=theta_x,
@@ -399,7 +399,7 @@ class TestMultiPlane(object):
                 y_out,
                 alpha_x_out,
                 alpha_y_out,
-            ) = lensmodel_class.ray_shooting_partial(
+            ) = lensmodel_class.ray_shooting_partial_comoving(
                 x=x_out,
                 y=y_out,
                 alpha_x=alpha_x_out,
@@ -427,7 +427,7 @@ class TestMultiPlane(object):
                 y_out,
                 alpha_x_out,
                 alpha_y_out,
-            ) = lensmodel_class.ray_shooting_partial(
+            ) = lensmodel_class.ray_shooting_partial_comoving(
                 x=0,
                 y=0,
                 alpha_x=theta_x,

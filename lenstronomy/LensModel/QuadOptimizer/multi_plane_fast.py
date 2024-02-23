@@ -105,7 +105,7 @@ class MultiplaneFast(object):
             y,
             alpha_x,
             alpha_y,
-        ) = self.lens_model_to_vary.lens_model.ray_shooting_partial(
+        ) = self.lens_model_to_vary.lens_model.ray_shooting_partial_comoving(
             x,
             y,
             alpha_x,
@@ -116,7 +116,7 @@ class MultiplaneFast(object):
             include_z_start=True,
         )
         # ray trace through background halos
-        x, y, _, _ = self.lens_model_fixed.lens_model.ray_shooting_partial(
+        x, y, _, _ = self.lens_model_fixed.lens_model.ray_shooting_partial_comoving(
             x,
             y,
             alpha_x,
@@ -144,7 +144,7 @@ class MultiplaneFast(object):
                 y,
                 alpha_x,
                 alpha_y,
-            ) = self.lens_model_fixed.lens_model.ray_shooting_partial(
+            ) = self.lens_model_fixed.lens_model.ray_shooting_partial_comoving(
                 x0,
                 y0,
                 self._x_image,

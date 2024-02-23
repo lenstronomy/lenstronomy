@@ -111,8 +111,11 @@ class MultiPlaneDecoupled(MultiPlane):
             "time delays are not yet implemented for the MultiPlaneDecoupled class"
         )
 
-    def ray_shooting_partial(self, *args, **kwargs):
+    def ray_shooting_partial_comoving(self, *args, **kwargs):
         raise Exception("ray_shooting_partial is not well defined for this class")
+
+    def ray_shooting_partial_comoving(self, *args, **kwargs):
+        raise Exception("ray_shooting_partial_comoving is not well defined for this class")
 
     def ray_shooting(self, theta_x, theta_y, kwargs_lens, *args, **kwargs):
         """Ray-shooting through the lens volume with fixed deflection angles at certain

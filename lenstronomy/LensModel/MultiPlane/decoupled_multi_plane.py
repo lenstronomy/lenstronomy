@@ -63,6 +63,8 @@ class MultiPlaneDecoupled(MultiPlane):
             y-component of the deflection angle at (x,y)
         :param z_interp_list: a list of redshifts corresponding to the
             alpha_x_interp_list and alpha_y_interp_list entries
+
+        TODO: extent this class to handle ray tracing through multiple lens planes with the "decoupled deflection" approximation applied across just one of them
         """
         self._alphax_interp_foreground = alpha_x_interp_foreground
         self._alphay_interp_foreground = alpha_y_interp_foreground
@@ -113,6 +115,9 @@ class MultiPlaneDecoupled(MultiPlane):
             "time delays are not yet implemented for the MultiPlaneDecoupled class"
         )
 
+     def ray_shooting_partial_comoving(self, *args, **kwargs):
+        raise Exception("ray_shooting_partial_comoving is not well defined for this class")
+    
     def ray_shooting_partial(self, *args, **kwargs):
         raise Exception("ray_shooting_partial is not well defined for this class")
 

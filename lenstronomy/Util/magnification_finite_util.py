@@ -56,7 +56,7 @@ def setup_mag_finite(grid_radius_arcsec, grid_resolution, source_model, kwargs_s
     :param source_model: instance of LightModel for the source :kwargs_source: keyword
         arguments for the light profile corresponding to the desired LightModel instance
     """
-    
+
     # setup the grid
     npix = int(2 * grid_radius_arcsec / grid_resolution)
     _grid_x = np.linspace(-grid_radius_arcsec, grid_radius_arcsec, npix)

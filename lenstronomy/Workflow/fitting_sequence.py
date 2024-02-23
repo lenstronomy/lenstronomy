@@ -410,7 +410,7 @@ class FittingSequence(object):
             threadCount=threadCount,
             mpi=self._mpi,
             print_key=print_key,
-            verbose=self._verbose
+            verbose=self._verbose,
         )
         kwargs_result = param_class.args2kwargs(result, bijective=True)
         return kwargs_result, chain, param_list

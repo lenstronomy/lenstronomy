@@ -403,8 +403,11 @@ class ModelBandPlot(ModelBand):
             y_grid = self._y_grid
         else:
             from lenstronomy.Util.util import make_grid
-            x_grid, y_grid = make_grid(int(self._coords.num_pixel_axes[0] * super_sample_factor),
-                                       self._deltaPix / super_sample_factor)
+
+            x_grid, y_grid = make_grid(
+                int(self._coords.num_pixel_axes[0] * super_sample_factor),
+                self._deltaPix / super_sample_factor,
+            )
 
         kappa_full = util.array2image(
             self._lensModel.kappa(x_grid, y_grid, self._kwargs_lens_partial)
@@ -418,25 +421,25 @@ class ModelBandPlot(ModelBand):
             residual_kappa -= mean_kappa
             colorbar_label = r"$\kappa_{\rm{sub}} - \langle \kappa_{\rm{sub}} \rangle$"
         if superimpose_model_image:
-            if 'vmin' not in kwargs_model_image.keys():
+            if "vmin" not in kwargs_model_image.keys():
                 vmin = self._v_min_default
             else:
-                vmin = kwargs_model_image['vmin']
-                del kwargs_model_image['vmin']
-            if 'vmax' not in kwargs_model_image.keys():
+                vmin = kwargs_model_image["vmin"]
+                del kwargs_model_image["vmin"]
+            if "vmax" not in kwargs_model_image.keys():
                 vmax = self._v_max_default
             else:
-                vmax = kwargs_model_image['vmax']
-                del kwargs_model_image['vmax']
-            if 'scale_vmin' in kwargs_model_image.keys():
-                vmin *= kwargs_model_image['scale_vmin']
-                del kwargs_model_image['scale_vmin']
-            if 'scale_vmax' in kwargs_model_image.keys():
-                vmax *= kwargs_model_image['scale_vmax']
-                del kwargs_model_image['scale_vmax']
-            if 'alpha' in kwargs_model_image.keys():
-                alpha = kwargs_model_image['alpha']
-                del kwargs_model_image['alpha']
+                vmax = kwargs_model_image["vmax"]
+                del kwargs_model_image["vmax"]
+            if "scale_vmin" in kwargs_model_image.keys():
+                vmin *= kwargs_model_image["scale_vmin"]
+                del kwargs_model_image["scale_vmin"]
+            if "scale_vmax" in kwargs_model_image.keys():
+                vmax *= kwargs_model_image["scale_vmax"]
+                del kwargs_model_image["scale_vmax"]
+            if "alpha" in kwargs_model_image.keys():
+                alpha = kwargs_model_image["alpha"]
+                del kwargs_model_image["alpha"]
             else:
                 alpha = 0.5
             im2 = ax.imshow(
@@ -458,7 +461,7 @@ class ModelBandPlot(ModelBand):
             vmax=v_max,
             extent=self._image_extent,
             cmap=cmap,
-            alpha=alpha
+            alpha=alpha,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -547,7 +550,7 @@ class ModelBandPlot(ModelBand):
             vmax=v_max,
             extent=self._image_extent,
             origin="lower",
-            **kwargs
+            **kwargs,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -763,7 +766,7 @@ class ModelBandPlot(ModelBand):
                 dec_caustic_list,
                 color=caustic_color,
                 points_only=self._caustic_points_only,
-                **kwargs.get("kwargs_caustic", {})
+                **kwargs.get("kwargs_caustic", {}),
             )
         if scale_size > 0:
             plot_util.scale_bar(
@@ -951,7 +954,7 @@ class ModelBandPlot(ModelBand):
             extent=self._image_extent,
             vmin=v_min,
             vmax=v_max,
-            **kwargs
+            **kwargs,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -1137,7 +1140,7 @@ class ModelBandPlot(ModelBand):
             vmin=v_min,
             vmax=v_max,
             extent=self._image_extent,
-            **kwargs
+            **kwargs,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -1339,6 +1342,6 @@ class ModelBandPlot(ModelBand):
             vmin=v_min,
             vmax=v_max,
             extent=self._image_extent,
-            **kwargs
+            **kwargs,
         )
         return ax

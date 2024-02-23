@@ -61,7 +61,7 @@ class TestClassCreator(object):
             "multi_plane": True,
             "z_source": 1,
             "kwargs_multiplane_model_point_source": kwargs_multiplane_model_point_source,
-            "decouple_multi_plane": False
+            "decouple_multi_plane": False,
         }
 
         self.kwargs_psf = {"psf_type": "NONE"}

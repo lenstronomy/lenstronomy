@@ -25,6 +25,7 @@ class MultiPlane(object):
         observed_convention_index=None,
         ignore_observed_positions=False,
         z_source_convention=None,
+        z_lens_convention=None,
         cosmo_interp=False,
         z_interp_stop=None,
         num_z_interp=100,
@@ -49,6 +50,9 @@ class MultiPlane(object):
          position of deflectors
         :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens
          models. If None, 'z_source' is used.
+        :param z_lens_convention: float, redshift of a lens plane to define the
+         effective time-delay distance. Only needed if distance ratios are
+         sampled. If None, the first lens redshift is used.
         :param kwargs_synthesis: keyword arguments for the 'SYNTHESIS' lens model, if applicable
         :param kwargs_multiplane_model: keyword arguments for the MultiPlaneDecoupled class, if specified
         :param distance_ratio_sampling: bool, if True, will use sampled
@@ -64,6 +68,16 @@ class MultiPlane(object):
                 "z_source_convention=%s"
                 % (z_interp_stop, z_source, z_source_convention)
             )
+
+        self._z_source_convention = z_source_convention
+        if z_lens_convention is None:
+            if len(lens_redshift_list) > 0:
+                self._z_lens_convention = np.min(lens_redshift_list)
+            else:
+                self._z_lens_convention = 0
+        else:
+            self._z_lens_convention = z_lens_convention
+
         self.distance_ratio_sampling = distance_ratio_sampling
         self._multi_plane_base = MultiPlaneBase(
             lens_model_list=lens_model_list,
@@ -99,6 +113,38 @@ class MultiPlane(object):
             pass
         else:
             self._set_source_distances(z_source)
+
+    @property
+    def multi_plane_base(self):
+        return self._multi_plane_base
+
+    @property
+    def z_source(self):
+        return self._z_source
+
+    @property
+    def z_source_convention(self):
+        return self._z_source_convention
+
+    @property
+    def z_lens_convention(self):
+        return self._z_lens_convention
+
+    @property
+    def T_ij_start(self):
+        return self._T_ij_start
+
+    @T_ij_start.setter
+    def T_ij_start(self, T_ij_start):
+        self._T_ij_start = T_ij_start
+
+    @property
+    def T_ij_stop(self):
+        return self._T_ij_stop
+
+    @T_ij_stop.setter
+    def T_ij_stop(self, T_ij_stop):
+        self._T_ij_stop = T_ij_stop
 
     def _set_source_distances(self, z_source):
         """Compute the relevant angular diameter distances to a specific source
@@ -214,6 +260,7 @@ class MultiPlane(object):
             T_ij_start=self._T_ij_start,
             T_ij_end=self._T_ij_stop,
         )
+
         beta_x, beta_y = self.co_moving2angle_source(x, y)
 
         return beta_x, beta_y
@@ -263,6 +310,62 @@ class MultiPlane(object):
         return self._multi_plane_base.ray_shooting_partial(
             theta_x,
             theta_y,
+            alpha_x,
+            alpha_y,
+            z_start,
+            z_stop,
+            kwargs_lens,
+            include_z_start=include_z_start,
+            T_ij_start=T_ij_start,
+            T_ij_end=T_ij_end,
+        )
+
+    def ray_shooting_partial_comoving(
+        self,
+        x,
+        y,
+        alpha_x,
+        alpha_y,
+        z_start,
+        z_stop,
+        kwargs_lens,
+        include_z_start=False,
+        T_ij_start=None,
+        T_ij_end=None,
+        check_convention=True,
+    ):
+        """Ray-tracing through parts of the cone, starting with (x,y) in angular units
+        as seen on the sky without lensing and angles (alpha_x, alpha_y) as seen at
+        redshift z_start and then backwards to redshift z_stop.
+
+        :param theta_x: angular position on the sky [arcsec]
+        :param theta_y: angular position on the sky [arcsec]
+        :param alpha_x: ray angle at z_start [arcsec]
+        :param alpha_y: ray angle at z_start [arcsec]
+        :param z_start: redshift of start of computation
+        :param z_stop: redshift where output is computed
+        :param kwargs_lens: lens model keyword argument list
+        :param include_z_start: bool, if True, includes the computation of the
+            deflection angle at the same redshift as the start of the ray-tracing.
+            ATTENTION: deflection angles at the same redshift as z_stop will be computed
+            always! This can lead to duplications in the computation of deflection
+            angles.
+        :param T_ij_start: transverse angular distance between the starting redshift to
+            the first lens plane to follow. If not set, will compute the distance each
+            time this function gets executed.
+        :param T_ij_end: transverse angular distance between the last lens plane being
+            computed and z_end. If not set, will compute the distance each time this
+            function gets executed.
+        :param check_convention: flag to check the image position convention (leave this
+            alone)
+        :return: angular position and angles at redshift z_stop
+        """
+        if check_convention and not self.ignore_observed_positions:
+            kwargs_lens = self._convention(kwargs_lens)
+
+        return self._multi_plane_base.ray_shooting_partial_comoving(
+            x,
+            y,
             alpha_x,
             alpha_y,
             z_start,
@@ -589,7 +692,8 @@ class LensedLocation(object):
                 T_ij_end=None,
             )
 
-            T = self._multiplane._T_z_list[ind]
+            T = self._multiplane.T_z_list[ind]
             new_kwargs[ind]["center_x"] = x / T
             new_kwargs[ind]["center_y"] = y / T
+
         return new_kwargs

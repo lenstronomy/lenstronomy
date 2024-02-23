@@ -613,7 +613,7 @@ class LensEquationSolver(object):
 
         if hasattr(self.lensModel, "_no_potential"):
             raise Exception(
-                "Instance of lensModel passed to this class does not compute the lensing potential, "
+                "Instance of `LensModel` passed to this class does not compute the lensing potential, "
                 "and therefore cannot compute time delays."
             )
 

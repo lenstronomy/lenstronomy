@@ -3,7 +3,7 @@ __author__ = "ewoudwempe"
 import numpy as np
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
-from lenstronomy.Util.numba_util import jit, nan_to_num
+from lenstronomy.Util.numba_util import jit
 
 __all__ = ["EPL_numba"]
 
@@ -186,7 +186,8 @@ def alpha(x, y, b, q, t, Omega=None):
     if Omega is None:
         Omega = omega(phi, t, q)
     # Omega = omega(phi, t, q)
-    alph = (2 * b) / (1 + q) * nan_to_num((b / R) ** t * R / b) * Omega
+    # TODO: check whether numba is active with np.nan_to_num instead of numba_util.nan_to_num
+    alph = (2 * b) / (1 + q) * np.nan_to_num((b / R) ** t * R / b) * Omega
     return alph
 
 

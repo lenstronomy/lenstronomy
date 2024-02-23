@@ -469,7 +469,7 @@ class ImageLinearFit(ImageModel):
                 )
                 logL += marg_const
         if check_positive_flux is True:
-            _, _, _, _ = self.update_linear_kwargs(
+            _, _, _, _ = self._update_linear_kwargs(
                 param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps
             )
             bool_ = self.check_positive_flux(
@@ -498,10 +498,12 @@ class ImageLinearFit(ImageModel):
         :return: number of linear coefficients to be solved for in the linear inversion
         """
         num = 0
-        if self._pixelbased_bool is False:
+
+        if self._pixelbased_bool is False and self._linear_solver is True:
             num += self.SourceModel.num_param_linear(kwargs_source)
             num += self.LensLightModel.num_param_linear(kwargs_lens_light)
-        num += self.PointSource.num_basis(kwargs_ps, kwargs_lens)
+        if self._linear_solver is True:
+            num += self.PointSource.num_basis(kwargs_ps, kwargs_lens)
         return num
 
     def _linear_response_matrix(
@@ -531,8 +533,9 @@ class ImageLinearFit(ImageModel):
         :return: response matrix (m x n)
         """
         x_grid, y_grid = self.ImageNumerics.coordinates_evaluate
+
         source_light_response, n_source = self.source_mapping.image_flux_split(
-            x_grid, y_grid, kwargs_lens, kwargs_source
+            x_grid, y_grid, kwargs_lens, kwargs_source, kwargs_special
         )
         extinction = self._extinction.extinction(
             x_grid,
@@ -608,14 +611,17 @@ class ImageLinearFit(ImageModel):
         :param param: linear parameter vector corresponding to the response matrix
         :return: updated list of kwargs with linear parameter values
         """
-        i = 0
-        kwargs_source, i = self.SourceModel.update_linear(
-            param, i, kwargs_list=kwargs_source
-        )
-        kwargs_lens_light, i = self.LensLightModel.update_linear(
-            param, i, kwargs_list=kwargs_lens_light
-        )
-        kwargs_ps, i = self.PointSource.update_linear(param, i, kwargs_ps, kwargs_lens)
+        if self._linear_solver is True:
+            i = 0
+            kwargs_source, i = self.SourceModel.update_linear(
+                param, i, kwargs_list=kwargs_source
+            )
+            kwargs_lens_light, i = self.LensLightModel.update_linear(
+                param, i, kwargs_list=kwargs_lens_light
+            )
+            kwargs_ps, i = self.PointSource.update_linear(
+                param, i, kwargs_ps, kwargs_lens
+            )
         return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps
 
     def linear_param_from_kwargs(self, kwargs_source, kwargs_lens_light, kwargs_ps):
@@ -641,9 +647,10 @@ class ImageLinearFit(ImageModel):
         :return: list of linear coefficients
         """
         param = []
-        param += self.SourceModel.linear_param_from_kwargs(kwargs_source)
-        param += self.LensLightModel.linear_param_from_kwargs(kwargs_lens_light)
-        param += self.PointSource.linear_param_from_kwargs(kwargs_ps)
+        if self._linear_solver is True:
+            param += self.SourceModel.linear_param_from_kwargs(kwargs_source)
+            param += self.LensLightModel.linear_param_from_kwargs(kwargs_lens_light)
+            param += self.PointSource.linear_param_from_kwargs(kwargs_ps)
         return param
 
     def update_pixel_kwargs(self, kwargs_source, kwargs_lens_light):
@@ -968,7 +975,7 @@ class ImageLinearFit(ImageModel):
         for i in range(num_of_light):
             b[i] = np.sum(A[i] * (d))
 
-        param_amps = np.linalg.lstsq(M, b)[0]
+        param_amps = np.linalg.lstsq(M, b, rcond=None)[0]
 
         clean_temp = np.zeros((num_of_image_pixel))
         dirty_temp = np.zeros((num_of_image_pixel))

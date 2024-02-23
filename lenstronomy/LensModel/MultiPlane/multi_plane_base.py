@@ -97,6 +97,39 @@ class MultiPlaneBase(ProfileListBase):
             self._T_z_list.append(T_z)
             z_before = z_lens
 
+    @property
+    def z_source_convention(self):
+        """Redshift of the source to define the reduced deflection angles of the lens
+        models."""
+        return self._z_source_convention
+
+    @property
+    def sorted_redshift_index(self):
+        """List of lens indices in the sorted redshift order."""
+        return self._sorted_redshift_index
+
+    @property
+    def T_z_list(self):
+        """List of transverse angular diameter distances between the observer and the
+        lens planes."""
+        return self._T_z_list
+
+    @T_z_list.setter
+    def T_z_list(self, T_z_list):
+        """List of transverse angular diameter distances between the observer and the
+        lens planes."""
+        self._T_z_list = T_z_list
+
+    @property
+    def T_ij_list(self):
+        """List of transverse angular diameter distances between the lens planes."""
+        return self._T_ij_list
+
+    @T_ij_list.setter
+    def T_ij_list(self, T_ij_list):
+        """List of transverse angular diameter distances between the lens planes."""
+        self._T_ij_list = T_ij_list
+
     def ray_shooting_partial_comoving(
         self,
         x,
@@ -389,9 +422,7 @@ class MultiPlaneBase(ProfileListBase):
         """
         d_beta_x = beta_j_x - beta_i_x
         d_beta_y = beta_j_y - beta_i_y
-        tau_ij = (
-            T_i * T_j / T_ij * const.Mpc / const.c / const.day_s * const.arcsec**2
-        )
+        tau_ij = T_i * T_j / T_ij * const.Mpc / const.c / const.day_s * const.arcsec**2
         return tau_ij * (d_beta_x**2 + d_beta_y**2) / 2
 
     def _lensing_potential2time_delay(self, potential, z_lens, z_source):

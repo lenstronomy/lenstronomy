@@ -100,6 +100,7 @@ class MultiplaneFast(object):
         # these do not depend on kwargs_lens_array
         x, y, alpha_x, alpha_y = self._ray_shooting_fast_foreground()
         # evaluate main deflector deflection angles
+
         (
             x,
             y,
@@ -139,6 +140,7 @@ class MultiplaneFast(object):
             kwargs_lens = kw[index:]
 
             x0, y0 = np.zeros_like(self._x_image), np.zeros_like(self._y_image)
+
             (
                 x,
                 y,

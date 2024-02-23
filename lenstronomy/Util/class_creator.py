@@ -21,6 +21,7 @@ def create_class_instances(
     lens_redshift_list=None,
     kwargs_interp=None,
     multi_plane=False,
+    distance_ratio_sampling=False,
     observed_convention_index=None,
     source_light_model_list=None,
     lens_light_model_list=None,
@@ -52,6 +53,7 @@ def create_class_instances(
     tracer_source_model_list=None,
     tracer_source_band=0,
     tracer_partition=None,
+    tracer_type="LINEAR",
 ):
     """
 
@@ -61,7 +63,8 @@ def create_class_instances(
     :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens models.
      If None, 'z_source' is used.
     :param lens_redshift_list:
-    :param multi_plane:
+    :param multi_plane: bool, if True, computes the lensing quantities in multi-plane mode
+    :param distance_ratio_sampling: bool, if True, samples the distance ratios in multi-lens-plane
     :param kwargs_interp: interpolation keyword arguments specifying the numerics.
      See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
     :param observed_convention_index:
@@ -109,6 +112,8 @@ def create_class_instances(
     :param tracer_partition: in case of tracer models for specific sub-parts of the surface brightness model
      [[list of light profiles, list of tracer profiles], [list of light profiles, list of tracer profiles], [...], ...]
     :type tracer_partition: None or list
+    :param tracer_type: 'LINEAR' or 'LOG', to determine how tracers are summed between components
+    :type tracer_type: string
     :return: lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class
     """
     if lens_model_list is None:
@@ -152,6 +157,7 @@ def create_class_instances(
         lens_redshift_list=lens_redshift_list_i,
         multi_plane=multi_plane,
         cosmo=cosmo,
+        distance_ratio_sampling=distance_ratio_sampling,
         observed_convention_index=observed_convention_index_i,
         kwargs_interp=kwargs_interp,
         numerical_alpha_class=tabulated_deflection_angles,
@@ -396,7 +402,7 @@ def create_tracer_model(tracer_data, kwargs_model, tracer_likelihood_mask=None):
 
     :param tracer_data:
     :param kwargs_model:
-    :param tracer_likelihood_mask_list:
+    :param tracer_likelihood_mask:
 
     :return:
     """

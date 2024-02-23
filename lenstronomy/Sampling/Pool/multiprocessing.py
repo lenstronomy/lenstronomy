@@ -7,7 +7,6 @@ The class also extends with a ``is_master()`` definition
 
 """
 
-
 # Standard library
 
 import signal

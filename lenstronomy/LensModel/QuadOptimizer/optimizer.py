@@ -242,12 +242,7 @@ class Optimizer(object):
 
         :return: the keyword arguments for the decoupled multi-plane class if it is specified
         """
-        if hasattr(self, "_kwargs_multiplane_model"):
-            return self._kwargs_multiplane_model
-        else:
-            raise Exception(
-                "optimizer class was not set up for use with the decoupled multi-plane formalism"
-            )
+        return self._kwargs_multiplane_model
 
     def optimize(self, n_particles=50, n_iterations=250, verbose=False, threadCount=1):
         """

@@ -182,7 +182,6 @@ class PowerLawFixedShear(PowerLawParamManager):
         :param shear_strength: the strenght of the external shear to be kept fixed
         """
         self._shear_strength = shear_strength
-
         super(PowerLawFixedShear, self).__init__(kwargs_lens_init)
 
     def args_to_kwargs(self, args):

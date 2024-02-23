@@ -154,15 +154,15 @@ def coordinates_and_deflections(
     alpha_y_main *= reduced_to_phys
 
     # get to the source plane
-    alpha_x = alpha_x_foreground - alpha_x_main
-    alpha_y = alpha_y_foreground - alpha_y_main
+    angle_x = alpha_x_foreground - alpha_x_main
+    angle_y = alpha_y_foreground - alpha_y_main
     x_source, y_source, _, _ = lens_model_fixed.lens_model.ray_shooting_partial(
-        x_main_deflector, y_main_deflector, alpha_x, alpha_y, z_split, z_source, kwargs_lens_fixed
+        x_main_deflector, y_main_deflector, angle_x, angle_y, z_split, z_source, kwargs_lens_fixed
     )
 
     # compute the effective deflection field for background halos
-    alpha_x_background = (x_source - x_main_deflector) / Tds - alpha_x
-    alpha_y_background = (y_source - y_main_deflector) / Tds - alpha_y
+    alpha_x_background = (x_source - x_main_deflector) / Tds - angle_x
+    alpha_y_background = (y_source - y_main_deflector) / Tds - angle_y
     return (
         x_main_deflector,
         y_main_deflector,

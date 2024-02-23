@@ -342,6 +342,10 @@ class ModelBandPlot(ModelBand):
         with_critical_curves=False,
         crit_curve_color="k",
         image_name_list=None,
+        super_sample_factor=None,
+        superimpose_model_image=False,
+        kwargs_model_image=None,
+        add_color_bar=True,
         **kwargs
     ):
         """Plots the convergence of a full lens model minus the convergence from a few
@@ -360,6 +364,7 @@ class ModelBandPlot(ModelBand):
         :param crit_curve_color: color of the critical curves
         :param image_name_list: labels the images, default is A, B, C, ...
         :param kwargs: any additional keyword arguments
+        :param add_color_bar: bool; whether or not to include a color bar
         :return: matplotib axis
         """
 
@@ -389,17 +394,59 @@ class ModelBandPlot(ModelBand):
             z_source=z_source,
             cosmo=cosmo,
         )
+        if super_sample_factor is None:
+            x_grid = self._x_grid
+            y_grid = self._y_grid
+        else:
+            from lenstronomy.Util.util import make_grid
+            x_grid, y_grid = make_grid(int(self._coords.num_pixel_axes[0] * super_sample_factor),
+                                       self._deltaPix / super_sample_factor)
+
         kappa_full = util.array2image(
-            self._lensModel.kappa(self._x_grid, self._y_grid, self._kwargs_lens_partial)
+            self._lensModel.kappa(x_grid, y_grid, self._kwargs_lens_partial)
         )
         kappa_macro = util.array2image(
-            lens_model_macro.kappa(self._x_grid, self._y_grid, kwargs_lens_macro)
+            lens_model_macro.kappa(x_grid, y_grid, kwargs_lens_macro)
         )
         residual_kappa = kappa_full - kappa_macro
         if subtract_mean:
             mean_kappa = np.mean(residual_kappa)
             residual_kappa -= mean_kappa
             colorbar_label = r"$\kappa_{\rm{sub}} - \langle \kappa_{\rm{sub}} \rangle$"
+        if superimpose_model_image:
+            if 'vmin' not in kwargs_model_image.keys():
+                vmin = self._v_min_default
+            else:
+                vmin = kwargs_model_image['vmin']
+                del kwargs_model_image['vmin']
+            if 'vmax' not in kwargs_model_image.keys():
+                vmax = self._v_max_default
+            else:
+                vmax = kwargs_model_image['vmax']
+                del kwargs_model_image['vmax']
+            if 'scale_vmin' in kwargs_model_image.keys():
+                vmin *= kwargs_model_image['scale_vmin']
+                del kwargs_model_image['scale_vmin']
+            if 'scale_vmax' in kwargs_model_image.keys():
+                vmax *= kwargs_model_image['scale_vmax']
+                del kwargs_model_image['scale_vmax']
+            if 'alpha' in kwargs_model_image.keys():
+                alpha = kwargs_model_image['alpha']
+                del kwargs_model_image['alpha']
+            else:
+                alpha = 0.5
+            im2 = ax.imshow(
+                np.log10(self._model),
+                origin="lower",
+                vmin=vmin,
+                vmax=vmax,
+                extent=self._image_extent,
+                alpha=1.0,
+                **kwargs_model_image,
+            )
+        else:
+            alpha = 1.0
+
         im = ax.imshow(
             residual_kappa,
             origin="lower",
@@ -407,6 +454,7 @@ class ModelBandPlot(ModelBand):
             vmax=v_max,
             extent=self._image_extent,
             cmap=cmap,
+            alpha=alpha
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -457,12 +505,14 @@ class ModelBandPlot(ModelBand):
             plot_out_of_image=False,
         )
 
-        divider = make_axes_locatable(ax)
-        cax = divider.append_axes("right", size="5%", pad=0.05)
-        cb = plt.colorbar(im, cax=cax)
-        cb.set_label(colorbar_label, fontsize=font_size)
-
-        return ax
+        if add_color_bar:
+            divider = make_axes_locatable(ax)
+            cax = divider.append_axes("right", size="5%", pad=0.05)
+            cb = plt.colorbar(im, cax=cax)
+            cb.set_label(colorbar_label, fontsize=font_size)
+        else:
+            cb = None
+        return ax, cb
 
     def normalized_residual_plot(
         self,

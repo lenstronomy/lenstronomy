@@ -136,8 +136,8 @@ class MultiPlaneDecoupled(MultiPlane):
 
         # now we compute (via the interpolation functions) the deflection angles from all deflectors at z <= z_main, \
         # exlucding the main deflector
-        deflection_x_foreground = self._alphax_interp_foreground(coordinates)
-        deflection_y_foreground = self._alphay_interp_foreground(coordinates)
+        angle_x_foreground = self._alphax_interp_foreground(coordinates)
+        angle_y_foreground = self._alphay_interp_foreground(coordinates)
 
         # compute the deflection angles from the main deflector
         deflection_x_main, deflection_y_main = self._main_deflector.alpha(
@@ -148,16 +148,16 @@ class MultiPlaneDecoupled(MultiPlane):
         deflection_y_main *= self._reduced_to_phys
 
         # add the main deflector to the deflection field
-        alpha_x = deflection_x_foreground - deflection_x_main
-        alpha_y = deflection_y_foreground - deflection_y_main
+        angle_x = angle_x_foreground - deflection_x_main
+        angle_y = angle_y_foreground - deflection_y_main
 
         # now we compute (via the interpolation functions) the deflection angles from all deflectors at z > z_main
         deflection_x_background = self._alphax_interp_background(coordinates)
         deflection_y_background = self._alphay_interp_background(coordinates)
 
         # combine deflections
-        alpha_background_x = alpha_x + deflection_x_background
-        alpha_background_y = alpha_y + deflection_y_background
+        alpha_background_x = angle_x + deflection_x_background
+        alpha_background_y = angle_y + deflection_y_background
 
         # ray propagation to the source plane with the small angle approximation
         beta_x = x / self._Ts + alpha_background_x * self._Tds / self._Ts

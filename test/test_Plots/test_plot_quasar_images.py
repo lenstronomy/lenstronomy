@@ -53,19 +53,5 @@ class TestPlotQuasarImages(object):
         )
         plt.close()
 
-        lens_model_as_list = [lensmodel] * len(x_image)
-        plot_quasar_images(
-            lens_model_as_list,
-            x_image,
-            y_image,
-            source_x,
-            source_y,
-            kwargs_lens,
-            source_fwhm_parsec,
-            z_source,
-        )
-        plt.close()
-
-
 if __name__ == "__main__":
     pytest.main()

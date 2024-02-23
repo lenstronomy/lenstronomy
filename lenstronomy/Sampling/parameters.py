@@ -257,6 +257,11 @@ class Param(object):
         )
         self._kwargs_model = kwargs_model
 
+        if "distance_ratio_sampling" in self._kwargs_model:
+            distance_ratio_sampling = self._kwargs_model["distance_ratio_sampling"]
+        else:
+            distance_ratio_sampling = None
+
         # check how many redshifts need to be sampled
         num_z_sampling = 0
         if lens_redshift_sampling_indexes is not None:
@@ -274,6 +279,12 @@ class Param(object):
             source_redshift_sampling_indexes,
         )
 
+        # check how many lens planes
+        if self._lens_redshift_list is None:
+            num_lens_planes = 0
+        else:
+            num_lens_planes = len(list(set(self._lens_redshift_list)))
+
         (
             self._lens_model_class,
             self._source_model_class,
@@ -282,7 +293,7 @@ class Param(object):
             _,
         ) = class_creator.create_class_instances(all_models=True, **kwargs_model)
         self._image2SourceMapping = Image2SourceMapping(
-            lensModel=self._lens_model_class, sourceModel=self._source_model_class
+            lens_model=self._lens_model_class, source_model=self._source_model_class
         )
 
         if kwargs_fixed_lens is None:
@@ -464,6 +475,8 @@ class Param(object):
             Ddt_sampling=Ddt_sampling,
             mass_scaling=self._mass_scaling,
             general_scaling_params=self._general_scaling_masks,
+            distance_ratio_sampling=distance_ratio_sampling,
+            num_lens_planes=num_lens_planes,
             kwargs_fixed=kwargs_fixed_special,
             num_scale_factor=self._num_scale_factor,
             kwargs_lower=kwargs_lower_special,
@@ -483,6 +496,7 @@ class Param(object):
             kwargs_upper=kwargs_upper_tracer_source,
             linear_solver=False,
         )
+
         for lens_source_joint in self._joint_lens_with_source_light:
             i_source = lens_source_joint[0]
             if i_source in self._image_plane_source_list:
@@ -676,7 +690,9 @@ class Param(object):
         num += self.pointSourceParams.num_param_linear()
         return num
 
-    def image2source_plane(self, kwargs_source, kwargs_lens, image_plane=False):
+    def image2source_plane(
+        self, kwargs_source, kwargs_lens, kwargs_special=None, image_plane=False
+    ):
         """Maps the image plane position definition of the source plane.
 
         :param kwargs_source: source light model keyword argument list
@@ -695,6 +711,7 @@ class Param(object):
                         kwargs["center_y"],
                         kwargs_lens,
                         index_source=i,
+                        kwargs_special=kwargs_special,
                     )
                     kwargs["center_x"] = x_mapped
                     kwargs["center_y"] = y_mapped
@@ -708,8 +725,21 @@ class Param(object):
         kwargs_special,
         image_plane=False,
     ):
+        """Update the source light model parameters with the point source position.
+
+        :param kwargs_lens_list: lens model keyword argument list
+        :param kwargs_source_list: source light model keyword argument list
+        :param kwargs_ps: point source model keyword argument list
+        :param kwargs_special: special keyword arguments
+        :param image_plane: boolean, if True, does not up map image plane parameters to
+            source plane
+        :return: updated source light model keyword arguments
+        """
         kwargs_source_list = self.image2source_plane(
-            kwargs_source_list, kwargs_lens_list, image_plane=image_plane
+            kwargs_source_list,
+            kwargs_lens_list,
+            image_plane=image_plane,
+            kwargs_special=kwargs_special,
         )
 
         for setting in self._joint_source_with_point_source:
@@ -724,8 +754,13 @@ class Param(object):
                 )
                 # x_pos, y_pos = self.real_image_positions(x_pos, y_pos, kwargs_special)
                 x_mapped, y_mapped = self._image2SourceMapping.image2source(
-                    x_pos, y_pos, kwargs_lens_list, index_source=k_source
+                    x_pos,
+                    y_pos,
+                    kwargs_lens_list,
+                    index_source=k_source,
+                    kwargs_special=kwargs_special,
                 )
+
             for param_name in param_list:
                 if param_name == "center_x":
                     kwargs_source_list[k_source][param_name] = np.mean(x_mapped)
@@ -935,7 +970,7 @@ class Param(object):
                 _,
             ) = class_creator.create_class_instances(all_models=True, **kwargs_model)
             self._image2SourceMapping = Image2SourceMapping(
-                lensModel=self._lens_model_class, sourceModel=self._source_model_class
+                lens_model=self._lens_model_class, source_model=self._source_model_class
             )
 
     def check_solver(self, kwargs_lens, kwargs_ps):

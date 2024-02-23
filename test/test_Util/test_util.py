@@ -8,6 +8,16 @@ import numpy.testing as npt
 import unittest
 
 
+def test_isiterable():
+    z = np.array([0, 1])
+    boolean = util.isiterable(z)
+    assert boolean is True
+
+    z = 1
+    boolean = util.isiterable(z)
+    assert boolean is False
+
+
 def test_estimate_theta_E():
     x = np.array([-0.45328229, 0.57461556, 0.53757501, -0.42312438])
     y = np.array([0.69582971, -0.51226356, 0.37577509, -0.40245467])

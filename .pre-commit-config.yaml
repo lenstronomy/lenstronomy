@@ -12,7 +12,7 @@ ci:
 
 repos:
   - repo: https://github.com/psf/black
-    rev: 23.11.0
+    rev: 24.2.0
     hooks:
       - id: black
         # It is recommended to specify the latest version of Python
@@ -21,7 +21,7 @@ repos:
         # https://pre-commit.com/#top_level-default_language_version
         language_version: python3
   - repo: https://github.com/psf/black
-    rev: 23.11.0
+    rev: 24.2.0
     hooks:
       - id: black-jupyter
         language_version: python3

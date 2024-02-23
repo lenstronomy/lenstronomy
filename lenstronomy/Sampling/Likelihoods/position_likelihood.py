@@ -50,7 +50,7 @@ class PositionLikelihood(object):
         """
         self._pointSource = point_source_class
         # TODO replace with public function of ray_shooting
-        self._lensModel = point_source_class._lensModel
+        self._lensModel = point_source_class._lens_model
         self._astrometric_likelihood = astrometric_likelihood
         self._image_position_sigma = image_position_uncertainty
         self._source_position_sigma = source_position_sigma

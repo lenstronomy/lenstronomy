@@ -82,9 +82,9 @@ class Testcnfw(object):
 
         R = np.array([0.5 * Rs, 0.8 * Rs, 1.1 * Rs])
 
-        g1_array, g2_array = self.cn.cnfwGamma(R, Rs, rho0, r_core, R, 0.6 * Rs)
+        g1_array, g2_array = self.cn.cnfw_gamma(R, Rs, rho0, r_core, R, 0.6 * Rs)
         for i in range(0, len(R)):
-            g1, g2 = self.cn.cnfwGamma(R[i], Rs, rho0, r_core, R[i], 0.6 * Rs)
+            g1, g2 = self.cn.cnfw_gamma(R[i], Rs, rho0, r_core, R[i], 0.6 * Rs)
             npt.assert_almost_equal(g1_array[i], g1)
             npt.assert_almost_equal(g2_array[i], g2)
 

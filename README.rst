@@ -9,8 +9,8 @@
         :target: http://lenstronomy.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
 
-.. image:: https://coveralls.io/repos/github/lenstronomy/lenstronomy/badge.svg?branch=main
-        :target: https://coveralls.io/github/lenstronomy/lenstronomy?branch=main
+.. image:: https://codecov.io/gh/lenstronomy/lenstronomy/graph/badge.svg?token=Pk1FmwQ4Ek 
+        :target: https://codecov.io/gh/lenstronomy/lenstronomy
 
 .. image:: https://img.shields.io/badge/License-BSD_3--Clause-blue.svg
     :target: https://github.com/lenstronomy/lenstronomy/blob/main/LICENSE

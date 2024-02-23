@@ -279,17 +279,32 @@ class TestRaise(unittest.TestCase):
             lens_model = LensModel(lens_model_list=["SIS"])
             kwargs = [{"theta_E": 1.0, "center_x": 0.0, "center_y": 0.0}]
             lens_model.hessian(0, 0, kwargs, diff=0.001, diff_method="bad")
+
         with self.assertRaises(ValueError):
             lens_model = LensModel(lens_model_list=["LOS", "LOS_MINIMAL"])
         with self.assertRaises(ValueError):
             lens_model = LensModel(
-                lens_model_list=["LOS", "EPL", "NFW"], multi_plane=True, z_source=1.0
+                lens_model_list=["EPL", "NFW"], multi_plane=True, z_source=1.0
+            )
+        with self.assertRaises(ValueError):
+            lens_model = LensModel(
+                lens_model_list=["EPL", "NFW"],
+                multi_plane=True,
+                lens_redshift_list=[0.5, 0.5],
+            )
+        with self.assertRaises(ValueError):
+            lens_model = LensModel(
+                lens_model_list=["LOS", "EPL", "NFW"],
+                multi_plane=True,
+                z_source=1.0,
+                lens_redshift_list=[0.5, 0.5, 0.5],
             )
         with self.assertRaises(ValueError):
             lens_model = LensModel(
                 lens_model_list=["LOS_MINIMAL", "SIS", "GAUSSIAN"],
                 multi_plane=True,
                 z_source=1.0,
+                lens_redshift_list=[0.5, 0.5, 0.5],
             )
 
     def test_hessian_z1z2_raise(self):

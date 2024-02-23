@@ -41,10 +41,9 @@ class SIS_truncate(LensProfileBase):
             f_ = np.zeros_like(r)
             f_[r < r_trunc] = theta_E * r[r < r_trunc]
             r_ = r[(r < 2 * r_trunc) & (r > r_trunc)]
-            f_[
-                (r < 2 * r_trunc) & (r > r_trunc)
-            ] = theta_E * r_trunc + 1.0 / 2 * theta_E * (3 - r_ / r_trunc) * (
-                r_ - r_trunc
+            f_[(r < 2 * r_trunc) & (r > r_trunc)] = (
+                theta_E * r_trunc
+                + 1.0 / 2 * theta_E * (3 - r_ / r_trunc) * (r_ - r_trunc)
             )
             f_[r > 2 * r_trunc] = 3.0 / 2 * theta_E * r_trunc
         return f_

@@ -11,7 +11,7 @@ from lenstronomy.Sampling.Likelihoods import kinematic_NN_call
 
 
 class TestKinLikelihood(object):
-    def setup(self):
+    def setup_method(self, method):
         self.kinematic_NN = kinematic_NN_call.KinematicNN().SKiNN_installed
         # initialize KinLikelihood class and calculate example vrms for testing
         major_axis_pa = 30 * np.pi / 180
@@ -301,9 +301,7 @@ class TestKinLikelihood(object):
         rescaled_map = self._KinLikelihood.rescale_distance(
             self.image_data, kwargs_special
         )
-        npt.assert_allclose(
-            1 / np.sqrt(2) * self.image_data, rescaled_map, atol=10**-4
-        )
+        npt.assert_allclose(1 / np.sqrt(2) * self.image_data, rescaled_map, atol=10**-4)
 
     def test_convert_kwargs_to_kinnalign_input(self):
         self._KinLikelihood.update_image_input(

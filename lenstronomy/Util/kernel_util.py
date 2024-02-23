@@ -1,4 +1,5 @@
 """Routines that manipulate convolution kernels."""
+
 import numpy as np
 import copy
 from scipy import ndimage
@@ -266,6 +267,23 @@ def kernel_average_pixel(kernel_super, supersampling_factor):
 
 
 @export
+def kernel_gaussian_grid(x_grid, y_grid, sigma):
+    """Gaussian kernel.
+
+    :param x: x-coordinate grid
+    :param y: y-coordinate grid
+    :param sigma: standard deviation of Gaussian
+    :return: 2d kernel
+    """
+    gaussian = Gaussian()
+    kernel = gaussian.function(
+        x_grid, y_grid, amp=1.0, sigma=sigma, center_x=0, center_y=0
+    )
+    kernel /= np.sum(kernel)
+    return kernel
+
+
+@export
 def kernel_gaussian(num_pix, delta_pix, fwhm):
     """Gaussian kernel.
 
@@ -278,15 +296,29 @@ def kernel_gaussian(num_pix, delta_pix, fwhm):
     # if kernel_numPix % 2 == 0:
     #    kernel_numPix += 1
     x_grid, y_grid = util.make_grid(num_pix, delta_pix)
-    gaussian = Gaussian()
-    kernel = gaussian.function(
-        x_grid, y_grid, amp=1.0, sigma=sigma, center_x=0, center_y=0
-    )
-    kernel /= np.sum(kernel)
+    kernel = kernel_gaussian_grid(x_grid, y_grid, sigma)
     kernel = util.array2image(kernel)
     return kernel
 
 
+@export
+def kernel_moffat_grid(x, y, fwhm, moffat_beta):
+    """Moffat kernel.
+
+    :param x: x-coordinate grid
+    :param y: y-coordinate grid
+    :param fwhm: full width at half maximum
+    :param moffat_beta: beta of Moffat profile
+    :return: 2d kernel
+    """
+    alpha = velocity_util.moffat_fwhm_alpha(fwhm, moffat_beta)
+    moffat = Moffat()
+    kernel = moffat.function(x=x, y=y, amp=1, alpha=alpha, beta=moffat_beta)
+    kernel /= np.sum(kernel)
+    return kernel
+
+
+@export
 def kernel_moffat(num_pix, delta_pix, fwhm, moffat_beta):
     """Moffat kernel.
 
@@ -296,12 +328,8 @@ def kernel_moffat(num_pix, delta_pix, fwhm, moffat_beta):
     :param moffat_beta: beta of Moffat profile
     :return: 2d kernel
     """
-    alpha = velocity_util.moffat_fwhm_alpha(fwhm, moffat_beta)
     x, y = util.make_grid(numPix=num_pix, deltapix=delta_pix)
-    moffat = Moffat()
-    kernel = moffat.function(x=x, y=y, amp=1, alpha=alpha, beta=moffat_beta)
-    kernel /= np.sum(kernel)
-    kernel = util.array2image(kernel)
+    kernel = kernel_moffat_grid(x, y, fwhm, moffat_beta)
     return kernel
 
 
@@ -382,9 +410,9 @@ def averaging_odd_kernel(kernel_super, degrading_factor):
 
     kernel_super_ = np.zeros((n_high, n_high))
     i_start = int((n_high - n_kernel) / 2)
-    kernel_super_[
-        i_start : i_start + n_kernel, i_start : i_start + n_kernel
-    ] = kernel_super
+    kernel_super_[i_start : i_start + n_kernel, i_start : i_start + n_kernel] = (
+        kernel_super
+    )
     kernel_low_res = util.averaging(kernel_super_, numGrid=n_high, numPix=numPix)
     return kernel_low_res
 

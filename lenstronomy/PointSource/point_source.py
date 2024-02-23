@@ -61,7 +61,7 @@ class PointSource(object):
                 point_source_frame_list = [None] * len(point_source_type_list)
         self._index_lens_model_list = index_lens_model_list
         self._point_source_frame_list = point_source_frame_list
-        self._lensModel = lens_model
+        self._lens_model = lens_model
         self.point_source_type_list = point_source_type_list
         self._point_source_list = []
         if fixed_magnification_list is None:
@@ -146,9 +146,9 @@ class PointSource(object):
         ):
             self._kwargs_lens_eqn_solver["min_distance"] = min_distance
         if only_from_unspecified:
-            self._kwargs_lens_eqn_solver[
-                "search_window"
-            ] = self._kwargs_lens_eqn_solver.get("search_window", search_window)
+            self._kwargs_lens_eqn_solver["search_window"] = (
+                self._kwargs_lens_eqn_solver.get("search_window", search_window)
+            )
             self._kwargs_lens_eqn_solver["x_center"] = self._kwargs_lens_eqn_solver.get(
                 "x_center", x_center
             )
@@ -167,7 +167,7 @@ class PointSource(object):
         :return: update instance of lens model class
         """
         self.delete_lens_model_cache()
-        self._lensModel = lens_model_class
+        self._lens_model = lens_model_class
         for model in self._point_source_list:
             model.update_lens_model(lens_model_class=lens_model_class)
 
@@ -392,7 +392,7 @@ class PointSource(object):
                     if with_amp:
                         mag = self.image_amplitude(kwargs_ps, kwargs_lens, k=i)[0]
                     else:
-                        mag = self._lensModel.magnification(x_pos, y_pos, kwargs_lens)
+                        mag = self._lens_model.magnification(x_pos, y_pos, kwargs_lens)
                         mag = np.abs(mag)
                     amp.append(list(mag))
                 else:
@@ -467,7 +467,7 @@ class PointSource(object):
             if model in ["LENSED_POSITION", "SOURCE_POSITION"]:
                 x_pos = x_image_list[i]
                 y_pos = y_image_list[i]
-                x_source, y_source = self._lensModel.ray_shooting(
+                x_source, y_source = self._lens_model.ray_shooting(
                     x_pos, y_pos, kwargs_lens
                 )
                 dist = np.sqrt(

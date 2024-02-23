@@ -20,6 +20,14 @@ lenstronomy.LensModel.Profiles.base\_profile module
    :undoc-members:
    :show-inheritance:
 
+lenstronomy.LensModel.Profiles.blank\_plane module
+--------------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.blank_plane
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 lenstronomy.LensModel.Profiles.chameleon module
 -----------------------------------------------
 
@@ -180,6 +188,14 @@ lenstronomy.LensModel.Profiles.epl module
    :undoc-members:
    :show-inheritance:
 
+lenstronomy.LensModel.Profiles.epl\_boxydisky module
+----------------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.epl_boxydisky
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 lenstronomy.LensModel.Profiles.epl\_numba module
 ------------------------------------------------
 
@@ -244,10 +260,10 @@ lenstronomy.LensModel.Profiles.gaussian\_potential module
    :undoc-members:
    :show-inheritance:
 
-lenstronomy.LensModel.Profiles.general\_nfw module
---------------------------------------------------
+lenstronomy.LensModel.Profiles.gnfw module
+------------------------------------------
 
-.. automodule:: lenstronomy.LensModel.Profiles.general_nfw
+.. automodule:: lenstronomy.LensModel.Profiles.gnfw
    :members:
    :undoc-members:
    :show-inheritance:
@@ -316,6 +332,14 @@ lenstronomy.LensModel.Profiles.nfw module
    :undoc-members:
    :show-inheritance:
 
+lenstronomy.LensModel.Profiles.nfw\_core\_truncated module
+----------------------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.nfw_core_truncated
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 lenstronomy.LensModel.Profiles.nfw\_ellipse module
 --------------------------------------------------
 
@@ -336,6 +360,14 @@ lenstronomy.LensModel.Profiles.nfw\_mass\_concentration module
 --------------------------------------------------------------
 
 .. automodule:: lenstronomy.LensModel.Profiles.nfw_mass_concentration
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+lenstronomy.LensModel.Profiles.nfw\_mass\_concentration\_ellipse module
+-----------------------------------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.nfw_mass_concentration_ellipse
    :members:
    :undoc-members:
    :show-inheritance:
@@ -400,6 +432,22 @@ lenstronomy.LensModel.Profiles.point\_mass module
 -------------------------------------------------
 
 .. automodule:: lenstronomy.LensModel.Profiles.point_mass
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+lenstronomy.LensModel.Profiles.pseudo\_double\_powerlaw module
+--------------------------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.pseudo_double_powerlaw
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+lenstronomy.LensModel.Profiles.radial\_interpolated module
+----------------------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.radial_interpolated
    :members:
    :undoc-members:
    :show-inheritance:
@@ -512,6 +560,14 @@ lenstronomy.LensModel.Profiles.spp module
 -----------------------------------------
 
 .. automodule:: lenstronomy.LensModel.Profiles.spp
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+lenstronomy.LensModel.Profiles.synthesis module
+-----------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.synthesis
    :members:
    :undoc-members:
    :show-inheritance:

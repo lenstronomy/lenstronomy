@@ -113,7 +113,7 @@ class TestTracerModelFit(object):
             "dec_at_xy_0": dec_at_xy_0,  # DEC at (0,0) pixel
             "transform_pix2angle": Mpix2coord,
             # matrix to translate shift in pixel in shift in relative RA/DEC (2x2 matrix). Make sure it's units are arcseconds or the angular units you want to model.
-            "image_data": np.zeros((numPix, numPix))
+            "image_data": np.zeros((numPix, numPix)),
             # 2d data vector, here initialized with zeros as place holders that get's overwritten once a simulated image with noise is created.
         }
 
@@ -167,7 +167,7 @@ class TestTracerModelFit(object):
             "dec_at_xy_0": dec_at_xy_0,  # DEC at (0,0) pixel
             "transform_pix2angle": Mpix2coord,
             # matrix to translate shift in pixel in shift in relative RA/DEC (2x2 matrix). Make sure it's units are arcseconds or the angular units you want to model.
-            "image_data": np.zeros((numPix, numPix))
+            "image_data": np.zeros((numPix, numPix)),
             # 2d data vector, here initialized with zeros as place holders that get's overwritten once a simulated image with noise is created.
         }
 

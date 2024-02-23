@@ -118,7 +118,6 @@ class MultiplaneFast(object):
         )
         # ray trace through background halos
 
-        kwargs_lens = kw[index:]
         x, y, _, _ = self.lens_model_fixed.lens_model.ray_shooting_partial_comoving(
             x,
             y,

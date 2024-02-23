@@ -419,7 +419,7 @@ class ModelBandPlot(ModelBand):
             mean_kappa = np.mean(residual_kappa)
             residual_kappa -= mean_kappa
             colorbar_label = r"$\kappa_{\rm{sub}} - \langle \kappa_{\rm{sub}} \rangle$"
-        alpha=1.0
+        alpha = 1.0
         im = ax.imshow(
             residual_kappa,
             origin="lower",

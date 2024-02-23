@@ -53,5 +53,6 @@ class TestPlotQuasarImages(object):
         )
         plt.close()
 
+
 if __name__ == "__main__":
     pytest.main()

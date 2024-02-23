@@ -116,8 +116,10 @@ class MultiPlaneDecoupled(MultiPlane):
         )
 
     def ray_shooting_partial_comoving(self, *args, **kwargs):
-        raise Exception("ray_shooting_partial_comoving is not well defined for this class")
-    
+        raise Exception(
+            "ray_shooting_partial_comoving is not well defined for this class"
+        )
+
     def ray_shooting_partial(self, *args, **kwargs):
         raise Exception("ray_shooting_partial is not well defined for this class")
 

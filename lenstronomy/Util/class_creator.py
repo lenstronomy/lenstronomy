@@ -253,7 +253,7 @@ def create_class_instances(
             ]
     point_source_class = PointSource(
         point_source_type_list=point_source_model_list_i,
-        lensModel=lens_model_class_point_source,
+        lens_model=lens_model_class_point_source,
         fixed_magnification_list=fixed_magnification_list_i,
         flux_from_point_source_list=flux_from_point_source_list,
         additional_images_list=additional_images_list_i,

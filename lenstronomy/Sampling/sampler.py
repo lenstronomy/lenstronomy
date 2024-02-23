@@ -69,7 +69,7 @@ class Sampler(object):
         init_pos=None,
         mpi=False,
         print_key="PSO",
-        verbose=True
+        verbose=True,
     ):
         """Return the best fit for the lens model on catalogue basis with particle swarm
         optimizer.
@@ -117,16 +117,18 @@ class Sampler(object):
 
         time_start = time.time()
 
-        result, [log_likelihood_list, pos_list, vel_list] = pso.optimize(n_iterations, verbose=verbose)
+        result, [log_likelihood_list, pos_list, vel_list] = pso.optimize(
+            n_iterations, verbose=verbose
+        )
 
         if pool.is_master():
             kwargs_return = self.chain.param.args2kwargs(result)
             if verbose:
                 print(
-                pso.global_best.fitness
-                * 2
-                / (max(self.chain.effective_num_data_points(**kwargs_return), 1)),
-                "reduced X^2 of best position",
+                    pso.global_best.fitness
+                    * 2
+                    / (max(self.chain.effective_num_data_points(**kwargs_return), 1)),
+                    "reduced X^2 of best position",
                 )
                 print(pso.global_best.fitness, "log likelihood")
                 self._print_result(result=result)

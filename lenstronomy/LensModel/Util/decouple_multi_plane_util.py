@@ -73,6 +73,7 @@ def setup_grids(
     grid_size, grid_resolution, coordinate_center_x=0.0, coordinate_center_y=0.0
 ):
     """Creates grids for use in the decoupled multiplane model.
+
     :param grid_size: The size (diameter of inscribed circle) of the grid
     :param grid_resolution: pixel scale (units arcsec / pixel)
     :param coordinate_center_x: center of the coordinate grid in arcsec
@@ -81,7 +82,7 @@ def setup_grids(
         number of pixels per axis
     """
     npix = int(grid_size / grid_resolution)
-    if npix%2==0:
+    if npix % 2 == 0:
         # we make sure this is odd so that grids include the center point
         npix += 1
     x = np.linspace(-grid_size / 2, grid_size / 2, npix)
@@ -92,6 +93,7 @@ def setup_grids(
     interp_points = (x, y)
 
     return xx.ravel(), yy.ravel(), interp_points, npix
+
 
 def coordinates_and_deflections(
     lens_model_fixed,
@@ -157,7 +159,13 @@ def coordinates_and_deflections(
     angle_x = alpha_x_foreground - alpha_x_main
     angle_y = alpha_y_foreground - alpha_y_main
     x_source, y_source, _, _ = lens_model_fixed.lens_model.ray_shooting_partial(
-        x_main_deflector, y_main_deflector, angle_x, angle_y, z_split, z_source, kwargs_lens_fixed
+        x_main_deflector,
+        y_main_deflector,
+        angle_x,
+        angle_y,
+        z_split,
+        z_source,
+        kwargs_lens_fixed,
     )
 
     # compute the effective deflection field for background halos
@@ -172,6 +180,7 @@ def coordinates_and_deflections(
         alpha_y_background,
     )
 
+
 def class_setup(
     lens_model_free,
     x,
@@ -185,9 +194,9 @@ def class_setup(
     interp_points=None,
     x_image=None,
     y_image=None,
-    method='linear',
+    method="linear",
     bounds_error=False,
-    fill_value=None
+    fill_value=None,
 ):
     """This funciton creates the keyword arguments for a LensModel instance that is the
     decoupled multi-plane approxiamtion for the specified lens model :param
@@ -224,38 +233,49 @@ def class_setup(
     """
     if coordinate_type == "GRID":
         from scipy.interpolate import RegularGridInterpolator
+
         npix = int(len(x) ** 0.5)
         interp_xD = RegularGridInterpolator(
-            interp_points, x.reshape(npix, npix).T, bounds_error=bounds_error,
-            fill_value=fill_value, method=method
+            interp_points,
+            x.reshape(npix, npix).T,
+            bounds_error=bounds_error,
+            fill_value=fill_value,
+            method=method,
         )
         interp_yD = RegularGridInterpolator(
-            interp_points, y.reshape(npix, npix).T, bounds_error=bounds_error,
-            fill_value=fill_value, method=method
+            interp_points,
+            y.reshape(npix, npix).T,
+            bounds_error=bounds_error,
+            fill_value=fill_value,
+            method=method,
         )
         interp_foreground_alpha_x = RegularGridInterpolator(
             interp_points,
             alpha_x_foreground.reshape(npix, npix).T,
             bounds_error=bounds_error,
-            fill_value=fill_value, method=method
+            fill_value=fill_value,
+            method=method,
         )
         interp_foreground_alpha_y = RegularGridInterpolator(
             interp_points,
             alpha_y_foreground.reshape(npix, npix).T,
             bounds_error=bounds_error,
-            fill_value=fill_value, method=method
+            fill_value=fill_value,
+            method=method,
         )
         interp_deltabeta_x = RegularGridInterpolator(
             interp_points,
             alpha_beta_subx.reshape(npix, npix).T,
             bounds_error=bounds_error,
-            fill_value=fill_value, method=method
+            fill_value=fill_value,
+            method=method,
         )
         interp_deltabeta_y = RegularGridInterpolator(
             interp_points,
             alpha_beta_suby.reshape(npix, npix).T,
             bounds_error=bounds_error,
-            fill_value=fill_value, method=method
+            fill_value=fill_value,
+            method=method,
         )
     elif coordinate_type == "POINT":
         interp_xD = lambda *args: x
@@ -267,6 +287,7 @@ def class_setup(
 
     elif coordinate_type == "MULTIPLE_IMAGES":
         from scipy.interpolate import NearestNDInterpolator
+
         interp_points = list(zip(x_image, y_image))
         interp_xD = NearestNDInterpolator(interp_points, x)
         interp_yD = NearestNDInterpolator(interp_points, y)
@@ -304,8 +325,16 @@ def class_setup(
     }
     return kwargs_lens_model
 
-def setup_raytracing_lensmodels(x_image, y_image, lens_model, kwargs_lens, index_lens_split,
-                                grid_size, grid_resolution):
+
+def setup_raytracing_lensmodels(
+    x_image,
+    y_image,
+    lens_model,
+    kwargs_lens,
+    index_lens_split,
+    grid_size,
+    grid_resolution,
+):
     """
 
     :param x_image:
@@ -318,28 +347,51 @@ def setup_raytracing_lensmodels(x_image, y_image, lens_model, kwargs_lens, index
     :return:
     """
 
-    lens_model_fixed, lens_model_free, kwargs_lens_fixed, kwargs_lens_free, z_source, z_split, cosmo_bkg = setup_lens_model(
-        lens_model, kwargs_lens, index_lens_split)
+    (
+        lens_model_fixed,
+        lens_model_free,
+        kwargs_lens_fixed,
+        kwargs_lens_free,
+        z_source,
+        z_split,
+        cosmo_bkg,
+    ) = setup_lens_model(lens_model, kwargs_lens, index_lens_split)
     kwargs_multiplane_lens_model_list = []
     multiplane_lens_model_list = []
     for image_index in range(0, len(x_image)):
-        grid_x, grid_y, interp_points, npix = setup_grids(grid_size, grid_resolution,
-                                                          x_image[image_index], y_image[image_index])
-        xD, yD, alpha_x_foreground, alpha_y_foreground, alpha_x_background, alpha_y_background = \
-            coordinates_and_deflections(lens_model_fixed,
-                                        lens_model_free,
-                                        kwargs_lens_fixed,
-                                        kwargs_lens_free,
-                                        grid_x,
-                                        grid_y,
-                                        z_split,
-                                        z_source,
-                                        cosmo_bkg)
-        kwargs_multiplane_lens_model = class_setup(lens_model_free, xD, yD, alpha_x_foreground, alpha_y_foreground,
-                                                   alpha_x_background, alpha_y_background, z_split,
-                                                   coordinate_type='GRID', interp_points=interp_points)
+        grid_x, grid_y, interp_points, npix = setup_grids(
+            grid_size, grid_resolution, x_image[image_index], y_image[image_index]
+        )
+        (
+            xD,
+            yD,
+            alpha_x_foreground,
+            alpha_y_foreground,
+            alpha_x_background,
+            alpha_y_background,
+        ) = coordinates_and_deflections(
+            lens_model_fixed,
+            lens_model_free,
+            kwargs_lens_fixed,
+            kwargs_lens_free,
+            grid_x,
+            grid_y,
+            z_split,
+            z_source,
+            cosmo_bkg,
+        )
+        kwargs_multiplane_lens_model = class_setup(
+            lens_model_free,
+            xD,
+            yD,
+            alpha_x_foreground,
+            alpha_y_foreground,
+            alpha_x_background,
+            alpha_y_background,
+            z_split,
+            coordinate_type="GRID",
+            interp_points=interp_points,
+        )
         kwargs_multiplane_lens_model_list.append(kwargs_multiplane_lens_model)
         multiplane_lens_model_list.append(LensModel(**kwargs_multiplane_lens_model))
     return multiplane_lens_model_list, kwargs_multiplane_lens_model_list
-
-

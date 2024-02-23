@@ -109,7 +109,7 @@ class ModelAPI(object):
                 fixed_magnification[i] = True
         self._point_source_model_class = PointSource(
             point_source_type_list=point_source_model_list,
-            lensModel=self._lens_model_class,
+            lens_model=self._lens_model_class,
             fixed_magnification_list=fixed_magnification,
         )
         self._cosmo = cosmo

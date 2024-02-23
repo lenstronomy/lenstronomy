@@ -11,7 +11,7 @@ class PointSource(object):
     def __init__(
         self,
         point_source_type_list,
-        lensModel=None,
+        lens_model=None,
         fixed_magnification_list=None,
         additional_images_list=None,
         flux_from_point_source_list=None,
@@ -24,7 +24,7 @@ class PointSource(object):
         """
 
         :param point_source_type_list: list of point source types
-        :param lensModel: instance of the LensModel() class
+        :param lens_model: instance of the LensModel() class
         :param fixed_magnification_list: list of booleans (same length as point_source_type_list).
          If True, magnification ratio of point sources is fixed to the one given by the lens model.
          This option then requires to provide a 'source_amp' amplitude of the source brightness instead of
@@ -61,7 +61,7 @@ class PointSource(object):
                 point_source_frame_list = [None] * len(point_source_type_list)
         self._index_lens_model_list = index_lens_model_list
         self._point_source_frame_list = point_source_frame_list
-        self._lensModel = lensModel
+        self._lensModel = lens_model
         self.point_source_type_list = point_source_type_list
         self._point_source_list = []
         if fixed_magnification_list is None:
@@ -87,7 +87,7 @@ class PointSource(object):
                 self._point_source_list.append(
                     PointSourceCached(
                         LensedPositions(
-                            lensModel,
+                            lens_model,
                             fixed_magnification=fixed_magnification_list[i],
                             additional_images=additional_images_list[i],
                             index_lens_model_list=index_lens_model_list,
@@ -104,7 +104,7 @@ class PointSource(object):
                 self._point_source_list.append(
                     PointSourceCached(
                         SourcePositions(
-                            lensModel, fixed_magnification=fixed_magnification_list[i]
+                            lens_model, fixed_magnification=fixed_magnification_list[i]
                         ),
                         save_cache=save_cache,
                     )

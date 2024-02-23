@@ -347,7 +347,6 @@ class ModelBandPlot(ModelBand):
         crit_curve_color="k",
         image_name_list=None,
         super_sample_factor=None,
-        superimpose_model_image=False,
         kwargs_model_image=None,
         add_color_bar=True,
         **kwargs
@@ -420,40 +419,7 @@ class ModelBandPlot(ModelBand):
             mean_kappa = np.mean(residual_kappa)
             residual_kappa -= mean_kappa
             colorbar_label = r"$\kappa_{\rm{sub}} - \langle \kappa_{\rm{sub}} \rangle$"
-        if superimpose_model_image:
-            if "vmin" not in kwargs_model_image.keys():
-                vmin = self._v_min_default
-            else:
-                vmin = kwargs_model_image["vmin"]
-                del kwargs_model_image["vmin"]
-            if "vmax" not in kwargs_model_image.keys():
-                vmax = self._v_max_default
-            else:
-                vmax = kwargs_model_image["vmax"]
-                del kwargs_model_image["vmax"]
-            if "scale_vmin" in kwargs_model_image.keys():
-                vmin *= kwargs_model_image["scale_vmin"]
-                del kwargs_model_image["scale_vmin"]
-            if "scale_vmax" in kwargs_model_image.keys():
-                vmax *= kwargs_model_image["scale_vmax"]
-                del kwargs_model_image["scale_vmax"]
-            if "alpha" in kwargs_model_image.keys():
-                alpha = kwargs_model_image["alpha"]
-                del kwargs_model_image["alpha"]
-            else:
-                alpha = 0.5
-            im2 = ax.imshow(
-                np.log10(self._model),
-                origin="lower",
-                vmin=vmin,
-                vmax=vmax,
-                extent=self._image_extent,
-                alpha=1.0,
-                **kwargs_model_image,
-            )
-        else:
-            alpha = 1.0
-
+        alpha=1.0
         im = ax.imshow(
             residual_kappa,
             origin="lower",

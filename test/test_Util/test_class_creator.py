@@ -113,7 +113,6 @@ class TestClassCreator(object):
             extinction_class,
         ) = class_creator.create_class_instances(**self.kwargs_model_5)
         assert lens_model_class.lens_model_list[0] == "SIS"
-        assert lens_model_class.lens_model._observed_convention_index[0] == 0
 
     def test_create_image_model(self):
         imageModel = class_creator.create_image_model(

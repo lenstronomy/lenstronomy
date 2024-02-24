@@ -60,7 +60,7 @@ class TestClassCreator(object):
             "lens_redshift_list": [0.3, 0.4],
             "multi_plane": True,
             "z_source": 1,
-            "kwargs_multiplane_model_point_source": kwargs_multiplane_model_point_source,
+            "kwargs_multiplane_model_point_source": {},
             "decouple_multi_plane": False,
         }
 

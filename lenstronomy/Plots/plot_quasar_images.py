@@ -51,38 +51,21 @@ def plot_quasar_images(
         r_min = 0
         r_max = grid_radius_arcsec
         grid_r = np.hypot(grid_x_0, grid_y_0)
-        if isinstance(lens_model, list):
-            lens_model_extension = LensModelExtensions(lens_model[k])
-            flux_array = lens_model_extension._magnification_adaptive_iteration(
-                flux_array,
-                xi,
-                yi,
-                grid_x_0,
-                grid_y_0,
-                grid_r,
-                r_min,
-                r_max,
-                lens_model[k],
-                kwargs_lens,
-                source_model,
-                kwargs_source,
-            )
-        else:
-            lens_model_extension = LensModelExtensions(lens_model)
-            flux_array = lens_model_extension._magnification_adaptive_iteration(
-                flux_array,
-                xi,
-                yi,
-                grid_x_0,
-                grid_y_0,
-                grid_r,
-                r_min,
-                r_max,
-                lens_model,
-                kwargs_lens,
-                source_model,
-                kwargs_source,
-            )
+        lens_model_extension = LensModelExtensions(lens_model)
+        flux_array = lens_model_extension._magnification_adaptive_iteration(
+            flux_array,
+            xi,
+            yi,
+            grid_x_0,
+            grid_y_0,
+            grid_r,
+            r_min,
+            r_max,
+            lens_model,
+            kwargs_lens,
+            source_model,
+            kwargs_source,
+        )
         m = np.sum(flux_array) * grid_resolution**2
         magnifications.append(m)
         images.append(flux_array.reshape(shape0))

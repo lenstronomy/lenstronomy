@@ -104,9 +104,8 @@ def create_class_instances(
     :param tabulated_deflection_angles: a user-specified class with a call method that returns deflection angles given
      (x, y) coordinates on the sky. This class gets passed to the lens model class TabulatedDeflections
     :param decouple_multi_plane: bool; if True, creates an instance of MultiPlaneDecoupled
-    :param kwargs_multiplane_model: keyword arguments for MultiPlaneDecoupled if decouple_multi_plane is True
-    :param kwargs_multiplane_model_point_source: keyword arguments for an optional separte lensed point source
-    lens model class
+    :param kwargs_multiplane_model: keyword arguments used to create an instance of MultiPlaneDecoupled if decouple_multi_plane is True
+    :param kwargs_multiplane_model_point_source: keyword arguments used to create an option MultiPlaneDecoupled class for the lensed point source to be treated separately from the rest of the imaging data
     :param tracer_source_model_list: list of tracer source models (not used in this function)
     :param tracer_source_band: integer, list index of source surface brightness band to apply tracer model to
     :param tracer_partition: in case of tracer models for specific sub-parts of the surface brightness model

@@ -82,6 +82,7 @@ class TestOptimizer(object):
 
         npt.assert_almost_equal(np.sum(beta_x) - 4 * np.mean(beta_x), 0)
         npt.assert_almost_equal(np.sum(beta_y) - 4 * np.mean(beta_y), 0)
+        npt.assert_equal(None, optimizer.kwargs_multiplane_model)
 
     def test_elp_fixed_shear(self):
         param_class = PowerLawFixedShear(self.kwargs_epl, 0.06)

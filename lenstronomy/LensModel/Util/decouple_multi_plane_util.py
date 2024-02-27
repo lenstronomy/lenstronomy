@@ -69,8 +69,11 @@ def setup_lens_model(lens_model, kwargs_lens, index_lens_split):
     )
 
 
-def setup_grids(grid_size, grid_resolution, coordinate_center_x=0.0, coordinate_center_y=0.0):
+def setup_grids(
+    grid_size, grid_resolution, coordinate_center_x=0.0, coordinate_center_y=0.0
+):
     """Creates grids for use in the decoupled multiplane model.
+
     :param grid_size: The size (diameter of inscribed circle) of the grid
     :param grid_resolution: pixel scale (units arcsec / pixel)
     :param coordinate_center_x: center of the coordinate grid in arcsec

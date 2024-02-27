@@ -381,7 +381,7 @@ def setup_raytracing_lensmodels(
             z_source,
             cosmo_bkg,
         )
-        kwargs_multiplane_lens_model = class_setup(
+        kwargs_multiplane_lens_model = decoupled_multiplane_class_setup(
             lens_model_free,
             xD,
             yD,

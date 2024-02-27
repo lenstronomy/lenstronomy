@@ -353,7 +353,6 @@ class ModelBandPlot(ModelBand):
     ):
         """Plots the convergence of a full lens model minus the convergence from a few
         specified lens models to more clearly show the presence of substructure.
-
         :param ax: matplotib axis instance
         :param index_macromodel: a list of indexes corresponding to the lens models with convergence to be subtracted
         :param text: text appearing in frame
@@ -366,9 +365,9 @@ class ModelBandPlot(ModelBand):
         :param with_critical_curves: bool; plots the critical curves in the frame
         :param crit_curve_color: color of the critical curves
         :param image_name_list: labels the images, default is A, B, C, ...
-        :param kwargs: any additional keyword arguments
+        :param super_sample_factor: a integer the specifies supersampling of the coordinate grid to create the convergence map
         :param add_color_bar: bool; whether or not to include a color bar
-        :return: matplotib axis
+        :return: matplotib axis and colorbar
         """
 
         kwargs_lens_macro = []

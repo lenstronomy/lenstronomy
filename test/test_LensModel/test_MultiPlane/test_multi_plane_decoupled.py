@@ -7,7 +7,7 @@ from lenstronomy.LensModel.Util.decouple_multi_plane_util import (
     setup_grids,
     coordinates_and_deflections,
     setup_raytracing_lensmodels,
-    class_setup,
+    decoupled_multiplane_class_setup,
 )
 from copy import deepcopy
 import numpy as np
@@ -94,7 +94,7 @@ class TestMultiPlaneDecoupled(object):
             self.cosmo_bkg,
         )
 
-        self.kwargs_multiplane_model_point = class_setup(
+        self.kwargs_multiplane_model_point = decoupled_multiplane_class_setup(
             self.lens_model_free,
             self.x0_point,
             self.y0_point,
@@ -132,7 +132,7 @@ class TestMultiPlaneDecoupled(object):
             self.cosmo_bkg,
         )
 
-        self.kwargs_multiplane_model_grid = class_setup(
+        self.kwargs_multiplane_model_grid = decoupled_multiplane_class_setup(
             self.lens_model_free,
             self.x0_grid,
             self.y0_grid,
@@ -167,7 +167,7 @@ class TestMultiPlaneDecoupled(object):
             self.cosmo_bkg,
         )
 
-        self.kwargs_multiplane_model_MI = class_setup(
+        self.kwargs_multiplane_model_MI = decoupled_multiplane_class_setup(
             self.lens_model_free,
             self.x0_MI,
             self.y0_MI,

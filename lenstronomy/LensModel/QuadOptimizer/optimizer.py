@@ -138,7 +138,7 @@ class Optimizer(object):
         )
         npix, interp_points = None, None
         coordinate_type = "MULTIPLE_IMAGES"
-        kwargs_decoupled = class_setup(
+        kwargs_decoupled = decoupled_multiplane_class_setup(
             lens_model_free,
             x,
             y,

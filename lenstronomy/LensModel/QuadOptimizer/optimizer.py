@@ -42,16 +42,16 @@ class Optimizer(object):
 
         :param x_image: x-coordinate of image positions
         :param y_image: y-coordinate of image positions
-        :param ray_shooting_class:
-        :param parameter_class:
-        :param tol_source:
-        :param tol_simplex_func:
-        :param simplex_n_iterations:
-        :param pso_convergence_mean:
-        :param particle_swarm:
-        :param re_optimize:
-        :param re_optimize_scale:
-        :param kwargs_multiplane_model:
+        :param ray_shooting_class: a class with a "ray_shooting" or "ray_shooting_fast" method; for example, an instance of LensModel, or of MultiPlaneFast 
+        :param parameter_class: a class that handles the lens model parameters being solved for, see classes in param_manager for examples 
+        :param tol_source: tolerance in the source plane that acts to punish poor solutions of the lens equation
+        :param tol_simplex_func: the tolerence for the downhill simplex optimization routine to terminate
+        :param simplex_n_iterations: the maximum number of iterations to iterate the downhill simplex optimization
+        :param pso_convergence_mean: implements an early termination of the particle swarm optimization when the avergae penalty function hits this value
+        :param particle_swarm: bool; if True, performs a particle swarm optimization of the lens model parameters before the downhill simplex routine
+        :param re_optimize: bool; if True, initializes the particle swarm cloud in a narrow volume around the initial position
+        :param re_optimize_scale: scales the size of the particle swarm cloud if re_optimize is True
+        :param kwargs_multiplane_model: keyword arguments passed to MultiPlaneDecoupled if one is using the decoupled multi-plane formalism 
         """
         self.x_image = x_image
         self.y_image = y_image
@@ -88,21 +88,21 @@ class Optimizer(object):
         simplex_n_iterations=400,
     ):
         """
-
-        :param x_image:
-        :param y_image:
-        :param lens_model:
-        :param kwargs_lens_model:
-        :param index_lens_split:
-        :param parameter_class:
-        :param particle_swarm:
-        :param re_optimize:
-        :param re_optimize_scale:
-        :param pso_convergence_mean:
-        :param tol_source:
-        :param tol_simplex_func:
-        :param simplex_n_iterations:
-        :return:
+        Initializes the Optimizer class using the decoupled multi-plane formalism for the lens model and ray shooting methods
+        :param x_image: x_image to fit (should be length 4)
+        :param y_image: y_image to fit (should be length 4)
+        :param lens_model: an instance of LensModel; should contain all deflectors along the line of sight
+        :param kwargs_lens_model: keyword arguments for the LensModel class
+        :param index_lens_split: a list of indexes where one splits the lens model, see documentation in Util/decoupled_multiplane_util/decoupled_multiplane_class_setup 
+        :param parameter_class: a class that handles the lens model parameters being solved for, see classes in param_manager for examples 
+        :param particle_swarm: bool; if True, performs a particle swarm optimization of the lens model parameters before the downhill simplex routine
+        :param re_optimize: bool; if True, initializes the particle swarm cloud in a narrow volume around the initial position
+        :param re_optimize_scale: scales the size of the particle swarm cloud if re_optimize is True
+        :param pso_convergence_mean: implements an early termination of the particle swarm optimization when the avergae penalty function hits this value
+        :param tol_source: tolerance in the source plane that acts to punish poor solutions of the lens equation
+        :param tol_simplex_func: the tolerence for the downhill simplex optimization routine to terminate
+        :param simplex_n_iterations: the maximum number of iterations to iterate the downhill simplex optimization
+        :return: an instance of the Optimizer class using the decoupled multi-plane formalism for ray tracing
         """
         (
             lens_model_fixed,
@@ -240,7 +240,7 @@ class Optimizer(object):
     def kwargs_multiplane_model(self):
         """
 
-        :return: the keyword arguments for the decoupled multi-plane class if it is specified
+        :return: the keyword arguments for the decoupled multi-plane class if they are specified
         """
         return self._kwargs_multiplane_model
 

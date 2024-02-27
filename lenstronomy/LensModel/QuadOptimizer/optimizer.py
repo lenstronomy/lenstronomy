@@ -8,7 +8,7 @@ from lenstronomy.Sampling.Pool.pool import choose_pool
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LensModel.Util.decouple_multi_plane_util import (
     coordinates_and_deflections,
-    class_setup,
+    decoupled_multiplane_class_setup,
     setup_lens_model,
 )
 

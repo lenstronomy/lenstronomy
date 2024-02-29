@@ -128,26 +128,16 @@ def ABM(source_position, L, beta_0, beta_s, n_p, eta, number_of_iterations, fina
     in the source plane.
     """
     
-    # Convert source_position to numpy array if it's a tuple
-    source_position = np.array(source_position)
-    
     # Initialize variables
     total_number_of_rays_shot = 0  # Counter for total number of rays shot
     i = 1  # Iteration counter
-    centers = np.array([[0,0]])  # Initial center coordinates
-    side_length = L  # Initial side length of square region (for source image)
-    delta_beta = beta_0  # Initial step size for source plane radius
+    centers = np.array([[0, 0]])  # Initial center coordinates
 
     # Main loop for adaptive boundary mesh algorithm
     while i < number_of_iterations:
 
-        running_list_of_new_centers = []
-
-        centers = np.array([centers])
-
         # Ray shoot from image to source plane using array-based approach
         source_coords_x, source_coords_y = lens.ray_shooting(centers[:, 0], centers[:, 1], kwargs=kwargs_lens)
-        total_number_of_rays_shot += len(centers)
 
         # Calculate source_coords array
         source_coords = np.column_stack((source_coords_x, source_coords_y))

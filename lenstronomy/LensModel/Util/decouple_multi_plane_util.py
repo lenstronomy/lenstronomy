@@ -106,10 +106,9 @@ def coordinates_and_deflections(
     cosmo_bkg,
 ):
     """Computes the lensed coordinates and deflection angles for the static lens model
-    :param lens_model_fixed: an instance of LensModel that is static :param
-    lens_model_free: an instance of LensModel that is free to vary.
-
-    NOTE: this should be a good guess of the
+    
+    :param lens_model_fixed: an instance of LensModel that is static 
+    :param lens_model_free: an instance of LensModel that is free to vary. NOTE: this should be a good guess of the
     "correct" lens model, as it will be used to estimate the coupling between the main deflector and deflectors between
     the main lens plane and the source plane
     :param kwargs_lens_fixed: keyword arguments for the fixed lens model
@@ -200,18 +199,17 @@ def decoupled_multiplane_class_setup(
     fill_value=None,
 ):
     """This funciton creates the keyword arguments for a LensModel instance that is the
-    decoupled multi-plane approxiamtion for the specified lens model :param
-    lens_model_free: the lens model with parameters free to vary :param x: comoving
-    coordinate at z_split :param y: comoving coordinate at z_split :param
-    alpha_x_foreground: ray angles at z_split (not including lens_model_free
-    contribution) :param alpha_y_foreground: ray angles at z_split (not including
-    lens_model_free contribution) :param alpha_beta_subx: deflection field from halos at
-    redshift > z_split given the initial guess for the keyword arguments in
-    lens_model_free :param alpha_beta_suby: deflection field from halos at redshift >
-    z_split given the initial guess for the keyword arguments in lens_model_free :param
-    z_split: redshift at which the lens model is decoupled from the line of sight :param
-    coordinate_type: specifies the type of interpolation to use.
-
+    decoupled multi-plane approxiamtion for the specified lens model 
+    
+    :param lens_model_free: the lens model with parameters free to vary 
+    :param x: comoving coordinate at z_split 
+    :param y: comoving coordinate at z_split 
+    :param alpha_x_foreground: ray angles at z_split (not including lens_model_free contribution) 
+    :param alpha_y_foreground: ray angles at z_split (not including lens_model_free contribution) 
+    :param alpha_beta_subx: deflection field from halos at redshift > z_split given the initial guess for the keyword arguments in lens_model_free 
+    :param alpha_beta_suby: deflection field from halos at redshift > z_split given the initial guess for the keyword arguments in lens_model_free 
+    :param z_split: redshift at which the lens model is decoupled from the line of sight 
+    :param coordinate_type: specifies the type of interpolation to use.
     Options are POINT, GRID, or MULTIPLE_IMAGES. POINT specifies a single point at which
     to compute the interpolation GRID specifies the interpolation on a regular grid
     MULTIPLE_IMAGES does interpolation on an array using the NEAREST method.

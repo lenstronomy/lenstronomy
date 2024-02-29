@@ -176,8 +176,7 @@ def shear_update(shear_idx, kwargs_lens, kwargs_lens_mcmc=None):
 
 
 def convergence_update(convergence, kwargs_lens, kwargs_lens_mcmc=None):
-    """
-    Update the COOLEST CONVERGENCE mass model (kappa) with results in kwargs_lens
+    """Update the COOLEST CONVERGENCE mass model (kappa) with results in kwargs_lens.
 
     :param convergence: coolest.template.classes.profiles.mass.ConvergenceSheet object
     :param kwargs_lens: dictionnary with the point estimate

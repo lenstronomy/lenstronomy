@@ -233,6 +233,80 @@ def update_kwargs_shear(
     return
 
 
+def update_kwargs_convergence(
+    convergence,
+    lens_model_list,
+    kwargs_lens,
+    kwargs_lens_init,
+    kwargs_lens_up,
+    kwargs_lens_down,
+    kwargs_lens_fixed,
+    kwargs_lens_sigma,
+    cleaning=False,
+):
+    """
+    Update the lens model list and kwargs with CONVERGENCE mass model (gamma_ext - phi_ext)
+
+    :param profile: coolest.template.classes.profiles.mass.ConvergenceSheet object
+    :param lens_model_list: the usual lenstronomy lens_model_list
+    :param kwargs_lens: the usual lenstronomy kwargs
+    :param kwargs_lens_init: the usual lenstronomy kwargs
+    :param kwargs_lens_up: the usual lenstronomy kwargs
+    :param kwargs_lens_down: the usual lenstronomy kwargs
+    :param kwargs_lens_fixed: the usual lenstronomy kwargs
+    :param kwargs_lens_sigma: the usual lenstronomy kwargs
+    :param cleaning: bool, if True, will update the empty fields with default values + cleans the kwargs_fixed
+    :return: updated list and kwargs
+    """
+    lens_model_list.append("CONVERGENCE")
+    for param_name, param in convergence.parameters.items():
+        if param_name == "kappa_s":
+            kappa = getattr(param.point_estimate, "value")
+            kappa_up = getattr(param.definition_range, "max_value")
+            kappa_down = getattr(param.definition_range, "min_value")
+            kappa_fixed = kappa if getattr(param, "fixed") else None
+        else:
+            print(f"{param_name} not known")
+
+    kw_1 = {"kappa": kappa, "ra_0": 0.0, "dec_0": 0.0}
+    kw_up_1 = {"kappa": kappa_up, "ra_0": 0.0, "dec_0": 0.0}
+    kw_down_1 = {"kappa": kappa_down, "ra_0": 0.0, "dec_0": 0.0}
+    kw_fixed_1 = {"kappa": kappa_fixed, "ra_0": 0.0, "dec_0": 0.0}
+
+    kw_ = kw_1.copy()
+    kw_init = kw_1.copy()
+    kw_up = kw_up_1.copy()
+    kw_down = kw_down_1.copy()
+    kw_fixed = kw_fixed_1.copy()
+
+    if cleaning is True:
+        kw_init_default = {"kappa": 0.0, "ra_0": 0.0, "dec_0": 0.0}
+        kw_up_default = {"kappa": 10, "ra_0": 100, "dec_0": 100}
+        kw_down_default = {"kappa": -10, "ra_0": -100, "dec_0": -100}
+        for key, val in kw_1.items():
+            if val is None:
+                kw_init[key] = kw_init_default[key]
+        for key, val in kw_up_1.items():
+            if val is None:
+                kw_up[key] = kw_up_default[key]
+        for key, val in kw_down_1.items():
+            if val is None:
+                kw_down[key] = kw_down_default[key]
+        for key, val in kw_fixed_1.items():
+            if val is None:
+                del kw_fixed[key]
+
+    kwargs_lens.append(kw_)
+    kwargs_lens_init.append(kw_init)
+    kwargs_lens_up.append(kw_up)
+    kwargs_lens_down.append(kw_down)
+    kwargs_lens_fixed.append(kw_fixed)
+    kwargs_lens_sigma.append({"kappa": 0.1, "ra_0": 0.0, "dec_0": 0.0})
+    print("\t Convergence correctly added")
+
+    return
+
+
 def update_kwargs_pemd(
     mass,
     lens_model_list,

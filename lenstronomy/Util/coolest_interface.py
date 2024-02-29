@@ -309,9 +309,22 @@ def create_lenstronomy_from_coolest(file_name, use_epl=True):
             elif lensing_entity.type == "MassField":
                 mass_field_list = lensing_entity.mass_model
                 for mass_field_idx in mass_field_list:
-                    print("Shear : ")
+                    print("Mass field : ")
                     if mass_field_idx.type == "ExternalShear":
                         read.update_kwargs_shear(
+                            mass_field_idx,
+                            lens_model_list,
+                            kwargs_lens,
+                            kwargs_lens_init,
+                            kwargs_lens_up,
+                            kwargs_lens_down,
+                            kwargs_lens_fixed,
+                            kwargs_lens_sigma,
+                            cleaning=True,
+                        )
+
+                    elif mass_field_idx.type == "ConvergenceSheet":
+                        read.update_kwargs_convergence(
                             mass_field_idx,
                             lens_model_list,
                             kwargs_lens,
@@ -436,6 +449,7 @@ def update_coolest_from_lenstronomy(
         "SIE",
         "SIS",
         "ExternalShear",
+        "ConvergenceSheet",
     ]
     if lens_coolest.mode == "MAP":
         print(f"LENS COOLEST : {lens_coolest.mode}")
@@ -608,6 +622,11 @@ def update_coolest_from_lenstronomy(
 
                     if mass_field_idx.type == "ExternalShear":
                         update.shear_update(
+                            mass_field_idx, kwargs_lens, kwargs_lens_mcmc
+                        )
+                        idx_lens += 1
+                    elif mass_field_idx.type == "ConvergenceSheet":
+                        update.convergence_update(
                             mass_field_idx, kwargs_lens, kwargs_lens_mcmc
                         )
                         idx_lens += 1

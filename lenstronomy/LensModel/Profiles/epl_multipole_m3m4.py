@@ -152,10 +152,10 @@ class EPL_MULTIPOLE_M3M4(LensProfileBase):
         center_x=0,
         center_y=0,
     ):
-        """Computes the gravitational potential in units of theta_E^2 
-        
-        :param x: x-coordinate in image plane 
-        :param y: y-coordinate in image plane 
+        """Computes the gravitational potential in units of theta_E^2.
+
+        :param x: x-coordinate in image plane
+        :param y: y-coordinate in image plane
         :param theta_E: Einstein radius
         :param gamma: log-slope of EPL mass profile
         :param e1: ellipticity of EPL profile (along 1st axis)
@@ -207,10 +207,10 @@ class EPL_MULTIPOLE_M3M4(LensProfileBase):
         center_y=0,
     ):
         """Computes the derivatives of the potential (deflection angles)in units of
-        theta_E 
-        
-        :param x: x-coordinate in image plane 
-        :param y: y-coordinate in image plane 
+        theta_E.
+
+        :param x: x-coordinate in image plane
+        :param y: y-coordinate in image plane
         :param theta_E: Einstein radius
         :param gamma: log-slope of EPL mass profile
         :param e1: ellipticity of EPL profile (along 1st axis)
@@ -268,10 +268,10 @@ class EPL_MULTIPOLE_M3M4(LensProfileBase):
         center_y=0,
     ):
         """Computes the components of the hessian matrix (second derivatives of the
-        potential) 
-        
-        :param x: x-coordinate in image plane 
-        :param y: y-coordinate in image plane 
+        potential)
+
+        :param x: x-coordinate in image plane
+        :param y: y-coordinate in image plane
         :param theta_E: Einstein radius
         :param gamma: log-slope of EPL mass profile
         :param e1: ellipticity of EPL profile (along 1st axis)

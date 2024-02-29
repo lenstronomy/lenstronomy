@@ -105,24 +105,28 @@ def coordinates_and_deflections(
     z_source,
     cosmo_bkg,
 ):
-    """Computes the lensed coordinates and deflection angles for the static lens model
-    
-    :param lens_model_fixed: an instance of LensModel that is static 
-    :param lens_model_free: an instance of LensModel that is free to vary. NOTE: this should be a good guess of the
-    "correct" lens model, as it will be used to estimate the coupling between the main deflector and deflectors between
-    the main lens plane and the source plane
+    """Computes the lensed coordinates and deflection angles for the static lens model.
+
+    :param lens_model_fixed: an instance of LensModel that is static
+    :param lens_model_free: an instance of LensModel that is free to vary. NOTE: this
+        should be a good guess of the "correct" lens model, as it will be used to
+        estimate the coupling between the main deflector and deflectors between the main
+        lens plane and the source plane
     :param kwargs_lens_fixed: keyword arguments for the fixed lens model
     :param kwargs_lens_free: keyword arguments for the free lens model
-    :param x_coordinate_arcsec: coordinates on which to perform the interpolation; should be either a single coordinate,
-    an array of coordiantes, or a list (or array) or coordinates corresponding to multiple images (see documentation in
-    class_setup)
-    :param y_coordinate_arcsec: coordinates on which to perform the interpolation; should be either a single coordinate,
-    an array of coordiantes, or a list (or array) or coordinates corresponding to multiple images (see documentation in
-    class_setup)
+    :param x_coordinate_arcsec: coordinates on which to perform the interpolation;
+        should be either a single coordinate, an array of coordiantes, or a list (or
+        array) or coordinates corresponding to multiple images (see documentation in
+        class_setup)
+    :param y_coordinate_arcsec: coordinates on which to perform the interpolation;
+        should be either a single coordinate, an array of coordiantes, or a list (or
+        array) or coordinates corresponding to multiple images (see documentation in
+        class_setup)
     :param z_split: the redshift where the free lens model lives
     :param z_source: the source redshift
     :param cosmo_bkg: background cosmology
-    :return: comoving coordinates of light rays at z_split, foreground deflection angles, background deflections
+    :return: comoving coordinates of light rays at z_split, foreground deflection
+        angles, background deflections
     """
 
     Tds = cosmo_bkg.T_xy(z_split, z_source)
@@ -199,36 +203,48 @@ def decoupled_multiplane_class_setup(
     fill_value=None,
 ):
     """This funciton creates the keyword arguments for a LensModel instance that is the
-    decoupled multi-plane approxiamtion for the specified lens model 
-    
-    :param lens_model_free: the lens model with parameters free to vary 
-    :param x: comoving coordinate at z_split 
-    :param y: comoving coordinate at z_split 
-    :param alpha_x_foreground: ray angles at z_split (not including lens_model_free contribution) 
-    :param alpha_y_foreground: ray angles at z_split (not including lens_model_free contribution) 
-    :param alpha_beta_subx: deflection field from halos at redshift > z_split given the initial guess for the keyword arguments in lens_model_free 
-    :param alpha_beta_suby: deflection field from halos at redshift > z_split given the initial guess for the keyword arguments in lens_model_free 
-    :param z_split: redshift at which the lens model is decoupled from the line of sight 
-    :param coordinate_type: specifies the type of interpolation to use.
-    Options are POINT, GRID, or MULTIPLE_IMAGES. POINT specifies a single point at which
-    to compute the interpolation GRID specifies the interpolation on a regular grid
-    MULTIPLE_IMAGES does interpolation on an array using the NEAREST method.
+    decoupled multi-plane approxiamtion for the specified lens model.
+
+    :param lens_model_free: the lens model with parameters free to vary
+    :param x: comoving coordinate at z_split
+    :param y: comoving coordinate at z_split
+    :param alpha_x_foreground: ray angles at z_split (not including lens_model_free
+        contribution)
+    :param alpha_y_foreground: ray angles at z_split (not including lens_model_free
+        contribution)
+    :param alpha_beta_subx: deflection field from halos at redshift > z_split given the
+        initial guess for the keyword arguments in lens_model_free
+    :param alpha_beta_suby: deflection field from halos at redshift > z_split given the
+        initial guess for the keyword arguments in lens_model_free
+    :param z_split: redshift at which the lens model is decoupled from the line of sight
+    :param coordinate_type: specifies the type of interpolation to use. Options are
+        POINT, GRID, or MULTIPLE_IMAGES. POINT specifies a single point at which to
+        compute the interpolation GRID specifies the interpolation on a regular grid
+        MULTIPLE_IMAGES does interpolation on an array using the NEAREST method.
     :param lens_model_free:
-    :param x: transverse comoving distance in x direction of the light rays at the main deflector
-    :param y: transverse comoving distance in y direction of the light rays at the main deflector
+    :param x: transverse comoving distance in x direction of the light rays at the main
+        deflector
+    :param y: transverse comoving distance in y direction of the light rays at the main
+        deflector
     :param alpha_x_foreground: deflection angles from halos at redshift z<=z_split
     :param alpha_y_foreground: deflection angles from halos at redshift z<=z_split
     :param alpha_beta_subx: deflection angles from halos at redshift z > z_lens
     :param alpha_beta_suby: deflection angles from halos at redshift z > z_lens
     :param z_split: the redshift where foreground and background halos are split
-    :param coordinate_type: a string specifying the type of coordinate of x. Options are GRID, POINT, and MULTIPLE_IMAGES
-    :param interp_points: optional keyword argument passed to GRID method that specifies the interpolation grid
-    :param x_image: optional keyword argument passed to multiple images argument that specifies the image coordinates
-    :param y_image: optional keyword argument passed to multiple images argument that specifies the image coordinates
-    :param method: the interpolation method used by RegularGridInterpolator if coordinate_type=='GRID'
+    :param coordinate_type: a string specifying the type of coordinate of x. Options are
+        GRID, POINT, and MULTIPLE_IMAGES
+    :param interp_points: optional keyword argument passed to GRID method that specifies
+        the interpolation grid
+    :param x_image: optional keyword argument passed to multiple images argument that
+        specifies the image coordinates
+    :param y_image: optional keyword argument passed to multiple images argument that
+        specifies the image coordinates
+    :param method: the interpolation method used by RegularGridInterpolator if
+        coordinate_type=='GRID'
     :param bounds_error: passed to RegularGridInterpolater, see documentation there
     :param fill_value: passed to RegularGridInterpolator, see documentation there
-    :return: keyword arguments that can be passed into a LensModel class to create a decoupled-multiplane lens model
+    :return: keyword arguments that can be passed into a LensModel class to create a
+        decoupled-multiplane lens model
     """
     if coordinate_type == "GRID":
         from scipy.interpolate import RegularGridInterpolator

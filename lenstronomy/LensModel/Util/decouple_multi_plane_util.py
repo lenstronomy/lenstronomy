@@ -11,8 +11,13 @@ def setup_lens_model(lens_model, kwargs_lens, index_lens_split):
 
     :param lens_model: an instance of LensModel
     :param kwargs_lens: keyword arguments for the lens model
-    :param index_lens_split: a list of indexes corresponding to the deflectors that will be left free to vary; every other deflector is assumed to remain static be absorbed into a net deflection field
-    :return: an instance of LensModel corresponding to the fixed (static) deflectors, an instance of LensModel corresponding to free deflectors, keyword arguments for each lens model, source redshift, the redshift where the splitting occurs, and the background cosmology
+    :param index_lens_split: a list of indexes corresponding to the deflectors that will
+        be left free to vary; every other deflector is assumed to remain static be
+        absorbed into a net deflection field
+    :return: an instance of LensModel corresponding to the fixed (static) deflectors, an
+        instance of LensModel corresponding to free deflectors, keyword arguments for
+        each lens model, source redshift, the redshift where the splitting occurs, and
+        the background cosmology
     """
     z_source = lens_model.z_source
     cosmo = lens_model.cosmo
@@ -345,17 +350,20 @@ def setup_raytracing_lensmodels(
     grid_size,
     grid_resolution,
 ):
-    """
-    This function sets up the lens model used for high-resolution ray tracing with the decoupled multi-plane approximation. 
-    
+    """This function sets up the lens model used for high-resolution ray tracing with
+    the decoupled multi-plane approximation.
+
     :param x_image: list of x-coordinates of lensed image
     :param y_image: list of y-coordinates of lensed image
     :param lens_model: an instance of LensModel
-    :param kwargs_lens: keyword arguments for the lens model 
-    :param index_lens_split: list of integers specifying  the lens models to be split from the line-of-sight population (see documentation in the DecoupledMultiplane class)
+    :param kwargs_lens: keyword arguments for the lens model
+    :param index_lens_split: list of integers specifying the lens models to be split
+        from the line-of-sight population (see documentation in the DecoupledMultiplane
+        class)
     :param grid_size: the size of the ray-tracing grid in arcsec
     :param grid_resolution: the resolution of the ray tracing grid in arcsec/pixel
-    :return: a list of DecoupledMultiPlane lens models and corresponding keyword arguments 
+    :return: a list of DecoupledMultiPlane lens models and corresponding keyword
+        arguments
     """
 
     (

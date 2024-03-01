@@ -339,9 +339,11 @@ class Optimizer(object):
         return -0.5 * chi_square
 
     def _penalty_function(self, args_lens, *args, **kwargs):
-        """This function evaluates a metric that determines goodness of fit :param
-        args_lens: array of parameters that will be turned into keyword arguments
-        :return: log-likelihood."""
+        """This function evaluates a metric that determines goodness of fit 
+        
+        :param args_lens: array of parameters that will be turned into keyword arguments
+        :return: log-likelihood.
+        """
         source_plane_chi2 = self.source_plane_penalty(args_lens)
         param_penalty = self._param_class.param_chi_square_penalty(args_lens)
         return source_plane_chi2 + param_penalty

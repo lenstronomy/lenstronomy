@@ -142,7 +142,28 @@ def ABM(source_position, L, beta_0, beta_s, n_p, eta, number_of_iterations, fina
         # Calculate source_coords array
         source_coords = np.column_stack((source_coords_x, source_coords_y))
 
+        i += 1
+
     return source_coords, centers
+
+def pixel_division(source_coords, source_position, delta_beta, side_length, centers):
+    """
+    Takes centers, which is an array of coordinates (x, y), and checks which of 
+    these coordinates are within delta_beta of the source position. If a center 
+    is within delta_beta, it creates a new set of subpixels (using sub_pixel_creator)
+    and extends running_list_of_new_centers with these new subpixel centers. 
+    Returns the updated list of centers.
+    """
+
+    running_list_of_new_centers = []
+
+    for center in centers:
+        if np.any(within_distance(source_coords, source_position, delta_beta)):
+
+            resultant_centers = sub_pixel_creator(center, side_length, n_p)[0]
+            running_list_of_new_centers.extend(resultant_centers)
+
+    return running_list_of_new_centers
 
 
 

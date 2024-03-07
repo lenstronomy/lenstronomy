@@ -158,12 +158,22 @@ def pixel_division(source_coords, source_position, delta_beta, side_length, cent
     running_list_of_new_centers = []
 
     for center in centers:
-        if np.any(within_distance(source_coords, source_position, delta_beta)):
-
+        if within_distance(source_coords, source_position, delta_beta).any():
             resultant_centers = sub_pixel_creator(center, side_length, n_p)[0]
             running_list_of_new_centers.extend(resultant_centers)
 
     return running_list_of_new_centers
+
+# def pixel_division(source_coords, source_position, delta_beta, side_length, centers):
+
+#     within_radius = within_distance(source_coords, source_position, delta_beta)
+#     running_list_of_new_centers = []
+
+#     resultant_centers = sub_pixel_creator(centers[within_radius[0]], side_length, n_p)[0]
+#     running_list_of_new_centers.extend(resultant_centers)
+
+#     return centers[~within_radius].tolist() + running_list_of_new_centers
+
 
 
 

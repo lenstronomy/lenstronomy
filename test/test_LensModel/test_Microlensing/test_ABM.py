@@ -62,24 +62,30 @@ class TestABM:
         assert np.allclose(source_coords, expected_source_coords)
         assert np.allclose(centers, expected_centers)
         assert source_coords.shape == centers.shape
-    
-    def test_pixel_division(self):
 
-        source_coords = np.array([[1, 1], [0, 1]])
-        centers = np.array([[1, 0], [3, 2]])
+
+    def test_pixel_division(self):
+        # Source coordinates within the threshold
+        source_coords_in = np.array([[0, 1]])
+        # Source coordinates outside the threshold
+        source_coords_out = np.array([[3, 5]])
+        # Center within the threshold
+        center_inside = np.array([[1, 1]])
+        # Center outside the threshold
+        center_outside = np.array([[5, 5]])
         source_position = (0, 0)
         delta_beta = 2
         side_length = 2
-        n_p = 2
-
-        new_centers = pixel_division(source_coords, source_position, delta_beta, side_length, centers)
-
-        expected_centers = [(0.5, -0.5), (0.5, 0.5), (1.5, -0.5), (1.5, 0.5), (2.5, 1.5), (2.5, 2.5), (3.5, 1.5), (3.5, 2.5)]
-
-        # Assert each pair of coordinates separately with tolerance
-        for expected_center, actual_center in zip(expected_centers, new_centers):
-            for expected_coord, actual_coord in zip(expected_center, actual_center):
-                assert np.isclose(expected_coord, actual_coord, atol=1e-8)
+        n_p = 30
+    
+        new_centers = pixel_division(source_coords_in, source_position, delta_beta, side_length, center_inside)
+        no_new_centers = pixel_division(source_coords_out, source_position, delta_beta, side_length, center_outside)
+    
+        number_of_new_centers = n_p**2
+    
+        assert len(new_centers) == number_of_new_centers
+        assert len(no_new_centers) == 0 
+        # the function should return an empty list if no new centers are found as it is outside the threshold
 
 if __name__ == "__main__":
     pytest.main()

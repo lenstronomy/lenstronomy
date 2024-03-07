@@ -347,7 +347,6 @@ class ModelBandPlot(ModelBand):
         crit_curve_color="k",
         image_name_list=None,
         super_sample_factor=None,
-        kwargs_model_image=None,
         add_color_bar=True,
         **kwargs
     ):
@@ -397,15 +396,13 @@ class ModelBandPlot(ModelBand):
             z_source=z_source,
             cosmo=cosmo,
         )
+
         if super_sample_factor is None:
             x_grid = self._x_grid
             y_grid = self._y_grid
         else:
-            from lenstronomy.Util.util import make_grid
-
-            x_grid, y_grid = make_grid(
-                int(self._coords.num_pixel_axes[0] * super_sample_factor),
-                self._deltaPix / super_sample_factor,
+            x_grid, y_grid = util.make_subgrid(
+                self._x_grid, self._y_grid, super_sample_factor
             )
 
         kappa_full = util.array2image(

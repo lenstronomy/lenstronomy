@@ -68,7 +68,6 @@ class TestOptimizer(object):
         )
 
         kwargs_final, source = optimizer.optimize(50, 100, verbose=True)
-
         lensmodel = LensModel(
             self.lens_model_list_epl,
             self.zlens,
@@ -83,6 +82,16 @@ class TestOptimizer(object):
         npt.assert_almost_equal(np.sum(beta_x) - 4 * np.mean(beta_x), 0)
         npt.assert_almost_equal(np.sum(beta_y) - 4 * np.mean(beta_y), 0)
         npt.assert_equal(None, optimizer.kwargs_multiplane_model)
+
+        kwargs_final_1, _ = optimizer.optimize(50, 100, verbose=True, seed=0)
+        kwargs_final_2, _ = optimizer.optimize(50, 100, verbose=True, seed=0)
+        npt.assert_almost_equal(kwargs_final_1[0]['theta_E'], kwargs_final_2[0]['theta_E'])
+        npt.assert_almost_equal(kwargs_final_1[0]['e1'], kwargs_final_2[0]['e1'])
+        npt.assert_almost_equal(kwargs_final_1[0]['e2'], kwargs_final_2[0]['e2'])
+        npt.assert_almost_equal(kwargs_final_1[0]['center_x'], kwargs_final_2[0]['center_x'])
+        npt.assert_almost_equal(kwargs_final_1[0]['center_y'], kwargs_final_2[0]['center_y'])
+        npt.assert_almost_equal(kwargs_final_1[1]['gamma1'], kwargs_final_2[1]['gamma1'])
+        npt.assert_almost_equal(kwargs_final_1[1]['gamma2'], kwargs_final_2[1]['gamma2'])
 
     def test_elp_fixed_shear(self):
         param_class = PowerLawFixedShear(self.kwargs_epl, 0.06)
@@ -102,7 +111,7 @@ class TestOptimizer(object):
             simplex_n_iterations=400,
         )
 
-        kwargs_final, source = optimizer.optimize(50, 100, verbose=True)
+        kwargs_final, source = optimizer.optimize(50, 100, verbose=True, threadCount=2)
 
         lensmodel = LensModel(
             self.lens_model_list_epl,

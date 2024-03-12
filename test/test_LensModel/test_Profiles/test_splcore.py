@@ -121,9 +121,7 @@ class TestSPLCORE(object):
         npt.assert_almost_equal(mass_analytic_from_sigm0, mass_numerical)
 
     def _mass_integrand3d(self, r, rho0, rc, gamma):
-        return (
-            4 * np.pi * r**2 * rho0 * rc**gamma / (rc**2 + r**2) ** (gamma / 2)
-        )
+        return 4 * np.pi * r**2 * rho0 * rc**gamma / (rc**2 + r**2) ** (gamma / 2)
 
     def _mass_integrand2d(self, r, rho0, rc, gamma):
         return 2 * np.pi * r * self.profile.density_2d(r, 0, rho0, rc, gamma)

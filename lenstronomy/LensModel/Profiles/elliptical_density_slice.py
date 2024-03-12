@@ -86,9 +86,11 @@ class ElliSLICE(LensProfileBase):
         else:
             f = np.array(
                 [
-                    self.pot_in(x_[i], y_[i], kwargs_slice)
-                    if (x_rot[i] ** 2 / a**2) + (y_rot[i] ** 2 / b**2) <= 1
-                    else self.pot_ext(x_[i], y_[i], kwargs_slice)
+                    (
+                        self.pot_in(x_[i], y_[i], kwargs_slice)
+                        if (x_rot[i] ** 2 / a**2) + (y_rot[i] ** 2 / b**2) <= 1
+                        else self.pot_ext(x_[i], y_[i], kwargs_slice)
+                    )
                     for i in range(len(x_))
                 ]
             )
@@ -126,9 +128,11 @@ class ElliSLICE(LensProfileBase):
         else:
             defl = np.array(
                 [
-                    self.alpha_in(x_[i], y_[i], kwargs_slice)
-                    if (x_rot[i] ** 2 / a**2) + (y_rot[i] ** 2 / b**2) <= 1
-                    else self.alpha_ext(x_[i], y_[i], kwargs_slice)
+                    (
+                        self.alpha_in(x_[i], y_[i], kwargs_slice)
+                        if (x_rot[i] ** 2 / a**2) + (y_rot[i] ** 2 / b**2) <= 1
+                        else self.alpha_ext(x_[i], y_[i], kwargs_slice)
+                    )
                     for i in range(len(x_))
                 ]
             )

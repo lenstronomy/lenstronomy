@@ -25,27 +25,23 @@ class LensModelExtensions(object):
         self,
         x_image,
         y_image,
-        source_x,
-        source_y,
         kwargs_lens,
-        source_fwhm_parsec,
-        z_source,
-        cosmo=None,
-        grid_resolution=None,
-        grid_radius_arcsec=None,
+        source_model,
+        kwargs_source,
+        grid_resolution,
+        grid_radius_arcsec,
         axis_ratio=0.5,
         tol=0.001,
         step_size=0.05,
         use_largest_eigenvalue=True,
-        source_light_model="SINGLE_GAUSSIAN",
-        dx=None,
-        dy=None,
-        size_scale=None,
-        amp_scale=None,
         fixed_aperture_size=False,
     ):
         """This method computes image magnifications with a finite-size background
-        source assuming a Gaussian or a double Gaussian source light profile. It can be
+        source.
+
+        This new updates allows for more flexibility in the source light model by requiring the user to specify the source light mode, grid size and grid resolution before calling the function.
+
+        The functions auto_raytrracing_grid_size and auto_raytracing_grid_resolution give good estimates for appropriate parameter choices for grid_radius_arcsec and grid_resolution. It can be
         much faster that magnification_finite for lens models with many deflectors and a
         compact source. This is because most pixels in a rectangular window around a
         lensed image of a compact source do not map onto the source, and therefore don't
@@ -67,15 +63,12 @@ class LensModelExtensions(object):
 
         :param x_image: a list or array of x coordinates [units arcsec]
         :param y_image: a list or array of y coordinates [units arcsec]
-        :param source_x: float, source position
-        :param source_y: float, source position
         :param kwargs_lens: keyword arguments for the lens model
-        :param source_fwhm_parsec: the size of the background source [units parsec]
-        :param z_source: the source redshift
-        :param cosmo: (optional) an instance of astropy.cosmology; if not specified, a default cosmology will be used
+        :param source_model: instance of LightModel for the source
+        :kwargs_source: keyword arguments for the light profile of the source (list of dictionary)
         :param grid_resolution: the grid resolution in units arcsec/pixel; if not specified, an appropriate value will
          be estimated from the source size
-        :param grid_radius_arcsec: (optional) the size of the ray tracing region in arcsec; if not specified, an appropriate value
+        :param grid_radius_arcsec: the size of the ray tracing region in arcsec; if not specified, an appropriate value
          will be estimated from the source size
         :param axis_ratio: the axis ratio of the ellipse used for ray tracing; if axis_ratio = 0, then the eigenvalues
          the hessian matrix will be used to estimate an appropriate axis ratio. Be warned: if the image is highly
@@ -84,16 +77,6 @@ class LensModelExtensions(object):
         :param step_size: sets the increment for the successively larger ray tracing windows
         :param use_largest_eigenvalue: bool; if True, then the major axis of the ray tracing ellipse region
          will be aligned with the eigenvector corresponding to the largest eigenvalue of the hessian matrix
-        :param source_light_model: the model for backgourn source light; currently implemented are 'SINGLE_GAUSSIAN' and
-         'DOUBLE_GAUSSIAN'.
-        :param dx: used with source model 'DOUBLE_GAUSSIAN', the offset of the second source light profile from the first
-         [arcsec]
-        :param dy: used with source model 'DOUBLE_GAUSSIAN', the offset of the second source light profile from the first
-         [arcsec]
-        :param size_scale: used with source model 'DOUBLE_GAUSSIAN', the size of the second source light profile relative
-         to the first
-        :param amp_scale: used with source model 'DOUBLE_GAUSSIAN', the peak brightness of the second source light profile
-         relative to the first
         :param fixed_aperture_size: bool, if True the flux is computed inside a fixed aperture size with radius
          grid_radius_arcsec
         :return: an array of image magnifications
@@ -107,20 +90,9 @@ class LensModelExtensions(object):
             grid_resolution,
             grid_radius_arcsec,
         ) = setup_mag_finite(
-            cosmo,
-            self._lensModel,
-            grid_radius_arcsec,
-            grid_resolution,
-            source_fwhm_parsec,
-            source_light_model,
-            z_source,
-            source_x,
-            source_y,
-            dx,
-            dy,
-            amp_scale,
-            size_scale,
+            grid_radius_arcsec, grid_resolution, source_model, kwargs_source
         )
+
         grid_x_0, grid_y_0 = grid_x_0.ravel(), grid_y_0.ravel()
 
         minimum_magnification = 1e-5
@@ -771,9 +743,7 @@ class LensModelExtensions(object):
         cos_dphi_tan_dtan = (
             v1_tan * v1_tan_dtan + v2_tan * v2_tan_dtan
         )  # / (np.sqrt(v1_tan**2 + v2_tan**2) * np.sqrt(v1_tan_dtan**2 + v2_tan_dtan**2))
-        norm = np.sqrt(v1_tan**2 + v2_tan**2) * np.sqrt(
-            v1_tan_dtan**2 + v2_tan_dtan**2
-        )
+        norm = np.sqrt(v1_tan**2 + v2_tan**2) * np.sqrt(v1_tan_dtan**2 + v2_tan_dtan**2)
         cos_dphi_tan_dtan /= norm
         arc_cos_dphi_tan_dtan = np.arccos(np.abs(np.minimum(cos_dphi_tan_dtan, 1)))
         dphi_tan_dtan = arc_cos_dphi_tan_dtan / smoothing_3rd
@@ -781,9 +751,7 @@ class LensModelExtensions(object):
         cos_dphi_tan_drad = (
             v1_tan * v1_tan_drad + v2_tan * v2_tan_drad
         )  # / (np.sqrt(v1_tan ** 2 + v2_tan ** 2) * np.sqrt(v1_tan_drad ** 2 + v2_tan_drad ** 2))
-        norm = np.sqrt(v1_tan**2 + v2_tan**2) * np.sqrt(
-            v1_tan_drad**2 + v2_tan_drad**2
-        )
+        norm = np.sqrt(v1_tan**2 + v2_tan**2) * np.sqrt(v1_tan_drad**2 + v2_tan_drad**2)
         cos_dphi_tan_drad /= norm
         arc_cos_dphi_tan_drad = np.arccos(np.abs(np.minimum(cos_dphi_tan_drad, 1)))
         dphi_tan_drad = arc_cos_dphi_tan_drad / smoothing_3rd
@@ -791,9 +759,7 @@ class LensModelExtensions(object):
         cos_dphi_rad_drad = (
             v1_rad * v1_rad_drad + v2_rad * v2_rad_drad
         )  # / (np.sqrt(v1_rad**2 + v2_rad**2) * np.sqrt(v1_rad_drad**2 + v2_rad_drad**2))
-        norm = np.sqrt(v1_rad**2 + v2_rad**2) * np.sqrt(
-            v1_rad_drad**2 + v2_rad_drad**2
-        )
+        norm = np.sqrt(v1_rad**2 + v2_rad**2) * np.sqrt(v1_rad_drad**2 + v2_rad_drad**2)
         cos_dphi_rad_drad /= norm
         cos_dphi_rad_drad = np.minimum(cos_dphi_rad_drad, 1)
         dphi_rad_drad = np.arccos(cos_dphi_rad_drad) / smoothing_3rd
@@ -801,9 +767,7 @@ class LensModelExtensions(object):
         cos_dphi_rad_dtan = (
             v1_rad * v1_rad_dtan + v2_rad * v2_rad_dtan
         )  # / (np.sqrt(v1_rad ** 2 + v2_rad ** 2) * np.sqrt(v1_rad_dtan ** 2 + v2_rad_dtan ** 2))
-        norm = np.sqrt(v1_rad**2 + v2_rad**2) * np.sqrt(
-            v1_rad_dtan**2 + v2_rad_dtan**2
-        )
+        norm = np.sqrt(v1_rad**2 + v2_rad**2) * np.sqrt(v1_rad_dtan**2 + v2_rad_dtan**2)
         cos_dphi_rad_dtan /= norm
         cos_dphi_rad_dtan = np.minimum(cos_dphi_rad_dtan, 1)
         dphi_rad_dtan = np.arccos(cos_dphi_rad_dtan) / smoothing_3rd

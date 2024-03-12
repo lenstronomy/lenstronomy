@@ -91,7 +91,7 @@
       },
       {
         "py/object": "coolest.template.classes.galaxy.Galaxy",
-        "type": "galaxy",
+        "type": "Galaxy",
         "name": "a lens galaxy",
         "redshift": 0.5,
         "mass_model": {
@@ -713,7 +713,7 @@
       },
       {
         "py/object": "coolest.template.classes.galaxy.Galaxy",
-        "type": "galaxy",
+        "type": "Galaxy",
         "name": "a source galaxy",
         "redshift": 2.0,
         "mass_model": {
@@ -1273,7 +1273,7 @@
       },
       {
         "py/object": "coolest.template.classes.galaxy.Galaxy",
-        "type": "galaxy",
+        "type": "Galaxy",
         "name": "another source",
         "redshift": 1.5,
         "mass_model": {

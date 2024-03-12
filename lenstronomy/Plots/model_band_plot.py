@@ -28,6 +28,7 @@ class ModelBandPlot(ModelBand):
         arrow_size=0.02,
         cmap_string="gist_heat",
         fast_caustic=True,
+        linear_solver=True,
     ):
         """
 
@@ -44,6 +45,8 @@ class ModelBandPlot(ModelBand):
         :param arrow_size: size of the scale and orientation arrow
         :param cmap_string: string of color map (or cmap matplotlib object)
         :param fast_caustic: boolean; if True, uses fast (but less accurate) caustic calculation method
+        :param linear_solver: bool, if True (default) fixes the linear amplitude parameters 'amp' (avoid sampling) such
+         that they get overwritten by the linear solver solution.
         """
         ModelBand.__init__(
             self,
@@ -56,6 +59,7 @@ class ModelBandPlot(ModelBand):
             kwargs_params,
             image_likelihood_mask_list=likelihood_mask_list,
             band_index=band_index,
+            linear_solver=linear_solver,
         )
 
         self._lensModel = self._bandmodel.LensModel
@@ -661,9 +665,7 @@ class ModelBandPlot(ModelBand):
         d_s = numPix * deltaPix_source
         source, coords_source = self.source(numPix, deltaPix_source, center=center)
         if plot_scale == "log":
-            source[source < 10**v_min] = 10 ** (
-                v_min
-            )  # to remove weird shadow in plot
+            source[source < 10**v_min] = 10 ** (v_min)  # to remove weird shadow in plot
             source_scale = np.log10(source)
         elif plot_scale == "linear":
             source_scale = source
@@ -1061,7 +1063,7 @@ class ModelBandPlot(ModelBand):
         :param kwargs: kwargs to send matplotlib.pyplot.matshow()
         :return:
         """
-        model = self._bandmodel.image(
+        model = self._bandmodel._image(
             self._kwargs_lens_partial,
             self._kwargs_source_partial,
             self._kwargs_lens_light_partial,
@@ -1120,7 +1122,7 @@ class ModelBandPlot(ModelBand):
         lens_light_add=False,
         font_size=15,
     ):
-        model = self._bandmodel.image(
+        model = self._bandmodel._image(
             self._kwargs_lens_partial,
             self._kwargs_source_partial,
             self._kwargs_lens_light_partial,

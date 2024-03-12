@@ -1,111 +1,188 @@
-__author__ = "dgilman"
+__author__ = "sibirrer"
 
-import unittest
-from lenstronomy.LensModel.Profiles.general_nfw import GNFW
-from lenstronomy.LensModel.lens_model import LensModel
-from scipy.integrate import quad
-from lenstronomy.LensModel.Profiles.splcore import SPLCORE
 
+from lenstronomy.LensModel.Profiles.nfw import NFW
+from lenstronomy.LensModel.Profiles.gnfw import GNFW
+
+import numpy as np
 import numpy.testing as npt
 import pytest
 
 
 class TestGNFW(object):
+    """This class tests the generalized NFW profile."""
+
     def setup_method(self):
+        self.nfw = NFW()
         self.gnfw = GNFW()
-        self.splcore = SPLCORE()
-        self.kwargs_lens = {
-            "alpha_Rs": 2.1,
-            "Rs": 1.5,
-            "gamma_inner": 1.0,
-            "gamma_outer": 3.0,
-            "center_x": 0.04,
-            "center_y": -1.0,
-        }
+        self.gnfw_trapezoidal = GNFW(trapezoidal_integration=True)
 
-    def test_alphaRs(self):
-        alpha_rs = self.gnfw.derivatives(
-            self.kwargs_lens["Rs"],
-            0.0,
-            self.kwargs_lens["Rs"],
-            self.kwargs_lens["alpha_Rs"],
-            self.kwargs_lens["gamma_inner"],
-            self.kwargs_lens["gamma_outer"],
-        )[0]
-        npt.assert_almost_equal(alpha_rs, self.kwargs_lens["alpha_Rs"], 8)
+    def test_function(self):
+        """Tests `GNFW.function()`"""
+        x = 1
+        y = 2
+        Rs = 1.0
+        rho0 = 1
+        gamma_in = 1
 
-    def test_alphaRs_rho0_conversion(self):
-        rho0 = self.gnfw.alpha2rho0(
-            self.kwargs_lens["alpha_Rs"],
-            self.kwargs_lens["Rs"],
-            self.kwargs_lens["gamma_inner"],
-            self.kwargs_lens["gamma_outer"],
+        alpha_Rs = self.nfw.rho02alpha(rho0, Rs)
+        values_nfw = self.nfw.function(x, y, Rs, alpha_Rs)
+
+        kappa_s = self.gnfw.rho02kappa_s(rho0, Rs, gamma_in)
+        values_gnfw = self.gnfw.function(x, y, Rs, kappa_s, gamma_in)
+        npt.assert_almost_equal(values_nfw, values_gnfw, decimal=5)
+
+        values_gnfw_trapezoidal = self.gnfw_trapezoidal.function(
+            x, y, Rs, kappa_s, gamma_in
         )
-        alpha_Rs = self.gnfw.rho02alpha(
-            rho0,
-            self.kwargs_lens["Rs"],
-            self.kwargs_lens["gamma_inner"],
-            self.kwargs_lens["gamma_outer"],
-        )
-        npt.assert_almost_equal(alpha_Rs, self.kwargs_lens["alpha_Rs"], 5)
+        npt.assert_almost_equal(values_nfw, values_gnfw_trapezoidal, decimal=4)
 
-    def test_lensing_quantities(self):
-        lensmodel = LensModel(["GNFW"])
-        f_x, f_y = self.gnfw.derivatives(1.0, 1.5, **self.kwargs_lens)
-        f_x_, f_y_ = lensmodel.alpha(1.0, 1.5, [self.kwargs_lens])
-        npt.assert_almost_equal(f_x, f_x_, 5)
-        npt.assert_almost_equal(f_y, f_y_, 5)
+        # test for array of values
+        x = np.linspace(0.5, 10, 10)
+        y = np.ones_like(x)
+        values_nfw = self.nfw.function(x, y, Rs, alpha_Rs)
+        values_gnfw = self.gnfw.function(x, y, Rs, kappa_s, gamma_in)
+        npt.assert_almost_equal(values_nfw, values_gnfw, decimal=5)
 
-        f_xx, f_xy, f_yx, f_yy = self.gnfw.hessian(1.0, 1.5, **self.kwargs_lens)
-        f_xx_, f_xy_, f_yx_, f_yy_ = lensmodel.hessian(1.0, 1.5, [self.kwargs_lens])
-        npt.assert_almost_equal(f_xx, f_xx_, 5)
-        npt.assert_almost_equal(f_yy, f_yy_, 5)
-        npt.assert_almost_equal(f_xy, f_xy_, 5)
+    def test_derivatives(self):
+        """Tests `GNFW.derivatives()`"""
+        x = np.array([1])
+        y = np.array([2])
+        Rs = 1.0
+        rho0 = 1
+        gamma_in = 1
 
-    def test_mass2d(self):
-        rho0 = self.gnfw.alpha2rho0(
-            self.kwargs_lens["alpha_Rs"],
-            self.kwargs_lens["Rs"],
-            self.kwargs_lens["gamma_inner"],
-            self.kwargs_lens["gamma_outer"],
-        )
-        m2d = self.gnfw.mass_2d(
-            10.0,
-            self.kwargs_lens["Rs"],
-            rho0,
-            self.kwargs_lens["gamma_inner"],
-            self.kwargs_lens["gamma_outer"],
-        )
-        integrand = (
-            lambda x: 2
-            * 3.14159265
-            * x
-            * self.gnfw.density_2d(
-                x,
-                0.0,
-                self.kwargs_lens["Rs"],
-                rho0,
-                self.kwargs_lens["gamma_inner"],
-                self.kwargs_lens["gamma_outer"],
-            )
-        )
-        m2d_num = quad(integrand, 0, 10.0)[0]
-        npt.assert_almost_equal(m2d_num / m2d, 1.0, 5)
+        alpha_Rs = self.nfw.rho02alpha(rho0, Rs)
+        f_x_nfw, f_y_nfw = self.nfw.derivatives(x, y, Rs, alpha_Rs)
 
-    def test_spl_core_match(self):
-        rs = 1.5
-        kwargs_spl = {"sigma0": 1e13, "gamma": 3.0, "r_core": 0.00000001}
-        alpha_rs = self.splcore.derivatives(rs, 0.0, **kwargs_spl)[0]
-        kwargs_gnfw = {
-            "alpha_Rs": alpha_rs,
-            "Rs": rs,
-            "gamma_inner": 2.99999,
-            "gamma_outer": 3.00001,
-        }
-        m3d_gnfw = self.gnfw.mass_3d_lens(5 * rs, **kwargs_gnfw)
-        m3d_splcore = self.splcore.mass_3d_lens(5 * rs, **kwargs_spl)
-        npt.assert_almost_equal(m3d_gnfw / m3d_splcore, 0.935, 3)
-        # approximate match to splcore with similar properties
+        kappa_s = self.gnfw.rho02kappa_s(rho0, Rs, gamma_in)
+        f_x_gnfw, f_y_gnfw = self.gnfw.derivatives(x, y, Rs, kappa_s, gamma_in)
+
+        npt.assert_almost_equal(f_x_nfw, f_x_gnfw, decimal=10)
+        npt.assert_almost_equal(f_y_nfw, f_y_gnfw, decimal=10)
+
+        f_x_gnfwt, f_y_gnfwt = self.gnfw_trapezoidal.derivatives(
+            x, y, Rs, kappa_s, gamma_in
+        )
+        npt.assert_almost_equal(f_x_nfw, f_x_gnfwt, decimal=5)
+        npt.assert_almost_equal(f_y_nfw, f_y_gnfwt, decimal=5)
+
+        # test for really small Rs
+        Rs = 0.00000001
+        f_x_nfw, f_y_nfw = self.nfw.derivatives(x, y, Rs, alpha_Rs)
+        f_x_gnfw, f_y_gnfw = self.gnfw.derivatives(x, y, Rs, kappa_s, gamma_in)
+        npt.assert_almost_equal(f_x_nfw, f_x_gnfw, decimal=3)
+        npt.assert_almost_equal(f_y_nfw, f_y_gnfw, decimal=3)
+
+    def test_hessian(self):
+        """Tests `GNFW.hessian()`"""
+        x = np.linspace(0.5, 10, 10)
+        y = x * 0.0
+        Rs = 1.0
+        rho0 = 1
+        gamma_in = 1
+
+        alpha_Rs = self.nfw.rho02alpha(rho0, Rs)
+        f_xx_nfw, f_xy_nfw, _, f_yy_nfw = self.nfw.hessian(x, y, Rs, alpha_Rs)
+
+        kappa_s = self.gnfw.rho02kappa_s(rho0, Rs, gamma_in)
+        f_xx_gnfw, f_xy_gnfw, _, f_yy_gnfw = self.gnfw.hessian(
+            x, y, Rs, kappa_s, gamma_in
+        )
+
+        npt.assert_almost_equal(f_xx_nfw, f_xx_gnfw, decimal=10)
+        npt.assert_almost_equal(f_yy_nfw, f_yy_gnfw, decimal=10)
+        npt.assert_almost_equal(f_xy_nfw, f_xy_gnfw, decimal=10)
+
+        f_xx_gnfwt, f_xy_gnfwt, _, f_yy_gnfwt = self.gnfw_trapezoidal.hessian(
+            x, y, Rs, kappa_s, gamma_in
+        )
+        npt.assert_almost_equal(f_xx_nfw, f_xx_gnfwt, decimal=4)
+        npt.assert_almost_equal(f_yy_nfw, f_yy_gnfwt, decimal=4)
+        npt.assert_almost_equal(f_xy_nfw, f_xy_gnfwt, decimal=4)
+
+        # test for really small Rs
+        Rs = 0.00000001
+        f_xx_nfw, f_xy_nfw, _, f_yy_nfw = self.nfw.hessian(x, y, Rs, alpha_Rs)
+        f_xx_gnfw, f_xy_gnfw, _, f_yy_gnfw = self.gnfw.hessian(
+            x, y, Rs, kappa_s, gamma_in
+        )
+
+        npt.assert_almost_equal(f_xx_nfw, f_xx_gnfw, decimal=2)
+        npt.assert_almost_equal(f_yy_nfw, f_yy_gnfw, decimal=2)
+        npt.assert_almost_equal(f_xy_nfw, f_xy_gnfw, decimal=2)
+
+    def test_density(self):
+        """Tests `GNFW.density()`"""
+        R = 1
+        Rs = 1.0
+        rho0 = 1
+        gamma_in = 1
+
+        density_nfw = self.nfw.density(R, Rs, rho0)
+        density_gnfw = self.gnfw.density(R, Rs, rho0, gamma_in)
+        density_gnfwt = self.gnfw_trapezoidal.density(R, Rs, rho0, gamma_in)
+
+        npt.assert_almost_equal(density_nfw, density_gnfw, decimal=10)
+        npt.assert_almost_equal(density_nfw, density_gnfwt, decimal=6)
+
+    def test_density_lens(self):
+        """Tests `GNFW.density_lens()`"""
+        R = 1
+        Rs = 1.0
+        rho0 = 1
+        gamma_in = 1
+
+        alpha_Rs = self.nfw.rho02alpha(rho0, Rs)
+        density_nfw = self.nfw.density_lens(R, Rs, alpha_Rs)
+
+        kappa_s = self.gnfw.rho02kappa_s(rho0, Rs, gamma_in)
+        density_gnfw = self.gnfw.density_lens(R, Rs, kappa_s, gamma_in)
+        density_gnfwt = self.gnfw_trapezoidal.density_lens(R, Rs, kappa_s, gamma_in)
+
+        npt.assert_almost_equal(density_nfw, density_gnfw, decimal=10)
+        npt.assert_almost_equal(density_nfw, density_gnfwt, decimal=6)
+
+    def test_density_2d(self):
+        """Tests `GNFW.density_2d_lens()`"""
+        x = np.array([1])
+        y = np.array([2])
+        Rs = 1.0
+        rho0 = 10
+        gamma_in = 1
+
+        kappa_nfw = self.nfw.density_2d(x, y, Rs, rho0)
+        kappa_gnfw = self.gnfw.density_2d(x, y, Rs, rho0, gamma_in)
+        kappa_gnfwt = self.gnfw_trapezoidal.density_2d(x, y, Rs, rho0, gamma_in)
+        npt.assert_almost_equal(kappa_nfw, kappa_gnfw, decimal=10)
+        npt.assert_almost_equal(kappa_nfw, kappa_gnfwt, decimal=5)
+
+    def test_mass_3d(self):
+        """Tests `GNFW.mass_3d()`"""
+        r = 1
+        Rs = 1.0
+        rho0 = 1
+        gamma_in = 1
+
+        mass_3d_nfw = self.nfw.mass_3d(r, Rs, rho0)
+        mass_3d_gnfw = self.gnfw.mass_3d(r, Rs, rho0, gamma_in)
+
+        npt.assert_almost_equal(mass_3d_nfw, mass_3d_gnfw, decimal=10)
+
+    def test_mass_3d_lens(self):
+        """Tests `GNFW.mass_3d_lens()`"""
+        r = 1
+        Rs = 1.0
+        rho0 = 1
+        gamma_in = 1
+
+        alpha_Rs = self.nfw.rho02alpha(rho0, Rs)
+        mass_3d_nfw = self.nfw.mass_3d_lens(r, Rs, alpha_Rs)
+
+        kappa_s = self.gnfw.rho02kappa_s(rho0, Rs, gamma_in)
+        mass_3d_gnfw = self.gnfw.mass_3d_lens(r, Rs, kappa_s, gamma_in)
+
+        npt.assert_almost_equal(mass_3d_nfw, mass_3d_gnfw, decimal=10)
 
 
 if __name__ == "__main__":

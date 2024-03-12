@@ -382,6 +382,7 @@ class LikelihoodModule(object):
                 print("image logL = %s" % logL_image)
         else:
             param = None
+
         if self._time_delay_likelihood is True:
             logL_time_delay = self.time_delay_likelihood.logL(
                 kwargs_lens, kwargs_ps, kwargs_special

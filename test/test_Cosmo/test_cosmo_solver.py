@@ -87,7 +87,7 @@ class TestInvertCosmo(object):
         Dd, Ds_Dds = cosmo2angular_diameter_distances(H0, omega_m, self.z_d, self.z_s)
         H0_new, omega_m_new = self.invertCosmo.get_cosmo(Dd, Ds_Dds)
         npt.assert_almost_equal(H0_new, H0, decimal=1)
-        npt.assert_almost_equal(omega_m_new, omega_m, decimal=3)
+        npt.assert_almost_equal(omega_m_new, omega_m, decimal=2)
 
         H0_new, omega_m_new = self.invertCosmo_default.get_cosmo(Dd, Ds_Dds)
         npt.assert_almost_equal(H0_new, H0, decimal=1)

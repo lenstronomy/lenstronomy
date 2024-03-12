@@ -189,9 +189,7 @@ def test_transform_e1e2_square_average():
     x_, y_ = param_util.transform_e1e2_square_average(
         x, y, e1, e2, center_x=center_x, center_y=center_y
     )
-    npt.assert_almost_equal(
-        np.sum(x**2 + y**2), np.sum(x_**2 + y_**2), decimal=8
-    )
+    npt.assert_almost_equal(np.sum(x**2 + y**2), np.sum(x_**2 + y_**2), decimal=8)
 
 
 if __name__ == "__main__":

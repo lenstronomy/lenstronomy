@@ -192,7 +192,7 @@ class SpecialParam(object):
     """Class that handles special parameters that are not directly part of a specific
     model component.
 
-    These includes cosmology relevant parameters, astrometric errors and overall scaling
+    These include cosmology relevant parameters, astrometric errors and overall scaling
     parameters.
     """
 
@@ -235,9 +235,11 @@ class SpecialParam(object):
          Warning: this is only defined for pixel-based source modelling (e.g. 'SLIT_STARLETS' light profile)
         :param kinematic_sampling: bool, if True, samples the kinematic parameters b_ani, incli, with cosmography
          D_dt (overrides _D_dt_sampling) and Dd
-        :param distance_ratio_sampling: bool, if True, the distance ratios will be sampled. Only applicable for multi-plane case, will turn-off Ddt_sampling by default as Ddt will be sampled as a ratio with a fiducial value in this option.
+        :param distance_ratio_sampling: bool, if True, the distance ratios will be sampled.
+         Only applicable for multi-plane case, will turn-off Ddt_sampling by default as Ddt will be sampled as a
+         ratio with a fiducial value in this option.
         :param num_lens_planes: integer, number of lens planes when `distance_ratio_sampling` is True
-        sampled
+         sampled
         """
         self._num_lens_planes = num_lens_planes
         self._distance_ratio_sampling = DistanceRatioFactorsAB(

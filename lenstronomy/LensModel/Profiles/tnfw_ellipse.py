@@ -67,7 +67,7 @@ class TNFW_ELLIPSE(LensProfileBase):
         Rs = np.maximum(Rs, 0.0000001)
         # if Rs < 0.0000001:
         #    Rs = 0.0000001
-        f_ = self.tnfw.nfwPot(R_, Rs, rho0_input, r_trunc)
+        f_ = self.tnfw.nfw_potential(R_, Rs, rho0_input, r_trunc)
         return f_
 
     def derivatives(self, x, y, Rs, alpha_Rs, r_trunc, e1, e2, center_x=0, center_y=0):
@@ -98,7 +98,7 @@ class TNFW_ELLIPSE(LensProfileBase):
         Rs = np.maximum(Rs, 0.0000001)
         # if Rs < 0.0000001:
         #    Rs = 0.0000001
-        f_x_prim, f_y_prim = self.tnfw.nfwAlpha(R_, Rs, rho0_input, r_trunc, x_, y_)
+        f_x_prim, f_y_prim = self.tnfw.nfw_alpha(R_, Rs, rho0_input, r_trunc, x_, y_)
         f_x_prim *= np.sqrt(1 - e)
         f_y_prim *= np.sqrt(1 + e)
         f_x = cos_phi * f_x_prim - sin_phi * f_y_prim

@@ -31,9 +31,6 @@ def plot_quasar_images(
     :param grid_resolution: the grid resolution in units arcsec/pixel
     :param grid_radius_arcsec: the size of the ray tracing region in arcsec
     """
-
-    lens_model_extension = LensModelExtensions(lens_model)
-
     magnifications = []
     images = []
 
@@ -49,12 +46,12 @@ def plot_quasar_images(
     )
     shape0 = grid_x_0.shape
     grid_x_0, grid_y_0 = grid_x_0.ravel(), grid_y_0.ravel()
-
-    for xi, yi in zip(x_image, y_image):
+    for k, (xi, yi) in enumerate(zip(x_image, y_image)):
         flux_array = np.zeros_like(grid_x_0)
         r_min = 0
         r_max = grid_radius_arcsec
         grid_r = np.hypot(grid_x_0, grid_y_0)
+        lens_model_extension = LensModelExtensions(lens_model)
         flux_array = lens_model_extension._magnification_adaptive_iteration(
             flux_array,
             xi,

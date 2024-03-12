@@ -9,6 +9,7 @@ from lenstronomy.LensModel.lens_param import LensParam
 from lenstronomy.LightModel.light_param import LightParam
 from lenstronomy.PointSource.point_source_param import PointSourceParam
 from lenstronomy.Sampling.special_param import SpecialParam
+from lenstronomy.LensModel.QuadOptimizer.optimizer import Optimizer
 
 __all__ = ["Param"]
 
@@ -387,7 +388,6 @@ class Param(object):
                 lensModel=self._lens_model_class,
                 num_images=self._num_images,
             )
-
         source_model_list = self._source_light_model_list
         if len(source_model_list) != 1 or source_model_list[0] not in [
             "SLIT_STARLETS",
@@ -564,6 +564,7 @@ class Param(object):
         kwargs_lens = self._update_joint_param(
             kwargs_lens, kwargs_lens, self._joint_lens_with_lens
         )
+
         kwargs_lens = self.update_lens_scaling(kwargs_special, kwargs_lens)
         # update point source constraint solver
         if self._solver is True:

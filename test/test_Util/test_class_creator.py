@@ -55,6 +55,14 @@ class TestClassCreator(object):
             "tau0_index_list": [0],
             "point_source_frame_list": [[0]],
         }
+        self.kwargs_model_5 = {
+            "lens_model_list": ["SIS", "SIS"],
+            "lens_redshift_list": [0.3, 0.4],
+            "multi_plane": True,
+            "z_source": 1,
+            "kwargs_multiplane_model_point_source": {},
+            "decouple_multi_plane": False,
+        }
 
         self.kwargs_psf = {"psf_type": "NONE"}
         self.kwargs_data = {"image_data": np.ones((10, 10))}
@@ -96,6 +104,15 @@ class TestClassCreator(object):
         ) = class_creator.create_class_instances(**self.kwargs_model_4)
         assert lens_model_class.lens_model_list[0] == "SIS"
         assert lens_model_class.lens_model._observed_convention_index[0] == 0
+
+        (
+            lens_model_class,
+            source_model_class,
+            lens_light_model_class,
+            point_source_class,
+            extinction_class,
+        ) = class_creator.create_class_instances(**self.kwargs_model_5)
+        assert lens_model_class.lens_model_list[0] == "SIS"
 
     def test_create_image_model(self):
         imageModel = class_creator.create_image_model(

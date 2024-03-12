@@ -234,7 +234,7 @@ class TestOutputPlots(object):
         plt.close()
 
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
-        kwargs_plot = {"index_macromodel": [0], "with_critical_curves": True}
+        kwargs_plot = {"index_macromodel": [0], "super_sample_factor": 2}
         lensPlot_multiplane.substructure_plot(ax=ax, **kwargs_plot)
         plt.close()
 

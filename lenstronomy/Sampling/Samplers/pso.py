@@ -229,7 +229,7 @@ class ParticleSwarmOptimizer(object):
         pos_list = []
 
         num_iter = 0
-        for _ in self.sample(max_iter, c1, c2, p, m, n, early_stop_tolerance):
+        for _ in self.sample(max_iter, c1, c2, p, m, n, early_stop_tolerance, verbose):
             log_likelihood_list.append(self.global_best.fitness)
             vel_list.append(self.global_best.velocity)
             pos_list.append(self.global_best.position)

@@ -85,13 +85,23 @@ class TestOptimizer(object):
 
         kwargs_final_1, _ = optimizer.optimize(50, 100, verbose=True, seed=0)
         kwargs_final_2, _ = optimizer.optimize(50, 100, verbose=True, seed=0)
-        npt.assert_almost_equal(kwargs_final_1[0]['theta_E'], kwargs_final_2[0]['theta_E'])
-        npt.assert_almost_equal(kwargs_final_1[0]['e1'], kwargs_final_2[0]['e1'])
-        npt.assert_almost_equal(kwargs_final_1[0]['e2'], kwargs_final_2[0]['e2'])
-        npt.assert_almost_equal(kwargs_final_1[0]['center_x'], kwargs_final_2[0]['center_x'])
-        npt.assert_almost_equal(kwargs_final_1[0]['center_y'], kwargs_final_2[0]['center_y'])
-        npt.assert_almost_equal(kwargs_final_1[1]['gamma1'], kwargs_final_2[1]['gamma1'])
-        npt.assert_almost_equal(kwargs_final_1[1]['gamma2'], kwargs_final_2[1]['gamma2'])
+        npt.assert_almost_equal(
+            kwargs_final_1[0]["theta_E"], kwargs_final_2[0]["theta_E"]
+        )
+        npt.assert_almost_equal(kwargs_final_1[0]["e1"], kwargs_final_2[0]["e1"])
+        npt.assert_almost_equal(kwargs_final_1[0]["e2"], kwargs_final_2[0]["e2"])
+        npt.assert_almost_equal(
+            kwargs_final_1[0]["center_x"], kwargs_final_2[0]["center_x"]
+        )
+        npt.assert_almost_equal(
+            kwargs_final_1[0]["center_y"], kwargs_final_2[0]["center_y"]
+        )
+        npt.assert_almost_equal(
+            kwargs_final_1[1]["gamma1"], kwargs_final_2[1]["gamma1"]
+        )
+        npt.assert_almost_equal(
+            kwargs_final_1[1]["gamma2"], kwargs_final_2[1]["gamma2"]
+        )
 
     def test_elp_fixed_shear(self):
         param_class = PowerLawFixedShear(self.kwargs_epl, 0.06)

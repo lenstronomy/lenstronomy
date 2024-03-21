@@ -146,7 +146,27 @@ def ABM(source_position, L, beta_0, beta_s, n_p, eta, number_of_iterations, fina
 
     return source_coords, centers
 
+# def pixel_division(source_coords, source_position, delta_beta, side_length, centers):
+#     """
+#     Takes centers, which is an array of coordinates (x, y), and checks which of 
+#     these coordinates are within delta_beta of the source position. If a center 
+#     is within delta_beta, it creates a new set of subpixels (using sub_pixel_creator)
+#     and extends running_list_of_new_centers with these new subpixel centers. 
+#     Returns the updated list of centers.
+#     """
+
+#     running_list_of_new_centers = []
+
+#     for center in centers:
+#         if within_distance(source_coords, source_position, delta_beta).any():
+#             resultant_centers = sub_pixel_creator(center, side_length, n_p)[0]
+#             running_list_of_new_centers.extend(resultant_centers)
+
+#     return running_list_of_new_centers
+
+# Using Boolean approach
 def pixel_division(source_coords, source_position, delta_beta, side_length, centers):
+
     """
     Takes centers, which is an array of coordinates (x, y), and checks which of 
     these coordinates are within delta_beta of the source position. If a center 
@@ -155,25 +175,86 @@ def pixel_division(source_coords, source_position, delta_beta, side_length, cent
     Returns the updated list of centers.
     """
 
+    within_radius = within_distance(source_coords, source_position, delta_beta)
     running_list_of_new_centers = []
 
-    for center in centers:
-        if within_distance(source_coords, source_position, delta_beta).any():
-            resultant_centers = sub_pixel_creator(center, side_length, n_p)[0]
-            running_list_of_new_centers.extend(resultant_centers)
-
+    running_list_of_new_centers = [sub_pixel_creator(center, side_length, n_p)[0]
+                                  for center in centers[within_radius]]
+    running_list_of_new_centers = [item for sublist in running_list_of_new_centers for item in sublist]
+    
     return running_list_of_new_centers
 
-# def pixel_division(source_coords, source_position, delta_beta, side_length, centers):
+#temporary function name  
+def ABM_with_pd(source_position, L, beta_0, beta_s, n_p, eta, number_of_iterations, final_eta, kwargs_lens):
 
-#     within_radius = within_distance(source_coords, source_position, delta_beta)
-#     running_list_of_new_centers = []
+    # Initialize variables
+    total_number_of_rays_shot = 0  # Counter for total number of rays shot
+    i = 1  # Iteration counter
+    centers = np.array([[0, 0]])  # Initial center coordinates
+    side_length = L # Initial side length of square region (for source image)
+    delta_beta = beta_0 # Initial step size for source plane radius
 
-#     resultant_centers = sub_pixel_creator(centers[within_radius[0]], side_length, n_p)[0]
-#     running_list_of_new_centers.extend(resultant_centers)
+    # Main loop for adaptive boundary mesh algorithm
+    while i < number_of_iterations:
 
-#     return centers[~within_radius].tolist() + running_list_of_new_centers
+        # Ray shoot from image to source plane using array-based approach
+        source_coords_x, source_coords_y = lens.ray_shooting(centers[:, 0], centers[:, 1], kwargs=kwargs_lens)
 
+        # Calculate source_coords array
+        source_coords = np.column_stack((source_coords_x, source_coords_y))
 
+        running_list_of_new_centers = []
+            
+        within_radius = within_distance(source_coords, source_position, delta_beta)
 
+        for center in centers[within_radius]:
+            resultant_centers = sub_pixel_creator(center, side_length, n_p)[0]
+            running_list_of_new_centers.extend(resultant_centers)
+            total_number_of_rays_shot += 1
 
+        # Update centers
+        centers = np.array(running_list_of_new_centers)
+
+        # Update side length
+        side_length /= n_p
+
+        # Update delta_beta based on iteration number
+        if i < number_of_iterations:
+            delta_beta /= eta
+        elif i == number_of_iterations:
+            delta_beta /= final_eta
+
+        # Increment iteration counter
+        i += 1
+
+    # Find final centers within beta_s radius around source position
+
+    final_centers = centers[within_distance(centers, source_position, beta_s)]
+
+    return side_length, total_number_of_rays_shot, final_centers
+
+# Call the ABM function to compute high resolution pixels
+high_resolution_pixels = ABM(source_position, L, beta_0, beta_s, n_p, eta, number_of_iterations, final_eta,[{'theta_E': theta_E, 'center_x': theta_E / 4, 'center_y': theta_E / 6}]) #last parameters are kwargs_lens parameters
+
+# Compute the number of high resolution pixels
+n = len(high_resolution_pixels[0]) 
+
+# Compute the magnification using ABM results
+computed_magnification = (n * high_resolution_pixels[1] ** 2) / (math.pi * (beta_s ** 2)) 
+
+# Plot the high resolution pixels on a scatter plot
+plt.figure()
+plt.scatter(*zip(*high_resolution_pixels[0]))
+ax = plt.gca()
+ax.set_aspect('equal', adjustable='box')
+plt.ylim(-2 * theta_E, 2 * theta_E)
+plt.xlim(-2 * theta_E, 2 * theta_E)
+plt.xlabel("Projected horizontal position on sky (arcseconds)")
+plt.ylabel("Projected vertical position on sky (arcseconds)")
+ax.invert_yaxis()
+
+# Display lensed image
+plt.figure()
+plt.imshow(image)
+plt.colorbar()  # Add colorbar to show intensity scale
+plt.show()

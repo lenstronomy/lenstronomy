@@ -4,7 +4,7 @@ from lenstronomy.LensModel.Microlensing.ABM import loop_information
 from lenstronomy.LensModel.Microlensing.ABM import within_distance
 from lenstronomy.LensModel.Microlensing.ABM import ABM
 from lenstronomy.LensModel.Microlensing.ABM import pixel_division
-from lenstronomy.LensModel.Microlensing.ABM import sub_pixel_creator
+from lenstronomy.LensModel.Microlensing.ABM import ABM_with_pd
 #from lenstronomy.LensModel.single_plane import ray_shooting
 
 class TestABM:
@@ -87,5 +87,27 @@ class TestABM:
         assert len(no_new_centers) == 0 
         # the function should return an empty list if no new centers are found as it is outside the threshold
 
-if __name__ == "__main__":
+    def test_ABM_with_pd(self):
+        
+        source_position = (0, 0)
+        L = 11
+        beta_0 = 50
+        beta_s = 5.2 # this value need to be adjusted (distance from source position)
+        # originally was 10, 10 is too high (value of 5.2-7 should be used)
+        n_p = 10
+        eta = 2
+        number_of_iterations =  5
+        final_eta = 1.25
+        kwargs_lens = [{'theta_E': 10, 'center_x': 2, 'center_y': 3}]
+
+        side_length, total_number_of_rays_shot, final_centers = ABM_with_pd(source_position, L, beta_0, beta_s, n_p, eta, number_of_iterations, final_eta, kwargs_lens)
+        
+        expected_side_length = 0.0011
+        expected_total_number_of_rays_shot = 75419
+        expected_len_of_final_centers = 48735
+
+        assert side_length == pytest.approx(expected_side_length)
+        assert total_number_of_rays_shot == expected_total_number_of_rays_shot
+        assert len(final_centers) == expected_len_of_final_centers
+
     pytest.main()

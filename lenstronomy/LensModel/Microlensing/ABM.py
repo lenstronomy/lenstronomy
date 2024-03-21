@@ -233,24 +233,58 @@ def ABM_with_pd(source_position, L, beta_0, beta_s, n_p, eta, number_of_iteratio
 
     return side_length, total_number_of_rays_shot, final_centers
 
+from lenstronomy.LensModel.lens_model import LensModel
+from lenstronomy.LightModel.light_model import LightModel
+
+# compute unlensed surface brightness
+lens = LensModel(lens_model_list=['POINT_MASS'])
+kwargs_lens = [{'theta_E': 0, 'center_x': 0, 'center_y': 0}]
+beta_x, beta_y = lens.ray_shooting(x, y, kwargs=kwargs_lens)
+ligth = LightModel(light_model_list=['ELLIPSOID'])
+kwargs_light = [{'amp': 1, 'radius': size_s/2, 'e1': 0, 'e2': 0, 'center_x': 0, 'center_y': 0}]
+surface_brightness = ligth.surface_brightness(beta_x, beta_y, kwargs_light)
+unlensed_flux = np.sum(surface_brightness)
+
+
+# compute surface brightness
+lens = LensModel(lens_model_list=['POINT_MASS'])
+kwargs_lens = [{'theta_E': theta_E, 'center_x': theta_E / 4, 'center_y': theta_E / 6}]
+beta_x, beta_y = lens.ray_shooting(x, y, kwargs=kwargs_lens)
+ligth = LightModel(light_model_list=['ELLIPSOID'])
+kwargs_light = [{'amp': 1, 'radius': size_s/2, 'e1': 0, 'e2': 0, 'center_x': 0, 'center_y': 0}]
+surface_brightness = ligth.surface_brightness(beta_x, beta_y, kwargs_light)
+lensed_flux = np.sum(surface_brightness)
+
+reference_magnification = lensed_flux / unlensed_flux
+# print(reference_magnification)
+
+image = util.array2image(surface_brightness)
+
 # Call the ABM function to compute high resolution pixels
-high_resolution_pixels = ABM(source_position, L, beta_0, beta_s, n_p, eta, number_of_iterations, final_eta,[{'theta_E': theta_E, 'center_x': theta_E / 4, 'center_y': theta_E / 6}]) #last parameters are kwargs_lens parameters
+high_resolution_pixels = ABM_with_pd(source_position, L, beta_0, beta_s, n_p, eta, number_of_iterations, final_eta,[{'theta_E': theta_E, 'center_x': theta_E / 4, 'center_y': theta_E / 6}]) #last parameters are kwargs_lens parameters 
 
-# Compute the number of high resolution pixels
-n = len(high_resolution_pixels[0]) 
+print("L: ", L, "\n"
+      "beta_0: ", beta_0, "\n"
+      "beta_s: ", beta_s, "\n"
+      "n_p: ", n_p, "\n"
+      "eta: ", eta, "\n"
+      "number_of_iterations: ", number_of_iterations, "\n"
+      "final_eta: ", final_eta, "\n"
+      "theta_E: ", theta_E,
+      sep='')
 
-# Compute the magnification using ABM results
-computed_magnification = (n * high_resolution_pixels[1] ** 2) / (math.pi * (beta_s ** 2)) 
+# Printing of centers
+print("centers:", high_resolution_pixels[2])
 
 # Plot the high resolution pixels on a scatter plot
 plt.figure()
-plt.scatter(*zip(*high_resolution_pixels[0]))
+plt.scatter(high_resolution_pixels[2][:, 0], high_resolution_pixels[2][:, 1], s=1)
 ax = plt.gca()
 ax.set_aspect('equal', adjustable='box')
 plt.ylim(-2 * theta_E, 2 * theta_E)
 plt.xlim(-2 * theta_E, 2 * theta_E)
-plt.xlabel("Projected horizontal position on sky (arcseconds)")
-plt.ylabel("Projected vertical position on sky (arcseconds)")
+plt.xlabel("Projected x-position (arcseconds)")
+plt.ylabel("Projected y-position (arcseconds)")
 ax.invert_yaxis()
 
 # Display lensed image

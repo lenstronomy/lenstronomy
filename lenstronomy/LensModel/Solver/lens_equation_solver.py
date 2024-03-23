@@ -8,6 +8,13 @@ from lenstronomy.LensModel.Solver.epl_shear_solver import solve_lenseq_pemd
 
 __all__ = ["LensEquationSolver"]
 
+SUPPORTED_LENS_MODELS_ANALYTICAL = (["SIE", "SHEAR"],
+                                    ["SIE"],
+                                    ["EPL_NUMBA", "SHEAR"],
+                                    ["EPL_NUMBA"],
+                                    ["EPL", "SHEAR"],
+                                    ["EPL"],)
+
 
 class LensEquationSolver(object):
     """Class to solve for image positions given lens model and source position."""
@@ -195,14 +202,7 @@ class LensEquationSolver(object):
             kwargs_lens_ = kwargs_lens
             x_, y_ = x, y
 
-        if lens_model_list not in (
-            ["SIE", "SHEAR"],
-            ["SIE"],
-            ["EPL_NUMBA", "SHEAR"],
-            ["EPL_NUMBA"],
-            ["EPL", "SHEAR"],
-            ["EPL"],
-        ):
+        if lens_model_list not in SUPPORTED_LENS_MODELS_ANALYTICAL:
             raise ValueError(
                 "Only SIE, EPL, EPL_NUMBA (+shear +convergence) supported in the analytical solver for now."
             )
@@ -662,3 +662,21 @@ class LensEquationSolver(object):
         x_mins = np.array(x_mins)[idx]
         y_mins = np.array(y_mins)[idx]
         return x_mins, y_mins
+
+
+def analytical_lens_model_support(lens_model_list):
+    """
+    checks whether analytical solver can be used
+
+    :param lens_model_list:
+    :return: True if analytical solver can be used, False if not
+    :rtype: bool
+    """
+    model_list = copy.deepcopy(lens_model_list)
+    if "CONVERGENCE" in model_list:
+        index_convergence = lens_model_list.index("CONVERGENCE")
+        model_list.pop(index_convergence)
+    if model_list in SUPPORTED_LENS_MODELS_ANALYTICAL:
+        return True
+    else:
+        return False

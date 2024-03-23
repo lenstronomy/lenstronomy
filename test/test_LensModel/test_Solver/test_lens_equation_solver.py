@@ -295,7 +295,7 @@ class TestLensEquationSolver(object):
                 "e2": 0.05,
             },
             {"gamma1": -0.04, "gamma2": -0.1, "ra_0": 0.0, "dec_0": 1.0},
-            {"kappa": 0.2, "ra_0": 0, "dec_0": 0}
+            {"kappa": 0.2, "ra_0": 0, "dec_0": 0},
         ]
 
         x_pos, y_pos = lensEquationSolver.image_position_from_source(
@@ -307,7 +307,7 @@ class TestLensEquationSolver(object):
 
         npt.assert_almost_equal(x_pos, x_pos_num)
 
-        print(kwargs_lens, 'test kwargs_lens')
+        print(kwargs_lens, "test kwargs_lens")
         source_x, source_y = lensModel.ray_shooting(x_pos, y_pos, kwargs_lens)
         assert len(source_x) == len(source_y) >= 2
         npt.assert_almost_equal(sourcePos_x, source_x, decimal=10)

@@ -181,7 +181,9 @@ class LensEquationSolver(object):
             kappa = kwargs_lens_[index_convergence]["kappa"]
             ra0 = kwargs_lens_[index_convergence].get("ra_0", 0)
             dec0 = kwargs_lens_[index_convergence].get("dec_0", 0)
-            lambda_mst = 1 - kappa  # a mass sheet that compensates the convergence field
+            lambda_mst = (
+                1 - kappa
+            )  # a mass sheet that compensates the convergence field
             # source position mapping
             x_ = (x - ra0) / lambda_mst
             y_ = (y - dec0) / lambda_mst
@@ -190,7 +192,7 @@ class LensEquationSolver(object):
             # alpha = theta_E * (r2 / theta_E**2) ** (1 - gamma / 2.0)
             gamma = kwargs_lens[0]["gamma"] if "gamma" in kwargs_lens[0] else 1
 
-            kwargs_lens_[0]["theta_E"] /= lambda_mst ** (1./(gamma - 1))
+            kwargs_lens_[0]["theta_E"] /= lambda_mst ** (1.0 / (gamma - 1))
             if "SHEAR" in lens_model_list:
                 kwargs_lens_[1]["gamma1"] /= lambda_mst
                 kwargs_lens_[1]["gamma2"] /= lambda_mst

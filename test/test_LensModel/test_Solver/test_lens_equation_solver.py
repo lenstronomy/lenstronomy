@@ -279,6 +279,40 @@ class TestLensEquationSolver(object):
         npt.assert_almost_equal(sourcePos_x, source_x, decimal=10)
         npt.assert_almost_equal(sourcePos_y, source_y, decimal=10)
 
+    def test_lens_equation_analytical_mst(self):
+        # here we test with convergence shear and mass profile centroids not aligned
+        lensModel = LensModel(["EPL", "SHEAR", "CONVERGENCE"])
+        lensEquationSolver = LensEquationSolver(lensModel)
+        sourcePos_x = 0.02
+        sourcePos_y = 0.02
+        kwargs_lens = [
+            {
+                "theta_E": 1.0,
+                "gamma": 2.2,
+                "center_x": 0.0,
+                "center_y": 0.0,
+                "e1": 0.01,
+                "e2": 0.05,
+            },
+            {"gamma1": -0.04, "gamma2": -0.1, "ra_0": 0.0, "dec_0": 1.0},
+            {"kappa": 0.2, "ra_0": 0, "dec_0": 0}
+        ]
+
+        x_pos, y_pos = lensEquationSolver.image_position_from_source(
+            sourcePos_x, sourcePos_y, kwargs_lens, solver="analytical"
+        )
+        x_pos_num, y_pos_num = lensEquationSolver.image_position_from_source(
+            sourcePos_x, sourcePos_y, kwargs_lens, solver="lenstronomy"
+        )
+
+        npt.assert_almost_equal(x_pos, x_pos_num)
+
+        print(kwargs_lens, 'test kwargs_lens')
+        source_x, source_y = lensModel.ray_shooting(x_pos, y_pos, kwargs_lens)
+        assert len(source_x) == len(source_y) >= 2
+        npt.assert_almost_equal(sourcePos_x, source_x, decimal=10)
+        npt.assert_almost_equal(sourcePos_y, source_y, decimal=10)
+
     def test_caustics(self):
         lm = LensModel(["EPL_NUMBA", "SHEAR"])
         leqs = LensEquationSolver(lm)

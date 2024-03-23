@@ -426,6 +426,16 @@ class TestLensEquationSolver(object):
                 0.1, 0.0, kwargs_lens, solver="nonexisting"
             )
 
+    def test_analytical_lens_model_supported(self):
+        from lenstronomy.LensModel.Solver.lens_equation_solver import (
+            analytical_lens_model_support,
+        )
+
+        lens_model_list = ["SIE", "CONVERGENCE"]
+        assert analytical_lens_model_support(lens_model_list)
+        lens_model_list = ["SIE", "CONVERGENCE", "SIS"]
+        assert not analytical_lens_model_support(lens_model_list)
+
 
 if __name__ == "__main__":
     pytest.main()

@@ -8,12 +8,14 @@ from lenstronomy.LensModel.Solver.epl_shear_solver import solve_lenseq_pemd
 
 __all__ = ["LensEquationSolver"]
 
-SUPPORTED_LENS_MODELS_ANALYTICAL = (["SIE", "SHEAR"],
-                                    ["SIE"],
-                                    ["EPL_NUMBA", "SHEAR"],
-                                    ["EPL_NUMBA"],
-                                    ["EPL", "SHEAR"],
-                                    ["EPL"],)
+SUPPORTED_LENS_MODELS_ANALYTICAL = (
+    ["SIE", "SHEAR"],
+    ["SIE"],
+    ["EPL_NUMBA", "SHEAR"],
+    ["EPL_NUMBA"],
+    ["EPL", "SHEAR"],
+    ["EPL"],
+)
 
 
 class LensEquationSolver(object):
@@ -667,8 +669,7 @@ class LensEquationSolver(object):
 
 
 def analytical_lens_model_support(lens_model_list):
-    """
-    checks whether analytical solver can be used
+    """Checks whether analytical solver can be used.
 
     :param lens_model_list:
     :return: True if analytical solver can be used, False if not

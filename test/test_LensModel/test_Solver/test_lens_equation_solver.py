@@ -427,7 +427,10 @@ class TestLensEquationSolver(object):
             )
 
     def test_analytical_lens_model_supported(self):
-        from lenstronomy.LensModel.Solver.lens_equation_solver import analytical_lens_model_support
+        from lenstronomy.LensModel.Solver.lens_equation_solver import (
+            analytical_lens_model_support,
+        )
+
         lens_model_list = ["SIE", "CONVERGENCE"]
         assert analytical_lens_model_support(lens_model_list)
         lens_model_list = ["SIE", "CONVERGENCE", "SIS"]

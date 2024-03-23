@@ -376,3 +376,8 @@ History
 * updated interface with COOLEST
 * updated tracer_model
 * minor deprecation fixes
+
+1.11.8 (2024-03-23)
++++++++++++++++++++
+* faster lens equation solver with constant convergence
+* decoupled multi-plane formalism

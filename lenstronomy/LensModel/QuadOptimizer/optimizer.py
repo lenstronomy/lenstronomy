@@ -104,7 +104,7 @@ class Optimizer(object):
         :param tol_simplex_func: the tolerence for the downhill simplex optimization routine to terminate
         :param simplex_n_iterations: the maximum number of iterations to iterate the downhill simplex optimization
         :return: an instance of the Optimizer class using the decoupled multi-plane
-        formalism for ray tracing.
+         formalism for ray tracing.
         """
         (
             lens_model_fixed,

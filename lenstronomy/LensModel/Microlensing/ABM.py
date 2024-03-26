@@ -31,7 +31,7 @@ def sub_pixel_creator(center, side_length, n_p):
 
 d_l = 4000  # distance of the lens in pc
 d_s = 8000  # distance of the source in pc
-M0 = 0.01  # mass of the lens in units of M_sol
+M0 = 0.5 # mass of the lens in units of M_sol
 diameter_s = 20 # size of the diameter of the source star in units of the solar radius
 
 # compute lensing properties
@@ -229,9 +229,22 @@ def ABM_with_pd(source_position, L, beta_0, beta_s, n_p, eta, number_of_iteratio
 
     # Find final centers within beta_s radius around source position
 
-    final_centers = centers[within_distance(centers, source_position, beta_s)]
+    final_centers = []
 
-    return side_length, total_number_of_rays_shot, final_centers
+    #Another ray shooting to find final centers
+    # Ray shoot from image to source plane using array-based approach
+    source_coords_x, source_coords_y = lens.ray_shooting(centers[:, 0], centers[:, 1], kwargs=kwargs_lens)
+
+    # Calculate source_coords array
+    source_coords = np.column_stack((source_coords_x, source_coords_y))
+    
+    for center in centers[within_distance(source_coords, source_position, beta_s)]:
+        total_number_of_rays_shot += 1
+        final_centers.append(center)
+
+    final_centers = np.array(final_centers)
+ 
+    return final_centers, side_length, total_number_of_rays_shot, centers
 
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
@@ -273,12 +286,25 @@ print("L: ", L, "\n"
       "theta_E: ", theta_E,
       sep='')
 
-# Printing of centers
-print("centers:", high_resolution_pixels[2])
+# Printing of centers and final centers and corresponding lengths
+# print("centers", high_resolution_pixels[3])
+# print("final centers", high_resolution_pixels[0])
+print("number of centers", len(high_resolution_pixels[3]))
+print("number of final centers:", len(high_resolution_pixels[0]))
+
+# Compute the number of high resolution pixels
+n = len(high_resolution_pixels[0]) 
+
+# Compute the magnification using ABM results
+computed_magnification = (n * high_resolution_pixels[1] ** 2) / (math.pi * (beta_s ** 2)) 
+
+# Print computed magnification and computation information
+print("The ABM magnification is " + str(computed_magnification) + "; the lenstronomy magnification is " + str(reference_magnification))
+print("ABM required " + str(high_resolution_pixels[2]) + " computations. To attain this accuracy with simple IRS would require " + str(n_p ** 2 ** 2) + " computations.")
 
 # Plot the high resolution pixels on a scatter plot
 plt.figure()
-plt.scatter(high_resolution_pixels[2][:, 0], high_resolution_pixels[2][:, 1], s=1)
+plt.scatter(high_resolution_pixels[0][:, 0], high_resolution_pixels[0][:, 1], s=1)
 ax = plt.gca()
 ax.set_aspect('equal', adjustable='box')
 plt.ylim(-2 * theta_E, 2 * theta_E)

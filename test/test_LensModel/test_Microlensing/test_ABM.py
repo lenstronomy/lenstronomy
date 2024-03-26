@@ -5,6 +5,8 @@ from lenstronomy.LensModel.Microlensing.ABM import within_distance
 from lenstronomy.LensModel.Microlensing.ABM import ABM
 from lenstronomy.LensModel.Microlensing.ABM import pixel_division
 from lenstronomy.LensModel.Microlensing.ABM import ABM_with_pd
+from lenstronomy.LensModel.Microlensing.non_array_ABM import ABM_non_array
+
 #from lenstronomy.LensModel.single_plane import ray_shooting
 
 class TestABM:
@@ -88,7 +90,9 @@ class TestABM:
         # the function should return an empty list if no new centers are found as it is outside the threshold
 
     def test_ABM_with_pd(self):
-        
+
+        # testing against non-array ABM
+    
         source_position = (0, 0)
         L = 11
         beta_0 = 50
@@ -100,14 +104,12 @@ class TestABM:
         final_eta = 1.25
         kwargs_lens = [{'theta_E': 10, 'center_x': 2, 'center_y': 3}]
 
-        side_length, total_number_of_rays_shot, final_centers = ABM_with_pd(source_position, L, beta_0, beta_s, n_p, eta, number_of_iterations, final_eta, kwargs_lens)
+        array_final_centers, array_side_length, array_total_number_of_rays_shot, array_centers = ABM_with_pd(source_position, L, beta_0, beta_s, n_p, eta, number_of_iterations, final_eta, kwargs_lens)
+        non_array_final_centers, non_array_side_length, non_array_total_number_of_rays_shot = ABM_non_array(source_position, L, beta_0, beta_s, n_p, eta, number_of_iterations, final_eta, kwargs_lens)
         
-        expected_side_length = 0.0011
-        expected_total_number_of_rays_shot = 75419
-        expected_len_of_final_centers = 48735
-
-        assert side_length == pytest.approx(expected_side_length)
-        assert total_number_of_rays_shot == expected_total_number_of_rays_shot
-        assert len(final_centers) == expected_len_of_final_centers
+        assert np.allclose(len(array_final_centers), len(non_array_final_centers))
+        assert np.allclose(array_side_length, non_array_side_length)
+        
+        assert array_total_number_of_rays_shot < non_array_total_number_of_rays_shot
 
     pytest.main()

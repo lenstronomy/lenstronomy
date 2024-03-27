@@ -31,7 +31,7 @@ def sub_pixel_creator(center, side_length, n_p):
 
 d_l = 4000  # distance of the lens in pc
 d_s = 8000  # distance of the source in pc
-M0 = 0.5 # mass of the lens in units of M_sol
+M0 = 0.01 # mass of the lens in units of M_sol
 diameter_s = 20 # size of the diameter of the source star in units of the solar radius
 
 # compute lensing properties
@@ -298,23 +298,49 @@ n = len(high_resolution_pixels[0])
 # Compute the magnification using ABM results
 computed_magnification = (n * high_resolution_pixels[1] ** 2) / (math.pi * (beta_s ** 2)) 
 
-# Print computed magnification and computation information
-print("The ABM magnification is " + str(computed_magnification) + "; the lenstronomy magnification is " + str(reference_magnification))
-print("ABM required " + str(high_resolution_pixels[2]) + " computations. To attain this accuracy with simple IRS would require " + str(n_p ** 2 ** 2) + " computations.")
+# # Print computed magnification and computation information
+# print("The ABM magnification is " + str(computed_magnification) + "; the lenstronomy magnification is " + str(reference_magnification))
+# print("ABM required " + str(high_resolution_pixels[2]) + " computations. To attain this accuracy with simple IRS would require " + str(n_p ** 2 ** 2) + " computations.")
 
-# Plot the high resolution pixels on a scatter plot
-plt.figure()
-plt.scatter(high_resolution_pixels[0][:, 0], high_resolution_pixels[0][:, 1], s=1)
-ax = plt.gca()
-ax.set_aspect('equal', adjustable='box')
-plt.ylim(-2 * theta_E, 2 * theta_E)
-plt.xlim(-2 * theta_E, 2 * theta_E)
-plt.xlabel("Projected x-position (arcseconds)")
-plt.ylabel("Projected y-position (arcseconds)")
-ax.invert_yaxis()
+# # Plot the high resolution pixels on a scatter plot
+# plt.figure()
+# plt.scatter(high_resolution_pixels[0][:, 0], high_resolution_pixels[0][:, 1], s=1)
+# ax = plt.gca()
+# ax.set_aspect('equal', adjustable='box')
+# plt.title("Source positions for M0 = 0.01")
+# plt.ylim(-2 * theta_E, 2 * theta_E)
+# plt.xlim(-2 * theta_E, 2 * theta_E)
+# plt.xlabel("Projected x-position (arcseconds)")
+# plt.ylabel("Projected y-position (arcseconds)")
+# ax.invert_yaxis()
 
-# Display lensed image
-plt.figure()
-plt.imshow(image)
-plt.colorbar()  # Add colorbar to show intensity scale
-plt.show()
+# # Display lensed image
+# plt.figure()
+# plt.imshow(image)
+# plt.title("Image positions for M0 = 0.01")
+# plt.colorbar()  # Add colorbar to show intensity scale
+# plt.show()
+
+# Light Curve
+
+def trajectory(length, steps, theta_E):
+    # operates in units of multiples of theta_E
+    points = []
+    step_size = length / steps
+    x_t = 0 - length / 2
+    i = 0
+    while i <= steps:
+        point = (x_t, 0) # replace 0 with desired f(x_t), e.g. x_t + theta_E / 2 
+        points.append(point)
+        x_t += step_size
+        i += 1
+    return [(point[0] * theta_E, point[1] * theta_E) for point in points]
+        
+source_path = trajectory(0.5, 10, theta_E)
+
+magnifications = []
+for source_position in source_path:
+    magnification = ABM_with_pd(source_position, L, beta_0, beta_s, n_p, eta, number_of_iterations, final_eta, kwargs_lens)[1]
+    magnifications.append(magnification)
+
+print(magnifications)

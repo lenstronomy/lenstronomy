@@ -246,16 +246,20 @@ class Optimizer(object):
         """
         return self._kwargs_multiplane_model
 
-    def optimize(self, n_particles=50, n_iterations=250, verbose=False, threadCount=1):
+    def optimize(
+        self, n_particles=50, n_iterations=250, verbose=False, threadCount=1, seed=None
+    ):
         """
 
         :param n_particles: number of PSO particles, will be ignored if self._particle_swarm is False
         :param n_iterations: number of PSO iterations, will be ignored if self._particle_swarm is False
         :param verbose: whether to print stuff
         :param threadCount: integer; number of threads in multi-threading mode
+        :param seed: sets a random seed for reproducibility
         :return: keyword arguments that map (x_image, y_image) to the same source coordinate (source_x, source_y)
         """
-
+        if seed is not None:
+            np.random.seed(seed)
         if self._particle_swarm:
             if threadCount > 1:
                 pool = choose_pool(mpi=False, processes=threadCount)

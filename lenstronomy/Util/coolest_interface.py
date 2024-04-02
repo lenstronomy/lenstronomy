@@ -418,7 +418,11 @@ def create_lenstronomy_from_coolest(file_name, use_epl=True, **kwargs_serializer
 
 
 def update_coolest_from_lenstronomy(
-    file_name, kwargs_result, kwargs_mcmc=None, ending="_update", **kwargs_serializer,
+    file_name,
+    kwargs_result,
+    kwargs_mcmc=None,
+    ending="_update",
+    **kwargs_serializer,
 ):
     """Function to update a json file already containing a model with the results of
     this model fitting.

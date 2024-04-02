@@ -34,13 +34,20 @@ class TestCOOLESTinterface(object):
     def test_load(self):
         path = os.getcwd()
         if path[-11:] == "lenstronomy":
-            path += "/test/test_Util"
-        kwargs_out = create_lenstronomy_from_coolest(path + "/coolest_template")
-        print(kwargs_out)
-        kwargs_out = create_lenstronomy_from_coolest(path + "/coolest_template_pemd")
+            # path += "/test/test_Util/test_COOLEST"
+            path = os.path.join(path, "test", "test_Util", "test_COOLEST")
         kwargs_out = create_lenstronomy_from_coolest(
-            path + "/coolest_template_pemd_random"
+            os.path.join(path, "coolest_template"),
+            check_external_files=False
         )
+        kwargs_out = create_lenstronomy_from_coolest(
+            os.path.join(path, "coolest_template_pemd"),
+            check_external_files=False,
+        )
+        # kwargs_out = create_lenstronomy_from_coolest(
+        #     # path + "/coolest_template_pemd_random",
+        #     check_external_files=False,
+        # )
         return
 
     def test_update(self):
@@ -107,9 +114,14 @@ class TestCOOLESTinterface(object):
             ],
         }
         update_coolest_from_lenstronomy(
-            path + "/coolest_template", kwargs_result, ending="_update"
+            path + "/coolest_template", kwargs_result, 
+            ending="_update",
+            check_external_files=False,
         )
-        kwargs_out = create_lenstronomy_from_coolest(path + "/coolest_template_update")
+        kwargs_out = create_lenstronomy_from_coolest(
+            path + "/coolest_template_update",
+            check_external_files=False,
+        )
         npt.assert_almost_equal(
             kwargs_out["kwargs_params"]["lens_model"][0][1]["e1"],
             kwargs_result["kwargs_lens"][1]["e1"],
@@ -120,7 +132,7 @@ class TestCOOLESTinterface(object):
             kwargs_result["kwargs_lens"][1]["e2"],
             decimal=4,
         )
-        os.remove(path + "/coolest_template_update_pyAPI.json")
+        os.remove(path + "/coolest_template_update.json")
 
         return
 
@@ -131,7 +143,10 @@ class TestCOOLESTinterface(object):
         if path[-11:] == "lenstronomy":
             path += "/test/test_Util"
 
-        kwargs_out = create_lenstronomy_from_coolest(path + "/coolest_template")
+        kwargs_out = create_lenstronomy_from_coolest(
+            path + "/coolest_template",
+            check_external_files=False,
+        )
 
         # IMAGE specifics
         background_rms = 0.005  # background noise per pixel
@@ -336,7 +351,8 @@ class TestCOOLESTinterface(object):
         )
         # save the results (aka update the COOLEST json)
         update_coolest_from_lenstronomy(
-            path + "/coolest_template", kwargs_result, kwargs_mcmc
+            path + "/coolest_template", kwargs_result, kwargs_mcmc,
+            check_external_files=False,
         )
 
         return
@@ -345,12 +361,19 @@ class TestCOOLESTinterface(object):
         path = os.getcwd()
         if path[-11:] == "lenstronomy":
             path += "/test/test_Util"
-        kwargs_out = create_lenstronomy_from_coolest(path + "/coolest_template_pemd")
+        kwargs_out = create_lenstronomy_from_coolest(
+            path + "/coolest_template_pemd",
+            check_external_files=False,
+        )
         print(kwargs_out)
 
         # kwargs_results to update the COOLEST template
         kwargs_result = {
             "kwargs_lens": [
+                {
+                    "gamma1": 0.0,
+                    "gamma2": -0.05,
+                },
                 {
                     "theta_E": 0.7,
                     "e1": -0.15,
@@ -380,6 +403,15 @@ class TestCOOLESTinterface(object):
                     "center_y": 0.01,
                     "e1": -0.15,
                     "e2": 0.01,
+                },
+                {
+                    "amp": 11.0,
+                    "R_sersic": 0.2,
+                    "n_sersic": 3.0,
+                    "center_x": 0.03,
+                    "center_y": 0.01,
+                    "e1": -0.15,
+                    "e2": 0.01,
                 }
             ],
         }
@@ -389,6 +421,10 @@ class TestCOOLESTinterface(object):
         kwargs_mcmc = {
             "args_lens": [
                 [
+                    {
+                        "gamma1": 0.0,
+                        "gamma2": -0.05,
+                    },
                     {
                         "theta_E": 0.68,
                         "e1": -0.10,
@@ -400,15 +436,9 @@ class TestCOOLESTinterface(object):
                 ],
                 [
                     {
-                        "theta_E": 0.65,
-                        "e1": -0.10,
-                        "e2": -0.04,
-                        "gamma": 1.9,
-                        "center_x": 0.03,
-                        "center_y": 0.01,
-                    }
-                ],
-                [
+                        "gamma1": 0.0,
+                        "gamma2": -0.05,
+                    },
                     {
                         "theta_E": 0.65,
                         "e1": -0.10,
@@ -419,6 +449,24 @@ class TestCOOLESTinterface(object):
                     }
                 ],
                 [
+                    {
+                        "gamma1": 0.0,
+                        "gamma2": -0.05,
+                    },
+                    {
+                        "theta_E": 0.65,
+                        "e1": -0.10,
+                        "e2": -0.04,
+                        "gamma": 1.9,
+                        "center_x": 0.03,
+                        "center_y": 0.01,
+                    }
+                ],
+                [
+                    {
+                        "gamma1": 0.0,
+                        "gamma2": -0.05,
+                    },
                     {
                         "theta_E": 0.65,
                         "e1": -0.10,
@@ -439,7 +487,7 @@ class TestCOOLESTinterface(object):
                         "center_y": -0.03,
                         "e1": 0.1,
                         "e2": -0.2,
-                    }
+                    },
                 ],
                 [
                     {
@@ -485,9 +533,7 @@ class TestCOOLESTinterface(object):
                         "center_y": 0.01,
                         "e1": -0.15,
                         "e2": 0.01,
-                    }
-                ],
-                [
+                    },
                     {
                         "amp": 11.0,
                         "R_sersic": 0.2,
@@ -507,9 +553,47 @@ class TestCOOLESTinterface(object):
                         "center_y": 0.01,
                         "e1": -0.15,
                         "e2": 0.01,
+                    },
+                    {
+                        "amp": 11.0,
+                        "R_sersic": 0.2,
+                        "n_sersic": 3.0,
+                        "center_x": 0.03,
+                        "center_y": 0.01,
+                        "e1": -0.15,
+                        "e2": 0.01,
                     }
                 ],
                 [
+                    {
+                        "amp": 11.0,
+                        "R_sersic": 0.2,
+                        "n_sersic": 3.0,
+                        "center_x": 0.03,
+                        "center_y": 0.01,
+                        "e1": -0.15,
+                        "e2": 0.01,
+                    },
+                    {
+                        "amp": 11.0,
+                        "R_sersic": 0.2,
+                        "n_sersic": 3.0,
+                        "center_x": 0.03,
+                        "center_y": 0.01,
+                        "e1": -0.15,
+                        "e2": 0.01,
+                    }
+                ],
+                [
+                    {
+                        "amp": 11.0,
+                        "R_sersic": 0.2,
+                        "n_sersic": 3.0,
+                        "center_x": 0.03,
+                        "center_y": 0.01,
+                        "e1": -0.15,
+                        "e2": 0.01,
+                    },
                     {
                         "amp": 11.0,
                         "R_sersic": 0.2,
@@ -527,19 +611,21 @@ class TestCOOLESTinterface(object):
             kwargs_result,
             ending="_update",
             kwargs_mcmc=kwargs_mcmc,
+            check_external_files=False,
         )
         kwargs_out = create_lenstronomy_from_coolest(
-            path + "/coolest_template_pemd_update"
+            path + "/coolest_template_pemd_update",
+            check_external_files=False,
         )
         print(kwargs_out)
         npt.assert_almost_equal(
-            kwargs_out["kwargs_params"]["lens_model"][0][0]["e1"],
-            kwargs_result["kwargs_lens"][0]["e1"],
+            kwargs_out["kwargs_params"]["lens_model"][0][1]["e1"],
+            kwargs_result["kwargs_lens"][1]["e1"],
             decimal=4,
         )
         npt.assert_almost_equal(
-            kwargs_out["kwargs_params"]["lens_model"][0][0]["e2"],
-            kwargs_result["kwargs_lens"][0]["e2"],
+            kwargs_out["kwargs_params"]["lens_model"][0][1]["e2"],
+            kwargs_result["kwargs_lens"][1]["e2"],
             decimal=4,
         )
 
@@ -550,10 +636,12 @@ class TestCOOLESTinterface(object):
         if path[-11:] == "lenstronomy":
             path += "/test/test_Util"
         kwargs_out = create_lenstronomy_from_coolest(
-            path + "/coolest_template_pemd", use_epl=True
+            path + "/coolest_template_pemd", 
+            use_epl=True,
+            check_external_files=False,
         )
         print(kwargs_out)
-        assert kwargs_out["kwargs_model"]["lens_model_list"][0] == "EPL"
+        assert kwargs_out["kwargs_model"]["lens_model_list"][1] == "EPL"
         # the rest of the test would identical to test_pemd()
 
     def test_util_functions(self):

@@ -10,7 +10,7 @@ from lenstronomy.Sampling.parameters import Param
 import lenstronomy.Util.class_creator as class_util
 
 
-def create_lenstronomy_from_coolest(file_name, use_epl=True):
+def create_lenstronomy_from_coolest(file_name, use_epl=True, **kwargs_serializer):
     """Creates lenstronomy typical kwargs from a COOLEST (JSON) file.
 
     :param file_name: str, name (with path) of the .json file containing the COOLEST
@@ -27,7 +27,7 @@ def create_lenstronomy_from_coolest(file_name, use_epl=True):
     creation_redshift_list = False
     creation_kwargs_likelihood = False
 
-    decoder = JSONSerializer(file_name, indent=2)
+    decoder = JSONSerializer(file_name, **kwargs_serializer)
     lens_coolest = decoder.load()
 
     print(f"LENS COOLEST : {lens_coolest.mode}")
@@ -418,7 +418,7 @@ def create_lenstronomy_from_coolest(file_name, use_epl=True):
 
 
 def update_coolest_from_lenstronomy(
-    file_name, kwargs_result, kwargs_mcmc=None, ending="_update"
+    file_name, kwargs_result, kwargs_mcmc=None, ending="_update", **kwargs_serializer,
 ):
     """Function to update a json file already containing a model with the results of
     this model fitting.
@@ -439,7 +439,7 @@ def update_coolest_from_lenstronomy(
      :return:   the new json file is saved with the updated kwargs.
     """
 
-    decoder = JSONSerializer(file_name, indent=2)
+    decoder = JSONSerializer(file_name, **kwargs_serializer)
     lens_coolest = decoder.load()
     available_profiles = [
         "LensedPS",
@@ -637,7 +637,7 @@ def update_coolest_from_lenstronomy(
                 print(f"Lensing entity of type {lensing_entity.type} is unknown.")
 
     encoder = JSONSerializer(file_name + ending, obj=lens_coolest, indent=2)
-    lens_coolest_encoded = encoder.dump_jsonpickle()
+    lens_coolest_encoded = encoder.dump_simple()
 
     return
 

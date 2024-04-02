@@ -34,7 +34,6 @@ class TestCOOLESTinterface(object):
     def test_load(self):
         path = os.getcwd()
         if path[-11:] == "lenstronomy":
-            # path += "/test/test_Util/test_COOLEST"
             path = os.path.join(path, "test", "test_Util", "test_COOLEST")
         kwargs_out = create_lenstronomy_from_coolest(
             os.path.join(path, "coolest_template"),
@@ -53,7 +52,7 @@ class TestCOOLESTinterface(object):
     def test_update(self):
         path = os.getcwd()
         if path[-11:] == "lenstronomy":
-            path += "/test/test_Util"
+            path = os.path.join(path, "test", "test_Util", "test_COOLEST")
         kwargs_result = {
             "kwargs_lens": [
                 {"gamma1": 0.1, "gamma2": -0.05, "ra_0": 0.0, "dec_0": 0.0},
@@ -141,7 +140,7 @@ class TestCOOLESTinterface(object):
         # create the kwargs mcmc ; upadte json
         path = os.getcwd()
         if path[-11:] == "lenstronomy":
-            path += "/test/test_Util"
+            path = os.path.join(path, "test", "test_Util", "test_COOLEST")
 
         kwargs_out = create_lenstronomy_from_coolest(
             path + "/coolest_template",
@@ -360,7 +359,7 @@ class TestCOOLESTinterface(object):
     def test_pemd(self):
         path = os.getcwd()
         if path[-11:] == "lenstronomy":
-            path += "/test/test_Util"
+            path = os.path.join(path, "test", "test_Util", "test_COOLEST")
         kwargs_out = create_lenstronomy_from_coolest(
             path + "/coolest_template_pemd",
             check_external_files=False,
@@ -634,7 +633,7 @@ class TestCOOLESTinterface(object):
     def test_pemd_via_epl(self):
         path = os.getcwd()
         if path[-11:] == "lenstronomy":
-            path += "/test/test_Util"
+            path = os.path.join(path, "test", "test_Util", "test_COOLEST")
         kwargs_out = create_lenstronomy_from_coolest(
             path + "/coolest_template_pemd", 
             use_epl=True,

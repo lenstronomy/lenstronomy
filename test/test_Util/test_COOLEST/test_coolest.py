@@ -36,8 +36,7 @@ class TestCOOLESTinterface(object):
         if path[-11:] == "lenstronomy":
             path = os.path.join(path, "test", "test_Util", "test_COOLEST")
         kwargs_out = create_lenstronomy_from_coolest(
-            os.path.join(path, "coolest_template"),
-            check_external_files=False
+            os.path.join(path, "coolest_template"), check_external_files=False
         )
         kwargs_out = create_lenstronomy_from_coolest(
             os.path.join(path, "coolest_template_pemd"),
@@ -113,7 +112,8 @@ class TestCOOLESTinterface(object):
             ],
         }
         update_coolest_from_lenstronomy(
-            path + "/coolest_template", kwargs_result, 
+            path + "/coolest_template",
+            kwargs_result,
             ending="_update",
             check_external_files=False,
         )
@@ -350,7 +350,9 @@ class TestCOOLESTinterface(object):
         )
         # save the results (aka update the COOLEST json)
         update_coolest_from_lenstronomy(
-            path + "/coolest_template", kwargs_result, kwargs_mcmc,
+            path + "/coolest_template",
+            kwargs_result,
+            kwargs_mcmc,
             check_external_files=False,
         )
 
@@ -380,7 +382,7 @@ class TestCOOLESTinterface(object):
                     "gamma": 2.1,
                     "center_x": 0.03,
                     "center_y": 0.01,
-                }
+                },
             ],
             "kwargs_source": [
                 {
@@ -411,7 +413,7 @@ class TestCOOLESTinterface(object):
                     "center_y": 0.01,
                     "e1": -0.15,
                     "e2": 0.01,
-                }
+                },
             ],
         }
         # kwargs_mcmc to update the COOLEST template. In real cases, this list would be much bigger
@@ -431,7 +433,7 @@ class TestCOOLESTinterface(object):
                         "gamma": 1.9,
                         "center_x": 0.02,
                         "center_y": 0.10,
-                    }
+                    },
                 ],
                 [
                     {
@@ -445,7 +447,7 @@ class TestCOOLESTinterface(object):
                         "gamma": 1.9,
                         "center_x": 0.03,
                         "center_y": 0.01,
-                    }
+                    },
                 ],
                 [
                     {
@@ -459,7 +461,7 @@ class TestCOOLESTinterface(object):
                         "gamma": 1.9,
                         "center_x": 0.03,
                         "center_y": 0.01,
-                    }
+                    },
                 ],
                 [
                     {
@@ -473,7 +475,7 @@ class TestCOOLESTinterface(object):
                         "gamma": 1.9,
                         "center_x": 0.03,
                         "center_y": 0.01,
-                    }
+                    },
                 ],
             ],
             "args_source": [
@@ -541,7 +543,7 @@ class TestCOOLESTinterface(object):
                         "center_y": 0.01,
                         "e1": -0.15,
                         "e2": 0.01,
-                    }
+                    },
                 ],
                 [
                     {
@@ -561,7 +563,7 @@ class TestCOOLESTinterface(object):
                         "center_y": 0.01,
                         "e1": -0.15,
                         "e2": 0.01,
-                    }
+                    },
                 ],
                 [
                     {
@@ -581,7 +583,7 @@ class TestCOOLESTinterface(object):
                         "center_y": 0.01,
                         "e1": -0.15,
                         "e2": 0.01,
-                    }
+                    },
                 ],
                 [
                     {
@@ -601,7 +603,7 @@ class TestCOOLESTinterface(object):
                         "center_y": 0.01,
                         "e1": -0.15,
                         "e2": 0.01,
-                    }
+                    },
                 ],
             ],
         }
@@ -635,7 +637,7 @@ class TestCOOLESTinterface(object):
         if path[-11:] == "lenstronomy":
             path = os.path.join(path, "test", "test_Util", "test_COOLEST")
         kwargs_out = create_lenstronomy_from_coolest(
-            path + "/coolest_template_pemd", 
+            path + "/coolest_template_pemd",
             use_epl=True,
             check_external_files=False,
         )

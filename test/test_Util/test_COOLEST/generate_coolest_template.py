@@ -1,10 +1,11 @@
 # Script that generates a a baseline JSON template following the COOLEST standard.
-# The template is then used by the test routines in test/test_Util/test_COOLEST
-# in order to cover the
+# The template is then used by the test routines in test/test_Util/test_COOLEST in order to cover the unit tests.
+# Note the name of the file should *not* contain "test" to be ignored by pytest.
 
 
 import os
-
+import numpy as np
+from astropy.io import fits
 from coolest.template.lazy import *
 from coolest.template.standard import COOLEST
 from coolest.template.json import JSONSerializer
@@ -56,19 +57,20 @@ origin = CoordinatesOrigin("00h11m20.244s", "-08d45m51.48s")
 # source_1.light_model[0].parameters['theta_eff'].set_posterior(PosteriorStatistics(mean=0.11, median=0.15, percentile_16th=0.03, percentile_84th=0.05))
 
 # Define the data pixels and noise properties
+data_shape = (100, 100)
 obs_pixels = PixelatedRegularGrid(
     "obs.fits",
     field_of_view_x=[-4.0, 4.0],
     field_of_view_y=[-4.0, 4.0],
-    num_pix_x=100,
-    num_pix_y=100,
+    num_pix_x=data_shape[0],
+    num_pix_y=data_shape[1],
 )
 obs_noise_pixels = PixelatedRegularGrid(
     "noise_map.fits",
     field_of_view_x=[-4.0, 4.0],
     field_of_view_y=[-4.0, 4.0],
-    num_pix_x=100,
-    num_pix_y=100,
+    num_pix_x=data_shape[0],
+    num_pix_y=data_shape[1],
 )
 observation = Observation(
     pixels=obs_pixels,
@@ -76,12 +78,13 @@ observation = Observation(
 )
 
 # Defines the instrument
+psf_shape = (23, 23)
 psf_pixels = PixelatedRegularGrid(
     "psf_kernel.fits",
     field_of_view_x=[-0.92, 0.92],
     field_of_view_y=[-0.92, 0.92],
-    num_pix_x=23,
-    num_pix_y=23,
+    num_pix_x=psf_shape[0],
+    num_pix_y=psf_shape[1],
 )
 instrument = Instrument(
     0.08,  # pixel size
@@ -98,3 +101,11 @@ coolest = COOLEST("MAP", origin, entity_list, observation, instrument, cosmology
 template_path = os.path.join(os.getcwd(), TEMPLATE_NAME)
 serializer = JSONSerializer(template_path, obj=coolest, check_external_files=True)
 serializer.dump_simple()
+
+
+
+# below we also create random fake FITS files that matches the above components
+np.random.seed(0)
+fits.writeto("obs.fits", np.random.randn(*data_shape), overwrite=True)
+fits.writeto("noise_map.fits", np.random.randn(*data_shape), overwrite=True)
+fits.writeto("psf_kernel.fits", np.random.randn(*psf_shape), overwrite=True)

@@ -31,7 +31,7 @@ from lenstronomy.Workflow.fitting_sequence import FittingSequence
 
 
 TEMPLATE_NAME = "coolest_template"  # name of the base COOLEST template
-#ERROR_TEMPLATE_NAME = "coolest_template_with_errors"  # name of the COOLEST template that contains errors
+INVALID_TEMPLATE_NAME = "invalid_coolest_template"  # name of the COOLEST template that contains errors
 
 
 class TestCOOLESTinterface(object):
@@ -586,13 +586,13 @@ class TestCOOLESTinterface(object):
         if path[-11:] == "lenstronomy":
             path = os.path.join(path, "test", "test_Util", "test_COOLEST")
         kwargs_out = create_lenstronomy_from_coolest(
-            os.path.join(path, TEMPLATE_NAME + "_update"),
+            os.path.join(path, TEMPLATE_NAME),
             use_epl=True,
             check_external_files=False,
         )
         print(kwargs_out)
         assert kwargs_out["kwargs_model"]["lens_model_list"][3] == "EPL"
-        # the rest of the test would identical to test_pemd()
+        # the rest of the test would be identical to test_pemd()
 
     def test_util_functions(self):
         radian = degree_coolest_to_radian_lenstronomy(None)

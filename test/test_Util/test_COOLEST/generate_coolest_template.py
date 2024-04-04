@@ -103,7 +103,6 @@ serializer = JSONSerializer(template_path, obj=coolest, check_external_files=Tru
 serializer.dump_simple()
 
 
-
 # below we also create random fake FITS files that matches the above components
 np.random.seed(0)
 fits.writeto("obs.fits", np.random.randn(*data_shape), overwrite=True)

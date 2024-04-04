@@ -31,7 +31,7 @@ from lenstronomy.Workflow.fitting_sequence import FittingSequence
 
 
 TEMPLATE_NAME = "coolest_template"  # name of the base COOLEST template
-#INVALID_TEMPLATE_NAME = "invalid_coolest_template"  # name of the COOLEST template that contains errors
+# INVALID_TEMPLATE_NAME = "invalid_coolest_template"  # name of the COOLEST template that contains errors
 
 
 class TestCOOLESTinterface(object):

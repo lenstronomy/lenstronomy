@@ -187,7 +187,7 @@ def convergence_update(convergence, kwargs_lens, kwargs_lens_mcmc=None):
         PointEstimate(float(kwargs_lens["kappa"]))
     )
     if kwargs_lens_mcmc is not None:
-        val_samples = [arg["kappa_s"] for arg in kwargs_lens_mcmc]
+        val_samples = [arg["kappa"] for arg in kwargs_lens_mcmc]
 
         val_mean = np.mean(val_samples)
         val_16, val_50, val_84 = np.quantile(val_samples, [0.16, 0.5, 0.84])

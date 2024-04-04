@@ -832,6 +832,7 @@ def update_kwargs_shapelets(
     """
     light_model_list.append("SHAPELETS")
     for light_name, light_param in light.parameters.items():
+        print("light_name, light_param", light_name, light_param)
         if light_name == "beta":
             b = getattr(light_param.point_estimate, "value")
             b_up = getattr(light_param.definition_range, "max_value")

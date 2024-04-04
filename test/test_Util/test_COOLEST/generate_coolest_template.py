@@ -14,25 +14,26 @@ from coolest.template.json import JSONSerializer
 # from coolest.template.classes.probabilities import PosteriorStatistics
 
 
-TEMPLATE_NAME = "coolest_template_pemd"
+# TEMPLATE_NAME = "coolest_template_pemd"
+TEMPLATE_NAME = "coolest_template"
 
 # Setup cosmology
 cosmology = Cosmology(H0=73.0, Om0=0.3)
 
-# Create a source galaxy represented by Sersic light profile
-source_1 = Galaxy("a source galaxy", 2.0, light_model=LightModel("Sersic"))
+# Create a source galaxy represented by light profile
+source_1 = Galaxy("a source galaxy", 2.0, light_model=LightModel("Sersic", "Shapelets"))
 
-# Create a lens galaxy represented by a PEMD mass profile and two Sersic light profiles
+# Create a lens galaxy represented by a mass and light profiles
 lens_1 = Galaxy(
     "a lens galaxy",
     0.5,
-    light_model=LightModel("Sersic", "Sersic"),
-    mass_model=MassModel("PEMD"),
+    light_model=LightModel("Sersic"),
+    mass_model=MassModel("SIE", "PEMD"),
 )
 
-# Defines the external shear
+# Defines the external shear as a massive field
 ext_shear = MassField(
-    "an external shear", lens_1.redshift, mass_model=MassModel("ExternalShear")
+    "an external shear", lens_1.redshift, mass_model=MassModel("ExternalShear", "ConvergenceSheet")
 )
 
 # Put them in a list, which will also create unique IDs for each profile

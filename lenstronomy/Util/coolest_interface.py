@@ -44,7 +44,7 @@ def create_lenstronomy_from_coolest(file_name, use_epl=True, **kwargs_serializer
             nx = lens_observation.pixels.num_pix_x
             ny = lens_observation.pixels.num_pix_y
             try:
-                image = fits.open(image_path)[0].data
+                image = fits.getdata(image_path, header=False).astype(float)
                 if (np.shape(image)[0] != nx) or (np.shape(image)[1] != ny):
                     print(
                         f"image shape {np.shape(image)} is different from the coolest file  {nx}, {ny}"
@@ -76,7 +76,7 @@ def create_lenstronomy_from_coolest(file_name, use_epl=True, **kwargs_serializer
                 creation_data = True
                 noise_path = lens_observation.noise.noise_map.fits_file.path
                 try:
-                    noise = fits.open(noise_path)[0].data
+                    noise = fits.getdata(noise_path, header=False).astype(float)
                 except:
                     noise = noise_path
                     print(
@@ -106,7 +106,7 @@ def create_lenstronomy_from_coolest(file_name, use_epl=True, **kwargs_serializer
                 creation_instrument = True
                 psf_path = lens_instrument.psf.pixels.fits_file.path
                 try:
-                    psf = fits.open(psf_path)[0].data
+                    psf = fits.getdata(psf_path, header=False).astype(float)
                 except:
                     psf = psf_path
                     print(

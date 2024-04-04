@@ -31,7 +31,7 @@ from lenstronomy.Workflow.fitting_sequence import FittingSequence
 
 
 TEMPLATE_NAME = "coolest_template"  # name of the base COOLEST template
-#ERROR_TEMPLATE_NAME = "coolest_template_with_errors"  # name of the COOLEST template that contains errors
+# ERROR_TEMPLATE_NAME = "coolest_template_with_errors"  # name of the COOLEST template that contains errors
 
 
 class TestCOOLESTinterface(object):
@@ -40,8 +40,7 @@ class TestCOOLESTinterface(object):
         if path[-11:] == "lenstronomy":
             path = os.path.join(path, "test", "test_Util", "test_COOLEST")
         kwargs_out = create_lenstronomy_from_coolest(
-            os.path.join(path, TEMPLATE_NAME), 
-            check_external_files=False
+            os.path.join(path, TEMPLATE_NAME), check_external_files=False
         )
         return
 
@@ -51,14 +50,8 @@ class TestCOOLESTinterface(object):
             path = os.path.join(path, "test", "test_Util", "test_COOLEST")
         kwargs_result = {
             "kwargs_lens": [
-                {
-                    "gamma1": 0.1, "gamma2": -0.05, 
-                    "ra_0": 0.0, "dec_0": 0.0
-                },
-                {
-                    "kappa": 0.2,
-                    "ra_0": 0.0, "dec_0": 0.0
-                },
+                {"gamma1": 0.1, "gamma2": -0.05, "ra_0": 0.0, "dec_0": 0.0},
+                {"kappa": 0.2, "ra_0": 0.0, "dec_0": 0.0},
                 {
                     "theta_E": 0.7,
                     "e1": -0.15,

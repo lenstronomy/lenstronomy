@@ -33,7 +33,9 @@ lens_1 = Galaxy(
 
 # Defines the external shear as a massive field
 ext_shear = MassField(
-    "an external shear", lens_1.redshift, mass_model=MassModel("ExternalShear", "ConvergenceSheet")
+    "an external shear",
+    lens_1.redshift,
+    mass_model=MassModel("ExternalShear", "ConvergenceSheet"),
 )
 
 # Put them in a list, which will also create unique IDs for each profile

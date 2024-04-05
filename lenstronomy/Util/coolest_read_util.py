@@ -174,8 +174,6 @@ def update_kwargs_shear(
             psiext_up = getattr(shear_param.definition_range, "max_value")
             psiext_down = getattr(shear_param.definition_range, "min_value")
             psiext_fixed = psiext if getattr(shear_param, "fixed") else None
-        else:
-            print(f"{shear_name} not known")
     gamma1, gamma2 = gamma_phi_coolest_to_g1_g2_lenstronomy(gammaext, psiext)
     gamma1_fixed, gamma2_fixed = gamma_phi_coolest_to_g1_g2_lenstronomy(
         gammaext_fixed, psiext_fixed
@@ -229,6 +227,78 @@ def update_kwargs_shear(
     kwargs_lens_fixed.append(kw_fixed)
     kwargs_lens_sigma.append({"gamma1": 0.1, "gamma2": 0.1, "ra_0": 0.0, "dec_0": 0.0})
     print("\t Shear correctly added")
+
+    return
+
+
+def update_kwargs_convergence(
+    convergence,
+    lens_model_list,
+    kwargs_lens,
+    kwargs_lens_init,
+    kwargs_lens_up,
+    kwargs_lens_down,
+    kwargs_lens_fixed,
+    kwargs_lens_sigma,
+    cleaning=False,
+):
+    """
+    Update the lens model list and kwargs with CONVERGENCE mass model (gamma_ext - phi_ext)
+
+    :param profile: coolest.template.classes.profiles.mass.ConvergenceSheet object
+    :param lens_model_list: the usual lenstronomy lens_model_list
+    :param kwargs_lens: the usual lenstronomy kwargs
+    :param kwargs_lens_init: the usual lenstronomy kwargs
+    :param kwargs_lens_up: the usual lenstronomy kwargs
+    :param kwargs_lens_down: the usual lenstronomy kwargs
+    :param kwargs_lens_fixed: the usual lenstronomy kwargs
+    :param kwargs_lens_sigma: the usual lenstronomy kwargs
+    :param cleaning: bool, if True, will update the empty fields with default values + cleans the kwargs_fixed
+    :return: updated list and kwargs
+    """
+    lens_model_list.append("CONVERGENCE")
+    for param_name, param in convergence.parameters.items():
+        if param_name == "kappa_s":
+            kappa = getattr(param.point_estimate, "value")
+            kappa_up = getattr(param.definition_range, "max_value")
+            kappa_down = getattr(param.definition_range, "min_value")
+            kappa_fixed = kappa if getattr(param, "fixed") else None
+
+    kw_1 = {"kappa": kappa, "ra_0": 0.0, "dec_0": 0.0}
+    kw_up_1 = {"kappa": kappa_up, "ra_0": 0.0, "dec_0": 0.0}
+    kw_down_1 = {"kappa": kappa_down, "ra_0": 0.0, "dec_0": 0.0}
+    kw_fixed_1 = {"kappa": kappa_fixed, "ra_0": 0.0, "dec_0": 0.0}
+
+    kw_ = kw_1.copy()
+    kw_init = kw_1.copy()
+    kw_up = kw_up_1.copy()
+    kw_down = kw_down_1.copy()
+    kw_fixed = kw_fixed_1.copy()
+
+    if cleaning is True:
+        kw_init_default = {"kappa": 0.0, "ra_0": 0.0, "dec_0": 0.0}
+        kw_up_default = {"kappa": 10, "ra_0": 100, "dec_0": 100}
+        kw_down_default = {"kappa": -10, "ra_0": -100, "dec_0": -100}
+        for key, val in kw_1.items():
+            if val is None:
+                kw_init[key] = kw_init_default[key]
+        for key, val in kw_up_1.items():
+            if val is None:
+                kw_up[key] = kw_up_default[key]
+        for key, val in kw_down_1.items():
+            if val is None:
+                kw_down[key] = kw_down_default[key]
+        for key, val in kw_fixed_1.items():
+            if val is None:
+                del kw_fixed[key]
+
+    kwargs_lens.append(kw_)
+    kwargs_lens_init.append(kw_init)
+    kwargs_lens_up.append(kw_up)
+    kwargs_lens_down.append(kw_down)
+    kwargs_lens_fixed.append(kw_fixed)
+    kwargs_lens_sigma.append({"kappa": 0.1, "ra_0": 0.0, "dec_0": 0.0})
+    print("\t Convergence correctly added")
 
     return
 
@@ -298,8 +368,6 @@ def update_kwargs_pemd(
             center_y_up = getattr(mass_param.definition_range, "max_value")
             center_y_down = getattr(mass_param.definition_range, "min_value")
             center_y_fixed = center_y if getattr(mass_param, "fixed") else None
-        else:
-            print(f"{mass_name} not known")
 
     e1, e2 = qphi_coolest_to_e1e2_lenstronomy(q, phi)
     e1_fixed, e2_fixed = qphi_coolest_to_e1e2_lenstronomy(q_fixed, phi_fixed)
@@ -461,8 +529,6 @@ def update_kwargs_sie(
             center_y_up = getattr(mass_param.definition_range, "max_value")
             center_y_down = getattr(mass_param.definition_range, "min_value")
             center_y_fixed = center_y if getattr(mass_param, "fixed") else None
-        else:
-            print(f"{mass_name} not known")
 
     e1, e2 = qphi_coolest_to_e1e2_lenstronomy(q, phi)
     e1_fixed, e2_fixed = qphi_coolest_to_e1e2_lenstronomy(q_fixed, phi_fixed)
@@ -621,8 +687,6 @@ def update_kwargs_sersic(
             cy_up = getattr(light_param.definition_range, "max_value")
             cy_down = getattr(light_param.definition_range, "min_value")
             cy_fixed = cy if getattr(light_param, "fixed") else None
-        else:
-            print(f"Parameter {light_name} unknown in SersicEllipse profile.")
 
     e1, e2 = qphi_coolest_to_e1e2_lenstronomy(q, phi)
     e1_fixed, e2_fixed = qphi_coolest_to_e1e2_lenstronomy(q_fixed, phi_fixed)
@@ -765,7 +829,7 @@ def update_kwargs_shapelets(
             b_fixed = b if getattr(light_param, "fixed") else None
         elif light_name == "n_max":
             nmax = getattr(light_param.point_estimate, "value")
-            nmax_fixed = nmax if getattr(light_param, "fixed") else None
+            # nmax_fixed = nmax if getattr(light_param, "fixed") else None
         elif light_name == "center_x":
             cx = (
                 -getattr(light_param.point_estimate, "value")
@@ -784,15 +848,13 @@ def update_kwargs_shapelets(
             amp = shapelet_amp_coolest_to_lenstronomy(
                 getattr(light_param.point_estimate, "value")
             )
-            amp_up = shapelet_amp_coolest_to_lenstronomy(
-                getattr(light_param.definition_range, "max_value")
-            )
-            amp_down = shapelet_amp_coolest_to_lenstronomy(
-                getattr(light_param.definition_range, "min_value")
-            )
-            amp_fixed = amp if getattr(light_param, "fixed") else None
-        else:
-            print(f"Parameter {light_name} unknown in Shapelets profile.")
+            # amp_up = shapelet_amp_coolest_to_lenstronomy(
+            #     getattr(light_param.definition_range, "max_value")
+            # )
+            # amp_down = shapelet_amp_coolest_to_lenstronomy(
+            #     getattr(light_param.definition_range, "min_value")
+            # )
+            # amp_fixed = amp if getattr(light_param, "fixed") else None
 
     kw_1 = {"amp": amp, "beta": b, "center_x": cx, "center_y": cy, "n_max": nmax}
     kw_up_1 = {"beta": b_up, "center_x": cx_up, "center_y": cy_up}
@@ -882,11 +944,7 @@ def update_kwargs_lensed_ps(
     :return: updated list and kwargs
     """
     ps_model_list.append("LENSED_POSITION")
-
-    try:
-        num_ps = len(getattr(light.parameters["ra_list"].point_estimate, "value"))
-    except:
-        num_ps = 4
+    num_ps = len(getattr(light.parameters["ra_list"].point_estimate, "value"))
 
     for light_name, light_param in light.parameters.items():
         if light_name == "ra_list":
@@ -905,11 +963,9 @@ def update_kwargs_lensed_ps(
             dec_fixed = dec if getattr(light_param, "fixed") else None
         elif light_name == "amps":
             amp = getattr(light_param.point_estimate, "value")
-            amp_up = getattr(light_param.definition_range, "max_value")
-            amp_down = getattr(light_param.definition_range, "min_value")
-            amp_fixed = amp if getattr(light_param, "fixed") else None
-        else:
-            print(f"Parameter {light_name} unknown in LensedPS profile.")
+            # amp_up = getattr(light_param.definition_range, "max_value")
+            # amp_down = getattr(light_param.definition_range, "min_value")
+            # amp_fixed = amp if getattr(light_param, "fixed") else None
 
     kw_1 = {
         "point_amp": np.array(amp) if amp is not None else None,

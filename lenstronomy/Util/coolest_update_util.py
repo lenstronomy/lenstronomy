@@ -175,6 +175,33 @@ def shear_update(shear_idx, kwargs_lens, kwargs_lens_mcmc=None):
     return
 
 
+def convergence_update(convergence, kwargs_lens, kwargs_lens_mcmc=None):
+    """Update the COOLEST CONVERGENCE mass model (kappa) with results in kwargs_lens.
+
+    :param convergence: coolest.template.classes.profiles.mass.ConvergenceSheet object
+    :param kwargs_lens: dictionnary with the point estimate
+
+    :return: updated convergence
+    """
+    convergence.parameters["kappa_s"].set_point_estimate(
+        PointEstimate(float(kwargs_lens["kappa"]))
+    )
+    if kwargs_lens_mcmc is not None:
+        val_samples = [arg["kappa"] for arg in kwargs_lens_mcmc]
+
+        val_mean = np.mean(val_samples)
+        val_16, val_50, val_84 = np.quantile(val_samples, [0.16, 0.5, 0.84])
+        convergence.parameters["kappa_s"].set_posterior(
+            PosteriorStatistics(
+                float(val_mean), float(val_50), float(val_16), float(val_84)
+            )
+        )
+
+    print("convergence correctly updated")
+
+    return
+
+
 def pemd_update(mass, kwargs_lens, kwargs_lens_mcmc=None):
     """Update the COOLEST PEMD mass model with results in kwargs_lens.
 

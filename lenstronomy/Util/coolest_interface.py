@@ -96,8 +96,10 @@ def create_lenstronomy_from_coolest(file_name, use_epl=True, **kwargs_serializer
                 kwargs_data["noise_map"] = noise
                 print("Noise (in Data) creation")
             else:
-                raise NotImplementedError(f"COOLEST noise type {lens_observation.noise.type} "
-                                          "is not supported in the lenstronomy interface.")
+                raise NotImplementedError(
+                    f"COOLEST noise type {lens_observation.noise.type} "
+                    "is not supported in the lenstronomy interface."
+                )
 
     # PSF
     if lens_coolest.instrument is not None:
@@ -131,8 +133,10 @@ def create_lenstronomy_from_coolest(file_name, use_epl=True, **kwargs_serializer
                 }
                 print("PSF creation")
             else:
-                raise NotImplementedError(f"COOLEST PSF type {lens_instrument.psf.type} "
-                                          "is not supported in the lenstronomy interface.")
+                raise NotImplementedError(
+                    f"COOLEST PSF type {lens_instrument.psf.type} "
+                    "is not supported in the lenstronomy interface."
+                )
 
     # COSMO
     if lens_coolest.cosmology is not None:
@@ -144,8 +148,10 @@ def create_lenstronomy_from_coolest(file_name, use_epl=True, **kwargs_serializer
         else:
             # NOTE: This error cannot be tested as all COOLEST cosmologies
             # are currently supported this interface.
-            raise NotImplementedError(f"COOLEST cosmology {lens_cosmo.astropy_name} "
-                                        "is not supported by lenstronomy interface.")
+            raise NotImplementedError(
+                f"COOLEST cosmology {lens_cosmo.astropy_name} "
+                "is not supported by lenstronomy interface."
+            )
 
     # LIKELIHOODS not yet well supported by COOLEST
     # # LIKELIHOODS
@@ -246,14 +252,18 @@ def create_lenstronomy_from_coolest(file_name, use_epl=True, **kwargs_serializer
                                 cleaning=True,
                             )
                         else:
-                            raise NotImplementedError(f"COOLEST light profile {light.type} "
-                                                      "is not supported by lenstronomy interface.")
+                            raise NotImplementedError(
+                                f"COOLEST light profile {light.type} "
+                                "is not supported by lenstronomy interface."
+                            )
 
                 if galaxy.redshift < max_redshift:
                     # LENSING GALAXY
                     if galaxy.redshift > min_redshift:
-                        raise NotImplementedError("Multi-plane is not yet supported "
-                                                  "in the lenstronomy COOLEST interface.")
+                        raise NotImplementedError(
+                            "Multi-plane is not yet supported "
+                            "in the lenstronomy COOLEST interface."
+                        )
                     mass_list = galaxy.mass_model
                     for mass in mass_list:
                         print("Lens Mass : ")
@@ -283,8 +293,10 @@ def create_lenstronomy_from_coolest(file_name, use_epl=True, **kwargs_serializer
                                 cleaning=True,
                             )
                         else:
-                            raise NotImplementedError(f"COOLEST mass profile {mass.type} "
-                                                      "is not supported by lenstronomy interface.")
+                            raise NotImplementedError(
+                                f"COOLEST mass profile {mass.type} "
+                                "is not supported by lenstronomy interface."
+                            )
 
                 if galaxy.redshift == min_redshift:
                     # LENSING LIGHT GALAXY
@@ -307,8 +319,10 @@ def create_lenstronomy_from_coolest(file_name, use_epl=True, **kwargs_serializer
                         #     read.update_kwargs_lensed_ps(light, ps_model_list, kwargs_ps, kwargs_ps_init, kwargs_ps_up,
                         #                         kwargs_ps_down, kwargs_ps_fixed, kwargs_ps_sigma, cleaning=True)
                         else:
-                            raise NotImplementedError(f"COOLEST light profile {light.type} "
-                                                      "is not supported by lenstronomy interface.")
+                            raise NotImplementedError(
+                                f"COOLEST light profile {light.type} "
+                                "is not supported by lenstronomy interface."
+                            )
 
                 # if (galaxy.redshift <= min_redshift) or (galaxy.redshift >= max_redshift):
                 #     print(f'REDSHIFT {galaxy.redshift} is not in the range ] {min_red} , {max_red} [')
@@ -346,8 +360,10 @@ def create_lenstronomy_from_coolest(file_name, use_epl=True, **kwargs_serializer
                     else:
                         # NOTE: This error cannot be tested as all COOLEST mass fields
                         # are currently supported this interface.
-                        raise NotImplementedError(f"COOLEST mass field type {lensing_entity.type} "
-                                                  "is not supported by lenstronomy interface.")
+                        raise NotImplementedError(
+                            f"COOLEST mass field type {lensing_entity.type} "
+                            "is not supported by lenstronomy interface."
+                        )
 
     return_dict = {}
     if creation_lens_source_light is True:
@@ -564,8 +580,10 @@ def update_coolest_from_lenstronomy(
                 if galaxy.redshift < max_redshift:
                     # LENSING GALAXY
                     if galaxy.redshift > min_redshift:
-                        raise NotImplementedError("Multi-plane lensing is not yet supported "
-                                                  "in the COOLEST interface.")
+                        raise NotImplementedError(
+                            "Multi-plane lensing is not yet supported "
+                            "in the COOLEST interface."
+                        )
                     mass_list = galaxy.mass_model
                     for mass in mass_list:
                         kwargs_lens_mcmc = None
@@ -585,8 +603,10 @@ def update_coolest_from_lenstronomy(
                             update.sie_update(mass, kwargs_lens, kwargs_lens_mcmc)
                             idx_lens += 1
                         else:
-                            raise NotImplementedError(f"COOLEST mass profile {mass.type} "
-                                                      "is not supported by lenstronomy interface.")
+                            raise NotImplementedError(
+                                f"COOLEST mass profile {mass.type} "
+                                "is not supported by lenstronomy interface."
+                            )
 
                 if galaxy.redshift == min_redshift:
                     # LENSING LIGHT GALAXY
@@ -598,8 +618,10 @@ def update_coolest_from_lenstronomy(
                             ]
                             kwargs_lens_light_mcmc = None
                         else:
-                            raise NotImplementedError(f"COOLEST light profile {light.type} "
-                                                      "is not supported by lenstronomy interface.")
+                            raise NotImplementedError(
+                                f"COOLEST light profile {light.type} "
+                                "is not supported by lenstronomy interface."
+                            )
 
                         if (kwargs_mcmc is not None) & (
                             light.type in available_profiles
@@ -645,8 +667,10 @@ def update_coolest_from_lenstronomy(
                         idx_lens += 1
 
             else:
-                raise NotImplementedError(f"COOLEST lensing entity type {lensing_entity.type} "
-                                          "is not supported by lenstronomy interface.")
+                raise NotImplementedError(
+                    f"COOLEST lensing entity type {lensing_entity.type} "
+                    "is not supported by lenstronomy interface."
+                )
 
     encoder = JSONSerializer(file_name + ending, obj=lens_coolest, indent=2)
     lens_coolest_encoded = encoder.dump_simple()

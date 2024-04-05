@@ -28,26 +28,35 @@ cosmology = Cosmology(H0=73.0, Om0=0.3)
 
 # Create a source galaxy represented by light profile
 if WITH_UNSUPPORTED_OPTION and UNSUPPORTED_OPTION_TYPE == "sourcelight":
-    main_source = Galaxy("a source galaxy", 2.0, light_model=LightModel("PixelatedRegularGrid"))
+    main_source = Galaxy(
+        "a source galaxy", 2.0, light_model=LightModel("PixelatedRegularGrid")
+    )
 else:
-    main_source = Galaxy("a source galaxy", 2.0, light_model=LightModel("Sersic", "Shapelets", "LensedPS"))
+    main_source = Galaxy(
+        "a source galaxy",
+        2.0,
+        light_model=LightModel("Sersic", "Shapelets", "LensedPS"),
+    )
 
 # Create a lens galaxy represented by a mass and light profiles
 if WITH_UNSUPPORTED_OPTION and UNSUPPORTED_OPTION_TYPE == "lensmass":
     main_lens = Galaxy(
-        "a lens galaxy", 0.5,
+        "a lens galaxy",
+        0.5,
         light_model=LightModel("Sersic"),
         mass_model=MassModel("PixelatedRegularGridPotential"),
     )
 elif WITH_UNSUPPORTED_OPTION and UNSUPPORTED_OPTION_TYPE == "lenslight":
     main_lens = Galaxy(
-        "a lens galaxy", 0.5,
+        "a lens galaxy",
+        0.5,
         light_model=LightModel("PixelatedRegularGrid"),
         mass_model=MassModel("SIE", "PEMD"),
     )
 else:
     main_lens = Galaxy(
-        "a lens galaxy", 0.5,
+        "a lens galaxy",
+        0.5,
         light_model=LightModel("Sersic"),
         mass_model=MassModel("SIE", "PEMD"),
     )
@@ -61,10 +70,18 @@ ext_shear = MassField(
 
 # Put them in a list, which will also create unique IDs for each profile
 if WITH_UNSUPPORTED_OPTION and UNSUPPORTED_OPTION_TYPE == "multiplane":
-    lens_other_z = Galaxy("a lens galaxy at different redshift", 0.2, 
-                          light_model=LightModel("Sersic"), mass_model=MassModel("SIE"),)
-    source_other_z = Galaxy("a source galaxy at different redshift", 1.3, light_model=LightModel("Sersic"))
-    entity_list = LensingEntityList(ext_shear, main_lens, main_source, lens_other_z, source_other_z)
+    lens_other_z = Galaxy(
+        "a lens galaxy at different redshift",
+        0.2,
+        light_model=LightModel("Sersic"),
+        mass_model=MassModel("SIE"),
+    )
+    source_other_z = Galaxy(
+        "a source galaxy at different redshift", 1.3, light_model=LightModel("Sersic")
+    )
+    entity_list = LensingEntityList(
+        ext_shear, main_lens, main_source, lens_other_z, source_other_z
+    )
 else:
     entity_list = LensingEntityList(ext_shear, main_lens, main_source)
 
@@ -92,7 +109,9 @@ obs_pixels = PixelatedRegularGrid(
     num_pix_y=data_shape[1],
 )
 if WITH_UNSUPPORTED_OPTION and UNSUPPORTED_OPTION_TYPE == "noise":
-    noise = UniformGaussianNoise(std_dev=0.005)  # other types of noise are supported in COOLEST
+    noise = UniformGaussianNoise(
+        std_dev=0.005
+    )  # other types of noise are supported in COOLEST
 else:
     obs_noise_pixels = PixelatedRegularGrid(
         "noise_map.fits",

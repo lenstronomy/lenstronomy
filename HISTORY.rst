@@ -381,3 +381,7 @@ History
 +++++++++++++++++++
 * faster lens equation solver with constant convergence
 * decoupled multi-plane formalism
+
+1.11.9 (2024-04-05)
++++++++++++++++++++
+* COOLEST format with external convergence implemented

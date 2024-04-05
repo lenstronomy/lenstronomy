@@ -457,7 +457,7 @@ class TestCOOLESTinterface(object):
                     "ra_image": np.array([0.25]),
                     "dec_image": np.array([0.2]),
                 }
-            ]
+            ],
         }
         # kwargs_mcmc to update the COOLEST template. In real cases, this list would be much bigger
         # as each element is a result from a given point at a given iteration of a MCMC chain

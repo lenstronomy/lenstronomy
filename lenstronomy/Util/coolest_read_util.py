@@ -840,7 +840,7 @@ def update_kwargs_shapelets(
             b_fixed = b if getattr(light_param, "fixed") else None
         elif light_name == "n_max":
             nmax = getattr(light_param.point_estimate, "value")
-            nmax_fixed = nmax if getattr(light_param, "fixed") else None
+            # nmax_fixed = nmax if getattr(light_param, "fixed") else None
         elif light_name == "center_x":
             cx = (
                 -getattr(light_param.point_estimate, "value")
@@ -859,13 +859,13 @@ def update_kwargs_shapelets(
             amp = shapelet_amp_coolest_to_lenstronomy(
                 getattr(light_param.point_estimate, "value")
             )
-            amp_up = shapelet_amp_coolest_to_lenstronomy(
-                getattr(light_param.definition_range, "max_value")
-            )
-            amp_down = shapelet_amp_coolest_to_lenstronomy(
-                getattr(light_param.definition_range, "min_value")
-            )
-            amp_fixed = amp if getattr(light_param, "fixed") else None
+            # amp_up = shapelet_amp_coolest_to_lenstronomy(
+            #     getattr(light_param.definition_range, "max_value")
+            # )
+            # amp_down = shapelet_amp_coolest_to_lenstronomy(
+            #     getattr(light_param.definition_range, "min_value")
+            # )
+            # amp_fixed = amp if getattr(light_param, "fixed") else None
         else:
             print(f"Parameter {light_name} unknown in Shapelets profile.")
 
@@ -980,9 +980,9 @@ def update_kwargs_lensed_ps(
             dec_fixed = dec if getattr(light_param, "fixed") else None
         elif light_name == "amps":
             amp = getattr(light_param.point_estimate, "value")
-            amp_up = getattr(light_param.definition_range, "max_value")
-            amp_down = getattr(light_param.definition_range, "min_value")
-            amp_fixed = amp if getattr(light_param, "fixed") else None
+            # amp_up = getattr(light_param.definition_range, "max_value")
+            # amp_down = getattr(light_param.definition_range, "min_value")
+            # amp_fixed = amp if getattr(light_param, "fixed") else None
         else:
             print(f"Parameter {light_name} unknown in LensedPS profile.")
 

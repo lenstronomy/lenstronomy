@@ -41,7 +41,7 @@ class TestCOOLESTinterface(object):
         if path[-11:] == "lenstronomy":
             path = os.path.join(path, "test", "test_Util", "test_COOLEST")
         kwargs_out = create_lenstronomy_from_coolest(
-            os.path.join(path, TEMPLATE_NAME), 
+            os.path.join(path, TEMPLATE_NAME),
             check_external_files=True,
         )
         return

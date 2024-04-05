@@ -22,7 +22,9 @@ TEMPLATE_NAME = "coolest_template"
 cosmology = Cosmology(H0=73.0, Om0=0.3)
 
 # Create a source galaxy represented by light profile
-source_1 = Galaxy("a source galaxy", 2.0, light_model=LightModel("Sersic", "Shapelets", "LensedPS"))
+source_1 = Galaxy(
+    "a source galaxy", 2.0, light_model=LightModel("Sersic", "Shapelets", "LensedPS")
+)
 
 # Create a lens galaxy represented by a mass and light profiles
 lens_1 = Galaxy(

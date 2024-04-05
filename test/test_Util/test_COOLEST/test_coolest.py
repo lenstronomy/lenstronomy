@@ -31,8 +31,21 @@ from lenstronomy.Plots.model_plot import ModelPlot
 from lenstronomy.Workflow.fitting_sequence import FittingSequence
 
 
-TEMPLATE_NAME = "coolest_template"  # name of the base COOLEST template
-# INVALID_TEMPLATE_NAME = "invalid_coolest_template"  # name of the COOLEST template that contains errors
+# name of the base COOLEST template
+TEMPLATE_NAME = "coolest_template"
+
+# name of the COOLEST template that contains errors
+INVALID_TEMPLATE_NAME = "invalid_coolest_template"
+
+# names of COOLEST templates that contains unsupported options
+UNSUPP_TEMPLATE_NAME_LIST = [
+    "unsupp_coolest_template_noise",
+    "unsupp_coolest_template_psf",
+    "unsupp_coolest_template_multiplane",
+    "unsupp_coolest_template_lensmass",
+    "unsupp_coolest_template_lenslight",
+    "unsupp_coolest_template_sourcelight",
+]
 
 
 class TestCOOLESTinterface(object):
@@ -40,11 +53,17 @@ class TestCOOLESTinterface(object):
         path = os.getcwd()
         if path[-11:] == "lenstronomy":
             path = os.path.join(path, "test", "test_Util", "test_COOLEST")
+
+        # valid and supported template
         kwargs_out = create_lenstronomy_from_coolest(
             os.path.join(path, TEMPLATE_NAME),
             check_external_files=True,
         )
-        return
+        # invalid template according to lenstronomy interface rules
+        kwargs_out = create_lenstronomy_from_coolest(
+            os.path.join(path, INVALID_TEMPLATE_NAME),
+            check_external_files=False,  # turn off check in order to go through lenstronomy checks instead
+        )
 
     def test_update(self):
         path = os.getcwd()
@@ -130,8 +149,6 @@ class TestCOOLESTinterface(object):
             decimal=4,
         )
         # os.remove(os.path.join(path, TEMPLATE_NAME + "_update.json"))
-
-        return
 
     def test_full(self):
         # use read json ; create an image ; create noise ; do fit (PSO for result + MCMC for chain)
@@ -364,8 +381,6 @@ class TestCOOLESTinterface(object):
             kwargs_mcmc,
             check_external_files=False,
         )
-
-        return
 
     def test_pemd(self):
         path = os.getcwd()
@@ -608,8 +623,6 @@ class TestCOOLESTinterface(object):
             decimal=4,
         )
 
-        return
-
     def test_pemd_via_epl(self):
         path = os.getcwd()
         if path[-11:] == "lenstronomy":
@@ -639,4 +652,16 @@ class TestCOOLESTinterface(object):
         folding_coolest(-95.0)
         folding_coolest(95.0)
 
-        return
+
+class TestRaise(unittest.TestCase):
+    def test_raise(self):
+        path = os.getcwd()
+        if path[-11:] == "lenstronomy":
+            path = os.path.join(path, "test", "test_Util", "test_COOLEST")
+        # Loop over templates that contain unsupported options to raise errors
+        for template_name in UNSUPP_TEMPLATE_NAME_LIST:
+            with self.assertRaises(NotImplementedError):
+                kwargs_out = create_lenstronomy_from_coolest(
+                    os.path.join(path, template_name),
+                    check_external_files=False,  # turn off check in order to go through lenstronomy checks instead
+                )

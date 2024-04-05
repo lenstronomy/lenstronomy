@@ -174,8 +174,6 @@ def update_kwargs_shear(
             psiext_up = getattr(shear_param.definition_range, "max_value")
             psiext_down = getattr(shear_param.definition_range, "min_value")
             psiext_fixed = psiext if getattr(shear_param, "fixed") else None
-        else:
-            print(f"{shear_name} not known")
     gamma1, gamma2 = gamma_phi_coolest_to_g1_g2_lenstronomy(gammaext, psiext)
     gamma1_fixed, gamma2_fixed = gamma_phi_coolest_to_g1_g2_lenstronomy(
         gammaext_fixed, psiext_fixed
@@ -265,8 +263,6 @@ def update_kwargs_convergence(
             kappa_up = getattr(param.definition_range, "max_value")
             kappa_down = getattr(param.definition_range, "min_value")
             kappa_fixed = kappa if getattr(param, "fixed") else None
-        else:
-            print(f"{param_name} not known")
 
     kw_1 = {"kappa": kappa, "ra_0": 0.0, "dec_0": 0.0}
     kw_up_1 = {"kappa": kappa_up, "ra_0": 0.0, "dec_0": 0.0}
@@ -372,8 +368,6 @@ def update_kwargs_pemd(
             center_y_up = getattr(mass_param.definition_range, "max_value")
             center_y_down = getattr(mass_param.definition_range, "min_value")
             center_y_fixed = center_y if getattr(mass_param, "fixed") else None
-        else:
-            print(f"{mass_name} not known")
 
     e1, e2 = qphi_coolest_to_e1e2_lenstronomy(q, phi)
     e1_fixed, e2_fixed = qphi_coolest_to_e1e2_lenstronomy(q_fixed, phi_fixed)
@@ -535,8 +529,6 @@ def update_kwargs_sie(
             center_y_up = getattr(mass_param.definition_range, "max_value")
             center_y_down = getattr(mass_param.definition_range, "min_value")
             center_y_fixed = center_y if getattr(mass_param, "fixed") else None
-        else:
-            print(f"{mass_name} not known")
 
     e1, e2 = qphi_coolest_to_e1e2_lenstronomy(q, phi)
     e1_fixed, e2_fixed = qphi_coolest_to_e1e2_lenstronomy(q_fixed, phi_fixed)
@@ -695,8 +687,6 @@ def update_kwargs_sersic(
             cy_up = getattr(light_param.definition_range, "max_value")
             cy_down = getattr(light_param.definition_range, "min_value")
             cy_fixed = cy if getattr(light_param, "fixed") else None
-        else:
-            print(f"Parameter {light_name} unknown in SersicEllipse profile.")
 
     e1, e2 = qphi_coolest_to_e1e2_lenstronomy(q, phi)
     e1_fixed, e2_fixed = qphi_coolest_to_e1e2_lenstronomy(q_fixed, phi_fixed)
@@ -832,7 +822,6 @@ def update_kwargs_shapelets(
     """
     light_model_list.append("SHAPELETS")
     for light_name, light_param in light.parameters.items():
-        print("light_name, light_param", light_name, light_param)
         if light_name == "beta":
             b = getattr(light_param.point_estimate, "value")
             b_up = getattr(light_param.definition_range, "max_value")
@@ -866,8 +855,6 @@ def update_kwargs_shapelets(
             #     getattr(light_param.definition_range, "min_value")
             # )
             # amp_fixed = amp if getattr(light_param, "fixed") else None
-        else:
-            print(f"Parameter {light_name} unknown in Shapelets profile.")
 
     kw_1 = {"amp": amp, "beta": b, "center_x": cx, "center_y": cy, "n_max": nmax}
     kw_up_1 = {"beta": b_up, "center_x": cx_up, "center_y": cy_up}
@@ -957,11 +944,7 @@ def update_kwargs_lensed_ps(
     :return: updated list and kwargs
     """
     ps_model_list.append("LENSED_POSITION")
-
-    try:
-        num_ps = len(getattr(light.parameters["ra_list"].point_estimate, "value"))
-    except:
-        num_ps = 4
+    num_ps = len(getattr(light.parameters["ra_list"].point_estimate, "value"))
 
     for light_name, light_param in light.parameters.items():
         if light_name == "ra_list":
@@ -983,8 +966,6 @@ def update_kwargs_lensed_ps(
             # amp_up = getattr(light_param.definition_range, "max_value")
             # amp_down = getattr(light_param.definition_range, "min_value")
             # amp_fixed = amp if getattr(light_param, "fixed") else None
-        else:
-            print(f"Parameter {light_name} unknown in LensedPS profile.")
 
     kw_1 = {
         "point_amp": np.array(amp) if amp is not None else None,

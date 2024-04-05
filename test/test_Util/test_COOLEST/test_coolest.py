@@ -21,6 +21,7 @@ from lenstronomy.Util.coolest_update_util import (
 
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
+from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
 import lenstronomy.Util.image_util as image_util
@@ -216,6 +217,16 @@ class TestCOOLESTinterface(object):
         kwargs_lens_light = [kwargs_sersic_lens]
         lens_light_model_class = LightModel(lens_light_model_list)
 
+        # Point source parameters
+        point_source_model_list = kwargs_out["kwargs_model"]["point_source_model_list"]
+        kwargs_ps_0 = {
+            "point_amp": np.array([0.1]),
+            "ra_image": np.array([0.25]),
+            "dec_image": np.array([0.2]),
+        }
+        kwargs_ps = [kwargs_ps_0]
+        point_source_class = PointSource(point_source_model_list)
+
         numPix = 100
         kwargs_out["kwargs_data"]["background_rms"] = background_rms
         kwargs_out["kwargs_data"]["exposure_time"] = exp_time
@@ -248,15 +259,16 @@ class TestCOOLESTinterface(object):
             lens_model_class=lens_model_class,
             source_model_class=source_model_class,
             lens_light_model_class=lens_light_model_class,
+            point_source_class=point_source_class,
             kwargs_numerics=kwargs_numerics,
         )
 
         # generate image
         image_model = imageModel.image(
-            kwargs_lens,
-            kwargs_source,
+            kwargs_lens=kwargs_lens,
+            kwargs_source=kwargs_source,
             kwargs_lens_light=kwargs_lens_light,
-            kwargs_ps=None,
+            kwargs_ps=kwargs_ps,
         )
 
         poisson = image_util.add_poisson(image_model, exp_time=exp_time)
@@ -424,6 +436,13 @@ class TestCOOLESTinterface(object):
                     "e2": 0.01,
                 },
             ],
+            "kwargs_ps": [
+                {
+                    "point_amp": np.array([0.1]),
+                    "ra_image": np.array([0.25]),
+                    "dec_image": np.array([0.2]),
+                }
+            ]
         }
         # kwargs_mcmc to update the COOLEST template. In real cases, this list would be much bigger
         # as each element is a result from a given point at a given iteration of a MCMC chain
@@ -547,6 +566,22 @@ class TestCOOLESTinterface(object):
                         "e1": -0.15,
                         "e2": 0.01,
                     },
+                ],
+            ],
+            "args_ps": [
+                [
+                    {
+                        "point_amp": np.array([0.1]),
+                        "ra_image": np.array([0.25]),
+                        "dec_image": np.array([0.2]),
+                    }
+                ],
+                [
+                    {
+                        "point_amp": np.array([0.1]),
+                        "ra_image": np.array([0.25]),
+                        "dec_image": np.array([0.2]),
+                    }
                 ],
             ],
         }

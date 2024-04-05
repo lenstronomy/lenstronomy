@@ -622,6 +622,63 @@
             }
           },
           "type": "Shapelets"
+        },
+        {
+          "id": "2-galaxy-light-2-LensedPS",
+          "parameters": {
+            "amps": {
+              "fixed": false,
+              "id": "2-galaxy-light-2-LensedPS-amps",
+              "num_values": 0,
+              "point_estimate": {
+                "value": []
+              },
+              "posterior_stats": {
+                "mean": null,
+                "median": null,
+                "percentile_16th": null,
+                "percentile_84th": null
+              },
+              "prior": {
+                "type": null
+              }
+            },
+            "dec_list": {
+              "fixed": false,
+              "id": "2-galaxy-light-2-LensedPS-dec_list",
+              "num_values": 0,
+              "point_estimate": {
+                "value": []
+              },
+              "posterior_stats": {
+                "mean": null,
+                "median": null,
+                "percentile_16th": null,
+                "percentile_84th": null
+              },
+              "prior": {
+                "type": null
+              }
+            },
+            "ra_list": {
+              "fixed": false,
+              "id": "2-galaxy-light-2-LensedPS-ra_list",
+              "num_values": 0,
+              "point_estimate": {
+                "value": []
+              },
+              "posterior_stats": {
+                "mean": null,
+                "median": null,
+                "percentile_16th": null,
+                "percentile_84th": null
+              },
+              "prior": {
+                "type": null
+              }
+            }
+          },
+          "type": "LensedPS"
         }
       ],
       "mass_model": [],

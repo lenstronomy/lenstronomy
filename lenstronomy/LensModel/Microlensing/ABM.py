@@ -3,6 +3,25 @@ import matplotlib.pyplot as plt
 import numpy as np
 import math
 
+def splitting_centers(center, side_length, n_p):
+
+    center_x = center[:, 0]
+    center_y = center[:, 1]
+
+    new_x = np.empty(n_p**2 * len(center_x))
+    new_y = np.empty(n_p**2 * len(center_y))
+
+    k = 0
+    for i in range(n_p):
+        for j in range(n_p):
+            new_x[k::n_p**2] = center_x - side_length / 2 + (j + 0.5) * side_length / n_p
+            new_y[k::n_p**2] = center_y - side_length / 2 + (i + 0.5) * side_length / n_p
+            k += 1
+
+    centers = np.column_stack((new_x, new_y))
+    new_side_length = side_length / n_p
+    return centers, new_side_length
+
 def sub_pixel_creator(center, side_length, n_p):
     
     """Takes square centered at center = (x, y) with side_length = side length 
@@ -31,7 +50,7 @@ def sub_pixel_creator(center, side_length, n_p):
 
 d_l = 4000  # distance of the lens in pc
 d_s = 8000  # distance of the source in pc
-M0 = 0.01 # mass of the lens in units of M_sol
+M0 = 0.5 # mass of the lens in units of M_sol
 diameter_s = 20 # size of the diameter of the source star in units of the solar radius
 
 # compute lensing properties
@@ -82,7 +101,9 @@ reference_magnification = lensed_flux / unlensed_flux
 # define source parameters
 
 L = theta_E * 4 # side length of square area in image plane - same as lenstronomy grid width
-beta_0 = 4 * L # initial search radius - few times bigger than "necessary" to be safe (delta_beta)
+beta_0 = 4* L # initial search radius (delta_beta)
+# DOES NOT MATTER, WE ARE NOT USING DELTA_BETA
+# intital search radius was smaller for array base approach, does not need to be that big, equal to the side length
 beta_s = size_s / 2 # factor of 1/2 because radius
 n_p = 30
 eta = 0.7 * n_p
@@ -110,15 +131,21 @@ def within_distance(center_points, test_point, threshold):
     Check if points in center_points are within a threshold distance of the test_point.
     
     Args:
-        center_points (numpy.ndarray): Array of center points, each row containing (x, y) coordinates.
-        test_point (tuple): Coordinates of the test point (x, y).
-        threshold (float): Threshold distance.
+        center_points (numpy.ndarray): Array of center points, each row containing (x, y) coordinates. Source coordrates of grid
+        test_point (tuple): Coordinates of the test point (x, y). Source position
+        threshold (float): Threshold distance, delta_beta
         
     Returns:
         numpy.ndarray: Boolean array indicating whether each point is within the threshold distance.
     """
-    test_point = np.array(test_point)  # Convert test_point to array for broadcasting
-    distances = np.sqrt(np.sum((center_points - test_point)**2, axis=1))
+
+    test_point = np.array(test_point)
+    center_points = np.array(center_points)
+    center_points_x = center_points[:, 0]
+    center_points_y = center_points[:, 1]
+    test_point_x = test_point[0]
+    test_point_y = test_point[1]
+    distances = np.sqrt((center_points_x - test_point_x)**2 + (center_points_y - test_point_y)**2)
     return distances < threshold
 
 def ABM(source_position, L, beta_0, beta_s, n_p, eta, number_of_iterations, final_eta, kwargs_lens):
@@ -184,7 +211,7 @@ def pixel_division(source_coords, source_position, delta_beta, side_length, cent
     
     return running_list_of_new_centers
 
-#temporary function name  
+#temporary function name, basically its the ABM algorithm with pixel division
 def ABM_with_pd(source_position, L, beta_0, beta_s, n_p, eta, number_of_iterations, final_eta, kwargs_lens):
 
     # Initialize variables
@@ -197,23 +224,21 @@ def ABM_with_pd(source_position, L, beta_0, beta_s, n_p, eta, number_of_iteratio
     # Main loop for adaptive boundary mesh algorithm
     while i < number_of_iterations:
 
+        centers = splitting_centers(centers, side_length, n_p)[0] #image plane centers
+
         # Ray shoot from image to source plane using array-based approach
         source_coords_x, source_coords_y = lens.ray_shooting(centers[:, 0], centers[:, 1], kwargs=kwargs_lens)
 
         # Calculate source_coords array
         source_coords = np.column_stack((source_coords_x, source_coords_y))
+        
+        # ask wheater with distance in source
+        within_radius = within_distance(source_coords, source_position, beta_s)
+        
+        #collect subset of centers in image plane (same as previous)
+        subset_centers = centers[within_radius]
 
-        running_list_of_new_centers = []
-            
-        within_radius = within_distance(source_coords, source_position, delta_beta)
-
-        for center in centers[within_radius]:
-            resultant_centers = sub_pixel_creator(center, side_length, n_p)[0]
-            running_list_of_new_centers.extend(resultant_centers)
-            total_number_of_rays_shot += 1
-
-        # Update centers
-        centers = np.array(running_list_of_new_centers)
+        total_number_of_rays_shot += len(subset_centers)
 
         # Update side length
         side_length /= n_p
@@ -226,25 +251,8 @@ def ABM_with_pd(source_position, L, beta_0, beta_s, n_p, eta, number_of_iteratio
 
         # Increment iteration counter
         i += 1
-
-    # Find final centers within beta_s radius around source position
-
-    final_centers = []
-
-    #Another ray shooting to find final centers
-    # Ray shoot from image to source plane using array-based approach
-    source_coords_x, source_coords_y = lens.ray_shooting(centers[:, 0], centers[:, 1], kwargs=kwargs_lens)
-
-    # Calculate source_coords array
-    source_coords = np.column_stack((source_coords_x, source_coords_y))
-    
-    for center in centers[within_distance(source_coords, source_position, beta_s)]:
-        total_number_of_rays_shot += 1
-        final_centers.append(center)
-
-    final_centers = np.array(final_centers)
  
-    return final_centers, side_length, total_number_of_rays_shot, centers
+    return subset_centers, side_length, total_number_of_rays_shot, centers
 
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
@@ -288,9 +296,10 @@ print("L: ", L, "\n"
 
 # Printing of centers and final centers and corresponding lengths
 # print("centers", high_resolution_pixels[3])
-# print("final centers", high_resolution_pixels[0])
+# print("subset centers", high_resolution_pixels[0])
 print("number of centers", len(high_resolution_pixels[3]))
-print("number of final centers:", len(high_resolution_pixels[0]))
+print("number of subset centers", len(high_resolution_pixels[0]))
+print("number of rays shot:", high_resolution_pixels[2])
 
 # Compute the number of high resolution pixels
 n = len(high_resolution_pixels[0]) 
@@ -298,28 +307,28 @@ n = len(high_resolution_pixels[0])
 # Compute the magnification using ABM results
 computed_magnification = (n * high_resolution_pixels[1] ** 2) / (math.pi * (beta_s ** 2)) 
 
-# # Print computed magnification and computation information
-# print("The ABM magnification is " + str(computed_magnification) + "; the lenstronomy magnification is " + str(reference_magnification))
-# print("ABM required " + str(high_resolution_pixels[2]) + " computations. To attain this accuracy with simple IRS would require " + str(n_p ** 2 ** 2) + " computations.")
+# Print computed magnification and computation information
+print("The ABM magnification is " + str(computed_magnification) + "; the lenstronomy magnification is " + str(reference_magnification))
+print("ABM required " + str(high_resolution_pixels[2]) + " computations. To attain this accuracy with simple IRS would require " + str(n_p ** 2 ** 2) + " computations.")
 
-# # Plot the high resolution pixels on a scatter plot
-# plt.figure()
-# plt.scatter(high_resolution_pixels[0][:, 0], high_resolution_pixels[0][:, 1], s=1)
-# ax = plt.gca()
-# ax.set_aspect('equal', adjustable='box')
-# plt.title("Source positions for M0 = 0.01")
-# plt.ylim(-2 * theta_E, 2 * theta_E)
-# plt.xlim(-2 * theta_E, 2 * theta_E)
-# plt.xlabel("Projected x-position (arcseconds)")
-# plt.ylabel("Projected y-position (arcseconds)")
-# ax.invert_yaxis()
+# Plot the high resolution pixels on a scatter plot
+plt.figure()
+plt.scatter(high_resolution_pixels[0][:, 0], high_resolution_pixels[0][:, 1], s=1)
+ax = plt.gca()
+ax.set_aspect('equal', adjustable='box')
+plt.title("Source positions for M0 = 0.01")
+plt.ylim(-2 * theta_E, 2 * theta_E)
+plt.xlim(-2 * theta_E, 2 * theta_E)
+plt.xlabel("Projected x-position (arcseconds)")
+plt.ylabel("Projected y-position (arcseconds)")
+ax.invert_yaxis()
 
-# # Display lensed image
-# plt.figure()
-# plt.imshow(image)
-# plt.title("Image positions for M0 = 0.01")
-# plt.colorbar()  # Add colorbar to show intensity scale
-# plt.show()
+# Display lensed image
+plt.figure()
+plt.imshow(image)
+plt.title("Image positions for M0 = 0.01")
+plt.colorbar()  # Add colorbar to show intensity scale
+plt.show()
 
 # Light Curve
 
@@ -343,4 +352,4 @@ for source_position in source_path:
     magnification = ABM_with_pd(source_position, L, beta_0, beta_s, n_p, eta, number_of_iterations, final_eta, kwargs_lens)[1]
     magnifications.append(magnification)
 
-print(magnifications)
+# print(magnifications)

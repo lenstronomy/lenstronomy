@@ -64,11 +64,14 @@ class ImageModel(object):
         if self.PointSource._lens_model is None:
             self.PointSource.update_lens_model(lens_model_class=lens_model_class)
         x_center, y_center = self.Data.center
+        search_window = np.max(self.Data.width)
+        # either have the pixel resolution of the window resolved in 200x200 grid
+        min_distance = min(self.Data.pixel_width, search_window / 200)
         self.PointSource.update_search_window(
-            search_window=np.max(self.Data.width),
+            search_window=search_window,
             x_center=x_center,
             y_center=y_center,
-            min_distance=self.Data.pixel_width,
+            min_distance=min_distance,
             only_from_unspecified=True,
         )
         self._psf_error_map = self.PSF.psf_error_map_bool

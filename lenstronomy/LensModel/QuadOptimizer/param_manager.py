@@ -182,7 +182,6 @@ class PowerLawFixedShear(PowerLawParamManager):
         :param shear_strength: the strenght of the external shear to be kept fixed
         """
         self._shear_strength = shear_strength
-
         super(PowerLawFixedShear, self).__init__(kwargs_lens_init)
 
     def args_to_kwargs(self, args):
@@ -194,7 +193,6 @@ class PowerLawFixedShear(PowerLawParamManager):
 
         (thetaE, center_x, center_y, e1, e2, g1, g2) = args
         gamma = self.kwargs_lens[0]["gamma"]
-
         kwargs_epl = {
             "theta_E": thetaE,
             "center_x": center_x,
@@ -203,14 +201,11 @@ class PowerLawFixedShear(PowerLawParamManager):
             "e2": e2,
             "gamma": gamma,
         }
-
         phi, _ = shear_cartesian2polar(g1, g2)
         gamma1, gamma2 = shear_polar2cartesian(phi, self._shear_strength)
         kwargs_shear = {"gamma1": gamma1, "gamma2": gamma2}
-
         self.kwargs_lens[0] = kwargs_epl
         self.kwargs_lens[1] = kwargs_shear
-
         return self.kwargs_lens
 
 

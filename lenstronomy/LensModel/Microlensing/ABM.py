@@ -5,6 +5,18 @@ import math
 
 def splitting_centers(center, side_length, n_p):
 
+    """Takes square centered at center = (x, y) with side_length = side length 
+       (float) and divides it into n_p (integer) squares along each axis - so 
+       returns n_p * n_p subsquares from the original square. In particular, 
+       the function returns the coordinates of the centers of these subsquares,
+       along with the final side length of the subsquare.
+       
+       :param center: nparray; center of square
+       :param side_length: float; side length of square
+       :param n_p: int; number of squares along each axis
+       :return: nparray; coordinates of centers of subsquares
+       """
+       
     center_x = center[:, 0]
     center_y = center[:, 1]
 
@@ -22,35 +34,11 @@ def splitting_centers(center, side_length, n_p):
     new_side_length = side_length / n_p
     return centers, new_side_length
 
-def sub_pixel_creator(center, side_length, n_p):
-    
-    """Takes square centered at center = (x, y) with side_length = side length 
-       (float) and divides it into n_p (integer) squares along each axis - so 
-       returns n_p * n_p subsquares from the original square. In particular, 
-       the function returns the coordinates of the centers of these subsquares,
-       along with the final side length of the subsquare."""
-     
-    step_size = side_length / n_p
-    leftmost_x = center[0] - side_length / 2
-    lowest_y = center[1] - side_length / 2
-
-    center_xs, center_ys = [], []
-    center_x, center_y = leftmost_x + step_size / 2, lowest_y + step_size / 2
-    for i in range(n_p):
-        center_xs.append(center_x)
-        center_ys.append(center_y)
-        center_x += step_size
-        center_y += step_size
-    
-    centers = list(itertools.product(center_xs, center_ys))
-    new_side_length = step_size 
-    return centers, new_side_length
-
 # define the microlens
 
 d_l = 4000  # distance of the lens in pc
 d_s = 8000  # distance of the source in pc
-M0 = 0.5 # mass of the lens in units of M_sol
+M0 = 0.01 # mass of the lens in units of M_sol (limited to 0.1 M_sol)
 diameter_s = 20 # size of the diameter of the source star in units of the solar radius
 
 # compute lensing properties
@@ -91,19 +79,11 @@ surface_brightness = ligth.surface_brightness(beta_x, beta_y, kwargs_light)
 lensed_flux = np.sum(surface_brightness)
 
 reference_magnification = lensed_flux / unlensed_flux
-# print(reference_magnification)
-
-# image = util.array2image(surface_brightness)
-#plt.imshow(image)
-# plt.colorbar()
-# plt.show()
 
 # define source parameters
 
 L = theta_E * 4 # side length of square area in image plane - same as lenstronomy grid width
-beta_0 = 4* L # initial search radius (delta_beta)
-# DOES NOT MATTER, WE ARE NOT USING DELTA_BETA
-# intital search radius was smaller for array base approach, does not need to be that big, equal to the side length
+beta_0 = 4 * L # initial search radius (delta_beta) - few times bigger than "necessary" to be safe (delta_beta)
 beta_s = size_s / 2 # factor of 1/2 because radius
 n_p = 30
 eta = 0.7 * n_p
@@ -121,7 +101,7 @@ def loop_information(eta, beta_0, beta_s):
 
     return number_of_iterations, final_eta
 
-#creates an loop_info array to store number of iterations and final scale factor
+# creates an loop_info array to store number of iterations and final scale factor
 loop_info = loop_information(eta, beta_0, beta_s)
 number_of_iterations = loop_info[0]
 final_eta = loop_info[1]
@@ -130,13 +110,10 @@ def within_distance(center_points, test_point, threshold):
     """
     Check if points in center_points are within a threshold distance of the test_point.
     
-    Args:
-        center_points (numpy.ndarray): Array of center points, each row containing (x, y) coordinates. Source coordrates of grid
-        test_point (tuple): Coordinates of the test point (x, y). Source position
-        threshold (float): Threshold distance, delta_beta
-        
-    Returns:
-        numpy.ndarray: Boolean array indicating whether each point is within the threshold distance.
+    :param center_points: nparray; Array of center points, each row containing (x, y) coordinates. Source coordrates of grid
+    :param test_point: nparray; Coordinates of the test point (x, y). Source position
+    :param threshold: float; Distance threshold.
+    :return: nparray; Boolean array indicating whether each point is within the threshold distance.
     """
 
     test_point = np.array(test_point)
@@ -148,71 +125,29 @@ def within_distance(center_points, test_point, threshold):
     distances = np.sqrt((center_points_x - test_point_x)**2 + (center_points_y - test_point_y)**2)
     return distances < threshold
 
+#temporary function name, basically its the ABM algorithm with pixel division
 def ABM(source_position, L, beta_0, beta_s, n_p, eta, number_of_iterations, final_eta, kwargs_lens):
+
     """
     Returns list of those high resolution image-plane pixels that were 
     mapped to within the radius β_s around the source position (β1, β2) 
-    in the source plane.
+    in the source plane. This is done by first loading all image-plane pixels, 
+    ray shooting from the image plane to the source plane, and then
+    checking if they are within the radius β_s.
+
+    :param source_position: tuple; Coordinates of the source position (x, y). Source position
+    :param L: float; Side length of square area in image plane. Same as lenstronomy grid width
+    :param beta_0: float; Initial search radius (delta_beta)
+    :param beta_s: float; Factor of 1/2 because radius
+    :param n_p: int; Number of pixels
+    :param eta: float; 0.7 * n_p
+    :param number_of_iterations: int; Number of iterations
+    :param final_eta: float; Final scale factor
+    :param kwargs_lens: dict; Keyword arguments for lens model
+    return: subset_centers: nparray; List of high resolution image-plane pixels that were mapped to within the radius β_s around the source position (β1, β2) in the source plane
+    return: side_length: nparray; updated side length of square area in image plane
+    return: int; total_number_of_rays_shot: total number of rays shot
     """
-    
-    # Initialize variables
-    total_number_of_rays_shot = 0  # Counter for total number of rays shot
-    i = 1  # Iteration counter
-    centers = np.array([[0, 0]])  # Initial center coordinates
-
-    # Main loop for adaptive boundary mesh algorithm
-    while i < number_of_iterations:
-
-        # Ray shoot from image to source plane using array-based approach
-        source_coords_x, source_coords_y = lens.ray_shooting(centers[:, 0], centers[:, 1], kwargs=kwargs_lens)
-
-        # Calculate source_coords array
-        source_coords = np.column_stack((source_coords_x, source_coords_y))
-
-        i += 1
-
-    return source_coords, centers
-
-# def pixel_division(source_coords, source_position, delta_beta, side_length, centers):
-#     """
-#     Takes centers, which is an array of coordinates (x, y), and checks which of 
-#     these coordinates are within delta_beta of the source position. If a center 
-#     is within delta_beta, it creates a new set of subpixels (using sub_pixel_creator)
-#     and extends running_list_of_new_centers with these new subpixel centers. 
-#     Returns the updated list of centers.
-#     """
-
-#     running_list_of_new_centers = []
-
-#     for center in centers:
-#         if within_distance(source_coords, source_position, delta_beta).any():
-#             resultant_centers = sub_pixel_creator(center, side_length, n_p)[0]
-#             running_list_of_new_centers.extend(resultant_centers)
-
-#     return running_list_of_new_centers
-
-# Using Boolean approach
-def pixel_division(source_coords, source_position, delta_beta, side_length, centers):
-
-    """
-    Takes centers, which is an array of coordinates (x, y), and checks which of 
-    these coordinates are within delta_beta of the source position. If a center 
-    is within delta_beta, it creates a new set of subpixels (using sub_pixel_creator)
-    and extends running_list_of_new_centers with these new subpixel centers. 
-    Returns the updated list of centers.
-    """
-
-    within_radius = within_distance(source_coords, source_position, delta_beta)
-    running_list_of_new_centers = []
-
-    running_list_of_new_centers = [sub_pixel_creator(center, side_length, n_p)[0]
-                                  for center in centers[within_radius]]
-    running_list_of_new_centers = [item for sublist in running_list_of_new_centers for item in sublist]
-    
-    return running_list_of_new_centers
-
-#temporary function name, basically its the ABM algorithm with pixel division
-def ABM_with_pd(source_position, L, beta_0, beta_s, n_p, eta, number_of_iterations, final_eta, kwargs_lens):
 
     # Initialize variables
     total_number_of_rays_shot = 0  # Counter for total number of rays shot
@@ -224,7 +159,8 @@ def ABM_with_pd(source_position, L, beta_0, beta_s, n_p, eta, number_of_iteratio
     # Main loop for adaptive boundary mesh algorithm
     while i < number_of_iterations:
 
-        centers = splitting_centers(centers, side_length, n_p)[0] #image plane centers
+        # Split image plane centers
+        centers = splitting_centers(centers, side_length, n_p)[0]
 
         # Ray shoot from image to source plane using array-based approach
         source_coords_x, source_coords_y = lens.ray_shooting(centers[:, 0], centers[:, 1], kwargs=kwargs_lens)
@@ -232,10 +168,10 @@ def ABM_with_pd(source_position, L, beta_0, beta_s, n_p, eta, number_of_iteratio
         # Calculate source_coords array
         source_coords = np.column_stack((source_coords_x, source_coords_y))
         
-        # ask wheater with distance in source
+        # Define within_radius
         within_radius = within_distance(source_coords, source_position, beta_s)
         
-        #collect subset of centers in image plane (same as previous)
+        # Collect subset of centers in image plane
         subset_centers = centers[within_radius]
 
         total_number_of_rays_shot += len(subset_centers)
@@ -252,7 +188,7 @@ def ABM_with_pd(source_position, L, beta_0, beta_s, n_p, eta, number_of_iteratio
         # Increment iteration counter
         i += 1
  
-    return subset_centers, side_length, total_number_of_rays_shot, centers
+    return subset_centers, side_length, total_number_of_rays_shot
 
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
@@ -266,7 +202,6 @@ kwargs_light = [{'amp': 1, 'radius': size_s/2, 'e1': 0, 'e2': 0, 'center_x': 0, 
 surface_brightness = ligth.surface_brightness(beta_x, beta_y, kwargs_light)
 unlensed_flux = np.sum(surface_brightness)
 
-
 # compute surface brightness
 lens = LensModel(lens_model_list=['POINT_MASS'])
 kwargs_lens = [{'theta_E': theta_E, 'center_x': theta_E / 4, 'center_y': theta_E / 6}]
@@ -277,12 +212,11 @@ surface_brightness = ligth.surface_brightness(beta_x, beta_y, kwargs_light)
 lensed_flux = np.sum(surface_brightness)
 
 reference_magnification = lensed_flux / unlensed_flux
-# print(reference_magnification)
 
 image = util.array2image(surface_brightness)
 
 # Call the ABM function to compute high resolution pixels
-high_resolution_pixels = ABM_with_pd(source_position, L, beta_0, beta_s, n_p, eta, number_of_iterations, final_eta,[{'theta_E': theta_E, 'center_x': theta_E / 4, 'center_y': theta_E / 6}]) #last parameters are kwargs_lens parameters 
+high_resolution_pixels = ABM(source_position, L, beta_0, beta_s, n_p, eta, number_of_iterations, final_eta,[{'theta_E': theta_E, 'center_x': theta_E / 4, 'center_y': theta_E / 6}]) #last parameters are kwargs_lens parameters 
 
 print("L: ", L, "\n"
       "beta_0: ", beta_0, "\n"
@@ -297,7 +231,6 @@ print("L: ", L, "\n"
 # Printing of centers and final centers and corresponding lengths
 # print("centers", high_resolution_pixels[3])
 # print("subset centers", high_resolution_pixels[0])
-print("number of centers", len(high_resolution_pixels[3]))
 print("number of subset centers", len(high_resolution_pixels[0]))
 print("number of rays shot:", high_resolution_pixels[2])
 
@@ -329,27 +262,3 @@ plt.imshow(image)
 plt.title("Image positions for M0 = 0.01")
 plt.colorbar()  # Add colorbar to show intensity scale
 plt.show()
-
-# Light Curve
-
-def trajectory(length, steps, theta_E):
-    # operates in units of multiples of theta_E
-    points = []
-    step_size = length / steps
-    x_t = 0 - length / 2
-    i = 0
-    while i <= steps:
-        point = (x_t, 0) # replace 0 with desired f(x_t), e.g. x_t + theta_E / 2 
-        points.append(point)
-        x_t += step_size
-        i += 1
-    return [(point[0] * theta_E, point[1] * theta_E) for point in points]
-        
-source_path = trajectory(0.5, 10, theta_E)
-
-magnifications = []
-for source_position in source_path:
-    magnification = ABM_with_pd(source_position, L, beta_0, beta_s, n_p, eta, number_of_iterations, final_eta, kwargs_lens)[1]
-    magnifications.append(magnification)
-
-# print(magnifications)

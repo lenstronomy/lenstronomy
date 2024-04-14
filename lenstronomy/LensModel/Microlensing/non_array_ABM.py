@@ -29,46 +29,6 @@ def sub_pixel_creator(center, side_length, n_p):
     new_side_length = step_size 
     return centers, new_side_length
 
-# result = sub_pixel_creator((0,0), 16, 2)
-# centers = result[0]
-# new_side_length = result[1]
-# plt.scatter(*zip(*centers))
-
-# # commands to draw the squares themselves
-# plt.axhline(y = 0)
-# plt.axvline(x = 0)
-    
-# ax = plt.gca()
-# plt.xlim(-8, 8)
-# plt.ylim(-8, 8)
-# ax.set_aspect('equal', adjustable='box')
-
-# second_iteration_centers = []
-# for center in centers:
-#     result = sub_pixel_creator(center, new_side_length, 2)
-#     new_centers = result[0]
-#     second_iteration_centers.extend(new_centers) # note use "extend" instead of "append"
-    
-# # recreating the above plot and plotting the new centers
-
-# plt.scatter(*zip(*centers))
-# plt.scatter(*zip(*second_iteration_centers))
-
-# # commands to draw the squares themselves
-
-# plt.axhline(y = 0)
-# plt.axvline(x = 0)
-
-# plt.axvline(x = -4, color = "orange")
-# plt.axvline(x = 4, color = "orange")
-# plt.axhline(y = -4, color = "orange")
-# plt.axhline(y = 4, color = "orange")
-    
-# ax = plt.gca()
-# plt.xlim(-8, 8)
-# plt.ylim(-8, 8)
-# ax.set_aspect('equal', adjustable='box')
-
 # define the microlens
 
 d_l = 4000  # distance of the lens in pc
@@ -156,10 +116,24 @@ def within_distance(center_point, test_point, threshold):
 
 # Defines the adaptive boundary mesh function
 def ABM_non_array(source_position, L, beta_0, beta_s, n_p, eta, number_of_iterations, final_eta, kwargs_lens):
+
     """
     Returns list of those high resolution image-plane pixels that were 
     mapped to within the radius β_s around the source position (β1, β2) 
     in the source plane.
+
+    :param source_position: tuple; Coordinates of the source position (x, y). Source position
+    :param L: float; Side length of square area in image plane. Same as lenstronomy grid width
+    :param beta_0: float; Initial search radius (delta_beta)
+    :param beta_s: float; Factor of 1/2 because radius
+    :param n_p: int; Number of pixels
+    :param eta: float; 0.7 * n_p
+    :param number_of_iterations: int; Number of iterations
+    :param final_eta: float; Final scale factor
+    :param kwargs_lens: dict; Keyword arguments for lens model
+    return: subset_centers: nparray; List of high resolution image-plane pixels that were mapped to within the radius β_s around the source position (β1, β2) in the source plane
+    return: side_length: nparray; updated side length of square area in image plane
+    return: int; total_number_of_rays_shot: total number of rays shot
     """
     
     # Initialize variables

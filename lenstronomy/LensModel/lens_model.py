@@ -1,6 +1,7 @@
 __author__ = "sibirrer"
 from lenstronomy.LensModel.single_plane import SinglePlane
 from lenstronomy.LensModel.LineOfSight.single_plane_los import SinglePlaneLOS
+from lenstronomy.LensModel.LineOfSightFlexion.single_plane_los_flexion import SinglePlaneLOSFlexion
 from lenstronomy.LensModel.MultiPlane.multi_plane import MultiPlane
 from lenstronomy.LensModel.MultiPlane.decoupled_multi_plane import MultiPlaneDecoupled
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
@@ -92,6 +93,28 @@ class LensModel(object):
             raise ValueError(
                 "You can only have one model for line-of-sight corrections."
             )
+            
+        # Are there line-of-sight corrections up to flexion?
+        permitted_losf_models = ["LOSF", "LOSF_MINIMAL"]
+        losf_models = [
+            (i, model) 
+            for (i, model) in enumerate(lens_model_list)
+            if model in permitted_losf_models
+        ]
+        if len(losf_models) == 0:
+            losf_effects = False
+        elif len(losf_models) == 1:
+            if los_effects is True :
+                raise ValueError(
+                    "You cannot use LOS and LOS flexion at the same time as the former is included into the later."
+                )
+            else:
+                losf_effects = True
+                index_losf, losf_model = losf_models[0]
+        else:
+            raise ValueError(
+                "You can only have one model for line-of-sight flexion corrections."
+            )
 
         # Multi-plane or single-plane lensing?
         self.multi_plane = multi_plane
@@ -107,6 +130,10 @@ class LensModel(object):
             if los_effects is True:
                 raise ValueError(
                     "LOS effects and multi-plane lensing are incompatible."
+                )
+            if losf_effects is True:
+                raise ValueError(
+                    "LOS flexion effects and multi-plane lensing are incompatible."
                 )
 
             if decouple_multi_plane:
@@ -153,6 +180,16 @@ class LensModel(object):
                     kwargs_interp=kwargs_interp,
                     kwargs_synthesis=kwargs_synthesis,
                 )
+            elif losf_effects is True:
+                self.lens_model = SinglePlaneLOSFlexion(
+                    lens_model_list,
+                    index_losf=index_losf,
+                    numerical_alpha_class=numerical_alpha_class,
+                    lens_redshift_list=lens_redshift_list,
+                    z_source_convention=z_source_convention,
+                    kwargs_interp=kwargs_interp,
+                    kwargs_synthesis=kwargs_synthesis,
+                )  
             else:
                 self.lens_model = SinglePlane(
                     lens_model_list,

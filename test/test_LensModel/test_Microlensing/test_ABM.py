@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 from Microlensing.adaptive_boundary_mesh import loop_information
 from Microlensing.adaptive_boundary_mesh import within_distance
-from Microlensing.adaptive_boundary_mesh import ABM
+from Microlensing.adaptive_boundary_mesh import adaptive_boundary_mesh
 
 class TestABM:
 
@@ -51,7 +51,7 @@ class TestABM:
         final_eta = 1.25
         kwargs_lens = [{'theta_E': 10, 'center_x': 2, 'center_y': 3}]
 
-        subset_centers, side_length, total_number_of_rays_shot = ABM(source_position, L, beta_0, beta_s, n_p, eta, number_of_iterations, final_eta, kwargs_lens)
+        subset_centers, side_length, total_number_of_rays_shot = adaptive_boundary_mesh(source_position, L, beta_0, beta_s, n_p, eta, number_of_iterations, final_eta, kwargs_lens)
 
         expected_number_of_subset_centers = 26071637
         expected_side_length = 0.0011

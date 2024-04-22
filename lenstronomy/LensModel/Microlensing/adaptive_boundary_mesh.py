@@ -1,26 +1,7 @@
 import numpy as np
 import math
 from lenstronomy.LensModel.lens_model import LensModel
-
-d_l = 4000  # distance of the lens in pc
-d_s = 8000  # distance of the source in pc
-M0 = 0.01 # mass of the lens in units of M_sol (limited to 0.1 M_sol)
-diameter_s = 20 # size of the diameter of the source star in units of the solar radius
-
-# compute lensing properties
-
 from lenstronomy.Cosmo.micro_lensing import einstein_radius, source_size
-theta_E = einstein_radius(M0, d_l, d_s)
-size_s = source_size(diameter_s, d_s)
-
-# define source parameters
-
-L = theta_E * 4 # side length of square area in image plane - same as lenstronomy grid width
-beta_0 = 4 * L # initial search radius (delta_beta) - few times bigger than "necessary" to be safe (delta_beta)
-beta_s = size_s / 2 # factor of 1/2 because radius
-n_p = 30
-eta = 0.7 * n_p
-source_position = (0, 0)
 
 def splitting_centers(center, side_length, n_p):
 
@@ -102,8 +83,9 @@ def within_distance(center_points, test_point, threshold):
     distances = np.sqrt((center_points_x - test_point_x)**2 + (center_points_y - test_point_y)**2)
     return distances < threshold
 
+
 #temporary function name, basically its the ABM algorithm with pixel division
-def ABM(source_position, L, beta_0, beta_s, n_p, eta, number_of_iterations, final_eta, kwargs_lens):
+def adaptive_boundary_mesh(source_position, L, beta_0, beta_s, n_p, eta, number_of_iterations, final_eta, kwargs_lens):
 
     """
     Iterative adaptive process based on Meena et al. (2022): https://arxiv.org/abs/2203.08131
@@ -141,6 +123,21 @@ def ABM(source_position, L, beta_0, beta_s, n_p, eta, number_of_iterations, fina
     return: total_number_of_rays_shot: total number of rays shot
     :rtype: total_number_of_rays_shot: int
     """
+
+    # default values
+    # d_l = 4000  # distance of the lens in pc
+    # d_s = 8000  # distance of the source in pc
+    # M0 = 0.01 # mass of the lens in units of M_sol (limited to 0.1 M_sol)
+    # diameter_s = 20 # size of the diameter of the source star in units of the solar radius
+    # theta_E = einstein_radius(M0, d_l, d_s)
+    # size_s = source_size(diameter_s, d_s)
+    # L = theta_E * 4 # side length of square area in image plane
+    # beta_0 = 4 * L # initial search radius (delta_beta) - few times bigger than "necessary" to be safe (delta_beta)
+    # beta_s = size_s / 2 # factor of 1/2 because radius
+    # n_p = 30
+    # eta = 0.7 * n_p
+    # kwargs_lens = [{'theta_E': theta_E, 'center_x': theta_E / 4, 'center_y': theta_E / 6}]
+    # source_position = (0, 0)
 
     # Initialize variables
     total_number_of_rays_shot = 0  # Counter for total number of rays shot

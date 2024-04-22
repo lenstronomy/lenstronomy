@@ -3,24 +3,25 @@ import math
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.Cosmo.micro_lensing import einstein_radius, source_size
 
-def splitting_centers(center, side_length, n_p):
 
-    """Takes square centered at center = (x, y) with side_length = side length 
-       (float) and divides it into n_p (integer) squares along each axis - so 
-       returns n_p * n_p subsquares from the original square. In particular, 
-       the function returns the coordinates of the centers of these subsquares,
-       along with the final side length of the subsquare.
-       
-       :param center: center of square
-       :type center: nparray
-       :param side_length: side length of square
-       :type side_length: float
-       :param n_p: number of squares along each axis
-       :type n_p: int
-       :return: coordinates of centers of subsquares
-       :rtype: nparray
-       """
-       
+def splitting_centers(center, side_length, n_p):
+    """Takes square centered at center = (x, y) with side_length = side length.
+
+    (float) and divides it into n_p (integer) squares along each axis - so
+    returns n_p * n_p subsquares from the original square. In particular,
+    the function returns the coordinates of the centers of these subsquares,
+    along with the final side length of the subsquare.
+
+    :param center: center of square
+    :type center: nparray
+    :param side_length: side length of square
+    :type side_length: float
+    :param n_p: number of squares along each axis
+    :type n_p: int
+    :return: coordinates of centers of subsquares
+    :rtype: nparray
+    """
+
     center_x = center[:, 0]
     center_y = center[:, 1]
 
@@ -30,18 +31,21 @@ def splitting_centers(center, side_length, n_p):
     k = 0
     for i in range(n_p):
         for j in range(n_p):
-            new_x[k::n_p**2] = center_x - side_length / 2 + (j + 0.5) * side_length / n_p
-            new_y[k::n_p**2] = center_y - side_length / 2 + (i + 0.5) * side_length / n_p
+            new_x[k :: n_p**2] = (
+                center_x - side_length / 2 + (j + 0.5) * side_length / n_p
+            )
+            new_y[k :: n_p**2] = (
+                center_y - side_length / 2 + (i + 0.5) * side_length / n_p
+            )
             k += 1
 
     centers = np.column_stack((new_x, new_y))
     new_side_length = side_length / n_p
     return centers, new_side_length
 
+
 def loop_information(eta, beta_0, beta_s):
-    
-    """
-    # Defines loop_information to defines number of iterations and final scale factor  
+    """# Defines loop_information to defines number of iterations and final scale factor
 
     :param eta: 0.7 * n_p
     :type eta: float
@@ -53,26 +57,28 @@ def loop_information(eta, beta_0, beta_s):
     :rtype: number_of_iterations: int
     :return: final_eta: Final scale factor
     :rtype: final_eta: float
-
     """
     N = 1 + math.log((beta_0 / beta_s), eta)
     number_of_iterations = math.ceil(N)
     N_star = N - math.floor(N)
-    final_eta = eta ** N_star 
+    final_eta = eta**N_star
 
     return number_of_iterations, final_eta
 
+
 def within_distance(center_points, test_point, threshold):
-    """
-    Check if points in center_points are within a threshold distance of the test_point.
-    
-    :param center_points: Array of center points, each row containing (x, y) coordinates. Source coordrates of grid
+    """Check if points in center_points are within a threshold distance of the
+    test_point.
+
+    :param center_points: Array of center points, each row containing (x, y)
+        coordinates. Source coordrates of grid
     :type center_points: nparray
     :param test_point: Coordinates of the test point (x, y). Source position
     :type test_point: nparray
     :param threshold: Distance threshold.
     :type threshold: float
-    :return: Boolean array indicating whether each point is within the threshold distance.
+    :return: Boolean array indicating whether each point is within the threshold
+        distance.
     :rtype: nparray
     """
 
@@ -80,15 +86,27 @@ def within_distance(center_points, test_point, threshold):
     center_points_y = center_points[:, 1]
     test_point_x = test_point[0]
     test_point_y = test_point[1]
-    distances = np.sqrt((center_points_x - test_point_x)**2 + (center_points_y - test_point_y)**2)
+    distances = np.sqrt(
+        (center_points_x - test_point_x) ** 2 + (center_points_y - test_point_y) ** 2
+    )
     return distances < threshold
 
 
-#temporary function name, basically its the ABM algorithm with pixel division
-def adaptive_boundary_mesh(source_position, L, beta_0, beta_s, n_p, eta, number_of_iterations, final_eta, kwargs_lens):
+# temporary function name, basically its the ABM algorithm with pixel division
+def adaptive_boundary_mesh(
+    source_position,
+    L,
+    beta_0,
+    beta_s,
+    n_p,
+    eta,
+    number_of_iterations,
+    final_eta,
+    kwargs_lens,
+):
+    """Iterative adaptive process based on Meena et al.
 
-    """
-    Iterative adaptive process based on Meena et al. (2022): https://arxiv.org/abs/2203.08131
+    (2022): https://arxiv.org/abs/2203.08131
     """
 
     """
@@ -143,9 +161,9 @@ def adaptive_boundary_mesh(source_position, L, beta_0, beta_s, n_p, eta, number_
     total_number_of_rays_shot = 0  # Counter for total number of rays shot
     i = 1  # Iteration counter
     centers = np.array([[0, 0]])  # Initial center coordinates
-    side_length = L # Initial side length of square region (for source image)
-    delta_beta = beta_0 # Initial step size for source plane radius
-    lens = LensModel(lens_model_list=['POINT_MASS'])
+    side_length = L  # Initial side length of square region (for source image)
+    delta_beta = beta_0  # Initial step size for source plane radius
+    lens = LensModel(lens_model_list=["POINT_MASS"])
 
     # Main loop for adaptive boundary mesh algorithm
     while i < number_of_iterations:
@@ -154,14 +172,16 @@ def adaptive_boundary_mesh(source_position, L, beta_0, beta_s, n_p, eta, number_
         centers = splitting_centers(centers, side_length, n_p)[0]
 
         # Ray shoot from image to source plane using array-based approach
-        source_coords_x, source_coords_y = lens.ray_shooting(centers[:, 0], centers[:, 1], kwargs=kwargs_lens)
+        source_coords_x, source_coords_y = lens.ray_shooting(
+            centers[:, 0], centers[:, 1], kwargs=kwargs_lens
+        )
 
         # Calculate source_coords array
         source_coords = np.column_stack((source_coords_x, source_coords_y))
-        
+
         # Define within_radius
         within_radius = within_distance(source_coords, source_position, beta_s)
-        
+
         # Collect subset of centers in image plane
         subset_centers = centers[within_radius]
 
@@ -178,5 +198,5 @@ def adaptive_boundary_mesh(source_position, L, beta_0, beta_s, n_p, eta, number_
 
         # Increment iteration counter
         i += 1
- 
+
     return subset_centers, side_length, total_number_of_rays_shot

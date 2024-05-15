@@ -212,7 +212,8 @@ class Param(object):
         :param num_point_source_list: list of number of point sources per point source model class
         :param image_plane_source_list: optional, list of booleans for the source_light components.
          If a component is set =True it will parameterized the positions in the image plane and ray-trace the
-         parameters back to the source position on the fly during the fitting.
+         parameters back to the source position on the fly during the fitting. If joint coordinates with other
+         source profiles, only one should be indicated as bool.
         :param solver_type: string, option for specific solver type
          see detailed instruction of the Solver4Point and Solver2Point classes
         :param Ddt_sampling: bool, if True, samples the time-delay distance D_dt (in units of Mpc)
@@ -369,7 +370,6 @@ class Param(object):
         if num_point_source_list is None:
             num_point_source_list = [1] * len(self._point_source_model_list)
 
-        # Attention: if joint coordinates with other source profiles, only indicate one as bool
         if image_plane_source_list is None:
             image_plane_source_list = [False] * len(self._source_light_model_list)
         self._image_plane_source_list = image_plane_source_list
@@ -499,7 +499,7 @@ class Param(object):
 
         for lens_source_joint in self._joint_lens_with_source_light:
             i_source = lens_source_joint[0]
-            if i_source in self._image_plane_source_list:
+            if self._image_plane_source_list[i_source]:
                 raise ValueError(
                     "linking a source light model with a lens model AND simultaneously parameterizing the"
                     " source position in the image plane is not valid!"

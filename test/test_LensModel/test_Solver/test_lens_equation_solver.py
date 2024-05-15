@@ -371,10 +371,11 @@ class TestLensEquationSolver(object):
         sourcePos_x = 0.03
         sourcePos_y = 0.0
 
-        lensModel = LensModel(["SIE"])
+        lensModel = LensModel(["SIE", "CONVERGENCE"])
         lensEquationSolver = LensEquationSolver(lensModel)
         kwargs_lens = [
             {"theta_E": 1.0, "center_x": 0.0, "center_y": 0.0, "e1": 0.5, "e2": 0.05},
+            {"kappa": 0.2, "ra_0": 0, "dec_0": 0},
         ]
 
         x_pos, y_pos = lensEquationSolver.image_position_from_source(

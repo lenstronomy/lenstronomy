@@ -385,3 +385,7 @@ History
 1.11.9 (2024-04-05)
 +++++++++++++++++++
 * COOLEST format with external convergence implemented
+
+1.11.10 (2024-05-15)
+++++++++++++++++++++
+* bug fix in analytical lens equation solver for SIE+CONVERGENCE

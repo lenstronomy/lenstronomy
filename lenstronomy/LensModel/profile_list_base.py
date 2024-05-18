@@ -30,6 +30,7 @@ _SUPPORTED_MODELS = [
     "DOUBLE_CHAMELEON",
     "EPL",
     "EPL_BOXYDISKY",
+    "EPL_MULTIPOLE_M3M4",
     "EPL_NUMBA",
     "EPL_Q_PHI",
     "ElliSLICE",
@@ -46,7 +47,8 @@ _SUPPORTED_MODELS = [
     "HESSIAN",
     "INTERPOL",
     "INTERPOL_SCALED",
-    "RADIAL_INTERPOL" "LOS",
+    "RADIAL_INTERPOL",
+    "LOS",
     "LOS_MINIMAL",
     "MULTIPOLE",
     "MULTI_GAUSSIAN_KAPPA",
@@ -89,6 +91,7 @@ _SUPPORTED_MODELS = [
     "TNFW_ELLIPSE",
     "TRIPLE_CHAMELEON",
     "ULDM",
+    "EPL_MULTIPOLE_M3M4",
 ]
 
 
@@ -351,6 +354,10 @@ def lens_class(
         from lenstronomy.LensModel.Profiles.epl_boxydisky import EPL_BOXYDISKY
 
         return EPL_BOXYDISKY()
+    elif lens_type == "EPL_MULTIPOLE_M3M4":
+        from lenstronomy.LensModel.Profiles.epl_multipole_m3m4 import EPL_MULTIPOLE_M3M4
+
+        return EPL_MULTIPOLE_M3M4()
     elif lens_type == "EPL_NUMBA":
         from lenstronomy.LensModel.Profiles.epl_numba import EPL_numba
 
@@ -627,6 +634,7 @@ def lens_class(
         return Uldm()
     # when adding a new profile, insert the corresponding elif statement in its
     # alphabetical position
+
     else:
         raise ValueError(
             "%s is not a valid lens model. Supported are: %s."

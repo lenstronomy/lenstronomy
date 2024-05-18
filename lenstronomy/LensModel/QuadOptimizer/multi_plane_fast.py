@@ -79,74 +79,14 @@ class MultiplaneFast(object):
         )
 
         self._z_lens = z_lens
-
         self._z_source = z_source
-
         self._x_image = x_image
         self._y_image = y_image
         self._param_class = param_class
-
         self._tol_source = tol_source
-
         self._foreground_rays = foreground_rays
 
-    def chi_square(self, args_lens, *args, **kwargs):
-        """
-
-        :param args_lens: array of lens model parameters being optimized, computed from kwargs_lens in a specified
-         param_class, see documentation in QuadOptimizer.param_manager
-        :return: total chi^2 penalty (source chi^2 + param chi^2), where param chi^2 is computed by the specified
-         param_class
-        """
-        source_plane_penlty = self.source_plane_chi_square(args_lens)
-
-        param_penalty = self._param_class.param_chi_square_penalty(args_lens)
-
-        return source_plane_penlty + param_penalty
-
-    def logL(self, args_lens, *args, **kwargs):
-        """
-
-        :param args_lens: array of lens model parameters being optimized, computed from kwargs_lens in a specified
-         param_class, see documentation in QuadOptimizer.param_manager
-        :return: the log likelihood corresponding to the given chi^2
-        """
-        chi_square = self.chi_square(args_lens)
-
-        return -0.5 * chi_square
-
-    def source_plane_chi_square(self, args_lens, *args, **kwargs):
-        """
-
-        :param args_lens: array of lens model parameters being optimized, computed from kwargs_lens in a specified
-         param_class, see documentation in QuadOptimizer.param_manager
-        :return: chi2 penalty for the source position (all images must map to the same source coordinate)
-        """
-
-        betax, betay = self.ray_shooting_fast(args_lens)
-
-        dx_source = (
-            (betax[0] - betax[1]) ** 2
-            + (betax[0] - betax[2]) ** 2
-            + (betax[0] - betax[3]) ** 2
-            + (betax[1] - betax[2]) ** 2
-            + (betax[1] - betax[3]) ** 2
-            + (betax[2] - betax[3]) ** 2
-        )
-        dy_source = (
-            (betay[0] - betay[1]) ** 2
-            + (betay[0] - betay[2]) ** 2
-            + (betay[0] - betay[3]) ** 2
-            + (betay[1] - betay[2]) ** 2
-            + (betay[1] - betay[3]) ** 2
-            + (betay[2] - betay[3]) ** 2
-        )
-
-        chi_square = 0.5 * (dx_source + dy_source) / self._tol_source**2
-
-        return chi_square
-
-    def ray_shooting_fast(self, args_lens):
+    def ray_shooting_fast(self, x_image, y_image, kwargs_lens):
         """Performs a ray tracing computation through observed coordinates on the sky
         (self._x_image, self._y_image) to the source plane, returning the final
         coordinates of each ray on the source plane.
@@ -156,14 +96,9 @@ class MultiplaneFast(object):
             documentation in QuadOptimizer.param_manager)
         :return: the xy coordinate of each ray traced back to the source plane
         """
-
+        index = self._param_class.to_vary_index
         # these do not depend on kwargs_lens_array
         x, y, alpha_x, alpha_y = self._ray_shooting_fast_foreground()
-
-        # convert array into new kwargs dictionary
-        kw = self._param_class.args_to_kwargs(args_lens)
-        index = self._param_class.to_vary_index
-        kwargs_lens = kw[0:index]
         # evaluate main deflector deflection angles
 
         (
@@ -178,12 +113,10 @@ class MultiplaneFast(object):
             alpha_y,
             self._z_lens,
             self._z_lens,
-            kwargs_lens,
+            kwargs_lens[0:index],
             include_z_start=True,
         )
-
         # ray trace through background halos
-        kwargs_lens = kw[index:]
         x, y, _, _ = self.lens_model_fixed.lens_model.ray_shooting_partial_comoving(
             x,
             y,
@@ -191,12 +124,10 @@ class MultiplaneFast(object):
             alpha_y,
             self._z_lens,
             self._z_source,
-            kwargs_lens,
+            kwargs_lens[index:],
             check_convention=False,
         )
-
         beta_x, beta_y = self.lens_model_fixed.lens_model.co_moving2angle_source(x, y)
-
         return beta_x, beta_y
 
     def _ray_shooting_fast_foreground(self):

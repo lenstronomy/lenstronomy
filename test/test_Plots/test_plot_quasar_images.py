@@ -11,6 +11,7 @@ import pytest
 
 
 class TestPlotQuasarImages(object):
+
     def test_plot_quasar_images(self):
         lens_model_list = ["EPL", "SHEAR"]
         z_source = 1.5

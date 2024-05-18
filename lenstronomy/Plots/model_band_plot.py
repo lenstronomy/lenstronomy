@@ -346,6 +346,8 @@ class ModelBandPlot(ModelBand):
         with_critical_curves=False,
         crit_curve_color="k",
         image_name_list=None,
+        super_sample_factor=None,
+        add_color_bar=True,
         **kwargs
     ):
         """Plots the convergence of a full lens model minus the convergence from a few
@@ -363,9 +365,11 @@ class ModelBandPlot(ModelBand):
         :param with_critical_curves: bool; plots the critical curves in the frame
         :param crit_curve_color: color of the critical curves
         :param image_name_list: labels the images, default is A, B, C, ...
-        :param kwargs: any additional keyword arguments
-        :return: matplotib axis
+        :param super_sample_factor: a integer the specifies supersampling of the coordinate grid to create the convergence map
+        :param add_color_bar: bool; whether or not to include a color bar
+        :return: matplotib axis and colorbar
         """
+
         kwargs_lens_macro = []
         lens_model_list_macro = []
         multi_plane = self._lensModel.multi_plane
@@ -392,17 +396,27 @@ class ModelBandPlot(ModelBand):
             z_source=z_source,
             cosmo=cosmo,
         )
+
+        if super_sample_factor is None:
+            x_grid = self._x_grid
+            y_grid = self._y_grid
+        else:
+            x_grid, y_grid = util.make_subgrid(
+                self._x_grid, self._y_grid, super_sample_factor
+            )
+
         kappa_full = util.array2image(
-            self._lensModel.kappa(self._x_grid, self._y_grid, self._kwargs_lens_partial)
+            self._lensModel.kappa(x_grid, y_grid, self._kwargs_lens_partial)
         )
         kappa_macro = util.array2image(
-            lens_model_macro.kappa(self._x_grid, self._y_grid, kwargs_lens_macro)
+            lens_model_macro.kappa(x_grid, y_grid, kwargs_lens_macro)
         )
         residual_kappa = kappa_full - kappa_macro
         if subtract_mean:
             mean_kappa = np.mean(residual_kappa)
             residual_kappa -= mean_kappa
             colorbar_label = r"$\kappa_{\rm{sub}} - \langle \kappa_{\rm{sub}} \rangle$"
+        alpha = 1.0
         im = ax.imshow(
             residual_kappa,
             origin="lower",
@@ -410,6 +424,7 @@ class ModelBandPlot(ModelBand):
             vmax=v_max,
             extent=self._image_extent,
             cmap=cmap,
+            alpha=alpha,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -460,12 +475,14 @@ class ModelBandPlot(ModelBand):
             plot_out_of_image=False,
         )
 
-        divider = make_axes_locatable(ax)
-        cax = divider.append_axes("right", size="5%", pad=0.05)
-        cb = plt.colorbar(im, cax=cax)
-        cb.set_label(colorbar_label, fontsize=font_size)
-
-        return ax
+        if add_color_bar:
+            divider = make_axes_locatable(ax)
+            cax = divider.append_axes("right", size="5%", pad=0.05)
+            cb = plt.colorbar(im, cax=cax)
+            cb.set_label(colorbar_label, fontsize=font_size)
+        else:
+            cb = None
+        return ax, cb
 
     def normalized_residual_plot(
         self,
@@ -496,7 +513,7 @@ class ModelBandPlot(ModelBand):
             vmax=v_max,
             extent=self._image_extent,
             origin="lower",
-            **kwargs
+            **kwargs,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -713,7 +730,7 @@ class ModelBandPlot(ModelBand):
                 dec_caustic_list,
                 color=caustic_color,
                 points_only=self._caustic_points_only,
-                **kwargs.get("kwargs_caustic", {})
+                **kwargs.get("kwargs_caustic", {}),
             )
         if scale_size > 0:
             plot_util.scale_bar(
@@ -901,7 +918,7 @@ class ModelBandPlot(ModelBand):
             extent=self._image_extent,
             vmin=v_min,
             vmax=v_max,
-            **kwargs
+            **kwargs,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -1087,7 +1104,7 @@ class ModelBandPlot(ModelBand):
             vmin=v_min,
             vmax=v_max,
             extent=self._image_extent,
-            **kwargs
+            **kwargs,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -1289,6 +1306,6 @@ class ModelBandPlot(ModelBand):
             vmin=v_min,
             vmax=v_max,
             extent=self._image_extent,
-            **kwargs
+            **kwargs,
         )
         return ax

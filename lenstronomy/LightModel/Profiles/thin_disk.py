@@ -4,11 +4,11 @@ __author__ = 'martin-millon'
 import numpy as np
 from lenstronomy.Util import param_util
 
-__all__ = ['ThinDisk', 'ThinDiskEllipse']
+__all__ = ['ThinDisk', 'ThinDiskEllipse', 'ThinDiskEccentric']
 
 class ThinDisk(object):
     """
-    this class contains functions to evaluate an thin disk model
+    This class contains functions to evaluate a thin disk model
 
     .. math::
         I(R) = I_0 / \\left[\\exp(\\xi) - 1\\right]
@@ -135,7 +135,7 @@ class ThinDiskEccentric(object):
         :return: distorted coordinates x', y'
         """
         R = np.sqrt((x- center_x)**2 + (y-center_y)**2)
-        phi =  np.arctan2((y-center_y) , (x-center_x))
+        phi = np.arctan2((y-center_y), (x-center_x))
         a = (R / (1 + e)) * (1 - e * np.cos(phi - phi_0))
 
         xt1 = a * np.cos(phi)

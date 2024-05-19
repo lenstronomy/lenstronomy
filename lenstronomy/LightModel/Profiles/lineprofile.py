@@ -49,9 +49,6 @@ class LineProfile(object):
 
     def total_flux(self, amp, angle, length, width, start_x=0, start_y=0):
         """Integrated flux of the profile.
-
-        :param x: x-coordinate on sky
-        :param y: y-coordinate on sky
         :param amp: constant surface brightness of line
         :param angle: angle of line to the horizontal (degrees)
         :param length: length of line (arcseconds)

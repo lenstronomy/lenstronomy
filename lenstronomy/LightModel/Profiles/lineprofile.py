@@ -1,12 +1,12 @@
-
 import numpy as np
 
+
 __all__ = ["LineProfile"]
+
 
 class LineProfile(object):
     """
     Horizontal line segment class.
-    Parameters:
     """
 
     param_names = ["amp", "angle", "length", "width", "start_x", "start_y"]
@@ -27,12 +27,8 @@ class LineProfile(object):
         "start_y": 100,
     }
 
-
     def __init__(self):
         pass
-
-
-
 
     def function(self, x, y, amp, angle, length, width, start_x=0, start_y=0):
         """Surface brightness per angular unit.
@@ -41,7 +37,7 @@ class LineProfile(object):
         :param amp: constant surface brightness of line
         :param angle: angle of line to the horizontal (degrees)
         :param length: length of line (arcseconds)
-        :param width: width of line (arcseconds), line width extends symmetrically 
+        :param width: width of line (arcseconds), line width extends symmetrically
         :param start_x: ra coordinate of start of line
         :param start_y: dec-coordinate of start of line
         :return: surface brightness, raise as definition is not defined
@@ -51,7 +47,6 @@ class LineProfile(object):
         y_ = np.cos(ang)*(start_y - y) - np.sin(ang)*(start_x - x)
         return amp * (x_ > 0) * (x_ < length) * (abs(y_) < width/2)
 
-
     def total_flux(self, amp, angle, length, width, start_x=0, start_y=0):
         """Integrated flux of the profile.
 
@@ -60,14 +55,12 @@ class LineProfile(object):
         :param amp: constant surface brightness of line
         :param angle: angle of line to the horizontal (degrees)
         :param length: length of line (arcseconds)
-        :param width: width of line (arcseconds), line width extends symmetrically 
+        :param width: width of line (arcseconds), line width extends symmetrically
         :param start_x: ra coordinate of start of line
         :param start_y: dec-coordinate of start of line
         :return: total flux
         """
         return amp * length * width
-
-
 
     def light_3d(self, *args, **kwargs):
         """

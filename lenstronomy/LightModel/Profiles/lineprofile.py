@@ -25,7 +25,7 @@ class LineProfile(object):
         "start_y": -100,
     }
     upper_limit_default = {
-        "amp": 0,
+        "amp": 10,
         "angle": 180,
         "length": 10,
         "width": 5,
@@ -49,13 +49,11 @@ class LineProfile(object):
         :return: surface brightness, raise as definition is not defined
         """
         
-        ang = np.deg2rad(angle)
-        rot = np.array([[np.cos(ang), np.sin(ang)],[-1*np.sin(ang), np.cos(ang)]])
-        out = rot.dot([[x],[y]])
+        ang = -np.deg2rad(angle)
+        out = (np.cos(ang)*(start_x - x) + np.sin(ang)*(start_y - y), np.cos(ang)*(start_y - y) - np.sin(ang)*(start_x - x))
         
-        if ((out[0]) > 0) and ((out[0]) < length) and (abs(([out[1]])/2) < width):
-            return amp
-        return 0
+        return amp * ((out[0]) > 0) * ((out[0]) < length) * (abs((out[1])) < width/2)
+
 
 
 

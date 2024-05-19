@@ -7,12 +7,6 @@ class LineProfile(object):
     """
     Horizontal line segment class.
     Parameters:
-    start_x: ra-coordiinate of start of line
-    start_y: dec-coordinate of start of line
-    length: length of line (arcseconds)
-    width: width of line (arcseconds), line centered at start_x, start_y in perpendicular direction
-    amp: surface brightness of line
-    angle: angle of jet to the horizontal (degrees, 0 = constant RA)
     """
 
     param_names = ["amp", "angle", "length", "width", "start_x", "start_y"]
@@ -41,19 +35,37 @@ class LineProfile(object):
 
 
     def function(self, x, y, amp, angle, length, width, start_x=0, start_y=0):
-        """
-
-        :param x: x-coordinate
-        :param y: y-coordinate
-        :param kwargs: keyword arguments of profile
+        """Surface brightness per angular unit.
+        :param x: x-coordinate on sky
+        :param y: y-coordinate on sky
+        :param amp: constant surface brightness of line
+        :param angle: angle of line to the horizontal (degrees)
+        :param length: length of line (arcseconds)
+        :param width: width of line (arcseconds), line width extends symmetrically 
+        :param start_x: ra coordinate of start of line
+        :param start_y: dec-coordinate of start of line
         :return: surface brightness, raise as definition is not defined
         """
-        
         ang = -np.deg2rad(angle)
-        out = (np.cos(ang)*(start_x - x) + np.sin(ang)*(start_y - y), np.cos(ang)*(start_y - y) - np.sin(ang)*(start_x - x))
-        
-        return amp * ((out[0]) > 0) * ((out[0]) < length) * (abs((out[1])) < width/2)
+        x_ = np.cos(ang)*(start_x - x) + np.sin(ang)*(start_y - y)
+        y_ = np.cos(ang)*(start_y - y) - np.sin(ang)*(start_x - x)
+        return amp * (x_ > 0) * (x_ < length) * (abs(y_) < width/2)
 
+
+    def total_flux(self, amp, angle, length, width, start_x=0, start_y=0):
+        """Integrated flux of the profile.
+
+        :param x: x-coordinate on sky
+        :param y: y-coordinate on sky
+        :param amp: constant surface brightness of line
+        :param angle: angle of line to the horizontal (degrees)
+        :param length: length of line (arcseconds)
+        :param width: width of line (arcseconds), line width extends symmetrically 
+        :param start_x: ra coordinate of start of line
+        :param start_y: dec-coordinate of start of line
+        :return: total flux
+        """
+        return amp * length * width
 
 
 

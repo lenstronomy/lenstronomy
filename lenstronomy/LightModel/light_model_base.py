@@ -194,7 +194,7 @@ class LightModelBase(object):
                 from lenstronomy.LightModel.Profiles.linear import LinearEllipse
 
                 self.func_list.append(LinearEllipse())
-            elif profile_type == "LINEPROFILE":
+            elif profile_type == "LINE_PROFILE":
                 from lenstronomy.LightModel.Profiles.lineprofile import LineProfile
 
                 self.func_list.append(LineProfile())

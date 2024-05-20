@@ -19,8 +19,9 @@ class TestLineProfile(object):
         flux_true = np.array([amp, 0, amp])
         flux = self.lineprofile.function(x, y, amp, angle, length, width)
         single_flux_true = amp
-        single_flux = self.lineprofile.function(x_single, y_single,
-            amp, angle, length, width)
+        single_flux = self.lineprofile.function(
+            x_single, y_single, amp, angle, length, width
+        )
         npt.assert_equal(flux_true, flux)
         npt.assert_equal(single_flux_true, single_flux)
 

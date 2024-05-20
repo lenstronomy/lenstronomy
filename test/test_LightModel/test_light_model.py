@@ -208,7 +208,7 @@ class TestLightModel(object):
             "GAUSSIAN_ELLIPSE",
             "MULTI_GAUSSIAN",
             "MULTI_GAUSSIAN_ELLIPSE",
-            "LINE_PROFILE"
+            "LINE_PROFILE",
         ]
         kwargs_list = [
             {

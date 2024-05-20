@@ -130,7 +130,7 @@ class TestLightModel(object):
                 "center_x": 0,
                 "center_y": 0,
             },  # 'ELLIPSOID'
-                        {
+            {
                 "amp": 1,
                 "length": 1.0,
                 "width": 0.01,
@@ -208,6 +208,7 @@ class TestLightModel(object):
             "GAUSSIAN_ELLIPSE",
             "MULTI_GAUSSIAN",
             "MULTI_GAUSSIAN_ELLIPSE",
+            "LINE_PROFILE"
         ]
         kwargs_list = [
             {
@@ -256,6 +257,14 @@ class TestLightModel(object):
                 "center_x": 0,
                 "center_y": 0,
             },  # 'MULTI_GAUSSIAN_ELLIPSE'
+            {
+                "amp": 1,
+                "length": 1.0,
+                "width": 0.01,
+                "angle": 57,
+                "start_x": 0,
+                "start_y": 0,
+            },  # 'LINE_PROFILE'
         ]
         lightModel = LightModel(light_model_list=light_model_list)
         total_flux_list = lightModel.total_flux(kwargs_list)

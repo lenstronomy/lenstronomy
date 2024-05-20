@@ -52,7 +52,7 @@ class LineProfile(object):
         x_ = np.cos(ang) * (start_x - x) + np.sin(ang) * (start_y - y)
         y_ = np.cos(ang) * (start_y - y) - np.sin(ang) * (start_x - x)
         flux = np.zeros_like(x_)
-        flux[(x_ > 0) * (x_ < length) * (abs(y_) < width / 2)] = amp
+        flux[(x_ >= 0) * (x_ <= length) * (abs(y_) <= width / 2)] = amp
         return flux
 
     def total_flux(self, amp, angle, length, width, start_x=0, start_y=0):

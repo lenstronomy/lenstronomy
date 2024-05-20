@@ -31,7 +31,7 @@ class TestLightModel(object):
             "INTERPOL",
             "SHAPELETS_POLAR_EXP",
             "ELLIPSOID",
-            "LINE_PROFILE"
+            "LINE_PROFILE",
         ]
         phi_G, q = 0.5, 0.8
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
@@ -130,7 +130,7 @@ class TestLightModel(object):
                 "center_x": 0,
                 "center_y": 0,
             },  # 'ELLIPSOID'
-                        {
+            {
                 "amp": 1,
                 "length": 1.0,
                 "width": 0.01,

@@ -12,8 +12,8 @@ class TestLineProfile(object):
         length = 1
         width = 0.01
         angle = 57
-        x = np.array([0, 1, 0.5*np.cos(np.deg2rad(57))])
-        y = np.array([0, 0, 0.5*np.sin(np.deg2rad(57))])
+        x = np.array([0, 1, 0.5 * np.cos(np.deg2rad(57))])
+        y = np.array([0, 0, 0.5 * np.sin(np.deg2rad(57))])
         flux_true = np.array([amp, 0, amp])
         flux = self.lineprofile.function(x, y, amp, angle, length, width)
         npt.assert_equal(flux_true, flux)

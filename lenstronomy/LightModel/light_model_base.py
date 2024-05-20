@@ -256,7 +256,7 @@ class LightModelBase(object):
                     "MULTI_GAUSSIAN_ELLIPSE",
                     "NIE",
                     "POWER_LAW",
-                    "TRIPLE_CHAMELEON"
+                    "TRIPLE_CHAMELEON",
                 ]:
                     flux += func.light_3d(r, **kwargs)
                 else:
@@ -291,7 +291,7 @@ class LightModelBase(object):
                     "GAUSSIAN_ELLIPSE",
                     "MULTI_GAUSSIAN",
                     "MULTI_GAUSSIAN_ELLIPSE",
-                    "LINEPROFILE"
+                    "LINEPROFILE",
                 ]:
                     kwargs_new = kwargs_list_standard[i].copy()
                     if norm is True:

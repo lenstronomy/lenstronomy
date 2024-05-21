@@ -217,7 +217,7 @@ class LinearBasis(LightModelBase):
                 "ELLIPSOID",
                 "LINEAR",
                 "LINEAR_ELLIPSE",
-                "LINE_PROFILE"
+                "LINE_PROFILE",
             ]:
                 kwargs_list[k]["amp"] = param[i]
                 i += 1

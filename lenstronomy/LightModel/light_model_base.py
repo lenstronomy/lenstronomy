@@ -291,7 +291,7 @@ class LightModelBase(object):
                     "GAUSSIAN_ELLIPSE",
                     "MULTI_GAUSSIAN",
                     "MULTI_GAUSSIAN_ELLIPSE",
-                    "LINEPROFILE",
+                    "LINE_PROFILE",
                 ]:
                     kwargs_new = kwargs_list_standard[i].copy()
                     if norm is True:

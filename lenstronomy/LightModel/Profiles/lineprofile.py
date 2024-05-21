@@ -49,8 +49,8 @@ class LineProfile(object):
         :return: surface brightness, raise as definition is not defined
         """
         ang = -np.deg2rad(angle)
-        x_ = np.cos(ang) * (start_x - x) + np.sin(ang) * (start_y - y)
-        y_ = np.cos(ang) * (start_y - y) - np.sin(ang) * (start_x - x)
+        x_ = np.cos(ang) * (x - start_x) + np.sin(ang) * (start_y - y)
+        y_ = np.cos(ang) * (start_y - y) - np.sin(ang) * (x - start_x)
         flux = np.zeros_like(x_)
         flux[(x_ >= 0) * (x_ <= length) * (abs(y_) <= width / 2)] = amp
         return flux

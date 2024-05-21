@@ -185,7 +185,7 @@ class TestLightModel(object):
 
     def test_num_param_linear(self):
         num = self.LightModel.num_param_linear(self.kwargs, list_return=False)
-        assert num == 19
+        assert num == 20
 
         num_list = self.LightModel.num_param_linear(self.kwargs, list_return=True)
         assert num_list[0] == 1

@@ -67,12 +67,3 @@ class LineProfile(object):
         :return: total flux
         """
         return amp * length * width
-
-    def light_3d(self, *args, **kwargs):
-        """
-
-        :param r: 3d radius
-        :param kwargs:  keyword arguments of profile
-        :return: 3d light profile, raise as definition is not defined
-        """
-        raise ValueError("light_3d definition not defined in the light profile.")

@@ -31,6 +31,7 @@ class TestLightModel(object):
             "INTERPOL",
             "SHAPELETS_POLAR_EXP",
             "ELLIPSOID",
+            "LINE_PROFILE",
         ]
         phi_G, q = 0.5, 0.8
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
@@ -129,6 +130,14 @@ class TestLightModel(object):
                 "center_x": 0,
                 "center_y": 0,
             },  # 'ELLIPSOID'
+            {
+                "amp": 1,
+                "length": 1.0,
+                "width": 0.01,
+                "angle": 57,
+                "start_x": 0,
+                "start_y": 0,
+            },  # 'LINE_PROFILE'
         ]
 
         self.LightModel = LightModel(
@@ -176,7 +185,7 @@ class TestLightModel(object):
 
     def test_num_param_linear(self):
         num = self.LightModel.num_param_linear(self.kwargs, list_return=False)
-        assert num == 19
+        assert num == 20
 
         num_list = self.LightModel.num_param_linear(self.kwargs, list_return=True)
         assert num_list[0] == 1
@@ -199,6 +208,7 @@ class TestLightModel(object):
             "GAUSSIAN_ELLIPSE",
             "MULTI_GAUSSIAN",
             "MULTI_GAUSSIAN_ELLIPSE",
+            "LINE_PROFILE",
         ]
         kwargs_list = [
             {
@@ -247,6 +257,14 @@ class TestLightModel(object):
                 "center_x": 0,
                 "center_y": 0,
             },  # 'MULTI_GAUSSIAN_ELLIPSE'
+            {
+                "amp": 1,
+                "length": 1.0,
+                "width": 0.01,
+                "angle": 57,
+                "start_x": 0,
+                "start_y": 0,
+            },  # 'LINE_PROFILE'
         ]
         lightModel = LightModel(light_model_list=light_model_list)
         total_flux_list = lightModel.total_flux(kwargs_list)

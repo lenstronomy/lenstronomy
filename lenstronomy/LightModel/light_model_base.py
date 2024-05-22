@@ -228,13 +228,12 @@ class LightModelBase(object):
         return flux
 
     def light_3d(self, r, kwargs_list, k=None):
-        """Computes 3d density at radius r (3D radius)
-        such that integrated in projection in units of angle results in the projected surface brightness
+        """Computes 3d density at radius r (3D radius) such that integrated in
+        projection in units of angle results in the projected surface brightness.
 
         :param r: 3d radius units of arcsec relative to the center of the light profile
         :param kwargs_list: keyword argument list of light profile
         :param k: integer or list of integers for selecting subsets of light profiles.
-
         :return: flux density
         """
         kwargs_list_standard = self._transform_kwargs(kwargs_list)

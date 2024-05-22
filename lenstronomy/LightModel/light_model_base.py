@@ -41,6 +41,7 @@ _MODELS_SUPPORTED = [
     "SLIT_STARLETS_GEN2",
     "LINEAR",
     "LINEAR_ELLIPSE",
+    "LINE_PROFILE",
 ]
 
 
@@ -193,6 +194,10 @@ class LightModelBase(object):
                 from lenstronomy.LightModel.Profiles.linear import LinearEllipse
 
                 self.func_list.append(LinearEllipse())
+            elif profile_type == "LINE_PROFILE":
+                from lenstronomy.LightModel.Profiles.lineprofile import LineProfile
+
+                self.func_list.append(LineProfile())
             else:
                 raise ValueError(
                     "No light model of type %s found! Supported are the following models: %s"
@@ -291,6 +296,7 @@ class LightModelBase(object):
                     "GAUSSIAN_ELLIPSE",
                     "MULTI_GAUSSIAN",
                     "MULTI_GAUSSIAN_ELLIPSE",
+                    "LINE_PROFILE",
                 ]:
                     kwargs_new = kwargs_list_standard[i].copy()
                     if norm is True:

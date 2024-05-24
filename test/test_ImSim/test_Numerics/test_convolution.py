@@ -46,9 +46,9 @@ class TestPixelKernelConvolution(object):
         npt.assert_equal(pixel_conv.pixel_kernel(num_pix=3), kernel[1:-1, 1:-1])
 
     def test_centroiding(self):
-        """
-        this test convolves a Gaussian source centered in a centered pixel with a Gaussian and checks whether the
-        pixelated FFT convolution returns a centered image as well
+        """This test convolves a Gaussian source centered in a centered pixel with a
+        Gaussian and checks whether the pixelated FFT convolution returns a centered
+        image as well.
 
         :return:
         """

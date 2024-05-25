@@ -1,4 +1,5 @@
 import lenstronomy.Util.param_util as param_util
+import numpy as np
 
 __all__ = ["Hernquist", "HernquistEllipse"]
 
@@ -48,6 +49,18 @@ class Hernquist(object):
         """
         rho0 = self.lens.sigma2rho(amp, Rs)
         return self.lens.density(r, rho0, Rs)
+
+    @staticmethod
+    def total_flux(amp, Rs):
+        """
+
+        :param amp:
+        :param Rs:
+        :return:
+        """
+        rhos = amp / Rs
+        m_tot = 2 * np.pi * rhos * Rs ** 3
+        return m_tot
 
 
 class HernquistEllipse(object):
@@ -108,3 +121,14 @@ class HernquistEllipse(object):
         """
         rho0 = self.lens.sigma2rho(amp, Rs)
         return self.lens.density(r, rho0, Rs)
+
+    def total_flux(self, amp, Rs, e1=0, e2=0):
+        """
+
+        :param amp:
+        :param Rs:
+        :param e1:
+        :param e2:
+        :return:
+        """
+        return self.spherical.total_flux(amp=amp, Rs=Rs)

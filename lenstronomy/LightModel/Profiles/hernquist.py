@@ -59,7 +59,7 @@ class Hernquist(object):
         :return: total integrated flux of profile
         """
         rhos = amp / Rs
-        m_tot = 2 * np.pi * rhos * Rs ** 3
+        m_tot = 2 * np.pi * rhos * Rs**3
         return m_tot
 
 

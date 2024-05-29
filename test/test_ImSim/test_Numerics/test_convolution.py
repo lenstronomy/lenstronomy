@@ -45,6 +45,54 @@ class TestPixelKernelConvolution(object):
         npt.assert_equal(pixel_conv.pixel_kernel(), kernel)
         npt.assert_equal(pixel_conv.pixel_kernel(num_pix=3), kernel[1:-1, 1:-1])
 
+    def test_centroiding(self):
+        """This test convolves a Gaussian source centered in a centered pixel with a
+        Gaussian and checks whether the pixelated FFT convolution returns a centered
+        image as well.
+
+        :return:
+        """
+        # constructing a source
+        lightModel = LightModel(light_model_list=["GAUSSIAN"])
+        delta_pix = 1
+        x, y = util.make_grid(11, deltapix=delta_pix)
+        kwargs_model = [{"amp": 1, "sigma": 2, "center_x": 0, "center_y": 0}]
+        flux = lightModel.surface_brightness(x, y, kwargs_model)
+        model = util.array2image(flux)
+        model /= np.sum(flux)
+
+        # compute moments of the source to check that it is centered in the center pixel
+        npt.assert_almost_equal(np.sum(flux * x), 0, decimal=5)
+        npt.assert_almost_equal(np.sum(flux * y), 0, decimal=5)
+
+        # PSF
+        x_psf, y_psf = util.make_grid(21, deltapix=delta_pix)
+        kwargs_model = [{"amp": 1, "sigma": 2, "center_x": 0, "center_y": 0}]
+        psf_1d = lightModel.surface_brightness(x_psf, y_psf, kwargs_model)
+        psf = util.array2image(psf_1d)
+        psf /= np.sum(psf)
+
+        npt.assert_almost_equal(np.sum(psf_1d * x_psf), 0, decimal=5)
+        npt.assert_almost_equal(np.sum(psf_1d * y_psf), 0, decimal=5)
+
+        conv = PixelKernelConvolution(kernel=psf, convolution_type="fft_static")
+        model_conv = conv.convolution2d(model)
+        model_conv_1d = util.image2array(model_conv)
+        npt.assert_almost_equal(np.sum(model_conv_1d * x), 0, decimal=5)
+        npt.assert_almost_equal(np.sum(model_conv_1d * y), 0, decimal=5)
+
+        conv = PixelKernelConvolution(kernel=psf, convolution_type="fft")
+        model_conv = conv.convolution2d(model)
+        model_conv_1d = util.image2array(model_conv)
+        npt.assert_almost_equal(np.sum(model_conv_1d * x), 0, decimal=5)
+        npt.assert_almost_equal(np.sum(model_conv_1d * y), 0, decimal=5)
+
+        conv = PixelKernelConvolution(kernel=psf, convolution_type="grid")
+        model_conv = conv.convolution2d(model)
+        model_conv_1d = util.image2array(model_conv)
+        npt.assert_almost_equal(np.sum(model_conv_1d * x), 0, decimal=5)
+        npt.assert_almost_equal(np.sum(model_conv_1d * y), 0, decimal=5)
+
 
 class TestSubgridKernelConvolution(object):
     def setup_method(self):

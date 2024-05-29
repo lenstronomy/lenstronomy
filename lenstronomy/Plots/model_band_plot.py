@@ -711,7 +711,6 @@ class ModelBandPlot(ModelBand):
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
         cb.set_label(colorbar_label, fontsize=font_size)
-        plot_util.scale_bar(ax, d_s, dist=0.1, text='0.1"', color='w', flipped=False, font_size=font_size)
 
         if with_caustics is True:
             ra_caustic_list, dec_caustic_list = self._caustics()

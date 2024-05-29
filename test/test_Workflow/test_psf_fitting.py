@@ -1,5 +1,6 @@
 __author__ = "sibirrer"
 
+import matplotlib.pyplot as plt
 import pytest
 import numpy as np
 import copy
@@ -177,6 +178,42 @@ class TestPSFIteration(object):
         diff_old = np.sum((kernel_old - kernel_true) ** 2)
         diff_new = np.sum((kernel_new - kernel_true) ** 2)
         assert diff_old > diff_new
+
+        #test STARRED
+        kwargs_psf_iter_starred = {
+            "stacking_method": "median",
+            "error_map_radius": 0.5,
+            "psf_iter_factor": 0.2,
+            "new_procedure": False,
+            "use_starred": True,
+            "kwargs_starred": {'verbose':False, 'lambda_scales':3, 'lambda_hf':3},
+        }
+
+        kwargs_psf_return_starred, improved_bool_starred, error_map_starred = self.psf_fitting.update_psf(
+            kwargs_psf, self.kwargs_params, **kwargs_psf_iter_starred
+        )
+        assert improved_bool_starred
+        # fig, ax = plt.subplots(2,3)
+        # ax[0,0].imshow(kwargs_psf_return_starred["kernel_point_source"])
+        # ax[0,1].imshow(kernel_old)
+        # ax[0,2].imshow(kwargs_psf_return_starred["kernel_point_source"]- kernel_old)
+        #
+        # ax[1,0].imshow(kwargs_psf_return_starred["kernel_point_source"])
+        # ax[1,1].imshow(kernel_true)
+        # ax[1,2].imshow(kwargs_psf_return_starred["kernel_point_source"] - kernel_true)
+        # plt.show()
+        #
+        # fig, ax = plt.subplots(1,3)
+        # ax[0].imshow(kwargs_psf_return_starred["kernel_point_source"])
+        # ax[1].imshow(error_map_starred)
+        # ax[2].imshow(error_map)
+        # plt.show()
+
+        kernel_new_starred = kwargs_psf_return_starred["kernel_point_source"]
+        diff_new_starred = np.sum((kernel_new_starred- kernel_true) ** 2)
+
+        # print(diff_new_starred, diff_new, diff_old)
+        assert diff_old > diff_new_starred
 
     def test_calc_corner_mask(self):
         kernel_old = np.ones((101, 101))

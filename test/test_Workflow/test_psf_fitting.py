@@ -195,22 +195,6 @@ class TestPSFIteration(object):
             )
         )
         assert improved_bool_starred
-        # fig, ax = plt.subplots(2,3)
-        # ax[0,0].imshow(kwargs_psf_return_starred["kernel_point_source"])
-        # ax[0,1].imshow(kernel_old)
-        # ax[0,2].imshow(kwargs_psf_return_starred["kernel_point_source"]- kernel_old)
-        #
-        # ax[1,0].imshow(kwargs_psf_return_starred["kernel_point_source"])
-        # ax[1,1].imshow(kernel_true)
-        # ax[1,2].imshow(kwargs_psf_return_starred["kernel_point_source"] - kernel_true)
-        # plt.show()
-        #
-        # fig, ax = plt.subplots(1,3)
-        # ax[0].imshow(kwargs_psf_return_starred["kernel_point_source"])
-        # ax[1].imshow(error_map_starred)
-        # ax[2].imshow(error_map)
-        # plt.show()
-
         kernel_new_starred = kwargs_psf_return_starred["kernel_point_source"]
         diff_new_starred = np.sum((kernel_new_starred - kernel_true) ** 2)
 

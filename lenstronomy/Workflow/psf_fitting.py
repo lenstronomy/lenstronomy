@@ -133,7 +133,6 @@ class PsfFitting(object):
                 kwargs_psf_new, _kwargs_params, corner_mask, **kwargs_psf_update
             )
 
-            print(logL_best, logL_after)
             if logL_after > logL_best:
                 kwargs_psf_final = copy.deepcopy(kwargs_psf_new)
                 error_map_final = copy.deepcopy(error_map)
@@ -363,11 +362,15 @@ class PsfFitting(object):
                     "STARRED is not installed. Please install STARRED to use this feature. "
                     "STARRED available by typing 'pip install starred-astro'."
                 )
+            if point_source_supersampling_factor != 3:
+                warnings.warn("Point source subsampling factor of 3 is highly recommended when using Starred PSF iteration routine")
 
+            kernel_old_high_res = psf_class.kernel_point_source_supersampled(
+                supersampling_factor=point_source_supersampling_factor
+            )
             image_single_point_source_list = self.image_single_point_source(
                 self._image_model_class, kwargs_params
             )
-
             # get the non-aligned cutouts
             psf_kernel_list = self.point_like_source_cutouts(
                 x_pos=x_,
@@ -416,7 +419,6 @@ class PsfFitting(object):
             parameters = ParametersPSF(
                 kwargs_init, kwargs_fixed, kwargs_up=kwargs_up, kwargs_down=kwargs_down
             )
-
             (
                 model,
                 parameters,
@@ -433,26 +435,19 @@ class PsfFitting(object):
                 **kwargs_starred
             )
 
-            # kernel_new, narrow_psf_new, psf_kernel_list, _ = starred.procedures.psf_routines.update_PSF(kernel_old,
-            #                                                                            psf_kernel_list,
-            #                                                                            sigma2_maps_list,
-            #                                                                            masks=None,
-            #                                                                            subsampling_factor=point_source_supersampling_factor,
-            #                                                                            **kwargs_starred)
-
             psf_kernel_list = model.model(
-                **kwargs_partial_list[-1], high_res=False
-            )  # return model for each point source at the resolution of the data
-            psf_kernel_list = [psf_k / np.sum(psf_k) for psf_k in psf_kernel_list]
-            kernel_new = model.get_full_psf(
+                **kwargs_partial_list[-1], high_res=True,
+            )  # return model for each point source at the super-sampled resolution
+            psf_kernel_list = [psf_k / np.sum(psf_k) for psf_k in psf_kernel_list]  #normalise the models
+            kernel_new_high_res = model.get_full_psf(
                 **kwargs_partial_list[-1], norm=True, high_res=True
             )  # subsampled PSF
             kernel_new = (
-                psf_iter_factor * kernel_new + (1.0 - psf_iter_factor) * kernel_old
+                psf_iter_factor * kernel_new_high_res + (1.0 - psf_iter_factor) * kernel_old_high_res
             )
 
             error_map = self.error_map_estimate_new(
-                kernel_new,
+                kernel_new_high_res,
                 psf_kernel_list,
                 ra_image,
                 dec_image,
@@ -461,19 +456,11 @@ class PsfFitting(object):
                 error_map_radius=error_map_radius,
             )
 
-        # fig, ax = plt.subplots(1,3, figsize=(15,12))
-        # ax[0].imshow(np.log10(kernel_new))
-        # ax[1].imshow(np.log10(kernel_old))
-        # ax[2].imshow(kernel_new- kernel_old)
-        # plt.show()
-
         kwargs_psf_new["kernel_point_source"] = kernel_new
         self._image_model_class.update_psf(PSF(**kwargs_psf_new))
         logL_after, _ = self._image_model_class.likelihood_data_given_model(
             **kwargs_params
         )
-        if use_starred:
-            logL_after = 0.0
         return kwargs_psf_new, logL_after, error_map
 
     def image_single_point_source(self, image_model_class, kwargs_params):
@@ -834,7 +821,7 @@ class PsfFitting(object):
         residuals achieved in the image.
 
         :param psf_kernel: PSF kernel (super-sampled)
-        :param psf_kernel_list: list of individual best PSF kernel estimates
+        :param psf_kernel_list: list of individual best PSF kernel estimates (super-sampled)
         :param ra_image: image positions in angles
         :param dec_image: image positions in angles
         :param point_amp: image amplitude

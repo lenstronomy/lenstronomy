@@ -363,7 +363,9 @@ class PsfFitting(object):
                     "STARRED available by typing 'pip install starred-astro'."
                 )
             if point_source_supersampling_factor != 3:
-                warnings.warn("Point source subsampling factor of 3 is highly recommended when using Starred PSF iteration routine")
+                warnings.warn(
+                    "Point source subsampling factor of 3 is highly recommended when using Starred PSF iteration routine"
+                )
 
             kernel_old_high_res = psf_class.kernel_point_source_supersampled(
                 supersampling_factor=point_source_supersampling_factor
@@ -432,18 +434,22 @@ class PsfFitting(object):
                 parameters,
                 sigma2_maps_list,
                 masks=None,
-                **kwargs_starred
+                **kwargs_starred,
             )
 
             psf_kernel_list = model.model(
-                **kwargs_partial_list[-1], high_res=True,
+                **kwargs_partial_list[-1],
+                high_res=True,
             )  # return model for each point source at the super-sampled resolution
-            psf_kernel_list = [psf_k / np.sum(psf_k) for psf_k in psf_kernel_list]  #normalise the models
+            psf_kernel_list = [
+                psf_k / np.sum(psf_k) for psf_k in psf_kernel_list
+            ]  # normalise the models
             kernel_new_high_res = model.get_full_psf(
                 **kwargs_partial_list[-1], norm=True, high_res=True
             )  # subsampled PSF
             kernel_new = (
-                psf_iter_factor * kernel_new_high_res + (1.0 - psf_iter_factor) * kernel_old_high_res
+                psf_iter_factor * kernel_new_high_res
+                + (1.0 - psf_iter_factor) * kernel_old_high_res
             )
 
             error_map = self.error_map_estimate_new(
@@ -821,7 +827,8 @@ class PsfFitting(object):
         residuals achieved in the image.
 
         :param psf_kernel: PSF kernel (super-sampled)
-        :param psf_kernel_list: list of individual best PSF kernel estimates (super-sampled)
+        :param psf_kernel_list: list of individual best PSF kernel estimates (super-
+            sampled)
         :param ra_image: image positions in angles
         :param dec_image: image positions in angles
         :param point_amp: image amplitude

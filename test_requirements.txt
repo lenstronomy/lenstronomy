@@ -2,4 +2,4 @@
 colossus
 git+https://github.com/mattgomer/SKiNN@main#egg=SKiNN
 git+https://github.com/aymgal/coolest@main#egg=coolest
-starred-astro>=1.4.2
+git+https://gitlab.com/cosmograil/starred@main#egg=starred-astro

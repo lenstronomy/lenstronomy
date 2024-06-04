@@ -393,7 +393,7 @@ class PsfFitting(object):
             # STARRED does not like 0 or negative value in the noise maps... so we replace them with the median
             sigma2_maps_list = np.asarray(sigma2_maps_list)
             psf_kernel_list = np.asarray(psf_kernel_list)
-            # normalise the data
+            # Starred works best with normalised the data
             norm = psf_kernel_list[0].max()
             psf_kernel_list /= norm
             sigma2_maps_list /= norm**2

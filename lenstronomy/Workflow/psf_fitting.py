@@ -367,7 +367,9 @@ class PsfFitting(object):
                     "Point source subsampling factor of 3 is highly recommended when using Starred PSF iteration routine"
                 )
             if psf_symmetry != 1:
-                warnings.warn("Starred PSF fitting routine does not assume any PSF symmetry. Setting psf_symmetry=1.")
+                warnings.warn(
+                    "Starred PSF fitting routine does not assume any PSF symmetry. Setting psf_symmetry=1."
+                )
 
             kernel_old_high_res = psf_class.kernel_point_source_supersampled(
                 supersampling_factor=point_source_supersampling_factor
@@ -409,12 +411,13 @@ class PsfFitting(object):
 
             # todo: Lenstronomy is not supporting custom PSF mask for the moment and propagating the corner mask makes no sense for STARRED, which is not using psf_symetry.
             if corner_mask is not None:
-                warnings.warn("Corner mask is not used in Starred PSF fitting routine. Corner_symmetry is ignored.")
-                                #possible implementation of corner_mask in STARRED could look like if custom masks can be propagated one day.
-                #starred requires a mask at the original resolution and has opposite convention (0 is masked)
+                warnings.warn(
+                    "Corner mask is not used in Starred PSF fitting routine. Corner_symmetry is ignored."
+                )
+                # possible implementation of corner_mask in STARRED could look like if custom masks can be propagated one day.
+                # starred requires a mask at the original resolution and has opposite convention (0 is masked)
                 # corner_mask_starred = kernel_util.degrade_kernel(np.invert(corner_mask), point_source_supersampling_factor)
                 # corner_mask_starred = np.repeat(corner_mask_starred[np.newaxis, :, :], N, axis=0)
-
 
             # setup the STARRED model
             model = StarredPSF(

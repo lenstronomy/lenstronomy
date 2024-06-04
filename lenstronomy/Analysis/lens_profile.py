@@ -152,6 +152,7 @@ class LensProfileAnalysis(object):
         center_y=None,
         model_list_bool=None,
         num_points=10,
+        alpha_differentials=True
     ):
         """Computes the logarithmic power-law slope of a profile. ATTENTION: this is not
         an observable!
@@ -163,6 +164,8 @@ class LensProfileAnalysis(object):
         :param center_y: center of profile from where to compute the slope
         :param model_list_bool: bool list, indicate which part of the model to consider
         :param num_points: number of estimates around the Einstein radius
+        :param alpha_differentials: if True, uses the deflection angle differentials, else the convergence differentials
+        :type alpha_differentials: bool
         :return: logarithmic power-law slope
         """
         center_x, center_y = analysis_util.profile_center(
@@ -172,16 +175,26 @@ class LensProfileAnalysis(object):
         dr = 0.01
         x_dr, y_dr = util.points_on_circle(radius + dr, num_points)
 
-        alpha_E_x_i, alpha_E_y_i = self._lens_model.alpha(
-            center_x + x, center_y + y, kwargs_lens, k=model_list_bool
-        )
-        alpha_E_r = np.sqrt(alpha_E_x_i**2 + alpha_E_y_i**2)
-        alpha_E_dr_x_i, alpha_E_dr_y_i = self._lens_model.alpha(
-            center_x + x_dr, center_y + y_dr, kwargs_lens, k=model_list_bool
-        )
-        alpha_E_dr = np.sqrt(alpha_E_dr_x_i**2 + alpha_E_dr_y_i**2)
-        slope = np.mean(np.log(alpha_E_dr / alpha_E_r) / np.log((radius + dr) / radius))
-        gamma = -slope + 2
+        if alpha_differentials:
+            alpha_E_x_i, alpha_E_y_i = self._lens_model.alpha(
+                center_x + x, center_y + y, kwargs_lens, k=model_list_bool
+            )
+            alpha_E_r = np.sqrt(alpha_E_x_i**2 + alpha_E_y_i**2)
+            alpha_E_dr_x_i, alpha_E_dr_y_i = self._lens_model.alpha(
+                center_x + x_dr, center_y + y_dr, kwargs_lens, k=model_list_bool
+            )
+            alpha_E_dr = np.sqrt(alpha_E_dr_x_i**2 + alpha_E_dr_y_i**2)
+            slope = np.mean(np.log(alpha_E_dr / alpha_E_r) / np.log((radius + dr) / radius))
+            gamma = -slope + 2
+        else:
+            kappa = self._lens_model.kappa(
+                center_x + x, center_y + y, kwargs_lens, k=model_list_bool
+            )
+            kappa_dr = self._lens_model.kappa(
+                center_x + x_dr, center_y + y_dr, kwargs_lens, k=model_list_bool
+            )
+            slope = np.mean(np.log(kappa_dr / kappa) / np.log((radius + dr) / radius))
+            gamma = -slope + 1
         return gamma
 
     def mst_invariant_differential(

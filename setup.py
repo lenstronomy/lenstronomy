@@ -68,7 +68,7 @@ tests_require = [
     "zeus-mcmc>=2.4.0",
     "nautilus-sampler>=0.2.1",
     "coolest",
-    "starred-astro>=1.4.2",
+    "starred-astro>=1.4.3",
 ]
 
 PACKAGE_PATH = os.path.abspath(os.path.join(__file__, os.pardir))

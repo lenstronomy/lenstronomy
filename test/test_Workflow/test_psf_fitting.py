@@ -179,13 +179,15 @@ class TestPSFIteration(object):
         assert diff_old > diff_new
 
         # test STARRED
-        self.psf_fitting._image_model_class.Data._C_D[42,70] = -1 #introducing one negative value in one of the noise maps cutouts to test warning message
+        self.psf_fitting._image_model_class.Data._C_D[42, 70] = (
+            -1
+        )  # introducing one negative value in one of the noise maps cutouts to test warning message
         kwargs_psf_iter_starred = {
             "stacking_method": "median",
             "error_map_radius": 0.5,
             "psf_iter_factor": 1.0,
-                        "psf_symmetry": 2, #to test warning message
-            "corner_symmetry": 2, #to test warning message
+            "psf_symmetry": 2,  # to test warning message
+            "corner_symmetry": 2,  # to test warning message
             "new_procedure": False,
             "use_starred": True,
             "kwargs_starred": {"verbose": False, "lambda_scales": 3, "lambda_hf": 3},

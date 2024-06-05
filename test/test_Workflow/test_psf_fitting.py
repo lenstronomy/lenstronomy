@@ -182,7 +182,7 @@ class TestPSFIteration(object):
         kwargs_psf_iter_starred = {
             "stacking_method": "median",
             "error_map_radius": 0.5,
-            "psf_iter_factor": 1.,
+            "psf_iter_factor": 1.0,
             "new_procedure": False,
             "use_starred": True,
             "kwargs_starred": {"verbose": False, "lambda_scales": 3, "lambda_hf": 3},

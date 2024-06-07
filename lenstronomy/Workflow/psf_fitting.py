@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 from lenstronomy.Data.psf import PSF
 import lenstronomy.Util.util as util
 import lenstronomy.Util.image_util as image_util
@@ -7,6 +8,7 @@ import lenstronomy.Util.mask_util as mask_util
 import numpy as np
 import copy
 from scipy import ndimage
+import warnings
 
 __all__ = ["PsfFitting"]
 
@@ -170,12 +172,15 @@ class PsfFitting(object):
         block_center_neighbour_error_map=None,
         new_procedure=True,
         corner_symmetry=None,
+        use_starred=False,
+        kwargs_starred=None,
     ):
         """
 
         :param kwargs_psf: keyword arguments to construct the PSF() class
         :param kwargs_params: keyword arguments of the parameters of the model components (e.g. 'kwargs_lens' etc)
         :param stacking_method: 'median', 'mean'; the different estimates of the PSF are stacked and combined together.
+        Not used if use_starred is True.
          The choices are:
          'mean': mean of pixel values as the estimator (not robust to outliers)
          'median': median of pixel values as the estimator (outlier rejection robust but needs >2 point sources in the
@@ -203,6 +208,10 @@ class PsfFitting(object):
          2) creates a psf with no symmetry
          3) adds the corner_symmetry psf (which has information at the corners) to the odd symmetry PSF, in the regions
          where the odd-symmetry PSF does not have information
+         :param use_starred: boolean, if True, uses the STARRED method to estimate the PSF (https://ui.adsabs.harvard.edu/abs/2023JOSS....8.5340M/abstract)
+         :param kwargs_starred: dictionary, keyword arguments for the starred.procedures.psf_routines.update_PSF() method.
+         Example: kwargs_starred = {'lambda_scales':2., 'lambda_hf':2., 'lambda_positivity':0.}
+
         :return: kwargs_psf_new, logL_after, error_map
         """
         if block_center_neighbour_error_map is None:
@@ -243,7 +252,8 @@ class PsfFitting(object):
         kernel_old = psf_class.kernel_point_source
         kernel_size = len(kernel_old)
 
-        if not new_procedure:
+        # TODO: refractor this if new_procedure is definitively adopted
+        if not new_procedure and not use_starred:
             image_single_point_source_list = self.image_single_point_source(
                 self._image_model_class, kwargs_params
             )
@@ -297,7 +307,7 @@ class PsfFitting(object):
                 n_kernel = len(kwargs_psf["kernel_point_source"])
                 kernel_new = kernel_util.cut_psf(kernel_new, psf_size=n_kernel)
 
-        else:
+        elif not use_starred:
             kernel_old_high_res = psf_class.kernel_point_source_supersampled(
                 supersampling_factor=point_source_supersampling_factor
             )
@@ -339,10 +349,132 @@ class PsfFitting(object):
                 point_source_supersampling_factor,
                 error_map_radius=error_map_radius,
             )
+        else:
+            # use STARRED empirical PSF reconstruction routines
+            try:
+                from starred.procedures.psf_routines import (
+                    run_multi_steps_PSF_reconstruction,
+                )
+                from starred.psf.psf import PSF as StarredPSF
+                from starred.psf.parameters import ParametersPSF
+            except ImportError:
+                raise ImportError(
+                    "STARRED is not installed. Please install STARRED to use this feature. "
+                    "STARRED available by typing 'pip install starred-astro'."
+                )
+            if point_source_supersampling_factor != 3:
+                warnings.warn(
+                    "Point source subsampling factor of 3 is highly recommended when using Starred PSF iteration routine"
+                )
+            if psf_symmetry != 1:
+                warnings.warn(
+                    "Starred PSF fitting routine does not assume any PSF symmetry. Setting psf_symmetry=1."
+                )
+
+            kernel_old_high_res = psf_class.kernel_point_source_supersampled(
+                supersampling_factor=point_source_supersampling_factor
+            )
+            image_single_point_source_list = self.image_single_point_source(
+                self._image_model_class, kwargs_params
+            )
+            # get the non-aligned cutouts
+            psf_kernel_list = self.point_like_source_cutouts(
+                x_pos=x_,
+                y_pos=y_,
+                image_list=image_single_point_source_list,
+                cutout_size=kernel_size,
+            )
+            # get the noise maps
+            sigma2_maps_list = self.point_like_source_cutouts(
+                x_pos=x_,
+                y_pos=y_,
+                image_list=[self._image_model_class.Data.C_D for _ in range(len(x_))],
+                cutout_size=kernel_size,
+            )
+
+            # STARRED does not like 0 or negative value in the noise maps... so we replace them with the median
+            sigma2_maps_list = np.asarray(sigma2_maps_list)
+            psf_kernel_list = np.asarray(psf_kernel_list)
+            # Starred works best with normalised the data
+            norm = psf_kernel_list[0].max()
+            psf_kernel_list /= norm
+            sigma2_maps_list /= norm**2
+
+            indneg = np.where(sigma2_maps_list <= 0)
+            if len(indneg[0]) > 0:
+                warnings.warn(
+                    "Negative or zero values in the noise maps. Replacing these pixels with the median value."
+                )
+                sigma2_maps_list[indneg] = np.median(sigma2_maps_list)
+
+            N, image_size, _ = np.shape(psf_kernel_list)
+
+            # todo: Lenstronomy is not supporting custom PSF mask for the moment and propagating the corner mask makes no sense for STARRED, which is not using psf_symetry.
+            if corner_mask is not None:
+                warnings.warn(
+                    "Corner mask is not used in Starred PSF fitting routine. Corner_symmetry is ignored."
+                )
+                # possible implementation of corner_mask in STARRED could look like if custom masks can be propagated one day.
+                # starred requires a mask at the original resolution and has opposite convention (0 is masked)
+                # corner_mask_starred = kernel_util.degrade_kernel(np.invert(corner_mask), point_source_supersampling_factor)
+                # corner_mask_starred = np.repeat(corner_mask_starred[np.newaxis, :, :], N, axis=0)
+
+            # setup the STARRED model
+            model = StarredPSF(
+                image_size=image_size,
+                number_of_sources=N,
+                upsampling_factor=point_source_supersampling_factor,
+                elliptical_moffat=True,
+            )
+
+            kwargs_init, kwargs_fixed, kwargs_up, kwargs_down = model.smart_guess(
+                psf_kernel_list, fixed_background=False
+            )
+            parameters = ParametersPSF(
+                kwargs_init, kwargs_fixed, kwargs_up=kwargs_up, kwargs_down=kwargs_down
+            )
+            (
+                model,
+                parameters,
+                loss,
+                kwargs_partial_list,
+                LogL_list,
+                loss_history_list,
+            ) = run_multi_steps_PSF_reconstruction(
+                psf_kernel_list,
+                model,
+                parameters,
+                sigma2_maps_list,
+                masks=None,
+                **kwargs_starred,
+            )
+
+            psf_kernel_list = model.model(
+                **kwargs_partial_list[-1],
+                high_res=True,
+            )  # return model for each point source at the super-sampled resolution
+            psf_kernel_list = [
+                psf_k / np.sum(psf_k) for psf_k in psf_kernel_list
+            ]  # normalise the models
+            kernel_new_high_res = model.get_full_psf(
+                **kwargs_partial_list[-1], norm=True, high_res=True
+            )  # subsampled PSF
+            kernel_new = (
+                psf_iter_factor * kernel_new_high_res
+                + (1.0 - psf_iter_factor) * kernel_old_high_res
+            )
+
+            error_map = self.error_map_estimate_new(
+                kernel_new_high_res,
+                psf_kernel_list,
+                ra_image,
+                dec_image,
+                point_amp,
+                point_source_supersampling_factor,
+                error_map_radius=error_map_radius,
+            )
 
         kwargs_psf_new["kernel_point_source"] = kernel_new
-        # if 'psf_error_map' in kwargs_psf_new:
-        #    kwargs_psf_new['psf_error_map'] *= 10
         self._image_model_class.update_psf(PSF(**kwargs_psf_new))
         logL_after, _ = self._image_model_class.likelihood_data_given_model(
             **kwargs_params
@@ -707,7 +839,8 @@ class PsfFitting(object):
         residuals achieved in the image.
 
         :param psf_kernel: PSF kernel (super-sampled)
-        :param psf_kernel_list: list of individual best PSF kernel estimates
+        :param psf_kernel_list: list of individual best PSF kernel estimates (super-
+            sampled)
         :param ra_image: image positions in angles
         :param dec_image: image positions in angles
         :param point_amp: image amplitude

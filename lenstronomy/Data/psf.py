@@ -130,7 +130,7 @@ class PSF(object):
         return self._kernel_pixel
 
     def kernel_point_source_supersampled(self, supersampling_factor, updata_cache=True):
-        """Generates (if not already available) a supersampled PSF with ood numbers of
+        """Generates (if not already available) a supersampled PSF with odd numbers of
         pixels centered.
 
         :param supersampling_factor: int >=1, supersampling factor relative to pixel

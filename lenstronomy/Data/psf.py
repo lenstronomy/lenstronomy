@@ -205,7 +205,7 @@ class PSF(object):
         if self.psf_type == "GAUSSIAN":
             try:
                 del self._kernel_point_source
-            except:
+            except NameError:
                 pass
 
     @property
@@ -226,7 +226,7 @@ class PSF(object):
     def fwhm(self):
         """
 
-        :return: full width at half maximum of kernel (in units of pixel)
+        :return: full width at half maximum of kernel (in units of angle)
         """
         if self.psf_type == "GAUSSIAN":
             return self._fwhm

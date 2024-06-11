@@ -49,9 +49,13 @@ class TestLensProfileAnalysis(object):
                 "gamma": gamma_in,
             }
         ]
-        gamma_out = lens_model.profile_slope(kwargs_lens, radius=1.45, alpha_differentials=True)
+        gamma_out = lens_model.profile_slope(
+            kwargs_lens, radius=1.45, alpha_differentials=True
+        )
         npt.assert_array_almost_equal(gamma_out, gamma_in, decimal=3)
-        gamma_out = lens_model.profile_slope(kwargs_lens, radius=1.45, alpha_differentials=False)
+        gamma_out = lens_model.profile_slope(
+            kwargs_lens, radius=1.45, alpha_differentials=False
+        )
         npt.assert_array_almost_equal(gamma_out, gamma_in, decimal=3)
 
     def test_effective_einstein_radius(self):

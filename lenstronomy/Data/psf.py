@@ -148,7 +148,12 @@ class PSF(object):
         else:
             if self.psf_type == "GAUSSIAN":
                 kernel_num_pix = int(
-                    round(self._truncation * self._fwhm / self._pixel_size * supersampling_factor)
+                    round(
+                        self._truncation
+                        * self._fwhm
+                        / self._pixel_size
+                        * supersampling_factor
+                    )
                 )
                 if kernel_num_pix > 10000:
                     raise ValueError(

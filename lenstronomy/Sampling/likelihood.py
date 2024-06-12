@@ -269,7 +269,8 @@ class LikelihoodModule(object):
         """
 
         :param kwargs_model: lenstronomy model keyword arguments
-        :param kwargs_imaging: keyword arguments for imaging likelihood
+        :param kwargs_image_sim: keyword arguments for imaging likelihood
+        :param kwargs_image_likelihood: image likelihood dictionary
         :param kwargs_position: keyword arguments for positional likelihood
         :param kwargs_flux: keyword arguments for flux ratio likelihood
         :param kwargs_time_delay: keyword arguments for time delay likelihood

@@ -205,7 +205,7 @@ class PSF(object):
         if self.psf_type == "GAUSSIAN":
             try:
                 del self._kernel_point_source
-            except NameError:
+            except:
                 pass
 
     @property

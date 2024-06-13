@@ -179,31 +179,42 @@ class TestPSFIteration(object):
         assert diff_old > diff_new
 
         # test STARRED
-        self.psf_fitting._image_model_class.Data._C_D[42, 70] = (
-            -1
-        )  # introducing one negative value in one of the noise maps cutouts to test warning message
-        kwargs_psf_iter_starred = {
-            "stacking_method": "median",
-            "error_map_radius": 0.5,
-            "psf_iter_factor": 1.0,
-            "psf_symmetry": 2,  # to test warning message
-            "corner_symmetry": 2,  # to test warning message
-            "new_procedure": False,
-            "use_starred": True,
-            "kwargs_starred": {"verbose": False, "lambda_scales": 3, "lambda_hf": 3},
-        }
+        try:
+            import starred
 
-        kwargs_psf_return_starred, improved_bool_starred, error_map_starred = (
-            self.psf_fitting.update_psf(
-                kwargs_psf, self.kwargs_params, **kwargs_psf_iter_starred
+            run_starred_test = True
+        except:
+            run_starred_test = False
+        if run_starred_test:
+            self.psf_fitting._image_model_class.Data._C_D[42, 70] = (
+                -1
+            )  # introducing one negative value in one of the noise maps cutouts to test warning message
+            kwargs_psf_iter_starred = {
+                "stacking_method": "median",
+                "error_map_radius": 0.5,
+                "psf_iter_factor": 1.0,
+                "psf_symmetry": 2,  # to test warning message
+                "corner_symmetry": 2,  # to test warning message
+                "new_procedure": False,
+                "use_starred": True,
+                "kwargs_starred": {
+                    "verbose": False,
+                    "lambda_scales": 3,
+                    "lambda_hf": 3,
+                },
+            }
+
+            kwargs_psf_return_starred, improved_bool_starred, error_map_starred = (
+                self.psf_fitting.update_psf(
+                    kwargs_psf, self.kwargs_params, **kwargs_psf_iter_starred
+                )
             )
-        )
-        assert improved_bool_starred
-        kernel_new_starred = kwargs_psf_return_starred["kernel_point_source"]
-        diff_new_starred = np.sum((kernel_new_starred - kernel_true) ** 2)
+            assert improved_bool_starred
+            kernel_new_starred = kwargs_psf_return_starred["kernel_point_source"]
+            diff_new_starred = np.sum((kernel_new_starred - kernel_true) ** 2)
 
-        # print(diff_new_starred, diff_new, diff_old)
-        assert diff_old > diff_new_starred
+            # print(diff_new_starred, diff_new, diff_old)
+            assert diff_old > diff_new_starred
 
     def test_calc_corner_mask(self):
         kernel_old = np.ones((101, 101))

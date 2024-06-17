@@ -408,7 +408,7 @@ class Particle(object):
         """Creates a new particle without position, velocity and -inf as fitness."""
 
         return Particle(
-            np.array([[]] * param_count), np.array([[]] * param_count), -np.Inf
+            np.array([[]] * param_count), np.array([[]] * param_count), -np.inf
         )
 
     def update_personal_best(self):

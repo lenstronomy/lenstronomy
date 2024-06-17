@@ -66,8 +66,7 @@ def within_distance(x, y, test_point, threshold, threshold_2):
     :type threshold: float
     :param threshold_2: beta_s value.
     :type threshold: float
-    :return: Boolean array indicating whether each point is within both threshold
-        distances.
+    :return: Boolean array indicating whether each point is within both threshold and threshold_2 distances.
     :rtype: nparray
     """
 

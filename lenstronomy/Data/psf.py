@@ -107,7 +107,7 @@ class PSF(object):
         if not hasattr(self, "_kernel_point_source"):
             if self.psf_type == "GAUSSIAN":
                 kernel_num_pix = min(
-                    round(self._truncation * self._fwhm / self._pixel_size), 201
+                    round(self._truncation * self._fwhm / self._pixel_size), 221
                 )
                 if kernel_num_pix % 2 == 0:
                     kernel_num_pix += 1
@@ -130,7 +130,7 @@ class PSF(object):
         return self._kernel_pixel
 
     def kernel_point_source_supersampled(self, supersampling_factor, updata_cache=True):
-        """Generates (if not already available) a supersampled PSF with ood numbers of
+        """Generates (if not already available) a supersampled PSF with odd numbers of
         pixels centered.
 
         :param supersampling_factor: int >=1, supersampling factor relative to pixel
@@ -147,20 +147,24 @@ class PSF(object):
             kernel_point_source_supersampled = self._kernel_point_source_supersampled
         else:
             if self.psf_type == "GAUSSIAN":
-                kernel_numPix = (
-                    self._truncation / self._pixel_size * supersampling_factor
+                kernel_num_pix = int(
+                    round(
+                        self._truncation
+                        * self._fwhm
+                        / self._pixel_size
+                        * supersampling_factor
+                    )
                 )
-                kernel_numPix = int(round(kernel_numPix))
-                if kernel_numPix > 10000:
+                if kernel_num_pix > 10000:
                     raise ValueError(
                         "The pixelized Gaussian kernel has a grid of %s pixels with a truncation at "
                         "%s times the sigma of the Gaussian, exceeding the limit allowed."
-                        % (kernel_numPix, self._truncation)
+                        % (kernel_num_pix, self._truncation)
                     )
-                if kernel_numPix % 2 == 0:
-                    kernel_numPix += 1
+                if kernel_num_pix % 2 == 0:
+                    kernel_num_pix += 1
                 kernel_point_source_supersampled = kernel_util.kernel_gaussian(
-                    kernel_numPix, self._pixel_size / supersampling_factor, self._fwhm
+                    kernel_num_pix, self._pixel_size / supersampling_factor, self._fwhm
                 )
 
             elif self.psf_type == "PIXEL":
@@ -222,7 +226,7 @@ class PSF(object):
     def fwhm(self):
         """
 
-        :return: full width at half maximum of kernel (in units of pixel)
+        :return: full width at half maximum of kernel (in units of angle)
         """
         if self.psf_type == "GAUSSIAN":
             return self._fwhm

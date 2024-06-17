@@ -192,7 +192,7 @@ class LensEquationSolver(object):
             # lens mapping
             # power-law scaling with mst
             # alpha = theta_E * (r2 / theta_E**2) ** (1 - gamma / 2.0)
-            gamma = kwargs_lens[0]["gamma"] if "gamma" in kwargs_lens[0] else 1
+            gamma = kwargs_lens[0]["gamma"] if "gamma" in kwargs_lens[0] else 2
 
             kwargs_lens_[0]["theta_E"] /= lambda_mst ** (1.0 / (gamma - 1))
             if "SHEAR" in lens_model_list:

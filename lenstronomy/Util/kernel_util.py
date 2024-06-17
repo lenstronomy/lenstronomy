@@ -403,7 +403,7 @@ def degrade_kernel(kernel_super, degrading_factor):
 def averaging_odd_kernel(kernel_super, degrading_factor):
     """"""
     n_kernel = len(kernel_super)
-    numPix = int(round(n_kernel / degrading_factor + 0.5))
+    numPix = int(round(n_kernel / degrading_factor))
     if numPix % 2 == 0:
         numPix += 1
     n_high = numPix * degrading_factor

@@ -213,7 +213,7 @@ class KinematicsAPI(object):
         galkin, kwargs_profile, kwargs_light = self.galkin_settings(
             kwargs_lens, kwargs_lens_light, r_eff=r_eff, theta_E=theta_E, gamma=gamma
         )
-        if direct_convolve:
+        if direct_convolve is True and not self._multi_observations:
             if self._kwargs_aperture_kin["aperture_type"] != "IFU_grid":
                 raise ValueError(
                     "direct_convolve=True is not supported if "
@@ -232,11 +232,12 @@ class KinematicsAPI(object):
 
             return sigma_v_map
         else:
-            if self._kwargs_aperture_kin["aperture_type"] == "IFU_grid":
-                warnings.warn(
-                    'direct_convolve=False may be slow with aperture type "IFU_grid", '
-                    "you may want to use direct_convolve=True instead."
-                )
+            if not self._multi_observations:
+                if self._kwargs_aperture_kin["aperture_type"] == "IFU_grid":
+                    warnings.warn(
+                        'direct_convolve=False may be slow with aperture type "IFU_grid", '
+                        "you may want to use direct_convolve=True instead."
+                    )
             sigma_v_map = galkin.dispersion_map(
                 kwargs_profile,
                 kwargs_light,

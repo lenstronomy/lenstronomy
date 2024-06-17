@@ -214,7 +214,7 @@ class FittingSequence(object):
 
         :return: log likelihood, float
         """
-        kwargs_result = self.best_fit(bijective=False)
+        kwargs_result = self.best_fit(bijective=True)
         param_class = self.param_class
         likelihoodModule = self.likelihoodModule
         logL = likelihoodModule.logL(param_class.kwargs2args(**kwargs_result))

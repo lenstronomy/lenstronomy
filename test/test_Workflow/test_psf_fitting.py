@@ -181,6 +181,7 @@ class TestPSFIteration(object):
         # test STARRED
         try:
             import starred
+
             run_starred_test = True
         except:
             run_starred_test = False
@@ -196,7 +197,11 @@ class TestPSFIteration(object):
                 "corner_symmetry": 2,  # to test warning message
                 "new_procedure": False,
                 "use_starred": True,
-                "kwargs_starred": {"verbose": False, "lambda_scales": 3, "lambda_hf": 3},
+                "kwargs_starred": {
+                    "verbose": False,
+                    "lambda_scales": 3,
+                    "lambda_hf": 3,
+                },
             }
 
             kwargs_psf_return_starred, improved_bool_starred, error_map_starred = (

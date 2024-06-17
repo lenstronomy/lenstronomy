@@ -166,6 +166,14 @@ class LensModel(object):
         if z_lens is not None and z_source is not None:
             self._lensCosmo = LensCosmo(z_lens, z_source, cosmo=cosmo)
 
+    def info(self):
+        """
+        shows what models are being initialized and what parameters are being requested for
+
+        :return: None
+        """
+        self.lens_model.model_info()
+
     def ray_shooting(self, x, y, kwargs, k=None):
         """Maps image to source position (inverse deflection)
 

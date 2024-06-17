@@ -62,6 +62,33 @@ class TestLensModel(object):
         value_interp_lookup = nfw_interp.function(x, y, **kwargs[0])
         npt.assert_almost_equal(value, value_interp_lookup, decimal=4)
 
+    def test_info(self):
+        lens_model_list = [
+            "FLEXION",
+            "SIS_TRUNCATED",
+            "SERSIC",
+            "SERSIC_ELLIPSE_KAPPA",
+            "SERSIC_ELLIPSE_GAUSS_DEC",
+            "NFW_ELLIPSE_GAUSS_DEC",
+            "SERSIC_ELLIPSE_POTENTIAL",
+            "CTNFW_GAUSS_DEC",
+            "PJAFFE",
+            "PJAFFE_ELLIPSE",
+            "HERNQUIST_ELLIPSE",
+            "INTERPOL",
+            "INTERPOL_SCALED",
+            "SHAPELETS_POLAR",
+            "DIPOLE",
+            "GAUSSIAN_ELLIPSE_KAPPA",
+            "GAUSSIAN_ELLIPSE_POTENTIAL",
+            "MULTI_GAUSSIAN_KAPPA",
+            "MULTI_GAUSSIAN_KAPPA_ELLIPSE",
+            "CHAMELEON",
+            "DOUBLE_CHAMELEON",
+        ]
+        lens_model = LensModel(lens_model_list=lens_model_list)
+        lens_model.info()
+
     def test_kappa(self):
         lensModel = LensModel(lens_model_list=["CONVERGENCE"])
         kappa_ext = 0.5

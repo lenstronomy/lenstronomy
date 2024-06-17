@@ -220,13 +220,16 @@ class ProfileListBase(object):
             func.set_dynamic()
 
     def model_info(self):
-        """
-        shows what models are being initialized and what parameters are being requested for
+        """Shows what models are being initialized and what parameters are being
+        requested for.
 
         :return: None
         """
         for i, func in enumerate(self.func_list):
-            print("Lens model %s is %s with parameters %s" % (i, self._model_list[i], func.param_names))
+            print(
+                "Lens model %s is %s with parameters %s"
+                % (i, self._model_list[i], func.param_names)
+            )
 
 
 def lens_class(

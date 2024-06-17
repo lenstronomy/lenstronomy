@@ -167,8 +167,8 @@ class LensModel(object):
             self._lensCosmo = LensCosmo(z_lens, z_source, cosmo=cosmo)
 
     def info(self):
-        """
-        shows what models are being initialized and what parameters are being requested for
+        """Shows what models are being initialized and what parameters are being
+        requested for.
 
         :return: None
         """

@@ -1,4 +1,4 @@
-numpy>=1.17
+numpy<2
 astropy
 scipy>=0.19.1
 mpmath

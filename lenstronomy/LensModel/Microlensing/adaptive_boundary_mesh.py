@@ -158,14 +158,14 @@ def adaptive_boundary_mesh(
 
     # Initialize variables
     total_number_of_rays_shot = 0  # Counter for total number of rays shot
-    i = 1  # Iteration counter
+    i = 2  # Iteration counter (starts at 2 because we already have the source position)
     image_centers = np.array([[0, 0]])  # Initial center coordinates
     image_centers_x, image_centers_y = image_centers[:, 0], image_centers[:, 1]
     side_length = L  # Initial side length of square region (for source image), same as image plane side length, arc seconds
     delta_beta = beta_0  # Initial step size for source plane radius, arc seconds
 
     # Main loop for adaptive boundary mesh algorithm
-    while i < number_of_iterations:
+    while i <= number_of_iterations:
 
         # Split image plane centers
         image_centers_x, image_centers_y, _ = splitting_centers(

@@ -81,9 +81,9 @@ def adaptive_boundary_mesh(
     Original ABM algorithm described in Meena et al. 2022, https://arxiv.org/abs/2203.08131
     
     Returns list of those high resolution image-plane pixels that were mapped to
-    within the radius :math:\\beta_s around the source position (:math:\\beta1, :math:\\beta2) in the source plane. This
+    within the radius :math:`\\beta_s` around the source position (:math:`\\beta_1`, :math:`\\beta_2`) in the source plane. This
     is done by first loading all image-plane pixels, ray shooting from the image plane
-    to the source plane, and then checking if they are within the radius :math:\\beta_s.
+    to the source plane, and then checking if they are within the radius :math:`\\beta_s`.
 
      :param source_position: Coordinates of the source position (x, y). Source position
      :type source_position: tuple

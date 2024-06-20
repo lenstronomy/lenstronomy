@@ -65,7 +65,8 @@ def within_distance(x, y, test_point, threshold, threshold_2):
     :type threshold: float
     :param threshold_2: beta_s value.
     :type threshold: float
-    :return: Boolean array indicating whether each point is within both threshold and threshold_2 distances.
+    :return: Boolean array indicating whether each point is within both threshold and
+        threshold_2 distances.
     :rtype: nparray
     """
 
@@ -75,11 +76,20 @@ def within_distance(x, y, test_point, threshold, threshold_2):
 
 # temporary function name, basically its the ABM algorithm with pixel division
 def adaptive_boundary_mesh(
-    source_position, L, beta_0, beta_s, n_p, eta, number_of_iterations, final_eta, kwargs_lens):
+    source_position,
+    L,
+    beta_0,
+    beta_s,
+    n_p,
+    eta,
+    number_of_iterations,
+    final_eta,
+    kwargs_lens,
+):
     """
-    
+
     Original ABM algorithm described in Meena et al. 2022, https://arxiv.org/abs/2203.08131
-    
+
     Returns list of those high resolution image-plane pixels that were mapped to
     within the radius :math:`\\beta_s` around the source position (:math:`\\beta_1`, :math:`\\beta_2`) in the source plane. This
     is done by first loading all image-plane pixels, ray shooting from the image plane
@@ -116,18 +126,32 @@ def adaptive_boundary_mesh(
     d_l = 4000  # distance of the lens in pc
     d_s = 8000  # distance of the source in pc
     M0 = 0.01  # mass of the lens in units of M_sol (limited up to 0.25 M_sol)
-    diameter_s = 20  # size of the diameter of the source star in units of the solar radius
+    diameter_s = (
+        20  # size of the diameter of the source star in units of the solar radius
+    )
     theta_E = einstein_radius(M0, d_l, d_s)  # returns Einstein radius in arcseconds
-    source_diameter = source_size(diameter_s, d_s)  # converts source star diameter from solar radius to arcseconds
+    source_diameter = source_size(
+        diameter_s, d_s
+    )  # converts source star diameter from solar radius to arcseconds
     lens = LensModel(lens_model_list=["POINT_MASS"])  # define the lens model
-    kwargs_lens = [{"theta_E": theta_E, "center_x": theta_E / 4, "center_y": theta_E / 6}]
+    kwargs_lens = [
+        {"theta_E": theta_E, "center_x": theta_E / 4, "center_y": theta_E / 6}
+    ]
 
     # define square area and search radius
-    L = theta_E * 4 # side length of square area in image plane - same as lenstronomy grid width, arc seconds
-    beta_0 = 4 * L # initial search radius few times bigger than "necessary" to be safe, arc seconds
-    beta_s = source_diameter / 2 # source size, factor of 1/2 because radius, arc seconds
+    L = (
+        theta_E * 4
+    )  # side length of square area in image plane - same as lenstronomy grid width, arc seconds
+    beta_0 = (
+        4 * L
+    )  # initial search radius few times bigger than "necessary" to be safe, arc seconds
+    beta_s = (
+        source_diameter / 2
+    )  # source size, factor of 1/2 because radius, arc seconds
     n_p = 5  # number of of subsquares per side by which each (valid) pixel is divided in the next iteration
-    eta = 0.7 * n_p # the factor by which the search radius is reduced in each iteration
+    eta = (
+        0.7 * n_p
+    )  # the factor by which the search radius is reduced in each iteration
     source_position = (0, 0)  # position of the source in the source plane
 
     # creates an loop_info array to store number of iterations and final scale factor
@@ -147,12 +171,18 @@ def adaptive_boundary_mesh(
     while i <= number_of_iterations:
 
         # Split image plane centers
-        image_centers_x, image_centers_y, _ = splitting_centers(image_centers_x, image_centers_y, side_length, n_p)
+        image_centers_x, image_centers_y, _ = splitting_centers(
+            image_centers_x, image_centers_y, side_length, n_p
+        )
 
         # Ray shoot from image to source plane using array-based approach
-        source_centers_x, source_centers_y = lens.ray_shooting(image_centers_x, image_centers_y, kwargs=kwargs_lens)
+        source_centers_x, source_centers_y = lens.ray_shooting(
+            image_centers_x, image_centers_y, kwargs=kwargs_lens
+        )
 
-        within_radius = within_distance(source_centers_x, source_centers_y, source_position, delta_beta, beta_s)
+        within_radius = within_distance(
+            source_centers_x, source_centers_y, source_position, delta_beta, beta_s
+        )
         subset_image_centers_x = image_centers_x[within_radius]
         subset_image_centers_y = image_centers_y[within_radius]
 
@@ -160,7 +190,9 @@ def adaptive_boundary_mesh(
         total_number_of_rays_shot += len(subset_image_centers_x)
 
         # Update centers to be matched image centers with subset of centers in source plane
-        combined_images = np.column_stack((subset_image_centers_x, subset_image_centers_y))  # not used in calculation, used for debugging
+        combined_images = np.column_stack(
+            (subset_image_centers_x, subset_image_centers_y)
+        )  # not used in calculation, used for debugging
 
         # Update side length
         side_length /= n_p
@@ -174,4 +206,9 @@ def adaptive_boundary_mesh(
         # Increment iteration counter
         i += 1
 
-    return (side_length, total_number_of_rays_shot, subset_image_centers_x, subset_image_centers_y,)
+    return (
+        side_length,
+        total_number_of_rays_shot,
+        subset_image_centers_x,
+        subset_image_centers_y,
+    )

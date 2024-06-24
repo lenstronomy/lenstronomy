@@ -55,8 +55,14 @@ class TestFluxRatioLikelihood(object):
         flux_ratio_errors = [0.1, 0.1, 0.1]
         flux_ratio_cov = np.diag([0.1, 0.1, 0.1]) ** 2
 
-        flux_ratios2 = [np.array(mag_inf[1:] / mag_inf[0]), np.array(mag_inf2[1:] / mag_inf2[0])]
-        flux_ratio_errors2 = [np.ones(len(flux_ratios2[0])), np.ones(len(flux_ratios2[1]))]
+        flux_ratios2 = [
+            np.array(mag_inf[1:] / mag_inf[0]),
+            np.array(mag_inf2[1:] / mag_inf2[0]),
+        ]
+        flux_ratio_errors2 = [
+            np.ones(len(flux_ratios2[0])),
+            np.ones(len(flux_ratios2[1])),
+        ]
 
         self.flux_likelihood = FluxRatioLikelihood(
             lens_model_class=lensModel,
@@ -148,10 +154,10 @@ class TestFluxRatioLikelihood(object):
         npt.assert_almost_equal(logL, 0, decimal=8)
 
     def test_two_point_sources(self):
-        """
-        same test but with two point sources
-        """
-        logL = self.flux_likelihood_inf2.logL(self.x_img2, self.y_img2, self.kwargs_lens, kwargs_special={})
+        """Same test but with two point sources."""
+        logL = self.flux_likelihood_inf2.logL(
+            self.x_img2, self.y_img2, self.kwargs_lens, kwargs_special={}
+        )
         # no numerical test, just checking whether it can loop through
         npt.assert_almost_equal(logL, -2.7854474307328996, decimal=0)
 

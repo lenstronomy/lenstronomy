@@ -131,7 +131,6 @@ class FittingSequence(object):
                 chain_list.append([fitting_type, chain, param])
 
             elif fitting_type == "SIMPLEX":
-                self._updateManager.check_initial_state()
                 kwargs_result = self.simplex(**kwargs)
                 self._updateManager.update_param_state(**kwargs_result)
                 chain_list.append([fitting_type, kwargs_result])

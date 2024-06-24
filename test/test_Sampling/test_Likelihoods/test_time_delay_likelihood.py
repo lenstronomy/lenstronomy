@@ -39,6 +39,7 @@ class TestImageLikelihood(object):
 
         # we chose a source position (in units angle)
         x_source, y_source = 0.02, 0.01
+        x_source2, y_source2 = -0.02, 0.01
         # we chose a lens model
         kwargs_lens = [
             {
@@ -58,6 +59,9 @@ class TestImageLikelihood(object):
         x_img, y_img = lensEquationSolver.image_position_from_source(
             kwargs_lens=kwargs_lens, sourcePos_x=x_source, sourcePos_y=y_source
         )
+        x_img2, y_img2 = lensEquationSolver.image_position_from_source(
+            kwargs_lens=kwargs_lens, sourcePos_x=x_source2, sourcePos_y=y_source2
+        )
 
         point_source_list = ["LENSED_POSITION"]
         kwargs_ps = [{"ra_image": x_img, "dec_image": y_img}]
@@ -74,6 +78,25 @@ class TestImageLikelihood(object):
         kwargs_cosmo = {"D_dt": lensCosmo.ddt}
         logL = self.td_likelihood.logL(
             kwargs_lens=kwargs_lens, kwargs_ps=kwargs_ps, kwargs_cosmo=kwargs_cosmo
+        )
+        npt.assert_almost_equal(logL, 0, decimal=8)
+
+        # testing two sources
+        point_source_list2 = ["LENSED_POSITION", "LENSED_POSITION"]
+        kwargs_ps2 = [{"ra_image": x_img, "dec_image": y_img}, {"ra_image": x_img2, "dec_image": y_img2}]
+        pointSource2 = PointSource(point_source_type_list=point_source_list2)
+        t2_days = lensModel.arrival_time(x_img2, y_img2, kwargs_lens)
+        time_delays_measured2 = t2_days[1:] - t2_days[0]
+        time_delays_uncertainties2 = np.array([0.1, 0.1, 0.1])
+        self.td_likelihood = TimeDelayLikelihood(
+            [time_delays_measured, time_delays_measured2],
+            [time_delays_uncertainties, time_delays_uncertainties2],
+            lens_model_class=lensModel,
+            point_source_class=pointSource2,
+        )
+        kwargs_cosmo = {"D_dt": lensCosmo.ddt}
+        logL = self.td_likelihood.logL(
+            kwargs_lens=kwargs_lens, kwargs_ps=kwargs_ps2, kwargs_cosmo=kwargs_cosmo
         )
         npt.assert_almost_equal(logL, 0, decimal=8)
 
@@ -117,6 +140,13 @@ class TestImageLikelihood(object):
             kwargs_lens=kwargs_lens, kwargs_ps=kwargs_ps, kwargs_cosmo=kwargs_cosmo
         )
         npt.assert_almost_equal(logL, -(10**15), decimal=8)
+
+    def test_two_point_sources(self):
+        """
+        tests for looping through two point sources with time delays
+
+        :return:
+        """
 
 
 if __name__ == "__main__":

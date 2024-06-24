@@ -539,6 +539,9 @@ class LikelihoodModule(object):
             self.image_likelihood.reset_point_source_cache(bool_input)
         if self._tracer_likelihood is True:
             self.tracer_likelihood.reset_point_source_cache(bool_input)
+        if self._time_delay_likelihood:
+            pass
+
 
     def _update_model(self, kwargs_special):
         """Updates lens model instance of this class (and all class instances related to

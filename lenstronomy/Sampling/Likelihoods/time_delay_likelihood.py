@@ -38,10 +38,14 @@ class TimeDelayLikelihood(object):
         self._pointSource = point_source_class
 
     def logL(self, kwargs_lens, kwargs_ps, kwargs_cosmo):
-        """Routine to compute the log likelihood of the time delay distance :param
-        kwargs_lens: lens model kwargs list :param kwargs_ps: point source kwargs list
-        :param kwargs_cosmo: cosmology and other kwargs :return: log likelihood of the
-        model given the time delay data."""
+        """Routine to compute the log likelihood of the time-delay distance
+
+        :param kwargs_lens: lens model kwargs list
+        :param kwargs_ps: point source kwargs list
+        :param kwargs_cosmo: cosmology and other kwargs
+        :return: log likelihood of the
+         model given the time delay data.
+        """
         x_pos, y_pos = self._pointSource.image_position(
             kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens, original_position=True
         )

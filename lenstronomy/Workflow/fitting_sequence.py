@@ -88,8 +88,23 @@ class FittingSequence(object):
             fitting_type = fitting[0]
             kwargs = fitting[1]
 
+            if fitting_type in [
+                "PSO",
+                "SIMPLEX",
+                "MCMC",
+                "emcee",
+                "zeus",
+                "Cobaya",
+                "dynesty",
+                "dyPolyChord",
+                "MultiNest",
+                "nested_sampling",
+                "Nautilus",
+            ]:
+                self._updateManager.check_initial_state()
             if fitting_type == "restart":
                 self._updateManager.set_init_state()
+                self._updateManager.check_initial_state()
 
             elif fitting_type == "update_settings":
                 self.update_settings(**kwargs)
@@ -193,7 +208,8 @@ class FittingSequence(object):
     def best_fit(self, bijective=False):
         """
 
-        :param bijective: bool, if True, the mapping of image2source_plane and the mass_scaling parameterisation are inverted. If you do not use those options, there is no effect.
+        :param bijective: bool, if True, the mapping of image2source_plane and the mass_scaling parameterisation
+         are inverted. If you do not use those options, there is no effect.
         :return: best fit model of the current state of the FittingSequence class
         """
 
@@ -207,17 +223,19 @@ class FittingSequence(object):
         """
         self._updateManager.update_param_state(**kwargs_update)
 
-    @property
-    def best_fit_likelihood(self):
+    def best_fit_likelihood(self, verbose=False):
         """Returns the log likelihood of the best fit model of the current state of this
         class.
 
+        :param verbose: bool, if True, prints likelihood statements
         :return: log likelihood, float
         """
         kwargs_result = self.best_fit(bijective=True)
         param_class = self.param_class
         likelihoodModule = self.likelihoodModule
-        logL = likelihoodModule.logL(param_class.kwargs2args(**kwargs_result))
+        logL = likelihoodModule.logL(
+            param_class.kwargs2args(**kwargs_result), verbose=verbose
+        )
         return logL
 
     @property
@@ -230,7 +248,9 @@ class FittingSequence(object):
         num_param_nonlinear = self.param_class.num_param()[0]
         num_param_linear = self.param_class.num_param_linear()
         num_param = num_param_nonlinear + num_param_linear
-        bic = analysis_util.bic_model(self.best_fit_likelihood, num_data, num_param)
+        bic = analysis_util.bic_model(
+            self.best_fit_likelihood(verbose=False), num_data, num_param
+        )
         return bic
 
     @property

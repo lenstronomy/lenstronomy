@@ -345,7 +345,7 @@ class LikelihoodModule(object):
                 args, self._lower_limit, self._upper_limit, verbose=verbose
             )
             if bound_hit is True:
-                return -(10**15)
+                return -(10**18)
         return self.log_likelihood(kwargs_return, verbose=verbose)
 
     def log_likelihood(self, kwargs_return, verbose=False):

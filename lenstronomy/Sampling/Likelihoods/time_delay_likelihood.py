@@ -67,10 +67,14 @@ class TimeDelayLikelihood(object):
         for i in range(self._num_point_sources):
             if self._measurement_bool_list[i] is True:
                 x_pos_, y_pos_ = x_pos[i], y_pos[i]
-                delay_arcsec = self._lensModel.fermat_potential(x_pos_, y_pos_, kwargs_lens)
+                delay_arcsec = self._lensModel.fermat_potential(
+                    x_pos_, y_pos_, kwargs_lens
+                )
                 D_dt_model = kwargs_cosmo["D_dt"]
                 delay_days = const.delay_arcsec2days(delay_arcsec, D_dt_model)
-                logL += self._logL_delays(delay_days, self._delays_measured[i], self._delays_errors[i])
+                logL += self._logL_delays(
+                    delay_days, self._delays_measured[i], self._delays_errors[i]
+                )
         return logL
 
     @staticmethod

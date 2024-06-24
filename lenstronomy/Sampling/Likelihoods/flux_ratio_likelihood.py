@@ -106,9 +106,7 @@ class FluxRatioLikelihood(object):
         if not np.isfinite(flux_ratios).any():
             return -(10**15)
         if flux_ratio_errors.ndim <= 1:
-            dist = (
-                (flux_ratios - flux_ratios_obs) ** 2 / flux_ratio_errors**2 / 2
-            )
+            dist = (flux_ratios - flux_ratios_obs) ** 2 / flux_ratio_errors**2 / 2
             logL = -np.sum(dist)
         elif flux_ratio_errors.ndim == 2:
             # Assume covariance matrix is in ln units!
@@ -136,4 +134,3 @@ class FluxRatioLikelihood(object):
             if self._flux_ratio_measurement_bool[k] is True:
                 num += len(self._flux_ratios[k])
         return num
-

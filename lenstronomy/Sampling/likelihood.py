@@ -312,7 +312,8 @@ class LikelihoodModule(object):
         )
         if self._flux_ratio_likelihood is True:
             self.flux_ratio_likelihood = FluxRatioLikelihood(
-                lens_model_class, num_point_sources=len(self.PointSource.point_source_type_list),
+                lens_model_class,
+                num_point_sources=len(self.PointSource.point_source_type_list),
                 **kwargs_flux
             )
         if self._kinematic_2D_likelihood is True:
@@ -541,7 +542,6 @@ class LikelihoodModule(object):
             self.tracer_likelihood.reset_point_source_cache(bool_input)
         if self._time_delay_likelihood:
             pass
-
 
     def _update_model(self, kwargs_special):
         """Updates lens model instance of this class (and all class instances related to

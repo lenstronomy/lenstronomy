@@ -83,7 +83,10 @@ class TestImageLikelihood(object):
 
         # testing two sources
         point_source_list2 = ["LENSED_POSITION", "LENSED_POSITION"]
-        kwargs_ps2 = [{"ra_image": x_img, "dec_image": y_img}, {"ra_image": x_img2, "dec_image": y_img2}]
+        kwargs_ps2 = [
+            {"ra_image": x_img, "dec_image": y_img},
+            {"ra_image": x_img2, "dec_image": y_img2},
+        ]
         pointSource2 = PointSource(point_source_type_list=point_source_list2)
         t2_days = lensModel.arrival_time(x_img2, y_img2, kwargs_lens)
         time_delays_measured2 = t2_days[1:] - t2_days[0]
@@ -142,8 +145,7 @@ class TestImageLikelihood(object):
         npt.assert_almost_equal(logL, -(10**15), decimal=8)
 
     def test_two_point_sources(self):
-        """
-        tests for looping through two point sources with time delays
+        """Tests for looping through two point sources with time delays.
 
         :return:
         """

@@ -285,7 +285,7 @@ class TestFittingSequence(object):
             lens_temp[0]["theta_E"], self.kwargs_lens[0]["theta_E"], decimal=2
         )
 
-        logL = fittingSequence.best_fit_likelihood
+        logL = fittingSequence.best_fit_likelihood()
         print(logL, "test")
         # print(lens_temp, source_temp, lens_light_temp, ps_temp, special_temp)
         assert logL < 0

@@ -332,8 +332,8 @@ class SingleBand(Instrument, Observation):
         Poisson statistics of astrophysical objects.
 
         :param image: data, background subtracted
-        :return: estimated noise map sqrt(variance) for each pixel as estimated from
-            the instrument and observation
+        :return: estimated noise map sqrt(variance) for each pixel as estimated from the
+            instrument and observation
         """
         return np.sqrt(self.background_noise**2 + self.flux_noise(image) ** 2)
 

@@ -234,7 +234,9 @@ class FittingSequence(object):
         kwargs_result = self.best_fit(bijective=True)
         param_class = self.param_class
         likelihoodModule = self.likelihoodModule
-        logL = likelihoodModule.logL(param_class.kwargs2args(**kwargs_result), verbose=verbose)
+        logL = likelihoodModule.logL(
+            param_class.kwargs2args(**kwargs_result), verbose=verbose
+        )
         return logL
 
     @property
@@ -247,7 +249,9 @@ class FittingSequence(object):
         num_param_nonlinear = self.param_class.num_param()[0]
         num_param_linear = self.param_class.num_param_linear()
         num_param = num_param_nonlinear + num_param_linear
-        bic = analysis_util.bic_model(self.best_fit_likelihood(verbose=False), num_data, num_param)
+        bic = analysis_util.bic_model(
+            self.best_fit_likelihood(verbose=False), num_data, num_param
+        )
         return bic
 
     @property

@@ -5,6 +5,7 @@
 .DS_store
 *.nbc
 *.nbi
+.vscode/settings.json
 
 # C extensions
 *.so
@@ -49,3 +50,4 @@ output/*/index.html
 # docs/_build
 .ipynb_checkpoints
 *.ipynb
+

@@ -174,8 +174,8 @@ class UpdateManager(object):
 
     @property
     def _init_kwargs(self):
-        """
-        keyword arguments for all model components of the initial mean model proposition in the sampling
+        """Keyword arguments for all model components of the initial mean model
+        proposition in the sampling.
 
         :return: list of keyword arguments
         """
@@ -250,30 +250,53 @@ class UpdateManager(object):
         return self.param_class.fixed_kwargs_list
 
     def check_initial_state(self):
-        """
-        checks if initial state is within the bounds in all parameters
-        returns a warning for specific arguments being out of the bounds
+        """Checks if initial state is within the bounds in all parameters returns a
+        warning for specific arguments being out of the bounds.
 
         #TODO: checks whether parameters match the model definitions
 
         :return:
         """
-        _model_class_list = ["kwargs_lens", "kwargs_source", "kwargs_lens_light", "kwargs_ps",
-                             "kwargs_special", "kwargs_extinction", "kwargs_tracer_source"]
+        _model_class_list = [
+            "kwargs_lens",
+            "kwargs_source",
+            "kwargs_lens_light",
+            "kwargs_ps",
+            "kwargs_special",
+            "kwargs_extinction",
+            "kwargs_tracer_source",
+        ]
         init_kwargs_list = self._init_kwargs
         lower_kwargs_list = self._lower_kwargs
         upper_kwargs_list = self._upper_kwargs
         fixed_kwargs_list = self.fixed_kwargs_updated_list
         for i in range(len(init_kwargs_list)):
-            init_kwargs, lower_kwargs, upper_kwargs, fixed_kwargs = init_kwargs_list[i], lower_kwargs_list[i], upper_kwargs_list[i], fixed_kwargs_list[i]
+            init_kwargs, lower_kwargs, upper_kwargs, fixed_kwargs = (
+                init_kwargs_list[i],
+                lower_kwargs_list[i],
+                upper_kwargs_list[i],
+                fixed_kwargs_list[i],
+            )
             if type(init_kwargs) is list:
                 # loop through dictionary
                 for k in range(len(init_kwargs)):
-                    _compare_bounds(init_kwargs[k], lower_kwargs[k], upper_kwargs[k], fixed_kwargs[k],
-                                    model_index=k, model_class=_model_class_list[i])
+                    _compare_bounds(
+                        init_kwargs[k],
+                        lower_kwargs[k],
+                        upper_kwargs[k],
+                        fixed_kwargs[k],
+                        model_index=k,
+                        model_class=_model_class_list[i],
+                    )
             else:
-                _compare_bounds(init_kwargs, lower_kwargs, upper_kwargs, fixed_kwargs,
-                                model_index=None, model_class=_model_class_list[i])
+                _compare_bounds(
+                    init_kwargs,
+                    lower_kwargs,
+                    upper_kwargs,
+                    fixed_kwargs,
+                    model_index=None,
+                    model_class=_model_class_list[i],
+                )
 
     def set_init_state(self):
         """Set the current state of the parameters to the initial one.
@@ -727,9 +750,15 @@ class UpdateManager(object):
         pass
 
 
-def _compare_bounds(init_kwargs, lower_kwargs, upper_kwargs, fixed_kwargs, model_index=None, model_class=None):
-    """
-    raises Warnings when parameters are out of bounds
+def _compare_bounds(
+    init_kwargs,
+    lower_kwargs,
+    upper_kwargs,
+    fixed_kwargs,
+    model_index=None,
+    model_class=None,
+):
+    """Raises Warnings when parameters are out of bounds.
 
     :param init_kwargs: dictionary of initial parameters
     :param lower_kwargs: lower bound dictionary
@@ -740,17 +769,38 @@ def _compare_bounds(init_kwargs, lower_kwargs, upper_kwargs, fixed_kwargs, model
     """
     for key in init_kwargs:
         # make sure linear parameters are not required when linear solver is on
-        if key not in fixed_kwargs: # key not in ['amp'] or
+        if key not in fixed_kwargs:  # key not in ['amp'] or
             if key not in lower_kwargs:
-                raise ValueError("Variable %s missing in lower bounds of %s'th model of %s" % (key, model_index, model_class))
+                raise ValueError(
+                    "Variable %s missing in lower bounds of %s'th model of %s"
+                    % (key, model_index, model_class)
+                )
             else:
                 if np.all(lower_kwargs[key] > init_kwargs[key]):
-                    Warning("Variable %s of %s'th model of %s with initial guess %s is below the lower bound %s"
-                            % (key, model_index, model_class, init_kwargs[key], lower_kwargs[key]))
+                    Warning(
+                        "Variable %s of %s'th model of %s with initial guess %s is below the lower bound %s"
+                        % (
+                            key,
+                            model_index,
+                            model_class,
+                            init_kwargs[key],
+                            lower_kwargs[key],
+                        )
+                    )
             if key not in upper_kwargs:
-                raise ValueError("Variable %s missing in upper bounds of %s'th model of %s" % (key, model_index, model_class))
+                raise ValueError(
+                    "Variable %s missing in upper bounds of %s'th model of %s"
+                    % (key, model_index, model_class)
+                )
             else:
                 if np.all(upper_kwargs[key] < init_kwargs[key]):
-                    Warning("Variable %s of %s'th model of %s with initial guess %s is above the upper bound %s"
-                            % (key, model_index, model_class, init_kwargs[key], upper_kwargs[key]))
-
+                    Warning(
+                        "Variable %s of %s'th model of %s with initial guess %s is above the upper bound %s"
+                        % (
+                            key,
+                            model_index,
+                            model_class,
+                            init_kwargs[key],
+                            upper_kwargs[key],
+                        )
+                    )

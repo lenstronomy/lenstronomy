@@ -138,7 +138,7 @@ class PositionLikelihood(object):
         return logL
 
     def check_additional_images(self, kwargs_ps, kwargs_lens):
-        """Checks whether additional images have been found and placed in kwargs_ps
+        """Checks whether additional images have been found and placed in kwargs_ps.
 
         :param kwargs_ps: point source kwargs
         :param kwargs_lens: lens model keyword arguments

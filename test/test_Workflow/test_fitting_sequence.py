@@ -443,9 +443,9 @@ class TestFittingSequence(object):
         }
 
         lens_fixed = [{"center_x": 0.0, "center_y": 0.0}]
-        lens_sigma = [{"theta_E": 0.01}]
-        lens_lower = [{"theta_E": 0.1}]
-        lens_upper = [{"theta_E": 3.0}]
+        lens_sigma = [{"theta_E": 0.01, "center_x": 0.1, "center_y": 0.1}]
+        lens_lower = [{"theta_E": 0.1, "center_x": -10, "center_y": -10}]
+        lens_upper = [{"theta_E": 3.0, "center_x": 10, "center_y": 10}]
 
         source_fixed = [{}]
         source_sigma = [

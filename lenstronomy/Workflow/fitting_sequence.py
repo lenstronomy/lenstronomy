@@ -214,17 +214,17 @@ class FittingSequence(object):
         """
         self._updateManager.update_param_state(**kwargs_update)
 
-    @property
-    def best_fit_likelihood(self):
+    def best_fit_likelihood(self, verbose=False):
         """Returns the log likelihood of the best fit model of the current state of this
         class.
 
+        :param verbose: bool, if True, prints likelihood statements
         :return: log likelihood, float
         """
         kwargs_result = self.best_fit(bijective=True)
         param_class = self.param_class
         likelihoodModule = self.likelihoodModule
-        logL = likelihoodModule.logL(param_class.kwargs2args(**kwargs_result))
+        logL = likelihoodModule.logL(param_class.kwargs2args(**kwargs_result), verbose=verbose)
         return logL
 
     @property
@@ -237,7 +237,7 @@ class FittingSequence(object):
         num_param_nonlinear = self.param_class.num_param()[0]
         num_param_linear = self.param_class.num_param_linear()
         num_param = num_param_nonlinear + num_param_linear
-        bic = analysis_util.bic_model(self.best_fit_likelihood, num_data, num_param)
+        bic = analysis_util.bic_model(self.best_fit_likelihood(verbose=False), num_data, num_param)
         return bic
 
     @property

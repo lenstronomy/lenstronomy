@@ -156,8 +156,8 @@ class TestLikelihoodModule(object):
         self.kwargs_data = {
             "multi_band_list": [[kwargs_band, kwargs_psf, kwargs_numerics]],
             "multi_band_type": "single-band",
-            "time_delays_measured": [np.ones(3)],
-            "time_delays_uncertainties": [np.ones(3)],
+            "time_delays_measured": np.ones(3),
+            "time_delays_uncertainties": np.ones(3),
             "flux_ratios": np.ones(3),
             "flux_ratio_errors": np.ones(3),
             "ra_image_list": ra_pos,

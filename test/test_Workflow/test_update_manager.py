@@ -239,7 +239,9 @@ class TestUpdateManager(object):
         lens_init = [{"e1": 0, "e2": 0}]
         lens_sigma = [{"e1": 0.1, "e2": 0.1}]
         lens_fixed = [{"ra_0": 0, "dec_0": 0}]
-        lens_lower = [{"e1": 1, "e2": 1}]  # here we mix lower and upper bounds to cause a warning
+        lens_lower = [
+            {"e1": 1, "e2": 1}
+        ]  # here we mix lower and upper bounds to cause a warning
         lens_upper = [{"e1": -1, "e2": -1}]
         kwargs_params["lens_model"] = [
             lens_init,
@@ -260,7 +262,11 @@ class TestUpdateManager(object):
         lens_init = [{"e1": 0, "e2": 0}]
         lens_sigma = [{"e1": 0.1, "e2": 0.1}]
         lens_fixed = [{"ra_0": 0, "dec_0": 0}]
-        lens_lower = [{"e1": -1, }] # warning in lower bounds as keyword is missing
+        lens_lower = [
+            {
+                "e1": -1,
+            }
+        ]  # warning in lower bounds as keyword is missing
         lens_upper = [{"e1": 1, "e2": 1}]
         kwargs_params["lens_model"] = [
             lens_init,
@@ -275,6 +281,7 @@ class TestUpdateManager(object):
         )
 
         from numpy.testing import assert_raises
+
         with assert_raises(ValueError):
             # should give a raise
             manager.check_initial_state()
@@ -299,6 +306,7 @@ class TestUpdateManager(object):
             )
 
             from numpy.testing import assert_raises
+
             with assert_raises(ValueError):
                 # should give a raise
                 manager.check_initial_state()

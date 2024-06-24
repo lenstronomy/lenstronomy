@@ -88,9 +88,19 @@ class FittingSequence(object):
             fitting_type = fitting[0]
             kwargs = fitting[1]
 
-            if fitting_type in ["PSO",  "SIMPLEX", "MCMC", "emcee", "zeus", "Cobaya",
-                                "dynesty", "dyPolyChord", "MultiNest", "nested_sampling", "Nautilus"
-                                ]:
+            if fitting_type in [
+                "PSO",
+                "SIMPLEX",
+                "MCMC",
+                "emcee",
+                "zeus",
+                "Cobaya",
+                "dynesty",
+                "dyPolyChord",
+                "MultiNest",
+                "nested_sampling",
+                "Nautilus",
+            ]:
                 self._updateManager.check_initial_state()
             if fitting_type == "restart":
                 self._updateManager.set_init_state()

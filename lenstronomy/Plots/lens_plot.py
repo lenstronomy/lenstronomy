@@ -269,6 +269,7 @@ def point_source_plot(
     source_x,
     source_y,
     name_list=None,
+    index=None,
     **kwargs
 ):
     """Plots and illustrates images of a point source The plotting routine orders the
@@ -280,57 +281,110 @@ def point_source_plot(
         PixelGrid()
     :param lens_model: LensModel() class instance
     :param kwargs_lens: lens model keyword argument list
-    :param source_x: x-position of source
-    :param source_y: y-position of source
+    :param source_x: x-position of source, if multiple: make an array
+    :param source_y: y-position of source, if multiple: make an array
     :param name_list: list of names of images
     :type name_list: list of strings, longer or equal the number of point sources
+    :param index: number of sources, an integer number. Default None.
     :param kwargs: additional plotting keyword arguments
     :return: matplotlib axis instance with figure
     """
     from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 
-    solver = LensEquationSolver(lens_model)
-    x_center, y_center = pixel_grid.center
-    delta_pix = pixel_grid.pixel_width
-    ra0, dec0 = pixel_grid.radec_at_xy_0
-    tranform = pixel_grid.transform_angle2pix
-    if (
-        np.linalg.det(tranform) < 0
-    ):  # if coordiate transform has negative parity (#TODO temporary fix)
-        delta_pix_x = -delta_pix
-    else:
-        delta_pix_x = delta_pix
-    origin = [ra0, dec0]
+    if index is None:
+        solver = LensEquationSolver(lens_model)
+        x_center, y_center = pixel_grid.center
+        delta_pix = pixel_grid.pixel_width
+        ra0, dec0 = pixel_grid.radec_at_xy_0
+        tranform = pixel_grid.transform_angle2pix
+        if (
+            np.linalg.det(tranform) < 0
+        ):  # if coordiate transform has negative parity (#TODO temporary fix)
+            delta_pix_x = -delta_pix
+        else:
+            delta_pix_x = delta_pix
+        origin = [ra0, dec0]
 
-    theta_x, theta_y = solver.image_position_from_source(
-        source_x,
-        source_y,
-        kwargs_lens,
-        search_window=np.max(pixel_grid.width),
-        x_center=x_center,
-        y_center=y_center,
-        min_distance=pixel_grid.pixel_width,
-    )
-    mag_images = lens_model.magnification(theta_x, theta_y, kwargs_lens)
-
-    x_image, y_image = pixel_grid.map_coord2pix(theta_x, theta_y)
-    if name_list is None:
-        name_list = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"]
-    for i in range(len(x_image)):
-        x_ = (x_image[i]) * delta_pix_x + origin[0]
-        y_ = (y_image[i]) * delta_pix + origin[1]
-        ax.plot(
-            x_, y_, "dk", markersize=4 * (1 + np.log(np.abs(mag_images[i]))), alpha=0.5
+        theta_x, theta_y = solver.image_position_from_source(
+            source_x,
+            source_y,
+            kwargs_lens,
+            search_window=np.max(pixel_grid.width),
+            x_center=x_center,
+            y_center=y_center,
+            min_distance=pixel_grid.pixel_width,
         )
-        ax.text(x_, y_, name_list[i], fontsize=20, color="k")
-    x_source, y_source = pixel_grid.map_coord2pix(source_x, source_y)
-    ax.plot(
-        x_source * delta_pix_x + origin[0],
-        y_source * delta_pix + origin[1],
-        "*k",
-        markersize=10,
-    )
-    return ax
+        mag_images = lens_model.magnification(theta_x, theta_y, kwargs_lens)
+
+        x_image, y_image = pixel_grid.map_coord2pix(theta_x, theta_y)
+        if name_list is None:
+            name_list = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"]
+                
+        for i in range(len(x_image)):
+            x_ = (x_image[i]) * delta_pix_x + origin[0]
+            y_ = (y_image[i]) * delta_pix + origin[1]
+            ax.plot(
+                x_, y_, "dk", markersize=4 * (1 + np.log(np.abs(mag_images[i]))), alpha=0.5
+            )
+            ax.text(x_, y_, name_list[i], fontsize=20, color="k")
+        x_source, y_source = pixel_grid.map_coord2pix(source_x, source_y)
+        ax.plot(
+            x_source * delta_pix_x + origin[0],
+            y_source * delta_pix + origin[1],
+            "*k",
+            markersize=10,
+        )
+        return ax
+
+    elif index is not None:
+        for j in range(index):
+            source_x_indexed = source_x[j]
+            source_y_indexed = source_y[j]
+            print(source_x_indexed)
+
+            solver = LensEquationSolver(lens_model)
+            x_center, y_center = pixel_grid.center
+            delta_pix = pixel_grid.pixel_width
+            ra0, dec0 = pixel_grid.radec_at_xy_0
+            tranform = pixel_grid.transform_angle2pix
+            if (
+                np.linalg.det(tranform) < 0
+            ):  # if coordiate transform has negative parity (#TODO temporary fix)
+                delta_pix_x = -delta_pix
+            else:
+                delta_pix_x = delta_pix
+            origin = [ra0, dec0]
+
+            theta_x, theta_y = solver.image_position_from_source(
+                source_x_indexed,
+                source_y_indexed,
+                kwargs_lens,
+                search_window=np.max(pixel_grid.width),
+                x_center=x_center,
+                y_center=y_center,
+                min_distance=pixel_grid.pixel_width,
+            )
+            x_image, y_image = pixel_grid.map_coord2pix(theta_x, theta_y)
+            if name_list is None:
+                name_list = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"]
+            
+            name_list = [f"A_{j}", f"B_{j}", f"C_{j}", f"D_{j}", f"E_{j}", f"F_{j}", f"G_{j}", f"H_{j}", f"I_{j}", f"J_{j}", f"K_{j}"]
+            
+            for i in range(len(x_image)):
+                x_ = (x_image[i]) * delta_pix_x + origin[0]
+                y_ = (y_image[i]) * delta_pix + origin[1]
+                ax.plot(
+                    x_, y_, "dk", markersize=4 * (1 + np.log(np.abs(mag_images[i]))), alpha=0.5
+                )
+                ax.text(x_, y_, name_list[i], fontsize=20, color="k")
+            x_source_indexed, y_source_indexed = pixel_grid.map_coord2pix(source_x_indexed, source_y_indexed)
+            ax.plot(
+                x_source_indexed * delta_pix_x + origin[0],
+                y_source_indexed * delta_pix + origin[1],
+                "*k",
+                markersize=10,
+            )
+            return ax
 
 
 @export

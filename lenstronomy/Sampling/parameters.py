@@ -985,6 +985,23 @@ class Param(object):
         else:
             return 0
 
+    @property
+    def fixed_kwargs_list(self):
+        """
+
+        :return: list of fixed keyword arguments
+        """
+
+        return (
+            self.lensParams.kwargs_fixed,
+            self.sourceParams.kwargs_fixed,
+            self.lensLightParams.kwargs_fixed,
+            self.pointSourceParams.kwargs_fixed,
+            self.specialParams.kwargs_fixed,
+            self.extinctionParams.kwargs_fixed,
+            self.tracerSourceParams.kwargs_fixed,
+        )
+
     def print_setting(self):
         """Prints the setting of the parameter class.
 

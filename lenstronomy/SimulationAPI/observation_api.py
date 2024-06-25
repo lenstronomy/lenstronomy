@@ -328,10 +328,12 @@ class SingleBand(Instrument, Observation):
         return noise
 
     def estimate_noise(self, image):
-        """
+        """Estimates noise per pixel on the basis that the counts in the pixel come from
+        Poisson statistics of astrophysical objects.
 
-        :param image: noisy data, background subtracted
-        :return: estimated noise map  sqrt(variance) for each pixel as estimated from the instrument and observation
+        :param image: data, background subtracted
+        :return: estimated noise map sqrt(variance) for each pixel as estimated from the
+            instrument and observation
         """
         return np.sqrt(self.background_noise**2 + self.flux_noise(image) ** 2)
 

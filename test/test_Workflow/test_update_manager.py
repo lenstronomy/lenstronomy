@@ -209,6 +209,108 @@ class TestUpdateManager(object):
         self.manager.fix_image_parameters(image_index=0)
         assert 1 == 1
 
+    def test_check_initial_state(self):
+        kwargs_model = {
+            "lens_model_list": ["SHEAR"],
+        }
+        kwargs_constraints = {}
+        kwargs_likelihood = {}
+        kwargs_params = {}
+        lens_init = [{"e1": 0, "e2": 0}]
+        lens_sigma = [{"e1": 0.1, "e2": 0.1}]
+        lens_fixed = [{"ra_0": 0, "dec_0": 0}]
+        lens_lower = [{"e1": -1, "e2": -1}]
+        lens_upper = [{"e1": 1, "e2": 1}]
+        kwargs_params["lens_model"] = [
+            lens_init,
+            lens_sigma,
+            lens_fixed,
+            lens_lower,
+            lens_upper,
+        ]
+
+        manager = UpdateManager(
+            kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params
+        )
+        # this should go smoothly through without warnings or raises
+        manager.check_initial_state()
+
+        # this should give a warning
+        lens_init = [{"e1": 0, "e2": 0}]
+        lens_sigma = [{"e1": 0.1, "e2": 0.1}]
+        lens_fixed = [{"ra_0": 0, "dec_0": 0}]
+        lens_lower = [
+            {"e1": 1, "e2": 1}
+        ]  # here we mix lower and upper bounds to cause a warning
+        lens_upper = [{"e1": -1, "e2": -1}]
+        kwargs_params["lens_model"] = [
+            lens_init,
+            lens_sigma,
+            lens_fixed,
+            lens_lower,
+            lens_upper,
+        ]
+
+        manager = UpdateManager(
+            kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params
+        )
+        # should give a warning
+        manager.check_initial_state()
+
+        # should give a raise
+        # this should give a warning
+        lens_init = [{"e1": 0, "e2": 0}]
+        lens_sigma = [{"e1": 0.1, "e2": 0.1}]
+        lens_fixed = [{"ra_0": 0, "dec_0": 0}]
+        lens_lower = [
+            {
+                "e1": -1,
+            }
+        ]  # warning in lower bounds as keyword is missing
+        lens_upper = [{"e1": 1, "e2": 1}]
+        kwargs_params["lens_model"] = [
+            lens_init,
+            lens_sigma,
+            lens_fixed,
+            lens_lower,
+            lens_upper,
+        ]
+
+        manager = UpdateManager(
+            kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params
+        )
+
+        from numpy.testing import assert_raises
+
+        with assert_raises(ValueError):
+            # should give a raise
+            manager.check_initial_state()
+
+        # should give a raise
+        # this should give a warning
+        lens_init = [{"e1": 0, "e2": 0}]
+        lens_sigma = [{"e1": 0.1, "e2": 0.1}]
+        lens_fixed = [{"ra_0": 0, "dec_0": 0}]
+        lens_lower = [{"e1": -1, "e2": -1}]
+        lens_upper = [{"e1": 1}]  # raise in upper bounds as keyword is missing
+        kwargs_params["lens_model"] = [
+            lens_init,
+            lens_sigma,
+            lens_fixed,
+            lens_lower,
+            lens_upper,
+        ]
+
+        manager = UpdateManager(
+            kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params
+        )
+
+        from numpy.testing import assert_raises
+
+        with assert_raises(ValueError):
+            # should give a raise
+            manager.check_initial_state()
+
 
 if __name__ == "__main__":
     pytest.main()

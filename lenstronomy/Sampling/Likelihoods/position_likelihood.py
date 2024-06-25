@@ -138,8 +138,7 @@ class PositionLikelihood(object):
         return logL
 
     def check_additional_images(self, kwargs_ps, kwargs_lens):
-        """Checks whether additional images have been found and placed in kwargs_ps of
-        the first point source model.
+        """Checks whether additional images have been found and placed in kwargs_ps.
 
         :param kwargs_ps: point source kwargs
         :param kwargs_lens: lens model keyword arguments
@@ -168,6 +167,7 @@ class PositionLikelihood(object):
         :return: log likelihood of the astrometirc correction between predicted image
             positions and model placement of the point sources
         """
+        # TODO: make it compatible with multiple source instances
         if not len(kwargs_ps) > 0:
             return 0
         if "ra_image" not in kwargs_ps[0]:
@@ -267,9 +267,9 @@ class PositionLikelihood(object):
                         if delta[0] ** 2 + delta[1] ** 2 > hard_bound_rms**2:
                             if verbose is True:
                                 print(
-                                    "Image positions do not match to the same source position to the required "
+                                    "Image positions of image %s of model %s do not match to the same source position to the required "
                                     "precision. Achieved: %s, Required: %s."
-                                    % (delta, hard_bound_rms)
+                                    % (i, k, delta, hard_bound_rms)
                                 )
                             logL -= 10**3
                     try:

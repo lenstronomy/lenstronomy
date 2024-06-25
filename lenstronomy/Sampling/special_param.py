@@ -290,7 +290,7 @@ class SpecialParam(object):
 
         if kwargs_fixed is None:
             kwargs_fixed = {}
-        self._kwargs_fixed = kwargs_fixed
+        self.kwargs_fixed = kwargs_fixed
 
         if kwargs_lower is None:
             kwargs_lower = {}
@@ -317,13 +317,13 @@ class SpecialParam(object):
                 self._param_groups,
                 args,
                 i,
-                kwargs_fixed=self._kwargs_fixed,
+                kwargs_fixed=self.kwargs_fixed,
                 kwargs_lower=self.lower_limit,
                 kwargs_upper=self.upper_limit,
             )
         else:
             result = ModelParamGroup.compose_get_params(
-                self._param_groups, args, i, kwargs_fixed=self._kwargs_fixed
+                self._param_groups, args, i, kwargs_fixed=self.kwargs_fixed
             )
         return result
 
@@ -334,7 +334,7 @@ class SpecialParam(object):
         :return: argument list of the sampled parameters extracted from kwargs_special
         """
         return ModelParamGroup.compose_set_params(
-            self._param_groups, kwargs_special, kwargs_fixed=self._kwargs_fixed
+            self._param_groups, kwargs_special, kwargs_fixed=self.kwargs_fixed
         )
 
     def num_param(self):
@@ -343,7 +343,7 @@ class SpecialParam(object):
         :return: integer, number of free parameters sampled (and managed) by this class, parameter names (list of strings)
         """
         return ModelParamGroup.compose_num_params(
-            self._param_groups, kwargs_fixed=self._kwargs_fixed
+            self._param_groups, kwargs_fixed=self.kwargs_fixed
         )
 
     @property

@@ -15,6 +15,7 @@ class TestFluxRatioLikelihood(object):
         lensEquationSolver = LensEquationSolver(lensModel=lensModel)
 
         x_source, y_source = 0.02, 0.01
+        x_source2, y_source2 = -0.02, 0.01
         kwargs_lens = [
             {
                 "theta_E": 1.0,
@@ -30,8 +31,12 @@ class TestFluxRatioLikelihood(object):
         x_img, y_img = lensEquationSolver.image_position_from_source(
             kwargs_lens=kwargs_lens, sourcePos_x=x_source, sourcePos_y=y_source
         )
+        x_img2, y_img2 = lensEquationSolver.image_position_from_source(
+            kwargs_lens=kwargs_lens, sourcePos_x=x_source2, sourcePos_y=y_source2
+        )
         print("image positions are: ", x_img, y_img)
         mag_inf = lensModel.magnification(x_img, y_img, kwargs_lens)
+        mag_inf2 = lensModel.magnification(x_img2, y_img2, kwargs_lens)
         print("point source magnification: ", mag_inf)
 
         source_size_arcsec = 0.001
@@ -49,6 +54,16 @@ class TestFluxRatioLikelihood(object):
         flux_ratios = mag_finite[1:] / mag_finite[0]
         flux_ratio_errors = [0.1, 0.1, 0.1]
         flux_ratio_cov = np.diag([0.1, 0.1, 0.1]) ** 2
+
+        flux_ratios2 = [
+            np.array(mag_inf[1:] / mag_inf[0]),
+            np.array(mag_inf2[1:] / mag_inf2[0]),
+        ]
+        flux_ratio_errors2 = [
+            np.ones(len(flux_ratios2[0])),
+            np.ones(len(flux_ratios2[1])),
+        ]
+
         self.flux_likelihood = FluxRatioLikelihood(
             lens_model_class=lensModel,
             flux_ratios=flux_ratios,
@@ -75,10 +90,19 @@ class TestFluxRatioLikelihood(object):
             grid_number=grid_number,
         )
         self.kwargs_cosmo = {"source_size": source_size_arcsec}
-        self.x_img, self.y_img = x_img, y_img
+        self.x_img, self.y_img = [x_img], [y_img]
+        self.x_img2, self.y_img2 = [x_img, x_img2], [y_img, y_img2]
         self.kwargs_lens = kwargs_lens
 
-    def test_logL(self):
+        self.flux_likelihood_inf2 = FluxRatioLikelihood(
+            lens_model_class=lensModel,
+            flux_ratios=flux_ratios2,
+            flux_ratio_errors=flux_ratio_errors2,
+            source_type="INF",
+            num_point_sources=2,
+        )
+
+    def test__logL(self):
         logL = self.flux_likelihood.logL(
             self.x_img, self.y_img, self.kwargs_lens, kwargs_special=self.kwargs_cosmo
         )
@@ -89,7 +113,7 @@ class TestFluxRatioLikelihood(object):
         )
         npt.assert_almost_equal(logL_inf, 0, decimal=4)
 
-    def test__logL(self):
+    def test_logL(self):
         lensModel = LensModel(lens_model_list=[])
         flux_ratios_init = np.array([1.0, 1.0, 1.0])
         flux_ratio_errors = np.array([1.0, 1.0, 1.0])
@@ -115,8 +139,8 @@ class TestFluxRatioLikelihood(object):
     def test_numimgs(self):
         # Test with a different number of images
         logL = self.flux_likelihood.logL(
-            self.x_img[:-1],
-            self.y_img[:-1],
+            [self.x_img[0][:-1]],
+            [self.y_img[0][:-1]],
             self.kwargs_lens,
             kwargs_special=self.kwargs_cosmo,
         )
@@ -128,6 +152,14 @@ class TestFluxRatioLikelihood(object):
             self.x_img, self.y_img, self.kwargs_lens, kwargs_special=self.kwargs_cosmo
         )
         npt.assert_almost_equal(logL, 0, decimal=8)
+
+    def test_two_point_sources(self):
+        """Same test but with two point sources."""
+        logL = self.flux_likelihood_inf2.logL(
+            self.x_img2, self.y_img2, self.kwargs_lens, kwargs_special={}
+        )
+        # no numerical test, just checking whether it can loop through
+        npt.assert_almost_equal(logL, -2.7854474307328996, decimal=0)
 
 
 if __name__ == "__main__":

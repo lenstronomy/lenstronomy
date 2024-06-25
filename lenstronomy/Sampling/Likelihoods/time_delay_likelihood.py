@@ -13,6 +13,7 @@ class TimeDelayLikelihood(object):
         time_delays_uncertainties,
         lens_model_class,
         point_source_class,
+        time_delay_measurement_bool_list=None,
     ):
         """
 
@@ -22,6 +23,7 @@ class TimeDelayLikelihood(object):
         :param lens_model_class: instance of the LensModel() class
         :param point_source_class: instance of the PointSource() class, note: the first point source type is the one the
          time delays are imposed on
+        :param time_delay_measurement_bool_list: list of bool to indicate for which point source model a measurement is available
         """
 
         if time_delays_measured is None:
@@ -32,24 +34,47 @@ class TimeDelayLikelihood(object):
             raise ValueError(
                 "time_delay_uncertainties need to be specified to evaluate the time-delay likelihood."
             )
-        self._delays_measured = np.array(time_delays_measured)
-        self._delays_errors = np.array(time_delays_uncertainties)
+
         self._lensModel = lens_model_class
         self._pointSource = point_source_class
+        self._num_point_sources = len(self._pointSource.point_source_type_list)
+        if self._num_point_sources == 1:
+            self._delays_measured = [np.array(time_delays_measured)]
+            self._delays_errors = [np.array(time_delays_uncertainties)]
+        else:
+            self._delays_measured = []
+            self._delays_errors = []
+            for i in range(self._num_point_sources):
+                self._delays_measured.append(np.array(time_delays_measured[i]))
+                self._delays_errors.append(np.array(time_delays_uncertainties[i]))
+
+        if time_delay_measurement_bool_list is None:
+            time_delay_measurement_bool_list = [True] * self._num_point_sources
+        self._measurement_bool_list = time_delay_measurement_bool_list
 
     def logL(self, kwargs_lens, kwargs_ps, kwargs_cosmo):
-        """Routine to compute the log likelihood of the time delay distance :param
-        kwargs_lens: lens model kwargs list :param kwargs_ps: point source kwargs list
-        :param kwargs_cosmo: cosmology and other kwargs :return: log likelihood of the
-        model given the time delay data."""
+        """Routine to compute the log likelihood of the time-delay distance.
+
+        :param kwargs_lens: lens model kwargs list
+        :param kwargs_ps: point source kwargs list
+        :param kwargs_cosmo: cosmology and other kwargs
+        :return: log likelihood of the model given the time delay data.
+        """
         x_pos, y_pos = self._pointSource.image_position(
             kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens, original_position=True
         )
-        x_pos, y_pos = x_pos[0], y_pos[0]
-        delay_arcsec = self._lensModel.fermat_potential(x_pos, y_pos, kwargs_lens)
-        D_dt_model = kwargs_cosmo["D_dt"]
-        delay_days = const.delay_arcsec2days(delay_arcsec, D_dt_model)
-        logL = self._logL_delays(delay_days, self._delays_measured, self._delays_errors)
+        logL = 0
+        for i in range(self._num_point_sources):
+            if self._measurement_bool_list[i] is True:
+                x_pos_, y_pos_ = x_pos[i], y_pos[i]
+                delay_arcsec = self._lensModel.fermat_potential(
+                    x_pos_, y_pos_, kwargs_lens
+                )
+                D_dt_model = kwargs_cosmo["D_dt"]
+                delay_days = const.delay_arcsec2days(delay_arcsec, D_dt_model)
+                logL += self._logL_delays(
+                    delay_days, self._delays_measured[i], self._delays_errors[i]
+                )
         return logL
 
     @staticmethod

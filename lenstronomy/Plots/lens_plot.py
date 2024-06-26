@@ -37,6 +37,7 @@ def lens_model_plot(
     coord_center_dec=0,
     coord_inverse=False,
     fast_caustic=True,
+    index=None,
     **kwargs
 ):
     """Plots a lens model (convergence) and the critical curves and caustics.
@@ -115,6 +116,7 @@ def lens_model_plot(
             kwargs_lens=kwargs_lens,
             source_x=sourcePos_x,
             source_y=sourcePos_y,
+            index=index,
             **kwargs_point_source
         )
     if coord_inverse:
@@ -290,13 +292,13 @@ def point_source_plot(
     :return: matplotlib axis instance with figure
     """
     from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
-
+    print(index)
     if index is None:        
         name_list = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"]
     elif index is not None:
         if name_list is None:
                     name_list = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"]
-        name_list = [f"A_{index+1}", f"B_{index+1}", f"C_{index+1}", f"D_{index+1}", f"E_{index+1}", f"F_{index+1}", f"G_{index+1}", f"H_{index+1}", f"I_{index+1}", f"J_{index+1}", f"K_{index+1}"]
+        name_list = [f"A{index+1}", f"B{index+1}", f"C{index+1}", f"D{index+1}", f"E{index+1}", f"F{index+1}", f"G{index+1}", f"H{index+1}", f"I{index+1}", f"J{index+1}", f"K{index+1}"]
         
     solver = LensEquationSolver(lens_model)
     x_center, y_center = pixel_grid.center
@@ -339,6 +341,7 @@ def point_source_plot(
         markersize=10,
     )
     return ax
+
         # for j in range(index):
         #     source_x_indexed = source_x[j]
         #     source_y_indexed = source_y[j]

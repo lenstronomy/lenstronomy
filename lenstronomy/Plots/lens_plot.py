@@ -17,6 +17,8 @@ from lenstronomy.Util.package_util import exporter
 export, __all__ = exporter()
 
 
+_NAME_LIST = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"]
+
 # TODO define coordinate grid beforehand, e.g. kwargs_data
 # TODO feed in PointSource instance?
 
@@ -37,6 +39,7 @@ def lens_model_plot(
     coord_center_dec=0,
     coord_inverse=False,
     fast_caustic=True,
+    name_list=None,
     index=None,
     **kwargs
 ):
@@ -116,6 +119,7 @@ def lens_model_plot(
             kwargs_lens=kwargs_lens,
             source_x=sourcePos_x,
             source_y=sourcePos_y,
+            name_list=name_list,
             index=index,
             **kwargs_point_source
         )
@@ -274,7 +278,7 @@ def point_source_plot(
     index=None,
     **kwargs
 ):
-    """Plots and illustrates images of a point source The plotting routine orders the
+    """Plots and illustrates images of a point source. The plotting routine orders the
     image labels according to the arrival time and illustrates a diamond shape of the
     size of the magnification. The coordinates are chosen in pixel coordinates.
 
@@ -292,13 +296,30 @@ def point_source_plot(
     :return: matplotlib axis instance with figure
     """
     from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
-    print(index)
-    if index is None:        
-        name_list = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"]
-    elif index is not None:
-        if name_list is None:
-                    name_list = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"]
+
+    if name_list is None and index is None:
+        name_list = _NAME_LIST
+    elif name_list is None and index is not None:
         name_list = [f"A{index+1}", f"B{index+1}", f"C{index+1}", f"D{index+1}", f"E{index+1}", f"F{index+1}", f"G{index+1}", f"H{index+1}", f"I{index+1}", f"J{index+1}", f"K{index+1}"]
+    elif name_list is not None and index is None:
+        name_list = name_list
+    elif name_list is not None and index is not None:
+        name__list = name_list
+        name_list = name_list
+        for i in range(len(name__list)):
+                name_list[i] = name__list[i] + str(index+1)
+        name_list = name__list
+    
+    # if index is None:
+    #     name_list = name_list
+    # elif index is not None:
+    #     if name_list is None:
+    #         name_list = [f"A{index+1}", f"B{index+1}", f"C{index+1}", f"D{index+1}", f"E{index+1}", f"F{index+1}", f"G{index+1}", f"H{index+1}", f"I{index+1}", f"J{index+1}", f"K{index+1}"]
+    #     elif name_list is not None:
+    #         for i in range(len(name_list)):
+    #             name_list[i] = name_list[i] + str(index+1)
+    #     ## Add the index to the loop so that the user can still input their own list (add strings)
+        ## then make a test function in the test_plots file
         
     solver = LensEquationSolver(lens_model)
     x_center, y_center = pixel_grid.center
@@ -340,7 +361,7 @@ def point_source_plot(
         "*k",
         markersize=10,
     )
-    return ax
+    return (ax, name_list)
 
 @export
 def arrival_time_surface(

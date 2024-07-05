@@ -290,7 +290,7 @@ def point_source_plot(
     :param source_x: x-position of source
     :param source_y: y-position of source
     :param name_list: list of names of images
-    :type name_list: list of strings, longer or equal the number of point sources
+    :type name_list: list of strings, longer or equal the number of point sources. If changing this parameter, input as name_list=[...]
     :param index: number of sources, an integer number. Default None.
     :param kwargs: additional plotting keyword arguments
     :return: matplotlib axis instance with figure
@@ -300,26 +300,13 @@ def point_source_plot(
     if name_list is None and index is None:
         name_list = _NAME_LIST
     elif name_list is None and index is not None:
-        name_list = [f"A{index+1}", f"B{index+1}", f"C{index+1}", f"D{index+1}", f"E{index+1}", f"F{index+1}", f"G{index+1}", f"H{index+1}", f"I{index+1}", f"J{index+1}", f"K{index+1}"]
+        name_list = [f"{index+1}A", f"{index+1}B", f"{index+1}C", f"{index+1}D", f"{index+1}E", f"{index+1}F", f"{index+1}G", f"{index+1}H", f"{index+1}I", f"{index+1}J", f"{index+1}K"]
     elif name_list is not None and index is None:
         name_list = name_list
     elif name_list is not None and index is not None:
-        name__list = name_list
         name_list = name_list
-        for i in range(len(name__list)):
-                name_list[i] = name__list[i] + str(index+1)
-        name_list = name__list
-    
-    # if index is None:
-    #     name_list = name_list
-    # elif index is not None:
-    #     if name_list is None:
-    #         name_list = [f"A{index+1}", f"B{index+1}", f"C{index+1}", f"D{index+1}", f"E{index+1}", f"F{index+1}", f"G{index+1}", f"H{index+1}", f"I{index+1}", f"J{index+1}", f"K{index+1}"]
-    #     elif name_list is not None:
-    #         for i in range(len(name_list)):
-    #             name_list[i] = name_list[i] + str(index+1)
-    #     ## Add the index to the loop so that the user can still input their own list (add strings)
-        ## then make a test function in the test_plots file
+        for i in range(len(name_list)):
+                name_list[i] = str(index+1) + name_list[i]
         
     solver = LensEquationSolver(lens_model)
     x_center, y_center = pixel_grid.center
@@ -361,7 +348,8 @@ def point_source_plot(
         "*k",
         markersize=10,
     )
-    return (ax, name_list)
+
+    return ax
 
 @export
 def arrival_time_surface(

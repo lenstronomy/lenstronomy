@@ -77,6 +77,19 @@ class TestSinglePlaneLOS(object):
         npt.assert_almost_equal(output_los, output, decimal=8)
         npt.assert_almost_equal(output_minimal, output, decimal=8)
 
+    def test_fermat_potential(self):
+        output = self.lensModel.fermat_potential(
+            x_image=1.0, y_image=1.0, kwargs_lens=[self.kwargs]
+        )
+        output_los = self.lensModel_los.fermat_potential(
+            x_image=1.0, y_image=1.0, kwargs_lens=[self.kwargs, self.los_kwargs]
+        )
+        output_minimal = self.lensModel_minimal.fermat_potential(
+            x_image=1.0, y_image=1.0, kwargs_lens=[self.kwargs, self.los_kwargs]
+        )
+        npt.assert_almost_equal(output_los, output, decimal=8)
+        npt.assert_almost_equal(output_minimal, output, decimal=8)
+
     def test_alpha(self):
         output1, output2 = self.lensModel.alpha(x=1.0, y=1.0, kwargs=[self.kwargs])
         output1_los, output2_los = self.lensModel_los.alpha(

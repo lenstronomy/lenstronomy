@@ -304,14 +304,14 @@ def point_source_plot(
     elif name_list is None and index is not None:
         name_list = _NAME_LIST
         for i in range(len(name_list)):
-            name_list[i] = str(index+1) + name_list[i]
+            name_list[i] = str(index + 1) + name_list[i]
     elif name_list is not None and index is None:
         name_list = name_list
     elif name_list is not None and index is not None:
         name_list = name_list
         for i in range(len(name_list)):
-            name_list[i] = str(index+1) + name_list[i]
-    
+            name_list[i] = str(index + 1) + name_list[i]
+
     solver = LensEquationSolver(lens_model)
     x_center, y_center = pixel_grid.center
     delta_pix = pixel_grid.pixel_width

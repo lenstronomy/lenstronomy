@@ -111,6 +111,23 @@ class TestLensPlot(object):
                 sourcePos_x=x_sources[i],
                 sourcePos_y=y_sources[i],
                 name_list=["Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
+                point_source=True,
+                with_caustics=True,
+                fast_caustic=True,
+                coord_inverse=True,
+            )
+        plt.close
+
+        for i in range(len(x_sources)):
+            lens_plot.lens_model_plot(
+                ax,
+                lensModel,
+                kwargs_lens,
+                numPix=10,
+                deltaPix=0.5,
+                sourcePos_x=x_sources[i],
+                sourcePos_y=y_sources[i],
+                name_list=["Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
                 index=i,
                 point_source=True,
                 with_caustics=True,

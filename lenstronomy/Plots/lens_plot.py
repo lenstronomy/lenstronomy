@@ -41,7 +41,7 @@ def lens_model_plot(
     fast_caustic=True,
     name_list=None,
     index=None,
-    **kwargs
+    **kwargs,
 ):
     """Plots a lens model (convergence) and the critical curves and caustics.
 
@@ -99,7 +99,7 @@ def lens_model_plot(
             lens_model=lensModel,
             kwargs_lens=kwargs_lens,
             extent=extent,
-            **kwargs_convergence
+            **kwargs_convergence,
         )
     if with_caustics is True:
         kwargs_caustics = kwargs.get("kwargs_caustics", {})
@@ -110,7 +110,7 @@ def lens_model_plot(
             kwargs_lens=kwargs_lens,
             fast_caustic=fast_caustic,
             coord_inverse=coord_inverse,
-            **kwargs_caustics
+            **kwargs_caustics,
         )
     if point_source:
         kwargs_point_source = kwargs.get("kwargs_point_source", {})
@@ -123,7 +123,7 @@ def lens_model_plot(
             source_y=sourcePos_y,
             name_list=name_list,
             index=index,
-            **kwargs_point_source
+            **kwargs_point_source,
         )
     if coord_inverse:
         ax.set_xlim([ra0, ra0 - _frame_size])
@@ -145,7 +145,7 @@ def convergence_plot(
     vmin=-1,
     vmax=1,
     cmap="Greys",
-    **kwargs
+    **kwargs,
 ):
     """Plot convergence.
 
@@ -173,7 +173,7 @@ def convergence_plot(
         cmap=cmap,
         vmin=vmin,
         vmax=vmax,
-        **kwargs
+        **kwargs,
     )
     return ax
 
@@ -188,7 +188,7 @@ def caustics_plot(
     color_crit="r",
     color_caustic="g",
     *args,
-    **kwargs
+    **kwargs,
 ):
     """
 
@@ -252,7 +252,7 @@ def caustics_plot(
         flipped_x=coord_inverse,
         points_only=points_only,
         *args,
-        **kwargs
+        **kwargs,
     )
     plot_util.plot_line_set(
         ax,
@@ -264,7 +264,7 @@ def caustics_plot(
         flipped_x=coord_inverse,
         points_only=points_only,
         *args,
-        **kwargs
+        **kwargs,
     )
     return ax
 
@@ -278,7 +278,7 @@ def point_source_plot(
     source_y,
     name_list=None,
     index=None,
-    **kwargs
+    **kwargs,
 ):
     """Plots and illustrates images of a point source. The plotting routine orders the
     image labels according to the arrival time and illustrates a diamond shape of the
@@ -311,7 +311,7 @@ def point_source_plot(
         name_list = name_list
         for i in range(len(name_list)):
             name_list[i] = str(index+1) + name_list[i]
-        
+    
     solver = LensEquationSolver(lens_model)
     x_center, y_center = pixel_grid.center
     delta_pix = pixel_grid.pixel_width
@@ -337,7 +337,7 @@ def point_source_plot(
     mag_images = lens_model.magnification(theta_x, theta_y, kwargs_lens)
 
     x_image, y_image = pixel_grid.map_coord2pix(theta_x, theta_y)
-        
+
     for i in range(len(x_image)):
         x_ = (x_image[i]) * delta_pix_x + origin[0]
         y_ = (y_image[i]) * delta_pix + origin[1]
@@ -354,6 +354,7 @@ def point_source_plot(
     )
 
     return ax
+
 
 @export
 def arrival_time_surface(
@@ -441,7 +442,7 @@ def arrival_time_surface(
             fermat_surface,
             origin="lower",  # extent=[0, _frame_size, 0, _frame_size],
             levels=np.sort(fermat_pot_images),
-            **kwargs_contours
+            **kwargs_contours,
         )
         # mag_images = lens_model.magnification(theta_x, theta_y, kwargs_lens)
         x_image, y_image = _coords.map_coord2pix(theta_x, theta_y)
@@ -481,7 +482,7 @@ def arrival_time_surface(
             fermat_surface,
             origin="lower",  # extent=[0, _frame_size, 0, _frame_size],
             levels=levels,
-            **kwargs_contours
+            **kwargs_contours,
         )
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
@@ -522,7 +523,7 @@ def curved_arc_illustration(
                 with_centroid=with_centroid,
                 stretch_scale=stretch_scale,
                 color=color,
-                **kwargs_lens[i]
+                **kwargs_lens[i],
             )
 
     ax.get_xaxis().set_visible(False)
@@ -637,7 +638,7 @@ def distortions(
     center_dec=0,
     differential_scale=0.0001,
     smoothing_scale=None,
-    **kwargs
+    **kwargs,
 ):
     """
 
@@ -849,7 +850,7 @@ def stretch_plot(
     scale=1,
     ellipse_color="k",
     max_stretch=np.inf,
-    **patch_kwargs
+    **patch_kwargs,
 ):
     """Plots ellipses at each point on a grid, scaled corresponding to the local
     Jacobian eigenvalues.
@@ -890,7 +891,7 @@ def stretch_plot(
             linewidth=1,
             fill=False,
             color=ellipse_color,
-            **patch_kwargs
+            **patch_kwargs,
         )
         ax.add_patch(ell)
     ax.set_xlim(np.min(x), np.max(x))
@@ -906,7 +907,7 @@ def shear_plot(
     scale=5,
     color="k",
     max_stretch=np.inf,
-    **kwargs
+    **kwargs,
 ):
     """Plots combined internal+external shear at each point on a grid, represented by
     pseudovectors in the direction of local shear with length corresponding to shear
@@ -948,7 +949,7 @@ def shear_plot(
         width=0.02,
         headwidth=1,
         color=color,
-        **kwargs
+        **kwargs,
     )
     # , headwidth=0, headlength=0)
     ax.set_xlim(np.min(x_grid), np.max(x_grid))

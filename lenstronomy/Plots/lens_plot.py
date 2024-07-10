@@ -66,6 +66,8 @@ def lens_model_plot(
     :param fast_caustic: boolean, if True, uses faster but less precise caustic
         calculation (might have troubles for the outer caustic (inner critical curve)
     :param with_convergence: boolean, if True, plots the convergence of the deflector
+    :param name_list: list of strings, longer or equal the number of point sources. If changing this parameter, input as name_list=[...]
+    :param index: number of sources, an integer number. Default None.
     :return: matplotlib axis instance with plot
     """
     kwargs_data = sim_util.data_configure_simple(
@@ -290,7 +292,7 @@ def point_source_plot(
     :param source_x: x-position of source
     :param source_y: y-position of source
     :param name_list: list of names of images
-    :type name_list: list of strings, longer or equal the number of point sources. If changing this parameter, input as name_list=[...]
+    :param name_list: list of strings, longer or equal the number of point sources. If changing this parameter, input as name_list=[...]
     :param index: number of sources, an integer number. Default None.
     :param kwargs: additional plotting keyword arguments
     :return: matplotlib axis instance with figure
@@ -300,13 +302,15 @@ def point_source_plot(
     if name_list is None and index is None:
         name_list = _NAME_LIST
     elif name_list is None and index is not None:
-        name_list = [f"{index+1}A", f"{index+1}B", f"{index+1}C", f"{index+1}D", f"{index+1}E", f"{index+1}F", f"{index+1}G", f"{index+1}H", f"{index+1}I", f"{index+1}J", f"{index+1}K"]
+        name_list = _NAME_LIST
+        for i in range(len(name_list)):
+            name_list[i] = str(index+1) + name_list[i]
     elif name_list is not None and index is None:
         name_list = name_list
     elif name_list is not None and index is not None:
         name_list = name_list
         for i in range(len(name_list)):
-                name_list[i] = str(index+1) + name_list[i]
+            name_list[i] = str(index+1) + name_list[i]
         
     solver = LensEquationSolver(lens_model)
     x_center, y_center = pixel_grid.center

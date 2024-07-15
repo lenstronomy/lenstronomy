@@ -304,7 +304,7 @@ def source_position_plot(
             x_source, y_source = coords.map_coord2pix(ra, dec)
             ax.plot(
                 x_source * delta_pix,
-                y_source + 0.5 * delta_pix,
+                y_source * delta_pix,
                 marker=marker,
                 markersize=markersize,
                 **kwargs

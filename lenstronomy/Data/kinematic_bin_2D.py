@@ -1,5 +1,4 @@
 import numpy as np
-import lenstronomy.Util.util as util
 from lenstronomy.Data.pixel_grid import PixelGrid
 
 __all__ = ["KinBin"]

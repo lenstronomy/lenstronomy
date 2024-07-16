@@ -3,7 +3,6 @@
 @author: jakeret
 """
 
-import py
 import subprocess
 
 

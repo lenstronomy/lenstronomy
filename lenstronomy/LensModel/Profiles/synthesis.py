@@ -3,8 +3,6 @@ __author__ = "mgomer"
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 import numpy as np
 import copy
-from lenstronomy.Util import param_util
-from lenstronomy.Util import util
 from lenstronomy.LensModel.lens_model import LensModel
 
 

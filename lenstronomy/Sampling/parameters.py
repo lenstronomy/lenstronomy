@@ -9,7 +9,6 @@ from lenstronomy.LensModel.lens_param import LensParam
 from lenstronomy.LightModel.light_param import LightParam
 from lenstronomy.PointSource.point_source_param import PointSourceParam
 from lenstronomy.Sampling.special_param import SpecialParam
-from lenstronomy.LensModel.QuadOptimizer.optimizer import Optimizer
 
 __all__ = ["Param"]
 

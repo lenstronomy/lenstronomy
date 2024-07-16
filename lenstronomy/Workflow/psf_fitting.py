@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 from lenstronomy.Data.psf import PSF
 import lenstronomy.Util.util as util
 import lenstronomy.Util.image_util as image_util

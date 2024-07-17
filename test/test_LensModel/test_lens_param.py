@@ -11,7 +11,7 @@ class TestParam(object):
             "SPEP",
             "INTERPOL_SCALED",
             "SHAPELETS_CART",
-            "MULTI_GAUSSIAN_KAPPA",
+            "MULTI_GAUSSIAN",
         ]
         self.kwargs = [
             {
@@ -119,8 +119,8 @@ class TestParam(object):
             "SERSIC_ELLIPSE_POTENTIAL",
             "SERSIC_ELLIPSE_KAPPA",
             "PJAFFE",
-            "PJAFFE_ELLIPSE",
-            "HERNQUIST_ELLIPSE",
+            "PJAFFE_ELLIPSE_POTENTIAL",
+            "HERNQUIST_ELLIPSE_POTENTIAL",
             "INTERPOL",
             "INTERPOL_SCALED",
             "SHAPELETS_POLAR",
@@ -131,8 +131,8 @@ class TestParam(object):
             "NFW_ELLIPSE_GAUSS_DEC",
             "CTNFW_GAUSS_DEC",
             "GAUSSIAN_ELLIPSE_POTENTIAL",
-            "MULTI_GAUSSIAN_KAPPA",
-            "MULTI_GAUSSIAN_KAPPA_ELLIPSE",
+            "MULTI_GAUSSIAN",
+            "MULTI_GAUSSIAN_ELLIPSE_POTENTIAL",
         ]
         lensParam = LensParam(lens_model_list, kwargs_fixed=None)
         param_name_list = lensParam._param_name_list

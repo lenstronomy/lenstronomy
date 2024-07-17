@@ -149,7 +149,7 @@ class TestSolver4Point(object):
         )
         assert kwargs_fixed_lens[0]["center_x"] == kwargs_lens_init[0]["center_x"]
 
-        lens_model_list = ["NFW_ELLIPSE", "SHEAR"]
+        lens_model_list = ["NFW_ELLIPSE_POTENTIAL", "SHEAR"]
         lensModel = LensModel(lens_model_list)
 
         kwargs_lens_init = [

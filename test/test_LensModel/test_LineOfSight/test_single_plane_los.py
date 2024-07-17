@@ -35,10 +35,10 @@ class TestSinglePlaneLOS(object):
     """
 
     def setup_method(self):
-        self.lensModel = SinglePlane(["GAUSSIAN"])
-        self.lensModel_los = SinglePlaneLOS(["GAUSSIAN", "LOS"], index_los=1)
+        self.lensModel = SinglePlane(["GAUSSIAN_POTENTIAL"])
+        self.lensModel_los = SinglePlaneLOS(["GAUSSIAN_POTENTIAL", "LOS"], index_los=1)
         self.lensModel_minimal = SinglePlaneLOS(
-            ["GAUSSIAN", "LOS_MINIMAL"], index_los=1
+            ["GAUSSIAN_POTENTIAL", "LOS_MINIMAL"], index_los=1
         )
         self.kwargs = {
             "amp": 1.0,

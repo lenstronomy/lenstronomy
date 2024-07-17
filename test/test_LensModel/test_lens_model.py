@@ -14,7 +14,7 @@ class TestLensModel(object):
     """Tests the source model routines."""
 
     def setup_method(self):
-        self.lensModel = LensModel(["GAUSSIAN"])
+        self.lensModel = LensModel(["GAUSSIAN_POTENTIAL"])
         self.kwargs = [
             {
                 "amp": 1.0,
@@ -328,7 +328,7 @@ class TestRaise(unittest.TestCase):
             )
         with self.assertRaises(ValueError):
             lens_model = LensModel(
-                lens_model_list=["LOS_MINIMAL", "SIS", "GAUSSIAN"],
+                lens_model_list=["LOS_MINIMAL", "SIS", "GAUSSIAN_POTENTIAL"],
                 multi_plane=True,
                 z_source=1.0,
                 lens_redshift_list=[0.5, 0.5, 0.5],

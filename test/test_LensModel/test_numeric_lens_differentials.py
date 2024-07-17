@@ -12,7 +12,7 @@ class TestNumerics(object):
     """Tests the source model routines."""
 
     def setup_method(self):
-        self.lensModel = LensModel(["GAUSSIAN"])
+        self.lensModel = LensModel(["GAUSSIAN_POTENTIAL"])
         self.kwargs = [
             {
                 "amp": 1.0 / 4.0,
@@ -126,7 +126,7 @@ class TestNumericsProfile(object):
             npt.assert_almost_equal(f_y, f_y_num, decimal=decimal)
 
     def test_gaussian(self):
-        lens_model = ["GAUSSIAN"]
+        lens_model = ["GAUSSIAN_POTENTIAL"]
         kwargs = {
             "amp": 1.0 / 4.0,
             "sigma_x": 2.0,

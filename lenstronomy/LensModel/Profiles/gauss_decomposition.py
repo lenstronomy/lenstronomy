@@ -20,7 +20,7 @@ _SQRT_2PI = np.sqrt(2 * np.pi)
 
 
 @export
-class GaussianEllipseKappaSet(LensProfileBase):
+class MultiGaussianEllipseKappa(LensProfileBase):
     """This class computes the lensing properties of a set of concentric elliptical
     Gaussian convergences."""
 
@@ -53,7 +53,7 @@ class GaussianEllipseKappaSet(LensProfileBase):
         self.gaussian_ellipse_kappa = GaussianEllipseKappa(
             use_scipy_wofz=use_scipy_wofz, min_ellipticity=min_ellipticity
         )
-        super(GaussianEllipseKappaSet, self).__init__()
+        super(MultiGaussianEllipseKappa, self).__init__()
 
     def function(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
         """Compute the potential function for a set of concentric elliptical Gaussian
@@ -246,7 +246,7 @@ class GaussDecompositionAbstract(metaclass=abc.ABCMeta):
         :param min_ellipticity: To be passed to ``class GaussianEllipseKappa``. Minimum ellipticity for Gaussian elliptical lensing calculation. For lower ellipticity than min_ellipticity the equations for the spherical case will be used.
         :type min_ellipticity: ``float``
         """
-        self.gaussian_set = GaussianEllipseKappaSet(
+        self.gaussian_set = MultiGaussianEllipseKappa(
             use_scipy_wofz=use_scipy_wofz, min_ellipticity=min_ellipticity
         )
 

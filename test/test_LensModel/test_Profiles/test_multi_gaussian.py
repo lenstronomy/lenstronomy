@@ -16,8 +16,8 @@ import numpy.testing as npt
 import pytest
 
 
-class TestGaussianKappa(object):
-    """Test the Gaussian with Gaussian kappa."""
+class TestGaussian(object):
+    """Test the Gaussian lens model class."""
 
     def setup_method(self):
         self.gaussian_kappa = MultiGaussian()

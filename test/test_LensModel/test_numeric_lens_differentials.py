@@ -325,7 +325,7 @@ class TestNumericsProfile(object):
 
     def test_Hernquist_ellipse(self):
         kwargs = {"sigma0": 1.0, "Rs": 1.5, "e1": 0.04, "e2": -0.0}
-        lens_model = ["HERNQUIST_ELLIPSE"]
+        lens_model = ["HERNQUIST_ELLIPSE_POTENTIAL"]
         self.assert_differentials(lens_model, kwargs)
 
     def test_NIE(self):

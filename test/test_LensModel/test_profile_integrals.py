@@ -85,7 +85,7 @@ class TestNumerics(object):
 
     def test_PJaffe(self):
         kwargs = {"rho0": 1.0, "Ra": 0.2, "Rs": 2.0}
-        from lenstronomy.LensModel.Profiles.p_jaffe import PJaffe as Model
+        from lenstronomy.LensModel.Profiles.pseudo_jaffe import PseudoJaffe as Model
 
         self.assert_integrals(Model, kwargs)
 
@@ -93,7 +93,7 @@ class TestNumerics(object):
         """Tests whether the unit conversion between the lensing parameter 'sigma0' and
         the units in the density profile are ok :return:"""
 
-        from lenstronomy.LensModel.Profiles.p_jaffe import PJaffe as Model
+        from lenstronomy.LensModel.Profiles.pseudo_jaffe import PseudoJaffe as Model
 
         lensModel = Model()
         sigma0 = 1.0

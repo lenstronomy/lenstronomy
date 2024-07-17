@@ -26,7 +26,7 @@ class TestNumerics(object):
 
     def test_PJaffe(self):
         kwargs = {"amp": 1.0, "Ra": 0.2, "Rs": 2.0}
-        from lenstronomy.LightModel.Profiles.p_jaffe import PJaffe as Model
+        from lenstronomy.LightModel.Profiles.p_jaffe import PseudoJaffe as Model
 
         self.assert_integrals(Model, kwargs)
 

@@ -64,7 +64,7 @@ _SUPPORTED_MODELS = [
     "NIE_SIMPLE",
     "PEMD",
     "PJAFFE",
-    "PJAFFE_ELLIPSE",
+    "PJAFFE_ELLIPSE_POTENTIAL",
     "POINT_MASS",
     "PSEUDO_DPL",
     "SERSIC",
@@ -519,13 +519,15 @@ def lens_class(
 
         return PEMD()
     elif lens_type == "PJAFFE":
-        from lenstronomy.LensModel.Profiles.p_jaffe import PJaffe
+        from lenstronomy.LensModel.Profiles.pseudo_jaffe import PseudoJaffe
 
-        return PJaffe()
-    elif lens_type == "PJAFFE_ELLIPSE":
-        from lenstronomy.LensModel.Profiles.p_jaffe_ellipse import PJaffe_Ellipse
+        return PseudoJaffe()
+    elif lens_type == "PJAFFE_ELLIPSE_POTENTIAL":
+        from lenstronomy.LensModel.Profiles.pseudo_jaffe_ellipse_potential import (
+            PseudoJaffeEllipsePotential,
+        )
 
-        return PJaffe_Ellipse()
+        return PseudoJaffeEllipsePotential()
     elif lens_type == "POINT_MASS":
         from lenstronomy.LensModel.Profiles.point_mass import PointMass
 

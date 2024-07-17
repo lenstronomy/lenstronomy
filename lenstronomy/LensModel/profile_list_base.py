@@ -88,7 +88,7 @@ _SUPPORTED_MODELS = [
     "TABULATED_DEFLECTIONS",
     "TNFW",
     "TNFWC",
-    "TNFW_ELLIPSE",
+    "TNFW_ELLIPSE_POTENTIAL",
     "TRIPLE_CHAMELEON",
     "ULDM",
     "EPL_MULTIPOLE_M3M4",
@@ -638,10 +638,10 @@ def lens_class(
         from lenstronomy.LensModel.Profiles.nfw_core_truncated import TNFWC
 
         return TNFWC()
-    elif lens_type == "TNFW_ELLIPSE":
-        from lenstronomy.LensModel.Profiles.tnfw_ellipse import TNFW_ELLIPSE
+    elif lens_type == "TNFW_ELLIPSE_POTENTIAL":
+        from lenstronomy.LensModel.Profiles.tnfw_ellipse import TNFWELLIPSEPotential
 
-        return TNFW_ELLIPSE()
+        return TNFWELLIPSEPotential()
     elif lens_type == "TRIPLE_CHAMELEON":
         from lenstronomy.LensModel.Profiles.chameleon import TripleChameleon
 

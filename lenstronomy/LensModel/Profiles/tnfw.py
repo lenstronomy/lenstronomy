@@ -61,7 +61,7 @@ class TNFW(LensProfileBase):
         y_ = y - center_y
         R = np.sqrt(x_**2 + y_**2)
         R = np.maximum(R, self._s * Rs)
-        f_ = self.nfw_potential(R, Rs, rho0_input, r_trunc)
+        f_ = self.tnfw_potential(R, Rs, rho0_input, r_trunc)
 
         return f_
 
@@ -126,7 +126,7 @@ class TNFW(LensProfileBase):
         y_ = y - center_y
         R = np.sqrt(x_**2 + y_**2)
         R = np.maximum(R, self._s * Rs)
-        f_x, f_y = self.nfw_alpha(R, Rs, rho0_input, r_trunc, x_, y_)
+        f_x, f_y = self.tnfw_alpha(R, Rs, rho0_input, r_trunc, x_, y_)
         return f_x, f_y
 
     def hessian(self, x, y, Rs, alpha_Rs, r_trunc, center_x=0, center_y=0):
@@ -149,7 +149,7 @@ class TNFW(LensProfileBase):
         R = np.maximum(R, self._s * Rs)
 
         kappa = self.density_2d(x_, y_, Rs, rho0_input, r_trunc)
-        gamma1, gamma2 = self.nfw_gamma(R, Rs, rho0_input, r_trunc, x_, y_)
+        gamma1, gamma2 = self.tnfw_gamma(R, Rs, rho0_input, r_trunc, x_, y_)
         f_xx = kappa + gamma1
         f_yy = kappa - gamma1
         f_xy = gamma2
@@ -221,7 +221,7 @@ class TNFW(LensProfileBase):
         m_3d = 4 * np.pi * Rs**3 * rho0 * func
         return m_3d
 
-    def nfw_potential(self, R, Rs, rho0, r_trunc):
+    def tnfw_potential(self, R, Rs, rho0, r_trunc):
         """Lensing potential of truncated NFW profile.
 
         :param R: radius of interest
@@ -240,8 +240,8 @@ class TNFW(LensProfileBase):
         hx = self._h(x, tau)
         return 2 * rho0 * Rs**3 * hx
 
-    def nfw_alpha(self, R, Rs, rho0, r_trunc, ax_x, ax_y):
-        """Deflection angle of NFW profile along the projection to coordinate axis.
+    def tnfw_alpha(self, R, Rs, rho0, r_trunc, ax_x, ax_y):
+        """Deflection angle of TNFW profile along the projection to coordinate axis.
 
         :param R: radius of interest
         :type R: float/numpy array
@@ -263,8 +263,8 @@ class TNFW(LensProfileBase):
         a = 4 * rho0 * Rs * gx / x**2
         return a * ax_x, a * ax_y
 
-    def nfw_gamma(self, R, Rs, rho0, r_trunc, ax_x, ax_y):
-        """Shear gamma of NFW profile (times Sigma_crit) along the projection to
+    def tnfw_gamma(self, R, Rs, rho0, r_trunc, ax_x, ax_y):
+        """Shear gamma of TNFW profile (times Sigma_crit) along the projection to
         coordinate 'axis'.
 
         :param R: radius of interest

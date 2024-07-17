@@ -5,10 +5,10 @@ from lenstronomy.LensModel.Profiles.tnfw import TNFW
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
-__all__ = ["TNFW_ELLIPSE"]
+__all__ = ["TNFWELLIPSEPotential"]
 
 
-class TNFW_ELLIPSE(LensProfileBase):
+class TNFWELLIPSEPotential(LensProfileBase):
     """This class contains functions concerning the truncated NFW profile with an
     ellipticity defined in the potential parameterization of alpha_Rs, Rs and r_trunc is
     the same as for the spherical NFW profile.
@@ -18,7 +18,7 @@ class TNFW_ELLIPSE(LensProfileBase):
     relation are: R_200 = c * Rs
     """
 
-    profile_name = "TNFW_ELLIPSE"
+    profile_name = "TNFW_ELLIPSE_POTENTIAL"
     param_names = ["Rs", "alpha_Rs", "r_trunc", "e1", "e2", "center_x", "center_y"]
     lower_limit_default = {
         "Rs": 0,
@@ -43,7 +43,7 @@ class TNFW_ELLIPSE(LensProfileBase):
         """"""
         self.tnfw = TNFW()
         self._diff = 0.0000000001
-        super(TNFW_ELLIPSE, self).__init__()
+        super(TNFWELLIPSEPotential, self).__init__()
 
     def function(self, x, y, Rs, alpha_Rs, r_trunc, e1, e2, center_x=0, center_y=0):
         """Returns elliptically distorted NFW lensing potential.
@@ -67,7 +67,7 @@ class TNFW_ELLIPSE(LensProfileBase):
         Rs = np.maximum(Rs, 0.0000001)
         # if Rs < 0.0000001:
         #    Rs = 0.0000001
-        f_ = self.tnfw.nfw_potential(R_, Rs, rho0_input, r_trunc)
+        f_ = self.tnfw.tnfw_potential(R_, Rs, rho0_input, r_trunc)
         return f_
 
     def derivatives(self, x, y, Rs, alpha_Rs, r_trunc, e1, e2, center_x=0, center_y=0):
@@ -98,7 +98,7 @@ class TNFW_ELLIPSE(LensProfileBase):
         Rs = np.maximum(Rs, 0.0000001)
         # if Rs < 0.0000001:
         #    Rs = 0.0000001
-        f_x_prim, f_y_prim = self.tnfw.nfw_alpha(R_, Rs, rho0_input, r_trunc, x_, y_)
+        f_x_prim, f_y_prim = self.tnfw.tnfw_alpha(R_, Rs, rho0_input, r_trunc, x_, y_)
         f_x_prim *= np.sqrt(1 - e)
         f_y_prim *= np.sqrt(1 + e)
         f_x = cos_phi * f_x_prim - sin_phi * f_y_prim

@@ -13,7 +13,7 @@ class GaussianEllipsePotential(LensProfileBase):
     """This class contains functions to evaluate a Gaussian function and calculates its
     derivative and hessian matrix with ellipticity in the potential.
 
-    the calculation follows Glenn van de Ven et al. 2009
+    The calculation follows Glenn van de Ven et al. 2009.
     """
 
     param_names = ["amp", "sigma", "e1", "e2", "center_x", "center_y"]

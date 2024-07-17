@@ -36,10 +36,10 @@ _SUPPORTED_MODELS = [
     "ElliSLICE",
     "FLEXION",
     "FLEXIONFG",
-    "GAUSSIAN",
     "GAUSSIAN_ELLIPSE_KAPPA",
     "GAUSSIAN_ELLIPSE_POTENTIAL",
     "GAUSSIAN_KAPPA",
+    "GAUSSIAN_POTENTIAL",
     "GNFW",
     "HERNQUIST",
     "HERNQUIST_ELLIPSE",
@@ -392,10 +392,6 @@ def lens_class(
         from lenstronomy.LensModel.Profiles.flexionfg import Flexionfg
 
         return Flexionfg()
-    elif lens_type == "GAUSSIAN":
-        from lenstronomy.LensModel.Profiles.gaussian_potential import GaussianPotential
-
-        return GaussianPotential()
     elif lens_type == "GAUSSIAN_ELLIPSE_KAPPA":
         from lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa import (
             GaussianEllipseKappa,
@@ -412,6 +408,10 @@ def lens_class(
         from lenstronomy.LensModel.Profiles.gaussian_kappa import GaussianKappa
 
         return GaussianKappa()
+    elif lens_type == "GAUSSIAN_POTENTIAL":
+        from lenstronomy.LensModel.Profiles.gaussian_potential import GaussianPotential
+
+        return GaussianPotential()
     elif lens_type == "GNFW":
         from lenstronomy.LensModel.Profiles.gnfw import GNFW
 

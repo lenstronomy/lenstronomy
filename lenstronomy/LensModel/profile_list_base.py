@@ -639,7 +639,9 @@ def lens_class(
 
         return TNFWC()
     elif lens_type == "TNFW_ELLIPSE_POTENTIAL":
-        from lenstronomy.LensModel.Profiles.tnfw_ellipse import TNFWELLIPSEPotential
+        from lenstronomy.LensModel.Profiles.tnfw_ellipse_potential import (
+            TNFWELLIPSEPotential,
+        )
 
         return TNFWELLIPSEPotential()
     elif lens_type == "TRIPLE_CHAMELEON":

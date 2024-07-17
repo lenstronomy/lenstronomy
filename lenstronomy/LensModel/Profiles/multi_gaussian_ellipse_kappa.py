@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-"""This module contains the class to compute lensing properties of a multi-Gaussian convergence 
-profile with the ellipticity defined in the convergence."""
+"""This module contains the class to compute lensing properties of a multi-Gaussian
+convergence profile with the ellipticity defined in the convergence."""
 
 __author__ = "ajshajib"
 

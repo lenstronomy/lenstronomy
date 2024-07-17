@@ -562,10 +562,10 @@ def lens_class(
         return SersicEllipseKappa()
     elif lens_type == "SERSIC_ELLIPSE_POTENTIAL":
         from lenstronomy.LensModel.Profiles.sersic_ellipse_potential import (
-            SersicEllipse,
+            SersicEllipsePotential,
         )
 
-        return SersicEllipse()
+        return SersicEllipsePotential()
     elif lens_type == "SHAPELETS_CART":
         from lenstronomy.LensModel.Profiles.shapelet_pot_cartesian import (
             CartShapelets,

@@ -2,7 +2,7 @@ __author__ = "sibirrer"
 
 
 from lenstronomy.LensModel.Profiles.tnfw import TNFW
-from lenstronomy.LensModel.Profiles.tnfw_ellipse import TNFWELLIPSEPotential
+from lenstronomy.LensModel.Profiles.tnfw_ellipse_potential import TNFWELLIPSEPotential
 from lenstronomy.LensModel.Profiles.nfw_ellipse_potential import NFWEllipsePotential
 
 import numpy as np

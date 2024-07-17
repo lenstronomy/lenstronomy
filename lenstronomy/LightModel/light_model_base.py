@@ -141,11 +141,13 @@ class LightModelBase(object):
 
                 self.func_list.append(HernquistEllipse())
             elif profile_type == "PJAFFE":
-                from lenstronomy.LightModel.Profiles.p_jaffe import PseudoJaffe
+                from lenstronomy.LightModel.Profiles.pseudo_jaffe import PseudoJaffe
 
                 self.func_list.append(PseudoJaffe())
             elif profile_type == "PJAFFE_ELLIPSE":
-                from lenstronomy.LightModel.Profiles.p_jaffe import PseudoJaffeEllipse
+                from lenstronomy.LightModel.Profiles.pseudo_jaffe import (
+                    PseudoJaffeEllipse,
+                )
 
                 self.func_list.append(PseudoJaffeEllipse())
             elif profile_type == "UNIFORM":

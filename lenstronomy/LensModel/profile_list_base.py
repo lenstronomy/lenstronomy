@@ -393,9 +393,9 @@ def lens_class(
 
         return Flexionfg()
     elif lens_type == "GAUSSIAN":
-        from lenstronomy.LensModel.Profiles.gaussian_potential import Gaussian
+        from lenstronomy.LensModel.Profiles.gaussian_potential import GaussianPotential
 
-        return Gaussian()
+        return GaussianPotential()
     elif lens_type == "GAUSSIAN_ELLIPSE_KAPPA":
         from lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa import (
             GaussianEllipseKappa,

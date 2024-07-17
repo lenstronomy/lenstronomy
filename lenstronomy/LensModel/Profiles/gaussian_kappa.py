@@ -4,14 +4,14 @@ __author__ = "sibirrer"
 import numpy as np
 import scipy.special
 import scipy.integrate as integrate
-from lenstronomy.LensModel.Profiles.gaussian_potential import Gaussian
+from lenstronomy.LensModel.Profiles.gaussian_potential import GaussianPotential
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
 __all__ = ["GaussianKappa"]
 
 
 class GaussianKappa(LensProfileBase):
-    """This class contains functions to evaluate a Gaussian function and calculates its
+    """This class contains functions to evaluate a Gaussian convergence and calculates its
     derivative and hessian matrix."""
 
     param_names = ["amp", "sigma", "center_x", "center_y"]
@@ -19,12 +19,12 @@ class GaussianKappa(LensProfileBase):
     upper_limit_default = {"amp": 100, "sigma": 100, "center_x": 100, "center_y": 100}
 
     def __init__(self):
-        self.gaussian = Gaussian()
+        self.gaussian = GaussianPotential()
         self.ds = 0.00001
         super(LensProfileBase, self).__init__()
 
     def function(self, x, y, amp, sigma, center_x=0, center_y=0):
-        """Returns Gaussian."""
+        """Returns potential for a Gaussian convergence."""
         x_ = x - center_x
         y_ = y - center_y
         r = np.sqrt(x_**2 + y_**2)

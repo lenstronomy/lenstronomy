@@ -1,7 +1,7 @@
 __author__ = "sibirrer"
 
 
-from lenstronomy.LightModel.Profiles.gaussian import GaussianLight
+from lenstronomy.LightModel.Profiles.gaussian import Gaussian as GaussianLight
 from lenstronomy.LensModel.Profiles.gaussian import Gaussian
 from lenstronomy.LensModel.Profiles.gaussian_ellipse_potential import (
     GaussianEllipsePotential,

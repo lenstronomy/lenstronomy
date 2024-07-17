@@ -8,10 +8,10 @@ from lenstronomy.LensModel.Profiles.cnfw import CNFW
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
-__all__ = ["CnfwEllipsePotential"]
+__all__ = ["CNFWEllipsePotential"]
 
 
-class CnfwEllipsePotential(LensProfileBase):
+class CNFWEllipsePotential(LensProfileBase):
     """This class contains functions concerning the CNFW profile with ellipticity in the
     potential.
 
@@ -41,7 +41,7 @@ class CnfwEllipsePotential(LensProfileBase):
     def __init__(self):
         self.cnfw = CNFW()
         self._diff = 0.0000000001
-        super(CnfwEllipsePotential, self).__init__()
+        super(CNFWEllipsePotential, self).__init__()
 
     def function(self, x, y, Rs, alpha_Rs, r_core, e1, e2, center_x=0, center_y=0):
         """Returns double integral of NFW profile."""

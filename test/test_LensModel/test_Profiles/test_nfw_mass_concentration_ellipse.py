@@ -2,7 +2,9 @@ __author__ = "ajshajib"
 
 
 from lenstronomy.LensModel.Profiles.nfw_ellipse_cse import NFW_ELLIPSE_CSE
-from lenstronomy.LensModel.Profiles.nfw_mass_concentration_ellipse import NFWMCEllipse
+from lenstronomy.LensModel.Profiles.nfw_mass_concentration_ellipse import (
+    NFWMCEllipsePotential,
+)
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 
 import numpy.testing as npt
@@ -18,7 +20,7 @@ class TestNFWMCEllipse(object):
 
         cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.05)
         self.nfw = NFW_ELLIPSE_CSE()
-        self.nfwmc = NFWMCEllipse(
+        self.nfwmc = NFWMCEllipsePotential(
             z_source=self.z_source, z_lens=self.z_lens, cosmo=cosmo
         )
         self.lensCosmo = LensCosmo(

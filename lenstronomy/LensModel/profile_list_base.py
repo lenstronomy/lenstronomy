@@ -54,11 +54,11 @@ _SUPPORTED_MODELS = [
     "MULTI_GAUSSIAN_KAPPA",
     "MULTI_GAUSSIAN_KAPPA_ELLIPSE",
     "NFW",
-    "NFW_ELLIPSE",
     "NFW_ELLIPSE_CSE",
     "NFW_ELLIPSE_GAUSS_DEC",
+    "NFW_ELLIPSE_POTENTIAL",
     "NFW_MC",
-    "NFW_MC_ELLIPSE",
+    "NFW_MC_ELLIPSE_POTENTIAL",
     "NIE",
     "NIE_POTENTIAL",
     "NIE_SIMPLE",
@@ -159,7 +159,7 @@ class ProfileListBase(object):
                 "INTERPOL_SCALED",
                 "NFW_ELLIPSE_GAUSS_DEC",
                 "NFW_MC",
-                "NFW_MC_ELLIPSE",
+                "NFW_MC_ELLIPSE_POTENTIAL",
                 "NIE",
                 "NIE_SIMPLE",
                 "RADIAL_INTERPOL",
@@ -274,10 +274,10 @@ def lens_class(
         return CNFW()
     elif lens_type == "CNFW_ELLIPSE_POTENTIAL":
         from lenstronomy.LensModel.Profiles.cnfw_ellipse_potential import (
-            CnfwEllipsePotential,
+            CNFWEllipsePotential,
         )
 
-        return CnfwEllipsePotential()
+        return CNFWEllipsePotential()
     elif lens_type == "CONST_MAG":
         from lenstronomy.LensModel.Profiles.const_mag import ConstMag
 
@@ -476,10 +476,12 @@ def lens_class(
         from lenstronomy.LensModel.Profiles.nfw import NFW
 
         return NFW()
-    elif lens_type == "NFW_ELLIPSE":
-        from lenstronomy.LensModel.Profiles.nfw_ellipse import NFW_ELLIPSE
+    elif lens_type == "NFW_ELLIPSE_POTENTIAL":
+        from lenstronomy.LensModel.Profiles.nfw_ellipse_potential import (
+            NFWEllipsePotential,
+        )
 
-        return NFW_ELLIPSE()
+        return NFWEllipsePotential()
     elif lens_type == "NFW_ELLIPSE_CSE":
         from lenstronomy.LensModel.Profiles.nfw_ellipse_cse import NFW_ELLIPSE_CSE
 
@@ -494,12 +496,12 @@ def lens_class(
         from lenstronomy.LensModel.Profiles.nfw_mass_concentration import NFWMC
 
         return NFWMC(z_lens=z_lens, z_source=z_source)
-    elif lens_type == "NFW_MC_ELLIPSE":
+    elif lens_type == "NFW_MC_ELLIPSE_POTENTIAL":
         from lenstronomy.LensModel.Profiles.nfw_mass_concentration_ellipse import (
-            NFWMCEllipse,
+            NFWMCEllipsePotential,
         )
 
-        return NFWMCEllipse(z_lens=z_lens, z_source=z_source)
+        return NFWMCEllipsePotential(z_lens=z_lens, z_source=z_source)
     elif lens_type == "NIE":
         from lenstronomy.LensModel.Profiles.nie import NIE
 

@@ -5,10 +5,10 @@ from lenstronomy.LensModel.Profiles.nfw import NFW
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
-__all__ = ["NFW_ELLIPSE"]
+__all__ = ["NFWEllipsePotential"]
 
 
-class NFW_ELLIPSE(LensProfileBase):
+class NFWEllipsePotential(LensProfileBase):
     """This class contains functions concerning the NFW profile with an ellipticity
     defined in the potential parameterization of alpha_Rs and Rs is the same as for the
     spherical NFW profile.
@@ -18,7 +18,7 @@ class NFW_ELLIPSE(LensProfileBase):
     relation are: R_200 = c * Rs
     """
 
-    profile_name = "NFW_ELLIPSE"
+    profile_name = "NFW_ELLIPSE_POTENTIAL"
     param_names = ["Rs", "alpha_Rs", "e1", "e2", "center_x", "center_y"]
     lower_limit_default = {
         "Rs": 0,
@@ -49,7 +49,7 @@ class NFW_ELLIPSE(LensProfileBase):
             interpol=interpol, num_interp_X=num_interp_X, max_interp_X=max_interp_X
         )
         self._diff = 0.0000000001
-        super(NFW_ELLIPSE, self).__init__()
+        super(NFWEllipsePotential, self).__init__()
 
     def function(self, x, y, Rs, alpha_Rs, e1, e2, center_x=0, center_y=0):
         """Returns elliptically distorted NFW lensing potential.

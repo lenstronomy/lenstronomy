@@ -2,7 +2,7 @@ __author__ = "sibirrer"
 
 
 from lenstronomy.LensModel.Profiles.nfw import NFW
-from lenstronomy.LensModel.Profiles.nfw_ellipse import NFW_ELLIPSE
+from lenstronomy.LensModel.Profiles.nfw_ellipse_potential import NFWEllipsePotential
 
 import numpy as np
 import numpy.testing as npt
@@ -311,7 +311,7 @@ class TestMassAngleConversion(object):
 
     def setup_method(self):
         self.nfw = NFW()
-        self.nfw_ellipse = NFW_ELLIPSE()
+        self.nfw_ellipse = NFWEllipsePotential()
 
     def test_angle(self):
         x, y = 1, 0

@@ -291,8 +291,8 @@ class TestNumerics(object):
         npt.assert_almost_equal(alpha_mass / np.pi, alpha_r, decimal=5)
 
     def test_gaussian(self):
-        from lenstronomy.LensModel.Profiles.gaussian_kappa import (
-            GaussianKappa as Model,
+        from lenstronomy.LensModel.Profiles.gaussian import (
+            Gaussian as Model,
         )
 
         kwargs = {"amp": 1.0 / 4.0, "sigma": 2.0}
@@ -302,8 +302,8 @@ class TestNumerics(object):
         """Tests whether the unit conversion between the lensing parameter 'sigma0' and
         the units in the density profile are ok :return:"""
 
-        from lenstronomy.LensModel.Profiles.gaussian_kappa import (
-            GaussianKappa as Model,
+        from lenstronomy.LensModel.Profiles.gaussian import (
+            Gaussian as Model,
         )
 
         lensModel = Model()

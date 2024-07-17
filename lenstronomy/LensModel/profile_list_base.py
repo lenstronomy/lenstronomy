@@ -51,8 +51,8 @@ _SUPPORTED_MODELS = [
     "LOS",
     "LOS_MINIMAL",
     "MULTIPOLE",
-    "MULTI_GAUSSIAN_KAPPA",
-    "MULTI_GAUSSIAN_KAPPA_ELLIPSE",
+    "MULTI_GAUSSIAN",
+    "MULTI_GAUSSIAN_ELLIPSE_POTENTIAL",
     "NFW",
     "NFW_ELLIPSE_CSE",
     "NFW_ELLIPSE_GAUSS_DEC",
@@ -407,9 +407,9 @@ def lens_class(
 
         return GaussianEllipsePotential()
     elif lens_type == "GAUSSIAN_KAPPA":
-        from lenstronomy.LensModel.Profiles.gaussian_kappa import GaussianKappa
+        from lenstronomy.LensModel.Profiles.gaussian import Gaussian
 
-        return GaussianKappa()
+        return Gaussian()
     elif lens_type == "GAUSSIAN_POTENTIAL":
         from lenstronomy.LensModel.Profiles.gaussian_potential import GaussianPotential
 
@@ -460,18 +460,18 @@ def lens_class(
         from lenstronomy.LensModel.Profiles.multipole import Multipole
 
         return Multipole()
-    elif lens_type == "MULTI_GAUSSIAN_KAPPA":
-        from lenstronomy.LensModel.Profiles.multi_gaussian_kappa import (
-            MultiGaussianKappa,
+    elif lens_type == "MULTI_GAUSSIAN":
+        from lenstronomy.LensModel.Profiles.multi_gaussian import (
+            MultiGaussian,
         )
 
-        return MultiGaussianKappa()
-    elif lens_type == "MULTI_GAUSSIAN_KAPPA_ELLIPSE":
-        from lenstronomy.LensModel.Profiles.multi_gaussian_kappa import (
-            MultiGaussianKappaEllipse,
+        return MultiGaussian()
+    elif lens_type == "MULTI_GAUSSIAN_ELLIPSE_POTENTIAL":
+        from lenstronomy.LensModel.Profiles.multi_gaussian import (
+            MultiGaussianEllipsePotential,
         )
 
-        return MultiGaussianKappaEllipse()
+        return MultiGaussianEllipsePotential()
     elif lens_type == "NFW":
         from lenstronomy.LensModel.Profiles.nfw import NFW
 

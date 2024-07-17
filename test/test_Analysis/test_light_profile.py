@@ -6,7 +6,7 @@ import unittest
 from lenstronomy.Analysis.light_profile import LightProfileAnalysis
 from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.LightModel.Profiles.gaussian import MultiGaussian, MultiGaussianEllipse
-from lenstronomy.LensModel.Profiles.multi_gaussian_kappa import MultiGaussianKappa
+from lenstronomy.LensModel.Profiles.multi_gaussian import MultiGaussian
 import lenstronomy.Util.param_util as param_util
 import lenstronomy.Util.util as util
 

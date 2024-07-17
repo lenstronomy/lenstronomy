@@ -9,7 +9,7 @@ import numpy as np
 from scipy.special import wofz
 from scipy.integrate import quad
 from copy import deepcopy
-from lenstronomy.LensModel.Profiles.gaussian_kappa import GaussianKappa
+from lenstronomy.LensModel.Profiles.gaussian import Gaussian
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
@@ -56,7 +56,7 @@ class GaussianEllipseKappa(LensProfileBase):
             self.w_f = self.w_f_approx
 
         self.min_ellipticity = min_ellipticity
-        self.spherical = GaussianKappa()
+        self.spherical = Gaussian()
         super(GaussianEllipseKappa, self).__init__()
 
     def function(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):

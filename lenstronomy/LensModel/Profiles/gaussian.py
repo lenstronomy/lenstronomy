@@ -7,10 +7,10 @@ import scipy.integrate as integrate
 from lenstronomy.LensModel.Profiles.gaussian_potential import GaussianPotential
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
-__all__ = ["GaussianKappa"]
+__all__ = ["Gaussian"]
 
 
-class GaussianKappa(LensProfileBase):
+class Gaussian(LensProfileBase):
     """This class contains functions to evaluate a Gaussian convergence and calculates
     its derivative and hessian matrix."""
 

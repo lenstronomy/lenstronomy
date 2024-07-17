@@ -1,7 +1,7 @@
 __author__ = "ajshajib"
 
 from lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa import GaussianEllipseKappa
-from lenstronomy.LensModel.Profiles.gaussian_kappa import GaussianKappa
+from lenstronomy.LensModel.Profiles.gaussian import Gaussian
 
 import numpy as np
 import numpy.testing as npt
@@ -18,7 +18,7 @@ class TestGaussianEllipseKappa(object):
         :return:
         :rtype:
         """
-        self.gaussian_kappa = GaussianKappa()
+        self.gaussian_kappa = Gaussian()
         self.gaussian_kappa_ellipse = GaussianEllipseKappa()
 
     def test_function(self):

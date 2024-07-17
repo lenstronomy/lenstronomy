@@ -2,13 +2,13 @@ __author__ = "sibirrer"
 
 
 from lenstronomy.LightModel.Profiles.gaussian import Gaussian
-from lenstronomy.LensModel.Profiles.gaussian_kappa import GaussianKappa
+from lenstronomy.LensModel.Profiles.gaussian import Gaussian
 from lenstronomy.LensModel.Profiles.gaussian_ellipse_potential import (
     GaussianEllipsePotential,
 )
-from lenstronomy.LensModel.Profiles.multi_gaussian_kappa import (
-    MultiGaussianKappa,
-    MultiGaussianKappaEllipse,
+from lenstronomy.LensModel.Profiles.multi_gaussian import (
+    MultiGaussian,
+    MultiGaussianEllipsePotential,
 )
 
 import numpy as np
@@ -20,9 +20,9 @@ class TestGaussianKappa(object):
     """Test the Gaussian with Gaussian kappa."""
 
     def setup_method(self):
-        self.gaussian_kappa = MultiGaussianKappa()
+        self.gaussian_kappa = MultiGaussian()
         self.gaussian = Gaussian()
-        self.g_kappa = GaussianKappa()
+        self.g_kappa = Gaussian()
 
     def test_derivatives(self):
         x = np.linspace(0, 5, 10)
@@ -83,7 +83,7 @@ class TestGaussianKappaEllipse(object):
     """Test the Gaussian with Gaussian kappa."""
 
     def setup_method(self):
-        self.multi = MultiGaussianKappaEllipse()
+        self.multi = MultiGaussianEllipsePotential()
         self.single = GaussianEllipsePotential()
 
     def test_function(self):

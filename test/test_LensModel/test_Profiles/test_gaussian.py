@@ -1,7 +1,7 @@
 __author__ = "sibirrer"
 
 from lenstronomy.LensModel.Profiles.gaussian_potential import GaussianPotential
-from lenstronomy.LensModel.Profiles.gaussian_kappa import GaussianKappa
+from lenstronomy.LensModel.Profiles.gaussian import Gaussian
 
 import numpy as np
 import numpy.testing as npt
@@ -81,7 +81,7 @@ class TestGaussianKappa(object):
     """Test the Gaussian with Gaussian kappa."""
 
     def setup_method(self):
-        self.gaussian_kappa = GaussianKappa()
+        self.gaussian_kappa = Gaussian()
         self.gaussian = GaussianPotential()
 
     def test_derivatives(self):

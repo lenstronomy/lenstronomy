@@ -12,7 +12,8 @@ __all__ = ["CnfwEllipsePotential"]
 
 
 class CnfwEllipsePotential(LensProfileBase):
-    """This class contains functions concerning the CNFW profile with ellipticity in the potential.
+    """This class contains functions concerning the CNFW profile with ellipticity in the
+    potential.
 
     relation are: R_200 = c * Rs
     """

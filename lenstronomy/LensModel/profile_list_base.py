@@ -8,7 +8,7 @@ _SUPPORTED_MODELS = [
     "BLANK_PLANE",
     "CHAMELEON",
     "CNFW",
-    "CNFW_ELLIPSE",
+    "CNFW_ELLIPSE_POTENTIAL",
     "CONST_MAG",
     "CONVERGENCE",
     "coreBURKERT",
@@ -272,10 +272,12 @@ def lens_class(
         from lenstronomy.LensModel.Profiles.cnfw import CNFW
 
         return CNFW()
-    elif lens_type == "CNFW_ELLIPSE":
-        from lenstronomy.LensModel.Profiles.cnfw_ellipse import CNFW_ELLIPSE
+    elif lens_type == "CNFW_ELLIPSE_POTENTIAL":
+        from lenstronomy.LensModel.Profiles.CNFW_ELLIPSE_POTENTIAL import (
+            CnfwEllipsePotential,
+        )
 
-        return CNFW_ELLIPSE()
+        return CnfwEllipsePotential()
     elif lens_type == "CONST_MAG":
         from lenstronomy.LensModel.Profiles.const_mag import ConstMag
 

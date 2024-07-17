@@ -340,7 +340,9 @@ class TestNumerics(object):
         self.assert_lens_integrals(Model, kwargs_lens)
 
     def test_cnfw_ellipse(self):
-        from lenstronomy.LensModel.Profiles.cnfw_ellipse import CNFW_ELLIPSE as Model
+        from lenstronomy.LensModel.Profiles.cnfw_ellipse_potential import (
+            CnfwEllipsePotential as Model,
+        )
 
         kwargs = {"rho0": 1.0, "Rs": 1, "r_core": 0.5, "e1": 0, "e2": 0}
         # self.assert_integrals(Model, kwargs)

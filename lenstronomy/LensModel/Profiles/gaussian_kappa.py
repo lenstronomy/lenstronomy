@@ -11,8 +11,8 @@ __all__ = ["GaussianKappa"]
 
 
 class GaussianKappa(LensProfileBase):
-    """This class contains functions to evaluate a Gaussian convergence and calculates its
-    derivative and hessian matrix."""
+    """This class contains functions to evaluate a Gaussian convergence and calculates
+    its derivative and hessian matrix."""
 
     param_names = ["amp", "sigma", "center_x", "center_y"]
     lower_limit_default = {"amp": 0, "sigma": 0, "center_x": -100, "center_y": -100}

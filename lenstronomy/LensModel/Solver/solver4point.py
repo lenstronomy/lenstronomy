@@ -20,7 +20,7 @@ class Solver4Point(object):
             "PEMD",
             "SIE",
             "NIE",
-            "NFW_ELLIPSE",
+            "NFW_ELLIPSE_POTENTIAL",
             "NFW_ELLIPSE_CSE",
             "SHAPELETS_CART",
             "CNFW_ELLIPSE",

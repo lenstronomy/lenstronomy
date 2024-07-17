@@ -11,7 +11,7 @@ __all__ = ["GaussianEllipsePotential"]
 
 class GaussianEllipsePotential(LensProfileBase):
     """This class contains functions to evaluate a Gaussian function and calculates its
-    derivative and hessian matrix with ellipticity in the convergence.
+    derivative and hessian matrix with ellipticity in the potential.
 
     the calculation follows Glenn van de Ven et al. 2009
     """

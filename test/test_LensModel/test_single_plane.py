@@ -19,7 +19,7 @@ class TestLensModel(object):
     """Tests the source model routines."""
 
     def setup_method(self):
-        self.lensModel = SinglePlane(["GAUSSIAN"])
+        self.lensModel = SinglePlane(["GAUSSIAN_POTENTIAL"])
         self.kwargs = [
             {
                 "amp": 1.0,

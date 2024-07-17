@@ -175,8 +175,8 @@ class TestNumerics(object):
         self.assert_lens_integrals(Model, kwargs)
 
     def test_hernquist_ellipse(self):
-        from lenstronomy.LensModel.Profiles.hernquist_ellipse import (
-            Hernquist_Ellipse as Model,
+        from lenstronomy.LensModel.Profiles.hernquist_ellipse_potential import (
+            HernquistEllipsePotential as Model,
         )
 
         kwargs = {"rho0": 1.0, "Rs": 5.0, "e1": 0, "e2": 0}

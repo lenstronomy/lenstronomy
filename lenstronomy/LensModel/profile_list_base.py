@@ -42,7 +42,7 @@ _SUPPORTED_MODELS = [
     "GAUSSIAN_POTENTIAL",
     "GNFW",
     "HERNQUIST",
-    "HERNQUIST_ELLIPSE",
+    "HERNQUIST_ELLIPSE_POTENTIAL",
     "HERNQUIST_ELLIPSE_CSE",
     "HESSIAN",
     "INTERPOL",
@@ -273,7 +273,7 @@ def lens_class(
 
         return CNFW()
     elif lens_type == "CNFW_ELLIPSE_POTENTIAL":
-        from lenstronomy.LensModel.Profiles.CNFW_ELLIPSE_POTENTIAL import (
+        from lenstronomy.LensModel.Profiles.cnfw_ellipse_potential import (
             CnfwEllipsePotential,
         )
 
@@ -422,12 +422,12 @@ def lens_class(
         from lenstronomy.LensModel.Profiles.hernquist import Hernquist
 
         return Hernquist()
-    elif lens_type == "HERNQUIST_ELLIPSE":
-        from lenstronomy.LensModel.Profiles.hernquist_ellipse import (
-            Hernquist_Ellipse,
+    elif lens_type == "HERNQUIST_ELLIPSE_POTENTIAL":
+        from lenstronomy.LensModel.Profiles.hernquist_ellipse_potential import (
+            HernquistEllipsePotential,
         )
 
-        return Hernquist_Ellipse()
+        return HernquistEllipsePotential()
     elif lens_type == "HERNQUIST_ELLIPSE_CSE":
         from lenstronomy.LensModel.Profiles.hernquist_ellipse_cse import (
             HernquistEllipseCSE,

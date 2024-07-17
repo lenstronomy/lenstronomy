@@ -11,9 +11,21 @@ __all__ = ["MultiGaussian", "MultiGaussianEllipsePotential"]
 class MultiGaussian(LensProfileBase):
     """"""
 
-    param_names = ["amp", "sigma", "center_x", "center_y"]
-    lower_limit_default = {"amp": 0, "sigma": 0, "center_x": -100, "center_y": -100}
-    upper_limit_default = {"amp": 100, "sigma": 100, "center_x": 100, "center_y": 100}
+    param_names = ["amp", "sigma", "center_x", "center_y", "scale_factor"]
+    lower_limit_default = {
+        "amp": 0,
+        "sigma": 0,
+        "center_x": -100,
+        "center_y": -100,
+        "scale_factor": 0,
+    }
+    upper_limit_default = {
+        "amp": 100,
+        "sigma": 100,
+        "center_x": 100,
+        "center_y": 100,
+        "scale_factor": 10000,
+    }
 
     def __init__(self):
         self.gaussian = Gaussian()
@@ -143,7 +155,7 @@ class MultiGaussian(LensProfileBase):
 class MultiGaussianEllipsePotential(LensProfileBase):
     """"""
 
-    param_names = ["amp", "sigma", "e1", "e2", "center_x", "center_y"]
+    param_names = ["amp", "sigma", "e1", "e2", "center_x", "center_y", "scale_factor"]
     lower_limit_default = {
         "amp": 0,
         "sigma": 0,
@@ -151,6 +163,7 @@ class MultiGaussianEllipsePotential(LensProfileBase):
         "e2": -0.5,
         "center_x": -100,
         "center_y": -100,
+        "scale_factor": 0,
     }
     upper_limit_default = {
         "amp": 100,
@@ -159,6 +172,7 @@ class MultiGaussianEllipsePotential(LensProfileBase):
         "e2": 0.5,
         "center_x": 100,
         "center_y": 100,
+        "scale_factor": 10000,
     }
 
     def __init__(self):

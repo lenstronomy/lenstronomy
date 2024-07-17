@@ -41,7 +41,7 @@ class TestParam(object):
                 "center_x": 0,
                 "center_y": 0,
                 "scale_factor": 1,
-            },  # 'MULTI_GAUSSIAN_KAPPA'
+            },  # 'MULTI_GAUSSIAN'
         ]
         self.kwargs_sigma = [
             {

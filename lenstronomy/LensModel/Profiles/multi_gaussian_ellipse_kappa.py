@@ -20,7 +20,7 @@ class MultiGaussianEllipseKappa(LensProfileBase):
     """This class computes the lensing properties of a set of concentric elliptical
     Gaussian convergences."""
 
-    param_names = ["amp", "sigma", "e1", "e2", "center_x", "center_y"]
+    param_names = ["amp", "sigma", "e1", "e2", "center_x", "center_y", "scale_factor"]
     lower_limit_default = {
         "amp": 0,
         "sigma": 0,
@@ -28,6 +28,7 @@ class MultiGaussianEllipseKappa(LensProfileBase):
         "e2": -0.5,
         "center_x": -100,
         "center_y": -100,
+        "scale_factor": 0,
     }
     upper_limit_default = {
         "amp": 100,
@@ -36,6 +37,7 @@ class MultiGaussianEllipseKappa(LensProfileBase):
         "e2": 0.5,
         "center_x": 100,
         "center_y": 100,
+        "scale_factor": 10000,
     }
 
     def __init__(self, use_scipy_wofz=True, min_ellipticity=1e-5):
@@ -51,7 +53,9 @@ class MultiGaussianEllipseKappa(LensProfileBase):
         )
         super(MultiGaussianEllipseKappa, self).__init__()
 
-    def function(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
+    def function(
+        self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0, scale_factor=1
+    ):
         """Compute the potential function for a set of concentric elliptical Gaussian
         convergence profiles.
 
@@ -71,6 +75,8 @@ class MultiGaussianEllipseKappa(LensProfileBase):
         :type center_x: ``float``
         :param center_y: y coordianate of centroid
         :type center_y: ``float``
+        :param scale_factor: Scaling factor for amplitude
+        :type scale_factor: ``float``
         :return: Potential for elliptical Gaussian convergence
         :rtype: ``float``, or ``numpy.array`` with ``shape = x.shape``
         """
@@ -78,11 +84,13 @@ class MultiGaussianEllipseKappa(LensProfileBase):
 
         for i in range(len(amp)):
             function += self.gaussian_ellipse_kappa.function(
-                x, y, amp[i], sigma[i], e1, e2, center_x, center_y
+                x, y, scale_factor * amp[i], sigma[i], e1, e2, center_x, center_y
             )
         return function
 
-    def derivatives(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
+    def derivatives(
+        self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0, scale_factor=1
+    ):
         """Compute the derivatives of function angles :math:`\\partial f/\\partial x`,
         :math:`\\partial f/\\partial y` at :math:`x,\\ y` for a set of concentric
         elliptic Gaussian convergence profiles.
@@ -103,6 +111,8 @@ class MultiGaussianEllipseKappa(LensProfileBase):
         :type center_x: ``float``
         :param center_y: y coordianate of centroid
         :type center_y: ``float``
+        :param scale_factor: Scaling factor for amplitude
+        :type scale_factor: ``float``
         :return: Deflection angle :math:`\\partial f/\\partial x`, :math:`\\partial f/\\partial y` for elliptical Gaussian convergence
         :rtype: tuple ``(float, float)`` or ``(numpy.array, numpy.array)`` with each ``numpy`` array's shape equal to ``x.shape``
         """
@@ -113,7 +123,7 @@ class MultiGaussianEllipseKappa(LensProfileBase):
             f_x_i, f_y_i = self.gaussian_ellipse_kappa.derivatives(
                 x,
                 y,
-                amp=amp[i],
+                amp=scale_factor * amp[i],
                 sigma=sigma[i],
                 e1=e1,
                 e2=e2,
@@ -125,7 +135,7 @@ class MultiGaussianEllipseKappa(LensProfileBase):
 
         return f_x, f_y
 
-    def hessian(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
+    def hessian(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0, scale_factor=1):
         """Compute Hessian matrix of function :math:`\\partial^2f/\\partial x^2`,
         :math:`\\partial^2 f/\\partial y^2`, :math:`\\partial^2 f/\\partial x\\partial
         y` for a set of concentric elliptic Gaussian convergence profiles.
@@ -146,6 +156,8 @@ class MultiGaussianEllipseKappa(LensProfileBase):
         :type center_x: ``float``
         :param center_y: y coordianate of centroid
         :type center_y: ``float``
+        :param scale_factor: Scaling factor for amplitude
+        scale_factor: ``float``
         :return: Hessian :math:`\\partial^2f/\\partial x^2`, :math:`\\partial^2/\\partial x\\partial y`,
          :math:`\\partial^2/\\partial y\\partial x`, :math:`\\partial^2 f/\\partial y^2` for elliptical Gaussian convergence.
         :rtype: tuple ``(float, float, float)`` , or ``(numpy.array, numpy.array, numpy.array)``
@@ -159,7 +171,7 @@ class MultiGaussianEllipseKappa(LensProfileBase):
             f_xx_i, f_xy_i, _, f_yy_i = self.gaussian_ellipse_kappa.hessian(
                 x,
                 y,
-                amp=amp[i],
+                amp=scale_factor * amp[i],
                 sigma=sigma[i],
                 e1=e1,
                 e2=e2,
@@ -172,7 +184,9 @@ class MultiGaussianEllipseKappa(LensProfileBase):
 
         return f_xx, f_xy, f_xy, f_yy
 
-    def density_2d(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
+    def density_2d(
+        self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0, scale_factor=1
+    ):
         """Compute the density of a set of concentric elliptical Gaussian convergence
         profiles :math:`\\sum A/(2\\pi \\sigma^2) \\exp(-( x^2+y^2/q^2)/2\\sigma^2)`.
 
@@ -192,6 +206,8 @@ class MultiGaussianEllipseKappa(LensProfileBase):
         :type center_x: ``float``
         :param center_y: y coordianate of centroid
         :type center_y: ``float``
+        :param scale_factor: Scaling factor for amplitude
+        :type scale_factor: ``float``
         :return: Density :math:`\\kappa` for elliptical Gaussian convergence
         :rtype: ``float``, or ``numpy.array`` with shape equal to ``x.shape``
         """
@@ -201,7 +217,7 @@ class MultiGaussianEllipseKappa(LensProfileBase):
             density_2d += self.gaussian_ellipse_kappa.density_2d(
                 x,
                 y,
-                amp=amp[i],
+                amp=scale_factor * amp[i],
                 sigma=sigma[i],
                 e1=e1,
                 e2=e2,

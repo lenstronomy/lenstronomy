@@ -2,7 +2,7 @@ __author__ = "sibirrer"
 # this file contains a class to make a gaussian
 
 import numpy as np
-from lenstronomy.LensModel.Profiles.gaussian_kappa import GaussianKappa
+from lenstronomy.LensModel.Profiles.gaussian import Gaussian
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
@@ -10,10 +10,10 @@ __all__ = ["GaussianEllipsePotential"]
 
 
 class GaussianEllipsePotential(LensProfileBase):
-    """This class contains functions to evaluate a Gaussian function and calculates its
-    derivative and hessian matrix with ellipticity in the convergence.
+    """This class contains functions to evaluate a Gaussian convergence and calculates
+    its derivative and hessian matrix with ellipticity in the potential.
 
-    the calculation follows Glenn van de Ven et al. 2009
+    The calculation follows Glenn van de Ven et al. 2009.
     """
 
     param_names = ["amp", "sigma", "e1", "e2", "center_x", "center_y"]
@@ -35,7 +35,7 @@ class GaussianEllipsePotential(LensProfileBase):
     }
 
     def __init__(self):
-        self.spherical = GaussianKappa()
+        self.spherical = Gaussian()
         self._diff = 0.000001
         super(GaussianEllipsePotential, self).__init__()
 

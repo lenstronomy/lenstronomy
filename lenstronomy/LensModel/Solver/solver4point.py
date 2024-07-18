@@ -20,18 +20,18 @@ class Solver4Point(object):
             "PEMD",
             "SIE",
             "NIE",
-            "NFW_ELLIPSE",
+            "NFW_ELLIPSE_POTENTIAL",
             "NFW_ELLIPSE_CSE",
             "SHAPELETS_CART",
-            "CNFW_ELLIPSE",
+            "CNFW_ELLIPSE_POTENTIAL",
             "EPL",
             "EPL_BOXYDISKY",
             "EPL_MULTIPOLE_M3M4",
         ]:
             raise ValueError(
                 "first lens model must be supported by the solver: 'SPEP', 'SPEMD', 'PEMD',"
-                " 'SIE', 'NIE', 'EPL', 'EPL_BOXYDISKY', 'EPL_MULTIPOLE_M3M4', 'NFW_ELLIPSE', 'NFW_ELLIPSE_CSE', "
-                "'SHAPELETS_CART', 'CNFW_ELLIPSE'."
+                " 'SIE', 'NIE', 'EPL', 'EPL_BOXYDISKY', 'EPL_MULTIPOLE_M3M4', 'NFW_ELLIPSE_POTENTIAL', 'NFW_ELLIPSE_CSE', "
+                "'SHAPELETS_CART', 'CNFW_ELLIPSE_POTENTIAL'."
                 "Your choice was %s" % lensModel.lens_model_list[0]
             )
         if solver_type not in ["PROFILE", "PROFILE_SHEAR"]:
@@ -170,7 +170,11 @@ class Solver4Point(object):
             kwargs_list[0]["center_x"] = center_x
             kwargs_list[0]["center_y"] = center_y
 
-        elif lens_model in ["NFW_ELLIPSE", "CNFW_ELLIPSE", "NFW_ELLIPSE_CSE"]:
+        elif lens_model in [
+            "NFW_ELLIPSE_POTENTIAL",
+            "CNFW_ELLIPSE_POTENTIAL",
+            "NFW_ELLIPSE_CSE",
+        ]:
             [alpha_Rs, e1, e2, center_x, center_y, _] = x
             kwargs_list[0]["alpha_Rs"] = alpha_Rs
             kwargs_list[0]["e1"] = e1
@@ -225,7 +229,11 @@ class Solver4Point(object):
             theta_E = kwargs_list[0]["theta_E"]
             x = [theta_E, e1, e2, center_x, center_y, phi_ext]
 
-        elif lens_model in ["NFW_ELLIPSE", "CNFW_ELLIPSE", "NFW_ELLIPSE_CSE"]:
+        elif lens_model in [
+            "NFW_ELLIPSE_POTENTIAL",
+            "CNFW_ELLIPSE_POTENTIAL",
+            "NFW_ELLIPSE_CSE",
+        ]:
             e1 = kwargs_list[0]["e1"]
             e2 = kwargs_list[0]["e2"]
             center_x = kwargs_list[0]["center_x"]
@@ -271,7 +279,11 @@ class Solver4Point(object):
             kwargs_fixed["e2"] = kwargs_lens["e2"]
             kwargs_fixed["center_x"] = kwargs_lens["center_x"]
             kwargs_fixed["center_y"] = kwargs_lens["center_y"]
-        elif lens_model in ["NFW_ELLIPSE", "CNFW_ELLIPSE", "NFW_ELLIPSE_CSE"]:
+        elif lens_model in [
+            "NFW_ELLIPSE_POTENTIAL",
+            "CNFW_ELLIPSE_POTENTIAL",
+            "NFW_ELLIPSE_CSE",
+        ]:
             kwargs_fixed["alpha_Rs"] = kwargs_lens["alpha_Rs"]
             kwargs_fixed["e1"] = kwargs_lens["e1"]
             kwargs_fixed["e2"] = kwargs_lens["e2"]

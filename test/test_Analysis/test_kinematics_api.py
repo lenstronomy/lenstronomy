@@ -318,7 +318,7 @@ class TestKinematicsAPI(object):
             theta_E=1.4,
             model_kinematics_bool=[True, False],
         )
-        assert mass_profile_list[0] == "MULTI_GAUSSIAN_KAPPA"
+        assert mass_profile_list[0] == "MULTI_GAUSSIAN"
 
         mass_profile_list, kwargs_profile = kin_api.kinematic_lens_profiles(
             kwargs_lens, MGE_fit=False, model_kinematics_bool=[True, False]

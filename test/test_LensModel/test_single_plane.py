@@ -19,7 +19,7 @@ class TestLensModel(object):
     """Tests the source model routines."""
 
     def setup_method(self):
-        self.lensModel = SinglePlane(["GAUSSIAN"])
+        self.lensModel = SinglePlane(["GAUSSIAN_POTENTIAL"])
         self.kwargs = [
             {
                 "amp": 1.0,
@@ -54,7 +54,7 @@ class TestLensModel(object):
         assert delta_y == 1 + 0.19470019576785122 / (8 * np.pi)
 
     def test_mass_2d(self):
-        lensModel = SinglePlane(["GAUSSIAN_KAPPA"])
+        lensModel = SinglePlane(["GAUSSIAN"])
         kwargs = [{"amp": 1.0, "sigma": 2.0, "center_x": 0.0, "center_y": 0.0}]
         output = lensModel.mass_2d(r=1, kwargs=kwargs)
         npt.assert_almost_equal(output, 0.11750309741540453, decimal=9)
@@ -99,7 +99,7 @@ class TestLensModel(object):
             "SHEAR_GAMMA_PSI",
             "CURVED_ARC_CONST",
             "NFW_MC",
-            "NFW_MC_ELLIPSE",
+            "NFW_MC_ELLIPSE_POTENTIAL",
             "ARC_PERT",
             "MULTIPOLE",
             "CURVED_ARC_SPP",

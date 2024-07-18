@@ -1,6 +1,6 @@
 __author__ = "sibirrer"
 
-from lenstronomy.LensModel.Profiles.p_jaffe import PJaffe
+from lenstronomy.LensModel.Profiles.pseudo_jaffe import PseudoJaffe
 
 import numpy as np
 import numpy.testing as npt
@@ -11,7 +11,7 @@ class TestP_JAFFW(object):
     """Tests the Gaussian methods."""
 
     def setup_method(self):
-        self.profile = PJaffe()
+        self.profile = PseudoJaffe()
 
     def test_function(self):
         x = np.array([1])

@@ -49,7 +49,7 @@ class TestLensEquationSolver(object):
         npt.assert_almost_equal(sourcePos_x, source_x, decimal=10)
 
     def test_nfw(self):
-        lens_model_list = ["NFW_ELLIPSE", "SIS"]
+        lens_model_list = ["NFW_ELLIPSE_POTENTIAL", "SIS"]
         lensModel = LensModel(lens_model_list)
         lensEquationSolver = LensEquationSolver(lensModel)
         sourcePos_x = 0.1

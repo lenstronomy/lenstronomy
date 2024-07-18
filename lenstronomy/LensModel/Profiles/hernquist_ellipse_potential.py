@@ -3,10 +3,10 @@ import lenstronomy.Util.param_util as param_util
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 import numpy as np
 
-__all__ = ["Hernquist_Ellipse"]
+__all__ = ["HernquistEllipsePotential"]
 
 
-class Hernquist_Ellipse(LensProfileBase):
+class HernquistEllipsePotential(LensProfileBase):
     """This class contains functions for the elliptical Hernquist profile.
 
     Ellipticity is defined in the potential.
@@ -33,7 +33,7 @@ class Hernquist_Ellipse(LensProfileBase):
     def __init__(self):
         self.spherical = Hernquist()
         self._diff = 0.00000001
-        super(Hernquist_Ellipse, self).__init__()
+        super(HernquistEllipsePotential, self).__init__()
 
     def function(self, x, y, sigma0, Rs, e1, e2, center_x=0, center_y=0):
         """Returns double integral of NFW profile."""

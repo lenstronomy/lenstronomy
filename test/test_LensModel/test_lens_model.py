@@ -14,7 +14,7 @@ class TestLensModel(object):
     """Tests the source model routines."""
 
     def setup_method(self):
-        self.lensModel = LensModel(["GAUSSIAN"])
+        self.lensModel = LensModel(["GAUSSIAN_POTENTIAL"])
         self.kwargs = [
             {
                 "amp": 1.0,
@@ -36,16 +36,16 @@ class TestLensModel(object):
             "SERSIC_ELLIPSE_POTENTIAL",
             "CTNFW_GAUSS_DEC",
             "PJAFFE",
-            "PJAFFE_ELLIPSE",
-            "HERNQUIST_ELLIPSE",
+            "PJAFFE_ELLIPSE_POTENTIAL",
+            "HERNQUIST_ELLIPSE_POTENTIAL",
             "INTERPOL",
             "INTERPOL_SCALED",
             "SHAPELETS_POLAR",
             "DIPOLE",
             "GAUSSIAN_ELLIPSE_KAPPA",
             "GAUSSIAN_ELLIPSE_POTENTIAL",
-            "MULTI_GAUSSIAN_KAPPA",
-            "MULTI_GAUSSIAN_KAPPA_ELLIPSE",
+            "MULTI_GAUSSIAN",
+            "MULTI_GAUSSIAN_ELLIPSE_POTENTIAL",
             "CHAMELEON",
             "DOUBLE_CHAMELEON",
         ]
@@ -73,16 +73,16 @@ class TestLensModel(object):
             "SERSIC_ELLIPSE_POTENTIAL",
             "CTNFW_GAUSS_DEC",
             "PJAFFE",
-            "PJAFFE_ELLIPSE",
-            "HERNQUIST_ELLIPSE",
+            "PJAFFE_ELLIPSE_POTENTIAL",
+            "HERNQUIST_ELLIPSE_POTENTIAL",
             "INTERPOL",
             "INTERPOL_SCALED",
             "SHAPELETS_POLAR",
             "DIPOLE",
             "GAUSSIAN_ELLIPSE_KAPPA",
             "GAUSSIAN_ELLIPSE_POTENTIAL",
-            "MULTI_GAUSSIAN_KAPPA",
-            "MULTI_GAUSSIAN_KAPPA_ELLIPSE",
+            "MULTI_GAUSSIAN",
+            "MULTI_GAUSSIAN_ELLIPSE_POTENTIAL",
             "CHAMELEON",
             "DOUBLE_CHAMELEON",
         ]
@@ -328,7 +328,7 @@ class TestRaise(unittest.TestCase):
             )
         with self.assertRaises(ValueError):
             lens_model = LensModel(
-                lens_model_list=["LOS_MINIMAL", "SIS", "GAUSSIAN"],
+                lens_model_list=["LOS_MINIMAL", "SIS", "GAUSSIAN_POTENTIAL"],
                 multi_plane=True,
                 z_source=1.0,
                 lens_redshift_list=[0.5, 0.5, 0.5],

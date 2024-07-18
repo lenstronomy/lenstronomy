@@ -1,23 +1,35 @@
 import numpy as np
-from lenstronomy.LensModel.Profiles.gaussian_kappa import GaussianKappa
+from lenstronomy.LensModel.Profiles.gaussian import Gaussian
 from lenstronomy.LensModel.Profiles.gaussian_ellipse_potential import (
     GaussianEllipsePotential,
 )
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
-__all__ = ["MultiGaussianKappa", "MultiGaussianKappaEllipse"]
+__all__ = ["MultiGaussian", "MultiGaussianEllipsePotential"]
 
 
-class MultiGaussianKappa(LensProfileBase):
+class MultiGaussian(LensProfileBase):
     """"""
 
-    param_names = ["amp", "sigma", "center_x", "center_y"]
-    lower_limit_default = {"amp": 0, "sigma": 0, "center_x": -100, "center_y": -100}
-    upper_limit_default = {"amp": 100, "sigma": 100, "center_x": 100, "center_y": 100}
+    param_names = ["amp", "sigma", "center_x", "center_y", "scale_factor"]
+    lower_limit_default = {
+        "amp": 0,
+        "sigma": 0,
+        "center_x": -100,
+        "center_y": -100,
+        "scale_factor": 0,
+    }
+    upper_limit_default = {
+        "amp": 100,
+        "sigma": 100,
+        "center_x": 100,
+        "center_y": 100,
+        "scale_factor": 10000,
+    }
 
     def __init__(self):
-        self.gaussian_kappa = GaussianKappa()
-        super(MultiGaussianKappa, self).__init__()
+        self.gaussian = Gaussian()
+        super(MultiGaussian, self).__init__()
 
     def function(self, x, y, amp, sigma, center_x=0, center_y=0, scale_factor=1):
         """
@@ -32,7 +44,7 @@ class MultiGaussianKappa(LensProfileBase):
         """
         f_ = np.zeros_like(x, dtype=float)
         for i in range(len(amp)):
-            f_ += self.gaussian_kappa.function(
+            f_ += self.gaussian.function(
                 x,
                 y,
                 amp=scale_factor * amp[i],
@@ -55,7 +67,7 @@ class MultiGaussianKappa(LensProfileBase):
         """
         f_x, f_y = np.zeros_like(x, dtype=float), np.zeros_like(x, dtype=float)
         for i in range(len(amp)):
-            f_x_i, f_y_i = self.gaussian_kappa.derivatives(
+            f_x_i, f_y_i = self.gaussian.derivatives(
                 x,
                 y,
                 amp=scale_factor * amp[i],
@@ -84,7 +96,7 @@ class MultiGaussianKappa(LensProfileBase):
             np.zeros_like(x, dtype=float),
         )
         for i in range(len(amp)):
-            f_xx_i, f_xy_i, _, f_yy_i = self.gaussian_kappa.hessian(
+            f_xx_i, f_xy_i, _, f_yy_i = self.gaussian.hessian(
                 x,
                 y,
                 amp=scale_factor * amp[i],
@@ -107,7 +119,7 @@ class MultiGaussianKappa(LensProfileBase):
         """
         d_ = np.zeros_like(r, dtype=float)
         for i in range(len(amp)):
-            d_ += self.gaussian_kappa.density(r, scale_factor * amp[i], sigma[i])
+            d_ += self.gaussian.density(r, scale_factor * amp[i], sigma[i])
         return d_
 
     def density_2d(self, x, y, amp, sigma, center_x=0, center_y=0, scale_factor=1):
@@ -121,7 +133,7 @@ class MultiGaussianKappa(LensProfileBase):
         """
         d_3d = np.zeros_like(x, dtype=float)
         for i in range(len(amp)):
-            d_3d += self.gaussian_kappa.density_2d(
+            d_3d += self.gaussian.density_2d(
                 x, y, scale_factor * amp[i], sigma[i], center_x, center_y
             )
         return d_3d
@@ -136,16 +148,14 @@ class MultiGaussianKappa(LensProfileBase):
         """
         mass_3d = np.zeros_like(R, dtype=float)
         for i in range(len(amp)):
-            mass_3d += self.gaussian_kappa.mass_3d_lens(
-                R, scale_factor * amp[i], sigma[i]
-            )
+            mass_3d += self.gaussian.mass_3d_lens(R, scale_factor * amp[i], sigma[i])
         return mass_3d
 
 
-class MultiGaussianKappaEllipse(LensProfileBase):
+class MultiGaussianEllipsePotential(LensProfileBase):
     """"""
 
-    param_names = ["amp", "sigma", "e1", "e2", "center_x", "center_y"]
+    param_names = ["amp", "sigma", "e1", "e2", "center_x", "center_y", "scale_factor"]
     lower_limit_default = {
         "amp": 0,
         "sigma": 0,
@@ -153,6 +163,7 @@ class MultiGaussianKappaEllipse(LensProfileBase):
         "e2": -0.5,
         "center_x": -100,
         "center_y": -100,
+        "scale_factor": 0,
     }
     upper_limit_default = {
         "amp": 100,
@@ -161,11 +172,12 @@ class MultiGaussianKappaEllipse(LensProfileBase):
         "e2": 0.5,
         "center_x": 100,
         "center_y": 100,
+        "scale_factor": 10000,
     }
 
     def __init__(self):
-        self.gaussian_kappa = GaussianEllipsePotential()
-        super(MultiGaussianKappaEllipse, self).__init__()
+        self.gaussian_ellipse_potential = GaussianEllipsePotential()
+        super(MultiGaussianEllipsePotential, self).__init__()
 
     def function(
         self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0, scale_factor=1
@@ -182,7 +194,7 @@ class MultiGaussianKappaEllipse(LensProfileBase):
         """
         f_ = np.zeros_like(x, dtype=float)
         for i in range(len(amp)):
-            f_ += self.gaussian_kappa.function(
+            f_ += self.gaussian_ellipse_potential.function(
                 x,
                 y,
                 amp=scale_factor * amp[i],
@@ -209,7 +221,7 @@ class MultiGaussianKappaEllipse(LensProfileBase):
         """
         f_x, f_y = np.zeros_like(x, dtype=float), np.zeros_like(x, dtype=float)
         for i in range(len(amp)):
-            f_x_i, f_y_i = self.gaussian_kappa.derivatives(
+            f_x_i, f_y_i = self.gaussian_ellipse_potential.derivatives(
                 x,
                 y,
                 amp=scale_factor * amp[i],
@@ -240,7 +252,7 @@ class MultiGaussianKappaEllipse(LensProfileBase):
             np.zeros_like(x, dtype=float),
         )
         for i in range(len(amp)):
-            f_xx_i, f_xy_i, _, f_yy_i = self.gaussian_kappa.hessian(
+            f_xx_i, f_xy_i, _, f_yy_i = self.gaussian_ellipse_potential.hessian(
                 x,
                 y,
                 amp=scale_factor * amp[i],
@@ -265,7 +277,7 @@ class MultiGaussianKappaEllipse(LensProfileBase):
         """
         d_ = np.zeros_like(r, dtype=float)
         for i in range(len(amp)):
-            d_ += self.gaussian_kappa.density(
+            d_ += self.gaussian_ellipse_potential.density(
                 r, scale_factor * amp[i], sigma[i], e1, e2
             )
         return d_
@@ -283,7 +295,7 @@ class MultiGaussianKappaEllipse(LensProfileBase):
         """
         d_3d = np.zeros_like(x, dtype=float)
         for i in range(len(amp)):
-            d_3d += self.gaussian_kappa.density_2d(
+            d_3d += self.gaussian_ellipse_potential.density_2d(
                 x, y, scale_factor * amp[i], sigma[i], e1, e2, center_x, center_y
             )
         return d_3d
@@ -298,7 +310,7 @@ class MultiGaussianKappaEllipse(LensProfileBase):
         """
         mass_3d = np.zeros_like(R, dtype=float)
         for i in range(len(amp)):
-            mass_3d += self.gaussian_kappa.mass_3d_lens(
+            mass_3d += self.gaussian_ellipse_potential.mass_3d_lens(
                 R, scale_factor * amp[i], sigma[i], e1, e2
             )
         return mass_3d

@@ -8,7 +8,7 @@ _SUPPORTED_MODELS = [
     "BLANK_PLANE",
     "CHAMELEON",
     "CNFW",
-    "CNFW_ELLIPSE",
+    "CNFW_ELLIPSE_POTENTIAL",
     "CONST_MAG",
     "CONVERGENCE",
     "coreBURKERT",
@@ -39,10 +39,10 @@ _SUPPORTED_MODELS = [
     "GAUSSIAN",
     "GAUSSIAN_ELLIPSE_KAPPA",
     "GAUSSIAN_ELLIPSE_POTENTIAL",
-    "GAUSSIAN_KAPPA",
+    "GAUSSIAN_POTENTIAL",
     "GNFW",
     "HERNQUIST",
-    "HERNQUIST_ELLIPSE",
+    "HERNQUIST_ELLIPSE_POTENTIAL",
     "HERNQUIST_ELLIPSE_CSE",
     "HESSIAN",
     "INTERPOL",
@@ -51,20 +51,20 @@ _SUPPORTED_MODELS = [
     "LOS",
     "LOS_MINIMAL",
     "MULTIPOLE",
-    "MULTI_GAUSSIAN_KAPPA",
-    "MULTI_GAUSSIAN_KAPPA_ELLIPSE",
+    "MULTI_GAUSSIAN",
+    "MULTI_GAUSSIAN_ELLIPSE_POTENTIAL",
     "NFW",
-    "NFW_ELLIPSE",
     "NFW_ELLIPSE_CSE",
     "NFW_ELLIPSE_GAUSS_DEC",
+    "NFW_ELLIPSE_POTENTIAL",
     "NFW_MC",
-    "NFW_MC_ELLIPSE",
+    "NFW_MC_ELLIPSE_POTENTIAL",
     "NIE",
     "NIE_POTENTIAL",
     "NIE_SIMPLE",
     "PEMD",
     "PJAFFE",
-    "PJAFFE_ELLIPSE",
+    "PJAFFE_ELLIPSE_POTENTIAL",
     "POINT_MASS",
     "PSEUDO_DPL",
     "SERSIC",
@@ -88,7 +88,7 @@ _SUPPORTED_MODELS = [
     "TABULATED_DEFLECTIONS",
     "TNFW",
     "TNFWC",
-    "TNFW_ELLIPSE",
+    "TNFW_ELLIPSE_POTENTIAL",
     "TRIPLE_CHAMELEON",
     "ULDM",
     "EPL_MULTIPOLE_M3M4",
@@ -159,7 +159,7 @@ class ProfileListBase(object):
                 "INTERPOL_SCALED",
                 "NFW_ELLIPSE_GAUSS_DEC",
                 "NFW_MC",
-                "NFW_MC_ELLIPSE",
+                "NFW_MC_ELLIPSE_POTENTIAL",
                 "NIE",
                 "NIE_SIMPLE",
                 "RADIAL_INTERPOL",
@@ -272,10 +272,12 @@ def lens_class(
         from lenstronomy.LensModel.Profiles.cnfw import CNFW
 
         return CNFW()
-    elif lens_type == "CNFW_ELLIPSE":
-        from lenstronomy.LensModel.Profiles.cnfw_ellipse import CNFW_ELLIPSE
+    elif lens_type == "CNFW_ELLIPSE_POTENTIAL":
+        from lenstronomy.LensModel.Profiles.cnfw_ellipse_potential import (
+            CNFWEllipsePotential,
+        )
 
-        return CNFW_ELLIPSE()
+        return CNFWEllipsePotential()
     elif lens_type == "CONST_MAG":
         from lenstronomy.LensModel.Profiles.const_mag import ConstMag
 
@@ -393,7 +395,7 @@ def lens_class(
 
         return Flexionfg()
     elif lens_type == "GAUSSIAN":
-        from lenstronomy.LensModel.Profiles.gaussian_potential import Gaussian
+        from lenstronomy.LensModel.Profiles.gaussian import Gaussian
 
         return Gaussian()
     elif lens_type == "GAUSSIAN_ELLIPSE_KAPPA":
@@ -408,10 +410,10 @@ def lens_class(
         )
 
         return GaussianEllipsePotential()
-    elif lens_type == "GAUSSIAN_KAPPA":
-        from lenstronomy.LensModel.Profiles.gaussian_kappa import GaussianKappa
+    elif lens_type == "GAUSSIAN_POTENTIAL":
+        from lenstronomy.LensModel.Profiles.gaussian_potential import GaussianPotential
 
-        return GaussianKappa()
+        return GaussianPotential()
     elif lens_type == "GNFW":
         from lenstronomy.LensModel.Profiles.gnfw import GNFW
 
@@ -420,12 +422,12 @@ def lens_class(
         from lenstronomy.LensModel.Profiles.hernquist import Hernquist
 
         return Hernquist()
-    elif lens_type == "HERNQUIST_ELLIPSE":
-        from lenstronomy.LensModel.Profiles.hernquist_ellipse import (
-            Hernquist_Ellipse,
+    elif lens_type == "HERNQUIST_ELLIPSE_POTENTIAL":
+        from lenstronomy.LensModel.Profiles.hernquist_ellipse_potential import (
+            HernquistEllipsePotential,
         )
 
-        return Hernquist_Ellipse()
+        return HernquistEllipsePotential()
     elif lens_type == "HERNQUIST_ELLIPSE_CSE":
         from lenstronomy.LensModel.Profiles.hernquist_ellipse_cse import (
             HernquistEllipseCSE,
@@ -458,26 +460,28 @@ def lens_class(
         from lenstronomy.LensModel.Profiles.multipole import Multipole
 
         return Multipole()
-    elif lens_type == "MULTI_GAUSSIAN_KAPPA":
-        from lenstronomy.LensModel.Profiles.multi_gaussian_kappa import (
-            MultiGaussianKappa,
+    elif lens_type == "MULTI_GAUSSIAN":
+        from lenstronomy.LensModel.Profiles.multi_gaussian import (
+            MultiGaussian,
         )
 
-        return MultiGaussianKappa()
-    elif lens_type == "MULTI_GAUSSIAN_KAPPA_ELLIPSE":
-        from lenstronomy.LensModel.Profiles.multi_gaussian_kappa import (
-            MultiGaussianKappaEllipse,
+        return MultiGaussian()
+    elif lens_type == "MULTI_GAUSSIAN_ELLIPSE_POTENTIAL":
+        from lenstronomy.LensModel.Profiles.multi_gaussian import (
+            MultiGaussianEllipsePotential,
         )
 
-        return MultiGaussianKappaEllipse()
+        return MultiGaussianEllipsePotential()
     elif lens_type == "NFW":
         from lenstronomy.LensModel.Profiles.nfw import NFW
 
         return NFW()
-    elif lens_type == "NFW_ELLIPSE":
-        from lenstronomy.LensModel.Profiles.nfw_ellipse import NFW_ELLIPSE
+    elif lens_type == "NFW_ELLIPSE_POTENTIAL":
+        from lenstronomy.LensModel.Profiles.nfw_ellipse_potential import (
+            NFWEllipsePotential,
+        )
 
-        return NFW_ELLIPSE()
+        return NFWEllipsePotential()
     elif lens_type == "NFW_ELLIPSE_CSE":
         from lenstronomy.LensModel.Profiles.nfw_ellipse_cse import NFW_ELLIPSE_CSE
 
@@ -492,12 +496,12 @@ def lens_class(
         from lenstronomy.LensModel.Profiles.nfw_mass_concentration import NFWMC
 
         return NFWMC(z_lens=z_lens, z_source=z_source)
-    elif lens_type == "NFW_MC_ELLIPSE":
+    elif lens_type == "NFW_MC_ELLIPSE_POTENTIAL":
         from lenstronomy.LensModel.Profiles.nfw_mass_concentration_ellipse import (
-            NFWMCEllipse,
+            NFWMCEllipsePotential,
         )
 
-        return NFWMCEllipse(z_lens=z_lens, z_source=z_source)
+        return NFWMCEllipsePotential(z_lens=z_lens, z_source=z_source)
     elif lens_type == "NIE":
         from lenstronomy.LensModel.Profiles.nie import NIE
 
@@ -515,13 +519,15 @@ def lens_class(
 
         return PEMD()
     elif lens_type == "PJAFFE":
-        from lenstronomy.LensModel.Profiles.p_jaffe import PJaffe
+        from lenstronomy.LensModel.Profiles.pseudo_jaffe import PseudoJaffe
 
-        return PJaffe()
-    elif lens_type == "PJAFFE_ELLIPSE":
-        from lenstronomy.LensModel.Profiles.p_jaffe_ellipse import PJaffe_Ellipse
+        return PseudoJaffe()
+    elif lens_type == "PJAFFE_ELLIPSE_POTENTIAL":
+        from lenstronomy.LensModel.Profiles.pseudo_jaffe_ellipse_potential import (
+            PseudoJaffeEllipsePotential,
+        )
 
-        return PJaffe_Ellipse()
+        return PseudoJaffeEllipsePotential()
     elif lens_type == "POINT_MASS":
         from lenstronomy.LensModel.Profiles.point_mass import PointMass
 
@@ -556,10 +562,10 @@ def lens_class(
         return SersicEllipseKappa()
     elif lens_type == "SERSIC_ELLIPSE_POTENTIAL":
         from lenstronomy.LensModel.Profiles.sersic_ellipse_potential import (
-            SersicEllipse,
+            SersicEllipsePotential,
         )
 
-        return SersicEllipse()
+        return SersicEllipsePotential()
     elif lens_type == "SHAPELETS_CART":
         from lenstronomy.LensModel.Profiles.shapelet_pot_cartesian import (
             CartShapelets,
@@ -632,10 +638,12 @@ def lens_class(
         from lenstronomy.LensModel.Profiles.nfw_core_truncated import TNFWC
 
         return TNFWC()
-    elif lens_type == "TNFW_ELLIPSE":
-        from lenstronomy.LensModel.Profiles.tnfw_ellipse import TNFW_ELLIPSE
+    elif lens_type == "TNFW_ELLIPSE_POTENTIAL":
+        from lenstronomy.LensModel.Profiles.tnfw_ellipse_potential import (
+            TNFWELLIPSEPotential,
+        )
 
-        return TNFW_ELLIPSE()
+        return TNFWELLIPSEPotential()
     elif lens_type == "TRIPLE_CHAMELEON":
         from lenstronomy.LensModel.Profiles.chameleon import TripleChameleon
 

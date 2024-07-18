@@ -52,6 +52,7 @@ _SUPPORTED_MODELS = [
     "LOS_MINIMAL",
     "MULTIPOLE",
     "MULTI_GAUSSIAN",
+    "MULTI_GAUSSIAN_ELLIPSE_KAPPA"
     "MULTI_GAUSSIAN_ELLIPSE_POTENTIAL",
     "NFW",
     "NFW_ELLIPSE_CSE",
@@ -466,6 +467,12 @@ def lens_class(
         )
 
         return MultiGaussian()
+    elif lens_type == "MULTI_GAUSSIAN_ELLIPSE_KAPPA":
+        from lenstronomy.LensModel.Profiles.multi_gaussian_ellipse_kappa import (
+            MultiGaussianEllipseKappa,
+        )
+
+        return MultiGaussianEllipseKappa()
     elif lens_type == "MULTI_GAUSSIAN_ELLIPSE_POTENTIAL":
         from lenstronomy.LensModel.Profiles.multi_gaussian import (
             MultiGaussianEllipsePotential,

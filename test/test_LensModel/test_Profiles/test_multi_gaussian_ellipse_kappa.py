@@ -15,6 +15,7 @@ import pytest
 
 class TestGaussianEllipseKappa(object):
     """Test the Gaussian with Gaussian Ellipse Kappa."""
+
     """Including 2 options: fixed ellipticity (input one single value of each e1 and e2)
         /variable ellipticities (input lists for both e1 and e2 for different components)"""
 

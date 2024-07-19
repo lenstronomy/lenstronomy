@@ -1,3 +1,5 @@
+import copy
+
 from lenstronomy.Workflow.psf_fitting import PsfFitting
 from lenstronomy.Workflow.alignment_matching import AlignmentFitting
 from lenstronomy.Workflow.flux_calibration import FluxCalibration
@@ -67,6 +69,8 @@ class FittingSequence(object):
             num_bands=len(self.multi_band_list),
         )
         self._mcmc_init_samples = None
+        self._psf_iteration_memory = []
+        self._psf_iteration_index = 0  # index of the sequence of the PSF iteration (how many times it is being run)
 
     @property
     def kwargs_fixed(self):
@@ -583,6 +587,7 @@ class FittingSequence(object):
         for band_index in range(len(self.multi_band_list)):
             if compute_bands[band_index] is True:
                 kwargs_psf = self.multi_band_list[band_index][1]
+                kwargs_psf_before = copy.deepcopy(kwargs_psf)
                 image_model = SingleBandMultiModel(
                     self.multi_band_list,
                     kwargs_model,
@@ -595,6 +600,15 @@ class FittingSequence(object):
                     kwargs_psf, kwargs_params=kwargs_temp, **kwargs_psf_iter
                 )
                 self.multi_band_list[band_index][1] = kwargs_psf
+                self._psf_iteration_memory.append(
+                    {
+                        "sequence": self._psf_iteration_index,
+                        "band": band_index,
+                        "psf_before": kwargs_psf_before,
+                        "psf_after": kwargs_psf,
+                    }
+                )
+        self._psf_iteration_index += 1
         return 0
 
     def align_images(
@@ -866,3 +880,17 @@ class FittingSequence(object):
         # get corresponding kwargs
         kwargs_result = self.param_class.args2kwargs(best_fit_result, bijective=True)
         return kwargs_result
+
+    @property
+    def psf_iteration_memory(self):
+        """
+        returns all the psf iterations performed in the FittingSequence
+        It stores in a list of dictionaries:
+        "sequence": what PSF sequence it is (0, 1 etc)
+        "band": index of the imaging band that is being corrected
+        "psf_before" kwargs_psf prior to the iteration
+        "psf_after" kwargs_psf as a result of the iteration
+
+        :return: list of all psf corrections
+        """
+        return self._psf_iteration_memory

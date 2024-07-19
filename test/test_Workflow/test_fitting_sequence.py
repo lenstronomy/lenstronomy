@@ -377,6 +377,13 @@ class TestFittingSequence(object):
             fitting_list_three.append(["emcee", kwargs_test])
             fittingSequence.fit_sequence(fitting_list_three)
 
+        psf_iteration_list = fittingSequence.psf_iteration_memory
+        assert len(psf_iteration_list) == 1
+        assert "sequence" in psf_iteration_list[0]
+        assert "band" in psf_iteration_list[0]
+        assert "psf_before" in psf_iteration_list[0]
+        assert "psf_after" in psf_iteration_list[0]
+
     def test_cobaya(self):
         np.random.seed(42)
 

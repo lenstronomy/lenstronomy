@@ -83,8 +83,21 @@ class MultiGaussianEllipseKappa(LensProfileBase):
         function = np.zeros_like(x, dtype=float)
 
         for i in range(len(amp)):
+            if isinstance(e1, int) or isinstance(e1, float):
+                current_e1 = e1
+                current_e2 = e2
+            else:
+                current_e1 = e1[i]
+                current_e2 = e2[i]
             function += self.gaussian_ellipse_kappa.function(
-                x, y, scale_factor * amp[i], sigma[i], e1, e2, center_x, center_y
+                x,
+                y,
+                scale_factor * amp[i],
+                sigma[i],
+                current_e1,
+                current_e2,
+                center_x,
+                center_y,
             )
         return function
 
@@ -120,13 +133,19 @@ class MultiGaussianEllipseKappa(LensProfileBase):
         f_y = np.zeros_like(x, dtype=float)
 
         for i in range(len(amp)):
+            if isinstance(e1, int) or isinstance(e1, float):
+                current_e1 = e1
+                current_e2 = e2
+            else:
+                current_e1 = e1[i]
+                current_e2 = e2[i]
             f_x_i, f_y_i = self.gaussian_ellipse_kappa.derivatives(
                 x,
                 y,
                 amp=scale_factor * amp[i],
                 sigma=sigma[i],
-                e1=e1,
-                e2=e2,
+                e1=current_e1,
+                e2=current_e2,
                 center_x=center_x,
                 center_y=center_y,
             )
@@ -168,13 +187,19 @@ class MultiGaussianEllipseKappa(LensProfileBase):
         f_xy = np.zeros_like(x, dtype=float)
 
         for i in range(len(amp)):
+            if isinstance(e1, int) or isinstance(e1, float):
+                current_e1 = e1
+                current_e2 = e2
+            else:
+                current_e1 = e1[i]
+                current_e2 = e2[i]
             f_xx_i, f_xy_i, _, f_yy_i = self.gaussian_ellipse_kappa.hessian(
                 x,
                 y,
                 amp=scale_factor * amp[i],
                 sigma=sigma[i],
-                e1=e1,
-                e2=e2,
+                e1=current_e1,
+                e2=current_e2,
                 center_x=center_x,
                 center_y=center_y,
             )
@@ -214,13 +239,19 @@ class MultiGaussianEllipseKappa(LensProfileBase):
         density_2d = np.zeros_like(x, dtype=float)
 
         for i in range(len(amp)):
+            if isinstance(e1, int) or isinstance(e1, float):
+                current_e1 = e1
+                current_e2 = e2
+            else:
+                current_e1 = e1[i]
+                current_e2 = e2[i]
             density_2d += self.gaussian_ellipse_kappa.density_2d(
                 x,
                 y,
                 amp=scale_factor * amp[i],
                 sigma=sigma[i],
-                e1=e1,
-                e2=e2,
+                e1=current_e1,
+                e2=current_e2,
                 center_x=center_x,
                 center_y=center_y,
             )

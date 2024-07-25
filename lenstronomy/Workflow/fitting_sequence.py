@@ -600,8 +600,14 @@ class FittingSequence(object):
                     kwargs_psf, kwargs_params=kwargs_temp, **kwargs_psf_iter
                 )
                 self.multi_band_list[band_index][1] = kwargs_psf
-                self._psf_iteration_memory.append({'sequence': self._psf_iteration_index, 'band': band_index,
-                                                   "psf_before": kwargs_psf_before, "psf_after": kwargs_psf})
+                self._psf_iteration_memory.append(
+                    {
+                        "sequence": self._psf_iteration_index,
+                        "band": band_index,
+                        "psf_before": kwargs_psf_before,
+                        "psf_after": kwargs_psf,
+                    }
+                )
         self._psf_iteration_index += 1
         return 0
 

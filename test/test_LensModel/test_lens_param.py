@@ -132,6 +132,7 @@ class TestParam(object):
             "CTNFW_GAUSS_DEC",
             "GAUSSIAN_ELLIPSE_POTENTIAL",
             "MULTI_GAUSSIAN",
+            "MULTI_GAUSSIAN_ELLIPSE_KAPPA",
             "MULTI_GAUSSIAN_ELLIPSE_POTENTIAL",
         ]
         lensParam = LensParam(lens_model_list, kwargs_fixed=None)

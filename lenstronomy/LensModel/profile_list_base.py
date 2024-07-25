@@ -164,6 +164,7 @@ class ProfileListBase(object):
                 "NIE_SIMPLE",
                 "RADIAL_INTERPOL",
                 "TRIPLE_CHAMELEON",
+                "EPL",
             ]:
                 lensmodel_class = lens_class(
                     lens_type,

@@ -113,11 +113,11 @@ def adaptive_boundary_mesh(
      :type final_eta: float
      :param kwargs_lens: Keyword arguments for lens model
      :type kwargs_lens: dict
-     return: side_length: updated side length of square area in image plane
+     :return: side_length: updated side length of square area in image plane
      :rtype: side_length: nparray
-     return: total_number_of_rays_shot: total number of rays shot
+     :return: total_number_of_rays_shot: total number of rays shot
      :rtype: total_number_of_rays_shot: int
-     return: subset_image_centers_x, subset_image_centers_y: x and y coordinates of high resolution image-plane pixels that were mapped to within the radius β_s around the source position (β1, β2) in the source plane
+     :return: subset_image_centers_x, subset_image_centers_y: x and y coordinates of high resolution image-plane pixels that were mapped to within the radius β_s around the source position (β1, β2) in the source plane
      :rtype: subset_image_centers_x, subset_image_centers_y: nparray
     """
     # default values

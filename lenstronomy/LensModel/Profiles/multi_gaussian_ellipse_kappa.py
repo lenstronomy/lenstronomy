@@ -176,7 +176,7 @@ class MultiGaussianEllipseKappa(LensProfileBase):
         :param center_y: y coordianate of centroid
         :type center_y: ``float``
         :param scale_factor: Scaling factor for amplitude
-        scale_factor: ``float``
+         scale_factor: ``float``
         :return: Hessian :math:`\\partial^2f/\\partial x^2`, :math:`\\partial^2/\\partial x\\partial y`,
          :math:`\\partial^2/\\partial y\\partial x`, :math:`\\partial^2 f/\\partial y^2` for elliptical Gaussian convergence.
         :rtype: tuple ``(float, float, float)`` , or ``(numpy.array, numpy.array, numpy.array)``

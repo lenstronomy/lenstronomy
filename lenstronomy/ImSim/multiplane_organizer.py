@@ -268,9 +268,9 @@ class MultiPlaneOrganizer(object):
             )
             assert ab_fiducial_index_m1 == ab_fiducial_index - 1
 
-            a_j = (
-                a_factors[ab_fiducial_index] * self.a_coeffs_fiducial[ab_fiducial_index]
-            )
+            # a_j = (
+            #     a_factors[ab_fiducial_index] * self.a_coeffs_fiducial[ab_fiducial_index]
+            # )
             a_i = (
                 a_factors[ab_fiducial_index - 1]
                 * self.a_coeffs_fiducial[ab_fiducial_index - 1]

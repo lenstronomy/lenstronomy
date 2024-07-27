@@ -310,7 +310,7 @@ class TracerPlot(object):
         :param ax: matplotib axis instance
         :return: convergence plot in ax instance
         """
-        if not "cmap" in kwargs:
+        if "cmap" not in kwargs:
             kwargs["cmap"] = self._cmap
 
         kappa_result = util.array2image(
@@ -375,7 +375,7 @@ class TracerPlot(object):
         :param color_bar: Option to display the color bar
         :return:
         """
-        if not "cmap" in kwargs:
+        if "cmap" not in kwargs:
             kwargs["cmap"] = "bwr"
         im = ax.matshow(
             self._norm_residuals,

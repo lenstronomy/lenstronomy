@@ -6,8 +6,6 @@ from lenstronomy.Util.package_util import exporter
 
 export, __all__ = exporter()
 
-import numpy as np
-
 
 @export
 class PSF(object):

@@ -19,7 +19,7 @@ export, __all__ = exporter()
 
 _SQRT_2PI = np.sqrt(2 * np.pi)
 
-__all__ = ["SersicEllipseGaussDec", "NFWEllipseGaussDec"]
+__all__ = ["SersicEllipseGaussDec", "NFWEllipseGaussDec"] # Redefinition of unused `__all__` from line 18
 
 
 @export

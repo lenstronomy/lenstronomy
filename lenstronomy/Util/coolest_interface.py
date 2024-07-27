@@ -25,7 +25,7 @@ def create_lenstronomy_from_coolest(file_name, use_epl=True, **kwargs_serializer
     creation_data = False
     creation_instrument = False
     creation_redshift_list = False
-    creation_kwargs_likelihood = False
+    # creation_kwargs_likelihood = False
 
     decoder = JSONSerializer(file_name, **kwargs_serializer)
     lens_coolest = decoder.load()
@@ -521,8 +521,8 @@ def update_coolest_from_lenstronomy(
         idx_source = 0
         idx_ps = 0
 
-        multi_plane = False
-        creation_redshift_list = True
+        # multi_plane = False
+        # creation_redshift_list = True
 
         min_redshift, max_redshift, redshift_list = create_redshift_info(
             lensing_entities_list

@@ -192,5 +192,24 @@ def test_transform_e1e2_square_average():
     npt.assert_almost_equal(np.sum(x**2 + y**2), np.sum(x_**2 + y_**2), decimal=8)
 
 
+def test_elliptical_distortion_product_average():
+    """
+    tests that elliptical distortions in product average is the same as distortions under reduced shear
+
+    :return:
+    """
+    x, y = util.make_grid(numPix=20, deltapix=0.1)
+    center_x, center_y = 1, -1
+
+    e1, e2, = 0.1, -0.2
+    x_, y_ = param_util.elliptical_distortion_product_average(x, y, e1, e2, center_x, center_y)
+    from lenstronomy.LensModel.lens_model import LensModel
+    lens_model = LensModel(lens_model_list=["SHEAR_REDUCED"])
+    kwargs_lens = [{"gamma1": e1, "gamma2": e2, "ra_0": center_x, "dec_0": center_y}]
+    beta_x, beta_y = lens_model.ray_shooting(x, y, kwargs=kwargs_lens)
+    npt.assert_almost_equal(x_, beta_x, decimal=5)
+    npt.assert_almost_equal(y_, beta_y, decimal=5)
+
+
 if __name__ == "__main__":
     pytest.main()

@@ -626,11 +626,7 @@ class LensEquationSolver(object):
             non_linear=non_linear,
             magnification_limit=magnification_limit,
         )
-        mag_list = []
-        for i in range(len(x_mins)):
-            mag = self.lensModel.magnification(x_mins[i], y_mins[i], kwargs_lens)
-            mag_list.append(abs(mag))
-        mag_list = np.array(mag_list)
+        mag_list = np.abs(self.lensModel.magnification(x_mins, y_mins, kwargs_lens))
         x_mins_sorted = util.selectBest(x_mins, mag_list, numImages)
         y_mins_sorted = util.selectBest(y_mins, mag_list, numImages)
         if arrival_time_sort:

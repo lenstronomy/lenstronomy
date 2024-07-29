@@ -131,7 +131,7 @@ def transform_e1e2_product_average(x, y, e1, e2, center_x, center_y):
 @export
 def elliptical_distortion_product_average(x, y, e1, e2, center_x, center_y):
     """Maps the coordinates x, y with eccentricities e1 e2 into a new elliptical
-    coordinate system such with same coordinate orientation
+    coordinate system such with same coordinate orientation.
 
     :param x: x-coordinate
     :param y: y-coordinate
@@ -153,6 +153,7 @@ def elliptical_distortion_product_average(x, y, e1, e2, center_x, center_y):
     x___ = x__ + center_x
     y___ = y__ + center_y
     return x___, y___
+
 
 @export
 def transform_e1e2_square_average(x, y, e1, e2, center_x, center_y):

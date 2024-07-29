@@ -193,17 +193,26 @@ def test_transform_e1e2_square_average():
 
 
 def test_elliptical_distortion_product_average():
-    """
-    tests that elliptical distortions in product average is the same as distortions under reduced shear
+    """Tests that elliptical distortions in product average is the same as distortions
+    under reduced shear.
 
     :return:
     """
     x, y = util.make_grid(numPix=20, deltapix=0.1)
     center_x, center_y = 1, -1
 
-    e1, e2, = 0.1, -0.2
-    x_, y_ = param_util.elliptical_distortion_product_average(x, y, e1, e2, center_x, center_y)
+    (
+        e1,
+        e2,
+    ) = (
+        0.1,
+        -0.2,
+    )
+    x_, y_ = param_util.elliptical_distortion_product_average(
+        x, y, e1, e2, center_x, center_y
+    )
     from lenstronomy.LensModel.lens_model import LensModel
+
     lens_model = LensModel(lens_model_list=["SHEAR_REDUCED"])
     kwargs_lens = [{"gamma1": e1, "gamma2": e2, "ra_0": center_x, "dec_0": center_y}]
     beta_x, beta_y = lens_model.ray_shooting(x, y, kwargs=kwargs_lens)

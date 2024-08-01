@@ -32,7 +32,6 @@ class LikelihoodModule(object):
         param_class,
         image_likelihood=True,
         check_bounds=True,
-        check_matched_source_position=False,
         astrometric_likelihood=False,
         image_position_likelihood=False,
         source_position_likelihood=False,
@@ -85,9 +84,6 @@ class LikelihoodModule(object):
             back to source plane and evaluates relative errors in respect ot the
             position_uncertainties in the image plane
         :param check_bounds: bool, option to punish the hard bounds in parameter space
-        :param check_matched_source_position: bool, option to check whether point source
-            position of solver finds a solution to match all the image positions in the
-            same source plane coordinate
         :param astrometric_likelihood: bool, additional likelihood term of the predicted
             vs modelled point source position
         :param image_position_uncertainty: float, 1-sigma Gaussian uncertainty on the
@@ -197,7 +193,6 @@ class LikelihoodModule(object):
             "ra_image_list": ra_image_list,
             "dec_image_list": dec_image_list,
             "image_position_uncertainty": image_position_uncertainty,
-            "check_matched_source_position": check_matched_source_position,
             "source_position_tolerance": source_position_tolerance,
             "source_position_sigma": source_position_sigma,
             "force_no_add_image": force_no_add_image,

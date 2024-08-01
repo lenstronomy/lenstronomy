@@ -118,7 +118,8 @@ class LikelihoodModule(object):
         :param kwargs_pixelbased: keyword arguments with various settings related to the
             pixel-based solver (see SLITronomy documentation)
         :param kinematic_2d_likelihood: bool, option to compute the kinematic likelihood
-        :param tracer_likelihood: option to perform likelihood on tracer quantity derived from imaging or spectroscopy
+        :param tracer_likelihood: option to perform likelihood on tracer quantity
+            derived from imaging or spectroscopy
         """
         # TODO unpack also tracer model from kwargs_data
         (

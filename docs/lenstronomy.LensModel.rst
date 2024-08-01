@@ -9,6 +9,7 @@ Subpackages
 
    lenstronomy.LensModel.LightConeSim
    lenstronomy.LensModel.LineOfSight
+   lenstronomy.LensModel.Microlensing
    lenstronomy.LensModel.MultiPlane
    lenstronomy.LensModel.Profiles
    lenstronomy.LensModel.QuadOptimizer

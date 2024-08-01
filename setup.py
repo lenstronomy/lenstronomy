@@ -2,7 +2,6 @@
 
 import os
 import sys
-from setuptools.command.test import test as TestCommand
 from setuptools import find_packages
 
 try:
@@ -14,19 +13,6 @@ except ImportError:
 if sys.argv[-1] == "publish":
     os.system("python setup.py sdist upload")
     sys.exit()
-
-
-class PyTest(TestCommand):
-    def finalize_options(self):
-        TestCommand.finalize_options(self)
-        self.test_args = []
-        self.test_suite = True
-
-    def run_tests(self):
-        import pytest
-
-        errno = pytest.main(self.test_args)
-        sys.exit(errno)
 
 
 readme = open("README.rst").read()
@@ -101,5 +87,4 @@ setup(
         "Programming Language :: Python :: 3.11",
     ],
     tests_require=tests_require,
-    cmdclass={"test": PyTest},  # 'build_ext':build_ext,
 )

@@ -44,6 +44,22 @@ lenstronomy.LightModel.Profiles.interpolation module
    :undoc-members:
    :show-inheritance:
 
+lenstronomy.LightModel.Profiles.linear module
+---------------------------------------------
+
+.. automodule:: lenstronomy.LightModel.Profiles.linear
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+lenstronomy.LightModel.Profiles.lineprofile module
+--------------------------------------------------
+
+.. automodule:: lenstronomy.LightModel.Profiles.lineprofile
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 lenstronomy.LightModel.Profiles.moffat module
 ---------------------------------------------
 
@@ -56,14 +72,6 @@ lenstronomy.LightModel.Profiles.nie module
 ------------------------------------------
 
 .. automodule:: lenstronomy.LightModel.Profiles.nie
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-lenstronomy.LightModel.Profiles.p\_jaffe module
------------------------------------------------
-
-.. automodule:: lenstronomy.LightModel.Profiles.p_jaffe
    :members:
    :undoc-members:
    :show-inheritance:
@@ -84,6 +92,14 @@ lenstronomy.LightModel.Profiles.profile\_base module
    :undoc-members:
    :show-inheritance:
 
+lenstronomy.LightModel.Profiles.pseudo\_jaffe module
+----------------------------------------------------
+
+.. automodule:: lenstronomy.LightModel.Profiles.pseudo_jaffe
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 lenstronomy.LightModel.Profiles.sersic module
 ---------------------------------------------
 
@@ -96,6 +112,14 @@ lenstronomy.LightModel.Profiles.shapelets module
 ------------------------------------------------
 
 .. automodule:: lenstronomy.LightModel.Profiles.shapelets
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+lenstronomy.LightModel.Profiles.shapelets\_ellipse module
+---------------------------------------------------------
+
+.. automodule:: lenstronomy.LightModel.Profiles.shapelets_ellipse
    :members:
    :undoc-members:
    :show-inheritance:

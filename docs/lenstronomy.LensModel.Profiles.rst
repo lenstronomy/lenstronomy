@@ -44,10 +44,10 @@ lenstronomy.LensModel.Profiles.cnfw module
    :undoc-members:
    :show-inheritance:
 
-lenstronomy.LensModel.Profiles.cnfw\_ellipse module
----------------------------------------------------
+lenstronomy.LensModel.Profiles.cnfw\_ellipse\_potential module
+--------------------------------------------------------------
 
-.. automodule:: lenstronomy.LensModel.Profiles.cnfw_ellipse
+.. automodule:: lenstronomy.LensModel.Profiles.cnfw_ellipse_potential
    :members:
    :undoc-members:
    :show-inheritance:
@@ -196,6 +196,14 @@ lenstronomy.LensModel.Profiles.epl\_boxydisky module
    :undoc-members:
    :show-inheritance:
 
+lenstronomy.LensModel.Profiles.epl\_multipole\_m3m4 module
+----------------------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.epl_multipole_m3m4
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 lenstronomy.LensModel.Profiles.epl\_numba module
 ------------------------------------------------
 
@@ -228,6 +236,14 @@ lenstronomy.LensModel.Profiles.gauss\_decomposition module
    :undoc-members:
    :show-inheritance:
 
+lenstronomy.LensModel.Profiles.gaussian module
+----------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.gaussian
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 lenstronomy.LensModel.Profiles.gaussian\_ellipse\_kappa module
 --------------------------------------------------------------
 
@@ -240,14 +256,6 @@ lenstronomy.LensModel.Profiles.gaussian\_ellipse\_potential module
 ------------------------------------------------------------------
 
 .. automodule:: lenstronomy.LensModel.Profiles.gaussian_ellipse_potential
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-lenstronomy.LensModel.Profiles.gaussian\_kappa module
------------------------------------------------------
-
-.. automodule:: lenstronomy.LensModel.Profiles.gaussian_kappa
    :members:
    :undoc-members:
    :show-inheritance:
@@ -276,18 +284,18 @@ lenstronomy.LensModel.Profiles.hernquist module
    :undoc-members:
    :show-inheritance:
 
-lenstronomy.LensModel.Profiles.hernquist\_ellipse module
---------------------------------------------------------
-
-.. automodule:: lenstronomy.LensModel.Profiles.hernquist_ellipse
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 lenstronomy.LensModel.Profiles.hernquist\_ellipse\_cse module
 -------------------------------------------------------------
 
 .. automodule:: lenstronomy.LensModel.Profiles.hernquist_ellipse_cse
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+lenstronomy.LensModel.Profiles.hernquist\_ellipse\_potential module
+-------------------------------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.hernquist_ellipse_potential
    :members:
    :undoc-members:
    :show-inheritance:
@@ -308,10 +316,18 @@ lenstronomy.LensModel.Profiles.interpol module
    :undoc-members:
    :show-inheritance:
 
-lenstronomy.LensModel.Profiles.multi\_gaussian\_kappa module
-------------------------------------------------------------
+lenstronomy.LensModel.Profiles.multi\_gaussian module
+-----------------------------------------------------
 
-.. automodule:: lenstronomy.LensModel.Profiles.multi_gaussian_kappa
+.. automodule:: lenstronomy.LensModel.Profiles.multi_gaussian
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+lenstronomy.LensModel.Profiles.multi\_gaussian\_ellipse\_kappa module
+---------------------------------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.multi_gaussian_ellipse_kappa
    :members:
    :undoc-members:
    :show-inheritance:
@@ -340,18 +356,18 @@ lenstronomy.LensModel.Profiles.nfw\_core\_truncated module
    :undoc-members:
    :show-inheritance:
 
-lenstronomy.LensModel.Profiles.nfw\_ellipse module
---------------------------------------------------
-
-.. automodule:: lenstronomy.LensModel.Profiles.nfw_ellipse
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 lenstronomy.LensModel.Profiles.nfw\_ellipse\_cse module
 -------------------------------------------------------
 
 .. automodule:: lenstronomy.LensModel.Profiles.nfw_ellipse_cse
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+lenstronomy.LensModel.Profiles.nfw\_ellipse\_potential module
+-------------------------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.nfw_ellipse_potential
    :members:
    :undoc-members:
    :show-inheritance:
@@ -404,22 +420,6 @@ lenstronomy.LensModel.Profiles.numerical\_deflections module
    :undoc-members:
    :show-inheritance:
 
-lenstronomy.LensModel.Profiles.p\_jaffe module
-----------------------------------------------
-
-.. automodule:: lenstronomy.LensModel.Profiles.p_jaffe
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-lenstronomy.LensModel.Profiles.p\_jaffe\_ellipse module
--------------------------------------------------------
-
-.. automodule:: lenstronomy.LensModel.Profiles.p_jaffe_ellipse
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 lenstronomy.LensModel.Profiles.pemd module
 ------------------------------------------
 
@@ -440,6 +440,22 @@ lenstronomy.LensModel.Profiles.pseudo\_double\_powerlaw module
 --------------------------------------------------------------
 
 .. automodule:: lenstronomy.LensModel.Profiles.pseudo_double_powerlaw
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+lenstronomy.LensModel.Profiles.pseudo\_jaffe module
+---------------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.pseudo_jaffe
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+lenstronomy.LensModel.Profiles.pseudo\_jaffe\_ellipse\_potential module
+-----------------------------------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.pseudo_jaffe_ellipse_potential
    :members:
    :undoc-members:
    :show-inheritance:
@@ -580,10 +596,10 @@ lenstronomy.LensModel.Profiles.tnfw module
    :undoc-members:
    :show-inheritance:
 
-lenstronomy.LensModel.Profiles.tnfw\_ellipse module
----------------------------------------------------
+lenstronomy.LensModel.Profiles.tnfw\_ellipse\_potential module
+--------------------------------------------------------------
 
-.. automodule:: lenstronomy.LensModel.Profiles.tnfw_ellipse
+.. automodule:: lenstronomy.LensModel.Profiles.tnfw_ellipse_potential
    :members:
    :undoc-members:
    :show-inheritance:

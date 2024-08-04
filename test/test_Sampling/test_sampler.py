@@ -120,8 +120,7 @@ class TestSampler(object):
         kwargs_likelihood = {
             "source_marg": False,
             "image_position_uncertainty": 0.004,
-            "check_matched_source_position": False,
-            "source_position_tolerance": 0.001,
+            "source_position_tolerance": None,
             "source_position_sigma": 0.001,
         }
         self.param_class = Param(kwargs_model, **kwargs_constraints)

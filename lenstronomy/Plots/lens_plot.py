@@ -313,7 +313,6 @@ def point_source_plot(
         for i in range(len(name_list)):
             Name_list.append(str(index+1)+name_list[i])
 
-    
     solver = LensEquationSolver(lens_model)
     x_center, y_center = pixel_grid.center
     delta_pix = pixel_grid.pixel_width

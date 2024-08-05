@@ -67,7 +67,7 @@ class TestLensPlot(object):
         x_source2, y_source2 = -0.15, -0.12
         x_sources = [x_source, x_source2]
         y_sources = [y_source, y_source2]
-        
+
         for i in range(len(x_sources)):
             lens_plot.lens_model_plot(
                 ax,
@@ -135,8 +135,6 @@ class TestLensPlot(object):
                 coord_inverse=True,
             )
         plt.close
-
-
 
     def test_arrival_time_surface(self):
         f, ax = plt.subplots(1, 1, figsize=(4, 4))

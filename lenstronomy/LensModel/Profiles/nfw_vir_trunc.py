@@ -4,7 +4,6 @@ __author__ = "sibirrer"
 # the potential therefore is its integral
 
 import numpy as np
-from lenstronomy.Util import constants as const
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 

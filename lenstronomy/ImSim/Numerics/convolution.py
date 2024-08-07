@@ -92,7 +92,7 @@ class PixelKernelConvolution(object):
                 self._sp2,
             ) = self._static_pre_compute(image)
             self._pre_computed = True
-        s1, s2, complex_result, shape, fshape, fslice, sp2 = (
+        s1, s2, complex_result, _, fshape, fslice, sp2 = (
             self._s1,
             self._s2,
             self._complex_result,

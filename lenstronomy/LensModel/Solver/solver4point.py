@@ -14,7 +14,7 @@ class Solver4Point(object):
 
     def __init__(self, lensModel, solver_type="PROFILE"):
         self._solver_type = solver_type  # supported:
-        if not lensModel.lens_model_list[0] in [
+        if lensModel.lens_model_list[0] not in [
             "SPEP",
             "SPEMD",
             "PEMD",

@@ -3,8 +3,6 @@ __author__ = "sibirrer"
 from lenstronomy.LensModel.Profiles.spp import SPP
 from lenstronomy.LensModel.Profiles.spemd import SPEMD
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
-import lenstronomy.Util.param_util as param_util
-import numpy as np
 
 __all__ = ["PEMD"]
 

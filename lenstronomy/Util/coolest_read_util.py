@@ -649,9 +649,9 @@ def update_kwargs_sersic(
     for light_name, light_param in light.parameters.items():
         if light_name == "I_eff":
             amp = getattr(light_param.point_estimate, "value")
-            amp_up = getattr(light_param.definition_range, "max_value")
-            amp_down = getattr(light_param.definition_range, "min_value")
-            amp_fixed = amp if getattr(light_param, "fixed") else None
+            # amp_up = getattr(light_param.definition_range, "max_value")
+            # amp_down = getattr(light_param.definition_range, "min_value")
+            # amp_fixed = amp if getattr(light_param, "fixed") else None
         elif light_name == "theta_eff":
             R = getattr(light_param.point_estimate, "value")
             R_up = getattr(light_param.definition_range, "max_value")

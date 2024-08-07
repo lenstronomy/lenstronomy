@@ -58,7 +58,7 @@ class Gaussian(LensProfileBase):
         x_ = x - center_x
         y_ = y - center_y
         R = np.sqrt(x_**2 + y_**2)
-        sigma_x, sigma_y = sigma, sigma
+        # sigma_x, sigma_y = sigma, sigma
         if isinstance(R, int) or isinstance(R, float):
             R = max(R, self.ds)
         else:

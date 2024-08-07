@@ -12,7 +12,7 @@ from lenstronomy.Util.package_util import exporter
 
 export, __all__ = exporter()
 
-__all__ = ["MultiGaussianEllipseKappa"]
+__all__ = ["MultiGaussianEllipseKappa"]  # Redefinition of unused `__all__` from line 13
 
 
 @export

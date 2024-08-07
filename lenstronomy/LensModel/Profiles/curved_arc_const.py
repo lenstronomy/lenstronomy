@@ -220,7 +220,7 @@ class CurvedArcConst(LensProfileBase):
         r = 1 / curvature
         # deflection angle to allow for tangential stretch
         # (ratio of source position around zero point relative to radius is tangential stretch)
-        alpha = r * (1 / tangential_stretch + 1)
+        # alpha = r * (1 / tangential_stretch + 1)
 
         # shift
         x_ = x - center_x

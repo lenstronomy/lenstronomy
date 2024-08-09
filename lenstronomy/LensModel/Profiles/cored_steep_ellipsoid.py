@@ -46,8 +46,8 @@ class CSE(LensProfileBase):
         "s": 10000,
         "e1": 0.5,
         "e2": 0.5,
-        "center_x": -100,
-        "center_y": -100,
+        "center_x": 100,
+        "center_y": 100,
     }
 
     def __init__(self, axis="product_avg"):
@@ -175,9 +175,8 @@ class CSEMajorAxis(LensProfileBase):
         "A": 1000,
         "s": 10000,
         "q": 0.99999,
-        "e2": 0.5,
-        "center_x": -100,
-        "center_y": -100,
+        "center_x": 100,
+        "center_y": 100,
     }
 
     def function(self, x, y, a, s, q):
@@ -275,7 +274,7 @@ class CSEMajorAxisSet(LensProfileBase):
         :param q: axis ratio
         :return: lensing potential
         """
-        f_ = np.zeros_like(x)
+        f_ = np.zeros_like(x, dtype=float)
         for a, s in zip(a_list, s_list):
             f_ += self.major_axis_model.function(x, y, a, s, q)
         return f_
@@ -290,7 +289,7 @@ class CSEMajorAxisSet(LensProfileBase):
         :param q: axis ratio
         :return: deflection in x- and y-direction
         """
-        f_x, f_y = np.zeros_like(x), np.zeros_like(y)
+        f_x, f_y = np.zeros_like(x, dtype=float), np.zeros_like(y, dtype=float)
         for a, s in zip(a_list, s_list):
             f_x_, f_y_ = self.major_axis_model.derivatives(x, y, a, s, q)
             f_x += f_x_
@@ -307,7 +306,7 @@ class CSEMajorAxisSet(LensProfileBase):
         :param q: axis ratio
         :return: hessian elements f_xx, f_xy, f_yx, f_yy
         """
-        f_xx, f_xy, f_yy = np.zeros_like(x), np.zeros_like(x), np.zeros_like(x)
+        f_xx, f_xy, f_yy = np.zeros_like(x, dtype=float), np.zeros_like(x, dtype=float), np.zeros_like(x, dtype=float)
         for a, s in zip(a_list, s_list):
             f_xx_, f_xy_, _, f_yy_ = self.major_axis_model.hessian(x, y, a, s, q)
             f_xx += f_xx_
@@ -346,9 +345,8 @@ class CSEProductAvg(LensProfileBase):
         "A": 1000,
         "s": 10000,
         "q": 0.99999,
-        "e2": 0.5,
-        "center_x": -100,
-        "center_y": -100,
+        "center_x": 100,
+        "center_y": 100,
     }
 
     def __init__(self):
@@ -425,7 +423,7 @@ class CSEProductAvgSet(LensProfileBase):
         :param q: axis ratio
         :return: lensing potential
         """
-        f_ = np.zeros_like(x)
+        f_ = np.zeros_like(x, dtype=float)
         for a, s in zip(a_list, s_list):
             f_ += self.major_axis_model.function(x, y, a, s, q)
         return f_
@@ -440,7 +438,7 @@ class CSEProductAvgSet(LensProfileBase):
         :param q: axis ratio
         :return: deflection in x- and y-direction
         """
-        f_x, f_y = np.zeros_like(x), np.zeros_like(y)
+        f_x, f_y = np.zeros_like(x, dtype=float), np.zeros_like(y, dtype=float)
         for a, s in zip(a_list, s_list):
             f_x_, f_y_ = self.major_axis_model.derivatives(x, y, a, s, q)
             f_x += f_x_
@@ -457,7 +455,7 @@ class CSEProductAvgSet(LensProfileBase):
         :param q: axis ratio
         :return: hessian elements f_xx, f_xy, f_yx, f_yy
         """
-        f_xx, f_xy, f_yy = np.zeros_like(x), np.zeros_like(x), np.zeros_like(x)
+        f_xx, f_xy, f_yy = np.zeros_like(x, dtype=float), np.zeros_like(x, dtype=float), np.zeros_like(x, dtype=float)
         for a, s in zip(a_list, s_list):
             f_xx_, f_xy_, _, f_yy_ = self.major_axis_model.hessian(x, y, a, s, q)
             f_xx += f_xx_

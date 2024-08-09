@@ -306,7 +306,11 @@ class CSEMajorAxisSet(LensProfileBase):
         :param q: axis ratio
         :return: hessian elements f_xx, f_xy, f_yx, f_yy
         """
-        f_xx, f_xy, f_yy = np.zeros_like(x, dtype=float), np.zeros_like(x, dtype=float), np.zeros_like(x, dtype=float)
+        f_xx, f_xy, f_yy = (
+            np.zeros_like(x, dtype=float),
+            np.zeros_like(x, dtype=float),
+            np.zeros_like(x, dtype=float),
+        )
         for a, s in zip(a_list, s_list):
             f_xx_, f_xy_, _, f_yy_ = self.major_axis_model.hessian(x, y, a, s, q)
             f_xx += f_xx_
@@ -455,7 +459,11 @@ class CSEProductAvgSet(LensProfileBase):
         :param q: axis ratio
         :return: hessian elements f_xx, f_xy, f_yx, f_yy
         """
-        f_xx, f_xy, f_yy = np.zeros_like(x, dtype=float), np.zeros_like(x, dtype=float), np.zeros_like(x, dtype=float)
+        f_xx, f_xy, f_yy = (
+            np.zeros_like(x, dtype=float),
+            np.zeros_like(x, dtype=float),
+            np.zeros_like(x, dtype=float),
+        )
         for a, s in zip(a_list, s_list):
             f_xx_, f_xy_, _, f_yy_ = self.major_axis_model.hessian(x, y, a, s, q)
             f_xx += f_xx_

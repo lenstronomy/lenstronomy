@@ -67,7 +67,7 @@ class TestLensPlot(object):
         x_source2, y_source2 = -0.15, -0.12
         x_sources = [x_source, x_source2]
         y_sources = [y_source, y_source2]
-        Name_List=[["Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"], ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]]
+        name_List=[["Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"], ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]]
 
         for i in range(len(x_sources)):
             lens_plot.lens_model_plot(
@@ -113,7 +113,7 @@ class TestLensPlot(object):
                 deltaPix=0.5,
                 sourcePos_x=x_sources[i],
                 sourcePos_y=y_sources[i],
-                name_list=Name_List[i],
+                name_list=name_List[i],
                 point_source=True,
                 with_caustics=True,
                 fast_caustic=True,
@@ -130,7 +130,7 @@ class TestLensPlot(object):
                 deltaPix=0.5,
                 sourcePos_x=x_sources[i],
                 sourcePos_y=y_sources[i],
-                name_list=Name_List[i],
+                name_list=name_List[i],
                 index=i,
                 point_source=True,
                 with_caustics=True,

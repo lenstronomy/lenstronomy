@@ -299,19 +299,19 @@ def point_source_plot(
     """
     from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 
-    Name_list = []
+    name_List_ = []
     if name_list is None and index is None:
-        Name_list = _NAME_LIST
+        name_List_ = _NAME_LIST
     elif name_list is None and index is not None:
         name_list = _NAME_LIST
         for i in range(len(name_list)):
-            Name_list.append(str(index + 1) + name_list[i])
+            name_List_.append(str(index + 1) + name_list[i])
     elif name_list is not None and index is None:
-        Name_list = name_list
+        name_List_ = name_list
     elif name_list is not None and index is not None:
         name_list = name_list
         for i in range(len(name_list)):
-            Name_list.append(str(index + 1) + name_list[i])
+            name_List_.append(str(index + 1) + name_list[i])
 
     solver = LensEquationSolver(lens_model)
     x_center, y_center = pixel_grid.center
@@ -345,7 +345,7 @@ def point_source_plot(
         ax.plot(
             x_, y_, "dk", markersize=4 * (1 + np.log(np.abs(mag_images[i]))), alpha=0.5
         )
-        ax.text(x_, y_, Name_list[i], fontsize=20, color="k")
+        ax.text(x_, y_, name_List_[i], fontsize=20, color="k")
     x_source, y_source = pixel_grid.map_coord2pix(source_x, source_y)
     ax.plot(
         x_source * delta_pix_x + origin[0],

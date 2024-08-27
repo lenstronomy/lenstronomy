@@ -30,7 +30,9 @@ _SUPPORTED_MODELS = [
     "DOUBLE_CHAMELEON",
     "EPL",
     "EPL_BOXYDISKY",
+    "EPL_BOXYDISKY_SPH",
     "EPL_MULTIPOLE_M3M4",
+    "EPL_MULTIPOLE_M3M4_SPH",
     "EPL_NUMBA",
     "EPL_Q_PHI",
     "ElliSLICE",
@@ -92,7 +94,6 @@ _SUPPORTED_MODELS = [
     "TNFW_ELLIPSE_POTENTIAL",
     "TRIPLE_CHAMELEON",
     "ULDM",
-    "EPL_MULTIPOLE_M3M4",
 ]
 
 
@@ -370,10 +371,18 @@ def lens_class(
         from lenstronomy.LensModel.Profiles.epl_boxydisky import EPL_BOXYDISKY
 
         return EPL_BOXYDISKY()
+    elif lens_type == "EPL_BOXYDISKY_SPH":
+        from lenstronomy.LensModel.Profiles.epl_boxydisky import EPL_BOXYDISKY_SPH
+
+        return EPL_BOXYDISKY_SPH()
     elif lens_type == "EPL_MULTIPOLE_M3M4":
         from lenstronomy.LensModel.Profiles.epl_multipole_m3m4 import EPL_MULTIPOLE_M3M4
 
         return EPL_MULTIPOLE_M3M4()
+    elif lens_type == "EPL_MULTIPOLE_M3M4_SPH":
+        from lenstronomy.LensModel.Profiles.epl_multipole_m3m4 import EPL_MULTIPOLE_M3M4_SPH
+
+        return EPL_MULTIPOLE_M3M4_SPH()
     elif lens_type == "EPL_NUMBA":
         from lenstronomy.LensModel.Profiles.epl_numba import EPL_numba
 

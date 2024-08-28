@@ -4,12 +4,12 @@ import numpy as np
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 from lenstronomy.LensModel.Profiles.epl import EPL
-from lenstronomy.LensModel.Profiles.multipole import Multipole, EllipticalMultipole
+from lenstronomy.LensModel.Profiles.multipole import SphericalMultipole, EllipticalMultipole
 
-__all__ = ["EPL_MULTIPOLE_M3M4_SPH", "EPL_MULTIPOLE_M3M4"]
+__all__ = ["EPL_MULTIPOLE_M3M4_SPH", "EPL_MULTIPOLE_M3M4_ELL"]
 
 
-class EPL_MULTIPOLE_M3M4(LensProfileBase):
+class EPL_MULTIPOLE_M3M4_ELL(LensProfileBase):
     """EPL (Elliptical Power Law) mass profile combined with two elliptical multipole terms of order
     m=3 and m=4 (exact for general axis ratio q).
 
@@ -72,7 +72,7 @@ class EPL_MULTIPOLE_M3M4(LensProfileBase):
     def __init__(self):
         self._epl = EPL()
         self._multipole = EllipticalMultipole()
-        super(EPL_MULTIPOLE_M3M4, self).__init__()
+        super(EPL_MULTIPOLE_M3M4_ELL, self).__init__()
 
     def _param_split(
         self,
@@ -400,7 +400,7 @@ class EPL_MULTIPOLE_M3M4_SPH(LensProfileBase):
 
     def __init__(self):
         self._epl = EPL()
-        self._multipole = Multipole()
+        self._multipole = SphericalMultipole()
         super(EPL_MULTIPOLE_M3M4_SPH, self).__init__()
 
     def _param_split(

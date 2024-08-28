@@ -4,32 +4,42 @@ import numpy as np
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 from lenstronomy.LensModel.Profiles.epl import EPL
-from lenstronomy.LensModel.Profiles.multipole import SphericalMultipole, EllipticalMultipole
+from lenstronomy.LensModel.Profiles.multipole import (
+    SphericalMultipole,
+    EllipticalMultipole,
+)
 
 __all__ = ["EPL_MULTIPOLE_M3M4_SPH", "EPL_MULTIPOLE_M3M4_ELL"]
 
 
 class EPL_MULTIPOLE_M3M4_ELL(LensProfileBase):
-    """EPL (Elliptical Power Law) mass profile combined with two elliptical multipole terms of order
-    m=3 and m=4 (exact for general axis ratio q).
+    """EPL (Elliptical Power Law) mass profile combined with two elliptical multipole
+    terms of order m=3 and m=4 (exact for general axis ratio q).
 
-    See also documentation of EPL_BOXYDIKSY CLASS, lenstronomy.LensModel.Profiles.epl and
-    lenstrnomy.LensModel.Profiles.multipole for details.
+    See also documentation of EPL_BOXYDIKSY CLASS, lenstronomy.LensModel.Profiles.epl
+    and lenstrnomy.LensModel.Profiles.multipole for details.
 
     :param theta_E: Einstein radius
     :param gamma: negative power-law slope of the 3D mass distributions
-    :param e1: eccentricity. For details, read lenstronomy.Util.param_util.phi_q2_ellipticity document.
-    :param e2: eccentricity. For details, read lenstronomy.Util.param_util.phi_q2_ellipticity document.
+    :param e1: eccentricity. For details, read
+        lenstronomy.Util.param_util.phi_q2_ellipticity document.
+    :param e2: eccentricity. For details, read
+        lenstronomy.Util.param_util.phi_q2_ellipticity document.
     :param center_x: center of distortion
     :param center_y: center of distortion
-    :param a3_a: Strength of the deviation from elliptical isodensity contours caused by the multipole term of order 3
-     translated into the multipole strength from the MULTIPOLE class through a rescaling by theta_E / sqrt(q). The rescaling
-     preserves the shape of the isodensity contours such that a3_a produces the same shape regardless of theta_E or q.
-    :param delta_phi_m3: angle of the m=3 multipole profile relative to the position angle of the EPL profile
-    :param a4_a: Strength of the deviation from elliptical isodensity contours caused by the multipole term of order 3
-     translated into the multipole strength from the MULTIPOLE class through a rescaling by theta_E / sqrt(q).
-     Profile is disky when a4_a>0 and boxy when a4_a<0 for phi_m_a4a=0.0.
-    :param delta_phi_m4: angle of the m=4 multipole profile relative to the position angle of the EPL profile
+    :param a3_a: Strength of the deviation from elliptical isodensity contours caused by
+        the multipole term of order 3 translated into the multipole strength from the
+        MULTIPOLE class through a rescaling by theta_E / sqrt(q). The rescaling
+        preserves the shape of the isodensity contours such that a3_a produces the same
+        shape regardless of theta_E or q.
+    :param delta_phi_m3: angle of the m=3 multipole profile relative to the position
+        angle of the EPL profile
+    :param a4_a: Strength of the deviation from elliptical isodensity contours caused by
+        the multipole term of order 3 translated into the multipole strength from the
+        MULTIPOLE class through a rescaling by theta_E / sqrt(q). Profile is disky when
+        a4_a>0 and boxy when a4_a<0 for phi_m_a4a=0.0.
+    :param delta_phi_m4: angle of the m=4 multipole profile relative to the position
+        angle of the EPL profile
     """
 
     param_names = [
@@ -135,7 +145,7 @@ class EPL_MULTIPOLE_M3M4_ELL(LensProfileBase):
             "center_x": center_x,
             "center_y": center_y,
         }
-            
+
         return kwargs_epl, kwargs_multipole_m3, kwargs_multipole_m4
 
     def function(
@@ -337,8 +347,8 @@ class EPL_MULTIPOLE_M3M4_ELL(LensProfileBase):
 
 
 class EPL_MULTIPOLE_M3M4_SPH(LensProfileBase):
-    """EPL (Elliptical Power Law) mass profile combined with two spherical multipole terms of order
-    m=3 and m=4 (exact for axis ratio =1).
+    """EPL (Elliptical Power Law) mass profile combined with two spherical multipole
+    terms of order m=3 and m=4 (exact for axis ratio =1).
 
     Reference to the implementation: https://ui.adsabs.harvard.edu/abs/2022A%26A...659A.127V/abstract
 
@@ -462,7 +472,7 @@ class EPL_MULTIPOLE_M3M4_SPH(LensProfileBase):
             "center_x": center_x,
             "center_y": center_y,
         }
-            
+
         return kwargs_epl, kwargs_multipole_m3, kwargs_multipole_m4
 
     def function(

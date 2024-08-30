@@ -220,12 +220,15 @@ class TestData(object):
             "psf_type": "PIXEL",
             "kernel_point_source": kernel_point_source,
             "point_source_supersampling_factor": 1,
-            "kernel_point_source_normalisation": False
+            "kernel_point_source_normalisation": False,
         }
         psf = PSF(**kwargs_psf)
         npt.assert_almost_equal(np.sum(psf.kernel_point_source), psf_norm_factor)
         npt.assert_almost_equal(np.sum(psf.kernel_pixel), psf_norm_factor)
-        npt.assert_almost_equal(np.sum(psf.kernel_point_source_supersampled(supersampling_factor=1)), psf_norm_factor)
+        npt.assert_almost_equal(
+            np.sum(psf.kernel_point_source_supersampled(supersampling_factor=1)),
+            psf_norm_factor,
+        )
 
         kwargs_psf = {
             "psf_type": "PIXEL",
@@ -236,18 +239,23 @@ class TestData(object):
         psf = PSF(**kwargs_psf)
         npt.assert_almost_equal(np.sum(psf.kernel_point_source), psf_norm_factor)
         npt.assert_almost_equal(np.sum(psf.kernel_pixel), psf_norm_factor)
-        npt.assert_almost_equal(np.sum(psf.kernel_point_source_supersampled(supersampling_factor=5)), psf_norm_factor)
+        npt.assert_almost_equal(
+            np.sum(psf.kernel_point_source_supersampled(supersampling_factor=5)),
+            psf_norm_factor,
+        )
 
         kwargs_psf = {
             "psf_type": "PIXEL",
             "kernel_point_source": kernel_point_source,
             "point_source_supersampling_factor": 1,
-            "kernel_point_source_normalisation": True
+            "kernel_point_source_normalisation": True,
         }
         psf = PSF(**kwargs_psf)
         npt.assert_almost_equal(np.sum(psf.kernel_point_source), 1)
         npt.assert_almost_equal(np.sum(psf.kernel_pixel), 1)
-        npt.assert_almost_equal(np.sum(psf.kernel_point_source_supersampled(supersampling_factor=1)), 1)
+        npt.assert_almost_equal(
+            np.sum(psf.kernel_point_source_supersampled(supersampling_factor=1)), 1
+        )
 
         kwargs_psf = {
             "psf_type": "PIXEL",
@@ -258,7 +266,9 @@ class TestData(object):
         psf = PSF(**kwargs_psf)
         npt.assert_almost_equal(np.sum(psf.kernel_point_source), 1)
         npt.assert_almost_equal(np.sum(psf.kernel_pixel), 1)
-        npt.assert_almost_equal(np.sum(psf.kernel_point_source_supersampled(supersampling_factor=5)), 1)
+        npt.assert_almost_equal(
+            np.sum(psf.kernel_point_source_supersampled(supersampling_factor=5)), 1
+        )
 
 
 class TestRaise(unittest.TestCase):

@@ -256,7 +256,9 @@ def test_split_kernel():
         supersampling_kernel_size=subsampling_size,
         supersampling_factor=subgrid_res,
     )
-    npt.assert_almost_equal(np.sum(kernel_hole) + np.sum(kernel_cutout), norm_factor, decimal=3)
+    npt.assert_almost_equal(
+        np.sum(kernel_hole) + np.sum(kernel_cutout), norm_factor, decimal=3
+    )
 
 
 def test_cutout_source2():

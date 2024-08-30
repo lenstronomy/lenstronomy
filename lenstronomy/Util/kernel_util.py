@@ -345,8 +345,8 @@ def split_kernel(
     :param kernel_super: super-sampled kernel
     :param supersampling_kernel_size: size of super-sampled PSF in units of degraded
         pixels
-    :param normalized: if True, preserves the sum of low and high-res kernels to be the sum of the original kernel,
-     else, conserves local density
+    :param normalized: if True, preserves the sum of low and high-res kernels to be the
+        sum of the original kernel, else, conserves local density
     :return: degraded kernel with hole and super-sampled kernel
     """
     if supersampling_factor <= 1:

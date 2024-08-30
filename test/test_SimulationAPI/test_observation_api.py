@@ -265,10 +265,12 @@ class TestData(object):
             "num_exposures": 1,
             "seeing": 1,
             "psf_type": "PIXEL",
+            "kernel_point_source_normalisation": False,
         }
         kwargs_data = util.merge_dicts(self.kwargs_instrument, kwargs_observations)
         data_pixel = SingleBand(data_count_unit="ADU", **kwargs_data)
         assert data_pixel._psf_type == "PIXEL"
+        assert data_pixel._kernel_point_source_normalisation == False
 
         kwargs_observations = {
             "exposure_time": 1,

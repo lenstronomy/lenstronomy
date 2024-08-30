@@ -119,6 +119,8 @@ def subgrid_kernel(kernel, subgrid_res, odd=False, num_iter=100):
     subgrid_res = int(subgrid_res)
     if subgrid_res == 1:
         return kernel
+    norm_kernel = np.sum(kernel)
+    kernel_input = copy.deepcopy(kernel) / norm_kernel
     nx, ny = np.shape(kernel)
     d_x = 1.0 / nx
     x_in = np.linspace(d_x / 2, 1 - d_x / 2, nx)
@@ -136,7 +138,7 @@ def subgrid_kernel(kernel, subgrid_res, odd=False, num_iter=100):
     d_y_new = 1.0 / ny_new
     x_out = np.linspace(d_x_new / 2.0, 1 - d_x_new / 2.0, nx_new)
     y_out = np.linspace(d_y_new / 2.0, 1 - d_y_new / 2.0, ny_new)
-    kernel_input = copy.deepcopy(kernel)
+
     kernel_subgrid = image_util.re_size_array(x_in, y_in, kernel_input, x_out, y_out)
     kernel_subgrid = kernel_norm(kernel_subgrid)
     for i in range(max(num_iter, 1)):
@@ -165,7 +167,7 @@ def subgrid_kernel(kernel, subgrid_res, odd=False, num_iter=100):
     delta_kernel = kernel_pixel - kernel_norm(kernel)
     id = np.ones((subgrid_res, subgrid_res))
     delta_kernel_sub = np.kron(delta_kernel, id) / subgrid_res**2
-    return kernel_norm(kernel_subgrid - delta_kernel_sub)
+    return kernel_norm(kernel_subgrid - delta_kernel_sub) * norm_kernel
 
 
 @export
@@ -343,8 +345,8 @@ def split_kernel(
     :param kernel_super: super-sampled kernel
     :param supersampling_kernel_size: size of super-sampled PSF in units of degraded
         pixels
-    :param normalized: boolean, if True returns a split kernel that is area normalized=1
-        representing a convolution kernel
+    :param normalized: if True, preserves the sum of low and high-res kernels to be the
+        sum of the original kernel, else, conserves local density
     :return: degraded kernel with hole and super-sampled kernel
     """
     if supersampling_factor <= 1:
@@ -362,6 +364,7 @@ def split_kernel(
         n_sub = n_super
 
     kernel_hole = copy.deepcopy(kernel_super)
+    flux_tot = np.sum(kernel_super)
     n_min = int((n_super - 1) / 2 - (n_sub - 1) / 2)
     n_max = int((n_super - 1) / 2 + (n_sub - 1) / 2 + 1)
     kernel_hole[n_min:n_max, n_min:n_max] = 0
@@ -369,15 +372,14 @@ def split_kernel(
         kernel_hole, degrading_factor=supersampling_factor
     )
     kernel_subgrid_cut = kernel_super[n_min:n_max, n_min:n_max]
-    if normalized is True:
-        flux_subsampled = np.sum(kernel_subgrid_cut)
-        flux_hole = np.sum(kernel_hole_resized)
-        if flux_hole > 0:
-            kernel_hole_resized *= (1.0 - flux_subsampled) / np.sum(kernel_hole_resized)
-        else:
-            kernel_subgrid_cut /= np.sum(kernel_subgrid_cut)
-    else:
+
+    flux_subsampled = np.sum(kernel_subgrid_cut)
+    flux_hole = np.sum(kernel_hole_resized)
+    if flux_hole > 0:
+        kernel_hole_resized *= flux_hole / np.sum(kernel_hole_resized)
+    if normalized is False:
         kernel_hole_resized /= supersampling_factor**2
+
     return kernel_hole_resized, kernel_subgrid_cut
 
 

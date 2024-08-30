@@ -1,3 +1,5 @@
+import copy
+
 import numpy as np
 import lenstronomy.Util.kernel_util as kernel_util
 import lenstronomy.Util.util as util
@@ -49,6 +51,7 @@ class PSF(object):
         self.psf_type = psf_type
         self._pixel_size = pixel_size
         self.kernel_point_source_init = kernel_point_source_init
+
         if self.psf_type == "GAUSSIAN":
             if fwhm is None:
                 raise ValueError("fwhm must be set for GAUSSIAN psf type!")
@@ -66,23 +69,28 @@ class PSF(object):
                     "kernel needs to have odd axis number, not ",
                     np.shape(kernel_point_source),
                 )
+            kernel_point_source_ = copy.deepcopy(kernel_point_source)
+            if kernel_point_source_normalisation is True:
+                kernel_point_source_ /= np.sum(kernel_point_source)
             if point_source_supersampling_factor > 1:
-                self._kernel_point_source_supersampled = kernel_point_source
+                self._kernel_point_source_supersampled = kernel_point_source_
                 self._point_source_supersampling_factor = (
                     point_source_supersampling_factor
                 )
-                kernel_point_source = kernel_util.degrade_kernel(
+                kernel_point_source_ = kernel_util.degrade_kernel(
                     self._kernel_point_source_supersampled,
                     self._point_source_supersampling_factor,
                 )
+                if kernel_point_source_normalisation is False:
+                    kernel_point_source_ *= np.sum(kernel_point_source) / np.sum(
+                        kernel_point_source_
+                    )
             # making sure the PSF is positive semi-definite and do the normalisation if kernel_point_source_normalisation is true
-            if np.min(kernel_point_source) < 0:
+            if np.min(kernel_point_source_) < 0:
                 warnings.warn(
                     "Input PSF model has at least one negative element, which is unphysical except for a PSF of an interferometric array."
                 )
-            self._kernel_point_source = kernel_point_source
-            if kernel_point_source_normalisation is not False:
-                self._kernel_point_source /= np.sum(kernel_point_source)
+            self._kernel_point_source = kernel_point_source_
 
         elif self.psf_type == "NONE":
             self._kernel_point_source = np.zeros((3, 3))
@@ -101,6 +109,12 @@ class PSF(object):
             self.psf_error_map_bool = True
         else:
             self.psf_error_map_bool = False
+
+        self._kernel_point_source_normalisation = kernel_point_source_normalisation
+        if kernel_point_source_normalisation is False and psf_type == "PIXEL":
+            self._kernel_norm = np.sum(kernel_point_source)
+        else:
+            self._kernel_norm = 1
 
     @property
     def kernel_point_source(self):
@@ -124,9 +138,10 @@ class PSF(object):
         :return: 2d numpy array
         """
         if not hasattr(self, "_kernel_pixel"):
-            self._kernel_pixel = kernel_util.pixel_kernel(
+            kernel_pixel = kernel_util.pixel_kernel(
                 self.kernel_point_source, subgrid_res=1
             )
+            self._kernel_pixel = kernel_pixel * self._kernel_norm / np.sum(kernel_pixel)
         return self._kernel_pixel
 
     def kernel_point_source_supersampled(self, supersampling_factor, updata_cache=True):
@@ -168,6 +183,7 @@ class PSF(object):
                 )
 
             elif self.psf_type == "PIXEL":
+
                 kernel = kernel_util.subgrid_kernel(
                     self.kernel_point_source, supersampling_factor, odd=True, num_iter=5
                 )
@@ -184,6 +200,10 @@ class PSF(object):
                 kernel_point_source_supersampled = kernel_util.cut_psf(
                     kernel, psf_size=n_new
                 )
+                kernel_point_source_supersampled *= self._kernel_norm / np.sum(
+                    kernel_point_source_supersampled
+                )
+
             elif self.psf_type == "NONE":
                 kernel_point_source_supersampled = self._kernel_point_source
             else:

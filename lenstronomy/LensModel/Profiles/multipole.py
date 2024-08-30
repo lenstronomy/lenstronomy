@@ -5,7 +5,7 @@ import numpy as np
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
-__all__ = ["MULTIPOLE_SPH", "MULTIPOLE_ELL"]
+__all__ = ["MULTIPOLE", "MULTIPOLE_ELL"]
 
 
 class SphericalMultipole(LensProfileBase):

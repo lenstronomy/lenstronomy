@@ -425,6 +425,7 @@ class TestSinglePlaneLOS(object):
             "NFW_MC",
             "ARC_PERT",
             "MULTIPOLE",
+            "MULTIPOLE_ELL",
             "CURVED_ARC_SPP",
         ]
         lensModel = SinglePlaneLOS(lens_model_list=lens_model_list, index_los=0)

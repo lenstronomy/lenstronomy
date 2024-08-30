@@ -52,7 +52,7 @@ _SUPPORTED_MODELS = [
     "RADIAL_INTERPOL",
     "LOS",
     "LOS_MINIMAL",
-    "MULTIPOLE_SPH",
+    "MULTIPOLE",
     "MULTIPOLE_ELL",
     "MULTI_GAUSSIAN",
     "MULTI_GAUSSIAN_ELLIPSE_KAPPA",
@@ -378,7 +378,7 @@ def lens_class(
         return EPL_BOXYDISKY_SPH()
     elif lens_type == "EPL_MULTIPOLE_M3M4_ELL":
         from lenstronomy.LensModel.Profiles.epl_multipole_m3m4 import (
-            EPL_MULTIPOLE_M3M4_ELL,
+            EPL_MULTIPOLE_M3M4_ELL
         )
 
         return EPL_MULTIPOLE_M3M4_ELL()
@@ -472,7 +472,7 @@ def lens_class(
         )
 
         return LOSMinimal()
-    elif lens_type == "MULTIPOLE_SPH":
+    elif lens_type == "MULTIPOLE":
         from lenstronomy.LensModel.Profiles.multipole import SphericalMultipole
 
         return SphericalMultipole()

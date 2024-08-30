@@ -8,7 +8,7 @@ from lenstronomy.Util import util
 
 
 class TestEPL_BOXYDISKY_SPH(object):
-    """Test EPL_BOXYDISKY_SPH vs EPL + MULTIPOLE_SPH values."""
+    """Test EPL_BOXYDISKY_SPH vs EPL + MULTIPOLE (Spherical) values."""
 
     def setup_method(self):
         from lenstronomy.LensModel.Profiles.epl import EPL
@@ -148,7 +148,6 @@ class TestEPL_BOXYDISKY_SPH(object):
                             npt.assert_almost_equal(f_yx, f_yx_, decimal=10)
                             npt.assert_almost_equal(f_yy, f_yy_, decimal=10)
 
-
 class TestEPL_BOXYDISKY_ELL(object):
     """Test EPL_BOXYDISKY_ELL vs EPL + MULTIPOLE_ELL values."""
 
@@ -187,7 +186,7 @@ class TestEPL_BOXYDISKY_ELL(object):
                                 "m": 4,
                                 "a_m": a4_a * theta_E / np.sqrt(q),
                                 "phi_m": phi,
-                                "q": q,
+                                "q":q,
                             }
                             kwargs_epl_boxydisky = {
                                 "theta_E": theta_E,
@@ -223,7 +222,7 @@ class TestEPL_BOXYDISKY_ELL(object):
                                 "m": 4,
                                 "a_m": a4_a * theta_E / np.sqrt(q),
                                 "phi_m": phi,
-                                "q": q,
+                                "q":q,
                             }
                             kwargs_epl_boxydisky = {
                                 "theta_E": theta_E,
@@ -265,7 +264,7 @@ class TestEPL_BOXYDISKY_ELL(object):
                                 "m": 4,
                                 "a_m": a4_a * theta_E / np.sqrt(q),
                                 "phi_m": phi,
-                                "q": q,
+                                "q":q,
                             }
                             kwargs_epl_boxydisky = {
                                 "theta_E": theta_E,

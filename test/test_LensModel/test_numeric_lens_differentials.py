@@ -437,10 +437,10 @@ class TestNumericsProfile(object):
 
     def test_multipole_sph(self):
         kwargs = {"m": 4, "a_m": 0.05, "phi_m": 0.1, "center_x": 0.0, "center_y": 0.0}
-        lens_model = ["MULTIPOLE_SPH"]
+        lens_model = ["MULTIPOLE"]
         self.assert_differentials(lens_model, kwargs, potential=True)
         kwargs = {"m": 2, "a_m": 0.1, "phi_m": 0.05, "center_x": 0.0, "center_y": 0.0}
-        lens_model = ["MULTIPOLE_SPH"]
+        lens_model = ["MULTIPOLE"]
         self.assert_differentials(lens_model, kwargs, potential=True)
         kwargs = {
             "m": 3,
@@ -449,7 +449,7 @@ class TestNumericsProfile(object):
             "center_x": -0.01,
             "center_y": -0.5,
         }
-        lens_model = ["MULTIPOLE_SPH"]
+        lens_model = ["MULTIPOLE"]
         self.assert_differentials(lens_model, kwargs, potential=True)
 
     def test_multipole_ell(self):

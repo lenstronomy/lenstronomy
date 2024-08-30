@@ -148,7 +148,7 @@ def adaptive_boundary_mesh(
     beta_s = (
         source_diameter / 2
     )  # source size, factor of 1/2 because radius, arc seconds
-    n_p = 5  # number of of subsquares per side by which each (valid) pixel is divided in the next iteration
+    n_p = 5  # number of subsquares per side by which each (valid) pixel is divided in the next iteration
     eta = (
         0.7 * n_p
     )  # the factor by which the search radius is reduced in each iteration

@@ -231,7 +231,7 @@ class Numerics(PointSourceRendering):
             size = convolution_kernel_size * supersampling_factor
             if size % 2 == 0:
                 size += 1
-            kernel_cut = kernel_util.cut_psf(kernel_super, size)
+            kernel_cut = kernel_util.cut_psf(kernel_super, size, normalisation=False)
             return kernel_cut
         else:
             return kernel_super

@@ -57,8 +57,10 @@ def potential_from_kappa_grid_adaptive(
     grid_spacing_low_res = grid_spacing * low_res_factor
     kernel = potential_kernel(num_pix, grid_spacing)
     kernel_low_res, kernel_high_res = kernel_util.split_kernel(
-        kernel, high_res_kernel_size, low_res_factor, normalized=False
+        kernel, high_res_kernel_size, low_res_factor
     )
+    kernel_low_res /= low_res_factor ** 2
+    # , normalized = False
 
     f_high_res = (
         scp.fftconvolve(kappa_high_res, kernel_high_res, mode="same")
@@ -123,8 +125,10 @@ def deflection_from_kappa_grid_adaptive(
     grid_spacing_low_res = grid_spacing * low_res_factor
 
     kernel_low_res_x, kernel_high_res_x = kernel_util.split_kernel(
-        kernel_x, high_res_kernel_size, low_res_factor, normalized=False
+        kernel_x, high_res_kernel_size, low_res_factor
     )
+    kernel_low_res_x /= low_res_factor ** 2
+    # , normalized=False
     f_x_high_res = (
         scp.fftconvolve(kappa_high_res, kernel_high_res_x, mode="same")
         / np.pi

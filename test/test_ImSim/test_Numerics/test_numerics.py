@@ -144,7 +144,7 @@ class TestNumerics(object):
 
         kernel_size = 9
         kernel_super = kernel_util.cut_psf(
-            psf_data=kernel_super, psf_size=kernel_size * self._supersampling_factor
+            psf_data=kernel_super, psf_size=kernel_size * self._supersampling_factor, normalisation=True
         )
 
         # make instance of the PixelGrid class
@@ -162,12 +162,22 @@ class TestNumerics(object):
         # make instance of the PSF class
         from lenstronomy.Data.psf import PSF
 
+        self.psf_norm_factor = 0.1
+        kwargs_psf_norm = {
+            "psf_type": "PIXEL",
+            "kernel_point_source": kernel_super * self.psf_norm_factor,
+            "point_source_supersampling_factor": self._supersampling_factor,
+            "kernel_point_source_normalisation": False,
+        }
         kwargs_psf = {
             "psf_type": "PIXEL",
-            "kernel_point_source": kernel_super,
+            "kernel_point_source": kernel_super * 0.1,
             "point_source_supersampling_factor": self._supersampling_factor,
+            "kernel_point_source_normalisation": True,
         }
+
         self.psf_class = PSF(**kwargs_psf)
+        self.psf_class_norm = PSF(**kwargs_psf_norm)
 
         # without convolution
         image_model_true = ImageModel(
@@ -192,6 +202,20 @@ class TestNumerics(object):
             np.sum(self.image_true) / np.sum(image_unconvolved), 1, decimal=2
         )
 
+    def test_full_norm(self):
+        image_model_true = ImageModel(
+            self.pixel_grid,
+            self.psf_class_norm,
+            lens_light_model_class=self.lightModel,
+            kwargs_numerics=self.kwargs_numerics_true,
+        )
+        image_unconvolved = image_model_true.image(
+            kwargs_lens_light=self.kwargs_light, unconvolved=True
+        )
+        npt.assert_almost_equal(
+            np.sum(self.image_true) / np.sum(image_unconvolved), 1, decimal=2
+        )
+
     def test_high_res_narrow(self):
         image_model = ImageModel(
             self.pixel_grid,
@@ -204,6 +228,19 @@ class TestNumerics(object):
         )
         npt.assert_almost_equal(
             (self.image_true - image_conv) / self.image_true, 0, decimal=2
+        )
+
+        image_model_norm = ImageModel(
+            self.pixel_grid,
+            self.psf_class_norm,
+            lens_light_model_class=self.lightModel,
+            kwargs_numerics=self.kwargs_numerics_high_res_narrow,
+        )
+        image_conv = image_model_norm.image(
+            kwargs_lens_light=self.kwargs_light, unconvolved=False
+        )
+        npt.assert_almost_equal(
+            (self.image_true * self.psf_norm_factor - image_conv) / self.image_true, 0, decimal=2
         )
 
     def test_low_conv_high_grid(self):
@@ -220,6 +257,19 @@ class TestNumerics(object):
             (self.image_true - image_conv) / self.image_true, 0, decimal=1
         )
 
+        image_model_norm = ImageModel(
+            self.pixel_grid,
+            self.psf_class_norm,
+            lens_light_model_class=self.lightModel,
+            kwargs_numerics=self.kwargs_numerics_low_conv_high_grid,
+        )
+        image_conv = image_model_norm.image(
+            kwargs_lens_light=self.kwargs_light, unconvolved=False
+        )
+        npt.assert_almost_equal(
+            (self.image_true * self.psf_norm_factor - image_conv) / self.image_true, 0, decimal=1
+        )
+
     def test_low_conv_high_adaptive(self):
         image_model = ImageModel(
             self.pixel_grid,
@@ -232,6 +282,19 @@ class TestNumerics(object):
         )
         npt.assert_almost_equal(
             (self.image_true - image_conv) / self.image_true, 0, decimal=1
+        )
+
+        image_model_norm = ImageModel(
+            self.pixel_grid,
+            self.psf_class_norm,
+            lens_light_model_class=self.lightModel,
+            kwargs_numerics=self.kwargs_numerics_low_conv_high_adaptive,
+        )
+        image_conv = image_model_norm.image(
+            kwargs_lens_light=self.kwargs_light, unconvolved=False
+        )
+        npt.assert_almost_equal(
+            (self.image_true * self.psf_norm_factor - image_conv) / self.image_true, 0, decimal=1
         )
 
     def test_high_adaptive(self):
@@ -248,6 +311,19 @@ class TestNumerics(object):
             (self.image_true - image_conv) / self.image_true, 0, decimal=1
         )
 
+        image_model_norm = ImageModel(
+            self.pixel_grid,
+            self.psf_class_norm,
+            lens_light_model_class=self.lightModel,
+            kwargs_numerics=self.kwargs_numerics_high_adaptive,
+        )
+        image_conv = image_model_norm.image(
+            kwargs_lens_light=self.kwargs_light, unconvolved=False
+        )
+        npt.assert_almost_equal(
+            (self.image_true * self.psf_norm_factor - image_conv) / self.image_true, 0, decimal=1
+        )
+
     def test_low_res(self):
         image_model = ImageModel(
             self.pixel_grid,
@@ -262,6 +338,19 @@ class TestNumerics(object):
             (self.image_true - image_conv) / self.image_true, 0, decimal=1
         )
 
+        image_model_norm = ImageModel(
+            self.pixel_grid,
+            self.psf_class_norm,
+            lens_light_model_class=self.lightModel,
+            kwargs_numerics=self.kwargs_numerics_low_res,
+        )
+        image_conv = image_model_norm.image(
+            kwargs_lens_light=self.kwargs_light, unconvolved=False
+        )
+        npt.assert_almost_equal(
+            (self.image_true * self.psf_norm_factor - image_conv) / self.image_true, 0, decimal=1
+        )
+
     def test_sub_frame(self):
         image_model = ImageModel(
             self.pixel_grid,
@@ -273,6 +362,18 @@ class TestNumerics(object):
             kwargs_lens_light=self.kwargs_light, unconvolved=False
         )
         delta = (self.image_true - image_conv) / self.image_true
+        npt.assert_almost_equal(delta[self._conv_pixels_partial], 0, decimal=1)
+
+        image_model_norm = ImageModel(
+            self.pixel_grid,
+            self.psf_class_norm,
+            lens_light_model_class=self.lightModel,
+            kwargs_numerics=self.kwargs_numerics_partial,
+        )
+        image_conv = image_model_norm.image(
+            kwargs_lens_light=self.kwargs_light, unconvolved=False
+        )
+        delta = (self.image_true * self.psf_norm_factor - image_conv) / self.image_true
         npt.assert_almost_equal(delta[self._conv_pixels_partial], 0, decimal=1)
 
     def test_property_access(self):

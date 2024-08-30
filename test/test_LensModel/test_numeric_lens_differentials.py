@@ -453,14 +453,21 @@ class TestNumericsProfile(object):
         self.assert_differentials(lens_model, kwargs, potential=True)
 
     def test_multipole_ell(self):
-        kwargs = {"m": 4, "a_m": 0.05, "phi_m": 0.1, "q":0.6, "center_x": 0.01, "center_y": 0.5}
+        kwargs = {
+            "m": 4,
+            "a_m": 0.05,
+            "phi_m": 0.1,
+            "q": 0.6,
+            "center_x": 0.01,
+            "center_y": 0.5,
+        }
         lens_model = ["MULTIPOLE_ELL"]
         self.assert_differentials(lens_model, kwargs, potential=True)
         kwargs = {
             "m": 3,
             "a_m": 0.07,
             "phi_m": 0.2,
-            "q":0.5,
+            "q": 0.5,
             "center_x": -0.01,
             "center_y": -0.5,
         }

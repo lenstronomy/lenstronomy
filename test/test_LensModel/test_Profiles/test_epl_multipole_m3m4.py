@@ -6,8 +6,14 @@ import numpy.testing as npt
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.Util import util
 from lenstronomy.LensModel.Profiles.epl import EPL
-from lenstronomy.LensModel.Profiles.multipole import SphericalMultipole, EllipticalMultipole
-from lenstronomy.LensModel.Profiles.epl_multipole_m3m4 import EPL_MULTIPOLE_M3M4_SPH, EPL_MULTIPOLE_M3M4_ELL
+from lenstronomy.LensModel.Profiles.multipole import (
+    SphericalMultipole,
+    EllipticalMultipole,
+)
+from lenstronomy.LensModel.Profiles.epl_multipole_m3m4 import (
+    EPL_MULTIPOLE_M3M4_SPH,
+    EPL_MULTIPOLE_M3M4_ELL,
+)
 from lenstronomy.LensModel.lens_model import LensModel
 
 
@@ -251,6 +257,7 @@ class TestEPL_MULTIPOLE_M3M4_SPH(object):
         npt.assert_allclose(fyx, fyx_split)
         npt.assert_allclose(fyy, fyy_split)
 
+
 class TestEPL_MULTIPOLE_M3M4_ELL(object):
     """Test TestEPL_MULTIPOLE_M3M4_ELL vs EPL + 2 MULTIPOLE_ELL values."""
 
@@ -300,7 +307,7 @@ class TestEPL_MULTIPOLE_M3M4_ELL(object):
             "center_y": 0.0,
             "a_m": a3_a * rescale,
             "phi_m": phi_q + delta_phi_m3,
-            "q":q,
+            "q": q,
         }
         kwargs_multliple_m4 = {
             "m": 4,
@@ -308,7 +315,7 @@ class TestEPL_MULTIPOLE_M3M4_ELL(object):
             "center_y": 0.0,
             "a_m": a4_a * rescale,
             "phi_m": phi_q + delta_phi_m4,
-            "q":q,
+            "q": q,
         }
         kwargs_split = [kwargs_epl, kwargs_multliple_m3, kwargs_multliple_m4]
         function_joint = self.lens_model.potential(
@@ -373,7 +380,7 @@ class TestEPL_MULTIPOLE_M3M4_ELL(object):
             "center_y": 0.0,
             "a_m": a3_a * rescale,
             "phi_m": phi_q + delta_phi_m3,
-            "q":q,
+            "q": q,
         }
         kwargs_multliple_m4 = {
             "m": 4,
@@ -381,7 +388,7 @@ class TestEPL_MULTIPOLE_M3M4_ELL(object):
             "center_y": 0.0,
             "a_m": a4_a * rescale,
             "phi_m": phi_q + delta_phi_m4,
-            "q":q,
+            "q": q,
         }
         kwargs_split = [kwargs_epl, kwargs_multliple_m3, kwargs_multliple_m4]
         alpha_x, alpha_y = self.lens_model.alpha(
@@ -450,7 +457,7 @@ class TestEPL_MULTIPOLE_M3M4_ELL(object):
             "center_y": 0.0,
             "a_m": a3_a * rescale,
             "phi_m": phi_q + delta_phi_m3,
-            "q":q,
+            "q": q,
         }
         kwargs_multliple_m4 = {
             "m": 4,
@@ -458,7 +465,7 @@ class TestEPL_MULTIPOLE_M3M4_ELL(object):
             "center_y": 0.0,
             "a_m": a4_a * rescale,
             "phi_m": phi_q + delta_phi_m4,
-            "q":q,
+            "q": q,
         }
         kwargs_split = [kwargs_epl, kwargs_multliple_m3, kwargs_multliple_m4]
         fxx, fxy, fyx, fyy = self.lens_model.hessian(
@@ -496,6 +503,7 @@ class TestEPL_MULTIPOLE_M3M4_ELL(object):
         npt.assert_allclose(fxy, fxy_split)
         npt.assert_allclose(fyx, fyx_split)
         npt.assert_allclose(fyy, fyy_split)
+
 
 if __name__ == "__main__":
     pytest.main()

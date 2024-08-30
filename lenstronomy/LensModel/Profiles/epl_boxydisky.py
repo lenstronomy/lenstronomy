@@ -5,7 +5,10 @@ import lenstronomy.Util.util as util
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 from lenstronomy.LensModel.Profiles.epl import EPL
-from lenstronomy.LensModel.Profiles.multipole import SphericalMultipole, EllipticalMultipole
+from lenstronomy.LensModel.Profiles.multipole import (
+    SphericalMultipole,
+    EllipticalMultipole,
+)
 
 __all__ = ["EPL_BOXYDISKY_ELL", "EPL_BOXYDISKY_SPH"]
 

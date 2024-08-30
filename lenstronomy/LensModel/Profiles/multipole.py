@@ -275,7 +275,7 @@ class EllipticalMultipole(LensProfileBase):
         :param center_y: y-position
         :return: f_xx, f_xy, f_yx, f_yy
         """
-        r, phi = param_util.cart2polar(x, y)
+        r, phi = param_util.cart2polar(x, y, center_x=center_x, center_y=center_y)
         r = np.maximum(r, 0.000001)
         phi_ell = np.angle(q * r * np.cos(phi) + 1j * r * np.sin(phi))
         R = np.sqrt(q * (r * np.cos(phi)) ** 2 + (r * np.sin(phi)) ** 2 / q)

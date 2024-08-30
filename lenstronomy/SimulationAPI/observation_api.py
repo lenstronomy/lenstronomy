@@ -133,7 +133,7 @@ class Observation(object):
                     "psf_type": "PIXEL",
                     "kernel_point_source": self._kernel_point_source,
                     "point_source_supersampling_factor": self._point_source_supersampling_factor,
-                    "kernel_point_source_normalisation": self._kernel_point_source_normalisation
+                    "kernel_point_source_normalisation": self._kernel_point_source_normalisation,
                 }
             else:
                 raise ValueError(
@@ -215,7 +215,7 @@ class SingleBand(Instrument, Observation):
             kernel_point_source=kernel_point_source,
             point_source_supersampling_factor=point_source_supersampling_factor,
             truncation=truncation,
-            kernel_point_source_normalisation=kernel_point_source_normalisation
+            kernel_point_source_normalisation=kernel_point_source_normalisation,
         )
         if data_count_unit not in ["e-", "ADU"]:
             raise ValueError(

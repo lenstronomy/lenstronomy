@@ -83,7 +83,7 @@ class EPL_BOXYDISKY_ELL(LensProfileBase):
             "m": self._m,
             "a_m": a4_a * rescale_am,
             "phi_m": phi,
-            "q": q
+            "q": q,
             "center_x": center_x,
             "center_y": center_y,
         }

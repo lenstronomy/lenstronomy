@@ -44,6 +44,13 @@ class TestNFWELLIPSE(object):
         npt.assert_almost_equal(f_x_cse_low / f_x_nfw, 1, decimal=2)
         npt.assert_almost_equal(f_y_cse_low, f_y_nfw, decimal=2)
 
+        x = 2
+        y = 2
+        f_x_nfw, f_y_nfw = self.nfw.derivatives(x, y, **kwargs)
+        f_x_cse, f_y_cse = self.nfw_cse.derivatives(x, y, e1=0, e2=0, **kwargs)
+        npt.assert_almost_equal(f_x_cse, f_x_nfw, decimal=5)
+        npt.assert_almost_equal(f_y_cse, f_y_nfw, decimal=5)
+
     def test_hessian(self):
         x = np.linspace(0.01, 2, 10)
         y = np.zeros_like(x)

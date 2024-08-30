@@ -42,6 +42,7 @@ class Observation(object):
         kernel_point_source=None,
         truncation=5,
         point_source_supersampling_factor=1,
+        kernel_point_source_normalisation=True,
     ):
         """
 
@@ -54,6 +55,8 @@ class Observation(object):
          (optional when psf_type='PIXEL' is chosen)
         :param point_source_supersampling_factor: int, supersampling factor of kernel_point_source
          (optional when psf_type='PIXEL' is chosen)
+        :param kernel_point_source_normalisation: bool, determines whether psf should be automatically normalised
+         (optional when psf_type='PIXEL' is chosen)
         """
         self._exposure_time = exposure_time
         self._sky_brightness_ = sky_brightness
@@ -63,6 +66,7 @@ class Observation(object):
         self._truncation = truncation
         self._kernel_point_source = kernel_point_source
         self._point_source_supersampling_factor = point_source_supersampling_factor
+        self._kernel_point_source_normalisation = kernel_point_source_normalisation
 
     def update_observation(
         self,
@@ -129,6 +133,7 @@ class Observation(object):
                     "psf_type": "PIXEL",
                     "kernel_point_source": self._kernel_point_source,
                     "point_source_supersampling_factor": self._point_source_supersampling_factor,
+                    "kernel_point_source_normalisation": self._kernel_point_source_normalisation
                 }
             else:
                 raise ValueError(
@@ -170,6 +175,7 @@ class SingleBand(Instrument, Observation):
         kernel_point_source=None,
         truncation=5,
         point_source_supersampling_factor=1,
+        kernel_point_source_normalisation=True,
         data_count_unit="e-",
         background_noise=None,
     ):
@@ -186,6 +192,8 @@ class SingleBand(Instrument, Observation):
         :param magnitude_zero_point: magnitude corresponding to 1 electron per second
         :param num_exposures: number of exposures that are combined
         :param point_source_supersampling_factor: int, supersampling factor of kernel_point_source
+         (optional when psf_type='PIXEL' is chosen)
+        :param kernel_point_source_normalisation: bool, determines whether psf should be automatically normalised
          (optional when psf_type='PIXEL' is chosen)
         :param data_count_unit: string, unit of the data (not noise properties - see other definitions),
          'e-': (electrons assumed to be IID),
@@ -207,6 +215,7 @@ class SingleBand(Instrument, Observation):
             kernel_point_source=kernel_point_source,
             point_source_supersampling_factor=point_source_supersampling_factor,
             truncation=truncation,
+            kernel_point_source_normalisation=kernel_point_source_normalisation
         )
         if data_count_unit not in ["e-", "ADU"]:
             raise ValueError(

@@ -781,6 +781,8 @@ class TestNumericsProfile(object):
             "delta_phi_m4": 0.2,
             "a3_a": -0.2,
             "delta_phi_m3": -0.3,
+            "center_x": 0.01,
+            "center_y": -0.01
         }
         lens_model = ["EPL_MULTIPOLE_M3M4_ELL"]
         self.assert_differentials(lens_model, kwargs)

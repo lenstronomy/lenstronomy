@@ -41,6 +41,7 @@ def lens_model_plot(
     fast_caustic=True,
     name_list=None,
     index=None,
+    color_list='k',
     **kwargs,
 ):
     """Plots a lens model (convergence) and the critical curves and caustics.
@@ -123,6 +124,7 @@ def lens_model_plot(
             source_y=sourcePos_y,
             name_list=name_list,
             index=index,
+            color_list=color_list,
             **kwargs_point_source,
         )
     if coord_inverse:
@@ -278,6 +280,7 @@ def point_source_plot(
     source_y,
     name_list=None,
     index=None,
+    color_list='k',
     **kwargs,
 ):
     """Plots and illustrates images of a point source. The plotting routine orders the
@@ -292,8 +295,9 @@ def point_source_plot(
     :param source_x: x-position of source
     :param source_y: y-position of source
     :param name_list: list of names of images
-    :param name_list: list of strings, longer or equal the number of point sources. If changing this parameter, input as name_list=[...]
+    :param name_list: list of strings, longer or equal the number of point sources. If changing this parameter, input as name_list=[[...], [...]]
     :param index: number of sources, an integer number. Default None.
+    param color_list: list of strings to represent the color for each source's images. Default None. 
     :param kwargs: additional plotting keyword arguments
     :return: matplotlib axis instance with figure
     """
@@ -338,19 +342,20 @@ def point_source_plot(
     mag_images = lens_model.magnification(theta_x, theta_y, kwargs_lens)
 
     x_image, y_image = pixel_grid.map_coord2pix(theta_x, theta_y)
+    color=color_list
 
     for i in range(len(x_image)):
         x_ = (x_image[i]) * delta_pix_x + origin[0]
         y_ = (y_image[i]) * delta_pix + origin[1]
         ax.plot(
-            x_, y_, "dk", markersize=4 * (1 + np.log(np.abs(mag_images[i]))), alpha=0.5
+            x_, y_, str('d'+color), markersize=4 * (1 + np.log(np.abs(mag_images[i]))), alpha=0.5
         )
-        ax.text(x_, y_, name_List_[i], fontsize=20, color="k")
+        ax.text(x_, y_, name_List_[i], fontsize=20, color=color)
     x_source, y_source = pixel_grid.map_coord2pix(source_x, source_y)
     ax.plot(
         x_source * delta_pix_x + origin[0],
         y_source * delta_pix + origin[1],
-        "*k",
+        color,
         markersize=10,
     )
 

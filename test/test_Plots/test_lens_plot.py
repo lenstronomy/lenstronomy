@@ -142,6 +142,44 @@ class TestLensPlot(object):
             )
         plt.close
 
+        for i in range(len(x_sources)):
+            lens_plot.lens_model_plot(
+                ax,
+                lensModel,
+                kwargs_lens,
+                numPix=10,
+                deltaPix=0.5,
+                sourcePos_x=x_sources[i],
+                sourcePos_y=y_sources[i],
+                name_list=name_List[i],
+                index=i,
+                point_source=True,
+                with_caustics=True,
+                fast_caustic=True,
+                coord_inverse=True,
+            )
+        plt.close
+
+        for i in range(len(x_sources)):
+            color_List = ['k', 'b', 'g', 'r', 'c', 'm', 'y']
+            lens_plot.lens_model_plot(
+                ax,
+                lensModel,
+                kwargs_lens,
+                numPix=10,
+                deltaPix=0.5,
+                sourcePos_x=x_sources[i],
+                sourcePos_y=y_sources[i],
+                name_list=name_List[i],
+                index=i,
+                color_list=color_List[i],
+                point_source=True,
+                with_caustics=True,
+                fast_caustic=True,
+                coord_inverse=True,
+            )
+        plt.close
+
     def test_arrival_time_surface(self):
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
         lensModel = LensModel(lens_model_list=["SIS"])

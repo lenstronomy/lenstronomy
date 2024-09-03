@@ -247,9 +247,9 @@ class EllipticalMultipole(LensProfileBase):
                 )
 
             elif m == 4:
-                F_m4 = _F_m4_1(phi, q=q) * np.cos(m * phi_m) + _F_m4_2(phi, q=q) * np.sin(
-                    m * phi_m
-                )
+                F_m4 = _F_m4_1(phi, q=q) * np.cos(m * phi_m) + _F_m4_2(
+                    phi, q=q
+                ) * np.sin(m * phi_m)
                 F_m4_prime = _F_m4_1_derivative(phi, q=q) * np.cos(
                     m * phi_m
                 ) + _F_m4_2_derivative(phi, q=q) * np.sin(m * phi_m)

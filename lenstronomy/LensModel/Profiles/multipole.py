@@ -5,12 +5,12 @@ import numpy as np
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
-__all__ = ["SphericalMultipole", "EllipticalMultipole"]
+__all__ = ["Multipole", "EllipticalMultipole"]
 
 
-class SphericalMultipole(LensProfileBase):
+class Multipole(LensProfileBase):
     """
-    This class contains a multipole contribution (for 1 component with m>=2)
+    This class contains a SPHERICAL multipole contribution (for 1 component with m>=2)
     This uses the same definitions as Xu et al.(2013) in Appendix B3 https://arxiv.org/pdf/1307.4220.pdf, Equation B12
     Only the q=1 case (ie., spherical symmetry) makes this definition consistent with interpretation of multipoles as a deformation of the isophotes with an order m symmetry (eg., disky/boxy in the m=4 case).
 
@@ -35,7 +35,7 @@ class SphericalMultipole(LensProfileBase):
         "center_y": 100,
     }
 
-    def function(self, x, y, m, a_m, phi_m, q=0, center_x=0, center_y=0):
+    def function(self, x, y, m, a_m, phi_m, center_x=0, center_y=0):
         """
         Lensing potential of multipole contribution (for 1 component with m>=2)
         This uses the same definitions as Xu et al.(2013) in Appendix B3 https://arxiv.org/pdf/1307.4220.pdf
@@ -54,7 +54,7 @@ class SphericalMultipole(LensProfileBase):
         f_ = r * a_m / (1 - m**2) * np.cos(m * (phi - phi_m))
         return f_
 
-    def derivatives(self, x, y, m, a_m, phi_m, q=0, center_x=0, center_y=0):
+    def derivatives(self, x, y, m, a_m, phi_m, center_x=0, center_y=0):
         """
         Deflection of a multipole contribution (for 1 component with m>=2)
         This uses the same definitions as Xu et al.(2013) in Appendix B3 https://arxiv.org/pdf/1307.4220.pdf
@@ -79,7 +79,7 @@ class SphericalMultipole(LensProfileBase):
         ) * m * a_m / (1 - m**2) * np.sin(m * (phi - phi_m))
         return f_x, f_y
 
-    def hessian(self, x, y, m, a_m, phi_m, q=0, center_x=0, center_y=0):
+    def hessian(self, x, y, m, a_m, phi_m, center_x=0, center_y=0):
         """
         Hessian of a multipole contribution (for 1 component with m>=2)
         This uses the same definitions as Xu et al.(2013) in Appendix B3 https://arxiv.org/pdf/1307.4220.pdf
@@ -165,8 +165,8 @@ class EllipticalMultipole(LensProfileBase):
                     * np.sqrt(q)
                     * r
                     * (
-                        (F_m3_1(phi, q) - F_m3_1(phisymm, q)) / 2 * np.cos(m * phi_m)
-                        + (F_m3_2(phirot, q) - F_m3_2(phirotsymm, q))
+                        (_F_m3_1(phi, q) - _F_m3_1(phisymm, q)) / 2 * np.cos(m * phi_m)
+                        + (_F_m3_2(phirot, q) - _F_m3_2(phirotsymm, q))
                         / 2
                         * np.sin(m * phi_m)
                     )
@@ -178,8 +178,8 @@ class EllipticalMultipole(LensProfileBase):
                     * np.sqrt(q)
                     * r
                     * (
-                        F_m4_1(phi, q=q) * np.cos(m * phi_m)
-                        + F_m4_2(phi, q=q) * np.sin(m * phi_m)
+                        _F_m4_1(phi, q=q) * np.cos(m * phi_m)
+                        + _F_m4_2(phi, q=q) * np.sin(m * phi_m)
                     )
                 )
 
@@ -225,16 +225,16 @@ class EllipticalMultipole(LensProfileBase):
                     param_util.cart2polar(r * np.sin(phi), r * np.cos(phi))[1]
                     - np.pi / 2
                 )  # find angle corresponding to -phi in (-3pi/2, pi/2]
-                alpha_x_1_pos, alpha_y_1_pos = deflection_m3_base(
+                alpha_x_1_pos, alpha_y_1_pos = _deflection_m3_base(
                     r, phi, q, a_3=a_m, phi_3=0
                 )
-                alpha_x_1_neg, alpha_y_1_neg = deflection_m3_base(
+                alpha_x_1_neg, alpha_y_1_neg = _deflection_m3_base(
                     r, phisymm, q, a_3=a_m, phi_3=0
                 )
-                alpha_x_2_pos, alpha_y_2_pos = deflection_m3_base(
+                alpha_x_2_pos, alpha_y_2_pos = _deflection_m3_base(
                     r, phirot, q, a_3=a_m, phi_3=np.pi / 6
                 )
-                alpha_x_2_neg, alpha_y_2_neg = deflection_m3_base(
+                alpha_x_2_neg, alpha_y_2_neg = _deflection_m3_base(
                     r, phirotsymm, q, a_3=a_m, phi_3=np.pi / 6
                 )
                 f_x = (
@@ -247,12 +247,12 @@ class EllipticalMultipole(LensProfileBase):
                 )
 
             elif m == 4:
-                F_m4 = F_m4_1(phi, q=q) * np.cos(m * phi_m) + F_m4_2(phi, q=q) * np.sin(
+                F_m4 = _F_m4_1(phi, q=q) * np.cos(m * phi_m) + _F_m4_2(phi, q=q) * np.sin(
                     m * phi_m
                 )
-                F_m4_prime = F_m4_1_derivative(phi, q=q) * np.cos(
+                F_m4_prime = _F_m4_1_derivative(phi, q=q) * np.cos(
                     m * phi_m
-                ) + F_m4_2_derivative(phi, q=q) * np.sin(m * phi_m)
+                ) + _F_m4_2_derivative(phi, q=q) * np.sin(m * phi_m)
                 f_x = a_m * np.sqrt(q) * (F_m4 * np.cos(phi) - F_m4_prime * np.sin(phi))
                 f_y = a_m * np.sqrt(q) * (F_m4 * np.sin(phi) + F_m4_prime * np.cos(phi))
 
@@ -287,7 +287,7 @@ class EllipticalMultipole(LensProfileBase):
         return f_xx, f_xy, f_xy, f_yy
 
 
-def phi_ell(phi, q):
+def _phi_ell(phi, q):
     return (
         phi
         - np.arctan2(np.sin(phi), np.cos(phi))
@@ -295,7 +295,7 @@ def phi_ell(phi, q):
     )
 
 
-def F_m3_1(phi, q):
+def _F_m3_1(phi, q):
     term1 = np.cos(phi) * (
         q * (3 + q**2) * np.log(1 + q**2 + (q**2 - 1) * np.cos(2 * phi))
         - (
@@ -305,12 +305,12 @@ def F_m3_1(phi, q):
         )
     )
     term2 = (
-        2 * np.sin(phi) * (q * (q**2 + 3) * phi - (1 + 3 * q**2) * phi_ell(phi, q))
+        2 * np.sin(phi) * (q * (q**2 + 3) * phi - (1 + 3 * q**2) * _phi_ell(phi, q))
     )  # Expression valid in (-pi, pi]
     return (term1 + term2) / (2 * (1 - q**2) ** 2)
 
 
-def F_m3_1_derivative(phi, q):
+def _F_m3_1_derivative(phi, q):
     term1 = -np.cos(phi) * q * (3 + q**2) * 2 * (q**2 - 1) * np.sin(2 * phi) / (
         1 + q**2 + (q**2 - 1) * np.cos(2 * phi)
     ) + np.sin(phi) * (
@@ -320,7 +320,7 @@ def F_m3_1_derivative(phi, q):
         + (1 - q**2) ** 2 / 4
     )
     term2 = 2 * np.cos(phi) * (
-        q * (q**2 + 3) * phi - (1 + 3 * q**2) * phi_ell(phi, q)
+        q * (q**2 + 3) * phi - (1 + 3 * q**2) * _phi_ell(phi, q)
     ) + 2 * np.sin(phi) * (
         q * (q**2 + 3)
         - (1 + 3 * q**2) * q / (q**2 * np.cos(phi) ** 2 + np.sin(phi) ** 2)
@@ -328,19 +328,19 @@ def F_m3_1_derivative(phi, q):
     return (term1 + term2) / (2 * (1 - q**2) ** 2)
 
 
-def F_m3_2(phi, q):
+def _F_m3_2(phi, q):
     # Expression valid in (-3*pi/2, pi/2]
-    return 1 / q * F_m3_1(phi + np.pi / 2, 1 / q)
+    return 1 / q * _F_m3_1(phi + np.pi / 2, 1 / q)
 
 
-def F_m3_2_derivative(phi, q):
+def _F_m3_2_derivative(phi, q):
     # Expression valid in (-3*pi/2, pi/2]
-    return 1 / q * F_m3_1_derivative(phi + np.pi / 2, 1 / q)
+    return 1 / q * _F_m3_1_derivative(phi + np.pi / 2, 1 / q)
 
 
-def deflection_m3_base(r, phi, q, a_3, phi_3):
-    F_m3 = F_m3_1(phi, q=q) * np.cos(3 * phi_3) + F_m3_2(phi, q=q) * np.sin(3 * phi_3)
-    F_m3_prime = F_m3_1_derivative(phi, q=q) * np.cos(3 * phi_3) + F_m3_2_derivative(
+def _deflection_m3_base(r, phi, q, a_3, phi_3):
+    F_m3 = _F_m3_1(phi, q=q) * np.cos(3 * phi_3) + _F_m3_2(phi, q=q) * np.sin(3 * phi_3)
+    F_m3_prime = _F_m3_1_derivative(phi, q=q) * np.cos(3 * phi_3) + _F_m3_2_derivative(
         phi, q=q
     ) * np.sin(3 * phi_3)
     alpha_x = a_3 * np.sqrt(q) * (F_m3 * np.cos(phi) - F_m3_prime * np.sin(phi))
@@ -348,7 +348,7 @@ def deflection_m3_base(r, phi, q, a_3, phi_3):
     return alpha_x, alpha_y
 
 
-def F_m4_1(phi, q):
+def _F_m4_1(phi, q):
     term1 = (
         -4
         * np.sqrt(2)
@@ -377,7 +377,7 @@ def F_m4_1(phi, q):
     return term1 + term2 + term3
 
 
-def F_m4_1_derivative(phi, q):
+def _F_m4_1_derivative(phi, q):
     term1 = (
         -4
         * np.sqrt(2)
@@ -418,7 +418,7 @@ def F_m4_1_derivative(phi, q):
     return term1 + term2 + term3
 
 
-def F_m4_2(phi, q):
+def _F_m4_2(phi, q):
     term1 = (
         -4
         * np.sqrt(2)
@@ -453,7 +453,7 @@ def F_m4_2(phi, q):
     return term1 + term2 + term3
 
 
-def F_m4_2_derivative(phi, q):
+def _F_m4_2_derivative(phi, q):
     term1 = (
         -8
         * np.sqrt(2)

@@ -1,21 +1,18 @@
 __author__ = "lynevdv"
 
 
-from lenstronomy.LensModel.Profiles.multipole import (
-    SphericalMultipole,
-    EllipticalMultipole,
-)
+from lenstronomy.LensModel.Profiles.multipole import Multipole, EllipticalMultipole
 
 import numpy as np
 import pytest
 import numpy.testing as npt
 
 
-class TestSphericalMultipole(object):
+class TestMultipole(object):
     """Tests the Gaussian methods."""
 
     def setup_method(self):
-        self.Multipole = SphericalMultipole()
+        self.Multipole = Multipole()
 
     def test_function(self):
         x = 1
@@ -96,6 +93,8 @@ class TestEllipticalMultipole(object):
 
     def setup_method(self):
         self.Multipole = EllipticalMultipole()
+        self.SphericalMultipole = Multipole()
+        self.x, self.y = util.make_grid(numPix=10, deltapix=0.2)
 
     def test_function(self):
         x = 1
@@ -118,6 +117,15 @@ class TestEllipticalMultipole(object):
         npt.assert_almost_equal(values[1], 0.000954611, decimal=6)
         npt.assert_almost_equal(values[2], -0.002321308, decimal=6)
 
+        #Test that the limit q-> 1 is consistent with the spherical multipoles
+        function_ell_limit = self.Multipole.function(self.x, self.y, m=4, a_m=a_m, phi_m = np.pi/24, q=0.99999)
+        function_sph = self.SphericalMultipole.function(self.x, self.y, m=4, a_m=a_m, phi_m = np.pi/24)
+        npt.assert_allclose(function_ell_limit, function_sph, rtol=0, atol=1e-6)
+
+        function_ell_limit = self.Multipole.function(self.x, self.y, m=3, a_m=a_m, phi_m = np.pi/18, q=0.99999)
+        function_sph = self.SphericalMultipole.function(self.x, self.y, m=3, a_m=a_m, phi_m = np.pi/18)
+        npt.assert_allclose(function_ell_limit, function_sph, rtol=0, atol=1e-6)
+
     def test_derivatives(self):
         x = 1
         y = 2
@@ -138,6 +146,17 @@ class TestEllipticalMultipole(object):
         npt.assert_almost_equal(f_y[0], 0.016882475, decimal=6)
         npt.assert_almost_equal(f_y[1], 0.012844618, decimal=6)
         npt.assert_almost_equal(f_y[2], 0.001639347, decimal=6)
+
+        #Test that the limit q-> 1 is consistent with the spherical multipoles
+        alpha_x_ell_limit, alpha_y_ell_limit = self.Multipole.derivatives(self.x, self.y, m=4, a_m=a_m, phi_m = np.pi/24, q=0.99999)
+        alpha_x_sph, alpha_y_sph = self.SphericalMultipole.derivatives(self.x, self.y, m=4, a_m=a_m, phi_m = np.pi/24)
+        npt.assert_allclose(alpha_x_ell_limit, alpha_x_sph, rtol=0, atol=1e-6)
+        npt.assert_allclose(alpha_y_ell_limit, alpha_y_sph, rtol=0, atol=1e-6)
+
+        alpha_x_ell_limit, alpha_y_ell_limit = self.Multipole.derivatives(self.x, self.y, m=3, a_m=a_m, phi_m = np.pi/18, q=0.99999)
+        alpha_x_sph, alpha_y_sph = self.SphericalMultipole.derivatives(self.x, self.y, m=3, a_m=a_m, phi_m = np.pi/18)
+        npt.assert_allclose(alpha_x_ell_limit, alpha_x_sph, rtol=0, atol=1e-6)
+        npt.assert_allclose(alpha_y_ell_limit, alpha_y_sph, rtol=0, atol=1e-6)
 
     def test_hessian(self):
         x = 1
@@ -164,6 +183,21 @@ class TestEllipticalMultipole(object):
         npt.assert_almost_equal(values[1][0], -0.001736482, decimal=6)
         npt.assert_almost_equal(values[1][1], -0.004833545, decimal=6)
         npt.assert_almost_equal(values[1][2], -0.003698142, decimal=6)
+
+        #Test that the limit q-> 1 is consistent with the spherical multipoles
+        f_xx_ell_limit, f_xy_ell_limit, f_yx_ell_limit, f_yy_ell_limit = self.Multipole.hessian(self.x, self.y, m=4, a_m=a_m, phi_m = np.pi/24, q=0.99999)
+        f_xx_sph, f_xy_sph, f_yx_sph, f_yy_sph = self.SphericalMultipole.hessian(self.x, self.y, m=4, a_m=a_m, phi_m = np.pi/24)
+        npt.assert_allclose(f_xx_ell_limit, f_xx_sph, rtol=0, atol=1e-6)
+        npt.assert_allclose(f_xy_ell_limit, f_xy_sph, rtol=0, atol=1e-6)
+        npt.assert_allclose(f_yx_ell_limit, f_yx_sph, rtol=0, atol=1e-6)
+        npt.assert_allclose(f_yy_ell_limit, f_yy_sph, rtol=0, atol=1e-6)
+
+        f_xx_ell_limit, f_xy_ell_limit, _, f_yy_ell_limit = self.Multipole.hessian(self.x, self.y, m=3, a_m=a_m, phi_m = np.pi/18, q=0.99999)
+        f_xx_sph, f_xy_sph, _, f_yy_sph = self.SphericalMultipole.hessian(self.x, self.y, m=4, a_m=a_3, phi_m = np.pi/18)
+        npt.assert_allclose(f_xx_ell_limit, f_xx_sph, rtol=0, atol=1e-6)
+        npt.assert_allclose(f_xy_ell_limit, f_xy_sph, rtol=0, atol=1e-6)
+        npt.assert_allclose(f_yx_ell_limit, f_yx_sph, rtol=0, atol=1e-6)
+        npt.assert_allclose(f_yy_ell_limit, f_yy_sph, rtol=0, atol=1e-6)
 
 
 if __name__ == "__main__":

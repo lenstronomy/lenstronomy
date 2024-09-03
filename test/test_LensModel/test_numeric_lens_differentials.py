@@ -348,9 +348,9 @@ class TestNumericsProfile(object):
         lens_model = ["EPL_Q_PHI"]
         self.assert_differentials(lens_model, kwargs)
 
-    def test_EPL_BOXYDISKY_SPH(self):
+    def test_EPL_BOXYDISKY(self):
         kwargs = {"theta_E": 2.0, "e1": 0.1, "e2": 0.2, "gamma": 2.13, "a4_a": 0.1}
-        lens_model = ["EPL_BOXYDISKY_SPH"]
+        lens_model = ["EPL_BOXYDISKY"]
         self.assert_differentials(lens_model, kwargs)
 
     def test_EPL_BOXYDISKY_ELL(self):
@@ -435,7 +435,7 @@ class TestNumericsProfile(object):
         lens_model = ["NIE_POTENTIAL"]
         self.assert_differentials(lens_model, kwargs)
 
-    def test_multipole_sph(self):
+    def test_multipole(self):
         kwargs = {"m": 4, "a_m": 0.05, "phi_m": 0.1, "center_x": 0.0, "center_y": 0.0}
         lens_model = ["MULTIPOLE"]
         self.assert_differentials(lens_model, kwargs, potential=True)
@@ -755,7 +755,7 @@ class TestNumericsProfile(object):
         lens_model = ["TNFWC"]
         self.assert_differentials(lens_model, kwargs, potential=False)
 
-    def test_epl_m3m4_sph(self):
+    def test_epl_m3m4(self):
 
         kwargs = {
             "theta_E": 2.0,
@@ -767,7 +767,7 @@ class TestNumericsProfile(object):
             "a3_a": -0.2,
             "delta_phi_m3": -0.3,
         }
-        lens_model = ["EPL_MULTIPOLE_M3M4_SPH"]
+        lens_model = ["EPL_MULTIPOLE_M3M4"]
         self.assert_differentials(lens_model, kwargs)
 
     def test_epl_m3m4_ell(self):

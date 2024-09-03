@@ -6,28 +6,25 @@ import numpy.testing as npt
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.Util import util
 from lenstronomy.LensModel.Profiles.epl import EPL
-from lenstronomy.LensModel.Profiles.multipole import (
-    SphericalMultipole,
-    EllipticalMultipole,
-)
+from lenstronomy.LensModel.Profiles.multipole import Multipole, EllipticalMultipole
 from lenstronomy.LensModel.Profiles.epl_multipole_m3m4 import (
-    EPL_MULTIPOLE_M3M4_SPH,
+    EPL_MULTIPOLE_M3M4,
     EPL_MULTIPOLE_M3M4_ELL,
 )
 from lenstronomy.LensModel.lens_model import LensModel
 
 
-class TestEPL_MULTIPOLE_M3M4_SPH(object):
-    """Test TestEPL_MULTIPOLE_M3M4_SPH vs EPL + 2 MULTIPOLE (Spherical) values."""
+class TestEPL_MULTIPOLE_M3M4(object):
+    """Test TestEPL_MULTIPOLE_M3M4 vs EPL + 2 MULTIPOLE (Spherical) values."""
 
     def setup_method(self):
         self.epl = EPL()
-        self.multipole = SphericalMultipole()
-        self.epl_multipole = EPL_MULTIPOLE_M3M4_SPH()
+        self.multipole = Multipole()
+        self.epl_multipole = EPL_MULTIPOLE_M3M4()
         self.x, self.y = util.make_grid(numPix=10, deltapix=0.2)
         self.lens_model_split = LensModel(["EPL", "MULTIPOLE", "MULTIPOLE"])
-        self.lens_model = LensModel(["EPL_MULTIPOLE_M3M4_SPH"])
-        self.lens_model_eplboxydisky = LensModel(["EPL_BOXYDISKY_SPH"])
+        self.lens_model = LensModel(["EPL_MULTIPOLE_M3M4"])
+        self.lens_model_eplboxydisky = LensModel(["EPL_BOXYDISKY"])
 
     def test_function(self):
         a3_a = 0.008

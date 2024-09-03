@@ -7,19 +7,19 @@ import lenstronomy.Util.param_util as param_util
 from lenstronomy.Util import util
 
 
-class TestEPL_BOXYDISKY_SPH(object):
-    """Test EPL_BOXYDISKY_SPH vs EPL + MULTIPOLE (Spherical) values."""
+class TestEPL_BOXYDISKY(object):
+    """Test EPL_BOXYDISKY vs EPL + MULTIPOLE (Spherical) values."""
 
     def setup_method(self):
         from lenstronomy.LensModel.Profiles.epl import EPL
 
         self.epl = EPL()
-        from lenstronomy.LensModel.Profiles.multipole import SphericalMultipole
+        from lenstronomy.LensModel.Profiles.multipole import Multipole
 
-        self.multipole = SphericalMultipole()
-        from lenstronomy.LensModel.Profiles.epl_boxydisky import EPL_BOXYDISKY_SPH
+        self.multipole = Multipole()
+        from lenstronomy.LensModel.Profiles.epl_boxydisky import EPL_BOXYDISKY
 
-        self.epl_boxydisky = EPL_BOXYDISKY_SPH()
+        self.epl_boxydisky = EPL_BOXYDISKY()
 
         self.x, self.y = util.make_grid(numPix=10, deltapix=0.2)
         self.theta_E_list = [0.5, 1, 2]

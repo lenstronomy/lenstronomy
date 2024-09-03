@@ -30,9 +30,9 @@ _SUPPORTED_MODELS = [
     "DOUBLE_CHAMELEON",
     "EPL",
     "EPL_BOXYDISKY_ELL",
-    "EPL_BOXYDISKY_SPH",
+    "EPL_BOXYDISKY",
     "EPL_MULTIPOLE_M3M4_ELL",
-    "EPL_MULTIPOLE_M3M4_SPH",
+    "EPL_MULTIPOLE_M3M4",
     "EPL_NUMBA",
     "EPL_Q_PHI",
     "ElliSLICE",
@@ -372,22 +372,22 @@ def lens_class(
         from lenstronomy.LensModel.Profiles.epl_boxydisky import EPL_BOXYDISKY_ELL
 
         return EPL_BOXYDISKY_ELL()
-    elif lens_type == "EPL_BOXYDISKY_SPH":
-        from lenstronomy.LensModel.Profiles.epl_boxydisky import EPL_BOXYDISKY_SPH
+    elif lens_type == "EPL_BOXYDISKY":
+        from lenstronomy.LensModel.Profiles.epl_boxydisky import EPL_BOXYDISKY
 
-        return EPL_BOXYDISKY_SPH()
+        return EPL_BOXYDISKY()
     elif lens_type == "EPL_MULTIPOLE_M3M4_ELL":
         from lenstronomy.LensModel.Profiles.epl_multipole_m3m4 import (
             EPL_MULTIPOLE_M3M4_ELL,
         )
 
         return EPL_MULTIPOLE_M3M4_ELL()
-    elif lens_type == "EPL_MULTIPOLE_M3M4_SPH":
+    elif lens_type == "EPL_MULTIPOLE_M3M4":
         from lenstronomy.LensModel.Profiles.epl_multipole_m3m4 import (
-            EPL_MULTIPOLE_M3M4_SPH,
+            EPL_MULTIPOLE_M3M4,
         )
 
-        return EPL_MULTIPOLE_M3M4_SPH()
+        return EPL_MULTIPOLE_M3M4()
     elif lens_type == "EPL_NUMBA":
         from lenstronomy.LensModel.Profiles.epl_numba import EPL_numba
 
@@ -473,9 +473,9 @@ def lens_class(
 
         return LOSMinimal()
     elif lens_type == "MULTIPOLE":
-        from lenstronomy.LensModel.Profiles.multipole import SphericalMultipole
+        from lenstronomy.LensModel.Profiles.multipole import Multipole
 
-        return SphericalMultipole()
+        return Multipole()
     elif lens_type == "MULTIPOLE_ELL":
         from lenstronomy.LensModel.Profiles.multipole import EllipticalMultipole
 

@@ -5,12 +5,10 @@ import lenstronomy.Util.util as util
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 from lenstronomy.LensModel.Profiles.epl import EPL
-from lenstronomy.LensModel.Profiles.multipole import (
-    SphericalMultipole,
-    EllipticalMultipole,
-)
+from lenstronomy.LensModel.Profiles.multipole import Multipole, EllipticalMultipole
 
-__all__ = ["EPL_BOXYDISKY_ELL", "EPL_BOXYDISKY_SPH"]
+
+__all__ = ["EPL_BOXYDISKY_ELL", "EPL_BOXYDISKY"]
 
 
 class EPL_BOXYDISKY_ELL(LensProfileBase):
@@ -170,7 +168,7 @@ class EPL_BOXYDISKY_ELL(LensProfileBase):
         return f_xx, f_xy, f_yx, f_yy
 
 
-class EPL_BOXYDISKY_SPH(LensProfileBase):
+class EPL_BOXYDISKY(LensProfileBase):
     """ " EPL (Elliptical Power Law) mass profile combined with Multipole with m=4, so
     that it's either purely boxy or disky with EPL's axis and Multipole's axis aligned.
 
@@ -211,9 +209,9 @@ class EPL_BOXYDISKY_SPH(LensProfileBase):
 
     def __init__(self, use_elliptical_multipoles=True):
         self._epl = EPL()
-        self._multipole = SphericalMultipole()
+        self._multipole = Multipole()
         self._m = int(4)
-        super(EPL_BOXYDISKY_SPH, self).__init__()
+        super(EPL_BOXYDISKY, self).__init__()
 
     def _param_split(self, theta_E, gamma, e1, e2, a4_a, center_x=0, center_y=0):
         """This function splits the keyword arguments for the EPL and multipole

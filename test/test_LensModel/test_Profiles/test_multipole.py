@@ -2,6 +2,7 @@ __author__ = "lynevdv"
 
 
 from lenstronomy.LensModel.Profiles.multipole import Multipole, EllipticalMultipole
+from lenstronomy.Util import util
 
 import numpy as np
 import pytest

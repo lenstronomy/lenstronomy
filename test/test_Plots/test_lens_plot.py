@@ -67,7 +67,7 @@ class TestLensPlot(object):
         x_source2, y_source2 = -0.15, -0.12
         x_sources = [x_source, x_source2]
         y_sources = [y_source, y_source2]
-        name_List = [
+        name_lists = [
             ["Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
             ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"],
         ]

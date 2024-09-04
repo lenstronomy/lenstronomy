@@ -219,7 +219,7 @@ class TestEllipticalMultipole(object):
             self.x, self.y, m=3, a_m=a_m, phi_m=np.pi / 18, q=0.99989
         )
         f_xx_sph, f_xy_sph, _, f_yy_sph = self.SphericalMultipole.hessian(
-            self.x, self.y, m=4, a_m=a_m, phi_m=np.pi / 18
+            self.x, self.y, m=3, a_m=a_m, phi_m=np.pi / 18
         )
         npt.assert_allclose(f_xx_ell_limit, f_xx_sph, rtol=1e-5, atol=5e-5)
         npt.assert_allclose(f_xy_ell_limit, f_xy_sph, rtol=1e-5, atol=5e-5)

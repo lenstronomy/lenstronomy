@@ -280,7 +280,7 @@ def point_source_plot(
     source_y,
     name_list=None,
     index=None,
-    color_value="k",
+    color="k",
     **kwargs,
 ):
     """Plots and illustrates images of a point source. The plotting routine orders the

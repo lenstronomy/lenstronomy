@@ -353,6 +353,11 @@ class TestNumericsProfile(object):
         lens_model = ["EPL_BOXYDISKY"]
         self.assert_differentials(lens_model, kwargs)
 
+    def test_EPL_BOXYDISKY_ELL(self):
+        kwargs = {"theta_E": 2.0, "e1": 0.1, "e2": 0.2, "gamma": 2.13, "a4_a": 0.1}
+        lens_model = ["EPL_BOXYDISKY_ELL"]
+        self.assert_differentials(lens_model, kwargs)
+
     def test_EPL_numba(self):
         kwargs = {"theta_E": 2.0, "e1": 0.1, "e2": 0.0, "gamma": 2.13}
         lens_model = ["EPL_NUMBA"]
@@ -445,6 +450,28 @@ class TestNumericsProfile(object):
             "center_y": -0.5,
         }
         lens_model = ["MULTIPOLE"]
+        self.assert_differentials(lens_model, kwargs, potential=True)
+
+    def test_multipole_ell(self):
+        kwargs = {
+            "m": 4,
+            "a_m": 0.05,
+            "phi_m": 0.1,
+            "q": 0.6,
+            "center_x": 0.01,
+            "center_y": 0.5,
+        }
+        lens_model = ["MULTIPOLE_ELL"]
+        self.assert_differentials(lens_model, kwargs, potential=True)
+        kwargs = {
+            "m": 3,
+            "a_m": 0.07,
+            "phi_m": 0.2,
+            "q": 0.5,
+            "center_x": -0.01,
+            "center_y": -0.5,
+        }
+        lens_model = ["MULTIPOLE_ELL"]
         self.assert_differentials(lens_model, kwargs, potential=True)
 
     def test_elli_slice(self):
@@ -741,6 +768,23 @@ class TestNumericsProfile(object):
             "delta_phi_m3": -0.3,
         }
         lens_model = ["EPL_MULTIPOLE_M3M4"]
+        self.assert_differentials(lens_model, kwargs)
+
+    def test_epl_m3m4_ell(self):
+
+        kwargs = {
+            "theta_E": 2.0,
+            "e1": 0.1,
+            "e2": 0.2,
+            "gamma": 2.13,
+            "a4_a": 0.1,
+            "delta_phi_m4": 0.2,
+            "a3_a": -0.2,
+            "delta_phi_m3": -0.3,
+            "center_x": 0.01,
+            "center_y": -0.01,
+        }
+        lens_model = ["EPL_MULTIPOLE_M3M4_ELL"]
         self.assert_differentials(lens_model, kwargs)
 
 

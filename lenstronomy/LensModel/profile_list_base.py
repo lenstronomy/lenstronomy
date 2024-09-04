@@ -29,7 +29,9 @@ _SUPPORTED_MODELS = [
     "DIPOLE",
     "DOUBLE_CHAMELEON",
     "EPL",
+    "EPL_BOXYDISKY_ELL",
     "EPL_BOXYDISKY",
+    "EPL_MULTIPOLE_M3M4_ELL",
     "EPL_MULTIPOLE_M3M4",
     "EPL_NUMBA",
     "EPL_Q_PHI",
@@ -51,6 +53,7 @@ _SUPPORTED_MODELS = [
     "LOS",
     "LOS_MINIMAL",
     "MULTIPOLE",
+    "MULTIPOLE_ELL",
     "MULTI_GAUSSIAN",
     "MULTI_GAUSSIAN_ELLIPSE_KAPPA",
     "MULTI_GAUSSIAN_ELLIPSE_POTENTIAL",
@@ -92,7 +95,6 @@ _SUPPORTED_MODELS = [
     "TNFW_ELLIPSE_POTENTIAL",
     "TRIPLE_CHAMELEON",
     "ULDM",
-    "EPL_MULTIPOLE_M3M4",
 ]
 
 
@@ -366,12 +368,24 @@ def lens_class(
         from lenstronomy.LensModel.Profiles.epl import EPL
 
         return EPL()
+    elif lens_type == "EPL_BOXYDISKY_ELL":
+        from lenstronomy.LensModel.Profiles.epl_boxydisky import EPL_BOXYDISKY_ELL
+
+        return EPL_BOXYDISKY_ELL()
     elif lens_type == "EPL_BOXYDISKY":
         from lenstronomy.LensModel.Profiles.epl_boxydisky import EPL_BOXYDISKY
 
         return EPL_BOXYDISKY()
+    elif lens_type == "EPL_MULTIPOLE_M3M4_ELL":
+        from lenstronomy.LensModel.Profiles.epl_multipole_m3m4 import (
+            EPL_MULTIPOLE_M3M4_ELL,
+        )
+
+        return EPL_MULTIPOLE_M3M4_ELL()
     elif lens_type == "EPL_MULTIPOLE_M3M4":
-        from lenstronomy.LensModel.Profiles.epl_multipole_m3m4 import EPL_MULTIPOLE_M3M4
+        from lenstronomy.LensModel.Profiles.epl_multipole_m3m4 import (
+            EPL_MULTIPOLE_M3M4,
+        )
 
         return EPL_MULTIPOLE_M3M4()
     elif lens_type == "EPL_NUMBA":
@@ -462,6 +476,10 @@ def lens_class(
         from lenstronomy.LensModel.Profiles.multipole import Multipole
 
         return Multipole()
+    elif lens_type == "MULTIPOLE_ELL":
+        from lenstronomy.LensModel.Profiles.multipole import EllipticalMultipole
+
+        return EllipticalMultipole()
     elif lens_type == "MULTI_GAUSSIAN":
         from lenstronomy.LensModel.Profiles.multi_gaussian import (
             MultiGaussian,

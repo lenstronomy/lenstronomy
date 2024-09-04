@@ -102,6 +102,7 @@ class TestLensModel(object):
             "NFW_MC_ELLIPSE_POTENTIAL",
             "ARC_PERT",
             "MULTIPOLE",
+            "MULTIPOLE_ELL",
             "CURVED_ARC_SPP",
         ]
         lensModel = SinglePlane(lens_model_list=lens_model_list)

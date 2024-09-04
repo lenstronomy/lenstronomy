@@ -305,7 +305,7 @@ def point_source_plot(
 
     name_List_ = []
     if name_list is None and index is None:
-        name_List_ = _NAME_LIST
+        name_list_ = _NAME_LIST
     elif name_list is None and index is not None:
         name_list = _NAME_LIST
         for i in range(len(name_list)):

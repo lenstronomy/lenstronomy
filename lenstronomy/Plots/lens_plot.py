@@ -124,7 +124,7 @@ def lens_model_plot(
             source_y=sourcePos_y,
             name_list=name_list,
             index=index,
-            color_value=color_value,
+            color=color_value,
             **kwargs_point_source,
         )
     if coord_inverse:

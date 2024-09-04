@@ -116,7 +116,7 @@ class TestLensPlot(object):
                 deltaPix=0.5,
                 sourcePos_x=x_sources[i],
                 sourcePos_y=y_sources[i],
-                name_list=name_List[i],
+                name_list=name_lists[i],
                 point_source=True,
                 with_caustics=True,
                 fast_caustic=True,

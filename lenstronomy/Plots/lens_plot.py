@@ -41,7 +41,7 @@ def lens_model_plot(
     fast_caustic=True,
     name_list=None,
     index=None,
-    color_list='k',
+    color_value='k',
     **kwargs,
 ):
     """Plots a lens model (convergence) and the critical curves and caustics.
@@ -124,7 +124,7 @@ def lens_model_plot(
             source_y=sourcePos_y,
             name_list=name_list,
             index=index,
-            color_list=color_list,
+            color_value=color_value,
             **kwargs_point_source,
         )
     if coord_inverse:
@@ -280,7 +280,7 @@ def point_source_plot(
     source_y,
     name_list=None,
     index=None,
-    color_list='k',
+    color_value='k',
     **kwargs,
 ):
     """Plots and illustrates images of a point source. The plotting routine orders the
@@ -297,25 +297,25 @@ def point_source_plot(
     :param name_list: list of names of images
     :param name_list: list of strings, longer or equal the number of point sources. If changing this parameter, input as name_list=[[...], [...]]
     :param index: number of sources, an integer number. Default None.
-    param color_list: list of strings to represent the color for each source's images. Default None. 
+    param color_value: string representing the color for the source's images. Default 'k'. 
     :param kwargs: additional plotting keyword arguments
     :return: matplotlib axis instance with figure
     """
     from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 
-    name_List_ = []
+    name_list_ = []
     if name_list is None and index is None:
-        name_List_ = _NAME_LIST
+        name_list_ = _NAME_LIST
     elif name_list is None and index is not None:
         name_list = _NAME_LIST
         for i in range(len(name_list)):
-            name_List_.append(str(index + 1) + name_list[i])
+            name_list_.append(str(index + 1) + name_list[i])
     elif name_list is not None and index is None:
-        name_List_ = name_list
+        name_list_ = name_list
     elif name_list is not None and index is not None:
         name_list = name_list
         for i in range(len(name_list)):
-            name_List_.append(str(index + 1) + name_list[i])
+            name_list_.append(str(index + 1) + name_list[i])
 
     solver = LensEquationSolver(lens_model)
     x_center, y_center = pixel_grid.center
@@ -342,7 +342,7 @@ def point_source_plot(
     mag_images = lens_model.magnification(theta_x, theta_y, kwargs_lens)
 
     x_image, y_image = pixel_grid.map_coord2pix(theta_x, theta_y)
-    color=color_list
+    color=color_value
 
     for i in range(len(x_image)):
         x_ = (x_image[i]) * delta_pix_x + origin[0]
@@ -350,7 +350,7 @@ def point_source_plot(
         ax.plot(
             x_, y_, str('d'+color), markersize=4 * (1 + np.log(np.abs(mag_images[i]))), alpha=0.5
         )
-        ax.text(x_, y_, name_List_[i], fontsize=20, color=color)
+        ax.text(x_, y_, name_list_[i], fontsize=20, color=color)
     x_source, y_source = pixel_grid.map_coord2pix(source_x, source_y)
     ax.plot(
         x_source * delta_pix_x + origin[0],
@@ -375,7 +375,7 @@ def arrival_time_surface(
     point_source=False,
     n_levels=10,
     kwargs_contours=None,
-    image_color_list=None,
+    image_color_value=None,
     letter_font_size=20,
     name_list=None,
 ):
@@ -458,10 +458,10 @@ def arrival_time_surface(
         for i in range(len(x_image)):
             x_ = (x_image[i] + 0.5) * deltaPix - _frame_size / 2
             y_ = (y_image[i] + 0.5) * deltaPix - _frame_size / 2
-            if image_color_list is None:
+            if image_color_value is None:
                 color = "k"
             else:
-                color = image_color_list[i]
+                color = image_color_value[i]
             ax.plot(x_, y_, "x", markersize=10, alpha=1, color=color)
             # markersize=8*(1 + np.log(np.abs(mag_images[i])))
             ax.text(

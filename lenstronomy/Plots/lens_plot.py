@@ -348,7 +348,11 @@ def point_source_plot(
         x_ = (x_image[i]) * delta_pix_x + origin[0]
         y_ = (y_image[i]) * delta_pix + origin[1]
         ax.plot(
-            x_, y_, str('d'+color), markersize=4 * (1 + np.log(np.abs(mag_images[i]))), alpha=0.5
+            x_,
+            y_,
+            str("d" + color),
+            markersize=4 * (1 + np.log(np.abs(mag_images[i]))),
+            alpha=0.5,
         )
         ax.text(x_, y_, name_list_[i], fontsize=20, color=color)
     x_source, y_source = pixel_grid.map_coord2pix(source_x, source_y)

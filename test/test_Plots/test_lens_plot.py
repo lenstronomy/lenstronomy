@@ -161,7 +161,7 @@ class TestLensPlot(object):
         plt.close
 
         for i in range(len(x_sources)):
-            color_list = ['k', 'b', 'g', 'r', 'c', 'm', 'y']
+            color_list = ["k", "b", "g", "r", "c", "m", "y"]
             lens_plot.lens_model_plot(
                 ax,
                 lensModel,

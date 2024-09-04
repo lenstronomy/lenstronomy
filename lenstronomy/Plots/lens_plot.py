@@ -297,7 +297,7 @@ def point_source_plot(
     :param name_list: list of names of images
     :param name_list: list of strings, longer or equal the number of point sources. If changing this parameter, input as name_list=[[...], [...]]
     :param index: number of sources, an integer number. Default None.
-    param color_value: string representing the color for the source's images. Default 'k'.
+    :param color: string representing the color for the source's images. Default "k".
     :param kwargs: additional plotting keyword arguments
     :return: matplotlib axis instance with figure
     """

@@ -41,7 +41,7 @@ def lens_model_plot(
     fast_caustic=True,
     name_list=None,
     index=None,
-    color_value='k',
+    color_value="k",
     **kwargs,
 ):
     """Plots a lens model (convergence) and the critical curves and caustics.
@@ -280,7 +280,7 @@ def point_source_plot(
     source_y,
     name_list=None,
     index=None,
-    color_value='k',
+    color_value="k",
     **kwargs,
 ):
     """Plots and illustrates images of a point source. The plotting routine orders the
@@ -297,7 +297,7 @@ def point_source_plot(
     :param name_list: list of names of images
     :param name_list: list of strings, longer or equal the number of point sources. If changing this parameter, input as name_list=[[...], [...]]
     :param index: number of sources, an integer number. Default None.
-    param color_value: string representing the color for the source's images. Default 'k'. 
+    param color_value: string representing the color for the source's images. Default 'k'.
     :param kwargs: additional plotting keyword arguments
     :return: matplotlib axis instance with figure
     """
@@ -342,7 +342,7 @@ def point_source_plot(
     mag_images = lens_model.magnification(theta_x, theta_y, kwargs_lens)
 
     x_image, y_image = pixel_grid.map_coord2pix(theta_x, theta_y)
-    color=color_value
+    color = color_value
 
     for i in range(len(x_image)):
         x_ = (x_image[i]) * delta_pix_x + origin[0]

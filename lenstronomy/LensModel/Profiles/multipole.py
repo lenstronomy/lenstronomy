@@ -145,7 +145,7 @@ class EllipticalMultipole(LensProfileBase):
 
         r, phi = param_util.cart2polar(x, y, center_x=center_x, center_y=center_y)
 
-        if q == 1:
+        if np.abs(1-q)< 1e-4: #avoid numerical instability when q is too close to 1
             f_ = r * a_m / (1 - m**2) * np.cos(m * (phi - phi_m))
 
         else:
@@ -205,7 +205,7 @@ class EllipticalMultipole(LensProfileBase):
 
         r, phi = param_util.cart2polar(x, y, center_x=center_x, center_y=center_y)
 
-        if q == 1:
+        if np.abs(1-q)< 1e-4: #avoid numerical instability when q is too close to 1
             f_x = np.cos(phi) * a_m / (1 - m**2) * np.cos(m * (phi - phi_m)) + np.sin(
                 phi
             ) * m * a_m / (1 - m**2) * np.sin(m * (phi - phi_m))

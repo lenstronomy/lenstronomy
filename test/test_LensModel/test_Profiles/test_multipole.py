@@ -120,20 +120,20 @@ class TestEllipticalMultipole(object):
 
         # Test that the limit q-> 1 is consistent with the spherical multipoles
         function_ell_limit = self.Multipole.function(
-            self.x, self.y, m=4, a_m=a_m, phi_m=np.pi / 24, q=0.999999
+            self.x, self.y, m=4, a_m=a_m, phi_m=np.pi / 24, q=0.999
         )
         function_sph = self.SphericalMultipole.function(
             self.x, self.y, m=4, a_m=a_m, phi_m=np.pi / 24
         )
-        npt.assert_allclose(function_ell_limit, function_sph, rtol=0, atol=1e-6)
+        npt.assert_allclose(function_ell_limit, function_sph, rtol=2e-3, atol=0)
 
         function_ell_limit = self.Multipole.function(
-            self.x, self.y, m=3, a_m=a_m, phi_m=np.pi / 18, q=0.999999
+            self.x, self.y, m=3, a_m=a_m, phi_m=np.pi / 18, q=0.999
         )
         function_sph = self.SphericalMultipole.function(
             self.x, self.y, m=3, a_m=a_m, phi_m=np.pi / 18
         )
-        npt.assert_allclose(function_ell_limit, function_sph, rtol=0, atol=1e-6)
+        npt.assert_allclose(function_ell_limit, function_sph, rtol=2e-3, atol=0)
 
     def test_derivatives(self):
         x = 1
@@ -158,22 +158,22 @@ class TestEllipticalMultipole(object):
 
         # Test that the limit q-> 1 is consistent with the spherical multipoles
         alpha_x_ell_limit, alpha_y_ell_limit = self.Multipole.derivatives(
-            self.x, self.y, m=4, a_m=a_m, phi_m=np.pi / 24, q=0.999999
+            self.x, self.y, m=4, a_m=a_m, phi_m=np.pi / 24, q=0.999
         )
         alpha_x_sph, alpha_y_sph = self.SphericalMultipole.derivatives(
             self.x, self.y, m=4, a_m=a_m, phi_m=np.pi / 24
         )
-        npt.assert_allclose(alpha_x_ell_limit, alpha_x_sph, rtol=0, atol=1e-6)
-        npt.assert_allclose(alpha_y_ell_limit, alpha_y_sph, rtol=0, atol=1e-6)
+        npt.assert_allclose(alpha_x_ell_limit, alpha_x_sph, rtol=2e-3, atol=0)
+        npt.assert_allclose(alpha_y_ell_limit, alpha_y_sph, rtol=2e-3, atol=0)
 
         alpha_x_ell_limit, alpha_y_ell_limit = self.Multipole.derivatives(
-            self.x, self.y, m=3, a_m=a_m, phi_m=np.pi / 18, q=0.999999
+            self.x, self.y, m=3, a_m=a_m, phi_m=np.pi / 18, q=0.999
         )
         alpha_x_sph, alpha_y_sph = self.SphericalMultipole.derivatives(
             self.x, self.y, m=3, a_m=a_m, phi_m=np.pi / 18
         )
-        npt.assert_allclose(alpha_x_ell_limit, alpha_x_sph, rtol=0, atol=1e-6)
-        npt.assert_allclose(alpha_y_ell_limit, alpha_y_sph, rtol=0, atol=1e-6)
+        npt.assert_allclose(alpha_x_ell_limit, alpha_x_sph, rtol=2e-3, atol=0)
+        npt.assert_allclose(alpha_y_ell_limit, alpha_y_sph, rtol=2e-3, atol=0)
 
     def test_hessian(self):
         x = 1
@@ -204,27 +204,27 @@ class TestEllipticalMultipole(object):
         # Test that the limit q-> 1 is consistent with the spherical multipoles
         f_xx_ell_limit, f_xy_ell_limit, f_yx_ell_limit, f_yy_ell_limit = (
             self.Multipole.hessian(
-                self.x, self.y, m=4, a_m=a_m, phi_m=np.pi / 24, q=0.999999
+                self.x, self.y, m=4, a_m=a_m, phi_m=np.pi / 24, q=0.999
             )
         )
         f_xx_sph, f_xy_sph, f_yx_sph, f_yy_sph = self.SphericalMultipole.hessian(
             self.x, self.y, m=4, a_m=a_m, phi_m=np.pi / 24
         )
-        npt.assert_allclose(f_xx_ell_limit, f_xx_sph, rtol=0, atol=1e-6)
-        npt.assert_allclose(f_xy_ell_limit, f_xy_sph, rtol=0, atol=1e-6)
-        npt.assert_allclose(f_yx_ell_limit, f_yx_sph, rtol=0, atol=1e-6)
-        npt.assert_allclose(f_yy_ell_limit, f_yy_sph, rtol=0, atol=1e-6)
+        npt.assert_allclose(f_xx_ell_limit, f_xx_sph, rtol=2e-3, atol=0)
+        npt.assert_allclose(f_xy_ell_limit, f_xy_sph, rtol=2e-3, atol=0)
+        npt.assert_allclose(f_yx_ell_limit, f_yx_sph, rtol=2e-3, atol=0)
+        npt.assert_allclose(f_yy_ell_limit, f_yy_sph, rtol=2e-3, atol=0)
 
         f_xx_ell_limit, f_xy_ell_limit, _, f_yy_ell_limit = self.Multipole.hessian(
-            self.x, self.y, m=3, a_m=a_m, phi_m=np.pi / 18, q=0.999999
+            self.x, self.y, m=3, a_m=a_m, phi_m=np.pi / 18, q=0.999
         )
         f_xx_sph, f_xy_sph, _, f_yy_sph = self.SphericalMultipole.hessian(
             self.x, self.y, m=4, a_m=a_3, phi_m=np.pi / 18
         )
-        npt.assert_allclose(f_xx_ell_limit, f_xx_sph, rtol=0, atol=1e-6)
-        npt.assert_allclose(f_xy_ell_limit, f_xy_sph, rtol=0, atol=1e-6)
-        npt.assert_allclose(f_yx_ell_limit, f_yx_sph, rtol=0, atol=1e-6)
-        npt.assert_allclose(f_yy_ell_limit, f_yy_sph, rtol=0, atol=1e-6)
+        npt.assert_allclose(f_xx_ell_limit, f_xx_sph, rtol=2e-3, atol=0)
+        npt.assert_allclose(f_xy_ell_limit, f_xy_sph, rtol=2e-3, atol=0)
+        npt.assert_allclose(f_yx_ell_limit, f_yx_sph, rtol=2e-3, atol=0)
+        npt.assert_allclose(f_yy_ell_limit, f_yy_sph, rtol=2e-3, atol=0)
 
 
 if __name__ == "__main__":

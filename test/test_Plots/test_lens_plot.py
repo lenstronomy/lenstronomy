@@ -172,7 +172,7 @@ class TestLensPlot(object):
                 sourcePos_y=y_sources[i],
                 name_list=name_List[i],
                 index=i,
-                color_list=color_List[i],
+                color_list=color_list[i],
                 point_source=True,
                 with_caustics=True,
                 fast_caustic=True,

@@ -161,7 +161,7 @@ class TestLensPlot(object):
         plt.close
 
         for i in range(len(x_sources)):
-            color_list = ["k", "b", "g", "r", "c", "m", "y"]
+            color_list = ['k', 'b', 'g', 'r', 'c', 'm', 'y']
             lens_plot.lens_model_plot(
                 ax,
                 lensModel,
@@ -172,7 +172,7 @@ class TestLensPlot(object):
                 sourcePos_y=y_sources[i],
                 name_list=name_lists[i],
                 index=i,
-                color_list=color_list[i],
+                color_value=color_list[i],
                 point_source=True,
                 with_caustics=True,
                 fast_caustic=True,
@@ -194,7 +194,7 @@ class TestLensPlot(object):
             sourcePos_y=0,
             point_source=True,
             with_caustics=True,
-            image_color_list=["k", "k", "k", "r"],
+            image_color_value=["k", "k", "k", "r"],
         )
         plt.close()
         lens_plot.arrival_time_surface(
@@ -207,7 +207,7 @@ class TestLensPlot(object):
             sourcePos_y=0,
             point_source=True,
             with_caustics=False,
-            image_color_list=None,
+            image_color_value=None,
         )
         plt.close()
         f, ax = plt.subplots(1, 1, figsize=(4, 4))

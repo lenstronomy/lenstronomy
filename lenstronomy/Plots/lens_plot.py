@@ -342,7 +342,6 @@ def point_source_plot(
     mag_images = lens_model.magnification(theta_x, theta_y, kwargs_lens)
 
     x_image, y_image = pixel_grid.map_coord2pix(theta_x, theta_y)
-    color = color_value
 
     for i in range(len(x_image)):
         x_ = (x_image[i]) * delta_pix_x + origin[0]

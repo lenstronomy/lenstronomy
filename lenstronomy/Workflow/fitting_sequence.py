@@ -306,7 +306,7 @@ class FittingSequence(object):
         threadCount=1,
         init_samples=None,
         re_use_samples=True,
-        sampler_type="EMCEE",
+        sampler_type="emcee",
         progress=True,
         backend_filename=None,
         start_from_backend=False,

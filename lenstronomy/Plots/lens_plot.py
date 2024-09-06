@@ -756,7 +756,7 @@ def distortions(
         :return:
         """
         font_size = 10
-        _arrow_size = 0.02
+        # _arrow_size = 0.02
         im = ax.matshow(
             frame, extent=[0, _frame_size, 0, _frame_size], vmin=vmin, vmax=vmax
         )

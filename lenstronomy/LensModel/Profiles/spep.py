@@ -130,7 +130,7 @@ class SPEP(LensProfileBase):
             p2 = P2[P2 > 0]  # in the SIS regime
             a[P2 == 0] = 0.000001
             a[P2 > 0] = p2
-        s2 = 0.0  # softening
+        # s2 = 0.0  # softening
 
         kappa = (
             1.0

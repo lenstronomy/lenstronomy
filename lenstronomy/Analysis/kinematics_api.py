@@ -457,7 +457,7 @@ class KinematicsAPI(object):
                     kwargs_lens_i = {
                         k: v
                         for k, v in kwargs_lens[i].items()
-                        if not k in ["center_x", "center_y"]
+                        if k not in ["center_x", "center_y"]
                     }
                 kwargs_profile.append(kwargs_lens_i)
 
@@ -554,7 +554,7 @@ class KinematicsAPI(object):
                 kwargs_lens_light_i = {
                     k: v
                     for k, v in kwargs_lens_light[i].items()
-                    if not k in ["center_x", "center_y"]
+                    if k not in ["center_x", "center_y"]
                 }
                 if "e1" in kwargs_lens_light_i:
                     kwargs_lens_light_i["e1"] = 0
@@ -567,8 +567,6 @@ class KinematicsAPI(object):
             (
                 amps,
                 sigmas,
-                center_x,
-                center_y,
             ) = self._lensLightProfile.multi_gaussian_decomposition(
                 kwargs_lens_light,
                 model_bool_list=model_kinematics_bool,

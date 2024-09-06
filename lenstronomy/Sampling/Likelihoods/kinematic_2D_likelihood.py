@@ -222,7 +222,7 @@ class KinLikelihood(object):
         :param kwargs_lens: lens kwargs with center and PA positions to be used as input
         """
         orientation_ellipse = kwargs_lens[self._idx_lens]["phi"]
-        q = kwargs_lens[self._idx_lens]["q"]
+        # q = kwargs_lens[self._idx_lens]["q"]
         cx = kwargs_lens[self._idx_lens]["center_x"]
         cy = kwargs_lens[self._idx_lens]["center_y"]
         self.image_input["ellipse_PA"] = orientation_ellipse

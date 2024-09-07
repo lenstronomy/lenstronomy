@@ -47,7 +47,7 @@ class GNFWParam(object):
         """Calculation of the mass enclosed r_200 for gNFW profile defined as.
 
         .. math::
-            M_{200} = 4 \\pi \\rho_0^{3} r_{\\rm s}^{3} \frac{c^{3 - \\gamma_{\\rm in}}} {3 - \\gamma_{\\rm in}}  {}_2F_1(2 - \\gamma_{\\rm in}, 3 - \\gamma_{\\rm in}, 4 - \\gamma_{\\rm in}; -c)
+            M_{200} = 4 \\pi \\rho_0^{3} r_{\\rm s}^{3} \frac{c^{3 - \\gamma_{\\rm in}}} {3 - \\gamma_{\\rm in}}  {}_2F_1(3 - \\gamma_{\\rm in}, 3 - \\gamma_{\\rm in}; 4 - \\gamma_{\\rm in}; -c)
 
         :param rs: scale radius
         :type rs: float
@@ -67,7 +67,7 @@ class GNFWParam(object):
             * rs**3
             * c ** (3 - gamma_in)
             / (3 - gamma_in)
-            * hyp2f1(2 - gamma_in, 3 - gamma_in, 4 - gamma_in, -c)
+            * hyp2f1(3 - gamma_in, 3 - gamma_in, 4 - gamma_in, -c)
         )
 
     def r200_M(self, M, z):
@@ -112,7 +112,7 @@ class GNFWParam(object):
             * self.rhoc_z(z)
             * (3 - gamma_in)
             * c**gamma_in
-            / hyp2f1(2 - gamma_in, 3 - gamma_in, 4 - gamma_in, -c)
+            / hyp2f1(3 - gamma_in, 3 - gamma_in, 4 - gamma_in, -c)
         )
 
     def c_rho0(self, rho0, z, gamma_in):

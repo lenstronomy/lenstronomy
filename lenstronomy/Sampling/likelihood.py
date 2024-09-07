@@ -380,58 +380,53 @@ class LikelihoodModule(object):
             if verbose is True:
                 print("custom added logL = %s" % logL_cond)
 
-        if np.isinf(logL):
-            return logL
+        if np.isfinite(logL):
+            logL_prior = self._prior_likelihood.logL(**kwargs_return)
+            logL += logL_prior
+            if verbose is True:
+                print("Prior likelihood = %s" % logL_prior)
 
-        logL_prior = self._prior_likelihood.logL(**kwargs_return)
-        logL += logL_prior
-        if verbose is True:
-            print("Prior likelihood = %s" % logL_prior)
+            if self._image_likelihood is True:
+                logL_image, param = self.image_likelihood.logL(**kwargs_return)
+                logL += logL_image
+                if verbose is True:
+                    print("image logL = %s" % logL_image)
+            else:
+                param = None
 
-        if np.isinf(logL):
-            return logL
-
-        if self._image_likelihood is True:
-            logL_image, param = self.image_likelihood.logL(**kwargs_return)
-            logL += logL_image
-            if verbose is True:
-                print("image logL = %s" % logL_image)
-        else:
-            param = None
-
-        if self._time_delay_likelihood is True:
-            logL_time_delay = self.time_delay_likelihood.logL(
-                kwargs_lens, kwargs_ps, kwargs_special
+            if self._time_delay_likelihood is True:
+                logL_time_delay = self.time_delay_likelihood.logL(
+                    kwargs_lens, kwargs_ps, kwargs_special
+                )
+                logL += logL_time_delay
+                if verbose is True:
+                    print("time-delay logL = %s" % logL_time_delay)
+            if self._flux_ratio_likelihood is True:
+                ra_image_list, dec_image_list = self.PointSource.image_position(
+                    kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens
+                )
+                logL_flux_ratios = self.flux_ratio_likelihood.logL(
+                    ra_image_list, dec_image_list, kwargs_lens, kwargs_special
+                )
+                logL += logL_flux_ratios
+                if verbose is True:
+                    print("flux ratio logL = %s" % logL_flux_ratios)
+            if self._kinematic_2D_likelihood is True:
+                logL_kinematic_2d = self.kinematic_2D_likelihood.logL(
+                    kwargs_lens, kwargs_lens_light, kwargs_special
+                )
+                logL += logL_kinematic_2d
+                if verbose is True:
+                    print("kinematic logL = %s" % logL_kinematic_2d)
+            logL += self._position_likelihood.logL(
+                kwargs_lens, kwargs_ps, kwargs_special, verbose=verbose
             )
-            logL += logL_time_delay
-            if verbose is True:
-                print("time-delay logL = %s" % logL_time_delay)
-        if self._flux_ratio_likelihood is True:
-            ra_image_list, dec_image_list = self.PointSource.image_position(
-                kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens
-            )
-            logL_flux_ratios = self.flux_ratio_likelihood.logL(
-                ra_image_list, dec_image_list, kwargs_lens, kwargs_special
-            )
-            logL += logL_flux_ratios
-            if verbose is True:
-                print("flux ratio logL = %s" % logL_flux_ratios)
-        if self._kinematic_2D_likelihood is True:
-            logL_kinematic_2d = self.kinematic_2D_likelihood.logL(
-                kwargs_lens, kwargs_lens_light, kwargs_special
-            )
-            logL += logL_kinematic_2d
-            if verbose is True:
-                print("kinematic logL = %s" % logL_kinematic_2d)
-        logL += self._position_likelihood.logL(
-            kwargs_lens, kwargs_ps, kwargs_special, verbose=verbose
-        )
-        if self._tracer_likelihood is True:
-            logL_tracer = self.tracer_likelihood.logL(param=param, **kwargs_return)
-            if verbose is True:
-                print("tracer logL = %s" % logL_tracer)
-            logL += logL_tracer
-        self._reset_point_source_cache(bool_input=False)
+            if self._tracer_likelihood is True:
+                logL_tracer = self.tracer_likelihood.logL(param=param, **kwargs_return)
+                if verbose is True:
+                    print("tracer logL = %s" % logL_tracer)
+                logL += logL_tracer
+            self._reset_point_source_cache(bool_input=False)
         return logL  # , None
 
     @staticmethod

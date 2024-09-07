@@ -264,7 +264,7 @@ class GNFW(LensProfileBase):
         return (
             M_0
             * x ** (3 - gamma_in)
-            * hyp2f1(3 - gamma_in, 3 - gamma_in, 4 - gamma_in, -x)
+            * hyp2f1(2 - gamma_in, 3 - gamma_in, 4 - gamma_in, -x)
         )
 
     def mass_3d_lens(self, R, Rs, kappa_s, gamma_in):

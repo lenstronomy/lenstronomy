@@ -495,7 +495,8 @@ class GeneralizedNFWEllipseGaussDec(GaussDecompositionAbstract):
         )
 
     def get_kappa_1d(self, y, **kwargs):
-        r"""Compute the spherical projected gNFW profile at y. See Keeton (2001, page 11).
+        r"""Compute the spherical projected gNFW profile at y. See Keeton (2001, page
+        11).
 
         :param y: y coordinate
         :type y: ``float``

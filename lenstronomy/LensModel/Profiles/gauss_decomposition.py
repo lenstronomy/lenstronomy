@@ -9,12 +9,10 @@ import abc
 from scipy.special import comb
 from scipy.special import hyp2f1
 
-from lenstronomy.LensModel.Profiles.multi_gaussian_ellipse_kappa import (
-    MultiGaussianEllipseKappa,
-)
-from lenstronomy.LensModel.Profiles.sersic_utils import SersicUtil
-
-from lenstronomy.Util.package_util import exporter
+from .multi_gaussian_ellipse_kappa import MultiGaussianEllipseKappa
+from .gnfw import GNFW
+from .sersic_utils import SersicUtil
+from ...Util.package_util import exporter
 
 export, __all__ = exporter()
 
@@ -493,6 +491,7 @@ class GeneralizedNFWEllipseGaussDec(GaussDecompositionAbstract):
             use_scipy_wofz=use_scipy_wofz,
             min_ellipticity=min_ellipticity,
         )
+        self.gnfw = GNFW()
 
     def get_kappa_1d(self, y, **kwargs):
         r"""Compute the spherical projected gNFW profile at y. See Keeton (2001, page
@@ -515,61 +514,10 @@ class GeneralizedNFWEllipseGaussDec(GaussDecompositionAbstract):
         alpha_Rs = kwargs["alpha_Rs"]
         gamma_in = kwargs["gamma_in"]
 
-        x = y / R_s
+        alpha_for_kappa_s_1 = self.gnfw.alpha(R_s, R_s, 1, gamma_in)
+        kappa_s = alpha_Rs / alpha_for_kappa_s_1
 
-        ys = np.linspace(0.0, 1.0, 1001)
-        dy = ys[1] - ys[0]
-        ys = (ys + dy / 2.0)[:-1]
-        weights = np.ones_like(ys)
-        # weights[0] = 0.5
-        # weights[-1] = 0.5
-
-        integral = (
-            np.sum(
-                (ys + 1.0) ** (gamma_in - 3) * (1 - np.sqrt(1 - ys * ys)) / ys * weights
-            )
-            * dy
-        )
-
-        kappa_s = alpha_Rs / (
-            4
-            * R_s
-            * (
-                hyp2f1(3.0 - gamma_in, 3.0 - gamma_in, 4.0 - gamma_in, -1.0)
-                / (3 - gamma_in)
-                + integral
-            )
-        )
-
-        if np.isscalar(x):
-            integral = (
-                np.sum(
-                    np.sum.outer(ys, x) ** (gamma_in - 4.0)
-                    * (1.0 - np.sqrt(1 - ys * ys))
-                    * weights
-                )
-                * dy
-            )
-        else:
-            # if x is a ndarray, then using broadcasting to compute the integral
-            # for each entry in x
-            integral = (
-                np.sum(
-                    np.multiply(
-                        (x[..., np.newaxis] + ys[np.newaxis, ...]) ** (gamma_in - 4.0),
-                        (1.0 - np.sqrt(1 - ys * ys)) * weights,
-                    ),
-                    axis=-1,
-                )
-                * dy
-            )
-
-        kappa = (
-            2
-            * kappa_s
-            * x ** (1.0 - gamma_in)
-            * ((1.0 + x) ** (gamma_in - 3.0) + (3.0 - gamma_in) * integral)
-        )
+        kappa = self.gnfw.kappa(y, R_s, kappa_s, gamma_in)
 
         return kappa
 

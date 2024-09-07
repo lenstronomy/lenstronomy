@@ -30,12 +30,13 @@ class GNFWParam(object):
         self.nfw_param = NFWParam(cosmo)
 
     def rhoc_z(self, z):
-        """
-        Compute the critical density of the universe at redshift z in physical units [h^2 M_sun Mpc^-3].
+        """Compute the critical density of the universe at redshift z in physical units
+        [h^2 M_sun Mpc^-3].
 
         :param z: redshift
         :type z: float
-        :return: critical density of the universe at redshift z in physical units [h^2 M_sun Mpc^-3]
+        :return: critical density of the universe at redshift z in physical units [h^2
+            M_sun Mpc^-3]
         :rtype: float
         """
         return self.nfw_param.rhoc_z(z)
@@ -82,8 +83,7 @@ class GNFWParam(object):
         return self.nfw_param.r200_M(M, z)
 
     def M_r200(self, r200, z):
-        """
-        Compute the mass M_200 of a halo of radius r_200 in physical Mpc/h.
+        """Compute the mass M_200 of a halo of radius r_200 in physical Mpc/h.
 
         :param r200: r200 in physical Mpc/h
         :type r200: float

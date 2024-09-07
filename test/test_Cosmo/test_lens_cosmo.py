@@ -78,6 +78,57 @@ class TestLensCosmo(object):
         npt.assert_almost_equal(c_out, c, decimal=3)
         npt.assert_almost_equal(np.log10(M200), np.log10(M), decimal=4)
 
+    def test_gnfw_angle2physical(self):
+        Rs_angle = 6.0
+        alpha_Rs = 1.0
+        gamma_in = 1
+
+        rho0, Rs, c, r200, M200 = self.lensCosmo.gnfw_angle2physical(
+            Rs_angle, alpha_Rs, gamma_in
+        )
+        assert Rs * c == r200
+        rho0_nfw, Rs_nfw, c_nfw, r200_nfw, M200_nfw = self.lensCosmo.nfw_angle2physical(
+            Rs_angle, alpha_Rs
+        )
+        npt.assert_almost_equal(rho0 / rho0_nfw, 1, decimal=10)
+        npt.assert_almost_equal(Rs / Rs_nfw, 1, decimal=10)
+        npt.assert_almost_equal(c / c_nfw, 1, decimal=10)
+        npt.assert_almost_equal(r200 / r200_nfw, 1, decimal=10)
+        npt.assert_almost_equal(M200 / M200_nfw, 1, decimal=10)
+
+    def test_gnfw_physical2angle(self):
+        M = 10.0**13.5
+        c = 4
+        Rs_angle, alpha_Rs = self.lensCosmo.gnfw_physical2angle(M, c, gamma_in=1)
+        rho0, Rs, c_out, r200, M200 = self.lensCosmo.gnfw_angle2physical(
+            Rs_angle, alpha_Rs, gamma_in=1
+        )
+        npt.assert_almost_equal(c_out, c, decimal=3)
+        npt.assert_almost_equal(np.log10(M200), np.log10(M), decimal=4)
+
+        Rs_angle_nfw, alpha_Rs_nfw = self.lensCosmo.nfw_physical2angle(M, c)
+
+        npt.assert_almost_equal(Rs_angle / Rs_angle_nfw, 1, decimal=10)
+        npt.assert_almost_equal(alpha_Rs / alpha_Rs_nfw, 1, decimal=10)
+
+    def test_gnfwParam_physical(self):
+        M = 10.0**13.5
+        c = 10
+        rh0, Rs, r200 = self.lensCosmo.gnfwParam_physical(M, c, gamma_in=1)
+
+        rho0_nfw, Rs_nfw, r200_nfw = self.lensCosmo.nfwParam_physical(M, c)
+
+        npt.assert_almost_equal(rho0_nfw / rh0, 1, decimal=10)
+        npt.assert_almost_equal(Rs_nfw / Rs, 1, decimal=10)
+
+    def test_gnfw_M_theta_r200(self):
+        M = 10.0**13.5
+
+        theta200 = self.lensCosmo.gnfw_M_theta_r200(M)
+        theta200_nfw = self.lensCosmo.nfw_M_theta_r200(M)
+
+        npt.assert_almost_equal(theta200 / theta200_nfw, 1, decimal=10)
+
     def test_sis_theta_E2sigma_v(self):
         theta_E = 2.0
         sigma_v = self.lensCosmo.sis_theta_E2sigma_v(theta_E)

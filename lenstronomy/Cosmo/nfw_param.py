@@ -27,12 +27,13 @@ class NFWParam(object):
         self.cosmo = cosmo
 
     def rhoc_z(self, z):
-        """
-        Compute the critical density of the universe at redshift z in physical units [h^2 M_sun Mpc^-3].
+        """Compute the critical density of the universe at redshift z in physical units
+        [h^2 M_sun Mpc^-3].
 
         :param z: redshift
         :type z: float
-        :return: critical density of the universe at redshift z in physical units [h^2 M_sun Mpc^-3]
+        :return: critical density of the universe at redshift z in physical units [h^2
+            M_sun Mpc^-3]
         :rtype: float
         """
         return self.rhoc * (self.cosmo.efunc(z)) ** 2

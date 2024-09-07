@@ -1,5 +1,7 @@
 import numpy as np
 from scipy.special import hyp2f1
+from astropy.cosmology import default_cosmology
+
 from .nfw_param import NFWParam
 
 __all__ = ["GNFWParam"]
@@ -22,8 +24,6 @@ class GNFWParam(object):
         :param cosmo: astropy.cosmology instance
         :type cosmo: astropy.cosmology instance
         """
-        from astropy.cosmology import default_cosmology
-
         if cosmo is None:
             cosmo = default_cosmology.get()
         self.cosmo = cosmo

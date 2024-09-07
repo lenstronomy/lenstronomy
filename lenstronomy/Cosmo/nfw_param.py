@@ -1,4 +1,5 @@
 import numpy as np
+from astropy.cosmology import default_cosmology
 
 __all__ = ["NFWParam"]
 
@@ -20,8 +21,6 @@ class NFWParam(object):
         :param cosmo: astropy.cosmology instance
         :type cosmo: astropy.cosmology
         """
-        from astropy.cosmology import default_cosmology
-
         if cosmo is None:
             cosmo = default_cosmology.get()
         self.cosmo = cosmo

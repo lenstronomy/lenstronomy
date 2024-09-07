@@ -19,7 +19,11 @@ export, __all__ = exporter()
 
 _SQRT_2PI = np.sqrt(2 * np.pi)
 
-__all__ = ["SersicEllipseGaussDec", "NFWEllipseGaussDec"]
+__all__ = [
+    "SersicEllipseGaussDec",
+    "NFWEllipseGaussDec",
+    "GeneralizedNFWEllipseGaussDec",
+]
 
 
 @export
@@ -417,6 +421,164 @@ class NFWEllipseGaussDec(GaussDecompositionAbstract):
         """Identify the scale size from the keyword arguments.
 
         :param kwargs: Keyword arguments
+
+        :Keyword Arguments:
+            * **alpha_Rs** (``float``) --
+              Deflection angle at ``Rs``
+            * **R_s** (``float``) --
+              NFW scale radius
+
+        :return: NFW scale radius
+        :rtype: ``float``
+        """
+        return kwargs["Rs"]
+
+
+@export
+class GeneralizedNFWEllipseGaussDec(GaussDecompositionAbstract):
+    """
+    This class computes the lensing properties of an elliptical, projected NFW
+    profile using Shajib (2019)'s Gauss decomposition method.
+    """
+
+    param_names = ["Rs", "alpha_Rs", "e1", "e2", "center_x", "center_y", "nfw_gamma"]
+    lower_limit_default = {
+        "Rs": 0,
+        "alpha_Rs": 0,
+        "e1": -0.5,
+        "e2": -0.5,
+        "center_x": -100,
+        "center_y": -100,
+        "nfw_gamma": 0.0,
+    }
+    upper_limit_default = {
+        "Rs": 100,
+        "alpha_Rs": 10,
+        "e1": 0.5,
+        "e2": 0.5,
+        "center_x": 100,
+        "center_y": 100,
+        "nfw_gamma": 2.5,
+    }
+
+    def __init__(
+        self,
+        n_sigma=20,
+        sigma_start_mult=0.001,
+        sigma_end_mult=5.0,
+        precision=10,
+        use_scipy_wofz=False,
+        min_ellipticity=1e-5,
+    ):
+        """
+        Set up settings for the Gaussian decomposition. For more details about
+        the decomposition parameters, see Shajib (2019).
+
+        :param n_sigma: Number of Gaussian components
+        :type n_sigma: ``int``
+        :param sigma_start_mult: Lower range of logarithmically spaced sigmas
+        :type sigma_start_mult: ``float``
+        :param sigma_end_mult: Upper range of logarithmically spaced sigmas
+        :type sigma_end_mult: ``float``
+        :param precision: Numerical precision of Gaussian decomposition
+        :type precision: ``int``
+        :param use_scipy_wofz: To be passed to ``class GaussianEllipseKappa``. If ``True``, Gaussian lensing will use ``scipy.special.wofz`` function. Set ``False`` for lower precision, but faster speed.
+        :type use_scipy_wofz: ``bool``
+        :param min_ellipticity: To be passed to ``class GaussianEllipseKappa``. Minimum ellipticity for Gaussian elliptical lensing calculation. For lower ellipticity than min_ellipticity the equations for the spherical case will be used.
+        :type min_ellipticity: ``float``
+        """
+        super(GeneralizedNFWEllipseGaussDec, self).__init__(
+            n_sigma=n_sigma,
+            sigma_start_mult=sigma_start_mult,
+            sigma_end_mult=sigma_end_mult,
+            precision=precision,
+            use_scipy_wofz=use_scipy_wofz,
+            min_ellipticity=min_ellipticity,
+        )
+
+    def get_kappa_1d(self, y, **kwargs):
+        r"""
+        Compute the spherical projected gNFW profile at y. From p11 of Keeton 2001.
+
+        :param y: y coordinate
+        :type y: ``float``
+        :param \**kwargs: Keyword arguments
+
+        :Keyword Arguments:
+            * **alpha_Rs** (``float``) --
+              Deflection angle at ``Rs``
+            * **R_s** (``float``) --
+              gNFW scale radius
+
+        :return: projected NFW profile at y
+        :rtype: ``type(y)``
+        """
+        R_s = kwargs["Rs"]
+        alpha_Rs = kwargs["alpha_Rs"]
+        gamma = kwargs["nfw_gamma"]
+
+        x = y / R_s
+
+        ys = np.linspace(0.0, 1.0, 1001)
+        dy = ys[1] - ys[0]
+        ys = (ys + dy / 2.0)[:-1]
+        weights = np.ones_like(ys)
+        # weights[0] = 0.5
+        # weights[-1] = 0.5
+
+        integral = (
+            np.sum(
+                (ys + 1.0) ** (gamma - 3) * (1 - np.sqrt(1 - ys * ys)) / ys * weights
+            )
+            * dy
+        )
+
+        kappa_s = alpha_Rs / (
+            4
+            * R_s
+            * (
+                hyp2f1(3.0 - gamma, 3.0 - gamma, 4.0 - gamma, -1.0) / (3 - gamma)
+                + integral
+            )
+        )
+
+        if np.isscalar(x):
+            integral = (
+                np.sum(
+                    np.sum.outer(ys, x) ** (gamma - 4.0)
+                    * (1.0 - np.sqrt(1 - ys * ys))
+                    * weights
+                )
+                * dy
+            )
+        else:
+            # if x is a ndarray, then using broadcasting to compute the integral
+            # for each entry in x
+            integral = (
+                np.sum(
+                    np.multiply(
+                        (x[..., np.newaxis] + ys[np.newaxis, ...]) ** (gamma - 4.0),
+                        (1.0 - np.sqrt(1 - ys * ys)) * weights,
+                    ),
+                    axis=-1,
+                )
+                * dy
+            )
+
+        kappa = (
+            2
+            * kappa_s
+            * x ** (1.0 - gamma)
+            * ((1.0 + x) ** (gamma - 3.0) + (3.0 - gamma) * integral)
+        )
+
+        return kappa
+
+    def get_scale(self, **kwargs):
+        """
+        Identify the scale size from the keyword arguments.
+
+        :param \**kwargs: Keyword arguments
 
         :Keyword Arguments:
             * **alpha_Rs** (``float``) --

@@ -440,7 +440,7 @@ class GeneralizedNFWEllipseGaussDec(GaussDecompositionAbstract):
     """This class computes the lensing properties of an elliptical, projected gNFW
     profile using Shajib (2019)'s Gauss decomposition method."""
 
-    param_names = ["Rs", "alpha_Rs", "e1", "e2", "center_x", "center_y", "nfw_gamma"]
+    param_names = ["Rs", "alpha_Rs", "e1", "e2", "center_x", "center_y", "gamma_in"]
     lower_limit_default = {
         "Rs": 0,
         "alpha_Rs": 0,
@@ -448,7 +448,7 @@ class GeneralizedNFWEllipseGaussDec(GaussDecompositionAbstract):
         "e2": -0.5,
         "center_x": -100,
         "center_y": -100,
-        "nfw_gamma": 0.0,
+        "gamma_in": 0.0,
     }
     upper_limit_default = {
         "Rs": 100,
@@ -457,7 +457,7 @@ class GeneralizedNFWEllipseGaussDec(GaussDecompositionAbstract):
         "e2": 0.5,
         "center_x": 100,
         "center_y": 100,
-        "nfw_gamma": 2.5,
+        "gamma_in": 2.5,
     }
 
     def __init__(
@@ -512,7 +512,7 @@ class GeneralizedNFWEllipseGaussDec(GaussDecompositionAbstract):
         """
         R_s = kwargs["Rs"]
         alpha_Rs = kwargs["alpha_Rs"]
-        gamma = kwargs["nfw_gamma"]
+        gamma_in = kwargs["gamma_in"]
 
         x = y / R_s
 
@@ -525,7 +525,7 @@ class GeneralizedNFWEllipseGaussDec(GaussDecompositionAbstract):
 
         integral = (
             np.sum(
-                (ys + 1.0) ** (gamma - 3) * (1 - np.sqrt(1 - ys * ys)) / ys * weights
+                (ys + 1.0) ** (gamma_in - 3) * (1 - np.sqrt(1 - ys * ys)) / ys * weights
             )
             * dy
         )
@@ -534,7 +534,8 @@ class GeneralizedNFWEllipseGaussDec(GaussDecompositionAbstract):
             4
             * R_s
             * (
-                hyp2f1(3.0 - gamma, 3.0 - gamma, 4.0 - gamma, -1.0) / (3 - gamma)
+                hyp2f1(3.0 - gamma_in, 3.0 - gamma_in, 4.0 - gamma_in, -1.0)
+                / (3 - gamma_in)
                 + integral
             )
         )
@@ -542,7 +543,7 @@ class GeneralizedNFWEllipseGaussDec(GaussDecompositionAbstract):
         if np.isscalar(x):
             integral = (
                 np.sum(
-                    np.sum.outer(ys, x) ** (gamma - 4.0)
+                    np.sum.outer(ys, x) ** (gamma_in - 4.0)
                     * (1.0 - np.sqrt(1 - ys * ys))
                     * weights
                 )
@@ -554,7 +555,7 @@ class GeneralizedNFWEllipseGaussDec(GaussDecompositionAbstract):
             integral = (
                 np.sum(
                     np.multiply(
-                        (x[..., np.newaxis] + ys[np.newaxis, ...]) ** (gamma - 4.0),
+                        (x[..., np.newaxis] + ys[np.newaxis, ...]) ** (gamma_in - 4.0),
                         (1.0 - np.sqrt(1 - ys * ys)) * weights,
                     ),
                     axis=-1,
@@ -565,8 +566,8 @@ class GeneralizedNFWEllipseGaussDec(GaussDecompositionAbstract):
         kappa = (
             2
             * kappa_s
-            * x ** (1.0 - gamma)
-            * ((1.0 + x) ** (gamma - 3.0) + (3.0 - gamma) * integral)
+            * x ** (1.0 - gamma_in)
+            * ((1.0 + x) ** (gamma_in - 3.0) + (3.0 - gamma_in) * integral)
         )
 
         return kappa

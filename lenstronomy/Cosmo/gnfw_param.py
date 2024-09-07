@@ -46,7 +46,7 @@ class GNFWParam(object):
         """Calculation of the mass enclosed r_200 for gNFW profile defined as.
 
         .. math::
-            M_{200} = 4 \\pi \\rho_0^{3} * r_s^{3} * c^{3 - \\gamma_{\\rm in}} / (3 - \\gamma_{\\rm in}) * {}_2F_1(2 - \\gamma_{\\rm in}, 3 - \\gamma_{\\rm in}, 4 - \\gamma_{\\rm in}; -c)
+            M_{200} = 4 \\pi \\rho_0^{3} r_{\\rm s}^{3} \frac{c^{3 - \\gamma_{\\rm in}}} {3 - \\gamma_{\\rm in}}  {}_2F_1(2 - \\gamma_{\\rm in}, 3 - \\gamma_{\\rm in}, 4 - \\gamma_{\\rm in}; -c)
 
         :param rs: scale radius
         :type rs: float

@@ -374,6 +374,8 @@ class LikelihoodModule(object):
         self._reset_point_source_cache(bool_input=True)
         logL = 0
 
+        # computing custom loglikelihood function first so that the full
+        # likelihood evaluation is skipped if it returns -inf
         if self._custom_logL_addition is not None:
             logL_cond = self._custom_logL_addition(**kwargs_return)
             logL += logL_cond

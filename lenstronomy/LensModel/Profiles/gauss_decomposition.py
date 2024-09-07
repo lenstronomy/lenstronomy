@@ -7,6 +7,7 @@ __author__ = "ajshajib"
 import numpy as np
 import abc
 from scipy.special import comb
+from scipy.special import hyp2f1
 
 from lenstronomy.LensModel.Profiles.multi_gaussian_ellipse_kappa import (
     MultiGaussianEllipseKappa,
@@ -436,7 +437,7 @@ class NFWEllipseGaussDec(GaussDecompositionAbstract):
 
 @export
 class GeneralizedNFWEllipseGaussDec(GaussDecompositionAbstract):
-    """This class computes the lensing properties of an elliptical, projected NFW
+    """This class computes the lensing properties of an elliptical, projected gNFW
     profile using Shajib (2019)'s Gauss decomposition method."""
 
     param_names = ["Rs", "alpha_Rs", "e1", "e2", "center_x", "center_y", "nfw_gamma"]
@@ -494,7 +495,7 @@ class GeneralizedNFWEllipseGaussDec(GaussDecompositionAbstract):
         )
 
     def get_kappa_1d(self, y, **kwargs):
-        r"""Compute the spherical projected gNFW profile at y. From p11 of Keeton 2001.
+        r"""Compute the spherical projected gNFW profile at y. See Keeton (2001, page 11).
 
         :param y: y coordinate
         :type y: ``float``

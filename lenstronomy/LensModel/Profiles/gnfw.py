@@ -310,11 +310,13 @@ class GNFW(LensProfileBase):
         if isinstance(x, int) or isinstance(x, float):
             integral = np.sum(func(y, x, gamma_in) * dy * weights)
         else:
-            ys = np.repeat(y[:, np.newaxis], len([x]), axis=1)
+            x_flat = x.flatten()
+            ys = np.repeat(y[:, np.newaxis], len([x_flat]), axis=1)
 
             integral = np.sum(
-                func(ys, x, gamma_in) * dy * weights[:, np.newaxis], axis=0
+                func(ys, x_flat, gamma_in) * dy * weights[:, np.newaxis], axis=0
             )
+            integral = integral.reshape(x.shape)
 
         return integral
 

@@ -436,10 +436,8 @@ class NFWEllipseGaussDec(GaussDecompositionAbstract):
 
 @export
 class GeneralizedNFWEllipseGaussDec(GaussDecompositionAbstract):
-    """
-    This class computes the lensing properties of an elliptical, projected NFW
-    profile using Shajib (2019)'s Gauss decomposition method.
-    """
+    """This class computes the lensing properties of an elliptical, projected NFW
+    profile using Shajib (2019)'s Gauss decomposition method."""
 
     param_names = ["Rs", "alpha_Rs", "e1", "e2", "center_x", "center_y", "nfw_gamma"]
     lower_limit_default = {
@@ -470,9 +468,8 @@ class GeneralizedNFWEllipseGaussDec(GaussDecompositionAbstract):
         use_scipy_wofz=False,
         min_ellipticity=1e-5,
     ):
-        """
-        Set up settings for the Gaussian decomposition. For more details about
-        the decomposition parameters, see Shajib (2019).
+        """Set up settings for the Gaussian decomposition. For more details about the
+        decomposition parameters, see Shajib (2019).
 
         :param n_sigma: Number of Gaussian components
         :type n_sigma: ``int``
@@ -497,8 +494,7 @@ class GeneralizedNFWEllipseGaussDec(GaussDecompositionAbstract):
         )
 
     def get_kappa_1d(self, y, **kwargs):
-        r"""
-        Compute the spherical projected gNFW profile at y. From p11 of Keeton 2001.
+        r"""Compute the spherical projected gNFW profile at y. From p11 of Keeton 2001.
 
         :param y: y coordinate
         :type y: ``float``
@@ -575,8 +571,7 @@ class GeneralizedNFWEllipseGaussDec(GaussDecompositionAbstract):
         return kappa
 
     def get_scale(self, **kwargs):
-        """
-        Identify the scale size from the keyword arguments.
+        """Identify the scale size from the keyword arguments.
 
         :param \**kwargs: Keyword arguments
 

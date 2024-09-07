@@ -493,7 +493,7 @@ class GeneralizedNFWEllipseGaussDec(GaussDecompositionAbstract):
             use_scipy_wofz=use_scipy_wofz,
             min_ellipticity=min_ellipticity,
         )
-        self.gnfw = GNFW()
+        self.gnfw = GNFW(trapezoidal_integration=True)
 
     def get_kappa_1d(self, y, **kwargs):
         r"""Compute the spherical projected gNFW profile at y. See Keeton (2001, page

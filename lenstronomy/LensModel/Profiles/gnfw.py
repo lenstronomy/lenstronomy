@@ -185,7 +185,7 @@ class GNFW(LensProfileBase):
         return f_xx, f_xy, f_xy, f_yy
 
     def density(self, R, Rs, rho0, gamma_in):
-        """Three dimensional truncated NFW profile.
+        """Three dimensional generalized NFW profile.
 
         :param R: radius of interest
         :type R: float/numpy array

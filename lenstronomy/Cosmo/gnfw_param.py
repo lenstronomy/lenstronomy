@@ -152,7 +152,7 @@ class GNFWParam(object):
         """
         return self.nfw_param.c_M_z(M, z)
 
-    def gnfw_Mz(self, M, z):
+    def gnfw_Mz(self, M, z, gamma_in):
         """Returns all needed parameter (in physical units modulo h) to draw the profile
         of the main halo r200 in physical Mpc/h rho_s in  h^2/Mpc^3 (physical) Rs in
         Mpc/h physical c unit less.
@@ -161,11 +161,13 @@ class GNFWParam(object):
         :type M: float
         :param z: redshift
         :type z: float
+        :param gamma_in: inner slope of the gNFW profile
+        :type gamma_in: float
         :return: r200, rho0, c, Rs
         :rtype: float, float, float, float
         """
         c = self.c_M_z(M, z)
         r200 = self.r200_M(M, z)
-        rho0 = self.rho0_c(c, z)
+        rho0 = self.rho0_c(c, z, gamma_in)
         Rs = r200 / c
         return r200, rho0, c, Rs

@@ -26,6 +26,10 @@ class TestGNFWParam(object):
             print(c, "c")
             npt.assert_almost_equal(c_out, c, decimal=3)
 
+            nfw_rho0 = self.nfwParam.rho0_c(c, z=self.z)
+            gnfw_rho0 = self.gnfwParam.rho0_c(c, z=self.z, gamma_in=1)
+            npt.assert_almost_equal(nfw_rho0 / gnfw_rho0, 1.0, decimal=10)
+
     def test_rhoc_z(self):
         z = 0
         rho0_z = self.gnfwParam.rhoc_z(z=z)

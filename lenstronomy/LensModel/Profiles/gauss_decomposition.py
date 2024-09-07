@@ -9,10 +9,12 @@ import abc
 from scipy.special import comb
 from scipy.special import hyp2f1
 
-from .multi_gaussian_ellipse_kappa import MultiGaussianEllipseKappa
-from .gnfw import GNFW
-from .sersic_utils import SersicUtil
-from ...Util.package_util import exporter
+from lenstronomy.LensModel.Profiles.multi_gaussian_ellipse_kappa import (
+    MultiGaussianEllipseKappa,
+)
+from lenstronomy.LensModel.Profiles.gnfw import GNFW
+from lenstronomy.LensModel.Profiles.sersic_utils import SersicUtil
+from lenstronomy.Util.package_util import exporter
 
 export, __all__ = exporter()
 

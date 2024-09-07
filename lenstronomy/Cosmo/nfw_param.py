@@ -1,4 +1,5 @@
 import numpy as np
+from scipy import interpolate
 from astropy.cosmology import default_cosmology
 
 __all__ = ["NFWParam"]
@@ -105,7 +106,6 @@ class NFWParam(object):
         if not hasattr(self, "_c_rho0_interp"):
             c_array = np.linspace(0.1, 30, 100)
             rho0_array = self.rho0_c(c_array, z)
-            from scipy import interpolate
 
             self._c_rho0_interp = interpolate.InterpolatedUnivariateSpline(
                 rho0_array, c_array, w=None, bbox=[None, None], k=3

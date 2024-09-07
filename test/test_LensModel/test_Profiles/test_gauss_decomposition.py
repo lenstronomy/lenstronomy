@@ -296,6 +296,15 @@ class TestGeneralizedNFWGaussDec(object):
 
         npt.assert_allclose(kappa_1d, kappa_1d_spherical, rtol=0.01)
 
+    def test_get_scale(self):
+        alpha_Rs = 1
+        R_s = 20.0
+        gamma_in = 0.8
+        assert (
+            self.gnfw_gauss.get_scale(alpha_Rs=alpha_Rs, Rs=R_s, gamma_in=gamma_in)
+            == R_s
+        )
+
 
 class TestCTNFWGaussDec(object):
     """This class tests the methods for Gauss-decomposed spherical cored-truncated NFW

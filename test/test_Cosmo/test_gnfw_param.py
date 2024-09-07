@@ -13,9 +13,8 @@ class TestGNFWParam(object):
     """Tests the UnitManager class routines."""
 
     def setup_method(self):
-        cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.05)
-        self.gnfwParam = GNFWParam(cosmo=cosmo)
-        self.nfwParam = NFWParam(cosmo=cosmo)
+        self.gnfwParam = GNFWParam(cosmo=None)
+        self.nfwParam = NFWParam(cosmo=None)
         self.z = 0.5  # needed fixed redshift for the inversion function
 
     def test_rho0_c(self):
@@ -30,6 +29,12 @@ class TestGNFWParam(object):
             gnfw_rho0 = self.gnfwParam.rho0_c(c, z=self.z, gamma_in=1)
             npt.assert_almost_equal(nfw_rho0 / gnfw_rho0, 1.0, decimal=10)
 
+    def test_M_r200(self):
+        r200 = 200
+        M200 = self.gnfwParam.M_r200(r200, z=self.z)
+        M200_nfw = self.nfwParam.M_r200(r200, z=self.z)
+        npt.assert_almost_equal(M200 / M200_nfw, 1, decimal=5)
+
     def test_rhoc_z(self):
         z = 0
         rho0_z = self.gnfwParam.rhoc_z(z=z)
@@ -38,7 +43,7 @@ class TestGNFWParam(object):
     def test_M200(self):
         M200 = self.gnfwParam.M200(rs=1, rho0=1, c=1, gamma_in=1.0)
         M200_nfw = self.nfwParam.M200(rs=1, rho0=1, c=1)
-        npt.assert_almost_equal(M200, M200_nfw, decimal=5)
+        npt.assert_almost_equal(M200, M200_nfw, decimal=10)
 
     def test_profileMain(self):
         M = 10**13.5

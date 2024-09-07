@@ -1,9 +1,13 @@
 __author__ = "ajshajib"
 
 from lenstronomy.LensModel.Profiles.gauss_decomposition import SersicEllipseGaussDec
+from lenstronomy.LensModel.Profiles.gauss_decomposition import (
+    GeneralizedNFWEllipseGaussDec,
+)
 from lenstronomy.LensModel.Profiles.gauss_decomposition import CTNFWGaussDec
 from lenstronomy.LensModel.Profiles.sersic import Sersic
 from lenstronomy.LightModel.Profiles.sersic import SersicElliptic
+from lenstronomy.LensModel.Profiles.gnfw import GNFW
 
 import numpy as np
 import numpy.testing as npt
@@ -269,6 +273,28 @@ class TestSersicEllipseGaussDec(object):
             back_sersic += a * np.exp(-(y**2) / 2.0 / s**2)
 
         assert np.all(np.abs(sersic - back_sersic) / np.sqrt(sersic) * 100.0 < 1.0)
+
+
+class TestGeneralizedNFWGaussDec(object):
+    """This class tests the methods for Gauss-decomposed generalized NFW profile."""
+
+    def setup_method(self):
+        self.gnfw_gauss = GeneralizedNFWEllipseGaussDec()
+        self.gnfw = GNFW()
+
+    def test_get_kappa_1d(self):
+        rs = np.logspace(-2, 1, 100)
+        kappa_s = 0.1
+        R_s = 20.0
+        gamma_in = 0.8
+
+        alpha_Rs = self.gnfw.alpha(R_s, R_s, kappa_s, gamma_in)
+        kappa_1d = self.gnfw_gauss.get_kappa_1d(
+            rs, alpha_Rs=alpha_Rs, Rs=R_s, gamma_in=gamma_in
+        )
+        kappa_1d_spherical = self.gnfw.kappa(rs, R_s, kappa_s, gamma_in)
+
+        npt.assert_allclose(kappa_1d, kappa_1d_spherical, rtol=0.01)
 
 
 class TestCTNFWGaussDec(object):

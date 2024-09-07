@@ -374,6 +374,23 @@ class LikelihoodModule(object):
         self._reset_point_source_cache(bool_input=True)
         logL = 0
 
+        if self._custom_logL_addition is not None:
+            logL_cond = self._custom_logL_addition(**kwargs_return)
+            logL += logL_cond
+            if verbose is True:
+                print("custom added logL = %s" % logL_cond)
+
+        if np.isinf(logL):
+            return logL
+
+        logL_prior = self._prior_likelihood.logL(**kwargs_return)
+        logL += logL_prior
+        if verbose is True:
+            print("Prior likelihood = %s" % logL_prior)
+
+        if np.isinf(logL):
+            return logL
+
         if self._image_likelihood is True:
             logL_image, param = self.image_likelihood.logL(**kwargs_return)
             logL += logL_image
@@ -414,15 +431,6 @@ class LikelihoodModule(object):
             if verbose is True:
                 print("tracer logL = %s" % logL_tracer)
             logL += logL_tracer
-        logL_prior = self._prior_likelihood.logL(**kwargs_return)
-        logL += logL_prior
-        if verbose is True:
-            print("Prior likelihood = %s" % logL_prior)
-        if self._custom_logL_addition is not None:
-            logL_cond = self._custom_logL_addition(**kwargs_return)
-            logL += logL_cond
-            if verbose is True:
-                print("custom added logL = %s" % logL_cond)
         self._reset_point_source_cache(bool_input=False)
         return logL  # , None
 

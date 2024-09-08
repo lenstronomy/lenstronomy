@@ -398,8 +398,6 @@ class NFWEllipseGaussDec(GaussDecompositionAbstract):
         alpha_Rs = kwargs["alpha_Rs"]
 
         rho0 = self.nfw.alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs)
-        if Rs < 0.0000001:
-            Rs = 0.0000001
 
         kappa = self.nfw.density_2d(y, 0, Rs, rho0)
 

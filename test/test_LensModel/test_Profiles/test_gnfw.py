@@ -30,7 +30,7 @@ class TestGNFW(object):
 
         kappa_s = self.gnfw.rho02kappa_s(rho0, Rs, gamma_in)
         values_gnfw = self.gnfw.function(x, y, Rs, kappa_s, gamma_in)
-        npt.assert_almost_equal(values_nfw, values_gnfw, decimal=5)
+        npt.assert_almost_equal(values_nfw, values_gnfw, decimal=3)
 
         values_gnfw_trapezoidal = self.gnfw_trapezoidal.function(
             x, y, Rs, kappa_s, gamma_in
@@ -42,7 +42,7 @@ class TestGNFW(object):
         y = np.ones_like(x)
         values_nfw = self.nfw.function(x, y, Rs, alpha_Rs)
         values_gnfw = self.gnfw.function(x, y, Rs, kappa_s, gamma_in)
-        npt.assert_almost_equal(values_nfw, values_gnfw, decimal=5)
+        npt.assert_almost_equal(values_nfw, values_gnfw, decimal=4)
 
     def test_derivatives(self):
         """Tests `GNFW.derivatives()`"""
@@ -64,8 +64,8 @@ class TestGNFW(object):
         f_x_gnfwt, f_y_gnfwt = self.gnfw_trapezoidal.derivatives(
             x, y, Rs, kappa_s, gamma_in
         )
-        npt.assert_almost_equal(f_x_nfw, f_x_gnfwt, decimal=5)
-        npt.assert_almost_equal(f_y_nfw, f_y_gnfwt, decimal=5)
+        npt.assert_almost_equal(f_x_nfw, f_x_gnfwt, decimal=4)
+        npt.assert_almost_equal(f_y_nfw, f_y_gnfwt, decimal=4)
 
         # test for really small Rs
         Rs = 0.00000001

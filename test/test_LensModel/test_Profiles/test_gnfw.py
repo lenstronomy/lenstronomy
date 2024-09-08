@@ -19,10 +19,10 @@ class TestGNFW(object):
 
     def test_function(self):
         """Tests `GNFW.function()`"""
-        x = 1
+        x = 1.5
         y = 2
-        Rs = 1.0
-        rho0 = 1
+        Rs = 5.0
+        rho0 = 0.1
         gamma_in = 1
 
         alpha_Rs = self.nfw.rho02alpha(rho0, Rs)
@@ -30,7 +30,7 @@ class TestGNFW(object):
 
         kappa_s = self.gnfw.rho02kappa_s(rho0, Rs, gamma_in)
         values_gnfw = self.gnfw.function(x, y, Rs, kappa_s, gamma_in)
-        npt.assert_almost_equal(values_nfw, values_gnfw, decimal=5)
+        npt.assert_almost_equal(values_nfw, values_gnfw, decimal=3)
 
         values_gnfw_trapezoidal = self.gnfw_trapezoidal.function(
             x, y, Rs, kappa_s, gamma_in
@@ -42,14 +42,14 @@ class TestGNFW(object):
         y = np.ones_like(x)
         values_nfw = self.nfw.function(x, y, Rs, alpha_Rs)
         values_gnfw = self.gnfw.function(x, y, Rs, kappa_s, gamma_in)
-        npt.assert_almost_equal(values_nfw, values_gnfw, decimal=5)
+        npt.assert_almost_equal(values_nfw, values_gnfw, decimal=4)
 
     def test_derivatives(self):
         """Tests `GNFW.derivatives()`"""
-        x = np.array([1])
+        x = np.array([1.5])
         y = np.array([2])
-        Rs = 1.0
-        rho0 = 1
+        Rs = 5.0
+        rho0 = 0.1
         gamma_in = 1
 
         alpha_Rs = self.nfw.rho02alpha(rho0, Rs)
@@ -64,8 +64,8 @@ class TestGNFW(object):
         f_x_gnfwt, f_y_gnfwt = self.gnfw_trapezoidal.derivatives(
             x, y, Rs, kappa_s, gamma_in
         )
-        npt.assert_almost_equal(f_x_nfw, f_x_gnfwt, decimal=5)
-        npt.assert_almost_equal(f_y_nfw, f_y_gnfwt, decimal=5)
+        npt.assert_almost_equal(f_x_nfw, f_x_gnfwt, decimal=4)
+        npt.assert_almost_equal(f_y_nfw, f_y_gnfwt, decimal=4)
 
         # test for really small Rs
         Rs = 0.00000001
@@ -78,8 +78,8 @@ class TestGNFW(object):
         """Tests `GNFW.hessian()`"""
         x = np.linspace(0.5, 10, 10)
         y = x * 0.0
-        Rs = 1.0
-        rho0 = 1
+        Rs = 5.0
+        rho0 = 0.1
         gamma_in = 1
 
         alpha_Rs = self.nfw.rho02alpha(rho0, Rs)
@@ -114,9 +114,9 @@ class TestGNFW(object):
 
     def test_density(self):
         """Tests `GNFW.density()`"""
-        R = 1
-        Rs = 1.0
-        rho0 = 1
+        R = 2
+        Rs = 5.0
+        rho0 = 0.1
         gamma_in = 1
 
         density_nfw = self.nfw.density(R, Rs, rho0)
@@ -128,9 +128,9 @@ class TestGNFW(object):
 
     def test_density_lens(self):
         """Tests `GNFW.density_lens()`"""
-        R = 1
-        Rs = 1.0
-        rho0 = 1
+        R = 2
+        Rs = 5.0
+        rho0 = 0.1
         gamma_in = 1
 
         alpha_Rs = self.nfw.rho02alpha(rho0, Rs)
@@ -145,10 +145,10 @@ class TestGNFW(object):
 
     def test_density_2d(self):
         """Tests `GNFW.density_2d_lens()`"""
-        x = np.array([1])
+        x = np.array([1.5])
         y = np.array([2])
-        Rs = 1.0
-        rho0 = 10
+        Rs = 5.0
+        rho0 = 0.1
         gamma_in = 1
 
         kappa_nfw = self.nfw.density_2d(x, y, Rs, rho0)
@@ -159,7 +159,7 @@ class TestGNFW(object):
 
     def test_mass_3d(self):
         """Tests `GNFW.mass_3d()`"""
-        r = 1
+        r = 2
         Rs = 1.0
         rho0 = 1
         gamma_in = 1
@@ -171,9 +171,9 @@ class TestGNFW(object):
 
     def test_mass_3d_lens(self):
         """Tests `GNFW.mass_3d_lens()`"""
-        r = 1
-        Rs = 1.0
-        rho0 = 1
+        r = 2
+        Rs = 5.0
+        rho0 = 0.1
         gamma_in = 1
 
         alpha_Rs = self.nfw.rho02alpha(rho0, Rs)

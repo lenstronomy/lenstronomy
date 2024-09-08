@@ -425,7 +425,6 @@ class GNFW(LensProfileBase):
         kappa = (
             2
             * kappa_s
-            * Rs
             * x ** (1 - gamma_in)
             * ((1 + x) ** (gamma_in - 3) + (3 - gamma_in) * integral)
         )

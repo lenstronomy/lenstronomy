@@ -28,17 +28,17 @@ class GNFW(LensProfileBase):
 
     model_name = "GNFW"
     _s = 0.001  # numerical limit for minimal radius
-    param_names = ["Rs", "kappa_s", "gamma_in", "center_x", "center_y"]
+    param_names = ["Rs", "alpha_Rs", "gamma_in", "center_x", "center_y"]
     lower_limit_default = {
         "Rs": 0,
-        "kappa_s": 0,
+        "alpha_Rs": 0,
         "gamma_in": 0.0,
         "center_x": -100,
         "center_y": -100,
     }
     upper_limit_default = {
         "Rs": 100,
-        "kappa_s": 1000.0,
+        "alpha_Rs": 10.0,
         "gamma_in": 3.0,
         "center_x": 100,
         "center_y": 100,
@@ -58,7 +58,7 @@ class GNFW(LensProfileBase):
         else:
             self._integrate = self._quad_integrate
 
-    def function(self, x, y, Rs, kappa_s, gamma_in, center_x=0, center_y=0):
+    def function(self, x, y, Rs, alpha_Rs, gamma_in, center_x=0, center_y=0):
         """Potential of gNFW profile.
 
         :param x: angular position
@@ -67,8 +67,8 @@ class GNFW(LensProfileBase):
         :type y: float/numpy array
         :param Rs: angular turn over point
         :type Rs: float
-        :param kappa_s: convergence correspoding to rho0
-        :type kappa_s: float
+        :param alpha_Rs: deflection (angular units) at projected Rs
+        :type alpha_Rs: float
         :param gamma_in: inner slope
         :type gamma_in: float
         :param center_x: center of halo
@@ -82,6 +82,8 @@ class GNFW(LensProfileBase):
         y_ = y - center_y
         r = np.sqrt(x_**2 + y_**2)
         r = np.maximum(r, self._s)
+
+        kappa_s = self.alpha_Rs_to_kappa_s(Rs, alpha_Rs, gamma_in)
 
         if isinstance(r, int) or isinstance(r, float):
             return self._num_integral_potential(r, Rs, kappa_s, gamma_in)
@@ -100,9 +102,11 @@ class GNFW(LensProfileBase):
         :type r: float
         :param Rs: scale radius
         :type Rs: float
+        :param kappa_s: convergence at Rs
+        :type kappa_s: float
+        :type alpha_Rs: float
         :param gamma_in: inner slope
         :type gamma_in: float
-        :param kappa_s: convergence correspoding to rho0
         :return: potential at radius r
         :rtype: float
         """
@@ -112,7 +116,7 @@ class GNFW(LensProfileBase):
 
         return quad(_integrand, a=0, b=r)[0]
 
-    def derivatives(self, x, y, Rs, kappa_s, gamma_in, center_x=0, center_y=0):
+    def derivatives(self, x, y, Rs, alpha_Rs, gamma_in, center_x=0, center_y=0):
         """Returns df/dx and df/dy of the function.
 
         :param x: angular position
@@ -121,8 +125,8 @@ class GNFW(LensProfileBase):
         :type y: float/numpy array
         :param Rs: angular turn over point
         :type Rs: float
-        :param kappa_s: convergence correspoding to rho0
-        :type kappa_s: float
+        :param alpha_Rs: deflection (angular units) at projected Rs
+        :type alpha_Rs: float
         :param gamma_in: inner slope
         :type gamma_in: float
         :param center_x: center of halo
@@ -139,13 +143,15 @@ class GNFW(LensProfileBase):
         R = np.sqrt(x_**2 + y_**2)
         R = np.maximum(R, self._s)
 
+        kappa_s = self.alpha_Rs_to_kappa_s(Rs, alpha_Rs, gamma_in)
+
         f_r = self.alpha(R, Rs, kappa_s, gamma_in)
         f_x = f_r * x_ / R
         f_y = f_r * y_ / R
 
         return f_x, f_y
 
-    def hessian(self, x, y, Rs, kappa_s, gamma_in, center_x=0, center_y=0):
+    def hessian(self, x, y, Rs, alpha_Rs, gamma_in, center_x=0, center_y=0):
         """Returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy.
 
         :param x: angular position
@@ -154,8 +160,8 @@ class GNFW(LensProfileBase):
         :type y: float/numpy array
         :param Rs: angular turn over point
         :type Rs: float
-        :param kappa_s: convergence correspoding to rho0
-        :type kappa_s: float
+        :param alpha_Rs: deflection (angular units) at projected Rs
+        :type alpha_Rs: float
         :param gamma_in: inner slope
         :type gamma_in: float
         :param center_x: center of halo
@@ -170,6 +176,8 @@ class GNFW(LensProfileBase):
         x_ = x - center_x
         y_ = y - center_y
         R = np.sqrt(x_**2 + y_**2)
+
+        kappa_s = self.alpha_Rs_to_kappa_s(Rs, alpha_Rs, gamma_in)
 
         kappa = self.kappa(R, Rs, kappa_s, gamma_in)
         f_r = self.alpha(R, Rs, kappa_s, gamma_in)
@@ -200,7 +208,7 @@ class GNFW(LensProfileBase):
         """
         return rho0 * (R / Rs) ** -gamma_in * (1 + R / Rs) ** (gamma_in - 3)
 
-    def density_lens(self, R, Rs, kappa_s, gamma_in):
+    def density_lens(self, R, Rs, alpha_Rs, gamma_in):
         """Computes the density at 3d radius r given lens model parameterization. The
         integral in the LOS projection of this quantity results in the convergence
         quantity.
@@ -209,14 +217,15 @@ class GNFW(LensProfileBase):
         :type R: float/numpy array
         :param Rs: scale radius
         :type Rs: float
-        :param kappa_s: convergence correspoding to rho0
-        :type kappa_s: float
+        :param alpha_Rs: deflection at Rs
+        :type alpha_Rs: float
         :param gamma_in: inner slope
         :type gamma_in: float
         :return: density at radius R
         :rtype: float
         """
-        rho0 = self.kappa_s2rho0(kappa_s=kappa_s, Rs=Rs, gamma_in=gamma_in)
+        kappa_s = self.alpha_Rs_to_kappa_s(Rs=Rs, alpha_Rs=alpha_Rs, gamma_in=gamma_in)
+        rho0 = self.kappa_s_to_rho0(kappa_s=kappa_s, Rs=Rs, gamma_in=gamma_in)
         return self.density(R, Rs, rho0, gamma_in)
 
     def density_2d(self, x, y, Rs, rho0, gamma_in, center_x=0, center_y=0):
@@ -241,7 +250,7 @@ class GNFW(LensProfileBase):
         x_ = x - center_x
         y_ = y - center_y
         R = np.sqrt(x_**2 + y_**2)
-        kappa_s = self.rho02kappa_s(rho0, Rs, gamma_in)
+        kappa_s = self.rho0_to_kappa_s(rho0, Rs, gamma_in)
 
         return self.kappa(R, Rs, kappa_s, gamma_in)
 
@@ -267,7 +276,7 @@ class GNFW(LensProfileBase):
             * hyp2f1(3 - gamma_in, 3 - gamma_in, 4 - gamma_in, -x)
         )
 
-    def mass_3d_lens(self, R, Rs, kappa_s, gamma_in):
+    def mass_3d_lens(self, R, Rs, alpha_Rs, gamma_in):
         """Mass enclosed a 3d sphere or radius r given a lens parameterization with
         angular units.
 
@@ -275,14 +284,15 @@ class GNFW(LensProfileBase):
         :type R: float/numpy array
         :param Rs: scale radius
         :type Rs: float
-        :param kappa_s: convergence correspoding to rho0
-        :type kappa_s: float
+        :param alpha_Rs: deflection at Rs
+        :type alpha_Rs: float
         :param gamma_in: inner slope
         :type gamma_in: float
         :return: mass enclosed a 3d sphere or radius r
         :rtype: float
         """
-        rho0 = self.kappa_s2rho0(kappa_s=kappa_s, Rs=Rs, gamma_in=gamma_in)
+        kappa_s = self.alpha_Rs_to_kappa_s(Rs=Rs, alpha_Rs=alpha_Rs, gamma_in=gamma_in)
+        rho0 = self.kappa_s_to_rho0(kappa_s=kappa_s, Rs=Rs, gamma_in=gamma_in)
         return self.mass_3d(R, Rs, rho0, gamma_in)
 
     def _trapezoidal_integrate(self, func, x, gamma_in):
@@ -375,7 +385,7 @@ class GNFW(LensProfileBase):
         :type R: float/numpy array
         :param Rs: scale radius
         :type Rs: float
-        :param kappa_s: convergence correspoding to rho0
+        :param kappa_s: convergence at `Rs`
         :type kappa_s: float
         :param gamma_in: inner slope
         :type gamma_in: float
@@ -408,7 +418,7 @@ class GNFW(LensProfileBase):
         :type R: float/numpy array
         :param Rs: scale radius
         :type Rs: float
-        :param kappa_s: convergence correspoding to rho0
+        :param kappa_s: convergence at `Rs`
         :type kappa_s: float
         :param gamma_in: inner slope
         :type gamma_in: float
@@ -430,8 +440,70 @@ class GNFW(LensProfileBase):
 
         return kappa
 
+    def kappa_s_to_alpha_Rs(self, kappa_s, Rs, gamma_in):
+        """Convert the convergence at Rs to the density normalization.
+
+        :param kappa_s: convergence at `Rs`
+        :type kappa_s: float
+        :param Rs: scale radius
+        :type Rs: float
+        :param gamma_in: inner slope
+        :type gamma_in: float
+        :return: rho0
+        :rtype: float
+        """
+        return self.alpha(R=Rs, Rs=Rs, kappa_s=kappa_s, gamma_in=gamma_in)
+
+    def alpha_Rs_to_kappa_s(self, Rs, alpha_Rs, gamma_in):
+        """
+        Convert the deflection at Rs to the convergence at Rs.
+
+        :param Rs: scale radius
+        :type Rs: float
+        :param alpha_Rs: deflection at Rs
+        :type alpha_Rs: float
+        :param gamma_in: inner slope
+        :type gamma_in: float
+        :return: kappa_s
+        :rtype: float
+        """
+        alpha_for_1 = self.alpha(R=Rs, Rs=Rs, kappa_s=1, gamma_in=gamma_in)
+        kappa_s = alpha_Rs / alpha_for_1
+
+        return kappa_s
+
+    def rho02alpha(rho0, Rs, gamma_in):
+        """Convenience function to compute alpha_Rs from rho0.
+
+        :param rho0: density normalization (characteristic density)
+        :type rho0: float
+        :param Rs: scale radius
+        :type Rs: float
+        :param gamma_in: inner slope
+        :type gamma_in: float
+        :return: alpha_Rs
+        :rtype: float
+        """
+        kappa_s = self.rho0_to_kappa_s(rho0, Rs)
+        return self.kappa_s_to_alpha_Rs(kappa_s, Rs, gamma_in)
+
+    def alpha2rho0(alpha_Rs, Rs, gamma_in):
+        """Convenience function to compute rho0 from alpha_Rs.
+
+        :param alpha_Rs: deflection at Rs
+        :type alpha_Rs: float
+        :param Rs: scale radius
+        :type Rs: float
+        :param gamma_in: inner slope
+        :type gamma_in: float
+        :return: rho0
+        :rtype: float
+        """
+        kappa_s = self.alpha_Rs_to_kappa_s(Rs, alpha_Rs, gamma_in)
+        return self.kappa_s_to_rho0(kappa_s, Rs)
+
     @staticmethod
-    def rho02kappa_s(rho0, Rs, gamma_in):
+    def rho0_to_kappa_s(rho0, Rs):
         """Convenience function to compute rho0 from alpha_Rs.
 
         :param rho0: density normalization (characteristic density)
@@ -446,11 +518,11 @@ class GNFW(LensProfileBase):
         return rho0 * Rs
 
     @staticmethod
-    def kappa_s2rho0(kappa_s, Rs, gamma_in):
+    def kappa_s_to_rho0(kappa_s, Rs):
         """Convenience function to compute rho0 from kappa_s. The returned rho_0 is
         normalized with $\\Sigma_{\\rm crit}$.
 
-        :param kappa_s: convergence corresponding to rho0
+        :param kappa_s: convergence at `Rs`
         :type kappa_s: float
         :param Rs: scale radius
         :type Rs: float

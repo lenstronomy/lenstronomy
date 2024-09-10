@@ -7,19 +7,25 @@ __author__ = "ajshajib"
 import numpy as np
 import abc
 from scipy.special import comb
+from scipy.special import hyp2f1
 
 from lenstronomy.LensModel.Profiles.multi_gaussian_ellipse_kappa import (
     MultiGaussianEllipseKappa,
 )
+from lenstronomy.LensModel.Profiles.nfw import NFW
+from lenstronomy.LensModel.Profiles.gnfw import GNFW
 from lenstronomy.LensModel.Profiles.sersic_utils import SersicUtil
-
 from lenstronomy.Util.package_util import exporter
 
 export, __all__ = exporter()
 
 _SQRT_2PI = np.sqrt(2 * np.pi)
 
-__all__ = ["SersicEllipseGaussDec", "NFWEllipseGaussDec"]
+__all__ = [
+    "SersicEllipseGaussDec",
+    "NFWEllipseGaussDec",
+    "GeneralizedNFWEllipseGaussDec",
+]
 
 
 @export
@@ -339,9 +345,9 @@ class NFWEllipseGaussDec(GaussDecompositionAbstract):
 
     def __init__(
         self,
-        n_sigma=15,
-        sigma_start_mult=0.005,
-        sigma_end_mult=50.0,
+        n_sigma=20,
+        sigma_start_mult=0.0001,
+        sigma_end_mult=250.0,
         precision=10,
         use_scipy_wofz=True,
         min_ellipticity=1e-5,
@@ -370,6 +376,7 @@ class NFWEllipseGaussDec(GaussDecompositionAbstract):
             use_scipy_wofz=use_scipy_wofz,
             min_ellipticity=min_ellipticity,
         )
+        self.nfw = NFW()
 
     def get_kappa_1d(self, y, **kwargs):
         r"""Compute the spherical projected NFW profile at y.
@@ -387,36 +394,124 @@ class NFWEllipseGaussDec(GaussDecompositionAbstract):
         :return: projected NFW profile at y
         :rtype: ``type(y)``
         """
-        R_s = kwargs["Rs"]
+        Rs = kwargs["Rs"]
         alpha_Rs = kwargs["alpha_Rs"]
 
-        kappa_s = alpha_Rs / (4 * R_s * (1 - 0.30102999566))
-        # log2 = 0.30102999566
+        rho0 = self.nfw.alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs)
 
-        x = y / R_s
+        kappa = self.nfw.density_2d(y, 0, Rs, rho0)
 
-        f = np.empty(shape=x.shape, dtype=x.dtype)
-
-        range1 = x > 1.0
-        if np.any(range1):
-            s = x[range1]
-            f[range1] = (1 - np.arccos(1 / s) / np.sqrt(s * s - 1)) / (s * s - 1)
-
-        range2 = x < 1.0
-        if np.any(range2):
-            s = x[range2]
-            f[range2] = (1 - np.arccosh(1 / s) / np.sqrt(1 - s * s)) / (s * s - 1)
-
-        range3 = np.logical_and(np.logical_not(range1), np.logical_not(range2))
-        if np.any(range3):
-            f[range3] = 1.0 / 3.0
-
-        return 2 * kappa_s * f
+        return kappa
 
     def get_scale(self, **kwargs):
         """Identify the scale size from the keyword arguments.
 
         :param kwargs: Keyword arguments
+
+        :Keyword Arguments:
+            * **alpha_Rs** (``float``) --
+              Deflection angle at ``Rs``
+            * **R_s** (``float``) --
+              NFW scale radius
+
+        :return: NFW scale radius
+        :rtype: ``float``
+        """
+        return kwargs["Rs"]
+
+
+@export
+class GeneralizedNFWEllipseGaussDec(GaussDecompositionAbstract):
+    """This class computes the lensing properties of an elliptical, projected gNFW
+    profile using Shajib (2019)'s Gauss decomposition method."""
+
+    param_names = ["Rs", "alpha_Rs", "e1", "e2", "center_x", "center_y", "gamma_in"]
+    lower_limit_default = {
+        "Rs": 0,
+        "alpha_Rs": 0,
+        "e1": -0.5,
+        "e2": -0.5,
+        "center_x": -100,
+        "center_y": -100,
+        "gamma_in": 0.0,
+    }
+    upper_limit_default = {
+        "Rs": 100,
+        "alpha_Rs": 10,
+        "e1": 0.5,
+        "e2": 0.5,
+        "center_x": 100,
+        "center_y": 100,
+        "gamma_in": 2.5,
+    }
+
+    def __init__(
+        self,
+        n_sigma=20,
+        sigma_start_mult=0.0001,
+        sigma_end_mult=250.0,
+        precision=10,
+        use_scipy_wofz=False,
+        min_ellipticity=1e-5,
+    ):
+        """Set up settings for the Gaussian decomposition. For more details about the
+        decomposition parameters, see Shajib (2019).
+
+        :param n_sigma: Number of Gaussian components
+        :type n_sigma: ``int``
+        :param sigma_start_mult: Lower range of logarithmically spaced sigmas
+        :type sigma_start_mult: ``float``
+        :param sigma_end_mult: Upper range of logarithmically spaced sigmas
+        :type sigma_end_mult: ``float``
+        :param precision: Numerical precision of Gaussian decomposition
+        :type precision: ``int``
+        :param use_scipy_wofz: To be passed to ``class GaussianEllipseKappa``. If ``True``, Gaussian lensing will use ``scipy.special.wofz`` function. Set ``False`` for lower precision, but faster speed.
+        :type use_scipy_wofz: ``bool``
+        :param min_ellipticity: To be passed to ``class GaussianEllipseKappa``. Minimum ellipticity for Gaussian elliptical lensing calculation. For lower ellipticity than min_ellipticity the equations for the spherical case will be used.
+        :type min_ellipticity: ``float``
+        """
+        super(GeneralizedNFWEllipseGaussDec, self).__init__(
+            n_sigma=n_sigma,
+            sigma_start_mult=sigma_start_mult,
+            sigma_end_mult=sigma_end_mult,
+            precision=precision,
+            use_scipy_wofz=use_scipy_wofz,
+            min_ellipticity=min_ellipticity,
+        )
+        self.gnfw = GNFW(trapezoidal_integration=True, integration_steps=1000)
+
+    def get_kappa_1d(self, y, **kwargs):
+        r"""Compute the spherical projected gNFW profile at y. See Keeton (2001, page
+        11).
+
+        :param y: y coordinate
+        :type y: ``float``
+        :param \**kwargs: Keyword arguments
+
+        :Keyword Arguments:
+            * **alpha_Rs** (``float``) --
+              Deflection angle at ``Rs``
+            * **R_s** (``float``) --
+              gNFW scale radius
+
+        :return: projected NFW profile at y
+        :rtype: ``type(y)``
+        """
+        R_s = kwargs["Rs"]
+        alpha_Rs = kwargs["alpha_Rs"]
+        gamma_in = kwargs["gamma_in"]
+
+        alpha_for_kappa_s_1 = self.gnfw.alpha(R_s, R_s, 1, gamma_in)
+        kappa_s = alpha_Rs / alpha_for_kappa_s_1
+
+        kappa = self.gnfw.kappa(y, R_s, kappa_s, gamma_in)
+
+        return kappa
+
+    def get_scale(self, **kwargs):
+        """Identify the scale size from the keyword arguments.
+
+        :param \**kwargs: Keyword arguments
 
         :Keyword Arguments:
             * **alpha_Rs** (``float``) --

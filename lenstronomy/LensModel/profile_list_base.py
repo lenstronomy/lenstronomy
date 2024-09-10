@@ -43,6 +43,7 @@ _SUPPORTED_MODELS = [
     "GAUSSIAN_ELLIPSE_POTENTIAL",
     "GAUSSIAN_POTENTIAL",
     "GNFW",
+    "GNFW_ELLIPSE_GAUSS_DEC",
     "HERNQUIST",
     "HERNQUIST_ELLIPSE_POTENTIAL",
     "HERNQUIST_ELLIPSE_CSE",
@@ -434,6 +435,12 @@ def lens_class(
         from lenstronomy.LensModel.Profiles.gnfw import GNFW
 
         return GNFW()
+    elif lens_type == "GNFW_ELLIPSE_GAUSS_DEC":
+        from lenstronomy.LensModel.Profiles.gauss_decomposition import (
+            GeneralizedNFWEllipseGaussDec,
+        )
+
+        return GeneralizedNFWEllipseGaussDec()
     elif lens_type == "HERNQUIST":
         from lenstronomy.LensModel.Profiles.hernquist import Hernquist
 

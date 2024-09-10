@@ -193,7 +193,7 @@ class GNFW(LensProfileBase):
         return f_xx, f_xy, f_xy, f_yy
 
     def density(self, R, Rs, rho0, gamma_in):
-        """Three dimensional truncated NFW profile.
+        """Three dimensional generalized NFW profile.
 
         :param R: radius of interest
         :type R: float/numpy array
@@ -320,11 +320,13 @@ class GNFW(LensProfileBase):
         if isinstance(x, int) or isinstance(x, float):
             integral = np.sum(func(y, x, gamma_in) * dy * weights)
         else:
-            ys = np.repeat(y[:, np.newaxis], len([x]), axis=1)
+            x_flat = x.flatten()
+            ys = np.repeat(y[:, np.newaxis], len([x_flat]), axis=1)
 
             integral = np.sum(
-                func(ys, x, gamma_in) * dy * weights[:, np.newaxis], axis=0
+                func(ys, x_flat, gamma_in) * dy * weights[:, np.newaxis], axis=0
             )
+            integral = integral.reshape(x.shape)
 
         return integral
 
@@ -433,7 +435,6 @@ class GNFW(LensProfileBase):
         kappa = (
             2
             * kappa_s
-            * Rs
             * x ** (1 - gamma_in)
             * ((1 + x) ** (gamma_in - 3) + (3 - gamma_in) * integral)
         )

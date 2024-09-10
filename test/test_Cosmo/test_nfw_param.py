@@ -8,7 +8,7 @@ from lenstronomy.Cosmo.nfw_param import NFWParam
 from astropy.cosmology import FlatLambdaCDM
 
 
-class TestLensCosmo(object):
+class TestNFWParam(object):
     """Tests the UnitManager class routines."""
 
     def setup_method(self):

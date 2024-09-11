@@ -497,14 +497,12 @@ class GeneralizedNFWEllipseGaussDec(GaussDecompositionAbstract):
         :return: projected NFW profile at y
         :rtype: ``type(y)``
         """
-        R_s = kwargs["Rs"]
+        Rs = kwargs["Rs"]
         alpha_Rs = kwargs["alpha_Rs"]
         gamma_in = kwargs["gamma_in"]
 
-        alpha_for_kappa_s_1 = self.gnfw.alpha(R_s, R_s, 1, gamma_in)
-        kappa_s = alpha_Rs / alpha_for_kappa_s_1
-
-        kappa = self.gnfw.kappa(y, R_s, kappa_s, gamma_in)
+        kappa_s = self.gnfw.alpha_Rs_to_kappa_s(Rs, alpha_Rs, gamma_in)
+        kappa = self.gnfw.kappa(y, Rs, kappa_s, gamma_in)
 
         return kappa
 

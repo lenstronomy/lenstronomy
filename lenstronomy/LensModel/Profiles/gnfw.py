@@ -389,8 +389,7 @@ class GNFW(LensProfileBase):
         return (y + x) ** (gamma_in - 4) * (1 - np.sqrt(1 - y**2))
 
     def alpha(self, R, Rs, alpha_Rs, gamma_in):
-        """
-        Deflection angel of gNFW profile along the radial direction.
+        """Deflection angel of gNFW profile along the radial direction.
 
         :param R: radius of interest
         :type R: float/numpy array
@@ -440,8 +439,7 @@ class GNFW(LensProfileBase):
         return alpha
 
     def kappa(self, R, Rs, alpha_Rs, gamma_in):
-        """
-        Convergence of gNFW profile along the radial direction.
+        """Convergence of gNFW profile along the radial direction.
 
         :param R: radius of interest
         :type R: float/numpy array
@@ -500,8 +498,7 @@ class GNFW(LensProfileBase):
         return self._alpha(R=Rs, Rs=Rs, kappa_s=kappa_s, gamma_in=gamma_in)
 
     def alpha_Rs_to_kappa_s(self, Rs, alpha_Rs, gamma_in):
-        """
-        Convert the deflection at Rs to the convergence at Rs.
+        """Convert the deflection at Rs to the convergence at Rs.
 
         :param Rs: scale radius
         :type Rs: float

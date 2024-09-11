@@ -230,8 +230,7 @@ class GNFW(LensProfileBase):
         :return: density at radius R
         :rtype: float
         """
-        kappa_s = self.alpha_Rs_to_kappa_s(Rs=Rs, alpha_Rs=alpha_Rs, gamma_in=gamma_in)
-        rho0 = self.kappa_s_to_rho0(kappa_s, Rs)
+        rho0 = self.alpha2rho0(alpha_Rs, Rs, gamma_in)
         return self.density(R, Rs, rho0, gamma_in)
 
     def density_2d(self, x, y, Rs, rho0, gamma_in, center_x=0, center_y=0):
@@ -297,8 +296,7 @@ class GNFW(LensProfileBase):
         :return: mass enclosed a 3d sphere or radius r
         :rtype: float
         """
-        kappa_s = self.alpha_Rs_to_kappa_s(Rs=Rs, alpha_Rs=alpha_Rs, gamma_in=gamma_in)
-        rho0 = self.kappa_s_to_rho0(kappa_s, Rs)
+        rho0 = self.alpha2rho0(alpha_Rs, Rs, gamma_in)
         return self.mass_3d(R, Rs, rho0, gamma_in)
 
     def _trapezoidal_integrate(self, func, x, gamma_in):
@@ -474,7 +472,7 @@ class GNFW(LensProfileBase):
         :return: kappa_s
         :rtype: float
         """
-        alpha_Rs_for_kappa_s_1 = self._get_alpha_Rs_for_kappa_s_1(Rs, gamma_in)
+        alpha_Rs_for_kappa_s_1 = self.get_alpha_Rs_for_kappa_s_1(Rs, gamma_in)
         kappa_s = alpha_Rs / alpha_Rs_for_kappa_s_1
 
         return kappa_s
@@ -540,7 +538,7 @@ class GNFW(LensProfileBase):
         """
         return kappa_s / Rs
 
-    def _get_alpha_Rs_for_kappa_s_1(self, Rs, gamma_in):
+    def get_alpha_Rs_for_kappa_s_1(self, Rs, gamma_in):
         """Compute the deflection at Rs.
 
         :param Rs: scale radius

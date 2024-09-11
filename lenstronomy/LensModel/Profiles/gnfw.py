@@ -62,8 +62,8 @@ class GNFW(LensProfileBase):
         gamma_ins = np.linspace(0.0, 2.99, 300)
         alphas = np.zeros_like(gamma_ins)
         for i, g in enumerate(gamma_ins):
-            alphas[i] = self.alpha(1.0, 1.0, 1.0, gamma_in=g)
-        self.alpha_1_interp = interp1d(gamma_ins, alphas, kind="cubic")
+            alphas[i] = self._alpha(1.0, 1.0, 1.0, gamma_in=g)
+        self._alpha_1_interp = interp1d(gamma_ins, alphas, kind="cubic")
 
     def function(self, x, y, Rs, alpha_Rs, gamma_in, center_x=0, center_y=0):
         """Potential of gNFW profile.
@@ -122,7 +122,7 @@ class GNFW(LensProfileBase):
         """
 
         def _integrand(x):
-            return self.alpha(x, Rs, kappa_s, gamma_in)
+            return self._alpha(x, Rs, kappa_s, gamma_in)
 
         return quad(_integrand, a=0, b=r)[0]
 
@@ -155,7 +155,7 @@ class GNFW(LensProfileBase):
 
         kappa_s = self.alpha_Rs_to_kappa_s(Rs, alpha_Rs, gamma_in)
 
-        f_r = self.alpha(R, Rs, kappa_s, gamma_in)
+        f_r = self._alpha(R, Rs, kappa_s, gamma_in)
         f_x = f_r * x_ / R
         f_y = f_r * y_ / R
 
@@ -189,8 +189,8 @@ class GNFW(LensProfileBase):
 
         kappa_s = self.alpha_Rs_to_kappa_s(Rs, alpha_Rs, gamma_in)
 
-        kappa = self.kappa(R, Rs, kappa_s, gamma_in)
-        f_r = self.alpha(R, Rs, kappa_s, gamma_in)
+        kappa = self._kappa(R, Rs, kappa_s, gamma_in)
+        f_r = self._alpha(R, Rs, kappa_s, gamma_in)
         f_rr = 2 * kappa - f_r / R
 
         cos_t = x_ / R
@@ -261,7 +261,7 @@ class GNFW(LensProfileBase):
         R = np.sqrt(x_**2 + y_**2)
         kappa_s = self.rho0_to_kappa_s(rho0, Rs)
 
-        return self.kappa(R, Rs, kappa_s, gamma_in)
+        return self._kappa(R, Rs, kappa_s, gamma_in)
 
     def mass_3d(self, R, Rs, rho0, gamma_in):
         """Mass enclosed a 3d sphere or radius r.
@@ -388,7 +388,25 @@ class GNFW(LensProfileBase):
         """
         return (y + x) ** (gamma_in - 4) * (1 - np.sqrt(1 - y**2))
 
-    def alpha(self, R, Rs, kappa_s, gamma_in):
+    def alpha(self, R, Rs, alpha_Rs, gamma_in):
+        """
+        Deflection angel of gNFW profile along the radial direction.
+
+        :param R: radius of interest
+        :type R: float/numpy array
+        :param Rs: scale radius
+        :type Rs: float
+        :param alpha_Rs: deflection at Rs
+        :type alpha_Rs: float
+        :param gamma_in: inner slope
+        :type gamma_in: float
+        :return: deflection angel at radius R
+        :rtype: float
+        """
+        kappa_s = self.alpha_Rs_to_kappa_s(Rs, alpha_Rs, gamma_in)
+        return self._alpha(R, Rs, kappa_s, gamma_in)
+
+    def _alpha(self, R, Rs, kappa_s, gamma_in):
         """Deflection angel of gNFW profile along the radial direction.
 
         :param R: radius of interest
@@ -421,7 +439,25 @@ class GNFW(LensProfileBase):
 
         return alpha
 
-    def kappa(self, R, Rs, kappa_s, gamma_in):
+    def kappa(self, R, Rs, alpha_Rs, gamma_in):
+        """
+        Convergence of gNFW profile along the radial direction.
+
+        :param R: radius of interest
+        :type R: float/numpy array
+        :param Rs: scale radius
+        :type Rs: float
+        :param alpha_Rs: deflection at Rs
+        :type alpha_Rs: float
+        :param gamma_in: inner slope
+        :type gamma_in: float
+        :return: convergence at radius R
+        :rtype: float
+        """
+        kappa_s = self.alpha_Rs_to_kappa_s(Rs, alpha_Rs, gamma_in)
+        return self._kappa(R, Rs, kappa_s, gamma_in)
+
+    def _kappa(self, R, Rs, kappa_s, gamma_in):
         """Convergence of gNFW profile along the radial direction.
 
         :param R: radius of interest
@@ -461,7 +497,7 @@ class GNFW(LensProfileBase):
         :return: rho0
         :rtype: float
         """
-        return self.alpha(R=Rs, Rs=Rs, kappa_s=kappa_s, gamma_in=gamma_in)
+        return self._alpha(R=Rs, Rs=Rs, kappa_s=kappa_s, gamma_in=gamma_in)
 
     def alpha_Rs_to_kappa_s(self, Rs, alpha_Rs, gamma_in):
         """
@@ -552,4 +588,4 @@ class GNFW(LensProfileBase):
         :return: alpha_Rs for kappa_s = 1
         :rtype: float
         """
-        return Rs * self.alpha_1_interp(gamma_in)
+        return Rs * self._alpha_1_interp(gamma_in)

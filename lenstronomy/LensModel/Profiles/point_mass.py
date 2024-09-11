@@ -82,3 +82,16 @@ class PointMass(LensProfileBase):
         f_yy = C * (x_**2 - y_**2) / r2**2
         f_xy = -C * 2 * x_ * y_ / r2**2
         return f_xx, f_xy, f_xy, f_yy
+
+    def mass_3d_lens(self, r, theta_E):
+        """
+        Mass enclosed within a 3d sphere of radius r, however it is just the point mass (in angular units).
+
+        :param r: radius in arcsec
+        :type r: float
+        :param theta_E: Einstein radius in arcsec
+        :type theta_E: float
+        :return: mass in units of M_sun
+        :rtype: float
+        """
+        return np.pi * theta_E**2

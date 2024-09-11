@@ -84,8 +84,8 @@ class PointMass(LensProfileBase):
         return f_xx, f_xy, f_xy, f_yy
 
     def mass_3d_lens(self, r, theta_E):
-        """
-        Mass enclosed within a 3d sphere of radius r, however it is just the point mass (in angular units).
+        """Mass enclosed within a 3d sphere of radius r, however it is just the point
+        mass (in angular units).
 
         :param r: radius in arcsec
         :type r: float

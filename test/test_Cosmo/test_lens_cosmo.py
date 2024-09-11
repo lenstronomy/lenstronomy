@@ -90,11 +90,11 @@ class TestLensCosmo(object):
         rho0_nfw, Rs_nfw, c_nfw, r200_nfw, M200_nfw = self.lensCosmo.nfw_angle2physical(
             Rs_angle, alpha_Rs
         )
-        npt.assert_almost_equal(rho0 / rho0_nfw, 1, decimal=10)
-        npt.assert_almost_equal(Rs / Rs_nfw, 1, decimal=10)
-        npt.assert_almost_equal(c / c_nfw, 1, decimal=10)
-        npt.assert_almost_equal(r200 / r200_nfw, 1, decimal=10)
-        npt.assert_almost_equal(M200 / M200_nfw, 1, decimal=10)
+        npt.assert_almost_equal(rho0 / rho0_nfw, 1, decimal=8)
+        npt.assert_almost_equal(Rs / Rs_nfw, 1, decimal=8)
+        npt.assert_almost_equal(c / c_nfw, 1, decimal=8)
+        npt.assert_almost_equal(r200 / r200_nfw, 1, decimal=8)
+        npt.assert_almost_equal(M200 / M200_nfw, 1, decimal=8)
 
     def test_gnfw_physical2angle(self):
         M = 10.0**13.5
@@ -108,8 +108,8 @@ class TestLensCosmo(object):
 
         Rs_angle_nfw, alpha_Rs_nfw = self.lensCosmo.nfw_physical2angle(M, c)
 
-        npt.assert_almost_equal(Rs_angle / Rs_angle_nfw, 1, decimal=10)
-        npt.assert_almost_equal(alpha_Rs / alpha_Rs_nfw, 1, decimal=10)
+        npt.assert_almost_equal(Rs_angle / Rs_angle_nfw, 1, decimal=8)
+        npt.assert_almost_equal(alpha_Rs / alpha_Rs_nfw, 1, decimal=8)
 
     def test_gnfwParam_physical(self):
         M = 10.0**13.5

@@ -382,7 +382,7 @@ class LikelihoodModule(object):
             if verbose is True:
                 print("custom added logL = %s" % logL_cond)
 
-        if logL > -(10**17):  # so that custom logL may return -1e18 instead of -inf
+        if logL > -(10**18):  # so that custom logL may return -1e18 instead of -inf
             logL_prior = self._prior_likelihood.logL(**kwargs_return)
             logL += logL_prior
             if verbose is True:

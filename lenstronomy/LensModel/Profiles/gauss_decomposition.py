@@ -502,7 +502,7 @@ class GeneralizedNFWEllipseGaussDec(GaussDecompositionAbstract):
         gamma_in = kwargs["gamma_in"]
 
         kappa_s = self.gnfw.alpha_Rs_to_kappa_s(Rs, alpha_Rs, gamma_in)
-        kappa = self.gnfw.kappa(y, Rs, kappa_s, gamma_in)
+        kappa = self.gnfw._kappa(y, Rs, kappa_s, gamma_in)
 
         return kappa
 

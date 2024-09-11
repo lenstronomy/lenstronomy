@@ -153,9 +153,7 @@ class GNFW(LensProfileBase):
         R = np.sqrt(x_**2 + y_**2)
         R = np.maximum(R, self._s)
 
-        kappa_s = self.alpha_Rs_to_kappa_s(Rs, alpha_Rs, gamma_in)
-
-        f_r = self._alpha(R, Rs, kappa_s, gamma_in)
+        f_r = self.alpha(R, Rs, alpha_Rs, gamma_in)
         f_x = f_r * x_ / R
         f_y = f_r * y_ / R
 
@@ -187,10 +185,8 @@ class GNFW(LensProfileBase):
         y_ = y - center_y
         R = np.sqrt(x_**2 + y_**2)
 
-        kappa_s = self.alpha_Rs_to_kappa_s(Rs, alpha_Rs, gamma_in)
-
-        kappa = self._kappa(R, Rs, kappa_s, gamma_in)
-        f_r = self._alpha(R, Rs, kappa_s, gamma_in)
+        kappa = self.kappa(R, Rs, alpha_Rs, gamma_in)
+        f_r = self.alpha(R, Rs, alpha_Rs, gamma_in)
         f_rr = 2 * kappa - f_r / R
 
         cos_t = x_ / R

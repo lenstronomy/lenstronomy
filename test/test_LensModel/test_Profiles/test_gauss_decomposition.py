@@ -288,11 +288,11 @@ class TestGeneralizedNFWGaussDec(object):
         R_s = 20.0
         gamma_in = 0.8
 
-        alpha_Rs = self.gnfw.alpha(R_s, R_s, kappa_s, gamma_in)
+        alpha_Rs = self.gnfw._alpha(R_s, R_s, kappa_s, gamma_in)
         kappa_1d = self.gnfw_gauss.get_kappa_1d(
             rs, alpha_Rs=alpha_Rs, Rs=R_s, gamma_in=gamma_in
         )
-        kappa_1d_spherical = self.gnfw.kappa(rs, R_s, kappa_s, gamma_in)
+        kappa_1d_spherical = self.gnfw._kappa(rs, R_s, kappa_s, gamma_in)
 
         npt.assert_allclose(kappa_1d, kappa_1d_spherical, rtol=0.01)
 

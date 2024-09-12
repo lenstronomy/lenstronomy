@@ -207,7 +207,7 @@ class LensCosmo(object):
         """
         Rs = Rs_angle * const.arcsec * self.dd
         theta_scaled = alpha_Rs * self.sigma_crit * self.dd * const.arcsec
-        factor = self._gnfw.alpha(1, 1, 1, gamma_in) / 4.0
+        factor = self._gnfw.get_alpha_Rs_for_kappa_s_1(1, gamma_in) / 4.0
         rho0 = theta_scaled / (4 * Rs**2 * factor)
         rho0_com = rho0 / self.h**2
         c = self.gnfw_param.c_rho0(rho0_com, self.z_lens, gamma_in)
@@ -242,7 +242,7 @@ class LensCosmo(object):
         """
         rho0, Rs, r200 = self.gnfwParam_physical(M, c, gamma_in)
         Rs_angle = Rs / self.dd / const.arcsec  # Rs in arcsec
-        factor = self._gnfw.alpha(1, 1, 1, gamma_in) / 4.0
+        factor = self._gnfw.get_alpha_Rs_for_kappa_s_1(1, gamma_in) / 4.0
         alpha_Rs = rho0 * (4 * Rs**2 * factor)
         return Rs_angle, alpha_Rs / self.sigma_crit / self.dd / const.arcsec
 

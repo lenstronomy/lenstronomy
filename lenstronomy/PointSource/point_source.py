@@ -20,6 +20,7 @@ class PointSource(object):
         kwargs_lens_eqn_solver=None,
         index_lens_model_list=None,
         point_source_frame_list=None,
+        redshift_list=None,
     ):
         """
 
@@ -50,6 +51,8 @@ class PointSource(object):
          Integers correspond to the i'th list entry of index_lens_model_list indicating in which frame/band the image is
          appearing, e.g., four images and four cutouts, you can do [[0], [1], [2], [3]] when the frames
          (ordered as the list) are in the same order as the point sources (indices)
+        :param redshift_list: list of redshifts (only required for multiple source redshifts)
+        :type redshift_list: None or list
         """
         if len(point_source_type_list) > 0:
             if index_lens_model_list is not None and point_source_frame_list is None:
@@ -72,6 +75,9 @@ class PointSource(object):
         if flux_from_point_source_list is None:
             flux_from_point_source_list = [True] * len(point_source_type_list)
         self._flux_from_point_source_list = flux_from_point_source_list
+        if redshift_list is None:
+            redshift_list = [None] * len(point_source_type_list)
+        self._redshift_list = redshift_list
         for i, model in enumerate(point_source_type_list):
             if model == "UNLENSED":
                 from lenstronomy.PointSource.Types.unlensed import Unlensed
@@ -92,6 +98,7 @@ class PointSource(object):
                             additional_images=additional_images_list[i],
                             index_lens_model_list=index_lens_model_list,
                             point_source_frame_list=point_source_frame_list[i],
+                            redshift=redshift_list[i],
                         ),
                         save_cache=save_cache,
                     )
@@ -104,7 +111,8 @@ class PointSource(object):
                 self._point_source_list.append(
                     PointSourceCached(
                         SourcePositions(
-                            lens_model, fixed_magnification=fixed_magnification_list[i]
+                            lens_model, fixed_magnification=fixed_magnification_list[i],
+                            redshift=redshift_list[i],
                         ),
                         save_cache=save_cache,
                     )
@@ -183,7 +191,7 @@ class PointSource(object):
         """Set the save cache boolean to new value.
 
         :param save_cache: bool, if True, saves (or uses a previously saved) values
-        :return: updated class and sub-class instances to either save or not save the
+        :return: updated class and subclass instances to either save or not save the
             point source information in cache
         """
         self._set_save_cache(save_cache)
@@ -467,6 +475,7 @@ class PointSource(object):
             if model in ["LENSED_POSITION", "SOURCE_POSITION"]:
                 x_pos = x_image_list[i]
                 y_pos = y_image_list[i]
+                # TODO: ray-trace to specific source redshift
                 x_source, y_source = self._lens_model.ray_shooting(
                     x_pos, y_pos, kwargs_lens
                 )

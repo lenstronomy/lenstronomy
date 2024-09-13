@@ -142,13 +142,17 @@ class TestData(object):
             "kernel_point_source": kernel_point_source_subsampled,
             "point_source_supersampling_factor": subsampling_res,
             "kernel_point_source_normalisation": False,
-
         }
         psf = PSF(**kwargs_pixel_subsampled)
-        kernel_supersampled_new = psf.kernel_point_source_supersampled(supersampling_factor=subsampling_res - 1,
-                                                                       updata_cache=True)
-        kernel_supersampled_origin = psf.kernel_point_source_supersampled(supersampling_factor=subsampling_res)
-        npt.assert_almost_equal(kernel_supersampled_origin, kernel_point_source_subsampled)
+        kernel_supersampled_new = psf.kernel_point_source_supersampled(
+            supersampling_factor=subsampling_res - 1, updata_cache=True
+        )
+        kernel_supersampled_origin = psf.kernel_point_source_supersampled(
+            supersampling_factor=subsampling_res
+        )
+        npt.assert_almost_equal(
+            kernel_supersampled_origin, kernel_point_source_subsampled
+        )
 
     def test_fwhm(self):
         deltaPix = 1.0

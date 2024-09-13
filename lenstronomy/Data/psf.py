@@ -169,7 +169,9 @@ class PSF(object):
         ):
             kernel_point_source_supersampled = self._kernel_point_source_supersampled
             return kernel_point_source_supersampled
-        if hasattr(self, "_kernel_point_source_init") and hasattr(self, "_point_source_supersampling_factor_init"):
+        if hasattr(self, "_kernel_point_source_init") and hasattr(
+            self, "_point_source_supersampling_factor_init"
+        ):
             if self._point_source_supersampling_factor_init == supersampling_factor:
                 kernel_point_source_supersampled = self._kernel_point_source_init
                 return kernel_point_source_supersampled

@@ -44,6 +44,8 @@ class TestLensModel(object):
             "DIPOLE",
             "GAUSSIAN_ELLIPSE_KAPPA",
             "GAUSSIAN_ELLIPSE_POTENTIAL",
+            "GNFW",
+            "GNFW_ELLIPSE_GAUSS_DEC",
             "MULTI_GAUSSIAN",
             "MULTI_GAUSSIAN_ELLIPSE_KAPPA",
             "MULTI_GAUSSIAN_ELLIPSE_POTENTIAL",

@@ -144,7 +144,9 @@ class TestNumerics(object):
 
         kernel_size = 9
         kernel_super = kernel_util.cut_psf(
-            psf_data=kernel_super, psf_size=kernel_size * self._supersampling_factor, normalisation=True
+            psf_data=kernel_super,
+            psf_size=kernel_size * self._supersampling_factor,
+            normalisation=True,
         )
 
         # make instance of the PixelGrid class
@@ -240,7 +242,9 @@ class TestNumerics(object):
             kwargs_lens_light=self.kwargs_light, unconvolved=False
         )
         npt.assert_almost_equal(
-            (self.image_true * self.psf_norm_factor - image_conv) / self.image_true, 0, decimal=2
+            (self.image_true * self.psf_norm_factor - image_conv) / self.image_true,
+            0,
+            decimal=2,
         )
 
     def test_low_conv_high_grid(self):
@@ -267,7 +271,9 @@ class TestNumerics(object):
             kwargs_lens_light=self.kwargs_light, unconvolved=False
         )
         npt.assert_almost_equal(
-            (self.image_true * self.psf_norm_factor - image_conv) / self.image_true, 0, decimal=1
+            (self.image_true * self.psf_norm_factor - image_conv) / self.image_true,
+            0,
+            decimal=1,
         )
 
     def test_low_conv_high_adaptive(self):
@@ -294,7 +300,9 @@ class TestNumerics(object):
             kwargs_lens_light=self.kwargs_light, unconvolved=False
         )
         npt.assert_almost_equal(
-            (self.image_true * self.psf_norm_factor - image_conv) / self.image_true, 0, decimal=1
+            (self.image_true * self.psf_norm_factor - image_conv) / self.image_true,
+            0,
+            decimal=1,
         )
 
     def test_high_adaptive(self):
@@ -321,7 +329,9 @@ class TestNumerics(object):
             kwargs_lens_light=self.kwargs_light, unconvolved=False
         )
         npt.assert_almost_equal(
-            (self.image_true * self.psf_norm_factor - image_conv) / self.image_true, 0, decimal=1
+            (self.image_true * self.psf_norm_factor - image_conv) / self.image_true,
+            0,
+            decimal=1,
         )
 
     def test_low_res(self):
@@ -348,7 +358,9 @@ class TestNumerics(object):
             kwargs_lens_light=self.kwargs_light, unconvolved=False
         )
         npt.assert_almost_equal(
-            (self.image_true * self.psf_norm_factor - image_conv) / self.image_true, 0, decimal=1
+            (self.image_true * self.psf_norm_factor - image_conv) / self.image_true,
+            0,
+            decimal=1,
         )
 
     def test_sub_frame(self):

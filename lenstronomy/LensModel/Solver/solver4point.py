@@ -26,11 +26,14 @@ class Solver4Point(object):
             "CNFW_ELLIPSE_POTENTIAL",
             "EPL",
             "EPL_BOXYDISKY",
+            "EPL_BOXYDISKY_ELL",
             "EPL_MULTIPOLE_M3M4",
+            "EPL_MULTIPOLE_M3M4_ELL",
         ]:
             raise ValueError(
                 "first lens model must be supported by the solver: 'SPEP', 'SPEMD', 'PEMD',"
-                " 'SIE', 'NIE', 'EPL', 'EPL_BOXYDISKY', 'EPL_MULTIPOLE_M3M4', 'NFW_ELLIPSE_POTENTIAL', 'NFW_ELLIPSE_CSE', "
+                " 'SIE', 'NIE', 'EPL', 'EPL_BOXYDISKY', 'EPL_BOXYDISKY_ELL', 'EPL_MULTIPOLE_M3M4', "
+                "'EPL_MULTIPOLE_M3M4_ELL', 'NFW_ELLIPSE_POTENTIAL', 'NFW_ELLIPSE_CSE', "
                 "'SHAPELETS_CART', 'CNFW_ELLIPSE_POTENTIAL'."
                 "Your choice was %s" % lensModel.lens_model_list[0]
             )
@@ -161,7 +164,9 @@ class Solver4Point(object):
             "PEMD",
             "EPL",
             "EPL_BOXYDISKY",
+            "EPL_BOXYDISKY_ELL",
             "EPL_MULTIPOLE_M3M4",
+            "EPL_MULTIPOLE_M3M4_ELL",
         ]:
             [theta_E, e1, e2, center_x, center_y, _] = x
             kwargs_list[0]["theta_E"] = theta_E
@@ -220,7 +225,9 @@ class Solver4Point(object):
             "PEMD",
             "EPL",
             "EPL_BOXYDISKY",
+            "EPL_BOXYDISKY_ELL",
             "EPL_MULTIPOLE_M3M4",
+            "EPL_MULTIPOLE_M3M4_ELL",
         ]:
             e1 = kwargs_list[0]["e1"]
             e2 = kwargs_list[0]["e2"]
@@ -272,7 +279,9 @@ class Solver4Point(object):
             "PEMD",
             "EPL",
             "EPL_BOXYDISKY",
+            "EPL_BOXYDISKY_ELL",
             "EPL_MULTIPOLE_M3M4",
+            "EPL_MULTIPOLE_M3M4_ELL",
         ]:
             kwargs_fixed["theta_E"] = kwargs_lens["theta_E"]
             kwargs_fixed["e1"] = kwargs_lens["e1"]

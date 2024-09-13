@@ -84,18 +84,18 @@ class MultiGaussianEllipseKappa(LensProfileBase):
 
         for i in range(len(amp)):
             if isinstance(e1, int) or isinstance(e1, float):
-                current_e1 = e1
-                current_e2 = e2
+                e1_i = e1
+                e2_i = e2
             else:
-                current_e1 = e1[i]
-                current_e2 = e2[i]
+                e1_i = e1[i]
+                e2_i = e2[i]
             function += self.gaussian_ellipse_kappa.function(
                 x,
                 y,
                 scale_factor * amp[i],
                 sigma[i],
-                current_e1,
-                current_e2,
+                e1_i,
+                e2_i,
                 center_x,
                 center_y,
             )
@@ -134,18 +134,18 @@ class MultiGaussianEllipseKappa(LensProfileBase):
 
         for i in range(len(amp)):
             if isinstance(e1, int) or isinstance(e1, float):
-                current_e1 = e1
-                current_e2 = e2
+                e1_i = e1
+                e2_i = e2
             else:
-                current_e1 = e1[i]
-                current_e2 = e2[i]
+                e1_i = e1[i]
+                e2_i = e2[i]
             f_x_i, f_y_i = self.gaussian_ellipse_kappa.derivatives(
                 x,
                 y,
                 amp=scale_factor * amp[i],
                 sigma=sigma[i],
-                e1=current_e1,
-                e2=current_e2,
+                e1=e1_i,
+                e2=e2_i,
                 center_x=center_x,
                 center_y=center_y,
             )
@@ -188,18 +188,18 @@ class MultiGaussianEllipseKappa(LensProfileBase):
 
         for i in range(len(amp)):
             if isinstance(e1, int) or isinstance(e1, float):
-                current_e1 = e1
-                current_e2 = e2
+                e1_i = e1
+                e2_i = e2
             else:
-                current_e1 = e1[i]
-                current_e2 = e2[i]
+                e1_i = e1[i]
+                e2_i = e2[i]
             f_xx_i, f_xy_i, _, f_yy_i = self.gaussian_ellipse_kappa.hessian(
                 x,
                 y,
                 amp=scale_factor * amp[i],
                 sigma=sigma[i],
-                e1=current_e1,
-                e2=current_e2,
+                e1=e1_i,
+                e2=e2_i,
                 center_x=center_x,
                 center_y=center_y,
             )
@@ -240,18 +240,18 @@ class MultiGaussianEllipseKappa(LensProfileBase):
 
         for i in range(len(amp)):
             if isinstance(e1, int) or isinstance(e1, float):
-                current_e1 = e1
-                current_e2 = e2
+                e1_i = e1
+                e2_i = e2
             else:
-                current_e1 = e1[i]
-                current_e2 = e2[i]
+                e1_i = e1[i]
+                e2_i = e2[i]
             density_2d += self.gaussian_ellipse_kappa.density_2d(
                 x,
                 y,
                 amp=scale_factor * amp[i],
                 sigma=sigma[i],
-                e1=current_e1,
-                e2=current_e2,
+                e1=e1_i,
+                e2=e2_i,
                 center_x=center_x,
                 center_y=center_y,
             )

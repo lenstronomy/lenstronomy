@@ -299,7 +299,7 @@ class LightModelBase(object):
                     "MULTI_GAUSSIAN_ELLIPSE",
                     "LINE_PROFILE",
                     "HERNQUIST",
-                    "HERNQUIST_ELLIPSE"
+                    "HERNQUIST_ELLIPSE",
                 ]:
                     kwargs_new = kwargs_list_standard[i].copy()
                     if norm is True:

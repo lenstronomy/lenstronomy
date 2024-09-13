@@ -1,13 +1,16 @@
 import numpy as np
+from scipy.special import hyp2f1
 from scipy import interpolate
 from astropy.cosmology import default_cosmology
 
-__all__ = ["NFWParam"]
+from .nfw_param import NFWParam
+
+__all__ = ["GNFWParam"]
 
 
-class NFWParam(object):
-    """Class which contains a halo model parameters dependent on cosmology for NFW
-    profile All distances are given in physical units.
+class GNFWParam(object):
+    """Class which contains a halo model parameters dependent on cosmology for gNFW
+    profile. All distances are given in physical units.
 
     Mass definitions are relative to 200 crit including redshift evolution. The redshift
     evolution is cosmology dependent (dark energy). The H0 dependence is propagated into
@@ -20,11 +23,12 @@ class NFWParam(object):
         """
 
         :param cosmo: astropy.cosmology instance
-        :type cosmo: astropy.cosmology
+        :type cosmo: astropy.cosmology instance
         """
         if cosmo is None:
             cosmo = default_cosmology.get()
         self.cosmo = cosmo
+        self.nfw_param = NFWParam(cosmo)
 
     def rhoc_z(self, z):
         """Compute the critical density of the universe at redshift z in physical units
@@ -36,15 +40,15 @@ class NFWParam(object):
             M_sun Mpc^-3]
         :rtype: float
         """
-        return self.rhoc * (self.cosmo.efunc(z)) ** 2
+        return self.nfw_param.rhoc_z(z)
         # return self.rhoc*(1+z)**3
 
     @staticmethod
-    def M200(rs, rho0, c):
-        """Calculation of the mass enclosed r_200 for NFW profile defined as.
+    def M200(rs, rho0, c, gamma_in):
+        """Calculation of the mass enclosed r_200 for gNFW profile defined as.
 
         .. math::
-            M_{200} = 4 \\pi \\rho_0^{3} r_{\\rm s}^3 \\left(\\log(1+c) - \\frac {c}{1 + c}  \\right)
+            M_{200} = 4 \\pi \\rho_0^{3} r_{\\rm s}^{3} \frac{c^{3 - \\gamma_{\\rm in}}} {3 - \\gamma_{\\rm in}}  {}_2F_1(3 - \\gamma_{\\rm in}, 3 - \\gamma_{\\rm in}; 4 - \\gamma_{\\rm in}; -c)
 
         :param rs: scale radius
         :type rs: float
@@ -52,12 +56,23 @@ class NFWParam(object):
         :type rho0: float
         :param c: concentration
         :type c: float [4,40]
+        :param gamma_in: inner slope of the gNFW profile
+        :type gamma_in: float
         :return: M(R_200) mass in units of rho0 * rs^3
+        :rtype: float
         """
-        return 4 * np.pi * rho0 * rs**3 * (np.log(1.0 + c) - c / (1.0 + c))
+        return (
+            4
+            * np.pi
+            * rho0
+            * rs**3
+            * c ** (3 - gamma_in)
+            / (3 - gamma_in)
+            * hyp2f1(3 - gamma_in, 3 - gamma_in, 4 - gamma_in, -c)
+        )
 
     def r200_M(self, M, z):
-        """Computes the radius R_200 crit of a halo of mass M in physical mass M/h.
+        """Compute the radius R_200 crit of a halo of mass M in physical mass M/h.
 
         :param M: halo mass in M_sun/h
         :type M: float or numpy array
@@ -66,10 +81,10 @@ class NFWParam(object):
         :return: radius R_200 in physical Mpc/h
         :rtype: float or numpy array
         """
-        return (3 * M / (4 * np.pi * self.rhoc_z(z) * 200)) ** (1.0 / 3.0)
+        return self.nfw_param.r200_M(M, z)
 
     def M_r200(self, r200, z):
-        """
+        """Compute the mass M_200 of a halo of radius r_200 in physical Mpc/h.
 
         :param r200: r200 in physical Mpc/h
         :type r200: float
@@ -78,21 +93,30 @@ class NFWParam(object):
         :return: M200 in M_sun/h
         :rtype: float
         """
-        return self.rhoc_z(z) * 200 * r200**3 * 4 * np.pi / 3.0
+        return self.nfw_param.M_r200(r200, z)
 
-    def rho0_c(self, c, z):
+    def rho0_c(self, c, z, gamma_in):
         """Computes density normalization as a function of concentration parameter.
 
         :param c: concentration
-        :type c: float [4,40]
+        :type c: float
         :param z: redshift
         :type z: float
+        :param gamma_in: inner slope of the gNFW profile
+        :type gamma_in: float
         :return: density normalization in h^2/Mpc^3 (physical)
         :rtype: float
         """
-        return 200.0 / 3 * self.rhoc_z(z) * c**3 / (np.log(1.0 + c) - c / (1.0 + c))
+        return (
+            200.0
+            / 3
+            * self.rhoc_z(z)
+            * (3 - gamma_in)
+            * c**gamma_in
+            / hyp2f1(3 - gamma_in, 3 - gamma_in, 4 - gamma_in, -c)
+        )
 
-    def c_rho0(self, rho0, z):
+    def c_rho0(self, rho0, z, gamma_in):
         """Computes the concentration given density normalization rho_0 in h^2/Mpc^3
         (physical) (inverse of function rho0_c)
 
@@ -100,23 +124,24 @@ class NFWParam(object):
         :type rho0: float
         :param z: redshift
         :type z: float
+        :param gamma_in: inner slope of the gNFW profile
+        :type gamma_in: float
         :return: concentration parameter c
         :rtype: float
         """
         if not hasattr(self, "_c_rho0_interp"):
             c_array = np.linspace(0.1, 30, 100)
-            rho0_array = self.rho0_c(c_array, z)
+            rho0_array = self.rho0_c(c_array, z, gamma_in)
 
             self._c_rho0_interp = interpolate.InterpolatedUnivariateSpline(
                 rho0_array, c_array, w=None, bbox=[None, None], k=3
             )
         return self._c_rho0_interp(rho0)
 
-    @staticmethod
-    def c_M_z(M, z):
+    def c_M_z(self, M, z):
         """
         Fitting function of http://moriond.in2p3.fr/J08/proceedings/duffy.pdf for the mass and redshift dependence of
-        the concentration parameter
+        the concentration parameter. Here, assuming the NFW M-c relation for the gNFW profile.
 
         :param M: halo mass in M_sun/h
         :type M: float or numpy array
@@ -125,14 +150,9 @@ class NFWParam(object):
         :return: concentration parameter as float
         :rtype: float
         """
-        # fitted parameter values
-        A = 5.22
-        B = -0.072
-        C = -0.42
-        M_pivot = 2.0 * 10**12
-        return A * (M / M_pivot) ** B * (1 + z) ** C
+        return self.nfw_param.c_M_z(M, z)
 
-    def nfw_Mz(self, M, z):
+    def gnfw_Mz(self, M, z, gamma_in):
         """Returns all needed parameter (in physical units modulo h) to draw the profile
         of the main halo r200 in physical Mpc/h rho_s in  h^2/Mpc^3 (physical) Rs in
         Mpc/h physical c unit less.
@@ -141,11 +161,13 @@ class NFWParam(object):
         :type M: float
         :param z: redshift
         :type z: float
+        :param gamma_in: inner slope of the gNFW profile
+        :type gamma_in: float
         :return: r200, rho0, c, Rs
-        :rtype: tuple
+        :rtype: float, float, float, float
         """
         c = self.c_M_z(M, z)
         r200 = self.r200_M(M, z)
-        rho0 = self.rho0_c(c, z)
+        rho0 = self.rho0_c(c, z, gamma_in)
         Rs = r200 / c
         return r200, rho0, c, Rs

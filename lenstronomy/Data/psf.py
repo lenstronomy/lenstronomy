@@ -82,7 +82,9 @@ class PSF(object):
                     self._point_source_supersampling_factor,
                 )
                 if kernel_point_source_normalisation is False:
-                    kernel_point_source_ *= np.sum(kernel_point_source) / np.sum(kernel_point_source_)
+                    kernel_point_source_ *= np.sum(kernel_point_source) / np.sum(
+                        kernel_point_source_
+                    )
             # making sure the PSF is positive semi-definite and do the normalisation if kernel_point_source_normalisation is true
             if np.min(kernel_point_source_) < 0:
                 warnings.warn(
@@ -183,8 +185,7 @@ class PSF(object):
             elif self.psf_type == "PIXEL":
 
                 kernel = kernel_util.subgrid_kernel(
-                    self.kernel_point_source
-                    , supersampling_factor, odd=True, num_iter=5
+                    self.kernel_point_source, supersampling_factor, odd=True, num_iter=5
                 )
                 n = len(self.kernel_point_source)
                 n_new = n * supersampling_factor
@@ -199,7 +200,9 @@ class PSF(object):
                 kernel_point_source_supersampled = kernel_util.cut_psf(
                     kernel, psf_size=n_new
                 )
-                kernel_point_source_supersampled *= self._kernel_norm / np.sum(kernel_point_source_supersampled)
+                kernel_point_source_supersampled *= self._kernel_norm / np.sum(
+                    kernel_point_source_supersampled
+                )
 
             elif self.psf_type == "NONE":
                 kernel_point_source_supersampled = self._kernel_point_source

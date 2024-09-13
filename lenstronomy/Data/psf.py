@@ -71,7 +71,9 @@ class PSF(object):
                 )
             # store the initial input PSF and supersampling factor
             self._kernel_point_source_init = kernel_point_source
-            self._point_source_supersampling_factor_init = point_source_supersampling_factor
+            self._point_source_supersampling_factor_init = (
+                point_source_supersampling_factor
+            )
             kernel_point_source_ = copy.deepcopy(kernel_point_source)
             if kernel_point_source_normalisation is True:
                 kernel_point_source_ /= np.sum(kernel_point_source)
@@ -167,7 +169,9 @@ class PSF(object):
         ):
             kernel_point_source_supersampled = self._kernel_point_source_supersampled
             return kernel_point_source_supersampled
-        if hasattr(self, "._kernel_point_source_init") and hasattr(self, "._point_source_supersampling_factor_init"):
+        if hasattr(self, "._kernel_point_source_init") and hasattr(
+            self, "._point_source_supersampling_factor_init"
+        ):
             if self._point_source_supersampling_factor_init == supersampling_factor:
                 kernel_point_source_supersampled = self._kernel_point_source_init
                 return kernel_point_source_supersampled
@@ -221,9 +225,7 @@ class PSF(object):
         else:
             raise ValueError("psf_type %s not valid!" % self.psf_type)
         if updata_cache is True:
-            self._kernel_point_source_supersampled = (
-                kernel_point_source_supersampled
-            )
+            self._kernel_point_source_supersampled = kernel_point_source_supersampled
             self._point_source_supersampling_factor = supersampling_factor
         return kernel_point_source_supersampled
 
@@ -275,4 +277,3 @@ class PSF(object):
             return self._point_source_supersampling_factor_init
         else:
             return 1
-

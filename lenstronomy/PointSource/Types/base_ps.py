@@ -29,6 +29,7 @@ class PSBase(object):
          Integers correspond to the i'th list entry of index_lens_model_list indicating in which frame/band the image is
          appearing
         :param redshift: redshift of the source, only required for multiple source redshifts
+        :type redshift: None or float
         """
         self._lens_model = lens_model
         if index_lens_model_list is not None:

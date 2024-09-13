@@ -13,10 +13,13 @@ class PointSourceRendering(object):
 
         :param pixel_grid: PixelGrid() instance
         :param supersampling_factor: int, factor of supersampling of point source
+         if None, then uses the supersampling factor of the original PSF
         :param psf: PSF() instance
         """
         self._pixel_grid = pixel_grid
         self._nx, self._ny = self._pixel_grid.num_pixel_axes
+        if supersampling_factor is None:
+            supersampling_factor = psf.point_source_supersampling_factor
         self._supersampling_factor = supersampling_factor
         self._psf = psf
 

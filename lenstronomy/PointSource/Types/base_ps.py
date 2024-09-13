@@ -14,6 +14,7 @@ class PSBase(object):
         additional_images=False,
         index_lens_model_list=None,
         point_source_frame_list=None,
+        redshift=None,
     ):
         """
 
@@ -27,6 +28,8 @@ class PSBase(object):
         :param point_source_frame_list: list of lists mirroring the structure of the image positions.
          Integers correspond to the i'th list entry of index_lens_model_list indicating in which frame/band the image is
          appearing
+        :param redshift: redshift of the source, only required for multiple source redshifts
+        :type redshift: None or float
         """
         self._lens_model = lens_model
         if index_lens_model_list is not None:

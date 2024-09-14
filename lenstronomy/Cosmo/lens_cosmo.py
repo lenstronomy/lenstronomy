@@ -21,7 +21,7 @@ class LensCosmo(object):
 
         :param z_lens: redshift of lens
         :param z_source: redshift of source
-        :param cosmo: astropy.cosmology instance
+        :param cosmo: ~astropy.cosmology instance
         """
 
         self.z_lens = z_lens
@@ -29,7 +29,6 @@ class LensCosmo(object):
         self.background = Background(cosmo=cosmo)
         self.nfw_param = NFWParam(cosmo=cosmo)
         self.gnfw_param = GNFWParam(cosmo=cosmo)
-        self._gnfw = GNFW()
 
     @property
     def h(self):
@@ -205,6 +204,8 @@ class LensCosmo(object):
         :param gamma_in: inner slope of the gNFW profile
         :return: rho0 [Msun/Mpc^3], Rs [Mpc], c, r200 [Mpc], M200 [Msun]
         """
+        if not hasattr(self, "self._gnfw"):
+            self._gnfw = GNFW()
         Rs = Rs_angle * const.arcsec * self.dd
         theta_scaled = alpha_Rs * self.sigma_crit * self.dd * const.arcsec
         factor = self._gnfw.get_alpha_Rs_for_kappa_s_1(1, gamma_in) / 4.0
@@ -240,6 +241,8 @@ class LensCosmo(object):
         :return: Rs_angle (angle at scale radius) (in units of arcsec), alpha_Rs
             (observed bending angle at the scale radius
         """
+        if not hasattr(self, "self._gnfw"):
+            self._gnfw = GNFW()
         rho0, Rs, r200 = self.gnfwParam_physical(M, c, gamma_in)
         Rs_angle = Rs / self.dd / const.arcsec  # Rs in arcsec
         factor = self._gnfw.get_alpha_Rs_for_kappa_s_1(1, gamma_in) / 4.0

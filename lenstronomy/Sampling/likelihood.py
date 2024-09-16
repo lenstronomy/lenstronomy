@@ -336,14 +336,14 @@ class LikelihoodModule(object):
         :type verbose: boolean
         :returns: log likelihood of the data given the model (natural logarithm)
         """
-        # extract parameters
-        kwargs_return = self.param.args2kwargs(args)
         if self._check_bounds is True:
             penalty, bound_hit = self.check_bounds(
                 args, self._lower_limit, self._upper_limit, verbose=verbose
             )
             if bound_hit is True:
                 return -(10**18)
+        # extract parameters
+        kwargs_return = self.param.args2kwargs(args)
         return self.log_likelihood(kwargs_return, verbose=verbose)
 
     def log_likelihood(self, kwargs_return, verbose=False):

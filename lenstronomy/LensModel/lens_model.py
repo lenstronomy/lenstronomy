@@ -95,6 +95,8 @@ class LensModel(object):
 
         # Multi-plane or single-plane lensing?
         self.multi_plane = multi_plane
+        self._decouple_multi_plane = decouple_multi_plane
+        self._los_effects = los_effects
         if multi_plane is True:
             if lens_redshift_list is None:
                 raise ValueError(
@@ -478,6 +480,33 @@ class LensModel(object):
         :return: None
         """
         self.lens_model.set_dynamic()
+
+    def change_source_redshift(self, z_source):
+        """
+        changes the ray-tracing (and all relevant default calculations) to a different source redshift
+        while preserving the deflection angles to z_source_convention
+
+        :param z_source: source redshift
+        :return: None
+        """
+        # TODO: for single plane, scale everything with relative deflection angle
+        # TODO: for multi plane, overwrite ray-tracing
+        if z_source == self.z_source:
+            return 0
+        if self.multi_plane is True:
+            if self._decouple_multi_plane:
+                raise NotImplementedError("MultiPlaneDecoupled lens model does not support change in source redshift")
+            else:
+                # TODO: make new multi-plane model or overwrite ray-tracing
+                self.lens_model = MultiPlane()
+        else:
+            if self._los_effects is True:
+                raise NotImplementedError("SinglePlaneLOS lens model does not support change in source redshift")
+            else:
+                self.lens_model.change_redshift_scaling(alpha_scaling)
+
+        if self.z_lens is not None:
+            self._lensCosmo = LensCosmo(self.z_lens, z_source, cosmo=self.cosmo)
 
     def _deflection_differential(self, x, y, kwargs, k=None, diff=0.00001):
         """

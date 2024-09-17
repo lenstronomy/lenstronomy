@@ -9,6 +9,31 @@ __all__ = ["SinglePlane"]
 class SinglePlane(ProfileListBase):
     """Class to handle an arbitrary list of lens models in a single lensing plane."""
 
+    def __init__(
+        self,
+        lens_model_list,
+        numerical_alpha_class=None,
+        lens_redshift_list=None,
+        z_source_convention=None,
+        kwargs_interp=None,
+        kwargs_synthesis=None,
+        alpha_scaling=1,
+        ):
+        """
+
+        :param lens_model_list: list of strings with lens model names
+        :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model
+         deflection angles as a lens model. See the documentation in Profiles.numerical_deflections
+        :param kwargs_interp: interpolation keyword arguments specifying the numerics.
+         See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
+        :param kwargs_synthesis: keyword arguments for the 'SYNTHESIS' lens model, if applicable
+        :param alpha_scaling: scaling factor of deflection angle relative to z_source_convention
+        """
+        self._alpha_scaling = alpha_scaling
+        ProfileListBase.__init__(self, lens_model_list=lens_model_list, numerical_alpha_class=numerical_alpha_class,
+                                 lens_redshift_list=lens_redshift_list, z_source_convention=z_source_convention,
+                                 kwargs_interp=kwargs_interp, kwargs_synthesis=kwargs_synthesis)
+
     def ray_shooting(self, x, y, kwargs, k=None):
         """Maps image to source position (inverse deflection).
 
@@ -68,7 +93,7 @@ class SinglePlane(ProfileListBase):
         for i, func in enumerate(self.func_list):
             if bool_list[i] is True:
                 potential += func.function(x, y, **kwargs[i])
-        return potential
+        return potential * self._alpha_scaling
 
     def alpha(self, x, y, kwargs, k=None):
         """Deflection angles.
@@ -95,7 +120,7 @@ class SinglePlane(ProfileListBase):
                 f_x += f_x_i
                 f_y += f_y_i
 
-        return f_x, f_y
+        return f_x * self._alpha_scaling, f_y * self._alpha_scaling
 
     def hessian(self, x, y, kwargs, k=None):
         """Hessian matrix.
@@ -129,7 +154,15 @@ class SinglePlane(ProfileListBase):
                 f_xy += f_xy_i
                 f_yx += f_yx_i
                 f_yy += f_yy_i
-        return f_xx, f_xy, f_yx, f_yy
+        return f_xx * self._alpha_scaling, f_xy * self._alpha_scaling, f_yx * self._alpha_scaling, f_yy * self._alpha_scaling
+
+    def change_redshift_scaling(self, alpha_scaling):
+        """
+
+        :param alpha_scaling: scaling parameter of the reduced deflection angle relative to z_source_convention
+        :return: None
+        """
+        self._alpha_scaling = alpha_scaling
 
     def mass_3d(self, r, kwargs, bool_list=None):
         """Computes the mass within a 3d sphere of radius r.

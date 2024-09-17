@@ -303,6 +303,18 @@ class TestLensModel(object):
         dt_sp = lens_model_sp.arrival_time(x, y, kwargs_lens=kwargs_lens)
         npt.assert_almost_equal(dt_sp, dt_mp, decimal=5)
 
+        # Multiplane
+        lens_model_mp_new = LensModel(lens_model_list=["SIS"], z_lens=z_lens, lens_redshift_list=[z_lens],
+                                  z_source_convention=z_source_convention, z_source=z_source_convention, multi_plane=True)
+        lens_model_mp_new.change_source_redshift(z_source=z_source_new)
+        beta_x_mp, beta_y_mp = lens_model_mp.ray_shooting(x, y, kwargs_lens)
+        beta_x_sp, beta_y_sp = lens_model_mp_new.ray_shooting(x, y, kwargs_lens)
+        npt.assert_almost_equal(beta_x_sp, beta_x_mp, decimal=5)
+        npt.assert_almost_equal(beta_y_sp, beta_y_mp, decimal=5)
+        dt_mp = lens_model_mp.arrival_time(x, y, kwargs_lens=kwargs_lens)
+        dt_sp = lens_model_mp_new.arrival_time(x, y, kwargs_lens=kwargs_lens)
+        npt.assert_almost_equal(dt_sp, dt_mp, decimal=5)
+
 
 class TestRaise(unittest.TestCase):
     def test_raise(self):

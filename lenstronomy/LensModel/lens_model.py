@@ -489,7 +489,6 @@ class LensModel(object):
         :param z_source: source redshift
         :return: None
         """
-        # TODO: for single plane, scale everything with relative deflection angle
         # TODO: for multi plane, overwrite ray-tracing
         if z_source == self.z_source:
             return 0
@@ -497,8 +496,10 @@ class LensModel(object):
             if self._decouple_multi_plane:
                 raise NotImplementedError("MultiPlaneDecoupled lens model does not support change in source redshift")
             else:
-                # TODO: make new multi-plane model or overwrite ray-tracing
-                self.lens_model = MultiPlane()
+                # TODO: is it possible to not re-initialize it for performance improvements?
+                kwargs_lens_class = self.lens_model.kwargs_class
+                kwargs_lens_class["z_source"] = z_source
+                self.lens_model = MultiPlane(**kwargs_lens_class)
         else:
             if self._los_effects is True:
                 raise NotImplementedError("SinglePlaneLOS lens model does not support change in source redshift")

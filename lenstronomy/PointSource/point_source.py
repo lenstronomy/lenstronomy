@@ -111,7 +111,8 @@ class PointSource(object):
                 self._point_source_list.append(
                     PointSourceCached(
                         SourcePositions(
-                            lens_model, fixed_magnification=fixed_magnification_list[i],
+                            lens_model,
+                            fixed_magnification=fixed_magnification_list[i],
                             redshift=redshift_list[i],
                         ),
                         save_cache=save_cache,

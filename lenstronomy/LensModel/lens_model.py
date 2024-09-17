@@ -489,7 +489,6 @@ class LensModel(object):
         :param z_source: source redshift
         :return: None
         """
-        # TODO: for multi plane, overwrite ray-tracing
         if z_source == self.z_source:
             return 0
         if self.multi_plane is True:

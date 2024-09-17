@@ -373,6 +373,23 @@ class TestRaise(unittest.TestCase):
                 z_source=1.0,
                 lens_redshift_list=[0.5, 0.5, 0.5],
             )
+        with self.assertRaises(NotImplementedError):
+            lens_model = LensModel(lens_model_list=["LOS"], z_source=2, z_lens=0.5)
+            lens_model.change_source_redshift(z_source=1)
+
+        with self.assertRaises(NotImplementedError):
+            kwargs_multiplane_model = {"x0_interp": 0,
+                                       "y0_interp": 0,
+                                       "alpha_x_interp_foreground": 1,
+                                       "alpha_y_interp_foreground": 1,
+                                       "alpha_x_interp_background": 0,
+                                       "alpha_y_interp_background": 0,
+                                       "z_split": 0.5}
+            lens_model = LensModel(lens_model_list=["SIS"], lens_redshift_list=[0.5], z_source=2, z_lens=0.5,
+                                   decouple_multi_plane=True,
+                                   multi_plane=True, kwargs_multiplane_model=kwargs_multiplane_model)
+            lens_model.change_source_redshift(z_source=1)
+
 
     def test_hessian_z1z2_raise(self):
         lensModel = LensModel(

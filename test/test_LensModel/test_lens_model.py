@@ -279,6 +279,30 @@ class TestLensModel(object):
         npt.assert_almost_equal(f_yx, f_yx_expected, decimal=5)
         npt.assert_almost_equal(f_yy, f_yy_expected, decimal=5)
 
+    def test_change_source_redshift(self):
+        """
+        testing changing source redshift agrees with multi-plane model
+
+        :return:
+        """
+        z_lens = 0.5
+        z_source_convention = 2
+        z_source_new = 1
+        lens_model_mp = LensModel(lens_model_list=["SIS"], z_lens=z_lens, lens_redshift_list=[z_lens],
+                              z_source_convention=z_source_convention, z_source=z_source_new, multi_plane=True)
+        lens_model_sp = LensModel(lens_model_list=["SIS"], z_lens=z_lens, z_source_convention=z_source_convention,
+                                  multi_plane=False, z_source=z_source_convention)
+        lens_model_sp.change_source_redshift(z_source=z_source_new)
+        kwargs_lens = [{"theta_E": 1, "center_x": 0, "center_y": 0}]
+        x, y = 1, 0
+        beta_x_mp, beta_y_mp = lens_model_mp.ray_shooting(x, y, kwargs_lens)
+        beta_x_sp, beta_y_sp = lens_model_sp.ray_shooting(x, y, kwargs_lens)
+        npt.assert_almost_equal(beta_x_sp, beta_x_mp, decimal=5)
+        npt.assert_almost_equal(beta_y_sp, beta_y_mp, decimal=5)
+        dt_mp = lens_model_mp.arrival_time(x, y, kwargs_lens=kwargs_lens)
+        dt_sp = lens_model_sp.arrival_time(x, y, kwargs_lens=kwargs_lens)
+        npt.assert_almost_equal(dt_sp, dt_mp, decimal=5)
+
 
 class TestRaise(unittest.TestCase):
     def test_raise(self):

@@ -503,10 +503,13 @@ class LensModel(object):
             if self._los_effects is True:
                 raise NotImplementedError("SinglePlaneLOS lens model does not support change in source redshift")
             else:
+                alpha_scaling = self._lensCosmo.beta_double_source_plane(z_lens=self.z_lens, z_source_1=z_source,
+                                                                         z_source_2=self._z_source_convention)
                 self.lens_model.change_redshift_scaling(alpha_scaling)
 
         if self.z_lens is not None:
             self._lensCosmo = LensCosmo(self.z_lens, z_source, cosmo=self.cosmo)
+        self.z_source = z_source
 
     def _deflection_differential(self, x, y, kwargs, k=None, diff=0.00001):
         """

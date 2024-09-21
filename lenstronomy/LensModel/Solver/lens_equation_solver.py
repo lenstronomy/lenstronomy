@@ -31,8 +31,7 @@ class LensEquationSolver(object):
         self.lensModel = lensModel
 
     def change_source_redshift(self, z_source=None):
-        """
-        change source redshift in solver
+        """Change source redshift in solver.
 
         :param z_source:
         :type z_source: float or None
@@ -222,8 +221,10 @@ class LensEquationSolver(object):
             )
 
         if self.lensModel.type != "SinglePlane":
-            raise ValueError("lens model type %s not supported for analytical lens equation solver, "
-                             "Needs to be SinglePlane." % self.lensModel.type)
+            raise ValueError(
+                "lens model type %s not supported for analytical lens equation solver, "
+                "Needs to be SinglePlane." % self.lensModel.type
+            )
 
         # re-scale solutions if source redshift has changed (i.e. alpha_scaling != 1)
         alpha_scaling = self.lensModel.lens_model.alpha_scaling

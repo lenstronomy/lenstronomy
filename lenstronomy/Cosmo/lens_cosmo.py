@@ -441,8 +441,7 @@ class LensCosmo(object):
         return m_star
 
     def beta_double_source_plane(self, z_lens, z_source_1, z_source_2):
-        """Model prediction of ratio of scaled
-        deflection angles.
+        """Model prediction of ratio of scaled deflection angles.
 
         :param z_lens: lens redshift
         :param z_source_1: source_1 redshift
@@ -451,8 +450,12 @@ class LensCosmo(object):
         :return: beta
         """
         ds1 = self.background.cosmo.angular_diameter_distance(z=z_source_1).value
-        dds1 = self.background.cosmo.angular_diameter_distance_z1z2(z1=z_lens, z2=z_source_1).value
+        dds1 = self.background.cosmo.angular_diameter_distance_z1z2(
+            z1=z_lens, z2=z_source_1
+        ).value
         ds2 = self.background.cosmo.angular_diameter_distance(z=z_source_2).value
-        dds2 = self.background.cosmo.angular_diameter_distance_z1z2(z1=z_lens, z2=z_source_2).value
+        dds2 = self.background.cosmo.angular_diameter_distance_z1z2(
+            z1=z_lens, z2=z_source_2
+        ).value
         beta = dds1 / ds1 * ds2 / dds2
         return beta

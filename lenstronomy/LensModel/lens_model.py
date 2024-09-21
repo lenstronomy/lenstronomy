@@ -174,11 +174,15 @@ class LensModel(object):
                 if z_source is not None and z_source_convention is not None:
                     if z_source != z_source_convention:
                         if z_lens is None:
-                            raise ValueError("a lens redshift needs to provided when z_source != z_source_convention")
+                            raise ValueError(
+                                "a lens redshift needs to provided when z_source != z_source_convention"
+                            )
                         else:
-                            alpha_scaling = self._lensCosmo.beta_double_source_plane(z_lens=self.z_lens,
-                                                                                     z_source_1=z_source,
-                                                                                     z_source_2=self._z_source_convention)
+                            alpha_scaling = self._lensCosmo.beta_double_source_plane(
+                                z_lens=self.z_lens,
+                                z_source_1=z_source,
+                                z_source_2=self._z_source_convention,
+                            )
                             self.lens_model.change_redshift_scaling(alpha_scaling)
 
     def info(self):
@@ -495,9 +499,9 @@ class LensModel(object):
         self.lens_model.set_dynamic()
 
     def change_source_redshift(self, z_source):
-        """
-        changes the ray-tracing (and all relevant default calculations) to a different source redshift
-        while preserving the deflection angles to z_source_convention
+        """Changes the ray-tracing (and all relevant default calculations) to a
+        different source redshift while preserving the deflection angles to
+        z_source_convention.
 
         :param z_source: source redshift
         :return: None
@@ -508,7 +512,9 @@ class LensModel(object):
             return 0
         if self.multi_plane is True:
             if self._decouple_multi_plane:
-                raise NotImplementedError("MultiPlaneDecoupled lens model does not support change in source redshift")
+                raise NotImplementedError(
+                    "MultiPlaneDecoupled lens model does not support change in source redshift"
+                )
             else:
                 # TODO: is it possible to not re-initialize it for performance improvements?
                 kwargs_lens_class = self.lens_model.kwargs_class
@@ -516,10 +522,15 @@ class LensModel(object):
                 self.lens_model = MultiPlane(**kwargs_lens_class)
         else:
             if self._los_effects is True:
-                raise NotImplementedError("SinglePlaneLOS lens model does not support change in source redshift")
+                raise NotImplementedError(
+                    "SinglePlaneLOS lens model does not support change in source redshift"
+                )
             else:
-                alpha_scaling = self._lensCosmo.beta_double_source_plane(z_lens=self.z_lens, z_source_1=z_source,
-                                                                         z_source_2=self._z_source_convention)
+                alpha_scaling = self._lensCosmo.beta_double_source_plane(
+                    z_lens=self.z_lens,
+                    z_source_1=z_source,
+                    z_source_2=self._z_source_convention,
+                )
                 self.lens_model.change_redshift_scaling(alpha_scaling)
 
         if self.z_lens is not None:

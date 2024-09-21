@@ -280,18 +280,28 @@ class TestLensModel(object):
         npt.assert_almost_equal(f_yy, f_yy_expected, decimal=5)
 
     def test_change_source_redshift(self):
-        """
-        testing changing source redshift agrees with multi-plane model
+        """Testing changing source redshift agrees with multi-plane model.
 
         :return:
         """
         z_lens = 0.5
         z_source_convention = 2
         z_source_new = 1
-        lens_model_mp = LensModel(lens_model_list=["SIS"], z_lens=z_lens, lens_redshift_list=[z_lens],
-                              z_source_convention=z_source_convention, z_source=z_source_new, multi_plane=True)
-        lens_model_sp = LensModel(lens_model_list=["SIS"], z_lens=z_lens, z_source_convention=z_source_convention,
-                                  multi_plane=False, z_source=z_source_convention)
+        lens_model_mp = LensModel(
+            lens_model_list=["SIS"],
+            z_lens=z_lens,
+            lens_redshift_list=[z_lens],
+            z_source_convention=z_source_convention,
+            z_source=z_source_new,
+            multi_plane=True,
+        )
+        lens_model_sp = LensModel(
+            lens_model_list=["SIS"],
+            z_lens=z_lens,
+            z_source_convention=z_source_convention,
+            multi_plane=False,
+            z_source=z_source_convention,
+        )
         lens_model_sp.change_source_redshift(z_source=z_source_new)
         kwargs_lens = [{"theta_E": 1, "center_x": 0, "center_y": 0}]
         x, y = 1, 0
@@ -304,8 +314,13 @@ class TestLensModel(object):
         npt.assert_almost_equal(dt_sp, dt_mp, decimal=5)
 
         # test directly with initialization
-        lens_model_sp = LensModel(lens_model_list=["SIS"], z_lens=z_lens, z_source_convention=z_source_convention,
-                                  multi_plane=False, z_source=z_source_new)
+        lens_model_sp = LensModel(
+            lens_model_list=["SIS"],
+            z_lens=z_lens,
+            z_source_convention=z_source_convention,
+            multi_plane=False,
+            z_source=z_source_new,
+        )
 
         beta_x_mp, beta_y_mp = lens_model_mp.ray_shooting(x, y, kwargs_lens)
         beta_x_sp, beta_y_sp = lens_model_sp.ray_shooting(x, y, kwargs_lens)
@@ -316,8 +331,14 @@ class TestLensModel(object):
         npt.assert_almost_equal(dt_sp, dt_mp, decimal=5)
 
         # Multiplane
-        lens_model_mp_new = LensModel(lens_model_list=["SIS"], z_lens=z_lens, lens_redshift_list=[z_lens],
-                                  z_source_convention=z_source_convention, z_source=z_source_convention, multi_plane=True)
+        lens_model_mp_new = LensModel(
+            lens_model_list=["SIS"],
+            z_lens=z_lens,
+            lens_redshift_list=[z_lens],
+            z_source_convention=z_source_convention,
+            z_source=z_source_convention,
+            multi_plane=True,
+        )
         lens_model_mp_new.change_source_redshift(z_source=z_source_new)
         beta_x_mp, beta_y_mp = lens_model_mp.ray_shooting(x, y, kwargs_lens)
         beta_x_sp, beta_y_sp = lens_model_mp_new.ray_shooting(x, y, kwargs_lens)
@@ -390,16 +411,24 @@ class TestRaise(unittest.TestCase):
             lens_model.change_source_redshift(z_source=1)
 
         with self.assertRaises(NotImplementedError):
-            kwargs_multiplane_model = {"x0_interp": 0,
-                                       "y0_interp": 0,
-                                       "alpha_x_interp_foreground": 1,
-                                       "alpha_y_interp_foreground": 1,
-                                       "alpha_x_interp_background": 0,
-                                       "alpha_y_interp_background": 0,
-                                       "z_split": 0.5}
-            lens_model = LensModel(lens_model_list=["SIS"], lens_redshift_list=[0.5], z_source=2, z_lens=0.5,
-                                   decouple_multi_plane=True,
-                                   multi_plane=True, kwargs_multiplane_model=kwargs_multiplane_model)
+            kwargs_multiplane_model = {
+                "x0_interp": 0,
+                "y0_interp": 0,
+                "alpha_x_interp_foreground": 1,
+                "alpha_y_interp_foreground": 1,
+                "alpha_x_interp_background": 0,
+                "alpha_y_interp_background": 0,
+                "z_split": 0.5,
+            }
+            lens_model = LensModel(
+                lens_model_list=["SIS"],
+                lens_redshift_list=[0.5],
+                z_source=2,
+                z_lens=0.5,
+                decouple_multi_plane=True,
+                multi_plane=True,
+                kwargs_multiplane_model=kwargs_multiplane_model,
+            )
             lens_model.change_source_redshift(z_source=1)
 
     def test_hessian_z1z2_raise(self):

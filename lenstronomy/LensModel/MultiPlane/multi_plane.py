@@ -58,22 +58,23 @@ class MultiPlane(object):
         :param distance_ratio_sampling: bool, if True, will use sampled
          distance ratios to update T_ij value in multi-lens plane computation.
         """
-        self.kwargs_class = {"z_source": z_source,
-                             "lens_model_list": lens_model_list,
-                             "lens_redshift_list": lens_redshift_list,
-                             "cosmo": cosmo,
-                             "numerical_alpha_class": numerical_alpha_class,
-                             "observed_convention_index": observed_convention_index,
-                             "ignore_observed_positions": ignore_observed_positions,
-                             "z_source_convention": z_source_convention,
-                             "z_lens_convention": z_lens_convention,
-                             "cosmo_interp": cosmo_interp,
-                             "z_interp_stop": z_interp_stop,
-                             "num_z_interp": num_z_interp,
-                             "kwargs_interp": kwargs_interp,
-                             "kwargs_synthesis": kwargs_synthesis,
-                             "distance_ratio_sampling": distance_ratio_sampling,
-                             }
+        self.kwargs_class = {
+            "z_source": z_source,
+            "lens_model_list": lens_model_list,
+            "lens_redshift_list": lens_redshift_list,
+            "cosmo": cosmo,
+            "numerical_alpha_class": numerical_alpha_class,
+            "observed_convention_index": observed_convention_index,
+            "ignore_observed_positions": ignore_observed_positions,
+            "z_source_convention": z_source_convention,
+            "z_lens_convention": z_lens_convention,
+            "cosmo_interp": cosmo_interp,
+            "z_interp_stop": z_interp_stop,
+            "num_z_interp": num_z_interp,
+            "kwargs_interp": kwargs_interp,
+            "kwargs_synthesis": kwargs_synthesis,
+            "distance_ratio_sampling": distance_ratio_sampling,
+        }
         if z_source_convention is None:
             z_source_convention = z_source
         if z_interp_stop is None:

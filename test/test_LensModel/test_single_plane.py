@@ -109,10 +109,7 @@ class TestLensModel(object):
         assert lensModel.func_list[0].param_names[0] == "Rs"
 
     def test_alpha_scaling(self):
-        """
-        test the behavior of scaling the deflection angle
-        :return:
-        """
+        """Test the behavior of scaling the deflection angle :return:"""
         x, y = 1, 0
         kwargs_lens = [{"theta_E": 1, "center_x": 0, "center_y": 0}]
         lens_model = SinglePlane(lens_model_list=["SIS"])

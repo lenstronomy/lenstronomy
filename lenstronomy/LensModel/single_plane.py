@@ -18,7 +18,7 @@ class SinglePlane(ProfileListBase):
         kwargs_interp=None,
         kwargs_synthesis=None,
         alpha_scaling=1,
-        ):
+    ):
         """
 
         :param lens_model_list: list of strings with lens model names
@@ -30,9 +30,15 @@ class SinglePlane(ProfileListBase):
         :param alpha_scaling: scaling factor of deflection angle relative to z_source_convention
         """
         self._alpha_scaling = alpha_scaling
-        ProfileListBase.__init__(self, lens_model_list=lens_model_list, numerical_alpha_class=numerical_alpha_class,
-                                 lens_redshift_list=lens_redshift_list, z_source_convention=z_source_convention,
-                                 kwargs_interp=kwargs_interp, kwargs_synthesis=kwargs_synthesis)
+        ProfileListBase.__init__(
+            self,
+            lens_model_list=lens_model_list,
+            numerical_alpha_class=numerical_alpha_class,
+            lens_redshift_list=lens_redshift_list,
+            z_source_convention=z_source_convention,
+            kwargs_interp=kwargs_interp,
+            kwargs_synthesis=kwargs_synthesis,
+        )
 
     def ray_shooting(self, x, y, kwargs, k=None):
         """Maps image to source position (inverse deflection).
@@ -154,7 +160,12 @@ class SinglePlane(ProfileListBase):
                 f_xy += f_xy_i
                 f_yx += f_yx_i
                 f_yy += f_yy_i
-        return f_xx * self._alpha_scaling, f_xy * self._alpha_scaling, f_yx * self._alpha_scaling, f_yy * self._alpha_scaling
+        return (
+            f_xx * self._alpha_scaling,
+            f_xy * self._alpha_scaling,
+            f_yx * self._alpha_scaling,
+            f_yy * self._alpha_scaling,
+        )
 
     def change_redshift_scaling(self, alpha_scaling):
         """
@@ -166,8 +177,7 @@ class SinglePlane(ProfileListBase):
 
     @property
     def alpha_scaling(self):
-        """
-        deflector scaling factor
+        """Deflector scaling factor.
 
         :return: alpha_scaling
         """

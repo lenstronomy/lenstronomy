@@ -398,8 +398,12 @@ class TestLensEquationSolver(object):
         z_lens = 0.5
         z_source_convention = 2
 
-        lensModel = LensModel(["EPL", "SHEAR", "CONVERGENCE"], z_lens=z_lens, z_source=z_source,
-                              z_source_convention=z_source_convention)
+        lensModel = LensModel(
+            ["EPL", "SHEAR", "CONVERGENCE"],
+            z_lens=z_lens,
+            z_source=z_source,
+            z_source_convention=z_source_convention,
+        )
         lensEquationSolver = LensEquationSolver(lensModel)
 
         alpha_scaling = lensModel.lens_model.alpha_scaling
@@ -422,11 +426,12 @@ class TestLensEquationSolver(object):
         ]
 
         kwargs_lens_scaling = copy.deepcopy(kwargs_lens)
-        kwargs_lens_scaling[0]["theta_E"] *= alpha_scaling ** (1.0 / (kwargs_lens[0]["gamma"] - 1))
+        kwargs_lens_scaling[0]["theta_E"] *= alpha_scaling ** (
+            1.0 / (kwargs_lens[0]["gamma"] - 1)
+        )
         kwargs_lens_scaling[1]["gamma1"] *= alpha_scaling
         kwargs_lens_scaling[1]["gamma2"] *= alpha_scaling
         kwargs_lens_scaling[2]["kappa"] *= alpha_scaling
-
 
         x_pos, y_pos = lensEquationSolver_no_scaling.image_position_from_source(
             sourcePos_x, sourcePos_y, kwargs_lens_scaling, solver="analytical"
@@ -454,7 +459,9 @@ class TestLensEquationSolver(object):
         npt.assert_almost_equal(x_pos_, x_pos)
 
         print(kwargs_lens, "test kwargs_lens")
-        source_x, source_y = lensModel_no_scaling.ray_shooting(x_pos_, y_pos_, kwargs_lens_scaling)
+        source_x, source_y = lensModel_no_scaling.ray_shooting(
+            x_pos_, y_pos_, kwargs_lens_scaling
+        )
         assert len(source_x) == len(source_y) >= 2
         npt.assert_almost_equal(sourcePos_x, source_x, decimal=10)
         npt.assert_almost_equal(sourcePos_y, source_y, decimal=10)

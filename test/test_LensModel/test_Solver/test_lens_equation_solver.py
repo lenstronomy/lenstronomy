@@ -503,10 +503,13 @@ class TestLensEquationSolver(object):
                 0.1, 0.0, kwargs_lens, solver="nonexisting"
             )
         with pytest.raises(ValueError):
-            lensModel = LensModel(["SIS"], lens_redshift_list=[0.5], z_source=2, z_source_convention=2)
+            lensModel = LensModel(
+                ["SIS"], lens_redshift_list=[0.5], z_source=2, z_source_convention=2
+            )
             lensEquationSolver = LensEquationSolver(lensModel)
-            lensEquationSolver.image_position_analytical(x=0, y=0, kwargs_lens=kwargs_lens)
-
+            lensEquationSolver.image_position_analytical(
+                x=0, y=0, kwargs_lens=kwargs_lens
+            )
 
     def test_analytical_lens_model_supported(self):
         from lenstronomy.LensModel.Solver.lens_equation_solver import (

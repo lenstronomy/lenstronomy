@@ -331,8 +331,14 @@ class TestLensModel(object):
         npt.assert_almost_equal(dt_sp, dt_mp, decimal=5)
 
         # Multiplane
-        lens_model_mp_new = LensModel(lens_model_list=["SIS"], z_lens=z_lens, lens_redshift_list=[z_lens],
-                                  z_source_convention=z_source_convention, z_source=z_source_convention, multi_plane=True)
+        lens_model_mp_new = LensModel(
+            lens_model_list=["SIS"],
+            z_lens=z_lens,
+            lens_redshift_list=[z_lens],
+            z_source_convention=z_source_convention,
+            z_source=z_source_convention,
+            multi_plane=True,
+        )
         # lens_model_mp_new.change_source_redshift(z_source=z_source_new)
         lens_model_mp_new.change_source_redshift(z_source=z_source_new + 1)
         lens_model_mp_new.change_source_redshift(z_source=z_source_new)
@@ -428,7 +434,9 @@ class TestRaise(unittest.TestCase):
             )
             lens_model.change_source_redshift(z_source=1)
         with self.assertRaises(ValueError):
-            lens_model = LensModel(lens_model_list=["SIS"], z_source=1, z_source_convention=2)
+            lens_model = LensModel(
+                lens_model_list=["SIS"], z_source=1, z_source_convention=2
+            )
 
     def test_hessian_z1z2_raise(self):
         lensModel = LensModel(

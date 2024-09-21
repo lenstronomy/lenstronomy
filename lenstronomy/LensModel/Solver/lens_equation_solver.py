@@ -30,6 +30,16 @@ class LensEquationSolver(object):
         """
         self.lensModel = lensModel
 
+    def change_source_redshift(self, z_source=None):
+        """
+        change source redshift in solver
+
+        :param z_source:
+        :type z_source: float or None
+        :return: updated lens model instance
+        """
+        self.lensModel.change_source_redshift(z_source=z_source)
+
     def image_position_stochastic(
         self,
         source_x,
@@ -210,6 +220,19 @@ class LensEquationSolver(object):
             raise ValueError(
                 "Only SIE, EPL, EPL_NUMBA (+shear +convergence) supported in the analytical solver for now."
             )
+
+        if self.lensModel.type != "SinglePlane":
+            raise ValueError("lens model type %s not supported for analytical lens equation solver, "
+                             "Needs to be SinglePlane." % self.lensModel.type)
+
+        # re-scale solutions if source redshift has changed (i.e. alpha_scaling != 1)
+        alpha_scaling = self.lensModel.lens_model.alpha_scaling
+        gamma = kwargs_lens[0]["gamma"] if "gamma" in kwargs_lens[0] else 2
+        kwargs_lens_[0]["theta_E"] *= alpha_scaling ** (1.0 / (gamma - 1))
+        if "SHEAR" in lens_model_list:
+            kwargs_lens_[1]["gamma1"] *= alpha_scaling
+            kwargs_lens_[1]["gamma2"] *= alpha_scaling
+
         x_mins, y_mins = solve_lenseq_pemd((x_, y_), kwargs_lens_, **kwargs_solver)
 
         if arrival_time_sort:

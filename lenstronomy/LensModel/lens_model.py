@@ -67,6 +67,8 @@ class LensModel(object):
         self.lens_model_list = lens_model_list
         self.z_lens = z_lens
         self.z_source = z_source
+        if z_source_convention is None and z_source is not None:
+            z_source_convention = z_source
         self._z_source_convention = z_source_convention
         self.redshift_list = lens_redshift_list
 
@@ -92,7 +94,8 @@ class LensModel(object):
             raise ValueError(
                 "You can only have one model for line-of-sight corrections."
             )
-
+        if z_lens is not None and z_source is not None:
+            self._lensCosmo = LensCosmo(z_lens, z_source, cosmo=cosmo)
         # Multi-plane or single-plane lensing?
         self.multi_plane = multi_plane
         self._decouple_multi_plane = decouple_multi_plane
@@ -127,6 +130,7 @@ class LensModel(object):
                     kwargs_synthesis=kwargs_synthesis,
                     **kwargs_multiplane_model
                 )
+                self.type = "MultiPlaneDecoupled"
             else:
                 self.lens_model = MultiPlane(
                     z_source,
@@ -143,6 +147,7 @@ class LensModel(object):
                     kwargs_synthesis=kwargs_synthesis,
                     distance_ratio_sampling=distance_ratio_sampling,
                 )
+                self.type = "MultiPlane"
 
         else:
             if los_effects is True:
@@ -155,6 +160,7 @@ class LensModel(object):
                     kwargs_interp=kwargs_interp,
                     kwargs_synthesis=kwargs_synthesis,
                 )
+                self.type = "SinglePlaneLOS"
             else:
                 self.lens_model = SinglePlane(
                     lens_model_list,
@@ -164,9 +170,16 @@ class LensModel(object):
                     kwargs_interp=kwargs_interp,
                     kwargs_synthesis=kwargs_synthesis,
                 )
-
-        if z_lens is not None and z_source is not None:
-            self._lensCosmo = LensCosmo(z_lens, z_source, cosmo=cosmo)
+                self.type = "SinglePlane"
+                if z_source is not None and z_source_convention is not None:
+                    if z_source != z_source_convention:
+                        if z_lens is None:
+                            raise ValueError("a lens redshift needs to provided when z_source != z_source_convention")
+                        else:
+                            alpha_scaling = self._lensCosmo.beta_double_source_plane(z_lens=self.z_lens,
+                                                                                     z_source_1=z_source,
+                                                                                     z_source_2=self._z_source_convention)
+                            self.lens_model.change_redshift_scaling(alpha_scaling)
 
     def info(self):
         """Shows what models are being initialized and what parameters are being
@@ -489,6 +502,8 @@ class LensModel(object):
         :param z_source: source redshift
         :return: None
         """
+        if z_source is None:
+            return 0
         if z_source == self.z_source:
             return 0
         if self.multi_plane is True:

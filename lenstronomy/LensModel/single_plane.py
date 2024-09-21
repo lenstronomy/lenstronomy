@@ -164,6 +164,15 @@ class SinglePlane(ProfileListBase):
         """
         self._alpha_scaling = alpha_scaling
 
+    @property
+    def alpha_scaling(self):
+        """
+        deflector scaling factor
+
+        :return: alpha_scaling
+        """
+        return self._alpha_scaling
+
     def mass_3d(self, r, kwargs, bool_list=None):
         """Computes the mass within a 3d sphere of radius r.
 

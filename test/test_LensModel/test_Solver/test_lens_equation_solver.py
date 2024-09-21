@@ -394,7 +394,6 @@ class TestLensEquationSolver(object):
 
     def test_lens_equation_scaling(self):
         # here we test with convergence shear and mass profile centroids not aligned
-        # TODO: make proper tests
         z_source = 5
         z_lens = 0.5
         z_source_convention = 2
@@ -443,7 +442,6 @@ class TestLensEquationSolver(object):
         npt.assert_almost_equal(sourcePos_x, source_x, decimal=10)
         npt.assert_almost_equal(sourcePos_y, source_y, decimal=10)
 
-
         x_pos_, y_pos_ = lensEquationSolver_no_scaling.image_position_from_source(
             sourcePos_x, sourcePos_y, kwargs_lens_scaling, solver="analytical"
         )
@@ -460,7 +458,6 @@ class TestLensEquationSolver(object):
         assert len(source_x) == len(source_y) >= 2
         npt.assert_almost_equal(sourcePos_x, source_x, decimal=10)
         npt.assert_almost_equal(sourcePos_y, source_y, decimal=10)
-
 
     def test_assertions(self):
         lensModel = LensModel(["SPEP"])
@@ -498,6 +495,11 @@ class TestLensEquationSolver(object):
             lensEquationSolver.image_position_from_source(
                 0.1, 0.0, kwargs_lens, solver="nonexisting"
             )
+        with pytest.raises(ValueError):
+            lensModel = LensModel(["SIS"], lens_redshift_list=[0.5], z_source=2, z_source_convention=2)
+            lensEquationSolver = LensEquationSolver(lensModel)
+            lensEquationSolver.image_position_analytical(x=0, y=0, kwargs_lens=kwargs_lens)
+
 
     def test_analytical_lens_model_supported(self):
         from lenstronomy.LensModel.Solver.lens_equation_solver import (

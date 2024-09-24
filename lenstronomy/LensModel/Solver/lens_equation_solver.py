@@ -9,6 +9,8 @@ from lenstronomy.LensModel.Solver.epl_shear_solver import solve_lenseq_pemd
 __all__ = ["LensEquationSolver"]
 
 SUPPORTED_LENS_MODELS_ANALYTICAL = (
+    ["SIS", "SHEAR"],
+    ["SIS"],
     ["SIE", "SHEAR"],
     ["SIE"],
     ["EPL_NUMBA", "SHEAR"],
@@ -217,7 +219,7 @@ class LensEquationSolver(object):
 
         if lens_model_list not in SUPPORTED_LENS_MODELS_ANALYTICAL:
             raise ValueError(
-                "Only SIE, EPL, EPL_NUMBA (+shear +convergence) supported in the analytical solver for now."
+                "Only SIS, SIE, EPL, EPL_NUMBA (+shear +convergence) supported in the analytical solver for now."
             )
 
         if self.lensModel.type != "SinglePlane":

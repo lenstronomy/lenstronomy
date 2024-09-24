@@ -198,7 +198,7 @@ def omega(phi, t, q, niter_max=200, tol=1e-16):
     f = (1 - q) / (1 + q)
     omegas = np.zeros_like(phi, dtype=np.complex128)
     niter = min(
-        niter_max, int(np.log(tol) / np.log(f)) + 2
+        niter_max, int(np.max(np.log(tol) / np.log(f))) + 2
     )  # The absolute value of each summand is always less than f, hence this limit for the number of iterations.
     Omega = 1 * np.exp(1j * phi)
     fact = -f * np.exp(2j * phi)

@@ -528,7 +528,7 @@ class TestLensEquationSolver(object):
             )
         with pytest.raises(ValueError):
             lensModel = LensModel(
-                ["SIS"],
+                ["SIE"],
                 lens_redshift_list=[0.5],
                 z_source=2,
                 z_source_convention=2,

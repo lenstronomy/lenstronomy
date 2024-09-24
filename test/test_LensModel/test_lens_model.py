@@ -435,7 +435,10 @@ class TestRaise(unittest.TestCase):
             lens_model.change_source_redshift(z_source=1)
         with self.assertRaises(ValueError):
             lens_model = LensModel(
-                lens_model_list=["SIS"], z_source=1, z_source_convention=2
+                lens_model_list=["SIE", "SHEAR"],
+                z_source=1,
+                z_source_convention=2,
+                multi_plane=True,
             )
 
     def test_hessian_z1z2_raise(self):

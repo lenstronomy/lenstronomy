@@ -392,6 +392,30 @@ class TestLensEquationSolver(object):
         npt.assert_almost_equal(sourcePos_x, source_x, decimal=10)
         npt.assert_almost_equal(sourcePos_y, source_y, decimal=10)
 
+    def test_analytical_sis(self):
+        sourcePos_x = 0.03
+        sourcePos_y = 0.0
+
+        lensModel = LensModel(["SIS", "SHEAR", "CONVERGENCE"])
+        lensEquationSolver = LensEquationSolver(lensModel)
+        kwargs_lens = [
+            {"theta_E": 1.0, "center_x": 0.0, "center_y": 0.0},
+            {"gamma1": 0.1, "gamma2": -0.02},
+            {"kappa": 0.2, "ra_0": 0, "dec_0": 0},
+        ]
+
+        x_pos, y_pos = lensEquationSolver.image_position_from_source(
+            sourcePos_x,
+            sourcePos_y,
+            kwargs_lens,
+            solver="analytical",
+            magnification_limit=1e-3,
+        )
+        source_x, source_y = lensModel.ray_shooting(x_pos, y_pos, kwargs_lens)
+        assert len(source_x) == len(source_y) == 4
+        npt.assert_almost_equal(sourcePos_x, source_x, decimal=10)
+        npt.assert_almost_equal(sourcePos_y, source_y, decimal=10)
+
     def test_lens_equation_scaling(self):
         # here we test with convergence shear and mass profile centroids not aligned
         z_source = 5

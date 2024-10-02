@@ -65,6 +65,9 @@ class TestLensModel(object):
         value_interp_lookup = nfw_interp.function(x, y, **kwargs[0])
         npt.assert_almost_equal(value, value_interp_lookup, decimal=4)
 
+        lensModel = LensModel(lens_model_list, z_source_convention=5, z_lens=0.2)
+        lensModel.z_source == 6
+
     def test_info(self):
         lens_model_list = [
             "FLEXION",

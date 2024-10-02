@@ -69,6 +69,8 @@ class LensModel(object):
         self.z_source = z_source
         if z_source_convention is None and z_source is not None:
             z_source_convention = z_source
+        if z_source is None and z_source_convention is not None:
+            z_source = z_source_convention
         self._z_source_convention = z_source_convention
         self.redshift_list = lens_redshift_list
 

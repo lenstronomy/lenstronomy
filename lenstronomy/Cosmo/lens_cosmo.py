@@ -449,4 +449,6 @@ class LensCosmo(object):
         :param cosmo: ~astropy.cosmology instance
         :return: beta
         """
-        return self.background.beta_double_source_plane(z_lens=z_lens, z_source_1=z_source_1, z_source_2=z_source_2)
+        return self.background.beta_double_source_plane(
+            z_lens=z_lens, z_source_1=z_source_1, z_source_2=z_source_2
+        )

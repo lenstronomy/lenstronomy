@@ -92,23 +92,19 @@ class Background(object):
         :return: beta
         """
         ds1 = self.cosmo.angular_diameter_distance(z=z_source_1).value
-        dds1 = self.cosmo.angular_diameter_distance_z1z2(
-            z1=z_lens, z2=z_source_1
-        ).value
+        dds1 = self.cosmo.angular_diameter_distance_z1z2(z1=z_lens, z2=z_source_1).value
         ds2 = self.cosmo.angular_diameter_distance(z=z_source_2).value
-        dds2 = self.cosmo.angular_diameter_distance_z1z2(
-            z1=z_lens, z2=z_source_2
-        ).value
+        dds2 = self.cosmo.angular_diameter_distance_z1z2(z1=z_lens, z2=z_source_2).value
         beta = dds1 / ds1 * ds2 / dds2
         return beta
 
     def ddt_scaling(self, z_lens, z_source_1, z_source_2):
-        """
-        scales the time-delay distance Ddt when given for one source redshift to a second source redshift
+        """Scales the time-delay distance Ddt when given for one source redshift to a
+        second source redshift.
 
         :param z_lens: deflector redshift
         :param z_source_1: source redshift of original Ddt
         :param z_source_2: new source redshift
         :return: Ddt to z_source_2
         """
-        return 1. / self.ddt(z_lens, z_source_1) * self.ddt(z_lens, z_source_2)
+        return 1.0 / self.ddt(z_lens, z_source_1) * self.ddt(z_lens, z_source_2)

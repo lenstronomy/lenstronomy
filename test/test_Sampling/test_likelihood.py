@@ -436,10 +436,9 @@ class TestLikelihoodModule(object):
         npt.assert_almost_equal(logL / num_data_evaluate, -1 / 2.0, decimal=1)
 
     def test_multi_source_redshift_likelihood(self):
-        """
-        this function tests the likelihood with multiple point sources at different source redshift and the recovery of
-        log likelihood=0 when providing the exact solution
-        """
+        """This function tests the likelihood with multiple point sources at different
+        source redshift and the recovery of log likelihood=0 when providing the exact
+        solution."""
         # lens properties
         z_lens = 0.5
         # source properties
@@ -447,34 +446,52 @@ class TestLikelihoodModule(object):
         num_sources = 4
         z_sources = np.linspace(start=z_lens + 0.5, stop=z_lens + 2, num=num_sources)
         from astropy.cosmology import FlatLambdaCDM
-        cosmo = FlatLambdaCDM(H0=100, Om0=0.3, Ob0=0.)
+
+        cosmo = FlatLambdaCDM(H0=100, Om0=0.3, Ob0=0.0)
         point_source_model_list = ["LENSED_POSITION"] * num_sources
 
         x_source, y_source = 0.1, 0.2
         # chose a lens model
-        lens_model_list = ['SIE']
-        kwargs_lens = [{"theta_E": 1, "e1": 0.2, "e2": -0.2, "center_x": 0, "center_y": 0}]
+        lens_model_list = ["SIE"]
+        kwargs_lens = [
+            {"theta_E": 1, "e1": 0.2, "e2": -0.2, "center_x": 0, "center_y": 0}
+        ]
 
         from lenstronomy.Cosmo.lens_cosmo import LensCosmo
+
         lens_cosmo = LensCosmo(z_lens=z_lens, z_source=z_source_convention, cosmo=cosmo)
         kwargs_special = {"D_dt": lens_cosmo.ddt}
 
         # make instance of LensModel class
         from lenstronomy.LensModel.lens_model import LensModel
-        lensModel = LensModel(lens_model_list=lens_model_list, cosmo=cosmo, z_lens=z_lens,
-                              z_source_convention=z_source_convention, z_source=z_source_convention)
+
+        lensModel = LensModel(
+            lens_model_list=lens_model_list,
+            cosmo=cosmo,
+            z_lens=z_lens,
+            z_source_convention=z_source_convention,
+            z_source=z_source_convention,
+        )
 
         # make instance of LensEquationSolver to solve the lens equation
         from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
+
         lensEquationSolver = LensEquationSolver(lensModel=lensModel)
-        x_img_list, y_img_list, flux_ratio_list, flux_ratio_list_err, dt_list, dt_list_err = [], [], [], [], [], []
+        (
+            x_img_list,
+            y_img_list,
+            flux_ratio_list,
+            flux_ratio_list_err,
+            dt_list,
+            dt_list_err,
+        ) = ([], [], [], [], [], [])
         kwargs_ps = []
         for i in range(num_sources):
             z_source = z_sources[i]
             lensEquationSolver.lensModel.change_source_redshift(z_source=z_source)
-            x_img_i, y_img_i = lensEquationSolver.image_position_from_source(kwargs_lens=kwargs_lens,
-                                                                                   sourcePos_x=x_source,
-                                                                                   sourcePos_y=y_source)
+            x_img_i, y_img_i = lensEquationSolver.image_position_from_source(
+                kwargs_lens=kwargs_lens, sourcePos_x=x_source, sourcePos_y=y_source
+            )
             mag_i = lensModel.magnification(x_img_i, y_img_i, kwargs_lens)
             lensModel.change_source_redshift(z_source=z_source)
             mag_i_ = lensModel.magnification(x_img_i, y_img_i, kwargs_lens)
@@ -483,7 +500,7 @@ class TestLikelihoodModule(object):
             dt_i = lensModel.arrival_time(x_img_i, y_img_i, kwargs_lens)
             x_img_list.append(x_img_i)
             y_img_list.append(y_img_i)
-            flux_ratio_list.append(np.abs(mag_i[1:]/mag_i[0]))
+            flux_ratio_list.append(np.abs(mag_i[1:] / mag_i[0]))
             flux_ratio_list_err.append(np.ones_like(mag_i[1:]) * 0.1)
             dt_list.append(dt_i[1:] - dt_i[0])
             dt_list_err.append(np.ones_like(dt_i[1:]) * 0.1)
@@ -493,24 +510,23 @@ class TestLikelihoodModule(object):
         flux_ratio_likelihood = True  # bool, modeling the flux ratios of the images
         image_position_likelihood = True  # bool, evaluating the image position likelihood (in combination with astrometric errors)
 
-        kwargs_flux_compute = {'source_type': 'INF'}
+        kwargs_flux_compute = {"source_type": "INF"}
         astrometry_sigma = 0.005
 
         kwargs_likelihood = {
-            'image_position_uncertainty': astrometry_sigma,  # astrometric uncertainty of image positions
-            'image_position_likelihood': image_position_likelihood,  # evaluate point source likelihood given the measured image positions
-            'time_delay_likelihood': time_delay_likelihood,  # evaluating the time-delay likelihood
-            'flux_ratio_likelihood': flux_ratio_likelihood,  # enables the flux ratio likelihood
-            'kwargs_flux_compute': kwargs_flux_compute,  # source_type='INF' will lead to point source
-            'check_bounds': True,  # check parameter bounds and punish them
+            "image_position_uncertainty": astrometry_sigma,  # astrometric uncertainty of image positions
+            "image_position_likelihood": image_position_likelihood,  # evaluate point source likelihood given the measured image positions
+            "time_delay_likelihood": time_delay_likelihood,  # evaluating the time-delay likelihood
+            "flux_ratio_likelihood": flux_ratio_likelihood,  # enables the flux ratio likelihood
+            "kwargs_flux_compute": kwargs_flux_compute,  # source_type='INF' will lead to point source
+            "check_bounds": True,  # check parameter bounds and punish them
         }
 
-        kwargs_likelihood['source_position_tolerance'] = 0.05
-        kwargs_likelihood['source_position_sigma'] = 0.005
+        kwargs_likelihood["source_position_tolerance"] = 0.05
+        kwargs_likelihood["source_position_sigma"] = 0.005
 
-        kwargs_likelihood[
-            'source_position_likelihood'] = False
-        kwargs_likelihood['image_position_uncertainty'] = astrometry_sigma
+        kwargs_likelihood["source_position_likelihood"] = False
+        kwargs_likelihood["image_position_uncertainty"] = astrometry_sigma
 
         kwargs_data = {
             "time_delays_measured": dt_list,
@@ -520,15 +536,28 @@ class TestLikelihoodModule(object):
             "ra_image_list": x_img_list,
             "dec_image_list": y_img_list,
         }
-        kwargs_model = {"lens_model_list": lens_model_list, "z_lens": z_lens, "z_source_convention": z_source_convention,
-                        "point_source_redshift_list": z_sources, "point_source_model_list": point_source_model_list,
-                        "cosmo": cosmo}
+        kwargs_model = {
+            "lens_model_list": lens_model_list,
+            "z_lens": z_lens,
+            "z_source_convention": z_source_convention,
+            "point_source_redshift_list": z_sources,
+            "point_source_model_list": point_source_model_list,
+            "cosmo": cosmo,
+        }
 
         param_class = Param(kwargs_model=kwargs_model)
 
-        likelihood = LikelihoodModule(kwargs_data_joint=kwargs_data, kwargs_model=kwargs_model,
-                                      param_class=param_class, **kwargs_likelihood)
-        kwargs_truth = {"kwargs_lens": kwargs_lens, "kwargs_ps": kwargs_ps, "kwargs_special": kwargs_special}
+        likelihood = LikelihoodModule(
+            kwargs_data_joint=kwargs_data,
+            kwargs_model=kwargs_model,
+            param_class=param_class,
+            **kwargs_likelihood,
+        )
+        kwargs_truth = {
+            "kwargs_lens": kwargs_lens,
+            "kwargs_ps": kwargs_ps,
+            "kwargs_special": kwargs_special,
+        }
         log_l = likelihood.log_likelihood(kwargs_return=kwargs_truth, verbose=True)
         npt.assert_almost_equal(log_l, 0, decimal=5)
 

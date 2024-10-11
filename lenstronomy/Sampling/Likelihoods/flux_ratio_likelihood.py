@@ -76,7 +76,9 @@ class FluxRatioLikelihood(object):
         for k in range(len(ra_image_list)):
             if self._flux_ratio_measurement_bool[k] is True:
                 x_pos, y_pos = ra_image_list[k], dec_image_list[k]
-                self._lens_model_class.change_source_redshift(z_source=self._point_source_redshift_list[k])
+                self._lens_model_class.change_source_redshift(
+                    z_source=self._point_source_redshift_list[k]
+                )
                 if self._source_type == "INF":
                     mag = np.abs(
                         self._lens_model_class.magnification(x_pos, y_pos, kwargs_lens)

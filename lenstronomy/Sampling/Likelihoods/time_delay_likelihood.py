@@ -67,7 +67,9 @@ class TimeDelayLikelihood(object):
         for i in range(self._num_point_sources):
             if self._measurement_bool_list[i] is True:
                 x_pos_, y_pos_ = x_pos[i], y_pos[i]
-                self._lensModel.change_source_redshift(z_source=self._pointSource._redshift_list[i])
+                self._lensModel.change_source_redshift(
+                    z_source=self._pointSource._redshift_list[i]
+                )
                 delay_arcsec = self._lensModel.fermat_potential(
                     x_pos_, y_pos_, kwargs_lens
                 )

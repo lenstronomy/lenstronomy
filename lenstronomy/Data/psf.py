@@ -69,6 +69,11 @@ class PSF(object):
                     "kernel needs to have odd axis number, not ",
                     np.shape(kernel_point_source),
                 )
+            # store the initial input PSF and supersampling factor
+            self._kernel_point_source_init = kernel_point_source
+            self._point_source_supersampling_factor_init = (
+                point_source_supersampling_factor
+            )
             kernel_point_source_ = copy.deepcopy(kernel_point_source)
             if kernel_point_source_normalisation is True:
                 kernel_point_source_ /= np.sum(kernel_point_source)
@@ -88,7 +93,8 @@ class PSF(object):
             # making sure the PSF is positive semi-definite and do the normalisation if kernel_point_source_normalisation is true
             if np.min(kernel_point_source_) < 0:
                 warnings.warn(
-                    "Input PSF model has at least one negative element, which is unphysical except for a PSF of an interferometric array."
+                    "Input PSF model has at least one negative element, which is unphysical except for a PSF of "
+                    "an interferometric array."
                 )
             self._kernel_point_source = kernel_point_source_
 
@@ -155,64 +161,72 @@ class PSF(object):
             if the resolution is changing.
         :return: super-sampled PSF as 2d numpy array
         """
+        if supersampling_factor == 1:
+            return self.kernel_point_source
         if (
             hasattr(self, "_kernel_point_source_supersampled")
             and self._point_source_supersampling_factor == supersampling_factor
         ):
             kernel_point_source_supersampled = self._kernel_point_source_supersampled
+            return kernel_point_source_supersampled
+        if hasattr(self, "_kernel_point_source_init") and hasattr(
+            self, "_point_source_supersampling_factor_init"
+        ):
+            if self._point_source_supersampling_factor_init == supersampling_factor:
+                kernel_point_source_supersampled = self._kernel_point_source_init
+                return kernel_point_source_supersampled
+
+        if self.psf_type == "GAUSSIAN":
+            kernel_num_pix = int(
+                round(
+                    self._truncation
+                    * self._fwhm
+                    / self._pixel_size
+                    * supersampling_factor
+                )
+            )
+            if kernel_num_pix > 10000:
+                raise ValueError(
+                    "The pixelized Gaussian kernel has a grid of %s pixels with a truncation at "
+                    "%s times the sigma of the Gaussian, exceeding the limit allowed."
+                    % (kernel_num_pix, self._truncation)
+                )
+            if kernel_num_pix % 2 == 0:
+                kernel_num_pix += 1
+            kernel_point_source_supersampled = kernel_util.kernel_gaussian(
+                kernel_num_pix, self._pixel_size / supersampling_factor, self._fwhm
+            )
+
+        elif self.psf_type == "PIXEL":
+
+            kernel = kernel_util.subgrid_kernel(
+                self.kernel_point_source, supersampling_factor, odd=True, num_iter=5
+            )
+            n = len(self.kernel_point_source)
+            n_new = n * supersampling_factor
+            if n_new % 2 == 0:
+                n_new -= 1
+            if hasattr(self, "_kernel_point_source_supersampled"):
+                warnings.warn(
+                    "Super-sampled point source kernel over-written due to different subsampling"
+                    " size requested. Previous supersampling factor: %s. New supersampling factor %s"
+                    % (self._point_source_supersampling_factor, supersampling_factor),
+                    Warning,
+                )
+            kernel_point_source_supersampled = kernel_util.cut_psf(
+                kernel, psf_size=n_new
+            )
+            kernel_point_source_supersampled *= self._kernel_norm / np.sum(
+                kernel_point_source_supersampled
+            )
+
+        elif self.psf_type == "NONE":
+            kernel_point_source_supersampled = self._kernel_point_source
         else:
-            if self.psf_type == "GAUSSIAN":
-                kernel_num_pix = int(
-                    round(
-                        self._truncation
-                        * self._fwhm
-                        / self._pixel_size
-                        * supersampling_factor
-                    )
-                )
-                if kernel_num_pix > 10000:
-                    raise ValueError(
-                        "The pixelized Gaussian kernel has a grid of %s pixels with a truncation at "
-                        "%s times the sigma of the Gaussian, exceeding the limit allowed."
-                        % (kernel_num_pix, self._truncation)
-                    )
-                if kernel_num_pix % 2 == 0:
-                    kernel_num_pix += 1
-                kernel_point_source_supersampled = kernel_util.kernel_gaussian(
-                    kernel_num_pix, self._pixel_size / supersampling_factor, self._fwhm
-                )
-
-            elif self.psf_type == "PIXEL":
-
-                kernel = kernel_util.subgrid_kernel(
-                    self.kernel_point_source, supersampling_factor, odd=True, num_iter=5
-                )
-                n = len(self.kernel_point_source)
-                n_new = n * supersampling_factor
-                if n_new % 2 == 0:
-                    n_new -= 1
-                if hasattr(self, "_kernel_point_source_supersampled"):
-                    warnings.warn(
-                        "Super-sampled point source kernel over-written due to different subsampling"
-                        " size requested.",
-                        Warning,
-                    )
-                kernel_point_source_supersampled = kernel_util.cut_psf(
-                    kernel, psf_size=n_new
-                )
-                kernel_point_source_supersampled *= self._kernel_norm / np.sum(
-                    kernel_point_source_supersampled
-                )
-
-            elif self.psf_type == "NONE":
-                kernel_point_source_supersampled = self._kernel_point_source
-            else:
-                raise ValueError("psf_type %s not valid!" % self.psf_type)
-            if updata_cache is True:
-                self._kernel_point_source_supersampled = (
-                    kernel_point_source_supersampled
-                )
-                self._point_source_supersampling_factor = supersampling_factor
+            raise ValueError("psf_type %s not valid!" % self.psf_type)
+        if updata_cache is True:
+            self._kernel_point_source_supersampled = kernel_point_source_supersampled
+            self._point_source_supersampling_factor = supersampling_factor
         return kernel_point_source_supersampled
 
     def set_pixel_size(self, deltaPix):
@@ -252,3 +266,14 @@ class PSF(object):
             return self._fwhm
         else:
             return kernel_util.fwhm_kernel(self.kernel_point_source) * self._pixel_size
+
+    @property
+    def point_source_supersampling_factor(self):
+        """
+
+        :return: supersampling factor of initial PSF (if PIXEL type), otherwise 1
+        """
+        if hasattr(self, "_point_source_supersampling_factor_init"):
+            return self._point_source_supersampling_factor_init
+        else:
+            return 1

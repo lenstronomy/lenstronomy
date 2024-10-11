@@ -129,14 +129,27 @@ class GNFWParam(object):
         :return: concentration parameter c
         :rtype: float
         """
-        if not hasattr(self, "_c_rho0_interp"):
-            c_array = np.linspace(0.1, 30, 100)
-            rho0_array = self.rho0_c(c_array, z, gamma_in)
+        c_array = np.linspace(0.1, 30, 100)
+        if not hasattr(self, "_rho0_c_gamma_in_interps"):
+            gamma_in_array = np.linspace(0.1, 2.99, 100)
+            self._rho0_c_gamma_in_interps = []
 
-            self._c_rho0_interp = interpolate.InterpolatedUnivariateSpline(
-                rho0_array, c_array, w=None, bbox=[None, None], k=3
-            )
-        return self._c_rho0_interp(rho0)
+            for i in range(len(c_array)):
+                rho0_array = self.rho0_c(c_array[i], z, gamma_in_array)
+
+                self._rho0_c_gamma_in_interps.append(
+                    interpolate.InterpolatedUnivariateSpline(
+                        gamma_in_array, rho0_array, w=None, bbox=[None, None], k=3
+                    )
+                )
+
+        rho0_interp = [interp(gamma_in) for interp in self._rho0_c_gamma_in_interps]
+
+        c_rho0_interp = interpolate.InterpolatedUnivariateSpline(
+            rho0_interp, c_array, w=None, bbox=[None, None], k=3
+        )
+
+        return c_rho0_interp(rho0)
 
     def c_M_z(self, M, z):
         """

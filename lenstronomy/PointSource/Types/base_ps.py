@@ -31,6 +31,7 @@ class PSBase(object):
         :param redshift: redshift of the source, only required for multiple source redshifts
         :type redshift: None or float
         """
+        self._redshift = redshift
         self._lens_model = lens_model
         if index_lens_model_list is not None:
             k_list = []

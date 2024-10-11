@@ -108,6 +108,19 @@ class TestLensModel(object):
         lensModel = SinglePlane(lens_model_list=lens_model_list)
         assert lensModel.func_list[0].param_names[0] == "Rs"
 
+    def test_alpha_scaling(self):
+        """Test the behavior of scaling the deflection angle :return:"""
+        x, y = 1, 0
+        kwargs_lens = [{"theta_E": 1, "center_x": 0, "center_y": 0}]
+        lens_model = SinglePlane(lens_model_list=["SIS"])
+        alpha_x, alpha_y = lens_model.alpha(x, y, kwargs_lens)
+
+        alpha_scaling = 0.5
+        lens_model.change_redshift_scaling(alpha_scaling=alpha_scaling)
+        alpha_x_scaled, alpha_y_scaled = lens_model.alpha(x, y, kwargs_lens)
+        npt.assert_almost_equal(alpha_x_scaled, alpha_x * alpha_scaling)
+        npt.assert_almost_equal(alpha_y_scaled, alpha_y * alpha_scaling)
+
 
 class TestRaise(unittest.TestCase):
     def test_raise(self):

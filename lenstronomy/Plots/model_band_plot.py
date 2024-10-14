@@ -552,7 +552,7 @@ class ModelBandPlot(ModelBand):
         v_max=1,
         font_size=15,
         text="Residuals",
-        colorbar_label=r"(f$_{model}$-f$_{data}$)",
+        colorbar_label=r"(f$_{\rm model}$-f$_{\rm data}$)",
     ):
         """
 

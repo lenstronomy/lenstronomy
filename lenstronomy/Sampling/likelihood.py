@@ -310,6 +310,7 @@ class LikelihoodModule(object):
             self.flux_ratio_likelihood = FluxRatioLikelihood(
                 lens_model_class,
                 num_point_sources=len(self.PointSource.point_source_type_list),
+                point_source_redshift_list=self.PointSource._redshift_list,
                 **kwargs_flux
             )
         if self._kinematic_2D_likelihood is True:
@@ -361,13 +362,13 @@ class LikelihoodModule(object):
          - logL (float) log likelihood of the data given the model (natural logarithm)
         """
         kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_special = (
-            kwargs_return["kwargs_lens"],
-            kwargs_return["kwargs_source"],
-            kwargs_return["kwargs_lens_light"],
-            kwargs_return["kwargs_ps"],
-            kwargs_return["kwargs_special"],
+            kwargs_return.get("kwargs_lens", {}),
+            kwargs_return.get("kwargs_source", {}),
+            kwargs_return.get("kwargs_lens_light", {}),
+            kwargs_return.get("kwargs_ps", {}),
+            kwargs_return.get("kwargs_special", {}),
         )
-        kwargs_tracer_source = kwargs_return["kwargs_tracer_source"]
+        # kwargs_tracer_source = kwargs_return["kwargs_tracer_source"]
         # update model instance in case of changes affecting it (i.e. redshift sampling in multi-plane)
         self._update_model(kwargs_special)
         # generate image and computes likelihood

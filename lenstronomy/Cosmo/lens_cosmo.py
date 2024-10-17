@@ -449,13 +449,6 @@ class LensCosmo(object):
         :param cosmo: ~astropy.cosmology instance
         :return: beta
         """
-        ds1 = self.background.cosmo.angular_diameter_distance(z=z_source_1).value
-        dds1 = self.background.cosmo.angular_diameter_distance_z1z2(
-            z1=z_lens, z2=z_source_1
-        ).value
-        ds2 = self.background.cosmo.angular_diameter_distance(z=z_source_2).value
-        dds2 = self.background.cosmo.angular_diameter_distance_z1z2(
-            z1=z_lens, z2=z_source_2
-        ).value
-        beta = dds1 / ds1 * ds2 / dds2
-        return beta
+        return self.background.beta_double_source_plane(
+            z_lens=z_lens, z_source_1=z_source_1, z_source_2=z_source_2
+        )

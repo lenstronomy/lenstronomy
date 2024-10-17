@@ -186,6 +186,16 @@ class LensModel(object):
                                 z_source_2=self._z_source_convention,
                             )
                             self.lens_model.change_redshift_scaling(alpha_scaling)
+        self._ddt_scaling = 1
+        if (
+            self.z_lens is not None
+            and self._z_source_convention is not None
+            and z_source is not None
+        ):
+            ddt_scaling = self._lensCosmo.background.ddt_scaling(
+                self.z_lens, self._z_source_convention, z_source
+            )
+            self._ddt_scaling = ddt_scaling
 
     def info(self):
         """Shows what models are being initialized and what parameters are being
@@ -537,7 +547,21 @@ class LensModel(object):
 
         if self.z_lens is not None:
             self._lensCosmo = LensCosmo(self.z_lens, z_source, cosmo=self.cosmo)
+            if self._z_source_convention is not None:
+                ddt_scaling = self._lensCosmo.background.ddt_scaling(
+                    self.z_lens, self._z_source_convention, z_source
+                )
+                self._ddt_scaling = ddt_scaling
         self.z_source = z_source
+
+    @property
+    def ddt_scaling(self):
+        """Ratio of time-delay distance between the source redshift and the time-delay
+        distance to the z_source_convention.
+
+        :return:
+        """
+        return self._ddt_scaling
 
     def _deflection_differential(self, x, y, kwargs, k=None, diff=0.00001):
         """

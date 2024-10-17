@@ -230,6 +230,7 @@ class PositionLikelihood(object):
             return 0
         logL = 0
         source_x, source_y = self._pointSource.source_position(kwargs_ps, kwargs_lens)
+        redshift_list = self._pointSource._redshift_list
         for k in range(len(kwargs_ps)):
             if (
                 "ra_image" in kwargs_ps[k]
@@ -237,11 +238,10 @@ class PositionLikelihood(object):
             ):
                 x_image = kwargs_ps[k]["ra_image"]
                 y_image = kwargs_ps[k]["dec_image"]
+                self._lensModel.change_source_redshift(redshift_list[k])
                 # calculating the individual source positions from the image positions
-                # TODO: have option for ray-shooting back to specific redshift in multi-plane lensing
                 k_list = self._pointSource.k_list(k)
                 for i in range(len(x_image)):
-                    # TODO: add redshift information in computation
                     if k_list is not None:
                         k_lens = k_list[i]
                     else:

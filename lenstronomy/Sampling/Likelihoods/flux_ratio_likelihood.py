@@ -19,6 +19,7 @@ class FluxRatioLikelihood(object):
         grid_number=100,
         polar_grid=False,
         aspect_ratio=0.5,
+        point_source_redshift_list=None,
     ):
         """
 
@@ -37,6 +38,7 @@ class FluxRatioLikelihood(object):
          finite-size source modeled as a Gaussian
         :param window_size: size of window to compute the finite flux
         :param grid_number: number of grid cells per axis in the window to numerically compute the flux
+        :param point_source_redshift_list: list of redshifts to the different sources
         """
         self._num_point_sources = num_point_sources
         self._lens_model_class = lens_model_class
@@ -59,6 +61,9 @@ class FluxRatioLikelihood(object):
         if flux_ratio_measurement_bool is None:
             flux_ratio_measurement_bool = [True] * num_point_sources
         self._flux_ratio_measurement_bool = flux_ratio_measurement_bool
+        if point_source_redshift_list is None:
+            point_source_redshift_list = [None] * num_point_sources
+        self._point_source_redshift_list = point_source_redshift_list
 
     def logL(self, ra_image_list, dec_image_list, kwargs_lens, kwargs_special):
         """
@@ -71,6 +76,9 @@ class FluxRatioLikelihood(object):
         for k in range(len(ra_image_list)):
             if self._flux_ratio_measurement_bool[k] is True:
                 x_pos, y_pos = ra_image_list[k], dec_image_list[k]
+                self._lens_model_class.change_source_redshift(
+                    z_source=self._point_source_redshift_list[k]
+                )
                 if self._source_type == "INF":
                     mag = np.abs(
                         self._lens_model_class.magnification(x_pos, y_pos, kwargs_lens)

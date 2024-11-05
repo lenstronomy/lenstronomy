@@ -205,6 +205,40 @@ class TestLensCosmo(object):
         # compare
         npt.assert_almost_equal(mass_tot / m_star, 1, decimal=1)
 
+    def test_vel_disp_dPIED_sigma0(self):
+        from lenstronomy.LensModel.lens_model import LensModel
+        import matplotlib.pyplot as plt
+        from astropy.cosmology import FlatLambdaCDM
+        cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.05)
+        lensCosmo = LensCosmo(z_lens=2, z_source=5, cosmo=cosmo)
+
+        vel_disp = 250
+        # make the test such that dPIED effectively mimics a SIS profile
+        theta_E_sis = lensCosmo.sis_sigma_v2theta_E(v_sigma=vel_disp)
+        sis = LensModel(lens_model_list=["SIS"])
+        kwargs_sis = [{"theta_E": theta_E_sis}]
+
+        lens_model = LensModel(lens_model_list=["PJAFFE"])
+        r = np.logspace(start=-2, stop=1, num=100)
+
+        Rs = 100000
+        Ra = 0.00001
+        Ra_list = [0.1, 0.01, 0.001, 0.0001, 0.00001]
+        for Ra in Ra_list:
+            sigma0 = lensCosmo.vel_disp_dPIED_sigma0(vel_disp, Ra=Ra, Rs=Rs)
+            print(sigma0, theta_E_sis, "test")
+            kwargs_lens = [{'sigma0': sigma0, "Ra": Ra, "Rs": Rs, 'center_x': 0, 'center_y': 0}]
+
+            #plt.semilogx(r, lens_model.kappa(r, 0, kwargs_lens) / sis.kappa(r, 0, kwargs_sis), label=Ra)
+        #plt.legend()
+        #plt.show()
+
+        # calculate Einstein radius and compare it with SIS profile
+        from lenstronomy.Analysis.lens_profile import LensProfileAnalysis
+        lens_analysis = LensProfileAnalysis(lens_model=lens_model)
+        theta_E_dPIED = lens_analysis.effective_einstein_radius(kwargs_lens=kwargs_lens)
+        npt.assert_almost_equal(theta_E_dPIED / theta_E_sis, 1, decimal=2)
+
 
 if __name__ == "__main__":
     pytest.main()

@@ -422,6 +422,48 @@ class LensCosmo(object):
         k_eff /= norm_integral
         return k_eff
 
+    def vel_disp_dPIED_sigma0(self, vel_disp, Ra, Rs):
+        """
+        sigma0 value in the convention of the lenstronomy pseudo_jaffe lens model
+
+        lenstronomy conventions:
+
+        .. math::
+            \\Sigma(R) = \\Sigma_0 \\frac{Ra Rs}{Rs-Ra}\\left(\\frac{1}{\\sqrt{Ra^2+R^2}} - \\frac{1}{\\sqrt{Rs^2+R^2}} \\right)
+
+        with
+
+        .. math::
+            \\Sigma_0 = \\pi \\rho_0 \\frac{Ra Rs}{Rs + Ra}
+
+        In the lensing parameterization,
+
+        .. math::
+            \\sigma_0 = \\frac{\\Sigma_0}{\\Sigma_{\\rm crit}}
+
+
+        SIS profile:
+
+        .. math::
+            \\theta_{\\rm E, SIS} = 4\\pi  \\frac{D_{\\rm LS}}{D_{\\rm S}} \\left(\\frac{\\sigma_v}{c} \\right)^2
+
+        .. math::
+            \\kappa_{\\rm SIS} = \\frac{1}{2} \\frac{\\theta_E}{R}
+
+        .. math::
+            \\kappa_{\\rm dPIED} \\approx \\sigma_0 \\frac{R_s R_a}{R_s - R_a} \\left(\\sim \\frac{1}{R}  \\right))
+
+        relation then between velocity dispersion and sigma0:
+
+        .. math::
+            \\sigma_v = c \\sqrt{\\sigma_0 \\frac{R_s R_a}{R_s - R_a} \\frac{D_{\\rm S}}{D_{\\rm LS}} \\frac{1}{2\\pi} }
+
+        :param vel_disp: SIS equivalent velocity dispersion (km/s)
+        :return: sigma0 value in the convention of the lenstronomy pseudo_jaffe lens model
+        """
+        sigma_0 = (vel_disp * 1000 / const.c) ** 2 * 2 * np.pi * self.dds / self.ds * ( (Rs - Ra) / (Rs*Ra)) / const.arcsec
+        return sigma_0
+
     def sersic_k_eff2m_star(self, k_eff, R_sersic, n_sersic):
         """Translates convergence at half-light radius to total integrated physical
         stellar mass for a Sersic profile.

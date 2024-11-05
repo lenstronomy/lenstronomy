@@ -346,8 +346,8 @@ class PseudoJaffe(LensProfileBase):
         """
         if Ra >= Rs:
             Ra, Rs = Rs, Ra
-        if Ra < 0.0001:
-            Ra = 0.0001
-        if Rs < Ra + 0.0001:
-            Rs += 0.0001
+        if Ra < 0.00000001:
+            Ra = 0.00000001
+        if Rs < Ra + 0.00000001:
+            Rs += 0.00000001
         return Ra, Rs

@@ -8,7 +8,7 @@ __all__ = ["Ellipsoid"]
 
 
 class Ellipsoid(object):
-    """Class for an universal surface brightness within an ellipsoid."""
+    """Class for a universal surface brightness within an ellipsoid."""
 
     def __init__(self):
         self.param_names = ["amp", "radius", "e1", "e2", "center_x", "center_y"]

@@ -104,7 +104,7 @@ def ellipticity2phi_q(e1, e2):
 
 
 @export
-def transform_e1e2_product_average(x, y, e1, e2, center_x, center_y):
+def transform_e1e2_product_average_old(x, y, e1, e2, center_x, center_y):
     """Maps the coordinates x, y with eccentricities e1 e2 into a new elliptical
     coordinate system such that R = sqrt(R_major * R_minor)
 
@@ -126,6 +126,28 @@ def transform_e1e2_product_average(x, y, e1, e2, center_x, center_y):
     xt1 = cos_phi * x_shift + sin_phi * y_shift
     xt2 = -sin_phi * x_shift + cos_phi * y_shift
     return xt1 * np.sqrt(q), xt2 / np.sqrt(q)
+
+
+@export
+def transform_e1e2_product_average(x, y, e1, e2, center_x, center_y):
+    """Maps the coordinates x, y with eccentricities e1 e2 into a new elliptical
+    coordinate system such that R = sqrt(R_major * R_minor)
+
+    :param x: x-coordinate
+    :param y: y-coordinate
+    :param e1: eccentricity
+    :param e2: eccentricity
+    :param center_x: center of distortion
+    :param center_y: center of distortion
+    :return: distorted coordinates x', y'
+    """
+    x_shift = x - center_x
+    y_shift = y - center_y
+
+    norm = np.sqrt(max(abs(1 - e1 ** 2 - e2 ** 2), 0.000001))
+    x_ = ((1 - e1) * x_shift - e2 * y_shift) / norm
+    y_ = (-e2 * x_shift + (1 + e1) * y_shift) / norm
+    return x_, y_
 
 
 @export
@@ -152,7 +174,8 @@ def elliptical_distortion_product_average(x, y, e1, e2, center_x, center_y):
     # shift
     x___ = x__ + center_x
     y___ = y__ + center_y
-    return x___, y___
+    # return x___, y___
+    return x_ + center_x, y_ + center_y
 
 
 @export

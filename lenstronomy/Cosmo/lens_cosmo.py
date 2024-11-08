@@ -224,7 +224,7 @@ class LensCosmo(object):
             no little h)
         :param c: NFW concentration parameter (r200/r_s)
         :return: Rs_angle (angle at scale radius) (in units of arcsec), alpha_Rs
-            (observed bending angle at the scale radius
+            (observed bending angle at the scale radius)
         """
         rho0, Rs, r200 = self.nfwParam_physical(M, c)
         Rs_angle = Rs / self.dd / const.arcsec  # Rs in arcsec

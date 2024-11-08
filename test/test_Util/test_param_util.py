@@ -89,7 +89,6 @@ def test_ellipticity2phi_q_symmetry():
 
     e1, e2 = 2.99, -0.0
     phi, q = param_util.ellipticity2phi_q(e1, e2)
-    print(phi, q)
     e1_new, e2_new = param_util.phi_q2_ellipticity(phi, q)
     phi_new, q_new = param_util.ellipticity2phi_q(e1_new, e2_new)
     npt.assert_almost_equal(phi, phi_new, decimal=10)
@@ -113,11 +112,24 @@ def test_transform_e1e2():
     npt.assert_almost_equal(y_, y_new / det, decimal=5)
 
 
+def test_transform_e1e2_product_average_new():
+    x, y = util.make_grid(numPix=31, deltapix=1)
+
+    e1, e2 = 0.3, 0.2
+    center_x, center_y = 0, 0
+
+    x_, y_ = param_util.transform_e1e2_product_average(x, y, e1, e2, center_x, center_y)
+    r_new = np.sqrt(x_**2 + y_**2)
+
+    x_old, y_old = param_util.transform_e1e2_product_average_old(x, y, e1, e2, center_x, center_y)
+    r_old = np.sqrt(x_old ** 2 + y_old ** 2)
+    npt.assert_almost_equal(r_new, r_old, decimal=8)
+
+
 def test_phi_gamma_ellipticity():
     phi = -1.0
     gamma = 0.1
     e1, e2 = param_util.shear_polar2cartesian(phi, gamma)
-    print(e1, e2, "e1, e2")
     phi_out, gamma_out = param_util.shear_cartesian2polar(e1, e2)
     npt.assert_almost_equal(phi_out, phi, decimal=8)
     npt.assert_almost_equal(gamma_out, gamma_out, decimal=8)
@@ -147,7 +159,6 @@ def test_displace_eccentricity():
 
     cos_phi = np.cos(phi_G)
     sin_phi = np.sin(phi_G)
-    print(cos_phi, sin_phi)
 
     xt1 = cos_phi * x_shift + sin_phi * y_shift
     xt2 = -sin_phi * x_shift + cos_phi * y_shift
@@ -170,7 +181,6 @@ def test_displace_eccentricity():
 
     cos_phi = np.cos(phi_G)
     sin_phi = np.sin(phi_G)
-    print(cos_phi, sin_phi)
 
     xt1 = cos_phi * x_shift + sin_phi * y_shift
     xt2 = -sin_phi * x_shift + cos_phi * y_shift

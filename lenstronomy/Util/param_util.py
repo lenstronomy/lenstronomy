@@ -164,16 +164,16 @@ def elliptical_distortion_product_average(x, y, e1, e2, center_x, center_y):
     :return: distorted coordinates x', y'
     """
     x_, y_ = transform_e1e2_product_average(x, y, e1, e2, center_x, center_y)
-    # rotate back
-    phi_g, q = ellipticity2phi_q(e1, e2)
-    cos_phi = np.cos(-phi_g)
-    sin_phi = np.sin(-phi_g)
+    # rotate back (only used in the old version of transform_e1e2_product_average < lenstronomy 1.12.2)
+    # phi_g, q = ellipticity2phi_q(e1, e2)
+    # cos_phi = np.cos(-phi_g)
+    # sin_phi = np.sin(-phi_g)
 
-    x__ = cos_phi * x_ + sin_phi * y_
-    y__ = -sin_phi * x_ + cos_phi * y_
+    # x__ = cos_phi * x_ + sin_phi * y_
+    # y__ = -sin_phi * x_ + cos_phi * y_
     # shift
-    x___ = x__ + center_x
-    y___ = y__ + center_y
+    # x___ = x__ + center_x
+    # y___ = y__ + center_y
     # return x___, y___
     return x_ + center_x, y_ + center_y
 

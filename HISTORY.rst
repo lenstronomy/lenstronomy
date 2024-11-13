@@ -389,3 +389,18 @@ History
 1.11.10 (2024-05-15)
 ++++++++++++++++++++
 * bug fix in analytical lens equation solver for SIE+CONVERGENCE
+
+1.12.0 (2024-05-15)
++++++++++++++++++++
+* renamed some lens profiles
+* minor bug fixed for lens equation solver involving multiple EPL profiles
+* FittingSequence allows to store intermediate PSF iteration results
+* minor updates of lens_plot
+* multiple conjugent points in likelihood
+* convenient checking of parameter bounds
+* STARRED PSF iteration procedure
+
+1.12.1 (2024-11-04)
++++++++++++++++++++
+* multi-source plane for point sources implemented
+* change source redshift in LensModel() and LensEquationSolver() implemented

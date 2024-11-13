@@ -29,7 +29,7 @@ class Numerics(PointSourceRendering):
         flux_evaluate_indexes=None,
         supersampled_indexes=None,
         compute_indexes=None,
-        point_source_supersampling_factor=1,
+        point_source_supersampling_factor=None,
         convolution_kernel_size=None,
         convolution_type="fft_static",
         truncation=4,
@@ -55,6 +55,7 @@ class Numerics(PointSourceRendering):
          convolution is computed (all others =0). This can be set to likelihood_mask in the Likelihood module for
          consistency.
         :param point_source_supersampling_factor: super-sampling resolution of the point source placing
+         if None, then uses the supersampling factor of the original PSF
         :param convolution_kernel_size: int, odd number, size of convolution kernel. If None, takes size of point_source_kernel
         :param convolution_type: string, 'fft', 'grid', 'fft_static' mode of 2d convolution
         """
@@ -231,7 +232,7 @@ class Numerics(PointSourceRendering):
             size = convolution_kernel_size * supersampling_factor
             if size % 2 == 0:
                 size += 1
-            kernel_cut = kernel_util.cut_psf(kernel_super, size)
+            kernel_cut = kernel_util.cut_psf(kernel_super, size, normalisation=False)
             return kernel_cut
         else:
             return kernel_super

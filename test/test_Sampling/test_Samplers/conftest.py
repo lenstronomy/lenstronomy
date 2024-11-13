@@ -101,8 +101,8 @@ def simple_einstein_ring_likelihood():
     kwargs_likelihood = {
         "source_marg": False,
         "image_position_uncertainty": 0.004,
-        "check_matched_source_position": False,
-        "source_position_tolerance": 0.001,
+        "source_position_likelihood": False,
+        "source_position_tolerance": None,
         "source_position_sigma": 0.001,
     }
 
@@ -229,8 +229,8 @@ def simple_einstein_ring_likelihood_2d():
     kwargs_likelihood = {
         "source_marg": False,
         "image_position_uncertainty": 0.004,
-        "check_matched_source_position": False,
-        "source_position_tolerance": 0.001,
+        "source_position_likelihood": False,
+        "source_position_tolerance": None,
         "source_position_sigma": 0.001,
     }
 

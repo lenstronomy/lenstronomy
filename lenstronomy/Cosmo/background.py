@@ -81,3 +81,30 @@ class Background(object):
         """
         h = self.cosmo.H(0).value / 100.0
         return 3 * h**2 / (8 * np.pi * const.G) * 10**10 * const.Mpc / const.M_sun
+
+    def beta_double_source_plane(self, z_lens, z_source_1, z_source_2):
+        """Model prediction of ratio of scaled deflection angles.
+
+        :param z_lens: lens redshift
+        :param z_source_1: source_1 redshift
+        :param z_source_2: source_2 redshift
+        :param cosmo: ~astropy.cosmology instance
+        :return: beta
+        """
+        ds1 = self.cosmo.angular_diameter_distance(z=z_source_1).value
+        dds1 = self.cosmo.angular_diameter_distance_z1z2(z1=z_lens, z2=z_source_1).value
+        ds2 = self.cosmo.angular_diameter_distance(z=z_source_2).value
+        dds2 = self.cosmo.angular_diameter_distance_z1z2(z1=z_lens, z2=z_source_2).value
+        beta = dds1 / ds1 * ds2 / dds2
+        return beta
+
+    def ddt_scaling(self, z_lens, z_source_1, z_source_2):
+        """Scales the time-delay distance Ddt when given for one source redshift to a
+        second source redshift.
+
+        :param z_lens: deflector redshift
+        :param z_source_1: source redshift of original Ddt
+        :param z_source_2: new source redshift
+        :return: Ddt to z_source_2
+        """
+        return 1.0 / self.ddt(z_lens, z_source_1) * self.ddt(z_lens, z_source_2)

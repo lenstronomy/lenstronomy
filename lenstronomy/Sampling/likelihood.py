@@ -32,7 +32,6 @@ class LikelihoodModule(object):
         param_class,
         image_likelihood=True,
         check_bounds=True,
-        check_matched_source_position=False,
         astrometric_likelihood=False,
         image_position_likelihood=False,
         source_position_likelihood=False,
@@ -85,9 +84,6 @@ class LikelihoodModule(object):
             back to source plane and evaluates relative errors in respect ot the
             position_uncertainties in the image plane
         :param check_bounds: bool, option to punish the hard bounds in parameter space
-        :param check_matched_source_position: bool, option to check whether point source
-            position of solver finds a solution to match all the image positions in the
-            same source plane coordinate
         :param astrometric_likelihood: bool, additional likelihood term of the predicted
             vs modelled point source position
         :param image_position_uncertainty: float, 1-sigma Gaussian uncertainty on the
@@ -122,7 +118,8 @@ class LikelihoodModule(object):
         :param kwargs_pixelbased: keyword arguments with various settings related to the
             pixel-based solver (see SLITronomy documentation)
         :param kinematic_2d_likelihood: bool, option to compute the kinematic likelihood
-        :param tracer_likelihood: option to perform likelihood on tracer quantity derived from imaging or spectroscopy
+        :param tracer_likelihood: option to perform likelihood on tracer quantity
+            derived from imaging or spectroscopy
         """
         # TODO unpack also tracer model from kwargs_data
         (
@@ -197,7 +194,6 @@ class LikelihoodModule(object):
             "ra_image_list": ra_image_list,
             "dec_image_list": dec_image_list,
             "image_position_uncertainty": image_position_uncertainty,
-            "check_matched_source_position": check_matched_source_position,
             "source_position_tolerance": source_position_tolerance,
             "source_position_sigma": source_position_sigma,
             "force_no_add_image": force_no_add_image,
@@ -314,6 +310,7 @@ class LikelihoodModule(object):
             self.flux_ratio_likelihood = FluxRatioLikelihood(
                 lens_model_class,
                 num_point_sources=len(self.PointSource.point_source_type_list),
+                point_source_redshift_list=self.PointSource._redshift_list,
                 **kwargs_flux
             )
         if self._kinematic_2D_likelihood is True:
@@ -340,14 +337,14 @@ class LikelihoodModule(object):
         :type verbose: boolean
         :returns: log likelihood of the data given the model (natural logarithm)
         """
-        # extract parameters
-        kwargs_return = self.param.args2kwargs(args)
         if self._check_bounds is True:
             penalty, bound_hit = self.check_bounds(
                 args, self._lower_limit, self._upper_limit, verbose=verbose
             )
             if bound_hit is True:
                 return -(10**18)
+        # extract parameters
+        kwargs_return = self.param.args2kwargs(args)
         return self.log_likelihood(kwargs_return, verbose=verbose)
 
     def log_likelihood(self, kwargs_return, verbose=False):
@@ -365,69 +362,74 @@ class LikelihoodModule(object):
          - logL (float) log likelihood of the data given the model (natural logarithm)
         """
         kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_special = (
-            kwargs_return["kwargs_lens"],
-            kwargs_return["kwargs_source"],
-            kwargs_return["kwargs_lens_light"],
-            kwargs_return["kwargs_ps"],
-            kwargs_return["kwargs_special"],
+            kwargs_return.get("kwargs_lens", {}),
+            kwargs_return.get("kwargs_source", {}),
+            kwargs_return.get("kwargs_lens_light", {}),
+            kwargs_return.get("kwargs_ps", {}),
+            kwargs_return.get("kwargs_special", {}),
         )
-        kwargs_tracer_source = kwargs_return["kwargs_tracer_source"]
+        # kwargs_tracer_source = kwargs_return["kwargs_tracer_source"]
         # update model instance in case of changes affecting it (i.e. redshift sampling in multi-plane)
         self._update_model(kwargs_special)
         # generate image and computes likelihood
         self._reset_point_source_cache(bool_input=True)
         logL = 0
 
-        if self._image_likelihood is True:
-            logL_image, param = self.image_likelihood.logL(**kwargs_return)
-            logL += logL_image
-            if verbose is True:
-                print("image logL = %s" % logL_image)
-        else:
-            param = None
-
-        if self._time_delay_likelihood is True:
-            logL_time_delay = self.time_delay_likelihood.logL(
-                kwargs_lens, kwargs_ps, kwargs_special
-            )
-            logL += logL_time_delay
-            if verbose is True:
-                print("time-delay logL = %s" % logL_time_delay)
-        if self._flux_ratio_likelihood is True:
-            ra_image_list, dec_image_list = self.PointSource.image_position(
-                kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens
-            )
-            logL_flux_ratios = self.flux_ratio_likelihood.logL(
-                ra_image_list, dec_image_list, kwargs_lens, kwargs_special
-            )
-            logL += logL_flux_ratios
-            if verbose is True:
-                print("flux ratio logL = %s" % logL_flux_ratios)
-        if self._kinematic_2D_likelihood is True:
-            logL_kinematic_2d = self.kinematic_2D_likelihood.logL(
-                kwargs_lens, kwargs_lens_light, kwargs_special
-            )
-            logL += logL_kinematic_2d
-            if verbose is True:
-                print("kinematic logL = %s" % logL_kinematic_2d)
-        logL += self._position_likelihood.logL(
-            kwargs_lens, kwargs_ps, kwargs_special, verbose=verbose
-        )
-        if self._tracer_likelihood is True:
-            logL_tracer = self.tracer_likelihood.logL(param=param, **kwargs_return)
-            if verbose is True:
-                print("tracer logL = %s" % logL_tracer)
-            logL += logL_tracer
-        logL_prior = self._prior_likelihood.logL(**kwargs_return)
-        logL += logL_prior
-        if verbose is True:
-            print("Prior likelihood = %s" % logL_prior)
+        # computing custom loglikelihood function first so that the full
+        # likelihood evaluation is skipped if it returns -inf
         if self._custom_logL_addition is not None:
             logL_cond = self._custom_logL_addition(**kwargs_return)
             logL += logL_cond
             if verbose is True:
                 print("custom added logL = %s" % logL_cond)
-        self._reset_point_source_cache(bool_input=False)
+
+        if logL > -(10**18):  # so that custom logL may return -1e18 instead of -inf
+            logL_prior = self._prior_likelihood.logL(**kwargs_return)
+            logL += logL_prior
+            if verbose is True:
+                print("Prior likelihood = %s" % logL_prior)
+
+            if self._image_likelihood is True:
+                logL_image, param = self.image_likelihood.logL(**kwargs_return)
+                logL += logL_image
+                if verbose is True:
+                    print("image logL = %s" % logL_image)
+            else:
+                param = None
+
+            if self._time_delay_likelihood is True:
+                logL_time_delay = self.time_delay_likelihood.logL(
+                    kwargs_lens, kwargs_ps, kwargs_special
+                )
+                logL += logL_time_delay
+                if verbose is True:
+                    print("time-delay logL = %s" % logL_time_delay)
+            if self._flux_ratio_likelihood is True:
+                ra_image_list, dec_image_list = self.PointSource.image_position(
+                    kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens
+                )
+                logL_flux_ratios = self.flux_ratio_likelihood.logL(
+                    ra_image_list, dec_image_list, kwargs_lens, kwargs_special
+                )
+                logL += logL_flux_ratios
+                if verbose is True:
+                    print("flux ratio logL = %s" % logL_flux_ratios)
+            if self._kinematic_2D_likelihood is True:
+                logL_kinematic_2d = self.kinematic_2D_likelihood.logL(
+                    kwargs_lens, kwargs_lens_light, kwargs_special
+                )
+                logL += logL_kinematic_2d
+                if verbose is True:
+                    print("kinematic logL = %s" % logL_kinematic_2d)
+            logL += self._position_likelihood.logL(
+                kwargs_lens, kwargs_ps, kwargs_special, verbose=verbose
+            )
+            if self._tracer_likelihood is True:
+                logL_tracer = self.tracer_likelihood.logL(param=param, **kwargs_return)
+                if verbose is True:
+                    print("tracer logL = %s" % logL_tracer)
+                logL += logL_tracer
+            self._reset_point_source_cache(bool_input=False)
         return logL  # , None
 
     @staticmethod

@@ -6,6 +6,8 @@ import numpy as np
 import lenstronomy.Util.constants as const
 from lenstronomy.Cosmo.background import Background
 from lenstronomy.Cosmo.nfw_param import NFWParam
+from lenstronomy.Cosmo.gnfw_param import GNFWParam
+from lenstronomy.LensModel.Profiles.gnfw import GNFW
 
 __all__ = ["LensCosmo"]
 
@@ -19,13 +21,14 @@ class LensCosmo(object):
 
         :param z_lens: redshift of lens
         :param z_source: redshift of source
-        :param cosmo: astropy.cosmology instance
+        :param cosmo: ~astropy.cosmology instance
         """
 
         self.z_lens = z_lens
         self.z_source = z_source
         self.background = Background(cosmo=cosmo)
         self.nfw_param = NFWParam(cosmo=cosmo)
+        self.gnfw_param = GNFWParam(cosmo=cosmo)
 
     @property
     def h(self):
@@ -193,6 +196,26 @@ class LensCosmo(object):
         M200 = self.nfw_param.M_r200(r200 * self.h, self.z_lens) / self.h
         return rho0, Rs, c, r200, M200
 
+    def gnfw_angle2physical(self, Rs_angle, alpha_Rs, gamma_in):
+        """Converts the angular parameters into the physical ones for a gNFW profile.
+
+        :param alpha_Rs: observed bending angle at the scale radius in units of arcsec
+        :param Rs_angle: scale radius in units of arcsec
+        :param gamma_in: inner slope of the gNFW profile
+        :return: rho0 [Msun/Mpc^3], Rs [Mpc], c, r200 [Mpc], M200 [Msun]
+        """
+        if not hasattr(self, "self._gnfw"):
+            self._gnfw = GNFW()
+        Rs = Rs_angle * const.arcsec * self.dd
+        theta_scaled = alpha_Rs * self.sigma_crit * self.dd * const.arcsec
+        factor = self._gnfw.get_alpha_Rs_for_kappa_s_1(1, gamma_in) / 4.0
+        rho0 = theta_scaled / (4 * Rs**2 * factor)
+        rho0_com = rho0 / self.h**2
+        c = self.gnfw_param.c_rho0(rho0_com, self.z_lens, gamma_in)
+        r200 = c * Rs
+        M200 = self.gnfw_param.M_r200(r200 * self.h, self.z_lens) / self.h
+        return rho0, Rs, c, r200, M200
+
     def nfw_physical2angle(self, M, c):
         """Converts the physical mass and concentration parameter of an NFW profile into
         the lensing quantities.
@@ -201,11 +224,29 @@ class LensCosmo(object):
             no little h)
         :param c: NFW concentration parameter (r200/r_s)
         :return: Rs_angle (angle at scale radius) (in units of arcsec), alpha_Rs
-            (observed bending angle at the scale radius
+            (observed bending angle at the scale radius)
         """
         rho0, Rs, r200 = self.nfwParam_physical(M, c)
         Rs_angle = Rs / self.dd / const.arcsec  # Rs in arcsec
         alpha_Rs = rho0 * (4 * Rs**2 * (1 + np.log(1.0 / 2.0)))
+        return Rs_angle, alpha_Rs / self.sigma_crit / self.dd / const.arcsec
+
+    def gnfw_physical2angle(self, M, c, gamma_in):
+        """Converts the physical mass and concentration parameter of a gNFW profile into
+        the lensing quantities.
+
+        :param M: mass enclosed 200 rho_crit in units of M_sun (physical units, meaning
+            no little h)
+        :param c: NFW concentration parameter (r200/r_s)
+        :return: Rs_angle (angle at scale radius) (in units of arcsec), alpha_Rs
+            (observed bending angle at the scale radius
+        """
+        if not hasattr(self, "self._gnfw"):
+            self._gnfw = GNFW()
+        rho0, Rs, r200 = self.gnfwParam_physical(M, c, gamma_in)
+        Rs_angle = Rs / self.dd / const.arcsec  # Rs in arcsec
+        factor = self._gnfw.get_alpha_Rs_for_kappa_s_1(1, gamma_in) / 4.0
+        alpha_Rs = rho0 * (4 * Rs**2 * factor)
         return Rs_angle, alpha_Rs / self.sigma_crit / self.dd / const.arcsec
 
     def nfwParam_physical(self, M, c):
@@ -224,6 +265,22 @@ class LensCosmo(object):
         Rs = r200 / c
         return rho0, Rs, r200
 
+    def gnfwParam_physical(self, M, c, gamma_in):
+        """Returns the gNFW parameters in physical units.
+
+        :param M: physical mass in M_sun in definition m200
+        :param c: concentration
+        :return: rho0 [Msun/Mpc^3], Rs [Mpc], r200 [Mpc]
+        """
+        r200 = (
+            self.gnfw_param.r200_M(M * self.h, self.z_lens) / self.h
+        )  # physical radius r200
+        rho0 = (
+            self.gnfw_param.rho0_c(c, self.z_lens, gamma_in) * self.h**2
+        )  # physical density in M_sun/Mpc**3
+        Rs = r200 / c
+        return rho0, Rs, r200
+
     def nfw_M_theta_r200(self, M):
         """Returns r200 radius in angular units of arc seconds on the sky.
 
@@ -232,6 +289,18 @@ class LensCosmo(object):
         """
         r200 = (
             self.nfw_param.r200_M(M * self.h, self.z_lens) / self.h
+        )  # physical radius r200
+        theta_r200 = r200 / self.dd / const.arcsec
+        return theta_r200
+
+    def gnfw_M_theta_r200(self, M):
+        """Returns r200 radius in angular units of arc seconds on the sky.
+
+        :param M: physical mass in M_sun
+        :return: angle (in arc seconds) of the r200 radius
+        """
+        r200 = (
+            self.gnfw_param.r200_M(M * self.h, self.z_lens) / self.h
         )  # physical radius r200
         theta_r200 = r200 / self.dd / const.arcsec
         return theta_r200
@@ -353,6 +422,48 @@ class LensCosmo(object):
         k_eff /= norm_integral
         return k_eff
 
+    def vel_disp_dPIED_sigma0(self, vel_disp, Ra, Rs):
+        """
+        sigma0 value in the convention of the lenstronomy pseudo_jaffe lens model
+
+        lenstronomy conventions:
+
+        .. math::
+            \\Sigma(R) = \\Sigma_0 \\frac{Ra Rs}{Rs-Ra}\\left(\\frac{1}{\\sqrt{Ra^2+R^2}} - \\frac{1}{\\sqrt{Rs^2+R^2}} \\right)
+
+        with
+
+        .. math::
+            \\Sigma_0 = \\pi \\rho_0 \\frac{Ra Rs}{Rs + Ra}
+
+        In the lensing parameterization,
+
+        .. math::
+            \\sigma_0 = \\frac{\\Sigma_0}{\\Sigma_{\\rm crit}}
+
+
+        SIS profile:
+
+        .. math::
+            \\theta_{\\rm E, SIS} = 4\\pi  \\frac{D_{\\rm LS}}{D_{\\rm S}} \\left(\\frac{\\sigma_v}{c} \\right)^2
+
+        .. math::
+            \\kappa_{\\rm SIS} = \\frac{1}{2} \\frac{\\theta_E}{R}
+
+        .. math::
+            \\kappa_{\\rm dPIED} \\approx \\sigma_0 \\frac{R_s R_a}{R_s - R_a} \\left(\\sim \\frac{1}{R}  \\right))
+
+        relation then between velocity dispersion and sigma0:
+
+        .. math::
+            \\sigma_v = c \\sqrt{\\sigma_0 \\frac{R_s R_a}{R_s - R_a} \\frac{D_{\\rm S}}{D_{\\rm LS}} \\frac{1}{2\\pi} }
+
+        :param vel_disp: SIS equivalent velocity dispersion (km/s)
+        :return: sigma0 value in the convention of the lenstronomy pseudo_jaffe lens model
+        """
+        sigma_0 = (vel_disp * 1000 / const.c) ** 2 * 2 * np.pi * self.dds / self.ds * ( (Rs - Ra) / (Rs*Ra)) / const.arcsec
+        return sigma_0
+
     def sersic_k_eff2m_star(self, k_eff, R_sersic, n_sersic):
         """Translates convergence at half-light radius to total integrated physical
         stellar mass for a Sersic profile.
@@ -370,3 +481,16 @@ class LensCosmo(object):
         )
         m_star = k_eff * self.sigma_crit_angle * norm_integral
         return m_star
+
+    def beta_double_source_plane(self, z_lens, z_source_1, z_source_2):
+        """Model prediction of ratio of scaled deflection angles.
+
+        :param z_lens: lens redshift
+        :param z_source_1: source_1 redshift
+        :param z_source_2: source_2 redshift
+        :param cosmo: ~astropy.cosmology instance
+        :return: beta
+        """
+        return self.background.beta_double_source_plane(
+            z_lens=z_lens, z_source_1=z_source_1, z_source_2=z_source_2
+        )

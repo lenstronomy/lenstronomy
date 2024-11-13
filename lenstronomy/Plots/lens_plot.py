@@ -41,6 +41,7 @@ def lens_model_plot(
     fast_caustic=True,
     name_list=None,
     index=None,
+    color_value="k",
     **kwargs,
 ):
     """Plots a lens model (convergence) and the critical curves and caustics.
@@ -123,6 +124,7 @@ def lens_model_plot(
             source_y=sourcePos_y,
             name_list=name_list,
             index=index,
+            color=color_value,
             **kwargs_point_source,
         )
     if coord_inverse:
@@ -290,6 +292,7 @@ def point_source_plot(
     index=None,
     solver_type='lenstronomy',
     kwargs_solver = {},
+    color="k",
     **kwargs,
 ):
     """Plots and illustrates images of a point source. The plotting routine orders the
@@ -304,8 +307,9 @@ def point_source_plot(
     :param source_x: x-position of source
     :param source_y: y-position of source
     :param name_list: list of names of images
-    :param name_list: list of strings, longer or equal the number of point sources. If changing this parameter, input as name_list=[...]
+    :param name_list: list of strings, longer or equal the number of point sources. If changing this parameter, input as name_list=[[...], [...]]
     :param index: number of sources, an integer number. Default None.
+    :param color: string representing the color for the source's images. Default "k".
     :param solver_type: string, type of solver to find the image positions ('lenstronomy', 'analytical' or 'stochastic')
     :param kwargs_solver: keyword arguments for the solver
     :param kwargs: additional plotting keyword arguments
@@ -313,18 +317,19 @@ def point_source_plot(
     """
     from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 
+    name_list_ = []
     if name_list is None and index is None:
-        name_list = _NAME_LIST
+        name_list_ = _NAME_LIST
     elif name_list is None and index is not None:
         name_list = _NAME_LIST
         for i in range(len(name_list)):
-            name_list[i] = str(index + 1) + name_list[i]
+            name_list_.append(str(index + 1) + name_list[i])
     elif name_list is not None and index is None:
-        name_list = name_list
+        name_list_ = name_list
     elif name_list is not None and index is not None:
         name_list = name_list
         for i in range(len(name_list)):
-            name_list[i] = str(index + 1) + name_list[i]
+            name_list_.append(str(index + 1) + name_list[i])
 
     solver = LensEquationSolver(lens_model)
     x_center, y_center = pixel_grid.center
@@ -358,15 +363,18 @@ def point_source_plot(
         x_ = (x_image[i]) * delta_pix_x + origin[0]
         y_ = (y_image[i]) * delta_pix + origin[1]
         ax.plot(
-            x_, y_, "dk", markersize=np.maximum(4 * (1 + np.log(np.abs(mag_images[i]))), 5), alpha=0.5
+            x_,
+            y_,
+            str("d" + color),
+            markersize=4 * (1 + np.log(np.abs(mag_images[i]))),
+            alpha=0.5,
         )
-        margin_x, margin_y = 0.0, 0.15
-        ax.text(x_ + margin_x, y_ + margin_y , name_list[i], fontsize=24, color="k")
+        ax.text(x_, y_, name_list_[i], fontsize=20, color=color)
     x_source, y_source = pixel_grid.map_coord2pix(source_x, source_y)
     ax.plot(
         x_source * delta_pix_x + origin[0],
         y_source * delta_pix + origin[1],
-        "*k",
+        color,
         markersize=10,
     )
 
@@ -386,7 +394,7 @@ def arrival_time_surface(
     point_source=False,
     n_levels=10,
     kwargs_contours=None,
-    image_color_list=None,
+    image_color_value=None,
     letter_font_size=20,
     name_list=None,
 ):
@@ -469,10 +477,10 @@ def arrival_time_surface(
         for i in range(len(x_image)):
             x_ = (x_image[i] + 0.5) * deltaPix - _frame_size / 2
             y_ = (y_image[i] + 0.5) * deltaPix - _frame_size / 2
-            if image_color_list is None:
+            if image_color_value is None:
                 color = "k"
             else:
-                color = image_color_list[i]
+                color = image_color_value[i]
             ax.plot(x_, y_, "x", markersize=10, alpha=1, color=color)
             # markersize=8*(1 + np.log(np.abs(mag_images[i])))
             ax.text(

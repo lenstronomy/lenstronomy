@@ -145,6 +145,9 @@ def convergence_plot(
     vmin=-1,
     vmax=1,
     cmap="Greys",
+    with_color_bar=False,
+    colorbar_label=r"$\log_{10}(\kappa)$",
+    font_size=20,
     **kwargs,
 ):
     """Plot convergence.
@@ -159,6 +162,7 @@ def convergence_plot(
     :param vmax: matplotlib vmax
     :param cmap: matplotlib cmap
     :param kwargs: keyword arguments for matshow
+    :param with_color_bar: bool, if True, shows color bar
     :return: matplotlib axis instance with convergence plot
     """
     x_grid, y_grid = pixel_grid.pixel_coordinates
@@ -166,7 +170,7 @@ def convergence_plot(
     y_grid1d = util.image2array(y_grid)
     kappa_result = lens_model.kappa(x_grid1d, y_grid1d, kwargs_lens)
     kappa_result = util.array2image(kappa_result)
-    _ = ax.matshow(
+    im = ax.matshow(
         np.log10(kappa_result),
         origin="lower",
         extent=extent,
@@ -175,6 +179,12 @@ def convergence_plot(
         vmax=vmax,
         **kwargs,
     )
+    if with_color_bar:
+        divider = make_axes_locatable(ax)
+        cax = divider.append_axes("right", size="5%", pad=0.05)
+        cb = plt.colorbar(im, cax=cax)
+        cb.set_label(colorbar_label, fontsize=font_size)
+
     return ax
 
 
@@ -278,6 +288,8 @@ def point_source_plot(
     source_y,
     name_list=None,
     index=None,
+    solver_type='lenstronomy',
+    kwargs_solver = {},
     **kwargs,
 ):
     """Plots and illustrates images of a point source. The plotting routine orders the
@@ -294,6 +306,8 @@ def point_source_plot(
     :param name_list: list of names of images
     :param name_list: list of strings, longer or equal the number of point sources. If changing this parameter, input as name_list=[...]
     :param index: number of sources, an integer number. Default None.
+    :param solver_type: string, type of solver to find the image positions ('lenstronomy', 'analytical' or 'stochastic')
+    :param kwargs_solver: keyword arguments for the solver
     :param kwargs: additional plotting keyword arguments
     :return: matplotlib axis instance with figure
     """
@@ -333,6 +347,8 @@ def point_source_plot(
         x_center=x_center,
         y_center=y_center,
         min_distance=pixel_grid.pixel_width,
+        solver=solver_type,
+        **kwargs_solver,
     )
     mag_images = lens_model.magnification(theta_x, theta_y, kwargs_lens)
 
@@ -342,9 +358,10 @@ def point_source_plot(
         x_ = (x_image[i]) * delta_pix_x + origin[0]
         y_ = (y_image[i]) * delta_pix + origin[1]
         ax.plot(
-            x_, y_, "dk", markersize=4 * (1 + np.log(np.abs(mag_images[i]))), alpha=0.5
+            x_, y_, "dk", markersize=np.maximum(4 * (1 + np.log(np.abs(mag_images[i]))), 5), alpha=0.5
         )
-        ax.text(x_, y_, name_list[i], fontsize=20, color="k")
+        margin_x, margin_y = 0.0, 0.15
+        ax.text(x_ + margin_x, y_ + margin_y , name_list[i], fontsize=24, color="k")
     x_source, y_source = pixel_grid.map_coord2pix(source_x, source_y)
     ax.plot(
         x_source * delta_pix_x + origin[0],

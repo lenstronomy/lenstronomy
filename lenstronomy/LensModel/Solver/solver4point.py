@@ -232,7 +232,7 @@ class Solver4Point(object):
             "EPL_BOXYDISKY_ELL",
             "EPL_MULTIPOLE_M3M4",
             "EPL_MULTIPOLE_M3M4_ELL",
-            "EPL_MULTIPOLE_M1M3M4"
+            "EPL_MULTIPOLE_M1M3M4",
             "EPL_MULTIPOLE_M1M3M4_ELL"
         ]:
             e1 = kwargs_list[0]["e1"]

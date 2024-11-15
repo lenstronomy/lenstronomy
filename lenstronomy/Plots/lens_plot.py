@@ -135,6 +135,8 @@ def lens_model_plot(
     # ax.get_xaxis().set_visible(False)
     # ax.get_yaxis().set_visible(False)
     ax.autoscale(False)
+    ax.set_xlabel("RA/x [arcsec]")
+    ax.set_ylabel("DEC/y [arcsec]")
     return ax
 
 
@@ -253,6 +255,7 @@ def caustics_plot(
         origin=origin,
         flipped_x=coord_inverse,
         points_only=points_only,
+        label="caustics",
         *args,
         **kwargs,
     )
@@ -265,6 +268,7 @@ def caustics_plot(
         origin=origin,
         flipped_x=coord_inverse,
         points_only=points_only,
+        label="critical curves",
         *args,
         **kwargs,
     )

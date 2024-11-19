@@ -209,6 +209,7 @@ class TestLensCosmo(object):
         from lenstronomy.LensModel.lens_model import LensModel
         import matplotlib.pyplot as plt
         from astropy.cosmology import FlatLambdaCDM
+
         cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.05)
         lensCosmo = LensCosmo(z_lens=2, z_source=5, cosmo=cosmo)
 
@@ -227,14 +228,17 @@ class TestLensCosmo(object):
         for Ra in Ra_list:
             sigma0 = lensCosmo.vel_disp_dPIED_sigma0(vel_disp, Ra=Ra, Rs=Rs)
             print(sigma0, theta_E_sis, "test")
-            kwargs_lens = [{'sigma0': sigma0, "Ra": Ra, "Rs": Rs, 'center_x': 0, 'center_y': 0}]
+            kwargs_lens = [
+                {"sigma0": sigma0, "Ra": Ra, "Rs": Rs, "center_x": 0, "center_y": 0}
+            ]
 
-            #plt.semilogx(r, lens_model.kappa(r, 0, kwargs_lens) / sis.kappa(r, 0, kwargs_sis), label=Ra)
-        #plt.legend()
-        #plt.show()
+            # plt.semilogx(r, lens_model.kappa(r, 0, kwargs_lens) / sis.kappa(r, 0, kwargs_sis), label=Ra)
+        # plt.legend()
+        # plt.show()
 
         # calculate Einstein radius and compare it with SIS profile
         from lenstronomy.Analysis.lens_profile import LensProfileAnalysis
+
         lens_analysis = LensProfileAnalysis(lens_model=lens_model)
         theta_E_dPIED = lens_analysis.effective_einstein_radius(kwargs_lens=kwargs_lens)
         npt.assert_almost_equal(theta_E_dPIED / theta_E_sis, 1, decimal=2)

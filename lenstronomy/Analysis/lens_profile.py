@@ -89,8 +89,6 @@ class LensProfileAnalysis(object):
         kappa_r = self.radial_lens_profile(r_array, kwargs_lens, center_x=0, center_y=0)
 
         return effective_einstein_radius_from_radial_profile(r_array, kappa_r)
-    
-    
 
     def local_lensing_effect(
         self, kwargs_lens, ra_pos=0, dec_pos=0, model_list_bool=None
@@ -384,14 +382,13 @@ def einstein_radius_from_grid(
 
 
 def effective_einstein_radius_from_radial_profile(r_array, kappa_r):
+    """Numerical estimate of the Einstein radius with integral approximation of radial
+    convergence profile.
 
-    """Numerical estimate of the Einstein radius with integral approximation of
-        radial convergence profile.
-
-        :param r_array: radius at which convergence is measured
-        :param kappa_r: convergence array measured at r_array
-        :return: estimate of the Einstein radius
-        """
+    :param r_array: radius at which convergence is measured
+    :param kappa_r: convergence array measured at r_array
+    :return: estimate of the Einstein radius
+    """
     r_min = r_array.min()
     r_max = r_array.max()
     num_points = len(r_array)

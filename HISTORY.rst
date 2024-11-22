@@ -404,3 +404,10 @@ History
 +++++++++++++++++++
 * multi-source plane for point sources implemented
 * change source redshift in LensModel() and LensEquationSolver() implemented
+
+1.12.2 (2024-11-22)
++++++++++++++++++++
+* minor bug fix in analytical lens equation solver
+* progress bar for PSO
+* astropy<7 version for CosmoInterp compatibility
+* minor plotting updates

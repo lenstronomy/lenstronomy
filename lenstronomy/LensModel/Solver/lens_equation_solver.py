@@ -183,7 +183,6 @@ class LensEquationSolver(object):
         """
         lens_model_list = copy.deepcopy(list(self.lensModel.lens_model_list))
 
-
         if self.lensModel.type != "SinglePlane":
             raise ValueError(
                 "lens model type %s not supported for analytical lens equation solver, "

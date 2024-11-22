@@ -5,9 +5,9 @@ import numpy as np
 
 
 class MagAmpConversion(ModelAPI):
-    """
-    class to convert astronomical magnitudes to lenstronomy amplitudes with given magnitude zero point
-    """
+    """Class to convert astronomical magnitudes to lenstronomy amplitudes with given
+    magnitude zero point."""
+
     def __init__(self, kwargs_model, magnitude_zero_point):
         """
 
@@ -44,7 +44,9 @@ class MagAmpConversion(ModelAPI):
                     kwargs_list=kwargs_lens_light, norm=True, k=i
                 )[0]
                 magnitude = kwargs_mag["magnitude"]
-                cps = data_util.magnitude2cps(magnitude, magnitude_zero_point=self._magnitude_zero_point)
+                cps = data_util.magnitude2cps(
+                    magnitude, magnitude_zero_point=self._magnitude_zero_point
+                )
                 amp = cps / cps_norm
                 kwargs_new["amp"] = amp
 
@@ -57,7 +59,9 @@ class MagAmpConversion(ModelAPI):
                     kwargs_list=kwargs_source, norm=True, k=i
                 )[0]
                 magnitude = kwargs_mag["magnitude"]
-                cps = data_util.magnitude2cps(magnitude, magnitude_zero_point=self._magnitude_zero_point)
+                cps = data_util.magnitude2cps(
+                    magnitude, magnitude_zero_point=self._magnitude_zero_point
+                )
                 amp = cps / cps_norm
                 kwargs_new["amp"] = amp
 
@@ -69,7 +73,9 @@ class MagAmpConversion(ModelAPI):
                 del kwargs_new["magnitude"]
                 cps_norm = 1
                 magnitude = np.array(kwargs_mag["magnitude"])
-                cps = data_util.magnitude2cps(magnitude, magnitude_zero_point=self._magnitude_zero_point)
+                cps = data_util.magnitude2cps(
+                    magnitude, magnitude_zero_point=self._magnitude_zero_point
+                )
                 amp = cps / cps_norm
                 amp_list.append(amp)
             kwargs_ps = self.point_source_model_class.set_amplitudes(

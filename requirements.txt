@@ -1,5 +1,5 @@
 numpy<2
-astropy
+astropy<7.0.0
 scipy>=0.19.1
 mpmath
 emcee>=3.0.0

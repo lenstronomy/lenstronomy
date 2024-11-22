@@ -25,10 +25,17 @@ repos:
     hooks:
       - id: black-jupyter
         language_version: python3
-  - repo: https://github.com/PyCQA/docformatter
-    rev: v1.7.5
+  - repo: local
     hooks:
       - id: docformatter
-        additional_dependencies: [tomli]
+        name: docformatter
+        description: Formats docstrings to follow PEP 257.
+        entry: python -m docformatter
+        additional_dependencies:
+          - docformatter==1.7.5
+          - tomli
         args: [-r, --black, --in-place]
+        language: python
+        types:
+          - python
 

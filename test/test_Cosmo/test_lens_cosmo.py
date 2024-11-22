@@ -243,6 +243,15 @@ class TestLensCosmo(object):
         theta_E_dPIED = lens_analysis.effective_einstein_radius(kwargs_lens=kwargs_lens)
         npt.assert_almost_equal(theta_E_dPIED / theta_E_sis, 1, decimal=2)
 
+    def test_beta_double_source_plane(self):
+        beta = self.lensCosmo.beta_double_source_plane(
+            z_lens=0.5, z_source_1=1, z_source_2=2
+        )
+        beta_true = self.lensCosmo.background.beta_double_source_plane(
+            z_lens=0.5, z_source_1=1, z_source_2=2
+        )
+        npt.assert_almost_equal(beta, beta_true, decimal=5)
+
 
 if __name__ == "__main__":
     pytest.main()

@@ -411,3 +411,7 @@ History
 * progress bar for PSO
 * astropy<7 version for CosmoInterp compatibility
 * minor plotting updates
+
+1.12.3 (2024-11-22)
++++++++++++++++++++
+* more convenient magnitude to amplitude conversion API

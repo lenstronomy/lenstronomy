@@ -7,6 +7,7 @@ import unittest
 
 from lenstronomy.LensModel.LineOfSight.LOSModels.los import LOS
 
+
 class TestLOS(object):
     """Tests the LOS profile."""
 

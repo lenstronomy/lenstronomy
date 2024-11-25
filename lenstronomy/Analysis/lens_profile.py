@@ -86,7 +86,7 @@ class LensProfileAnalysis(object):
 
         # Define the integrand function for the 1D numerical integration: this is the surface mass density
         # kappa at a given radius r, multiplied by 2*pi*r to account for the circular geometry.
-        kappa_r = self.radial_lens_profile(r_array, kwargs_lens, center_x=0, center_y=0)
+        kappa_r = self.radial_lens_profile(r_array, kwargs_lens, center_x=None, center_y=None)
 
         # here we make a finer grid interpolation in log-log space
         k_interp = scipy.interpolate.interp1d(np.log10(r_array), np.log10(kappa_r))

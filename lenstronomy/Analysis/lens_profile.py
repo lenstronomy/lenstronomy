@@ -88,18 +88,33 @@ class LensProfileAnalysis(object):
         # kappa at a given radius r, multiplied by 2*pi*r to account for the circular geometry.
         kappa_r = self.radial_lens_profile(r_array, kwargs_lens, center_x=None, center_y=None)
 
+        return self.effective_einstein_radius_from_radial_profile(r_array, kappa_r)
+
+    @staticmethod
+    def effective_einstein_radius_from_radial_profile(r_array, kappa_r):
+        """Numerical estimate of the Einstein radius with integral approximation of
+        radial convergence profile.
+
+        :param r_array: radius at which convergence is measured
+        :param kappa_r: convergence array measured at r_array
+        :return: estimate of the Einstein radius
+        """
+        r_min = r_array.min()
+        r_max = r_array.max()
+        num_points = len(r_array)
+
         # here we make a finer grid interpolation in log-log space
         k_interp = scipy.interpolate.interp1d(np.log10(r_array), np.log10(kappa_r))
-        r_array = np.logspace(np.log10(r_min), np.log10(r_max), num_points * 10)
-        kappa_r = 10 ** k_interp(np.log10(r_array))
+        r_array_fine = np.geomspace(r_min, r_max, 10 * num_points)
+        kappa_r = 10 ** k_interp(np.log10(r_array_fine))
 
         # we perform the integral in logarithmic steps of the convergence
         kappa_r = np.array(kappa_r)
         kappa_r_ = (kappa_r[1:] + kappa_r[:-1]) / 2
-        r_array_ = (r_array[1:] + r_array[:-1]) / 2
-        dlog_r = (np.log10(r_array[2]) - np.log10(r_array[1])) * np.log(10)
+        r_array_ = (r_array_fine[1:] + r_array_fine[:-1]) / 2
+        dlog_r = (np.log10(r_array_fine[2]) - np.log10(r_array_fine[1])) * np.log(10)
         # add the mass within the innermost bin and assume it's constant
-        kappa_innermost = kappa_r[0] * np.pi * r_array[0] ** 2
+        kappa_innermost = kappa_r[0] * np.pi * r_array_fine[0] ** 2
 
         # the first part is the logarithmic integrand, the second part the circle integrand
         kappa_slice = kappa_r_ * dlog_r * r_array_ * (2 * np.pi * r_array_)
@@ -107,12 +122,12 @@ class LensProfileAnalysis(object):
 
         kappa_cdf = np.cumsum(kappa_slice)
         # calculate average convergence at radius
-        kappa_average = kappa_cdf / (np.pi * r_array**2)
+        kappa_average = kappa_cdf / (np.pi * r_array_fine**2)
 
         # we interpolate as the inverse function and evaluate this function for average kappa = 1
         # (assumes monotonic decline in average convergence)
         inv_interp = scipy.interpolate.interp1d(
-            np.log10(kappa_average), np.log10(r_array)
+            np.log10(kappa_average), np.log10(r_array_fine)
         )
         try:
             theta_e = 10 ** inv_interp(0)

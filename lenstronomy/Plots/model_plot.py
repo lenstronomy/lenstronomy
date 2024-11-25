@@ -361,7 +361,7 @@ class ModelPlot(object):
         plot_band = self._select_band(band_index)
         return plot_band.source(**kwargs)
 
-     def single_band_chi2(self, band_index=0):
+    def single_band_chi2(self, band_index=0):
         """
         
         :param band_index: index of band

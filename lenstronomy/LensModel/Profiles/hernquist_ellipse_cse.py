@@ -1,4 +1,6 @@
-from lenstronomy.LensModel.Profiles.hernquist_ellipse import Hernquist_Ellipse
+from lenstronomy.LensModel.Profiles.hernquist_ellipse_potential import (
+    HernquistEllipsePotential,
+)
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.Util import util
 from lenstronomy.LensModel.Profiles.cored_steep_ellipsoid import CSEMajorAxisSet
@@ -7,7 +9,7 @@ import numpy as np
 __all__ = ["HernquistEllipseCSE"]
 
 
-class HernquistEllipseCSE(Hernquist_Ellipse):
+class HernquistEllipseCSE(HernquistEllipsePotential):
     """This class contains functions for the elliptical Hernquist profile.
 
     Ellipticity is defined in the convergence.

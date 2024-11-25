@@ -281,8 +281,12 @@ def solve_lenseq_pemd(pos_, kwargs_lens, Nmeas=400, Nmeas_extra=80, **kwargs):
     if pos.ndim > 1 and pos.shape[-1] != 1:
         pos = pos[..., None]
     t = kwargs_lens[0]["gamma"] - 1 if "gamma" in kwargs_lens[0] else 1
-
-    theta_ell, q = ellipticity2phi_q(kwargs_lens[0]["e1"], kwargs_lens[0]["e2"])
+    if "e1" in kwargs_lens[0] and "e2" in kwargs_lens[0]:
+        e1 = kwargs_lens[0]["e1"]
+        e2 = kwargs_lens[0]["e2"]
+    else:
+        e1, e2 = 0, 0
+    theta_ell, q = ellipticity2phi_q(e1, e2)
     b = kwargs_lens[0]["theta_E"] * np.sqrt(q)
     if len(kwargs_lens) > 1:
         gamma = kwargs_lens[1]["gamma1"] + 1j * kwargs_lens[1]["gamma2"]

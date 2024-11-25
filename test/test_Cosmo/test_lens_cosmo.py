@@ -78,6 +78,57 @@ class TestLensCosmo(object):
         npt.assert_almost_equal(c_out, c, decimal=3)
         npt.assert_almost_equal(np.log10(M200), np.log10(M), decimal=4)
 
+    def test_gnfw_angle2physical(self):
+        Rs_angle = 6.0
+        alpha_Rs = 1.0
+        gamma_in = 1
+
+        rho0, Rs, c, r200, M200 = self.lensCosmo.gnfw_angle2physical(
+            Rs_angle, alpha_Rs, gamma_in
+        )
+        assert Rs * c == r200
+        rho0_nfw, Rs_nfw, c_nfw, r200_nfw, M200_nfw = self.lensCosmo.nfw_angle2physical(
+            Rs_angle, alpha_Rs
+        )
+        npt.assert_almost_equal(rho0 / rho0_nfw, 1, decimal=8)
+        npt.assert_almost_equal(Rs / Rs_nfw, 1, decimal=8)
+        npt.assert_almost_equal(c / c_nfw, 1, decimal=8)
+        npt.assert_almost_equal(r200 / r200_nfw, 1, decimal=8)
+        npt.assert_almost_equal(M200 / M200_nfw, 1, decimal=8)
+
+    def test_gnfw_physical2angle(self):
+        M = 10.0**13.5
+        c = 4
+        Rs_angle, alpha_Rs = self.lensCosmo.gnfw_physical2angle(M, c, gamma_in=1)
+        rho0, Rs, c_out, r200, M200 = self.lensCosmo.gnfw_angle2physical(
+            Rs_angle, alpha_Rs, gamma_in=1
+        )
+        npt.assert_almost_equal(c_out, c, decimal=3)
+        npt.assert_almost_equal(np.log10(M200), np.log10(M), decimal=4)
+
+        Rs_angle_nfw, alpha_Rs_nfw = self.lensCosmo.nfw_physical2angle(M, c)
+
+        npt.assert_almost_equal(Rs_angle / Rs_angle_nfw, 1, decimal=8)
+        npt.assert_almost_equal(alpha_Rs / alpha_Rs_nfw, 1, decimal=8)
+
+    def test_gnfwParam_physical(self):
+        M = 10.0**13.5
+        c = 10
+        rh0, Rs, r200 = self.lensCosmo.gnfwParam_physical(M, c, gamma_in=1)
+
+        rho0_nfw, Rs_nfw, r200_nfw = self.lensCosmo.nfwParam_physical(M, c)
+
+        npt.assert_almost_equal(rho0_nfw / rh0, 1, decimal=10)
+        npt.assert_almost_equal(Rs_nfw / Rs, 1, decimal=10)
+
+    def test_gnfw_M_theta_r200(self):
+        M = 10.0**13.5
+
+        theta200 = self.lensCosmo.gnfw_M_theta_r200(M)
+        theta200_nfw = self.lensCosmo.nfw_M_theta_r200(M)
+
+        npt.assert_almost_equal(theta200 / theta200_nfw, 1, decimal=10)
+
     def test_sis_theta_E2sigma_v(self):
         theta_E = 2.0
         sigma_v = self.lensCosmo.sis_theta_E2sigma_v(theta_E)
@@ -153,6 +204,53 @@ class TestLensCosmo(object):
 
         # compare
         npt.assert_almost_equal(mass_tot / m_star, 1, decimal=1)
+
+    def test_vel_disp_dPIED_sigma0(self):
+        from lenstronomy.LensModel.lens_model import LensModel
+        import matplotlib.pyplot as plt
+        from astropy.cosmology import FlatLambdaCDM
+
+        cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.05)
+        lensCosmo = LensCosmo(z_lens=2, z_source=5, cosmo=cosmo)
+
+        vel_disp = 250
+        # make the test such that dPIED effectively mimics a SIS profile
+        theta_E_sis = lensCosmo.sis_sigma_v2theta_E(v_sigma=vel_disp)
+        sis = LensModel(lens_model_list=["SIS"])
+        kwargs_sis = [{"theta_E": theta_E_sis}]
+
+        lens_model = LensModel(lens_model_list=["PJAFFE"])
+        r = np.logspace(start=-2, stop=1, num=100)
+
+        Rs = 100000
+        Ra = 0.00001
+        Ra_list = [0.1, 0.01, 0.001, 0.0001, 0.00001]
+        for Ra in Ra_list:
+            sigma0 = lensCosmo.vel_disp_dPIED_sigma0(vel_disp, Ra=Ra, Rs=Rs)
+            print(sigma0, theta_E_sis, "test")
+            kwargs_lens = [
+                {"sigma0": sigma0, "Ra": Ra, "Rs": Rs, "center_x": 0, "center_y": 0}
+            ]
+
+            # plt.semilogx(r, lens_model.kappa(r, 0, kwargs_lens) / sis.kappa(r, 0, kwargs_sis), label=Ra)
+        # plt.legend()
+        # plt.show()
+
+        # calculate Einstein radius and compare it with SIS profile
+        from lenstronomy.Analysis.lens_profile import LensProfileAnalysis
+
+        lens_analysis = LensProfileAnalysis(lens_model=lens_model)
+        theta_E_dPIED = lens_analysis.effective_einstein_radius(kwargs_lens=kwargs_lens)
+        npt.assert_almost_equal(theta_E_dPIED / theta_E_sis, 1, decimal=2)
+
+    def test_beta_double_source_plane(self):
+        beta = self.lensCosmo.beta_double_source_plane(
+            z_lens=0.5, z_source_1=1, z_source_2=2
+        )
+        beta_true = self.lensCosmo.background.beta_double_source_plane(
+            z_lens=0.5, z_source_1=1, z_source_2=2
+        )
+        npt.assert_almost_equal(beta, beta_true, decimal=5)
 
 
 if __name__ == "__main__":

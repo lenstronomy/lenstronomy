@@ -19,7 +19,7 @@ class TestLensModel(object):
     """Tests the source model routines."""
 
     def setup_method(self):
-        self.lensModel = SinglePlane(["GAUSSIAN"])
+        self.lensModel = SinglePlane(["GAUSSIAN_POTENTIAL"])
         self.kwargs = [
             {
                 "amp": 1.0,
@@ -54,7 +54,7 @@ class TestLensModel(object):
         assert delta_y == 1 + 0.19470019576785122 / (8 * np.pi)
 
     def test_mass_2d(self):
-        lensModel = SinglePlane(["GAUSSIAN_KAPPA"])
+        lensModel = SinglePlane(["GAUSSIAN"])
         kwargs = [{"amp": 1.0, "sigma": 2.0, "center_x": 0.0, "center_y": 0.0}]
         output = lensModel.mass_2d(r=1, kwargs=kwargs)
         npt.assert_almost_equal(output, 0.11750309741540453, decimal=9)
@@ -99,13 +99,27 @@ class TestLensModel(object):
             "SHEAR_GAMMA_PSI",
             "CURVED_ARC_CONST",
             "NFW_MC",
-            "NFW_MC_ELLIPSE",
+            "NFW_MC_ELLIPSE_POTENTIAL",
             "ARC_PERT",
             "MULTIPOLE",
+            "MULTIPOLE_ELL",
             "CURVED_ARC_SPP",
         ]
         lensModel = SinglePlane(lens_model_list=lens_model_list)
         assert lensModel.func_list[0].param_names[0] == "Rs"
+
+    def test_alpha_scaling(self):
+        """Test the behavior of scaling the deflection angle :return:"""
+        x, y = 1, 0
+        kwargs_lens = [{"theta_E": 1, "center_x": 0, "center_y": 0}]
+        lens_model = SinglePlane(lens_model_list=["SIS"])
+        alpha_x, alpha_y = lens_model.alpha(x, y, kwargs_lens)
+
+        alpha_scaling = 0.5
+        lens_model.change_redshift_scaling(alpha_scaling=alpha_scaling)
+        alpha_x_scaled, alpha_y_scaled = lens_model.alpha(x, y, kwargs_lens)
+        npt.assert_almost_equal(alpha_x_scaled, alpha_x * alpha_scaling)
+        npt.assert_almost_equal(alpha_y_scaled, alpha_y * alpha_scaling)
 
 
 class TestRaise(unittest.TestCase):

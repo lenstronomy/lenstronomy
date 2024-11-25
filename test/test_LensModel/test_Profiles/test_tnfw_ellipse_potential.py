@@ -2,8 +2,8 @@ __author__ = "sibirrer"
 
 
 from lenstronomy.LensModel.Profiles.tnfw import TNFW
-from lenstronomy.LensModel.Profiles.tnfw_ellipse import TNFW_ELLIPSE
-from lenstronomy.LensModel.Profiles.nfw_ellipse import NFW_ELLIPSE
+from lenstronomy.LensModel.Profiles.tnfw_ellipse_potential import TNFWELLIPSEPotential
+from lenstronomy.LensModel.Profiles.nfw_ellipse_potential import NFWEllipsePotential
 
 import numpy as np
 import numpy.testing as npt
@@ -15,8 +15,8 @@ class TestNFWELLIPSE(object):
 
     def setup_method(self):
         self.tnfw = TNFW()
-        self.nfw_e = NFW_ELLIPSE()
-        self.tnfw_e = TNFW_ELLIPSE()
+        self.nfw_e = NFWEllipsePotential()
+        self.tnfw_e = TNFWELLIPSEPotential()
 
     def test_function(self):
         x = np.linspace(start=0.1, stop=10, num=10)

@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 from lenstronomy.Data.psf import PSF
 import lenstronomy.Util.util as util
 import lenstronomy.Util.image_util as image_util
@@ -180,7 +179,7 @@ class PsfFitting(object):
         :param kwargs_psf: keyword arguments to construct the PSF() class
         :param kwargs_params: keyword arguments of the parameters of the model components (e.g. 'kwargs_lens' etc)
         :param stacking_method: 'median', 'mean'; the different estimates of the PSF are stacked and combined together.
-        Not used if use_starred is True.
+         Not used if use_starred is True.
          The choices are:
          'mean': mean of pixel values as the estimator (not robust to outliers)
          'median': median of pixel values as the estimator (outlier rejection robust but needs >2 point sources in the
@@ -208,8 +207,8 @@ class PsfFitting(object):
          2) creates a psf with no symmetry
          3) adds the corner_symmetry psf (which has information at the corners) to the odd symmetry PSF, in the regions
          where the odd-symmetry PSF does not have information
-         :param use_starred: boolean, if True, uses the STARRED method to estimate the PSF (https://ui.adsabs.harvard.edu/abs/2023JOSS....8.5340M/abstract)
-         :param kwargs_starred: dictionary, keyword arguments for the starred.procedures.psf_routines.update_PSF() method.
+        :param use_starred: boolean, if True, uses the STARRED method to estimate the PSF (https://ui.adsabs.harvard.edu/abs/2023JOSS....8.5340M/abstract)
+        :param kwargs_starred: dictionary, keyword arguments for the starred.procedures.psf_routines.update_PSF() method.
          Example: kwargs_starred = {'lambda_scales':2., 'lambda_hf':2., 'lambda_positivity':0.}
 
         :return: kwargs_psf_new, logL_after, error_map

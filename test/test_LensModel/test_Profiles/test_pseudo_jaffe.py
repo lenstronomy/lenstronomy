@@ -1,6 +1,6 @@
 __author__ = "sibirrer"
 
-from lenstronomy.LensModel.Profiles.p_jaffe import PJaffe
+from lenstronomy.LensModel.Profiles.pseudo_jaffe import PseudoJaffe
 
 import numpy as np
 import numpy.testing as npt
@@ -11,7 +11,7 @@ class TestP_JAFFW(object):
     """Tests the Gaussian methods."""
 
     def setup_method(self):
-        self.profile = PJaffe()
+        self.profile = PseudoJaffe()
 
     def test_function(self):
         x = np.array([1])
@@ -90,6 +90,11 @@ class TestP_JAFFW(object):
         Ra, Rs = 0.5, 0.8
         grav_pot = self.profile.grav_pot(r, rho0, Ra, Rs)
         npt.assert_almost_equal(grav_pot, 0.89106542283974155, decimal=10)
+
+    def test_sort_ra_rs(self):
+        Ra, Rs = self.profile._sort_ra_rs(Ra=0, Rs=0)
+        assert Ra > 0
+        assert Rs > Ra
 
 
 if __name__ == "__main__":

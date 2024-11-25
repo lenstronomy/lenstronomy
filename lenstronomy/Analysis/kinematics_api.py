@@ -491,7 +491,7 @@ class KinematicsAPI(object):
             amps, sigmas, norm = mge.mge_1d(
                 r_array, mass_r, N=kwargs_mge.get("n_comp", 20)
             )
-            mass_profile_list = ["MULTI_GAUSSIAN_KAPPA"]
+            mass_profile_list = ["MULTI_GAUSSIAN"]
             kwargs_profile = [{"amp": amps, "sigma": sigmas}]
 
         kwargs_profile = self._copy_centers(kwargs_profile, kwargs_lens)

@@ -144,8 +144,7 @@ class TestFittingSequence(object):
             "source_marg": True,
             "linear_prior": [1],
             "image_position_uncertainty": 0.004,
-            "check_matched_source_position": False,
-            "source_position_tolerance": 0.001,
+            "source_position_tolerance": None,
             "source_position_sigma": 0.001,
             "check_positive_flux": True,
         }
@@ -376,6 +375,13 @@ class TestFittingSequence(object):
             kwargs_test = {"n_burn": 10, "n_run": 10}
             fitting_list_three.append(["emcee", kwargs_test])
             fittingSequence.fit_sequence(fitting_list_three)
+
+        psf_iteration_list = fittingSequence.psf_iteration_memory
+        assert len(psf_iteration_list) == 1
+        assert "sequence" in psf_iteration_list[0]
+        assert "band" in psf_iteration_list[0]
+        assert "psf_before" in psf_iteration_list[0]
+        assert "psf_after" in psf_iteration_list[0]
 
     def test_cobaya(self):
         np.random.seed(42)

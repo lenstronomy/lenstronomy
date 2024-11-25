@@ -9,6 +9,7 @@ from lenstronomy.LensModel.Solver.epl_shear_solver import solve_lenseq_pemd
 __all__ = ["LensEquationSolver"]
 
 SUPPORTED_LENS_MODELS_ANALYTICAL = (
+    ["SIS", "SHEAR"],
     ["SIE", "SHEAR"],
     ["SIE"],
     ["EPL_NUMBA", "SHEAR"],
@@ -29,6 +30,15 @@ class LensEquationSolver(object):
             lenstronomy.LensModel.lens_model
         """
         self.lensModel = lensModel
+
+    def change_source_redshift(self, z_source=None):
+        """Change source redshift in solver.
+
+        :param z_source:
+        :type z_source: float or None
+        :return: updated lens model instance
+        """
+        self.lensModel.change_source_redshift(z_source=z_source)
 
     def image_position_stochastic(
         self,
@@ -173,6 +183,12 @@ class LensEquationSolver(object):
         """
         lens_model_list = copy.deepcopy(list(self.lensModel.lens_model_list))
 
+        if self.lensModel.type != "SinglePlane":
+            raise ValueError(
+                "lens model type %s not supported for analytical lens equation solver, "
+                "Needs to be SinglePlane." % self.lensModel.type
+            )
+        alpha_scaling = self.lensModel.lens_model.alpha_scaling
         # make MST when "CONVERGENCE" profile is given
         if "CONVERGENCE" in lens_model_list:
             # here we apply an inverse MST that leaves image positions invariant under the MST
@@ -180,7 +196,7 @@ class LensEquationSolver(object):
             index_convergence = lens_model_list.index("CONVERGENCE")
 
             # MST in source position and Einstein radius
-            kappa = kwargs_lens_[index_convergence]["kappa"]
+            kappa = kwargs_lens_[index_convergence]["kappa"] * alpha_scaling
             ra0 = kwargs_lens_[index_convergence].get("ra_0", 0)
             dec0 = kwargs_lens_[index_convergence].get("dec_0", 0)
             lambda_mst = (
@@ -203,13 +219,22 @@ class LensEquationSolver(object):
             kwargs_lens_.pop(index_convergence)
             lens_model_list.pop(index_convergence)
         else:
-            kwargs_lens_ = kwargs_lens
+            kwargs_lens_ = copy.deepcopy(kwargs_lens)
             x_, y_ = x, y
-
         if lens_model_list not in SUPPORTED_LENS_MODELS_ANALYTICAL:
             raise ValueError(
-                "Only SIE, EPL, EPL_NUMBA (+shear +convergence) supported in the analytical solver for now."
+                "Only SIS (only with shear), SIE, EPL, EPL_NUMBA (+shear +convergence) "
+                "supported in the analytical solver for now."
             )
+
+        # re-scale solutions if source redshift has changed (i.e. alpha_scaling != 1)
+
+        gamma = kwargs_lens[0]["gamma"] if "gamma" in kwargs_lens[0] else 2
+        kwargs_lens_[0]["theta_E"] *= alpha_scaling ** (1.0 / (gamma - 1))
+        if "SHEAR" in lens_model_list:
+            kwargs_lens_[1]["gamma1"] *= alpha_scaling
+            kwargs_lens_[1]["gamma2"] *= alpha_scaling
+
         x_mins, y_mins = solve_lenseq_pemd((x_, y_), kwargs_lens_, **kwargs_solver)
 
         if arrival_time_sort:
@@ -626,11 +651,7 @@ class LensEquationSolver(object):
             non_linear=non_linear,
             magnification_limit=magnification_limit,
         )
-        mag_list = []
-        for i in range(len(x_mins)):
-            mag = self.lensModel.magnification(x_mins[i], y_mins[i], kwargs_lens)
-            mag_list.append(abs(mag))
-        mag_list = np.array(mag_list)
+        mag_list = np.abs(self.lensModel.magnification(x_mins, y_mins, kwargs_lens))
         x_mins_sorted = util.selectBest(x_mins, mag_list, numImages)
         y_mins_sorted = util.selectBest(y_mins, mag_list, numImages)
         if arrival_time_sort:

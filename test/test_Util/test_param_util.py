@@ -89,7 +89,6 @@ def test_ellipticity2phi_q_symmetry():
 
     e1, e2 = 2.99, -0.0
     phi, q = param_util.ellipticity2phi_q(e1, e2)
-    print(phi, q)
     e1_new, e2_new = param_util.phi_q2_ellipticity(phi, q)
     phi_new, q_new = param_util.ellipticity2phi_q(e1_new, e2_new)
     npt.assert_almost_equal(phi, phi_new, decimal=10)
@@ -113,11 +112,26 @@ def test_transform_e1e2():
     npt.assert_almost_equal(y_, y_new / det, decimal=5)
 
 
+def test_transform_e1e2_product_average_new():
+    x, y = util.make_grid(numPix=31, deltapix=1)
+
+    e1, e2 = 0.3, 0.2
+    center_x, center_y = 0, 0
+
+    x_, y_ = param_util.transform_e1e2_product_average(x, y, e1, e2, center_x, center_y)
+    r_new = np.sqrt(x_**2 + y_**2)
+
+    x_old, y_old = param_util.transform_e1e2_product_average_old(
+        x, y, e1, e2, center_x, center_y
+    )
+    r_old = np.sqrt(x_old**2 + y_old**2)
+    npt.assert_almost_equal(r_new, r_old, decimal=8)
+
+
 def test_phi_gamma_ellipticity():
     phi = -1.0
     gamma = 0.1
     e1, e2 = param_util.shear_polar2cartesian(phi, gamma)
-    print(e1, e2, "e1, e2")
     phi_out, gamma_out = param_util.shear_cartesian2polar(e1, e2)
     npt.assert_almost_equal(phi_out, phi, decimal=8)
     npt.assert_almost_equal(gamma_out, gamma_out, decimal=8)
@@ -147,7 +161,6 @@ def test_displace_eccentricity():
 
     cos_phi = np.cos(phi_G)
     sin_phi = np.sin(phi_G)
-    print(cos_phi, sin_phi)
 
     xt1 = cos_phi * x_shift + sin_phi * y_shift
     xt2 = -sin_phi * x_shift + cos_phi * y_shift
@@ -170,7 +183,6 @@ def test_displace_eccentricity():
 
     cos_phi = np.cos(phi_G)
     sin_phi = np.sin(phi_G)
-    print(cos_phi, sin_phi)
 
     xt1 = cos_phi * x_shift + sin_phi * y_shift
     xt2 = -sin_phi * x_shift + cos_phi * y_shift
@@ -190,6 +202,34 @@ def test_transform_e1e2_square_average():
         x, y, e1, e2, center_x=center_x, center_y=center_y
     )
     npt.assert_almost_equal(np.sum(x**2 + y**2), np.sum(x_**2 + y_**2), decimal=8)
+
+
+def test_elliptical_distortion_product_average():
+    """Tests that elliptical distortions in product average is the same as distortions
+    under reduced shear.
+
+    :return:
+    """
+    x, y = util.make_grid(numPix=20, deltapix=0.1)
+    center_x, center_y = 1, -1
+
+    (
+        e1,
+        e2,
+    ) = (
+        0.1,
+        -0.2,
+    )
+    x_, y_ = param_util.elliptical_distortion_product_average(
+        x, y, e1, e2, center_x, center_y
+    )
+    from lenstronomy.LensModel.lens_model import LensModel
+
+    lens_model = LensModel(lens_model_list=["SHEAR_REDUCED"])
+    kwargs_lens = [{"gamma1": e1, "gamma2": e2, "ra_0": center_x, "dec_0": center_y}]
+    beta_x, beta_y = lens_model.ray_shooting(x, y, kwargs=kwargs_lens)
+    npt.assert_almost_equal(x_, beta_x, decimal=5)
+    npt.assert_almost_equal(y_, beta_y, decimal=5)
 
 
 if __name__ == "__main__":

@@ -174,6 +174,7 @@ def plot_line_set(
     origin=None,
     flipped_x=False,
     points_only=False,
+    label=None,
     *args,
     **kwargs
 ):
@@ -225,6 +226,8 @@ def plot_line_set(
             *args,
             **kwargs
         )
+    if label is not None:
+        ax.plot(-1000, -1000, label=label, *args, **kwargs)
     return ax
 
 
@@ -304,7 +307,7 @@ def source_position_plot(
             x_source, y_source = coords.map_coord2pix(ra, dec)
             ax.plot(
                 x_source * delta_pix,
-                y_source + 0.5 * delta_pix,
+                y_source * delta_pix,
                 marker=marker,
                 markersize=markersize,
                 **kwargs

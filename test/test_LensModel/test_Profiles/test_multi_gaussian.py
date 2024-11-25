@@ -1,14 +1,14 @@
 __author__ = "sibirrer"
 
 
-from lenstronomy.LightModel.Profiles.gaussian import Gaussian
-from lenstronomy.LensModel.Profiles.gaussian_kappa import GaussianKappa
+from lenstronomy.LightModel.Profiles.gaussian import Gaussian as GaussianLight
+from lenstronomy.LensModel.Profiles.gaussian import Gaussian
 from lenstronomy.LensModel.Profiles.gaussian_ellipse_potential import (
     GaussianEllipsePotential,
 )
-from lenstronomy.LensModel.Profiles.multi_gaussian_kappa import (
-    MultiGaussianKappa,
-    MultiGaussianKappaEllipse,
+from lenstronomy.LensModel.Profiles.multi_gaussian import (
+    MultiGaussian,
+    MultiGaussianEllipsePotential,
 )
 
 import numpy as np
@@ -16,13 +16,13 @@ import numpy.testing as npt
 import pytest
 
 
-class TestGaussianKappa(object):
-    """Test the Gaussian with Gaussian kappa."""
+class TestGaussian(object):
+    """Test the Gaussian lens model class."""
 
     def setup_method(self):
-        self.gaussian_kappa = MultiGaussianKappa()
-        self.gaussian = Gaussian()
-        self.g_kappa = GaussianKappa()
+        self.multi_gaussian_kappa = MultiGaussian()
+        self.gaussian_light = GaussianLight()
+        self.gaussian_kappa = Gaussian()
 
     def test_derivatives(self):
         x = np.linspace(0, 5, 10)
@@ -31,7 +31,9 @@ class TestGaussianKappa(object):
         center_x = 0.0
         center_y = 0.0
         sigma = [1.0]
-        f_x, f_y = self.gaussian_kappa.derivatives(x, y, amp, sigma, center_x, center_y)
+        f_x, f_y = self.multi_gaussian_kappa.derivatives(
+            x, y, amp, sigma, center_x, center_y
+        )
         npt.assert_almost_equal(f_x[2], 0.63813558702212059, decimal=8)
         npt.assert_almost_equal(f_y[2], 0.63813558702212059, decimal=8)
 
@@ -42,11 +44,13 @@ class TestGaussianKappa(object):
         center_x = 0.0
         center_y = 0.0
         sigma = [1.0]
-        f_xx, f_xy, f_yx, f_yy = self.gaussian_kappa.hessian(
+        f_xx, f_xy, f_yx, f_yy = self.multi_gaussian_kappa.hessian(
             x, y, amp, sigma, center_x, center_y
         )
         kappa = 1.0 / 2 * (f_xx + f_yy)
-        kappa_true = self.gaussian.function(x, y, amp[0], sigma[0], center_x, center_y)
+        kappa_true = self.gaussian_light.function(
+            x, y, amp[0], sigma[0], center_x, center_y
+        )
         print(kappa_true)
         print(kappa)
         npt.assert_almost_equal(kappa[0], kappa_true[0], decimal=5)
@@ -60,12 +64,12 @@ class TestGaussianKappa(object):
         center_x = 0.0
         center_y = 0.0
         sigma = [1.0]
-        f_xx, f_xy, f_yx, f_yy = self.gaussian_kappa.hessian(
+        f_xx, f_xy, f_yx, f_yy = self.multi_gaussian_kappa.hessian(
             x, y, amp, sigma, center_x, center_y
         )
         kappa = 1.0 / 2 * (f_xx + f_yy)
-        amp_3d = self.g_kappa._amp2d_to_3d(amp, sigma[0], sigma[0])
-        density_2d = self.gaussian_kappa.density_2d(
+        amp_3d = self.gaussian_kappa._amp2d_to_3d(amp, sigma[0], sigma[0])
+        density_2d = self.multi_gaussian_kappa.density_2d(
             x, y, amp_3d, sigma, center_x, center_y
         )
         npt.assert_almost_equal(kappa[1], density_2d[1], decimal=5)
@@ -75,7 +79,7 @@ class TestGaussianKappa(object):
         amp = [1.0 * 2 * np.pi]
 
         sigma = [1.0]
-        density = self.gaussian_kappa.density(1.0, amp, sigma)
+        density = self.multi_gaussian_kappa.density(1.0, amp, sigma)
         npt.assert_almost_equal(density, 0.6065306597126334, decimal=8)
 
 
@@ -83,7 +87,7 @@ class TestGaussianKappaEllipse(object):
     """Test the Gaussian with Gaussian kappa."""
 
     def setup_method(self):
-        self.multi = MultiGaussianKappaEllipse()
+        self.multi = MultiGaussianEllipsePotential()
         self.single = GaussianEllipsePotential()
 
     def test_function(self):

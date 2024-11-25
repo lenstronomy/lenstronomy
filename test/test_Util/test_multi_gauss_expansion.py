@@ -142,12 +142,12 @@ class TestMGE(object):
 
     def test_spemd(self):
         from lenstronomy.LensModel.Profiles.spep import SPEP
-        from lenstronomy.LensModel.Profiles.multi_gaussian_kappa import (
-            MultiGaussianKappa,
+        from lenstronomy.LensModel.Profiles.multi_gaussian import (
+            MultiGaussian,
         )
 
         spep = SPEP()
-        mge_kappa = MultiGaussianKappa()
+        mge_kappa = MultiGaussian()
         n_comp = 8
         theta_E = 1.41
         kwargs = {"theta_E": theta_E, "e1": 0, "e2": 0, "gamma": 1.61}
@@ -405,11 +405,11 @@ class TestMGE(object):
         kappa_mge = self.multiGaussian.function(
             rs, np.zeros_like(rs), amp=amplitudes, sigma=sigmas
         )
-        from lenstronomy.LensModel.Profiles.multi_gaussian_kappa import (
-            MultiGaussianKappa,
+        from lenstronomy.LensModel.Profiles.multi_gaussian import (
+            MultiGaussian,
         )
 
-        mge_kappa = MultiGaussianKappa()
+        mge_kappa = MultiGaussian()
         f_xx_mge, f_xy_mge, f_yx_mge, f_yy_mge = mge_kappa.hessian(
             rs, np.zeros_like(rs), amp=amplitudes, sigma=sigmas
         )

@@ -1,10 +1,10 @@
 import numpy as np
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
-__all__ = ["PJaffe"]
+__all__ = ["PseudoJaffe"]
 
 
-class PJaffe(LensProfileBase):
+class PseudoJaffe(LensProfileBase):
     """
     class to compute the DUAL PSEUDO ISOTHERMAL MASS DISTRIBUTION
     based on Eliasdottir (2007) https://arxiv.org/pdf/0710.5636.pdf Appendix A
@@ -346,8 +346,8 @@ class PJaffe(LensProfileBase):
         """
         if Ra >= Rs:
             Ra, Rs = Rs, Ra
-        if Ra < 0.0001:
-            Ra = 0.0001
-        if Rs < Ra + 0.0001:
-            Rs += 0.0001
+        if Ra < 0.00000001:
+            Ra = 0.00000001
+        if Rs < Ra + 0.00000001:
+            Rs += 0.00000002
         return Ra, Rs

@@ -12,7 +12,7 @@ class TestNumerics(object):
     """Tests the source model routines."""
 
     def setup_method(self):
-        self.lensModel = LensModel(["GAUSSIAN"])
+        self.lensModel = LensModel(["GAUSSIAN_POTENTIAL"])
         self.kwargs = [
             {
                 "amp": 1.0 / 4.0,
@@ -126,7 +126,7 @@ class TestNumericsProfile(object):
             npt.assert_almost_equal(f_y, f_y_num, decimal=decimal)
 
     def test_gaussian(self):
-        lens_model = ["GAUSSIAN"]
+        lens_model = ["GAUSSIAN_POTENTIAL"]
         kwargs = {
             "amp": 1.0 / 4.0,
             "sigma_x": 2.0,
@@ -154,7 +154,7 @@ class TestNumericsProfile(object):
 
     def test_gausian_kappa(self):
         kwargs = {"amp": 1.0 / 4.0, "sigma": 2.0, "center_x": 0.0, "center_y": 0.0}
-        lens_model = ["GAUSSIAN_KAPPA"]
+        lens_model = ["GAUSSIAN"]
         self.assert_differentials(lens_model, kwargs)
 
     def test_gausian_ellipse_kappa(self):
@@ -226,7 +226,7 @@ class TestNumericsProfile(object):
         self.assert_differentials(lens_model, kwargs)
 
     def test_tnfw_ellipse(self):
-        lens_model = ["TNFW_ELLIPSE"]
+        lens_model = ["TNFW_ELLIPSE_POTENTIAL"]
 
         kwargs = {"alpha_Rs": 0.1, "Rs": 1.0, "r_trunc": 7, "e1": 0, "e2": 0}
         self.assert_differentials(lens_model, kwargs)
@@ -239,7 +239,7 @@ class TestNumericsProfile(object):
 
     def test_nfw_ellipse(self):
         kwargs = {"alpha_Rs": 0.1, "Rs": 5.0, "e1": 0.04, "e2": -0.04}
-        lens_model = ["NFW_ELLIPSE"]
+        lens_model = ["NFW_ELLIPSE_POTENTIAL"]
         self.assert_differentials(lens_model, kwargs)
 
     def test_nfw_ellipse_gauss_dec(self):
@@ -315,7 +315,7 @@ class TestNumericsProfile(object):
 
     def test_PJaffe_ellipse(self):
         kwargs = {"sigma0": 1.0, "Ra": 0.2, "Rs": 2.0, "e1": 0.04, "e2": -0.0}
-        lens_model = ["PJAFFE_ELLIPSE"]
+        lens_model = ["PJAFFE_ELLIPSE_POTENTIAL"]
         self.assert_differentials(lens_model, kwargs)
 
     def test_Hernquist(self):
@@ -325,7 +325,7 @@ class TestNumericsProfile(object):
 
     def test_Hernquist_ellipse(self):
         kwargs = {"sigma0": 1.0, "Rs": 1.5, "e1": 0.04, "e2": -0.0}
-        lens_model = ["HERNQUIST_ELLIPSE"]
+        lens_model = ["HERNQUIST_ELLIPSE_POTENTIAL"]
         self.assert_differentials(lens_model, kwargs)
 
     def test_NIE(self):
@@ -353,6 +353,11 @@ class TestNumericsProfile(object):
         lens_model = ["EPL_BOXYDISKY"]
         self.assert_differentials(lens_model, kwargs)
 
+    def test_EPL_BOXYDISKY_ELL(self):
+        kwargs = {"theta_E": 2.0, "e1": 0.1, "e2": 0.2, "gamma": 2.13, "a4_a": 0.1}
+        lens_model = ["EPL_BOXYDISKY_ELL"]
+        self.assert_differentials(lens_model, kwargs)
+
     def test_EPL_numba(self):
         kwargs = {"theta_E": 2.0, "e1": 0.1, "e2": 0.0, "gamma": 2.13}
         lens_model = ["EPL_NUMBA"]
@@ -372,7 +377,7 @@ class TestNumericsProfile(object):
 
     def test_cnfw_ellipse(self):
         kwargs = {"alpha_Rs": 0.1, "Rs": 5.0, "r_core": 0.1, "e1": 0.04, "e2": -0.04}
-        lens_model = ["CNFW_ELLIPSE"]
+        lens_model = ["CNFW_ELLIPSE_POTENTIAL"]
         self.assert_differentials(lens_model, kwargs, potential=True)
 
     def test_cored_density(self):
@@ -445,6 +450,28 @@ class TestNumericsProfile(object):
             "center_y": -0.5,
         }
         lens_model = ["MULTIPOLE"]
+        self.assert_differentials(lens_model, kwargs, potential=True)
+
+    def test_multipole_ell(self):
+        kwargs = {
+            "m": 4,
+            "a_m": 0.05,
+            "phi_m": 0.1,
+            "q": 0.6,
+            "center_x": 0.01,
+            "center_y": 0.5,
+        }
+        lens_model = ["MULTIPOLE_ELL"]
+        self.assert_differentials(lens_model, kwargs, potential=True)
+        kwargs = {
+            "m": 3,
+            "a_m": 0.07,
+            "phi_m": 0.2,
+            "q": 0.5,
+            "center_x": -0.01,
+            "center_y": -0.5,
+        }
+        lens_model = ["MULTIPOLE_ELL"]
         self.assert_differentials(lens_model, kwargs, potential=True)
 
     def test_elli_slice(self):
@@ -741,6 +768,23 @@ class TestNumericsProfile(object):
             "delta_phi_m3": -0.3,
         }
         lens_model = ["EPL_MULTIPOLE_M3M4"]
+        self.assert_differentials(lens_model, kwargs)
+
+    def test_epl_m3m4_ell(self):
+
+        kwargs = {
+            "theta_E": 2.0,
+            "e1": 0.1,
+            "e2": 0.2,
+            "gamma": 2.13,
+            "a4_a": 0.1,
+            "delta_phi_m4": 0.2,
+            "a3_a": -0.2,
+            "delta_phi_m3": -0.3,
+            "center_x": 0.01,
+            "center_y": -0.01,
+        }
+        lens_model = ["EPL_MULTIPOLE_M3M4_ELL"]
         self.assert_differentials(lens_model, kwargs)
 
 

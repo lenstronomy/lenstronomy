@@ -1,5 +1,7 @@
 __author__ = "sibirrer"
 
+import copy
+
 import numpy.testing as npt
 import numpy as np
 import pytest
@@ -49,7 +51,7 @@ class TestLensEquationSolver(object):
         npt.assert_almost_equal(sourcePos_x, source_x, decimal=10)
 
     def test_nfw(self):
-        lens_model_list = ["NFW_ELLIPSE", "SIS"]
+        lens_model_list = ["NFW_ELLIPSE_POTENTIAL", "SIS"]
         lensModel = LensModel(lens_model_list)
         lensEquationSolver = LensEquationSolver(lensModel)
         sourcePos_x = 0.1
@@ -390,6 +392,105 @@ class TestLensEquationSolver(object):
         npt.assert_almost_equal(sourcePos_x, source_x, decimal=10)
         npt.assert_almost_equal(sourcePos_y, source_y, decimal=10)
 
+    def test_analytical_sis(self):
+        sourcePos_x = 0.03
+        sourcePos_y = 0.0
+
+        lensModel = LensModel(["SIS", "SHEAR", "CONVERGENCE"])
+        lensEquationSolver = LensEquationSolver(lensModel)
+        kwargs_lens = [
+            {"theta_E": 1.0, "center_x": 0.0, "center_y": 0.0},
+            {"gamma1": 0.1, "gamma2": -0.02},
+            {"kappa": 0.2, "ra_0": 0, "dec_0": 0},
+        ]
+
+        x_pos, y_pos = lensEquationSolver.image_position_from_source(
+            sourcePos_x,
+            sourcePos_y,
+            kwargs_lens,
+            solver="analytical",
+            magnification_limit=1e-3,
+        )
+        source_x, source_y = lensModel.ray_shooting(x_pos, y_pos, kwargs_lens)
+        assert len(source_x) == len(source_y) == 4
+        npt.assert_almost_equal(sourcePos_x, source_x, decimal=10)
+        npt.assert_almost_equal(sourcePos_y, source_y, decimal=10)
+
+    def test_lens_equation_scaling(self):
+        # here we test with convergence shear and mass profile centroids not aligned
+        z_source = 5
+        z_lens = 0.5
+        z_source_convention = 2
+
+        lensModel = LensModel(
+            ["EPL", "SHEAR", "CONVERGENCE"],
+            z_lens=z_lens,
+            z_source=z_source,
+            z_source_convention=z_source_convention,
+        )
+        lensEquationSolver = LensEquationSolver(lensModel)
+
+        alpha_scaling = lensModel.lens_model.alpha_scaling
+        lensModel_no_scaling = LensModel(["EPL", "SHEAR", "CONVERGENCE"])
+        lensEquationSolver_no_scaling = LensEquationSolver(lensModel_no_scaling)
+
+        sourcePos_x = 0.02
+        sourcePos_y = 0.02
+        kwargs_lens = [
+            {
+                "theta_E": 1.0,
+                "gamma": 2.2,
+                "center_x": 0.0,
+                "center_y": 0.0,
+                "e1": 0.01,
+                "e2": 0.05,
+            },
+            {"gamma1": -0.04, "gamma2": -0.1, "ra_0": 0.0, "dec_0": 1.0},
+            {"kappa": 0.2, "ra_0": 0, "dec_0": 0},
+        ]
+
+        kwargs_lens_scaling = copy.deepcopy(kwargs_lens)
+        kwargs_lens_scaling[0]["theta_E"] *= alpha_scaling ** (
+            1.0 / (kwargs_lens[0]["gamma"] - 1)
+        )
+        kwargs_lens_scaling[1]["gamma1"] *= alpha_scaling
+        kwargs_lens_scaling[1]["gamma2"] *= alpha_scaling
+        kwargs_lens_scaling[2]["kappa"] *= alpha_scaling
+
+        # establishing the truth
+        x_pos_num, y_pos_num = lensEquationSolver.image_position_from_source(
+            sourcePos_x, sourcePos_y, kwargs_lens, solver="lenstronomy"
+        )
+
+        x_pos, y_pos = lensEquationSolver_no_scaling.image_position_from_source(
+            sourcePos_x, sourcePos_y, kwargs_lens_scaling, solver="analytical"
+        )
+
+        npt.assert_almost_equal(x_pos, x_pos_num)
+
+        source_x, source_y = lensModel.ray_shooting(x_pos, y_pos, kwargs_lens)
+        assert len(source_x) == len(source_y) >= 2
+        npt.assert_almost_equal(sourcePos_x, source_x, decimal=10)
+        npt.assert_almost_equal(sourcePos_y, source_y, decimal=10)
+
+        x_pos_, y_pos_ = lensEquationSolver_no_scaling.image_position_from_source(
+            sourcePos_x, sourcePos_y, kwargs_lens_scaling, solver="lenstronomy"
+        )
+
+        npt.assert_almost_equal(x_pos_, x_pos)
+
+        source_x, source_y = lensModel_no_scaling.ray_shooting(
+            x_pos_, y_pos_, kwargs_lens_scaling
+        )
+        assert len(source_x) == len(source_y) >= 2
+        npt.assert_almost_equal(sourcePos_x, source_x, decimal=10)
+        npt.assert_almost_equal(sourcePos_y, source_y, decimal=10)
+
+        x_pos_, y_pos_ = lensEquationSolver.image_position_from_source(
+            sourcePos_x, sourcePos_y, kwargs_lens, solver="analytical"
+        )
+        npt.assert_almost_equal(x_pos_, x_pos)
+
     def test_assertions(self):
         lensModel = LensModel(["SPEP"])
         lensEquationSolver = LensEquationSolver(lensModel)
@@ -425,6 +526,18 @@ class TestLensEquationSolver(object):
         with pytest.raises(ValueError):
             lensEquationSolver.image_position_from_source(
                 0.1, 0.0, kwargs_lens, solver="nonexisting"
+            )
+        with pytest.raises(ValueError):
+            lensModel = LensModel(
+                ["SIE"],
+                lens_redshift_list=[0.5],
+                z_source=2,
+                z_source_convention=2,
+                multi_plane=True,
+            )
+            lensEquationSolver = LensEquationSolver(lensModel)
+            lensEquationSolver.image_position_analytical(
+                x=0, y=0, kwargs_lens=kwargs_lens
             )
 
     def test_analytical_lens_model_supported(self):

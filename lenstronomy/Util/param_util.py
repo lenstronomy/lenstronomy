@@ -144,7 +144,7 @@ def transform_e1e2_product_average(x, y, e1, e2, center_x, center_y):
     x_shift = x - center_x
     y_shift = y - center_y
 
-    norm = np.sqrt(max(abs(1 - e1 ** 2 - e2 ** 2), 0.000001))
+    norm = np.sqrt(max(abs(1 - e1**2 - e2**2), 0.000001))
     x_ = ((1 - e1) * x_shift - e2 * y_shift) / norm
     y_ = (-e2 * x_shift + (1 + e1) * y_shift) / norm
     return x_, y_

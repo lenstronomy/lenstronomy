@@ -121,8 +121,10 @@ def test_transform_e1e2_product_average_new():
     x_, y_ = param_util.transform_e1e2_product_average(x, y, e1, e2, center_x, center_y)
     r_new = np.sqrt(x_**2 + y_**2)
 
-    x_old, y_old = param_util.transform_e1e2_product_average_old(x, y, e1, e2, center_x, center_y)
-    r_old = np.sqrt(x_old ** 2 + y_old ** 2)
+    x_old, y_old = param_util.transform_e1e2_product_average_old(
+        x, y, e1, e2, center_x, center_y
+    )
+    r_old = np.sqrt(x_old**2 + y_old**2)
     npt.assert_almost_equal(r_new, r_old, decimal=8)
 
 

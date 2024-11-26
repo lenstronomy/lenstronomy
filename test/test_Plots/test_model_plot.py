@@ -287,6 +287,20 @@ class TestOutputPlots(object):
         )
         assert len(source) == 10
 
+    def test_single_band_chi2(self):
+        multi_band_list = [[self.kwargs_data, self.kwargs_psf, self.kwargs_numerics]]
+        lensPlot = ModelPlot(
+            multi_band_list,
+            self.kwargs_model,
+            self.kwargs_params,
+            arrow_size=0.02,
+            cmap_string="gist_heat",
+        )
+
+        chi2 = lensPlot.single_band_chi2(band_index=0)
+
+        assert isinstance(chi2, float)
+
     def test_joint_linear(self):
         multi_band_list = [
             [self.kwargs_data, self.kwargs_psf, self.kwargs_numerics],

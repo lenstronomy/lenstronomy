@@ -368,4 +368,4 @@ class ModelPlot(object):
         :return: the reduced chi-square value of the band as a float
         """
         plot_band = self._select_band(band_index)
-        return plot_band._reduced_x2
+        return plot_band.reduced_x2

@@ -38,7 +38,7 @@ class EPL_MULTIPOLE_M1M3M4_ELL(LensProfileBase):
     :param delta_phi_m4: angle of the m=4 multipole profile relative to the position
         angle of the EPL profile
     """
-
+    TODO: update the m=1 multipole term to have elliptical symmetry when the solution for the m=1 elliptical multipole is implemented
     param_names = [
         "theta_E",
         "gamma",

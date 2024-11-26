@@ -7,7 +7,7 @@ if float(astropy.__version__[0]) < 5.0:
 
     DeprecationWarning(
         "Astropy<5 is going to be deprecated soon. This is in combination with Python version<3.8."
-        "We recommend you to update astropy to the latest versionbut keep supporting your settings for "
+        "We recommend you to update astropy to the latest version but keep supporting your settings for "
         "the time being."
     )
 # elif float(astropy.__version__[0]) < 6.0:

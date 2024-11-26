@@ -423,8 +423,7 @@ class LensCosmo(object):
         return k_eff
 
     def vel_disp_dPIED_sigma0(self, vel_disp, Ra, Rs):
-        """
-        sigma0 value in the convention of the lenstronomy pseudo_jaffe lens model
+        """Sigma0 value in the convention of the lenstronomy pseudo_jaffe lens model.
 
         lenstronomy conventions:
 
@@ -461,7 +460,15 @@ class LensCosmo(object):
         :param vel_disp: SIS equivalent velocity dispersion (km/s)
         :return: sigma0 value in the convention of the lenstronomy pseudo_jaffe lens model
         """
-        sigma_0 = (vel_disp * 1000 / const.c) ** 2 * 2 * np.pi * self.dds / self.ds * ( (Rs - Ra) / (Rs*Ra)) / const.arcsec
+        sigma_0 = (
+            (vel_disp * 1000 / const.c) ** 2
+            * 2
+            * np.pi
+            * self.dds
+            / self.ds
+            * ((Rs - Ra) / (Rs * Ra))
+            / const.arcsec
+        )
         return sigma_0
 
     def sersic_k_eff2m_star(self, k_eff, R_sersic, n_sersic):

@@ -11,7 +11,8 @@ __all__ = ["EPL_MULTIPOLE_M1M3M4", "EPL_MULTIPOLE_M1M3M4_ELL"]
 
 class EPL_MULTIPOLE_M1M3M4_ELL(LensProfileBase):
     """EPL (Elliptical Power Law) mass profile combined with two elliptical multipole
-    terms of order m=3 and m=4 (exact for general axis ratio q) and a circular m=1 multipole.
+    terms of order m=3 and m=4 (exact for general axis ratio q) and a circular m=1
+    multipole.
 
     See also documentation of EPL_BOXYDIKSY CLASS, lenstronomy.LensModel.Profiles.epl
     and lenstrnomy.LensModel.Profiles.multipole for details.
@@ -199,19 +200,21 @@ class EPL_MULTIPOLE_M1M3M4_ELL(LensProfileBase):
         :param center_y: center of the profile
         :return: lensing potential.
         """
-        kwargs_epl, kwargs_multipole1, kwargs_multipole3, kwargs_multipole4 = self._param_split(
-            theta_E,
-            gamma,
-            e1,
-            e2,
-            a1_a,
-            delta_phi_m1,
-            a3_a,
-            delta_phi_m3,
-            a4_a,
-            delta_phi_m4,
-            center_x=center_x,
-            center_y=center_y,
+        kwargs_epl, kwargs_multipole1, kwargs_multipole3, kwargs_multipole4 = (
+            self._param_split(
+                theta_E,
+                gamma,
+                e1,
+                e2,
+                a1_a,
+                delta_phi_m1,
+                a3_a,
+                delta_phi_m3,
+                a4_a,
+                delta_phi_m4,
+                center_x=center_x,
+                center_y=center_y,
+            )
         )
         f_epl = self._epl.function(x, y, **kwargs_epl)
         f_multipole = self._multipole.function(x, y, **kwargs_multipole3)
@@ -272,19 +275,21 @@ class EPL_MULTIPOLE_M1M3M4_ELL(LensProfileBase):
         :param center_y: center of the profile:
         :return: alpha_x, alpha_y.
         """
-        kwargs_epl, kwargs_multipole1, kwargs_multipole3, kwargs_multipole4 = self._param_split(
-            theta_E,
-            gamma,
-            e1,
-            e2,
-            a1_a,
-            delta_phi_m1,
-            a3_a,
-            delta_phi_m3,
-            a4_a,
-            delta_phi_m4,
-            center_x=center_x,
-            center_y=center_y,
+        kwargs_epl, kwargs_multipole1, kwargs_multipole3, kwargs_multipole4 = (
+            self._param_split(
+                theta_E,
+                gamma,
+                e1,
+                e2,
+                a1_a,
+                delta_phi_m1,
+                a3_a,
+                delta_phi_m3,
+                a4_a,
+                delta_phi_m4,
+                center_x=center_x,
+                center_y=center_y,
+            )
         )
         f_x_epl, f_y_epl = self._epl.derivatives(x, y, **kwargs_epl)
         f_x_multipole3, f_y_multipole3 = self._multipole.derivatives(
@@ -340,19 +345,21 @@ class EPL_MULTIPOLE_M1M3M4_ELL(LensProfileBase):
         :param center_y: center of the profile
         :return: f_xx, f_xy, f_yx, f_yy.
         """
-        kwargs_epl, kwargs_multipole1, kwargs_multipole3, kwargs_multipole4 = self._param_split(
-            theta_E,
-            gamma,
-            e1,
-            e2,
-            a1_a,
-            delta_phi_m1,
-            a3_a,
-            delta_phi_m3,
-            a4_a,
-            delta_phi_m4,
-            center_x=center_x,
-            center_y=center_y,
+        kwargs_epl, kwargs_multipole1, kwargs_multipole3, kwargs_multipole4 = (
+            self._param_split(
+                theta_E,
+                gamma,
+                e1,
+                e2,
+                a1_a,
+                delta_phi_m1,
+                a3_a,
+                delta_phi_m3,
+                a4_a,
+                delta_phi_m4,
+                center_x=center_x,
+                center_y=center_y,
+            )
         )
         f_xx_epl, f_xy_epl, f_yx_epl, f_yy_epl = self._epl.hessian(x, y, **kwargs_epl)
         (
@@ -378,6 +385,7 @@ class EPL_MULTIPOLE_M1M3M4_ELL(LensProfileBase):
         f_yx = f_yx_epl + f_yx_multipole3 + f_yx_multipole4 + f_yx_multipole1
         f_yy = f_yy_epl + f_yy_multipole3 + f_yy_multipole4 + f_yy_multipole1
         return f_xx, f_xy, f_yx, f_yy
+
 
 class EPL_MULTIPOLE_M1M3M4(LensProfileBase):
     """EPL (Elliptical Power Law) mass profile combined with three spherical multipole
@@ -562,19 +570,21 @@ class EPL_MULTIPOLE_M1M3M4(LensProfileBase):
         :param center_y: center of the profile
         :return: lensing potential.
         """
-        kwargs_epl, kwargs_multipole1, kwargs_multipole3, kwargs_multipole4 = self._param_split(
-            theta_E,
-            gamma,
-            e1,
-            e2,
-            a1_a,
-            delta_phi_m1,
-            a3_a,
-            delta_phi_m3,
-            a4_a,
-            delta_phi_m4,
-            center_x=center_x,
-            center_y=center_y,
+        kwargs_epl, kwargs_multipole1, kwargs_multipole3, kwargs_multipole4 = (
+            self._param_split(
+                theta_E,
+                gamma,
+                e1,
+                e2,
+                a1_a,
+                delta_phi_m1,
+                a3_a,
+                delta_phi_m3,
+                a4_a,
+                delta_phi_m4,
+                center_x=center_x,
+                center_y=center_y,
+            )
         )
         f_epl = self._epl.function(x, y, **kwargs_epl)
         f_multipole = self._multipole.function(x, y, **kwargs_multipole3)
@@ -635,19 +645,21 @@ class EPL_MULTIPOLE_M1M3M4(LensProfileBase):
         :param center_y: center of the profile:
         :return: alpha_x, alpha_y.
         """
-        kwargs_epl, kwargs_multipole1, kwargs_multipole3, kwargs_multipole4 = self._param_split(
-            theta_E,
-            gamma,
-            e1,
-            e2,
-            a1_a,
-            delta_phi_m1,
-            a3_a,
-            delta_phi_m3,
-            a4_a,
-            delta_phi_m4,
-            center_x=center_x,
-            center_y=center_y,
+        kwargs_epl, kwargs_multipole1, kwargs_multipole3, kwargs_multipole4 = (
+            self._param_split(
+                theta_E,
+                gamma,
+                e1,
+                e2,
+                a1_a,
+                delta_phi_m1,
+                a3_a,
+                delta_phi_m3,
+                a4_a,
+                delta_phi_m4,
+                center_x=center_x,
+                center_y=center_y,
+            )
         )
         f_x_epl, f_y_epl = self._epl.derivatives(x, y, **kwargs_epl)
         f_x_multipole3, f_y_multipole3 = self._multipole.derivatives(
@@ -703,19 +715,21 @@ class EPL_MULTIPOLE_M1M3M4(LensProfileBase):
         :param center_y: center of the profile
         :return: f_xx, f_xy, f_yx, f_yy.
         """
-        kwargs_epl, kwargs_multipole1, kwargs_multipole3, kwargs_multipole4 = self._param_split(
-            theta_E,
-            gamma,
-            e1,
-            e2,
-            a1_a,
-            delta_phi_m1,
-            a3_a,
-            delta_phi_m3,
-            a4_a,
-            delta_phi_m4,
-            center_x=center_x,
-            center_y=center_y,
+        kwargs_epl, kwargs_multipole1, kwargs_multipole3, kwargs_multipole4 = (
+            self._param_split(
+                theta_E,
+                gamma,
+                e1,
+                e2,
+                a1_a,
+                delta_phi_m1,
+                a3_a,
+                delta_phi_m3,
+                a4_a,
+                delta_phi_m4,
+                center_x=center_x,
+                center_y=center_y,
+            )
         )
         f_xx_epl, f_xy_epl, f_yx_epl, f_yy_epl = self._epl.hessian(x, y, **kwargs_epl)
         (

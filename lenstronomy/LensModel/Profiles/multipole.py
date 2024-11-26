@@ -51,8 +51,8 @@ class Multipole(LensProfileBase):
         """
 
         r, phi = param_util.cart2polar(x, y, center_x=center_x, center_y=center_y)
-        if m==1:
-            f_ = r * a_m / 2 * phi * np.sin(phi-phi_m)
+        if m == 1:
+            f_ = r * a_m / 2 * phi * np.sin(phi - phi_m)
         else:
             f_ = r * a_m / (1 - m**2) * np.cos(m * (phi - phi_m))
         return f_
@@ -73,7 +73,7 @@ class Multipole(LensProfileBase):
         :return: deflection angles alpha_x, alpha_y
         """
         r, phi = param_util.cart2polar(x, y, center_x=center_x, center_y=center_y)
-        if m==1:
+        if m == 1:
             f_phi = a_m * phi * np.sin(phi - phi_m) / 2
             df_dphi = (a_m * np.sin(phi - phi_m) + a_m * phi * np.cos(phi - phi_m)) / 2
             f_x = np.cos(phi) * f_phi - df_dphi * np.sin(phi)
@@ -104,15 +104,17 @@ class Multipole(LensProfileBase):
 
         r, phi = param_util.cart2polar(x, y, center_x=center_x, center_y=center_y)
         r = np.maximum(r, 0.000001)
-        if m==1:
+        if m == 1:
             g_phi = a_m * np.cos(phi - phi_m)
             f_xx = np.sin(phi) ** 2 / r * g_phi
             f_yy = np.cos(phi) ** 2 / r * g_phi
-            f_xy = -np.sin(2*phi) / (2*r) * g_phi
+            f_xy = -np.sin(2 * phi) / (2 * r) * g_phi
         else:
             f_xx = 1.0 / r * np.sin(phi) ** 2 * a_m * np.cos(m * (phi - phi_m))
             f_yy = 1.0 / r * np.cos(phi) ** 2 * a_m * np.cos(m * (phi - phi_m))
-            f_xy = -1.0 / r * a_m * np.cos(phi) * np.sin(phi) * np.cos(m * (phi - phi_m))
+            f_xy = (
+                -1.0 / r * a_m * np.cos(phi) * np.sin(phi) * np.cos(m * (phi - phi_m))
+            )
         return f_xx, f_xy, f_xy, f_yy
 
 

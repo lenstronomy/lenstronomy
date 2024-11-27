@@ -1,6 +1,7 @@
 __author__ = ['TheoDuboscq']
 
 from lenstronomy.LensModel.single_plane import SinglePlane
+from lenstronomy.LensModel.profile_list_base import lens_class
 import numpy as np
 import copy
 
@@ -28,7 +29,8 @@ class SinglePlaneLOSFlexion(SinglePlane):
                  numerical_alpha_class=None,
                  lens_redshift_list=None,
                  z_source_convention=None,
-                 kwargs_interp=None):
+                 kwargs_interp=None,
+                 kwargs_synthesis=None):
         """
         Instance of SinglePlaneLOSFlexion() based on the SinglePlane(), except:
         - argument "index_losf" indicating the position of the LOSF model in the
@@ -43,8 +45,13 @@ class SinglePlaneLOSFlexion(SinglePlane):
 
         # Extract the los flexion model and import its class
         self._index_losf = index_losf
-        self._losf_model = lens_model_list[index_losf]
-        self.losf = self._import_class(self._losf_model, custom_class=None, kwargs_interp=None)
+        self._losf_model = lens_model_list[index_losf]        
+        self.losf = lens_class(
+            self._losf_model,
+            custom_class=None,
+            kwargs_interp=None,
+            kwargs_synthesis=kwargs_synthesis,
+        )
 
         # Define a separate class for the main lens
         lens_model_list_wo_los = [
@@ -313,7 +320,7 @@ class SinglePlaneLOSFlexion(SinglePlane):
 
         print("Note: The computation of the 3d mass ignores the LOS corrections.")
 
-        kwargs_main, kwargs_los = self.split_lens_los(kwargs)
+        kwargs_main, kwargs_los = self.split_lens_losf(kwargs)
         mass_3d = self._main_lens.mass_3d(r=r, kwargs=kwargs_main, bool_list=bool_list)
 
         return mass_3d
@@ -337,7 +344,7 @@ class SinglePlaneLOSFlexion(SinglePlane):
 
         print("Note: The computation of the 2d mass ignores the LOS corrections.")
 
-        kwargs_main, kwargs_los = self.split_lens_los(kwargs)
+        kwargs_main, kwargs_los = self.split_lens_losf(kwargs)
         mass_2d = self._main_lens.mass_2d(r=r, kwargs=kwargs_main, bool_list=bool_list)
 
         return mass_2d
@@ -355,7 +362,7 @@ class SinglePlaneLOSFlexion(SinglePlane):
 
         print("Note: The computation of the density ignores the LOS corrections.")
 
-        kwargs_main, kwargs_los = self.split_lens_los(kwargs)
+        kwargs_main, kwargs_los = self.split_lens_losf(kwargs)
         density = self._main_lens.density(r=r, kwargs=kwargs_main, bool_list=bool_list)
 
         return density

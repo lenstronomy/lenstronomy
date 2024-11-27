@@ -12,7 +12,7 @@ class LOSFlexion(object):
 
     The key-word arguments are the three line-of-sight convergences, the two components of the three line-of-sight shears,
     the two components of the four line-of-sight type-F flexion, and the two components of the four line-of-sight type-G 
-    flexion, for a total of 25 real numbers. Those are named as in "Weak lensing of strong lensing: beyond the tidal regime" (in prep.) :
+    flexion, for a total of 25 real numbers. Those are named as in "Weak lensing of strong lensing: beyond the tidal regime" (Duboscq et al. 2024, 2405.12091):
     kappa_od, kappa_os, kappa_ds, gamma1_od, gamma2_od, gamma1_os, gamma2_os, gamma1_ds, gamma2_ds, F1_od, F2_od, G1_od, G2_od,
     F1_os, F2_os, G1_os, G2_os, F1_1ds, F2_1ds, G1_1ds, G2_1ds, F1_2ds, F2_2ds, G1_2ds, G2_2ds. On top of this is added the rotation
     omega_os, which will serve in the minimal model where it transforms into the non zero omega_los.

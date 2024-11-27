@@ -53,7 +53,7 @@ _SUPPORTED_MODELS = [
     "RADIAL_INTERPOL",
     "LOS",
     "LOS_MINIMAL",
-    "LOSF", 
+    "LOSF",
     "LOSF_MINIMAL",
     "MULTIPOLE",
     "MULTIPOLE_ELL",
@@ -479,13 +479,13 @@ def lens_class(
         from lenstronomy.LensModel.LineOfSightFlexion.LOSFlexionModels.losflexion import (
             LOSFlexion,
         )
-        
+
         return LOSFlexion()
     elif lens_type == "LOSF_MINIMAL":
         from lenstronomy.LensModel.LineOfSightFlexion.LOSFlexionModels.losflexion_minimal import (
             LOSFlexionMinimal,
         )
-        
+
         return LOSFlexionMinimal()
     elif lens_type == "LOS_MINIMAL":
         from lenstronomy.LensModel.LineOfSight.LOSModels.los_minimal import (

@@ -5,12 +5,14 @@ import numpy.testing as npt
 import pytest
 import unittest
 
-from lenstronomy.LensModel.LineOfSightFlexion.LOSFlexionModels.losflexion_minimal import LOSFlexionMinimal
+from lenstronomy.LensModel.LineOfSightFlexion.LOSFlexionModels.losflexion_minimal import (
+    LOSFlexionMinimal,
+)
 
 
 class TestLOSFlexionMinimal(object):
-    """Tests the LOSFlexionMinimal profile; inherits from LOS so we can repeat those tests
-    here.
+    """Tests the LOSFlexionMinimal profile; inherits from LOS so we can repeat those
+    tests here.
 
     This is functionally redundant but boosts coverage.
     """

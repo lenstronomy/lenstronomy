@@ -6,7 +6,9 @@ import pytest
 import unittest
 
 from lenstronomy.LensModel.single_plane import SinglePlane
-from lenstronomy.LensModel.LineOfSightFlexion.single_plane_los_flexion import SinglePlaneLOSFlexion
+from lenstronomy.LensModel.LineOfSightFlexion.single_plane_los_flexion import (
+    SinglePlaneLOSFlexion,
+)
 from lenstronomy.LensModel.MultiPlane.multi_plane import MultiPlane
 from lenstronomy.LensModel.Profiles.sis import SIS
 from lenstronomy.LensModel.lens_model import LensModel
@@ -28,13 +30,15 @@ class TestSinglePlaneLOSFlexion(object):
     """Tests the SinglePlaneLOSFlexion routines.
 
     these functions are the same as in TestLensModel but with the addition of LOSF and
-    LOSF_MINIMAL as profiles. with all params in self.kwargs_los set to zero, the results
-    should be the same as the non-LOSF cases originally tested. 
+    LOSF_MINIMAL as profiles. with all params in self.kwargs_los set to zero, the
+    results should be the same as the non-LOSF cases originally tested.
     """
 
     def setup_method(self):
         self.lensModel = SinglePlane(["GAUSSIAN_POTENTIAL"])
-        self.lensModel_los = SinglePlaneLOSFlexion(["GAUSSIAN_POTENTIAL", "LOSF"], index_losf=1)
+        self.lensModel_los = SinglePlaneLOSFlexion(
+            ["GAUSSIAN_POTENTIAL", "LOSF"], index_losf=1
+        )
         self.lensModel_minimal = SinglePlaneLOSFlexion(
             ["GAUSSIAN_POTENTIAL", "LOSF_MINIMAL"], index_losf=1
         )
@@ -46,55 +50,45 @@ class TestSinglePlaneLOSFlexion(object):
             "center_y": 0.0,
         }
         self.los_kwargs = {
-            'kappa_od': 0.0, 
-            'kappa_os': 0.0, 
-            'kappa_ds': 0.0,
-            'kappa_los': 0.0,
-
-            'gamma1_od': 0.0, 
-            'gamma2_od': 0.0,
-            'gamma1_os': 0.0,
-            'gamma2_os': 0.0,
-            'gamma1_ds': 0.0, 
-            'gamma2_ds': 0.0, 
-            'gamma1_los': 0.0,
-            'gamma2_los': 0.0,
-
-            'F1_od': 0.0, 
-            'F2_od': 0.0, 
-            'G1_od': 0.0, 
-            'G2_od': 0.0,
-
-            'F1_os': 0.0, 
-            'F2_os': 0.0, 
-            'G1_os': 0.0, 
-            'G2_os': 0.0, 
-
-            'F1_los': 0.0,
-            'F2_los': 0.0,
-            'G1_los': 0.0,
-            'G2_los': 0.0,
-
-            'F1_1ds': 0.0, 
-            'F2_1ds': 0.0,
-            'G1_1ds': 0.0, 
-            'G2_1ds': 0.0, 
-
-            'F1_2ds': 0.0, 
-            'F2_2ds': 0.0, 
-            'G1_2ds': 0.0, 
-            'G2_2ds': 0.0, 
-
-            'F1_1los': 0.0, 
-            'F2_1los': 0.0, 
-            'G1_1los': 0.0, 
-            'G2_1los': 0.0,
-
-            'omega_os': 0.0,
-            'omega_los': 0.0,
-            }
-
-            
+            "kappa_od": 0.0,
+            "kappa_os": 0.0,
+            "kappa_ds": 0.0,
+            "kappa_los": 0.0,
+            "gamma1_od": 0.0,
+            "gamma2_od": 0.0,
+            "gamma1_os": 0.0,
+            "gamma2_os": 0.0,
+            "gamma1_ds": 0.0,
+            "gamma2_ds": 0.0,
+            "gamma1_los": 0.0,
+            "gamma2_los": 0.0,
+            "F1_od": 0.0,
+            "F2_od": 0.0,
+            "G1_od": 0.0,
+            "G2_od": 0.0,
+            "F1_os": 0.0,
+            "F2_os": 0.0,
+            "G1_os": 0.0,
+            "G2_os": 0.0,
+            "F1_los": 0.0,
+            "F2_los": 0.0,
+            "G1_los": 0.0,
+            "G2_los": 0.0,
+            "F1_1ds": 0.0,
+            "F2_1ds": 0.0,
+            "G1_1ds": 0.0,
+            "G2_1ds": 0.0,
+            "F1_2ds": 0.0,
+            "F2_2ds": 0.0,
+            "G1_2ds": 0.0,
+            "G2_2ds": 0.0,
+            "F1_1los": 0.0,
+            "F2_1los": 0.0,
+            "G1_1los": 0.0,
+            "G2_1los": 0.0,
+            "omega_os": 0.0,
+            "omega_los": 0.0,
+        }
 
     def test_potential(self):
         output = self.lensModel.potential(x=1.0, y=1.0, kwargs=[self.kwargs])
@@ -140,7 +134,9 @@ class TestSinglePlaneLOSFlexion(object):
 
         lensModel = SinglePlane(["GAUSSIAN"])
         lensModel_los = SinglePlaneLOSFlexion(["GAUSSIAN", "LOSF"], index_losf=1)
-        lensModel_minimal = SinglePlaneLOSFlexion(["GAUSSIAN", "LOSF_MINIMAL"], index_losf=1)
+        lensModel_minimal = SinglePlaneLOSFlexion(
+            ["GAUSSIAN", "LOSF_MINIMAL"], index_losf=1
+        )
 
         output = lensModel.mass_2d(r=1, kwargs=[mass_kwargs])
         output_los = lensModel_los.mass_2d(r=1, kwargs=[mass_kwargs, self.los_kwargs])
@@ -156,7 +152,9 @@ class TestSinglePlaneLOSFlexion(object):
 
         lensModel = SinglePlane(["GAUSSIAN"])
         lensModel_los = SinglePlaneLOSFlexion(["GAUSSIAN", "LOSF"], index_losf=1)
-        lensModel_minimal = SinglePlaneLOSFlexion(["GAUSSIAN", "LOSF_MINIMAL"], index_losf=1)
+        lensModel_minimal = SinglePlaneLOSFlexion(
+            ["GAUSSIAN", "LOSF_MINIMAL"], index_losf=1
+        )
 
         output = lensModel.mass_3d(r=1, kwargs=[mass_kwargs])
         output_los = lensModel_los.mass_3d(r=1, kwargs=[mass_kwargs, self.los_kwargs])
@@ -174,7 +172,9 @@ class TestSinglePlaneLOSFlexion(object):
         density_model = sis.density_lens(r=r, theta_E=theta_E)
 
         # LOS
-        lensModel_los = SinglePlaneLOSFlexion(lens_model_list=["SIS", "LOSF"], index_losf=1)
+        lensModel_los = SinglePlaneLOSFlexion(
+            lens_model_list=["SIS", "LOSF"], index_losf=1
+        )
         density_los = lensModel_los.density(
             r=r, kwargs=[{"theta_E": theta_E}, self.los_kwargs]
         )
@@ -272,7 +272,9 @@ class TestRaise(unittest.TestCase):
             with self.assertRaises(ImportError):
                 SinglePlaneLOSFlexion(lens_model_list=["SPEMD", "LOSF"], index_losf=1)
         else:
-            SinglePlaneLOSFlexion(lens_model_list=["PEMD", "SPEMD", "LOSF"], index_losf=2)
+            SinglePlaneLOSFlexion(
+                lens_model_list=["PEMD", "SPEMD", "LOSF"], index_losf=2
+            )
 
 
 if __name__ == "__main__":

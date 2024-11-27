@@ -112,10 +112,14 @@ class LightModelBase(object):
                     CoreSersic(smoothing=smoothing, sersic_major_axis=sersic_major_axis)
                 )
             elif profile_type == "SERSIC_FLEXION":
-                from lenstronomy.LightModel.Profiles.sersic_flexion import SersicEllipticFlexed
-                
+                from lenstronomy.LightModel.Profiles.sersic_flexion import (
+                    SersicEllipticFlexed,
+                )
+
                 self.func_list.append(
-                    SersicEllipticFlexed(smoothing=smoothing, sersic_major_axis=sersic_major_axis)
+                    SersicEllipticFlexed(
+                        smoothing=smoothing, sersic_major_axis=sersic_major_axis
+                    )
                 )
             elif profile_type == "SHAPELETS":
                 from lenstronomy.LightModel.Profiles.shapelets import ShapeletSet

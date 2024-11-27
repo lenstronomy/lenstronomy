@@ -29,9 +29,9 @@ class TestSinglePlaneLOS(object):
 
     these functions are the same as in TestLensModel but with the addition of LOS and
     LOS_MINIMAL as profiles. with all params in self.kwargs_los set to zero, the results
-    should be the same as the non-LOS cases originally tested the test_los_vs_multiplane
+    should be the same as the non-LOS cases originally tested. The test_los_vs_multiplane
     checks that a multiplane setup with three shear planes returns the same as the LOS
-    and LOS MINIMAL models
+    and LOS MINIMAL models.
     """
 
     def setup_method(self):

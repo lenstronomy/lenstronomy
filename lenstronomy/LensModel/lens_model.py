@@ -110,7 +110,7 @@ class LensModel(object):
         elif len(losf_models) == 1:
             if los_effects is True :
                 raise ValueError(
-                    "You cannot use LOS and LOS flexion at the same time as the former is included into the later."
+                    "You cannot use LOS and LOS flexion at the same time as the former is included in the latter."
                 )
             else:
                 losf_effects = True

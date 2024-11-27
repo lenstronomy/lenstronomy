@@ -242,6 +242,24 @@ def test_split_kernel():
     assert len(kernel_cutout) == subgrid_res * subsampling_size + 1
     npt.assert_almost_equal(np.sum(kernel_hole) + np.sum(kernel_cutout), 1, decimal=4)
 
+    norm_factor = 0.1
+    kernel = np.zeros((9, 9))
+    kernel[4, 4] = norm_factor
+    subgrid_res = 3
+    subgrid_kernel = kernel_util.subgrid_kernel(
+        kernel, subgrid_res=subgrid_res, odd=True
+    )
+    npt.assert_almost_equal(np.sum(subgrid_kernel), norm_factor, decimal=3)
+    subsampling_size = 3
+    kernel_hole, kernel_cutout = kernel_util.split_kernel(
+        subgrid_kernel,
+        supersampling_kernel_size=subsampling_size,
+        supersampling_factor=subgrid_res,
+    )
+    npt.assert_almost_equal(
+        np.sum(kernel_hole) + np.sum(kernel_cutout), norm_factor, decimal=3
+    )
+
 
 def test_cutout_source2():
     grid2d = np.zeros((20, 20))

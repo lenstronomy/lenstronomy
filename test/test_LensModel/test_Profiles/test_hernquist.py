@@ -5,7 +5,9 @@ import numpy as np
 import numpy.testing as npt
 
 from lenstronomy.LensModel.Profiles.hernquist import Hernquist
-from lenstronomy.LensModel.Profiles.hernquist_ellipse import Hernquist_Ellipse
+from lenstronomy.LensModel.Profiles.hernquist_ellipse_potential import (
+    HernquistEllipsePotential,
+)
 import lenstronomy.Util.param_util as param_util
 
 
@@ -82,7 +84,7 @@ class TestHernquist(object):
 
 class TestHernquistEllipse(object):
     def setup_method(self):
-        self.profile = Hernquist_Ellipse()
+        self.profile = HernquistEllipsePotential()
 
     def test_function(self):
         x = np.array([1])

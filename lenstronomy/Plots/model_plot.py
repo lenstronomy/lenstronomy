@@ -360,3 +360,12 @@ class ModelPlot(object):
         """
         plot_band = self._select_band(band_index)
         return plot_band.source(**kwargs)
+
+    def single_band_chi2(self, band_index=0):
+        """
+
+        :param band_index: index of band
+        :return: the reduced chi-square value of the band as a float
+        """
+        plot_band = self._select_band(band_index)
+        return plot_band.reduced_x2

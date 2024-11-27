@@ -9,7 +9,6 @@ from lenstronomy.LensModel.lens_param import LensParam
 from lenstronomy.LightModel.light_param import LightParam
 from lenstronomy.PointSource.point_source_param import PointSourceParam
 from lenstronomy.Sampling.special_param import SpecialParam
-from lenstronomy.LensModel.QuadOptimizer.optimizer import Optimizer
 
 __all__ = ["Param"]
 
@@ -984,6 +983,23 @@ class Param(object):
             return np.max(dist)
         else:
             return 0
+
+    @property
+    def fixed_kwargs_list(self):
+        """
+
+        :return: list of fixed keyword arguments
+        """
+
+        return (
+            self.lensParams.kwargs_fixed,
+            self.sourceParams.kwargs_fixed,
+            self.lensLightParams.kwargs_fixed,
+            self.pointSourceParams.kwargs_fixed,
+            self.specialParams.kwargs_fixed,
+            self.extinctionParams.kwargs_fixed,
+            self.tracerSourceParams.kwargs_fixed,
+        )
 
     def print_setting(self):
         """Prints the setting of the parameter class.

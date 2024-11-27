@@ -1,12 +1,12 @@
-from lenstronomy.LensModel.Profiles.p_jaffe import PJaffe
+from lenstronomy.LensModel.Profiles.pseudo_jaffe import PseudoJaffe
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 import numpy as np
 
-__all__ = ["PJaffe_Ellipse"]
+__all__ = ["PseudoJaffeEllipsePotential"]
 
 
-class PJaffe_Ellipse(LensProfileBase):
+class PseudoJaffeEllipsePotential(LensProfileBase):
     """
     class to compute the DUAL PSEUDO ISOTHERMAL ELLIPTICAL MASS DISTRIBUTION
     based on Eliasdottir (2007) https://arxiv.org/pdf/0710.5636.pdf Appendix A
@@ -61,9 +61,9 @@ class PJaffe_Ellipse(LensProfileBase):
     }
 
     def __init__(self):
-        self.spherical = PJaffe()
+        self.spherical = PseudoJaffe()
         self._diff = 0.000001
-        super(PJaffe_Ellipse, self).__init__()
+        super(PseudoJaffeEllipsePotential, self).__init__()
 
     def function(self, x, y, sigma0, Ra, Rs, e1, e2, center_x=0, center_y=0):
         """Returns double integral of NFW profile."""

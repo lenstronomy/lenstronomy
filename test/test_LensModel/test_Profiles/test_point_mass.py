@@ -8,8 +8,8 @@ import numpy.testing as npt
 import pytest
 
 
-class TestSIS(object):
-    """Tests the Gaussian methods."""
+class TestPointMass(object):
+    """Tests the PointMass class routines."""
 
     def setup_method(self):
         self.pointmass = PointMass()
@@ -71,6 +71,13 @@ class TestSIS(object):
         assert values[0][1] == -0.080000000000000002
         assert values[3][1] == 0.080000000000000002
         assert values[1][1] == -0.059999999999999998
+
+    def test_mass_3d_lens(self):
+        theta_E = 0.5
+        r = 5
+
+        mass_3d = self.pointmass.mass_3d_lens(r, theta_E)
+        assert mass_3d == np.pi * theta_E**2
 
 
 if __name__ == "__main__":

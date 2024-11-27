@@ -188,7 +188,7 @@ class TestSolver4Point(object):
         assert np.max(dist) < 0.000001
 
     def test_solver_nfw(self):
-        lens_model_list = ["NFW_ELLIPSE", "SIS"]
+        lens_model_list = ["NFW_ELLIPSE_POTENTIAL", "SIS"]
         lensModel = LensModel(lens_model_list)
         solver = Solver4Point(lensModel)
         lensEquationSolver = LensEquationSolver(lensModel)

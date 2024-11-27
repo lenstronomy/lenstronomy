@@ -5,7 +5,7 @@ import unittest
 
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.Analysis.lens_profile import LensProfileAnalysis
-from lenstronomy.LensModel.Profiles.multi_gaussian_kappa import MultiGaussianKappa
+from lenstronomy.LensModel.Profiles.multi_gaussian import MultiGaussian
 import lenstronomy.Util.param_util as param_util
 
 
@@ -49,7 +49,13 @@ class TestLensProfileAnalysis(object):
                 "gamma": gamma_in,
             }
         ]
-        gamma_out = lens_model.profile_slope(kwargs_lens, radius=1.45)
+        gamma_out = lens_model.profile_slope(
+            kwargs_lens, radius=1.45, alpha_differentials=True
+        )
+        npt.assert_array_almost_equal(gamma_out, gamma_in, decimal=3)
+        gamma_out = lens_model.profile_slope(
+            kwargs_lens, radius=1.45, alpha_differentials=False
+        )
         npt.assert_array_almost_equal(gamma_out, gamma_in, decimal=3)
 
     def test_effective_einstein_radius(self):
@@ -155,7 +161,7 @@ class TestLensProfileAnalysis(object):
         amplitudes, sigmas, center_x, center_y = lensAnalysis.multi_gaussian_lens(
             kwargs_lens, n_comp=20
         )
-        model = MultiGaussianKappa()
+        model = MultiGaussian()
         x = np.logspace(-2, 0.5, 10) + 0.5
         y = np.zeros_like(x) - 0.1
         f_xx, fxy, fyx, f_yy = model.hessian(

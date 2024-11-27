@@ -1,5 +1,4 @@
 import numpy as np
-import coolest
 from lenstronomy.Util.param_util import phi_q2_ellipticity, shear_polar2cartesian
 
 

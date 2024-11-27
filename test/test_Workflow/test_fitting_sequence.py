@@ -144,8 +144,7 @@ class TestFittingSequence(object):
             "source_marg": True,
             "linear_prior": [1],
             "image_position_uncertainty": 0.004,
-            "check_matched_source_position": False,
-            "source_position_tolerance": 0.001,
+            "source_position_tolerance": None,
             "source_position_sigma": 0.001,
             "check_positive_flux": True,
         }
@@ -285,7 +284,7 @@ class TestFittingSequence(object):
             lens_temp[0]["theta_E"], self.kwargs_lens[0]["theta_E"], decimal=2
         )
 
-        logL = fittingSequence.best_fit_likelihood
+        logL = fittingSequence.best_fit_likelihood()
         print(logL, "test")
         # print(lens_temp, source_temp, lens_light_temp, ps_temp, special_temp)
         assert logL < 0
@@ -377,6 +376,13 @@ class TestFittingSequence(object):
             fitting_list_three.append(["emcee", kwargs_test])
             fittingSequence.fit_sequence(fitting_list_three)
 
+        psf_iteration_list = fittingSequence.psf_iteration_memory
+        assert len(psf_iteration_list) == 1
+        assert "sequence" in psf_iteration_list[0]
+        assert "band" in psf_iteration_list[0]
+        assert "psf_before" in psf_iteration_list[0]
+        assert "psf_after" in psf_iteration_list[0]
+
     def test_cobaya(self):
         np.random.seed(42)
 
@@ -443,9 +449,9 @@ class TestFittingSequence(object):
         }
 
         lens_fixed = [{"center_x": 0.0, "center_y": 0.0}]
-        lens_sigma = [{"theta_E": 0.01}]
-        lens_lower = [{"theta_E": 0.1}]
-        lens_upper = [{"theta_E": 3.0}]
+        lens_sigma = [{"theta_E": 0.01, "center_x": 0.1, "center_y": 0.1}]
+        lens_lower = [{"theta_E": 0.1, "center_x": -10, "center_y": -10}]
+        lens_upper = [{"theta_E": 3.0, "center_x": 10, "center_y": 10}]
 
         source_fixed = [{}]
         source_sigma = [

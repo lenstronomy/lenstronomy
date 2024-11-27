@@ -3,14 +3,15 @@ __author__ = "sibirrer"
 import numpy as np
 from lenstronomy.Util import util
 from lenstronomy.LensModel.Profiles.nfw import NFW
-from lenstronomy.LensModel.Profiles.nfw_ellipse import NFW_ELLIPSE
+from lenstronomy.LensModel.Profiles.nfw_ellipse_potential import NFWEllipsePotential
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 from lenstronomy.LensModel.Profiles.cored_steep_ellipsoid import CSEProductAvgSet
 import lenstronomy.Util.param_util as param_util
 
 __all__ = ["NFW_ELLIPSE_CSE"]
 
 
-class NFW_ELLIPSE_CSE(NFW_ELLIPSE):
+class NFW_ELLIPSE_CSE(LensProfileBase):
     """
     this class contains functions concerning the NFW profile with an ellipticity defined in the convergence
     parameterization of alpha_Rs and Rs is the same as for the spherical NFW profile
@@ -278,6 +279,18 @@ class NFW_ELLIPSE_CSE(NFW_ELLIPSE):
         const = self._normalization(alpha_Rs, Rs, q) / Rs**2
 
         return const * f_xx, const * f_xy, const * f_xy, const * f_yy
+
+    def mass_3d_lens(self, r, Rs, alpha_Rs, e1=1, e2=0):
+        """
+
+        :param r: radius (in angular units)
+        :param Rs:
+        :param alpha_Rs:
+        :param e1:
+        :param e2:
+        :return:
+        """
+        return self.nfw.mass_3d_lens(r, Rs, alpha_Rs)
 
     def _normalization(self, alpha_Rs, Rs, q):
         """Applying to eqn 7 and 8 in Oguri 2021 from phenomenological definition.

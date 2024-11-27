@@ -153,7 +153,7 @@ class TestGalkin(object):
         r_array = np.logspace(-2, 2, 100) * theta_E
         kappa_r = lensModel.kappa(r_array, 0, kwargs_profile)
         amps, sigmas, norm = mge.mge_1d(r_array, kappa_r, N=20)
-        mass_profile_list_mge = ["MULTI_GAUSSIAN_KAPPA"]
+        mass_profile_list_mge = ["MULTI_GAUSSIAN"]
         kwargs_profile_mge = [{"amp": amps, "sigma": sigmas}]
         kwargs_psf = {"psf_type": "GAUSSIAN", "fwhm": psf_fwhm}
         kwargs_model = {
@@ -248,7 +248,7 @@ class TestGalkin(object):
         r_array = np.logspace(-2, 2, 200)
         kappa_r = lensModel.kappa(r_array, 0, kwargs_profile)
         amps, sigmas, norm = mge.mge_1d(r_array, kappa_r, N=20)
-        mass_profile_list_mge = ["MULTI_GAUSSIAN_KAPPA"]
+        mass_profile_list_mge = ["MULTI_GAUSSIAN"]
         kwargs_profile_mge = [{"amp": amps, "sigma": sigmas}]
         kwargs_psf = {"psf_type": "GAUSSIAN", "fwhm": psf_fwhm}
         kwargs_model = {

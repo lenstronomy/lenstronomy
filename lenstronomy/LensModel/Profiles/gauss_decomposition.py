@@ -7,213 +7,25 @@ __author__ = "ajshajib"
 import numpy as np
 import abc
 from scipy.special import comb
+from scipy.special import hyp2f1
 
-from lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa import GaussianEllipseKappa
+from lenstronomy.LensModel.Profiles.multi_gaussian_ellipse_kappa import (
+    MultiGaussianEllipseKappa,
+)
+from lenstronomy.LensModel.Profiles.nfw import NFW
+from lenstronomy.LensModel.Profiles.gnfw import GNFW
 from lenstronomy.LensModel.Profiles.sersic_utils import SersicUtil
-from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
-
 from lenstronomy.Util.package_util import exporter
 
 export, __all__ = exporter()
 
 _SQRT_2PI = np.sqrt(2 * np.pi)
 
-
-@export
-class GaussianEllipseKappaSet(LensProfileBase):
-    """This class computes the lensing properties of a set of concentric elliptical
-    Gaussian convergences."""
-
-    param_names = ["amp", "sigma", "e1", "e2", "center_x", "center_y"]
-    lower_limit_default = {
-        "amp": 0,
-        "sigma": 0,
-        "e1": -0.5,
-        "e2": -0.5,
-        "center_x": -100,
-        "center_y": -100,
-    }
-    upper_limit_default = {
-        "amp": 100,
-        "sigma": 100,
-        "e1": 0.5,
-        "e2": 0.5,
-        "center_x": 100,
-        "center_y": 100,
-    }
-
-    def __init__(self, use_scipy_wofz=True, min_ellipticity=1e-5):
-        """
-
-        :param use_scipy_wofz: To initiate ``class GaussianEllipseKappa``. If ``True``, Gaussian lensing will use ``scipy.special.wofz`` function. Set ``False`` for lower precision, but faster speed.
-        :type use_scipy_wofz: ``bool``
-        :param min_ellipticity: To be passed to ``class GaussianEllipseKappa``. Minimum ellipticity for Gaussian elliptical lensing calculation. For lower ellipticity than min_ellipticity the equations for the spherical case will be used.
-        :type min_ellipticity: ``float``
-        """
-        self.gaussian_ellipse_kappa = GaussianEllipseKappa(
-            use_scipy_wofz=use_scipy_wofz, min_ellipticity=min_ellipticity
-        )
-        super(GaussianEllipseKappaSet, self).__init__()
-
-    def function(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
-        """Compute the potential function for a set of concentric elliptical Gaussian
-        convergence profiles.
-
-        :param x: x coordinate
-        :type x: ``float`` or ``numpy.array``
-        :param y: y coordinate
-        :type y: ``float`` or ``numpy.array``
-        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \\pi\\sigma^2) \\exp(-(x^2+y^2/q^2)/2\\sigma^2)`
-        :type amp: ``numpy.array`` with ``dtype=float``
-        :param sigma: Standard deviation of Gaussian
-        :type sigma: ``numpy.array`` with ``dtype=float``
-        :param e1: Ellipticity parameter 1
-        :type e1: ``float``
-        :param e2: Ellipticity parameter 2
-        :type e2: ``float``
-        :param center_x: x coordinate of centroid
-        :type center_x: ``float``
-        :param center_y: y coordianate of centroid
-        :type center_y: ``float``
-        :return: Potential for elliptical Gaussian convergence
-        :rtype: ``float``, or ``numpy.array`` with ``shape = x.shape``
-        """
-        function = np.zeros_like(x, dtype=float)
-
-        for i in range(len(amp)):
-            function += self.gaussian_ellipse_kappa.function(
-                x, y, amp[i], sigma[i], e1, e2, center_x, center_y
-            )
-        return function
-
-    def derivatives(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
-        """Compute the derivatives of function angles :math:`\\partial f/\\partial x`,
-        :math:`\\partial f/\\partial y` at :math:`x,\\ y` for a set of concentric
-        elliptic Gaussian convergence profiles.
-
-        :param x: x coordinate
-        :type x: ``float`` or ``numpy.array``
-        :param y: y coordinate
-        :type y: ``float`` or ``numpy.array``
-        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \\pi\\sigma^2) \\exp(-(x^2+y^2/q^2)/2\\sigma^2)`
-        :type amp: ``numpy.array`` with ``dtype=float``
-        :param sigma: Standard deviation of Gaussian
-        :type sigma: ``numpy.array`` with ``dtype=float``
-        :param e1: Ellipticity parameter 1
-        :type e1: ``float``
-        :param e2: Ellipticity parameter 2
-        :type e2: ``float``
-        :param center_x: x coordinate of centroid
-        :type center_x: ``float``
-        :param center_y: y coordianate of centroid
-        :type center_y: ``float``
-        :return: Deflection angle :math:`\\partial f/\\partial x`, :math:`\\partial f/\\partial y` for elliptical Gaussian convergence
-        :rtype: tuple ``(float, float)`` or ``(numpy.array, numpy.array)`` with each ``numpy`` array's shape equal to ``x.shape``
-        """
-        f_x = np.zeros_like(x, dtype=float)
-        f_y = np.zeros_like(x, dtype=float)
-
-        for i in range(len(amp)):
-            f_x_i, f_y_i = self.gaussian_ellipse_kappa.derivatives(
-                x,
-                y,
-                amp=amp[i],
-                sigma=sigma[i],
-                e1=e1,
-                e2=e2,
-                center_x=center_x,
-                center_y=center_y,
-            )
-            f_x += f_x_i
-            f_y += f_y_i
-
-        return f_x, f_y
-
-    def hessian(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
-        """Compute Hessian matrix of function :math:`\\partial^2f/\\partial x^2`,
-        :math:`\\partial^2 f/\\partial y^2`, :math:`\\partial^2 f/\\partial x\\partial
-        y` for a set of concentric elliptic Gaussian convergence profiles.
-
-        :param x: x coordinate
-        :type x: ``float`` or ``numpy.array``
-        :param y: y coordinate
-        :type y: ``float`` or ``numpy.array``
-        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \\pi\\sigma^2) \\exp(-(x^2+y^2/q^2)/2\\sigma^2)`
-        :type amp: ``numpy.array`` with ``dtype=float``
-        :param sigma: Standard deviation of Gaussian
-        :type sigma: ``numpy.array`` with ``dtype=float``
-        :param e1: Ellipticity parameter 1
-        :type e1: ``float``
-        :param e2: Ellipticity parameter 2
-        :type e2: ``float``
-        :param center_x: x coordinate of centroid
-        :type center_x: ``float``
-        :param center_y: y coordianate of centroid
-        :type center_y: ``float``
-        :return: Hessian :math:`\\partial^2f/\\partial x^2`, :math:`\\partial^2/\\partial x\\partial y`,
-         :math:`\\partial^2/\\partial y\\partial x`, :math:`\\partial^2 f/\\partial y^2` for elliptical Gaussian convergence.
-        :rtype: tuple ``(float, float, float)`` , or ``(numpy.array, numpy.array, numpy.array)``
-         with each ``numpy`` array's shape equal to ``x.shape``
-        """
-        f_xx = np.zeros_like(x, dtype=float)
-        f_yy = np.zeros_like(x, dtype=float)
-        f_xy = np.zeros_like(x, dtype=float)
-
-        for i in range(len(amp)):
-            f_xx_i, f_xy_i, _, f_yy_i = self.gaussian_ellipse_kappa.hessian(
-                x,
-                y,
-                amp=amp[i],
-                sigma=sigma[i],
-                e1=e1,
-                e2=e2,
-                center_x=center_x,
-                center_y=center_y,
-            )
-            f_xx += f_xx_i
-            f_yy += f_yy_i
-            f_xy += f_xy_i
-
-        return f_xx, f_xy, f_xy, f_yy
-
-    def density_2d(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
-        """Compute the density of a set of concentric elliptical Gaussian convergence
-        profiles :math:`\\sum A/(2\\pi \\sigma^2) \\exp(-( x^2+y^2/q^2)/2\\sigma^2)`.
-
-        :param x: x coordinate
-        :type x: ``float`` or ``numpy.array``
-        :param y: y coordinate
-        :type y: ``float`` or ``numpy.array``
-        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \\pi\\sigma^2) \\exp(-(x^2+y^2/q^2)/2\\sigma^2)`
-        :type amp: ``numpy.array`` with ``dtype=float``
-        :param sigma: Standard deviation of Gaussian
-        :type sigma: ``numpy.array`` with ``dtype=float``
-        :param e1: Ellipticity parameter 1
-        :type e1: ``float``
-        :param e2: Ellipticity parameter 2
-        :type e2: ``float``
-        :param center_x: x coordinate of centroid
-        :type center_x: ``float``
-        :param center_y: y coordianate of centroid
-        :type center_y: ``float``
-        :return: Density :math:`\\kappa` for elliptical Gaussian convergence
-        :rtype: ``float``, or ``numpy.array`` with shape equal to ``x.shape``
-        """
-        density_2d = np.zeros_like(x, dtype=float)
-
-        for i in range(len(amp)):
-            density_2d += self.gaussian_ellipse_kappa.density_2d(
-                x,
-                y,
-                amp=amp[i],
-                sigma=sigma[i],
-                e1=e1,
-                e2=e2,
-                center_x=center_x,
-                center_y=center_y,
-            )
-
-        return density_2d
+__all__ = [
+    "SersicEllipseGaussDec",
+    "NFWEllipseGaussDec",
+    "GeneralizedNFWEllipseGaussDec",
+]
 
 
 @export
@@ -246,7 +58,7 @@ class GaussDecompositionAbstract(metaclass=abc.ABCMeta):
         :param min_ellipticity: To be passed to ``class GaussianEllipseKappa``. Minimum ellipticity for Gaussian elliptical lensing calculation. For lower ellipticity than min_ellipticity the equations for the spherical case will be used.
         :type min_ellipticity: ``float``
         """
-        self.gaussian_set = GaussianEllipseKappaSet(
+        self.gaussian_set = MultiGaussianEllipseKappa(
             use_scipy_wofz=use_scipy_wofz, min_ellipticity=min_ellipticity
         )
 
@@ -533,9 +345,9 @@ class NFWEllipseGaussDec(GaussDecompositionAbstract):
 
     def __init__(
         self,
-        n_sigma=15,
-        sigma_start_mult=0.005,
-        sigma_end_mult=50.0,
+        n_sigma=20,
+        sigma_start_mult=0.0001,
+        sigma_end_mult=250.0,
         precision=10,
         use_scipy_wofz=True,
         min_ellipticity=1e-5,
@@ -564,6 +376,7 @@ class NFWEllipseGaussDec(GaussDecompositionAbstract):
             use_scipy_wofz=use_scipy_wofz,
             min_ellipticity=min_ellipticity,
         )
+        self.nfw = NFW()
 
     def get_kappa_1d(self, y, **kwargs):
         r"""Compute the spherical projected NFW profile at y.
@@ -581,36 +394,122 @@ class NFWEllipseGaussDec(GaussDecompositionAbstract):
         :return: projected NFW profile at y
         :rtype: ``type(y)``
         """
-        R_s = kwargs["Rs"]
+        Rs = kwargs["Rs"]
         alpha_Rs = kwargs["alpha_Rs"]
 
-        kappa_s = alpha_Rs / (4 * R_s * (1 - 0.30102999566))
-        # log2 = 0.30102999566
+        rho0 = self.nfw.alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs)
 
-        x = y / R_s
+        kappa = self.nfw.density_2d(y, 0, Rs, rho0)
 
-        f = np.empty(shape=x.shape, dtype=x.dtype)
-
-        range1 = x > 1.0
-        if np.any(range1):
-            s = x[range1]
-            f[range1] = (1 - np.arccos(1 / s) / np.sqrt(s * s - 1)) / (s * s - 1)
-
-        range2 = x < 1.0
-        if np.any(range2):
-            s = x[range2]
-            f[range2] = (1 - np.arccosh(1 / s) / np.sqrt(1 - s * s)) / (s * s - 1)
-
-        range3 = np.logical_and(np.logical_not(range1), np.logical_not(range2))
-        if np.any(range3):
-            f[range3] = 1.0 / 3.0
-
-        return 2 * kappa_s * f
+        return kappa
 
     def get_scale(self, **kwargs):
         """Identify the scale size from the keyword arguments.
 
         :param kwargs: Keyword arguments
+
+        :Keyword Arguments:
+            * **alpha_Rs** (``float``) --
+              Deflection angle at ``Rs``
+            * **R_s** (``float``) --
+              NFW scale radius
+
+        :return: NFW scale radius
+        :rtype: ``float``
+        """
+        return kwargs["Rs"]
+
+
+@export
+class GeneralizedNFWEllipseGaussDec(GaussDecompositionAbstract):
+    """This class computes the lensing properties of an elliptical, projected gNFW
+    profile using Shajib (2019)'s Gauss decomposition method."""
+
+    param_names = ["Rs", "alpha_Rs", "e1", "e2", "center_x", "center_y", "gamma_in"]
+    lower_limit_default = {
+        "Rs": 0,
+        "alpha_Rs": 0,
+        "e1": -0.5,
+        "e2": -0.5,
+        "center_x": -100,
+        "center_y": -100,
+        "gamma_in": 0.0,
+    }
+    upper_limit_default = {
+        "Rs": 100,
+        "alpha_Rs": 10,
+        "e1": 0.5,
+        "e2": 0.5,
+        "center_x": 100,
+        "center_y": 100,
+        "gamma_in": 2.5,
+    }
+
+    def __init__(
+        self,
+        n_sigma=20,
+        sigma_start_mult=0.0001,
+        sigma_end_mult=250.0,
+        precision=10,
+        use_scipy_wofz=False,
+        min_ellipticity=1e-5,
+    ):
+        """Set up settings for the Gaussian decomposition. For more details about the
+        decomposition parameters, see Shajib (2019).
+
+        :param n_sigma: Number of Gaussian components
+        :type n_sigma: ``int``
+        :param sigma_start_mult: Lower range of logarithmically spaced sigmas
+        :type sigma_start_mult: ``float``
+        :param sigma_end_mult: Upper range of logarithmically spaced sigmas
+        :type sigma_end_mult: ``float``
+        :param precision: Numerical precision of Gaussian decomposition
+        :type precision: ``int``
+        :param use_scipy_wofz: To be passed to ``class GaussianEllipseKappa``. If ``True``, Gaussian lensing will use ``scipy.special.wofz`` function. Set ``False`` for lower precision, but faster speed.
+        :type use_scipy_wofz: ``bool``
+        :param min_ellipticity: To be passed to ``class GaussianEllipseKappa``. Minimum ellipticity for Gaussian elliptical lensing calculation. For lower ellipticity than min_ellipticity the equations for the spherical case will be used.
+        :type min_ellipticity: ``float``
+        """
+        super(GeneralizedNFWEllipseGaussDec, self).__init__(
+            n_sigma=n_sigma,
+            sigma_start_mult=sigma_start_mult,
+            sigma_end_mult=sigma_end_mult,
+            precision=precision,
+            use_scipy_wofz=use_scipy_wofz,
+            min_ellipticity=min_ellipticity,
+        )
+        self.gnfw = GNFW(trapezoidal_integration=True, integration_steps=1000)
+
+    def get_kappa_1d(self, y, **kwargs):
+        r"""Compute the spherical projected gNFW profile at y. See Keeton (2001, page
+        11).
+
+        :param y: y coordinate
+        :type y: ``float``
+        :param \**kwargs: Keyword arguments
+
+        :Keyword Arguments:
+            * **alpha_Rs** (``float``) --
+              Deflection angle at ``Rs``
+            * **R_s** (``float``) --
+              gNFW scale radius
+
+        :return: projected NFW profile at y
+        :rtype: ``type(y)``
+        """
+        Rs = kwargs["Rs"]
+        alpha_Rs = kwargs["alpha_Rs"]
+        gamma_in = kwargs["gamma_in"]
+
+        kappa_s = self.gnfw.alpha_Rs_to_kappa_s(Rs, alpha_Rs, gamma_in)
+        kappa = self.gnfw._kappa(y, Rs, kappa_s, gamma_in)
+
+        return kappa
+
+    def get_scale(self, **kwargs):
+        """Identify the scale size from the keyword arguments.
+
+        :param \**kwargs: Keyword arguments
 
         :Keyword Arguments:
             * **alpha_Rs** (``float``) --

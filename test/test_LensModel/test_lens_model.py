@@ -14,7 +14,7 @@ class TestLensModel(object):
     """Tests the source model routines."""
 
     def setup_method(self):
-        self.lensModel = LensModel(["GAUSSIAN"])
+        self.lensModel = LensModel(["GAUSSIAN_POTENTIAL"])
         self.kwargs = [
             {
                 "amp": 1.0,
@@ -36,16 +36,19 @@ class TestLensModel(object):
             "SERSIC_ELLIPSE_POTENTIAL",
             "CTNFW_GAUSS_DEC",
             "PJAFFE",
-            "PJAFFE_ELLIPSE",
-            "HERNQUIST_ELLIPSE",
+            "PJAFFE_ELLIPSE_POTENTIAL",
+            "HERNQUIST_ELLIPSE_POTENTIAL",
             "INTERPOL",
             "INTERPOL_SCALED",
             "SHAPELETS_POLAR",
             "DIPOLE",
             "GAUSSIAN_ELLIPSE_KAPPA",
             "GAUSSIAN_ELLIPSE_POTENTIAL",
-            "MULTI_GAUSSIAN_KAPPA",
-            "MULTI_GAUSSIAN_KAPPA_ELLIPSE",
+            "GNFW",
+            "GNFW_ELLIPSE_GAUSS_DEC",
+            "MULTI_GAUSSIAN",
+            "MULTI_GAUSSIAN_ELLIPSE_KAPPA",
+            "MULTI_GAUSSIAN_ELLIPSE_POTENTIAL",
             "CHAMELEON",
             "DOUBLE_CHAMELEON",
         ]
@@ -61,6 +64,37 @@ class TestLensModel(object):
         nfw_interp = NFW(interpol=True)
         value_interp_lookup = nfw_interp.function(x, y, **kwargs[0])
         npt.assert_almost_equal(value, value_interp_lookup, decimal=4)
+
+        lensModel = LensModel(lens_model_list, z_source_convention=5, z_lens=0.2)
+        lensModel.z_source == 6
+
+    def test_info(self):
+        lens_model_list = [
+            "FLEXION",
+            "SIS_TRUNCATED",
+            "SERSIC",
+            "SERSIC_ELLIPSE_KAPPA",
+            "SERSIC_ELLIPSE_GAUSS_DEC",
+            "NFW_ELLIPSE_GAUSS_DEC",
+            "SERSIC_ELLIPSE_POTENTIAL",
+            "CTNFW_GAUSS_DEC",
+            "PJAFFE",
+            "PJAFFE_ELLIPSE_POTENTIAL",
+            "HERNQUIST_ELLIPSE_POTENTIAL",
+            "INTERPOL",
+            "INTERPOL_SCALED",
+            "SHAPELETS_POLAR",
+            "DIPOLE",
+            "GAUSSIAN_ELLIPSE_KAPPA",
+            "GAUSSIAN_ELLIPSE_POTENTIAL",
+            "MULTI_GAUSSIAN",
+            "MULTI_GAUSSIAN_ELLIPSE_KAPPA",
+            "MULTI_GAUSSIAN_ELLIPSE_POTENTIAL",
+            "CHAMELEON",
+            "DOUBLE_CHAMELEON",
+        ]
+        lens_model = LensModel(lens_model_list=lens_model_list)
+        lens_model.info()
 
     def test_kappa(self):
         lensModel = LensModel(lens_model_list=["CONVERGENCE"])
@@ -248,6 +282,78 @@ class TestLensModel(object):
         npt.assert_almost_equal(f_yx, f_yx_expected, decimal=5)
         npt.assert_almost_equal(f_yy, f_yy_expected, decimal=5)
 
+    def test_change_source_redshift(self):
+        """Testing changing source redshift agrees with multi-plane model.
+
+        :return:
+        """
+        z_lens = 0.5
+        z_source_convention = 2
+        z_source_new = 1
+        lens_model_mp = LensModel(
+            lens_model_list=["SIS"],
+            z_lens=z_lens,
+            lens_redshift_list=[z_lens],
+            z_source_convention=z_source_convention,
+            z_source=z_source_new,
+            multi_plane=True,
+        )
+        lens_model_sp = LensModel(
+            lens_model_list=["SIS"],
+            z_lens=z_lens,
+            z_source_convention=z_source_convention,
+            multi_plane=False,
+            z_source=z_source_convention,
+        )
+        lens_model_sp.change_source_redshift(z_source=z_source_new)
+        kwargs_lens = [{"theta_E": 1, "center_x": 0, "center_y": 0}]
+        x, y = 1, 0
+        beta_x_mp, beta_y_mp = lens_model_mp.ray_shooting(x, y, kwargs_lens)
+        beta_x_sp, beta_y_sp = lens_model_sp.ray_shooting(x, y, kwargs_lens)
+        npt.assert_almost_equal(beta_x_sp, beta_x_mp, decimal=5)
+        npt.assert_almost_equal(beta_y_sp, beta_y_mp, decimal=5)
+        dt_mp = lens_model_mp.arrival_time(x, y, kwargs_lens=kwargs_lens)
+        dt_sp = lens_model_sp.arrival_time(x, y, kwargs_lens=kwargs_lens)
+        npt.assert_almost_equal(dt_sp, dt_mp, decimal=5)
+
+        # test directly with initialization
+        lens_model_sp = LensModel(
+            lens_model_list=["SIS"],
+            z_lens=z_lens,
+            z_source_convention=z_source_convention,
+            multi_plane=False,
+            z_source=z_source_new,
+        )
+
+        beta_x_mp, beta_y_mp = lens_model_mp.ray_shooting(x, y, kwargs_lens)
+        beta_x_sp, beta_y_sp = lens_model_sp.ray_shooting(x, y, kwargs_lens)
+        npt.assert_almost_equal(beta_x_sp, beta_x_mp, decimal=5)
+        npt.assert_almost_equal(beta_y_sp, beta_y_mp, decimal=5)
+        dt_mp = lens_model_mp.arrival_time(x, y, kwargs_lens=kwargs_lens)
+        dt_sp = lens_model_sp.arrival_time(x, y, kwargs_lens=kwargs_lens)
+        npt.assert_almost_equal(dt_sp, dt_mp, decimal=5)
+
+        # Multiplane
+        lens_model_mp_new = LensModel(
+            lens_model_list=["SIS"],
+            z_lens=z_lens,
+            lens_redshift_list=[z_lens],
+            z_source_convention=z_source_convention,
+            z_source=z_source_convention,
+            multi_plane=True,
+        )
+        # lens_model_mp_new.change_source_redshift(z_source=z_source_new)
+        lens_model_mp_new.change_source_redshift(z_source=z_source_new + 1)
+        lens_model_mp_new.change_source_redshift(z_source=z_source_new)
+        beta_x_mp, beta_y_mp = lens_model_mp.ray_shooting(x, y, kwargs_lens)
+        beta_x_sp, beta_y_sp = lens_model_mp_new.ray_shooting(x, y, kwargs_lens)
+        npt.assert_almost_equal(beta_x_sp, beta_x_mp, decimal=5)
+        npt.assert_almost_equal(beta_y_sp, beta_y_mp, decimal=5)
+        dt_mp = lens_model_mp.arrival_time(x, y, kwargs_lens=kwargs_lens)
+        dt_sp = lens_model_mp_new.arrival_time(x, y, kwargs_lens=kwargs_lens)
+        npt.assert_almost_equal(dt_sp, dt_mp, decimal=5)
+        lens_model_mp_new.change_source_redshift(z_source=z_source_new)
+
 
 class TestRaise(unittest.TestCase):
     def test_raise(self):
@@ -301,10 +407,40 @@ class TestRaise(unittest.TestCase):
             )
         with self.assertRaises(ValueError):
             lens_model = LensModel(
-                lens_model_list=["LOS_MINIMAL", "SIS", "GAUSSIAN"],
+                lens_model_list=["LOS_MINIMAL", "SIS", "GAUSSIAN_POTENTIAL"],
                 multi_plane=True,
                 z_source=1.0,
                 lens_redshift_list=[0.5, 0.5, 0.5],
+            )
+        with self.assertRaises(NotImplementedError):
+            lens_model = LensModel(lens_model_list=["LOS"], z_source=2, z_lens=0.5)
+            lens_model.change_source_redshift(z_source=1)
+
+        with self.assertRaises(NotImplementedError):
+            kwargs_multiplane_model = {
+                "x0_interp": 0,
+                "y0_interp": 0,
+                "alpha_x_interp_foreground": 1,
+                "alpha_y_interp_foreground": 1,
+                "alpha_x_interp_background": 0,
+                "alpha_y_interp_background": 0,
+                "z_split": 0.5,
+            }
+            lens_model = LensModel(
+                lens_model_list=["SIS"],
+                lens_redshift_list=[0.5],
+                z_source=2,
+                z_lens=0.5,
+                decouple_multi_plane=True,
+                multi_plane=True,
+                kwargs_multiplane_model=kwargs_multiplane_model,
+            )
+            lens_model.change_source_redshift(z_source=1)
+        with self.assertRaises(ValueError):
+            lens_model = LensModel(
+                lens_model_list=["SIE"],
+                z_source=1,
+                z_source_convention=2,
             )
 
     def test_hessian_z1z2_raise(self):

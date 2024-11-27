@@ -42,6 +42,7 @@ _MODELS_SUPPORTED = [
     "SLIT_STARLETS_GEN2",
     "LINEAR",
     "LINEAR_ELLIPSE",
+    "LINE_PROFILE",
 ]
 
 
@@ -147,13 +148,15 @@ class LightModelBase(object):
 
                 self.func_list.append(HernquistEllipse())
             elif profile_type == "PJAFFE":
-                from lenstronomy.LightModel.Profiles.p_jaffe import PJaffe
+                from lenstronomy.LightModel.Profiles.pseudo_jaffe import PseudoJaffe
 
-                self.func_list.append(PJaffe())
+                self.func_list.append(PseudoJaffe())
             elif profile_type == "PJAFFE_ELLIPSE":
-                from lenstronomy.LightModel.Profiles.p_jaffe import PJaffeEllipse
+                from lenstronomy.LightModel.Profiles.pseudo_jaffe import (
+                    PseudoJaffeEllipse,
+                )
 
-                self.func_list.append(PJaffeEllipse())
+                self.func_list.append(PseudoJaffeEllipse())
             elif profile_type == "UNIFORM":
                 from lenstronomy.LightModel.Profiles.uniform import Uniform
 
@@ -200,6 +203,10 @@ class LightModelBase(object):
                 from lenstronomy.LightModel.Profiles.linear import LinearEllipse
 
                 self.func_list.append(LinearEllipse())
+            elif profile_type == "LINE_PROFILE":
+                from lenstronomy.LightModel.Profiles.lineprofile import LineProfile
+
+                self.func_list.append(LineProfile())
             else:
                 raise ValueError(
                     "No light model of type %s found! Supported are the following models: %s"
@@ -230,10 +237,14 @@ class LightModelBase(object):
         return flux
 
     def light_3d(self, r, kwargs_list, k=None):
-        """Computes 3d density at radius r :param r: 3d radius units of arcsec relative
-        to the center of the light profile :param kwargs_list: keyword argument list of
-        light profile :param k: integer or list of integers for selecting subsets of
-        light profiles."""
+        """Computes 3d density at radius r (3D radius) such that integrated in
+        projection in units of angle results in the projected surface brightness.
+
+        :param r: 3d radius units of arcsec relative to the center of the light profile
+        :param kwargs_list: keyword argument list of light profile
+        :param k: integer or list of integers for selecting subsets of light profiles.
+        :return: flux density
+        """
         kwargs_list_standard = self._transform_kwargs(kwargs_list)
         r = np.array(r, dtype=float)
         flux = np.zeros_like(r)
@@ -294,6 +305,9 @@ class LightModelBase(object):
                     "GAUSSIAN_ELLIPSE",
                     "MULTI_GAUSSIAN",
                     "MULTI_GAUSSIAN_ELLIPSE",
+                    "LINE_PROFILE",
+                    "HERNQUIST",
+                    "HERNQUIST_ELLIPSE",
                 ]:
                     kwargs_new = kwargs_list_standard[i].copy()
                     if norm is True:

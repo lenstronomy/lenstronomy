@@ -68,6 +68,10 @@ class LensModel(object):
         self.lens_model_list = lens_model_list
         self.z_lens = z_lens
         self.z_source = z_source
+        if z_source_convention is None and z_source is not None:
+            z_source_convention = z_source
+        if z_source is None and z_source_convention is not None:
+            z_source = z_source_convention
         self._z_source_convention = z_source_convention
         self.redshift_list = lens_redshift_list
 
@@ -115,9 +119,12 @@ class LensModel(object):
             raise ValueError(
                 "You can only have one model for line-of-sight flexion corrections."
             )
-
+        if z_lens is not None and z_source is not None:
+            self._lensCosmo = LensCosmo(z_lens, z_source, cosmo=cosmo)
         # Multi-plane or single-plane lensing?
         self.multi_plane = multi_plane
+        self._decouple_multi_plane = decouple_multi_plane
+        self._los_effects = los_effects
         if multi_plane is True:
             if lens_redshift_list is None:
                 raise ValueError(
@@ -152,6 +159,7 @@ class LensModel(object):
                     kwargs_synthesis=kwargs_synthesis,
                     **kwargs_multiplane_model
                 )
+                self.type = "MultiPlaneDecoupled"
             else:
                 self.lens_model = MultiPlane(
                     z_source,
@@ -168,6 +176,7 @@ class LensModel(object):
                     kwargs_synthesis=kwargs_synthesis,
                     distance_ratio_sampling=distance_ratio_sampling,
                 )
+                self.type = "MultiPlane"
 
         else:
             if los_effects is True:
@@ -180,6 +189,7 @@ class LensModel(object):
                     kwargs_interp=kwargs_interp,
                     kwargs_synthesis=kwargs_synthesis,
                 )
+                self.type = "SinglePlaneLOS"
             elif losf_effects is True:
                 self.lens_model = SinglePlaneLOSFlexion(
                     lens_model_list,
@@ -190,6 +200,7 @@ class LensModel(object):
                     kwargs_interp=kwargs_interp,
                     kwargs_synthesis=kwargs_synthesis,
                 )  
+                self.type = "SinglePlaneLOSFlexion"
             else:
                 self.lens_model = SinglePlane(
                     lens_model_list,
@@ -199,9 +210,38 @@ class LensModel(object):
                     kwargs_interp=kwargs_interp,
                     kwargs_synthesis=kwargs_synthesis,
                 )
+                self.type = "SinglePlane"
+                if z_source is not None and z_source_convention is not None:
+                    if z_source != z_source_convention:
+                        if z_lens is None:
+                            raise ValueError(
+                                "a lens redshift needs to provided when z_source != z_source_convention"
+                            )
+                        else:
+                            alpha_scaling = self._lensCosmo.beta_double_source_plane(
+                                z_lens=self.z_lens,
+                                z_source_1=z_source,
+                                z_source_2=self._z_source_convention,
+                            )
+                            self.lens_model.change_redshift_scaling(alpha_scaling)
+        self._ddt_scaling = 1
+        if (
+            self.z_lens is not None
+            and self._z_source_convention is not None
+            and z_source is not None
+        ):
+            ddt_scaling = self._lensCosmo.background.ddt_scaling(
+                self.z_lens, self._z_source_convention, z_source
+            )
+            self._ddt_scaling = ddt_scaling
 
-        if z_lens is not None and z_source is not None:
-            self._lensCosmo = LensCosmo(z_lens, z_source, cosmo=cosmo)
+    def info(self):
+        """Shows what models are being initialized and what parameters are being
+        requested for.
+
+        :return: None
+        """
+        self.lens_model.model_info()
 
     def ray_shooting(self, x, y, kwargs, k=None):
         """Maps image to source position (inverse deflection)
@@ -507,6 +547,59 @@ class LensModel(object):
         :return: None
         """
         self.lens_model.set_dynamic()
+
+    def change_source_redshift(self, z_source):
+        """Changes the ray-tracing (and all relevant default calculations) to a
+        different source redshift while preserving the deflection angles to
+        z_source_convention.
+
+        :param z_source: source redshift
+        :return: None
+        """
+        if z_source is None:
+            return 0
+        if z_source == self.z_source:
+            return 0
+        if self.multi_plane is True:
+            if self._decouple_multi_plane:
+                raise NotImplementedError(
+                    "MultiPlaneDecoupled lens model does not support change in source redshift"
+                )
+            else:
+                # TODO: is it possible to not re-initialize it for performance improvements?
+                kwargs_lens_class = self.lens_model.kwargs_class
+                kwargs_lens_class["z_source"] = z_source
+                self.lens_model = MultiPlane(**kwargs_lens_class)
+        else:
+            if self._los_effects is True:
+                raise NotImplementedError(
+                    "SinglePlaneLOS lens model does not support change in source redshift"
+                )
+            else:
+                alpha_scaling = self._lensCosmo.beta_double_source_plane(
+                    z_lens=self.z_lens,
+                    z_source_1=z_source,
+                    z_source_2=self._z_source_convention,
+                )
+                self.lens_model.change_redshift_scaling(alpha_scaling)
+
+        if self.z_lens is not None:
+            self._lensCosmo = LensCosmo(self.z_lens, z_source, cosmo=self.cosmo)
+            if self._z_source_convention is not None:
+                ddt_scaling = self._lensCosmo.background.ddt_scaling(
+                    self.z_lens, self._z_source_convention, z_source
+                )
+                self._ddt_scaling = ddt_scaling
+        self.z_source = z_source
+
+    @property
+    def ddt_scaling(self):
+        """Ratio of time-delay distance between the source redshift and the time-delay
+        distance to the z_source_convention.
+
+        :return:
+        """
+        return self._ddt_scaling
 
     def _deflection_differential(self, x, y, kwargs, k=None, diff=0.00001):
         """

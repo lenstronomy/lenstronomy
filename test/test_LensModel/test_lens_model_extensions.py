@@ -109,7 +109,7 @@ class TestLensModelExtensions(object):
 
     def test_get_magnification_model(self):
         self.kwargs_options = {
-            "lens_model_list": ["GAUSSIAN"],
+            "lens_model_list": ["GAUSSIAN_POTENTIAL"],
             "source_light_model_list": ["GAUSSIAN"],
             "lens_light_model_list": ["SERSIC"],
             "subgrid_res": 10,
@@ -123,7 +123,9 @@ class TestLensModelExtensions(object):
 
         x_pos = np.array([1.0, 1.0, 2.0])
         y_pos = np.array([-1.0, 0.0, 0.0])
-        lens_model = LensModelExtensions(LensModel(lens_model_list=["GAUSSIAN"]))
+        lens_model = LensModelExtensions(
+            LensModel(lens_model_list=["GAUSSIAN_POTENTIAL"])
+        )
         mag = lens_model.magnification_finite(
             x_pos,
             y_pos,

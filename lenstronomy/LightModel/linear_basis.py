@@ -78,6 +78,7 @@ class LinearBasis(LightModelBase):
                     "ELLIPSOID",
                     "LINEAR",
                     "LINEAR_ELLIPSE",
+                    "LINE_PROFILE",
                 ]:
                     kwargs_new = kwargs_list[i].copy()
                     new = {"amp": 1}
@@ -158,6 +159,7 @@ class LinearBasis(LightModelBase):
                 "ELLIPSOID",
                 "LINEAR",
                 "LINEAR_ELLIPSE",
+                "LINE_PROFILE",
             ]:
                 n_list += [1]
             elif model in ["MULTI_GAUSSIAN", "MULTI_GAUSSIAN_ELLIPSE"]:
@@ -218,6 +220,7 @@ class LinearBasis(LightModelBase):
                 "ELLIPSOID",
                 "LINEAR",
                 "LINEAR_ELLIPSE",
+                "LINE_PROFILE",
             ]:
                 kwargs_list[k]["amp"] = param[i]
                 i += 1

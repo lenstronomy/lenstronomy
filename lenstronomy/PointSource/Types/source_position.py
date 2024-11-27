@@ -43,6 +43,7 @@ class SourcePositions(PSBase):
         if kwargs_lens_eqn_solver is None:
             kwargs_lens_eqn_solver = {}
         ra_source, dec_source = self.source_position(kwargs_ps)
+        self._solver.change_source_redshift(self._redshift)
         ra_image, dec_image = self._solver.image_position_from_source(
             ra_source,
             dec_source,
@@ -87,6 +88,7 @@ class SourcePositions(PSBase):
         :return: array of image amplitudes
         """
         if self._fixed_magnification:
+            self._lens_model.change_source_redshift(self._redshift)
             if x_pos is not None and y_pos is not None:
                 ra_image, dec_image = x_pos, y_pos
             else:
@@ -122,6 +124,7 @@ class SourcePositions(PSBase):
         if self._fixed_magnification:
             source_amp = kwargs_ps["source_amp"]
         else:
+            self._lens_model.change_source_redshift(self._redshift)
             ra_image, dec_image = self.image_position(kwargs_ps, kwargs_lens)
             mag = self._lens_model.magnification(ra_image, dec_image, kwargs_lens)
             point_amp = kwargs_ps["point_amp"]

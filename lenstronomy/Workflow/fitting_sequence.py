@@ -1,3 +1,5 @@
+import copy
+
 from lenstronomy.Workflow.psf_fitting import PsfFitting
 from lenstronomy.Workflow.alignment_matching import AlignmentFitting
 from lenstronomy.Workflow.flux_calibration import FluxCalibration
@@ -67,6 +69,8 @@ class FittingSequence(object):
             num_bands=len(self.multi_band_list),
         )
         self._mcmc_init_samples = None
+        self._psf_iteration_memory = []
+        self._psf_iteration_index = 0  # index of the sequence of the PSF iteration (how many times it is being run)
 
     @property
     def kwargs_fixed(self):
@@ -88,8 +92,23 @@ class FittingSequence(object):
             fitting_type = fitting[0]
             kwargs = fitting[1]
 
+            if fitting_type in [
+                "PSO",
+                "SIMPLEX",
+                "MCMC",
+                "emcee",
+                "zeus",
+                "Cobaya",
+                "dynesty",
+                "dyPolyChord",
+                "MultiNest",
+                "nested_sampling",
+                "Nautilus",
+            ]:
+                self._updateManager.check_initial_state()
             if fitting_type == "restart":
                 self._updateManager.set_init_state()
+                self._updateManager.check_initial_state()
 
             elif fitting_type == "update_settings":
                 self.update_settings(**kwargs)
@@ -193,7 +212,8 @@ class FittingSequence(object):
     def best_fit(self, bijective=False):
         """
 
-        :param bijective: bool, if True, the mapping of image2source_plane and the mass_scaling parameterisation are inverted. If you do not use those options, there is no effect.
+        :param bijective: bool, if True, the mapping of image2source_plane and the mass_scaling parameterisation
+         are inverted. If you do not use those options, there is no effect.
         :return: best fit model of the current state of the FittingSequence class
         """
 
@@ -207,17 +227,19 @@ class FittingSequence(object):
         """
         self._updateManager.update_param_state(**kwargs_update)
 
-    @property
-    def best_fit_likelihood(self):
+    def best_fit_likelihood(self, verbose=False):
         """Returns the log likelihood of the best fit model of the current state of this
         class.
 
+        :param verbose: bool, if True, prints likelihood statements
         :return: log likelihood, float
         """
-        kwargs_result = self.best_fit(bijective=False)
+        kwargs_result = self.best_fit(bijective=True)
         param_class = self.param_class
         likelihoodModule = self.likelihoodModule
-        logL = likelihoodModule.logL(param_class.kwargs2args(**kwargs_result))
+        logL = likelihoodModule.logL(
+            param_class.kwargs2args(**kwargs_result), verbose=verbose
+        )
         return logL
 
     @property
@@ -230,7 +252,9 @@ class FittingSequence(object):
         num_param_nonlinear = self.param_class.num_param()[0]
         num_param_linear = self.param_class.num_param_linear()
         num_param = num_param_nonlinear + num_param_linear
-        bic = analysis_util.bic_model(self.best_fit_likelihood, num_data, num_param)
+        bic = analysis_util.bic_model(
+            self.best_fit_likelihood(verbose=False), num_data, num_param
+        )
         return bic
 
     @property
@@ -282,7 +306,7 @@ class FittingSequence(object):
         threadCount=1,
         init_samples=None,
         re_use_samples=True,
-        sampler_type="EMCEE",
+        sampler_type="emcee",
         progress=True,
         backend_filename=None,
         start_from_backend=False,
@@ -563,6 +587,7 @@ class FittingSequence(object):
         for band_index in range(len(self.multi_band_list)):
             if compute_bands[band_index] is True:
                 kwargs_psf = self.multi_band_list[band_index][1]
+                kwargs_psf_before = copy.deepcopy(kwargs_psf)
                 image_model = SingleBandMultiModel(
                     self.multi_band_list,
                     kwargs_model,
@@ -575,6 +600,15 @@ class FittingSequence(object):
                     kwargs_psf, kwargs_params=kwargs_temp, **kwargs_psf_iter
                 )
                 self.multi_band_list[band_index][1] = kwargs_psf
+                self._psf_iteration_memory.append(
+                    {
+                        "sequence": self._psf_iteration_index,
+                        "band": band_index,
+                        "psf_before": kwargs_psf_before,
+                        "psf_after": kwargs_psf,
+                    }
+                )
+        self._psf_iteration_index += 1
         return 0
 
     def align_images(
@@ -846,3 +880,17 @@ class FittingSequence(object):
         # get corresponding kwargs
         kwargs_result = self.param_class.args2kwargs(best_fit_result, bijective=True)
         return kwargs_result
+
+    @property
+    def psf_iteration_memory(self):
+        """
+        returns all the psf iterations performed in the FittingSequence
+        It stores in a list of dictionaries:
+        "sequence": what PSF sequence it is (0, 1 etc)
+        "band": index of the imaging band that is being corrected
+        "psf_before" kwargs_psf prior to the iteration
+        "psf_after" kwargs_psf as a result of the iteration
+
+        :return: list of all psf corrections
+        """
+        return self._psf_iteration_memory

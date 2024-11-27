@@ -26,6 +26,7 @@ def create_class_instances(
     source_light_model_list=None,
     lens_light_model_list=None,
     point_source_model_list=None,
+    point_source_redshift_list=None,
     fixed_magnification_list=None,
     flux_from_point_source_list=None,
     point_source_frame_list=None,
@@ -89,7 +90,7 @@ def create_class_instances(
     :param index_lens_model_list:
     :param index_source_light_model_list:
     :param index_lens_light_model_list: optional, list of list of all model indexes for each modeled band
-    :param index_point_source_model_list:
+    :param index_point_source_model_list: optional, list of list of all model indexes for each modeled band
     :param optical_depth_model_list: list of strings indicating the optical depth model to compute (differential) extinctions from the source
     :param index_optical_depth_model_list:
     :param band_index: int, index of band to consider. Has an effect if only partial models are considered for a specific band
@@ -113,6 +114,8 @@ def create_class_instances(
     :type tracer_partition: None or list
     :param tracer_type: 'LINEAR' or 'LOG', to determine how tracers are summed between components
     :type tracer_type: string
+    :param point_source_redshift_list: list of redshifts of point sources
+         (default None, i.e. all point sources at the same redshift following the source convention)
     :return: lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class
     """
     if lens_model_list is None:
@@ -260,6 +263,7 @@ def create_class_instances(
         kwargs_lens_eqn_solver=kwargs_lens_eqn_solver,
         point_source_frame_list=point_source_frame_list_i,
         index_lens_model_list=index_lens_model_list,
+        redshift_list=point_source_redshift_list,
     )
     if tau0_index_list is None:
         tau0_index = 0

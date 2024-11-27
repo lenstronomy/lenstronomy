@@ -1,5 +1,3 @@
-from lenstronomy.Util.util import fwhm2sigma
-from lenstronomy.LightModel.light_model import LightModel
 import numpy as np
 
 

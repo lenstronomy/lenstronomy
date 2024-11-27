@@ -7,7 +7,6 @@ import sys
 import copy
 
 from lenstronomy.Sampling.Samplers.base_nested_sampler import NestedSampler
-import lenstronomy.Util.sampling_util as utils
 
 __all__ = ["DyPolyChordSampler"]
 

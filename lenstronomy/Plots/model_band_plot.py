@@ -195,6 +195,7 @@ class ModelBandPlot(ModelBand):
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax, orientation="vertical")
         cb.set_label(colorbar_label, fontsize=font_size)
+        cb.ax.tick_params(labelsize=font_size)
         return ax
 
     def model_plot(
@@ -254,6 +255,7 @@ class ModelBandPlot(ModelBand):
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
         cb.set_label(colorbar_label, fontsize=font_size)
+        cb.ax.tick_params(labelsize=font_size)
 
         # plot_line_set(ax, self._coords, self._ra_caustic_list, self._dec_caustic_list, color='b')
         # plot_line_set(ax, self._coords, self._ra_crit_list, self._dec_crit_list, color='r')
@@ -330,6 +332,7 @@ class ModelBandPlot(ModelBand):
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
         cb.set_label(colorbar_label, fontsize=font_size)
+        cb.ax.tick_params(labelsize=font_size)
         return ax
 
     def substructure_plot(
@@ -480,6 +483,7 @@ class ModelBandPlot(ModelBand):
             cax = divider.append_axes("right", size="5%", pad=0.05)
             cb = plt.colorbar(im, cax=cax)
             cb.set_label(colorbar_label, fontsize=font_size)
+            cb.ax.tick_params(labelsize=font_size)
         else:
             cb = None
         return ax, cb
@@ -543,6 +547,7 @@ class ModelBandPlot(ModelBand):
             cax = divider.append_axes("right", size="5%", pad=0.05)
             cb = plt.colorbar(im, cax=cax)
             cb.set_label(colorbar_label, fontsize=font_size)
+            cb.ax.tick_params(labelsize=font_size)
         return ax
 
     def absolute_residual_plot(
@@ -552,7 +557,7 @@ class ModelBandPlot(ModelBand):
         v_max=1,
         font_size=15,
         text="Residuals",
-        colorbar_label=r"(f$_{model}$-f$_{data}$)",
+        colorbar_label=r"(f$_{\rm model}$-f$_{\rm data}$)",
     ):
         """
 
@@ -593,6 +598,7 @@ class ModelBandPlot(ModelBand):
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
         cb.set_label(colorbar_label, fontsize=font_size)
+        cb.ax.tick_params(labelsize=font_size)
         return ax
 
     def source(self, numPix, deltaPix, center=None, image_orientation=True):
@@ -711,6 +717,7 @@ class ModelBandPlot(ModelBand):
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
         cb.set_label(colorbar_label, fontsize=font_size)
+        cb.ax.tick_params(labelsize=font_size)
 
         if with_caustics is True:
             ra_caustic_list, dec_caustic_list = self._caustics()
@@ -839,6 +846,7 @@ class ModelBandPlot(ModelBand):
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
         cb.set_label(r"error variance", fontsize=font_size)
+        cb.ax.tick_params(labelsize=font_size)
         if with_caustics:
             ra_caustic_list, dec_caustic_list = self._caustics()
             plot_util.plot_line_set(
@@ -946,6 +954,7 @@ class ModelBandPlot(ModelBand):
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
         cb.set_label(colorbar_label, fontsize=font_size)
+        cb.ax.tick_params(labelsize=font_size)
         ra_image, dec_image = self._bandmodel.PointSource.image_position(
             self._kwargs_ps_partial, self._kwargs_lens_partial
         )
@@ -1021,6 +1030,7 @@ class ModelBandPlot(ModelBand):
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
         cb.set_label(colorbar_label, fontsize=font_size)
+        cb.ax.tick_params(labelsize=font_size)
         if with_caustics is True:
             ra_crit_list, dec_crit_list = self._critical_curves()
             ra_caustic_list, dec_caustic_list = self._caustics()
@@ -1125,6 +1135,7 @@ class ModelBandPlot(ModelBand):
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
         cb.set_label(r"log$_{10}$ flux", fontsize=font_size)
+        cb.ax.tick_params(labelsize=font_size)
         return ax
 
     def subtract_from_data_plot(
@@ -1186,6 +1197,7 @@ class ModelBandPlot(ModelBand):
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
         cb.set_label(r"log$_{10}$ flux", fontsize=font_size)
+        cb.ax.tick_params(labelsize=font_size)
         return ax
 
     def plot_main(self, with_caustics=False):

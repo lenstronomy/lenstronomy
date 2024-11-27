@@ -2,7 +2,6 @@ __author__ = "sibirrer"
 
 import numpy as np
 from scipy import ndimage
-from scipy import interpolate
 import copy
 import lenstronomy.Util.util as util
 

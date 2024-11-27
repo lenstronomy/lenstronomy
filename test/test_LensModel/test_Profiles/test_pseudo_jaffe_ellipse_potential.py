@@ -1,7 +1,9 @@
 __author__ = "sibirrer"
 
 
-from lenstronomy.LensModel.Profiles.p_jaffe_ellipse import PJaffe_Ellipse
+from lenstronomy.LensModel.Profiles.pseudo_jaffe_ellipse_potential import (
+    PseudoJaffeEllipsePotential,
+)
 import lenstronomy.Util.param_util as param_util
 
 import numpy as np
@@ -13,7 +15,7 @@ class TestP_JAFFW(object):
     """Tests the Gaussian methods."""
 
     def setup_method(self):
-        self.profile = PJaffe_Ellipse()
+        self.profile = PseudoJaffeEllipsePotential()
 
     def test_function(self):
         x = np.array([1])

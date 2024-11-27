@@ -10,6 +10,8 @@ class ArcPerturbations(LensProfileBase):
     """Uses radial and tangential fourier modes within a specific range in both
     directions to perturb a lensing potential."""
 
+    param_names = ["coeff", "d_r", "d_phi", "center_x", "center_y"]
+
     def __init__(self):
         super(ArcPerturbations, self).__init__()
         self._2_pi = np.pi * 2

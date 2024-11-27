@@ -4,11 +4,11 @@ __author__ = "sibirrer"
 import numpy as np
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
-__all__ = ["Gaussian"]
+__all__ = ["GaussianPotential"]
 
 
-class Gaussian(LensProfileBase):
-    """This class contains functions to evaluate a Gaussian function and calculates its
+class GaussianPotential(LensProfileBase):
+    """This class contains functions to evaluate a Gaussian potential and calculates its
     derivative and hessian matrix."""
 
     param_names = ["amp", "sigma_x", "sigma_y", "center_x", "center_y"]

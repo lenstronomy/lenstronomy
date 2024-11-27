@@ -1,4 +1,6 @@
 import numpy as np
+from scipy import interpolate
+from astropy.cosmology import default_cosmology
 
 __all__ = ["NFWParam"]
 
@@ -18,18 +20,21 @@ class NFWParam(object):
         """
 
         :param cosmo: astropy.cosmology instance
+        :type cosmo: astropy.cosmology
         """
-        from astropy.cosmology import default_cosmology
-
         if cosmo is None:
             cosmo = default_cosmology.get()
         self.cosmo = cosmo
 
     def rhoc_z(self, z):
-        """
+        """Compute the critical density of the universe at redshift z in physical units
+        [h^2 M_sun Mpc^-3].
 
         :param z: redshift
-        :return: critical density of the universe at redshift z in physical units [h^2 M_sun Mpc^-3]
+        :type z: float
+        :return: critical density of the universe at redshift z in physical units [h^2
+            M_sun Mpc^-3]
+        :rtype: float
         """
         return self.rhoc * (self.cosmo.efunc(z)) ** 2
         # return self.rhoc*(1+z)**3
@@ -39,7 +44,7 @@ class NFWParam(object):
         """Calculation of the mass enclosed r_200 for NFW profile defined as.
 
         .. math::
-            M_{200} = 4 \\pi \\rho_0^{3} * \\left(\\log(1+c) - c / (1 + c)  \\right))
+            M_{200} = 4 \\pi \\rho_0^{3} r_{\\rm s}^3 \\left(\\log(1+c) - \\frac {c}{1 + c}  \\right)
 
         :param rs: scale radius
         :type rs: float
@@ -59,6 +64,7 @@ class NFWParam(object):
         :param z: redshift
         :type z: float
         :return: radius R_200 in physical Mpc/h
+        :rtype: float or numpy array
         """
         return (3 * M / (4 * np.pi * self.rhoc_z(z) * 200)) ** (1.0 / 3.0)
 
@@ -66,8 +72,11 @@ class NFWParam(object):
         """
 
         :param r200: r200 in physical Mpc/h
+        :type r200: float
         :param z: redshift
+        :type z: float
         :return: M200 in M_sun/h
+        :rtype: float
         """
         return self.rhoc_z(z) * 200 * r200**3 * 4 * np.pi / 3.0
 
@@ -75,8 +84,11 @@ class NFWParam(object):
         """Computes density normalization as a function of concentration parameter.
 
         :param c: concentration
+        :type c: float [4,40]
         :param z: redshift
+        :type z: float
         :return: density normalization in h^2/Mpc^3 (physical)
+        :rtype: float
         """
         return 200.0 / 3 * self.rhoc_z(z) * c**3 / (np.log(1.0 + c) - c / (1.0 + c))
 
@@ -85,13 +97,15 @@ class NFWParam(object):
         (physical) (inverse of function rho0_c)
 
         :param rho0: density normalization in h^2/Mpc^3 (physical)
+        :type rho0: float
         :param z: redshift
+        :type z: float
         :return: concentration parameter c
+        :rtype: float
         """
         if not hasattr(self, "_c_rho0_interp"):
             c_array = np.linspace(0.1, 30, 100)
             rho0_array = self.rho0_c(c_array, z)
-            from scipy import interpolate
 
             self._c_rho0_interp = interpolate.InterpolatedUnivariateSpline(
                 rho0_array, c_array, w=None, bbox=[None, None], k=3
@@ -101,7 +115,7 @@ class NFWParam(object):
     @staticmethod
     def c_M_z(M, z):
         """
-        fitting function of http://moriond.in2p3.fr/J08/proceedings/duffy.pdf for the mass and redshift dependence of
+        Fitting function of http://moriond.in2p3.fr/J08/proceedings/duffy.pdf for the mass and redshift dependence of
         the concentration parameter
 
         :param M: halo mass in M_sun/h
@@ -109,6 +123,7 @@ class NFWParam(object):
         :param z: redshift
         :type z: float >0
         :return: concentration parameter as float
+        :rtype: float
         """
         # fitted parameter values
         A = 5.22
@@ -123,7 +138,11 @@ class NFWParam(object):
         Mpc/h physical c unit less.
 
         :param M: Mass in physical M_sun/h
+        :type M: float
         :param z: redshift
+        :type z: float
+        :return: r200, rho0, c, Rs
+        :rtype: tuple
         """
         c = self.c_M_z(M, z)
         r200 = self.r200_M(M, z)

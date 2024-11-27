@@ -6,10 +6,10 @@ from lenstronomy.LensModel.Profiles.sersic import Sersic
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
-__all__ = ["SersicEllipse"]
+__all__ = ["SersicEllipsePotential"]
 
 
-class SersicEllipse(LensProfileBase):
+class SersicEllipsePotential(LensProfileBase):
     """
     this class contains functions to evaluate a Sersic mass profile: https://arxiv.org/pdf/astro-ph/0311559.pdf
     """
@@ -37,7 +37,7 @@ class SersicEllipse(LensProfileBase):
     def __init__(self):
         self.sersic = Sersic()
         self._diff = 0.000001
-        super(SersicEllipse, self).__init__()
+        super(SersicEllipsePotential, self).__init__()
 
     def function(self, x, y, n_sersic, R_sersic, k_eff, e1, e2, center_x=0, center_y=0):
         """Returns Gaussian."""

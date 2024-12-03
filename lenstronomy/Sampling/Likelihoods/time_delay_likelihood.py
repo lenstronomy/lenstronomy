@@ -24,7 +24,7 @@ class TimeDelayLikelihood(object):
         :param point_source_class: instance of the PointSource() class, note: the first point source type is the one the
          time delays are imposed on
         :param time_delay_measurement_bool_list: list of list of bool to indicate for which point source model a measurement is available.
-        This list must have the same length as time_delays_measured and time_delays_uncertainties.
+         This list must have the same length as time_delays_measured and time_delays_uncertainties.
         Example for two point sources, imaged 4 times each: [[True, False, True], [True, True, True]]
         """
 

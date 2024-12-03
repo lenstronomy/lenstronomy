@@ -53,15 +53,20 @@ class TimeDelayLikelihood(object):
         if time_delay_measurement_bool_list is None:
             if self._num_point_sources == 1:
                 time_delay_measurement_bool_list = [[True] * len(time_delays_measured)]
-            else: 
+            else:
                 time_delay_measurement_bool_list = []
                 for i in range(self._num_point_sources):
-                    time_delay_measurement_bool_list.append([True] * len(time_delays_measured[i]))
+                    time_delay_measurement_bool_list.append(
+                        [True] * len(time_delays_measured[i])
+                    )
         else:
             for i in range(self._num_point_sources):
-                if len(time_delay_measurement_bool_list[i]) != len(self._delays_measured[i]):
+                if len(time_delay_measurement_bool_list[i]) != len(
+                    self._delays_measured[i]
+                ):
                     raise ValueError(
-                        "time_delay_measurement_bool_list and time_delays_measured need to have the same length.") 
+                        "time_delay_measurement_bool_list and time_delays_measured need to have the same length."
+                    )
 
         self._measurement_bool_list = time_delay_measurement_bool_list
 
@@ -90,12 +95,16 @@ class TimeDelayLikelihood(object):
                 D_dt_model = kwargs_cosmo["D_dt"]
                 Ddt_scaled = self._lensModel.ddt_scaling * D_dt_model
                 delay_days = const.delay_arcsec2days(delay_arcsec, Ddt_scaled)
-                mask_full = np.concatenate(([True], mask)) # add the first image to the mask
+                mask_full = np.concatenate(
+                    ([True], mask)
+                )  # add the first image to the mask
                 if len(delay_days) - 1 != len(self._delays_measured[i]):
-                    logL += -(10 ** 15)
-                else :
+                    logL += -(10**15)
+                else:
                     logL += self._logL_delays(
-                        delay_days[mask_full], self._delays_measured[i][mask], self._delays_errors[i][mask]
+                        delay_days[mask_full],
+                        self._delays_measured[i][mask],
+                        self._delays_errors[i][mask],
                     )
         return logL
 

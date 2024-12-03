@@ -23,7 +23,9 @@ class TimeDelayLikelihood(object):
         :param lens_model_class: instance of the LensModel() class
         :param point_source_class: instance of the PointSource() class, note: the first point source type is the one the
          time delays are imposed on
-        :param time_delay_measurement_bool_list: list of bool to indicate for which point source model a measurement is available
+        :param time_delay_measurement_bool_list: list of list of bool to indicate for which point source model a measurement is available.
+        This list must have the same length as time_delays_measured and time_delays_uncertainties.
+        Example for two point sources, imaged 4 times each: [[True, False, True], [True, True, True]]
         """
 
         if time_delays_measured is None:
@@ -49,7 +51,18 @@ class TimeDelayLikelihood(object):
                 self._delays_errors.append(np.array(time_delays_uncertainties[i]))
 
         if time_delay_measurement_bool_list is None:
-            time_delay_measurement_bool_list = [True] * self._num_point_sources
+            if self._num_point_sources == 1:
+                time_delay_measurement_bool_list = [[True] * len(time_delays_measured)]
+            else: 
+                time_delay_measurement_bool_list = []
+                for i in range(self._num_point_sources):
+                    time_delay_measurement_bool_list.append([True] * len(time_delays_measured[i]))
+        else:
+            for i in range(self._num_point_sources):
+                if len(time_delay_measurement_bool_list[i]) != len(self._delays_measured[i]):
+                    raise ValueError(
+                        "time_delay_measurement_bool_list and time_delays_measured need to have the same length.") 
+
         self._measurement_bool_list = time_delay_measurement_bool_list
 
     def logL(self, kwargs_lens, kwargs_ps, kwargs_cosmo):
@@ -65,7 +78,8 @@ class TimeDelayLikelihood(object):
         )
         logL = 0
         for i in range(self._num_point_sources):
-            if self._measurement_bool_list[i] is True:
+            mask = np.array(self._measurement_bool_list[i])
+            if np.any(mask):
                 x_pos_, y_pos_ = x_pos[i], y_pos[i]
                 self._lensModel.change_source_redshift(
                     z_source=self._pointSource._redshift_list[i]
@@ -76,9 +90,13 @@ class TimeDelayLikelihood(object):
                 D_dt_model = kwargs_cosmo["D_dt"]
                 Ddt_scaled = self._lensModel.ddt_scaling * D_dt_model
                 delay_days = const.delay_arcsec2days(delay_arcsec, Ddt_scaled)
-                logL += self._logL_delays(
-                    delay_days, self._delays_measured[i], self._delays_errors[i]
-                )
+                mask_full = np.concatenate(([True], mask)) # add the first image to the mask
+                if len(delay_days) - 1 != len(self._delays_measured[i]):
+                    logL += -(10 ** 15)
+                else :
+                    logL += self._logL_delays(
+                        delay_days[mask_full], self._delays_measured[i][mask], self._delays_errors[i][mask]
+                    )
         return logL
 
     @staticmethod

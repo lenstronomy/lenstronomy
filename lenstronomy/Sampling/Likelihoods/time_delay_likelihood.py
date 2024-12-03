@@ -108,7 +108,6 @@ class TimeDelayLikelihood(object):
                     ([True], mask)
                 )  # add the first image to the mask
                 if len(delay_days) - 1 != len(self._delays_measured[i]):
-<<<<<<< HEAD
                     logL += -(10 ** 15)
                 else :
                     if self._delays_errors[i].ndim == 1:
@@ -120,15 +119,6 @@ class TimeDelayLikelihood(object):
                         logL += self._logL_delays(
                             delay_days[mask_full], self._delays_measured[i][mask], self._delays_errors[i][mask, :][:, mask]
                         )
-=======
-                    logL += -(10**15)
-                else:
-                    logL += self._logL_delays(
-                        delay_days[mask_full],
-                        self._delays_measured[i][mask],
-                        self._delays_errors[i][mask],
-                    )
->>>>>>> 65a8df58b3a32aa442bb7caa222e13232175744b
         return logL
 
     @staticmethod

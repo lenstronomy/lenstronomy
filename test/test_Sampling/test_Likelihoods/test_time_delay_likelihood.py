@@ -15,7 +15,9 @@ class TestTimeDelayLikelihood(object):
         self.z_source = 1.5
         self.z_lens = 0.5
         self.cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.0)
-        self.lensCosmo = LensCosmo(cosmo=self.cosmo, z_lens=self.z_lens, z_source=self.z_source)
+        self.lensCosmo = LensCosmo(
+            cosmo=self.cosmo, z_lens=self.z_lens, z_source=self.z_source
+        )
 
         # make class instances for a chosen lens model type
 
@@ -54,10 +56,14 @@ class TestTimeDelayLikelihood(object):
 
         # we solve for the image position(s) of the provided source position and lens model
         self.x_img, self.y_img = self.lensEquationSolver.image_position_from_source(
-            kwargs_lens=self.kwargs_lens, sourcePos_x=self.x_source, sourcePos_y=self.y_source
+            kwargs_lens=self.kwargs_lens,
+            sourcePos_x=self.x_source,
+            sourcePos_y=self.y_source,
         )
         self.x_img2, self.y_img2 = self.lensEquationSolver.image_position_from_source(
-            kwargs_lens=self.kwargs_lens, sourcePos_x=self.x_source2, sourcePos_y=self.y_source2
+            kwargs_lens=self.kwargs_lens,
+            sourcePos_x=self.x_source2,
+            sourcePos_y=self.y_source2,
         )
         self.point_source_list = ["LENSED_POSITION"]
         self.kwargs_ps = [{"ra_image": self.x_img, "dec_image": self.y_img}]
@@ -75,7 +81,9 @@ class TestTimeDelayLikelihood(object):
         )
         kwargs_cosmo = {"D_dt": self.lensCosmo.ddt}
         logL = td_likelihood.logL(
-            kwargs_lens=self.kwargs_lens, kwargs_ps=self.kwargs_ps, kwargs_cosmo=kwargs_cosmo
+            kwargs_lens=self.kwargs_lens,
+            kwargs_ps=self.kwargs_ps,
+            kwargs_cosmo=kwargs_cosmo,
         )
         npt.assert_almost_equal(logL, 0, decimal=8)
 
@@ -89,10 +97,11 @@ class TestTimeDelayLikelihood(object):
         )
         kwargs_cosmo = {"D_dt": self.lensCosmo.ddt}
         logL = td_likelihood.logL(
-            kwargs_lens=self.kwargs_lens, kwargs_ps=self.kwargs_ps, kwargs_cosmo=kwargs_cosmo
+            kwargs_lens=self.kwargs_lens,
+            kwargs_ps=self.kwargs_ps,
+            kwargs_cosmo=kwargs_cosmo,
         )
         npt.assert_almost_equal(logL, -0.5, decimal=8)
-
 
         # Test a covariance matrix being used
         time_delays_cov = np.diag([0.1, 0.1, 0.1]) ** 2
@@ -103,7 +112,9 @@ class TestTimeDelayLikelihood(object):
             point_source_class=self.pointSource,
         )
         logL = td_likelihood.logL(
-            kwargs_lens=self.kwargs_lens, kwargs_ps=self.kwargs_ps, kwargs_cosmo=kwargs_cosmo
+            kwargs_lens=self.kwargs_lens,
+            kwargs_ps=self.kwargs_ps,
+            kwargs_cosmo=kwargs_cosmo,
         )
         npt.assert_almost_equal(logL, -0.5, decimal=8)
 
@@ -117,7 +128,9 @@ class TestTimeDelayLikelihood(object):
             point_source_class=self.pointSource,
         )
         logL = td_likelihood.logL(
-            kwargs_lens=self.kwargs_lens, kwargs_ps=self.kwargs_ps, kwargs_cosmo=kwargs_cosmo
+            kwargs_lens=self.kwargs_lens,
+            kwargs_ps=self.kwargs_ps,
+            kwargs_cosmo=kwargs_cosmo,
         )
         npt.assert_almost_equal(logL, -(10**15), decimal=8)
 
@@ -137,7 +150,9 @@ class TestTimeDelayLikelihood(object):
         time_delays_measured = t_days[1:] - t_days[0]
         time_delays_uncertainties = np.array([0.1, 0.1, 0.1])
         pointSource2 = PointSource(point_source_type_list=point_source_list2)
-        t2_days = self.lensModel.arrival_time(self.x_img2, self.y_img2, self.kwargs_lens)
+        t2_days = self.lensModel.arrival_time(
+            self.x_img2, self.y_img2, self.kwargs_lens
+        )
         time_delays_measured2 = t2_days[1:] - t2_days[0]
         time_delays_uncertainties2 = np.array([0.1, 0.1, 0.1])
         td_likelihood = TimeDelayLikelihood(
@@ -148,7 +163,9 @@ class TestTimeDelayLikelihood(object):
         )
         kwargs_cosmo = {"D_dt": self.lensCosmo.ddt}
         logL = td_likelihood.logL(
-            kwargs_lens=self.kwargs_lens, kwargs_ps=kwargs_ps2, kwargs_cosmo=kwargs_cosmo
+            kwargs_lens=self.kwargs_lens,
+            kwargs_ps=kwargs_ps2,
+            kwargs_cosmo=kwargs_cosmo,
         )
         npt.assert_almost_equal(logL, 0, decimal=8)
 
@@ -162,10 +179,11 @@ class TestTimeDelayLikelihood(object):
         )
         kwargs_cosmo = {"D_dt": self.lensCosmo.ddt}
         logL = td_likelihood.logL(
-            kwargs_lens=self.kwargs_lens, kwargs_ps=kwargs_ps2, kwargs_cosmo=kwargs_cosmo
+            kwargs_lens=self.kwargs_lens,
+            kwargs_ps=kwargs_ps2,
+            kwargs_cosmo=kwargs_cosmo,
         )
         npt.assert_almost_equal(logL, -0.5, decimal=8)
-
 
         # Test if the time delay measurement bool list is used correctly
         td_likelihood = TimeDelayLikelihood(
@@ -177,7 +195,9 @@ class TestTimeDelayLikelihood(object):
         )
         kwargs_cosmo = {"D_dt": self.lensCosmo.ddt}
         logL = td_likelihood.logL(
-            kwargs_lens=self.kwargs_lens, kwargs_ps=kwargs_ps2, kwargs_cosmo=kwargs_cosmo
+            kwargs_lens=self.kwargs_lens,
+            kwargs_ps=kwargs_ps2,
+            kwargs_cosmo=kwargs_cosmo,
         )
         npt.assert_almost_equal(logL, 0, decimal=8)
 
@@ -191,7 +211,9 @@ class TestTimeDelayLikelihood(object):
         )
         kwargs_cosmo = {"D_dt": self.lensCosmo.ddt}
         logL = td_likelihood.logL(
-            kwargs_lens=self.kwargs_lens, kwargs_ps=kwargs_ps2, kwargs_cosmo=kwargs_cosmo
+            kwargs_lens=self.kwargs_lens,
+            kwargs_ps=kwargs_ps2,
+            kwargs_cosmo=kwargs_cosmo,
         )
         npt.assert_almost_equal(logL, 0, decimal=8)
 
@@ -208,7 +230,9 @@ class TestTimeDelayLikelihood(object):
         )
         kwargs_cosmo = {"D_dt": self.lensCosmo.ddt}
         logL = td_likelihood.logL(
-            kwargs_lens=self.kwargs_lens, kwargs_ps=kwargs_ps2, kwargs_cosmo=kwargs_cosmo
+            kwargs_lens=self.kwargs_lens,
+            kwargs_ps=kwargs_ps2,
+            kwargs_cosmo=kwargs_cosmo,
         )
         npt.assert_almost_equal(logL, 0, decimal=8)
 

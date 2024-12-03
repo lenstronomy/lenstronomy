@@ -176,7 +176,7 @@ class LikelihoodModule(object):
         self._kwargs_time_delay = {
             "time_delays_measured": time_delays_measured,
             "time_delays_uncertainties": time_delays_uncertainties,
-            "time_delay_measurement_bool_list":time_delay_measurement_bool_list
+            "time_delay_measurement_bool_list": time_delay_measurement_bool_list,
         }
         self._kwargs_image_likelihood = {
             "source_marg": source_marg,

@@ -290,8 +290,8 @@ def point_source_plot(
     source_y,
     name_list=None,
     index=None,
-    solver_type='lenstronomy',
-    kwargs_solver = {},
+    solver_type="lenstronomy",
+    kwargs_solver={},
     color="k",
     **kwargs,
 ):

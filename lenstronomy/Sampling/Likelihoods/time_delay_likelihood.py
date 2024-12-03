@@ -58,10 +58,22 @@ class TimeDelayLikelihood(object):
                 for i in range(self._num_point_sources):
                     time_delay_measurement_bool_list.append([True] * len(time_delays_measured[i]))
         else:
+            if len(time_delay_measurement_bool_list) != self._num_point_sources:
+                raise ValueError(
+                    "time_delay_measurement_bool_list must have the same length as the number of point sources."
+                )
             for i in range(self._num_point_sources):
-                if len(time_delay_measurement_bool_list[i]) != len(self._delays_measured[i]):
+                if isinstance(time_delay_measurement_bool_list[i], (bool, np.bool_, int)):
+                    print("Warning: time_delay_measurement_bool_list is a single bool, converting to list of bools, assuming all time delays are measured.")
+                    time_delay_measurement_bool_list[i] = [bool(time_delay_measurement_bool_list[i])] * len(self._delays_measured[i])
+                elif isinstance(time_delay_measurement_bool_list[i], (list, np.array)):
+                    if len(time_delay_measurement_bool_list[i]) != len(self._delays_measured[i]):
+                        raise ValueError(
+                            "time_delay_measurement_bool_list and time_delays_measured need to have the same length.")
+                else:
                     raise ValueError(
-                        "time_delay_measurement_bool_list and time_delays_measured need to have the same length.") 
+                        "time_delay_measurement_bool_list must be a list of bools or a list of lists of bools."
+                    )
 
         self._measurement_bool_list = time_delay_measurement_bool_list
 
@@ -94,9 +106,15 @@ class TimeDelayLikelihood(object):
                 if len(delay_days) - 1 != len(self._delays_measured[i]):
                     logL += -(10 ** 15)
                 else :
-                    logL += self._logL_delays(
-                        delay_days[mask_full], self._delays_measured[i][mask], self._delays_errors[i][mask]
-                    )
+                    if self._delays_errors[i].ndim == 1:
+                        logL += self._logL_delays(
+                            delay_days[mask_full], self._delays_measured[i][mask], self._delays_errors[i][mask]
+                        )
+                    elif self._delays_errors[i].ndim == 2:
+                        #mask the covariance matrix
+                        logL += self._logL_delays(
+                            delay_days[mask_full], self._delays_measured[i][mask], self._delays_errors[i][mask, :][:, mask]
+                        )
         return logL
 
     @staticmethod

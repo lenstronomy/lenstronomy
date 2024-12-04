@@ -75,11 +75,12 @@ class Image2SourceMapping(object):
                     "length of redshift_list must correspond to length of light_model_list"
                 )
 
-            if np.max(self._source_redshift_list) > self._lens_model.z_source:
-                raise ValueError(
-                    "redshift of source_redshift_list have to be smaller or equal to "
-                    "the one specified in the lens model."
-                )
+            if len(self._source_redshift_list) > 0:
+                if np.max(self._source_redshift_list) > self._lens_model.z_source:
+                    raise ValueError(
+                        "redshift of source_redshift_list have to be smaller or equal to "
+                        "the one specified in the lens model."
+                    )
 
             # turn off multi source plane if all sources are at the same redshift
             if len(list(set(self._source_redshift_list))) == 1:

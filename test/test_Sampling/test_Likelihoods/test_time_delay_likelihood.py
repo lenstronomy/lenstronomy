@@ -255,6 +255,15 @@ class TestTimeDelayLikelihood(object):
                 time_delay_measurement_bool_list=[[True, True, True]],
             )
 
+        with pytest.raises(ValueError):
+            td_likelihood = TimeDelayLikelihood(
+                [time_delays_measured, time_delays_measured2],
+                [time_delays_uncertainties, time_delays_uncertainties2],
+                lens_model_class=self.lensModel,
+                point_source_class=pointSource2,
+                time_delay_measurement_bool_list=['aaa', 'bbb'],
+            )
+
 
 if __name__ == "__main__":
     pytest.main()

@@ -74,7 +74,7 @@ class TimeDelayLikelihood(object):
                     time_delay_measurement_bool_list[i] = [
                         bool(time_delay_measurement_bool_list[i])
                     ] * len(self._delays_measured[i])
-                elif isinstance(time_delay_measurement_bool_list[i], (list, np.array)):
+                elif isinstance(time_delay_measurement_bool_list[i], (list, np.ndarray)):
                     if len(time_delay_measurement_bool_list[i]) != len(
                         self._delays_measured[i]
                     ):

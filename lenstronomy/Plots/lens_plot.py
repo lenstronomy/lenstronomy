@@ -165,6 +165,8 @@ def convergence_plot(
     :param cmap: matplotlib cmap
     :param kwargs: keyword arguments for matshow
     :param with_color_bar: bool, if True, shows color bar
+    :param colorbar_label: string, label of color bar
+    :param font_size: int, font size of color bar label
     :return: matplotlib axis instance with convergence plot
     """
     x_grid, y_grid = pixel_grid.pixel_coordinates

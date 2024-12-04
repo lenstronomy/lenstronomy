@@ -261,7 +261,7 @@ class TestTimeDelayLikelihood(object):
                 [time_delays_uncertainties, time_delays_uncertainties2],
                 lens_model_class=self.lensModel,
                 point_source_class=pointSource2,
-                time_delay_measurement_bool_list=['aaa', 'bbb'],
+                time_delay_measurement_bool_list=["aaa", "bbb"],
             )
 
 

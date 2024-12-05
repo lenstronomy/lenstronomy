@@ -14,29 +14,8 @@ class EPL_MULTIPOLE_M1M3M4_ELL(LensProfileBase):
     terms of order m=3 and m=4 (exact for general axis ratio q) and a circular m=1 multipole.
 
     See also documentation of EPL_BOXYDIKSY CLASS, lenstronomy.LensModel.Profiles.epl
-    and lenstronomy.LensModel.Profiles.multipole for details.
-
-    :param theta_E: Einstein radius
-    :param gamma: negative power-law slope of the 3D mass distributions
-    :param e1: eccentricity. For details, read
-        lenstronomy.Util.param_util.phi_q2_ellipticity document.
-    :param e2: eccentricity. For details, read
-        lenstronomy.Util.param_util.phi_q2_ellipticity document.
-    :param center_x: center of distortion
-    :param center_y: center of distortion
-    :param a3_a: Strength of the deviation from elliptical isodensity contours caused by
-        the multipole term of order 3 translated into the multipole strength from the
-        MULTIPOLE class through a rescaling by theta_E / sqrt(q). The rescaling
-        preserves the shape of the isodensity contours such that a3_a produces the same
-        shape regardless of theta_E or q.
-    :param delta_phi_m3: angle of the m=3 multipole profile relative to the position
-        angle of the EPL profile
-    :param a4_a: Strength of the deviation from elliptical isodensity contours caused by
-        the multipole term of order 3 translated into the multipole strength from the
-        MULTIPOLE class through a rescaling by theta_E / sqrt(q). Profile is disky when
-        a4_a>0 and boxy when a4_a<0 for phi_m_a4a=0.0.
-    :param delta_phi_m4: angle of the m=4 multipole profile relative to the position
-        angle of the EPL profile
+    and lenstronomy.LensModel.Profiles.multipole for details. For an example of using all three circular multipoles
+    together, see e.g. https://ui.adsabs.harvard.edu/abs/2024arXiv241012987L/abstract 
     """
     #TODO: update the m=1 multipole term to have elliptical symmetry when the solution for the m=1 elliptical multipole is implemented
     param_names = [

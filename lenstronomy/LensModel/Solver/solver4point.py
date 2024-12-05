@@ -30,7 +30,7 @@ class Solver4Point(object):
             "EPL_MULTIPOLE_M3M4",
             "EPL_MULTIPOLE_M1M3M4",
             "EPL_MULTIPOLE_M3M4_ELL",
-            "EPL_MULTIPOLE_M1M3M4_ELL"
+            "EPL_MULTIPOLE_M1M3M4_ELL",
         ]:
             raise ValueError(
                 "first lens model must be supported by the solver: 'SPEP', 'SPEMD', 'PEMD',"
@@ -170,7 +170,7 @@ class Solver4Point(object):
             "EPL_MULTIPOLE_M3M4",
             "EPL_MULTIPOLE_M3M4_ELL",
             "EPL_MULTIPOLE_M1M3M4",
-            "EPL_MULTIPOLE_M1M3M4_ELL"
+            "EPL_MULTIPOLE_M1M3M4_ELL",
         ]:
             [theta_E, e1, e2, center_x, center_y, _] = x
             kwargs_list[0]["theta_E"] = theta_E
@@ -233,7 +233,7 @@ class Solver4Point(object):
             "EPL_MULTIPOLE_M3M4",
             "EPL_MULTIPOLE_M3M4_ELL",
             "EPL_MULTIPOLE_M1M3M4",
-            "EPL_MULTIPOLE_M1M3M4_ELL"
+            "EPL_MULTIPOLE_M1M3M4_ELL",
         ]:
             e1 = kwargs_list[0]["e1"]
             e2 = kwargs_list[0]["e2"]
@@ -289,7 +289,7 @@ class Solver4Point(object):
             "EPL_MULTIPOLE_M3M4",
             "EPL_MULTIPOLE_M3M4_ELL",
             "EPL_MULTIPOLE_M1M3M4",
-            "EPL_MULTIPOLE_M1M3M4_ELL"
+            "EPL_MULTIPOLE_M1M3M4_ELL",
         ]:
             kwargs_fixed["theta_E"] = kwargs_lens["theta_E"]
             kwargs_fixed["e1"] = kwargs_lens["e1"]

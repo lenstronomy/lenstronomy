@@ -26,6 +26,7 @@ class LensModel(object):
         numerical_alpha_class=None,
         observed_convention_index=None,
         z_source_convention=None,
+        z_lens_convention=None,
         cosmo_interp=False,
         z_interp_stop=None,
         num_z_interp=100,
@@ -55,6 +56,9 @@ class LensModel(object):
          positions. The code will compute the physical locations when performing computations
         :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens
          models. If None, 'z_source' is used.
+        :param z_lens_convention: float, redshift of a lens plane to define the
+         effective time-delay distance. Only needed if distance ratios are
+         sampled. If None, the first lens redshift is used.
         :param cosmo_interp: boolean (only employed in multi-plane mode), interpolates astropy.cosmology distances for
          faster calls when accessing several lensing planes
         :param z_interp_stop: (only in multi-plane with cosmo_interp=True); maximum redshift for distance interpolation
@@ -142,6 +146,7 @@ class LensModel(object):
                     numerical_alpha_class=numerical_alpha_class,
                     observed_convention_index=observed_convention_index,
                     z_source_convention=z_source_convention,
+                    z_lens_convention=z_lens_convention,
                     cosmo_interp=cosmo_interp,
                     z_interp_stop=z_interp_stop,
                     num_z_interp=num_z_interp,

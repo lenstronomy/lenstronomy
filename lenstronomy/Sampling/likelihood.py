@@ -46,6 +46,7 @@ class LikelihoodModule(object):
         max_num_images=None,
         bands_compute=None,
         time_delay_likelihood=False,
+        time_delay_measurement_bool_list=None,
         image_likelihood_mask_list=None,
         flux_ratio_likelihood=False,
         kwargs_flux_compute=None,
@@ -110,6 +111,8 @@ class LikelihoodModule(object):
             which "band" to include in the fitting
         :param time_delay_likelihood: bool, if True computes the time-delay likelihood
             of the FIRST point source
+        :param time_delay_measurement_bool_list: list of bool to indicate for which
+            point source model a measurement is available
         :param kwargs_flux_compute: keyword arguments of how to compute the image
             position fluxes (see FluxRatioLikeliood)
         :param custom_logL_addition: a definition taking as arguments (kwargs_lens,
@@ -173,6 +176,7 @@ class LikelihoodModule(object):
         self._kwargs_time_delay = {
             "time_delays_measured": time_delays_measured,
             "time_delays_uncertainties": time_delays_uncertainties,
+            "time_delay_measurement_bool_list": time_delay_measurement_bool_list,
         }
         self._kwargs_image_likelihood = {
             "source_marg": source_marg,

@@ -34,6 +34,8 @@ _SUPPORTED_MODELS = [
     "EPL_MULTIPOLE_M3M4_ELL",
     "EPL_MULTIPOLE_M3M4",
     "EPL_NUMBA",
+    "EPL_PMULTIPOL",
+    "EPL_PMULTIPOL_QPHI",
     "EPL_Q_PHI",
     "ElliSLICE",
     "FLEXION",
@@ -397,6 +399,14 @@ def lens_class(
         from lenstronomy.LensModel.Profiles.epl import EPLQPhi
 
         return EPLQPhi()
+    elif lens_type == "EPL_PMULTIPOL":
+        from lenstronomy.LensModel.Profiles.epl_powermultipole import EPL_PMultipol
+
+        return EPL_PMultipol()
+    elif lens_type == "EPL_PMULTIPOL_QPHI":
+        from lenstronomy.LensModel.Profiles.epl_powermultipole import EPL_PMultipol_qphi
+
+        return EPL_PMultipol_qphi()
     elif lens_type == "ElliSLICE":
         from lenstronomy.LensModel.Profiles.elliptical_density_slice import (
             ElliSLICE,

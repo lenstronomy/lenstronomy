@@ -8,13 +8,14 @@ from lenstronomy.LensModel.Profiles.epl_powermultipole import EPL_PMultipol
 from lenstronomy.LensModel.Profiles.epl import EPL
 from lenstronomy.Util import util
 
+
 class EPL_PMultipolTest(object):
     """Test analytical kappa vs kappa from Hessian (0.5 * (f_xx + f_yy))."""
 
     def setup_method(self):
         # Define parameters for the EPL_PMultipol profile
-        self.lens_model = EPL_PMultipol() 
-        self.epl=EPL() # Correct profile here
+        self.lens_model = EPL_PMultipol()
+        self.epl = EPL()  # Correct profile here
         self.theta_E = 1.0
         self.gamma = 2.0
         self.k_m = 0.1
@@ -31,7 +32,9 @@ class EPL_PMultipolTest(object):
         if r == 0:
             raise ValueError("Kappa is not defined at r = 0")
 
-        kappa = 0.5 * (self.theta_E / r)**(self.gamma - 1) * self.k_m * np.cos(self.m * (phi - self.phi_m))+(3-self.gamma)/2*(self.theta_E/r)**(self.gamma-1)
+        kappa = 0.5 * (self.theta_E / r) ** (self.gamma - 1) * self.k_m * np.cos(
+            self.m * (phi - self.phi_m)
+        ) + (3 - self.gamma) / 2 * (self.theta_E / r) ** (self.gamma - 1)
         return kappa
 
     def test_kappa_comparison(self):
@@ -60,8 +63,10 @@ class EPL_PMultipolTest(object):
 
                 # Compare analytical and numerical kappa
                 npt.assert_almost_equal(
-                    kappa_analytical, kappa_numerical, decimal=4,
-                    err_msg=f"Kappa mismatch at (x, y) = ({x_i}, {y_i})"
+                    kappa_analytical,
+                    kappa_numerical,
+                    decimal=4,
+                    err_msg=f"Kappa mismatch at (x, y) = ({x_i}, {y_i})",
                 )
 
                 print(

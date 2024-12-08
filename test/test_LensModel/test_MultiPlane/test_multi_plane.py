@@ -49,7 +49,7 @@ class TestMultiPlane(object):
                 z_lens_convention=0.5,
                 cosmo=cosmo,
                 cosmology_sampling=True,
-                cosmology_model="stringTheory"
+                cosmology_model="stringTheory",
             )
 
     def test_geo_shapiro_delay(self):
@@ -149,7 +149,7 @@ class TestMultiPlane(object):
             z_interp_stop=3,
             cosmo_interp=False,
             z_lens_convention=0.5,
-            cosmo=cosmo
+            cosmo=cosmo,
         )
         lens_model_mutli_2 = MultiPlane(
             z_source=z_source,

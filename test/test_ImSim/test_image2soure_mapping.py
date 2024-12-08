@@ -40,6 +40,15 @@ class TestMultiSourcePlane(object):
             cosmo=None,
             distance_ratio_sampling=True,
         )
+        multi_plane_free_cosmology = LensModel(
+            lens_model_list=lens_model_list,
+            multi_plane=True,
+            z_source=2,
+            lens_redshift_list=[0.2, 0.5],
+            cosmo=None,
+            cosmology_sampling=True,
+            cosmology_model="FlatwCDM",
+        )   
 
         light_model_list = ["SERSIC", "SERSIC"]
         self.kwargs_light = [
@@ -120,6 +129,16 @@ class TestMultiSourcePlane(object):
         # test multi lens plane with distance sampling, single source plane
         self.multi_free_multi = Image2SourceMapping(
             multi_plane_free_distance,
+            LightModel(
+                light_model_list,
+                deflection_scaling_list=None,
+                source_redshift_list=None,
+            ),
+        )
+
+        # test multi lens plane with cosmology sampling, single source plane
+        self.multi_cosmo_multi = Image2SourceMapping(
+            multi_plane_free_cosmology,
             LightModel(
                 light_model_list,
                 deflection_scaling_list=None,

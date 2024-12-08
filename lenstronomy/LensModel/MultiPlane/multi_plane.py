@@ -67,13 +67,29 @@ class MultiPlane(object):
         """
         if cosmology_sampling:
             self.cosmology_model = cosmology_model
-            
-            supported_cosmologies = ["FlatLambdaCDM", "LambdaCDM", "FlatwCDM", "wCDM", "Flatw0waCDM", "w0waCDM"]
-            
+
+            supported_cosmologies = [
+                "FlatLambdaCDM",
+                "LambdaCDM",
+                "FlatwCDM",
+                "wCDM",
+                "Flatw0waCDM",
+                "w0waCDM",
+            ]
+
             if cosmology_model not in supported_cosmologies:
-                raise ValueError(f"cosmology model {cosmology_model} not supported! Choose between {supported_cosmologies}.")
+                raise ValueError(
+                    f"cosmology model {cosmology_model} not supported! Choose between {supported_cosmologies}."
+                )
             index = supported_cosmologies.index(cosmology_model)
-            cosmo_classes = [FlatLambdaCDM, LambdaCDM, FlatwCDM, wCDM, Flatw0waCDM, w0waCDM]
+            cosmo_classes = [
+                FlatLambdaCDM,
+                LambdaCDM,
+                FlatwCDM,
+                wCDM,
+                Flatw0waCDM,
+                w0waCDM,
+            ]
             cosmo_kwargs = [
                 {"H0": 70, "Om0": 0.3},
                 {"H0": 70, "Om0": 0.3, "Ode0": 0.7},
@@ -84,15 +100,19 @@ class MultiPlane(object):
             ]
 
             cosmo = cosmo_classes[index](**cosmo_kwargs[index])
-            
+
             if distance_ratio_sampling:
-                warnings.warn("cosmology_sampling=True and distance_ratio_sampling=True cannot be set simultaneously. "
-                              "Setting distance_ratio_sampling=False.")
+                warnings.warn(
+                    "cosmology_sampling=True and distance_ratio_sampling=True cannot be set simultaneously. "
+                    "Setting distance_ratio_sampling=False."
+                )
                 distance_ratio_sampling = False
 
             if cosmo_interp:
-                warnings.warn("cosmology_sampling=True and cosmo_interp=True cannot be set simultaneously. "
-                              "Setting cosmo_interp=False.")
+                warnings.warn(
+                    "cosmology_sampling=True and cosmo_interp=True cannot be set simultaneously. "
+                    "Setting cosmo_interp=False."
+                )
                 cosmo_interp = False
 
         self.kwargs_class = {

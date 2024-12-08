@@ -257,7 +257,9 @@ class Param(object):
         )
         self._kwargs_model = kwargs_model
 
-        distance_ratio_sampling = self._kwargs_model.get("distance_ratio_sampling", None)
+        distance_ratio_sampling = self._kwargs_model.get(
+            "distance_ratio_sampling", None
+        )
         cosmology_sampling = self._kwargs_model.get("cosmology_sampling", None)
         cosmology_model = self._kwargs_model.get("cosmology_model", "FlatLambdaCDM")
 

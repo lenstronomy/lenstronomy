@@ -21,6 +21,37 @@ class TestMultiPlane(object):
     def setup_method(self):
         pass
 
+    def test_init(self):
+        z_source = 1.5
+        lens_model_list = ["SIS"]
+        kwargs_lens = [{"theta_E": 1}]
+        redshift_list = [0.5]
+        cosmo = FlatwCDM(H0=70, Om0=0.3, w0=-0.8)
+        MultiPlane(
+            z_source=z_source,
+            lens_model_list=lens_model_list,
+            lens_redshift_list=redshift_list,
+            z_interp_stop=3,
+            cosmo_interp=True,
+            distance_ratio_sampling=True,
+            z_lens_convention=0.5,
+            cosmo=cosmo,
+            cosmology_sampling=True,
+        )
+        with pytest.raises(ValueError):
+            MultiPlane(
+                z_source=z_source,
+                lens_model_list=lens_model_list,
+                lens_redshift_list=redshift_list,
+                z_interp_stop=3,
+                cosmo_interp=True,
+                distance_ratio_sampling=True,
+                z_lens_convention=0.5,
+                cosmo=cosmo,
+                cosmology_sampling=True,
+                cosmology_model="stringTheory"
+            )
+
     def test_geo_shapiro_delay(self):
         z_source = 1.5
         lens_model_list = ["SIS", "SIS"]
@@ -105,7 +136,7 @@ class TestMultiPlane(object):
         lens_model_mutli.T_ij_stop = 1000
         assert lens_model_mutli.T_ij_stop == 1000
 
-    def test_set_T_ij_stop(self):
+    def test_set_background_cosmo(self):
         z_source = 1.5
         lens_model_list = ["SIS"]
         kwargs_lens = [{"theta_E": 1}]

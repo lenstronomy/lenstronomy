@@ -40,6 +40,8 @@ class MultiPlaneBase(ProfileListBase):
          See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
         :param kwargs_synthesis: keyword arguments for the 'SYNTHESIS' lens model, if applicable
         """
+        self._lens_model_list = lens_model_list
+
         if z_interp_stop is None:
             z_interp_stop = z_source_convention
         self._cosmo_bkg = Background(
@@ -54,14 +56,14 @@ class MultiPlaneBase(ProfileListBase):
                     "reduced lens model quantities not allowed (leads to negative reduced deflection "
                     "angles!" % (z_lens_max, z_source_convention)
                 )
-        if not len(lens_model_list) == len(lens_redshift_list):
+        if not len(self._lens_model_list) == len(lens_redshift_list):
             raise ValueError(
                 "The length of lens_model_list does not correspond to redshift_list"
             )
 
         self._lens_redshift_list = lens_redshift_list
         super(MultiPlaneBase, self).__init__(
-            lens_model_list,
+            self._lens_model_list,
             numerical_alpha_class=numerical_alpha_class,
             lens_redshift_list=lens_redshift_list,
             z_source_convention=z_source_convention,
@@ -69,22 +71,31 @@ class MultiPlaneBase(ProfileListBase):
             kwargs_synthesis=kwargs_synthesis,
         )
 
-        if len(lens_model_list) < 1:
+        if len(self._lens_model_list) < 1:
             self._sorted_redshift_index = []
         else:
             self._sorted_redshift_index = self._index_ordering(lens_redshift_list)
-        z_before = 0
-        T_z = 0
+
         self._T_ij_list = []
         self._T_z_list = []
+
+        self._reduced2physical_factor = []
+
+        self.set_T_zs_and_T_ijs()
+
+    def set_T_zs_and_T_ijs(self):
+        """Set the transverse angular diameter distances between the observer and the
+        lens planes and between the lens planes."""
+        z_before = 0
+        T_z = 0
         # Sort redshift for vectorized reduced2physical factor calculation
-        if len(lens_model_list) < 1:
+        if len(self._lens_model_list) < 1:
             self._reduced2physical_factor = []
         else:
             z_sort = np.array(self._lens_redshift_list)[self._sorted_redshift_index]
-            z_source_array = np.ones(z_sort.shape) * z_source_convention
+            z_source_array = np.ones(z_sort.shape) * self._z_source_convention
             self._reduced2physical_factor = self._cosmo_bkg.d_xy(
-                0, z_source_convention
+                0, self._z_source_convention
             ) / self._cosmo_bkg.d_xy(z_sort, z_source_array)
         for idex in self._sorted_redshift_index:
             z_lens = self._lens_redshift_list[idex]
@@ -96,6 +107,14 @@ class MultiPlaneBase(ProfileListBase):
             self._T_ij_list.append(delta_T)
             self._T_z_list.append(T_z)
             z_before = z_lens
+
+    def set_background_cosmo(self, cosmo):
+        """Set the cosmology instance of the background class.
+
+        :param cosmo: instance of astropy.cosmology
+        """
+        self._cosmo_bkg.cosmo = cosmo
+        self.set_T_zs_and_T_ijs()
 
     @property
     def z_source_convention(self):

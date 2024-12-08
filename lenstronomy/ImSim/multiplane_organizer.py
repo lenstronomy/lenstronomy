@@ -13,21 +13,19 @@ class MultiPlaneOrganizer(object):
     being the $P+1$-th plane), the effective Fermat potential is defined as (eq. 9 of Shajib et al. 2020):
 
     .. math::
-    \\phi^{\\rm eff} (\\theta) \\equiv \\sum_{i=1}^{P} \\frac{1+z_i}{1+z_{\\rm d}} \\frac{D_i D_{i+1} D_{\\rm ds}}{D_{\\rm d} D_{\\rm s}D_{i\\ i+1} } \\left[ \\frac{(\\theta_{i} - \\theta_{ i+1})^2}{2} - \\zeta_{i,i+1} \\psi_{i}(\\theta_{i})  \\right].
+    \\phi^{\\rm eff} (\\theta) \\equiv \\sum_{i=1}^{P} \\frac{1+z_i}{1+z_{\\rm d}} \\frac{D_i D_{i+1} D_{\\rm ds}}{D_{\\rm d} D_{\\rm s}D_{i\\ i+1} } \\left[ \\frac{(\\theta_{i} - \\theta_{ i+1})^2}{2} - \\beta_{i,i+1} \\psi_{i}(\\theta_{i})  \\right].
 
-    Then, the $a_i$ and $b_i$ distance ratios are defined as:
+    Satisfying $\\Delta \\phi^{\\rm eff} = 0$ will lead to the lens equation in the multiplane, where $\\beta_{ij}$ parameters are free parameters that are defined as:
 
     .. math::
-    a_i \\equiv \\frac{D_i D_{i+1} D_{1\\ P+1}}{D_{\\rm 1} D_{P+1}D_{i\\ i+1} } = \\frac{D_i D_{i+1}}{D_{i\\ i+1} D_{\\Delta t}^{\\rm eff}}
-    b_i \\equiv \\frac{D_i D_{1\\ P+1}}{D_1 D_{i\\ P+1}} = \\frac{D_i D_{P+1}}{D_{i\\ P+1} D_{\\Delta t}^{\\rm eff}}.
+    \\beta_{ij} \\equiv \\frac{D_{ij} D_{\\rm s}}{D_{j} D_{i\\rm s}}.
 
-    This class converts the $a_i$ and $b_i$ ratios to the relevant cosmological
-    distances needed for ray-tracing. However, instead of using $a_i$ and $b_i$,
-    lenstronomy uses factor_a and factor_b parameters that are defined using a
+    For $P$ lens planes, there are $\\rm{comb}(P, 2)$ number of $\\beta_{ij}$ parameters to track. This class converts the $\\beta_{ij}$ to the relevant cosmological
+    distances needed for ray-tracing. However, instead of sampling absolute values of $\\beta_{ij}$,
+    lenstronomy uses factor_beta parameters that are defined using a
     fiducial cosmology as follows:
 
-    factor_a_i = a_i / a_i_fiducial
-    factor_b_i = b_i / b_i_fiducial
+    factor_beta_ij = beta_ij / beta_ij_fiducial
     """
 
     def __init__(
@@ -66,16 +64,18 @@ class MultiPlaneOrganizer(object):
         self._sorted_joint_unique_redshift_list = sorted(
             list(set(list(lens_redshift_list) + list(source_redshift_list)))
         )
+        self._sorted_joint_unique_redshift_list = [
+            0
+        ] + self._sorted_joint_unique_redshift_list  # includes 0 as first element
 
         self._num_lens_planes = (
-            len(self._sorted_joint_unique_redshift_list) - 1
-        )  # not including the last source plane
-        # self._sorted_unique_lens_redshifts = sorted(list(set(
-        #     lens_redshift_list)))
+            len(self._sorted_joint_unique_redshift_list) - 2
+        )  # not including the z=0 plane and the last source plane
 
-        self.a_coeffs_fiducial = []
-        self.b_coeffs_fiducial = []
-        self._D_z_list_fiducial = []
+        self.betas_fiducial = []
+        self._D_z_list_fiducial = [
+            0.0
+        ]  # D_z upto P lens planes, does not include the last source plane. D_s = _D_is_list_fiducial[0]
         self._D_is_list_fiducial = (
             []
         )  # distance between lens planes and the last (source) plane
@@ -100,50 +100,48 @@ class MultiPlaneOrganizer(object):
             self._cosmo_bkg.d_xy(0, self.z_source_convention)
         )
 
-        for i in range(len(self._sorted_joint_unique_redshift_list) - 1):
+        self._beta_ij_ordering_list = []
+        for i in range(1, len(self._sorted_joint_unique_redshift_list) - 1):
             z_i = self._sorted_joint_unique_redshift_list[i]
-            z_ip1 = self._sorted_joint_unique_redshift_list[i + 1]
+            # z_ip1 = self._sorted_joint_unique_redshift_list[i + 1]
 
             self._D_z_list_fiducial.append(self._cosmo_bkg.d_xy(0, z_i))
             self._D_is_list_fiducial.append(
                 self._cosmo_bkg.d_xy(z_i, self.z_source_convention)
             )
 
-            self.a_coeffs_fiducial.append(
-                self._cosmo_bkg.d_xy(0, z_i)
-                * self._cosmo_bkg.d_xy(0, z_ip1)
-                / self._cosmo_bkg.d_xy(z_i, z_ip1)
-                / self.D_dt_eff_fiducial
-            )
-            self.b_coeffs_fiducial.append(
-                self._cosmo_bkg.d_xy(0, z_i)
-                * D_s
-                / self._cosmo_bkg.d_xy(z_i, z_source_convention)
-                / self.D_dt_eff_fiducial
-            )
+            # append the beta factors
+            if i > 1:
+                for k in range(1, i):
+                    z_k = self._sorted_joint_unique_redshift_list[k]
+                    self.betas_fiducial.append(
+                        self._cosmo_bkg.d_xy(z_k, z_i)
+                        * D_s
+                        / self._cosmo_bkg.d_xy(z_k, z_source_convention)
+                        / self._cosmo_bkg.d_xy(0, z_i)
+                    )
+                    self._beta_ij_ordering_list.append(f"{k}_{i}")
 
+        # append the distance to the last source plane to D_z_list_fiducial
         self._D_z_list_fiducial.append(
             self._cosmo_bkg.d_xy(0, self.z_source_convention)
         )
 
-    def _extract_a_b_factors(self, kwargs_special):
+    def _extract_beta_factors(self, kwargs_special):
         """Extracts the a and b factors from the kwargs_special dictionary.
 
         :param kwargs_special: dictionary of special keyword arguments
         :type kwargs_special: dict
-        :return: a_factors, b_factors
-        :rtype: list, list
+        :return: beta_factors
+        :rtype: list
         """
-        a_factors = []
-        b_factors = [1.0]
+        beta_factors = []
 
-        for i in range(1, self._num_lens_planes + 1):
-            a_factors.append(kwargs_special["factor_a_{}".format(i)])
-        for i in range(2, self._num_lens_planes):
-            b_factors.append(kwargs_special["factor_b_{}".format(i)])
-        b_factors.append(a_factors[-1])
+        for j in range(1, self._num_lens_planes + 1):
+            for i in range(1, j):
+                beta_factors.append(kwargs_special[f"factor_beta_{i}_{j}"])
 
-        return a_factors, b_factors
+        return beta_factors
 
     def update_lens_T_lists(self, lens_model, kwargs_special):
         """Updates the lens model's `T_ij`, `T_ij_start`, `T_ij_stop`, and `T_z lists`.
@@ -195,8 +193,8 @@ class MultiPlaneOrganizer(object):
         return index
 
     def _get_lens_T_lists(self, kwargs_special):
-        """Retreive the lens model's `T_ij` and `T_z` lists for a given set of a_factors
-        and b_factors.
+        """Retreive the lens model's `T_ij` and `T_z` lists for a given set of
+        beta_factors.
 
         :param kwargs_special: dictionary of special keyword arguments
         :type kwargs_special: dict
@@ -225,7 +223,7 @@ class MultiPlaneOrganizer(object):
 
     def _get_D_ij(self, z_i, z_j, kwargs_special):
         """Returns the transverse distance between two redshifts for a given set of
-        a_factors and b_factors.
+        beta_factors.
 
         :param z_i: redshift of first plane
         :type z_i: float
@@ -241,55 +239,36 @@ class MultiPlaneOrganizer(object):
         elif z_i == z_j:
             return 0.0
         elif z_j == self._sorted_joint_unique_redshift_list[-1]:
-            ab_fiducial_index = self._get_element_index(
+            i_fiducial_index = self._get_element_index(
                 self._sorted_joint_unique_redshift_list, z_i
             )
-            return self._D_is_list_fiducial[ab_fiducial_index + 1]
+            return self._D_is_list_fiducial[i_fiducial_index]
 
-        a_factors, b_factors = self._extract_a_b_factors(kwargs_special)
-        ab_fiducial_index = self._get_element_index(
+        if z_i > z_j:
+            z_i, z_j = z_j, z_i
+
+        beta_factors = self._extract_beta_factors(kwargs_special)
+        i_fiducial_index = self._get_element_index(
+            self._sorted_joint_unique_redshift_list, z_i
+        )
+        j_fiducial_index = self._get_element_index(
             self._sorted_joint_unique_redshift_list, z_j
         )
-
-        b_j = b_factors[ab_fiducial_index] * self.b_coeffs_fiducial[ab_fiducial_index]
-        D_j = (
-            b_j
-            * self._D_is_list_fiducial[ab_fiducial_index + 1]
-            * self.D_dt_eff_fiducial
-            / self._D_is_list_fiducial[0]
+        ij_fiducial_index = self._get_element_index(
+            self._beta_ij_ordering_list, f"{i_fiducial_index}_{j_fiducial_index}"
         )
 
-        if ab_fiducial_index == 0:
-            raise ValueError("The code should not come here!")
-            # return D_j
-        else:
-            ab_fiducial_index_m1 = self._get_element_index(
-                self._sorted_joint_unique_redshift_list, z_i
-            )
-            assert ab_fiducial_index_m1 == ab_fiducial_index - 1
+        D_j = self._D_z_list_fiducial[j_fiducial_index]
+        D_s = self._D_is_list_fiducial[0]
+        D_is = self._D_is_list_fiducial[i_fiducial_index]
 
-            a_j = (
-                a_factors[ab_fiducial_index] * self.a_coeffs_fiducial[ab_fiducial_index]
-            )
-            a_i = (
-                a_factors[ab_fiducial_index - 1]
-                * self.a_coeffs_fiducial[ab_fiducial_index - 1]
-            )
+        beta_ij = (
+            beta_factors[ij_fiducial_index] * self.betas_fiducial[ij_fiducial_index]
+        )
 
-            b_i = (
-                b_factors[ab_fiducial_index - 1]
-                * self.b_coeffs_fiducial[ab_fiducial_index - 1]
-            )
-            D_i = (
-                b_i
-                * self._D_is_list_fiducial[ab_fiducial_index]
-                * self.D_dt_eff_fiducial
-                / self._D_is_list_fiducial[0]
-            )
+        D_ij = beta_ij * D_j * D_is / D_s
 
-            D_ij = D_j * D_i / a_i / self.D_dt_eff_fiducial
-
-            return D_ij
+        return D_ij
 
     def _get_D_i(self, z_i, kwargs_special):
         """"""
@@ -298,21 +277,8 @@ class MultiPlaneOrganizer(object):
         elif z_i == self._sorted_joint_unique_redshift_list[-1]:
             return self._D_is_list_fiducial[0]
 
-        a_factors, b_factors = self._extract_a_b_factors(kwargs_special)
-
-        ab_fiducial_index = self._get_element_index(
-            self._sorted_joint_unique_redshift_list, z_i
-        )
-
-        b_i = b_factors[ab_fiducial_index] * self.b_coeffs_fiducial[ab_fiducial_index]
-        D_i = (
-            b_i
-            * self._D_is_list_fiducial[ab_fiducial_index + 1]
-            * self.D_dt_eff_fiducial
-            / self._D_is_list_fiducial[0]
-        )
-
-        return D_i
+        i_index = self._get_element_index(self._sorted_joint_unique_redshift_list, z_i)
+        return self._D_z_list_fiducial[i_index]
 
     def _transverse_distance_start_stop(
         self, z_start, z_stop, kwargs_special, include_z_start=False

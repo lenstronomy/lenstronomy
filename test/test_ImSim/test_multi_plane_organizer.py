@@ -62,32 +62,31 @@ class TestMultiPlaneOrganizer(object):
             cosmo=Background(cosmo=self.cosmo),
         )
 
-    def test_extract_a_b_factors(self):
+    def test_extract_beta_factors(self):
         """Test MultiPlaneOrganizer._extract_a_b_factors()"""
         kwargs_special = {
-            "factor_a_1": 1.0,
-            "factor_a_2": 2.0,
-            "factor_a_3": 3.0,
-            "factor_a_4": 4.0,
-            "factor_b_2": 5.0,
-            "factor_b_3": 6.0,
+            "factor_beta_1_2": 1.0,
+            "factor_beta_1_3": 2.0,
+            "factor_beta_2_3": 3.0,
+            "factor_beta_1_4": 4.0,
+            "factor_beta_2_4": 5.0,
+            "factor_beta_3_4": 6.0,
         }
 
-        a_factor_list, b_factor_list = self.multi_plane_organizer._extract_a_b_factors(
+        beta_factor_list = self.multi_plane_organizer._extract_beta_factors(
             kwargs_special
         )
-        npt.assert_almost_equal(a_factor_list, [1.0, 2.0, 3.0, 4.0])
-        npt.assert_almost_equal(b_factor_list, [1.0, 5.0, 6.0, 4.0])
+        npt.assert_almost_equal(beta_factor_list, [1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
 
     def test_update_lens_T_lists(self):
         """Test MultiPlaneOrganizer.update_lens_T_lists()"""
         kwargs_special = {
-            "factor_a_1": 1.0,
-            "factor_a_2": 1.0,
-            "factor_a_3": 1.0,
-            "factor_a_4": 1.0,
-            "factor_b_2": 1.0,
-            "factor_b_3": 1.0,
+            "factor_beta_1_2": 1.0,
+            "factor_beta_1_3": 1.0,
+            "factor_beta_2_3": 1.0,
+            "factor_beta_1_4": 1.0,
+            "factor_beta_2_4": 1.0,
+            "factor_beta_3_4": 1.0,
         }
 
         fiducial_T_z_list = copy.deepcopy(
@@ -121,12 +120,12 @@ class TestMultiPlaneOrganizer(object):
     def test_update_source_mapping_T_lists(self):
         """Test MultiPlaneOrganizer.update_source_T_lists()"""
         kwargs_special = {
-            "factor_a_1": 1.0,
-            "factor_a_2": 1.0,
-            "factor_a_3": 1.0,
-            "factor_a_4": 1.0,
-            "factor_b_2": 1.0,
-            "factor_b_3": 1.0,
+            "factor_beta_1_2": 1.0,
+            "factor_beta_1_3": 1.0,
+            "factor_beta_2_3": 1.0,
+            "factor_beta_1_4": 1.0,
+            "factor_beta_2_4": 1.0,
+            "factor_beta_3_4": 1.0,
         }
 
         fiducial_T_ij_start_list = copy.deepcopy(self.mapping.T_ij_start_list)
@@ -158,12 +157,12 @@ class TestMultiPlaneOrganizer(object):
     def test_get_lens_T_lists(self):
         """Test MultiPlaneOrganizer._get_lens_T_lists()"""
         kwargs_special = {
-            "factor_a_1": 1.0,
-            "factor_a_2": 1.0,
-            "factor_a_3": 1.0,
-            "factor_a_4": 1.0,
-            "factor_b_2": 1.0,
-            "factor_b_3": 1.0,
+            "factor_beta_1_2": 1.0,
+            "factor_beta_1_3": 1.0,
+            "factor_beta_2_3": 1.0,
+            "factor_beta_1_4": 1.0,
+            "factor_beta_2_4": 1.0,
+            "factor_beta_3_4": 1.0,
         }
 
         T_z_list, T_ij_list = self.multi_plane_organizer._get_lens_T_lists(
@@ -206,54 +205,49 @@ class TestMultiPlaneOrganizer(object):
     def test_get_D_ij(self):
         """Test MultiPlaneOrganizer._get_D_ij()"""
         kwargs_special = {
-            "factor_a_1": 1.0,
-            "factor_a_2": 1.0,
-            "factor_a_3": 1.0,
-            "factor_a_4": 1.0,
-            "factor_b_2": 1.0,
-            "factor_b_3": 1.0,
+            "factor_beta_1_2": 1.0,
+            "factor_beta_1_3": 1.0,
+            "factor_beta_2_3": 1.0,
+            "factor_beta_1_4": 1.0,
+            "factor_beta_2_4": 1.0,
+            "factor_beta_3_4": 1.0,
         }
 
         D_ij = self.multi_plane_organizer._get_D_ij(
             self.lens_redshift_list[1], self.lens_redshift_list[2], kwargs_special
         )
-        assert D_ij == 358.1158558418066
+        npt.assert_almost_equal(D_ij, 358.1158558418066, decimal=10)
+
+        D_ij = self.multi_plane_organizer._get_D_ij(
+            self.lens_redshift_list[2], self.lens_redshift_list[1], kwargs_special
+        )
+        npt.assert_almost_equal(D_ij, 358.1158558418066, decimal=10)
 
         D_ij = self.multi_plane_organizer._get_D_ij(
             self.source_redshift_list[2], self.source_redshift_list[3], kwargs_special
         )
-        assert D_ij == 175.31018095788596
-
-        # test if an error is raised if the redshifts are not in the list
-        with pytest.raises(ValueError):
-            D_ij = self.multi_plane_organizer._get_D_ij(0.1, 0.2, kwargs_special)
-
-        # test if the redshifts are not consecutive
-        with pytest.raises(AssertionError):
-            D_ij = self.multi_plane_organizer._get_D_ij(
-                self.lens_redshift_list[0], self.lens_redshift_list[3], kwargs_special
-            )
+        npt.assert_almost_equal(D_ij, 175.31018095788596, decimal=10)
 
     def test_get_D_i(self):
         """Test MultiPlaneOrganizer._get_D_i()"""
         kwargs_special = {
-            "factor_a_1": 1.0,
-            "factor_a_2": 1.0,
-            "factor_a_3": 1.0,
-            "factor_a_4": 1.0,
-            "factor_b_2": 1.0,
-            "factor_b_3": 1.0,
+            "factor_beta_1_2": 1.0,
+            "factor_beta_1_3": 1.0,
+            "factor_beta_2_3": 1.0,
+            "factor_beta_1_4": 1.0,
+            "factor_beta_2_4": 1.0,
+            "factor_beta_3_4": 1.0,
         }
 
         D_i = self.multi_plane_organizer._get_D_i(
             self.lens_redshift_list[1], kwargs_special
         )
-        assert D_i == 1006.5247314933569
+        npt.assert_almost_equal(D_i, 1006.5247314933569, decimal=10)
 
         D_i = self.multi_plane_organizer._get_D_i(
             self.source_redshift_list[2], kwargs_special
         )
-        assert D_i == 1459.6840895330772
+        npt.assert_almost_equal(D_i, 1459.6840895330772, decimal=10)
 
         # test if an error is raised if the redshifts are not in the list
         with pytest.raises(ValueError):
@@ -267,15 +261,15 @@ class TestMultiPlaneOrganizer(object):
             == self.multi_plane_organizer._D_is_list_fiducial[0]
         )
 
-    def test_transver_distance_start_stop(self):
+    def test_transverse_distance_start_stop(self):
         """Test MultiPlaneOrganizer._transverse_distance_start_stop()"""
         kwargs_special = {
-            "factor_a_1": 1.0,
-            "factor_a_2": 1.0,
-            "factor_a_3": 1.0,
-            "factor_a_4": 1.0,
-            "factor_b_2": 1.0,
-            "factor_b_3": 1.0,
+            "factor_beta_1_2": 1.0,
+            "factor_beta_1_3": 1.0,
+            "factor_beta_2_3": 1.0,
+            "factor_beta_1_4": 1.0,
+            "factor_beta_2_4": 1.0,
+            "factor_beta_3_4": 1.0,
         }
 
         (
@@ -285,18 +279,18 @@ class TestMultiPlaneOrganizer(object):
             self.lens_redshift_list[1], self.source_redshift_list[-2], kwargs_special
         )
 
-        assert T_ij_start == 572.9853693468906
-        assert T_ij_stop == 0.0
+        npt.assert_almost_equal(T_ij_start, 572.9853693468906, decimal=10)
+        npt.assert_almost_equal(T_ij_stop, 0.0, decimal=10)
 
     def test_get_source_T_start_end_lists(self):
         """Test MultiPlaneOrganizer._get_source_T_start_end_lists()"""
         kwargs_special = {
-            "factor_a_1": 1.0,
-            "factor_a_2": 1.0,
-            "factor_a_3": 1.0,
-            "factor_a_4": 1.0,
-            "factor_b_2": 1.0,
-            "factor_b_3": 1.0,
+            "factor_beta_1_2": 1.0,
+            "factor_beta_1_3": 1.0,
+            "factor_beta_2_3": 1.0,
+            "factor_beta_1_4": 1.0,
+            "factor_beta_2_4": 1.0,
+            "factor_beta_3_4": 1.0,
         }
 
         (
@@ -335,12 +329,12 @@ class TestMultiPlaneOrganizer(object):
         ]
 
         kwargs_special = {
-            "factor_a_1": 1.0,
-            "factor_a_2": 1.0,
-            "factor_a_3": 1.0,
-            "factor_a_4": 1.0,
-            "factor_b_2": 1.0,
-            "factor_b_3": 1.0,
+            "factor_beta_1_2": 1.0,
+            "factor_beta_1_3": 1.0,
+            "factor_beta_2_3": 1.0,
+            "factor_beta_1_4": 1.0,
+            "factor_beta_2_4": 1.0,
+            "factor_beta_3_4": 1.0,
         }
 
         x, y = np.meshgrid(np.arange(-4, 4, 0.05), np.arange(-4, 4, 0.05))

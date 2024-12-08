@@ -64,15 +64,14 @@ class MultiPlaneOrganizer(object):
         self._sorted_joint_unique_redshift_list = sorted(
             list(set(list(lens_redshift_list) + list(source_redshift_list)))
         )
+        self._sorted_joint_unique_redshift_list = [0] + self._sorted_joint_unique_redshift_list # includes 0 as first element
 
         self._num_lens_planes = (
-            len(self._sorted_joint_unique_redshift_list) - 1
-        )  # not including the last source plane
-        # self._sorted_unique_lens_redshifts = sorted(list(set(
-        #     lens_redshift_list)))
+            len(self._sorted_joint_unique_redshift_list) - 2
+        )  # not including the z=0 plane and the last source plane
 
         self.betas_fiducial = []
-        self._D_z_list_fiducial = [] # D_z upto P lens planes, does not include the last source plane. D_s = _D_is_list_fiducial[0]
+        self._D_z_list_fiducial = [0.] # D_z upto P lens planes, does not include the last source plane. D_s = _D_is_list_fiducial[0]
         self._D_is_list_fiducial = (
             []
         )  # distance between lens planes and the last (source) plane
@@ -98,7 +97,7 @@ class MultiPlaneOrganizer(object):
         )
 
         self._beta_ij_ordering_list = []
-        for i in range(len(self._sorted_joint_unique_redshift_list) - 1):
+        for i in range(1, len(self._sorted_joint_unique_redshift_list) - 1):
             z_i = self._sorted_joint_unique_redshift_list[i]
             # z_ip1 = self._sorted_joint_unique_redshift_list[i + 1]
 
@@ -107,8 +106,9 @@ class MultiPlaneOrganizer(object):
                 self._cosmo_bkg.d_xy(z_i, self.z_source_convention)
             )
 
-            if i > 0:
-                for k in range(i):
+            # append the beta factors
+            if i > 1:
+                for k in range(1, i):
                     z_k = self._sorted_joint_unique_redshift_list[k]
                     self.betas_fiducial.append(
                         self._cosmo_bkg.d_xy(z_k, z_i)
@@ -118,6 +118,7 @@ class MultiPlaneOrganizer(object):
                     )
                     self._beta_ij_ordering_list.append(f"{k}_{i}")
 
+        # append the distance to the last source plane to D_z_list_fiducial
         self._D_z_list_fiducial.append(
             self._cosmo_bkg.d_xy(0, self.z_source_convention)
         )
@@ -133,8 +134,8 @@ class MultiPlaneOrganizer(object):
         beta_factors = []
 
         for j in range(1, self._num_lens_planes+1):
-            for i in range(j):
-                beta_factors.append(kwargs_special["factor_beta_{}_{}".format(i, j)])
+            for i in range(1, j):
+                beta_factors.append(kwargs_special[f"factor_beta_{i}_{j}"])
 
         return beta_factors
 
@@ -236,7 +237,10 @@ class MultiPlaneOrganizer(object):
             i_fiducial_index = self._get_element_index(
                 self._sorted_joint_unique_redshift_list, z_i
             )
-            return self._D_is_list_fiducial[i_fiducial_index + 1]
+            return self._D_is_list_fiducial[i_fiducial_index]
+        
+        if z_i > z_j:
+            z_i, z_j = z_j, z_i
 
         beta_factors = self._extract_beta_factors(kwargs_special)
         i_fiducial_index = self._get_element_index(self._sorted_joint_unique_redshift_list, z_i)

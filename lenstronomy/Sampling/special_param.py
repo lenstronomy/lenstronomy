@@ -148,7 +148,7 @@ class GeneralScalingParam(ArrayParam):
 class DistanceRatioBetaFactors(SingleParam):
     """Distance ratio a and b factors.
 
-    If there are P lens planes, then there are comb(P, 2) factor_beta parameters. The 
+    If there are P lens planes, then there are comb(P, 2) factor_beta parameters. The
     parameter to be defined by the user are "factor_beta_12", "factor_beta_13", "factor_beta_23", ...,". For
     further definitions of factor_beta parameters, see the documentation of
     `lesnstronomy.ImSim.multiplane_organizer.MultiplaneOrganizer()` class.

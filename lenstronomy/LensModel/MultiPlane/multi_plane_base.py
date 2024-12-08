@@ -85,8 +85,7 @@ class MultiPlaneBase(ProfileListBase):
 
     def set_T_zs_and_T_ijs(self):
         """Set the transverse angular diameter distances between the observer and the
-        lens planes and between the lens planes.
-        """
+        lens planes and between the lens planes."""
         z_before = 0
         T_z = 0
         # Sort redshift for vectorized reduced2physical factor calculation

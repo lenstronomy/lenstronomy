@@ -48,7 +48,7 @@ class TestMultiSourcePlane(object):
             cosmo=None,
             cosmology_sampling=True,
             cosmology_model="FlatwCDM",
-        )   
+        )
 
         light_model_list = ["SERSIC", "SERSIC"]
         self.kwargs_light = [

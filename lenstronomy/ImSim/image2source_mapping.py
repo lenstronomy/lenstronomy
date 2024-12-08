@@ -192,7 +192,14 @@ class Image2SourceMapping(object):
         w0 = kwargs_special.get("w0", -1)
         wa = kwargs_special.get("wa", 0)
 
-        supported_models = ["FlatLambdaCDM", "LambdaCDM", "FlatwCDM", "wCDM", "Flatw0waCDM", "w0waCDM"]
+        supported_models = [
+            "FlatLambdaCDM",
+            "LambdaCDM",
+            "FlatwCDM",
+            "wCDM",
+            "Flatw0waCDM",
+            "w0waCDM",
+        ]
         cosmo_classes = [FlatLambdaCDM, LambdaCDM, FlatwCDM, wCDM, Flatw0waCDM, w0waCDM]
         cosmo_kwargs = [
             {"H0": H0, "Om0": Om0},
@@ -207,10 +214,10 @@ class Image2SourceMapping(object):
             raise ValueError(
                 f"cosmology model {cosmology_model} not supported! Choose between {supported_models}."
             )
-        
+
         index = supported_models.index(cosmology_model)
         cosmo = cosmo_classes[index](**cosmo_kwargs[index])
-        
+
         return cosmo
 
     def image2source(self, x, y, kwargs_lens, index_source, kwargs_special=None):
@@ -259,8 +266,8 @@ class Image2SourceMapping(object):
         return x_source, y_source
 
     def update_distances(self, kwargs_special):
-        """Updates the distances for the multi-lens-plane case if distance_ratio_sampling or cosmology_sampling is True.
-        """
+        """Updates the distances for the multi-lens-plane case if
+        distance_ratio_sampling or cosmology_sampling is True."""
         if self._distance_ratio_sampling:
             self.multi_plane_organizer.update_lens_T_lists(
                 self._lens_model, kwargs_special
@@ -268,9 +275,11 @@ class Image2SourceMapping(object):
             self.multi_plane_organizer.update_source_mapping_T_lists(
                 self, kwargs_special
             )
-        
+
         if self._cosmology_sampling:
-            cosmo = self._get_cosmo(self._lens_model.lens_model.cosmology_model, kwargs_special)
+            cosmo = self._get_cosmo(
+                self._lens_model.lens_model.cosmology_model, kwargs_special
+            )
             self.set_background_cosmo(cosmo)
 
     def image_flux_joint(
@@ -353,7 +362,7 @@ class Image2SourceMapping(object):
             amplitude amp=1, in the same order as the light_model_list
         """
         self.update_distances(kwargs_special)
-        
+
         if self._multi_source_plane is False:
             x_source, y_source = self._lens_model.ray_shooting(x, y, kwargs_lens)
             return self._light_model.functions_split(x_source, y_source, kwargs_source)

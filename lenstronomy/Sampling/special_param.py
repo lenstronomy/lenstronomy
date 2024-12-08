@@ -188,7 +188,14 @@ class CosmologyParam(SingleParam):
         """
         :param on: bool, if True, cosmology parameters are sampled
         """
-        allowed_cosmologies = ["FlatLambdaCDM", "LambdaCDM", "FlatwCDM", "wCDM", "Flatw0waCDM", "w0waCDM"]
+        allowed_cosmologies = [
+            "FlatLambdaCDM",
+            "LambdaCDM",
+            "FlatwCDM",
+            "wCDM",
+            "Flatw0waCDM",
+            "w0waCDM",
+        ]
         param_names = [
             ["H0", "Om0"],
             ["H0", "Om0", "Ode0"],
@@ -224,6 +231,7 @@ class CosmologyParam(SingleParam):
 
         if not self.on:
             return
+
 
 # ======================================== #
 # == All together: Composing into class == #

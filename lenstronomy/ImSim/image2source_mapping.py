@@ -210,11 +210,6 @@ class Image2SourceMapping(object):
             {"H0": H0, "Om0": Om0, "Ode0": Ode0, "w0": w0, "wa": wa},
         ]
 
-        if cosmology_model not in supported_models:
-            raise ValueError(
-                f"cosmology model {cosmology_model} not supported! Choose between {supported_models}."
-            )
-
         index = supported_models.index(cosmology_model)
         cosmo = cosmo_classes[index](**cosmo_kwargs[index])
 

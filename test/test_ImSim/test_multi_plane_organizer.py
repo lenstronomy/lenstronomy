@@ -73,7 +73,9 @@ class TestMultiPlaneOrganizer(object):
             "factor_beta_3_4": 6.0,
         }
 
-        beta_factor_list = self.multi_plane_organizer._extract_beta_factors(kwargs_special)
+        beta_factor_list = self.multi_plane_organizer._extract_beta_factors(
+            kwargs_special
+        )
         npt.assert_almost_equal(beta_factor_list, [1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
 
     def test_update_lens_T_lists(self):
@@ -225,7 +227,6 @@ class TestMultiPlaneOrganizer(object):
             self.source_redshift_list[2], self.source_redshift_list[3], kwargs_special
         )
         npt.assert_almost_equal(D_ij, 175.31018095788596, decimal=10)
-
 
     def test_get_D_i(self):
         """Test MultiPlaneOrganizer._get_D_i()"""

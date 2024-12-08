@@ -64,14 +64,18 @@ class MultiPlaneOrganizer(object):
         self._sorted_joint_unique_redshift_list = sorted(
             list(set(list(lens_redshift_list) + list(source_redshift_list)))
         )
-        self._sorted_joint_unique_redshift_list = [0] + self._sorted_joint_unique_redshift_list # includes 0 as first element
+        self._sorted_joint_unique_redshift_list = [
+            0
+        ] + self._sorted_joint_unique_redshift_list  # includes 0 as first element
 
         self._num_lens_planes = (
             len(self._sorted_joint_unique_redshift_list) - 2
         )  # not including the z=0 plane and the last source plane
 
         self.betas_fiducial = []
-        self._D_z_list_fiducial = [0.] # D_z upto P lens planes, does not include the last source plane. D_s = _D_is_list_fiducial[0]
+        self._D_z_list_fiducial = [
+            0.0
+        ]  # D_z upto P lens planes, does not include the last source plane. D_s = _D_is_list_fiducial[0]
         self._D_is_list_fiducial = (
             []
         )  # distance between lens planes and the last (source) plane
@@ -133,7 +137,7 @@ class MultiPlaneOrganizer(object):
         """
         beta_factors = []
 
-        for j in range(1, self._num_lens_planes+1):
+        for j in range(1, self._num_lens_planes + 1):
             for i in range(1, j):
                 beta_factors.append(kwargs_special[f"factor_beta_{i}_{j}"])
 
@@ -189,7 +193,8 @@ class MultiPlaneOrganizer(object):
         return index
 
     def _get_lens_T_lists(self, kwargs_special):
-        """Retreive the lens model's `T_ij` and `T_z` lists for a given set of beta_factors.
+        """Retreive the lens model's `T_ij` and `T_z` lists for a given set of
+        beta_factors.
 
         :param kwargs_special: dictionary of special keyword arguments
         :type kwargs_special: dict
@@ -238,22 +243,30 @@ class MultiPlaneOrganizer(object):
                 self._sorted_joint_unique_redshift_list, z_i
             )
             return self._D_is_list_fiducial[i_fiducial_index]
-        
+
         if z_i > z_j:
             z_i, z_j = z_j, z_i
 
         beta_factors = self._extract_beta_factors(kwargs_special)
-        i_fiducial_index = self._get_element_index(self._sorted_joint_unique_redshift_list, z_i)
-        j_fiducial_index = self._get_element_index(self._sorted_joint_unique_redshift_list, z_j)
-        ij_fiducial_index = self._get_element_index(self._beta_ij_ordering_list, f"{i_fiducial_index}_{j_fiducial_index}")
-        
+        i_fiducial_index = self._get_element_index(
+            self._sorted_joint_unique_redshift_list, z_i
+        )
+        j_fiducial_index = self._get_element_index(
+            self._sorted_joint_unique_redshift_list, z_j
+        )
+        ij_fiducial_index = self._get_element_index(
+            self._beta_ij_ordering_list, f"{i_fiducial_index}_{j_fiducial_index}"
+        )
+
         D_j = self._D_z_list_fiducial[j_fiducial_index]
         D_s = self._D_is_list_fiducial[0]
         D_is = self._D_is_list_fiducial[i_fiducial_index]
 
-        beta_ij = beta_factors[ij_fiducial_index] * self.betas_fiducial[ij_fiducial_index]
+        beta_ij = (
+            beta_factors[ij_fiducial_index] * self.betas_fiducial[ij_fiducial_index]
+        )
 
-        D_ij  = beta_ij * D_j * D_is / D_s
+        D_ij = beta_ij * D_j * D_is / D_s
 
         return D_ij
 
@@ -264,7 +277,7 @@ class MultiPlaneOrganizer(object):
         elif z_i == self._sorted_joint_unique_redshift_list[-1]:
             return self._D_is_list_fiducial[0]
 
-        i_index  = self._get_element_index(self._sorted_joint_unique_redshift_list, z_i)
+        i_index = self._get_element_index(self._sorted_joint_unique_redshift_list, z_i)
         return self._D_z_list_fiducial[i_index]
 
     def _transverse_distance_start_stop(

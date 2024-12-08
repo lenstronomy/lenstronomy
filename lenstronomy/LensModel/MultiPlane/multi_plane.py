@@ -2,6 +2,8 @@ import numpy as np
 from copy import deepcopy
 from lenstronomy.LensModel.MultiPlane.multi_plane_base import MultiPlaneBase
 from lenstronomy.Util.package_util import exporter
+from astropy.cosmology import *
+import warnings
 
 export, __all__ = exporter()
 
@@ -32,6 +34,8 @@ class MultiPlane(object):
         kwargs_interp=None,
         kwargs_synthesis=None,
         distance_ratio_sampling=False,
+        cosmology_sampling=False,
+        cosmology_model="FlatLambdaCDM",
     ):
         """
 
@@ -53,11 +57,44 @@ class MultiPlane(object):
         :param z_lens_convention: float, redshift of a lens plane to define the
          effective time-delay distance. Only needed if distance ratios are
          sampled. If None, the first lens redshift is used.
+        :param cosmo_interp: bool, if True, will use interpolated cosmology
         :param kwargs_synthesis: keyword arguments for the 'SYNTHESIS' lens model, if applicable
         :param kwargs_multiplane_model: keyword arguments for the MultiPlaneDecoupled class, if specified
         :param distance_ratio_sampling: bool, if True, will use sampled
          distance ratios to update T_ij value in multi-lens plane computation.
+        :param cosmology_sampling: bool, if True, will use sampled cosmology
+        :param cosmology_model: str, name of the cosmology model to use for
         """
+        if cosmology_sampling:
+            self.cosmology_model = cosmology_model
+            
+            supported_cosmologies = ["FlatLambdaCDM", "LambdaCDM", "FlatwCDM", "wCDM", "Flatw0waCDM", "w0waCDM"]
+            
+            if cosmology_model not in supported_cosmologies:
+                raise ValueError(f"cosmology model {cosmology_model} not supported! Choose between {supported_cosmologies}.")
+            index = supported_cosmologies.index(cosmology_model)
+            cosmo_classes = [FlatLambdaCDM, LambdaCDM, FlatwCDM, wCDM, Flatw0waCDM, w0waCDM]
+            cosmo_kwargs = [
+                {"H0": 70, "Om0": 0.3},
+                {"H0": 70, "Om0": 0.3, "Ode0": 0.7},
+                {"H0": 70, "Om0": 0.3, "w0": -1},
+                {"H0": 70, "Om0": 0.3, "Ode0": 0.7, "w0": -1},
+                {"H0": 70, "Om0": 0.3, "w0": -1, "wa": 0},
+                {"H0": 70, "Om0": 0.3, "Ode0": 0.7, "w0": -1, "wa": 0},
+            ]
+
+            cosmo = cosmo_classes[index](**cosmo_kwargs[index])
+            
+            if distance_ratio_sampling:
+                warnings.warn("cosmology_sampling=True and distance_ratio_sampling=True cannot be set simultaneously. "
+                              "Setting distance_ratio_sampling=False.")
+                distance_ratio_sampling = False
+
+            if cosmo_interp:
+                warnings.warn("cosmology_sampling=True and cosmo_interp=True cannot be set simultaneously. "
+                              "Setting cosmo_interp=False.")
+                cosmo_interp = False
+
         self.kwargs_class = {
             "z_source": z_source,
             "lens_model_list": lens_model_list,
@@ -74,6 +111,8 @@ class MultiPlane(object):
             "kwargs_interp": kwargs_interp,
             "kwargs_synthesis": kwargs_synthesis,
             "distance_ratio_sampling": distance_ratio_sampling,
+            "cosmology_sampling": cosmology_sampling,
+            "cosmology_model": cosmology_model,
         }
         if z_source_convention is None:
             z_source_convention = z_source

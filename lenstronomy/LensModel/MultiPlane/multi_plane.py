@@ -167,6 +167,7 @@ class MultiPlane(object):
             kwargs_interp=kwargs_interp,
             kwargs_synthesis=kwargs_synthesis,
         )
+        self._z_source = z_source
         self._set_source_distances(z_source)
         self._observed_convention_index = observed_convention_index
         if observed_convention_index is None:
@@ -237,6 +238,15 @@ class MultiPlane(object):
             z_start=0, z_stop=z_source, include_z_start=False
         )
         self._T_z_source = self._multi_plane_base._cosmo_bkg.T_xy(0, z_source)
+
+    def set_background_cosmo(self, cosmo):
+        """Set the background cosmology.
+
+        :param cosmo: instance of astropy.cosmology
+        :return: None
+        """
+        self._multi_plane_base.set_background_cosmo(cosmo)
+        self._set_source_distances(self._z_source)
 
     def observed2flat_convention(self, kwargs_lens):
         """

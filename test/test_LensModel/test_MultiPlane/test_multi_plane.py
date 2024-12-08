@@ -4,6 +4,7 @@ import numpy.testing as npt
 import numpy as np
 import pytest
 import unittest
+from astropy.cosmology import FlatwCDM
 from lenstronomy.LensModel.MultiPlane.multi_plane import MultiPlane
 from lenstronomy.LensModel.MultiPlane.multi_plane_base import MultiPlaneBase
 from lenstronomy.LensModel.lens_model import LensModel
@@ -103,6 +104,32 @@ class TestMultiPlane(object):
         )
         lens_model_mutli.T_ij_stop = 1000
         assert lens_model_mutli.T_ij_stop == 1000
+
+    def test_set_T_ij_stop(self):
+        z_source = 1.5
+        lens_model_list = ["SIS"]
+        kwargs_lens = [{"theta_E": 1}]
+        redshift_list = [0.5]
+        cosmo = FlatwCDM(H0=70, Om0=0.3, w0=-0.8)
+        lens_model_mutli = MultiPlane(
+            z_source=z_source,
+            lens_model_list=lens_model_list,
+            lens_redshift_list=redshift_list,
+            z_interp_stop=3,
+            cosmo_interp=False,
+            z_lens_convention=0.5,
+            cosmo=cosmo
+        )
+        lens_model_mutli_2 = MultiPlane(
+            z_source=z_source,
+            lens_model_list=lens_model_list,
+            lens_redshift_list=redshift_list,
+            z_interp_stop=3,
+            cosmo_interp=False,
+            z_lens_convention=0.5,
+        )
+        lens_model_mutli_2.set_background_cosmo(cosmo)
+        assert lens_model_mutli._T_z_source == lens_model_mutli_2._T_z_source
 
     def test_sis_ray_tracing(self):
         z_source = 1.5

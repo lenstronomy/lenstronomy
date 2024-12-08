@@ -120,6 +120,7 @@ class TestParam(object):
         param = SpecialParam(
             cosmology_sampling=True,
             cosmology_model="wCDM",
+            distance_ratio_sampling=True,
             Ddt_sampling=True,
             kinematic_sampling=True,
             kwargs_fixed=kwargs_fixed,

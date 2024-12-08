@@ -65,9 +65,9 @@ class MultiPlane(object):
         :param cosmology_sampling: bool, if True, will use sampled cosmology
         :param cosmology_model: str, name of the cosmology model to use for
         """
-        if cosmology_sampling:
-            self.cosmology_model = cosmology_model
-
+        self.cosmology_sampling = cosmology_sampling
+        self.cosmology_model = cosmology_model
+        if self.cosmology_sampling:
             supported_cosmologies = [
                 "FlatLambdaCDM",
                 "LambdaCDM",

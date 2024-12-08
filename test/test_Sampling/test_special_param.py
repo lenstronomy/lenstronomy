@@ -115,6 +115,26 @@ class TestParam(object):
         assert kwargs_new["factor_beta_1_3"] == 1
         assert kwargs_new["factor_beta_2_3"] == 1
 
+    def test_cosmology_parameters(self):
+        kwargs_fixed = {"H0": 70}
+        param = SpecialParam(
+            cosmology_sampling=True,
+            cosmology_model="wCDM",
+            Ddt_sampling=True,
+            kinematic_sampling=True,
+            kwargs_fixed=kwargs_fixed,
+            num_z_sampling=3,
+            num_lens_planes=2,
+        )
+        kwargs = {"w0": -0.5, "Om0": 0.3, "Ode0": 0.7}
+
+        args = param.set_params(kwargs)
+        assert len(args) == 3
+        num_param, param_list = param.num_param()
+        assert num_param == 3
+        kwargs_new, _ = param.get_params(args, i=0)
+        assert kwargs_new["w0"] == -0.5
+
     def test_mass_scaling(self):
         kwargs_fixed = {}
         param = SpecialParam(

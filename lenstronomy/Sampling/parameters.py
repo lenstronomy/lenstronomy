@@ -257,10 +257,9 @@ class Param(object):
         )
         self._kwargs_model = kwargs_model
 
-        if "distance_ratio_sampling" in self._kwargs_model:
-            distance_ratio_sampling = self._kwargs_model["distance_ratio_sampling"]
-        else:
-            distance_ratio_sampling = None
+        distance_ratio_sampling = self._kwargs_model.get("distance_ratio_sampling", None)
+        cosmology_sampling = self._kwargs_model.get("cosmology_sampling", None)
+        cosmology_model = self._kwargs_model.get("cosmology_model", "FlatLambdaCDM")
 
         # check how many redshifts need to be sampled
         num_z_sampling = 0
@@ -476,6 +475,8 @@ class Param(object):
             general_scaling_params=self._general_scaling_masks,
             distance_ratio_sampling=distance_ratio_sampling,
             num_lens_planes=num_lens_planes,
+            cosmology_sampling=cosmology_sampling,
+            cosmology_model=cosmology_model,
             kwargs_fixed=kwargs_fixed_special,
             num_scale_factor=self._num_scale_factor,
             kwargs_lower=kwargs_lower_special,

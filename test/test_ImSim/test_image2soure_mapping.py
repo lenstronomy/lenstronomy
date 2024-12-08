@@ -129,8 +129,7 @@ class TestMultiSourcePlane(object):
 
     def test_image_2_source(self):
         kwargs_special = {
-            "factor_a_1": 1,
-            "factor_a_2": 1,
+            "factor_beta_1_2": 1,
         }
         x, y = np.arange(10), np.arange(10)
         source_x, source_y = self.multi_free_multi.image2source(
@@ -145,8 +144,7 @@ class TestMultiSourcePlane(object):
 
     def test_image_flux_split(self):
         kwargs_special = {
-            "factor_a_1": 1,
-            "factor_a_2": 1,
+            "factor_beta_1_2": 1,
         }
         x, y = np.arange(10), np.arange(10)
         flux, n = self.multi_free_multi.image_flux_split(

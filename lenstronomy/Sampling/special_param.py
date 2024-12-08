@@ -145,13 +145,12 @@ class GeneralScalingParam(ArrayParam):
                 self._kwargs_upper[pow_name] = 10
 
 
-class DistanceRatioFactorsAB(SingleParam):
+class DistanceRatioBetaFactors(SingleParam):
     """Distance ratio a and b factors.
 
-    If there are P lens planes, then there are P
-    factor_a and P-2 factor_b parameters. The parameter to be defined by the user are
-    "factor_a_1", "factor_a_2, ..., factor_a_P, factor_b_2, ..., factor_b_{P-1}". For
-    further definitions of factor_a and factor_b parameters, see the documentation of
+    If there are P lens planes, then there are comb(P, 2) factor_beta parameters. The 
+    parameter to be defined by the user are "factor_beta_12", "factor_beta_13", "factor_beta_23", ...,". For
+    further definitions of factor_beta parameters, see the documentation of
     `lesnstronomy.ImSim.multiplane_organizer.MultiplaneOrganizer()` class.
     """
 
@@ -170,17 +169,12 @@ class DistanceRatioFactorsAB(SingleParam):
         if not self.on:
             return
 
-        for i in range(self.num_lens_plane):
-            param_name = f"factor_a_{i+1}"
-            self.param_names[param_name] = 1
-            self._kwargs_lower[param_name] = 0
-            self._kwargs_upper[param_name] = 1000
-
-        for i in range(1, self.num_lens_plane - 1):
-            param_name = f"factor_b_{i + 1}"
-            self.param_names[param_name] = 1
-            self._kwargs_lower[param_name] = 0
-            self._kwargs_upper[param_name] = 1000
+        for j in range(self.num_lens_plane):
+            for i in range(j):
+                param_name = f"factor_beta_{i+1}_{j+1}"
+                self.param_names[param_name] = 1
+                self._kwargs_lower[param_name] = 0
+                self._kwargs_upper[param_name] = 1000
 
 
 # ======================================== #
@@ -242,7 +236,7 @@ class SpecialParam(object):
          sampled
         """
         self._num_lens_planes = num_lens_planes
-        self._distance_ratio_sampling = DistanceRatioFactorsAB(
+        self._distance_ratio_sampling = DistanceRatioBetaFactors(
             distance_ratio_sampling, num_lens_planes
         )
 

@@ -321,13 +321,19 @@ class TestMultiSourcePlane(object):
 
         npt.assert_almost_equal(
             self.multi_lens_free_cosmology.image2source(
-                x, y, kwargs_lens=self.kwargs_lens, index_source=0,
-                kwargs_special={"H0": 70, "Om0": 0.3, "w0": -0.5}
+                x,
+                y,
+                kwargs_lens=self.kwargs_lens,
+                index_source=0,
+                kwargs_special={"H0": 70, "Om0": 0.3, "w0": -0.5},
             ),
             self.multi_lens_free_cosmology_2.image2source(
-                x, y, kwargs_lens=self.kwargs_lens, index_source=0,
-                kwargs_special={"H0": 70, "Om0": 0.3, "w0": -0.5}
-            ),  
+                x,
+                y,
+                kwargs_lens=self.kwargs_lens,
+                index_source=0,
+                kwargs_special={"H0": 70, "Om0": 0.3, "w0": -0.5},
+            ),
             decimal=10,
         )
 

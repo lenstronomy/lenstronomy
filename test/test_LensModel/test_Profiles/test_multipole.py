@@ -9,13 +9,13 @@ import pytest
 import numpy.testing as npt
 
 
-class TestMultipole(object): 
+class TestMultipole(object):
     """Tests the Gaussian methods."""
 
     def setup_method(self):
         self.Multipole = Multipole()
 
-    def test_function(self): 
+    def test_function(self):
         x = 1
         y = 2
         m = 4
@@ -35,8 +35,8 @@ class TestMultipole(object):
         npt.assert_almost_equal(values[1], -0.009453038, decimal=6)
         npt.assert_almost_equal(values[2], -0.009910505, decimal=6)
 
-        m=1
-        values = self.Multipole.function(x, y, m, a_m, phi_m, r_E=1.)
+        m = 1
+        values = self.Multipole.function(x, y, m, a_m, phi_m, r_E=1.0)
         npt.assert_almost_equal(values[0], 0.04496838, decimal=6)
         npt.assert_almost_equal(values[1], 0.09042084, decimal=6)
         npt.assert_almost_equal(values[2], 0.14335526, decimal=6)
@@ -67,9 +67,9 @@ class TestMultipole(object):
         npt.assert_almost_equal(f_y[1], -0.006541883, decimal=6)
         npt.assert_almost_equal(f_y[2], 0.001649720, decimal=6)
 
-        m=1
-        f_x, f_y = self.Multipole.derivatives(x, y, m, a_m, phi_m, r_E=1.)
-        npt.assert_almost_equal(f_x[0], 0.04058541, decimal=6)   
+        m = 1
+        f_x, f_y = self.Multipole.derivatives(x, y, m, a_m, phi_m, r_E=1.0)
+        npt.assert_almost_equal(f_x[0], 0.04058541, decimal=6)
         npt.assert_almost_equal(f_x[1], 0.0496472, decimal=6)
         npt.assert_almost_equal(f_x[2], 0.03591584, decimal=6)
         npt.assert_almost_equal(f_y[0], 0.01967839, decimal=6)
@@ -103,10 +103,10 @@ class TestMultipole(object):
         npt.assert_almost_equal(values[3][1], 0.012761602, decimal=6)
         npt.assert_almost_equal(values[1][1], -0.004253867, decimal=6)
 
-        m=1
-        values = self.Multipole.hessian(x, y, m, a_m, phi_m, r_E=1.)  
-        npt.assert_almost_equal(values[0][0], 0.01431771, decimal=6)  
-        npt.assert_almost_equal(values[3][0], 0.00319773, decimal=6)   
+        m = 1
+        values = self.Multipole.hessian(x, y, m, a_m, phi_m, r_E=1.0)
+        npt.assert_almost_equal(values[0][0], 0.01431771, decimal=6)
+        npt.assert_almost_equal(values[3][0], 0.00319773, decimal=6)
         npt.assert_almost_equal(values[1][0], 0.00416999, decimal=6)
         npt.assert_almost_equal(values[0][1], 0.00731153, decimal=6)
         npt.assert_almost_equal(values[3][1], 0.00839617, decimal=6)
@@ -114,8 +114,9 @@ class TestMultipole(object):
 
         npt.assert_almost_equal(values[2], values[1], decimal=8)
         r, phi = np.sqrt(x**2 + y**2), np.arctan2(y, x)
-        npt.assert_almost_equal((values[0]+values[3]), a_m*np.cos(phi-phi_m)/r, decimal=6)
-
+        npt.assert_almost_equal(
+            (values[0] + values[3]), a_m * np.cos(phi - phi_m) / r, decimal=6
+        )
 
 
 class TestEllipticalMultipole(object):
@@ -249,17 +250,23 @@ class TestEllipticalMultipole(object):
 
         npt.assert_almost_equal(values[2], values[1], decimal=8)
 
-        #Check convergence profiles
-        R, phi_ell = np.sqrt(q*x**2 + y**2/q), np.arctan2(y, q*x)
-        npt.assert_almost_equal((values[0]+values[3]), a_m*np.cos(m*(phi_ell-phi_m))/R, decimal=6)
+        # Check convergence profiles
+        R, phi_ell = np.sqrt(q * x**2 + y**2 / q), np.arctan2(y, q * x)
+        npt.assert_almost_equal(
+            (values[0] + values[3]), a_m * np.cos(m * (phi_ell - phi_m)) / R, decimal=6
+        )
 
-        m=3
+        m = 3
         values = self.Multipole.hessian(x, y, m, a_m, phi_m, q)
-        npt.assert_almost_equal((values[0]+values[3]), a_m*np.cos(m*(phi_ell-phi_m))/R, decimal=6)
+        npt.assert_almost_equal(
+            (values[0] + values[3]), a_m * np.cos(m * (phi_ell - phi_m)) / R, decimal=6
+        )
 
-        m=1
+        m = 1
         values = self.Multipole.hessian(x, y, m, a_m, phi_m, q)
-        npt.assert_almost_equal((values[0]+values[3]), a_m*np.cos(m*(phi_ell-phi_m))/R, decimal=6)
+        npt.assert_almost_equal(
+            (values[0] + values[3]), a_m * np.cos(m * (phi_ell - phi_m)) / R, decimal=6
+        )
 
         # Test that the limit q-> 1 is consistent with the spherical multipoles
         f_xx_ell_limit, f_xy_ell_limit, f_yx_ell_limit, f_yy_ell_limit = (

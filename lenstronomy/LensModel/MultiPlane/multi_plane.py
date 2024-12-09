@@ -2,6 +2,7 @@ import numpy as np
 from copy import deepcopy
 from lenstronomy.LensModel.MultiPlane.multi_plane_base import MultiPlaneBase
 from lenstronomy.Util.package_util import exporter
+from lenstronomy.Util.cosmo_util import get_cosmology
 from astropy.cosmology import *
 import warnings
 
@@ -68,38 +69,7 @@ class MultiPlane(object):
         self.cosmology_sampling = cosmology_sampling
         self.cosmology_model = cosmology_model
         if self.cosmology_sampling:
-            supported_cosmologies = [
-                "FlatLambdaCDM",
-                "LambdaCDM",
-                "FlatwCDM",
-                "wCDM",
-                "Flatw0waCDM",
-                "w0waCDM",
-            ]
-
-            if cosmology_model not in supported_cosmologies:
-                raise ValueError(
-                    f"cosmology model {cosmology_model} not supported! Choose between {supported_cosmologies}."
-                )
-            index = supported_cosmologies.index(cosmology_model)
-            cosmo_classes = [
-                FlatLambdaCDM,
-                LambdaCDM,
-                FlatwCDM,
-                wCDM,
-                Flatw0waCDM,
-                w0waCDM,
-            ]
-            cosmo_kwargs = [
-                {"H0": 70, "Om0": 0.3},
-                {"H0": 70, "Om0": 0.3, "Ode0": 0.7},
-                {"H0": 70, "Om0": 0.3, "w0": -1},
-                {"H0": 70, "Om0": 0.3, "Ode0": 0.7, "w0": -1},
-                {"H0": 70, "Om0": 0.3, "w0": -1, "wa": 0},
-                {"H0": 70, "Om0": 0.3, "Ode0": 0.7, "w0": -1, "wa": 0},
-            ]
-
-            cosmo = cosmo_classes[index](**cosmo_kwargs[index])
+            cosmo = get_cosmology(cosmology_model=cosmology_model)
 
             if distance_ratio_sampling:
                 warnings.warn(

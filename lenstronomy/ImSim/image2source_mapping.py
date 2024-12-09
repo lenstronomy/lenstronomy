@@ -3,6 +3,7 @@ import warnings
 from astropy.cosmology import *
 from lenstronomy.Cosmo.background import Background
 from lenstronomy.ImSim.multiplane_organizer import MultiPlaneOrganizer
+from lenstronomy.Util.cosmo_util import get_cosmology
 
 __all__ = ["Image2SourceMapping"]
 
@@ -178,43 +179,6 @@ class Image2SourceMapping(object):
         plane."""
         self._T_ij_end_list = T_ij_end_list
 
-    @staticmethod
-    def _get_cosmo(cosmology_model, kwargs_special):
-        """Returns the cosmology instance.
-
-        :param cosmology_model: str, name of the cosmology model
-        :param kwargs_special: keyword arguments for the cosmology model
-        :return: astropy.cosmology instance
-        """
-        H0 = kwargs_special.get("H0", 70)
-        Om0 = kwargs_special.get("Om0", 0.3)
-        Ode0 = kwargs_special.get("Ode0", 0.7)
-        w0 = kwargs_special.get("w0", -1)
-        wa = kwargs_special.get("wa", 0)
-
-        supported_models = [
-            "FlatLambdaCDM",
-            "LambdaCDM",
-            "FlatwCDM",
-            "wCDM",
-            "Flatw0waCDM",
-            "w0waCDM",
-        ]
-        cosmo_classes = [FlatLambdaCDM, LambdaCDM, FlatwCDM, wCDM, Flatw0waCDM, w0waCDM]
-        cosmo_kwargs = [
-            {"H0": H0, "Om0": Om0},
-            {"H0": H0, "Om0": Om0, "Ode0": Ode0},
-            {"H0": H0, "Om0": Om0, "w0": w0},
-            {"H0": H0, "Om0": Om0, "Ode0": Ode0, "w0": w0},
-            {"H0": H0, "Om0": Om0, "w0": w0, "wa": wa},
-            {"H0": H0, "Om0": Om0, "Ode0": Ode0, "w0": w0, "wa": wa},
-        ]
-
-        index = supported_models.index(cosmology_model)
-        cosmo = cosmo_classes[index](**cosmo_kwargs[index])
-
-        return cosmo
-
     def image2source(self, x, y, kwargs_lens, index_source, kwargs_special=None):
         """
         mapping of image plane to source plane coordinates
@@ -272,7 +236,7 @@ class Image2SourceMapping(object):
             )
 
         if self._cosmology_sampling:
-            cosmo = self._get_cosmo(
+            cosmo = get_cosmology(
                 self._lens_model.lens_model.cosmology_model, kwargs_special
             )
             self.set_background_cosmo(cosmo)

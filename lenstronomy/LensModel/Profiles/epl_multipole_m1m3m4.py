@@ -10,9 +10,8 @@ __all__ = ["EPL_MULTIPOLE_M1M3M4", "EPL_MULTIPOLE_M1M3M4_ELL"]
 
 
 class EPL_MULTIPOLE_M1M3M4_ELL(LensProfileBase):
-    """EPL (Elliptical Power Law) mass profile combined with two elliptical multipole
-    terms of order m=3 and m=4 (exact for general axis ratio q) and a circular m=1
-    multipole.
+    """EPL (Elliptical Power Law) mass profile combined with three elliptical multipole
+    terms of order m=1, m=3 and m=4  (exact for general axis ratio q).
 
     See also documentation of EPL_BOXYDIKSY CLASS, lenstronomy.LensModel.Profiles.epl
     and lenstronomy.LensModel.Profiles.multipole for details. For an example of using
@@ -20,7 +19,6 @@ class EPL_MULTIPOLE_M1M3M4_ELL(LensProfileBase):
     https://ui.adsabs.harvard.edu/abs/2024arXiv241012987L/abstract
     """
 
-    # TODO: update the m=1 multipole term to have elliptical symmetry when the solution for the m=1 elliptical multipole is implemented
     param_names = [
         "theta_E",
         "gamma",
@@ -66,7 +64,6 @@ class EPL_MULTIPOLE_M1M3M4_ELL(LensProfileBase):
 
     def __init__(self):
         self._epl = EPL()
-        self._multipole_m1 = Multipole()
         self._multipole = EllipticalMultipole()
         super(EPL_MULTIPOLE_M1M3M4_ELL, self).__init__()
 
@@ -123,9 +120,11 @@ class EPL_MULTIPOLE_M1M3M4_ELL(LensProfileBase):
         kwargs_multipole_m1 = {
             "m": 1,
             "a_m": a1_a * rescale_am,
+            "q": q,
             "phi_m": phi + delta_phi_m1,
             "center_x": center_x,
             "center_y": center_y,
+            "r_E": theta_E,
         }
         kwargs_multipole_m3 = {
             "m": 3,
@@ -134,6 +133,7 @@ class EPL_MULTIPOLE_M1M3M4_ELL(LensProfileBase):
             "phi_m": phi + delta_phi_m3,
             "center_x": center_x,
             "center_y": center_y,
+            "r_E": theta_E,
         }
         kwargs_multipole_m4 = {
             "m": 4,
@@ -206,7 +206,7 @@ class EPL_MULTIPOLE_M1M3M4_ELL(LensProfileBase):
         f_epl = self._epl.function(x, y, **kwargs_epl)
         f_multipole = self._multipole.function(x, y, **kwargs_multipole3)
         f_multipole += self._multipole.function(x, y, **kwargs_multipole4)
-        f_multipole += self._multipole_m1.function(x, y, **kwargs_multipole1)
+        f_multipole += self._multipole.function(x, y, **kwargs_multipole1)
         return f_epl + f_multipole
 
     def derivatives(
@@ -290,7 +290,7 @@ class EPL_MULTIPOLE_M1M3M4_ELL(LensProfileBase):
         f_x_multipole4, f_y_multipole4 = self._multipole.derivatives(
             x, y, **kwargs_multipole4
         )
-        f_x_multipole1, f_y_multipole1 = self._multipole_m1.derivatives(
+        f_x_multipole1, f_y_multipole1 = self._multipole.derivatives(
             x, y, **kwargs_multipole1
         )
         f_x = f_x_epl + f_x_multipole3 + f_x_multipole4 + f_x_multipole1
@@ -374,7 +374,7 @@ class EPL_MULTIPOLE_M1M3M4_ELL(LensProfileBase):
             f_xy_multipole1,
             f_yx_multipole1,
             f_yy_multipole1,
-        ) = self._multipole_m1.hessian(x, y, **kwargs_multipole1)
+        ) = self._multipole.hessian(x, y, **kwargs_multipole1)
         f_xx = f_xx_epl + f_xx_multipole3 + f_xx_multipole4 + f_xx_multipole1
         f_xy = f_xy_epl + f_xy_multipole3 + f_xy_multipole4 + f_xy_multipole1
         f_yx = f_yx_epl + f_yx_multipole3 + f_yx_multipole4 + f_yx_multipole1
@@ -513,6 +513,7 @@ class EPL_MULTIPOLE_M1M3M4(LensProfileBase):
             "phi_m": phi + delta_phi_m1,
             "center_x": center_x,
             "center_y": center_y,
+            "r_E": theta_E,
         }
         kwargs_multipole_m3 = {
             "m": 3,

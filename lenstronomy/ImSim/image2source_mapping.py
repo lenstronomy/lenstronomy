@@ -1,6 +1,4 @@
 import numpy as np
-import warnings
-from astropy.cosmology import *
 from lenstronomy.Cosmo.background import Background
 from lenstronomy.ImSim.multiplane_organizer import MultiPlaneOrganizer
 from lenstronomy.Util.cosmo_util import get_cosmology

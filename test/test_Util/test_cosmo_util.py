@@ -4,7 +4,7 @@ from lenstronomy.Util.cosmo_util import get_astropy_cosmo
 import numpy.testing as npt
 from astropy.cosmology import w0waCDM
 from astropy.cosmology import Flatw0waCDM
-
+import pytest
 
 class TestCosmoUtil(object):
     def setup_method(self):
@@ -24,3 +24,6 @@ class TestCosmoUtil(object):
 
         npt.assert_almost_equal(cosmo.H0.value, fiducial_cosmo.H0.value, decimal=10)
         npt.assert_almost_equal(cosmo.angular_diameter_distance(1).value, fiducial_cosmo.angular_diameter_distance(1).value, decimal=10)
+
+        with pytest.raises(ValueError):
+            get_astropy_cosmo("FLRW", {"H0": 70, "Om0": 0.3, "Ode0": 0.7, "w0": -0.8, "wa": 0.2})

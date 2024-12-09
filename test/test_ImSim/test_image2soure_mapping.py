@@ -3,6 +3,7 @@ __author__ = "sibirrer"
 import numpy as np
 import numpy.testing as npt
 import lenstronomy.Util.util as util
+from astropy.cosmology import FlatwCDM
 from lenstronomy.ImSim.image2source_mapping import Image2SourceMapping
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
@@ -39,6 +40,24 @@ class TestMultiSourcePlane(object):
             lens_redshift_list=[0.2, 0.5],
             cosmo=None,
             distance_ratio_sampling=True,
+        )
+        multi_plane_free_cosmology = LensModel(
+            lens_model_list=lens_model_list,
+            multi_plane=True,
+            z_source=2,
+            lens_redshift_list=[0.2, 0.5],
+            cosmo=FlatwCDM(H0=70, Om0=0.3, w0=-0.5),
+            cosmology_sampling=True,
+            cosmology_model="FlatwCDM",
+        )
+        multi_plane_free_cosmology_2 = LensModel(
+            lens_model_list=lens_model_list,
+            multi_plane=True,
+            z_source=2,
+            lens_redshift_list=[0.2, 0.5],
+            cosmo=FlatwCDM(H0=70, Om0=0.3, w0=-1.5),
+            cosmology_sampling=True,
+            cosmology_model="FlatwCDM",
         )
 
         light_model_list = ["SERSIC", "SERSIC"]
@@ -118,8 +137,26 @@ class TestMultiSourcePlane(object):
         )
 
         # test multi lens plane with distance sampling, single source plane
-        self.multi_free_multi = Image2SourceMapping(
+        self.multi_lens_free_distance_ratios = Image2SourceMapping(
             multi_plane_free_distance,
+            LightModel(
+                light_model_list,
+                deflection_scaling_list=None,
+                source_redshift_list=None,
+            ),
+        )
+
+        # test multi lens plane with cosmology sampling, single source plane
+        self.multi_lens_free_cosmology = Image2SourceMapping(
+            multi_plane_free_cosmology,
+            LightModel(
+                light_model_list,
+                deflection_scaling_list=None,
+                source_redshift_list=None,
+            ),
+        )
+        self.multi_lens_free_cosmology_2 = Image2SourceMapping(
+            multi_plane_free_cosmology_2,
             LightModel(
                 light_model_list,
                 deflection_scaling_list=None,
@@ -129,11 +166,10 @@ class TestMultiSourcePlane(object):
 
     def test_image_2_source(self):
         kwargs_special = {
-            "factor_a_1": 1,
-            "factor_a_2": 1,
+            "factor_beta_1_2": 1,
         }
         x, y = np.arange(10), np.arange(10)
-        source_x, source_y = self.multi_free_multi.image2source(
+        source_x, source_y = self.multi_lens_free_distance_ratios.image2source(
             x,
             y,
             kwargs_lens=self.kwargs_lens,
@@ -145,11 +181,10 @@ class TestMultiSourcePlane(object):
 
     def test_image_flux_split(self):
         kwargs_special = {
-            "factor_a_1": 1,
-            "factor_a_2": 1,
+            "factor_beta_1_2": 1,
         }
         x, y = np.arange(10), np.arange(10)
-        flux, n = self.multi_free_multi.image_flux_split(
+        flux, n = self.multi_lens_free_distance_ratios.image_flux_split(
             x,
             y,
             kwargs_lens=self.kwargs_lens,
@@ -283,6 +318,24 @@ class TestMultiSourcePlane(object):
             x, y, kwargs_lens=self.kwargs_lens, index_source=0
         )
         npt.assert_almost_equal(beta_x0, beta_x, decimal=10)
+
+        npt.assert_almost_equal(
+            self.multi_lens_free_cosmology.image2source(
+                x,
+                y,
+                kwargs_lens=self.kwargs_lens,
+                index_source=0,
+                kwargs_special={"H0": 70, "Om0": 0.3, "w0": -0.5},
+            ),
+            self.multi_lens_free_cosmology_2.image2source(
+                x,
+                y,
+                kwargs_lens=self.kwargs_lens,
+                index_source=0,
+                kwargs_special={"H0": 70, "Om0": 0.3, "w0": -0.5},
+            ),
+            decimal=10,
+        )
 
     def test__re_order_split(self):
         lens_model = LensModel(

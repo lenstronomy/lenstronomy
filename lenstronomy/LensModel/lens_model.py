@@ -35,6 +35,8 @@ class LensModel(object):
         decouple_multi_plane=False,
         kwargs_multiplane_model=None,
         distance_ratio_sampling=False,
+        cosmology_sampling=False,
+        cosmology_model="FlatLambdaCDM",
     ):
         """
 
@@ -67,6 +69,10 @@ class LensModel(object):
          distances
         :param distance_ratio_sampling: bool, if True, will use sampled
          distance ratios to update T_ij value in multi-lens plane computation.
+        :param cosmology_sampling: bool, if True, will use sampled cosmology
+            to update T_ij value in multi-lens plane computation.
+        :param cosmology_model: str, name of the cosmology model to be used for
+            cosmology sampling. Default is 'FlatLambdaCDM'.
         """
         self.lens_model_list = lens_model_list
         self.z_lens = z_lens
@@ -153,6 +159,8 @@ class LensModel(object):
                     kwargs_interp=kwargs_interp,
                     kwargs_synthesis=kwargs_synthesis,
                     distance_ratio_sampling=distance_ratio_sampling,
+                    cosmology_sampling=cosmology_sampling,
+                    cosmology_model=cosmology_model,
                 )
                 self.type = "MultiPlane"
 

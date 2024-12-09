@@ -83,7 +83,7 @@ class Multipole(LensProfileBase):
         if m == 1:
             r = np.maximum(r, 0.000001)
             f_x = a_m/2 * (np.cos(phi_m) * np.log(r/r_E) + np.cos(phi - phi_m) * np.cos(phi))
-            f_y = a_m/2 * (np.sin(phi_m) * np.log(r/r_E) + np.cos(phi - phi_m) * np.sin(phi))
+            f_x = a_m/2 * (np.sin(phi_m) * np.log(r/r_E) + np.cos(phi - phi_m) * np.sin(phi))
         else:
             f_x = np.cos(phi) * a_m / (1 - m**2) * np.cos(m * (phi - phi_m)) + np.sin(
                 phi
@@ -184,7 +184,7 @@ class EllipticalMultipole(LensProfileBase):
                 
             elif m == 3:
                 f_ = a_m * np.sqrt(q) * (np.cos(m * phi_m) * _potential_m3_1(r, phi, q, r_E) 
-                                         + (1/q) * np.sin(m * phi_m) * _potential_m3_1(r, phi+np.pi/2, 1/q, r_E))
+                                         - (1/q) * np.sin(m * phi_m) * _potential_m3_1(r, phi+np.pi/2, 1/q, r_E))
 
             elif m == 4:
                 f_ = (
@@ -239,8 +239,8 @@ class EllipticalMultipole(LensProfileBase):
             elif m == 3:
                 alpha_x_1, alpha_y_1 = _alpha_m3_1(r, phi, q, r_E)
                 alpha_x_2, alpha_y_2 = _alpha_m3_1(r, phi+np.pi/2, 1/q, r_E)
-                f_x = a_m * np.sqrt(q) * (np.cos(m * phi_m) * alpha_x_1 + (1/q) * np.sin(m * phi_m) * alpha_y_2)
-                f_y = a_m * np.sqrt(q) * (np.cos(m * phi_m) * alpha_y_1 - (1/q) * np.sin(m * phi_m) * alpha_x_2)
+                f_x = a_m * np.sqrt(q) * (np.cos(m * phi_m) * alpha_x_1 - (1/q) * np.sin(m * phi_m) * alpha_y_2)
+                f_y = a_m * np.sqrt(q) * (np.cos(m * phi_m) * alpha_y_1 + (1/q) * np.sin(m * phi_m) * alpha_x_2)
 
             elif m == 4:
                 F_m4 = _F_m4_1(phi, q=q) * np.cos(m * phi_m) + _F_m4_2(
@@ -286,9 +286,9 @@ class EllipticalMultipole(LensProfileBase):
         elif m==3:
             d2psi_dx2_1, d2psi_dy2_1, d2psi_dxdy_1 = _hessian_m3_1(r, phi, q)
             d2psi_dx2_2, d2psi_dy2_2, d2psi_dxdy_2 = _hessian_m3_1(r, phi+np.pi/2, 1/q)
-            f_xx = a_m * np.sqrt(q) * (np.cos(m * phi_m) * d2psi_dx2_1 + (1/q) * np.sin(m * phi_m) * d2psi_dy2_2)
-            f_yy = a_m * np.sqrt(q) * (np.cos(m * phi_m) * d2psi_dy2_1 + (1/q) * np.sin(m * phi_m) * d2psi_dx2_2)
-            f_xy = a_m * np.sqrt(q) * (np.cos(m * phi_m) * d2psi_dxdy_1 - (1/q) * np.sin(m * phi_m) * d2psi_dxdy_2)
+            f_xx = a_m * np.sqrt(q) * (np.cos(m * phi_m) * d2psi_dx2_1 - (1/q) * np.sin(m * phi_m) * d2psi_dy2_2)
+            f_yy = a_m * np.sqrt(q) * (np.cos(m * phi_m) * d2psi_dy2_1 - (1/q) * np.sin(m * phi_m) * d2psi_dx2_2)
+            f_xy = a_m * np.sqrt(q) * (np.cos(m * phi_m) * d2psi_dxdy_1 + (1/q) * np.sin(m * phi_m) * d2psi_dxdy_2)
             
         elif (m%2)==0: #for m=4, will also work for any even m
             phi_ell = np.angle(q * r * np.cos(phi) + 1j * r * np.sin(phi))
@@ -314,18 +314,18 @@ def _phi_ell(phi, q):
         + np.arctan2(np.sin(phi), q * np.cos(phi))
     )
 
-def _G_m_1(m, phi, q):
+def _G_m_1(m, phi_m, phi, q):
     return np.cos(m*np.arctan2(np.sin(phi), q*np.cos(phi)))/np.sqrt(q**2*np.cos(phi)**2+np.sin(phi)**2)
 
 def _F_m1_1_hat(phi, q):
     term1 = np.cos(phi) * (q*np.log(1+q**2+(q**2-1)*np.cos(2*phi)) - (np.log(2)*(1+q)/2 - (1-q**2)*(1+np.log(2)/4)))
-    term2 = 2 * np.sin(phi) * (phi - _phi_ell(phi,q)) 
+    term2 = 2 * np.sin(phi) * (phi - phi_ell(phi,q)) 
     return -(term1+term2)/(2*(1-q**2))
 
 def _F_m1_1_hat_derivative(phi,q):
     term1 = - np.cos(phi) *q * 2*(q**2-1)*np.sin(2*phi)/(1+q**2+(q**2-1)*np.cos(2*phi)) + np.sin(phi) * (
         - q*np.log(1+q**2+(q**2-1)*np.cos(2*phi)) + np.log(2)*(1+q)/2 - (1-q**2)*(1+np.log(2)/4))
-    term2 = 2 * np.cos(phi) * (phi - _phi_ell(phi,q)) + 2 * np.sin(phi) * (1 - q/(q**2*np.cos(phi)**2+np.sin(phi)**2))
+    term2 = 2 * np.cos(phi) * (phi - phi_ell(phi,q)) + 2 * np.sin(phi) * (1 - q/(q**2*np.cos(phi)**2+np.sin(phi)**2))
     return -(term1+term2)/(2*(1-q**2))
 
 def _potential_m1_1(r, phi, q, r_E):
@@ -352,14 +352,14 @@ def _A_3_1(q):
     return (np.log(2)*(1+q)**2 - 2*(1-q)*(1+q)**2*(1+np.log(2)/4) + (1-q**2)**2/4)
 
 def _F_m3_1_hat(phi,q): 
-    term1 = np.cos(phi) * (q*(3+q**2) * np.log(1+q**2+(q**2-1)*np.cos(2*phi)) - _A_3_1(q) )
-    term2 = 2 * np.sin(phi) * (1+3*q**2)*(phi - _phi_ell(phi,q))
+    term1 = np.cos(phi) * (q*(3+q**2) * np.log(1+q**2+(q**2-1)*np.cos(2*phi)) - A_3_1(q) )
+    term2 = 2 * np.sin(phi) * (1+3*q**2)*(phi -  phi_ell(phi,q))
     return (term1+term2)/(2*(1-q**2)**2)
 
 def _F_m3_1_hat_derivative(phi,q): 
     term1 = - np.cos(phi) *q*(3+q**2) * 2*(q**2-1)*np.sin(2*phi)/(1+q**2+(q**2-1)*np.cos(2*phi)) + np.sin(phi) * (
-        -q*(3+q**2) * np.log(1+q**2+(q**2-1)*np.cos(2*phi)) + _A_3_1(q))
-    term2 = 2 * np.cos(phi) * (1+3*q**2) * (phi -_phi_ell(phi,q)) + 2 * np.sin(phi) * (1+3*q**2)* (
+        -q*(3+q**2) * np.log(1+q**2+(q**2-1)*np.cos(2*phi)) + A_3_1(q))
+    term2 = 2 * np.cos(phi) * (1+3*q**2) * (phi - phi_ell(phi,q)) + 2 * np.sin(phi) * (1+3*q**2)* (
         1 - q/(q**2*np.cos(phi)**2+np.sin(phi)**2))
     return (term1+term2)/(2*(1-q**2)**2)
 

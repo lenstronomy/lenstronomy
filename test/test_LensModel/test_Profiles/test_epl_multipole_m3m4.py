@@ -306,7 +306,6 @@ class TestEPL_MULTIPOLE_M3M4_ELL(object):
             "phi_m": phi_q + delta_phi_m3,
             "q": q,
             "r_E": kwargs_epl_multipole_m3m4[0]["theta_E"],
-
         }
         kwargs_multipole_m4 = {
             "m": 4,
@@ -381,7 +380,6 @@ class TestEPL_MULTIPOLE_M3M4_ELL(object):
             "phi_m": phi_q + delta_phi_m3,
             "q": q,
             "r_E": kwargs_epl_multipole_m3m4[0]["theta_E"],
-
         }
         kwargs_multipole_m4 = {
             "m": 4,

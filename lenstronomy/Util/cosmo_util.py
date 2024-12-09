@@ -11,8 +11,7 @@ export, __all__ = exporter()
 
 @export
 def get_astropy_cosmo(cosmology_model="FlatLambdaCDM", param_kwargs={}):
-    """
-    Return an instance of a astropy.cosmology class.
+    """Return an instance of a astropy.cosmology class.
 
     :param cosmology_model: string, name of the cosmology model
     :type cosmology_model: str
@@ -20,7 +19,6 @@ def get_astropy_cosmo(cosmology_model="FlatLambdaCDM", param_kwargs={}):
     :type param_kwargs: dict
     :return: instance of a astropy.cosmology class
     """
-
 
     H0 = param_kwargs.get("H0", 70)
     Om0 = param_kwargs.get("Om0", 0.3)

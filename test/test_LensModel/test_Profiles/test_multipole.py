@@ -282,8 +282,10 @@ class TestEllipticalMultipole(object):
         npt.assert_allclose(f_yx_ell_limit, f_yx_sph, rtol=1e-4, atol=1e-4)
         npt.assert_allclose(f_yy_ell_limit, f_yy_sph, rtol=1e-4, atol=1e-4)
 
-        f_xx_ell_limit, f_xy_ell_limit, f_yx_ell_limit, f_yy_ell_limit = self.Multipole.hessian(
-            self.x, self.y, m=3, a_m=a_m, phi_m=np.pi / 18, q=0.9999
+        f_xx_ell_limit, f_xy_ell_limit, f_yx_ell_limit, f_yy_ell_limit = (
+            self.Multipole.hessian(
+                self.x, self.y, m=3, a_m=a_m, phi_m=np.pi / 18, q=0.9999
+            )
         )
         f_xx_sph, f_xy_sph, f_yx_sph, f_yy_sph = self.SphericalMultipole.hessian(
             self.x, self.y, m=3, a_m=a_m, phi_m=np.pi / 18
@@ -293,8 +295,10 @@ class TestEllipticalMultipole(object):
         npt.assert_allclose(f_yx_ell_limit, f_yx_sph, rtol=5e-5, atol=5e-5)
         npt.assert_allclose(f_yy_ell_limit, f_yy_sph, rtol=5e-5, atol=5e-5)
 
-        f_xx_ell_limit, f_xy_ell_limit, f_yx_ell_limit, f_yy_ell_limit = self.Multipole.hessian(
-            self.x, self.y, m=1, a_m=a_m, phi_m=np.pi / 6, q=0.9999999
+        f_xx_ell_limit, f_xy_ell_limit, f_yx_ell_limit, f_yy_ell_limit = (
+            self.Multipole.hessian(
+                self.x, self.y, m=1, a_m=a_m, phi_m=np.pi / 6, q=0.9999999
+            )
         )
         f_xx_sph, f_xy_sph, f_yx_sph, f_yy_sph = self.SphericalMultipole.hessian(
             self.x, self.y, m=1, a_m=a_m, phi_m=np.pi / 6

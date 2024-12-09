@@ -10,7 +10,7 @@ export, __all__ = exporter()
 
 
 @export
-def get_cosmology(cosmology_model="FlatLambdaCDM", param_kwargs={}):
+def get_astropy_cosmo(cosmology_model="FlatLambdaCDM", param_kwargs={}):
     """
     Return an instance of a astropy.cosmology class.
 

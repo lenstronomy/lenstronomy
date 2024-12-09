@@ -2,7 +2,7 @@ import numpy as np
 from copy import deepcopy
 from lenstronomy.LensModel.MultiPlane.multi_plane_base import MultiPlaneBase
 from lenstronomy.Util.package_util import exporter
-from lenstronomy.Util.cosmo_util import get_astropy_cosmo
+from lenstronomy.Util.cosmo_util import get_astropy_cosmology
 from astropy.cosmology import *
 import warnings
 
@@ -69,7 +69,7 @@ class MultiPlane(object):
         self.cosmology_sampling = cosmology_sampling
         self.cosmology_model = cosmology_model
         if self.cosmology_sampling:
-            cosmo = get_astropy_cosmo(cosmology_model=cosmology_model)
+            cosmo = get_astropy_cosmology(cosmology_model=cosmology_model)
 
             if distance_ratio_sampling:
                 warnings.warn(

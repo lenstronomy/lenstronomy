@@ -1,6 +1,6 @@
 __author__ = "ajshajib"
 
-from lenstronomy.Util.cosmo_util import get_astropy_cosmo
+from lenstronomy.Util.cosmo_util import get_astropy_cosmology
 import numpy.testing as npt
 from astropy.cosmology import w0waCDM
 from astropy.cosmology import Flatw0waCDM
@@ -13,7 +13,7 @@ class TestCosmoUtil(object):
     def test_get_cosmology(self):
         fiducial_cosmo = w0waCDM(H0=70, Om0=0.3, Ode0=0.7, w0=-0.8, wa=0.2)
 
-        cosmo = get_astropy_cosmo(
+        cosmo = get_astropy_cosmology(
             "w0waCDM", {"H0": 70, "Om0": 0.3, "Ode0": 0.7, "w0": -0.8, "wa": 0.2}
         )
 
@@ -26,7 +26,7 @@ class TestCosmoUtil(object):
 
         fiducial_cosmo = Flatw0waCDM(H0=70, Om0=0.3, w0=-1, wa=0.0)
 
-        cosmo = get_astropy_cosmo(
+        cosmo = get_astropy_cosmology(
             "Flatw0waCDM", {"H0": 70, "Om0": 0.3, "w0": -1, "wa": 0.0}
         )
 
@@ -38,4 +38,4 @@ class TestCosmoUtil(object):
         )
 
         with pytest.raises(ValueError):
-            get_astropy_cosmo("FLRW", {"H0": 70, "Om0": 0.3, "Ode0": 0.7, "w0": -0.8, "wa": 0.2})
+            get_astropy_cosmology("FLRW", {"H0": 70, "Om0": 0.3, "Ode0": 0.7, "w0": -0.8, "wa": 0.2})

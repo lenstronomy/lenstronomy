@@ -1,7 +1,7 @@
 import numpy as np
 from lenstronomy.Cosmo.background import Background
 from lenstronomy.ImSim.multiplane_organizer import MultiPlaneOrganizer
-from lenstronomy.Util.cosmo_util import get_astropy_cosmo
+from lenstronomy.Util.cosmo_util import get_astropy_cosmology
 
 __all__ = ["Image2SourceMapping"]
 
@@ -234,7 +234,7 @@ class Image2SourceMapping(object):
             )
 
         if self._cosmology_sampling:
-            cosmo = get_astropy_cosmo(
+            cosmo = get_astropy_cosmology(
                 self._lens_model.lens_model.cosmology_model, kwargs_special
             )
             self.set_background_cosmo(cosmo)

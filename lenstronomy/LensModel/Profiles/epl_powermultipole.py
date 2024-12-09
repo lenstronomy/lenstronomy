@@ -13,7 +13,16 @@ class EPL_PMultipol(LensProfileBase):
     """This class contains a EPL+PLMultipole contribution over e1,e2.
     The PLMultipole is an extention to the parametrization of Chu et al.(2013) (https://arxiv.org/abs/1302.5482). The equation is Eq. (8) from Nightingale et al. (2023) (https://arxiv.org/abs/2209.10566)
     It scales the contribution of the multipoles with the same power-law as the EPL.  It is defined with a prefactor 1/2 and the einstein radius theta_e in order to achieve k = theta_E / 2theta as the m=0
-    contribution (Reason stated in Chu et al.(2013) (https://arxiv.org/abs/1302.5482) Eq. (3)).
+    contribution (Reason stated in Chu et al.(2013) (https://arxiv.org/abs/1302.5482) Eq. (3)). The convergence \( \kappa(r, \phi) \) is given by:
+    \[
+    \kappa(r, \phi) = \frac{1}{2} \left(\frac{\theta_{\rm E}^{\rm mass}}{r}\right)^{\gamma^{\rm mass} - 1}
+    k^{\rm mass}_m \, \cos\left(m\left(\phi - \phi^{\rm mass}_m\right)\right)
+    \]
+
+    Here, \( k^{\rm mass}_m \) and \( \phi^{\rm mass}_m \) are parameterized as elliptical components:
+    \[
+    \left(\epsilon_{\rm 1}^{\rm mp}, \epsilon_{\rm 2}^{\rm mp}\right)
+    \]
 
 
     theta_E : float, Einstein radius
@@ -70,7 +79,11 @@ class EPL_PMultipol(LensProfileBase):
     ):
         """
         Lensing potential of PLmultipole contribution (for 1 component with m>=2)+EPL.
-        The equation for PLMultipol is Eq. (8) from Nightingale et al. (2023) (https://arxiv.org/abs/2209.10566)
+        The equation for PLMultipol is Eq. (8) from Nightingale et al. (2023) (https://arxiv.org/abs/2209.10566) The multipole perturbation function \( f_{\text{multi}} \) is given by:
+        \[
+        f_{\text{multi}} = \frac{\theta_E^{\gamma - 1} \, k_m}{(3 - \gamma)^2 - m^2} \, r^{3 - \gamma} \cos\left(m (\phi - \phi_m)\right)
+        \]
+        This has to be combined with an EPL power law potential f_=f_{\text{epl}}+f_{\text_{multi}}
 
 
 

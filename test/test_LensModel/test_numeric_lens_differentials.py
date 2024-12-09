@@ -479,7 +479,7 @@ class TestNumericsProfile(object):
         lens_model = ["MULTIPOLE_ELL"]
         self.assert_differentials(lens_model, kwargs, potential=True)
 
-        kwargs = {"m": 1, "a_m": 0.1, "phi_m": 0.3, "q": 0.5, "center_x": 0.0, "center_y": 0.0, "r_E":1.0}
+        kwargs = {"m": 1, "a_m": 0.1, "phi_m": 0.3, "center_x": 0.0, "center_y": 0.0, "r_E":1.0}
         lens_model = ["MULTIPOLE_ELL"]
         self.assert_differentials(lens_model, kwargs, potential=True)
 

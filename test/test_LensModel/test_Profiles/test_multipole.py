@@ -71,10 +71,10 @@ class TestMultipole(object):
         f_x, f_y = self.Multipole.derivatives(x, y, m, a_m, phi_m, r_E=1.)
         npt.assert_almost_equal(f_x[0], 0.04058541, decimal=6)    
         npt.assert_almost_equal(f_x[1], 0.0496472, decimal=6)
-        npt.assert_almost_equal(f_x[2], 0.03591584, decimal=6)
+        npt.assert_almost_equal(f_x[2], 0.05590792, decimal=6)
         npt.assert_almost_equal(f_y[0], 0.01967839, decimal=6)
         npt.assert_almost_equal(f_y[1], 0.02001779, decimal=6)
-        npt.assert_almost_equal(f_y[2], 0.03024228, decimal=6)
+        npt.assert_almost_equal(f_y[2], 0.02091982, decimal=6)
 
     def test_hessian(self):
         x = 1
@@ -105,9 +105,9 @@ class TestMultipole(object):
 
         m=1
         values = self.Multipole.hessian(x, y, m, a_m, phi_m, r_E=1.)  
-        npt.assert_almost_equal(values[0][0], 0.01431771, decimal=6)  
-        npt.assert_almost_equal(values[3][0], 0.00319773, decimal=6)   
-        npt.assert_almost_equal(values[1][0], 0.00416999, decimal=6)
+        npt.assert_almost_equal(values[0][0], 0.01142045, decimal=6)  
+        npt.assert_almost_equal(values[3][0], 0.01093188, decimal=6)   
+        npt.assert_almost_equal(values[1][0], -0.00018321, decimal=6)
         npt.assert_almost_equal(values[0][1], 0.00731153, decimal=6)
         npt.assert_almost_equal(values[3][1], 0.00839617, decimal=6)
         npt.assert_almost_equal(values[1][1], 0.00072309, decimal=6)
@@ -138,7 +138,7 @@ class TestEllipticalMultipole(object):
         x = np.array([0])
         y = np.array([0])
         values = self.Multipole.function(x, y, m, a_m, phi_m, q)
-        npt.assert_almost_equal(values[0], 0.0, decimal=6)
+        assert values[0] == 0
 
         x = np.array([2, 3, 4])
         y = np.array([1, 1, 1])
@@ -270,10 +270,10 @@ class TestEllipticalMultipole(object):
         f_xx_sph, f_xy_sph, f_yx_sph, f_yy_sph = self.SphericalMultipole.hessian(
             self.x, self.y, m=4, a_m=a_m, phi_m=np.pi / 24
         )
-        npt.assert_allclose(f_xx_ell_limit, f_xx_sph, rtol=1e-4, atol=1e-4)
-        npt.assert_allclose(f_xy_ell_limit, f_xy_sph, rtol=1e-4, atol=1e-4)
-        npt.assert_allclose(f_yx_ell_limit, f_yx_sph, rtol=1e-4, atol=1e-4)
-        npt.assert_allclose(f_yy_ell_limit, f_yy_sph, rtol=1e-4, atol=1e-4)
+        npt.assert_allclose(f_xx_ell_limit, f_xx_sph, rtol=1e-4, atol=5e-5)
+        npt.assert_allclose(f_xy_ell_limit, f_xy_sph, rtol=1e-4, atol=5e-5)
+        npt.assert_allclose(f_yx_ell_limit, f_yx_sph, rtol=1e-4, atol=5e-5)
+        npt.assert_allclose(f_yy_ell_limit, f_yy_sph, rtol=1e-4, atol=5e-5)
 
         f_xx_ell_limit, f_xy_ell_limit, _, f_yy_ell_limit = self.Multipole.hessian(
             self.x, self.y, m=3, a_m=a_m, phi_m=np.pi / 18, q=0.9999

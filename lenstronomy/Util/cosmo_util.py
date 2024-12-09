@@ -36,8 +36,10 @@ def get_astropy_cosmology(cosmology_model="FlatLambdaCDM", param_kwargs={}):
     ]
 
     if cosmology_model not in supported_models:
-        raise ValueError(f"Cosmology model {cosmology_model} not supported! Choose from {supported_models}.")
-    
+        raise ValueError(
+            f"Cosmology model {cosmology_model} not supported! Choose from {supported_models}."
+        )
+
     cosmo_classes = [FlatLambdaCDM, LambdaCDM, FlatwCDM, wCDM, Flatw0waCDM, w0waCDM]
     cosmo_kwargs = [
         {"H0": H0, "Om0": Om0},

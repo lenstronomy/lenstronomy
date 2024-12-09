@@ -6,6 +6,7 @@ from astropy.cosmology import w0waCDM
 from astropy.cosmology import Flatw0waCDM
 import pytest
 
+
 class TestCosmoUtil(object):
     def setup_method(self):
         pass
@@ -38,4 +39,6 @@ class TestCosmoUtil(object):
         )
 
         with pytest.raises(ValueError):
-            get_astropy_cosmology("FLRW", {"H0": 70, "Om0": 0.3, "Ode0": 0.7, "w0": -0.8, "wa": 0.2})
+            get_astropy_cosmology(
+                "FLRW", {"H0": 70, "Om0": 0.3, "Ode0": 0.7, "w0": -0.8, "wa": 0.2}
+            )

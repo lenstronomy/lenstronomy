@@ -2,6 +2,9 @@ import numpy as np
 from copy import deepcopy
 from lenstronomy.LensModel.MultiPlane.multi_plane_base import MultiPlaneBase
 from lenstronomy.Util.package_util import exporter
+from lenstronomy.Util.cosmo_util import get_astropy_cosmology
+from astropy.cosmology import *
+import warnings
 
 export, __all__ = exporter()
 
@@ -32,6 +35,8 @@ class MultiPlane(object):
         kwargs_interp=None,
         kwargs_synthesis=None,
         distance_ratio_sampling=False,
+        cosmology_sampling=False,
+        cosmology_model="FlatLambdaCDM",
     ):
         """
 
@@ -53,11 +58,33 @@ class MultiPlane(object):
         :param z_lens_convention: float, redshift of a lens plane to define the
          effective time-delay distance. Only needed if distance ratios are
          sampled. If None, the first lens redshift is used.
+        :param cosmo_interp: bool, if True, will use interpolated cosmology
         :param kwargs_synthesis: keyword arguments for the 'SYNTHESIS' lens model, if applicable
         :param kwargs_multiplane_model: keyword arguments for the MultiPlaneDecoupled class, if specified
         :param distance_ratio_sampling: bool, if True, will use sampled
          distance ratios to update T_ij value in multi-lens plane computation.
+        :param cosmology_sampling: bool, if True, will use sampled cosmology
+        :param cosmology_model: str, name of the cosmology model to use for
         """
+        self.cosmology_sampling = cosmology_sampling
+        self.cosmology_model = cosmology_model
+        if self.cosmology_sampling:
+            cosmo = get_astropy_cosmology(cosmology_model=cosmology_model)
+
+            if distance_ratio_sampling:
+                warnings.warn(
+                    "cosmology_sampling=True and distance_ratio_sampling=True cannot be set simultaneously. "
+                    "Setting distance_ratio_sampling=False."
+                )
+                distance_ratio_sampling = False
+
+            if cosmo_interp:
+                warnings.warn(
+                    "cosmology_sampling=True and cosmo_interp=True cannot be set simultaneously. "
+                    "Setting cosmo_interp=False."
+                )
+                cosmo_interp = False
+
         self.kwargs_class = {
             "z_source": z_source,
             "lens_model_list": lens_model_list,
@@ -74,6 +101,8 @@ class MultiPlane(object):
             "kwargs_interp": kwargs_interp,
             "kwargs_synthesis": kwargs_synthesis,
             "distance_ratio_sampling": distance_ratio_sampling,
+            "cosmology_sampling": cosmology_sampling,
+            "cosmology_model": cosmology_model,
         }
         if z_source_convention is None:
             z_source_convention = z_source
@@ -108,6 +137,7 @@ class MultiPlane(object):
             kwargs_interp=kwargs_interp,
             kwargs_synthesis=kwargs_synthesis,
         )
+        self._z_source = z_source
         self._set_source_distances(z_source)
         self._observed_convention_index = observed_convention_index
         if observed_convention_index is None:
@@ -178,6 +208,15 @@ class MultiPlane(object):
             z_start=0, z_stop=z_source, include_z_start=False
         )
         self._T_z_source = self._multi_plane_base._cosmo_bkg.T_xy(0, z_source)
+
+    def set_background_cosmo(self, cosmo):
+        """Set the background cosmology.
+
+        :param cosmo: instance of astropy.cosmology
+        :return: None
+        """
+        self._multi_plane_base.set_background_cosmo(cosmo)
+        self._set_source_distances(self._z_source)
 
     def observed2flat_convention(self, kwargs_lens):
         """

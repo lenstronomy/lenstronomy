@@ -268,45 +268,77 @@ class TestEllipticalMultipole(object):
             (values[0] + values[3]), a_m * np.cos(m * (phi_ell - phi_m)) / R, decimal=6
         )
 
-        # Test that the limit q-> 1 is consistent with the spherical multipoles
+        # Test that the limit q-> 1 is consistent with the spherical multipoles and that q=1 gives exactly the spherical multipoles
+        f_xx_sph, f_xy_sph, f_yx_sph, f_yy_sph = self.SphericalMultipole.hessian(
+            self.x, self.y, m=4, a_m=a_m, phi_m=np.pi / 24
+        )
         f_xx_ell_limit, f_xy_ell_limit, f_yx_ell_limit, f_yy_ell_limit = (
             self.Multipole.hessian(
                 self.x, self.y, m=4, a_m=a_m, phi_m=np.pi / 24, q=0.9995
             )
-        )
-        f_xx_sph, f_xy_sph, f_yx_sph, f_yy_sph = self.SphericalMultipole.hessian(
-            self.x, self.y, m=4, a_m=a_m, phi_m=np.pi / 24
         )
         npt.assert_allclose(f_xx_ell_limit, f_xx_sph, rtol=1e-4, atol=1e-4)
         npt.assert_allclose(f_xy_ell_limit, f_xy_sph, rtol=1e-4, atol=1e-4)
         npt.assert_allclose(f_yx_ell_limit, f_yx_sph, rtol=1e-4, atol=1e-4)
         npt.assert_allclose(f_yy_ell_limit, f_yy_sph, rtol=1e-4, atol=1e-4)
 
+        f_xx_ell_q1, f_xy_ell_q1, f_yx_ell_q1, f_yy_ell_q1 = (
+            self.Multipole.hessian(
+                self.x, self.y, m=4, a_m=a_m, phi_m=np.pi / 24, q=1.0
+            )
+        )
+        npt.assert_almost_equal(f_xx_ell_q1, f_xx_sph, decimal=8)
+        npt.assert_almost_equal(f_xy_ell_q1, f_xy_sph, decimal=8)
+        npt.assert_almost_equal(f_yx_ell_q1, f_yx_sph, decimal=8)
+        npt.assert_almost_equal(f_yy_ell_q1, f_yy_sph, decimal=8)
+        
+        f_xx_sph, f_xy_sph, f_yx_sph, f_yy_sph = self.SphericalMultipole.hessian(
+            self.x, self.y, m=3, a_m=a_m, phi_m=np.pi / 18
+        )
+        
         f_xx_ell_limit, f_xy_ell_limit, f_yx_ell_limit, f_yy_ell_limit = (
             self.Multipole.hessian(
                 self.x, self.y, m=3, a_m=a_m, phi_m=np.pi / 18, q=0.9999
             )
         )
-        f_xx_sph, f_xy_sph, f_yx_sph, f_yy_sph = self.SphericalMultipole.hessian(
-            self.x, self.y, m=3, a_m=a_m, phi_m=np.pi / 18
-        )
         npt.assert_allclose(f_xx_ell_limit, f_xx_sph, rtol=5e-5, atol=5e-5)
         npt.assert_allclose(f_xy_ell_limit, f_xy_sph, rtol=5e-5, atol=5e-5)
         npt.assert_allclose(f_yx_ell_limit, f_yx_sph, rtol=5e-5, atol=5e-5)
         npt.assert_allclose(f_yy_ell_limit, f_yy_sph, rtol=5e-5, atol=5e-5)
-
+        
+        f_xx_ell_q1, f_xy_ell_q1, f_yx_ell_q1, f_yy_ell_q1 = (
+            self.Multipole.hessian(
+                self.x, self.y, m=3, a_m=a_m, phi_m=np.pi / 18, q=1.0
+            )
+        )
+        npt.assert_almost_equal(f_xx_ell_q1, f_xx_sph, decimal=8)
+        npt.assert_almost_equal(f_xy_ell_q1, f_xy_sph, decimal=8)
+        npt.assert_almost_equal(f_yx_ell_q1, f_yx_sph, decimal=8)
+        npt.assert_almost_equal(f_yy_ell_q1, f_yy_sph, decimal=8)
+        
+        f_xx_sph, f_xy_sph, f_yx_sph, f_yy_sph = self.SphericalMultipole.hessian(
+            self.x, self.y, m=1, a_m=a_m, phi_m=np.pi / 6
+        )
+        
         f_xx_ell_limit, f_xy_ell_limit, f_yx_ell_limit, f_yy_ell_limit = (
             self.Multipole.hessian(
                 self.x, self.y, m=1, a_m=a_m, phi_m=np.pi / 6, q=0.9999999
             )
         )
-        f_xx_sph, f_xy_sph, f_yx_sph, f_yy_sph = self.SphericalMultipole.hessian(
-            self.x, self.y, m=1, a_m=a_m, phi_m=np.pi / 6
-        )
         npt.assert_allclose(f_xx_ell_limit, f_xx_sph, rtol=1e-7, atol=1e-7)
         npt.assert_allclose(f_xy_ell_limit, f_xy_sph, rtol=1e-7, atol=1e-7)
         npt.assert_allclose(f_yx_ell_limit, f_yx_sph, rtol=1e-7, atol=1e-7)
         npt.assert_allclose(f_yy_ell_limit, f_yy_sph, rtol=1e-7, atol=1e-7)
+
+        f_xx_ell_q1, f_xy_ell_q1, f_yx_ell_q1, f_yy_ell_q1 = (
+            self.Multipole.hessian(
+                self.x, self.y, m=1, a_m=a_m, phi_m=np.pi / 6, q=1.0
+            )
+        )
+        npt.assert_almost_equal(f_xx_ell_q1, f_xx_sph, decimal=8)
+        npt.assert_almost_equal(f_xy_ell_q1, f_xy_sph, decimal=8)
+        npt.assert_almost_equal(f_yx_ell_q1, f_yx_sph, decimal=8)
+        npt.assert_almost_equal(f_yy_ell_q1, f_yy_sph, decimal=8)
 
 
 if __name__ == "__main__":

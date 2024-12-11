@@ -111,6 +111,7 @@ class EPL_MULTIPOLE_M3M4_ELL(LensProfileBase):
             "q": q,
             "center_x": center_x,
             "center_y": center_y,
+            "r_E": theta_E,
         }
         kwargs_multipole_m4 = {
             "m": 4,

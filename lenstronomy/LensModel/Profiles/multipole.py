@@ -44,7 +44,7 @@ class Multipole(LensProfileBase):
 
         :param x: x-coordinate to evaluate function
         :param y: y-coordinate to evaluate function
-        :param m: int, multipole order, m>=2
+        :param m: int, multipole order, m>=1
         :param a_m: float, multipole strength
         :param phi_m: float, multipole orientation in radian
         :param center_x: x-position
@@ -70,7 +70,7 @@ class Multipole(LensProfileBase):
 
         :param x: x-coordinate to evaluate function
         :param y: y-coordinate to evaluate function
-        :param m: int, multipole order, m>=&
+        :param m: int, multipole order, m>=1
         :param a_m: float, multipole strength
         :param phi_m: float, multipole orientation in radian
         :param center_x: x-position
@@ -201,11 +201,11 @@ class EllipticalMultipole(LensProfileBase):
 
         if (
             np.abs(1 - q**2) ** ((m + 1) / 2) < 1e-8
-        ):  # avoid numerical instability when q is too close to 1
-            if m == 1:
-                f_ = r * np.log(r / r_E) * a_m / 2 * np.cos(phi - phi_m)
-            else:
-                f_ = r * a_m / (1 - m**2) * np.cos(m * (phi - phi_m))
+        ):  # avoid numerical instability when q is too close to 1 by taking spherical multipole solution
+            sph_multipole = Multipole()
+            f_ = sph_multipole.function(
+                x, y, m, a_m, phi_m, center_x=center_x, center_y=center_y, r_E=r_E
+            )
 
         else:
             if m == 1:
@@ -270,13 +270,11 @@ class EllipticalMultipole(LensProfileBase):
 
         if (
             np.abs(1 - q**2) ** ((m + 1) / 2) < 1e-8
-        ):  # avoid numerical instability when q is too close to 1
-            f_x = np.cos(phi) * a_m / (1 - m**2) * np.cos(m * (phi - phi_m)) + np.sin(
-                phi
-            ) * m * a_m / (1 - m**2) * np.sin(m * (phi - phi_m))
-            f_y = np.sin(phi) * a_m / (1 - m**2) * np.cos(m * (phi - phi_m)) - np.cos(
-                phi
-            ) * m * a_m / (1 - m**2) * np.sin(m * (phi - phi_m))
+        ):  # avoid numerical instability when q is too close to 1 by taking spherical multipole solution
+            sph_multipole = Multipole()
+            f_x, f_y = sph_multipole.derivatives(
+                x, y, m, a_m, phi_m, center_x=center_x, center_y=center_y, r_E=r_E
+            )
 
         else:
             if m == 1:
@@ -353,79 +351,88 @@ class EllipticalMultipole(LensProfileBase):
         r, phi = param_util.cart2polar(x, y, center_x=center_x, center_y=center_y)
         r = np.maximum(r, 0.000001)
 
-        if m == 1:
-            d2psi_dx2_1, d2psi_dy2_1, d2psi_dxdy_1 = _hessian_m1_1(r, phi, q)
-            d2psi_dx2_2, d2psi_dy2_2, d2psi_dxdy_2 = _hessian_m1_1(
-                r, phi + np.pi / 2, 1 / q
+        if (
+            np.abs(1 - q**2) ** ((m + 1) / 2) < 1e-8
+        ):  # avoid numerical instability when q is too close to 1 by taking spherical multipole solution
+            sph_multipole = Multipole()
+            f_xx, f_xy, f_xy, f_yy = sph_multipole.hessian(
+                x, y, m, a_m, phi_m, center_x=center_x, center_y=center_y, r_E=r_E
             )
-            f_xx = (
-                a_m
-                * np.sqrt(q)
-                * (
-                    np.cos(m * phi_m) * d2psi_dx2_1
-                    - (1 / q) * np.sin(m * phi_m) * d2psi_dy2_2
-                )
-            )
-            f_yy = (
-                a_m
-                * np.sqrt(q)
-                * (
-                    np.cos(m * phi_m) * d2psi_dy2_1
-                    - (1 / q) * np.sin(m * phi_m) * d2psi_dx2_2
-                )
-            )
-            f_xy = (
-                a_m
-                * np.sqrt(q)
-                * (
-                    np.cos(m * phi_m) * d2psi_dxdy_1
-                    + (1 / q) * np.sin(m * phi_m) * d2psi_dxdy_2
-                )
-            )
-
-        elif m == 3:
-            d2psi_dx2_1, d2psi_dy2_1, d2psi_dxdy_1 = _hessian_m3_1(r, phi, q)
-            d2psi_dx2_2, d2psi_dy2_2, d2psi_dxdy_2 = _hessian_m3_1(
-                r, phi + np.pi / 2, 1 / q
-            )
-            f_xx = (
-                a_m
-                * np.sqrt(q)
-                * (
-                    np.cos(m * phi_m) * d2psi_dx2_1
-                    + (1 / q) * np.sin(m * phi_m) * d2psi_dy2_2
-                )
-            )
-            f_yy = (
-                a_m
-                * np.sqrt(q)
-                * (
-                    np.cos(m * phi_m) * d2psi_dy2_1
-                    + (1 / q) * np.sin(m * phi_m) * d2psi_dx2_2
-                )
-            )
-            f_xy = (
-                a_m
-                * np.sqrt(q)
-                * (
-                    np.cos(m * phi_m) * d2psi_dxdy_1
-                    - (1 / q) * np.sin(m * phi_m) * d2psi_dxdy_2
-                )
-            )
-
-        elif (m % 2) == 0:  # for m=4, will also work for any even m
-            phi_ell = np.angle(q * r * np.cos(phi) + 1j * r * np.sin(phi))
-            R = np.sqrt(q * (r * np.cos(phi)) ** 2 + (r * np.sin(phi)) ** 2 / q)
-
-            delta_r = a_m * np.cos(m * (phi_ell - phi_m)) * r / R
-            f_xx = np.sin(phi) ** 2 * delta_r / r
-            f_yy = np.cos(phi) ** 2 * delta_r / r
-            f_xy = -np.sin(phi) * np.cos(phi) * delta_r / r
 
         else:
-            raise ValueError(
-                "Implementation of multipoles perturbation for general axis ratio q only available for m=1, m=3 or m=4."
-            )
+            if m == 1:
+                d2psi_dx2_1, d2psi_dy2_1, d2psi_dxdy_1 = _hessian_m1_1(r, phi, q)
+                d2psi_dx2_2, d2psi_dy2_2, d2psi_dxdy_2 = _hessian_m1_1(
+                    r, phi + np.pi / 2, 1 / q
+                )
+                f_xx = (
+                    a_m
+                    * np.sqrt(q)
+                    * (
+                        np.cos(m * phi_m) * d2psi_dx2_1
+                        - (1 / q) * np.sin(m * phi_m) * d2psi_dy2_2
+                    )
+                )
+                f_yy = (
+                    a_m
+                    * np.sqrt(q)
+                    * (
+                        np.cos(m * phi_m) * d2psi_dy2_1
+                        - (1 / q) * np.sin(m * phi_m) * d2psi_dx2_2
+                    )
+                )
+                f_xy = (
+                    a_m
+                    * np.sqrt(q)
+                    * (
+                        np.cos(m * phi_m) * d2psi_dxdy_1
+                        + (1 / q) * np.sin(m * phi_m) * d2psi_dxdy_2
+                    )
+                )
+
+            elif m == 3:
+                d2psi_dx2_1, d2psi_dy2_1, d2psi_dxdy_1 = _hessian_m3_1(r, phi, q)
+                d2psi_dx2_2, d2psi_dy2_2, d2psi_dxdy_2 = _hessian_m3_1(
+                    r, phi + np.pi / 2, 1 / q
+                )
+                f_xx = (
+                    a_m
+                    * np.sqrt(q)
+                    * (
+                        np.cos(m * phi_m) * d2psi_dx2_1
+                        + (1 / q) * np.sin(m * phi_m) * d2psi_dy2_2
+                    )
+                )
+                f_yy = (
+                    a_m
+                    * np.sqrt(q)
+                    * (
+                        np.cos(m * phi_m) * d2psi_dy2_1
+                        + (1 / q) * np.sin(m * phi_m) * d2psi_dx2_2
+                    )
+                )
+                f_xy = (
+                    a_m
+                    * np.sqrt(q)
+                    * (
+                        np.cos(m * phi_m) * d2psi_dxdy_1
+                        - (1 / q) * np.sin(m * phi_m) * d2psi_dxdy_2
+                    )
+                )
+
+            elif (m % 2) == 0:  # for m=4, will also work for any even m
+                phi_ell = np.angle(q * r * np.cos(phi) + 1j * r * np.sin(phi))
+                R = np.sqrt(q * (r * np.cos(phi)) ** 2 + (r * np.sin(phi)) ** 2 / q)
+
+                delta_r = a_m * np.cos(m * (phi_ell - phi_m)) * r / R
+                f_xx = np.sin(phi) ** 2 * delta_r / r
+                f_yy = np.cos(phi) ** 2 * delta_r / r
+                f_xy = -np.sin(phi) * np.cos(phi) * delta_r / r
+
+            else:
+                raise ValueError(
+                    "Implementation of multipoles perturbation for general axis ratio q only available for m=1, m=3 or m=4."
+                )
 
         return f_xx, f_xy, f_xy, f_yy
 

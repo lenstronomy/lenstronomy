@@ -1,5 +1,6 @@
 import numpy as np
 from numpy.linalg import inv
+from lenstronomy.Util.cosmo_util import get_astropy_cosmology
 
 __all__ = ["PositionLikelihood"]
 
@@ -116,7 +117,7 @@ class PositionLikelihood(object):
                 kwargs_ps,
                 self._source_position_sigma,
                 hard_bound_rms=self._bound_source_position_tolerance,
-                verbose=verbose,
+                verbose=verbose, kwargs_special=kwargs_special,
             )
             logL += logL_source_pos
             if verbose is True:
@@ -125,7 +126,7 @@ class PositionLikelihood(object):
             logL_image_pos = self.image_position_likelihood(
                 kwargs_ps=kwargs_ps,
                 kwargs_lens=kwargs_lens,
-                sigma=self._image_position_sigma,
+                sigma=self._image_position_sigma, #TODO : add the kwargs special here as well
             )
             logL += logL_image_pos
             if verbose is True:
@@ -210,7 +211,7 @@ class PositionLikelihood(object):
         return logL
 
     def source_position_likelihood(
-        self, kwargs_lens, kwargs_ps, sigma, hard_bound_rms=None, verbose=False
+        self, kwargs_lens, kwargs_ps, sigma, hard_bound_rms=None, verbose=False, kwargs_special=None
     ):
         """Computes a likelihood/punishing factor of how well the source positions of
         multiple images match given the image position and a lens model. The likelihood
@@ -219,6 +220,7 @@ class PositionLikelihood(object):
 
         :param kwargs_lens: lens model keyword argument list
         :param kwargs_ps: point source keyword argument list
+        :param kwargs_special: special keyword arguments
         :param sigma: 1-sigma Gaussian uncertainty in the image plane
         :param hard_bound_rms: hard bound deviation between the mapping of the images
             back to the source plane (in source frame)
@@ -231,6 +233,11 @@ class PositionLikelihood(object):
         logL = 0
         source_x, source_y = self._pointSource.source_position(kwargs_ps, kwargs_lens)
         redshift_list = self._pointSource._redshift_list
+        if self._lensModel.lens_model.cosmology_sampling is True and kwargs_special is not None:
+            cosmo = get_astropy_cosmology(cosmology_model=self._lensModel.lens_model.cosmology_model,
+                                          param_kwargs=kwargs_special)
+            self._lensModel.lens_model._multi_plane_base.set_background_cosmo(cosmo)
+
         for k in range(len(kwargs_ps)):
             if (
                 "ra_image" in kwargs_ps[k]

@@ -271,7 +271,8 @@ class LensModel(object):
             )
 
     def arrival_time(
-        self, x_image, y_image, kwargs_lens, kappa_ext=0, x_source=None, y_source=None
+        self, x_image, y_image, kwargs_lens, kappa_ext=0, x_source=None, y_source=None,
+            kwargs_cosmo=None
     ):
         """Arrival time of images relative to a straight line without lensing. Negative
         values correspond to images arriving earlier, and positive signs correspond to
@@ -288,7 +289,7 @@ class LensModel(object):
         :return: arrival time of image positions in units of days
         """
         if hasattr(self.lens_model, "arrival_time"):
-            arrival_time = self.lens_model.arrival_time(x_image, y_image, kwargs_lens)
+            arrival_time = self.lens_model.arrival_time(x_image, y_image, kwargs_lens, kwargs_cosmo=kwargs_cosmo)
         else:
             fermat_pot = self.lens_model.fermat_potential(
                 x_image, y_image, kwargs_lens, x_source=x_source, y_source=y_source

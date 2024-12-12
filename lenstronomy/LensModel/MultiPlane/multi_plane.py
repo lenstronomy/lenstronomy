@@ -446,15 +446,19 @@ class MultiPlane(object):
             z_start, z_stop, include_z_start
         )
 
-    def arrival_time(self, theta_x, theta_y, kwargs_lens, check_convention=True):
+    def arrival_time(self, theta_x, theta_y, kwargs_lens, check_convention=True, kwargs_cosmo=None):
         """Light travel time relative to a straight path through the coordinate (0,0)
         Negative sign means earlier arrival time.
 
         :param theta_x: angle in x-direction on the image
         :param theta_y: angle in y-direction on the image
         :param kwargs_lens: lens model keyword argument list
+        :param kwargs_cosmo: cosmo keyword argument
         :return: travel time in unit of days
         """
+        if kwargs_cosmo is not None:
+            cosmo = get_astropy_cosmology(cosmology_model=self.cosmology_model, param_kwargs=kwargs_cosmo)
+            self._multi_plane_base.set_background_cosmo(cosmo)
         dt_geo, dt_grav = self.geo_shapiro_delay(
             theta_x, theta_y, kwargs_lens, check_convention=check_convention
         )

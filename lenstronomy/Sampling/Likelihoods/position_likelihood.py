@@ -233,10 +233,11 @@ class PositionLikelihood(object):
         logL = 0
         source_x, source_y = self._pointSource.source_position(kwargs_ps, kwargs_lens)
         redshift_list = self._pointSource._redshift_list
-        if self._lensModel.lens_model.cosmology_sampling is True and kwargs_special is not None:
-            cosmo = get_astropy_cosmology(cosmology_model=self._lensModel.lens_model.cosmology_model,
-                                          param_kwargs=kwargs_special)
-            self._lensModel.lens_model._multi_plane_base.set_background_cosmo(cosmo)
+        if hasattr(self._lensModel.lens_model, "cosmology_sampling"): #only for multi-plane lens models
+            if self._lensModel.lens_model.cosmology_sampling is True and kwargs_special is not None:
+                cosmo = get_astropy_cosmology(cosmology_model=self._lensModel.lens_model.cosmology_model,
+                                              param_kwargs=kwargs_special)
+                self._lensModel.lens_model._multi_plane_base.set_background_cosmo(cosmo)
 
         for k in range(len(kwargs_ps)):
             if (

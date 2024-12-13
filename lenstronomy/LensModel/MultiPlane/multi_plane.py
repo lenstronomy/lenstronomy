@@ -69,8 +69,6 @@ class MultiPlane(object):
         self.cosmology_sampling = cosmology_sampling
         self.cosmology_model = cosmology_model
         if self.cosmology_sampling:
-            cosmo = get_astropy_cosmology(cosmology_model=cosmology_model)
-
             if distance_ratio_sampling:
                 warnings.warn(
                     "cosmology_sampling=True and distance_ratio_sampling=True cannot be set simultaneously. "
@@ -462,8 +460,6 @@ class MultiPlane(object):
         dt_geo, dt_grav = self.geo_shapiro_delay(
             theta_x, theta_y, kwargs_lens, check_convention=check_convention
         )
-        print("used cosmo for td", self._multi_plane_base._cosmo_bkg.cosmo)
-        print("geo and grav delay", dt_geo, dt_grav)
         return dt_geo + dt_grav
 
     def geo_shapiro_delay(self, theta_x, theta_y, kwargs_lens, check_convention=True):

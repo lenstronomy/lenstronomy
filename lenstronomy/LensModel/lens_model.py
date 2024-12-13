@@ -295,7 +295,7 @@ class LensModel(object):
         if hasattr(self.lens_model, "arrival_time"): #for multiplane
             arrival_time = self.lens_model.arrival_time(x_image, y_image, kwargs_lens, kwargs_cosmo=kwargs_cosmo)
         else:
-            if self.cosmology_sampling and kwargs_cosmo is not None:
+            if self.cosmology_sampling and kwargs_cosmo is not None: #for single plane
                 cosmo = get_astropy_cosmology(cosmology_model=self.cosmology_model,
                                               param_kwargs=kwargs_cosmo)
                 self.cosmo = cosmo

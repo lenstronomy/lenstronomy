@@ -462,6 +462,8 @@ class MultiPlane(object):
         dt_geo, dt_grav = self.geo_shapiro_delay(
             theta_x, theta_y, kwargs_lens, check_convention=check_convention
         )
+        print("used cosmo for td", self._multi_plane_base._cosmo_bkg.cosmo)
+        print("geo and grav delay", dt_geo, dt_grav)
         return dt_geo + dt_grav
 
     def geo_shapiro_delay(self, theta_x, theta_y, kwargs_lens, check_convention=True):

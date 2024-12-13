@@ -109,15 +109,8 @@ class TimeDelayLikelihood(object):
                 self._lensModel.change_source_redshift(
                     z_source=self._pointSource._redshift_list[i]
                 )
-                if hasattr(self._lensModel.lens_model, "cosmology_sampling"):
-                    if self._lensModel.lens_model.cosmology_sampling is True:
-                        delay_days = self._lensModel.arrival_time(x_pos_, y_pos_, kwargs_lens, kwargs_cosmo=kwargs_cosmo)
-                    else:
-                        delay_arcsec = self._lensModel.fermat_potential(
-                        x_pos_, y_pos_, kwargs_lens)
-                        D_dt_model = kwargs_cosmo["D_dt"]
-                        Ddt_scaled = self._lensModel.ddt_scaling * D_dt_model
-                        delay_days = const.delay_arcsec2days(delay_arcsec, Ddt_scaled)
+                if self._lensModel.cosmology_sampling:
+                    delay_days = self._lensModel.arrival_time(x_pos_, y_pos_, kwargs_lens, kwargs_cosmo=kwargs_cosmo)
                 else :
                     delay_arcsec = self._lensModel.fermat_potential(
                     x_pos_, y_pos_, kwargs_lens)

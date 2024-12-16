@@ -6,6 +6,8 @@ from lenstronomy.LensModel.MultiPlane.decoupled_multi_plane import MultiPlaneDec
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 from lenstronomy.Util import constants as const
 from lenstronomy.Util.cosmo_util import get_astropy_cosmology
+from astropy.cosmology import default_cosmology
+import warnings
 
 __all__ = ["LensModel"]
 
@@ -88,10 +90,14 @@ class LensModel(object):
         self._z_source_convention = z_source_convention
         self.redshift_list = lens_redshift_list
 
-        if cosmo is None:
-            from astropy.cosmology import default_cosmology
-
+        if cosmo is None and cosmology_model == 'FlatLambdaCDM':
             cosmo = default_cosmology.get()
+        elif cosmo is None and cosmology_model != 'FlatLambdaCDM':
+            cosmo = get_astropy_cosmology(cosmology_model=cosmology_model)
+        else:
+            warnings.warn(
+                "Astropy Cosmology is provided. Make sure your cosmology model is consistent with the cosmology_model argument."
+            )
         self.cosmo = cosmo
 
         # Are there line-of-sight corrections?

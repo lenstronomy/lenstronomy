@@ -68,6 +68,15 @@ class MultiPlane(object):
         """
         self.cosmology_sampling = cosmology_sampling
         self.cosmology_model = cosmology_model
+        if cosmo is None and cosmology_model == 'FlatLambdaCDM':
+            cosmo = default_cosmology.get()
+        elif cosmo is None and cosmology_model != 'FlatLambdaCDM':
+            cosmo = get_astropy_cosmology(cosmology_model=cosmology_model)
+        else:
+            warnings.warn(
+                "Cosmology is provided. Make sure your cosmological model is consistent with the cosmology_model argument."
+            )
+
         if self.cosmology_sampling:
             if distance_ratio_sampling:
                 warnings.warn(

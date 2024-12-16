@@ -40,6 +40,20 @@ class TestMultiPlane(object):
             cosmology_model="FlatwCDM",
         )
 
+        with pytest.raises(ValueError):
+            MultiPlane(
+                z_source=z_source,
+                lens_model_list=lens_model_list,
+                lens_redshift_list=redshift_list,
+                z_interp_stop=3,
+                cosmo_interp=True,
+                distance_ratio_sampling=True,
+                z_lens_convention=0.5,
+                cosmo=None,
+                cosmology_sampling=True,
+                cosmology_model="stringTheory",
+            )
+
     def test_geo_shapiro_delay(self):
         z_source = 1.5
         lens_model_list = ["SIS", "SIS"]

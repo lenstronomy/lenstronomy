@@ -58,7 +58,7 @@ Installation
 
 |PyPI| |conda-forge|
 
-lenstronomy releases are distributed through PyPI_ and conda-forge_. Instructions for
+``lenstronomy`` releases are distributed through PyPI_ and conda-forge_. Instructions for
 installing lenstronomy and its dependencies can be found in the Installation_
 section of the documentation.
 Specific instructions for settings and installation requirements for special cases that can provide speed-ups,

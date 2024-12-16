@@ -90,9 +90,9 @@ class LensModel(object):
         self._z_source_convention = z_source_convention
         self.redshift_list = lens_redshift_list
 
-        if cosmo is None and cosmology_model == 'FlatLambdaCDM':
+        if cosmo is None and cosmology_model == "FlatLambdaCDM":
             cosmo = default_cosmology.get()
-        elif cosmo is None and cosmology_model != 'FlatLambdaCDM':
+        elif cosmo is None and cosmology_model != "FlatLambdaCDM":
             cosmo = get_astropy_cosmology(cosmology_model=cosmology_model)
         else:
             warnings.warn(
@@ -281,8 +281,14 @@ class LensModel(object):
             )
 
     def arrival_time(
-        self, x_image, y_image, kwargs_lens, kappa_ext=0, x_source=None, y_source=None,
-            kwargs_cosmo=None
+        self,
+        x_image,
+        y_image,
+        kwargs_lens,
+        kappa_ext=0,
+        x_source=None,
+        y_source=None,
+        kwargs_cosmo=None,
     ):
         """Arrival time of images relative to a straight line without lensing. Negative
         values correspond to images arriving earlier, and positive signs correspond to
@@ -298,12 +304,15 @@ class LensModel(object):
         :param y_source: source position (optional), otherwise computed with ray-tracing
         :return: arrival time of image positions in units of days
         """
-        if hasattr(self.lens_model, "arrival_time"): #for multiplane
-            arrival_time = self.lens_model.arrival_time(x_image, y_image, kwargs_lens, kwargs_cosmo=kwargs_cosmo)
+        if hasattr(self.lens_model, "arrival_time"):  # for multiplane
+            arrival_time = self.lens_model.arrival_time(
+                x_image, y_image, kwargs_lens, kwargs_cosmo=kwargs_cosmo
+            )
         else:
-            if self.cosmology_sampling and kwargs_cosmo is not None: #for single plane
-                cosmo = get_astropy_cosmology(cosmology_model=self.cosmology_model,
-                                              param_kwargs=kwargs_cosmo)
+            if self.cosmology_sampling and kwargs_cosmo is not None:  # for single plane
+                cosmo = get_astropy_cosmology(
+                    cosmology_model=self.cosmology_model, param_kwargs=kwargs_cosmo
+                )
                 self.cosmo = cosmo
                 self._lensCosmo.background.cosmo = cosmo
 

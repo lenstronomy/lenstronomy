@@ -37,6 +37,7 @@ class TestMultiPlane(object):
             z_lens_convention=0.5,
             cosmo=cosmo,
             cosmology_sampling=True,
+            cosmology_model="FlatwCDM",
         )
 
     def test_geo_shapiro_delay(self):

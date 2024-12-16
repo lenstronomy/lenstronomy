@@ -198,7 +198,7 @@ class PositionLikelihood(object):
             if self._lensModel.lens_model.cosmology_sampling is True and kwargs_special is not None:
                 cosmo = get_astropy_cosmology(cosmology_model=self._lensModel.lens_model.cosmology_model,
                                               param_kwargs=kwargs_special)
-                self._lensModel.lens_model._multi_plane_base.set_background_cosmo(cosmo)
+                self._lensModel.lens_model.set_background_cosmo(cosmo)
 
         ra_image_list, dec_image_list = self._pointSource.image_position(
             kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens, original_position=True

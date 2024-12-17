@@ -5,6 +5,9 @@ from lenstronomy.LensModel.MultiPlane.multi_plane import MultiPlane
 from lenstronomy.LensModel.MultiPlane.decoupled_multi_plane import MultiPlaneDecoupled
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 from lenstronomy.Util import constants as const
+from lenstronomy.Util.cosmo_util import get_astropy_cosmology
+from astropy.cosmology import default_cosmology
+import warnings
 
 __all__ = ["LensModel"]
 
@@ -77,6 +80,9 @@ class LensModel(object):
         self.lens_model_list = lens_model_list
         self.z_lens = z_lens
         self.z_source = z_source
+        self.cosmology_sampling = cosmology_sampling
+        self.cosmology_model = cosmology_model
+
         if z_source_convention is None and z_source is not None:
             z_source_convention = z_source
         if z_source is None and z_source_convention is not None:
@@ -84,10 +90,14 @@ class LensModel(object):
         self._z_source_convention = z_source_convention
         self.redshift_list = lens_redshift_list
 
-        if cosmo is None:
-            from astropy.cosmology import default_cosmology
-
+        if cosmo is None and cosmology_model == "FlatLambdaCDM":
             cosmo = default_cosmology.get()
+        elif cosmo is None and cosmology_model != "FlatLambdaCDM":
+            cosmo = get_astropy_cosmology(cosmology_model=cosmology_model)
+        else:
+            warnings.warn(
+                "Astropy Cosmology is provided. Make sure your cosmology model is consistent with the cosmology_model argument."
+            )
         self.cosmo = cosmo
 
         # Are there line-of-sight corrections?
@@ -271,7 +281,14 @@ class LensModel(object):
             )
 
     def arrival_time(
-        self, x_image, y_image, kwargs_lens, kappa_ext=0, x_source=None, y_source=None
+        self,
+        x_image,
+        y_image,
+        kwargs_lens,
+        kappa_ext=0,
+        x_source=None,
+        y_source=None,
+        kwargs_cosmo=None,
     ):
         """Arrival time of images relative to a straight line without lensing. Negative
         values correspond to images arriving earlier, and positive signs correspond to
@@ -287,9 +304,18 @@ class LensModel(object):
         :param y_source: source position (optional), otherwise computed with ray-tracing
         :return: arrival time of image positions in units of days
         """
-        if hasattr(self.lens_model, "arrival_time"):
-            arrival_time = self.lens_model.arrival_time(x_image, y_image, kwargs_lens)
+        if hasattr(self.lens_model, "arrival_time"):  # for multiplane
+            arrival_time = self.lens_model.arrival_time(
+                x_image, y_image, kwargs_lens, kwargs_cosmo=kwargs_cosmo
+            )
         else:
+            if self.cosmology_sampling and kwargs_cosmo is not None:  # for single plane
+                cosmo = get_astropy_cosmology(
+                    cosmology_model=self.cosmology_model, param_kwargs=kwargs_cosmo
+                )
+                self.cosmo = cosmo
+                self._lensCosmo.background.cosmo = cosmo
+
             fermat_pot = self.lens_model.fermat_potential(
                 x_image, y_image, kwargs_lens, x_source=x_source, y_source=y_source
             )

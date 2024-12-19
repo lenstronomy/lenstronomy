@@ -511,6 +511,18 @@ class LensCosmo(object):
         z_source_convention,
         z_source,
     ):
+        """
+        maps Einstein radius of a power-law profile with external convergence to different source redshifts
+
+        :param theta_E_convention: Einstein radius for the lens when a source is at z_source_conventions coming from
+         the main deflector (excluding external convergence)
+        :param kappa_ext_convention: external convergence for z_source_convention
+        :param gamma_pl: power-law slope of the deflector
+        :param z_lens: lens redshift
+        :param z_source_convention: source redshift for lens model conventions
+        :param z_source: source redshift
+        :return: Einstein radius for a source at redshift z_source
+        """
 
         if z_source == z_source_convention:
             theta_E = theta_E_convention

@@ -1,5 +1,7 @@
 __author__ = "dangilman"
 
+import copy
+
 import numpy.testing as npt
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LensModel.Util.decouple_multi_plane_util import (
@@ -607,6 +609,52 @@ class TestMultiPlaneDecoupled(object):
             )
             npt.assert_almost_equal(beta_x, beta_x_true)
             npt.assert_almost_equal(beta_y, beta_y_true)
+
+    def test_change_cosmology(self):
+        from astropy.cosmology import FlatwCDM
+
+        cosmo = FlatwCDM(H0=67, Om0=0.3, w0=-0.8)
+        cosmo_new = FlatwCDM(H0=73, Om0=0.3, w0=-1)
+
+        z_lens = 0.5
+        z_source_convention = 2
+        z_source_new = 1
+        kwargs_lens = [{"theta_E": 1, "center_x": 0, "center_y": 0}]
+        print(self.kwargs_multiplane_model_grid)
+        kwargs_multiplane_model_grid_ = copy.deepcopy(self.kwargs_multiplane_model_grid)
+        lens_model_list = self.kwargs_multiplane_model_grid["lens_model_list"]
+        kwargs_multiplane_model_grid_.pop("cosmo")
+        kwargs_multiplane_model_grid_.pop("lens_model_list")
+        lens_model = LensModel(
+            lens_model_list=lens_model_list,
+            z_lens=z_lens,
+            # lens_redshift_list=[z_lens],
+            z_source_convention=z_source_convention,
+            # z_source=z_source_new,
+            # multi_plane=True,
+            cosmo=cosmo,
+            # kwargs_multiplane_model=kwargs_multiplane_model_grid_,
+            # decouple_multi_plane=True,
+            **kwargs_multiplane_model_grid_,
+        )
+        lens_model_new = LensModel(
+            lens_model_list=lens_model_list,
+            z_lens=z_lens,
+            # lens_redshift_list=[z_lens],
+            z_source_convention=z_source_convention,
+            # z_source=z_source_new,
+            # multi_plane=True,
+            cosmo=cosmo_new,
+            # kwargs_multiplane_model=kwargs_multiplane_model_grid_,
+            # decouple_multi_plane=True,
+            **kwargs_multiplane_model_grid_,
+        )
+        lens_model.update_cosmology(cosmo=cosmo_new)
+        alpha_x, alpha_y = lens_model.alpha(1, 1, kwargs=self.kwargs_lens_free)
+        alpha_x_new, alpha_y_new = lens_model_new.alpha(
+            1, 1, kwargs=self.kwargs_lens_free
+        )
+        npt.assert_almost_equal(alpha_x, alpha_x_new, decimal=5)
 
 
 if __name__ == "__main__":

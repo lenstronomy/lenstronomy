@@ -85,6 +85,7 @@ class MultiPlane(object):
                 )
                 cosmo_interp = False
 
+        # TODO update kwargs_class with new cosmology
         self.kwargs_class = {
             "z_source": z_source,
             "lens_model_list": lens_model_list,

@@ -548,15 +548,14 @@ class LensModel(object):
         else:
             if self._los_effects is True:
                 raise NotImplementedError(
-                    "SinglePlaneLOS lens model does not support change in source redshift"
+                    "SinglePlaneLOS lens model does not support change in redshift"
                 )
-            else:
-                alpha_scaling = self._lensCosmo.beta_double_source_plane(
-                    z_lens=self.z_lens,
-                    z_source_1=z_source,
-                    z_source_2=self._z_source_convention,
-                )
-                self.lens_model.change_redshift_scaling(alpha_scaling)
+            alpha_scaling = self._lensCosmo.beta_double_source_plane(
+                z_lens=self.z_lens,
+                z_source_1=z_source,
+                z_source_2=self._z_source_convention,
+            )
+            self.lens_model.change_redshift_scaling(alpha_scaling)
 
         if self.z_lens is not None:
             self._lensCosmo = LensCosmo(self.z_lens, z_source, cosmo=self.cosmo)
@@ -584,28 +583,24 @@ class LensModel(object):
                 self._ddt_scaling = ddt_scaling
         if self.multi_plane is True:
             if self._decouple_multi_plane:
-                # TODO: re-initialize MultiPlaneDecoupled model
-                raise NotImplementedError(
-                    "MultiPlaneDecoupled lens model does not support change in cosmology redshift"
-                )
+                kwargs_lens_class = self.lens_model.kwargs_class
+                kwargs_decoupled = self.lens_model.kwargs_multiplane_model
+                kwargs_lens_class["cosmo"] = cosmo
+                kwargs_class = {**kwargs_lens_class, **kwargs_decoupled}
+                self.lens_model = MultiPlaneDecoupled(**kwargs_class)
             else:
                 # TODO: is it possible to not re-initialize it for performance improvements?
                 kwargs_lens_class = self.lens_model.kwargs_class
                 kwargs_lens_class["cosmo"] = cosmo
                 self.lens_model = MultiPlane(**kwargs_lens_class)
         else:
-            if self._los_effects is True:
-                raise NotImplementedError(
-                    "SinglePlaneLOS lens model does not support change in cosmology"
+            if self.z_lens is not None and self.z_source is not None:
+                alpha_scaling = self._lensCosmo.beta_double_source_plane(
+                    z_lens=self.z_lens,
+                    z_source_1=self.z_source,
+                    z_source_2=self._z_source_convention,
                 )
-            else:
-                if self.z_lens is not None and self.z_source is not None:
-                    alpha_scaling = self._lensCosmo.beta_double_source_plane(
-                        z_lens=self.z_lens,
-                        z_source_1=self.z_source,
-                        z_source_2=self._z_source_convention,
-                    )
-                    self.lens_model.change_redshift_scaling(alpha_scaling)
+                self.lens_model.change_redshift_scaling(alpha_scaling)
 
     @property
     def ddt_scaling(self):

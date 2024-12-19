@@ -354,6 +354,63 @@ class TestLensModel(object):
         npt.assert_almost_equal(dt_sp, dt_mp, decimal=5)
         lens_model_mp_new.change_source_redshift(z_source=z_source_new)
 
+    def test_update_cosmology(self):
+        from astropy.cosmology import FlatwCDM
+        cosmo = FlatwCDM(H0=67, Om0=0.3, w0=-0.8)
+        cosmo_new = FlatwCDM(H0=73, Om0=0.3, w0=-1)
+
+        z_lens = 0.5
+        z_source_convention = 2
+        z_source_new = 1
+        kwargs_lens = [{"theta_E": 1, "center_x": 0, "center_y": 0}]
+        # multi-plane lens model
+        lens_model = LensModel(
+            lens_model_list=["SIS"],
+            z_lens=z_lens,
+            lens_redshift_list=[z_lens],
+            z_source_convention=z_source_convention,
+            z_source=z_source_new,
+            multi_plane=True,
+            cosmo=cosmo,
+        )
+        lens_model_new = LensModel(
+            lens_model_list=["SIS"],
+            z_lens=z_lens,
+            lens_redshift_list=[z_lens],
+            z_source_convention=z_source_convention,
+            z_source=z_source_new,
+            multi_plane=True,
+            cosmo=cosmo_new,
+        )
+        lens_model.update_cosmology(cosmo=cosmo_new)
+        dt = lens_model.arrival_time(1, 1, kwargs_lens=kwargs_lens)
+        dt_new = lens_model_new.arrival_time(1, 1, kwargs_lens=kwargs_lens)
+        npt.assert_almost_equal(dt, dt_new, decimal=5)
+
+        # single-plane lens model
+        lens_model = LensModel(
+            lens_model_list=["SIS"],
+            z_lens=z_lens,
+            z_source_convention=z_source_convention,
+            multi_plane=False,
+            z_source=z_source_convention,
+            cosmo=cosmo
+        )
+        lens_model_new = LensModel(
+            lens_model_list=["SIS"],
+            z_lens=z_lens,
+            z_source_convention=z_source_convention,
+            multi_plane=False,
+            z_source=z_source_convention,
+            cosmo=cosmo_new
+        )
+        lens_model.update_cosmology(cosmo=cosmo_new)
+        dt = lens_model.arrival_time(1, 1, kwargs_lens=kwargs_lens)
+        dt_new = lens_model_new.arrival_time(1, 1, kwargs_lens=kwargs_lens)
+        npt.assert_almost_equal(dt, dt_new, decimal=5)
+
+        # TODO: raise testing
+
 
 class TestRaise(unittest.TestCase):
     def test_raise(self):

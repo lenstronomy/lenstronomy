@@ -409,8 +409,6 @@ class TestLensModel(object):
         dt_new = lens_model_new.arrival_time(1, 1, kwargs_lens=kwargs_lens)
         npt.assert_almost_equal(dt, dt_new, decimal=5)
 
-        # TODO: raise testing
-
 
 class TestRaise(unittest.TestCase):
     def test_raise(self):

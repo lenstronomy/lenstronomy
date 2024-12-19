@@ -257,11 +257,18 @@ class TestLensCosmo(object):
         z_lens = 0.5
         z_source_convention = 5
         z_source = 1
-        theta_E_conversion = self.lensCosmo.theta_E_power_law_scaling(theta_E_convention, kappa_ext_convention, gamma_pl,
-                                  z_lens, z_source_convention, z_source)
+        theta_E_conversion = self.lensCosmo.theta_E_power_law_scaling(
+            theta_E_convention,
+            kappa_ext_convention,
+            gamma_pl,
+            z_lens,
+            z_source_convention,
+            z_source,
+        )
         # numerical solution for the Einstein radius
         from lenstronomy.LensModel.lens_model import LensModel
         from lenstronomy.Analysis.lens_profile import LensProfileAnalysis
+
         lens_model = LensModel(
             lens_model_list=["EPL", "CONVERGENCE"],
             z_lens=z_lens,
@@ -269,8 +276,17 @@ class TestLensCosmo(object):
             multi_plane=False,
             z_source=z_source,
         )
-        kwargs_lens = [{"theta_E": theta_E_convention, "gamma": gamma_pl, "e1": 0, "e2": 0,
-                        "center_x": 0, "center_y": 0}, {"kappa": kappa_ext_convention}]
+        kwargs_lens = [
+            {
+                "theta_E": theta_E_convention,
+                "gamma": gamma_pl,
+                "e1": 0,
+                "e2": 0,
+                "center_x": 0,
+                "center_y": 0,
+            },
+            {"kappa": kappa_ext_convention},
+        ]
 
         lens_analysis = LensProfileAnalysis(lens_model=lens_model)
         theta_E = lens_analysis.effective_einstein_radius(
@@ -278,9 +294,14 @@ class TestLensCosmo(object):
         )
         npt.assert_almost_equal(theta_E_conversion, theta_E, decimal=3)
         # and here we test no alterations
-        theta_E_conversion = self.lensCosmo.theta_E_power_law_scaling(theta_E_convention, 0,
-                                                                      gamma_pl,
-                                                                      z_lens, z_source_convention, z_source_convention)
+        theta_E_conversion = self.lensCosmo.theta_E_power_law_scaling(
+            theta_E_convention,
+            0,
+            gamma_pl,
+            z_lens,
+            z_source_convention,
+            z_source_convention,
+        )
         npt.assert_almost_equal(theta_E_conversion, theta_E_convention, decimal=8)
 
         theta_E_convention = 1
@@ -289,12 +310,18 @@ class TestLensCosmo(object):
         z_lens = 0.5
         z_source_convention = 5
         z_source = 1
-        theta_E_conversion = self.lensCosmo.theta_E_power_law_scaling(theta_E_convention, kappa_ext_convention,
-                                                                      gamma_pl,
-                                                                      z_lens, z_source_convention, z_source)
+        theta_E_conversion = self.lensCosmo.theta_E_power_law_scaling(
+            theta_E_convention,
+            kappa_ext_convention,
+            gamma_pl,
+            z_lens,
+            z_source_convention,
+            z_source,
+        )
         # numerical solution for the Einstein radius
         from lenstronomy.LensModel.lens_model import LensModel
         from lenstronomy.Analysis.lens_profile import LensProfileAnalysis
+
         lens_model = LensModel(
             lens_model_list=["EPL", "CONVERGENCE"],
             z_lens=z_lens,
@@ -302,8 +329,17 @@ class TestLensCosmo(object):
             multi_plane=False,
             z_source=z_source,
         )
-        kwargs_lens = [{"theta_E": theta_E_convention, "gamma": gamma_pl, "e1": 0, "e2": 0,
-                        "center_x": 0, "center_y": 0}, {"kappa": kappa_ext_convention}]
+        kwargs_lens = [
+            {
+                "theta_E": theta_E_convention,
+                "gamma": gamma_pl,
+                "e1": 0,
+                "e2": 0,
+                "center_x": 0,
+                "center_y": 0,
+            },
+            {"kappa": kappa_ext_convention},
+        ]
 
         lens_analysis = LensProfileAnalysis(lens_model=lens_model)
         theta_E = lens_analysis.effective_einstein_radius(
@@ -311,9 +347,14 @@ class TestLensCosmo(object):
         )
         npt.assert_almost_equal(theta_E_conversion, theta_E, decimal=3)
         # and here we test no alterations
-        theta_E_conversion = self.lensCosmo.theta_E_power_law_scaling(theta_E_convention, 0,
-                                                                      gamma_pl,
-                                                                      z_lens, z_source_convention, z_source_convention)
+        theta_E_conversion = self.lensCosmo.theta_E_power_law_scaling(
+            theta_E_convention,
+            0,
+            gamma_pl,
+            z_lens,
+            z_source_convention,
+            z_source_convention,
+        )
         npt.assert_almost_equal(theta_E_conversion, theta_E_convention, decimal=8)
 
 

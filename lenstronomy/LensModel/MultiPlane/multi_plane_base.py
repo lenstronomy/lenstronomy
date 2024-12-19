@@ -97,6 +97,9 @@ class MultiPlaneBase(ProfileListBase):
             self._reduced2physical_factor = self._cosmo_bkg.d_xy(
                 0, self._z_source_convention
             ) / self._cosmo_bkg.d_xy(z_sort, z_source_array)
+
+        self._T_ij_list = []
+        self._T_z_list = []
         for idex in self._sorted_redshift_index:
             z_lens = self._lens_redshift_list[idex]
             if z_before == z_lens:

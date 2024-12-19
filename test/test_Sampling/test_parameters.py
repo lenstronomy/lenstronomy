@@ -22,6 +22,7 @@ class TestParam(object):
             "z_source": 2,
             "source_redshift_list": [0.5],
             "distance_ratio_sampling": None,
+            "cosmology_sampling": None,
         }
         kwargs_param = {
             "num_point_source_list": [2],

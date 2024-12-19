@@ -612,6 +612,7 @@ class TestMultiPlaneDecoupled(object):
 
     def test_change_cosmology(self):
         from astropy.cosmology import FlatwCDM
+
         cosmo = FlatwCDM(H0=67, Om0=0.3, w0=-0.8)
         cosmo_new = FlatwCDM(H0=73, Om0=0.3, w0=-1)
 
@@ -650,7 +651,9 @@ class TestMultiPlaneDecoupled(object):
         )
         lens_model.update_cosmology(cosmo=cosmo_new)
         alpha_x, alpha_y = lens_model.alpha(1, 1, kwargs=self.kwargs_lens_free)
-        alpha_x_new, alpha_y_new = lens_model_new.alpha(1, 1, kwargs=self.kwargs_lens_free)
+        alpha_x_new, alpha_y_new = lens_model_new.alpha(
+            1, 1, kwargs=self.kwargs_lens_free
+        )
         npt.assert_almost_equal(alpha_x, alpha_x_new, decimal=5)
 
 

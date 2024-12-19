@@ -95,9 +95,6 @@ class MultiPlaneDecoupled(MultiPlane):
             cosmology_model=cosmology_model,
         )
 
-
-
-
         cosmo_bkg = Background(cosmo)
         d_xy_source = cosmo_bkg.d_xy(0, z_source)
         d_xy_lens_source = cosmo_bkg.d_xy(self._z_split, z_source)

@@ -356,6 +356,7 @@ class TestLensModel(object):
 
     def test_update_cosmology(self):
         from astropy.cosmology import FlatwCDM
+
         cosmo = FlatwCDM(H0=67, Om0=0.3, w0=-0.8)
         cosmo_new = FlatwCDM(H0=73, Om0=0.3, w0=-1)
 
@@ -394,7 +395,7 @@ class TestLensModel(object):
             z_source_convention=z_source_convention,
             multi_plane=False,
             z_source=z_source_convention,
-            cosmo=cosmo
+            cosmo=cosmo,
         )
         lens_model_new = LensModel(
             lens_model_list=["SIS"],
@@ -402,7 +403,7 @@ class TestLensModel(object):
             z_source_convention=z_source_convention,
             multi_plane=False,
             z_source=z_source_convention,
-            cosmo=cosmo_new
+            cosmo=cosmo_new,
         )
         lens_model.update_cosmology(cosmo=cosmo_new)
         dt = lens_model.arrival_time(1, 1, kwargs_lens=kwargs_lens)

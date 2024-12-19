@@ -543,6 +543,7 @@ class LensModel(object):
             else:
                 # TODO: is it possible to not re-initialize it for performance improvements?
                 kwargs_lens_class = self.lens_model.kwargs_class
+                kwargs_lens_class["cosmo"] = self.cosmo
                 kwargs_lens_class["z_source"] = z_source
                 self.lens_model = MultiPlane(**kwargs_lens_class)
         else:
@@ -566,6 +567,14 @@ class LensModel(object):
                 )
                 self._ddt_scaling = ddt_scaling
         self.z_source = z_source
+
+    def update_cosmology(self, cosmo):
+        """
+
+        :param cosmo: ~astropy.cosmology instance
+        :return: updated LensModel class with new cosmology
+        """
+        self.lens_model.update_cosmology
 
     @property
     def ddt_scaling(self):

@@ -514,7 +514,6 @@ class LensCosmo(object):
                 z_source_2=z_source_convention,
                 z_source_1=z_source,
             )
-            #theta_E = theta_E_convention * beta ** (1.0 / (gamma_pl - 1))
             kappa_ext = kappa_ext_convention * beta
             theta_E = theta_E_convention * beta ** (1. / (gamma_pl - 1.))
             # theta_E = theta_E_convention * (beta + kappa_ext_convention * (1 - beta)) ** (1. / (gamma_pl - 1.))

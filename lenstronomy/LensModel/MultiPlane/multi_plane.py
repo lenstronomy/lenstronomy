@@ -68,9 +68,9 @@ class MultiPlane(object):
         """
         self.cosmology_sampling = cosmology_sampling
         self.cosmology_model = cosmology_model
-        if cosmo is None and cosmology_model == 'FlatLambdaCDM':
+        if cosmo is None and cosmology_model == "FlatLambdaCDM":
             cosmo = default_cosmology.get()
-        elif cosmo is None and cosmology_model != 'FlatLambdaCDM':
+        elif cosmo is None and cosmology_model != "FlatLambdaCDM":
             cosmo = get_astropy_cosmology(cosmology_model=cosmology_model)
         else:
             warnings.warn(
@@ -453,7 +453,9 @@ class MultiPlane(object):
             z_start, z_stop, include_z_start
         )
 
-    def arrival_time(self, theta_x, theta_y, kwargs_lens, check_convention=True, kwargs_cosmo=None):
+    def arrival_time(
+        self, theta_x, theta_y, kwargs_lens, check_convention=True, kwargs_cosmo=None
+    ):
         """Light travel time relative to a straight path through the coordinate (0,0)
         Negative sign means earlier arrival time.
 
@@ -464,7 +466,9 @@ class MultiPlane(object):
         :return: travel time in unit of days
         """
         if kwargs_cosmo is not None:
-            cosmo = get_astropy_cosmology(cosmology_model=self.cosmology_model, param_kwargs=kwargs_cosmo)
+            cosmo = get_astropy_cosmology(
+                cosmology_model=self.cosmology_model, param_kwargs=kwargs_cosmo
+            )
             self._multi_plane_base.set_background_cosmo(cosmo)
         dt_geo, dt_grav = self.geo_shapiro_delay(
             theta_x, theta_y, kwargs_lens, check_convention=check_convention

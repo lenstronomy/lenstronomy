@@ -501,3 +501,43 @@ class LensCosmo(object):
         return self.background.beta_double_source_plane(
             z_lens=z_lens, z_source_1=z_source_1, z_source_2=z_source_2
         )
+
+    def theta_E_power_law_scaling(
+        self,
+        theta_E_convention,
+        kappa_ext_convention,
+        gamma_pl,
+        z_lens,
+        z_source_convention,
+        z_source,
+    ):
+        """Maps Einstein radius of a power-law profile with external convergence to
+        different source redshifts.
+
+        :param theta_E_convention: Einstein radius for the lens when a source is at
+            z_source_conventions coming from the main deflector (excluding external
+            convergence)
+        :param kappa_ext_convention: external convergence for z_source_convention
+        :param gamma_pl: power-law slope of the deflector
+        :param z_lens: lens redshift
+        :param z_source_convention: source redshift for lens model conventions
+        :param z_source: source redshift
+        :return: Einstein radius for a source at redshift z_source
+        """
+
+        if z_source == z_source_convention:
+            theta_E = theta_E_convention
+            kappa_ext = kappa_ext_convention
+        else:
+            beta = self.beta_double_source_plane(
+                z_lens=z_lens,
+                z_source_2=z_source_convention,
+                z_source_1=z_source,
+            )
+            kappa_ext = kappa_ext_convention * beta
+            theta_E = theta_E_convention * beta ** (1.0 / (gamma_pl - 1.0))
+            # theta_E = theta_E_convention * (beta + kappa_ext_convention * (1 - beta)) ** (1. / (gamma_pl - 1.))
+            # β − (1 − λ)(1 − β) ** (1.0 / (gamma_pl - 1))
+
+        theta_E /= (1 - kappa_ext) ** (1.0 / (gamma_pl - 1))
+        return theta_E

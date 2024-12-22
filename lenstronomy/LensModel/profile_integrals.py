@@ -87,5 +87,9 @@ class ProfileIntegrals(object):
         kwargs.pop("center_x", None)
         kwargs.pop("center_y", None)
         # integral of self.density_2d(x)* 2*np.pi * x *dx, 0, r
-        out = integrate.quad(lambda x: self.density_2d(x, kwargs, lens_param=lens_param) * 2 * np.pi * x, 0, r)
+        out = integrate.quad(
+            lambda x: self.density_2d(x, kwargs, lens_param=lens_param) * 2 * np.pi * x,
+            0,
+            r,
+        )
         return out[0]

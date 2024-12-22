@@ -91,6 +91,8 @@ class Background(object):
         :param cosmo: ~astropy.cosmology instance
         :return: beta
         """
+        if z_source_1 == z_source_2:
+            return 1
         ds1 = self.cosmo.angular_diameter_distance(z=z_source_1).value
         dds1 = self.cosmo.angular_diameter_distance_z1z2(z1=z_lens, z2=z_source_1).value
         ds2 = self.cosmo.angular_diameter_distance(z=z_source_2).value
@@ -107,4 +109,6 @@ class Background(object):
         :param z_source_2: new source redshift
         :return: Ddt to z_source_2
         """
+        if z_source_1 == z_source_2:
+            return 1
         return 1.0 / self.ddt(z_lens, z_source_1) * self.ddt(z_lens, z_source_2)

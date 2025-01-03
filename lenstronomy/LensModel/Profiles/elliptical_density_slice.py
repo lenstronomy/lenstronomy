@@ -220,8 +220,8 @@ class ElliSLICE(LensProfileBase):
         # along the axis but it slows down the function.
         if a == b:
             # if round, simpler formula is valid
-            I_out_real = sig_0 * a ** 2 * x / np.sqrt(x**2 + y**2)
-            I_out_imag = sig_0 * a ** 2 * y / np.sqrt(x**2 + y**2)
+            I_out_real = sig_0 * a**2 * x / np.sqrt(x**2 + y**2)
+            I_out_imag = sig_0 * a**2 * y / np.sqrt(x**2 + y**2)
             return I_out_real, I_out_imag
         if (
             np.abs(np.sin(phi - psi)) <= 10**-10
@@ -242,10 +242,10 @@ class ElliSLICE(LensProfileBase):
                 * b
                 / f2
                 * (
-                        zb_minus_eps * e2ipsi
-                        - eipsi
-                        * self.sign(zb_minus_eps * eipsi)
-                        * cmath.sqrt(zb_minus_eps ** 2 * e2ipsi - f2)
+                    zb_minus_eps * e2ipsi
+                    - eipsi
+                    * self.sign(zb_minus_eps * eipsi)
+                    * cmath.sqrt(zb_minus_eps**2 * e2ipsi - f2)
                 )
                 * sig_0
             )
@@ -255,10 +255,10 @@ class ElliSLICE(LensProfileBase):
                 * b
                 / f2
                 * (
-                        zb_plus_eps * e2ipsi
-                        - eipsi
-                        * self.sign(zb_plus_eps * eipsi)
-                        * cmath.sqrt(zb_plus_eps ** 2 * e2ipsi - f2)
+                    zb_plus_eps * e2ipsi
+                    - eipsi
+                    * self.sign(zb_plus_eps * eipsi)
+                    * cmath.sqrt(zb_plus_eps**2 * e2ipsi - f2)
                 )
                 * sig_0
             )
@@ -268,8 +268,8 @@ class ElliSLICE(LensProfileBase):
                 * b
                 / f2
                 * (
-                        zb * e2ipsi
-                        - eipsi * self.sign(zb * eipsi) * cmath.sqrt(zb ** 2 * e2ipsi - f2)
+                    zb * e2ipsi
+                    - eipsi * self.sign(zb * eipsi) * cmath.sqrt(zb**2 * e2ipsi - f2)
                 )
                 * sig_0
             )
@@ -282,8 +282,8 @@ class ElliSLICE(LensProfileBase):
                 * b
                 / f2
                 * (
-                        zb * e2ipsi
-                        - eipsi * self.sign(zb * eipsi) * cmath.sqrt(zb ** 2 * e2ipsi - f2)
+                    zb * e2ipsi
+                    - eipsi * self.sign(zb * eipsi) * cmath.sqrt(zb**2 * e2ipsi - f2)
                 )
                 * sig_0
             )
@@ -360,19 +360,19 @@ class ElliSLICE(LensProfileBase):
                 (1 - e**2)
                 / (4 * e)
                 * (
-                        f2
-                        * cmath.log(
+                    f2
+                    * cmath.log(
                         (
-                                self.sign(z_minus_eps * emipsi) * z_minus_eps * emipsi
-                                + cmath.sqrt(z_minus_eps ** 2 * em2ipsi - f2)
+                            self.sign(z_minus_eps * emipsi) * z_minus_eps * emipsi
+                            + cmath.sqrt(z_minus_eps**2 * em2ipsi - f2)
                         )
                         / 2.0
                     )
-                        - self.sign(z_minus_eps * emipsi)
-                        * z_minus_eps
-                        * emipsi
-                        * cmath.sqrt(z_minus_eps ** 2 * em2ipsi - f2)
-                        + z_minus_eps ** 2 * em2ipsi
+                    - self.sign(z_minus_eps * emipsi)
+                    * z_minus_eps
+                    * emipsi
+                    * cmath.sqrt(z_minus_eps**2 * em2ipsi - f2)
+                    + z_minus_eps**2 * em2ipsi
                 )
                 * sig_0
             )
@@ -380,19 +380,19 @@ class ElliSLICE(LensProfileBase):
                 (1 - e**2)
                 / (4 * e)
                 * (
-                        f2
-                        * cmath.log(
+                    f2
+                    * cmath.log(
                         (
-                                self.sign(z_plus_eps * emipsi) * z_plus_eps * emipsi
-                                + cmath.sqrt(z_plus_eps ** 2 * em2ipsi - f2)
+                            self.sign(z_plus_eps * emipsi) * z_plus_eps * emipsi
+                            + cmath.sqrt(z_plus_eps**2 * em2ipsi - f2)
                         )
                         / 2.0
                     )
-                        - self.sign(z_plus_eps * emipsi)
-                        * z_plus_eps
-                        * emipsi
-                        * cmath.sqrt(z_plus_eps ** 2 * em2ipsi - f2)
-                        + z_plus_eps ** 2 * em2ipsi
+                    - self.sign(z_plus_eps * emipsi)
+                    * z_plus_eps
+                    * emipsi
+                    * cmath.sqrt(z_plus_eps**2 * em2ipsi - f2)
+                    + z_plus_eps**2 * em2ipsi
                 )
                 * sig_0
             )
@@ -400,16 +400,19 @@ class ElliSLICE(LensProfileBase):
                 (1 - e**2)
                 / (4 * e)
                 * (
-                        f2
-                        * cmath.log(
+                    f2
+                    * cmath.log(
                         (
-                                self.sign(z * emipsi) * z * emipsi
-                                + cmath.sqrt(z ** 2 * em2ipsi - f2)
+                            self.sign(z * emipsi) * z * emipsi
+                            + cmath.sqrt(z**2 * em2ipsi - f2)
                         )
                         / 2.0
                     )
-                        - self.sign(z * emipsi) * z * emipsi * cmath.sqrt(z ** 2 * em2ipsi - f2)
-                        + z ** 2 * em2ipsi
+                    - self.sign(z * emipsi)
+                    * z
+                    * emipsi
+                    * cmath.sqrt(z**2 * em2ipsi - f2)
+                    + z**2 * em2ipsi
                 )
                 * sig_0
             )
@@ -421,16 +424,19 @@ class ElliSLICE(LensProfileBase):
                 (1 - e**2)
                 / (4 * e)
                 * (
-                        f2
-                        * cmath.log(
+                    f2
+                    * cmath.log(
                         (
-                                self.sign(z * emipsi) * z * emipsi
-                                + cmath.sqrt(z ** 2 * em2ipsi - f2)
+                            self.sign(z * emipsi) * z * emipsi
+                            + cmath.sqrt(z**2 * em2ipsi - f2)
                         )
                         / 2.0
                     )
-                        - self.sign(z * emipsi) * z * emipsi * cmath.sqrt(z ** 2 * em2ipsi - f2)
-                        + z ** 2 * em2ipsi
+                    - self.sign(z * emipsi)
+                    * z
+                    * emipsi
+                    * cmath.sqrt(z**2 * em2ipsi - f2)
+                    + z**2 * em2ipsi
                 )
                 * sig_0
             ).real

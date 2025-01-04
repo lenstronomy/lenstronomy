@@ -155,6 +155,8 @@ class Param(object):
         kinematic_sampling=None,
         num_shapelet_lens=0,
         log_sampling_lens=[],
+        distance_ratio_sampling=False,
+        cosmology_sampling=False,
     ):
         """
 
@@ -229,6 +231,10 @@ class Param(object):
          adds two additional sampled parameters describing RA/Dec offsets between data coordinate grid and pixelated source plane coordinate grid.
         :param num_shapelet_lens: number of shapelet coefficients in the 'SHAPELETS_CART' or 'SHAPELETS_POLAR' mass profile.
         :param log_sampling_lens: Sample the log10 of the lens model parameters. Format : [[i_lens, ['param_name1', 'param_name2', ...]], [...], ...],
+        :param distance_ratio_sampling: bool, if True, will use sampled
+         distance ratios to update T_ij value in multi-lens plane computation.
+        :param cosmology_sampling: bool, if True, will use sampled cosmology
+        :param cosmology_model: str, name of the cosmology model to use for
         """
 
         self._lens_model_list = kwargs_model.get("lens_model_list", [])
@@ -1012,7 +1018,7 @@ class Param(object):
         num, param_list = self.num_param()
         num_linear = self.num_param_linear()
 
-        # TODO print settings of specailParams?
+        # TODO print settings of specialParams?
         print("The following model options are chosen:")
         print("Lens models:", self._lens_model_list)
         print("Source models:", self._source_light_model_list)

@@ -79,7 +79,7 @@ class TestElliSLICE(object):
             x, y, a=a, b=a + 0.00001, psi=psi, sigma_0=sigma_0
         )
         f_x_round, f_y_round = self.ElliSLICE.derivatives(
-            x, y, a=a, b=a + 0.000001, psi=psi, sigma_0=sigma_0
+            x, y, a=a, b=a, psi=psi, sigma_0=sigma_0
         )
         npt.assert_almost_equal(f_x, f_x_round, decimal=5)
         npt.assert_almost_equal(f_y, f_y_round, decimal=5)

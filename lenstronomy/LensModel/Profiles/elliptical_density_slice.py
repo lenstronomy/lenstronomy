@@ -218,11 +218,6 @@ class ElliSLICE(LensProfileBase):
         # away from this position, perpendicularly to the axis ; another one is at -delta perpendicularly away from
         # x,y). We calculate the function for each point and take the median. This avoids any singularity for points
         # along the axis but it slows down the function.
-        if a == b:
-            # if round, simpler formula is valid
-            I_out_real = sig_0 * a**2 * x / np.sqrt(x**2 + y**2)
-            I_out_imag = sig_0 * a**2 * y / np.sqrt(x**2 + y**2)
-            return I_out_real, I_out_imag
         if (
             np.abs(np.sin(phi - psi)) <= 10**-10
             or np.abs(np.sin(phi - psi - np.pi / 2.0)) <= 10**-10
@@ -276,6 +271,12 @@ class ElliSLICE(LensProfileBase):
             I_out_real = np.median([I_out_minus.real, I_out_plus.real, I_out_mid.real])
             I_out_imag = np.median([I_out_minus.imag, I_out_plus.imag, I_out_mid.imag])
         else:
+            if a == b and x ** 2 + y ** 2 > a ** 2:
+                # if round, simpler formula is valid
+                I_out_real = sig_0 * a ** 2 * x / (x ** 2 + y ** 2)
+                I_out_imag = sig_0 * a ** 2 * y / (x ** 2 + y ** 2)
+
+                return I_out_real, I_out_imag
             I_out = (
                 2
                 * a
@@ -287,6 +288,7 @@ class ElliSLICE(LensProfileBase):
                 )
                 * sig_0
             )
+
             I_out_real = I_out.real
             I_out_imag = I_out.imag
 

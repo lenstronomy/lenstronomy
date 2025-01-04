@@ -271,10 +271,10 @@ class ElliSLICE(LensProfileBase):
             I_out_real = np.median([I_out_minus.real, I_out_plus.real, I_out_mid.real])
             I_out_imag = np.median([I_out_minus.imag, I_out_plus.imag, I_out_mid.imag])
         else:
-            if a == b and x ** 2 + y ** 2 > a ** 2:
+            if a == b and x**2 + y**2 > a**2:
                 # if round, simpler formula is valid
-                I_out_real = sig_0 * a ** 2 * x / (x ** 2 + y ** 2)
-                I_out_imag = sig_0 * a ** 2 * y / (x ** 2 + y ** 2)
+                I_out_real = sig_0 * a**2 * x / (x**2 + y**2)
+                I_out_imag = sig_0 * a**2 * y / (x**2 + y**2)
 
                 return I_out_real, I_out_imag
             I_out = (

@@ -453,9 +453,7 @@ class MultiPlane(object):
             z_start, z_stop, include_z_start
         )
 
-    def arrival_time(
-        self, theta_x, theta_y, kwargs_lens, check_convention=True
-    ):
+    def arrival_time(self, theta_x, theta_y, kwargs_lens, check_convention=True):
         """Light travel time relative to a straight path through the coordinate (0,0)
         Negative sign means earlier arrival time.
 

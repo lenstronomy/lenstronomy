@@ -305,9 +305,11 @@ class LensModel(object):
         """
         if hasattr(self.lens_model, "arrival_time"):  # for multiplane
             arrival_time = self.lens_model.arrival_time(
-                x_image, y_image, kwargs_lens,
+                x_image,
+                y_image,
+                kwargs_lens,
             )
-        else: #for single plane
+        else:  # for single plane
             fermat_pot = self.lens_model.fermat_potential(
                 x_image, y_image, kwargs_lens, x_source=x_source, y_source=y_source
             )

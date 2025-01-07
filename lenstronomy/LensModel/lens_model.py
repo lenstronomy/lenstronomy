@@ -97,6 +97,8 @@ class LensModel(object):
                 "Astropy Cosmology is provided. Make sure your cosmology model is consistent with the cosmology_model argument."
             )
         self.cosmo = cosmo
+        self.cosmology_sampling = cosmology_sampling
+        self.cosmology_model = cosmology_model
 
         # Are there line-of-sight corrections?
         permitted_los_models = ["LOS", "LOS_MINIMAL"]
@@ -286,7 +288,6 @@ class LensModel(object):
         kappa_ext=0,
         x_source=None,
         y_source=None,
-        kwargs_cosmo=None,
     ):
         """Arrival time of images relative to a straight line without lensing. Negative
         values correspond to images arriving earlier, and positive signs correspond to
@@ -304,16 +305,9 @@ class LensModel(object):
         """
         if hasattr(self.lens_model, "arrival_time"):  # for multiplane
             arrival_time = self.lens_model.arrival_time(
-                x_image, y_image, kwargs_lens, kwargs_cosmo=kwargs_cosmo
+                x_image, y_image, kwargs_lens,
             )
-        else:
-            if self.cosmology_sampling and kwargs_cosmo is not None:  # for single plane
-                cosmo = get_astropy_cosmology(
-                    cosmology_model=self.cosmology_model, param_kwargs=kwargs_cosmo
-                )
-                self.cosmo = cosmo
-                self._lensCosmo.background.cosmo = cosmo
-
+        else: #for single plane
             fermat_pot = self.lens_model.fermat_potential(
                 x_image, y_image, kwargs_lens, x_source=x_source, y_source=y_source
             )

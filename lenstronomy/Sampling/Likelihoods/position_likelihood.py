@@ -82,6 +82,10 @@ class PositionLikelihood(object):
         """
 
         logL = 0
+        if self._lensModel.cosmology_sampling:
+            cosmo =  get_astropy_cosmology(cosmology_model=self._lensModel.cosmology_model, param_kwargs=kwargs_special)
+            self._lensModel.update_cosmology(cosmo)
+
         if self._astrometric_likelihood is True:
             logL_astrometry = self.astrometric_likelihood(
                 kwargs_ps, kwargs_special, self._image_position_sigma
@@ -118,7 +122,6 @@ class PositionLikelihood(object):
                 self._source_position_sigma,
                 hard_bound_rms=self._bound_source_position_tolerance,
                 verbose=verbose,
-                kwargs_special=kwargs_special,
             )
             logL += logL_source_pos
             if verbose is True:
@@ -128,7 +131,6 @@ class PositionLikelihood(object):
                 kwargs_ps=kwargs_ps,
                 kwargs_lens=kwargs_lens,
                 sigma=self._image_position_sigma,
-                kwargs_special=kwargs_special,
             )
             logL += logL_image_pos
             if verbose is True:
@@ -183,7 +185,7 @@ class PositionLikelihood(object):
             return 0
 
     def image_position_likelihood(
-        self, kwargs_ps, kwargs_lens, sigma, kwargs_special=None
+        self, kwargs_ps, kwargs_lens, sigma,
     ):
         """Computes the likelihood of the model predicted image position relative to
         measured image positions with an astrometric error. This routine requires the
@@ -192,21 +194,10 @@ class PositionLikelihood(object):
 
         :param kwargs_ps: point source keyword argument list
         :param kwargs_lens: lens model keyword argument list
-        :param kwargs_special: special keyword arguments, can contain the cosmology
         :param sigma: 1-sigma uncertainty in the measured position of the images
         :return: log likelihood of the model predicted image positions given the
             data/measured image positions.
         """
-        if self._lensModel.type == "MultiPlane":  # only for multi-plane lens models
-            if (
-                self._lensModel.lens_model.cosmology_sampling is True
-                and kwargs_special is not None
-            ):
-                cosmo = get_astropy_cosmology(
-                    cosmology_model=self._lensModel.lens_model.cosmology_model,
-                    param_kwargs=kwargs_special,
-                )
-                self._lensModel.lens_model.set_background_cosmo(cosmo)
 
         ra_image_list, dec_image_list = self._pointSource.image_position(
             kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens, original_position=True
@@ -233,7 +224,6 @@ class PositionLikelihood(object):
         sigma,
         hard_bound_rms=None,
         verbose=False,
-        kwargs_special=None,
     ):
         """Computes a likelihood/punishing factor of how well the source positions of
         multiple images match given the image position and a lens model. The likelihood
@@ -242,7 +232,6 @@ class PositionLikelihood(object):
 
         :param kwargs_lens: lens model keyword argument list
         :param kwargs_ps: point source keyword argument list
-        :param kwargs_special: special keyword arguments
         :param sigma: 1-sigma Gaussian uncertainty in the image plane
         :param hard_bound_rms: hard bound deviation between the mapping of the images
             back to the source plane (in source frame)
@@ -255,16 +244,6 @@ class PositionLikelihood(object):
         logL = 0
         source_x, source_y = self._pointSource.source_position(kwargs_ps, kwargs_lens)
         redshift_list = self._pointSource._redshift_list
-        if self._lensModel.type == "MultiPlane":  # only for multi-plane lens models
-            if (
-                self._lensModel.lens_model.cosmology_sampling is True
-                and kwargs_special is not None
-            ):
-                cosmo = get_astropy_cosmology(
-                    cosmology_model=self._lensModel.lens_model.cosmology_model,
-                    param_kwargs=kwargs_special,
-                )
-                self._lensModel.lens_model._multi_plane_base.set_background_cosmo(cosmo)
 
         for k in range(len(kwargs_ps)):
             if (

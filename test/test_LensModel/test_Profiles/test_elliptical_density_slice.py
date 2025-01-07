@@ -69,6 +69,21 @@ class TestElliSLICE(object):
         npt.assert_almost_equal(f_x[0], f_x[1], decimal=5)
         npt.assert_almost_equal(f_y[1], f_y[2], decimal=5)
 
+        # testing almost round vs round and should match (numerically)
+        x = 1
+        y = 2
+        a = 1.0
+        psi = 0
+        sigma_0 = 1.0
+        f_x, f_y = self.ElliSLICE.derivatives(
+            x, y, a=a, b=a + 0.00001, psi=psi, sigma_0=sigma_0
+        )
+        f_x_round, f_y_round = self.ElliSLICE.derivatives(
+            x, y, a=a, b=a, psi=psi, sigma_0=sigma_0
+        )
+        npt.assert_almost_equal(f_x / f_x_round, 1, decimal=5)
+        npt.assert_almost_equal(f_y / f_y_round, 1, decimal=5)
+
     def test_hessian(self):
         x = 0.5
         y = 0.1

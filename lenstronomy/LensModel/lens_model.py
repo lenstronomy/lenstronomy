@@ -79,7 +79,7 @@ class LensModel(object):
         """
         self.lens_model_list = lens_model_list
         self.z_lens = z_lens
-        
+
         if z_source_convention is None and z_source is not None:
             z_source_convention = z_source
         if z_source is None and z_source_convention is not None:

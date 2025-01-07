@@ -79,15 +79,13 @@ class LensModel(object):
         """
         self.lens_model_list = lens_model_list
         self.z_lens = z_lens
-        self.z_source = z_source
-        self.cosmology_sampling = cosmology_sampling
-        self.cosmology_model = cosmology_model
-
+        
         if z_source_convention is None and z_source is not None:
             z_source_convention = z_source
         if z_source is None and z_source_convention is not None:
             z_source = z_source_convention
         self._z_source_convention = z_source_convention
+        self.z_source = z_source
         self.redshift_list = lens_redshift_list
 
         if cosmo is None and cosmology_model == "FlatLambdaCDM":
@@ -574,15 +572,14 @@ class LensModel(object):
         else:
             if self._los_effects is True:
                 raise NotImplementedError(
-                    "SinglePlaneLOS lens model does not support change in source redshift"
+                    "SinglePlaneLOS lens model does not support change in redshift"
                 )
-            else:
-                alpha_scaling = self._lensCosmo.beta_double_source_plane(
-                    z_lens=self.z_lens,
-                    z_source_1=z_source,
-                    z_source_2=self._z_source_convention,
-                )
-                self.lens_model.change_redshift_scaling(alpha_scaling)
+            alpha_scaling = self._lensCosmo.beta_double_source_plane(
+                z_lens=self.z_lens,
+                z_source_1=z_source,
+                z_source_2=self._z_source_convention,
+            )
+            self.lens_model.change_redshift_scaling(alpha_scaling)
 
         if self.z_lens is not None:
             self._lensCosmo = LensCosmo(self.z_lens, z_source, cosmo=self.cosmo)
@@ -592,6 +589,42 @@ class LensModel(object):
                 )
                 self._ddt_scaling = ddt_scaling
         self.z_source = z_source
+
+    def update_cosmology(self, cosmo):
+        """
+
+        :param cosmo: ~astropy.cosmology instance
+        :return: updated LensModel class with new cosmology
+        """
+        self.cosmo = cosmo
+
+        if self.z_lens is not None and self.z_source is not None:
+            self._lensCosmo = LensCosmo(self.z_lens, self.z_source, cosmo=cosmo)
+            if self._z_source_convention is not None:
+                ddt_scaling = self._lensCosmo.background.ddt_scaling(
+                    self.z_lens, self._z_source_convention, self.z_source
+                )
+                self._ddt_scaling = ddt_scaling
+        if self.multi_plane is True:
+            if self._decouple_multi_plane:
+                kwargs_lens_class = self.lens_model.kwargs_class
+                kwargs_decoupled = self.lens_model.kwargs_multiplane_model
+                kwargs_lens_class["cosmo"] = cosmo
+                kwargs_class = {**kwargs_lens_class, **kwargs_decoupled}
+                self.lens_model = MultiPlaneDecoupled(**kwargs_class)
+            else:
+                # TODO: is it possible to not re-initialize it for performance improvements?
+                kwargs_lens_class = self.lens_model.kwargs_class
+                kwargs_lens_class["cosmo"] = cosmo
+                self.lens_model = MultiPlane(**kwargs_lens_class)
+        else:
+            if self.z_lens is not None and self.z_source is not None:
+                alpha_scaling = self._lensCosmo.beta_double_source_plane(
+                    z_lens=self.z_lens,
+                    z_source_1=self.z_source,
+                    z_source_2=self._z_source_convention,
+                )
+                self.lens_model.change_redshift_scaling(alpha_scaling)
 
     @property
     def ddt_scaling(self):

@@ -83,7 +83,10 @@ class PositionLikelihood(object):
 
         logL = 0
         if self._lensModel.cosmology_sampling:
-            cosmo =  get_astropy_cosmology(cosmology_model=self._lensModel.cosmology_model, param_kwargs=kwargs_special)
+            cosmo = get_astropy_cosmology(
+                cosmology_model=self._lensModel.cosmology_model,
+                param_kwargs=kwargs_special,
+            )
             self._lensModel.update_cosmology(cosmo)
 
         if self._astrometric_likelihood is True:
@@ -185,7 +188,10 @@ class PositionLikelihood(object):
             return 0
 
     def image_position_likelihood(
-        self, kwargs_ps, kwargs_lens, sigma,
+        self,
+        kwargs_ps,
+        kwargs_lens,
+        sigma,
     ):
         """Computes the likelihood of the model predicted image position relative to
         measured image positions with an astrometric error. This routine requires the

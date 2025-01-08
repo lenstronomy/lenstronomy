@@ -103,7 +103,10 @@ class TimeDelayLikelihood(object):
             kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens, original_position=True
         )
         if self._lensModel.cosmology_sampling:
-            cosmo =  get_astropy_cosmology(cosmology_model=self._lensModel.cosmology_model, param_kwargs=kwargs_cosmo)
+            cosmo = get_astropy_cosmology(
+                cosmology_model=self._lensModel.cosmology_model,
+                param_kwargs=kwargs_cosmo,
+            )
             self._lensModel.update_cosmology(cosmo)
 
         logL = 0

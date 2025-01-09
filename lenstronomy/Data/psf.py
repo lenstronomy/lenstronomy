@@ -132,7 +132,7 @@ class PSF(object):
                 # kernel_num_pix is always an odd integer between 3 and 221
                 kernel_radius = max(round(self._truncation * sigma / self._pixel_size), 1)
                 kernel_num_pix = min(
-                    round(2 * kernel_radius + 1), 221
+                    2 * kernel_radius + 1, 221
                 )
                 self._kernel_point_source = kernel_util.kernel_gaussian(
                     kernel_num_pix, self._pixel_size, self._fwhm

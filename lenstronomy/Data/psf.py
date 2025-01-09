@@ -126,11 +126,14 @@ class PSF(object):
     def kernel_point_source(self):
         if not hasattr(self, "_kernel_point_source"):
             if self.psf_type == "GAUSSIAN":
+                sigma = util.fwhm2sigma(self._fwhm)
+                # This num_pix definition is equivalent to that of the scipy ndimage.gaussian_filter
+                # num_pix = 2r + 1 where r = round(truncation * sigma) is the radius of the gaussian kernel
+                # kernel_num_pix is always an odd integer between 3 and 221
+                kernel_radius = max(round(self._truncation * sigma / self._pixel_size), 1)
                 kernel_num_pix = min(
-                    round(self._truncation * self._fwhm / self._pixel_size), 221
+                    round(2 * kernel_radius + 1), 221
                 )
-                if kernel_num_pix % 2 == 0:
-                    kernel_num_pix += 1
                 self._kernel_point_source = kernel_util.kernel_gaussian(
                     kernel_num_pix, self._pixel_size, self._fwhm
                 )
@@ -177,22 +180,17 @@ class PSF(object):
                 return kernel_point_source_supersampled
 
         if self.psf_type == "GAUSSIAN":
-            kernel_num_pix = int(
-                round(
-                    self._truncation
-                    * self._fwhm
-                    / self._pixel_size
-                    * supersampling_factor
-                )
-            )
+            sigma = util.fwhm2sigma(self._fwhm)
+            # This num_pix definition is equivalent to that of the scipy ndimage.gaussian_filter
+            # num_pix = 2r + 1 where r = round(truncation * sigma) is the radius of the gaussian kernel
+            kernel_radius = max(round(self._truncation * sigma / self._pixel_size * supersampling_factor), 1)
+            kernel_num_pix = 2 * kernel_radius + 1
             if kernel_num_pix > 10000:
                 raise ValueError(
                     "The pixelized Gaussian kernel has a grid of %s pixels with a truncation at "
                     "%s times the sigma of the Gaussian, exceeding the limit allowed."
                     % (kernel_num_pix, self._truncation)
                 )
-            if kernel_num_pix % 2 == 0:
-                kernel_num_pix += 1
             kernel_point_source_supersampled = kernel_util.kernel_gaussian(
                 kernel_num_pix, self._pixel_size / supersampling_factor, self._fwhm
             )

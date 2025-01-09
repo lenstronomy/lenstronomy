@@ -130,10 +130,10 @@ class PSF(object):
                 # This num_pix definition is equivalent to that of the scipy ndimage.gaussian_filter
                 # num_pix = 2r + 1 where r = round(truncation * sigma) is the radius of the gaussian kernel
                 # kernel_num_pix is always an odd integer between 3 and 221
-                kernel_radius = max(round(self._truncation * sigma / self._pixel_size), 1)
-                kernel_num_pix = min(
-                    round(2 * kernel_radius + 1), 221
+                kernel_radius = max(
+                    round(self._truncation * sigma / self._pixel_size), 1
                 )
+                kernel_num_pix = min(round(2 * kernel_radius + 1), 221)
                 self._kernel_point_source = kernel_util.kernel_gaussian(
                     kernel_num_pix, self._pixel_size, self._fwhm
                 )
@@ -183,7 +183,12 @@ class PSF(object):
             sigma = util.fwhm2sigma(self._fwhm)
             # This num_pix definition is equivalent to that of the scipy ndimage.gaussian_filter
             # num_pix = 2r + 1 where r = round(truncation * sigma) is the radius of the gaussian kernel
-            kernel_radius = max(round(self._truncation * sigma / self._pixel_size * supersampling_factor), 1)
+            kernel_radius = max(
+                round(
+                    self._truncation * sigma / self._pixel_size * supersampling_factor
+                ),
+                1,
+            )
             kernel_num_pix = 2 * kernel_radius + 1
             if kernel_num_pix > 10000:
                 raise ValueError(

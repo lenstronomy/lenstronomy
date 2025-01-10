@@ -299,7 +299,9 @@ class TestLensProfileAnalysis(object):
             {"k_eff": 1, "R_sersic": 2, "n_sersic": 1, "center_x": 0, "center_y": 0}
         ]
         profileAnalysis = LensProfileAnalysis(lens_model=lensModel)
-        m200_out, r200_out = profileAnalysis.m_delta_crit(kwargs_lens, z_lens, z_source, cosmo, delta_crit=200)
+        m200_out, r200_out = profileAnalysis.m_delta_crit(
+            kwargs_lens, z_lens, z_source, cosmo, delta_crit=200
+        )
         npt.assert_almost_equal(m200_out / 3827526804710.1196, 1, decimal=5)
 
 

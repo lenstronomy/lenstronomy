@@ -23,17 +23,15 @@ class ElliSLICE(LensProfileBase):
             \\begin{array}{ll}
                 \\sigma_0  & \\mbox{if } \\frac{x_{rot}^2}{a^2} + \\frac{y_{rot}^2}{b^2} \\leq 1 \\\
                 0 & \\mbox{else}
-
             \\end{array}
-
         \\right}.
 
     with
 
     ..math::
-        x_{rot} = x_c \\cos \\psi + y_c \\sin \\psi  \\
-        y_{rot} = - x_c \\sin \\psi + y_c \\cos \\psi  \\
-        x_c = x - center_x  \\
+        x_{rot} = x_c \\cos \\psi + y_c \\sin \\psi  \\\
+        y_{rot} = - x_c \\sin \\psi + y_c \\cos \\psi  \\\
+        x_c = x - center_x  \\\
         y_c = y - center_y
 
     """

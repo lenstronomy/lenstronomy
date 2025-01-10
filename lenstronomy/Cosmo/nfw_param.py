@@ -37,7 +37,6 @@ class NFWParam(object):
         :rtype: float
         """
         return self.rhoc * (self.cosmo.efunc(z)) ** 2
-        # return self.rhoc*(1+z)**3
 
     @staticmethod
     def M200(rs, rho0, c):

@@ -19,7 +19,7 @@ class Background(object):
          redshift
         :return: Background class with instance of astropy.cosmology
         """
-
+        self.rhoc = 2.77536627e11  # critical density [h^2 M_sun Mpc^-3]
         if cosmo is None:
             from astropy.cosmology import default_cosmology
 
@@ -81,6 +81,17 @@ class Background(object):
         """
         h = self.cosmo.H(0).value / 100.0
         return 3 * h**2 / (8 * np.pi * const.G) * 10**10 * const.Mpc / const.M_sun
+
+    def rho_crit_z(self, z):
+        """
+        critical density of the universe at given redshift
+
+        :param z: redshift
+        :return: critical densith in physical [M_sun/Mpc^3]
+        """
+        h = self.cosmo.H(0).value / 100.0
+        return self.rhoc * (self.cosmo.efunc(z)) ** 2 * h**2
+
 
     def beta_double_source_plane(self, z_lens, z_source_1, z_source_2):
         """Model prediction of ratio of scaled deflection angles.

@@ -20,6 +20,10 @@ class TestCosmoProp(object):
     def test_rho_crit(self):
         assert self.bkg.rho_crit == 135955133951.10692
 
+    def test_rho_crit_z(self):
+        rho_crit_test = self.bkg.rho_crit_z(z=0)
+        npt.assert_almost_equal(rho_crit_test / self.bkg.rho_crit, 1, decimal=3)
+
     def test_interpol(self):
         from astropy.cosmology import FlatLambdaCDM
 

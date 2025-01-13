@@ -413,7 +413,7 @@ class SingleBandMultiModel(ImageLinearFit):
         kwargs_extinction=None,
         kwargs_special=None,
     ):
-        """Computes the linear response matrix (m x n), with n beeing the data size and
+        """Computes the linear response matrix (m x n), with n being the data size and
         m being the coefficients.
 
         :param kwargs_lens:

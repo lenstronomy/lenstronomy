@@ -200,6 +200,14 @@ class MultiPlane(object):
     def T_ij_stop(self, T_ij_stop):
         self._T_ij_stop = T_ij_stop
 
+    def model_info(self):
+        """Shows what models are being initialized and what parameters are being
+        requested for.
+
+        :return: None
+        """
+        self._multi_plane_base.model_info()
+
     def _set_source_distances(self, z_source):
         """Compute the relevant angular diameter distances to a specific source
         redshift.

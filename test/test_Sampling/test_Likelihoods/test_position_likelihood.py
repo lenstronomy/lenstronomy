@@ -213,13 +213,6 @@ class TestPositionLikelihood(object):
             kwargs_ps,
             sigma=0.01,
         )
-        print(
-            "before position shift MP",
-            logL,
-            self._kwargs_lens_mp,
-            kwargs_ps,
-            flush=True,
-        )
         npt.assert_almost_equal(logL, 0, decimal=9)
 
         # position shift (this does not return the same results everytime the code is run!)
@@ -232,10 +225,6 @@ class TestPositionLikelihood(object):
             self._kwargs_lens_mp,
             kwargs_ps_pos,
             sigma=0.01,
-        )
-
-        print(
-            "position shift MP", logL, self._kwargs_lens_mp, kwargs_ps_pos, flush=True
         )
         npt.assert_almost_equal(logL, -0.4344342437028236, decimal=2)
 

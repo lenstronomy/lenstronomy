@@ -96,9 +96,13 @@ class TestLensModel(object):
         lens_model = LensModel(lens_model_list=lens_model_list)
         lens_model.info()
 
-            # Testing the multiplane version
-        lens_model2 = LensModel(lens_model_list=lens_model_list, multi_plane=True, lens_redshift_list=[0.5]*len(lens_model_list),
-                                z_source=1.5)
+        # Testing the multiplane version
+        lens_model2 = LensModel(
+            lens_model_list=lens_model_list,
+            multi_plane=True,
+            lens_redshift_list=[0.5] * len(lens_model_list),
+            z_source=1.5,
+        )
         lens_model2.info()
 
     def test_kappa(self):
@@ -415,7 +419,7 @@ class TestLensModel(object):
         dt_new = lens_model_new.arrival_time(1, 1, kwargs_lens=kwargs_lens)
         npt.assert_almost_equal(dt, dt_new, decimal=5)
 
-        #test that default cosmological parameters result in the expected value with non-standard cosmology
+        # test that default cosmological parameters result in the expected value with non-standard cosmology
         lens_model_new = LensModel(
             lens_model_list=["SIS"],
             z_lens=z_lens,
@@ -423,7 +427,7 @@ class TestLensModel(object):
             multi_plane=False,
             z_source=z_source_convention,
             cosmo=None,
-                        cosmology_model='FlatwCDM',
+            cosmology_model="FlatwCDM",
         )
         assert lens_model_new.cosmo.H0.value == 70
         assert lens_model_new.cosmo.Om0 == 0.3

@@ -263,15 +263,20 @@ class TestPositionLikelihood(object):
         npt.assert_almost_equal(logL_cosmo, -0.012514763470246378, decimal=4)
 
     def test_cosmology_shift_sp(self):
-        #in Single plane, we test that H0 does not change the likelihood
+        # in Single plane, we test that H0 does not change the likelihood
         kwargs_ps = [{"ra_image": self._x_pos, "dec_image": self._y_pos}]
         likelihood_cs_copy = copy.deepcopy(self.likelihood_cs)
         kwargs_special_shift = {"H0": 75, "Om0": 0.3}
         kwargs_special_base = {"H0": 70, "Om0": 0.3}
-        logL_cosmo_shift = likelihood_cs_copy.logL(self._kwargs_lens, kwargs_ps, kwargs_special_shift, verbose=True)
-        logL_cosmo_base = likelihood_cs_copy.logL(self._kwargs_lens, kwargs_ps, kwargs_special_base, verbose=True)
+        logL_cosmo_shift = likelihood_cs_copy.logL(
+            self._kwargs_lens, kwargs_ps, kwargs_special_shift, verbose=True
+        )
+        logL_cosmo_base = likelihood_cs_copy.logL(
+            self._kwargs_lens, kwargs_ps, kwargs_special_base, verbose=True
+        )
 
         npt.assert_almost_equal(logL_cosmo_base, logL_cosmo_shift, decimal=4)
+
 
 if __name__ == "__main__":
     pytest.main()

@@ -264,6 +264,65 @@ class TestTimeDelayLikelihood(object):
                 time_delay_measurement_bool_list=["aaa", "bbb"],
             )
 
+    def test_multiplane(self):
+        lensModel_mp = LensModel(
+            lens_model_list=["SIE", "SIE"],
+            multi_plane=True,
+            lens_redshift_list=[0.5, 1],
+            z_source=2,
+            cosmo=FlatLambdaCDM(H0=70, Om0=0.3),
+            cosmology_sampling=True,
+            cosmology_model="FlatLambdaCDM",
+        )
+        kwargs_lens_eqn_solver = {
+            "min_distance": 0.1,
+            "search_window": 10,
+            "precision_limit": 10 ** (-10),
+            "num_iter_max": 30000,
+            "arrival_time_sort": True,
+            "initial_guess_cut": True,
+        }
+        solver_mp = LensEquationSolver(lensModel=lensModel_mp)
+        kwargs_lens_mp = [
+            {"theta_E": 1, "e1": 0.1, "e2": -0.03, "center_x": 0, "center_y": 0},
+            {"theta_E": 1, "e1": 0.1, "e2": -0.03, "center_x": 0.02, "center_y": 0.01},
+        ]
+        x_img_mp, y_img_mp = solver_mp.image_position_from_source(
+            sourcePos_x=0.01,
+            sourcePos_y=-0.01,
+            kwargs_lens=kwargs_lens_mp,
+            **kwargs_lens_eqn_solver
+        )
+        pointSource_mp = PointSource(
+            point_source_type_list=["LENSED_POSITION"],
+        )
+        kwargs_ps_mp = [{"ra_image": x_img_mp, "dec_image": y_img_mp}]
+
+        t_days = lensModel_mp.arrival_time(x_img_mp, y_img_mp, kwargs_lens_mp)
+        time_delays_measured = t_days[1:] - t_days[0]
+        time_delays_uncertainties = np.array([0.1, 0.1, 0.1, 0.1])
+        td_likelihood = TimeDelayLikelihood(
+            time_delays_measured,
+            time_delays_uncertainties,
+            lens_model_class=lensModel_mp,
+            point_source_class=pointSource_mp,
+        )
+        kwargs_cosmo = {"H0": 70, "Om0": 0.3}
+        logL = td_likelihood.logL(
+            kwargs_lens=kwargs_lens_mp,
+            kwargs_ps=kwargs_ps_mp,
+            kwargs_cosmo=kwargs_cosmo,
+        )
+        npt.assert_almost_equal(logL, 0, decimal=8)
+
+        # cosmo shift
+        logL = td_likelihood.logL(
+            kwargs_lens=kwargs_lens_mp,
+            kwargs_ps=kwargs_ps_mp,
+            kwargs_cosmo={"H0": 75, "Om0": 0.3},
+        )
+        npt.assert_almost_equal(logL, -9108.078115857057, decimal=3)
+
 
 if __name__ == "__main__":
     pytest.main()

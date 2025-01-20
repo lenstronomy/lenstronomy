@@ -37,7 +37,9 @@ class TestMultiPlane(object):
             z_lens_convention=0.5,
             cosmo=cosmo,
             cosmology_sampling=True,
+            cosmology_model="FlatwCDM",
         )
+
         with pytest.raises(ValueError):
             MultiPlane(
                 z_source=z_source,
@@ -47,7 +49,7 @@ class TestMultiPlane(object):
                 cosmo_interp=True,
                 distance_ratio_sampling=True,
                 z_lens_convention=0.5,
-                cosmo=cosmo,
+                cosmo=None,
                 cosmology_sampling=True,
                 cosmology_model="stringTheory",
             )

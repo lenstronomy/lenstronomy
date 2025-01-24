@@ -562,8 +562,10 @@ class ImageModel(object):
         """Returns the 1d array of the error estimate corresponding to the data
         response.
 
-        :param kwargs_lens: list of dicts, keyword arguments corresponding to the lens profiles
-        :param kwargs_ps: list of dicts, keyword arguments corresponding to the point source models
+        :param kwargs_lens: list of dicts, keyword arguments corresponding to the lens
+            profiles
+        :param kwargs_ps: list of dicts, keyword arguments corresponding to the point
+            source models
         :param kwargs_special: list of dicts, special parameter keyword arguments
         :return: 1d numpy array of response, 2d array of additional errors (e.g. point
             source uncertainties)

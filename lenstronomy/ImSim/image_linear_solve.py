@@ -220,7 +220,7 @@ class ImageLinearFit(ImageModel):
             likelihood if so.
         :return: log likelihood (natural logarithm), linear parameter list
         """
-        
+
         im_sim, model_error, cov_matrix, param = ImageLinearFit.image_linear_solve(
             self,
             kwargs_lens,
@@ -413,9 +413,7 @@ class ImageLinearFit(ImageModel):
         kwargs_lens_light, i = self.LensLightModel.update_linear(
             param, i, kwargs_list=kwargs_lens_light
         )
-        kwargs_ps, i = self.PointSource.update_linear(
-            param, i, kwargs_ps, kwargs_lens
-        )
+        kwargs_ps, i = self.PointSource.update_linear(param, i, kwargs_ps, kwargs_lens)
         return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps
 
     def linear_param_from_kwargs(self, kwargs_source, kwargs_lens_light, kwargs_ps):

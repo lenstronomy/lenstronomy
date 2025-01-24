@@ -99,7 +99,11 @@ class TestSingleBandMultiModel(object):
         )
         self.imageModel = imageModel
         image_sim = simulation_util.simulate_simple(
-            imageModel, kwargs_lens_imageModel, kwargs_source, kwargs_lens_light, kwargs_ps
+            imageModel,
+            kwargs_lens_imageModel,
+            kwargs_source,
+            kwargs_lens_light,
+            kwargs_ps,
         )
 
         data_class.update_data(image_sim)
@@ -153,7 +157,9 @@ class TestSingleBandMultiModel(object):
         npt.assert_almost_equal(logl / logl_no_linear, 1, decimal=4)
 
         # Tests the feature to deactivate/activate linear_solver
-        logl_no_linear2, _ = self.single_band.likelihood_data_given_model(linear_solver=False, **self.kwargs_params)
+        logl_no_linear2, _ = self.single_band.likelihood_data_given_model(
+            linear_solver=False, **self.kwargs_params
+        )
         npt.assert_almost_equal(logl_no_linear2, logl_no_linear, decimal=8)
 
         logl2, _ = self.single_band_no_linear.likelihood_data_given_model(

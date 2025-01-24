@@ -188,7 +188,6 @@ class ImageModel(object):
         logL = self.Data.log_likelihood(im_sim, self.likelihood_mask, model_error)
         return logL
 
-
     def source_surface_brightness(
         self,
         kwargs_source,
@@ -548,7 +547,7 @@ class ImageModel(object):
             / self.ImageNumerics.grid_class.pixel_width**2
         )
         return extinction
-    
+
     @property
     def data_response(self):
         """Returns the 1d array of the data element that is fitted for (including
@@ -604,16 +603,16 @@ class ImageModel(object):
         """
         self.Data = data_class
         self.ImageNumerics._PixelGrid = data_class
-    
+
     @property
     def num_data_evaluate(self):
-        """Number of data points to be used in the likelihood calculation
+        """Number of data points to be used in the likelihood calculation.
 
         :return: number of evaluated data points
         :rtype: int.
         """
         return int(np.sum(self.likelihood_mask))
-    
+
     def reduced_residuals(self, model, error_map=0):
         """
 
@@ -627,19 +626,19 @@ class ImageModel(object):
         return residual
 
     def reduced_chi2(self, model, error_map=0):
-        """Returns reduced chi2
+        """Returns reduced chi2.
 
         :param model: 2d numpy array of a model predicted image
         :param error_map: same format as model, additional error component (such as PSF
-        errors)
+            errors)
         :return: reduced chi2.
         """
         norm_res = self.reduced_residuals(model, error_map)
         return np.sum(norm_res**2) / self.num_data_evaluate
-    
+
     def image2array_masked(self, image):
         """Returns 1d array of values in image that are not masked out for the
-        likelihood computation/linear minimization
+        likelihood computation/linear minimization.
 
         :param image: 2d numpy array of full image
         :return: 1d array.
@@ -658,7 +657,7 @@ class ImageModel(object):
         grid1d[self._mask1d] = array
         grid2d = util.array2image(grid1d, nx, ny)
         return grid2d
-    
+
     def _error_map_model(self, kwargs_lens, kwargs_ps, kwargs_special=None):
         """Noise estimate (variances as diagonal of the pixel covariance matrix)
         resulted from inherent model uncertainties This term is currently the psf error

@@ -164,7 +164,7 @@ class TestImageModel(object):
         npt.assert_almost_equal(
             lens_flux[50, 50], 4.7310552067454452 * 0.05**2, decimal=4
         )
-        
+
     def test_image_with_params(self):
         model = self.imageModel.image(
             self.kwargs_lens,

@@ -4,8 +4,8 @@ import numpy as np
 
 from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModel
 
-from lenstronomy.Util import simulation_util
-from lenstronomy.ImSim.image_model import ImageModel
+from lenstronomy.Util import simulation_util, util
+from lenstronomy.ImSim.image_linear_solve import ImageLinearFit
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.PointSource.point_source import PointSource
@@ -88,7 +88,7 @@ class TestSingleBandMultiModel(object):
             "supersampling_convolution": False,
             "compute_mode": "regular",
         }
-        imageModel = ImageModel(
+        imageModel = ImageLinearFit(
             data_class,
             psf_class,
             lens_model_class,
@@ -241,11 +241,34 @@ class TestSingleBandMultiModel(object):
         )
         npt.assert_almost_equal(extinction_map, 1)
 
-    def test_select_kwargs(self):
-        kwargs_tuple = self.single_band.select_kwargs()
-        for kwargs in kwargs_tuple:
-            assert kwargs is None
+    def test_error_map_source(self):
+        x_grid, y_grid = util.make_grid(numPix=10, deltapix=0.1)
+        error = self.single_band_no_linear.error_map_source(
+            [None], x_grid, y_grid, None
+        )
+        npt.assert_array_equal(error, np.zeros(100))
 
+        kwargs_source = self.kwargs_params['kwargs_source']
+        error = self.single_band.error_map_source(
+            kwargs_source, x_grid, y_grid, None
+        )
+        error2 = self.imageModel.error_map_source(
+            kwargs_source, x_grid, y_grid, None
+        )
+        npt.assert_array_almost_equal(error, error2, decimal=8)
+
+    def test_linear_param_from_kwargs(self):
+        kwargs_source = self.kwargs_params['kwargs_source']
+        kwargs_lens_light = self.kwargs_params['kwargs_lens_light']
+        kwargs_ps = self.kwargs_params['kwargs_ps']
+
+        linear_params = self.single_band.linear_param_from_kwargs(
+            kwargs_source, kwargs_lens_light, kwargs_ps
+        )
+        linear_params2 = self.imageModel.linear_param_from_kwargs(
+            kwargs_source, kwargs_lens_light, kwargs_ps
+        )
+        npt.assert_array_almost_equal(linear_params, linear_params2, decimal=8)
 
 if __name__ == "__main__":
     pytest.main()

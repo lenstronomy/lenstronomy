@@ -241,6 +241,10 @@ class TestSingleBandMultiModel(object):
         )
         npt.assert_almost_equal(extinction_map, 1)
 
+    def test_select_kwargs(self):
+        kwargs_tuple = self.single_band.select_kwargs()
+        for kwargs in kwargs_tuple:
+            assert kwargs is None
 
 if __name__ == "__main__":
     pytest.main()

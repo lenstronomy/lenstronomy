@@ -246,5 +246,6 @@ class TestSingleBandMultiModel(object):
         for kwargs in kwargs_tuple:
             assert kwargs is None
 
+
 if __name__ == "__main__":
     pytest.main()

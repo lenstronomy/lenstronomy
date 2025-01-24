@@ -410,7 +410,8 @@ class ImageLinearFit(ImageModel):
         :param param: linear parameter vector corresponding to the response matrix
         :param kwargs_lens: list of dicts containing lens model keyword arguments
         :param kwargs_source: list of dicts containing source model keyword arguments
-        :param kwargs_lens_light: list of dicts containing lens light model keyword arguments
+        :param kwargs_lens_light: list of dicts containing lens light model keyword
+            arguments
         :param kwargs_ps: list of dicts containing point source keyword arguments
         :return: updated list of kwargs with linear parameter values
         """
@@ -429,7 +430,8 @@ class ImageLinearFit(ImageModel):
         the keyword argument list.
 
         :param kwargs_source: list of dicts containing source model keyword arguments
-        :param kwargs_lens_light: list of dicts containing lens light model keyword arguments
+        :param kwargs_lens_light: list of dicts containing lens light model keyword
+            arguments
         :param kwargs_ps: list of dicts containing point source keyword arguments
         :return: list of linear coefficients
         """

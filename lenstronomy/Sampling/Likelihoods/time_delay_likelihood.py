@@ -1,5 +1,6 @@
 import numpy as np
 import lenstronomy.Util.constants as const
+from lenstronomy.Util.cosmo_util import get_astropy_cosmology
 
 __all__ = ["TimeDelayLikelihood"]
 
@@ -101,6 +102,13 @@ class TimeDelayLikelihood(object):
         x_pos, y_pos = self._pointSource.image_position(
             kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens, original_position=True
         )
+        if self._lensModel.cosmology_sampling:
+            cosmo = get_astropy_cosmology(
+                cosmology_model=self._lensModel.cosmology_model,
+                param_kwargs=kwargs_cosmo,
+            )
+            self._lensModel.update_cosmology(cosmo)
+
         logL = 0
         for i in range(self._num_point_sources):
             mask = np.array(self._measurement_bool_list[i])
@@ -109,12 +117,17 @@ class TimeDelayLikelihood(object):
                 self._lensModel.change_source_redshift(
                     z_source=self._pointSource._redshift_list[i]
                 )
-                delay_arcsec = self._lensModel.fermat_potential(
-                    x_pos_, y_pos_, kwargs_lens
-                )
-                D_dt_model = kwargs_cosmo["D_dt"]
-                Ddt_scaled = self._lensModel.ddt_scaling * D_dt_model
-                delay_days = const.delay_arcsec2days(delay_arcsec, Ddt_scaled)
+                if self._lensModel.cosmology_sampling:
+                    delay_days = self._lensModel.arrival_time(
+                        x_pos_, y_pos_, kwargs_lens
+                    )
+                else:
+                    delay_arcsec = self._lensModel.fermat_potential(
+                        x_pos_, y_pos_, kwargs_lens
+                    )
+                    D_dt_model = kwargs_cosmo["D_dt"]
+                    Ddt_scaled = self._lensModel.ddt_scaling * D_dt_model
+                    delay_days = const.delay_arcsec2days(delay_arcsec, Ddt_scaled)
                 mask_full = np.concatenate(
                     ([True], mask)
                 )  # add the first image to the mask

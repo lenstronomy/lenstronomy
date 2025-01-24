@@ -68,9 +68,16 @@ class MultiPlane(object):
         """
         self.cosmology_sampling = cosmology_sampling
         self.cosmology_model = cosmology_model
-        if self.cosmology_sampling:
+        if cosmo is None and cosmology_model == "FlatLambdaCDM":
+            cosmo = default_cosmology.get()
+        elif cosmo is None and cosmology_model != "FlatLambdaCDM":
             cosmo = get_astropy_cosmology(cosmology_model=cosmology_model)
+        else:
+            warnings.warn(
+                "Cosmology is provided. Make sure your cosmological model is consistent with the cosmology_model argument."
+            )
 
+        if self.cosmology_sampling:
             if distance_ratio_sampling:
                 warnings.warn(
                     "cosmology_sampling=True and distance_ratio_sampling=True cannot be set simultaneously. "
@@ -192,6 +199,14 @@ class MultiPlane(object):
     @T_ij_stop.setter
     def T_ij_stop(self, T_ij_stop):
         self._T_ij_stop = T_ij_stop
+
+    def model_info(self):
+        """Shows what models are being initialized and what parameters are being
+        requested for.
+
+        :return: None
+        """
+        self._multi_plane_base.model_info()
 
     def _set_source_distances(self, z_source):
         """Compute the relevant angular diameter distances to a specific source
@@ -453,6 +468,7 @@ class MultiPlane(object):
         :param theta_x: angle in x-direction on the image
         :param theta_y: angle in y-direction on the image
         :param kwargs_lens: lens model keyword argument list
+        :param kwargs_cosmo: cosmo keyword argument
         :return: travel time in unit of days
         """
         dt_geo, dt_grav = self.geo_shapiro_delay(

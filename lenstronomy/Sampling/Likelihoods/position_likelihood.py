@@ -1,5 +1,6 @@
 import numpy as np
 from numpy.linalg import inv
+from lenstronomy.Util.cosmo_util import get_astropy_cosmology
 
 __all__ = ["PositionLikelihood"]
 
@@ -81,6 +82,13 @@ class PositionLikelihood(object):
         """
 
         logL = 0
+        if self._lensModel.cosmology_sampling:
+            cosmo = get_astropy_cosmology(
+                cosmology_model=self._lensModel.cosmology_model,
+                param_kwargs=kwargs_special,
+            )
+            self._lensModel.update_cosmology(cosmo)
+
         if self._astrometric_likelihood is True:
             logL_astrometry = self.astrometric_likelihood(
                 kwargs_ps, kwargs_special, self._image_position_sigma
@@ -179,7 +187,12 @@ class PositionLikelihood(object):
         else:
             return 0
 
-    def image_position_likelihood(self, kwargs_ps, kwargs_lens, sigma):
+    def image_position_likelihood(
+        self,
+        kwargs_ps,
+        kwargs_lens,
+        sigma,
+    ):
         """Computes the likelihood of the model predicted image position relative to
         measured image positions with an astrometric error. This routine requires the
         'ra_image_list' and 'dec_image_list' being declared in the initiation of the
@@ -191,6 +204,7 @@ class PositionLikelihood(object):
         :return: log likelihood of the model predicted image positions given the
             data/measured image positions.
         """
+
         ra_image_list, dec_image_list = self._pointSource.image_position(
             kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens, original_position=True
         )
@@ -210,7 +224,12 @@ class PositionLikelihood(object):
         return logL
 
     def source_position_likelihood(
-        self, kwargs_lens, kwargs_ps, sigma, hard_bound_rms=None, verbose=False
+        self,
+        kwargs_lens,
+        kwargs_ps,
+        sigma,
+        hard_bound_rms=None,
+        verbose=False,
     ):
         """Computes a likelihood/punishing factor of how well the source positions of
         multiple images match given the image position and a lens model. The likelihood
@@ -231,6 +250,7 @@ class PositionLikelihood(object):
         logL = 0
         source_x, source_y = self._pointSource.source_position(kwargs_ps, kwargs_lens)
         redshift_list = self._pointSource._redshift_list
+
         for k in range(len(kwargs_ps)):
             if (
                 "ra_image" in kwargs_ps[k]

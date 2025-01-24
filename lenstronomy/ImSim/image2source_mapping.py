@@ -149,6 +149,7 @@ class Image2SourceMapping(object):
 
     def set_background_cosmo(self, cosmo):
         """Sets the cosmology for the multi-lens-plane case."""
+        self._lens_model.cosmo = cosmo
         self._lens_model.lens_model.set_background_cosmo(cosmo)
         self._bkg_cosmo.cosmo = cosmo
         self.set_T_ij_arrays()

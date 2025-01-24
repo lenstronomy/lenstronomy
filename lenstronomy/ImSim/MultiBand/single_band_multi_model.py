@@ -233,9 +233,10 @@ class SingleBandMultiModel(ImageLinearFit, ImageModel):
 
         :param kwargs_ps: list of dicts containing point source keyword arguments
         :param kwargs_lens: list of dicts containing lens model keyword arguments
+        :param kwargs_special: list of dicts containing "special" keywords
         :param unconvolved: bool, if False, applies convolution
         :param k: int or tuple, only evaluate the k-th point source model
-        :return:
+        :return: image of point source
         """
         kwargs_lens_i, _, _, kwargs_ps_i, _ = self.select_kwargs(
             kwargs_lens=kwargs_lens,

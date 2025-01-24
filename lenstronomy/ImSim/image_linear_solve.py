@@ -302,6 +302,10 @@ class ImageLinearFit(ImageModel):
         self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps
     ):
         """
+        :param kwargs_lens: list of dicts containing lens model keyword arguments
+        :param kwargs_source: list of dicts containing source model keyword arguments
+        :param kwargs_lens_light: list of dicts containing lens light model keyword arguments
+        :param kwargs_ps: list of dicts containing point source keyword arguments
 
         :return: number of linear coefficients to be solved for in the linear inversion
         """
@@ -404,6 +408,10 @@ class ImageLinearFit(ImageModel):
         """Links linear parameters to kwargs arguments.
 
         :param param: linear parameter vector corresponding to the response matrix
+        :param kwargs_lens: list of dicts containing lens model keyword arguments
+        :param kwargs_source: list of dicts containing source model keyword arguments
+        :param kwargs_lens_light: list of dicts containing lens light model keyword arguments
+        :param kwargs_ps: list of dicts containing point source keyword arguments
         :return: updated list of kwargs with linear parameter values
         """
         i = 0
@@ -420,9 +428,9 @@ class ImageLinearFit(ImageModel):
         """Inverse function of update_linear() returning the linear amplitude list for
         the keyword argument list.
 
-        :param kwargs_source:
-        :param kwargs_lens_light:
-        :param kwargs_ps:
+        :param kwargs_source: list of dicts containing source model keyword arguments
+        :param kwargs_lens_light: list of dicts containing lens light model keyword arguments
+        :param kwargs_ps: list of dicts containing point source keyword arguments
         :return: list of linear coefficients
         """
         param = []

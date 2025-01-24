@@ -445,12 +445,12 @@ class ImageModel(object):
     ):
         """Computes the point source positions and paints PSF convolutions on them.
 
-        :param kwargs_ps:
-        :param kwargs_lens:
-        :param kwargs_special:
-        :param unconvolved:
-        :param k:
-        :return:
+        :param kwargs_ps: list of dicts containing point source keyword arguments
+        :param kwargs_lens: list of dicts containing lens model keyword arguments
+        :param kwargs_special: list of dicts containing "special" keywords
+        :param unconvolved: bool, if False, applies convolution
+        :param k: int or tuple, only evaluate the k-th point source model
+        :return: image of point source
         """
         point_source_image = np.zeros((self.Data.num_pixel_axes))
         if unconvolved or self.PointSource is None:

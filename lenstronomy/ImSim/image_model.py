@@ -562,6 +562,9 @@ class ImageModel(object):
         """Returns the 1d array of the error estimate corresponding to the data
         response.
 
+        :param kwargs_lens: list of dicts, keyword arguments corresponding to the lens profiles
+        :param kwargs_ps: list of dicts, keyword arguments corresponding to the point source models
+        :param kwargs_special: list of dicts, special parameter keyword arguments
         :return: 1d numpy array of response, 2d array of additional errors (e.g. point
             source uncertainties)
         """
@@ -586,7 +589,7 @@ class ImageModel(object):
         """Update the instance of the class with a new instance of PSF() with a
         potentially different point spread function.
 
-        :param psf_class:
+        :param psi_class: instance of lenstronomy.Data.psf.PSF class
         :return: no return. Class is updated.
         """
         self.PSF = psf_class

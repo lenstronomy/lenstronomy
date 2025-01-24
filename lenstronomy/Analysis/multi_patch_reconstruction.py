@@ -127,7 +127,7 @@ class MultiPatchReconstruction(MultiBandImageReconstruction):
             if model_band is not None:
                 image_model = model_band.image_model_class
                 kwargs_params = model_band.kwargs_model
-                model = image_model._image(
+                model = image_model.image(
                     **kwargs_params
                 )  # TODO: avoid using private definitions uses sub-set of the model parameters
                 data_class_i = image_model.Data

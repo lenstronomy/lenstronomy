@@ -341,7 +341,6 @@ class SingleBandMultiModel(ImageLinearFit, ImageModel):
         :return: log likelihood (natural logarithm) (sum of the log likelihoods of the
             individual images)
         """
-        # generate image
         (
             kwargs_lens_i,
             kwargs_source_i,

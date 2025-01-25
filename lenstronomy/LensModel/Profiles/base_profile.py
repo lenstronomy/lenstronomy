@@ -21,6 +21,8 @@ class LensProfileBase(object):
 
     5. give the new profile a meaningful name and add it in the LensModel.profile_list_base class
     6. write test functions in the test/test_LensModel/test_Profiles folder with a new file with test_<profile name>.py
+    7. add a test to check whether the numerical derivatives of the lensing potential and deflection angles result in the corresponding quantities
+    in test/test_LensModel/test_numerical_lens_differentials.py
 
     With that, you should be good to go and import and use it for any purpose.
     Further definitions in the class are optional and only used for certain applications (such as kinematics)

@@ -310,7 +310,7 @@ class EPL_MULTIPOLE_M3M4_ELL(LensProfileBase):
 
 
 class EPL_MULTIPOLE_M3M4(LensProfileBase):
-    """EPL (Elliptical Power Law) mass profile combined with two spherical multipole
+    """EPL (Elliptical Power Law) mass profile combined with two circular multipole
     terms of order m=3 and m=4 (exact for axis ratio =1).
 
     Reference to the implementation: https://ui.adsabs.harvard.edu/abs/2022A%26A...659A.127V/abstract

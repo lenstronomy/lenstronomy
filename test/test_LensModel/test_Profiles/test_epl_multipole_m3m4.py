@@ -15,7 +15,7 @@ from lenstronomy.LensModel.lens_model import LensModel
 
 
 class TestEPL_MULTIPOLE_M3M4(object):
-    """Test TestEPL_MULTIPOLE_M3M4 vs EPL + 2 MULTIPOLE (Spherical) values."""
+    """Test TestEPL_MULTIPOLE_M3M4 vs EPL + 2 MULTIPOLE (circular) values."""
 
     def setup_method(self):
         self.epl = EPL()

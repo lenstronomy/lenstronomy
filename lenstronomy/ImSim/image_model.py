@@ -38,7 +38,12 @@ class ImageModel(object):
         :param source_model_class: instance of LightModel() class describing the source parameters
         :param lens_light_model_class: instance of LightModel() class describing the lens light parameters
         :param point_source_class: instance of PointSource() class describing the point sources
+        :param extinction_class: instance of DifferentialExtinction() class
         :param kwargs_numerics: keyword arguments with various numeric description (see ImageNumerics class for options)
+        :param likelihood_mask: 2d boolean array of pixels to be counted in the likelihood calculation/linear
+         optimization
+        :param psf_error_map_bool_list: list of boolean of length of point source models.
+         Indicates whether PSF error map is used for the point source model stated as the index.
         :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver
          (see SLITronomy documentation)
         """
@@ -160,15 +165,13 @@ class ImageModel(object):
             lens light surface brightness profiles
         :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as
             external shear and point source image positions
-        :param source_marg: bool, performs a marginalization over the linear parameters
-        :param linear_prior: linear prior width in eigenvalues
-        :param check_positive_flux: bool, if True, checks whether the linear inversion
-            resulted in non-negative flux components and applies a punishment in the
-            likelihood if so.
-        :param linear_solver: bool, if True (default) fixes the linear amplitude
-            parameters 'amp' (avoid sampling) such that they get overwritten by the
-            linear solver solution.
-        :return: log likelihood (natural logarithm), linear parameter list
+        :param kwargs_extinction: list of keyword arguments for extinction model
+        :param kwargs_special: list of special keyword arguments
+        :param source_marg: unused param; kept to match
+            ImageLinearFit.likelihood_data_given_model API
+        :param linear_prior: unused param
+        :param check_positive_flux: unused param
+        :return: log likelihood (natural logarithm)
         """
         # generate image
         im_sim = ImageModel.image(
@@ -205,7 +208,8 @@ class ImageModel(object):
             superposition of different source light profiles
         :param kwargs_lens: list of keyword arguments corresponding to the superposition
             of different lens profiles
-        :param kwargs_extinction: list of keyword arguments of extinction model
+        :param kwargs_extinction: list of keyword arguments for extinction model
+        :param kwargs_special: list of special keyword arguments
         :param unconvolved: if True: returns the unconvolved light distribution (prefect
             seeing)
         :param de_lensed: if True: returns the un-lensed source surface brightness
@@ -254,6 +258,7 @@ class ImageModel(object):
         :param kwargs_lens: list of keyword arguments corresponding to the superposition
             of different lens profiles
         :param kwargs_extinction: list of keyword arguments of extinction model
+        :param kwargs_special: list of special keyword arguments
         :param unconvolved: if True: returns the unconvolved light distribution (prefect
             seeing)
         :param de_lensed: if True: returns the un-lensed source surface brightness
@@ -291,6 +296,7 @@ class ImageModel(object):
         :param kwargs_lens: list of keyword arguments corresponding to the superposition
             of different lens profiles
         :param kwargs_extinction: list of keyword arguments of extinction model
+        :param kwargs_special: list of special keyword arguments
         :param de_lensed: if True: returns the un-lensed source surface brightness
             profile, otherwise the lensed.
         :param k: integer, if set, will only return the model of the specific index
@@ -341,6 +347,7 @@ class ImageModel(object):
         :param kwargs_lens: list of keyword arguments corresponding to the superposition
             of different lens profiles
         :param kwargs_extinction: list of keyword arguments of extinction model
+        :param kwargs_special: list of special keyword arguments
         :param unconvolved: if True: returns the unconvolved light distribution (prefect
             seeing)
         :param de_lensed: if True: returns the un-lensed source surface brightness
@@ -494,6 +501,8 @@ class ImageModel(object):
             lens light surface brightness profiles
         :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as
             external shear and point source image positions
+        :param kwargs_extinction: list of keyword arguments for dust extinction
+        :param kwargs_special: list of special keyword arguments
         :param unconvolved: if True: returns the unconvolved light distribution (prefect
             seeing)
         :param source_add: if True, compute source, otherwise without

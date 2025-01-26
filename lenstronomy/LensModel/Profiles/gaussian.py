@@ -83,9 +83,8 @@ class Gaussian(LensProfileBase):
         return alpha / R * x_, alpha / R * y_
 
     def hessian(self, x, y, amp, sigma, center_x=0, center_y=0):
-        """Returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx,
-        d^f/dy^2.
-        
+        """Returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2.
+
         :param x: x position
         :param y: y position
         :param amp: 2d amplitude of Gaussian

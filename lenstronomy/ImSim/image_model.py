@@ -167,7 +167,8 @@ class ImageModel(object):
             external shear and point source image positions
         :param kwargs_extinction: list of keyword arguments for extinction model
         :param kwargs_special: list of special keyword arguments
-        :param source_marg: unused param; kept to match ImageLinearFit.likelihood_data_given_model API
+        :param source_marg: unused param; kept to match
+            ImageLinearFit.likelihood_data_given_model API
         :param linear_prior: unused param
         :param check_positive_flux: unused param
         :return: log likelihood (natural logarithm)

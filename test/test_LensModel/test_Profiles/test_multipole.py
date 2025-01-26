@@ -124,7 +124,7 @@ class TestEllipticalMultipole(object):
 
     def setup_method(self):
         self.Multipole = EllipticalMultipole()
-        self.SphericalMultipole = Multipole()
+        self.CircularMultipole = Multipole()
         self.x, self.y = util.make_grid(numPix=10, deltapix=0.2)
 
     def test_function(self):
@@ -148,30 +148,30 @@ class TestEllipticalMultipole(object):
         npt.assert_almost_equal(values[1], 0.000954611, decimal=6)
         npt.assert_almost_equal(values[2], -0.002321308, decimal=6)
 
-        # Test that the limit q-> 1 is consistent with the spherical multipoles
+        # Test that the limit q-> 1 is consistent with the circular multipoles
         function_ell_limit = self.Multipole.function(
             self.x, self.y, m=4, a_m=a_m, phi_m=np.pi / 24, q=0.9995
         )
-        function_sph = self.SphericalMultipole.function(
+        function_circ = self.CircularMultipole.function(
             self.x, self.y, m=4, a_m=a_m, phi_m=np.pi / 24
         )
-        npt.assert_allclose(function_ell_limit, function_sph, rtol=1e-4, atol=5e-5)
+        npt.assert_allclose(function_ell_limit, function_circ, rtol=1e-4, atol=5e-5)
 
         function_ell_limit = self.Multipole.function(
             self.x, self.y, m=3, a_m=a_m, phi_m=np.pi / 18, q=0.9999
         )
-        function_sph = self.SphericalMultipole.function(
+        function_circ = self.CircularMultipole.function(
             self.x, self.y, m=3, a_m=a_m, phi_m=np.pi / 18
         )
-        npt.assert_allclose(function_ell_limit, function_sph, rtol=5e-5, atol=5e-5)
+        npt.assert_allclose(function_ell_limit, function_circ, rtol=5e-5, atol=5e-5)
 
         function_ell_limit = self.Multipole.function(
             self.x, self.y, m=1, a_m=a_m, phi_m=np.pi / 6, q=0.9999999
         )
-        function_sph = self.SphericalMultipole.function(
+        function_circ = self.CircularMultipole.function(
             self.x, self.y, m=1, a_m=a_m, phi_m=np.pi / 6
         )
-        npt.assert_allclose(function_ell_limit, function_sph, rtol=1e-7, atol=1e-7)
+        npt.assert_allclose(function_ell_limit, function_circ, rtol=1e-7, atol=1e-7)
 
     def test_derivatives(self):
         x = 1
@@ -194,33 +194,33 @@ class TestEllipticalMultipole(object):
         npt.assert_almost_equal(f_y[1], 0.012844618, decimal=6)
         npt.assert_almost_equal(f_y[2], 0.001639347, decimal=6)
 
-        # Test that the limit q-> 1 is consistent with the spherical multipoles
+        # Test that the limit q-> 1 is consistent with the circular multipoles
         alpha_x_ell_limit, alpha_y_ell_limit = self.Multipole.derivatives(
             self.x, self.y, m=4, a_m=a_m, phi_m=np.pi / 24, q=0.9995
         )
-        alpha_x_sph, alpha_y_sph = self.SphericalMultipole.derivatives(
+        alpha_x_circ, alpha_y_circ = self.CircularMultipole.derivatives(
             self.x, self.y, m=4, a_m=a_m, phi_m=np.pi / 24
         )
-        npt.assert_allclose(alpha_x_ell_limit, alpha_x_sph, rtol=1e-4, atol=5e-5)
-        npt.assert_allclose(alpha_y_ell_limit, alpha_y_sph, rtol=1e-4, atol=5e-5)
+        npt.assert_allclose(alpha_x_ell_limit, alpha_x_circ, rtol=1e-4, atol=5e-5)
+        npt.assert_allclose(alpha_y_ell_limit, alpha_y_circ, rtol=1e-4, atol=5e-5)
 
         alpha_x_ell_limit, alpha_y_ell_limit = self.Multipole.derivatives(
             self.x, self.y, m=3, a_m=a_m, phi_m=np.pi / 18, q=0.9999
         )
-        alpha_x_sph, alpha_y_sph = self.SphericalMultipole.derivatives(
+        alpha_x_circ, alpha_y_circ = self.CircularMultipole.derivatives(
             self.x, self.y, m=3, a_m=a_m, phi_m=np.pi / 18
         )
-        npt.assert_allclose(alpha_x_ell_limit, alpha_x_sph, rtol=5e-5, atol=5e-5)
-        npt.assert_allclose(alpha_y_ell_limit, alpha_y_sph, rtol=5e-5, atol=5e-5)
+        npt.assert_allclose(alpha_x_ell_limit, alpha_x_circ, rtol=5e-5, atol=5e-5)
+        npt.assert_allclose(alpha_y_ell_limit, alpha_y_circ, rtol=5e-5, atol=5e-5)
 
         alpha_x_ell_limit, alpha_y_ell_limit = self.Multipole.derivatives(
             self.x, self.y, m=1, a_m=a_m, phi_m=np.pi / 6, q=0.9999999
         )
-        alpha_x_sph, alpha_y_sph = self.SphericalMultipole.derivatives(
+        alpha_x_circ, alpha_y_circ = self.CircularMultipole.derivatives(
             self.x, self.y, m=1, a_m=a_m, phi_m=np.pi / 6
         )
-        npt.assert_allclose(alpha_x_ell_limit, alpha_x_sph, rtol=1e-7, atol=1e-7)
-        npt.assert_allclose(alpha_y_ell_limit, alpha_y_sph, rtol=1e-7, atol=1e-7)
+        npt.assert_allclose(alpha_x_ell_limit, alpha_x_circ, rtol=1e-7, atol=1e-7)
+        npt.assert_allclose(alpha_y_ell_limit, alpha_y_circ, rtol=1e-7, atol=1e-7)
 
     def test_hessian(self):
         x = 1
@@ -268,8 +268,8 @@ class TestEllipticalMultipole(object):
             (values[0] + values[3]), a_m * np.cos(m * (phi_ell - phi_m)) / R, decimal=6
         )
 
-        # Test that the limit q-> 1 is consistent with the spherical multipoles and that q=1 gives exactly the spherical multipoles
-        f_xx_sph, f_xy_sph, f_yx_sph, f_yy_sph = self.SphericalMultipole.hessian(
+        # Test that the limit q-> 1 is consistent with the circular multipoles and that q=1 gives exactly the circular multipoles
+        f_xx_circ, f_xy_circ, f_yx_circ, f_yy_circ = self.CircularMultipole.hessian(
             self.x, self.y, m=4, a_m=a_m, phi_m=np.pi / 24
         )
         f_xx_ell_limit, f_xy_ell_limit, f_yx_ell_limit, f_yy_ell_limit = (
@@ -277,20 +277,20 @@ class TestEllipticalMultipole(object):
                 self.x, self.y, m=4, a_m=a_m, phi_m=np.pi / 24, q=0.9995
             )
         )
-        npt.assert_allclose(f_xx_ell_limit, f_xx_sph, rtol=1e-4, atol=1e-4)
-        npt.assert_allclose(f_xy_ell_limit, f_xy_sph, rtol=1e-4, atol=1e-4)
-        npt.assert_allclose(f_yx_ell_limit, f_yx_sph, rtol=1e-4, atol=1e-4)
-        npt.assert_allclose(f_yy_ell_limit, f_yy_sph, rtol=1e-4, atol=1e-4)
+        npt.assert_allclose(f_xx_ell_limit, f_xx_circ, rtol=1e-4, atol=1e-4)
+        npt.assert_allclose(f_xy_ell_limit, f_xy_circ, rtol=1e-4, atol=1e-4)
+        npt.assert_allclose(f_yx_ell_limit, f_yx_circ, rtol=1e-4, atol=1e-4)
+        npt.assert_allclose(f_yy_ell_limit, f_yy_circ, rtol=1e-4, atol=1e-4)
 
         f_xx_ell_q1, f_xy_ell_q1, f_yx_ell_q1, f_yy_ell_q1 = self.Multipole.hessian(
             self.x, self.y, m=4, a_m=a_m, phi_m=np.pi / 24, q=1.0
         )
-        npt.assert_almost_equal(f_xx_ell_q1, f_xx_sph, decimal=8)
-        npt.assert_almost_equal(f_xy_ell_q1, f_xy_sph, decimal=8)
-        npt.assert_almost_equal(f_yx_ell_q1, f_yx_sph, decimal=8)
-        npt.assert_almost_equal(f_yy_ell_q1, f_yy_sph, decimal=8)
+        npt.assert_almost_equal(f_xx_ell_q1, f_xx_circ, decimal=8)
+        npt.assert_almost_equal(f_xy_ell_q1, f_xy_circ, decimal=8)
+        npt.assert_almost_equal(f_yx_ell_q1, f_yx_circ, decimal=8)
+        npt.assert_almost_equal(f_yy_ell_q1, f_yy_circ, decimal=8)
 
-        f_xx_sph, f_xy_sph, f_yx_sph, f_yy_sph = self.SphericalMultipole.hessian(
+        f_xx_circ, f_xy_circ, f_yx_circ, f_yy_circ = self.CircularMultipole.hessian(
             self.x, self.y, m=3, a_m=a_m, phi_m=np.pi / 18
         )
 
@@ -299,20 +299,20 @@ class TestEllipticalMultipole(object):
                 self.x, self.y, m=3, a_m=a_m, phi_m=np.pi / 18, q=0.9999
             )
         )
-        npt.assert_allclose(f_xx_ell_limit, f_xx_sph, rtol=5e-5, atol=5e-5)
-        npt.assert_allclose(f_xy_ell_limit, f_xy_sph, rtol=5e-5, atol=5e-5)
-        npt.assert_allclose(f_yx_ell_limit, f_yx_sph, rtol=5e-5, atol=5e-5)
-        npt.assert_allclose(f_yy_ell_limit, f_yy_sph, rtol=5e-5, atol=5e-5)
+        npt.assert_allclose(f_xx_ell_limit, f_xx_circ, rtol=5e-5, atol=5e-5)
+        npt.assert_allclose(f_xy_ell_limit, f_xy_circ, rtol=5e-5, atol=5e-5)
+        npt.assert_allclose(f_yx_ell_limit, f_yx_circ, rtol=5e-5, atol=5e-5)
+        npt.assert_allclose(f_yy_ell_limit, f_yy_circ, rtol=5e-5, atol=5e-5)
 
         f_xx_ell_q1, f_xy_ell_q1, f_yx_ell_q1, f_yy_ell_q1 = self.Multipole.hessian(
             self.x, self.y, m=3, a_m=a_m, phi_m=np.pi / 18, q=1.0
         )
-        npt.assert_almost_equal(f_xx_ell_q1, f_xx_sph, decimal=8)
-        npt.assert_almost_equal(f_xy_ell_q1, f_xy_sph, decimal=8)
-        npt.assert_almost_equal(f_yx_ell_q1, f_yx_sph, decimal=8)
-        npt.assert_almost_equal(f_yy_ell_q1, f_yy_sph, decimal=8)
+        npt.assert_almost_equal(f_xx_ell_q1, f_xx_circ, decimal=8)
+        npt.assert_almost_equal(f_xy_ell_q1, f_xy_circ, decimal=8)
+        npt.assert_almost_equal(f_yx_ell_q1, f_yx_circ, decimal=8)
+        npt.assert_almost_equal(f_yy_ell_q1, f_yy_circ, decimal=8)
 
-        f_xx_sph, f_xy_sph, f_yx_sph, f_yy_sph = self.SphericalMultipole.hessian(
+        f_xx_circ, f_xy_circ, f_yx_circ, f_yy_circ = self.CircularMultipole.hessian(
             self.x, self.y, m=1, a_m=a_m, phi_m=np.pi / 6
         )
 
@@ -321,18 +321,18 @@ class TestEllipticalMultipole(object):
                 self.x, self.y, m=1, a_m=a_m, phi_m=np.pi / 6, q=0.9999999
             )
         )
-        npt.assert_allclose(f_xx_ell_limit, f_xx_sph, rtol=1e-7, atol=1e-7)
-        npt.assert_allclose(f_xy_ell_limit, f_xy_sph, rtol=1e-7, atol=1e-7)
-        npt.assert_allclose(f_yx_ell_limit, f_yx_sph, rtol=1e-7, atol=1e-7)
-        npt.assert_allclose(f_yy_ell_limit, f_yy_sph, rtol=1e-7, atol=1e-7)
+        npt.assert_allclose(f_xx_ell_limit, f_xx_circ, rtol=1e-7, atol=1e-7)
+        npt.assert_allclose(f_xy_ell_limit, f_xy_circ, rtol=1e-7, atol=1e-7)
+        npt.assert_allclose(f_yx_ell_limit, f_yx_circ, rtol=1e-7, atol=1e-7)
+        npt.assert_allclose(f_yy_ell_limit, f_yy_circ, rtol=1e-7, atol=1e-7)
 
         f_xx_ell_q1, f_xy_ell_q1, f_yx_ell_q1, f_yy_ell_q1 = self.Multipole.hessian(
             self.x, self.y, m=1, a_m=a_m, phi_m=np.pi / 6, q=1.0
         )
-        npt.assert_almost_equal(f_xx_ell_q1, f_xx_sph, decimal=8)
-        npt.assert_almost_equal(f_xy_ell_q1, f_xy_sph, decimal=8)
-        npt.assert_almost_equal(f_yx_ell_q1, f_yx_sph, decimal=8)
-        npt.assert_almost_equal(f_yy_ell_q1, f_yy_sph, decimal=8)
+        npt.assert_almost_equal(f_xx_ell_q1, f_xx_circ, decimal=8)
+        npt.assert_almost_equal(f_xy_ell_q1, f_xy_circ, decimal=8)
+        npt.assert_almost_equal(f_yx_ell_q1, f_yx_circ, decimal=8)
+        npt.assert_almost_equal(f_yy_ell_q1, f_yy_circ, decimal=8)
 
 
 if __name__ == "__main__":

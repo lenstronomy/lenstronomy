@@ -8,7 +8,7 @@ from lenstronomy.Util import util
 
 
 class TestEPL_BOXYDISKY(object):
-    """Test EPL_BOXYDISKY vs EPL + MULTIPOLE (Spherical) values."""
+    """Test EPL_BOXYDISKY vs EPL + MULTIPOLE (Circular) values."""
 
     def setup_method(self):
         from lenstronomy.LensModel.Profiles.epl import EPL

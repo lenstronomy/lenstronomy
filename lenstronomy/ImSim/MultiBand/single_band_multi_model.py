@@ -127,6 +127,8 @@ class SingleBandMultiModel(ImageLinearFit, ImageModel):
             lens light surface brightness profiles
         :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as
             external shear and point source image positions
+        :param kwargs_extinction: list of keyword arguments for extinction model
+        :param kwargs_special: list of special keyword arguments
         :param unconvolved: if True: returns the unconvolved light distribution (prefect
             seeing)
         :param source_add: if True, compute source, otherwise without
@@ -175,6 +177,7 @@ class SingleBandMultiModel(ImageLinearFit, ImageModel):
         :param kwargs_lens: list of keyword arguments corresponding to the superposition
             of different lens profiles
         :param kwargs_extinction: list of keyword arguments of extinction model
+        :param kwargs_special: list of special keyword arguments
         :param unconvolved: if True: returns the unconvolved light distribution (prefect
             seeing)
         :param de_lensed: if True: returns the un-lensed source surface brightness

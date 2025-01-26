@@ -37,6 +37,7 @@ class ImageLinearFit(ImageModel):
         :param source_model_class: LightModel() instance
         :param lens_light_model_class: LightModel() instance
         :param point_source_class: PointSource() instance
+        :param extinction_class: DifferentialExtinction() instance
         :param kwargs_numerics: keyword arguments passed to the Numerics module
         :param likelihood_mask: 2d boolean array of pixels to be counted in the likelihood calculation/linear
          optimization
@@ -89,6 +90,8 @@ class ImageLinearFit(ImageModel):
             lens light surface brightness profiles
         :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as
             external shear and point source image positions
+        :param kwargs_extinction: list of keyword arguments for extinction model
+        :param kwargs_special: list of special keyword arguments
         :param inv_bool: if True, invert the full linear solver Matrix Ax = y for the
             purpose of the covariance matrix. This has no impact in case of pixel-based
             modelling.
@@ -213,6 +216,8 @@ class ImageLinearFit(ImageModel):
             lens light surface brightness profiles
         :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as
             external shear and point source image positions
+        :param kwargs_extinction: list of keyword arguments for extinction model
+        :param kwargs_special: list of special keyword arguments
         :param source_marg: bool, performs a marginalization over the linear parameters
         :param linear_prior: linear prior width in eigenvalues
         :param check_positive_flux: bool, if True, checks whether the linear inversion
@@ -271,6 +276,8 @@ class ImageLinearFit(ImageModel):
         :param kwargs_source: list of dicts containing source model keyword arguments
         :param kwargs_lens_light: list of dicts containing lens light model keyword arguments
         :param kwargs_ps: list of dicts containing point source keyword arguments
+        :param kwargs_extinction: list of keyword arguments for extinction model
+        :param kwargs_special: list of special keyword arguments
         :param source_marg: bool, performs a marginalization over the linear parameters
         :param linear_prior: linear prior width in eigenvalues
         :param check_positive_flux: bool, if True, checks whether the linear inversion
@@ -340,6 +347,8 @@ class ImageLinearFit(ImageModel):
         :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
         :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
         :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
+        :param kwargs_extinction: list of keyword arguments for extinction model
+        :param kwargs_special: list of special keyword arguments
         :param unconvolved: bool, if True, computes components without convolution kernel (will not work for point sources)
         :return: response matrix (m x n)
         """
@@ -575,6 +584,12 @@ class ImageLinearFit(ImageModel):
         linear amplitudes and apply the marginalized amplitudes to make the model
         images.
 
+        :param kwargs_lens: list of dicts containing lens model keyword arguments
+        :param kwargs_source: list of dicts containing source model keyword arguments
+        :param kwargs_lens_light: list of dicts containing lens light model keyword arguments
+        :param kwargs_ps: list of dicts containing point source keyword arguments
+        :param kwargs_extinction: list of keyword arguments for extinction model
+        :param kwargs_special: list of special keyword arguments
         :return: model, model_error, cov_param, param
         model and param are the same returns of self._image_linear_solve_interferometry_natwt_solving(A, d) function
         model_error =0 and cov_param = None for the interferometric method.

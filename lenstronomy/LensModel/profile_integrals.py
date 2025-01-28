@@ -77,10 +77,11 @@ class ProfileIntegrals(object):
     def mass_enclosed_2d(self, r, kwargs_profile, lens_param=False):
         """
         computes the mass enclosed the projected line-of-sight
+
         :param r: radius (arcsec)
         :param kwargs_profile: keyword argument list with lens model parameters
         :param lens_param: boolean, if True uses the lens model parameterization in
-            computing the 3d density convention and the return is the convergence
+         computing the 3d density convention and the return is the convergence
         :return: projected mass enclosed radius r
         """
         kwargs = copy.deepcopy(kwargs_profile)

@@ -67,16 +67,16 @@ class PointSourceRendering(object):
         return self._kernel_supersampled_instance
 
     def psf_variance_map(self, ra_pos, dec_pos, amp, data, fix_psf_error_map=False):
-        """
-        variance of PSF error
+        """Variance of PSF error.
 
         :param ra_pos: image positions of point sources
         :param dec_pos: image positions of point sources
         :param amp: amplitude of modeled point sources
         :param data: 2d numpy array of the data
-        :param fix_psf_error_map: bool, if True, estimates the error based on the input (modeled) amplitude, else uses
-         the data to do so.
-        :return: 2d array of size of the image with error terms (sigma**2) expected from inaccuracies in the PSF modeling
+        :param fix_psf_error_map: bool, if True, estimates the error based on the input
+            (modeled) amplitude, else uses the data to do so.
+        :return: 2d array of size of the image with error terms (sigma**2) expected from
+            inaccuracies in the PSF modeling
         """
         x_pos, y_pos = self._pixel_grid.map_coord2pix(ra_pos, dec_pos)
         psf_kernel = self._psf.kernel_point_source

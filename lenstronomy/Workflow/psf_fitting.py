@@ -900,8 +900,8 @@ class PsfFitting(object):
         error_map_radius=None,
         block_center_neighbour=0,
     ):
-        """Provides a psf_variance_map based on the goodness of fit of the given PSF kernel
-        on the point source cutouts, their estimated amplitudes and positions.
+        """Provides a psf_variance_map based on the goodness of fit of the given PSF
+        kernel on the point source cutouts, their estimated amplitudes and positions.
 
         :param kernel: PSF kernel
         :param star_cutout_list: list of 2d arrays of cutouts of the point sources with

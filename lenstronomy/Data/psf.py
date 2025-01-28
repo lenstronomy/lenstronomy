@@ -105,7 +105,9 @@ class PSF(object):
             raise ValueError("psf_type %s not supported!" % self.psf_type)
         if psf_variance_map is not None:
             n_kernel = len(self.kernel_point_source)
-            self._psf_variance_map = kernel_util.match_kernel_size(psf_variance_map, n_kernel)
+            self._psf_variance_map = kernel_util.match_kernel_size(
+                psf_variance_map, n_kernel
+            )
             if self.psf_type == "PIXEL" and point_source_supersampling_factor > 1:
                 if len(psf_variance_map) == len(self._kernel_point_source_supersampled):
                     Warning(

@@ -142,7 +142,7 @@ class JointLinear(MultiLinear):
         for i in range(self._num_bands):
             if self._compute_bool[i] is True:
                 num_data = self.num_response_list[i]
-                array_i = array[k : k + num_data]
+                array_i = array[k: k + num_data]
                 image_i = self._imageModel_list[i].array_masked2image(array_i)
                 image_list.append(image_i)
                 k += num_data

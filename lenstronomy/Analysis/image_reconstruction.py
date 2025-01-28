@@ -187,7 +187,7 @@ class ModelBand(object):
         kwargs_params_copy = copy.deepcopy(kwargs_params)
         kwargs_params_copy.pop("kwargs_tracer_source", None)
         (
-            kwarks_lens_partial,
+            kwargs_lens_partial,
             kwargs_source_partial,
             kwargs_lens_light_partial,
             kwargs_ps_partial,

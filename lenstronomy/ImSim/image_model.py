@@ -81,7 +81,7 @@ class ImageModel(object):
             min_distance=min_distance,
             only_from_unspecified=True,
         )
-        self._psf_error_map = self.PSF.psf_error_map_bool
+        self._psf_error_map = self.PSF.psf_variance_map_bool
         if likelihood_mask is None:
             likelihood_mask = np.ones(data_class.num_pixel_axes)
         self.likelihood_mask = np.array(likelihood_mask, dtype=bool)
@@ -704,7 +704,7 @@ class ImageModel(object):
                         ra_pos, dec_pos = self._displace_astrometry(
                             ra_pos, dec_pos, kwargs_special=kwargs_special
                         )
-                        error_map += self.ImageNumerics.psf_error_map(
+                        error_map += self.ImageNumerics.psf_variance_map(
                             ra_pos,
                             dec_pos,
                             None,

@@ -465,8 +465,8 @@ class SingleBandMultiModel(ImageLinearFit, ImageModel):
         kwargs_extinction=None,
         kwargs_special=None,
     ):
-        """Computes the linear response matrix (m x n), with n being the data size and
-        m being the coefficients.
+        """Computes the linear response matrix (m x n), with n being the data size and m
+        being the coefficients.
 
         :param kwargs_lens: list of dicts containing lens model keyword arguments
         :param kwargs_source: list of dicts containing source model keyword arguments

@@ -113,7 +113,7 @@ class PSF(object):
                         "psf_error_map are on the down-sampled pixel scale."
                     )
             if kernel_point_source_normalisation is True:
-                self._psf_error_map /= np.sum(kernel_point_source)**2
+                self._psf_error_map /= np.sum(kernel_point_source) ** 2
             self.psf_error_map_bool = True
         else:
             self.psf_error_map_bool = False

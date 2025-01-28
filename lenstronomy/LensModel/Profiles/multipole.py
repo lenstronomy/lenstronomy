@@ -10,9 +10,9 @@ __all__ = ["Multipole", "EllipticalMultipole"]
 
 class Multipole(LensProfileBase):
     """
-    This class contains a SPHERICAL multipole contribution (for 1 component with m>=2)
+    This class contains a CIRCULAR multipole contribution (for 1 component with m>=2)
     This uses the same definitions as Xu et al.(2013) in Appendix B3 https://arxiv.org/pdf/1307.4220.pdf, Equation B12
-    Only the q=1 case (ie., spherical symmetry) makes this definition consistent with interpretation of multipoles as a deformation of the isophotes with an order m symmetry (eg., disky/boxy in the m=4 case).
+    Only the q=1 case (ie., circular symmetry) makes this definition consistent with interpretation of multipoles as a deformation of the isophotes with an order m symmetry (eg., disky/boxy in the m=4 case).
 
     m : int, multipole order, m>=1
     a_m : float, multipole strength
@@ -201,7 +201,7 @@ class EllipticalMultipole(LensProfileBase):
 
         if (
             np.abs(1 - q**2) ** ((m + 1) / 2) < 1e-8
-        ):  # avoid numerical instability when q is too close to 1 by taking spherical multipole solution
+        ):  # avoid numerical instability when q is too close to 1 by taking circular multipole solution
             sph_multipole = Multipole()
             f_ = sph_multipole.function(
                 x, y, m, a_m, phi_m, center_x=center_x, center_y=center_y, r_E=r_E
@@ -270,7 +270,7 @@ class EllipticalMultipole(LensProfileBase):
 
         if (
             np.abs(1 - q**2) ** ((m + 1) / 2) < 1e-8
-        ):  # avoid numerical instability when q is too close to 1 by taking spherical multipole solution
+        ):  # avoid numerical instability when q is too close to 1 by taking circular multipole solution
             sph_multipole = Multipole()
             f_x, f_y = sph_multipole.derivatives(
                 x, y, m, a_m, phi_m, center_x=center_x, center_y=center_y, r_E=r_E
@@ -353,7 +353,7 @@ class EllipticalMultipole(LensProfileBase):
 
         if (
             np.abs(1 - q**2) ** ((m + 1) / 2) < 1e-8
-        ):  # avoid numerical instability when q is too close to 1 by taking spherical multipole solution
+        ):  # avoid numerical instability when q is too close to 1 by taking circular multipole solution
             sph_multipole = Multipole()
             f_xx, f_xy, f_xy, f_yy = sph_multipole.hessian(
                 x, y, m, a_m, phi_m, center_x=center_x, center_y=center_y, r_E=r_E

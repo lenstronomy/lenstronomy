@@ -709,7 +709,7 @@ class ImageModel(object):
                             dec_pos,
                             None,
                             self.Data.data,
-                            fix_psf_error_map=False,
+                            fix_psf_variance_map=False,
                         )
         return error_map
 

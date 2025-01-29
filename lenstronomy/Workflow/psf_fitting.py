@@ -80,7 +80,7 @@ class PsfFitting(object):
         kwargs_psf,
         kwargs_params,
         num_iter=10,
-        keep_psf_error_map=True,
+        keep_psf_variance_map=True,
         no_break=True,
         verbose=True,
         **kwargs_psf_update
@@ -151,7 +151,7 @@ class PsfFitting(object):
                 "log likelihood before: %s and log likelihood after: %s"
                 % (logL_before, logL_best)
             )
-        if keep_psf_error_map is True:
+        if keep_psf_variance_map is True:
             kwargs_psf_final["psf_variance_map"] = error_map_init
         else:
             kwargs_psf_final["psf_variance_map"] = error_map_final

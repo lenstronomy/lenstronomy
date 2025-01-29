@@ -305,7 +305,7 @@ class TestPSFIteration(object):
             kwargs_params,
             num_iter=3,
             no_break=True,
-            keep_psf_error_map=True,
+            keep_psf_variance_map=True,
         )
         kernel_new = kwargs_psf_new["kernel_point_source"]
         kernel_true = self.kwargs_psf["kernel_point_source"]
@@ -518,7 +518,7 @@ class TestPSFIterationOld(object):
             "new_procedure": False,
             "no_break": False,
             "verbose": True,
-            "keep_psf_error_map": False,
+            "keep_psf_variance_map": False,
         }
 
         kwargs_params = copy.deepcopy(self.kwargs_params)
@@ -542,7 +542,7 @@ class TestPSFIterationOld(object):
             kwargs_params,
             num_iter=3,
             no_break=True,
-            keep_psf_error_map=True,
+            keep_psf_variance_map=True,
         )
         kernel_new = kwargs_psf_new["kernel_point_source"]
         kernel_true = self.kwargs_psf["kernel_point_source"]

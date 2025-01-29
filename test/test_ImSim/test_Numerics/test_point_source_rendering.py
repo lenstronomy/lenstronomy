@@ -36,19 +36,19 @@ class TestPointSourceRendering(object):
         ra_pos, dec_pos = [5], [5]
         data = np.zeros((10, 10))
         image = self._ps_rendering.psf_variance_map(
-            ra_pos, dec_pos, amp=1, data=data, fix_psf_error_map=False
+            ra_pos, dec_pos, amp=1, data=data, fix_psf_variance_map=False
         )
         npt.assert_almost_equal(np.sum(image), 0, decimal=10)
 
         image = self._ps_rendering.psf_variance_map(
-            ra_pos, dec_pos, amp=1, data=data, fix_psf_error_map=True
+            ra_pos, dec_pos, amp=1, data=data, fix_psf_variance_map=True
         )
         npt.assert_almost_equal(np.sum(image), 1, decimal=10)
 
         ra_pos, dec_pos = [50], [50]
         data = np.zeros((10, 10))
         image = self._ps_rendering.psf_variance_map(
-            ra_pos, dec_pos, amp=1, data=data, fix_psf_error_map=False
+            ra_pos, dec_pos, amp=1, data=data, fix_psf_variance_map=False
         )
         npt.assert_almost_equal(np.sum(image), 0, decimal=10)
 

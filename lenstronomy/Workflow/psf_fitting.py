@@ -90,7 +90,7 @@ class PsfFitting(object):
         :param kwargs_psf: keyword arguments to construct the PSF() class
         :param kwargs_params: keyword arguments of the parameters of the model components (e.g. 'kwargs_lens' etc)
         :param num_iter: number of iterations in the PSF fitting and image fitting process
-        :param keep_psf_error_map: boolean, if True keeps previous psf_variance_map
+        :param keep_psf_variance_map: boolean, if True keeps previous psf_variance_map
         :param no_break: boolean, if True, runs until the end regardless of the next step getting worse, and then
          reads out the overall best fit
         :param verbose: print statements informing about progress of iterative procedure

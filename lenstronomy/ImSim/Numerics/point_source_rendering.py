@@ -83,7 +83,7 @@ class PointSourceRendering(object):
         psf_variance_map = self._psf.psf_variance_map
         variance_map = np.zeros_like(data)
         for i in range(len(x_pos)):
-            if fix_psf_error_map is True:
+            if fix_psf_variance_map is True:
                 amp_estimated = amp
             else:
                 amp_estimated = kernel_util.estimate_amp(

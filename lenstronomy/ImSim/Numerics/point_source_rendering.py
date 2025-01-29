@@ -66,7 +66,7 @@ class PointSourceRendering(object):
             )
         return self._kernel_supersampled_instance
 
-    def psf_variance_map(self, ra_pos, dec_pos, amp, data, fix_psf_error_map=False):
+    def psf_variance_map(self, ra_pos, dec_pos, amp, data, fix_psf_variance_map=False):
         """Variance of PSF error.
 
         :param ra_pos: image positions of point sources

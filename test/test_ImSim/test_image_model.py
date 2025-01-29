@@ -46,7 +46,7 @@ class TestImageModel(object):
         kwargs_psf = {
             "psf_type": "PIXEL",
             "kernel_point_source": kernel,
-            "psf_error_map": np.ones_like(kernel) * 0.001 * kernel**2,
+            "psf_variance_map": np.ones_like(kernel) * 0.001 * kernel**2,
         }
         psf_class = PSF(**kwargs_psf)
 
@@ -231,7 +231,7 @@ class TestImageModel(object):
         kwargs_psf = {
             "kernel_point_source": kernel,
             "psf_type": "PIXEL",
-            "psf_error_map": np.ones_like(kernel) * 0.001,
+            "psf_variance_map": np.ones_like(kernel) * 0.001,
         }
         psf_class = PSF(**kwargs_psf)
         lens_model_class = LensModel(["SPEP"])

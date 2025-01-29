@@ -40,7 +40,7 @@ class PsfFitting(object):
         the symmetry specified. These additional imposed symmetries can help stabelize the PSF estimate when there are
         limited constraints/number of point sources in the image.
 
-    The procedure only requires and changes the 'point_source_kernel' in the PSF() class and the 'psf_error_map'.
+    The procedure only requires and changes the 'point_source_kernel' in the PSF() class and the 'psf_variance_map'.
     Any previously set subgrid kernels or pixel_kernels are removed and constructed from the 'point_source_kernel'.
     """
 
@@ -80,7 +80,7 @@ class PsfFitting(object):
         kwargs_psf,
         kwargs_params,
         num_iter=10,
-        keep_psf_error_map=True,
+        keep_psf_variance_map=True,
         no_break=True,
         verbose=True,
         **kwargs_psf_update
@@ -90,7 +90,7 @@ class PsfFitting(object):
         :param kwargs_psf: keyword arguments to construct the PSF() class
         :param kwargs_params: keyword arguments of the parameters of the model components (e.g. 'kwargs_lens' etc)
         :param num_iter: number of iterations in the PSF fitting and image fitting process
-        :param keep_psf_error_map: boolean, if True keeps previous psf_error_map
+        :param keep_psf_variance_map: boolean, if True keeps previous psf_variance_map
         :param no_break: boolean, if True, runs until the end regardless of the next step getting worse, and then
          reads out the overall best fit
         :param verbose: print statements informing about progress of iterative procedure
@@ -105,8 +105,8 @@ class PsfFitting(object):
             kernel_point_source_init = kwargs_psf["kernel_point_source_init"]
         kwargs_psf_new = copy.deepcopy(kwargs_psf)
         kwargs_psf_final = copy.deepcopy(kwargs_psf)
-        if "psf_error_map" in kwargs_psf:
-            error_map_final = kwargs_psf["psf_error_map"]
+        if "psf_variance_map" in kwargs_psf:
+            error_map_final = kwargs_psf["psf_variance_map"]
         else:
             error_map_final = np.zeros_like(kernel_point_source_init)
         error_map_init = copy.deepcopy(error_map_final)
@@ -151,10 +151,10 @@ class PsfFitting(object):
                 "log likelihood before: %s and log likelihood after: %s"
                 % (logL_before, logL_best)
             )
-        if keep_psf_error_map is True:
-            kwargs_psf_final["psf_error_map"] = error_map_init
+        if keep_psf_variance_map is True:
+            kwargs_psf_final["psf_variance_map"] = error_map_init
         else:
-            kwargs_psf_final["psf_error_map"] = error_map_final
+            kwargs_psf_final["psf_variance_map"] = error_map_final
         kwargs_psf_final["kernel_point_source_init"] = kernel_point_source_init
         return kwargs_psf_final
 
@@ -226,7 +226,7 @@ class PsfFitting(object):
             "psf_type": "PIXEL",
             "kernel_point_source": kwargs_psf_copy["kernel_point_source"],
             "point_source_supersampling_factor": point_source_supersampling_factor,
-            "psf_error_map": kwargs_psf_copy.get("psf_error_map", None),
+            "psf_variance_map": kwargs_psf_copy.get("psf_variance_map", None),
         }
         # if 'psf_error_map' in kwargs_psf_copy:
         #    kwargs_psf_new['psf_error_map'] = kwargs_psf_copy['psf_error_map'] / 10
@@ -900,8 +900,8 @@ class PsfFitting(object):
         error_map_radius=None,
         block_center_neighbour=0,
     ):
-        """Provides a psf_error_map based on the goodness of fit of the given PSF kernel
-        on the point source cutouts, their estimated amplitudes and positions.
+        """Provides a psf_variance_map based on the goodness of fit of the given PSF
+        kernel on the point source cutouts, their estimated amplitudes and positions.
 
         :param kernel: PSF kernel
         :param star_cutout_list: list of 2d arrays of cutouts of the point sources with

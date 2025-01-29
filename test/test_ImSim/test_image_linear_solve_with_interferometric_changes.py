@@ -137,12 +137,12 @@ def test_image_linear_solve_with_primary_beam_and_interferometry_psf():
         lens_light_model_class,
         kwargs_numerics=kwargs_numerics,
     )
-    model, _, _, amps = imageLinearFit._image_linear_solve(
+    model, _, _, amps = imageLinearFit.image_linear_solve(
         kwargs_lens, kwargs_source, kwargs_lens_light
     )
 
-    # execute the same linear solving outside of the _image_linear_solve function
-    A = imageLinearFit._linear_response_matrix(
+    # execute the same linear solving outside of the image_linear_solve function
+    A = imageLinearFit.linear_response_matrix(
         kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps=None, unconvolved=True
     )
     A0 = util.array2image(A[0])

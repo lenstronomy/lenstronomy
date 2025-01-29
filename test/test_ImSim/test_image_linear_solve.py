@@ -78,7 +78,7 @@ class TestImageLinearFit(object):
             "supersampling_convolution": False,
         }
 
-        self.imageModel = ImageLinearFit(
+        self.imageLinearFit = ImageLinearFit(
             data_class,
             psf_class,
             lens_model_class,
@@ -87,9 +87,62 @@ class TestImageLinearFit(object):
             point_source_class,
             kwargs_numerics=kwargs_numerics,
         )
+        image_sim = sim_util.simulate_simple(
+            self.imageLinearFit,
+            self.kwargs_lens,
+            self.kwargs_source,
+            self.kwargs_lens_light,
+            self.kwargs_ps,
+        )
+        data_class.update_data(image_sim)
+
+    def test_likelihood_data_given_model(self):
+        logL, _ = self.imageLinearFit.likelihood_data_given_model(
+            self.kwargs_lens,
+            self.kwargs_source,
+            self.kwargs_lens_light,
+            self.kwargs_ps,
+            source_marg=False,
+        )
+        npt.assert_almost_equal(logL, -5000, decimal=-3)
+
+        logLmarg, _ = self.imageLinearFit.likelihood_data_given_model(
+            self.kwargs_lens,
+            self.kwargs_source,
+            self.kwargs_lens_light,
+            self.kwargs_ps,
+            source_marg=True,
+        )
+        npt.assert_almost_equal(logL - logLmarg, 0, decimal=-3)
+        assert logLmarg < logL
+
+    def test_image_linear_solve(self):
+        model, error_map, cov_param, param = self.imageLinearFit.image_linear_solve(
+            self.kwargs_lens,
+            self.kwargs_source,
+            self.kwargs_lens_light,
+            self.kwargs_ps,
+            inv_bool=False,
+        )
+        chi2_reduced = self.imageLinearFit.reduced_chi2(model, error_map)
+        npt.assert_almost_equal(chi2_reduced, 1, decimal=1)
+
+    def test_num_param_linear(self):
+        num_param_linear = self.imageLinearFit.num_param_linear(
+            self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps
+        )
+        assert num_param_linear == 3
+
+    def test_linear_response_matrix(self):
+        A = self.imageLinearFit.linear_response_matrix(
+            self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps
+        )
+        n, m = np.shape(A)
+        assert n == 3
+        assert m == 100 * 100
 
     def test_linear_param_from_kwargs(self):
-        param = self.imageModel.linear_param_from_kwargs(
+        param = self.imageLinearFit.linear_param_from_kwargs(
             self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps
         )
         assert param[0] == self.kwargs_source[0]["amp"]
@@ -97,7 +150,7 @@ class TestImageLinearFit(object):
         assert param[2] == self.kwargs_ps[0]["source_amp"]
 
     def test_update_linear_kwargs(self):
-        num = self.imageModel.num_param_linear(
+        num = self.imageLinearFit.num_param_linear(
             self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps
         )
         param = np.ones(num) * 10
@@ -106,7 +159,7 @@ class TestImageLinearFit(object):
             kwargs_source,
             kwargs_lens_light,
             kwargs_ps,
-        ) = self.imageModel.update_linear_kwargs(
+        ) = self.imageLinearFit.update_linear_kwargs(
             param,
             kwargs_lens=self.kwargs_lens,
             kwargs_source=self.kwargs_source,
@@ -116,7 +169,22 @@ class TestImageLinearFit(object):
         assert kwargs_source[0]["amp"] == 10
 
     def test_error_response(self):
-        C_D_response, model_error = self.imageModel.error_response(
+        C_D_response, model_error = self.imageLinearFit.error_response(
             kwargs_lens=self.kwargs_lens, kwargs_ps=self.kwargs_ps, kwargs_special=None
         )
         npt.assert_almost_equal(model_error, 0)
+
+    def test_point_source_linear_response_set(self):
+        kwargs_special = {"delta_x_image": [0.1, 0.1], "delta_y_image": [-0.1, -0.1]}
+        (
+            ra_pos,
+            dec_pos,
+            amp,
+            num_point,
+        ) = self.imageLinearFit.point_source_linear_response_set(
+            self.kwargs_ps, self.kwargs_lens, kwargs_special, with_amp=True
+        )
+        ra, dec = self.imageLinearFit.PointSource.image_position(
+            self.kwargs_ps, self.kwargs_lens
+        )
+        npt.assert_almost_equal(ra[0][0], ra_pos[0][0] - 0.1, decimal=5)

@@ -1,7 +1,7 @@
 __author__ = "lynevdv"
 
 import numpy as np
-import cmath as c
+import cmath
 from lenstronomy.Util import param_util
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
@@ -23,17 +23,15 @@ class ElliSLICE(LensProfileBase):
             \\begin{array}{ll}
                 \\sigma_0  & \\mbox{if } \\frac{x_{rot}^2}{a^2} + \\frac{y_{rot}^2}{b^2} \\leq 1 \\\
                 0 & \\mbox{else}
-
             \\end{array}
-
         \\right}.
 
     with
 
     ..math::
-        x_{rot} = x_c \\cos \\psi + y_c \\sin \\psi  \\
-        y_{rot} = - x_c \\sin \\psi + y_c \\cos \\psi  \\
-        x_c = x - center_x  \\
+        x_{rot} = x_c \\cos \\psi + y_c \\sin \\psi  \\\
+        y_{rot} = - x_c \\sin \\psi + y_c \\cos \\psi  \\\
+        x_c = x - center_x  \\\
         y_c = y - center_y
 
     """
@@ -192,7 +190,7 @@ class ElliSLICE(LensProfileBase):
             kwargs_slice["a"] + kwargs_slice["b"]
         )
         sig_0 = kwargs_slice["sigma_0"]
-        e2ipsi = c.exp(2j * psi)
+        e2ipsi = cmath.exp(2j * psi)
         I_in = (z - e * zb * e2ipsi) * sig_0
         return I_in.real, I_in.imag
 
@@ -209,6 +207,7 @@ class ElliSLICE(LensProfileBase):
         a = kwargs_slice["a"]
         b = kwargs_slice["b"]
         f2 = a**2 - b**2
+        # c = a * b / f2
         sig_0 = kwargs_slice["sigma_0"]
         median_op = False
         # when (x,y) is on one of the ellipse axis, there might be an issue when calculating the square root of
@@ -222,8 +221,8 @@ class ElliSLICE(LensProfileBase):
             or np.abs(np.sin(phi - psi - np.pi / 2.0)) <= 10**-10
         ):  # very close to one of the ellipse axis
             median_op = True
-        e2ipsi = c.exp(2j * psi)
-        eipsi = c.exp(1j * psi)
+        e2ipsi = cmath.exp(2j * psi)
+        eipsi = cmath.exp(1j * psi)
         if median_op is True:
             eps = 10**-10
             z_minus_eps = complex(r * np.cos(phi - eps), r * np.sin(phi - eps))
@@ -239,7 +238,7 @@ class ElliSLICE(LensProfileBase):
                     zb_minus_eps * e2ipsi
                     - eipsi
                     * self.sign(zb_minus_eps * eipsi)
-                    * c.sqrt(zb_minus_eps**2 * e2ipsi - f2)
+                    * cmath.sqrt(zb_minus_eps**2 * e2ipsi - f2)
                 )
                 * sig_0
             )
@@ -252,7 +251,7 @@ class ElliSLICE(LensProfileBase):
                     zb_plus_eps * e2ipsi
                     - eipsi
                     * self.sign(zb_plus_eps * eipsi)
-                    * c.sqrt(zb_plus_eps**2 * e2ipsi - f2)
+                    * cmath.sqrt(zb_plus_eps**2 * e2ipsi - f2)
                 )
                 * sig_0
             )
@@ -263,13 +262,19 @@ class ElliSLICE(LensProfileBase):
                 / f2
                 * (
                     zb * e2ipsi
-                    - eipsi * self.sign(zb * eipsi) * c.sqrt(zb**2 * e2ipsi - f2)
+                    - eipsi * self.sign(zb * eipsi) * cmath.sqrt(zb**2 * e2ipsi - f2)
                 )
                 * sig_0
             )
             I_out_real = np.median([I_out_minus.real, I_out_plus.real, I_out_mid.real])
             I_out_imag = np.median([I_out_minus.imag, I_out_plus.imag, I_out_mid.imag])
         else:
+            if a == b and x**2 + y**2 > a**2:
+                # if round, simpler formula is valid
+                I_out_real = sig_0 * a**2 * x / (x**2 + y**2)
+                I_out_imag = sig_0 * a**2 * y / (x**2 + y**2)
+
+                return I_out_real, I_out_imag
             I_out = (
                 2
                 * a
@@ -277,10 +282,11 @@ class ElliSLICE(LensProfileBase):
                 / f2
                 * (
                     zb * e2ipsi
-                    - eipsi * self.sign(zb * eipsi) * c.sqrt(zb**2 * e2ipsi - f2)
+                    - eipsi * self.sign(zb * eipsi) * cmath.sqrt(zb**2 * e2ipsi - f2)
                 )
                 * sig_0
             )
+
             I_out_real = I_out.real
             I_out_imag = I_out.imag
 
@@ -343,8 +349,8 @@ class ElliSLICE(LensProfileBase):
             median_op = True
         e = (a - b) / (a + b)
         f2 = a**2 - b**2
-        emipsi = c.exp(-1j * psi)
-        em2ipsi = c.exp(-2j * psi)
+        emipsi = cmath.exp(-1j * psi)
+        em2ipsi = cmath.exp(-2j * psi)
         if median_op is True:
             eps = 10**-10
             z_minus_eps = complex(r * np.cos(phi - eps), r * np.sin(phi - eps))
@@ -355,17 +361,17 @@ class ElliSLICE(LensProfileBase):
                 / (4 * e)
                 * (
                     f2
-                    * c.log(
+                    * cmath.log(
                         (
                             self.sign(z_minus_eps * emipsi) * z_minus_eps * emipsi
-                            + c.sqrt(z_minus_eps**2 * em2ipsi - f2)
+                            + cmath.sqrt(z_minus_eps**2 * em2ipsi - f2)
                         )
                         / 2.0
                     )
                     - self.sign(z_minus_eps * emipsi)
                     * z_minus_eps
                     * emipsi
-                    * c.sqrt(z_minus_eps**2 * em2ipsi - f2)
+                    * cmath.sqrt(z_minus_eps**2 * em2ipsi - f2)
                     + z_minus_eps**2 * em2ipsi
                 )
                 * sig_0
@@ -375,17 +381,17 @@ class ElliSLICE(LensProfileBase):
                 / (4 * e)
                 * (
                     f2
-                    * c.log(
+                    * cmath.log(
                         (
                             self.sign(z_plus_eps * emipsi) * z_plus_eps * emipsi
-                            + c.sqrt(z_plus_eps**2 * em2ipsi - f2)
+                            + cmath.sqrt(z_plus_eps**2 * em2ipsi - f2)
                         )
                         / 2.0
                     )
                     - self.sign(z_plus_eps * emipsi)
                     * z_plus_eps
                     * emipsi
-                    * c.sqrt(z_plus_eps**2 * em2ipsi - f2)
+                    * cmath.sqrt(z_plus_eps**2 * em2ipsi - f2)
                     + z_plus_eps**2 * em2ipsi
                 )
                 * sig_0
@@ -395,14 +401,17 @@ class ElliSLICE(LensProfileBase):
                 / (4 * e)
                 * (
                     f2
-                    * c.log(
+                    * cmath.log(
                         (
                             self.sign(z * emipsi) * z * emipsi
-                            + c.sqrt(z**2 * em2ipsi - f2)
+                            + cmath.sqrt(z**2 * em2ipsi - f2)
                         )
                         / 2.0
                     )
-                    - self.sign(z * emipsi) * z * emipsi * c.sqrt(z**2 * em2ipsi - f2)
+                    - self.sign(z * emipsi)
+                    * z
+                    * emipsi
+                    * cmath.sqrt(z**2 * em2ipsi - f2)
                     + z**2 * em2ipsi
                 )
                 * sig_0
@@ -416,14 +425,17 @@ class ElliSLICE(LensProfileBase):
                 / (4 * e)
                 * (
                     f2
-                    * c.log(
+                    * cmath.log(
                         (
                             self.sign(z * emipsi) * z * emipsi
-                            + c.sqrt(z**2 * em2ipsi - f2)
+                            + cmath.sqrt(z**2 * em2ipsi - f2)
                         )
                         / 2.0
                     )
-                    - self.sign(z * emipsi) * z * emipsi * c.sqrt(z**2 * em2ipsi - f2)
+                    - self.sign(z * emipsi)
+                    * z
+                    * emipsi
+                    * cmath.sqrt(z**2 * em2ipsi - f2)
                     + z**2 * em2ipsi
                 )
                 * sig_0

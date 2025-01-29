@@ -1,43 +1,52 @@
 
 .. image:: https://raw.githubusercontent.com/lenstronomy/lenstronomy/main/docs/figures/logo_text.png
     :target: https://raw.githubusercontent.com/lenstronomy/lenstronomy/main/docs/figures/logo_text.png
+    :alt: Lenstronomy Logo
 
 .. image:: https://github.com/lenstronomy/lenstronomy/workflows/Tests/badge.svg
     :target: https://github.com/lenstronomy/lenstronomy/actions
+    :alt: GitHub Tests Badge
 
 .. image:: https://readthedocs.org/projects/lenstronomy/badge/?version=latest
-        :target: http://lenstronomy.readthedocs.io/en/latest/?badge=latest
-        :alt: Documentation Status
+    :target: http://lenstronomy.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status Badge
 
 .. image:: https://codecov.io/gh/lenstronomy/lenstronomy/graph/badge.svg?token=Pk1FmwQ4Ek 
-        :target: https://codecov.io/gh/lenstronomy/lenstronomy
+    :target: https://codecov.io/gh/lenstronomy/lenstronomy
+    :alt: Code Coverage Badge
 
 .. image:: https://img.shields.io/badge/License-BSD_3--Clause-blue.svg
     :target: https://github.com/lenstronomy/lenstronomy/blob/main/LICENSE
+    :alt: License BSD 3-Clause Badge
 
 .. image:: http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat
-        :target: http://www.astropy.org
-        :alt: Powered by Astropy Badge
+    :target: http://www.astropy.org
+    :alt: Powered by Astropy Badge
 
 .. image:: https://joss.theoj.org/papers/6a562375312c9a9e4466912a16f27589/status.svg
     :target: https://joss.theoj.org/papers/6a562375312c9a9e4466912a16f27589
+    :alt: JOSS Publication Status Badge
 
 .. image:: https://img.shields.io/badge/arXiv-1803.09746%20-yellowgreen.svg
     :target: https://arxiv.org/abs/1803.09746
+    :alt: arXiv 1803.09746 Badge
 
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
     :target: https://github.com/psf/black
+    :alt: Code Style Black Badge
 
 .. image:: https://img.shields.io/badge/%20formatter-docformatter-fedcba.svg
     :target: https://github.com/PyCQA/docformatter
+    :alt: Docformatter Formatter Badge
 
 .. image:: https://img.shields.io/badge/%20style-sphinx-0a507a.svg
     :target: https://www.sphinx-doc.org/en/master/usage/index.html
+    :alt: Sphinx Documentation Style Badge
 
 ..
     .. image:: https://raw.githubusercontent.com/lenstronomy/lenstronomy/main/docs/figures/readme_fig.png
         :target: https://raw.githubusercontent.com/lenstronomy/lenstronomy/main/docs/figures/readme_fig.png
-
+        :alt: Lenstronomy Example Image
 
 ``lenstronomy`` is a multi-purpose software package to model strong gravitational lenses.
 ``lenstronomy`` finds application for time-delay cosmography and measuring
@@ -58,7 +67,7 @@ Installation
 
 |PyPI| |conda-forge|
 
-lenstronomy releases are distributed through PyPI_ and conda-forge_. Instructions for
+``lenstronomy`` releases are distributed through PyPI_ and conda-forge_. Instructions for
 installing lenstronomy and its dependencies can be found in the Installation_
 section of the documentation.
 Specific instructions for settings and installation requirements for special cases that can provide speed-ups,

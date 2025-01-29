@@ -96,6 +96,15 @@ class TestLensModel(object):
         lens_model = LensModel(lens_model_list=lens_model_list)
         lens_model.info()
 
+        # Testing the multiplane version
+        lens_model2 = LensModel(
+            lens_model_list=lens_model_list,
+            multi_plane=True,
+            lens_redshift_list=[0.5] * len(lens_model_list),
+            z_source=1.5,
+        )
+        lens_model2.info()
+
     def test_kappa(self):
         lensModel = LensModel(lens_model_list=["CONVERGENCE"])
         kappa_ext = 0.5
@@ -353,6 +362,76 @@ class TestLensModel(object):
         dt_sp = lens_model_mp_new.arrival_time(x, y, kwargs_lens=kwargs_lens)
         npt.assert_almost_equal(dt_sp, dt_mp, decimal=5)
         lens_model_mp_new.change_source_redshift(z_source=z_source_new)
+
+    def test_update_cosmology(self):
+        from astropy.cosmology import FlatwCDM
+
+        cosmo = FlatwCDM(H0=67, Om0=0.3, w0=-0.8)
+        cosmo_new = FlatwCDM(H0=73, Om0=0.3, w0=-1)
+
+        z_lens = 0.5
+        z_source_convention = 2
+        z_source_new = 1
+        kwargs_lens = [{"theta_E": 1, "center_x": 0, "center_y": 0}]
+        # multi-plane lens model
+        lens_model = LensModel(
+            lens_model_list=["SIS"],
+            z_lens=z_lens,
+            lens_redshift_list=[z_lens],
+            z_source_convention=z_source_convention,
+            z_source=z_source_new,
+            multi_plane=True,
+            cosmo=cosmo,
+        )
+        lens_model_new = LensModel(
+            lens_model_list=["SIS"],
+            z_lens=z_lens,
+            lens_redshift_list=[z_lens],
+            z_source_convention=z_source_convention,
+            z_source=z_source_new,
+            multi_plane=True,
+            cosmo=cosmo_new,
+        )
+        lens_model.update_cosmology(cosmo=cosmo_new)
+        dt = lens_model.arrival_time(1, 1, kwargs_lens=kwargs_lens)
+        dt_new = lens_model_new.arrival_time(1, 1, kwargs_lens=kwargs_lens)
+        npt.assert_almost_equal(dt, dt_new, decimal=5)
+
+        # single-plane lens model
+        lens_model = LensModel(
+            lens_model_list=["SIS"],
+            z_lens=z_lens,
+            z_source_convention=z_source_convention,
+            multi_plane=False,
+            z_source=z_source_convention,
+            cosmo=cosmo,
+        )
+        lens_model_new = LensModel(
+            lens_model_list=["SIS"],
+            z_lens=z_lens,
+            z_source_convention=z_source_convention,
+            multi_plane=False,
+            z_source=z_source_convention,
+            cosmo=cosmo_new,
+        )
+        lens_model.update_cosmology(cosmo=cosmo_new)
+        dt = lens_model.arrival_time(1, 1, kwargs_lens=kwargs_lens)
+        dt_new = lens_model_new.arrival_time(1, 1, kwargs_lens=kwargs_lens)
+        npt.assert_almost_equal(dt, dt_new, decimal=5)
+
+        # test that default cosmological parameters result in the expected value with non-standard cosmology
+        lens_model_new = LensModel(
+            lens_model_list=["SIS"],
+            z_lens=z_lens,
+            z_source_convention=z_source_convention,
+            multi_plane=False,
+            z_source=z_source_convention,
+            cosmo=None,
+            cosmology_model="FlatwCDM",
+        )
+        assert lens_model_new.cosmo.H0.value == 70
+        assert lens_model_new.cosmo.Om0 == 0.3
+        assert lens_model_new.cosmo.w0 == -1
 
 
 class TestRaise(unittest.TestCase):

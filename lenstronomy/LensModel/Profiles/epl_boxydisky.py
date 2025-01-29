@@ -12,22 +12,25 @@ __all__ = ["EPL_BOXYDISKY_ELL", "EPL_BOXYDISKY"]
 
 
 class EPL_BOXYDISKY_ELL(LensProfileBase):
-    """ " EPL (Elliptical Power Law) mass profile combined with Multipole with m=4, so
-    that it's either purely boxy or disky with EPL's axis and Multipole's axis aligned.
+    """ " EPL (Elliptical Power Law) mass profile combined with an elliptical multipole
+    with m=4, so that it's either purely boxy or disky with EPL's axis and multipole's
+    axis aligned (exact for general axis ratio q).
 
-    Reference to the implementation: https://ui.adsabs.harvard.edu/abs/2022A%26A...659A.127V/abstract
-
-    Read the documentation of lenstronomy.LensModel.Profiles.epl and lenstrnomy.LensModel.Profiles.multipole for details.
+    Read the documentation of lenstronomy.LensModel.Profiles.epl and
+    lenstrnomy.LensModel.Profiles.multipole for details.
 
     :param theta_E: Einstein radius
     :param gamma: negative power-law slope of the 3D mass distributions
-    :param e1: eccentricity. For details, read lenstronomy.Util.param_util.phi_q2_ellipticity document.
-    :param e2: eccentricity. For details, read lenstronomy.Util.param_util.phi_q2_ellipticity document.
+    :param e1: eccentricity. For details, read
+        lenstronomy.Util.param_util.phi_q2_ellipticity document.
+    :param e2: eccentricity. For details, read
+        lenstronomy.Util.param_util.phi_q2_ellipticity document.
     :param center_x: center of distortion
     :param center_y: center of distortion
-    :param a4_a: Strength of the deviation of multipole order 4 of the elliptical isodensity contours,
-     which is translated into the multipole strength from the MULTIPOLE class through a rescaling by theta_E / sqrt(q).
-     Profile is disky when a4_a>0 and boxy when a4_a<0.
+    :param a4_a: Strength of the deviation of multipole order 4 of the elliptical
+        isodensity contours, which is translated into the multipole strength from the
+        MULTIPOLE class through a rescaling by theta_E / sqrt(q). Profile is disky when
+        a4_a>0 and boxy when a4_a<0.
     """
 
     param_names = ["theta_E", "gamma", "e1", "e2", "center_x", "center_y", "a4_a"]
@@ -169,8 +172,9 @@ class EPL_BOXYDISKY_ELL(LensProfileBase):
 
 
 class EPL_BOXYDISKY(LensProfileBase):
-    """ " EPL (Elliptical Power Law) mass profile combined with Multipole with m=4, so
-    that it's either purely boxy or disky with EPL's axis and Multipole's axis aligned.
+    """ " EPL (Elliptical Power Law) mass profile combined with a circular multipole with
+    m=4, so that it's either purely boxy or disky with EPL's axis and multipole's axis
+    aligned (exact for axis ratio q=1 only).
 
     Reference to the implementation: https://ui.adsabs.harvard.edu/abs/2022A%26A...659A.127V/abstract
 
@@ -207,7 +211,7 @@ class EPL_BOXYDISKY(LensProfileBase):
         "a4_a": +0.1,
     }
 
-    def __init__(self, use_elliptical_multipoles=True):
+    def __init__(self):
         self._epl = EPL()
         self._multipole = Multipole()
         self._m = int(4)

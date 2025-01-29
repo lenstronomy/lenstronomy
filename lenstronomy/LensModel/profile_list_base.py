@@ -31,6 +31,8 @@ _SUPPORTED_MODELS = [
     "EPL",
     "EPL_BOXYDISKY_ELL",
     "EPL_BOXYDISKY",
+    "EPL_MULTIPOLE_M1M3M4",
+    "EPL_MULTIPOLE_M1M3M4_ELL",
     "EPL_MULTIPOLE_M3M4_ELL",
     "EPL_MULTIPOLE_M3M4",
     "EPL_NUMBA",
@@ -379,6 +381,18 @@ def lens_class(
         from lenstronomy.LensModel.Profiles.epl_boxydisky import EPL_BOXYDISKY
 
         return EPL_BOXYDISKY()
+    elif lens_type == "EPL_MULTIPOLE_M1M3M4":
+        from lenstronomy.LensModel.Profiles.epl_multipole_m1m3m4 import (
+            EPL_MULTIPOLE_M1M3M4,
+        )
+
+        return EPL_MULTIPOLE_M1M3M4()
+    elif lens_type == "EPL_MULTIPOLE_M1M3M4_ELL":
+        from lenstronomy.LensModel.Profiles.epl_multipole_m1m3m4 import (
+            EPL_MULTIPOLE_M1M3M4_ELL,
+        )
+
+        return EPL_MULTIPOLE_M1M3M4_ELL()
     elif lens_type == "EPL_MULTIPOLE_M3M4_ELL":
         from lenstronomy.LensModel.Profiles.epl_multipole_m3m4 import (
             EPL_MULTIPOLE_M3M4_ELL,

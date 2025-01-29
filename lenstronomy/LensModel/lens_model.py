@@ -8,6 +8,9 @@ from lenstronomy.LensModel.MultiPlane.multi_plane import MultiPlane
 from lenstronomy.LensModel.MultiPlane.decoupled_multi_plane import MultiPlaneDecoupled
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 from lenstronomy.Util import constants as const
+from lenstronomy.Util.cosmo_util import get_astropy_cosmology
+from astropy.cosmology import default_cosmology
+import warnings
 
 __all__ = ["LensModel"]
 
@@ -29,6 +32,7 @@ class LensModel(object):
         numerical_alpha_class=None,
         observed_convention_index=None,
         z_source_convention=None,
+        z_lens_convention=None,
         cosmo_interp=False,
         z_interp_stop=None,
         num_z_interp=100,
@@ -37,6 +41,8 @@ class LensModel(object):
         decouple_multi_plane=False,
         kwargs_multiplane_model=None,
         distance_ratio_sampling=False,
+        cosmology_sampling=False,
+        cosmology_model="FlatLambdaCDM",
     ):
         """
 
@@ -58,6 +64,9 @@ class LensModel(object):
          positions. The code will compute the physical locations when performing computations
         :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens
          models. If None, 'z_source' is used.
+        :param z_lens_convention: float, redshift of a lens plane to define the
+         effective time-delay distance. Only needed if distance ratios are
+         sampled. If None, the first lens redshift is used.
         :param cosmo_interp: boolean (only employed in multi-plane mode), interpolates astropy.cosmology distances for
          faster calls when accessing several lensing planes
         :param z_interp_stop: (only in multi-plane with cosmo_interp=True); maximum redshift for distance interpolation
@@ -66,22 +75,33 @@ class LensModel(object):
          distances
         :param distance_ratio_sampling: bool, if True, will use sampled
          distance ratios to update T_ij value in multi-lens plane computation.
+        :param cosmology_sampling: bool, if True, will use sampled cosmology
+            to update T_ij value in multi-lens plane computation.
+        :param cosmology_model: str, name of the cosmology model to be used for
+            cosmology sampling. Default is 'FlatLambdaCDM'.
         """
         self.lens_model_list = lens_model_list
         self.z_lens = z_lens
-        self.z_source = z_source
+
         if z_source_convention is None and z_source is not None:
             z_source_convention = z_source
         if z_source is None and z_source_convention is not None:
             z_source = z_source_convention
         self._z_source_convention = z_source_convention
+        self.z_source = z_source
         self.redshift_list = lens_redshift_list
 
-        if cosmo is None:
-            from astropy.cosmology import default_cosmology
-
+        if cosmo is None and cosmology_model == "FlatLambdaCDM":
             cosmo = default_cosmology.get()
+        elif cosmo is None and cosmology_model != "FlatLambdaCDM":
+            cosmo = get_astropy_cosmology(cosmology_model=cosmology_model)
+        else:
+            warnings.warn(
+                "Astropy Cosmology is provided. Make sure your cosmology model is consistent with the cosmology_model argument."
+            )
         self.cosmo = cosmo
+        self.cosmology_sampling = cosmology_sampling
+        self.cosmology_model = cosmology_model
 
         # Are there line-of-sight corrections?
         permitted_los_models = ["LOS", "LOS_MINIMAL"]
@@ -171,12 +191,15 @@ class LensModel(object):
                     numerical_alpha_class=numerical_alpha_class,
                     observed_convention_index=observed_convention_index,
                     z_source_convention=z_source_convention,
+                    z_lens_convention=z_lens_convention,
                     cosmo_interp=cosmo_interp,
                     z_interp_stop=z_interp_stop,
                     num_z_interp=num_z_interp,
                     kwargs_interp=kwargs_interp,
                     kwargs_synthesis=kwargs_synthesis,
                     distance_ratio_sampling=distance_ratio_sampling,
+                    cosmology_sampling=cosmology_sampling,
+                    cosmology_model=cosmology_model,
                 )
                 self.type = "MultiPlane"
 
@@ -298,7 +321,13 @@ class LensModel(object):
             )
 
     def arrival_time(
-        self, x_image, y_image, kwargs_lens, kappa_ext=0, x_source=None, y_source=None
+        self,
+        x_image,
+        y_image,
+        kwargs_lens,
+        kappa_ext=0,
+        x_source=None,
+        y_source=None,
     ):
         """Arrival time of images relative to a straight line without lensing. Negative
         values correspond to images arriving earlier, and positive signs correspond to
@@ -314,9 +343,13 @@ class LensModel(object):
         :param y_source: source position (optional), otherwise computed with ray-tracing
         :return: arrival time of image positions in units of days
         """
-        if hasattr(self.lens_model, "arrival_time"):
-            arrival_time = self.lens_model.arrival_time(x_image, y_image, kwargs_lens)
-        else:
+        if hasattr(self.lens_model, "arrival_time"):  # for multiplane
+            arrival_time = self.lens_model.arrival_time(
+                x_image,
+                y_image,
+                kwargs_lens,
+            )
+        else:  # for single plane
             fermat_pot = self.lens_model.fermat_potential(
                 x_image, y_image, kwargs_lens, x_source=x_source, y_source=y_source
             )
@@ -575,15 +608,14 @@ class LensModel(object):
         else:
             if self._los_effects is True:
                 raise NotImplementedError(
-                    "SinglePlaneLOS lens model does not support change in source redshift"
+                    "SinglePlaneLOS lens model does not support change in redshift"
                 )
-            else:
-                alpha_scaling = self._lensCosmo.beta_double_source_plane(
-                    z_lens=self.z_lens,
-                    z_source_1=z_source,
-                    z_source_2=self._z_source_convention,
-                )
-                self.lens_model.change_redshift_scaling(alpha_scaling)
+            alpha_scaling = self._lensCosmo.beta_double_source_plane(
+                z_lens=self.z_lens,
+                z_source_1=z_source,
+                z_source_2=self._z_source_convention,
+            )
+            self.lens_model.change_redshift_scaling(alpha_scaling)
 
         if self.z_lens is not None:
             self._lensCosmo = LensCosmo(self.z_lens, z_source, cosmo=self.cosmo)
@@ -593,6 +625,42 @@ class LensModel(object):
                 )
                 self._ddt_scaling = ddt_scaling
         self.z_source = z_source
+
+    def update_cosmology(self, cosmo):
+        """
+
+        :param cosmo: ~astropy.cosmology instance
+        :return: updated LensModel class with new cosmology
+        """
+        self.cosmo = cosmo
+
+        if self.z_lens is not None and self.z_source is not None:
+            self._lensCosmo = LensCosmo(self.z_lens, self.z_source, cosmo=cosmo)
+            if self._z_source_convention is not None:
+                ddt_scaling = self._lensCosmo.background.ddt_scaling(
+                    self.z_lens, self._z_source_convention, self.z_source
+                )
+                self._ddt_scaling = ddt_scaling
+        if self.multi_plane is True:
+            if self._decouple_multi_plane:
+                kwargs_lens_class = self.lens_model.kwargs_class
+                kwargs_decoupled = self.lens_model.kwargs_multiplane_model
+                kwargs_lens_class["cosmo"] = cosmo
+                kwargs_class = {**kwargs_lens_class, **kwargs_decoupled}
+                self.lens_model = MultiPlaneDecoupled(**kwargs_class)
+            else:
+                # TODO: is it possible to not re-initialize it for performance improvements?
+                kwargs_lens_class = self.lens_model.kwargs_class
+                kwargs_lens_class["cosmo"] = cosmo
+                self.lens_model = MultiPlane(**kwargs_lens_class)
+        else:
+            if self.z_lens is not None and self.z_source is not None:
+                alpha_scaling = self._lensCosmo.beta_double_source_plane(
+                    z_lens=self.z_lens,
+                    z_source_1=self.z_source,
+                    z_source_2=self._z_source_convention,
+                )
+                self.lens_model.change_redshift_scaling(alpha_scaling)
 
     @property
     def ddt_scaling(self):

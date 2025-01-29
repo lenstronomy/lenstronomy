@@ -5,6 +5,7 @@ from lenstronomy.Util import mask_util as mask_util
 import lenstronomy.Util.multi_gauss_expansion as mge
 from lenstronomy.Util import analysis_util
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
+import lenstronomy.Util.constants as const
 
 __all__ = ["LensProfileAnalysis"]
 
@@ -86,7 +87,9 @@ class LensProfileAnalysis(object):
 
         # Define the integrand function for the 1D numerical integration: this is the surface mass density
         # kappa at a given radius r, multiplied by 2*pi*r to account for the circular geometry.
-        kappa_r = self.radial_lens_profile(r_array, kwargs_lens, center_x=0, center_y=0)
+        kappa_r = self.radial_lens_profile(
+            r_array, kwargs_lens, center_x=None, center_y=None
+        )
 
         return self.effective_einstein_radius_from_radial_profile(r_array, kappa_r)
 
@@ -361,6 +364,71 @@ class LensProfileAnalysis(object):
         center_x = x_grid[kappa == np.max(kappa)]
         center_y = y_grid[kappa == np.max(kappa)]
         return center_x, center_y
+
+    def m_delta_crit(self, kwargs_lens, z_lens, z_source, cosmo, delta_crit=200):
+        """Calculates the mass enclosed an average of delta_crit above the critical
+        background density.
+
+        :param kwargs_lens: list of lens model dictionary
+        :param z_lens: redshift of the deflector
+        :param z_source: redshift of the source (for lens model conventions)
+        :param cosmo: ~astropy.cosmology instance
+        :param delta_crit: relative overdensity relative to the critical density of the
+            universe
+        :return: m(<delta_crit) [M_sol], r(delta_crit) [arcsec]
+        """
+        from lenstronomy.Cosmo.lens_cosmo import LensCosmo
+
+        lens_cosmo = LensCosmo(cosmo=cosmo, z_lens=z_lens, z_source=z_source)
+        # calculate critical density
+        rho_crit = lens_cosmo.background.rho_crit_z(z=z_lens)  # value in M_sol/Mpc^3
+        # 3d deprojection
+        r = np.logspace(-3, 3, 500)
+        try:
+            m_3d_r = self._lens_model.lens_model.mass_3d(r, kwargs_lens)
+        except:
+            r_array = np.logspace(-3, 3, 200)
+            kappa_s = self.radial_lens_profile(r_array, kwargs_lens)
+            amplitudes, sigmas, norm = mge.mge_1d(r_array, kappa_s, N=20)
+            from lenstronomy.LensModel.Profiles.multi_gaussian import MultiGaussian
+
+            mult_gauss = MultiGaussian()
+            m_3d_r = mult_gauss.mass_3d_lens(R=r, amp=amplitudes, sigma=sigmas)
+
+        m_3d_kg = (
+            m_3d_r
+            * const.arcsec**2
+            * lens_cosmo.dd
+            * lens_cosmo.ds
+            / lens_cosmo.dds
+            * const.Mpc
+            * const.c**2
+            / (4 * np.pi * const.G)
+        )
+        # if you want to have physical units of kg, you need to multiply by this factor:
+        #    const.arcsec ** 2 * self._cosmo.dd * self._cosmo.ds / self._cosmo.dds *
+        #    const.Mpc * const.c ** 2 / (4 * np.pi * const.G)
+        mean_density_r = (
+            m_3d_kg
+            / const.M_sun
+            / (4 / 3 * np.pi * (r * const.arcsec * lens_cosmo.dd) ** 3)
+        )  # in M_sun / Mpc^3
+        delta_crit_r = mean_density_r / rho_crit
+        if delta_crit_r[0] < delta_crit:
+            Warning(
+                "Central density did not exceed %s times critical density." % delta_crit
+            )
+            return 0, 0
+        # invert mean density with radius
+        inv_interp = scipy.interpolate.interp1d(delta_crit_r, r)
+        try:
+            r_delta = inv_interp(delta_crit)
+            r_delta_mpc = r_delta * const.arcsec * lens_cosmo.dd
+            m_delta_crit = rho_crit * delta_crit * (4 / 3 * np.pi * r_delta_mpc**3)
+        except:
+            r_delta = np.nan
+            m_delta_crit = np.nan
+        return m_delta_crit, r_delta
 
 
 def einstein_radius_from_grid(

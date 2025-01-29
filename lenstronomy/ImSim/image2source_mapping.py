@@ -1,6 +1,7 @@
 import numpy as np
 from lenstronomy.Cosmo.background import Background
 from lenstronomy.ImSim.multiplane_organizer import MultiPlaneOrganizer
+from lenstronomy.Util.cosmo_util import get_astropy_cosmology
 
 __all__ = ["Image2SourceMapping"]
 
@@ -38,6 +39,7 @@ class Image2SourceMapping(object):
         light_model_list = source_model.profile_type_list
         self._multi_lens_plane = lens_model.multi_plane
         self._distance_ratio_sampling = False
+        self._cosmology_sampling = False
 
         # sort out source redshifts in the multi-lens-plane case
         if self._multi_lens_plane:
@@ -48,6 +50,9 @@ class Image2SourceMapping(object):
             else:
                 self._source_redshift_list = source_model.redshift_list
             self._lens_redshift_list = self._lens_model.redshift_list
+
+            if self._lens_model.lens_model.cosmology_sampling:
+                self._cosmology_sampling = True
 
             if self._lens_model.lens_model.distance_ratio_sampling:
                 self._distance_ratio_sampling = True
@@ -75,11 +80,12 @@ class Image2SourceMapping(object):
                     "length of redshift_list must correspond to length of light_model_list"
                 )
 
-            if np.max(self._source_redshift_list) > self._lens_model.z_source:
-                raise ValueError(
-                    "redshift of source_redshift_list have to be smaller or equal to "
-                    "the one specified in the lens model."
-                )
+            if len(self._source_redshift_list) > 0:
+                if np.max(self._source_redshift_list) > self._lens_model.z_source:
+                    raise ValueError(
+                        "redshift of source_redshift_list have to be smaller or equal to "
+                        "the one specified in the lens model."
+                    )
 
             # turn off multi source plane if all sources are at the same redshift
             if len(list(set(self._source_redshift_list))) == 1:
@@ -89,26 +95,10 @@ class Image2SourceMapping(object):
                 self._sorted_source_redshift_index = self._index_ordering(
                     self._source_redshift_list
                 )
-
                 self._T0z_list = []
-                for z_stop in self._source_redshift_list:
-                    self._T0z_list.append(self._bkg_cosmo.T_xy(0, z_stop))
-                z_start = 0
                 self._T_ij_start_list = []
                 self._T_ij_end_list = []
-                for i, index_source in enumerate(self._sorted_source_redshift_index):
-                    z_stop = self._source_redshift_list[index_source]
-
-                    (
-                        T_ij_start,
-                        T_ij_end,
-                    ) = self._lens_model.lens_model.transverse_distance_start_stop(
-                        z_start, z_stop, include_z_start=False
-                    )
-
-                    self._T_ij_start_list.append(T_ij_start)
-                    self._T_ij_end_list.append(T_ij_end)
-                    z_start = z_stop
+                self.set_T_ij_arrays()
         else:
             if self._deflection_scaling_list is None:
                 self._multi_source_plane = False
@@ -131,6 +121,38 @@ class Image2SourceMapping(object):
                 self._lens_model.lens_model.z_source_convention,
                 self._bkg_cosmo,
             )
+
+    def set_T_ij_arrays(self):
+        """Sets the transverse distance arrays for the multi-lens-plane case."""
+        self._T0z_list = []
+
+        for z_stop in self._source_redshift_list:
+            self._T0z_list.append(self._bkg_cosmo.T_xy(0, z_stop))
+
+        z_start = 0
+        self._T_ij_start_list = []
+        self._T_ij_end_list = []
+
+        for i, index_source in enumerate(self._sorted_source_redshift_index):
+            z_stop = self._source_redshift_list[index_source]
+
+            (
+                T_ij_start,
+                T_ij_end,
+            ) = self._lens_model.lens_model.transverse_distance_start_stop(
+                z_start, z_stop, include_z_start=False
+            )
+
+            self._T_ij_start_list.append(T_ij_start)
+            self._T_ij_end_list.append(T_ij_end)
+            z_start = z_stop
+
+    def set_background_cosmo(self, cosmo):
+        """Sets the cosmology for the multi-lens-plane case."""
+        self._lens_model.cosmo = cosmo
+        self._lens_model.lens_model.set_background_cosmo(cosmo)
+        self._bkg_cosmo.cosmo = cosmo
+        self.set_T_ij_arrays()
 
     @property
     def T_ij_start_list(self):
@@ -168,13 +190,7 @@ class Image2SourceMapping(object):
         :param index_source: int, index of source model
         :return: source plane coordinate corresponding to the source model of index index_source
         """
-        if self._distance_ratio_sampling:
-            self.multi_plane_organizer.update_lens_T_lists(
-                self._lens_model, kwargs_special
-            )
-            self.multi_plane_organizer.update_source_mapping_T_lists(
-                self, kwargs_special
-            )
+        self.update_distances(kwargs_special)
 
         if self._multi_source_plane is False:
             x_source, y_source = self._lens_model.ray_shooting(x, y, kwargs_lens)
@@ -207,6 +223,23 @@ class Image2SourceMapping(object):
 
         return x_source, y_source
 
+    def update_distances(self, kwargs_special):
+        """Updates the distances for the multi-lens-plane case if
+        distance_ratio_sampling or cosmology_sampling is True."""
+        if self._distance_ratio_sampling:
+            self.multi_plane_organizer.update_lens_T_lists(
+                self._lens_model, kwargs_special
+            )
+            self.multi_plane_organizer.update_source_mapping_T_lists(
+                self, kwargs_special
+            )
+
+        if self._cosmology_sampling:
+            cosmo = get_astropy_cosmology(
+                self._lens_model.lens_model.cosmology_model, kwargs_special
+            )
+            self.set_background_cosmo(cosmo)
+
     def image_flux_joint(
         self, x, y, kwargs_lens, kwargs_source, kwargs_special=None, k=None
     ):
@@ -221,13 +254,7 @@ class Image2SourceMapping(object):
         :return: surface brightness of all joint light components at image position (x,
             y)
         """
-        if self._distance_ratio_sampling:
-            self.multi_plane_organizer.update_lens_T_lists(
-                self._lens_model, kwargs_special
-            )
-            self.multi_plane_organizer.update_source_mapping_T_lists(
-                self, kwargs_special
-            )
+        self.update_distances(kwargs_special)
 
         if self._multi_source_plane is False:
             x_source, y_source = self._lens_model.ray_shooting(x, y, kwargs_lens)
@@ -292,13 +319,8 @@ class Image2SourceMapping(object):
         :return: list of responses of every single basis component with default
             amplitude amp=1, in the same order as the light_model_list
         """
-        if self._distance_ratio_sampling:
-            self.multi_plane_organizer.update_lens_T_lists(
-                self._lens_model, kwargs_special
-            )
-            self.multi_plane_organizer.update_source_mapping_T_lists(
-                self, kwargs_special
-            )
+        self.update_distances(kwargs_special)
+
         if self._multi_source_plane is False:
             x_source, y_source = self._lens_model.ray_shooting(x, y, kwargs_lens)
             return self._light_model.functions_split(x_source, y_source, kwargs_source)

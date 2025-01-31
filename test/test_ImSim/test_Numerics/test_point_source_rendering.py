@@ -24,7 +24,7 @@ class TestPointSourceRendering(object):
         kwargs_psf = {
             "kernel_point_source": kernel,
             "psf_type": "PIXEL",
-            "psf_error_map": np.ones_like(kernel) * kernel**2,
+            "psf_variance_map": np.ones_like(kernel) * kernel**2,
         }
         psf_class = PSF(**kwargs_psf)
 
@@ -32,23 +32,23 @@ class TestPointSourceRendering(object):
             pixel_grid, supersampling_factor=1, psf=psf_class
         )
 
-    def test_psf_error_map(self):
+    def test_psf_variance_map(self):
         ra_pos, dec_pos = [5], [5]
         data = np.zeros((10, 10))
-        image = self._ps_rendering.psf_error_map(
-            ra_pos, dec_pos, amp=1, data=data, fix_psf_error_map=False
+        image = self._ps_rendering.psf_variance_map(
+            ra_pos, dec_pos, amp=1, data=data, fix_psf_variance_map=False
         )
         npt.assert_almost_equal(np.sum(image), 0, decimal=10)
 
-        image = self._ps_rendering.psf_error_map(
-            ra_pos, dec_pos, amp=1, data=data, fix_psf_error_map=True
+        image = self._ps_rendering.psf_variance_map(
+            ra_pos, dec_pos, amp=1, data=data, fix_psf_variance_map=True
         )
         npt.assert_almost_equal(np.sum(image), 1, decimal=10)
 
         ra_pos, dec_pos = [50], [50]
         data = np.zeros((10, 10))
-        image = self._ps_rendering.psf_error_map(
-            ra_pos, dec_pos, amp=1, data=data, fix_psf_error_map=False
+        image = self._ps_rendering.psf_variance_map(
+            ra_pos, dec_pos, amp=1, data=data, fix_psf_variance_map=False
         )
         npt.assert_almost_equal(np.sum(image), 0, decimal=10)
 
@@ -75,7 +75,7 @@ class TestRaise(unittest.TestCase):
         kwargs_psf = {
             "kernel_point_source": kernel,
             "psf_type": "PIXEL",
-            "psf_error_map": np.ones_like(kernel),
+            "psf_variance_map": np.ones_like(kernel),
         }
         psf_class = PSF(**kwargs_psf)
 

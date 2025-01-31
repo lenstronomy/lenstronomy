@@ -214,7 +214,7 @@ class TestData(object):
             "pixel_size": deltaPix,
         }
         psf_kernel = PSF(**kwargs)
-        error_map = psf_kernel.psf_error_map
+        error_map = psf_kernel.psf_variance_map
         assert error_map.all() == 0
 
     def test_warning(self):
@@ -234,11 +234,11 @@ class TestData(object):
             "psf_type": "PIXEL",
             "kernel_point_source": kernel_point_source_subsampled,
             "point_source_supersampling_factor": subsampling_res,
-            "psf_error_map": np.ones_like(kernel_point_source_subsampled),
+            "psf_variance_map": np.ones_like(kernel_point_source_subsampled),
         }
         psf_kernel = PSF(**kwargs_psf)
         n = len(psf_kernel.kernel_point_source)
-        error_map = psf_kernel.psf_error_map
+        error_map = psf_kernel.psf_variance_map
         assert len(error_map) == n
 
     def test_unnormalized(self):
@@ -317,7 +317,7 @@ class TestRaise(unittest.TestCase):
             PSF(
                 psf_type="PIXEL",
                 kernel_point_source=np.ones((3, 3)),
-                psf_error_map=np.ones((5, 5)),
+                psf_variance_map=np.ones((5, 5)),
             )
             psf.kernel_point_source_supersampled(supersampling_factor=3)
         with self.assertRaises(ValueError):

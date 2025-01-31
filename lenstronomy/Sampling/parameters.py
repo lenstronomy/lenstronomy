@@ -530,7 +530,7 @@ class Param(object):
         """
         return self._linear_solver
 
-    def args2kwargs(self, args, bijective=False):
+    def args2kwargs(self, args, bijective=False, jax=False):
         """
 
         :param args: tuple of parameter values (float, strings, ...)
@@ -538,10 +538,13 @@ class Param(object):
          (e.g. if image_plane_source_list is set =True it returns the position in the image plane coordinates),
          if False, returns the parameters in the form to render a model (e.g. image_plane_source_list positions are
          ray-traced back to the source plane).
+        :param jax: Always False unless this function is being called from jaxtronomy, in which case set to True.
         :return: keyword arguments sorted in lenstronomy conventions
         """
         i = 0
-        args = np.atleast_1d(args)
+        if jax is False:
+            args = np.atleast_1d(args)
+
         kwargs_lens, i = self.lensParams.get_params(args, i)
         kwargs_source, i = self.sourceParams.get_params(args, i)
         kwargs_lens_light, i = self.lensLightParams.get_params(args, i)

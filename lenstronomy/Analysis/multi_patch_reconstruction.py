@@ -127,9 +127,7 @@ class MultiPatchReconstruction(MultiBandImageReconstruction):
         for model_band in self.model_band_list:
             if model_band is not None:
                 image_model = model_band.image_model_class
-                model = image_model.image(
-                    **self._kwargs_params_no_tracersource
-                ) 
+                model = image_model.image(**self._kwargs_params_no_tracersource)
                 data_class_i = image_model.Data
                 # evaluate pixel of zero point with the base coordinate system
                 ra0, dec0 = data_class_i.radec_at_xy_0

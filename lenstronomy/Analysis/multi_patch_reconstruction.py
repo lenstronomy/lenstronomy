@@ -56,7 +56,8 @@ class MultiPatchReconstruction(MultiBandImageReconstruction):
             self._pixel_grid_joint = PixelGrid(**kwargs_pixel_grid)
         else:
             self._pixel_grid_joint = self._joint_pixel_grid(multi_band_list)
-        # self._kwargs_params = kwargs_params  # TODO: this is a but since linear parameters won't be updated
+        self._kwargs_params_no_tracersource = kwargs_params
+        self._kwargs_params_no_tracersource.pop("kwargs_tracer_source", None)
 
     @property
     def pixel_grid_joint(self):
@@ -126,10 +127,9 @@ class MultiPatchReconstruction(MultiBandImageReconstruction):
         for model_band in self.model_band_list:
             if model_band is not None:
                 image_model = model_band.image_model_class
-                kwargs_params = model_band.kwargs_model
                 model = image_model.image(
-                    **kwargs_params
-                )  # TODO: avoid using private definitions uses sub-set of the model parameters
+                    **self._kwargs_params_no_tracersource
+                ) 
                 data_class_i = image_model.Data
                 # evaluate pixel of zero point with the base coordinate system
                 ra0, dec0 = data_class_i.radec_at_xy_0

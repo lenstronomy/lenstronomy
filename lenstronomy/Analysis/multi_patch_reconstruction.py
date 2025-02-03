@@ -1,6 +1,7 @@
 from lenstronomy.Analysis.image_reconstruction import MultiBandImageReconstruction
 from lenstronomy.Data.pixel_grid import PixelGrid
 from lenstronomy.Data.imaging_data import ImageData
+from lenstronomy.ImSim.image_model import ImageModel
 from lenstronomy.Util import util
 import numpy as np
 import numpy.testing as npt
@@ -56,8 +57,6 @@ class MultiPatchReconstruction(MultiBandImageReconstruction):
             self._pixel_grid_joint = PixelGrid(**kwargs_pixel_grid)
         else:
             self._pixel_grid_joint = self._joint_pixel_grid(multi_band_list)
-        self._kwargs_params_no_tracersource = kwargs_params
-        self._kwargs_params_no_tracersource.pop("kwargs_tracer_source", None)
 
     @property
     def pixel_grid_joint(self):
@@ -127,7 +126,8 @@ class MultiPatchReconstruction(MultiBandImageReconstruction):
         for model_band in self.model_band_list:
             if model_band is not None:
                 image_model = model_band.image_model_class
-                model = image_model.image(**self._kwargs_params_no_tracersource)
+                kwargs_params = model_band.kwargs_model
+                model = ImageModel.image(image_model, **kwargs_params)
                 data_class_i = image_model.Data
                 # evaluate pixel of zero point with the base coordinate system
                 ra0, dec0 = data_class_i.radec_at_xy_0

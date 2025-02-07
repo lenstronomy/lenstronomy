@@ -381,11 +381,11 @@ def point_source_plot(
     ax.plot(
         x_source * delta_pix_x + origin[0],
         y_source * delta_pix + origin[1],
-        marker='*',
-        color='gold',
-        mec='k',
+        marker="*",
+        color="gold",
+        mec="k",
         markersize=10,
-        label="source position"
+        label="source position",
     )
 
     return ax

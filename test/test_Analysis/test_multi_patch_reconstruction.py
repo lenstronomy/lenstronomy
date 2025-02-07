@@ -116,7 +116,7 @@ class TestMultiPatchReconstruction(object):
         kwargs_data["image_data"] = image_sim
 
         kwargs_model = {
-            "lens_model_list": lens_model_list,
+            "lens_model_list": ["EPL"] + lens_model_list,
             "source_light_model_list": source_model_list,
         }
 
@@ -145,8 +145,9 @@ class TestMultiPatchReconstruction(object):
             }
             multi_band_list.append([kwargs_data_i, kwargs_psf, kwargs_numerics])
 
+        kwargs_model["index_lens_model_list"] = [[1, 2]] * len(x_pos)
         kwargs_params = {
-            "kwargs_lens": kwargs_lens_true,
+            "kwargs_lens": [kwargs_spemd] + kwargs_lens_true,
             "kwargs_source": kwargs_source_true,
         }
         self.multiPatch = MultiPatchReconstruction(

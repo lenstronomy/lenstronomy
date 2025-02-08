@@ -259,7 +259,7 @@ class TNFWC(LensProfileBase):
         """
         if b == t:
             t += 1e-3
-        prefactor = abs(t**2 / (t**2 - 1))
+        prefactor = t**2 / (t**2 - 1)
         return prefactor * (
             -self._u2(x, b, t)
             + self._u2(0.0, b, t)

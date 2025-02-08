@@ -779,6 +779,10 @@ class TestNumericsProfile(object):
         lens_model = ["TNFWC"]
         self.assert_differentials(lens_model, kwargs, potential=False)
 
+        kwargs = {"alpha_Rs": 4.0, "Rs": 2.0, "r_core": 12.1, "r_trunc": 0.5}
+        lens_model = ["TNFWC"]
+        self.assert_differentials(lens_model, kwargs, potential=False)
+
     def test_epl_m3m4(self):
 
         kwargs = {

@@ -377,11 +377,15 @@ def point_source_plot(
         )
         ax.text(x_, y_, name_list_[i], fontsize=20, color=color)
     x_source, y_source = pixel_grid.map_coord2pix(source_x, source_y)
+
     ax.plot(
         x_source * delta_pix_x + origin[0],
         y_source * delta_pix + origin[1],
-        color,
+        marker="*",
+        color="gold",
+        mec="k",
         markersize=10,
+        label="source position",
     )
 
     return ax

@@ -94,7 +94,8 @@ class LensModel(object):
             cosmo = get_astropy_cosmology(cosmology_model=cosmology_model)
         else:
             warnings.warn(
-                "Astropy Cosmology is provided. Make sure your cosmology model is consistent with the cosmology_model argument."
+                "Astropy Cosmology is provided. Make sure your cosmology model is consistent with the cosmology_model "
+                "argument."
             )
         self.cosmo = cosmo
         self.cosmology_sampling = cosmology_sampling

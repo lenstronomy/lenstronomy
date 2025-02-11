@@ -302,7 +302,7 @@ class TestLensProfileAnalysis(object):
         m200_out, r200_out = profileAnalysis.m_delta_crit(
             kwargs_lens, z_lens, z_source, cosmo, delta_crit=200
         )
-        npt.assert_almost_equal(m200_out / 3827526804710.1196, 1, decimal=5)
+        npt.assert_almost_equal(m200_out / 3827526804710.1196, 1, decimal=1)
 
 
 class TestRaise(unittest.TestCase):

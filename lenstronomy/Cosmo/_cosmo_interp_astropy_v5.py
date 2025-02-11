@@ -12,8 +12,6 @@ else:
     from astropy.cosmology._utils import vectorize_redshift_method
 
 
-
-
 class CosmoInterp(object):
     """Class which interpolates the comoving transfer distance and then computes angular
     diameter distances from it This class is modifying the astropy.cosmology

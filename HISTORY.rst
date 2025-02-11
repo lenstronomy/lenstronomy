@@ -420,3 +420,8 @@ History
 +++++++++++++++++++
 * refactoring of ImageModel class
 * renaming of lens models
+
+1.12.5 (2025-02-11)
++++++++++++++++++++
+* bug fix in elliptical shapelets
+* improved point source rendering in plots

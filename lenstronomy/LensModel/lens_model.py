@@ -485,7 +485,7 @@ class LensModel(object):
         det_A = (1 - f_xx) * (1 - f_yy) - f_xy * f_yx
         return 1.0 / det_A  # attention, if dividing by zero
 
-    def flexion(self, x, y, kwargs, k=None, diff=0.000001, hessian_diff=True):
+    def flexion(self, x, y, kwargs, k=None, diff=0.0001, hessian_diff=False):
         """Third derivatives (flexion)
 
         :param x: x-position (preferentially arcsec)
@@ -498,11 +498,15 @@ class LensModel(object):
             component
         :param diff: numerical differential length of Flexion
         :param hessian_diff: boolean, if true also computes the numerical differential
-            length of Hessian (optional)
+            length of Hessian (optional). =False only works when there is an analytical expression for the Hessian
+            available
         :return: f_xxx, f_xxy, f_xyy, f_yyy
         """
         if hessian_diff is not True:
             hessian_diff = None
+        else:
+            hessian_diff = diff / 4  # make sure the Hessian differential is computed at smaller scales than
+            # the Flexion differential
         f_xx_dx, f_xy_dx, f_yx_dx, f_yy_dx = self.hessian(
             x + diff / 2, y, kwargs, k=k, diff=hessian_diff
         )

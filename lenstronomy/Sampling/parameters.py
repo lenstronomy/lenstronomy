@@ -249,18 +249,6 @@ class Param(object):
         self._tracer_source_model_list = kwargs_model.get(
             "tracer_source_model_list", []
         )
-        self._lens_model_list = kwargs_model.get("lens_model_list", [])
-        self._lens_redshift_list = kwargs_model.get("lens_redshift_list", None)
-        self._source_light_model_list = kwargs_model.get("source_light_model_list", [])
-        self._source_redshift_list = kwargs_model.get("source_redshift_list", None)
-        self._lens_light_model_list = kwargs_model.get("lens_light_model_list", [])
-        self._point_source_model_list = kwargs_model.get("point_source_model_list", [])
-        self._optical_depth_model_list = kwargs_model.get(
-            "optical_depth_model_list", []
-        )
-        self._tracer_source_model_list = kwargs_model.get(
-            "tracer_source_model_list", []
-        )
         self._kwargs_model = kwargs_model
 
         distance_ratio_sampling = self._kwargs_model.get(

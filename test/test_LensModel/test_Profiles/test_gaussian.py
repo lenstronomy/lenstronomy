@@ -84,6 +84,15 @@ class TestGaussianKappa(object):
         self.gaussian_kappa = Gaussian()
         self.gaussian = GaussianPotential()
 
+    def test_function(self):
+        x = np.array([0, 3], dtype=float)
+        y = np.zeros_like(x)
+        amp = 1.3
+        sigma = 0.5
+
+        result = self.gaussian_kappa.function(x, y, amp, sigma)
+        npt.assert_array_almost_equal(result, np.array([0, 0.71744878]), decimal=8)
+
     def test_derivatives(self):
         x = np.linspace(0, 5, 10)
         y = np.linspace(0, 5, 10)

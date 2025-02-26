@@ -32,9 +32,9 @@ class CSE(LensProfileBase):
 
     """
 
-    param_names = ["A", "s", "e1", "e2", "center_x", "center_y"]
+    param_names = ["a", "s", "e1", "e2", "center_x", "center_y"]
     lower_limit_default = {
-        "A": -1000,
+        "a": -1000,
         "s": 0,
         "e1": -0.5,
         "e2": -0.5,
@@ -42,7 +42,7 @@ class CSE(LensProfileBase):
         "center_y": -100,
     }
     upper_limit_default = {
-        "A": 1000,
+        "a": 1000,
         "s": 10000,
         "e1": 0.5,
         "e2": 0.5,
@@ -163,16 +163,16 @@ class CSEMajorAxis(LensProfileBase):
 
     """
 
-    param_names = ["A", "s", "q", "center_x", "center_y"]
+    param_names = ["a", "s", "q", "center_x", "center_y"]
     lower_limit_default = {
-        "A": -1000,
+        "a": -1000,
         "s": 0,
         "q": 0.001,
         "center_x": -100,
         "center_y": -100,
     }
     upper_limit_default = {
-        "A": 1000,
+        "a": 1000,
         "s": 10000,
         "q": 0.99999,
         "center_x": 100,
@@ -337,16 +337,16 @@ class CSEProductAvg(LensProfileBase):
         \\xi(x, y) = \\sqrt{qx^2 + \\frac{y^2}{q}}
     """
 
-    param_names = ["A", "s", "q", "center_x", "center_y"]
+    param_names = ["a", "s", "q", "center_x", "center_y"]
     lower_limit_default = {
-        "A": -1000,
+        "a": -1000,
         "s": 0,
         "q": 0.001,
         "center_x": -100,
         "center_y": -100,
     }
     upper_limit_default = {
-        "A": 1000,
+        "a": 1000,
         "s": 10000,
         "q": 0.99999,
         "center_x": 100,

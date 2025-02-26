@@ -150,18 +150,21 @@ class TestLensModel(object):
         lensModel = LensModel(lens_model_list=["CONVERGENCE", "FLEXION"])
         g1, g2, g3, g4 = 0.01, 0.02, 0.03, 0.04
         kwargs = [{"kappa": 0.1}, {"g1": g1, "g2": g2, "g3": g3, "g4": g4}]
-        f_xxx, f_xxy, f_xyy, f_yyy = lensModel.flexion(x=100.0, y=100.0, kwargs=kwargs, hessian_diff=False)
+        f_xxx, f_xxy, f_xyy, f_yyy = lensModel.flexion(
+            x=100.0, y=100.0, kwargs=kwargs, hessian_diff=False
+        )
         npt.assert_almost_equal(f_xxx, g1, decimal=8)
         npt.assert_almost_equal(f_xxy, g2, decimal=8)
         npt.assert_almost_equal(f_xyy, g3, decimal=8)
         npt.assert_almost_equal(f_yyy, g4, decimal=8)
 
-        f_xxx, f_xxy, f_xyy, f_yyy = lensModel.flexion(x=100.0, y=100.0, kwargs=kwargs, diff=0.0001, hessian_diff=True)
+        f_xxx, f_xxy, f_xyy, f_yyy = lensModel.flexion(
+            x=100.0, y=100.0, kwargs=kwargs, diff=0.0001, hessian_diff=True
+        )
         npt.assert_almost_equal(f_xxx, g1, decimal=4)
         npt.assert_almost_equal(f_xxy, g2, decimal=4)
         npt.assert_almost_equal(f_xyy, g3, decimal=4)
         npt.assert_almost_equal(f_yyy, g4, decimal=4)
-
 
     def test_ray_shooting(self):
         delta_x, delta_y = self.lensModel.ray_shooting(x=1.0, y=1.0, kwargs=self.kwargs)

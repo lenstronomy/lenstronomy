@@ -397,6 +397,7 @@ class SpecialParam(object):
         """
 
         :param kwargs_special: keyword arguments with parameter settings
+         For example, if num_mass_scaling = 2, {"scale_factor": [1, 2]} scale_factor needs to be an array of length two
         :return: argument list of the sampled parameters extracted from kwargs_special
         """
         return ModelParamGroup.compose_set_params(

@@ -267,9 +267,9 @@ class ArrayParam(ModelParamGroup):
         swarm, etc.
 
         :param kwargs: lenstronomy parameters to flatten
-        :type kwargs: dict
+        :type kwargs: dict with arrays
         :param kwargs_fixed: Dictionary of fixed arguments
-        :type kwargs_fixed: dict
+        :type kwargs_fixed: dict of arrays
         :returns: flattened array of parameters as floats
         """
         if not self.on:

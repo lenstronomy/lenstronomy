@@ -1308,7 +1308,9 @@ class ModelBandPlot(ModelBand):
         :return:
         """
         model = ImageModel.extinction_map(
-            self._bandmodel, self._kwargs_extinction_partial, self._kwargs_special_partial
+            self._bandmodel,
+            self._kwargs_extinction_partial,
+            self._kwargs_special_partial,
         )
         if v_min is None:
             v_min = 0

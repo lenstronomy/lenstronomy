@@ -20,7 +20,6 @@ class TNFWC(LensProfileBase):
     with the squared term inside the parentheses.
 
     TODO: add the gravitational potential for this profile
-    TODO: add analytic solution for 3D mass
     """
 
     profile_name = "TNFWC"
@@ -155,8 +154,11 @@ class TNFWC(LensProfileBase):
         :param r_trunc: truncation radius [arcsec]
         :return: M(<r)
         """
-        integrand = lambda x: x**2 * self.density(x, Rs, rho0, r_core, r_trunc)
-        return 4 * np.pi * quad(integrand, 0, r)[0]
+        x = r / Rs
+        beta = max(r_core / Rs, 5e-4)
+        tau = max(r_trunc / Rs, 5e-3)
+        diff = self._u3(x, beta, tau) - self._u3(x, beta, 1.0)
+        return 4 * np.pi * tau ** 2. * rho0 * diff / (tau ** 2. - 1)
 
     def mass_3d_lens(self, r, Rs, alpha_Rs, r_core, r_trunc):
         """Mass enclosed a 3d sphere or radius r. This function takes as input the
@@ -294,6 +296,30 @@ class TNFWC(LensProfileBase):
 
         """
         return (t**2 + x**2) * self._u1(x, b, t)
+
+    @staticmethod
+    def _u3(x, b, t):
+        """
+        The solution of the 3D mass integral
+        :param x: coordinate in units R/Rs
+        :param b: core size in units of Rs r_core/Rs
+        :param t: truncation radius in units of Rs r_trunc/Rs
+        :return: solution of the integral
+        """
+        t2b2 = t**2 - b**2
+        if b < t:
+            diff_1 = np.arctanh(np.sqrt(t2b2) / t)
+            arg =  (t * np.sqrt(t2b2) / (t ** 2 + x ** 2 - x * np.sqrt(b ** 2 + x ** 2)))
+            diff_2 = np.arctanh(arg)
+            diff = diff_1 - diff_2
+            prefac = -t / np.sqrt(t2b2)
+        else:
+            t2b2 *= -1
+            t2b2 = max(t2b2, 1e-9)
+            diff = np.arctan(t / np.sqrt(t2b2)) - np.arctan(
+                (t ** 2 + x ** 2 - x * np.sqrt(b ** 2 + x ** 2)) / (t * np.sqrt(t2b2)))
+            prefac = t / np.sqrt(t2b2)
+        return prefac * diff
 
     def alpha2rho0(self, alpha_Rs, Rs, r_core, r_trunc):
         """Convert angle at Rs into rho0.

@@ -824,7 +824,6 @@ class ModelBandPlot(ModelBand):
             x_grid_source,
             y_grid_source,
             self._cov_param,
-            model_index_select=False,
         )
         error_map_source = util.array2image(error_map_source)
         d_s = numPix * deltaPix_source

@@ -158,7 +158,7 @@ class TNFWC(LensProfileBase):
         beta = r_core / Rs
         tau = r_trunc / Rs
         diff = self._u3(x, beta, tau) - self._u3(x, beta, 1.0)
-        return 4 * np.pi * tau ** 2. * rho0 * diff / (tau ** 2. - 1)
+        return 4 * np.pi * tau**2.0 * rho0 * diff / (tau**2.0 - 1)
 
     def mass_3d_lens(self, r, Rs, alpha_Rs, r_core, r_trunc):
         """Mass enclosed a 3d sphere or radius r. This function takes as input the
@@ -299,23 +299,19 @@ class TNFWC(LensProfileBase):
 
     @staticmethod
     def _u3(x, b, t):
-        """
-        The solution of the 3D mass integral
-        :param x: coordinate in units R/Rs
-        :param b: core size in units of Rs r_core/Rs
-        :param t: truncation radius in units of Rs r_trunc/Rs
-        :return: solution of the integral
-        """
+        """The solution of the 3D mass integral :param x: coordinate in units R/Rs
+        :param b: core size in units of Rs r_core/Rs :param t: truncation radius in
+        units of Rs r_trunc/Rs :return: solution of the integral."""
         t2b2 = t**2 - b**2
         if b < t:
             diff_1 = np.arctanh(np.sqrt(t2b2) / t)
-            arg =  (t * np.sqrt(t2b2) / (t ** 2 + x ** 2 - x * np.sqrt(b ** 2 + x ** 2)))
+            arg = t * np.sqrt(t2b2) / (t**2 + x**2 - x * np.sqrt(b**2 + x**2))
             diff_2 = np.arctanh(arg)
             diff = diff_1 - diff_2
             prefac = -t / np.sqrt(t2b2)
         else:
             t2b2 *= -1
-            arg=(t ** 2 + x ** 2 - x * np.sqrt(b ** 2 + x ** 2)) / (t * np.sqrt(t2b2))
+            arg = (t**2 + x**2 - x * np.sqrt(b**2 + x**2)) / (t * np.sqrt(t2b2))
             diff = np.arctan(t / np.sqrt(t2b2)) - np.arctan(arg)
             prefac = -t / np.sqrt(t2b2)
         return prefac * diff

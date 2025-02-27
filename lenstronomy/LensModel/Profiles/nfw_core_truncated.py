@@ -155,6 +155,8 @@ class TNFWC(LensProfileBase):
         :return: M(<r)
         """
         x = r / Rs
+        beta = r_core / Rs
+        tau = r_trunc / Rs
         diff = self._u3(x, beta, tau) - self._u3(x, beta, 1.0)
         return 4 * np.pi * tau ** 2. * rho0 * diff / (tau ** 2. - 1)
 

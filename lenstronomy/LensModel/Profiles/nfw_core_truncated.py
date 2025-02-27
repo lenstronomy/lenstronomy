@@ -155,8 +155,6 @@ class TNFWC(LensProfileBase):
         :return: M(<r)
         """
         x = r / Rs
-        beta = max(r_core / Rs, 5e-4)
-        tau = max(r_trunc / Rs, 5e-3)
         diff = self._u3(x, beta, tau) - self._u3(x, beta, 1.0)
         return 4 * np.pi * tau ** 2. * rho0 * diff / (tau ** 2. - 1)
 
@@ -315,10 +313,9 @@ class TNFWC(LensProfileBase):
             prefac = -t / np.sqrt(t2b2)
         else:
             t2b2 *= -1
-            t2b2 = max(t2b2, 1e-9)
-            diff = np.arctan(t / np.sqrt(t2b2)) - np.arctan(
-                (t ** 2 + x ** 2 - x * np.sqrt(b ** 2 + x ** 2)) / (t * np.sqrt(t2b2)))
-            prefac = t / np.sqrt(t2b2)
+            arg=(t ** 2 + x ** 2 - x * np.sqrt(b ** 2 + x ** 2)) / (t * np.sqrt(t2b2))
+            diff = np.arctan(t / np.sqrt(t2b2)) - np.arctan(arg)
+            prefac = -t / np.sqrt(t2b2)
         return prefac * diff
 
     def alpha2rho0(self, alpha_Rs, Rs, r_core, r_trunc):

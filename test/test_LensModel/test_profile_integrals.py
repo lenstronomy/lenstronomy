@@ -465,7 +465,7 @@ class TestNumerics(object):
     def test_tnfwc(self):
         from lenstronomy.LensModel.Profiles.nfw_core_truncated import TNFWC as Model
 
-        kwargs = {"alpha_Rs": 4.0, "Rs": 2.0, "r_core": 0.1, "r_trunc": 200.0}
+        kwargs = {"alpha_Rs": 4.0, "Rs": 1.8, "r_core": 0.5, "r_trunc": 2.1}
         self.assert_lens_integrals(Model, kwargs)
 
         kwargs = {"alpha_Rs": 4.0, "Rs": 2.0, "r_core": 1.1, "r_trunc": 100.0}
@@ -474,13 +474,13 @@ class TestNumerics(object):
         kwargs = {"alpha_Rs": 4.0, "Rs": 0.5, "r_core": 0.1, "r_trunc": 3.0}
         self.assert_lens_integrals(Model, kwargs)
 
-        kwargs = {"alpha_Rs": 4.0, "Rs": 0.5, "r_core": 0.4, "r_trunc": 3.0}
+        kwargs = {"alpha_Rs": 4.0, "Rs": 0.5, "r_core": 3.4, "r_trunc": 0.3}
         self.assert_lens_integrals(Model, kwargs)
 
-        kwargs = {"alpha_Rs": 4.0, "Rs": 0.5, "r_core": 0.9, "r_trunc": 3.0}
+        kwargs = {"alpha_Rs": 4.0, "Rs": 0.5, "r_core": 0.001, "r_trunc": 0.00001}
         self.assert_lens_integrals(Model, kwargs)
 
-        kwargs = {"alpha_Rs": 4.0, "Rs": 1.0, "r_core": 0.01, "r_trunc": 0.05}
+        kwargs = {"alpha_Rs": 4.0, "Rs": 1.0, "r_core": 0.00001, "r_trunc": 0.001}
         self.assert_lens_integrals(Model, kwargs)
 
     """

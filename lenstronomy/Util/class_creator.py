@@ -49,7 +49,6 @@ def create_class_instances(
     point_source_magnification_limit=None,
     surface_brightness_smoothing=0.001,
     sersic_major_axis=None,
-    tabulated_deflection_angles=None,
     decouple_multi_plane=False,
     kwargs_multiplane_model=None,
     kwargs_multiplane_model_point_source=None,
@@ -107,8 +106,6 @@ def create_class_instances(
     :param sersic_major_axis: boolean or None, if True, uses the semi-major axis as the definition of the Sersic
         half-light radius, if False, uses the product average of semi-major and semi-minor axis. If None, uses the
         convention in the lenstronomy yaml setting (which by default is =False)
-    :param tabulated_deflection_angles: a user-specified class with a call method that returns deflection angles given
-        (x, y) coordinates on the sky. This class gets passed to the lens model class TabulatedDeflections
     :param decouple_multi_plane: bool; if True, creates an instance of MultiPlaneDecoupled
     :param kwargs_multiplane_model: keyword arguments used to create an instance of MultiPlaneDecoupled if decouple_multi_plane is True
     :param kwargs_multiplane_model_point_source: keyword arguments used to create an option MultiPlaneDecoupled class for the lensed point source to be treated separately from the rest of the imaging data
@@ -169,7 +166,6 @@ def create_class_instances(
         cosmology_model=cosmology_model,
         observed_convention_index=observed_convention_index_i,
         profile_kwargs_list=lens_profile_kwargs_list,
-        numerical_alpha_class=tabulated_deflection_angles,
         decouple_multi_plane=decouple_multi_plane,
         kwargs_multiplane_model=kwargs_multiplane_model,
     )
@@ -185,7 +181,6 @@ def create_class_instances(
             cosmo=cosmo,
             observed_convention_index=observed_convention_index,
             profile_kwargs_list=lens_profile_kwargs_list,
-            numerical_alpha_class=tabulated_deflection_angles,
             decouple_multi_plane=decouple_multi_plane,
             kwargs_multiplane_model=kwargs_multiplane_model_point_source,
         )

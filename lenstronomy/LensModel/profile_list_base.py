@@ -100,6 +100,26 @@ _SUPPORTED_MODELS = [
     "ULDM",
 ]
 
+# These models require a new instance per profile as some computations are different when class
+# attributes are changed. For example, the 'INTERPOL' model needs to know the specific map to be
+# interpolated. This list does not need to include profiles with different initialization settings,
+# e.g. GNFW, since that is handled automatically in _load_model_instances()
+DYNAMIC_PROFILES = [
+    "CHAMELEON",
+    "CTNFW_GAUSS_DEC",
+    "DOUBLE_CHAMELEON",
+    "EPL",
+    "INTERPOL",
+    "INTERPOL_SCALED"
+    "NFW_ELLIPSE_GAUSS_DEC",
+    "NFW_MC",
+    "NFW_MC_ELLIPSE_POTENTIAL",
+    "NIE",
+    "NIE_POTENTIAL",
+    "RADIAL_INTERPOL",
+    "SYNTHESIS",
+    "TRIPLE_CHAMELEON",
+]
 
 class ProfileListBase(object):
     """Class that manages the list of lens model class instances.
@@ -142,15 +162,33 @@ class ProfileListBase(object):
         if profile_kwargs_list is None:
             profile_kwargs_list = [{} for _ in range(len(lens_model_list))]
         func_list = []
+        imported_classes = []
+        imported_profile_kwargs = []
         for i, lens_type in enumerate(lens_model_list):
             if lens_type in ["NFW_MC", "NFW_MC_ELLIPSE_POTENTIAL"]:
                 profile_kwargs_list[i]["z_lens"] = lens_redshift_list[i]
                 profile_kwargs_list[i]["z_source"] = z_source_convention
 
-            lensmodel_class = lens_class(
-                lens_type,
-                profile_kwargs=profile_kwargs_list[i],
-            )
+            # Creates another instance for dynamic profiles
+            if lens_type in DYNAMIC_PROFILES:
+                lensmodel_class = lens_class(
+                    lens_type,
+                    profile_kwargs=profile_kwargs_list[i],
+                )
+            # Otherwise checks if a profile with specific initialization settings has
+            # already been created
+            else:
+                if (lens_type, profile_kwargs_list[i]) not in imported_profile_kwargs:
+                    lensmodel_class = lens_class(
+                        lens_type,
+                        profile_kwargs=profile_kwargs_list[i],
+                    )
+                    imported_classes.append(lensmodel_class)
+                    imported_profile_kwargs.append((lens_type, profile_kwargs_list[i]))
+                else:
+                    index = imported_profile_kwargs.index((lens_type, profile_kwargs_list[i]))
+                    lensmodel_class = imported_classes[index]
+
             func_list.append(lensmodel_class)
         return func_list
 
@@ -505,6 +543,10 @@ def lens_class(
         )
 
         return NFWMCEllipsePotential(**profile_kwargs)
+    elif lens_type == "NFW_VIR_TRUNC":
+        from lenstronomy.LensModel.Profiles.nfw_vir_trunc import NFWVirTrunc
+
+        return NFWVirTrunc(**profile_kwargs)
     elif lens_type == "NIE":
         from lenstronomy.LensModel.Profiles.nie import NIE
 

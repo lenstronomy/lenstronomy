@@ -144,9 +144,9 @@ class ProfileListBase(object):
         func_list = []
         for i, lens_type in enumerate(lens_model_list):
             if lens_type in ["NFW_MC", "NFW_MC_ELLIPSE_POTENTIAL"]:
-                profile_kwargs_list[i]['z_lens'] = lens_redshift_list[i],
-                profile_kwargs_list[i]['z_source'] = z_source_convention,
-            
+                profile_kwargs_list[i]["z_lens"] = (lens_redshift_list[i],)
+                profile_kwargs_list[i]["z_source"] = (z_source_convention,)
+
             lensmodel_class = lens_class(
                 lens_type,
                 profile_kwargs=profile_kwargs_list[i],
@@ -206,8 +206,8 @@ def lens_class(
     """Generate class instance of single lens.
 
     :param lens_type: string, lens model type
-    :param profile_kwargs: dict, keyword arguments used to initialize profile classes
-        If None, then the profile is initialized using default settings
+    :param profile_kwargs: dict, keyword arguments used to initialize profile classes If
+        None, then the profile is initialized using default settings
     :param custom_class: custom class
     :return: class instance of the lens model type
     """
@@ -260,7 +260,7 @@ def lens_class(
     elif lens_type == "CORED_DENSITY_2_MST":
         from lenstronomy.LensModel.Profiles.cored_density_mst import CoredDensityMST
 
-        profile_kwargs['profile_type'] = "CORED_DENSITY_2"
+        profile_kwargs["profile_type"] = "CORED_DENSITY_2"
         return CoredDensityMST(**profile_kwargs)
     elif lens_type == "CORED_DENSITY_EXP":
         from lenstronomy.LensModel.Profiles.cored_density_exp import CoredDensityExp
@@ -269,17 +269,17 @@ def lens_class(
     elif lens_type == "CORED_DENSITY_EXP_MST":
         from lenstronomy.LensModel.Profiles.cored_density_mst import CoredDensityMST
 
-        profile_kwargs['profile_type'] = "CORED_DENSITY_EXP"
+        profile_kwargs["profile_type"] = "CORED_DENSITY_EXP"
         return CoredDensityMST(**profile_kwargs)
     elif lens_type == "CORED_DENSITY_MST":
         from lenstronomy.LensModel.Profiles.cored_density_mst import CoredDensityMST
 
-        profile_kwargs['profile_type'] = "CORED_DENSITY"
+        profile_kwargs["profile_type"] = "CORED_DENSITY"
         return CoredDensityMST(**profile_kwargs)
     elif lens_type == "CORED_DENSITY_ULDM_MST":
         from lenstronomy.LensModel.Profiles.cored_density_mst import CoredDensityMST
 
-        profile_kwargs['profile_type'] = "CORED_DENSITY_ULDM"
+        profile_kwargs["profile_type"] = "CORED_DENSITY_ULDM"
         return CoredDensityMST(**profile_kwargs)
     elif lens_type == "CSE":
         from lenstronomy.LensModel.Profiles.cored_steep_ellipsoid import CSE

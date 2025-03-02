@@ -11,7 +11,12 @@ class TestClassCreator(object):
     def setup_method(self):
         self.kwargs_model = {
             "lens_model_list": ["SIS", "NFW", "GNFW", "GNFW"],
-            "lens_profile_kwargs_list": [None, {"interpol": True}, {"trapezoidal_integration": True}, None],
+            "lens_profile_kwargs_list": [
+                None,
+                {"interpol": True},
+                {"trapezoidal_integration": True},
+                None,
+            ],
             "source_light_model_list": ["SERSIC"],
             "lens_light_model_list": ["SERSIC"],
             "point_source_model_list": ["LENSED_POSITION"],
@@ -58,7 +63,13 @@ class TestClassCreator(object):
         }
         self.kwargs_model_5 = {
             "lens_model_list": ["SIS", "SIS", "NFW", "GNFW", "GNFW"],
-            "lens_profile_kwargs_list": [None, None, {"interpol": True}, {"trapezoidal_integration": True}, None],
+            "lens_profile_kwargs_list": [
+                None,
+                None,
+                {"interpol": True},
+                {"trapezoidal_integration": True},
+                None,
+            ],
             "lens_redshift_list": [0.3, 0.4, 0.5, 0.6, 0.8],
             "multi_plane": True,
             "z_source": 1,
@@ -79,8 +90,14 @@ class TestClassCreator(object):
         ) = class_creator.create_class_instances(**self.kwargs_model)
         assert lens_model_class.lens_model_list == ["SIS", "NFW", "GNFW", "GNFW"]
         assert lens_model_class.lens_model.func_list[1]._interpol == True
-        assert lens_model_class.lens_model.func_list[2]._integrate.__name__ == "_trapezoidal_integrate"
-        assert lens_model_class.lens_model.func_list[3]._integrate.__name__ == "_quad_integrate"
+        assert (
+            lens_model_class.lens_model.func_list[2]._integrate.__name__
+            == "_trapezoidal_integrate"
+        )
+        assert (
+            lens_model_class.lens_model.func_list[3]._integrate.__name__
+            == "_quad_integrate"
+        )
 
         (
             lens_model_class,
@@ -118,9 +135,21 @@ class TestClassCreator(object):
             extinction_class,
         ) = class_creator.create_class_instances(**self.kwargs_model_5)
         assert lens_model_class.lens_model_list == ["SIS", "SIS", "NFW", "GNFW", "GNFW"]
-        assert lens_model_class.lens_model._multi_plane_base.func_list[2]._interpol == True
-        assert lens_model_class.lens_model._multi_plane_base.func_list[3]._integrate.__name__ == "_trapezoidal_integrate"
-        assert lens_model_class.lens_model._multi_plane_base.func_list[4]._integrate.__name__ == "_quad_integrate"
+        assert (
+            lens_model_class.lens_model._multi_plane_base.func_list[2]._interpol == True
+        )
+        assert (
+            lens_model_class.lens_model._multi_plane_base.func_list[
+                3
+            ]._integrate.__name__
+            == "_trapezoidal_integrate"
+        )
+        assert (
+            lens_model_class.lens_model._multi_plane_base.func_list[
+                4
+            ]._integrate.__name__
+            == "_quad_integrate"
+        )
 
     def test_create_image_model(self):
         imageModel = class_creator.create_image_model(

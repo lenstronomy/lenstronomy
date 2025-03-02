@@ -39,9 +39,10 @@ class ModelAPI(object):
         'kwargs_model', # i.e. multi-plane options, perhaps others
 
         :param lens_model_list: list of strings with lens model names
-        :param lens_profile_kwargs_list: list of dicts, keyword arguments used to initialize lens profile
-            classes in the same order of the lens_model_list. If any of the profile_kwargs are None, then
-            that profile will be initialized using default settings.
+        :param lens_profile_kwargs_list: list of dicts, keyword arguments used to
+            initialize lens profile classes in the same order of the lens_model_list. If
+            any of the profile_kwargs are None, then that profile will be initialized
+            using default settings.
         :param z_lens: redshift of the deflector (only considered when operating in
             single plane mode). Is only needed for specific functions that require a
             cosmology.

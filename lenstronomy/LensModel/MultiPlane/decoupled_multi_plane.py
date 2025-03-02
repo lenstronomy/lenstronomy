@@ -48,9 +48,10 @@ class MultiPlaneDecoupled(MultiPlane):
         :param z_source_convention: float, redshift of a source to define the reduced
             deflection angles of the lens models. If None, 'z_source' is used.
         :param cosmo: instance of astropy.cosmology
-        :param profile_kwargs_list: list of dicts, keyword arguments used to initialize profile classes
-            in the same order of the lens_model_list. If any of the profile_kwargs are None, then that
-            profile will be initialized using default settings.
+        :param profile_kwargs_list: list of dicts, keyword arguments used to initialize
+            profile classes in the same order of the lens_model_list. If any of the
+            profile_kwargs are None, then that profile will be initialized using default
+            settings.
         :param x0_interp: a function that maps an angular coordinate on the sky to the x
             coordinate of a physical position [Mpc] at the first lens plane
         :param y0_interp: same as x0_interp, but returns the y coordinate in Mpc

@@ -93,11 +93,11 @@ class TestNumericalAlpha(object):
         for i, flag in enumerate([False, True]):
             lensmodel = LensModel(
                 lens_model_list=["TABULATED_DEFLECTIONS", "NFW"],
+                profile_kwargs_list=[{"custom_class": numerical_alpha_class}, None],
                 z_source=1.5,
                 z_lens=0.5,
                 lens_redshift_list=zlist[i],
                 multi_plane=flag,
-                numerical_alpha_class=numerical_alpha_class,
             )
 
             lensmodel_nfw = LensModel(
@@ -106,7 +106,6 @@ class TestNumericalAlpha(object):
                 z_lens=0.5,
                 lens_redshift_list=zlist[i],
                 multi_plane=flag,
-                numerical_alpha_class=numerical_alpha_class,
             )
 
             keywords_num = [
@@ -158,11 +157,11 @@ class TestNumericalAlpha(object):
         for i, flag in enumerate([False, True]):
             lensmodel = LensModel(
                 lens_model_list=["TABULATED_DEFLECTIONS", "NFW"],
+                profile_kwargs_list=[{"custom_class": numerical_alpha_class}, None],
                 z_source=1.5,
                 z_lens=0.5,
                 lens_redshift_list=zlist[i],
                 multi_plane=flag,
-                numerical_alpha_class=numerical_alpha_class,
             )
 
             lensmodel_nfw = LensModel(
@@ -171,7 +170,6 @@ class TestNumericalAlpha(object):
                 z_lens=0.5,
                 lens_redshift_list=zlist[i],
                 multi_plane=flag,
-                numerical_alpha_class=numerical_alpha_class,
             )
 
             keywords_num = [

@@ -32,8 +32,8 @@ class TabulatedDeflections(LensProfileBase):
         or equivalently:
 
         >>> from lenstronomy.LensModel.lens_model import LensModel
-        >>> lens_model_list = ['NumericalAlpha']
-        >>> lens_model = LensModel(lens_model_list, numerical_alpha_class=custom_class)
+        >>> lens_model_list = ['TABULATED_DEFLECTIONS']
+        >>> lens_model = LensModel(lens_model_list, profile_kwargs_list=[{"custom_class": custom_class}])
         >>>> alpha_x, alpha_y = lens_model.alpha(x, y, **kwargs)
         """
 

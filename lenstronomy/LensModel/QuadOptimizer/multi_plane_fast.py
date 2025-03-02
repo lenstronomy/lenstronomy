@@ -25,7 +25,6 @@ class MultiplaneFast(object):
         param_class,
         foreground_rays,
         tol_source=1e-5,
-        numerical_alpha_class=None,
     ):
         """
 
@@ -40,7 +39,6 @@ class MultiplaneFast(object):
         :param foreground_rays: (optional) pre-computed foreground rays from a previous iteration, if they are not specified
          they will be re-computed
         :param tol_source: source plane chi^2 sigma
-        :param numerical_alpha_class: class for computing numerically tabulated deflection angles
         """
 
         self.lensModel = LensModel(
@@ -50,7 +48,6 @@ class MultiplaneFast(object):
             redshift_list,
             astropy_instance,
             multi_plane=True,
-            numerical_alpha_class=numerical_alpha_class,
         )
 
         lensmodel_list_to_vary = lens_model_list[0 : param_class.to_vary_index]
@@ -65,7 +62,6 @@ class MultiplaneFast(object):
             redshift_list_to_vary,
             cosmo=astropy_instance,
             multi_plane=True,
-            numerical_alpha_class=numerical_alpha_class,
         )
 
         self.lens_model_fixed = LensModel(
@@ -75,7 +71,6 @@ class MultiplaneFast(object):
             redshift_list_fixed,
             cosmo=astropy_instance,
             multi_plane=True,
-            numerical_alpha_class=numerical_alpha_class,
         )
 
         self._z_lens = z_lens

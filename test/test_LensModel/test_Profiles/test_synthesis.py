@@ -45,7 +45,9 @@ class TestSynthesis(object):
             "kwargs_list": kwargs_list,
             "lin_fit_hyperparams": self.lin_fit_hyperparams,
         }
-        lensmodel_synth = LensModel(["SYNTHESIS"], kwargs_synthesis=kwargs_synthesis)
+        lensmodel_synth = LensModel(
+            ["SYNTHESIS"], profile_kwargs_list=[kwargs_synthesis]
+        )
         lensmodel_nfw = LensModel(["NFW"])
         self.compare_synth(lensmodel_synth, lensmodel_nfw, kwargs_nfw)
         # test sersic
@@ -56,7 +58,9 @@ class TestSynthesis(object):
             "kwargs_list": kwargs_list,
             "lin_fit_hyperparams": self.lin_fit_hyperparams,
         }
-        lensmodel_synth = LensModel(["SYNTHESIS"], kwargs_synthesis=kwargs_synthesis)
+        lensmodel_synth = LensModel(
+            ["SYNTHESIS"], profile_kwargs_list=[kwargs_synthesis]
+        )
         lensmodel_sersic = LensModel(["SERSIC"])
         self.compare_synth(lensmodel_synth, lensmodel_sersic, kwargs_sersic)
         # test hernquist
@@ -69,7 +73,9 @@ class TestSynthesis(object):
             "kwargs_list": kwargs_list,
             "lin_fit_hyperparams": self.lin_fit_hyperparams,
         }
-        lensmodel_synth = LensModel(["SYNTHESIS"], kwargs_synthesis=kwargs_synthesis)
+        lensmodel_synth = LensModel(
+            ["SYNTHESIS"], profile_kwargs_list=[kwargs_synthesis]
+        )
         lensmodel_hernquist = LensModel(["HERNQUIST"])
         self.compare_synth(lensmodel_synth, lensmodel_hernquist, kwargs_hernquist)
 
@@ -92,7 +98,9 @@ class TestSynthesis(object):
             "kwargs_list": kwargs_list,
             "lin_fit_hyperparams": self.lin_fit_hyperparams,
         }
-        lensmodel_synth = LensModel(["SYNTHESIS"], kwargs_synthesis=kwargs_synthesis)
+        lensmodel_synth = LensModel(
+            ["SYNTHESIS"], profile_kwargs_list=[kwargs_synthesis]
+        )
         lensmodel_nfw = LensModel(["NFW"])
         self.compare_synth(lensmodel_synth, lensmodel_nfw, kwargs_nfw)
         # test sersic
@@ -103,7 +111,9 @@ class TestSynthesis(object):
             "kwargs_list": kwargs_list,
             "lin_fit_hyperparams": self.lin_fit_hyperparams,
         }
-        lensmodel_synth = LensModel(["SYNTHESIS"], kwargs_synthesis=kwargs_synthesis)
+        lensmodel_synth = LensModel(
+            ["SYNTHESIS"], profile_kwargs_list=[kwargs_synthesis]
+        )
         lensmodel_sersic = LensModel(["SERSIC"])
         self.compare_synth(lensmodel_synth, lensmodel_sersic, kwargs_sersic)
         # test hernquist
@@ -116,7 +126,9 @@ class TestSynthesis(object):
             "kwargs_list": kwargs_list,
             "lin_fit_hyperparams": self.lin_fit_hyperparams,
         }
-        lensmodel_synth = LensModel(["SYNTHESIS"], kwargs_synthesis=kwargs_synthesis)
+        lensmodel_synth = LensModel(
+            ["SYNTHESIS"], profile_kwargs_list=[kwargs_synthesis]
+        )
         lensmodel_hernquist = LensModel(["HERNQUIST"])
         self.compare_synth(lensmodel_synth, lensmodel_hernquist, kwargs_hernquist)
 
@@ -161,7 +173,9 @@ class TestSynthesis(object):
             "kwargs_list": kwargs_list,
             "lin_fit_hyperparams": self.lin_fit_hyperparams,
         }
-        lensmodel_synth = LensModel(["SYNTHESIS"], kwargs_synthesis=kwargs_synthesis)
+        lensmodel_synth = LensModel(
+            ["SYNTHESIS"], profile_kwargs_list=[kwargs_synthesis]
+        )
         lensmodel_nfw = LensModel(["NFW"])
         LensAn_synth = LensProfileAnalysis(lensmodel_synth)
         synth_avg_kappa = LensAn_synth.radial_lens_profile(r_test, kwargs_nfw)

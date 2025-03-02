@@ -47,8 +47,8 @@ class LightCone(object):
         :param z_source: redshift to where lensing quantities are computed
         :param cosmo: astropy.cosmology class
         :param multi_plane: boolean, if True, computes multi-plane ray-tracing
-        :param kwargs_interp: interpolation keyword arguments specifying the numerics.
-         See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
+        :param kwargs_interp: list of dicts, interpolation keyword arguments specifying the numerics.
+            See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
         :return: LensModel instance, keyword argument list of lens model
         """
         lens_model = LensModel(
@@ -58,7 +58,7 @@ class LightCone(object):
             z_source_convention=z_source,
             cosmo=cosmo,
             z_source=z_source,
-            kwargs_interp=kwargs_interp,
+            profile_kwargs_list=kwargs_interp,
         )
         kwargs_lens = []
         for mass_slice in self._mass_slice_list:

@@ -22,6 +22,7 @@ class ModelAPI(object):
     def __init__(
         self,
         lens_model_list=None,
+        lens_profile_kwargs_list=None,
         z_lens=None,
         z_source=None,
         lens_redshift_list=None,
@@ -31,13 +32,16 @@ class ModelAPI(object):
         source_redshift_list=None,
         cosmo=None,
         z_source_convention=None,
-        tabulated_deflection_angles=None,
         observed_convention_index=None,
     ):
         """# TODO: make inputs follow the kwargs_model of the class_creator instances of
         'kwargs_model', # i.e. multi-plane options, perhaps others
 
         :param lens_model_list: list of strings with lens model names
+        :param lens_profile_kwargs_list: list of dicts, keyword arguments used to
+            initialize lens profile classes in the same order of the lens_model_list. If
+            any of the profile_kwargs are None, then that profile will be initialized
+            using default settings.
         :param z_lens: redshift of the deflector (only considered when operating in
             single plane mode). Is only needed for specific functions that require a
             cosmology.
@@ -58,9 +62,6 @@ class ModelAPI(object):
             the default cosmology.
         :param z_source_convention: float, redshift of a source to define the reduced
             deflection angles of the lens models. If None, 'z_source' is used.
-        :param tabulated_deflection_angles: a class that returns deflection angles given
-            a set of (x, y) coordinates. Effectively a fixed lens model. See
-            documentation in Profiles.numerical_alpha
         :param observed_convention_index: a list of indices that correspond to lens
             models where the center_x,center_y values correspond to the observed (lensed
             positions), not the physical positions in space
@@ -87,13 +88,13 @@ class ModelAPI(object):
 
         self._lens_model_class = LensModel(
             lens_model_list=lens_model_list,
+            profile_kwargs_list=lens_profile_kwargs_list,
             z_source=z_source,
             z_lens=z_lens,
             lens_redshift_list=lens_redshift_list,
             multi_plane=multi_plane,
             cosmo=cosmo,
             z_source_convention=z_source_convention,
-            numerical_alpha_class=tabulated_deflection_angles,
             observed_convention_index=observed_convention_index,
         )
         self._source_model_class = LightModel(

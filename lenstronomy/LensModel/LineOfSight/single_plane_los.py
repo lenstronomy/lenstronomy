@@ -28,21 +28,28 @@ class SinglePlaneLOS(SinglePlane):
         self,
         lens_model_list,
         index_los,
-        numerical_alpha_class=None,
+        profile_kwargs_list=None,
         lens_redshift_list=None,
         z_source_convention=None,
-        kwargs_interp=None,
-        kwargs_synthesis=None,
     ):
         """
         Instance of SinglePlaneLOS() based on the SinglePlane(), except:
         - argument "index_los" indicating the position of the LOS model in the
         lens_model_list (for correct association with kwargs)
         - attribute "los" containing the LOS model.
-        :param kwargs_synthesis: keyword arguments for the 'SYNTHESIS' lens model, if applicable
-        """
 
-        super(SinglePlaneLOS, self).__init__(lens_model_list)
+        See SinglePlane() docstring for other documentation.
+        """
+        if lens_redshift_list is None:
+            lens_redshift_list = [None] * len(lens_model_list)
+        if profile_kwargs_list is None:
+            profile_kwargs_list = [{} for _ in range(len(lens_model_list))]
+
+        super(SinglePlaneLOS, self).__init__(
+            lens_model_list,
+            profile_kwargs_list=profile_kwargs_list,
+            lens_redshift_list=lens_redshift_list,
+        )
         # NB: It is important to run that init first, in order to create a
         # list_func for the entire model, before splitting it between a main
         # lens and the LOS corrections
@@ -52,22 +59,26 @@ class SinglePlaneLOS(SinglePlane):
         self._los_model = lens_model_list[index_los]
         self.los = lens_class(
             self._los_model,
-            custom_class=None,
-            kwargs_interp=None,
-            kwargs_synthesis=kwargs_synthesis,
+            profile_kwargs=profile_kwargs_list[index_los],
         )
 
         # Define a separate class for the main lens
         lens_model_list_wo_los = [
             model for i, model in enumerate(lens_model_list) if i != index_los
         ]
+        profile_kwargs_list_wo_los = [
+            profile_kwargs
+            for i, profile_kwargs in enumerate(profile_kwargs_list)
+            if i != index_los
+        ]
+        lens_redshift_list_wo_los = [
+            redshift for i, redshift in enumerate(lens_redshift_list) if i != index_los
+        ]
         self._main_lens = SinglePlane(
             lens_model_list_wo_los,
-            numerical_alpha_class=numerical_alpha_class,
-            lens_redshift_list=lens_redshift_list,
+            profile_kwargs_list=profile_kwargs_list_wo_los,
+            lens_redshift_list=lens_redshift_list_wo_los,
             z_source_convention=z_source_convention,
-            kwargs_interp=kwargs_interp,
-            kwargs_synthesis=kwargs_synthesis,
         )
 
     def split_lens_los(self, kwargs):

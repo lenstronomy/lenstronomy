@@ -23,21 +23,28 @@ def setup_lens_model(lens_model, kwargs_lens, index_lens_split):
     cosmo = lens_model.cosmo
     lens_model_list = lens_model.lens_model_list
     lens_redshift_list = lens_model.redshift_list
+    profile_kwargs_list = lens_model.profile_kwargs_list
     cosmo_bkg = lens_model.lens_model._multi_plane_base._cosmo_bkg
+
     lens_model_list_free = []
     lens_redshift_list_free = []
+    profile_kwargs_list_free = []
     kwargs_lens_free = []
+
     lens_model_list_fixed = []
     lens_redshift_list_fixed = []
+    profile_kwargs_list_fixed = []
     kwargs_lens_fixed = []
     for i in range(0, len(lens_model_list)):
         if i in index_lens_split:
             lens_model_list_free.append(lens_model_list[i])
             lens_redshift_list_free.append(lens_redshift_list[i])
+            profile_kwargs_list_free.append(profile_kwargs_list[i])
             kwargs_lens_free.append(kwargs_lens[i])
         else:
             lens_model_list_fixed.append(lens_model_list[i])
             lens_redshift_list_fixed.append(lens_redshift_list[i])
+            profile_kwargs_list_fixed.append(profile_kwargs_list[i])
             kwargs_lens_fixed.append(kwargs_lens[i])
     # for now we restrict to this relatively simple case
     for zi in lens_redshift_list_free:
@@ -47,6 +54,7 @@ def setup_lens_model(lens_model, kwargs_lens, index_lens_split):
     lens_model_free = LensModel(
         lens_model_list_free,
         lens_redshift_list=lens_redshift_list_free,
+        profile_kwargs_list=profile_kwargs_list_free,
         multi_plane=True,
         z_source=z_source,
         cosmo=cosmo,
@@ -54,6 +62,7 @@ def setup_lens_model(lens_model, kwargs_lens, index_lens_split):
     lens_model_fixed = LensModel(
         lens_model_list_fixed,
         lens_redshift_list=lens_redshift_list_fixed,
+        profile_kwargs_list=profile_kwargs_list_fixed,
         multi_plane=True,
         z_source=z_source,
         cosmo=cosmo,
@@ -331,6 +340,7 @@ def decoupled_multiplane_class_setup(
     }
     kwargs_lens_model = {
         "lens_model_list": lens_model_free.lens_model_list,
+        "profile_kwargs_list": lens_model_free.profile_kwargs_list,
         "lens_redshift_list": lens_model_free.redshift_list,
         "cosmo": lens_model_free.cosmo,
         "multi_plane": True,

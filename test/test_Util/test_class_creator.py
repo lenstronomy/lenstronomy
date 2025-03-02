@@ -10,17 +10,19 @@ import unittest
 class TestClassCreator(object):
     def setup_method(self):
         self.kwargs_model = {
-            "lens_model_list": ["SIS", "NFW", "GNFW", "GNFW"],
+            "lens_model_list": ["SIS", "NFW", "GNFW", "GNFW", "NFW", "NFW"],
             "lens_profile_kwargs_list": [
                 None,
                 {"interpol": True},
                 {"trapezoidal_integration": True},
                 None,
+                {"interpol": True},
+                None,
             ],
             "source_light_model_list": ["SERSIC"],
             "lens_light_model_list": ["SERSIC"],
             "point_source_model_list": ["LENSED_POSITION"],
-            "index_lens_model_list": [[0, 1, 2, 3]],
+            "index_lens_model_list": [[0, 1, 2, 3, 4, 5]],
             "index_source_light_model_list": [[0]],
             "index_lens_light_model_list": [[0]],
             "index_point_source_model_list": [[0]],
@@ -29,7 +31,7 @@ class TestClassCreator(object):
             "source_redshift_list": [1],
             "fixed_magnification_list": [True],
             "additional_images_list": [False],
-            "lens_redshift_list": [0.5] * 4,
+            "lens_redshift_list": [0.5] * 6,
             "point_source_frame_list": [[0]],
         }
         self.kwargs_model_2 = {
@@ -88,7 +90,7 @@ class TestClassCreator(object):
             point_source_class,
             extinction_class,
         ) = class_creator.create_class_instances(**self.kwargs_model)
-        assert lens_model_class.lens_model_list == ["SIS", "NFW", "GNFW", "GNFW"]
+        assert lens_model_class.lens_model_list == ["SIS", "NFW", "GNFW", "GNFW", "NFW", "NFW"]
         assert lens_model_class.lens_model.func_list[1]._interpol == True
         assert (
             lens_model_class.lens_model.func_list[2]._integrate.__name__
@@ -98,6 +100,10 @@ class TestClassCreator(object):
             lens_model_class.lens_model.func_list[3]._integrate.__name__
             == "_quad_integrate"
         )
+        assert lens_model_class.lens_model.func_list[1] == lens_model_class.lens_model.func_list[4]
+
+        assert lens_model_class.lens_model.func_list[5]._interpol == False
+        assert lens_model_class.lens_model.func_list[1] != lens_model_class.lens_model.func_list[5]
 
         (
             lens_model_class,

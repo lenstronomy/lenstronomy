@@ -97,7 +97,7 @@ class MultiPlaneDecoupled(MultiPlane):
         self._Ts = cosmo_bkg.T_xy(0, z_source)
         self._Td = cosmo_bkg.T_xy(0, z_split)
         self._Tds = cosmo_bkg.T_xy(self._z_split, z_source)
-        self._main_deflector = SinglePlane(lens_model_list)
+        self._main_deflector = SinglePlane(lens_model_list, profile_kwargs_list=profile_kwargs_list)
         # useful to have these saved to access later outside the class
         self.kwargs_multiplane_model = {
             "x0_interp": self._x0_interp,

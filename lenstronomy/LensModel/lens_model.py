@@ -38,9 +38,6 @@ class LensModel(object):
         distance_ratio_sampling=False,
         cosmology_sampling=False,
         cosmology_model="FlatLambdaCDM",
-        kwargs_interp=None,
-        kwargs_synthesis=None,
-        numerical_alpha_class=None,
     ):
         """
 
@@ -76,11 +73,7 @@ class LensModel(object):
             to update T_ij value in multi-lens plane computation.
         :param cosmology_model: str, name of the cosmology model to be used for
             cosmology sampling. Default is 'FlatLambdaCDM'.
-        :param kwargs_interp, kwargs_synthesis, numerical_alpha_class: deprecated
         """
-        if kwargs_interp is not None or kwargs_synthesis is not None or numerical_alpha_class is not None:
-            raise ValueError("kwargs_interp, kwargs_synthesis, and numerical_alpha_class are deprecated. Use profile_kwargs_list instead")
-
         self.lens_model_list = lens_model_list
         self.z_lens = z_lens
         if profile_kwargs_list is None:

@@ -19,7 +19,7 @@ def create_class_instances(
     z_source=None,
     z_source_convention=None,
     lens_redshift_list=None,
-    kwargs_interp=None,
+    lens_profile_kwargs_list=None,
     multi_plane=False,
     distance_ratio_sampling=False,
     cosmology_sampling=False,
@@ -64,14 +64,15 @@ def create_class_instances(
     :param z_lens: redshift of the deflector (for single lens plane mode, but only relevant when computing physical quantities)
     :param z_source: redshift of source (for single source plane mode, or for multiple source planes the redshift of the point source). In regard to this redshift the reduced deflection angles are defined in the lens model.
     :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens models.
-     If None, 'z_source' is used.
+        If None, 'z_source' is used.
     :param lens_redshift_list:
     :param multi_plane: bool, if True, computes the lensing quantities in multi-plane mode
     :param distance_ratio_sampling: bool, if True, samples the distance ratios in multi-lens-plane
     :param cosmology_sampling: bool, if True, samples the cosmology in multi-lens-plane
     :param cosmology_model: string, name of the cosmology model to be used in the multi-lens-plane mode
-    :param kwargs_interp: interpolation keyword arguments specifying the numerics.
-     See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
+    :param profile_kwargs_list: list of dicts, keyword arguments used to initialize profile classes
+        in the same order of the lens_model_list. If any of the profile_kwargs are None, then that
+        profile will be initialized using default settings.
     :param observed_convention_index:
     :param source_light_model_list:
     :param lens_light_model_list:
@@ -80,15 +81,15 @@ def create_class_instances(
     :param flux_from_point_source_list: list of bools (optional), if set, will only return image positions
          (for imaging modeling) for the subset of the point source lists that =True. This option enables to model
     :param point_source_frame_list: list of lists mirroring the structure of the image positions.
-     Integers correspond to the i'th list entry of index_lens_model_list indicating in which frame/band the image is
-     appearing
+        Integers correspond to the i'th list entry of index_lens_model_list indicating in which frame/band the image is
+        appearing
     :param additional_images_list:
     :param kwargs_lens_eqn_solver: keyword arguments specifying the numerical settings for the lens equation solver
          see LensEquationSolver() class for details
     :param source_deflection_scaling_list: List of floats for each source ligth model (optional, and only applicable
-     for single-plane lensing. The factors re-scale the reduced deflection angles described from the lens model.
-     =1 means identical source position as without this option. This option enables multiple source planes.
-     The geometric difference between the different source planes needs to be pre-computed and is cosmology dependent.
+        for single-plane lensing. The factors re-scale the reduced deflection angles described from the lens model.
+        =1 means identical source position as without this option. This option enables multiple source planes.
+        The geometric difference between the different source planes needs to be pre-computed and is cosmology dependent.
     :param source_redshift_list:
     :param cosmo: astropy.cosmology instance
     :param index_lens_model_list:
@@ -102,24 +103,24 @@ def create_class_instances(
     :param all_models: bool, if True, will make class instances of all models ignoring potential keywords that are excluding specific models as indicated.
     :param point_source_magnification_limit: float >0 or None, if set and additional images are computed, then it will cut the point sources computed to the limiting (absolute) magnification
     :param surface_brightness_smoothing: float, smoothing scale of light profile (minimal distance to the center of a profile)
-     this can help to avoid inaccuracies in the very center of a cuspy light profile
+        this can help to avoid inaccuracies in the very center of a cuspy light profile
     :param sersic_major_axis: boolean or None, if True, uses the semi-major axis as the definition of the Sersic
-     half-light radius, if False, uses the product average of semi-major and semi-minor axis. If None, uses the
-     convention in the lenstronomy yaml setting (which by default is =False)
+        half-light radius, if False, uses the product average of semi-major and semi-minor axis. If None, uses the
+        convention in the lenstronomy yaml setting (which by default is =False)
     :param tabulated_deflection_angles: a user-specified class with a call method that returns deflection angles given
-     (x, y) coordinates on the sky. This class gets passed to the lens model class TabulatedDeflections
+        (x, y) coordinates on the sky. This class gets passed to the lens model class TabulatedDeflections
     :param decouple_multi_plane: bool; if True, creates an instance of MultiPlaneDecoupled
     :param kwargs_multiplane_model: keyword arguments used to create an instance of MultiPlaneDecoupled if decouple_multi_plane is True
     :param kwargs_multiplane_model_point_source: keyword arguments used to create an option MultiPlaneDecoupled class for the lensed point source to be treated separately from the rest of the imaging data
     :param tracer_source_model_list: list of tracer source models (not used in this function)
     :param tracer_source_band: integer, list index of source surface brightness band to apply tracer model to
     :param tracer_partition: in case of tracer models for specific sub-parts of the surface brightness model
-     [[list of light profiles, list of tracer profiles], [list of light profiles, list of tracer profiles], [...], ...]
+        [[list of light profiles, list of tracer profiles], [list of light profiles, list of tracer profiles], [...], ...]
     :type tracer_partition: None or list
     :param tracer_type: 'LINEAR' or 'LOG', to determine how tracers are summed between components
     :type tracer_type: string
     :param point_source_redshift_list: list of redshifts of point sources
-         (default None, i.e. all point sources at the same redshift following the source convention)
+        (default None, i.e. all point sources at the same redshift following the source convention)
     :return: lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class
     """
     if lens_model_list is None:
@@ -167,7 +168,7 @@ def create_class_instances(
         cosmology_sampling=cosmology_sampling,
         cosmology_model=cosmology_model,
         observed_convention_index=observed_convention_index_i,
-        kwargs_interp=kwargs_interp,
+        profile_kwargs_list=lens_profile_kwargs_list,
         numerical_alpha_class=tabulated_deflection_angles,
         decouple_multi_plane=decouple_multi_plane,
         kwargs_multiplane_model=kwargs_multiplane_model,
@@ -183,7 +184,7 @@ def create_class_instances(
             multi_plane=multi_plane,
             cosmo=cosmo,
             observed_convention_index=observed_convention_index,
-            kwargs_interp=kwargs_interp,
+            profile_kwargs_list=lens_profile_kwargs_list,
             numerical_alpha_class=tabulated_deflection_angles,
             decouple_multi_plane=decouple_multi_plane,
             kwargs_multiplane_model=kwargs_multiplane_model_point_source,

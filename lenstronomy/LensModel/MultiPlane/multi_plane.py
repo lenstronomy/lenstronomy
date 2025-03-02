@@ -24,7 +24,6 @@ class MultiPlane(object):
         lens_model_list,
         lens_redshift_list,
         cosmo=None,
-        numerical_alpha_class=None,
         observed_convention_index=None,
         ignore_observed_positions=False,
         z_source_convention=None,
@@ -32,8 +31,7 @@ class MultiPlane(object):
         cosmo_interp=False,
         z_interp_stop=None,
         num_z_interp=100,
-        kwargs_interp=None,
-        kwargs_synthesis=None,
+        profile_kwargs_list=None,
         distance_ratio_sampling=False,
         cosmology_sampling=False,
         cosmology_model="FlatLambdaCDM",
@@ -45,24 +43,24 @@ class MultiPlane(object):
         :param lens_redshift_list: list of floats with redshifts of the lens models indicated in lens_model_list
         :param cosmo: instance of astropy.cosmology
         :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model
-         (see documentation in Profiles/numerical_alpha)
-        :param kwargs_interp: interpolation keyword arguments specifying the numerics.
-         See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
+            (see documentation in Profiles/numerical_alpha)
+        :param profile_kwargs_list: list of dicts, keyword arguments used to initialize profile classes
+            in the same order of the lens_model_list. If any of the profile_kwargs are None, then that
+            profile will be initialized using default settings.
         :param observed_convention_index: a list of indices, corresponding to the lens_model_list element with same
-         index, where the 'center_x' and 'center_y' kwargs correspond to observed (lensed) positions, not physical
-         positions. The code will compute the physical locations when performing computations
+            index, where the 'center_x' and 'center_y' kwargs correspond to observed (lensed) positions, not physical
+            positions. The code will compute the physical locations when performing computations
         :param ignore_observed_positions: bool, if True, will ignore the conversion between observed to physical
-         position of deflectors
+            position of deflectors
         :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens
-         models. If None, 'z_source' is used.
+            models. If None, 'z_source' is used.
         :param z_lens_convention: float, redshift of a lens plane to define the
-         effective time-delay distance. Only needed if distance ratios are
-         sampled. If None, the first lens redshift is used.
+            effective time-delay distance. Only needed if distance ratios are
+            sampled. If None, the first lens redshift is used.
         :param cosmo_interp: bool, if True, will use interpolated cosmology
-        :param kwargs_synthesis: keyword arguments for the 'SYNTHESIS' lens model, if applicable
         :param kwargs_multiplane_model: keyword arguments for the MultiPlaneDecoupled class, if specified
         :param distance_ratio_sampling: bool, if True, will use sampled
-         distance ratios to update T_ij value in multi-lens plane computation.
+            distance ratios to update T_ij value in multi-lens plane computation.
         :param cosmology_sampling: bool, if True, will use sampled cosmology
         :param cosmology_model: str, name of the cosmology model to use for
         """
@@ -97,7 +95,6 @@ class MultiPlane(object):
             "lens_model_list": lens_model_list,
             "lens_redshift_list": lens_redshift_list,
             "cosmo": cosmo,
-            "numerical_alpha_class": numerical_alpha_class,
             "observed_convention_index": observed_convention_index,
             "ignore_observed_positions": ignore_observed_positions,
             "z_source_convention": z_source_convention,
@@ -105,8 +102,7 @@ class MultiPlane(object):
             "cosmo_interp": cosmo_interp,
             "z_interp_stop": z_interp_stop,
             "num_z_interp": num_z_interp,
-            "kwargs_interp": kwargs_interp,
-            "kwargs_synthesis": kwargs_synthesis,
+            "profile_kwargs_list": profile_kwargs_list,
             "distance_ratio_sampling": distance_ratio_sampling,
             "cosmology_sampling": cosmology_sampling,
             "cosmology_model": cosmology_model,
@@ -136,13 +132,11 @@ class MultiPlane(object):
             lens_model_list=lens_model_list,
             lens_redshift_list=lens_redshift_list,
             cosmo=cosmo,
-            numerical_alpha_class=numerical_alpha_class,
             z_source_convention=z_source_convention,
             cosmo_interp=cosmo_interp,
             z_interp_stop=z_interp_stop,
             num_z_interp=num_z_interp,
-            kwargs_interp=kwargs_interp,
-            kwargs_synthesis=kwargs_synthesis,
+            profile_kwargs_list=profile_kwargs_list,
         )
         self._z_source = z_source
         self._set_source_distances(z_source)

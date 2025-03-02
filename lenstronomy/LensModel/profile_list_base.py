@@ -144,8 +144,8 @@ class ProfileListBase(object):
         func_list = []
         for i, lens_type in enumerate(lens_model_list):
             if lens_type in ["NFW_MC", "NFW_MC_ELLIPSE_POTENTIAL"]:
-                profile_kwargs_list[i]["z_lens"] = (lens_redshift_list[i],)
-                profile_kwargs_list[i]["z_source"] = (z_source_convention,)
+                profile_kwargs_list[i]["z_lens"] = lens_redshift_list[i]
+                profile_kwargs_list[i]["z_source"] = z_source_convention
 
             lensmodel_class = lens_class(
                 lens_type,

@@ -32,7 +32,6 @@ class ModelAPI(object):
         source_redshift_list=None,
         cosmo=None,
         z_source_convention=None,
-        tabulated_deflection_angles=None,
         observed_convention_index=None,
     ):
         """# TODO: make inputs follow the kwargs_model of the class_creator instances of
@@ -63,9 +62,6 @@ class ModelAPI(object):
             the default cosmology.
         :param z_source_convention: float, redshift of a source to define the reduced
             deflection angles of the lens models. If None, 'z_source' is used.
-        :param tabulated_deflection_angles: a class that returns deflection angles given
-            a set of (x, y) coordinates. Effectively a fixed lens model. See
-            documentation in Profiles.numerical_alpha
         :param observed_convention_index: a list of indices that correspond to lens
             models where the center_x,center_y values correspond to the observed (lensed
             positions), not the physical positions in space
@@ -99,7 +95,6 @@ class ModelAPI(object):
             multi_plane=multi_plane,
             cosmo=cosmo,
             z_source_convention=z_source_convention,
-            numerical_alpha_class=tabulated_deflection_angles,
             observed_convention_index=observed_convention_index,
         )
         self._source_model_class = LightModel(

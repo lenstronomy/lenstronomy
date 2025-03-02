@@ -110,8 +110,7 @@ DYNAMIC_PROFILES = [
     "DOUBLE_CHAMELEON",
     "EPL",
     "INTERPOL",
-    "INTERPOL_SCALED"
-    "NFW_ELLIPSE_GAUSS_DEC",
+    "INTERPOL_SCALED" "NFW_ELLIPSE_GAUSS_DEC",
     "NFW_MC",
     "NFW_MC_ELLIPSE_POTENTIAL",
     "NIE",
@@ -120,6 +119,7 @@ DYNAMIC_PROFILES = [
     "SYNTHESIS",
     "TRIPLE_CHAMELEON",
 ]
+
 
 class ProfileListBase(object):
     """Class that manages the list of lens model class instances.
@@ -186,7 +186,9 @@ class ProfileListBase(object):
                     imported_classes.append(lensmodel_class)
                     imported_profile_kwargs.append((lens_type, profile_kwargs_list[i]))
                 else:
-                    index = imported_profile_kwargs.index((lens_type, profile_kwargs_list[i]))
+                    index = imported_profile_kwargs.index(
+                        (lens_type, profile_kwargs_list[i])
+                    )
                     lensmodel_class = imported_classes[index]
 
             func_list.append(lensmodel_class)

@@ -90,7 +90,14 @@ class TestClassCreator(object):
             point_source_class,
             extinction_class,
         ) = class_creator.create_class_instances(**self.kwargs_model)
-        assert lens_model_class.lens_model_list == ["SIS", "NFW", "GNFW", "GNFW", "NFW", "NFW"]
+        assert lens_model_class.lens_model_list == [
+            "SIS",
+            "NFW",
+            "GNFW",
+            "GNFW",
+            "NFW",
+            "NFW",
+        ]
         assert lens_model_class.lens_model.func_list[1]._interpol == True
         assert (
             lens_model_class.lens_model.func_list[2]._integrate.__name__
@@ -100,10 +107,16 @@ class TestClassCreator(object):
             lens_model_class.lens_model.func_list[3]._integrate.__name__
             == "_quad_integrate"
         )
-        assert lens_model_class.lens_model.func_list[1] == lens_model_class.lens_model.func_list[4]
+        assert (
+            lens_model_class.lens_model.func_list[1]
+            == lens_model_class.lens_model.func_list[4]
+        )
 
         assert lens_model_class.lens_model.func_list[5]._interpol == False
-        assert lens_model_class.lens_model.func_list[1] != lens_model_class.lens_model.func_list[5]
+        assert (
+            lens_model_class.lens_model.func_list[1]
+            != lens_model_class.lens_model.func_list[5]
+        )
 
         (
             lens_model_class,

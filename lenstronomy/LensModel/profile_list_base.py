@@ -546,10 +546,6 @@ def lens_class(
         )
 
         return NFWMCEllipsePotential(**profile_kwargs)
-    elif lens_type == "NFW_VIR_TRUNC":
-        from lenstronomy.LensModel.Profiles.nfw_vir_trunc import NFWVirTrunc
-
-        return NFWVirTrunc(**profile_kwargs)
     elif lens_type == "NIE":
         from lenstronomy.LensModel.Profiles.nie import NIE
 

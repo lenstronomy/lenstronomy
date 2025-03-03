@@ -37,7 +37,9 @@ class LightProfile(object):
         :param max_draw: float; (optional) if set, draws up to this radius, else uses max_interpolate value
         """
 
-        self.light_model = LightModel(light_model_list=profile_list, profile_kwargs_list=profile_kwargs_list)
+        self.light_model = LightModel(
+            light_model_list=profile_list, profile_kwargs_list=profile_kwargs_list
+        )
         self._interp_grid_num = interpol_grid_num
         self._max_interpolate = max_interpolate
         self._min_interpolate = min_interpolate

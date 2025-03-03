@@ -226,7 +226,7 @@ def create_class_instances(
         light_model_list=source_light_model_list_i,
         deflection_scaling_list=source_deflection_scaling_list_i,
         source_redshift_list=source_redshift_list_i,
-        profile_kwargs_list=source_light_profile_kwargs_list
+        profile_kwargs_list=source_light_profile_kwargs_list,
     )
 
     if index_lens_light_model_list is None or all_models is True:
@@ -237,7 +237,7 @@ def create_class_instances(
         ]
     lens_light_model_class = LightModel(
         light_model_list=lens_light_model_list_i,
-        profile_kwargs_list=lens_light_profile_kwargs_list
+        profile_kwargs_list=lens_light_profile_kwargs_list,
     )
 
     point_source_model_list_i = point_source_model_list
@@ -291,7 +291,7 @@ def create_class_instances(
     extinction_class = DifferentialExtinction(
         optical_depth_model=optical_depth_model_list_i,
         profile_kwargs_list=optical_depth_profile_kwargs_list,
-        tau0_index=tau0_index
+        tau0_index=tau0_index,
     )
     return (
         lens_model_class,

@@ -41,8 +41,7 @@ class LightModel(LinearBasis):
             are None, then that profile will be initialized using default settings.
         """
         super(LightModel, self).__init__(
-            light_model_list=light_model_list,
-            profile_kwargs_list=profile_kwargs_list
+            light_model_list=light_model_list, profile_kwargs_list=profile_kwargs_list
         )
         self.deflection_scaling_list = deflection_scaling_list
         self.redshift_list = source_redshift_list

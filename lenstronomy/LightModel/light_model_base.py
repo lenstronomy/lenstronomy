@@ -88,21 +88,15 @@ class LightModelBase(object):
             elif profile_type == "SERSIC_ELLIPSE":
                 from lenstronomy.LightModel.Profiles.sersic import SersicElliptic
 
-                self.func_list.append(
-                    SersicElliptic(**profile_kwargs)
-                )
+                self.func_list.append(SersicElliptic(**profile_kwargs))
             elif profile_type == "SERSIC_ELLIPSE_Q_PHI":
                 from lenstronomy.LightModel.Profiles.sersic import SersicElliptic_qPhi
 
-                self.func_list.append(
-                    SersicElliptic_qPhi(**profile_kwargs)
-                )
+                self.func_list.append(SersicElliptic_qPhi(**profile_kwargs))
             elif profile_type == "CORE_SERSIC":
                 from lenstronomy.LightModel.Profiles.sersic import CoreSersic
 
-                self.func_list.append(
-                    CoreSersic(**profile_kwargs)
-                )
+                self.func_list.append(CoreSersic(**profile_kwargs))
             elif profile_type == "SHAPELETS":
                 from lenstronomy.LightModel.Profiles.shapelets import ShapeletSet
 
@@ -117,12 +111,14 @@ class LightModelBase(object):
                 from lenstronomy.LightModel.Profiles.shapelets_polar import (
                     ShapeletSetPolar,
                 )
+
                 profile_kwargs["exponential"] = False
                 self.func_list.append(ShapeletSetPolar(**profile_kwargs))
             elif profile_type == "SHAPELETS_POLAR_EXP":
                 from lenstronomy.LightModel.Profiles.shapelets_polar import (
                     ShapeletSetPolar,
                 )
+
                 profile_kwargs["exponential"] = True
                 self.func_list.append(ShapeletSetPolar(**profile_kwargs))
             elif profile_type == "HERNQUIST":
@@ -176,9 +172,7 @@ class LightModelBase(object):
 
                 profile_kwargs["fast_inverse"] = True
                 profile_kwargs["second_gen"] = False
-                self.func_list.append(
-                    SLIT_Starlets(**profile_kwargs)
-                )
+                self.func_list.append(SLIT_Starlets(**profile_kwargs))
             elif profile_type == "SLIT_STARLETS_GEN2":
                 from lenstronomy.LightModel.Profiles.starlets import SLIT_Starlets
 

@@ -401,7 +401,7 @@ class ModelBandPlot(ModelBand):
             lens_redshift_list=lens_redshift_list_macro,
             z_source=z_source,
             cosmo=cosmo,
-            profile_kwargs_list=profile_kwargs_list_macro
+            profile_kwargs_list=profile_kwargs_list_macro,
         )
 
         if super_sample_factor is None:

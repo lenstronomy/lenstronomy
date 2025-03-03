@@ -56,14 +56,16 @@ class ModelAPI(object):
             model list), only applicable in multi_plane mode.
         :param source_light_model_list: list of strings with source light model names
             (lensed light profiles)
-        :param source_light_profile_kwargs_list: list of dicts, keyword arguments used to initialize source light
-            profile classes in the same order of the source_light_model_list. If any of the profile_kwargs are None,
-            then that profile will be initialized using default settings.
+        :param source_light_profile_kwargs_list: list of dicts, keyword arguments used
+            to initialize source light profile classes in the same order of the
+            source_light_model_list. If any of the profile_kwargs are None, then that
+            profile will be initialized using default settings.
         :param lens_light_model_list: list of strings with lens light model names (not
             lensed light profiles)
-        :param lens_light_profile_kwargs_list: list of dicts, keyword arguments used to initialize lens light
-            profile classes in the same order of the lens_light_model_list. If any of the profile_kwargs are None,
-            then that profile will be initialized using default settings.
+        :param lens_light_profile_kwargs_list: list of dicts, keyword arguments used to
+            initialize lens light profile classes in the same order of the
+            lens_light_model_list. If any of the profile_kwargs are None, then that
+            profile will be initialized using default settings.
         :param point_source_model_list: list of strings with point source model names
         :param source_redshift_list: list of redshifts of the source profiles (optional)
         :param cosmo: instance of the astropy cosmology class. If not specified, uses

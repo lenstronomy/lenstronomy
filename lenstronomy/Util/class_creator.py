@@ -50,8 +50,6 @@ def create_class_instances(
     tau0_index_list=None,
     all_models=False,
     point_source_magnification_limit=None,
-    surface_brightness_smoothing=0.001,
-    sersic_major_axis=None,
     decouple_multi_plane=False,
     kwargs_multiplane_model=None,
     kwargs_multiplane_model_point_source=None,
@@ -113,11 +111,6 @@ def create_class_instances(
     :param tau0_index_list: list of integers of the specific extinction scaling parameter tau0 for each band
     :param all_models: bool, if True, will make class instances of all models ignoring potential keywords that are excluding specific models as indicated.
     :param point_source_magnification_limit: float >0 or None, if set and additional images are computed, then it will cut the point sources computed to the limiting (absolute) magnification
-    :param surface_brightness_smoothing: float, smoothing scale of light profile (minimal distance to the center of a profile)
-        this can help to avoid inaccuracies in the very center of a cuspy light profile
-    :param sersic_major_axis: boolean or None, if True, uses the semi-major axis as the definition of the Sersic
-        half-light radius, if False, uses the product average of semi-major and semi-minor axis. If None, uses the
-        convention in the lenstronomy yaml setting (which by default is =False)
     :param decouple_multi_plane: bool; if True, creates an instance of MultiPlaneDecoupled
     :param kwargs_multiplane_model: keyword arguments used to create an instance of MultiPlaneDecoupled if decouple_multi_plane is True
     :param kwargs_multiplane_model_point_source: keyword arguments used to create an option MultiPlaneDecoupled class for the lensed point source to be treated separately from the rest of the imaging data

@@ -26,7 +26,9 @@ def create_class_instances(
     cosmology_model="FlatLambdaCDM",
     observed_convention_index=None,
     source_light_model_list=None,
+    source_light_profile_kwargs_list=None,
     lens_light_model_list=None,
+    lens_light_profile_kwargs_list=None,
     point_source_model_list=None,
     point_source_redshift_list=None,
     fixed_magnification_list=None,
@@ -42,6 +44,7 @@ def create_class_instances(
     index_lens_light_model_list=None,
     index_point_source_model_list=None,
     optical_depth_model_list=None,
+    optical_depth_profile_kwargs_list=None,
     index_optical_depth_model_list=None,
     band_index=0,
     tau0_index_list=None,
@@ -64,18 +67,24 @@ def create_class_instances(
     :param z_source: redshift of source (for single source plane mode, or for multiple source planes the redshift of the point source). In regard to this redshift the reduced deflection angles are defined in the lens model.
     :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens models.
         If None, 'z_source' is used.
-    :param lens_redshift_list:
+    :param lens_redshift_list: None or list of floats in the same order of the lens_model_list
+    :param lens_profile_kwargs_list: list of dicts, keyword arguments used to initialize deflector profile
+        classes in the same order of the lens_model_list. If any of the profile_kwargs are None, then that
+        profile will be initialized using default settings.
     :param multi_plane: bool, if True, computes the lensing quantities in multi-plane mode
     :param distance_ratio_sampling: bool, if True, samples the distance ratios in multi-lens-plane
     :param cosmology_sampling: bool, if True, samples the cosmology in multi-lens-plane
     :param cosmology_model: string, name of the cosmology model to be used in the multi-lens-plane mode
-    :param profile_kwargs_list: list of dicts, keyword arguments used to initialize profile classes
-        in the same order of the lens_model_list. If any of the profile_kwargs are None, then that
-        profile will be initialized using default settings.
     :param observed_convention_index:
-    :param source_light_model_list:
-    :param lens_light_model_list:
-    :param point_source_model_list:
+    :param source_light_model_list: list of strings indicating the type of source light models
+    :param source_light_profile_kwargs_list: list of dicts, keyword arguments used to initialize source light
+        profile classes in the same order of the source_light_model_list. If any of the profile_kwargs are None,
+        then that profile will be initialized using default settings.
+    :param lens_light_model_list: list of strings indicating the type of lens light models
+    :param lens_light_profile_kwargs_list: list of dicts, keyword arguments used to initialize lens light
+        profile classes in the same order of the lens_light_model_list. If any of the profile_kwargs are None,
+        then that profile will be initialized using default settings.
+    :param point_source_model_list: list of strings indicating the type of point source models
     :param fixed_magnification_list:
     :param flux_from_point_source_list: list of bools (optional), if set, will only return image positions
          (for imaging modeling) for the subset of the point source lists that =True. This option enables to model
@@ -96,6 +105,9 @@ def create_class_instances(
     :param index_lens_light_model_list: optional, list of list of all model indexes for each modeled band
     :param index_point_source_model_list: optional, list of list of all model indexes for each modeled band
     :param optical_depth_model_list: list of strings indicating the optical depth model to compute (differential) extinctions from the source
+    :param optical_depth_profile_kwargs_list: list of dicts, keyword arguments used to initialize light model
+        profile classes in the same order of the optical_depth_model_list. If any of the profile_kwargs are None,
+        then that profile will be initialized using default settings.
     :param index_optical_depth_model_list:
     :param band_index: int, index of band to consider. Has an effect if only partial models are considered for a specific band
     :param tau0_index_list: list of integers of the specific extinction scaling parameter tau0 for each band
@@ -214,8 +226,7 @@ def create_class_instances(
         light_model_list=source_light_model_list_i,
         deflection_scaling_list=source_deflection_scaling_list_i,
         source_redshift_list=source_redshift_list_i,
-        smoothing=surface_brightness_smoothing,
-        sersic_major_axis=sersic_major_axis,
+        profile_kwargs_list=source_light_profile_kwargs_list
     )
 
     if index_lens_light_model_list is None or all_models is True:
@@ -226,8 +237,7 @@ def create_class_instances(
         ]
     lens_light_model_class = LightModel(
         light_model_list=lens_light_model_list_i,
-        smoothing=surface_brightness_smoothing,
-        sersic_major_axis=sersic_major_axis,
+        profile_kwargs_list=lens_light_profile_kwargs_list
     )
 
     point_source_model_list_i = point_source_model_list
@@ -279,7 +289,9 @@ def create_class_instances(
     else:
         optical_depth_model_list_i = optical_depth_model_list
     extinction_class = DifferentialExtinction(
-        optical_depth_model=optical_depth_model_list_i, tau0_index=tau0_index
+        optical_depth_model=optical_depth_model_list_i,
+        profile_kwargs_list=optical_depth_profile_kwargs_list,
+        tau0_index=tau0_index
     )
     return (
         lens_model_class,

@@ -140,9 +140,7 @@ class TestLightModel(object):
             },  # 'LINE_PROFILE'
         ]
 
-        self.LightModel = LightModel(
-            light_model_list=self.light_model_list
-        )
+        self.LightModel = LightModel(light_model_list=self.light_model_list)
 
     def test_init(self):
         model_list = [
@@ -158,8 +156,14 @@ class TestLightModel(object):
             "DOUBLE_CHAMELEON",
             "TRIPLE_CHAMELEON",
         ]
-        profile_kwargs_list = [None, {"sersic_major_axis": False}, {"sersic_major_axis": True}] + [None] * 8
-        lightModel = LightModel(light_model_list=model_list, profile_kwargs_list=profile_kwargs_list)
+        profile_kwargs_list = [
+            None,
+            {"sersic_major_axis": False},
+            {"sersic_major_axis": True},
+        ] + [None] * 8
+        lightModel = LightModel(
+            light_model_list=model_list, profile_kwargs_list=profile_kwargs_list
+        )
         assert len(lightModel.profile_type_list) == len(model_list)
         assert lightModel.func_list[1]._sersic_major_axis == False
         assert lightModel.func_list[2]._sersic_major_axis == True

@@ -145,10 +145,10 @@ class TestLightModel(object):
     def test_init(self):
         model_list = [
             "CORE_SERSIC",
-            "LINEAR_ELLIPSE",
             "SERSIC",
             "SERSIC",
             "SHAPELETS",
+            "LINEAR_ELLIPSE",
             "SHAPELETS_ELLIPSE",
             "SHAPELETS_POLAR",
             "SHAPELETS_POLAR_EXP",
@@ -161,7 +161,7 @@ class TestLightModel(object):
             None,
             {"sersic_major_axis": False},
             {"sersic_major_axis": True},
-        ] + [None] * 8
+        ] + [None] * 9
         lightModel = LightModel(
             light_model_list=model_list, profile_kwargs_list=profile_kwargs_list
         )

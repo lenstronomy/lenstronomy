@@ -145,6 +145,7 @@ class TestLightModel(object):
     def test_init(self):
         model_list = [
             "CORE_SERSIC",
+            "LINEAR_ELLIPSE",
             "SERSIC",
             "SERSIC",
             "SHAPELETS",

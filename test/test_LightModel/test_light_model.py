@@ -141,12 +141,14 @@ class TestLightModel(object):
         ]
 
         self.LightModel = LightModel(
-            light_model_list=self.light_model_list, sersic_major_axis=False
+            light_model_list=self.light_model_list
         )
 
     def test_init(self):
         model_list = [
             "CORE_SERSIC",
+            "SERSIC",
+            "SERSIC",
             "SHAPELETS",
             "SHAPELETS_ELLIPSE",
             "SHAPELETS_POLAR",
@@ -156,8 +158,11 @@ class TestLightModel(object):
             "DOUBLE_CHAMELEON",
             "TRIPLE_CHAMELEON",
         ]
-        lightModel = LightModel(light_model_list=model_list)
+        profile_kwargs_list = [None, {"sersic_major_axis": False}, {"sersic_major_axis": True}] + [None] * 8
+        lightModel = LightModel(light_model_list=model_list, profile_kwargs_list=profile_kwargs_list)
         assert len(lightModel.profile_type_list) == len(model_list)
+        assert lightModel.func_list[1]._sersic_major_axis == False
+        assert lightModel.func_list[2]._sersic_major_axis == True
 
     def test_surface_brightness(self):
         output = self.LightModel.surface_brightness(

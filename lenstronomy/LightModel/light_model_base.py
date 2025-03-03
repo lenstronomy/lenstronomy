@@ -59,6 +59,8 @@ class LightModelBase(object):
             profile_kwargs_list = [{} for _ in range(len(light_model_list))]
 
         for profile_type, profile_kwargs in zip(light_model_list, profile_kwargs_list):
+            if profile_kwargs is None:
+                profile_kwargs = {}
             if profile_type == "GAUSSIAN":
                 from lenstronomy.LightModel.Profiles.gaussian import Gaussian
 

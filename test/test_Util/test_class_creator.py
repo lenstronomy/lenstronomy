@@ -20,7 +20,10 @@ class TestClassCreator(object):
                 None,
             ],
             "source_light_model_list": ["SERSIC", "SERSIC"],
-            "source_light_profile_kwargs_list": [{"sersic_major_axis": False}, {"sersic_major_axis": True}],
+            "source_light_profile_kwargs_list": [
+                {"sersic_major_axis": False},
+                {"sersic_major_axis": True},
+            ],
             "lens_light_model_list": ["SERSIC", "SERSIC"],
             "lens_light_profile_kwargs_list": [{"sersic_major_axis": True}, None],
             "point_source_model_list": ["LENSED_POSITION"],

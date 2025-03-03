@@ -7,7 +7,7 @@ __all__ = ["SersicUtil"]
 
 
 class SersicUtil(object):
-    _s = 0.00001
+    _s = 0.001
 
     def __init__(self, smoothing=_s, sersic_major_axis=False):
         """

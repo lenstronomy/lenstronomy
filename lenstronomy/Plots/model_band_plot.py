@@ -376,6 +376,7 @@ class ModelBandPlot(ModelBand):
 
         kwargs_lens_macro = []
         lens_model_list_macro = []
+        profile_kwargs_list_macro = []
         multi_plane = self._lensModel.multi_plane
         if multi_plane:
             lens_redshift_list = self._lensModel.redshift_list
@@ -392,6 +393,7 @@ class ModelBandPlot(ModelBand):
             kwargs_lens_macro.append(self._kwargs_lens_partial[idx])
             if multi_plane:
                 lens_redshift_list_macro.append(lens_redshift_list[idx])
+            profile_kwargs_list_macro.append(self._lensModel.profile_kwargs_list[idx])
 
         lens_model_macro = LensModel(
             lens_model_list_macro,
@@ -399,6 +401,7 @@ class ModelBandPlot(ModelBand):
             lens_redshift_list=lens_redshift_list_macro,
             z_source=z_source,
             cosmo=cosmo,
+            profile_kwargs_list=profile_kwargs_list_macro
         )
 
         if super_sample_factor is None:

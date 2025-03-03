@@ -96,9 +96,9 @@ class Sersic(SersicUtil, LensProfileBase):
         y_ = y - center_y
         r = np.sqrt(x_**2 + y_**2)
         if isinstance(r, int) or isinstance(r, float):
-            r = max(self._s, r)
+            r = max(self._smoothing, r)
         else:
-            r[r < self._s] = self._s
+            r[r < self._smoothing] = self._smoothing
         alpha = -self.alpha_abs(x, y, n_sersic, R_sersic, k_eff, center_x, center_y)
         f_x = alpha * x_ / r
         f_y = alpha * y_ / r
@@ -111,9 +111,9 @@ class Sersic(SersicUtil, LensProfileBase):
         y_ = y - center_y
         r = np.sqrt(x_**2 + y_**2)
         if isinstance(r, int) or isinstance(r, float):
-            r = max(self._s, r)
+            r = max(self._smoothing, r)
         else:
-            r[r < self._s] = self._s
+            r[r < self._smoothing] = self._smoothing
         d_alpha_dr = self.d_alpha_dr(
             x, y, n_sersic, R_sersic, k_eff, center_x, center_y
         )

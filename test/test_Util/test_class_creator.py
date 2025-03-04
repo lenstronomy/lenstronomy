@@ -19,16 +19,21 @@ class TestClassCreator(object):
                 {"interpol": True},
                 None,
             ],
-            "source_light_model_list": ["SERSIC"],
-            "lens_light_model_list": ["SERSIC"],
+            "source_light_model_list": ["SERSIC", "SERSIC"],
+            "source_light_profile_kwargs_list": [
+                {"sersic_major_axis": False},
+                {"sersic_major_axis": True},
+            ],
+            "lens_light_model_list": ["SERSIC", "SERSIC"],
+            "lens_light_profile_kwargs_list": [{"sersic_major_axis": True}, None],
             "point_source_model_list": ["LENSED_POSITION"],
             "index_lens_model_list": [[0, 1, 2, 3, 4, 5]],
-            "index_source_light_model_list": [[0]],
-            "index_lens_light_model_list": [[0]],
+            "index_source_light_model_list": [[0, 1]],
+            "index_lens_light_model_list": [[0, 1]],
             "index_point_source_model_list": [[0]],
             "band_index": 0,
-            "source_deflection_scaling_list": [1],
-            "source_redshift_list": [1],
+            "source_deflection_scaling_list": [1, 1],
+            "source_redshift_list": [1, 1],
             "fixed_magnification_list": [True],
             "additional_images_list": [False],
             "lens_redshift_list": [0.5] * 6,
@@ -117,6 +122,12 @@ class TestClassCreator(object):
             lens_model_class.lens_model.func_list[1]
             != lens_model_class.lens_model.func_list[5]
         )
+
+        assert source_model_class.func_list[0]._sersic_major_axis == False
+        assert source_model_class.func_list[1]._sersic_major_axis == True
+
+        assert lens_light_model_class.func_list[0]._sersic_major_axis == True
+        assert lens_light_model_class.func_list[1]._sersic_major_axis == False
 
         (
             lens_model_class,

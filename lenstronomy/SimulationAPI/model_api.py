@@ -27,7 +27,9 @@ class ModelAPI(object):
         z_source=None,
         lens_redshift_list=None,
         source_light_model_list=None,
+        source_light_profile_kwargs_list=None,
         lens_light_model_list=None,
+        lens_light_profile_kwargs_list=None,
         point_source_model_list=None,
         source_redshift_list=None,
         cosmo=None,
@@ -54,8 +56,16 @@ class ModelAPI(object):
             model list), only applicable in multi_plane mode.
         :param source_light_model_list: list of strings with source light model names
             (lensed light profiles)
+        :param source_light_profile_kwargs_list: list of dicts, keyword arguments used
+            to initialize source light profile classes in the same order of the
+            source_light_model_list. If any of the profile_kwargs are None, then that
+            profile will be initialized using default settings.
         :param lens_light_model_list: list of strings with lens light model names (not
             lensed light profiles)
+        :param lens_light_profile_kwargs_list: list of dicts, keyword arguments used to
+            initialize lens light profile classes in the same order of the
+            lens_light_model_list. If any of the profile_kwargs are None, then that
+            profile will be initialized using default settings.
         :param point_source_model_list: list of strings with point source model names
         :param source_redshift_list: list of redshifts of the source profiles (optional)
         :param cosmo: instance of the astropy cosmology class. If not specified, uses
@@ -100,9 +110,11 @@ class ModelAPI(object):
         self._source_model_class = LightModel(
             light_model_list=source_light_model_list,
             source_redshift_list=source_redshift_list,
+            profile_kwargs_list=source_light_profile_kwargs_list,
         )
         self._lens_light_model_class = LightModel(
-            light_model_list=lens_light_model_list
+            light_model_list=lens_light_model_list,
+            profile_kwargs_list=lens_light_profile_kwargs_list,
         )
         fixed_magnification = [False] * len(point_source_model_list)
         for i, ps_type in enumerate(point_source_model_list):

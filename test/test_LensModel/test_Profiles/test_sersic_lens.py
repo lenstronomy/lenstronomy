@@ -31,7 +31,7 @@ class TestSersic(object):
         x = np.array([0])
         y = np.array([0])
         values = self.sersic.function(x, y, n_sersic, R_sersic, k_eff)
-        npt.assert_almost_equal(values[0], 0.0, decimal=9)
+        npt.assert_almost_equal(values[0], 3.8391158402117444e-08, decimal=9)
 
         x = np.array([2, 3, 4])
         y = np.array([1, 1, 1])

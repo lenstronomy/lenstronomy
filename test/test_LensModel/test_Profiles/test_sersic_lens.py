@@ -28,6 +28,7 @@ class TestSersic(object):
         values = self.sersic.function(x, y, n_sersic, R_sersic, k_eff)
         npt.assert_almost_equal(values, 1.0272982586319199, decimal=10)
 
+        # Tests the smoothing of the sersic profile at r=0
         x = np.array([0])
         y = np.array([0])
         values = self.sersic.function(x, y, n_sersic, R_sersic, k_eff)

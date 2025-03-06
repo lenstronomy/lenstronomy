@@ -44,10 +44,10 @@ class SinglePlaneLOSFlexion(SinglePlane):
             profile_kwargs_list = [{} for _ in range(len(lens_model_list))]
 
         super(SinglePlaneLOSFlexion, self).__init__(
-            lens_model_list, 
+            lens_model_list,
             profile_kwargs_list=profile_kwargs_list,
             lens_redshift_list=lens_redshift_list,
-            )
+        )
         # NB: It is important to run that init first, in order to create a
         # list_func for the entire model, before splitting it between a main
         # lens and the LOS flexion corrections
@@ -57,7 +57,6 @@ class SinglePlaneLOSFlexion(SinglePlane):
         self._losf_model = lens_model_list[index_losf]
         self.losf = lens_class(
             self._losf_model,
-
         )
 
         # Define a separate class for the main lens

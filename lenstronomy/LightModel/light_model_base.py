@@ -98,6 +98,7 @@ class LightModelBase(object):
                 from lenstronomy.LightModel.Profiles.sersic_flexion import (
                     SersicEllipticFlexed,
                 )
+
                 self.func_list.append(
                     SersicEllipticFlexed(
                         smoothing=smoothing, sersic_major_axis=sersic_major_axis

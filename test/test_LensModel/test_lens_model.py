@@ -503,7 +503,10 @@ class TestRaise(unittest.TestCase):
             )
         with self.assertRaises(ValueError):
             lens_model = LensModel(
-                lens_model_list=["LOS", "LOSF"], # NH: more permutations exist but let's be content w testing one
+                lens_model_list=[
+                    "LOS",
+                    "LOSF",
+                ],  # NH: more permutations exist but let's be content w testing one
             )
         with self.assertRaises(ValueError):
             lens_model = LensModel(

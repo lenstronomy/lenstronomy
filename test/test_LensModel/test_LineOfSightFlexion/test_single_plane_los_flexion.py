@@ -1,4 +1,4 @@
-__author__ = "nataliehogg" "test"
+__author__ = "nataliehogg"
 
 import numpy as np
 import numpy.testing as npt
@@ -242,6 +242,184 @@ class TestSinglePlaneLOSFlexion(object):
         npt.assert_almost_equal(
             alphay_1_1_minimal + alphay_1_2_minimal, alphay_full_minimal, decimal=5
         )
+        
+    def test_los_versus_multiplane(self):
+        """This function asserts that the outcome from LOSF and LOSF MINIMAL is the same
+        as MultiPlane. Note that the LOSF and LOSF MINIMAL models are based on the dominant
+        lens approximation, which means that those models are accurate at the level of
+        the approximation. The error is of order of the square of the flexion parameters
+        magnitude."""
+        # set up the cosmology to convert between flexions
+        # the exact numbers don't matter because we are just doing a comparison
+
+        z_o = 0.0  # redshift of observer
+        z_d = 0.5  # redshift of main lens
+        z_s = 2.0  # redshift of source
+
+        z_f = (z_o + z_d) / 2 # redshift of foreground perturber
+        z_b = (z_d + z_s) / 2 # redshift of background perturber
+        
+        # define the flexion parameters of the perturbers. Those are taken in a normal distribution
+        # with standard deviation of 0.005 arcsec^-1, in agreement with the expected value of cosmic 
+        # flexion derived in arXiv:2405.12091.
+        F1_f = 0.0007
+        F2_f = 0.0016
+        G1_f = -0.009
+        G2_f = 0.0018
+        F1_b = -0.0070
+        F2_b = 0.0051
+        G1_b = -0.0028
+        G2_b = -0.0016
+
+        Flexions_f = np.array([F1_f, F2_f, G1_f, G2_f])
+        Flexions_b = np.array([F1_b, F2_b, G1_b, G2_b])
+
+        def d(z1, z2):
+            return cosmo.angular_diameter_distance_z1z2(z1, z2).to_value()
+
+        # conversion of the base flexions to LOS flexions using some distance factors
+        Flexions_od = Flexions_f * ( (d(z_o, z_s) * d(z_f, z_d))/(d(z_o, z_d) * d(z_f, z_s)) )
+        Flexions_os = Flexions_f + Flexions_b
+        Flexions_1ds = Flexions_b * ( (d(z_o, z_s) * d(z_d, z_b)) / (d(z_o, z_b) * d(z_d, z_s)) )**2
+        Flexions_2ds = Flexions_b * ( (d(z_o, z_s) * d(z_d, z_b)) / (d(z_o, z_b) * d(z_d, z_s)) )
+
+        # conversion of the base flexions to lenstronomy conventions
+        transfer_matrix = np.array([[3, 0, 1, 0], [0, 1, 0, 1], [1, 0, -1, 0], [0, 3, 0, -1]])
+        Flexions_f_lenstro = np.matmul(transfer_matrix, Flexions_f)
+        Flexions_b_lenstro = np.matmul(transfer_matrix, Flexions_b)
+
+        # test three image positions
+        x, y = np.array([0.4, 0.2, -1.2]), np.array([-1.7, 1.5, 0])
+
+        # setup the lens models and kwargs
+
+        # Shared in both cases
+        kwargs_epl = {
+            "theta_E": 1.0,
+            "gamma": 1.95,
+            "center_x": 0.0,
+            "center_y": 0.0,
+            "e1": 0.07,
+            "e2": -0.03,
+        }
+
+        # LOSF
+        kwargs_losf = {
+            'kappa_od': 0.0, 
+            'kappa_os': 0.0, 
+            'kappa_ds': 0.0,
+            'gamma1_od': 0.0, 
+            'gamma2_od': 0.0,
+            'gamma1_os': 0.0, 
+            'gamma2_os': 0.0,
+            'gamma1_ds': 0.0, 
+            'gamma2_ds': 0.0, 
+            'F1_od': Flexions_od[0], 'F2_od': Flexions_od[1], 'G1_od': Flexions_od[2], 'G2_od': Flexions_od[3],
+            'F1_os': Flexions_os[0], 'F2_os': Flexions_os[1], 'G1_os': Flexions_os[2], 'G2_os': Flexions_os[3], 
+            'F1_1ds': Flexions_1ds[0], 'F2_1ds': Flexions_1ds[1], 'G1_1ds': Flexions_1ds[2], 'G2_1ds': Flexions_1ds[3], 
+            'F1_2ds': Flexions_2ds[0], 'F2_2ds': Flexions_2ds[1], 'G1_2ds': Flexions_2ds[2], 'G2_2ds': Flexions_2ds[3], 
+            'omega_os': 0.0
+        }
+
+        kwargs_singleplane_los = [kwargs_losf, kwargs_epl]
+
+        lens_model_los = SinglePlaneLOSFlexion(["LOSF", "EPL"], index_losf=0)
+
+        # Multiplane
+        lens_model_list = ["EPL", "FLEXION", "FLEXION"]
+
+        redshift_list = [z_d, z_f, z_b]
+
+        kwargs_flexion_f = {"g1": Flexions_f_lenstro[0], "g2": Flexions_f_lenstro[1],
+                            "g3": Flexions_f_lenstro[2], "g4": Flexions_f_lenstro[3]}
+        kwargs_flexion_b = {"g1": Flexions_b_lenstro[0], "g2": Flexions_b_lenstro[1],
+                            "g3": Flexions_b_lenstro[2], "g4": Flexions_b_lenstro[3]}
+
+        kwargs_multiplane = [kwargs_epl, kwargs_flexion_f, kwargs_flexion_b]
+
+        lens_model_multiplane = MultiPlane(
+            z_source=z_s,
+            lens_model_list=lens_model_list,
+            lens_redshift_list=redshift_list,
+        )
+
+        # set the tolerance
+        # In the dominant lens approximation, the neglected terms are of the the order the square of the  
+        # flexion magnitude times theta^3 (theta ~ 1 arcsec). We therefore set the absolute tolerance to 
+        # 10 x 0.005^2 = 2.5e-4 arcsec.
+        atolerance = 2.5e-4
+        # For time delay though absolute tolerance is not relevant because terms are multiplied to the 
+        # time delay scale; the relative tolerance is therefore more suitable.
+        rtolerance = 1e-3
+
+        # compare some different results from single_plane_los and multiplane
+        # we use assert_allclose rather than assert_almost_equal because we are dealing with arrays
+        # since we pass an array of image positions
+        
+        # displacement angle
+        alpha_multiplane_x, alpha_multiplane_y = lens_model_multiplane.alpha(x, y, kwargs_multiplane)
+        alpha_los_x, alpha_los_y = lens_model_los.alpha(x, y, kwargs_singleplane_los)
+        npt.assert_allclose(alpha_multiplane_x, alpha_los_x, atol=atolerance)
+        npt.assert_allclose(alpha_multiplane_y, alpha_los_y, atol=atolerance)
+
+        # ray_shooting
+        beta_multiplane_x, beta_multiplane_y = lens_model_multiplane.ray_shooting(x, y, kwargs_multiplane)
+        beta_los_x, beta_los_y = lens_model_los.ray_shooting(x, y, kwargs_singleplane_los)
+        npt.assert_allclose(beta_multiplane_x, beta_los_x, atol=atolerance)
+        npt.assert_allclose(beta_multiplane_y, beta_los_y, atol=atolerance)
+
+        # hessian
+        (
+            hessian_multiplane_xx,
+            hessian_multiplane_xy,
+            hessian_multiplane_yx,
+            hessian_multiplane_yy,
+        ) = lens_model_multiplane.hessian(x, y, kwargs_multiplane)
+        (
+            hessian_los_xx,
+            hessian_los_xy,
+            hessian_los_yx,
+            hessian_los_yy,
+        ) = lens_model_los.hessian(x, y, kwargs_singleplane_los)
+        npt.assert_allclose(hessian_multiplane_xx, hessian_los_xx, atol=atolerance)
+        npt.assert_allclose(hessian_multiplane_xy, hessian_los_xy, atol=atolerance)
+        npt.assert_allclose(hessian_multiplane_yx, hessian_los_yx, atol=atolerance)
+        npt.assert_allclose(hessian_multiplane_yy, hessian_los_yy, atol=atolerance)
+
+        # time delays
+        ra_source, dec_source = 0.05, 0.02
+        number_of_images = 4
+
+        lens_model_multiplane_time = LensModel(
+            lens_model_list,
+            z_lens=z_d,
+            z_source=z_s,
+            lens_redshift_list=redshift_list,
+            multi_plane=True,
+        )
+
+        multiplane_solver = LensEquationSolver(lens_model_multiplane_time)
+        x_image_mp, y_image_mp = multiplane_solver.findBrightImage(
+            ra_source, dec_source, kwargs_multiplane, numImages=number_of_images
+        )
+
+        t_days_mp = lens_model_multiplane_time.arrival_time(x_image_mp, y_image_mp, kwargs_multiplane)
+        dt_days_mp = t_days_mp[1:] - t_days_mp[0]
+
+        lens_model_los_time = LensModel(["LOSF", "EPL"], z_lens=z_d, z_source=z_s)
+        kwargs_time_los = [kwargs_losf, kwargs_epl]
+
+        los_solver = LensEquationSolver(lens_model_los_time)
+        x_image_los, y_image_los = los_solver.findBrightImage(
+            ra_source, dec_source, kwargs_time_los, numImages=number_of_images
+        )
+
+        t_days_los = lens_model_los_time.arrival_time(
+            x_image_los, y_image_los, kwargs_time_los
+        )
+        dt_days_los = t_days_los[1:] - t_days_los[0]
+
+        npt.assert_allclose(dt_days_mp, dt_days_los, rtol=rtolerance)
 
     def test_init(self):
         lens_model_list = [

@@ -19,12 +19,10 @@ class MultiPlaneBase(ProfileListBase):
         lens_redshift_list,
         z_source_convention,
         cosmo=None,
-        numerical_alpha_class=None,
         cosmo_interp=False,
         z_interp_stop=None,
         num_z_interp=100,
-        kwargs_interp=None,
-        kwargs_synthesis=None,
+        profile_kwargs_list=None,
     ):
         """
         A description of the recursive multi-plane formalism can be found e.g. here: https://arxiv.org/abs/1312.1536
@@ -32,13 +30,11 @@ class MultiPlaneBase(ProfileListBase):
         :param lens_model_list: list of lens model strings
         :param lens_redshift_list: list of floats with redshifts of the lens models indicated in lens_model_list
         :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens
-         models. If None, 'z_source' is used.
+            models. If None, 'z_source' is used.
         :param cosmo: instance of astropy.cosmology
-        :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model
-         (see documentation in Profiles/numerical_alpha)
-        :param kwargs_interp: interpolation keyword arguments specifying the numerics.
-         See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
-        :param kwargs_synthesis: keyword arguments for the 'SYNTHESIS' lens model, if applicable
+        :param profile_kwargs_list: list of dicts, keyword arguments used to initialize profile classes
+            in the same order of the lens_model_list. If any of the profile_kwargs are None, then that
+            profile will be initialized using default settings.
         """
         self._lens_model_list = lens_model_list
 
@@ -64,11 +60,9 @@ class MultiPlaneBase(ProfileListBase):
         self._lens_redshift_list = lens_redshift_list
         super(MultiPlaneBase, self).__init__(
             self._lens_model_list,
-            numerical_alpha_class=numerical_alpha_class,
             lens_redshift_list=lens_redshift_list,
             z_source_convention=z_source_convention,
-            kwargs_interp=kwargs_interp,
-            kwargs_synthesis=kwargs_synthesis,
+            profile_kwargs_list=profile_kwargs_list,
         )
 
         if len(self._lens_model_list) < 1:

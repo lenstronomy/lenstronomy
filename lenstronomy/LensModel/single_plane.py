@@ -12,32 +12,26 @@ class SinglePlane(ProfileListBase):
     def __init__(
         self,
         lens_model_list,
-        numerical_alpha_class=None,
+        profile_kwargs_list=None,
         lens_redshift_list=None,
         z_source_convention=None,
-        kwargs_interp=None,
-        kwargs_synthesis=None,
         alpha_scaling=1,
     ):
         """
 
         :param lens_model_list: list of strings with lens model names
-        :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model
-         deflection angles as a lens model. See the documentation in Profiles.numerical_deflections
-        :param kwargs_interp: interpolation keyword arguments specifying the numerics.
-         See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
-        :param kwargs_synthesis: keyword arguments for the 'SYNTHESIS' lens model, if applicable
+        :param profile_kwargs_list: list of dicts, keyword arguments used to initialize profile classes
+            in the same order of the lens_model_list. If any of the profile_kwargs are None, then that
+            profile will be initialized using default settings.
         :param alpha_scaling: scaling factor of deflection angle relative to z_source_convention
         """
         self._alpha_scaling = alpha_scaling
         ProfileListBase.__init__(
             self,
             lens_model_list=lens_model_list,
-            numerical_alpha_class=numerical_alpha_class,
+            profile_kwargs_list=profile_kwargs_list,
             lens_redshift_list=lens_redshift_list,
             z_source_convention=z_source_convention,
-            kwargs_interp=kwargs_interp,
-            kwargs_synthesis=kwargs_synthesis,
         )
 
     def ray_shooting(self, x, y, kwargs, k=None):

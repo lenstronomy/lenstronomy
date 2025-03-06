@@ -64,7 +64,6 @@ class TestFastRayShooting(object):
             param_class=self.param_class,
             foreground_rays=None,
             tol_source=1e-5,
-            numerical_alpha_class=None,
         )
 
         (
@@ -117,7 +116,6 @@ class TestFastRayShooting(object):
             param_class=self.param_class,
             foreground_rays=foreground_rays,
             tol_source=1e-5,
-            numerical_alpha_class=None,
         )
 
         # xfast, yfast = fast_rayshooting_new.ray_shooting_fast(args_lens)

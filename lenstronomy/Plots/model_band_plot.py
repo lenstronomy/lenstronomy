@@ -7,6 +7,7 @@ from lenstronomy.Data.coord_transforms import Coordinates
 from lenstronomy.Plots import plot_util
 from lenstronomy.Analysis.image_reconstruction import ModelBand
 from lenstronomy.LensModel.lens_model import LensModel
+from lenstronomy.ImSim.image_linear_solve import ImageLinearFit, ImageModel
 
 __all__ = ["ModelBandPlot"]
 
@@ -375,6 +376,7 @@ class ModelBandPlot(ModelBand):
 
         kwargs_lens_macro = []
         lens_model_list_macro = []
+        profile_kwargs_list_macro = []
         multi_plane = self._lensModel.multi_plane
         if multi_plane:
             lens_redshift_list = self._lensModel.redshift_list
@@ -391,6 +393,7 @@ class ModelBandPlot(ModelBand):
             kwargs_lens_macro.append(self._kwargs_lens_partial[idx])
             if multi_plane:
                 lens_redshift_list_macro.append(lens_redshift_list[idx])
+            profile_kwargs_list_macro.append(self._lensModel.profile_kwargs_list[idx])
 
         lens_model_macro = LensModel(
             lens_model_list_macro,
@@ -398,6 +401,7 @@ class ModelBandPlot(ModelBand):
             lens_redshift_list=lens_redshift_list_macro,
             z_source=z_source,
             cosmo=cosmo,
+            profile_kwargs_list=profile_kwargs_list_macro,
         )
 
         if super_sample_factor is None:
@@ -817,12 +821,12 @@ class ModelBandPlot(ModelBand):
             ra_at_xy_0=x_grid_source[0],
             dec_at_xy_0=y_grid_source[0],
         )
-        error_map_source = self._bandmodel.error_map_source(
+        error_map_source = ImageLinearFit.error_map_source(
+            self._bandmodel,
             self._kwargs_source_partial,
             x_grid_source,
             y_grid_source,
             self._cov_param,
-            model_index_select=False,
         )
         error_map_source = util.array2image(error_map_source)
         d_s = numPix * deltaPix_source
@@ -1089,7 +1093,8 @@ class ModelBandPlot(ModelBand):
         :param kwargs: kwargs to send matplotlib.pyplot.matshow()
         :return:
         """
-        model = self._bandmodel.image(
+        model = ImageModel.image(
+            self._bandmodel,
             self._kwargs_lens_partial,
             self._kwargs_source_partial,
             self._kwargs_lens_light_partial,
@@ -1149,7 +1154,8 @@ class ModelBandPlot(ModelBand):
         lens_light_add=False,
         font_size=15,
     ):
-        model = self._bandmodel.image(
+        model = ImageModel.image(
+            self._bandmodel,
             self._kwargs_lens_partial,
             self._kwargs_source_partial,
             self._kwargs_lens_light_partial,
@@ -1303,8 +1309,10 @@ class ModelBandPlot(ModelBand):
         :param v_max:
         :return:
         """
-        model = self._bandmodel.extinction_map(
-            self._kwargs_extinction_partial, self._kwargs_special_partial
+        model = ImageModel.extinction_map(
+            self._bandmodel,
+            self._kwargs_extinction_partial,
+            self._kwargs_special_partial,
         )
         if v_min is None:
             v_min = 0

@@ -19,6 +19,7 @@ class LightProfile(object):
     def __init__(
         self,
         profile_list,
+        profile_kwargs_list=None,
         interpol_grid_num=2000,
         max_interpolate=1000,
         min_interpolate=0.001,
@@ -27,13 +28,18 @@ class LightProfile(object):
         """
 
         :param profile_list: list of light profiles for LightModel module (must support light_3d() functionalities)
+        :param profile_kwargs_list: list of dicts, keyword arguments used to initialize light profile
+            classes in the same order of the profile_list. If any of the profile_kwargs are None,
+            then that profile will be initialized using default settings.
         :param interpol_grid_num: int; number of interpolation steps (logarithmically between min and max value)
         :param max_interpolate: float; maximum interpolation of 3d light profile
         :param min_interpolate: float; minimum interpolate (and also drawing of light profile)
         :param max_draw: float; (optional) if set, draws up to this radius, else uses max_interpolate value
         """
 
-        self.light_model = LightModel(light_model_list=profile_list)
+        self.light_model = LightModel(
+            light_model_list=profile_list, profile_kwargs_list=profile_kwargs_list
+        )
         self._interp_grid_num = interpol_grid_num
         self._max_interpolate = max_interpolate
         self._min_interpolate = min_interpolate

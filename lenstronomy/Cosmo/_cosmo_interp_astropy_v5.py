@@ -6,8 +6,10 @@ if float(astropy.__version__[0]) < 5.0:
         "This routines are only supported for astropy version >=5. Current version is %s."
         % astropy.__version__
     )
-else:
+elif float(astropy.__version__[0]) < 7.0:
     from astropy.cosmology.utils import vectorize_redshift_method
+else:
+    from astropy.cosmology._utils import vectorize_redshift_method
 
 
 class CosmoInterp(object):

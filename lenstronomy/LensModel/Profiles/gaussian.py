@@ -58,6 +58,8 @@ class Gaussian(LensProfileBase):
         :param c: 1/2sigma^2
         :return:
         """
+        if r == 0:
+            return 0
         out = integrate.quad(lambda x: (1 - np.exp(-c * x**2)) / x, 0, r)
         return out[0]
 

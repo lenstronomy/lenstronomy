@@ -130,7 +130,7 @@ class LensedPositions(PSBase):
                 for i in range(len(ra_image)):
                     mag.append(
                         self._lens_model.magnification(
-                            ra_image, dec_image, kwargs_lens, k=self.k_list[i]
+                            ra_image[i], dec_image[i], kwargs_lens, k=self.k_list[i]
                         )
                     )
             point_amp = kwargs_ps["source_amp"] * np.abs(mag)
@@ -162,7 +162,7 @@ class LensedPositions(PSBase):
                 for i in range(len(ra_image)):
                     mag.append(
                         self._lens_model.magnification(
-                            ra_image, dec_image, kwargs_lens, k=self.k_list[i]
+                            ra_image[i], dec_image[i], kwargs_lens, k=self.k_list[i]
                         )
                     )
             point_amp = kwargs_ps["point_amp"]

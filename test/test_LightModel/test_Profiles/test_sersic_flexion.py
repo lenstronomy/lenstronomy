@@ -14,7 +14,9 @@ class TestSersic(object):
     """Tests the elliptic flexed Sersic in the same way as the other Sersic profiles."""
 
     def setup_method(self):
-        self.flexed_sersic = SersicEllipticFlexed(smoothing=0.02, sersic_major_axis=True)
+        self.flexed_sersic = SersicEllipticFlexed(
+            smoothing=0.02, sersic_major_axis=True
+        )
 
     def test_sersic_flexion(self):
         x = np.array([1])
@@ -46,6 +48,7 @@ class TestSersic(object):
         npt.assert_almost_equal(values[0], 0.11308277793465012, decimal=6)
         npt.assert_almost_equal(values[1], 0.021188620675507107, decimal=6)
         npt.assert_almost_equal(values[2], 0.0037276744362724477, decimal=6)
+
 
 if __name__ == "__main__":
     pytest.main()

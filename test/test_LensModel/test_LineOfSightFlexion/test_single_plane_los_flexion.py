@@ -1,4 +1,4 @@
-__author__ = "nataliehogg"
+__author__ = "nataliehogg" "test"
 
 import numpy as np
 import numpy.testing as npt

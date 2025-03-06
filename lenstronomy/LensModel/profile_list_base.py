@@ -482,26 +482,25 @@ def lens_class(
         from lenstronomy.LensModel.Profiles.interpol import InterpolScaled
 
         return InterpolScaled(**profile_kwargs)
+
+
     elif lens_type == "LOS":
         from lenstronomy.LensModel.LineOfSight.LOSModels.los import LOS
-
         return LOS(**profile_kwargs)
+
     elif lens_type == "LOS_MINIMAL":
-        from lenstronomy.LensModel.LineOfSight.LOSModels.los_minimal import (
-            LOSMinimal,
-        )
-    elif lens_type == "LOSF":
-        from lenstronomy.LensModel.LineOfSightFlexion.LOSFlexionModels.losflexion import (
-            LOSFlexion,
-        )
-
-        return LOSFlexion()
-    elif lens_type == "LOSF_MINIMAL":
-        from lenstronomy.LensModel.LineOfSightFlexion.LOSFlexionModels.losflexion_minimal import (
-            LOSFlexionMinimal,
-        )
-
+        from lenstronomy.LensModel.LineOfSight.LOSModels.los_minimal import LOSMinimal
         return LOSMinimal(**profile_kwargs)
+
+    elif lens_type == "LOSF":
+        from lenstronomy.LensModel.LineOfSightFlexion.LOSFlexionModels.losflexion import LOSFlexion
+        return LOSFlexion(**profile_kwargs)
+
+    elif lens_type == "LOSF_MINIMAL":
+        from lenstronomy.LensModel.LineOfSightFlexion.LOSFlexionModels.losflexion_minimal import LOSFlexionMinimal
+        return LOSFlexionMinimal(**profile_kwargs)
+
+
     elif lens_type == "MULTIPOLE":
         from lenstronomy.LensModel.Profiles.multipole import Multipole
 

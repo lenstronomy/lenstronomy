@@ -57,7 +57,7 @@ class SinglePlaneLOSFlexion(SinglePlane):
         self._losf_model = lens_model_list[index_losf]
         self.losf = lens_class(
             self._losf_model,
-            profile_kwargs=profile_kwargs_list[index_losf]
+
         )
 
         # Define a separate class for the main lens

@@ -214,9 +214,17 @@ class LensModel(object):
                 self.lens_model = SinglePlaneLOSFlexion(
                     lens_model_list,
                     index_losf=index_losf,
+<<<<<<< HEAD
                     lens_redshift_list=lens_redshift_list,
                     z_source_convention=z_source_convention,
                     profile_kwargs_list=profile_kwargs_list,
+=======
+                    # numerical_alpha_class=numerical_alpha_class,
+                    lens_redshift_list=lens_redshift_list,
+                    z_source_convention=z_source_convention,
+                    # kwargs_interp=kwargs_interp,
+                    # kwargs_synthesis=kwargs_synthesis,
+>>>>>>> a45adce97af29609b52296f88acb99dc22ece61a
                 )
                 self.type = "SinglePlaneLOSFlexion"
             else:

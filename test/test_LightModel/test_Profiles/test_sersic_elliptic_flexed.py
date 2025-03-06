@@ -4,7 +4,6 @@ from lenstronomy.LightModel.Profiles.sersic_elliptic_flexed import (
     SersicEllipticFlexed,
 )
 import lenstronomy.Util.param_util as param_util
-from lenstronomy.Util import util
 import numpy as np
 import pytest
 import numpy.testing as npt

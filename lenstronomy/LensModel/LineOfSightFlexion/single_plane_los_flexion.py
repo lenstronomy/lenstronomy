@@ -51,9 +51,9 @@ class SinglePlaneLOSFlexion(SinglePlane):
         self._losf_model = lens_model_list[index_losf]
         self.losf = lens_class(
             self._losf_model,
-            #custom_class=None,
-            #kwargs_interp=None,
-            #kwargs_synthesis=kwargs_synthesis,
+            # custom_class=None,
+            # kwargs_interp=None,
+            # kwargs_synthesis=kwargs_synthesis,
         )
 
         # Define a separate class for the main lens
@@ -62,10 +62,10 @@ class SinglePlaneLOSFlexion(SinglePlane):
         ]
         self._main_lens = SinglePlane(
             lens_model_list_wo_los,
-            #numerical_alpha_class=numerical_alpha_class,
+            # numerical_alpha_class=numerical_alpha_class,
             lens_redshift_list=lens_redshift_list,
             z_source_convention=z_source_convention,
-            #kwargs_interp=kwargs_interp,
+            # kwargs_interp=kwargs_interp,
         )
 
     def split_lens_losf(self, kwargs):

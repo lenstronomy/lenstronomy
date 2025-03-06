@@ -18,7 +18,7 @@ class TestSersicEllipticFlexed(object):
             smoothing=0.02, sersic_major_axis=True
         )
 
-    def test_sersic_flexion(self):
+    def test_sersic_elliptic_flexed(self):
         x = np.array([1])
         y = np.array([2])
         I0_sersic = 1

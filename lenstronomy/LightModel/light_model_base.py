@@ -98,7 +98,7 @@ class LightModelBase(object):
                 self.func_list.append(SersicElliptic_qPhi(**profile_kwargs))
 
             elif profile_type == "SERSIC_FLEXION":
-                from lenstronomy.LightModel.Profiles.sersic_flexion import (
+                from lenstronomy.LightModel.Profiles.sersic_elliptic_flexed import (
                     SersicEllipticFlexed,
                 )
 

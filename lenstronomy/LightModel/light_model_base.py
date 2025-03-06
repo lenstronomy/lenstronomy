@@ -18,6 +18,7 @@ _MODELS_SUPPORTED = [
     "SERSIC",
     "SERSIC_ELLIPSE",
     "SERSIC_ELLIPSE_Q_PHI",
+    "SERSIC_FLEXION",
     "CORE_SERSIC",
     "SHAPELETS",
     "SHAPELETS_POLAR",
@@ -93,7 +94,16 @@ class LightModelBase(object):
                 self.func_list.append(SersicElliptic(**profile_kwargs))
             elif profile_type == "SERSIC_ELLIPSE_Q_PHI":
                 from lenstronomy.LightModel.Profiles.sersic import SersicElliptic_qPhi
+            elif profile_type == "SERSIC_FLEXION":
+                from lenstronomy.LightModel.Profiles.sersic_flexion import (
+                    SersicEllipticFlexed,
+                )
 
+                self.func_list.append(
+                    SersicEllipticFlexed(
+                        smoothing=smoothing, sersic_major_axis=sersic_major_axis
+                    )
+                )
                 self.func_list.append(SersicElliptic_qPhi(**profile_kwargs))
             elif profile_type == "CORE_SERSIC":
                 from lenstronomy.LightModel.Profiles.sersic import CoreSersic
@@ -284,6 +294,7 @@ class LightModelBase(object):
                 if model in [
                     "SERSIC",
                     "SERSIC_ELLIPSE",
+                    "SERSIC_FLEXION",
                     "INTERPOL",
                     "GAUSSIAN",
                     "GAUSSIAN_ELLIPSE",

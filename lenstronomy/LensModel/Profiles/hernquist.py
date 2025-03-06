@@ -6,7 +6,7 @@ __all__ = ["Hernquist"]
 
 class Hernquist(LensProfileBase):
     """Class to compute the Hernquist 1990 model (https://articles.adsabs.harvard.edu/pdf/1990ApJ...356..359H)
-    This model in 3D is: 
+    This model in 3D is:
     .. math::
         \\rho(r) = \\frac{\\rho_0}{(r/R_s) (1 + r/R_s)^3}
     where :math:`\\rho_0` is a characteristic density and :math:`R_s` is a scale length.

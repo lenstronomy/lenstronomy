@@ -1,6 +1,6 @@
 __author__ = "nataliehogg"
 
-from lenstronomy.LightModel.Profiles.sersic_flexion import (
+from lenstronomy.LightModel.Profiles.sersic_elliptic_flexed import (
     SersicEllipticFlexed,
 )
 import lenstronomy.Util.param_util as param_util
@@ -10,7 +10,7 @@ import pytest
 import numpy.testing as npt
 
 
-class TestSersic(object):
+class TestSersicEllipticFlexed(object):
     """Tests the elliptic flexed Sersic in the same way as the other Sersic profiles."""
 
     def setup_method(self):

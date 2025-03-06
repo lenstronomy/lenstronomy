@@ -20,19 +20,23 @@ class PSBase(object):
 
         :param lens_model: instance of the LensModel() class
         :param fixed_magnification: bool. If True, magnification
-         ratio of point sources is fixed to the one given by the lens model
+            ratio of point sources is fixed to the one given by the lens model
         :param additional_images: bool. If True, search for additional images of the same source is conducted.
         :param index_lens_model_list: list (length of different patches/bands) of integer lists, e.g., [[0, 1], [2, 3]];
-         evaluating a subset of the lens models per individual bands. If this keyword is set, the image positions need
-         to have a specified band/frame assigned to it
-        :param point_source_frame_list: list of lists mirroring the structure of the image positions.
-         Integers correspond to the i'th list entry of index_lens_model_list indicating in which frame/band the image is
-         appearing
+            evaluating a subset of the lens models per individual bands. If this keyword is set, the image positions need
+            to have a specified band/frame assigned to it
+        :param point_source_frame_list: list of ints, e.g. we can assign the i-th image to the second band
+            with point_source_frame_list[i] = 2
         :param redshift: redshift of the source, only required for multiple source redshifts
         :type redshift: None or float
         """
         self._redshift = redshift
         self._lens_model = lens_model
+
+        # k_list is a list of lists which combines index_lens_model_list with point_source_frame_list
+        # to connect each point source image with its corresponding lens models
+        # e.g. k_list[i] = (a, b) means that the i-th point source image only involves the models
+        # lens_model_list[a] and lens_model_list[b]
         if index_lens_model_list is not None:
             k_list = []
             for point_source_frame in point_source_frame_list:

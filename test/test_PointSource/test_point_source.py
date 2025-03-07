@@ -310,6 +310,13 @@ class TestPointSourceFixedMag(object):
         assert ra_list[0] == self.x_pos[0]
         assert len(ra_list) == 9
 
+        ra_list, dec_list, amp_list = self.PointSource.point_source_list(
+            self.kwargs_ps, self.kwargs_lens, with_amp=False
+        )
+        assert ra_list[0] == self.x_pos[0]
+        assert len(ra_list) == 9
+        assert amp_list == [1.] * 9
+
     def test_check_image_positions(self):
         bool = self.PointSource.check_image_positions(
             self.kwargs_ps, self.kwargs_lens, tolerance=0.001

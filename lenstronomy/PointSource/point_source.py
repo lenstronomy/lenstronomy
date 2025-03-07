@@ -308,8 +308,6 @@ class PointSource(object):
         ra_list, dec_list = self.image_position(kwargs_ps, kwargs_lens, k=k)
         if with_amp is True:
             amp_list = self.image_amplitude(kwargs_ps, kwargs_lens, k=k)
-        else:
-            amp_list = np.ones_like(ra_list)
 
         # here we delete the individual modeling caches in case this was the option
         if self._save_cache is False:
@@ -321,7 +319,10 @@ class PointSource(object):
             for j in range(len(ra)):
                 ra_array.append(ra_list[i][j])
                 dec_array.append(dec_list[i][j])
-                amp_array.append(amp_list[i][j])
+                if with_amp:
+                    amp_array.append(amp_list[i][j])
+                else:
+                    amp_array.append(1.)
         return ra_array, dec_array, amp_array
 
     def num_basis(self, kwargs_ps, kwargs_lens):

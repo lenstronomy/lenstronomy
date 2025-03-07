@@ -51,7 +51,7 @@ class PSBase(object):
             self._solver = None
         else:
             self._solver = LensEquationSolver(lens_model)
-            
+
         self._fixed_magnification = fixed_magnification
         self.additional_images = additional_images
         if fixed_magnification is True and additional_images is True:

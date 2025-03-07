@@ -253,7 +253,7 @@ class SPEP(LensProfileBase):
 
         :param gamma: power-law slope
         :param q: axis ratio
-        :return: bounded \textbf{gamma} and \textbf{q}
+        :return: bounded :math:`\gamma` and :math:`q`
         """
     
         if gamma < 1.4:

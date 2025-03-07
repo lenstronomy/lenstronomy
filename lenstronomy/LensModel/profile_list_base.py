@@ -482,7 +482,6 @@ def lens_class(
         from lenstronomy.LensModel.Profiles.interpol import InterpolScaled
 
         return InterpolScaled(**profile_kwargs)
-
     elif lens_type == "LOS":
         from lenstronomy.LensModel.LineOfSight.LOSModels.los import LOS
 

@@ -10,20 +10,33 @@ import unittest
 class TestClassCreator(object):
     def setup_method(self):
         self.kwargs_model = {
-            "lens_model_list": ["SIS"],
-            "source_light_model_list": ["SERSIC"],
-            "lens_light_model_list": ["SERSIC"],
+            "lens_model_list": ["SIS", "NFW", "GNFW", "GNFW", "NFW", "NFW"],
+            "lens_profile_kwargs_list": [
+                None,
+                {"interpol": True},
+                {"trapezoidal_integration": True},
+                None,
+                {"interpol": True},
+                None,
+            ],
+            "source_light_model_list": ["SERSIC", "SERSIC"],
+            "source_light_profile_kwargs_list": [
+                {"sersic_major_axis": False},
+                {"sersic_major_axis": True},
+            ],
+            "lens_light_model_list": ["SERSIC", "SERSIC"],
+            "lens_light_profile_kwargs_list": [{"sersic_major_axis": True}, None],
             "point_source_model_list": ["LENSED_POSITION"],
-            "index_lens_model_list": [[0]],
-            "index_source_light_model_list": [[0]],
-            "index_lens_light_model_list": [[0]],
+            "index_lens_model_list": [[0, 1, 2, 3, 4, 5]],
+            "index_source_light_model_list": [[0, 1]],
+            "index_lens_light_model_list": [[0, 1]],
             "index_point_source_model_list": [[0]],
             "band_index": 0,
-            "source_deflection_scaling_list": [1],
-            "source_redshift_list": [1],
+            "source_deflection_scaling_list": [1, 1],
+            "source_redshift_list": [1, 1],
             "fixed_magnification_list": [True],
             "additional_images_list": [False],
-            "lens_redshift_list": [0.5],
+            "lens_redshift_list": [0.5] * 6,
             "point_source_frame_list": [[0]],
         }
         self.kwargs_model_2 = {
@@ -56,8 +69,15 @@ class TestClassCreator(object):
             "point_source_frame_list": [[0]],
         }
         self.kwargs_model_5 = {
-            "lens_model_list": ["SIS", "SIS"],
-            "lens_redshift_list": [0.3, 0.4],
+            "lens_model_list": ["SIS", "SIS", "NFW", "GNFW", "GNFW"],
+            "lens_profile_kwargs_list": [
+                None,
+                None,
+                {"interpol": True},
+                {"trapezoidal_integration": True},
+                None,
+            ],
+            "lens_redshift_list": [0.3, 0.4, 0.5, 0.6, 0.8],
             "multi_plane": True,
             "z_source": 1,
             "kwargs_multiplane_model_point_source": {},
@@ -75,7 +95,39 @@ class TestClassCreator(object):
             point_source_class,
             extinction_class,
         ) = class_creator.create_class_instances(**self.kwargs_model)
-        assert lens_model_class.lens_model_list[0] == "SIS"
+        assert lens_model_class.lens_model_list == [
+            "SIS",
+            "NFW",
+            "GNFW",
+            "GNFW",
+            "NFW",
+            "NFW",
+        ]
+        assert lens_model_class.lens_model.func_list[1]._interpol == True
+        assert (
+            lens_model_class.lens_model.func_list[2]._integrate.__name__
+            == "_trapezoidal_integrate"
+        )
+        assert (
+            lens_model_class.lens_model.func_list[3]._integrate.__name__
+            == "_quad_integrate"
+        )
+        assert (
+            lens_model_class.lens_model.func_list[1]
+            == lens_model_class.lens_model.func_list[4]
+        )
+
+        assert lens_model_class.lens_model.func_list[5]._interpol == False
+        assert (
+            lens_model_class.lens_model.func_list[1]
+            != lens_model_class.lens_model.func_list[5]
+        )
+
+        assert source_model_class.func_list[0]._sersic_major_axis == False
+        assert source_model_class.func_list[1]._sersic_major_axis == True
+
+        assert lens_light_model_class.func_list[0]._sersic_major_axis == True
+        assert lens_light_model_class.func_list[1]._sersic_major_axis == False
 
         (
             lens_model_class,
@@ -112,7 +164,22 @@ class TestClassCreator(object):
             point_source_class,
             extinction_class,
         ) = class_creator.create_class_instances(**self.kwargs_model_5)
-        assert lens_model_class.lens_model_list[0] == "SIS"
+        assert lens_model_class.lens_model_list == ["SIS", "SIS", "NFW", "GNFW", "GNFW"]
+        assert (
+            lens_model_class.lens_model._multi_plane_base.func_list[2]._interpol == True
+        )
+        assert (
+            lens_model_class.lens_model._multi_plane_base.func_list[
+                3
+            ]._integrate.__name__
+            == "_trapezoidal_integrate"
+        )
+        assert (
+            lens_model_class.lens_model._multi_plane_base.func_list[
+                4
+            ]._integrate.__name__
+            == "_quad_integrate"
+        )
 
     def test_create_image_model(self):
         imageModel = class_creator.create_image_model(

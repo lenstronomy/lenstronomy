@@ -7,9 +7,8 @@ __all__ = ["SersicUtil"]
 
 
 class SersicUtil(object):
-    _s = 0.00001
 
-    def __init__(self, smoothing=_s, sersic_major_axis=False):
+    def __init__(self, smoothing=0.0001, sersic_major_axis=False):
         """
 
         :param smoothing: smoothing scale of the innermost part of the profile (for numerical reasons)
@@ -88,9 +87,9 @@ class SersicUtil(object):
         y_ = y - center_y
         r = np.sqrt(x_**2 + y_**2)
         if isinstance(r, int) or isinstance(r, float):
-            r = max(self._s, r)
+            r = max(self._smoothing, r)
         else:
-            r[r < self._s] = self._s
+            r[r < self._smoothing] = self._smoothing
         x_reduced = (r / r_eff) ** (1.0 / n_sersic)
         return x_reduced
 

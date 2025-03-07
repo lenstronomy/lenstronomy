@@ -17,7 +17,9 @@ class SPEP(LensProfileBase):
     .. math::
         \\psi(x, y) = \\frac{2 E^2}{\\eta^2} \\left( \\frac{p^2 + s^2}{E^2} \\right)^{\\eta/2}
 
-    where :math:`E` is the normalization factor related to the Einstein radius :math:`\\theta_{E}`,  
+    where :math:`E` is the normalization factor related to the Einstein radius :math:`\\theta_{E}`, 
+    :math:`\\gamma` is the power law slope,
+    :math:`s` is the softening parameter,
     :math:`\\eta = 3 - \\gamma` is the power-law exponent transformation,  
     and :math:`p^2` is given by  
 
@@ -38,11 +40,7 @@ class SPEP(LensProfileBase):
     .. math::
         E = \\frac{\\theta_E}{\\left( \\frac{3 - \\gamma}{2} \\right)^{1/(1 - \\gamma)} \\sqrt{q}}.
 
-    Here, :math:`\\theta_E` is the Einstein radius, :math:`\\gamma` is the power-law slope of the mass profile,  
-    :math:`q` is the axis ratio of the elliptical potential, and :math:`s` is a softening parameter.  
-
-    The transformed coordinates incorporate the ellipticity parameters :math:`e_1, e_2`, converted to  
-    an axis ratio :math:`q` and position angle :math:`\\phi_G`.  
+    Here, :math:`q` is the axis ratio of the elliptical potential.  
 
     A mathematical derivation of this potential is discussed in Barkana (1998),  
     https://iopscience.iop.org/article/10.1086/305950/fulltext/.

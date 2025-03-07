@@ -498,7 +498,6 @@ def lens_class(
         )
 
         return LOSFlexion(**profile_kwargs)
-
     elif lens_type == "LOSF_MINIMAL":
         from lenstronomy.LensModel.LineOfSightFlexion.LOSFlexionModels.losflexion_minimal import (
             LOSFlexionMinimal,

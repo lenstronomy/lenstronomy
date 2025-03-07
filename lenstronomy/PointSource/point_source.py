@@ -322,7 +322,7 @@ class PointSource(object):
                 if with_amp:
                     amp_array.append(amp_list[i][j])
                 else:
-                    amp_array.append(1.)
+                    amp_array.append(1.0)
         return ra_array, dec_array, amp_array
 
     def num_basis(self, kwargs_ps, kwargs_lens):

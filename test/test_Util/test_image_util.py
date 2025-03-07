@@ -68,13 +68,15 @@ def test_add_layer2image_int():
     x_pos, y_pos = 4, 1
     kernel = np.ones((3, 5))
     added = image_util.add_layer2image_int(grid2d, x_pos, y_pos, kernel)
-    added_ref = [[0, 0, 1, 1, 1, 1, 1],
-                 [0, 0, 1, 1, 1, 1, 1],
-                 [0, 0, 1, 1, 1, 1, 1],
-                 [0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 0],]
+    added_ref = [
+        [0, 0, 1, 1, 1, 1, 1],
+        [0, 0, 1, 1, 1, 1, 1],
+        [0, 0, 1, 1, 1, 1, 1],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+    ]
     npt.assert_array_equal(added, added_ref)
 
 

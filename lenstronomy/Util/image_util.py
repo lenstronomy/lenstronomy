@@ -46,7 +46,7 @@ def add_layer2image_int(grid2d, x_pos, y_pos, kernel):
     k_rows, k_cols = np.shape(kernel)
     if k_rows % 2 == 0 or k_cols % 2 == 0:
         raise ValueError("kernel dimensions must be odd")
-    
+
     num_rows, num_cols = np.shape(grid2d)
     x_int = int(round(x_pos))
     y_int = int(round(y_pos))

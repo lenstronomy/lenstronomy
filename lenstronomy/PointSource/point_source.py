@@ -49,9 +49,9 @@ class PointSource(object):
             the 2nd and 3rd lens models to the 1st band, and the 1st lens model to the 2nd band.
             If this keyword is set, the image positions need to have a specified band/frame assigned to it
         :param point_source_frame_list: list of list of ints, assigns each model in point_source_type_list a frame list.
-            Only relevent for LENSEDPOSITION. e.g. if point_source_type_list = ["UNLENSED", "LENSEDPOSITION", "LENSEDPOSITION"]
-            with point_source_frame_list = [None, [0, 1, 2], [0, 1, 2, 1]], then the first LENSEDPOSITION will have a frame list of
-            [0, 1, 2] and the second LENSEDPOSITION will have a frame list of [0, 1, 2, 1]. See docstring for point_source_frame_list
+            Only relevent for LENSED_POSITION. e.g. if point_source_type_list = ["UNLENSED", "LENSED_POSITION", "LENSED_POSITION"]
+            with point_source_frame_list = [None, [0, 1, 2], [0, 1, 2, 1]], then the first LENSED_POSITION will have a frame list of
+            [0, 1, 2] and the second LENSED_POSITION will have a frame list of [0, 1, 2, 1]. See docstring for point_source_frame_list
             in PSBase for further details.
         :param redshift_list: list of redshifts (only required for multiple source redshifts)
         :type redshift_list: None or list

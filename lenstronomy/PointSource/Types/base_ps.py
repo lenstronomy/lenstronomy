@@ -27,7 +27,7 @@ class PSBase(object):
             the 2nd and 3rd lens models to the 1st band, and the 1st lens model to the 2nd band.
             If this keyword is set, the image positions need to have a specified band/frame assigned to it
         :param point_source_frame_list: list of ints assigning each image to a specific band/frame. Only relevant in
-            Lensed_Position. e.g. if Lensed_Position contains 4 images, we can assign them each to one of the bands with
+            LENSED_POSITION. e.g. if LENSED_POSITION contains 4 images, we can assign them each to one of the bands with
             point_source_frame_list = [0, 1, 2, 1], where point_source_frame_list[i] = n means that the i-th image belongs
             to band n.
         :param redshift: redshift of the source, only required for multiple source redshifts

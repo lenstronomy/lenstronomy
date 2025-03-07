@@ -158,7 +158,7 @@ class Hernquist(LensProfileBase):
         """Lensing potential, which is given by:
         .. math::
             \\phi = \\sigma_0 R_s^2 \\left[ \\log \\left( \\frac{X^2}{4} \\right) + 2 F(X) \\right]
-        where :math:`F(X)` is a function of :math:`X = r/R_s`. See equation 47 and 50 in https://arxiv.org/pdf/astro-ph/0102341.pdf
+        where :math:`F(X)` is a function of :math:`X = r/R_s`. See equation 47 and 50 in https://arxiv.org/abs/astro-ph/0102341v2
 
         :param x: x-coordinate position (units of angle)
         :param y: y-coordinate position (units of angle)

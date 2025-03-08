@@ -29,7 +29,7 @@ except:
 class TestSinglePlaneLOSFlexion(object):
     """Tests the SinglePlaneLOSFlexion routines.
 
-    these functions are the same as in TestLensModel but with the addition of LOSF and
+    These functions are the same as in TestLensModel but with the addition of LOSF and
     LOSF_MINIMAL as profiles. with all params in self.kwargs_los set to zero, the
     results should be the same as the non-LOSF cases originally tested.
     """

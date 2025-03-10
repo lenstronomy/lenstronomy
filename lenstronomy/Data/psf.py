@@ -54,9 +54,7 @@ class PSF(object):
 
         if self.psf_type == "GAUSSIAN":
             if fwhm is None:
-                raise ValueError(
-                    "fwhm must be set for GAUSSIAN psf type!"
-                )
+                raise ValueError("fwhm must be set for GAUSSIAN psf type!")
             self._fwhm = fwhm
             self._sigma_gaussian = util.fwhm2sigma(self._fwhm)
             self._truncation = truncation

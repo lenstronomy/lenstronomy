@@ -87,7 +87,6 @@ def create_class_instances(
         and the magnification is calculated from the lens models.
     :param point_source_frame_list: Unused, as this was not working correctly previously.
         # TODO: In addition to separating point source models into bands, also allow separation of images within a certain model into frames
-    
     :param additional_images_list: list of bool. Indicates which point source classes in the same order of point_source_model_list should use the lens equation
         solver to solve for additional images. Only relevant for the LENSED_POSITION point source type.
     :param kwargs_lens_eqn_solver: keyword arguments specifying the numerical settings for the lens equation solver

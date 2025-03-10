@@ -48,7 +48,7 @@ class SIS_truncate(LensProfileBase):
         :param center_y: profile center
         :returns:  function
         """
-       
+
         x_shift = x - center_x
         y_shift = y - center_y
         r = np.sqrt(x_shift * x_shift + y_shift * y_shift)
@@ -73,8 +73,7 @@ class SIS_truncate(LensProfileBase):
         return f_
 
     def derivatives(self, x, y, theta_E, r_trunc, center_x=0, center_y=0):
-        """
-        Computes the first derivatives df/dx and df/dy
+        """Computes the first derivatives df/dx and df/dy.
 
         :param x: x-coordinate in image plane
         :param y: y-coordinate in image plane
@@ -95,9 +94,8 @@ class SIS_truncate(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, theta_E, r_trunc, center_x=0, center_y=0):
-        """
-        Computes the Hessian matrix.
-        
+        """Computes the Hessian matrix.
+
         :param x: x-coordinate in image plane
         :param y: y-coordinate in image plane
         :param theta_E: Einstein radius of lens
@@ -119,8 +117,7 @@ class SIS_truncate(LensProfileBase):
         return f_xx, f_xy, f_xy, f_yy
 
     def _dphi_dr(self, x, y, theta_E, r_trunc):
-        """
-        First derivative of the potential in radial direction
+        """First derivative of the potential in radial direction.
 
         :param x: x-coordinate in image plane
         :param y: y-coordinate in image plane
@@ -148,7 +145,7 @@ class SIS_truncate(LensProfileBase):
         return a
 
     def _d2phi_dr2(self, x, y, theta_E, r_trunc):
-        """Second derivative of the potential in radial direction
+        """Second derivative of the potential in radial direction.
 
         :param x: x-coordinate in image plane
         :param y: y-coordinate in image plane
@@ -173,7 +170,7 @@ class SIS_truncate(LensProfileBase):
         return a
 
     def _dr_dx(self, x, y):
-        """Derivative dr/dx, dr/dy
+        """Derivative dr/dx, dr/dy.
 
         :param x: x-coordinate in image plane
         :param y: y-coordinate in image plane
@@ -190,7 +187,7 @@ class SIS_truncate(LensProfileBase):
 
     @staticmethod
     def _d2r_dx2(x, y):
-        """Second derivatives of dr/dx and dr/dy
+        """Second derivatives of dr/dx and dr/dy.
 
         :param x: x-coordinate in image plane
         :param y: y-coordinate in image plane

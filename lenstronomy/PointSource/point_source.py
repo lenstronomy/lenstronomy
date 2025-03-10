@@ -353,14 +353,17 @@ class PointSource(object):
         """
         amp_list = []
         for i, model in enumerate(self._point_source_list):
-            if (k is None or k == i) and self._flux_from_point_source_list[i]:
-                amp_list.append(
-                    model.image_amplitude(
-                        kwargs_ps=kwargs_ps[i],
-                        kwargs_lens=kwargs_lens,
-                        kwargs_lens_eqn_solver=self._kwargs_lens_eqn_solver,
-                    )
+            if k is None or k == i:
+                image_amp = model.image_amplitude(
+                    kwargs_ps=kwargs_ps[i],
+                    kwargs_lens=kwargs_lens,
+                    kwargs_lens_eqn_solver=self._kwargs_lens_eqn_solver,
                 )
+                if self._flux_from_point_source_list[i]:
+                    amp_list.append(np.zeros_like(image_amp))
+                else:
+                    amp_list.append(image_amp)
+                
         return amp_list
 
     def source_amplitude(self, kwargs_ps, kwargs_lens):
@@ -372,12 +375,13 @@ class PointSource(object):
         """
         amp_list = []
         for i, model in enumerate(self._point_source_list):
+            source_amp = model.source_amplitude(
+                kwargs_ps=kwargs_ps[i], kwargs_lens=kwargs_lens
+            )
             if self._flux_from_point_source_list[i]:
-                amp_list.append(
-                    model.source_amplitude(
-                        kwargs_ps=kwargs_ps[i], kwargs_lens=kwargs_lens
-                    )
-                )
+                amp_list.append(source_amp)
+            else:
+                amp_list.append(np.zeros_like(source_amp))
         return amp_list
 
     def linear_response_set(self, kwargs_ps, kwargs_lens=None, with_amp=False):
@@ -495,7 +499,9 @@ class PointSource(object):
         argument list currently only used in SimAPI to transform magnitudes to
         amplitudes in the lenstronomy conventions.
 
-        :param amp_list: list of model amplitudes for each point source model
+        :param amp_list: list of model amplitudes for each point source model. This list should
+            include all of the point source models even if flux_from_point_source is False for any of them.
+            In that case, the amplitudes will not be changed for those models.
         :param kwargs_ps: list of point source keywords
         :return: overwrites kwargs_ps with new amplitudes
         """

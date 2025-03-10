@@ -58,14 +58,18 @@ class TestClassCreator(object):
             "lens_model_list": ["SIS", "EPL", "SHEAR"],
             "source_light_model_list": ["SERSIC"],
             "lens_light_model_list": ["SERSIC"],
-            "point_source_model_list": ["LENSED_POSITION", "UNLENSED", "LENSED_POSITION"],
+            "point_source_model_list": [
+                "LENSED_POSITION",
+                "UNLENSED",
+                "LENSED_POSITION",
+            ],
             "index_lens_model_list": [[0, 2], [1, 2]],
             "index_source_light_model_list": [[0], [0]],
             "index_lens_light_model_list": [[0], [0]],
             "index_point_source_model_list": [[0, 1], [1, 2]],
             "point_source_frame_list": [[0, 1], None, [1, 0, 1]],
             "point_source_redshift_list": [0.5, 1, 1.5],
-            "band_index": 1
+            "band_index": 1,
         }
         self.kwargs_model_4 = {
             "lens_model_list": ["SIS", "SIS"],
@@ -171,7 +175,11 @@ class TestClassCreator(object):
 
         # Since we assigned LENSED_POSITION 2 with a point_source_frame_list of [1, 0, 1]
         # the three images should correspond to lens models [[1, 2], [0, 2], [1, 2]]
-        assert point_source_class._point_source_list[1]._model.k_list == [[1, 2], [0, 2], [1, 2]]
+        assert point_source_class._point_source_list[1]._model.k_list == [
+            [1, 2],
+            [0, 2],
+            [1, 2],
+        ]
 
         (
             lens_model_class,

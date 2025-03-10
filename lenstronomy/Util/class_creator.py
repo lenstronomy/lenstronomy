@@ -61,7 +61,8 @@ def create_class_instances(
 
     :param lens_model_list: list of strings indicating the type of lens models
     :param z_lens: redshift of the deflector (for single lens plane mode, but only relevant when computing physical quantities)
-    :param z_source: redshift of source (for single source plane mode, or for multiple source planes the redshift of the point source). In regard to this redshift the reduced deflection angles are defined in the lens model.
+    :param z_source: redshift of source (for single source plane mode, or for multiple source planes the redshift of the point source).
+        In regard to this redshift the reduced deflection angles are defined in the lens model.
     :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens models.
         If None, 'z_source' is used.
     :param lens_redshift_list: None or list of floats in the same order of the lens_model_list
@@ -82,13 +83,15 @@ def create_class_instances(
         profile classes in the same order of the lens_light_model_list. If any of the profile_kwargs are None,
         then that profile will be initialized using default settings.
     :param point_source_model_list: list of strings indicating the type of point source models
-    :param fixed_magnification_list: list of bool. Indicates which point source classes in the same order of point_source_model_list should have fixed magnification.
-        Only relevant for the LENSED_POSITION point source type. If set to True, then "source_amp" is a parameter instead of "point_amp",
-        and the magnification is calculated from the lens models.
+    :param fixed_magnification_list: list of bool. Indicates which point source classes in the same order of
+        point_source_model_list should have fixed magnification. Only relevant for the LENSED_POSITION point
+        source type. If set to True, then "source_amp" is a parameter instead of "point_amp", and the magnification
+        is calculated from the lens models.
     :param point_source_frame_list: Unused, as this was not working correctly previously.
         # TODO: In addition to separating point source models into bands, also allow separation of images within a certain model into frames
-    :param additional_images_list: list of bool. Indicates which point source classes in the same order of point_source_model_list should use the lens equation
-        solver to solve for additional images. Only relevant for the LENSED_POSITION point source type.
+    :param additional_images_list: list of bool. Indicates which point source classes in the same order of the
+        point_source_model_list should use the lens equation solver to solve for additional images. Only relevant
+        for the LENSED_POSITION point source type.
     :param kwargs_lens_eqn_solver: keyword arguments specifying the numerical settings for the lens equation solver
          see LensEquationSolver() class for details
     :param source_deflection_scaling_list: List of floats for each source ligth model (optional, and only applicable
@@ -109,11 +112,14 @@ def create_class_instances(
     :param index_optical_depth_model_list: list of list of ints, indicates which optical depth models are in each band.
     :param band_index: int, index of band to consider. Has an effect if only partial models are considered for a specific band
     :param tau0_index_list: list of integers of the specific extinction scaling parameter tau0 for each band
-    :param all_models: bool, if True, will make class instances of all models ignoring potential keywords that are excluding specific models as indicated.
-    :param point_source_magnification_limit: float >0 or None, if set and additional images are computed, then it will cut the point sources computed to the limiting (absolute) magnification
+    :param all_models: bool, if True, will make class instances of all models ignoring potential keywords that are excluding
+        specific models as indicated.
+    :param point_source_magnification_limit: float >0 or None, if set and additional images are computed, then it will cut
+        the point sources computed to the limiting (absolute) magnification
     :param decouple_multi_plane: bool; if True, creates an instance of MultiPlaneDecoupled
     :param kwargs_multiplane_model: keyword arguments used to create an instance of MultiPlaneDecoupled if decouple_multi_plane is True
-    :param kwargs_multiplane_model_point_source: keyword arguments used to create an option MultiPlaneDecoupled class for the lensed point source to be treated separately from the rest of the imaging data
+    :param kwargs_multiplane_model_point_source: keyword arguments used to create an option MultiPlaneDecoupled class for the lensed
+        point source to be treated separately from the rest of the imaging data
     :param tracer_source_model_list: list of tracer source models (not used in this function)
     :param tracer_source_band: integer, list index of source surface brightness band to apply tracer model to
     :param tracer_partition: in case of tracer models for specific sub-parts of the surface brightness model

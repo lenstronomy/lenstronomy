@@ -45,16 +45,27 @@ class TestClassCreator(object):
             "lens_light_model_list": ["SERSIC"],
             "point_source_model_list": ["LENSED_POSITION"],
         }
+
+        # Band 0: SIS + SHEAR, SERSIC, SERSIC, LENSED_POSITION 1 + UNLENSED
+        # Band 1: EPL + SHEAR, SERSIC, SERSIC, UNLENSED + LENSED_POSITION 2
+        # LENSED_POSITION 1 will have a point_source_frame_list of [0, 1], indicating that
+        # it has two images, where the first image comes from being lensed by the lens models in band 0
+        # and the second image comes from being lensed by the lens models in band 1
+        # LENSED_POSITION 2 will have a point_source_frame_list of [1, 0, 1], indicating that it has
+        # three images, where the first and third images come from being lensed by the lens models in
+        # band 1 and the second image comes from being lensed by the lens models in band 0
         self.kwargs_model_3 = {
-            "lens_model_list": ["SIS"],
+            "lens_model_list": ["SIS", "EPL", "SHEAR"],
             "source_light_model_list": ["SERSIC"],
             "lens_light_model_list": ["SERSIC"],
-            "point_source_model_list": ["LENSED_POSITION"],
-            "index_lens_model_list": [[0]],
-            "index_source_light_model_list": [[0]],
-            "index_lens_light_model_list": [[0]],
-            "index_point_source_model_list": [[0]],
-            "point_source_frame_list": [[0]],
+            "point_source_model_list": ["LENSED_POSITION", "UNLENSED", "LENSED_POSITION"],
+            "index_lens_model_list": [[0, 2], [1, 2]],
+            "index_source_light_model_list": [[0], [0]],
+            "index_lens_light_model_list": [[0], [0]],
+            "index_point_source_model_list": [[0, 1], [1, 2]],
+            "point_source_frame_list": [[0, 1], None, [1, 0, 1]],
+            "point_source_redshift_list": [0.5, 1, 1.5],
+            "band_index": 1
         }
         self.kwargs_model_4 = {
             "lens_model_list": ["SIS", "SIS"],
@@ -145,7 +156,22 @@ class TestClassCreator(object):
             point_source_class,
             extinction_class,
         ) = class_creator.create_class_instances(**self.kwargs_model_3)
-        assert lens_model_class.lens_model_list[0] == "SIS"
+
+        # Since band index = 1, we should only have the EPL and SHEAR lens models
+        assert lens_model_class.lens_model_list[0] == "EPL"
+        assert lens_model_class.lens_model_list[1] == "SHEAR"
+
+        # The point source class should have access to the full lens model list
+        assert point_source_class._lens_model.lens_model_list == ["SIS", "EPL", "SHEAR"]
+
+        # Since band index = 1, we should only have the UNLENSED and second LENSED_POSITION lens models
+        assert point_source_class.point_source_type_list[0] == "UNLENSED"
+        assert point_source_class.point_source_type_list[1] == "LENSED_POSITION"
+        assert point_source_class._redshift_list == [1, 1.5]
+
+        # Since we assigned LENSED_POSITION 2 with a point_source_frame_list of [1, 0, 1]
+        # the three images should correspond to lens models [[1, 2], [0, 2], [1, 2]]
+        assert point_source_class._point_source_list[1]._model.k_list == [[1, 2], [0, 2], [1, 2]]
 
         (
             lens_model_class,

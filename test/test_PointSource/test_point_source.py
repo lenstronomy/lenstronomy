@@ -35,7 +35,7 @@ class TestPointSource(object):
             lens_model=lensModel,
             fixed_magnification_list=[False] * 3,
             additional_images_list=[False] * 4,
-            flux_from_point_source_list=[True, True, True],
+            flux_from_point_source_list=[True, False, True],
             index_lens_model_list=[[0]],
             point_source_frame_list=[[0] * len(self.x_pos), [0], [0]],
         )
@@ -82,7 +82,7 @@ class TestPointSource(object):
 
     def test_num_basis(self):
         num_basis = self.PointSource.num_basis(self.kwargs_ps, self.kwargs_lens)
-        assert num_basis == 9
+        assert num_basis == 8
 
     def test_linear_response_set(self):
         ra_pos, dec_pos, amp, n = self.PointSource.linear_response_set(
@@ -145,8 +145,10 @@ class TestPointSource(object):
         amp_list = [np.ones_like(self.x_pos) * 20, [100], np.ones_like(self.x_pos) * 10]
         kwargs_out = self.PointSource.set_amplitudes(amp_list, self.kwargs_ps)
         assert kwargs_out[0]["point_amp"][0] == 10 * self.kwargs_ps[0]["point_amp"][0]
-        assert kwargs_out[1]["point_amp"][0] == 10 * self.kwargs_ps[1]["point_amp"][0]
         assert kwargs_out[2]["point_amp"][3] == 10 * self.kwargs_ps[2]["point_amp"][3]
+        
+        # Since flux_from_point_source = False for this model, its amplitudes aren't updated
+        assert kwargs_out[1]["point_amp"][0] == self.kwargs_ps[1]["point_amp"][0]
 
     def test_update_search_window(self):
         search_window = 5

@@ -168,7 +168,7 @@ class TestClassCreator(object):
         # The point source class should have access to the full lens model list
         assert point_source_class._lens_model.lens_model_list == ["SIS", "EPL", "SHEAR"]
 
-        # Since band index = 1, we should only have the UNLENSED and second LENSED_POSITION lens models
+        # Since band index = 1, we should only have the UNLENSED and second LENSED_POSITION point source models
         assert point_source_class.point_source_type_list[0] == "UNLENSED"
         assert point_source_class.point_source_type_list[1] == "LENSED_POSITION"
         assert point_source_class._redshift_list == [1, 1.5]

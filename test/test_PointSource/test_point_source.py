@@ -111,7 +111,7 @@ class TestPointSource(object):
             self.kwargs_ps, self.kwargs_lens
         )
         assert ra_list[0] == self.x_pos[0]
-        assert len(ra_list) == 9
+        assert len(ra_list) == 8
 
         ra_list, dec_list, amp_list = self.PointSource.point_source_list(
             self.kwargs_ps, self.kwargs_lens, k=0
@@ -146,7 +146,7 @@ class TestPointSource(object):
         kwargs_out = self.PointSource.set_amplitudes(amp_list, self.kwargs_ps)
         assert kwargs_out[0]["point_amp"][0] == 10 * self.kwargs_ps[0]["point_amp"][0]
         assert kwargs_out[2]["point_amp"][3] == 10 * self.kwargs_ps[2]["point_amp"][3]
-        
+
         # Since flux_from_point_source = False for this model, its amplitudes aren't updated
         assert kwargs_out[1]["point_amp"][0] == self.kwargs_ps[1]["point_amp"][0]
 

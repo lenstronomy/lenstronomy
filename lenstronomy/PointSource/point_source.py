@@ -317,6 +317,10 @@ class PointSource(object):
         ra_array, dec_array, amp_array = [], [], []
         for i, ra in enumerate(ra_list):
             for j in range(len(ra)):
+                # Remove images with zero amplitude so that they do not have to be rendered.
+                if with_amp is True and amp_list[i][j] == 0:
+                    continue
+
                 ra_array.append(ra_list[i][j])
                 dec_array.append(dec_list[i][j])
                 if with_amp:
@@ -360,9 +364,9 @@ class PointSource(object):
                     kwargs_lens_eqn_solver=self._kwargs_lens_eqn_solver,
                 )
                 if self._flux_from_point_source_list[i]:
-                    amp_list.append(np.zeros_like(image_amp))
-                else:
                     amp_list.append(image_amp)
+                else:
+                    amp_list.append(np.zeros_like(image_amp))
                 
         return amp_list
 

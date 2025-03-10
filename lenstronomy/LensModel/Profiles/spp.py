@@ -9,21 +9,21 @@ __all__ = ["SPP"]
 
 
 class SPP(LensProfileBase):
-    """
-    Class to compute the Spherical Power-law Potential (SPP) Model.
-    
+    """Class to compute the Spherical Power-law Potential (SPP) Model.
+
     Given by:
     .. math::
         \\psi(x, y) = \\frac{2 E^2}{\\eta^2} \\left( \\frac{p^2 + s^2}{E^2} \\right)^{\\frac{\\eta}{2}}
     where,
     :math:`p^2` is squared distance from center of lens,
-    :math:`s^2 = 0` due to no softening,  
+    :math:`s^2 = 0` due to no softening,
     :math:'E' is the characteristic scale factor related to the Einstein radius :math:`\\theta_{E}`,
     :math:`\\eta = -\\gamma + 3` is a parameter that depends on the power law slope :math:`\\gamma`.
 
     .. math::
         E = \\frac{\\theta_E}{\\left( \\frac{3 - \\gamma}{2} \\right)^{\\frac{1}{1 - \\gamma}}}
     """
+
     param_names = ["theta_E", "gamma", "center_x", "center_y"]
     lower_limit_default = {
         "theta_E": 0,
@@ -192,7 +192,8 @@ class SPP(LensProfileBase):
         return mass_3d
 
     def mass_3d_lens(self, r, theta_E, gamma):
-        """Calculates the mass enclosed in a 3D sphere of radius r using lens model parameters.
+        """Calculates the mass enclosed in a 3D sphere of radius r using lens model
+        parameters.
 
         :param r: radius of the sphere
         :param theta_E: 2D projected density parameter
@@ -223,7 +224,8 @@ class SPP(LensProfileBase):
         return mass_2d
 
     def mass_2d_lens(self, r, theta_E, gamma):
-        """Calculates the mass enclosed in a 2D sphere of radius r using lens model parameters.
+        """Calculates the mass enclosed in a 2D sphere of radius r using lens model
+        parameters.
 
         :param r: radius of the circle
         :param theta_E: 2D projected density parameter
@@ -265,7 +267,7 @@ class SPP(LensProfileBase):
 
     def density_lens(self, r, theta_E, gamma):
         """Calculates the 3D density using lens model parameters.
-        
+
         The integral is projected in units of angles (i.e. arc seconds) results in the
         convergence quantity.
 

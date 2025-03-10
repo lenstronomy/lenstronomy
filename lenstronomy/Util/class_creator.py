@@ -32,7 +32,6 @@ def create_class_instances(
     point_source_model_list=None,
     point_source_redshift_list=None,
     fixed_magnification_list=None,
-    flux_from_point_source_list=None,
     point_source_frame_list=None,
     additional_images_list=None,
     kwargs_lens_eqn_solver=None,
@@ -83,30 +82,32 @@ def create_class_instances(
         profile classes in the same order of the lens_light_model_list. If any of the profile_kwargs are None,
         then that profile will be initialized using default settings.
     :param point_source_model_list: list of strings indicating the type of point source models
-    :param fixed_magnification_list:
-    :param flux_from_point_source_list: list of bools (optional), if set, will only return image positions
-         (for imaging modeling) for the subset of the point source lists that =True. This option enables to model
-    :param point_source_frame_list: list of lists mirroring the structure of the image positions.
-        Integers correspond to the i'th list entry of index_lens_model_list indicating in which frame/band the image is
-        appearing
-    :param additional_images_list:
+    :param fixed_magnification_list: list of bool. Indicates which point source classes in the same order of point_source_model_list should have fixed magnification.
+        Only relevant for the LENSED_POSITION point source type. If set to True, then "source_amp" is a parameter instead of "point_amp",
+        and the magnification is calculated from the lens models.
+    :param point_source_frame_list: Unused, as this was not working correctly previously.
+        # TODO: In addition to separating point source models into bands, also allow separation of images within a certain model into frames
+    
+    :param additional_images_list: list of bool. Indicates which point source classes in the same order of point_source_model_list should use the lens equation
+        solver to solve for additional images. Only relevant for the LENSED_POSITION point source type.
     :param kwargs_lens_eqn_solver: keyword arguments specifying the numerical settings for the lens equation solver
          see LensEquationSolver() class for details
     :param source_deflection_scaling_list: List of floats for each source ligth model (optional, and only applicable
         for single-plane lensing. The factors re-scale the reduced deflection angles described from the lens model.
         =1 means identical source position as without this option. This option enables multiple source planes.
         The geometric difference between the different source planes needs to be pre-computed and is cosmology dependent.
-    :param source_redshift_list:
+    :param source_redshift_list: list of redshifts for the source model profiles in the same order of the source_light_model_list
     :param cosmo: astropy.cosmology instance
-    :param index_lens_model_list:
-    :param index_source_light_model_list:
+    :param index_lens_model_list: list of list of ints, indicating which lens models are in each band. For example [[0, 2], [1, 3]]
+        indicates that band 0 uses lens models 0 and 2, and band 1 uses lens models 1 and 3 from the lens_model_list
+    :param index_source_light_model_list: list of list of ints, indicating which source light models are in each band.
     :param index_lens_light_model_list: optional, list of list of all model indexes for each modeled band
     :param index_point_source_model_list: optional, list of list of all model indexes for each modeled band
     :param optical_depth_model_list: list of strings indicating the optical depth model to compute (differential) extinctions from the source
     :param optical_depth_profile_kwargs_list: list of dicts, keyword arguments used to initialize light model
         profile classes in the same order of the optical_depth_model_list. If any of the profile_kwargs are None,
         then that profile will be initialized using default settings.
-    :param index_optical_depth_model_list:
+    :param index_optical_depth_model_list: list of list of ints, indicates which optical depth models are in each band.
     :param band_index: int, index of band to consider. Has an effect if only partial models are considered for a specific band
     :param tau0_index_list: list of integers of the specific extinction scaling parameter tau0 for each band
     :param all_models: bool, if True, will make class instances of all models ignoring potential keywords that are excluding specific models as indicated.
@@ -119,8 +120,7 @@ def create_class_instances(
     :param tracer_partition: in case of tracer models for specific sub-parts of the surface brightness model
         [[list of light profiles, list of tracer profiles], [list of light profiles, list of tracer profiles], [...], ...]
     :type tracer_partition: None or list
-    :param tracer_type: 'LINEAR' or 'LOG', to determine how tracers are summed between components
-    :type tracer_type: string
+    :param tracer_type: string with options 'LINEAR' or 'LOG', to determine how tracers are summed between components
     :param point_source_redshift_list: list of redshifts of point sources
         (default None, i.e. all point sources at the same redshift following the source convention)
     :return: lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class
@@ -237,6 +237,7 @@ def create_class_instances(
     fixed_magnification_list_i = fixed_magnification_list
     additional_images_list_i = additional_images_list
     point_source_frame_list_i = point_source_frame_list
+    point_source_redshift_list_i = point_source_redshift_list
 
     if index_point_source_model_list is not None and not all_models:
         point_source_model_list_i = [
@@ -258,17 +259,21 @@ def create_class_instances(
                 point_source_frame_list[k]
                 for k in index_point_source_model_list[band_index]
             ]
+        if point_source_redshift_list is not None:
+            point_source_redshift_list_i = [
+                point_source_redshift_list[k]
+                for k in index_point_source_model_list[band_index]
+            ]
     point_source_class = PointSource(
         point_source_type_list=point_source_model_list_i,
         lens_model=lens_model_class_point_source,
         fixed_magnification_list=fixed_magnification_list_i,
-        flux_from_point_source_list=flux_from_point_source_list,
         additional_images_list=additional_images_list_i,
         magnification_limit=point_source_magnification_limit,
         kwargs_lens_eqn_solver=kwargs_lens_eqn_solver,
-        point_source_frame_list=point_source_frame_list_i,
-        index_lens_model_list=index_lens_model_list,
-        redshift_list=point_source_redshift_list,
+        point_source_frame_list=None,
+        index_lens_model_list=None,
+        redshift_list=point_source_redshift_list_i,
     )
     if tau0_index_list is None:
         tau0_index = 0

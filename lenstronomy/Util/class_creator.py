@@ -87,8 +87,11 @@ def create_class_instances(
         point_source_model_list should have fixed magnification. Only relevant for the LENSED_POSITION point
         source type. If set to True, then "source_amp" is a parameter instead of "point_amp", and the magnification
         is calculated from the lens models.
-    :param point_source_frame_list: Unused, as this was not working correctly previously.
-        # TODO: In addition to separating point source models into bands, also allow separation of images within a certain model into frames
+    :param point_source_frame_list: list of list of ints, assigns each model in point_source_type_list a frame list.
+        Only relevent for LENSED_POSITION. e.g. if point_source_type_list = ["UNLENSED", "LENSED_POSITION", "LENSED_POSITION"]
+        with point_source_frame_list = [None, [0, 1, 2], [1, 2, 0, 1]], then the first LENSED_POSITION will have a frame list of
+        [0, 1, 2] and the second LENSED_POSITION will have a frame list of [1, 2, 0, 1]. See docstring of point_source_frame_list
+        in PSBase for further details.
     :param additional_images_list: list of bool. Indicates which point source classes in the same order of the
         point_source_model_list should use the lens equation solver to solve for additional images. Only relevant
         for the LENSED_POSITION point source type.
@@ -180,22 +183,21 @@ def create_class_instances(
         kwargs_multiplane_model=kwargs_multiplane_model,
     )
 
-    if kwargs_multiplane_model_point_source is not None:
-        lens_model_class_point_source = LensModel(
-            lens_model_list=lens_model_list,
-            z_lens=z_lens,
-            z_source=z_source,
-            z_source_convention=z_source_convention,
-            lens_redshift_list=lens_redshift_list,
-            multi_plane=multi_plane,
-            cosmo=cosmo,
-            observed_convention_index=observed_convention_index,
-            profile_kwargs_list=lens_profile_kwargs_list,
-            decouple_multi_plane=decouple_multi_plane,
-            kwargs_multiplane_model=kwargs_multiplane_model_point_source,
-        )
-    else:
-        lens_model_class_point_source = lens_model_class
+    if kwargs_multiplane_model_point_source is None:
+        kwargs_multiplane_model_point_source = kwargs_multiplane_model
+    lens_model_class_point_source = LensModel(
+        lens_model_list=lens_model_list,
+        z_lens=z_lens,
+        z_source=z_source,
+        z_source_convention=z_source_convention,
+        lens_redshift_list=lens_redshift_list,
+        multi_plane=multi_plane,
+        cosmo=cosmo,
+        observed_convention_index=observed_convention_index,
+        profile_kwargs_list=lens_profile_kwargs_list,
+        decouple_multi_plane=decouple_multi_plane,
+        kwargs_multiplane_model=kwargs_multiplane_model_point_source,
+    )
 
     if index_source_light_model_list is None or all_models is True:
         source_light_model_list_i = source_light_model_list
@@ -276,8 +278,8 @@ def create_class_instances(
         additional_images_list=additional_images_list_i,
         magnification_limit=point_source_magnification_limit,
         kwargs_lens_eqn_solver=kwargs_lens_eqn_solver,
-        point_source_frame_list=None,
-        index_lens_model_list=None,
+        point_source_frame_list=point_source_frame_list_i,
+        index_lens_model_list=index_lens_model_list,
         redshift_list=point_source_redshift_list_i,
     )
     if tau0_index_list is None:

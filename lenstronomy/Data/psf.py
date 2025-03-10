@@ -53,8 +53,8 @@ class PSF(object):
         self.kernel_point_source_init = kernel_point_source_init
 
         if self.psf_type == "GAUSSIAN":
-            if fwhm is None:
-                raise ValueError("fwhm must be set for GAUSSIAN psf type!")
+            if fwhm is None or pixel_size is None:
+                raise ValueError("fwhm and pixel_size must be set for GAUSSIAN psf type!")
             self._fwhm = fwhm
             self._sigma_gaussian = util.fwhm2sigma(self._fwhm)
             self._truncation = truncation

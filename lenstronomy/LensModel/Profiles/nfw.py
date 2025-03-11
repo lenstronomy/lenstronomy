@@ -15,7 +15,7 @@ class NFW(LensProfileBase):
     .. math::
         \\rho(r) = \\frac{\\rho_0}{(r/R_s) (1 + r/R_s)^2}
 
-    where :math:`\\rho_0` is a characteristic density and :math:`R_s` is a scale length.
+    where :math:`\\rho_0` is the density normalization and :math:`R_s` is the scale radius.
 
     The Virial radius in terms of :math:`R_s` is :math:`R_{200} = c * R_s`.
     The definition of ':math:`R_s`' is in angular (arc second) units and the normalization is put

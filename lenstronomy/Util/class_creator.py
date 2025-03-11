@@ -183,21 +183,26 @@ def create_class_instances(
         kwargs_multiplane_model=kwargs_multiplane_model,
     )
 
-    if kwargs_multiplane_model_point_source is None:
-        kwargs_multiplane_model_point_source = kwargs_multiplane_model
-    lens_model_class_point_source = LensModel(
-        lens_model_list=lens_model_list,
-        z_lens=z_lens,
-        z_source=z_source,
-        z_source_convention=z_source_convention,
-        lens_redshift_list=lens_redshift_list,
-        multi_plane=multi_plane,
-        cosmo=cosmo,
-        observed_convention_index=observed_convention_index,
-        profile_kwargs_list=lens_profile_kwargs_list,
-        decouple_multi_plane=decouple_multi_plane,
-        kwargs_multiplane_model=kwargs_multiplane_model_point_source,
-    )
+    # Only create a second LensModel class if the user wants a separate class
+    # or if index_lens_model_list is specified, since we need a class with all lens models
+    if kwargs_multiplane_model_point_source is not None or index_lens_model_list is not None:
+        if kwargs_multiplane_model_point_source is None:
+            kwargs_multiplane_model_point_source = kwargs_multiplane_model
+        lens_model_class_point_source = LensModel(
+            lens_model_list=lens_model_list,
+            z_lens=z_lens,
+            z_source=z_source,
+            z_source_convention=z_source_convention,
+            lens_redshift_list=lens_redshift_list,
+            multi_plane=multi_plane,
+            cosmo=cosmo,
+            observed_convention_index=observed_convention_index,
+            profile_kwargs_list=lens_profile_kwargs_list,
+            decouple_multi_plane=decouple_multi_plane,
+            kwargs_multiplane_model=kwargs_multiplane_model_point_source,
+        )
+    else:
+        lens_model_class_point_source = lens_model_class
 
     if index_source_light_model_list is None or all_models is True:
         source_light_model_list_i = source_light_model_list

@@ -41,11 +41,11 @@ class ImageModel(object):
         :param extinction_class: instance of DifferentialExtinction() class
         :param kwargs_numerics: keyword arguments with various numeric description (see ImageNumerics class for options)
         :param likelihood_mask: 2d boolean array of pixels to be counted in the likelihood calculation/linear
-         optimization
+            optimization
         :param psf_error_map_bool_list: list of boolean of length of point source models.
-         Indicates whether PSF error map is used for the point source model stated as the index.
+            Indicates whether PSF error map is used for the point source model stated as the index.
         :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver
-         (see SLITronomy documentation)
+            (see SLITronomy documentation)
         """
 
         self.type = "single-band"

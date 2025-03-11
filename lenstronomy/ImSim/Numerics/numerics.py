@@ -160,7 +160,7 @@ class Numerics(PointSourceRendering):
             sigma_list = [sigma]
             fraction_list = [1]
             if truncation_conv is None:
-                truncation_conv = psf._truncation
+                truncation_conv = psf.truncation
             self._conv = MultiGaussianConvolution(
                 sigma_list,
                 fraction_list,

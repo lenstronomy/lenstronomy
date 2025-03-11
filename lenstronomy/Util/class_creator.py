@@ -185,7 +185,10 @@ def create_class_instances(
 
     # Only create a second LensModel class if the user wants a separate class
     # or if index_lens_model_list is specified, since we need a class with all lens models
-    if kwargs_multiplane_model_point_source is not None or index_lens_model_list is not None:
+    if (
+        kwargs_multiplane_model_point_source is not None
+        or index_lens_model_list is not None
+    ):
         if kwargs_multiplane_model_point_source is None:
             kwargs_multiplane_model_point_source = kwargs_multiplane_model
         lens_model_class_point_source = LensModel(

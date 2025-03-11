@@ -56,11 +56,11 @@ class PointSource(object):
         :param redshift_list: list of redshifts (only required for multiple source redshifts)
         :type redshift_list: None or list
         """
-        if len(point_source_type_list) > 0:
+        if "LENSED_POSITION" in point_source_type_list:
             if index_lens_model_list is not None and point_source_frame_list is None:
                 raise ValueError(
-                    "with specified index_lens_model_list a specified point_source_frame_list argument is "
-                    "required"
+                    "with specified index_lens_model_list, a specified point_source_frame_list argument is "
+                    "required for LENSED_POSITION"
                 )
             if index_lens_model_list is None:
                 point_source_frame_list = [None] * len(point_source_type_list)

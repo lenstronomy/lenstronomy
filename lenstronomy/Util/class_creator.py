@@ -261,7 +261,9 @@ def create_class_instances(
                 for k in index_point_source_model_list[band_index]
             ]
         if point_source_frame_list is not None:
-            warnings.warn("point_source_frame_list is unused in class_creator.create_class_instances()")
+            warnings.warn(
+                "point_source_frame_list is unused in class_creator.create_class_instances()"
+            )
             point_source_frame_list_i = [
                 point_source_frame_list[k]
                 for k in index_point_source_model_list[band_index]

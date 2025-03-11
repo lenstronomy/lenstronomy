@@ -280,7 +280,7 @@ class TestRaise(unittest.TestCase):
                 point_source_model_list=["UNLENSED", "LENSED_POSITION"],
                 index_point_source_model_list=[[0], [1]],
                 point_source_frame_list=[None, [1, 0]],
-                band_index=1
+                band_index=1,
             )
 
 

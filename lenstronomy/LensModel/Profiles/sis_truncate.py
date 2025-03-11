@@ -7,8 +7,18 @@ __all__ = ["SIS_truncate"]
 
 
 class SIS_truncate(LensProfileBase):
-    """This class contains the function and the derivatives of the Singular Isothermal
-    Sphere."""
+    """This class contains the function and the derivatives of the truncated Singular Isothermal Sphere potential:
+
+    .. math::
+        \\psi(x, y) = 
+        \\begin{cases} 
+        \\theta_{E} \\, r & r < r_{\\text{trunc}} \\\\
+        \\theta_{E} \\, r_{\\text{trunc}} + \\frac{1}{2} \\theta_{E} \\left(3 - \\frac{r}{r_{\\text{trunc}}}\\right) (r - r_{\\text{trunc}}) & r_{\\text{trunc}} \\leq r < 2 r_{\\text{trunc}} \\\\
+        \\frac{3}{2} \\theta_{E} \\, r_{\\text{trunc}} & r \\geq 2 r_{\\text{trunc}}
+        \\end{cases}
+
+    where :math:`\\theta_{E}` is the Einstein radius and :math:`r_{\\text{trunc}}` is the truncation radius
+    """
 
     param_names = ["theta_E", "r_trunc", "center_x", "center_y"]
     lower_limit_default = {
@@ -25,6 +35,20 @@ class SIS_truncate(LensProfileBase):
     }
 
     def function(self, x, y, theta_E, r_trunc, center_x=0, center_y=0):
+        """
+        :param x: set of x-coordinates
+        :type x: array of size (n)
+        :param y: set of y-coordinates
+        :type y: array of size (n)
+        :param theta_E: Einstein radius of lens
+        :type theta_E: float (in arcsec)
+        :param r_trunc: truncated radius
+        :type r_trunc: float (in arcsec)
+        :param center_x: profile center
+        :param center_y: profile center
+        :returns:  function
+        """
+
         x_shift = x - center_x
         y_shift = y - center_y
         r = np.sqrt(x_shift * x_shift + y_shift * y_shift)
@@ -49,7 +73,17 @@ class SIS_truncate(LensProfileBase):
         return f_
 
     def derivatives(self, x, y, theta_E, r_trunc, center_x=0, center_y=0):
-        """Returns df/dx and df/dy of the function."""
+        """Computes the first derivatives df/dx and df/dy.
+
+        :param x: x-coordinate in image plane
+        :param y: y-coordinate in image plane
+        :param theta_E: Einstein radius of lens
+        :param r_trunc: truncated radius
+        :type r_trunc: float (in arcsec)
+        :param center_x: profile center
+        :param center_y: profile center
+        :returns: first derivatives (df/dx, df/dy)
+        """
         x_shift = x - center_x
         y_shift = y - center_y
 
@@ -60,8 +94,17 @@ class SIS_truncate(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, theta_E, r_trunc, center_x=0, center_y=0):
-        """Returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx,
-        d^f/dy^2."""
+        """Computes the Hessian matrix.
+
+        :param x: x-coordinate in image plane
+        :param y: y-coordinate in image plane
+        :param theta_E: Einstein radius of lens
+        :param r_trunc: truncated radius
+        :type r_trunc: float (in arcsec)
+        :param center_x: profile center
+        :param center_y: profile center
+        :returns: Hessian matrix components (d^2f/dx^2, d^2f/dxdy, d^2f/dydx, d^2f/dy^2)
+        """
         x_shift = x - center_x
         y_shift = y - center_y
         dphi_dr = self._dphi_dr(x_shift, y_shift, theta_E, r_trunc)
@@ -74,12 +117,14 @@ class SIS_truncate(LensProfileBase):
         return f_xx, f_xy, f_xy, f_yy
 
     def _dphi_dr(self, x, y, theta_E, r_trunc):
-        """
+        """First derivative of the potential in radial direction.
 
-        :param x:
-        :param y:
-        :param r_trunc:
-        :return:
+        :param x: x-coordinate in image plane
+        :param y: y-coordinate in image plane
+        :param theta_E: Einstein radius of lens
+        :param r_trunc: truncated radius
+        :type r_trunc: float (in arcsec)
+        :returns: derivative dphi/dr
         """
         r = np.sqrt(x * x + y * y)
         if isinstance(r, int) or isinstance(r, float):
@@ -100,12 +145,14 @@ class SIS_truncate(LensProfileBase):
         return a
 
     def _d2phi_dr2(self, x, y, theta_E, r_trunc):
-        """Second derivative of the potential in radial direction :param x:
+        """Second derivative of the potential in radial direction.
 
-        :param y:
-        :param theta_E:
-        :param r_trunc:
-        :return:
+        :param x: x-coordinate in image plane
+        :param y: y-coordinate in image plane
+        :param theta_E: Einstein radius of lens
+        :param r_trunc: truncated radius
+        :type r_trunc: float (in arcsec)
+        :return: second derivative (d^2phi / dr^2)
         """
         r = np.sqrt(x * x + y * y)
         if isinstance(r, int) or isinstance(r, float):
@@ -123,10 +170,11 @@ class SIS_truncate(LensProfileBase):
         return a
 
     def _dr_dx(self, x, y):
-        """Derivative of dr/dx, dr/dy :param x:
+        """Derivative dr/dx, dr/dy.
 
-        :param y:
-        :return:
+        :param x: x-coordinate in image plane
+        :param y: y-coordinate in image plane
+        :return: derivatives dr/dx and dr/dy
         """
 
         r = np.sqrt(x**2 + y**2)
@@ -139,10 +187,11 @@ class SIS_truncate(LensProfileBase):
 
     @staticmethod
     def _d2r_dx2(x, y):
-        """Second derivative :param x:
+        """Second derivatives of dr/dx and dr/dy.
 
-        :param y:
-        :return:
+        :param x: x-coordinate in image plane
+        :param y: y-coordinate in image plane
+        :return: d^2r/dx^2 & d^2r/dy^2
         """
         r = np.sqrt(x**2 + y**2)
         if isinstance(r, int) or isinstance(r, float):

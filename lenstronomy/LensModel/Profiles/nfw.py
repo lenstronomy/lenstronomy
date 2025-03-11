@@ -19,7 +19,7 @@ class NFW(LensProfileBase):
 
     The Virial radius in terms of :math:`R_s` is :math:`R_{200} = c * R_s`.
     The definition of ':math:`R_s`' is in angular (arc second) units and the normalization is put
-    in with regard to a deflection angle at ':math:`R_s`' - ':math:`\\alpha_{R_s}`'. 
+    in with regard to a deflection angle at ':math:`R_s`' - ':math:`\\alpha_{R_s}`'.
     :math:`\\alpha_{R_s}` and :math:`\\rho_0` are related by:
 
     .. math::

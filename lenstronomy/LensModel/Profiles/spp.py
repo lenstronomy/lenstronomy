@@ -9,15 +9,14 @@ __all__ = ["SPP"]
 
 
 class SPP(LensProfileBase):
-    """
-    Class to compute the Spherical Power-law Potential (SPP) Model.
-    
+    """Class to compute the Spherical Power-law Potential (SPP) Model.
+
     Given by:
     .. math::
         \\psi(r) = \\frac{2 E^2}{\\eta^2} \\left( \\frac{r^2 + s^2}{E^2} \\right)^{\\frac{\\eta}{2}}
     where:
-    :math:`r^2 = (x-x_{\\text{center}})^2 + (y-y_{\\text{center}})^2` is squared radius from center of lens, 
-    :math:`s^2 = 0` due to no softening,  
+    :math:`r^2 = (x-x_{\\text{center}})^2 + (y-y_{\\text{center}})^2` is squared radius from center of lens,
+    :math:`s^2 = 0` due to no softening,
     :math:'E' is the characteristic scale factor related to the Einstein radius :math:`\\theta_{E}`, given by:
     .. math::
         E = \\frac{\\theta_E}{\\left( \\frac{3 - \\gamma}{2} \\right)^{\\frac{1}{1 - \\gamma}}}
@@ -194,7 +193,8 @@ class SPP(LensProfileBase):
         return mass_3d
 
     def mass_3d_lens(self, r, theta_E, gamma):
-        """Calculates the mass enclosed in a 3D sphere of radius r using lens model parameters.
+        """Calculates the mass enclosed in a 3D sphere of radius r using lens model
+        parameters.
 
         :param r: radius of the sphere
         :param theta_E: 2D projected density parameter
@@ -225,7 +225,8 @@ class SPP(LensProfileBase):
         return mass_2d
 
     def mass_2d_lens(self, r, theta_E, gamma):
-        """Calculates the mass enclosed in a projected circle of radius r using lens model parameters.
+        """Calculates the mass enclosed in a projected circle of radius r using lens
+        model parameters.
 
         :param r: radius of the projected circle
         :param theta_E: 2D projected density parameter
@@ -267,7 +268,7 @@ class SPP(LensProfileBase):
 
     def density_lens(self, r, theta_E, gamma):
         """Calculates the 3D density using lens model parameters.
-        
+
         The integral is projected in units of angles (i.e. arc seconds) results in the
         convergence quantity.
 
@@ -311,4 +312,3 @@ class SPP(LensProfileBase):
         :return: bounded power-law slopte
         """
         return gamma
-    

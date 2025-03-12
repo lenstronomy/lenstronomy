@@ -11,7 +11,7 @@ export, __all__ = exporter()
 
 
 @export
-class SersicEllipticFlexed(SersicUtil):
+class SersicEllipticWithFlexion(SersicUtil):
     """This class contains functions to evaluate an elliptical Sersic function which
     contains flexion.
 

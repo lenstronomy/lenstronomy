@@ -5,9 +5,7 @@ import numpy.testing as npt
 import pytest
 import unittest
 
-from lenstronomy.LensModel.LineOfSightFlexion.LOSFlexionModels.losflexion_minimal import (
-    LOSFlexionMinimal,
-)
+from lenstronomy.LensModel.LineOfSight.LOSFlexionModels.losflexion_minimal import LOSFlexionMinimal
 
 
 class TestLOSFlexionMinimal(object):

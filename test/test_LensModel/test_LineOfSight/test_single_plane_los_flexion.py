@@ -6,7 +6,7 @@ import pytest
 import unittest
 
 from lenstronomy.LensModel.single_plane import SinglePlane
-from lenstronomy.LensModel.LineOfSightFlexion.single_plane_los_flexion import SinglePlaneLOSFlexion
+from lenstronomy.LensModel.LineOfSight.single_plane_los_flexion import SinglePlaneLOSFlexion
 from lenstronomy.LensModel.MultiPlane.multi_plane import MultiPlane
 from lenstronomy.LensModel.Profiles.sis import SIS
 from lenstronomy.LensModel.lens_model import LensModel

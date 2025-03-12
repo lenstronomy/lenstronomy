@@ -505,16 +505,16 @@ class TestRaise(unittest.TestCase):
             lens_model = LensModel(
                 lens_model_list=[
                     "LOS",
-                    "LOSF",
+                    "LOS_FLEXION",
                 ],  # NH: more permutations exist but let's be content w testing one
             )
         with self.assertRaises(ValueError):
             lens_model = LensModel(
-                lens_model_list=["LOSF", "LOSF_MINIMAL"],
+                lens_model_list=["LOS_FLEXION", "LOS_FLEXION_MINIMAL"],
             )
         with self.assertRaises(ValueError):
             lens_model = LensModel(
-                lens_model_list=["LOSF_MINIMAL", "SIS", "GAUSSIAN_POTENTIAL"],
+                lens_model_list=["LOS_FLEXION_MINIMAL", "SIS", "GAUSSIAN_POTENTIAL"],
                 multi_plane=True,
                 z_source=1.0,
                 lens_redshift_list=[0.5, 0.5, 0.5],

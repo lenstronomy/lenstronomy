@@ -1,6 +1,6 @@
 __author__ = ["TheoDuboscq"]
 
-from lenstronomy.LensModel.LineOfSight.LOSModels.losflexion import LOSFlexion
+from lenstronomy.LensModel.LineOfSight.LOSModels.los_flexion import LOSFlexion
 
 __all__ = ["LOSFlexionMinimal"]
 

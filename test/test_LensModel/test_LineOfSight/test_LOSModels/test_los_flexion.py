@@ -5,7 +5,7 @@ import numpy.testing as npt
 import pytest
 import unittest
 
-from lenstronomy.LensModel.LineOfSight.LOSModels.losflexion import LOSFlexion
+from lenstronomy.LensModel.LineOfSight.LOSModels.los_flexion import LOSFlexion
 
 
 class TestLOSFlexion(object):

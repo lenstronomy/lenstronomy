@@ -18,7 +18,7 @@ class ConstMag(LensProfileBase):
     :math:`\\theta_x` and :math:`\\theta_y` are angular coordinates in the image plane,
     :math:`\\gamma_1` and :math:`\\gamma_2` are the horizontal and vertical components of shear, respectively, and
     :math:`\\kappa` is the convergence.
-    
+
 
     :math:`\\kappa` and :math:`\\gamma` depend on the parity. A negative parity means the image becomes inverted compared to the source.
 

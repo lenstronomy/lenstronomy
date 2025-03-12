@@ -6,9 +6,7 @@ import pytest
 import unittest
 
 from lenstronomy.LensModel.single_plane import SinglePlane
-from lenstronomy.LensModel.LineOfSightFlexion.single_plane_los_flexion import (
-    SinglePlaneLOSFlexion,
-)
+from lenstronomy.LensModel.LineOfSightFlexion.single_plane_los_flexion import SinglePlaneLOSFlexion
 from lenstronomy.LensModel.MultiPlane.multi_plane import MultiPlane
 from lenstronomy.LensModel.Profiles.sis import SIS
 from lenstronomy.LensModel.lens_model import LensModel
@@ -37,10 +35,10 @@ class TestSinglePlaneLOSFlexion(object):
     def setup_method(self):
         self.lensModel = SinglePlane(["GAUSSIAN_POTENTIAL"])
         self.lensModel_los = SinglePlaneLOSFlexion(
-            ["GAUSSIAN_POTENTIAL", "LOSF"], index_losf=1
+            ["GAUSSIAN_POTENTIAL", "LOS_FLEXION"], index_los_flexion=1
         )
         self.lensModel_minimal = SinglePlaneLOSFlexion(
-            ["GAUSSIAN_POTENTIAL", "LOSF_MINIMAL"], index_losf=1
+            ["GAUSSIAN_POTENTIAL", "LOS_FLEXION_MINIMAL"], index_los_flexion=1
         )
         self.kwargs = {
             "amp": 1.0,
@@ -133,9 +131,9 @@ class TestSinglePlaneLOSFlexion(object):
         mass_kwargs = {"amp": 1.0, "sigma": 2.0, "center_x": 0.0, "center_y": 0.0}
 
         lensModel = SinglePlane(["GAUSSIAN"])
-        lensModel_los = SinglePlaneLOSFlexion(["GAUSSIAN", "LOSF"], index_losf=1)
+        lensModel_los = SinglePlaneLOSFlexion(["GAUSSIAN", "LOS_FLEXION"], index_los_flexion=1)
         lensModel_minimal = SinglePlaneLOSFlexion(
-            ["GAUSSIAN", "LOSF_MINIMAL"], index_losf=1
+            ["GAUSSIAN", "LOS_FLEXION_MINIMAL"], index_los_flexion=1
         )
 
         output = lensModel.mass_2d(r=1, kwargs=[mass_kwargs])
@@ -151,9 +149,9 @@ class TestSinglePlaneLOSFlexion(object):
         mass_kwargs = {"amp": 1.0, "sigma": 2.0, "center_x": 0.0, "center_y": 0.0}
 
         lensModel = SinglePlane(["GAUSSIAN"])
-        lensModel_los = SinglePlaneLOSFlexion(["GAUSSIAN", "LOSF"], index_losf=1)
+        lensModel_los = SinglePlaneLOSFlexion(["GAUSSIAN", "LOS_FLEXION"], index_los_flexion=1)
         lensModel_minimal = SinglePlaneLOSFlexion(
-            ["GAUSSIAN", "LOSF_MINIMAL"], index_losf=1
+            ["GAUSSIAN", "LOS_FLEXION_MINIMAL"], index_los_flexion=1
         )
 
         output = lensModel.mass_3d(r=1, kwargs=[mass_kwargs])
@@ -173,7 +171,7 @@ class TestSinglePlaneLOSFlexion(object):
 
         # LOS
         lensModel_los = SinglePlaneLOSFlexion(
-            lens_model_list=["SIS", "LOSF"], index_losf=1
+            lens_model_list=["SIS", "LOS_FLEXION"], index_los_flexion=1
         )
         density_los = lensModel_los.density(
             r=r, kwargs=[{"theta_E": theta_E}, self.los_kwargs]
@@ -182,7 +180,7 @@ class TestSinglePlaneLOSFlexion(object):
 
         # LOS_MINIMAL
         lensModel_minimal = SinglePlaneLOSFlexion(
-            lens_model_list=["SIS", "LOSF_MINIMAL"], index_losf=1
+            lens_model_list=["SIS", "LOS_FLEXION_MINIMAL"], index_los_flexion=1
         )
         density_minimal = lensModel_minimal.density(
             r=r, kwargs=[{"theta_E": theta_E}, self.los_kwargs]
@@ -190,9 +188,9 @@ class TestSinglePlaneLOSFlexion(object):
         npt.assert_almost_equal(density_minimal, density_model, decimal=8)
 
     def test_bool_list(self):
-        lensModel_los = SinglePlaneLOSFlexion(["SPEP", "SHEAR", "LOSF"], index_losf=2)
+        lensModel_los = SinglePlaneLOSFlexion(["SPEP", "SHEAR", "LOS_FLEXION"], index_los_flexion=2)
         lensModel_minimal = SinglePlaneLOSFlexion(
-            ["SPEP", "SHEAR", "LOSF_MINIMAL"], index_losf=2
+            ["SPEP", "SHEAR", "LOS_FLEXION_MINIMAL"], index_los_flexion=2
         )
         kwargs = [
             {
@@ -244,10 +242,10 @@ class TestSinglePlaneLOSFlexion(object):
         )
 
     def test_los_versus_multiplane(self):
-        """This function asserts that the outcome from LOSF and LOSF MINIMAL is the same
+        """This function asserts that the outcome from LOS_FLEXION and LOS_FLEXION MINIMAL is the same
         as MultiPlane.
 
-        Note that the LOSF and LOSF MINIMAL models are based on the dominant lens
+        Note that the LOS_FLEXION and LOS_FLEXION_MINIMAL models are based on the dominant lens
         approximation, which means that those models are accurate at the level of the
         approximation. The error is of order of the square of the flexion parameters
         magnitude.
@@ -316,7 +314,7 @@ class TestSinglePlaneLOSFlexion(object):
         }
 
         # LOSF
-        kwargs_losf = {
+        kwargs_los_flexion = {
             "kappa_od": 0.0,
             "kappa_os": 0.0,
             "kappa_ds": 0.0,
@@ -345,9 +343,9 @@ class TestSinglePlaneLOSFlexion(object):
             "omega_os": 0.0,
         }
 
-        kwargs_singleplane_los = [kwargs_losf, kwargs_epl]
+        kwargs_singleplane_los = [kwargs_los_flexion, kwargs_epl]
 
-        lens_model_los = SinglePlaneLOSFlexion(["LOSF", "EPL"], index_losf=0)
+        lens_model_los = SinglePlaneLOSFlexion(["LOS_FLEXION", "EPL"], index_los_flexion=0)
 
         # Multiplane
         lens_model_list = ["EPL", "FLEXION", "FLEXION"]
@@ -369,11 +367,7 @@ class TestSinglePlaneLOSFlexion(object):
 
         kwargs_multiplane = [kwargs_epl, kwargs_flexion_f, kwargs_flexion_b]
 
-        lens_model_multiplane = MultiPlane(
-            z_source=z_s,
-            lens_model_list=lens_model_list,
-            lens_redshift_list=redshift_list,
-        )
+        lens_model_multiplane = MultiPlane(z_source=z_s, lens_model_list=lens_model_list,lens_redshift_list=redshift_list,)
 
         # set the tolerance
         # In the dominant lens approximation, the neglected terms are of the the order the square of the
@@ -389,20 +383,16 @@ class TestSinglePlaneLOSFlexion(object):
         # since we pass an array of image positions
 
         # displacement angle
-        alpha_multiplane_x, alpha_multiplane_y = lens_model_multiplane.alpha(
-            x, y, kwargs_multiplane
-        )
+        alpha_multiplane_x, alpha_multiplane_y = lens_model_multiplane.alpha(x, y, kwargs_multiplane)
         alpha_los_x, alpha_los_y = lens_model_los.alpha(x, y, kwargs_singleplane_los)
+
         npt.assert_allclose(alpha_multiplane_x, alpha_los_x, atol=atolerance)
         npt.assert_allclose(alpha_multiplane_y, alpha_los_y, atol=atolerance)
 
         # ray_shooting
-        beta_multiplane_x, beta_multiplane_y = lens_model_multiplane.ray_shooting(
-            x, y, kwargs_multiplane
-        )
-        beta_los_x, beta_los_y = lens_model_los.ray_shooting(
-            x, y, kwargs_singleplane_los
-        )
+        beta_multiplane_x, beta_multiplane_y = lens_model_multiplane.ray_shooting(x, y, kwargs_multiplane)
+        beta_los_x, beta_los_y = lens_model_los.ray_shooting(x, y, kwargs_singleplane_los)
+
         npt.assert_allclose(beta_multiplane_x, beta_los_x, atol=atolerance)
         npt.assert_allclose(beta_multiplane_y, beta_los_y, atol=atolerance)
 
@@ -446,8 +436,8 @@ class TestSinglePlaneLOSFlexion(object):
         )
         dt_days_mp = t_days_mp[1:] - t_days_mp[0]
 
-        lens_model_los_time = LensModel(["LOSF", "EPL"], z_lens=z_d, z_source=z_s)
-        kwargs_time_los = [kwargs_losf, kwargs_epl]
+        lens_model_los_time = LensModel(["LOS_FLEXION", "EPL"], z_lens=z_d, z_source=z_s)
+        kwargs_time_los = [kwargs_los_flexion, kwargs_epl]
 
         los_solver = LensEquationSolver(lens_model_los_time)
         x_image_los, y_image_los = los_solver.findBrightImage(
@@ -465,7 +455,7 @@ class TestSinglePlaneLOSFlexion(object):
         lens_model_list = [
             "TNFW",
             "TRIPLE_CHAMELEON",
-            "LOSF",
+            "LOS_FLEXION",
             "SHEAR_GAMMA_PSI",
             "CURVED_ARC_CONST",
             "NFW_MC",
@@ -474,7 +464,7 @@ class TestSinglePlaneLOSFlexion(object):
             "MULTIPOLE_ELL",
             "CURVED_ARC_SPP",
         ]
-        lensModel = SinglePlaneLOSFlexion(lens_model_list=lens_model_list, index_losf=0)
+        lensModel = SinglePlaneLOSFlexion(lens_model_list=lens_model_list, index_los_flexion=2)
         assert lensModel.func_list[0].param_names[0] == "Rs"
 
 
@@ -486,12 +476,12 @@ class TestRaise(unittest.TestCase):
         """
         if bool_test is False:
             with self.assertRaises(ImportError):
-                SinglePlaneLOSFlexion(lens_model_list=["PEMD", "LOSF"], index_losf=1)
+                SinglePlaneLOSFlexion(lens_model_list=["PEMD", "LOS_FLEXION"], index_los_flexion=1)
             with self.assertRaises(ImportError):
-                SinglePlaneLOSFlexion(lens_model_list=["SPEMD", "LOSF"], index_losf=1)
+                SinglePlaneLOSFlexion(lens_model_list=["SPEMD", "LOS_FLEXION"], index_los_flexion=1)
         else:
             SinglePlaneLOSFlexion(
-                lens_model_list=["PEMD", "SPEMD", "LOSF"], index_losf=2
+                lens_model_list=["PEMD", "SPEMD", "LOS_FLEXION"], index_los_flexion=2
             )
 
 

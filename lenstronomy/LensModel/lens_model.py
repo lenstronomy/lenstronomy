@@ -122,22 +122,22 @@ class LensModel(object):
             )
 
         # Are there line-of-sight corrections up to flexion?
-        permitted_losf_models = ["LOSF", "LOSF_MINIMAL"]
-        losf_models = [
+        permitted_los_flexion_models = ["LOS_FLEXION", "LOS_FLEXION_MINIMAL"]
+        los_flexion_models = [
             (i, model)
             for (i, model) in enumerate(lens_model_list)
-            if model in permitted_losf_models
+            if model in permitted_los_flexion_models
         ]
-        if len(losf_models) == 0:
-            losf_effects = False
-        elif len(losf_models) == 1:
+        if len(los_flexion_models) == 0:
+            los_flexion_effects = False
+        elif len(los_flexion_models) == 1:
             if los_effects is True:
                 raise ValueError(
                     "You cannot use LOS and LOS flexion at the same time as the former is included in the latter."
                 )
             else:
-                losf_effects = True
-                index_losf, losf_model = losf_models[0]
+                los_flexion_effects = True
+                index_los_flexion, los_flexion_model = los_flexion_models[0]
         else:
             raise ValueError(
                 "You can only have one model for line-of-sight flexion corrections."
@@ -161,7 +161,7 @@ class LensModel(object):
                 raise ValueError(
                     "LOS effects and multi-plane lensing are incompatible."
                 )
-            if losf_effects is True:
+            if los_flexion_effects is True:
                 raise ValueError(
                     "LOS flexion effects and multi-plane lensing are incompatible."
                 )
@@ -210,10 +210,10 @@ class LensModel(object):
                     profile_kwargs_list=profile_kwargs_list,
                 )
                 self.type = "SinglePlaneLOS"
-            elif losf_effects is True:
+            elif los_flexion_effects is True:
                 self.lens_model = SinglePlaneLOSFlexion(
                     lens_model_list,
-                    index_losf=index_losf,
+                    index_los_flexion=index_los_flexion,
                     lens_redshift_list=lens_redshift_list,
                     z_source_convention=z_source_convention,
                     profile_kwargs_list=profile_kwargs_list,

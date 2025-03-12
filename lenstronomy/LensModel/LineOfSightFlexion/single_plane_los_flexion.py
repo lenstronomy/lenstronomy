@@ -27,16 +27,16 @@ class SinglePlaneLOSFlexion(SinglePlane):
     def __init__(
         self,
         lens_model_list,
-        index_losf,
+        index_los_flexion,
         lens_redshift_list=None,
         z_source_convention=None,
         profile_kwargs_list=None,
     ):
         """
         Instance of SinglePlaneLOSFlexion() based on the SinglePlane(), except:
-        - argument "index_losf" indicating the position of the LOSF model in the
+        - argument "index_los_flexion" indicating the position of the LOS_FLEXION model in the
         lens_model_list (for correct association with kwargs)
-        - attribute "losf" containing the LOSF model.
+        - attribute "los_flexion" containing the LOS_FLEXION model.
         """
         if lens_redshift_list is None:
             lens_redshift_list = [None] * len(lens_model_list)
@@ -53,23 +53,23 @@ class SinglePlaneLOSFlexion(SinglePlane):
         # lens and the LOS flexion corrections
 
         # Extract the los flexion model and import its class
-        self._index_losf = index_losf
-        self._losf_model = lens_model_list[index_losf]
-        self.losf = lens_class(
-            self._losf_model,
+        self._index_los_flexion = index_los_flexion
+        self._los_flexion_model = lens_model_list[index_los_flexion]
+        self.los_flexion = lens_class(
+            self._los_flexion_model,
         )
 
         # Define a separate class for the main lens
         lens_model_list_wo_los = [
-            model for i, model in enumerate(lens_model_list) if i != index_losf
+            model for i, model in enumerate(lens_model_list) if i != index_los_flexion
         ]
         profile_kwargs_list_wo_los = [
             profile_kwargs
             for i, profile_kwargs in enumerate(profile_kwargs_list)
-            if i != index_losf
+            if i != index_los_flexion
         ]
         lens_redshift_list_wo_los = [
-            redshift for i, redshift in enumerate(lens_redshift_list) if i != index_losf
+            redshift for i, redshift in enumerate(lens_redshift_list) if i != index_los_flexion
         ]
         self._main_lens = SinglePlane(
             lens_model_list_wo_los,
@@ -78,10 +78,10 @@ class SinglePlaneLOSFlexion(SinglePlane):
             z_source_convention=z_source_convention,
         )
 
-    def split_lens_losf(self, kwargs):
+    def split_lens_los_flexion(self, kwargs):
         """This function splits the list of key-word arguments given to the lens model
         into those that correspond to the lens itself (kwargs_main), and those that
-        correspond to the line-of-sight corrections (kwargs_losf), including line-of-
+        correspond to the line-of-sight corrections (kwargs_los_flexion), including line-of-
         sight flexion.
 
         :param kwargs: the list of key-word arguments passed to lenstronomy
@@ -89,37 +89,37 @@ class SinglePlaneLOSFlexion(SinglePlane):
             corresponding to the LOS effects
         """
 
-        kwargs_losf = copy.deepcopy(kwargs[self._index_losf])
-        # if 'LOSF_MINIMAL' is at play, we set kappa_os = kappa_los, gamma_os = gamma_los, F_os = F_los, G_os = G_los,
+        kwargs_los_flexion = copy.deepcopy(kwargs[self._index_los_flexion])
+        # if 'LOS_FLEXION_MINIMAL' is at play, we set kappa_os = kappa_los, gamma_os = gamma_los, F_os = F_los, G_os = G_los,
         # F_1ds = F_1los, G_1ds = G_1los, kappa_ds = kappa_od, gamma_ds = gamma_od, F_2ds = F_od, G_2ds = G_od.
         # In the following we convert a list expressed for the LOSF_MINIMAL model as a list expressed for the LOSF model,
         # that's why for instance we delete the kappa_los entry while creating the kappa_os entry
-        if self._losf_model == "LOSF_MINIMAL":
-            kwargs_losf["kappa_os"] = kwargs_losf.pop("kappa_los")
-            kwargs_losf["gamma1_os"] = kwargs_losf.pop("gamma1_los")
-            kwargs_losf["gamma2_os"] = kwargs_losf.pop("gamma2_los")
-            kwargs_losf["F1_os"] = kwargs_losf.pop("F1_los")
-            kwargs_losf["F2_os"] = kwargs_losf.pop("F2_los")
-            kwargs_losf["G1_os"] = kwargs_losf.pop("G1_los")
-            kwargs_losf["G2_os"] = kwargs_losf.pop("G2_los")
-            kwargs_losf["F1_1ds"] = kwargs_losf.pop("F1_1los")
-            kwargs_losf["F2_1ds"] = kwargs_losf.pop("F2_1los")
-            kwargs_losf["G1_1ds"] = kwargs_losf.pop("G1_1los")
-            kwargs_losf["G2_1ds"] = kwargs_losf.pop("G2_1los")
-            kwargs_losf["kappa_ds"] = kwargs_losf[
+        if self._los_flexion_model == "LOS_FLEXION_MINIMAL":
+            kwargs_los_flexion["kappa_os"] = kwargs_los_flexion.pop("kappa_los")
+            kwargs_los_flexion["gamma1_os"] = kwargs_los_flexion.pop("gamma1_los")
+            kwargs_los_flexion["gamma2_os"] = kwargs_los_flexion.pop("gamma2_los")
+            kwargs_los_flexion["F1_os"] = kwargs_los_flexion.pop("F1_los")
+            kwargs_los_flexion["F2_os"] = kwargs_los_flexion.pop("F2_los")
+            kwargs_los_flexion["G1_os"] = kwargs_los_flexion.pop("G1_los")
+            kwargs_los_flexion["G2_os"] = kwargs_los_flexion.pop("G2_los")
+            kwargs_los_flexion["F1_1ds"] = kwargs_los_flexion.pop("F1_1los")
+            kwargs_los_flexion["F2_1ds"] = kwargs_los_flexion.pop("F2_1los")
+            kwargs_los_flexion["G1_1ds"] = kwargs_los_flexion.pop("G1_1los")
+            kwargs_los_flexion["G2_1ds"] = kwargs_los_flexion.pop("G2_1los")
+            kwargs_los_flexion["kappa_ds"] = kwargs_los_flexion[
                 "kappa_od"
             ]  # here kappa_od is still present in the list of arguments for LOSF, thus we don't delete
-            kwargs_losf["gamma1_ds"] = kwargs_losf["gamma1_od"]
-            kwargs_losf["gamma2_ds"] = kwargs_losf["gamma2_od"]
-            kwargs_losf["F1_2ds"] = kwargs_losf["F1_od"]
-            kwargs_losf["F2_2ds"] = kwargs_losf["F2_od"]
-            kwargs_losf["G1_2ds"] = kwargs_losf["G1_od"]
-            kwargs_losf["G2_2ds"] = kwargs_losf["G2_od"]
-            kwargs_losf["omega_os"] = kwargs_losf["omega_los"]
+            kwargs_los_flexion["gamma1_ds"] = kwargs_los_flexion["gamma1_od"]
+            kwargs_los_flexion["gamma2_ds"] = kwargs_los_flexion["gamma2_od"]
+            kwargs_los_flexion["F1_2ds"] = kwargs_los_flexion["F1_od"]
+            kwargs_los_flexion["F2_2ds"] = kwargs_los_flexion["F2_od"]
+            kwargs_los_flexion["G1_2ds"] = kwargs_los_flexion["G1_od"]
+            kwargs_los_flexion["G2_2ds"] = kwargs_los_flexion["G2_od"]
+            kwargs_los_flexion["omega_os"] = kwargs_los_flexion["omega_los"]
 
-        kwargs_main = [kwarg for i, kwarg in enumerate(kwargs) if i != self._index_losf]
+        kwargs_main = [kwarg for i, kwarg in enumerate(kwargs) if i != self._index_los_flexion]
 
-        return kwargs_main, kwargs_losf
+        return kwargs_main, kwargs_los_flexion
 
     def fermat_potential(
         self, x_image, y_image, kwargs_lens, x_source=None, y_source=None, k=None
@@ -137,67 +137,67 @@ class SinglePlaneLOSFlexion(SinglePlane):
         # Beware! Here the formula used for the computation of the fermat potential is different than the one presented in the paper "Weak lensing of strong lensing: beyond the tidal regime",
         # but it is equivalent. This form has the advantage of being more compact.
 
-        kwargs_main, kwargs_losf = self.split_lens_losf(kwargs_lens)
+        kwargs_main, kwargs_los_flexion = self.split_lens_los_flexion(kwargs_lens)
         theta = x_image + 1j * y_image
         thetac = theta.conjugate()
 
         # F_los, G_los, F_1los, G_1los, kappa_los, gamma_los
         F_los = (
-            kwargs_losf["F1_od"]
-            + kwargs_losf["F1_os"]
-            - kwargs_losf["F1_2ds"]
-            + 1j * (kwargs_losf["F2_od"] + kwargs_losf["F2_os"] - kwargs_losf["F2_2ds"])
+            kwargs_los_flexion["F1_od"]
+            + kwargs_los_flexion["F1_os"]
+            - kwargs_los_flexion["F1_2ds"]
+            + 1j * (kwargs_los_flexion["F2_od"] + kwargs_los_flexion["F2_os"] - kwargs_los_flexion["F2_2ds"])
         )
         G_los = (
-            kwargs_losf["G1_od"]
-            + kwargs_losf["G1_os"]
-            - kwargs_losf["G1_2ds"]
-            + 1j * (kwargs_losf["G2_od"] + kwargs_losf["G2_os"] - kwargs_losf["G2_2ds"])
+            kwargs_los_flexion["G1_od"]
+            + kwargs_los_flexion["G1_os"]
+            - kwargs_los_flexion["G1_2ds"]
+            + 1j * (kwargs_los_flexion["G2_od"] + kwargs_los_flexion["G2_os"] - kwargs_los_flexion["G2_2ds"])
         )
 
         F_1los = (
-            kwargs_losf["F1_od"]
-            + kwargs_losf["F1_1ds"]
-            - kwargs_losf["F1_2ds"]
+            kwargs_los_flexion["F1_od"]
+            + kwargs_los_flexion["F1_1ds"]
+            - kwargs_los_flexion["F1_2ds"]
             + 1j
-            * (kwargs_losf["F2_od"] + kwargs_losf["F2_1ds"] - kwargs_losf["F2_2ds"])
+            * (kwargs_los_flexion["F2_od"] + kwargs_los_flexion["F2_1ds"] - kwargs_los_flexion["F2_2ds"])
         )
         G_1los = (
-            kwargs_losf["G1_od"]
-            + kwargs_losf["G1_1ds"]
-            - kwargs_losf["G1_2ds"]
+            kwargs_los_flexion["G1_od"]
+            + kwargs_los_flexion["G1_1ds"]
+            - kwargs_los_flexion["G1_2ds"]
             + 1j
-            * (kwargs_losf["G2_od"] + kwargs_losf["G2_1ds"] - kwargs_losf["G2_2ds"])
+            * (kwargs_los_flexion["G2_od"] + kwargs_los_flexion["G2_1ds"] - kwargs_los_flexion["G2_2ds"])
         )
 
         kappa_los = (
-            kwargs_losf["kappa_od"] + kwargs_losf["kappa_os"] - kwargs_losf["kappa_ds"]
+            kwargs_los_flexion["kappa_od"] + kwargs_los_flexion["kappa_os"] - kwargs_los_flexion["kappa_ds"]
         )
         gamma_los = (
-            kwargs_losf["gamma1_od"]
-            + kwargs_losf["gamma1_os"]
-            - kwargs_losf["gamma1_ds"]
+            kwargs_los_flexion["gamma1_od"]
+            + kwargs_los_flexion["gamma1_os"]
+            - kwargs_los_flexion["gamma1_ds"]
             + 1j
             * (
-                kwargs_losf["gamma2_od"]
-                + kwargs_losf["gamma2_os"]
-                - kwargs_losf["gamma2_ds"]
+                kwargs_los_flexion["gamma2_od"]
+                + kwargs_los_flexion["gamma2_os"]
+                - kwargs_los_flexion["gamma2_ds"]
             )
         )
 
         # computation of f(theta)
         theta_d = (
-            (1 - kwargs_losf["kappa_od"]) * theta
-            - (kwargs_losf["gamma1_od"] + 1j * kwargs_losf["gamma2_od"]) * thetac
+            (1 - kwargs_los_flexion["kappa_od"]) * theta
+            - (kwargs_los_flexion["gamma1_od"] + 1j * kwargs_los_flexion["gamma2_od"]) * thetac
             - 1
             / 2
             * (
-                (kwargs_losf["F1_od"] - 1j * kwargs_losf["F2_od"]) * theta**2
+                (kwargs_los_flexion["F1_od"] - 1j * kwargs_los_flexion["F2_od"]) * theta**2
                 + 2
-                * (kwargs_losf["F1_od"] + 1j * kwargs_losf["F2_od"])
+                * (kwargs_los_flexion["F1_od"] + 1j * kwargs_los_flexion["F2_od"])
                 * theta
                 * thetac
-                + (kwargs_losf["G1_od"] + 1j * kwargs_losf["G2_od"]) * thetac**2
+                + (kwargs_los_flexion["G1_od"] + 1j * kwargs_los_flexion["G2_od"]) * thetac**2
             )
         )
         x_d, y_d = theta_d.real, theta_d.imag
@@ -222,15 +222,15 @@ class SinglePlaneLOSFlexion(SinglePlane):
         alpha_mc = alpha_m.conjugate()
 
         group1 = (
-            kwargs_losf["kappa_od"]
-            + (kwargs_losf["F1_od"] - 1j * kwargs_losf["F2_od"]) * theta
-            + (kwargs_losf["F1_od"] + 1j * kwargs_losf["F2_od"]) * thetac
+            kwargs_los_flexion["kappa_od"]
+            + (kwargs_los_flexion["F1_od"] - 1j * kwargs_los_flexion["F2_od"]) * theta
+            + (kwargs_los_flexion["F1_od"] + 1j * kwargs_los_flexion["F2_od"]) * thetac
         )
         group2 = (
-            kwargs_losf["gamma1_od"]
-            + 1j * kwargs_losf["gamma2_od"]
-            + (kwargs_losf["F1_od"] + 1j * kwargs_losf["F2_od"]) * theta
-            + (kwargs_losf["G1_od"] + 1j * kwargs_losf["G2_od"]) * thetac
+            kwargs_los_flexion["gamma1_od"]
+            + 1j * kwargs_los_flexion["gamma2_od"]
+            + (kwargs_los_flexion["F1_od"] + 1j * kwargs_los_flexion["F2_od"]) * theta
+            + (kwargs_los_flexion["G1_od"] + 1j * kwargs_los_flexion["G2_od"]) * thetac
         )
         group3 = (
             F_los.conjugate() * theta**2
@@ -270,23 +270,24 @@ class SinglePlaneLOSFlexion(SinglePlane):
         :param k: only evaluate the k-th lens model
         :return: deflection angles in units of arcsec
         """
+        print('hello')
 
-        kwargs_main, kwargs_losf = self.split_lens_losf(kwargs)
+        kwargs_main, kwargs_los_flexion = self.split_lens_los_flexion(kwargs)
         theta = x + y * 1j
         thetac = theta.conjugate()
 
         # Angular position where the ray hits the deflector's plane
         theta_d = (
-            (1 - kwargs_losf["kappa_od"]) * theta
-            - (kwargs_losf["gamma1_od"] + 1j * kwargs_losf["gamma2_od"]) * thetac
+            (1 - kwargs_los_flexion["kappa_od"]) * theta
+            - (kwargs_los_flexion["gamma1_od"] + 1j * kwargs_los_flexion["gamma2_od"]) * thetac
             - 1
             / 2
             * (
-                (kwargs_losf["F1_od"] - 1j * kwargs_losf["F2_od"]) * theta**2
+                (kwargs_los_flexion["F1_od"] - 1j * kwargs_los_flexion["F2_od"]) * theta**2
                 + 2
-                * (kwargs_losf["F1_od"] + 1j * kwargs_losf["F2_od"])
+                * (kwargs_los_flexion["F1_od"] + 1j * kwargs_los_flexion["F2_od"])
                 * abs(theta) ** 2
-                + (kwargs_losf["G1_od"] + 1j * kwargs_losf["G2_od"]) * thetac**2
+                + (kwargs_los_flexion["G1_od"] + 1j * kwargs_los_flexion["G2_od"]) * thetac**2
             )
         )
         x_d, y_d = theta_d.real, theta_d.imag
@@ -296,17 +297,17 @@ class SinglePlaneLOSFlexion(SinglePlane):
 
         # Flexed alpha_os
         alpha_os = (
-            kwargs_losf["kappa_os"] * theta
-            + 1j * kwargs_losf["omega_os"] * theta
-            + (kwargs_losf["gamma1_os"] + 1j * kwargs_losf["gamma2_os"]) * thetac
+            kwargs_los_flexion["kappa_os"] * theta
+            + 1j * kwargs_los_flexion["omega_os"] * theta
+            + (kwargs_los_flexion["gamma1_os"] + 1j * kwargs_los_flexion["gamma2_os"]) * thetac
             + 1
             / 2
             * (
-                (kwargs_losf["F1_os"] - 1j * kwargs_losf["F2_os"]) * theta**2
+                (kwargs_los_flexion["F1_os"] - 1j * kwargs_los_flexion["F2_os"]) * theta**2
                 + 2
-                * (kwargs_losf["F1_os"] + 1j * kwargs_losf["F2_os"])
+                * (kwargs_los_flexion["F1_os"] + 1j * kwargs_los_flexion["F2_os"])
                 * abs(theta) ** 2
-                + (kwargs_losf["G1_os"] + 1j * kwargs_losf["G2_os"]) * thetac**2
+                + (kwargs_los_flexion["G1_os"] + 1j * kwargs_los_flexion["G2_os"]) * thetac**2
             )
         )
         x_s, y_s = alpha_os.real, alpha_os.imag
@@ -316,16 +317,16 @@ class SinglePlaneLOSFlexion(SinglePlane):
         alpha_ods = alpha_ods_x + 1j * alpha_ods_y
         lin = (
             -(
-                kwargs_losf["kappa_ds"]
-                + (kwargs_losf["F1_2ds"] - 1j * kwargs_losf["F2_2ds"]) * theta
-                + (kwargs_losf["F1_2ds"] + 1j * kwargs_losf["F2_2ds"]) * thetac
+                kwargs_los_flexion["kappa_ds"]
+                + (kwargs_los_flexion["F1_2ds"] - 1j * kwargs_los_flexion["F2_2ds"]) * theta
+                + (kwargs_los_flexion["F1_2ds"] + 1j * kwargs_los_flexion["F2_2ds"]) * thetac
             )
             * alpha_ods
             - (
-                kwargs_losf["gamma1_ds"]
-                + 1j * kwargs_losf["gamma2_ds"]
-                + (kwargs_losf["F1_2ds"] + 1j * kwargs_losf["F2_2ds"]) * theta
-                + (kwargs_losf["G1_2ds"] + 1j * kwargs_losf["G2_2ds"]) * thetac
+                kwargs_los_flexion["gamma1_ds"]
+                + 1j * kwargs_los_flexion["gamma2_ds"]
+                + (kwargs_los_flexion["F1_2ds"] + 1j * kwargs_los_flexion["F2_2ds"]) * theta
+                + (kwargs_los_flexion["G1_2ds"] + 1j * kwargs_los_flexion["G2_2ds"]) * thetac
             )
             * alpha_ods.conjugate()
         )
@@ -336,12 +337,12 @@ class SinglePlaneLOSFlexion(SinglePlane):
             1
             / 2
             * (
-                (kwargs_losf["F1_1ds"] - 1j * kwargs_losf["F2_1ds"]) * alpha_ods**2
+                (kwargs_los_flexion["F1_1ds"] - 1j * kwargs_los_flexion["F2_1ds"]) * alpha_ods**2
                 + 2
-                * (kwargs_losf["F1_1ds"] + 1j * kwargs_losf["F2_1ds"])
+                * (kwargs_los_flexion["F1_1ds"] + 1j * kwargs_los_flexion["F2_1ds"])
                 * alpha_ods
                 * alpha_ods.conjugate()
-                + (kwargs_losf["G1_1ds"] + 1j * kwargs_losf["G2_1ds"])
+                + (kwargs_los_flexion["G1_1ds"] + 1j * kwargs_los_flexion["G2_1ds"])
                 * alpha_ods.conjugate() ** 2
             )
         )
@@ -366,7 +367,7 @@ class SinglePlaneLOSFlexion(SinglePlane):
         :return: f_xx, f_xy, f_yx, f_yy components
         """
 
-        kwargs_main, kwargs_losf = self.split_lens_losf(kwargs)
+        kwargs_main, kwargs_los_flexion = self.split_lens_los_flexion(kwargs)
         theta = x + y * 1j
         thetac = theta.conjugate()
 
@@ -374,30 +375,30 @@ class SinglePlaneLOSFlexion(SinglePlane):
         alpha_ods = alpha_ods_x + 1j * alpha_ods_y
 
         # Computation of complex parameters
-        F_od = kwargs_losf["F1_od"] + 1j * kwargs_losf["F2_od"]
-        G_od = kwargs_losf["G1_od"] + 1j * kwargs_losf["G2_od"]
+        F_od = kwargs_los_flexion["F1_od"] + 1j * kwargs_los_flexion["F2_od"]
+        G_od = kwargs_los_flexion["G1_od"] + 1j * kwargs_los_flexion["G2_od"]
 
-        F_1ds = kwargs_losf["F1_1ds"] + 1j * kwargs_losf["F2_1ds"]
-        F_2ds = kwargs_losf["F1_2ds"] + 1j * kwargs_losf["F2_2ds"]
+        F_1ds = kwargs_los_flexion["F1_1ds"] + 1j * kwargs_los_flexion["F2_1ds"]
+        F_2ds = kwargs_los_flexion["F1_2ds"] + 1j * kwargs_los_flexion["F2_2ds"]
 
-        G_1ds = kwargs_losf["G1_1ds"] + 1j * kwargs_losf["G2_1ds"]
-        G_2ds = kwargs_losf["G1_2ds"] + 1j * kwargs_losf["G2_2ds"]
+        G_1ds = kwargs_los_flexion["G1_1ds"] + 1j * kwargs_los_flexion["G2_1ds"]
+        G_2ds = kwargs_los_flexion["G1_2ds"] + 1j * kwargs_los_flexion["G2_2ds"]
 
-        F_os = kwargs_losf["F1_os"] + 1j * kwargs_losf["F2_os"]
-        G_os = kwargs_losf["G1_os"] + 1j * kwargs_losf["G2_os"]
+        F_os = kwargs_los_flexion["F1_os"] + 1j * kwargs_los_flexion["F2_os"]
+        G_os = kwargs_los_flexion["G1_os"] + 1j * kwargs_los_flexion["G2_os"]
 
         # Angular position where the ray hits the deflector's plane
         theta_d = (
-            (1 - kwargs_losf["kappa_od"]) * theta
-            - (kwargs_losf["gamma1_od"] + 1j * kwargs_losf["gamma2_od"]) * thetac
+            (1 - kwargs_los_flexion["kappa_od"]) * theta
+            - (kwargs_los_flexion["gamma1_od"] + 1j * kwargs_los_flexion["gamma2_od"]) * thetac
             - 1
             / 2
             * (
-                (kwargs_losf["F1_od"] - 1j * kwargs_losf["F2_od"]) * theta**2
+                (kwargs_los_flexion["F1_od"] - 1j * kwargs_los_flexion["F2_od"]) * theta**2
                 + 2
-                * (kwargs_losf["F1_od"] + 1j * kwargs_losf["F2_od"])
+                * (kwargs_los_flexion["F1_od"] + 1j * kwargs_los_flexion["F2_od"])
                 * abs(theta) ** 2
-                + (kwargs_losf["G1_od"] + 1j * kwargs_losf["G2_od"]) * thetac**2
+                + (kwargs_los_flexion["G1_od"] + 1j * kwargs_los_flexion["G2_od"]) * thetac**2
             )
         )
         x_d, y_d = theta_d.real, theta_d.imag
@@ -409,15 +410,15 @@ class SinglePlaneLOSFlexion(SinglePlane):
 
         # Computation of Gamma_ds
         kappa_ds = (
-            kwargs_losf["kappa_ds"]
+            kwargs_los_flexion["kappa_ds"]
             + F_2ds.conjugate() * theta
             + F_2ds * thetac
             - F_1ds.conjugate() * alpha_ods
             - F_1ds * alpha_ods.conjugate()
         )
         gamma_ds = (
-            kwargs_losf["gamma1_ds"]
-            + 1j * kwargs_losf["gamma2_ds"]
+            kwargs_los_flexion["gamma1_ds"]
+            + 1j * kwargs_los_flexion["gamma2_ds"]
             + F_2ds * theta
             + G_2ds * thetac
             - F_1ds * alpha_ods
@@ -432,10 +433,10 @@ class SinglePlaneLOSFlexion(SinglePlane):
         f__yy = -gamma2_ds * f_xy + (1 - kappa_ds + gamma1_ds) * f_yy
 
         # Computation of Gamma_od
-        kappa_od = kwargs_losf["kappa_od"] + F_od.conjugate() * theta + F_od * thetac
+        kappa_od = kwargs_los_flexion["kappa_od"] + F_od.conjugate() * theta + F_od * thetac
         gamma_od = (
-            kwargs_losf["gamma1_od"]
-            + 1j * kwargs_losf["gamma2_od"]
+            kwargs_los_flexion["gamma1_od"]
+            + 1j * kwargs_los_flexion["gamma2_od"]
             + F_od * theta
             + G_od * thetac
         )
@@ -449,15 +450,15 @@ class SinglePlaneLOSFlexion(SinglePlane):
 
         # Computation of Gamma_os
         kappa_os = (
-            kwargs_losf["kappa_os"]
+            kwargs_los_flexion["kappa_os"]
             + F_os.conjugate() * theta
             + F_os * thetac
             - F_2ds.conjugate() * alpha_ods
             - F_2ds * alpha_ods.conjugate()
         )
         gamma_os = (
-            kwargs_losf["gamma1_os"]
-            + 1j * kwargs_losf["gamma2_os"]
+            kwargs_los_flexion["gamma1_os"]
+            + 1j * kwargs_los_flexion["gamma2_os"]
             + F_os * theta
             + G_os * thetac
             - F_2ds * alpha_ods
@@ -485,7 +486,7 @@ class SinglePlaneLOSFlexion(SinglePlane):
 
         print("Note: The computation of the 3d mass ignores the LOS corrections.")
 
-        kwargs_main, kwargs_los = self.split_lens_losf(kwargs)
+        kwargs_main, kwargs_los = self.split_lens_los_flexion(kwargs)
         mass_3d = self._main_lens.mass_3d(r=r, kwargs=kwargs_main, bool_list=bool_list)
 
         return mass_3d
@@ -508,7 +509,7 @@ class SinglePlaneLOSFlexion(SinglePlane):
 
         print("Note: The computation of the 2d mass ignores the LOS corrections.")
 
-        kwargs_main, kwargs_los = self.split_lens_losf(kwargs)
+        kwargs_main, kwargs_los = self.split_lens_los_flexion(kwargs)
         mass_2d = self._main_lens.mass_2d(r=r, kwargs=kwargs_main, bool_list=bool_list)
 
         return mass_2d
@@ -526,7 +527,7 @@ class SinglePlaneLOSFlexion(SinglePlane):
 
         print("Note: The computation of the density ignores the LOS corrections.")
 
-        kwargs_main, kwargs_los = self.split_lens_losf(kwargs)
+        kwargs_main, kwargs_los = self.split_lens_los_flexion(kwargs)
         density = self._main_lens.density(r=r, kwargs=kwargs_main, bool_list=bool_list)
 
         return density

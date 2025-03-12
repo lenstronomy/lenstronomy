@@ -219,29 +219,6 @@ class TestLightModel(object):
             "SERSIC_ELLIPSE",
         ]
         kwargs_list = [
-            {
-                "amp": 1,
-                "R_sersic": 0.5,
-                "n_sersic": 1,
-                "center_x": 0,
-                "center_y": 0,
-            },  # 'SERSIC'
-            {
-                "amp": 1,
-                "R_sersic": 0.5,
-                "n_sersic": 1,
-                "e1": 0.1,
-                "e2": 0,
-                "center_x": 0,
-                "center_y": 0,
-            },  # 'SERSIC_ELLIPSE'
-            {
-                "image": np.ones((20, 5)),
-                "scale": 1,
-                "phi_G": 0,
-                "center_x": 0,
-                "center_y": 0,
-            },  # 'INTERPOL'
             {"amp": 2, "sigma": 2, "center_x": 0, "center_y": 0},  # 'GAUSSIAN'
             {
                 "amp": 2,
@@ -251,6 +228,21 @@ class TestLightModel(object):
                 "center_x": 0,
                 "center_y": 0,
             },  # 'GAUSSIAN_ELLIPSE'
+            {
+                "image": np.ones((20, 5)),
+                "scale": 1,
+                "phi_G": 0,
+                "center_x": 0,
+                "center_y": 0,
+            },  # 'INTERPOL'
+            {
+                "amp": 1,
+                "length": 1.0,
+                "width": 0.01,
+                "angle": 57,
+                "start_x": 0,
+                "start_y": 0,
+            },  # 'LINE_PROFILE'
             {
                 "amp": [1, 1],
                 "sigma": [2, 1],
@@ -267,12 +259,20 @@ class TestLightModel(object):
             },  # 'MULTI_GAUSSIAN_ELLIPSE'
             {
                 "amp": 1,
-                "length": 1.0,
-                "width": 0.01,
-                "angle": 57,
-                "start_x": 0,
-                "start_y": 0,
-            },  # 'LINE_PROFILE'
+                "R_sersic": 0.5,
+                "n_sersic": 1,
+                "center_x": 0,
+                "center_y": 0,
+            },  # 'SERSIC'
+            {
+                "amp": 1,
+                "R_sersic": 0.5,
+                "n_sersic": 1,
+                "e1": 0.1,
+                "e2": 0,
+                "center_x": 0,
+                "center_y": 0,
+            },  # 'SERSIC_ELLIPSE'
         ]
         lightModel = LightModel(light_model_list=light_model_list)
         total_flux_list = lightModel.total_flux(kwargs_list)

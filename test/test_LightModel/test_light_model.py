@@ -15,23 +15,23 @@ class TestLightModel(object):
 
     def setup_method(self):
         self.light_model_list = [
-            "GAUSSIAN",
-            "MULTI_GAUSSIAN",
-            "SERSIC",
-            "SERSIC_ELLIPSE",
             "CORE_SERSIC",
-            "SHAPELETS",
+            "ELLIPSOID",
+            "GAUSSIAN",
             "HERNQUIST",
             "HERNQUIST_ELLIPSE",
+            "INTERPOL",
+            "LINE_PROFILE",
+            "MULTI_GAUSSIAN",
+            "NIE",
             "PJAFFE",
             "PJAFFE_ELLIPSE",
-            "UNIFORM",
             "POWER_LAW",
-            "NIE",
-            "INTERPOL",
+            "SERSIC",
+            "SERSIC_ELLIPSE",
+            "SHAPELETS",
             "SHAPELETS_POLAR_EXP",
-            "ELLIPSOID",
-            "LINE_PROFILE",
+            "UNIFORM",
         ]
         phi_G, q = 0.5, 0.8
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
@@ -144,18 +144,18 @@ class TestLightModel(object):
 
     def test_init(self):
         model_list = [
+            "CHAMELEON",
             "CORE_SERSIC",
-            "SERSIC",
-            "SERSIC_FLEXION",
-            "SHAPELETS",
+            "DOUBLE_CHAMELEON",
             "LINEAR_ELLIPSE",
+            "SERSIC",
+            "SERSIC_ELLIPSE_FLEXION",
+            "SHAPELETS",
             "SHAPELETS_ELLIPSE",
             "SHAPELETS_POLAR",
             "SHAPELETS_POLAR_EXP",
-            "UNIFORM",
-            "CHAMELEON",
-            "DOUBLE_CHAMELEON",
             "TRIPLE_CHAMELEON",
+            "UNIFORM",
         ]
         profile_kwargs_list = [
             None,
@@ -211,14 +211,14 @@ class TestLightModel(object):
 
     def test_total_flux(self):
         light_model_list = [
-            "SERSIC",
-            "SERSIC_ELLIPSE",
-            "INTERPOL",
             "GAUSSIAN",
             "GAUSSIAN_ELLIPSE",
+            "INTERPOL",
+            "LINE_PROFILE",
             "MULTI_GAUSSIAN",
             "MULTI_GAUSSIAN_ELLIPSE",
-            "LINE_PROFILE",
+            "SERSIC",
+            "SERSIC_ELLIPSE",
         ]
         kwargs_list = [
             {

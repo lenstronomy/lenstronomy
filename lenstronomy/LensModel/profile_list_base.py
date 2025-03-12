@@ -55,7 +55,7 @@ _SUPPORTED_MODELS = [
     "RADIAL_INTERPOL",
     "LOS",
     "LOS_MINIMAL",
-    "LOSF",
+    "LOS_FLEXION",
     "LOSF_MINIMAL",
     "MULTIPOLE",
     "MULTIPOLE_ELL",

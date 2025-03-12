@@ -138,7 +138,7 @@ class SinglePlaneLOSFlexion(SinglePlane):
             the lens model classes
         :return: fermat potential in arcsec**2 as a list
         """
-        # Beware! Here the formula used for the computation of the fermat potential is different than the one presented in the paper 
+        # Beware! Here the formula used for the computation of the fermat potential is different than the one presented in the paper
         # "Weak lensing of strong lensing: beyond the tidal regime",
         # but it is equivalent. This form has the advantage of being more compact.
 

@@ -1,7 +1,9 @@
 __author__ = "sibirrer"
 from lenstronomy.LensModel.single_plane import SinglePlane
 from lenstronomy.LensModel.LineOfSight.single_plane_los import SinglePlaneLOS
-from lenstronomy.LensModel.LineOfSight.single_plane_los_flexion import SinglePlaneLOSFlexion
+from lenstronomy.LensModel.LineOfSight.single_plane_los_flexion import (
+    SinglePlaneLOSFlexion,
+)
 from lenstronomy.LensModel.MultiPlane.multi_plane import MultiPlane
 from lenstronomy.LensModel.MultiPlane.decoupled_multi_plane import MultiPlaneDecoupled
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo

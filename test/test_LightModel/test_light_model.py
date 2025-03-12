@@ -15,103 +15,34 @@ class TestLightModel(object):
 
     def setup_method(self):
         self.light_model_list = [
-            "CORE_SERSIC",
-            "ELLIPSOID",
             "GAUSSIAN",
-            "HERNQUIST",
-            "HERNQUIST_ELLIPSE",
-            "INTERPOL",
-            "LINE_PROFILE",
             "MULTI_GAUSSIAN",
-            "NIE",
-            "PJAFFE",
-            "PJAFFE_ELLIPSE",
-            "POWER_LAW",
             "SERSIC",
             "SERSIC_ELLIPSE",
+            "CORE_SERSIC",
             "SHAPELETS",
-            "SHAPELETS_POLAR_EXP",
+            "HERNQUIST",
+            "HERNQUIST_ELLIPSE",
+            "PJAFFE",
+            "PJAFFE_ELLIPSE",
             "UNIFORM",
+            "POWER_LAW",
+            "NIE",
+            "INTERPOL",
+            "SHAPELETS_POLAR_EXP",
+            "ELLIPSOID",
+            "LINE_PROFILE",
         ]
         phi_G, q = 0.5, 0.8
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         self.kwargs = [
-            {
-                "amp": 1,
-                "R_sersic": 0.5,
-                "Rb": 0.1,
-                "gamma": 2.0,
-                "n_sersic": 1,
-                "e1": e1,
-                "e2": e2,
-                "center_x": 0,
-                "center_y": 0,
-            },  # 'CORE_SERSIC'
-            {
-                "amp": 1,
-                "radius": 1.0,
-                "e1": 0,
-                "e2": 0.1,
-                "center_x": 0,
-                "center_y": 0,
-            },  # 'ELLIPSOID'
             {"amp": 1.0, "sigma": 1.0, "center_x": 0, "center_y": 0},  # 'GAUSSIAN'
-            {"amp": 1, "Rs": 0.5, "center_x": 0, "center_y": 0},  # 'HERNQUIST'
-            {
-                "amp": 1,
-                "Rs": 0.5,
-                "center_x": 0,
-                "center_y": 0,
-                "e1": e1,
-                "e2": e2,
-            },  # 'HERNQUIST_ELLIPSE'
-            {
-                "image": np.zeros((20, 5)),
-                "scale": 1,
-                "phi_G": 0,
-                "center_x": 0,
-                "center_y": 0,
-            },  # 'INTERPOL'
-            {
-                "amp": 1,
-                "length": 1.0,
-                "width": 0.01,
-                "angle": 57,
-                "start_x": 0,
-                "start_y": 0,
-            },  # 'LINE_PROFILE'
             {
                 "amp": [1.0, 2],
                 "sigma": [1, 3],
                 "center_x": 0,
                 "center_y": 0,
             },  # 'MULTI_GAUSSIAN'
-            {
-                "amp": 0.001,
-                "e1": 0,
-                "e2": 1.0,
-                "center_x": 0,
-                "center_y": 0,
-                "s_scale": 1.0,
-            },  # 'NIE'
-            {"amp": 1, "Ra": 1, "Rs": 0.5, "center_x": 0, "center_y": 0},  # 'PJAFFE'
-            {
-                "amp": 1,
-                "Ra": 1,
-                "Rs": 0.5,
-                "center_x": 0,
-                "center_y": 0,
-                "e1": e1,
-                "e2": e2,
-            },  # 'PJAFFE_ELLIPSE'
-            {
-                "amp": 1.0,
-                "gamma": 2.0,
-                "e1": e1,
-                "e2": e2,
-                "center_x": 0,
-                "center_y": 0,
-            },  # 'POWER_LAW'
             {
                 "amp": 1,
                 "R_sersic": 0.5,
@@ -129,31 +60,102 @@ class TestLightModel(object):
                 "center_y": 0,
             },  # 'SERSIC_ELLIPSE'
             {
-                "amp": [1],
-                "n_max": 0,
-                "beta": 1,
+                "amp": 1,
+                "R_sersic": 0.5,
+                "Rb": 0.1,
+                "gamma": 2.0,
+                "n_sersic": 1,
+                "e1": e1,
+                "e2": e2,
                 "center_x": 0,
                 "center_y": 0,
-            },  # 'SHAPELETS_POLAR_EXP'
+            },
+            # 'CORE_SERSIC'
+            {
+                "amp": [1, 1, 1],
+                "beta": 0.5,
+                "n_max": 1,
+                "center_x": 0,
+                "center_y": 0,
+            },  # 'SHAPELETS'
+            {"amp": 1, "Rs": 0.5, "center_x": 0, "center_y": 0},  # 'HERNQUIST'
+            {
+                "amp": 1,
+                "Rs": 0.5,
+                "center_x": 0,
+                "center_y": 0,
+                "e1": e1,
+                "e2": e2,
+            },  # 'HERNQUIST_ELLIPSE'
+            {"amp": 1, "Ra": 1, "Rs": 0.5, "center_x": 0, "center_y": 0},  # 'PJAFFE'
+            {
+                "amp": 1,
+                "Ra": 1,
+                "Rs": 0.5,
+                "center_x": 0,
+                "center_y": 0,
+                "e1": e1,
+                "e2": e2,
+            },  # 'PJAFFE_ELLIPSE'
             {"amp": 1},  # 'UNIFORM'
+            {
+                "amp": 1.0,
+                "gamma": 2.0,
+                "e1": e1,
+                "e2": e2,
+                "center_x": 0,
+                "center_y": 0,
+            },  # 'POWER_LAW'
+            {
+                "amp": 0.001,
+                "e1": 0,
+                "e2": 1.0,
+                "center_x": 0,
+                "center_y": 0,
+                "s_scale": 1.0,
+            },  # 'NIE'
+            {
+                "image": np.zeros((20, 5)),
+                "scale": 1,
+                "phi_G": 0,
+                "center_x": 0,
+                "center_y": 0,
+            },
+            {"amp": [1], "n_max": 0, "beta": 1, "center_x": 0, "center_y": 0},
+            {
+                "amp": 1,
+                "radius": 1.0,
+                "e1": 0,
+                "e2": 0.1,
+                "center_x": 0,
+                "center_y": 0,
+            },  # 'ELLIPSOID'
+            {
+                "amp": 1,
+                "length": 1.0,
+                "width": 0.01,
+                "angle": 57,
+                "start_x": 0,
+                "start_y": 0,
+            },  # 'LINE_PROFILE'
         ]
 
         self.LightModel = LightModel(light_model_list=self.light_model_list)
 
     def test_init(self):
         model_list = [
-            "CHAMELEON",
             "CORE_SERSIC",
-            "DOUBLE_CHAMELEON",
-            "LINEAR_ELLIPSE",
             "SERSIC",
             "SERSIC_ELLIPSE_FLEXION",
             "SHAPELETS",
+            "LINEAR_ELLIPSE",
             "SHAPELETS_ELLIPSE",
             "SHAPELETS_POLAR",
             "SHAPELETS_POLAR_EXP",
-            "TRIPLE_CHAMELEON",
             "UNIFORM",
+            "CHAMELEON",
+            "DOUBLE_CHAMELEON",
+            "TRIPLE_CHAMELEON",
         ]
         profile_kwargs_list = [
             None,
@@ -209,54 +211,16 @@ class TestLightModel(object):
 
     def test_total_flux(self):
         light_model_list = [
-            "GAUSSIAN",
-            "GAUSSIAN_ELLIPSE",
-            "INTERPOL",
-            "LINE_PROFILE",
-            "MULTI_GAUSSIAN",
-            "MULTI_GAUSSIAN_ELLIPSE",
             "SERSIC",
             "SERSIC_ELLIPSE",
+            "INTERPOL",
+            "GAUSSIAN",
+            "GAUSSIAN_ELLIPSE",
+            "MULTI_GAUSSIAN",
+            "MULTI_GAUSSIAN_ELLIPSE",
+            "LINE_PROFILE",
         ]
         kwargs_list = [
-            {"amp": 2, "sigma": 2, "center_x": 0, "center_y": 0},  # 'GAUSSIAN'
-            {
-                "amp": 2,
-                "sigma": 2,
-                "e1": 0.1,
-                "e2": 0,
-                "center_x": 0,
-                "center_y": 0,
-            },  # 'GAUSSIAN_ELLIPSE'
-            {
-                "image": np.ones((20, 5)),
-                "scale": 1,
-                "phi_G": 0,
-                "center_x": 0,
-                "center_y": 0,
-            },  # 'INTERPOL'
-            {
-                "amp": 1,
-                "length": 1.0,
-                "width": 0.01,
-                "angle": 57,
-                "start_x": 0,
-                "start_y": 0,
-            },  # 'LINE_PROFILE'
-            {
-                "amp": [1, 1],
-                "sigma": [2, 1],
-                "center_x": 0,
-                "center_y": 0,
-            },  # 'MULTI_GAUSSIAN'
-            {
-                "amp": [1, 1],
-                "sigma": [2, 1],
-                "e1": 0.1,
-                "e2": 0,
-                "center_x": 0,
-                "center_y": 0,
-            },  # 'MULTI_GAUSSIAN_ELLIPSE'
             {
                 "amp": 1,
                 "R_sersic": 0.5,
@@ -273,6 +237,44 @@ class TestLightModel(object):
                 "center_x": 0,
                 "center_y": 0,
             },  # 'SERSIC_ELLIPSE'
+            {
+                "image": np.ones((20, 5)),
+                "scale": 1,
+                "phi_G": 0,
+                "center_x": 0,
+                "center_y": 0,
+            },  # 'INTERPOL'
+            {"amp": 2, "sigma": 2, "center_x": 0, "center_y": 0},  # 'GAUSSIAN'
+            {
+                "amp": 2,
+                "sigma": 2,
+                "e1": 0.1,
+                "e2": 0,
+                "center_x": 0,
+                "center_y": 0,
+            },  # 'GAUSSIAN_ELLIPSE'
+            {
+                "amp": [1, 1],
+                "sigma": [2, 1],
+                "center_x": 0,
+                "center_y": 0,
+            },  # 'MULTI_GAUSSIAN'
+            {
+                "amp": [1, 1],
+                "sigma": [2, 1],
+                "e1": 0.1,
+                "e2": 0,
+                "center_x": 0,
+                "center_y": 0,
+            },  # 'MULTI_GAUSSIAN_ELLIPSE'
+            {
+                "amp": 1,
+                "length": 1.0,
+                "width": 0.01,
+                "angle": 57,
+                "start_x": 0,
+                "start_y": 0,
+            },  # 'LINE_PROFILE'
         ]
         lightModel = LightModel(light_model_list=light_model_list)
         total_flux_list = lightModel.total_flux(kwargs_list)

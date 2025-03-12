@@ -41,6 +41,12 @@ class Flexionfg(LensProfileBase):
 
     (Formula 3.99 in Meneghetti 2017).
 
+    Now we can express the flexion in terms of ra_0, dec_0, the center of the flexion.
+
+    .. math::
+        \\beta_1=A_{11}(\\theta_1-ra_0)+A_{12}(\\theta_2-dec_0)+\\frac{1}{2}D_{111}(\\theta_1-ra_0)^2+D_{121}(\\theta_1-ra_0)(\\theta_2-dec_0)+\\frac{1}{2}D_{122}(\\theta_2-dec_0)^2
+        \\beta_2=A_{21}(\\theta_1-ra_0)+A_{22}(\\theta_2-dec_0)+\\frac{1}{2}D_{211}(\\theta_1-ra_0)^2+D_{212}(\\theta_1-ra_0)(\\theta_2-dec_0)+\\frac{1}{2}D_{222}(\\theta_2-dec_0)^2
+
     """
 
     param_names = ["F1", "F2", "G1", "G2", "ra_0", "dec_0"]

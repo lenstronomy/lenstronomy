@@ -95,10 +95,10 @@ class LensModel(object):
             cosmo = default_cosmology.get()
         elif cosmo is None and cosmology_model != "FlatLambdaCDM":
             cosmo = get_astropy_cosmology(cosmology_model=cosmology_model)
-        else:
+        elif cosmology_sampling is True:
             warnings.warn(
                 "Astropy Cosmology is provided. Make sure your cosmology model is consistent with the cosmology_model "
-                "argument."
+                "argument for cosmology sampling."
             )
         self.cosmo = cosmo
         self.cosmology_sampling = cosmology_sampling

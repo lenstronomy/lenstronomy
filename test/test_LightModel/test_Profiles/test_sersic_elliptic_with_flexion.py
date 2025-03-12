@@ -1,7 +1,7 @@
 __author__ = "nataliehogg"
 
-from lenstronomy.LightModel.Profiles.sersic_elliptic_with_flexion import (
-    SersicEllipticWithFlexion,
+from lenstronomy.LightModel.Profiles.sersic_ellipse_with_flexion import (
+    SersicEllipseWithFlexion,
 )
 import lenstronomy.Util.param_util as param_util
 import numpy as np
@@ -13,7 +13,7 @@ class TestSersicEllipticWithFlexion(object):
     """Tests the elliptic flexed Sersic in the same way as the other Sersic profiles."""
 
     def setup_method(self):
-        self.flexed_sersic = SersicEllipticWithFlexion(
+        self.flexed_sersic = SersicEllipseWithFlexion(
             smoothing=0.02, sersic_major_axis=True
         )
 

@@ -21,6 +21,7 @@ Contributors (alphabetic)
 * Adam Amara `aamara <https://github.com/aamara/>`_
 * Vikram Bhamre `vikramb1 <https://github.com/vikramb1/>`_
 * Xuheng Ding `dartoon <https://github.com/dartoon/>`_
+* Théo Duboscq `TheoDuboscq <https://github.com/TheoDuboscq/>`_ 
 * Sydney Erickson `smericks <https://github.com/smericks/>`_
 * Andreas Filipp `andreasfilipp <https://github.com/andreasfilipp/>`_
 * Pierre Fleury `pierrefleury <https://github.com/pierrefleury/>`_

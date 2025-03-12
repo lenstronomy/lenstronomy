@@ -146,7 +146,7 @@ class TestLightModel(object):
         model_list = [
             "CORE_SERSIC",
             "SERSIC",
-            "SERSIC",
+            "SERSIC_ELLIPSE_FLEXION",
             "SHAPELETS",
             "LINEAR_ELLIPSE",
             "SHAPELETS_ELLIPSE",

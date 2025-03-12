@@ -501,6 +501,24 @@ class TestRaise(unittest.TestCase):
                 z_source=1.0,
                 lens_redshift_list=[0.5, 0.5, 0.5],
             )
+        with self.assertRaises(ValueError):
+            lens_model = LensModel(
+                lens_model_list=[
+                    "LOS",
+                    "LOS_FLEXION",
+                ],  # NH: more permutations exist but let's be content w testing one
+            )
+        with self.assertRaises(ValueError):
+            lens_model = LensModel(
+                lens_model_list=["LOS_FLEXION", "LOS_FLEXION_MINIMAL"],
+            )
+        with self.assertRaises(ValueError):
+            lens_model = LensModel(
+                lens_model_list=["LOS_FLEXION_MINIMAL", "SIS", "GAUSSIAN_POTENTIAL"],
+                multi_plane=True,
+                z_source=1.0,
+                lens_redshift_list=[0.5, 0.5, 0.5],
+            )
         with self.assertRaises(NotImplementedError):
             lens_model = LensModel(lens_model_list=["LOS"], z_source=2, z_lens=0.5)
             lens_model.change_source_redshift(z_source=1)

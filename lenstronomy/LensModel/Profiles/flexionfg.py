@@ -21,7 +21,7 @@ class Flexionfg(LensProfileBase):
       \\beta_i\\simeq\\sum_{j} A_{ij}\\theta_j+\\frac{1}{2}\\sum_{j}\\sum_{k}D_{ijk}\\theta_j\\theta_k
 
     Which is the second order lensing effects expressed in terms of the third derivatives of the lensing potential
-    (Formula 3.60 in Meneghetti 2017).
+    (Formula 3.60 in Meneghetti 2021).
 
     These in turn can be expressed in terms of the flexion F and G.
 
@@ -39,13 +39,16 @@ class Flexionfg(LensProfileBase):
         \\beta_1=A_{11}\\theta_1+A_{12}\\theta_2+\\frac{1}{2}D_{111}\\theta_1^2+D_{121}\\theta_1\\theta_2+\\frac{1}{2}D_{122}\\theta_2^2
         \\beta_2=A_{21}\\theta_1+A_{22}\\theta_2+\\frac{1}{2}D_{211}\\theta_1^2+D_{212}\\theta_1\\theta_2+\\frac{1}{2}D_{222}\\theta_2^2
 
-    (Formula 3.99 in Meneghetti 2017).
+    (Formula 3.99 in Meneghetti 2021).
 
-    Now we can express the flexion in terms of ra_0, dec_0, the center of the flexion.
+    Now we can express the flexion in terms of ra_0, and dec_0,
+    which are the zero-points of the polynomial expansion. 
+    Instead of using absolute coordinates \\theta_1, and \\theta_2,
+    we define the relative angular positions:
 
     .. math::
-        \\beta_1=A_{11}(\\theta_1-ra_0)+A_{12}(\\theta_2-dec_0)+\\frac{1}{2}D_{111}(\\theta_1-ra_0)^2+D_{121}(\\theta_1-ra_0)(\\theta_2-dec_0)+\\frac{1}{2}D_{122}(\\theta_2-dec_0)^2
-        \\beta_2=A_{21}(\\theta_1-ra_0)+A_{22}(\\theta_2-dec_0)+\\frac{1}{2}D_{211}(\\theta_1-ra_0)^2+D_{212}(\\theta_1-ra_0)(\\theta_2-dec_0)+\\frac{1}{2}D_{222}(\\theta_2-dec_0)^2
+        x = \\theta_1 - ra_0
+        y = \\theta_2 - dec_0
 
     """
 

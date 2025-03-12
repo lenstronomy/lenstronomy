@@ -17,8 +17,8 @@ _MODELS_SUPPORTED = [
     "MULTI_GAUSSIAN_ELLIPSE",
     "SERSIC",
     "SERSIC_ELLIPSE",
+    "SERSIC_ELLIPSE_FLEXION",
     "SERSIC_ELLIPSE_Q_PHI",
-    "SERSIC_FLEXION",
     "CORE_SERSIC",
     "SHAPELETS",
     "SHAPELETS_POLAR",
@@ -97,7 +97,7 @@ class LightModelBase(object):
 
                 self.func_list.append(SersicElliptic_qPhi(**profile_kwargs))
 
-            elif profile_type == "SERSIC_FLEXION":
+            elif profile_type == "SERSIC_ELLIPSE_FLEXION":
                 from lenstronomy.LightModel.Profiles.sersic_ellipse_with_flexion import (
                     SersicEllipseWithFlexion,
                 )
@@ -294,7 +294,7 @@ class LightModelBase(object):
                 if model in [
                     "SERSIC",
                     "SERSIC_ELLIPSE",
-                    "SERSIC_FLEXION",
+                    "SERSIC_ELLIPSE_FLEXION",
                     "INTERPOL",
                     "GAUSSIAN",
                     "GAUSSIAN_ELLIPSE",

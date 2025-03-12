@@ -7,8 +7,10 @@ __all__ = ["Hernquist"]
 class Hernquist(LensProfileBase):
     """Class to compute the Hernquist 1990 model (https://articles.adsabs.harvard.edu/pdf/1990ApJ...356..359H)
     This model in 3D is:
+
     .. math::
         \\rho(r) = \\frac{\\rho_0}{(r/R_s) (1 + r/R_s)^3}
+
     where :math:`\\rho_0` is a characteristic density and :math:`R_s` is a scale length.
 
     In lensing terms, the normalization parameter 'sigma0' is defined such that the deflection at projected RS leads to
@@ -156,8 +158,10 @@ class Hernquist(LensProfileBase):
 
     def function(self, x, y, sigma0, Rs, center_x=0, center_y=0):
         """Lensing potential, which is given by:
+
         .. math::
             \\phi = \\sigma_0 R_s^2 \\left[ \\log \\left( \\frac{X^2}{4} \\right) + 2 F(X) \\right]
+
         where :math:`F(X)` is a function of :math:`X = r/R_s`. See equation 47 and 50 in https://arxiv.org/abs/astro-ph/0102341v2
 
         :param x: x-coordinate position (units of angle)
@@ -178,7 +182,7 @@ class Hernquist(LensProfileBase):
         return f_
 
     def derivatives(self, x, y, sigma0, Rs, center_x=0, center_y=0):
-        """
+        """Calculates derivatives of the lensing potential (function).
 
         :param x: x-coordinate position (units of angle)
         :param y: y-coordinate position (units of angle)
@@ -211,7 +215,7 @@ class Hernquist(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, sigma0, Rs, center_x=0, center_y=0):
-        """Hessian terms of the function.
+        """Hessian terms of the lensing potential (function).
 
         :param x: x-coordinate position (units of angle)
         :param y: y-coordinate position (units of angle)

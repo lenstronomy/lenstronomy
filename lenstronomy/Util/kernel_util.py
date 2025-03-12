@@ -553,7 +553,7 @@ def estimate_amp(data, x_pos, y_pos, psf_kernel):
     numPix_x, numPix_y = np.shape(data)
     x_int = int(round(x_pos - 0.49999))
     y_int = int(round(y_pos - 0.49999))
-    # TODO: make amplitude estimate not sucebtible to rounding effects on which pixels to chose to estimate the amplitude
+    # TODO: make amplitude estimate not susceptible to rounding effects on which pixels to chose to estimate the amplitude
     if x_int > 2 and x_int < numPix_x - 2 and y_int > 2 and y_int < numPix_y - 2:
         mean_image = max(np.sum(data[y_int - 2 : y_int + 3, x_int - 2 : x_int + 3]), 0)
         num = len(psf_kernel)

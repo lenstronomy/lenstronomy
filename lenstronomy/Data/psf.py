@@ -57,7 +57,7 @@ class PSF(object):
                 raise ValueError("fwhm must be set for GAUSSIAN psf type!")
             self._fwhm = fwhm
             self._sigma_gaussian = util.fwhm2sigma(self._fwhm)
-            self._truncation = truncation
+            self.truncation = truncation
             self._point_source_supersampling_factor = 0
         elif self.psf_type == "PIXEL":
             if kernel_point_source is None:
@@ -135,7 +135,7 @@ class PSF(object):
                 # num_pix = 2r + 1 where r = round(truncation * sigma) is the radius of the gaussian kernel
                 # kernel_num_pix is always an odd integer between 3 and 221
                 kernel_radius = max(
-                    round(self._truncation * sigma / self._pixel_size), 1
+                    round(self.truncation * sigma / self._pixel_size), 1
                 )
                 kernel_num_pix = min(2 * kernel_radius + 1, 221)
                 self._kernel_point_source = kernel_util.kernel_gaussian(
@@ -189,7 +189,7 @@ class PSF(object):
             # num_pix = 2r + 1 where r = round(truncation * sigma) is the radius of the gaussian kernel
             kernel_radius = max(
                 round(
-                    self._truncation * sigma / self._pixel_size * supersampling_factor
+                    self.truncation * sigma / self._pixel_size * supersampling_factor
                 ),
                 1,
             )
@@ -198,7 +198,7 @@ class PSF(object):
                 raise ValueError(
                     "The pixelized Gaussian kernel has a grid of %s pixels with a truncation at "
                     "%s times the sigma of the Gaussian, exceeding the limit allowed."
-                    % (kernel_num_pix, self._truncation)
+                    % (kernel_num_pix, self.truncation)
                 )
             kernel_point_source_supersampled = kernel_util.kernel_gaussian(
                 kernel_num_pix, self._pixel_size / supersampling_factor, self._fwhm

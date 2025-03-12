@@ -42,39 +42,42 @@ def add_layer2image_int(grid2d, x_pos, y_pos, kernel):
     :param kernel: the layer to be added to the image
     :return: image with added layer
     """
-    nx, ny = np.shape(kernel)
-    if nx % 2 == 0:
-        raise ValueError("kernel needs odd numbers of pixels")
 
-    num_x, num_y = np.shape(grid2d)
+    k_rows, k_cols = np.shape(kernel)
+    if k_rows % 2 == 0 or k_cols % 2 == 0:
+        raise ValueError("kernel dimensions must be odd")
+
+    num_rows, num_cols = np.shape(grid2d)
     x_int = int(round(x_pos))
     y_int = int(round(y_pos))
 
-    k_x, k_y = np.shape(kernel)
-    k_l2_x = int((k_x - 1) / 2)
-    k_l2_y = int((k_y - 1) / 2)
+    kernel_y_radius = int((k_rows - 1) / 2)
+    kernel_x_radius = int((k_cols - 1) / 2)
 
-    min_x = np.maximum(0, x_int - k_l2_x)
-    min_y = np.maximum(0, y_int - k_l2_y)
-    max_x = np.minimum(num_x, x_int + k_l2_x + 1)
-    max_y = np.minimum(num_y, y_int + k_l2_y + 1)
+    min_row = np.maximum(0, y_int - kernel_y_radius)
+    min_col = np.maximum(0, x_int - kernel_x_radius)
+    max_row = np.minimum(num_rows, y_int + kernel_y_radius + 1)
+    max_col = np.minimum(num_cols, x_int + kernel_x_radius + 1)
 
-    min_xk = np.maximum(0, -x_int + k_l2_x)
-    min_yk = np.maximum(0, -y_int + k_l2_y)
-    max_xk = np.minimum(k_x, -x_int + k_l2_x + num_x)
-    max_yk = np.minimum(k_y, -y_int + k_l2_y + num_y)
+    min_k_row = np.maximum(0, -y_int + kernel_y_radius)
+    min_k_col = np.maximum(0, -x_int + kernel_x_radius)
+    max_k_row = np.minimum(k_rows, -y_int + kernel_y_radius + num_rows)
+    max_k_col = np.minimum(k_cols, -x_int + kernel_x_radius + num_cols)
+
+    # The conditions check if the (x_pos, y_pos) is so far outside the grid that
+    # the kernel no longer overlaps with the image
     if (
-        min_x >= max_x
-        or min_y >= max_y
-        or min_xk >= max_xk
-        or min_yk >= max_yk
-        or (max_x - min_x != max_xk - min_xk)
-        or (max_y - min_y != max_yk - min_yk)
+        min_row >= max_row
+        or min_col >= max_col
+        or min_k_row >= max_k_row
+        or min_k_col >= max_k_col
+        or (max_row - min_row != max_k_row - min_k_row)
+        or (max_col - min_col != max_k_col - min_k_col)
     ):
         return grid2d
-    kernel_re_sized = kernel[min_yk:max_yk, min_xk:max_xk]
+    kernel_re_sized = kernel[min_k_row:max_k_row, min_k_col:max_k_col]
     new = grid2d.copy()
-    new[min_y:max_y, min_x:max_x] += kernel_re_sized
+    new[min_row:max_row, min_col:max_col] += kernel_re_sized
     return new
 
 

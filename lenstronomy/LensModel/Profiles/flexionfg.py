@@ -42,7 +42,7 @@ class Flexionfg(LensProfileBase):
     (Formula 3.99 in Meneghetti 2021).
 
     Now we can express the flexion in terms of ra_0, and dec_0,
-    which are the zero-points of the polynomial expansion. 
+    which are the zero-points of the polynomial expansion.
     Instead of using absolute coordinates \\theta_1, and \\theta_2,
     we define the relative angular positions:
 

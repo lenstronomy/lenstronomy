@@ -1,5 +1,7 @@
 import numpy as np
 from numpy.linalg import inv
+import matplotlib.pyplot as plt
+from math import sqrt
 
 __all__ = ["PositionLikelihood"]
 
@@ -274,6 +276,99 @@ class PositionLikelihood(object):
                     chi2 = delta.T.dot(Sigma_inv.dot(delta))
                     logL -= chi2 / 2
         return logL
+
+    def source_position_rms_scatter(
+        self, x_source_list, y_source_list, num_sources, num_images_list
+    ):
+        """
+        Calculates the rms scatter for the sources' x and y positions wrt the mean of the sources calculated for each group of multiple images.
+
+        :param x_source_list: x positions of sources as calculated by the source_position_likelihood function, first return using ._lensModel.rayshooting(x_image[i], y_image[i], kwargs_lens, k=k_lens) {can replace ._lensModel with a lenModel class instance}
+        :param y_source_list: y positions of sources as calculated by the source_position_likelihood function, second return using ._lensModel.rayshooting(x_image[i], y_image[i], kwargs_lens, k=k_lens) {can replace ._lensModel with a lenModel class instance}
+        :param num_sources: int, number of sources as input or in the data set
+        :param num_images_groups: list of ints, each value is the number of multiple images associated with the source of that index
+        :return rms_scatter_xs, rms_scatter_ys, ax: list of floats representing the rms scatter of the source positions (x and y) wrt the mean for each, and the axes for two scatter plots and two histograms.
+        """
+
+        grouped_xs = []
+        grouped_ys = []
+        cutoff = 0
+        for i in range(num_sources):
+            x_source_temp = []
+            y_source_temp = []
+            for j in range(num_images_list[i]):
+                x_source_temp.append(float(x_source_list[j+cutoff]))
+                y_source_temp.append(float(y_source_list[j+cutoff]))
+            cutoff += num_images_list[i]
+            grouped_xs.append(x_source_temp)
+            grouped_ys.append(y_source_temp)
+
+        source_groups_calc = []
+        for i in range(len(grouped_xs)):
+            source_groups_calc.append(len(grouped_xs[i]))
+
+        means_x = []
+        means_y = []
+        for i in range(num_sources):
+            mean_x = sum(grouped_xs[i]) / len(grouped_xs[i])
+            mean_y = sum(grouped_ys[i]) / len(grouped_ys[i])
+            means_x.append(mean_x)
+            means_y.append(mean_y)
+
+        diffs_x = []
+        diffs_y = []
+        cutoff = 0
+        for i in range(num_sources):
+            diff_x = []
+            diff_y = []
+            for j in range(source_groups_calc[i]):
+                diff_x_temp = float(grouped_xs[i][j] - means_x[i])
+                diff_y_temp = float(grouped_ys[i][j] - means_y[i])
+                diff_x.append(diff_x_temp)
+                diff_y.append(diff_y_temp)
+            cutoff += source_groups_calc[i]
+            diffs_x.append(diff_x)
+            diffs_y.append(diff_y)
+
+        rms_scatters_x = []
+        rms_scatters_y = []
+        for i in range(len(diffs_x)):
+            for j in range(len(diffs_x[i])):
+                rms_scatter_x = sqrt((1/(num_sources-1)) * (diffs_x[i][j]**2))
+                rms_scatter_y = sqrt((1/(num_sources-1)) * (diffs_y[i][j]**2))
+                rms_scatters_x.append(rms_scatter_x)
+                rms_scatters_y.append(rms_scatter_y)
+
+        f, ax = plt.subplots(1, 4, figsize=(20, 5), sharex=True, sharey=True)
+
+        for i in range(len(x_source_list)):
+            ax[0].scatter(x_source_list[i], rms_scatters_x[i], c='blue')
+            ax[1].scatter(y_source_list[i], rms_scatters_y[i], c='red')
+        ax[0].set_xlabel('source posiiton x [arcsec]')
+        ax[1].set_xlabel('source posiiton y [arcsec]')
+        ax[0].set_ylabel('rms scatter')
+        ax[1].set_ylabel('rms scatter')
+
+        values_x, bins_x, bars_x = ax[2].hist(rms_scatters_x, bins=20, edgecolor='black')
+        values_y, bins_y, bars_y = ax[3].hist(rms_scatters_y, bins=20, edgecolor='black')
+
+
+        # ax[2].hist(rms_scatters_x, bins=20, edgecolor='Black')
+        ax[2].set_xlabel('RMS scatter of Source x Position [arcsec]')
+        ax[2].set_ylabel('Frequency')
+        ax[2].bar_label(bars_x, fontsize=10, color='blue')
+        ax[2].margins(x=0.01, y=0.1)
+
+        # ax[3].hist(rms_scatters_y, bins=20, edgecolor='Black')
+        ax[3].set_xlabel('RMS scatter of Source y Position [arcsec]')
+        ax[3].set_ylabel('Frequency')
+        ax[3].bar_label(bars_y, fontsize=10, color='blue')
+        ax[3].margins(x=0.01, y=0.1)
+
+        ax[2].set_title('RMS Scatter for Source x Position')
+        ax[3].set_title('RMS Scatter for Source y Position')
+
+        return rms_scatters_x, rms_scatters_y, ax
 
     @property
     def num_data(self):

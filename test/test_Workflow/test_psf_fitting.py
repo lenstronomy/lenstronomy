@@ -47,7 +47,7 @@ class TestPSFIteration(object):
         self.kwargs_psf = {
             "psf_type": "PIXEL",
             "kernel_point_source": kernel_point_source,
-            "psf_error_map": psf_error_map,
+            "psf_variance_map": psf_error_map,
         }
 
         psf_class = PSF(**self.kwargs_psf)
@@ -298,14 +298,14 @@ class TestPSFIteration(object):
         diff_new = np.sum((kernel_new - kernel_true) ** 2)
         assert diff_old > diff_new
         assert diff_new < 0.01
-        assert "psf_error_map" in kwargs_psf_new
+        assert "psf_variance_map" in kwargs_psf_new
 
         kwargs_psf_new = self.psf_fitting.update_iterative(
             kwargs_psf,
             kwargs_params,
             num_iter=3,
             no_break=True,
-            keep_psf_error_map=True,
+            keep_psf_variance_map=True,
         )
         kernel_new = kwargs_psf_new["kernel_point_source"]
         kernel_true = self.kwargs_psf["kernel_point_source"]
@@ -361,7 +361,7 @@ class TestPSFIterationOld(object):
         self.kwargs_psf = {
             "psf_type": "PIXEL",
             "kernel_point_source": kernel_point_source,
-            "psf_error_map": psf_error_map,
+            "psf_variance_map": psf_error_map,
         }
 
         psf_class = PSF(**self.kwargs_psf)
@@ -518,7 +518,7 @@ class TestPSFIterationOld(object):
             "new_procedure": False,
             "no_break": False,
             "verbose": True,
-            "keep_psf_error_map": False,
+            "keep_psf_variance_map": False,
         }
 
         kwargs_params = copy.deepcopy(self.kwargs_params)
@@ -535,14 +535,14 @@ class TestPSFIterationOld(object):
         diff_new = np.sum((kernel_new - kernel_true) ** 2)
         assert diff_old > diff_new
         assert diff_new < 0.01
-        assert "psf_error_map" in kwargs_psf_new
+        assert "psf_variance_map" in kwargs_psf_new
 
         kwargs_psf_new = self.psf_fitting.update_iterative(
             kwargs_psf,
             kwargs_params,
             num_iter=3,
             no_break=True,
-            keep_psf_error_map=True,
+            keep_psf_variance_map=True,
         )
         kernel_new = kwargs_psf_new["kernel_point_source"]
         kernel_true = self.kwargs_psf["kernel_point_source"]

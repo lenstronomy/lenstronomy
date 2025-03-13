@@ -15,7 +15,7 @@ from lenstronomy.LensModel.lens_model import LensModel
 
 
 class TestEPL_MULTIPOLE_M3M4(object):
-    """Test TestEPL_MULTIPOLE_M3M4 vs EPL + 2 MULTIPOLE (Spherical) values."""
+    """Test TestEPL_MULTIPOLE_M3M4 vs EPL + 2 MULTIPOLE (circular) values."""
 
     def setup_method(self):
         self.epl = EPL()
@@ -57,21 +57,21 @@ class TestEPL_MULTIPOLE_M3M4(object):
             kwargs_epl_multipole_m3m4[0]["e1"], kwargs_epl_multipole_m3m4[0]["e2"]
         )
         rescale = kwargs_epl_multipole_m3m4[0]["theta_E"] / np.sqrt(q)
-        kwargs_multliple_m3 = {
+        kwargs_multipole_m3 = {
             "m": 3,
             "center_x": 0.1,
             "center_y": 0.0,
             "a_m": a3_a * rescale,
             "phi_m": phi_q + delta_phi_m3,
         }
-        kwargs_multliple_m4 = {
+        kwargs_multipole_m4 = {
             "m": 4,
             "center_x": 0.1,
             "center_y": 0.0,
             "a_m": a4_a * rescale,
             "phi_m": phi_q + delta_phi_m4,
         }
-        kwargs_split = [kwargs_epl, kwargs_multliple_m3, kwargs_multliple_m4]
+        kwargs_split = [kwargs_epl, kwargs_multipole_m3, kwargs_multipole_m4]
         function_joint = self.lens_model.potential(
             self.x, self.y, kwargs_epl_multipole_m3m4
         )
@@ -128,21 +128,21 @@ class TestEPL_MULTIPOLE_M3M4(object):
             kwargs_epl_multipole_m3m4[0]["e1"], kwargs_epl_multipole_m3m4[0]["e2"]
         )
         rescale = kwargs_epl_multipole_m3m4[0]["theta_E"] / np.sqrt(q)
-        kwargs_multliple_m3 = {
+        kwargs_multipole_m3 = {
             "m": 3,
             "center_x": 0.1,
             "center_y": 0.0,
             "a_m": a3_a * rescale,
             "phi_m": phi_q + delta_phi_m3,
         }
-        kwargs_multliple_m4 = {
+        kwargs_multipole_m4 = {
             "m": 4,
             "center_x": 0.1,
             "center_y": 0.0,
             "a_m": a4_a * rescale,
             "phi_m": phi_q + delta_phi_m4,
         }
-        kwargs_split = [kwargs_epl, kwargs_multliple_m3, kwargs_multliple_m4]
+        kwargs_split = [kwargs_epl, kwargs_multipole_m3, kwargs_multipole_m4]
         alpha_x, alpha_y = self.lens_model.alpha(
             self.x, self.y, kwargs_epl_multipole_m3m4
         )
@@ -203,21 +203,21 @@ class TestEPL_MULTIPOLE_M3M4(object):
             kwargs_epl_multipole_m3m4[0]["e1"], kwargs_epl_multipole_m3m4[0]["e2"]
         )
         rescale = kwargs_epl_multipole_m3m4[0]["theta_E"] / np.sqrt(q)
-        kwargs_multliple_m3 = {
+        kwargs_multipole_m3 = {
             "m": 3,
             "center_x": 0.1,
             "center_y": 0.0,
             "a_m": a3_a * rescale,
             "phi_m": phi_q + delta_phi_m3,
         }
-        kwargs_multliple_m4 = {
+        kwargs_multipole_m4 = {
             "m": 4,
             "center_x": 0.1,
             "center_y": 0.0,
             "a_m": a4_a * rescale,
             "phi_m": phi_q + delta_phi_m4,
         }
-        kwargs_split = [kwargs_epl, kwargs_multliple_m3, kwargs_multliple_m4]
+        kwargs_split = [kwargs_epl, kwargs_multipole_m3, kwargs_multipole_m4]
         fxx, fxy, fyx, fyy = self.lens_model.hessian(
             self.x, self.y, kwargs_epl_multipole_m3m4
         )
@@ -298,15 +298,16 @@ class TestEPL_MULTIPOLE_M3M4_ELL(object):
             kwargs_epl_multipole_m3m4[0]["e1"], kwargs_epl_multipole_m3m4[0]["e2"]
         )
         rescale = kwargs_epl_multipole_m3m4[0]["theta_E"] / np.sqrt(q)
-        kwargs_multliple_m3 = {
+        kwargs_multipole_m3 = {
             "m": 3,
             "center_x": 0.1,
             "center_y": 0.0,
             "a_m": a3_a * rescale,
             "phi_m": phi_q + delta_phi_m3,
             "q": q,
+            "r_E": kwargs_epl_multipole_m3m4[0]["theta_E"],
         }
-        kwargs_multliple_m4 = {
+        kwargs_multipole_m4 = {
             "m": 4,
             "center_x": 0.1,
             "center_y": 0.0,
@@ -314,7 +315,7 @@ class TestEPL_MULTIPOLE_M3M4_ELL(object):
             "phi_m": phi_q + delta_phi_m4,
             "q": q,
         }
-        kwargs_split = [kwargs_epl, kwargs_multliple_m3, kwargs_multliple_m4]
+        kwargs_split = [kwargs_epl, kwargs_multipole_m3, kwargs_multipole_m4]
         function_joint = self.lens_model.potential(
             self.x, self.y, kwargs_epl_multipole_m3m4
         )
@@ -371,15 +372,16 @@ class TestEPL_MULTIPOLE_M3M4_ELL(object):
             kwargs_epl_multipole_m3m4[0]["e1"], kwargs_epl_multipole_m3m4[0]["e2"]
         )
         rescale = kwargs_epl_multipole_m3m4[0]["theta_E"] / np.sqrt(q)
-        kwargs_multliple_m3 = {
+        kwargs_multipole_m3 = {
             "m": 3,
             "center_x": 0.1,
             "center_y": 0.0,
             "a_m": a3_a * rescale,
             "phi_m": phi_q + delta_phi_m3,
             "q": q,
+            "r_E": kwargs_epl_multipole_m3m4[0]["theta_E"],
         }
-        kwargs_multliple_m4 = {
+        kwargs_multipole_m4 = {
             "m": 4,
             "center_x": 0.1,
             "center_y": 0.0,
@@ -387,7 +389,7 @@ class TestEPL_MULTIPOLE_M3M4_ELL(object):
             "phi_m": phi_q + delta_phi_m4,
             "q": q,
         }
-        kwargs_split = [kwargs_epl, kwargs_multliple_m3, kwargs_multliple_m4]
+        kwargs_split = [kwargs_epl, kwargs_multipole_m3, kwargs_multipole_m4]
         alpha_x, alpha_y = self.lens_model.alpha(
             self.x, self.y, kwargs_epl_multipole_m3m4
         )
@@ -448,15 +450,16 @@ class TestEPL_MULTIPOLE_M3M4_ELL(object):
             kwargs_epl_multipole_m3m4[0]["e1"], kwargs_epl_multipole_m3m4[0]["e2"]
         )
         rescale = kwargs_epl_multipole_m3m4[0]["theta_E"] / np.sqrt(q)
-        kwargs_multliple_m3 = {
+        kwargs_multipole_m3 = {
             "m": 3,
             "center_x": 0.1,
             "center_y": 0.0,
             "a_m": a3_a * rescale,
             "phi_m": phi_q + delta_phi_m3,
             "q": q,
+            "r_E": kwargs_epl_multipole_m3m4[0]["theta_E"],
         }
-        kwargs_multliple_m4 = {
+        kwargs_multipole_m4 = {
             "m": 4,
             "center_x": 0.1,
             "center_y": 0.0,
@@ -464,7 +467,7 @@ class TestEPL_MULTIPOLE_M3M4_ELL(object):
             "phi_m": phi_q + delta_phi_m4,
             "q": q,
         }
-        kwargs_split = [kwargs_epl, kwargs_multliple_m3, kwargs_multliple_m4]
+        kwargs_split = [kwargs_epl, kwargs_multipole_m3, kwargs_multipole_m4]
         fxx, fxy, fyx, fyy = self.lens_model.hessian(
             self.x, self.y, kwargs_epl_multipole_m3m4
         )

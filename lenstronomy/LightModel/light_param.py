@@ -138,7 +138,7 @@ class LightParam(object):
                         model in ["SHAPELETS", "SHAPELETS_POLAR", "SHAPELETS_POLAR_EXP"]
                         and name == "amp"
                     ):
-                        n_max = kwargs_fixed.get("n_max", kwargs["n_max"])
+                        n_max = kwargs_fixed.get("n_max", kwargs.get("n_max"))
                         if model in ["SHAPELETS_POLAR_EXP"]:
                             num_param = int((n_max + 1) ** 2)
                         else:

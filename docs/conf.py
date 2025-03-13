@@ -57,7 +57,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "lenstronomy"
-copyright = "2018-2022, lenstronomy developers"
+copyright = "2018-2025, lenstronomy developers"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

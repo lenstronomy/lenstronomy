@@ -8,6 +8,7 @@ __all__ = ["light2mass_interpol"]
 def light2mass_interpol(
     lens_light_model_list,
     kwargs_lens_light,
+    lens_light_profile_kwargs_list=None,
     numPix=100,
     deltaPix=0.05,
     subgrid_res=5,
@@ -18,7 +19,13 @@ def light2mass_interpol(
     lensmodel quantities computed on a grid). Then provides an interpolated grid for the
     quantities.
 
+    :param lens_light_model_list: list of strings indicating the type of lens light
+        models
     :param kwargs_lens_light: lens light keyword argument list
+    :param lens_light_profile_kwargs_list: list of dicts, keyword arguments used to
+        initialize lens light profile classes in the same order of the
+        lens_light_model_list. If any of the profile_kwargs are None, then that profile
+        will be initialized using default settings.
     :param numPix: number of pixels per axis for the return interpolation
     :param deltaPix: interpolation/pixel size
     :param center_x: center of the grid
@@ -35,7 +42,10 @@ def light2mass_interpol(
     mask = mask_util.mask_azimuthal(x_grid_sub, y_grid_sub, center_x, center_y, r=1)
     x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
     # compute light on the subgrid
-    lightModel = LightModel(light_model_list=lens_light_model_list)
+    lightModel = LightModel(
+        light_model_list=lens_light_model_list,
+        profile_kwargs_list=lens_light_profile_kwargs_list,
+    )
     flux = lightModel.surface_brightness(x_grid_sub, y_grid_sub, kwargs_lens_light)
     flux_norm = np.sum(flux[mask == 1]) / np.sum(mask)
     flux /= flux_norm

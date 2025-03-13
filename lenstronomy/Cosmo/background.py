@@ -19,7 +19,7 @@ class Background(object):
          redshift
         :return: Background class with instance of astropy.cosmology
         """
-
+        self.rhoc = 2.77536627e11  # critical density [h^2 M_sun Mpc^-3]
         if cosmo is None:
             from astropy.cosmology import default_cosmology
 
@@ -82,6 +82,15 @@ class Background(object):
         h = self.cosmo.H(0).value / 100.0
         return 3 * h**2 / (8 * np.pi * const.G) * 10**10 * const.Mpc / const.M_sun
 
+    def rho_crit_z(self, z):
+        """Critical density of the universe at given redshift.
+
+        :param z: redshift
+        :return: critical densith in physical [M_sun/Mpc^3]
+        """
+        h = self.cosmo.H(0).value / 100.0
+        return self.rhoc * (self.cosmo.efunc(z)) ** 2 * h**2
+
     def beta_double_source_plane(self, z_lens, z_source_1, z_source_2):
         """Model prediction of ratio of scaled deflection angles.
 
@@ -91,6 +100,8 @@ class Background(object):
         :param cosmo: ~astropy.cosmology instance
         :return: beta
         """
+        if z_source_1 == z_source_2:
+            return 1
         ds1 = self.cosmo.angular_diameter_distance(z=z_source_1).value
         dds1 = self.cosmo.angular_diameter_distance_z1z2(z1=z_lens, z2=z_source_1).value
         ds2 = self.cosmo.angular_diameter_distance(z=z_source_2).value
@@ -107,4 +118,6 @@ class Background(object):
         :param z_source_2: new source redshift
         :return: Ddt to z_source_2
         """
+        if z_source_1 == z_source_2:
+            return 1
         return 1.0 / self.ddt(z_lens, z_source_1) * self.ddt(z_lens, z_source_2)

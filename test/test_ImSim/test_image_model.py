@@ -46,7 +46,7 @@ class TestImageModel(object):
         kwargs_psf = {
             "psf_type": "PIXEL",
             "kernel_point_source": kernel,
-            "psf_error_map": np.ones_like(kernel) * 0.001 * kernel**2,
+            "psf_variance_map": np.ones_like(kernel) * 0.001 * kernel**2,
         }
         psf_class = PSF(**kwargs_psf)
 
@@ -107,7 +107,8 @@ class TestImageModel(object):
             "supersampling_factor": 2,
             "supersampling_convolution": False,
         }
-        imageModel = ImageModel(
+
+        self.imageModel = ImageModel(
             data_class,
             psf_class,
             lens_model_class,
@@ -117,7 +118,7 @@ class TestImageModel(object):
             kwargs_numerics=kwargs_numerics,
         )
         image_sim = sim_util.simulate_simple(
-            imageModel,
+            self.imageModel,
             self.kwargs_lens,
             self.kwargs_source,
             self.kwargs_lens_light,
@@ -125,15 +126,6 @@ class TestImageModel(object):
         )
         data_class.update_data(image_sim)
 
-        self.imageModel = ImageLinearFit(
-            data_class,
-            psf_class,
-            lens_model_class,
-            source_model_class,
-            lens_light_model_class,
-            point_source_class,
-            kwargs_numerics=kwargs_numerics,
-        )
         self.solver = LensEquationSolver(lensModel=self.imageModel.LensModel)
 
     def test_source_surface_brightness(self):
@@ -173,25 +165,6 @@ class TestImageModel(object):
             lens_flux[50, 50], 4.7310552067454452 * 0.05**2, decimal=4
         )
 
-    def test_image_linear_solve(self):
-        model, error_map, cov_param, param = self.imageModel.image_linear_solve(
-            self.kwargs_lens,
-            self.kwargs_source,
-            self.kwargs_lens_light,
-            self.kwargs_ps,
-            inv_bool=False,
-        )
-        chi2_reduced = self.imageModel.reduced_chi2(model, error_map)
-        npt.assert_almost_equal(chi2_reduced, 1, decimal=1)
-
-    def test_linear_response_matrix(self):
-        A = self.imageModel.linear_response_matrix(
-            self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps
-        )
-        n, m = np.shape(A)
-        assert n == 3
-        assert m == 100 * 100
-
     def test_image_with_params(self):
         model = self.imageModel.image(
             self.kwargs_lens,
@@ -208,7 +181,7 @@ class TestImageModel(object):
         npt.assert_almost_equal(chi2_reduced, 1, decimal=1)
 
     def test_likelihood_data_given_model(self):
-        logL, param = self.imageModel.likelihood_data_given_model(
+        logL = self.imageModel.likelihood_data_given_model(
             self.kwargs_lens,
             self.kwargs_source,
             self.kwargs_lens_light,
@@ -216,16 +189,6 @@ class TestImageModel(object):
             source_marg=False,
         )
         npt.assert_almost_equal(logL, -5000, decimal=-3)
-
-        logLmarg, _ = self.imageModel.likelihood_data_given_model(
-            self.kwargs_lens,
-            self.kwargs_source,
-            self.kwargs_lens_light,
-            self.kwargs_ps,
-            source_marg=True,
-        )
-        npt.assert_almost_equal(logL - logLmarg, 0, decimal=-3)
-        assert logLmarg < logL
 
     def test_reduced_residuals(self):
         model = sim_util.simulate_simple(
@@ -245,12 +208,6 @@ class TestImageModel(object):
     def test_numData_evaluate(self):
         numData = self.imageModel.num_data_evaluate
         assert numData == 10000
-
-    def test_num_param_linear(self):
-        num_param_linear = self.imageModel.num_param_linear(
-            self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps
-        )
-        assert num_param_linear == 3
 
     def test_update_data(self):
         kwargs_data = sim_util.data_configure_simple(
@@ -274,7 +231,7 @@ class TestImageModel(object):
         kwargs_psf = {
             "kernel_point_source": kernel,
             "psf_type": "PIXEL",
-            "psf_error_map": np.ones_like(kernel) * 0.001,
+            "psf_variance_map": np.ones_like(kernel) * 0.001,
         }
         psf_class = PSF(**kwargs_psf)
         lens_model_class = LensModel(["SPEP"])
@@ -434,27 +391,12 @@ class TestImageModel(object):
         npt.assert_almost_equal(extinction, np.exp(-1))
 
     def test_error_response(self):
-        C_D_response, model_error = self.imageModel._error_response(
+        C_D_response, model_error = self.imageModel.error_response(
             self.kwargs_lens, self.kwargs_ps, kwargs_special=None
         )
         assert len(model_error) == 100
         print(np.sum(model_error))
         npt.assert_almost_equal(np.sum(model_error), 0.0019271126921470687, decimal=3)
-
-    def test_point_source_linear_response_set(self):
-        kwargs_special = {"delta_x_image": [0.1, 0.1], "delta_y_image": [-0.1, -0.1]}
-        (
-            ra_pos,
-            dec_pos,
-            amp,
-            num_point,
-        ) = self.imageModel.point_source_linear_response_set(
-            self.kwargs_ps, self.kwargs_lens, kwargs_special, with_amp=True
-        )
-        ra, dec = self.imageModel.PointSource.image_position(
-            self.kwargs_ps, self.kwargs_lens
-        )
-        npt.assert_almost_equal(ra[0][0], ra_pos[0][0] - 0.1, decimal=5)
 
     def test_displace_astrometry(self):
         kwargs_special = {

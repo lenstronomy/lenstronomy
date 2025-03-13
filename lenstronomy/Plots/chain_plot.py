@@ -122,7 +122,7 @@ def psf_iteration_compare(kwargs_psf, **kwargs):
 
     psf = PSF(**kwargs_psf)
     # psf_out = psf.kernel_point_source
-    psf_error_map = psf.psf_error_map
+    psf_variance_map = psf.psf_variance_map
     n_kernel = len(psf_in)
     delta_x = n_kernel / 20.0
     delta_y = n_kernel / 10.0
@@ -131,7 +131,7 @@ def psf_iteration_compare(kwargs_psf, **kwargs):
         kwargs["cmap"] = "seismic"
 
     n = 3
-    if psf_error_map is not None:
+    if psf_variance_map is not None:
         n += 1
     f, axes = plt.subplots(1, n, figsize=(5 * n, 5))
     ax = axes[0]
@@ -194,14 +194,14 @@ def psf_iteration_compare(kwargs_psf, **kwargs):
         backgroundcolor="w",
     )
 
-    if psf_error_map is not None:
+    if psf_variance_map is not None:
         ax = axes[3]
         im = ax.matshow(
-            np.log10(psf_error_map * psf.kernel_point_source**2),
+            np.log10(psf_variance_map * psf.kernel_point_source**2),
             origin="lower",
             **kwargs
         )
-        n_kernel = len(psf_error_map)
+        n_kernel = len(psf_variance_map)
         delta_x = n_kernel / 20.0
         delta_y = n_kernel / 10.0
         divider = make_axes_locatable(ax)
@@ -212,7 +212,7 @@ def psf_iteration_compare(kwargs_psf, **kwargs):
         ax.text(
             delta_x,
             n_kernel - delta_y,
-            "psf error map",
+            "psf variance map",
             color="k",
             fontsize=20,
             backgroundcolor="w",

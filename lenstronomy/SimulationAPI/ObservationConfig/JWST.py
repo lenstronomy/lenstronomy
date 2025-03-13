@@ -8,6 +8,13 @@ import lenstronomy.Util.util as util
 
 __all__ = ["JWST"]
 
+# - keyword exposure_time: exposure time per image (in seconds)
+# - keyword sky_brightness: sky brightness (in magnitude per square arcseconds in units of electrons)
+# - keyword magnitude_zero_point: magnitude in which 1 count (e-) per second per arcsecond square is registered
+# - keyword num_exposures: number of exposures that are combined (depends on coadd_years)
+# - keyword seeing: Full-Width-at-Half-Maximum (FWHM) of PSF
+# - keyword psf_type: string, type of PSF ('GAUSSIAN' and 'PIXEL' supported)
+
 
 NIRCAM_F200W_band_obs = {
     "exposure_time": 3600.0,
@@ -19,7 +26,6 @@ NIRCAM_F200W_band_obs = {
     "psf_type": "PIXEL",
 }
 
-
 NIRCAM_F356W_band_obs = {
     "exposure_time": 3600.0,
     "sky_brightness": 28.39,  # this is derived using the ETC
@@ -30,12 +36,42 @@ NIRCAM_F356W_band_obs = {
     "psf_type": "PIXEL",  # note kernel_point_source (the PSF map) must be provided separately
 }
 
-# - keyword exposure_time: exposure time per image (in seconds)
-# - keyword sky_brightness: sky brightness (in magnitude per square arcseconds in units of electrons)
-# - keyword magnitude_zero_point: magnitude in which 1 count (e-) per second per arcsecond square is registered
-# - keyword num_exposures: number of exposures that are combined (depends on coadd_years)
-# - keyword seeing: Full-Width-at-Half-Maximum (FWHM) of PSF
-# - keyword psf_type: string, type of PSF ('GAUSSIAN' and 'PIXEL' supported)
+# for COSMOS-Web observations
+NIRCAM_F115W_band_obs = {
+    "exposure_time": 257,
+    "sky_brightness": 30.96,
+    "magnitude_zero_point": 28.02,
+    "num_exposures": 8,
+    "seeing": 0.04,  # PSF FWHM
+    "psf_type": "PIXEL",
+}
+
+NIRCAM_F150W_band_obs = {
+    "exposure_time": 257,
+    "sky_brightness": 29.96,
+    "magnitude_zero_point": 28.02,
+    "num_exposures": 8,
+    "seeing": 0.05,
+    "psf_type": "PIXEL",
+}
+
+NIRCAM_F277W_band_obs = {
+    "exposure_time": 257,
+    "sky_brightness": 28.96,
+    "magnitude_zero_point": 26.49,
+    "num_exposures": 8,
+    "seeing": 0.092,
+    "psf_type": "PIXEL",
+}
+
+NIRCAM_F444W_band_obs = {
+    "exposure_time": 257,
+    "sky_brightness": 28.15,
+    "magnitude_zero_point": 26.49,
+    "num_exposures": 8,
+    "seeing": 0.145,
+    "psf_type": "PIXEL",
+}
 
 
 class JWST(object):
@@ -44,7 +80,7 @@ class JWST(object):
     def __init__(self, band="F200W", psf_type="PIXEL", coadd_years=None):
         """
 
-        :param band: string, 'F200W' or 'F356W' supported. Determines obs dictionary.
+        :param band: string, 'F115W', 'F150W', 'F200W', 'F277W', 'F356W' or 'F444W' supported. Determines obs dictionary.
         :param psf_type: string, type of PSF ('GAUSSIAN', 'PIXEL' supported).
         :param coadd_years: int, number of years corresponding to num_exposures in obs dict. Currently supported: None.
         """
@@ -55,7 +91,18 @@ class JWST(object):
         elif band == "F356W":
             self.obs = NIRCAM_F356W_band_obs
             self.arm = "long"
-
+        elif band == "F115W":
+            self.obs = NIRCAM_F115W_band_obs
+            self.arm = "short"
+        elif band == "F150W":
+            self.obs = NIRCAM_F150W_band_obs
+            self.arm = "short"
+        elif band == "F277W":
+            self.obs = NIRCAM_F277W_band_obs
+            self.arm = "long"
+        elif band == "F444W":
+            self.obs = NIRCAM_F444W_band_obs
+            self.arm = "long"
         else:
             raise ValueError("band %s not supported!" % band)
 

@@ -7,7 +7,13 @@ from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 class TestModelAPI(object):
     def setup_method(self):
         self.api = ModelAPI(
-            lens_model_list=["SIS"],
+            lens_model_list=["SIS", "NFW", "GNFW", "GNFW"],
+            lens_profile_kwargs_list=[
+                None,
+                {"interpol": True},
+                {"trapezoidal_integration": True},
+                None,
+            ],
             z_lens=None,
             z_source=None,
             lens_redshift_list=None,
@@ -20,7 +26,13 @@ class TestModelAPI(object):
 
     def test_lens_model_class(self):
         model = self.api.lens_model_class
-        assert model.lens_model_list[0] == "SIS"
+        assert model.lens_model_list == ["SIS", "NFW", "GNFW", "GNFW"]
+        assert model.lens_model.func_list[1]._interpol == True
+        assert (
+            model.lens_model.func_list[2]._integrate.__name__
+            == "_trapezoidal_integrate"
+        )
+        assert model.lens_model.func_list[3]._integrate.__name__ == "_quad_integrate"
 
     def test_lens_light_model_class(self):
         model = self.api.lens_light_model_class

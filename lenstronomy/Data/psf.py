@@ -23,7 +23,7 @@ class PSF(object):
         truncation=5,
         pixel_size=None,
         kernel_point_source=None,
-        psf_error_map=None,
+        psf_variance_map=None,
         point_source_supersampling_factor=1,
         kernel_point_source_init=None,
         kernel_point_source_normalisation=True,
@@ -37,10 +37,10 @@ class PSF(object):
          ImageModel modules)
         :param kernel_point_source: 2d numpy array, odd length, centered PSF of a point source
          (if not normalized, will be normalized)
-        :param psf_error_map: uncertainty in the PSF model per pixel (size of data, not super-sampled). 2d numpy array.
+        :param psf_variance_map: uncertainty in the PSF model per pixel (size of data, not super-sampled). 2d numpy array.
          Size can be larger or smaller than the pixel-sized PSF model and if so, will be matched.
          This error will be added to the pixel error around the position of point sources as follows:
-         sigma^2_i += 'psf_error_map'_j * <point source amplitude>**2
+         sigma^2_i += 'psf_variance_map'_j * <point source amplitude>**2
         :param point_source_supersampling_factor: int, supersampling factor of kernel_point_source.
          This is the input PSF to this class and does not need to be the choice in the modeling
          (thought preferred if modeling choses supersampling)
@@ -57,7 +57,7 @@ class PSF(object):
                 raise ValueError("fwhm must be set for GAUSSIAN psf type!")
             self._fwhm = fwhm
             self._sigma_gaussian = util.fwhm2sigma(self._fwhm)
-            self._truncation = truncation
+            self.truncation = truncation
             self._point_source_supersampling_factor = 0
         elif self.psf_type == "PIXEL":
             if kernel_point_source is None:
@@ -103,18 +103,22 @@ class PSF(object):
             self._kernel_point_source[1, 1] = 1
         else:
             raise ValueError("psf_type %s not supported!" % self.psf_type)
-        if psf_error_map is not None:
+        if psf_variance_map is not None:
             n_kernel = len(self.kernel_point_source)
-            self._psf_error_map = kernel_util.match_kernel_size(psf_error_map, n_kernel)
+            self._psf_variance_map = kernel_util.match_kernel_size(
+                psf_variance_map, n_kernel
+            )
             if self.psf_type == "PIXEL" and point_source_supersampling_factor > 1:
-                if len(psf_error_map) == len(self._kernel_point_source_supersampled):
+                if len(psf_variance_map) == len(self._kernel_point_source_supersampled):
                     Warning(
-                        "psf_error_map has the same size as the super-sampled kernel. Make sure the units in the"
-                        "psf_error_map are on the down-sampled pixel scale."
+                        "psf_variance_map has the same size as the super-sampled kernel. Make sure the units in the"
+                        "psf_variance_map are on the down-sampled pixel scale."
                     )
-            self.psf_error_map_bool = True
+            if kernel_point_source_normalisation is True:
+                self._psf_variance_map /= np.sum(kernel_point_source) ** 2
+            self.psf_variance_map_bool = True
         else:
-            self.psf_error_map_bool = False
+            self.psf_variance_map_bool = False
 
         self._kernel_point_source_normalisation = kernel_point_source_normalisation
         if kernel_point_source_normalisation is False and psf_type == "PIXEL":
@@ -126,11 +130,14 @@ class PSF(object):
     def kernel_point_source(self):
         if not hasattr(self, "_kernel_point_source"):
             if self.psf_type == "GAUSSIAN":
-                kernel_num_pix = min(
-                    round(self._truncation * self._fwhm / self._pixel_size), 221
+                sigma = util.fwhm2sigma(self._fwhm)
+                # This num_pix definition is equivalent to that of the scipy ndimage.gaussian_filter
+                # num_pix = 2r + 1 where r = round(truncation * sigma) is the radius of the gaussian kernel
+                # kernel_num_pix is always an odd integer between 3 and 221
+                kernel_radius = max(
+                    round(self.truncation * sigma / self._pixel_size), 1
                 )
-                if kernel_num_pix % 2 == 0:
-                    kernel_num_pix += 1
+                kernel_num_pix = min(2 * kernel_radius + 1, 221)
                 self._kernel_point_source = kernel_util.kernel_gaussian(
                     kernel_num_pix, self._pixel_size, self._fwhm
                 )
@@ -177,22 +184,22 @@ class PSF(object):
                 return kernel_point_source_supersampled
 
         if self.psf_type == "GAUSSIAN":
-            kernel_num_pix = int(
+            sigma = util.fwhm2sigma(self._fwhm)
+            # This num_pix definition is equivalent to that of the scipy ndimage.gaussian_filter
+            # num_pix = 2r + 1 where r = round(truncation * sigma) is the radius of the gaussian kernel
+            kernel_radius = max(
                 round(
-                    self._truncation
-                    * self._fwhm
-                    / self._pixel_size
-                    * supersampling_factor
-                )
+                    self.truncation * sigma / self._pixel_size * supersampling_factor
+                ),
+                1,
             )
+            kernel_num_pix = 2 * kernel_radius + 1
             if kernel_num_pix > 10000:
                 raise ValueError(
                     "The pixelized Gaussian kernel has a grid of %s pixels with a truncation at "
                     "%s times the sigma of the Gaussian, exceeding the limit allowed."
-                    % (kernel_num_pix, self._truncation)
+                    % (kernel_num_pix, self.truncation)
                 )
-            if kernel_num_pix % 2 == 0:
-                kernel_num_pix += 1
             kernel_point_source_supersampled = kernel_util.kernel_gaussian(
                 kernel_num_pix, self._pixel_size / supersampling_factor, self._fwhm
             )
@@ -243,18 +250,18 @@ class PSF(object):
                 pass
 
     @property
-    def psf_error_map(self):
+    def psf_variance_map(self):
         """Error variance of the normalized PSF.
 
         This error will be added to the pixel error around the position of point sources as follows:
-        sigma^2_i += 'psf_error_map'_j * <point source amplitude>**2
+        sigma^2_i += 'psf_variance_map'_j * <point source amplitude>**2
 
         :return: error variance of the normalized PSF. Variance of
         :rtype: 2d numpy array of size of the PSF in pixel size (not supersampled)
         """
-        if not hasattr(self, "_psf_error_map"):
-            self._psf_error_map = np.zeros_like(self.kernel_point_source)
-        return self._psf_error_map
+        if not hasattr(self, "_psf_variance_map"):
+            self._psf_variance_map = np.zeros_like(self.kernel_point_source)
+        return self._psf_variance_map
 
     @property
     def fwhm(self):

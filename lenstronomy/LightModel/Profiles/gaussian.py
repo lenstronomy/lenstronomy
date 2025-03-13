@@ -154,16 +154,12 @@ class MultiGaussian(object):
     lower_limit_default = {
         "amp": 0,
         "sigma": 0,
-        "e1": -0.5,
-        "e2": -0.5,
         "center_x": -100,
         "center_y": -100,
     }
     upper_limit_default = {
         "amp": 1000,
         "sigma": 100,
-        "e1": -0.5,
-        "e2": -0.5,
         "center_x": 100,
         "center_y": 100,
     }
@@ -182,7 +178,7 @@ class MultiGaussian(object):
         :param center_y: center of profile
         :return: surface brightness at (x, y)
         """
-        f_ = np.zeros_like(x)
+        f_ = np.zeros_like(x, dtype=float)
         for i in range(len(amp)):
             f_ += self.gaussian.function(x, y, amp[i], sigma[i], center_x, center_y)
         return f_
@@ -227,7 +223,7 @@ class MultiGaussian(object):
         :param sigma: list of widths of individual Gaussian profiles
         :return: 3D brightness per angular volume element
         """
-        f_ = np.zeros_like(r)
+        f_ = np.zeros_like(r, dtype=float)
         for i in range(len(amp)):
             f_ += self.gaussian.light_3d(r, amp[i], sigma[i])
         return f_
@@ -278,7 +274,7 @@ class MultiGaussianEllipse(object):
             x, y, e1, e2, center_x, center_y
         )
 
-        f_ = np.zeros_like(x)
+        f_ = np.zeros_like(x, dtype=float)
         for i in range(len(amp)):
             f_ += self.gaussian.function(
                 x_, y_, amp[i], sigma[i], center_x=0, center_y=0
@@ -334,7 +330,7 @@ class MultiGaussianEllipse(object):
         :param e2: eccentricity modulus
         :return: 3D brightness per angular volume element
         """
-        f_ = np.zeros_like(r)
+        f_ = np.zeros_like(r, dtype=float)
         for i in range(len(amp)):
             f_ += self.gaussian.light_3d(r, amp[i], sigma[i])
         return f_

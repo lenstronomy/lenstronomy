@@ -2,6 +2,9 @@ import numpy as np
 from copy import deepcopy
 from lenstronomy.LensModel.MultiPlane.multi_plane_base import MultiPlaneBase
 from lenstronomy.Util.package_util import exporter
+from lenstronomy.Util.cosmo_util import get_astropy_cosmology
+from astropy.cosmology import *
+import warnings
 
 export, __all__ = exporter()
 
@@ -21,7 +24,6 @@ class MultiPlane(object):
         lens_model_list,
         lens_redshift_list,
         cosmo=None,
-        numerical_alpha_class=None,
         observed_convention_index=None,
         ignore_observed_positions=False,
         z_source_convention=None,
@@ -29,9 +31,10 @@ class MultiPlane(object):
         cosmo_interp=False,
         z_interp_stop=None,
         num_z_interp=100,
-        kwargs_interp=None,
-        kwargs_synthesis=None,
+        profile_kwargs_list=None,
         distance_ratio_sampling=False,
+        cosmology_sampling=False,
+        cosmology_model="FlatLambdaCDM",
     ):
         """
 
@@ -40,30 +43,58 @@ class MultiPlane(object):
         :param lens_redshift_list: list of floats with redshifts of the lens models indicated in lens_model_list
         :param cosmo: instance of astropy.cosmology
         :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model
-         (see documentation in Profiles/numerical_alpha)
-        :param kwargs_interp: interpolation keyword arguments specifying the numerics.
-         See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
+            (see documentation in Profiles/numerical_alpha)
+        :param profile_kwargs_list: list of dicts, keyword arguments used to initialize profile classes
+            in the same order of the lens_model_list. If any of the profile_kwargs are None, then that
+            profile will be initialized using default settings.
         :param observed_convention_index: a list of indices, corresponding to the lens_model_list element with same
-         index, where the 'center_x' and 'center_y' kwargs correspond to observed (lensed) positions, not physical
-         positions. The code will compute the physical locations when performing computations
+            index, where the 'center_x' and 'center_y' kwargs correspond to observed (lensed) positions, not physical
+            positions. The code will compute the physical locations when performing computations
         :param ignore_observed_positions: bool, if True, will ignore the conversion between observed to physical
-         position of deflectors
+            position of deflectors
         :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens
-         models. If None, 'z_source' is used.
+            models. If None, 'z_source' is used.
         :param z_lens_convention: float, redshift of a lens plane to define the
-         effective time-delay distance. Only needed if distance ratios are
-         sampled. If None, the first lens redshift is used.
-        :param kwargs_synthesis: keyword arguments for the 'SYNTHESIS' lens model, if applicable
+            effective time-delay distance. Only needed if distance ratios are
+            sampled. If None, the first lens redshift is used.
+        :param cosmo_interp: bool, if True, will use interpolated cosmology
         :param kwargs_multiplane_model: keyword arguments for the MultiPlaneDecoupled class, if specified
         :param distance_ratio_sampling: bool, if True, will use sampled
-         distance ratios to update T_ij value in multi-lens plane computation.
+            distance ratios to update T_ij value in multi-lens plane computation.
+        :param cosmology_sampling: bool, if True, will use sampled cosmology
+        :param cosmology_model: str, name of the cosmology model to use for
         """
+        self.cosmology_sampling = cosmology_sampling
+        self.cosmology_model = cosmology_model
+        if cosmo is None and cosmology_model == "FlatLambdaCDM":
+            cosmo = default_cosmology.get()
+        elif cosmo is None and cosmology_model != "FlatLambdaCDM":
+            cosmo = get_astropy_cosmology(cosmology_model=cosmology_model)
+        else:
+            warnings.warn(
+                "Cosmology is provided. Make sure your cosmological model is consistent with the cosmology_model argument."
+            )
+
+        if self.cosmology_sampling:
+            if distance_ratio_sampling:
+                warnings.warn(
+                    "cosmology_sampling=True and distance_ratio_sampling=True cannot be set simultaneously. "
+                    "Setting distance_ratio_sampling=False."
+                )
+                distance_ratio_sampling = False
+
+            if cosmo_interp:
+                warnings.warn(
+                    "cosmology_sampling=True and cosmo_interp=True cannot be set simultaneously. "
+                    "Setting cosmo_interp=False."
+                )
+                cosmo_interp = False
+
         self.kwargs_class = {
             "z_source": z_source,
             "lens_model_list": lens_model_list,
             "lens_redshift_list": lens_redshift_list,
             "cosmo": cosmo,
-            "numerical_alpha_class": numerical_alpha_class,
             "observed_convention_index": observed_convention_index,
             "ignore_observed_positions": ignore_observed_positions,
             "z_source_convention": z_source_convention,
@@ -71,9 +102,10 @@ class MultiPlane(object):
             "cosmo_interp": cosmo_interp,
             "z_interp_stop": z_interp_stop,
             "num_z_interp": num_z_interp,
-            "kwargs_interp": kwargs_interp,
-            "kwargs_synthesis": kwargs_synthesis,
+            "profile_kwargs_list": profile_kwargs_list,
             "distance_ratio_sampling": distance_ratio_sampling,
+            "cosmology_sampling": cosmology_sampling,
+            "cosmology_model": cosmology_model,
         }
         if z_source_convention is None:
             z_source_convention = z_source
@@ -100,14 +132,13 @@ class MultiPlane(object):
             lens_model_list=lens_model_list,
             lens_redshift_list=lens_redshift_list,
             cosmo=cosmo,
-            numerical_alpha_class=numerical_alpha_class,
             z_source_convention=z_source_convention,
             cosmo_interp=cosmo_interp,
             z_interp_stop=z_interp_stop,
             num_z_interp=num_z_interp,
-            kwargs_interp=kwargs_interp,
-            kwargs_synthesis=kwargs_synthesis,
+            profile_kwargs_list=profile_kwargs_list,
         )
+        self._z_source = z_source
         self._set_source_distances(z_source)
         self._observed_convention_index = observed_convention_index
         if observed_convention_index is None:
@@ -163,6 +194,14 @@ class MultiPlane(object):
     def T_ij_stop(self, T_ij_stop):
         self._T_ij_stop = T_ij_stop
 
+    def model_info(self):
+        """Shows what models are being initialized and what parameters are being
+        requested for.
+
+        :return: None
+        """
+        self._multi_plane_base.model_info()
+
     def _set_source_distances(self, z_source):
         """Compute the relevant angular diameter distances to a specific source
         redshift.
@@ -178,6 +217,15 @@ class MultiPlane(object):
             z_start=0, z_stop=z_source, include_z_start=False
         )
         self._T_z_source = self._multi_plane_base._cosmo_bkg.T_xy(0, z_source)
+
+    def set_background_cosmo(self, cosmo):
+        """Set the background cosmology.
+
+        :param cosmo: instance of astropy.cosmology
+        :return: None
+        """
+        self._multi_plane_base.set_background_cosmo(cosmo)
+        self._set_source_distances(self._z_source)
 
     def observed2flat_convention(self, kwargs_lens):
         """
@@ -414,6 +462,7 @@ class MultiPlane(object):
         :param theta_x: angle in x-direction on the image
         :param theta_y: angle in y-direction on the image
         :param kwargs_lens: lens model keyword argument list
+        :param kwargs_cosmo: cosmo keyword argument
         :return: travel time in unit of days
         """
         dt_geo, dt_grav = self.geo_shapiro_delay(

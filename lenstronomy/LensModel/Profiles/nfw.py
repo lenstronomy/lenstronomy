@@ -9,12 +9,24 @@ __all__ = ["NFW"]
 
 
 class NFW(LensProfileBase):
-    """This class contains functions concerning the NFW profile.
+    """Class to compute the functions concerning the Navarro-Frenk-White (NFW) 1997 profile (https://arxiv.org/abs/astro-ph/9611107).
+    This model in 3D is:
 
-    relation are: R_200 = c * Rs
-    The definition of 'Rs' is in angular (arc second) units and the normalization is put
-    in with regard to a deflection angle at 'Rs' - 'alpha_Rs'. To convert a physical
-    mass and concentration definition into those lensing quantities for a specific
+    .. math::
+        \\rho(r) = \\frac{\\rho_0}{(r/R_s) (1 + r/R_s)^2}
+
+    where :math:`\\rho_0` is the density normalization and :math:`R_s` is the scale radius.
+
+    The Virial radius in terms of :math:`R_s` is :math:`R_{200} = c * R_s`, where :math:`c` is the concentration.
+    The definition of ':math:`R_s`' is in angular (arc second) units and the normalization is put
+    in with regard to a deflection angle at ':math:`R_s`' - ':math:`\\alpha_{R_s}`'.
+    :math:`\\alpha_{R_s}` and :math:`\\rho_0` are related by:
+
+    .. math::
+        \\alpha_{R_s} = 4 R_s^2 \\rho_0(1 + \\ln(1/2))
+
+
+    To convert a physical mass and concentration definition into those lensing quantities for a specific
     redshift configuration and cosmological model, you can find routines in
     `lenstronomy.Cosmo.lens_cosmo.py`
 
@@ -60,7 +72,13 @@ class NFW(LensProfileBase):
         super(NFW, self).__init__()
 
     def function(self, x, y, Rs, alpha_Rs, center_x=0, center_y=0):
-        """
+        """Lensing potential of the NFW profile, which is given by:
+
+        .. math::
+            \\phi = 2 \\rho_0 R_s^3 \\left[ \\ln^2 \\left( \\frac{X}{2} \\right) - \\operatorname{arctanh}^2(\\sqrt{1-X^2}) \\right]
+
+        where :math:`X = r/R_s`. See equation 54 in https://arxiv.org/abs/astro-ph/0102341v2.
+
 
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
@@ -126,7 +144,7 @@ class NFW(LensProfileBase):
 
     @staticmethod
     def density(R, Rs, rho0):
-        """Three-dimensional NFW profile.
+        """Three-dimensional density of the NFW profile at radius R.
 
         :param R: radius of interest
         :type R: float/numpy array

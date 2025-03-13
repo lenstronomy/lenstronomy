@@ -52,7 +52,7 @@ class TestImageModel(object):
         kwargs_psf = {
             "psf_type": "PIXEL",
             "kernel_point_source": kernel,
-            "psf_error_map": np.ones_like(kernel) * 0.001,
+            "psf_variance_map": np.ones_like(kernel) * 0.001,
         }
         psf_class = PSF(**kwargs_psf)
 
@@ -336,14 +336,14 @@ class TestImageModel(object):
         npt.assert_almost_equal(extinction, np.exp(-1))
 
     def test_error_response(self):
-        C_D_response, psf_model_error = self.imageModel._error_response(
+        C_D_response, psf_model_error = self.imageModel.error_response(
             self.kwargs_lens, self.kwargs_ps, kwargs_special=None
         )
         assert len(psf_model_error) == 100
         print(np.sum(psf_model_error))
         npt.assert_almost_equal(np.sum(psf_model_error), 0, decimal=3)
 
-        C_D_response, psf_model_error = self.imageModel_source._error_response(
+        C_D_response, psf_model_error = self.imageModel_source.error_response(
             self.kwargs_lens, self.kwargs_ps, kwargs_special=None
         )
         assert len(psf_model_error) == 100
@@ -378,7 +378,7 @@ class TestRaise(unittest.TestCase):
         kwargs_psf = {
             "psf_type": "PIXEL",
             "kernel_point_source": kernel,
-            "psf_error_map": np.ones_like(kernel) * 0.001,
+            "psf_variance_map": np.ones_like(kernel) * 0.001,
         }
         self.psf_class = PSF(**kwargs_psf)
 

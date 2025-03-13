@@ -457,11 +457,13 @@ class TestLensEquationSolver(object):
         kwargs_lens_scaling[1]["gamma2"] *= alpha_scaling
         kwargs_lens_scaling[2]["kappa"] *= alpha_scaling
 
-        x_pos, y_pos = lensEquationSolver_no_scaling.image_position_from_source(
-            sourcePos_x, sourcePos_y, kwargs_lens_scaling, solver="analytical"
-        )
+        # establishing the truth
         x_pos_num, y_pos_num = lensEquationSolver.image_position_from_source(
             sourcePos_x, sourcePos_y, kwargs_lens, solver="lenstronomy"
+        )
+
+        x_pos, y_pos = lensEquationSolver_no_scaling.image_position_from_source(
+            sourcePos_x, sourcePos_y, kwargs_lens_scaling, solver="analytical"
         )
 
         npt.assert_almost_equal(x_pos, x_pos_num)
@@ -472,23 +474,22 @@ class TestLensEquationSolver(object):
         npt.assert_almost_equal(sourcePos_y, source_y, decimal=10)
 
         x_pos_, y_pos_ = lensEquationSolver_no_scaling.image_position_from_source(
-            sourcePos_x, sourcePos_y, kwargs_lens_scaling, solver="analytical"
-        )
-        npt.assert_almost_equal(x_pos_, x_pos)
-
-        x_pos_, y_pos_ = lensEquationSolver_no_scaling.image_position_from_source(
             sourcePos_x, sourcePos_y, kwargs_lens_scaling, solver="lenstronomy"
         )
 
         npt.assert_almost_equal(x_pos_, x_pos)
 
-        print(kwargs_lens, "test kwargs_lens")
         source_x, source_y = lensModel_no_scaling.ray_shooting(
             x_pos_, y_pos_, kwargs_lens_scaling
         )
         assert len(source_x) == len(source_y) >= 2
         npt.assert_almost_equal(sourcePos_x, source_x, decimal=10)
         npt.assert_almost_equal(sourcePos_y, source_y, decimal=10)
+
+        x_pos_, y_pos_ = lensEquationSolver.image_position_from_source(
+            sourcePos_x, sourcePos_y, kwargs_lens, solver="analytical"
+        )
+        npt.assert_almost_equal(x_pos_, x_pos)
 
     def test_assertions(self):
         lensModel = LensModel(["SPEP"])

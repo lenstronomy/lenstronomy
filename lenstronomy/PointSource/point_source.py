@@ -27,38 +27,40 @@ class PointSource(object):
         :param point_source_type_list: list of point source types
         :param lens_model: instance of the LensModel() class
         :param fixed_magnification_list: list of booleans (same length as point_source_type_list).
-         If True, magnification ratio of point sources is fixed to the one given by the lens model.
-         This option then requires to provide a 'source_amp' amplitude of the source brightness instead of
-         'point_amp' the list of image brightnesses.
+            If True, magnification ratio of point sources is fixed to the one given by the lens model.
+            This option then requires to provide a 'source_amp' amplitude of the source brightness instead of
+            'point_amp' the list of image brightnesses.
         :param additional_images_list: list of booleans (same length as point_source_type_list). If True, search for
-         additional images of the same source is conducted.
+            additional images of the same source is conducted.
         :param flux_from_point_source_list: list of booleans (optional), if set, will only return image positions
-         (for imaging modeling) for the subset of the point source lists that =True. This option enables to model
-         imaging data with transient point sources, when the point source positions are measured and present at a
-         different time than the imaging data, or when the image position is not known (such as for lensed GW)
+            (for imaging modeling) for the subset of the point source lists that =True. This option enables to model
+            imaging data with transient point sources, when the point source positions are measured and present at a
+            different time than the imaging data, or when the image position is not known (such as for lensed GW)
         :param magnification_limit: float >0 or None, if float is set and additional images are computed, only those
-         images will be computed that exceed the lensing magnification (absolute value) limit
+            images will be computed that exceed the lensing magnification (absolute value) limit
         :param save_cache: bool, saves image positions and only if delete_cache is executed, a new solution of the lens
-         equation is conducted with the lens model parameters provided. This can increase the speed as multiple times
-         the image positions are requested for the same lens model. Attention in usage!
+            equation is conducted with the lens model parameters provided. This can increase the speed as multiple times
+            the image positions are requested for the same lens model. Attention in usage!
         :param kwargs_lens_eqn_solver: keyword arguments specifying the numerical settings for the lens equation solver
-         see LensEquationSolver() class for details, such as:
-         min_distance=0.01, search_window=5, precision_limit=10**(-10), num_iter_max=100
-        :param index_lens_model_list: list (length of different patches/bands) of integer lists, e.g., [[0, 1], [2, 3]];
-         evaluating a subset of the lens models per individual bands. If this keyword is set, the image positions need
-         to have a specified band/frame assigned to it
-        :param point_source_frame_list: list of lists mirroring the structure of the image positions.
-         Integers correspond to the i'th list entry of index_lens_model_list indicating in which frame/band the image is
-         appearing, e.g., four images and four cutouts, you can do [[0], [1], [2], [3]] when the frames
-         (ordered as the list) are in the same order as the point sources (indices)
+            see LensEquationSolver() class for details, such as:
+            min_distance=0.01, search_window=5, precision_limit=10**(-10), num_iter_max=100
+        :param index_lens_model_list: list (length of different patches/bands) of integer lists, evaluating a subset of
+            the lens models per individual bands. e.g., [[0], [2, 3], [1]] assigns the 0th lens model to the 0th band,
+            the 2nd and 3rd lens models to the 1st band, and the 1st lens model to the 2nd band.
+            If this keyword is set, the image positions need to have a specified band/frame assigned to it
+        :param point_source_frame_list: list of list of ints, assigns each model in point_source_type_list a frame list.
+            Only relevent for LENSED_POSITION. e.g. if point_source_type_list = ["UNLENSED", "LENSED_POSITION", "LENSED_POSITION"]
+            with point_source_frame_list = [None, [0, 1, 2], [1, 2, 0, 1]], then the first LENSED_POSITION will have a frame list of
+            [0, 1, 2] and the second LENSED_POSITION will have a frame list of [1, 2, 0, 1]. See docstring for point_source_frame_list
+            in PSBase for further details.
         :param redshift_list: list of redshifts (only required for multiple source redshifts)
         :type redshift_list: None or list
         """
-        if len(point_source_type_list) > 0:
+        if "LENSED_POSITION" in point_source_type_list:
             if index_lens_model_list is not None and point_source_frame_list is None:
                 raise ValueError(
-                    "with specified index_lens_model_list a specified point_source_frame_list argument is "
-                    "required"
+                    "with specified index_lens_model_list, a specified point_source_frame_list argument is "
+                    "required for LENSED_POSITION"
                 )
             if index_lens_model_list is None:
                 point_source_frame_list = [None] * len(point_source_type_list)
@@ -306,8 +308,6 @@ class PointSource(object):
         ra_list, dec_list = self.image_position(kwargs_ps, kwargs_lens, k=k)
         if with_amp is True:
             amp_list = self.image_amplitude(kwargs_ps, kwargs_lens, k=k)
-        else:
-            amp_list = np.ones_like(ra_list)
 
         # here we delete the individual modeling caches in case this was the option
         if self._save_cache is False:
@@ -317,9 +317,16 @@ class PointSource(object):
         ra_array, dec_array, amp_array = [], [], []
         for i, ra in enumerate(ra_list):
             for j in range(len(ra)):
+                # Remove images with zero amplitude so that they do not have to be rendered.
+                if with_amp is True and amp_list[i][j] == 0:
+                    continue
+
                 ra_array.append(ra_list[i][j])
                 dec_array.append(dec_list[i][j])
-                amp_array.append(amp_list[i][j])
+                if with_amp:
+                    amp_array.append(amp_list[i][j])
+                else:
+                    amp_array.append(1.0)
         return ra_array, dec_array, amp_array
 
     def num_basis(self, kwargs_ps, kwargs_lens):
@@ -350,14 +357,17 @@ class PointSource(object):
         """
         amp_list = []
         for i, model in enumerate(self._point_source_list):
-            if (k is None or k == i) and self._flux_from_point_source_list[i]:
-                amp_list.append(
-                    model.image_amplitude(
-                        kwargs_ps=kwargs_ps[i],
-                        kwargs_lens=kwargs_lens,
-                        kwargs_lens_eqn_solver=self._kwargs_lens_eqn_solver,
-                    )
+            if k is None or k == i:
+                image_amp = model.image_amplitude(
+                    kwargs_ps=kwargs_ps[i],
+                    kwargs_lens=kwargs_lens,
+                    kwargs_lens_eqn_solver=self._kwargs_lens_eqn_solver,
                 )
+                if self._flux_from_point_source_list[i]:
+                    amp_list.append(image_amp)
+                else:
+                    amp_list.append(np.zeros_like(image_amp))
+
         return amp_list
 
     def source_amplitude(self, kwargs_ps, kwargs_lens):
@@ -369,12 +379,13 @@ class PointSource(object):
         """
         amp_list = []
         for i, model in enumerate(self._point_source_list):
+            source_amp = model.source_amplitude(
+                kwargs_ps=kwargs_ps[i], kwargs_lens=kwargs_lens
+            )
             if self._flux_from_point_source_list[i]:
-                amp_list.append(
-                    model.source_amplitude(
-                        kwargs_ps=kwargs_ps[i], kwargs_lens=kwargs_lens
-                    )
-                )
+                amp_list.append(source_amp)
+            else:
+                amp_list.append(np.zeros_like(source_amp))
         return amp_list
 
     def linear_response_set(self, kwargs_ps, kwargs_lens=None, with_amp=False):
@@ -492,7 +503,10 @@ class PointSource(object):
         argument list currently only used in SimAPI to transform magnitudes to
         amplitudes in the lenstronomy conventions.
 
-        :param amp_list: list of model amplitudes for each point source model
+        :param amp_list: list of model amplitudes for each point source model. This list
+            should include all of the point source models even if flux_from_point_source
+            is False for any of them. In that case, the amplitudes will not be changed
+            for those models.
         :param kwargs_ps: list of point source keywords
         :return: overwrites kwargs_ps with new amplitudes
         """

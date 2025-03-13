@@ -383,13 +383,13 @@ def point_source_plot(
         delta_pix_x = -delta_pix
     else:
         delta_pix_x = delta_pix
-    origin = [ra0, dec0]        
+    origin = [ra0, dec0]
 
     if images_x == None and images_y == None:
-        ax = ax  
+        ax = ax
 
     if images_x != None or images_y != None:
-        if images_from_data==False:
+        if images_from_data == False:
             theta_x, theta_y = solver.image_position_from_source(
                 source_x,
                 source_y,
@@ -398,8 +398,8 @@ def point_source_plot(
                 x_center=x_center,
                 y_center=y_center,
                 min_distance=pixel_grid.pixel_width,
-        solver=solver_type,
-        **kwargs_solver,
+                solver=solver_type,
+                **kwargs_solver,
             )
             mag_images = lens_model.magnification(theta_x, theta_y, kwargs_lens)
             x_image, y_image = pixel_grid.map_coord2pix(theta_x, theta_y)
@@ -410,7 +410,7 @@ def point_source_plot(
                 color,
                 markersize=10,
             )
-        if images_from_data==True:
+        if images_from_data == True:
             mag_images = lens_model.magnification(images_x, images_y, kwargs_lens)
             #### put in the map_coords2grid with images_x, etc. as the theta_x
             x_image, y_image = pixel_grid.map_coord2pix(images_x, images_y)
@@ -439,6 +439,7 @@ def point_source_plot(
     )
 
     return ax
+
 
 # def images_from_data_plot(
 #     ax,
@@ -487,7 +488,7 @@ def point_source_plot(
 #         name_list = name_list
 #         for i in range(len(name_list)):
 #             name_list_.append(str(index + 1) + name_list[i])
-        
+
 #     x_center, y_center = pixel_grid.center
 #     delta_pix = pixel_grid.pixel_width
 #     ra0, dec0 = pixel_grid.radec_at_xy_0
@@ -526,8 +527,9 @@ def point_source_plot(
 #     #     color,
 #     #     markersize = 10
 #     # )
-        
+
 #     return ax
+
 
 @export
 def arrival_time_surface(

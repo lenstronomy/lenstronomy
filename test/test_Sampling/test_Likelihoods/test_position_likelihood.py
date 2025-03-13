@@ -279,14 +279,53 @@ class TestPositionLikelihood(object):
         npt.assert_almost_equal(logL_cosmo_base, logL_cosmo_shift, decimal=4)
 
     def test_source_position_rms_scatter(self):
-        x_source_list = [0.5, 1.0, 0.0, -0.25, -0.75, 0.5, 1.0, 0.0, -0.25, -0.75, 0.5, 1.0, 0.0, -0.25, -0.75]
-        y_source_list = [-0.75, 0.0, 1.0, 0.5, -0.25, -0.75, 0.0, 1.0, 0.5, -0.25, -.075, 0.0, 1.0, 0,5, -0.25]
+        x_source_list = [
+            0.5,
+            1.0,
+            0.0,
+            -0.25,
+            -0.75,
+            0.5,
+            1.0,
+            0.0,
+            -0.25,
+            -0.75,
+            0.5,
+            1.0,
+            0.0,
+            -0.25,
+            -0.75,
+        ]
+        y_source_list = [
+            -0.75,
+            0.0,
+            1.0,
+            0.5,
+            -0.25,
+            -0.75,
+            0.0,
+            1.0,
+            0.5,
+            -0.25,
+            -0.075,
+            0.0,
+            1.0,
+            0,
+            5,
+            -0.25,
+        ]
         num_sources = 5
         num_images_list = [3, 3, 3, 3, 3]
-        rms_x, rms_y, axes = self.likelihood.source_position_rms_scatter(x_source_list=x_source_list, y_source_list=y_source_list, num_sources=num_sources, num_images_list=num_images_list)
+        rms_x, rms_y, axes = self.likelihood.source_position_rms_scatter(
+            x_source_list=x_source_list,
+            y_source_list=y_source_list,
+            num_sources=num_sources,
+            num_images_list=num_images_list,
+        )
         npt.assert_almost_equal(rms_x, 0.5, delta=0.5)
         npt.assert_almost_equal(rms_y, 0.5, delta=0.5)
         plt.close()
+
 
 if __name__ == "__main__":
     pytest.main()

@@ -32,7 +32,10 @@ def lens_model_plot(
     deltaPix=0.01,
     sourcePos_x=0,
     sourcePos_y=0,
+    images_x=None,
+    images_y=None,
     point_source=False,
+    images_from_data=False,
     with_caustics=False,
     with_convergence=True,
     coord_center_ra=0,
@@ -42,6 +45,7 @@ def lens_model_plot(
     name_list=None,
     index=None,
     color_value="k",
+    mag_images=None,
     **kwargs,
 ):
     """Plots a lens model (convergence) and the critical curves and caustics.
@@ -55,8 +59,12 @@ def lens_model_plot(
         the lens equation)
     :param sourcePos_y: float, y-position of point source (image positions computed by
         the lens equation)
+    :param images_x: list of x-positions of the images associated with a particular source
+    :param images_y: list of y-positions of the images associated with a particular source
     :param point_source: bool, if True, illustrates and computes the image positions of
         the point source
+    :param images_from_data: bool, if True, illustrates and computes the image positions of
+        from a given data set
     :param with_caustics: bool, if True, illustrates the critical curve and caustics of
         the system
     :param with_convergence: bool, if True, illustrates the convergence map
@@ -122,11 +130,30 @@ def lens_model_plot(
             kwargs_lens=kwargs_lens,
             source_x=sourcePos_x,
             source_y=sourcePos_y,
+            images_x=images_x,
+            images_y=images_y,
+            mag_images=mag_images,
             name_list=name_list,
             index=index,
             color=color_value,
+            images_from_data=images_from_data,
             **kwargs_point_source,
         )
+    # if images_from_data:
+    #     kwargs_images_from_data = kwargs.get("kwargs_point_source:", {})
+    #     images_from_data_plot(
+    #         ax,
+    #         pixel_grid=_coords,
+    #         lens_model=lensModel,
+    #         kwargs_lens=kwargs_lens,
+    #         images_x=images_x,
+    #         images_y=images_y,
+    #         mag_images=mag_images,
+    #         index=index,
+    #         color=color_value,
+    #         name_list=name_list,
+    #         **kwargs_images_from_data,
+    #     )
     if coord_inverse:
         ax.set_xlim([ra0, ra0 - _frame_size])
     else:
@@ -278,9 +305,13 @@ def point_source_plot(
     kwargs_lens,
     source_x,
     source_y,
+    images_x,
+    images_y,
+    mag_images,
     name_list=None,
     index=None,
     color="k",
+    images_from_data=False,
     **kwargs,
 ):
     """Plots and illustrates images of a point source. The plotting routine orders the
@@ -294,10 +325,14 @@ def point_source_plot(
     :param kwargs_lens: lens model keyword argument list
     :param source_x: x-position of source
     :param source_y: y-position of source
-    :param name_list: list of names of images
-    :param name_list: list of strings, longer or equal the number of point sources. If changing this parameter, input as name_list=[[...], [...]]
+    :param images_x: list of x-positions of the images associated with a particular source in arcsec
+    :param images_y: list of y-positions of the images associated with a particular source in arcsec
+    :param mag_images: list of magnifications from data with reference to the first image in the list
+    :param name_list: list of strings, longer or equal the number of point sources.
+        If changing this parameter, input as name_list=[[...], [...]]
     :param index: number of sources, an integer number. Default None.
     :param color: string representing the color for the source's images. Default "k".
+    :param images_from_data: bool, if True, illustrates image positions from a given data set
     :param kwargs: additional plotting keyword arguments
     :return: matplotlib axis instance with figure
     """
@@ -328,42 +363,138 @@ def point_source_plot(
         delta_pix_x = -delta_pix
     else:
         delta_pix_x = delta_pix
-    origin = [ra0, dec0]
+    origin = [ra0, dec0]        
 
-    theta_x, theta_y = solver.image_position_from_source(
-        source_x,
-        source_y,
-        kwargs_lens,
-        search_window=np.max(pixel_grid.width),
-        x_center=x_center,
-        y_center=y_center,
-        min_distance=pixel_grid.pixel_width,
-    )
-    mag_images = lens_model.magnification(theta_x, theta_y, kwargs_lens)
+    if images_x == None and images_y == None:
+        ax = ax  
 
-    x_image, y_image = pixel_grid.map_coord2pix(theta_x, theta_y)
+    if images_x != None or images_y != None:
+        if images_from_data==False:
+            theta_x, theta_y = solver.image_position_from_source(
+                source_x,
+                source_y,
+                kwargs_lens,
+                search_window=np.max(pixel_grid.width),
+                x_center=x_center,
+                y_center=y_center,
+                min_distance=pixel_grid.pixel_width,
+            )
+            mag_images = lens_model.magnification(theta_x, theta_y, kwargs_lens)
+            x_image, y_image = pixel_grid.map_coord2pix(theta_x, theta_y)
+            x_source, y_source = pixel_grid.map_coord2pix(source_x, source_y)
+            ax.plot(
+                x_source * delta_pix_x + origin[0],
+                y_source * delta_pix + origin[1],
+                color,
+                markersize=10,
+            )
+        if images_from_data==True:
+            mag_images = lens_model.magnification(images_x, images_y, kwargs_lens)
+            #### put in the map_coords2grid with images_x, etc. as the theta_x
+            x_image, y_image = pixel_grid.map_coord2pix(images_x, images_y)
 
-    for i in range(len(x_image)):
-        x_ = (x_image[i]) * delta_pix_x + origin[0]
-        y_ = (y_image[i]) * delta_pix + origin[1]
-        ax.plot(
-            x_,
-            y_,
-            str("d" + color),
-            markersize=4 * (1 + np.log(np.abs(mag_images[i]))),
-            alpha=0.5,
-        )
-        ax.text(x_, y_, name_list_[i], fontsize=20, color=color)
-    x_source, y_source = pixel_grid.map_coord2pix(source_x, source_y)
-    ax.plot(
-        x_source * delta_pix_x + origin[0],
-        y_source * delta_pix + origin[1],
-        color,
-        markersize=10,
-    )
-
+        for i in range(len(x_image)):
+            x_ = (x_image[i]) * delta_pix_x + origin[0]
+            y_ = (y_image[i]) * delta_pix + origin[1]
+            ax.plot(
+                x_,
+                y_,
+                str("d" + color),
+                markersize=4 * (1 + np.log(np.abs(mag_images[i]))),
+                alpha=0.5,
+            )
+            ax.text(x_, y_, name_list_[i], fontsize=20, color=color)
+            
     return ax
 
+# def images_from_data_plot(
+#     ax,
+#     pixel_grid,
+#     lens_model,
+#     kwargs_lens,
+#     images_x,
+#     images_y,
+#     mag_images,
+#     index,
+#     color,
+#     name_list=None,
+#     **kwargs,
+# ):
+#     """Plots and illustrates images from a data set. The plotting routine orders the image
+#     labels according to the arrival time and illustrates a diamond shape of the size of
+#     the magnification. The coordinates are chosen in pixel coordinates.
+
+#     :param ax: matplotlib axis instance
+#     :param pixel_grid: lenstronomy PixelGrid() instance (or class with inheritance of
+#         PixelGrid()
+#     :param lens_model: LensModel() class instance
+#     :param kwargs_lens: lens model keyword argument list
+#     :param images_x: list of x-positions of the images associated with a particular source
+#     :param images_y: list of y-positions of the images associated with a particular source
+#     :param mag_images: list of magnifications from data with reference to the first image in the list
+#     :param name_list: list of strings, longer or equal the number of point sources. If changing this parameter, input as name_list=[[...], [...]]
+#     :param index: number of sources, an integer number. Default None.
+#     :param color: string representing the color for the source's images. Default "k".
+#     :param kwargs: additional plotting keyword arguments
+#     :return: matplotlib axis instance with figure
+#     """
+
+#     from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
+
+#     name_list_ = []
+#     if name_list is None and index is None:
+#         name_list_ = _NAME_LIST
+#     elif name_list is None and index is not None:
+#         name_list = _NAME_LIST
+#         for i in range(len(name_list)):
+#             name_list_.append(str(index + 1) + name_list[i])
+#     elif name_list is not None and index is None:
+#         name_list_ = name_list
+#     elif name_list is not None and index is not None:
+#         name_list = name_list
+#         for i in range(len(name_list)):
+#             name_list_.append(str(index + 1) + name_list[i])
+        
+#     x_center, y_center = pixel_grid.center
+#     delta_pix = pixel_grid.pixel_width
+#     ra0, dec0 = pixel_grid.radec_at_xy_0
+#     tranform = pixel_grid.transform_angle2pix
+#     if (
+#         np.linalg.det(tranform) < 0
+#     ):  # if coordiate transform has negative parity (#TODO temporary fix)
+#         delta_pix_x = -delta_pix
+#     else:
+#         delta_pix_x = delta_pix
+#     origin = [x_center, y_center]
+
+#     solver = LensEquationSolver(lens_model)
+
+#     #### put in the map_coords2grid with images_x, etc. as the theta_x
+
+#     mag_images = mag_images
+#         # .magnification(theta_x, theta_y, kwargs_lens)
+#     x_image = images_x
+#     y_image = images_y
+#     for i in range(len(x_image)):
+#         x_ = (x_image[i]) * delta_pix_x + origin[0]
+#         y_ = (y_image[i]) * delta_pix + origin[1]
+#         ax.plot(
+#             x_,
+#             y_,
+#             str("d" + color),
+#             markersize=4 * (1 + np.log(np.abs(mag_images[i]))),
+#             alpha=0.5
+#         )
+#         ax.text(x_, y_, name_list_[i], fontsize=20, color=color)
+#     # x_source, y_source = pixel_grid.map_coord2pix(cent_x, cent_y)
+#     # ax.plot(
+#     #     x_source * delta_pix_x + origin[0],
+#     #     y_source * delta_pix + origin[1],
+#     #     color,
+#     #     markersize = 10
+#     # )
+        
+#     return ax
 
 @export
 def arrival_time_surface(

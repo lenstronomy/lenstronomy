@@ -39,16 +39,16 @@ NIRCAM_F356W_band_obs = {
 # for COSMOS-Web observations
 NIRCAM_F115W_band_obs = {
     "exposure_time": 257,
-    "sky_brightness": 30.96,  
+    "sky_brightness": 30.96,
     "magnitude_zero_point": 28.02,
     "num_exposures": 8,
-    "seeing": 0.04, # PSF FWHM
+    "seeing": 0.04,  # PSF FWHM
     "psf_type": "PIXEL",
 }
 
 NIRCAM_F150W_band_obs = {
     "exposure_time": 257,
-    "sky_brightness": 29.96, 
+    "sky_brightness": 29.96,
     "magnitude_zero_point": 28.02,
     "num_exposures": 8,
     "seeing": 0.05,
@@ -57,7 +57,7 @@ NIRCAM_F150W_band_obs = {
 
 NIRCAM_F277W_band_obs = {
     "exposure_time": 257,
-    "sky_brightness": 28.96,  
+    "sky_brightness": 28.96,
     "magnitude_zero_point": 26.49,
     "num_exposures": 8,
     "seeing": 0.092,
@@ -66,7 +66,7 @@ NIRCAM_F277W_band_obs = {
 
 NIRCAM_F444W_band_obs = {
     "exposure_time": 257,
-    "sky_brightness": 28.15, 
+    "sky_brightness": 28.15,
     "magnitude_zero_point": 26.49,
     "num_exposures": 8,
     "seeing": 0.145,
@@ -91,16 +91,16 @@ class JWST(object):
         elif band == "F356W":
             self.obs = NIRCAM_F356W_band_obs
             self.arm = "long"
-        elif band=="F115W":
+        elif band == "F115W":
             self.obs = NIRCAM_F115W_band_obs
             self.arm = "short"
-        elif band=="F150W":
+        elif band == "F150W":
             self.obs = NIRCAM_F150W_band_obs
             self.arm = "short"
-        elif band=="F277W":
+        elif band == "F277W":
             self.obs = NIRCAM_F277W_band_obs
             self.arm = "long"
-        elif band=="F444W":
+        elif band == "F444W":
             self.obs = NIRCAM_F444W_band_obs
             self.arm = "long"
         else:

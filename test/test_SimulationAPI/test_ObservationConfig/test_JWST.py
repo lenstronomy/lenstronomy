@@ -10,10 +10,10 @@ class TestJWST(unittest.TestCase):
         self.F356W = JWST(band="F356W")
         self.F356W2 = JWST(band="F356W", psf_type="GAUSSIAN")
 
-        self.F115W = JWST(band='F115W')
-        self.F150W = JWST(band='F150W')
-        self.F277W = JWST(band='F277W')
-        self.F444W = JWST(band='F444W')
+        self.F115W = JWST(band="F115W")
+        self.F150W = JWST(band="F150W")
+        self.F277W = JWST(band="F277W")
+        self.F444W = JWST(band="F444W")
 
         kwargs_F200W = self.F200W.kwargs_single_band()
         kwargs_F356W = self.F356W.kwargs_single_band()
@@ -24,7 +24,6 @@ class TestJWST(unittest.TestCase):
         kwargs_F277W = self.F277W.kwargs_single_band()
         kwargs_F444W = self.F444W.kwargs_single_band()
 
-
         self.F200W_band = SingleBand(**kwargs_F200W)
         self.F356W_band = SingleBand(**kwargs_F356W)
         self.F356W2_band = SingleBand(**kwargs_F356W2)
@@ -33,7 +32,6 @@ class TestJWST(unittest.TestCase):
         self.F150W_band = SingleBand(**kwargs_F150W)
         self.F277W_band = SingleBand(**kwargs_F277W)
         self.F444W_band = SingleBand(**kwargs_F444W)
-
 
         # dictionaries mapping JWST kwargs to SingleBand kwargs
         self.camera_settings = {

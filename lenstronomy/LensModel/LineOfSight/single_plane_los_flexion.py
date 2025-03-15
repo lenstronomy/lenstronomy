@@ -298,7 +298,6 @@ class SinglePlaneLOSFlexion(SinglePlane):
         :param k: only evaluate the k-th lens model
         :return: deflection angles in units of arcsec
         """
-        print("hello")
 
         kwargs_main, kwargs_los_flexion = self.split_lens_los_flexion(kwargs)
         theta = x + y * 1j

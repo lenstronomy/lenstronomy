@@ -117,7 +117,7 @@ class PositionLikelihood(object):
                     )
         if (
             self._source_position_likelihood is True
-            or self._bound_source_position_tolerance is not None
+            and self._bound_source_position_tolerance is not None
         ):
             logL_source_pos = self.source_position_likelihood(
                 kwargs_lens,

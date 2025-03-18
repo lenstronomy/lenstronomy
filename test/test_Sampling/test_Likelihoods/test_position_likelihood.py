@@ -110,7 +110,7 @@ class TestPositionLikelihood(object):
         self._x_pos_mp, self._y_pos_mp = x_pos_mp, y_pos_mp
 
     def test_raises(self):
-        npt.assert_raises(
+        npt.assert_warns(
             UserWarning,
             PositionLikelihood,
             self.ps_class,

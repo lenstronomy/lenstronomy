@@ -110,8 +110,20 @@ class TestPositionLikelihood(object):
         self._x_pos_mp, self._y_pos_mp = x_pos_mp, y_pos_mp
 
     def test_raises(self):
-        npt.assert_raises(UserWarning, PositionLikelihood, self.ps_class, source_position_tolerance=0.001, source_position_likelihood=False)
-        npt.assert_raises(ValueError, PositionLikelihood, self.ps_class, max_num_images=None, restrict_image_number=True)
+        npt.assert_raises(
+            UserWarning,
+            PositionLikelihood,
+            self.ps_class,
+            source_position_tolerance=0.001,
+            source_position_likelihood=False,
+        )
+        npt.assert_raises(
+            ValueError,
+            PositionLikelihood,
+            self.ps_class,
+            max_num_images=None,
+            restrict_image_number=True,
+        )
 
     def test_image_position_likelihood(self):
         kwargs_ps = [{"ra_image": self._x_pos, "dec_image": self._y_pos}]

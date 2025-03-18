@@ -1078,6 +1078,7 @@ class ModelBandPlot(ModelBand):
         font_size=15,
         source_add=False,
         lens_light_add=False,
+        no_arrow=False,
         **kwargs
     ):
         """
@@ -1090,6 +1091,7 @@ class ModelBandPlot(ModelBand):
         :param point_source_add:
         :param source_add:
         :param lens_light_add:
+        :param no_arrow:
         :param kwargs: kwargs to send matplotlib.pyplot.matshow()
         :return:
         """
@@ -1129,13 +1131,15 @@ class ModelBandPlot(ModelBand):
         plot_util.text_description(
             ax, self._frame_size, text=text, color="w", backgroundcolor="k"
         )
-        plot_util.coordinate_arrows(
-            ax,
-            self._frame_size,
-            self._coords,
-            arrow_size=self._arrow_size,
-            font_size=font_size,
-        )
+        if no_arrow is False:
+            plot_util.coordinate_arrows(
+                ax,
+                self._frame_size,
+                self._coords,
+                color="w",
+                arrow_size=self._arrow_size,
+                font_size=font_size,
+            )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)

@@ -2,6 +2,8 @@ import numpy as np
 from numpy.linalg import inv
 from lenstronomy.Util.cosmo_util import get_astropy_cosmology
 
+import warnings
+
 __all__ = ["PositionLikelihood"]
 
 
@@ -27,27 +29,27 @@ class PositionLikelihood(object):
 
         :param point_source_class: Instance of PointSource() class
         :param image_position_uncertainty: uncertainty in image position uncertainty (1-sigma Gaussian radially),
-         this is applicable for astrometric uncertainties as well as if image positions are provided as data
+            this is applicable for astrometric uncertainties as well as if image positions are provided as data
         :param astrometric_likelihood: bool, if True, evaluates the astrometric uncertainty of the predicted and modeled
-         image positions with an offset 'delta_x_image' and 'delta_y_image'
+            image positions with an offset 'delta_x_image' and 'delta_y_image'
         :param image_position_likelihood: bool, if True, evaluates the likelihood of the model predicted image position
-         given the data/measured image positions
+            given the data/measured image positions
         :param ra_image_list: list or RA image positions per model component
         :param dec_image_list: list or DEC image positions per model component
         :param source_position_likelihood: bool, if True, ray-traces image positions back to source plane and evaluates
-         relative errors in respect ot the position_uncertainties in the image plane (image_position_uncertainty)
+            relative errors in respect ot the position_uncertainties in the image plane (image_position_uncertainty)
         :param source_position_tolerance: tolerance level (in arc seconds in the source plane) of the different images.
-         If set =! None, then the backwards ray tracing is performed on the images and demand on the same position of
-         the source is meant to match the requirements, otherwise a punishing likelihood term is introduced
+            If set =! None, then the backwards ray tracing is performed on the images and demand on the same position of
+            the source is meant to match the requirements, otherwise a punishing likelihood term is introduced
         :type source_position_tolerance: None or float
         :param source_position_sigma: r.m.s. value corresponding to a 1-sigma Gaussian likelihood accepted by the model
-         precision in matching the source position transformed from the image plane
+            precision in matching the source position transformed from the image plane
         :param force_no_add_image: bool, if True, will punish additional images appearing in the frame of the modelled
-         image(first calculate them)
+            image(first calculate them)
         :param restrict_image_number: bool, if True, searches for all appearing images in the frame of the data and
-         compares with max_num_images
+            compares with max_num_images
         :param max_num_images: integer, maximum number of appearing images. Default is the number of  images given in
-         the Param() class
+            the Param() class
         """
         self._pointSource = point_source_class
         # TODO replace with public function of ray_shooting
@@ -55,6 +57,14 @@ class PositionLikelihood(object):
         self._astrometric_likelihood = astrometric_likelihood
         self._image_position_sigma = image_position_uncertainty
         self._source_position_sigma = source_position_sigma
+        if (
+            source_position_tolerance is not None
+            and source_position_likelihood is False
+        ):
+            warnings.warn(
+                "source_position_tolerance has been set but source_position_likelihood is False. \n"
+                "In order to use the source_position_tolerance, set source_position_likelihood to True"
+            )
         self._bound_source_position_tolerance = source_position_tolerance
         self._force_no_add_image = force_no_add_image
         self._restrict_number_images = restrict_image_number
@@ -115,10 +125,7 @@ class PositionLikelihood(object):
                         "Number of images found %s exceeded the limited number allowed %s"
                         % (len(ra_image_list[0]), self._max_num_images)
                     )
-        if (
-            self._source_position_likelihood is True
-            or self._bound_source_position_tolerance is not None
-        ):
+        if self._source_position_likelihood:
             logL_source_pos = self.source_position_likelihood(
                 kwargs_lens,
                 kwargs_ps,

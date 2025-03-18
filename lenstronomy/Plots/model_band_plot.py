@@ -1081,19 +1081,22 @@ class ModelBandPlot(ModelBand):
         no_arrow=False,
         **kwargs
     ):
-        """
+        """Make a plot displaying all or a subset of light components.
 
-        :param ax:
-        :param text:
-        :param v_min:
-        :param v_max:
-        :param unconvolved:
-        :param point_source_add:
-        :param source_add:
-        :param lens_light_add:
-        :param no_arrow:
+        :param ax: an instance of matplotlib.axes.Axes
+        :param text: text to display in upper left corner
+        :param v_min: min color scale for matshow plot
+        :param v_max: max color scale for matshow plot
+        :param unconvolved: bool, if True, does not perform PSF convolution on the image
+        :param point_source_add: bool, if True, includes the lensed point source(s) in
+            the plot
+        :param source_add: bool, if True, includes the lensed image of the source in the
+            plot
+        :param lens_light_add: bool, if True, includes the lens light in the plot
+        :param no_arrow: bool, if True, omits the North/East directional arrows from the
+            plot
         :param kwargs: kwargs to send matplotlib.pyplot.matshow()
-        :return:
+        :return: the instance of matplotlib.axes.Axes
         """
         model = ImageModel.image(
             self._bandmodel,

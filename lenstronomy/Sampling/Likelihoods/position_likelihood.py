@@ -116,8 +116,7 @@ class PositionLikelihood(object):
                         % (len(ra_image_list[0]), self._max_num_images)
                     )
         if (
-            self._source_position_likelihood is True
-            and self._bound_source_position_tolerance is not None
+            self._source_position_likelihood
         ):
             logL_source_pos = self.source_position_likelihood(
                 kwargs_lens,

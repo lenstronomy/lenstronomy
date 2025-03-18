@@ -2,6 +2,8 @@ import numpy as np
 from numpy.linalg import inv
 from lenstronomy.Util.cosmo_util import get_astropy_cosmology
 
+import warnings
+
 __all__ = ["PositionLikelihood"]
 
 
@@ -55,6 +57,11 @@ class PositionLikelihood(object):
         self._astrometric_likelihood = astrometric_likelihood
         self._image_position_sigma = image_position_uncertainty
         self._source_position_sigma = source_position_sigma
+        if source_position_tolerance is not None and source_position_likelihood:
+            warnings.warn(
+                "source_position_tolerance has been set but source_position_likelihood is False. \n"
+                "In order to use the source_position_tolerance, set source_position_likelihood to True"
+            )
         self._bound_source_position_tolerance = source_position_tolerance
         self._force_no_add_image = force_no_add_image
         self._restrict_number_images = restrict_image_number

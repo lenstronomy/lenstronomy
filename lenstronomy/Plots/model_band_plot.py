@@ -1083,7 +1083,7 @@ class ModelBandPlot(ModelBand):
     ):
         """
         Make a plot displaying all or a subset of light components
-         
+
         :param ax: an instance of matplotlib.axes.Axes
         :param text: text to display in upper left corner
         :param v_min: min color scale for matshow plot
@@ -1094,7 +1094,7 @@ class ModelBandPlot(ModelBand):
         :param lens_light_add: bool, if True, includes the lens light in the plot
         :param no_arrow: bool, if True, omits the North/East directional arrows from the plot
         :param kwargs: kwargs to send matplotlib.pyplot.matshow()
-        :return:
+        :return: the instance of matplotlib.axes.Axes
         """
         model = ImageModel.image(
             self._bandmodel,

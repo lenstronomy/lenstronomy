@@ -115,9 +115,7 @@ class PositionLikelihood(object):
                         "Number of images found %s exceeded the limited number allowed %s"
                         % (len(ra_image_list[0]), self._max_num_images)
                     )
-        if (
-            self._source_position_likelihood
-        ):
+        if self._source_position_likelihood:
             logL_source_pos = self.source_position_likelihood(
                 kwargs_lens,
                 kwargs_ps,

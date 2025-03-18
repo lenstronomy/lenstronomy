@@ -57,7 +57,10 @@ class PositionLikelihood(object):
         self._astrometric_likelihood = astrometric_likelihood
         self._image_position_sigma = image_position_uncertainty
         self._source_position_sigma = source_position_sigma
-        if source_position_tolerance is not None and source_position_likelihood is False:
+        if (
+            source_position_tolerance is not None
+            and source_position_likelihood is False
+        ):
             warnings.warn(
                 "source_position_tolerance has been set but source_position_likelihood is False. \n"
                 "In order to use the source_position_tolerance, set source_position_likelihood to True"

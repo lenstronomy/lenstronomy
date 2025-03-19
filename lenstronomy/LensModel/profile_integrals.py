@@ -45,13 +45,14 @@ class ProfileIntegrals(object):
             )
         return out[0]
 
-    def density_2d(self, r, kwargs_profile, lens_param=False):
+    def density_2d(self, r, kwargs_profile, lens_param=False, r_max=100):
         """Computes the projected density along the line-of-sight.
 
         :param r: radius (arcsec)
         :param kwargs_profile: keyword argument list with lens model parameters
         :param lens_param: boolean, if True uses the lens model parameterization in
             computing the 3d density convention and the return is the convergence
+        :param r_max: maximum integration range (in arcsec)
         :return: 2d projected density at projected radius r
         """
         kwargs = copy.deepcopy(kwargs_profile)
@@ -63,26 +64,32 @@ class ProfileIntegrals(object):
                 lambda x: 2
                 * self._profile.density_lens(np.sqrt(x**2 + r**2), **kwargs),
                 0,
-                100,
+                r_max,
             )
         else:
             out = integrate.quad(
                 lambda x: 2 * self._profile.density(np.sqrt(x**2 + r**2), **kwargs),
                 0,
-                100,
+                r_max,
             )
         return out[0]
 
-    def mass_enclosed_2d(self, r, kwargs_profile):
-        """
-        computes the mass enclosed the projected line-of-sight
+    def mass_enclosed_2d(self, r, kwargs_profile, lens_param=False):
+        """Computes the mass enclosed the projected line-of-sight.
+
         :param r: radius (arcsec)
         :param kwargs_profile: keyword argument list with lens model parameters
+        :param lens_param: boolean, if True uses the lens model parameterization in
+            computing the 3d density convention and the return is the convergence
         :return: projected mass enclosed radius r
         """
         kwargs = copy.deepcopy(kwargs_profile)
         kwargs.pop("center_x", None)
         kwargs.pop("center_y", None)
         # integral of self.density_2d(x)* 2*np.pi * x *dx, 0, r
-        out = integrate.quad(lambda x: self.density_2d(x, kwargs) * 2 * np.pi * x, 0, r)
+        out = integrate.quad(
+            lambda x: self.density_2d(x, kwargs, lens_param=lens_param) * 2 * np.pi * x,
+            0,
+            r,
+        )
         return out[0]

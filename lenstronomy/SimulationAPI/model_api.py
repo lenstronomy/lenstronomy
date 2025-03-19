@@ -22,22 +22,28 @@ class ModelAPI(object):
     def __init__(
         self,
         lens_model_list=None,
+        lens_profile_kwargs_list=None,
         z_lens=None,
         z_source=None,
         lens_redshift_list=None,
         source_light_model_list=None,
+        source_light_profile_kwargs_list=None,
         lens_light_model_list=None,
+        lens_light_profile_kwargs_list=None,
         point_source_model_list=None,
         source_redshift_list=None,
         cosmo=None,
         z_source_convention=None,
-        tabulated_deflection_angles=None,
         observed_convention_index=None,
     ):
         """# TODO: make inputs follow the kwargs_model of the class_creator instances of
         'kwargs_model', # i.e. multi-plane options, perhaps others
 
         :param lens_model_list: list of strings with lens model names
+        :param lens_profile_kwargs_list: list of dicts, keyword arguments used to
+            initialize lens profile classes in the same order of the lens_model_list. If
+            any of the profile_kwargs are None, then that profile will be initialized
+            using default settings.
         :param z_lens: redshift of the deflector (only considered when operating in
             single plane mode). Is only needed for specific functions that require a
             cosmology.
@@ -50,17 +56,22 @@ class ModelAPI(object):
             model list), only applicable in multi_plane mode.
         :param source_light_model_list: list of strings with source light model names
             (lensed light profiles)
+        :param source_light_profile_kwargs_list: list of dicts, keyword arguments used
+            to initialize source light profile classes in the same order of the
+            source_light_model_list. If any of the profile_kwargs are None, then that
+            profile will be initialized using default settings.
         :param lens_light_model_list: list of strings with lens light model names (not
             lensed light profiles)
+        :param lens_light_profile_kwargs_list: list of dicts, keyword arguments used to
+            initialize lens light profile classes in the same order of the
+            lens_light_model_list. If any of the profile_kwargs are None, then that
+            profile will be initialized using default settings.
         :param point_source_model_list: list of strings with point source model names
         :param source_redshift_list: list of redshifts of the source profiles (optional)
         :param cosmo: instance of the astropy cosmology class. If not specified, uses
             the default cosmology.
         :param z_source_convention: float, redshift of a source to define the reduced
             deflection angles of the lens models. If None, 'z_source' is used.
-        :param tabulated_deflection_angles: a class that returns deflection angles given
-            a set of (x, y) coordinates. Effectively a fixed lens model. See
-            documentation in Profiles.numerical_alpha
         :param observed_convention_index: a list of indices that correspond to lens
             models where the center_x,center_y values correspond to the observed (lensed
             positions), not the physical positions in space
@@ -87,21 +98,23 @@ class ModelAPI(object):
 
         self._lens_model_class = LensModel(
             lens_model_list=lens_model_list,
+            profile_kwargs_list=lens_profile_kwargs_list,
             z_source=z_source,
             z_lens=z_lens,
             lens_redshift_list=lens_redshift_list,
             multi_plane=multi_plane,
             cosmo=cosmo,
             z_source_convention=z_source_convention,
-            numerical_alpha_class=tabulated_deflection_angles,
             observed_convention_index=observed_convention_index,
         )
         self._source_model_class = LightModel(
             light_model_list=source_light_model_list,
             source_redshift_list=source_redshift_list,
+            profile_kwargs_list=source_light_profile_kwargs_list,
         )
         self._lens_light_model_class = LightModel(
-            light_model_list=lens_light_model_list
+            light_model_list=lens_light_model_list,
+            profile_kwargs_list=lens_light_profile_kwargs_list,
         )
         fixed_magnification = [False] * len(point_source_model_list)
         for i, ps_type in enumerate(point_source_model_list):

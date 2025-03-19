@@ -8,7 +8,6 @@ from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.LightModel.Profiles.gaussian import MultiGaussian
 from lenstronomy.LightModel.Profiles.gaussian import MultiGaussianEllipse
 import lenstronomy.Util.param_util as param_util
-import lenstronomy.Util.util as util
 
 
 class TestLightAnalysis(object):
@@ -209,7 +208,7 @@ class TestLightAnalysis(object):
         amplitudes, sigmas, center_x, center_y = profile.multi_gaussian_decomposition(
             kwargs_light,
             grid_spacing=0.01,
-            grid_num=100,
+            grid_num=200,
             model_bool_list=None,
             n_comp=20,
             center_x=None,
@@ -241,7 +240,7 @@ class TestLightAnalysis(object):
         amplitudes, sigmas, center_x, center_y = profile.multi_gaussian_decomposition(
             kwargs_light,
             grid_spacing=0.01,
-            grid_num=100,
+            grid_num=200,
             model_bool_list=None,
             n_comp=20,
             center_x=None,
@@ -279,7 +278,7 @@ class TestLightAnalysis(object):
         kwargs_mge = profile.multi_gaussian_decomposition_ellipse(
             kwargs_light,
             grid_spacing=0.01,
-            grid_num=100,
+            grid_num=200,
             model_bool_list=None,
             n_comp=20,
             center_x=None,

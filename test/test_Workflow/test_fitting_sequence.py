@@ -42,7 +42,7 @@ class TestFittingSequence(object):
         self.kwargs_psf = {
             "psf_type": "PIXEL",
             "kernel_point_source": psf_gaussian.kernel_point_source,
-            "psf_error_map": np.zeros_like(psf_gaussian.kernel_point_source),
+            "psf_variance_map": np.zeros_like(psf_gaussian.kernel_point_source),
         }
         psf_class = PSF(**self.kwargs_psf)
         # 'EXTERNAL_SHEAR': external shear

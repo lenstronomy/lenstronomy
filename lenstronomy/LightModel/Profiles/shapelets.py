@@ -34,7 +34,7 @@ class Shapelets(object):
     The two-dimensional basis function is
 
     .. math::
-        \\phi_{\\bf n}({\bf x}) \\equiv \\phi_{n1}(x1) \\phi_{n2}(x2)
+        \\phi_{\\bf n}({\\bf x}) \\equiv \\phi_{n1}(x1) \\phi_{n2}(x2)
 
     where :math:`{\\bf n} \\equiv (n1, n2)` and :math:`{\\bf x} \\equiv (x1, x2)`.
 

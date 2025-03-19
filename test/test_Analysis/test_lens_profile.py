@@ -250,6 +250,60 @@ class TestLensProfileAnalysis(object):
                     xi_true = (gamma - 2) / theta_E_prime
                     npt.assert_almost_equal(xi, xi_true, decimal=2)
 
+    def test_m_delta_crit(self):
+        # test done with NFW profile where M200 is known
+        lensModel = LensModel(**{"lens_model_list": ["NFW"]})
+        profileAnalysis = LensProfileAnalysis(lens_model=lensModel)
+        import lenstronomy.Util.constants as const
+        from astropy.cosmology import FlatLambdaCDM
+
+        cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.05)
+        from lenstronomy.Cosmo.lens_cosmo import LensCosmo
+
+        z_lens = 0.5
+        z_source = 2.0
+        lensCosmo = LensCosmo(z_lens=z_lens, z_source=z_source, cosmo=cosmo)
+        M = 10.0**13.5
+        c = 4
+        Rs_angle, alpha_Rs = lensCosmo.nfw_physical2angle(M, c)
+        rho0, Rs, c_out, r200, M200 = lensCosmo.nfw_angle2physical(Rs_angle, alpha_Rs)
+        kwargs_lens = [{"alpha_Rs": alpha_Rs, "Rs": Rs_angle}]
+        print(r200, "test r200")
+        m200_out, r200_out = profileAnalysis.m_delta_crit(
+            kwargs_lens, z_lens, z_source, cosmo, delta_crit=200
+        )
+        r200_out_mpc = r200_out * const.arcsec * lensCosmo.dd
+        npt.assert_almost_equal(M200 / M, 1, decimal=3)
+        npt.assert_almost_equal(m200_out / M, 1, decimal=3)
+        npt.assert_almost_equal(r200_out_mpc, r200, decimal=3)
+
+        # here a profile that does not have an M200
+        lensModel = LensModel(**{"lens_model_list": ["GAUSSIAN"]})
+        kwargs_lens = [{"amp": 0.01, "sigma": 100, "center_x": 0, "center_y": 0}]
+        profileAnalysis = LensProfileAnalysis(lens_model=lensModel)
+        m200_out, r200_out = profileAnalysis.m_delta_crit(
+            kwargs_lens, z_lens, z_source, cosmo, delta_crit=200
+        )
+        assert m200_out == 0
+        assert r200_out == 0
+
+        m200_out, r200_out = profileAnalysis.m_delta_crit(
+            kwargs_lens, z_lens, z_source, cosmo, delta_crit=-200
+        )
+        assert np.isnan(m200_out)
+        assert np.isnan(r200_out)
+
+        # profile that does not have analytical mass_3d
+        lensModel = LensModel(**{"lens_model_list": ["SERSIC"]})
+        kwargs_lens = [
+            {"k_eff": 1, "R_sersic": 2, "n_sersic": 1, "center_x": 0, "center_y": 0}
+        ]
+        profileAnalysis = LensProfileAnalysis(lens_model=lensModel)
+        m200_out, r200_out = profileAnalysis.m_delta_crit(
+            kwargs_lens, z_lens, z_source, cosmo, delta_crit=200
+        )
+        npt.assert_almost_equal(m200_out / 3827526804710.1196, 1, decimal=1)
+
 
 class TestRaise(unittest.TestCase):
     def test_raise(self):

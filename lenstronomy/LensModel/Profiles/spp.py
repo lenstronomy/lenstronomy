@@ -9,7 +9,21 @@ __all__ = ["SPP"]
 
 
 class SPP(LensProfileBase):
-    """Class for circular power-law mass distribution."""
+    """Class to compute the Spherical Power-law Potential (SPP) Model.
+
+    Given by:
+    .. math::
+        \\psi(r) = \\frac{2 E^2}{\\eta^2} \\left( \\frac{r^2 + s^2}{E^2} \\right)^{\\frac{\\eta}{2}}
+    where:
+    :math:`r^2 = (x-x_{\\text{center}})^2 + (y-y_{\\text{center}})^2` is squared radius from center of lens,
+    :math:`s^2 = 0` due to no softening,
+    :math:'E' is the characteristic scale factor related to the Einstein radius :math:`\\theta_{E}`, given by:
+    .. math::
+        E = \\frac{\\theta_E}{\\left( \\frac{3 - \\gamma}{2} \\right)^{\\frac{1}{1 - \\gamma}}}
+    :math:'\\theta_{E}` is the Einstein radius of the lens,
+    :math:`\\eta = -\\gamma + 3` is a parameter that depends on the power law slope :math:`\\gamma`,
+    :math:`\\gamma` is the power law slope of the mass profile.
+    """
 
     param_names = ["theta_E", "gamma", "center_x", "center_y"]
     lower_limit_default = {
@@ -32,10 +46,14 @@ class SPP(LensProfileBase):
         :param y: set of y-coordinates
         :type y: array of size (n)
         :param theta_E: Einstein radius of lens
-        :type theta_E: float.
+        :type theta_E: float
         :param gamma: power law slope of mass profile
         :type gamma: <2 float
-        :returns:  function
+        :param center_x: x-coordinate of the lens center
+        :type center_x: float
+        :param center_y: y-coordinate of the lens center
+        :type center_y: float
+        :returns: function value
         :raises: AttributeError, KeyError
         """
         gamma = self._gamma_limit(gamma)
@@ -51,6 +69,15 @@ class SPP(LensProfileBase):
         return 2 * E**2 / eta**2 * ((p2 + s2) / E**2) ** (eta / 2)
 
     def derivatives(self, x, y, theta_E, gamma, center_x=0.0, center_y=0.0):
+        """
+        :param x: x-coordinate position
+        :param y: y-coordinate position
+        :param theta_E: Einstein radius of lens
+        :param gamma: power law slope of mass profile
+        :param center_x: x-coordinate of the lens center
+        :param center_y: y-coordinate of the lens center
+        :returns: f_x, f_y
+        """
         gamma = self._gamma_limit(gamma)
 
         xt1 = x - center_x
@@ -66,6 +93,15 @@ class SPP(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, theta_E, gamma, center_x=0.0, center_y=0.0):
+        """
+        :param x: x-coordinate position
+        :param y: y-coordinate position
+        :param theta_E: Einstein radius of lens
+        :param gamma: power law slope of mass profile
+        :param center_x: x-coordinate of the lens center
+        :param center_y: y-coordinate of the lens center
+        :returns: f_xx, f_xy, f_yx, f_yy
+        """
         gamma = self._gamma_limit(gamma)
         xt1 = x - center_x
         xt2 = y - center_y
@@ -105,11 +141,11 @@ class SPP(LensProfileBase):
 
     @staticmethod
     def rho2theta(rho0, gamma):
-        """Converts 3d density into 2d projected density parameter.
+        """Converts 3D density into 2D projected density parameter.
 
-        :param rho0:
-        :param gamma:
-        :return:
+        :param rho0: 3D density parameter
+        :param gamma: power law slope of mass profile
+        :returns: 2D projected density parameter (theta_E)
         """
         fac = (
             np.sqrt(np.pi)
@@ -129,9 +165,9 @@ class SPP(LensProfileBase):
         """Converts projected density parameter (in units of deflection) into 3d density
         parameter.
 
-        :param theta_E:
-        :param gamma:
-        :return:
+        :param theta_E: 2D projected density parameter
+        :param gamma: power law slope of mass profile
+        :returns: 3D density parameter (rho0)
         """
         fac1 = (
             np.sqrt(np.pi)
@@ -146,34 +182,35 @@ class SPP(LensProfileBase):
 
     @staticmethod
     def mass_3d(r, rho0, gamma):
-        """Mass enclosed a 3d sphere or radius r.
+        """Calculates the mass enclosed in a 3D sphere of radius r.
 
-        :param r:
-        :param rho0:
-        :param gamma:
-        :return:
+        :param r: radius of the sphere
+        :param rho0: 3D density parameter
+        :param gamma: power law slope of mass profile
+        :returns: mass enclosed in the sphere
         """
         mass_3d = 4 * np.pi * rho0 / (-gamma + 3) * r ** (-gamma + 3)
         return mass_3d
 
     def mass_3d_lens(self, r, theta_E, gamma):
-        """
+        """Calculates the mass enclosed in a 3D sphere of radius r using lens model
+        parameters.
 
-        :param r:
-        :param theta_E:
-        :param gamma:
-        :return:
+        :param r: radius of the sphere
+        :param theta_E: 2D projected density parameter
+        :param gamma: power law slope of mass profile
+        :returns: mass enclosed in the sphere
         """
         rho0 = self.theta2rho(theta_E, gamma)
         return self.mass_3d(r, rho0, gamma)
 
     def mass_2d(self, r, rho0, gamma):
-        """Mass enclosed projected 2d sphere of radius r.
+        """Calculates the mass enclosed in a projected circle of radius r.
 
-        :param r:
-        :param rho0:
-        :param gamma:
-        :return:
+        :param r: radius of the projected circle
+        :param rho0: 3D density parameter
+        :param gamma: power law slope of mass profile
+        :returns: mass enclosed in the projected circle
         """
         alpha = (
             np.sqrt(np.pi)
@@ -188,12 +225,13 @@ class SPP(LensProfileBase):
         return mass_2d
 
     def mass_2d_lens(self, r, theta_E, gamma):
-        """
+        """Calculates the mass enclosed in a projected circle of radius r using lens
+        model parameters.
 
-        :param r: projected radius
-        :param theta_E: Einstein radius
-        :param gamma: power-law slope
-        :return: 2d projected radius enclosed
+        :param r: radius of the projected circle
+        :param theta_E: 2D projected density parameter
+        :param gamma: power law slope of mass profile
+        :returns: mass enclosed in the projected circle
         """
         rho0 = self.theta2rho(theta_E, gamma)
         return self.mass_2d(r, rho0, gamma)
@@ -201,13 +239,13 @@ class SPP(LensProfileBase):
     def grav_pot(self, x, y, rho0, gamma, center_x=0, center_y=0):
         """Gravitational potential (modulo 4 pi G and rho0 in appropriate units)
 
-        :param x:
-        :param y:
-        :param rho0:
-        :param gamma:
-        :param center_x:
-        :param center_y:
-        :return:
+        :param x: x-coordinate position
+        :param y: y-coordinate position
+        :param rho0: 3D density parameter
+        :param gamma: power law slope of mass profile
+        :param center_x: x-coordinate of the lens center
+        :param center_y: y-coordinate of the lens center
+        :returns: gravitational potential
         """
         x_ = x - center_x
         y_ = y - center_y
@@ -218,36 +256,41 @@ class SPP(LensProfileBase):
 
     @staticmethod
     def density(r, rho0, gamma):
-        """Computes the density.
+        """Calculates the 3D density.
 
-        :param r:
-        :param rho0:
-        :param gamma:
-        :return:
+        :param r: radius
+        :param rho0: 3D density parameter
+        :param gamma: power law slope of mass profile
+        :returns: 3D density
         """
         rho = rho0 / r**gamma
         return rho
 
     def density_lens(self, r, theta_E, gamma):
-        """Computes the density at 3d radius r given lens model parameterization.
+        """Calculates the 3D density using lens model parameters.
 
-        The integral in projected in units of angles (i.e. arc seconds) results in the
+        The integral is projected in units of angles (i.e. arc seconds) results in the
         convergence quantity.
+
+        :param r: radius
+        :param theta_E: 2D projected density parameter
+        :param gamma: power law slope of mass profile
+        :returns: 3D density
         """
         rho0 = self.theta2rho(theta_E, gamma)
         return self.density(r, rho0, gamma)
 
     @staticmethod
     def density_2d(x, y, rho0, gamma, center_x=0, center_y=0):
-        """Projected density.
+        """Calculates the 2D projected density.
 
-        :param x:
-        :param y:
-        :param rho0:
-        :param gamma:
-        :param center_x:
-        :param center_y:
-        :return:
+        :param x: x-coordinate position
+        :param y: y-coordinate position
+        :param rho0: 3D density parameter
+        :param gamma: power law slope of mass profile
+        :param center_x: x-coordinate of the center of the profile
+        :param center_y: y-coordinate of the center of the profile
+        :returns: 2D projected density
         """
         x_ = x - center_x
         y_ = y - center_y

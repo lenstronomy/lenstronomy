@@ -11,7 +11,7 @@ class SynthesisProfile(LensProfileBase):
     approximate a target profile.
 
     Example: Mimic an NFW profile with many CSE profiles. In this case, you could use LensModel(['SYNTHESIS'],
-    kwargs_synthesis=kwargs_synthesis)
+    profile_kwargs_list=[kwargs_synthesis])
     with
     kwargs_synthesis={'target_lens_model': 'NFW', 'component_lens_model': 'CSE', 'kwargs_list': kwargs_list,
     'lin_fit_hyperparams':{'lower_log_bound':-6, 'upper_log_bound':3, 'num_r_evals':100, 'sigma':0.01} (default values)

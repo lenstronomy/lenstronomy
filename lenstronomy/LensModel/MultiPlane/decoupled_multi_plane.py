@@ -14,15 +14,17 @@ class MultiPlaneDecoupled(MultiPlane):
         lens_model_list,
         lens_redshift_list,
         cosmo=None,
-        numerical_alpha_class=None,
         observed_convention_index=None,
         ignore_observed_positions=False,
         z_source_convention=None,
+        z_lens_convention=None,
         cosmo_interp=False,
         z_interp_stop=None,
         num_z_interp=100,
-        kwargs_interp=None,
-        kwargs_synthesis=None,
+        profile_kwargs_list=None,
+        distance_ratio_sampling=False,
+        cosmology_sampling=False,
+        cosmology_model="FlatLambdaCDM",
         x0_interp=None,
         y0_interp=None,
         alpha_x_interp_foreground=None,
@@ -46,13 +48,10 @@ class MultiPlaneDecoupled(MultiPlane):
         :param z_source_convention: float, redshift of a source to define the reduced
             deflection angles of the lens models. If None, 'z_source' is used.
         :param cosmo: instance of astropy.cosmology
-        :param numerical_alpha_class: an instance of a custom class for use in
-            NumericalAlpha() lens model (see documentation in Profiles/numerical_alpha)
-        :param kwargs_interp: interpolation keyword arguments specifying the numerics.
-            See description in the Interpolate() class. Only applicable for 'INTERPOL'
-            and 'INTERPOL_SCALED' models.
-        :param kwargs_synthesis: keyword arguments for the 'SYNTHESIS' lens model, if
-            applicable
+        :param profile_kwargs_list: list of dicts, keyword arguments used to initialize
+            profile classes in the same order of the lens_model_list. If any of the
+            profile_kwargs are None, then that profile will be initialized using default
+            settings.
         :param x0_interp: a function that maps an angular coordinate on the sky to the x
             coordinate of a physical position [Mpc] at the first lens plane
         :param y0_interp: same as x0_interp, but returns the y coordinate in Mpc
@@ -72,19 +71,21 @@ class MultiPlaneDecoupled(MultiPlane):
         self._y0_interp = y0_interp
         self._z_split = z_split
         super(MultiPlaneDecoupled, self).__init__(
-            z_source,
-            lens_model_list,
-            lens_redshift_list,
-            cosmo,
-            numerical_alpha_class,
-            observed_convention_index,
-            ignore_observed_positions,
-            z_source_convention,
-            cosmo_interp,
-            z_interp_stop,
-            num_z_interp,
-            kwargs_interp,
-            kwargs_synthesis,
+            z_source=z_source,
+            lens_model_list=lens_model_list,
+            lens_redshift_list=lens_redshift_list,
+            cosmo=cosmo,
+            observed_convention_index=observed_convention_index,
+            ignore_observed_positions=ignore_observed_positions,
+            z_source_convention=z_source_convention,
+            z_lens_convention=z_lens_convention,
+            cosmo_interp=cosmo_interp,
+            z_interp_stop=z_interp_stop,
+            num_z_interp=num_z_interp,
+            profile_kwargs_list=profile_kwargs_list,
+            distance_ratio_sampling=distance_ratio_sampling,
+            cosmology_sampling=cosmology_sampling,
+            cosmology_model=cosmology_model,
         )
 
         cosmo_bkg = Background(cosmo)
@@ -96,7 +97,9 @@ class MultiPlaneDecoupled(MultiPlane):
         self._Ts = cosmo_bkg.T_xy(0, z_source)
         self._Td = cosmo_bkg.T_xy(0, z_split)
         self._Tds = cosmo_bkg.T_xy(self._z_split, z_source)
-        self._main_deflector = SinglePlane(lens_model_list)
+        self._main_deflector = SinglePlane(
+            lens_model_list, profile_kwargs_list=profile_kwargs_list
+        )
         # useful to have these saved to access later outside the class
         self.kwargs_multiplane_model = {
             "x0_interp": self._x0_interp,

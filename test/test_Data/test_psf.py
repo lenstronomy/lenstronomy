@@ -21,7 +21,7 @@ class TestData(object):
         }
         self.psf_gaussian = PSF(**kwargs_gaussian)
         kernel_point_source = kernel_util.kernel_gaussian(
-            num_pix=21, delta_pix=self.deltaPix, fwhm=fwhm
+            num_pix=17, delta_pix=self.deltaPix, fwhm=fwhm
         )
         kwargs_pixel = {"psf_type": "PIXEL", "kernel_point_source": kernel_point_source}
         self.psf_pixel = PSF(**kwargs_pixel)
@@ -29,8 +29,8 @@ class TestData(object):
     def test_kernel_point_source(self):
         kernel_gaussian = self.psf_gaussian.kernel_point_source
         kernel_pixel = self.psf_pixel.kernel_point_source
-        assert len(kernel_gaussian) == 21
-        assert len(kernel_pixel) == 21
+        assert len(kernel_gaussian) == 17
+        assert len(kernel_pixel) == 17
 
         kwargs_psf = {
             "psf_type": "GAUSSIAN",
@@ -40,7 +40,7 @@ class TestData(object):
         }
         psf_class = PSF(**kwargs_psf)
         kernel_point_source = psf_class.kernel_point_source
-        assert len(kernel_point_source) == 13
+        assert len(kernel_point_source) == 11
         kernel_super = psf_class.kernel_point_source_supersampled(
             supersampling_factor=3
         )
@@ -214,7 +214,7 @@ class TestData(object):
             "pixel_size": deltaPix,
         }
         psf_kernel = PSF(**kwargs)
-        error_map = psf_kernel.psf_error_map
+        error_map = psf_kernel.psf_variance_map
         assert error_map.all() == 0
 
     def test_warning(self):
@@ -234,11 +234,11 @@ class TestData(object):
             "psf_type": "PIXEL",
             "kernel_point_source": kernel_point_source_subsampled,
             "point_source_supersampling_factor": subsampling_res,
-            "psf_error_map": np.ones_like(kernel_point_source_subsampled),
+            "psf_variance_map": np.ones_like(kernel_point_source_subsampled),
         }
         psf_kernel = PSF(**kwargs_psf)
         n = len(psf_kernel.kernel_point_source)
-        error_map = psf_kernel.psf_error_map
+        error_map = psf_kernel.psf_variance_map
         assert len(error_map) == n
 
     def test_unnormalized(self):
@@ -317,7 +317,7 @@ class TestRaise(unittest.TestCase):
             PSF(
                 psf_type="PIXEL",
                 kernel_point_source=np.ones((3, 3)),
-                psf_error_map=np.ones((5, 5)),
+                psf_variance_map=np.ones((5, 5)),
             )
             psf.kernel_point_source_supersampled(supersampling_factor=3)
         with self.assertRaises(ValueError):

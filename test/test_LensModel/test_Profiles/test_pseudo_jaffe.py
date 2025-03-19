@@ -92,7 +92,7 @@ class TestP_JAFFW(object):
         npt.assert_almost_equal(grav_pot, 0.89106542283974155, decimal=10)
 
     def test_sort_ra_rs(self):
-        Ra, Rs= self.profile._sort_ra_rs(Ra=0, Rs=0)
+        Ra, Rs = self.profile._sort_ra_rs(Ra=0, Rs=0)
         assert Ra > 0
         assert Rs > Ra
 

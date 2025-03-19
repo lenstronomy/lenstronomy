@@ -11,7 +11,39 @@ __all__ = ["SPEP"]
 
 
 class SPEP(LensProfileBase):
-    """Class for Softened power-law elliptical potential (SPEP)"""
+    """Softened Power-Law Elliptical Potential (SPEP)
+
+    .. math::
+        \\psi(x, y) = \\frac{2 E^2}{\\eta^2} \\left( \\frac{p^2 + s^2}{E^2} \\right)^{\\eta/2}
+
+    where :math:`E` is the normalization factor related to the Einstein radius :math:`\\theta_{E}`,
+    :math:`\\gamma` is the power law slope,
+    :math:`s` is the softening parameter,
+    :math:`\\eta = 3 - \\gamma` is the power-law exponent transformation,
+    and :math:`p^2` is given by
+
+    .. math::
+        p^2 = x_t^2 + \\frac{y_t^2}{q^2},
+
+    with the transformed coordinates :math:`x_t, y_t` aligned with the major and minor axes of the lens,
+    given by:
+
+    .. math::
+        x_t = \\cos(\\phi_G) (x - x_c) + \\sin(\\phi_G) (y - y_c)
+
+    .. math::
+        y_t = -\\sin(\\phi_G) (x - x_c) + \\cos(\\phi_G) (y - y_c).
+
+    The Einstein radius normalization :math:`E` is given by
+
+    .. math::
+        E = \\frac{\\theta_E}{\\left( \\frac{3 - \\gamma}{2} \\right)^{1/(1 - \\gamma)} \\sqrt{q}}.
+
+    Here, :math:`q` is the axis ratio of the elliptical potential.
+
+    A mathematical derivation of this potential is discussed in Barkana (1998),
+    https://iopscience.iop.org/article/10.1086/305950/fulltext/.
+    """
 
     param_names = ["theta_E", "gamma", "e1", "e2", "center_x", "center_y"]
     lower_limit_default = {
@@ -39,7 +71,7 @@ class SPEP(LensProfileBase):
         """
         :param x: set of x-coordinates
         :type x: array of size (n)
-        :param theta_E: Einstein radius of lense
+        :param theta_E: Einstein radius of lens
         :type theta_E: float.
         :param gamma: power law slope of mass profifle
         :type gamma: <2 float
@@ -65,6 +97,18 @@ class SPEP(LensProfileBase):
         return 2 * E**2 / eta**2 * ((p2 + s2) / E**2) ** (eta / 2)
 
     def derivatives(self, x, y, theta_E, gamma, e1, e2, center_x=0, center_y=0):
+        """
+        :param x: x-coordinate in image plane
+        :param y: y-coordinate in image plane
+        :param theta_E: Einstein radius
+        :param gamma: power law slope
+        :param e1: eccentricity component
+        :param e2: eccentricity component
+        :param center_x: profile center
+        :param center_y: profile center
+        :return: alpha_x, alpha_y
+        """
+
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         gamma, q = self._param_bounds(gamma, q)
         phi_E_new = theta_E * q
@@ -96,6 +140,18 @@ class SPEP(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, theta_E, gamma, e1, e2, center_x=0, center_y=0):
+        """
+        :param x: x-coordinate in image plane
+        :param y: y-coordinate in image plane
+        :param theta_E: Einstein radius
+        :param gamma: power law slope
+        :param e1: eccentricity component
+        :param e2: eccentricity component
+        :param center_x: profile center
+        :param center_y: profile center
+        :return: f_xx, f_xy, f_yx, f_yy
+        """
+
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         gamma, q = self._param_bounds(gamma, q)
         phi_E_new = theta_E * q
@@ -192,10 +248,11 @@ class SPEP(LensProfileBase):
     def _param_bounds(gamma, q):
         """Bounds parameters.
 
-        :param gamma:
-        :param q:
-        :return:
+        :param gamma: power-law slope
+        :param q: axis ratio
+        :return: bounded :math:`\gamma` and :math:`q`
         """
+
         if gamma < 1.4:
             gamma = 1.4
         if gamma > 2.9:

@@ -135,6 +135,8 @@ def lens_model_plot(
     # ax.get_xaxis().set_visible(False)
     # ax.get_yaxis().set_visible(False)
     ax.autoscale(False)
+    ax.set_xlabel("RA/x [arcsec]")
+    ax.set_ylabel("DEC/y [arcsec]")
     return ax
 
 
@@ -147,6 +149,9 @@ def convergence_plot(
     vmin=-1,
     vmax=1,
     cmap="Greys",
+    with_color_bar=False,
+    colorbar_label=r"$\log_{10}(\kappa)$",
+    font_size=20,
     **kwargs,
 ):
     """Plot convergence.
@@ -161,6 +166,9 @@ def convergence_plot(
     :param vmax: matplotlib vmax
     :param cmap: matplotlib cmap
     :param kwargs: keyword arguments for matshow
+    :param with_color_bar: bool, if True, shows color bar
+    :param colorbar_label: string, label of color bar
+    :param font_size: int, font size of color bar label
     :return: matplotlib axis instance with convergence plot
     """
     x_grid, y_grid = pixel_grid.pixel_coordinates
@@ -168,7 +176,7 @@ def convergence_plot(
     y_grid1d = util.image2array(y_grid)
     kappa_result = lens_model.kappa(x_grid1d, y_grid1d, kwargs_lens)
     kappa_result = util.array2image(kappa_result)
-    _ = ax.matshow(
+    im = ax.matshow(
         np.log10(kappa_result),
         origin="lower",
         extent=extent,
@@ -177,6 +185,12 @@ def convergence_plot(
         vmax=vmax,
         **kwargs,
     )
+    if with_color_bar:
+        divider = make_axes_locatable(ax)
+        cax = divider.append_axes("right", size="5%", pad=0.05)
+        cb = plt.colorbar(im, cax=cax)
+        cb.set_label(colorbar_label, fontsize=font_size)
+
     return ax
 
 
@@ -253,6 +267,7 @@ def caustics_plot(
         origin=origin,
         flipped_x=coord_inverse,
         points_only=points_only,
+        label="caustics",
         *args,
         **kwargs,
     )
@@ -265,6 +280,7 @@ def caustics_plot(
         origin=origin,
         flipped_x=coord_inverse,
         points_only=points_only,
+        label="critical curves",
         *args,
         **kwargs,
     )
@@ -280,6 +296,8 @@ def point_source_plot(
     source_y,
     name_list=None,
     index=None,
+    solver_type="lenstronomy",
+    kwargs_solver={},
     color="k",
     **kwargs,
 ):
@@ -298,6 +316,8 @@ def point_source_plot(
     :param name_list: list of strings, longer or equal the number of point sources. If changing this parameter, input as name_list=[[...], [...]]
     :param index: number of sources, an integer number. Default None.
     :param color: string representing the color for the source's images. Default "k".
+    :param solver_type: string, type of solver to find the image positions ('lenstronomy', 'analytical' or 'stochastic')
+    :param kwargs_solver: keyword arguments for the solver
     :param kwargs: additional plotting keyword arguments
     :return: matplotlib axis instance with figure
     """
@@ -338,6 +358,8 @@ def point_source_plot(
         x_center=x_center,
         y_center=y_center,
         min_distance=pixel_grid.pixel_width,
+        solver=solver_type,
+        **kwargs_solver,
     )
     mag_images = lens_model.magnification(theta_x, theta_y, kwargs_lens)
 
@@ -355,11 +377,15 @@ def point_source_plot(
         )
         ax.text(x_, y_, name_list_[i], fontsize=20, color=color)
     x_source, y_source = pixel_grid.map_coord2pix(source_x, source_y)
+
     ax.plot(
         x_source * delta_pix_x + origin[0],
         y_source * delta_pix + origin[1],
-        color,
+        marker="*",
+        color="gold",
+        mec="k",
         markersize=10,
+        label="source position",
     )
 
     return ax

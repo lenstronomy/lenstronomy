@@ -9,6 +9,47 @@ class Flexionfg(LensProfileBase):
     Flexion consist of basis F flexion and G flexion (F1,F2,G1,G2),
     see formulas 2.54, 2.55 in Massimo Meneghetti 2017 - "Introduction to Gravitational
     Lensing".
+
+    The flexion is a third order derivative of the lensing potential, i.e. the deflection angle.
+    The flexion is a measure of the lensing shear gradient, i.e. the change of the shear field
+    with respect to the position on the sky.
+
+    The second order lensing effects can be expressed in terms of the third derivatives of the lensing potential,
+    which can be written in terms of the flexion F and G.
+
+    .. math::
+      \\beta_i\\simeq\\sum_{j} A_{ij}\\theta_j+\\frac{1}{2}\\sum_{j}\\sum_{k}D_{ijk}\\theta_j\\theta_k
+
+    Which is the second order lensing effects expressed in terms of the third derivatives of the lensing potential
+    (Formula 3.60 in Meneghetti 2021).
+
+    These in turn can be expressed in terms of the flexion F and G.
+
+    .. math::
+        D_{111}=-2\\gamma_{11}-\\gamma_{22}=\\frac{1}{2}(3F_1+G_1)
+        D_{211}=D_{131}=D_{112}-\\gamma_{21}=-\\frac{1}{2}(F_2+G_2)
+        D_{122}=D_{212}=D_{221}=-\\gamma_{22}=-\\frac{1}{2}(F_1-G_1)
+        D_{222}=2\\gamma_{12}-\\gamma_{21}=-\\frac{1}{2}(3F_2-G_2)
+
+    (Formula 3.98 in Meneghetti 2017).
+
+    Then we find that the two components of \\vec{\\beta} are:
+
+    .. math::
+        \\beta_1=A_{11}\\theta_1+A_{12}\\theta_2+\\frac{1}{2}D_{111}\\theta_1^2+D_{121}\\theta_1\\theta_2+\\frac{1}{2}D_{122}\\theta_2^2
+        \\beta_2=A_{21}\\theta_1+A_{22}\\theta_2+\\frac{1}{2}D_{211}\\theta_1^2+D_{212}\\theta_1\\theta_2+\\frac{1}{2}D_{222}\\theta_2^2
+
+    (Formula 3.99 in Meneghetti 2021).
+
+    Now we can express the flexion in terms of ra_0, and dec_0,
+    which are the zero-points of the polynomial expansion.
+    Instead of using absolute coordinates \\theta_1, and \\theta_2,
+    we define the relative angular positions:
+
+    .. math::
+        x = \\theta_1 - ra_0
+        y = \\theta_2 - dec_0
+
     """
 
     param_names = ["F1", "F2", "G1", "G2", "ra_0", "dec_0"]

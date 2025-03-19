@@ -187,7 +187,7 @@ class ModelBand(object):
         kwargs_params_copy = copy.deepcopy(kwargs_params)
         kwargs_params_copy.pop("kwargs_tracer_source", None)
         (
-            kwarks_lens_partial,
+            kwargs_lens_partial,
             kwargs_source_partial,
             kwargs_lens_light_partial,
             kwargs_ps_partial,
@@ -209,9 +209,9 @@ class ModelBand(object):
         self._norm_residuals = self._bandmodel.reduced_residuals(
             model, error_map=error_map
         )
-        self._reduced_x2 = self._bandmodel.reduced_chi2(model, error_map=error_map)
+        self.reduced_x2 = self._bandmodel.reduced_chi2(model, error_map=error_map)
         if verbose:
-            print("reduced chi^2 of data ", band_index, "= ", self._reduced_x2)
+            print("reduced chi^2 of data ", band_index, "= ", self.reduced_x2)
 
         self._model = model
         self._cov_param = cov_param

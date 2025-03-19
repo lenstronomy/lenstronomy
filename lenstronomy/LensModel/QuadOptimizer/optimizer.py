@@ -179,7 +179,6 @@ class Optimizer(object):
         z_source,
         parameter_class,
         astropy_instance=None,
-        numerical_alpha_class=None,
         particle_swarm=True,
         re_optimize=False,
         re_optimize_scale=1.0,
@@ -199,7 +198,6 @@ class Optimizer(object):
         :param z_source: the source redshift
         :param parameter_class: an instance of ParamClass (see documentation in QuadOptimizer.param_manager)
         :param astropy_instance: an instance of astropy to pass to the lens model
-        :param numerical_alpha_class: a class to compute numerical deflection angles to pass to the lens model
         :param particle_swarm: bool, whether or not to use a PSO fit first
         :param re_optimize: bool, if True the initial spread of particles will be very tight
         :param re_optimize_scale: float, controls how tight the initial spread of particles is
@@ -222,7 +220,6 @@ class Optimizer(object):
             parameter_class,
             foreground_rays,
             tol_source,
-            numerical_alpha_class,
         )
         return Optimizer(
             x_image,

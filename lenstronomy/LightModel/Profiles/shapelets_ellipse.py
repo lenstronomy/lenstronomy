@@ -39,9 +39,11 @@ class ShapeletSetEllipse(object):
         :return: surface brightness of combined shapelet set
         """
         x_, y_ = param_util.transform_e1e2_product_average(
-            x, y, e1, e2, center_x=0, center_y=0
+            x, y, e1, e2, center_x=center_x, center_y=center_y
         )
-        return self._shapelet_set.function(x_, y_, amp, n_max, beta, center_x, center_y)
+        return self._shapelet_set.function(
+            x_, y_, amp, n_max, beta, center_x=0, center_y=0
+        )
 
     def function_split(self, x, y, amp, n_max, beta, e1, e2, center_x=0, center_y=0):
         """Splits shapelet set in list of individual shapelet basis function responses.
@@ -58,8 +60,8 @@ class ShapeletSetEllipse(object):
         :return: list of individual shapelet basis function responses
         """
         x_, y_ = param_util.transform_e1e2_product_average(
-            x, y, e1, e2, center_x=0, center_y=0
+            x, y, e1, e2, center_x=center_x, center_y=center_y
         )
         return self._shapelet_set.function_split(
-            x_, y_, amp, n_max, beta, center_x, center_y
+            x_, y_, amp, n_max, beta, center_x=0, center_y=0
         )

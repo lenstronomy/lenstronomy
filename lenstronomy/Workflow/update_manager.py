@@ -158,10 +158,10 @@ class UpdateManager(object):
 
     @property
     def init_kwargs(self):
-        """
-        Return the initial state of the parameters.
+        """Return the initial state of the parameters.
 
-        :return: keyword arguments for all model components of the initial mean model proposition in the sampling
+        :return: keyword arguments for all model components of the initial mean model
+            proposition in the sampling
         """
         return {
             "kwargs_lens": self._lens_init,
@@ -192,10 +192,10 @@ class UpdateManager(object):
 
     @property
     def sigma_kwargs(self):
-        """
-        Return the sigma values of the parameters.
+        """Return the sigma values of the parameters.
 
-        :return: keyword arguments for all model components of the initial 1-sigma width proposition in the sampling
+        :return: keyword arguments for all model components of the initial 1-sigma width
+            proposition in the sampling
         """
         return {
             "kwargs_lens": self._lens_sigma,
@@ -233,10 +233,10 @@ class UpdateManager(object):
 
     @property
     def lower_kwargs(self):
-        """
-        Return the lower bounds of the parameters.
+        """Return the lower bounds of the parameters.
 
-        :return: keyword arguments for all model components of the lower bound proposition in the sampling
+        :return: keyword arguments for all model components of the lower bound
+            proposition in the sampling
         """
         return {
             "kwargs_lens": self._lens_lower,
@@ -250,10 +250,10 @@ class UpdateManager(object):
 
     @property
     def upper_kwargs(self):
-        """
-        Return the upper bounds of the parameters.
+        """Return the upper bounds of the parameters.
 
-        :return: keyword arguments for all model components of the upper bound proposition in the sampling
+        :return: keyword arguments for all model components of the upper bound
+            proposition in the sampling
         """
         return {
             "kwargs_lens": self._lens_upper,

@@ -1,15 +1,42 @@
-from lenstronomy.LensModel.Profiles.hernquist import Hernquist
-import lenstronomy.Util.param_util as param_util
-from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
-import numpy as np
-
 __all__ = ["HernquistEllipsePotential"]
+
+import numpy as np
+import lenstronomy.Util.param_util as param_util
+from lenstronomy.LensModel.Profiles.hernquist import Hernquist
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
 
 class HernquistEllipsePotential(LensProfileBase):
-    """This class contains functions for the elliptical Hernquist profile.
+    """This class implements the elliptical version of the Hernquist potential
+    for gravitational lensing.
+    
+    The Hernquist profile, presented in Hernquist (1990),
+    https://ui.adsabs.harvard.edu/abs/1990ApJ...356..359H/abstract, is a
+    spherically symmetric density profile.
+    
+    This profile is defined by the density function:
+    
+    .. math::
+        \\rho(R) = \\frac{\\rho_0}{\\left( \\frac{R}{R_s} \\right)
+        \\left( 1 + \frac{R}{R_s} \\right)^3}
+        
+    where :math:`\\rho_0` is the density normalization (`rho0`), and
+    :math:`R_s` is the Hernquist radius (`Rs`). Here, we will use
+    :math:`\\sigma_0 = \\rho_0 \\times R_s` as a parameter (`sigma0`) as it is
+    more convenient to tune.
+    
+    In this implementation, the profile is generalized to include elliptical
+    symmetry in the lensing potential rather than in the mass distribution. The
+    potential ellipticity is parameterized by (`e1`, `e2`), and the profile is
+    defined by :math:`\\sigma_0` (`sigma0`), :math:`R_s` (`Rs`), and a
+    positional center (`center_x`, `center_y`).
 
-    Ellipticity is defined in the potential.
+    The ellipticity, :math:`e`, is defined as
+
+    .. math::
+        e = \\sqrt{e_1^2 + e_2^2} = \\equic \\frac{1 - q^2}{1 + q^2}
+        
+    where :math:`e_1` and :math:`e_2` are `e1` and `e2` respectively.
     """
 
     param_names = ["sigma0", "Rs", "e1", "e2", "center_x", "center_y"]
@@ -36,26 +63,66 @@ class HernquistEllipsePotential(LensProfileBase):
         super(HernquistEllipsePotential, self).__init__()
 
     def function(self, x, y, sigma0, Rs, e1, e2, center_x=0, center_y=0):
-        """Returns double integral of NFW profile."""
+        """Returns double integral of NFW profile.
+        
+        :param x: x-coordinate in image plane
+        :param y: y-coordinate in image plane
+        :param sigma0: rho0 * Rs (units of projected density)
+        :param Rs: Hernquist radius
+        :param e1: eccentricity component
+        :param e2: eccentricity component
+        :param center_x: profile center
+        :param center_y: profile center
+        :return: lensing potential
+        """
+        # Maps (x, y) with (e1, e2) into coordinate system
         x_, y_ = param_util.transform_e1e2_square_average(
-            x, y, e1, e2, center_x, center_y
+            x, y,
+            e1, e2,
+            center_x, center_y
         )
+        # Calls Hernquist()
         f_ = self.spherical.function(x_, y_, sigma0, Rs)
         return f_
 
     def derivatives(self, x, y, sigma0, Rs, e1, e2, center_x=0, center_y=0):
-        """Returns df/dx and df/dy of the function (integral of NFW)"""
+        """Returns :math:`\\frac{df}{dx}` and :math:`\\frac{df}{dy}` of the
+        function (integral of NFW).
+        
+        :param x: x-coordinate in image plane
+        :param y: y-coordinate in image plane
+        :param sigma0: rho0 * Rs (units of projected density)
+        :param Rs: Hernquist radius
+        :param e1: eccentricity component
+        :param e2: eccentricity component
+        :param center_x: profile center
+        :param center_y: profile center
+        :return: gradient of the potential
+        """
+        # Maps (x, y) with (e1, e2) into coordinate system
         x_, y_ = param_util.transform_e1e2_square_average(
-            x, y, e1, e2, center_x, center_y
+            x, y,
+            e1, e2,
+            center_x, center_y
         )
-        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
+        
+        # Convert (e1, e2) to (phi_G, q), which are the orientation angle and
+        # axis ratio respectively
+        phi_G, q = param_util.ellipticity2phi_q(
+            e1, e2
+        )
+        # Trigonometric components of the rotation
         cos_phi = np.cos(phi_G)
         sin_phi = np.sin(phi_G)
+        # Convert axis ratio q to ellipticity e used for gradient stretching
         e = param_util.q2e(q)
 
+        # Compute the gradient in the transformed (spherical) frame
         f_x_prim, f_y_prim = self.spherical.derivatives(x_, y_, sigma0, Rs)
+        # Stretch the gradient components to approximate elliptical effects
         f_x_prim *= np.sqrt(1 - e)
         f_y_prim *= np.sqrt(1 + e)
+        # Rotate the stretched gradient back to the original (x, y) coordinates
         f_x = cos_phi * f_x_prim - sin_phi * f_y_prim
         f_y = sin_phi * f_x_prim + cos_phi * f_y_prim
         return f_x, f_y

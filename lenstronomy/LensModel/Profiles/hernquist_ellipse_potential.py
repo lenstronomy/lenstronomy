@@ -7,24 +7,24 @@ from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
 
 class HernquistEllipsePotential(LensProfileBase):
-    """This class implements the elliptical version of the Hernquist potential
-    for gravitational lensing.
-    
+    """This class implements the elliptical version of the Hernquist potential for
+    gravitational lensing.
+
     The Hernquist profile, presented in Hernquist (1990),
     https://ui.adsabs.harvard.edu/abs/1990ApJ...356..359H/abstract, is a
     spherically symmetric density profile.
-    
+
     This profile is defined by the density function:
-    
+
     .. math::
         \\rho(R) = \\frac{\\rho_0}{\\left( \\frac{R}{R_s} \\right)
         \\left( 1 + \frac{R}{R_s} \\right)^3}
-        
+
     where :math:`\\rho_0` is the density normalization (`rho0`), and
     :math:`R_s` is the Hernquist radius (`Rs`). Here, we will use
     :math:`\\sigma_0 = \\rho_0 \\times R_s` as a parameter (`sigma0`) as it is
     more convenient to tune.
-    
+
     In this implementation, the profile is generalized to include elliptical
     symmetry in the lensing potential rather than in the mass distribution. The
     potential ellipticity is parameterized by (`e1`, `e2`), and the profile is
@@ -35,7 +35,7 @@ class HernquistEllipsePotential(LensProfileBase):
 
     .. math::
         e = \\sqrt{e_1^2 + e_2^2} = \\equic \\frac{1 - q^2}{1 + q^2}
-        
+
     where :math:`e_1` and :math:`e_2` are `e1` and `e2` respectively.
     """
 
@@ -64,7 +64,7 @@ class HernquistEllipsePotential(LensProfileBase):
 
     def function(self, x, y, sigma0, Rs, e1, e2, center_x=0, center_y=0):
         """Returns double integral of NFW profile.
-        
+
         :param x: x-coordinate in image plane
         :param y: y-coordinate in image plane
         :param sigma0: :math:`\\rho_0 \\times R_s` (units of projected density)
@@ -77,22 +77,16 @@ class HernquistEllipsePotential(LensProfileBase):
         """
         # Maps (x, y) with (e1, e2) into coordinate system
         x_, y_ = param_util.transform_e1e2_square_average(
-            x, y,
-            e1, e2,
-            center_x, center_y
+            x, y, e1, e2, center_x, center_y
         )
         # Calls Hernquist()
-        f_ = self.spherical.function(
-            x_, y_,
-            sigma0,
-            Rs
-        )
+        f_ = self.spherical.function(x_, y_, sigma0, Rs)
         return f_
 
     def derivatives(self, x, y, sigma0, Rs, e1, e2, center_x=0, center_y=0):
-        """Returns :math:`\\frac{df}{dx}` and :math:`\\frac{df}{dy}` of the
-        function (integral of NFW).
-        
+        """Returns :math:`\\frac{df}{dx}` and :math:`\\frac{df}{dy}` of the function
+        (integral of NFW).
+
         :param x: x-coordinate in image plane
         :param y: y-coordinate in image plane
         :param sigma0: :math:`\\rho_0 \\times R_s` (units of projected density)
@@ -105,16 +99,12 @@ class HernquistEllipsePotential(LensProfileBase):
         """
         # Maps (x, y) with (e1, e2) into coordinate system
         x_, y_ = param_util.transform_e1e2_square_average(
-            x, y,
-            e1, e2,
-            center_x, center_y
+            x, y, e1, e2, center_x, center_y
         )
-        
+
         # Convert (e1, e2) to (phi_G, q), which are the orientation angle and
         # axis ratio respectively
-        phi_G, q = param_util.ellipticity2phi_q(
-            e1, e2
-        )
+        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         # Trigonometric components of the rotation
         cos_phi = np.cos(phi_G)
         sin_phi = np.sin(phi_G)
@@ -122,11 +112,7 @@ class HernquistEllipsePotential(LensProfileBase):
         e = param_util.q2e(q)
 
         # Compute the gradient in the transformed (spherical) frame
-        f_x_prim, f_y_prim = self.spherical.derivatives(
-            x_, y_,
-            sigma0,
-            Rs
-        )
+        f_x_prim, f_y_prim = self.spherical.derivatives(x_, y_, sigma0, Rs)
         # Stretch the gradient components to approximate elliptical effects
         f_x_prim *= np.sqrt(1 - e)
         f_y_prim *= np.sqrt(1 + e)
@@ -137,11 +123,11 @@ class HernquistEllipsePotential(LensProfileBase):
 
     def hessian(self, x, y, sigma0, Rs, e1, e2, center_x=0, center_y=0):
         """Returns Hessian matrix of function.
-        
+
         .. math::
             \\frac{d^2f}{dx^2}, \\frac{d^2}{dxdy}, \\frac{d^2}{dydx},
             \\frac{d^f}{dy^2}
-        
+
         :param x: x-coordinate in image plane
         :param y: y-coordinate in image plane
         :param sigma0: :math:`\\rho_0 \\times R_s` (units of projected density)
@@ -154,29 +140,17 @@ class HernquistEllipsePotential(LensProfileBase):
         """
         # Evaluate the first derivatives (deflection angles) at (x, y)
         alpha_ra, alpha_dec = self.derivatives(
-            x, y,
-            sigma0,
-            Rs,
-            e1, e2,
-            center_x, center_y
+            x, y, sigma0, Rs, e1, e2, center_x, center_y
         )
         # Small step used for numerical differentiation
         diff = self._diff
         # Evaluate first derivatives at (x + dx, y)
         alpha_ra_dx, alpha_dec_dx = self.derivatives(
-            x + diff, y,
-            sigma0,
-            Rs,
-            e1, e2,
-            center_x, center_y
+            x + diff, y, sigma0, Rs, e1, e2, center_x, center_y
         )
         # Evaluate first derivatives at (x, y + dy)
         alpha_ra_dy, alpha_dec_dy = self.derivatives(
-            x, y + diff,
-            sigma0,
-            Rs,
-            e1, e2,
-            center_x, center_y
+            x, y + diff, sigma0, Rs, e1, e2, center_x, center_y
         )
 
         # Approximate second derivatives using finite differences
@@ -196,15 +170,11 @@ class HernquistEllipsePotential(LensProfileBase):
         :param e2: eccentricity component
         :return: density at radius `r`
         """
-        return self.spherical.density(
-            r,
-            rho0,
-            Rs
-        )
+        return self.spherical.density(r, rho0, Rs)
 
     def density_lens(self, r, sigma0, Rs, e1=0, e2=0):
         """Returns the density as a function of 3D radius in lensing parameters.
-        
+
         This function converts the lensing definition `sigma0` into the 3D
         density.
 
@@ -215,11 +185,7 @@ class HernquistEllipsePotential(LensProfileBase):
         :param e2: eccentricity component
         :return: enclosed mass in 3D
         """
-        return self.spherical.density_lens(
-            r,
-            sigma0,
-            Rs
-        )
+        return self.spherical.density_lens(r, sigma0, Rs)
 
     def density_2d(self, x, y, rho0, Rs, e1=0, e2=0, center_x=0, center_y=0):
         """Projected density along the line of sight at coordinate (x, y).
@@ -234,16 +200,11 @@ class HernquistEllipsePotential(LensProfileBase):
         :param center_y: y-center of the profile
         :return: projected density
         """
-        return self.spherical.density_2d(
-            x, y,
-            rho0,
-            Rs,
-            center_x, center_y
-        )
+        return self.spherical.density_2d(x, y, rho0, Rs, center_x, center_y)
 
     def mass_2d_lens(self, r, sigma0, Rs, e1=0, e2=0):
-        """Mass enclosed projected 2D sphere of radius `r`. Same as `mass_2d`
-        but with input normalization in units of projected density.
+        """Mass enclosed projected 2D sphere of radius `r`. Same as `mass_2d` but with
+        input normalization in units of projected density.
 
         :param r: projected radius
         :param sigma0: :math:`\\rho_0 \\times R_s` (units of projected density)
@@ -252,11 +213,7 @@ class HernquistEllipsePotential(LensProfileBase):
         :param e2: eccentricity component
         :return: mass enclosed 2D projected radius
         """
-        return self.spherical.mass_2d_lens(
-            r,
-            sigma0,
-            Rs
-        )
+        return self.spherical.mass_2d_lens(r, sigma0, Rs)
 
     def mass_2d(self, r, rho0, Rs, e1=0, e2=0):
         """Mass enclosed projected 2D sphere of radius `r`.
@@ -268,42 +225,30 @@ class HernquistEllipsePotential(LensProfileBase):
         :param e2: eccentricity component
         :return: mass enclosed 2D projected radius
         """
-        return self.spherical.mass_2d(
-            r,
-            rho0,
-            Rs
-        )
+        return self.spherical.mass_2d(r, rho0, Rs)
 
     def mass_3d(self, r, rho0, Rs, e1=0, e2=0):
         """Mass enclosed a 3D sphere or radius `r`.
 
-        :param r: 3D radius within the mass is integrated (same distance units
-            as density definition)
+        :param r: 3D radius within the mass is integrated (same distance units as
+            density definition)
         :param rho0: density normalization
         :param Rs: Hernquist radius
         :param e1: eccentricity component
         :param e2: eccentricity component
         :return: enclosed mass
         """
-        return self.spherical.mass_3d(
-            r,
-            rho0,
-            Rs
-        )
+        return self.spherical.mass_3d(r, rho0, Rs)
 
     def mass_3d_lens(self, r, sigma0, Rs, e1=0, e2=0):
         """Mass enclosed a 3D sphere or radius `r` in lensing parameterization.
 
-        :param r: 3D radius within the mass is integrated (same distance units
-            as density definition)
+        :param r: 3D radius within the mass is integrated (same distance units as
+            density definition)
         :param sigma0: :math:`\\rho_0 \\times R_s` (units of projected density)
         :param Rs: Hernquist radius
         :param e1: eccentricity component
         :param e2: eccentricity component
         :return: enclosed mass
         """
-        return self.spherical.mass_3d_lens(
-            r,
-            sigma0,
-            Rs
-        )
+        return self.spherical.mass_3d_lens(r, sigma0, Rs)

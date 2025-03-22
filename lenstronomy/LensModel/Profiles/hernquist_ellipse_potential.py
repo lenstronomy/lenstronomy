@@ -82,7 +82,11 @@ class HernquistEllipsePotential(LensProfileBase):
             center_x, center_y
         )
         # Calls Hernquist()
-        f_ = self.spherical.function(x_, y_, sigma0, Rs)
+        f_ = self.spherical.function(
+            x_, y_,
+            sigma0,
+            Rs
+        )
         return f_
 
     def derivatives(self, x, y, sigma0, Rs, e1, e2, center_x=0, center_y=0):
@@ -118,7 +122,11 @@ class HernquistEllipsePotential(LensProfileBase):
         e = param_util.q2e(q)
 
         # Compute the gradient in the transformed (spherical) frame
-        f_x_prim, f_y_prim = self.spherical.derivatives(x_, y_, sigma0, Rs)
+        f_x_prim, f_y_prim = self.spherical.derivatives(
+            x_, y_,
+            sigma0,
+            Rs
+        )
         # Stretch the gradient components to approximate elliptical effects
         f_x_prim *= np.sqrt(1 - e)
         f_y_prim *= np.sqrt(1 + e)
@@ -128,8 +136,22 @@ class HernquistEllipsePotential(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, sigma0, Rs, e1, e2, center_x=0, center_y=0):
-        """Returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx,
-        d^f/dy^2."""
+        """Returns Hessian matrix of function
+        
+        .. math::
+            \\frac{d^2f}{dx^2}, \\frac{d^2}{dxdy}, \\frac{d^2}{dydx},
+            \\frac{d^f}{dy^2}
+        
+        :param x: x-coordinate in image plane
+        :param y: y-coordinate in image plane
+        :param sigma0: rho0 * Rs (units of projected density)
+        :param Rs: Hernquist radius
+        :param e1: eccentricity component
+        :param e2: eccentricity component
+        :param center_x: profile center
+        :param center_y: profile center
+        :return: hessian of the potential
+        """
         alpha_ra, alpha_dec = self.derivatives(
             x, y, sigma0, Rs, e1, e2, center_x, center_y
         )

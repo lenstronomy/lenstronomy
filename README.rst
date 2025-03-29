@@ -31,6 +31,9 @@
     :target: https://arxiv.org/abs/1803.09746
     :alt: arXiv 1803.09746 Badge
 
+.. image:: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white
+    :target: https://pre-commit.com/
+
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
     :target: https://github.com/psf/black
     :alt: Code Style Black Badge

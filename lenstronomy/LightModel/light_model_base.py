@@ -314,6 +314,17 @@ class LightModelBase(object):
                 # 'TRIPLE_CHAMELEON', 'UNIFORM'
         return norm_flux_list
 
+    @property
+    def param_name_list(self):
+        """Returns the list of all parameter names.
+
+        :return: list of lists of strings (for each light model separately)
+        """
+        name_list = []
+        for i, func in enumerate(self.func_list):
+            name_list.append(func.param_names)
+        return name_list
+
     def delete_interpol_caches(self):
         """Call the delete_cache method of INTERPOL profiles."""
         for i, model in enumerate(self.profile_type_list):

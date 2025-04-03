@@ -325,6 +325,43 @@ class LightModelBase(object):
             name_list.append(func.param_names)
         return name_list
 
+    @property
+    def param_name_list_latex(self):
+        """Returns the list of all parameter names in LateX style.
+
+        :return: list of lists of strings (for each light model separately)
+        """
+        name_list = []
+        for i, func in enumerate(self.func_list):
+            if hasattr(func, "param_names_latex"):
+                name_list.append(func.param_names_latex)
+            else:
+                name_list.append(func.param_names)
+        return name_list
+
+    def check_parameters(self, kwargs_list):
+        """
+        checks whether parameter list is consistent with the parameters required by the model
+
+        :param kwargs_list: keyword argument list as parameterised models
+        :return: None or raise ValueError with error message of what parameter is not supported.
+        """
+
+        name_list = self.param_name_list
+        if len(kwargs_list) != len(name_list):
+            raise ValueError("length of input parameter list %s does not match length of light models %s"
+                             % (len(kwargs_list), len(name_list)))
+        for i, names in enumerate(name_list):
+            for key in kwargs_list[i]:
+                if key not in names:
+                    raise ValueError("parameter %s in light model is not part of model %s (%s). "
+                                     "Parameters allowed are %s"
+                                     % (key, i, self.profile_type_list[i], names))
+            for name in names:
+                if name not in kwargs_list[i]:
+                    raise ValueError("Light model %s (%s) requires parameter %s which is not provided in input."
+                                     % (i, self.profile_type_list[i], name))
+
     def delete_interpol_caches(self):
         """Call the delete_cache method of INTERPOL profiles."""
         for i, model in enumerate(self.profile_type_list):

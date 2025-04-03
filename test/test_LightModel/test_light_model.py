@@ -320,6 +320,19 @@ class TestLightModel(object):
         bool = ligthModel.check_positive_flux_profile(kwargs_list)
         assert not bool
 
+    def test_check_parameters(self):
+        ligthModel = LightModel(light_model_list=["GAUSSIAN"])
+        kwargs_list = [{"amp": 0, "sigma": 1, "center_x": 0, "center_y": 0}]
+
+        ligthModel.check_parameters(kwargs_list)
+
+        kwargs_list_add = [{"amp": 0, "sigma": 1, "center_x": 0, "center_y": 0, "bad": 1}]
+
+        kwargs_list_remove = [{"amp": 0, "center_x": 0, "center_y": 0}]
+
+        npt.assert_raises(ValueError, ligthModel.check_parameters, kwargs_list_add)
+        npt.assert_raises(ValueError, ligthModel.check_parameters, kwargs_list_remove)
+
 
 class TestRaise(unittest.TestCase):
     def test_raise(self):

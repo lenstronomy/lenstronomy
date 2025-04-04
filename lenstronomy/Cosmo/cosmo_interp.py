@@ -74,9 +74,11 @@ class CosmoInterp(object):
                 )
 
                 self._comoving_interp = CosmoInterp_(cosmo)
-            self._comoving_distance_interpolation_func = self._interpolate_comoving_distance(z_start=0,
-                                                                                             z_stop=z_stop,
-                                                                                             num_interp=num_interp)
+            self._comoving_distance_interpolation_func = (
+                self._interpolate_comoving_distance(
+                    z_start=0, z_stop=z_stop, num_interp=num_interp
+                )
+            )
         self._abs_sqrt_k = np.sqrt(abs(self.k))
 
     def _comoving_distance_interp(self, z):
@@ -213,7 +215,9 @@ class CosmoInterp(object):
         if np.all(z1) == 0:
             return self._comoving_distance_interp(z2) * units.Mpc
         else:
-            return (self._comoving_distance_interp(z2) - self._comoving_distance_interp(z1)) * units.Mpc
+            return (
+                self._comoving_distance_interp(z2) - self._comoving_distance_interp(z1)
+            ) * units.Mpc
 
     def _interpolate_comoving_distance(self, z_start, z_stop, num_interp):
         """Interpolates the comoving distance.

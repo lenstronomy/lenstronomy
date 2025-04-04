@@ -256,27 +256,34 @@ class ProfileListBase(object):
         return self._param_name_list
 
     def check_parameters(self, kwargs_list):
-        """
-        checks whether parameter list is consistent with the parameters required by the model
+        """Checks whether parameter list is consistent with the parameters required by
+        the model.
 
         :param kwargs_list: keyword argument list as parameterised models
-        :return: None or raise ValueError with error message of what parameter is not supported.
+        :return: None or raise ValueError with error message of what parameter is not
+            supported.
         """
 
         name_list = self.param_name_list
         if len(kwargs_list) != len(name_list):
-            raise ValueError("length of input parameter list %s does not match length of lens models %s"
-                             % (len(kwargs_list), len(name_list)))
+            raise ValueError(
+                "length of input parameter list %s does not match length of lens models %s"
+                % (len(kwargs_list), len(name_list))
+            )
         for i, names in enumerate(name_list):
             for key in kwargs_list[i]:
                 if key not in names:
-                    raise ValueError("parameter %s in lens model is not part of model %s (%s). "
-                                     "Parameters allowed are %s"
-                                     % (key, i, self._model_list[i], names))
+                    raise ValueError(
+                        "parameter %s in lens model is not part of model %s (%s). "
+                        "Parameters allowed are %s"
+                        % (key, i, self._model_list[i], names)
+                    )
             for name in names:
                 if name not in kwargs_list[i]:
-                    raise ValueError("Lens model %s (%s) requires parameter %s which is not provided in input."
-                                     % (i, self._model_list[i], name))
+                    raise ValueError(
+                        "Lens model %s (%s) requires parameter %s which is not provided in input."
+                        % (i, self._model_list[i], name)
+                    )
 
 
 def lens_class(

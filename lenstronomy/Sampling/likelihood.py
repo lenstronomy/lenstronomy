@@ -37,7 +37,7 @@ class LikelihoodModule(object):
         source_position_likelihood=False,
         image_position_uncertainty=0.004,
         check_positive_flux=False,
-        source_position_tolerance=0.001,
+        source_position_tolerance=None,
         source_position_sigma=0.001,
         force_no_add_image=False,
         source_marg=False,

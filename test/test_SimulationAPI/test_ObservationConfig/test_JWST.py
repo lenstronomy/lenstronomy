@@ -10,13 +10,28 @@ class TestJWST(unittest.TestCase):
         self.F356W = JWST(band="F356W")
         self.F356W2 = JWST(band="F356W", psf_type="GAUSSIAN")
 
+        self.F115W = JWST(band="F115W")
+        self.F150W = JWST(band="F150W")
+        self.F277W = JWST(band="F277W")
+        self.F444W = JWST(band="F444W")
+
         kwargs_F200W = self.F200W.kwargs_single_band()
         kwargs_F356W = self.F356W.kwargs_single_band()
         kwargs_F356W2 = self.F356W2.kwargs_single_band()
 
+        kwargs_F115W = self.F115W.kwargs_single_band()
+        kwargs_F150W = self.F150W.kwargs_single_band()
+        kwargs_F277W = self.F277W.kwargs_single_band()
+        kwargs_F444W = self.F444W.kwargs_single_band()
+
         self.F200W_band = SingleBand(**kwargs_F200W)
         self.F356W_band = SingleBand(**kwargs_F356W)
         self.F356W2_band = SingleBand(**kwargs_F356W2)
+
+        self.F115W_band = SingleBand(**kwargs_F115W)
+        self.F150W_band = SingleBand(**kwargs_F150W)
+        self.F277W_band = SingleBand(**kwargs_F277W)
+        self.F444W_band = SingleBand(**kwargs_F444W)
 
         # dictionaries mapping JWST kwargs to SingleBand kwargs
         self.camera_settings = {
@@ -75,6 +90,26 @@ class TestJWST(unittest.TestCase):
             self.assertEqual(
                 self.F356W2.obs[config],
                 getattr(self.F356W2_band, setting),
+                msg=f"{config} did not match",
+            )
+            self.assertEqual(
+                self.F115W.obs[config],
+                getattr(self.F115W_band, setting),
+                msg=f"{config} did not match",
+            )
+            self.assertEqual(
+                self.F150W.obs[config],
+                getattr(self.F150W_band, setting),
+                msg=f"{config} did not match",
+            )
+            self.assertEqual(
+                self.F277W.obs[config],
+                getattr(self.F277W_band, setting),
+                msg=f"{config} did not match",
+            )
+            self.assertEqual(
+                self.F444W.obs[config],
+                getattr(self.F444W_band, setting),
                 msg=f"{config} did not match",
             )
 

@@ -158,9 +158,10 @@ class UpdateManager(object):
 
     @property
     def init_kwargs(self):
-        """
+        """Return the initial state of the parameters.
 
-        :return: keyword arguments for all model components of the initial mean model proposition in the sampling
+        :return: keyword arguments for all model components of the initial mean model
+            proposition in the sampling
         """
         return {
             "kwargs_lens": self._lens_init,
@@ -191,9 +192,10 @@ class UpdateManager(object):
 
     @property
     def sigma_kwargs(self):
-        """
+        """Return the sigma values of the parameters.
 
-        :return: keyword arguments for all model components of the initial 1-sigma width proposition in the sampling
+        :return: keyword arguments for all model components of the initial 1-sigma width
+            proposition in the sampling
         """
         return {
             "kwargs_lens": self._lens_sigma,
@@ -228,6 +230,40 @@ class UpdateManager(object):
             self._extinction_upper,
             self._tracer_source_upper,
         )
+
+    @property
+    def lower_kwargs(self):
+        """Return the lower bounds of the parameters.
+
+        :return: keyword arguments for all model components of the lower bound
+            proposition in the sampling
+        """
+        return {
+            "kwargs_lens": self._lens_lower,
+            "kwargs_source": self._source_lower,
+            "kwargs_lens_light": self._lens_light_lower,
+            "kwargs_ps": self._ps_lower,
+            "kwargs_special": self._special_lower,
+            "kwargs_extinction": self._extinction_lower,
+            "kwargs_tracer_source": self._tracer_source_lower,
+        }
+
+    @property
+    def upper_kwargs(self):
+        """Return the upper bounds of the parameters.
+
+        :return: keyword arguments for all model components of the upper bound
+            proposition in the sampling
+        """
+        return {
+            "kwargs_lens": self._lens_upper,
+            "kwargs_source": self._source_upper,
+            "kwargs_lens_light": self._lens_light_upper,
+            "kwargs_ps": self._ps_upper,
+            "kwargs_special": self._special_upper,
+            "kwargs_extinction": self._extinction_upper,
+            "kwargs_tracer_source": self._tracer_source_upper,
+        }
 
     @property
     def fixed_kwargs(self):

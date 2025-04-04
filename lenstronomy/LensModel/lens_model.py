@@ -1,6 +1,9 @@
 __author__ = "sibirrer"
 from lenstronomy.LensModel.single_plane import SinglePlane
 from lenstronomy.LensModel.LineOfSight.single_plane_los import SinglePlaneLOS
+from lenstronomy.LensModel.LineOfSight.single_plane_los_flexion import (
+    SinglePlaneLOSFlexion,
+)
 from lenstronomy.LensModel.MultiPlane.multi_plane import MultiPlane
 from lenstronomy.LensModel.MultiPlane.decoupled_multi_plane import MultiPlaneDecoupled
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
@@ -117,6 +120,28 @@ class LensModel(object):
             raise ValueError(
                 "You can only have one model for line-of-sight corrections."
             )
+
+        # Are there line-of-sight corrections up to flexion?
+        permitted_los_flexion_models = ["LOS_FLEXION", "LOS_FLEXION_MINIMAL"]
+        los_flexion_models = [
+            (i, model)
+            for (i, model) in enumerate(lens_model_list)
+            if model in permitted_los_flexion_models
+        ]
+        if len(los_flexion_models) == 0:
+            los_flexion_effects = False
+        elif len(los_flexion_models) == 1:
+            if los_effects is True:
+                raise ValueError(
+                    "You cannot use LOS and LOS flexion at the same time as the former is included in the latter."
+                )
+            else:
+                los_flexion_effects = True
+                index_los_flexion, los_flexion_model = los_flexion_models[0]
+        else:
+            raise ValueError(
+                "You can only have one model for line-of-sight flexion corrections."
+            )
         if z_lens is not None and z_source is not None:
             self._lensCosmo = LensCosmo(z_lens, z_source, cosmo=cosmo)
         # Multi-plane or single-plane lensing?
@@ -135,6 +160,10 @@ class LensModel(object):
             if los_effects is True:
                 raise ValueError(
                     "LOS effects and multi-plane lensing are incompatible."
+                )
+            if los_flexion_effects is True:
+                raise ValueError(
+                    "LOS flexion effects and multi-plane lensing are incompatible."
                 )
 
             if decouple_multi_plane:
@@ -181,6 +210,15 @@ class LensModel(object):
                     profile_kwargs_list=profile_kwargs_list,
                 )
                 self.type = "SinglePlaneLOS"
+            elif los_flexion_effects is True:
+                self.lens_model = SinglePlaneLOSFlexion(
+                    lens_model_list,
+                    index_los_flexion=index_los_flexion,
+                    lens_redshift_list=lens_redshift_list,
+                    z_source_convention=z_source_convention,
+                    profile_kwargs_list=profile_kwargs_list,
+                )
+                self.type = "SinglePlaneLOSFlexion"
             else:
                 self.lens_model = SinglePlane(
                     lens_model_list,

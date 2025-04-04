@@ -18,31 +18,6 @@ class LinearBasis(LightModelBase):
         """
         super(LinearBasis, self).__init__(**kwargs)
 
-    @property
-    def param_name_list(self):
-        """Returns the list of all parameter names.
-
-        :return: list of list of strings (for each light model separately)
-        """
-        name_list = []
-        for i, func in enumerate(self.func_list):
-            name_list.append(func.param_names)
-        return name_list
-
-    @property
-    def param_name_list_latex(self):
-        """Returns the list of all parameter names in LateX style.
-
-        :return: list of list of strings (for each light model separately)
-        """
-        name_list = []
-        for i, func in enumerate(self.func_list):
-            if hasattr(func, "param_names_latex"):
-                name_list.append(func.param_names_latex)
-            else:
-                name_list.append(func.param_names)
-        return name_list
-
     def functions_split(self, x, y, kwargs_list, k=None):
         """Split model in different components.
 

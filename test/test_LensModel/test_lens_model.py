@@ -443,6 +443,20 @@ class TestLensModel(object):
         assert lens_model_new.cosmo.Om0 == 0.3
         assert lens_model_new.cosmo.w0 == -1
 
+    def test_check_parameters(self):
+        lens_model = LensModel(lens_model_list=["SIS"])
+        # check_parameters
+        kwargs_list = [{"theta_E": 1.0, "center_x": 0, "center_y": 0}]
+        lens_model.check_parameters(kwargs_list)
+        kwargs_list_add = [
+            {"theta_E": 1.0, "center_x": 0, "center_y": 0, "not_a_parameter": 1}
+        ]
+        kwargs_list_remove = [{"center_x": 0, "center_y": 0}]
+        kwargs_list_too_long = [{"theta_E": 1.0, "center_x": 0, "center_y": 0}, {}]
+        npt.assert_raises(ValueError, lens_model.check_parameters, kwargs_list_add)
+        npt.assert_raises(ValueError, lens_model.check_parameters, kwargs_list_remove)
+        npt.assert_raises(ValueError, lens_model.check_parameters, kwargs_list_too_long)
+
 
 class TestRaise(unittest.TestCase):
     def test_raise(self):

@@ -94,6 +94,9 @@ class Background(object):
     def beta_double_source_plane(self, z_lens, z_source_1, z_source_2):
         """Model prediction of ratio of scaled deflection angles.
 
+        .. math::
+            \\beta = \\frac{\\alpha_{z1}}{\\alpha_{z2}}
+
         :param z_lens: lens redshift
         :param z_source_1: source_1 redshift
         :param z_source_2: source_2 redshift

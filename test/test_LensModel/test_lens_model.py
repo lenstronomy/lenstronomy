@@ -452,8 +452,10 @@ class TestLensModel(object):
             {"theta_E": 1.0, "center_x": 0, "center_y": 0, "not_a_parameter": 1}
         ]
         kwargs_list_remove = [{"center_x": 0, "center_y": 0}]
+        kwargs_list_too_long = [{"theta_E": 1.0, "center_x": 0, "center_y": 0}, {}]
         npt.assert_raises(ValueError, lens_model.check_parameters, kwargs_list_add)
         npt.assert_raises(ValueError, lens_model.check_parameters, kwargs_list_remove)
+        npt.assert_raises(ValueError, lens_model.check_parameters, kwargs_list_too_long)
 
 
 class TestRaise(unittest.TestCase):

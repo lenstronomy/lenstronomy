@@ -329,11 +329,12 @@ class TestLightModel(object):
         kwargs_list_add = [
             {"amp": 0, "sigma": 1, "center_x": 0, "center_y": 0, "bad": 1}
         ]
-
         kwargs_list_remove = [{"amp": 0, "center_x": 0, "center_y": 0}]
+        kwargs_list_too_long = [{"amp": 0, "sigma": 1, "center_x": 0, "center_y": 0}, {}]
 
         npt.assert_raises(ValueError, ligthModel.check_parameters, kwargs_list_add)
         npt.assert_raises(ValueError, ligthModel.check_parameters, kwargs_list_remove)
+        npt.assert_raises(ValueError, ligthModel.check_parameters, kwargs_list_too_long)
 
 
 class TestRaise(unittest.TestCase):

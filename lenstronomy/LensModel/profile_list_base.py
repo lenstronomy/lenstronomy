@@ -251,7 +251,7 @@ class ProfileListBase(object):
         """
 
 
-        :return: list of dictionary of parameter names
+        :return: list of parameter names for each lens model
         """
         return self._param_name_list
 

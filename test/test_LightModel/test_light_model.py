@@ -321,11 +321,10 @@ class TestLightModel(object):
         assert not bool
 
     def test_check_parameters(self):
-        ligthModel = LightModel(light_model_list=["GAUSSIAN"])
+        lightModel = LightModel(light_model_list=["GAUSSIAN"])
         kwargs_list = [{"amp": 0, "sigma": 1, "center_x": 0, "center_y": 0}]
 
-        ligthModel.check_parameters(kwargs_list)
-
+        lightModel.check_parameters(kwargs_list)
         kwargs_list_add = [
             {"amp": 0, "sigma": 1, "center_x": 0, "center_y": 0, "bad": 1}
         ]

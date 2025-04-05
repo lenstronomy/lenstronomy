@@ -212,7 +212,7 @@ class CosmoInterp(object):
         d : `~astropy.units.Quantity`
           Comoving distance in Mpc between each input redshift.
         """
-        if np.all(z1) == 0:
+        if np.all(z1 == 0):
             return self._comoving_distance_interp(z2) * units.Mpc
         else:
             return (

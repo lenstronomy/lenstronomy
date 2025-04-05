@@ -334,10 +334,9 @@ class TestLightModel(object):
             {},
         ]
 
-        npt.assert_raises(ValueError, ligthModel.check_parameters, kwargs_list_add)
-        npt.assert_raises(ValueError, ligthModel.check_parameters, kwargs_list_remove)
-        npt.assert_raises(ValueError, ligthModel.check_parameters, kwargs_list_too_long)
-
+        npt.assert_raises(ValueError, lightModel.check_parameters, kwargs_list_add)
+        npt.assert_raises(ValueError, lightModel.check_parameters, kwargs_list_remove)
+        npt.assert_raises(ValueError, lightModel.check_parameters, kwargs_list_too_long)
 
 class TestRaise(unittest.TestCase):
     def test_raise(self):

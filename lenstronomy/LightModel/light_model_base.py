@@ -351,8 +351,8 @@ class LightModelBase(object):
         return name_list
 
     def check_parameters(self, kwargs_list):
-        """Checks whether the parameter list is consistent with the parameters required by
-        the light model.
+        """Checks whether the parameter list is consistent with the parameters required
+        by the light model.
 
         :param kwargs_list: keyword argument list as parameterised models
         :return: None or raise ValueError with error message of what parameter is not

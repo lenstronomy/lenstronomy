@@ -170,6 +170,7 @@ class ProfileListBase(object):
         self._param_name_list = name_list
 
     def _load_model_instances(
+        self,
         lens_model_list,
         profile_kwargs_list=None,
         lens_redshift_list=None,

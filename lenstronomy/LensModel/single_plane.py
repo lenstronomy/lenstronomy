@@ -16,6 +16,7 @@ class SinglePlane(ProfileListBase):
         lens_redshift_list=None,
         z_source_convention=None,
         alpha_scaling=1,
+        use_jax=False,
     ):
         """
 
@@ -24,6 +25,7 @@ class SinglePlane(ProfileListBase):
             in the same order of the lens_model_list. If any of the profile_kwargs are None, then that
             profile will be initialized using default settings.
         :param alpha_scaling: scaling factor of deflection angle relative to z_source_convention
+        :param use_jax: bool, if True, uses deflector profiles from jaxtronomy
         """
         self._alpha_scaling = alpha_scaling
         ProfileListBase.__init__(
@@ -32,6 +34,7 @@ class SinglePlane(ProfileListBase):
             profile_kwargs_list=profile_kwargs_list,
             lens_redshift_list=lens_redshift_list,
             z_source_convention=z_source_convention,
+            use_jax=use_jax,
         )
 
     def ray_shooting(self, x, y, kwargs, k=None):

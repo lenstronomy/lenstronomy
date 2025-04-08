@@ -136,6 +136,7 @@ class ProfileListBase(object):
         profile_kwargs_list=None,
         lens_redshift_list=None,
         z_source_convention=None,
+        use_jax=False,
     ):
         """
 
@@ -143,18 +144,28 @@ class ProfileListBase(object):
         :param profile_kwargs_list: list of dicts, keyword arguments used to initialize profile classes
             in the same order of the lens_model_list. If any of the profile_kwargs are None, then that
             profile will be initialized using default settings.
+        :param use_jax: bool, if True, uses deflector profiles from jaxtronomy
         """
-        self.func_list = self._load_model_instances(
-            lens_model_list,
-            profile_kwargs_list=profile_kwargs_list,
-            lens_redshift_list=lens_redshift_list,
-            z_source_convention=z_source_convention,
-        )
+        if use_jax:
+            from jaxtronomy.LensModel.profile_list_base import ProfileListBase as ProfileListBase_JAX
+            self.func_list = ProfileListBase_JAX._load_model_instances(
+                lens_model_list,
+                profile_kwargs_list=profile_kwargs_list,
+                lens_redshift_list=lens_redshift_list,
+                z_source_convention=z_source_convention,
+            )
+        else:
+            self.func_list = self._load_model_instances(
+                lens_model_list,
+                profile_kwargs_list=profile_kwargs_list,
+                lens_redshift_list=lens_redshift_list,
+                z_source_convention=z_source_convention,
+            )
         self._num_func = len(self.func_list)
         self._model_list = lens_model_list
 
+    @staticmethod
     def _load_model_instances(
-        self,
         lens_model_list,
         profile_kwargs_list=None,
         lens_redshift_list=None,

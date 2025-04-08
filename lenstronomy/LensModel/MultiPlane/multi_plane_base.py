@@ -23,6 +23,7 @@ class MultiPlaneBase(ProfileListBase):
         z_interp_stop=None,
         num_z_interp=100,
         profile_kwargs_list=None,
+        use_jax=False,
     ):
         """
         A description of the recursive multi-plane formalism can be found e.g. here: https://arxiv.org/abs/1312.1536
@@ -35,6 +36,7 @@ class MultiPlaneBase(ProfileListBase):
         :param profile_kwargs_list: list of dicts, keyword arguments used to initialize profile classes
             in the same order of the lens_model_list. If any of the profile_kwargs are None, then that
             profile will be initialized using default settings.
+        :param use_jax: bool, if True, uses deflector profiles from jaxtronomy
         """
         self._lens_model_list = lens_model_list
 
@@ -63,6 +65,7 @@ class MultiPlaneBase(ProfileListBase):
             lens_redshift_list=lens_redshift_list,
             z_source_convention=z_source_convention,
             profile_kwargs_list=profile_kwargs_list,
+            use_jax=use_jax,
         )
 
         if len(self._lens_model_list) < 1:

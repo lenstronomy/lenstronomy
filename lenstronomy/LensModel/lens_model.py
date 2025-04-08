@@ -264,6 +264,16 @@ class LensModel(object):
         """
         self.lens_model.model_info()
 
+    def check_parameters(self, kwargs_list):
+        """Checks whether parameter list is consistent with the parameters required by
+        the model.
+
+        :param kwargs_list: keyword argument list as parameterised models
+        :return: None or raise ValueError with error message of what parameter is not
+            supported.
+        """
+        self.lens_model.check_parameters(kwargs_list)
+
     def ray_shooting(self, x, y, kwargs, k=None):
         """Maps image to source position (inverse deflection)
 

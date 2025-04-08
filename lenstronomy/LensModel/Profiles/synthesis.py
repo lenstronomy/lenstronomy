@@ -33,6 +33,7 @@ class SynthesisProfile(LensProfileBase):
         """
         super(SynthesisProfile, self).__init__()
         self.target_class = LensModel([target_lens_model])
+        self.param_names = self.target_class.lens_model.param_name_list[0]
         self.component_class = LensModel([component_lens_model])
         self.kwargs_list = kwargs_list
         self.lin_fit_hyperparams = lin_fit_hyperparams

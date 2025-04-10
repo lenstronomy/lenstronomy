@@ -3,6 +3,7 @@ from numpy.linalg import inv
 from lenstronomy.Util.cosmo_util import get_astropy_cosmology
 import matplotlib.pyplot as plt
 from math import sqrt
+from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 
 __all__ = ["PositionLikelihood"]
 
@@ -23,7 +24,7 @@ class PositionLikelihood(object):
         source_position_sigma=0.001,
         force_no_add_image=False,
         restrict_image_number=False,
-        max_num_images=None,
+        max_num_images=None
     ):
         """
 
@@ -298,17 +299,50 @@ class PositionLikelihood(object):
         return logL
 
     def source_position_rms_scatter(
-        self, x_source_list, y_source_list, num_sources, num_images_list
+        self, 
+        kwargs_lens,
+        kwargs_ps,
+        lens_model,
+        z_sources
     ):
         """
-        Calculates the rms scatter for the sources' x and y positions wrt the mean of the sources calculated for each group of multiple images.
+        Calculates the rms scatter for the sources' x and y positions wrt the mean of 
+        the sources calculated for each group of multiple images.
 
-        :param x_source_list: x positions of sources as calculated by the source_position_likelihood function, first return using ._lensModel.rayshooting(x_image[i], y_image[i], kwargs_lens, k=k_lens) {can replace ._lensModel with a lenModel class instance}
-        :param y_source_list: y positions of sources as calculated by the source_position_likelihood function, second return using ._lensModel.rayshooting(x_image[i], y_image[i], kwargs_lens, k=k_lens) {can replace ._lensModel with a lenModel class instance}
-        :param num_sources: int, number of sources as input or in the data set
-        :param num_images_groups: list of ints, each value is the number of multiple images associated with the source of that index
-        :return rms_scatter_xs, rms_scatter_ys, ax: list of floats representing the rms scatter of the source positions (x and y) wrt the mean for each, and the axes for two scatter plots and two histograms.
+        :param kwargs_lens: lens model keyword argument list
+        :param kwargs_ps: point source keyword argument list
+        :param lens_model: instance of the LensModel class object, used in change_source_redshift funciton
+        :param z_sources: list of redshifts for each of the images. Used in change_source_redshift function
+        :return diffs_x, diffs_y, rms_x, rms_y: lists of floats representing the 
+        difference between each calculated source position and the mean (x and y), 
+        and the rms scatter of the source positions (x and y) wrt the mean of the
+        calculated positions for each source.
         """
+
+        num_sources = len(kwargs_ps)
+        lensModelExtensions = LensModelExtensions(lensModel=lens_model)
+        num_images_list = []
+        for i in range(len(kwargs_ps)):
+            num_images_list.append(len(kwargs_ps[i]))
+
+        x_image_data = []
+        y_image_data = []
+        x_sources = []
+        y_sources = []
+        cutoff = 0
+        for i in range(num_sources):
+            x_image_data.append(kwargs_ps[i]['ra_image'])
+            y_image_data.append(kwargs_ps[i]['dec_image'])
+            for j in range(len(x_image_data[i])):
+                lensModelExtensions._lensModel.change_source_redshift(z_source=z_sources[j+cutoff])
+                x_source_i, y_source_i = lens_model.ray_shooting(x_image_data[i][j], y_image_data[i][j], kwargs_lens, k=None)
+                x_sources.append(x_source_i)
+                y_sources.append(y_source_i)
+            cutoff += num_images_list[i]
+
+        num_images_list = []
+        for i in range(num_sources):
+            num_images_list.append(len(kwargs_ps[i]['ra_image']))
 
         grouped_xs = []
         grouped_ys = []
@@ -317,78 +351,108 @@ class PositionLikelihood(object):
             x_source_temp = []
             y_source_temp = []
             for j in range(num_images_list[i]):
-                x_source_temp.append(float(x_source_list[j+cutoff]))
-                y_source_temp.append(float(y_source_list[j+cutoff]))
+                x_source_temp.append(x_sources[j+cutoff])
+                y_source_temp.append(y_sources[j+cutoff])
             cutoff += num_images_list[i]
             grouped_xs.append(x_source_temp)
             grouped_ys.append(y_source_temp)
 
-        source_groups_calc = []
-        for i in range(len(grouped_xs)):
-            source_groups_calc.append(len(grouped_xs[i]))
-
         means_x = []
         means_y = []
         for i in range(num_sources):
-            mean_x = sum(grouped_xs[i]) / len(grouped_xs[i])
-            mean_y = sum(grouped_ys[i]) / len(grouped_ys[i])
+            mean_x = float(sum(grouped_xs[i]) / (num_images_list[i]))
             means_x.append(mean_x)
+            mean_y = float(sum(grouped_ys[i]) / (num_images_list[i]))
             means_y.append(mean_y)
 
         diffs_x = []
         diffs_y = []
-        cutoff = 0
         for i in range(num_sources):
-            diff_x = []
-            diff_y = []
-            for j in range(source_groups_calc[i]):
-                diff_x_temp = float(grouped_xs[i][j] - means_x[i])
-                diff_y_temp = float(grouped_ys[i][j] - means_y[i])
-                diff_x.append(diff_x_temp)
-                diff_y.append(diff_y_temp)
-            cutoff += source_groups_calc[i]
-            diffs_x.append(diff_x)
-            diffs_y.append(diff_y)
+            for j in range(num_images_list[i]):
+                diff_x_temp = (grouped_xs[i][j] - means_x[i])
+                diffs_x.append(float(diff_x_temp))
+                diff_y_temp = (grouped_ys[i][j] - means_y[i])
+                diffs_y.append(float(diff_y_temp))
 
-        rms_scatters_x = []
-        rms_scatters_y = []
+        diffs_x2 = []
+        diffs_y2 = []
         for i in range(len(diffs_x)):
-            for j in range(len(diffs_x[i])):
-                rms_scatter_x = sqrt((1/(num_sources-1)) * (diffs_x[i][j]**2))
-                rms_scatter_y = sqrt((1/(num_sources-1)) * (diffs_y[i][j]**2))
-                rms_scatters_x.append(rms_scatter_x)
-                rms_scatters_y.append(rms_scatter_y)
+            diff_x2 = diffs_x[i]**2
+            diffs_x2.append(float(diff_x2))
+            diff_y2 = diffs_y[i]**2
+            diffs_y2.append(float(diff_y2))
 
-        f, ax = plt.subplots(1, 4, figsize=(20, 5), sharex=True, sharey=True)
+        sum_x = sum(diffs_x2)
+        sum_y = sum(diffs_y2)
 
-        for i in range(len(x_source_list)):
-            ax[0].scatter(x_source_list[i], rms_scatters_x[i], c='blue')
-            ax[1].scatter(y_source_list[i], rms_scatters_y[i], c='red')
-        ax[0].set_xlabel('source posiiton x [arcsec]')
-        ax[1].set_xlabel('source posiiton y [arcsec]')
-        ax[0].set_ylabel('rms scatter')
-        ax[1].set_ylabel('rms scatter')
-
-        values_x, bins_x, bars_x = ax[2].hist(rms_scatters_x, bins=20, edgecolor='black')
-        values_y, bins_y, bars_y = ax[3].hist(rms_scatters_y, bins=20, edgecolor='black')
+        rms_x = sqrt((1/(num_sources-1))*sum_x)
+        rms_y = sqrt((1/(num_sources-1))*sum_y)
 
 
-        # ax[2].hist(rms_scatters_x, bins=20, edgecolor='Black')
-        ax[2].set_xlabel('RMS scatter of Source x Position [arcsec]')
-        ax[2].set_ylabel('Frequency')
-        ax[2].bar_label(bars_x, fontsize=10, color='blue')
-        ax[2].margins(x=0.01, y=0.1)
 
-        # ax[3].hist(rms_scatters_y, bins=20, edgecolor='Black')
-        ax[3].set_xlabel('RMS scatter of Source y Position [arcsec]')
-        ax[3].set_ylabel('Frequency')
-        ax[3].bar_label(bars_y, fontsize=10, color='blue')
-        ax[3].margins(x=0.01, y=0.1)
+##################################
 
-        ax[2].set_title('RMS Scatter for Source x Position')
-        ax[3].set_title('RMS Scatter for Source y Position')
+        # x_sources = []
+        # y_sources = []
+        # for i in range(len(kwargs_ps)):
+        #     x_image_data = kwargs_ps[i]['ra_image']
+        #     y_image_data = kwargs_ps[i]['dec_image']
+        #     # self._lensModel.change_source_redshift(z_source=z_sources[i])
+        #     for j in range(len(x_image_data)):
+        #         x_source_i, y_source_i = lens_model.ray_shooting(x_image_data[i][j], y_image_data[i][j], kwargs_lens, k=None)
+        #         x_sources.append(x_source_i)
+        #         y_sources.append(y_source_i)
 
-        return rms_scatters_x, rms_scatters_y, ax
+        # num_images_list = []
+        # num_sources = len(kwargs_ps)
+        # for i in range(num_sources):
+        #     num_images_list.append(len(kwargs_ps[i]['ra_image']))
+
+        # grouped_xs = []
+        # grouped_ys = []
+        # cutoff = 0
+        # for i in range(num_sources):
+        #     x_source_temp = []
+        #     y_source_temp = []
+        #     for j in range(num_images_list[i]):
+        #         x_source_temp.append(float(x_sources[j+cutoff]))
+        #         y_source_temp.append(float(y_sources[j+cutoff]))
+        #     cutoff += num_images_list[i]
+        #     grouped_xs.append(x_source_temp)
+        #     grouped_ys.append(y_source_temp)
+
+        # means_x = []
+        # means_y = []
+        # for i in range(num_sources):
+        #     for j in range(num_images_list[i]):
+        #         mean_x = sum(grouped_xs[i]) / len(grouped_xs[i])
+        #         means_x.append(mean_x)
+        #         mean_y = sum(grouped_ys[i]) / len(grouped_ys[i])
+        #         means_y.append(mean_y)
+
+        # diffs_x = []
+        # diffs_y = []
+        # for i in range(num_sources):
+        #     for j in range(num_images_list[i]):
+        #         diff_x_temp = float(grouped_xs[i] - means_x[i])
+        #         diffs_x.append(diff_x_temp)
+        #         diff_y_temp = float(grouped_ys[i] - means_y[i])
+        #         diffs_y.append(diff_y_temp)
+            
+        # diffs_x2 = []
+        # diffs_y2 = []
+        # for i in range(len(diffs_x)):
+        #     diff_x2 = diffs_x[i]**2
+        #     diffs_x2.append(diff_x2)
+        #     diff_y2 = diffs_y[i]**2
+        #     diffs_y2.append(diff_y2)
+
+        # sum_x = sum(diffs_x2)
+        # sum_y = sum(diffs_y2)
+        # rms_x = sqrt((1/(num_sources-1)) * sum_x)
+        # rms_y = sqrt((1/(num_sources-1)) * sum_y)
+
+        return diffs_x, diffs_y, rms_x, rms_y
 
     @property
     def num_data(self):

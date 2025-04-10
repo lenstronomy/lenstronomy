@@ -385,36 +385,36 @@ def point_source_plot(
         delta_pix_x = delta_pix
     origin = [ra0, dec0]        
 
-    if images_x == None and images_y == None:
-        ax = ax  
+    a=0.5
+    if images_from_data==False:
+        theta_x, theta_y = solver.image_position_from_source(
+            source_x,
+            source_y,
+            kwargs_lens,
+            search_window=np.max(pixel_grid.width),
+            x_center=x_center,
+            y_center=y_center,
+            min_distance=pixel_grid.pixel_width,
+            solver=solver_type,
+            **kwargs_solver,
+        )
+        mag_images = lens_model.magnification(theta_x, theta_y, kwargs_lens)
+        x_image, y_image = pixel_grid.map_coord2pix(theta_x, theta_y)
+        x_source, y_source = pixel_grid.map_coord2pix(source_x, source_y)
+        ax.plot(
+            x_source * delta_pix_x + origin[0],
+            y_source * delta_pix + origin[1],
+            color,
+            markersize=10,
+        )
+    elif images_from_data==True:
+        mag_images = lens_model.magnification(images_x, images_y, kwargs_lens)
+        #### put in the map_coords2grid with images_x, etc. as the theta_x
+        x_image, y_image = pixel_grid.map_coord2pix(images_x, images_y)
 
-    if images_x != None or images_y != None:
-        if images_from_data==False:
-            theta_x, theta_y = solver.image_position_from_source(
-                source_x,
-                source_y,
-                kwargs_lens,
-                search_window=np.max(pixel_grid.width),
-                x_center=x_center,
-                y_center=y_center,
-                min_distance=pixel_grid.pixel_width,
-        solver=solver_type,
-        **kwargs_solver,
-            )
-            mag_images = lens_model.magnification(theta_x, theta_y, kwargs_lens)
-            x_image, y_image = pixel_grid.map_coord2pix(theta_x, theta_y)
-            x_source, y_source = pixel_grid.map_coord2pix(source_x, source_y)
-            ax.plot(
-                x_source * delta_pix_x + origin[0],
-                y_source * delta_pix + origin[1],
-                color,
-                markersize=10,
-            )
-        if images_from_data==True:
-            mag_images = lens_model.magnification(images_x, images_y, kwargs_lens)
-            #### put in the map_coords2grid with images_x, etc. as the theta_x
-            x_image, y_image = pixel_grid.map_coord2pix(images_x, images_y)
-
+    if images_x == [] and images_y == []:
+        a = 0.0
+    
     for i in range(len(x_image)):
         x_ = (x_image[i]) * delta_pix_x + origin[0]
         y_ = (y_image[i]) * delta_pix + origin[1]
@@ -423,9 +423,9 @@ def point_source_plot(
             y_,
             str("d" + color),
             markersize=4 * (1 + np.log(np.abs(mag_images[i]))),
-            alpha=0.5,
+            alpha=a,
         )
-        ax.text(x_, y_, name_list_[i], fontsize=20, color=color)
+        ax.text(x_, y_, name_list_[i], fontsize=20, color=color, alpha=a)
     x_source, y_source = pixel_grid.map_coord2pix(source_x, source_y)
 
     ax.plot(

@@ -7,8 +7,9 @@ from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 from astropy.cosmology import FlatLambdaCDM
 from lenstronomy.Util.cosmo_util import get_astropy_cosmology
+from lenstronomy.Util.param_util import shear_polar2cartesian
 import matplotlib.pyplot as plt
-
+from lenstronomy.Workflow import fitting_sequence
 
 class TestPositionLikelihood(object):
     def setup_method(self):
@@ -279,14 +280,67 @@ class TestPositionLikelihood(object):
         npt.assert_almost_equal(logL_cosmo_base, logL_cosmo_shift, decimal=4)
 
     def test_source_position_rms_scatter(self):
-        x_source_list = [0.5, 1.0, 0.0, -0.25, -0.75, 0.5, 1.0, 0.0, -0.25, -0.75, 0.5, 1.0, 0.0, -0.25, -0.75]
-        y_source_list = [-0.75, 0.0, 1.0, 0.5, -0.25, -0.75, 0.0, 1.0, 0.5, -0.25, -.075, 0.0, 1.0, 0,5, -0.25]
-        num_sources = 5
-        num_images_list = [3, 3, 3, 3, 3]
-        rms_x, rms_y, axes = self.likelihood.source_position_rms_scatter(x_source_list=x_source_list, y_source_list=y_source_list, num_sources=num_sources, num_images_list=num_images_list)
-        npt.assert_almost_equal(rms_x, 0.5, delta=0.5)
-        npt.assert_almost_equal(rms_y, 0.5, delta=0.5)
-        plt.close()
+        lens_model_list = ['SIS']
+        cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.)
+        z_lens = 0.5
+        z_source = 1.5
+        lensModel = LensModel(lens_model_list=lens_model_list, cosmo=cosmo, z_lens=z_lens, z_source=z_source)
+
+        point_source_list = ['LENSED_POSITION']
+        num_images_list = [4]
+        mass_scaling_list = [1]
+        astrometry_sigma = 0.005
+        kwargs_ra_image_list = [0.5, -0.5, 0, 0]
+        kwargs_dec_image_list = [0, 0, 0.5, -0.5]
+
+        kwargs_lens_init = {"theta_E": 0.5, "center_x": 0, "center_y": 0}
+        fixed_lens = {"theta_E": 0.5, "center_x": 0, "center_y": 0}
+        
+        kwargs_ps_init = {'ra_image': kwargs_ra_image_list, 'dec_image': kwargs_dec_image_list}
+        fixed_ps = {'ra_image': kwargs_ra_image_list, 'dec_image': kwargs_dec_image_list}
+
+        kwargs_special_init = {}
+        fixed_special = {}
+
+        kwargs_special_init['scale_factor'] = [1]
+
+        window_size = 0.1
+        grid_number = 100
+        kwargs_flux_compute = {'source_type': 'INF',
+                       'window_size': window_size,
+                       'grid_number': grid_number}
+        lens_params = [kwargs_lens_init, fixed_lens] # kwargs_lens_sigma, fixed_lens, kwargs_lower_lens, kwargs_upper_lens]
+        ps_params = [kwargs_ps_init, fixed_ps] # kwargs_ps_sigma, fixed_ps, kwargs_lower_ps, kwargs_upper_ps]
+        special_params = [kwargs_special_init, fixed_special] # kwargs_special_sigma, fixed_special, kwargs_lower_special, kwargs_upper_special]
+
+
+        kwargs_data_joint = {'ra_image_list': kwargs_ra_image_list, 'dec_image_list': kwargs_dec_image_list}
+        kwargs_model = {'lens_model_list': lens_model_list, 
+                'point_source_model_list': point_source_list,
+                'z_source_convention': z_source,
+                'z_lens': z_lens,
+                'cosmo': cosmo}
+        kwargs_constraints = {'num_point_source_list': num_images_list, 
+                'mass_scaling_list': mass_scaling_list}
+        kwargs_likelihood = {'image_position_uncertainty': astrometry_sigma,
+                'image_position_likelihood': True,
+                'time_delay_likelihood': False,
+                'flux_ratio_likelihood': False,
+                'kwargs_flux_compute': kwargs_flux_compute,
+                'check_bounds': True}
+        kwargs_params = {'lens_model': lens_params,
+                'point_source_model': ps_params,
+                'special': special_params}
+
+        fitting_seq = fitting_sequence.FittingSequence(kwargs_data_joint, kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params)
+
+        func_diffs_x, func_diffs_y, func_rms_x, func_rms_y = fitting_seq.likelihoodModule._position_likelihood.source_position_rms_scatter(kwargs_ps=kwargs_ps_init, kwargs_lens=kwargs_lens_init, lens_model=lensModel, z_sources=z_source)
+        act_diffs_x, act_diffs_y = [], []
+        npt.assert_array_almost_equal(func_diffs_x, act_diffs_x, decimal=3)
+        npt.assert_array_almost_equal(func_diffs_y, act_diffs_y, decimal=3)
+        npt.assert_almost_equal(func_rms_x, 0.0, delta=1)
+        npt.assert_almost_equal(func_rms_y, 0.0, delta=1)
+        
 
 if __name__ == "__main__":
     pytest.main()

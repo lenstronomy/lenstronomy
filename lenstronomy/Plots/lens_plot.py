@@ -385,8 +385,8 @@ def point_source_plot(
         delta_pix_x = delta_pix
     origin = [ra0, dec0]
 
-    a=0.5
-    if images_from_data==False:
+    a = 0.5
+    if images_from_data == False:
         theta_x, theta_y = solver.image_position_from_source(
             source_x,
             source_y,
@@ -407,14 +407,14 @@ def point_source_plot(
             color,
             markersize=10,
         )
-    elif images_from_data==True:
+    elif images_from_data == True:
         mag_images = lens_model.magnification(images_x, images_y, kwargs_lens)
         #### put in the map_coords2grid with images_x, etc. as the theta_x
         x_image, y_image = pixel_grid.map_coord2pix(images_x, images_y)
 
     if images_x == [] and images_y == []:
         a = 0.0
-    
+
     for i in range(len(x_image)):
         x_ = (x_image[i]) * delta_pix_x + origin[0]
         y_ = (y_image[i]) * delta_pix + origin[1]

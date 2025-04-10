@@ -24,7 +24,7 @@ class PositionLikelihood(object):
         source_position_sigma=0.001,
         force_no_add_image=False,
         restrict_image_number=False,
-        max_num_images=None
+        max_num_images=None,
     ):
         """
 
@@ -299,24 +299,20 @@ class PositionLikelihood(object):
         return logL
 
     def source_position_rms_scatter(
-        self, 
-        kwargs_lens,
-        kwargs_ps,
-        lens_model,
-        z_sources
+        self, kwargs_lens, kwargs_ps, lens_model, z_sources
     ):
-        """
-        Calculates the rms scatter for the sources' x and y positions wrt the mean of 
+        """Calculates the rms scatter for the sources' x and y positions wrt the mean of
         the sources calculated for each group of multiple images.
 
         :param kwargs_lens: lens model keyword argument list
         :param kwargs_ps: point source keyword argument list
-        :param lens_model: instance of the LensModel class object, used in change_source_redshift funciton
-        :param z_sources: list of redshifts for each of the images. Used in change_source_redshift function
-        :return diffs_x, diffs_y, rms_x, rms_y: lists of floats representing the 
-        difference between each calculated source position and the mean (x and y), 
-        and the rms scatter of the source positions (x and y) wrt the mean of the
-        calculated positions for each source.
+        :param lens_model: instance of the LensModel class object, used in
+            change_source_redshift funciton
+        :param z_sources: list of redshifts for each of the images. Used in
+            change_source_redshift function :return diffs_x, diffs_y, rms_x, rms_y:
+            lists of floats representing the difference between each calculated source
+            position and the mean (x and y), and the rms scatter of the source positions
+            (x and y) wrt the mean of the calculated positions for each source.
         """
 
         num_sources = len(kwargs_ps)
@@ -331,18 +327,22 @@ class PositionLikelihood(object):
         y_sources = []
         cutoff = 0
         for i in range(num_sources):
-            x_image_data.append(kwargs_ps[i]['ra_image'])
-            y_image_data.append(kwargs_ps[i]['dec_image'])
+            x_image_data.append(kwargs_ps[i]["ra_image"])
+            y_image_data.append(kwargs_ps[i]["dec_image"])
             for j in range(len(x_image_data[i])):
-                lensModelExtensions._lensModel.change_source_redshift(z_source=z_sources[j+cutoff])
-                x_source_i, y_source_i = lens_model.ray_shooting(x_image_data[i][j], y_image_data[i][j], kwargs_lens, k=None)
+                lensModelExtensions._lensModel.change_source_redshift(
+                    z_source=z_sources[j + cutoff]
+                )
+                x_source_i, y_source_i = lens_model.ray_shooting(
+                    x_image_data[i][j], y_image_data[i][j], kwargs_lens, k=None
+                )
                 x_sources.append(x_source_i)
                 y_sources.append(y_source_i)
             cutoff += num_images_list[i]
 
         num_images_list = []
         for i in range(num_sources):
-            num_images_list.append(len(kwargs_ps[i]['ra_image']))
+            num_images_list.append(len(kwargs_ps[i]["ra_image"]))
 
         grouped_xs = []
         grouped_ys = []
@@ -351,8 +351,8 @@ class PositionLikelihood(object):
             x_source_temp = []
             y_source_temp = []
             for j in range(num_images_list[i]):
-                x_source_temp.append(x_sources[j+cutoff])
-                y_source_temp.append(y_sources[j+cutoff])
+                x_source_temp.append(x_sources[j + cutoff])
+                y_source_temp.append(y_sources[j + cutoff])
             cutoff += num_images_list[i]
             grouped_xs.append(x_source_temp)
             grouped_ys.append(y_source_temp)
@@ -369,24 +369,24 @@ class PositionLikelihood(object):
         diffs_y = []
         for i in range(num_sources):
             for j in range(num_images_list[i]):
-                diff_x_temp = (grouped_xs[i][j] - means_x[i])
+                diff_x_temp = grouped_xs[i][j] - means_x[i]
                 diffs_x.append(float(diff_x_temp))
-                diff_y_temp = (grouped_ys[i][j] - means_y[i])
+                diff_y_temp = grouped_ys[i][j] - means_y[i]
                 diffs_y.append(float(diff_y_temp))
 
         diffs_x2 = []
         diffs_y2 = []
         for i in range(len(diffs_x)):
-            diff_x2 = diffs_x[i]**2
+            diff_x2 = diffs_x[i] ** 2
             diffs_x2.append(float(diff_x2))
-            diff_y2 = diffs_y[i]**2
+            diff_y2 = diffs_y[i] ** 2
             diffs_y2.append(float(diff_y2))
 
         sum_x = sum(diffs_x2)
         sum_y = sum(diffs_y2)
 
-        rms_x = sqrt((1/(num_sources-1))*sum_x)
-        rms_y = sqrt((1/(num_sources-1))*sum_y)
+        rms_x = sqrt((1 / (num_sources - 1)) * sum_x)
+        rms_y = sqrt((1 / (num_sources - 1)) * sum_y)
 
         return diffs_x, diffs_y, rms_x, rms_y
 

@@ -342,5 +342,6 @@ class TestPositionLikelihood(object):
         npt.assert_almost_equal(func_rms_y, 0.0, delta=1)
         
 
+
 if __name__ == "__main__":
     pytest.main()

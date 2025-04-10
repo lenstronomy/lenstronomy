@@ -383,7 +383,7 @@ def point_source_plot(
         delta_pix_x = -delta_pix
     else:
         delta_pix_x = delta_pix
-    origin = [ra0, dec0]        
+    origin = [ra0, dec0]
 
     a=0.5
     if images_from_data==False:
@@ -440,6 +440,7 @@ def point_source_plot(
 
     return ax
 
+
 # def images_from_data_plot(
 #     ax,
 #     pixel_grid,
@@ -487,7 +488,7 @@ def point_source_plot(
 #         name_list = name_list
 #         for i in range(len(name_list)):
 #             name_list_.append(str(index + 1) + name_list[i])
-        
+
 #     x_center, y_center = pixel_grid.center
 #     delta_pix = pixel_grid.pixel_width
 #     ra0, dec0 = pixel_grid.radec_at_xy_0
@@ -526,8 +527,9 @@ def point_source_plot(
 #     #     color,
 #     #     markersize = 10
 #     # )
-        
+
 #     return ax
+
 
 @export
 def arrival_time_surface(

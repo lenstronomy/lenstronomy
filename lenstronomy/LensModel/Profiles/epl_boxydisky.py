@@ -29,8 +29,8 @@ class EPL_BOXYDISKY_ELL(LensProfileBase):
     :param center_y: center of distortion
     :param a4_a: Strength of the deviation of multipole order 4 of the elliptical
         isodensity contours, which is translated into the multipole strength from the
-        MULTIPOLE_ELL class through a rescaling by theta_E. Profile is disky when
-        a4_a>0 and boxy when a4_a<0.
+        MULTIPOLE_ELL class through a rescaling by theta_E. Profile is disky when a4_a>0
+        and boxy when a4_a<0.
     """
 
     param_names = ["theta_E", "gamma", "e1", "e2", "center_x", "center_y", "a4_a"]

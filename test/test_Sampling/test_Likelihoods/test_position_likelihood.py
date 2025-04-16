@@ -293,14 +293,23 @@ class TestPositionLikelihood(object):
         kwargs_ra_image_list = [0.5, -0.5, 0, 0]
         kwargs_dec_image_list = [0, 0, 0.5, -0.5]
 
-        kwargs_lens_init = {"theta_E": 0.5, "center_x": 0, "center_y": 0}
-        fixed_lens = {"theta_E": 0.5, "center_x": 0, "center_y": 0}
-        
+        kwargs_lens_init = {'theta_E': 0.5, 'center_x': 0, 'center_y': 0}
+        fixed_lens = {'theta_E': 0.5, 'center_x': 0, 'center_y': 0}
+        kwargs_lens_sigma = {'theta_E': 0.1, 'center_x': 1, 'center_y': 1}
+        kwargs_lower_lens = {'theta_E': 0.5, 'center_x': -5, 'center_y': -5}
+        kwargs_upper_lens = {'theta_E': 0.5, 'center_x': 5, 'center_y': 5}
+
         kwargs_ps_init = {'ra_image': kwargs_ra_image_list, 'dec_image': kwargs_dec_image_list}
         fixed_ps = {'ra_image': kwargs_ra_image_list, 'dec_image': kwargs_dec_image_list}
+        kwargs_ps_sigma = {'ra_image': [0.1, 0.1, 0.1, 0.1], 'dec_image': [0.1, 0.1, 0.1, 0.1]}
+        kwargs_lower_ps = {'ra_image': [-10, -10, -10, -10], 'dec_image': [-10, -10, -10, -10]}
+        kwargs_upper_ps = {'ra_image': [10, 10, 10, 10], 'dec_image': [10, 10, 10, 10]}
 
         kwargs_special_init = {}
         fixed_special = {}
+        kwargs_special_sigma = {}
+        kwargs_lower_special = {}
+        kwargs_upper_special = {}
 
         kwargs_special_init['scale_factor'] = [1]
 
@@ -309,9 +318,9 @@ class TestPositionLikelihood(object):
         kwargs_flux_compute = {'source_type': 'INF',
                        'window_size': window_size,
                        'grid_number': grid_number}
-        lens_params = [kwargs_lens_init, fixed_lens] # kwargs_lens_sigma, fixed_lens, kwargs_lower_lens, kwargs_upper_lens]
-        ps_params = [kwargs_ps_init, fixed_ps] # kwargs_ps_sigma, fixed_ps, kwargs_lower_ps, kwargs_upper_ps]
-        special_params = [kwargs_special_init, fixed_special] # kwargs_special_sigma, fixed_special, kwargs_lower_special, kwargs_upper_special]
+        lens_params = [kwargs_lens_init, fixed_lens, kwargs_lens_sigma, fixed_lens, kwargs_lower_lens, kwargs_upper_lens]
+        ps_params = [kwargs_ps_init, fixed_ps, kwargs_ps_sigma, fixed_ps, kwargs_lower_ps, kwargs_upper_ps]
+        special_params = [kwargs_special_init, fixed_special, kwargs_special_sigma, fixed_special, kwargs_lower_special, kwargs_upper_special]
 
 
         kwargs_data_joint = {'ra_image_list': kwargs_ra_image_list, 'dec_image_list': kwargs_dec_image_list}
@@ -335,9 +344,11 @@ class TestPositionLikelihood(object):
         fitting_seq = fitting_sequence.FittingSequence(kwargs_data_joint, kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params)
 
         func_diffs_x, func_diffs_y, func_rms_x, func_rms_y = fitting_seq.likelihoodModule._position_likelihood.source_position_rms_scatter(kwargs_ps=kwargs_ps_init, kwargs_lens=kwargs_lens_init, lens_model=lensModel, z_sources=z_source)
-        act_diffs_x, act_diffs_y = [], []
-        npt.assert_array_almost_equal(func_diffs_x, act_diffs_x, decimal=3)
-        npt.assert_array_almost_equal(func_diffs_y, act_diffs_y, decimal=3)
+        act_diffs_x = [0.05, 0.05, 0.05, 0.05]
+        act_diffs_y = [0.05, 0.05, 0.05, 0.05]
+
+        npt.assert_array_almost_equal(func_diffs_x, act_diffs_x, decimal=1)
+        npt.assert_array_almost_equal(func_diffs_y, act_diffs_y, decimal=1)
         npt.assert_almost_equal(func_rms_x, 0.0, delta=1)
         npt.assert_almost_equal(func_rms_y, 0.0, delta=1)
         

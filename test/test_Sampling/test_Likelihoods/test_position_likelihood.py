@@ -299,25 +299,23 @@ class TestPositionLikelihood(object):
         kwargs_ra_image_list = [0.5, -0.5, 0, 0]
         kwargs_dec_image_list = [0, 0, 0.5, -0.5]
 
-        kwargs_lens_init = {'theta_E': 0.5, 'center_x': 0, 'center_y': 0}
-        fixed_lens = {'theta_E': 0.5, 'center_x': 0, 'center_y': 0}
-        kwargs_lens_sigma = {'theta_E': 0.1, 'center_x': 1, 'center_y': 1}
-        kwargs_lower_lens = {'theta_E': 0.5, 'center_x': -5, 'center_y': -5}
-        kwargs_upper_lens = {'theta_E': 0.5, 'center_x': 5, 'center_y': 5}
+        kwargs_lens_init = [{'theta_E': 0.5, 'center_x': 0, 'center_y': 0}]
+        fixed_lens = [{'theta_E': 0.5, 'center_x': 0, 'center_y': 0}]
+        kwargs_lens_sigma = [{'theta_E': 0.1, 'center_x': 1, 'center_y': 1}]
+        kwargs_lower_lens = [{'theta_E': 0.5, 'center_x': -5, 'center_y': -5}]
+        kwargs_upper_lens = [{'theta_E': 0.5, 'center_x': 5, 'center_y': 5}]
 
-        kwargs_ps_init = {'ra_image': kwargs_ra_image_list, 'dec_image': kwargs_dec_image_list}
-        fixed_ps = {'ra_image': kwargs_ra_image_list, 'dec_image': kwargs_dec_image_list}
-        kwargs_ps_sigma = {'ra_image': [0.1, 0.1, 0.1, 0.1], 'dec_image': [0.1, 0.1, 0.1, 0.1]}
-        kwargs_lower_ps = {'ra_image': [-10, -10, -10, -10], 'dec_image': [-10, -10, -10, -10]}
-        kwargs_upper_ps = {'ra_image': [10, 10, 10, 10], 'dec_image': [10, 10, 10, 10]}
+        kwargs_ps_init = [{'ra_image': kwargs_ra_image_list, 'dec_image': kwargs_dec_image_list}]
+        fixed_ps = [{'ra_image': kwargs_ra_image_list, 'dec_image': kwargs_dec_image_list}]
+        kwargs_ps_sigma = [{'ra_image': [0.1, 0.1, 0.1, 0.1], 'dec_image': [0.1, 0.1, 0.1, 0.1]}]
+        kwargs_lower_ps = [{'ra_image': [-10, -10, -10, -10], 'dec_image': [-10, -10, -10, -10]}]
+        kwargs_upper_ps = [{'ra_image': [10, 10, 10, 10], 'dec_image': [10, 10, 10, 10]}]
 
         kwargs_special_init = {}
         fixed_special = {}
         kwargs_special_sigma = {}
         kwargs_lower_special = {}
         kwargs_upper_special = {}
-
-        kwargs_special_init["scale_factor"] = [1]
 
         window_size = 0.1
         grid_number = 100
@@ -331,18 +329,18 @@ class TestPositionLikelihood(object):
 
         kwargs_data_joint = {
             "ra_image_list": kwargs_ra_image_list,
-            "dec_image_list": kwargs_dec_image_list,
+            "dec_image_list": kwargs_dec_image_list
         }
         kwargs_model = {
             "lens_model_list": lens_model_list,
             "point_source_model_list": point_source_list,
             "z_source_convention": z_source,
             "z_lens": z_lens,
-            "cosmo": cosmo,
+            "cosmo": cosmo
         }
         kwargs_constraints = {
             "num_point_source_list": num_images_list,
-            "mass_scaling_list": mass_scaling_list,
+            "mass_scaling_list": mass_scaling_list
         }
         kwargs_likelihood = {
             "image_position_uncertainty": astrometry_sigma,
@@ -350,12 +348,12 @@ class TestPositionLikelihood(object):
             "time_delay_likelihood": False,
             "flux_ratio_likelihood": False,
             "kwargs_flux_compute": kwargs_flux_compute,
-            "check_bounds": True,
+            "check_bounds": True
         }
         kwargs_params = {
             "lens_model": lens_params,
             "point_source_model": ps_params,
-            "special": special_params,
+            "special": special_params
         }
 
         fitting_seq = fitting_sequence.FittingSequence(
@@ -363,7 +361,7 @@ class TestPositionLikelihood(object):
             kwargs_model,
             kwargs_constraints,
             kwargs_likelihood,
-            kwargs_params,
+            kwargs_params
         )
 
         func_diffs_x, func_diffs_y, func_rms_x, func_rms_y = fitting_seq.likelihoodModule._position_likelihood.source_position_rms_scatter(kwargs_ps=kwargs_ps_init, kwargs_lens=kwargs_lens_init, lens_model=lensModel, z_sources=z_source)

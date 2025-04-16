@@ -319,13 +319,35 @@ class TestPositionLikelihood(object):
 
         window_size = 0.1
         grid_number = 100
-        kwargs_flux_compute = {'source_type': 'INF',
-                       'window_size': window_size,
-                       'grid_number': grid_number}
-        lens_params = [kwargs_lens_init, fixed_lens, kwargs_lens_sigma, fixed_lens, kwargs_lower_lens, kwargs_upper_lens]
-        ps_params = [kwargs_ps_init, fixed_ps, kwargs_ps_sigma, fixed_ps, kwargs_lower_ps, kwargs_upper_ps]
-        special_params = [kwargs_special_init, fixed_special, kwargs_special_sigma, fixed_special, kwargs_lower_special, kwargs_upper_special]
-
+        kwargs_flux_compute = {
+            "source_type": "INF",
+            "window_size": window_size,
+            "grid_number": grid_number,
+        }
+        lens_params = [
+            kwargs_lens_init,
+            fixed_lens,
+            kwargs_lens_sigma,
+            fixed_lens,
+            kwargs_lower_lens,
+            kwargs_upper_lens,
+        ]
+        ps_params = [
+            kwargs_ps_init,
+            fixed_ps,
+            kwargs_ps_sigma,
+            fixed_ps,
+            kwargs_lower_ps,
+            kwargs_upper_ps,
+        ]
+        special_params = [
+            kwargs_special_init,
+            fixed_special,
+            kwargs_special_sigma,
+            fixed_special,
+            kwargs_lower_special,
+            kwargs_upper_special,
+        ]
 
         kwargs_data_joint = {
             "ra_image_list": kwargs_ra_image_list,
@@ -364,7 +386,14 @@ class TestPositionLikelihood(object):
             kwargs_params
         )
 
-        func_diffs_x, func_diffs_y, func_rms_x, func_rms_y = fitting_seq.likelihoodModule._position_likelihood.source_position_rms_scatter(kwargs_ps=kwargs_ps_init, kwargs_lens=kwargs_lens_init, lens_model=lensModel, z_sources=z_source)
+        func_diffs_x, func_diffs_y, func_rms_x, func_rms_y = (
+            fitting_seq.likelihoodModule._position_likelihood.source_position_rms_scatter(
+                kwargs_ps=kwargs_ps_init,
+                kwargs_lens=kwargs_lens_init,
+                lens_model=lensModel,
+                z_sources=z_source,
+            )
+        )
         act_diffs_x = [0.05, 0.05, 0.05, 0.05]
         act_diffs_y = [0.05, 0.05, 0.05, 0.05]
 

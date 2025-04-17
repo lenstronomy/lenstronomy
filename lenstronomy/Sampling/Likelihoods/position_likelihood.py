@@ -385,16 +385,15 @@ class PositionLikelihood(object):
         sum_x = sum(diffs_x2)
         sum_y = sum(diffs_y2)
 
-
         if num_sources == 1:
-            num_div =  num_images_list[0]-1
-            mean = (1/(num_div))
-            rms_x = math.sqrt(mean*sum_x)
-            rms_y = math.sqrt(mean*sum_y)
-        
+            num_div = num_images_list[0] - 1
+            mean = 1 / (num_div)
+            rms_x = math.sqrt(mean * sum_x)
+            rms_y = math.sqrt(mean * sum_y)
+
         elif num_sources > 1:
-            rms_x = np.sqrt((1/(num_sources-1))*sum_x)
-            rms_y = np.sqrt((1/(num_sources-1))*sum_y)
+            rms_x = np.sqrt((1 / (num_sources - 1)) * sum_x)
+            rms_y = np.sqrt((1 / (num_sources - 1)) * sum_y)
 
         return diffs_x, diffs_y, rms_x, rms_y
 

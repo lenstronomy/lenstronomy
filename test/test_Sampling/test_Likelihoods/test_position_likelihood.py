@@ -287,7 +287,7 @@ class TestPositionLikelihood(object):
         num_sources = 2
         astrometry_sigma = 0.005
         z_lens = 0.5
-        z_source = [1.5, 1.5 , 1.5, 1.5, 1.5, 1.5, 1.5, 1.5]
+        z_source = [1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5]
         lensModel = LensModel(
             lens_model_list=lens_model_list,
             cosmo=cosmo,
@@ -295,12 +295,11 @@ class TestPositionLikelihood(object):
             z_source=z_source[0],
         )
 
-        kwargs_lens_init = [{'theta_E': 0.5, 'center_x': 0, 'center_y': 0}]
-        fixed_lens = [{'theta_E': 0.5, 'center_x': 0, 'center_y': 0}]
-        kwargs_lens_sigma = [{'theta_E': 0.1, 'center_x': 1, 'center_y': 1}]
-        kwargs_lower_lens = [{'theta_E': 0.25, 'center_x': -5, 'center_y': -5}]
-        kwargs_upper_lens = [{'theta_E': 0.75, 'center_x': 5, 'center_y': 5}]
-
+        kwargs_lens_init = [{"theta_E": 0.5, "center_x": 0, "center_y": 0}]
+        fixed_lens = [{"theta_E": 0.5, "center_x": 0, "center_y": 0}]
+        kwargs_lens_sigma = [{"theta_E": 0.1, "center_x": 1, "center_y": 1}]
+        kwargs_lower_lens = [{"theta_E": 0.25, "center_x": -5, "center_y": -5}]
+        kwargs_upper_lens = [{"theta_E": 0.75, "center_x": 5, "center_y": 5}]
 
         kwargs_ra_image_list = [[0.5, -0.5, 0, 0], [0.5, -0.5, 0, 0]]
         kwargs_dec_image_list = [[0, 0, 0.5, -0.5], [0, 0, 0.5, -0.5]]
@@ -315,11 +314,33 @@ class TestPositionLikelihood(object):
         for i in range(num_sources):
             point_source_list.append("LENSED_POSITION")
             num_images_list.append(4)
-            kwargs_ps_init.append({'ra_image': kwargs_ra_image_list[i], 'dec_image': kwargs_dec_image_list[i]})
-            fixed_ps.append({'ra_image': kwargs_ra_image_list, 'dec_image': kwargs_dec_image_list})
-            kwargs_ps_sigma.append({'ra_image': 0.01 * np.ones(len(kwargs_ra_image_list[i])), 'dec_image': 0.01 * np.ones(len(kwargs_dec_image_list[i]))})
-            kwargs_lower_ps.append({'ra_image': -10 * np.ones(len(kwargs_ra_image_list[i])), 'dec_image': -10 * np.ones(len(kwargs_dec_image_list[i]))})
-            kwargs_upper_ps.append({'ra_image': 10 * np.ones(len(kwargs_ra_image_list[i])), 'dec_image': 10 * np.ones(len(kwargs_dec_image_list[i]))})
+            kwargs_ps_init.append(
+                {
+                    "ra_image": kwargs_ra_image_list[i],
+                    "dec_image": kwargs_dec_image_list[i],
+                }
+            )
+            fixed_ps.append(
+                {"ra_image": kwargs_ra_image_list, "dec_image": kwargs_dec_image_list}
+            )
+            kwargs_ps_sigma.append(
+                {
+                    "ra_image": 0.01 * np.ones(len(kwargs_ra_image_list[i])),
+                    "dec_image": 0.01 * np.ones(len(kwargs_dec_image_list[i])),
+                }
+            )
+            kwargs_lower_ps.append(
+                {
+                    "ra_image": -10 * np.ones(len(kwargs_ra_image_list[i])),
+                    "dec_image": -10 * np.ones(len(kwargs_dec_image_list[i])),
+                }
+            )
+            kwargs_upper_ps.append(
+                {
+                    "ra_image": 10 * np.ones(len(kwargs_ra_image_list[i])),
+                    "dec_image": 10 * np.ones(len(kwargs_dec_image_list[i])),
+                }
+            )
 
         kwargs_special_init = {}
         fixed_special = {}
@@ -367,9 +388,7 @@ class TestPositionLikelihood(object):
             "z_lens": z_lens,
             "cosmo": cosmo,
         }
-        kwargs_constraints = {
-            "num_point_source_list": num_images_list
-        }
+        kwargs_constraints = {"num_point_source_list": num_images_list}
         kwargs_likelihood = {
             "image_position_uncertainty": astrometry_sigma,
             "image_position_likelihood": True,

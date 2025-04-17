@@ -358,14 +358,14 @@ class TestPositionLikelihood(object):
 
         kwargs_data_joint = {
             "ra_image_list": kwargs_ra_image_list,
-            "dec_image_list": kwargs_dec_image_list
+            "dec_image_list": kwargs_dec_image_list,
         }
         kwargs_model = {
             "lens_model_list": lens_model_list,
             "point_source_model_list": point_source_list,
             "z_source_convention": z_source,
             "z_lens": z_lens,
-            "cosmo": cosmo
+            "cosmo": cosmo,
         }
         kwargs_constraints = {
             "num_point_source_list": num_images_list
@@ -376,12 +376,12 @@ class TestPositionLikelihood(object):
             "time_delay_likelihood": False,
             "flux_ratio_likelihood": False,
             "kwargs_flux_compute": kwargs_flux_compute,
-            "check_bounds": True
+            "check_bounds": True,
         }
         kwargs_params = {
             "lens_model": lens_params,
             "point_source_model": ps_params,
-            "special": special_params
+            "special": special_params,
         }
 
         fitting_seq = fitting_sequence.FittingSequence(
@@ -389,7 +389,7 @@ class TestPositionLikelihood(object):
             kwargs_model,
             kwargs_constraints,
             kwargs_likelihood,
-            kwargs_params
+            kwargs_params,
         )
 
         diffs_x, diffs_y, rms_x, rms_y = (

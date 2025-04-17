@@ -2,7 +2,7 @@ import numpy as np
 from numpy.linalg import inv
 from lenstronomy.Util.cosmo_util import get_astropy_cosmology
 import matplotlib.pyplot as plt
-from math import sqrt
+import math
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 
 __all__ = ["PositionLikelihood"]
@@ -360,9 +360,9 @@ class PositionLikelihood(object):
         means_x = []
         means_y = []
         for i in range(num_sources):
-            mean_x = float(sum(grouped_xs[i]) / (num_images_list[i]))
+            mean_x = sum(grouped_xs[i]) / (num_images_list[i])
             means_x.append(mean_x)
-            mean_y = float(sum(grouped_ys[i]) / (num_images_list[i]))
+            mean_y = sum(grouped_ys[i]) / (num_images_list[i])
             means_y.append(mean_y)
 
         diffs_x = []
@@ -370,23 +370,31 @@ class PositionLikelihood(object):
         for i in range(num_sources):
             for j in range(num_images_list[i]):
                 diff_x_temp = grouped_xs[i][j] - means_x[i]
-                diffs_x.append(float(diff_x_temp))
+                diffs_x.append(diff_x_temp)
                 diff_y_temp = grouped_ys[i][j] - means_y[i]
-                diffs_y.append(float(diff_y_temp))
+                diffs_y.append(diff_y_temp)
 
         diffs_x2 = []
         diffs_y2 = []
         for i in range(len(diffs_x)):
             diff_x2 = diffs_x[i] ** 2
-            diffs_x2.append(float(diff_x2))
+            diffs_x2.append(diff_x2)
             diff_y2 = diffs_y[i] ** 2
-            diffs_y2.append(float(diff_y2))
+            diffs_y2.append(diff_y2)
 
         sum_x = sum(diffs_x2)
         sum_y = sum(diffs_y2)
 
-        rms_x = sqrt((1 / (num_sources - 1)) * sum_x)
-        rms_y = sqrt((1 / (num_sources - 1)) * sum_y)
+
+        if num_sources == 1:
+            num_div =  num_images_list[0]-1
+            mean = (1/(num_div))
+            rms_x = math.sqrt(mean*sum_x)
+            rms_y = math.sqrt(mean*sum_y)
+        
+        elif num_sources > 1:
+            rms_x = np.sqrt((1/(num_sources-1))*sum_x)
+            rms_y = np.sqrt((1/(num_sources-1))*sum_y)
 
         return diffs_x, diffs_y, rms_x, rms_y
 

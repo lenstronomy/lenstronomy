@@ -9,6 +9,7 @@ from astropy.cosmology import FlatLambdaCDM
 from lenstronomy.Util.cosmo_util import get_astropy_cosmology
 from lenstronomy.Util.param_util import shear_polar2cartesian
 import matplotlib.pyplot as plt
+import numpy as np
 from lenstronomy.Workflow import fitting_sequence
 
 
@@ -283,33 +284,42 @@ class TestPositionLikelihood(object):
     def test_source_position_rms_scatter(self):
         lens_model_list = ["SIS"]
         cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.0)
+        num_sources = 2
+        astrometry_sigma = 0.005
         z_lens = 0.5
-        z_source = 1.5
+        z_source = [1.5, 1.5 , 1.5, 1.5, 1.5, 1.5, 1.5, 1.5]
         lensModel = LensModel(
             lens_model_list=lens_model_list,
             cosmo=cosmo,
             z_lens=z_lens,
-            z_source=z_source,
+            z_source=z_source[0],
         )
-
-        point_source_list = ["LENSED_POSITION"]
-        num_images_list = [4]
-        mass_scaling_list = [1]
-        astrometry_sigma = 0.005
-        kwargs_ra_image_list = [0.5, -0.5, 0, 0]
-        kwargs_dec_image_list = [0, 0, 0.5, -0.5]
 
         kwargs_lens_init = [{'theta_E': 0.5, 'center_x': 0, 'center_y': 0}]
         fixed_lens = [{'theta_E': 0.5, 'center_x': 0, 'center_y': 0}]
         kwargs_lens_sigma = [{'theta_E': 0.1, 'center_x': 1, 'center_y': 1}]
-        kwargs_lower_lens = [{'theta_E': 0.5, 'center_x': -5, 'center_y': -5}]
-        kwargs_upper_lens = [{'theta_E': 0.5, 'center_x': 5, 'center_y': 5}]
+        kwargs_lower_lens = [{'theta_E': 0.25, 'center_x': -5, 'center_y': -5}]
+        kwargs_upper_lens = [{'theta_E': 0.75, 'center_x': 5, 'center_y': 5}]
 
-        kwargs_ps_init = [{'ra_image': kwargs_ra_image_list, 'dec_image': kwargs_dec_image_list}]
-        fixed_ps = [{'ra_image': kwargs_ra_image_list, 'dec_image': kwargs_dec_image_list}]
-        kwargs_ps_sigma = [{'ra_image': [0.1, 0.1, 0.1, 0.1], 'dec_image': [0.1, 0.1, 0.1, 0.1]}]
-        kwargs_lower_ps = [{'ra_image': [-10, -10, -10, -10], 'dec_image': [-10, -10, -10, -10]}]
-        kwargs_upper_ps = [{'ra_image': [10, 10, 10, 10], 'dec_image': [10, 10, 10, 10]}]
+
+        kwargs_ra_image_list = [[0.5, -0.5, 0, 0], [0.5, -0.5, 0, 0]]
+        kwargs_dec_image_list = [[0, 0, 0.5, -0.5], [0, 0, 0.5, -0.5]]
+
+        point_source_list = []
+        num_images_list = []
+        kwargs_ps_init = []
+        fixed_ps = []
+        kwargs_ps_sigma = []
+        kwargs_lower_ps = []
+        kwargs_upper_ps = []
+        for i in range(num_sources):
+            point_source_list.append("LENSED_POSITION")
+            num_images_list.append(4)
+            kwargs_ps_init.append({'ra_image': kwargs_ra_image_list[i], 'dec_image': kwargs_dec_image_list[i]})
+            fixed_ps.append({'ra_image': kwargs_ra_image_list, 'dec_image': kwargs_dec_image_list})
+            kwargs_ps_sigma.append({'ra_image': 0.01 * np.ones(len(kwargs_ra_image_list[i])), 'dec_image': 0.01 * np.ones(len(kwargs_dec_image_list[i]))})
+            kwargs_lower_ps.append({'ra_image': -10 * np.ones(len(kwargs_ra_image_list[i])), 'dec_image': -10 * np.ones(len(kwargs_dec_image_list[i]))})
+            kwargs_upper_ps.append({'ra_image': 10 * np.ones(len(kwargs_ra_image_list[i])), 'dec_image': 10 * np.ones(len(kwargs_dec_image_list[i]))})
 
         kwargs_special_init = {}
         fixed_special = {}
@@ -328,7 +338,6 @@ class TestPositionLikelihood(object):
             kwargs_lens_init,
             fixed_lens,
             kwargs_lens_sigma,
-            fixed_lens,
             kwargs_lower_lens,
             kwargs_upper_lens,
         ]
@@ -336,7 +345,6 @@ class TestPositionLikelihood(object):
             kwargs_ps_init,
             fixed_ps,
             kwargs_ps_sigma,
-            fixed_ps,
             kwargs_lower_ps,
             kwargs_upper_ps,
         ]
@@ -344,7 +352,6 @@ class TestPositionLikelihood(object):
             kwargs_special_init,
             fixed_special,
             kwargs_special_sigma,
-            fixed_special,
             kwargs_lower_special,
             kwargs_upper_special,
         ]
@@ -361,8 +368,7 @@ class TestPositionLikelihood(object):
             "cosmo": cosmo
         }
         kwargs_constraints = {
-            "num_point_source_list": num_images_list,
-            "mass_scaling_list": mass_scaling_list
+            "num_point_source_list": num_images_list
         }
         kwargs_likelihood = {
             "image_position_uncertainty": astrometry_sigma,
@@ -386,7 +392,7 @@ class TestPositionLikelihood(object):
             kwargs_params
         )
 
-        func_diffs_x, func_diffs_y, func_rms_x, func_rms_y = (
+        diffs_x, diffs_y, rms_x, rms_y = (
             fitting_seq.likelihoodModule._position_likelihood.source_position_rms_scatter(
                 kwargs_ps=kwargs_ps_init,
                 kwargs_lens=kwargs_lens_init,
@@ -394,13 +400,11 @@ class TestPositionLikelihood(object):
                 z_sources=z_source,
             )
         )
-        act_diffs_x = [0.05, 0.05, 0.05, 0.05]
-        act_diffs_y = [0.05, 0.05, 0.05, 0.05]
 
-        npt.assert_array_almost_equal(func_diffs_x, act_diffs_x, delta=1)
-        npt.assert_array_almost_equal(func_diffs_y, act_diffs_y, delta=1)
-        npt.assert_almost_equal(func_rms_x, 0.0, delta=1)
-        npt.assert_almost_equal(func_rms_y, 0.0, delta=1)
+        npt.assert_allclose(rms_x, 0.0, atol=1e-10)
+        npt.assert_allclose(rms_y, 0.0, atol=1e-10)
+        npt.assert_allclose(diffs_x, 0.0, atol=1e-10)
+        npt.assert_allclose(diffs_y, 0.0, atol=1e-10)
 
 
 if __name__ == "__main__":

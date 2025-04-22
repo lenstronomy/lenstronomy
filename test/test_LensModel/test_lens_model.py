@@ -6,7 +6,11 @@ import pytest
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LensModel.MultiPlane.multi_plane import MultiPlane
 from lenstronomy.LensModel.Profiles.nfw import NFW
+from lenstronomy.LensModel.Profiles.tnfw import TNFW
 from lenstronomy.Util.util import make_grid
+
+from jaxtronomy.LensModel.Profiles.nfw import NFW as NFW_jax
+from jaxtronomy.LensModel.Profiles.tnfw import TNFW as TNFW_jax
 import unittest
 
 
@@ -67,6 +71,32 @@ class TestLensModel(object):
 
         lensModel = LensModel(lens_model_list, z_source_convention=5, z_lens=0.2)
         assert lensModel.z_source == 5
+
+    def test_use_jax(self):
+        lensModel = LensModel(["NFW", "TNFW"], use_jax=True)
+        assert isinstance(lensModel.lens_model.func_list[0], NFW_jax)
+        assert isinstance(lensModel.lens_model.func_list[1], TNFW_jax)
+
+        lensModel = LensModel(["NFW", "TNFW"], use_jax=[True, False])
+        assert isinstance(lensModel.lens_model.func_list[0], NFW_jax)
+        assert isinstance(lensModel.lens_model.func_list[1], TNFW)
+
+        lensModel = LensModel(["NFW", "TNFW"], use_jax=False)
+        assert isinstance(lensModel.lens_model.func_list[0], NFW)
+        assert isinstance(lensModel.lens_model.func_list[1], TNFW)
+
+        lensModel = LensModel(["NFW", "TNFW"], lens_redshift_list=[1, 1], z_source=1.3, multi_plane=True, use_jax=True)
+        assert isinstance(lensModel.lens_model.multi_plane_base.func_list[0], NFW_jax)
+        assert isinstance(lensModel.lens_model.multi_plane_base.func_list[1], TNFW_jax)
+
+        lensModel = LensModel(["NFW", "TNFW"], lens_redshift_list=[1, 1], z_source=1.3, multi_plane=True, use_jax=[False, True])
+        assert isinstance(lensModel.lens_model.multi_plane_base.func_list[0], NFW)
+        assert isinstance(lensModel.lens_model.multi_plane_base.func_list[1], TNFW_jax)
+
+        lensModel = LensModel(["NFW", "TNFW"], lens_redshift_list=[1, 1], z_source=1.3, multi_plane=True, use_jax=False)
+        assert isinstance(lensModel.lens_model.multi_plane_base.func_list[0], NFW)
+        assert isinstance(lensModel.lens_model.multi_plane_base.func_list[1], TNFW)
+        
 
     def test_info(self):
         lens_model_list = [

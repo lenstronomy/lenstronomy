@@ -144,23 +144,16 @@ class ProfileListBase(object):
         :param profile_kwargs_list: list of dicts, keyword arguments used to initialize profile classes
             in the same order of the lens_model_list. If any of the profile_kwargs are None, then that
             profile will be initialized using default settings.
-        :param use_jax: bool, if True, uses deflector profiles from jaxtronomy
+        :param use_jax: bool, if True, uses deflector profiles from jaxtronomy.
+            Can also be a list of bools, selecting which models in the lens_model_list to use from jaxtronomy
         """
-        if use_jax:
-            from jaxtronomy.LensModel.profile_list_base import ProfileListBase as ProfileListBase_JAX
-            self.func_list = ProfileListBase_JAX._load_model_instances(
-                lens_model_list,
-                profile_kwargs_list=profile_kwargs_list,
-                lens_redshift_list=lens_redshift_list,
-                z_source_convention=z_source_convention,
-            )
-        else:
-            self.func_list = self._load_model_instances(
-                lens_model_list,
-                profile_kwargs_list=profile_kwargs_list,
-                lens_redshift_list=lens_redshift_list,
-                z_source_convention=z_source_convention,
-            )
+        self.func_list = self._load_model_instances(
+            lens_model_list,
+            profile_kwargs_list=profile_kwargs_list,
+            lens_redshift_list=lens_redshift_list,
+            z_source_convention=z_source_convention,
+            use_jax=use_jax,
+        )
         self._num_func = len(self.func_list)
         self._model_list = lens_model_list
 
@@ -175,11 +168,17 @@ class ProfileListBase(object):
         profile_kwargs_list=None,
         lens_redshift_list=None,
         z_source_convention=None,
+        use_jax=False,
     ):
         if lens_redshift_list is None:
             lens_redshift_list = [None] * len(lens_model_list)
         if profile_kwargs_list is None:
             profile_kwargs_list = [{} for _ in range(len(lens_model_list))]
+        if use_jax is True or use_jax is False:
+            use_jax = [use_jax] * len(lens_model_list)
+        if True in use_jax:
+            from jaxtronomy.LensModel.profile_list_base import lens_class as lens_class_jax
+
         func_list = []
         imported_classes = []
         imported_profile_kwargs = []
@@ -187,10 +186,14 @@ class ProfileListBase(object):
             if lens_type in ["NFW_MC", "NFW_MC_ELLIPSE_POTENTIAL"]:
                 profile_kwargs_list[i]["z_lens"] = lens_redshift_list[i]
                 profile_kwargs_list[i]["z_source"] = z_source_convention
+            if use_jax[i] is True:
+                init_lens_class = lens_class_jax
+            else:
+                init_lens_class = lens_class
 
             # Creates another instance for dynamic profiles
             if lens_type in DYNAMIC_PROFILES:
-                lensmodel_class = lens_class(
+                lensmodel_class = init_lens_class(
                     lens_type,
                     profile_kwargs=profile_kwargs_list[i],
                 )
@@ -198,7 +201,7 @@ class ProfileListBase(object):
             # already been created
             else:
                 if (lens_type, profile_kwargs_list[i]) not in imported_profile_kwargs:
-                    lensmodel_class = lens_class(
+                    lensmodel_class = init_lens_class(
                         lens_type,
                         profile_kwargs=profile_kwargs_list[i],
                     )

@@ -25,7 +25,8 @@ class SinglePlane(ProfileListBase):
             in the same order of the lens_model_list. If any of the profile_kwargs are None, then that
             profile will be initialized using default settings.
         :param alpha_scaling: scaling factor of deflection angle relative to z_source_convention
-        :param use_jax: bool, if True, uses deflector profiles from jaxtronomy
+        :param use_jax: bool, if True, uses deflector profiles from jaxtronomy.
+            Can also be a list of bools, selecting which models in the lens_model_list to use from jaxtronomy
         """
         self._alpha_scaling = alpha_scaling
         ProfileListBase.__init__(

@@ -77,7 +77,8 @@ class LensModel(object):
             to update T_ij value in multi-lens plane computation.
         :param cosmology_model: str, name of the cosmology model to be used for
             cosmology sampling. Default is 'FlatLambdaCDM'.
-        :param use_jax: bool, if True, uses deflector profiles from jaxtronomy
+        :param use_jax: bool, if True, uses deflector profiles from jaxtronomy.
+            Can also be a list of bools, selecting which models in the lens_model_list to use from jaxtronomy
             Only supported for MultiPlane() and SinglePlane() at the moment
         """
         self.lens_model_list = lens_model_list

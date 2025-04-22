@@ -174,7 +174,10 @@ class ProfileListBase(object):
             lens_redshift_list = [None] * len(lens_model_list)
         if profile_kwargs_list is None:
             profile_kwargs_list = [{} for _ in range(len(lens_model_list))]
-        if use_jax is True or use_jax is False:
+        
+        # use_jax can be either a bool or list of bools to select specific models to be imported from jaxtronomy
+        # If it's a bool, convert to list of bools
+        if isinstance(use_jax, bool):
             use_jax = [use_jax] * len(lens_model_list)
         if True in use_jax:
             from jaxtronomy.LensModel.profile_list_base import (

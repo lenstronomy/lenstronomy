@@ -85,18 +85,35 @@ class TestLensModel(object):
         assert isinstance(lensModel.lens_model.func_list[0], NFW)
         assert isinstance(lensModel.lens_model.func_list[1], TNFW)
 
-        lensModel = LensModel(["NFW", "TNFW"], lens_redshift_list=[1, 1], z_source=1.3, multi_plane=True, use_jax=True)
+        lensModel = LensModel(
+            ["NFW", "TNFW"],
+            lens_redshift_list=[1, 1],
+            z_source=1.3,
+            multi_plane=True,
+            use_jax=True,
+        )
         assert isinstance(lensModel.lens_model.multi_plane_base.func_list[0], NFW_jax)
         assert isinstance(lensModel.lens_model.multi_plane_base.func_list[1], TNFW_jax)
 
-        lensModel = LensModel(["NFW", "TNFW"], lens_redshift_list=[1, 1], z_source=1.3, multi_plane=True, use_jax=[False, True])
+        lensModel = LensModel(
+            ["NFW", "TNFW"],
+            lens_redshift_list=[1, 1],
+            z_source=1.3,
+            multi_plane=True,
+            use_jax=[False, True],
+        )
         assert isinstance(lensModel.lens_model.multi_plane_base.func_list[0], NFW)
         assert isinstance(lensModel.lens_model.multi_plane_base.func_list[1], TNFW_jax)
 
-        lensModel = LensModel(["NFW", "TNFW"], lens_redshift_list=[1, 1], z_source=1.3, multi_plane=True, use_jax=False)
+        lensModel = LensModel(
+            ["NFW", "TNFW"],
+            lens_redshift_list=[1, 1],
+            z_source=1.3,
+            multi_plane=True,
+            use_jax=False,
+        )
         assert isinstance(lensModel.lens_model.multi_plane_base.func_list[0], NFW)
         assert isinstance(lensModel.lens_model.multi_plane_base.func_list[1], TNFW)
-        
 
     def test_info(self):
         lens_model_list = [

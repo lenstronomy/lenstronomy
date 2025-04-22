@@ -230,7 +230,7 @@ class LensModel(object):
                     lens_redshift_list=lens_redshift_list,
                     z_source_convention=z_source_convention,
                     profile_kwargs_list=profile_kwargs_list,
-                    use_jax=use_jax
+                    use_jax=use_jax,
                 )
                 self.type = "SinglePlane"
                 if z_source is not None and z_source_convention is not None:

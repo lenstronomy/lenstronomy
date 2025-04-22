@@ -177,7 +177,9 @@ class ProfileListBase(object):
         if use_jax is True or use_jax is False:
             use_jax = [use_jax] * len(lens_model_list)
         if True in use_jax:
-            from jaxtronomy.LensModel.profile_list_base import lens_class as lens_class_jax
+            from jaxtronomy.LensModel.profile_list_base import (
+                lens_class as lens_class_jax,
+            )
 
         func_list = []
         imported_classes = []

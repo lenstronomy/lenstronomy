@@ -185,7 +185,7 @@ class TestEPL_BOXYDISKY_ELL(object):
                             phi, q = param_util.ellipticity2phi_q(e1, e2)
                             kwargs_multipole = {
                                 "m": 4,
-                                "a_m": a4_a * theta_E / np.sqrt(q),
+                                "a_m": a4_a * theta_E,
                                 "phi_m": phi,
                                 "q": q,
                             }
@@ -221,7 +221,7 @@ class TestEPL_BOXYDISKY_ELL(object):
                             phi, q = param_util.ellipticity2phi_q(e1, e2)
                             kwargs_multipole = {
                                 "m": 4,
-                                "a_m": a4_a * theta_E / np.sqrt(q),
+                                "a_m": a4_a * theta_E,
                                 "phi_m": phi,
                                 "q": q,
                             }
@@ -263,7 +263,7 @@ class TestEPL_BOXYDISKY_ELL(object):
                             phi, q = param_util.ellipticity2phi_q(e1, e2)
                             kwargs_multipole = {
                                 "m": 4,
-                                "a_m": a4_a * theta_E / np.sqrt(q),
+                                "a_m": a4_a * theta_E,
                                 "phi_m": phi,
                                 "q": q,
                             }

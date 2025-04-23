@@ -18,7 +18,7 @@ class HernquistEllipsePotential(LensProfileBase):
 
     .. math::
         \\rho(R) = \\frac{\\rho_0}{\\left( \\frac{R}{R_s} \\right)
-        \\left( 1 + \frac{R}{R_s} \\right)^3}
+        \\left( 1 + \\frac{R}{R_s} \\right)^3}
 
     where :math:`\\rho_0` is the density normalization (`rho0`), and
     :math:`R_s` is the Hernquist radius (`Rs`). Here, we will use

@@ -12,14 +12,18 @@ class SPP(LensProfileBase):
     """Class to compute the Spherical Power-law Potential (SPP) Model.
 
     Given by:
+
     .. math::
         \\psi(r) = \\frac{2 E^2}{\\eta^2} \\left( \\frac{r^2 + s^2}{E^2} \\right)^{\\frac{\\eta}{2}}
+
     where:
     :math:`r^2 = (x-x_{\\text{center}})^2 + (y-y_{\\text{center}})^2` is squared radius from center of lens,
     :math:`s^2 = 0` due to no softening,
     :math:'E' is the characteristic scale factor related to the Einstein radius :math:`\\theta_{E}`, given by:
+
     .. math::
         E = \\frac{\\theta_E}{\\left( \\frac{3 - \\gamma}{2} \\right)^{\\frac{1}{1 - \\gamma}}}
+
     :math:'\\theta_{E}` is the Einstein radius of the lens,
     :math:`\\eta = -\\gamma + 3` is a parameter that depends on the power law slope :math:`\\gamma`,
     :math:`\\gamma` is the power law slope of the mass profile.

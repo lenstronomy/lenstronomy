@@ -12,8 +12,10 @@ class ConstMag(LensProfileBase):
     `ConstMag` assumes constant radial and tangential magnification components.
 
     The lensing potential is given by:
+
     .. math::
         \\psi(\\theta_x, \\theta_y) = \\frac{\\kappa}{2}(\\theta_x^2 + \\theta_y^2) + \\frac{\\gamma_1}{2}(\\theta_x^2 - \\theta_y^2) - \\gamma_2(\\theta_x \\theta_y)
+
     where:
     :math:`\\theta_x` and :math:`\\theta_y` are angular coordinates in the image plane,
     :math:`\\gamma_1` and :math:`\\gamma_2` are the horizontal and vertical components of shear, respectively, and
@@ -23,20 +25,25 @@ class ConstMag(LensProfileBase):
     :math:`\\kappa` and :math:`\\gamma` depend on the parity. A negative parity means the image becomes inverted compared to the source.
 
     For positive parity (:math:`\\text{parity} = +1`):
+
     .. math::
         \\gamma = \\frac{1}{2} \\left(\\frac{1}{\\mu_t} - \\frac{1}{\\mu_r}\\right)
         \\kappa = 1 - \\gamma - \\frac{1}{\\mu_r}
 
     For negative parity (:math:`\\text{parity} = -1`):
+
     .. math::
         \\gamma = \\frac{1}{2} \\left(\\frac{1}{\\mu_t} + \\frac{1}{\\mu_r}\\right)
         \\kappa = 1 - \\gamma + \\frac{1}{\\mu_r}
+
     where :math:`mu_r` and :math:`mu_t` are the radial and tangental components of magnification, respectively.
 
     The shear components are calculated as:
+
     .. math::
         \\gamma_1 = \\gamma\\cos{2\\phi_G}
         \\gamma_2 = -\\gamma\\sin{2\\phi_G}
+
     where :math:`\\phi_G` is the shear orientation angle relative to the x-axis.
 
     For a detailed derivation see <https://www.aanda.org/articles/aa/pdf/2019/07/aa35490-19.pdf>`

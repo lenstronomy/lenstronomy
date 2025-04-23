@@ -425,3 +425,10 @@ History
 +++++++++++++++++++
 * bug fix in elliptical shapelets
 * improved point source rendering in plots
+
+1.12.6 (2025-04-23)
++++++++++++++++++++
+* first jaxtronomy integration
+* updated multipole definitions
+* routines for better checking parameters
+* updated documentations for different deflector profiles

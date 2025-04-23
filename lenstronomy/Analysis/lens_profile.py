@@ -111,6 +111,8 @@ class LensProfileAnalysis(object):
         r_min = r_array.min()
         r_max = r_array.max()
         num_points = len(r_array)
+        kappa_r = np.array(kappa_r)
+        kappa_r[kappa_r <= 0] = 10 ** (-100)
 
         # here we make a finer grid interpolation in log-log space
         k_interp = scipy.interpolate.interp1d(np.log10(r_array), np.log10(kappa_r))

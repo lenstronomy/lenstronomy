@@ -58,7 +58,7 @@ class TestLensProfileAnalysis(object):
         )
         npt.assert_array_almost_equal(gamma_out, gamma_in, decimal=3)
 
-    def test_effective_einstein_radius(self):
+    def test_effective_einstein_radius_grid(self):
         kwargs_lens = [{"theta_E": 1, "center_x": 0, "center_y": 0}]
         lensModel = LensProfileAnalysis(LensModel(lens_model_list=["SIS"]))
         ret = lensModel.effective_einstein_radius_grid(kwargs_lens, get_precision=True)
@@ -128,6 +128,17 @@ class TestLensProfileAnalysis(object):
             kwargs_nfw, get_precision=True
         )
         assert np.isnan(theta_E_subcrit)
+
+    def test_effective_einstein_radius(self):
+        theta_E_true = 1.
+        kwargs_lens = [{"theta_E": theta_E_true, "center_x": 1, "center_y": 0}]
+        lensModel = LensProfileAnalysis(LensModel(lens_model_list=["SIS"]))
+        theta_e_est = lensModel.effective_einstein_radius(kwargs_lens, r_min=1e-3, r_max=1e1, num_points=30,
+                                                  spherical_model=False)
+        npt.assert_almost_equal(theta_e_est, theta_E_true, decimal=3)
+        theta_e_est = lensModel.effective_einstein_radius(kwargs_lens, r_min=1e-3, r_max=1e1, num_points=30,
+                                                          spherical_model=True)
+        npt.assert_almost_equal(theta_e_est, theta_E_true, decimal=3)
 
     def test_external_lensing_effect(self):
         lens_model_list = ["SHEAR"]

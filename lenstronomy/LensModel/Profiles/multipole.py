@@ -154,6 +154,8 @@ class EllipticalMultipole(LensProfileBase):
     """This class contains a multipole contribution that encode deviations from the
     elliptical isodensity contours of a SIE with any axis ratio q.
 
+    This uses the definitions from Paugnat & Gilman (2025): "Elliptical multipoles for gravitational lenses"
+
     m : int, multipole order, (m=1, m=3 or m=4)
     a_m : float, multipole strength
     phi_m : float, multipole orientation in radian

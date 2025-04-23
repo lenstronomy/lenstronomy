@@ -17,7 +17,7 @@ class EPL_BOXYDISKY_ELL(LensProfileBase):
     axis aligned (exact for general axis ratio q).
 
     Read the documentation of lenstronomy.LensModel.Profiles.epl and
-    lenstrnomy.LensModel.Profiles.multipole for details.
+    lenstronomy.LensModel.Profiles.multipole for details.
 
     :param theta_E: Einstein radius
     :param gamma: negative power-law slope of the 3D mass distributions
@@ -29,8 +29,8 @@ class EPL_BOXYDISKY_ELL(LensProfileBase):
     :param center_y: center of distortion
     :param a4_a: Strength of the deviation of multipole order 4 of the elliptical
         isodensity contours, which is translated into the multipole strength from the
-        MULTIPOLE class through a rescaling by theta_E / sqrt(q). Profile is disky when
-        a4_a>0 and boxy when a4_a<0.
+        MULTIPOLE_ELL class through a rescaling by theta_E. Profile is disky when a4_a>0
+        and boxy when a4_a<0.
     """
 
     param_names = ["theta_E", "gamma", "e1", "e2", "center_x", "center_y", "a4_a"]
@@ -74,7 +74,6 @@ class EPL_BOXYDISKY_ELL(LensProfileBase):
         """
 
         phi, q = param_util.ellipticity2phi_q(e1, e2)
-        rescale_am = theta_E / np.sqrt(q)
         kwargs_epl = {
             "theta_E": theta_E,
             "gamma": gamma,
@@ -85,7 +84,7 @@ class EPL_BOXYDISKY_ELL(LensProfileBase):
         }
         kwargs_multipole = {
             "m": self._m,
-            "a_m": a4_a * rescale_am,
+            "a_m": a4_a * theta_E,
             "phi_m": phi,
             "q": q,
             "center_x": center_x,
@@ -178,7 +177,7 @@ class EPL_BOXYDISKY(LensProfileBase):
 
     Reference to the implementation: https://ui.adsabs.harvard.edu/abs/2022A%26A...659A.127V/abstract
 
-    Read the documentation of lenstronomy.LensModel.Profiles.epl and lenstrnomy.LensModel.Profiles.multipole for details.
+    Read the documentation of lenstronomy.LensModel.Profiles.epl and lenstronomy.LensModel.Profiles.multipole for details.
 
     :param theta_E: Einstein radius
     :param gamma: negative power-law slope of the 3D mass distributions

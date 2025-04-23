@@ -35,6 +35,7 @@ class MultiPlane(object):
         distance_ratio_sampling=False,
         cosmology_sampling=False,
         cosmology_model="FlatLambdaCDM",
+        use_jax=False,
     ):
         """
 
@@ -63,6 +64,8 @@ class MultiPlane(object):
             distance ratios to update T_ij value in multi-lens plane computation.
         :param cosmology_sampling: bool, if True, will use sampled cosmology
         :param cosmology_model: str, name of the cosmology model to use for
+        :param use_jax: bool, if True, uses deflector profiles from jaxtronomy.
+            Can also be a list of bools, selecting which models in the lens_model_list to use from jaxtronomy
         """
         self.cosmology_sampling = cosmology_sampling
         self.cosmology_model = cosmology_model
@@ -137,6 +140,7 @@ class MultiPlane(object):
             z_interp_stop=z_interp_stop,
             num_z_interp=num_z_interp,
             profile_kwargs_list=profile_kwargs_list,
+            use_jax=use_jax,
         )
         self._z_source = z_source
         self._set_source_distances(z_source)

@@ -81,8 +81,8 @@ class LensProfileAnalysis(object):
         :param r_max: maximum radius of the convergence integrand (should be larger than
             Einstein radius)
         :param num_points: number of radial points in log spacing
-        :param spherical_model: if True, assumes the model is spherical and only calculates the convergence along one
-            axis (for speed improvements)
+        :param spherical_model: if True, assumes the model is spherical and only
+            calculates the convergence along one axis (for speed improvements)
         :return: estimate of the Einstein radius
         """
         r_array = np.logspace(np.log10(r_min), np.log10(r_max), num_points)
@@ -94,7 +94,11 @@ class LensProfileAnalysis(object):
         # Define the integrand function for the 1D numerical integration: this is the surface mass density
         # kappa at a given radius r, multiplied by 2*pi*r to account for the circular geometry.
         kappa_r = self.radial_lens_profile(
-            r_array, kwargs_lens, center_x=None, center_y=None, num_azimuthal_points=num_azimuthal_points,
+            r_array,
+            kwargs_lens,
+            center_x=None,
+            center_y=None,
+            num_azimuthal_points=num_azimuthal_points,
         )
 
         return self.effective_einstein_radius_from_radial_profile(r_array, kappa_r)
@@ -277,8 +281,13 @@ class LensProfileAnalysis(object):
         return xi
 
     def radial_lens_profile(
-        self, r_list, kwargs_lens, center_x=None, center_y=None, model_bool_list=None,
-            num_azimuthal_points=20,
+        self,
+        r_list,
+        kwargs_lens,
+        center_x=None,
+        center_y=None,
+        model_bool_list=None,
+        num_azimuthal_points=20,
     ):
         """
 

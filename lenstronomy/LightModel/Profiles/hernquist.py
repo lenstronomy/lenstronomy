@@ -51,7 +51,7 @@ class Hernquist(object):
         return self.lens.density(r, rho0, Rs)
 
     @staticmethod
-    def total_flux(amp, Rs):
+    def total_flux(amp, Rs, center_x=0, center_y=0):
         """
 
         :param amp: surface brightness amplitude
@@ -109,7 +109,7 @@ class HernquistEllipse(object):
         )
         return self.spherical.function(x_, y_, amp, Rs)
 
-    def light_3d(self, r, amp, Rs, e1=0, e2=0):
+    def light_3d(self, r, amp, Rs, e1=0, e2=0, **kwargs):
         """
 
         :param r: 3d radius (in angular units)
@@ -122,13 +122,11 @@ class HernquistEllipse(object):
         rho0 = self.lens.sigma2rho(amp, Rs)
         return self.lens.density(r, rho0, Rs)
 
-    def total_flux(self, amp, Rs, e1=0, e2=0):
+    def total_flux(self, amp, Rs, **kwargs):
         """
 
         :param amp: surface brightness amplitude
         :param Rs: scale radius: half-light radius = Rs / 0.551
-        :param e1: eccentricity component
-        :param e2: eccentricity component
         :return: total integrated flux
         """
         return self.spherical.total_flux(amp=amp, Rs=Rs)

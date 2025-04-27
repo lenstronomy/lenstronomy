@@ -244,7 +244,13 @@ class Optimizer(object):
         return self._kwargs_multiplane_model
 
     def optimize(
-        self, n_particles=50, n_iterations=250, verbose=False, threadCount=1, seed=None, minimize_method='Nelder-Mead'
+        self,
+        n_particles=50,
+        n_iterations=250,
+        verbose=False,
+        threadCount=1,
+        seed=None,
+        minimize_method="Nelder-Mead",
     ):
         """
 
@@ -267,7 +273,9 @@ class Optimizer(object):
 
         else:
             kwargs = self._param_class.kwargs_lens
-        kwargs_lens_final, source_penalty = self._fit_amoeba(kwargs, verbose, minimize_method)
+        kwargs_lens_final, source_penalty = self._fit_amoeba(
+            kwargs, verbose, minimize_method
+        )
         source_x_array, source_y_array = self.ray_shooting_method(
             self.x_image, self.y_image, kwargs
         )
@@ -308,7 +316,7 @@ class Optimizer(object):
             print("total chi^2: ", self._penalty_function(args_best))
         return kwargs
 
-    def _fit_amoeba(self, kwargs, verbose, method='Nelder-Mead'):
+    def _fit_amoeba(self, kwargs, verbose, method="Nelder-Mead"):
         """
         Executes the downhill simplex optimization with scipy
         :param kwargs: keyword arguments to initialize the optimization

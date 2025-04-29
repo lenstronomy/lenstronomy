@@ -30,7 +30,7 @@ class Optimizer(object):
         ray_shooting_class,
         parameter_class,
         tol_source=1e-5,
-        tol_simplex_func=1e-3,
+        tol_simplex_func=1e-6,
         simplex_n_iterations=400,
         pso_convergence_mean=50000,
         particle_swarm=True,
@@ -244,7 +244,13 @@ class Optimizer(object):
         return self._kwargs_multiplane_model
 
     def optimize(
-        self, n_particles=50, n_iterations=250, verbose=False, threadCount=1, seed=None
+        self,
+        n_particles=50,
+        n_iterations=250,
+        verbose=False,
+        threadCount=1,
+        seed=None,
+        minimize_method="Nelder-Mead",
     ):
         """
 
@@ -253,6 +259,7 @@ class Optimizer(object):
         :param verbose: whether to print stuff
         :param threadCount: integer; number of threads in multi-threading mode
         :param seed: sets a random seed for reproducibility
+        :param minimize_method:  optimization algorithm to be used by scipy.optimize.minimize
         :return: keyword arguments that map (x_image, y_image) to the same source coordinate (source_x, source_y)
         """
         if seed is not None:
@@ -266,7 +273,9 @@ class Optimizer(object):
 
         else:
             kwargs = self._param_class.kwargs_lens
-        kwargs_lens_final, source_penalty = self._fit_amoeba(kwargs, verbose)
+        kwargs_lens_final, source_penalty = self._fit_amoeba(
+            kwargs, verbose, minimize_method
+        )
         source_x_array, source_y_array = self.ray_shooting_method(
             self.x_image, self.y_image, kwargs
         )
@@ -307,8 +316,15 @@ class Optimizer(object):
             print("total chi^2: ", self._penalty_function(args_best))
         return kwargs
 
-    def _fit_amoeba(self, kwargs, verbose):
-        """Executes the downhill simplex."""
+    def _fit_amoeba(self, kwargs, verbose, method="Nelder-Mead"):
+        """
+        Executes the downhill simplex optimization with scipy
+        :param kwargs: keyword arguments to initialize the optimization
+        :param verbose: bool; if True, make print statements
+        :param method: optimization algorithm to be used by scipy.optimize.minimize;
+        see documentation in scipy: https://docs.scipy.org/doc/scipy/reference/optimize.html#module-scipy.optimize
+        :return: best-fit keyword arguments, and source-plane punishing term used to enforce solution of lens eqn.
+        """
 
         args_init = self._param_class.kwargs_to_args(kwargs)
         options = {
@@ -316,7 +332,6 @@ class Optimizer(object):
             "fatol": self._tol_simplex_func,
             "maxiter": self._simplex_n_iterations * len(args_init),
         }
-        method = "Nelder-Mead"
         if verbose:
             print("starting amoeba... ")
         opt = minimize(

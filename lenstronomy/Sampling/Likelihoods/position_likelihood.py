@@ -305,17 +305,16 @@ class PositionLikelihood(object):
     def source_position_dist(
         self, kwargs_lens, kwargs_ps, lens_model, z_sources
     ):
-        """Calculates the distances between source positions from images
+        """Calculates the distances between source positions from images.
 
         :param kwargs_lens: lens model keyword argument list
         :param kwargs_ps: point source keyword argument list
         :param lens_model: instance of the LensModel class object, used in
             change_source_redshift funciton
         :param z_sources: list of redshifts for each of the images. Used in
-            change_source_redshift function
-        :return diffs_x, diffs_y:
-            lists of floats representing the difference between each calculated source
-            position and the mean (x and y) for each source.
+            change_source_redshift function :return diffs_x, diffs_y: lists of floats
+            representing the difference between each calculated source position and the
+            mean (x and y) for each source.
         """
 
         ## Setting up the data and calculating the source positions        
@@ -351,20 +350,20 @@ class PositionLikelihood(object):
         self, kwargs_lens, kwargs_ps, lens_model, z_sources
     ):
         """Calculates the rms scatter for the sources' x and y positions wrt the mean of
-        the sources calculated for each group of multiple images. Uses the source_position_dist function.
+        the sources calculated for each group of multiple images. Uses the
+        source_position_dist function.
 
         :param kwargs_lens: lens model keyword argument list
         :param kwargs_ps: point source keyword argument list
         :param lens_model: instance of the LensModel class object, used in
             change_source_redshift funciton
         :param z_sources: list of redshifts for each of the images. Used in
-            change_source_redshift function
-        :return rms_x, rms_y:
-            floats representing the rms scatter of the source positions (x and y)
-            calculated wrt the mean of the calculated positions for each source.
-            If there is only one source, the rmse returned is 0, or if the number
-            of images for a source is 1 or less the distance^2 for that source is 0
-            and is added to the sum for the rmse calculation.
+            change_source_redshift function :return rms_x, rms_y: floats representing
+            the rms scatter of the source positions (x and y) calculated wrt the mean of
+            the calculated positions for each source. If there is only one source, the
+            rmse returned is 0, or if the number of images for a source is 1 or less the
+            distance^2 for that source is 0 and is added to the sum for the rmse
+            calculation.
         """
 
         # ## Setting up the data and calculating the source positions

@@ -127,7 +127,10 @@ class SinglePlane(ProfileListBase):
                 f_x += f_x_i
                 f_y += f_y_i
 
-        return f_x.__array__() * self._alpha_scaling, f_y.__array__() * self._alpha_scaling
+        return (
+            f_x.__array__() * self._alpha_scaling,
+            f_y.__array__() * self._alpha_scaling,
+        )
 
     def hessian(self, x, y, kwargs, k=None):
         """Hessian matrix.
@@ -147,7 +150,12 @@ class SinglePlane(ProfileListBase):
         # NOTE: jax arrays are converted back into regular numpy arrays in cases where use_jax is True.
         if isinstance(k, int):
             f_xx, f_xy, f_yx, f_yy = self.func_list[k].hessian(x, y, **kwargs[k])
-            return f_xx.__array__(), f_xy.__array__(), f_yx.__array__(), f_yy.__array__()
+            return (
+                f_xx.__array__(),
+                f_xy.__array__(),
+                f_yx.__array__(),
+                f_yy.__array__(),
+            )
 
         bool_list = self._bool_list(k)
         f_xx, f_xy, f_yx, f_yy = (

@@ -63,8 +63,9 @@ class MultiPlaneDecoupled(MultiPlane):
             y-component of the deflection angle at (x,y)
         :param z_interp_list: a list of redshifts corresponding to the
             alpha_x_interp_list and alpha_y_interp_list entries
-        :param use_jax: bool, if True, uses deflector profiles from jaxtronomy.
-            Can also be a list of bools, selecting which models in the lens_model_list to use from jaxtronomy
+        :param use_jax: bool, if True, uses deflector profiles from jaxtronomy. Can also
+            be a list of bools, selecting which models in the lens_model_list to use
+            from jaxtronomy
         """
         self._alphax_interp_foreground = alpha_x_interp_foreground
         self._alphay_interp_foreground = alpha_y_interp_foreground

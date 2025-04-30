@@ -88,11 +88,10 @@ class TestLensModel(object):
         # Tests that the result is converted back from jax array to np array
         result = lensModel.potential(x, y, kwargs_lens)
         assert isinstance(result, np.ndarray)
+        result = lensModel.potential(x, y, kwargs_lens, k=1)
+        assert isinstance(result, np.ndarray)
 
         resultx, resulty = lensModel.ray_shooting(x, y, kwargs_lens)
-        assert isinstance(resultx, np.ndarray) and isinstance(resulty, np.ndarray)
-
-        resultx, resulty = lensModel.ray_shooting(x, y, kwargs_lens, k=1)
         assert isinstance(resultx, np.ndarray) and isinstance(resulty, np.ndarray)
 
         fxx, fxy, fyx, fyy = lensModel.hessian(x, y, kwargs_lens)

@@ -89,6 +89,9 @@ class TestLensModel(object):
         resultx, resulty = lensModel.ray_shooting(x, y, kwargs_lens)
         assert isinstance(resultx, np.ndarray) and isinstance(resulty, np.ndarray)
 
+        resultx, resulty = lensModel.ray_shooting(x, y, kwargs_lens, k=1)
+        assert isinstance(resultx, np.ndarray) and isinstance(resulty, np.ndarray)
+
         fxx, fxy, fyx, fyy = lensModel.hessian(x, y, kwargs_lens)
         assert isinstance(fxx, np.ndarray)
         assert isinstance(fxy, np.ndarray)

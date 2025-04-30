@@ -4,6 +4,9 @@ from lenstronomy.Util.cosmo_util import get_astropy_cosmology
 import matplotlib.pyplot as plt
 import math
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
+from lenstronomy.PointSource.point_source import PointSource
+from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
+
 
 __all__ = ["PositionLikelihood"]
 
@@ -298,105 +301,100 @@ class PositionLikelihood(object):
                     logL -= chi2 / 2
         return logL
 
-    def source_position_rms_scatter(
+
+    def source_position_dist(
         self, kwargs_lens, kwargs_ps, lens_model, z_sources
     ):
-        """Calculates the rms scatter for the sources' x and y positions wrt the mean of
-        the sources calculated for each group of multiple images.
+        """Calculates the distances between source positions from images
 
         :param kwargs_lens: lens model keyword argument list
         :param kwargs_ps: point source keyword argument list
         :param lens_model: instance of the LensModel class object, used in
             change_source_redshift funciton
         :param z_sources: list of redshifts for each of the images. Used in
-            change_source_redshift function :return diffs_x, diffs_y, rms_x, rms_y:
+            change_source_redshift function
+        :return diffs_x, diffs_y:
             lists of floats representing the difference between each calculated source
-            position and the mean (x and y), and the rms scatter of the source positions
-            (x and y) wrt the mean of the calculated positions for each source.
+            position and the mean (x and y) for each source.
         """
 
-        num_sources = len(kwargs_ps)
-        lensModelExtensions = LensModelExtensions(lensModel=lens_model)
-        num_images_list = []
-        for i in range(len(kwargs_ps)):
-            num_images_list.append(len(kwargs_ps[i]))
+        ## Setting up the data and calculating the source positions        
+        x_image_data, y_image_data = self._pointSource.image_position(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens, k=None, original_position=False, additional_images=False)
+        dists_x = [np.zeros_like(x_image_data[k]) for k in range(len(x_image_data))]
+        dists_y = [np.zeros_like(y_image_data[k]) for k in range(len(y_image_data))]
+        source_x, source_y = self._pointSource.source_position(kwargs_ps, kwargs_lens)
+        redshift_list = self._pointSource._redshift_list
 
-        x_image_data = []
-        y_image_data = []
-        x_sources = []
-        y_sources = []
-        cutoff = 0
-        for i in range(num_sources):
-            x_image_data.append(kwargs_ps[i]["ra_image"])
-            y_image_data.append(kwargs_ps[i]["dec_image"])
-            for j in range(len(x_image_data[i])):
-                lensModelExtensions._lensModel.change_source_redshift(
-                    z_source=z_sources[j + cutoff]
-                )
-                x_source_i, y_source_i = lens_model.ray_shooting(
-                    x_image_data[i][j], y_image_data[i][j], kwargs_lens, k=None
-                )
-                x_sources.append(x_source_i)
-                y_sources.append(y_source_i)
-            cutoff += num_images_list[i]
+        for k in range(len(kwargs_ps)):
+            x_image = x_image_data[k]
+            y_image = y_image_data[k]
+            
+            self._lensModel.change_source_redshift(redshift_list[k])
+            # calculating the individual source positions from the image positions
+            k_list = self._pointSource.k_list(k)
+            for i in range(len(x_image)):
+                if k_list is not None:
+                    k_lens = k_list[i]
+                else:
+                    k_lens = None
+                # Calculate each image position individually
+                x_source_i, y_source_i = self._lensModel.ray_shooting(x_image[i], y_image[i], kwargs_lens, k=k_lens)
+                # Take the difference between each calculated source positions and the mean for that group of multiple images
+                dists_x[k][i] = x_source_i - source_x[k]
+                dists_y[k][i] = y_source_i - source_y[k]
 
-        num_images_list = []
-        for i in range(num_sources):
-            num_images_list.append(len(kwargs_ps[i]["ra_image"]))
-
-        grouped_xs = []
-        grouped_ys = []
-        cutoff = 0
-        for i in range(num_sources):
-            x_source_temp = []
-            y_source_temp = []
-            for j in range(num_images_list[i]):
-                x_source_temp.append(x_sources[j + cutoff])
-                y_source_temp.append(y_sources[j + cutoff])
-            cutoff += num_images_list[i]
-            grouped_xs.append(x_source_temp)
-            grouped_ys.append(y_source_temp)
-
-        means_x = []
-        means_y = []
-        for i in range(num_sources):
-            mean_x = sum(grouped_xs[i]) / (num_images_list[i])
-            means_x.append(mean_x)
-            mean_y = sum(grouped_ys[i]) / (num_images_list[i])
-            means_y.append(mean_y)
-
-        diffs_x = []
-        diffs_y = []
-        for i in range(num_sources):
-            for j in range(num_images_list[i]):
-                diff_x_temp = grouped_xs[i][j] - means_x[i]
-                diffs_x.append(diff_x_temp)
-                diff_y_temp = grouped_ys[i][j] - means_y[i]
-                diffs_y.append(diff_y_temp)
-
-        diffs_x2 = []
-        diffs_y2 = []
-        for i in range(len(diffs_x)):
-            diff_x2 = diffs_x[i] ** 2
-            diffs_x2.append(diff_x2)
-            diff_y2 = diffs_y[i] ** 2
-            diffs_y2.append(diff_y2)
-
-        sum_x = sum(diffs_x2)
-        sum_y = sum(diffs_y2)
+        return dists_x, dists_y
 
 
-        if num_sources == 1:
-            num_div =  num_images_list[0]-1
-            mean = (1/(num_div))
-            rms_x = math.sqrt(mean*sum_x)
-            rms_y = math.sqrt(mean*sum_y)
-        
-        elif num_sources > 1:
-            rms_x = np.sqrt((1/(num_sources-1))*sum_x)
-            rms_y = np.sqrt((1/(num_sources-1))*sum_y)
+    def source_position_rmse(
+        self, kwargs_lens, kwargs_ps, lens_model, z_sources
+    ):
+        """Calculates the rms scatter for the sources' x and y positions wrt the mean of
+        the sources calculated for each group of multiple images. Uses the source_position_dist function.
 
-        return diffs_x, diffs_y, rms_x, rms_y
+        :param kwargs_lens: lens model keyword argument list
+        :param kwargs_ps: point source keyword argument list
+        :param lens_model: instance of the LensModel class object, used in
+            change_source_redshift funciton
+        :param z_sources: list of redshifts for each of the images. Used in
+            change_source_redshift function
+        :return rms_x, rms_y:
+            floats representing the rms scatter of the source positions (x and y)
+            calculated wrt the mean of the calculated positions for each source.
+            If there is only one source, the rmse returned is 0, or if the number
+            of images for a source is 1 or less the distance^2 for that source is 0
+            and is added to the sum for the rmse calculation.
+        """
+
+        # ## Setting up the data and calculating the source positions
+        dists_x, dists_y = PositionLikelihood.source_position_dist(self, kwargs_lens=kwargs_lens, kwargs_ps=kwargs_ps, lens_model=lens_model, z_sources=z_sources)
+
+        ## Square the differences
+        dists_x2 = 0
+        dists_y2 = 0
+        num = 0
+
+        if len(dists_x) <= 1:
+            dists_x2 = dists_x2
+            dists_y2 = dists_y2
+
+        else:
+            for k in range(len(dists_x)):
+                if len(dists_x[k]) >= 2:
+                    ## Sum the squared differences
+                    for i in range(len(dists_x[k])):
+                        dists_x2 += dists_x[k][i] ** 2
+                        dists_y2 += dists_y[k][i] ** 2
+                        num += 1
+                elif len(dists_x[k]) <= 1:
+                    dists_x2 = dists_x2
+                    dists_y2 = dists_y2
+
+        rmse_x = np.sqrt((1/(num-1))*dists_x2)
+        rmse_y = np.sqrt((1/(num-1))*dists_y2)
+
+        return rmse_x, rmse_y
+
 
     @property
     def num_data(self):

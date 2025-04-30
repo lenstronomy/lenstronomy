@@ -10,6 +10,7 @@ from lenstronomy.Util.cosmo_util import get_astropy_cosmology
 from lenstronomy.Util.param_util import shear_polar2cartesian
 import numpy as np
 from lenstronomy.Workflow import fitting_sequence
+import unittest
 
 
 class TestPositionLikelihood(object):
@@ -26,7 +27,6 @@ class TestPositionLikelihood(object):
             cosmology_sampling=True,
             cosmology_model="FlatLambdaCDM",
         )
-        lensModel_rmse = LensModel(lens_model_list=["SIS"])
         solver = LensEquationSolver(lensModel=lensModel)
         solver_mp = LensEquationSolver(lensModel=lensModel_mp)
 
@@ -36,9 +36,6 @@ class TestPositionLikelihood(object):
         self._kwargs_lens_mp = [
             {"theta_E": 1, "e1": 0.1, "e2": -0.03, "center_x": 0, "center_y": 0},
             {"theta_E": 1, "e1": 0.1, "e2": -0.03, "center_x": 0.02, "center_y": 0.01},
-        ]
-        self.kwargs_lens_rmse = [
-            {"thets_E": 1, 'center_x': 0, 'center_y': 0}
         ]
         self.kwargs_lens_eqn_solver = {"min_distance": 0.1, "search_window": 10}
         x_pos, y_pos = solver.image_position_from_source(
@@ -67,11 +64,6 @@ class TestPositionLikelihood(object):
         point_source_class_mp = PointSource(
             point_source_type_list=["LENSED_POSITION"],
             lens_model=lensModel_mp,
-            kwargs_lens_eqn_solver=self.kwargs_lens_eqn_solver,
-        )
-        point_source_class_rmse = PointSource(
-            point_source_type_list=["LENSED_POSITION", "LENSED_POSITION"],
-            lens_model=lensModel_rmse,
             kwargs_lens_eqn_solver=self.kwargs_lens_eqn_solver,
         )
 
@@ -116,12 +108,6 @@ class TestPositionLikelihood(object):
             image_position_likelihood=True,
             ra_image_list=[x_pos],
             dec_image_list=[y_pos],
-        )
-
-        self.likelihood_rmse = PositionLikelihood(
-            point_source_class=point_source_class_rmse,
-            image_position_uncertainty=0.005,
-            source_position_rmse=True,
         )
 
         self._x_pos, self._y_pos = x_pos, y_pos
@@ -297,179 +283,89 @@ class TestPositionLikelihood(object):
         npt.assert_almost_equal(logL_cosmo_base, logL_cosmo_shift, decimal=4)
 
     def test_source_position_dist(self):
-        likelihood_rmse_copy = copy.deepcopy(self.likelihood_rmse)
-        ra_image_list = [[1, 0, -1, 0], [1, 0, -1, 0]]
-        dec_image_list= [[0, 1, 0, -1], [0, 1, 0, -1]]
-        z_sources = [1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5]
-        kwargs_ps = [{"ra_image": ra_image_list[0], "dec_image": dec_image_list[0]}, {"ra_image": ra_image_list[1], "dec_image": dec_image_list[1]}]
         lensModel_rmse = LensModel(lens_model_list=["SIS"])
-
-        # dists_x, dists_y = likelihood_rmse_copy.source_position_dist(
-        #     kwargs_lens=self.kwargs_lens_rmse,
-        #     kwargs_ps=kwargs_ps,
-        #     lens_model=lensModel_rmse,
-        #     z_sources=z_sources,
-        # )
-
-        dists_x, dists_y = self.likelihood_rmse.source_position_dist(
-            kwargs_lens=self.kwargs_lens_rmse,
-            kwargs_ps=kwargs_ps,
+        kwargs_lens_rmse = [{"theta_E": 1, 'center_x': 0, 'center_y': 0}]
+        point_source_class_rmse = PointSource(
+            point_source_type_list=["LENSED_POSITION", "LENSED_POSITION"],
             lens_model=lensModel_rmse,
-            z_sources=z_sources,
-
+            kwargs_lens_eqn_solver=self.kwargs_lens_eqn_solver,
+        )
+        likelihood_rmse = PositionLikelihood(
+            point_source_class=point_source_class_rmse,
+            image_position_uncertainty=0.005
         )
 
-        npt.assert_allclose(dists_x, 0.0, atol=1e-10)
-        npt.assert_allclose(dists_y, 0.0, atol=1e-10)
+        ra_image_list_1 = [[1, 0, -1, 0], [1, 0, -1, 0]]
+        dec_image_list_1 = [[0, 1, 0, -1], [0, 1, 0, -1]]
+        z_sources = [1.5, 1.5]
+        kwargs_ps_1 = [{"ra_image": ra_image_list_1[0], "dec_image": dec_image_list_1[0]}, {"ra_image": ra_image_list_1[1], "dec_image": dec_image_list_1[1]}]
+
+        ra_image_list_2 = [[-1.5, 2.75,- 3, 4.25], [5, -6.75, 7.5, -8.25]]
+        dec_image_list_2 = [[9.25, -8.5, 7.75, 6], [5.25, 4, -3.75, 2.5]]
+        kwargs_ps_2 = [{"ra_image": ra_image_list_2[0], "dec_image": dec_image_list_2[0]}, {"ra_image": ra_image_list_2[1], "dec_image": dec_image_list_2[1]}]
+
+        dists_x_1, dists_y_1 = likelihood_rmse.source_position_dist(
+            kwargs_lens=kwargs_lens_rmse,
+            kwargs_ps=kwargs_ps_1,
+            lens_model=lensModel_rmse,
+            z_sources=z_sources,
+        )
+
+        npt.assert_allclose(dists_x_1, 0.0, atol=1e-10)
+        npt.assert_allclose(dists_y_1, 0.0, atol=1e-10)
+
+        dists_x_2, dists_y_2 = likelihood_rmse.source_position_dist(
+            kwargs_lens=kwargs_lens_rmse,
+            kwargs_ps=kwargs_ps_2,
+            lens_model=lensModel_rmse,
+            z_sources=z_sources,
+        )
+
+        npt.assert_equal(np.any(np.not_equal(dists_x_2,0.0)), True)
+        npt.assert_equal(np.any(np.not_equal(dists_y_2,0.0)), True)
 
     def test_source_position_rmse(self):
-        # create point_source_class as above, then use the PositionLikelihood() with rms scatter as True, can even test that with the wrong things to see if it breaks
-        likelihood_rmse_copy = copy.deepcopy(self.likelihood_rmse)
-        ra_image_list = [[1, 0, -1, 0], [1, 0, -1, 0]]
-        dec_image_list= [[0, 1, 0, -1], [0, 1, 0, -1]]
-        z_sources = [1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5]
-        kwargs_ps = [{"ra_image": ra_image_list[0], "dec_image": dec_image_list[0]}, {"ra_image": ra_image_list[1], "dec_image": dec_image_list[1]}]
         lensModel_rmse = LensModel(lens_model_list=["SIS"])
+        kwargs_lens_rmse = [{"theta_E": 1, 'center_x': 0, 'center_y': 0}]
+        point_source_class_rmse = PointSource(
+            point_source_type_list=["LENSED_POSITION", "LENSED_POSITION"],
+            lens_model=lensModel_rmse,
+            kwargs_lens_eqn_solver=self.kwargs_lens_eqn_solver,
+        )
+        likelihood_rmse = PositionLikelihood(
+            point_source_class=point_source_class_rmse,
+            image_position_uncertainty=0.005
+        )
 
-        # rmse_x, rmse_y = likelihood_rmse_copy.source_position_rmse(
-        #     kwargs_lens=self.kwargs_lens_rmse,
-        #     kwargs_ps=kwargs_ps,
-        #     lens_model=lensModel_rmse,
-        #     z_sources=z_sources,
-        # )
+        ra_image_list_1 = [[1, 0, -1, 0], [1, 0, -1, 0]]
+        dec_image_list_1 = [[0, 1, 0, -1], [0, 1, 0, -1]]
+        z_sources = [1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5]
+        kwargs_ps_1 = [{"ra_image": ra_image_list_1[0], "dec_image": dec_image_list_1[0]}, {"ra_image": ra_image_list_1[1], "dec_image": dec_image_list_1[1]}]
 
-        rmse_x, rmse_y = self.likelihood_rmse.source_position_rmse(kwargs_lens=self.kwargs_lens_rmse,
-            kwargs_ps=kwargs_ps,
+        ra_image_list_2 = [[-1.5, 2.75,- 3, 4.25], [5, -6.75, 7.5, -8.25]]
+        dec_image_list_2 = [[9.25, -8.5, 7.75, 6], [5.25, 4, -3.75, 2.5]]
+        kwargs_ps_2 = [{"ra_image": ra_image_list_2[0], "dec_image": dec_image_list_2[0]}, {"ra_image": ra_image_list_2[1], "dec_image": dec_image_list_2[1]}]
+
+        rmse_x_1, rmse_y_1 = likelihood_rmse.source_position_rmse(
+            kwargs_lens=kwargs_lens_rmse,
+            kwargs_ps=kwargs_ps_1,
             lens_model=lensModel_rmse,
             z_sources=z_sources,
         )
 
-        npt.assert_allclose(rmse_x, 0.0, atol=1e-10)
-        npt.assert_allclose(rmse_y, 0.0, atol=1e-10)
-        
+        npt.assert_allclose(rmse_x_1, 0.0, atol=1e-10)
+        npt.assert_allclose(rmse_y_1, 0.0, atol=1e-10)
 
-        # .source_position_rms_scatter(kwargs_lens=kwargs_lens, kwargs_ps=kwargs_ps, lens_model=, z_sources=z_sources)
-        
-        # lens_model_list = ["SIS"]
-        # cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.0)
-        # num_sources = 2
-        # astrometry_sigma = 0.005
-        # z_lens = 0.5
-        # z_source = [1.5, 1.5 , 1.5, 1.5, 1.5, 1.5, 1.5, 1.5]
-        # lensModel = LensModel(
-        #     lens_model_list=lens_model_list,
-        #     cosmo=cosmo,
-        #     z_lens=z_lens,
-        #     z_source=z_source[0],
-        # )
+        rmse_x_2, rmse_y_2 = likelihood_rmse.source_position_rmse(
+            kwargs_lens=kwargs_lens_rmse,
+            kwargs_ps=kwargs_ps_2,
+            lens_model=lensModel_rmse,
+            z_sources=z_sources,
+        )
 
-        # kwargs_lens_init = [{'theta_E': 0.5, 'center_x': 0, 'center_y': 0}]
-        # fixed_lens = [{'theta_E': 0.5, 'center_x': 0, 'center_y': 0}]
-        # kwargs_lens_sigma = [{'theta_E': 0.1, 'center_x': 1, 'center_y': 1}]
-        # kwargs_lower_lens = [{'theta_E': 0.25, 'center_x': -5, 'center_y': -5}]
-        # kwargs_upper_lens = [{'theta_E': 0.75, 'center_x': 5, 'center_y': 5}]
+        npt.assert_equal((np.not_equal(rmse_x_2, 0.0)), True)
+        npt.assert_equal((np.not_equal(rmse_y_2, 0.0)), True)
 
-        # kwargs_ra_image_list = [[0.5, -0.5, 0, 0], [0.5, -0.5, 0, 0]]
-        # kwargs_dec_image_list = [[0, 0, 0.5, -0.5], [0, 0, 0.5, -0.5]]
-
-        # point_source_list = []
-        # num_images_list = []
-        # kwargs_ps_init = []
-        # fixed_ps = []
-        # kwargs_ps_sigma = []
-        # kwargs_lower_ps = []
-        # kwargs_upper_ps = []
-        # for i in range(num_sources):
-        #     point_source_list.append("LENSED_POSITION")
-        #     num_images_list.append(4)
-        #     kwargs_ps_init.append({'ra_image': kwargs_ra_image_list[i], 'dec_image': kwargs_dec_image_list[i]})
-        #     fixed_ps.append({'ra_image': kwargs_ra_image_list, 'dec_image': kwargs_dec_image_list})
-        #     kwargs_ps_sigma.append({'ra_image': 0.01 * np.ones(len(kwargs_ra_image_list[i])), 'dec_image': 0.01 * np.ones(len(kwargs_dec_image_list[i]))})
-        #     kwargs_lower_ps.append({'ra_image': -10 * np.ones(len(kwargs_ra_image_list[i])), 'dec_image': -10 * np.ones(len(kwargs_dec_image_list[i]))})
-        #     kwargs_upper_ps.append({'ra_image': 10 * np.ones(len(kwargs_ra_image_list[i])), 'dec_image': 10 * np.ones(len(kwargs_dec_image_list[i]))})
-
-        # kwargs_special_init = {}
-        # fixed_special = {}
-        # kwargs_special_sigma = {}
-        # kwargs_lower_special = {}
-        # kwargs_upper_special = {}
-
-        # window_size = 0.1
-        # grid_number = 100
-        # kwargs_flux_compute = {
-        #     "source_type": "INF",
-        #     "window_size": window_size,
-        #     "grid_number": grid_number,
-        # }
-        # lens_params = [
-        #     kwargs_lens_init,
-        #     fixed_lens,
-        #     kwargs_lens_sigma,
-        #     kwargs_lower_lens,
-        #     kwargs_upper_lens,
-        # ]
-        # ps_params = [
-        #     kwargs_ps_init,
-        #     fixed_ps,
-        #     kwargs_ps_sigma,
-        #     kwargs_lower_ps,
-        #     kwargs_upper_ps,
-        # ]
-        # special_params = [
-        #     kwargs_special_init,
-        #     fixed_special,
-        #     kwargs_special_sigma,
-        #     kwargs_lower_special,
-        #     kwargs_upper_special,
-        # ]
-
-        # kwargs_data_joint = {
-        #     "ra_image_list": kwargs_ra_image_list,
-        #     "dec_image_list": kwargs_dec_image_list,
-        # }
-        # kwargs_model = {
-        #     "lens_model_list": lens_model_list,
-        #     "point_source_model_list": point_source_list,
-        #     "z_source_convention": z_source,
-        #     "z_lens": z_lens,
-        #     "cosmo": cosmo,
-        # }
-        # kwargs_constraints = {
-        #     "num_point_source_list": num_images_list
-        # }
-        # kwargs_likelihood = {
-        #     "image_position_uncertainty": astrometry_sigma,
-        #     "image_position_likelihood": True,
-        #     "time_delay_likelihood": False,
-        #     "flux_ratio_likelihood": False,
-        #     "kwargs_flux_compute": kwargs_flux_compute,
-        #     "check_bounds": True,
-        # }
-        # kwargs_params = {
-        #     "lens_model": lens_params,
-        #     "point_source_model": ps_params,
-        #     "special": special_params,
-        # }
-
-        # fitting_seq = fitting_sequence.FittingSequence(
-        #     kwargs_data_joint,
-        #     kwargs_model,
-        #     kwargs_constraints,
-        #     kwargs_likelihood,
-        #     kwargs_params,
-        # )
-
-        # rms_x, rms_y = (
-        #     fitting_seq.likelihoodModule._position_likelihood.source_position_rmse(
-        #         kwargs_ps=kwargs_ps_init,
-        #         kwargs_lens=kwargs_lens_init,
-        #         lens_model=lensModel,
-        #         z_sources=z_source,
-        #     )
-        # )
-
-        # npt.assert_allclose(rms_x, 0.0, atol=1e-10)
-        # npt.assert_allclose(rms_y, 0.0, atol=1e-10)
 
 
 if __name__ == "__main__":

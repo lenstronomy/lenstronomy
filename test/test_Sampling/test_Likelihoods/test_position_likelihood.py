@@ -282,6 +282,7 @@ class TestPositionLikelihood(object):
 
         npt.assert_almost_equal(logL_cosmo_base, logL_cosmo_shift, decimal=4)
 
+<<<<<<< HEAD
     def test_source_position_dist(self):
         lensModel_rmse = LensModel(lens_model_list=["SIS"])
         kwargs_lens_rmse = [{"theta_E": 1, 'center_x': 0, 'center_y': 0}]
@@ -309,6 +310,136 @@ class TestPositionLikelihood(object):
             kwargs_ps=kwargs_ps_1,
             lens_model=lensModel_rmse,
             z_sources=z_sources,
+=======
+    def test_source_position_rms_scatter(self):
+        lens_model_list = ["SIS"]
+        cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.0)
+        num_sources = 2
+        astrometry_sigma = 0.005
+        z_lens = 0.5
+        z_source = [1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5]
+        lensModel = LensModel(
+            lens_model_list=lens_model_list,
+            cosmo=cosmo,
+            z_lens=z_lens,
+            z_source=z_source[0],
+        )
+
+        kwargs_lens_init = [{"theta_E": 0.5, "center_x": 0, "center_y": 0}]
+        fixed_lens = [{"theta_E": 0.5, "center_x": 0, "center_y": 0}]
+        kwargs_lens_sigma = [{"theta_E": 0.1, "center_x": 1, "center_y": 1}]
+        kwargs_lower_lens = [{"theta_E": 0.25, "center_x": -5, "center_y": -5}]
+        kwargs_upper_lens = [{"theta_E": 0.75, "center_x": 5, "center_y": 5}]
+
+        kwargs_ra_image_list = [[0.5, -0.5, 0, 0], [0.5, -0.5, 0, 0]]
+        kwargs_dec_image_list = [[0, 0, 0.5, -0.5], [0, 0, 0.5, -0.5]]
+
+        point_source_list = []
+        num_images_list = []
+        kwargs_ps_init = []
+        fixed_ps = []
+        kwargs_ps_sigma = []
+        kwargs_lower_ps = []
+        kwargs_upper_ps = []
+        for i in range(num_sources):
+            point_source_list.append("LENSED_POSITION")
+            num_images_list.append(4)
+            kwargs_ps_init.append(
+                {
+                    "ra_image": kwargs_ra_image_list[i],
+                    "dec_image": kwargs_dec_image_list[i],
+                }
+            )
+            fixed_ps.append(
+                {"ra_image": kwargs_ra_image_list, "dec_image": kwargs_dec_image_list}
+            )
+            kwargs_ps_sigma.append(
+                {
+                    "ra_image": 0.01 * np.ones(len(kwargs_ra_image_list[i])),
+                    "dec_image": 0.01 * np.ones(len(kwargs_dec_image_list[i])),
+                }
+            )
+            kwargs_lower_ps.append(
+                {
+                    "ra_image": -10 * np.ones(len(kwargs_ra_image_list[i])),
+                    "dec_image": -10 * np.ones(len(kwargs_dec_image_list[i])),
+                }
+            )
+            kwargs_upper_ps.append(
+                {
+                    "ra_image": 10 * np.ones(len(kwargs_ra_image_list[i])),
+                    "dec_image": 10 * np.ones(len(kwargs_dec_image_list[i])),
+                }
+            )
+
+        kwargs_special_init = {}
+        fixed_special = {}
+        kwargs_special_sigma = {}
+        kwargs_lower_special = {}
+        kwargs_upper_special = {}
+
+        window_size = 0.1
+        grid_number = 100
+        kwargs_flux_compute = {
+            "source_type": "INF",
+            "window_size": window_size,
+            "grid_number": grid_number,
+        }
+        lens_params = [
+            kwargs_lens_init,
+            fixed_lens,
+            kwargs_lens_sigma,
+            kwargs_lower_lens,
+            kwargs_upper_lens,
+        ]
+        ps_params = [
+            kwargs_ps_init,
+            fixed_ps,
+            kwargs_ps_sigma,
+            kwargs_lower_ps,
+            kwargs_upper_ps,
+        ]
+        special_params = [
+            kwargs_special_init,
+            fixed_special,
+            kwargs_special_sigma,
+            kwargs_lower_special,
+            kwargs_upper_special,
+        ]
+
+        kwargs_data_joint = {
+            "ra_image_list": kwargs_ra_image_list,
+            "dec_image_list": kwargs_dec_image_list,
+        }
+        kwargs_model = {
+            "lens_model_list": lens_model_list,
+            "point_source_model_list": point_source_list,
+            "z_source_convention": z_source,
+            "z_lens": z_lens,
+            "cosmo": cosmo,
+        }
+        kwargs_constraints = {"num_point_source_list": num_images_list}
+        kwargs_likelihood = {
+            "image_position_uncertainty": astrometry_sigma,
+            "image_position_likelihood": True,
+            "time_delay_likelihood": False,
+            "flux_ratio_likelihood": False,
+            "kwargs_flux_compute": kwargs_flux_compute,
+            "check_bounds": True,
+        }
+        kwargs_params = {
+            "lens_model": lens_params,
+            "point_source_model": ps_params,
+            "special": special_params,
+        }
+
+        fitting_seq = fitting_sequence.FittingSequence(
+            kwargs_data_joint,
+            kwargs_model,
+            kwargs_constraints,
+            kwargs_likelihood,
+            kwargs_params,
+>>>>>>> 4a97f69063ecece272980fb2bb1c77d86e4dc057
         )
 
         npt.assert_allclose(dists_x_1, 0.0, atol=1e-10)

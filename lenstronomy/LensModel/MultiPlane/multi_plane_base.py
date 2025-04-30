@@ -347,7 +347,7 @@ class MultiPlaneBase(ProfileListBase):
         alpha_y = np.array(theta_y, dtype=float)
 
         # NOTE: jax arrays are converted back into regular numpy arrays in cases where use_jax is True.
-        
+
         i = 0
         z_lens_last = 0
         for i, index in enumerate(self._sorted_redshift_index):

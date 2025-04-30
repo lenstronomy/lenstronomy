@@ -75,7 +75,10 @@ class TestLensModel(object):
     def test_use_jax(self):
         x = np.array([1.0, 2.0])
         y = np.array([1.5, 2.5])
-        kwargs_lens = [{"Rs": 0.5, "alpha_Rs": 0.7}, {"Rs": 0.5, "alpha_Rs": 0.7, "r_trunc": 0.9}]
+        kwargs_lens = [
+            {"Rs": 0.5, "alpha_Rs": 0.7},
+            {"Rs": 0.5, "alpha_Rs": 0.7, "r_trunc": 0.9},
+        ]
 
         # Tests that the jaxtronomy profiles are being used
         lensModel = LensModel(["NFW", "TNFW"], use_jax=True)

@@ -9,23 +9,23 @@ import copy
 __all__ = ["Solver4Point"]
 
 _SUPPORTED_LENS_MODEL_SOLVER = [
-            "SPEP",
-            "SPEMD",
-            "PEMD",
-            "SIE",
-            "NIE",
-            "NFW_ELLIPSE_POTENTIAL",
-            "NFW_ELLIPSE_CSE",
-            "SHAPELETS_CART",
-            "CNFW_ELLIPSE_POTENTIAL",
-            "EPL",
-            "EPL_BOXYDISKY",
-            "EPL_BOXYDISKY_ELL",
-            "EPL_MULTIPOLE_M3M4",
-            "EPL_MULTIPOLE_M1M3M4",
-            "EPL_MULTIPOLE_M3M4_ELL",
-            "EPL_MULTIPOLE_M1M3M4_ELL",
-        ]
+    "SPEP",
+    "SPEMD",
+    "PEMD",
+    "SIE",
+    "NIE",
+    "NFW_ELLIPSE_POTENTIAL",
+    "NFW_ELLIPSE_CSE",
+    "SHAPELETS_CART",
+    "CNFW_ELLIPSE_POTENTIAL",
+    "EPL",
+    "EPL_BOXYDISKY",
+    "EPL_BOXYDISKY_ELL",
+    "EPL_MULTIPOLE_M3M4",
+    "EPL_MULTIPOLE_M1M3M4",
+    "EPL_MULTIPOLE_M3M4_ELL",
+    "EPL_MULTIPOLE_M1M3M4_ELL",
+]
 
 
 class Solver4Point(object):
@@ -36,7 +36,8 @@ class Solver4Point(object):
         if not lensModel.lens_model_list[0] in _SUPPORTED_LENS_MODEL_SOLVER:
             raise ValueError(
                 "first lens model must be supported by the solver: %s."
-                "Your choice was %s" % (_SUPPORTED_LENS_MODEL_SOLVER, lensModel.lens_model_list[0])
+                "Your choice was %s"
+                % (_SUPPORTED_LENS_MODEL_SOLVER, lensModel.lens_model_list[0])
             )
         if solver_type not in ["PROFILE", "PROFILE_SHEAR"]:
             raise ValueError(
@@ -201,7 +202,7 @@ class Solver4Point(object):
         return kwargs_list
 
     def _extract_array(self, kwargs_list):
-        """Inverse of _update_kwargs
+        """Inverse of _update_kwargs.
 
         :param kwargs_list:
         :return:
@@ -264,9 +265,8 @@ class Solver4Point(object):
         return x
 
     def add_fixed_lens(self, kwargs_fixed_lens_list, kwargs_lens_init):
-        """
-        updates kwargs_fixed_lens_list with the values of kwargs_lens_init for the parameters that are getting solved
-        for.
+        """Updates kwargs_fixed_lens_list with the values of kwargs_lens_init for the
+        parameters that are getting solved for.
 
         :param kwargs_fixed_lens_list:
         :param kwargs_lens_init:

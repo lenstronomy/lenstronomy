@@ -205,6 +205,29 @@ class TestLensCosmo(object):
         # compare
         npt.assert_almost_equal(mass_tot / m_star, 1, decimal=1)
 
+        rs = 0.001  # in Mpc
+
+        # test bijective transformation
+        sigma0, rs_angle = self.lensCosmo.hernquist_phys2angular(mass=m_star, rs=rs)
+
+        # test mass integrals
+        # make large grid
+        delta_pix = rs_angle / 30.0
+        x, y = util.make_grid(numPix=501, deltapix=delta_pix)
+        # compute convergence
+        from lenstronomy.LensModel.lens_model import LensModel
+
+        lens_model = LensModel(lens_model_list=["HERNQUIST"])
+        kwargs = [{"sigma0": sigma0, "Rs": rs_angle, "center_x": 0, "center_y": 0}]
+        kappa = lens_model.kappa(x, y, kwargs)
+        # sum up convergence
+        kappa_tot = np.sum(kappa) * delta_pix ** 2
+        # transform to mass
+        mass_tot = kappa_tot * self.lensCosmo.sigma_crit_angle
+
+        # compare
+        npt.assert_almost_equal(mass_tot / m_star, 1, decimal=1)
+
     def test_vel_disp_dPIED_sigma0(self):
         from lenstronomy.LensModel.lens_model import LensModel
         from astropy.cosmology import FlatLambdaCDM
@@ -223,20 +246,21 @@ class TestLensCosmo(object):
 
         Rs = 100000
         Ra = 0.00001
-        Ra_list = [0.1, 0.01, 0.001, 0.0001, 0.00001]
-        for Ra in Ra_list:
-            sigma0 = lensCosmo.vel_disp_dPIED_sigma0(vel_disp, Ra=Ra, Rs=Rs)
-            kwargs_lens = [
-                {"sigma0": sigma0, "Ra": Ra, "Rs": Rs, "center_x": 0, "center_y": 0}
-            ]
-
-            # plt.semilogx(r, lens_model.kappa(r, 0, kwargs_lens) / sis.kappa(r, 0, kwargs_sis), label=Ra)
-        # plt.legend()
-        # plt.show()
+        #Ra_list = [0.1, 0.01, 0.001, 0.0001, 0.00001]
+        #for Ra in Ra_list:
+        #    sigma0 = lensCosmo.vel_disp_dPIED_sigma0(vel_disp, Ra=Ra, Rs=Rs)
+        #    kwargs_lens = [
+        #        {"sigma0": sigma0, "Ra": Ra, "Rs": Rs, "center_x": 0, "center_y": 0}
+        #    ]
 
         # calculate Einstein radius and compare it with SIS profile
         from lenstronomy.Analysis.lens_profile import LensProfileAnalysis
-
+        sigma0 = lensCosmo.vel_disp_dPIED_sigma0(vel_disp, Ra=Ra, Rs=Rs)
+        Rs = 100000
+        Ra = 0.00001
+        kwargs_lens = [
+            {"sigma0": sigma0, "Ra": Ra, "Rs": Rs, "center_x": 0, "center_y": 0}
+        ]
         lens_analysis = LensProfileAnalysis(lens_model=lens_model)
         theta_E_dPIED = lens_analysis.effective_einstein_radius(kwargs_lens=kwargs_lens)
         npt.assert_almost_equal(theta_E_dPIED / theta_E_sis, 1, decimal=2)

@@ -38,7 +38,8 @@ class TestHernquistEllipseCSE(object):
     def test_hessian(self):
         x = np.linspace(0.01, 5, 30)
         y = np.zeros_like(x)
-        kwargs = {"sigma0": 0.5, "Rs": 2, "center_x": 0, "center_y": 0}
+        # kwargs = {"sigma0": 0.5, "Rs": 2, "center_x": 0, "center_y": 0}
+        kwargs = {"Rs": 1, "sigma0": 0.5, "center_x": 0, "center_y": 0}
 
         f_xx_nfw, f_xy_nfw, f_yx_nfw, f_yy_nfw = self.hernquist.hessian(x, y, **kwargs)
         f_xx_cse, f_xy_cse, f_yx_cse, f_yy_cse = self.hernquist_cse.hessian(

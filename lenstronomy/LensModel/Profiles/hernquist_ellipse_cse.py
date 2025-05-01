@@ -194,5 +194,6 @@ class HernquistEllipseCSE(HernquistEllipsePotential):
         :return: normalization (m)
         """
         rs_ = Rs / np.sqrt(q)
-        const = sigma0 / 2 * rs_**3
+        #const = sigma0 / 2 * rs_**3
+        const = sigma0 * rs_**2
         return const

@@ -218,7 +218,16 @@ class TestLensCosmo(object):
         from lenstronomy.LensModel.lens_model import LensModel
 
         lens_model = LensModel(lens_model_list=["HERNQUIST_ELLIPSE_CSE"])
-        kwargs = [{"sigma0": sigma0, "Rs": rs_angle, "center_x": 0, "center_y": 0, "e1": 0, "e2": 0}]
+        kwargs = [
+            {
+                "sigma0": sigma0,
+                "Rs": rs_angle,
+                "center_x": 0,
+                "center_y": 0,
+                "e1": 0,
+                "e2": 0,
+            }
+        ]
         kappa = lens_model.kappa(x, y, kwargs)
         # sum up convergence
         kappa_tot = np.sum(kappa) * delta_pix**2

@@ -193,6 +193,8 @@ class MultiPlaneBase(ProfileListBase):
         alpha_x = np.array(alpha_x)
         alpha_y = np.array(alpha_y)
 
+        # NOTE: jax arrays are converted back into regular numpy arrays in cases where use_jax is True.
+
         z_lens_last = z_start
         first_deflector = True
         for i, idex in enumerate(self._sorted_redshift_index):
@@ -226,7 +228,7 @@ class MultiPlaneBase(ProfileListBase):
         else:
             delta_T = T_ij_end
         x, y = self._ray_step_add(x, y, alpha_x, alpha_y, delta_T)
-        return x, y, alpha_x, alpha_y
+        return x.__array__(), y.__array__(), alpha_x.__array__(), alpha_y.__array__()
 
     def ray_shooting_partial(
         self,
@@ -343,6 +345,9 @@ class MultiPlaneBase(ProfileListBase):
         y = np.zeros_like(theta_y, dtype=float)
         alpha_x = np.array(theta_x, dtype=float)
         alpha_y = np.array(theta_y, dtype=float)
+
+        # NOTE: jax arrays are converted back into regular numpy arrays in cases where use_jax is True.
+
         i = 0
         z_lens_last = 0
         for i, index in enumerate(self._sorted_redshift_index):
@@ -383,7 +388,7 @@ class MultiPlaneBase(ProfileListBase):
             beta_i_x, beta_i_y, beta_j_x, beta_j_y, T_i, T_j, T_ij
         )
         dt_geo += dt_geo_new
-        return dt_geo, dt_grav
+        return dt_geo.__array__(), dt_grav.__array__()
 
     @staticmethod
     def _index_ordering(redshift_list):

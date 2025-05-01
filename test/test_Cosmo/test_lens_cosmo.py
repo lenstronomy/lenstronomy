@@ -221,7 +221,7 @@ class TestLensCosmo(object):
         kwargs = [{"sigma0": sigma0, "Rs": rs_angle, "center_x": 0, "center_y": 0}]
         kappa = lens_model.kappa(x, y, kwargs)
         # sum up convergence
-        kappa_tot = np.sum(kappa) * delta_pix ** 2
+        kappa_tot = np.sum(kappa) * delta_pix**2
         # transform to mass
         mass_tot = kappa_tot * self.lensCosmo.sigma_crit_angle
 
@@ -246,8 +246,8 @@ class TestLensCosmo(object):
 
         Rs = 100000
         Ra = 0.00001
-        #Ra_list = [0.1, 0.01, 0.001, 0.0001, 0.00001]
-        #for Ra in Ra_list:
+        # Ra_list = [0.1, 0.01, 0.001, 0.0001, 0.00001]
+        # for Ra in Ra_list:
         #    sigma0 = lensCosmo.vel_disp_dPIED_sigma0(vel_disp, Ra=Ra, Rs=Rs)
         #    kwargs_lens = [
         #        {"sigma0": sigma0, "Ra": Ra, "Rs": Rs, "center_x": 0, "center_y": 0}
@@ -255,6 +255,7 @@ class TestLensCosmo(object):
 
         # calculate Einstein radius and compare it with SIS profile
         from lenstronomy.Analysis.lens_profile import LensProfileAnalysis
+
         sigma0 = lensCosmo.vel_disp_dPIED_sigma0(vel_disp, Ra=Ra, Rs=Rs)
         Rs = 100000
         Ra = 0.00001

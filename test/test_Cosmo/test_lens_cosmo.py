@@ -189,8 +189,8 @@ class TestLensCosmo(object):
 
         # test mass integrals
         # make large grid
-        delta_pix = rs_angle / 30.0
-        x, y = util.make_grid(numPix=501, deltapix=delta_pix)
+        delta_pix = rs_angle / 10.0
+        x, y = util.make_grid(numPix=1001, deltapix=delta_pix)
         # compute convergence
         from lenstronomy.LensModel.lens_model import LensModel
 
@@ -203,22 +203,22 @@ class TestLensCosmo(object):
         mass_tot = kappa_tot * self.lensCosmo.sigma_crit_angle
 
         # compare
-        npt.assert_almost_equal(mass_tot / m_star, 1, decimal=1)
+        npt.assert_almost_equal(mass_tot / m_star, 1, decimal=2)
 
-        rs = 0.001  # in Mpc
+        rs = 0.01  # in Mpc
 
         # test bijective transformation
         sigma0, rs_angle = self.lensCosmo.hernquist_phys2angular(mass=m_star, rs=rs)
 
         # test mass integrals
         # make large grid
-        delta_pix = rs_angle / 30.0
-        x, y = util.make_grid(numPix=501, deltapix=delta_pix)
+        delta_pix = rs_angle / 10.0
+        x, y = util.make_grid(numPix=1001, deltapix=delta_pix)
         # compute convergence
         from lenstronomy.LensModel.lens_model import LensModel
 
-        lens_model = LensModel(lens_model_list=["HERNQUIST"])
-        kwargs = [{"sigma0": sigma0, "Rs": rs_angle, "center_x": 0, "center_y": 0}]
+        lens_model = LensModel(lens_model_list=["HERNQUIST_ELLIPSE_CSE"])
+        kwargs = [{"sigma0": sigma0, "Rs": rs_angle, "center_x": 0, "center_y": 0, "e1": 0, "e2": 0}]
         kappa = lens_model.kappa(x, y, kwargs)
         # sum up convergence
         kappa_tot = np.sum(kappa) * delta_pix ** 2
@@ -226,7 +226,7 @@ class TestLensCosmo(object):
         mass_tot = kappa_tot * self.lensCosmo.sigma_crit_angle
 
         # compare
-        npt.assert_almost_equal(mass_tot / m_star, 1, decimal=1)
+        npt.assert_almost_equal(mass_tot / m_star, 1, decimal=2)
 
     def test_vel_disp_dPIED_sigma0(self):
         from lenstronomy.LensModel.lens_model import LensModel

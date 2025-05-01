@@ -79,7 +79,7 @@ class LensModel(object):
             cosmology sampling. Default is 'FlatLambdaCDM'.
         :param use_jax: bool, if True, uses deflector profiles from jaxtronomy.
             Can also be a list of bools, selecting which models in the lens_model_list to use from jaxtronomy
-            Only supported for MultiPlane() and SinglePlane() at the moment
+            Only supported for MultiPlane(), MultiPlaneDecoupled(), and SinglePlane() at the moment
         """
         self.lens_model_list = lens_model_list
         self.z_lens = z_lens
@@ -182,6 +182,7 @@ class LensModel(object):
                     z_interp_stop=z_interp_stop,
                     num_z_interp=num_z_interp,
                     profile_kwargs_list=profile_kwargs_list,
+                    use_jax=use_jax,
                     **kwargs_multiplane_model
                 )
                 self.type = "MultiPlaneDecoupled"

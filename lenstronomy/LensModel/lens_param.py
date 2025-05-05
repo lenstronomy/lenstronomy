@@ -17,6 +17,7 @@ class LensParam(object):
         num_images=0,
         solver_type="NONE",
         num_shapelet_lens=0,
+        profile_kwargs_list=None
     ):
         """
 
@@ -31,6 +32,9 @@ class LensParam(object):
          (only relevant in this class when 'SHAPELETS' is the solver type)
         :param num_shapelet_lens: integer, number of shapelets in the lensing potential
          (only relevant when 'SHAPELET' lens model is used)
+         :param profile_kwargs_list: list of dicts, keyword arguments used to initialize profile classes
+            in the same order of the lens_model_list. If any of the profile_kwargs are None, then that
+            profile will be initialized using default settings.
         """
 
         self.model_list = lens_model_list
@@ -42,7 +46,8 @@ class LensParam(object):
         # PF: Here the instantiation of SinglePlane is only made to deal with
         # a list of lens parameters. It does not seem to matter whether multi-
         # plane lensing or line-of-sight effects are activated.
-        lens_model = SinglePlane(lens_model_list=lens_model_list)
+        lens_model = SinglePlane(lens_model_list=lens_model_list,
+                                 profile_kwargs_list=profile_kwargs_list)
 
         name_list = []
         for func in lens_model.func_list:

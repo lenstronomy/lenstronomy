@@ -345,7 +345,6 @@ class PositionLikelihood(object):
 
         return dists_x, dists_y
 
-<<<<<<< HEAD
 
     def source_position_rmse(
         self, kwargs_lens, kwargs_ps, lens_model, z_sources
@@ -395,17 +394,6 @@ class PositionLikelihood(object):
         rmse_y = np.sqrt((1/(num-1))*dists_y2)
 
         return rmse_x, rmse_y
-=======
-        if num_sources == 1:
-            num_div = num_images_list[0] - 1
-            mean = 1 / (num_div)
-            rms_x = math.sqrt(mean * sum_x)
-            rms_y = math.sqrt(mean * sum_y)
-
-        elif num_sources > 1:
-            rms_x = np.sqrt((1 / (num_sources - 1)) * sum_x)
-            rms_y = np.sqrt((1 / (num_sources - 1)) * sum_y)
->>>>>>> 4a97f69063ecece272980fb2bb1c77d86e4dc057
 
 
     @property

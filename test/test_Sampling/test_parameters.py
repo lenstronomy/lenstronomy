@@ -46,6 +46,45 @@ class TestParam(object):
         )
         self.param_class.print_setting()
 
+    def test_instantiate_with_profile_kwargs_list(self):
+
+        kwargs_model = {
+            "lens_model_list": ["TABULATED_DEFLECTIONS"],
+            "source_light_model_list": ["GAUSSIAN"],
+            "lens_light_model_list": ["SERSIC"],
+            "point_source_model_list": ["LENSED_POSITION"],
+            "multi_plane": True,
+            "lens_redshift_list": [0.5],
+            "z_source": 2,
+            "source_redshift_list": [0.5],
+            "distance_ratio_sampling": None,
+            "cosmology_sampling": None,
+            "lens_profile_kwargs_list": [{"custom_class": None}],
+            "lens_light_profile_kwargs_list": [None],
+            "source_light_profile_kwargs_list": [None],
+        }
+        kwargs_param = {
+            "num_point_source_list": [2],
+            "lens_redshift_sampling_indexes": [0],
+            "source_redshift_sampling_indexes": [0],
+            "image_plane_source_list": [True],
+        }
+        kwargs_fixed_lens = [{"gamma": 1.9}]  # for SPEP lens
+        kwargs_fixed_source = [{"sigma": 0.1, "center_x": 0.2, "center_y": 0.2}]
+        kwargs_fixed_ps = [{"ra_image": [-1, 1], "dec_image": [-1, 1]}]
+        kwargs_fixed_lens_light = [{}]
+        kwargs_fixed_cosmo = [{}]
+        self.param_class = Param(
+            kwargs_model,
+            kwargs_fixed_lens=kwargs_fixed_lens,
+            kwargs_fixed_source=kwargs_fixed_source,
+            kwargs_fixed_lens_light=kwargs_fixed_lens_light,
+            kwargs_fixed_ps=kwargs_fixed_ps,
+            kwargs_fixed_special=kwargs_fixed_cosmo,
+            **kwargs_param
+        )
+        self.param_class.print_setting()
+
     def test_num_param(self):
         num_param, list = self.param_class.num_param()
         assert list[0] == "theta_E_lens0"

@@ -228,7 +228,7 @@ class MultiPlaneBase(ProfileListBase):
         else:
             delta_T = T_ij_end
         x, y = self._ray_step_add(x, y, alpha_x, alpha_y, delta_T)
-        return x.__array__(), y.__array__(), alpha_x.__array__(), alpha_y.__array__()
+        return np.asarray(x), np.asarray(y), np.asarray(alpha_x), np.asarray(alpha_y)
 
     def ray_shooting_partial(
         self,
@@ -388,7 +388,7 @@ class MultiPlaneBase(ProfileListBase):
             beta_i_x, beta_i_y, beta_j_x, beta_j_y, T_i, T_j, T_ij
         )
         dt_geo += dt_geo_new
-        return dt_geo.__array__(), dt_grav.__array__()
+        return np.asarray(dt_geo), np.asarray(dt_grav)
 
     @staticmethod
     def _index_ordering(redshift_list):

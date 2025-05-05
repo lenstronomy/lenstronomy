@@ -66,7 +66,8 @@ def setup_lens_model(lens_model, kwargs_lens, index_lens_split, use_jax=False):
         profile_kwargs_list=profile_kwargs_list_fixed,
         multi_plane=True,
         z_source=z_source,
-        cosmo=cosmo, use_jax=use_jax
+        cosmo=cosmo,
+        use_jax=use_jax,
     )
     return (
         lens_model_fixed,

@@ -1078,20 +1078,25 @@ class ModelBandPlot(ModelBand):
         font_size=15,
         source_add=False,
         lens_light_add=False,
+        no_arrow=False,
         **kwargs
     ):
-        """
+        """Make a plot displaying all or a subset of light components.
 
-        :param ax:
-        :param text:
-        :param v_min:
-        :param v_max:
-        :param unconvolved:
-        :param point_source_add:
-        :param source_add:
-        :param lens_light_add:
+        :param ax: an instance of matplotlib.axes.Axes
+        :param text: text to display in upper left corner
+        :param v_min: min color scale for matshow plot
+        :param v_max: max color scale for matshow plot
+        :param unconvolved: bool, if True, does not perform PSF convolution on the image
+        :param point_source_add: bool, if True, includes the lensed point source(s) in
+            the plot
+        :param source_add: bool, if True, includes the lensed image of the source in the
+            plot
+        :param lens_light_add: bool, if True, includes the lens light in the plot
+        :param no_arrow: bool, if True, omits the North/East directional arrows from the
+            plot
         :param kwargs: kwargs to send matplotlib.pyplot.matshow()
-        :return:
+        :return: the instance of matplotlib.axes.Axes
         """
         model = ImageModel.image(
             self._bandmodel,
@@ -1129,13 +1134,15 @@ class ModelBandPlot(ModelBand):
         plot_util.text_description(
             ax, self._frame_size, text=text, color="w", backgroundcolor="k"
         )
-        plot_util.coordinate_arrows(
-            ax,
-            self._frame_size,
-            self._coords,
-            arrow_size=self._arrow_size,
-            font_size=font_size,
-        )
+        if no_arrow is False:
+            plot_util.coordinate_arrows(
+                ax,
+                self._frame_size,
+                self._coords,
+                color="w",
+                arrow_size=self._arrow_size,
+                font_size=font_size,
+            )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)

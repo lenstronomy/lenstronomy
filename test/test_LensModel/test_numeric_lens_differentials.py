@@ -749,7 +749,7 @@ class TestNumericsProfile(object):
 
         kwargs = {
             "sigma0": 2,
-            "Rs": 0.5,
+            "Rs": 5,
             "e1": 0,
             "e2": 0.4,
             "center_x": 0.0,

@@ -87,7 +87,7 @@ class CosmoInterp(object):
         :param z: redshift to which the comoving distance is calculated
         :return: comoving distance in units Mpc
         """
-        return self._comoving_distance_interpolation_func(z) * units.Mpc
+        return self._comoving_distance_interpolation_func(z)
 
     def angular_diameter_distance(self, z):
         """Angular diameter distance in Mpc at a given redshift.
@@ -212,7 +212,12 @@ class CosmoInterp(object):
         d : `~astropy.units.Quantity`
           Comoving distance in Mpc between each input redshift.
         """
-        return self._comoving_distance_interp(z2) - self._comoving_distance_interp(z1)
+        if np.all(z1 == 0):
+            return self._comoving_distance_interp(z2) * units.Mpc
+        else:
+            return (
+                self._comoving_distance_interp(z2) - self._comoving_distance_interp(z1)
+            ) * units.Mpc
 
     def _interpolate_comoving_distance(self, z_start, z_stop, num_interp):
         """Interpolates the comoving distance.
@@ -231,7 +236,7 @@ class CosmoInterp(object):
             )
             running_dist += delta_dist.value
             ang_dist[i + 1] = copy.deepcopy(running_dist)
-        return interp1d(z_steps, ang_dist)
+        return interp1d(z_steps, ang_dist, assume_sorted=True)
 
     def _interpolate_ang_dist(self, ang_dist_list, z_list, Ok0, K):
         """Translates angular diameter distances to transversal comoving distances.

@@ -41,6 +41,7 @@ class LensModel(object):
         distance_ratio_sampling=False,
         cosmology_sampling=False,
         cosmology_model="FlatLambdaCDM",
+        use_jax=False,
     ):
         """
 
@@ -76,6 +77,9 @@ class LensModel(object):
             to update T_ij value in multi-lens plane computation.
         :param cosmology_model: str, name of the cosmology model to be used for
             cosmology sampling. Default is 'FlatLambdaCDM'.
+        :param use_jax: bool, if True, uses deflector profiles from jaxtronomy.
+            Can also be a list of bools, selecting which models in the lens_model_list to use from jaxtronomy
+            Only supported for MultiPlane(), MultiPlaneDecoupled(), and SinglePlane() at the moment
         """
         self.lens_model_list = lens_model_list
         self.z_lens = z_lens
@@ -178,6 +182,7 @@ class LensModel(object):
                     z_interp_stop=z_interp_stop,
                     num_z_interp=num_z_interp,
                     profile_kwargs_list=profile_kwargs_list,
+                    use_jax=use_jax,
                     **kwargs_multiplane_model
                 )
                 self.type = "MultiPlaneDecoupled"
@@ -197,6 +202,7 @@ class LensModel(object):
                     distance_ratio_sampling=distance_ratio_sampling,
                     cosmology_sampling=cosmology_sampling,
                     cosmology_model=cosmology_model,
+                    use_jax=use_jax,
                 )
                 self.type = "MultiPlane"
 
@@ -225,6 +231,7 @@ class LensModel(object):
                     lens_redshift_list=lens_redshift_list,
                     z_source_convention=z_source_convention,
                     profile_kwargs_list=profile_kwargs_list,
+                    use_jax=use_jax,
                 )
                 self.type = "SinglePlane"
                 if z_source is not None and z_source_convention is not None:
@@ -258,6 +265,16 @@ class LensModel(object):
         :return: None
         """
         self.lens_model.model_info()
+
+    def check_parameters(self, kwargs_list):
+        """Checks whether parameter list is consistent with the parameters required by
+        the model.
+
+        :param kwargs_list: keyword argument list as parameterised models
+        :return: None or raise ValueError with error message of what parameter is not
+            supported.
+        """
+        self.lens_model.check_parameters(kwargs_list)
 
     def ray_shooting(self, x, y, kwargs, k=None):
         """Maps image to source position (inverse deflection)

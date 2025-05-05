@@ -17,7 +17,7 @@ class LensParam(object):
         num_images=0,
         solver_type="NONE",
         num_shapelet_lens=0,
-        profile_kwargs_list=None
+        profile_kwargs_list=None,
     ):
         """
 
@@ -46,8 +46,9 @@ class LensParam(object):
         # PF: Here the instantiation of SinglePlane is only made to deal with
         # a list of lens parameters. It does not seem to matter whether multi-
         # plane lensing or line-of-sight effects are activated.
-        lens_model = SinglePlane(lens_model_list=lens_model_list,
-                                 profile_kwargs_list=profile_kwargs_list)
+        lens_model = SinglePlane(
+            lens_model_list=lens_model_list, profile_kwargs_list=profile_kwargs_list
+        )
 
         name_list = []
         for func in lens_model.func_list:

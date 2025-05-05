@@ -427,8 +427,8 @@ class Param(object):
         kwargs_fixed_tracer_source_updated = self._fix_joint_param(
             kwargs_fixed_tracer_source, self._joint_source_light_with_tracer
         )
-        if 'lens_profile_kwargs_list' in kwargs_model.keys():
-            lens_profile_kwargs_list = kwargs_model['lens_profile_kwargs_list']
+        if "lens_profile_kwargs_list" in kwargs_model.keys():
+            lens_profile_kwargs_list = kwargs_model["lens_profile_kwargs_list"]
         else:
             lens_profile_kwargs_list = None
         self.lensParams = LensParam(
@@ -440,10 +440,12 @@ class Param(object):
             kwargs_lower=kwargs_lower_lens,
             kwargs_upper=kwargs_upper_lens,
             num_shapelet_lens=num_shapelet_lens,
-            profile_kwargs_list=lens_profile_kwargs_list
+            profile_kwargs_list=lens_profile_kwargs_list,
         )
-        if 'lens_light_profile_kwargs_list' in kwargs_model.keys():
-            lens_light_profile_kwargs_list = kwargs_model['lens_light_profile_kwargs_list']
+        if "lens_light_profile_kwargs_list" in kwargs_model.keys():
+            lens_light_profile_kwargs_list = kwargs_model[
+                "lens_light_profile_kwargs_list"
+            ]
         else:
             lens_light_profile_kwargs_list = None
         self.lensLightParams = LightParam(
@@ -453,10 +455,12 @@ class Param(object):
             linear_solver=linear_solver,
             kwargs_lower=kwargs_lower_lens_light,
             kwargs_upper=kwargs_upper_lens_light,
-            profile_kwargs_list=lens_light_profile_kwargs_list
+            profile_kwargs_list=lens_light_profile_kwargs_list,
         )
-        if 'source_light_profile_kwargs_list' in kwargs_model.keys():
-            source_light_profile_kwargs_list = kwargs_model['source_light_profile_kwargs_list']
+        if "source_light_profile_kwargs_list" in kwargs_model.keys():
+            source_light_profile_kwargs_list = kwargs_model[
+                "source_light_profile_kwargs_list"
+            ]
         else:
             source_light_profile_kwargs_list = None
         self.sourceParams = LightParam(
@@ -466,7 +470,7 @@ class Param(object):
             linear_solver=linear_solver,
             kwargs_lower=kwargs_lower_source,
             kwargs_upper=kwargs_upper_source,
-            profile_kwargs_list=source_light_profile_kwargs_list
+            profile_kwargs_list=source_light_profile_kwargs_list,
         )
         self.pointSourceParams = PointSourceParam(
             self._point_source_model_list,

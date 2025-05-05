@@ -136,6 +136,7 @@ class ProfileListBase(object):
         profile_kwargs_list=None,
         lens_redshift_list=None,
         z_source_convention=None,
+        use_jax=False,
     ):
         """
 
@@ -143,15 +144,23 @@ class ProfileListBase(object):
         :param profile_kwargs_list: list of dicts, keyword arguments used to initialize profile classes
             in the same order of the lens_model_list. If any of the profile_kwargs are None, then that
             profile will be initialized using default settings.
+        :param use_jax: bool, if True, uses deflector profiles from jaxtronomy.
+            Can also be a list of bools, selecting which models in the lens_model_list to use from jaxtronomy
         """
         self.func_list = self._load_model_instances(
             lens_model_list,
             profile_kwargs_list=profile_kwargs_list,
             lens_redshift_list=lens_redshift_list,
             z_source_convention=z_source_convention,
+            use_jax=use_jax,
         )
         self._num_func = len(self.func_list)
         self._model_list = lens_model_list
+
+        name_list = []
+        for i, func in enumerate(self.func_list):
+            name_list.append(func.param_names)
+        self._param_name_list = name_list
 
     def _load_model_instances(
         self,
@@ -159,11 +168,22 @@ class ProfileListBase(object):
         profile_kwargs_list=None,
         lens_redshift_list=None,
         z_source_convention=None,
+        use_jax=False,
     ):
         if lens_redshift_list is None:
             lens_redshift_list = [None] * len(lens_model_list)
         if profile_kwargs_list is None:
             profile_kwargs_list = [{} for _ in range(len(lens_model_list))]
+
+        # use_jax can be either a bool or list of bools to select specific models to be imported from jaxtronomy
+        # If it's a bool, convert to list of bools
+        if isinstance(use_jax, bool):
+            use_jax = [use_jax] * len(lens_model_list)
+        if True in use_jax:
+            from jaxtronomy.LensModel.profile_list_base import (
+                lens_class as lens_class_jax,
+            )
+
         func_list = []
         imported_classes = []
         imported_profile_kwargs = []
@@ -171,10 +191,14 @@ class ProfileListBase(object):
             if lens_type in ["NFW_MC", "NFW_MC_ELLIPSE_POTENTIAL"]:
                 profile_kwargs_list[i]["z_lens"] = lens_redshift_list[i]
                 profile_kwargs_list[i]["z_source"] = z_source_convention
+            if use_jax[i] is True:
+                init_lens_class = lens_class_jax
+            else:
+                init_lens_class = lens_class
 
             # Creates another instance for dynamic profiles
             if lens_type in DYNAMIC_PROFILES:
-                lensmodel_class = lens_class(
+                lensmodel_class = init_lens_class(
                     lens_type,
                     profile_kwargs=profile_kwargs_list[i],
                 )
@@ -182,7 +206,7 @@ class ProfileListBase(object):
             # already been created
             else:
                 if (lens_type, profile_kwargs_list[i]) not in imported_profile_kwargs:
-                    lensmodel_class = lens_class(
+                    lensmodel_class = init_lens_class(
                         lens_type,
                         profile_kwargs=profile_kwargs_list[i],
                     )
@@ -240,6 +264,45 @@ class ProfileListBase(object):
                 "Lens model %s is %s with parameters %s"
                 % (i, self._model_list[i], func.param_names)
             )
+
+    @property
+    def param_name_list(self):
+        """
+
+
+        :return: list of parameter names for each lens model
+        """
+        return self._param_name_list
+
+    def check_parameters(self, kwargs_list):
+        """Checks whether the parameter list is consistent with the parameters required
+        by the lens (mass) model.
+
+        :param kwargs_list: keyword argument list as parameterised models
+        :return: None or raise ValueError with error message of what parameter is not
+            supported.
+        """
+
+        name_list = self.param_name_list
+        if len(kwargs_list) != len(name_list):
+            raise ValueError(
+                "length of input parameter list %s does not match length of lens models %s"
+                % (len(kwargs_list), len(name_list))
+            )
+        for i, names in enumerate(name_list):
+            for key in kwargs_list[i]:
+                if key not in names:
+                    raise ValueError(
+                        "parameter %s in lens model is not part of model %s (%s). "
+                        "Parameters allowed are %s"
+                        % (key, i, self._model_list[i], names)
+                    )
+            for name in names:
+                if name not in kwargs_list[i]:
+                    raise ValueError(
+                        "Lens model %s (%s) requires parameter %s which is not provided in input."
+                        % (i, self._model_list[i], name)
+                    )
 
 
 def lens_class(

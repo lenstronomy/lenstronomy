@@ -32,6 +32,7 @@ class MultiPlaneDecoupled(MultiPlane):
         alpha_x_interp_background=None,
         alpha_y_interp_background=None,
         z_split=None,
+        use_jax=False,
     ):
         """A class for multiplane lensing in which the deflection angles at certain
         coordinates are fixed through user-specified interpolation functions. These
@@ -62,6 +63,9 @@ class MultiPlaneDecoupled(MultiPlane):
             y-component of the deflection angle at (x,y)
         :param z_interp_list: a list of redshifts corresponding to the
             alpha_x_interp_list and alpha_y_interp_list entries
+        :param use_jax: bool, if True, uses deflector profiles from jaxtronomy. Can also
+            be a list of bools, selecting which models in the lens_model_list to use
+            from jaxtronomy
         """
         self._alphax_interp_foreground = alpha_x_interp_foreground
         self._alphay_interp_foreground = alpha_y_interp_foreground
@@ -98,7 +102,7 @@ class MultiPlaneDecoupled(MultiPlane):
         self._Td = cosmo_bkg.T_xy(0, z_split)
         self._Tds = cosmo_bkg.T_xy(self._z_split, z_source)
         self._main_deflector = SinglePlane(
-            lens_model_list, profile_kwargs_list=profile_kwargs_list
+            lens_model_list, profile_kwargs_list=profile_kwargs_list, use_jax=use_jax
         )
         # useful to have these saved to access later outside the class
         self.kwargs_multiplane_model = {

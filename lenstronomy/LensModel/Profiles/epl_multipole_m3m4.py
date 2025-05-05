@@ -14,7 +14,7 @@ class EPL_MULTIPOLE_M3M4_ELL(LensProfileBase):
     terms of order m=3 and m=4 (exact for general axis ratio q).
 
     See also documentation of EPL_BOXYDIKSY CLASS, lenstronomy.LensModel.Profiles.epl
-    and lenstrnomy.LensModel.Profiles.multipole for details.
+    and lenstronomy.LensModel.Profiles.multipole for details.
     """
 
     param_names = [
@@ -80,13 +80,13 @@ class EPL_MULTIPOLE_M3M4_ELL(LensProfileBase):
         :param e1: ellipticity of EPL profile (along 1st axis)
         :param e2: ellipticity of EPL profile (along 2nd axis)
         :param a3_a: amplitude of the m=3 multiple deviation from pure elliptical shape
-            related to the physical amplitude of the MULTIPOLE profile by a scaling
-            theta_E / sqrt(q)
+            related to the physical amplitude of the MULTIPOLE_ELL profile by a scaling
+            theta_E
         :param delta_phi_m3: orientation of the m=3 profile relative to the position
             angle of the EPL profile
         :param a4_a: amplitude of the m=4 multipole deviation from pure elliptical shape
-            related to the physical amplitude of the MULTIPOLE profile by a scaling
-            theta_E / sqrt(q)
+            related to the physical amplitude of the MULTIPOLE_ELL profile by a scaling
+            theta_E
         :param delta_phi_m4: orientation of the m=4 profile relative to the position
             angle of the EPL profile
         :param center_x: center of the profile
@@ -95,7 +95,6 @@ class EPL_MULTIPOLE_M3M4_ELL(LensProfileBase):
         """
 
         phi, q = param_util.ellipticity2phi_q(e1, e2)
-        rescale_am = theta_E / np.sqrt(q)
         kwargs_epl = {
             "theta_E": theta_E,
             "gamma": gamma,
@@ -106,7 +105,7 @@ class EPL_MULTIPOLE_M3M4_ELL(LensProfileBase):
         }
         kwargs_multipole_m3 = {
             "m": 3,
-            "a_m": a3_a * rescale_am,
+            "a_m": a3_a * theta_E,
             "phi_m": phi + delta_phi_m3,
             "q": q,
             "center_x": center_x,
@@ -115,7 +114,7 @@ class EPL_MULTIPOLE_M3M4_ELL(LensProfileBase):
         }
         kwargs_multipole_m4 = {
             "m": 4,
-            "a_m": a4_a * rescale_am,
+            "a_m": a4_a * theta_E,
             "phi_m": phi + delta_phi_m4,
             "q": q,
             "center_x": center_x,
@@ -148,13 +147,13 @@ class EPL_MULTIPOLE_M3M4_ELL(LensProfileBase):
         :param e1: ellipticity of EPL profile (along 1st axis)
         :param e2: ellipticity of EPL profile (along 2nd axis)
         :param a3_a: amplitude of the m=3 multiple deviation from pure elliptical shape
-            related to the physical amplitude of the MULTIPOLE profile by a scaling
-            theta_E / sqrt(q)
+            related to the physical amplitude of the MULTIPOLE_ELL profile by a scaling
+            theta_E
         :param delta_phi_m3: orientation of the m=3 profile relative to the position
             angle of the EPL profile
         :param a4_a: amplitude of the m=4 multipole deviation from pure elliptical shape
-            related to the physical amplitude of the MULTIPOLE profile by a scaling
-            theta_E / sqrt(q)
+            related to the physical amplitude of the MULTIPOLE_ELL profile by a scaling
+            theta_E
         :param delta_phi_m4: orientation of the m=4 profile relative to the position
             angle of the EPL profile
         :param center_x: center of the profile
@@ -203,13 +202,13 @@ class EPL_MULTIPOLE_M3M4_ELL(LensProfileBase):
         :param e1: ellipticity of EPL profile (along 1st axis)
         :param e2: ellipticity of EPL profile (along 2nd axis)
         :param a3_a: amplitude of the m=3 multiple deviation from pure elliptical shape
-            related to the physical amplitude of the MULTIPOLE profile by a scaling
-            theta_E / sqrt(q)
+            related to the physical amplitude of the MULTIPOLE_ELL profile by a scaling
+            theta_E
         :param delta_phi_m3: orientation of the m=3 profile relative to the position
             angle of the EPL profile
         :param a4_a: amplitude of the m=4 multipole deviation from pure elliptical shape
-            related to the physical amplitude of the MULTIPOLE profile by a scaling
-            theta_E / sqrt(q)
+            related to the physical amplitude of the MULTIPOLE_ELL profile by a scaling
+            theta_E
         :param delta_phi_m4: orientation of the m=4 profile relative to the position
             angle of the EPL profile
         :param center_x: center of the profile
@@ -264,13 +263,13 @@ class EPL_MULTIPOLE_M3M4_ELL(LensProfileBase):
         :param e1: ellipticity of EPL profile (along 1st axis)
         :param e2: ellipticity of EPL profile (along 2nd axis)
         :param a3_a: amplitude of the m=3 multiple deviation from pure elliptical shape
-            related to the physical amplitude of the MULTIPOLE profile by a scaling
-            theta_E / sqrt(q)
+            related to the physical amplitude of the MULTIPOLE_ELL profile by a scaling
+            theta_E
         :param delta_phi_m3: orientation of the m=3 profile relative to the position
             angle of the EPL profile
         :param a4_a: amplitude of the m=4 multipole deviation from pure elliptical shape
-            related to the physical amplitude of the MULTIPOLE profile by a scaling
-            theta_E / sqrt(q)
+            related to the physical amplitude of the MULTIPOLE_ELL profile by a scaling
+            theta_E
         :param delta_phi_m4: orientation of the m=4 profile relative to the position
             angle of the EPL profile
         :param center_x: center of the profile
@@ -316,7 +315,7 @@ class EPL_MULTIPOLE_M3M4(LensProfileBase):
     Reference to the implementation: https://ui.adsabs.harvard.edu/abs/2022A%26A...659A.127V/abstract
 
     See also documentation of EPL_BOXYDIKSY CLASS, lenstronomy.LensModel.Profiles.epl and
-    lenstrnomy.LensModel.Profiles.multipole for details.
+    lenstronomy.LensModel.Profiles.multipole for details.
     """
 
     param_names = [

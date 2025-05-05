@@ -23,6 +23,7 @@ class MultiPlaneBase(ProfileListBase):
         z_interp_stop=None,
         num_z_interp=100,
         profile_kwargs_list=None,
+        use_jax=False,
     ):
         """
         A description of the recursive multi-plane formalism can be found e.g. here: https://arxiv.org/abs/1312.1536
@@ -35,6 +36,8 @@ class MultiPlaneBase(ProfileListBase):
         :param profile_kwargs_list: list of dicts, keyword arguments used to initialize profile classes
             in the same order of the lens_model_list. If any of the profile_kwargs are None, then that
             profile will be initialized using default settings.
+        :param use_jax: bool, if True, uses deflector profiles from jaxtronomy.
+            Can also be a list of bools, selecting which models in the lens_model_list to use from jaxtronomy
         """
         self._lens_model_list = lens_model_list
 
@@ -63,6 +66,7 @@ class MultiPlaneBase(ProfileListBase):
             lens_redshift_list=lens_redshift_list,
             z_source_convention=z_source_convention,
             profile_kwargs_list=profile_kwargs_list,
+            use_jax=use_jax,
         )
 
         if len(self._lens_model_list) < 1:
@@ -189,6 +193,8 @@ class MultiPlaneBase(ProfileListBase):
         alpha_x = np.array(alpha_x)
         alpha_y = np.array(alpha_y)
 
+        # NOTE: jax arrays are converted back into regular numpy arrays in cases where use_jax is True.
+
         z_lens_last = z_start
         first_deflector = True
         for i, idex in enumerate(self._sorted_redshift_index):
@@ -222,7 +228,7 @@ class MultiPlaneBase(ProfileListBase):
         else:
             delta_T = T_ij_end
         x, y = self._ray_step_add(x, y, alpha_x, alpha_y, delta_T)
-        return x, y, alpha_x, alpha_y
+        return np.asarray(x), np.asarray(y), np.asarray(alpha_x), np.asarray(alpha_y)
 
     def ray_shooting_partial(
         self,
@@ -339,6 +345,9 @@ class MultiPlaneBase(ProfileListBase):
         y = np.zeros_like(theta_y, dtype=float)
         alpha_x = np.array(theta_x, dtype=float)
         alpha_y = np.array(theta_y, dtype=float)
+
+        # NOTE: jax arrays are converted back into regular numpy arrays in cases where use_jax is True.
+
         i = 0
         z_lens_last = 0
         for i, index in enumerate(self._sorted_redshift_index):
@@ -379,7 +388,7 @@ class MultiPlaneBase(ProfileListBase):
             beta_i_x, beta_i_y, beta_j_x, beta_j_y, T_i, T_j, T_ij
         )
         dt_geo += dt_geo_new
-        return dt_geo, dt_grav
+        return np.asarray(dt_geo), np.asarray(dt_grav)
 
     @staticmethod
     def _index_ordering(redshift_list):

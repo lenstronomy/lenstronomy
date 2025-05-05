@@ -71,7 +71,7 @@ class LensProfileAnalysis(object):
         )
 
     def effective_einstein_radius(
-        self, kwargs_lens, r_min=1e-3, r_max=1e1, num_points=30
+        self, kwargs_lens, r_min=1e-3, r_max=1e1, num_points=30, spherical_model=False
     ):
         """Numerical estimate of the Einstein radius with integral approximation of
         radial convergence profile.
@@ -81,14 +81,24 @@ class LensProfileAnalysis(object):
         :param r_max: maximum radius of the convergence integrand (should be larger than
             Einstein radius)
         :param num_points: number of radial points in log spacing
+        :param spherical_model: if True, assumes the model is spherical and only
+            calculates the convergence along one axis (for speed improvements)
         :return: estimate of the Einstein radius
         """
         r_array = np.logspace(np.log10(r_min), np.log10(r_max), num_points)
+        if spherical_model is True:
+            num_azimuthal_points = 1
+        else:
+            num_azimuthal_points = 10
 
         # Define the integrand function for the 1D numerical integration: this is the surface mass density
         # kappa at a given radius r, multiplied by 2*pi*r to account for the circular geometry.
         kappa_r = self.radial_lens_profile(
-            r_array, kwargs_lens, center_x=None, center_y=None
+            r_array,
+            kwargs_lens,
+            center_x=None,
+            center_y=None,
+            num_azimuthal_points=num_azimuthal_points,
         )
 
         return self.effective_einstein_radius_from_radial_profile(r_array, kappa_r)
@@ -105,6 +115,8 @@ class LensProfileAnalysis(object):
         r_min = r_array.min()
         r_max = r_array.max()
         num_points = len(r_array)
+        kappa_r = np.array(kappa_r)
+        kappa_r[kappa_r <= 0] = 10 ** (-100)
 
         # here we make a finer grid interpolation in log-log space
         k_interp = scipy.interpolate.interp1d(np.log10(r_array), np.log10(kappa_r))
@@ -269,7 +281,13 @@ class LensProfileAnalysis(object):
         return xi
 
     def radial_lens_profile(
-        self, r_list, kwargs_lens, center_x=None, center_y=None, model_bool_list=None
+        self,
+        r_list,
+        kwargs_lens,
+        center_x=None,
+        center_y=None,
+        model_bool_list=None,
+        num_azimuthal_points=20,
     ):
         """
 
@@ -278,6 +296,8 @@ class LensProfileAnalysis(object):
         :param center_y: center of the profile
         :param kwargs_lens: lens parameter keyword argument list
         :param model_bool_list: bool list or None, indicating which profiles to sum over
+        :param num_azimuthal_points: number of points equally spaced azimuthally to create an average
+        :type num_azimuthal_points: int
         :return: flux amplitudes at r_list radii azimuthally averaged
         """
         center_x, center_y = analysis_util.profile_center(
@@ -285,7 +305,7 @@ class LensProfileAnalysis(object):
         )
         kappa_list = []
         for r in r_list:
-            x, y = util.points_on_circle(r, num_points=20)
+            x, y = util.points_on_circle(r, num_points=num_azimuthal_points)
             f_r = self._lens_model.kappa(
                 x + center_x, y + center_y, kwargs=kwargs_lens, k=model_bool_list
             )

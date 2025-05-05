@@ -297,7 +297,7 @@ class TestEPL_MULTIPOLE_M3M4_ELL(object):
         phi_q, q = param_util.ellipticity2phi_q(
             kwargs_epl_multipole_m3m4[0]["e1"], kwargs_epl_multipole_m3m4[0]["e2"]
         )
-        rescale = kwargs_epl_multipole_m3m4[0]["theta_E"] / np.sqrt(q)
+        rescale = kwargs_epl_multipole_m3m4[0]["theta_E"]
         kwargs_multipole_m3 = {
             "m": 3,
             "center_x": 0.1,
@@ -371,7 +371,7 @@ class TestEPL_MULTIPOLE_M3M4_ELL(object):
         phi_q, q = param_util.ellipticity2phi_q(
             kwargs_epl_multipole_m3m4[0]["e1"], kwargs_epl_multipole_m3m4[0]["e2"]
         )
-        rescale = kwargs_epl_multipole_m3m4[0]["theta_E"] / np.sqrt(q)
+        rescale = kwargs_epl_multipole_m3m4[0]["theta_E"]
         kwargs_multipole_m3 = {
             "m": 3,
             "center_x": 0.1,
@@ -449,7 +449,7 @@ class TestEPL_MULTIPOLE_M3M4_ELL(object):
         phi_q, q = param_util.ellipticity2phi_q(
             kwargs_epl_multipole_m3m4[0]["e1"], kwargs_epl_multipole_m3m4[0]["e2"]
         )
-        rescale = kwargs_epl_multipole_m3m4[0]["theta_E"] / np.sqrt(q)
+        rescale = kwargs_epl_multipole_m3m4[0]["theta_E"]
         kwargs_multipole_m3 = {
             "m": 3,
             "center_x": 0.1,

@@ -243,6 +243,9 @@ class Param(object):
         self._source_redshift_list = kwargs_model.get("source_redshift_list", None)
         self._lens_light_model_list = kwargs_model.get("lens_light_model_list", [])
         self._point_source_model_list = kwargs_model.get("point_source_model_list", [])
+        self._fixed_magnification_list = kwargs_model.get(
+            "fixed_magnification_list", None
+        )
         self._optical_depth_model_list = kwargs_model.get(
             "optical_depth_model_list", []
         )
@@ -455,6 +458,7 @@ class Param(object):
             kwargs_fixed_ps_updated,
             num_point_source_list=num_point_source_list,
             linear_solver=linear_solver,
+            fixed_magnification_list=self._fixed_magnification_list,
             kwargs_lower=kwargs_lower_ps,
             kwargs_upper=kwargs_upper_ps,
         )

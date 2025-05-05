@@ -16,6 +16,7 @@ class SinglePlane(ProfileListBase):
         lens_redshift_list=None,
         z_source_convention=None,
         alpha_scaling=1,
+        use_jax=False,
     ):
         """
 
@@ -24,6 +25,8 @@ class SinglePlane(ProfileListBase):
             in the same order of the lens_model_list. If any of the profile_kwargs are None, then that
             profile will be initialized using default settings.
         :param alpha_scaling: scaling factor of deflection angle relative to z_source_convention
+        :param use_jax: bool, if True, uses deflector profiles from jaxtronomy.
+            Can also be a list of bools, selecting which models in the lens_model_list to use from jaxtronomy
         """
         self._alpha_scaling = alpha_scaling
         ProfileListBase.__init__(
@@ -32,6 +35,7 @@ class SinglePlane(ProfileListBase):
             profile_kwargs_list=profile_kwargs_list,
             lens_redshift_list=lens_redshift_list,
             z_source_convention=z_source_convention,
+            use_jax=use_jax,
         )
 
     def ray_shooting(self, x, y, kwargs, k=None):
@@ -86,14 +90,16 @@ class SinglePlane(ProfileListBase):
         """
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
+
+        # NOTE: jax arrays are converted back into regular numpy arrays in cases where use_jax is True.
         if isinstance(k, int):
-            return self.func_list[k].function(x, y, **kwargs[k])
+            return np.asarray(self.func_list[k].function(x, y, **kwargs[k]))
         bool_list = self._bool_list(k)
         potential = np.zeros_like(x)
         for i, func in enumerate(self.func_list):
             if bool_list[i] is True:
                 potential += func.function(x, y, **kwargs[i])
-        return potential * self._alpha_scaling
+        return np.asarray(potential) * self._alpha_scaling
 
     def alpha(self, x, y, kwargs, k=None):
         """Deflection angles.
@@ -109,9 +115,10 @@ class SinglePlane(ProfileListBase):
         """
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
-
+        # NOTE: jax arrays are converted back into regular numpy arrays in cases where use_jax is True.
         if isinstance(k, int):
-            return self.func_list[k].derivatives(x, y, **kwargs[k])
+            f_x, f_y = self.func_list[k].derivatives(x, y, **kwargs[k])
+            return np.asarray(f_x), np.asarray(f_y)
         bool_list = self._bool_list(k)
         f_x, f_y = np.zeros_like(x), np.zeros_like(x)
         for i, func in enumerate(self.func_list):
@@ -120,7 +127,10 @@ class SinglePlane(ProfileListBase):
                 f_x += f_x_i
                 f_y += f_y_i
 
-        return f_x * self._alpha_scaling, f_y * self._alpha_scaling
+        return (
+            np.asarray(f_x) * self._alpha_scaling,
+            np.asarray(f_y) * self._alpha_scaling,
+        )
 
     def hessian(self, x, y, kwargs, k=None):
         """Hessian matrix.
@@ -136,9 +146,16 @@ class SinglePlane(ProfileListBase):
         """
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
+
+        # NOTE: jax arrays are converted back into regular numpy arrays in cases where use_jax is True.
         if isinstance(k, int):
             f_xx, f_xy, f_yx, f_yy = self.func_list[k].hessian(x, y, **kwargs[k])
-            return f_xx, f_xy, f_yx, f_yy
+            return (
+                np.asarray(f_xx),
+                np.asarray(f_xy),
+                np.asarray(f_yx),
+                np.asarray(f_yy),
+            )
 
         bool_list = self._bool_list(k)
         f_xx, f_xy, f_yx, f_yy = (
@@ -155,10 +172,10 @@ class SinglePlane(ProfileListBase):
                 f_yx += f_yx_i
                 f_yy += f_yy_i
         return (
-            f_xx * self._alpha_scaling,
-            f_xy * self._alpha_scaling,
-            f_yx * self._alpha_scaling,
-            f_yy * self._alpha_scaling,
+            np.asarray(f_xx) * self._alpha_scaling,
+            np.asarray(f_xy) * self._alpha_scaling,
+            np.asarray(f_yx) * self._alpha_scaling,
+            np.asarray(f_yy) * self._alpha_scaling,
         )
 
     def change_redshift_scaling(self, alpha_scaling):

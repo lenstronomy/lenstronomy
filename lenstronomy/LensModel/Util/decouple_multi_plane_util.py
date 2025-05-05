@@ -4,7 +4,7 @@ from lenstronomy.LensModel.lens_model import LensModel
 import numpy as np
 
 
-def setup_lens_model(lens_model, kwargs_lens, index_lens_split):
+def setup_lens_model(lens_model, kwargs_lens, index_lens_split, use_jax=False):
     """A method to split a lens model into a piece to vary or optimize, and fixed lens
     model whose deflection field will be interpolated. Note that this method currently
     only supports splitting the lens system at one particular redshift.
@@ -14,6 +14,7 @@ def setup_lens_model(lens_model, kwargs_lens, index_lens_split):
     :param index_lens_split: a list of indexes corresponding to the deflectors that will
         be left free to vary; every other deflector is assumed to remain static be
         absorbed into a net deflection field
+    :param use_jax: bool or list of bools to specify which profiles use JAXstronomy
     :return: an instance of LensModel corresponding to the fixed (static) deflectors, an
         instance of LensModel corresponding to free deflectors, keyword arguments for
         each lens model, source redshift, the redshift where the splitting occurs, and
@@ -66,6 +67,7 @@ def setup_lens_model(lens_model, kwargs_lens, index_lens_split):
         multi_plane=True,
         z_source=z_source,
         cosmo=cosmo,
+        use_jax=use_jax,
     )
     return (
         lens_model_fixed,

@@ -308,10 +308,7 @@ class PositionLikelihood(object):
                     logL -= chi2 / 2
         return logL
 
-
-    def source_position_dist(
-        self, kwargs_lens, kwargs_ps, lens_model, z_sources
-    ):
+    def source_position_dist(self, kwargs_lens, kwargs_ps, lens_model, z_sources):
         """Calculates the distances between source positions from images.
 
         :param kwargs_lens: lens model keyword argument list
@@ -324,8 +321,14 @@ class PositionLikelihood(object):
             mean (x and y) for each source.
         """
 
-        ## Setting up the data and calculating the source positions        
-        x_image_data, y_image_data = self._pointSource.image_position(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens, k=None, original_position=False, additional_images=False)
+        ## Setting up the data and calculating the source positions
+        x_image_data, y_image_data = self._pointSource.image_position(
+            kwargs_ps=kwargs_ps,
+            kwargs_lens=kwargs_lens,
+            k=None,
+            original_position=False,
+            additional_images=False,
+        )
         dists_x = [np.zeros_like(x_image_data[k]) for k in range(len(x_image_data))]
         dists_y = [np.zeros_like(y_image_data[k]) for k in range(len(y_image_data))]
         source_x, source_y = self._pointSource.source_position(kwargs_ps, kwargs_lens)
@@ -334,7 +337,7 @@ class PositionLikelihood(object):
         for k in range(len(kwargs_ps)):
             x_image = x_image_data[k]
             y_image = y_image_data[k]
-            
+
             self._lensModel.change_source_redshift(redshift_list[k])
             # calculating the individual source positions from the image positions
             k_list = self._pointSource.k_list(k)
@@ -344,17 +347,16 @@ class PositionLikelihood(object):
                 else:
                     k_lens = None
                 # Calculate each image position individually
-                x_source_i, y_source_i = self._lensModel.ray_shooting(x_image[i], y_image[i], kwargs_lens, k=k_lens)
+                x_source_i, y_source_i = self._lensModel.ray_shooting(
+                    x_image[i], y_image[i], kwargs_lens, k=k_lens
+                )
                 # Take the difference between each calculated source positions and the mean for that group of multiple images
                 dists_x[k][i] = x_source_i - source_x[k]
                 dists_y[k][i] = y_source_i - source_y[k]
 
         return dists_x, dists_y
 
-
-    def source_position_rmse(
-        self, kwargs_lens, kwargs_ps, lens_model, z_sources
-    ):
+    def source_position_rmse(self, kwargs_lens, kwargs_ps, lens_model, z_sources):
         """Calculates the rms scatter for the sources' x and y positions wrt the mean of
         the sources calculated for each group of multiple images. Uses the
         source_position_dist function.
@@ -373,7 +375,13 @@ class PositionLikelihood(object):
         """
 
         # ## Setting up the data and calculating the source positions
-        dists_x, dists_y = PositionLikelihood.source_position_dist(self, kwargs_lens=kwargs_lens, kwargs_ps=kwargs_ps, lens_model=lens_model, z_sources=z_sources)
+        dists_x, dists_y = PositionLikelihood.source_position_dist(
+            self,
+            kwargs_lens=kwargs_lens,
+            kwargs_ps=kwargs_ps,
+            lens_model=lens_model,
+            z_sources=z_sources,
+        )
 
         ## Square the differences
         dists_x2 = 0
@@ -396,11 +404,10 @@ class PositionLikelihood(object):
                     dists_x2 = dists_x2
                     dists_y2 = dists_y2
 
-        rmse_x = np.sqrt((1/(num-1))*dists_x2)
-        rmse_y = np.sqrt((1/(num-1))*dists_y2)
+        rmse_x = np.sqrt((1 / (num - 1)) * dists_x2)
+        rmse_y = np.sqrt((1 / (num - 1)) * dists_y2)
 
         return rmse_x, rmse_y
-
 
     @property
     def num_data(self):

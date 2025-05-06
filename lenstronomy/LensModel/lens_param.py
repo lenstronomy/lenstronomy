@@ -32,9 +32,9 @@ class LensParam(object):
          (only relevant in this class when 'SHAPELETS' is the solver type)
         :param num_shapelet_lens: integer, number of shapelets in the lensing potential
          (only relevant when 'SHAPELET' lens model is used)
-         :param profile_kwargs_list: list of dicts, keyword arguments used to initialize profile classes
-            in the same order of the lens_model_list. If any of the profile_kwargs are None, then that
-            profile will be initialized using default settings.
+        :param profile_kwargs_list: list of dicts, keyword arguments used to initialize profile classes
+         in the same order of the lens_model_list. If any of the profile_kwargs are None, then that
+         profile will be initialized using default settings.
         """
 
         self.model_list = lens_model_list

@@ -432,3 +432,9 @@ History
 * updated multipole definitions
 * routines for better checking parameters
 * updated documentations for different deflector profiles
+
+1.13.0 (2025-05-06)
++++++++++++++++++++
+* minor bug fix in jaxtronomy integration
+* bug fix in HERNQUIST_ELLIPSE_CSE model
+* better integration of Param() class with lens and light models

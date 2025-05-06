@@ -17,6 +17,7 @@ class LightParam(object):
         kwargs_upper=None,
         param_type="light",
         linear_solver=True,
+        profile_kwargs_list=None,
     ):
         """
 
@@ -28,8 +29,13 @@ class LightParam(object):
          source light)
         :param linear_solver: bool, if True fixes the linear amplitude parameters 'amp' (avoid sampling) such that they
          get overwritten by the linear solver solution.
+        :param profile_kwargs_list: list of dicts, keyword arguments used to initialize light model
+            profile classes in the same order of the light_model_list. If any of the profile_kwargs
+            are None, then that profile will be initialized using default settings.
         """
-        self._lightModel = LightModel(light_model_list=light_model_list)
+        self._lightModel = LightModel(
+            light_model_list=light_model_list, profile_kwargs_list=profile_kwargs_list
+        )
         self._param_name_list = self._lightModel.param_name_list
         self._type = param_type
         self.model_list = light_model_list

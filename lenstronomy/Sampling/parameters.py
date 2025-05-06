@@ -427,6 +427,10 @@ class Param(object):
         kwargs_fixed_tracer_source_updated = self._fix_joint_param(
             kwargs_fixed_tracer_source, self._joint_source_light_with_tracer
         )
+        if "lens_profile_kwargs_list" in kwargs_model.keys():
+            lens_profile_kwargs_list = kwargs_model["lens_profile_kwargs_list"]
+        else:
+            lens_profile_kwargs_list = None
         self.lensParams = LensParam(
             self._lens_model_list,
             kwargs_fixed_lens_updated,
@@ -436,7 +440,14 @@ class Param(object):
             kwargs_lower=kwargs_lower_lens,
             kwargs_upper=kwargs_upper_lens,
             num_shapelet_lens=num_shapelet_lens,
+            profile_kwargs_list=lens_profile_kwargs_list,
         )
+        if "lens_light_profile_kwargs_list" in kwargs_model.keys():
+            lens_light_profile_kwargs_list = kwargs_model[
+                "lens_light_profile_kwargs_list"
+            ]
+        else:
+            lens_light_profile_kwargs_list = None
         self.lensLightParams = LightParam(
             self._lens_light_model_list,
             kwargs_fixed_lens_light_updated,
@@ -444,7 +455,14 @@ class Param(object):
             linear_solver=linear_solver,
             kwargs_lower=kwargs_lower_lens_light,
             kwargs_upper=kwargs_upper_lens_light,
+            profile_kwargs_list=lens_light_profile_kwargs_list,
         )
+        if "source_light_profile_kwargs_list" in kwargs_model.keys():
+            source_light_profile_kwargs_list = kwargs_model[
+                "source_light_profile_kwargs_list"
+            ]
+        else:
+            source_light_profile_kwargs_list = None
         self.sourceParams = LightParam(
             self._source_light_model_list,
             kwargs_fixed_source_updated,
@@ -452,6 +470,7 @@ class Param(object):
             linear_solver=linear_solver,
             kwargs_lower=kwargs_lower_source,
             kwargs_upper=kwargs_upper_source,
+            profile_kwargs_list=source_light_profile_kwargs_list,
         )
         self.pointSourceParams = PointSourceParam(
             self._point_source_model_list,
@@ -621,7 +640,6 @@ class Param(object):
         :param kwargs_tracer_source: tracer of the source light keyword argument list
         :return: numpy array of parameters
         """
-
         args = self.lensParams.set_params(kwargs_lens)
         args += self.sourceParams.set_params(kwargs_source)
         args += self.lensLightParams.set_params(kwargs_lens_light)

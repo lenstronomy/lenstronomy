@@ -58,6 +58,7 @@ def create_class_instances(
     tracer_source_band=0,
     tracer_partition=None,
     tracer_type="LINEAR",
+    use_jax=False,
 ):
     """
 
@@ -129,6 +130,8 @@ def create_class_instances(
     :param tracer_type: string with options 'LINEAR' or 'LOG', to determine how tracers are summed between components
     :param point_source_redshift_list: list of redshifts of point sources
         (default None, i.e. all point sources at the same redshift following the source convention)
+    :param use_jax: bool, if True, uses deflector profiles from jaxtronomy.
+        Can also be a list of bools, selecting which models in the lens_model_list to use from jaxtronomy
     :return: lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class
     """
     if lens_model_list is None:
@@ -140,6 +143,7 @@ def create_class_instances(
     if point_source_model_list is None:
         point_source_model_list = []
 
+    use_jax_i = use_jax
     if index_lens_model_list is None or all_models is True:
         lens_model_list_i = lens_model_list
         lens_redshift_list_i = lens_redshift_list
@@ -163,6 +167,8 @@ def create_class_instances(
                 counter += 1
         else:
             observed_convention_index_i = observed_convention_index
+        if isinstance(use_jax, list):
+            use_jax_i = [use_jax[k] for k in index_lens_model_list[band_index]]
 
     lens_model_class = LensModel(
         lens_model_list=lens_model_list_i,
@@ -179,6 +185,7 @@ def create_class_instances(
         profile_kwargs_list=lens_profile_kwargs_list,
         decouple_multi_plane=decouple_multi_plane,
         kwargs_multiplane_model=kwargs_multiplane_model,
+        use_jax=use_jax_i
     )
 
     if kwargs_multiplane_model_point_source is not None:
@@ -194,6 +201,7 @@ def create_class_instances(
             profile_kwargs_list=lens_profile_kwargs_list,
             decouple_multi_plane=decouple_multi_plane,
             kwargs_multiplane_model=kwargs_multiplane_model_point_source,
+            use_jax=use_jax_i
         )
     else:
         lens_model_class_point_source = lens_model_class

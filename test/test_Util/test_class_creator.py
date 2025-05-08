@@ -253,6 +253,58 @@ class TestClassCreator(object):
         )
         assert multi_band.LensModel.lens_model_list[0] == "SIS"
 
+    def test_use_jax(self):
+        kwargs_model = {
+            "lens_model_list": ["EPL", "TNFW"],
+            "index_lens_model_list": [[0, 1], [1]],
+            "use_jax": [True, False],
+            "multi_plane": False,
+            "band_index": 0
+        }
+        (
+            lens_model_class,
+            _,
+            _,
+            _,
+            _,
+        ) = class_creator.create_class_instances(**kwargs_model)
+        assert "jaxtronomy" in lens_model_class.lens_model.func_list[0].__module__
+        assert "lenstronomy" in lens_model_class.lens_model.func_list[1].__module__
+
+        kwargs_model = {
+            "lens_model_list": ["EPL", "TNFW"],
+            "index_lens_model_list": [[0, 1], [1]],
+            "use_jax": True,
+            "multi_plane": False,
+            "band_index": 0
+        }
+        (
+            lens_model_class,
+            _,
+            _,
+            _,
+            _,
+        ) = class_creator.create_class_instances(**kwargs_model)
+        assert "jaxtronomy" in lens_model_class.lens_model.func_list[0].__module__
+        assert "jaxtronomy" in lens_model_class.lens_model.func_list[1].__module__
+
+        kwargs_model = {
+            "lens_model_list": ["EPL", "TNFW"],
+            "index_lens_model_list": [[0, 1], [1]],
+            "use_jax": False,
+            "multi_plane": False,
+            "band_index": 0
+        }
+        (
+            lens_model_class,
+            _,
+            _,
+            _,
+            _,
+        ) = class_creator.create_class_instances(**kwargs_model)
+        assert "lenstronomy" in lens_model_class.lens_model.func_list[0].__module__
+        assert "lenstronomy" in lens_model_class.lens_model.func_list[1].__module__
+
 
 class TestRaise(unittest.TestCase):
     def test_raise(self):

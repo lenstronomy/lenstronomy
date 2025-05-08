@@ -185,7 +185,7 @@ def create_class_instances(
         profile_kwargs_list=lens_profile_kwargs_list,
         decouple_multi_plane=decouple_multi_plane,
         kwargs_multiplane_model=kwargs_multiplane_model,
-        use_jax=use_jax_i
+        use_jax=use_jax_i,
     )
 
     if kwargs_multiplane_model_point_source is not None:
@@ -201,7 +201,7 @@ def create_class_instances(
             profile_kwargs_list=lens_profile_kwargs_list,
             decouple_multi_plane=decouple_multi_plane,
             kwargs_multiplane_model=kwargs_multiplane_model_point_source,
-            use_jax=use_jax_i
+            use_jax=use_jax_i,
         )
     else:
         lens_model_class_point_source = lens_model_class

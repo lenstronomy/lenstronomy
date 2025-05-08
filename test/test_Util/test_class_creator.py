@@ -259,7 +259,7 @@ class TestClassCreator(object):
             "index_lens_model_list": [[0, 1], [1]],
             "use_jax": [True, False],
             "multi_plane": False,
-            "band_index": 0
+            "band_index": 0,
         }
         (
             lens_model_class,
@@ -276,7 +276,7 @@ class TestClassCreator(object):
             "index_lens_model_list": [[0, 1], [1]],
             "use_jax": True,
             "multi_plane": False,
-            "band_index": 0
+            "band_index": 0,
         }
         (
             lens_model_class,
@@ -293,7 +293,7 @@ class TestClassCreator(object):
             "index_lens_model_list": [[0, 1], [1]],
             "use_jax": False,
             "multi_plane": False,
-            "band_index": 0
+            "band_index": 0,
         }
         (
             lens_model_class,

@@ -89,7 +89,7 @@ class Solver4Point(object):
         if self._decoupling:
             alpha_0_x, alpha_0_y = self.lensModel.alpha(x_pos, y_pos, kwargs)
             alpha_1_x, alpha_1_y = self.lensModel.alpha(x_pos, y_pos, kwargs, k=0)
-            if self._solver_type in ["PROFILE_SHEAR", "PROFILE_SHEAR_GAMMA_PSI", "PROFILE_SHEAR_Q"]:
+            if self._solver_type in ["PROFILE_SHEAR", "PROFILE_SHEAR_GAMMA_PSI"]:
                 alpha_shear_x, alpha_shear_y = self.lensModel.alpha(
                     x_pos, y_pos, kwargs, k=1
                 )

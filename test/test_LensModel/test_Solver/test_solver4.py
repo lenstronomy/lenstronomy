@@ -9,6 +9,44 @@ from lenstronomy.LensModel.lens_model import LensModel
 import lenstronomy.Util.param_util as param_util
 
 
+class CustomParamModule(object):
+
+    def __init__(self, q):
+        self._q = q
+
+    def update_kwargs(self, x, kwargs_list):
+        phi_q = x[5]
+        e1, e2 = param_util.phi_q2_ellipticity(phi_q, self._q)
+        kwargs_list[0]["e1"] = e1
+        kwargs_list[0]["e2"] = e2
+        [theta_E, gamma1, gamma2, center_x, center_y, _] = x
+        kwargs_list[0]["theta_E"] = theta_E
+        kwargs_list[1]["gamma1"] = gamma1
+        kwargs_list[1]["gamma2"] = gamma2
+        kwargs_list[0]["center_x"] = center_x
+        kwargs_list[0]["center_y"] = center_y
+        return kwargs_list
+
+    def extract_array(self, kwargs_list):
+        _e1 = kwargs_list[0]["e1"]
+        _e2 = kwargs_list[0]["e2"]
+        phi_q, _ = param_util.ellipticity2phi_q(_e1, _e2)
+        center_x = kwargs_list[0]["center_x"]
+        center_y = kwargs_list[0]["center_y"]
+        theta_E = kwargs_list[0]["theta_E"]
+        gamma1 = kwargs_list[1]["gamma1"]
+        gamma2 = kwargs_list[1]["gamma2"]
+        x = [theta_E, center_x, center_y, gamma1, gamma2, phi_q]
+        return x
+
+    def add_fixed_lens(self, kwargs_fixed_lens_list, kwargs_lens_init):
+        kwargs_fixed_lens_list[0]["theta_E"] = kwargs_lens_init[0]["theta_E"]
+        kwargs_fixed_lens_list[0]["center_x"] = kwargs_lens_init[0]["center_x"]
+        kwargs_fixed_lens_list[0]["center_y"] = kwargs_lens_init[0]["center_y"]
+        kwargs_fixed_lens_list[1]["gamma1"] = kwargs_lens_init[1]["gamma1"]
+        kwargs_fixed_lens_list[1]["gamma2"] = kwargs_lens_init[1]["gamma2"]
+        return kwargs_fixed_lens_list
+
 class TestSolver4Point(object):
     def setup_method(self):
         """
@@ -691,6 +729,96 @@ class TestSolver4Point(object):
         npt.assert_almost_equal(
             kwargs_lens_new[1]["gamma1"], kwargs_lens[1]["gamma1"], decimal=8
         )
+
+    def test_solver_custom(self):
+        """
+        This demonstrates functionality of the CUSTOM solver_type option with a solver enforcing a fixed axis ratio. The
+        test is the same as test_multiplane, but the solution for the lens model is found for a fixed axis ratio while
+        still sampling in e1/e2 basis
+        """
+        lens_model_list = ["SPEP", "SHEAR", "SIS"]
+        lensModel = LensModel(
+            lens_model_list,
+            z_source=1,
+            lens_redshift_list=[0.5, 0.5, 0.3],
+            multi_plane=True,
+        )
+
+        lensEquationSolver = LensEquationSolver(lensModel)
+        sourcePos_x = 0.01
+        sourcePos_y = -0.01
+        deltapix = 0.05
+        numPix = 150
+        gamma = 1.96
+        gamma1, gamma2 = 0.01, 0.01
+        kwargs_shear = {
+            "gamma1": gamma1,
+            "gamma2": gamma2,
+        }  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
+        kwargs_spemd = {
+            "theta_E": 1.0,
+            "gamma": gamma,
+            "center_x": 0,
+            "center_y": 0,
+            "e1": 0.2,
+            "e2": 0.03,
+        }
+        kwargs_sis = {"theta_E": 0.1, "center_x": 1, "center_y": 0}
+        kwargs_lens = [kwargs_spemd, kwargs_shear, kwargs_sis]
+        x_pos, y_pos = lensEquationSolver.findBrightImage(
+            sourcePos_x,
+            sourcePos_y,
+            kwargs_lens,
+            numImages=4,
+            min_distance=deltapix,
+            search_window=numPix * deltapix,
+        )
+        print(x_pos, y_pos, "test positions")
+        kwargs_lens_init = [
+            {
+                "theta_E": 1.3,
+                "gamma": gamma,
+                "e1": 0.1,
+                "e2": 0,
+                "center_x": 0.0,
+                "center_y": 0,
+            },
+            {"gamma1": gamma1, "gamma2": gamma2},
+            {"theta_E": 0.1, "center_x": 1, "center_y": 0},
+        ]
+
+        # Here one creates the custom class (see top of the file)
+        q_in = 0.73
+        fixed_q_param_class = CustomParamModule(q_in)
+        solver = Solver4Point(lensModel, solver_type="CUSTOM", parameter_module=fixed_q_param_class)
+        kwargs_lens_new, accuracy = solver.constraint_lensmodel(
+            x_pos, y_pos, kwargs_lens_init
+        )
+        print(kwargs_lens_new, "kwargs_lens_new")
+        assert accuracy < 10 ** (-10)
+        x_source, y_source = lensModel.ray_shooting(x_pos, y_pos, kwargs_lens_new)
+        x_source, y_source = np.mean(x_source), np.mean(y_source)
+        x_pos_new, y_pos_new = lensEquationSolver.findBrightImage(
+            x_source,
+            y_source,
+            kwargs_lens_new,
+            numImages=4,
+            min_distance=deltapix,
+            search_window=numPix * deltapix,
+        )
+        print(x_pos, x_pos_new)
+        x_pos = np.sort(x_pos)
+        x_pos_new = np.sort(x_pos_new)
+        y_pos = np.sort(y_pos)
+        y_pos_new = np.sort(y_pos_new)
+        for i in range(len(x_pos)):
+            npt.assert_almost_equal(x_pos[i], x_pos_new[i], decimal=6)
+            npt.assert_almost_equal(y_pos[i], y_pos_new[i], decimal=6)
+
+        _, q_out = param_util.ellipticity2phi_q(kwargs_lens_new[0]['e1'],
+                                                kwargs_lens_new[0]['e2'])
+        npt.assert_almost_equal(q_out, q_in)
+
 
 
 if __name__ == "__main__":

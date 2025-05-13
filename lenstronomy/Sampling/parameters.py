@@ -157,6 +157,7 @@ class Param(object):
         log_sampling_lens=[],
         distance_ratio_sampling=False,
         cosmology_sampling=False,
+        solver_param_module=None
     ):
         """
 
@@ -235,6 +236,8 @@ class Param(object):
          distance ratios to update T_ij value in multi-lens plane computation.
         :param cosmology_sampling: bool, if True, will use sampled cosmology
         :param cosmology_model: str, name of the cosmology model to use for
+        :param solver_param_module: a class that performs conversions update_kwargs, extract_array, and add_fixed_lens
+        for the Solver4Point class with the solver_type = 'CUSTOM' option
         """
 
         self._lens_model_list = kwargs_model.get("lens_model_list", [])
@@ -384,6 +387,7 @@ class Param(object):
                 solver_type=self._solver_type,
                 lensModel=self._lens_model_class,
                 num_images=self._num_images,
+                parameter_module=solver_param_module
             )
         source_model_list = self._source_light_model_list
         if len(source_model_list) != 1 or source_model_list[0] not in [

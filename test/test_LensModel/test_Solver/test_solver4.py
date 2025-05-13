@@ -819,6 +819,55 @@ class TestSolver4Point(object):
                                                 kwargs_lens_new[0]['e2'])
         npt.assert_almost_equal(q_out, q_in)
 
+        fixed = solver.add_fixed_lens(kwargs_lens_new, kwargs_lens_init)
+        npt.assert_almost_equal(fixed[0]['theta_E'], kwargs_lens_init[0]['theta_E'])
+        npt.assert_almost_equal(fixed[0]['center_x'], kwargs_lens_init[0]['center_x'])
+        npt.assert_almost_equal(fixed[0]['center_y'], kwargs_lens_init[0]['center_y'])
+        npt.assert_almost_equal(fixed[1]['gamma1'], kwargs_lens_init[1]['gamma1'])
+        npt.assert_almost_equal(fixed[1]['gamma2'], kwargs_lens_init[1]['gamma2'])
+
+    def test_errors(self):
+
+        lens_model_list = ["SPEP", "SHEAR", "SIS"]
+        lensModel = LensModel(
+            lens_model_list,
+            z_source=1,
+            lens_redshift_list=[0.5, 0.5, 0.3],
+            multi_plane=True,
+        )
+        solver_init = Solver4Point
+        solver_type = "ALSDKFJAJDF"
+        parameter_module = None
+        init_args = (lensModel, solver_type, parameter_module)
+        npt.assert_raises(ValueError, solver_init, *init_args)
+
+        lens_model_list = ["SPEP", "SIS", "SIS"]
+        lensModel = LensModel(
+            lens_model_list,
+            z_source=1,
+            lens_redshift_list=[0.5, 0.5, 0.3],
+            multi_plane=True,
+        )
+        solver_init = Solver4Point
+        solver_type = "PROFILE_SHEAR"
+        parameter_module = None
+        init_args = (lensModel, solver_type, parameter_module)
+        npt.assert_raises(ValueError, solver_init, *init_args)
+
+        lens_model_list = ["SPEP", "SHEAR", "SIS"]
+        lensModel = LensModel(
+            lens_model_list,
+            z_source=1,
+            lens_redshift_list=[0.5, 0.5, 0.3],
+            multi_plane=True,
+        )
+        solver_init = Solver4Point
+        solver_type = "CUSTOM"
+        parameter_module = None
+        init_args = (lensModel, solver_type, parameter_module)
+        npt.assert_raises(ValueError, solver_init, *init_args)
+
+
 
 
 if __name__ == "__main__":

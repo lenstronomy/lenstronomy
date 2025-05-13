@@ -24,12 +24,13 @@ _SUPPORTED_LENS_MODEL_SOLVER = [
     "EPL_MULTIPOLE_M3M4",
     "EPL_MULTIPOLE_M1M3M4",
     "EPL_MULTIPOLE_M3M4_ELL",
-    "EPL_MULTIPOLE_M1M3M4_ELL"
+    "EPL_MULTIPOLE_M1M3M4_ELL",
 ]
 
 
 class Solver4Point(object):
     """Class to make the constraints for the solver."""
+
     def __init__(self, lensModel, solver_type="PROFILE", parameter_module=None):
         """
 
@@ -70,7 +71,11 @@ class Solver4Point(object):
         self._parameter_module = parameter_module
         self.lensModel = lensModel
         self._lens_mode_list = lensModel.lens_model_list
-        if lensModel.multi_plane is True or "FOREGROUND_SHEAR" in self._lens_mode_list or self._solver_type=='CUSTOM':
+        if (
+            lensModel.multi_plane is True
+            or "FOREGROUND_SHEAR" in self._lens_mode_list
+            or self._solver_type == "CUSTOM"
+        ):
             self._decoupling = False
         else:
             self._decoupling = True
@@ -103,7 +108,7 @@ class Solver4Point(object):
         x = self.solve(x_pos, y_pos, init, kwargs, a, xtol)
         kwargs = self._update_kwargs(x, kwargs)
         y_end = self._F(x, x_pos, y_pos, kwargs, a)
-        accuracy = np.sum(y_end ** 2)
+        accuracy = np.sum(y_end**2)
         return kwargs, accuracy
 
     def solve(self, x_pos, y_pos, init, kwargs_list, a, xtol=1.49012e-10):
@@ -160,7 +165,7 @@ class Solver4Point(object):
         :param kwargs_list: list of lens model kwargs
         :return: updated kwargs_list
         """
-        if self._solver_type == 'CUSTOM':
+        if self._solver_type == "CUSTOM":
             return self._parameter_module.update_kwargs(x, kwargs_list)
         if self._solver_type == "PROFILE_SHEAR_GAMMA_PSI":
             phi_G = x[5]  # % (2 * np.pi)
@@ -224,7 +229,7 @@ class Solver4Point(object):
         :param kwargs_list:
         :return:
         """
-        if self._solver_type == 'CUSTOM':
+        if self._solver_type == "CUSTOM":
             return self._parameter_module.extract_array(kwargs_list)
         if self._solver_type == "PROFILE_SHEAR_GAMMA_PSI":
             phi_ext = kwargs_list[1]["psi_ext"]  # % (np.pi)
@@ -254,7 +259,7 @@ class Solver4Point(object):
             "EPL_MULTIPOLE_M3M4_ELL",
             "EPL_MULTIPOLE_M1M3M4",
             "EPL_MULTIPOLE_M1M3M4_ELL",
-            "EPL_MULTIPOLE_M1M3M4_ELL_SHEAR"
+            "EPL_MULTIPOLE_M1M3M4_ELL_SHEAR",
         ]:
             e1 = kwargs_list[0]["e1"]
             e2 = kwargs_list[0]["e2"]
@@ -291,8 +296,10 @@ class Solver4Point(object):
         :param kwargs_lens_init:
         :return:
         """
-        if self._solver_type == 'CUSTOM':
-            return self._parameter_module.add_fixed_lens(kwargs_fixed_lens_list, kwargs_lens_init)
+        if self._solver_type == "CUSTOM":
+            return self._parameter_module.add_fixed_lens(
+                kwargs_fixed_lens_list, kwargs_lens_init
+            )
         lens_model = self.lensModel.lens_model_list[0]
         kwargs_fixed = kwargs_fixed_lens_list[0]
         kwargs_lens = kwargs_lens_init[0]

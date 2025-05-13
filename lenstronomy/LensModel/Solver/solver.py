@@ -22,7 +22,9 @@ class Solver(object):
         self._num_images = num_images
         self._lensModel = lensModel
         if self._num_images == 4:
-            self._solver = Solver4Point(lensModel, solver_type=solver_type, parameter_module=parameter_module)
+            self._solver = Solver4Point(
+                lensModel, solver_type=solver_type, parameter_module=parameter_module
+            )
         elif self._num_images == 2:
             self._solver = Solver2Point(lensModel, solver_type=solver_type)
         else:

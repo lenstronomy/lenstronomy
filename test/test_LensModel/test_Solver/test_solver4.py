@@ -47,6 +47,7 @@ class CustomParamModule(object):
         kwargs_fixed_lens_list[1]["gamma2"] = kwargs_lens_init[1]["gamma2"]
         return kwargs_fixed_lens_list
 
+
 class TestSolver4Point(object):
     def setup_method(self):
         """
@@ -731,10 +732,11 @@ class TestSolver4Point(object):
         )
 
     def test_solver_custom(self):
-        """
-        This demonstrates functionality of the CUSTOM solver_type option with a solver enforcing a fixed axis ratio. The
-        test is the same as test_multiplane, but the solution for the lens model is found for a fixed axis ratio while
-        still sampling in e1/e2 basis
+        """This demonstrates functionality of the CUSTOM solver_type option with a
+        solver enforcing a fixed axis ratio.
+
+        The test is the same as test_multiplane, but the solution for the lens model is
+        found for a fixed axis ratio while still sampling in e1/e2 basis
         """
         lens_model_list = ["SPEP", "SHEAR", "SIS"]
         lensModel = LensModel(
@@ -790,7 +792,9 @@ class TestSolver4Point(object):
         # Here one creates the custom class (see top of the file)
         q_in = 0.73
         fixed_q_param_class = CustomParamModule(q_in)
-        solver = Solver4Point(lensModel, solver_type="CUSTOM", parameter_module=fixed_q_param_class)
+        solver = Solver4Point(
+            lensModel, solver_type="CUSTOM", parameter_module=fixed_q_param_class
+        )
         kwargs_lens_new, accuracy = solver.constraint_lensmodel(
             x_pos, y_pos, kwargs_lens_init
         )
@@ -815,16 +819,17 @@ class TestSolver4Point(object):
             npt.assert_almost_equal(x_pos[i], x_pos_new[i], decimal=6)
             npt.assert_almost_equal(y_pos[i], y_pos_new[i], decimal=6)
 
-        _, q_out = param_util.ellipticity2phi_q(kwargs_lens_new[0]['e1'],
-                                                kwargs_lens_new[0]['e2'])
+        _, q_out = param_util.ellipticity2phi_q(
+            kwargs_lens_new[0]["e1"], kwargs_lens_new[0]["e2"]
+        )
         npt.assert_almost_equal(q_out, q_in)
 
         fixed = solver.add_fixed_lens(kwargs_lens_new, kwargs_lens_init)
-        npt.assert_almost_equal(fixed[0]['theta_E'], kwargs_lens_init[0]['theta_E'])
-        npt.assert_almost_equal(fixed[0]['center_x'], kwargs_lens_init[0]['center_x'])
-        npt.assert_almost_equal(fixed[0]['center_y'], kwargs_lens_init[0]['center_y'])
-        npt.assert_almost_equal(fixed[1]['gamma1'], kwargs_lens_init[1]['gamma1'])
-        npt.assert_almost_equal(fixed[1]['gamma2'], kwargs_lens_init[1]['gamma2'])
+        npt.assert_almost_equal(fixed[0]["theta_E"], kwargs_lens_init[0]["theta_E"])
+        npt.assert_almost_equal(fixed[0]["center_x"], kwargs_lens_init[0]["center_x"])
+        npt.assert_almost_equal(fixed[0]["center_y"], kwargs_lens_init[0]["center_y"])
+        npt.assert_almost_equal(fixed[1]["gamma1"], kwargs_lens_init[1]["gamma1"])
+        npt.assert_almost_equal(fixed[1]["gamma2"], kwargs_lens_init[1]["gamma2"])
 
     def test_errors(self):
 
@@ -866,8 +871,6 @@ class TestSolver4Point(object):
         parameter_module = None
         init_args = (lensModel, solver_type, parameter_module)
         npt.assert_raises(ValueError, solver_init, *init_args)
-
-
 
 
 if __name__ == "__main__":

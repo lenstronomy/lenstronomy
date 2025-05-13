@@ -157,7 +157,7 @@ class Param(object):
         log_sampling_lens=[],
         distance_ratio_sampling=False,
         cosmology_sampling=False,
-        solver_param_module=None
+        solver_param_module=None,
     ):
         """
 
@@ -387,7 +387,7 @@ class Param(object):
                 solver_type=self._solver_type,
                 lensModel=self._lens_model_class,
                 num_images=self._num_images,
-                parameter_module=solver_param_module
+                parameter_module=solver_param_module,
             )
         source_model_list = self._source_light_model_list
         if len(source_model_list) != 1 or source_model_list[0] not in [

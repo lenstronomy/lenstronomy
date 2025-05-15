@@ -9,18 +9,22 @@ class Solver(object):
     """Joint solve class to manage with type of solver to be executed and checks whether
     the requirements are fulfilled."""
 
-    def __init__(self, solver_type, lensModel, num_images):
+    def __init__(self, solver_type, lensModel, num_images, parameter_module=None):
         """
 
         :param solver_type: string, option for specific solver type
          see detailed instruction of the Solver4Point and Solver2Point classes
         :param lensModel: instance of a LensModel() class
         :param num_images: int, number of images to be solved for
+        :param parameter_module: a class to be used with solver_type that has routines to be used in the Solver4Point
+        module for parameter handling: extract_array, update_kwargs, and add_fixed_lens
         """
         self._num_images = num_images
         self._lensModel = lensModel
         if self._num_images == 4:
-            self._solver = Solver4Point(lensModel, solver_type=solver_type)
+            self._solver = Solver4Point(
+                lensModel, solver_type=solver_type, parameter_module=parameter_module
+            )
         elif self._num_images == 2:
             self._solver = Solver2Point(lensModel, solver_type=solver_type)
         else:

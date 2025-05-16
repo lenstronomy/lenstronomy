@@ -323,7 +323,8 @@ class Optimizer(object):
         :param verbose: bool; if True, make print statements
         :param method: optimization algorithm to be used by scipy.optimize.minimize;
         see documentation in scipy: https://docs.scipy.org/doc/scipy/reference/optimize.html#module-scipy.optimize. Can
-        also be a callable function with signature method(objective_function, initial_guess)
+        also be a callable function with signature method(objective_function, initial_guess). The callable function
+        must return a dictionary with the "x" and "fun" properties, as described in the scipy OptimizeResult class docs
         :return: best-fit keyword arguments, and source-plane punishing term used to enforce solution of lens eqn.
         """
         args_init = self._param_class.kwargs_to_args(kwargs)

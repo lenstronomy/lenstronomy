@@ -246,7 +246,7 @@ class TestOptimizer(object):
             tol_simplex_func=1e-3,
             simplex_n_iterations=400,
         )
-        
+
         from scipy.optimize import minimize as scipy_minimize
         kwargs_final, source = optimizer.optimize(50, 100, verbose=True, minimize_method=scipy_minimize)
         lensmodel = LensModel(

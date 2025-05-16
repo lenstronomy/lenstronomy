@@ -273,7 +273,7 @@ class Optimizer(object):
 
         else:
             kwargs = self._param_class.kwargs_lens
-        kwargs_lens_final, source_penalty = self._fit_amoeba(
+        kwargs_lens_final, source_penalty = self._optimization(
             kwargs, verbose, minimize_method
         )
         source_x_array, source_y_array = self.ray_shooting_method(
@@ -316,30 +316,40 @@ class Optimizer(object):
             print("total chi^2: ", self._penalty_function(args_best))
         return kwargs
 
-    def _fit_amoeba(self, kwargs, verbose, method="Nelder-Mead"):
+    def _optimization(self, kwargs, verbose, method="Nelder-Mead"):
         """
-        Executes the downhill simplex optimization with scipy
+        Executes an optimization routine as specified by method
         :param kwargs: keyword arguments to initialize the optimization
         :param verbose: bool; if True, make print statements
         :param method: optimization algorithm to be used by scipy.optimize.minimize;
-        see documentation in scipy: https://docs.scipy.org/doc/scipy/reference/optimize.html#module-scipy.optimize
+        see documentation in scipy: https://docs.scipy.org/doc/scipy/reference/optimize.html#module-scipy.optimize. Can
+        also be COBYQA, in which case cobyqa should be installed
         :return: best-fit keyword arguments, and source-plane punishing term used to enforce solution of lens eqn.
         """
-
         args_init = self._param_class.kwargs_to_args(kwargs)
-        options = {
-            "adaptive": True,
-            "fatol": self._tol_simplex_func,
-            "maxiter": self._simplex_n_iterations * len(args_init),
-        }
-        if verbose:
-            print("starting amoeba... ")
-        opt = minimize(
-            self._penalty_function,
-            x0=args_init,
-            method=method,
-            options=options,
-        )
+        if method == 'COBYQA':
+            try:
+                from cobyqa import minimize as minimize_cobyqa
+            except:
+                raise ModuleNotFoundError('cobyqa not installed, install cobyqa (https://www.cobyqa.com/stable/) '
+                                          'in order to use the COBYQA optimization algorithm!')
+            opt = minimize_cobyqa(self._penalty_function,
+                                  x0=args_init)
+        else:
+            # use scipy routines
+            scipy_options = {
+                "adaptive": True,
+                "fatol": self._tol_simplex_func,
+                "maxiter": self._simplex_n_iterations * len(args_init),
+            }
+            if verbose:
+                print("starting amoeba... ")
+            opt = minimize(
+                self._penalty_function,
+                x0=args_init,
+                method=method,
+                options=scipy_options,
+            )
         kwargs = self._param_class.args_to_kwargs(opt["x"])
         source_penalty = opt["fun"]
         return kwargs, source_penalty

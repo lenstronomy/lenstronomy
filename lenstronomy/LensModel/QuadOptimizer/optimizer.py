@@ -323,27 +323,20 @@ class Optimizer(object):
         :param verbose: bool; if True, make print statements
         :param method: optimization algorithm to be used by scipy.optimize.minimize;
         see documentation in scipy: https://docs.scipy.org/doc/scipy/reference/optimize.html#module-scipy.optimize. Can
-        also be COBYQA, in which case cobyqa should be installed
+        also be a callable function with signature method(objective_function, initial_guess)
         :return: best-fit keyword arguments, and source-plane punishing term used to enforce solution of lens eqn.
         """
         args_init = self._param_class.kwargs_to_args(kwargs)
-        if method == 'COBYQA':
-            try:
-                from cobyqa import minimize as minimize_cobyqa
-            except:
-                raise ModuleNotFoundError('cobyqa not installed, install cobyqa (https://www.cobyqa.com/stable/) '
-                                          'in order to use the COBYQA optimization algorithm!')
-            opt = minimize_cobyqa(self._penalty_function,
-                                  x0=args_init)
+        if verbose:
+            print("starting optimization... ")
+        if callable(method):
+            opt = method(self._penalty_function, x0=args_init)
         else:
-            # use scipy routines
             scipy_options = {
                 "adaptive": True,
                 "fatol": self._tol_simplex_func,
                 "maxiter": self._simplex_n_iterations * len(args_init),
             }
-            if verbose:
-                print("starting amoeba... ")
             opt = minimize(
                 self._penalty_function,
                 x0=args_init,

@@ -248,7 +248,10 @@ class TestOptimizer(object):
         )
 
         from scipy.optimize import minimize as scipy_minimize
-        kwargs_final, source = optimizer.optimize(50, 100, verbose=True, minimize_method=scipy_minimize)
+
+        kwargs_final, source = optimizer.optimize(
+            50, 100, verbose=True, minimize_method=scipy_minimize
+        )
         lensmodel = LensModel(
             self.lens_model_list_multipole,
             self.zlens,

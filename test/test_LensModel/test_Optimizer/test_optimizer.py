@@ -229,6 +229,55 @@ class TestOptimizer(object):
         phi, _ = ellipticity2phi_q(kwargs_epl["e1"], kwargs_epl["e2"])
         npt.assert_almost_equal(phi, kwargs_multipole["phi_m"])
 
+    def test_callable_method(self):
+        param_class = PowerLawFixedShearMultipole(self.kwargs_multipole, 0.07)
+
+        optimizer = Optimizer.full_raytracing(
+            self.x_image,
+            self.y_image,
+            self.lens_model_list_multipole,
+            self.zlist_multipole,
+            self.zlens,
+            self.zsource,
+            param_class,
+            pso_convergence_mean=50000,
+            foreground_rays=None,
+            tol_source=1e-5,
+            tol_simplex_func=1e-3,
+            simplex_n_iterations=400,
+        )
+
+        from scipy.optimize import minimize as scipy_minimize
+
+        kwargs_final, source = optimizer.optimize(
+            50, 100, verbose=True, minimize_method=scipy_minimize
+        )
+        lensmodel = LensModel(
+            self.lens_model_list_multipole,
+            self.zlens,
+            self.zsource,
+            self.zlist_multipole,
+            multi_plane=True,
+        )
+        beta_x, beta_y = lensmodel.ray_shooting(
+            self.x_image, self.y_image, kwargs_final
+        )
+
+        npt.assert_almost_equal(np.sum(beta_x) - 4 * np.mean(beta_x), 0)
+        npt.assert_almost_equal(np.sum(beta_y) - 4 * np.mean(beta_y), 0)
+
+        kwargs_shear = kwargs_final[1]
+        shear_out = np.hypot(kwargs_shear["gamma1"], kwargs_shear["gamma2"])
+        npt.assert_almost_equal(shear_out, 0.07)
+
+        kwargs_epl = kwargs_final[0]
+        kwargs_multipole = kwargs_final[2]
+        npt.assert_almost_equal(kwargs_multipole["m"], 4)
+        npt.assert_almost_equal(kwargs_multipole["center_x"], kwargs_epl["center_x"])
+        npt.assert_almost_equal(kwargs_multipole["center_y"], kwargs_epl["center_y"])
+        phi, _ = ellipticity2phi_q(kwargs_epl["e1"], kwargs_epl["e2"])
+        npt.assert_almost_equal(phi, kwargs_multipole["phi_m"])
+
     def test_options(self):
         param_class = PowerLawFixedShearMultipole(self.kwargs_multipole, 0.07)
         optimizer = Optimizer.full_raytracing(

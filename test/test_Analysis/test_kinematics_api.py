@@ -613,7 +613,7 @@ class TestKinematicsAPI(object):
             supersampling_factor=5,
             voronoi_bins=None,
         )
-        print(np.shape(vel_dis), 'test vel_disp')
+        print(np.shape(vel_dis), "test vel_disp")
 
         jampy_vel_dis = np.array(
             [

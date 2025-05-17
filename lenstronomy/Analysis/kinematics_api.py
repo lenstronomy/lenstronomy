@@ -230,8 +230,8 @@ class KinematicsAPI(object):
                     kwargs_anisotropy,
                     supersampling_factor=supersampling_factor,
                     voronoi_bins=voronoi_bins,
-                    )
-                print(np.shape(sigma_v_map_), 'test sigma_v_map IFU_grid')
+                )
+                print(np.shape(sigma_v_map_), "test sigma_v_map IFU_grid")
             else:
                 sigma_v_map_ = galkin[i].dispersion_map(
                     kwargs_profile,

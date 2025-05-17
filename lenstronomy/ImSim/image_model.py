@@ -674,7 +674,7 @@ class ImageModel(object):
 
     def _error_map_model(self, kwargs_lens, kwargs_ps, kwargs_special=None):
         """Noise estimate (variances as diagonal of the pixel covariance matrix)
-        resulted from inherent model uncertainties This term is currently the psf error
+        resulted from inherent model uncertainties. This term is currently the psf error
         map.
 
         :param kwargs_lens: lens model keyword arguments

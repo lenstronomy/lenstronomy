@@ -610,10 +610,10 @@ class TestKinematicsAPI(object):
             theta_E=kwargs_lens[0]["theta_E"],
             gamma=kwargs_lens[0]["gamma"],
             kappa_ext=0,
-            direct_convolve=True,
             supersampling_factor=5,
             voronoi_bins=None,
         )
+        print(np.shape(vel_dis), 'test vel_disp')
 
         jampy_vel_dis = np.array(
             [
@@ -843,7 +843,8 @@ class TestKinematicsAPI(object):
                 ],
             ]
         )
-
+        n = int(np.sqrt(len(vel_dis)))
+        vel_dis = vel_dis.reshape(int(n), int(n))
         assert np.max(np.abs(jampy_vel_dis / vel_dis[14:28, 14:28] - 1)) < 0.009
 
     def test_velocity_dispersion_map(self):
@@ -954,14 +955,12 @@ class TestKinematicsAPI(object):
             [{"theta_E": 1, "center_x": 0, "center_y": 0}],
             [{"Rs": 1, "amp": 1, "center_x": 0, "center_y": 0}],
             {"r_ani": 1},
-            direct_convolve=False,
         )
 
         kin_api.velocity_dispersion_map(
             [{"theta_E": 1, "center_x": 0, "center_y": 0}],
             [{"Rs": 1, "amp": 1, "center_x": 0, "center_y": 0}],
             {"r_ani": 1},
-            direct_convolve=True,
         )
 
     def test_interpolated_sersic(self):
@@ -1109,34 +1108,6 @@ class TestKinematicsAPI(object):
 
 class TestRaise(unittest.TestCase):
     def test_raise(self):
-        with self.assertRaises(ValueError):
-            # self._kwargs_aperture_kin["aperture_type"] != "IFU_grid":
-            z_lens = 0.5
-            z_source = 1.5
-            kwargs_model = {
-                "lens_model_list": ["SIS"],
-                "lens_light_model_list": ["HERNQUIST"],
-            }
-
-            kwargs_aperture = {
-                "aperture_type": "slit",
-                "length": 1,
-                "width": 1,
-            }
-            kinematicAPI = KinematicsAPI(
-                z_lens,
-                z_source,
-                kwargs_model,
-                kwargs_seeing={"psf_type": "GAUSSIAN", "fwhm": 0.7},
-                kwargs_aperture=kwargs_aperture,
-                anisotropy_model="OM",
-            )
-            kinematicAPI.velocity_dispersion_map(
-                [{"theta_E": 1, "center_x": 0, "center_y": 0}],
-                [{"Rs": 1, "amp": 1, "center_x": 0, "center_y": 0}],
-                {"r_ani": 1},
-                direct_convolve=True,
-            )
 
         with self.assertRaises(ValueError):
             z_lens = 0.5
@@ -1360,7 +1331,6 @@ class TestRaise(unittest.TestCase):
                 theta_E=theta_e,
                 gamma=gamma,
                 kappa_ext=0,
-                direct_convolve=True,
                 supersampling_factor=5,
                 voronoi_bins=None,
             )

@@ -91,8 +91,13 @@ class KinematicsAPI(object):
         """
         self.z_d = z_lens
         self.z_s = z_source
-        self._kwargs_aperture_kin = kwargs_aperture
-        self._kwargs_psf_kin = kwargs_seeing
+        # put it in list of apertures and seeing conditions
+        if multi_observations is False:
+            self._kwargs_aperture_kin = [kwargs_aperture]
+            self._kwargs_psf_kin = [kwargs_seeing]
+        else:
+            self._kwargs_aperture_kin = kwargs_aperture
+            self._kwargs_psf_kin = kwargs_seeing
         self.lensCosmo = LensCosmo(z_lens, z_source, cosmo=cosmo)
         (
             self.LensModel,
@@ -168,12 +173,15 @@ class KinematicsAPI(object):
         galkin, kwargs_profile, kwargs_light = self.galkin_settings(
             kwargs_lens, kwargs_lens_light, r_eff=r_eff, theta_E=theta_E, gamma=gamma
         )
-        sigma_v = galkin.dispersion(
-            kwargs_profile,
-            kwargs_light,
-            kwargs_anisotropy,
-            sampling_number=self._sampling_number,
-        )
+        sigma_v = []
+        for i in range(len(galkin)):
+            sigma_v_ = galkin[i].dispersion(
+                kwargs_profile,
+                kwargs_light,
+                kwargs_anisotropy,
+                sampling_number=self._sampling_number,
+            )
+            sigma_v = np.append(sigma_v, sigma_v_)
         sigma_v = self.transform_kappa_ext(sigma_v, kappa_ext=kappa_ext)
         return sigma_v
 
@@ -186,12 +194,11 @@ class KinematicsAPI(object):
         theta_E=None,
         gamma=None,
         kappa_ext=0,
-        direct_convolve=False,
         supersampling_factor=1,
         voronoi_bins=None,
     ):
         """API for both, analytic and numerical JAM to compute the velocity dispersion
-        map with IFU data [km/s]
+        map with IFU data or multiple apertures [km/s]
 
         :param kwargs_lens: lens model keyword arguments
         :param kwargs_lens_light: lens light model keyword arguments
@@ -203,9 +210,8 @@ class KinematicsAPI(object):
             either be computed in this function with default settings or not required
         :param gamma: power-law slope at the Einstein radius, optional
         :param kappa_ext: external convergence
-        :param direct_convolve: bool, if True, compute the 2D integral numerically
         :param supersampling_factor: supersampling factor for 2D integration grid
-        :param voronoi_bins: mapping of the voronoi bins, -1 values for  pixels not
+        :param voronoi_bins: mapping of the voronoi bins, -1 values for pixels not
             binned
         :return: velocity dispersion map in specified bins or grid in `kwargs_aperture`,
             in [km/s] unit
@@ -213,40 +219,30 @@ class KinematicsAPI(object):
         galkin, kwargs_profile, kwargs_light = self.galkin_settings(
             kwargs_lens, kwargs_lens_light, r_eff=r_eff, theta_E=theta_E, gamma=gamma
         )
-        if direct_convolve is True and not self._multi_observations:
-            if self._kwargs_aperture_kin["aperture_type"] != "IFU_grid":
-                raise ValueError(
-                    "direct_convolve=True is not supported if "
-                    'aperture type is not "IFU_grid"!'
-                )
 
-            sigma_v_map = galkin.dispersion_map_grid_convolved(
-                kwargs_profile,
-                kwargs_light,
-                kwargs_anisotropy,
-                supersampling_factor=supersampling_factor,
-                voronoi_bins=voronoi_bins,
-            )
+        sigma_v_map = []
+        for i in range(len(self._kwargs_aperture_kin)):
 
-            sigma_v_map = self.transform_kappa_ext(sigma_v_map, kappa_ext=kappa_ext)
-
-            return sigma_v_map
-        else:
-            if not self._multi_observations:
-                if self._kwargs_aperture_kin["aperture_type"] == "IFU_grid":
-                    warnings.warn(
-                        'direct_convolve=False may be slow with aperture type "IFU_grid", '
-                        "you may want to use direct_convolve=True instead."
+            if self._kwargs_aperture_kin[i]["aperture_type"] == "IFU_grid":
+                sigma_v_map_ = galkin[i].dispersion_map_grid_convolved(
+                    kwargs_profile,
+                    kwargs_light,
+                    kwargs_anisotropy,
+                    supersampling_factor=supersampling_factor,
+                    voronoi_bins=voronoi_bins,
                     )
-            sigma_v_map = galkin.dispersion_map(
-                kwargs_profile,
-                kwargs_light,
-                kwargs_anisotropy,
-                num_kin_sampling=self._num_kin_sampling,
-                num_psf_sampling=self._num_psf_sampling,
-            )
-            sigma_v_map = self.transform_kappa_ext(sigma_v_map, kappa_ext=kappa_ext)
-            return sigma_v_map
+                print(np.shape(sigma_v_map_), 'test sigma_v_map IFU_grid')
+            else:
+                sigma_v_map_ = galkin[i].dispersion_map(
+                    kwargs_profile,
+                    kwargs_light,
+                    kwargs_anisotropy,
+                    num_kin_sampling=self._num_kin_sampling,
+                    num_psf_sampling=self._num_psf_sampling,
+                )
+            sigma_v_map = np.append(sigma_v_map, sigma_v_map_)
+        sigma_v_map = self.transform_kappa_ext(sigma_v_map, kappa_ext=kappa_ext)
+        return sigma_v_map
 
     def velocity_dispersion_analytical(self, theta_E, gamma, r_eff, r_ani, kappa_ext=0):
         """Computes the LOS velocity dispersion of the lens within a slit of size R_slit
@@ -263,23 +259,26 @@ class KinematicsAPI(object):
         :param kappa_ext: external convergence not accounted in the lens models
         :return: velocity dispersion in units [km/s]
         """
-        galkin = Galkin(
-            kwargs_model={"anisotropy_model": "OM"},
-            kwargs_aperture=self._kwargs_aperture_kin,
-            kwargs_psf=self._kwargs_psf_kin,
-            kwargs_cosmo=self._kwargs_cosmo,
-            kwargs_numerics={},
-            analytic_kinematics=True,
-        )
-        kwargs_profile = {"theta_E": theta_E, "gamma": gamma}
-        kwargs_light = {"r_eff": r_eff}
-        kwargs_anisotropy = {"r_ani": r_ani}
-        sigma_v = galkin.dispersion(
-            kwargs_profile,
-            kwargs_light,
-            kwargs_anisotropy,
-            sampling_number=self._sampling_number,
-        )
+        sigma_v = []
+        for i in range(len(self._kwargs_aperture_kin)):
+            galkin = Galkin(
+                kwargs_model={"anisotropy_model": "OM"},
+                kwargs_aperture=self._kwargs_aperture_kin[i],
+                kwargs_psf=self._kwargs_psf_kin[i],
+                kwargs_cosmo=self._kwargs_cosmo,
+                kwargs_numerics={},
+                analytic_kinematics=True,
+            )
+            kwargs_profile = {"theta_E": theta_E, "gamma": gamma}
+            kwargs_light = {"r_eff": r_eff}
+            kwargs_anisotropy = {"r_ani": r_ani}
+            sigma_v_ = galkin.dispersion(
+                kwargs_profile,
+                kwargs_light,
+                kwargs_anisotropy,
+                sampling_number=self._sampling_number,
+            )
+            sigma_v = np.append(sigma_v, sigma_v_)
         sigma_v = self.transform_kappa_ext(sigma_v, kappa_ext=kappa_ext)
         return sigma_v
 
@@ -349,36 +348,32 @@ class KinematicsAPI(object):
             "light_profile_list": light_profile_list,
             "anisotropy_model": self._anisotropy_model,
         }
-        if self._multi_observations is True:
-            galkin = GalkinMultiObservation(
-                kwargs_model=kwargs_model,
-                kwargs_aperture_list=self._kwargs_aperture_kin,
-                kwargs_psf_list=self._kwargs_psf_kin,
-                kwargs_cosmo=self._kwargs_cosmo,
-                kwargs_numerics=self._kwargs_numerics_kin,
-                analytic_kinematics=self._analytic_kinematics,
-            )
-        elif (
-            self._kwargs_aperture_kin["aperture_type"] == "IFU_shells"
-            and not self._analytic_kinematics
-        ):
-            galkin = GalkinShells(
-                kwargs_model=kwargs_model,
-                kwargs_aperture=self._kwargs_aperture_kin,
-                kwargs_psf=self._kwargs_psf_kin,
-                kwargs_cosmo=self._kwargs_cosmo,
-                kwargs_numerics=self._kwargs_numerics_kin,
-                analytic_kinematics=self._analytic_kinematics,
-            )
-        else:
-            galkin = Galkin(
-                kwargs_model=kwargs_model,
-                kwargs_aperture=self._kwargs_aperture_kin,
-                kwargs_psf=self._kwargs_psf_kin,
-                kwargs_cosmo=self._kwargs_cosmo,
-                kwargs_numerics=self._kwargs_numerics_kin,
-                analytic_kinematics=self._analytic_kinematics,
-            )
+        galkin = []
+
+        for i in range(len(self._kwargs_aperture_kin)):
+
+            if (
+                self._kwargs_aperture_kin[i]["aperture_type"] == "IFU_shells"
+                and not self._analytic_kinematics
+            ):
+                galkin_ = GalkinShells(
+                    kwargs_model=kwargs_model,
+                    kwargs_aperture=self._kwargs_aperture_kin[i],
+                    kwargs_psf=self._kwargs_psf_kin[i],
+                    kwargs_cosmo=self._kwargs_cosmo,
+                    kwargs_numerics=self._kwargs_numerics_kin,
+                    analytic_kinematics=self._analytic_kinematics,
+                )
+            else:
+                galkin_ = Galkin(
+                    kwargs_model=kwargs_model,
+                    kwargs_aperture=self._kwargs_aperture_kin[i],
+                    kwargs_psf=self._kwargs_psf_kin[i],
+                    kwargs_cosmo=self._kwargs_cosmo,
+                    kwargs_numerics=self._kwargs_numerics_kin,
+                    analytic_kinematics=self._analytic_kinematics,
+                )
+            galkin.append(galkin_)
 
         return galkin, kwargs_profile, kwargs_light
 

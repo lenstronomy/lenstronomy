@@ -56,7 +56,7 @@ class KinematicsAPI(object):
             default cosmology
         :param lens_model_kinematics_bool: bool list of length of the lens model. Only
             takes a subset of all the models as part of the kinematics computation (
-            can be used to ignore substructure, shear etc that do not describe the
+            can be used to ignore substructure, shear etc. that do not describe the
             main deflector potential
         :param light_model_kinematics_bool: bool list of length of the light model. Only
             takes a subset of all the models as part of the kinematics computation (can
@@ -231,7 +231,6 @@ class KinematicsAPI(object):
                     supersampling_factor=supersampling_factor,
                     voronoi_bins=voronoi_bins,
                 )
-                print(np.shape(sigma_v_map_), "test sigma_v_map IFU_grid")
             else:
                 sigma_v_map_ = galkin[i].dispersion_map(
                     kwargs_profile,

@@ -163,7 +163,6 @@ class TestKinematicsAPI(object):
         vel_disp_temp = kinematicAPI.velocity_dispersion_analytical(
             theta_E, gamma, r_ani=r_ani, r_eff=r_eff
         )
-        print(v_sigma, vel_disp_temp)
         # assert 1 == 0
         npt.assert_almost_equal(v_sigma / vel_disp_temp, 1, decimal=1)
         npt.assert_almost_equal(v_sigma_mge_lens / v_sigma, 1, decimal=1)
@@ -613,7 +612,6 @@ class TestKinematicsAPI(object):
             supersampling_factor=5,
             voronoi_bins=None,
         )
-        print(np.shape(vel_dis), "test vel_disp")
 
         jampy_vel_dis = np.array(
             [
@@ -926,7 +924,6 @@ class TestKinematicsAPI(object):
             theta_E=theta_E,
             gamma=2,
         )
-        print(vel_disp_numerical, vel_disp_analytic)
         npt.assert_almost_equal(vel_disp_numerical, vel_disp_analytic, decimal=-1)
 
         z_lens = 0.5

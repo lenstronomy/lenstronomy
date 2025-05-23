@@ -379,14 +379,21 @@ class TestMultiPlaneDecoupled(object):
         npt.assert_allclose(beta_y_new, beta_y_true)
 
         # Test use_jax
-        lens_model_decoupled = LensModel(
-            use_jax=True, **self.kwargs_multiplane_model_point
-        )
-        beta_x_new, beta_y_new = lens_model_decoupled.ray_shooting(
-            self.x_image[1], self.y_image[1], self.kwargs_lens_free
-        )
-        npt.assert_allclose(beta_x_new, beta_x_true)
-        npt.assert_allclose(beta_y_new, beta_y_true)
+        try:
+            from jaxtronomy.LensModel.Profiles.nfw import NFW as NFW_jax
+            from jaxtronomy.LensModel.Profiles.tnfw import TNFW as TNFW_jax
+            test_jax = True
+        except:
+            test_jax = False
+        if test_jax:
+            lens_model_decoupled = LensModel(
+                use_jax=True, **self.kwargs_multiplane_model_point
+            )
+            beta_x_new, beta_y_new = lens_model_decoupled.ray_shooting(
+                self.x_image[1], self.y_image[1], self.kwargs_lens_free
+            )
+            npt.assert_allclose(beta_x_new, beta_x_true)
+            npt.assert_allclose(beta_y_new, beta_y_true)
 
     def test_grid_deflection_model(self):
 

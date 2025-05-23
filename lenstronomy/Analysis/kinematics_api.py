@@ -562,13 +562,18 @@ class KinematicsAPI(object):
             kwargs_light = []
             for i in range(len(kwargs_lens_light)):
                 kwargs_lens_light_ = kwargs_lens_light[i]
-                light_profile_list, kwargs_light_ = self._setup_light_parameters(kwargs_lens_light_,
-                                                                                model_kinematics_bool,
-                                                                                r_eff, kwargs_mge, MGE_fit)
+                light_profile_list, kwargs_light_ = self._setup_light_parameters(
+                    kwargs_lens_light_,
+                    model_kinematics_bool,
+                    r_eff,
+                    kwargs_mge,
+                    MGE_fit,
+                )
                 kwargs_light.append(kwargs_light_)
         else:
-            light_profile_list, kwargs_light = self._setup_light_parameters(kwargs_lens_light, model_kinematics_bool,
-                                                                            r_eff, kwargs_mge, MGE_fit)
+            light_profile_list, kwargs_light = self._setup_light_parameters(
+                kwargs_lens_light, model_kinematics_bool, r_eff, kwargs_mge, MGE_fit
+            )
 
         return light_profile_list, kwargs_light
 
@@ -646,7 +651,9 @@ class KinematicsAPI(object):
         sigma_v_mst = sigma_v * np.sqrt(1 - kappa_ext)
         return sigma_v_mst
 
-    def _setup_light_parameters(self, kwargs_lens_light, model_kinematics_bool, r_eff, kwargs_mge, MGE_fit):
+    def _setup_light_parameters(
+        self, kwargs_lens_light, model_kinematics_bool, r_eff, kwargs_mge, MGE_fit
+    ):
         light_profile_list = []
         kwargs_light = []
 

@@ -9,8 +9,6 @@ from lenstronomy.LensModel.Profiles.nfw import NFW
 from lenstronomy.LensModel.Profiles.tnfw import TNFW
 from lenstronomy.Util.util import make_grid
 
-from jaxtronomy.LensModel.Profiles.nfw import NFW as NFW_jax
-from jaxtronomy.LensModel.Profiles.tnfw import TNFW as TNFW_jax
 import unittest
 
 
@@ -73,85 +71,92 @@ class TestLensModel(object):
         assert lensModel.z_source == 5
 
     def test_use_jax(self):
-        x = np.array([1.0, 2.0])
-        y = np.array([1.5, 2.5])
-        kwargs_lens = [
-            {"Rs": 0.5, "alpha_Rs": 0.7},
-            {"Rs": 0.5, "alpha_Rs": 0.7, "r_trunc": 0.9},
-        ]
+        try:
+            from jaxtronomy.LensModel.Profiles.nfw import NFW as NFW_jax
+            from jaxtronomy.LensModel.Profiles.tnfw import TNFW as TNFW_jax
+            test_jax = True
+        except:
+            test_jax = False
+        if test_jax:
+            x = np.array([1.0, 2.0])
+            y = np.array([1.5, 2.5])
+            kwargs_lens = [
+                {"Rs": 0.5, "alpha_Rs": 0.7},
+                {"Rs": 0.5, "alpha_Rs": 0.7, "r_trunc": 0.9},
+            ]
 
-        # Tests that the jaxtronomy profiles are being used
-        lensModel = LensModel(["NFW", "TNFW"], use_jax=True)
-        assert isinstance(lensModel.lens_model.func_list[0], NFW_jax)
-        assert isinstance(lensModel.lens_model.func_list[1], TNFW_jax)
+            # Tests that the jaxtronomy profiles are being used
+            lensModel = LensModel(["NFW", "TNFW"], use_jax=True)
+            assert isinstance(lensModel.lens_model.func_list[0], NFW_jax)
+            assert isinstance(lensModel.lens_model.func_list[1], TNFW_jax)
 
-        # Tests that the result is converted back from jax array to np array
-        result = lensModel.potential(x, y, kwargs_lens)
-        assert isinstance(result, np.ndarray)
-        result = lensModel.potential(x, y, kwargs_lens, k=1)
-        assert isinstance(result, np.ndarray)
+            # Tests that the result is converted back from jax array to np array
+            result = lensModel.potential(x, y, kwargs_lens)
+            assert isinstance(result, np.ndarray)
+            result = lensModel.potential(x, y, kwargs_lens, k=1)
+            assert isinstance(result, np.ndarray)
 
-        resultx, resulty = lensModel.ray_shooting(x, y, kwargs_lens)
-        assert isinstance(resultx, np.ndarray) and isinstance(resulty, np.ndarray)
+            resultx, resulty = lensModel.ray_shooting(x, y, kwargs_lens)
+            assert isinstance(resultx, np.ndarray) and isinstance(resulty, np.ndarray)
 
-        fxx, fxy, fyx, fyy = lensModel.hessian(x, y, kwargs_lens)
-        assert isinstance(fxx, np.ndarray)
-        assert isinstance(fxy, np.ndarray)
-        assert isinstance(fyx, np.ndarray)
-        assert isinstance(fyy, np.ndarray)
+            fxx, fxy, fyx, fyy = lensModel.hessian(x, y, kwargs_lens)
+            assert isinstance(fxx, np.ndarray)
+            assert isinstance(fxy, np.ndarray)
+            assert isinstance(fyx, np.ndarray)
+            assert isinstance(fyy, np.ndarray)
 
-        # Tests other options for use_jax
-        lensModel = LensModel(["NFW", "TNFW"], use_jax=[True, False])
-        assert isinstance(lensModel.lens_model.func_list[0], NFW_jax)
-        assert isinstance(lensModel.lens_model.func_list[1], TNFW)
+            # Tests other options for use_jax
+            lensModel = LensModel(["NFW", "TNFW"], use_jax=[True, False])
+            assert isinstance(lensModel.lens_model.func_list[0], NFW_jax)
+            assert isinstance(lensModel.lens_model.func_list[1], TNFW)
 
-        lensModel = LensModel(["NFW", "TNFW"], use_jax=False)
-        assert isinstance(lensModel.lens_model.func_list[0], NFW)
-        assert isinstance(lensModel.lens_model.func_list[1], TNFW)
+            lensModel = LensModel(["NFW", "TNFW"], use_jax=False)
+            assert isinstance(lensModel.lens_model.func_list[0], NFW)
+            assert isinstance(lensModel.lens_model.func_list[1], TNFW)
 
-        # Tests use_jax for multiplane
-        lensModel = LensModel(
-            ["NFW", "TNFW"],
-            lens_redshift_list=[1, 1],
-            z_source=1.3,
-            multi_plane=True,
-            use_jax=True,
-        )
-        assert isinstance(lensModel.lens_model.multi_plane_base.func_list[0], NFW_jax)
-        assert isinstance(lensModel.lens_model.multi_plane_base.func_list[1], TNFW_jax)
+            # Tests use_jax for multiplane
+            lensModel = LensModel(
+                ["NFW", "TNFW"],
+                lens_redshift_list=[1, 1],
+                z_source=1.3,
+                multi_plane=True,
+                use_jax=True,
+            )
+            assert isinstance(lensModel.lens_model.multi_plane_base.func_list[0], NFW_jax)
+            assert isinstance(lensModel.lens_model.multi_plane_base.func_list[1], TNFW_jax)
 
-        # Tests that the result is converted back from jax array to np array
-        result = lensModel.arrival_time(x, y, kwargs_lens)
-        assert isinstance(result, np.ndarray)
+            # Tests that the result is converted back from jax array to np array
+            result = lensModel.arrival_time(x, y, kwargs_lens)
+            assert isinstance(result, np.ndarray)
 
-        resultx, resulty = lensModel.ray_shooting(x, y, kwargs_lens)
-        assert isinstance(resultx, np.ndarray) and isinstance(resulty, np.ndarray)
+            resultx, resulty = lensModel.ray_shooting(x, y, kwargs_lens)
+            assert isinstance(resultx, np.ndarray) and isinstance(resulty, np.ndarray)
 
-        fxx, fxy, fyx, fyy = lensModel.hessian(x, y, kwargs_lens)
-        assert isinstance(fxx, np.ndarray)
-        assert isinstance(fxy, np.ndarray)
-        assert isinstance(fyx, np.ndarray)
-        assert isinstance(fyy, np.ndarray)
+            fxx, fxy, fyx, fyy = lensModel.hessian(x, y, kwargs_lens)
+            assert isinstance(fxx, np.ndarray)
+            assert isinstance(fxy, np.ndarray)
+            assert isinstance(fyx, np.ndarray)
+            assert isinstance(fyy, np.ndarray)
 
-        lensModel = LensModel(
-            ["NFW", "TNFW"],
-            lens_redshift_list=[1, 1],
-            z_source=1.3,
-            multi_plane=True,
-            use_jax=[False, True],
-        )
-        assert isinstance(lensModel.lens_model.multi_plane_base.func_list[0], NFW)
-        assert isinstance(lensModel.lens_model.multi_plane_base.func_list[1], TNFW_jax)
+            lensModel = LensModel(
+                ["NFW", "TNFW"],
+                lens_redshift_list=[1, 1],
+                z_source=1.3,
+                multi_plane=True,
+                use_jax=[False, True],
+            )
+            assert isinstance(lensModel.lens_model.multi_plane_base.func_list[0], NFW)
+            assert isinstance(lensModel.lens_model.multi_plane_base.func_list[1], TNFW_jax)
 
-        lensModel = LensModel(
-            ["NFW", "TNFW"],
-            lens_redshift_list=[1, 1],
-            z_source=1.3,
-            multi_plane=True,
-            use_jax=False,
-        )
-        assert isinstance(lensModel.lens_model.multi_plane_base.func_list[0], NFW)
-        assert isinstance(lensModel.lens_model.multi_plane_base.func_list[1], TNFW)
+            lensModel = LensModel(
+                ["NFW", "TNFW"],
+                lens_redshift_list=[1, 1],
+                z_source=1.3,
+                multi_plane=True,
+                use_jax=False,
+            )
+            assert isinstance(lensModel.lens_model.multi_plane_base.func_list[0], NFW)
+            assert isinstance(lensModel.lens_model.multi_plane_base.func_list[1], TNFW)
 
     def test_info(self):
         lens_model_list = [
@@ -457,6 +462,29 @@ class TestLensModel(object):
         dt_sp = lens_model_mp_new.arrival_time(x, y, kwargs_lens=kwargs_lens)
         npt.assert_almost_equal(dt_sp, dt_mp, decimal=5)
         lens_model_mp_new.change_source_redshift(z_source=z_source_new)
+
+        # initialize a lens model with the wrong source redshift and then change it to the right one
+        # (while having the correct z_source_convention)
+        z_source = 2
+        lens_model_new = LensModel(
+            lens_model_list=["SIS"],
+            z_lens=z_lens,
+            z_source_convention=z_source_convention,
+            z_source=3,
+            multi_plane=False,
+        )
+        lens_model = LensModel(
+            lens_model_list=["SIS"],
+            z_lens=z_lens,
+            z_source_convention=z_source_convention,
+            z_source=z_source,
+            multi_plane=False,
+        )
+        lens_model_new.change_source_redshift(z_source=z_source)
+        beta_x, beta_y = lens_model.ray_shooting(1, 1, kwargs_lens)
+        beta_x_new, beta_y_new = lens_model_new.ray_shooting(1, 1, kwargs_lens)
+        npt.assert_almost_equal(beta_x_new, beta_x, decimal=8)
+        npt.assert_almost_equal(beta_y_new, beta_y, decimal=8)
 
     def test_update_cosmology(self):
         from astropy.cosmology import FlatwCDM

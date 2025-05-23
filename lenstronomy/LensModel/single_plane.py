@@ -111,7 +111,7 @@ class SinglePlane(ProfileListBase):
         :param kwargs: list of keyword arguments of lens model parameters matching the
             lens model classes
         :param k: only evaluate the k-th lens model
-        :return: deflectionangles in units of arcsec
+        :return: deflection angles in units of arcsec
         """
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)

@@ -231,6 +231,25 @@ class TestKinematicsAPI(object):
         )
         npt.assert_almost_equal(kwargs_profile["gamma"], 2, decimal=2)
 
+        kinematicAPI = KinematicsAPI(
+            z_lens,
+            z_source,
+            kwargs_model,
+            kwargs_aperture=[kwargs_aperture],
+            kwargs_seeing=[kwargs_psf],
+            analytic_kinematics=False,
+            anisotropy_model=anisotropy_model,
+            multi_observations=True,
+            multi_light_profile=True,
+            kwargs_mge_light=kwargs_mge,
+            kwargs_mge_mass=kwargs_mge,
+            sampling_number=1000,
+        )
+        galkin, kwargs_profile, kwargs_light = kinematicAPI.galkin_settings(
+            kwargs_lens, [kwargs_lens_light], r_eff=None, theta_E=None, gamma=None
+        )
+        npt.assert_almost_equal(kwargs_light[0][0]["Rs"], 1, decimal=2)
+
     def test_kinematic_light_profile(self):
         z_lens = 0.5
         z_source = 1.5

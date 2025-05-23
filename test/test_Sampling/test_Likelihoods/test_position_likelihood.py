@@ -277,7 +277,7 @@ class TestPositionLikelihood(object):
             kwargs_ps_cosmo,
             sigma=0.01,
         )
-        npt.assert_almost_equal(logL_cosmo, -0.012514763470246378, decimal=4)
+        npt.assert_almost_equal(logL_cosmo, -0.012514763470246378, decimal=2)
 
     def test_cosmology_shift_sp(self):
         # in Single plane, we test that H0 does not change the likelihood

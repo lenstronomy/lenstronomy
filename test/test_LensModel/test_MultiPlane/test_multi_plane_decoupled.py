@@ -382,6 +382,7 @@ class TestMultiPlaneDecoupled(object):
         try:
             from jaxtronomy.LensModel.Profiles.nfw import NFW as NFW_jax
             from jaxtronomy.LensModel.Profiles.tnfw import TNFW as TNFW_jax
+
             test_jax = True
         except:
             test_jax = False

@@ -74,6 +74,7 @@ class TestLensModel(object):
         try:
             from jaxtronomy.LensModel.Profiles.nfw import NFW as NFW_jax
             from jaxtronomy.LensModel.Profiles.tnfw import TNFW as TNFW_jax
+
             test_jax = True
         except:
             test_jax = False
@@ -122,8 +123,12 @@ class TestLensModel(object):
                 multi_plane=True,
                 use_jax=True,
             )
-            assert isinstance(lensModel.lens_model.multi_plane_base.func_list[0], NFW_jax)
-            assert isinstance(lensModel.lens_model.multi_plane_base.func_list[1], TNFW_jax)
+            assert isinstance(
+                lensModel.lens_model.multi_plane_base.func_list[0], NFW_jax
+            )
+            assert isinstance(
+                lensModel.lens_model.multi_plane_base.func_list[1], TNFW_jax
+            )
 
             # Tests that the result is converted back from jax array to np array
             result = lensModel.arrival_time(x, y, kwargs_lens)
@@ -146,7 +151,9 @@ class TestLensModel(object):
                 use_jax=[False, True],
             )
             assert isinstance(lensModel.lens_model.multi_plane_base.func_list[0], NFW)
-            assert isinstance(lensModel.lens_model.multi_plane_base.func_list[1], TNFW_jax)
+            assert isinstance(
+                lensModel.lens_model.multi_plane_base.func_list[1], TNFW_jax
+            )
 
             lensModel = LensModel(
                 ["NFW", "TNFW"],

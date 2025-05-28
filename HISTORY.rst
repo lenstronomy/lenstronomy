@@ -442,3 +442,4 @@ History
 1.13.1 (2025-05-27)
 +++++++++++++++++++
 * KinematicsAPI improved
+* Custom Solver

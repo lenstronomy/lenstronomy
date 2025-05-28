@@ -438,3 +438,8 @@ History
 * minor bug fix in jaxtronomy integration
 * bug fix in HERNQUIST_ELLIPSE_CSE model
 * better integration of Param() class with lens and light models
+
+1.13.1 (2025-05-27)
++++++++++++++++++++
+* KinematicsAPI improved
+* Custom Solver

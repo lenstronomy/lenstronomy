@@ -61,7 +61,7 @@ class LinearBasis(LightModelBase):
                     response += [self.func_list[i].function(x, y, **kwargs_new)]
                     n += 1
                 elif model in ["MULTI_GAUSSIAN", "MULTI_GAUSSIAN_ELLIPSE"]:
-                    num = len(kwargs_list[i]["amp"])
+                    num = len(kwargs_list[i]["sigma"])
                     new = {"amp": np.ones(num)}
                     kwargs_new = kwargs_list[i].copy()
                     kwargs_new.update(new)

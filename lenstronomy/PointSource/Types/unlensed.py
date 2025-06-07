@@ -10,9 +10,9 @@ class Unlensed(PSBase):
     Name within the PointSource module: 'UNLENSED'
     This model can deal with arrays of point sources.
     parameters:
-        ra_image: list of floats
-        dec_image: list of floats
-        point_amp: list of floats
+        ra_image: list or array of floats
+        dec_image: list or array of floats
+        point_amp: list or array of floats
 
     """
 

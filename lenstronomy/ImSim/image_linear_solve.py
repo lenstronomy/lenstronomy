@@ -507,7 +507,7 @@ class ImageLinearFit(ImageModel):
         return error_map
 
     def point_source_linear_response_set(
-        self, kwargs_ps, kwargs_lens, kwargs_special, with_amp=True
+        self, kwargs_ps, kwargs_lens, kwargs_special=None, with_amp=True
     ):
         """
 

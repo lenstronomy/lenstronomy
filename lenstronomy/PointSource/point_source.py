@@ -533,7 +533,7 @@ class PointSource(object):
         pos_bool = True
         for kwargs in kwargs_ps:
             if "point_amp" in kwargs:
-                point_amp = kwargs["point_amp"]
+                point_amp = np.asarray(kwargs["point_amp"])
                 if not np.all(point_amp >= 0):
                     pos_bool = False
                     break

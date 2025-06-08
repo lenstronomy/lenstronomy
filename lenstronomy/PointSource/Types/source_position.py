@@ -14,8 +14,11 @@ class SourcePositions(PSBase):
     specified source position.
 
     Name within the PointSource module: 'SOURCE_POSITION'
-    parameters: ra_source, dec_source, source_amp, mag_pert (optional)
-    mag_pert is a list of fractional magnification pertubations applied to point source images
+    parameters:
+        ra_source: float
+        dec_source: float
+        source_amp: float
+        mag_pert: optional list of fractional magnification pertubations applied to point source images
     """
 
     def image_position(

@@ -18,7 +18,7 @@ class ImageLinearFit(ImageModel):
     def __init__(
         self,
         data_class,
-        psf_class=None,
+        psf_class,
         lens_model_class=None,
         source_model_class=None,
         lens_light_model_class=None,
@@ -507,7 +507,7 @@ class ImageLinearFit(ImageModel):
         return error_map
 
     def point_source_linear_response_set(
-        self, kwargs_ps, kwargs_lens, kwargs_special, with_amp=True
+        self, kwargs_ps, kwargs_lens, kwargs_special=None, with_amp=True
     ):
         """
 

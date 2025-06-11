@@ -88,6 +88,8 @@ class TestNumerics(object):
         from lenstronomy.LensModel.Profiles.pseudo_jaffe import PseudoJaffe as Model
 
         self.assert_integrals(Model, kwargs)
+        kwargs_lens = {"sigma0": .5, "Ra": 0.2, "Rs": 2.0}
+        self.assert_lens_integrals(Model, kwargs_lens)
 
     def test_PJaffa_density_deflection(self):
         """Tests whether the unit conversion between the lensing parameter 'sigma0' and
@@ -298,6 +300,9 @@ class TestNumerics(object):
         kwargs = {"amp": 1.0 / 4.0, "sigma": 2.0}
         self.assert_integrals(Model, kwargs)
 
+        kwargs_lens = {"amp": 1.0 / 4.0, "sigma": 2.0}
+        self.assert_lens_integrals(Model, kwargs_lens)
+
     def test_gaussian_density_deflection(self):
         """Tests whether the unit conversion between the lensing parameter 'sigma0' and
         the units in the density profile are ok :return:"""
@@ -332,6 +337,9 @@ class TestNumerics(object):
 
         kwargs = {"rho0": 1.0, "Rs": 1, "r_trunc": 4}
         self.assert_integrals(Model, kwargs)
+        # TODO: add density_lens() definition to TNFW profile
+        # kwargs_lens = {"alpha_Rs": 1.0, "Rs": 1, "r_trunc": 4}
+        # self.assert_lens_integrals(Model, kwargs_lens)
 
     def test_cnfw(self):
         from lenstronomy.LensModel.Profiles.cnfw import CNFW as Model

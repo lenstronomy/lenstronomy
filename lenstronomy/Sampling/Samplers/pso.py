@@ -231,20 +231,21 @@ class ParticleSwarmOptimizer(object):
         pos_list = []
 
         num_iter = 0
-        with tqdm(total=max_iter) as pbar:
-                for _ in self.sample(
-                    max_iter, c1, c2, p, m, n, early_stop_tolerance, verbose
-                ):
-                    log_likelihood_list.append(self.global_best.fitness)
-                    vel_list.append(self.global_best.velocity)
-                    pos_list.append(self.global_best.position)
-                    num_iter += 1
+        if verbose:
+            disable_tqdm = False
+        else:
+            disable_tqdm = True
+        with tqdm(total=max_iter, disable=disable_tqdm) as pbar:
+            for _ in self.sample(
+                max_iter, c1, c2, p, m, n, early_stop_tolerance, verbose
+            ):
+                log_likelihood_list.append(self.global_best.fitness)
+                vel_list.append(self.global_best.velocity)
+                pos_list.append(self.global_best.position)
+                num_iter += 1
 
-                    if verbose and self.is_master():
-                        pbar.update(1)
-                        # if num_iter % 10 == 0:
-                        #    print(num_iter)
-      
+                if verbose and self.is_master():
+                    pbar.update(1)
 
         return self.global_best.position, [log_likelihood_list, pos_list, vel_list]
 

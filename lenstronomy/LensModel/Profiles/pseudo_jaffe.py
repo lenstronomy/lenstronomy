@@ -75,6 +75,23 @@ class PseudoJaffe(LensProfileBase):
         rho = rho0 / ((1 + (r / Ra) ** 2) * (1 + (r / Rs) ** 2))
         return rho
 
+    def density_lens(self, r, sigma0, Ra, Rs):
+        """Computes the density at 3d radius r given lens model parameterization. The
+        integral in the LOS projection of this quantity results in the convergence
+        quantity. (optional definition)
+
+        .. math::
+            \\kappa(x, y) = \\int_{-\\infty}^{\\infty} \\rho(x, y, z) dz
+
+        :param r: radial distance from the center (in 3D)
+        :param sigma0: density normalization (see class documentation above)
+        :param Ra: core radius
+        :param Rs: transition radius from logarithmic slope -2 to -4
+        :return: density
+        """
+        rho0 = self.sigma2rho(sigma0, Ra, Rs)
+        return self.density(r, rho0, Ra, Rs)
+
     def density_2d(self, x, y, rho0, Ra, Rs, center_x=0, center_y=0):
         """Projected density.
 

@@ -74,8 +74,7 @@ class AlignmentFitting(object):
                 init_pos, [0] * len(init_pos), self.chain.likelihood(init_pos)
             )
 
-        if verbose:
-            if pool.is_master():
+        if verbose and pool.is_master():
                 print("Computing the %s ..." % print_key)
 
         time_start = time.time()
@@ -85,8 +84,7 @@ class AlignmentFitting(object):
         )
 
         kwargs_data = self.chain.update_data(result)
-        if verbose:
-            if pool.is_master():
+        if verbose and pool.is_master():
                 time_end = time.time()
                 print("Shifts found: ", result)
                 print(time_end - time_start, "time used for ", print_key)

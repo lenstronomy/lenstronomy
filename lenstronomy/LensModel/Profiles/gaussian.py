@@ -120,6 +120,22 @@ class Gaussian(LensProfileBase):
         sigma_x, sigma_y = sigma, sigma
         return self.gaussian.function(r, 0, amp, sigma_x, sigma_y)
 
+    def density_lens(self, r, amp, sigma):
+        """Computes the density at 3d radius r given lens model parameterization. The
+        integral in the LOS projection of this quantity results in the convergence
+        quantity. (optional definition)
+
+        .. math::
+            \\kappa(x, y) = \\int_{-\\infty}^{\\infty} \\rho(x, y, z) dz
+
+        :param r: radial distance from the center (in 3D)
+        :param amp: 2d amplitude of Gaussian
+        :param sigma: standard deviation of Gaussian
+        :return: density
+        """
+        amp_density = self._amp2d_to_3d(amp, sigma, sigma)
+        return self.density(r, amp_density, sigma)
+
     def density_2d(self, x, y, amp, sigma, center_x=0, center_y=0):
         """Projected 2d density at position (x,y)
 

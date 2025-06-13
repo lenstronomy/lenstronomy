@@ -36,9 +36,9 @@ class Solver4Point(object):
 
         :param lensModel: An instance of the LensModel class
         :param solver_type: a string that specifies the possible solver routines; current implementations are
-        'PROFILE','PROFILE_SHEAR', 'CUSTOM'
+         'PROFILE','PROFILE_SHEAR', 'CUSTOM'
         :param parameter_module: a class to be used with routines "extract_array", "update_kwargs", and
-        "add_fixed_lens" with the same call signatures as the methods in this class
+         "add_fixed_lens" with the same call signatures as the methods in this class
         """
         self._solver_type = solver_type  # supported:
         if not lensModel.lens_model_list[0] in _SUPPORTED_LENS_MODEL_SOLVER:

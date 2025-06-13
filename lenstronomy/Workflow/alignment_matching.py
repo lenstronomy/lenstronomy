@@ -48,6 +48,7 @@ class AlignmentFitting(object):
         threadCount=1,
         mpi=False,
         print_key="default",
+        verbose = False
     ):
         """Returns the best fit for the lens model on catalogue basis with particle
         swarm optimizer.
@@ -73,19 +74,20 @@ class AlignmentFitting(object):
                 init_pos, [0] * len(init_pos), self.chain.likelihood(init_pos)
             )
 
-        if pool.is_master():
-            print("Computing the %s ..." % print_key)
+        if verbose:
+            if pool.is_master():
+                print("Computing the %s ..." % print_key)
 
         time_start = time.time()
 
-        result, [chi2_list, pos_list, vel_list] = pso.optimize(n_iterations)
+        result, [chi2_list, pos_list, vel_list] = pso.optimize(n_iterations,verbose=verbose)
 
         kwargs_data = self.chain.update_data(result)
-
-        if pool.is_master():
-            time_end = time.time()
-            print("Shifts found: ", result)
-            print(time_end - time_start, "time used for ", print_key)
+        if verbose:
+            if pool.is_master():
+                time_end = time.time()
+                print("Shifts found: ", result)
+                print(time_end - time_start, "time used for ", print_key)
         return kwargs_data, [chi2_list, pos_list, vel_list]
 
 

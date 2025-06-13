@@ -628,6 +628,9 @@ class FittingSequence(object):
         delta_shift=0.2,
         delta_rot=0.1,
     ):
+        #print('is verbose')
+        #print(self._verbose)
+        #print(banana)
         """Aligns the coordinate systems of different exposures within a fixed model
         parameterisation by executing a PSO with relative coordinate shifts as free
         parameters.
@@ -672,16 +675,18 @@ class FittingSequence(object):
                     threadCount=threadCount,
                     mpi=self._mpi,
                     print_key="Alignment fitting for band %s ..." % i,
+                    verbose = self._verbose
                 )
-                print("Align completed for band %s." % i)
-                print(
-                    "ra_shift: %s,  dec_shift: %s, phi_rot: %s"
-                    % (
-                        kwargs_data.get("ra_shift", 0),
-                        kwargs_data.get("dec_shift", 0),
-                        kwargs_data.get("phi_rot", 0),
+                if self._verbose:
+                    print("Align completed for band %s." % i)
+                    print(
+                        "ra_shift: %s,  dec_shift: %s, phi_rot: %s"
+                        % (
+                            kwargs_data.get("ra_shift", 0),
+                            kwargs_data.get("dec_shift", 0),
+                            kwargs_data.get("phi_rot", 0),
+                        )
                     )
-                )
                 self.multi_band_list[i][0] = kwargs_data
         return 0
 

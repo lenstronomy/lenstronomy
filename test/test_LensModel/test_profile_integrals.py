@@ -88,7 +88,7 @@ class TestNumerics(object):
         from lenstronomy.LensModel.Profiles.pseudo_jaffe import PseudoJaffe as Model
 
         self.assert_integrals(Model, kwargs)
-        kwargs_lens = {"sigma0": .5, "Ra": 0.2, "Rs": 2.0}
+        kwargs_lens = {"sigma0": 0.5, "Ra": 0.2, "Rs": 2.0}
         self.assert_lens_integrals(Model, kwargs_lens)
 
     def test_PJaffa_density_deflection(self):

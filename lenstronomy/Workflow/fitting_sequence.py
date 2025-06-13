@@ -628,7 +628,6 @@ class FittingSequence(object):
         delta_shift=0.2,
         delta_rot=0.1,
     ):
-        
         """Aligns the coordinate systems of different exposures within a fixed model
         parameterisation by executing a PSO with relative coordinate shifts as free
         parameters.

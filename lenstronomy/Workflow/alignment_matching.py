@@ -75,7 +75,7 @@ class AlignmentFitting(object):
             )
 
         if verbose and pool.is_master():
-                print("Computing the %s ..." % print_key)
+            print("Computing the %s ..." % print_key)
 
         time_start = time.time()
 
@@ -85,9 +85,9 @@ class AlignmentFitting(object):
 
         kwargs_data = self.chain.update_data(result)
         if verbose and pool.is_master():
-                time_end = time.time()
-                print("Shifts found: ", result)
-                print(time_end - time_start, "time used for ", print_key)
+            time_end = time.time()
+            print("Shifts found: ", result)
+            print(time_end - time_start, "time used for ", print_key)
         return kwargs_data, [chi2_list, pos_list, vel_list]
 
 

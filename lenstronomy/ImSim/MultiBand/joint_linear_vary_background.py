@@ -20,11 +20,10 @@ class JointLinear_VaryBG(MultiLinear):
     Usage is the following:
     from lenstronomy.ImSim.MultiBand.joint_linear_vary_bg import JointLinear_VaryBG
     image_model = JointLinear_VaryBG(multi_band_list, kwargs_model)
-	kwargs_result_copy = copy.deepcopy(kwargs_result)
-	model, error_map, cov_param, param_vals = image_model.image_linear_solve(inv_bool=True, **kwargs_result_copy)
+        kwargs_result_copy = copy.deepcopy(kwargs_result)
+        model, error_map, cov_param, param_vals = image_model.image_linear_solve(inv_bool=True, **kwargs_result_copy)
 
     parm_vals will now include the best fit background values.
-
     """
 
     def __init__(
@@ -122,10 +121,9 @@ class JointLinear_VaryBG(MultiLinear):
                 )
                 ##bg has zero response, unless it's the correct filter, so it's an array of zeros exept for the ith
                 # element which is ones
-                background_response_i = np.zeros((self._num_bands,A_i_start.shape[1]))
-                background_response_i[i,:]+=1
-                A_i = np.append(A_i_start,background_response_i, axis = 0)
-
+                background_response_i = np.zeros((self._num_bands, A_i_start.shape[1]))
+                background_response_i[i, :] += 1
+                A_i = np.append(A_i_start, background_response_i, axis=0)
 
                 if len(A) == 0:
                     A = A_i

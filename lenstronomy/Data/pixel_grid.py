@@ -73,8 +73,7 @@ class PixelGrid(Coordinates, AngularSensitivity):
         return np.mean(self._x_grid), np.mean(self._y_grid)
 
     def shift_coordinate_system(self, x_shift, y_shift, pixel_unit=False):
-        """
-        Shifts the coordinate system
+        """Shifts the coordinate system.
 
         :param x_shift: shift in x (or RA)
         :param y_shift: shift in y (or DEC)

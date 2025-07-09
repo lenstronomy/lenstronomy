@@ -3,6 +3,7 @@ import numpy as np
 
 from lenstronomy.Data.pixel_grid import PixelGrid
 
+
 class TestPixelGrid(object):
 
     def setup_method(self):
@@ -10,12 +11,14 @@ class TestPixelGrid(object):
         self.delta_pix = 0.1
         transform_pix2angle = np.array([[1, 0], [0, 1]]) * self.delta_pix
         ra_at_xy_0, dec_at_xy_0 = 0, 0
-        self.pixel_grid = PixelGrid(nx=self.nx,
-                                    ny=self.ny,
-                  transform_pix2angle=transform_pix2angle,
-                  ra_at_xy_0=ra_at_xy_0,
-                  dec_at_xy_0=dec_at_xy_0,
-                  antenna_primary_beam=None,)
+        self.pixel_grid = PixelGrid(
+            nx=self.nx,
+            ny=self.ny,
+            transform_pix2angle=transform_pix2angle,
+            ra_at_xy_0=ra_at_xy_0,
+            dec_at_xy_0=dec_at_xy_0,
+            antenna_primary_beam=None,
+        )
 
     def test_num_pix(self):
         num_pix = self.pixel_grid.num_pixel
@@ -35,6 +38,13 @@ class TestPixelGrid(object):
         x_grid, y_grid = self.pixel_grid.pixel_coordinates
         print(np.shape(x_grid[0, :]))
 
-        npt.assert_almost_equal(x_grid[0, :], np.linspace(start=0, stop=(self.nx-1)*self.delta_pix, num=self.nx), decimal=4)
-        npt.assert_almost_equal(y_grid[:, 0], np.linspace(start=0, stop=(self.ny - 1) * self.delta_pix, num=self.ny),
-                                decimal=4)
+        npt.assert_almost_equal(
+            x_grid[0, :],
+            np.linspace(start=0, stop=(self.nx - 1) * self.delta_pix, num=self.nx),
+            decimal=4,
+        )
+        npt.assert_almost_equal(
+            y_grid[:, 0],
+            np.linspace(start=0, stop=(self.ny - 1) * self.delta_pix, num=self.ny),
+            decimal=4,
+        )

@@ -64,22 +64,17 @@ class TestPixelatedSourceReconstruction(object):
         
     def test_init(self):
         psr = PixelatedSourceReconstruction(self.data_class, self.psf_class, self.lens_model_class, 
-                                            self.source_pixel_grid_class, kwargs_lens=self.kwargs_lens)
+                                            self.source_pixel_grid_class)
         assert psr._numPix == len(self.image_data)
         assert np.allclose(psr._image_data, self.image_data)
         assert np.allclose(psr._noise_rms, self.background_rms)
         assert psr._primary_beam is None
         assert psr._logL_method == 'diagonal'
-        assert psr._verbose is False
         assert np.allclose(psr._nx_source, self.kwargs_source_grid['nx'])
         assert np.allclose(psr._ny_source, self.kwargs_source_grid['ny'])
         assert np.allclose(psr._pixel_width_source, self.kwargs_source_grid['transform_pix2angle'][0,0])
+        assert np.allclose(psr._ratio_data_pixel_source_pixel, self.deltaPix**2 / self.source_pixel_width**2)
         assert np.allclose(psr._kernel, self.kernel)
-        
-        # Test verbose = True
-        psr = PixelatedSourceReconstruction(self.data_class, self.psf_class, self.lens_model_class, 
-                                            self.source_pixel_grid_class, kwargs_lens=self.kwargs_lens, verbose=True)
-        assert psr._verbose is True
         
         # Test invalid source grid input
         source_grid_invalid1 = PixelGrid(nx = 3, ny = 3, transform_pix2angle = np.array(((1., 0.1), (0., 1.))),
@@ -90,13 +85,13 @@ class TestPixelatedSourceReconstruction(object):
                                 ra_at_xy_0 = 0, dec_at_xy_0 = 0)
         with pytest.raises(ValueError):
             PixelatedSourceReconstruction(self.data_class, self.psf_class, self.lens_model_class,
-                                          source_grid_invalid1, kwargs_lens=self.kwargs_lens)
+                                          source_grid_invalid1)
         with pytest.raises(ValueError):
             PixelatedSourceReconstruction(self.data_class, self.psf_class, self.lens_model_class,
-                                          source_grid_invalid2, kwargs_lens=self.kwargs_lens)
+                                          source_grid_invalid2)
         with pytest.raises(ValueError):
             PixelatedSourceReconstruction(self.data_class, self.psf_class, self.lens_model_class,
-                                          source_grid_invalid3, kwargs_lens=self.kwargs_lens)
+                                          source_grid_invalid3)
         
         # Test invalid kernel size for likelihood_method = 'interferometry_natwt'
         kwargs_data_natwt_kernel_test = self.kwargs_data.copy()
@@ -107,14 +102,13 @@ class TestPixelatedSourceReconstruction(object):
         psf_class_natwt_kernel_test1 = PSF(**kwargs_psf_natwt_kernel_test1)
         with pytest.raises(ValueError):
             PixelatedSourceReconstruction(data_class_natwt_kernel_test, psf_class_natwt_kernel_test1, 
-                                          self.lens_model_class, self.source_pixel_grid_class, 
-                                          kwargs_lens=self.kwargs_lens)
-    
+                                          self.lens_model_class, self.source_pixel_grid_class)
+
     def test_generate_M_b(self):
         psr = PixelatedSourceReconstruction(self.data_class, self.psf_class, self.lens_model_class, 
-                                            self.source_pixel_grid_class, kwargs_lens=self.kwargs_lens)
-        M_default, b_default = psr.generate_M_b()
-        M_diagonal, b_diagonal = psr.generate_M_b_diagonal_likelihood()
+                                            self.source_pixel_grid_class)
+        M_default, b_default = psr.generate_M_b(kwargs_lens = self.kwargs_lens)
+        M_diagonal, b_diagonal = psr.generate_M_b_diagonal_likelihood(kwargs_lens = self.kwargs_lens)
         assert np.allclose(M_default, M_diagonal)
         assert np.allclose(b_default, b_diagonal)
         
@@ -122,24 +116,23 @@ class TestPixelatedSourceReconstruction(object):
         kwargs_data_interferometry_likelihood_test['likelihood_method'] = 'interferometry_natwt'
         data_class_interferometry_likelihood_test = ImageData(**kwargs_data_interferometry_likelihood_test)
         psr_natwt = PixelatedSourceReconstruction(data_class_interferometry_likelihood_test, self.psf_class, 
-                                                  self.lens_model_class, self.source_pixel_grid_class, 
-                                                  kwargs_lens=self.kwargs_lens)
-        M_natwt0, b_natwt0 = psr_natwt.generate_M_b()
-        M_natwt1, b_natwt1 = psr_natwt.generate_M_b_interferometry_natwt_likelihood()
+                                                  self.lens_model_class, self.source_pixel_grid_class)
+        M_natwt0, b_natwt0 = psr_natwt.generate_M_b(kwargs_lens = self.kwargs_lens)
+        M_natwt1, b_natwt1 = psr_natwt.generate_M_b_interferometry_natwt_likelihood(kwargs_lens = self.kwargs_lens)
         assert np.allclose(M_natwt0, M_natwt1)
         assert np.allclose(b_natwt0, b_natwt1)
         
     def test_generate_M_b_diagonal_likelihood(self):
         psr = PixelatedSourceReconstruction(self.data_class, self.psf_class, self.lens_model_class, 
-                                            self.source_pixel_grid_class, kwargs_lens=self.kwargs_lens)
-        M_result, b_result = psr.generate_M_b_diagonal_likelihood()
-        M_expected = np.array([[0.01129016, 0.01358918, 0.01358918, 0.02152248, 0.01484909, 0.02400253],
-                               [0.01358918, 0.01815592, 0.01604542, 0.02759236, 0.01819409, 0.03177232],
-                               [0.01358918, 0.01604542, 0.01815592, 0.02759236, 0.02200811, 0.03442514],
-                               [0.02152248, 0.02759236, 0.02759236, 0.04546299, 0.03301198, 0.0554495 ],
-                               [0.01484909, 0.01819409, 0.02200811, 0.03301198, 0.03050647, 0.04755653],
-                               [0.02400253, 0.03177232, 0.03442514, 0.0554495 , 0.04755653, 0.07859336]])
-        b_expected = np.array([0.44319784, 0.60691129, 0.60445714, 1.00888506, 0.80968046, 1.37626347])
+                                            self.source_pixel_grid_class)
+        M_result, b_result = psr.generate_M_b_diagonal_likelihood(kwargs_lens = self.kwargs_lens)
+        M_expected = np.array([[0.08711542, 0.10485476, 0.10485476, 0.16606854, 0.1145763 , 0.18520471],
+                               [0.10485476, 0.14009196, 0.12380729, 0.21290403, 0.1403865 , 0.24515675],
+                               [0.10485476, 0.12380729, 0.14009196, 0.21290402, 0.16981564, 0.26562611],
+                               [0.16606854, 0.21290403, 0.21290402, 0.3507947 , 0.25472209, 0.42785108],
+                               [0.1145763 , 0.1403865 , 0.16981564, 0.25472209, 0.23538944, 0.36694854],
+                               [0.18520471, 0.24515675, 0.26562611, 0.42785108, 0.36694854, 0.60643026]])
+        b_expected = np.array([1.2311051 , 1.6858647 , 1.6790476 , 2.8024585 , 2.24911239, 3.82295409])
         assert np.allclose(M_expected, M_result, atol = 1e-5)
         assert np.allclose(b_expected, b_result, atol = 1e-5)
         
@@ -162,34 +155,35 @@ class TestPixelatedSourceReconstruction(object):
         # Note that the PSF here used is not the real dirty beam of the interferometric images
         # Here we just use a gaussian PSF to test the output of the function
         psr = PixelatedSourceReconstruction(data_class_interferometry, self.psf_class, self.lens_model_class, 
-                                            self.source_pixel_grid_class, kwargs_lens=self.kwargs_lens)
-        M_result, b_result = psr.generate_M_b_interferometry_natwt_likelihood()
-        M_expected = np.array([[0.02229289, 0.0221506 , 0.0221506 , 0.03531318, 0.01467593, 0.02430386],
-                               [0.0221506 , 0.03126001, 0.01790875, 0.03867838, 0.01132409, 0.02526159],
-                               [0.0221506 , 0.01790875, 0.03126001, 0.03867838, 0.02907649, 0.03816851],
-                               [0.03531318, 0.03867838, 0.03867838, 0.06318939, 0.03045054, 0.05084672],
-                               [0.01467593, 0.01132409, 0.02907649, 0.03045054, 0.040716  , 0.04901641],
-                               [0.02430386, 0.02526159, 0.03816851, 0.05084672, 0.04901641, 0.06995898]])
-        b_expected = np.array([0.84629238, 0.8555345 , 0.93490381, 1.09044392, 1.06591831, 1.55618881])
+                                            self.source_pixel_grid_class)
+        M_result, b_result = psr.generate_M_b_interferometry_natwt_likelihood(kwargs_lens = self.kwargs_lens)
+        M_expected = np.array([[0.17201307, 0.17091511, 0.17091511, 0.27247823, 0.11324017, 0.1875298 ],
+                               [0.17091511, 0.2412038 , 0.13818483, 0.29844431, 0.08737723, 0.19491969],
+                               [0.17091511, 0.13818483, 0.2412038 , 0.29844431, 0.22435566, 0.2945101 ],
+                               [0.27247823, 0.29844431, 0.29844431, 0.48757246, 0.23495785, 0.39233583],
+                               [0.11324017, 0.08737723, 0.22435566, 0.23495785, 0.31416669, 0.37821306],
+                               [0.1875298 , 0.19491969, 0.2945101 , 0.39233583, 0.37821306, 0.53980691]])
+        b_expected = np.array([2.35081217, 2.37648472, 2.59695503, 3.02901088, 2.9608842 , 4.32274669])
         assert np.allclose(M_expected, M_result, atol = 1e-5)
         assert np.allclose(b_expected, b_result, atol = 1e-5)
-
+        
     def test_lens_pixel_source_of_a_rectangular_region(self):
         psr = PixelatedSourceReconstruction(self.data_class, self.psf_class, self.lens_model_class, 
-                                            self.source_pixel_grid_class, kwargs_lens=self.kwargs_lens)
-        lensed_pixels = psr.lens_pixel_source_of_a_rectangular_region()
+                                            self.source_pixel_grid_class)
+        lensed_pixels = psr.lens_pixel_source_of_a_rectangular_region(kwargs_lens = self.kwargs_lens)
         assert len(lensed_pixels) == 6
         assert type(lensed_pixels[3][0][0]) == int
         assert type(lensed_pixels[3][0][1]) == int
-        assert np.allclose(lensed_pixels[3][0][2], 0.07323579271979347, atol = 1e-5)
+        assert np.allclose(lensed_pixels[3][0][2], 0.20343275755498194, atol = 1e-5)
         
         # test when there is no lens and the source grid is right on the image grid
         kwargs_source_grid_1 = {'nx': 3, 'ny': 3, 'transform_pix2angle': 0.05 * np.identity(2),
                                    'ra_at_xy_0': -2.0 * 0.05, 'dec_at_xy_0': -2.0 * 0.05}
         source_pixel_grid_class_1 = PixelGrid(**kwargs_source_grid_1)
-        psr_no_lens = PixelatedSourceReconstruction(self.data_class, self.psf_class, self.lens_model_class, source_pixel_grid_class_1,
-                            kwargs_lens = [{'theta_E': 0.0, 'e1': 0.0, 'e2': 0.0, 'center_x': 0.0, 'center_y': 0.0}])
-        lensed_pixels_no_lens = psr_no_lens.lens_pixel_source_of_a_rectangular_region()
+        psr_no_lens = PixelatedSourceReconstruction(self.data_class, self.psf_class, self.lens_model_class, 
+                                                    source_pixel_grid_class_1)
+        lensed_pixels_no_lens = psr_no_lens.lens_pixel_source_of_a_rectangular_region(
+            kwargs_lens = [{'theta_E': 0.0, 'e1': 0.0, 'e2': 0.0, 'center_x': 0.0, 'center_y': 0.0}])
         assert len(lensed_pixels_no_lens) == 9
         assert np.allclose(lensed_pixels_no_lens[3][0][2], 0.0, atol = 1e-5)
         assert np.allclose(lensed_pixels_no_lens[3][1][2], 0.0, atol = 1e-5)
@@ -198,9 +192,9 @@ class TestPixelatedSourceReconstruction(object):
         
     def test_lens_an_image_by_rayshooting(self):
         psr = PixelatedSourceReconstruction(self.data_class, self.psf_class, self.lens_model_class, 
-                                            self.source_pixel_grid_class, kwargs_lens=self.kwargs_lens)
-        image_lensed = psr.lens_an_image_by_rayshooting(self.image_data[1:4,1:3])
-        image_lensed_expected = np.array([[0.        , 0.        , 0.        , 0.        , 0.11461723,
+                                            self.source_pixel_grid_class)
+        image_lensed = psr.lens_an_image_by_rayshooting(self.kwargs_lens, self.image_data[1:4,1:3])
+        image_lensed_expected = (5.0/3)**2 * np.array([[0.        , 0.        , 0.        , 0.        , 0.11461723,
                                               0.        , 0.        , 0.        , 0.        , 0.        ],
                                              [0.        , 0.61209186, 0.51636297, 0.22842217, 0.03150559,
                                               0.        , 0.        , 0.        , 0.        , 0.        ],
@@ -227,13 +221,15 @@ class TestPixelatedSourceReconstruction(object):
         kwargs_source_grid_1 = {'nx': 3, 'ny': 3, 'transform_pix2angle': 0.05 * np.identity(2),
                                    'ra_at_xy_0': -2.0 * 0.05, 'dec_at_xy_0': -2.0 * 0.05}
         source_pixel_grid_class_1 = PixelGrid(**kwargs_source_grid_1)
-        psr_no_lens = PixelatedSourceReconstruction(self.data_class, self.psf_class, self.lens_model_class, source_pixel_grid_class_1,
-                            kwargs_lens = [{'theta_E': 0.0, 'e1': 0.0, 'e2': 0.0, 'center_x': 0.0, 'center_y': 0.0}])
-        image_lensed_no_lense = psr_no_lens.lens_an_image_by_rayshooting(self.image_data[3:6, 3:6])
+        psr_no_lens = PixelatedSourceReconstruction(self.data_class, self.psf_class, self.lens_model_class, 
+                                                    source_pixel_grid_class_1)
+        image_lensed_no_lense = psr_no_lens.lens_an_image_by_rayshooting(
+            [{'theta_E': 0.0, 'e1': 0.0, 'e2': 0.0, 'center_x': 0.0, 'center_y': 0.0}],
+            self.image_data[3:6, 3:6])
         assert np.allclose(self.image_data[3:6,3:6], image_lensed_no_lense[3:6,3:6], atol = 1e-5)
         
         with pytest.raises(ValueError):
-            psr.lens_an_image_by_rayshooting(np.random.rand(9, 9))
+            psr.lens_an_image_by_rayshooting(self.kwargs_lens, np.random.rand(9, 9))
             
     def test_sparse_matrix_manipulation_functions(self):
         
@@ -241,7 +237,7 @@ class TestPixelatedSourceReconstruction(object):
         kwargs_data_small = sim_util.data_configure_simple(5, 0.05, np.inf, 1)
         data_class_small = ImageData(**kwargs_data_small)
         psr_small = PixelatedSourceReconstruction(data_class_small, self.psf_class, self.lens_model_class, 
-                                                  self.source_pixel_grid_class, kwargs_lens=self.kwargs_lens)
+                                                  self.source_pixel_grid_class)
         
         # Define a source reconstrution with a smaller data image size 
         # AND a small kernel (kernel size is smaller than the image)
@@ -250,7 +246,7 @@ class TestPixelatedSourceReconstruction(object):
         kwargs_psf_small_kernel['kernel_point_source'] = kernel_small
         psf_class_small_kernel = PSF(**kwargs_psf_small_kernel)
         psr_small_kernel = PixelatedSourceReconstruction(data_class_small, psf_class_small_kernel, self.lens_model_class, 
-                                                  self.source_pixel_grid_class, kwargs_lens=self.kwargs_lens)
+                                                  self.source_pixel_grid_class)
         
         sp1 = [[0, 0, 0.6862915211329877],
                [0, 1, 0.333126273654468],
@@ -319,6 +315,6 @@ class TestPixelatedSourceReconstruction(object):
         assert np.allclose(compare2, 0, atol = 1e-5)
         assert np.allclose(compare3, 0, atol = 1e-5)
         assert np.allclose(compare4, 0, atol = 1e-5)
-     
+
 if __name__ == "__main__":
     pytest.main()

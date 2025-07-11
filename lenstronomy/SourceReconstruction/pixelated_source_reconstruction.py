@@ -9,10 +9,14 @@ class PixelatedSourceReconstruction(object):
     """
     This class defines useful functions for pixelated source plane reconstruction in gravitational lensing.
     It handles initialization of data, lens model, and PSF kernel, and provides methods for generating
-    the M and b matrices for source reconstruction based on different likelihood methods.
+    the M and b matrices (definition see 'placeholder for Nan Zhang's paper) for source reconstruction based on different likelihood methods.
+    
+    All sparse matrices (sp) in this class are represented as a list of lists:
+    [[y_coord, x_coord, pixel_value], ...], where [y_coord, x_coord] are
+    the pixel coordinates and pixel_value is the corresponding pixel's value.
     """
     
-    def __init__(self, data_class, psf_class, lens_model_class, source_pixel_grid_class, kwargs_lens, verbose=False):
+    def __init__(self, data_class, psf_class, lens_model_class, source_pixel_grid_class):
         """
         Initializes the PixelatedSourceReconstruction class. This sets up the necessary data,
         PSF, lens model, and source grid for subsequent source reconstruction matrix generation.
@@ -21,8 +25,6 @@ class PixelatedSourceReconstruction(object):
         :param psf_class: PSF() class instance (for the observed image data)
         :param lens_model_class: LensModel class instance 
         :param source_pixel_grid_class: PixelGrid() class instance (defining the source plane grid)
-        :param kwargs_lens: List of keyword arguments for the lens_model_class.
-        :param verbose: If True, print progress messages during matrix generation steps. Defaults to False.
         :type verbose: bool
         
         :raises ValueError:
@@ -30,18 +32,15 @@ class PixelatedSourceReconstruction(object):
             - If the PSF kernel size is improperly sized for interferometric likelihood methods.
         """
         
-        self._numPix = data_class.num_pixel_axes[0]  # Number of pixels along one dimension of the image
+        self._numPix = data_class.num_pixel_axes[0]
         self._image_data = data_class.data
         self._noise_rms = data_class._background_rms
         self._primary_beam = data_class.primary_beam
         self._logL_method = data_class._logL_method
-        self._verbose = verbose
         
-        # Map the image plane pixels to the coordinates of the source plane
-        x_grid_temp, y_grid_temp = data_class.pixel_coordinates
-        self._beta_x_grid, self._beta_y_grid = lens_model_class.ray_shooting(util.image2array(x_grid_temp), 
-                                                                             util.image2array(y_grid_temp), 
-                                                                             kwargs=kwargs_lens)
+        # prepare for the rayshooting
+        self._x_grid_data, self._y_grid_data = data_class.pixel_coordinates
+        self._lens_model_class = lens_model_class
         
         self._source_grid_class = source_pixel_grid_class
         # Validate source grid properties: no rotation and uniform pixel width
@@ -58,6 +57,7 @@ class PixelatedSourceReconstruction(object):
         self._num_pixel_source = self._source_grid_class.num_pixel
         self._pixel_width_source = self._source_grid_class.pixel_width
         self._source_min_x, self._source_min_y = self._source_grid_class.radec_at_xy_0
+        self._ratio_data_pixel_source_pixel = data_class.pixel_area / source_pixel_grid_class.pixel_area
         
         self._kernel = psf_class.kernel_point_source
         self._shape_kernel = self._kernel.shape
@@ -69,55 +69,61 @@ class PixelatedSourceReconstruction(object):
                     raise ValueError('PSF kernel size must be at least (2 * numPix - 1) '
                                      'in each dimension for interferometry_natwt likelihood.')
         
-    def generate_M_b(self):
+    def generate_M_b(self, kwargs_lens, verbose = False, show_progress = True):
         """
         Generates the M matrix and the b vector for source reconstruction based on the selected likelihood method.
         Definitions of the M and b is given by (placeholder for Nan Zhang's paper).
-
+                      
+        :param kwargs_lens: List of keyword arguments for the lens_model_class.
+        :param verbose: If True, print progress messages during matrix generation steps. Defaults to False.
+        :param show_progress: If True, show progress bar of generating the M matrix. Defaults to True.
         :returns: (M, b) tuple, where M is the matrix and b is the vector.
         """
-        if self._verbose:
+        if verbose:
             # Print the total number of source pixels in the defined rectangular source region.
             print("number of source pixels:", self._source_grid_class.num_pixel,
                   "(x axis:", self._source_grid_class.num_pixel_axes[0], "pixels; ",
                   "y axis:", self._source_grid_class.num_pixel_axes[1], "pixels)")
             print("likelihood method:", self._logL_method)
         if self._logL_method == 'diagonal':
-            M, b = self.generate_M_b_diagonal_likelihood()
+            M, b = self.generate_M_b_diagonal_likelihood(kwargs_lens, verbose, show_progress)
         elif self._logL_method == 'interferometry_natwt':
-            M, b = self.generate_M_b_interferometry_natwt_likelihood()
+            M, b = self.generate_M_b_interferometry_natwt_likelihood(kwargs_lens, verbose, show_progress)
         return M, b
     
-    def generate_M_b_diagonal_likelihood(self):
+    def generate_M_b_diagonal_likelihood(self, kwargs_lens, verbose = False, show_progress = True):
         """
         Generates M and b matrices assuming spatially uncorrelated noise with uniform RMS across the image.
         This approach is typically used for CCD image data.
 
         This method performs lensing, convolution, and then computes M and b.
 
+        :param kwargs_lens: List of keyword arguments for the lens_model_class.
+        :param verbose: If True, print progress messages during matrix generation steps. Defaults to False.
+        :param show_progress: If True, show progress bar of generating the M matrix. Defaults to True.
         :returns: (M, b) tuple, where M is the matrix and b is the vector.
         """
-        if self._verbose:
+        if verbose:
             print("Step 1: Lensing the source pixels")
-        lensed_sp = self.lens_pixel_source_of_a_rectangular_region()
-        if self._verbose:
+        lensed_sp = self.lens_pixel_source_of_a_rectangular_region(kwargs_lens)
+        if verbose:
             print("Step 1: Finished!")
 
-        if self._verbose:
+        if verbose:
             print("Step 2: Convolve the lensed pixels")
         N_lensed = len(lensed_sp)
         lensed_pixel_conv_set = np.zeros((N_lensed, self._numPix, self._numPix))
         for i in range(N_lensed):
             lensed_pixel_conv_set[i] = self.sparse_convolution(lensed_sp[i], self._kernel)
-        if self._verbose:
+        if verbose:
             print("Step 2: Finished!")
 
-        if self._verbose:
+        if verbose:
             print("Step 3: Compute the matrix M and vector b")
         M = np.zeros((N_lensed,N_lensed))
         b = np.zeros((N_lensed))
 
-        for i in tqdm(range(N_lensed), desc="Running (iteration times vary)"):
+        for i in tqdm(range(N_lensed), desc="Running (iteration times vary)", disable=not show_progress):
             b[i] = np.sum(lensed_pixel_conv_set[i] * self._image_data)
             for j in range(N_lensed):
                 if j < i:
@@ -127,32 +133,35 @@ class PixelatedSourceReconstruction(object):
 
         b /= self._noise_rms**2
         M /= self._noise_rms**2
-        if self._verbose:
+        if verbose:
             print("Step 3: Finished!")
 
         return M, b
     
-    def generate_M_b_interferometry_natwt_likelihood(self):
+    def generate_M_b_interferometry_natwt_likelihood(self, kwargs_lens, verbose = False, show_progress = True):
         """
         Generates the M and b matrices for interferometric data with natural weighting.
 
         This method integrates the convolution step implicitly via specialized sparse product functions.
 
+        :param kwargs_lens: List of keyword arguments for the lens_model_class.
+        :param verbose: If True, print progress messages during matrix generation steps. Defaults to False.
+        :param show_progress: If True, show progress bar of generating the M matrix. Defaults to True.
         :returns: (M, b) tuple, where M is the matrix and b is the vector.
         """
-        if self._verbose:
+        if verbose:
             print("Step 1: Lensing the source pixels")
-        lensed_sp = self.lens_pixel_source_of_a_rectangular_region()
-        if self._verbose:
+        lensed_sp = self.lens_pixel_source_of_a_rectangular_region(kwargs_lens)
+        if verbose:
             print("Step 1: Finished!")
         
-        if self._verbose:
+        if verbose:
             print("Step 2: Compute the matrix M and vector b (including the convolution step)")
         N_lensed = len(lensed_sp)
         M = np.zeros((N_lensed,N_lensed))
         b = np.zeros((N_lensed))
         
-        for i in tqdm(range(N_lensed), desc="Running (iteration times vary)"):
+        for i in tqdm(range(N_lensed), desc="Running (iteration times vary)", disable=not show_progress):
             b[i] = self.sum_sparse_elementwise_product(lensed_sp[i], self._image_data)
             pixel_lensed_convolved = self.sparse_convolution(lensed_sp[i], self._kernel) # convolution
             for j in range(N_lensed):
@@ -163,27 +172,28 @@ class PixelatedSourceReconstruction(object):
         
         b /= self._noise_rms**2
         M /= self._noise_rms**2
-        if self._verbose:
+        if verbose:
             print("Step 2: Finished!")
         
         return M, b
         
-    def lens_pixel_source_of_a_rectangular_region(self):
+    def lens_pixel_source_of_a_rectangular_region(self, kwargs_lens):
         """
         Maps image plane pixels to source plane pixels within a specified rectangular source grid,
         considering lensing deflections and applying bilinear interpolation.
 
+        :param kwargs_lens: List of keyword arguments for the lens_model_class.
         :returns: A list of lists. Each element in the outer list corresponds to a single source pixel
             within the defined source grid (ordered by their linear index). Each inner list contains
-            `[image_y_idx, image_x_idx, weight]` tuples, indicating that the source pixel at this index
-            contributes with `weight` to the image plane pixel at `(image_y_idx, image_x_idx)` when lensed.
+            `[y_coord, x_coord, weight]` tuples, indicating that the source pixel at this index
+            contributes with `weight` to the image plane pixel at `(y_coord, x_coord)` when lensed.
         :rtype: list
         """
         
         lensed_pixel_sp = [[] for _ in range(self._num_pixel_source)]
         
-        beta_x_grid_2d = util.array2image(self._beta_x_grid)
-        beta_y_grid_2d = util.array2image(self._beta_y_grid)
+        beta_x_grid_2d, beta_y_grid_2d = self._lens_model_class.ray_shooting(
+            self._x_grid_data, self._y_grid_data, kwargs = kwargs_lens)
         
         # Calculate integer pixel indices (floor/ceiling) in the source plane
         x_floor = np.floor((beta_x_grid_2d - self._source_min_x) / self._pixel_width_source).astype(int)
@@ -200,6 +210,12 @@ class PixelatedSourceReconstruction(object):
         w10 = delta_x_pixel * (1 - delta_y_pixel)
         w01 = delta_y_pixel * (1 - delta_x_pixel)
         w11 = delta_x_pixel * delta_y_pixel
+        
+        # Apply the ratio (source grid pixel area / data image pixel area) to ensure the flux conservation
+        w00 *= self._ratio_data_pixel_source_pixel
+        w10 *= self._ratio_data_pixel_source_pixel
+        w01 *= self._ratio_data_pixel_source_pixel
+        w11 *= self._ratio_data_pixel_source_pixel
     
         # Apply primary beam modulation if specified
         if self._primary_beam is not None:
@@ -251,7 +267,7 @@ class PixelatedSourceReconstruction(object):
         return lensed_pixel_sp
 
 
-    def lens_an_image_by_rayshooting(self, image):
+    def lens_an_image_by_rayshooting(self, kwargs_lens, source_image):
         """
         Lenses a pixelated source plane image to the image plane using ray-shooting and bilinear interpolation.
         The imput image should have the same dimension and coordinates defined by source_pixel_grid_class. 
@@ -262,6 +278,7 @@ class PixelatedSourceReconstruction(object):
         source pixels is derived via interpolation. Note that the primary beam will NOT be applied on the 
         lensed image in this function.
     
+        :param kwargs_lens: List of keyword arguments for the lens_model_class.
         :param image: 2D NumPy array representing the pixelated source plane image. Expected to have
                       dimensions defined by source_pixel_grid_class.
         :type image: numpy.ndarray
@@ -271,12 +288,17 @@ class PixelatedSourceReconstruction(object):
                             defined source pixel grid (`self._ny_source`, `self._nx_source`).
         """
         
-        ny_source_check, nx_source_check = np.shape(image)
+        ny_source_check, nx_source_check = np.shape(source_image)
         if nx_source_check != self._nx_source or ny_source_check != self._ny_source:
             raise ValueError(f"Input image size ({ny_source_check}, {nx_source_check}) must match the defined "
                              f"source grid class dimension ({self._ny_source}, {self._nx_source}).")
         
         lensed_image = np.zeros((self._numPix, self._numPix))
+        
+        beta_x_grid_2d, beta_y_grid_2d = self._lens_model_class.ray_shooting(
+            self._x_grid_data, self._y_grid_data, kwargs = kwargs_lens)
+        beta_x_grid = util.image2array(beta_x_grid_2d)
+        beta_y_grid = util.image2array(beta_y_grid_2d)
     
         # Iterate through each pixel in the image plane (i, j)
         for i in range(self._numPix):
@@ -286,8 +308,8 @@ class PixelatedSourceReconstruction(object):
 
                 # Get the source plane angular coordinates (beta_x, beta_y) corresponding
                 # to the current image plane pixel (i,j) after ray-shooting.
-                cor_beta_x = self._beta_x_grid[n_beta]
-                cor_beta_y = self._beta_y_grid[n_beta]
+                cor_beta_x = beta_x_grid[n_beta]
+                cor_beta_y = beta_y_grid[n_beta]
 
                 # Convert source plane angular coordinates to integer pixel indices (n_y, n_x)
                 # within the source grid, relative to self._minx, self._miny.
@@ -311,19 +333,22 @@ class PixelatedSourceReconstruction(object):
                         np.abs(self._source_min_y + n_y*self._pixel_width_source - cor_beta_y)) / (self._pixel_width_source**2)
                     
                     # Interpolate flux from the source image using the calculated weights
-                    lensed_image[i,j] = image[n_y, n_x] * weight_upper_left
+                    lensed_image[i,j] = source_image[n_y, n_x] * weight_upper_left
                     if n_x + 1 < self._nx_source:
-                        lensed_image[i,j] += image[n_y, n_x + 1] * weight_upper_right
+                        lensed_image[i,j] += source_image[n_y, n_x + 1] * weight_upper_right
                     if n_y + 1 < self._ny_source:
-                        lensed_image[i,j] += image[n_y + 1, n_x] * weight_lower_left
+                        lensed_image[i,j] += source_image[n_y + 1, n_x] * weight_lower_left
                         if n_x + 1 < self._nx_source:
-                            lensed_image[i,j] += image[n_y + 1, n_x + 1] * weight_lower_right
-                
+                            lensed_image[i,j] += source_image[n_y + 1, n_x + 1] * weight_lower_right
+        
+        # Apply the ratio (source grid pixel area / data image pixel area) to ensure the flux conservation
+        lensed_image *= self._ratio_data_pixel_source_pixel
+        
         return lensed_image
 
     def sparse_to_array(self, sparse):
         """
-        Converts a sparse image representation (list of `[y_idx, x_idx, value]` tuples) to a 2D NumPy array.
+        Converts a sparse image representation (list of `[y_coord, x_coord, value]` tuples) to a 2D NumPy array.
 
         :param sparse: A list representing non-zero elements of the sparse image.
         :returns: A 2D NumPy array representing the full image.
@@ -339,7 +364,7 @@ class PixelatedSourceReconstruction(object):
         """
         Computes the element-wise sum of products between a sparse matrix and a dense 2D NumPy array image.
 
-        :param sparse: Sparse matrix representation (list of `[y_idx, x_idx, value]` tuples).
+        :param sparse: Sparse matrix representation (list of `[y_coord, x_coord, value]` tuples).
         :param ordinary: A 2D NumPy array (dense matrix).
         :returns: The sum of the element-wise products.
         :rtype: float

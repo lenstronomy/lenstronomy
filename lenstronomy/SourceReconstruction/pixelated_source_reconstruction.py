@@ -211,7 +211,7 @@ class PixelatedSourceReconstruction(object):
         w01 = delta_y_pixel * (1 - delta_x_pixel)
         w11 = delta_x_pixel * delta_y_pixel
         
-        # Apply the ratio (source grid pixel area / data image pixel area) to ensure the flux conservation
+        # Apply the ratio (data image pixel area / source grid pixel area) to ensure the flux conservation
         w00 *= self._ratio_data_pixel_source_pixel
         w10 *= self._ratio_data_pixel_source_pixel
         w01 *= self._ratio_data_pixel_source_pixel
@@ -341,7 +341,7 @@ class PixelatedSourceReconstruction(object):
                         if n_x + 1 < self._nx_source:
                             lensed_image[i,j] += source_image[n_y + 1, n_x + 1] * weight_lower_right
         
-        # Apply the ratio (source grid pixel area / data image pixel area) to ensure the flux conservation
+        # Apply the ratio (data image pixel area / source grid pixel area) to ensure the flux conservation
         lensed_image *= self._ratio_data_pixel_source_pixel
         
         return lensed_image

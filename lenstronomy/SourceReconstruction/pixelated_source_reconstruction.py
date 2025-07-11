@@ -25,7 +25,6 @@ class PixelatedSourceReconstruction(object):
         :param psf_class: PSF() class instance (for the observed image data)
         :param lens_model_class: LensModel class instance 
         :param source_pixel_grid_class: PixelGrid() class instance (defining the source plane grid)
-        :type verbose: bool
         
         :raises ValueError:
             - If the source pixel grid has rotational components or non-uniform pixel widths.

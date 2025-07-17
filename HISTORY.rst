@@ -443,3 +443,8 @@ History
 +++++++++++++++++++
 * KinematicsAPI improved
 * Custom Solver
+
+1.13.2 (2025-07-17)
++++++++++++++++++++
+* pixelated source reconstruction
+* rectangular PixelGrid bug fix

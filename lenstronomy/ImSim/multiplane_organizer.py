@@ -9,16 +9,16 @@ class MultiPlaneOrganizer(object):
     """This class organizes the lens and source planes in multi-lens plane and multi-
     source plane setting.
 
-    In the multi-lens-plane setting with $P$ lens planes (and the last source plane
-    being the $P+1$-th plane), the effective Fermat potential is defined as (eq. 9 of Shajib et al. 2020):
+    In the multi-lens-plane setting with :math:`P` lens planes (and the last source plane
+    being the :math:`P+1`-th plane), the effective Fermat potential is defined as (eq. 9 of Shajib et al. 2020):
 
     .. math::
-    \\phi^{\\rm eff} (\\theta) \\equiv \\sum_{i=1}^{P} \\frac{1+z_i}{1+z_{\\rm d}} \\frac{D_i D_{i+1} D_{\\rm ds}}{D_{\\rm d} D_{\\rm s}D_{i\\ i+1} } \\left[ \\frac{(\\theta_{i} - \\theta_{ i+1})^2}{2} - \\beta_{i,i+1} \\psi_{i}(\\theta_{i})  \\right].
+        \\phi^{\\rm eff} (\\theta) \\equiv \\sum_{i=1}^{P} \\frac{1+z_i}{1+z_{\\rm d}} \\frac{D_i D_{i+1} D_{\\rm ds}}{D_{\\rm d} D_{\\rm s}D_{i\\ i+1} } \\left[ \\frac{(\\theta_{i} - \\theta_{ i+1})^2}{2} - \\beta_{i,i+1} \\psi_{i}(\\theta_{i})  \\right].
 
-    Satisfying $\\Delta \\phi^{\\rm eff} = 0$ will lead to the lens equation in the multiplane, where $\\beta_{ij}$ parameters are free parameters that are defined as:
+    Satisfying :math:`\\Delta \\phi^{\\rm eff} = 0` will lead to the lens equation in the multiplane, where $\\beta_{ij}$ parameters are free parameters that are defined as:
 
     .. math::
-    \\beta_{ij} \\equiv \\frac{D_{ij} D_{\\rm s}}{D_{j} D_{i\\rm s}}.
+        \\beta_{ij} \\equiv \\frac{D_{ij} D_{\\rm s}}{D_{j} D_{i\\rm s}}.
 
     For $P$ lens planes, there are $\\rm{comb}(P, 2)$ number of $\\beta_{ij}$ parameters to track. This class converts the $\\beta_{ij}$ to the relevant cosmological
     distances needed for ray-tracing. However, instead of sampling absolute values of $\\beta_{ij}$,

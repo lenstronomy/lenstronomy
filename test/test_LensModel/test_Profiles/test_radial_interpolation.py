@@ -84,3 +84,19 @@ class TestRadialInterpolation(object):
         f_int = interp_profile.potential(x, y, kwargs_interp)
         f_ = mass_sheet.potential(x, y, kwargs_convergence)
         npt.assert_almost_equal(f_int, f_, decimal=3)
+
+    def test_set_dynamic(self):
+        interp_profile = LensModel(lens_model_list=["RADIAL_INTERPOL"])
+        sis = LensModel(lens_model_list=["SIS"])
+        kwargs_sis = [{"theta_E": 1, "center_x": 0, "center_y": 0}]
+        r_bin_log = np.logspace(-4, 1, 200)
+        kappa_r_sis = sis.kappa(r_bin_log, 0, kwargs=kwargs_sis)
+        kwargs_interp = [{"r_bin": r_bin_log, "kappa_r": kappa_r_sis}]
+
+        alpha_x, alpha_y = interp_profile.alpha(1, 0, kwargs=kwargs_interp)
+
+        interp_profile.set_dynamic()
+        kwargs_interp = [{"r_bin": r_bin_log, "kappa_r": kappa_r_sis*2}]
+        alpha_x_new, alpha_y_new = interp_profile.alpha(1, 0, kwargs=kwargs_interp)
+        assert alpha_x_new != alpha_x
+

@@ -96,7 +96,6 @@ class TestRadialInterpolation(object):
         alpha_x, alpha_y = interp_profile.alpha(1, 0, kwargs=kwargs_interp)
 
         interp_profile.set_dynamic()
-        kwargs_interp = [{"r_bin": r_bin_log, "kappa_r": kappa_r_sis*2}]
+        kwargs_interp = [{"r_bin": r_bin_log, "kappa_r": kappa_r_sis * 2}]
         alpha_x_new, alpha_y_new = interp_profile.alpha(1, 0, kwargs=kwargs_interp)
         assert alpha_x_new != alpha_x
-

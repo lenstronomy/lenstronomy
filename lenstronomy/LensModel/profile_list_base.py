@@ -520,7 +520,7 @@ def lens_class(
         return GeneralizedNFWEllipseGaussDec(**profile_kwargs)
     elif lens_type == "GreenBoschNFW":
         from lenstronomy.LensModel.Profiles.greenboschnfw import GreenBoschNFW
-        
+
         return GreenBoschNFW(**profile_kwargs)
     elif lens_type == "HERNQUIST":
         from lenstronomy.LensModel.Profiles.hernquist import Hernquist

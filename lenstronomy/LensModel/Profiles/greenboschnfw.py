@@ -169,7 +169,7 @@ class GreenBoschNFW(LensProfileBase):
     def set_dynamic(self):
         """
 
-        :return: no return, deletes the pre-computed kappa(r) and rbin, for every instance of this class (subhalo)
+        :return: no return, deletes the pre-computed \\kappa(r) and rbin, for every instance of this class (subhalo)
         """
 
         self._last_params = None
@@ -191,7 +191,7 @@ class GreenBoschNFW(LensProfileBase):
         :param rho0ang: Dimensionless NFW normalization
         :type rho0ang: Float
         :param center_x: Position of halo center [arcseconds]
-        :return: Density \rho(r)
+        :return: Density \\rho(r)
         """
 
         a1, a2, a3, a4 = 0.338, 0.0, 0.157, 1.337
@@ -225,7 +225,7 @@ class GreenBoschNFW(LensProfileBase):
         :param rho0ang: Dimensionless NFW normalization
         :type rho0ang: Float
         :param center_x: Position of halo center [arcseconds]
-        :return: Radial convergence \kappa(r)
+        :return: Radial convergence \\kappa(r)
         """
 
         def _round_params(p):
@@ -253,14 +253,14 @@ class GreenBoschNFW(LensProfileBase):
 
             kappa_vals.append(kappa)
 
-            if kappa != 0:
-                rel_err = abs(error / kappa)
-            else:
-                rel_err = np.inf
-            if rel_err > 1e-3:
-                print(
-                    f"High relative LOS integral error at r={r:.3e}: rel_err={rel_err:.2e}"
-                )
+            # if kappa != 0:
+            #     rel_err = abs(error / kappa)
+            # else:
+            #     rel_err = np.inf
+            # if rel_err > 1e-3:
+            #     print(
+            #         f"High relative LOS integral error at r={r:.3e}: rel_err={rel_err:.2e}"
+            #     )
 
         kappa_r = np.array(kappa_vals)
         self._last_params = params

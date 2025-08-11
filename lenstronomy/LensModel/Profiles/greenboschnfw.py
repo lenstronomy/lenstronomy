@@ -248,19 +248,7 @@ class GreenBoschNFW(LensProfileBase):
             )
             kappa, error = quad(integrand, 0, np.inf, limit=200)
 
-            if not np.isfinite(kappa) or not np.isfinite(error):
-                raise RuntimeError(f"LOS integral failed at r={r}")
-
             kappa_vals.append(kappa)
-
-            # if kappa != 0:
-            #     rel_err = abs(error / kappa)
-            # else:
-            #     rel_err = np.inf
-            # if rel_err > 1e-3:
-            #     print(
-            #         f"High relative LOS integral error at r={r:.3e}: rel_err={rel_err:.2e}"
-            #     )
 
         kappa_r = np.array(kappa_vals)
         self._last_params = params

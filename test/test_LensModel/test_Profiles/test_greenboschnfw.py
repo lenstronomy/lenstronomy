@@ -7,9 +7,9 @@ from lenstronomy.LensModel.Profiles.greenboschnfw import GreenBoschNFW
 from lenstronomy.LensModel.Profiles.nfw import NFW
 import scipy.integrate as si
 
-@pytest.mark.parametrize("N", [25, 50])
 
-def test_nfw_limit(N): 
+@pytest.mark.parametrize("N", [25, 50])
+def test_nfw_limit(N):
 
     gb = GreenBoschNFW(num_bins=1200, r_min=5e-5, r_max_factor=30.0)
     nfw = NFW()
@@ -25,7 +25,13 @@ def test_nfw_limit(N):
     npt.assert_allclose(ay_gb, ay_nf, rtol=1e-2, atol=1e-6)
     f_xx_gb, f_xy_gb, f_yx_gb, f_yy_gb = gb.hessian(x, y, f_b, c_s, Rs, rho0ang, 0, 0)
     f_xx_nf, f_xy_nf, f_yx_nf, f_yy_nf = nfw.hessian(x, y, Rs, alpha_Rs, 0, 0)
-    npt.assert_allclose([f_xx_gb, f_xy_gb, f_yx_gb, f_yy_gb], [f_xx_nf, f_xy_nf, f_yx_nf, f_yy_nf], rtol=3e-2, atol=2e-6)
+    npt.assert_allclose(
+        [f_xx_gb, f_xy_gb, f_yx_gb, f_yy_gb],
+        [f_xx_nf, f_xy_nf, f_yx_nf, f_yy_nf],
+        rtol=3e-2,
+        atol=2e-6,
+    )
+
 
 def test_zero_mass_all_zero():
 
@@ -34,9 +40,12 @@ def test_zero_mass_all_zero():
     ys = np.linspace(-4.0, 4.0, 90)
     X, Y = np.meshgrid(xs, ys, indexing="xy")
     x, y = X.ravel(), Y.ravel()
-    ax, ay = gb.derivatives(x, y, f_b=1.0, c_s=10.0, Rs=1.0, rho0ang=0.0, center_x=0, center_y=0)
+    ax, ay = gb.derivatives(
+        x, y, f_b=1.0, c_s=10.0, Rs=1.0, rho0ang=0.0, center_x=0, center_y=0
+    )
     f_xx, f_xy, f_yx, f_yy = gb.hessian(x, y, 1.0, 10.0, 1.0, 0.0, 0, 0)
     npt.assert_allclose([ax, ay, f_xx, f_xy, f_yx, f_yy], 0.0, atol=1e-14)
+
 
 def test_linearity_rho0ang():
 
@@ -45,13 +54,17 @@ def test_linearity_rho0ang():
     ys = np.linspace(-4.0, 4.0, 90)
     X, Y = np.meshgrid(xs, ys, indexing="xy")
     x, y = X.ravel(), Y.ravel()
-    ax1, ay1 = gb.derivatives(x, y, f_b=0.6, c_s=12.0, Rs=1.3, rho0ang=200.0, center_x=0, center_y=0)
+    ax1, ay1 = gb.derivatives(
+        x, y, f_b=0.6, c_s=12.0, Rs=1.3, rho0ang=200.0, center_x=0, center_y=0
+    )
     gb.set_dynamic()
-    ax2, ay2 = gb.derivatives(x, y, f_b=0.6, c_s=12.0, Rs=1.3, rho0ang=500.0, center_x=0, center_y=0)
+    ax2, ay2 = gb.derivatives(
+        x, y, f_b=0.6, c_s=12.0, Rs=1.3, rho0ang=500.0, center_x=0, center_y=0
+    )
     mask_x = np.abs(ax1) > 1e-12
     mask_y = np.abs(ay1) > 1e-12
-    npt.assert_allclose(ax2[mask_x]/ax1[mask_x], 2.5, rtol=1e-12, atol=1e-12)
-    npt.assert_allclose(ay2[mask_y]/ay1[mask_y], 2.5, rtol=1e-12, atol=1e-12)
+    npt.assert_allclose(ax2[mask_x] / ax1[mask_x], 2.5, rtol=1e-12, atol=1e-12)
+    npt.assert_allclose(ay2[mask_y] / ay1[mask_y], 2.5, rtol=1e-12, atol=1e-12)
 
 
 def test_center_shift_invariance():
@@ -62,11 +75,23 @@ def test_center_shift_invariance():
     ys = np.linspace(-4.0, 4.0, 90)
     X, Y = np.meshgrid(xs, ys, indexing="xy")
     x, y = X.ravel(), Y.ravel()
-    ax1, ay1 = gb.derivatives(x+cx, y+cy, f_b=0.7, c_s=15.0, Rs=1.0, rho0ang=300.0, center_x=cx, center_y=cy)
+    ax1, ay1 = gb.derivatives(
+        x + cx,
+        y + cy,
+        f_b=0.7,
+        c_s=15.0,
+        Rs=1.0,
+        rho0ang=300.0,
+        center_x=cx,
+        center_y=cy,
+    )
     gb.set_dynamic()
-    ax2, ay2 = gb.derivatives(x, y, f_b=0.7, c_s=15.0, Rs=1.0, rho0ang=300.0, center_x=0,  center_y=0)
+    ax2, ay2 = gb.derivatives(
+        x, y, f_b=0.7, c_s=15.0, Rs=1.0, rho0ang=300.0, center_x=0, center_y=0
+    )
     npt.assert_allclose(ax1, ax2, rtol=1e-12, atol=1e-14)
     npt.assert_allclose(ay1, ay2, rtol=1e-12, atol=1e-14)
+
 
 def test_hessian_symmetry():
 
@@ -78,12 +103,14 @@ def test_hessian_symmetry():
     f_xx, f_xy, f_yx, f_yy = gb.hessian(x, y, 0.8, 20.0, 1.0, 200.0, 0, 0)
     npt.assert_allclose(f_xy, f_yx, rtol=1e-13, atol=1e-15)
 
+
 def test_kappa_monotonic_decrease():
 
     gb = GreenBoschNFW(num_bins=1200)
     kappa_r, rbin = gb.rbin_kappa_r(f_b=1.0e-5, c_s=0.1, Rs=1.0, rho0ang=100.0)
     diff = np.diff(kappa_r)
     assert np.sum(diff > 1e-10) == 0
+
 
 def test_cache_and_set_dynamic_consistency():
 
@@ -95,7 +122,9 @@ def test_cache_and_set_dynamic_consistency():
     gb.set_dynamic()
     k3, r3 = gb.rbin_kappa_r(f_b=0.4, c_s=10.0, Rs=1.1, rho0ang=200.0)
     assert (k3 is not k1) or (r3 is not r1)
-    npt.assert_allclose(k1, k3); npt.assert_allclose(r1, r3)
+    npt.assert_allclose(k1, k3)
+    npt.assert_allclose(r1, r3)
+
 
 def test_cache_skips_quad(monkeypatch):
 
@@ -104,7 +133,7 @@ def test_cache_skips_quad(monkeypatch):
     def spy_quad(*a, **k):
         calls["n"] += 1
         return si.quad(*a, **k)
-    
+
     monkeypatch.setattr("lenstronomy.LensModel.Profiles.greenboschnfw.quad", spy_quad)
     gb = GreenBoschNFW()
     args = dict(f_b=0.4, c_s=10.0, Rs=1.1, rho0ang=200.0)
@@ -115,6 +144,8 @@ def test_cache_skips_quad(monkeypatch):
     gb.rbin_kappa_r(**{**args, "rho0ang": 201.0})
     assert calls["n"] > first
 
+
 if __name__ == "__main__":
     import pytest, sys
+
     sys.exit(pytest.main([__file__]))

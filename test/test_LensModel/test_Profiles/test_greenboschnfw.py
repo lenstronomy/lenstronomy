@@ -6,6 +6,7 @@ import numpy.testing as npt
 from lenstronomy.LensModel.Profiles.greenboschnfw import GreenBoschNFW
 from lenstronomy.LensModel.Profiles.nfw import NFW
 import scipy.integrate as si
+from lenstronomy.LensModel.lens_model import LensModel
 
 
 @pytest.mark.parametrize("N", [25, 50])
@@ -144,8 +145,46 @@ def test_cache_skips_quad(monkeypatch):
     gb.rbin_kappa_r(**{**args, "rho0ang": 201.0})
     assert calls["n"] > first
 
+def test_lensmodel_imports_profile():
 
-if __name__ == "__main__":
-    import pytest, sys
+    lm = LensModel(lens_model_list=["GreenBoschNFW"])
+    kwargs = [dict(
+        f_b=0.5,
+        c_s=12.0,
+        Rs=0.5,
+        rho0ang=10.0,
+        center_x=0.0,
+        center_y=0.0,
+    )]
+    xs = np.linspace(-5.0, 5.0, 80)
+    ys = np.linspace(-4.0, 4.0, 90)
+    X, Y = np.meshgrid(xs, ys, indexing="xy")
+    x, y = X.ravel(), Y.ravel()
+    pot = lm.potential(x, y, kwargs)
+    alpha_x, alpha_y = lm.alpha(x, y, kwargs)
+    kappa = lm.kappa(x, y, kwargs)
+    assert pot.shape == x.shape
+    assert alpha_x.shape == x.shape and alpha_y.shape == x.shape
+    assert kappa.shape == x.shape
+    assert np.all(np.isfinite(pot))
+    assert np.all(np.isfinite(alpha_x))
+    assert np.all(np.isfinite(alpha_y))
+    assert np.all(np.isfinite(kappa))
 
-    sys.exit(pytest.main([__file__]))
+@pytest.mark.parametrize("point", [(0.05, 0.02), (-0.03, 0.04)])
+
+def test_derivatives_match_finite_difference(point):
+
+    gb = GreenBoschNFW(num_bins=1200)
+    params = dict(f_b=0.5, c_s=12.0, Rs=0.5, rho0ang=10.0, center_x=0.0, center_y=0.0)
+    x0, y0 = point
+    h = 1e-5
+    fx_plus = gb.function(x0 + h, y0, **params)
+    fx_minus = gb.function(x0 - h, y0, **params)
+    fd_dx = (fx_plus - fx_minus) / (2 * h)
+    fy_plus = gb.function(x0, y0 + h, **params)
+    fy_minus = gb.function(x0, y0 - h, **params)
+    fd_dy = (fy_plus - fy_minus) / (2 * h)
+    dpsi_dx, dpsi_dy = gb.derivatives(x0, y0, **params)
+    npt.assert_allclose(dpsi_dx, fd_dx, rtol=5e-3, atol=1e-5)
+    npt.assert_allclose(dpsi_dy, fd_dy, rtol=5e-3, atol=1e-5)

@@ -53,9 +53,9 @@ class GreenBoschNFW(LensProfileBase):
 
     def __init__(
         self,
-        r_min: float = 1e-4,
+        r_min: float = 5e-5,
         r_max_factor: float = 10.0,
-        num_bins: int = 100,
+        num_bins: int = 400,
         **kwargs_numerics,
     ):
         """Initialization of the GreenBoschNFW class object.
@@ -246,7 +246,7 @@ class GreenBoschNFW(LensProfileBase):
             integrand = lambda z: 2.0 * self.rho_3d_lens(
                 np.hypot(r, z), f_b, c_s, Rs, rho0ang
             )
-            kappa, error = quad(integrand, 0, np.inf, limit=200)
+            kappa, error = quad(integrand, 0, np.inf, limit=800, epsrel=1e-10, epsabs=1e-12)
 
             kappa_vals.append(kappa)
 

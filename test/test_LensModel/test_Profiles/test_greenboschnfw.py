@@ -145,17 +145,20 @@ def test_cache_skips_quad(monkeypatch):
     gb.rbin_kappa_r(**{**args, "rho0ang": 201.0})
     assert calls["n"] > first
 
+
 def test_lensmodel_imports_profile():
 
     lm = LensModel(lens_model_list=["GreenBoschNFW"])
-    kwargs = [dict(
-        f_b=0.5,
-        c_s=12.0,
-        Rs=0.5,
-        rho0ang=10.0,
-        center_x=0.0,
-        center_y=0.0,
-    )]
+    kwargs = [
+        dict(
+            f_b=0.5,
+            c_s=12.0,
+            Rs=0.5,
+            rho0ang=10.0,
+            center_x=0.0,
+            center_y=0.0,
+        )
+    ]
     xs = np.linspace(-5.0, 5.0, 80)
     ys = np.linspace(-4.0, 4.0, 90)
     X, Y = np.meshgrid(xs, ys, indexing="xy")
@@ -171,8 +174,8 @@ def test_lensmodel_imports_profile():
     assert np.all(np.isfinite(alpha_y))
     assert np.all(np.isfinite(kappa))
 
-@pytest.mark.parametrize("point", [(0.05, 0.02), (-0.03, 0.04)])
 
+@pytest.mark.parametrize("point", [(0.05, 0.02), (-0.03, 0.04)])
 def test_derivatives_match_finite_difference(point):
 
     gb = GreenBoschNFW(num_bins=1200)

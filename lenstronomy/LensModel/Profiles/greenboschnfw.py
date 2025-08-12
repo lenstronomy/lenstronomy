@@ -246,7 +246,9 @@ class GreenBoschNFW(LensProfileBase):
             integrand = lambda z: 2.0 * self.rho_3d_lens(
                 np.hypot(r, z), f_b, c_s, Rs, rho0ang
             )
-            kappa, error = quad(integrand, 0, np.inf, limit=800, epsrel=1e-10, epsabs=1e-12)
+            kappa, error = quad(
+                integrand, 0, np.inf, limit=800, epsrel=1e-10, epsabs=1e-12
+            )
 
             kappa_vals.append(kappa)
 

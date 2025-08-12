@@ -862,5 +862,6 @@ class TestNumericsProfile(object):
         }
         self.assert_differentials(lens_model, kwargs, diff=2e-3, decimal=1)
 
+
 if __name__ == "__main__":
     pytest.main("-k TestLensModel")

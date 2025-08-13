@@ -46,6 +46,7 @@ _SUPPORTED_MODELS = [
     "GAUSSIAN_POTENTIAL",
     "GNFW",
     "GNFW_ELLIPSE_GAUSS_DEC",
+    "GreenBoschNFW",
     "HERNQUIST",
     "HERNQUIST_ELLIPSE_POTENTIAL",
     "HERNQUIST_ELLIPSE_CSE",
@@ -111,6 +112,7 @@ DYNAMIC_PROFILES = [
     "CTNFW_GAUSS_DEC",
     "DOUBLE_CHAMELEON",
     "EPL",
+    "GreenBoschNFW",
     "INTERPOL",
     "INTERPOL_SCALED",
     "NFW_ELLIPSE_GAUSS_DEC",
@@ -516,6 +518,10 @@ def lens_class(
         )
 
         return GeneralizedNFWEllipseGaussDec(**profile_kwargs)
+    elif lens_type == "GreenBoschNFW":
+        from lenstronomy.LensModel.Profiles.greenboschnfw import GreenBoschNFW
+
+        return GreenBoschNFW(**profile_kwargs)
     elif lens_type == "HERNQUIST":
         from lenstronomy.LensModel.Profiles.hernquist import Hernquist
 

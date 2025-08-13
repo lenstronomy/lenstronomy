@@ -849,6 +849,19 @@ class TestNumericsProfile(object):
         lens_model = ["EPL_MULTIPOLE_M1M3M4_ELL"]
         self.assert_differentials(lens_model, kwargs)
 
+    def test_greenboschnfw(self):
+
+        lens_model = ["GreenBoschNFW"]
+        kwargs = {
+            "f_b": 0.1,
+            "c_s": 1.0,
+            "Rs": 1.5,
+            "rho0ang": 10.0,
+            "center_x": 0.0,
+            "center_y": 0.0,
+        }
+        self.assert_differentials(lens_model, kwargs, diff=2e-3, decimal=1)
+
 
 if __name__ == "__main__":
     pytest.main("-k TestLensModel")

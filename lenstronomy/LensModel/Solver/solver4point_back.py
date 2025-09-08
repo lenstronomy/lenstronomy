@@ -8,49 +8,41 @@ import copy
 
 __all__ = ["Solver4Point"]
 
-_SUPPORTED_LENS_MODEL_SOLVER = [
-    "SPEP",
-    "SPEMD",
-    "PEMD",
-    "SIE",
-    "NIE",
-    "NFW_ELLIPSE_POTENTIAL",
-    "NFW_ELLIPSE_CSE",
-    "SHAPELETS_CART",
-    "CNFW_ELLIPSE_POTENTIAL",
-    "EPL",
-    "EPL_BOXYDISKY",
-    "EPL_BOXYDISKY_ELL",
-    "EPL_MULTIPOLE_M3M4",
-    "EPL_MULTIPOLE_M1M3M4",
-    "EPL_MULTIPOLE_M3M4_ELL",
-    "EPL_MULTIPOLE_M1M3M4_ELL",
-    "BPL",
-]
-
 
 class Solver4Point(object):
     """Class to make the constraints for the solver."""
 
-    def __init__(self, lensModel, solver_type="PROFILE", parameter_module=None):
-        """
-
-        :param lensModel: An instance of the LensModel class
-        :param solver_type: a string that specifies the possible solver routines; current implementations are
-         'PROFILE','PROFILE_SHEAR', 'CUSTOM'
-        :param parameter_module: a class to be used with routines "extract_array", "update_kwargs", and
-         "add_fixed_lens" with the same call signatures as the methods in this class
-        """
+    def __init__(self, lensModel, solver_type="PROFILE"):
         self._solver_type = solver_type  # supported:
-        if not lensModel.lens_model_list[0] in _SUPPORTED_LENS_MODEL_SOLVER:
+        if not lensModel.lens_model_list[0] in [
+            "SPEP",
+            "SPEMD",
+            "PEMD",
+            "SIE",
+            "NIE",
+            "NFW_ELLIPSE_POTENTIAL",
+            "NFW_ELLIPSE_CSE",
+            "SHAPELETS_CART",
+            "CNFW_ELLIPSE_POTENTIAL",
+            "EPL",
+            "EPL_BOXYDISKY",
+            "EPL_BOXYDISKY_ELL",
+            "EPL_MULTIPOLE_M3M4",
+            "EPL_MULTIPOLE_M1M3M4",
+            "EPL_MULTIPOLE_M3M4_ELL",
+            "EPL_MULTIPOLE_M1M3M4_ELL",
+            "BPL",
+        ]:
             raise ValueError(
-                "first lens model must be supported by the solver: %s."
-                "Your choice was %s"
-                % (_SUPPORTED_LENS_MODEL_SOLVER, lensModel.lens_model_list[0])
+                "first lens model must be supported by the solver: 'SPEP', 'SPEMD', 'PEMD',"
+                " 'SIE', 'NIE', 'EPL', 'EPL_BOXYDISKY', 'EPL_BOXYDISKY_ELL', 'EPL_MULTIPOLE_M3M4', "
+                "'EPL_MULTIPOLE_M3M4_ELL', 'NFW_ELLIPSE_POTENTIAL', 'NFW_ELLIPSE_CSE', "
+                "'SHAPELETS_CART', 'CNFW_ELLIPSE_POTENTIAL', 'BPL'."
+                "Your choice was %s" % lensModel.lens_model_list[0]
             )
-        if solver_type not in ["PROFILE", "PROFILE_SHEAR", "CUSTOM"]:
+        if solver_type not in ["PROFILE", "PROFILE_SHEAR"]:
             raise ValueError(
-                "solver_type %s not supported! Choose from 'PROFILE', 'PROFILE_SHEAR', 'CUSTOM'"
+                "solver_type %s not supported! Choose from 'PROFILE', 'PROFILE_SHEAR'"
                 % solver_type
             )
         if solver_type in ["PROFILE_SHEAR"]:
@@ -63,20 +55,9 @@ class Solver4Point(object):
                     "second lens model must be SHEAR_GAMMA_PSI or SHEAR to enable solver type %s!"
                     % solver_type
                 )
-        if solver_type in ["CUSTOM"]:
-            if parameter_module is None:
-                raise ValueError(
-                    "parameter_module must be specified if solver_type is CUSTOM"
-                )
-            self._solver_type = "CUSTOM"
-        self._parameter_module = parameter_module
         self.lensModel = lensModel
         self._lens_mode_list = lensModel.lens_model_list
-        if (
-            lensModel.multi_plane is True
-            or "FOREGROUND_SHEAR" in self._lens_mode_list
-            or self._solver_type == "CUSTOM"
-        ):
+        if lensModel.multi_plane is True or "FOREGROUND_SHEAR" in self._lens_mode_list:
             self._decoupling = False
         else:
             self._decoupling = True
@@ -166,8 +147,6 @@ class Solver4Point(object):
         :param kwargs_list: list of lens model kwargs
         :return: updated kwargs_list
         """
-        if self._solver_type == "CUSTOM":
-            return self._parameter_module.update_kwargs(x, kwargs_list)
         if self._solver_type == "PROFILE_SHEAR_GAMMA_PSI":
             phi_G = x[5]  # % (2 * np.pi)
             kwargs_list[1]["psi_ext"] = phi_G
@@ -179,7 +158,6 @@ class Solver4Point(object):
             gamma1, gamma2 = param_util.shear_polar2cartesian(phi_G, gamma_ext)
             kwargs_list[1]["gamma1"] = gamma1
             kwargs_list[1]["gamma2"] = gamma2
-
         lens_model = self._lens_mode_list[0]
         if lens_model in [
             "SPEP",
@@ -234,13 +212,10 @@ class Solver4Point(object):
         return kwargs_list
 
     def _extract_array(self, kwargs_list):
-        """Inverse of _update_kwargs.
+        """Inverse of _update_kwargs :param kwargs_list:
 
-        :param kwargs_list:
         :return:
         """
-        if self._solver_type == "CUSTOM":
-            return self._parameter_module.extract_array(kwargs_list)
         if self._solver_type == "PROFILE_SHEAR_GAMMA_PSI":
             phi_ext = kwargs_list[1]["psi_ext"]  # % (np.pi)
             # e1 = kwargs_list[1]['e1']
@@ -269,7 +244,6 @@ class Solver4Point(object):
             "EPL_MULTIPOLE_M3M4_ELL",
             "EPL_MULTIPOLE_M1M3M4",
             "EPL_MULTIPOLE_M1M3M4_ELL",
-            "EPL_MULTIPOLE_M1M3M4_ELL_SHEAR",
         ]:
             e1 = kwargs_list[0]["e1"]
             e2 = kwargs_list[0]["e2"]
@@ -277,6 +251,7 @@ class Solver4Point(object):
             center_y = kwargs_list[0]["center_y"]
             theta_E = kwargs_list[0]["theta_E"]
             x = [theta_E, e1, e2, center_x, center_y, phi_ext]
+
         elif lens_model in [
             "NFW_ELLIPSE_POTENTIAL",
             "CNFW_ELLIPSE_POTENTIAL",
@@ -299,7 +274,7 @@ class Solver4Point(object):
             e2 = kwargs_list[0]["e2"]
             center_x = kwargs_list[0]["center_x"]
             center_y = kwargs_list[0]["center_y"]
-            b = kwargs_list[0]["b"]
+            alpha_Rs = kwargs_list[0]["b"]
             x = [b, e1, e2, center_x, center_y, phi_ext]
         else:
             raise ValueError(
@@ -308,17 +283,13 @@ class Solver4Point(object):
         return x
 
     def add_fixed_lens(self, kwargs_fixed_lens_list, kwargs_lens_init):
-        """Updates kwargs_fixed_lens_list with the values of kwargs_lens_init for the
-        parameters that are getting solved for.
+        """
 
         :param kwargs_fixed_lens_list:
         :param kwargs_lens_init:
         :return:
         """
-        if self._solver_type == "CUSTOM":
-            return self._parameter_module.add_fixed_lens(
-                kwargs_fixed_lens_list, kwargs_lens_init
-            )
+
         lens_model = self.lensModel.lens_model_list[0]
         kwargs_fixed = kwargs_fixed_lens_list[0]
         kwargs_lens = kwargs_lens_init[0]

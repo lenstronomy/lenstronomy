@@ -213,9 +213,9 @@ class ImageModel(object):
         :param kwargs_special: list of special keyword arguments
         :param unconvolved: if True: returns the unconvolved light distribution (prefect
             seeing)
-        :param apply_primary_beam: if True: returns the light distribution affected by the 
-            interferometry primary beam. This only applies when the class instance has a primary beam
-            (for interferometric image fitting).
+        :param apply_primary_beam: if True: returns the light distribution affected by
+            the interferometry primary beam. This only applies when the class instance
+            has a primary beam (for interferometric image fitting).
         :param de_lensed: if True: returns the un-lensed source surface brightness
             profile, otherwise the lensed.
         :param k: integer, if set, will only return the model of the specific index
@@ -267,9 +267,9 @@ class ImageModel(object):
         :param kwargs_special: list of special keyword arguments
         :param unconvolved: if True: returns the unconvolved light distribution (prefect
             seeing)
-        :param apply_primary_beam: if True: returns the light distribution affected by the 
-            interferometry primary beam. This only applies when the class instance has a primary beam
-            (for interferometric image fitting).
+        :param apply_primary_beam: if True: returns the light distribution affected by
+            the interferometry primary beam. This only applies when the class instance
+            has a primary beam (for interferometric image fitting).
         :param de_lensed: if True: returns the un-lensed source surface brightness
             profile, otherwise the lensed.
         :param k: integer, if set, will only return the model of the specific index
@@ -308,9 +308,9 @@ class ImageModel(object):
             of different lens profiles
         :param kwargs_extinction: list of keyword arguments of extinction model
         :param kwargs_special: list of special keyword arguments
-        :param apply_primary_beam: if True: returns the light distribution affected by the 
-            interferometry primary beam. This only applies when the class instance has a primary beam
-            (for interferometric image fitting).
+        :param apply_primary_beam: if True: returns the light distribution affected by
+            the interferometry primary beam. This only applies when the class instance
+            has a primary beam (for interferometric image fitting).
         :param de_lensed: if True: returns the un-lensed source surface brightness
             profile, otherwise the lensed.
         :param k: integer, if set, will only return the model of the specific index
@@ -396,7 +396,7 @@ class ImageModel(object):
         return source_light_final * self._flux_scaling
 
     def lens_surface_brightness(
-            self, kwargs_lens_light, unconvolved=False, apply_primary_beam=True, k=None
+        self, kwargs_lens_light, unconvolved=False, apply_primary_beam=True, k=None
     ):
         """Computes the lens surface brightness distribution.
 
@@ -404,9 +404,9 @@ class ImageModel(object):
             lens light surface brightness profiles
         :param unconvolved: if True, returns unconvolved surface brightness (perfect
             seeing), otherwise convolved with PSF kernel
-        :param apply_primary_beam: if True: returns the light distribution affected by the 
-            interferometry primary beam. This only applies when the class instance has a primary beam
-            (for interferometric image fitting).
+        :param apply_primary_beam: if True: returns the light distribution affected by
+            the interferometry primary beam. This only applies when the class instance
+            has a primary beam (for interferometric image fitting).
         :return: 2d array of surface brightness pixels
         """
         if self._pixelbased_bool is True:
@@ -417,8 +417,10 @@ class ImageModel(object):
             return self._lens_surface_brightness_pixelbased(kwargs_lens_light, k=k)
         else:
             return self._lens_surface_brightness_analytical(
-                kwargs_lens_light, unconvolved=unconvolved, 
-                apply_primary_beam=apply_primary_beam, k=k
+                kwargs_lens_light,
+                unconvolved=unconvolved,
+                apply_primary_beam=apply_primary_beam,
+                k=k,
             )
 
     def _lens_surface_brightness_analytical(
@@ -430,9 +432,9 @@ class ImageModel(object):
             lens light surface brightness profiles
         :param unconvolved: if True, returns unconvolved surface brightness (perfect
             seeing), otherwise convolved with PSF kernel
-        :param apply_primary_beam: if True: returns the light distribution affected by the 
-            interferometry primary beam. This only applies when the class instance has a primary beam
-            (for interferometric image fitting).
+        :param apply_primary_beam: if True: returns the light distribution affected by
+            the interferometry primary beam. This only applies when the class instance
+            has a primary beam (for interferometric image fitting).
         :return: 2d array of surface brightness pixels
         """
         ra_grid, dec_grid = self.ImageNumerics.coordinates_evaluate
@@ -529,9 +531,9 @@ class ImageModel(object):
         :param kwargs_special: list of special keyword arguments
         :param unconvolved: if True: returns the unconvolved light distribution (prefect
             seeing)
-        :param apply_primary_beam: if True: returns the light distribution affected by the 
-            interferometry primary beam. This only applies when the class instance has a primary beam
-            (for interferometric image fitting).
+        :param apply_primary_beam: if True: returns the light distribution affected by
+            the interferometry primary beam. This only applies when the class instance
+            has a primary beam (for interferometric image fitting).
         :param source_add: if True, compute source, otherwise without
         :param lens_light_add: if True, compute lens light, otherwise without
         :param point_source_add: if True, add point sources, otherwise without
@@ -550,9 +552,9 @@ class ImageModel(object):
             )
         if lens_light_add is True:
             model += ImageModel.lens_surface_brightness(
-                self, 
-                kwargs_lens_light, 
-                unconvolved=unconvolved, 
+                self,
+                kwargs_lens_light,
+                unconvolved=unconvolved,
                 apply_primary_beam=apply_primary_beam,
             )
         if point_source_add is True:

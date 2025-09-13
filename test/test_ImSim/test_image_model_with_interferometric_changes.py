@@ -138,3 +138,50 @@ def test_ImageModel_with_primary_beam_and_interferometry_psf():
         image_sim_no_pb_psf * primary_beam, kernel_cut, mode="same"
     )
     npt.assert_almost_equal(image_sim_with_pb_psf, image_sim_with_pb_psf2, decimal=8)
+
+    # test the "apply_primary_beam" parameter
+    imageModel_with_psf_without_pb = ImageModel(
+        data_class_no_pb,
+        psf_class,
+        lens_model_class,
+        source_model_class,
+        lens_light_model_class,
+        kwargs_numerics=kwargs_numerics,
+    )
+
+    ## test "apply_primary_beam" of source_surface_brightness function
+    source_without_pb_image1 = imageModel_with_psf_without_pb.source_surface_brightness(
+        kwargs_source, de_lensed=True, unconvolved=True
+    )
+    source_without_pb_image2 = imageModel_with_pb_psf.source_surface_brightness(
+        kwargs_source, de_lensed=True, unconvolved=True, apply_primary_beam=False
+    )
+    npt.assert_almost_equal(
+        source_without_pb_image1, source_without_pb_image2, decimal=8
+    )
+
+    ## test "apply_primary_beam" of lens_surface_brightness function
+    lens_light_without_pb_image1 = (
+        imageModel_with_psf_without_pb.lens_surface_brightness(
+            kwargs_lens_light, unconvolved=True
+        )
+    )
+    lens_light_without_pb_image2 = imageModel_with_pb_psf.lens_surface_brightness(
+        kwargs_lens_light, unconvolved=True, apply_primary_beam=False
+    )
+    npt.assert_almost_equal(
+        lens_light_without_pb_image1, lens_light_without_pb_image2, decimal=8
+    )
+
+    ## test "apply_primary_beam" of image function
+    image_without_pb_image1 = imageModel_with_psf_without_pb.image(
+        kwargs_lens, kwargs_source, kwargs_lens_light, unconvolved=True
+    )
+    image_without_pb_image2 = imageModel_with_pb_psf.image(
+        kwargs_lens,
+        kwargs_source,
+        kwargs_lens_light,
+        unconvolved=True,
+        apply_primary_beam=False,
+    )
+    npt.assert_almost_equal(image_without_pb_image1, image_without_pb_image2, decimal=8)

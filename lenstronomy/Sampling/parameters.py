@@ -38,7 +38,7 @@ class Param(object):
     joint position parameter between source light model and point source
 
     'joint_lens_light_with_point_source': list [[i_point_source, k_lens_light], [...], ...],
-    joint position parameter between lens model and lens light model
+    joint position parameter between lens light model and point source
 
     'joint_extinction_with_lens_light': list [[i_lens_light, k_extinction, ['param_name1', 'param_name2', ...]], [...], ...],
     joint parameters between the lens surface brightness and the optical depth models

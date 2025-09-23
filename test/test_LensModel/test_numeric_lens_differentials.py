@@ -1,6 +1,5 @@
 __author__ = "sibirrer"
 
-import pytest
 import numpy as np
 import numpy.testing as npt
 
@@ -861,7 +860,3 @@ class TestNumericsProfile(object):
             "center_y": 0.0,
         }
         self.assert_differentials(lens_model, kwargs, diff=2e-3, decimal=1)
-
-
-if __name__ == "__main__":
-    pytest.main("-k TestLensModel")

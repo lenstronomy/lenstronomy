@@ -79,7 +79,7 @@ class NautilusSampler(NestedSampler):
         kwargs = {key: kwargs[key] for key in kwargs.keys() & keys}
         self._sampler.run(**kwargs)
         points, log_w, log_l = self._sampler.posterior()
-        log_z = self._sampler.evidence()
+        log_z = self._sampler.log_z
 
         return points, log_w, log_l, log_z
 

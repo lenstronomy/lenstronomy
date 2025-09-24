@@ -12,7 +12,7 @@ class TestSynthesis(object):
     """Tests the synthesis model's ability to approximate several profiles."""
 
     def setup_method(self):
-        self.lin_fit_hyperparams = {"num_r_evals": 100}
+        self.lin_fit_hyperparams = {"num_r_evals": 50}
         self.s_list = np.logspace(-4.0, 3.0, 30)
         self.x_test = np.linspace(0.01, 2, 10)
         self.y_test = np.zeros_like(self.x_test)

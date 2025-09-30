@@ -7,6 +7,7 @@ from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.ImSim.differential_extinction import DifferentialExtinction
 from lenstronomy.Util import util
+from lenstronomy.Util import primary_beam_util
 
 import numpy as np
 
@@ -337,7 +338,7 @@ class ImageModel(object):
                 kwargs_special=kwargs_special,
             )
 
-        # multiply with primary beam before convolution
+        # multiply with primary beam before convolution, if applicable.
         if apply_primary_beam and self._pb is not None:
             source_light *= self._pb_1d
         return source_light * self._flux_scaling
@@ -442,7 +443,7 @@ class ImageModel(object):
             ra_grid, dec_grid, kwargs_lens_light, k=k
         )
 
-        # multiply with primary beam before convolution
+        # multiply with primary beam before convolution, if applicable.
         if apply_primary_beam and self._pb is not None:
             lens_light *= self._pb_1d
 
@@ -473,6 +474,7 @@ class ImageModel(object):
         kwargs_lens=None,
         kwargs_special=None,
         unconvolved=False,
+        apply_primary_beam=True,
         k=None,
     ):
         """Computes the point source positions and paints PSF convolutions on them.
@@ -481,6 +483,9 @@ class ImageModel(object):
         :param kwargs_lens: list of dicts containing lens model keyword arguments
         :param kwargs_special: list of dicts containing "special" keywords
         :param unconvolved: bool, if False, applies convolution
+        :param apply_primary_beam: if True: returns the point source light affected by
+            the interferometry primary beam. This only applies when the class instance
+            has a primary beam (for interferometric images).
         :param k: int or tuple, only evaluate the k-th point source model
         :return: image of point source
         """
@@ -490,14 +495,15 @@ class ImageModel(object):
         ra_pos, dec_pos, amp = self.PointSource.point_source_list(
             kwargs_ps, kwargs_lens=kwargs_lens, k=k
         )
-        # raise warnings when primary beam is attempted to be applied to point sources.
-        if len(ra_pos) != 0 and self._pb is not None:
-            raise Warning(
-                "Antenna primary beam does not apply to point sources in ImageModel!"
-            )
         ra_pos, dec_pos = self._displace_astrometry(
             ra_pos, dec_pos, kwargs_special=kwargs_special
         )
+        
+        # Scale point source amplitude (amp) by the primary beam response, if applicable.
+        if apply_primary_beam and self._pb is not None:
+            pb_values_at_ps = self._point_source_primary_beam_amp_normalization(ra_pos, dec_pos)
+            amp = amp * pb_values_at_ps
+            
         point_source_image += self.ImageNumerics.point_source_rendering(
             ra_pos, dec_pos, amp
         )
@@ -564,6 +570,7 @@ class ImageModel(object):
                 kwargs_lens,
                 kwargs_special=kwargs_special,
                 unconvolved=unconvolved,
+                apply_primary_beam=apply_primary_beam,
             )
         return model
 
@@ -831,3 +838,17 @@ class ImageModel(object):
             pixel_grid=self.Data, psf=self.PSF, **kwargs_numerics_source
         )
         return source_numerics_class
+    
+    def _point_source_primary_beam_amp_normalization(self, ra_pos, dec_pos):
+        """
+        Interpolate primary beam response values at the point source positions,
+        (only for interferometric images).
+        These values are used to scale the observed point source amplitudes.
+        
+        :param ra_pos: RA coordinates of point source(s).
+        :param dec_pos: DEC coordinates of point source(s).
+        :return: Array of primary beam response values at the given (RA, DEC).
+        """
+        x_pos, y_pos = self.Data.map_coord2pix(ra_pos, dec_pos)
+        pb_values = primary_beam_util.primary_beam_value_at_coords(x_pos, y_pos, self._pb)
+        return pb_values

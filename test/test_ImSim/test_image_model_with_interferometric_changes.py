@@ -185,7 +185,7 @@ def test_lens_light_and_source_light_simulation_with_interferometric_PSF_and_pri
     )
     npt.assert_almost_equal(image_without_pb_image1, image_without_pb_image2, decimal=8)
 
-    
+
 def test_point_source_simulation_with_interferometric_PSF_and_primary_beam():
     sigma_bkg = 0.05
     exp_time = np.inf
@@ -212,18 +212,16 @@ def test_point_source_simulation_with_interferometric_PSF_and_primary_beam():
                 psf_test[i, j] = np.sin(r * 0.5) / (r * 0.5)
 
     # Define data class with the primary beam
-    kwargs_data = sim_util.data_configure_simple(
-        numPix, deltaPix, exp_time, sigma_bkg
-    )
-    kwargs_data['ra_at_xy_0'] = -(50)*deltaPix
-    kwargs_data['dec_at_xy_0'] = -(50)*deltaPix
-    kwargs_data['antenna_primary_beam'] = primary_beam
+    kwargs_data = sim_util.data_configure_simple(numPix, deltaPix, exp_time, sigma_bkg)
+    kwargs_data["ra_at_xy_0"] = -(50) * deltaPix
+    kwargs_data["dec_at_xy_0"] = -(50) * deltaPix
+    kwargs_data["antenna_primary_beam"] = primary_beam
     data_class = ImageData(**kwargs_data)
-    
+
     # Define two PSF classes
-    kwargs_psf_none = {'psf_type': 'NONE', 'pixel_size': deltaPix}
+    kwargs_psf_none = {"psf_type": "NONE", "pixel_size": deltaPix}
     psf_class_none = PSF(**kwargs_psf_none)
-    
+
     kernel_cut = kernel_util.cut_psf(psf_test, 201, normalisation=False)
     kwargs_psf = {
         "psf_type": "PIXEL",
@@ -232,75 +230,67 @@ def test_point_source_simulation_with_interferometric_PSF_and_primary_beam():
         "kernel_point_source_normalisation": False,
     }
     psf_class = PSF(**kwargs_psf)
-    
+
     # define lens model
     kwargs_lens = [
         {
-        'theta_E': 1.7, 
-        'gamma': 2.0, 
-        'e1': -0.02, 
-        'e2': -0.01, 
-        'center_x': -0.31, 
-        'center_y': -0.26
+            "theta_E": 1.7,
+            "gamma": 2.0,
+            "e1": -0.02,
+            "e2": -0.01,
+            "center_x": -0.31,
+            "center_y": -0.26,
         }
     ]
-    lens_model_list = ['EPL']
+    lens_model_list = ["EPL"]
     lens_model_class = LensModel(lens_model_list=lens_model_list)
-    
+
     # Define the Point Source class
-    point_source_model_list = ['UNLENSED', 'LENSED_POSITION', 'SOURCE_POSITION']
+    point_source_model_list = ["UNLENSED", "LENSED_POSITION", "SOURCE_POSITION"]
     pointSource = PointSource(
-        point_source_type_list=point_source_model_list, 
-        lens_model=lens_model_class, 
-        fixed_magnification_list=[True, True, True]
+        point_source_type_list=point_source_model_list,
+        lens_model=lens_model_class,
+        fixed_magnification_list=[True, True, True],
     )
     kwargs_ps = [
-        {'ra_image': [-1.7, -0.4 , -1.57], 
-         'dec_image': [0.21, 0.99 , 2.21], 
-         'point_amp': [100, 100, 100]},
-        {'ra_image': [1.49, 3.85, 0.81], 
-         'dec_image': [2.51,  1.67, -3.78], 
-         'source_amp': [100, 100, 100]},
-        {'ra_source': 3.23, 
-         'dec_source': -0.40, 
-         'source_amp': 100}
+        {
+            "ra_image": [-1.7, -0.4, -1.57],
+            "dec_image": [0.21, 0.99, 2.21],
+            "point_amp": [100, 100, 100],
+        },
+        {
+            "ra_image": [1.49, 3.85, 0.81],
+            "dec_image": [2.51, 1.67, -3.78],
+            "source_amp": [100, 100, 100],
+        },
+        {"ra_source": 3.23, "dec_source": -0.40, "source_amp": 100},
     ]
-    
+
     # Define the image model class
     imageModel_no_psf = ImageModel(
-        data_class, 
-        psf_class_none, 
-        lens_model_class = lens_model_class,
-        point_source_class = pointSource
+        data_class,
+        psf_class_none,
+        lens_model_class=lens_model_class,
+        point_source_class=pointSource,
     )
 
     imageModel_with_psf = ImageModel(
         data_class,
-        psf_class, 
-        lens_model_class = lens_model_class,
-        point_source_class = pointSource
+        psf_class,
+        lens_model_class=lens_model_class,
+        point_source_class=pointSource,
     )
-    
+
     # Generate images with different psf, pb conditions
     image_uncon_no_pb = imageModel_no_psf.image(
-        kwargs_lens=kwargs_lens, 
-        kwargs_ps = kwargs_ps, 
-        apply_primary_beam = False
+        kwargs_lens=kwargs_lens, kwargs_ps=kwargs_ps, apply_primary_beam=False
     )
-    image_uncon = imageModel_no_psf.image(
-        kwargs_lens=kwargs_lens, 
-        kwargs_ps = kwargs_ps
-    )
+    image_uncon = imageModel_no_psf.image(kwargs_lens=kwargs_lens, kwargs_ps=kwargs_ps)
     image_no_pb = imageModel_with_psf.image(
-        kwargs_lens=kwargs_lens, 
-        kwargs_ps = kwargs_ps, 
-        apply_primary_beam = False
+        kwargs_lens=kwargs_lens, kwargs_ps=kwargs_ps, apply_primary_beam=False
     )
-    image = imageModel_with_psf.image(
-        kwargs_lens=kwargs_lens, 
-        kwargs_ps = kwargs_ps
-    )
-    
+    image = imageModel_with_psf.image(kwargs_lens=kwargs_lens, kwargs_ps=kwargs_ps)
+
     # test the values by testing the summations
     npt.assert_almost_equal(np.sum(image_uncon_no_pb), 998.0643356369997, decimal=8)
     npt.assert_almost_equal(np.sum(image_uncon), 834.2233081496132, decimal=8)

@@ -498,12 +498,14 @@ class ImageModel(object):
         ra_pos, dec_pos = self._displace_astrometry(
             ra_pos, dec_pos, kwargs_special=kwargs_special
         )
-        
+
         # Scale point source amplitude (amp) by the primary beam response, if applicable.
         if apply_primary_beam and self._pb is not None:
-            pb_values_at_ps = self._point_source_primary_beam_amp_normalization(ra_pos, dec_pos)
+            pb_values_at_ps = self._point_source_primary_beam_amp_normalization(
+                ra_pos, dec_pos
+            )
             amp = amp * pb_values_at_ps
-            
+
         point_source_image += self.ImageNumerics.point_source_rendering(
             ra_pos, dec_pos, amp
         )
@@ -838,17 +840,18 @@ class ImageModel(object):
             pixel_grid=self.Data, psf=self.PSF, **kwargs_numerics_source
         )
         return source_numerics_class
-    
+
     def _point_source_primary_beam_amp_normalization(self, ra_pos, dec_pos):
-        """
-        Interpolate primary beam response values at the point source positions,
-        (only for interferometric images).
-        These values are used to scale the observed point source amplitudes.
-        
+        """Interpolate primary beam response values at the point source positions, (only
+        for interferometric images). These values are used to scale the observed point
+        source amplitudes.
+
         :param ra_pos: RA coordinates of point source(s).
         :param dec_pos: DEC coordinates of point source(s).
         :return: Array of primary beam response values at the given (RA, DEC).
         """
         x_pos, y_pos = self.Data.map_coord2pix(ra_pos, dec_pos)
-        pb_values = primary_beam_util.primary_beam_value_at_coords(x_pos, y_pos, self._pb)
+        pb_values = primary_beam_util.primary_beam_value_at_coords(
+            x_pos, y_pos, self._pb
+        )
         return pb_values

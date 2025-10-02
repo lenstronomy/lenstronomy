@@ -96,7 +96,9 @@ class ImageLinearFit(ImageModel):
             purpose of the covariance matrix. This has no impact in case of pixel-based
             modelling.
         :return: 2d array of surface brightness pixels of the optimal solution of the
-            linear parameters to match the data
+            linear parameters to match the data. For the "interferometry_natwt"
+            likelihood, the output model is a list [unconvolved_model, convolved_model],
+            where the unconvolved_model is the sky model affected by the primary beam.
         """
         if self._pixelbased_bool is True:
             model, model_error, cov_param, param = self.image_pixelbased_solve(
@@ -586,13 +588,16 @@ class ImageLinearFit(ImageModel):
 
         :param kwargs_lens: list of dicts containing lens model keyword arguments
         :param kwargs_source: list of dicts containing source model keyword arguments
-        :param kwargs_lens_light: list of dicts containing lens light model keyword arguments
+        :param kwargs_lens_light: list of dicts containing lens light model keyword
+            arguments
         :param kwargs_ps: list of dicts containing point source keyword arguments
         :param kwargs_extinction: list of keyword arguments for extinction model
         :param kwargs_special: list of special keyword arguments
-        :return: model, model_error, cov_param, param
-        model and param are the same returns of self._image_linear_solve_interferometry_natwt_solving(A, d) function
-        model_error =0 and cov_param = None for the interferometric method.
+        :return: model, model_error, cov_param, param model is a list
+            [unconvolved_model, convolved_model], where the unconvolved_model is the sky
+            model affected by the primary beam. param is the solved linear parameters
+            (the amplitudes). model_error =0 and cov_param = None for the
+            interferometric method.
         """
         A = ImageLinearFit.linear_response_matrix(
             self,
@@ -615,7 +620,7 @@ class ImageLinearFit(ImageModel):
 
     def _image_linear_solve_interferometry_natwt_solving(self, A, d):
         """Linearly solve the amplitude of each light profile response to the natural
-        weighting interferometry images, based on (placeholder for Nan Zhang's paper).
+        weighting interferometry images, based on arxiv: 2508.08393.
 
         Theories:
             Suppose there are a set of light responses :math:`\\{x_i\\}`, we want to solve the set of amplitudes :math:`\\{\\alpha_i\\}`,
@@ -674,15 +679,15 @@ class ImageLinearFit(ImageModel):
 
         param_amps = np.linalg.lstsq(M, b, rcond=None)[0]
 
-        clean_temp = np.zeros((num_of_image_pixel))
+        unconvolved_temp = np.zeros((num_of_image_pixel))
         dirty_temp = np.zeros((num_of_image_pixel))
         for i in range(num_of_light):
-            clean_temp += param_amps[i] * A[i]
+            unconvolved_temp += param_amps[i] * A[i]
             dirty_temp += param_amps[i] * A_convolved[i]
 
-        clean_model = util.array2image(clean_temp)
+        unconvolved_model = util.array2image(unconvolved_temp)
         dirty_model = util.array2image(dirty_temp)
 
-        model = [clean_model, dirty_model]
+        model = [unconvolved_model, dirty_model]
 
         return model, param_amps

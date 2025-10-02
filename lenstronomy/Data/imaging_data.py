@@ -177,7 +177,7 @@ class ImageData(PixelGrid, ImageNoise):
 
     def log_likelihood_interferometry(self, model):
         """log_likelihood function for natural weighting interferometric images, based
-        on (placeholder for Nan Zhang's paper).
+        on arxiv: 2508.08393.
 
         For the interferometry case, the model should be in the form [array1, array2],
         where array1 and array2 are unconvolved and convolved model images respectively.

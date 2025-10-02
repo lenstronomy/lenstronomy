@@ -96,9 +96,9 @@ class ImageLinearFit(ImageModel):
             purpose of the covariance matrix. This has no impact in case of pixel-based
             modelling.
         :return: 2d array of surface brightness pixels of the optimal solution of the
-            linear parameters to match the data. For the "interferometry_natwt" likelihood,
-            the output model is a list [unconvolved_model, convolved_model], where the
-            unconvolved_model is the sky model affected by the primary beam.
+            linear parameters to match the data. For the "interferometry_natwt"
+            likelihood, the output model is a list [unconvolved_model, convolved_model],
+            where the unconvolved_model is the sky model affected by the primary beam.
         """
         if self._pixelbased_bool is True:
             model, model_error, cov_param, param = self.image_pixelbased_solve(
@@ -588,15 +588,16 @@ class ImageLinearFit(ImageModel):
 
         :param kwargs_lens: list of dicts containing lens model keyword arguments
         :param kwargs_source: list of dicts containing source model keyword arguments
-        :param kwargs_lens_light: list of dicts containing lens light model keyword arguments
+        :param kwargs_lens_light: list of dicts containing lens light model keyword
+            arguments
         :param kwargs_ps: list of dicts containing point source keyword arguments
         :param kwargs_extinction: list of keyword arguments for extinction model
         :param kwargs_special: list of special keyword arguments
-        :return: model, model_error, cov_param, param
-        model is a list [unconvolved_model, convolved_model], where the
-              unconvolved_model is the sky model affected by the primary beam.
-        param is the solved linear parameters (the amplitudes).
-        model_error =0 and cov_param = None for the interferometric method.
+        :return: model, model_error, cov_param, param model is a list
+            [unconvolved_model, convolved_model], where the unconvolved_model is the sky
+            model affected by the primary beam. param is the solved linear parameters
+            (the amplitudes). model_error =0 and cov_param = None for the
+            interferometric method.
         """
         A = ImageLinearFit.linear_response_matrix(
             self,

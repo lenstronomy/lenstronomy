@@ -46,14 +46,14 @@ def get_param_WLS(A, C_D_inv, d, inv_bool=True):
 def get_param_WLS_interferometry(M, b, inv_bool=True):
     """Returns the linear parameters and its covariance matrix.
 
-    :param M: the interferometric equivalent of the `M` matrix in the 
-        `get_param_WLS` function. inverse covariance matrix of the linear 
+    :param M: the interferometric equivalent of the `M` matrix in the
+        `get_param_WLS` function. inverse covariance matrix of the linear
         parameters, Ns x Ns positive-semi-definite and symmetric (Ns = # parameters)
-    :param b: the interferometric equivalent of the `R` matrix in the 
+    :param b: the interferometric equivalent of the `R` matrix in the
         `get_param_WLS` function, 1-d Ns
-    :param inv_bool: boolean, whether returning also the covariance matrix of the 
+    :param inv_bool: boolean, whether returning also the covariance matrix of the
         linear parameters or just solve the linear system
-    :return: param_amps: 1-d array of linear parameter values, 
+    :return: param_amps: 1-d array of linear parameter values,
         M_inv the covariance matrix of linear parameters
     """
     if inv_bool:

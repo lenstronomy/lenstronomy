@@ -96,9 +96,9 @@ class ImageLinearFit(ImageModel):
             purpose of the covariance matrix. This has no impact in case of pixel-based
             modelling.
         :return: 2d array of surface brightness pixels of the optimal solution of the
-            linear parameters to match the data. For the "interferometry_natwt" likelihood,
-            the output model is a list [unconvolved_model, convolved_model], where the
-            unconvolved_model is the sky model affected by the primary beam.
+            linear parameters to match the data. For the "interferometry_natwt"
+            likelihood, the output model is a list [unconvolved_model, convolved_model],
+            where the unconvolved_model is the sky model affected by the primary beam.
         """
         if self._pixelbased_bool is True:
             model, model_error, cov_param, param = self.image_pixelbased_solve(
@@ -584,25 +584,23 @@ class ImageLinearFit(ImageModel):
         inv_bool=False,
     ):
         """'interferometry_natwt' method does NOT support model_error. The
-        interferometry linear solver does the linear solving to get the optimal
-        linear amplitudes and apply the marginalized amplitudes to make the model
-        images.
+        interferometry linear solver does the linear solving to get the optimal linear
+        amplitudes and apply the marginalized amplitudes to make the model images.
 
         :param kwargs_lens: list of dicts containing lens model keyword arguments
         :param kwargs_source: list of dicts containing source model keyword arguments
-        :param kwargs_lens_light: list of dicts containing lens light model keyword arguments
+        :param kwargs_lens_light: list of dicts containing lens light model keyword
+            arguments
         :param kwargs_ps: list of dicts containing point source keyword arguments
         :param kwargs_extinction: list of keyword arguments for extinction model
         :param kwargs_special: list of special keyword arguments
         :param inv_bool: if True, cov_param would give the covariance matrix of the
             linear parameters (the amplitudes).
-        
-        :return: model, model_error, cov_param, param
-        model is a list [unconvolved_model, convolved_model], where the
-              unconvolved_model is the sky model affected by the primary beam.
-        cov_param is the covariance matrix of linear parameters.
-        param is the solved linear parameters (the amplitudes).
-        model_error =0 for the interferometric method.
+        :return: model, model_error, cov_param, param model is a list
+            [unconvolved_model, convolved_model], where the unconvolved_model is the sky
+            model affected by the primary beam. cov_param is the covariance matrix of
+            linear parameters. param is the solved linear parameters (the amplitudes).
+            model_error =0 for the interferometric method.
         """
         A = ImageLinearFit.linear_response_matrix(
             self,
@@ -625,7 +623,9 @@ class ImageLinearFit(ImageModel):
         )
         return model, model_error, cov_param, param
 
-    def _image_linear_solve_interferometry_natwt_solving(self, A, d, data_noise_rms, inv_bool=False):
+    def _image_linear_solve_interferometry_natwt_solving(
+        self, A, d, data_noise_rms, inv_bool=False
+    ):
         """Linearly solve the amplitude of each light profile response to the natural
         weighting interferometry images, based on arxiv: 2508.08393.
 
@@ -661,7 +661,7 @@ class ImageLinearFit(ImageModel):
         :param data_noise_rms: noise rms of the data image
         :param inv_bool: if True, cov_param would give the covariance matrix of the
             linear parameters (amplitudes).
-        
+
         :return: [array1, array2], [M_inv_array], [amp_array]
         [array1, array2] is unconvolved and convolved model images with solved amplitudes,
         [M_inv_array] is the covariance matrix of all linear parameters,
@@ -688,7 +688,7 @@ class ImageLinearFit(ImageModel):
         b = np.zeros((num_of_light))
         for i in range(num_of_light):
             b[i] = np.sum(A[i] * (d))
-            
+
         M /= data_noise_rms**2
         b /= data_noise_rms**2
 

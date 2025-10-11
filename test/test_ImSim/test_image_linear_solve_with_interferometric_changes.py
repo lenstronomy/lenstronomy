@@ -24,7 +24,7 @@ The test should be independent of the specific definitions of the light and lens
 
 
 def test_image_linear_solve_with_primary_beam_and_interferometry_psf():
-    background_rms = 3.
+    background_rms = 3.0
     exp_time = np.inf
     numPix = 80
     deltaPix = 0.05
@@ -158,7 +158,7 @@ def test_image_linear_solve_with_primary_beam_and_interferometry_psf():
     M[1, 1] = np.sum(A1c * A1)
     b[0] = np.sum(A0 * sim_data)
     b[1] = np.sum(A1 * sim_data)
-    
+
     M /= background_rms**2
     b /= background_rms**2
 
@@ -169,7 +169,7 @@ def test_image_linear_solve_with_primary_beam_and_interferometry_psf():
     npt.assert_almost_equal([unconvolved_model, dirty_model], model, decimal=8)
     npt.assert_almost_equal(amps0, amps, decimal=8)
     assert param_cov is None
-    
+
     # test param_cov
     model_1, _, param_cov_1, amps_1 = imageLinearFit.image_linear_solve(
         kwargs_lens, kwargs_source, kwargs_lens_light, inv_bool=True

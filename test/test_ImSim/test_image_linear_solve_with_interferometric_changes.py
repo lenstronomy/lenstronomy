@@ -1,3 +1,5 @@
+__author__ = "nan zhang"
+
 import numpy as np
 import numpy.testing as npt
 import scipy.signal
@@ -22,7 +24,7 @@ The test should be independent of the specific definitions of the light and lens
 
 
 def test_image_linear_solve_with_primary_beam_and_interferometry_psf():
-    background_rms = 0.05
+    background_rms = 3.
     exp_time = np.inf
     numPix = 80
     deltaPix = 0.05
@@ -47,11 +49,6 @@ def test_image_linear_solve_with_primary_beam_and_interferometry_psf():
                 psf_test[i, j] = 1
             else:
                 psf_test[i, j] = np.sin(r * 0.5) / (r * 0.5)
-
-    # note that the simulated noise here is not the interferometric noise. we just use it to test the numerics
-    test_noise = scipy.signal.fftconvolve(
-        np.random.normal(0, 1, (numPix, numPix)), psf_test, mode="same"
-    )
 
     kwargs_data = sim_util.data_configure_simple(
         numPix, deltaPix, exp_time, background_rms
@@ -123,8 +120,12 @@ def test_image_linear_solve_with_primary_beam_and_interferometry_psf():
     )
     image_sim = imageModel.image(kwargs_lens, kwargs_source, kwargs_lens_light)
 
-    # normalize the noise to make it small compared to the model image
-    test_noise *= 1e-2 * (np.max(image_sim) / np.std(test_noise))
+    # note that the simulated noise here is not the interferometric noise. we just use it to test the numerics
+    np.random.seed(42)
+    test_noise = scipy.signal.fftconvolve(
+        np.random.normal(0, 1, (numPix, numPix)), psf_test, mode="same"
+    )
+    test_noise *= background_rms / np.std(test_noise)
     sim_data = image_sim + test_noise
     data_class.update_data(sim_data)
 
@@ -137,7 +138,7 @@ def test_image_linear_solve_with_primary_beam_and_interferometry_psf():
         lens_light_model_class,
         kwargs_numerics=kwargs_numerics,
     )
-    model, _, _, amps = imageLinearFit.image_linear_solve(
+    model, _, param_cov, amps = imageLinearFit.image_linear_solve(
         kwargs_lens, kwargs_source, kwargs_lens_light
     )
 
@@ -157,10 +158,23 @@ def test_image_linear_solve_with_primary_beam_and_interferometry_psf():
     M[1, 1] = np.sum(A1c * A1)
     b[0] = np.sum(A0 * sim_data)
     b[1] = np.sum(A1 * sim_data)
+    
+    M /= background_rms**2
+    b /= background_rms**2
 
     amps0 = np.linalg.lstsq(M, b, rcond=None)[0]
-    clean_model = amps0[0] * A0 + amps0[1] * A1
+    unconvolved_model = amps0[0] * A0 + amps0[1] * A1
     dirty_model = amps0[0] * A0c + amps0[1] * A1c
 
-    npt.assert_almost_equal([clean_model, dirty_model], model, decimal=8)
+    npt.assert_almost_equal([unconvolved_model, dirty_model], model, decimal=8)
     npt.assert_almost_equal(amps0, amps, decimal=8)
+    assert param_cov is None
+    
+    # test param_cov
+    model_1, _, param_cov_1, amps_1 = imageLinearFit.image_linear_solve(
+        kwargs_lens, kwargs_source, kwargs_lens_light, inv_bool=True
+    )
+    param_cov_1_expected = np.linalg.inv(M)
+    npt.assert_almost_equal([unconvolved_model, dirty_model], model_1, decimal=8)
+    npt.assert_almost_equal(amps0, amps_1, decimal=8)
+    npt.assert_almost_equal(param_cov_1_expected, param_cov_1, decimal=8)

@@ -600,6 +600,7 @@ class ImageLinearFit(ImageModel):
         :return: model, model_error, cov_param, param
         model is a list [unconvolved_model, convolved_model], where the
               unconvolved_model is the sky model affected by the primary beam.
+        cov_param is the covariance matrix of linear parameters.
         param is the solved linear parameters (the amplitudes).
         model_error =0 for the interferometric method.
         """

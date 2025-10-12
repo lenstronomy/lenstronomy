@@ -143,6 +143,7 @@ class ImageLinearFit(ImageModel):
                 kwargs_ps,
                 kwargs_extinction,
                 kwargs_special,
+                inv_bool=inv_bool,
             )
         else:
             raise ValueError(
@@ -580,11 +581,11 @@ class ImageLinearFit(ImageModel):
         kwargs_ps=None,
         kwargs_extinction=None,
         kwargs_special=None,
+        inv_bool=False,
     ):
-        """'interferometry_natwt' method does NOT support model_error, cov_param. The
-        interferometry linear solver just does the linear solving to get the optimal
-        linear amplitudes and apply the marginalized amplitudes to make the model
-        images.
+        """'interferometry_natwt' method does NOT support model_error. The
+        interferometry linear solver does the linear solving to get the optimal linear
+        amplitudes and apply the marginalized amplitudes to make the model images.
 
         :param kwargs_lens: list of dicts containing lens model keyword arguments
         :param kwargs_source: list of dicts containing source model keyword arguments
@@ -593,11 +594,13 @@ class ImageLinearFit(ImageModel):
         :param kwargs_ps: list of dicts containing point source keyword arguments
         :param kwargs_extinction: list of keyword arguments for extinction model
         :param kwargs_special: list of special keyword arguments
+        :param inv_bool: if True, cov_param would give the covariance matrix of the
+            linear parameters (the amplitudes).
         :return: model, model_error, cov_param, param model is a list
             [unconvolved_model, convolved_model], where the unconvolved_model is the sky
-            model affected by the primary beam. param is the solved linear parameters
-            (the amplitudes). model_error =0 and cov_param = None for the
-            interferometric method.
+            model affected by the primary beam. cov_param is the covariance matrix of
+            linear parameters. param is the solved linear parameters (the amplitudes).
+            model_error =0 for the interferometric method.
         """
         A = ImageLinearFit.linear_response_matrix(
             self,
@@ -610,15 +613,19 @@ class ImageLinearFit(ImageModel):
             unconvolved=True,
         )
         d = self.data_response
-        model, param = self._image_linear_solve_interferometry_natwt_solving(A, d)
+        image_noise_rms = self.Data.background_rms
+        model, cov_param, param = self._image_linear_solve_interferometry_natwt_solving(
+            A, d, image_noise_rms, inv_bool
+        )
         model_error = 0  # just a place holder
-        cov_param = None  # just a place holder
         _, _, _, _ = ImageLinearFit.update_linear_kwargs(
             self, param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps
         )
         return model, model_error, cov_param, param
 
-    def _image_linear_solve_interferometry_natwt_solving(self, A, d):
+    def _image_linear_solve_interferometry_natwt_solving(
+        self, A, d, data_noise_rms, inv_bool=False
+    ):
         """Linearly solve the amplitude of each light profile response to the natural
         weighting interferometry images, based on arxiv: 2508.08393.
 
@@ -651,9 +658,14 @@ class ImageLinearFit(ImageModel):
 
         :param A: response of unconvolved light profiles, [x_1, x_2, ...]
         :param d: data image, d
-        :return: [array1, array2], [amp_array]
-        where the [array1, array2] are unconvolved and convolved model images with solved amplitudes
-        and [amp_array] are the solved optimal amplitudes.
+        :param data_noise_rms: noise rms of the data image
+        :param inv_bool: if True, cov_param would give the covariance matrix of the
+            linear parameters (amplitudes).
+
+        :return: [array1, array2], [M_inv_array], [amp_array]
+        [array1, array2] is unconvolved and convolved model images with solved amplitudes,
+        [M_inv_array] is the covariance matrix of all linear parameters,
+        [amp_array] is the solved optimal amplitudes.
         """
         num_of_light, num_of_image_pixel = np.shape(A)
 
@@ -677,7 +689,10 @@ class ImageLinearFit(ImageModel):
         for i in range(num_of_light):
             b[i] = np.sum(A[i] * (d))
 
-        param_amps = np.linalg.lstsq(M, b, rcond=None)[0]
+        M /= data_noise_rms**2
+        b /= data_noise_rms**2
+
+        param_amps, M_inv = de_lens.get_param_WLS_interferometry(M, b, inv_bool)
 
         unconvolved_temp = np.zeros((num_of_image_pixel))
         dirty_temp = np.zeros((num_of_image_pixel))
@@ -690,4 +705,4 @@ class ImageLinearFit(ImageModel):
 
         model = [unconvolved_model, dirty_model]
 
-        return model, param_amps
+        return model, M_inv, param_amps

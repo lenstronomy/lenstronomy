@@ -608,7 +608,7 @@ class ImageLinearFit(ImageModel):
             self, param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps
         )
         return model, model_error, cov_param, param
-
+    
     def linear_response_matrix_interferometry_unconvolved(
         self,
         kwargs_lens,
@@ -618,10 +618,9 @@ class ImageLinearFit(ImageModel):
         kwargs_extinction=None,
         kwargs_special=None,
     ):
-        """Computes the linear response matrix (m x n) for interferometric likelihood
-        fitting, with n being the data size and m being the coefficients. This function
-        is similar to `linear_response_matrix` but includes specific modifications for
-        interferometry:
+        """Computes the linear response matrix (m x n) for interferometric likelihood fitting, 
+        with n being the data size and m being the coefficients. This function is similar to 
+        `linear_response_matrix` but includes specific modifications for interferometry:
 
         - The linear response images are not convolved with the psf.
         - Unconvolved point sources are also included in the response images.
@@ -661,7 +660,7 @@ class ImageLinearFit(ImageModel):
         for i in range(0, n_source):
             image = source_light_response[i]
 
-            # multiply with primary beam before convolution
+            # multiply with primary beam
             if self._pb is not None:
                 image *= self._pb_1d
 
@@ -673,7 +672,7 @@ class ImageLinearFit(ImageModel):
         for i in range(0, n_lens_light):
             image = lens_light_response[i]
 
-            # multiply with primary beam before convolution
+            # multiply with primary beam
             if self._pb is not None:
                 image *= self._pb_1d
 
@@ -682,15 +681,13 @@ class ImageLinearFit(ImageModel):
             n += 1
         # response of point sources
         for i in range(0, n_points):
-
+            
             # Apply primary beam values to the amps of the point sources
             if self.Data.primary_beam is not None:
                 x_pos, y_pos = self.Data.map_coord2pix(ra_pos[i], dec_pos[i])
-                pb_values = primary_beam_util.primary_beam_value_at_coords(
-                    x_pos, y_pos, self.Data.primary_beam
-                )
+                pb_values = primary_beam_util.primary_beam_value_at_coords(x_pos, y_pos, self.Data.primary_beam)
                 amp[i] = amp[i] * pb_values
-
+            
             # Rendering the unconvolved point source images
             image = self.ImageNumerics.point_source_rendering_unconvolved_for_interferometry(
                 ra_pos[i], dec_pos[i], amp[i]

@@ -352,3 +352,12 @@ def test_interferometry_image_linear_solve_with_point_source():
     npt.assert_almost_equal([unconvolved_model, dirty_model], model, decimal=8)
     npt.assert_almost_equal(amps0, amps, decimal=8)
     assert param_cov is None
+    
+    # test inv_bool=True 
+    model_1, _, param_cov_1, amps_1 = imageLinearFit.image_linear_solve(
+        kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, inv_bool=True
+    )
+    param_cov_1_expected = np.linalg.inv(M)
+    npt.assert_almost_equal(model_1, model, decimal=8)
+    npt.assert_almost_equal(amps_1, amps, decimal=8)
+    npt.assert_almost_equal(param_cov_1, param_cov_1_expected, decimal=8)

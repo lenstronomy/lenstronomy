@@ -1,6 +1,7 @@
 from lenstronomy.ImSim.image_model import ImageModel
 import lenstronomy.ImSim.de_lens as de_lens
 from lenstronomy.Util import util
+from lenstronomy.Util import primary_beam_util
 from lenstronomy.ImSim.Numerics.convolution import PixelKernelConvolution
 import numpy as np
 
@@ -381,11 +382,6 @@ class ImageLinearFit(ImageModel):
         # response of lensed source profile
         for i in range(0, n_source):
             image = source_light_response[i]
-
-            # multiply with primary beam before convolution
-            if self._pb is not None:
-                image *= self._pb_1d
-
             image *= extinction
             image = self.ImageNumerics.re_size_convolve(image, unconvolved=unconvolved)
             A[n, :] = np.nan_to_num(self.image2array_masked(image), copy=False)
@@ -393,20 +389,11 @@ class ImageLinearFit(ImageModel):
         # response of deflector light profile (or any other un-lensed extended components)
         for i in range(0, n_lens_light):
             image = lens_light_response[i]
-
-            # multiply with primary beam before convolution
-            if self._pb is not None:
-                image *= self._pb_1d
-
             image = self.ImageNumerics.re_size_convolve(image, unconvolved=unconvolved)
             A[n, :] = np.nan_to_num(self.image2array_masked(image), copy=False)
             n += 1
         # response of point sources
         for i in range(0, n_points):
-            # raise warnings when primary beam is attempted to be applied for point sources
-            if self._pb is not None:
-                raise Warning("Antenna primary beam does not apply to point sources!")
-
             image = self.ImageNumerics.point_source_rendering(
                 ra_pos[i], dec_pos[i], amp[i]
             )
@@ -602,7 +589,7 @@ class ImageLinearFit(ImageModel):
             linear parameters. param is the solved linear parameters (the amplitudes).
             model_error =0 for the interferometric method.
         """
-        A = ImageLinearFit.linear_response_matrix(
+        A = ImageLinearFit.linear_response_matrix_interferometry_unconvolved(
             self,
             kwargs_lens,
             kwargs_source,
@@ -610,7 +597,6 @@ class ImageLinearFit(ImageModel):
             kwargs_ps,
             kwargs_extinction,
             kwargs_special,
-            unconvolved=True,
         )
         d = self.data_response
         image_noise_rms = self.Data.background_rms
@@ -622,6 +608,93 @@ class ImageLinearFit(ImageModel):
             self, param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps
         )
         return model, model_error, cov_param, param
+    
+    def linear_response_matrix_interferometry_unconvolved(
+        self,
+        kwargs_lens,
+        kwargs_source,
+        kwargs_lens_light,
+        kwargs_ps,
+        kwargs_extinction=None,
+        kwargs_special=None,
+    ):
+        """Computes the linear response matrix (m x n) for interferometric likelihood fitting, 
+        with n being the data size and m being the coefficients. This function is similar to 
+        `linear_response_matrix` but includes specific modifications for interferometry:
+
+        - The linear response images are not convolved with the psf.
+        - Unconvolved point sources are also included in the response images.
+        - Apply the primary beam to the sky image if a primary beam is provided.
+
+        :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
+        :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
+        :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
+        :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
+        :param kwargs_extinction: list of keyword arguments for extinction model
+        :param kwargs_special: list of special keyword arguments
+        :return: response matrix (m x n)
+        """
+        x_grid, y_grid = self.ImageNumerics.coordinates_evaluate
+
+        source_light_response, n_source = self.source_mapping.image_flux_split(
+            x_grid, y_grid, kwargs_lens, kwargs_source, kwargs_special
+        )
+        extinction = self._extinction.extinction(
+            x_grid,
+            y_grid,
+            kwargs_extinction=kwargs_extinction,
+            kwargs_special=kwargs_special,
+        )
+        lens_light_response, n_lens_light = self.LensLightModel.functions_split(
+            x_grid, y_grid, kwargs_lens_light
+        )
+        ra_pos, dec_pos, amp, n_points = self.point_source_linear_response_set(
+            kwargs_ps, kwargs_lens, kwargs_special, with_amp=False
+        )
+        num_param = n_points + n_lens_light + n_source
+
+        num_response = self.num_data_evaluate
+        A = np.zeros((num_param, num_response))
+        n = 0
+        # response of lensed source profile
+        for i in range(0, n_source):
+            image = source_light_response[i]
+
+            # multiply with primary beam before convolution
+            if self._pb is not None:
+                image *= self._pb_1d
+
+            image *= extinction
+            image = self.ImageNumerics.re_size_convolve(image, unconvolved=True)
+            A[n, :] = np.nan_to_num(self.image2array_masked(image), copy=False)
+            n += 1
+        # response of deflector light profile (or any other un-lensed extended components)
+        for i in range(0, n_lens_light):
+            image = lens_light_response[i]
+
+            # multiply with primary beam before convolution
+            if self._pb is not None:
+                image *= self._pb_1d
+
+            image = self.ImageNumerics.re_size_convolve(image, unconvolved=True)
+            A[n, :] = np.nan_to_num(self.image2array_masked(image), copy=False)
+            n += 1
+        # response of point sources
+        for i in range(0, n_points):
+            
+            # Apply primary beam values to the amps of the point sources
+            if self.Data.primary_beam is not None:
+                x_pos, y_pos = self.Data.map_coord2pix(ra_pos[i], dec_pos[i])
+                pb_values = primary_beam_util.primary_beam_value_at_coords(x_pos, y_pos, self.Data.primary_beam)
+                amp[i] = amp[i] * pb_values
+            
+            # Rendering the unconvolved point source images
+            image = self.ImageNumerics.point_source_rendering_unconvolved_for_interferometry(
+                ra_pos[i], dec_pos[i], amp[i]
+            )
+            A[n, :] = np.nan_to_num(self.image2array_masked(image), copy=False)
+            n += 1
+        return A * self._flux_scaling
 
     def _image_linear_solve_interferometry_natwt_solving(
         self, A, d, data_noise_rms, inv_bool=False

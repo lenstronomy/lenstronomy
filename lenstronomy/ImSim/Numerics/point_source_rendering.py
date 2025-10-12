@@ -93,17 +93,20 @@ class PointSourceRendering(object):
                 variance_map, x_pos[i], y_pos[i], psf_variance_map * amp_estimated**2
             )
         return variance_map
-    
-    def point_source_rendering_unconvolved_for_interferometry(self, ra_pos, dec_pos, amp):
-        """
-        Render a point source image specifically for interferometric image point source fitting.
-        The resulting image is unconvolved, and the function does not support supersampling,
-        as it's incompatible with the interferometric image processing pipeline.
-        
+
+    def point_source_rendering_unconvolved_for_interferometry(
+        self, ra_pos, dec_pos, amp
+    ):
+        """Render a point source image specifically for interferometric image point
+        source fitting. The resulting image is unconvolved, and the function does not
+        support supersampling, as it's incompatible with the interferometric image
+        processing pipeline.
+
         :param ra_pos: list of RA positions of point source(s)
         :param dec_pos: list of DEC positions of point source(s)
         :param amp: list of amplitudes of point source(s)
-        :return: 2d numpy array of size of the unconvolved image with the point source(s) rendered
+        :return: 2d numpy array of size of the unconvolved image with the point
+            source(s) rendered
         """
         # check and raise an error if the supersampling factor is greater than 1
         if self._supersampling_factor != 1:
@@ -112,8 +115,8 @@ class PointSourceRendering(object):
             )
         x_pos, y_pos = self._pixel_grid.map_coord2pix(ra_pos, dec_pos)
         # render the unconvolved point source using a PSF of [[0, 0, 0], [0, 1, 0], [0, 0, 0]].
-        kernel_point_source_for_unconcolved_image = np.zeros((3,3))
-        kernel_point_source_for_unconcolved_image[1,1] = 1
+        kernel_point_source_for_unconcolved_image = np.zeros((3, 3))
+        kernel_point_source_for_unconcolved_image[1, 1] = 1
         grid2d = np.zeros((self._nx, self._ny))
         # add_layer2image
         if len(x_pos) > len(amp):

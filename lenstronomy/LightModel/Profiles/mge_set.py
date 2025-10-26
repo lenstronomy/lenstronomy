@@ -3,11 +3,12 @@ import numpy as np
 
 
 class MGESet(object):
-    """Class for Multi Gaussian lens light (2d projected light/mass
-        distribution as a set of Gaussians in logarithmic spacing
+    """Class for Multi Gaussian lens light (2d projected light/mass distribution as a
+    set of Gaussians in logarithmic spacing.
 
-        profile name in LightModel module: 'MGE_SET
+    profile name in LightModel module: 'MGE_SET
     """
+
     param_names = ["amp", "sigma_min", "sigma_max", "center_x", "center_y"]
     lower_limit_default = {
         "amp": 0,
@@ -36,22 +37,26 @@ class MGESet(object):
 
     @property
     def num_linear(self):
-        """
-        number of linear parameters
+        """Number of linear parameters.
 
         :return:
         """
         return self._ncomp
 
     def _sigma(self, sigma_min, sigma_max):
-        """
-        logarithmically scaled sigmas
+        """Logarithmically scaled sigmas.
 
-        :param sigma_min: minimum Gaussian sigma (sigmas being logarithmically scalled between min and max)
+        :param sigma_min: minimum Gaussian sigma (sigmas being logarithmically scalled
+            between min and max)
         :param sigma_max: maximum Gaussian sigma
         :return: array of sigmas for Multi-Gaussian components
         """
-        sigmas = np.logspace(start=np.log10(sigma_min), stop=np.log10(sigma_max), num=self._ncomp, endpoint=True)
+        sigmas = np.logspace(
+            start=np.log10(sigma_min),
+            stop=np.log10(sigma_max),
+            num=self._ncomp,
+            endpoint=True,
+        )
         return sigmas
 
     def function(self, x, y, amp, sigma_min, sigma_max, center_x=0, center_y=0):
@@ -60,7 +65,8 @@ class MGESet(object):
         :param x: coordinate on the sky
         :param y: coordinate on the sky
         :param amp: list of amplitudes of individual Gaussian profiles
-        :param sigma_min: minimum Gaussian sigma (sigmas being logarithmically scalled between min and max)
+        :param sigma_min: minimum Gaussian sigma (sigmas being logarithmically scalled
+            between min and max)
         :param sigma_max: maximum Gaussian sigma
         :param center_x: center of profile
         :param center_y: center of profile
@@ -76,7 +82,8 @@ class MGESet(object):
         """Total integrated flux of profile.
 
         :param amp: list of amplitudes of individual Gaussian profiles
-        :param sigma_min: minimum Gaussian sigma (sigmas being logarithmically scalled between min and max)
+        :param sigma_min: minimum Gaussian sigma (sigmas being logarithmically scalled
+            between min and max)
         :param sigma_max: maximum Gaussian sigma
         :param center_x: center of profile
         :param center_y: center of profile
@@ -94,7 +101,8 @@ class MGESet(object):
         :param x: coordinate on the sky
         :param y: coordinate on the sky
         :param amp: list of amplitudes of individual Gaussian profiles
-        :param sigma_min: minimum Gaussian sigma (sigmas being logarithmically scalled between min and max)
+        :param sigma_min: minimum Gaussian sigma (sigmas being logarithmically scalled
+            between min and max)
         :param sigma_max: maximum Gaussian sigma
         :param center_x: center of profile
         :param center_y: center of profile
@@ -113,7 +121,8 @@ class MGESet(object):
 
         :param r: 3d distance from center of profile
         :param amp: list of amplitudes of individual Gaussian profiles
-        :param sigma_min: minimum Gaussian sigma (sigmas being logarithmically scalled between min and max)
+        :param sigma_min: minimum Gaussian sigma (sigmas being logarithmically scalled
+            between min and max)
         :param sigma_max: maximum Gaussian sigma
         :return: 3D brightness per angular volume element
         """

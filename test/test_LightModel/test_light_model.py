@@ -43,9 +43,9 @@ class TestLightModel(object):
                 "center_x": 0,
                 "center_y": 0,
             },  # 'MULTI_GAUSSIAN'
-            #{'amp': [1, 2], 'sigma_min': 0.1, 'sigma_max': 1, "center_x": 0,
+            # {'amp': [1, 2], 'sigma_min': 0.1, 'sigma_max': 1, "center_x": 0,
             #    "center_y": 0,}, # 'MGE_SET'
-            #{'amp': [1, 2], 'sigma_min': 0.1, 'sigma_max': 1, 'e1': 0.1, 'e2': -0.1, "center_x": 0,
+            # {'amp': [1, 2], 'sigma_min': 0.1, 'sigma_max': 1, 'e1': 0.1, 'e2': -0.1, "center_x": 0,
             #    "center_y": 0,},  # 'MGE_SET_ELLIPSE'
             {
                 "amp": 1,
@@ -164,9 +164,9 @@ class TestLightModel(object):
             "TRIPLE_CHAMELEON",
         ]
         profile_kwargs_list = [
-                                  {"n_comp": 2},
-                                  {"n_comp": 2},
-                                  None,
+            {"n_comp": 2},
+            {"n_comp": 2},
+            None,
             {"sersic_major_axis": False},
             {"sersic_major_axis": True},
         ] + [None] * 9
@@ -328,7 +328,9 @@ class TestLightModel(object):
         bool = ligthModel.check_positive_flux_profile(kwargs_list)
         assert not bool
 
-        ligthModel = LightModel(light_model_list=["MGE_SET"], profile_kwargs_list=[{"n_comp": 2}])
+        ligthModel = LightModel(
+            light_model_list=["MGE_SET"], profile_kwargs_list=[{"n_comp": 2}]
+        )
         kwargs_list = [{"amp": [-1, 1], "sigma_min": 1, "sigma_max": 2}]
         bool = ligthModel.check_positive_flux_profile(kwargs_list)
         assert not bool

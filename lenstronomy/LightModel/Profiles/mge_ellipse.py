@@ -10,8 +10,8 @@ class MGEEllipse(object):
         "amp": 0,
         "sigma_min": 0.0001,
         "sigma_max": 0.001,
-        "e1": -.6,
-        "e2": -.6,
+        "e1": -0.6,
+        "e2": -0.6,
         "center_x": -100,
         "center_y": -100,
     }
@@ -19,8 +19,8 @@ class MGEEllipse(object):
         "amp": 1000,
         "sigma_min": 50,
         "sigma_max": 100,
-        "e1": .6,
-        "e2": .6,
+        "e1": 0.6,
+        "e2": 0.6,
         "center_x": 100,
         "center_y": 100,
     }
@@ -36,8 +36,7 @@ class MGEEllipse(object):
 
     @property
     def num_linear(self):
-        """
-        number of linear parameters
+        """Number of linear parameters.
 
         :return:
         """
@@ -61,17 +60,25 @@ class MGEEllipse(object):
             x, y, e1, e2, center_x=center_x, center_y=center_y
         )
         return self._mge_set.function(
-            x_, y_, amp, sigma_min=sigma_min, sigma_max=sigma_max, center_x=0, center_y=0
+            x_,
+            y_,
+            amp,
+            sigma_min=sigma_min,
+            sigma_max=sigma_max,
+            center_x=0,
+            center_y=0,
         )
 
-    def function_split(self, x, y, amp, sigma_min, sigma_max, e1, e2, center_x=0, center_y=0):
-        """
-        slits surface brightness into individual Gaussian components
+    def function_split(
+        self, x, y, amp, sigma_min, sigma_max, e1, e2, center_x=0, center_y=0
+    ):
+        """Slits surface brightness into individual Gaussian components.
 
         :param x: x-coordinates
         :param y: y-coordinates
         :param amp: array of amplitudes in pre-defined order of shapelet basis functions
-        :param sigma_min: minimum Gaussian sigma (sigmas being logarithmically scalled between min and max)
+        :param sigma_min: minimum Gaussian sigma (sigmas being logarithmically scalled
+            between min and max)
         :param sigma_max: maximum Gaussian sigma
         :param e1: eccentricity component 1
         :param e2: eccentricity component 2
@@ -83,14 +90,21 @@ class MGEEllipse(object):
             x, y, e1, e2, center_x=center_x, center_y=center_y
         )
         return self._mge_set.function_split(
-            x_, y_, amp, sigma_min=sigma_min, sigma_max=sigma_max, center_x=0, center_y=0
+            x_,
+            y_,
+            amp,
+            sigma_min=sigma_min,
+            sigma_max=sigma_max,
+            center_x=0,
+            center_y=0,
         )
 
     def total_flux(self, amp, sigma_min, sigma_max, e1, e2, center_x=0, center_y=0):
         """Total integrated flux of profile.
 
         :param amp: list of amplitudes of individual Gaussian profiles
-        :param sigma_min: minimum Gaussian sigma (sigmas being logarithmically scalled between min and max)
+        :param sigma_min: minimum Gaussian sigma (sigmas being logarithmically scalled
+            between min and max)
         :param sigma_max: maximum Gaussian sigma
         :param e1: eccentricity component 1
         :param e2: eccentricity component 2
@@ -98,15 +112,21 @@ class MGEEllipse(object):
         :param center_y: center of profile
         :return: total flux
         """
-        return self._mge_set.total_flux(amp, sigma_min=sigma_min, sigma_max=sigma_max,
-                                        center_x=center_x, center_y=center_y)
+        return self._mge_set.total_flux(
+            amp,
+            sigma_min=sigma_min,
+            sigma_max=sigma_max,
+            center_x=center_x,
+            center_y=center_y,
+        )
 
     def light_3d(self, r, amp, sigma_min, sigma_max, e1, e2):
         """3D brightness per angular volume element.
 
         :param r: 3d distance from center of profile
         :param amp: list of amplitudes of individual Gaussian profiles
-        :param sigma_min: minimum Gaussian sigma (sigmas being logarithmically scalled between min and max)
+        :param sigma_min: minimum Gaussian sigma (sigmas being logarithmically scalled
+            between min and max)
         :param sigma_max: maximum Gaussian sigma
         :param e1: eccentricity component 1
         :param e2: eccentricity component 2

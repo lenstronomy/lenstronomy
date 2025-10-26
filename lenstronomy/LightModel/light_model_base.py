@@ -84,6 +84,7 @@ class LightModelBase(object):
                 from lenstronomy.LightModel.Profiles.gaussian import (
                     MultiGaussianEllipse,
                 )
+
                 self.func_list.append(MultiGaussianEllipse(**profile_kwargs))
             elif profile_type == "MGE_SET":
                 from lenstronomy.LightModel.Profiles.mge_set import MGESet
@@ -317,8 +318,12 @@ class LightModelBase(object):
                 ]:
                     kwargs_new = kwargs_list_standard[i].copy()
                     if norm is True:
-                        if model in ["MULTI_GAUSSIAN", "MULTI_GAUSSIAN_ELLIPSE", "MGE_SET",
-                                     "MGE_SET_ELLIPSE",]:
+                        if model in [
+                            "MULTI_GAUSSIAN",
+                            "MULTI_GAUSSIAN_ELLIPSE",
+                            "MGE_SET",
+                            "MGE_SET_ELLIPSE",
+                        ]:
                             new = {
                                 "amp": np.array(kwargs_new["amp"])
                                 / np.sum(kwargs_new["amp"])

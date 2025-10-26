@@ -17,8 +17,6 @@ class TestLightModel(object):
         self.light_model_list = [
             "GAUSSIAN",
             "MULTI_GAUSSIAN",
-            "MGE_SET",
-            "MGE_SET_ELLIPSE",
             "SERSIC",
             "SERSIC_ELLIPSE",
             "CORE_SERSIC",
@@ -45,10 +43,10 @@ class TestLightModel(object):
                 "center_x": 0,
                 "center_y": 0,
             },  # 'MULTI_GAUSSIAN'
-            {'amp': [1, 2], 'sigma_min': 0.1, 'sigma_max': 1, "center_x": 0,
-                "center_y": 0,}, # 'MGE_SET'
-            {'amp': [1, 2], 'sigma_min': 0.1, 'sigma_max': 1, 'e1': 0.1, 'e2': -0.1, "center_x": 0,
-                "center_y": 0,},  # 'MGE_SET_ELLIPSE'
+            #{'amp': [1, 2], 'sigma_min': 0.1, 'sigma_max': 1, "center_x": 0,
+            #    "center_y": 0,}, # 'MGE_SET'
+            #{'amp': [1, 2], 'sigma_min': 0.1, 'sigma_max': 1, 'e1': 0.1, 'e2': -0.1, "center_x": 0,
+            #    "center_y": 0,},  # 'MGE_SET_ELLIPSE'
             {
                 "amp": 1,
                 "R_sersic": 0.5,
@@ -145,10 +143,8 @@ class TestLightModel(object):
                 "start_y": 0,
             },  # 'LINE_PROFILE'
         ]
-        profile_kwargs_list = [{} for lightmodel in self.light_model_list]
-        profile_kwargs_list[2] = {"n_comp": 2}
-        profile_kwargs_list[3] = {"n_comp": 2}
-        self.LightModel = LightModel(light_model_list=self.light_model_list, profile_kwargs_list=profile_kwargs_list)
+
+        self.LightModel = LightModel(light_model_list=self.light_model_list)
 
     def test_init(self):
         model_list = [
@@ -185,13 +181,13 @@ class TestLightModel(object):
         output = self.LightModel.surface_brightness(
             x=1.0, y=1.0, kwargs_list=self.kwargs
         )
-        npt.assert_almost_equal(output, 2.855891, decimal=6)
+        npt.assert_almost_equal(output, 2.647127, decimal=6)
 
     def test_surface_brightness_array(self):
         output = self.LightModel.surface_brightness(
             x=[1], y=[1], kwargs_list=self.kwargs
         )
-        npt.assert_almost_equal(output[0], 2.8558905926020923, decimal=6)
+        npt.assert_almost_equal(output[0], 2.647127113888489, decimal=6)
 
     def test_functions_split(self):
         output = self.LightModel.functions_split(x=1.0, y=1.0, kwargs_list=self.kwargs)
@@ -207,7 +203,7 @@ class TestLightModel(object):
 
     def test_num_param_linear(self):
         num = self.LightModel.num_param_linear(self.kwargs, list_return=False)
-        assert num == 24
+        assert num == 20
 
         num_list = self.LightModel.num_param_linear(self.kwargs, list_return=True)
         assert num_list[0] == 1

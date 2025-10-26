@@ -215,7 +215,7 @@ class LinearBasis(LightModelBase):
                 i += num_param
             elif model in ["MGE_SET", "MGE_SET_ELLIPSE"]:
                 num_param = self.func_list[k].num_linear
-                kwargs_list[k]["amp"] = param[i: i + num_param]
+                kwargs_list[k]["amp"] = param[i : i + num_param]
                 i += num_param
             elif model in [
                 "SHAPELETS",

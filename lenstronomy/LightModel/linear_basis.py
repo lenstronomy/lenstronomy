@@ -67,6 +67,13 @@ class LinearBasis(LightModelBase):
                     kwargs_new.update(new)
                     response += self.func_list[i].function_split(x, y, **kwargs_new)
                     n += num
+                elif model in ["MGE_SET", "MGE_SET_ELLIPSE"]:
+                    num = self.func_list[i].num_linear
+                    new = {"amp": np.ones(num)}
+                    kwargs_new = kwargs_list[i].copy()
+                    kwargs_new.update(new)
+                    response += self.func_list[i].function_split(x, y, **kwargs_new)
+                    n += num
                 elif model in [
                     "SHAPELETS",
                     "SHAPELETS_POLAR",
@@ -140,6 +147,9 @@ class LinearBasis(LightModelBase):
             elif model in ["MULTI_GAUSSIAN", "MULTI_GAUSSIAN_ELLIPSE"]:
                 num = len(kwargs_list[i]["sigma"])
                 n_list += [num]
+            elif model in ["MGE_SET", "MGE_SET_ELLIPSE"]:
+                num = self.func_list[i].num_linear
+                n_list += [num]
             elif model in [
                 "SHAPELETS",
                 "SHAPELETS_POLAR",
@@ -201,6 +211,10 @@ class LinearBasis(LightModelBase):
                 i += 1
             elif model in ["MULTI_GAUSSIAN", "MULTI_GAUSSIAN_ELLIPSE"]:
                 num_param = len(kwargs_list[k]["sigma"])
+                kwargs_list[k]["amp"] = param[i : i + num_param]
+                i += num_param
+            elif model in ["MGE_SET", "MGE_SET_ELLIPSE"]:
+                num_param = self.func_list[k].num_linear
                 kwargs_list[k]["amp"] = param[i : i + num_param]
                 i += num_param
             elif model in [
@@ -271,6 +285,10 @@ class LinearBasis(LightModelBase):
         for k, model in enumerate(self.profile_type_list):
             if "amp" in kwargs_list[k]:
                 if model in [
+                    "MULTI_GAUSSIAN",
+                    "MULTI_GAUSSIAN_ELLIPSE",
+                    "MGE_SET",
+                    "MGE_SET_ELLIPSE",
                     "CHAMELEON",
                     "CORE_SERSIC",
                     "DOUBLE_CHAMELEON",
@@ -286,7 +304,7 @@ class LinearBasis(LightModelBase):
                     "SERSIC_ELLIPSE",
                     "SERSIC_ELLIPSE_FLEXION",
                 ]:
-                    if kwargs_list[k]["amp"] < 0:
+                    if np.any(np.array(kwargs_list[k]["amp"]) < 0):
                         pos_bool = False
                         break
         return pos_bool

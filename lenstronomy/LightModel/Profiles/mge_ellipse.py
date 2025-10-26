@@ -5,7 +5,15 @@ from lenstronomy.Util import param_util
 class MGEEllipse(object):
     """Multi Gaussian Sets with elliptical axis ratios."""
 
-    param_names = ["amp", "sigma_min", "sigma_width", "e1", "e2", "center_x", "center_y"]
+    param_names = [
+        "amp",
+        "sigma_min",
+        "sigma_width",
+        "e1",
+        "e2",
+        "center_x",
+        "center_y",
+    ]
     lower_limit_default = {
         "amp": 0,
         "sigma_min": 0.0001,
@@ -42,7 +50,9 @@ class MGEEllipse(object):
         """
         return self._mge_set.num_linear
 
-    def function(self, x, y, amp, sigma_min, sigma_width, e1, e2, center_x=0, center_y=0):
+    def function(
+        self, x, y, amp, sigma_min, sigma_width, e1, e2, center_x=0, center_y=0
+    ):
         """
 
         :param x: x-coordinates
@@ -132,4 +142,6 @@ class MGEEllipse(object):
         :param e2: eccentricity component 2
         :return: 3D brightness per angular volume element
         """
-        return self._mge_set.light_3d(r, amp, sigma_min=sigma_min, sigma_width=sigma_width)
+        return self._mge_set.light_3d(
+            r, amp, sigma_min=sigma_min, sigma_width=sigma_width
+        )

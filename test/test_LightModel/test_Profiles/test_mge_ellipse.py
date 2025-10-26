@@ -18,7 +18,9 @@ class TestMGESet(object):
         sigma_min, sigma_width = 0.01, 10
         e1, e2 = 0.1, -0.05
         sigma = np.logspace(
-            start=np.log10(sigma_min), stop=np.log10(sigma_min + sigma_width), num=self.n_comp
+            start=np.log10(sigma_min),
+            stop=np.log10(sigma_min + sigma_width),
+            num=self.n_comp,
         )
         amp = np.ones(self.n_comp)
         flux_mg = self.multi_gauss_ellipse.function(
@@ -46,7 +48,9 @@ class TestMGESet(object):
         sigma_min, sigma_width = 0.01, 10
         e1, e2 = 0.1, -0.05
         sigma = np.logspace(
-            start=np.log10(sigma_min), stop=np.log10(sigma_min + sigma_width), num=self.n_comp
+            start=np.log10(sigma_min),
+            stop=np.log10(sigma_min + sigma_width),
+            num=self.n_comp,
         )
         amp = np.ones(self.n_comp)
         flux_mg = self.multi_gauss_ellipse.function_split(
@@ -71,7 +75,9 @@ class TestMGESet(object):
         sigma_min, sigma_width = 0.01, 10
         e1, e2 = 0.1, -0.05
         sigma = np.logspace(
-            start=np.log10(sigma_min), stop=np.log10(sigma_min + sigma_width), num=self.n_comp
+            start=np.log10(sigma_min),
+            stop=np.log10(sigma_min + sigma_width),
+            num=self.n_comp,
         )
         amp = np.ones(self.n_comp)
         light_3d = self.multi_gauss_ellipse.light_3d(
@@ -88,7 +94,9 @@ class TestMGESet(object):
         sigma_min, sigma_width = 0.01, 10
         e1, e2 = 0.1, -0.05
         sigma = np.logspace(
-            start=np.log10(sigma_min), stop=np.log10(sigma_min + sigma_width), num=self.n_comp
+            start=np.log10(sigma_min),
+            stop=np.log10(sigma_min + sigma_width),
+            num=self.n_comp,
         )
         amp = np.ones(self.n_comp)
         flux = self.multi_gauss_ellipse.total_flux(amp=amp, sigma=sigma, e1=e1, e2=e2)

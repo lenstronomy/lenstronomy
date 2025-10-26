@@ -17,7 +17,9 @@ class TestMGESet(object):
         x, y = 3, 2
         sigma_min, sigma_width = 0.01, 10
         sigma = np.logspace(
-            start=np.log10(sigma_min), stop=np.log10(sigma_min + sigma_width), num=self.n_comp
+            start=np.log10(sigma_min),
+            stop=np.log10(sigma_min + sigma_width),
+            num=self.n_comp,
         )
         amp = np.ones(self.n_comp)
         flux_mg = self.multi_gauss.function(
@@ -42,7 +44,9 @@ class TestMGESet(object):
         x, y = np.linspace(start=0, stop=10, num=10), np.zeros(10)
         sigma_min, sigma_width = 0.01, 10
         sigma = np.logspace(
-            start=np.log10(sigma_min), stop=np.log10(sigma_min + sigma_width), num=self.n_comp
+            start=np.log10(sigma_min),
+            stop=np.log10(sigma_min + sigma_width),
+            num=self.n_comp,
         )
         amp = np.ones(self.n_comp)
         flux_mg = self.multi_gauss.function_split(
@@ -64,7 +68,9 @@ class TestMGESet(object):
         r = np.linspace(start=0, stop=10, num=10)
         sigma_min, sigma_width = 0.01, 10
         sigma = np.logspace(
-            start=np.log10(sigma_min), stop=np.log10(sigma_min + sigma_width), num=self.n_comp
+            start=np.log10(sigma_min),
+            stop=np.log10(sigma_min + sigma_width),
+            num=self.n_comp,
         )
         amp = np.ones(self.n_comp)
         light_3d = self.multi_gauss.light_3d(r, amp=amp, sigma=sigma)

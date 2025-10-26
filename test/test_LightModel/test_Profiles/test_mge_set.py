@@ -55,3 +55,7 @@ class TestMGESet(object):
         flux_mge = self.mge_set.total_flux(amp=amp, sigma_min=sigma_min, sigma_max=sigma_max)
         npt.assert_almost_equal(flux_mge, flux, decimal=8)
         npt.assert_almost_equal(flux_mge, flux, decimal=8)
+
+    def test_num_linear(self):
+        num = self.mge_set.num_linear
+        assert num == self.n_comp

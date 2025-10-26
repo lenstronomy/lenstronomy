@@ -62,3 +62,7 @@ class TestMGESet(object):
         flux_mge = self.mge_ellipse.total_flux(amp=amp, sigma_min=sigma_min, sigma_max=sigma_max, e1=e1, e2=e2)
         npt.assert_almost_equal(flux_mge, flux, decimal=8)
         npt.assert_almost_equal(flux_mge, flux, decimal=8)
+
+    def test_num_linear(self):
+        num = self.mge_ellipse.num_linear
+        assert num == self.n_comp

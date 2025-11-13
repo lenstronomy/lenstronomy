@@ -160,8 +160,8 @@ class TestLensPlot(object):
             )
         plt.close
 
+        color_list = ["k", "b", "g", "r", "c", "m", "y"]
         for i in range(len(x_sources)):
-            color_list = ["k", "b", "g", "r", "c", "m", "y"]
             lens_plot.lens_model_plot(
                 ax,
                 lensModel,
@@ -176,6 +176,52 @@ class TestLensPlot(object):
                 point_source=True,
                 with_caustics=True,
                 fast_caustic=True,
+                coord_inverse=True,
+            )
+        plt.close
+
+        ## testing the new images_from_data function using images_x and _y instead of the sourcePos_x and _y
+        kwargs_ra_image_list = [[0.5, -0.5, 0, 0], [0.5, -0.5, 0, 0]]
+        kwargs_dec_image_list = [[0, 0, 0.5, -0.5], [0, 0, 0.5, -0.5]]
+        for i in range(len(kwargs_dec_image_list)):
+            lens_plot.lens_model_plot(
+                ax,
+                lensModel,
+                kwargs_lens,
+                numPix=10,
+                deltaPix=0.5,
+                images_x=kwargs_ra_image_list[i],
+                images_y=kwargs_dec_image_list[i],
+                name_list=name_lists[i],
+                index=i,
+                color_value=color_list[i],
+                point_source=True,
+                images_from_data=True,
+                with_caustics=False,
+                fast_caustic=False,
+                coord_inverse=True,
+            )
+        plt.close
+
+        ## test when images_x and _y are empty lists:
+        kwargs_ra_image_list = [[0.5, -0.5, 0, 0], [0.5, -0.5, 0, 0]]
+        kwargs_dec_image_list = [[0, 0, 0.5, -0.5], [0, 0, 0.5, -0.5]]
+        for i in range(len(kwargs_dec_image_list)):
+            lens_plot.lens_model_plot(
+                ax,
+                lensModel,
+                kwargs_lens,
+                numPix=10,
+                deltaPix=0.5,
+                images_x=[],
+                images_y=[],
+                name_list=name_lists[i],
+                index=i,
+                color_value=color_list[i],
+                point_source=True,
+                images_from_data=True,
+                with_caustics=False,
+                fast_caustic=False,
                 coord_inverse=True,
             )
         plt.close

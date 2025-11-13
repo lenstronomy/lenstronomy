@@ -33,6 +33,11 @@ class MultiPlaneBase(ProfileListBase):
         :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens
             models. If None, 'z_source' is used.
         :param cosmo: instance of astropy.cosmology
+        :param cosmo_interp: bool, if True, will use interpolated cosmology
+        :param z_interp_stop: (only in multi-plane with cosmo_interp=True); maximum redshift for distance interpolation
+            This number should be higher or equal the maximum of the source redshift and/or the z_source_convention
+        :param num_z_interp: (only in multi-plane with cosmo_interp=True); number of redshift bins for interpolating
+            distances
         :param profile_kwargs_list: list of dicts, keyword arguments used to initialize profile classes
             in the same order of the lens_model_list. If any of the profile_kwargs are None, then that
             profile will be initialized using default settings.

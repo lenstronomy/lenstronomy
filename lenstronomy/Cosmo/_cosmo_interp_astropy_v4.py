@@ -48,4 +48,4 @@ class CosmoInterp(object):
             z2,
             args=self._cosmo._inv_efunc_scalar_args,
         )[0]
-        return self._cosmo._hubble_distance * vectorize_if_needed(f, z1, z2)
+        return self._cosmo.hubble_distance * vectorize_if_needed(f, z1, z2)

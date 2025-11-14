@@ -36,7 +36,7 @@ class TestCosmoInterp(object):
         z_list = np.linspace(start=0.01, stop=3, num=100)
 
         ang_dist_list = self.cosmo_ok.angular_diameter_distance(z_list).value
-        Ok0 = self.cosmo_ok._Ok0
+        Ok0 = self.cosmo_ok.Ok0
         dh = self.cosmo_ok._hubble_distance
         K = -Ok0 / dh**2
         self.cosmo_ok_input = CosmoInterp(
@@ -50,7 +50,7 @@ class TestCosmoInterp(object):
         )
 
         ang_dist_list = self.cosmo_ok_neg.angular_diameter_distance(z_list).value
-        Ok0 = self.cosmo_ok_neg._Ok0
+        Ok0 = self.cosmo_ok_neg.Ok0
         dh = self.cosmo_ok_neg._hubble_distance
         K = -Ok0 / dh**2
         self.cosmo_ok_neg_input = CosmoInterp(

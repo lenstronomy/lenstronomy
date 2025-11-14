@@ -58,7 +58,7 @@ class CosmoInterp(object):
 
         else:
             self._cosmo = cosmo
-            self.Ok0 = self._cosmo._Ok0
+            self.Ok0 = self._cosmo.Ok0
             dh = self._cosmo._hubble_distance
             self.k = -self.Ok0 / dh**2
 

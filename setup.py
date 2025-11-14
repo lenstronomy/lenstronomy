@@ -29,7 +29,7 @@ requires = [
     "numpy>=1.13",
     "scipy>=0.19.1",
     "configparser",
-    "astropy",
+    "astropy<7",
     "mpmath",
     "matplotlib",
     "scikit-learn",

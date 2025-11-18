@@ -10,7 +10,8 @@ elif float(astropy.__version__[0]) < 7.0:
     from astropy.cosmology.utils import vectorize_redshift_method
 else:
     from astropy.cosmology._src.utils import vectorize_redshift_method
-    #from astropy.cosmology._utils import vectorize_redshift_method
+
+    # from astropy.cosmology._utils import vectorize_redshift_method
 
 
 class CosmoInterp(object):

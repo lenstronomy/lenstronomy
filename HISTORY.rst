@@ -448,3 +448,8 @@ History
 +++++++++++++++++++
 * pixelated source reconstruction
 * rectangular PixelGrid bug fix
+
+1.13.3 (2025-11-29)
++++++++++++++++++++
+* Astropy v7 compatibility of interpolated cosmology class
+* Minor GalKin IFU bug fix

@@ -539,8 +539,8 @@ def points_on_circle(radius, num_points, connect_ends=True):
         angle = np.linspace(0, 2 * np.pi, num_points)
     else:
         angle = np.linspace(0, 2 * np.pi * (1 - 1.0 / num_points), num_points)
-    x_coord = np.cos(angle) * radius
-    y_coord = np.sin(angle) * radius
+    x_coord = radius * np.cos(angle)
+    y_coord = radius * np.sin(angle)
     return x_coord, y_coord
 
 

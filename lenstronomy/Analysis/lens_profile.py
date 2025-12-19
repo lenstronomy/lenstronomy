@@ -316,7 +316,7 @@ class LensProfileAnalysis(object):
         )
         f_r = f_r.reshape((len(r_list), num_azimuthal_points))
         kappa_list = np.average(f_r, axis=1)
-        
+
         return kappa_list.tolist()
 
     def multi_gaussian_lens(

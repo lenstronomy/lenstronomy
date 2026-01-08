@@ -46,11 +46,19 @@ class TimeDelayLikelihood(object):
         self._num_point_sources = len(self._pointSource.point_source_type_list)
         self._bimodal_measurement = bimodal_measurement
         if bimodal_measurement and self._num_point_sources > 1:
-            raise ValueError("bimodal time-delay measurements only supported for one point source object.")
+            raise ValueError(
+                "bimodal time-delay measurements only supported for one point source object."
+            )
         if self._num_point_sources == 1:
             if bimodal_measurement:
-                self._delays_measured = [np.array(time_delays_measured[0]), np.array(time_delays_measured[1])]
-                self._delays_errors = [np.array(time_delays_uncertainties[0]), np.array(time_delays_uncertainties[1])]
+                self._delays_measured = [
+                    np.array(time_delays_measured[0]),
+                    np.array(time_delays_measured[1]),
+                ]
+                self._delays_errors = [
+                    np.array(time_delays_uncertainties[0]),
+                    np.array(time_delays_uncertainties[1]),
+                ]
             else:
                 self._delays_measured = [np.array(time_delays_measured)]
                 self._delays_errors = [np.array(time_delays_uncertainties)]
@@ -64,9 +72,13 @@ class TimeDelayLikelihood(object):
         if time_delay_measurement_bool_list is None:
             if self._num_point_sources == 1:
                 if bimodal_measurement:
-                    time_delay_measurement_bool_list = [[True] * len(time_delays_measured[0])]
+                    time_delay_measurement_bool_list = [
+                        [True] * len(time_delays_measured[0])
+                    ]
                 else:
-                    time_delay_measurement_bool_list = [[True] * len(time_delays_measured)]
+                    time_delay_measurement_bool_list = [
+                        [True] * len(time_delays_measured)
+                    ]
             else:
                 time_delay_measurement_bool_list = []
                 for i in range(self._num_point_sources):
@@ -142,12 +154,18 @@ class TimeDelayLikelihood(object):
                     Ddt_scaled = self._lensModel.ddt_scaling * D_dt_model
                     delay_days = const.delay_arcsec2days(delay_arcsec, Ddt_scaled)
                 if self._bimodal_measurement:
-                    logL1 = self._log_delay_masked(delay_days=delay_days, mask=mask, i=0)
-                    logL2 = self._log_delay_masked(delay_days=delay_days, mask=mask, i=1)
+                    logL1 = self._log_delay_masked(
+                        delay_days=delay_days, mask=mask, i=0
+                    )
+                    logL2 = self._log_delay_masked(
+                        delay_days=delay_days, mask=mask, i=1
+                    )
                     logL_sum = np.log(np.exp(logL1) + np.exp(logL2))
                     logL += logL_sum
                 else:
-                    logL += self._log_delay_masked(delay_days=delay_days, mask=mask, i=i)
+                    logL += self._log_delay_masked(
+                        delay_days=delay_days, mask=mask, i=i
+                    )
         return logL
 
     def _log_delay_masked(self, delay_days, mask, i):
@@ -159,12 +177,10 @@ class TimeDelayLikelihood(object):
         :return:
         """
         logL = 0
-        mask_full = np.concatenate(
-            ([True], mask)
-        )  # add the first image to the mask
+        mask_full = np.concatenate(([True], mask))  # add the first image to the mask
 
         if len(delay_days) - 1 != len(self._delays_measured[i]):
-            logL += -(10 ** 15)
+            logL += -(10**15)
         else:
             if self._delays_errors[i].ndim == 1:
                 logL += self._logL_delays(

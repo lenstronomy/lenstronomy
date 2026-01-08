@@ -120,7 +120,9 @@ class TestTimeDelayLikelihood(object):
 
         # Test behaviour with a wrong number of images
         time_delays_measured_new_cut = time_delays_measured_new[:-1]
-        time_delays_uncertainties_cut = time_delays_uncertainties[:-1]  # remove last image
+        time_delays_uncertainties_cut = time_delays_uncertainties[
+            :-1
+        ]  # remove last image
         td_likelihood = TimeDelayLikelihood(
             time_delays_measured_new_cut,
             time_delays_uncertainties_cut,
@@ -140,7 +142,7 @@ class TestTimeDelayLikelihood(object):
             [time_delays_uncertainties, time_delays_uncertainties],
             lens_model_class=self.lensModel,
             point_source_class=self.pointSource,
-            bimodal_measurement=True
+            bimodal_measurement=True,
         )
         kwargs_cosmo = {"D_dt": self.lensCosmo.ddt}
         logL = td_likelihood.logL(
@@ -288,7 +290,10 @@ class TestTimeDelayLikelihood(object):
                 [time_delays_cov, time_delays_cov2],
                 lens_model_class=self.lensModel,
                 point_source_class=pointSource2,
-                time_delay_measurement_bool_list=[[True, True, True], [True, True, False]],
+                time_delay_measurement_bool_list=[
+                    [True, True, True],
+                    [True, True, False],
+                ],
                 bimodal_measurement=True,
             )
 

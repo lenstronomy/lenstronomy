@@ -303,14 +303,21 @@ class LensProfileAnalysis(object):
         center_x, center_y = analysis_util.profile_center(
             kwargs_lens, center_x, center_y
         )
-        kappa_list = []
-        for r in r_list:
-            x, y = util.points_on_circle(r, num_points=num_azimuthal_points)
-            f_r = self._lens_model.kappa(
-                x + center_x, y + center_y, kwargs=kwargs_lens, k=model_bool_list
-            )
-            kappa_list.append(np.average(f_r))
-        return kappa_list
+
+        r_list = np.array(r_list)
+        r = (np.ones((num_azimuthal_points, len(r_list))) * r_list).T
+
+        cos_angle, sin_angle = util.points_on_circle(1, num_points=num_azimuthal_points)
+        x = (r * cos_angle).flatten()
+        y = (r * sin_angle).flatten()
+
+        f_r = self._lens_model.kappa(
+            x + center_x, y + center_y, kwargs=kwargs_lens, k=model_bool_list
+        )
+        f_r = f_r.reshape((len(r_list), num_azimuthal_points))
+        kappa_list = np.average(f_r, axis=1)
+
+        return kappa_list.tolist()
 
     def multi_gaussian_lens(
         self, kwargs_lens, center_x=None, center_y=None, model_bool_list=None, n_comp=20

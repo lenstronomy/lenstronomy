@@ -15,6 +15,7 @@ class TimeDelayLikelihood(object):
         lens_model_class,
         point_source_class,
         time_delay_measurement_bool_list=None,
+        bimodal_measurement=False,
     ):
         """
 
@@ -27,6 +28,8 @@ class TimeDelayLikelihood(object):
         :param time_delay_measurement_bool_list: list of list of bool to indicate for which point source model a measurement is available.
          This list must have the same length as time_delays_measured and time_delays_uncertainties.
          Example for two point sources, imaged 4 times each: [[True, False, True], [True, True, True]]
+        :param bimodal_measurement: if True, two sets of delays are required. Only allowed for one set of point sources
+        :type bimodal_measurement: bool
         """
 
         if time_delays_measured is None:
@@ -41,9 +44,24 @@ class TimeDelayLikelihood(object):
         self._lensModel = lens_model_class
         self._pointSource = point_source_class
         self._num_point_sources = len(self._pointSource.point_source_type_list)
+        self._bimodal_measurement = bimodal_measurement
+        if bimodal_measurement and self._num_point_sources > 1:
+            raise ValueError(
+                "bimodal time-delay measurements only supported for one point source object."
+            )
         if self._num_point_sources == 1:
-            self._delays_measured = [np.array(time_delays_measured)]
-            self._delays_errors = [np.array(time_delays_uncertainties)]
+            if bimodal_measurement:
+                self._delays_measured = [
+                    np.array(time_delays_measured[0]),
+                    np.array(time_delays_measured[1]),
+                ]
+                self._delays_errors = [
+                    np.array(time_delays_uncertainties[0]),
+                    np.array(time_delays_uncertainties[1]),
+                ]
+            else:
+                self._delays_measured = [np.array(time_delays_measured)]
+                self._delays_errors = [np.array(time_delays_uncertainties)]
         else:
             self._delays_measured = []
             self._delays_errors = []
@@ -53,7 +71,14 @@ class TimeDelayLikelihood(object):
 
         if time_delay_measurement_bool_list is None:
             if self._num_point_sources == 1:
-                time_delay_measurement_bool_list = [[True] * len(time_delays_measured)]
+                if bimodal_measurement:
+                    time_delay_measurement_bool_list = [
+                        [True] * len(time_delays_measured[0])
+                    ]
+                else:
+                    time_delay_measurement_bool_list = [
+                        [True] * len(time_delays_measured)
+                    ]
             else:
                 time_delay_measurement_bool_list = []
                 for i in range(self._num_point_sources):
@@ -128,25 +153,48 @@ class TimeDelayLikelihood(object):
                     D_dt_model = kwargs_cosmo["D_dt"]
                     Ddt_scaled = self._lensModel.ddt_scaling * D_dt_model
                     delay_days = const.delay_arcsec2days(delay_arcsec, Ddt_scaled)
-                mask_full = np.concatenate(
-                    ([True], mask)
-                )  # add the first image to the mask
-                if len(delay_days) - 1 != len(self._delays_measured[i]):
-                    logL += -(10**15)
+                if self._bimodal_measurement:
+                    logL1 = self._log_delay_masked(
+                        delay_days=delay_days, mask=mask, i=0
+                    )
+                    logL2 = self._log_delay_masked(
+                        delay_days=delay_days, mask=mask, i=1
+                    )
+                    logL_sum = np.log(np.exp(logL1) + np.exp(logL2))
+                    logL += logL_sum
                 else:
-                    if self._delays_errors[i].ndim == 1:
-                        logL += self._logL_delays(
-                            delay_days[mask_full],
-                            self._delays_measured[i][mask],
-                            self._delays_errors[i][mask],
-                        )
-                    elif self._delays_errors[i].ndim == 2:
-                        # mask the covariance matrix
-                        logL += self._logL_delays(
-                            delay_days[mask_full],
-                            self._delays_measured[i][mask],
-                            self._delays_errors[i][mask, :][:, mask],
-                        )
+                    logL += self._log_delay_masked(
+                        delay_days=delay_days, mask=mask, i=i
+                    )
+        return logL
+
+    def _log_delay_masked(self, delay_days, mask, i):
+        """
+
+        :param delay_days:
+        :param mask:
+        :param i:
+        :return:
+        """
+        logL = 0
+        mask_full = np.concatenate(([True], mask))  # add the first image to the mask
+
+        if len(delay_days) - 1 != len(self._delays_measured[i]):
+            logL += -(10**15)
+        else:
+            if self._delays_errors[i].ndim == 1:
+                logL += self._logL_delays(
+                    delay_days[mask_full],
+                    self._delays_measured[i][mask],
+                    self._delays_errors[i][mask],
+                )
+            elif self._delays_errors[i].ndim == 2:
+                # mask the covariance matrix
+                logL += self._logL_delays(
+                    delay_days[mask_full],
+                    self._delays_measured[i][mask],
+                    self._delays_errors[i][mask, :][:, mask],
+                )
         return logL
 
     @staticmethod

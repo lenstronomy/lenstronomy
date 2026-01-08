@@ -119,11 +119,11 @@ class TestTimeDelayLikelihood(object):
         npt.assert_almost_equal(logL, -0.5, decimal=8)
 
         # Test behaviour with a wrong number of images
-        time_delays_measured_new = time_delays_measured_new[:-1]
-        time_delays_uncertainties = time_delays_uncertainties[:-1]  # remove last image
+        time_delays_measured_new_cut = time_delays_measured_new[:-1]
+        time_delays_uncertainties_cut = time_delays_uncertainties[:-1]  # remove last image
         td_likelihood = TimeDelayLikelihood(
-            time_delays_measured_new,
-            time_delays_uncertainties,
+            time_delays_measured_new_cut,
+            time_delays_uncertainties_cut,
             lens_model_class=self.lensModel,
             point_source_class=self.pointSource,
         )
@@ -133,6 +133,23 @@ class TestTimeDelayLikelihood(object):
             kwargs_cosmo=kwargs_cosmo,
         )
         npt.assert_almost_equal(logL, -(10**15), decimal=8)
+
+        # bimodal time-delay measurement
+        td_likelihood = TimeDelayLikelihood(
+            [time_delays_measured, time_delays_measured_new],
+            [time_delays_uncertainties, time_delays_uncertainties],
+            lens_model_class=self.lensModel,
+            point_source_class=self.pointSource,
+            bimodal_measurement=True
+        )
+        kwargs_cosmo = {"D_dt": self.lensCosmo.ddt}
+        logL = td_likelihood.logL(
+            kwargs_lens=self.kwargs_lens,
+            kwargs_ps=self.kwargs_ps,
+            kwargs_cosmo=kwargs_cosmo,
+        )
+        logL_true = np.log(np.exp(0) + np.exp(-0.5))
+        npt.assert_almost_equal(logL, logL_true, decimal=8)
 
     def test_two_point_sources(self):
         """Tests for looping through two point sources with time delays.

@@ -281,6 +281,17 @@ class TestTimeDelayLikelihood(object):
                 time_delay_measurement_bool_list=["aaa", "bbb"],
             )
 
+        with pytest.raises(ValueError):
+            # not support for bimodal likelihood for more than one point source
+            td_likelihood = TimeDelayLikelihood(
+                [time_delays_measured, time_delays_measured2],
+                [time_delays_cov, time_delays_cov2],
+                lens_model_class=self.lensModel,
+                point_source_class=pointSource2,
+                time_delay_measurement_bool_list=[[True, True, True], [True, True, False]],
+                bimodal_measurement=True,
+            )
+
     def test_multiplane(self):
         lensModel_mp = LensModel(
             lens_model_list=["SIE", "SIE"],

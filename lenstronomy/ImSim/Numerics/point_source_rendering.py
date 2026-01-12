@@ -23,12 +23,14 @@ class PointSourceRendering(object):
         self._supersampling_factor = supersampling_factor
         self._psf = psf
 
-    def point_source_rendering(self, ra_pos, dec_pos, amp):
+    def point_source_rendering(self, ra_pos, dec_pos, amp, unconvolved=False):
         """
 
         :param ra_pos: list of RA positions of point source(s)
         :param dec_pos: list of DEC positions of point source(s)
         :param amp: list of amplitudes of point source(s)
+        :param unconvolved: if True, instead of the proper PSF, renders it on a single pixel
+        :type unconvolved: bool
         :return: 2d numpy array of size of the image with the point source(s) rendered
         """
         subgrid = self._supersampling_factor
@@ -36,7 +38,11 @@ class PointSourceRendering(object):
         # translate coordinates to higher resolution grid
         x_pos_subgird = x_pos * subgrid + (subgrid - 1) / 2.0
         y_pos_subgrid = y_pos * subgrid + (subgrid - 1) / 2.0
-        kernel_point_source_subgrid = self._kernel_supersampled
+        if unconvolved is True:
+            kernel_point_source_subgrid = np.zeros((3, 3))
+            kernel_point_source_subgrid[1, 1] = 1
+        else:
+            kernel_point_source_subgrid = self._kernel_supersampled
         # initialize grid with higher resolution
         subgrid2d = np.zeros((self._nx * subgrid, self._ny * subgrid))
         # add_layer2image

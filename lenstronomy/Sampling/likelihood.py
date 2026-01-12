@@ -124,7 +124,8 @@ class LikelihoodModule(object):
         :param kinematic_2d_likelihood: bool, option to compute the kinematic likelihood
         :param tracer_likelihood: option to perform likelihood on tracer quantity
             derived from imaging or spectroscopy
-        :param bimodal_time_delay_measurement: if True, two sets of delays are required. Only allowed for one set of point sources
+        :param bimodal_time_delay_measurement: if True, two sets of delays are required.
+            Only allowed for one set of point sources
         :type bimodal_time_delay_measurement: bool
         """
         # TODO unpack also tracer model from kwargs_data

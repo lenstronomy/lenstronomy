@@ -490,7 +490,7 @@ class ImageModel(object):
         :return: image of point source
         """
         point_source_image = np.zeros((self.Data.num_pixel_axes))
-        if unconvolved or self.PointSource is None:
+        if self.PointSource is None:
             return point_source_image
         ra_pos, dec_pos, amp = self.PointSource.point_source_list(
             kwargs_ps, kwargs_lens=kwargs_lens, k=k
@@ -507,7 +507,7 @@ class ImageModel(object):
             amp = amp * pb_values_at_ps
 
         point_source_image += self.ImageNumerics.point_source_rendering(
-            ra_pos, dec_pos, amp
+            ra_pos, dec_pos, amp, unconvolved=unconvolved
         )
         return point_source_image * self._flux_scaling
 

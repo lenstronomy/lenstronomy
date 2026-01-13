@@ -53,7 +53,7 @@ def test_center_kernel():
 
 def test_kernel_make_odd():
     kernel_even = np.zeros((4, 4))
-    kernel_even[1:3, 1:3] = np.ones((2, 2)) / 4.
+    kernel_even[1:3, 1:3] = np.ones((2, 2)) / 4.0
     kernel_odd = kernel_util.kernel_make_odd(kernel_even)
     nx_odd, ny_odd = np.shape(kernel_odd)
     assert nx_odd == 5

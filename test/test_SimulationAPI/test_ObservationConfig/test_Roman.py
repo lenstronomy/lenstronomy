@@ -70,10 +70,14 @@ class TestRoman(unittest.TestCase):
             bad_band_wide = Roman(band="F087")
 
         with self.assertRaises(ValueError):
-            bad_band_time_domain_wide = Roman(band="F184", survey_mode="time_domain_wide")
+            bad_band_time_domain_wide = Roman(
+                band="F184", survey_mode="time_domain_wide"
+            )
 
         with self.assertRaises(ValueError):
-            bad_band_time_domain_deep = Roman(band="F062", survey_mode="time_domain_deep")
+            bad_band_time_domain_deep = Roman(
+                band="F062", survey_mode="time_domain_deep"
+            )
 
         with self.assertRaises(ValueError):
             bad_band_microlensing = Roman(band="F062", survey_mode="microlensing")

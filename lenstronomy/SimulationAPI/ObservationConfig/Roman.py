@@ -115,7 +115,7 @@ class Roman(object):
                 exposure_time = exposure_times[index]
             else:
                 raise ValueError(
-                    "band %s is not supported with the time_domain_deep tier survey mode! Choose 'F062', 'F087', 'F106', 'F129', or 'F158'"
+                    "band %s is not supported with the time_domain_wide tier survey mode! Choose 'F062', 'F087', 'F106', 'F129', or 'F158'"
                     % band
                 )
             self.obs.update({"exposure_time": exposure_time, "num_exposures": 1})

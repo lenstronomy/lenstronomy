@@ -65,7 +65,7 @@ F146_band_obs = {
 class Roman(object):
     """Class contains Roman instrument and observation configurations."""
 
-    def __init__(self, band="F062", psf_type="GAUSSIAN", survey_mode="wide_area"):
+    def __init__(self, band="F106", psf_type="GAUSSIAN", survey_mode="wide_area"):
         """
 
         :param band: string, 'F062', 'F087', 'F106', 'F129', 'F158' , 'F184' or 'F146' supported. Determines obs dictionary.

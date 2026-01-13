@@ -92,6 +92,7 @@ class Roman(object):
                 % band
             )
 
+        # NOTE: Updated on 1/13/2026
         if survey_mode == "wide_area":
             # medium tier
             # the number of exposures is given per sector
@@ -105,6 +106,7 @@ class Roman(object):
                     % band
                 )
 
+        # NOTE: Updated on 1/13/2026
         elif survey_mode == "time_domain_wide":
 
             bands = ["F062", "F087", "F106", "F129", "F158"]
@@ -115,11 +117,12 @@ class Roman(object):
                 exposure_time = exposure_times[index]
             else:
                 raise ValueError(
-                    "band %s is not supported with the time_domain_wide tier survey mode! Choose 'F062', 'F087', 'F106', 'F129', or 'F158'"
+                    "band %s is not supported with the time_domain_wide survey mode! Choose 'F062', 'F087', 'F106', 'F129', or 'F158'"
                     % band
                 )
             self.obs.update({"exposure_time": exposure_time, "num_exposures": 1})
 
+        # NOTE: Updated on 1/13/2026
         elif survey_mode == "time_domain_deep":
 
             bands = ["F087", "F106", "F129", "F158", "F184"]
@@ -132,7 +135,7 @@ class Roman(object):
                 num_exposures = num_exposures_list[index]
             else:
                 raise ValueError(
-                    "band %s is not supported with the time_domain_deep tier survey mode! Choose 'F087', 'F106', 'F129', 'F158', or 'F184'"
+                    "band %s is not supported with the time_domain_deep survey mode! Choose 'F087', 'F106', 'F129', 'F158', or 'F184'"
                     % band
                 )
             self.obs.update(

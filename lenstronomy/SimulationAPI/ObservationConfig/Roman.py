@@ -107,7 +107,7 @@ class Roman(object):
 
         elif survey_mode == "time_domain_wide":
 
-            bands = ['F062', 'F087', 'F106', 'F129', 'F158']
+            bands = ["F062", "F087", "F106", "F129", "F158"]
             exposure_times = [60, 85, 95, 152, 294]
 
             if band in bands:
@@ -122,7 +122,7 @@ class Roman(object):
 
         elif survey_mode == "time_domain_deep":
 
-            bands = ['F087', 'F106', 'F129', 'F158', 'F184']
+            bands = ["F087", "F106", "F129", "F158", "F184"]
             exposure_times = [193, 294, 307, 420, 409]
             num_exposures_list = [1, 1, 1, 1, 4]
 
@@ -135,7 +135,9 @@ class Roman(object):
                     "band %s is not supported with the time_domain_deep tier survey mode! Choose 'F087', 'F106', 'F129', 'F158', or 'F184'"
                     % band
                 )
-            self.obs.update({"exposure_time": exposure_time, "num_exposures": num_exposures})
+            self.obs.update(
+                {"exposure_time": exposure_time, "num_exposures": num_exposures}
+            )
 
         elif survey_mode == "microlensing":
             if band == "F146":

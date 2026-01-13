@@ -453,3 +453,7 @@ History
 +++++++++++++++++++
 * Astropy v7 compatibility of interpolated cosmology class
 * Minor GalKin IFU bug fix
+
+1.13.4 (2025-01-12)
++++++++++++++++++++
+* unconvolved image simulation supports point source

@@ -241,6 +241,13 @@ class TestData(object):
         error_map = psf_kernel.psf_variance_map
         assert len(error_map) == n
 
+        kernel_point_source = np.ones((2, 2))
+        psf = PSF(psf_type="PIXEL", kernel_point_source=kernel_point_source)
+        kernel_odd = psf.kernel_point_source
+        assert len(kernel_odd) == 3
+        kernel_odd_new = kernel_util.kernel_make_odd(kernel_point_source)
+        npt.assert_almost_equal(kernel_odd_new, kernel_odd, decimal=4)
+
     def test_unnormalized(self):
         psf_norm_factor = 0.1
         kernel_point_source = np.zeros((51, 51))
@@ -309,8 +316,6 @@ class TestRaise(unittest.TestCase):
             PSF(psf_type="GAUSSIAN")
         with self.assertRaises(ValueError):
             PSF(psf_type="PIXEL")
-        with self.assertRaises(ValueError):
-            PSF(psf_type="PIXEL", kernel_point_source=np.ones((2, 2)))
         with self.assertRaises(ValueError):
             PSF(psf_type="WRONG")
         with self.assertRaises(ValueError):

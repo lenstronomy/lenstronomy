@@ -59,13 +59,10 @@ def test_kernel_make_odd():
     assert nx_odd == 5
     assert ny_odd == 5
     npt.assert_almost_equal(np.sum(kernel_odd), 1, decimal=8)
-
-    import matplotlib.pyplot as plt
-    plt.imshow(kernel_even)
-    plt.show()
-    plt.imshow(kernel_odd)
-    plt.show()
     assert kernel_odd[2, 2] > 0.5
+
+    kernel_odd_new = kernel_util.kernel_make_odd(kernel_odd)
+    npt.assert_almost_equal(kernel_odd_new, kernel_odd, decimal=9)
 
 
 def test_pixelsize_change():

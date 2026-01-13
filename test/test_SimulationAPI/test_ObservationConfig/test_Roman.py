@@ -8,12 +8,14 @@ import astropy.io.fits as pyfits
 
 class TestRoman(unittest.TestCase):
     def setUp(self):
-        self.F062 = Roman(band="F062", survey_mode="time_domain_wide") 
+        self.F062 = Roman(band="F062", survey_mode="time_domain_wide")
         self.F087 = Roman(band="F087", survey_mode="microlensing")
-        self.F106 = Roman() # default is F106
+        self.F106 = Roman()  # default is F106
         self.F129 = Roman(band="F129", psf_type="GAUSSIAN")
         self.F158 = Roman(band="F158", psf_type="GAUSSIAN")
-        self.F184 = Roman(band="F184", survey_mode="time_domain_deep", psf_type="GAUSSIAN")
+        self.F184 = Roman(
+            band="F184", survey_mode="time_domain_deep", psf_type="GAUSSIAN"
+        )
         self.F146 = Roman(band="F146", survey_mode="microlensing", psf_type="GAUSSIAN")
 
         kwargs_F062 = self.F062.kwargs_single_band()

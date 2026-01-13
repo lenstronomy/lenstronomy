@@ -180,6 +180,19 @@ class TestImageModel(object):
         chi2_reduced = self.imageModel.reduced_chi2(model, error_map)
         npt.assert_almost_equal(chi2_reduced, 1, decimal=1)
 
+        model = self.imageModel.image(
+            self.kwargs_lens,
+            self.kwargs_source,
+            self.kwargs_lens_light,
+            self.kwargs_ps,
+            unconvolved=True,
+            source_add=False,
+            lens_light_add=False,
+            point_source_add=True,
+        )
+        # test image plots magnified point sources
+        npt.assert_almost_equal(np.sum(model), 12, decimal=0)
+
     def test_likelihood_data_given_model(self):
         logL = self.imageModel.likelihood_data_given_model(
             self.kwargs_lens,

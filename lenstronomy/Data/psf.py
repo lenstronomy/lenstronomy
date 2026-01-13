@@ -68,11 +68,13 @@ class PSF(object):
             self._kernel_point_source_init = kernel_point_source
             self._point_source_supersampling_factor_init = (
                 point_source_supersampling_factor
-                )
+            )
             if len(kernel_point_source) % 2 == 0:
                 kernel_point_source_ = kernel_util.kernel_make_odd(kernel_point_source)
-                Warning("Kernel with even axis got changed to odd axis and re-centered. This can cause inaccuracies and"
-                        " is not recommended")
+                Warning(
+                    "Kernel with even axis got changed to odd axis and re-centered. This can cause inaccuracies and"
+                    " is not recommended"
+                )
             else:
                 kernel_point_source_ = copy.deepcopy(kernel_point_source)
             if kernel_point_source_normalisation is True:

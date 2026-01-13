@@ -248,7 +248,6 @@ class TestData(object):
         kernel_odd_new = kernel_util.kernel_make_odd(kernel_point_source)
         npt.assert_almost_equal(kernel_odd_new, kernel_odd, decimal=4)
 
-
     def test_unnormalized(self):
         psf_norm_factor = 0.1
         kernel_point_source = np.zeros((51, 51))

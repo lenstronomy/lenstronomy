@@ -517,7 +517,7 @@ class LensEquationSolver(object):
                 )
                 delta = np.sqrt((x_mapped - source_x) ** 2 + (y_mapped - source_y) ** 2)
                 f_xx, f_xy, f_yx, f_yy = self.lensModel.hessian(
-                    x_guess, y_guess, kwargs_lens, diff=0.0001
+                    x_guess, y_guess, kwargs_lens
                 )
                 DistMatrix = np.array([[1 - f_yy, f_yx], [f_xy, 1 - f_xx]])
                 det = (1 - f_xx) * (1 - f_yy) - f_xy * f_yx

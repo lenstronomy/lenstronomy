@@ -11,10 +11,8 @@ from lenstronomy.Sampling.Samplers.polychord_sampler import DyPolyChordSampler
 try:
     import dyPolyChord
 except:
-    print(
-        "Warning : PolyChordLite/DyPolyChord not installed properly, \
-but tests will be trivially fulfilled"
-    )
+    print("Warning : PolyChordLite/DyPolyChord not installed properly, \
+but tests will be trivially fulfilled")
     dypolychord_installed = False
 else:
     dypolychord_installed = True
@@ -22,10 +20,8 @@ else:
 try:
     import nestcheck
 except:
-    print(
-        "Warning : PolyChordLite/DyPolyChord not installed properly, \
-but tests will be trivially fulfilled"
-    )
+    print("Warning : PolyChordLite/DyPolyChord not installed properly, \
+but tests will be trivially fulfilled")
     nestcheck_installed = False
 else:
     nestcheck_installed = True

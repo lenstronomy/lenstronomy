@@ -32,7 +32,10 @@ def lens_model_plot(
     deltaPix=0.01,
     sourcePos_x=0,
     sourcePos_y=0,
+    images_x=None,
+    images_y=None,
     point_source=False,
+    images_from_data=False,
     with_caustics=False,
     with_convergence=True,
     coord_center_ra=0,
@@ -42,6 +45,7 @@ def lens_model_plot(
     name_list=None,
     index=None,
     color_value="k",
+    mag_images=None,
     **kwargs,
 ):
     """Plots a lens model (convergence) and the critical curves and caustics.
@@ -57,6 +61,10 @@ def lens_model_plot(
         the lens equation)
     :param point_source: bool, if True, illustrates and computes the image positions of
         the point source
+    :param images_from_data: bool, if True, illustrates the image positions from a given data set,
+        uses the image data from images_x and images_y
+    :param images_x: list of x-positions of the images associated with a particular source
+    :param images_y: list of y-positions of the images associated with a particular source
     :param with_caustics: bool, if True, illustrates the critical curve and caustics of
         the system
     :param with_convergence: bool, if True, illustrates the convergence map
@@ -122,9 +130,13 @@ def lens_model_plot(
             kwargs_lens=kwargs_lens,
             source_x=sourcePos_x,
             source_y=sourcePos_y,
+            images_x=images_x,
+            images_y=images_y,
+            mag_images=mag_images,
             name_list=name_list,
             index=index,
             color=color_value,
+            images_from_data=images_from_data,
             **kwargs_point_source,
         )
     if coord_inverse:
@@ -294,11 +306,15 @@ def point_source_plot(
     kwargs_lens,
     source_x,
     source_y,
+    images_x,
+    images_y,
+    mag_images,
     name_list=None,
     index=None,
     solver_type="lenstronomy",
     kwargs_solver={},
     color="k",
+    images_from_data=False,
     **kwargs,
 ):
     """Plots and illustrates images of a point source. The plotting routine orders the
@@ -312,12 +328,16 @@ def point_source_plot(
     :param kwargs_lens: lens model keyword argument list
     :param source_x: x-position of source
     :param source_y: y-position of source
-    :param name_list: list of names of images
-    :param name_list: list of strings, longer or equal the number of point sources. If changing this parameter, input as name_list=[[...], [...]]
+    :param images_x: list of x-positions of the images associated with a particular source in arcsec
+    :param images_y: list of y-positions of the images associated with a particular source in arcsec
+    :param mag_images: list of magnifications from data with reference to the first image in the list
+    :param name_list: list of strings, longer or equal the number of point sources.
+        If changing this parameter, input as name_list=[[...], [...]]
     :param index: number of sources, an integer number. Default None.
     :param color: string representing the color for the source's images. Default "k".
     :param solver_type: string, type of solver to find the image positions ('lenstronomy', 'analytical' or 'stochastic')
     :param kwargs_solver: keyword arguments for the solver
+    :param images_from_data: bool, if True, illustrates image positions from a given data set
     :param kwargs: additional plotting keyword arguments
     :return: matplotlib axis instance with figure
     """
@@ -350,20 +370,35 @@ def point_source_plot(
         delta_pix_x = delta_pix
     origin = [ra0, dec0]
 
-    theta_x, theta_y = solver.image_position_from_source(
-        source_x,
-        source_y,
-        kwargs_lens,
-        search_window=np.max(pixel_grid.width),
-        x_center=x_center,
-        y_center=y_center,
-        min_distance=pixel_grid.pixel_width,
-        solver=solver_type,
-        **kwargs_solver,
-    )
-    mag_images = lens_model.magnification(theta_x, theta_y, kwargs_lens)
+    a = 0.5
+    if images_from_data == False:
+        theta_x, theta_y = solver.image_position_from_source(
+            source_x,
+            source_y,
+            kwargs_lens,
+            search_window=np.max(pixel_grid.width),
+            x_center=x_center,
+            y_center=y_center,
+            min_distance=pixel_grid.pixel_width,
+            solver=solver_type,
+            **kwargs_solver,
+        )
+        mag_images = lens_model.magnification(theta_x, theta_y, kwargs_lens)
+        x_image, y_image = pixel_grid.map_coord2pix(theta_x, theta_y)
+        x_source, y_source = pixel_grid.map_coord2pix(source_x, source_y)
+        ax.plot(
+            x_source * delta_pix_x + origin[0],
+            y_source * delta_pix + origin[1],
+            color,
+            markersize=10,
+        )
+    elif images_from_data == True:
+        mag_images = lens_model.magnification(images_x, images_y, kwargs_lens)
+        #### put in the map_coords2grid with images_x, etc. as the theta_x
+        x_image, y_image = pixel_grid.map_coord2pix(images_x, images_y)
 
-    x_image, y_image = pixel_grid.map_coord2pix(theta_x, theta_y)
+    if images_x == [] and images_y == []:
+        a = 0.0
 
     for i in range(len(x_image)):
         x_ = (x_image[i]) * delta_pix_x + origin[0]
@@ -373,9 +408,9 @@ def point_source_plot(
             y_,
             str("d" + color),
             markersize=4 * (1 + np.log(np.abs(mag_images[i]))),
-            alpha=0.5,
+            alpha=a,
         )
-        ax.text(x_, y_, name_list_[i], fontsize=20, color=color)
+        ax.text(x_, y_, name_list_[i], fontsize=20, color=color, alpha=a)
     x_source, y_source = pixel_grid.map_coord2pix(source_x, source_y)
 
     ax.plot(

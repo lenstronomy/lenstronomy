@@ -122,8 +122,8 @@ class TimeDelayLikelihood(object):
         :param kwargs_lens: lens model kwargs list
         :param kwargs_ps: point source kwargs list
         :param kwargs_cosmo: cosmology and other kwargs
-        :param lambda_mst: mass-sheet transform of the input lens model that is not accounted for in the
-            lens model parameters
+        :param lambda_mst: mass-sheet transform of the input lens model that is not
+            accounted for in the lens model parameters
         :type lambda_mst: float or int
         :return: log likelihood of the model given the time delay data.
         """

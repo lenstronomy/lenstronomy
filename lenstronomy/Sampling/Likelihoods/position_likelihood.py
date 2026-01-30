@@ -18,7 +18,7 @@ class PositionLikelihood(object):
         image_position_likelihood=False,
         ra_image_list=None,
         dec_image_list=None,
-        source_position_likelihood=False,
+        source_position_likelihood=None,
         source_position_tolerance=None,
         source_position_sigma=0.001,
         force_no_add_image=False,
@@ -55,6 +55,13 @@ class PositionLikelihood(object):
         self._pointSource = point_source_class
         # TODO replace with public function of ray_shooting
         self._lensModel = point_source_class._lens_model
+        point_source_type_list = point_source_class.point_source_type_list
+
+        if source_position_likelihood is None:
+            if "LENSED_POSITION" in point_source_type_list:
+                source_position_likelihood = True
+            else:
+                source_position_likelihood = False
         self._astrometric_likelihood = astrometric_likelihood
         self._image_position_sigma = image_position_uncertainty
         self._source_position_sigma = source_position_sigma

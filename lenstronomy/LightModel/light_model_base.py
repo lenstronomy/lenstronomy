@@ -5,7 +5,6 @@ __author__ = "sibirrer"
 import numpy as np
 from lenstronomy.Util.util import convert_bool_list
 
-
 __all__ = ["LightModelBase"]
 
 

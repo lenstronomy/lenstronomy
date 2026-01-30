@@ -1,7 +1,6 @@
 import astropy
 from lenstronomy.Util.util import isiterable
 
-
 if float(astropy.__version__[0]) < 5.0:
     from astropy.cosmology.core import isiterable
 

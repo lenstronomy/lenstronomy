@@ -116,12 +116,15 @@ class TimeDelayLikelihood(object):
 
         self._measurement_bool_list = time_delay_measurement_bool_list
 
-    def logL(self, kwargs_lens, kwargs_ps, kwargs_cosmo):
+    def logL(self, kwargs_lens, kwargs_ps, kwargs_cosmo, lambda_mst=1):
         """Routine to compute the log likelihood of the time-delay distance.
 
         :param kwargs_lens: lens model kwargs list
         :param kwargs_ps: point source kwargs list
         :param kwargs_cosmo: cosmology and other kwargs
+        :param lambda_mst: mass-sheet transform of the input lens model that is not
+            accounted for in the lens model parameters
+        :type lambda_mst: float or int
         :return: log likelihood of the model given the time delay data.
         """
         x_pos, y_pos = self._pointSource.image_position(
@@ -153,6 +156,7 @@ class TimeDelayLikelihood(object):
                     D_dt_model = kwargs_cosmo["D_dt"]
                     Ddt_scaled = self._lensModel.ddt_scaling * D_dt_model
                     delay_days = const.delay_arcsec2days(delay_arcsec, Ddt_scaled)
+                delay_days *= lambda_mst
                 if self._bimodal_measurement:
                     logL1 = self._log_delay_masked(
                         delay_days=delay_days, mask=mask, i=0

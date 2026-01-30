@@ -220,6 +220,15 @@ class TestTimeDelayLikelihood(object):
         )
         npt.assert_almost_equal(logL, 0, decimal=8)
 
+        # test with MST
+        logL = td_likelihood.logL(
+            kwargs_lens=self.kwargs_lens,
+            kwargs_ps=kwargs_ps2,
+            kwargs_cosmo=kwargs_cosmo,
+            lambda_mst=0.9,
+        )
+        npt.assert_almost_equal(logL, -1891, decimal=0)
+
         # Test if the time delay measurement bool list is used correctly if only one bool per point source is given
         td_likelihood = TimeDelayLikelihood(
             [time_delays_measured, time_delays_measured2],

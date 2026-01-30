@@ -110,10 +110,16 @@ class TestPositionLikelihood(object):
         self._x_pos_mp, self._y_pos_mp = x_pos_mp, y_pos_mp
 
     def test_raises(self):
+        ps_class = PointSource(
+            point_source_type_list=["SOURCE_POSITION"],
+            lens_model=None,
+            kwargs_lens_eqn_solver=self.kwargs_lens_eqn_solver,
+        )
+
         npt.assert_warns(
             UserWarning,
             PositionLikelihood,
-            self.ps_class,
+            ps_class,
             source_position_tolerance=0.001,
             source_position_likelihood=False,
         )

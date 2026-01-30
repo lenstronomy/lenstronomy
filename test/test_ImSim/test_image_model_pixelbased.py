@@ -18,7 +18,6 @@ from lenstronomy.Data.psf import PSF
 from lenstronomy.ImSim.differential_extinction import DifferentialExtinction
 from lenstronomy.LightModel.Profiles.starlets import SLIT_Starlets
 
-
 _force_no_pysap = (
     True  # if issues on Travis-CI to install pysap, force use python-only functions
 )

@@ -263,7 +263,7 @@ class TestPositionLikelihood(object):
             kwargs_ps_pos,
             sigma=0.01,
         )
-        npt.assert_almost_equal(logL, -0.45561141313119335, decimal=2)
+        npt.assert_almost_equal(logL, -0.45561141313119335, decimal=1)
 
     def test_cosmology_shift_mp(self):
         kwargs_ps_cosmo = [

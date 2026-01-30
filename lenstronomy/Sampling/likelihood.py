@@ -34,7 +34,7 @@ class LikelihoodModule(object):
         check_bounds=True,
         astrometric_likelihood=False,
         image_position_likelihood=False,
-        source_position_likelihood=False,
+        source_position_likelihood=None,
         image_position_uncertainty=0.004,
         check_positive_flux=False,
         source_position_tolerance=None,

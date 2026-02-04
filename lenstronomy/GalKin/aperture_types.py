@@ -286,6 +286,35 @@ class IFUGrid(object):
         return self._y_grid
 
 
+class IFUBinned(IFUGrid):
+    """Class for an Integral Field Unit spectrograph, with rectangular grid then binned (e.g. Voronoi)."""
+
+    def __init__(self, x_grid, y_grid, bins):
+        super(IFUBinned, self).__init__(x_grid, y_grid)
+        self._bins = bins.astype(int)
+
+    def aperture_select(self, ra, dec):
+        in_grid, grid_loc = super(IFUBinned, self).aperture_select(ra, dec)
+        if in_grid:
+            bin_id = self.bins[grid_loc]
+            if bin_id > -1:
+                return True, bin_id
+        return False, None
+
+    @property
+    def num_segments(self):
+        """Number of segments with separate measurements of the velocity dispersion.
+
+        :return: int.
+        """
+        unique_bins = np.unique(self._bins[self.bins > -1])
+        return len(unique_bins)
+
+    @property
+    def bins(self):
+        return self._bins
+
+
 @export
 def grid_ifu_select(ra, dec, x_grid, y_grid):
     """

@@ -54,6 +54,7 @@ class LinearBasis(LightModelBase):
                     "SERSIC_ELLIPSE_Q_PHI",
                     "TRIPLE_CHAMELEON",
                     "UNIFORM",
+                    "PL_SERSIC",
                 ]:
                     kwargs_new = kwargs_list[i].copy()
                     new = {"amp": 1}
@@ -142,6 +143,7 @@ class LinearBasis(LightModelBase):
                 "SERSIC_ELLIPSE_FLEXION",
                 "TRIPLE_CHAMELEON",
                 "UNIFORM",
+                "PL_SERSIC",
             ]:
                 n_list += [1]
             elif model in ["MULTI_GAUSSIAN", "MULTI_GAUSSIAN_ELLIPSE"]:
@@ -206,6 +208,7 @@ class LinearBasis(LightModelBase):
                 "SERSIC_ELLIPSE_Q_PHI",
                 "TRIPLE_CHAMELEON",
                 "UNIFORM",
+                "PL_SERSIC",
             ]:
                 kwargs_list[k]["amp"] = param[i]
                 i += 1
@@ -303,6 +306,7 @@ class LinearBasis(LightModelBase):
                     "SERSIC",
                     "SERSIC_ELLIPSE",
                     "SERSIC_ELLIPSE_FLEXION",
+                    "PL_SERSIC",
                 ]:
                     if np.any(np.array(kwargs_list[k]["amp"]) < 0):
                         pos_bool = False

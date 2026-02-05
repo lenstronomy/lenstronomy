@@ -287,7 +287,8 @@ class IFUGrid(object):
 
 
 class IFUBinned(IFUGrid):
-    """Class for an Integral Field Unit spectrograph, with rectangular grid then binned (e.g. Voronoi)."""
+    """Class for an Integral Field Unit spectrograph, with rectangular grid then binned
+    (e.g. Voronoi)."""
 
     def __init__(self, x_grid, y_grid, bins):
         super(IFUBinned, self).__init__(x_grid, y_grid)

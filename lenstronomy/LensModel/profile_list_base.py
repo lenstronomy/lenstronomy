@@ -6,6 +6,7 @@ __all__ = ["ProfileListBase"]
 _SUPPORTED_MODELS = [
     "ARC_PERT",
     "BLANK_PLANE",
+    "BPL",
     "CHAMELEON",
     "CNFW",
     "CNFW_ELLIPSE_POTENTIAL",
@@ -46,6 +47,7 @@ _SUPPORTED_MODELS = [
     "GAUSSIAN_POTENTIAL",
     "GNFW",
     "GNFW_ELLIPSE_GAUSS_DEC",
+    "GreenBoschNFW",
     "HERNQUIST",
     "HERNQUIST_ELLIPSE_POTENTIAL",
     "HERNQUIST_ELLIPSE_CSE",
@@ -100,7 +102,6 @@ _SUPPORTED_MODELS = [
     "TNFW_ELLIPSE_POTENTIAL",
     "TRIPLE_CHAMELEON",
     "ULDM",
-    "BPL",
 ]
 
 # These models require a new instance per profile as some computations are different when class
@@ -112,6 +113,7 @@ DYNAMIC_PROFILES = [
     "CTNFW_GAUSS_DEC",
     "DOUBLE_CHAMELEON",
     "EPL",
+    "GreenBoschNFW",
     "INTERPOL",
     "INTERPOL_SCALED",
     "NFW_ELLIPSE_GAUSS_DEC",
@@ -329,6 +331,10 @@ def lens_class(
         from lenstronomy.LensModel.Profiles.blank_plane import BlankPlane
 
         return BlankPlane(**profile_kwargs)
+    elif lens_type == "BPL":
+        from lenstronomy.LensModel.Profiles.bpl import BPL
+
+        return BPL(**profile_kwargs)
     elif lens_type == "CHAMELEON":
         from lenstronomy.LensModel.Profiles.chameleon import Chameleon
 
@@ -517,6 +523,10 @@ def lens_class(
         )
 
         return GeneralizedNFWEllipseGaussDec(**profile_kwargs)
+    elif lens_type == "GreenBoschNFW":
+        from lenstronomy.LensModel.Profiles.greenboschnfw import GreenBoschNFW
+
+        return GreenBoschNFW(**profile_kwargs)
     elif lens_type == "HERNQUIST":
         from lenstronomy.LensModel.Profiles.hernquist import Hernquist
 
@@ -774,10 +784,6 @@ def lens_class(
         from lenstronomy.LensModel.Profiles.uldm import Uldm
 
         return Uldm(**profile_kwargs)
-    elif lens_type == "BPL":
-        from lenstronomy.LensModel.Profiles.bpl import BPL
-
-        return BPL(**profile_kwargs)
     # when adding a new profile, insert the corresponding elif statement in its
     # alphabetical position
 

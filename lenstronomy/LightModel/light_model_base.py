@@ -29,9 +29,9 @@ _MODELS_SUPPORTED = [
     "HERNQUIST_ELLIPSE",
     "PJAFFE",
     "PJAFFE_ELLIPSE",
+    "PL_SERSIC",
     "UNIFORM",
     "POWER_LAW",
-    "PL_SERSIC",
     "NIE",
     "CHAMELEON",
     "DOUBLE_CHAMELEON",
@@ -161,6 +161,10 @@ class LightModelBase(object):
                 )
 
                 self.func_list.append(PseudoJaffeEllipse(**profile_kwargs))
+            elif profile_type == "PL_SERSIC":
+                from lenstronomy.LightModel.Profiles.pl_sersic import PL_Sersic
+
+                self.func_list.append(PL_Sersic(**profile_kwargs))
             elif profile_type == "UNIFORM":
                 from lenstronomy.LightModel.Profiles.uniform import Uniform
 
@@ -212,10 +216,6 @@ class LightModelBase(object):
                 from lenstronomy.LightModel.Profiles.lineprofile import LineProfile
 
                 self.func_list.append(LineProfile(**profile_kwargs))
-            elif profile_type == "PL_SERSIC":
-                from lenstronomy.LightModel.Profiles.pl_sersic import PL_Sersic
-
-                self.func_list.append(PL_Sersic(**profile_kwargs))
             else:
                 raise ValueError(
                     "No light model of type %s found! Supported are the following models: %s"

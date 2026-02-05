@@ -792,5 +792,3 @@ def lens_class(
             "%s is not a valid lens model. Supported are: %s."
             % (lens_type, _SUPPORTED_MODELS)
         )
-
-

@@ -32,17 +32,20 @@ class TestBPLvsEPL(object):
     def _kwargs_pair(b=1.0, a=2.0, q=0.8, phi_G=1.0, r_c=0.7):
         """Return kwargs for BPL and EPL that should match in the power-law limit.
 
-        Power-law limit is achieved by setting a_c == a (no break in 3D slope),
-        which removes the 'core/break' correction terms in the current BPL implementation.
+        Power-law limit is achieved by setting a_c == a (no break in 3D slope), which
+        removes the 'core/break' correction terms in the current BPL implementation.
         """
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
 
-        kwargs_bpl = dict(b=b, a=a, a_c=a, r_c=r_c, e1=e1, e2=e2, center_x=0.0, center_y=0.0)
+        kwargs_bpl = dict(
+            b=b, a=a, a_c=a, r_c=r_c, e1=e1, e2=e2, center_x=0.0, center_y=0.0
+        )
         kwargs_epl = dict(theta_E=b, gamma=a, e1=e1, e2=e2, center_x=0.0, center_y=0.0)
         return kwargs_bpl, kwargs_epl
 
     def test_elliptical_radius_convention(self):
-        """Sanity check the two common elliptical-radius definitions mentioned in the discussion.
+        """Sanity check the two common elliptical-radius definitions mentioned in the
+        discussion.
 
         r1 = sqrt(q*x^2 + y^2/q)
         r2 = sqrt(x^2 + y^2/q^2)
@@ -65,7 +68,9 @@ class TestBPLvsEPL(object):
         y = np.array([2.0, 0.0])
 
         for q in [0.999, 0.8, 0.4]:
-            kwargs_bpl, kwargs_epl = self._kwargs_pair(b=1.3, a=2.0, q=q, phi_G=1.0, r_c=0.7)
+            kwargs_bpl, kwargs_epl = self._kwargs_pair(
+                b=1.3, a=2.0, q=q, phi_G=1.0, r_c=0.7
+            )
 
             psi_bpl = self.bpl.function(x, y, **kwargs_bpl)
             psi_epl = self.epl.function(x, y, **kwargs_epl)
@@ -80,7 +85,9 @@ class TestBPLvsEPL(object):
         y = np.array([2.0, 0.0])
 
         for q in [1.0, 0.7, 0.4]:
-            kwargs_bpl, kwargs_epl = self._kwargs_pair(b=1.0, a=2.1, q=q, phi_G=0.3, r_c=0.5)
+            kwargs_bpl, kwargs_epl = self._kwargs_pair(
+                b=1.0, a=2.1, q=q, phi_G=0.3, r_c=0.5
+            )
 
             fx_bpl, fy_bpl = self.bpl.derivatives(x, y, **kwargs_bpl)
             fx_epl, fy_epl = self.epl.derivatives(x, y, **kwargs_epl)
@@ -93,7 +100,9 @@ class TestBPLvsEPL(object):
         y = np.array([2.0])
 
         for q in [0.9, 0.7, 0.5]:
-            kwargs_bpl, kwargs_epl = self._kwargs_pair(b=1.0, a=1.9, q=q, phi_G=1.0, r_c=0.7)
+            kwargs_bpl, kwargs_epl = self._kwargs_pair(
+                b=1.0, a=1.9, q=q, phi_G=1.0, r_c=0.7
+            )
 
             f_xx, f_xy, f_yx, f_yy = self.bpl.hessian(x, y, **kwargs_bpl)
             f_xx_e, f_xy_e, f_yx_e, f_yy_e = self.epl.hessian(x, y, **kwargs_epl)

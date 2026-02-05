@@ -159,7 +159,9 @@ class LensedPositions(PSBase):
             source_amp = kwargs_ps["source_amp"]
         else:
             self._lens_model.change_source_redshift(self._redshift)
-            ra_image, dec_image = kwargs_ps["ra_image"], kwargs_ps["dec_image"]
+            ra_image, dec_image = np.array(kwargs_ps["ra_image"]), np.array(
+                kwargs_ps["dec_image"]
+            )
             if self.k_list is None:
                 mag = self._lens_model.magnification(ra_image, dec_image, kwargs_lens)
             else:

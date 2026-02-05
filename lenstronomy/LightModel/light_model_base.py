@@ -5,7 +5,6 @@ __author__ = "sibirrer"
 import numpy as np
 from lenstronomy.Util.util import convert_bool_list
 
-
 __all__ = ["LightModelBase"]
 
 
@@ -15,6 +14,8 @@ _MODELS_SUPPORTED = [
     "ELLIPSOID",
     "MULTI_GAUSSIAN",
     "MULTI_GAUSSIAN_ELLIPSE",
+    "MGE_SET",
+    "MGE_SET_ELLIPSE",
     "SERSIC",
     "SERSIC_ELLIPSE",
     "SERSIC_ELLIPSE_FLEXION",
@@ -84,6 +85,14 @@ class LightModelBase(object):
                 )
 
                 self.func_list.append(MultiGaussianEllipse(**profile_kwargs))
+            elif profile_type == "MGE_SET":
+                from lenstronomy.LightModel.Profiles.mge_set import MGESet
+
+                self.func_list.append(MGESet(**profile_kwargs))
+            elif profile_type == "MGE_SET_ELLIPSE":
+                from lenstronomy.LightModel.Profiles.mge_ellipse import MGEEllipse
+
+                self.func_list.append(MGEEllipse(**profile_kwargs))
             elif profile_type == "SERSIC":
                 from lenstronomy.LightModel.Profiles.sersic import Sersic
 
@@ -300,16 +309,23 @@ class LightModelBase(object):
                     "GAUSSIAN_ELLIPSE",
                     "MULTI_GAUSSIAN",
                     "MULTI_GAUSSIAN_ELLIPSE",
+                    "MGE_SET",
+                    "MGE_SET_ELLIPSE",
                     "LINE_PROFILE",
                     "HERNQUIST",
                     "HERNQUIST_ELLIPSE",
                 ]:
                     kwargs_new = kwargs_list_standard[i].copy()
                     if norm is True:
-                        if model in ["MULTI_GAUSSIAN", "MULTI_GAUSSIAN_ELLIPSE"]:
+                        if model in [
+                            "MULTI_GAUSSIAN",
+                            "MULTI_GAUSSIAN_ELLIPSE",
+                            "MGE_SET",
+                            "MGE_SET_ELLIPSE",
+                        ]:
                             new = {
                                 "amp": np.array(kwargs_new["amp"])
-                                / kwargs_new["amp"][0]
+                                / np.sum(kwargs_new["amp"])
                             }
                         else:
                             new = {"amp": 1}

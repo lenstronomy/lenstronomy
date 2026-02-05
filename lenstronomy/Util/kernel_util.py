@@ -31,8 +31,9 @@ def de_shift_kernel(kernel, shift_x, shift_y, iterations=20, fractional_step_siz
     :param shift_y: y-offset relative to the center of the pixel (sub-pixel shift)
     :param iterations: number of repeated iterations of shifting a new de-shifted kernel
         and apply corrections
-    :param fractional_step_size: float (0, 1] correction factor relative to previous
-        proposal (can be used for stability
+    :param fractional_step_size: correction factor relative to previous proposal (can be
+        used for stability
+    :type fractional_step_size: float (0, 1]
     :return: de-shifted kernel such that the interpolated shift boy (shift_x, shift_y)
         results in the input kernel
     """
@@ -59,6 +60,7 @@ def de_shift_kernel(kernel, shift_x, shift_y, iterations=20, fractional_step_siz
         delta = kernel_init_shifted - kernel_norm(kernel_shifted_inv) * norm
         kernel_new += delta * fractional_step_size
         kernel_new = kernel_norm(kernel_new) * norm
+        # kernel_new[kernel_new < 0] = 0
     return kernel_new[1:-1, 1:-1]
 
 
@@ -83,9 +85,51 @@ def center_kernel(kernel, iterations=20):
     y_w = np.sum(kernel * util.array2image(y_grid))
     # de-shift kernel
     kernel_centered = de_shift_kernel(
-        kernel, shift_x=-x_w, shift_y=-y_w, iterations=iterations
+        kernel,
+        shift_x=-x_w,
+        shift_y=-y_w,
+        iterations=iterations,
+        fractional_step_size=1,
     )
     return kernel_norm(kernel_centered)
+
+
+@export
+def kernel_make_odd(kernel_even):
+    """De-shifts a even kernel (with all for central pixels the same brightness to an
+    odd kernel.
+
+    :param kernel_even: n x n kernel with n even, centered
+    :return: even kernel with n+1 x n+1 centered
+    """
+    # extend kernel with one
+    nx, ny = np.shape(kernel_even)
+    assert nx == ny
+    if nx % 2 == 1:
+        return kernel_even
+    kernel_odd = np.zeros((nx + 1, ny + 1))
+    kernel_odd[1:, 1:] = kernel_even
+    # de-shift kernel
+    kernel_1 = center_kernel(kernel_odd)
+
+    kernel_odd = np.zeros((nx + 1, ny + 1))
+    kernel_odd[:nx, 1:] = kernel_even
+    # de-shift kernel
+    kernel_2 = center_kernel(kernel_odd)
+
+    kernel_odd = np.zeros((nx + 1, ny + 1))
+    kernel_odd[1:, :ny] = kernel_even
+    # de-shift kernel
+    kernel_3 = center_kernel(kernel_odd)
+
+    kernel_odd = np.zeros((nx + 1, ny + 1))
+    kernel_odd[:nx, :ny] = kernel_even
+    # de-shift kernel
+    kernel_4 = center_kernel(kernel_odd)
+
+    kernel_avg = kernel_1 + kernel_2 + kernel_3 + kernel_4
+    kernel_avg[kernel_avg < 0] = 0
+    return center_kernel(kernel_avg)
 
 
 @export

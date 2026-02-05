@@ -195,10 +195,8 @@ class DyPolyChordSampler(NestedSampler):
         except ImportError:
             dyPolyChord = None
             pypolychord_utils = None
-            print(
-                "Warning : dyPolyChord not properly installed. \
-                   You can get it from : https://github.com/ejhigson/dyPolyChord"
-            )
+            print("Warning : dyPolyChord not properly installed. \
+                   You can get it from : https://github.com/ejhigson/dyPolyChord")
             dypolychord_installed = False
         else:
             dypolychord_installed = True

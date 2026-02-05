@@ -30,7 +30,6 @@ from lenstronomy.Plots.model_plot import ModelPlot
 
 from lenstronomy.Workflow.fitting_sequence import FittingSequence
 
-
 # name of the base COOLEST template
 TEMPLATE_NAME = "coolest_template"
 

@@ -59,6 +59,10 @@ class MultiPlane(object):
             effective time-delay distance. Only needed if distance ratios are
             sampled. If None, the first lens redshift is used.
         :param cosmo_interp: bool, if True, will use interpolated cosmology
+        :param z_interp_stop: (only in multi-plane with cosmo_interp=True); maximum redshift for distance interpolation
+            This number should be higher or equal the maximum of the source redshift and/or the z_source_convention
+        :param num_z_interp: (only in multi-plane with cosmo_interp=True); number of redshift bins for interpolating
+            distances
         :param kwargs_multiplane_model: keyword arguments for the MultiPlaneDecoupled class, if specified
         :param distance_ratio_sampling: bool, if True, will use sampled
             distance ratios to update T_ij value in multi-lens plane computation.

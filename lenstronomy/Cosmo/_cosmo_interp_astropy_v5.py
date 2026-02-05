@@ -9,7 +9,9 @@ if float(astropy.__version__[0]) < 5.0:
 elif float(astropy.__version__[0]) < 7.0:
     from astropy.cosmology.utils import vectorize_redshift_method
 else:
-    from astropy.cosmology._utils import vectorize_redshift_method
+    from astropy.cosmology._src.utils import vectorize_redshift_method
+
+    # from astropy.cosmology._utils import vectorize_redshift_method
 
 
 class CosmoInterp(object):
@@ -41,7 +43,7 @@ class CosmoInterp(object):
         """
 
         return (
-            self._cosmo._hubble_distance
+            self._cosmo.hubble_distance
             * self._integral_comoving_distance_z1z2_scalar(z1, z2)
         )
 

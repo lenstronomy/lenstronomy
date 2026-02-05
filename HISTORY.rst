@@ -448,3 +448,17 @@ History
 +++++++++++++++++++
 * pixelated source reconstruction
 * rectangular PixelGrid bug fix
+
+1.13.3 (2025-11-29)
++++++++++++++++++++
+* Astropy v7 compatibility of interpolated cosmology class
+* Minor GalKin IFU bug fix
+
+1.13.4 (2026-01-12)
++++++++++++++++++++
+* unconvolved image simulation supports point source
+
+1.13.5 (2026-01-16)
++++++++++++++++++++
+* bug fix in lens equation solver in multi-plane when deflectors are parameterized in the image plane
+* updated Roman Space Telescope exposure times

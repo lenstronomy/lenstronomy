@@ -1,4 +1,3 @@
-import lenstronomy.Util.util as Util
 import lenstronomy.Util.kernel_util as kernel_util
 import lenstronomy.Util.image_util as image_util
 import lenstronomy.Util.util as util
@@ -13,22 +12,22 @@ from scipy.ndimage import shift
 
 
 def test_fwhm_kernel():
-    x_grid, y_gird = Util.make_grid(101, 1)
+    x_grid, y_gird = util.make_grid(101, 1)
     sigma = 20
 
     flux = gaussian.function(x_grid, y_gird, amp=1, sigma=sigma)
-    kernel = Util.array2image(flux)
+    kernel = util.array2image(flux)
     kernel = kernel_util.kernel_norm(kernel)
     fwhm_kernel = kernel_util.fwhm_kernel(kernel)
-    fwhm = Util.sigma2fwhm(sigma)
+    fwhm = util.sigma2fwhm(sigma)
     npt.assert_almost_equal(fwhm / fwhm_kernel, 1, 2)
 
 
 def test_center_kernel():
-    x_grid, y_gird = Util.make_grid(31, 1)
+    x_grid, y_gird = util.make_grid(31, 1)
     sigma = 2
     flux = gaussian.function(x_grid, y_gird, amp=1, sigma=sigma)
-    kernel = Util.array2image(flux)
+    kernel = util.array2image(flux)
     kernel = kernel_util.kernel_norm(kernel)
 
     # kernel being centered
@@ -50,6 +49,20 @@ def test_center_kernel():
     kernel_new = kernel_util.center_kernel(kernel_shifted, iterations=5)
     kernel_new = kernel_util.kernel_norm(kernel_new)
     npt.assert_almost_equal((kernel_new + 0.01) / (kernel + 0.01), 1, decimal=3)
+
+
+def test_kernel_make_odd():
+    kernel_even = np.zeros((4, 4))
+    kernel_even[1:3, 1:3] = np.ones((2, 2)) / 4.0
+    kernel_odd = kernel_util.kernel_make_odd(kernel_even)
+    nx_odd, ny_odd = np.shape(kernel_odd)
+    assert nx_odd == 5
+    assert ny_odd == 5
+    npt.assert_almost_equal(np.sum(kernel_odd), 1, decimal=8)
+    assert kernel_odd[2, 2] > 0.5
+
+    kernel_odd_new = kernel_util.kernel_make_odd(kernel_odd)
+    npt.assert_almost_equal(kernel_odd_new, kernel_odd, decimal=9)
 
 
 def test_pixelsize_change():
@@ -118,8 +131,9 @@ def test_de_shift():
     shift_y = 0.2
     kernel_shifted = shift(kernel, shift=[-shift_y, -shift_x], order=1)
     kernel_de_shifted = kernel_util.de_shift_kernel(
-        kernel_shifted, shift_x, shift_y, iterations=50
+        kernel_shifted, shift_x, shift_y, iterations=500, fractional_step_size=1
     )
+
     delta_max = np.max(kernel - kernel_de_shifted)
     assert delta_max < 0.01
     npt.assert_almost_equal(kernel_de_shifted[2, 2], kernel[2, 2], decimal=2)
@@ -295,9 +309,9 @@ def test_subgrid_rebin():
     subgrid_res = 3
 
     sigma = 1
-    x_grid, y_gird = Util.make_grid(kernel_size, 1.0 / subgrid_res, subgrid_res)
+    x_grid, y_gird = util.make_grid(kernel_size, 1.0 / subgrid_res, subgrid_res)
     flux = gaussian.function(x_grid, y_gird, amp=1, sigma=sigma)
-    kernel = Util.array2image(flux)
+    kernel = util.array2image(flux)
     print(np.shape(kernel))
     kernel = util.averaging(
         kernel, numGrid=kernel_size * subgrid_res, numPix=kernel_size
@@ -336,10 +350,10 @@ def test_mge_kernel():
 def test_kernel_average_pixel():
     gaussian = Gaussian()
     subgrid_res = 3
-    x_grid, y_gird = Util.make_grid(9, 1.0, subgrid_res)
+    x_grid, y_gird = util.make_grid(9, 1.0, subgrid_res)
     sigma = 2
     flux = gaussian.function(x_grid, y_gird, amp=1, sigma=sigma)
-    kernel_super = Util.array2image(flux)
+    kernel_super = util.array2image(flux)
     kernel_pixel = kernel_util.kernel_average_pixel(
         kernel_super, supersampling_factor=subgrid_res
     )
@@ -354,20 +368,20 @@ def test_kernel_average_pixel():
 def test_averaging_even_kernel():
     subgrid_res = 4
 
-    x_grid, y_gird = Util.make_grid(19, 1.0, 1)
+    x_grid, y_gird = util.make_grid(19, 1.0, 1)
     sigma = 1.5
     flux = gaussian.function(x_grid, y_gird, amp=1, sigma=sigma)
-    kernel_super = Util.array2image(flux)
+    kernel_super = util.array2image(flux)
 
     kernel_pixel = kernel_util.averaging_even_kernel(kernel_super, subgrid_res)
     npt.assert_almost_equal(np.sum(kernel_pixel) * subgrid_res**2, 1, decimal=5)
     assert len(kernel_pixel) == 5
 
-    x_grid, y_gird = Util.make_grid(17, 1.0, 1)
+    x_grid, y_gird = util.make_grid(17, 1.0, 1)
     sigma = 1.5
     amp = 2
     flux = gaussian.function(x_grid, y_gird, amp=amp, sigma=sigma)
-    kernel_super = Util.array2image(flux)
+    kernel_super = util.array2image(flux)
 
     kernel_pixel = kernel_util.averaging_even_kernel(kernel_super, subgrid_res)
     npt.assert_almost_equal(np.sum(kernel_pixel) * subgrid_res**2, amp, decimal=5)
@@ -375,11 +389,11 @@ def test_averaging_even_kernel():
 
 
 def test_degrade_kernel():
-    x_grid, y_gird = Util.make_grid(19 * 5, 1.0, 1)
+    x_grid, y_gird = util.make_grid(19 * 5, 1.0, 1)
     sigma = 1.5
     amp = 2
     flux = gaussian.function(x_grid, y_gird, amp=2, sigma=sigma)
-    kernel_super = Util.array2image(flux) / np.sum(flux) * amp
+    kernel_super = util.array2image(flux) / np.sum(flux) * amp
 
     for degrading_factor in range(7):
         kernel_degraded = kernel_util.degrade_kernel(

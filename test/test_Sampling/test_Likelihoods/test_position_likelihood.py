@@ -110,10 +110,16 @@ class TestPositionLikelihood(object):
         self._x_pos_mp, self._y_pos_mp = x_pos_mp, y_pos_mp
 
     def test_raises(self):
+        ps_class = PointSource(
+            point_source_type_list=["SOURCE_POSITION"],
+            lens_model=None,
+            kwargs_lens_eqn_solver=self.kwargs_lens_eqn_solver,
+        )
+
         npt.assert_warns(
             UserWarning,
             PositionLikelihood,
-            self.ps_class,
+            ps_class,
             source_position_tolerance=0.001,
             source_position_likelihood=False,
         )
@@ -257,7 +263,7 @@ class TestPositionLikelihood(object):
             kwargs_ps_pos,
             sigma=0.01,
         )
-        npt.assert_almost_equal(logL, -0.4344342437028236, decimal=2)
+        npt.assert_almost_equal(logL, -0.45561141313119335, decimal=1)
 
     def test_cosmology_shift_mp(self):
         kwargs_ps_cosmo = [

@@ -140,7 +140,6 @@ class LensEquationSolver(object):
             units of angles, related ray-traced source displacements and pixel width
         :raises: AttributeError, KeyError
         """
-        kwargs_lens = self.lensModel.set_static(kwargs_lens)
         # compute number of pixels to cover the search window with the required min_distance
         numPix = int(round(search_window / min_distance) + 0.5)
         x_grid, y_grid = util.make_grid(numPix, min_distance)
@@ -329,6 +328,7 @@ class LensEquationSolver(object):
         """
         # find pixels in the image plane possibly hosting a solution of the lens equation, related source distances and
         # pixel width
+        kwargs_lens = self.lensModel.set_static(kwargs_lens)
         x_mins, y_mins, delta_map, pixel_width = self.candidate_solutions(
             sourcePos_x,
             sourcePos_y,
@@ -577,8 +577,8 @@ class LensEquationSolver(object):
             else:
                 # if the new proposal is worse than the previous one, it randomly draws a new proposal in a different
                 # direction and tries again
-                image_plane_vector[0] *= np.random.normal(loc=0, scale=0.5)
-                image_plane_vector[1] *= np.random.normal(loc=0, scale=0.5)
+                image_plane_vector[0] *= np.random.normal(loc=0, scale=0.1)
+                image_plane_vector[1] *= np.random.normal(loc=0, scale=0.1)
                 return self._gradient_step(
                     x_guess,
                     y_guess,

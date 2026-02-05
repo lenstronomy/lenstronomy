@@ -18,7 +18,7 @@ class PositionLikelihood(object):
         image_position_likelihood=False,
         ra_image_list=None,
         dec_image_list=None,
-        source_position_likelihood=False,
+        source_position_likelihood=None,
         source_position_tolerance=None,
         source_position_sigma=0.001,
         force_no_add_image=False,
@@ -43,7 +43,8 @@ class PositionLikelihood(object):
             the source is meant to match the requirements, otherwise a punishing likelihood term is introduced
         :type source_position_tolerance: None or float
         :param source_position_sigma: r.m.s. value corresponding to a 1-sigma Gaussian likelihood accepted by the model
-            precision in matching the source position transformed from the image plane
+            precision in matching the source position transformed from the image plane. Used for
+            source_position_likelihood
         :param force_no_add_image: bool, if True, will punish additional images appearing in the frame of the modelled
             image(first calculate them)
         :param restrict_image_number: bool, if True, searches for all appearing images in the frame of the data and
@@ -54,6 +55,13 @@ class PositionLikelihood(object):
         self._pointSource = point_source_class
         # TODO replace with public function of ray_shooting
         self._lensModel = point_source_class._lens_model
+        point_source_type_list = point_source_class.point_source_type_list
+
+        if source_position_likelihood is None:
+            if "LENSED_POSITION" in point_source_type_list:
+                source_position_likelihood = True
+            else:
+                source_position_likelihood = False
         self._astrometric_likelihood = astrometric_likelihood
         self._image_position_sigma = image_position_uncertainty
         self._source_position_sigma = source_position_sigma

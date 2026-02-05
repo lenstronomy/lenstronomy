@@ -43,6 +43,10 @@ class TestLightModel(object):
                 "center_x": 0,
                 "center_y": 0,
             },  # 'MULTI_GAUSSIAN'
+            # {'amp': [1, 2], 'sigma_min': 0.1, 'sigma_max': 1, "center_x": 0,
+            #    "center_y": 0,}, # 'MGE_SET'
+            # {'amp': [1, 2], 'sigma_min': 0.1, 'sigma_max': 1, 'e1': 0.1, 'e2': -0.1, "center_x": 0,
+            #    "center_y": 0,},  # 'MGE_SET_ELLIPSE'
             {
                 "amp": 1,
                 "R_sersic": 0.5,
@@ -144,6 +148,8 @@ class TestLightModel(object):
 
     def test_init(self):
         model_list = [
+            "MGE_SET",
+            "MGE_SET_ELLIPSE",
             "CORE_SERSIC",
             "SERSIC",
             "SERSIC_ELLIPSE_FLEXION",
@@ -158,6 +164,8 @@ class TestLightModel(object):
             "TRIPLE_CHAMELEON",
         ]
         profile_kwargs_list = [
+            {"n_comp": 2},
+            {"n_comp": 2},
             None,
             {"sersic_major_axis": False},
             {"sersic_major_axis": True},
@@ -166,8 +174,8 @@ class TestLightModel(object):
             light_model_list=model_list, profile_kwargs_list=profile_kwargs_list
         )
         assert len(lightModel.profile_type_list) == len(model_list)
-        assert lightModel.func_list[1]._sersic_major_axis == False
-        assert lightModel.func_list[2]._sersic_major_axis == True
+        assert lightModel.func_list[3]._sersic_major_axis == False
+        assert lightModel.func_list[4]._sersic_major_axis == True
 
     def test_surface_brightness(self):
         output = self.LightModel.surface_brightness(
@@ -288,8 +296,8 @@ class TestLightModel(object):
         assert total_flux_list[2] == 100
         assert total_flux_list[3] == 1
         assert total_flux_list[4] == 1
-        assert total_flux_list[5] == 2
-        assert total_flux_list[6] == 2
+        assert total_flux_list[5] == 1
+        assert total_flux_list[6] == 1
 
     def test_delete_interpol_caches(self):
         x, y = util.make_grid(numPix=20, deltapix=1.0)
@@ -317,6 +325,13 @@ class TestLightModel(object):
         assert bool
 
         kwargs_list = [{"amp": -1, "sigma": 1}]
+        bool = ligthModel.check_positive_flux_profile(kwargs_list)
+        assert not bool
+
+        ligthModel = LightModel(
+            light_model_list=["MGE_SET"], profile_kwargs_list=[{"n_comp": 2}]
+        )
+        kwargs_list = [{"amp": [-1, 1], "sigma_min": 1, "sigma_max": 2}]
         bool = ligthModel.check_positive_flux_profile(kwargs_list)
         assert not bool
 

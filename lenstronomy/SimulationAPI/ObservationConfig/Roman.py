@@ -1,5 +1,6 @@
 # %%
 """Provisional Roman instrument and observational settings."""
+
 import lenstronomy.Util.util as util
 import os
 import astropy.io.fits as pyfits
@@ -9,8 +10,8 @@ import astropy.io.fits as pyfits
 # seeing, read_noise, pixel_scale (labelled as plate_scale on website): https://roman.gsfc.nasa.gov/science/WFI_technical.html
 # sky brightness calculated using count rates per pixel at minimum Zodiacal light given in website above
 # For microlensing survey mode: exposure time, number of exposures for F146 and F087: table 1 with the mission design of WFIRST Cycle 7 from https://iopscience.iop.org/article/10.3847/1538-4365/aafb69/meta#apjsaafb69t1fnd
-# For wide area survey mode: exposure time and number of exposures for relevant filters set as given in https://roman.gsfc.nasa.gov/high_latitude_wide_area_survey.html
-
+# For wide area survey mode: exposure time and number of exposures for relevant filters set as given in https://roman-docs.stsci.edu/roman-community-defined-surveys/high-latitude-wide-area-survey
+# For time domain survey mode: exposure time and number of exposures for relevant filters set as given in https://roman-docs.stsci.edu/roman-community-defined-surveys/high-latitude-time-domain-survey
 
 __all__ = ["Roman"]
 
@@ -65,7 +66,7 @@ F146_band_obs = {
 class Roman(object):
     """Class contains Roman instrument and observation configurations."""
 
-    def __init__(self, band="F062", psf_type="GAUSSIAN", survey_mode="wide_area"):
+    def __init__(self, band="F106", psf_type="GAUSSIAN", survey_mode="wide_area"):
         """
 
         :param band: string, 'F062', 'F087', 'F106', 'F129', 'F158' , 'F184' or 'F146' supported. Determines obs dictionary.
@@ -92,21 +93,56 @@ class Roman(object):
                 % band
             )
 
+        # NOTE: Updated on 1/13/2026
         if survey_mode == "wide_area":
+            # medium tier
             # the number of exposures is given per sector
             # a full pass of the High Latitude Wide Area Survey is 155 sectors
 
-            if band in ["F106", "F158", "F184", "F062"]:
-                exp_per_tile = 3
-            elif band == "F129":
-                exp_per_tile = 4
+            if band in ["F106", "F129", "F158"]:
+                self.obs.update({"exposure_time": 107, "num_exposures": 3})
             else:
                 raise ValueError(
-                    "band %s is not supported with the wide_area survey mode! Choose 'F106', 'F062, 'F158', 'F184' or F129"
+                    "band %s is not supported with the wide_area medium tier survey mode! Choose 'F106', 'F129', or 'F158'"
                     % band
                 )
 
-            self.obs.update({"exposure_time": 146, "num_exposures": 32 * exp_per_tile})
+        # NOTE: Updated on 1/13/2026
+        elif survey_mode == "time_domain_wide":
+
+            bands = ["F062", "F087", "F106", "F129", "F158"]
+            exposure_times = [60, 85, 95, 152, 294]
+
+            if band in bands:
+                index = bands.index(band)
+                exposure_time = exposure_times[index]
+            else:
+                raise ValueError(
+                    "band %s is not supported with the time_domain_wide survey mode! Choose 'F062', 'F087', 'F106', 'F129', or 'F158'"
+                    % band
+                )
+            self.obs.update({"exposure_time": exposure_time, "num_exposures": 1})
+
+        # NOTE: Updated on 1/13/2026
+        elif survey_mode == "time_domain_deep":
+
+            bands = ["F087", "F106", "F129", "F158", "F184"]
+            exposure_times = [193, 294, 307, 420, 409]
+            num_exposures_list = [1, 1, 1, 1, 4]
+
+            if band in bands:
+                index = bands.index(band)
+                exposure_time = exposure_times[index]
+                num_exposures = num_exposures_list[index]
+            else:
+                raise ValueError(
+                    "band %s is not supported with the time_domain_deep survey mode! Choose 'F087', 'F106', 'F129', 'F158', or 'F184'"
+                    % band
+                )
+            self.obs.update(
+                {"exposure_time": exposure_time, "num_exposures": num_exposures}
+            )
+
         elif survey_mode == "microlensing":
             if band == "F146":
                 # These are the exposure times and number of exposures for the primary filter, F146

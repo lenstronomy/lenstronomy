@@ -191,7 +191,7 @@ class PowerLawFixedShear(PowerLawParamManager):
         :return: dictionary of lens model parameters with fixed shear = shear_strength
         """
 
-        (thetaE, center_x, center_y, e1, e2, g1, g2) = args
+        thetaE, center_x, center_y, e1, e2, g1, g2 = args
         gamma = self.kwargs_lens[0]["gamma"]
         kwargs_epl = {
             "theta_E": thetaE,
@@ -234,7 +234,7 @@ class PowerLawFreeShearMultipole(PowerLawParamManager):
         return 3
 
     def args_to_kwargs(self, args):
-        (thetaE, center_x, center_y, e1, e2, g1, g2) = args
+        thetaE, center_x, center_y, e1, e2, g1, g2 = args
 
         gamma = self.kwargs_lens[0]["gamma"]
 
@@ -285,7 +285,7 @@ class PowerLawFixedShearMultipole(PowerLawFixedShear):
         return 3
 
     def args_to_kwargs(self, args):
-        (thetaE, center_x, center_y, e1, e2, g1, g2) = args
+        thetaE, center_x, center_y, e1, e2, g1, g2 = args
         gamma = self.kwargs_lens[0]["gamma"]
 
         kwargs_epl = {

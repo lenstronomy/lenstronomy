@@ -872,6 +872,93 @@ class TestSolver4Point(object):
         init_args = (lensModel, solver_type, parameter_module)
         npt.assert_raises(ValueError, solver_init, *init_args)
 
+    def test_solver_bpl(self):
+        lens_model_list = ["BPL"]
+        lensModel = LensModel(lens_model_list)
+        solver = Solver4Point(lensModel)
+        lensEquationSolver = LensEquationSolver(lensModel)
+        sourcePos_x = 0.1
+        sourcePos_y = -0.1
+        deltapix = 0.05
+        numPix = 150
+        gamma = 1.9
+        phi_G, q = 0.5, 0.8
+        e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
+        a = 1.8
+        a_c = 0.9
+        r_c = 0.5
+
+        kwargs_lens = [
+            {
+                "b": 1.0,  
+                "a": a,  
+                "a_c": a_c, 
+                "r_c": r_c,  
+                "e1": e1,
+                "e2": e2,
+                "center_x": 0.1,
+                "center_y": -0.1,
+            }
+        ]
+
+        x_pos, y_pos = lensEquationSolver.findBrightImage(
+            sourcePos_x,
+            sourcePos_y,
+            kwargs_lens,
+            numImages=4,
+            min_distance=deltapix,
+            search_window=numPix * deltapix,
+        )
+
+
+        kwargs_lens_init = [
+            {
+                "b": 1.3, 
+                "a": a,  
+                "a_c": a_c,  
+                "r_c": r_c,  
+                "e1": e1,
+                "e2": e2,
+                "center_x": 0.0,
+                "center_y": 0,
+            }
+        ]
+
+        kwargs_lens_new, accuracy = solver.constraint_lensmodel(
+            x_pos, y_pos, kwargs_lens_init
+        )
+        
+
+        npt.assert_almost_equal(
+            kwargs_lens_new[0]["b"], kwargs_lens[0]["b"], decimal=3
+        )
+        npt.assert_almost_equal(
+            kwargs_lens_new[0]["e1"], kwargs_lens[0]["e1"], decimal=3
+        )
+        npt.assert_almost_equal(
+            kwargs_lens_new[0]["e2"], kwargs_lens[0]["e2"], decimal=3
+        )
+        npt.assert_almost_equal(
+            kwargs_lens_new[0]["center_x"], kwargs_lens[0]["center_x"], decimal=3
+        )
+        npt.assert_almost_equal(
+            kwargs_lens_new[0]["center_y"], kwargs_lens[0]["center_y"], decimal=3
+        )
+
+
+        npt.assert_almost_equal(kwargs_lens_new[0]["b"], 1.0, decimal=3)
+
+
+        x_source_new, y_source_new = lensModel.ray_shooting(
+            x_pos, y_pos, kwargs_lens_new
+        )
+        dist = np.sqrt(
+            (x_source_new - x_source_new[0]) ** 2
+            + (y_source_new - y_source_new[0]) ** 2
+        )
+        print(dist)
+        assert np.max(dist) < 0.000001
+
 
 if __name__ == "__main__":
     pytest.main()

@@ -286,6 +286,51 @@ class IFUGrid(object):
         return self._y_grid
 
 
+class IFUBinned(IFUGrid):
+    """Class for an Integral Field Unit spectrograph, with a binned (e.g. Voronoi)
+    rectangular grid.
+
+    It has the same grid definition as IFUGrid, and a matrix of bin ids, indicating to
+    which bin each pixel belongs.
+    """
+
+    def __init__(self, x_grid, y_grid, bins):
+        """
+        :param x_grid: float array of shape (n_y, n_x) with the x coordinates of the grid
+        :param y_grid: float array of shape (n_y, n_x) with the y coordinates of the grid
+        :param bins: int array of shape (n_y, n_x) with the bin ids (0, 1, ...), and -1 for excluded pixels.
+        """
+        super(IFUBinned, self).__init__(x_grid, y_grid)
+        self._bins = bins.astype(int)
+
+    def aperture_select(self, ra, dec):
+        """
+        :param ra: angular coordinate of photon/ray
+        :param dec: angular coordinate of photon/ray
+        :return: bool, True if photon/ray is within the slit, False otherwise, and bin id
+        """
+        in_grid, grid_loc = super(IFUBinned, self).aperture_select(ra, dec)
+        if in_grid:
+            bin_id = self.bins[grid_loc]
+            if bin_id > -1:
+                return True, bin_id
+        return False, None
+
+    @property
+    def num_segments(self):
+        """Number of segments with separate measurements of the velocity dispersion.
+        This is the number of unique bin ids.
+
+        :return: int.
+        """
+        unique_bins = np.unique(self._bins[self.bins > -1])
+        return len(unique_bins)
+
+    @property
+    def bins(self):
+        return self._bins
+
+
 @export
 def grid_ifu_select(ra, dec, x_grid, y_grid):
     """

@@ -60,6 +60,36 @@ class TestAperture(object):
         assert bool is False
         assert frame.num_segments == (10, 10)
 
+        # binned IFU
+        x = y = np.linspace(-3, 3, 9)
+        x_grid, y_grid = np.meshgrid(x, y)
+        # create two bins (with two pixels each)
+        bins = np.full_like(x_grid, -1)
+        bins[3, 3] = 0
+        bins[3, 4] = 0
+        bins[4, 4] = 1
+        bins[4, 5] = 1
+        kwargs_ifu_binned = {"x_grid": x_grid, "y_grid": y_grid, "bins": bins}
+        ifu_binned = Aperture(aperture_type="IFU_binned", **kwargs_ifu_binned)
+        # number of bins
+        assert ifu_binned.num_segments == 2
+        # outside the grid
+        bool, i = ifu_binned.aperture_select(5, 5)
+        assert bool is False
+        assert i is None
+        # inside but not in a bin
+        bool, i = ifu_binned.aperture_select(-2.5, 2.5)
+        assert bool is False
+        assert i is None
+        # in bin 0
+        bool, i = ifu_binned.aperture_select(0.0, -0.7)
+        assert bool is True
+        assert i == 0
+        # in bin 1
+        bool, i = ifu_binned.aperture_select(0.8, 0.1)
+        assert bool is True
+        assert i == 1
+
 
 class TestRaise(unittest.TestCase):
     def test_raise(self):

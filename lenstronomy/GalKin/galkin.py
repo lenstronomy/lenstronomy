@@ -279,7 +279,9 @@ class Galkin(GalkinModel, GalkinObservation):
             if not self.numerics.lum_weight_int_method:
                 raise ValueError("'lum_weight_int_method' must be True!")
         if (voronoi_bins is not None) and self.aperture_type != "IFU_grid":
-            raise ValueError("Voronoi bins can only be used with the IFU_grid aperture!")
+            raise ValueError(
+                "Voronoi bins can only be used with the IFU_grid aperture!"
+            )
         if self.aperture_type == "IFU_binned":
             voronoi_bins = self._aperture.bins
 

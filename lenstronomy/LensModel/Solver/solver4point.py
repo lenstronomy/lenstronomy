@@ -25,6 +25,7 @@ _SUPPORTED_LENS_MODEL_SOLVER = [
     "EPL_MULTIPOLE_M1M3M4",
     "EPL_MULTIPOLE_M3M4_ELL",
     "EPL_MULTIPOLE_M1M3M4_ELL",
+    "BPL",
 ]
 
 
@@ -217,6 +218,15 @@ class Solver4Point(object):
             coeffs = list(kwargs_list[0]["coeffs"])
             coeffs[1:6] = [c10, c01, c20, c11, c02]
             kwargs_list[0]["coeffs"] = coeffs
+        elif lens_model in [
+            "BPL",
+        ]:
+            [b, e1, e2, center_x, center_y, _] = x
+            kwargs_list[0]["b"] = b
+            kwargs_list[0]["e1"] = e1
+            kwargs_list[0]["e2"] = e2
+            kwargs_list[0]["center_x"] = center_x
+            kwargs_list[0]["center_y"] = center_y
         else:
             raise ValueError(
                 "Lens model %s not supported for 4-point solver!" % lens_model
@@ -282,6 +292,15 @@ class Solver4Point(object):
             coeffs = list(kwargs_list[0]["coeffs"])
             [c10, c01, c20, c11, c02] = coeffs[1:6]
             x = [c10, c01, c20, c11, c02, phi_ext]
+        elif lens_model in [
+            "BPL",
+        ]:
+            e1 = kwargs_list[0]["e1"]
+            e2 = kwargs_list[0]["e2"]
+            center_x = kwargs_list[0]["center_x"]
+            center_y = kwargs_list[0]["center_y"]
+            b = kwargs_list[0]["b"]
+            x = [b, e1, e2, center_x, center_y, phi_ext]
         else:
             raise ValueError(
                 "Lens model %s not supported for 4-point solver!" % lens_model
@@ -331,6 +350,14 @@ class Solver4Point(object):
             "NFW_ELLIPSE_CSE",
         ]:
             kwargs_fixed["alpha_Rs"] = kwargs_lens["alpha_Rs"]
+            kwargs_fixed["e1"] = kwargs_lens["e1"]
+            kwargs_fixed["e2"] = kwargs_lens["e2"]
+            kwargs_fixed["center_x"] = kwargs_lens["center_x"]
+            kwargs_fixed["center_y"] = kwargs_lens["center_y"]
+        elif lens_model in [
+            "BPL",
+        ]:
+            kwargs_fixed["b"] = kwargs_lens["b"]
             kwargs_fixed["e1"] = kwargs_lens["e1"]
             kwargs_fixed["e2"] = kwargs_lens["e2"]
             kwargs_fixed["center_x"] = kwargs_lens["center_x"]

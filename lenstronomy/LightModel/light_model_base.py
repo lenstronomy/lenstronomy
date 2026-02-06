@@ -29,6 +29,7 @@ _MODELS_SUPPORTED = [
     "HERNQUIST_ELLIPSE",
     "PJAFFE",
     "PJAFFE_ELLIPSE",
+    "PL_SERSIC",
     "UNIFORM",
     "POWER_LAW",
     "NIE",
@@ -160,6 +161,10 @@ class LightModelBase(object):
                 )
 
                 self.func_list.append(PseudoJaffeEllipse(**profile_kwargs))
+            elif profile_type == "PL_SERSIC":
+                from lenstronomy.LightModel.Profiles.pl_sersic import PL_Sersic
+
+                self.func_list.append(PL_Sersic(**profile_kwargs))
             elif profile_type == "UNIFORM":
                 from lenstronomy.LightModel.Profiles.uniform import Uniform
 
@@ -314,6 +319,7 @@ class LightModelBase(object):
                     "LINE_PROFILE",
                     "HERNQUIST",
                     "HERNQUIST_ELLIPSE",
+                    "PL_SERSIC",
                 ]:
                     kwargs_new = kwargs_list_standard[i].copy()
                     if norm is True:

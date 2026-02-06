@@ -67,7 +67,9 @@ class TestPLSersic(object):
         )
         npt.assert_almost_equal(
             values,
-            np.array([0.07440080198329953, 0.011670302367673888, 0.0017081167108147768]),
+            np.array(
+                [0.07440080198329953, 0.011670302367673888, 0.0017081167108147768]
+            ),
             decimal=10,
         )
 
@@ -207,14 +209,33 @@ class TestPLSersic(object):
         e1, e2 = 0.0, 0.0
 
         v1 = self.pl_sersic.function(
-            x, y, 1.0, R_sersic, n_sersic, alpha_c, r_c, e1, e2, center_x=0.0, center_y=0.0
+            x,
+            y,
+            1.0,
+            R_sersic,
+            n_sersic,
+            alpha_c,
+            r_c,
+            e1,
+            e2,
+            center_x=0.0,
+            center_y=0.0,
         )
         v2 = self.pl_sersic.function(
-            x, y, 2.0, R_sersic, n_sersic, alpha_c, r_c, e1, e2, center_x=0.0, center_y=0.0
+            x,
+            y,
+            2.0,
+            R_sersic,
+            n_sersic,
+            alpha_c,
+            r_c,
+            e1,
+            e2,
+            center_x=0.0,
+            center_y=0.0,
         )
         npt.assert_almost_equal(v2[0] / v1[0], 2.0, decimal=10)
 
 
 if __name__ == "__main__":
     pytest.main()
-

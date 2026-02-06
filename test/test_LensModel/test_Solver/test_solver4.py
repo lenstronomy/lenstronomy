@@ -890,10 +890,10 @@ class TestSolver4Point(object):
 
         kwargs_lens = [
             {
-                "b": 1.0,  
-                "a": a,  
-                "a_c": a_c, 
-                "r_c": r_c,  
+                "b": 1.0,
+                "a": a,
+                "a_c": a_c,
+                "r_c": r_c,
                 "e1": e1,
                 "e2": e2,
                 "center_x": 0.1,
@@ -910,13 +910,12 @@ class TestSolver4Point(object):
             search_window=numPix * deltapix,
         )
 
-
         kwargs_lens_init = [
             {
-                "b": 1.3, 
-                "a": a,  
-                "a_c": a_c,  
-                "r_c": r_c,  
+                "b": 1.3,
+                "a": a,
+                "a_c": a_c,
+                "r_c": r_c,
                 "e1": e1,
                 "e2": e2,
                 "center_x": 0.0,
@@ -927,11 +926,8 @@ class TestSolver4Point(object):
         kwargs_lens_new, accuracy = solver.constraint_lensmodel(
             x_pos, y_pos, kwargs_lens_init
         )
-        
 
-        npt.assert_almost_equal(
-            kwargs_lens_new[0]["b"], kwargs_lens[0]["b"], decimal=3
-        )
+        npt.assert_almost_equal(kwargs_lens_new[0]["b"], kwargs_lens[0]["b"], decimal=3)
         npt.assert_almost_equal(
             kwargs_lens_new[0]["e1"], kwargs_lens[0]["e1"], decimal=3
         )
@@ -945,9 +941,7 @@ class TestSolver4Point(object):
             kwargs_lens_new[0]["center_y"], kwargs_lens[0]["center_y"], decimal=3
         )
 
-
         npt.assert_almost_equal(kwargs_lens_new[0]["b"], 1.0, decimal=3)
-
 
         x_source_new, y_source_new = lensModel.ray_shooting(
             x_pos, y_pos, kwargs_lens_new

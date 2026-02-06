@@ -115,10 +115,6 @@ class BPL(LensProfileBase):
         f__xx, f__xy, f__yx, f__yy = self.bpl_major_axis.hessian(
             x__, y__, b, a, a_c, r_c, q
         )
-<<<<<<< HEAD
-
-=======
->>>>>>> f0103c9ad4df7a26cd1c23f5f17b033133e538bb
         kappa = 0.5 * (f__xx + f__yy)
         gamma1__ = 0.5 * (f__xx - f__yy)
         gamma2__ = f__xy

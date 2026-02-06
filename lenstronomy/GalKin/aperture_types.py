@@ -287,8 +287,11 @@ class IFUGrid(object):
 
 
 class IFUBinned(IFUGrid):
-    """Class for an Integral Field Unit spectrograph, with a binned (e.g. Voronoi) rectangular grid.
-    It has the same grid definition as IFUGrid, and a matrix of bin ids, indicating to which bin each pixel belongs.
+    """Class for an Integral Field Unit spectrograph, with a binned (e.g. Voronoi)
+    rectangular grid.
+
+    It has the same grid definition as IFUGrid, and a matrix of bin ids, indicating to
+    which bin each pixel belongs.
     """
 
     def __init__(self, x_grid, y_grid, bins):
@@ -315,8 +318,8 @@ class IFUBinned(IFUGrid):
 
     @property
     def num_segments(self):
-        """Number of segments with separate measurements of the velocity dispersion. This is the number of
-        unique bin ids.
+        """Number of segments with separate measurements of the velocity dispersion.
+        This is the number of unique bin ids.
 
         :return: int.
         """

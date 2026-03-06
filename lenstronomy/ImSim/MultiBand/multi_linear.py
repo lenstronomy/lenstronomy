@@ -121,10 +121,10 @@ class MultiLinear(MultiDataBase):
         """Computes the likelihood of the data given a model This is specified with the
         non-linear parameters and a linear inversion and prior marginalisation.
 
-        :param kwargs_lens:
-        :param kwargs_source:
-        :param kwargs_lens_light:
-        :param kwargs_ps:
+        :param kwargs_lens: list of keyword arguments for the mass profiles
+        :param kwargs_source: list of keyword arguments for the source light profiles
+        :param kwargs_lens_light: list of keyword arguments for the lens light profiles
+        :param kwargs_ps: list of keyword arguments for point sources
         :param check_positive_flux: bool, if True, checks whether the linear inversion
             resulted in non-negative flux components and applies a punishment in the
             likelihood if so.
@@ -168,14 +168,13 @@ class MultiLinear(MultiDataBase):
 
         :param param: linear parameter vector corresponding to the response matrix
         :type param: list of array
-        :param model_band: for which band the model parameters need to be retrieved
-        :param kwargs_lens:
-        :param kwargs_source:
-        :param kwargs_lens_light:
-        :param kwargs_ps:
+        :param model_band: integer, which band the model parameters need to be retrieved
+        :param kwargs_lens: list of keyword arguments for the mass profiles
+        :param kwargs_source: list of keyword arguments for the source light profiles
+        :param kwargs_lens_light: list of keyword arguments for the lens light profiles
+        :param kwargs_ps: list of keyword arguments for point sources
         :return: updated list of kwargs with linear parameter values for specific band
         """
-        model_band = self._imageModel_list[model_band]
-        return model_band.update_linear_kwargs(
+        return self._imageModel_list[model_band].update_linear_kwargs(
             param[model_band], kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps
         )

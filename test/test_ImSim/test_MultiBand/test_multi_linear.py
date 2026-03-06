@@ -195,5 +195,6 @@ class TestImageModel(object):
         assert kwargs_lens_light[0]["amp"] == 10
         assert kwargs_ps[0]["source_amp"] == 10
 
+
 if __name__ == "__main__":
     pytest.main()

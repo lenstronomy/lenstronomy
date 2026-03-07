@@ -78,7 +78,7 @@ class MultiDataBase(object):
         """
         residual_list = []
         if error_map_list is None:
-            error_map_list = np.ones(self.num_bands)
+            error_map_list = np.zeros(self.num_bands)
         index = 0
         for i in range(self._num_bands):
             if self._compute_bool[i] is True:

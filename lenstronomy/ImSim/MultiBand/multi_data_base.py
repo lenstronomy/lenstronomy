@@ -2,6 +2,7 @@ __all__ = ["MultiDataBase"]
 
 import numpy as np
 
+
 class MultiDataBase(object):
     """Base class with definitions that are shared among all variations of modelling
     multiple data sets."""

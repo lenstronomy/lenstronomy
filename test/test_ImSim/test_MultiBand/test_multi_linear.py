@@ -129,12 +129,13 @@ class TestImageModel(object):
 
     def test_init(self):
         # Wrong number of compute_bool
-        npt.assert_raises(ValueError,
+        npt.assert_raises(
+            ValueError,
             MultiLinear,
             self.multi_band_list,
             self.kwargs_model,
             likelihood_mask_list=None,
-            compute_bool=[True, False]
+            compute_bool=[True, False],
         )
         assert self.imageModel.num_bands == 1
 

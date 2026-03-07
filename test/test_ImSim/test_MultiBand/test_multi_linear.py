@@ -121,9 +121,22 @@ class TestImageModel(object):
             "point_source_model_list": ["SOURCE_POSITION"],
             "fixed_magnification_list": [True],
         }
+        self.kwargs_model = kwargs_model
+        self.multi_band_list = multi_band_list
         self.imageModel = MultiLinear(
             multi_band_list, kwargs_model, likelihood_mask_list=None, compute_bool=None
         )
+
+    def test_init(self):
+        # Wrong number of compute_bool
+        npt.assert_raises(ValueError,
+            MultiLinear,
+            self.multi_band_list,
+            self.kwargs_model,
+            likelihood_mask_list=None,
+            compute_bool=[True, False]
+        )
+        assert self.imageModel.num_bands == 1
 
     def test_image_linear_solve(self):
         model, error_map, cov_param, param = self.imageModel.image_linear_solve(
@@ -142,6 +155,10 @@ class TestImageModel(object):
         )
         npt.assert_almost_equal(
             np.sum(chi2_reduced_list[0] ** 2) / (100**2), 1, decimal=1
+        )
+
+        chi2_reduced_list = self.imageModel.reduced_residuals(
+            model_list=model, error_map_list=None
         )
 
     def test_likelihood_data_given_model(self):

@@ -57,7 +57,7 @@ F146_band_obs = {
     "seeing": 0.105,
 }
 
-# - keyword sky_brightness: sky brightness (in magnitude per square arcseconds in units of electrons)
+# - keyword sky_brightness: sky brightness (in magnitude per square arcsecond)
 # - keyword magnitude_zero_point: magnitude in which 1 count (e-) per second per arcsecond square is registered
 # - keyword seeing: Full-Width-at-Half-Maximum (FWHM) of PSF
 # - keyword psf_type: string, type of PSF ('GAUSSIAN' supported)
@@ -69,8 +69,9 @@ class Roman(object):
     def __init__(self, band="F106", psf_type="GAUSSIAN", survey_mode="wide_area"):
         """
 
-        :param band: string, 'F062', 'F087', 'F106', 'F129', 'F158' , 'F184' or 'F146' supported. Determines obs dictionary.
+        :param band: string, 'F062', 'F087', 'F106', 'F129', 'F158', 'F184', or 'F146' supported. Determines obs dictionary.
         :param psf_type: string, type of PSF ('GAUSSIAN', 'PIXEL' supported).
+        :param survey_mode: string, survey mode ('wide_area', 'time_domain_wide', 'time_domain_deep', or 'microlensing' supported). Determines exposure time and number of exposures.
         """
 
         if band == "F062":
@@ -157,7 +158,7 @@ class Roman(object):
                 )
         else:
             raise ValueError(
-                "survey mode %s not supported! Choose 'wide_area' or 'microlensing'"
+                "survey mode %s not supported! Choose 'wide_area', 'time_domain_wide', 'time_domain_deep', or 'microlensing'"
                 % survey_mode
             )
 
@@ -174,7 +175,9 @@ class Roman(object):
         elif psf_type == "GAUSSIAN":
             self.obs.update({"psf_type": "GAUSSIAN"})
         else:
-            raise ValueError("psf_type %s not supported!" % psf_type)
+            raise ValueError(
+                "psf_type %s not supported! Choose 'GAUSSIAN' or 'PIXEL'" % psf_type
+            )
 
         self.camera = {"read_noise": 15.5, "pixel_scale": 0.11, "ccd_gain": 1}
 

@@ -5,8 +5,8 @@ import lenstronomy.Util.util as util
 import os
 import astropy.io.fits as pyfits
 
-# magnitude_zero_point: table 1 from https://iopscience.iop.org/article/10.3847/1538-4357/aac08b/pdf
-# ccd_gain found right under table 1 in paper
+# magnitude_zero_point: table 3 from https://www.stsci.edu/files/live/sites/www/files/home/roman/documentation/technical-documentation/_documents/Roman-STScI%E2%80%93000825.pdf
+# ccd_gain found right under table 1 in https://iopscience.iop.org/article/10.3847/1538-4357/aac08b/pdf
 # seeing, read_noise, pixel_scale (labelled as plate_scale on website): https://roman.gsfc.nasa.gov/science/WFI_technical.html
 # sky brightness calculated using count rates per pixel at minimum Zodiacal light given in website above
 # For microlensing survey mode: exposure time, number of exposures for F146 and F087: table 1 with the mission design of WFIRST Cycle 7 from https://iopscience.iop.org/article/10.3847/1538-4365/aafb69/meta#apjsaafb69t1fnd
@@ -15,45 +15,48 @@ import astropy.io.fits as pyfits
 
 __all__ = ["Roman"]
 
+# magnitude zero points updated on 3/10/2026
+# seeing, or PSF FWHM in arcseconds, updated on 3/10/2026
+
 F062_band_obs = {
     "sky_brightness": 23.19,
-    "magnitude_zero_point": 26.56,
+    "magnitude_zero_point": 26.6179,
     "seeing": 0.058,
 }
 
 F087_band_obs = {
     "sky_brightness": 22.93,
-    "magnitude_zero_point": 26.30,
+    "magnitude_zero_point": 26.3023,
     "seeing": 0.073,
 }
 
 F106_band_obs = {
     "sky_brightness": 22.99,
-    "magnitude_zero_point": 26.44,
+    "magnitude_zero_point": 26.3546,
     "seeing": 0.087,
 }
 
 F129_band_obs = {
     "sky_brightness": 22.99,
-    "magnitude_zero_point": 26.40,
-    "seeing": 0.105,
+    "magnitude_zero_point": 26.3531,
+    "seeing": 0.106,
 }
 
 F158_band_obs = {
     "sky_brightness": 23.10,
-    "magnitude_zero_point": 26.43,
-    "seeing": 0.127,
+    "magnitude_zero_point": 26.3760,
+    "seeing": 0.128,
 }
 
 F184_band_obs = {
     "sky_brightness": 23.22,
-    "magnitude_zero_point": 25.95,
-    "seeing": 0.151,
+    "magnitude_zero_point": 25.9124,
+    "seeing": 0.146,
 }
 
 F146_band_obs = {
     "sky_brightness": 22.03,
-    "magnitude_zero_point": 26.65,
+    "magnitude_zero_point": 27.5842,
     "seeing": 0.105,
 }
 
@@ -97,11 +100,10 @@ class Roman(object):
         # NOTE: Updated on 1/13/2026
         if survey_mode == "wide_area":
             # medium tier
-            # the number of exposures is given per sector
-            # a full pass of the High Latitude Wide Area Survey is 155 sectors
 
             if band in ["F106", "F129", "F158"]:
-                self.obs.update({"exposure_time": 107, "num_exposures": 3})
+                # 107s per dither, 3 dithers, 2 passes for a total of 6 exposures
+                self.obs.update({"exposure_time": 107, "num_exposures": 6})
             else:
                 raise ValueError(
                     "band %s is not supported with the wide_area medium tier survey mode! Choose 'F106', 'F129', or 'F158'"

@@ -59,6 +59,25 @@ class Aperture(object):
         """
         return self._aperture.aperture_select(ra, dec)
 
+    def aperture_sample(self):
+        """
+
+        :return: regular (x, y) grid within the aperture to be sampled
+        """
+        return self._aperture.aperture_sample()
+
+    def aperture_downsample(self, hires_map):
+        """
+
+        :param hires_map: values within the aperture to be integrated
+        :return: averaged values within the aperture into num_segments
+        """
+        return self._aperture.aperture_downsample(hires_map)
+
     @property
     def num_segments(self):
         return self._aperture.num_segments
+
+    @property
+    def delta_pix(self):
+        return self._aperture.delta_pix

@@ -1,5 +1,7 @@
 __all__ = ["MultiDataBase"]
 
+import numpy as np
+
 
 class MultiDataBase(object):
     """Base class with definitions that are shared among all variations of modelling
@@ -77,7 +79,7 @@ class MultiDataBase(object):
         """
         residual_list = []
         if error_map_list is None:
-            error_map_list = [[] for _ in range(self._num_bands)]
+            error_map_list = np.zeros(self.num_bands)
         index = 0
         for i in range(self._num_bands):
             if self._compute_bool[i] is True:

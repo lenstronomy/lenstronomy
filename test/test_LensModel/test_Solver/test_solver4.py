@@ -872,6 +872,161 @@ class TestSolver4Point(object):
         init_args = (lensModel, solver_type, parameter_module)
         npt.assert_raises(ValueError, solver_init, *init_args)
 
+    def test_solver_bpl(self):
+        lens_model_list = ["BPL"]
+        lensModel = LensModel(lens_model_list)
+        solver = Solver4Point(lensModel)
+        lensEquationSolver = LensEquationSolver(lensModel)
+        sourcePos_x = 0.1
+        sourcePos_y = -0.1
+        deltapix = 0.05
+        numPix = 150
+        gamma = 1.9
+        phi_G, q = 0.5, 0.8
+        e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
+        a = 1.8
+        a_c = 0.9
+        r_c = 0.5
+
+        kwargs_lens = [
+            {
+                "b": 1.0,
+                "a": a,
+                "a_c": a_c,
+                "r_c": r_c,
+                "e1": e1,
+                "e2": e2,
+                "center_x": 0.1,
+                "center_y": -0.1,
+            }
+        ]
+
+        x_pos, y_pos = lensEquationSolver.findBrightImage(
+            sourcePos_x,
+            sourcePos_y,
+            kwargs_lens,
+            numImages=4,
+            min_distance=deltapix,
+            search_window=numPix * deltapix,
+        )
+
+        kwargs_lens_init = [
+            {
+                "b": 1.3,
+                "a": a,
+                "a_c": a_c,
+                "r_c": r_c,
+                "e1": e1,
+                "e2": e2,
+                "center_x": 0.0,
+                "center_y": 0,
+            }
+        ]
+
+        kwargs_lens_new, accuracy = solver.constraint_lensmodel(
+            x_pos, y_pos, kwargs_lens_init
+        )
+
+        npt.assert_almost_equal(kwargs_lens_new[0]["b"], kwargs_lens[0]["b"], decimal=3)
+        npt.assert_almost_equal(
+            kwargs_lens_new[0]["e1"], kwargs_lens[0]["e1"], decimal=3
+        )
+        npt.assert_almost_equal(
+            kwargs_lens_new[0]["e2"], kwargs_lens[0]["e2"], decimal=3
+        )
+        npt.assert_almost_equal(
+            kwargs_lens_new[0]["center_x"], kwargs_lens[0]["center_x"], decimal=3
+        )
+        npt.assert_almost_equal(
+            kwargs_lens_new[0]["center_y"], kwargs_lens[0]["center_y"], decimal=3
+        )
+
+        npt.assert_almost_equal(kwargs_lens_new[0]["b"], 1.0, decimal=3)
+
+        x_source_new, y_source_new = lensModel.ray_shooting(
+            x_pos, y_pos, kwargs_lens_new
+        )
+        dist = np.sqrt(
+            (x_source_new - x_source_new[0]) ** 2
+            + (y_source_new - y_source_new[0]) ** 2
+        )
+        print(dist)
+        assert np.max(dist) < 0.000001
+
+    def test_add_fixed_lens_bpl_branch(self):
+        lensModel = LensModel(["BPL"])
+        solver = Solver4Point(lensModel)
+
+        kwargs_fixed_lens_list = [{}]
+        kwargs_lens_init = [
+            {
+                "b": 1.23,
+                "e1": 0.01,
+                "e2": -0.02,
+                "center_x": 0.1,
+                "center_y": -0.2,
+            }
+        ]
+
+        out = solver.add_fixed_lens(kwargs_fixed_lens_list, kwargs_lens_init)
+
+        npt.assert_almost_equal(out[0]["b"], kwargs_lens_init[0]["b"])
+        npt.assert_almost_equal(out[0]["e1"], kwargs_lens_init[0]["e1"])
+        npt.assert_almost_equal(out[0]["e2"], kwargs_lens_init[0]["e2"])
+        npt.assert_almost_equal(out[0]["center_x"], kwargs_lens_init[0]["center_x"])
+        npt.assert_almost_equal(out[0]["center_y"], kwargs_lens_init[0]["center_y"])
+
+    def test_error_unsupported_first_lens_model(self):
+        lens_model_list = ["SIS"]
+        lensModel = LensModel(lens_model_list)
+        npt.assert_raises(ValueError, Solver4Point, lensModel)
+
+    def test_internal_update_kwargs_unsupported_lens_model_raises(self):
+        lensModel = LensModel(["SPEP"])
+        solver = Solver4Point(lensModel)
+
+        # force an unsupported lens model name to hit the defensive branch
+        solver._lens_mode_list = ["NOT_A_SUPPORTED_MODEL"]
+
+        with pytest.raises(ValueError, match="not supported"):
+            solver._update_kwargs(np.zeros(6), [{}])
+
+    def test_internal_extract_array_unsupported_lens_model_raises(self):
+        lensModel = LensModel(["SPEP"])
+        solver = Solver4Point(lensModel)
+
+        solver._lens_mode_list = ["NOT_A_SUPPORTED_MODEL"]
+
+        with pytest.raises(ValueError, match="not supported"):
+            solver._extract_array([{}])
+
+    def test_add_fixed_lens_shapelets_cart_noop(self):
+        lensModel = LensModel(["SHAPELETS_CART"])
+        solver = Solver4Point(lensModel)
+
+        kwargs_fixed_lens_list = [
+            {"beta": 1.0, "coeffs": np.ones(6), "center_x": 0.0, "center_y": 0.0}
+        ]
+        kwargs_lens_init = [
+            {"beta": 2.0, "coeffs": np.ones(6) * 3, "center_x": 9.0, "center_y": 8.0}
+        ]
+
+        before = kwargs_fixed_lens_list[0].copy()
+        out = solver.add_fixed_lens(kwargs_fixed_lens_list, kwargs_lens_init)
+
+        # should be unchanged for SHAPELETS_CART
+        assert out[0] == before
+
+    def test_add_fixed_lens_invalid_lens_model_raises(self):
+        lensModel = LensModel(["SPEP"])
+        solver = Solver4Point(lensModel)
+
+        # force lens_model to an invalid name for this method
+        solver.lensModel.lens_model_list[0] = "NOT_A_SUPPORTED_MODEL"
+
+        with pytest.raises(ValueError, match="not a valid option"):
+            solver.add_fixed_lens([{}], [{}])
+
 
 if __name__ == "__main__":
     pytest.main()

@@ -96,40 +96,28 @@ def center_kernel(kernel, iterations=20):
 
 @export
 def kernel_make_odd(kernel_even):
-    """De-shifts a even kernel (with all for central pixels the same brightness to an
-    odd kernel.
+    """Converts an even-sized kernel into an odd-sized kernel using quadratic
+    interpolation.
 
     :param kernel_even: n x n kernel with n even, centered
     :return: even kernel with n+1 x n+1 centered
     """
-    # extend kernel with one
-    nx, ny = np.shape(kernel_even)
-    assert nx == ny
-    if nx % 2 == 1:
+
+    n_row, n_col = np.shape(kernel_even)
+    assert n_row == n_col
+    if n_row % 2 == 1:
         return kernel_even
-    kernel_odd = np.zeros((nx + 1, ny + 1))
-    kernel_odd[1:, 1:] = kernel_even
-    # de-shift kernel
-    kernel_1 = center_kernel(kernel_odd)
 
-    kernel_odd = np.zeros((nx + 1, ny + 1))
-    kernel_odd[:nx, 1:] = kernel_even
-    # de-shift kernel
-    kernel_2 = center_kernel(kernel_odd)
+    # extend kernel by one on each side; fill edges with zero
+    _kernel = np.zeros((n_row + 2, n_col + 2))
+    _kernel[1:-1, 1:-1] = kernel_even
 
-    kernel_odd = np.zeros((nx + 1, ny + 1))
-    kernel_odd[1:, :ny] = kernel_even
-    # de-shift kernel
-    kernel_3 = center_kernel(kernel_odd)
+    # creates new odd sized kernel by interpolation
+    xrange = np.arange(n_col + 1) + 0.5
+    yrange = np.arange(n_row + 1) + 0.5
+    x_grid, y_grid = np.meshgrid(xrange, yrange)
 
-    kernel_odd = np.zeros((nx + 1, ny + 1))
-    kernel_odd[:nx, :ny] = kernel_even
-    # de-shift kernel
-    kernel_4 = center_kernel(kernel_odd)
-
-    kernel_avg = kernel_1 + kernel_2 + kernel_3 + kernel_4
-    kernel_avg[kernel_avg < 0] = 0
-    return center_kernel(kernel_avg)
+    return ndimage.map_coordinates(_kernel, coordinates=[y_grid, x_grid], order=2)
 
 
 @export

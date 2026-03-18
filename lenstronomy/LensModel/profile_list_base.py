@@ -6,6 +6,7 @@ __all__ = ["ProfileListBase"]
 _SUPPORTED_MODELS = [
     "ARC_PERT",
     "BLANK_PLANE",
+    "BPL",
     "CHAMELEON",
     "CNFW",
     "CNFW_ELLIPSE_POTENTIAL",
@@ -330,6 +331,10 @@ def lens_class(
         from lenstronomy.LensModel.Profiles.blank_plane import BlankPlane
 
         return BlankPlane(**profile_kwargs)
+    elif lens_type == "BPL":
+        from lenstronomy.LensModel.Profiles.bpl import BPL
+
+        return BPL(**profile_kwargs)
     elif lens_type == "CHAMELEON":
         from lenstronomy.LensModel.Profiles.chameleon import Chameleon
 

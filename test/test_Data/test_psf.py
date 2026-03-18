@@ -242,11 +242,15 @@ class TestData(object):
         assert len(error_map) == n
 
         kernel_point_source = np.ones((2, 2))
-        psf = PSF(psf_type="PIXEL", kernel_point_source=kernel_point_source)
+        psf = PSF(
+            psf_type="PIXEL",
+            kernel_point_source=kernel_point_source,
+            kernel_point_source_normalisation=False,
+        )
         kernel_odd = psf.kernel_point_source
         assert len(kernel_odd) == 3
         kernel_odd_new = kernel_util.kernel_make_odd(kernel_point_source)
-        npt.assert_almost_equal(kernel_odd_new, kernel_odd, decimal=4)
+        npt.assert_almost_equal(kernel_odd_new, kernel_odd, decimal=16)
 
     def test_unnormalized(self):
         psf_norm_factor = 0.1

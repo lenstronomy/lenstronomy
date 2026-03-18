@@ -32,6 +32,7 @@ class TestLightModel(object):
             "SHAPELETS_POLAR_EXP",
             "ELLIPSOID",
             "LINE_PROFILE",
+            "PL_SERSIC",
         ]
         phi_G, q = 0.5, 0.8
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
@@ -142,6 +143,17 @@ class TestLightModel(object):
                 "start_x": 0,
                 "start_y": 0,
             },  # 'LINE_PROFILE'
+            {
+                "amp": 1,
+                "R_sersic": 0.5,
+                "n_sersic": 1,
+                "alpha_c": 1.0,
+                "r_c": 1.0,
+                "e1": 0,
+                "e2": 0.1,
+                "center_x": 0,
+                "center_y": 0,
+            },  # 'PL_SERSIC'
         ]
 
         self.LightModel = LightModel(light_model_list=self.light_model_list)
@@ -162,6 +174,7 @@ class TestLightModel(object):
             "CHAMELEON",
             "DOUBLE_CHAMELEON",
             "TRIPLE_CHAMELEON",
+            "PL_SERSIC",
         ]
         profile_kwargs_list = [
             {"n_comp": 2},
@@ -181,13 +194,15 @@ class TestLightModel(object):
         output = self.LightModel.surface_brightness(
             x=1.0, y=1.0, kwargs_list=self.kwargs
         )
-        npt.assert_almost_equal(output, 2.647127, decimal=6)
+        # old (without PL_SERSIC) was 2.647127; PL_SERSIC adds ~0.41936468445 at (1,1)
+        npt.assert_almost_equal(output, 3.066491823341393, decimal=6)
 
     def test_surface_brightness_array(self):
         output = self.LightModel.surface_brightness(
             x=[1], y=[1], kwargs_list=self.kwargs
         )
-        npt.assert_almost_equal(output[0], 2.647127113888489, decimal=6)
+        # old (without PL_SERSIC) was 2.647127; PL_SERSIC adds ~0.41936468445 at (1,1)
+        npt.assert_almost_equal(output[0], 3.066491823341393, decimal=6)
 
     def test_functions_split(self):
         output = self.LightModel.functions_split(x=1.0, y=1.0, kwargs_list=self.kwargs)
@@ -203,7 +218,7 @@ class TestLightModel(object):
 
     def test_num_param_linear(self):
         num = self.LightModel.num_param_linear(self.kwargs, list_return=False)
-        assert num == 20
+        assert num == 21
 
         num_list = self.LightModel.num_param_linear(self.kwargs, list_return=True)
         assert num_list[0] == 1
@@ -227,6 +242,7 @@ class TestLightModel(object):
             "MULTI_GAUSSIAN",
             "MULTI_GAUSSIAN_ELLIPSE",
             "LINE_PROFILE",
+            "PL_SERSIC",
         ]
         kwargs_list = [
             {
@@ -283,6 +299,17 @@ class TestLightModel(object):
                 "start_x": 0,
                 "start_y": 0,
             },  # 'LINE_PROFILE'
+            {
+                "amp": 1.0,
+                "R_sersic": 2.0,
+                "n_sersic": 1.0,
+                "alpha_c": 0.5,
+                "r_c": 0.1,
+                "e1": 0.0,
+                "e2": 0.1,
+                "center_x": 0.0,
+                "center_y": 0.0,
+            },  # 'PL_SERSIC'
         ]
         lightModel = LightModel(light_model_list=light_model_list)
         total_flux_list = lightModel.total_flux(kwargs_list)
@@ -291,6 +318,8 @@ class TestLightModel(object):
         assert total_flux_list[4] == 2
         assert total_flux_list[5] == 2
         assert total_flux_list[6] == 2
+        assert np.isfinite(total_flux_list[8])
+        assert total_flux_list[8] > 0
 
         total_flux_list = lightModel.total_flux(kwargs_list, norm=True)
         assert total_flux_list[2] == 100
@@ -298,6 +327,8 @@ class TestLightModel(object):
         assert total_flux_list[4] == 1
         assert total_flux_list[5] == 1
         assert total_flux_list[6] == 1
+        assert np.isfinite(total_flux_list[8])
+        assert total_flux_list[8] > 0
 
     def test_delete_interpol_caches(self):
         x, y = util.make_grid(numPix=20, deltapix=1.0)

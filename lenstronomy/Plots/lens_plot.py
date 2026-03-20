@@ -552,6 +552,7 @@ def curved_arc_illustration(
             "CURVED_ARC_CONST_MST",
             "CURVED_ARC_SPT",
             "CURVED_ARC_TAN_DIFF",
+            "CURVED_ARC_TAN_DIFF_CENTERED",
         ]:
             plot_arc(
                 ax,

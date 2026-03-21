@@ -554,12 +554,23 @@ def curved_arc_illustration(
             "CURVED_ARC_TAN_DIFF",
             "CURVED_ARC_TAN_DIFF_CENTERED",
         ]:
+            kwargs_lens_copy = kwargs_lens[i].copy()
+            if lens_type == "CURVED_ARC_TAN_DIFF_CENTERED":
+                delta_x = kwargs_lens[i]["center_x"] - kwargs_lens[i]["center_x_lens"]
+                delta_y = kwargs_lens[i]["center_y"] - kwargs_lens[i]["center_y_lens"]
+                curvature = 1 / np.sqrt(delta_x**2 + delta_y**2)
+                direction = np.arctan2(delta_y, delta_x)
+                kwargs_lens_copy["curvature"] = curvature
+                kwargs_lens_copy["direction"] = direction
+                del kwargs_lens_copy["center_x_lens"]
+                del kwargs_lens_copy["center_y_lens"]
+
             plot_arc(
                 ax,
                 with_centroid=with_centroid,
                 stretch_scale=stretch_scale,
                 color=color,
-                **kwargs_lens[i],
+                **kwargs_lens_copy,
             )
 
     ax.get_xaxis().set_visible(False)

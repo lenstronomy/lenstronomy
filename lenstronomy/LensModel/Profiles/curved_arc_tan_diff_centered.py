@@ -10,8 +10,8 @@ __all__ = ["CurvedArcTanDiffCentered"]
 
 class CurvedArcTanDiffCentered(LensProfileBase):
     """Curved arc model with an additional non-zero tangential stretch differential in
-    tangential direction component. The center of the lensing object is specified instead
-    of the curvature radius and direction.
+    tangential direction component. The center of the lensing object is specified
+    instead of the curvature radius and direction.
 
     Observables are:
     - center_x of the lensing object (useful to fix curvature and direction)

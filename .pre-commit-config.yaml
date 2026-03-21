@@ -12,7 +12,7 @@ ci:
 
 repos:
   - repo: https://github.com/psf/black-pre-commit-mirror
-    rev: 26.1.0
+    rev: 26.3.1
     hooks:
       - id: black
         # It is recommended to specify the latest version of Python
@@ -21,21 +21,13 @@ repos:
         # https://pre-commit.com/#top_level-default_language_version
         language_version: python3
   - repo: https://github.com/psf/black-pre-commit-mirror
-    rev: 26.1.0
+    rev: 26.3.1
     hooks:
       - id: black-jupyter
         language_version: python3
-  - repo: local
+  - repo: https://github.com/PyCQA/docformatter
+    rev: v1.7.6
     hooks:
       - id: docformatter
-        name: docformatter
-        description: Formats docstrings to follow PEP 257.
-        entry: python -m docformatter
-        additional_dependencies:
-          - docformatter==1.7.5
-          - tomli
         args: [-r, --black, --in-place]
-        language: python
-        types:
-          - python
 

@@ -121,7 +121,7 @@ class CurvedArcTanDiffCentered(LensProfileBase):
         :param center_y: center of source in image plane
         :return:
         """
-        self._curved_arc.function(
+        return self._curved_arc.function(
             x,
             y,
             *self.lens_center2curvature_direction(
@@ -160,7 +160,7 @@ class CurvedArcTanDiffCentered(LensProfileBase):
         :param center_y: center of source in image plane
         :return:
         """
-        self._curved_arc.derivatives(
+        return self._curved_arc.derivatives(
             x,
             y,
             *self.lens_center2curvature_direction(
@@ -199,7 +199,7 @@ class CurvedArcTanDiffCentered(LensProfileBase):
         :param center_y: center of source in image plane
         :return:
         """
-        self._curved_arc.hessian(
+        return self._curved_arc.hessian(
             x,
             y,
             *self.lens_center2curvature_direction(

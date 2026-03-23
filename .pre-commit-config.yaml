@@ -26,7 +26,7 @@ repos:
       - id: black-jupyter
         language_version: python3
   - repo: https://github.com/PyCQA/docformatter
-    rev: v1.7.6
+    rev: v1.7.7
     hooks:
       - id: docformatter
         args: [-r, --black, --in-place]

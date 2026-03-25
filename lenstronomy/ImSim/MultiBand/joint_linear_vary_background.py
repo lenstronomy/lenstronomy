@@ -21,7 +21,13 @@ class JointLinear_VaryBG(MultiLinear):
     order they appear in ``multi_band_list``.
 
     .. note::
-        This routine assumes the source fluxes are identical across all exposures.
+        The purpose of this class is to calculate the optimum flux for all bands
+        simultaneously, assuming transparency corrections have already been applied
+        via ``flux_scaling``, while allowing the sky background to be different in
+        each exposure. The joint solve yields better-constrained source fluxes than
+        fitting each band independently, because the shared model parameters are
+        constrained by all the data at once.
+
         In ground-based observing, sky transparency variations can introduce a
         multiplicative offset between exposures. It is recommended to first fit each
         exposure independently using ``MultiLinear`` to measure the relative image

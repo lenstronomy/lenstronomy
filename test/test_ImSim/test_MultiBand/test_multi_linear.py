@@ -117,12 +117,27 @@ class TestImageModel(object):
         kwargs_model = {
             "lens_model_list": lens_model_list,
             "source_light_model_list": source_model_list,
+            "lens_light_model_list": lens_light_model_list,
             "point_source_model_list": ["SOURCE_POSITION"],
             "fixed_magnification_list": [True],
         }
+        self.kwargs_model = kwargs_model
+        self.multi_band_list = multi_band_list
         self.imageModel = MultiLinear(
             multi_band_list, kwargs_model, likelihood_mask_list=None, compute_bool=None
         )
+
+    def test_init(self):
+        # Wrong number of compute_bool
+        npt.assert_raises(
+            ValueError,
+            MultiLinear,
+            self.multi_band_list,
+            self.kwargs_model,
+            likelihood_mask_list=None,
+            compute_bool=[True, False],
+        )
+        assert self.imageModel.num_bands == 1
 
     def test_image_linear_solve(self):
         model, error_map, cov_param, param = self.imageModel.image_linear_solve(
@@ -141,6 +156,10 @@ class TestImageModel(object):
         )
         npt.assert_almost_equal(
             np.sum(chi2_reduced_list[0] ** 2) / (100**2), 1, decimal=1
+        )
+
+        chi2_reduced_list = self.imageModel.reduced_residuals(
+            model_list=model, error_map_list=None
         )
 
     def test_likelihood_data_given_model(self):
@@ -165,6 +184,34 @@ class TestImageModel(object):
     def test_numData_evaluate(self):
         numData = self.imageModel.num_data_evaluate
         assert numData == 10000
+
+    def test_update_linear_kwargs(self):
+        num_param_linear = self.imageModel.num_param_linear(
+            self.kwargs_lens,
+            self.kwargs_source,
+            self.kwargs_lens_light,
+            self.kwargs_ps,
+        )
+
+        assert num_param_linear == 3
+        param = np.ones(num_param_linear) * 10
+        (
+            kwargs_lens,
+            kwargs_source,
+            kwargs_lens_light,
+            kwargs_ps,
+        ) = self.imageModel.update_linear_kwargs(
+            [param],
+            0,
+            self.kwargs_lens,
+            self.kwargs_source,
+            self.kwargs_lens_light,
+            self.kwargs_ps,
+        )
+        print(kwargs_lens_light)
+        assert kwargs_source[0]["amp"] == 10
+        assert kwargs_lens_light[0]["amp"] == 10
+        assert kwargs_ps[0]["source_amp"] == 10
 
 
 if __name__ == "__main__":

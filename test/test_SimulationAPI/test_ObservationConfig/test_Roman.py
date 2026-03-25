@@ -8,12 +8,14 @@ import astropy.io.fits as pyfits
 
 class TestRoman(unittest.TestCase):
     def setUp(self):
-        self.F062 = Roman()  # default is F062
+        self.F062 = Roman(band="F062", survey_mode="time_domain_wide")
         self.F087 = Roman(band="F087", survey_mode="microlensing")
-        self.F106 = Roman(band="F106", psf_type="GAUSSIAN")
+        self.F106 = Roman()  # default is F106
         self.F129 = Roman(band="F129", psf_type="GAUSSIAN")
         self.F158 = Roman(band="F158", psf_type="GAUSSIAN")
-        self.F184 = Roman(band="F184", psf_type="GAUSSIAN")
+        self.F184 = Roman(
+            band="F184", survey_mode="time_domain_deep", psf_type="GAUSSIAN"
+        )
         self.F146 = Roman(band="F146", survey_mode="microlensing", psf_type="GAUSSIAN")
 
         kwargs_F062 = self.F062.kwargs_single_band()
@@ -50,10 +52,10 @@ class TestRoman(unittest.TestCase):
         self.instrument = Instrument(**self.F062.camera)
 
     def test_Roman_class(self):
-        default = self.F062
-        explicit_F062 = Roman(band="F062")
-        self.assertEqual(explicit_F062.camera, default.camera)
-        self.assertEqual(explicit_F062.obs, default.obs)
+        default = self.F106
+        explicit_F106 = Roman(band="F106")
+        self.assertEqual(explicit_F106.camera, default.camera)
+        self.assertEqual(explicit_F106.obs, default.obs)
 
         with self.assertRaises(ValueError):
             bad_band = Roman(band="g")
@@ -66,6 +68,16 @@ class TestRoman(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             bad_band_wide = Roman(band="F087")
+
+        with self.assertRaises(ValueError):
+            bad_band_time_domain_wide = Roman(
+                band="F184", survey_mode="time_domain_wide"
+            )
+
+        with self.assertRaises(ValueError):
+            bad_band_time_domain_deep = Roman(
+                band="F062", survey_mode="time_domain_deep"
+            )
 
         with self.assertRaises(ValueError):
             bad_band_microlensing = Roman(band="F062", survey_mode="microlensing")

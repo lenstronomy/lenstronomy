@@ -1,7 +1,6 @@
 import astropy
 from lenstronomy.Util.util import isiterable
 
-
 if float(astropy.__version__[0]) < 5.0:
     from astropy.cosmology.core import isiterable
 
@@ -58,8 +57,8 @@ class CosmoInterp(object):
 
         else:
             self._cosmo = cosmo
-            self.Ok0 = self._cosmo._Ok0
-            dh = self._cosmo._hubble_distance
+            self.Ok0 = self._cosmo.Ok0
+            dh = self._cosmo.hubble_distance
             self.k = -self.Ok0 / dh**2
 
             if float(astropy.__version__[0]) < 5.0:

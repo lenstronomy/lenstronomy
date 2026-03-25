@@ -4,7 +4,6 @@ __author__ = "aymgal, johannesulf"
 from inspect import signature
 from lenstronomy.Sampling.Samplers.base_nested_sampler import NestedSampler
 
-
 __all__ = ["NautilusSampler"]
 
 
@@ -79,7 +78,7 @@ class NautilusSampler(NestedSampler):
         kwargs = {key: kwargs[key] for key in kwargs.keys() & keys}
         self._sampler.run(**kwargs)
         points, log_w, log_l = self._sampler.posterior()
-        log_z = self._sampler.evidence()
+        log_z = self._sampler.log_z
 
         return points, log_w, log_l, log_z
 
@@ -87,9 +86,7 @@ class NautilusSampler(NestedSampler):
         try:
             import nautilus
         except ImportError:
-            print(
-                "Warning : nautilus not properly installed. \
-                  You can get it with $pip install nautilus-sampler."
-            )
+            print("Warning : nautilus not properly installed. \
+                  You can get it with $pip install nautilus-sampler.")
         else:
             self._nautilus = nautilus

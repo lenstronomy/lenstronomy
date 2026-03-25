@@ -1,6 +1,5 @@
 __author__ = "sibirrer"
 
-import pytest
 import numpy as np
 import numpy.testing as npt
 
@@ -849,6 +848,90 @@ class TestNumericsProfile(object):
         lens_model = ["EPL_MULTIPOLE_M1M3M4_ELL"]
         self.assert_differentials(lens_model, kwargs)
 
+    def test_greenboschnfw(self):
 
-if __name__ == "__main__":
-    pytest.main("-k TestLensModel")
+        lens_model = ["GreenBoschNFW"]
+        kwargs = {
+            "f_b": 0.1,
+            "c_s": 1.0,
+            "Rs": 1.5,
+            "rho0ang": 10.0,
+            "center_x": 0.0,
+            "center_y": 0.0,
+        }
+        self.assert_differentials(lens_model, kwargs, diff=2e-3, decimal=1)
+
+    def test_bpl(self):
+
+        kwargs = {
+            "b": 2.5,
+            "a": 2.1,
+            "a_c": 0.9,
+            "r_c": 2.5,
+            "e1": 0.1,
+            "e2": 0.2,
+            "center_x": 0.0,
+            "center_y": 0.0,
+            "target_precision": 1e-5,
+            "maxiter": 2000,
+        }
+        lens_model = ["BPL"]
+        self.assert_differentials(lens_model, kwargs, diff=2e-3, decimal=1)
+
+        kwargs = {
+            "b": 1.2,
+            "a": 1.1,
+            "a_c": 2.1,
+            "r_c": 0.4,
+            "e1": 0.2,
+            "e2": 0.1,
+            "center_x": 0.0,
+            "center_y": 0.0,
+            "target_precision": 1e-5,
+            "maxiter": 2000,
+        }
+        lens_model = ["BPL"]
+        self.assert_differentials(lens_model, kwargs, diff=2e-3, decimal=1)
+
+        kwargs = {
+            "b": 1.2,
+            "a": 1.1,
+            "a_c": 2.1,
+            "r_c": 0.4,
+            "e1": 0.2,
+            "e2": 0.1,
+            "center_x": 0.0,
+            "center_y": 0.0,
+            "target_precision": 1e-5,
+            "maxiter": 1000,
+        }
+        lens_model = ["BPL"]
+        self.assert_differentials(lens_model, kwargs, diff=1e-6, decimal=3)
+
+        kwargs = {
+            "b": 2.5,
+            "a": 2.1,
+            "a_c": 0.9,
+            "r_c": 2.5,
+            "e1": 0.1,
+            "e2": 0.2,
+            "center_x": 0.0,
+            "center_y": 0.0,
+            "target_precision": 1e-12,
+            "maxiter": 4000,
+        }
+        lens_model = ["BPL"]
+        self.assert_differentials(lens_model, kwargs, diff=1e-6, decimal=3)
+
+        kwargs = {
+            "b": 2.5,
+            "a": 2.1,
+            "a_c": 0.9,
+            "r_c": 2.5,
+            "e1": 0.1,
+            "e2": 0.2,
+            "center_x": 0.0,
+            "center_y": 0.0,
+        }
+        lens_model = ["BPL"]
+        self.assert_differentials(lens_model, kwargs, diff=2e-3, decimal=1)

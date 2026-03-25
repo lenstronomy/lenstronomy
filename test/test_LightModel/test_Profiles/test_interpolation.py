@@ -21,7 +21,7 @@ class TestInterpol(object):
             x, y = util.make_grid(numPix=(len_x, len_y), deltapix=1.0)
             gauss = Gaussian()
             flux = gauss.function(x, y, amp=1.0, center_x=0.0, center_y=0.0, sigma=1.0)
-            image = util.array2image(flux, nx=len_y, ny=len_x)
+            image = util.array2image(flux, nx=len_x, ny=len_y)
 
             interp = Interpol()
             kwargs_interp = {

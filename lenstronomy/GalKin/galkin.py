@@ -229,15 +229,27 @@ class Galkin(GalkinModel, GalkinObservation):
         :param supersampling_factor: number of sub-pixels to compute the kernel on
         """
         delta_x, delta_y = self._delta_pix_xy()
+
+        delta_x_sub = np.abs(delta_x) / supersampling_factor
+        num_x = int(round(2 * fwhm_factor * self._psf.fwhm / delta_x_sub + 0.5))
+        if num_x % 2 == 0:
+            num_x += 1
+
         psf_x = np.arange(
-            -fwhm_factor * self._psf.fwhm,
-            fwhm_factor * self._psf.fwhm + np.abs(delta_x) / (supersampling_factor + 1),
-            np.abs(delta_x) / supersampling_factor,
+            -delta_x_sub * (num_x - 1) / 2,
+            delta_x_sub * (num_x + 1) / 2,
+            delta_x_sub,
         )
+
+        delta_y_sub = np.abs(delta_y) / supersampling_factor
+        num_y = int(round(2 * fwhm_factor * self._psf.fwhm / delta_y_sub + 0.5))
+        if num_y % 2 == 0:
+            num_y += 1
+
         psf_y = np.arange(
-            -fwhm_factor * self._psf.fwhm,
-            fwhm_factor * self._psf.fwhm + np.abs(delta_y) / (supersampling_factor + 1),
-            np.abs(delta_y) / supersampling_factor,
+            -delta_y_sub * (num_y - 1) / 2,
+            delta_y_sub * (num_y + 1) / 2,
+            delta_y_sub,
         )
 
         psf_x_grid, psf_y_grid = np.meshgrid(psf_x, psf_y)
@@ -266,6 +278,12 @@ class Galkin(GalkinModel, GalkinObservation):
         if hasattr(self.numerics, "lum_weight_int_method"):
             if not self.numerics.lum_weight_int_method:
                 raise ValueError("'lum_weight_int_method' must be True!")
+        if (voronoi_bins is not None) and self.aperture_type != "IFU_grid":
+            raise ValueError(
+                "Voronoi bins can only be used with the IFU_grid aperture!"
+            )
+        if self.aperture_type == "IFU_binned":
+            voronoi_bins = self._aperture.bins
 
         (
             x_grid_supersmapled,

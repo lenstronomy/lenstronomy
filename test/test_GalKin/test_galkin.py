@@ -65,6 +65,34 @@ class TestRaise(unittest.TestCase):
                 supersampling_factor=1,
             )
 
+        # voronoi in wrong aperture
+        with self.assertRaises(ValueError):
+            kwargs_model = {"anisotropy_model": "OM"}
+            voronoi_bins = np.zeros_like(x_grid) - 1
+            kwargs_aperture = {
+                "x_grid": x_grid,
+                "y_grid": y_grid,
+                "bins": voronoi_bins,
+                "aperture_type": "IFU_binned",
+            }
+            kwargs_cosmo = {"d_d": 1000, "d_s": 1500, "d_ds": 800}
+            kwargs_psf = {"psf_type": "GAUSSIAN", "fwhm": 1}
+            galkin = Galkin(
+                kwargs_model,
+                kwargs_aperture,
+                kwargs_psf,
+                kwargs_cosmo,
+                kwargs_numerics={},
+                analytic_kinematics=True,
+            )
+            galkin.dispersion_map_grid_convolved(
+                kwargs_mass={"theta_E": 1, "gamma": 2},
+                kwargs_light={"amp": 1, "Rs": 1},
+                kwargs_anisotropy={"r_ani": 1},
+                supersampling_factor=1,
+                voronoi_bins=voronoi_bins,
+            )
+
 
 class TestGalkin(object):
     def setup_method(self):
@@ -683,6 +711,125 @@ class TestGalkin(object):
         )
 
         npt.assert_almost_equal(sigma_v, sigma_v_ifu[0], decimal=-1)
+
+    def test_binned_ifu_aperture(self):
+
+        # aperture as Voronoi binned IFU
+        x = y = np.linspace(-1, 1, 10)
+        x_grid, y_grid = np.meshgrid(x, y)
+        bins = np.zeros_like(x_grid) - 1
+        bins[(x_grid > 0) & (y_grid > 0)] = 0
+        bins[(x_grid < 0) & (y_grid < 0)] = 1
+        kwargs_grid = {
+            "x_grid": x_grid,
+            "y_grid": y_grid,
+            "aperture_type": "IFU_grid",
+        }
+        kwargs_voronoi = {
+            "x_grid": x_grid,
+            "y_grid": y_grid,
+            "bins": bins,
+            "aperture_type": "IFU_binned",
+        }
+        # this slit equals bin 0
+        kwargs_slit = {
+            "aperture_type": "slit",
+            "width": 1,
+            "length": 1,
+            "center_ra": 0.5,
+            "center_dec": 0.5,
+        }
+        psf_fwhm = 0.8  # Gaussian FWHM psf
+        kwargs_cosmo = {"d_d": 1000, "d_s": 1500, "d_ds": 800}
+        kwargs_numerics = {  # 'sampling_number': 1000,
+            "interpol_grid_num": 1000,
+            "log_integration": True,
+            "max_integrate": 1000,
+            "min_integrate": 0.001,
+        }
+        kwargs_psf = {"psf_type": "GAUSSIAN", "fwhm": psf_fwhm}
+        # light profile
+        light_profile_list = ["HERNQUIST"]
+        r_eff = 1.0
+        kwargs_light = {
+            "r_eff": r_eff,  # effective half light radius (2d
+            # projected) in arcsec 0.551 * mass profile
+            "amp": 1.0,
+            "center_x": 0.0,
+            "center_y": 0.0,
+        }
+        mass_profile_list = ["PEMD"]
+        theta_E = 1.0
+        gamma = 2.0
+        kwargs_mass = {
+            "theta_E": theta_E,
+            "center_x": 0.0,
+            "center_y": 0.0,
+            "gamma": gamma,
+        }  # Einstein radius (arcsec) and power-law slope
+
+        # anisotropy profile
+        anisotropy_type = "OM"
+        r_ani = 1.5
+        kwargs_anisotropy = {"r_ani": r_ani}  # anisotropy radius [arcsec]
+
+        kwargs_model = {
+            "mass_profile_list": mass_profile_list,
+            "light_profile_list": light_profile_list,
+            "anisotropy_model": anisotropy_type,
+        }
+
+        galkin_grid = Galkin(
+            kwargs_aperture=kwargs_grid,
+            kwargs_psf=kwargs_psf,
+            kwargs_cosmo=kwargs_cosmo,
+            kwargs_model=kwargs_model,
+            kwargs_numerics=kwargs_numerics,
+            analytic_kinematics=True,
+        )
+        galkin_binned = Galkin(
+            kwargs_aperture=kwargs_voronoi,
+            kwargs_psf=kwargs_psf,
+            kwargs_cosmo=kwargs_cosmo,
+            kwargs_model=kwargs_model,
+            kwargs_numerics=kwargs_numerics,
+            analytic_kinematics=True,
+        )
+        galkin_slit = Galkin(
+            kwargs_aperture=kwargs_slit,
+            kwargs_psf=kwargs_psf,
+            kwargs_cosmo=kwargs_cosmo,
+            kwargs_model=kwargs_model,
+            kwargs_numerics=kwargs_numerics,
+            analytic_kinematics=True,
+        )
+
+        # test that dispersion_map_grid_convolved is equal
+        sigma_v_grid = galkin_grid.dispersion_map_grid_convolved(
+            kwargs_mass=kwargs_mass,
+            kwargs_light=kwargs_light,
+            kwargs_anisotropy=kwargs_anisotropy,
+            voronoi_bins=bins,
+        )
+        sigma_v_binned = galkin_binned.dispersion_map_grid_convolved(
+            kwargs_mass=kwargs_mass,
+            kwargs_light=kwargs_light,
+            kwargs_anisotropy=kwargs_anisotropy,
+        )
+        npt.assert_almost_equal(sigma_v_grid, sigma_v_binned, decimal=-3)
+
+        # test that dispersion_map is equal to a slit that takes the same bins
+        sigma_v_bin_0 = galkin_binned.dispersion_map(
+            kwargs_mass=kwargs_mass,
+            kwargs_light=kwargs_light,
+            kwargs_anisotropy=kwargs_anisotropy,
+        )[0]
+        sigma_v_slit = galkin_slit.dispersion_map(
+            kwargs_mass=kwargs_mass,
+            kwargs_light=kwargs_light,
+            kwargs_anisotropy=kwargs_anisotropy,
+        )
+        npt.assert_almost_equal(sigma_v_grid, sigma_v_binned, decimal=-2)
 
     def test_extract_center(self):
         """Test the extraction of the center of the IFU map."""

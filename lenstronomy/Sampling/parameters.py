@@ -38,7 +38,7 @@ class Param(object):
     joint position parameter between source light model and point source
 
     'joint_lens_light_with_point_source': list [[i_point_source, k_lens_light], [...], ...],
-    joint position parameter between lens model and lens light model
+    joint position parameter between lens light model and point source
 
     'joint_extinction_with_lens_light': list [[i_lens_light, k_extinction, ['param_name1', 'param_name2', ...]], [...], ...],
     joint parameters between the lens surface brightness and the optical depth models
@@ -237,7 +237,7 @@ class Param(object):
         :param cosmology_sampling: bool, if True, will use sampled cosmology
         :param cosmology_model: str, name of the cosmology model to use for
         :param solver_param_module: a class that performs conversions update_kwargs, extract_array, and add_fixed_lens
-        for the Solver4Point class with the solver_type = 'CUSTOM' option
+         for the Solver4Point class with the solver_type = 'CUSTOM' option
         """
 
         self._lens_model_list = kwargs_model.get("lens_model_list", [])

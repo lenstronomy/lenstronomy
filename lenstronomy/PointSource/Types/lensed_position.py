@@ -9,9 +9,10 @@ class LensedPositions(PSBase):
     class of a lensed point source parameterized as the (multiple) observed image positions
     Name within the PointSource module: 'LENSED_POSITION'
     parameters:
-        ra_image: list or array of floats
-        dec_image: list or array of floats
-        point_amp: list or array of floats
+    :param ra_image: list or array of floats
+    :param dec_image: list or array of floats
+    :param point_amp: list or array of floats
+
     If fixed_magnification=True, then 'source_amp' is a parameter instead of 'point_amp'
         source_amp: float
 
@@ -158,7 +159,9 @@ class LensedPositions(PSBase):
             source_amp = kwargs_ps["source_amp"]
         else:
             self._lens_model.change_source_redshift(self._redshift)
-            ra_image, dec_image = kwargs_ps["ra_image"], kwargs_ps["dec_image"]
+            ra_image, dec_image = np.array(kwargs_ps["ra_image"]), np.array(
+                kwargs_ps["dec_image"]
+            )
             if self.k_list is None:
                 mag = self._lens_model.magnification(ra_image, dec_image, kwargs_lens)
             else:

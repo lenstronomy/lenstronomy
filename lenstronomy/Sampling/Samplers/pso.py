@@ -9,7 +9,6 @@ import math
 import numpy as np
 from tqdm import tqdm
 
-
 __all__ = ["ParticleSwarmOptimizer"]
 
 

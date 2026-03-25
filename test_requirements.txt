@@ -1,6 +1,6 @@
 # requirements for tests
 colossus
-git+https://github.com/mattgomer/SKiNN@main#egg=SKiNN
+# git+https://github.com/mattgomer/SKiNN@main#egg=SKiNN
 git+https://github.com/aymgal/coolest@main#egg=coolest
 git+https://gitlab.com/cosmograil/starred@main#egg=starred-astro
 git+https://github.com/lenstronomy/JAXtronomy

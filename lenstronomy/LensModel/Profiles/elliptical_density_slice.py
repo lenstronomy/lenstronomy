@@ -20,10 +20,10 @@ class ElliSLICE(LensProfileBase):
 
     ..math::
         \\kappa(x,y) = \\left{
-            \\begin{array}{ll}
-                \\sigma_0  & \\mbox{if } \\frac{x_{rot}^2}{a^2} + \\frac{y_{rot}^2}{b^2} \\leq 1 \\\
-                0 & \\mbox{else}
-            \\end{array}
+        \\begin{array}{ll}
+        \\sigma_0  & \\mbox{if } \\frac{x_{rot}^2}{a^2} + \\frac{y_{rot}^2}{b^2} \\leq 1 \\\
+        0 \\& \\mbox{else}
+        \\end{array}
         \\right}.
 
     with

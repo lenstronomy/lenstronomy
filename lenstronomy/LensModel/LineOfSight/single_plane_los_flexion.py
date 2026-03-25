@@ -590,11 +590,9 @@ class SinglePlaneLOSFlexion(SinglePlane):
         :return: lensing potential in units of arcsec^2
         """
 
-        print(
-            "Note: The computation of the potential ignores the LOS corrections.\
+        print("Note: The computation of the potential ignores the LOS corrections.\
               In the presence of LOS corrections, a lensing system does not always\
-              derive from a potential."
-        )
+              derive from a potential.")
 
         # kwargs_main, kwargs_los = self.split_lens_los(kwargs)
         potential = self._main_lens.potential(x, y, kwargs, k=k)

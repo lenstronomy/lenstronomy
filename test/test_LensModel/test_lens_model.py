@@ -189,6 +189,7 @@ class TestLensModel(object):
             "MULTI_GAUSSIAN_ELLIPSE_POTENTIAL",
             "CHAMELEON",
             "DOUBLE_CHAMELEON",
+            "GreenBoschNFW",
         ]
         lens_model = LensModel(lens_model_list=lens_model_list)
         lens_model.info()

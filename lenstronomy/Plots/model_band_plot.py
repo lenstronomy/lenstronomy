@@ -1132,7 +1132,12 @@ class ModelBandPlot(ModelBand):
             ax, self._frame_size, dist=1, text='1"', font_size=font_size
         )
         plot_util.text_description(
-            ax, self._frame_size, text=text, color="w", backgroundcolor="k"
+            ax,
+            self._frame_size,
+            text=text,
+            color="w",
+            backgroundcolor="k",
+            font_size=font_size,
         )
         if no_arrow is False:
             plot_util.coordinate_arrows(

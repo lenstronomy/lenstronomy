@@ -86,7 +86,7 @@ class MultiBandImageReconstruction(object):
             n_data = self._imageModel.num_data_evaluate
             if n_data > 0:
                 print(
-                    logL * 2 / n_data,
+                    -logL * 2 / n_data,
                     "reduced X^2 of all evaluated imaging data combined.",
                 )
 

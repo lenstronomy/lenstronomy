@@ -131,7 +131,7 @@ def array2image(array, nx=0, ny=0):
                 % (len(array))
             )
         nx, ny = n, n
-    image = array.reshape(int(nx), int(ny))
+    image = array.reshape(int(ny), int(nx))
     return image
 
 

@@ -8,7 +8,6 @@ from lenstronomy.LightModel.Profiles.gaussian import Gaussian
 from lenstronomy.LightModel.Profiles.starlets import SLIT_Starlets
 from lenstronomy.Util import util
 
-
 _force_no_pysap = (
     True  # if issues on Travis-CI to install pysap, force use python-only functions
 )

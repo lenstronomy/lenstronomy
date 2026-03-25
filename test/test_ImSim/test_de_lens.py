@@ -52,6 +52,42 @@ class TestDeLens(object):
         npt.assert_almost_equal(result[1], 0, decimal=8)
         npt.assert_almost_equal(image[0], 0, decimal=8)
 
+    def test_get_param_WLS_interferometry(self):
+        M = np.array([[15, 3, 2], [3, 15, 3], [2, 3, 14]])
+        b = np.array([4, 2, 1])
+        param_amps, M_inv = de_lens.get_param_WLS_interferometry(M, b)
+        param_amps_expected = np.array([0.24816754, 0.07993019, 0.01884817])
+        M_inv_expected = np.array(
+            [
+                [0.07015707, -0.01256545, -0.00732984],
+                [-0.01256545, 0.07190227, -0.01361257],
+                [-0.00732984, -0.01361257, 0.07539267],
+            ]
+        )
+        npt.assert_almost_equal(param_amps, param_amps_expected, decimal=8)
+        npt.assert_almost_equal(M_inv, M_inv_expected, decimal=8)
+
+        param_amps1, M_inv1 = de_lens.get_param_WLS_interferometry(M, b, inv_bool=False)
+        npt.assert_almost_equal(param_amps1, param_amps_expected, decimal=8)
+        assert M_inv1 is None
+
+        # test the unstable case
+        M_degenerate = np.array([[0, 0, 0], [0, 15, 3], [0, 3, 14]])
+        b_degenerate = np.array([0, 2, 1])
+        param_amps_deg, M_inv_deg = de_lens.get_param_WLS_interferometry(
+            M_degenerate, b_degenerate
+        )
+        assert M_inv_deg[0, 0] == 0
+        assert M_inv_deg[1, 2] == 0
+        assert param_amps_deg[0] == 0
+        assert param_amps_deg[2] == 0
+        param_amps_deg1, M_inv_deg1 = de_lens.get_param_WLS_interferometry(
+            M_degenerate, b_degenerate, inv_bool=False
+        )
+        assert M_inv_deg1 is None
+        assert param_amps_deg1[0] == 0
+        assert param_amps_deg1[2] == 0
+
     def test_marginalisation_const(self):
         A = np.array([[1, 2, 3], [3, 2, 1]]).T
         C_D_inv = np.array([1, 1, 1])

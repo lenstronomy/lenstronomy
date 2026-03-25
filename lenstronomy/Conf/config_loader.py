@@ -2,7 +2,6 @@ import yaml
 import os
 import lenstronomy
 
-
 # in case the xdg library is installed, the import statement with pyxdg can raise an error
 # to avoid it, we draw back to the ~/.config directory in case this import fails.
 # TODO come up with more permanent solution of path to configuration directory

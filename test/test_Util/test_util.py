@@ -317,7 +317,7 @@ def test_image2array():
 
 def test_image2array2image():
     image = np.zeros((20, 10))
-    nx, ny = np.shape(image)
+    ny, nx = np.shape(image)
     image[1, 2] = 1
     array = util.image2array(image)
     image_new = util.array2image(array, nx, ny)

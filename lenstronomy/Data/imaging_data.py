@@ -90,7 +90,7 @@ class ImageData(PixelGrid, ImageNoise):
          when modeling multiple exposures that have different magnitude zero points (or flux normalizations) but demand
          the same model normalization
         """
-        nx, ny = np.shape(image_data)
+        ny, nx = np.shape(image_data)
         if transform_pix2angle is None:
             transform_pix2angle = np.array([[1, 0], [0, 1]])
         cos_phi, sin_phi = np.cos(phi_rot), np.sin(phi_rot)
@@ -134,7 +134,7 @@ class ImageData(PixelGrid, ImageNoise):
         :param image_data: 2d numpy array of same size as nx, ny
         :return: None
         """
-        nx, ny = np.shape(image_data)
+        ny, nx = np.shape(image_data)
         if not self._nx == nx and not self._ny == ny:
             raise ValueError(
                 "shape of new data %s %s must equal old data %s %s!"
@@ -177,7 +177,7 @@ class ImageData(PixelGrid, ImageNoise):
 
     def log_likelihood_interferometry(self, model):
         """log_likelihood function for natural weighting interferometric images, based
-        on (placeholder for Nan Zhang's paper).
+        on arxiv: 2508.08393.
 
         For the interferometry case, the model should be in the form [array1, array2],
         where array1 and array2 are unconvolved and convolved model images respectively.

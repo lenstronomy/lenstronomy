@@ -7,7 +7,6 @@ from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 from lenstronomy.LensModel.Profiles.epl import EPL
 from lenstronomy.LensModel.Profiles.multipole import Multipole, EllipticalMultipole
 
-
 __all__ = ["EPL_BOXYDISKY_ELL", "EPL_BOXYDISKY"]
 
 

@@ -64,19 +64,21 @@ class PSF(object):
                 raise ValueError(
                     "kernel_point_source needs to be specified for PIXEL PSF type!"
                 )
-            if len(kernel_point_source) % 2 == 0:
-                raise ValueError(
-                    "kernel needs to have odd axis number, not ",
-                    np.shape(kernel_point_source),
-                )
             # store the initial input PSF and supersampling factor
             self._kernel_point_source_init = kernel_point_source
             self._point_source_supersampling_factor_init = (
                 point_source_supersampling_factor
             )
-            kernel_point_source_ = copy.deepcopy(kernel_point_source)
+            if len(kernel_point_source) % 2 == 0:
+                kernel_point_source_ = kernel_util.kernel_make_odd(kernel_point_source)
+                Warning(
+                    "Kernel with even axis got changed to odd axis and re-centered. This can cause inaccuracies and"
+                    " is not recommended"
+                )
+            else:
+                kernel_point_source_ = copy.deepcopy(kernel_point_source)
             if kernel_point_source_normalisation is True:
-                kernel_point_source_ /= np.sum(kernel_point_source)
+                kernel_point_source_ /= np.sum(kernel_point_source_)
             if point_source_supersampling_factor > 1:
                 self._kernel_point_source_supersampled = kernel_point_source_
                 self._point_source_supersampling_factor = (

@@ -34,7 +34,7 @@ class LikelihoodModule(object):
         check_bounds=True,
         astrometric_likelihood=False,
         image_position_likelihood=False,
-        source_position_likelihood=False,
+        source_position_likelihood=None,
         image_position_uncertainty=0.004,
         check_positive_flux=False,
         source_position_tolerance=None,
@@ -47,6 +47,7 @@ class LikelihoodModule(object):
         bands_compute=None,
         time_delay_likelihood=False,
         time_delay_measurement_bool_list=None,
+        bimodal_time_delay_measurement=False,
         image_likelihood_mask_list=None,
         flux_ratio_likelihood=False,
         kwargs_flux_compute=None,
@@ -123,6 +124,9 @@ class LikelihoodModule(object):
         :param kinematic_2d_likelihood: bool, option to compute the kinematic likelihood
         :param tracer_likelihood: option to perform likelihood on tracer quantity
             derived from imaging or spectroscopy
+        :param bimodal_time_delay_measurement: if True, two sets of delays are required.
+            Only allowed for one set of point sources
+        :type bimodal_time_delay_measurement: bool
         """
         # TODO unpack also tracer model from kwargs_data
         (
@@ -177,6 +181,7 @@ class LikelihoodModule(object):
             "time_delays_measured": time_delays_measured,
             "time_delays_uncertainties": time_delays_uncertainties,
             "time_delay_measurement_bool_list": time_delay_measurement_bool_list,
+            "bimodal_measurement": bimodal_time_delay_measurement,
         }
         self._kwargs_image_likelihood = {
             "source_marg": source_marg,

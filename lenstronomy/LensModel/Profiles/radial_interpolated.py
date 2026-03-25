@@ -239,3 +239,15 @@ class RadialInterpolate(LensProfileBase):
                 bounds_error=False,
             )
         return self._interp_potential_over_r2(r) * r**2
+
+    def set_dynamic(self):
+        """
+
+        :return: no return, deletes pre-computed variables for certain lens models
+        """
+        if hasattr(self, "_interp_m_enclosed_over_r"):
+            del self._interp_m_enclosed_over_r
+        if hasattr(self, "_interp_kappa"):
+            del self._interp_kappa
+        if hasattr(self, "_interp_potential_over_r2"):
+            del self._interp_potential_over_r2

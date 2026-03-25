@@ -144,8 +144,7 @@ class GaussianEllipse(object):
 
 @export
 class MultiGaussian(object):
-    """Class for elliptical pseudo Jaffe lens light (2d projected light/mass
-    distribution.
+    """Class for Multi Gaussian lens light (2d projected light/mass distribution.
 
     profile name in LightModel module: 'MULTI_GAUSSIAN'
     """

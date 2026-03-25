@@ -1,62 +1,66 @@
 # %%
 """Provisional Roman instrument and observational settings."""
+
 import lenstronomy.Util.util as util
 import os
 import astropy.io.fits as pyfits
 
-# magnitude_zero_point: table 1 from https://iopscience.iop.org/article/10.3847/1538-4357/aac08b/pdf
-# ccd_gain found right under table 1 in paper
+# magnitude_zero_point: table 3 from https://www.stsci.edu/files/live/sites/www/files/home/roman/documentation/technical-documentation/_documents/Roman-STScI%E2%80%93000825.pdf
+# ccd_gain found right under table 1 in https://iopscience.iop.org/article/10.3847/1538-4357/aac08b/pdf
 # seeing, read_noise, pixel_scale (labelled as plate_scale on website): https://roman.gsfc.nasa.gov/science/WFI_technical.html
 # sky brightness calculated using count rates per pixel at minimum Zodiacal light given in website above
 # For microlensing survey mode: exposure time, number of exposures for F146 and F087: table 1 with the mission design of WFIRST Cycle 7 from https://iopscience.iop.org/article/10.3847/1538-4365/aafb69/meta#apjsaafb69t1fnd
-# For wide area survey mode: exposure time and number of exposures for relevant filters set as given in https://roman.gsfc.nasa.gov/high_latitude_wide_area_survey.html
-
+# For wide area survey mode: exposure time and number of exposures for relevant filters set as given in https://roman-docs.stsci.edu/roman-community-defined-surveys/high-latitude-wide-area-survey
+# For time domain survey mode: exposure time and number of exposures for relevant filters set as given in https://roman-docs.stsci.edu/roman-community-defined-surveys/high-latitude-time-domain-survey
 
 __all__ = ["Roman"]
 
+# magnitude zero points updated on 3/10/2026
+# seeing, or PSF FWHM in arcseconds, updated on 3/10/2026
+
 F062_band_obs = {
     "sky_brightness": 23.19,
-    "magnitude_zero_point": 26.56,
+    "magnitude_zero_point": 26.6179,
     "seeing": 0.058,
 }
 
 F087_band_obs = {
     "sky_brightness": 22.93,
-    "magnitude_zero_point": 26.30,
+    "magnitude_zero_point": 26.3023,
     "seeing": 0.073,
 }
 
 F106_band_obs = {
     "sky_brightness": 22.99,
-    "magnitude_zero_point": 26.44,
+    "magnitude_zero_point": 26.3546,
     "seeing": 0.087,
 }
 
 F129_band_obs = {
     "sky_brightness": 22.99,
-    "magnitude_zero_point": 26.40,
-    "seeing": 0.105,
+    "magnitude_zero_point": 26.3531,
+    "seeing": 0.106,
 }
 
 F158_band_obs = {
     "sky_brightness": 23.10,
-    "magnitude_zero_point": 26.43,
-    "seeing": 0.127,
+    "magnitude_zero_point": 26.3760,
+    "seeing": 0.128,
 }
 
 F184_band_obs = {
     "sky_brightness": 23.22,
-    "magnitude_zero_point": 25.95,
-    "seeing": 0.151,
+    "magnitude_zero_point": 25.9124,
+    "seeing": 0.146,
 }
 
 F146_band_obs = {
     "sky_brightness": 22.03,
-    "magnitude_zero_point": 26.65,
+    "magnitude_zero_point": 27.5842,
     "seeing": 0.105,
 }
 
-# - keyword sky_brightness: sky brightness (in magnitude per square arcseconds in units of electrons)
+# - keyword sky_brightness: sky brightness (in magnitude per square arcsecond)
 # - keyword magnitude_zero_point: magnitude in which 1 count (e-) per second per arcsecond square is registered
 # - keyword seeing: Full-Width-at-Half-Maximum (FWHM) of PSF
 # - keyword psf_type: string, type of PSF ('GAUSSIAN' supported)
@@ -65,11 +69,12 @@ F146_band_obs = {
 class Roman(object):
     """Class contains Roman instrument and observation configurations."""
 
-    def __init__(self, band="F062", psf_type="GAUSSIAN", survey_mode="wide_area"):
+    def __init__(self, band="F106", psf_type="GAUSSIAN", survey_mode="wide_area"):
         """
 
-        :param band: string, 'F062', 'F087', 'F106', 'F129', 'F158' , 'F184' or 'F146' supported. Determines obs dictionary.
+        :param band: string, 'F062', 'F087', 'F106', 'F129', 'F158', 'F184', or 'F146' supported. Determines obs dictionary.
         :param psf_type: string, type of PSF ('GAUSSIAN', 'PIXEL' supported).
+        :param survey_mode: string, survey mode ('wide_area', 'time_domain_wide', 'time_domain_deep', or 'microlensing' supported). Determines exposure time and number of exposures.
         """
 
         if band == "F062":
@@ -92,21 +97,55 @@ class Roman(object):
                 % band
             )
 
+        # NOTE: Updated on 1/13/2026
         if survey_mode == "wide_area":
-            # the number of exposures is given per sector
-            # a full pass of the High Latitude Wide Area Survey is 155 sectors
+            # medium tier
 
-            if band in ["F106", "F158", "F184", "F062"]:
-                exp_per_tile = 3
-            elif band == "F129":
-                exp_per_tile = 4
+            if band in ["F106", "F129", "F158"]:
+                # 107s per dither, 3 dithers, 2 passes for a total of 6 exposures
+                self.obs.update({"exposure_time": 107, "num_exposures": 6})
             else:
                 raise ValueError(
-                    "band %s is not supported with the wide_area survey mode! Choose 'F106', 'F062, 'F158', 'F184' or F129"
+                    "band %s is not supported with the wide_area medium tier survey mode! Choose 'F106', 'F129', or 'F158'"
                     % band
                 )
 
-            self.obs.update({"exposure_time": 146, "num_exposures": 32 * exp_per_tile})
+        # NOTE: Updated on 1/13/2026
+        elif survey_mode == "time_domain_wide":
+
+            bands = ["F062", "F087", "F106", "F129", "F158"]
+            exposure_times = [60, 85, 95, 152, 294]
+
+            if band in bands:
+                index = bands.index(band)
+                exposure_time = exposure_times[index]
+            else:
+                raise ValueError(
+                    "band %s is not supported with the time_domain_wide survey mode! Choose 'F062', 'F087', 'F106', 'F129', or 'F158'"
+                    % band
+                )
+            self.obs.update({"exposure_time": exposure_time, "num_exposures": 1})
+
+        # NOTE: Updated on 1/13/2026
+        elif survey_mode == "time_domain_deep":
+
+            bands = ["F087", "F106", "F129", "F158", "F184"]
+            exposure_times = [193, 294, 307, 420, 409]
+            num_exposures_list = [1, 1, 1, 1, 4]
+
+            if band in bands:
+                index = bands.index(band)
+                exposure_time = exposure_times[index]
+                num_exposures = num_exposures_list[index]
+            else:
+                raise ValueError(
+                    "band %s is not supported with the time_domain_deep survey mode! Choose 'F087', 'F106', 'F129', 'F158', or 'F184'"
+                    % band
+                )
+            self.obs.update(
+                {"exposure_time": exposure_time, "num_exposures": num_exposures}
+            )
+
         elif survey_mode == "microlensing":
             if band == "F146":
                 # These are the exposure times and number of exposures for the primary filter, F146
@@ -121,7 +160,7 @@ class Roman(object):
                 )
         else:
             raise ValueError(
-                "survey mode %s not supported! Choose 'wide_area' or 'microlensing'"
+                "survey mode %s not supported! Choose 'wide_area', 'time_domain_wide', 'time_domain_deep', or 'microlensing'"
                 % survey_mode
             )
 
@@ -138,9 +177,11 @@ class Roman(object):
         elif psf_type == "GAUSSIAN":
             self.obs.update({"psf_type": "GAUSSIAN"})
         else:
-            raise ValueError("psf_type %s not supported!" % psf_type)
+            raise ValueError(
+                "psf_type %s not supported! Choose 'GAUSSIAN' or 'PIXEL'" % psf_type
+            )
 
-        self.camera = {"read_noise": 15.5, "pixel_scale": 0.11, "ccd_gain": 1}
+        self.camera = {"read_noise": 8.5, "pixel_scale": 0.11, "ccd_gain": 1}
 
         # - keyword read_noise: std of noise generated by read-out (in units of electrons)
         # - keyword pixel_scale: scale (in arcseconds) of pixels

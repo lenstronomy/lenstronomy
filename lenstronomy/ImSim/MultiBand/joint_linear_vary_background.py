@@ -90,9 +90,9 @@ class JointLinear_VaryBG(MultiLinear):
         :param inv_bool: if True, invert the full linear solver Matrix Ax = y for the
             purpose of the covariance matrix.
         :return: list of best-fit 2D model images (one per band), list of model error
-            maps, covariance matrix of shape (N_params + N_bands, N_params + N_bands)
-            or None if inv_bool is False, and 1D parameter array of length
-            N_params + N_bands (last N_bands entries are the per-band background levels)
+            maps, covariance matrix of shape (N_params + N_bands, N_params + N_bands) or
+            None if inv_bool is False, and 1D parameter array of length N_params +
+            N_bands (last N_bands entries are the per-band background levels)
         """
         A = self.linear_response_matrix(
             kwargs_lens,

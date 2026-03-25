@@ -18,8 +18,8 @@ from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 
 
 class TestJointLinear_VaryBG(object):
-    """Tests JointLinear_VaryBG, which extends JointLinear with a per-band
-    constant background as an additional free linear parameter."""
+    """Tests JointLinear_VaryBG, which extends JointLinear with a per-band constant
+    background as an additional free linear parameter."""
 
     def setup_method(self):
         sigma_bkg = 0.05
@@ -76,9 +76,7 @@ class TestJointLinear_VaryBG(object):
         source_model_list = ["SERSIC_ELLIPSE"]
         self.kwargs_source = [kwargs_sersic_ellipse]
         source_model_class = LightModel(light_model_list=source_model_list)
-        self.kwargs_ps = [
-            {"ra_source": 0.0001, "dec_source": 0.0, "source_amp": 1.0}
-        ]
+        self.kwargs_ps = [{"ra_source": 0.0001, "dec_source": 0.0, "source_amp": 1.0}]
         point_source_class = PointSource(
             point_source_type_list=["SOURCE_POSITION"], fixed_magnification_list=[True]
         )
@@ -109,7 +107,11 @@ class TestJointLinear_VaryBG(object):
 
         def make_band_image(noiseless, bg):
             img = noiseless + bg
-            return img + image_util.add_poisson(img, exp_time) + image_util.add_background(img, sigma_bkg)
+            return (
+                img
+                + image_util.add_poisson(img, exp_time)
+                + image_util.add_background(img, sigma_bkg)
+            )
 
         image_sim_band0 = make_band_image(image_noiseless, self.bg_band0)
         image_sim_band1 = make_band_image(image_noiseless, self.bg_band1)
@@ -119,8 +121,12 @@ class TestJointLinear_VaryBG(object):
 
         # flux_scaling mimics per-exposure relative flux calibration (as in the
         # analysis script: multi_band_list[j][0]['flux_scaling'] = flux_scaling[j])
-        kwargs_data_band0 = dict(kwargs_data, image_data=image_sim_band0, flux_scaling=1.0)
-        kwargs_data_band1 = dict(kwargs_data, image_data=image_sim_band1, flux_scaling=0.8)
+        kwargs_data_band0 = dict(
+            kwargs_data, image_data=image_sim_band0, flux_scaling=1.0
+        )
+        kwargs_data_band1 = dict(
+            kwargs_data, image_data=image_sim_band1, flux_scaling=0.8
+        )
         multi_band_list = [
             [kwargs_data_band0, kwargs_psf, kwargs_numerics],
             [kwargs_data_band1, kwargs_psf, kwargs_numerics],
@@ -138,7 +144,8 @@ class TestJointLinear_VaryBG(object):
         self.num_params_total = self.num_joint_params + self.num_bands
 
     def test_linear_response(self):
-        """Response matrix should have one extra row per band compared to JointLinear."""
+        """Response matrix should have one extra row per band compared to
+        JointLinear."""
         A = self.imageModel.linear_response_matrix(
             kwargs_lens=self.kwargs_lens,
             kwargs_source=self.kwargs_source,
@@ -150,14 +157,16 @@ class TestJointLinear_VaryBG(object):
         assert ny == 100**2 * self.num_bands
 
     def test_image_linear_solve(self):
-        """image_linear_solve should return a single cov_param matrix and a flat
-        param array (not per-band lists), with length = num_joint_params + num_bands."""
-        wls_list, model_error_list, cov_param, param = self.imageModel.image_linear_solve(
-            self.kwargs_lens,
-            self.kwargs_source,
-            self.kwargs_lens_light,
-            self.kwargs_ps,
-            inv_bool=True,
+        """image_linear_solve should return a single cov_param matrix and a flat param
+        array (not per-band lists), with length = num_joint_params + num_bands."""
+        wls_list, model_error_list, cov_param, param = (
+            self.imageModel.image_linear_solve(
+                self.kwargs_lens,
+                self.kwargs_source,
+                self.kwargs_lens_light,
+                self.kwargs_ps,
+                inv_bool=True,
+            )
         )
         # wls_list has one reconstructed image per band
         assert len(wls_list) == self.num_bands

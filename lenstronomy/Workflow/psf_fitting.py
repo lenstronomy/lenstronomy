@@ -32,7 +32,7 @@ class PsfFitting(object):
         Default is zero, meaning a not optimal subtraction of the neighbouring point sources might contaminate the
         estimate.
 
-    'keep_error_map': bool, if True, does not replace the error term associated with the PSF estimate.
+    'keep_psf_variance_map': bool, if True, does not replace the error term associated with the PSF estimate.
         If false, re-estimates the variance between the PSF estimates.
 
     'psf_symmetry': number of rotational invariant symmetries in the estimated PSF.

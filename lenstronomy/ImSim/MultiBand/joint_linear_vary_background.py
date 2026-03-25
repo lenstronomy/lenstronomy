@@ -7,23 +7,27 @@ __all__ = ["JointLinear_VaryBG"]
 
 
 class JointLinear_VaryBG(MultiLinear):
-    """Class to model multiple exposures in the same band and makes a constraint fit to
-    all bands simultaneously with joint constraints on the surface brightness of the
-    model.
+    """Class to model multiple exposures and makes a joint linear fit across all bands
+    simultaneously, with shared surface brightness constraints and a free per-band
+    background level.
 
-    This model setting require the same surface brightness models to be called in all
-    available images/bands
+    Like JointLinear, the same surface brightness models must be called in all bands.
+    Unlike JointLinear, each band has an additional free constant background parameter
+    appended to the end of the linear parameter vector. This is not compatible with
+    other lenstronomy fitting methods (e.g. FittingSequence).
 
-    Unlike joint_linear, this allows there to be a variable background flux in each filter. Background fluxes in each
-    filter are appended to the end of the linear response. This is not compatible with other lenstronomy methods.
+    The returned ``param`` array has length ``N_model_params + N_bands``, where the
+    last ``N_bands`` entries are the best-fit background levels for each band in the
+    order they appear in ``multi_band_list``.
 
-    Usage is the following:
-    from lenstronomy.ImSim.MultiBand.joint_linear_vary_bg import JointLinear_VaryBG
-    image_model = JointLinear_VaryBG(multi_band_list, kwargs_model)
-        kwargs_result_copy = copy.deepcopy(kwargs_result)
-        model, error_map, cov_param, param_vals = image_model.image_linear_solve(inv_bool=True, **kwargs_result_copy)
+    Usage::
 
-    parm_vals will now include the best fit background values.
+        from lenstronomy.ImSim.MultiBand.joint_linear_vary_background import JointLinear_VaryBG
+        image_model = JointLinear_VaryBG(multi_band_list, kwargs_model)
+        model, error_map, cov_param, param_vals = image_model.image_linear_solve(
+            inv_bool=True, **kwargs_result
+        )
+        # param_vals[-N_bands:] are the best-fit background values per band
     """
 
     def __init__(
@@ -71,8 +75,10 @@ class JointLinear_VaryBG(MultiLinear):
             external shear and point source image positions
         :param inv_bool: if True, invert the full linear solver Matrix Ax = y for the
             purpose of the covariance matrix.
-        :return: 1d array of surface brightness pixels of the optimal solution of the
-            linear parameters to match the data
+        :return: list of best-fit 2D model images (one per band), list of model error
+            maps, covariance matrix of shape (N_params + N_bands, N_params + N_bands)
+            or None if inv_bool is False, and 1D parameter array of length
+            N_params + N_bands (last N_bands entries are the per-band background levels)
         """
         A = self.linear_response_matrix(
             kwargs_lens,
@@ -99,14 +105,15 @@ class JointLinear_VaryBG(MultiLinear):
         kwargs_extinction=None,
         kwargs_special=None,
     ):
-        """Computes the linear response matrix (m x n), with n being the data size and m
-        being the coefficients.
+        """Computes the linear response matrix of shape (N_params + N_bands, N_pixels_total),
+        where the last N_bands rows encode the per-band constant background: row
+        N_params + i is all-ones for band i's pixels and zero elsewhere.
 
         :param kwargs_lens:
         :param kwargs_source:
         :param kwargs_lens_light:
         :param kwargs_ps:
-        :return:
+        :return: 2D numpy array of shape (N_params + N_bands, N_pixels_total)
         """
         A = []
         for i in range(self._num_bands):
@@ -119,8 +126,7 @@ class JointLinear_VaryBG(MultiLinear):
                     kwargs_extinction,
                     kwargs_special,
                 )
-                ##bg has zero response, unless it's the correct filter, so it's an array of zeros exept for the ith
-                # element which is ones
+                # Background response: ones for this band's pixels, zeros for all other bands
                 background_response_i = np.zeros((self._num_bands, A_i_start.shape[1]))
                 background_response_i[i, :] += 1
                 A_i = np.append(A_i_start, background_response_i, axis=0)

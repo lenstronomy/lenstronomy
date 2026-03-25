@@ -20,6 +20,14 @@ class JointLinear_VaryBG(MultiLinear):
     last ``N_bands`` entries are the best-fit background levels for each band in the
     order they appear in ``multi_band_list``.
 
+    .. note::
+        This routine assumes the source fluxes are identical across all exposures.
+        In ground-based observing, sky transparency variations can introduce a
+        multiplicative offset between exposures. It is recommended to first fit each
+        exposure independently using ``MultiLinear`` to measure the relative image
+        amplitudes, and then pass these as ``flux_scaling`` in each band's
+        ``kwargs_data``. This corrects for transparency offsets before the joint solve.
+
     Usage::
 
         from lenstronomy.ImSim.MultiBand.joint_linear_vary_background import JointLinear_VaryBG

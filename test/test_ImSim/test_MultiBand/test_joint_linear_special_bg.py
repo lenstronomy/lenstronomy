@@ -228,7 +228,8 @@ class TestJointLinear_VaryBG(object):
         assert np.isfinite(logL)
 
     def test_update_linear_kwargs(self):
-        """Test that update_linear_kwargs runs without error and returns updated kwargs."""
+        """Test that update_linear_kwargs runs without error and returns updated
+        kwargs."""
         _, _, _, param = self.imageModel.image_linear_solve(
             self.kwargs_lens,
             self.kwargs_source,

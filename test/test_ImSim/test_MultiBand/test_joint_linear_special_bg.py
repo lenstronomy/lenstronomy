@@ -203,6 +203,51 @@ class TestJointLinear_VaryBG(object):
         chi2_reduced = logL * 2 / self.imageModel.num_data_evaluate
         npt.assert_almost_equal(chi2_reduced, -1, 1)
 
+    def test_likelihood_source_marg(self):
+        """Test source_marg=True branch, which computes the marginalization constant
+        from the covariance matrix."""
+        logL_marg, param = self.imageModel.likelihood_data_given_model(
+            self.kwargs_lens,
+            self.kwargs_source,
+            self.kwargs_lens_light,
+            self.kwargs_ps,
+            source_marg=True,
+        )
+        assert np.isfinite(logL_marg)
+
+    def test_likelihood_check_positive_flux(self):
+        """Test check_positive_flux=True branch, which penalises negative fluxes."""
+        logL, param = self.imageModel.likelihood_data_given_model(
+            self.kwargs_lens,
+            self.kwargs_source,
+            self.kwargs_lens_light,
+            self.kwargs_ps,
+            source_marg=False,
+            check_positive_flux=True,
+        )
+        assert np.isfinite(logL)
+
+    def test_update_linear_kwargs(self):
+        """Test that update_linear_kwargs runs without error and returns updated kwargs."""
+        _, _, _, param = self.imageModel.image_linear_solve(
+            self.kwargs_lens,
+            self.kwargs_source,
+            self.kwargs_lens_light,
+            self.kwargs_ps,
+            inv_bool=False,
+        )
+        kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps = (
+            self.imageModel.update_linear_kwargs(
+                param,
+                0,
+                self.kwargs_lens,
+                self.kwargs_source,
+                self.kwargs_lens_light,
+                self.kwargs_ps,
+            )
+        )
+        assert kwargs_source is not None
+
 
 if __name__ == "__main__":
     pytest.main()

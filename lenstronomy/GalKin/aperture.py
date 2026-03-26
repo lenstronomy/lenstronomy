@@ -59,17 +59,17 @@ class Aperture(object):
         """
         return self._aperture.aperture_select(ra, dec)
 
-    def aperture_sample(self):
+    def aperture_sample(self, supersampling_factor):
         """
 
         :return: regular (x, y) grid within the aperture to be sampled
         """
-        return self._aperture.aperture_sample()
+        return self._aperture.aperture_sample(supersampling_factor)
 
     def aperture_downsample(self, hires_map):
         """
 
-        :param hires_map: values within the aperture to be integrated
+        :param hires_map: regular grid of values within the aperture to be integrated
         :return: averaged values within the aperture into num_segments
         """
         return self._aperture.aperture_downsample(hires_map)

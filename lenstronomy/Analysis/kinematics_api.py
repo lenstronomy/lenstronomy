@@ -6,6 +6,7 @@ import warnings
 from lenstronomy.GalKin.galkin_multiobservation import GalkinMultiObservation
 from lenstronomy.GalKin.galkin import Galkin
 from lenstronomy.GalKin.galkin_shells import GalkinShells
+from lenstronomy.JAMPy.jam_wrapper import JAMWrapper
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 from lenstronomy.Util import class_creator
 from lenstronomy.Analysis.lens_profile import LensProfileAnalysis
@@ -34,14 +35,16 @@ class KinematicsAPI(object):
         multi_light_profile=False,
         kwargs_numerics_galkin=None,
         analytic_kinematics=False,
-        Hernquist_approx=False,
-        MGE_light=False,
-        MGE_mass=False,
+        Hernquist_approx=False,  # TODO: revise if this is still needed
+        MGE_light=None,
+        MGE_mass=None,
         kwargs_mge_light=None,
         kwargs_mge_mass=None,
         sampling_number=1000,
         num_kin_sampling=1000,
         num_psf_sampling=100,
+        backend='jampy',
+        axial_symmetry="spherical",
     ):
         """Initialize the class with the lens model and cosmology.
 
@@ -77,7 +80,9 @@ class KinematicsAPI(object):
             to the half light radius of the deflector light profile to compute the
             kinematics
         :param MGE_light: bool, if true performs the MGE for the light distribution
+            defaults to False for Galkin and True for Jampy
         :param MGE_mass: bool, if true performs the MGE for the mass distribution
+            defaults to False for Galkin and True for Jampy
         :param kwargs_numerics_galkin: numerical settings for the integrated
             line-of-sight velocity dispersion
         :param kwargs_mge_mass: keyword arguments that go into the MGE decomposition
@@ -124,6 +129,39 @@ class KinematicsAPI(object):
         self._num_kin_sampling = num_kin_sampling
         self._num_psf_sampling = num_psf_sampling
 
+        if backend == 'jampy':
+            if MGE_mass is None:
+                MGE_mass = True
+            elif MGE_mass is False:
+                raise ValueError('MGE_mass must be True for the jampy backend')
+            if MGE_light is None:
+                MGE_light = True
+            elif MGE_light is False:
+                raise ValueError('MGE_light must be True for the jampy backend')
+        if backend == 'galkin':
+            if MGE_light is None:
+                MGE_light = False
+            if MGE_mass is None:
+                MGE_mass = False
+        else:
+            raise ValueError('backend must be either "jampy" or "galkin"')
+
+        if axial_symmetry in ["axi_sph", "axi_cyl"]:
+            if backend != "jampy":
+                raise ValueError(
+                    "Only the JamPy backend is currently supported for axisymmetric JAM models."
+                )
+        if axial_symmetry not in ["spherical", "axi_sph", "axi_cyl"]:
+            raise ValueError(
+                "Axial symmetry option %s not recognized." % axial_symmetry
+            )
+        if analytic_kinematics and (backend == "jampy"):
+            raise ValueError(
+                "Analytic kinematics not supported with the jampy backend."
+            )
+        self.backend = backend
+        self.axial_symmetry = axial_symmetry
+
         if kwargs_mge_mass is None:
             self._kwargs_mge_mass = {"n_comp": 20}
         else:
@@ -158,9 +196,10 @@ class KinematicsAPI(object):
         theta_E=None,
         gamma=None,
         kappa_ext=0,
+        q_intrinsic=1.0,
     ):
         """API for both, analytic and numerical JAM to compute the velocity dispersion
-        [km/s] This routine uses the galkin_setting() routine for the Galkin
+        [km/s] This routine uses the jam_model_setting() routine for the Galkin/Jampy
         configurations (see there what options and input is relevant.
 
         :param kwargs_lens: lens model keyword arguments
@@ -172,19 +211,32 @@ class KinematicsAPI(object):
         :param theta_E: Einstein radius (optional)
         :param gamma: power-law slope (optional)
         :param kappa_ext: external convergence (optional)
+        :param q_intrinsic: intrinsic axis ratio of the light profile to compute the inclination angle
         :return: velocity dispersion [km/s]
         """
-        galkin, kwargs_profile, kwargs_light = self.galkin_settings(
+        jam_model, kwargs_profile, kwargs_light = self.jam_model_settings(
             kwargs_lens, kwargs_lens_light, r_eff=r_eff, theta_E=theta_E, gamma=gamma
         )
         sigma_v = []
-        for i in range(len(galkin)):
-            sigma_v_ = galkin[i].dispersion(
-                kwargs_profile,
-                kwargs_light,
-                kwargs_anisotropy,
-                sampling_number=self._sampling_number,
-            )
+        for i in range(len(jam_model)):
+            if self._multi_light_profile:
+                kwargs_light_i = kwargs_light[i]
+            else:
+                kwargs_light_i = kwargs_light
+            if self.backend == "galkin":
+                sigma_v_ = jam_model[i].dispersion(
+                    kwargs_profile,
+                    kwargs_light_i,
+                    kwargs_anisotropy,
+                    sampling_number=self._sampling_number,
+                )
+            elif self.backend == "jampy":
+                sigma_v_ = jam_model[i].dispersion(
+                    kwargs_profile,
+                    kwargs_light_i,
+                    kwargs_anisotropy,
+                    q_intrinsic=q_intrinsic,
+                )
             sigma_v = np.append(sigma_v, sigma_v_)
         sigma_v = self.transform_kappa_ext(sigma_v, kappa_ext=kappa_ext)
         return sigma_v
@@ -198,6 +250,7 @@ class KinematicsAPI(object):
         theta_E=None,
         gamma=None,
         kappa_ext=0,
+        q_intrinsic=1.0,
         supersampling_factor=1,
         voronoi_bins=None,
     ):
@@ -214,38 +267,46 @@ class KinematicsAPI(object):
             either be computed in this function with default settings or not required
         :param gamma: power-law slope at the Einstein radius, optional
         :param kappa_ext: external convergence
+        :param q_intrinsic: intrinsic axis ratio of the light profile to compute the inclination angle
         :param supersampling_factor: supersampling factor for 2D integration grid
         :param voronoi_bins: mapping of the voronoi bins, -1 values for pixels not
             binned
         :return: velocity dispersion map in specified bins or grid in `kwargs_aperture`,
             in [km/s] unit
         """
-        galkin, kwargs_profile, kwargs_light = self.galkin_settings(
+        jam_model, kwargs_profile, kwargs_light = self.jam_model_settings(
             kwargs_lens, kwargs_lens_light, r_eff=r_eff, theta_E=theta_E, gamma=gamma
         )
-
         sigma_v_map = []
         for i in range(len(self._kwargs_aperture_kin)):
             if self._multi_light_profile is True:
-                kwargs_light_ = kwargs_light[i]
+                kwargs_light_i = kwargs_light[i]
             else:
-                kwargs_light_ = kwargs_light
-
-            if self._kwargs_aperture_kin[i]["aperture_type"] == "IFU_grid":
-                sigma_v_map_ = galkin[i].dispersion_map_grid_convolved(
+                kwargs_light_i = kwargs_light
+            if self.backend == "galkin":
+                if self._kwargs_aperture_kin[i]["aperture_type"] == "IFU_grid":
+                    sigma_v_map_ = jam_model[i].dispersion_map_grid_convolved(
+                        kwargs_profile,
+                        kwargs_light_i,
+                        kwargs_anisotropy,
+                        supersampling_factor=supersampling_factor,
+                        voronoi_bins=voronoi_bins,
+                    )
+                else:
+                    sigma_v_map_ = jam_model[i].dispersion_map(
+                        kwargs_profile,
+                        kwargs_light_i,
+                        kwargs_anisotropy,
+                        num_kin_sampling=self._num_kin_sampling,
+                        num_psf_sampling=self._num_psf_sampling,
+                    )
+            elif self.backend == "jampy":
+                sigma_v_map_ = jam_model[i].dispersion(
                     kwargs_profile,
-                    kwargs_light_,
+                    kwargs_light_i,
                     kwargs_anisotropy,
-                    supersampling_factor=supersampling_factor,
+                    q_intrinsic=q_intrinsic,
                     voronoi_bins=voronoi_bins,
-                )
-            else:
-                sigma_v_map_ = galkin[i].dispersion_map(
-                    kwargs_profile,
-                    kwargs_light_,
-                    kwargs_anisotropy,
-                    num_kin_sampling=self._num_kin_sampling,
-                    num_psf_sampling=self._num_psf_sampling,
                 )
             sigma_v_map = np.append(sigma_v_map, sigma_v_map_)
         sigma_v_map = self.transform_kappa_ext(sigma_v_map, kappa_ext=kappa_ext)
@@ -266,6 +327,8 @@ class KinematicsAPI(object):
         :param kappa_ext: external convergence not accounted in the lens models
         :return: velocity dispersion in units [km/s]
         """
+        if self.backend == "jampy":
+            raise ValueError("Analytic kinematics is not implemented for jampy backend")
         sigma_v = []
         for i in range(len(self._kwargs_aperture_kin)):
             galkin = Galkin(
@@ -289,7 +352,7 @@ class KinematicsAPI(object):
         sigma_v = self.transform_kappa_ext(sigma_v, kappa_ext=kappa_ext)
         return sigma_v
 
-    def galkin_settings(
+    def jam_model_settings(
         self, kwargs_lens, kwargs_lens_light, r_eff=None, theta_E=None, gamma=None
     ):
         """
@@ -355,7 +418,7 @@ class KinematicsAPI(object):
             analytic_kinematics=self._analytic_kinematics,
         )
 
-        galkin = []
+        jam_models = []
 
         for i in range(len(self._kwargs_aperture_kin)):
             kwargs_model = {
@@ -363,31 +426,39 @@ class KinematicsAPI(object):
                 "light_profile_list": light_profile_list,
                 "anisotropy_model": self._anisotropy_model,
             }
-
-            if (
-                self._kwargs_aperture_kin[i]["aperture_type"] == "IFU_shells"
-                and not self._analytic_kinematics
-            ):
-                galkin_ = GalkinShells(
+            if self.backend == "galkin":
+                if (
+                    self._kwargs_aperture_kin[i]["aperture_type"] == "IFU_shells"
+                    and not self._analytic_kinematics
+                ):
+                    jam_model_i = GalkinShells(
+                        kwargs_model=kwargs_model,
+                        kwargs_aperture=self._kwargs_aperture_kin[i],
+                        kwargs_psf=self._kwargs_psf_kin[i],
+                        kwargs_cosmo=self._kwargs_cosmo,
+                        kwargs_numerics=self._kwargs_numerics_kin,
+                        analytic_kinematics=self._analytic_kinematics,
+                    )
+                else:
+                    jam_model_i = Galkin(
+                        kwargs_model=kwargs_model,
+                        kwargs_aperture=self._kwargs_aperture_kin[i],
+                        kwargs_psf=self._kwargs_psf_kin[i],
+                        kwargs_cosmo=self._kwargs_cosmo,
+                        kwargs_numerics=self._kwargs_numerics_kin,
+                        analytic_kinematics=self._analytic_kinematics,
+                    )
+            elif self.backend == "jampy":
+                jam_model_i = JAMWrapper(
                     kwargs_model=kwargs_model,
                     kwargs_aperture=self._kwargs_aperture_kin[i],
                     kwargs_psf=self._kwargs_psf_kin[i],
                     kwargs_cosmo=self._kwargs_cosmo,
-                    kwargs_numerics=self._kwargs_numerics_kin,
-                    analytic_kinematics=self._analytic_kinematics,
+                    kwargs_numerics={},
                 )
-            else:
-                galkin_ = Galkin(
-                    kwargs_model=kwargs_model,
-                    kwargs_aperture=self._kwargs_aperture_kin[i],
-                    kwargs_psf=self._kwargs_psf_kin[i],
-                    kwargs_cosmo=self._kwargs_cosmo,
-                    kwargs_numerics=self._kwargs_numerics_kin,
-                    analytic_kinematics=self._analytic_kinematics,
-                )
-            galkin.append(galkin_)
+            jam_models.append(jam_model_i)
 
-        return galkin, kwargs_profile, kwargs_light
+        return jam_models, kwargs_profile, kwargs_light
 
     def _copy_centers(self, kwargs_1, kwargs_2):
         """Fills the centers of the kwargs_1 with the centers of kwargs_2.
@@ -665,7 +736,7 @@ class KinematicsAPI(object):
                     for k, v in kwargs_lens_light[i].items()
                     if not k in ["center_x", "center_y"]
                 }
-                if "e1" in kwargs_lens_light_i:
+                if ("e1" in kwargs_lens_light_i) and (self.axial_symmetry == "spherical"):
                     kwargs_lens_light_i["e1"] = 0
                     kwargs_lens_light_i["e2"] = 0
                 kwargs_light.append(kwargs_lens_light_i)

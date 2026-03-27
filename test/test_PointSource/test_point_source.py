@@ -38,6 +38,7 @@ class TestPointSource(object):
             flux_from_point_source_list=[True, False, True],
             index_lens_model_list=[[0]],
             point_source_frame_list=[[0] * len(self.x_pos), [0], [0]],
+            kwargs_lens_eqn_solver={"search_window": 10}
         )
         self.kwargs_ps = [
             {

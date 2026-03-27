@@ -262,13 +262,16 @@ class PointSource(object):
         :param additional_images: if True, solves the lens equation for additional
             images
         :type additional_images: bool
-        :param width_search_factor: searches on wider area than default setting (usually tided to image frame)
+        :param width_search_factor: searches on wider area than default setting (usually
+            tided to image frame)
         :type width_search_factor: int of float >1
         :return: list of: list of image positions per point source model component
         """
         x_image_list = []
         y_image_list = []
-        if width_search_factor != 1 and hasattr(self._kwargs_lens_eqn_solver, "search_window"):
+        if width_search_factor != 1 and hasattr(
+            self._kwargs_lens_eqn_solver, "search_window"
+        ):
             kwargs_lens_eqn_solver = copy.deepcopy(self._kwargs_lens_eqn_solver)
             kwargs_lens_eqn_solver["search_window"] *= width_search_factor
         else:

@@ -27,6 +27,7 @@ _SUPPORTED_MODELS = [
     "CURVED_ARC_SPP",
     "CURVED_ARC_SPT",
     "CURVED_ARC_TAN_DIFF",
+    "CURVED_ARC_TAN_DIFF_CENTERED",
     "DIPOLE",
     "DOUBLE_CHAMELEON",
     "EPL",
@@ -427,6 +428,12 @@ def lens_class(
         )
 
         return CurvedArcTanDiff(**profile_kwargs)
+    elif lens_type == "CURVED_ARC_TAN_DIFF_CENTERED":
+        from lenstronomy.LensModel.Profiles.curved_arc_tan_diff_centered import (
+            CurvedArcTanDiffCentered,
+        )
+
+        return CurvedArcTanDiffCentered(**profile_kwargs)
     elif lens_type == "DIPOLE":
         from lenstronomy.LensModel.Profiles.dipole import Dipole
 

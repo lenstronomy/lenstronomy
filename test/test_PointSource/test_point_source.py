@@ -38,6 +38,7 @@ class TestPointSource(object):
             flux_from_point_source_list=[True, False, True],
             index_lens_model_list=[[0]],
             point_source_frame_list=[[0] * len(self.x_pos), [0], [0]],
+            kwargs_lens_eqn_solver={"search_window": 10},
         )
         self.kwargs_ps = [
             {
@@ -56,7 +57,9 @@ class TestPointSource(object):
 
     def test_image_position(self):
         x_image_list, y_image_list = self.PointSource.image_position(
-            kwargs_ps=self.kwargs_ps, kwargs_lens=self.kwargs_lens
+            kwargs_ps=self.kwargs_ps,
+            kwargs_lens=self.kwargs_lens,
+            width_search_factor=1.5,
         )
         npt.assert_almost_equal(x_image_list[0][0], self.x_pos[0], decimal=8)
         npt.assert_almost_equal(x_image_list[1], 1, decimal=8)

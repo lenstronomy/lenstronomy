@@ -26,12 +26,14 @@ class JAMWrapperBase(object):
         self.mass_profile_list = kwargs_model.get("mass_profile_list")
         self.light_profile_list = kwargs_model.get("light_profile_list")
         if (len(self.mass_profile_list) > 1) or (
-                self.mass_profile_list[0] not in ["MULTI_GAUSSIAN", "MULTI_GAUSSIAN_ELLIPSE"]
-        ):
+                self.mass_profile_list[0] not in [
+            "MULTI_GAUSSIAN", "MULTI_GAUSSIAN_ELLIPSE_KAPPA"
+        ]):
             raise ValueError("Jampy only support MULTI_GAUSSIAN(_ELLIPSE) mass profiles")
         if (len(self.light_profile_list) > 1) or (
-                self.light_profile_list[0] not in ["MULTI_GAUSSIAN", "MULTI_GAUSSIAN_ELLIPSE"]
-        ):
+                self.light_profile_list[0] not in [
+            "MULTI_GAUSSIAN", "MULTI_GAUSSIAN_ELLIPSE"
+        ]):
             raise ValueError("Jampy only support MULTI_GAUSSIAN(_ELLIPSE) light profiles")
         anisotropy_model = kwargs_model.get("anisotropy_model")
         self._anisotropy = Anisotropy(anisotropy_model)

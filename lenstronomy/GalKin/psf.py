@@ -1,7 +1,6 @@
 from lenstronomy.GalKin import velocity_util
 from lenstronomy.Util import kernel_util
 import lenstronomy.Util.util as util
-from scipy.signal import convolve2d
 from lenstronomy.Util.package_util import exporter
 import lenstronomy.Util.multi_gauss_expansion as mge
 from lenstronomy.LightModel.Profiles.moffat import Moffat
@@ -60,9 +59,6 @@ class PSF(object):
         """
         return self._psf.convolution_kernel_grid(x, y)
 
-    def convolve(self, data, **kernel_kwargs):
-        kernel = self.convolution_kernel(**kernel_kwargs)
-        return convolve2d(data, kernel, mode="same")
 
     @property
     def psf_fwhm(self):
@@ -318,6 +314,10 @@ class PSFPixel(object):
         """Retrieve supersampling factor if stored as a private variable."""
         return self._supersampling_factor
 
+    @property
+    def kenrel_size(self):
+        """Retrieve kernel size if stored as a private variable."""
+        return self._kernel_size
 
 def _make_gaussian_psf_kernel(sigma, delta_pix, num_pix=21, normalize=True):
     """Helper function to make a Gaussian PSF kernel."""

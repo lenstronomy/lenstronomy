@@ -76,7 +76,7 @@ class Galkin(GalkinModel, GalkinObservation):
             analytic_kinematics=analytic_kinematics,
         )
         GalkinObservation.__init__(
-            self, kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf
+            self, kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf, backend='galkin'
         )
 
     def dispersion(

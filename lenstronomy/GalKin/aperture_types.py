@@ -51,15 +51,16 @@ class ApertureBase:
         aperture_samples = _unpad_map(aperture_samples, padding)
         num_pix_y, num_pix_x = self._x_grid.shape
         # remove supersampling
-        aperture_samples = _undo_supersampling(
+        aperture_samples_unp = _undo_supersampling(
             aperture_samples,
             num_pix_x, num_pix_y,
             supersampling_factor
         )
-        downsample_values_to_bins(
-            aperture_samples,
+        aperture_samples_bin = downsample_values_to_bins(
+            aperture_samples_unp,
             self._bins,
         )
+        return aperture_samples_bin
 
     def aperture_select(self, ra, dec):
         """
@@ -201,7 +202,7 @@ def make_slit_grid(delta_pix, length, width, center_ra=0, center_dec=0, angle=0)
     slit_y = np.arange((-width + delta_pix) / 2, width / 2, delta_pix)
     grid_x, grid_y = np.meshgrid(slit_x, slit_y)
     # rotate
-    grid_x, grid_y = _rotate(grid_x, grid_y, angle=-angle)
+    grid_x, grid_y = _rotate(grid_x, grid_y, angle=angle)
     # shift
     grid_x = grid_x + center_ra
     grid_y = grid_y + center_dec
@@ -248,15 +249,6 @@ class Frame(ApertureBase):
             delta_pix, padding_arcsec,
             angle
         )
-
-    def aperture_downsample(self, aperture_samples, supersampling_factor=1):
-        """
-        Integrates the frame samples
-        :param aperture_samples: frame samples in a regular grid
-        :param supersampling_factor: supersampling factor
-        :return: a single integrated value
-        """
-        return np.mean(aperture_samples)
 
     def aperture_select(self, ra, dec):
         """
@@ -320,8 +312,8 @@ class Shell(ApertureBase):
         self._center_ra, self._center_dec = center_ra, center_dec
         x_grid, y_grid = make_slit_grid(
             delta_pix,
-            self._r_out,
-            self._r_out,
+            self._r_out * 2,
+            self._r_out * 2,
             self._center_ra,
             self._center_dec,
         )
@@ -334,15 +326,6 @@ class Shell(ApertureBase):
             x_grid, y_grid, bins,
             delta_pix, padding_arcsec
         )
-
-    def aperture_downsample(self, aperture_samples, supersampling_factor=1):
-        """
-        Integrates the shell samples
-        :param aperture_samples: shell samples in a regular grid
-        :param supersampling_factor: supersampling factor
-        :return: a single integrated value
-        """
-        return np.mean(aperture_samples)
 
     def aperture_select(self, ra, dec):
         """
@@ -411,9 +394,9 @@ class IFUGrid(ApertureBase):
         """
         num_pix_y, num_pix_x = self.num_segments
         padding = self.padding_pix(supersampling_factor)
-        aperture_samples = _unpad_map(aperture_samples, padding)
+        aperture_samples_unp = _unpad_map(aperture_samples, padding)
         return _undo_supersampling(
-            aperture_samples,
+            aperture_samples_unp,
             num_pix_x, num_pix_y,
             supersampling_factor,
         )
@@ -492,8 +475,8 @@ class IFUShells(ApertureBase):
         r_max = np.max(r_bins)
         x_grid, y_grid = make_slit_grid(
             delta_pix,
-            r_max,
-            r_max,
+            2 * r_max,
+            2 * r_max,
             center_ra,
             center_dec,
         )
@@ -612,7 +595,7 @@ class GeneralAperture(ApertureBase):
     def aperture_sample(self, supersampling_factor):
         if supersampling_factor > 1:
             raise ValueError("Supersampling factor cannot be greater than 1 for general aperture.")
-        return super(GeneralAperture, self).aperture_sample(supersampling_factor=1)
+        return self._x_grid, self._y_grid
 
     def aperture_downsample(self, aperture_samples, supersampling_factor):
         if supersampling_factor > 1:
@@ -665,6 +648,7 @@ def make_supersampled_grid(
     :param padding: padding in pixels around the supersampled grid
     :param angle: position angle in radians
     """
+    ny, nx = x_grid.shape
     # rotate to align with RA axis
     x_grid, y_grid = _rotate(x_grid, y_grid, angle=-angle)
     delta_x = x_grid[0, 1] - x_grid[0, 0]
@@ -684,8 +668,8 @@ def make_supersampled_grid(
     y_start = y_grid[0, 0] - 0.5 * delta_y * (1 - 1 / supersampling_factor) - pad_y
     y_end = y_grid[-1, 0] + 0.5 * delta_y * (1 - 1 / supersampling_factor) + pad_y
 
-    xs = np.arange(x_start, x_end * (1 + 1e-6), new_delta_x)
-    ys = np.arange(y_start, y_end * (1 + 1e-6), new_delta_y)
+    xs = np.linspace(x_start, x_end, nx * supersampling_factor + 2 * padding)
+    ys = np.linspace(y_start, y_end, ny * supersampling_factor + 2 * padding)
 
     x_grid_supersampled, y_grid_supersampled = np.meshgrid(xs, ys)
     # rotate back to position angle
@@ -702,8 +686,8 @@ def _rotate(x, y, angle):
     :param angle: angle to rotate
     :return: rotated x, rotated y
     """
-    x_rot = np.cos(angle) * x + np.sin(angle) * y
-    y_rot = -np.sin(angle) * x + np.cos(angle) * y
+    x_rot = np.cos(angle) * x - np.sin(angle) * y
+    y_rot = np.sin(angle) * x + np.cos(angle) * y
     return x_rot, y_rot
 
 

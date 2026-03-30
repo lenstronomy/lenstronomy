@@ -41,6 +41,8 @@ requires = [
     "pyxdg",
     "schwimmbad",
     "multiprocess>=0.70.8",
+    "jampy",
+    "mgefit", # required by jampy
 ]
 tests_require = [
     "pytest>=2.3",

@@ -7,6 +7,7 @@ from lenstronomy.GalKin.aperture_types import (
     Frame,
     IFUGrid,
     IFUBinned,
+    downsample_values_to_bins
 )
 
 __all__ = ["Aperture"]
@@ -66,13 +67,14 @@ class Aperture(object):
         """
         return self._aperture.aperture_sample(supersampling_factor)
 
-    def aperture_downsample(self, hires_map):
+    def aperture_downsample(self, aperture_samples, supersampling_factor):
         """
 
-        :param hires_map: regular grid of values within the aperture to be integrated
+        :param aperture_samples: regular grid of values within the aperture to be integrated
+        :param supersampling_factor: supersampling factor
         :return: averaged values within the aperture into num_segments
         """
-        return self._aperture.aperture_downsample(hires_map)
+        return self._aperture.aperture_downsample(aperture_samples, supersampling_factor)
 
     @property
     def num_segments(self):

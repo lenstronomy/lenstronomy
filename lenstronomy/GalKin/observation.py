@@ -1,6 +1,8 @@
 from lenstronomy.GalKin.aperture import Aperture
 from lenstronomy.GalKin.psf import PSF
 import lenstronomy.Util.util as util
+from scipy.signal import convolve2d
+import numpy as np
 
 __all__ = ["GalkinObservation"]
 
@@ -9,8 +11,12 @@ class GalkinObservation(PSF, Aperture):
     """This class sets the base for the observational properties (aperture and seeing
     condition)"""
 
-    def __init__(self, kwargs_aperture, kwargs_psf, backend='galkin'):
-
+    def __init__(self, kwargs_aperture, kwargs_psf, backend):
+        """
+        :param kwargs_aperture: aperture parameters (see lenstronomy.GalKin.aperture)
+        :param kwargs_psf: psf parameters (see lenstronomy.GalKin.psf)
+        :param backend: either 'galkin' or 'jampy'
+        """
         PSF.__init__(self, **kwargs_psf)
 
         kwargs_aperture = kwargs_aperture.copy()
@@ -33,3 +39,15 @@ class GalkinObservation(PSF, Aperture):
             self._default_supersampling_factor = 1
 
         Aperture.__init__(self, **kwargs_aperture)
+
+    def convolve(self, data, supersampling_factor=1, num_pix=None):
+        delta_pix_psf = self.delta_pix / supersampling_factor
+        if num_pix is None:
+            if self.psf_type == "PIXEL":
+                num_pix = self._psf.kenrel_size
+            else:
+                num_pix = 6 * self.psf_fwhm / delta_pix_psf
+                # make odd
+                num_pix = int(np.ceil(num_pix)) // 2 * 2 + 1
+        kernel = self.convolution_kernel(delta_pix_psf, num_pix)
+        return convolve2d(data, kernel, mode="same")

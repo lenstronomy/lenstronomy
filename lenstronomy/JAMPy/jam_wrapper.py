@@ -3,9 +3,8 @@ __author__ = "furcelay", "sibirrer"
 import warnings
 
 from lenstronomy.JAMPy.jam_wrapper_base import JAMWrapperBase
-from lenstronomy.Util.param_util import ellipticity2phi_q
 from lenstronomy.GalKin.observation import GalkinObservation
-from astropy.stats import gaussian_fwhm_to_sigma
+from lenstronomy.GalKin.aperture import downsample_values_to_bins
 import numpy as np
 
 __all__ = ["JAMWrapper"]
@@ -32,50 +31,18 @@ class JAMWrapper(JAMWrapperBase, GalkinObservation):
     ):
 
         JAMWrapperBase.__init__(self, kwargs_model, kwargs_cosmo)
-
-        GalkinObservation.__init__(self, kwargs_aperture, kwargs_psf)
-
-        if ("delta_pix" not in kwargs_aperture) and (
-            "IFU" not in kwargs_aperture["aperture_type"]
-        ):
-            # set the sampling of the aperture to FWHM / 3
-            kwargs_aperture = kwargs_aperture.copy()
-            kwargs_aperture["delta_pix"] = min(self.psf_fwhm / 3, 0.1)
-
-        if kwargs_aperture["aperture_type"] == "IFU_grid":
-            kwargs_aperture = kwargs_aperture.copy()
-            if "supersampling_factor" in kwargs_aperture:
-                if (
-                    kwargs_aperture["supersampling_factor"]
-                    != self.psf_supersampling_factor
-                ):
-                    warnings.warn(
-                        f"Supersampling factor in kwargs_aperture ({kwargs_aperture['supersampling_factor']}) "
-                        f"does not match the one set by the PSF kwargs ({self.psf_supersampling_factor}). "
-                        f"The one from the PSF kwargs will be used.",
-                        UserWarning,
-                    )
-            kwargs_aperture["supersampling_factor"] = self.psf_supersampling_factor
-            if "padding_arcsec" not in kwargs_aperture:
-                # add a padding of 3 times the PSF sigma for convolution
-                kwargs_aperture["padding_arcsec"] = (
-                    gaussian_fwhm_to_sigma * self.psf_fwhm * 3
-                )
-            Aperture.__init__(self, **kwargs_aperture)
-            self.convolution_padding = self._aperture.padding
-        else:
-            Aperture.__init__(self, **kwargs_aperture)
-            self.convolution_padding = 0
+        GalkinObservation.__init__(self, kwargs_aperture, kwargs_psf, backend='jampy')
 
     def dispersion(
         self,
         kwargs_mass,
         kwargs_light,
         kwargs_anisotropy,
-        q_intrinsic=1.0,
+        inclination=90.0,
         black_hole_mass=0.0,
         convolved=True,
         voronoi_bins=None,
+        supersampling_factor=1,
     ):
         """Computes the velocity dispersion in the aperture. IF the aperture is a slit,
         frame or shell, the output is a single float. If the aperture is an IFU grid,
@@ -85,19 +52,19 @@ class JAMWrapper(JAMWrapperBase, GalkinObservation):
         :param kwargs_mass: keyword arguments of the mass model
         :param kwargs_light: keyword argument of the light model
         :param kwargs_anisotropy: anisotropy keyword arguments
-        :param q_intrinsic: intrinsic axis ratio of the light profile to compute the
-            inclination angle
+        :param inclination: inclination angle of the lens galaxy [degrees]
         :param black_hole_mass: mass of the central SMBH [solar masses]
         :param convolved: bool, if True the PSF convolution is applied
         :param voronoi_bins: None or 2D array with same shape as the IFU grid defining
             the Voronoi bins. If None, no Voronoi binning is applied. Only relevant if
             aperture is of type 'IFU_grid'.
+        :param supersampling_factor: supersampling factor of the aperture.
+            Only relevant for a PIXEL PSF, otherwise supersampling is done within jampy
         :return: ordered array of velocity dispersions [km/s] for each unit
         """
-        x_sup, y_sup = self.aperture_sample()
+        x_sup, y_sup = self.aperture_sample(supersampling_factor)
         # shift and rotate to align with light profile
         x_gal_sup, y_gal_sup = self._shift_and_rotate(x_sup, y_sup, kwargs_light)
-        inclination = self._get_inclination_angle(kwargs_light[0], q_intrinsic)
         if self.psf_type == "PIXEL":
             vrms_sup, surf_bright_sup = self.dispersion_points(
                 x_gal_sup,
@@ -112,7 +79,7 @@ class JAMWrapper(JAMWrapperBase, GalkinObservation):
             sigma2_lum_weighted_sup = vrms_sup**2 * surf_bright_sup
             if convolved:
                 sigma2_lum_weighted_sup = self.convolve(sigma2_lum_weighted_sup)
-                surf_bright_sup = self.convolve(surf_bright_sup)
+                surf_bright_sup = self.convolve(surf_bright_sup, supersampling_factor)
         else:
             vrms_sup, surf_bright_sup = self.dispersion_points(
                 x_gal_sup,
@@ -123,11 +90,20 @@ class JAMWrapper(JAMWrapperBase, GalkinObservation):
                 inclination=inclination,
                 convolved=convolved,
                 black_hole_mass=black_hole_mass,
-                psf_sigmas=self.psf_sigmas,
-                psf_amplitudes=self.psf_amplitudes,
+                psf_sigmas=self.psf_multi_gauss_sigmas,
+                psf_amplitudes=self.psf_multi_gauss_amplitudes,
                 delta_pix=self.delta_pix,
             )
             sigma2_lum_weighted_sup = vrms_sup**2 * surf_bright_sup
+
+        sigma2_lum_weighted = self.aperture_downsample(
+            sigma2_lum_weighted_sup,
+            supersampling_factor
+        )
+        surf_bright = self.aperture_downsample(
+            surf_bright_sup,
+            supersampling_factor
+        )
 
         if voronoi_bins is not None:
             if self.aperture_type != "IFU_grid":
@@ -140,49 +116,13 @@ class JAMWrapper(JAMWrapperBase, GalkinObservation):
                 "use the IFU_binned aperture type instead.",
                 DeprecationWarning,
             )
-            sigma2_lum_weighted = downsample_cords_to_bins(
-                sigma2_lum_weighted_sup,
+            sigma2_lum_weighted = downsample_values_to_bins(
+                sigma2_lum_weighted,
                 voronoi_bins,
-                supersampling_factor=self.psf_supersampling_factor,
-                padding=self.convolution_padding,
             )
-            surf_bright = downsample_cords_to_bins(
-                surf_bright_sup,
+            surf_bright = downsample_values_to_bins(
+                surf_bright,
                 voronoi_bins,
-                supersampling_factor=self.psf_supersampling_factor,
-                padding=self.convolution_padding,
             )
-            vrms = np.sqrt(sigma2_lum_weighted / surf_bright)
-        else:
-            sigma2_lum_weighted = self.aperture_downsample(
-                sigma2_lum_weighted_sup,
-            )
-            surf_bright = self.aperture_downsample(
-                surf_bright_sup,
-            )
-            vrms = np.sqrt(sigma2_lum_weighted / surf_bright)
+        vrms = np.sqrt(sigma2_lum_weighted / surf_bright)
         return vrms
-
-    def _get_inclination_angle(self, obs_kwargs, q_intrinsic):
-        """Compute inclination angle from observed ellipticity and intrinsic axis ratio.
-
-        :param obs_kwargs: dictionary with observed ellipticity parameters 'e1' and 'e2'
-        :param q_intrinsic: intrinsic axis ratio
-        :return: inclination angle in degrees
-        """
-        if (not self.axisymmetric) or q_intrinsic == 1.0:
-            return 90.0  # spherical case
-        e1_obs = obs_kwargs.get("e1", 0.0)
-        e2_obs = obs_kwargs.get("e2", 0.0)
-        phi_obs, q_obs = ellipticity2phi_q(e1_obs, e2_obs)
-        if q_obs == 1.0:
-            warnings.warn(
-                "Cannot determine inclination angle for circular observed profile (q_obs=1.0)."
-                " Spherical symmetry will be assumed.",
-                UserWarning,
-            )
-            return None
-        cos_i_squared = (q_obs**2 - q_intrinsic**2) / (1 - q_intrinsic**2)
-        cos_i_squared = np.clip(cos_i_squared, 0, 1)
-        inclination_angle = np.arccos(np.sqrt(cos_i_squared))
-        return np.rad2deg(inclination_angle)

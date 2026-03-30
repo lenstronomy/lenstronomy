@@ -199,9 +199,11 @@ class PSFMoffat(object):
         r_array = np.linspace(0, 5 * self._fwhm, num=100)
         alpha = velocity_util.moffat_fwhm_alpha(self._fwhm, self._moffat_beta)
         psf_array = Moffat().function(x=r_array, y=0, amp=1, alpha=alpha, beta=self._moffat_beta)
-        amps, sigmas, norm = mge.mge_1d(
+        amps, sigmas, _ = mge.mge_1d(
             r_array, psf_array, N=2
         )
+        amps = np.asarray(amps)
+        sigmas = np.asarray(sigmas)
         amps = amps / (2 * np.pi * sigmas**2)
         return amps, sigmas
 
@@ -218,6 +220,7 @@ class PSFMultiGaussian(object):
         """
         self._amplitudes = amplitudes / np.sum(amplitudes)
         self._sigmas = sigmas
+        self._gaussian = Gaussian()
         if fwhm is None:
             kernel = self.convolution_kernel(delta_pix=0.01, num_pix=201)
             r, p = _radial_profile_from_kernel(kernel, pixel_scale=0.01, n_bins=100)
@@ -232,12 +235,27 @@ class PSFMultiGaussian(object):
         :return: 2d numpy array of kernel
         """
         kernel = np.zeros((num_pix, num_pix))
+        x_grid, y_grid = util.make_grid(num_pix, delta_pix)
+        x_grid = x_grid.reshape(num_pix, num_pix)
+        y_grid = y_grid.reshape(num_pix, num_pix)
         for amp, sigma in zip(self._amplitudes, self._sigmas):
-            kernel += amp * _make_gaussian_psf_kernel(
-                sigma, delta_pix, num_pix, normalize=False
+            kernel += self._gaussian.function(
+                x_grid, y_grid, amp=amp, sigma=sigma
+            ) * delta_pix**2
+        kernel /= np.sum(kernel)
+        return kernel
+
+    def convolution_kernel_grid(self, x, y):
+        kernel = np.zeros_like(x)
+        for amp, sigma in zip(self._amplitudes, self._sigmas):
+            kernel += self._gaussian.function(
+                x, y, amp=amp, sigma=sigma
             )
         kernel /= np.sum(kernel)
         return kernel
+
+    def displace_psf(self, x, y):
+        raise NotImplementedError("displace_psf not implemented for Multi-Gaussian PSF")
 
     @property
     def fwhm(self):
@@ -288,11 +306,11 @@ class PSFPixel(object):
 
     def convolution_kernel_grid(self, x, y):
         if np.shape(x)[0] != self._kernel_size:
-            raise ValueError("PSF grid does not match kernel size")
+            raise ValueError("PSF grid does not match kernel shape")
         return self._kernel
 
     def displace_psf(self, x, y):
-        raise NotImplementedError("Displacement of a pixelated PSF is not implemented.")
+        raise NotImplementedError("displace_psf not implemented for Pixel PSF")
 
     @property
     def fwhm(self):
@@ -318,18 +336,6 @@ class PSFPixel(object):
     def kenrel_size(self):
         """Retrieve kernel size if stored as a private variable."""
         return self._kernel_size
-
-def _make_gaussian_psf_kernel(sigma, delta_pix, num_pix=21, normalize=True):
-    """Helper function to make a Gaussian PSF kernel."""
-    x_grid, y_grid = util.make_grid(num_pix, delta_pix)
-    gaussian = Gaussian()
-    kernel = gaussian.function(
-        x_grid, y_grid, amp=1.0, sigma=sigma, center_x=0, center_y=0
-    )
-    kernel = util.array2image(kernel)
-    if normalize:
-        kernel /= np.sum(kernel)
-    return kernel
 
 
 def _radial_profile_from_kernel(kernel, pixel_scale, n_bins=100):

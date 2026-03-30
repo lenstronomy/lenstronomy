@@ -364,6 +364,7 @@ def kernel_moffat(num_pix, delta_pix, fwhm, moffat_beta):
     """
     x, y = util.make_grid(numPix=num_pix, deltapix=delta_pix)
     kernel = kernel_moffat_grid(x, y, fwhm, moffat_beta)
+    kernel = util.array2image(kernel)
     return kernel
 
 

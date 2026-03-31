@@ -60,6 +60,22 @@ lenstronomy.GalKin.galkin\_model module
     :undoc-members:
     :show-inheritance:
 
+lenstronomy.GalKin.galkin\_multiobservation module
+--------------------------------------------------
+
+.. automodule:: lenstronomy.GalKin.galkin_multiobservation
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+lenstronomy.GalKin.galkin\_shells module
+----------------------------------------
+
+.. automodule:: lenstronomy.GalKin.galkin_shells
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 lenstronomy.GalKin.light\_profile module
 ----------------------------------------
 

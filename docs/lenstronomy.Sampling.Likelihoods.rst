@@ -5,7 +5,7 @@ Submodules
 ----------
 
 lenstronomy.Sampling.Likelihoods.flux\_ratio\_likelihood module
---------------------------------------------------------------
+---------------------------------------------------------------
 
 .. automodule:: lenstronomy.Sampling.Likelihoods.flux_ratio_likelihood
     :members:
@@ -21,7 +21,7 @@ lenstronomy.Sampling.Likelihoods.image\_likelihood module
     :show-inheritance:
 
 lenstronomy.Sampling.Likelihoods.kinematic\_2D\_likelihood module
-----------------------------------------------------------------
+-----------------------------------------------------------------
 
 .. automodule:: lenstronomy.Sampling.Likelihoods.kinematic_2D_likelihood
     :members:

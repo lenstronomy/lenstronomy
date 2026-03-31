@@ -13,7 +13,7 @@ lenstronomy.ImSim.MultiBand.joint\_linear module
     :show-inheritance:
 
 lenstronomy.ImSim.MultiBand.joint\_linear\_vary\_background module
------------------------------------------------------------------
+------------------------------------------------------------------
 
 .. automodule:: lenstronomy.ImSim.MultiBand.joint_linear_vary_background
     :members:

@@ -5,7 +5,7 @@ Submodules
 ----------
 
 lenstronomy.LensModel.Util.decouple\_multi\_plane\_util module
--------------------------------------------------------------
+--------------------------------------------------------------
 
 .. automodule:: lenstronomy.LensModel.Util.decouple_multi_plane_util
    :members:

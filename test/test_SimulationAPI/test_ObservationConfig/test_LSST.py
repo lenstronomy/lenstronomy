@@ -1,18 +1,17 @@
-"""
-Tests for lenstronomy.SimulationAPI.ObservationConfig.LSST
+"""Tests for lenstronomy.SimulationAPI.ObservationConfig.LSST.
 
-Covers the updated LSST class (corrected parameters, PIXEL/MOFFAT psf_type)
-and the new ComCam class. Designed to slot directly into the existing
-test_ObservationConfig test suite without modifying any existing tests.
+Covers the updated LSST class (corrected parameters, PIXEL/MOFFAT psf_type) and the new
+ComCam class. Designed to slot directly into the existing test_ObservationConfig test
+suite without modifying any existing tests.
 """
 
 import pytest
 from lenstronomy.SimulationAPI.ObservationConfig.LSST import LSST, ComCam
 
-
 # -----------------------------------------------------------------------
 # Existing LSST behaviour (must not regress)
 # -----------------------------------------------------------------------
+
 
 class TestLSST:
 
@@ -34,8 +33,10 @@ class TestLSST:
     def test_coadd_years_10_is_default(self):
         obs_default = LSST(band="i")
         obs_10 = LSST(band="i", coadd_years=10)
-        assert (obs_default.kwargs_single_band()["num_exposures"]
-                == obs_10.kwargs_single_band()["num_exposures"])
+        assert (
+            obs_default.kwargs_single_band()["num_exposures"]
+            == obs_10.kwargs_single_band()["num_exposures"]
+        )
 
     def test_coadd_years_scales_linearly(self):
         obs_10 = LSST(band="r", coadd_years=10)
@@ -46,9 +47,10 @@ class TestLSST:
 
     def test_coadd_years_1_minimum_one_exposure(self):
         for band in ["u", "g", "r", "i", "z", "y"]:
-            assert LSST(band=band, coadd_years=1).kwargs_single_band()[
-                "num_exposures"
-            ] >= 1
+            assert (
+                LSST(band=band, coadd_years=1).kwargs_single_band()["num_exposures"]
+                >= 1
+            )
 
     def test_gaussian_psf_type(self):
         kwargs = LSST(band="i", psf_type="GAUSSIAN").kwargs_single_band()
@@ -104,6 +106,7 @@ class TestLSST:
 # ComCam (new class)
 # -----------------------------------------------------------------------
 
+
 class TestComCam:
 
     def test_default_instantiation(self):
@@ -119,14 +122,14 @@ class TestComCam:
             assert kwargs["exposure_time"] == 30.0
 
     def test_num_exposures_custom(self):
-        assert ComCam(band="r", num_exposures=5).kwargs_single_band()[
-            "num_exposures"
-        ] == 5
+        assert (
+            ComCam(band="r", num_exposures=5).kwargs_single_band()["num_exposures"] == 5
+        )
 
     def test_num_exposures_floor_one(self):
-        assert ComCam(band="r", num_exposures=0).kwargs_single_band()[
-            "num_exposures"
-        ] >= 1
+        assert (
+            ComCam(band="r", num_exposures=0).kwargs_single_band()["num_exposures"] >= 1
+        )
 
     def test_gaussian_psf(self):
         kwargs = ComCam(band="i", psf_type="GAUSSIAN").kwargs_single_band()
@@ -145,12 +148,8 @@ class TestComCam:
     def test_zp_at_most_lsst_zp(self):
         """ComCam ZP should be <= LSSTCam due to smaller focal-plane area."""
         for band in ["g", "r", "i"]:
-            comcam_zp = ComCam(band=band).kwargs_single_band()[
-                "magnitude_zero_point"
-            ]
-            lsst_zp = LSST(band=band).kwargs_single_band()[
-                "magnitude_zero_point"
-            ]
+            comcam_zp = ComCam(band=band).kwargs_single_band()["magnitude_zero_point"]
+            lsst_zp = LSST(band=band).kwargs_single_band()["magnitude_zero_point"]
             assert comcam_zp <= lsst_zp
 
     def test_unsupported_band_raises(self):

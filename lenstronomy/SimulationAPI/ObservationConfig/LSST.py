@@ -144,9 +144,7 @@ class LSST(object):
             self.obs["moffat_beta"] = _MOFFAT_BETA_LSST
         if int(coadd_years) != 10:
             full = _BAND_OBS[band]["num_exposures"]
-            self.obs["num_exposures"] = max(
-                1, int(round(full * coadd_years / 10.0))
-            )
+            self.obs["num_exposures"] = max(1, int(round(full * coadd_years / 10.0)))
 
     def kwargs_single_band(self):
         """
@@ -195,16 +193,15 @@ _COMCAM_BAND_OBS = {
 
 
 class ComCam(object):
-    """
-    Class contains Rubin ComCam instrument and observation configurations.
+    """Class contains Rubin ComCam instrument and observation configurations.
 
-    ComCam is the 3x3 raft (9 CCD) commissioning camera used for all
-    Rubin on-sky operations through 2025 and the source instrument for
-    Data Preview 1 (DP1). Supports g, r, i bands. Throughput is slightly
-    lower than the full LSSTCam due to the smaller focal-plane area.
+    ComCam is the 3x3 raft (9 CCD) commissioning camera used for all Rubin on-sky
+    operations through 2025 and the source instrument for Data Preview 1 (DP1). Supports
+    g, r, i bands. Throughput is slightly lower than the full LSSTCam due to the smaller
+    focal-plane area.
 
-    Use this class to simulate DP1-era strong lensing images for training
-    or validating models on the first real Rubin Observatory data products.
+    Use this class to simulate DP1-era strong lensing images for training or validating
+    models on the first real Rubin Observatory data products.
     """
 
     def __init__(self, band="i", psf_type="GAUSSIAN", num_exposures=1):

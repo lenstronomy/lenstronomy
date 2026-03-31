@@ -2,6 +2,7 @@ __author__ = "aymgal, johannesulf"
 
 
 from inspect import signature
+import numpy as np
 from lenstronomy.Sampling.Samplers.base_nested_sampler import NestedSampler
 
 __all__ = ["NautilusSampler"]
@@ -69,7 +70,7 @@ class NautilusSampler(NestedSampler):
         see https://nautilus-sampler.readthedocs.io for content of kwargs
 
         :param kwargs: kwargs directly passed to Sampler.run
-        :return: points, log_w, log_l, log_z
+        :return: samples, means, log_z, log_z_err, log_l, results
         """
         print("prior type :", self.prior_type)
         print("parameter names :", self.param_names)
@@ -78,9 +79,50 @@ class NautilusSampler(NestedSampler):
         kwargs = {key: kwargs[key] for key in kwargs.keys() & keys}
         self._sampler.run(**kwargs)
         points, log_w, log_l = self._sampler.posterior()
+        log_l_raw = np.asarray(log_l)
         log_z = self._sampler.log_z
+        weights = self._normalized_weights(log_w)
+        means = np.average(points, weights=weights, axis=0)
+        samples, sample_indices = self._resample_equal(points, weights)
+        log_l = log_l_raw[sample_indices]
+        results = {
+            "points": points,
+            "log_w": log_w,
+            "log_l": log_l_raw,
+            "log_z": log_z,
+        }
 
-        return points, log_w, log_l, log_z
+        return samples, means, log_z, None, log_l, results
+
+    @staticmethod
+    def _normalized_weights(log_w):
+        """Normalize log weights.
+
+        :param log_w: array of shape (n_samples,)
+        :return: normalized weights, array of shape (n_samples,)
+        """
+        log_w = np.asarray(log_w)
+        weights = np.exp(log_w - np.max(log_w))
+        return weights / np.sum(weights)
+
+    @staticmethod
+    def _resample_equal(points, weights):
+        """Resample points with equal weights according to the provided weights.
+
+        :param points: array of shape (n_samples, n_dims)
+        :param weights: array of shape (n_samples,)
+        :return: resampled points, indices of the resampled points in the original array
+        """
+        n_samples = len(points)
+        positions = (np.arange(n_samples) + 0.5) / n_samples
+
+        # Normalize weights first
+        weights_normalized = weights / np.sum(weights)
+        cumulative_sum = np.cumsum(weights_normalized)
+        cumulative_sum[-1] = 1.0  # For numerical precision
+
+        sample_indices = np.searchsorted(cumulative_sum, positions)
+        return points[sample_indices], sample_indices
 
     def _check_install(self):
         try:

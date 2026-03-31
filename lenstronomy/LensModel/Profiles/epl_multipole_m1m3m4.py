@@ -615,7 +615,8 @@ class EPL_MULTIPOLE_M1M3M4(LensProfileBase):
         :param e1: ellipticity of EPL profile (along 1st axis)
         :param e2: ellipticity of EPL profile (along 2nd axis)
         :param a1_a: amplitude of the m=1 mutipole perturbation
-        :param delta_phi_m1: orientation of the m=1 multipole perturbation relative to EPL
+        :param delta_phi_m1: orientation of the m=1 multipole perturbation relative to
+            EPL
         :param a3_a: amplitude of the m=3 multiple deviation from pure elliptical shape
             related to the physical amplitude of the MULTIPOLE profile by a scaling
             theta_E / sqrt(q)

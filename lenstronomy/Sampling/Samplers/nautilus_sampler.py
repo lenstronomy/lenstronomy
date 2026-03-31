@@ -69,7 +69,7 @@ class NautilusSampler(NestedSampler):
         see https://nautilus-sampler.readthedocs.io for content of kwargs
 
         :param kwargs: kwargs directly passed to Sampler.run
-        :return: samples, means, logZ, logZ_err, logL, results
+        :return: points, log_w, log_l, log_z
         """
         print("prior type :", self.prior_type)
         print("parameter names :", self.param_names)
@@ -86,7 +86,9 @@ class NautilusSampler(NestedSampler):
         try:
             import nautilus
         except ImportError:
-            print("Warning : nautilus not properly installed. \
-                  You can get it with $pip install nautilus-sampler.")
+            print(
+                "Warning : nautilus not properly installed. \
+                  You can get it with $pip install nautilus-sampler."
+            )
         else:
             self._nautilus = nautilus

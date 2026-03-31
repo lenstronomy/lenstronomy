@@ -192,7 +192,23 @@ class FittingSequence(object):
                     likelihood_module=self.likelihoodModule, mpi=self._mpi, **kwargs
                 )
                 points, log_w, log_l, log_z = nautilus.run(**kwargs)
-                chain_list.append([points, log_w, log_l, log_z])
+                results_object = {
+                    "points": points,
+                    "log_w": log_w,
+                    "log_l": log_l,
+                    "log_z": log_z,
+                }
+                chain_list.append(
+                    [
+                        fitting_type,
+                        points,
+                        nautilus.param_names,
+                        log_l,
+                        log_z,
+                        None,
+                        results_object,
+                    ]
+                )
                 if kwargs.get("verbose", False):
                     print(len(points), "number of points sampled")
                 kwargs_result = self.best_fit_from_samples(points, log_l)

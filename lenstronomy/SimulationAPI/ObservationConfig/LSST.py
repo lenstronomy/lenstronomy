@@ -184,8 +184,9 @@ _SUPPORTED_SEEING_VERSIONS = ("LSST-specs", "DP1")
 class LSST(object):
     """Class contains LSST instrument and observation configurations."""
 
-    def __init__(self, band="g", psf_type="GAUSSIAN", coadd_years=10,
-                 seeing_version="LSST-specs"):
+    def __init__(
+        self, band="g", psf_type="GAUSSIAN", coadd_years=10, seeing_version="LSST-specs"
+    ):
         """
         :param band: string, 'u', 'g', 'r', 'i', 'z' or 'y' supported.
             Determines obs dictionary.
@@ -233,9 +234,7 @@ class LSST(object):
             self.obs["moffat_beta"] = _MOFFAT_BETA_LSST
         if int(coadd_years) != 10:
             full = band_obs["num_exposures"]
-            self.obs["num_exposures"] = max(
-                1, int(round(full * coadd_years / 10.0))
-            )
+            self.obs["num_exposures"] = max(1, int(round(full * coadd_years / 10.0)))
 
         # Camera settings (shared across all bands)
         self.camera = {

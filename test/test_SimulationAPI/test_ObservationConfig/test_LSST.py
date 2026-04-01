@@ -70,6 +70,7 @@ class TestLSST:
         """Read noise should be sqrt(2) * 10 for two-snap readout."""
         kwargs = LSST().kwargs_single_band()
         import math
+
         expected_read_noise = 10.0 * math.sqrt(2.0)
         assert abs(kwargs["read_noise"] - expected_read_noise) < 0.01
 

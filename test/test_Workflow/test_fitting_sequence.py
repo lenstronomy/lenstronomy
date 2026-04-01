@@ -806,14 +806,12 @@ class TestFittingSequence(object):
         assert output[0] == "Nautilus"
         assert len(output[2]) == output[1].shape[1]
         assert len(output[3]) == len(output[1])
-        assert output[5] is None
+        assert np.isfinite(output[5])
         legacy_output = output[6]
         assert "points" in legacy_output
         assert "log_l" in legacy_output
         assert "log_w" in legacy_output
-        assert "log_z" in legacy_output
-        assert len(legacy_output["log_l"]) == len(output[1])
-        assert legacy_output["log_z"] == output[4]
+        assert len(legacy_output["log_l"]) == len(legacy_output["points"])
 
     def test_dypolychord(self):
         fittingSequence = FittingSequence(

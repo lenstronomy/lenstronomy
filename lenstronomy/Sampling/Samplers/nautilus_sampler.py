@@ -86,7 +86,6 @@ class NautilusSampler(NestedSampler):
             "points": points,
             "log_w": log_w,
             "log_l": log_l_weighted,
-            "log_z": log_z,
         }
         means = np.average(points, weights=self._normalized_weights(log_w), axis=0)
 
@@ -130,7 +129,9 @@ class NautilusSampler(NestedSampler):
         try:
             import nautilus
         except ImportError:
-            print("Warning : nautilus not properly installed. \
-                  You can get it with $pip install nautilus-sampler.")
+            print(
+                "Warning : nautilus not properly installed. \
+                  You can get it with $pip install nautilus-sampler."
+            )
         else:
             self._nautilus = nautilus

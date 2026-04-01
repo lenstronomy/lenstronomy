@@ -106,30 +106,13 @@ class NautilusSampler(NestedSampler):
         weights = np.exp(log_w - np.max(log_w))
         return weights / np.sum(weights)
 
-    @staticmethod
-    def _resample_equal(points, weights):
-        """Resample points with equal weights according to the provided weights.
-
-        :param points: array of shape (n_samples, n_dims)
-        :param weights: array of shape (n_samples,)
-        :return: resampled points, indices of the resampled points in the original array
-        """
-        n_samples = len(points)
-        positions = (np.arange(n_samples) + 0.5) / n_samples
-
-        # Normalize weights first
-        weights_normalized = weights / np.sum(weights)
-        cumulative_sum = np.cumsum(weights_normalized)
-        cumulative_sum[-1] = 1.0  # For numerical precision
-
-        sample_indices = np.searchsorted(cumulative_sum, positions)
-        return points[sample_indices], sample_indices
-
     def _check_install(self):
         try:
             import nautilus
         except ImportError:
-            print("Warning : nautilus not properly installed. \
-                  You can get it with $pip install nautilus-sampler.")
+            print(
+                "Warning : nautilus not properly installed. \
+                  You can get it with $pip install nautilus-sampler."
+            )
         else:
             self._nautilus = nautilus

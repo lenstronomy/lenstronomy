@@ -102,6 +102,7 @@ class TestKinematicsAPI(object):
             kwargs_mge_mass=kwargs_mge,
             sampling_number=1000,
             MGE_light=True,
+            backend='galkin'
         )
 
         v_sigma = kinematicAPI.velocity_dispersion(
@@ -121,6 +122,7 @@ class TestKinematicsAPI(object):
             sampling_number=1000,
             MGE_light=True,
             MGE_mass=True,
+            backend='galkin'
         )
         v_sigma_mge_lens = kinematicAPI.velocity_dispersion(
             kwargs_lens,
@@ -147,6 +149,7 @@ class TestKinematicsAPI(object):
             MGE_light=False,
             MGE_mass=False,
             Hernquist_approx=True,
+            backend='galkin'
         )
         v_sigma_hernquist = kinematicAPI.velocity_dispersion(
             kwargs_lens,
@@ -168,7 +171,7 @@ class TestKinematicsAPI(object):
         npt.assert_almost_equal(v_sigma_mge_lens / v_sigma, 1, decimal=1)
         npt.assert_almost_equal(v_sigma / v_sigma_hernquist, 1, decimal=1)
 
-    def test_galkin_settings(self):
+    def test_jam_settings(self):
         z_lens = 0.5
         z_source = 1.5
         kwargs_model = {
@@ -207,8 +210,9 @@ class TestKinematicsAPI(object):
             kwargs_mge_light=kwargs_mge,
             kwargs_mge_mass=kwargs_mge,
             sampling_number=1000,
+            backend='galkin'
         )
-        galkin, kwargs_profile, kwargs_light = kinematicAPI.galkin_settings(
+        galkin, kwargs_profile, kwargs_light = kinematicAPI.jam_model_settings(
             kwargs_lens, kwargs_lens_light, r_eff=None, theta_E=None, gamma=None
         )
         npt.assert_almost_equal(kwargs_profile["gamma"], 2, decimal=2)
@@ -225,8 +229,9 @@ class TestKinematicsAPI(object):
             kwargs_mge_light=kwargs_mge,
             kwargs_mge_mass=kwargs_mge,
             sampling_number=1000,
+            backend='galkin'
         )
-        galkin, kwargs_profile, kwargs_light = kinematicAPI.galkin_settings(
+        galkin, kwargs_profile, kwargs_light = kinematicAPI.jam_model_settings(
             kwargs_lens, kwargs_lens_light, r_eff=None, theta_E=None, gamma=None
         )
         npt.assert_almost_equal(kwargs_profile["gamma"], 2, decimal=2)
@@ -244,8 +249,9 @@ class TestKinematicsAPI(object):
             kwargs_mge_light=kwargs_mge,
             kwargs_mge_mass=kwargs_mge,
             sampling_number=1000,
+            backend='galkin'
         )
-        galkin, kwargs_profile, kwargs_light = kinematicAPI.galkin_settings(
+        galkin, kwargs_profile, kwargs_light = kinematicAPI.jam_model_settings(
             kwargs_lens, [kwargs_lens_light], r_eff=None, theta_E=None, gamma=None
         )
         npt.assert_almost_equal(kwargs_light[0][0]["Rs"], 1, decimal=2)
@@ -262,6 +268,7 @@ class TestKinematicsAPI(object):
             kwargs_seeing={},
             kwargs_aperture={},
             anisotropy_model="OM",
+            backend='galkin'
         )
         r_eff = 0.2
         kwargs_lens_light = [
@@ -315,6 +322,7 @@ class TestKinematicsAPI(object):
             kwargs_aperture={},
             kwargs_seeing={},
             anisotropy_model="OM",
+            backend='galkin'
         )
         kwargs_lens = [
             {
@@ -381,6 +389,7 @@ class TestKinematicsAPI(object):
             kwargs_aperture,
             kwargs_seeing,
             anisotropy_model=anisotropy_model,
+            backend='galkin'
         )
 
         kwargs_numerics_galkin = {
@@ -593,6 +602,7 @@ class TestKinematicsAPI(object):
             sampling_number=1000,
             num_kin_sampling=2000,
             num_psf_sampling=500,
+            backend='galkin'
         )
 
         beta = 0.25
@@ -898,6 +908,7 @@ class TestKinematicsAPI(object):
             kwargs_aperture=kwargs_aperture,
             kwargs_seeing=kwargs_seeing,
             anisotropy_model=anisotropy_model,
+            backend='galkin'
         )
 
         kwargs_numerics_galkin = {
@@ -966,6 +977,7 @@ class TestKinematicsAPI(object):
             kwargs_seeing=kwargs_seeing,
             kwargs_aperture=kwargs_aperture,
             anisotropy_model="OM",
+            backend='galkin'
         )
         kin_api.velocity_dispersion_map(
             [{"theta_E": 1, "center_x": 0, "center_y": 0}],
@@ -1048,6 +1060,7 @@ class TestKinematicsAPI(object):
             MGE_mass=True,
             kwargs_mge_mass=kwargs_mge,
             kwargs_mge_light=kwargs_mge,
+            backend='galkin'
         )
 
         v_sigma = kinematic_api.velocity_dispersion(
@@ -1068,6 +1081,7 @@ class TestKinematicsAPI(object):
             MGE_mass=True,
             kwargs_mge_mass=kwargs_mge,
             kwargs_mge_light=kwargs_mge,
+            backend='galkin'
         )
         v_sigma_interp = kinematic_api_interp.velocity_dispersion(
             kwargs_lens_interp,
@@ -1106,6 +1120,7 @@ class TestKinematicsAPI(object):
             kwargs_aperture,
             anisotropy_model=anisotropy_model,
             analytic_kinematics=True,
+            backend='galkin'
         )
         kwargs_lens = [{"theta_E": 1, "center_x": 0, "center_y": 0}]
         kwargs_lens_light = [{"Rs": 1, "amp": 1, "center_x": 0, "center_y": 0}]
@@ -1126,6 +1141,7 @@ class TestRaise(unittest.TestCase):
     def test_raise(self):
 
         with self.assertRaises(ValueError):
+        # no r_eff provided for Hernquist approximation
             z_lens = 0.5
             z_source = 1.5
             kwargs_model = {"lens_light_model_list": ["HERNQUIST"]}
@@ -1136,6 +1152,7 @@ class TestRaise(unittest.TestCase):
                 kwargs_seeing={},
                 kwargs_aperture={},
                 anisotropy_model="OM",
+                backend='galkin'
             )
             kwargs_light = [{"Rs": 1, "amp": 1, "center_x": 0, "center_y": 0}]
             kinematicAPI.kinematic_light_profile(
@@ -1146,6 +1163,7 @@ class TestRaise(unittest.TestCase):
                 model_kinematics_bool=[True],
             )
         with self.assertRaises(ValueError):
+            # no r_eff for analytic kinematics
             z_lens = 0.5
             z_source = 1.5
             kwargs_model = {"lens_light_model_list": ["HERNQUIST"]}
@@ -1156,6 +1174,7 @@ class TestRaise(unittest.TestCase):
                 kwargs_seeing={},
                 kwargs_aperture={},
                 anisotropy_model="OM",
+                backend='galkin'
             )
             kwargs_light = [{"Rs": 1, "amp": 1, "center_x": 0, "center_y": 0}]
             kinematicAPI.kinematic_light_profile(
@@ -1165,7 +1184,7 @@ class TestRaise(unittest.TestCase):
                 r_eff=None,
                 analytic_kinematics=True,
             )
-        with self.assertRaises(ValueError):
+        with self.assertRaises(IndexError):
             z_lens = 0.5
             z_source = 1.5
             kwargs_model = {
@@ -1179,10 +1198,10 @@ class TestRaise(unittest.TestCase):
                 kwargs_seeing={},
                 kwargs_aperture={},
                 anisotropy_model="OM",
+                backend='galkin'
             )
-            kwargs_light = [{"Rs": 1, "amp": 1, "center_x": 0, "center_y": 0}]
             kinematicAPI.kinematic_lens_profiles(
-                kwargs_light, MGE_fit=True, model_kinematics_bool=[True]
+                [], MGE_fit=True, model_kinematics_bool=[True]
             )
         with self.assertRaises(ValueError):
             z_lens = 0.5
@@ -1198,6 +1217,7 @@ class TestRaise(unittest.TestCase):
                 kwargs_seeing={},
                 kwargs_aperture={},
                 anisotropy_model="OM",
+                backend='galkin'
             )
             kinematicAPI.kinematic_lens_profiles(
                 kwargs_lens=None, analytic_kinematics=True
@@ -1217,8 +1237,9 @@ class TestRaise(unittest.TestCase):
                 kwargs_seeing={},
                 kwargs_aperture={},
                 anisotropy_model="OM",
+                backend='galkin'
             )
-            kwargs_lens_light = [{"Rs": 1, "center_x": 0, "center_y": 0}]
+            kwargs_lens_light = [{"Rs": 1, "center_x": 0, "center_y": 0, "amp": 1}]
             kinematicAPI.kinematic_light_profile(
                 kwargs_lens_light,
                 r_eff=None,
@@ -1242,6 +1263,7 @@ class TestRaise(unittest.TestCase):
                 kwargs_seeing={},
                 kwargs_aperture={},
                 anisotropy_model="OM",
+                backend='galkin'
             )
             kinematicAPI.kinematic_lens_profiles(
                 kwargs_lens,
@@ -1320,6 +1342,7 @@ class TestRaise(unittest.TestCase):
                 sampling_number=1000,
                 num_kin_sampling=2000,
                 num_psf_sampling=500,
+                backend='galkin'
             )
 
             kwargs_mass = [

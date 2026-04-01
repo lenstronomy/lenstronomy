@@ -2,16 +2,14 @@ __author__ = "sibirrer"
 
 import numpy as np
 import copy
-import warnings
-from lenstronomy.GalKin.galkin_multiobservation import GalkinMultiObservation
 from lenstronomy.GalKin.galkin import Galkin
 from lenstronomy.GalKin.galkin_shells import GalkinShells
 from lenstronomy.JAMPy.jam_wrapper import JAMWrapper
+from lenstronomy.JAMPy.mge import MGEMass, MGELight
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 from lenstronomy.Util import class_creator
 from lenstronomy.Analysis.lens_profile import LensProfileAnalysis
 from lenstronomy.Analysis.light_profile import LightProfileAnalysis
-import lenstronomy.Util.multi_gauss_expansion as mge
 
 __all__ = ["KinematicsAPI"]
 
@@ -87,8 +85,22 @@ class KinematicsAPI(object):
             line-of-sight velocity dispersion
         :param kwargs_mge_mass: keyword arguments that go into the MGE decomposition
             routine
+            - n_gauss: number of Gaussian components to fit (default: 20)
+            - r_min: minimum radius for the radial profile in units of the
+              Einstein radius (default: 1e-4)
+            - r_max: maximum radius for the radial profile in units of the
+              Einstein radius (default: 300)
+            - n_radial_points: number of radial points to sample for the MGE fit
+              (default: 200)
         :param kwargs_mge_light: keyword arguments that go into the MGE decomposition
             routine
+            - n_gauss: number of Gaussian components to fit (default: 20)
+            - r_min: minimum radius for the radial profile in units of the
+              effective radius (default: 1e-4)
+            - r_max: maximum radius for the radial profile in units of the
+              effective radius (default: 200)
+            - n_radial_points: number of radial points to sample for the MGE fit
+              (default: 200)
         :param sampling_number: int, number of spectral rendering to compute the
             light weighted integrated LOS dispersion within the aperture. This
             keyword should be chosen high enough to result in converged results
@@ -159,25 +171,15 @@ class KinematicsAPI(object):
             raise ValueError(
                 "Analytic kinematics not supported with the jampy backend."
             )
+        if Hernquist_approx and MGE_light:
+            raise ValueError(
+                "Hernquist approximation and MGE light cannot be used at the same time."
+            )
         self.backend = backend
         self.axial_symmetry = axial_symmetry
 
-        if kwargs_mge_mass is None:
-            self._kwargs_mge_mass = {"n_comp": 20}
-        else:
-            self._kwargs_mge_mass = kwargs_mge_mass
-
-        if kwargs_mge_light is None:
-            self._kwargs_mge_light = {
-                "grid_spacing": 0.01,
-                "grid_num": 100,
-                "n_comp": 20,
-                "center_x": None,
-                "center_y": None,
-            }
-        else:
-            self._kwargs_mge_light = kwargs_mge_light
-
+        self._kwargs_mge_mass = kwargs_mge_mass
+        self._kwargs_mge_light = kwargs_mge_light
         self._kwargs_numerics_kin = kwargs_numerics_galkin
         self._anisotropy_model = anisotropy_model
         self._analytic_kinematics = analytic_kinematics
@@ -404,7 +406,6 @@ class KinematicsAPI(object):
             MGE_fit=self._MGE_mass,
             theta_E=theta_E,
             model_kinematics_bool=self._lens_model_kinematics_bool,
-            kwargs_mge=self._kwargs_mge_mass,
             gamma=gamma,
             analytic_kinematics=self._analytic_kinematics,
         )
@@ -412,7 +413,6 @@ class KinematicsAPI(object):
             kwargs_lens_light,
             r_eff=r_eff,
             MGE_fit=self._MGE_light,
-            kwargs_mge=self._kwargs_mge_light,
             model_kinematics_bool=self._light_model_kinematics_bool,
             Hernquist_approx=self._Hernquist_approx,
             analytic_kinematics=self._analytic_kinematics,
@@ -454,7 +454,6 @@ class KinematicsAPI(object):
                     kwargs_aperture=self._kwargs_aperture_kin[i],
                     kwargs_psf=self._kwargs_psf_kin[i],
                     kwargs_cosmo=self._kwargs_cosmo,
-                    kwargs_numerics={},
                 )
             jam_models.append(jam_model_i)
 
@@ -540,36 +539,12 @@ class KinematicsAPI(object):
                 kwargs_profile.append(kwargs_lens_i)
 
         if MGE_fit is True:
-            if kwargs_mge is None:
-                raise ValueError("kwargs_mge needs to be specified!")
-            if theta_E is None:
-                raise ValueError(
-                    "rough estimate of the Einstein radius needs to be provided to "
-                    "compute the MGE!"
-                )
-            r_array = np.logspace(-4, 2, 200) * theta_E
-            if self._lens_model_list[0] in ["INTERPOL", "INTERPOL_SCLAED"]:
-                center_x, center_y = self._lensMassProfile.convergence_peak(
-                    kwargs_lens,
-                    model_bool_list=model_kinematics_bool,
-                    grid_num=200,
-                    grid_spacing=0.01,
-                    center_x_init=0,
-                    center_y_init=0,
-                )
+            MGE_mass_fitter = MGEMass(mass_profile_list, kwargs_mge)
+            amps, sigmas = MGE_mass_fitter.mge_fit(kwargs_lens, theta_E)
+            if self.axial_symmetry == "spherical":
+                mass_profile_list = ["MULTI_GAUSSIAN"]
             else:
-                center_x, center_y = None, None
-            mass_r = self._lensMassProfile.radial_lens_profile(
-                r_array,
-                kwargs_lens,
-                center_x=center_x,
-                center_y=center_y,
-                model_bool_list=model_kinematics_bool,
-            )
-            amps, sigmas, norm = mge.mge_1d(
-                r_array, mass_r, N=kwargs_mge.get("n_comp", 20)
-            )
-            mass_profile_list = ["MULTI_GAUSSIAN"]
+                mass_profile_list = ["MULTI_GAUSSIAN_ELLIPSE_KAPPA"]
             kwargs_profile = [{"amp": amps, "sigma": sigmas}]
 
         kwargs_profile = self._copy_centers(kwargs_profile, kwargs_lens)
@@ -677,29 +652,30 @@ class KinematicsAPI(object):
             line-of-sight velocity dispersion
         :param kwargs_mge_mass: keyword arguments that go into the MGE decomposition
             routine
+            - n_gauss: number of Gaussian components to fit (default: 20)
+            - r_min: minimum radius for the radial profile in units of the
+              Einstein radius (default: 1e-4)
+            - r_max: maximum radius for the radial profile in units of the
+              Einstein radius (default: 300)
+            - n_radial_points: number of radial points to sample for the MGE fit
+              (default: 200)
         :param kwargs_mge_light: keyword arguments that go into the MGE decomposition
             routine
+            - n_gauss: number of Gaussian components to fit (default: 20)
+            - r_min: minimum radius for the radial profile in units of the
+              effective radius (default: 1e-4)
+            - r_max: maximum radius for the radial profile in units of the
+              effective radius (default: 200)
+            - n_radial_points: number of radial points to sample for the MGE fit
+              (default: 200)
         :param sampling_number: number of spectral rendering on a single slit
         :param num_kin_sampling: number of kinematic renderings on a total IFU
         :param num_psf_sampling: number of PSF displacements for each kinematic
             rendering on the IFU
         :return: updated settings
         """
-        if kwargs_mge_mass is None:
-            self._kwargs_mge_mass = {"n_comp": 20}
-        else:
-            self._kwargs_mge_mass = kwargs_mge_mass
-
-        if kwargs_mge_light is None:
-            self._kwargs_mge_light = {
-                "grid_spacing": 0.01,
-                "grid_num": 100,
-                "n_comp": 20,
-                "center_x": None,
-                "center_y": None,
-            }
-        else:
-            self._kwargs_mge_light = kwargs_mge_light
+        self._kwargs_mge_mass = kwargs_mge_mass
+        self._kwargs_mge_light = kwargs_mge_light
         self._kwargs_numerics_kin = kwargs_numerics_galkin
         self._anisotropy_model = anisotropy_model
         self._analytic_kinematics = analytic_kinematics
@@ -742,20 +718,12 @@ class KinematicsAPI(object):
                 kwargs_light.append(kwargs_lens_light_i)
 
         if MGE_fit is True:
-            if kwargs_mge is None:
-                raise ValueError("kwargs_mge must be provided to compute the MGE")
-            (
-                amps,
-                sigmas,
-                center_x,
-                center_y,
-            ) = self._lensLightProfile.multi_gaussian_decomposition(
-                kwargs_lens_light,
-                model_bool_list=model_kinematics_bool,
-                r_h=r_eff,
-                **kwargs_mge
-            )
-            light_profile_list = ["MULTI_GAUSSIAN"]
+            MGE_light_fitter = MGELight(light_profile_list, kwargs_mge)
+            amps, sigmas = MGE_light_fitter.mge_fit(kwargs_lens_light, r_eff)
+            if self.axial_symmetry == "spherical":
+                light_profile_list = ["MULTI_GAUSSIAN"]
+            else:
+                light_profile_list = ["MULTI_GAUSSIAN_ELLIPSE"]
             kwargs_light = [{"amp": amps, "sigma": sigmas}]
             kwargs_light = self._copy_centers(kwargs_light, kwargs_lens_light)
         return light_profile_list, kwargs_light

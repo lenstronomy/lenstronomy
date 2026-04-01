@@ -101,18 +101,10 @@ class JAMWrapperBase(object):
         sigma_lum = np.asarray(kwargs_light[0]["sigma"])
         # convert to surface brightness
         surf_lum = np.asarray(kwargs_light[0]["amp"]) / (2 * np.pi * sigma_lum ** 2)
-        # clean zero amplitudes as Jampy doesn't like them
-        zero_surf = surf_lum == 0
-        surf_lum = surf_lum[~zero_surf]
-        sigma_lum = sigma_lum[~zero_surf]
 
         sigma_mass = np.asarray(kwargs_mass[0]["sigma"])
         # convert to convergence
         surf_mass = np.asarray(kwargs_mass[0]["amp"]) / (2 * np.pi * sigma_mass ** 2)
-        # clean zero amplitudes as Jampy doesn't like them
-        zero_surf = surf_mass == 0
-        surf_mass = surf_mass[~zero_surf]
-        sigma_mass = sigma_mass[~zero_surf]
         # convert to units of M_sun / pc^2
         surf_mass *= self.cosmo.epsilon_crit * 1e-12
 

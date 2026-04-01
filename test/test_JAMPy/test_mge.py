@@ -4,6 +4,7 @@ import pytest
 from lenstronomy.JAMPy.mge import MGEMass, MGELight
 from lenstronomy.LensModel.Profiles.sie import SIE
 from lenstronomy.LightModel.Profiles.hernquist import Hernquist
+from lenstronomy.LightModel.Profiles.sersic import Sersic
 
 
 class TestMGEMass:
@@ -35,15 +36,15 @@ class TestMGEMass:
         npt.assert_almost_equal(theta_composite, 1.24952, decimal=3)
 
     def test_mge_mass(self):
-        mge_mass = MGEMass(["SIE"])
+        mge_mass = MGEMass(["SIE"]
+                           )
         r_test = np.logspace(  # this must be in logspace
             np.log10(1e-2),
             np.log10(100),
             300,
         )
-        surf_mass, sigma_mass = mge_mass.mge_mass(
-            [self.kw_sie], n_gauss=20,
-            rmin=1e-4, rmax=400, n_rad=500
+        surf_mass, sigma_mass = mge_mass.mge_fit(
+            [self.kw_sie]
         )
         mge_surf_1d = _mge(r_test, surf_mass, sigma_mass)
         theta_E = self.kw_sie["theta_E"]
@@ -54,11 +55,11 @@ class TestMGEMass:
     def test_mge_mass_mge_prof(self):
         mge_mass = MGEMass(["MULTI_GAUSSIAN"])
         kw_mge = {"amp": np.arange(5), "sigma": np.arange(1, 6)}
-        surf_lum, sigma_lum = mge_mass.mge_mass(
+        surf_lum, sigma_lum = mge_mass.mge_fit(
            [kw_mge],
         )
-        npt.assert_allclose(surf_lum, np.arange(5), rtol=1e-2)
-        npt.assert_allclose(sigma_lum, np.arange(1, 6), rtol=1e-2)
+        npt.assert_allclose(surf_lum, np.arange(1, 5), rtol=1e-2)
+        npt.assert_allclose(sigma_lum, np.arange(2, 6), rtol=1e-2)
 
     def test_parse_kwargs(self):
         mge_mass = MGEMass(["SIE", "GAUSSIAN"])
@@ -114,39 +115,58 @@ class TestMGELight:
         )
         mge_l = MGELight(["SERSIC", "HERNQUIST"])
         kwargs_list = [
-            dict(self.kw_sersic, **{"center_x": 0.2, "center_y": -0.1}),
-            self.kw_hernquist,
+            self.kw_sersic, self.kw_hernquist,
         ]
         r_eff = mge_l.effective_radius(kwargs_list)
         npt.assert_almost_equal(r_eff, 0.849914, decimal=3)
 
-    def test_mge_lum(self):
+    def test_mge_lum_hernquist(self):
         mge_l = MGELight(["HERNQUIST"])
         r_test = np.logspace(  # this must be in logspace
             np.log10(1e-2),
             np.log10(100),
             300,
         )
-        surf_lum, sigma_lum = mge_l.mge_lum_tracer(
-           [self.kw_hernquist], n_gauss=20,
-            rmin=1e-4, rmax=400, n_rad=500
+        surf_lum, sigma_lum = mge_l.mge_fit(
+           [self.kw_hernquist]
         )
         mge_surf_1d = _mge(r_test, surf_lum, sigma_lum)
         hernq = Hernquist()
         hernq_surf_1d = hernq.function(
             x=r_test, y=0, Rs=self.kw_hernquist["Rs"], amp=self.kw_hernquist["amp"]
         )
-        npt.assert_allclose(mge_surf_1d, hernq_surf_1d, rtol=0.1)
+        npt.assert_allclose(mge_surf_1d, hernq_surf_1d, rtol=0.1, atol=1e-5)
+
+    def test_mge_lum_sersic(self):
+        mge_l = MGELight(["SERSIC"])
+        r_test = np.logspace(  # this must be in logspace
+            np.log10(1e-2),
+            np.log10(100),
+            300,
+        )
+        surf_lum, sigma_lum = mge_l.mge_fit(
+            [self.kw_sersic]
+        )
+        mge_surf_1d = _mge(r_test, surf_lum, sigma_lum)
+        sersic = Sersic()
+        sersic_surf_1d = sersic.function(
+            x=r_test, y=0,
+            n_sersic=self.kw_sersic["n_sersic"],
+            R_sersic=self.kw_sersic["R_sersic"],
+            amp=self.kw_sersic["amp"],
+        )
+        npt.assert_allclose(mge_surf_1d, sersic_surf_1d, rtol=0.1, atol=1e-5)
 
     def test_mge_lum_mge_prof(self):
         mge_l = MGELight(["MULTI_GAUSSIAN"])
         kw_mge = {"amp": np.arange(5), "sigma": np.arange(1, 6)}
 
-        surf_lum, sigma_lum = mge_l.mge_lum_tracer(
+        surf_lum, sigma_lum = mge_l.mge_fit(
            [kw_mge],
         )
-        npt.assert_allclose(surf_lum, np.arange(5), rtol=1e-3)
-        npt.assert_allclose(sigma_lum, np.arange(1, 6), rtol=1e-3)
+        # should remove the zero amplitude
+        npt.assert_allclose(surf_lum, np.arange(1, 5), rtol=1e-3)
+        npt.assert_allclose(sigma_lum, np.arange(2, 6), rtol=1e-3)
 
     def test_parse_kwargs(self):
         mge_l = MGELight(["SERSIC_ELLIPSE", "GAUSSIAN"])

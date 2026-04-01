@@ -78,20 +78,21 @@ class NautilusSampler(NestedSampler):
         keys = [p.name for p in signature(self._sampler.run).parameters.values()]
         kwargs = {key: kwargs[key] for key in kwargs.keys() & keys}
         self._sampler.run(**kwargs)
-        points, log_w, log_l = self._sampler.posterior()
-        log_l_raw = np.asarray(log_l)
+        points, log_w, log_l_weighted = self._sampler.posterior()
         log_z = self._sampler.log_z
-        log_zerr = log_z / np.sqrt(self._sampler.neff)
-        weights = self._normalized_weights(log_w)
-        means = np.average(points, weights=weights, axis=0)
-        samples, sample_indices = self._resample_equal(points, weights)
-        log_l = log_l_raw[sample_indices]
+        log_zerr = log_z / np.sqrt(self._sampler.n_eff)
+
         results = {
             "points": points,
             "log_w": log_w,
-            "log_l": log_l_raw,
+            "log_l": log_l_weighted,
             "log_z": log_z,
         }
+        means = np.average(points, weights=self._normalized_weights(log_w), axis=0)
+
+        samples, _, log_l = self._sampler.posterior(
+            equal_weight=True, equal_weight_boost=len(points) / self._sampler.n_eff
+        )
 
         return samples, means, log_z, log_zerr, log_l, results
 

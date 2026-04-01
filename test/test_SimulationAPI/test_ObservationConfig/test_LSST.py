@@ -57,6 +57,32 @@ class TestLSST:
         assert kwargs["psf_type"] == "GAUSSIAN"
         assert "moffat_beta" not in kwargs
 
+    # ---- camera settings (from original LSST class) ----
+
+    def test_camera_settings_present(self):
+        """Verify camera dict is present and merged into kwargs_single_band."""
+        kwargs = LSST().kwargs_single_band()
+        assert "read_noise" in kwargs
+        assert "pixel_scale" in kwargs
+        assert "ccd_gain" in kwargs
+
+    def test_read_noise_value(self):
+        """Read noise should be sqrt(2) * 10 for two-snap readout."""
+        kwargs = LSST().kwargs_single_band()
+        import math
+        expected_read_noise = 10.0 * math.sqrt(2.0)
+        assert abs(kwargs["read_noise"] - expected_read_noise) < 0.01
+
+    def test_pixel_scale_value(self):
+        """Pixel scale should be 0.2 arcseconds."""
+        kwargs = LSST().kwargs_single_band()
+        assert kwargs["pixel_scale"] == 0.2
+
+    def test_ccd_gain_value(self):
+        """CCD gain should be 2.3 e-/ADU."""
+        kwargs = LSST().kwargs_single_band()
+        assert kwargs["ccd_gain"] == 2.3
+
     # ---- new psf_type coverage ----
 
     def test_pixel_psf_type(self):
@@ -75,6 +101,38 @@ class TestLSST:
         for band in ["u", "g", "r", "i", "z", "y"]:
             assert LSST(band=band).kwargs_single_band()["exposure_time"] == 30.0
 
+    # ---- seeing_version parameter ----
+
+    def test_seeing_version_default_is_specs(self):
+        """Default seeing_version should be LSST-specs."""
+        kwargs = LSST(band="r").kwargs_single_band()
+        assert abs(kwargs["seeing"] - 0.73) < 0.01
+
+    def test_seeing_version_dp1(self):
+        """DP1 seeing version should use measured values."""
+        kwargs = LSST(band="r", seeing_version="DP1").kwargs_single_band()
+        assert abs(kwargs["seeing"] - 0.83) < 0.01
+
+    def test_seeing_version_explicit_specs(self):
+        """Explicit LSST-specs should match default."""
+        default = LSST(band="i").kwargs_single_band()
+        explicit = LSST(band="i", seeing_version="LSST-specs").kwargs_single_band()
+        assert default["seeing"] == explicit["seeing"]
+
+    def test_seeing_version_all_bands_specs(self):
+        """All bands should have LSST-specs seeing available."""
+        for band in ["u", "g", "r", "i", "z", "y"]:
+            kwargs = LSST(band=band, seeing_version="LSST-specs").kwargs_single_band()
+            assert "seeing" in kwargs
+            assert kwargs["seeing"] > 0
+
+    def test_seeing_version_all_bands_dp1(self):
+        """All bands should have DP1 seeing available."""
+        for band in ["u", "g", "r", "i", "z", "y"]:
+            kwargs = LSST(band=band, seeing_version="DP1").kwargs_single_band()
+            assert "seeing" in kwargs
+            assert kwargs["seeing"] > 0
+
     # ---- error handling ----
 
     def test_unsupported_band_raises(self):
@@ -84,6 +142,10 @@ class TestLSST:
     def test_unsupported_psf_type_raises(self):
         with pytest.raises(ValueError, match="not supported"):
             LSST(psf_type="AIRY")
+
+    def test_unsupported_seeing_version_raises(self):
+        with pytest.raises(ValueError, match="not supported"):
+            LSST(seeing_version="INVALID")
 
     def test_coadd_years_out_of_range_raises(self):
         with pytest.raises(ValueError):
@@ -144,6 +206,13 @@ class TestComCam:
     def test_pixel_psf(self):
         kwargs = ComCam(band="r", psf_type="PIXEL").kwargs_single_band()
         assert kwargs["psf_type"] == "PIXEL"
+
+    def test_camera_settings_present(self):
+        """Verify camera dict is present in ComCam as well."""
+        kwargs = ComCam().kwargs_single_band()
+        assert "read_noise" in kwargs
+        assert "pixel_scale" in kwargs
+        assert "ccd_gain" in kwargs
 
     def test_zp_at_most_lsst_zp(self):
         """ComCam ZP should be <= LSSTCam due to smaller focal-plane area."""

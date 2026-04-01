@@ -4,6 +4,14 @@ lenstronomy.LensModel.MultiPlane package
 Submodules
 ----------
 
+lenstronomy.LensModel.MultiPlane.decoupled\_multi\_plane module
+---------------------------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.MultiPlane.decoupled_multi_plane
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 lenstronomy.LensModel.MultiPlane.multi\_plane module
 ----------------------------------------------------
 

@@ -272,9 +272,10 @@ def solve_lenseq_pemd(pos_, kwargs_lens, Nmeas=400, Nmeas_extra=80, **kwargs):
     :param kwargs_lens: List of kwargs in lenstronomy style, following ['EPL', 'SHEAR'] format
     :param Nmeas: resolution with which to sample the angular grid, higher means more reliable lens equation solving. For solving many positions at once, you may want to set this higher.
     :param Nmeas_extra: resolution with which to additionally sample the angular grid at the low-shear end,
-     higher means more reliable lens equation solving.
-     For solving many positions at once, you may want to set this higher.
+        higher means more reliable lens equation solving.
+        For solving many positions at once, you may want to set this higher.
     :return: The lens plane positions.
+
     Note: generally the (demagnified) central image will also be included.
     """
     pos = np.asarray(pos_)

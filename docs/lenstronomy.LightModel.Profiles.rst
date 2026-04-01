@@ -60,6 +60,22 @@ lenstronomy.LightModel.Profiles.lineprofile module
    :undoc-members:
    :show-inheritance:
 
+lenstronomy.LightModel.Profiles.mge\_ellipse module
+---------------------------------------------------
+
+.. automodule:: lenstronomy.LightModel.Profiles.mge_ellipse
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+lenstronomy.LightModel.Profiles.mge\_set module
+-----------------------------------------------
+
+.. automodule:: lenstronomy.LightModel.Profiles.mge_set
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 lenstronomy.LightModel.Profiles.moffat module
 ---------------------------------------------
 
@@ -72,6 +88,14 @@ lenstronomy.LightModel.Profiles.nie module
 ------------------------------------------
 
 .. automodule:: lenstronomy.LightModel.Profiles.nie
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+lenstronomy.LightModel.Profiles.pl\_sersic module
+-------------------------------------------------
+
+.. automodule:: lenstronomy.LightModel.Profiles.pl_sersic
    :members:
    :undoc-members:
    :show-inheritance:
@@ -104,6 +128,14 @@ lenstronomy.LightModel.Profiles.sersic module
 ---------------------------------------------
 
 .. automodule:: lenstronomy.LightModel.Profiles.sersic
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+lenstronomy.LightModel.Profiles.sersic\_ellipse\_with\_flexion module
+---------------------------------------------------------------------
+
+.. automodule:: lenstronomy.LightModel.Profiles.sersic_ellipse_with_flexion
    :members:
    :undoc-members:
    :show-inheritance:

@@ -47,10 +47,10 @@ class ParticleSwarmOptimizer(object):
         :param pool: MPI pool for mapping different processes
         :type pool: None or MPI pool
         :param args: positional arguments to send to `func`. The function
-        will be called as `func(x, *args, **kwargs)`.
+            will be called as `func(x, *args, **kwargs)`.
         :type args: `list`
         :param kwargs: keyword arguments to send to `func`. The function
-        will be called as `func(x, *args, **kwargs)`
+            will be called as `func(x, *args, **kwargs)`
         :type kwargs: `dict`
         """
         self.low = [l for l in low]

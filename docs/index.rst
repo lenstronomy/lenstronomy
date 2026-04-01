@@ -19,4 +19,5 @@ Contents:
    published
    affiliatedpackages
    lenstronomy
+   modules
    history

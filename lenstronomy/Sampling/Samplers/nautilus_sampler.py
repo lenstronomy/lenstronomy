@@ -81,6 +81,7 @@ class NautilusSampler(NestedSampler):
         points, log_w, log_l = self._sampler.posterior()
         log_l_raw = np.asarray(log_l)
         log_z = self._sampler.log_z
+        log_zerr = log_z / np.sqrt(self._sampler.neff)
         weights = self._normalized_weights(log_w)
         means = np.average(points, weights=weights, axis=0)
         samples, sample_indices = self._resample_equal(points, weights)
@@ -92,7 +93,7 @@ class NautilusSampler(NestedSampler):
             "log_z": log_z,
         }
 
-        return samples, means, log_z, None, log_l, results
+        return samples, means, log_z, log_zerr, log_l, results
 
     @staticmethod
     def _normalized_weights(log_w):

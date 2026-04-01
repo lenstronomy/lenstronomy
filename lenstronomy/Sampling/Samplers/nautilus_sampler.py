@@ -70,7 +70,7 @@ class NautilusSampler(NestedSampler):
         see https://nautilus-sampler.readthedocs.io for content of kwargs
 
         :param kwargs: kwargs directly passed to Sampler.run
-        :return: samples, means, log_z, log_z_err, log_l, results
+        :return: samples, means, log_Z, log_Z_err, log_L, results
         """
         print("prior type :", self.prior_type)
         print("parameter names :", self.param_names)
@@ -80,7 +80,7 @@ class NautilusSampler(NestedSampler):
         self._sampler.run(**kwargs)
         points, log_w, log_l_weighted = self._sampler.posterior()
         log_z = self._sampler.log_z
-        log_zerr = log_z / np.sqrt(self._sampler.n_eff)
+        log_z_err = log_z / np.sqrt(self._sampler.n_eff)
 
         results = {
             "points": points,
@@ -93,7 +93,7 @@ class NautilusSampler(NestedSampler):
             equal_weight=True, equal_weight_boost=len(points) / self._sampler.n_eff
         )
 
-        return samples, means, log_z, log_zerr, log_l, results
+        return samples, means, log_z, log_z_err, log_l, results
 
     @staticmethod
     def _normalized_weights(log_w):

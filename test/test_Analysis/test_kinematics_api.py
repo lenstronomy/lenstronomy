@@ -1141,7 +1141,7 @@ class TestRaise(unittest.TestCase):
     def test_raise(self):
 
         with self.assertRaises(ValueError):
-        # no r_eff provided for Hernquist approximation
+            # no r_eff for Hernquist approx
             z_lens = 0.5
             z_source = 1.5
             kwargs_model = {"lens_light_model_list": ["HERNQUIST"]}
@@ -1184,7 +1184,8 @@ class TestRaise(unittest.TestCase):
                 r_eff=None,
                 analytic_kinematics=True,
             )
-        with self.assertRaises(IndexError):
+        with self.assertRaises(ValueError):
+            # MGE mass without kwargs_mge
             z_lens = 0.5
             z_source = 1.5
             kwargs_model = {
@@ -1204,6 +1205,7 @@ class TestRaise(unittest.TestCase):
                 [], MGE_fit=True, model_kinematics_bool=[True]
             )
         with self.assertRaises(ValueError):
+            # analytic kinematics without theta_E and gamma
             z_lens = 0.5
             z_source = 1.5
             kwargs_model = {
@@ -1224,6 +1226,7 @@ class TestRaise(unittest.TestCase):
             )
 
         with self.assertRaises(ValueError):
+            # no kwargs_mge for MGE light
             z_lens = 0.5
             z_source = 1.5
             kwargs_model = {
@@ -1249,6 +1252,7 @@ class TestRaise(unittest.TestCase):
                 kwargs_mge=None,
             )
         with self.assertRaises(ValueError):
+            # no theta_E for MGE mass
             z_lens = 0.5
             z_source = 1.5
             kwargs_model = {

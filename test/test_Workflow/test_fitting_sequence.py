@@ -772,6 +772,11 @@ class TestFittingSequence(object):
         fitting_list.append(["dynesty", kwargs_dynesty])
 
         chain_list = fittingSequence.fit_sequence(fitting_list)
+        output = chain_list[0]
+        assert len(output) == 7
+        assert output[0] == "dynesty"
+        assert len(output[2]) == output[1].shape[1]
+        assert len(output[3]) == len(output[1])
 
     def test_nautilus(self):
         np.random.seed(42)
@@ -796,6 +801,17 @@ class TestFittingSequence(object):
 
         fitting_list.append(["Nautilus", kwargs_nautilus])
         chain_list = fittingSequence.fit_sequence(fitting_list)
+        output = chain_list[0]
+        assert len(output) == 7
+        assert output[0] == "Nautilus"
+        assert len(output[2]) == output[1].shape[1]
+        assert len(output[3]) == len(output[1])
+        assert np.isfinite(output[5])
+        legacy_output = output[6]
+        assert "points" in legacy_output
+        assert "log_l" in legacy_output
+        assert "log_w" in legacy_output
+        assert len(legacy_output["log_l"]) == len(legacy_output["points"])
 
     def test_dypolychord(self):
         fittingSequence = FittingSequence(

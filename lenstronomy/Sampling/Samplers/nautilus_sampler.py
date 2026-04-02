@@ -89,9 +89,7 @@ class NautilusSampler(NestedSampler):
         }
         means = np.average(points, weights=self._normalized_weights(log_w), axis=0)
 
-        samples, _, log_l = self._sampler.posterior(
-            equal_weight=True, equal_weight_boost=len(points) / self._sampler.n_eff
-        )
+        samples, _, log_l = self._sampler.posterior(equal_weight=True)
 
         return samples, means, log_z, log_z_err, log_l, results
 

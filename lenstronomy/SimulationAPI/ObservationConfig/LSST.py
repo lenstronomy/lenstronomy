@@ -147,7 +147,9 @@ class LSST(object):
         if seeing_version not in _SUPPORTED_SEEING_VERSIONS:
             raise ValueError(
                 "seeing_version '{}' is not supported! "
-                "Choose from: {}.".format(seeing_version, list(_SUPPORTED_SEEING_VERSIONS))
+                "Choose from: {}.".format(
+                    seeing_version, list(_SUPPORTED_SEEING_VERSIONS)
+                )
             )
         if not 1 <= int(coadd_years) <= 10:
             raise ValueError(
@@ -166,9 +168,7 @@ class LSST(object):
 
         if int(coadd_years) != 10:
             full = band_obs["num_exposures"]
-            self.obs["num_exposures"] = max(
-                1, int(round(full * coadd_years / 10.0))
-            )
+            self.obs["num_exposures"] = max(1, int(round(full * coadd_years / 10.0)))
 
         self.camera = {
             "read_noise": _READ_NOISE_LSST,

@@ -165,8 +165,10 @@ class LSST(object):
             self.obs["moffat_beta"] = _MOFFAT_BETA_LSST
 
         if int(coadd_years) != 10:
-            full = _BAND_OBS[band]["num_exposures"]
-            self.obs["num_exposures"] = max(1, int(round(full * coadd_years / 10.0)))
+            full = band_obs["num_exposures"]
+            self.obs["num_exposures"] = max(
+                1, int(round(full * coadd_years / 10.0))
+            )
 
         self.camera = {
             "read_noise": _READ_NOISE_LSST,

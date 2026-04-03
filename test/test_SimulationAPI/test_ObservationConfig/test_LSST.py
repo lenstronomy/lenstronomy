@@ -59,7 +59,9 @@ class TestLSST:
     def test_read_noise_two_snap(self):
         """Read noise should be sqrt(2) * 10 for the two-snap readout."""
         kwargs = LSST().kwargs_single_band()
-        assert abs(kwargs["read_noise"] - 10.0 * math.sqrt(2.0)) < 0.01
+        import math
+        expected_read_noise = 10.0 * math.sqrt(2.0)
+        assert abs(kwargs["read_noise"] - expected_read_noise) < 0.01
 
     def test_pixel_scale_value(self):
         assert LSST().kwargs_single_band()["pixel_scale"] == 0.2

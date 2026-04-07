@@ -578,6 +578,16 @@ class IFUBinned(ApertureBase):
                 return True, bin_id
         return False, None
 
+    @property
+    def x_grid(self):
+        """X coordinates of the grid."""
+        return self._x_grid
+
+    @property
+    def y_grid(self):
+        """Y coordinates of the grid."""
+        return self._y_grid
+
 
 class GeneralAperture(ApertureBase):
     """General aperture that allows to sample in any shape,
@@ -659,7 +669,7 @@ def make_supersampled_grid(
     :param padding: padding in pixels around the supersampled grid
     :param angle: position angle in radians
     """
-    if (supersampling_factor > 1) and (padding > 0):
+    if (supersampling_factor > 1) or (padding > 0):
         ny, nx = x_grid.shape
         # rotate to align with RA axis
         x_grid, y_grid = _rotate(x_grid, y_grid, angle=-angle)

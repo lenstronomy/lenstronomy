@@ -304,7 +304,7 @@ class TestRaise(object):
     def test_raise_ifu_grid_not_square(self):
         xg = np.array([[0.0, 0.0], [0.0, 1.0]])  # x size is 1
         yg = np.array([[0.0, 0.0], [-0.5, 0.0]])  # y size is 0.5
-        with pytest.raises(ValueError, match="IFU grid pixels must be square!"):
+        with pytest.raises(ValueError, match="The IFU grid is irregular"):
             aperture_types.IFUGrid(xg, yg)
 
 

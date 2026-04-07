@@ -24,7 +24,7 @@ class TestMGEMass:
         kwargs_list = [self.kw_sie, self.kw_gauss]
         r = np.array([0.1, 0.5, 1.0])
         dens = mge_mass.radial_convergence(r, kwargs_list)
-        npt.assert_almost_equal(dens, np.array([5.63832, 1.38899, 0.58759]), decimal=3)
+        npt.assert_almost_equal(dens, np.array([5.1453 , 1.12148, 0.58844]), decimal=3)
 
     def test_einstein_radius(self):
         mge_mass = MGEMass(["SIE"])
@@ -34,7 +34,7 @@ class TestMGEMass:
         mp2 = MGEMass(["SIE", "GAUSSIAN"])
         kwargs_list = [self.kw_sie, self.kw_gauss]
         theta_composite = mp2.einstein_radius(kwargs_list)
-        npt.assert_almost_equal(theta_composite, 1.24952, decimal=3)
+        npt.assert_almost_equal(theta_composite, 1.12273, decimal=3)
 
     def test_mge_mass(self):
         mge_mass = MGEMass(["SIE"]

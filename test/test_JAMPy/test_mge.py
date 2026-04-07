@@ -5,6 +5,7 @@ from lenstronomy.JAMPy.mge import MGEMass, MGELight
 from lenstronomy.LensModel.Profiles.sie import SIE
 from lenstronomy.LightModel.Profiles.hernquist import Hernquist
 from lenstronomy.LightModel.Profiles.sersic import Sersic
+from lenstronomy.Analysis.light2mass import light2mass_interpol
 
 
 class TestMGEMass:
@@ -16,7 +17,7 @@ class TestMGEMass:
             "e1": 0.1,
             "e2": 0.01,
         }
-        self.kw_gauss = {"sigma": 0.5, "amp": 1.0, "center_x": 0.0, "center_y": 0.0}
+        self.kw_gauss = {"sigma": 1.1, "amp": 1.0, "center_x": 0.0, "center_y": 0.0}
 
     def test_radial_convergence(self):
         mge_mass = MGEMass(["SIE", "GAUSSIAN"])
@@ -55,11 +56,38 @@ class TestMGEMass:
     def test_mge_mass_mge_prof(self):
         mge_mass = MGEMass(["MULTI_GAUSSIAN"])
         kw_mge = {"amp": np.arange(5), "sigma": np.arange(1, 6)}
-        surf_lum, sigma_lum = mge_mass.mge_fit(
+        surf_mass, sigma_mass = mge_mass.mge_fit(
            [kw_mge],
         )
-        npt.assert_allclose(surf_lum, np.arange(1, 5), rtol=1e-2)
-        npt.assert_allclose(sigma_lum, np.arange(2, 6), rtol=1e-2)
+        npt.assert_allclose(surf_mass, np.arange(1, 5), rtol=1e-2)
+        npt.assert_allclose(sigma_mass, np.arange(2, 6), rtol=1e-2)
+
+    def test_mge_interpolated_mass(self):
+        r_test = np.logspace(  # this must be in logspace
+            np.log10(0.1),
+            np.log10(2),
+            100,
+        )
+        mge_interp = MGEMass(["INTERPOL"])
+        mge_gauss = MGEMass(["GAUSSIAN"])
+        kw_interp = light2mass_interpol(
+            ["GAUSSIAN"],
+            kwargs_lens_light=[self.kw_gauss],
+            numPix=200,
+            deltaPix=0.2,
+            subgrid_res=3,
+        )
+        surf_interp = mge_interp.radial_convergence(
+            r_test,
+            [kw_interp],
+        )
+        surf_gauss = mge_gauss.radial_convergence(
+            r_test,
+            [self.kw_gauss],
+        )
+        npt.assert_allclose(
+            surf_interp / surf_interp[0], surf_gauss / surf_gauss[0],
+            rtol=0.1)
 
     def test_parse_kwargs(self):
         mge_mass = MGEMass(["SIE", "GAUSSIAN"])
@@ -184,10 +212,10 @@ class TestMGELight:
 
 class TestRaise:
     def test_invalid_profile_name_raises(self):
-        with pytest.raises(Exception):
+        with pytest.raises(ValueError):
             MGEMass(["INVALID_PROFILE_NAME"])
             
-        with pytest.raises(Exception):
+        with pytest.raises(ValueError):
             MGELight(["INVALID_PROFILE_NAME"])
 
 

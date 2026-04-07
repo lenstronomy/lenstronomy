@@ -17,7 +17,7 @@ class MGEMass:
         the one implemented in lenstronomy.
         :param profile_list: list of lens profile names
         :param kwargs_mge: dictionary with options for the MGE fitting:
-            - n_gauss: number of Gaussian components to fit (default: 20)
+            - n_comp: number of Gaussian components to fit (default: 20)
             - r_min: minimum radius for the radial profile in units of the 
               Einstein radius (default: 1e-4)
             - r_max: maximum radius for the radial profile in units of the 
@@ -30,7 +30,7 @@ class MGEMass:
         self.lens_analysis = LensProfileAnalysis(self.mass_model)
         if kwargs_mge is None:
             kwargs_mge = {}
-        self.n_gauss = kwargs_mge.get('n_gauss', 20)
+        self.n_gauss = kwargs_mge.get('n_comp', 20)
         self.r_min = kwargs_mge.get('r_min', 1e-4)
         self.r_max = kwargs_mge.get('r_max', 3e2)
         self.n_rad = kwargs_mge.get('n_radial_points', 200)
@@ -44,7 +44,7 @@ class MGEMass:
         """
         kwargs_list = self._parse_kwargs(kwargs_list)
         if self.profile_list[0] in ["INTERPOL", "INTERPOL_SCLAED"]:
-            center_x, center_y = self.profile_list.convergence_peak(
+            center_x, center_y = self.lens_analysis.convergence_peak(
                 kwargs_list,
                 grid_num=200,
                 grid_spacing=0.01,
@@ -113,6 +113,11 @@ class MGEMass:
                 self.n_rad
             ) * theta_E
             radial_density = self.radial_convergence(r_array, kwargs_list)
+            # if the profile decreases too fast, the MGE fit can be inaccurate,
+            # limit the radial profile extent
+            radial_density_filter = radial_density / radial_density.max() > 1e-16
+            radial_density = radial_density[radial_density_filter]
+            r_array = r_array[radial_density_filter]
             sol = mge.mge_fit_1d(
                 r_array, radial_density,
                 ngauss=self.n_gauss,
@@ -137,7 +142,7 @@ class MGELight:
         the one implemented in lenstronomy.
         :param profile_list: list of light profile names
         :param kwargs_mge: dictionary with options for the MGE fitting:
-            - n_gauss: number of Gaussian components to fit (default: 20)
+            - n_comp: number of Gaussian components to fit (default: 20)
             - r_min: minimum radius for the radial profile in units of the 
               effective radius (default: 1e-4)
             - r_max: maximum radius for the radial profile in units of the 
@@ -150,7 +155,7 @@ class MGELight:
         self.light_analysis = LightProfileAnalysis(self.light_model)
         if kwargs_mge is None:
             kwargs_mge = {}
-        self.n_gauss = kwargs_mge.get('n_gauss', 20)
+        self.n_gauss = kwargs_mge.get('n_comp', 20)
         self.r_min = kwargs_mge.get('r_min', 1e-4)
         self.r_max = kwargs_mge.get('r_max', 2e2)
         self.n_rad = kwargs_mge.get('n_radial_points', 200)
@@ -204,6 +209,11 @@ class MGELight:
                 self.n_rad
             ) * r_eff
             radial_surf = self.radial_surface_brightness(r_array, kwargs_list)
+            # if the profile decreases too fast, the MGE fit can be inaccurate,
+            # limit the radial profile extent
+            radial_surf_filter = radial_surf / radial_surf.max() > 1e-16
+            radial_surf = radial_surf[radial_surf_filter]
+            r_array = r_array[radial_surf_filter]
             sol = mge.mge_fit_1d(
                 r_array, radial_surf,
                 ngauss=self.n_gauss,

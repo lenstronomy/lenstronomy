@@ -367,21 +367,27 @@ class IFUGrid(ApertureBase):
     """Class for an Integral Field Unit spectrograph with rectangular grid where the
     kinematics are measured."""
 
-    def __init__(self, x_grid, y_grid, padding_arcsec=0):
+    def __init__(self, x_grid, y_grid, padding_arcsec=0, angle=0):
         """
 
         :param x_grid: x coordinates of the grid
         :param y_grid: y coordinates of the grid
+        :param padding_arcsec: padding of the IFU grid for convolution in arcsec
+        :param angle: angle of the IFU grid in radians
         """
-        delta_x = x_grid[0, 1] - x_grid[0, 0]
-        delta_y = y_grid[1, 0] - y_grid[0, 0]
-        if np.abs(delta_x) != np.abs(delta_y):
-            raise ValueError("IFU grid pixels must be square!")
+        x0, y0 = _rotate(x_grid[0, 0], y_grid[0, 0], -angle)
+        x1, y1 = _rotate(x_grid[0, 1], y_grid[1, 0], -angle)
+        delta_x = x1 - x0
+        delta_y = y1 - y0
+        if not np.isclose(np.abs(delta_x), np.abs(delta_y), rtol=1e-3):
+            raise ValueError("The IFU grid is irregular: |delta_x| != |delta_y|, "
+                             "check if there is a rotation angle!")
         delta_pix = np.abs(delta_x)
         bins = np.arange(np.size(x_grid), dtype=int).reshape(x_grid.shape)
         super().__init__(
             x_grid, y_grid, bins,
-            delta_pix, padding_arcsec
+            delta_pix, padding_arcsec,
+            angle
         )
 
     def aperture_downsample(self, aperture_samples, supersampling_factor):
@@ -537,21 +543,26 @@ class IFUBinned(ApertureBase):
     which bin each pixel belongs.
     """
 
-    def __init__(self, x_grid, y_grid, bins, padding_arcsec=0):
+    def __init__(self, x_grid, y_grid, bins, padding_arcsec=0, angle=0):
         """
         :param x_grid: float array of shape (n_y, n_x) with the x coordinates of the grid
         :param y_grid: float array of shape (n_y, n_x) with the y coordinates of the grid
         :param bins: int array of shape (n_y, n_x) with the bin ids (0, 1, ...), and -1 for excluded pixels.
         :param padding_arcsec: padding of the IFU grid for convolution
+        :param angle: angle of the IFU grid in radians
         """
-        delta_x = x_grid[0, 1] - x_grid[0, 0]
-        delta_y = y_grid[1, 0] - y_grid[0, 0]
-        if np.abs(delta_x) != np.abs(delta_y):
-            raise ValueError("IFU grid pixels must be square!")
+        x0, y0 = _rotate(x_grid[0, 0], y_grid[0, 0], -angle)
+        x1, y1 = _rotate(x_grid[0, 1], y_grid[1, 0], -angle)
+        delta_x = x1 - x0
+        delta_y = y1 - y0
+        if not np.isclose(np.abs(delta_x), np.abs(delta_y), rtol=1e-3):
+            raise ValueError("The IFU grid is irregular: |delta_x| != |delta_y|, "
+                             "check if there is a rotation angle!")
         delta_pix = np.abs(delta_x)
         super(IFUBinned, self).__init__(
             x_grid, y_grid, bins,
-            delta_pix, padding_arcsec
+            delta_pix, padding_arcsec,
+            angle
         )
 
     def aperture_select(self, ra, dec):
@@ -648,35 +659,38 @@ def make_supersampled_grid(
     :param padding: padding in pixels around the supersampled grid
     :param angle: position angle in radians
     """
-    ny, nx = x_grid.shape
-    # rotate to align with RA axis
-    x_grid, y_grid = _rotate(x_grid, y_grid, angle=-angle)
-    delta_x = x_grid[0, 1] - x_grid[0, 0]
-    delta_y = y_grid[1, 0] - y_grid[0, 0]
+    if (supersampling_factor > 1) and (padding > 0):
+        ny, nx = x_grid.shape
+        # rotate to align with RA axis
+        x_grid, y_grid = _rotate(x_grid, y_grid, angle=-angle)
+        delta_x = x_grid[0, 1] - x_grid[0, 0]
+        delta_y = y_grid[1, 0] - y_grid[0, 0]
 
-    # New (supersampled) pixel size
-    new_delta_x = delta_x / supersampling_factor
-    new_delta_y = delta_y / supersampling_factor
+        # New (supersampled) pixel size
+        new_delta_x = delta_x / supersampling_factor
+        new_delta_y = delta_y / supersampling_factor
 
-    # the padding is in supersampled pixels
-    pad_x = padding * new_delta_x
-    pad_y = padding * new_delta_y
+        # the padding is in supersampled pixels
+        pad_x = padding * new_delta_x
+        pad_y = padding * new_delta_y
 
-    # grid bounds (pixel-centered)
-    x_start = x_grid[0, 0] - 0.5 * delta_x * (1 - 1 / supersampling_factor) - pad_x
-    x_end = x_grid[0, -1] + 0.5 * delta_x * (1 - 1 / supersampling_factor) + pad_x
-    y_start = y_grid[0, 0] - 0.5 * delta_y * (1 - 1 / supersampling_factor) - pad_y
-    y_end = y_grid[-1, 0] + 0.5 * delta_y * (1 - 1 / supersampling_factor) + pad_y
+        # grid bounds (pixel-centered)
+        x_start = x_grid[0, 0] - 0.5 * delta_x * (1 - 1 / supersampling_factor) - pad_x
+        x_end = x_grid[0, -1] + 0.5 * delta_x * (1 - 1 / supersampling_factor) + pad_x
+        y_start = y_grid[0, 0] - 0.5 * delta_y * (1 - 1 / supersampling_factor) - pad_y
+        y_end = y_grid[-1, 0] + 0.5 * delta_y * (1 - 1 / supersampling_factor) + pad_y
 
-    xs = np.linspace(x_start, x_end, nx * supersampling_factor + 2 * padding)
-    ys = np.linspace(y_start, y_end, ny * supersampling_factor + 2 * padding)
+        xs = np.linspace(x_start, x_end, nx * supersampling_factor + 2 * padding)
+        ys = np.linspace(y_start, y_end, ny * supersampling_factor + 2 * padding)
 
-    x_grid_supersampled, y_grid_supersampled = np.meshgrid(xs, ys)
-    # rotate back to position angle
-    x_grid_supersampled, y_grid_supersampled = _rotate(
-        x_grid_supersampled, y_grid_supersampled, angle=angle
-    )
-    return x_grid_supersampled, y_grid_supersampled
+        x_grid_supersampled, y_grid_supersampled = np.meshgrid(xs, ys)
+        # rotate back to position angle
+        x_grid_supersampled, y_grid_supersampled = _rotate(
+            x_grid_supersampled, y_grid_supersampled, angle=angle
+        )
+        return x_grid_supersampled, y_grid_supersampled
+    else:
+        return x_grid, y_grid
 
 
 def _rotate(x, y, angle):

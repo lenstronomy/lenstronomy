@@ -1,7 +1,6 @@
 __author__ = "furcelay", "sibirrer"
 
 import warnings
-
 from lenstronomy.JAMPy.jam_wrapper_base import JAMWrapperBase
 from lenstronomy.GalKin.observation import GalkinObservation
 from lenstronomy.GalKin.aperture import downsample_values_to_bins

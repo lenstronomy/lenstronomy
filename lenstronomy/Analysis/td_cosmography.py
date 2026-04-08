@@ -177,6 +177,7 @@ class TDCosmography(KinematicsAPI):
             kwargs_lens=kwargs_lens,
             kwargs_lens_light=kwargs_lens_light,
             kwargs_anisotropy=kwargs_anisotropy,
+            inclination=inclination,
             r_eff=r_eff,
             theta_E=theta_E,
             gamma=gamma,
@@ -194,7 +195,7 @@ class TDCosmography(KinematicsAPI):
         r_eff=None,
         theta_E=None,
         gamma=None,
-        supersampling_factor=1,
+        supersampling_factor=None,
         voronoi_bins=None,
     ):
         """Sigma**2 = Dd/Dds * c**2 * J(kwargs_lens, kwargs_light, anisotropy) (Equation
@@ -220,6 +221,7 @@ class TDCosmography(KinematicsAPI):
             kwargs_lens=kwargs_lens,
             kwargs_lens_light=kwargs_lens_light,
             kwargs_anisotropy=kwargs_anisotropy,
+            inclination=inclination,
             r_eff=r_eff,
             theta_E=theta_E,
             gamma=gamma,

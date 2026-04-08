@@ -265,7 +265,7 @@ class KinematicsAPI(object):
         gamma=None,
         kappa_ext=0,
         inclination=90.0,
-        supersampling_factor=1,
+        supersampling_factor=None,
         voronoi_bins=None,
     ):
         """API for both, analytic and numerical JAM to compute the velocity dispersion

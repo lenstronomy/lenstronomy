@@ -41,7 +41,7 @@ class JAMWrapper(JAMWrapperBase, GalkinObservation):
         black_hole_mass=0.0,
         convolved=True,
         voronoi_bins=None,
-        supersampling_factor=1,
+        supersampling_factor=None,
     ):
         """Computes the velocity dispersion in the aperture. IF the aperture is a slit,
         frame or shell, the output is a single float. If the aperture is an IFU grid,
@@ -61,6 +61,8 @@ class JAMWrapper(JAMWrapperBase, GalkinObservation):
             Only relevant for a PIXEL PSF, otherwise supersampling is done within jampy
         :return: ordered array of velocity dispersions [km/s] for each unit
         """
+        if supersampling_factor is None:
+            supersampling_factor = self._default_supersampling_factor
         x_sup, y_sup = self.aperture_sample(supersampling_factor)
         # shift and rotate to align with light profile
         x_gal_sup, y_gal_sup = self._shift_and_rotate(x_sup, y_sup, kwargs_light)

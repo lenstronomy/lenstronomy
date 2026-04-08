@@ -73,7 +73,7 @@ class MultiBandUpdateManager(UpdateManager):
         """
 
         :param frame_list: list of frame indexes to be set back to the parameters being fixed in the initial fix
-        parameters in the class creation
+            parameters in the class creation
         :return: updated fixed lens model parameter in the FittingSequence()
         """
         for j in frame_list:

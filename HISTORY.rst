@@ -462,3 +462,7 @@ History
 +++++++++++++++++++
 * bug fix in lens equation solver in multi-plane when deflectors are parameterized in the image plane
 * updated Roman Space Telescope exposure times
+
+1.13.6 (2026-03-25)
++++++++++++++++++++
+* Updated configurations for Roman Space Telescope

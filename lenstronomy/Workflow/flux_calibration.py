@@ -17,7 +17,7 @@ class FluxCalibration(object):
         calibration fitting.
 
         :param kwargs_imaging: keyword argument related to imaging data and imaging
-            likelihood. Feeds into ImageLikelihood(**kwargs_imaging)
+            likelihood. Feeds into ImageLikelihood(\*\*kwargs_imaging)
         :param kwargs_model: keyword argument of model components
         :param kwargs_params: keyword argument of model parameters
         :param calibrate_bands: state which bands the flux calibration is applied to

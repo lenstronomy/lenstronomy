@@ -45,14 +45,15 @@ class CobayaSampler(object):
     def run(self, **kwargs):
         """
         :param kwargs: dictionary of keyword arguments for Cobaya. kwargs that can be passed are:
-        'proposal_widths' (standard deviation of the Gaussian from which initial point is drawn, list or dict),
-        'latex' (list of LaTeX lables for params),
-        'path' (where products will be saved, string),
-        'force_overwrite' (whether or not to overwite previous products with the same name, bool) and
-        'mpi' (to run in MPI mode, bool).
-        Furthermore, all the cobaya-native kwargs for the mcmc sampler listed in the docs are available: https://cobaya.readthedocs.io/en/latest/sampler_mcmc.html#options-and-defaults
-        except 'drag' and 'blocking', since there is no obvious parameter speed hierarchy in a strong lensing likelihood.
-        If none of these kwargs are passed, the default values/settings will be used.
+            'proposal_widths' (standard deviation of the Gaussian from which initial point is drawn, list or dict),
+            'latex' (list of LaTeX lables for params),
+            'path' (where products will be saved, string),
+            'force_overwrite' (whether or not to overwite previous products with the same name, bool) and
+            'mpi' (to run in MPI mode, bool).
+            Furthermore, all the cobaya-native kwargs for the mcmc sampler listed in the docs are available:
+            https://cobaya.readthedocs.io/en/latest/sampler_mcmc.html#options-and-defaults
+            except 'drag' and 'blocking', since there is no obvious parameter speed hierarchy in a strong lensing likelihood.
+            If none of these kwargs are passed, the default values/settings will be used.
         """
 
         sampled_params = self._param_names

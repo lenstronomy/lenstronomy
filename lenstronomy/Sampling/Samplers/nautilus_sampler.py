@@ -2,6 +2,7 @@ __author__ = "aymgal, johannesulf"
 
 
 from inspect import signature
+import numpy as np
 from lenstronomy.Sampling.Samplers.base_nested_sampler import NestedSampler
 
 __all__ = ["NautilusSampler"]
@@ -69,7 +70,7 @@ class NautilusSampler(NestedSampler):
         see https://nautilus-sampler.readthedocs.io for content of kwargs
 
         :param kwargs: kwargs directly passed to Sampler.run
-        :return: samples, means, logZ, logZ_err, logL, results
+        :return: samples, means, log_Z, log_Z_err, log_L, results
         """
         print("prior type :", self.prior_type)
         print("parameter names :", self.param_names)
@@ -77,10 +78,31 @@ class NautilusSampler(NestedSampler):
         keys = [p.name for p in signature(self._sampler.run).parameters.values()]
         kwargs = {key: kwargs[key] for key in kwargs.keys() & keys}
         self._sampler.run(**kwargs)
-        points, log_w, log_l = self._sampler.posterior()
+        points, log_w, log_l_weighted = self._sampler.posterior()
         log_z = self._sampler.log_z
+        log_z_err = log_z / np.sqrt(self._sampler.n_eff)
 
-        return points, log_w, log_l, log_z
+        results = {
+            "points": points,
+            "log_w": log_w,
+            "log_l": log_l_weighted,
+        }
+        means = np.average(points, weights=self._normalized_weights(log_w), axis=0)
+
+        samples, _, log_l = self._sampler.posterior(equal_weight=True)
+
+        return samples, means, log_z, log_z_err, log_l, results
+
+    @staticmethod
+    def _normalized_weights(log_w):
+        """Normalize log weights.
+
+        :param log_w: array of shape (n_samples,)
+        :return: normalized weights, array of shape (n_samples,)
+        """
+        log_w = np.asarray(log_w)
+        weights = np.exp(log_w - np.max(log_w))
+        return weights / np.sum(weights)
 
     def _check_install(self):
         try:

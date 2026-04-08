@@ -7,8 +7,7 @@ __author__ = "ajshajib"
 import numpy as np
 import abc
 from scipy.special import comb
-from scipy.special import hyp2f1
-
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 from lenstronomy.LensModel.Profiles.multi_gaussian_ellipse_kappa import (
     MultiGaussianEllipseKappa,
 )
@@ -29,7 +28,7 @@ __all__ = [
 
 
 @export
-class GaussDecompositionAbstract(metaclass=abc.ABCMeta):
+class GaussDecompositionAbstract(LensProfileBase, metaclass=abc.ABCMeta,):
     """This abstract class sets up a template for computing lensing properties of an
     elliptical convergence through Shajib (2019)'s Gauss decomposition."""
 
@@ -82,6 +81,8 @@ class GaussDecompositionAbstract(metaclass=abc.ABCMeta):
             epsilons[2 * p - k] = epsilons[2 * p - k + 1] + 1 / 2.0**p * comb(p, k)
 
         self.etas = (-1.0) ** kes * epsilons * 10.0 ** (p / 3.0) * 2.0 * _SQRT_2PI
+
+        super(GaussDecompositionAbstract, self).__init__()
 
     def gauss_decompose(self, **kwargs):
         r"""Compute the amplitudes and sigmas of Gaussian components using the integral
@@ -248,23 +249,6 @@ class GaussDecompositionAbstract(metaclass=abc.ABCMeta):
         return self.gaussian_set.density_2d(
             x, y, amps, sigmas, e1, e2, center_x, center_y
         )
-
-    def set_static(self, **kwargs):
-        """Pre-computes certain computations that do only relate to the lens model
-        parameters and not to the specific position where to evaluate the lens model.
-
-        :param kwargs: lens model parameters
-        :return: no return, for certain lens model some private self variables are
-            initiated
-        """
-        pass
-
-    def set_dynamic(self):
-        """
-
-        :return: no return, deletes pre-computed variables for certain lens models
-        """
-        pass
 
 
 @export

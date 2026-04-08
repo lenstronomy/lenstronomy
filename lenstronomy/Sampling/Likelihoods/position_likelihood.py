@@ -164,7 +164,10 @@ class PositionLikelihood(object):
             assigned
         """
         ra_image_list, dec_image_list = self._pointSource.image_position(
-            kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens, additional_images=True
+            kwargs_ps=kwargs_ps,
+            kwargs_lens=kwargs_lens,
+            additional_images=True,
+            width_search_factor=1.5,
         )
         for i in range(len(ra_image_list)):
             if "ra_image" in kwargs_ps[i]:

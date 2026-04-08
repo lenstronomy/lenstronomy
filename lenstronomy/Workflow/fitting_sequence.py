@@ -191,11 +191,25 @@ class FittingSequence(object):
                 nautilus = NautilusSampler(
                     likelihood_module=self.likelihoodModule, mpi=self._mpi, **kwargs
                 )
-                points, log_w, log_l, log_z = nautilus.run(**kwargs)
-                chain_list.append([points, log_w, log_l, log_z])
+                samples, means, log_z, log_z_err, log_l, results_object = nautilus.run(
+                    **kwargs
+                )
+                chain_list.append(
+                    [
+                        fitting_type,
+                        samples,
+                        nautilus.param_names,
+                        log_l,
+                        log_z,
+                        log_z_err,
+                        results_object,
+                    ]
+                )
                 if kwargs.get("verbose", False):
-                    print(len(points), "number of points sampled")
-                kwargs_result = self.best_fit_from_samples(points, log_l)
+                    print(len(samples), "number of points sampled")
+                kwargs_result = self.best_fit_from_samples(
+                    results_object["points"], results_object["log_l"]
+                )
                 self._updateManager.update_param_state(**kwargs_result)
 
             else:

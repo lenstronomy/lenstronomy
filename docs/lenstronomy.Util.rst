@@ -28,10 +28,42 @@ lenstronomy.Util.constants module
     :undoc-members:
     :show-inheritance:
 
+lenstronomy.Util.coolest\_interface module
+------------------------------------------
+
+.. automodule:: lenstronomy.Util.coolest_interface
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+lenstronomy.Util.coolest\_read\_util module
+-------------------------------------------
+
+.. automodule:: lenstronomy.Util.coolest_read_util
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+lenstronomy.Util.coolest\_update\_util module
+---------------------------------------------
+
+.. automodule:: lenstronomy.Util.coolest_update_util
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 lenstronomy.Util.correlation module
 -----------------------------------
 
 .. automodule:: lenstronomy.Util.correlation
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+lenstronomy.Util.cosmo\_util module
+-----------------------------------
+
+.. automodule:: lenstronomy.Util.cosmo_util
     :members:
     :undoc-members:
     :show-inheritance:
@@ -68,6 +100,22 @@ lenstronomy.Util.kernel\_util module
     :undoc-members:
     :show-inheritance:
 
+lenstronomy.Util.kin\_sampling\_util module
+-------------------------------------------
+
+.. automodule:: lenstronomy.Util.kin_sampling_util
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+lenstronomy.Util.magnification\_finite\_util module
+---------------------------------------------------
+
+.. automodule:: lenstronomy.Util.magnification_finite_util
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 lenstronomy.Util.mask\_util module
 ----------------------------------
 
@@ -92,10 +140,26 @@ lenstronomy.Util.numba\_util module
     :undoc-members:
     :show-inheritance:
 
+lenstronomy.Util.package\_util module
+--------------------------------------
+
+.. automodule:: lenstronomy.Util.package_util
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 lenstronomy.Util.param\_util module
 -----------------------------------
 
 .. automodule:: lenstronomy.Util.param_util
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+lenstronomy.Util.primary\_beam\_util module
+-------------------------------------------
+
+.. automodule:: lenstronomy.Util.primary_beam_util
     :members:
     :undoc-members:
     :show-inheritance:

@@ -33,10 +33,10 @@ class MultiPatchPlot(MultiPatchReconstruction):
             - 'linear-joint': linear amplitudes ae jointly inferred
             - 'single-band': single band
         :param kwargs_likelihood: likelihood keyword arguments as supported by the Likelihood() class
-        :param kwargs_pixel_grid: keyword argument of PixelGrid() class. This is optional and overwrites a minimal grid
-         Attention for consistent pixel grid definitions!
+        :param kwargs_pixel_grid: keyword argument of PixelGrid() class. This is optional and overwrites a minimal grid.
+            Attention for consistent pixel grid definitions!
         :param verbose: if True (default), computes and prints the total log-likelihood.
-        This can deactivated for speedup purposes (does not run linear inversion again), and reduces the number of prints.
+            This can deactivated for speedup purposes (does not run linear inversion again), and reduces the number of prints.
         :param cmap_string: string of color map (or cmap matplotlib object)
         """
         MultiPatchReconstruction.__init__(

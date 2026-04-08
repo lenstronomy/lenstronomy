@@ -34,10 +34,14 @@ class TestNautilusSampler(object):
             "n_eff": 0.0,
             "seed": 42,
         }
-        points, log_w, log_l, log_z = sampler.run(**kwargs)
-        assert len(points) == len(log_w)
-        assert len(points) == len(log_l)
+        samples, means, log_z, log_z_err, log_l, results = sampler.run(**kwargs)
+        assert len(samples) == len(log_l)
+        assert len(means) == samples.shape[1]
         assert np.isfinite(log_z)
+        assert np.isfinite(log_z_err)
+        assert "points" in results
+        assert "log_w" in results
+        assert "log_l" in results
 
 
 if __name__ == "__main__":

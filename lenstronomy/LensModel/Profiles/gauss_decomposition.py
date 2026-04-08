@@ -28,7 +28,10 @@ __all__ = [
 
 
 @export
-class GaussDecompositionAbstract(LensProfileBase, metaclass=abc.ABCMeta,):
+class GaussDecompositionAbstract(
+    LensProfileBase,
+    metaclass=abc.ABCMeta,
+):
     """This abstract class sets up a template for computing lensing properties of an
     elliptical convergence through Shajib (2019)'s Gauss decomposition."""
 

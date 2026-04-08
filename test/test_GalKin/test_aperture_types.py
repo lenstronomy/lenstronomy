@@ -110,17 +110,15 @@ class TestApertureTypesSample(object):
         assert y.shape == (2 * s, 2 * s)
         assert_allclose((x[0, 1] - x[0, 0]) * s, self.x[0, 1] - self.x[0, 0])
         assert_allclose((y[1, 0] - y[0, 0]) * s, self.y[1, 0] - self.y[0, 0])
-        assert_allclose(np.mean(x.reshape(2, s, 2, s), axis=(1, 3)),
-                        self.x)
-        assert_allclose(np.mean(y.reshape(2, s, 2, s), axis=(1, 3)),
-                        self.y)
+        assert_allclose(np.mean(x.reshape(2, s, 2, s), axis=(1, 3)), self.x)
+        assert_allclose(np.mean(y.reshape(2, s, 2, s), axis=(1, 3)), self.y)
         # with padding
         p = 3
         x, y = aperture_types.make_supersampled_grid(
             self.x, self.y, supersampling_factor=1, padding=p, angle=0
         )
-        assert x.shape == (2 + 2*p, 2 + 2*p)
-        assert y.shape == (2 + 2*p, 2 + 2*p)
+        assert x.shape == (2 + 2 * p, 2 + 2 * p)
+        assert y.shape == (2 + 2 * p, 2 + 2 * p)
         assert_allclose(x[p:-p, p:-p], self.x)
         assert_allclose(y[p:-p, p:-p], self.y)
 
@@ -149,9 +147,7 @@ class TestApertureTypesSample(object):
         # replicate to 4x4 by repeating each element 2x2
         supersampling_factor = 2
         hr_map = np.arange(16).reshape(4, 4).astype(float)
-        v = aperture_types.downsample_values_to_bins(
-            hr_map, supersampled_bins
-        )
+        v = aperture_types.downsample_values_to_bins(hr_map, supersampled_bins)
         # expected vrms for each bin is mean of the corresponding 2x2 block:
         assert_allclose(v, np.array([2.5, 4.5, 10.5, 12.5]))
 
@@ -187,8 +183,7 @@ class TestApertureTypesSample(object):
         xs, ys = slit.aperture_sample(1)
         hr_map = xs**2 + ys**2
         # slit.aperture_downsample returns sum of high_res_map
-        assert_allclose(slit.aperture_downsample(hr_map, 1), np.mean(hr_map),
-                        rtol=1e-5)
+        assert_allclose(slit.aperture_downsample(hr_map, 1), np.mean(hr_map), rtol=1e-5)
         # check that all xs and ys are within the aperture
         for x, y in zip(xs.ravel(), ys.ravel()):
             assert slit.aperture_select(x, y)[0]
@@ -209,8 +204,9 @@ class TestApertureTypesSample(object):
         assert np.all(bins[inner_mask] == -1)
         # aperture_downsample returns sum
         hr_map = xs**2 + ys**2
-        assert_allclose(frame.aperture_downsample(hr_map, 1), np.mean(hr_map[bins >= 0]),
-                        rtol=1e-5)
+        assert_allclose(
+            frame.aperture_downsample(hr_map, 1), np.mean(hr_map[bins >= 0]), rtol=1e-5
+        )
         assert frame.num_segments == 1
         # all components are within the frame
         for x, y, b in zip(xs.ravel(), ys.ravel(), bins.ravel()):
@@ -218,7 +214,9 @@ class TestApertureTypesSample(object):
             assert frame.aperture_select(x, y)[0] or (b == -1)
 
     def test_shell(self):
-        shell = aperture_types.Shell(r_in=0.5, r_out=1., center_ra=0.0, center_dec=0.0, delta_pix=0.1)
+        shell = aperture_types.Shell(
+            r_in=0.5, r_out=1.0, center_ra=0.0, center_dec=0.0, delta_pix=0.1
+        )
         xs, ys = shell.aperture_sample(1)
         bins = shell.bins
         rs = np.sqrt((xs) ** 2 + (ys) ** 2)
@@ -229,8 +227,9 @@ class TestApertureTypesSample(object):
         assert rs.max() >= 1.1
         # aperture_downsample returns sum
         hr_map = xs**2 + ys**2
-        assert_allclose(shell.aperture_downsample(hr_map, 1), np.mean(hr_map[bins == 0]),
-                        rtol=1e-5)
+        assert_allclose(
+            shell.aperture_downsample(hr_map, 1), np.mean(hr_map[bins == 0]), rtol=1e-5
+        )
         assert shell.num_segments == 1
         # all components are within the shell
         for x, y, b in zip(xs.ravel(), ys.ravel(), bins.ravel()):
@@ -258,8 +257,7 @@ class TestApertureTypesSample(object):
         assert down.shape == (num_pix_y, num_pix_x)
         # verify the (0,0) entry equals mean of top-left sxs block
         expected00 = hr_map[0:s, 0:s].mean()
-        assert_allclose(down[0, 0], expected00,
-                        rtol=1e-5)
+        assert_allclose(down[0, 0], expected00, rtol=1e-5)
         # test with padding (should add two pixels)
         ifu = aperture_types.IFUGrid(xg, yg, padding_arcsec=1.0)
         xg_sample_p, yg_sample_p = ifu.aperture_sample(1)
@@ -270,12 +268,14 @@ class TestApertureTypesSample(object):
 
     def test_ifu_shells(self):
         r_bins = np.array([0.0, 0.5, 1.0, 1.5])
-        ifu_shells = aperture_types.IFUShells(r_bins, center_ra=0.0, center_dec=0.0, delta_pix=0.5)
+        ifu_shells = aperture_types.IFUShells(
+            r_bins, center_ra=0.0, center_dec=0.0, delta_pix=0.5
+        )
         # num_segments should be len(r_bins)-1
         assert ifu_shells.num_segments == len(r_bins) - 1
         # create a high-res map with values equal to radius for simplicity
         x_sup, y_sup = ifu_shells.aperture_sample(1)
-        hr_vals = np.sqrt(x_sup ** 2 + y_sup ** 2)
+        hr_vals = np.sqrt(x_sup**2 + y_sup**2)
         # downsample: for each shell we expect mean radius to be between the bins; just check shape and finite values
         out = ifu_shells.aperture_downsample(hr_vals, 1)
         assert out.shape == (ifu_shells.num_segments,)
@@ -295,8 +295,7 @@ class TestApertureTypesSample(object):
         hr = np.array([[1.0, 2.0], [3.0, 4.0]])
         out = ifu_b.aperture_downsample(hr, 1)
         # bin 0 -> hr[0,0]=1 ; bin1 -> hr[0,1]=2 ; bin2 -> hr[1,0]=3
-        assert_allclose(out, np.array([1.0, 2.0, 3.0]),
-                        rtol=1e-4)
+        assert_allclose(out, np.array([1.0, 2.0, 3.0]), rtol=1e-4)
 
 
 class TestRaise(object):

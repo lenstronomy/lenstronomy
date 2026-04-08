@@ -24,7 +24,7 @@ class TestMGEMass:
         kwargs_list = [self.kw_sie, self.kw_gauss]
         r = np.array([0.1, 0.5, 1.0])
         dens = mge_mass.radial_convergence(r, kwargs_list)
-        npt.assert_almost_equal(dens, np.array([5.1453 , 1.12148, 0.58844]), decimal=3)
+        npt.assert_almost_equal(dens, np.array([5.1453, 1.12148, 0.58844]), decimal=3)
 
     def test_einstein_radius(self):
         mge_mass = MGEMass(["SIE"])
@@ -37,16 +37,13 @@ class TestMGEMass:
         npt.assert_almost_equal(theta_composite, 1.12273, decimal=3)
 
     def test_mge_mass(self):
-        mge_mass = MGEMass(["SIE"]
-                           )
+        mge_mass = MGEMass(["SIE"])
         r_test = np.logspace(  # this must be in logspace
             np.log10(1e-2),
             np.log10(100),
             300,
         )
-        surf_mass, sigma_mass = mge_mass.mge_fit(
-            [self.kw_sie]
-        )
+        surf_mass, sigma_mass = mge_mass.mge_fit([self.kw_sie])
         mge_surf_1d = _mge(r_test, surf_mass, sigma_mass)
         theta_E = self.kw_sie["theta_E"]
         rho0 = SIE.theta2rho(theta_E)
@@ -57,7 +54,7 @@ class TestMGEMass:
         mge_mass = MGEMass(["MULTI_GAUSSIAN"])
         kw_mge = {"amp": np.arange(5), "sigma": np.arange(1, 6)}
         surf_mass, sigma_mass = mge_mass.mge_fit(
-           [kw_mge],
+            [kw_mge],
         )
         npt.assert_allclose(surf_mass, np.arange(1, 5), rtol=1e-2)
         npt.assert_allclose(sigma_mass, np.arange(2, 6), rtol=1e-2)
@@ -86,8 +83,8 @@ class TestMGEMass:
             [self.kw_gauss],
         )
         npt.assert_allclose(
-            surf_interp / surf_interp[0], surf_gauss / surf_gauss[0],
-            rtol=0.1)
+            surf_interp / surf_interp[0], surf_gauss / surf_gauss[0], rtol=0.1
+        )
 
     def test_parse_kwargs(self):
         mge_mass = MGEMass(["SIE", "GAUSSIAN"])
@@ -133,7 +130,8 @@ class TestMGELight:
     def test_effective_radius(self):
         mge_l_sersic = MGELight(["SERSIC"])
         assert (
-            mge_l_sersic.effective_radius([self.kw_sersic]) == self.kw_sersic["R_sersic"]
+            mge_l_sersic.effective_radius([self.kw_sersic])
+            == self.kw_sersic["R_sersic"]
         )
         mge_l_hern = MGELight(["HERNQUIST"])
         npt.assert_almost_equal(
@@ -143,7 +141,8 @@ class TestMGELight:
         )
         mge_l = MGELight(["SERSIC", "HERNQUIST"])
         kwargs_list = [
-            self.kw_sersic, self.kw_hernquist,
+            self.kw_sersic,
+            self.kw_hernquist,
         ]
         r_eff = mge_l.effective_radius(kwargs_list)
         npt.assert_almost_equal(r_eff, 0.849914, decimal=3)
@@ -155,9 +154,7 @@ class TestMGELight:
             np.log10(100),
             300,
         )
-        surf_lum, sigma_lum = mge_l.mge_fit(
-           [self.kw_hernquist]
-        )
+        surf_lum, sigma_lum = mge_l.mge_fit([self.kw_hernquist])
         mge_surf_1d = _mge(r_test, surf_lum, sigma_lum)
         hernq = Hernquist()
         hernq_surf_1d = hernq.function(
@@ -172,13 +169,12 @@ class TestMGELight:
             np.log10(100),
             300,
         )
-        surf_lum, sigma_lum = mge_l.mge_fit(
-            [self.kw_sersic]
-        )
+        surf_lum, sigma_lum = mge_l.mge_fit([self.kw_sersic])
         mge_surf_1d = _mge(r_test, surf_lum, sigma_lum)
         sersic = Sersic()
         sersic_surf_1d = sersic.function(
-            x=r_test, y=0,
+            x=r_test,
+            y=0,
             n_sersic=self.kw_sersic["n_sersic"],
             R_sersic=self.kw_sersic["R_sersic"],
             amp=self.kw_sersic["amp"],
@@ -190,7 +186,7 @@ class TestMGELight:
         kw_mge = {"amp": np.arange(5), "sigma": np.arange(1, 6)}
 
         surf_lum, sigma_lum = mge_l.mge_fit(
-           [kw_mge],
+            [kw_mge],
         )
         # should remove the zero amplitude
         npt.assert_allclose(surf_lum, np.arange(1, 5), rtol=1e-3)
@@ -208,13 +204,13 @@ class TestMGELight:
         assert "e2" in kwargs_list_parsed[0]
         assert "e1" not in kwargs_list_parsed[1]
         assert "e2" not in kwargs_list_parsed[1]
-        
+
 
 class TestRaise:
     def test_invalid_profile_name_raises(self):
         with pytest.raises(ValueError):
             MGEMass(["INVALID_PROFILE_NAME"])
-            
+
         with pytest.raises(ValueError):
             MGELight(["INVALID_PROFILE_NAME"])
 
@@ -222,8 +218,9 @@ class TestRaise:
 def _gaussian(r, amp, sigma):
     return amp * np.exp(-0.5 * (r / sigma) ** 2)
 
+
 def _mge(r, amps, sigmas):
-    amps /= (2 * np.pi * sigmas**2)
+    amps /= 2 * np.pi * sigmas**2
     total = np.zeros_like(r)
     for amp, sigma in zip(amps, sigmas):
         total += _gaussian(r, amp, sigma)

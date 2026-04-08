@@ -429,7 +429,9 @@ class GeneralizedOM(object):
             return np.array(_F_array, dtype=float)
 
     def jampy_params(self, r_ani, beta_inf):
-        return _logistic_function_params(r_ani=r_ani, beta_inf=beta_inf, **self._logistic_kwargs)
+        return _logistic_function_params(
+            r_ani=r_ani, beta_inf=beta_inf, **self._logistic_kwargs
+        )
 
 
 @export
@@ -500,7 +502,7 @@ class Colin(object):
         return _logistic_function_params(r_ani=r_ani, **self._logistic_kwargs)
 
 
-class  Logistic(object):
+class Logistic(object):
 
     def __init__(self):
         self.use_logistic = True
@@ -508,7 +510,7 @@ class  Logistic(object):
 
     def beta_r(self, r, r_ani, beta_0, beta_inf, alpha):
         """Anisotropy as a function of radius.
-        
+
         beta(r) = beta_0 + (beta_inf - beta_0)/[1 + (r_a/r)^alpha]
 
         :param r: 3d radius
@@ -524,15 +526,20 @@ class  Logistic(object):
         raise NotImplementedError("K(r) is not implemented for Logistic anisotropy.")
 
     def anisotropy_solution(self, r, r_ani, beta_0, beta_inf, alpha):
-        raise NotImplementedError("anisotropy_solution(r) is not implemented for Logistic anisotropy.")
-    
+        raise NotImplementedError(
+            "anisotropy_solution(r) is not implemented for Logistic anisotropy."
+        )
+
     @staticmethod
     def jampy_params(r_ani, beta_0, beta_inf, alpha):
-        return _logistic_function_params(r_ani=r_ani, beta_0=beta_0, beta_inf=beta_inf, alpha=alpha)
+        return _logistic_function_params(
+            r_ani=r_ani, beta_0=beta_0, beta_inf=beta_inf, alpha=alpha
+        )
 
 
 def _logistic_function_params(beta_0, beta_inf, r_ani, alpha):
     """Return the logistic function parameters for Jampy beta(r) format.
+
     beta(r) = beta_0 + (beta_inf - beta_0)/[1 + (r_a/r)^alpha]
     :param beta_0: float, central anisotropy value (beta at r=0)
     :param beta_inf: float, asymptotic anisotropy value (beta at r

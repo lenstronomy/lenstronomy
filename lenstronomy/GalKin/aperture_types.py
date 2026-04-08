@@ -34,9 +34,7 @@ class ApertureBase:
         """
         padding = self.padding_pix(supersampling_factor)
         x_grid_sup, y_grid_sup = make_supersampled_grid(
-            self._x_grid, self._y_grid,
-            supersampling_factor, padding,
-            self._angle
+            self._x_grid, self._y_grid, supersampling_factor, padding, self._angle
         )
         return x_grid_sup, y_grid_sup
 
@@ -52,9 +50,7 @@ class ApertureBase:
         num_pix_y, num_pix_x = self._x_grid.shape
         # remove supersampling
         aperture_samples_unp = _undo_supersampling(
-            aperture_samples,
-            num_pix_x, num_pix_y,
-            supersampling_factor
+            aperture_samples, num_pix_x, num_pix_y, supersampling_factor
         )
         aperture_samples_bin = downsample_values_to_bins(
             aperture_samples_unp,
@@ -70,7 +66,8 @@ class ApertureBase:
         """
         bins = self.bins.flatten()
         in_grid, grid_loc = general_aperture_select(
-            ra, dec, self._x_grid, self._y_grid, self._delta_pix)
+            ra, dec, self._x_grid, self._y_grid, self._delta_pix
+        )
         if in_grid:
             bin_id = bins[grid_loc]
             if bin_id > -1:
@@ -107,12 +104,16 @@ class ApertureBase:
 class Slit(ApertureBase):
     """Slit aperture description."""
 
-    def __init__(self,
-                 length, width,
-                 center_ra=0, center_dec=0, angle=0,
-                 delta_pix=0.1,
-                 padding_arcsec=0
-                 ):
+    def __init__(
+        self,
+        length,
+        width,
+        center_ra=0,
+        center_dec=0,
+        angle=0,
+        delta_pix=0.1,
+        padding_arcsec=0,
+    ):
         """
 
         :param length: length of slit
@@ -133,15 +134,10 @@ class Slit(ApertureBase):
             self._width,
             self._center_ra,
             self._center_dec,
-            self._angle
+            self._angle,
         )
         bins = np.zeros_like(x_grid, dtype=int)
-        super().__init__(
-            x_grid, y_grid, bins,
-            delta_pix,
-            padding_arcsec,
-            angle
-        )
+        super().__init__(x_grid, y_grid, bins, delta_pix, padding_arcsec, angle)
 
     def aperture_select(self, ra, dec):
         """
@@ -214,7 +210,16 @@ class Frame(ApertureBase):
     """Rectangular box with a hole in the middle (also rectangular), effectively a
     frame."""
 
-    def __init__(self, width_outer, width_inner, center_ra=0, center_dec=0, angle=0, delta_pix=0.1, padding_arcsec=0.):
+    def __init__(
+        self,
+        width_outer,
+        width_inner,
+        center_ra=0,
+        center_dec=0,
+        angle=0,
+        delta_pix=0.1,
+        padding_arcsec=0.0,
+    ):
         """
 
         :param width_outer: width of box to the outer parts
@@ -236,19 +241,15 @@ class Frame(ApertureBase):
             self._width_outer,
             self._center_ra,
             self._center_dec,
-            self._angle
+            self._angle,
         )
         bins = np.zeros_like(x_grid, dtype=int)
         mask_inner = (np.abs(x_grid - center_ra) < width_inner / 2) & (
-                np.abs(y_grid - center_dec) < width_inner / 2
+            np.abs(y_grid - center_dec) < width_inner / 2
         )
         bins[mask_inner] = -1
 
-        super().__init__(
-            x_grid, y_grid, bins,
-            delta_pix, padding_arcsec,
-            angle
-        )
+        super().__init__(x_grid, y_grid, bins, delta_pix, padding_arcsec, angle)
 
     def aperture_select(self, ra, dec):
         """
@@ -300,7 +301,9 @@ def frame_select(ra, dec, width_outer, width_inner, center_ra=0, center_dec=0, a
 class Shell(ApertureBase):
     """Shell aperture."""
 
-    def __init__(self, r_in, r_out, center_ra=0, center_dec=0, delta_pix=0.1, padding_arcsec=0.):
+    def __init__(
+        self, r_in, r_out, center_ra=0, center_dec=0, delta_pix=0.1, padding_arcsec=0.0
+    ):
         """
 
         :param r_in: innermost radius to be selected
@@ -322,10 +325,7 @@ class Shell(ApertureBase):
         bins[r_grid < self._r_in] = -1
         bins[r_grid > self._r_out] = -1
 
-        super().__init__(
-            x_grid, y_grid, bins,
-            delta_pix, padding_arcsec
-        )
+        super().__init__(x_grid, y_grid, bins, delta_pix, padding_arcsec)
 
     def aperture_select(self, ra, dec):
         """
@@ -340,6 +340,7 @@ class Shell(ApertureBase):
             ),
             0,
         )
+
 
 @export
 def shell_select(ra, dec, r_in, r_out, center_ra=0, center_dec=0):
@@ -380,15 +381,13 @@ class IFUGrid(ApertureBase):
         delta_x = x1 - x0
         delta_y = y1 - y0
         if not np.isclose(np.abs(delta_x), np.abs(delta_y), rtol=1e-3):
-            raise ValueError("The IFU grid is irregular: |delta_x| != |delta_y|, "
-                             "check if there is a rotation angle!")
+            raise ValueError(
+                "The IFU grid is irregular: |delta_x| != |delta_y|, "
+                "check if there is a rotation angle!"
+            )
         delta_pix = np.abs(delta_x)
         bins = np.arange(np.size(x_grid), dtype=int).reshape(x_grid.shape)
-        super().__init__(
-            x_grid, y_grid, bins,
-            delta_pix, padding_arcsec,
-            angle
-        )
+        super().__init__(x_grid, y_grid, bins, delta_pix, padding_arcsec, angle)
 
     def aperture_downsample(self, aperture_samples, supersampling_factor):
         """Downsample a high-resolution map to the IFU grid by averaging over the
@@ -403,7 +402,8 @@ class IFUGrid(ApertureBase):
         aperture_samples_unp = _unpad_map(aperture_samples, padding)
         return _undo_supersampling(
             aperture_samples_unp,
-            num_pix_x, num_pix_y,
+            num_pix_x,
+            num_pix_y,
             supersampling_factor,
         )
 
@@ -467,7 +467,9 @@ class IFUShells(ApertureBase):
     """Class for an Integral Field Unit spectrograph with azimuthal shells where the
     kinematics are measured."""
 
-    def __init__(self, r_bins, center_ra=0, center_dec=0, delta_pix=0.1, padding_arcsec=0):
+    def __init__(
+        self, r_bins, center_ra=0, center_dec=0, delta_pix=0.1, padding_arcsec=0
+    ):
         """
         :param r_bins: array of radial bins to average the dispersion spectra in ascending order.
          It starts with the innermost edge to the outermost edge.
@@ -491,10 +493,7 @@ class IFUShells(ApertureBase):
         for i in range(len(r_bins) - 1):
             mask = (r_grid >= r_bins[i]) & (r_grid < r_bins[i + 1])
             bins[mask] = i
-        super().__init__(
-            x_grid, y_grid, bins,
-            delta_pix, padding_arcsec
-        )
+        super().__init__(x_grid, y_grid, bins, delta_pix, padding_arcsec)
 
     def aperture_select(self, ra, dec):
         """
@@ -556,13 +555,13 @@ class IFUBinned(ApertureBase):
         delta_x = x1 - x0
         delta_y = y1 - y0
         if not np.isclose(np.abs(delta_x), np.abs(delta_y), rtol=1e-3):
-            raise ValueError("The IFU grid is irregular: |delta_x| != |delta_y|, "
-                             "check if there is a rotation angle!")
+            raise ValueError(
+                "The IFU grid is irregular: |delta_x| != |delta_y|, "
+                "check if there is a rotation angle!"
+            )
         delta_pix = np.abs(delta_x)
         super(IFUBinned, self).__init__(
-            x_grid, y_grid, bins,
-            delta_pix, padding_arcsec,
-            angle
+            x_grid, y_grid, bins, delta_pix, padding_arcsec, angle
         )
 
     def aperture_select(self, ra, dec):
@@ -590,12 +589,11 @@ class IFUBinned(ApertureBase):
 
 
 class GeneralAperture(ApertureBase):
-    """General aperture that allows to sample in any shape,
-    using 1d arrays of coordinates and bins.
+    """General aperture that allows to sample in any shape, using 1d arrays of
+    coordinates and bins.
 
-    This is not compatible with supersampling or padding.
-    It is meant to be used with the jampy backend and with a
-    non-pixelated PSF.
+    This is not compatible with supersampling or padding. It is meant to be used with
+    the jampy backend and with a non-pixelated PSF.
     """
 
     def __init__(self, x_cords, y_cords, bins=None, delta_pix=0.1):
@@ -608,29 +606,31 @@ class GeneralAperture(ApertureBase):
         :param delta_pix: pixel scale of the coordinates, needed for PSF convolution
         """
         super(GeneralAperture, self).__init__(
-            x_cords, y_cords, bins,
+            x_cords,
+            y_cords,
+            bins,
             delta_pix,
             padding_arcsec=0,
         )
 
     def aperture_sample(self, supersampling_factor):
         if supersampling_factor > 1:
-            raise ValueError("Supersampling factor cannot be greater than 1 for general aperture.")
+            raise ValueError(
+                "Supersampling factor cannot be greater than 1 for general aperture."
+            )
         return self._x_grid, self._y_grid
 
     def aperture_downsample(self, aperture_samples, supersampling_factor):
         if supersampling_factor > 1:
-            raise ValueError("Supersampling factor cannot be greater than 1 for general aperture.")
-        return super(GeneralAperture, self).aperture_downsample(aperture_samples, supersampling_factor=1)
+            raise ValueError(
+                "Supersampling factor cannot be greater than 1 for general aperture."
+            )
+        return super(GeneralAperture, self).aperture_downsample(
+            aperture_samples, supersampling_factor=1
+        )
 
 
-def general_aperture_select(
-    ra,
-    dec,
-    x_cords,
-    y_cords,
-    delta_pix=0.1
-):
+def general_aperture_select(ra, dec, x_cords, y_cords, delta_pix=0.1):
     """
 
     :param ra: angular coordinate of photon/ray
@@ -655,13 +655,13 @@ def general_aperture_select(
 
 
 def make_supersampled_grid(
-        x_grid, y_grid,
-        supersampling_factor=1,
-        padding=0,
-        angle=0,
+    x_grid,
+    y_grid,
+    supersampling_factor=1,
+    padding=0,
+    angle=0,
 ):
-    """
-    Creates a new grid, supersampled and with padding for PSF convolution.
+    """Creates a new grid, supersampled and with padding for PSF convolution.
 
     :param x_grid: x coordinates of the original grid
     :param y_grid: y coordinates of the original grid
@@ -727,11 +727,7 @@ def _unpad_map(padded_map, padding):
         return padded_map
 
 
-def _undo_supersampling(
-        supresampled_map,
-        num_pix_x, num_pix_y,
-        supersampling_factor
-):
+def _undo_supersampling(supresampled_map, num_pix_x, num_pix_y, supersampling_factor):
     if supersampling_factor > 1:
         return supresampled_map.reshape(
             num_pix_y, supersampling_factor, num_pix_x, supersampling_factor

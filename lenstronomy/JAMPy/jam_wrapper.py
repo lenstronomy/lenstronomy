@@ -30,7 +30,7 @@ class JAMWrapper(JAMWrapperBase, GalkinObservation):
     ):
 
         JAMWrapperBase.__init__(self, kwargs_model, kwargs_cosmo)
-        GalkinObservation.__init__(self, kwargs_aperture, kwargs_psf, backend='jampy')
+        GalkinObservation.__init__(self, kwargs_aperture, kwargs_psf, backend="jampy")
 
     def dispersion(
         self,
@@ -57,8 +57,8 @@ class JAMWrapper(JAMWrapperBase, GalkinObservation):
         :param voronoi_bins: None or 2D array with same shape as the IFU grid defining
             the Voronoi bins. If None, no Voronoi binning is applied. Only relevant if
             aperture is of type 'IFU_grid'.
-        :param supersampling_factor: supersampling factor of the aperture.
-            Only relevant for a PIXEL PSF, otherwise supersampling is done within jampy
+        :param supersampling_factor: supersampling factor of the aperture. Only relevant
+            for a PIXEL PSF, otherwise supersampling is done within jampy
         :return: ordered array of velocity dispersions [km/s] for each unit
         """
         if supersampling_factor is None:
@@ -98,13 +98,9 @@ class JAMWrapper(JAMWrapperBase, GalkinObservation):
             sigma2_lum_weighted_sup = vrms_sup**2 * surf_bright_sup
 
         sigma2_lum_weighted = self.aperture_downsample(
-            sigma2_lum_weighted_sup,
-            supersampling_factor
+            sigma2_lum_weighted_sup, supersampling_factor
         )
-        surf_bright = self.aperture_downsample(
-            surf_bright_sup,
-            supersampling_factor
-        )
+        surf_bright = self.aperture_downsample(surf_bright_sup, supersampling_factor)
 
         if voronoi_bins is not None:
             if self.aperture_type != "IFU_grid":

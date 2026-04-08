@@ -26,15 +26,19 @@ class JAMWrapperBase(object):
         self.mass_profile_list = kwargs_model.get("mass_profile_list")
         self.light_profile_list = kwargs_model.get("light_profile_list")
         if (len(self.mass_profile_list) > 1) or (
-                self.mass_profile_list[0] not in [
-            "MULTI_GAUSSIAN", "MULTI_GAUSSIAN_ELLIPSE_KAPPA"
-        ]):
-            raise ValueError("Jampy only support MULTI_GAUSSIAN(_ELLIPSE) mass profiles")
+            self.mass_profile_list[0]
+            not in ["MULTI_GAUSSIAN", "MULTI_GAUSSIAN_ELLIPSE_KAPPA"]
+        ):
+            raise ValueError(
+                "Jampy only support MULTI_GAUSSIAN(_ELLIPSE) mass profiles"
+            )
         if (len(self.light_profile_list) > 1) or (
-                self.light_profile_list[0] not in [
-            "MULTI_GAUSSIAN", "MULTI_GAUSSIAN_ELLIPSE"
-        ]):
-            raise ValueError("Jampy only support MULTI_GAUSSIAN(_ELLIPSE) light profiles")
+            self.light_profile_list[0]
+            not in ["MULTI_GAUSSIAN", "MULTI_GAUSSIAN_ELLIPSE"]
+        ):
+            raise ValueError(
+                "Jampy only support MULTI_GAUSSIAN(_ELLIPSE) light profiles"
+            )
         anisotropy_model = kwargs_model.get("anisotropy_model")
         self._anisotropy = Anisotropy(anisotropy_model)
         self.cosmo = Cosmo(**kwargs_cosmo)
@@ -100,11 +104,11 @@ class JAMWrapperBase(object):
 
         sigma_lum = np.asarray(kwargs_light[0]["sigma"])
         # convert to surface brightness
-        surf_lum = np.asarray(kwargs_light[0]["amp"]) / (2 * np.pi * sigma_lum ** 2)
+        surf_lum = np.asarray(kwargs_light[0]["amp"]) / (2 * np.pi * sigma_lum**2)
 
         sigma_mass = np.asarray(kwargs_mass[0]["sigma"])
         # convert to convergence
-        surf_mass = np.asarray(kwargs_mass[0]["amp"]) / (2 * np.pi * sigma_mass ** 2)
+        surf_mass = np.asarray(kwargs_mass[0]["amp"]) / (2 * np.pi * sigma_mass**2)
         # convert to units of M_sun / pc^2
         surf_mass *= self.cosmo.epsilon_crit * 1e-12
 

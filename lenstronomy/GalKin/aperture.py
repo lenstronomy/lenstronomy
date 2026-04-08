@@ -7,7 +7,7 @@ from lenstronomy.GalKin.aperture_types import (
     Frame,
     IFUGrid,
     IFUBinned,
-    downsample_values_to_bins
+    downsample_values_to_bins,
 )
 
 __all__ = ["Aperture"]
@@ -74,7 +74,9 @@ class Aperture(object):
         :param supersampling_factor: supersampling factor
         :return: averaged values within the aperture into num_segments
         """
-        return self._aperture.aperture_downsample(aperture_samples, supersampling_factor)
+        return self._aperture.aperture_downsample(
+            aperture_samples, supersampling_factor
+        )
 
     @property
     def num_segments(self):

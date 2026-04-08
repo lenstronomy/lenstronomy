@@ -32,7 +32,7 @@ class TDCosmography(KinematicsAPI):
         kwargs_seeing=None,
         kwargs_aperture=None,
         anisotropy_model=None,
-        kinematics_backend='jampy',
+        kinematics_backend="jampy",
         axial_symmetry="spherical",
         **kwargs_kin_api
     ):

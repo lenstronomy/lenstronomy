@@ -9,18 +9,16 @@ from copy import deepcopy
 
 class MGEMass:
     def __init__(self, profile_list, kwargs_mge=None):
-        """
-        Class to do the MGE fitting of the mass profile, 
-        which is needed for the JAM modelling. 
-        It uses LensProfileAnalysis to obtain the radial convergence,
-        and mgefit.mge_fit_1d for the MGE, which is more accurate than 
-        the one implemented in lenstronomy.
-        :param profile_list: list of lens profile names
+        """Class to do the MGE fitting of the mass profile, which is needed for the JAM
+        modelling. It uses LensProfileAnalysis to obtain the radial convergence, and
+        mgefit.mge_fit_1d for the MGE, which is more accurate than the one implemented
+        in lenstronomy. :param profile_list: list of lens profile names.
+
         :param kwargs_mge: dictionary with options for the MGE fitting:
             - n_comp: number of Gaussian components to fit (default: 20)
-            - r_min: minimum radius for the radial profile in units of the 
+            - r_min: minimum radius for the radial profile in units of the
               Einstein radius (default: 1e-4)
-            - r_max: maximum radius for the radial profile in units of the 
+            - r_max: maximum radius for the radial profile in units of the
               Einstein radius (default: 300)
             - n_radial_points: number of radial points to sample for the
             MGE fit (default: 200)
@@ -30,18 +28,16 @@ class MGEMass:
         self.lens_analysis = LensProfileAnalysis(self.mass_model)
         if kwargs_mge is None:
             kwargs_mge = {}
-        self.n_gauss = kwargs_mge.get('n_comp', 20)
-        self.r_min = kwargs_mge.get('r_min', 1e-4)
-        self.r_max = kwargs_mge.get('r_max', 3e2)
-        self.n_rad = kwargs_mge.get('n_radial_points', 200)
+        self.n_gauss = kwargs_mge.get("n_comp", 20)
+        self.r_min = kwargs_mge.get("r_min", 1e-4)
+        self.r_max = kwargs_mge.get("r_max", 3e2)
+        self.n_rad = kwargs_mge.get("n_radial_points", 200)
 
     def radial_convergence(self, r, kwargs_list):
-        """Convergence radial profile :param r: projected radius in angular units
-        :param kwargs_list: list of keyword arguments of lens model parameters
-            matching the lens model classes
-        :return: surface mass density at radius r (in angular units,
-            modulo epsilon_crit)
-        """
+        """Convergence radial profile :param r: projected radius in angular units :param
+        kwargs_list: list of keyword arguments of lens model parameters matching the
+        lens model classes :return: surface mass density at radius r (in angular units,
+        modulo epsilon_crit)"""
         kwargs_list = self._parse_kwargs(kwargs_list)
         if self.profile_list[0] in ["INTERPOL", "INTERPOL_SCLAED"]:
             center_x, center_y = self.lens_analysis.convergence_peak(
@@ -55,7 +51,10 @@ class MGEMass:
             center_x = kwargs_list[0].get("center_x", 0.0)
             center_y = kwargs_list[0].get("center_y", 0.0)
         kappa = self.lens_analysis.radial_lens_profile(
-            r, kwargs_list, center_x, center_y,
+            r,
+            kwargs_list,
+            center_x,
+            center_y,
         )
         return np.asarray(kappa)
 
@@ -72,11 +71,9 @@ class MGEMass:
             )
 
     def _parse_kwargs(self, kwargs_list):
-        """Removes e1 and e2 kwargs if not present in the profile
-        :param kwargs_list: list of keyword arguments of light profiles
-            (see LightModule)
-        :return: parsed arguments.
-        """
+        """Removes e1 and e2 kwargs if not present in the profile :param kwargs_list:
+        list of keyword arguments of light profiles (see LightModule) :return: parsed
+        arguments."""
         kwargs_list_copy = deepcopy(kwargs_list)
         kwargs_list_new = []
         profiles = self.mass_model.lens_model.func_list
@@ -93,7 +90,9 @@ class MGEMass:
         return kwargs_list_new
 
     def mge_fit(
-        self, kwargs_list, theta_E=None,
+        self,
+        kwargs_list,
+        theta_E=None,
     ):
         if (len(self.profile_list) == 1) and (
             self.profile_list[0] in ["MULTI_GAUSSIAN", "MULTI_GAUSSIAN_ELLIPSE_KAPPA"]
@@ -107,11 +106,10 @@ class MGEMass:
         else:
             if theta_E is None:
                 theta_E = self.einstein_radius(kwargs_list)
-            r_array = np.logspace(
-                np.log10(self.r_min),
-                np.log10(self.r_max),
-                self.n_rad
-            ) * theta_E
+            r_array = (
+                np.logspace(np.log10(self.r_min), np.log10(self.r_max), self.n_rad)
+                * theta_E
+            )
             radial_density = self.radial_convergence(r_array, kwargs_list)
             # if the profile decreases too fast, the MGE fit can be inaccurate,
             # limit the radial profile extent
@@ -119,12 +117,13 @@ class MGEMass:
             radial_density = radial_density[radial_density_filter]
             r_array = r_array[radial_density_filter]
             sol = mge.mge_fit_1d(
-                r_array, radial_density,
+                r_array,
+                radial_density,
                 ngauss=self.n_gauss,
                 linear=True,
                 plot=False,
                 quiet=True,
-                outer_slope=2
+                outer_slope=2,
             )
             amps, sigmas = sol.sol
             # convert from jampy to lenstronomy amps
@@ -134,18 +133,16 @@ class MGEMass:
 
 class MGELight:
     def __init__(self, profile_list, kwargs_mge=None):
-        """
-        Class to do the MGE fitting of the light profile, 
-        which is needed for the JAM modelling. 
-        It uses LightProfileAnalysis to obtain the radial surface brightness,
-        and mgefit.mge_fit_1d for the MGE, which is more accurate than 
-        the one implemented in lenstronomy.
-        :param profile_list: list of light profile names
+        """Class to do the MGE fitting of the light profile, which is needed for the JAM
+        modelling. It uses LightProfileAnalysis to obtain the radial surface brightness,
+        and mgefit.mge_fit_1d for the MGE, which is more accurate than the one
+        implemented in lenstronomy. :param profile_list: list of light profile names.
+
         :param kwargs_mge: dictionary with options for the MGE fitting:
             - n_comp: number of Gaussian components to fit (default: 20)
-            - r_min: minimum radius for the radial profile in units of the 
+            - r_min: minimum radius for the radial profile in units of the
               effective radius (default: 1e-4)
-            - r_max: maximum radius for the radial profile in units of the 
+            - r_max: maximum radius for the radial profile in units of the
               effective radius (default: 200)
             - n_radial_points: number of radial points to sample for the MGE fit
               (default: 200)
@@ -155,17 +152,20 @@ class MGELight:
         self.light_analysis = LightProfileAnalysis(self.light_model)
         if kwargs_mge is None:
             kwargs_mge = {}
-        self.n_gauss = kwargs_mge.get('n_comp', 20)
-        self.r_min = kwargs_mge.get('r_min', 1e-4)
-        self.r_max = kwargs_mge.get('r_max', 2e2)
-        self.n_rad = kwargs_mge.get('n_radial_points', 200)
+        self.n_gauss = kwargs_mge.get("n_comp", 20)
+        self.r_min = kwargs_mge.get("r_min", 1e-4)
+        self.r_max = kwargs_mge.get("r_max", 2e2)
+        self.n_rad = kwargs_mge.get("n_radial_points", 200)
 
     def radial_surface_brightness(self, r, kwargs_list):
         kwargs_list = self._parse_kwargs(kwargs_list)
         center_x = kwargs_list[0].get("center_x", 0.0)
         center_y = kwargs_list[0].get("center_y", 0.0)
         surf = self.light_analysis.radial_light_profile(
-            r, kwargs_list, center_x, center_y,
+            r,
+            kwargs_list,
+            center_x,
+            center_y,
         )
         return np.asarray(surf)
 
@@ -189,7 +189,9 @@ class MGELight:
         )
 
     def mge_fit(
-            self, kwargs_list, r_eff=None,
+        self,
+        kwargs_list,
+        r_eff=None,
     ):
         if (len(self.profile_list) == 1) and (
             self.profile_list[0] in ["MULTI_GAUSSIAN", "MULTI_GAUSSIAN_ELLIPSE"]
@@ -203,11 +205,10 @@ class MGELight:
         else:
             if r_eff is None:
                 r_eff = self.effective_radius(kwargs_list)
-            r_array = np.logspace(
-                np.log10(self.r_min),
-                np.log10(self.r_max),
-                self.n_rad
-            ) * r_eff
+            r_array = (
+                np.logspace(np.log10(self.r_min), np.log10(self.r_max), self.n_rad)
+                * r_eff
+            )
             radial_surf = self.radial_surface_brightness(r_array, kwargs_list)
             # if the profile decreases too fast, the MGE fit can be inaccurate,
             # limit the radial profile extent
@@ -215,7 +216,8 @@ class MGELight:
             radial_surf = radial_surf[radial_surf_filter]
             r_array = r_array[radial_surf_filter]
             sol = mge.mge_fit_1d(
-                r_array, radial_surf,
+                r_array,
+                radial_surf,
                 ngauss=self.n_gauss,
                 linear=True,
                 plot=False,
@@ -227,11 +229,9 @@ class MGELight:
         return amps, sigmas
 
     def _parse_kwargs(self, kwargs_list):
-        """Removes e1 and e2 kwargs if not present in the profile
-        :param kwargs_list: list of keyword arguments of light profiles
-        (see LightModule)
-        :return: parsed arguments.
-        """
+        """Removes e1 and e2 kwargs if not present in the profile :param kwargs_list:
+        list of keyword arguments of light profiles (see LightModule) :return: parsed
+        arguments."""
         kwargs_list_copy = deepcopy(kwargs_list)
         kwargs_list_new = []
         profiles = self.light_model.func_list
@@ -246,4 +246,3 @@ class MGELight:
                 kwargs["e2"] = 0.0
             kwargs_list_new.append(kwargs)
         return kwargs_list_new
-

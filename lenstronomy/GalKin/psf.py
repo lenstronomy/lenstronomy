@@ -59,7 +59,6 @@ class PSF(object):
         """
         return self._psf.convolution_kernel_grid(x, y)
 
-
     @property
     def psf_fwhm(self):
         """PSF FWHM in arcsec."""
@@ -198,10 +197,10 @@ class PSFMoffat(object):
         """Approximate Moffat as a multi-gaussian kernel."""
         r_array = np.linspace(0, 5 * self._fwhm, num=100)
         alpha = velocity_util.moffat_fwhm_alpha(self._fwhm, self._moffat_beta)
-        psf_array = Moffat().function(x=r_array, y=0, amp=1, alpha=alpha, beta=self._moffat_beta)
-        amps, sigmas, _ = mge.mge_1d(
-            r_array, psf_array, N=2
+        psf_array = Moffat().function(
+            x=r_array, y=0, amp=1, alpha=alpha, beta=self._moffat_beta
         )
+        amps, sigmas, _ = mge.mge_1d(r_array, psf_array, N=2)
         amps = np.asarray(amps)
         sigmas = np.asarray(sigmas)
         amps = amps / (2 * np.pi * sigmas**2)
@@ -239,18 +238,17 @@ class PSFMultiGaussian(object):
         x_grid = x_grid.reshape(num_pix, num_pix)
         y_grid = y_grid.reshape(num_pix, num_pix)
         for amp, sigma in zip(self._amplitudes, self._sigmas):
-            kernel += self._gaussian.function(
-                x_grid, y_grid, amp=amp, sigma=sigma
-            ) * delta_pix**2
+            kernel += (
+                self._gaussian.function(x_grid, y_grid, amp=amp, sigma=sigma)
+                * delta_pix**2
+            )
         kernel /= np.sum(kernel)
         return kernel
 
     def convolution_kernel_grid(self, x, y):
         kernel = np.zeros_like(x)
         for amp, sigma in zip(self._amplitudes, self._sigmas):
-            kernel += self._gaussian.function(
-                x, y, amp=amp, sigma=sigma
-            )
+            kernel += self._gaussian.function(x, y, amp=amp, sigma=sigma)
         kernel /= np.sum(kernel)
         return kernel
 
@@ -293,7 +291,9 @@ class PSFPixel(object):
         self._delta_pix = delta_pix
         self._supersampling_factor = supersampling_factor
         if fwhm is None:
-            r, p = _radial_profile_from_kernel(kernel, pixel_scale=delta_pix, n_bins=100)
+            r, p = _radial_profile_from_kernel(
+                kernel, pixel_scale=delta_pix, n_bins=100
+            )
             fwhm = _fwhm_from_radial_profile(r, p)
         self._fwhm = fwhm
 
@@ -351,7 +351,7 @@ def _radial_profile_from_kernel(kernel, pixel_scale, n_bins=100):
     x0 = (nx - 1) / 2.0
 
     y, x = np.indices(kernel.shape)
-    r = np.sqrt((x - x0)**2 + (y - y0)**2) * pixel_scale
+    r = np.sqrt((x - x0) ** 2 + (y - y0) ** 2) * pixel_scale
 
     r_max = r.max()
     bins = np.linspace(0.0, r_max, n_bins + 1)

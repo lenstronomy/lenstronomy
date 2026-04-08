@@ -62,15 +62,11 @@ class TestJAMWrapperBase(object):
         self.kwargs_lens_mass = [{"theta_E": 1.0, "gamma": 2.1}]
         self.kwargs_anisotropy = {"beta": 0.3}
 
-        light_mge = MGELight(kwargs_model_galkin["light_profile_list"], {'n_comp': 50})
-        amp_l, sigma_l = light_mge.mge_fit(
-            self.kwargs_light
-        )
+        light_mge = MGELight(kwargs_model_galkin["light_profile_list"], {"n_comp": 50})
+        amp_l, sigma_l = light_mge.mge_fit(self.kwargs_light)
         self.kwargs_light_mge = [{"amp": amp_l, "sigma": sigma_l}]
-        mass_mge = MGEMass(kwargs_model_galkin["mass_profile_list"], {'n_comp': 50})
-        amp_m, sigma_m= mass_mge.mge_fit(
-            self.kwargs_lens_mass
-        )
+        mass_mge = MGEMass(kwargs_model_galkin["mass_profile_list"], {"n_comp": 50})
+        amp_m, sigma_m = mass_mge.mge_fit(self.kwargs_lens_mass)
         self.kwargs_mass_mge = [{"amp": amp_m, "sigma": sigma_m}]
 
     def test_dispersion_points_unconvolved(self):
@@ -163,15 +159,11 @@ class TestJAMWrapperBaseOM(object):
             kwargs_numerics=kwargs_numerics_lenstronomy,
             analytic_kinematics=False,
         )
-        light_mge = MGELight(kwargs_model_galkin["light_profile_list"], {'n_comp': 50})
-        amp_l, sigma_l = light_mge.mge_fit(
-            self.kwargs_light
-        )
+        light_mge = MGELight(kwargs_model_galkin["light_profile_list"], {"n_comp": 50})
+        amp_l, sigma_l = light_mge.mge_fit(self.kwargs_light)
         self.kwargs_light_mge = [{"amp": amp_l, "sigma": sigma_l}]
-        mass_mge = MGEMass(kwargs_model_galkin["mass_profile_list"], {'n_comp': 50})
-        amp_m, sigma_m = mass_mge.mge_fit(
-            self.kwargs_lens_mass
-        )
+        mass_mge = MGEMass(kwargs_model_galkin["mass_profile_list"], {"n_comp": 50})
+        amp_m, sigma_m = mass_mge.mge_fit(self.kwargs_lens_mass)
         self.kwargs_mass_mge = [{"amp": amp_m, "sigma": sigma_m}]
 
     def test_dispersion_points_om(self):
@@ -233,15 +225,11 @@ class TestJAMWrapperBaseAnalytical(object):
         self.kwargs_lens_mass = [{"Rs": self.a, "sigma0": sigma0}]
         self.kwargs_anisotropy = {}
 
-        light_mge = MGELight(kwargs_model_galkin["light_profile_list"], {'n_comp': 50})
-        amp_l, sigma_l = light_mge.mge_fit(
-            self.kwargs_light
-        )
+        light_mge = MGELight(kwargs_model_galkin["light_profile_list"], {"n_comp": 50})
+        amp_l, sigma_l = light_mge.mge_fit(self.kwargs_light)
         self.kwargs_light_mge = [{"amp": amp_l, "sigma": sigma_l}]
-        mass_mge = MGEMass(kwargs_model_galkin["mass_profile_list"], {'n_comp': 50})
-        amp_m, sigma_m = mass_mge.mge_fit(
-            self.kwargs_lens_mass
-        )
+        mass_mge = MGEMass(kwargs_model_galkin["mass_profile_list"], {"n_comp": 50})
+        amp_m, sigma_m = mass_mge.mge_fit(self.kwargs_lens_mass)
         self.kwargs_mass_mge = [{"amp": amp_m, "sigma": sigma_m}]
 
     def test_dispersion_points_analytical(self):
@@ -354,15 +342,11 @@ class TestJAMWrapperBaseAxiSph(object):
             kwargs_numerics=kwargs_numerics_lenstronomy,
             analytic_kinematics=False,
         )
-        light_mge = MGELight(kwargs_model_galkin["light_profile_list"], {'n_comp': 50})
-        amp_l, sigma_l = light_mge.mge_fit(
-            self.kwargs_light
-        )
+        light_mge = MGELight(kwargs_model_galkin["light_profile_list"], {"n_comp": 50})
+        amp_l, sigma_l = light_mge.mge_fit(self.kwargs_light)
         self.kwargs_light_mge = [{"amp": amp_l, "sigma": sigma_l}]
-        mass_mge = MGEMass(kwargs_model_galkin["mass_profile_list"], {'n_comp': 50})
-        amp_m, sigma_m = mass_mge.mge_fit(
-            self.kwargs_lens_mass
-        )
+        mass_mge = MGEMass(kwargs_model_galkin["mass_profile_list"], {"n_comp": 50})
+        amp_m, sigma_m = mass_mge.mge_fit(self.kwargs_lens_mass)
         self.kwargs_mass_mge = [{"amp": amp_m, "sigma": sigma_m}]
 
     def test_dispersion_points_unconvolved(self):
@@ -462,15 +446,11 @@ class TestJAMWrapperBaseIsoAxiCyl(object):
             analytic_kinematics=False,
         )
 
-        light_mge = MGELight(kwargs_model_galkin["light_profile_list"], {'n_comp': 50})
-        amp_l, sigma_l = light_mge.mge_fit(
-            self.kwargs_light
-        )
+        light_mge = MGELight(kwargs_model_galkin["light_profile_list"], {"n_comp": 50})
+        amp_l, sigma_l = light_mge.mge_fit(self.kwargs_light)
         self.kwargs_light_mge = [{"amp": amp_l, "sigma": sigma_l}]
-        mass_mge = MGEMass(kwargs_model_galkin["mass_profile_list"], {'n_comp': 50})
-        amp_m, sigma_m = mass_mge.mge_fit(
-            self.kwargs_lens_mass
-        )
+        mass_mge = MGEMass(kwargs_model_galkin["mass_profile_list"], {"n_comp": 50})
+        amp_m, sigma_m = mass_mge.mge_fit(self.kwargs_lens_mass)
         self.kwargs_mass_mge = [{"amp": amp_m, "sigma": sigma_m}]
 
     def test_dispersion_points_unconvolved(self):

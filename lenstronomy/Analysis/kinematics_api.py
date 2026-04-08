@@ -42,7 +42,7 @@ class KinematicsAPI(object):
         sampling_number=1000,
         num_kin_sampling=1000,
         num_psf_sampling=100,
-        kinematics_backend='jampy',
+        kinematics_backend="jampy",
         axial_symmetry="spherical",
     ):
         """Initialize the class with the lens model and cosmology.
@@ -146,22 +146,22 @@ class KinematicsAPI(object):
         self._num_kin_sampling = num_kin_sampling
         self._num_psf_sampling = num_psf_sampling
 
-        if kinematics_backend == 'jampy':
+        if kinematics_backend == "jampy":
             if MGE_mass is None:
                 MGE_mass = True
             elif MGE_mass is False:
-                raise ValueError('MGE_mass must be True for the jampy backend')
+                raise ValueError("MGE_mass must be True for the jampy backend")
             # true if the light profile is already multi-gaussian
-            multi_gauss_light_profile = (
-                    (len(self._lens_light_model_list) == 1) and
-                    (self._lens_light_model_list[0] in ["MULTI_GAUSSIAN", "MULTI_GAUSSIAN_ELLIPSE"])
+            multi_gauss_light_profile = (len(self._lens_light_model_list) == 1) and (
+                self._lens_light_model_list[0]
+                in ["MULTI_GAUSSIAN", "MULTI_GAUSSIAN_ELLIPSE"]
             )
             # must use MGE, either through MGE decomposition or provided as a profile
             if MGE_light is None:
                 MGE_light = True
             elif (MGE_light is False) and (multi_gauss_light_profile is False):
-                raise ValueError('MGE_light must be True for the jampy backend')
-        elif kinematics_backend == 'galkin':
+                raise ValueError("MGE_light must be True for the jampy backend")
+        elif kinematics_backend == "galkin":
             if MGE_light is None:
                 MGE_light = False
             if MGE_mass is None:
@@ -175,9 +175,7 @@ class KinematicsAPI(object):
                     "Only the JamPy backend is currently supported for axisymmetric JAM models."
                 )
         if axial_symmetry not in ["spherical", "axi_sph", "axi_cyl"]:
-            raise ValueError(
-                f"Axial symmetry option {axial_symmetry} not recognized."
-            )
+            raise ValueError(f"Axial symmetry option {axial_symmetry} not recognized.")
         if analytic_kinematics and (kinematics_backend == "jampy"):
             raise ValueError(
                 "Analytic kinematics not supported with the jampy backend."
@@ -224,8 +222,8 @@ class KinematicsAPI(object):
         :param theta_E: Einstein radius (optional)
         :param gamma: power-law slope (optional)
         :param kappa_ext: external convergence (optional)
-        :param inclination: inclination angle of the galaxy in degrees
-            for axisymmetric deprojection
+        :param inclination: inclination angle of the galaxy in degrees for axisymmetric
+            deprojection
         :return: velocity dispersion [km/s]
         """
         jam_model, kwargs_profile, kwargs_light = self.jam_model_settings(
@@ -547,10 +545,14 @@ class KinematicsAPI(object):
                 else:
                     kwargs_lens_i = deepcopy(kwargs_lens[i])
                     mass_profile = self.LensModel.lens_model.func_list[i]
-                    if ("e1" in kwargs_lens_i) and ("e1" not in mass_profile.param_names):
+                    if ("e1" in kwargs_lens_i) and (
+                        "e1" not in mass_profile.param_names
+                    ):
                         kwargs_lens_i.pop("e1")
                         kwargs_lens_i.pop("e2")
-                    elif ("e1" in mass_profile.param_names) and (self.axial_symmetry == "spherical"):
+                    elif ("e1" in mass_profile.param_names) and (
+                        self.axial_symmetry == "spherical"
+                    ):
                         kwargs_lens_i["e1"] = 0.0
                         kwargs_lens_i["e2"] = 0.0
                 kwargs_profile.append(kwargs_lens_i)
@@ -691,16 +693,16 @@ class KinematicsAPI(object):
             rendering on the IFU
         :return: updated settings
         """
-        if self.kinematics_backend == 'jampy':
+        if self.kinematics_backend == "jampy":
             if MGE_mass is None:
                 MGE_mass = True
             elif MGE_mass is False:
-                raise ValueError('MGE_mass must be True for the jampy backend')
+                raise ValueError("MGE_mass must be True for the jampy backend")
             if MGE_light is None:
                 MGE_light = True
             elif MGE_light is False:
-                raise ValueError('MGE_light must be True for the jampy backend')
-        elif self.kinematics_backend == 'galkin':
+                raise ValueError("MGE_light must be True for the jampy backend")
+        elif self.kinematics_backend == "galkin":
             if MGE_light is None:
                 MGE_light = False
             if MGE_mass is None:
@@ -760,10 +762,14 @@ class KinematicsAPI(object):
                 light_profile_list.append(light_model)
                 light_profile = self.LensLightModel.func_list[i]
                 kwargs_lens_light_i = deepcopy(kwargs_lens_light[i])
-                if ("e1" in kwargs_lens_light_i) and ("e1" not in light_profile.param_names):
+                if ("e1" in kwargs_lens_light_i) and (
+                    "e1" not in light_profile.param_names
+                ):
                     kwargs_lens_light_i.pop("e1")
                     kwargs_lens_light_i.pop("e2")
-                elif ("e1" in light_profile.param_names) and (self.axial_symmetry == "spherical"):
+                elif ("e1" in light_profile.param_names) and (
+                    self.axial_symmetry == "spherical"
+                ):
                     kwargs_lens_light_i["e1"] = 0.0
                     kwargs_lens_light_i["e2"] = 0.0
                 kwargs_light.append(kwargs_lens_light_i)

@@ -43,14 +43,14 @@ class TestGalkinObservation(object):
         obs_slit = GalkinObservation(
             kwargs_aperture=self.kwargs_aperture_slit,
             kwargs_psf=self.kwargs_psf_gauss,
-            backend='galkin'
+            backend="galkin",
         )
         assert obs_slit.delta_pix == 0.1
 
         obs_grid = GalkinObservation(
             kwargs_aperture=self.kwargs_aperture_grid,
             kwargs_psf=self.kwargs_psf_gauss,
-            backend='galkin'
+            backend="galkin",
         )
         assert obs_grid.delta_pix == self.grid_delta_pix
 
@@ -58,21 +58,21 @@ class TestGalkinObservation(object):
         obs_galkin = GalkinObservation(
             kwargs_aperture=self.kwargs_aperture_slit,
             kwargs_psf=self.kwargs_psf_gauss,
-            backend='galkin'
+            backend="galkin",
         )
         npt.assert_almost_equal(obs_galkin._aperture.padding_arcsec, 0.634, decimal=2)
 
         obs_jampy = GalkinObservation(
             kwargs_aperture=self.kwargs_aperture_slit,
             kwargs_psf=self.kwargs_psf_gauss,
-            backend='jampy'
+            backend="jampy",
         )
         assert obs_jampy._aperture.padding_arcsec == 0
 
         obs_pix = GalkinObservation(
             kwargs_aperture=self.kwargs_aperture_slit,
             kwargs_psf=self.kwargs_psf_pixel,
-            backend='jampy'
+            backend="jampy",
         )
         npt.assert_almost_equal(obs_pix._aperture.padding_arcsec, 0.127, decimal=2)
 
@@ -80,14 +80,14 @@ class TestGalkinObservation(object):
         obs_gauss = GalkinObservation(
             kwargs_aperture=self.kwargs_aperture_slit,
             kwargs_psf=self.kwargs_psf_gauss,
-            backend='galkin'
+            backend="galkin",
         )
         assert obs_gauss._default_supersampling_factor == 1
 
         obs_pix = GalkinObservation(
             kwargs_aperture=self.kwargs_aperture_slit,
             kwargs_psf=self.kwargs_psf_pixel,
-            backend='galkin'
+            backend="galkin",
         )
         assert obs_pix._default_supersampling_factor == 3
 
@@ -98,27 +98,19 @@ class TestGalkinObservation(object):
         obs_gauss = GalkinObservation(
             kwargs_aperture=self.kwargs_aperture_slit,
             kwargs_psf=self.kwargs_psf_gauss,
-            backend='galkin'
+            backend="galkin",
         )
 
-        data_gauss = convolve2d(
-            data,
-            kernel_gaussian(31, 0.1, 0.5),
-            mode='same'
-        )
+        data_gauss = convolve2d(data, kernel_gaussian(31, 0.1, 0.5), mode="same")
         obs_conv = obs_gauss.convolve(data)
         npt.assert_allclose(obs_conv, data_gauss, rtol=1e-3)
 
         obs_pix = GalkinObservation(
             kwargs_aperture=self.kwargs_aperture_grid,
             kwargs_psf=self.kwargs_psf_pixel,
-            backend='jampy'
+            backend="jampy",
         )
-        data_pix = convolve2d(
-            data,
-            self.pix_kernel,
-            mode='same'
-        )
+        data_pix = convolve2d(data, self.pix_kernel, mode="same")
         obs_conv = obs_pix.convolve(data, supersampling_factor=3)
         npt.assert_allclose(obs_conv, data_pix, rtol=1e-3)
 

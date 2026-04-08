@@ -163,13 +163,13 @@ class TestJAMWrapperSpherical(object):
             kwargs_cosmo=kwargs_cosmo,
         )
 
-        light_mge = MGELight(kwargs_model_galkin["light_profile_list"], {'n_comp': 50})
+        light_mge = MGELight(kwargs_model_galkin["light_profile_list"], {"n_comp": 50})
         amp_l, sigma_l = light_mge.mge_fit(
             self.kwargs_light,
         )
         self.kwargs_light_mge = [{"amp": amp_l, "sigma": sigma_l}]
-        mass_mge = MGEMass(kwargs_model_galkin["mass_profile_list"], {'n_comp': 50})
-        amp_m, sigma_m= mass_mge.mge_fit(
+        mass_mge = MGEMass(kwargs_model_galkin["mass_profile_list"], {"n_comp": 50})
+        amp_m, sigma_m = mass_mge.mge_fit(
             self.kwargs_lens_mass,
         )
         self.kwargs_mass_mge = [{"amp": amp_m, "sigma": sigma_m}]
@@ -415,12 +415,12 @@ class TestJAMWrapperAxiSph(object):
             analytic_kinematics=False,
         )
 
-        light_mge = MGELight(kwargs_model_galkin["light_profile_list"], {'n_comp': 50})
+        light_mge = MGELight(kwargs_model_galkin["light_profile_list"], {"n_comp": 50})
         amp_l, sigma_l = light_mge.mge_fit(
             [self.kwargs_light_spherical],
         )
         self.kwargs_light_mge = {"amp": amp_l, "sigma": sigma_l}
-        mass_mge = MGEMass(kwargs_model_galkin["mass_profile_list"], {'n_comp': 50})
+        mass_mge = MGEMass(kwargs_model_galkin["mass_profile_list"], {"n_comp": 50})
         amp_m, sigma_m = mass_mge.mge_fit(
             [self.kwargs_lens_mass_spherical],
         )
@@ -548,12 +548,12 @@ class TestJAMWrapperAxiCyl(object):
             analytic_kinematics=False,
         )
 
-        light_mge = MGELight(kwargs_model_galkin["light_profile_list"], {'n_comp': 50})
+        light_mge = MGELight(kwargs_model_galkin["light_profile_list"], {"n_comp": 50})
         amp_l, sigma_l = light_mge.mge_fit(
             [self.kwargs_light_spherical],
         )
         self.kwargs_light_mge = {"amp": amp_l, "sigma": sigma_l}
-        mass_mge = MGEMass(kwargs_model_galkin["mass_profile_list"], {'n_comp': 50})
+        mass_mge = MGEMass(kwargs_model_galkin["mass_profile_list"], {"n_comp": 50})
         amp_m, sigma_m = mass_mge.mge_fit(
             [self.kwargs_lens_mass_spherical],
         )

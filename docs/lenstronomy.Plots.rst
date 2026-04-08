@@ -36,10 +36,34 @@ lenstronomy.Plots.model\_plot module
     :undoc-members:
     :show-inheritance:
 
+lenstronomy.Plots.multi\_patch\_plot module
+-------------------------------------------
+
+.. automodule:: lenstronomy.Plots.multi_patch_plot
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+lenstronomy.Plots.plot\_quasar\_images module
+---------------------------------------------
+
+.. automodule:: lenstronomy.Plots.plot_quasar_images
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 lenstronomy.Plots.plot\_util module
 -----------------------------------
 
 .. automodule:: lenstronomy.Plots.plot_util
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+lenstronomy.Plots.tracer\_plot module
+-------------------------------------
+
+.. automodule:: lenstronomy.Plots.tracer_plot
     :members:
     :undoc-members:
     :show-inheritance:

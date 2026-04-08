@@ -8,11 +8,12 @@ class KinBin(object):
     """Class that summarizes the binned kinematic data.
 
     The KinBin() class is initialized with :
-     - The information about the bins (bin values, and bin covariances, which pixels belong to which bin):
-    bin_data, bin_cov, bin_mask.
-     - The information about the associated intial shape of the unbinned kinematic map: bin_mask gives the index of
-    corresponding bin for each pixel), and ra_at_xy_0,dec_at_xy_0,transform_pix2angle,ra_shift,dec_shift are the usual
-    PixelGrid characteritics.
+
+    - The information about the bins (bin values, and bin covariances, which pixels belong to which bin):
+      bin_data, bin_cov, bin_mask.
+    - The information about the associated intial shape of the unbinned kinematic map: bin_mask gives the index of
+      corresponding bin for each pixel), and ra_at_xy_0,dec_at_xy_0,transform_pix2angle,ra_shift,dec_shift are the usual
+      PixelGrid characteritics.
     """
 
     def __init__(
@@ -31,7 +32,7 @@ class KinBin(object):
         :param bin_data: list, kinematic value of each bin, ordered by bin index.
         :param bin_cov: 2D array (nbins x nbins), vrms covariance matrix associated to each bin, ordered by bin index
         :param bin_mask: 2D array, mapping from the unbinned image to the binned one, each pixel value is the
-         corresponding bin index.
+            corresponding bin index.
         :param ra_at_xy_0: float, ra coordinate at pixel (0,0) (unbinned image)
         :param dec_at_xy_0: float, dec coordinate at pixel (0,0) (unbinned image)
         :param transform_pix2angle: 2x2 array, mapping of pixel (unbinned image) to coordinate

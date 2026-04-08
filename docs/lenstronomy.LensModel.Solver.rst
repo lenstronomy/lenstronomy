@@ -4,6 +4,14 @@ lenstronomy\.LensModel\.Solver package
 Submodules
 ----------
 
+lenstronomy\.LensModel\.Solver\.epl\_shear\_solver module
+---------------------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Solver.epl_shear_solver
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 lenstronomy\.LensModel\.Solver\.lens\_equation\_solver module
 -------------------------------------------------------------
 

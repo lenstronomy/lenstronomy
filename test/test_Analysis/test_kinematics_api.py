@@ -198,9 +198,7 @@ class TestKinematicsAPI(object):
         assert kin_api_galkin._MGE_mass is False
         assert kin_api_galkin._MGE_light is False
         kin_api_galkin.kinematics_modeling_settings(
-            anisotropy_model,
-            MGE_mass=True,
-            MGE_light=True
+            anisotropy_model, MGE_mass=True, MGE_light=True
         )
         assert kin_api_galkin._MGE_mass is True
         assert kin_api_galkin._MGE_light is True

@@ -108,7 +108,8 @@ class TestApertureTypesSelect(object):
         assert bool_select is True
         assert pix_id == 0
         bool_select, pix_id = aperture.aperture_select(
-            -1, -1,
+            -1,
+            -1,
         )
         assert bool_select is False
         assert pix_id is None

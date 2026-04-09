@@ -545,12 +545,7 @@ class KinematicsAPI(object):
                 else:
                     kwargs_lens_i = deepcopy(kwargs_lens[i])
                     mass_profile = self.LensModel.lens_model.func_list[i]
-                    if ("e1" in kwargs_lens_i) and (
-                        "e1" not in mass_profile.param_names
-                    ):
-                        kwargs_lens_i.pop("e1")
-                        kwargs_lens_i.pop("e2")
-                    elif ("e1" in mass_profile.param_names) and (
+                    if ("e1" in mass_profile.param_names) and (
                         self.axial_symmetry == "spherical"
                     ):
                         kwargs_lens_i["e1"] = 0.0
@@ -645,7 +640,7 @@ class KinematicsAPI(object):
     def kinematics_modeling_settings(
         self,
         anisotropy_model,
-        kwargs_numerics_galkin,
+        kwargs_numerics_galkin=None,
         analytic_kinematics=False,
         Hernquist_approx=False,
         MGE_light=False,
@@ -656,7 +651,7 @@ class KinematicsAPI(object):
         num_kin_sampling=1000,
         num_psf_sampling=100,
     ):
-        """Return the settings for the kinematic modeling.
+        """Modify the settings for the kinematic modeling.
 
         :param anisotropy_model: type of stellar anisotropy model. See details in
             MamonLokasAnisotropy() class of lenstronomy.GalKin.anisotropy
@@ -707,18 +702,7 @@ class KinematicsAPI(object):
                 MGE_light = False
             if MGE_mass is None:
                 MGE_mass = False
-        else:
-            raise ValueError('backend must be either "jampy" or "galkin"')
 
-        if self.axial_symmetry in ["axi_sph", "axi_cyl"]:
-            if self.kinematics_backend != "jampy":
-                raise ValueError(
-                    "Only the JamPy backend is currently supported for axisymmetric JAM models."
-                )
-        if self.axial_symmetry not in ["spherical", "axi_sph", "axi_cyl"]:
-            raise ValueError(
-                f"Axial symmetry option {self.axial_symmetry} not recognized."
-            )
         if analytic_kinematics and (self.kinematics_backend == "jampy"):
             raise ValueError(
                 "Analytic kinematics not supported with the jampy backend."
@@ -762,12 +746,7 @@ class KinematicsAPI(object):
                 light_profile_list.append(light_model)
                 light_profile = self.LensLightModel.func_list[i]
                 kwargs_lens_light_i = deepcopy(kwargs_lens_light[i])
-                if ("e1" in kwargs_lens_light_i) and (
-                    "e1" not in light_profile.param_names
-                ):
-                    kwargs_lens_light_i.pop("e1")
-                    kwargs_lens_light_i.pop("e2")
-                elif ("e1" in light_profile.param_names) and (
+                if ("e1" in light_profile.param_names) and (
                     self.axial_symmetry == "spherical"
                 ):
                     kwargs_lens_light_i["e1"] = 0.0

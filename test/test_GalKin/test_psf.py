@@ -79,6 +79,57 @@ class TestPSF(object):
         # approximated pixelated psf FWHM
         npt.assert_allclose(psf.psf_fwhm, self.fwhm, rtol=1e-1)
 
+    def test_moffat_multi_gaussian_approx(self):
+        moffat = PSF(psf_type="MOFFAT", fwhm=1, moffat_beta=2)
+        moffat_kernel = moffat.convolution_kernel(delta_pix=0.1, num_pix=31)
+
+        multi_gauss = PSF(
+            psf_type="MULTI_GAUSSIAN",
+            amplitudes=moffat.psf_multi_gauss_amplitudes,
+            sigmas=moffat.psf_multi_gauss_sigmas,
+        )
+        multi_gauss_kernel = multi_gauss.convolution_kernel(delta_pix=0.1, num_pix=31)
+        npt.assert_allclose(multi_gauss_kernel, moffat_kernel, rtol=1e-2, atol=1e-4)
+
+    def test_psf_props(self):
+        psf = PSF(psf_type="GAUSSIAN", fwhm=1)
+        assert psf.psf_fwhm == 1
+        assert psf.psf_multi_gauss_amplitudes == 1
+        npt.assert_allclose(psf.psf_multi_gauss_sigmas, util.fwhm2sigma(1), rtol=1e-3)
+
+        psf = PSF(psf_type="MOFFAT", fwhm=1, moffat_beta=0.3)
+        assert psf.psf_fwhm == 1
+        npt.assert_almost_equal(
+            psf.psf_multi_gauss_amplitudes,
+            [0.00000e+00, 4.08999e-04, 1.61160e-02, 2.29624e-02, 9.60513e-01],
+            decimal=5
+        )
+        npt.assert_almost_equal(
+            psf.psf_multi_gauss_sigmas,
+            [0.02817, 0.07937, 0.22361, 0.62996, 1.77477],
+            decimal=5
+        )
+
+        psf = PSF(
+            psf_type="MULTI_GAUSSIAN",
+            amplitudes=np.array([0.6, 0.4]),
+            sigmas=np.array([0.3, 0.8]),
+        )
+        npt.assert_allclose(psf.psf_fwhm, 0.745, rtol=1e-1)
+        npt.assert_almost_equal(psf.psf_multi_gauss_amplitudes, [0.6, 0.4], decimal=5)
+        npt.assert_almost_equal(psf.psf_multi_gauss_sigmas, [0.3, 0.8], decimal=5)
+
+        psf = PSF(
+            psf_type="PIXEL",
+            kernel=self.gaussian_kernel,
+            delta_pix=0.3,
+            supersampling_factor=2,
+        )
+        npt.assert_allclose(psf.psf_fwhm, self.fwhm, rtol=1e-1)
+        assert psf.psf_multi_gauss_amplitudes is None
+        assert psf.psf_multi_gauss_sigmas is None
+        assert psf._psf.supersampling_factor == 2
+
     def test_fwhm_from_radial_profile(self):
         r = np.linspace(0, 3, 100)
         p = Gaussian().function(r, y=0, amp=1, sigma=self.sigma, center_x=0, center_y=0)

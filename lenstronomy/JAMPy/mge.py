@@ -126,7 +126,7 @@ class MGEMass:
                 outer_slope=2,
             )
             amps, sigmas = sol.sol
-            # convert from jampy to lenstronomy amps
+            # convert from jampy (2D) to lenstronomy (1D) amps
             amps *= np.sqrt(2 * np.pi) * sigmas
         return amps, sigmas
 
@@ -224,7 +224,7 @@ class MGELight:
                 quiet=True,
             )
             amps, sigmas = sol.sol
-            # convert from jampy to lenstronomy amps
+            # convert from jampy (2D) to lenstronomy (1D) amps
             amps *= np.sqrt(2 * np.pi) * sigmas
         return amps, sigmas
 

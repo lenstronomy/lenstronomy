@@ -625,9 +625,11 @@ class GeneralAperture(ApertureBase):
             raise ValueError(
                 "Supersampling factor cannot be greater than 1 for general aperture."
             )
-        return super(GeneralAperture, self).aperture_downsample(
-            aperture_samples, supersampling_factor=1
+        aperture_samples_bin = downsample_values_to_bins(
+            aperture_samples,
+            self._bins,
         )
+        return aperture_samples_bin
 
 
 def general_aperture_select(ra, dec, x_cords, y_cords, delta_pix=0.1):

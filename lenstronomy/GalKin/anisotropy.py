@@ -140,7 +140,7 @@ class Const(object):
 
     @staticmethod
     def jampy_params(beta):
-        return beta
+        return np.minimum(beta, 0.999)  # Jampy requires beta < 1
 
 
 @export
@@ -232,7 +232,7 @@ class Radial(object):
 
     @staticmethod
     def jampy_params():
-        return 1.0
+        return 0.999  # Jampy requires beta < 1
 
 
 @export
@@ -522,7 +522,7 @@ class Logistic(object):
         """
         return beta_0 + (beta_inf - beta_0) / (1 + (r_ani / r) ** alpha)
 
-    def K(self, r, r_ani, beta_0, beta_inf, alpha):
+    def K(self, r, R, r_ani, beta_0, beta_inf, alpha):
         raise NotImplementedError("K(r) is not implemented for Logistic anisotropy.")
 
     def anisotropy_solution(self, r, r_ani, beta_0, beta_inf, alpha):

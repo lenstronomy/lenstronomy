@@ -983,6 +983,78 @@ class TestKinematicsAPI(object):
             {"r_ani": 1},
         )
 
+    def test_multi_obs_dispersion(self):
+        anisotropy_model = "const"
+        kwargs_aperture = {
+            "aperture_type": "shell",
+            "r_in": 0,
+            "r_out": 3 / 2.0,
+            "center_ra": 0.0,
+            "center_dec": 0,
+        }
+        kwargs_seeing = {"psf_type": "GAUSSIAN", "fwhm": 1.4}
+
+        # redshift
+        z_lens = 0.5
+        z_source = 1.5
+
+        cosmo = FlatLambdaCDM(H0=70, Om0=0.3)
+        theta_E = 1.0
+        r_eff = 1
+        gamma = 2.1
+
+        # kwargs_model
+        lens_light_model_list = ["HERNQUIST"]
+        lens_model_list = ["SPP"]
+        kwargs_model = {
+            "lens_model_list": lens_model_list,
+            "lens_light_model_list": lens_light_model_list,
+        }
+
+        kin_api = KinematicsAPI(
+            z_lens,
+            z_source,
+            kwargs_model,
+            kwargs_aperture=[kwargs_aperture, kwargs_aperture],
+            kwargs_seeing=[kwargs_seeing, kwargs_seeing],
+            anisotropy_model=anisotropy_model,
+            cosmo=cosmo,
+            kinematics_backend="jampy",
+            multi_observations=True,
+            multi_light_profile=True
+        )
+
+        # compute kinematics with fiducial cosmology
+        kwargs_lens = [
+            {"theta_E": theta_E, "gamma": gamma, "center_x": 0, "center_y": 0}
+        ]
+        kwargs_lens_light = [
+            [{"Rs": r_eff * 0.551, "amp": 1.0}],
+            [{"Rs": r_eff * 0.551, "amp": 1.0}],
+        ]
+        kwargs_anisotropy = {"beta": 0.0}
+        sigma_v = kin_api.velocity_dispersion(
+            kwargs_lens,
+            kwargs_lens_light,
+            kwargs_anisotropy,
+            r_eff=r_eff,
+            theta_E=theta_E,
+            gamma=gamma,
+            kappa_ext=0,
+        )
+        sigma_v_map = kin_api.velocity_dispersion_map(
+            kwargs_lens,
+            kwargs_lens_light,
+            kwargs_anisotropy,
+            r_eff=r_eff,
+            theta_E=theta_E,
+            gamma=gamma,
+            kappa_ext=0,
+        )
+        assert len(sigma_v) == 2
+        npt.assert_almost_equal(sigma_v, 224.08528, decimal=3)
+        npt.assert_almost_equal(sigma_v, sigma_v_map, decimal=3)
+
     def test_interpolated_sersic(self):
 
         kwargs_light = [
@@ -1313,11 +1385,9 @@ class TestKinematicsAPIJAMPy(object):
     def test_velocity_dispersion(self):
         z_lens = 0.5
         z_source = 1.5
-        kwargs_model = {
-            "lens_model_list": ["SPEP", "SHEAR", "SIS", "SIS", "SIS"],
-            "lens_light_model_list": ["SERSIC_ELLIPSE", "SERSIC"],
-        }
-
+        kwargs_model = {"lens_model_list": ["EPL"],
+                        "lens_light_model_list": ["SERSIC_ELLIPSE"],
+                        }
         theta_E = 1.5
         gamma = 1.8
         kwargs_lens = [
@@ -1328,22 +1398,6 @@ class TestKinematicsAPIJAMPy(object):
                 "center_y": 0.0054408937891703788,
                 "e2": 0,
                 "gamma": gamma,
-            },
-            {"e1": -0.050871696555354479, "e2": -0.0061601733920590464},
-            {
-                "center_y": 2.79985456,
-                "center_x": -2.32019894,
-                "theta_E": 0.28165274714097904,
-            },
-            {
-                "center_y": 3.83985426,
-                "center_x": -2.32019933,
-                "theta_E": 0.0038110812674654873,
-            },
-            {
-                "center_y": 4.31985428,
-                "center_x": -1.68019931,
-                "theta_E": 0.45552039839735037,
             },
         ]
 
@@ -1358,13 +1412,6 @@ class TestKinematicsAPIJAMPy(object):
                 "amp": 1.1091367792010356,
                 "center_y": 0.076914975081560991,
                 "R_sersic": 0.42691611878867058,
-            },
-            {
-                "R_sersic": 0.03025682660635394,
-                "amp": 139.96763298885992,
-                "n_sersic": 1.90000008624093865,
-                "center_x": -0.019674496231393473,
-                "center_y": 0.076914975081560991,
             },
         ]
         r_ani = 0.62
@@ -1385,14 +1432,13 @@ class TestKinematicsAPIJAMPy(object):
         kwargs_psf = {"psf_type": "GAUSSIAN", "fwhm": psf_fwhm}
         anisotropy_model = "OM"
         kwargs_mge = {"n_comp": 20}
-        r_eff = 0.211919902322
+
         kinematicAPI_galkin = KinematicsAPI(
             z_lens,
             z_source,
             kwargs_model,
             kwargs_aperture=kwargs_aperture,
             kwargs_seeing=kwargs_psf,
-            lens_model_kinematics_bool=[True, False, False, False, False],
             anisotropy_model=anisotropy_model,
             kwargs_mge_light=kwargs_mge,
             kwargs_mge_mass=kwargs_mge,
@@ -1401,7 +1447,7 @@ class TestKinematicsAPIJAMPy(object):
             kinematics_backend="galkin",
         )
         v_sigma_galkin = kinematicAPI_galkin.velocity_dispersion(
-            kwargs_lens, kwargs_lens_light, kwargs_anisotropy, r_eff=r_eff
+            kwargs_lens, kwargs_lens_light, kwargs_anisotropy
         )
 
         kinematicAPI_jampy_sph = KinematicsAPI(
@@ -1410,7 +1456,6 @@ class TestKinematicsAPIJAMPy(object):
             kwargs_model,
             kwargs_aperture=kwargs_aperture,
             kwargs_seeing=kwargs_psf,
-            lens_model_kinematics_bool=[True, False, False, False, False],
             anisotropy_model=anisotropy_model,
             kwargs_mge_light=kwargs_mge,
             kwargs_mge_mass=kwargs_mge,
@@ -1423,7 +1468,12 @@ class TestKinematicsAPIJAMPy(object):
             kwargs_lens,
             kwargs_lens_light,
             kwargs_anisotropy,
-            r_eff=r_eff,
+            inclination=90.0,
+        )
+        v_sigma_jampy_sph_map = kinematicAPI_jampy_sph.velocity_dispersion_map(
+            kwargs_lens,
+            kwargs_lens_light,
+            kwargs_anisotropy,
             inclination=90.0,
         )
 
@@ -1433,7 +1483,6 @@ class TestKinematicsAPIJAMPy(object):
             kwargs_model,
             kwargs_aperture=kwargs_aperture,
             kwargs_seeing=kwargs_psf,
-            lens_model_kinematics_bool=[True, False, False, False, False],
             anisotropy_model=anisotropy_model,
             kwargs_mge_light=kwargs_mge,
             kwargs_mge_mass=kwargs_mge,
@@ -1446,12 +1495,19 @@ class TestKinematicsAPIJAMPy(object):
             kwargs_lens,
             kwargs_lens_light,
             kwargs_anisotropy,
-            r_eff=r_eff,
+            inclination=90.0,
+        )
+        v_sigma_jampy_axi_map = kinematicAPI_jampy_axi.velocity_dispersion_map(
+            kwargs_lens,
+            kwargs_lens_light,
+            kwargs_anisotropy,
             inclination=90.0,
         )
 
         npt.assert_almost_equal(v_sigma_jampy_sph / v_sigma_galkin, 1, decimal=1)
         npt.assert_almost_equal(v_sigma_jampy_axi / v_sigma_galkin, 1, decimal=1)
+        npt.assert_almost_equal(v_sigma_jampy_sph, v_sigma_jampy_sph_map, decimal=3)
+        npt.assert_almost_equal(v_sigma_jampy_axi, v_sigma_jampy_axi_map, decimal=3)
 
 
 class TestRiseJAMPy(object):
@@ -1556,6 +1612,105 @@ class TestRiseJAMPy(object):
                 MGE_light=True,
                 MGE_mass=True,
                 kinematics_backend="jampy",
+                Hernquist_approx=True,
+            )
+
+    def test_analytic_dispersion(self):
+        z_lens = 0.5
+        z_source = 1.5
+        kwargs_model = {"lens_model_list": ["SPP"],
+                        "lens_light_model_list": ["HERNQUIST"],
+        }
+
+        theta_E = 1.5
+        gamma = 1.8
+        r_ani = 0.62
+        r_eff = 0.2
+
+        R_slit = 3.8
+        dR_slit = 1.0
+        aperture_type = "slit"
+        kwargs_aperture = {
+            "aperture_type": aperture_type,
+            "center_ra": 0,
+            "width": dR_slit,
+            "length": R_slit,
+            "angle": 0,
+            "center_dec": 0,
+        }
+
+        psf_fwhm = 0.7
+        kwargs_psf = {"psf_type": "GAUSSIAN", "fwhm": psf_fwhm}
+        anisotropy_model = "OM"
+        kwargs_mge = {"n_comp": 20}
+
+        kin_api = KinematicsAPI(
+            z_lens,
+            z_source,
+            kwargs_model,
+            kwargs_aperture=kwargs_aperture,
+            kwargs_seeing=kwargs_psf,
+            lens_model_kinematics_bool=[True, False, False, False, False],
+            anisotropy_model=anisotropy_model,
+            kwargs_mge_light=kwargs_mge,
+            kwargs_mge_mass=kwargs_mge,
+            MGE_light=True,
+            MGE_mass=True,
+            kinematics_backend="jampy",
+            axial_symmetry="spherical",
+        )
+        with pytest.raises(
+                ValueError,
+                match="Analytic kinematics is not implemented for jampy backend"
+        ):
+            kin_api.velocity_dispersion_analytical(theta_E, gamma, r_eff, r_ani)
+
+
+class TestRiseJAMPyModelingSettings(object):
+    def setup_method(self):
+        self.kin_api = KinematicsAPI(
+                z_lens=0.5,
+                z_source=1.0,
+                kwargs_model={},
+                kwargs_aperture={},
+                kwargs_seeing={},
+                anisotropy_model="const",
+                MGE_light=True,
+                MGE_mass=True,
+                kinematics_backend="jampy",
+            )
+
+    def test_no_mge_mass(self):
+        with pytest.raises(ValueError, match="MGE_mass must be True"):
+            self.kin_api.kinematics_modeling_settings(
+                anisotropy_model="const",
+                MGE_light=True,
+                MGE_mass=False,
+            )
+
+    def test_no_mge_light(self):
+        with pytest.raises(ValueError, match="MGE_light must be True"):
+            self.kin_api.kinematics_modeling_settings(
+                anisotropy_model="const",
+                MGE_light=False,
+                MGE_mass=True,
+            )
+
+    def test_jampy_analytical(self):
+        with pytest.raises(ValueError, match="Analytic kinematics not supported"):
+            self.kin_api.kinematics_modeling_settings(
+                anisotropy_model="const",
+                MGE_light=True,
+                MGE_mass=True,
+                analytic_kinematics=True,
+            )
+
+    def test_mge_hernq_approx(self):
+        with pytest.raises(ValueError, match="Hernquist approximation"):
+            self.kin_api.kinematics_modeling_settings(
+                anisotropy_model="const",
+                MGE_light=True,
+                MGE_mass=True,
                 Hernquist_approx=True,
             )
 

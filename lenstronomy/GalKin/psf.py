@@ -135,14 +135,16 @@ class PSFGaussian(object):
 class PSFMoffat(object):
     """Moffat PSF."""
 
-    def __init__(self, fwhm, moffat_beta):
+    def __init__(self, fwhm, moffat_beta, n_gauss_approx=10):
         """
 
         :param fwhm: full width at half maximum seeing condition
         :param moffat_beta: float, beta parameter of Moffat profile
+        :param n_gauss_approx: int, number of Gaussian components to use in a MGE for Jampy
         """
         self._fwhm = fwhm
         self._moffat_beta = moffat_beta
+        self._n_gauss_approx = n_gauss_approx
         self._multi_gauss_amps, self._multi_gauss_sigmas = self._moffat_multi_gaussian()
 
     def displace_psf(self, x, y):
@@ -195,15 +197,15 @@ class PSFMoffat(object):
 
     def _moffat_multi_gaussian(self):
         """Approximate Moffat as a multi-gaussian kernel."""
-        r_array = np.linspace(0, 5 * self._fwhm, num=100)
+        r_array = np.logspace(-2, np.log10(10 * self._fwhm), num=100)
         alpha = velocity_util.moffat_fwhm_alpha(self._fwhm, self._moffat_beta)
         psf_array = Moffat().function(
             x=r_array, y=0, amp=1, alpha=alpha, beta=self._moffat_beta
         )
-        amps, sigmas, _ = mge.mge_1d(r_array, psf_array, N=2)
+        amps, sigmas, _ = mge.mge_1d(r_array, psf_array, N=self._n_gauss_approx)
         amps = np.asarray(amps)
         sigmas = np.asarray(sigmas)
-        amps = amps / (2 * np.pi * sigmas**2)
+        amps = amps / amps.sum()
         return amps, sigmas
 
 

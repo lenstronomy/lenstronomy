@@ -49,7 +49,7 @@ class TestApertureTypesSelect(object):
         assert bool_select is True
         assert i == 1
 
-    def test_frame(self):
+    def test_frame_select(self):
         center_ra, center_dec = 0, 0
         width_outer = 1.2
         width_inner = 0.6
@@ -86,6 +86,30 @@ class TestApertureTypesSelect(object):
             angle=0,
         )
         assert bool_select is False
+
+    def test_general_aperture_select(self):
+        ra, dec = 1, 1
+        x_cords = y_cords = np.arange(10)
+        bool_select, pix_id = aperture_types.general_aperture_select(
+            ra, dec,
+            x_cords, y_cords,
+            delta_pix=0.5
+        )
+        assert bool_select is True
+        assert pix_id == 1
+
+    def test_general_aperture_select_binned(self):
+        ra, dec = 1, 1
+        x_cords = y_cords = np.arange(10)
+        bins = np.zeros_like(x_cords, dtype=int)
+        aperture = aperture_types.ApertureBase(
+            x_cords, y_cords, bins, delta_pix=0.5
+        )
+        bool_select, pix_id = aperture.aperture_select(
+            ra, dec,
+        )
+        assert bool_select is True
+        assert pix_id == 0
 
 
 class TestApertureTypesSample(object):
@@ -165,6 +189,9 @@ class TestApertureTypesSample(object):
         assert_allclose(ga.delta_pix, 0.2)
         # num_segments = max(bin)+1 = 1+1 = 2
         assert ga.num_segments == 2
+        # downsample
+        hr_map = x**2 + y**2
+        assert_allclose(ga.aperture_downsample(hr_map, 1), [0., 3.125], rtol=1e-3)
 
     def test_slit(self):
         # small slit length & width -> will create few points
@@ -306,6 +333,27 @@ class TestRaise(object):
         with pytest.raises(ValueError, match="The IFU grid is irregular"):
             aperture_types.IFUGrid(xg, yg)
 
+    def test_raise_ifu_grid_not_square_binned(self):
+        xg = np.array([[0.0, 0.0], [0.0, 1.0]])  # x size is 1
+        yg = np.array([[0.0, 0.0], [-0.5, 0.0]])  # y size is 0.5
+        bins = np.array([[0, 1], [0, -1]])
+        with pytest.raises(ValueError, match="The IFU grid is irregular"):
+            aperture_types.IFUBinned(xg, yg, bins)
+
+    def test_raise_general_sample_supersampled(self):
+        x = y = np.arange(10)
+        b = np.zeros_like(x, dtype=int)
+        aperture = aperture_types.GeneralAperture(x, y, b)
+        with pytest.raises(ValueError, match="Supersampling factor"):
+            aperture.aperture_sample(2)
+
+    def test_raise_general_downsample_supersampled(self):
+        x = y = np.arange(10)
+        b = np.zeros_like(x, dtype=int)
+        v = np.zeros_like(x, dtype=float)
+        aperture = aperture_types.GeneralAperture(x, y, b)
+        with pytest.raises(ValueError, match="Supersampling factor"):
+            aperture.aperture_downsample(v, 2)
 
 if __name__ == "__main__":
     pytest.main()

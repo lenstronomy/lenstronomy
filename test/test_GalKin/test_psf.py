@@ -101,13 +101,13 @@ class TestPSF(object):
         assert psf.psf_fwhm == 1
         npt.assert_almost_equal(
             psf.psf_multi_gauss_amplitudes,
-            [0.00000e+00, 4.08999e-04, 1.61160e-02, 2.29624e-02, 9.60513e-01],
-            decimal=5
+            [0.00000e00, 4.08999e-04, 1.61160e-02, 2.29624e-02, 9.60513e-01],
+            decimal=5,
         )
         npt.assert_almost_equal(
             psf.psf_multi_gauss_sigmas,
             [0.02817, 0.07937, 0.22361, 0.62996, 1.77477],
-            decimal=5
+            decimal=5,
         )
 
         psf = PSF(

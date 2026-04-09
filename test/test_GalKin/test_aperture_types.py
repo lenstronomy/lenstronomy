@@ -91,9 +91,7 @@ class TestApertureTypesSelect(object):
         ra, dec = 1, 1
         x_cords = y_cords = np.arange(10)
         bool_select, pix_id = aperture_types.general_aperture_select(
-            ra, dec,
-            x_cords, y_cords,
-            delta_pix=0.5
+            ra, dec, x_cords, y_cords, delta_pix=0.5
         )
         assert bool_select is True
         assert pix_id == 1
@@ -102,11 +100,10 @@ class TestApertureTypesSelect(object):
         ra, dec = 1, 1
         x_cords = y_cords = np.arange(10)
         bins = np.zeros_like(x_cords, dtype=int)
-        aperture = aperture_types.ApertureBase(
-            x_cords, y_cords, bins, delta_pix=0.5
-        )
+        aperture = aperture_types.ApertureBase(x_cords, y_cords, bins, delta_pix=0.5)
         bool_select, pix_id = aperture.aperture_select(
-            ra, dec,
+            ra,
+            dec,
         )
         assert bool_select is True
         assert pix_id == 0
@@ -191,7 +188,7 @@ class TestApertureTypesSample(object):
         assert ga.num_segments == 2
         # downsample
         hr_map = x**2 + y**2
-        assert_allclose(ga.aperture_downsample(hr_map, 1), [0., 3.125], rtol=1e-3)
+        assert_allclose(ga.aperture_downsample(hr_map, 1), [0.0, 3.125], rtol=1e-3)
 
     def test_slit(self):
         # small slit length & width -> will create few points
@@ -354,6 +351,7 @@ class TestRaise(object):
         aperture = aperture_types.GeneralAperture(x, y, b)
         with pytest.raises(ValueError, match="Supersampling factor"):
             aperture.aperture_downsample(v, 2)
+
 
 if __name__ == "__main__":
     pytest.main()

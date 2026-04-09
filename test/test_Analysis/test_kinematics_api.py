@@ -1021,7 +1021,7 @@ class TestKinematicsAPI(object):
             cosmo=cosmo,
             kinematics_backend="jampy",
             multi_observations=True,
-            multi_light_profile=True
+            multi_light_profile=True,
         )
 
         # compute kinematics with fiducial cosmology
@@ -1385,9 +1385,10 @@ class TestKinematicsAPIJAMPy(object):
     def test_velocity_dispersion(self):
         z_lens = 0.5
         z_source = 1.5
-        kwargs_model = {"lens_model_list": ["EPL"],
-                        "lens_light_model_list": ["SERSIC_ELLIPSE"],
-                        }
+        kwargs_model = {
+            "lens_model_list": ["EPL"],
+            "lens_light_model_list": ["SERSIC_ELLIPSE"],
+        }
         theta_E = 1.5
         gamma = 1.8
         kwargs_lens = [
@@ -1618,8 +1619,9 @@ class TestRiseJAMPy(object):
     def test_analytic_dispersion(self):
         z_lens = 0.5
         z_source = 1.5
-        kwargs_model = {"lens_model_list": ["SPP"],
-                        "lens_light_model_list": ["HERNQUIST"],
+        kwargs_model = {
+            "lens_model_list": ["SPP"],
+            "lens_light_model_list": ["HERNQUIST"],
         }
 
         theta_E = 1.5
@@ -1660,8 +1662,7 @@ class TestRiseJAMPy(object):
             axial_symmetry="spherical",
         )
         with pytest.raises(
-                ValueError,
-                match="Analytic kinematics is not implemented for jampy backend"
+            ValueError, match="Analytic kinematics is not implemented for jampy backend"
         ):
             kin_api.velocity_dispersion_analytical(theta_E, gamma, r_eff, r_ani)
 
@@ -1669,16 +1670,16 @@ class TestRiseJAMPy(object):
 class TestRiseJAMPyModelingSettings(object):
     def setup_method(self):
         self.kin_api = KinematicsAPI(
-                z_lens=0.5,
-                z_source=1.0,
-                kwargs_model={},
-                kwargs_aperture={},
-                kwargs_seeing={},
-                anisotropy_model="const",
-                MGE_light=True,
-                MGE_mass=True,
-                kinematics_backend="jampy",
-            )
+            z_lens=0.5,
+            z_source=1.0,
+            kwargs_model={},
+            kwargs_aperture={},
+            kwargs_seeing={},
+            anisotropy_model="const",
+            MGE_light=True,
+            MGE_mass=True,
+            kinematics_backend="jampy",
+        )
 
     def test_no_mge_mass(self):
         with pytest.raises(ValueError, match="MGE_mass must be True"):

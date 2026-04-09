@@ -72,8 +72,10 @@ class MGEMass:
 
     def _parse_kwargs(self, kwargs_list):
         """Removes e1 and e2 kwargs if not present in the profile :param kwargs_list:
-        list of keyword arguments of light profiles (see LightModule) :return: parsed
-        arguments."""
+
+        list of keyword arguments of light profiles (see LightModule)
+        :return: parsed arguments.
+        """
         kwargs_list_copy = deepcopy(kwargs_list)
         kwargs_list_new = []
         profiles = self.mass_model.lens_model.func_list
@@ -230,8 +232,10 @@ class MGELight:
 
     def _parse_kwargs(self, kwargs_list):
         """Removes e1 and e2 kwargs if not present in the profile :param kwargs_list:
-        list of keyword arguments of light profiles (see LightModule) :return: parsed
-        arguments."""
+
+        list of keyword arguments of light profiles (see LightModule)
+        :return: parsed arguments.
+        """
         kwargs_list_copy = deepcopy(kwargs_list)
         kwargs_list_new = []
         profiles = self.light_model.func_list

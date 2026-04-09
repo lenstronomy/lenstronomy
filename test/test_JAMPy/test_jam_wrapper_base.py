@@ -472,5 +472,52 @@ class TestJAMWrapperBaseIsoAxiCyl(object):
         npt.assert_allclose(sigma_v_jam, sigma_v_galkin, rtol=5e-2)
 
 
+class TestRaise(object):
+    def test_invalid_mass_profile(self):
+        kwargs_cosmo = {
+            "d_d": 1.0,
+            "d_s": 1.0,
+            "d_ds": 1.0,
+        }
+        kwargs_model_jampy = {
+            "mass_profile_list": ["INVALID_PROFILE"],
+            "light_profile_list": ["MULTI_GAUSSIAN"],
+            "anisotropy_model": "const",
+            "symmetry": "spherical",
+        }
+        with pytest.raises(ValueError, match="Jampy only support MULTI_GAUSSIAN"):
+            JAMWrapperBase(kwargs_model=kwargs_model_jampy, kwargs_cosmo=kwargs_cosmo)
+
+    def test_invalid_light_profile(self):
+        kwargs_cosmo = {
+            "d_d": 1.0,
+            "d_s": 1.0,
+            "d_ds": 1.0,
+        }
+        kwargs_model_jampy = {
+            "mass_profile_list": ["INVALID_PROFILE"],
+            "light_profile_list": ["MULTI_GAUSSIAN"],
+            "anisotropy_model": "const",
+            "symmetry": "spherical",
+        }
+        with pytest.raises(ValueError, match="Jampy only support MULTI_GAUSSIAN"):
+            JAMWrapperBase(kwargs_model=kwargs_model_jampy, kwargs_cosmo=kwargs_cosmo)
+
+    def test_invalid_symmetry(self):
+        kwargs_cosmo = {
+            "d_d": 1.0,
+            "d_s": 1.0,
+            "d_ds": 1.0,
+        }
+        kwargs_model_jampy = {
+            "mass_profile_list": ["MULTI_GAUSSIAN"],
+            "light_profile_list": ["MULTI_GAUSSIAN"],
+            "anisotropy_model": "const",
+            "symmetry": "invalid_symmetry",
+        }
+        with pytest.raises(ValueError, match="Invalid symmetry type"):
+            JAMWrapperBase(kwargs_model=kwargs_model_jampy, kwargs_cosmo=kwargs_cosmo)
+
+
 if __name__ == "__main__":
     pytest.main()

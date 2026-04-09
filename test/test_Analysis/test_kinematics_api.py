@@ -163,6 +163,77 @@ class TestKinematicsAPI(object):
         npt.assert_almost_equal(v_sigma_mge_lens / v_sigma, 1, decimal=1)
         npt.assert_almost_equal(v_sigma / v_sigma_hernquist, 1, decimal=1)
 
+    def test_mge_kinematic_settings(self):
+        z_lens = 0.5
+        z_source = 1.5
+        kwargs_model = {
+            "lens_model_list": ["SIS"],
+            "lens_light_model_list": ["HERNQUIST"],
+        }
+        anisotropy_model = "const"
+        kwargs_mge = {"n_comp": 20}
+        kin_api_galkin = KinematicsAPI(
+            z_lens,
+            z_source,
+            kwargs_model,
+            kwargs_aperture={},
+            kwargs_seeing={},
+            analytic_kinematics=False,
+            anisotropy_model=anisotropy_model,
+            MGE_light=None,
+            MGE_mass=None,
+            kwargs_mge_light=kwargs_mge,
+            kwargs_mge_mass=kwargs_mge,
+            sampling_number=1000,
+            kinematics_backend="galkin",
+        )
+        assert kin_api_galkin._MGE_mass is False
+        assert kin_api_galkin._MGE_light is False
+
+        kin_api_galkin.kinematics_modeling_settings(
+            anisotropy_model,
+            MGE_mass=None,
+            MGE_light=None,
+        )
+        assert kin_api_galkin._MGE_mass is False
+        assert kin_api_galkin._MGE_light is False
+        kin_api_galkin.kinematics_modeling_settings(
+            anisotropy_model,
+            MGE_mass=True,
+            MGE_light=True
+        )
+        assert kin_api_galkin._MGE_mass is True
+        assert kin_api_galkin._MGE_light is True
+
+        kin_api_jampy = KinematicsAPI(
+            z_lens,
+            z_source,
+            kwargs_model,
+            kwargs_aperture={},
+            kwargs_seeing={},
+            anisotropy_model=anisotropy_model,
+            MGE_light=None,
+            MGE_mass=None,
+            kwargs_mge_light=kwargs_mge,
+            kwargs_mge_mass=kwargs_mge,
+        )
+        assert kin_api_jampy._MGE_mass is True
+        assert kin_api_jampy._MGE_light is True
+        kin_api_jampy.kinematics_modeling_settings(
+            anisotropy_model,
+            MGE_mass=None,
+            MGE_light=None,
+        )
+        assert kin_api_jampy._MGE_mass is True
+        assert kin_api_jampy._MGE_light is True
+        kin_api_jampy.kinematics_modeling_settings(
+            anisotropy_model,
+            MGE_mass=True,
+            MGE_light=True,
+        )
+        assert kin_api_jampy._MGE_mass is True
+        assert kin_api_jampy._MGE_light is True
+
     def test_jam_settings(self):
         z_lens = 0.5
         z_source = 1.5

@@ -495,8 +495,8 @@ class TestRaise(object):
             "d_ds": 1.0,
         }
         kwargs_model_jampy = {
-            "mass_profile_list": ["INVALID_PROFILE"],
-            "light_profile_list": ["MULTI_GAUSSIAN"],
+            "mass_profile_list": ["MULTI_GAUSSIAN"],
+            "light_profile_list": ["INVALID_PROFILE"],
             "anisotropy_model": "const",
             "symmetry": "spherical",
         }

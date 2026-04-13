@@ -7,12 +7,12 @@ export, __all__ = exporter()
 
 
 class ApertureBase:
-    """
-    General aperture class. This is intended to be inherited to
-    define specific apertures. The aperture is defined by a set of
-    coordinates (x_grid, y_grid) to be sampled, and then binned according
-    to the bins matrix. The aperture can be supersampled and padded
-    for PSF convolution.
+    """General aperture class.
+
+    This is intended to be inherited to define specific apertures. The aperture is
+    defined by a set of coordinates (x_grid, y_grid) to be sampled, and then binned
+    according to the bins matrix. The aperture can be supersampled and padded for PSF
+    convolution.
     """
 
     def __init__(self, x_grid, y_grid, bins, delta_pix=0.1, padding_arcsec=0, angle=0):
@@ -34,11 +34,9 @@ class ApertureBase:
         self._bins = np.asarray(bins, dtype=int)
 
     def aperture_sample(self, supersampling_factor):
-        """
-        returns a grid of points within the aperture, with supersampling and padding
-        :param supersampling_factor: supersampling factor for the grid
-        :return: regular (x, y) meshgrid within the aperture to be sampled
-        """
+        """Returns a grid of points within the aperture, with supersampling and padding
+        :param supersampling_factor: supersampling factor for the grid :return: regular
+        (x, y) meshgrid within the aperture to be sampled."""
         padding = self.padding_pix(supersampling_factor)
         x_grid_sup, y_grid_sup = make_supersampled_grid(
             self._x_grid, self._y_grid, supersampling_factor, padding, self._angle
@@ -46,12 +44,10 @@ class ApertureBase:
         return x_grid_sup, y_grid_sup
 
     def aperture_downsample(self, aperture_samples, supersampling_factor):
-        """
-        downsamples the aperture to the desired bins
-        :param aperture_samples: map of values in a regular grid within the aperture
-        :param supersampling_factor: supersampling factor for the grid
-        :return: integrated values into num_segments
-        """
+        """Downsamples the aperture to the desired bins :param aperture_samples: map of
+        values in a regular grid within the aperture :param supersampling_factor:
+        supersampling factor for the grid :return: integrated values into
+        num_segments."""
         # remove padding
         padding = self.padding_pix(supersampling_factor)
         aperture_samples = _unpad_map(aperture_samples, padding)
@@ -67,12 +63,10 @@ class ApertureBase:
         return aperture_samples_bin
 
     def aperture_select(self, ra, dec):
-        """
-        test if a point is within the aperture, and return the bin id if it is
-        :param ra: angular coordinate of photon/ray
-        :param dec: angular coordinate of photon/ray
-        :return: bool, True if photon/ray is within the slit, False otherwise, and bin id
-        """
+        """Test if a point is within the aperture, and return the bin id if it is :param
+        ra: angular coordinate of photon/ray :param dec: angular coordinate of
+        photon/ray :return: bool, True if photon/ray is within the slit, False
+        otherwise, and bin id."""
         bins = self.bins.flatten()
         in_grid, grid_loc = general_aperture_select(
             ra, dec, self._x_grid, self._y_grid, self._delta_pix
@@ -90,6 +84,7 @@ class ApertureBase:
     @property
     def num_segments(self):
         """Number of segments with separate measurements of the velocity dispersion.
+
         :return: int
         """
         return int(np.max(self._bins)) + 1
@@ -199,17 +194,12 @@ def slit_select(ra, dec, length, width, center_ra=0, center_dec=0, angle=0):
 
 @export
 def make_slit_grid(delta_pix, length, width, center_ra=0, center_dec=0, angle=0):
-    """
-    creates a rectangular grid of points with an angle
-    :param delta_pix: size of the sub-pixels that samples the aperture for integration
-    :param length: length of slit
-    :param width: width of slit
-    :param center_ra: center of slit
-    :param center_dec: center of slit
-    :param angle: orientation angle of slit in radians,
-    angle=0 corresponds length in RA direction
-    :return: bool, True if photon/ray is within the slit, False otherwise
-    """
+    """Creates a rectangular grid of points with an angle :param delta_pix: size of the
+    sub-pixels that samples the aperture for integration :param length: length of slit
+    :param width: width of slit :param center_ra: center of slit :param center_dec:
+    center of slit :param angle: orientation angle of slit in radians, angle=0
+    corresponds length in RA direction :return: bool, True if photon/ray is within the
+    slit, False otherwise."""
     slit_x = np.arange((-length + delta_pix) / 2, length / 2, delta_pix)
     slit_y = np.arange((-width + delta_pix) / 2, width / 2, delta_pix)
     grid_x, grid_y = np.meshgrid(slit_x, slit_y)
@@ -726,13 +716,8 @@ def make_supersampled_grid(
 
 
 def _rotate(x, y, angle):
-    """
-    rotate coordinates in anti-clockwise direction
-    :param x: x coordinates
-    :param y: y coordinates
-    :param angle: angle to rotate
-    :return: rotated x, rotated y
-    """
+    """Rotate coordinates in anti-clockwise direction :param x: x coordinates :param y:
+    y coordinates :param angle: angle to rotate :return: rotated x, rotated y."""
     x_rot = np.cos(angle) * x - np.sin(angle) * y
     y_rot = np.sin(angle) * x + np.cos(angle) * y
     return x_rot, y_rot

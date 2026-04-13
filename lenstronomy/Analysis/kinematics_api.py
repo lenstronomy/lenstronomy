@@ -544,7 +544,8 @@ class KinematicsAPI(object):
                     kwargs_lens_i["grid_interp_y"] -= center_y_i
                 else:
                     kwargs_lens_i = {
-                        k: v for k, v in kwargs_lens[i].items()
+                        k: v
+                        for k, v in kwargs_lens[i].items()
                         if not k in ["center_x", "center_y"]
                     }
                     mass_profile = self.LensModel.lens_model.func_list[i]
@@ -749,7 +750,8 @@ class KinematicsAPI(object):
                 light_profile_list.append(light_model)
                 light_profile = self.LensLightModel.func_list[i]
                 kwargs_lens_light_i = {
-                    k: v for k, v in kwargs_lens_light[i].items()
+                    k: v
+                    for k, v in kwargs_lens_light[i].items()
                     if not k in ["center_x", "center_y"]
                 }
                 if ("e1" in light_profile.param_names) and (

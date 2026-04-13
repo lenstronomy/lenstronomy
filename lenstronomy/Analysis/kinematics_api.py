@@ -543,7 +543,10 @@ class KinematicsAPI(object):
                     kwargs_lens_i["grid_interp_x"] -= center_x_i
                     kwargs_lens_i["grid_interp_y"] -= center_y_i
                 else:
-                    kwargs_lens_i = deepcopy(kwargs_lens[i])
+                    kwargs_lens_i = {
+                        k: v for k, v in kwargs_lens[i].items()
+                        if not k in ["center_x", "center_y"]
+                    }
                     mass_profile = self.LensModel.lens_model.func_list[i]
                     if ("e1" in mass_profile.param_names) and (
                         self.axial_symmetry == "spherical"
@@ -745,7 +748,10 @@ class KinematicsAPI(object):
             if model_kinematics_bool[i] is True:
                 light_profile_list.append(light_model)
                 light_profile = self.LensLightModel.func_list[i]
-                kwargs_lens_light_i = deepcopy(kwargs_lens_light[i])
+                kwargs_lens_light_i = {
+                    k: v for k, v in kwargs_lens_light[i].items()
+                    if not k in ["center_x", "center_y"]
+                }
                 if ("e1" in light_profile.param_names) and (
                     self.axial_symmetry == "spherical"
                 ):

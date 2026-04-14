@@ -32,6 +32,8 @@ class TDCosmography(KinematicsAPI):
         kwargs_seeing=None,
         kwargs_aperture=None,
         anisotropy_model=None,
+        kinematics_backend="jampy",
+        axial_symmetry="spherical",
         **kwargs_kin_api
     ):
         """
@@ -47,6 +49,10 @@ class TDCosmography(KinematicsAPI):
         :param kwargs_seeing: seeing conditions (see observation class in Galkin)
         :param kwargs_aperture: aperture keyword arguments (see aperture class in Galkin)
         :param anisotropy_model: string, anisotropy model type
+        :param kinematics_backend: string, which type of kinematics backend to use,
+            either 'jampy' or 'galkin'  (default 'jampy')
+        :param axial_symmetry: string, which type of axis symmetry to use,
+            either 'spherical', 'axi_sph' or 'axi_cyl' (default 'spherical')
         :param kwargs_kin_api: additional keyword arguments for KinematicsAPI class instance
         """
 
@@ -79,6 +85,8 @@ class TDCosmography(KinematicsAPI):
             kwargs_seeing=kwargs_seeing,
             kwargs_aperture=kwargs_aperture,
             anisotropy_model=anisotropy_model,
+            kinematics_backend=kinematics_backend,
+            axial_symmetry=axial_symmetry,
             **kwargs_kin_api
         )
 
@@ -143,6 +151,7 @@ class TDCosmography(KinematicsAPI):
         kwargs_lens,
         kwargs_lens_light,
         kwargs_anisotropy,
+        inclination=90,
         r_eff=None,
         theta_E=None,
         gamma=None,
@@ -156,6 +165,7 @@ class TDCosmography(KinematicsAPI):
         :param kwargs_lens: lens model keyword arguments
         :param kwargs_lens_light: lens light model keyword arguments
         :param kwargs_anisotropy: stellar anisotropy keyword arguments
+        :param inclination: inclination angle in degrees
         :param r_eff: projected half-light radius of the stellar light associated with
             the deflector galaxy, optional, if set to None will be computed in this
             function with default settings that may not be accurate.
@@ -167,6 +177,7 @@ class TDCosmography(KinematicsAPI):
             kwargs_lens=kwargs_lens,
             kwargs_lens_light=kwargs_lens_light,
             kwargs_anisotropy=kwargs_anisotropy,
+            inclination=inclination,
             r_eff=r_eff,
             theta_E=theta_E,
             gamma=gamma,
@@ -180,10 +191,11 @@ class TDCosmography(KinematicsAPI):
         kwargs_lens,
         kwargs_lens_light,
         kwargs_anisotropy,
+        inclination=90,
         r_eff=None,
         theta_E=None,
         gamma=None,
-        supersampling_factor=1,
+        supersampling_factor=None,
         voronoi_bins=None,
     ):
         """Sigma**2 = Dd/Dds * c**2 * J(kwargs_lens, kwargs_light, anisotropy) (Equation
@@ -196,6 +208,7 @@ class TDCosmography(KinematicsAPI):
         :param kwargs_lens: lens model keyword arguments
         :param kwargs_lens_light: lens light model keyword arguments
         :param kwargs_anisotropy: stellar anisotropy keyword arguments
+        :param inclination: inclination angle in degrees
         :param r_eff: projected half-light radius of the stellar light associated
             with the deflector galaxy, optional, if set to None will be computed in this
             function with default settings that may not be accurate.
@@ -208,6 +221,7 @@ class TDCosmography(KinematicsAPI):
             kwargs_lens=kwargs_lens,
             kwargs_lens_light=kwargs_lens_light,
             kwargs_anisotropy=kwargs_anisotropy,
+            inclination=inclination,
             r_eff=r_eff,
             theta_E=theta_E,
             gamma=gamma,

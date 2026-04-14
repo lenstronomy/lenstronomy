@@ -100,7 +100,6 @@ class JAMWrapperBase(object):
         :param jam_kwargs: keyword arguments for JAM call
         :return: array of LOS velocity dispersion at each (x,y) position [km/s]
         """
-        # TODO: read light and mass mge parameters from cached values if available
 
         sigma_lum = np.asarray(kwargs_light[0]["sigma"])
         # convert to surface brightness
@@ -168,7 +167,6 @@ class JAMWrapperBase(object):
         y = y.flatten()
         if (not self.axisymmetric) or (inclination is None):
             # spherical modeling
-            # TODO: evaluate at fixed radius and then interpolate for speed
             r = np.sqrt(x**2 + y**2)
             vrms, surf_bright = self.call_jampy_sph(
                 surf_lum,

@@ -437,7 +437,6 @@ class GeneralizedOM(object):
 @export
 class Colin(object):
     """Class for stellar orbits anisotropy parameter based on Colin et al.
-
     (2000) See Mamon & Lokas 2005 for details
     """
 
@@ -541,6 +540,7 @@ def _logistic_function_params(beta_0, beta_inf, r_ani, alpha):
     """Return the logistic function parameters for Jampy beta(r) format.
 
     beta(r) = beta_0 + (beta_inf - beta_0)/[1 + (r_a/r)^alpha]
+
     :param beta_0: float, central anisotropy value (beta at r=0)
     :param beta_inf: float, asymptotic anisotropy value (beta at r
     :param r_ani: float, anisotropy radius (scale of transition)

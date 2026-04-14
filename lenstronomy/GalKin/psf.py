@@ -53,6 +53,7 @@ class PSF(object):
 
     def convolution_kernel_grid(self, x, y):
         """
+
         :param x: x-coordinate of light ray
         :param y: y-coordinate of light ray
         :return: psf value at x and y grid positions
@@ -108,6 +109,7 @@ class PSFGaussian(object):
 
     def convolution_kernel_grid(self, x, y):
         """
+
         :param x: x-coordinate of light ray
         :param y: y-coordinate of light ray
         :return: psf value at x and y grid positions
@@ -174,6 +176,7 @@ class PSFMoffat(object):
 
     def convolution_kernel_grid(self, x, y):
         """
+
         :param x: x-coordinate of light ray
         :param y: y-coordinate of light ray
         :return: psf value at x and y grid positions
@@ -278,6 +281,7 @@ class PSFPixel(object):
 
     def __init__(self, kernel, delta_pix, supersampling_factor, fwhm=None):
         """
+
         :param kernel: 2D numpy array of supersampled kernel values
         :param delta_pix: pixel scale of kernel, accounting for supersampling
         :param supersampling_factor: supersampling factor
@@ -342,10 +346,10 @@ class PSFPixel(object):
 
 def _radial_profile_from_kernel(kernel, pixel_scale, n_bins=100):
     """
-    img: 2D array, assumed centered PSF/kernel
+
+    kernel: 2D array, assumed centered PSF/kernel
     pixel_scale: physical size of one pixel
-    center: (y0, x0) center in pixel coordinates; default is image center
-    nbins: number of radial bins
+    n_bins: number of radial bins
     returns: r_centers, radial_profile
     """
     ny, nx = kernel.shape
@@ -378,9 +382,10 @@ def _radial_profile_from_kernel(kernel, pixel_scale, n_bins=100):
 
 def _fwhm_from_radial_profile(r, p):
     """
-    r: 1D array of radii, increasing from 0
+
+    r: 1D array of radii in arcseconds, increasing from 0
     p: 1D array of profile values at those radii
-    returns: approximate FWHM
+    returns: approximate FWHM in arcseconds
     """
     p0 = p[0]
     half = 0.5 * p0

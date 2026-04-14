@@ -13,6 +13,7 @@ class GalkinObservation(PSF, Aperture):
 
     def __init__(self, kwargs_aperture, kwargs_psf, backend):
         """
+
         :param kwargs_aperture: aperture parameters (see lenstronomy.GalKin.aperture)
         :param kwargs_psf: psf parameters (see lenstronomy.GalKin.psf)
         :param backend: either 'galkin' or 'jampy'

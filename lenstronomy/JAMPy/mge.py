@@ -12,8 +12,9 @@ class MGEMass:
         """Class to do the MGE fitting of the mass profile, which is needed for the JAM
         modelling. It uses LensProfileAnalysis to obtain the radial convergence, and
         mgefit.mge_fit_1d for the MGE, which is more accurate than the one implemented
-        in lenstronomy. :param profile_list: list of lens profile names.
+        in lenstronomy.
 
+        :param profile_list: list of lens profile names.
         :param kwargs_mge: dictionary with options for the MGE fitting:
             - n_comp: number of Gaussian components to fit (default: 20)
             - r_min: minimum radius for the radial profile in units of the
@@ -34,10 +35,14 @@ class MGEMass:
         self.n_rad = kwargs_mge.get("n_radial_points", 200)
 
     def radial_convergence(self, r, kwargs_list):
-        """Convergence radial profile :param r: projected radius in angular units :param
-        kwargs_list: list of keyword arguments of lens model parameters matching the
-        lens model classes :return: surface mass density at radius r (in angular units,
-        modulo epsilon_crit)"""
+        """Convergence radial profile
+
+        :param r: projected radius in angular units
+        :param kwargs_list: list of keyword arguments of lens model
+            parameters matching the lens model classes
+        :return: surface mass density at radius r (in angular units,
+            modulo epsilon_crit)
+        """
         kwargs_list = self._parse_kwargs(kwargs_list)
         if self.profile_list[0] in ["INTERPOL", "INTERPOL_SCLAED"]:
             center_x, center_y = self.lens_analysis.convergence_peak(
@@ -71,9 +76,9 @@ class MGEMass:
             )
 
     def _parse_kwargs(self, kwargs_list):
-        """Removes e1 and e2 kwargs if not present in the profile :param kwargs_list:
+        """Removes e1 and e2 kwargs if not present in the profile
 
-        list of keyword arguments of light profiles (see LightModule)
+        :param kwargs_list: list of keyword arguments of mass profiles
         :return: parsed arguments.
         """
         kwargs_list_copy = deepcopy(kwargs_list)
@@ -138,8 +143,9 @@ class MGELight:
         """Class to do the MGE fitting of the light profile, which is needed for the JAM
         modelling. It uses LightProfileAnalysis to obtain the radial surface brightness,
         and mgefit.mge_fit_1d for the MGE, which is more accurate than the one
-        implemented in lenstronomy. :param profile_list: list of light profile names.
+        implemented in lenstronomy.
 
+        :param profile_list: list of light profile names.
         :param kwargs_mge: dictionary with options for the MGE fitting:
             - n_comp: number of Gaussian components to fit (default: 20)
             - r_min: minimum radius for the radial profile in units of the
@@ -231,9 +237,9 @@ class MGELight:
         return amps, sigmas
 
     def _parse_kwargs(self, kwargs_list):
-        """Removes e1 and e2 kwargs if not present in the profile :param kwargs_list:
+        """Removes e1 and e2 kwargs if not present in the profile
 
-        list of keyword arguments of light profiles (see LightModule)
+        :param kwargs_list:  list of keyword arguments of light profiles
         :return: parsed arguments.
         """
         kwargs_list_copy = deepcopy(kwargs_list)

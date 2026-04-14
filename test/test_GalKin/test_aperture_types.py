@@ -295,6 +295,13 @@ class TestApertureTypesSample(object):
         hr_map = xg_sample_p**2 + yg_sample_p**2
         hr_map = aperture_types._unpad_map(hr_map, padding=ifu.padding_pix(1.0))
         assert hr_map.shape == (num_pix_y, num_pix_x)
+        # test with rotation angle
+        phi = 0.12
+        x = y = np.linspace(-0.5, 0.5)
+        xg, yg = np.meshgrid(x, y)
+        xg, yg = aperture_types._rotate(xg, yg, phi)
+        ifu = aperture_types.IFUGrid(xg, yg, angle=phi)
+        assert_allclose(ifu.delta_pix, x[1] - x[0], rtol=1e-3)
 
     def test_ifu_shells(self):
         r_bins = np.array([0.0, 0.5, 1.0, 1.5])

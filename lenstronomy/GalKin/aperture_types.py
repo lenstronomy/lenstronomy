@@ -402,7 +402,8 @@ class IFUGrid(ApertureBase):
         :param angle: angle of the IFU grid in radians
         """
         x0, y0 = _rotate(x_grid[0, 0], y_grid[0, 0], -angle)
-        x1, y1 = _rotate(x_grid[0, 1], y_grid[1, 0], -angle)
+        x1 = _rotate(x_grid[0, 1], y_grid[0, 1], -angle)[0]
+        y1 = _rotate(x_grid[1, 0], y_grid[1, 0], -angle)[1]
         delta_x = x1 - x0
         delta_y = y1 - y0
         if not np.isclose(np.abs(delta_x), np.abs(delta_y), rtol=1e-3):
@@ -580,7 +581,8 @@ class IFUBinned(ApertureBase):
         :param angle: angle of the IFU grid in radians
         """
         x0, y0 = _rotate(x_grid[0, 0], y_grid[0, 0], -angle)
-        x1, y1 = _rotate(x_grid[0, 1], y_grid[1, 0], -angle)
+        x1 = _rotate(x_grid[0, 1], y_grid[0, 1], -angle)[0]
+        y1 = _rotate(x_grid[1, 0], y_grid[1, 0], -angle)[1]
         delta_x = x1 - x0
         delta_y = y1 - y0
         if not np.isclose(np.abs(delta_x), np.abs(delta_y), rtol=1e-3):

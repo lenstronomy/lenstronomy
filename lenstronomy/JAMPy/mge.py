@@ -35,13 +35,13 @@ class MGEMass:
         self.n_rad = kwargs_mge.get("n_radial_points", 200)
 
     def radial_convergence(self, r, kwargs_list):
-        """Convergence radial profile
+        """Convergence radial profile.
 
         :param r: projected radius in angular units
-        :param kwargs_list: list of keyword arguments of lens model
-            parameters matching the lens model classes
-        :return: surface mass density at radius r (in angular units,
-            modulo epsilon_crit)
+        :param kwargs_list: list of keyword arguments of lens model parameters matching
+            the lens model classes
+        :return: surface mass density at radius r (in angular units, modulo
+            epsilon_crit)
         """
         kwargs_list = self._parse_kwargs(kwargs_list)
         if self.profile_list[0] in ["INTERPOL", "INTERPOL_SCLAED"]:
@@ -76,7 +76,7 @@ class MGEMass:
             )
 
     def _parse_kwargs(self, kwargs_list):
-        """Removes e1 and e2 kwargs if not present in the profile
+        """Removes e1 and e2 kwargs if not present in the profile.
 
         :param kwargs_list: list of keyword arguments of mass profiles
         :return: parsed arguments.
@@ -237,9 +237,9 @@ class MGELight:
         return amps, sigmas
 
     def _parse_kwargs(self, kwargs_list):
-        """Removes e1 and e2 kwargs if not present in the profile
+        """Removes e1 and e2 kwargs if not present in the profile.
 
-        :param kwargs_list:  list of keyword arguments of light profiles
+        :param kwargs_list: list of keyword arguments of light profiles
         :return: parsed arguments.
         """
         kwargs_list_copy = deepcopy(kwargs_list)

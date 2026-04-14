@@ -437,6 +437,7 @@ class GeneralizedOM(object):
 @export
 class Colin(object):
     """Class for stellar orbits anisotropy parameter based on Colin et al.
+
     (2000) See Mamon & Lokas 2005 for details
     """
 

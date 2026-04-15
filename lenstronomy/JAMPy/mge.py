@@ -17,12 +17,9 @@ class MGEMass:
         :param profile_list: list of lens profile names.
         :param kwargs_mge: dictionary with options for the MGE fitting:
             - n_comp: number of Gaussian components to fit (default: 20)
-            - r_min: minimum radius for the radial profile in units of the
-              Einstein radius (default: 1e-4)
-            - r_max: maximum radius for the radial profile in units of the
-              Einstein radius (default: 300)
-            - n_radial_points: number of radial points to sample for the
-            MGE fit (default: 200)
+            - r_min: minimum radius for the radial profile in units of the Einstein radius (default: 1e-4)
+            - r_max: maximum radius for the radial profile in units of the Einstein radius (default: 300)
+            - n_radial_points: number of radial points to sample for the MGE fit (default: 200)
         """
         self.profile_list = profile_list
         self.mass_model = LensModel(profile_list)
@@ -148,12 +145,9 @@ class MGELight:
         :param profile_list: list of light profile names.
         :param kwargs_mge: dictionary with options for the MGE fitting:
             - n_comp: number of Gaussian components to fit (default: 20)
-            - r_min: minimum radius for the radial profile in units of the
-              effective radius (default: 1e-4)
-            - r_max: maximum radius for the radial profile in units of the
-              effective radius (default: 200)
-            - n_radial_points: number of radial points to sample for the MGE fit
-              (default: 200)
+            - r_min: minimum radius for the radial profile in units of the effective radius (default: 1e-4)
+            - r_max: maximum radius for the radial profile in units of the effective radius (default: 200)
+            - n_radial_points: number of radial points to sample for the MGE fit (default: 200)
         """
         self.profile_list = profile_list
         self.light_model = LightModel(profile_list)

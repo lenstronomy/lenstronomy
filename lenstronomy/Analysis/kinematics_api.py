@@ -291,7 +291,10 @@ class KinematicsAPI(object):
             else:
                 kwargs_light_i = kwargs_light
             if self.kinematics_backend == "galkin":
-                if self._kwargs_aperture_kin[i]["aperture_type"] in ["IFU_grid", "IFU_binned"]:
+                if self._kwargs_aperture_kin[i]["aperture_type"] in [
+                    "IFU_grid",
+                    "IFU_binned",
+                ]:
                     sigma_v_map_ = jam_model[i].dispersion_map_grid_convolved(
                         kwargs_profile,
                         kwargs_light_i,

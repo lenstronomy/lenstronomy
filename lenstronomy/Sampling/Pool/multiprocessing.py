@@ -58,15 +58,16 @@ class MultiPool(Pool):
         :param kwargs: Extra arguments passed to the :class:`multiprocessing.pool.Pool` superclass.
         """
 
-        '''
+        """
         Since macOS uses fork as the default multiprocessing mode, and STARRED relies on JAX which conflicts with fork and can lead to deadlocks, I explicitly switched to spawn mode here.
         Initially, I planned to implement a conditional check—i.e., if use_starred=True in the update_psf function within psf_fitting.py, then automatically switch the multiprocessing mode to spawn.
         However, in practice this introduced additional conflicts, so I decided not to proceed with this approach.
-        '''
-         # ===== Force using spawn context =====
-        if 'context' not in kwargs:
+        """
+        # ===== Force using spawn context =====
+        if "context" not in kwargs:
             import multiprocess
-            kwargs['context'] = multiprocess.get_context('spawn')
+
+            kwargs["context"] = multiprocess.get_context("spawn")
         # ===== End =====
         new_initializer = functools.partial(_initializer_wrapper, initializer)
         super(MultiPool, self).__init__(processes, new_initializer, initargs, **kwargs)

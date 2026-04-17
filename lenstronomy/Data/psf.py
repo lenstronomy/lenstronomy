@@ -119,7 +119,9 @@ class PSF(object):
             if kernel_point_source_normalisation is True:
                 # self._psf_variance_map /= np.sum(kernel_point_source) ** 2
                 # Handle the inconsistency between jax and numpy arrays for the psf variance map.
-                if isinstance(self._psf_variance_map, jax.Array) or isinstance(kernel_point_source, jax.Array):
+                if isinstance(self._psf_variance_map, jax.Array) or isinstance(
+                    kernel_point_source, jax.Array
+                ):
                     psf_var = np.asarray(self._psf_variance_map)
                     kernel = np.asarray(kernel_point_source)
                     psf_var /= np.sum(kernel) ** 2

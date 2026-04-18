@@ -18,7 +18,6 @@ class PointMassLogScaled(LensProfileBase):
 
     def __init__(self):
         self.point_mass = PointMass()
-        self.r_min = 10 ** (-25)
         super(PointMassLogScaled, self).__init__()
 
     @staticmethod

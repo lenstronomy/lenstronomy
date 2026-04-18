@@ -4,6 +4,10 @@ __author__ = "aymgal, johannesulf"
 from inspect import signature
 import numpy as np
 from lenstronomy.Sampling.Samplers.base_nested_sampler import NestedSampler
+from lenstronomy.Sampling.Pool.parallelization_util import (
+    nested_logl_worker,
+    set_nested_likelihood_module,
+)
 
 __all__ = ["NautilusSampler"]
 
@@ -50,6 +54,8 @@ class NautilusSampler(NestedSampler):
             from schwimmbad import MPIPool
             import sys
 
+            set_nested_likelihood_module(self._ll, self.n_dims)
+
             # use_dill=True not supported for some versions of schwimmbad
             pool = MPIPool(use_dill=True)
             if not pool.is_master():
@@ -61,7 +67,10 @@ class NautilusSampler(NestedSampler):
         kwargs = {key: kwargs[key] for key in kwargs.keys() & keys}
 
         self._sampler = self._nautilus.Sampler(
-            self.prior, self.log_likelihood, self.n_dims, **kwargs
+            self.prior,
+            nested_logl_worker if mpi else self.log_likelihood,
+            self.n_dims,
+            **kwargs
         )
 
     def run(self, **kwargs):
@@ -108,7 +117,9 @@ class NautilusSampler(NestedSampler):
         try:
             import nautilus
         except ImportError:
-            print("Warning : nautilus not properly installed. \
-                  You can get it with $pip install nautilus-sampler.")
+            print(
+                "Warning : nautilus not properly installed. \
+                  You can get it with $pip install nautilus-sampler."
+            )
         else:
             self._nautilus = nautilus

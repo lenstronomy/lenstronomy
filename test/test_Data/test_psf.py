@@ -252,6 +252,47 @@ class TestData(object):
         kernel_odd_new = kernel_util.kernel_make_odd(kernel_point_source)
         npt.assert_almost_equal(kernel_odd_new, kernel_odd, decimal=16)
 
+    def test_jax_array_psf_variance_map(self):
+        """Test that jax arrays in kernel_point_source or psf_variance_map are handled
+        correctly during normalisation (covers the jax.Array branch in psf.py)."""
+        jnp = pytest.importorskip("jax.numpy")
+
+        kernel_np = kernel_util.kernel_gaussian(
+            num_pix=17, delta_pix=self.deltaPix, fwhm=0.2
+        )
+        psf_variance_map = np.ones_like(kernel_np)
+
+        # Case 1: kernel_point_source is a jax array
+        kernel_jax = jnp.array(kernel_np)
+        kwargs_psf = {
+            "psf_type": "PIXEL",
+            "kernel_point_source": kernel_jax,
+            "psf_variance_map": psf_variance_map,
+            "kernel_point_source_normalisation": True,
+        }
+        psf = PSF(**kwargs_psf)
+        # After normalisation by sum(kernel)^2 ≈ 1, the total should remain close to original
+        npt.assert_almost_equal(
+            np.sum(psf.psf_variance_map),
+            np.sum(psf_variance_map) / np.sum(kernel_np) ** 2,
+            decimal=6,
+        )
+
+        # Case 2: psf_variance_map is a jax array
+        variance_jax = jnp.ones_like(kernel_np)
+        kwargs_psf2 = {
+            "psf_type": "PIXEL",
+            "kernel_point_source": kernel_np,
+            "psf_variance_map": variance_jax,
+            "kernel_point_source_normalisation": True,
+        }
+        psf2 = PSF(**kwargs_psf2)
+        npt.assert_almost_equal(
+            np.sum(psf2.psf_variance_map),
+            np.sum(np.asarray(variance_jax)) / np.sum(kernel_np) ** 2,
+            decimal=6,
+        )
+
     def test_unnormalized(self):
         psf_norm_factor = 0.1
         kernel_point_source = np.zeros((51, 51))

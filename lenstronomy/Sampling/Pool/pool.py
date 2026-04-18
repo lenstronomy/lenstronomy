@@ -64,8 +64,8 @@ def choose_pool(mpi=False, processes=1, **kwargs):
     # Imports moved here to avoid crashing at import time if dependencies
     # are missing
     from lenstronomy.Sampling.Pool.multiprocessing import MultiPool
-    from schwimmbad.serial import SerialPool
-    from schwimmbad.mpi import MPIPool
+    from schwimmbad import SerialPool
+    from schwimmbad import MPIPool
 
     if mpi:
         if not MPIPool.enabled():

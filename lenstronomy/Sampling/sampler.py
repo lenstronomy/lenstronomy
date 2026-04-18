@@ -37,7 +37,7 @@ class Sampler(object):
     def _pool_and_logl(self, mpi, threadCount):
         """Build a pool and return the corresponding worker-safe logL callable."""
         if mpi:
-            pool = choose_pool(mpi=mpi, processes=threadCount, use_dill=True)
+            pool = choose_pool(mpi=mpi, processes=threadCount)
             return pool, sampler_logl_worker
 
         if threadCount != 1:

@@ -61,8 +61,7 @@ class DynestySampler(NestedSampler):
 
             set_nested_likelihood_module(self._ll, self.n_dims)
 
-            # use_dill=True not supported for some versions of schwimmbad
-            pool = MPIPool(use_dill=True)
+            pool = MPIPool()
             if not pool.is_master():
                 pool.wait()
                 sys.exit(0)

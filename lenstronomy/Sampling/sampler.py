@@ -44,13 +44,12 @@ class Sampler(object):
             pool = choose_pool(
                 mpi=mpi,
                 processes=threadCount,
-                use_dill=True,
                 initializer=set_sampler_likelihood_module,
                 initargs=(self.chain,),
             )
             return pool, sampler_logl_worker
 
-        pool = choose_pool(mpi=mpi, processes=threadCount, use_dill=True)
+        pool = choose_pool(mpi=mpi, processes=threadCount)
         return pool, self.chain.logL
 
     def simplex(self, init_pos, n_iterations, method, print_key="SIMPLEX"):

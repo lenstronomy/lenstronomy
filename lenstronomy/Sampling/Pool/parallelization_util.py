@@ -1,3 +1,5 @@
+__author__ = "ajshajib"
+
 import numpy as np
 
 _SAMPLER_LIKELIHOOD_MODULE = None

@@ -63,7 +63,8 @@ class PointMassLogScaled(LensProfileBase):
         :param x: x-coord (in angles)
         :param y: y-coord (in angles)
         :param log10_theta_E: log10 of the Einstein radius (in arcsec)
-        :return: Hessian matrix components"""
+        :return: Hessian matrix components
+        """
         theta_E = self._theta_e(log10_theta_E)
         return self.point_mass.hessian(
             x, y, theta_E, center_x=center_x, center_y=center_y
@@ -74,6 +75,7 @@ class PointMassLogScaled(LensProfileBase):
 
         :param r: radius (in angles)
         :param log10_theta_E: log10 of the Einstein radius (in arcsec)
-        :return: 3D mass enclosed within radius r"""
+        :return: 3D mass enclosed within radius r
+        """
         theta_E = self._theta_e(log10_theta_E)
         return self.point_mass.mass_3d_lens(r, theta_E)

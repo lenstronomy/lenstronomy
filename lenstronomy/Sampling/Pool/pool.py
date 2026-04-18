@@ -72,12 +72,11 @@ def choose_pool(mpi=False, processes=1, **kwargs):
             raise SystemError("Tried to run with MPI but MPIPool not enabled.")
         try:
             pool = MPIPool(**kwargs)
-        except:
-            raise ImportError(
-                "MPIPool of schwimmbad can not be generated. lenstronomy uses a specific branch of "
-                "schwimmbad specified in the requirements.txt. Make sure you are using the correct "
-                'version of schwimmbad. In particular the "use_dill" argument is not supported in the '
-                "pypi version 0.3.0."
+        except Exception as e:
+            raise SystemError(
+                "Tried to run with MPI but failed to initialize MPIPool. Error message: {0}".format(
+                    e
+                )
             )
         if not pool.is_master():
             pool.wait()

@@ -35,7 +35,9 @@ class TestCorrelation(object):
 
         e1, e2 = 0.1, 0.0
         profile = GaussianEllipse()
-        I_xy = profile.function(x_grid, y_grid, amp=1, sigma=10, e1=e1, e2=e2)
+        I_xy = profile.function(
+            x_grid, y_grid, amp=100, sigma=10, e1=e1, e2=e2, center_x=1, center_y=-1
+        )
         e1_out, e2_out = analysis_util.ellipticities(I_xy, x_grid, y_grid)
         print(e1_out, e2_out)
         npt.assert_almost_equal(e1_out, e1, decimal=3)

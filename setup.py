@@ -41,6 +41,8 @@ requires = [
     "pyxdg",
     "schwimmbad",
     "multiprocess>=0.70.8",
+    "jampy",
+    "mgefit",  # required by jampy
 ]
 tests_require = [
     "pytest>=2.3",
@@ -62,13 +64,13 @@ PACKAGE_PATH = os.path.abspath(os.path.join(__file__, os.pardir))
 
 setup(
     name="lenstronomy",
-    version="1.13.6",
+    version="1.14.0",
     description="Strong lens modeling package.",
     long_description=desc,
     author="lenstronomy developers",
     author_email="lenstronomy-dev@googlegroups.com",
     url="https://github.com/lenstronomy/lenstronomy",
-    download_url="https://github.com/lenstronomy/lenstronomy/archive/1.13.6.tar.gz",
+    download_url="https://github.com/lenstronomy/lenstronomy/archive/1.14.0.tar.gz",
     packages=find_packages(PACKAGE_PATH, "test"),
     package_dir={"lenstronomy": "lenstronomy"},
     include_package_data=True,

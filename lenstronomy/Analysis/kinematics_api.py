@@ -2,15 +2,15 @@ __author__ = "sibirrer"
 
 import numpy as np
 import copy
-import warnings
-from lenstronomy.GalKin.galkin_multiobservation import GalkinMultiObservation
 from lenstronomy.GalKin.galkin import Galkin
 from lenstronomy.GalKin.galkin_shells import GalkinShells
+from lenstronomy.JAMPy.jam_wrapper import JAMWrapper
+from lenstronomy.JAMPy.mge import MGEMass, MGELight
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 from lenstronomy.Util import class_creator
 from lenstronomy.Analysis.lens_profile import LensProfileAnalysis
 from lenstronomy.Analysis.light_profile import LightProfileAnalysis
-import lenstronomy.Util.multi_gauss_expansion as mge
+from copy import deepcopy
 
 __all__ = ["KinematicsAPI"]
 
@@ -34,14 +34,16 @@ class KinematicsAPI(object):
         multi_light_profile=False,
         kwargs_numerics_galkin=None,
         analytic_kinematics=False,
-        Hernquist_approx=False,
-        MGE_light=False,
-        MGE_mass=False,
+        Hernquist_approx=False,  # TODO: revise if this is still needed
+        MGE_light=None,
+        MGE_mass=None,
         kwargs_mge_light=None,
         kwargs_mge_mass=None,
         sampling_number=1000,
         num_kin_sampling=1000,
         num_psf_sampling=100,
+        kinematics_backend="jampy",
+        axial_symmetry="spherical",
     ):
         """Initialize the class with the lens model and cosmology.
 
@@ -77,13 +79,23 @@ class KinematicsAPI(object):
             to the half light radius of the deflector light profile to compute the
             kinematics
         :param MGE_light: bool, if true performs the MGE for the light distribution
+            defaults to False for Galkin and True for Jampy
         :param MGE_mass: bool, if true performs the MGE for the mass distribution
+            defaults to False for Galkin and True for Jampy
         :param kwargs_numerics_galkin: numerical settings for the integrated
             line-of-sight velocity dispersion
         :param kwargs_mge_mass: keyword arguments that go into the MGE decomposition
             routine
+            - n_gauss: number of Gaussian components to fit (default: 20)
+            - r_min: minimum radius for the radial profile in units of the Einstein radius (default: 1e-4)
+            - r_max: maximum radius for the radial profile in units of the Einstein radius (default: 300)
+            - n_radial_points: number of radial points to sample for the MGE fit (default: 200)
         :param kwargs_mge_light: keyword arguments that go into the MGE decomposition
             routine
+            - n_gauss: number of Gaussian components to fit (default: 20)
+            - r_min: minimum radius for the radial profile in units of the effective radius (default: 1e-4)
+            - r_max: maximum radius for the radial profile in units of the effective radius (default: 200)
+            - n_radial_points: number of radial points to sample for the MGE fit (default: 200)
         :param sampling_number: int, number of spectral rendering to compute the
             light weighted integrated LOS dispersion within the aperture. This
             keyword should be chosen high enough to result in converged results
@@ -91,6 +103,10 @@ class KinematicsAPI(object):
         :param num_kin_sampling: number of kinematic renderings on a total IFU
         :param num_psf_sampling: number of PSF displacements for each kinematic
             rendering on the IFU
+        :param kinematics_backend: str, either 'jampy' or 'galkin',
+            sets the backend to compute the kinematics.
+        :param axial_symmetry: str, either 'spherical', 'axi_sph' or 'axi_cyl'
+            axial symmetry for jampy.
         """
         self.z_d = z_lens
         self.z_s = z_source
@@ -124,22 +140,49 @@ class KinematicsAPI(object):
         self._num_kin_sampling = num_kin_sampling
         self._num_psf_sampling = num_psf_sampling
 
-        if kwargs_mge_mass is None:
-            self._kwargs_mge_mass = {"n_comp": 20}
+        if kinematics_backend == "jampy":
+            if MGE_mass is None:
+                MGE_mass = True
+            elif MGE_mass is False:
+                raise ValueError("MGE_mass must be True for the jampy backend")
+            # true if the light profile is already multi-gaussian
+            multi_gauss_light_profile = (len(self._lens_light_model_list) == 1) and (
+                self._lens_light_model_list[0]
+                in ["MULTI_GAUSSIAN", "MULTI_GAUSSIAN_ELLIPSE"]
+            )
+            # must use MGE, either through MGE decomposition or provided as a profile
+            if MGE_light is None:
+                MGE_light = True
+            elif (MGE_light is False) and (multi_gauss_light_profile is False):
+                raise ValueError("MGE_light must be True for the jampy backend")
+        elif kinematics_backend == "galkin":
+            if MGE_light is None:
+                MGE_light = False
+            if MGE_mass is None:
+                MGE_mass = False
         else:
-            self._kwargs_mge_mass = kwargs_mge_mass
+            raise ValueError('backend must be either "jampy" or "galkin"')
 
-        if kwargs_mge_light is None:
-            self._kwargs_mge_light = {
-                "grid_spacing": 0.01,
-                "grid_num": 100,
-                "n_comp": 20,
-                "center_x": None,
-                "center_y": None,
-            }
-        else:
-            self._kwargs_mge_light = kwargs_mge_light
+        if axial_symmetry in ["axi_sph", "axi_cyl"]:
+            if kinematics_backend != "jampy":
+                raise ValueError(
+                    "Only the JamPy backend is currently supported for axisymmetric JAM models."
+                )
+        if axial_symmetry not in ["spherical", "axi_sph", "axi_cyl"]:
+            raise ValueError(f"Axial symmetry option {axial_symmetry} not recognized.")
+        if analytic_kinematics and (kinematics_backend == "jampy"):
+            raise ValueError(
+                "Analytic kinematics not supported with the jampy backend."
+            )
+        if Hernquist_approx and MGE_light:
+            raise ValueError(
+                "Hernquist approximation and MGE light cannot be used at the same time."
+            )
+        self.kinematics_backend = kinematics_backend
+        self.axial_symmetry = axial_symmetry
 
+        self._kwargs_mge_mass = kwargs_mge_mass
+        self._kwargs_mge_light = kwargs_mge_light
         self._kwargs_numerics_kin = kwargs_numerics_galkin
         self._anisotropy_model = anisotropy_model
         self._analytic_kinematics = analytic_kinematics
@@ -158,9 +201,10 @@ class KinematicsAPI(object):
         theta_E=None,
         gamma=None,
         kappa_ext=0,
+        inclination=90.0,
     ):
         """API for both, analytic and numerical JAM to compute the velocity dispersion
-        [km/s] This routine uses the galkin_setting() routine for the Galkin
+        [km/s] This routine uses the jam_model_setting() routine for the Galkin/Jampy
         configurations (see there what options and input is relevant.
 
         :param kwargs_lens: lens model keyword arguments
@@ -172,19 +216,33 @@ class KinematicsAPI(object):
         :param theta_E: Einstein radius (optional)
         :param gamma: power-law slope (optional)
         :param kappa_ext: external convergence (optional)
+        :param inclination: inclination angle of the galaxy in degrees for axisymmetric
+            deprojection
         :return: velocity dispersion [km/s]
         """
-        galkin, kwargs_profile, kwargs_light = self.galkin_settings(
+        jam_model, kwargs_profile, kwargs_light = self.jam_model_settings(
             kwargs_lens, kwargs_lens_light, r_eff=r_eff, theta_E=theta_E, gamma=gamma
         )
         sigma_v = []
-        for i in range(len(galkin)):
-            sigma_v_ = galkin[i].dispersion(
-                kwargs_profile,
-                kwargs_light,
-                kwargs_anisotropy,
-                sampling_number=self._sampling_number,
-            )
+        for i in range(len(jam_model)):
+            if self._multi_light_profile:
+                kwargs_light_i = kwargs_light[i]
+            else:
+                kwargs_light_i = kwargs_light
+            if self.kinematics_backend == "galkin":
+                sigma_v_ = jam_model[i].dispersion(
+                    kwargs_profile,
+                    kwargs_light_i,
+                    kwargs_anisotropy,
+                    sampling_number=self._sampling_number,
+                )
+            elif self.kinematics_backend == "jampy":
+                sigma_v_ = jam_model[i].dispersion(
+                    kwargs_profile,
+                    kwargs_light_i,
+                    kwargs_anisotropy,
+                    inclination=inclination,
+                )
             sigma_v = np.append(sigma_v, sigma_v_)
         sigma_v = self.transform_kappa_ext(sigma_v, kappa_ext=kappa_ext)
         return sigma_v
@@ -198,7 +256,8 @@ class KinematicsAPI(object):
         theta_E=None,
         gamma=None,
         kappa_ext=0,
-        supersampling_factor=1,
+        inclination=90.0,
+        supersampling_factor=None,
         voronoi_bins=None,
     ):
         """API for both, analytic and numerical JAM to compute the velocity dispersion
@@ -214,38 +273,51 @@ class KinematicsAPI(object):
             either be computed in this function with default settings or not required
         :param gamma: power-law slope at the Einstein radius, optional
         :param kappa_ext: external convergence
+        :param inclination: inclination angle of the galaxy in degrees
+            for axisymmetric deprojection
         :param supersampling_factor: supersampling factor for 2D integration grid
         :param voronoi_bins: mapping of the voronoi bins, -1 values for pixels not
             binned
         :return: velocity dispersion map in specified bins or grid in `kwargs_aperture`,
             in [km/s] unit
         """
-        galkin, kwargs_profile, kwargs_light = self.galkin_settings(
+        jam_model, kwargs_profile, kwargs_light = self.jam_model_settings(
             kwargs_lens, kwargs_lens_light, r_eff=r_eff, theta_E=theta_E, gamma=gamma
         )
-
         sigma_v_map = []
         for i in range(len(self._kwargs_aperture_kin)):
             if self._multi_light_profile is True:
-                kwargs_light_ = kwargs_light[i]
+                kwargs_light_i = kwargs_light[i]
             else:
-                kwargs_light_ = kwargs_light
-
-            if self._kwargs_aperture_kin[i]["aperture_type"] == "IFU_grid":
-                sigma_v_map_ = galkin[i].dispersion_map_grid_convolved(
+                kwargs_light_i = kwargs_light
+            if self.kinematics_backend == "galkin":
+                if self._kwargs_aperture_kin[i]["aperture_type"] in [
+                    "IFU_grid",
+                    "IFU_binned",
+                ]:
+                    sigma_v_map_ = jam_model[i].dispersion_map_grid_convolved(
+                        kwargs_profile,
+                        kwargs_light_i,
+                        kwargs_anisotropy,
+                        supersampling_factor=supersampling_factor,
+                        voronoi_bins=voronoi_bins,
+                    )
+                else:
+                    sigma_v_map_ = jam_model[i].dispersion_map(
+                        kwargs_profile,
+                        kwargs_light_i,
+                        kwargs_anisotropy,
+                        num_kin_sampling=self._num_kin_sampling,
+                        num_psf_sampling=self._num_psf_sampling,
+                    )
+            elif self.kinematics_backend == "jampy":
+                sigma_v_map_ = jam_model[i].dispersion(
                     kwargs_profile,
-                    kwargs_light_,
+                    kwargs_light_i,
                     kwargs_anisotropy,
+                    inclination=inclination,
                     supersampling_factor=supersampling_factor,
                     voronoi_bins=voronoi_bins,
-                )
-            else:
-                sigma_v_map_ = galkin[i].dispersion_map(
-                    kwargs_profile,
-                    kwargs_light_,
-                    kwargs_anisotropy,
-                    num_kin_sampling=self._num_kin_sampling,
-                    num_psf_sampling=self._num_psf_sampling,
                 )
             sigma_v_map = np.append(sigma_v_map, sigma_v_map_)
         sigma_v_map = self.transform_kappa_ext(sigma_v_map, kappa_ext=kappa_ext)
@@ -266,6 +338,8 @@ class KinematicsAPI(object):
         :param kappa_ext: external convergence not accounted in the lens models
         :return: velocity dispersion in units [km/s]
         """
+        if self.kinematics_backend == "jampy":
+            raise ValueError("Analytic kinematics is not implemented for jampy backend")
         sigma_v = []
         for i in range(len(self._kwargs_aperture_kin)):
             galkin = Galkin(
@@ -289,7 +363,7 @@ class KinematicsAPI(object):
         sigma_v = self.transform_kappa_ext(sigma_v, kappa_ext=kappa_ext)
         return sigma_v
 
-    def galkin_settings(
+    def jam_model_settings(
         self, kwargs_lens, kwargs_lens_light, r_eff=None, theta_E=None, gamma=None
     ):
         """
@@ -341,7 +415,6 @@ class KinematicsAPI(object):
             MGE_fit=self._MGE_mass,
             theta_E=theta_E,
             model_kinematics_bool=self._lens_model_kinematics_bool,
-            kwargs_mge=self._kwargs_mge_mass,
             gamma=gamma,
             analytic_kinematics=self._analytic_kinematics,
         )
@@ -349,13 +422,12 @@ class KinematicsAPI(object):
             kwargs_lens_light,
             r_eff=r_eff,
             MGE_fit=self._MGE_light,
-            kwargs_mge=self._kwargs_mge_light,
             model_kinematics_bool=self._light_model_kinematics_bool,
             Hernquist_approx=self._Hernquist_approx,
             analytic_kinematics=self._analytic_kinematics,
         )
 
-        galkin = []
+        jam_models = []
 
         for i in range(len(self._kwargs_aperture_kin)):
             kwargs_model = {
@@ -363,31 +435,38 @@ class KinematicsAPI(object):
                 "light_profile_list": light_profile_list,
                 "anisotropy_model": self._anisotropy_model,
             }
-
-            if (
-                self._kwargs_aperture_kin[i]["aperture_type"] == "IFU_shells"
-                and not self._analytic_kinematics
-            ):
-                galkin_ = GalkinShells(
+            if self.kinematics_backend == "galkin":
+                if (
+                    self._kwargs_aperture_kin[i]["aperture_type"] == "IFU_shells"
+                    and not self._analytic_kinematics
+                ):
+                    jam_model_i = GalkinShells(
+                        kwargs_model=kwargs_model,
+                        kwargs_aperture=self._kwargs_aperture_kin[i],
+                        kwargs_psf=self._kwargs_psf_kin[i],
+                        kwargs_cosmo=self._kwargs_cosmo,
+                        kwargs_numerics=self._kwargs_numerics_kin,
+                        analytic_kinematics=self._analytic_kinematics,
+                    )
+                else:
+                    jam_model_i = Galkin(
+                        kwargs_model=kwargs_model,
+                        kwargs_aperture=self._kwargs_aperture_kin[i],
+                        kwargs_psf=self._kwargs_psf_kin[i],
+                        kwargs_cosmo=self._kwargs_cosmo,
+                        kwargs_numerics=self._kwargs_numerics_kin,
+                        analytic_kinematics=self._analytic_kinematics,
+                    )
+            elif self.kinematics_backend == "jampy":
+                jam_model_i = JAMWrapper(
                     kwargs_model=kwargs_model,
                     kwargs_aperture=self._kwargs_aperture_kin[i],
                     kwargs_psf=self._kwargs_psf_kin[i],
                     kwargs_cosmo=self._kwargs_cosmo,
-                    kwargs_numerics=self._kwargs_numerics_kin,
-                    analytic_kinematics=self._analytic_kinematics,
                 )
-            else:
-                galkin_ = Galkin(
-                    kwargs_model=kwargs_model,
-                    kwargs_aperture=self._kwargs_aperture_kin[i],
-                    kwargs_psf=self._kwargs_psf_kin[i],
-                    kwargs_cosmo=self._kwargs_cosmo,
-                    kwargs_numerics=self._kwargs_numerics_kin,
-                    analytic_kinematics=self._analytic_kinematics,
-                )
-            galkin.append(galkin_)
+            jam_models.append(jam_model_i)
 
-        return galkin, kwargs_profile, kwargs_light
+        return jam_models, kwargs_profile, kwargs_light
 
     def _copy_centers(self, kwargs_1, kwargs_2):
         """Fills the centers of the kwargs_1 with the centers of kwargs_2.
@@ -466,39 +545,21 @@ class KinematicsAPI(object):
                         for k, v in kwargs_lens[i].items()
                         if not k in ["center_x", "center_y"]
                     }
+                    mass_profile = self.LensModel.lens_model.func_list[i]
+                    if ("e1" in mass_profile.param_names) and (
+                        self.axial_symmetry == "spherical"
+                    ):
+                        kwargs_lens_i["e1"] = 0.0
+                        kwargs_lens_i["e2"] = 0.0
                 kwargs_profile.append(kwargs_lens_i)
 
         if MGE_fit is True:
-            if kwargs_mge is None:
-                raise ValueError("kwargs_mge needs to be specified!")
-            if theta_E is None:
-                raise ValueError(
-                    "rough estimate of the Einstein radius needs to be provided to "
-                    "compute the MGE!"
-                )
-            r_array = np.logspace(-4, 2, 200) * theta_E
-            if self._lens_model_list[0] in ["INTERPOL", "INTERPOL_SCLAED"]:
-                center_x, center_y = self._lensMassProfile.convergence_peak(
-                    kwargs_lens,
-                    model_bool_list=model_kinematics_bool,
-                    grid_num=200,
-                    grid_spacing=0.01,
-                    center_x_init=0,
-                    center_y_init=0,
-                )
+            MGE_mass_fitter = MGEMass(mass_profile_list, kwargs_mge)
+            amps, sigmas = MGE_mass_fitter.mge_fit(kwargs_lens, theta_E)
+            if self.axial_symmetry == "spherical":
+                mass_profile_list = ["MULTI_GAUSSIAN"]
             else:
-                center_x, center_y = None, None
-            mass_r = self._lensMassProfile.radial_lens_profile(
-                r_array,
-                kwargs_lens,
-                center_x=center_x,
-                center_y=center_y,
-                model_bool_list=model_kinematics_bool,
-            )
-            amps, sigmas, norm = mge.mge_1d(
-                r_array, mass_r, N=kwargs_mge.get("n_comp", 20)
-            )
-            mass_profile_list = ["MULTI_GAUSSIAN"]
+                mass_profile_list = ["MULTI_GAUSSIAN_ELLIPSE_KAPPA"]
             kwargs_profile = [{"amp": amps, "sigma": sigmas}]
 
         kwargs_profile = self._copy_centers(kwargs_profile, kwargs_lens)
@@ -580,7 +641,7 @@ class KinematicsAPI(object):
     def kinematics_modeling_settings(
         self,
         anisotropy_model,
-        kwargs_numerics_galkin,
+        kwargs_numerics_galkin=None,
         analytic_kinematics=False,
         Hernquist_approx=False,
         MGE_light=False,
@@ -591,7 +652,7 @@ class KinematicsAPI(object):
         num_kin_sampling=1000,
         num_psf_sampling=100,
     ):
-        """Return the settings for the kinematic modeling.
+        """Modify the settings for the kinematic modeling.
 
         :param anisotropy_model: type of stellar anisotropy model. See details in
             MamonLokasAnisotropy() class of lenstronomy.GalKin.anisotropy
@@ -606,29 +667,47 @@ class KinematicsAPI(object):
             line-of-sight velocity dispersion
         :param kwargs_mge_mass: keyword arguments that go into the MGE decomposition
             routine
+            - n_gauss: number of Gaussian components to fit (default: 20)
+            - r_min: minimum radius for the radial profile in units of the Einstein radius (default: 1e-4)
+            - r_max: maximum radius for the radial profile in units of the Einstein radius (default: 300)
+            - n_radial_points: number of radial points to sample for the MGE fit (default: 200)
         :param kwargs_mge_light: keyword arguments that go into the MGE decomposition
             routine
+            - n_gauss: number of Gaussian components to fit (default: 20)
+            - r_min: minimum radius for the radial profile in units of the effective radius (default: 1e-4)
+            - r_max: maximum radius for the radial profile in units of the effective radius (default: 200)
+            - n_radial_points: number of radial points to sample for the MGE fit (default: 200)
         :param sampling_number: number of spectral rendering on a single slit
         :param num_kin_sampling: number of kinematic renderings on a total IFU
         :param num_psf_sampling: number of PSF displacements for each kinematic
             rendering on the IFU
         :return: updated settings
         """
-        if kwargs_mge_mass is None:
-            self._kwargs_mge_mass = {"n_comp": 20}
-        else:
-            self._kwargs_mge_mass = kwargs_mge_mass
+        if self.kinematics_backend == "jampy":
+            if MGE_mass is None:
+                MGE_mass = True
+            elif MGE_mass is False:
+                raise ValueError("MGE_mass must be True for the jampy backend")
+            if MGE_light is None:
+                MGE_light = True
+            elif MGE_light is False:
+                raise ValueError("MGE_light must be True for the jampy backend")
+        elif self.kinematics_backend == "galkin":
+            if MGE_light is None:
+                MGE_light = False
+            if MGE_mass is None:
+                MGE_mass = False
 
-        if kwargs_mge_light is None:
-            self._kwargs_mge_light = {
-                "grid_spacing": 0.01,
-                "grid_num": 100,
-                "n_comp": 20,
-                "center_x": None,
-                "center_y": None,
-            }
-        else:
-            self._kwargs_mge_light = kwargs_mge_light
+        if analytic_kinematics and (self.kinematics_backend == "jampy"):
+            raise ValueError(
+                "Analytic kinematics not supported with the jampy backend."
+            )
+        if Hernquist_approx and MGE_light:
+            raise ValueError(
+                "Hernquist approximation and MGE light cannot be used at the same time."
+            )
+        self._kwargs_mge_mass = kwargs_mge_mass
+        self._kwargs_mge_light = kwargs_mge_light
         self._kwargs_numerics_kin = kwargs_numerics_galkin
         self._anisotropy_model = anisotropy_model
         self._analytic_kinematics = analytic_kinematics
@@ -660,31 +739,26 @@ class KinematicsAPI(object):
         for i, light_model in enumerate(self._lens_light_model_list):
             if model_kinematics_bool[i] is True:
                 light_profile_list.append(light_model)
+                light_profile = self.LensLightModel.func_list[i]
                 kwargs_lens_light_i = {
                     k: v
                     for k, v in kwargs_lens_light[i].items()
                     if not k in ["center_x", "center_y"]
                 }
-                if "e1" in kwargs_lens_light_i:
-                    kwargs_lens_light_i["e1"] = 0
-                    kwargs_lens_light_i["e2"] = 0
+                if ("e1" in light_profile.param_names) and (
+                    self.axial_symmetry == "spherical"
+                ):
+                    kwargs_lens_light_i["e1"] = 0.0
+                    kwargs_lens_light_i["e2"] = 0.0
                 kwargs_light.append(kwargs_lens_light_i)
 
         if MGE_fit is True:
-            if kwargs_mge is None:
-                raise ValueError("kwargs_mge must be provided to compute the MGE")
-            (
-                amps,
-                sigmas,
-                center_x,
-                center_y,
-            ) = self._lensLightProfile.multi_gaussian_decomposition(
-                kwargs_lens_light,
-                model_bool_list=model_kinematics_bool,
-                r_h=r_eff,
-                **kwargs_mge
-            )
-            light_profile_list = ["MULTI_GAUSSIAN"]
+            MGE_light_fitter = MGELight(light_profile_list, kwargs_mge)
+            amps, sigmas = MGE_light_fitter.mge_fit(kwargs_lens_light, r_eff)
+            if self.axial_symmetry == "spherical":
+                light_profile_list = ["MULTI_GAUSSIAN"]
+            else:
+                light_profile_list = ["MULTI_GAUSSIAN_ELLIPSE"]
             kwargs_light = [{"amp": amps, "sigma": sigmas}]
             kwargs_light = self._copy_centers(kwargs_light, kwargs_lens_light)
         return light_profile_list, kwargs_light

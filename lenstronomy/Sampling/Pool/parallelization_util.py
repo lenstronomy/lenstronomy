@@ -11,7 +11,8 @@ _NESTED_HAS_WARNED = False
 def set_sampler_likelihood_module(likelihood_module):
     """Set the likelihood module used by worker log-likelihood evaluations.
 
-    :param likelihood_module: a likelihood module like in likelihood.py (should be callable)
+    :param likelihood_module: a likelihood module like in likelihood.py (should be
+        callable)
     :return: None
     """
     global _SAMPLER_LIKELIHOOD_MODULE
@@ -35,7 +36,8 @@ def sampler_logl_worker(args):
 def set_nested_likelihood_module(likelihood_module, n_dims):
     """Set the nested-sampler likelihood and dimensionality on each worker.
 
-    :param likelihood_module: a likelihood module like in likelihood.py (should be callable)
+    :param likelihood_module: a likelihood module like in likelihood.py (should be
+        callable)
     :param n_dims: number of dimensions in the parameter space
     :return: None
     """

@@ -12,6 +12,15 @@ from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.Sampling.sampler import Sampler, choose_pool
 from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
+from lenstronomy.Sampling.Pool.parallelization_util import sampler_logl_worker
+
+
+class _MiniLikelihood(object):
+    param_limits = ([-1.0, -1.0], [1.0, 1.0])
+
+    @staticmethod
+    def logL(args):
+        return -np.sum(np.asarray(args) ** 2)
 
 
 class TestSampler(object):
@@ -260,6 +269,69 @@ class TestSampler(object):
             miniter_callback=miniter_callback,
         )
         assert len(samples_mi) == n_walkers * n_run
+
+
+def test_pool_and_logl_mpi(monkeypatch):
+    calls = []
+
+    class _FakePool(object):
+        pass
+
+    def _fake_choose_pool(**kwargs):
+        calls.append(kwargs)
+        return _FakePool()
+
+    monkeypatch.setattr("lenstronomy.Sampling.sampler.choose_pool", _fake_choose_pool)
+
+    sampler = Sampler(likelihoodModule=_MiniLikelihood())
+    pool, logl_function = sampler._pool_and_logl(mpi=True, threadCount=8)
+
+    assert isinstance(pool, _FakePool)
+    assert logl_function is sampler_logl_worker
+    assert calls[0] == {"mpi": True, "processes": 8}
+
+
+def test_pool_and_logl_multiprocess(monkeypatch):
+    calls = []
+
+    class _FakePool(object):
+        pass
+
+    def _fake_choose_pool(**kwargs):
+        calls.append(kwargs)
+        return _FakePool()
+
+    monkeypatch.setattr("lenstronomy.Sampling.sampler.choose_pool", _fake_choose_pool)
+
+    sampler = Sampler(likelihoodModule=_MiniLikelihood())
+    pool, logl_function = sampler._pool_and_logl(mpi=False, threadCount=4)
+
+    assert isinstance(pool, _FakePool)
+    assert logl_function is sampler_logl_worker
+    assert calls[0]["mpi"] is False
+    assert calls[0]["processes"] == 4
+    assert "initializer" in calls[0]
+    assert "initargs" in calls[0]
+
+
+def test_pool_and_logl_serial(monkeypatch):
+    calls = []
+
+    class _FakePool(object):
+        pass
+
+    def _fake_choose_pool(**kwargs):
+        calls.append(kwargs)
+        return _FakePool()
+
+    monkeypatch.setattr("lenstronomy.Sampling.sampler.choose_pool", _fake_choose_pool)
+
+    sampler = Sampler(likelihoodModule=_MiniLikelihood())
+    pool, logl_function = sampler._pool_and_logl(mpi=False, threadCount=1)
+
+    assert isinstance(pool, _FakePool)
+    assert calls[0] == {"mpi": False, "processes": 1}
+    assert logl_function is sampler.chain.logL
 
 
 if __name__ == "__main__":

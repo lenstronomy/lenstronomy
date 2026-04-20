@@ -57,7 +57,7 @@ class Nautilus(object):
                 "prior_type %s is not supported for Nautilus wrapper." % prior_type
             )
         # loop through prior
-        pool = choose_pool(mpi=mpi, processes=thread_count, use_dill=True)
+        pool = choose_pool(mpi=mpi, processes=thread_count)
         sampler = Sampler(
             prior,
             likelihood=self.likelihood,

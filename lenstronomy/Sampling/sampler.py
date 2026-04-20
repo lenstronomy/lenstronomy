@@ -6,6 +6,10 @@ import numpy as np
 from lenstronomy.Sampling.Samplers.pso import ParticleSwarmOptimizer
 from lenstronomy.Util import sampling_util
 from lenstronomy.Sampling.Pool.pool import choose_pool
+from lenstronomy.Sampling.Pool.parallelization_util import (
+    sampler_logl_worker,
+    set_sampler_likelihood_module,
+)
 from scipy.optimize import minimize
 
 __all__ = ["Sampler"]
@@ -27,6 +31,26 @@ class Sampler(object):
         """
         self.chain = likelihoodModule
         self.lower_limit, self.upper_limit = self.chain.param_limits
+        # Keep the worker-local log-likelihood state in sync on ranks that construct this class.
+        set_sampler_likelihood_module(self.chain)
+
+    def _pool_and_logl(self, mpi, threadCount):
+        """Build a pool and return the corresponding worker-safe logL callable."""
+        if mpi:
+            pool = choose_pool(mpi=mpi, processes=threadCount)
+            return pool, sampler_logl_worker
+
+        if threadCount != 1:
+            pool = choose_pool(
+                mpi=mpi,
+                processes=threadCount,
+                initializer=set_sampler_likelihood_module,
+                initargs=(self.chain,),
+            )
+            return pool, sampler_logl_worker
+
+        pool = choose_pool(mpi=mpi, processes=threadCount)
+        return pool, self.chain.logL
 
     def simplex(self, init_pos, n_iterations, method, print_key="SIMPLEX"):
         """
@@ -98,13 +122,13 @@ class Sampler(object):
             lower_start = np.maximum(lower_start, self.lower_limit)
             upper_start = np.minimum(upper_start, self.upper_limit)
 
-        pool = choose_pool(mpi=mpi, processes=threadCount, use_dill=True)
+        pool, logl_function = self._pool_and_logl(mpi=mpi, threadCount=threadCount)
 
         if mpi is True and pool.is_master():
             print("MPI option chosen for PSO.")
 
         pso = ParticleSwarmOptimizer(
-            self.chain.logL, lower_start, upper_start, n_particles, pool=pool
+            logl_function, lower_start, upper_start, n_particles, pool=pool
         )
 
         if init_pos is None:
@@ -192,7 +216,7 @@ class Sampler(object):
                 size=n_walkers,
             )
 
-        pool = choose_pool(mpi=mpi, processes=threadCount, use_dill=True)
+        pool, logl_function = self._pool_and_logl(mpi=mpi, threadCount=threadCount)
 
         if backend_filename is not None:
             backend = emcee.backends.HDFBackend(
@@ -223,7 +247,7 @@ class Sampler(object):
         time_start = time.time()
 
         sampler = emcee.EnsembleSampler(
-            n_walkers, num_param, self.chain.logL, pool=pool, backend=backend
+            n_walkers, num_param, logl_function, pool=pool, backend=backend
         )
 
         sampler.run_mcmc(initpos, n_run_eff, progress=progress)
@@ -368,12 +392,12 @@ class Sampler(object):
         else:
             pass
 
-        pool = choose_pool(mpi=mpi, processes=threadCount, use_dill=True)
+        pool, logl_function = self._pool_and_logl(mpi=mpi, threadCount=threadCount)
 
         sampler = zeus.EnsembleSampler(
             nwalkers=n_walkers,
             ndim=num_param,
-            logprob_fn=self.chain.logL,
+            logprob_fn=logl_function,
             moves=moves,
             tune=tune,
             tolerance=tolerance,

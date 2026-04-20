@@ -173,6 +173,7 @@ class PsfFitting(object):
         corner_symmetry=None,
         use_starred=False,
         kwargs_starred=None,
+        mask_starred=None,
     ):
         """
 
@@ -210,6 +211,12 @@ class PsfFitting(object):
         :param use_starred: boolean, if True, uses the STARRED method to estimate the PSF (https://ui.adsabs.harvard.edu/abs/2023JOSS....8.5340M/abstract)
         :param kwargs_starred: dictionary, keyword arguments for the starred.procedures.psf_routines.update_PSF() method.
          Example: kwargs_starred = {'lambda_scales':2., 'lambda_hf':2., 'lambda_positivity':0.}
+        :param mask_starred: array-like of shape (N, size, size), optional.
+         Mask array used in the STARRED PSF iteration. Here, N corresponds to the number of PSF kernels
+         (i.e., the number of point sources), and size is the pixel size of the input initial PSF.
+         For supersampled PSFs, the original (pre-supersampling) size should be used.
+         Each mask is applied to exclude contamination from other point sources when estimating the PSF,
+         ensuring that each PSF kernel is reconstructed using only its corresponding source, respectively.
 
         :return: kwargs_psf_new, logL_after, error_map
         """
@@ -444,7 +451,7 @@ class PsfFitting(object):
                 model,
                 parameters,
                 sigma2_maps_list,
-                masks=None,
+                masks=mask_starred,
                 **kwargs_starred,
             )
 

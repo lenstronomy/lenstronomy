@@ -284,7 +284,6 @@ class MultiPlane(object):
         :return: co-moving position (modulo angle definition) and angles at redshift
             z_stop
         """
-
         if check_convention and not self.ignore_observed_positions:
             kwargs_lens = self._convention(kwargs_lens)
 
@@ -583,7 +582,6 @@ class MultiPlane(object):
         :param diff: numerical differential step (float)
         :return: f_xx, f_xy, f_yx, f_yy
         """
-
         T_0z1 = self._multi_plane_base._cosmo_bkg.T_xy(0, z1)
         x = theta_x * T_0z1
         y = theta_x * T_0z1
@@ -681,7 +679,6 @@ class MultiPlane(object):
         :param kwargs: lens model keyword argument list
         :return: lens model keyword argument list with positional parameters all in flat sky coordinates
         """
-
         kwargs = self.observed2flat_convention(kwargs)
         self.ignore_observed_positions = True
         return self._multi_plane_base.set_static(kwargs)
@@ -714,7 +711,6 @@ class MultiPlane(object):
 class PhysicalLocation(object):
     """center_x and center_y kwargs correspond to angular location of deflectors without
     lensing along the LOS."""
-
     def __call__(self, kwargs_lens):
         return kwargs_lens
 
@@ -724,14 +720,12 @@ class LensedLocation(object):
     """center_x and center_y kwargs correspond to observed (lensed) locations of
     deflectors given a model for the line of sight structure, compute the angular
     position of the deflector without lensing contribution along the LOS."""
-
     def __init__(self, multiplane_instance, observed_convention_index):
         """
 
         :param multiplane_instance: instance of the MultiPlane class
         :param observed_convention_index: list of lens model indexes to be modelled in the observed plane
         """
-
         self._multiplane = multiplane_instance
 
         if len(observed_convention_index) == 1:

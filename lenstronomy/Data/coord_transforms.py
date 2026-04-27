@@ -66,7 +66,6 @@ class Coordinates(object):
         :param dec: relative DEC coordinate as defined by the coordinate frame
         :return: (x, y) pixel coordinates
         """
-
         return util.map_coord2pix(
             ra, dec, self._x_at_radec_0, self._y_at_radec_0, self._Ma2pix
         )

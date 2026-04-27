@@ -295,7 +295,6 @@ class SpecialParam(object):
         :param cosmological_param_sampling: bool, if True, samples cosmological parameters
         :param cosmology_model: str, name of the cosmology model to be used
         """
-
         if cosmology_sampling or distance_ratio_sampling:
             if Ddt_sampling:
                 warnings.warn(

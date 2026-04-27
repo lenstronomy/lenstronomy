@@ -48,7 +48,6 @@ class SIS_truncate(LensProfileBase):
         :param center_y: profile center
         :returns:  function
         """
-
         x_shift = x - center_x
         y_shift = y - center_y
         r = np.sqrt(x_shift * x_shift + y_shift * y_shift)
@@ -176,7 +175,6 @@ class SIS_truncate(LensProfileBase):
         :param y: y-coordinate in image plane
         :return: derivatives dr/dx and dr/dy
         """
-
         r = np.sqrt(x**2 + y**2)
         if isinstance(r, int) or isinstance(r, float):
             if r == 0:

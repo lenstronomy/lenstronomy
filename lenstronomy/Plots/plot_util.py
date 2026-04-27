@@ -21,7 +21,6 @@ def sqrt(inputArray, scale_min=None, scale_max=None):
     :rtype: numpy array
     :return: image data array
     """
-
     imageData = np.array(inputArray, copy=True)
 
     if scale_min is None:

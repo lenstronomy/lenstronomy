@@ -18,7 +18,8 @@ def plot_chain_list(chain_list, index=0, num_average=100):
 
     :param chain_list: list of chains with arguments [type string, samples etc...]
     :param index: index of chain to be plotted
-    :param num_average: in chains, number of steps to average over in plotting diagnostics
+    :param num_average: in chains, number of steps to average over in plotting
+        diagnostics
     :return: plotting instance figure, axes (potentially multiple)
     """
     chain_i = chain_list[index]

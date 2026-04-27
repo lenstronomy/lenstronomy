@@ -68,7 +68,6 @@ class GreenBoschNFW(LensProfileBase):
         :param num_bins: Number of log-spaced radial bins to integrate
         :type num_bins: Integer
         """
-
         self._last_params = None
         self._cached = None
         super().__init__()
@@ -100,7 +99,6 @@ class GreenBoschNFW(LensProfileBase):
         :return: Lensing potential enclosing radius r
         :rtype: Float
         """
-
         kappa_r, r_bin = self.rbin_kappa_r(f_b, c_s, Rs, rho0ang)
 
         return self._rad_interp.function(
@@ -129,7 +127,6 @@ class GreenBoschNFW(LensProfileBase):
         :type center_y: Float
         :return: f_x, f_y at interpolated positions (x, y)
         """
-
         kappa_r, r_bin = self.rbin_kappa_r(f_b, c_s, Rs, rho0ang)
 
         return self._rad_interp.derivatives(
@@ -159,7 +156,6 @@ class GreenBoschNFW(LensProfileBase):
         :type center_y: Float
         :return: f_xx, f_xy, f_yx, f_yy at interpolated positions (x, y)
         """
-
         kappa_r, r_bin = self.rbin_kappa_r(f_b, c_s, Rs, rho0ang)
 
         return self._rad_interp.hessian(
@@ -171,7 +167,6 @@ class GreenBoschNFW(LensProfileBase):
 
         :return: no return, deletes the pre-computed \\kappa(r) and rbin, for every instance of this class (subhalo)
         """
-
         self._last_params = None
         self._cached = None
         self._rad_interp.set_dynamic()
@@ -193,7 +188,6 @@ class GreenBoschNFW(LensProfileBase):
         :param center_x: Position of halo center [arcseconds]
         :return: Density \\rho(r)
         """
-
         a1, a2, a3, a4 = 0.338, 0.0, 0.157, 1.337
         b1, b2, b3, b4, b5, b6 = 0.448, 0.272, -0.199, 0.011, -1.119, 0.093
         c0, c1, c2, c3, c4 = 2.779, -0.035, -0.337, -0.099, 0.415

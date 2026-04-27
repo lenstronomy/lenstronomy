@@ -201,7 +201,6 @@ class LensModelExtensions(object):
         :return: the flux array where the surface brightness has been computed for all
             pixels with r_min < grid_r < r_max.
         """
-
         condition1 = grid_r >= r_min
         condition2 = grid_r < r_max
         condition = np.logical_and(condition1, condition2)
@@ -238,7 +237,6 @@ class LensModelExtensions(object):
             compute the flux
         :return: numerically computed brightness of the sources
         """
-
         mag_finite = np.zeros_like(x_pos)
         deltaPix = float(window_size) / grid_number
         from lenstronomy.LightModel.Profiles.gaussian import Gaussian
@@ -400,7 +398,6 @@ class LensModelExtensions(object):
             self.critical_curve_caustics() of disconnected curves.
         :return: area within the caustic curve selected
         """
-
         (
             ra_crit_list,
             dec_crit_list,
@@ -896,7 +893,6 @@ class LensModelExtensions(object):
         :param dr: radius of finite source
         :return: keyword arguments of curved arc
         """
-
         # estimate curvature centroid as the median around the circle
 
         # make circle of points around position of interest

@@ -29,7 +29,6 @@ class CobayaSampler(object):
         :param sigma_start: initial point for parameters are drawn from Gaussians with
             these standard deviations
         """
-
         # get the logL and parameter info from LikelihoodModule
         self._check_install()
         self._likelihood_module = likelihood_module
@@ -55,7 +54,6 @@ class CobayaSampler(object):
             except 'drag' and 'blocking', since there is no obvious parameter speed hierarchy in a strong lensing likelihood.
             If none of these kwargs are passed, the default values/settings will be used.
         """
-
         sampled_params = self._param_names
 
         # add the priors to the sampled_params
@@ -258,7 +256,8 @@ class CobayaSampler(object):
         try:
             import cobaya
         except ImportError:
-            print("Warning : cobaya not properly installed. \
+            print(\
+                  "Warning : cobaya not properly installed. \
                     You can get it with $pip install cobaya.")
         else:
             pass

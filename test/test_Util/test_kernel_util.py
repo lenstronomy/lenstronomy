@@ -198,7 +198,6 @@ def test_deshift_subgrid():
 
 def test_shift_long_dist():
     """Input is a shifted kernel by more than 1 pixel :return:"""
-
     kernel_size = 9
     kernel = np.zeros((kernel_size, kernel_size))
     kernel[4, 4] = 2.0

@@ -358,9 +358,11 @@ class ModelBandPlot(ModelBand):
         specified lens models to more clearly show the presence of substructure.
 
         :param ax: matplotib axis instance
-        :param index_macromodel: a list of indexes corresponding to the lens models with convergence to be subtracted
+        :param index_macromodel: a list of indexes corresponding to the lens models with
+            convergence to be subtracted
         :param text: text appearing in frame
-        :param subtract_mean: bool; displays the substructure convergence relative to the mean convergence in the frame
+        :param subtract_mean: bool; displays the substructure convergence relative to
+            the mean convergence in the frame
         :param v_min: minimum color scale
         :param v_max: max color scale
         :param font_size: font size for text appearing in image
@@ -369,11 +371,11 @@ class ModelBandPlot(ModelBand):
         :param with_critical_curves: bool; plots the critical curves in the frame
         :param crit_curve_color: color of the critical curves
         :param image_name_list: labels the images, default is A, B, C, ...
-        :param super_sample_factor: a integer the specifies supersampling of the coordinate grid to create the convergence map
+        :param super_sample_factor: a integer the specifies supersampling of the
+            coordinate grid to create the convergence map
         :param add_color_bar: bool; whether or not to include a color bar
         :return: matplotib axis and colorbar
         """
-
         kwargs_lens_macro = []
         lens_model_list_macro = []
         profile_kwargs_list_macro = []
@@ -989,7 +991,6 @@ class ModelBandPlot(ModelBand):
 
         :return:
         """
-
         alpha1, alpha2 = self._lensModel.alpha(
             self._x_grid, self._y_grid, self._kwargs_lens_partial
         )
@@ -1223,7 +1224,6 @@ class ModelBandPlot(ModelBand):
 
         :return:
         """
-
         f, axes = plt.subplots(2, 3, figsize=(16, 8))
         self.data_plot(ax=axes[0, 0])
         self.model_plot(ax=axes[0, 1], image_names=True)

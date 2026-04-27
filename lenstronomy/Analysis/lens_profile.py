@@ -184,8 +184,9 @@ class LensProfileAnalysis(object):
         num_points=10,
         alpha_differentials=True,
     ):
-        """Computes the logarithmic power-law slope of a profile. ATTENTION: this is not
-        an observable!
+        """Computes the logarithmic power-law slope of a profile.
+
+        ATTENTION: this is not an observable!
 
         :param kwargs_lens: lens model keyword argument list
         :param radius: radius from the center where to compute the logarithmic slope
@@ -486,7 +487,6 @@ def einstein_radius_from_grid(
     :type verbose: bool
     :return: einstein radius
     """
-
     r_array = np.linspace(start=0, stop=grid_num * grid_spacing / 2.0, num=grid_num * 2)
     inner_most_bin = True
     for r in r_array:

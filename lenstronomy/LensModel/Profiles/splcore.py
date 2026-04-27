@@ -172,7 +172,6 @@ class SPLCORE(LensProfileBase):
         :param gamma: logarithmic slope at r -> infinity
         :return: convergence at r
         """
-
         r = np.hypot(x, y)
         r = self._safe_r_division(r, r_core)
         return self._density_2d_r(r, rho0, r_core, gamma)
@@ -236,7 +235,6 @@ class SPLCORE(LensProfileBase):
         :param r_core: core radius in arcsec
         :return: a minimum value of r
         """
-
         if isinstance(r, float) or isinstance(r, int):
             r = max(x_min * r_core, r)
         else:

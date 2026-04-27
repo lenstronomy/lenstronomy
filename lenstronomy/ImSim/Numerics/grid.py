@@ -98,7 +98,6 @@ class AdaptiveGrid(Coordinates1D):
         :param supersampled_values: values of the supersampled sub-pixels
         :return: 2d image
         """
-
         array = np.zeros_like(self._x_grid)
         array[self._low_res_indexes1d] = low_res_values
         array_low_res_partial = self._average_subgrid(supersampled_values)

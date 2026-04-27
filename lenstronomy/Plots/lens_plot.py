@@ -301,9 +301,11 @@ def point_source_plot(
     color="k",
     **kwargs,
 ):
-    """Plots and illustrates images of a point source. The plotting routine orders the
-    image labels according to the arrival time and illustrates a diamond shape of the
-    size of the magnification. The coordinates are chosen in pixel coordinates.
+    """Plots and illustrates images of a point source.
+
+    The plotting routine orders the image labels according to the arrival time and
+    illustrates a diamond shape of the size of the magnification. The coordinates are
+    chosen in pixel coordinates.
 
     :param ax: matplotlib axis instance
     :param pixel_grid: lenstronomy PixelGrid() instance (or class with inheritance of
@@ -313,10 +315,12 @@ def point_source_plot(
     :param source_x: x-position of source
     :param source_y: y-position of source
     :param name_list: list of names of images
-    :param name_list: list of strings, longer or equal the number of point sources. If changing this parameter, input as name_list=[[...], [...]]
+    :param name_list: list of strings, longer or equal the number of point sources. If
+        changing this parameter, input as name_list=[[...], [...]]
     :param index: number of sources, an integer number. Default None.
     :param color: string representing the color for the source's images. Default "k".
-    :param solver_type: string, type of solver to find the image positions ('lenstronomy', 'analytical' or 'stochastic')
+    :param solver_type: string, type of solver to find the image positions
+        ('lenstronomy', 'analytical' or 'stochastic')
     :param kwargs_solver: keyword arguments for the solver
     :param kwargs: additional plotting keyword arguments
     :return: matplotlib axis instance with figure
@@ -540,7 +544,6 @@ def curved_arc_illustration(
     :param color: string, matplotlib color for plot
     :return: matplotlib axis instance
     """
-
     # loop through lens models
     # check whether curved arc
     lens_model_list = lensModel.lens_model_list
@@ -900,7 +903,6 @@ def stretch_plot(
     :param patch_kwargs: additional keyword arguments for creating ellipse patch
     :return: matplotlib axis instance with figure
     """
-
     if plot_grid is None:
         # define default ellipse grid (20x20 spanning from -2 to 2)
         plot_grid = PixelGrid(20, 20, np.array([[1, 0], [0, 1]]) * 0.2, -2, -2)
@@ -958,7 +960,6 @@ def shear_plot(
     :param kwargs: additional plotting keyword arguments
     :return: matplotlib axis instance with figure
     """
-
     if plot_grid is None:
         # define default ellipse grid (20x20 spanning from -2 to 2)
         plot_grid = PixelGrid(20, 20, np.array([[1, 0], [0, 1]]) * 0.2, -2, -2)

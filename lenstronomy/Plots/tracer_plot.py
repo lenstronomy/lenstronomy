@@ -34,7 +34,6 @@ class TracerPlot(object):
         :param cmap_string: string of color map (or cmap matplotlib object)
         :param fast_caustic: boolean; if True, uses fast (but less accurate) caustic calculation method
         """
-
         multi_band_list = kwargs_data_joint.get("multi_band_list", [])
         multi_band_type = kwargs_data_joint.get("multi_band_type", "single-band")
         bands_compute = kwargs_data_joint.get("bands_compute", None)
@@ -721,7 +720,6 @@ class TracerPlot(object):
 
         :return:
         """
-
         alpha1, alpha2 = self.LensModel.alpha(
             self._x_grid, self._y_grid, self._kwargs_lens
         )
@@ -798,7 +796,6 @@ class TracerPlot(object):
 
         :return:
         """
-
         f, axes = plt.subplots(2, 3, figsize=(16, 8))
         self.data_plot(ax=axes[0, 0])
         self.model_plot(ax=axes[0, 1], image_names=True)

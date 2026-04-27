@@ -14,15 +14,16 @@ class PixelatedSourceReconstruction(object):
     likelihood methods.
 
     All sparse matrices (sp) in this class are represented as a list of lists:
-    [[y_coord, x_coord, pixel_value], ...], where [y_coord, x_coord] are
-    the pixel coordinates and pixel_value is the corresponding pixel's value.
+    [[y_coord, x_coord, pixel_value], ...], where [y_coord, x_coord] are the pixel
+    coordinates and pixel_value is the corresponding pixel's value.
     """
 
     def __init__(
         self, data_class, psf_class, lens_model_class, source_pixel_grid_class
     ):
-        """Initializes the PixelatedSourceReconstruction class. This sets up the
-        necessary data, PSF, lens model, and source grid for subsequent source
+        """Initializes the PixelatedSourceReconstruction class.
+
+        This sets up the necessary data, PSF, lens model, and source grid for subsequent source
         reconstruction matrix generation.
 
         :param data_class: ImageData() class instance (for the observed image data)
@@ -33,7 +34,6 @@ class PixelatedSourceReconstruction(object):
             - If the source pixel grid has rotational components or non-uniform pixel widths.
             - If the PSF kernel size is improperly sized for interferometric likelihood methods.
         """
-
         self._numPix = data_class.num_pixel_axes[0]
         self._image_data = data_class.data
         self._noise_rms = data_class.background_rms
@@ -226,13 +226,13 @@ class PixelatedSourceReconstruction(object):
         interpolation.
 
         :param kwargs_lens: List of keyword arguments for the lens_model_class.
-        :returns: A list of lists. Each element in the outer list corresponds to a single source pixel
-            within the defined source grid (ordered by their linear index). Each inner list contains
-            `[y_coord, x_coord, weight]` tuples, indicating that the source pixel at this index
-            contributes with `weight` to the image plane pixel at `(y_coord, x_coord)` when lensed.
+        :returns: A list of lists. Each element in the outer list corresponds to a
+            single source pixel within the defined source grid (ordered by their linear
+            index). Each inner list contains `[y_coord, x_coord, weight]` tuples,
+            indicating that the source pixel at this index contributes with `weight` to
+            the image plane pixel at `(y_coord, x_coord)` when lensed.
         :rtype: list
         """
-
         lensed_pixel_sp = [[] for _ in range(self._num_pixel_source)]
 
         beta_x_grid_2d, beta_y_grid_2d = self._lens_model_class.ray_shooting(
@@ -327,22 +327,22 @@ class PixelatedSourceReconstruction(object):
         and bilinear interpolation. The imput image should have the same dimension and
         coordinates defined by source_pixel_grid_class.
 
-        This method works by iterating through each pixel in the image plane, ray-shooting back to the source
-        plane to find the corresponding source coordinate, and then interpolating the flux from the input
-        source image at that coordinate. This provides an approximate lensed image, as flux between exact
-        source pixels is derived via interpolation. Note that the primary beam will NOT be applied on the
-        lensed image in this function.
+        This method works by iterating through each pixel in the image plane, ray-
+        shooting back to the source plane to find the corresponding source coordinate,
+        and then interpolating the flux from the input source image at that coordinate.
+        This provides an approximate lensed image, as flux between exact source pixels
+        is derived via interpolation. Note that the primary beam will NOT be applied on
+        the lensed image in this function.
 
         :param kwargs_lens: List of keyword arguments for the lens_model_class.
-        :param image: 2D NumPy array representing the pixelated source plane image. Expected to have
-                      dimensions defined by source_pixel_grid_class.
+        :param image: 2D NumPy array representing the pixelated source plane image.
+            Expected to have dimensions defined by source_pixel_grid_class.
         :type image: numpy.ndarray
         :returns: 2D NumPy array representing the lensed image in the image plane.
         :rtype: numpy.ndarray
-        :raises ValueError: If the input `image` dimensions do not match the dimensions of the
-                            defined source pixel grid (`self._ny_source`, `self._nx_source`).
+        :raises ValueError: If the input `image` dimensions do not match the dimensions
+            of the defined source pixel grid (`self._ny_source`, `self._nx_source`).
         """
-
         ny_source_check, nx_source_check = np.shape(source_image)
         if nx_source_check != self._nx_source or ny_source_check != self._ny_source:
             raise ValueError(
@@ -514,8 +514,9 @@ class PixelatedSourceReconstruction(object):
 
         :param sp1: First sparse matrix representation.
         :param sp2: Second sparse matrix representation.
-        :param kernel: The 2D PSF kernel (NumPy array). Assumed to be square with odd dimensions,
-                       with its center at the central pixel. If None, `self._kernel` is used
+        :param kernel: The 2D PSF kernel (NumPy array). Assumed to be square with odd
+            dimensions, with its center at the central pixel. If None, `self._kernel` is
+            used
         :returns: The result of the convolution product.
         :rtype: float
         """
@@ -549,8 +550,9 @@ class PixelatedSourceReconstruction(object):
         """Performs convolution of a sparse matrix with a given kernel.
 
         :param sp: Sparse matrix representation.
-        :param kernel: The 2D PSF kernel (NumPy array). Assumed to be square with odd dimensions,
-                       with its center at the central pixel. If None, `self._kernel` is used
+        :param kernel: The 2D PSF kernel (NumPy array). Assumed to be square with odd
+            dimensions, with its center at the central pixel. If None, `self._kernel` is
+            used
         :returns: A 2D NumPy array representing the convolved image.
         :rtype: numpy.ndarray
         """

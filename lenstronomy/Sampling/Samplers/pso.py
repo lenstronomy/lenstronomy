@@ -15,20 +15,15 @@ __all__ = ["ParticleSwarmOptimizer"]
 class ParticleSwarmOptimizer(object):
     """Optimizer using a swarm of particles.
 
-    :param func:
-        A function that takes a vector in the parameter space as input and
-        returns the natural logarithm of the posterior probability for that
-        position.
-
+    :param func: A function that takes a vector in the parameter space as input and
+        returns the natural logarithm of the posterior probability for that position.
     :param low: array of the lower bound of the parameter space
     :param high: array of the upper bound of the parameter space
     :param particle_count: the number of particles to use.
-    :param pool: (optional)
-        An alternative method of using the parallelized algorithm. If
-        provided, the value of ``threads`` is ignored and the
-        object provided by ``pool`` is used for all parallelization. It
-        can be any object with a ``map`` method that follows the same
-        calling sequence as the built-in ``map`` function.
+    :param pool: (optional) An alternative method of using the parallelized algorithm.
+        If provided, the value of ``threads`` is ignored and the object provided by
+        ``pool`` is used for all parallelization. It can be any object with a ``map``
+        method that follows the same calling sequence as the built-in ``map`` function.
     """
 
     def __init__(
@@ -79,12 +74,12 @@ class ParticleSwarmOptimizer(object):
         """Set the global best particle.
 
         :param position: position of the new global best
-        :type position: `list` or `ndarray`
+        :type position:`list` or `ndarray`
         :param velocity: velocity of the new global best
-        :type velocity: `list` or `ndarray`
+        :type velocity:`list` or `ndarray`
         :param fitness: fitness of the new global best
-        :type fitness: `float`
-        :return: `None`
+        :type fitness:`float`
+        :return:`None`
         :rtype:
         """
         self.global_best.position = [p for p in position]
@@ -119,21 +114,21 @@ class ParticleSwarmOptimizer(object):
         early_stop_tolerance=None,
         verbose=True,
     ):
-        """Launches the PSO. Yields the complete swarm per iteration.
+        """Launches the PSO.
 
-        :param max_iter: maximum iterations
-        :param c1: cognitive weight
-        :param c2: social weight
-        :param p: stop criterion, percentage of particles to use
-        :param m: stop criterion, difference between mean fitness and global best
-        :param n: stop criterion, difference between norm of the particle vector and
-            norm of the global best
-        :param early_stop_tolerance: will terminate at the given value (should be
-            specified as a chi^2)
-        :param verbose: prints when it stopped
-        :type verbose: boolean
+        Yields the complete swarm per iteration.
+                :param max_iter: maximum iterations
+                :param c1: cognitive weight
+                :param c2: social weight
+                :param p: stop criterion, percentage of particles to use
+                :param m: stop criterion, difference between mean fitness and global best
+                :param n: stop criterion, difference between norm of the particle vector and
+                    norm of the global best
+                :param early_stop_tolerance: will terminate at the given value (should be
+                    specified as a chi^2)
+                :param verbose: prints when it stopped
+                :type verbose: boolean
         """
-
         self._get_fitness(self.swarm)
         i = 0
         while True:
@@ -413,7 +408,6 @@ class Particle(object):
     @classmethod
     def create(cls, param_count):
         """Creates a new particle without position, velocity and -inf as fitness."""
-
         return Particle(
             np.array([[]] * param_count), np.array([[]] * param_count), -np.inf
         )

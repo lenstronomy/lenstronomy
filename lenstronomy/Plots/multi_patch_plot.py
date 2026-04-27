@@ -248,7 +248,6 @@ class MultiPatchPlot(MultiPatchReconstruction):
 
         :return:
         """
-
         f, axes = plt.subplots(2, 3, figsize=(16, 8))
         self.data_plot(ax=axes[0, 0], **kwargs)
         self.model_plot(ax=axes[0, 1], image_names=True, **kwargs)

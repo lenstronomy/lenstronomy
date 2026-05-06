@@ -502,7 +502,6 @@ class TestNumerics(object):
         kwargs = {"alpha_Rs": 4.0, "Rs": 0.5, "r_core": 0.9, "r_trunc": 3.0}
         self.assert_lens_integrals(Model, kwargs)
 
-    \
     """
     def test_sis(self):
         kwargs = {'theta_E': 0.5}

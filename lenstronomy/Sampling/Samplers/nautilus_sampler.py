@@ -13,9 +13,7 @@ __all__ = ["NautilusSampler"]
 
 
 class NautilusSampler(NestedSampler):
-    """Wrapper for the nautilus sampler by Johannes U.
-
-    Lange.
+    """Wrapper for the nautilus sampler by Johannes U. Lange.
         paper : https://arxiv.org/abs/2306.16923
         doc : https://nautilus-sampler.readthedocs.io
     """

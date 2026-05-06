@@ -13,7 +13,7 @@ class NIE_POTENTIAL(LensProfileBase):
 
     (67) of
     `LECTURES ON GRAVITATIONAL LENSING <https://arxiv.org/pdf/astro-ph/9606001.pdf>`_
-     and Eq. (1) of `Blandford & Kochanek 1987
+      and Eq. (1) of `Blandford & Kochanek 1987
     <http://adsabs.harvard.edu/full/1987ApJ...321..658B>`_, mapped to Eq. (8) of
     `Barnaka1998 <https://iopscience.iop.org/article/10.1086/305950/fulltext/37798.text.html>`_
     to find the ellipticity bounds
@@ -222,7 +222,7 @@ class NIEPotentialMajorAxis(LensProfileBase):
 
     (67) of
     `LECTURES ON GRAVITATIONAL LENSING <https://arxiv.org/pdf/astro-ph/9606001.pdf>`_
-     and Eq. (1) of `Blandford & Kochanek 1987
+      and Eq. (1) of `Blandford & Kochanek 1987
     <http://adsabs.harvard.edu/full/1987ApJ...321..658B>`_, mapped to Eq. (8) of
     `Barnaka1998 <https://iopscience.iop.org/article/10.1086/305950/fulltext/37798.text.html>`_
     to find the ellipticity bounds

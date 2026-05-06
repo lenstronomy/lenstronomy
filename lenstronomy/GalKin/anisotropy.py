@@ -401,9 +401,10 @@ class GeneralizedOM(object):
 
     @staticmethod
     def _j_beta(r, s, r_ani, beta_inf):
-        """Equation (12) in Agnello et al. (2014).
-        
-       :param r:
+        """Equation (12) in Agnello et al.
+
+        (2014).
+        :param r:
         :param s:
         :param r_ani: :param beta_inf
         :return:

@@ -13,9 +13,10 @@ __all__ = ["NautilusSampler"]
 
 
 class NautilusSampler(NestedSampler):
-    """Wrapper for the nautilus sampler by Johannes U. Lange.
-        paper : https://arxiv.org/abs/2306.16923
-        doc : https://nautilus-sampler.readthedocs.io
+    """Wrapper for the nautilus sampler by Johannes U.
+
+    Lange. paper : https://arxiv.org/abs/2306.16923
+    doc : https://nautilus-sampler.readthedocs.io
     """
 
     def __init__(
@@ -115,7 +116,8 @@ class NautilusSampler(NestedSampler):
         try:
             import nautilus
         except ImportError:
-            print("Warning : nautilus not properly installed. \
+            print(\
+                  "Warning : nautilus not properly installed. \
                   You can get it with $pip install nautilus-sampler.")
         else:
             self._nautilus = nautilus

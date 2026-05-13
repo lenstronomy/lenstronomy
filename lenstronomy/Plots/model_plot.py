@@ -551,7 +551,8 @@ class ModelPlot(object):
         :param v_max: maximum plotting scale of the map
         :param with_caustics: plot the caustics on top of the source reconstruction
         :param font_size: font size of labels
-        :param point_source_position: boolean, if True, plots a point at the position of the point source
+        :param point_source_position: boolean, if True, plots a point at the position of
+            the point source
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
@@ -686,7 +687,8 @@ class ModelPlot(object):
         :param source_add: bool, if True, includes the lensed image of the source in the
             plot
         :param lens_light_add: bool, if True, includes the lens light in the plot
-        :param coordinate_arrows: bool, if True, shows the North/East directional arrows from the plot
+        :param coordinate_arrows: bool, if True, shows the North/East directional arrows
+            from the plot
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
@@ -732,7 +734,8 @@ class ModelPlot(object):
             plot
         :param lens_light_add: bool, if True, includes the lens light in the plot
         :param font_size: font size of labels
-        :param coordinate_arrows: bool, if True, shows the North/East directional arrows from the plot
+        :param coordinate_arrows: bool, if True, shows the North/East directional arrows
+            from the plot
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """

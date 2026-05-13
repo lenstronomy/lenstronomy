@@ -254,7 +254,8 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param text: string, text to be displayed in the image
         :param colorbar_label: string, label for the colorbar
         :param cmap: string, color map
-        :param white_on_black: boolean, if True, prints white text on black background, otherwise the opposite
+        :param white_on_black: boolean, if True, prints white text on black background,
+            otherwise the opposite
         :param kwargs: plotting keyword arguments
         :return: matplotlib instance
         """

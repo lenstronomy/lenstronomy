@@ -258,7 +258,7 @@ class TestOutputPlots(object):
             v_max=None,
             with_caustics=True,
             caustic_color="yellow",
-            fsize=15,
+            font_size=15,
             plot_scale="linear",
         )
         plt.close()
@@ -319,42 +319,27 @@ class TestOutputPlots(object):
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
         ax = lensPlot.data_plot(
             ax=ax,
-            numPix=10,
-            deltaPix_source=0.1,
             v_min=None,
             v_max=None,
-            with_caustics=False,
-            caustic_color="yellow",
-            fsize=15,
-            plot_scale="linear",
+            font_size=15,
         )
         plt.close()
 
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
         ax = lensPlot.model_plot(
             ax=ax,
-            numPix=10,
-            deltaPix_source=0.1,
             v_min=None,
             v_max=None,
-            with_caustics=False,
-            caustic_color="yellow",
-            fsize=15,
-            plot_scale="linear",
+            font_size=15,
         )
         plt.close()
 
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
         ax = lensPlot.convergence_plot(
             ax=ax,
-            numPix=10,
-            deltaPix_source=0.1,
             v_min=None,
             v_max=None,
-            with_caustics=False,
-            caustic_color="yellow",
-            fsize=15,
-            plot_scale="linear",
+            font_size=15,
         )
         plt.close()
         f, ax = plt.subplots(1, 1, figsize=(4, 4))

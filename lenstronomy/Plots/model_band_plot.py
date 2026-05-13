@@ -1138,8 +1138,8 @@ class ModelBandPlot(ModelBand):
         :param source_add: bool, if True, includes the lensed image of the source in the
             plot
         :param lens_light_add: bool, if True, includes the lens light in the plot
-        :param show_coordinate_arrows: bool, if True, shows the North/East directional arrows from the
-            plot
+        :param show_coordinate_arrows: bool, if True, shows the North/East directional
+            arrows from the plot
         :param kwargs: kwargs to send matplotlib.pyplot.matshow()
         :return: the instance of matplotlib.axes.Axes
         """

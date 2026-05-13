@@ -485,7 +485,8 @@ class ModelPlot(object):
         :param band_index: index of band
         :param ax: matplotlib axis instance
         :param numPix: number of pixels in plot per axis
-        :param deltaPix_source: pixel spacing in the source resolution illustrated in plot
+        :param deltaPix_source: pixel spacing in the source resolution illustrated in
+            plot
         :param center: [center_x, center_y], if specified, uses this as the center
         :param v_min: minimum plotting scale of the map
         :param v_max: maximum plotting scale of the map
@@ -496,7 +497,8 @@ class ModelPlot(object):
         :param scale_size: float, size of the scale bar
         :param text: string, text to be displayed in the image
         :param colorbar_label: string, label for the colorbar
-        :param point_source_position: boolean, if True, plots a point at the position of the point source
+        :param point_source_position: boolean, if True, plots a point at the position of
+            the point source
         :param kwargs_caustic: keyword arguments for caustic plotting
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
@@ -543,7 +545,8 @@ class ModelPlot(object):
         :param band_index: index of band
         :param ax: matplotlib axis instance
         :param numPix: number of pixels in plot per axis
-        :param deltaPix_source: pixel spacing in the source resolution illustrated in plot
+        :param deltaPix_source: pixel spacing in the source resolution illustrated in
+            plot
         :param v_min: minimum plotting scale of the map
         :param v_max: maximum plotting scale of the map
         :param with_caustics: plot the caustics on top of the source reconstruction
@@ -586,7 +589,8 @@ class ModelPlot(object):
         :param ax: matplotib axis instance
         :param v_min: minimum range of plotting
         :param v_max: maximum range of plotting
-        :param image_name_list: list of strings for names of the images in the same order as the positions
+        :param image_name_list: list of strings for names of the images in the same
+            order as the positions
         :param font_size: font size of labels
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param text: string, text to be displayed in the image
@@ -676,9 +680,11 @@ class ModelPlot(object):
         :param v_min: min color scale for matshow plot
         :param v_max: max color scale for matshow plot
         :param unconvolved: bool, if True, does not perform PSF convolution on the image
-        :param point_source_add: bool, if True, includes the lensed point source(s) in the plot
+        :param point_source_add: bool, if True, includes the lensed point source(s) in
+            the plot
         :param font_size: font size of labels
-        :param source_add: bool, if True, includes the lensed image of the source in the plot
+        :param source_add: bool, if True, includes the lensed image of the source in the
+            plot
         :param lens_light_add: bool, if True, includes the lens light in the plot
         :param coordinate_arrows: bool, if True, shows the North/East directional arrows from the plot
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
@@ -720,8 +726,10 @@ class ModelPlot(object):
         :param text: text to display in upper left corner
         :param v_min: min color scale for matshow plot
         :param v_max: max color scale for matshow plot
-        :param point_source_add: bool, if True, includes the lensed point source(s) in the plot
-        :param source_add: bool, if True, includes the lensed image of the source in the plot
+        :param point_source_add: bool, if True, includes the lensed point source(s) in
+            the plot
+        :param source_add: bool, if True, includes the lensed image of the source in the
+            plot
         :param lens_light_add: bool, if True, includes the lens light in the plot
         :param font_size: font size of labels
         :param coordinate_arrows: bool, if True, shows the North/East directional arrows from the plot

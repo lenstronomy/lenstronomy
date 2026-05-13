@@ -146,7 +146,7 @@ class ModelBandPlot(ModelBand):
         text="Observed",
         font_size=15,
         colorbar_label=r"log$_{10}$ flux",
-        **kwargs
+        **kwargs,
     ):
         """
 
@@ -164,6 +164,7 @@ class ModelBandPlot(ModelBand):
             cmap=self._cmap,
             vmin=v_min,
             vmax=v_max,
+            **kwargs,
         )  # , vmin=0, vmax=2
 
         ax.get_xaxis().set_visible(False)
@@ -208,7 +209,7 @@ class ModelBandPlot(ModelBand):
         colorbar_label=r"log$_{10}$ flux",
         font_size=15,
         text="Reconstructed",
-        **kwargs
+        **kwargs,
     ):
         """
 
@@ -228,6 +229,7 @@ class ModelBandPlot(ModelBand):
             vmax=v_max,
             extent=self._image_extent,
             cmap=self._cmap,
+            **kwargs,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -284,7 +286,7 @@ class ModelBandPlot(ModelBand):
         v_max=None,
         font_size=15,
         colorbar_label=r"$\log_{10}\ \kappa$",
-        **kwargs
+        **kwargs,
     ):
         """
 
@@ -352,7 +354,7 @@ class ModelBandPlot(ModelBand):
         image_name_list=None,
         super_sample_factor=None,
         add_color_bar=True,
-        **kwargs
+        **kwargs,
     ):
         """Plots the convergence of a full lens model minus the convergence from a few
         specified lens models to more clearly show the presence of substructure.
@@ -499,10 +501,10 @@ class ModelBandPlot(ModelBand):
         v_max=6,
         font_size=15,
         text="Normalized Residuals",
-        colorbar_label=r"(f${}_{\rm model}$ - f${}_{\rm data}$)/$\sigma$",
+        colorbar_label=r"(f${}_{\rm data}$ - f${}_{\rm model}$)/$\sigma$",
         no_arrow=False,
         color_bar=True,
-        **kwargs
+        **kwargs,
     ):
         """
 
@@ -514,7 +516,7 @@ class ModelBandPlot(ModelBand):
         :return:
         """
         if not "cmap" in kwargs:
-            kwargs["cmap"] = "bwr"
+            kwargs["cmap"] = "RdBu_r"
         im = ax.matshow(
             self._norm_residuals,
             vmin=v_min,
@@ -561,20 +563,23 @@ class ModelBandPlot(ModelBand):
         v_max=1,
         font_size=15,
         text="Residuals",
-        colorbar_label=r"(f$_{\rm model}$-f$_{\rm data}$)",
+        colorbar_label=r"(f$_{\rm data}$-f$_{\rm model}$)",
+        **kwargs,
     ):
         """
 
         :param ax:
         :return:
         """
+        if not "cmap" in kwargs:
+            kwargs["cmap"] = "RdBu_r"
         im = ax.matshow(
-            self._model - self._data,
+            self._data - self._model,
             vmin=v_min,
             vmax=v_max,
             extent=self._image_extent,
-            cmap="bwr",
             origin="lower",
+            **kwargs,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -669,7 +674,7 @@ class ModelBandPlot(ModelBand):
         text="Reconstructed source",
         colorbar_label=r"log$_{10}$ flux",
         point_source_position=True,
-        **kwargs
+        **kwargs,
     ):
         """
 
@@ -713,6 +718,7 @@ class ModelBandPlot(ModelBand):
             cmap=self._cmap,
             vmin=v_min,
             vmax=v_max,
+            **kwargs,
         )  # source
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -787,6 +793,7 @@ class ModelBandPlot(ModelBand):
         with_caustics=False,
         font_size=15,
         point_source_position=True,
+        **kwargs,
     ):
         """Plots the uncertainty in the surface brightness in the source from the linear
         inversion by taking the diagonal elements of the covariance matrix of the
@@ -842,6 +849,7 @@ class ModelBandPlot(ModelBand):
             cmap=self._cmap,
             vmin=v_min,
             vmax=v_max,
+            **kwargs,
         )  # source
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -904,7 +912,7 @@ class ModelBandPlot(ModelBand):
         no_arrow=False,
         text="Magnification model",
         colorbar_label=r"$\det\ (\mathsf{A}^{-1})$",
-        **kwargs
+        **kwargs,
     ):
         """
 
@@ -915,7 +923,7 @@ class ModelBandPlot(ModelBand):
         :return:
         """
         if "cmap" not in kwargs:
-            kwargs["cmap"] = self._cmap
+            kwargs["cmap"] = "RdYlBu_r"
         if "alpha" not in kwargs:
             kwargs["alpha"] = 0.5
         mag_result = util.array2image(
@@ -984,6 +992,7 @@ class ModelBandPlot(ModelBand):
         text="Deflection model",
         font_size=15,
         colorbar_label=r"arcsec",
+        **kwargs,
     ):
         """
 
@@ -999,14 +1008,16 @@ class ModelBandPlot(ModelBand):
             alpha = alpha1
         else:
             alpha = alpha2
+        if "cmap" not in kwargs:
+            kwargs["cmap"] = "RdYlBu_r"
         im = ax.matshow(
             alpha,
             origin="lower",
             extent=self._image_extent,
             vmin=v_min,
             vmax=v_max,
-            cmap=self._cmap,
             alpha=0.5,
+            **kwargs,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -1079,7 +1090,7 @@ class ModelBandPlot(ModelBand):
         source_add=False,
         lens_light_add=False,
         no_arrow=False,
-        **kwargs
+        **kwargs,
     ):
         """Make a plot displaying all or a subset of light components.
 
@@ -1165,6 +1176,7 @@ class ModelBandPlot(ModelBand):
         source_add=False,
         lens_light_add=False,
         font_size=15,
+        **kwargs,
     ):
         model = ImageModel.image(
             self._bandmodel,
@@ -1189,6 +1201,7 @@ class ModelBandPlot(ModelBand):
             vmax=v_max,
             extent=self._image_extent,
             cmap=self._cmap,
+            **kwargs,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)

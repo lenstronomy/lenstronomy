@@ -186,6 +186,7 @@ class TracerPlot(object):
             cmap=self._cmap,
             vmin=v_min,
             vmax=v_max,
+            **kwargs,
         )  # , vmin=0, vmax=2
 
         ax.get_xaxis().set_visible(False)
@@ -249,6 +250,7 @@ class TracerPlot(object):
             vmax=v_max,
             extent=[0, self._frame_size, 0, self._frame_size],
             cmap=self._cmap,
+            **kwargs,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -423,6 +425,7 @@ class TracerPlot(object):
         font_size=15,
         text="Residuals",
         colorbar_label=r"(f$_{model}$-f$_{data}$)",
+        **kwargs,
     ):
         """
 
@@ -436,6 +439,7 @@ class TracerPlot(object):
             extent=[0, self._frame_size, 0, self._frame_size],
             cmap="bwr",
             origin="lower",
+            **kwargs,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -568,6 +572,7 @@ class TracerPlot(object):
             cmap=self._cmap,
             vmin=v_min,
             vmax=v_max,
+            **kwargs,
         )  # source
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -716,6 +721,7 @@ class TracerPlot(object):
         text="Deflection model",
         font_size=15,
         colorbar_label=r"arcsec",
+        **kwargs,
     ):
         """
 
@@ -731,14 +737,17 @@ class TracerPlot(object):
             alpha = alpha1
         else:
             alpha = alpha2
+        if "cmap" not in kwargs:
+            kwargs["cmap"] = self._cmap
+        if "alpha" not in kwargs:
+            kwargs["alpha"] = 0.5
         im = ax.matshow(
             alpha,
             origin="lower",
             extent=[0, self._frame_size, 0, self._frame_size],
             vmin=v_min,
             vmax=v_max,
-            cmap=self._cmap,
-            alpha=0.5,
+            **kwargs,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)

@@ -163,10 +163,10 @@ class ModelPlot(object):
         i = int(i)
         return self._band_plot_list[i]
 
-    def reconstruction_all_bands(self, **kwargs):
+    def reconstruction_all_bands(self, **matshow_kwargs):
         """
 
-        :param kwargs: arguments of plotting
+        :param matshow_kwargs: arguments of plotting
         :return: 3 x n_data plot with data, model, reduced residual plots of all the images/bands that are being modeled
 
         """
@@ -182,146 +182,575 @@ class ModelPlot(object):
         for band_index in self._index_list:
             if band_index >= 0:
                 axes[i, 0].set_title("image " + str(band_index))
-                self.data_plot(ax=axes[i, 0], band_index=band_index, **kwargs)
+                self.data_plot(ax=axes[i, 0], band_index=band_index, **matshow_kwargs)
                 self.model_plot(
-                    ax=axes[i, 1], image_names=True, band_index=band_index, **kwargs
+                    ax=axes[i, 1],
+                    image_names=True,
+                    band_index=band_index,
+                    **matshow_kwargs
                 )
                 self.normalized_residual_plot(
-                    ax=axes[i, 2], v_min=-6, v_max=6, band_index=band_index, **kwargs
+                    ax=axes[i, 2],
+                    v_min=-6,
+                    v_max=6,
+                    band_index=band_index,
+                    **matshow_kwargs
                 )
                 i += 1
         return f, axes
 
-    def data_plot(self, band_index=0, **kwargs):
+    def data_plot(
+        self,
+        band_index=0,
+        ax=None,
+        v_min=None,
+        v_max=None,
+        text="Observed",
+        font_size=15,
+        colorbar_label=r"log$_{10}$ flux",
+        no_arrow=False,
+        **matshow_kwargs
+    ):
         """Illustrates data.
 
         :param band_index: index of band
-        :param kwargs: arguments of plotting
+        :param ax: matplotlib axis instance
+        :param v_min: minimum plotting scale
+        :param v_max: maximum plotting scale
+        :param text: string, text to be displayed in the image
+        :param font_size: font size of the text
+        :param colorbar_label: string, label for the colorbar
+        :param no_arrow: boolean, if True, does not plot coordinate arrows
+        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
-        return plot_band.data_plot(**kwargs)
+        return plot_band.data_plot(
+            ax=ax,
+            v_min=v_min,
+            v_max=v_max,
+            text=text,
+            font_size=font_size,
+            colorbar_label=colorbar_label,
+            no_arrow=no_arrow,
+            **matshow_kwargs
+        )
 
-    def model_plot(self, band_index=0, **kwargs):
+    def model_plot(
+        self,
+        band_index=0,
+        ax=None,
+        v_min=None,
+        v_max=None,
+        image_names=False,
+        colorbar_label=r"log$_{10}$ flux",
+        font_size=15,
+        text="Reconstructed",
+        no_arrow=False,
+        original_position=True,
+        image_name_list=None,
+        **matshow_kwargs
+    ):
         """Illustrates model.
 
         :param band_index: index of band
-        :param kwargs: arguments of plotting
+        :param ax: matplotlib axis instance
+        :param v_min: minimum plotting scale
+        :param v_max: maximum plotting scale
+        :param image_names: boolean, if True, prints image names
+        :param colorbar_label: string, label for the colorbar
+        :param font_size: font size of the text
+        :param text: string, text to be displayed in the image
+        :param no_arrow: boolean, if True, does not plot coordinate arrows
+        :param original_position: boolean, if True, uses original image positions
+        :param image_name_list: list of names for images
+        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
-        return plot_band.model_plot(**kwargs)
+        return plot_band.model_plot(
+            ax=ax,
+            v_min=v_min,
+            v_max=v_max,
+            image_names=image_names,
+            colorbar_label=colorbar_label,
+            font_size=font_size,
+            text=text,
+            no_arrow=no_arrow,
+            original_position=original_position,
+            image_name_list=image_name_list,
+            **matshow_kwargs
+        )
 
-    def convergence_plot(self, band_index=0, **kwargs):
+    def convergence_plot(
+        self,
+        band_index=0,
+        ax=None,
+        text="Convergence",
+        v_min=None,
+        v_max=None,
+        font_size=15,
+        colorbar_label=r"$\log_{10}\ \kappa$",
+        no_arrow=False,
+        **matshow_kwargs
+    ):
         """Illustrates lensing convergence in data frame.
 
         :param band_index: index of band
-        :param kwargs: arguments of plotting
+        :param ax: matplotlib axis instance
+        :param text: string, text to be displayed in the image
+        :param v_min: minimum plotting scale
+        :param v_max: maximum plotting scale
+        :param font_size: font size of the text
+        :param colorbar_label: string, label for the colorbar
+        :param no_arrow: boolean, if True, does not plot coordinate arrows
+        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
-        return plot_band.convergence_plot(**kwargs)
+        return plot_band.convergence_plot(
+            ax=ax,
+            text=text,
+            v_min=v_min,
+            v_max=v_max,
+            font_size=font_size,
+            colorbar_label=colorbar_label,
+            no_arrow=no_arrow,
+            **matshow_kwargs
+        )
 
-    def substructure_plot(self, band_index=0, **kwargs):
+    def substructure_plot(
+        self,
+        band_index=0,
+        ax=None,
+        index_macromodel=None,
+        text="Substructure convergence",
+        subtract_mean=True,
+        v_min=-0.05,
+        v_max=0.05,
+        font_size=15,
+        colorbar_label=r"$\kappa - \kappa_{\rm{macro}}$",
+        cmap="bwr",
+        with_critical_curves=False,
+        crit_curve_color="k",
+        image_name_list=None,
+        super_sample_factor=None,
+        add_color_bar=True,
+        no_arrow=False,
+        **matshow_kwargs
+    ):
         """Illustrates substructure in the lens system.
 
         :param band_index: index of band
-        :param kwargs: arguments of plotting
+        :param ax: matplotlib axis instance
+        :param index_macromodel: a list of indexes corresponding to the lens models with convergence to be subtracted
+        :param text: text appearing in frame
+        :param subtract_mean: bool; displays the substructure convergence relative to the mean convergence in the frame
+        :param v_min: minimum color scale
+        :param v_max: max color scale
+        :param font_size: font size for text appearing in image
+        :param colorbar_label: label for the color bar
+        :param cmap: colormap for use in the visualization
+        :param with_critical_curves: bool; plots the critical curves in the frame
+        :param crit_curve_color: color of the critical curves
+        :param image_name_list: labels the images, default is A, B, C, ...
+        :param super_sample_factor: a integer the specifies supersampling of the coordinate grid to create the convergence map
+        :param add_color_bar: bool; whether or not to include a color bar
+        :param no_arrow: boolean, if True, does not plot coordinate arrows
+        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
-        return plot_band.substructure_plot(**kwargs)
+        if index_macromodel is None:
+            index_macromodel = tuple()
+        return plot_band.substructure_plot(
+            ax=ax,
+            index_macromodel=index_macromodel,
+            text=text,
+            subtract_mean=subtract_mean,
+            v_min=v_min,
+            v_max=v_max,
+            font_size=font_size,
+            colorbar_label=colorbar_label,
+            cmap=cmap,
+            with_critical_curves=with_critical_curves,
+            crit_curve_color=crit_curve_color,
+            image_name_list=image_name_list,
+            super_sample_factor=super_sample_factor,
+            add_color_bar=add_color_bar,
+            no_arrow=no_arrow,
+            **matshow_kwargs
+        )
 
-    def normalized_residual_plot(self, band_index=0, **kwargs):
+    def normalized_residual_plot(
+        self,
+        band_index=0,
+        ax=None,
+        v_min=-6,
+        v_max=6,
+        font_size=15,
+        text="Normalized Residuals",
+        colorbar_label=r"(f${}_{\rm data}$ - f${}_{\rm model}$)/$\sigma$",
+        no_arrow=False,
+        color_bar=True,
+        **matshow_kwargs
+    ):
         """Illustrates normalized residuals between data and model fit.
 
         :param band_index: index of band
-        :param kwargs: arguments of plotting
+        :param ax: matplotlib axis instance
+        :param v_min: minimum color scale
+        :param v_max: max color scale
+        :param font_size: font size for text appearing in image
+        :param text: text appearing in frame
+        :param colorbar_label: label for the color bar
+        :param no_arrow: boolean, if True, does not plot coordinate arrows
+        :param color_bar: Option to display the color bar
+        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
-        return plot_band.normalized_residual_plot(**kwargs)
+        return plot_band.normalized_residual_plot(
+            ax=ax,
+            v_min=v_min,
+            v_max=v_max,
+            font_size=font_size,
+            text=text,
+            colorbar_label=colorbar_label,
+            no_arrow=no_arrow,
+            color_bar=color_bar,
+            **matshow_kwargs
+        )
 
-    def absolute_residual_plot(self, band_index=0, **kwargs):
+    def absolute_residual_plot(
+        self,
+        band_index=0,
+        ax=None,
+        v_min=-1,
+        v_max=1,
+        font_size=15,
+        text="Residuals",
+        colorbar_label=r"(f$_{\rm data}$-f$_{\rm model}$)",
+        no_arrow=False,
+        **matshow_kwargs
+    ):
         """Illustrates absolute residuals between data and model fit.
 
         :param band_index: index of band
-        :param kwargs: arguments of plotting
+        :param ax: matplotlib axis instance
+        :param v_min: minimum color scale
+        :param v_max: max color scale
+        :param font_size: font size for text appearing in image
+        :param text: text appearing in frame
+        :param colorbar_label: label for the color bar
+        :param no_arrow: boolean, if True, does not plot coordinate arrows
+        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
-        return plot_band.absolute_residual_plot(**kwargs)
+        return plot_band.absolute_residual_plot(
+            ax=ax,
+            v_min=v_min,
+            v_max=v_max,
+            font_size=font_size,
+            text=text,
+            colorbar_label=colorbar_label,
+            no_arrow=no_arrow,
+            **matshow_kwargs
+        )
 
-    def source_plot(self, band_index=0, **kwargs):
+    def source_plot(
+        self,
+        band_index=0,
+        ax=None,
+        numPix=100,
+        deltaPix_source=0.01,
+        center=None,
+        v_min=None,
+        v_max=None,
+        with_caustics=False,
+        caustic_color="yellow",
+        font_size=15,
+        plot_scale="log",
+        scale_size=0.1,
+        text="Reconstructed source",
+        colorbar_label=r"log$_{10}$ flux",
+        point_source_position=True,
+        kwargs_caustic=None,
+        no_arrow=False,
+        **matshow_kwargs
+    ):
         """Illustrates reconstructed source (de-lensed de-convolved)
 
         :param band_index: index of band
-        :param kwargs: arguments of plotting
+        :param ax: matplotlib axis instance
+        :param numPix: number of pixels in plot per axis
+        :param deltaPix_source: pixel spacing in the source resolution illustrated in plot
+        :param center: [center_x, center_y], if specified, uses this as the center
+        :param v_min: minimum plotting scale of the map
+        :param v_max: maximum plotting scale of the map
+        :param with_caustics: plot the caustics on top of the source reconstruction
+        :param caustic_color: color of the caustics
+        :param font_size: font size of labels
+        :param plot_scale: string, log or linear, scale of surface brightness plot
+        :param scale_size: float, size of the scale bar
+        :param text: string, text to be displayed in the image
+        :param colorbar_label: string, label for the colorbar
+        :param point_source_position: boolean, if True, plots a point at the position of the point source
+        :param kwargs_caustic: keyword arguments for caustic plotting
+        :param no_arrow: boolean, if True, does not plot coordinate arrows
+        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
-        return plot_band.source_plot(**kwargs)
+        return plot_band.source_plot(
+            ax=ax,
+            numPix=numPix,
+            deltaPix_source=deltaPix_source,
+            center=center,
+            v_min=v_min,
+            v_max=v_max,
+            with_caustics=with_caustics,
+            caustic_color=caustic_color,
+            font_size=font_size,
+            plot_scale=plot_scale,
+            scale_size=scale_size,
+            text=text,
+            colorbar_label=colorbar_label,
+            point_source_position=point_source_position,
+            kwargs_caustic=kwargs_caustic,
+            no_arrow=no_arrow,
+            **matshow_kwargs
+        )
 
-    def error_map_source_plot(self, band_index=0, **kwargs):
+    def error_map_source_plot(
+        self,
+        band_index=0,
+        ax=None,
+        numPix=100,
+        deltaPix_source=0.01,
+        v_min=None,
+        v_max=None,
+        with_caustics=False,
+        font_size=15,
+        point_source_position=True,
+        no_arrow=False,
+        **matshow_kwargs
+    ):
         """Illustrates surface brightness variance in the reconstruction in the source
         plane.
 
         :param band_index: index of band
-        :param kwargs: arguments of plotting
+        :param ax: matplotlib axis instance
+        :param numPix: number of pixels in plot per axis
+        :param deltaPix_source: pixel spacing in the source resolution illustrated in plot
+        :param v_min: minimum plotting scale of the map
+        :param v_max: maximum plotting scale of the map
+        :param with_caustics: plot the caustics on top of the source reconstruction
+        :param font_size: font size of labels
+        :param point_source_position: boolean, if True, plots a point at the position of the point source
+        :param no_arrow: boolean, if True, does not plot coordinate arrows
+        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
-        return plot_band.error_map_source_plot(**kwargs)
+        return plot_band.error_map_source_plot(
+            ax=ax,
+            numPix=numPix,
+            deltaPix_source=deltaPix_source,
+            v_min=v_min,
+            v_max=v_max,
+            with_caustics=with_caustics,
+            font_size=font_size,
+            point_source_position=point_source_position,
+            no_arrow=no_arrow,
+            **matshow_kwargs
+        )
 
-    def magnification_plot(self, band_index=0, **kwargs):
+    def magnification_plot(
+        self,
+        band_index=0,
+        ax=None,
+        v_min=-10,
+        v_max=10,
+        image_name_list=None,
+        font_size=15,
+        no_arrow=False,
+        text="Magnification model",
+        colorbar_label=r"$\det\ (\mathsf{A}^{-1})$",
+        **matshow_kwargs
+    ):
         """Illustrates lensing magnification in the field of view of the data frame.
 
         :param band_index: index of band
-        :param kwargs: arguments of plotting
+        :param ax: matplotib axis instance
+        :param v_min: minimum range of plotting
+        :param v_max: maximum range of plotting
+        :param image_name_list: list of strings for names of the images in the same order as the positions
+        :param font_size: font size of labels
+        :param no_arrow: boolean, if True, does not plot coordinate arrows
+        :param text: string, text to be displayed in the image
+        :param colorbar_label: string, label for the colorbar
+        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
-        return plot_band.magnification_plot(**kwargs)
+        return plot_band.magnification_plot(
+            ax=ax,
+            v_min=v_min,
+            v_max=v_max,
+            image_name_list=image_name_list,
+            font_size=font_size,
+            no_arrow=no_arrow,
+            text=text,
+            colorbar_label=colorbar_label,
+            **matshow_kwargs
+        )
 
-    def deflection_plot(self, band_index=0, **kwargs):
+    def deflection_plot(
+        self,
+        band_index=0,
+        ax=None,
+        v_min=None,
+        v_max=None,
+        axis=0,
+        with_caustics=False,
+        image_name_list=None,
+        text="Deflection model",
+        font_size=15,
+        colorbar_label=r"arcsec",
+        no_arrow=False,
+        **matshow_kwargs
+    ):
         """Illustrates lensing deflections on the field of view of the data frame.
 
         :param band_index: index of band
-        :param kwargs: arguments of plotting
+        :param ax: matplotlib axis instance
+        :param v_min: minimum plotting scale
+        :param v_max: maximum plotting scale
+        :param axis: integer, 0 or 1, specifies the deflection angle axis to be plotted
+        :param with_caustics: boolean, if True, plots caustics
+        :param image_name_list: list of strings for names of the images
+        :param text: string, text to be displayed in the image
+        :param font_size: font size of labels
+        :param colorbar_label: string, label for the colorbar
+        :param no_arrow: boolean, if True, does not plot coordinate arrows
+        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
-        return plot_band.deflection_plot(**kwargs)
+        return plot_band.deflection_plot(
+            ax=ax,
+            v_min=v_min,
+            v_max=v_max,
+            axis=axis,
+            with_caustics=with_caustics,
+            image_name_list=image_name_list,
+            text=text,
+            font_size=font_size,
+            colorbar_label=colorbar_label,
+            no_arrow=no_arrow,
+            **matshow_kwargs
+        )
 
-    def decomposition_plot(self, band_index=0, **kwargs):
+    def decomposition_plot(
+        self,
+        band_index=0,
+        ax=None,
+        text="Reconstructed",
+        v_min=None,
+        v_max=None,
+        unconvolved=False,
+        point_source_add=False,
+        font_size=15,
+        source_add=False,
+        lens_light_add=False,
+        no_arrow=False,
+        **matshow_kwargs
+    ):
         """Illustrates decomposition of model components.
 
         :param band_index: index of band
-        :param kwargs: arguments of plotting
+        :param ax: an instance of matplotlib.axes.Axes
+        :param text: text to display in upper left corner
+        :param v_min: min color scale for matshow plot
+        :param v_max: max color scale for matshow plot
+        :param unconvolved: bool, if True, does not perform PSF convolution on the image
+        :param point_source_add: bool, if True, includes the lensed point source(s) in the plot
+        :param font_size: font size of labels
+        :param source_add: bool, if True, includes the lensed image of the source in the plot
+        :param lens_light_add: bool, if True, includes the lens light in the plot
+        :param no_arrow: bool, if True, omits the North/East directional arrows from the plot
+        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
-        return plot_band.decomposition_plot(**kwargs)
+        return plot_band.decomposition_plot(
+            ax=ax,
+            text=text,
+            v_min=v_min,
+            v_max=v_max,
+            unconvolved=unconvolved,
+            point_source_add=point_source_add,
+            font_size=font_size,
+            source_add=source_add,
+            lens_light_add=lens_light_add,
+            no_arrow=no_arrow,
+            **matshow_kwargs
+        )
 
-    def subtract_from_data_plot(self, band_index=0, **kwargs):
+    def subtract_from_data_plot(
+        self,
+        band_index=0,
+        ax=None,
+        text="Subtracted",
+        v_min=None,
+        v_max=None,
+        point_source_add=False,
+        source_add=False,
+        lens_light_add=False,
+        font_size=15,
+        no_arrow=False,
+        **matshow_kwargs
+    ):
         """Subtracts individual model components from the data.
 
         :param band_index: index of band
-        :param kwargs: arguments of plotting
+        :param ax: an instance of matplotlib.axes.Axes
+        :param text: text to display in upper left corner
+        :param v_min: min color scale for matshow plot
+        :param v_max: max color scale for matshow plot
+        :param point_source_add: bool, if True, includes the lensed point source(s) in the plot
+        :param source_add: bool, if True, includes the lensed image of the source in the plot
+        :param lens_light_add: bool, if True, includes the lens light in the plot
+        :param font_size: font size of labels
+        :param no_arrow: bool, if True, omits the North/East directional arrows from the plot
+        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
-        return plot_band.subtract_from_data_plot(**kwargs)
+        return plot_band.subtract_from_data_plot(
+            ax=ax,
+            text=text,
+            v_min=v_min,
+            v_max=v_max,
+            point_source_add=point_source_add,
+            source_add=source_add,
+            lens_light_add=lens_light_add,
+            font_size=font_size,
+            no_arrow=no_arrow,
+            **matshow_kwargs
+        )
 
-    def plot_main(self, band_index=0, **kwargs):
+    def plot_main(self, band_index=0, with_caustics=False):
         """Plot a set of 'main' modelling diagnostics.
 
         :param band_index: index of band
-        :param kwargs: arguments of plotting
+        :param with_caustics: boolean, if True, plots caustics in the source plane
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
-        return plot_band.plot_main(**kwargs)
+        return plot_band.plot_main(with_caustics=with_caustics)
 
     def plot_separate(self, band_index=0):
         """Plot a set of 'main' modelling diagnostics.
@@ -341,15 +770,22 @@ class ModelPlot(object):
         plot_band = self._select_band(band_index)
         return plot_band.plot_subtract_from_data_all()
 
-    def plot_extinction_map(self, band_index=0, **kwargs):
+    def plot_extinction_map(
+        self, band_index=0, ax=None, v_min=None, v_max=None, **matshow_kwargs
+    ):
         """
 
         :param band_index: index of band
-        :param kwargs: arguments of plotting
+        :param ax: an instance of matplotlib.axes.Axes
+        :param v_min: min color scale for matshow plot
+        :param v_max: max color scale for matshow plot
+        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance of differential extinction map
         """
         plot_band = self._select_band(band_index)
-        return plot_band.plot_extinction_map(**kwargs)
+        return plot_band.plot_extinction_map(
+            ax=ax, v_min=v_min, v_max=v_max, **matshow_kwargs
+        )
 
     def source(self, band_index=0, **kwargs):
         """

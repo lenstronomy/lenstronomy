@@ -146,11 +146,14 @@ class ModelBandPlot(ModelBand):
         text="Observed",
         font_size=15,
         colorbar_label=r"log$_{10}$ flux",
-        **kwargs,
+        no_arrow=False,
+        **matshow_kwargs,
     ):
         """
 
-        :param ax:
+        :param ax: matplotlib axis instance
+        :param no_arrow: boolean, if True, does not plot coordinate arrows
+        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return:
         """
         if v_min is None:
@@ -164,7 +167,7 @@ class ModelBandPlot(ModelBand):
             cmap=self._cmap,
             vmin=v_min,
             vmax=v_max,
-            **kwargs,
+            **matshow_kwargs,
         )  # , vmin=0, vmax=2
 
         ax.get_xaxis().set_visible(False)
@@ -183,7 +186,7 @@ class ModelBandPlot(ModelBand):
             font_size=font_size,
         )
 
-        if "no_arrow" not in kwargs or not kwargs["no_arrow"]:
+        if not no_arrow:
             plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,
@@ -209,13 +212,20 @@ class ModelBandPlot(ModelBand):
         colorbar_label=r"log$_{10}$ flux",
         font_size=15,
         text="Reconstructed",
-        **kwargs,
+        no_arrow=False,
+        original_position=True,
+        image_name_list=None,
+        **matshow_kwargs,
     ):
         """
 
         :param ax: matplotib axis instance
         :param v_min:
         :param v_max:
+        :param no_arrow: boolean, if True, does not plot coordinate arrows
+        :param original_position: boolean, if True, uses original image positions
+        :param image_name_list: list of names for images
+        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return:
         """
         if v_min is None:
@@ -229,7 +239,7 @@ class ModelBandPlot(ModelBand):
             vmax=v_max,
             extent=self._image_extent,
             cmap=self._cmap,
-            **kwargs,
+            **matshow_kwargs,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -245,7 +255,7 @@ class ModelBandPlot(ModelBand):
             backgroundcolor="k",
             font_size=font_size,
         )
-        if "no_arrow" not in kwargs or not kwargs["no_arrow"]:
+        if not no_arrow:
             plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,
@@ -266,14 +276,14 @@ class ModelBandPlot(ModelBand):
             ra_image, dec_image = self._bandmodel.PointSource.image_position(
                 self._kwargs_ps_partial,
                 self._kwargs_lens_partial,
-                original_position=kwargs.get("original_position", True),
+                original_position=original_position,
             )
             plot_util.image_position_plot(
                 ax,
                 self._coords,
                 ra_image,
                 dec_image,
-                image_name_list=kwargs.get("image_name_list", None),
+                image_name_list=image_name_list,
                 plot_out_of_image=False,
             )
         # source_position_plot(ax, self._coords, self._kwargs_source)
@@ -286,15 +296,18 @@ class ModelBandPlot(ModelBand):
         v_max=None,
         font_size=15,
         colorbar_label=r"$\log_{10}\ \kappa$",
-        **kwargs,
+        no_arrow=False,
+        **matshow_kwargs,
     ):
         """
 
         :param ax: matplotib axis instance
+        :param no_arrow: boolean, if True, does not plot coordinate arrows
+        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: convergence plot in ax instance
         """
-        if not "cmap" in kwargs:
-            kwargs["cmap"] = self._cmap
+        if "cmap" not in matshow_kwargs:
+            matshow_kwargs["cmap"] = self._cmap
 
         kappa_result = util.array2image(
             self._lensModel.kappa(self._x_grid, self._y_grid, self._kwargs_lens_partial)
@@ -303,9 +316,9 @@ class ModelBandPlot(ModelBand):
             np.log10(kappa_result),
             origin="lower",
             extent=self._image_extent,
-            cmap=kwargs["cmap"],
             vmin=v_min,
             vmax=v_max,
+            **matshow_kwargs,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -313,7 +326,7 @@ class ModelBandPlot(ModelBand):
         plot_util.scale_bar(
             ax, self._frame_size, dist=1, text='1"', color="w", font_size=font_size
         )
-        if "no_arrow" not in kwargs or not kwargs["no_arrow"]:
+        if not no_arrow:
             plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,
@@ -354,7 +367,8 @@ class ModelBandPlot(ModelBand):
         image_name_list=None,
         super_sample_factor=None,
         add_color_bar=True,
-        **kwargs,
+        no_arrow=False,
+        **matshow_kwargs,
     ):
         """Plots the convergence of a full lens model minus the convergence from a few
         specified lens models to more clearly show the presence of substructure.
@@ -373,6 +387,8 @@ class ModelBandPlot(ModelBand):
         :param image_name_list: labels the images, default is A, B, C, ...
         :param super_sample_factor: a integer the specifies supersampling of the coordinate grid to create the convergence map
         :param add_color_bar: bool; whether or not to include a color bar
+        :param no_arrow: boolean, if True, does not plot coordinate arrows
+        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotib axis and colorbar
         """
 
@@ -441,7 +457,7 @@ class ModelBandPlot(ModelBand):
         plot_util.scale_bar(
             ax, self._frame_size, dist=1, text='1"', color="k", font_size=font_size
         )
-        if "no_arrow" not in kwargs or not kwargs["no_arrow"]:
+        if not no_arrow:
             plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,
@@ -504,26 +520,26 @@ class ModelBandPlot(ModelBand):
         colorbar_label=r"(f${}_{\rm data}$ - f${}_{\rm model}$)/$\sigma$",
         no_arrow=False,
         color_bar=True,
-        **kwargs,
+        **matshow_kwargs,
     ):
         """
 
         :param ax:
         :param v_min:
         :param v_max:
-        :param kwargs: kwargs to send to matplotlib.pyplot.matshow()
+        :param matshow_kwargs: kwargs to send to matplotlib.pyplot.matshow()
         :param color_bar: Option to display the color bar
         :return:
         """
-        if not "cmap" in kwargs:
-            kwargs["cmap"] = "RdBu_r"
+        if "cmap" not in matshow_kwargs:
+            matshow_kwargs["cmap"] = "RdBu_r"
         im = ax.matshow(
             self._norm_residuals,
             vmin=v_min,
             vmax=v_max,
             extent=self._image_extent,
             origin="lower",
-            **kwargs,
+            **matshow_kwargs,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -564,22 +580,25 @@ class ModelBandPlot(ModelBand):
         font_size=15,
         text="Residuals",
         colorbar_label=r"(f$_{\rm data}$-f$_{\rm model}$)",
-        **kwargs,
+        no_arrow=False,
+        **matshow_kwargs,
     ):
         """
 
         :param ax:
+        :param no_arrow: boolean, if True, does not plot coordinate arrows
+        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return:
         """
-        if not "cmap" in kwargs:
-            kwargs["cmap"] = "RdBu_r"
+        if "cmap" not in matshow_kwargs:
+            matshow_kwargs["cmap"] = "RdBu_r"
         im = ax.matshow(
             self._data - self._model,
             vmin=v_min,
             vmax=v_max,
             extent=self._image_extent,
             origin="lower",
-            **kwargs,
+            **matshow_kwargs,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -595,14 +614,15 @@ class ModelBandPlot(ModelBand):
             backgroundcolor="w",
             font_size=font_size,
         )
-        plot_util.coordinate_arrows(
-            ax,
-            self._frame_size,
-            self._coords,
-            font_size=font_size,
-            color="k",
-            arrow_size=self._arrow_size,
-        )
+        if not no_arrow:
+            plot_util.coordinate_arrows(
+                ax,
+                self._frame_size,
+                self._coords,
+                font_size=font_size,
+                color="k",
+                arrow_size=self._arrow_size,
+            )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
@@ -674,7 +694,9 @@ class ModelBandPlot(ModelBand):
         text="Reconstructed source",
         colorbar_label=r"log$_{10}$ flux",
         point_source_position=True,
-        **kwargs,
+        kwargs_caustic=None,
+        no_arrow=False,
+        **matshow_kwargs,
     ):
         """
 
@@ -687,13 +709,17 @@ class ModelBandPlot(ModelBand):
         :param caustic_color:
         :param font_size:
         :param plot_scale: string, log or linear, scale of surface brightness plot
-        :param kwargs:
+        :param kwargs_caustic: keyword arguments for caustic plotting
+        :param no_arrow: boolean, if True, does not plot coordinate arrows
+        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return:
         """
         if v_min is None:
             v_min = self._v_min_default
         if v_max is None:
             v_max = self._v_max_default
+        if kwargs_caustic is None:
+            kwargs_caustic = {}
         d_s = numPix * deltaPix_source
         source, coords_source = self.source(numPix, deltaPix_source, center=center)
         if plot_scale == "log":
@@ -718,7 +744,7 @@ class ModelBandPlot(ModelBand):
             cmap=self._cmap,
             vmin=v_min,
             vmax=v_max,
-            **kwargs,
+            **matshow_kwargs,
         )  # source
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -746,7 +772,7 @@ class ModelBandPlot(ModelBand):
                 dec_caustic_list,
                 color=caustic_color,
                 points_only=self._caustic_points_only,
-                **kwargs.get("kwargs_caustic", {}),
+                **kwargs_caustic,
             )
         if scale_size > 0:
             plot_util.scale_bar(
@@ -758,7 +784,7 @@ class ModelBandPlot(ModelBand):
                 flipped=False,
                 font_size=font_size,
             )
-        if "no_arrow" not in kwargs or not kwargs["no_arrow"]:
+        if not no_arrow:
             plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,
@@ -793,7 +819,8 @@ class ModelBandPlot(ModelBand):
         with_caustics=False,
         font_size=15,
         point_source_position=True,
-        **kwargs,
+        no_arrow=False,
+        **matshow_kwargs,
     ):
         """Plots the uncertainty in the surface brightness in the source from the linear
         inversion by taking the diagonal elements of the covariance matrix of the
@@ -813,6 +840,8 @@ class ModelBandPlot(ModelBand):
         :param font_size: font size of labels
         :param point_source_position: boolean, if True, plots a point at the position of
             the point source
+        :param no_arrow: boolean, if True, does not plot coordinate arrows
+        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot of source surface brightness errors in the reconstruction on the
             axis instance
         """
@@ -849,7 +878,7 @@ class ModelBandPlot(ModelBand):
             cmap=self._cmap,
             vmin=v_min,
             vmax=v_max,
-            **kwargs,
+            **matshow_kwargs,
         )  # source
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -878,14 +907,15 @@ class ModelBandPlot(ModelBand):
             flipped=False,
             font_size=font_size,
         )
-        plot_util.coordinate_arrows(
-            ax,
-            d_s,
-            coords_source,
-            arrow_size=self._arrow_size,
-            color="w",
-            font_size=font_size,
-        )
+        if not no_arrow:
+            plot_util.coordinate_arrows(
+                ax,
+                d_s,
+                coords_source,
+                arrow_size=self._arrow_size,
+                color="w",
+                font_size=font_size,
+            )
         plot_util.text_description(
             ax,
             d_s,
@@ -912,20 +942,20 @@ class ModelBandPlot(ModelBand):
         no_arrow=False,
         text="Magnification model",
         colorbar_label=r"$\det\ (\mathsf{A}^{-1})$",
-        **kwargs,
+        **matshow_kwargs,
     ):
         """
 
         :param ax: matplotib axis instance
         :param v_min: minimum range of plotting
         :param v_max: maximum range of plotting
-        :param kwargs: kwargs to send to matplotlib.pyplot.matshow()
+        :param matshow_kwargs: kwargs to send to matplotlib.pyplot.matshow()
         :return:
         """
-        if "cmap" not in kwargs:
-            kwargs["cmap"] = "RdYlBu_r"
-        if "alpha" not in kwargs:
-            kwargs["alpha"] = 0.5
+        if "cmap" not in matshow_kwargs:
+            matshow_kwargs["cmap"] = "RdYlBu_r"
+        if "alpha" not in matshow_kwargs:
+            matshow_kwargs["alpha"] = 0.5
         mag_result = util.array2image(
             self._lensModel.magnification(
                 self._x_grid, self._y_grid, self._kwargs_lens_partial
@@ -937,7 +967,7 @@ class ModelBandPlot(ModelBand):
             extent=self._image_extent,
             vmin=v_min,
             vmax=v_max,
-            **kwargs,
+            **matshow_kwargs,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -992,10 +1022,13 @@ class ModelBandPlot(ModelBand):
         text="Deflection model",
         font_size=15,
         colorbar_label=r"arcsec",
-        **kwargs,
+        no_arrow=False,
+        **matshow_kwargs,
     ):
         """
 
+        :param no_arrow: boolean, if True, does not plot coordinate arrows
+        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return:
         """
 
@@ -1008,8 +1041,8 @@ class ModelBandPlot(ModelBand):
             alpha = alpha1
         else:
             alpha = alpha2
-        if "cmap" not in kwargs:
-            kwargs["cmap"] = "RdYlBu_r"
+        if "cmap" not in matshow_kwargs:
+            matshow_kwargs["cmap"] = "RdYlBu_r"
         im = ax.matshow(
             alpha,
             origin="lower",
@@ -1017,7 +1050,7 @@ class ModelBandPlot(ModelBand):
             vmin=v_min,
             vmax=v_max,
             alpha=0.5,
-            **kwargs,
+            **matshow_kwargs,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -1025,14 +1058,15 @@ class ModelBandPlot(ModelBand):
         plot_util.scale_bar(
             ax, self._frame_size, dist=1, text='1"', color="k", font_size=font_size
         )
-        plot_util.coordinate_arrows(
-            ax,
-            self._frame_size,
-            self._coords,
-            color="k",
-            arrow_size=self._arrow_size,
-            font_size=font_size,
-        )
+        if not no_arrow:
+            plot_util.coordinate_arrows(
+                ax,
+                self._frame_size,
+                self._coords,
+                color="k",
+                arrow_size=self._arrow_size,
+                font_size=font_size,
+            )
         plot_util.text_description(
             ax,
             self._frame_size,
@@ -1090,7 +1124,7 @@ class ModelBandPlot(ModelBand):
         source_add=False,
         lens_light_add=False,
         no_arrow=False,
-        **kwargs,
+        **matshow_kwargs,
     ):
         """Make a plot displaying all or a subset of light components.
 
@@ -1126,15 +1160,15 @@ class ModelBandPlot(ModelBand):
             v_min = self._v_min_default
         if v_max is None:
             v_max = self._v_max_default
-        if "cmap" not in kwargs:
-            kwargs["cmap"] = self._cmap
+        if "cmap" not in matshow_kwargs:
+            matshow_kwargs["cmap"] = self._cmap
         im = ax.matshow(
             np.log10(model),
             origin="lower",
             vmin=v_min,
             vmax=v_max,
             extent=self._image_extent,
-            **kwargs,
+            **matshow_kwargs,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -1176,7 +1210,8 @@ class ModelBandPlot(ModelBand):
         source_add=False,
         lens_light_add=False,
         font_size=15,
-        **kwargs,
+        no_arrow=False,
+        **matshow_kwargs,
     ):
         model = ImageModel.image(
             self._bandmodel,
@@ -1201,7 +1236,7 @@ class ModelBandPlot(ModelBand):
             vmax=v_max,
             extent=self._image_extent,
             cmap=self._cmap,
-            **kwargs,
+            **matshow_kwargs,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -1217,13 +1252,14 @@ class ModelBandPlot(ModelBand):
             backgroundcolor="k",
             font_size=font_size,
         )
-        plot_util.coordinate_arrows(
-            ax,
-            self._frame_size,
-            self._coords,
-            arrow_size=self._arrow_size,
-            font_size=font_size,
-        )
+        if not no_arrow:
+            plot_util.coordinate_arrows(
+                ax,
+                self._frame_size,
+                self._coords,
+                arrow_size=self._arrow_size,
+                font_size=font_size,
+            )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
@@ -1326,12 +1362,13 @@ class ModelBandPlot(ModelBand):
         )
         return f, axes
 
-    def plot_extinction_map(self, ax, v_min=None, v_max=None, **kwargs):
+    def plot_extinction_map(self, ax, v_min=None, v_max=None, **matshow_kwargs):
         """
 
         :param ax:
         :param v_min:
         :param v_max:
+        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return:
         """
         model = ImageModel.extinction_map(
@@ -1350,6 +1387,6 @@ class ModelBandPlot(ModelBand):
             vmin=v_min,
             vmax=v_max,
             extent=self._image_extent,
-            **kwargs,
+            **matshow_kwargs,
         )
         return ax

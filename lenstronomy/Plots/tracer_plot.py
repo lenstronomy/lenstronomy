@@ -168,11 +168,14 @@ class TracerPlot(object):
         text="Observed",
         font_size=15,
         colorbar_label=r"log$_{10}$ flux",
-        **kwargs
+        no_arrow=False,
+        **matshow_kwargs,
     ):
         """
 
         :param ax:
+        :param no_arrow: boolean, if True, does not plot coordinate arrows
+        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return:
         """
         if v_min is None:
@@ -186,7 +189,7 @@ class TracerPlot(object):
             cmap=self._cmap,
             vmin=v_min,
             vmax=v_max,
-            **kwargs,
+            **matshow_kwargs,
         )  # , vmin=0, vmax=2
 
         ax.get_xaxis().set_visible(False)
@@ -205,7 +208,7 @@ class TracerPlot(object):
             font_size=font_size,
         )
 
-        if "no_arrow" not in kwargs or not kwargs["no_arrow"]:
+        if not no_arrow:
             plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,
@@ -230,13 +233,20 @@ class TracerPlot(object):
         colorbar_label=r"log$_{10}$ flux",
         font_size=15,
         text="Reconstructed",
-        **kwargs
+        no_arrow=False,
+        original_position=True,
+        image_name_list=None,
+        **matshow_kwargs,
     ):
         """
 
         :param ax: matplotib axis instance
         :param v_min:
         :param v_max:
+        :param no_arrow: boolean, if True, does not plot coordinate arrows
+        :param original_position: boolean, if True, uses original image positions
+        :param image_name_list: list of names for images
+        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return:
         """
         if v_min is None:
@@ -250,7 +260,7 @@ class TracerPlot(object):
             vmax=v_max,
             extent=[0, self._frame_size, 0, self._frame_size],
             cmap=self._cmap,
-            **kwargs,
+            **matshow_kwargs,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -266,7 +276,7 @@ class TracerPlot(object):
             backgroundcolor="k",
             font_size=font_size,
         )
-        if "no_arrow" not in kwargs or not kwargs["no_arrow"]:
+        if not no_arrow:
             plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,
@@ -286,14 +296,14 @@ class TracerPlot(object):
             ra_image, dec_image = self.PointSource.image_position(
                 self._kwargs_ps,
                 self._kwargs_lens,
-                original_position=kwargs.get("original_position", True),
+                original_position=original_position,
             )
             plot_util.image_position_plot(
                 ax,
                 self._coords,
                 ra_image,
                 dec_image,
-                image_name_list=kwargs.get("image_name_list", None),
+                image_name_list=image_name_list,
             )
         # source_position_plot(ax, self._coords, self._kwargs_source)
 
@@ -305,15 +315,18 @@ class TracerPlot(object):
         v_max=None,
         font_size=15,
         colorbar_label=r"$\log_{10}\ \kappa$",
-        **kwargs
+        no_arrow=False,
+        **matshow_kwargs,
     ):
         """
 
         :param ax: matplotib axis instance
+        :param no_arrow: boolean, if True, does not plot coordinate arrows
+        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: convergence plot in ax instance
         """
-        if not "cmap" in kwargs:
-            kwargs["cmap"] = self._cmap
+        if "cmap" not in matshow_kwargs:
+            matshow_kwargs["cmap"] = self._cmap
 
         kappa_result = util.array2image(
             self.LensModel.kappa(self._x_grid, self._y_grid, self._kwargs_lens)
@@ -322,9 +335,9 @@ class TracerPlot(object):
             np.log10(kappa_result),
             origin="lower",
             extent=[0, self._frame_size, 0, self._frame_size],
-            cmap=kwargs["cmap"],
             vmin=v_min,
             vmax=v_max,
+            **matshow_kwargs,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -332,7 +345,7 @@ class TracerPlot(object):
         plot_util.scale_bar(
             ax, self._frame_size, dist=1, text='1"', color="w", font_size=font_size
         )
-        if "no_arrow" not in kwargs or not kwargs["no_arrow"]:
+        if not no_arrow:
             plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,
@@ -366,26 +379,26 @@ class TracerPlot(object):
         colorbar_label=r"(f${}_{\rm model}$ - f${}_{\rm data}$)/$\sigma$",
         no_arrow=False,
         color_bar=True,
-        **kwargs
+        **matshow_kwargs,
     ):
         """
 
         :param ax:
         :param v_min:
         :param v_max:
-        :param kwargs: kwargs to send to matplotlib.pyplot.matshow()
+        :param matshow_kwargs: kwargs to send to matplotlib.pyplot.matshow()
         :param color_bar: Option to display the color bar
         :return:
         """
-        if not "cmap" in kwargs:
-            kwargs["cmap"] = "bwr"
+        if "cmap" not in matshow_kwargs:
+            matshow_kwargs["cmap"] = "bwr"
         im = ax.matshow(
             self._norm_residuals,
             vmin=v_min,
             vmax=v_max,
             extent=[0, self._frame_size, 0, self._frame_size],
             origin="lower",
-            **kwargs
+            **matshow_kwargs,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -425,21 +438,24 @@ class TracerPlot(object):
         font_size=15,
         text="Residuals",
         colorbar_label=r"(f$_{model}$-f$_{data}$)",
-        **kwargs,
+        no_arrow=False,
+        **matshow_kwargs,
     ):
         """
 
         :param ax:
+        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return:
         """
+        if "cmap" not in matshow_kwargs:
+            matshow_kwargs["cmap"] = "bwr"
         im = ax.matshow(
             self._model - self._data,
             vmin=v_min,
             vmax=v_max,
             extent=[0, self._frame_size, 0, self._frame_size],
-            cmap="bwr",
             origin="lower",
-            **kwargs,
+            **matshow_kwargs,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -455,14 +471,15 @@ class TracerPlot(object):
             backgroundcolor="w",
             font_size=font_size,
         )
-        plot_util.coordinate_arrows(
-            ax,
-            self._frame_size,
-            self._coords,
-            font_size=font_size,
-            color="k",
-            arrow_size=self._arrow_size,
-        )
+        if not no_arrow:
+            plot_util.coordinate_arrows(
+                ax,
+                self._frame_size,
+                self._coords,
+                font_size=font_size,
+                color="k",
+                arrow_size=self._arrow_size,
+            )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
@@ -533,7 +550,9 @@ class TracerPlot(object):
         text="Reconstructed source",
         colorbar_label=r"tracer",
         point_source_position=True,
-        **kwargs
+        kwargs_caustic=None,
+        no_arrow=False,
+        **matshow_kwargs,
     ):
         """
 
@@ -546,13 +565,17 @@ class TracerPlot(object):
         :param caustic_color:
         :param font_size:
         :param plot_scale: string, log or linear, scale of surface brightness plot
-        :param kwargs:
+        :param kwargs_caustic: keyword arguments for caustic plotting
+        :param no_arrow: boolean, if True, does not plot coordinate arrows
+        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return:
         """
         if v_min is None:
             v_min = self._v_min_default
         if v_max is None:
             v_max = self._v_max_default
+        if kwargs_caustic is None:
+            kwargs_caustic = {}
         d_s = numPix * deltaPix_source
         source, coords_source = self.source(numPix, deltaPix_source, center=center)
         if plot_scale == "log":
@@ -572,7 +595,7 @@ class TracerPlot(object):
             cmap=self._cmap,
             vmin=v_min,
             vmax=v_max,
-            **kwargs,
+            **matshow_kwargs,
         )  # source
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -599,7 +622,7 @@ class TracerPlot(object):
                 dec_caustic_list,
                 color=caustic_color,
                 points_only=self._caustic_points_only,
-                **kwargs.get("kwargs_caustic", {})
+                **kwargs_caustic,
             )
             plot_util.scale_bar(
                 ax,
@@ -610,7 +633,7 @@ class TracerPlot(object):
                 flipped=False,
                 font_size=font_size,
             )
-        if "no_arrow" not in kwargs or not kwargs["no_arrow"]:
+        if not no_arrow:
             plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,
@@ -645,20 +668,20 @@ class TracerPlot(object):
         no_arrow=False,
         text="Magnification model",
         colorbar_label=r"$\det\ (\mathsf{A}^{-1})$",
-        **kwargs
+        **matshow_kwargs,
     ):
         """
 
         :param ax: matplotib axis instance
         :param v_min: minimum range of plotting
         :param v_max: maximum range of plotting
-        :param kwargs: kwargs to send to matplotlib.pyplot.matshow()
+        :param matshow_kwargs: kwargs to send to matplotlib.pyplot.matshow()
         :return:
         """
-        if "cmap" not in kwargs:
-            kwargs["cmap"] = self._cmap
-        if "alpha" not in kwargs:
-            kwargs["alpha"] = 0.5
+        if "cmap" not in matshow_kwargs:
+            matshow_kwargs["cmap"] = self._cmap
+        if "alpha" not in matshow_kwargs:
+            matshow_kwargs["alpha"] = 0.5
         mag_result = util.array2image(
             self.LensModel.magnification(self._x_grid, self._y_grid, self._kwargs_lens)
         )
@@ -668,7 +691,7 @@ class TracerPlot(object):
             extent=[0, self._frame_size, 0, self._frame_size],
             vmin=v_min,
             vmax=v_max,
-            **kwargs
+            **matshow_kwargs,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -721,10 +744,12 @@ class TracerPlot(object):
         text="Deflection model",
         font_size=15,
         colorbar_label=r"arcsec",
-        **kwargs,
+        no_arrow=False,
+        **matshow_kwargs,
     ):
         """
 
+        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return:
         """
 
@@ -737,17 +762,17 @@ class TracerPlot(object):
             alpha = alpha1
         else:
             alpha = alpha2
-        if "cmap" not in kwargs:
-            kwargs["cmap"] = self._cmap
-        if "alpha" not in kwargs:
-            kwargs["alpha"] = 0.5
+        if "cmap" not in matshow_kwargs:
+            matshow_kwargs["cmap"] = self._cmap
+        if "alpha" not in matshow_kwargs:
+            matshow_kwargs["alpha"] = 0.5
         im = ax.matshow(
             alpha,
             origin="lower",
             extent=[0, self._frame_size, 0, self._frame_size],
             vmin=v_min,
             vmax=v_max,
-            **kwargs,
+            **matshow_kwargs,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -755,14 +780,15 @@ class TracerPlot(object):
         plot_util.scale_bar(
             ax, self._frame_size, dist=1, text='1"', color="k", font_size=font_size
         )
-        plot_util.coordinate_arrows(
-            ax,
-            self._frame_size,
-            self._coords,
-            color="k",
-            arrow_size=self._arrow_size,
-            font_size=font_size,
-        )
+        if not no_arrow:
+            plot_util.coordinate_arrows(
+                ax,
+                self._frame_size,
+                self._coords,
+                color="k",
+                arrow_size=self._arrow_size,
+                font_size=font_size,
+            )
         plot_util.text_description(
             ax,
             self._frame_size,

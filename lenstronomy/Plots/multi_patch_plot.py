@@ -349,7 +349,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
                     font_size=font_size,
                 )
 
-            if kwargs.get("show_coordinate_arrows", True):
+            if kwargs.get("coordinate_arrows", True):
                 plot_util.coordinate_arrows(
                     ax,
                     frame_size,

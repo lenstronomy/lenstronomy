@@ -208,7 +208,7 @@ class ModelPlot(object):
         text="Observed",
         font_size=15,
         colorbar_label=r"log$_{10}$ flux",
-        show_coordinate_arrows=True,
+        coordinate_arrows=True,
         **matshow_kwargs
     ):
         """Illustrates data.
@@ -220,7 +220,7 @@ class ModelPlot(object):
         :param text: string, text to be displayed in the image
         :param font_size: font size of the text
         :param colorbar_label: string, label for the colorbar
-        :param show_coordinate_arrows: boolean, if True, plots coordinate arrows
+        :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
@@ -232,7 +232,7 @@ class ModelPlot(object):
             text=text,
             font_size=font_size,
             colorbar_label=colorbar_label,
-            show_coordinate_arrows=show_coordinate_arrows,
+            coordinate_arrows=coordinate_arrows,
             **matshow_kwargs
         )
 
@@ -246,7 +246,7 @@ class ModelPlot(object):
         colorbar_label=r"log$_{10}$ flux",
         font_size=15,
         text="Reconstructed",
-        show_coordinate_arrows=True,
+        coordinate_arrows=True,
         original_position=True,
         image_name_list=None,
         **matshow_kwargs
@@ -261,7 +261,7 @@ class ModelPlot(object):
         :param colorbar_label: string, label for the colorbar
         :param font_size: font size of the text
         :param text: string, text to be displayed in the image
-        :param show_coordinate_arrows: boolean, if True, plots coordinate arrows
+        :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param original_position: boolean, if True, uses original image positions
         :param image_name_list: list of names for images
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
@@ -276,7 +276,7 @@ class ModelPlot(object):
             colorbar_label=colorbar_label,
             font_size=font_size,
             text=text,
-            show_coordinate_arrows=show_coordinate_arrows,
+            coordinate_arrows=coordinate_arrows,
             original_position=original_position,
             image_name_list=image_name_list,
             **matshow_kwargs
@@ -291,7 +291,7 @@ class ModelPlot(object):
         v_max=None,
         font_size=15,
         colorbar_label=r"$\log_{10}\ \kappa$",
-        show_coordinate_arrows=True,
+        coordinate_arrows=True,
         **matshow_kwargs
     ):
         """Illustrates lensing convergence in data frame.
@@ -303,7 +303,7 @@ class ModelPlot(object):
         :param v_max: maximum plotting scale
         :param font_size: font size of the text
         :param colorbar_label: string, label for the colorbar
-        :param show_coordinate_arrows: boolean, if True, plots coordinate arrows
+        :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
@@ -315,7 +315,7 @@ class ModelPlot(object):
             v_max=v_max,
             font_size=font_size,
             colorbar_label=colorbar_label,
-            show_coordinate_arrows=show_coordinate_arrows,
+            coordinate_arrows=coordinate_arrows,
             **matshow_kwargs
         )
 
@@ -336,7 +336,7 @@ class ModelPlot(object):
         image_name_list=None,
         super_sample_factor=None,
         add_color_bar=True,
-        show_coordinate_arrows=True,
+        coordinate_arrows=True,
         **matshow_kwargs
     ):
         """Illustrates substructure in the lens system.
@@ -356,7 +356,7 @@ class ModelPlot(object):
         :param image_name_list: labels the images, default is A, B, C, ...
         :param super_sample_factor: a integer the specifies supersampling of the coordinate grid to create the convergence map
         :param add_color_bar: bool; whether or not to include a color bar
-        :param show_coordinate_arrows: boolean, if True, plots coordinate arrows
+        :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
@@ -378,7 +378,7 @@ class ModelPlot(object):
             image_name_list=image_name_list,
             super_sample_factor=super_sample_factor,
             add_color_bar=add_color_bar,
-            show_coordinate_arrows=show_coordinate_arrows,
+            coordinate_arrows=coordinate_arrows,
             **matshow_kwargs
         )
 
@@ -391,7 +391,7 @@ class ModelPlot(object):
         font_size=15,
         text="Normalized Residuals",
         colorbar_label=r"(f$_{\rm data}$ - f$_{\rm model}$)/$\sigma$",
-        show_coordinate_arrows=True,
+        coordinate_arrows=True,
         color_bar=True,
         **matshow_kwargs
     ):
@@ -404,7 +404,7 @@ class ModelPlot(object):
         :param font_size: font size for text appearing in image
         :param text: text appearing in frame
         :param colorbar_label: label for the color bar
-        :param show_coordinate_arrows: boolean, if True, plots coordinate arrows
+        :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param color_bar: Option to display the color bar
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
@@ -417,7 +417,7 @@ class ModelPlot(object):
             font_size=font_size,
             text=text,
             colorbar_label=colorbar_label,
-            show_coordinate_arrows=show_coordinate_arrows,
+            coordinate_arrows=coordinate_arrows,
             color_bar=color_bar,
             **matshow_kwargs
         )
@@ -431,7 +431,7 @@ class ModelPlot(object):
         font_size=15,
         text="Residuals",
         colorbar_label=r"(f$_{\rm data}$-f$_{\rm model}$)",
-        show_coordinate_arrows=True,
+        coordinate_arrows=True,
         **matshow_kwargs
     ):
         """Illustrates absolute residuals between data and model fit.
@@ -443,7 +443,7 @@ class ModelPlot(object):
         :param font_size: font size for text appearing in image
         :param text: text appearing in frame
         :param colorbar_label: label for the color bar
-        :param show_coordinate_arrows: boolean, if True, plots coordinate arrows
+        :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
@@ -455,7 +455,7 @@ class ModelPlot(object):
             font_size=font_size,
             text=text,
             colorbar_label=colorbar_label,
-            show_coordinate_arrows=show_coordinate_arrows,
+            coordinate_arrows=coordinate_arrows,
             **matshow_kwargs
         )
 
@@ -477,7 +477,7 @@ class ModelPlot(object):
         colorbar_label=r"log$_{10}$ flux",
         point_source_position=True,
         kwargs_caustic=None,
-        show_coordinate_arrows=True,
+        coordinate_arrows=True,
         **matshow_kwargs
     ):
         """Illustrates reconstructed source (de-lensed de-convolved)
@@ -498,7 +498,7 @@ class ModelPlot(object):
         :param colorbar_label: string, label for the colorbar
         :param point_source_position: boolean, if True, plots a point at the position of the point source
         :param kwargs_caustic: keyword arguments for caustic plotting
-        :param show_coordinate_arrows: boolean, if True, plots coordinate arrows
+        :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
@@ -519,7 +519,7 @@ class ModelPlot(object):
             colorbar_label=colorbar_label,
             point_source_position=point_source_position,
             kwargs_caustic=kwargs_caustic,
-            show_coordinate_arrows=show_coordinate_arrows,
+            coordinate_arrows=coordinate_arrows,
             **matshow_kwargs
         )
 
@@ -534,7 +534,7 @@ class ModelPlot(object):
         with_caustics=False,
         font_size=15,
         point_source_position=True,
-        show_coordinate_arrows=True,
+        coordinate_arrows=True,
         **matshow_kwargs
     ):
         """Illustrates surface brightness variance in the reconstruction in the source
@@ -549,7 +549,7 @@ class ModelPlot(object):
         :param with_caustics: plot the caustics on top of the source reconstruction
         :param font_size: font size of labels
         :param point_source_position: boolean, if True, plots a point at the position of the point source
-        :param show_coordinate_arrows: boolean, if True, plots coordinate arrows
+        :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
@@ -563,7 +563,7 @@ class ModelPlot(object):
             with_caustics=with_caustics,
             font_size=font_size,
             point_source_position=point_source_position,
-            show_coordinate_arrows=show_coordinate_arrows,
+            coordinate_arrows=coordinate_arrows,
             **matshow_kwargs
         )
 
@@ -575,7 +575,7 @@ class ModelPlot(object):
         v_max=10,
         image_name_list=None,
         font_size=15,
-        show_coordinate_arrows=True,
+        coordinate_arrows=True,
         text="Magnification model",
         colorbar_label=r"$\det\ (\mathsf{A}^{-1})$",
         **matshow_kwargs
@@ -588,7 +588,7 @@ class ModelPlot(object):
         :param v_max: maximum range of plotting
         :param image_name_list: list of strings for names of the images in the same order as the positions
         :param font_size: font size of labels
-        :param show_coordinate_arrows: boolean, if True, plots coordinate arrows
+        :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param text: string, text to be displayed in the image
         :param colorbar_label: string, label for the colorbar
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
@@ -601,7 +601,7 @@ class ModelPlot(object):
             v_max=v_max,
             image_name_list=image_name_list,
             font_size=font_size,
-            show_coordinate_arrows=show_coordinate_arrows,
+            coordinate_arrows=coordinate_arrows,
             text=text,
             colorbar_label=colorbar_label,
             **matshow_kwargs
@@ -619,7 +619,7 @@ class ModelPlot(object):
         text="Deflection model",
         font_size=15,
         colorbar_label=r"arcsec",
-        show_coordinate_arrows=True,
+        coordinate_arrows=True,
         **matshow_kwargs
     ):
         """Illustrates lensing deflections on the field of view of the data frame.
@@ -634,7 +634,7 @@ class ModelPlot(object):
         :param text: string, text to be displayed in the image
         :param font_size: font size of labels
         :param colorbar_label: string, label for the colorbar
-        :param show_coordinate_arrows: boolean, if True, plots coordinate arrows
+        :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
@@ -649,7 +649,7 @@ class ModelPlot(object):
             text=text,
             font_size=font_size,
             colorbar_label=colorbar_label,
-            show_coordinate_arrows=show_coordinate_arrows,
+            coordinate_arrows=coordinate_arrows,
             **matshow_kwargs
         )
 
@@ -665,7 +665,7 @@ class ModelPlot(object):
         font_size=15,
         source_add=False,
         lens_light_add=False,
-        show_coordinate_arrows=True,
+        coordinate_arrows=True,
         **matshow_kwargs
     ):
         """Illustrates decomposition of model components.
@@ -680,7 +680,7 @@ class ModelPlot(object):
         :param font_size: font size of labels
         :param source_add: bool, if True, includes the lensed image of the source in the plot
         :param lens_light_add: bool, if True, includes the lens light in the plot
-        :param show_coordinate_arrows: bool, if True, shows the North/East directional arrows from the plot
+        :param coordinate_arrows: bool, if True, shows the North/East directional arrows from the plot
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
@@ -695,7 +695,7 @@ class ModelPlot(object):
             font_size=font_size,
             source_add=source_add,
             lens_light_add=lens_light_add,
-            show_coordinate_arrows=show_coordinate_arrows,
+            coordinate_arrows=coordinate_arrows,
             **matshow_kwargs
         )
 
@@ -710,7 +710,7 @@ class ModelPlot(object):
         source_add=False,
         lens_light_add=False,
         font_size=15,
-        show_coordinate_arrows=True,
+        coordinate_arrows=True,
         **matshow_kwargs
     ):
         """Subtracts individual model components from the data.
@@ -724,7 +724,7 @@ class ModelPlot(object):
         :param source_add: bool, if True, includes the lensed image of the source in the plot
         :param lens_light_add: bool, if True, includes the lens light in the plot
         :param font_size: font size of labels
-        :param show_coordinate_arrows: bool, if True, shows the North/East directional arrows from the plot
+        :param coordinate_arrows: bool, if True, shows the North/East directional arrows from the plot
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
@@ -738,7 +738,7 @@ class ModelPlot(object):
             source_add=source_add,
             lens_light_add=lens_light_add,
             font_size=font_size,
-            show_coordinate_arrows=show_coordinate_arrows,
+            coordinate_arrows=coordinate_arrows,
             **matshow_kwargs
         )
 

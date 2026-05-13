@@ -14,7 +14,7 @@ class _FakeParam(object):
         return np.array([-1.0, -2.0]), np.array([1.0, 2.0])
 
 
-class _FakeLikelihoodModule(object):
+class _FakeLikelihoodClass(object):
     def __init__(self):
         self.param = _FakeParam()
 
@@ -73,7 +73,7 @@ def test_nautilus_sampling_uses_choose_pool(monkeypatch):
     )
     monkeypatch.setitem(__import__("sys").modules, "nautilus", fake_nautilus_module)
 
-    wrapper = Nautilus(_FakeLikelihoodModule())
+    wrapper = Nautilus(_FakeLikelihoodClass())
     points, log_w, log_l, log_z = wrapper.nautilus_sampling(
         prior_type="uniform", mpi=False, thread_count=3, one_step=True
     )

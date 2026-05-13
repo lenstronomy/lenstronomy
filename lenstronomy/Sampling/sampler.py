@@ -24,12 +24,12 @@ class Sampler(object):
 
     """
 
-    def __init__(self, likelihoodModule):
+    def __init__(self, likelihood_class):
         """
 
-        :param likelihoodModule: instance of LikelihoodModule class
+        :param likelihood_class: instance of Likelihood class
         """
-        self.chain = likelihoodModule
+        self.chain = likelihood_class
         self.lower_limit, self.upper_limit = self.chain.param_limits
         # Keep the worker-local log-likelihood state in sync on ranks that construct this class.
         set_sampler_likelihood_module(self.chain)

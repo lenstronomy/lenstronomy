@@ -6,7 +6,7 @@ import numpy.testing as npt
 import lenstronomy.Util.simulation_util as sim_util
 import lenstronomy.Util.class_creator as class_creator
 from lenstronomy.ImSim.image_model import ImageModel
-from lenstronomy.Sampling.likelihood import LikelihoodModule
+from lenstronomy.Sampling.likelihood import Likelihood
 from lenstronomy.Sampling.parameters import Param
 from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
@@ -15,7 +15,7 @@ from lenstronomy.Sampling.Likelihoods import kinematic_NN_call
 import lenstronomy.Util.kernel_util as kernel_util
 
 
-class TestLikelihoodModule(object):
+class TestLikelihood(object):
     """Test the fitting sequences."""
 
     def setup_method(self):
@@ -172,7 +172,7 @@ class TestLikelihoodModule(object):
             point_source_class,
             kwargs_numerics=kwargs_numerics,
         )
-        self.Likelihood = LikelihoodModule(
+        self.Likelihood = Likelihood(
             kwargs_data_joint=self.kwargs_data,
             kwargs_model=kwargs_model,
             param_class=self.param_class,
@@ -199,7 +199,7 @@ class TestLikelihoodModule(object):
         kwargs_likelihood = {
             "time_delay_likelihood": True,
         }
-        likelihood = LikelihoodModule(
+        likelihood = Likelihood(
             kwargs_data_joint=self.kwargs_data,
             kwargs_model=self.kwargs_model,
             param_class=self.param_class,
@@ -259,7 +259,7 @@ class TestLikelihoodModule(object):
                 "time_delay_likelihood": False,
             }
             param_class = Param(kwargs_model, **kwargs_constraints)
-            Likelihood = LikelihoodModule(
+            Likelihood = Likelihood(
                 kwargs_data_joint=self.kwargs_data,
                 kwargs_model=kwargs_model,
                 param_class=param_class,
@@ -327,7 +327,7 @@ class TestLikelihoodModule(object):
 
             kwargs_constraints["kinematic_sampling"] = True
             param_class = Param(kwargs_model, **kwargs_constraints)
-            Likelihood = LikelihoodModule(
+            Likelihood = Likelihood(
                 kwargs_data_joint=kwargs_data_kin,
                 kwargs_model=kwargs_model,
                 param_class=param_class,
@@ -414,7 +414,7 @@ class TestLikelihoodModule(object):
             **kwargs_constraints,
         )
 
-        likelihood = LikelihoodModule(
+        likelihood = Likelihood(
             kwargs_data_joint=kwargs_data,
             kwargs_model=kwargs_model,
             param_class=param_class,
@@ -547,7 +547,7 @@ class TestLikelihoodModule(object):
 
         param_class = Param(kwargs_model=kwargs_model)
 
-        likelihood = LikelihoodModule(
+        likelihood = Likelihood(
             kwargs_data_joint=kwargs_data,
             kwargs_model=kwargs_model,
             param_class=param_class,

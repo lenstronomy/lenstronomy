@@ -3,7 +3,7 @@ import pytest
 
 import lenstronomy.Util.simulation_util as sim_util
 from lenstronomy.ImSim.image_model import ImageModel
-from lenstronomy.Sampling.likelihood import LikelihoodModule
+from lenstronomy.Sampling.likelihood import Likelihood
 from lenstronomy.Sampling.parameters import Param
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
@@ -125,7 +125,7 @@ def simple_einstein_ring_likelihood():
         **kwargs_constraints
     )
 
-    likelihood = LikelihoodModule(
+    likelihood = Likelihood(
         kwargs_data_joint=kwargs_data_joint,
         kwargs_model=kwargs_model,
         param_class=param_class,
@@ -262,7 +262,7 @@ def simple_einstein_ring_likelihood_2d():
         **kwargs_constraints
     )
 
-    likelihood = LikelihoodModule(
+    likelihood = Likelihood(
         kwargs_data_joint=kwargs_data_joint,
         kwargs_model=kwargs_model,
         param_class=param_class,

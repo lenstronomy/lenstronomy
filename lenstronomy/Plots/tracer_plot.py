@@ -168,13 +168,13 @@ class TracerPlot(object):
         text="Observed",
         font_size=15,
         colorbar_label=r"log$_{10}$ flux",
-        no_arrow=False,
+        show_coordinate_arrows=True,
         **matshow_kwargs,
     ):
         """
 
         :param ax:
-        :param no_arrow: boolean, if True, does not plot coordinate arrows
+        :param show_coordinate_arrows: boolean, if True, plots coordinate arrows
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return:
         """
@@ -208,7 +208,7 @@ class TracerPlot(object):
             font_size=font_size,
         )
 
-        if not no_arrow:
+        if show_coordinate_arrows:
             plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,
@@ -233,7 +233,7 @@ class TracerPlot(object):
         colorbar_label=r"log$_{10}$ flux",
         font_size=15,
         text="Reconstructed",
-        no_arrow=False,
+        show_coordinate_arrows=True,
         original_position=True,
         image_name_list=None,
         **matshow_kwargs,
@@ -243,7 +243,7 @@ class TracerPlot(object):
         :param ax: matplotib axis instance
         :param v_min:
         :param v_max:
-        :param no_arrow: boolean, if True, does not plot coordinate arrows
+        :param show_coordinate_arrows: boolean, if True, plots coordinate arrows
         :param original_position: boolean, if True, uses original image positions
         :param image_name_list: list of names for images
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
@@ -276,7 +276,7 @@ class TracerPlot(object):
             backgroundcolor="k",
             font_size=font_size,
         )
-        if not no_arrow:
+        if show_coordinate_arrows:
             plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,
@@ -315,13 +315,13 @@ class TracerPlot(object):
         v_max=None,
         font_size=15,
         colorbar_label=r"$\log_{10}\ \kappa$",
-        no_arrow=False,
+        show_coordinate_arrows=True,
         **matshow_kwargs,
     ):
         """
 
         :param ax: matplotib axis instance
-        :param no_arrow: boolean, if True, does not plot coordinate arrows
+        :param show_coordinate_arrows: boolean, if True, plots coordinate arrows
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: convergence plot in ax instance
         """
@@ -345,7 +345,7 @@ class TracerPlot(object):
         plot_util.scale_bar(
             ax, self._frame_size, dist=1, text='1"', color="w", font_size=font_size
         )
-        if not no_arrow:
+        if show_coordinate_arrows:
             plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,
@@ -376,8 +376,8 @@ class TracerPlot(object):
         v_max=6,
         font_size=15,
         text="Normalized Residuals",
-        colorbar_label=r"(f${}_{\rm model}$ - f${}_{\rm data}$)/$\sigma$",
-        no_arrow=False,
+        colorbar_label=r"(f$_{\rm model}$ - f$_{\rm data}$)/$\sigma$",
+        show_coordinate_arrows=True,
         color_bar=True,
         **matshow_kwargs,
     ):
@@ -414,7 +414,7 @@ class TracerPlot(object):
             backgroundcolor="w",
             font_size=font_size,
         )
-        if not no_arrow:
+        if show_coordinate_arrows:
             plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,
@@ -438,7 +438,7 @@ class TracerPlot(object):
         font_size=15,
         text="Residuals",
         colorbar_label=r"(f$_{model}$-f$_{data}$)",
-        no_arrow=False,
+        show_coordinate_arrows=True,
         **matshow_kwargs,
     ):
         """
@@ -471,7 +471,7 @@ class TracerPlot(object):
             backgroundcolor="w",
             font_size=font_size,
         )
-        if not no_arrow:
+        if show_coordinate_arrows:
             plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,
@@ -551,7 +551,7 @@ class TracerPlot(object):
         colorbar_label=r"tracer",
         point_source_position=True,
         kwargs_caustic=None,
-        no_arrow=False,
+        show_coordinate_arrows=True,
         **matshow_kwargs,
     ):
         """
@@ -566,7 +566,7 @@ class TracerPlot(object):
         :param font_size:
         :param plot_scale: string, log or linear, scale of surface brightness plot
         :param kwargs_caustic: keyword arguments for caustic plotting
-        :param no_arrow: boolean, if True, does not plot coordinate arrows
+        :param show_coordinate_arrows: boolean, if True, plots coordinate arrows
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return:
         """
@@ -633,7 +633,7 @@ class TracerPlot(object):
                 flipped=False,
                 font_size=font_size,
             )
-        if not no_arrow:
+        if show_coordinate_arrows:
             plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,
@@ -665,7 +665,7 @@ class TracerPlot(object):
         v_max=10,
         image_name_list=None,
         font_size=15,
-        no_arrow=False,
+        show_coordinate_arrows=True,
         text="Magnification model",
         colorbar_label=r"$\det\ (\mathsf{A}^{-1})$",
         **matshow_kwargs,
@@ -699,7 +699,7 @@ class TracerPlot(object):
         plot_util.scale_bar(
             ax, self._frame_size, dist=1, text='1"', color="k", font_size=font_size
         )
-        if not no_arrow:
+        if show_coordinate_arrows:
             plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,
@@ -744,7 +744,7 @@ class TracerPlot(object):
         text="Deflection model",
         font_size=15,
         colorbar_label=r"arcsec",
-        no_arrow=False,
+        show_coordinate_arrows=True,
         **matshow_kwargs,
     ):
         """
@@ -780,7 +780,7 @@ class TracerPlot(object):
         plot_util.scale_bar(
             ax, self._frame_size, dist=1, text='1"', color="k", font_size=font_size
         )
-        if not no_arrow:
+        if show_coordinate_arrows:
             plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,

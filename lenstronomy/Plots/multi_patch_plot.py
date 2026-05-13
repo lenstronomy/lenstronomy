@@ -293,6 +293,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param image: 2d numpy array to be plotted
         :param coords: Coordinate() instance with the coordinate system
         :param white_on_black: boolean, if True, prints white text on black background, otherwise the opposite
+        :param kwargs: keyword arguments
         :return: matplotlib axis instance
         """
         if white_on_black:
@@ -348,7 +349,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
                     font_size=font_size,
                 )
 
-            if "no_arrow" not in kwargs or not kwargs["no_arrow"]:
+            if kwargs.get("show_coordinate_arrows", True):
                 plot_util.coordinate_arrows(
                     ax,
                     frame_size,

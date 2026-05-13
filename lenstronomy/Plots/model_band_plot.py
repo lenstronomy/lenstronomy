@@ -146,13 +146,13 @@ class ModelBandPlot(ModelBand):
         text="Observed",
         font_size=15,
         colorbar_label=r"log$_{10}$ flux",
-        no_arrow=False,
+        show_coordinate_arrows=True,
         **matshow_kwargs,
     ):
         """
 
         :param ax: matplotlib axis instance
-        :param no_arrow: boolean, if True, does not plot coordinate arrows
+        :param show_coordinate_arrows: boolean, if True, plots coordinate arrows
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return:
         """
@@ -186,7 +186,7 @@ class ModelBandPlot(ModelBand):
             font_size=font_size,
         )
 
-        if not no_arrow:
+        if show_coordinate_arrows:
             plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,
@@ -212,7 +212,7 @@ class ModelBandPlot(ModelBand):
         colorbar_label=r"log$_{10}$ flux",
         font_size=15,
         text="Reconstructed",
-        no_arrow=False,
+        show_coordinate_arrows=True,
         original_position=True,
         image_name_list=None,
         **matshow_kwargs,
@@ -222,7 +222,7 @@ class ModelBandPlot(ModelBand):
         :param ax: matplotib axis instance
         :param v_min:
         :param v_max:
-        :param no_arrow: boolean, if True, does not plot coordinate arrows
+        :param show_coordinate_arrows: boolean, if True, plots coordinate arrows
         :param original_position: boolean, if True, uses original image positions
         :param image_name_list: list of names for images
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
@@ -255,7 +255,7 @@ class ModelBandPlot(ModelBand):
             backgroundcolor="k",
             font_size=font_size,
         )
-        if not no_arrow:
+        if show_coordinate_arrows:
             plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,
@@ -296,13 +296,13 @@ class ModelBandPlot(ModelBand):
         v_max=None,
         font_size=15,
         colorbar_label=r"$\log_{10}\ \kappa$",
-        no_arrow=False,
+        show_coordinate_arrows=True,
         **matshow_kwargs,
     ):
         """
 
         :param ax: matplotib axis instance
-        :param no_arrow: boolean, if True, does not plot coordinate arrows
+        :param show_coordinate_arrows: boolean, if True, plots coordinate arrows
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: convergence plot in ax instance
         """
@@ -326,7 +326,7 @@ class ModelBandPlot(ModelBand):
         plot_util.scale_bar(
             ax, self._frame_size, dist=1, text='1"', color="w", font_size=font_size
         )
-        if not no_arrow:
+        if show_coordinate_arrows:
             plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,
@@ -367,7 +367,7 @@ class ModelBandPlot(ModelBand):
         image_name_list=None,
         super_sample_factor=None,
         add_color_bar=True,
-        no_arrow=False,
+        show_coordinate_arrows=True,
         **matshow_kwargs,
     ):
         """Plots the convergence of a full lens model minus the convergence from a few
@@ -387,7 +387,7 @@ class ModelBandPlot(ModelBand):
         :param image_name_list: labels the images, default is A, B, C, ...
         :param super_sample_factor: a integer the specifies supersampling of the coordinate grid to create the convergence map
         :param add_color_bar: bool; whether or not to include a color bar
-        :param no_arrow: boolean, if True, does not plot coordinate arrows
+        :param show_coordinate_arrows: boolean, if True, plots coordinate arrows
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotib axis and colorbar
         """
@@ -457,7 +457,7 @@ class ModelBandPlot(ModelBand):
         plot_util.scale_bar(
             ax, self._frame_size, dist=1, text='1"', color="k", font_size=font_size
         )
-        if not no_arrow:
+        if show_coordinate_arrows:
             plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,
@@ -517,8 +517,8 @@ class ModelBandPlot(ModelBand):
         v_max=6,
         font_size=15,
         text="Normalized Residuals",
-        colorbar_label=r"(f${}_{\rm data}$ - f${}_{\rm model}$)/$\sigma$",
-        no_arrow=False,
+        colorbar_label=r"(f$_{\rm data}$ - f$_{\rm model}$)/$\sigma$",
+        show_coordinate_arrows=True,
         color_bar=True,
         **matshow_kwargs,
     ):
@@ -555,7 +555,7 @@ class ModelBandPlot(ModelBand):
             backgroundcolor="w",
             font_size=font_size,
         )
-        if not no_arrow:
+        if show_coordinate_arrows:
             plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,
@@ -580,13 +580,13 @@ class ModelBandPlot(ModelBand):
         font_size=15,
         text="Residuals",
         colorbar_label=r"(f$_{\rm data}$-f$_{\rm model}$)",
-        no_arrow=False,
+        show_coordinate_arrows=True,
         **matshow_kwargs,
     ):
         """
 
         :param ax:
-        :param no_arrow: boolean, if True, does not plot coordinate arrows
+        :param show_coordinate_arrows: boolean, if True, plots coordinate arrows
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return:
         """
@@ -614,7 +614,7 @@ class ModelBandPlot(ModelBand):
             backgroundcolor="w",
             font_size=font_size,
         )
-        if not no_arrow:
+        if show_coordinate_arrows:
             plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,
@@ -695,7 +695,7 @@ class ModelBandPlot(ModelBand):
         colorbar_label=r"log$_{10}$ flux",
         point_source_position=True,
         kwargs_caustic=None,
-        no_arrow=False,
+        show_coordinate_arrows=True,
         **matshow_kwargs,
     ):
         """
@@ -710,7 +710,7 @@ class ModelBandPlot(ModelBand):
         :param font_size:
         :param plot_scale: string, log or linear, scale of surface brightness plot
         :param kwargs_caustic: keyword arguments for caustic plotting
-        :param no_arrow: boolean, if True, does not plot coordinate arrows
+        :param show_coordinate_arrows: boolean, if True, plots coordinate arrows
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return:
         """
@@ -784,7 +784,7 @@ class ModelBandPlot(ModelBand):
                 flipped=False,
                 font_size=font_size,
             )
-        if not no_arrow:
+        if show_coordinate_arrows:
             plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,
@@ -819,7 +819,7 @@ class ModelBandPlot(ModelBand):
         with_caustics=False,
         font_size=15,
         point_source_position=True,
-        no_arrow=False,
+        show_coordinate_arrows=True,
         **matshow_kwargs,
     ):
         """Plots the uncertainty in the surface brightness in the source from the linear
@@ -840,7 +840,7 @@ class ModelBandPlot(ModelBand):
         :param font_size: font size of labels
         :param point_source_position: boolean, if True, plots a point at the position of
             the point source
-        :param no_arrow: boolean, if True, does not plot coordinate arrows
+        :param show_coordinate_arrows: boolean, if True, plots coordinate arrows
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot of source surface brightness errors in the reconstruction on the
             axis instance
@@ -907,7 +907,7 @@ class ModelBandPlot(ModelBand):
             flipped=False,
             font_size=font_size,
         )
-        if not no_arrow:
+        if show_coordinate_arrows:
             plot_util.coordinate_arrows(
                 ax,
                 d_s,
@@ -939,7 +939,7 @@ class ModelBandPlot(ModelBand):
         v_max=10,
         image_name_list=None,
         font_size=15,
-        no_arrow=False,
+        show_coordinate_arrows=True,
         text="Magnification model",
         colorbar_label=r"$\det\ (\mathsf{A}^{-1})$",
         **matshow_kwargs,
@@ -975,7 +975,7 @@ class ModelBandPlot(ModelBand):
         plot_util.scale_bar(
             ax, self._frame_size, dist=1, text='1"', color="k", font_size=font_size
         )
-        if not no_arrow:
+        if show_coordinate_arrows:
             plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,
@@ -1022,12 +1022,12 @@ class ModelBandPlot(ModelBand):
         text="Deflection model",
         font_size=15,
         colorbar_label=r"arcsec",
-        no_arrow=False,
+        show_coordinate_arrows=True,
         **matshow_kwargs,
     ):
         """
 
-        :param no_arrow: boolean, if True, does not plot coordinate arrows
+        :param show_coordinate_arrows: boolean, if True, plots coordinate arrows
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return:
         """
@@ -1058,7 +1058,7 @@ class ModelBandPlot(ModelBand):
         plot_util.scale_bar(
             ax, self._frame_size, dist=1, text='1"', color="k", font_size=font_size
         )
-        if not no_arrow:
+        if show_coordinate_arrows:
             plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,
@@ -1123,7 +1123,7 @@ class ModelBandPlot(ModelBand):
         font_size=15,
         source_add=False,
         lens_light_add=False,
-        no_arrow=False,
+        show_coordinate_arrows=True,
         **matshow_kwargs,
     ):
         """Make a plot displaying all or a subset of light components.
@@ -1138,7 +1138,7 @@ class ModelBandPlot(ModelBand):
         :param source_add: bool, if True, includes the lensed image of the source in the
             plot
         :param lens_light_add: bool, if True, includes the lens light in the plot
-        :param no_arrow: bool, if True, omits the North/East directional arrows from the
+        :param show_coordinate_arrows: bool, if True, shows the North/East directional arrows from the
             plot
         :param kwargs: kwargs to send matplotlib.pyplot.matshow()
         :return: the instance of matplotlib.axes.Axes
@@ -1184,7 +1184,7 @@ class ModelBandPlot(ModelBand):
             backgroundcolor="k",
             font_size=font_size,
         )
-        if no_arrow is False:
+        if show_coordinate_arrows:
             plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,
@@ -1210,7 +1210,7 @@ class ModelBandPlot(ModelBand):
         source_add=False,
         lens_light_add=False,
         font_size=15,
-        no_arrow=False,
+        show_coordinate_arrows=True,
         **matshow_kwargs,
     ):
         model = ImageModel.image(
@@ -1252,7 +1252,7 @@ class ModelBandPlot(ModelBand):
             backgroundcolor="k",
             font_size=font_size,
         )
-        if not no_arrow:
+        if show_coordinate_arrows:
             plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,

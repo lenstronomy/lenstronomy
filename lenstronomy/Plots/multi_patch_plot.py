@@ -168,7 +168,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         log_scale=False,
         text="Normalized Residuals",
         colorbar_label=r"(f${}_{\rm model}$ - f${}_{\rm data}$)/$\sigma$",
-        cmap="bwr",
+        cmap="RdBu_r",
         white_on_black=False,
         **kwargs
     ):
@@ -241,7 +241,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         v_max=10,
         text="Magnification",
         colorbar_label=r"$\det\ (\mathsf{A}^{-1})$",
-        cmap="bwr",
+        cmap="RdYlBu_r",
         white_on_black=False,
         **kwargs
     ):

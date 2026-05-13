@@ -418,7 +418,7 @@ class TracerPlot(object):
         :return: matplotlib axis instance
         """
         if "cmap" not in matshow_kwargs:
-            matshow_kwargs["cmap"] = "bwr"
+            matshow_kwargs["cmap"] = "RdBu_r"
         im = ax.matshow(
             self._norm_residuals,
             vmin=v_min,
@@ -483,7 +483,7 @@ class TracerPlot(object):
         :return: matplotlib axis instance
         """
         if "cmap" not in matshow_kwargs:
-            matshow_kwargs["cmap"] = "bwr"
+            matshow_kwargs["cmap"] = "RdBu_r"
         im = ax.matshow(
             self._model - self._data,
             vmin=v_min,

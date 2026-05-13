@@ -78,6 +78,9 @@ class MultiPatchPlot(MultiPatchReconstruction):
         """Illustrates data.
 
         :param ax: matplotlib axis instance
+        :param log_scale: boolean, if True, plots the map in log_10 scale
+        :param text: string, text to be displayed in the image
+        :param colorbar_label: string, label for the colorbar
         :param kwargs: plotting keyword arguments
         :return: matplotlib instance
         """
@@ -102,6 +105,9 @@ class MultiPatchPlot(MultiPatchReconstruction):
         """Illustrates model.
 
         :param ax: matplotlib axis instance
+        :param log_scale: boolean, if True, plots the map in log_10 scale
+        :param text: string, text to be displayed in the image
+        :param colorbar_label: string, label for the colorbar
         :param kwargs: plotting keyword arguments
         :return: matplotlib instance
         """
@@ -133,6 +139,10 @@ class MultiPatchPlot(MultiPatchReconstruction):
             the source plot
         :param num_pix: number of pixels per axis of the source plot
         :param center: list with two entries [center_x, center_y] (optional)
+        :param log_scale: boolean, if True, plots the map in log_10 scale
+        :param text: string, text to be displayed in the image
+        :param colorbar_label: string, label for the colorbar
+        :param dist_scale: distance scale for scale bar
         :param kwargs: plotting keyword arguments
         :return: matplotlib instance
         """
@@ -166,6 +176,13 @@ class MultiPatchPlot(MultiPatchReconstruction):
         illustrates normalized residuals of (data - model) / error
 
         :param ax: matplotlib axis instance
+        :param v_min: minimum plotting scale
+        :param v_max: maximum plotting scale
+        :param log_scale: boolean, if True, plots the map in log_10 scale
+        :param text: string, text to be displayed in the image
+        :param colorbar_label: string, label for the colorbar
+        :param cmap: string, color map
+        :param white_on_black: boolean, if True, prints white text on black background, otherwise the opposite
         :param kwargs: plotting keyword arguments
         :return: matplotlib instance
         """
@@ -196,6 +213,11 @@ class MultiPatchPlot(MultiPatchReconstruction):
         """Illustrates lensing convergence.
 
         :param ax: matplotlib axis instance
+        :param log_scale: boolean, if True, plots the map in log_10 scale
+        :param v_min: minimum plotting scale
+        :param v_max: maximum plotting scale
+        :param text: string, text to be displayed in the image
+        :param colorbar_label: string, label for the colorbar
         :param kwargs: plotting keyword arguments
         :return: matplotlib instance
         """
@@ -226,6 +248,13 @@ class MultiPatchPlot(MultiPatchReconstruction):
         """Illustrates lensing convergence.
 
         :param ax: matplotlib axis instance
+        :param log_scale: boolean, if True, plots the map in log_10 scale
+        :param v_min: minimum plotting scale
+        :param v_max: maximum plotting scale
+        :param text: string, text to be displayed in the image
+        :param colorbar_label: string, label for the colorbar
+        :param cmap: string, color map
+        :param white_on_black: boolean, if True, prints white text on black background, otherwise the opposite
         :param kwargs: plotting keyword arguments
         :return: matplotlib instance
         """
@@ -292,7 +321,17 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param ax: matplotlib axis instance
         :param image: 2d numpy array to be plotted
         :param coords: Coordinate() instance with the coordinate system
+        :param log_scale: boolean, if True, plots the map in log_10 scale
+        :param v_min: minimum plotting scale
+        :param v_max: maximum plotting scale
+        :param text: string, text to be displayed in the image
+        :param font_size: font size of the text
+        :param colorbar_label: string, label for the colorbar
+        :param arrow_size: size of the scale and orientation arrow
+        :param cmap: string of color map (or cmap matplotlib object)
+        :param dist_scale: distance scale for scale bar
         :param white_on_black: boolean, if True, prints white text on black background, otherwise the opposite
+        :param no_support: boolean, if True, does not plot the scale bar, text description, coordinate arrows, or color bar
         :param kwargs: keyword arguments
         :return: matplotlib axis instance
         """

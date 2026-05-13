@@ -152,9 +152,15 @@ class ModelBandPlot(ModelBand):
         """
 
         :param ax: matplotlib axis instance
+        :param v_min: minimum plotting scale
+        :param v_max: maximum plotting scale
+        :param text: string, text to be displayed in the image
+        :param font_size: font size of the text
+        :param colorbar_label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return:
+        :return: matplotlib axis instance
         """
         if v_min is None:
             v_min = self._v_min_default
@@ -222,11 +228,18 @@ class ModelBandPlot(ModelBand):
         :param ax: matplotib axis instance
         :param v_min:
         :param v_max:
+        :param v_min: minimum plotting scale
+        :param v_max: maximum plotting scale
+        :param image_names: boolean, if True, prints image names
+        :param colorbar_label: string, label for the colorbar
+        :param font_size: font size of the text
+        :param text: string, text to be displayed in the image
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param original_position: boolean, if True, uses original image positions
         :param image_name_list: list of names for images
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return:
+        :return: matplotlib axis instance
         """
         if v_min is None:
             v_min = self._v_min_default
@@ -302,6 +315,11 @@ class ModelBandPlot(ModelBand):
         """
 
         :param ax: matplotib axis instance
+        :param text: string, text to be displayed in the image
+        :param v_min: minimum plotting scale
+        :param v_max: maximum plotting scale
+        :param font_size: font size of the text
+        :param colorbar_label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: convergence plot in ax instance
@@ -527,9 +545,18 @@ class ModelBandPlot(ModelBand):
         :param ax:
         :param v_min:
         :param v_max:
+        :param ax: matplotlib axis instance
+        :param v_min: minimum color scale
+        :param v_max: max color scale
+        :param font_size: font size for text appearing in image
+        :param text: text appearing in frame
+        :param colorbar_label: label for the color bar
+        :param coordinate_arrows: boolean, if True, plots coordinate arrows
+        :param color_bar: Option to display the color bar
         :param matshow_kwargs: kwargs to send to matplotlib.pyplot.matshow()
         :param color_bar: Option to display the color bar
         :return:
+        :return: matplotlib axis instance
         """
         if "cmap" not in matshow_kwargs:
             matshow_kwargs["cmap"] = "RdBu_r"
@@ -586,9 +613,16 @@ class ModelBandPlot(ModelBand):
         """
 
         :param ax:
+        :param ax: matplotlib axis instance
+        :param v_min: minimum color scale
+        :param v_max: max color scale
+        :param font_size: font size for text appearing in image
+        :param text: text appearing in frame
+        :param colorbar_label: label for the color bar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return:
+        :return: matplotlib axis instance
         """
         if "cmap" not in matshow_kwargs:
             matshow_kwargs["cmap"] = "RdBu_r"
@@ -703,16 +737,29 @@ class ModelBandPlot(ModelBand):
         :param ax:
         :param numPix:
         :param deltaPix_source:
+        :param ax: matplotlib axis instance
+        :param numPix: number of pixels in plot per axis
+        :param deltaPix_source: pixel spacing in the source resolution illustrated in plot
         :param center: [center_x, center_y], if specified, uses this as the center
         :param v_min:
         :param v_max:
         :param caustic_color:
         :param font_size:
+        :param v_min: minimum plotting scale of the map
+        :param v_max: maximum plotting scale of the map
+        :param with_caustics: plot the caustics on top of the source reconstruction
+        :param caustic_color: color of the caustics
+        :param font_size: font size of labels
         :param plot_scale: string, log or linear, scale of surface brightness plot
+        :param scale_size: float, size of the scale bar
+        :param text: string, text to be displayed in the image
+        :param colorbar_label: string, label for the colorbar
+        :param point_source_position: boolean, if True, plots a point at the position of the point source
         :param kwargs_caustic: keyword arguments for caustic plotting
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return:
+        :return: matplotlib axis instance
         """
         if v_min is None:
             v_min = self._v_min_default
@@ -949,8 +996,14 @@ class ModelBandPlot(ModelBand):
         :param ax: matplotib axis instance
         :param v_min: minimum range of plotting
         :param v_max: maximum range of plotting
+        :param image_name_list: list of strings for names of the images in the same order as the positions
+        :param font_size: font size of labels
+        :param coordinate_arrows: boolean, if True, plots coordinate arrows
+        :param text: string, text to be displayed in the image
+        :param colorbar_label: string, label for the colorbar
         :param matshow_kwargs: kwargs to send to matplotlib.pyplot.matshow()
         :return:
+        :return: matplotlib axis instance
         """
         if "cmap" not in matshow_kwargs:
             matshow_kwargs["cmap"] = "RdYlBu_r"
@@ -1027,9 +1080,19 @@ class ModelBandPlot(ModelBand):
     ):
         """
 
+        :param ax: matplotlib axis instance
+        :param v_min: minimum plotting scale
+        :param v_max: maximum plotting scale
+        :param axis: integer, 0 or 1, specifies the deflection angle axis to be plotted
+        :param with_caustics: boolean, if True, plots caustics
+        :param image_name_list: list of strings for names of the images
+        :param text: string, text to be displayed in the image
+        :param font_size: font size of labels
+        :param colorbar_label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return:
+        :return: matplotlib axis instance
         """
 
         alpha1, alpha2 = self._lensModel.alpha(
@@ -1368,8 +1431,12 @@ class ModelBandPlot(ModelBand):
         :param ax:
         :param v_min:
         :param v_max:
+        :param ax: matplotlib axis instance
+        :param v_min: minimum color scale for matshow plot
+        :param v_max: maximum color scale for matshow plot
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return:
+        :return: matplotlib axis instance
         """
         model = ImageModel.extinction_map(
             self._bandmodel,

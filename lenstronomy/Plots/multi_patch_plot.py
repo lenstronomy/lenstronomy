@@ -22,6 +22,9 @@ class MultiPatchPlot(MultiPatchReconstruction):
         kwargs_pixel_grid=None,
         verbose=True,
         cmap_string="gist_heat",
+        scale_bar_width=2,
+        scale_bar_color="w",
+        scale_bar_font_size=15,
     ):
         """
 
@@ -66,6 +69,9 @@ class MultiPatchPlot(MultiPatchReconstruction):
         self._v_min_default = max(np.min(log_model), -5)
         self._v_max_default = min(np.max(log_model), 10)
         self._cmap = plot_util.cmap_conf(cmap_string)
+        self._scale_bar_width = scale_bar_width
+        self._scale_bar_color = scale_bar_color
+        self._scale_bar_font_size = scale_bar_font_size
 
     def data_plot(
         self,
@@ -310,7 +316,6 @@ class MultiPatchPlot(MultiPatchReconstruction):
         text="Observed",
         font_size=15,
         colorbar_label=r"log$_{10}$ flux",
-        arrow_size=0.02,
         cmap=None,
         dist_scale=1.0,
         white_on_black=True,
@@ -328,7 +333,6 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param text: string, text to be displayed in the image
         :param font_size: font size of the text
         :param colorbar_label: string, label for the colorbar
-        :param arrow_size: size of the scale and orientation arrow
         :param cmap: string of color map (or cmap matplotlib object)
         :param dist_scale: distance scale for scale bar
         :param white_on_black: boolean, if True, prints white text on black background, otherwise the opposite
@@ -376,8 +380,9 @@ class MultiPatchPlot(MultiPatchReconstruction):
                     frame_size,
                     dist=dist_scale,
                     text=text_dist,
-                    font_size=font_size,
-                    color=text_k,
+                    color=self._scale_bar_color,
+                    font_size=self._scale_bar_font_size,
+                    linewidth=self._scale_bar_width,
                 )
             if "no_text" not in kwargs or not kwargs["no_text"]:
                 plot_util.text_description(
@@ -395,7 +400,6 @@ class MultiPatchPlot(MultiPatchReconstruction):
                     frame_size,
                     coords,
                     color=text_k,
-                    arrow_size=arrow_size,
                     font_size=font_size,
                 )
 

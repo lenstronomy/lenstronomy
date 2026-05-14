@@ -690,8 +690,8 @@ class ModelBandPlot(ModelBand):
         scale_bar_text=None,
         scale_bar_font_size=15,
         colorbar_label_font_size=15,
-        arrow_color_n="w",
-        arrow_color_e="w",
+        arrow_color_n="k",
+        arrow_color_e="k",
         arrow_font_size=15,
         **matshow_kwargs,
     ):

@@ -771,14 +771,14 @@ def distortions(
             dphi_tan_dtan2d, sigma=smoothing_scale / delta_pix
         )
 
-    def _plot_frame(ax, frame, vmin, vmax, text_string):
+    def _plot_frame(ax, frame, vmin, vmax, title_text):
         """
 
         :param ax: matplotlib.axis instance
         :param frame: 2d array
         :param vmin: minimum plotting scale
         :param vmax: maximum plotting scale
-        :param text_string: string to describe the label
+        :param title_text: string to describe the label
         :return:
         """
         font_size = 10
@@ -797,7 +797,7 @@ def distortions(
         plot_util.text_description(
             ax,
             _frame_size,
-            text=text_string,
+            title_text=title_text,
             color="k",
             backgroundcolor="w",
             font_size=font_size,
@@ -809,69 +809,69 @@ def distortions(
 
     f, axes = plt.subplots(3, 4, figsize=(12, 8))
     _plot_frame(
-        axes[0, 0], lambda_rad2d, vmin=0.6, vmax=1.4, text_string=r"$\lambda_{rad}$"
+        axes[0, 0], lambda_rad2d, vmin=0.6, vmax=1.4, title_text=r"$\lambda_{rad}$"
     )
     _plot_frame(
-        axes[0, 1], lambda_tan2d, vmin=-20, vmax=20, text_string=r"$\lambda_{tan}$"
+        axes[0, 1], lambda_tan2d, vmin=-20, vmax=20, title_text=r"$\lambda_{tan}$"
     )
     _plot_frame(
         axes[0, 2],
         orientation_angle2d,
         vmin=-np.pi / 10,
         vmax=np.pi / 10,
-        text_string=r"$\phi$",
+        title_text=r"$\phi$",
     )
     _plot_frame(
         axes[0, 3],
         util.array2image(lambda_tan * lambda_rad),
         vmin=-20,
         vmax=20,
-        text_string="magnification",
+        title_text="magnification",
     )
     _plot_frame(
         axes[1, 0],
         dlambda_rad_drad2d / lambda_rad2d,
         vmin=-0.1,
         vmax=0.1,
-        text_string="dlambda_rad_drad",
+        title_text="dlambda_rad_drad",
     )
     _plot_frame(
         axes[1, 1],
         dlambda_tan_dtan2d / lambda_tan2d,
         vmin=-20,
         vmax=20,
-        text_string="dlambda_tan_dtan",
+        title_text="dlambda_tan_dtan",
     )
     _plot_frame(
         axes[1, 2],
         dlambda_tan_drad2d / lambda_tan2d,
         vmin=-20,
         vmax=20,
-        text_string="dlambda_tan_drad",
+        title_text="dlambda_tan_drad",
     )
     _plot_frame(
         axes[1, 3],
         dlambda_rad_dtan2d / lambda_rad2d,
         vmin=-0.1,
         vmax=0.1,
-        text_string="dlambda_rad_dtan",
+        title_text="dlambda_rad_dtan",
     )
 
     _plot_frame(
-        axes[2, 0], dphi_rad_drad2d, vmin=-0.1, vmax=0.1, text_string="dphi_rad_drad"
+        axes[2, 0], dphi_rad_drad2d, vmin=-0.1, vmax=0.1, title_text="dphi_rad_drad"
     )
     _plot_frame(
         axes[2, 1],
         dphi_tan_dtan2d,
         vmin=0,
         vmax=20,
-        text_string="dphi_tan_dtan: curvature radius",
+        title_text="dphi_tan_dtan: curvature radius",
     )
     _plot_frame(
-        axes[2, 2], dphi_tan_drad2d, vmin=-0.1, vmax=0.1, text_string="dphi_tan_drad"
+        axes[2, 2], dphi_tan_drad2d, vmin=-0.1, vmax=0.1, title_text="dphi_tan_drad"
     )
     _plot_frame(
-        axes[2, 3], dphi_rad_dtan2d, vmin=0, vmax=20, text_string="dphi_rad_dtan"
+        axes[2, 3], dphi_rad_dtan2d, vmin=0, vmax=20, title_text="dphi_rad_dtan"
     )
 
     return f, axes

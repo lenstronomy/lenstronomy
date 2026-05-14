@@ -42,28 +42,28 @@ def sqrt(inputArray, scale_min=None, scale_max=None):
 def text_description(
     ax,
     d,
-    text,
+    title_text,
     color="w",
     backgroundcolor="k",
     flipped=False,
     font_size=15,
-    caption_x_pos=None,
-    caption_y_pos=None,
+    title_x_pos=None,
+    title_y_pos=None,
 ):
-    if caption_x_pos is None:
+    if title_x_pos is None:
         if flipped:
-            caption_x_pos = 0.975
+            title_x_pos = 0.975
         else:
-            caption_x_pos = 0.025
-    if caption_y_pos is None:
-        caption_y_pos = 0.975
+            title_x_pos = 0.025
+    if title_y_pos is None:
+        title_y_pos = 0.975
 
     ha = "right" if flipped else "left"
 
     ax.text(
-        caption_x_pos,
-        caption_y_pos,
-        text,
+        title_x_pos,
+        title_y_pos,
+        title_text,
         color=color,
         fontsize=font_size,
         backgroundcolor=backgroundcolor,

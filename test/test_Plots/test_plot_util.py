@@ -22,7 +22,7 @@ class TestPlotUtil(object):
         plt.close()
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
         plot_util.text_description(
-            ax, d=3, text="test", color="w", backgroundcolor="k", flipped=True
+            ax, d=3, title_text="test", color="w", backgroundcolor="k", flipped=True
         )
         plt.close()
 

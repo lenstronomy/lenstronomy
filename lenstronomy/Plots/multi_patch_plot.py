@@ -101,7 +101,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         self,
         ax,
         log_scale=True,
-        text="Observed",
+        title_text="Observed",
         colorbar_label=r"log$_{10}$ flux",
         **kwargs
     ):
@@ -109,7 +109,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
 
         :param ax: matplotlib axis instance
         :param log_scale: boolean, if True, plots the map in log_10 scale
-        :param text: string, text to be displayed in the image
+        :param title_text: string, text to be displayed in the image
         :param colorbar_label: string, label for the colorbar
         :param kwargs: plotting keyword arguments
         :return: matplotlib instance
@@ -119,7 +119,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
             image=self._image_joint,
             coords=self._pixel_grid_joint,
             log_scale=log_scale,
-            text=text,
+            title_text=title_text,
             colorbar_label=colorbar_label,
             **kwargs
         )
@@ -128,7 +128,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         self,
         ax,
         log_scale=True,
-        text="Reconstructed",
+        title_text="Reconstructed",
         colorbar_label=r"log$_{10}$ flux",
         **kwargs
     ):
@@ -136,7 +136,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
 
         :param ax: matplotlib axis instance
         :param log_scale: boolean, if True, plots the map in log_10 scale
-        :param text: string, text to be displayed in the image
+        :param title_text: string, text to be displayed in the image
         :param colorbar_label: string, label for the colorbar
         :param kwargs: plotting keyword arguments
         :return: matplotlib instance
@@ -146,7 +146,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
             image=self._model_joint,
             coords=self._pixel_grid_joint,
             log_scale=log_scale,
-            text=text,
+            title_text=title_text,
             colorbar_label=colorbar_label,
             **kwargs
         )
@@ -158,7 +158,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         num_pix,
         center=None,
         log_scale=True,
-        text="Source",
+        title_text="Source",
         colorbar_label=r"log$_{10}$ flux",
         scale_bar_length=0.1,
         **kwargs
@@ -170,7 +170,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param num_pix: number of pixels per axis of the source plot
         :param center: list with two entries [center_x, center_y] (optional)
         :param log_scale: boolean, if True, plots the map in log_10 scale
-        :param text: string, text to be displayed in the image
+        :param title_text: string, text to be displayed in the image
         :param colorbar_label: string, label for the colorbar
         :param scale_bar_length: distance scale for scale bar
         :param kwargs: plotting keyword arguments
@@ -184,7 +184,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
             image=source,
             coords=coords,
             log_scale=log_scale,
-            text=text,
+            title_text=title_text,
             colorbar_label=colorbar_label,
             scale_bar_length=scale_bar_length,
             **kwargs
@@ -196,7 +196,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         v_min=-6,
         v_max=6,
         log_scale=False,
-        text="Normalized Residuals",
+        title_text="Normalized Residuals",
         colorbar_label=r"(f$_{\rm data}$ - f$_{\rm model}$)/$\sigma$",
         cmap="RdBu_r",
         white_on_black=False,
@@ -209,7 +209,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
         :param log_scale: boolean, if True, plots the map in log_10 scale
-        :param text: string, text to be displayed in the image
+        :param title_text: string, text to be displayed in the image
         :param colorbar_label: string, label for the colorbar
         :param cmap: string, color map
         :param white_on_black: boolean, if True, prints white text on black background, otherwise the opposite
@@ -223,7 +223,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
             v_min=v_min,
             v_max=v_max,
             log_scale=log_scale,
-            text=text,
+            title_text=title_text,
             colorbar_label=colorbar_label,
             cmap=cmap,
             white_on_black=white_on_black,
@@ -236,7 +236,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         log_scale=True,
         v_min=-2,
         v_max=0.2,
-        text="Convergence",
+        title_text="Convergence",
         colorbar_label=r"$\log_{10}\ \kappa$",
         **kwargs
     ):
@@ -246,7 +246,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param log_scale: boolean, if True, plots the map in log_10 scale
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
-        :param text: string, text to be displayed in the image
+        :param title_text: string, text to be displayed in the image
         :param colorbar_label: string, label for the colorbar
         :param kwargs: plotting keyword arguments
         :return: matplotlib instance
@@ -258,7 +258,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
             log_scale=log_scale,
             v_min=v_min,
             v_max=v_max,
-            text=text,
+            title_text=title_text,
             colorbar_label=colorbar_label,
             **kwargs
         )
@@ -269,7 +269,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         log_scale=False,
         v_min=-10,
         v_max=10,
-        text="Magnification",
+        title_text="Magnification",
         colorbar_label=r"$\det\ (\mathsf{A}^{-1})$",
         cmap="RdYlBu_r",
         white_on_black=False,
@@ -281,7 +281,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param log_scale: boolean, if True, plots the map in log_10 scale
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
-        :param text: string, text to be displayed in the image
+        :param title_text: string, text to be displayed in the image
         :param colorbar_label: string, label for the colorbar
         :param cmap: string, color map
         :param white_on_black: boolean, if True, prints white text on black background,
@@ -296,7 +296,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
             log_scale=log_scale,
             v_min=v_min,
             v_max=v_max,
-            text=text,
+            title_text=title_text,
             colorbar_label=colorbar_label,
             cmap=cmap,
             white_on_black=white_on_black,
@@ -337,17 +337,17 @@ class MultiPatchPlot(MultiPatchReconstruction):
         log_scale=True,
         v_min=None,
         v_max=None,
-        text="Observed",
+        title_text="Observed",
         font_size=15,
         colorbar_label=r"log$_{10}$ flux",
         cmap=None,
         scale_bar_length=1.0,
         scale_bar_text=None,
-        caption_font_size=15,
-        caption_color=None,
-        caption_background_color=None,
-        caption_x_pos=None,
-        caption_y_pos=None,
+        title_font_size=15,
+        title_color=None,
+        title_background_color=None,
+        title_x_pos=None,
+        title_y_pos=None,
         white_on_black=True,
         no_support=False,
         colorbar_label_font_size=15,
@@ -364,17 +364,17 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param log_scale: boolean, if True, plots the map in log_10 scale
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
-        :param text: string, text to be displayed in the image
+        :param title_text: string, text to be displayed in the image
         :param font_size: font size of the text
         :param colorbar_label: string, label for the colorbar
         :param cmap: string of color map (or cmap matplotlib object)
         :param scale_bar_length: distance scale for scale bar
         :param scale_bar_text: string to be printed on scale bar
-        :param caption_font_size: font size of the caption
-        :param caption_color: color of the caption
-        :param caption_background_color: background color of the caption
-        :param caption_x_pos: x-position of the caption
-        :param caption_y_pos: y-position of the caption
+        :param title_font_size: font size of the title
+        :param title_color: color of the title
+        :param title_background_color: background color of the title
+        :param title_x_pos: x-position of the title
+        :param title_y_pos: y-position of the title
         :param white_on_black: boolean, if True, prints white text on black background, otherwise the opposite
         :param no_support: boolean, if True, does not plot the scale bar, text description, coordinate arrows, or color bar
         :param colorbar_label_font_size: font size of the colorbar label
@@ -391,10 +391,10 @@ class MultiPatchPlot(MultiPatchReconstruction):
             text_k = "k"
             bkg_k = "w"
 
-        if caption_color is None:
-            caption_color = text_k
-        if caption_background_color is None:
-            caption_background_color = bkg_k
+        if title_color is None:
+            title_color = text_k
+        if title_background_color is None:
+            title_background_color = bkg_k
         if arrow_color_north is None:
             arrow_color_north = text_k
         if arrow_color_east is None:
@@ -440,12 +440,12 @@ class MultiPatchPlot(MultiPatchReconstruction):
                 plot_util.text_description(
                     ax,
                     frame_size,
-                    text=text,
-                    color=caption_color,
-                    backgroundcolor=caption_background_color,
-                    font_size=caption_font_size,
-                    caption_x_pos=caption_x_pos,
-                    caption_y_pos=caption_y_pos,
+                    title_text=title_text,
+                    color=title_color,
+                    backgroundcolor=title_background_color,
+                    font_size=title_font_size,
+                    title_x_pos=title_x_pos,
+                    title_y_pos=title_y_pos,
                 )
 
             if kwargs.get("coordinate_arrows", True):

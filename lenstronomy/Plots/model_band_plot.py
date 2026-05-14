@@ -171,15 +171,15 @@ class ModelBandPlot(ModelBand):
         ax,
         v_min=None,
         v_max=None,
-        text="Observed",
+        title_text="Observed",
         font_size=15,
         colorbar_label=r"log$_{10}$ flux",
         coordinate_arrows=True,
-        caption_font_size=15,
-        caption_color="w",
-        caption_background_color="k",
-        caption_x_pos=None,
-        caption_y_pos=None,
+        title_font_size=15,
+        title_color="w",
+        title_background_color="k",
+        title_x_pos=None,
+        title_y_pos=None,
         scale_bar_color="w",
         scale_bar_length=1.0,
         scale_bar_text=None,
@@ -194,15 +194,15 @@ class ModelBandPlot(ModelBand):
         :param ax: matplotlib axis instance
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
-        :param text: string, text to be displayed in the image
+        :param title_text: string, text to be displayed in the image
         :param font_size: font size of the text
         :param colorbar_label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param caption_font_size: font size of the caption
-        :param caption_color: color of the caption
-        :param caption_background_color: background color of the caption
-        :param caption_x_pos: x-position of the caption
-        :param caption_y_pos: y-position of the caption
+        :param title_font_size: font size of the title
+        :param title_color: color of the title
+        :param title_background_color: background color of the title
+        :param title_x_pos: x-position of the title
+        :param title_y_pos: y-position of the title
         :param scale_bar_color: color of the scale bar
         :param scale_bar_length: length of the scale bar
         :param scale_bar_text: text of the scale bar
@@ -243,12 +243,12 @@ class ModelBandPlot(ModelBand):
         plot_util.text_description(
             ax,
             self._frame_size,
-            text=text,
-            color=caption_color,
-            backgroundcolor=caption_background_color,
-            font_size=caption_font_size,
-            caption_x_pos=caption_x_pos,
-            caption_y_pos=caption_y_pos,
+            title_text=title_text,
+            color=title_color,
+            backgroundcolor=title_background_color,
+            font_size=title_font_size,
+            title_x_pos=title_x_pos,
+            title_y_pos=title_y_pos,
         )
 
         if coordinate_arrows:
@@ -285,15 +285,15 @@ class ModelBandPlot(ModelBand):
         image_names=False,
         colorbar_label=r"log$_{10}$ flux",
         font_size=15,
-        text="Reconstructed",
+        title_text="Reconstructed",
         coordinate_arrows=True,
         original_position=True,
         image_name_list=None,
-        caption_font_size=15,
-        caption_color="w",
-        caption_background_color="k",
-        caption_x_pos=None,
-        caption_y_pos=None,
+        title_font_size=15,
+        title_color="w",
+        title_background_color="k",
+        title_x_pos=None,
+        title_y_pos=None,
         scale_bar_color="w",
         scale_bar_length=1.0,
         scale_bar_text=None,
@@ -311,15 +311,15 @@ class ModelBandPlot(ModelBand):
         :param image_names: boolean, if True, prints image names
         :param colorbar_label: string, label for the colorbar
         :param font_size: font size of the text
-        :param text: string, text to be displayed in the image
+        :param title_text: string, text to be displayed in the image
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param original_position: boolean, if True, uses original image positions
         :param image_name_list: list of names for images
-        :param caption_font_size: font size of the caption
-        :param caption_color: color of the caption
-        :param caption_background_color: background color of the caption
-        :param caption_x_pos: x-position of the caption
-        :param caption_y_pos: y-position of the caption
+        :param title_font_size: font size of the title
+        :param title_color: color of the title
+        :param title_background_color: background color of the title
+        :param title_x_pos: x-position of the title
+        :param title_y_pos: y-position of the title
         :param scale_bar_color: color of the scale bar
         :param scale_bar_length: length of the scale bar
         :param scale_bar_text: text of the scale bar
@@ -358,12 +358,12 @@ class ModelBandPlot(ModelBand):
         plot_util.text_description(
             ax,
             self._frame_size,
-            text=text,
-            color=caption_color,
-            backgroundcolor=caption_background_color,
-            font_size=caption_font_size,
-            caption_x_pos=caption_x_pos,
-            caption_y_pos=caption_y_pos,
+            title_text=title_text,
+            color=title_color,
+            backgroundcolor=title_background_color,
+            font_size=title_font_size,
+            title_x_pos=title_x_pos,
+            title_y_pos=title_y_pos,
         )
         if coordinate_arrows:
             plot_util.coordinate_arrows(
@@ -410,17 +410,17 @@ class ModelBandPlot(ModelBand):
     def convergence_plot(
         self,
         ax,
-        text="Convergence",
+        title_text="Convergence",
         v_min=None,
         v_max=None,
         font_size=15,
         colorbar_label=r"$\log_{10}\ \kappa$",
         coordinate_arrows=True,
-        caption_font_size=15,
-        caption_color="w",
-        caption_background_color="k",
-        caption_x_pos=None,
-        caption_y_pos=None,
+        title_font_size=15,
+        title_color="w",
+        title_background_color="k",
+        title_x_pos=None,
+        title_y_pos=None,
         scale_bar_color="w",
         scale_bar_length=1.0,
         scale_bar_text=None,
@@ -433,17 +433,17 @@ class ModelBandPlot(ModelBand):
         """
 
         :param ax: matplotib axis instance
-        :param text: string, text to be displayed in the image
+        :param title_text: string, text to be displayed in the image
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
         :param font_size: font size of the text
         :param colorbar_label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param caption_font_size: font size of the caption
-        :param caption_color: color of the caption
-        :param caption_background_color: background color of the caption
-        :param caption_x_pos: x-position of the caption
-        :param caption_y_pos: y-position of the caption
+        :param title_font_size: font size of the title
+        :param title_color: color of the title
+        :param title_background_color: background color of the title
+        :param title_x_pos: x-position of the title
+        :param title_y_pos: y-position of the title
         :param scale_bar_color: color of the scale bar
         :param scale_bar_length: length of the scale bar
         :param scale_bar_text: text of the scale bar
@@ -500,13 +500,13 @@ class ModelBandPlot(ModelBand):
             plot_util.text_description(
                 ax,
                 self._frame_size,
-                text=text,
+                title_text=title_text,
                 flipped=False,
-                color=caption_color,
-                backgroundcolor=caption_background_color,
-                font_size=caption_font_size,
-                caption_x_pos=caption_x_pos,
-                caption_y_pos=caption_y_pos,
+                color=title_color,
+                backgroundcolor=title_background_color,
+                font_size=title_font_size,
+                title_x_pos=title_x_pos,
+                title_y_pos=title_y_pos,
             )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
@@ -520,7 +520,7 @@ class ModelBandPlot(ModelBand):
         self,
         ax,
         index_macromodel,
-        text="Substructure convergence",
+        title_text="Substructure convergence",
         subtract_mean=True,
         v_min=-0.05,
         v_max=0.05,
@@ -533,11 +533,11 @@ class ModelBandPlot(ModelBand):
         super_sample_factor=None,
         add_color_bar=True,
         coordinate_arrows=True,
-        caption_font_size=15,
-        caption_color="k",
-        caption_background_color="w",
-        caption_x_pos=None,
-        caption_y_pos=None,
+        title_font_size=15,
+        title_color="k",
+        title_background_color="w",
+        title_x_pos=None,
+        title_y_pos=None,
         scale_bar_color="k",
         scale_bar_length=1.0,
         scale_bar_text=None,
@@ -552,7 +552,7 @@ class ModelBandPlot(ModelBand):
 
         :param ax: matplotib axis instance
         :param index_macromodel: a list of indexes corresponding to the lens models with convergence to be subtracted
-        :param text: text appearing in frame
+        :param title_text: text appearing in frame
         :param subtract_mean: bool; displays the substructure convergence relative to the mean convergence in the frame
         :param v_min: minimum color scale
         :param v_max: max color scale
@@ -565,11 +565,11 @@ class ModelBandPlot(ModelBand):
         :param super_sample_factor: a integer the specifies supersampling of the coordinate grid to create the convergence map
         :param add_color_bar: bool; whether or not to include a color bar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param caption_font_size: font size of the caption
-        :param caption_color: color of the caption
-        :param caption_background_color: background color of the caption
-        :param caption_x_pos: x-position of the caption
-        :param caption_y_pos: y-position of the caption
+        :param title_font_size: font size of the title
+        :param title_color: color of the title
+        :param title_background_color: background color of the title
+        :param title_x_pos: x-position of the title
+        :param title_y_pos: y-position of the title
         :param scale_bar_color: color of the scale bar
         :param scale_bar_length: length of the scale bar
         :param scale_bar_text: text of the scale bar
@@ -672,13 +672,13 @@ class ModelBandPlot(ModelBand):
             plot_util.text_description(
                 ax,
                 self._frame_size,
-                text=text,
+                title_text=title_text,
                 flipped=False,
-                color=caption_color,
-                backgroundcolor=caption_background_color,
-                font_size=caption_font_size,
-                caption_x_pos=caption_x_pos,
-                caption_y_pos=caption_y_pos,
+                color=title_color,
+                backgroundcolor=title_background_color,
+                font_size=title_font_size,
+                title_x_pos=title_x_pos,
+                title_y_pos=title_y_pos,
             )
 
         if with_critical_curves is True:
@@ -722,15 +722,15 @@ class ModelBandPlot(ModelBand):
         v_min=-6,
         v_max=6,
         font_size=15,
-        text="Normalized Residuals",
+        title_text="Normalized Residuals",
         colorbar_label=r"(f$_{\rm data}$ - f$_{\rm model}$)/$\sigma$",
         coordinate_arrows=True,
         color_bar=True,
-        caption_font_size=15,
-        caption_color="k",
-        caption_background_color="w",
-        caption_x_pos=None,
-        caption_y_pos=None,
+        title_font_size=15,
+        title_color="k",
+        title_background_color="w",
+        title_x_pos=None,
+        title_y_pos=None,
         scale_bar_color="k",
         scale_bar_length=1.0,
         scale_bar_text=None,
@@ -746,15 +746,15 @@ class ModelBandPlot(ModelBand):
         :param v_min: minimum color scale
         :param v_max: max color scale
         :param font_size: font size for text appearing in image
-        :param text: text appearing in frame
+        :param title_text: text appearing in frame
         :param colorbar_label: label for the color bar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param color_bar: Option to display the color bar
-        :param caption_font_size: font size of the caption
-        :param caption_color: color of the caption
-        :param caption_background_color: background color of the caption
-        :param caption_x_pos: x-position of the caption
-        :param caption_y_pos: y-position of the caption
+        :param title_font_size: font size of the title
+        :param title_color: color of the title
+        :param title_background_color: background color of the title
+        :param title_x_pos: x-position of the title
+        :param title_y_pos: y-position of the title
         :param scale_bar_color: color of the scale bar
         :param scale_bar_length: length of the scale bar
         :param scale_bar_text: text of the scale bar
@@ -790,12 +790,12 @@ class ModelBandPlot(ModelBand):
         plot_util.text_description(
             ax,
             self._frame_size,
-            text=text,
-            color=caption_color,
-            backgroundcolor=caption_background_color,
-            font_size=caption_font_size,
-            caption_x_pos=caption_x_pos,
-            caption_y_pos=caption_y_pos,
+            title_text=title_text,
+            color=title_color,
+            backgroundcolor=title_background_color,
+            font_size=title_font_size,
+            title_x_pos=title_x_pos,
+            title_y_pos=title_y_pos,
         )
         if coordinate_arrows:
             plot_util.coordinate_arrows(
@@ -829,14 +829,14 @@ class ModelBandPlot(ModelBand):
         v_min=-1,
         v_max=1,
         font_size=15,
-        text="Residuals",
+        title_text="Residuals",
         colorbar_label=r"(f$_{\rm data}$-f$_{\rm model}$)",
         coordinate_arrows=True,
-        caption_font_size=15,
-        caption_color="k",
-        caption_background_color="w",
-        caption_x_pos=None,
-        caption_y_pos=None,
+        title_font_size=15,
+        title_color="k",
+        title_background_color="w",
+        title_x_pos=None,
+        title_y_pos=None,
         scale_bar_color="k",
         scale_bar_length=1.0,
         scale_bar_text=None,
@@ -852,14 +852,14 @@ class ModelBandPlot(ModelBand):
         :param v_min: minimum color scale
         :param v_max: max color scale
         :param font_size: font size for text appearing in image
-        :param text: text appearing in frame
+        :param title_text: text appearing in frame
         :param colorbar_label: label for the color bar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param caption_font_size: font size of the caption
-        :param caption_color: color of the caption
-        :param caption_background_color: background color of the caption
-        :param caption_x_pos: x-position of the caption
-        :param caption_y_pos: y-position of the caption
+        :param title_font_size: font size of the title
+        :param title_color: color of the title
+        :param title_background_color: background color of the title
+        :param title_x_pos: x-position of the title
+        :param title_y_pos: y-position of the title
         :param scale_bar_color: color of the scale bar
         :param scale_bar_length: length of the scale bar
         :param scale_bar_text: text of the scale bar
@@ -895,12 +895,12 @@ class ModelBandPlot(ModelBand):
         plot_util.text_description(
             ax,
             self._frame_size,
-            text=text,
-            color=caption_color,
-            backgroundcolor=caption_background_color,
-            font_size=caption_font_size,
-            caption_x_pos=caption_x_pos,
-            caption_y_pos=caption_y_pos,
+            title_text=title_text,
+            color=title_color,
+            backgroundcolor=title_background_color,
+            font_size=title_font_size,
+            title_x_pos=title_x_pos,
+            title_y_pos=title_y_pos,
         )
         if coordinate_arrows:
             plot_util.coordinate_arrows(
@@ -988,16 +988,16 @@ class ModelBandPlot(ModelBand):
         font_size=15,
         plot_scale="log",
         scale_size=0.1,
-        text="Reconstructed source",
+        title_text="Reconstructed source",
         colorbar_label=r"log$_{10}$ flux",
         point_source_position=True,
         kwargs_caustic=None,
         coordinate_arrows=True,
-        caption_font_size=15,
-        caption_color="w",
-        caption_background_color="k",
-        caption_x_pos=None,
-        caption_y_pos=None,
+        title_font_size=15,
+        title_color="w",
+        title_background_color="k",
+        title_x_pos=None,
+        title_y_pos=None,
         scale_bar_color="w",
         scale_bar_length=0.1,
         scale_bar_text=None,
@@ -1020,16 +1020,16 @@ class ModelBandPlot(ModelBand):
         :param font_size: font size of labels
         :param plot_scale: string, log or linear, scale of surface brightness plot
         :param scale_size: float, size of the scale bar
-        :param text: string, text to be displayed in the image
+        :param title_text: string, text to be displayed in the image
         :param colorbar_label: string, label for the colorbar
         :param point_source_position: boolean, if True, plots a point at the position of the point source
         :param kwargs_caustic: keyword arguments for caustic plotting
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param caption_font_size: font size of the caption
-        :param caption_color: color of the caption
-        :param caption_background_color: background color of the caption
-        :param caption_x_pos: x-position of the caption
-        :param caption_y_pos: y-position of the caption
+        :param title_font_size: font size of the title
+        :param title_color: color of the title
+        :param title_background_color: background color of the title
+        :param title_x_pos: x-position of the title
+        :param title_y_pos: y-position of the title
         :param scale_bar_color: color of the scale bar
         :param scale_bar_length: length of the scale bar
         :param scale_bar_text: text of the scale bar
@@ -1131,13 +1131,13 @@ class ModelBandPlot(ModelBand):
             plot_util.text_description(
                 ax,
                 d_s,
-                text=text,
+                title_text=title_text,
                 flipped=False,
-                color=caption_color,
-                backgroundcolor=caption_background_color,
-                font_size=caption_font_size,
-                caption_x_pos=caption_x_pos,
-                caption_y_pos=caption_y_pos,
+                color=title_color,
+                backgroundcolor=title_background_color,
+                font_size=title_font_size,
+                title_x_pos=title_x_pos,
+                title_y_pos=title_y_pos,
             )
         if point_source_position is True:
             ra_source, dec_source = self._bandmodel.PointSource.source_position(
@@ -1157,11 +1157,11 @@ class ModelBandPlot(ModelBand):
         font_size=15,
         point_source_position=True,
         coordinate_arrows=True,
-        caption_font_size=15,
-        caption_color="w",
-        caption_background_color="k",
-        caption_x_pos=None,
-        caption_y_pos=None,
+        title_font_size=15,
+        title_color="w",
+        title_background_color="k",
+        title_x_pos=None,
+        title_y_pos=None,
         scale_bar_color="w",
         scale_bar_length=0.1,
         scale_bar_text=None,
@@ -1190,11 +1190,11 @@ class ModelBandPlot(ModelBand):
         :param point_source_position: boolean, if True, plots a point at the position of
             the point source
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param caption_font_size: font size of the caption
-        :param caption_color: color of the caption
-        :param caption_background_color: background color of the caption
-        :param caption_x_pos: x-position of the caption
-        :param caption_y_pos: y-position of the caption
+        :param title_font_size: font size of the title
+        :param title_color: color of the title
+        :param title_background_color: background color of the title
+        :param title_x_pos: x-position of the title
+        :param title_y_pos: y-position of the title
         :param scale_bar_color: color of the scale bar
         :param scale_bar_length: length of the scale bar
         :param scale_bar_text: text of the scale bar
@@ -1289,13 +1289,13 @@ class ModelBandPlot(ModelBand):
         plot_util.text_description(
             ax,
             d_s,
-            text="Error map in source",
+            title_text="Error map in source",
             flipped=False,
-            color=caption_color,
-            backgroundcolor=caption_background_color,
-            font_size=caption_font_size,
-            caption_x_pos=caption_x_pos,
-            caption_y_pos=caption_y_pos,
+            color=title_color,
+            backgroundcolor=title_background_color,
+            font_size=title_font_size,
+            title_x_pos=title_x_pos,
+            title_y_pos=title_y_pos,
         )
         if point_source_position is True:
             ra_source, dec_source = self._bandmodel.PointSource.source_position(
@@ -1312,13 +1312,13 @@ class ModelBandPlot(ModelBand):
         image_name_list=None,
         font_size=15,
         coordinate_arrows=True,
-        text="Magnification model",
+        title_text="Magnification model",
         colorbar_label=r"$\det\ (\mathsf{A}^{-1})$",
-        caption_font_size=15,
-        caption_color="k",
-        caption_background_color="w",
-        caption_x_pos=None,
-        caption_y_pos=None,
+        title_font_size=15,
+        title_color="k",
+        title_background_color="w",
+        title_x_pos=None,
+        title_y_pos=None,
         scale_bar_color="k",
         scale_bar_length=1.0,
         scale_bar_text=None,
@@ -1336,13 +1336,13 @@ class ModelBandPlot(ModelBand):
         :param image_name_list: list of strings for names of the images in the same order as the positions
         :param font_size: font size of labels
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param text: string, text to be displayed in the image
+        :param title_text: string, text to be displayed in the image
         :param colorbar_label: string, label for the colorbar
-        :param caption_font_size: font size of the caption
-        :param caption_color: color of the caption
-        :param caption_background_color: background color of the caption
-        :param caption_x_pos: x-position of the caption
-        :param caption_y_pos: y-position of the caption
+        :param title_font_size: font size of the title
+        :param title_color: color of the title
+        :param title_background_color: background color of the title
+        :param title_x_pos: x-position of the title
+        :param title_y_pos: y-position of the title
         :param scale_bar_color: color of the scale bar
         :param scale_bar_length: length of the scale bar
         :param scale_bar_text: text of the scale bar
@@ -1402,12 +1402,12 @@ class ModelBandPlot(ModelBand):
         plot_util.text_description(
             ax,
             self._frame_size,
-            text=text,
-            color=caption_color,
-            backgroundcolor=caption_background_color,
-            font_size=caption_font_size,
-            caption_x_pos=caption_x_pos,
-            caption_y_pos=caption_y_pos,
+            title_text=title_text,
+            color=title_color,
+            backgroundcolor=title_background_color,
+            font_size=title_font_size,
+            title_x_pos=title_x_pos,
+            title_y_pos=title_y_pos,
         )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
@@ -1437,15 +1437,15 @@ class ModelBandPlot(ModelBand):
         axis=0,
         with_caustics=False,
         image_name_list=None,
-        text="Deflection model",
+        title_text="Deflection model",
         font_size=15,
         colorbar_label=r"arcsec",
         coordinate_arrows=True,
-        caption_font_size=15,
-        caption_color="k",
-        caption_background_color="w",
-        caption_x_pos=None,
-        caption_y_pos=None,
+        title_font_size=15,
+        title_color="k",
+        title_background_color="w",
+        title_x_pos=None,
+        title_y_pos=None,
         scale_bar_color="k",
         scale_bar_length=1.0,
         scale_bar_text=None,
@@ -1463,15 +1463,15 @@ class ModelBandPlot(ModelBand):
         :param axis: integer, 0 or 1, specifies the deflection angle axis to be plotted
         :param with_caustics: boolean, if True, plots caustics
         :param image_name_list: list of strings for names of the images
-        :param text: string, text to be displayed in the image
+        :param title_text: string, text to be displayed in the image
         :param font_size: font size of labels
         :param colorbar_label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param caption_font_size: font size of the caption
-        :param caption_color: color of the caption
-        :param caption_background_color: background color of the caption
-        :param caption_x_pos: x-position of the caption
-        :param caption_y_pos: y-position of the caption
+        :param title_font_size: font size of the title
+        :param title_color: color of the title
+        :param title_background_color: background color of the title
+        :param title_x_pos: x-position of the title
+        :param title_y_pos: y-position of the title
         :param scale_bar_color: color of the scale bar
         :param scale_bar_length: length of the scale bar
         :param scale_bar_text: text of the scale bar
@@ -1535,12 +1535,12 @@ class ModelBandPlot(ModelBand):
         plot_util.text_description(
             ax,
             self._frame_size,
-            text=text,
-            color=caption_color,
-            backgroundcolor=caption_background_color,
-            font_size=caption_font_size,
-            caption_x_pos=caption_x_pos,
-            caption_y_pos=caption_y_pos,
+            title_text=title_text,
+            color=title_color,
+            backgroundcolor=title_background_color,
+            font_size=title_font_size,
+            title_x_pos=title_x_pos,
+            title_y_pos=title_y_pos,
         )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
@@ -1583,7 +1583,7 @@ class ModelBandPlot(ModelBand):
     def decomposition_plot(
         self,
         ax,
-        text="Reconstructed",
+        title_text="Reconstructed",
         v_min=None,
         v_max=None,
         unconvolved=False,
@@ -1592,11 +1592,11 @@ class ModelBandPlot(ModelBand):
         source_add=False,
         lens_light_add=False,
         coordinate_arrows=True,
-        caption_font_size=15,
-        caption_color="w",
-        caption_background_color="k",
-        caption_x_pos=None,
-        caption_y_pos=None,
+        title_font_size=15,
+        title_color="w",
+        title_background_color="k",
+        title_x_pos=None,
+        title_y_pos=None,
         scale_bar_color="w",
         scale_bar_length=1.0,
         scale_bar_text=None,
@@ -1609,7 +1609,7 @@ class ModelBandPlot(ModelBand):
         """Make a plot displaying all or a subset of light components.
 
         :param ax: an instance of matplotlib.axes.Axes
-        :param text: text to display in upper left corner
+        :param title_text: text to display in upper left corner
         :param v_min: min color scale for matshow plot
         :param v_max: max color scale for matshow plot
         :param unconvolved: bool, if True, does not perform PSF convolution on the image
@@ -1620,11 +1620,11 @@ class ModelBandPlot(ModelBand):
         :param lens_light_add: bool, if True, includes the lens light in the plot
         :param coordinate_arrows: bool, if True, shows the North/East directional arrows
             from the plot
-        :param caption_font_size: font size of the caption
-        :param caption_color: color of the caption
-        :param caption_background_color: background color of the caption
-        :param caption_x_pos: x-position of the caption
-        :param caption_y_pos: y-position of the caption
+        :param title_font_size: font size of the title
+        :param title_color: color of the title
+        :param title_background_color: background color of the title
+        :param title_x_pos: x-position of the title
+        :param title_y_pos: y-position of the title
         :param scale_bar_color: color of the scale bar
         :param scale_bar_length: length of the scale bar
         :param scale_bar_text: text of the scale bar
@@ -1677,12 +1677,12 @@ class ModelBandPlot(ModelBand):
         plot_util.text_description(
             ax,
             self._frame_size,
-            text=text,
-            color=caption_color,
-            backgroundcolor=caption_background_color,
-            font_size=caption_font_size,
-            caption_x_pos=caption_x_pos,
-            caption_y_pos=caption_y_pos,
+            title_text=title_text,
+            color=title_color,
+            backgroundcolor=title_background_color,
+            font_size=title_font_size,
+            title_x_pos=title_x_pos,
+            title_y_pos=title_y_pos,
         )
         if coordinate_arrows:
             plot_util.coordinate_arrows(
@@ -1712,7 +1712,7 @@ class ModelBandPlot(ModelBand):
     def subtract_from_data_plot(
         self,
         ax,
-        text="Subtracted",
+        title_text="Subtracted",
         v_min=None,
         v_max=None,
         point_source_add=False,
@@ -1720,11 +1720,11 @@ class ModelBandPlot(ModelBand):
         lens_light_add=False,
         font_size=15,
         coordinate_arrows=True,
-        caption_font_size=15,
-        caption_color="w",
-        caption_background_color="k",
-        caption_x_pos=None,
-        caption_y_pos=None,
+        title_font_size=15,
+        title_color="w",
+        title_background_color="k",
+        title_x_pos=None,
+        title_y_pos=None,
         scale_bar_color="w",
         scale_bar_length=1.0,
         scale_bar_text=None,
@@ -1774,12 +1774,12 @@ class ModelBandPlot(ModelBand):
         plot_util.text_description(
             ax,
             self._frame_size,
-            text=text,
-            color=caption_color,
-            backgroundcolor=caption_background_color,
-            font_size=caption_font_size,
-            caption_x_pos=caption_x_pos,
-            caption_y_pos=caption_y_pos,
+            title_text=title_text,
+            color=title_color,
+            backgroundcolor=title_background_color,
+            font_size=title_font_size,
+            title_x_pos=title_x_pos,
+            title_y_pos=title_y_pos,
         )
         if coordinate_arrows:
             plot_util.coordinate_arrows(

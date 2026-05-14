@@ -34,10 +34,12 @@ class ModelBandPlot(ModelBand):
         arrowhead_size=0.025,
         arrow_origin_x=None,
         arrow_origin_y=None,
-        arrow_e_offset_x=None,
-        arrow_e_offset_y=None,
-        arrow_n_offset_x=None,
-        arrow_n_offset_y=None,
+        arrow_east_offset_x=None,
+        arrow_east_offset_y=None,
+        arrow_north_offset_x=None,
+        arrow_north_offset_y=None,
+        scale_bar_width=2,
+        scale_bar_font_size=15,
     ):
         """
 
@@ -95,10 +97,12 @@ class ModelBandPlot(ModelBand):
         self._arrowhead_size = arrowhead_size
         self._arrow_origin_x = arrow_origin_x
         self._arrow_origin_y = arrow_origin_y
-        self._arrow_e_offset_x = arrow_e_offset_x
-        self._arrow_e_offset_y = arrow_e_offset_y
-        self._arrow_n_offset_x = arrow_n_offset_x
-        self._arrow_n_offset_y = arrow_n_offset_y
+        self._arrow_east_offset_x = arrow_east_offset_x
+        self._arrow_east_offset_y = arrow_east_offset_y
+        self._arrow_north_offset_x = arrow_north_offset_x
+        self._arrow_north_offset_y = arrow_north_offset_y
+        self._scale_bar_width = scale_bar_width
+        self._scale_bar_font_size = scale_bar_font_size
 
         self._image_extent = [
             -self._deltaPix / 2,
@@ -170,13 +174,11 @@ class ModelBandPlot(ModelBand):
         caption_x_pos=None,
         caption_y_pos=None,
         scale_bar_color="w",
-        scale_bar_width=2,
         scale_bar_length=1.0,
         scale_bar_text=None,
-        scale_bar_font_size=15,
         colorbar_label_font_size=15,
-        arrow_color_n="w",
-        arrow_color_e="w",
+        arrow_color_north="w",
+        arrow_color_east="w",
         arrow_font_size=15,
         **matshow_kwargs,
     ):
@@ -217,8 +219,8 @@ class ModelBandPlot(ModelBand):
             dist=scale_bar_length,
             text=scale_bar_text,
             color=scale_bar_color,
-            font_size=scale_bar_font_size,
-            linewidth=scale_bar_width,
+            font_size=self._scale_bar_font_size,
+            linewidth=self._scale_bar_width,
         )
         plot_util.text_description(
             ax,
@@ -241,12 +243,12 @@ class ModelBandPlot(ModelBand):
                 arrowhead_size=self._arrowhead_size,
                 arrow_origin_x=self._arrow_origin_x,
                 arrow_origin_y=self._arrow_origin_y,
-                arrow_n_offset_x=self._arrow_n_offset_x,
-                arrow_n_offset_y=self._arrow_n_offset_y,
-                arrow_e_offset_x=self._arrow_e_offset_x,
-                arrow_e_offset_y=self._arrow_e_offset_y,
-                color_n=arrow_color_n,
-                color_e=arrow_color_e,
+                arrow_north_offset_x=self._arrow_north_offset_x,
+                arrow_north_offset_y=self._arrow_north_offset_y,
+                arrow_east_offset_x=self._arrow_east_offset_x,
+                arrow_east_offset_y=self._arrow_east_offset_y,
+                color_n=arrow_color_north,
+                color_e=arrow_color_east,
             )
 
         divider = make_axes_locatable(ax)
@@ -275,13 +277,11 @@ class ModelBandPlot(ModelBand):
         caption_x_pos=None,
         caption_y_pos=None,
         scale_bar_color="w",
-        scale_bar_width=2,
         scale_bar_length=1.0,
         scale_bar_text=None,
-        scale_bar_font_size=15,
         colorbar_label_font_size=15,
-        arrow_color_n="w",
-        arrow_color_e="w",
+        arrow_color_north="w",
+        arrow_color_east="w",
         arrow_font_size=15,
         **matshow_kwargs,
     ):
@@ -325,8 +325,8 @@ class ModelBandPlot(ModelBand):
             dist=scale_bar_length,
             text=scale_bar_text,
             color=scale_bar_color,
-            font_size=scale_bar_font_size,
-            linewidth=scale_bar_width,
+            font_size=self._scale_bar_font_size,
+            linewidth=self._scale_bar_width,
         )
         plot_util.text_description(
             ax,
@@ -348,12 +348,12 @@ class ModelBandPlot(ModelBand):
                 arrowhead_size=self._arrowhead_size,
                 arrow_origin_x=self._arrow_origin_x,
                 arrow_origin_y=self._arrow_origin_y,
-                arrow_n_offset_x=self._arrow_n_offset_x,
-                arrow_n_offset_y=self._arrow_n_offset_y,
-                arrow_e_offset_x=self._arrow_e_offset_x,
-                arrow_e_offset_y=self._arrow_e_offset_y,
-                color_n=arrow_color_n,
-                color_e=arrow_color_e,
+                arrow_north_offset_x=self._arrow_north_offset_x,
+                arrow_north_offset_y=self._arrow_north_offset_y,
+                arrow_east_offset_x=self._arrow_east_offset_x,
+                arrow_east_offset_y=self._arrow_east_offset_y,
+                color_n=arrow_color_north,
+                color_e=arrow_color_east,
             )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
@@ -395,13 +395,11 @@ class ModelBandPlot(ModelBand):
         caption_x_pos=None,
         caption_y_pos=None,
         scale_bar_color="w",
-        scale_bar_width=2,
         scale_bar_length=1.0,
         scale_bar_text=None,
-        scale_bar_font_size=15,
         colorbar_label_font_size=15,
-        arrow_color_n="w",
-        arrow_color_e="w",
+        arrow_color_north="w",
+        arrow_color_east="w",
         arrow_font_size=15,
         **matshow_kwargs,
     ):
@@ -440,8 +438,8 @@ class ModelBandPlot(ModelBand):
             dist=scale_bar_length,
             text=scale_bar_text,
             color=scale_bar_color,
-            font_size=scale_bar_font_size,
-            linewidth=scale_bar_width,
+            font_size=self._scale_bar_font_size,
+            linewidth=self._scale_bar_width,
         )
         if coordinate_arrows:
             plot_util.coordinate_arrows(
@@ -453,12 +451,12 @@ class ModelBandPlot(ModelBand):
                 arrowhead_size=self._arrowhead_size,
                 arrow_origin_x=self._arrow_origin_x,
                 arrow_origin_y=self._arrow_origin_y,
-                arrow_n_offset_x=self._arrow_n_offset_x,
-                arrow_n_offset_y=self._arrow_n_offset_y,
-                arrow_e_offset_x=self._arrow_e_offset_x,
-                arrow_e_offset_y=self._arrow_e_offset_y,
-                color_n=arrow_color_n,
-                color_e=arrow_color_e,
+                arrow_north_offset_x=self._arrow_north_offset_x,
+                arrow_north_offset_y=self._arrow_north_offset_y,
+                arrow_east_offset_x=self._arrow_east_offset_x,
+                arrow_east_offset_y=self._arrow_east_offset_y,
+                color_n=arrow_color_north,
+                color_e=arrow_color_east,
             )
             plot_util.text_description(
                 ax,
@@ -502,13 +500,11 @@ class ModelBandPlot(ModelBand):
         caption_x_pos=None,
         caption_y_pos=None,
         scale_bar_color="k",
-        scale_bar_width=2,
         scale_bar_length=1.0,
         scale_bar_text=None,
-        scale_bar_font_size=15,
         colorbar_label_font_size=15,
-        arrow_color_n="k",
-        arrow_color_e="k",
+        arrow_color_north="k",
+        arrow_color_east="k",
         arrow_font_size=15,
         **matshow_kwargs,
     ):
@@ -602,8 +598,8 @@ class ModelBandPlot(ModelBand):
             dist=scale_bar_length,
             text=scale_bar_text,
             color=scale_bar_color,
-            font_size=scale_bar_font_size,
-            linewidth=scale_bar_width,
+            font_size=self._scale_bar_font_size,
+            linewidth=self._scale_bar_width,
         )
         if coordinate_arrows:
             plot_util.coordinate_arrows(
@@ -615,12 +611,12 @@ class ModelBandPlot(ModelBand):
                 arrowhead_size=self._arrowhead_size,
                 arrow_origin_x=self._arrow_origin_x,
                 arrow_origin_y=self._arrow_origin_y,
-                arrow_n_offset_x=self._arrow_n_offset_x,
-                arrow_n_offset_y=self._arrow_n_offset_y,
-                arrow_e_offset_x=self._arrow_e_offset_x,
-                arrow_e_offset_y=self._arrow_e_offset_y,
-                color_n=arrow_color_n,
-                color_e=arrow_color_e,
+                arrow_north_offset_x=self._arrow_north_offset_x,
+                arrow_north_offset_y=self._arrow_north_offset_y,
+                arrow_east_offset_x=self._arrow_east_offset_x,
+                arrow_east_offset_y=self._arrow_east_offset_y,
+                color_n=arrow_color_north,
+                color_e=arrow_color_east,
             )
             plot_util.text_description(
                 ax,
@@ -685,13 +681,11 @@ class ModelBandPlot(ModelBand):
         caption_x_pos=None,
         caption_y_pos=None,
         scale_bar_color="k",
-        scale_bar_width=2,
         scale_bar_length=1.0,
         scale_bar_text=None,
-        scale_bar_font_size=15,
         colorbar_label_font_size=15,
-        arrow_color_n="k",
-        arrow_color_e="k",
+        arrow_color_north="k",
+        arrow_color_east="k",
         arrow_font_size=15,
         **matshow_kwargs,
     ):
@@ -732,8 +726,8 @@ class ModelBandPlot(ModelBand):
             dist=scale_bar_length,
             text=scale_bar_text,
             color=scale_bar_color,
-            font_size=scale_bar_font_size,
-            linewidth=scale_bar_width,
+            font_size=self._scale_bar_font_size,
+            linewidth=self._scale_bar_width,
         )
         plot_util.text_description(
             ax,
@@ -755,12 +749,12 @@ class ModelBandPlot(ModelBand):
                 arrowhead_size=self._arrowhead_size,
                 arrow_origin_x=self._arrow_origin_x,
                 arrow_origin_y=self._arrow_origin_y,
-                arrow_n_offset_x=self._arrow_n_offset_x,
-                arrow_n_offset_y=self._arrow_n_offset_y,
-                arrow_e_offset_x=self._arrow_e_offset_x,
-                arrow_e_offset_y=self._arrow_e_offset_y,
-                color_n=arrow_color_n,
-                color_e=arrow_color_e,
+                arrow_north_offset_x=self._arrow_north_offset_x,
+                arrow_north_offset_y=self._arrow_north_offset_y,
+                arrow_east_offset_x=self._arrow_east_offset_x,
+                arrow_east_offset_y=self._arrow_east_offset_y,
+                color_n=arrow_color_north,
+                color_e=arrow_color_east,
             )
         if color_bar:
             divider = make_axes_locatable(ax)
@@ -786,13 +780,11 @@ class ModelBandPlot(ModelBand):
         caption_x_pos=None,
         caption_y_pos=None,
         scale_bar_color="k",
-        scale_bar_width=2,
         scale_bar_length=1.0,
         scale_bar_text=None,
-        scale_bar_font_size=15,
         colorbar_label_font_size=15,
-        arrow_color_n="k",
-        arrow_color_e="k",
+        arrow_color_north="k",
+        arrow_color_east="k",
         arrow_font_size=15,
         **matshow_kwargs,
     ):
@@ -829,8 +821,8 @@ class ModelBandPlot(ModelBand):
             dist=scale_bar_length,
             text=scale_bar_text,
             color=scale_bar_color,
-            font_size=scale_bar_font_size,
-            linewidth=scale_bar_width,
+            font_size=self._scale_bar_font_size,
+            linewidth=self._scale_bar_width,
         )
         plot_util.text_description(
             ax,
@@ -852,12 +844,12 @@ class ModelBandPlot(ModelBand):
                 arrowhead_size=self._arrowhead_size,
                 arrow_origin_x=self._arrow_origin_x,
                 arrow_origin_y=self._arrow_origin_y,
-                arrow_n_offset_x=self._arrow_n_offset_x,
-                arrow_n_offset_y=self._arrow_n_offset_y,
-                arrow_e_offset_x=self._arrow_e_offset_x,
-                arrow_e_offset_y=self._arrow_e_offset_y,
-                color_n=arrow_color_n,
-                color_e=arrow_color_e,
+                arrow_north_offset_x=self._arrow_north_offset_x,
+                arrow_north_offset_y=self._arrow_north_offset_y,
+                arrow_east_offset_x=self._arrow_east_offset_x,
+                arrow_east_offset_y=self._arrow_east_offset_y,
+                color_n=arrow_color_north,
+                color_e=arrow_color_east,
             )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
@@ -939,13 +931,11 @@ class ModelBandPlot(ModelBand):
         caption_x_pos=None,
         caption_y_pos=None,
         scale_bar_color="w",
-        scale_bar_width=2,
         scale_bar_length=0.1,
         scale_bar_text=None,
-        scale_bar_font_size=15,
         colorbar_label_font_size=15,
-        arrow_color_n="w",
-        arrow_color_e="w",
+        arrow_color_north="w",
+        arrow_color_east="w",
         arrow_font_size=15,
         **matshow_kwargs,
     ):
@@ -1046,8 +1036,8 @@ class ModelBandPlot(ModelBand):
                 dist=scale_bar_length,
                 text=scale_bar_text,
                 color=scale_bar_color,
-                font_size=scale_bar_font_size,
-                linewidth=scale_bar_width,
+                font_size=self._scale_bar_font_size,
+                linewidth=self._scale_bar_width,
             )
         if coordinate_arrows:
             plot_util.coordinate_arrows(
@@ -1059,12 +1049,12 @@ class ModelBandPlot(ModelBand):
                 arrowhead_size=self._arrowhead_size,
                 arrow_origin_x=self._arrow_origin_x,
                 arrow_origin_y=self._arrow_origin_y,
-                arrow_n_offset_x=self._arrow_n_offset_x,
-                arrow_n_offset_y=self._arrow_n_offset_y,
-                arrow_e_offset_x=self._arrow_e_offset_x,
-                arrow_e_offset_y=self._arrow_e_offset_y,
-                color_n=arrow_color_n,
-                color_e=arrow_color_e,
+                arrow_north_offset_x=self._arrow_north_offset_x,
+                arrow_north_offset_y=self._arrow_north_offset_y,
+                arrow_east_offset_x=self._arrow_east_offset_x,
+                arrow_east_offset_y=self._arrow_east_offset_y,
+                color_n=arrow_color_north,
+                color_e=arrow_color_east,
             )
             plot_util.text_description(
                 ax,
@@ -1101,13 +1091,11 @@ class ModelBandPlot(ModelBand):
         caption_x_pos=None,
         caption_y_pos=None,
         scale_bar_color="w",
-        scale_bar_width=2,
         scale_bar_length=0.1,
         scale_bar_text=None,
-        scale_bar_font_size=15,
         colorbar_label_font_size=15,
-        arrow_color_n="w",
-        arrow_color_e="w",
+        arrow_color_north="w",
+        arrow_color_east="w",
         arrow_font_size=15,
         **matshow_kwargs,
     ):
@@ -1194,8 +1182,8 @@ class ModelBandPlot(ModelBand):
             dist=scale_bar_length,
             text=scale_bar_text,
             color=scale_bar_color,
-            font_size=scale_bar_font_size,
-            linewidth=scale_bar_width,
+            font_size=self._scale_bar_font_size,
+            linewidth=self._scale_bar_width,
         )
         if coordinate_arrows:
             plot_util.coordinate_arrows(
@@ -1207,12 +1195,12 @@ class ModelBandPlot(ModelBand):
                 arrowhead_size=self._arrowhead_size,
                 arrow_origin_x=self._arrow_origin_x,
                 arrow_origin_y=self._arrow_origin_y,
-                arrow_n_offset_x=self._arrow_n_offset_x,
-                arrow_n_offset_y=self._arrow_n_offset_y,
-                arrow_e_offset_x=self._arrow_e_offset_x,
-                arrow_e_offset_y=self._arrow_e_offset_y,
-                color_n=arrow_color_n,
-                color_e=arrow_color_e,
+                arrow_north_offset_x=self._arrow_north_offset_x,
+                arrow_north_offset_y=self._arrow_north_offset_y,
+                arrow_east_offset_x=self._arrow_east_offset_x,
+                arrow_east_offset_y=self._arrow_east_offset_y,
+                color_n=arrow_color_north,
+                color_e=arrow_color_east,
             )
         plot_util.text_description(
             ax,
@@ -1248,13 +1236,11 @@ class ModelBandPlot(ModelBand):
         caption_x_pos=None,
         caption_y_pos=None,
         scale_bar_color="k",
-        scale_bar_width=2,
         scale_bar_length=1.0,
         scale_bar_text=None,
-        scale_bar_font_size=15,
         colorbar_label_font_size=15,
-        arrow_color_n="k",
-        arrow_color_e="k",
+        arrow_color_north="k",
+        arrow_color_east="k",
         arrow_font_size=15,
         **matshow_kwargs,
     ):
@@ -1298,8 +1284,8 @@ class ModelBandPlot(ModelBand):
             dist=scale_bar_length,
             text=scale_bar_text,
             color=scale_bar_color,
-            font_size=scale_bar_font_size,
-            linewidth=scale_bar_width,
+            font_size=self._scale_bar_font_size,
+            linewidth=self._scale_bar_width,
         )
         if coordinate_arrows:
             plot_util.coordinate_arrows(
@@ -1311,12 +1297,12 @@ class ModelBandPlot(ModelBand):
                 arrowhead_size=self._arrowhead_size,
                 arrow_origin_x=self._arrow_origin_x,
                 arrow_origin_y=self._arrow_origin_y,
-                arrow_n_offset_x=self._arrow_n_offset_x,
-                arrow_n_offset_y=self._arrow_n_offset_y,
-                arrow_e_offset_x=self._arrow_e_offset_x,
-                arrow_e_offset_y=self._arrow_e_offset_y,
-                color_n=arrow_color_n,
-                color_e=arrow_color_e,
+                arrow_north_offset_x=self._arrow_north_offset_x,
+                arrow_north_offset_y=self._arrow_north_offset_y,
+                arrow_east_offset_x=self._arrow_east_offset_x,
+                arrow_east_offset_y=self._arrow_east_offset_y,
+                color_n=arrow_color_north,
+                color_e=arrow_color_east,
             )
         plot_util.text_description(
             ax,
@@ -1366,13 +1352,11 @@ class ModelBandPlot(ModelBand):
         caption_x_pos=None,
         caption_y_pos=None,
         scale_bar_color="k",
-        scale_bar_width=2,
         scale_bar_length=1.0,
         scale_bar_text=None,
-        scale_bar_font_size=15,
         colorbar_label_font_size=15,
-        arrow_color_n="k",
-        arrow_color_e="k",
+        arrow_color_north="k",
+        arrow_color_east="k",
         arrow_font_size=15,
         **matshow_kwargs,
     ):
@@ -1422,8 +1406,8 @@ class ModelBandPlot(ModelBand):
             dist=scale_bar_length,
             text=scale_bar_text,
             color=scale_bar_color,
-            font_size=scale_bar_font_size,
-            linewidth=scale_bar_width,
+            font_size=self._scale_bar_font_size,
+            linewidth=self._scale_bar_width,
         )
         if coordinate_arrows:
             plot_util.coordinate_arrows(
@@ -1435,12 +1419,12 @@ class ModelBandPlot(ModelBand):
                 arrowhead_size=self._arrowhead_size,
                 arrow_origin_x=self._arrow_origin_x,
                 arrow_origin_y=self._arrow_origin_y,
-                arrow_n_offset_x=self._arrow_n_offset_x,
-                arrow_n_offset_y=self._arrow_n_offset_y,
-                arrow_e_offset_x=self._arrow_e_offset_x,
-                arrow_e_offset_y=self._arrow_e_offset_y,
-                color_n=arrow_color_n,
-                color_e=arrow_color_e,
+                arrow_north_offset_x=self._arrow_north_offset_x,
+                arrow_north_offset_y=self._arrow_north_offset_y,
+                arrow_east_offset_x=self._arrow_east_offset_x,
+                arrow_east_offset_y=self._arrow_east_offset_y,
+                color_n=arrow_color_north,
+                color_e=arrow_color_east,
             )
         plot_util.text_description(
             ax,
@@ -1508,13 +1492,11 @@ class ModelBandPlot(ModelBand):
         caption_x_pos=None,
         caption_y_pos=None,
         scale_bar_color="w",
-        scale_bar_width=2,
         scale_bar_length=1.0,
         scale_bar_text=None,
-        scale_bar_font_size=15,
         colorbar_label_font_size=15,
-        arrow_color_n="w",
-        arrow_color_e="w",
+        arrow_color_north="w",
+        arrow_color_east="w",
         arrow_font_size=15,
         **matshow_kwargs,
     ):
@@ -1571,8 +1553,8 @@ class ModelBandPlot(ModelBand):
             dist=scale_bar_length,
             text=scale_bar_text,
             color=scale_bar_color,
-            font_size=scale_bar_font_size,
-            linewidth=scale_bar_width,
+            font_size=self._scale_bar_font_size,
+            linewidth=self._scale_bar_width,
         )
         plot_util.text_description(
             ax,
@@ -1594,12 +1576,12 @@ class ModelBandPlot(ModelBand):
                 arrowhead_size=self._arrowhead_size,
                 arrow_origin_x=self._arrow_origin_x,
                 arrow_origin_y=self._arrow_origin_y,
-                arrow_n_offset_x=self._arrow_n_offset_x,
-                arrow_n_offset_y=self._arrow_n_offset_y,
-                arrow_e_offset_x=self._arrow_e_offset_x,
-                arrow_e_offset_y=self._arrow_e_offset_y,
-                color_n=arrow_color_n,
-                color_e=arrow_color_e,
+                arrow_north_offset_x=self._arrow_north_offset_x,
+                arrow_north_offset_y=self._arrow_north_offset_y,
+                arrow_east_offset_x=self._arrow_east_offset_x,
+                arrow_east_offset_y=self._arrow_east_offset_y,
+                color_n=arrow_color_north,
+                color_e=arrow_color_east,
             )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
@@ -1626,13 +1608,11 @@ class ModelBandPlot(ModelBand):
         caption_x_pos=None,
         caption_y_pos=None,
         scale_bar_color="w",
-        scale_bar_width=2,
         scale_bar_length=1.0,
         scale_bar_text=None,
-        scale_bar_font_size=15,
         colorbar_label_font_size=15,
-        arrow_color_n="w",
-        arrow_color_e="w",
+        arrow_color_north="w",
+        arrow_color_east="w",
         arrow_font_size=15,
         **matshow_kwargs,
     ):
@@ -1670,8 +1650,8 @@ class ModelBandPlot(ModelBand):
             dist=scale_bar_length,
             text=scale_bar_text,
             color=scale_bar_color,
-            font_size=scale_bar_font_size,
-            linewidth=scale_bar_width,
+            font_size=self._scale_bar_font_size,
+            linewidth=self._scale_bar_width,
         )
         plot_util.text_description(
             ax,
@@ -1693,12 +1673,12 @@ class ModelBandPlot(ModelBand):
                 arrowhead_size=self._arrowhead_size,
                 arrow_origin_x=self._arrow_origin_x,
                 arrow_origin_y=self._arrow_origin_y,
-                arrow_n_offset_x=self._arrow_n_offset_x,
-                arrow_n_offset_y=self._arrow_n_offset_y,
-                arrow_e_offset_x=self._arrow_e_offset_x,
-                arrow_e_offset_y=self._arrow_e_offset_y,
-                color_n=arrow_color_n,
-                color_e=arrow_color_e,
+                arrow_north_offset_x=self._arrow_north_offset_x,
+                arrow_north_offset_y=self._arrow_north_offset_y,
+                arrow_east_offset_x=self._arrow_east_offset_x,
+                arrow_east_offset_y=self._arrow_east_offset_y,
+                color_n=arrow_color_north,
+                color_e=arrow_color_east,
             )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)

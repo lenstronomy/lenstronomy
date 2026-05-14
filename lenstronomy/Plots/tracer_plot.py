@@ -24,6 +24,8 @@ class TracerPlot(object):
         arrow_size=0.02,
         cmap_string="gist_heat",
         fast_caustic=True,
+        scale_bar_width=2,
+        scale_bar_font_size=15,
     ):
         """
 
@@ -33,6 +35,8 @@ class TracerPlot(object):
         :param arrow_size: size of the scale and orientation arrow
         :param cmap_string: string of color map (or cmap matplotlib object)
         :param fast_caustic: boolean; if True, uses fast (but less accurate) caustic calculation method
+        :param scale_bar_width: width of the scale bar
+        :param scale_bar_font_size: font size of the scale bar
         """
 
         multi_band_list = kwargs_data_joint.get("multi_band_list", [])
@@ -114,6 +118,8 @@ class TracerPlot(object):
         self._cmap = plot_util.cmap_conf(cmap_string)
         self._arrow_size = arrow_size
         self._fast_caustic = fast_caustic
+        self._scale_bar_width = scale_bar_width
+        self._scale_bar_font_size = scale_bar_font_size
 
     def _critical_curves(self):
         if not hasattr(self, "_ra_crit_list") or not hasattr(self, "_dec_crit_list"):
@@ -205,6 +211,7 @@ class TracerPlot(object):
 
         plot_util.scale_bar(
             ax, self._frame_size, dist=1, text='1"', font_size=font_size
+            ax, self._frame_size, dist=1, text='1"', font_size=self._scale_bar_font_size, linewidth=self._scale_bar_width
         )
         plot_util.text_description(
             ax,
@@ -281,6 +288,7 @@ class TracerPlot(object):
         ax.autoscale(False)
         plot_util.scale_bar(
             ax, self._frame_size, dist=1, text='1"', font_size=font_size
+            ax, self._frame_size, dist=1, text='1"', font_size=self._scale_bar_font_size, linewidth=self._scale_bar_width
         )
         plot_util.text_description(
             ax,
@@ -363,6 +371,7 @@ class TracerPlot(object):
         ax.autoscale(False)
         plot_util.scale_bar(
             ax, self._frame_size, dist=1, text='1"', color="w", font_size=font_size
+            ax, self._frame_size, dist=1, text='1"', color="w", font_size=self._scale_bar_font_size, linewidth=self._scale_bar_width
         )
         if coordinate_arrows:
             plot_util.coordinate_arrows(
@@ -432,6 +441,7 @@ class TracerPlot(object):
         ax.autoscale(False)
         plot_util.scale_bar(
             ax, self._frame_size, dist=1, text='1"', color="k", font_size=font_size
+            ax, self._frame_size, dist=1, text='1"', color="k", font_size=self._scale_bar_font_size, linewidth=self._scale_bar_width
         )
         plot_util.text_description(
             ax,
@@ -497,6 +507,7 @@ class TracerPlot(object):
         ax.autoscale(False)
         plot_util.scale_bar(
             ax, self._frame_size, dist=1, text='1"', color="k", font_size=font_size
+            ax, self._frame_size, dist=1, text='1"', color="k", font_size=self._scale_bar_font_size, linewidth=self._scale_bar_width
         )
         plot_util.text_description(
             ax,
@@ -680,6 +691,8 @@ class TracerPlot(object):
                 color="w",
                 flipped=False,
                 font_size=font_size,
+                font_size=self._scale_bar_font_size,
+                linewidth=self._scale_bar_width,
             )
         if coordinate_arrows:
             plot_util.coordinate_arrows(
@@ -752,6 +765,7 @@ class TracerPlot(object):
         ax.autoscale(False)
         plot_util.scale_bar(
             ax, self._frame_size, dist=1, text='1"', color="k", font_size=font_size
+            ax, self._frame_size, dist=1, text='1"', color="k", font_size=self._scale_bar_font_size, linewidth=self._scale_bar_width
         )
         if coordinate_arrows:
             plot_util.coordinate_arrows(
@@ -844,6 +858,7 @@ class TracerPlot(object):
         ax.autoscale(False)
         plot_util.scale_bar(
             ax, self._frame_size, dist=1, text='1"', color="k", font_size=font_size
+            ax, self._frame_size, dist=1, text='1"', color="k", font_size=self._scale_bar_font_size, linewidth=self._scale_bar_width
         )
         if coordinate_arrows:
             plot_util.coordinate_arrows(

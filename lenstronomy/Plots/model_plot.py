@@ -36,10 +36,10 @@ class ModelPlot(object):
         arrowhead_size=0.025,
         arrow_origin_x=None,
         arrow_origin_y=None,
-        arrow_e_offset_x=None,
-        arrow_e_offset_y=None,
-        arrow_n_offset_x=None,
-        arrow_n_offset_y=None,
+        arrow_east_offset_x=None,
+        arrow_east_offset_y=None,
+        arrow_north_offset_x=None,
+        arrow_north_offset_y=None,
         scale_bar_width=2,
         scale_bar_font_size=15,
     ):
@@ -157,10 +157,10 @@ class ModelPlot(object):
                     arrowhead_size=arrowhead_size,
                     arrow_origin_x=arrow_origin_x,
                     arrow_origin_y=arrow_origin_y,
-                    arrow_e_offset_x=arrow_e_offset_x,
-                    arrow_e_offset_y=arrow_e_offset_y,
-                    arrow_n_offset_x=arrow_n_offset_x,
-                    arrow_n_offset_y=arrow_n_offset_y,
+                    arrow_east_offset_x=arrow_east_offset_x,
+                    arrow_east_offset_y=arrow_east_offset_y,
+                    arrow_north_offset_x=arrow_north_offset_x,
+                    arrow_north_offset_y=arrow_north_offset_y,
                     scale_bar_width=scale_bar_width,
                     scale_bar_font_size=scale_bar_font_size,
                 )
@@ -237,8 +237,8 @@ class ModelPlot(object):
         scale_bar_length=1.0,
         scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_n="w",
-        arrow_color_e="w",
+        arrow_color_north="w",
+        arrow_color_east="w",
         arrow_font_size=15,
         **matshow_kwargs
     ):
@@ -273,8 +273,8 @@ class ModelPlot(object):
             scale_bar_length=scale_bar_length,
             scale_bar_text=scale_bar_text,
             colorbar_label_font_size=colorbar_label_font_size,
-            arrow_color_n=arrow_color_n,
-            arrow_color_e=arrow_color_e,
+            arrow_color_north=arrow_color_north,
+            arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
             **matshow_kwargs
         )
@@ -301,8 +301,8 @@ class ModelPlot(object):
         scale_bar_length=1.0,
         scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_n="w",
-        arrow_color_e="w",
+        arrow_color_north="w",
+        arrow_color_east="w",
         arrow_font_size=15,
         **matshow_kwargs
     ):
@@ -343,8 +343,8 @@ class ModelPlot(object):
             scale_bar_length=scale_bar_length,
             scale_bar_text=scale_bar_text,
             colorbar_label_font_size=colorbar_label_font_size,
-            arrow_color_n=arrow_color_n,
-            arrow_color_e=arrow_color_e,
+            arrow_color_north=arrow_color_north,
+            arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
             **matshow_kwargs
         )
@@ -368,8 +368,8 @@ class ModelPlot(object):
         scale_bar_length=1.0,
         scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_n="w",
-        arrow_color_e="w",
+        arrow_color_north="w",
+        arrow_color_east="w",
         arrow_font_size=15,
         **matshow_kwargs
     ):
@@ -404,8 +404,8 @@ class ModelPlot(object):
             scale_bar_length=scale_bar_length,
             scale_bar_text=scale_bar_text,
             colorbar_label_font_size=colorbar_label_font_size,
-            arrow_color_n=arrow_color_n,
-            arrow_color_e=arrow_color_e,
+            arrow_color_north=arrow_color_north,
+            arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
             **matshow_kwargs
         )
@@ -437,8 +437,8 @@ class ModelPlot(object):
         scale_bar_length=1.0,
         scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_n="k",
-        arrow_color_e="k",
+        arrow_color_north="k",
+        arrow_color_east="k",
         arrow_font_size=15,
         **matshow_kwargs
     ):
@@ -491,8 +491,8 @@ class ModelPlot(object):
             scale_bar_length=scale_bar_length,
             scale_bar_text=scale_bar_text,
             colorbar_label_font_size=colorbar_label_font_size,
-            arrow_color_n=arrow_color_n,
-            arrow_color_e=arrow_color_e,
+            arrow_color_north=arrow_color_north,
+            arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
             **matshow_kwargs
         )
@@ -517,8 +517,8 @@ class ModelPlot(object):
         scale_bar_length=1.0,
         scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_n="k",
-        arrow_color_e="k",
+        arrow_color_north="k",
+        arrow_color_east="k",
         arrow_font_size=15,
         **matshow_kwargs
     ):
@@ -555,8 +555,8 @@ class ModelPlot(object):
             scale_bar_length=scale_bar_length,
             scale_bar_text=scale_bar_text,
             colorbar_label_font_size=colorbar_label_font_size,
-            arrow_color_n=arrow_color_n,
-            arrow_color_e=arrow_color_e,
+            arrow_color_north=arrow_color_north,
+            arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
             **matshow_kwargs
         )
@@ -580,8 +580,8 @@ class ModelPlot(object):
         scale_bar_length=1.0,
         scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_n="k",
-        arrow_color_e="k",
+        arrow_color_north="k",
+        arrow_color_east="k",
         arrow_font_size=15,
         **matshow_kwargs
     ):
@@ -616,8 +616,8 @@ class ModelPlot(object):
             scale_bar_length=scale_bar_length,
             scale_bar_text=scale_bar_text,
             colorbar_label_font_size=colorbar_label_font_size,
-            arrow_color_n=arrow_color_n,
-            arrow_color_e=arrow_color_e,
+            arrow_color_north=arrow_color_north,
+            arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
             **matshow_kwargs
         )
@@ -650,8 +650,8 @@ class ModelPlot(object):
         scale_bar_length=0.1,
         scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_n="w",
-        arrow_color_e="w",
+        arrow_color_north="w",
+        arrow_color_east="w",
         arrow_font_size=15,
         **matshow_kwargs
     ):
@@ -706,8 +706,8 @@ class ModelPlot(object):
             scale_bar_length=scale_bar_length,
             scale_bar_text=scale_bar_text,
             colorbar_label_font_size=colorbar_label_font_size,
-            arrow_color_n=arrow_color_n,
-            arrow_color_e=arrow_color_e,
+            arrow_color_north=arrow_color_north,
+            arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
             **matshow_kwargs
         )
@@ -733,8 +733,8 @@ class ModelPlot(object):
         scale_bar_length=0.1,
         scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_n="w",
-        arrow_color_e="w",
+        arrow_color_north="w",
+        arrow_color_east="w",
         arrow_font_size=15,
         **matshow_kwargs
     ):
@@ -776,8 +776,8 @@ class ModelPlot(object):
             scale_bar_length=scale_bar_length,
             scale_bar_text=scale_bar_text,
             colorbar_label_font_size=colorbar_label_font_size,
-            arrow_color_n=arrow_color_n,
-            arrow_color_e=arrow_color_e,
+            arrow_color_north=arrow_color_north,
+            arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
             **matshow_kwargs
         )
@@ -802,8 +802,8 @@ class ModelPlot(object):
         scale_bar_length=1.0,
         scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_n="k",
-        arrow_color_e="k",
+        arrow_color_north="k",
+        arrow_color_east="k",
         arrow_font_size=15,
         **matshow_kwargs
     ):
@@ -841,8 +841,8 @@ class ModelPlot(object):
             scale_bar_length=scale_bar_length,
             scale_bar_text=scale_bar_text,
             colorbar_label_font_size=colorbar_label_font_size,
-            arrow_color_n=arrow_color_n,
-            arrow_color_e=arrow_color_e,
+            arrow_color_north=arrow_color_north,
+            arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
             **matshow_kwargs
         )
@@ -869,8 +869,8 @@ class ModelPlot(object):
         scale_bar_length=1.0,
         scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_n="k",
-        arrow_color_e="k",
+        arrow_color_north="k",
+        arrow_color_east="k",
         arrow_font_size=15,
         **matshow_kwargs
     ):
@@ -911,8 +911,8 @@ class ModelPlot(object):
             scale_bar_length=scale_bar_length,
             scale_bar_text=scale_bar_text,
             colorbar_label_font_size=colorbar_label_font_size,
-            arrow_color_n=arrow_color_n,
-            arrow_color_e=arrow_color_e,
+            arrow_color_north=arrow_color_north,
+            arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
             **matshow_kwargs
         )
@@ -939,8 +939,8 @@ class ModelPlot(object):
         scale_bar_length=1.0,
         scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_n="w",
-        arrow_color_e="w",
+        arrow_color_north="w",
+        arrow_color_east="w",
         arrow_font_size=15,
         **matshow_kwargs
     ):
@@ -984,8 +984,8 @@ class ModelPlot(object):
             scale_bar_length=scale_bar_length,
             scale_bar_text=scale_bar_text,
             colorbar_label_font_size=colorbar_label_font_size,
-            arrow_color_n=arrow_color_n,
-            arrow_color_e=arrow_color_e,
+            arrow_color_north=arrow_color_north,
+            arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
             **matshow_kwargs
         )
@@ -1011,8 +1011,8 @@ class ModelPlot(object):
         scale_bar_length=1.0,
         scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_n="w",
-        arrow_color_e="w",
+        arrow_color_north="w",
+        arrow_color_east="w",
         arrow_font_size=15,
         **matshow_kwargs
     ):
@@ -1054,8 +1054,8 @@ class ModelPlot(object):
             scale_bar_length=scale_bar_length,
             scale_bar_text=scale_bar_text,
             colorbar_label_font_size=colorbar_label_font_size,
-            arrow_color_n=arrow_color_n,
-            arrow_color_e=arrow_color_e,
+            arrow_color_north=arrow_color_north,
+            arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
             **matshow_kwargs
         )

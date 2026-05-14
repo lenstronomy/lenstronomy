@@ -130,10 +130,10 @@ def coordinate_arrows(
     arrowhead_size=0.025,
     arrow_origin_x=None,
     arrow_origin_y=None,
-    arrow_n_offset_x=None,
-    arrow_n_offset_y=None,
-    arrow_e_offset_x=None,
-    arrow_e_offset_y=None,
+    arrow_north_offset_x=None,
+    arrow_north_offset_y=None,
+    arrow_east_offset_x=None,
+    arrow_east_offset_y=None,
     color_n="w",
     color_e="w",
 ):
@@ -147,10 +147,10 @@ def coordinate_arrows(
     :param arrowhead_size: size of the arrow head as a fraction of the image size
     :param arrow_origin_x: x origin of the arrow as a fraction of the image size
     :param arrow_origin_y: y origin of the arrow as a fraction of the image size
-    :param arrow_n_offset_x: x offset for N from the tip of the arrow as a fraction of image size
-    :param arrow_n_offset_y: y offset for N from the tip of the arrow as a fraction of image size
-    :param arrow_e_offset_x: x offset for E from the tip of the arrow as a fraction of image size
-    :param arrow_e_offset_y: y offset for E from the tip of the arrow as a fraction of image size
+    :param arrow_north_offset_x: x offset for N from the tip of the arrow as a fraction of image size
+    :param arrow_north_offset_y: y offset for N from the tip of the arrow as a fraction of image size
+    :param arrow_east_offset_x: x offset for E from the tip of the arrow as a fraction of image size
+    :param arrow_east_offset_y: y offset for E from the tip of the arrow as a fraction of image size
     :param color_n: color string for N
     :param color_e: color string for E
     :return: updated ax instance
@@ -171,25 +171,33 @@ def coordinate_arrows(
     d_y_n = yy_dec_test - 0
     len_n = np.sqrt(d_x_n**2 + d_y_n**2)
 
-    if arrow_e_offset_x is None or arrow_e_offset_y is None:
-        arrow_e_offset_x = (d_x_e / len_e) * 0.06
-        arrow_e_offset_y = (d_y_e / len_e) * 0.06
+    if arrow_east_offset_x is None or arrow_east_offset_y is None:
+        arrow_east_offset_x = (d_x_e / len_e) * 0.06
+        arrow_east_offset_y = (d_y_e / len_e) * 0.06
 
-    if arrow_n_offset_x is None or arrow_n_offset_y is None:
-        arrow_n_offset_x = (d_x_n / len_n) * 0.06
-        arrow_n_offset_y = (d_y_n / len_n) * 0.06
+    if arrow_north_offset_x is None or arrow_north_offset_y is None:
+        arrow_north_offset_x = (d_x_n / len_n) * 0.06
+        arrow_north_offset_y = (d_y_n / len_n) * 0.06
 
-    arrow_e_offset_x_pix = arrow_e_offset_x * (d / deltaPix)
-    arrow_e_offset_y_pix = arrow_e_offset_y * (d / deltaPix)
-    arrow_n_offset_x_pix = arrow_n_offset_x * (d / deltaPix)
-    arrow_n_offset_y_pix = arrow_n_offset_y * (d / deltaPix)
+    arrow_east_offset_x_pix = arrow_east_offset_x * (d / deltaPix)
+    arrow_east_offset_y_pix = arrow_east_offset_y * (d / deltaPix)
+    arrow_north_offset_x_pix = arrow_north_offset_x * (d / deltaPix)
+    arrow_north_offset_y_pix = arrow_north_offset_y * (d / deltaPix)
 
     if arrow_origin_x is None or arrow_origin_y is None:
         x_max_rel = max(
-            0, d_x_e, d_x_n, d_x_e + arrow_e_offset_x_pix, d_x_n + arrow_n_offset_x_pix
+            0,
+            d_x_e,
+            d_x_n,
+            d_x_e + arrow_east_offset_x_pix,
+            d_x_n + arrow_north_offset_x_pix,
         )
         y_min_rel = min(
-            0, d_y_e, d_y_n, d_y_e + arrow_e_offset_y_pix, d_y_n + arrow_n_offset_y_pix
+            0,
+            d_y_e,
+            d_y_n,
+            d_y_e + arrow_east_offset_y_pix,
+            d_y_n + arrow_north_offset_y_pix,
         )
 
         margin = 0.05 * (d / deltaPix)
@@ -208,11 +216,11 @@ def coordinate_arrows(
     xx_dec = xx_ + d_x_n
     yy_dec = yy_ + d_y_n
 
-    xx_ra_t = xx_ra + arrow_e_offset_x_pix
-    yy_ra_t = yy_ra + arrow_e_offset_y_pix
+    xx_ra_t = xx_ra + arrow_east_offset_x_pix
+    yy_ra_t = yy_ra + arrow_east_offset_y_pix
 
-    xx_dec_t = xx_dec + arrow_n_offset_x_pix
-    yy_dec_t = yy_dec + arrow_n_offset_y_pix
+    xx_dec_t = xx_dec + arrow_north_offset_x_pix
+    yy_dec_t = yy_dec + arrow_north_offset_y_pix
 
     ax.arrow(
         xx_ * deltaPix,

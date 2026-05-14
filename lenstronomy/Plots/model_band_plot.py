@@ -26,7 +26,6 @@ class ModelBandPlot(ModelBand):
         kwargs_params,
         likelihood_mask_list=None,
         band_index=0,
-        arrow_size=0.02,
         cmap_string="gist_heat",
         fast_caustic=True,
         linear_solver=True,
@@ -34,10 +33,10 @@ class ModelBandPlot(ModelBand):
         arrowhead_size=0.025,
         arrow_origin_x=None,
         arrow_origin_y=None,
-        arrow_east_offset_x=None,
-        arrow_east_offset_y=None,
-        arrow_north_offset_x=None,
-        arrow_north_offset_y=None,
+        arrow_e_offset_x=None,
+        arrow_e_offset_y=None,
+        arrow_n_offset_x=None,
+        arrow_n_offset_y=None,
         scale_bar_width=2,
         scale_bar_font_size=15,
     ):
@@ -53,11 +52,20 @@ class ModelBandPlot(ModelBand):
          the imaging band, NOT including linear amplitudes (not required as being overwritten by the param list)
         :param likelihood_mask_list: list of 2d numpy arrays of likelihood masks (for all bands)
         :param band_index: integer of the band to be considered in this class
-        :param arrow_size: size of the scale and orientation arrow
         :param cmap_string: string of color map (or cmap matplotlib object)
         :param fast_caustic: boolean; if True, uses fast (but less accurate) caustic calculation method
         :param linear_solver: bool, if True (default) fixes the linear amplitude parameters 'amp' (avoid sampling) such
          that they get overwritten by the linear solver solution.
+        :param arrow_length: length of the coordinate arrow
+        :param arrowhead_size: size of the arrowhead of the coordinate arrow
+        :param arrow_origin_x: x-origin of the coordinate arrow
+        :param arrow_origin_y: y-origin of the coordinate arrow
+        :param arrow_east_offset_x: x-offset of the East arrow text
+        :param arrow_east_offset_y: y-offset of the East arrow text
+        :param arrow_north_offset_x: x-offset of the North arrow text
+        :param arrow_north_offset_y: y-offset of the North arrow text
+        :param scale_bar_width: width of the scale bar
+        :param scale_bar_font_size: font size of the scale bar
         """
         ModelBand.__init__(
             self,
@@ -90,19 +98,18 @@ class ModelBandPlot(ModelBand):
         self._x_center, self._y_center = self._coords.center
 
         self._cmap = plot_util.cmap_conf(cmap_string)
-        self._arrow_size = arrow_size
+        self._scale_bar_width = scale_bar_width
+        self._scale_bar_font_size = scale_bar_font_size
         self._fast_caustic = fast_caustic
 
         self._arrow_length = arrow_length
         self._arrowhead_size = arrowhead_size
         self._arrow_origin_x = arrow_origin_x
         self._arrow_origin_y = arrow_origin_y
-        self._arrow_east_offset_x = arrow_east_offset_x
-        self._arrow_east_offset_y = arrow_east_offset_y
-        self._arrow_north_offset_x = arrow_north_offset_x
-        self._arrow_north_offset_y = arrow_north_offset_y
-        self._scale_bar_width = scale_bar_width
-        self._scale_bar_font_size = scale_bar_font_size
+        self._arrow_e_offset_x = arrow_e_offset_x
+        self._arrow_e_offset_y = arrow_e_offset_y
+        self._arrow_n_offset_x = arrow_n_offset_x
+        self._arrow_n_offset_y = arrow_n_offset_y
 
         self._image_extent = [
             -self._deltaPix / 2,
@@ -177,8 +184,8 @@ class ModelBandPlot(ModelBand):
         scale_bar_length=1.0,
         scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_north="w",
-        arrow_color_east="w",
+        arrow_color_n="w",
+        arrow_color_e="w",
         arrow_font_size=15,
         **matshow_kwargs,
     ):
@@ -191,8 +198,19 @@ class ModelBandPlot(ModelBand):
         :param font_size: font size of the text
         :param colorbar_label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
+        :param caption_font_size: font size of the caption
+        :param caption_color: color of the caption
+        :param caption_background_color: background color of the caption
+        :param caption_x_pos: x-position of the caption
+        :param caption_y_pos: y-position of the caption
+        :param scale_bar_color: color of the scale bar
+        :param scale_bar_length: length of the scale bar
+        :param scale_bar_text: text of the scale bar
+        :param colorbar_label_font_size: font size of the colorbar label
+        :param arrow_color_north: color of the North arrow
+        :param arrow_color_east: color of the East arrow
+        :param arrow_font_size: font size of the arrow text
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
-        :return:
         :return: matplotlib axis instance
         """
         if v_min is None:
@@ -243,12 +261,12 @@ class ModelBandPlot(ModelBand):
                 arrowhead_size=self._arrowhead_size,
                 arrow_origin_x=self._arrow_origin_x,
                 arrow_origin_y=self._arrow_origin_y,
-                arrow_north_offset_x=self._arrow_north_offset_x,
-                arrow_north_offset_y=self._arrow_north_offset_y,
-                arrow_east_offset_x=self._arrow_east_offset_x,
-                arrow_east_offset_y=self._arrow_east_offset_y,
-                color_n=arrow_color_north,
-                color_e=arrow_color_east,
+                arrow_n_offset_x=self._arrow_n_offset_x,
+                arrow_n_offset_y=self._arrow_n_offset_y,
+                arrow_e_offset_x=self._arrow_e_offset_x,
+                arrow_e_offset_y=self._arrow_e_offset_y,
+                color_n=arrow_color_n,
+                color_e=arrow_color_e,
             )
 
         divider = make_axes_locatable(ax)
@@ -280,16 +298,14 @@ class ModelBandPlot(ModelBand):
         scale_bar_length=1.0,
         scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_north="w",
-        arrow_color_east="w",
+        arrow_color_n="w",
+        arrow_color_e="w",
         arrow_font_size=15,
         **matshow_kwargs,
     ):
         """
 
         :param ax: matplotib axis instance
-        :param v_min:
-        :param v_max:
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
         :param image_names: boolean, if True, prints image names
@@ -299,8 +315,19 @@ class ModelBandPlot(ModelBand):
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param original_position: boolean, if True, uses original image positions
         :param image_name_list: list of names for images
+        :param caption_font_size: font size of the caption
+        :param caption_color: color of the caption
+        :param caption_background_color: background color of the caption
+        :param caption_x_pos: x-position of the caption
+        :param caption_y_pos: y-position of the caption
+        :param scale_bar_color: color of the scale bar
+        :param scale_bar_length: length of the scale bar
+        :param scale_bar_text: text of the scale bar
+        :param colorbar_label_font_size: font size of the colorbar label
+        :param arrow_color_north: color of the North arrow
+        :param arrow_color_east: color of the East arrow
+        :param arrow_font_size: font size of the arrow text
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
-        :return:
         :return: matplotlib axis instance
         """
         if v_min is None:
@@ -348,12 +375,12 @@ class ModelBandPlot(ModelBand):
                 arrowhead_size=self._arrowhead_size,
                 arrow_origin_x=self._arrow_origin_x,
                 arrow_origin_y=self._arrow_origin_y,
-                arrow_north_offset_x=self._arrow_north_offset_x,
-                arrow_north_offset_y=self._arrow_north_offset_y,
-                arrow_east_offset_x=self._arrow_east_offset_x,
-                arrow_east_offset_y=self._arrow_east_offset_y,
-                color_n=arrow_color_north,
-                color_e=arrow_color_east,
+                arrow_n_offset_x=self._arrow_n_offset_x,
+                arrow_n_offset_y=self._arrow_n_offset_y,
+                arrow_e_offset_x=self._arrow_e_offset_x,
+                arrow_e_offset_y=self._arrow_e_offset_y,
+                color_n=arrow_color_n,
+                color_e=arrow_color_e,
             )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
@@ -398,8 +425,8 @@ class ModelBandPlot(ModelBand):
         scale_bar_length=1.0,
         scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_north="w",
-        arrow_color_east="w",
+        arrow_color_n="w",
+        arrow_color_e="w",
         arrow_font_size=15,
         **matshow_kwargs,
     ):
@@ -412,6 +439,18 @@ class ModelBandPlot(ModelBand):
         :param font_size: font size of the text
         :param colorbar_label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
+        :param caption_font_size: font size of the caption
+        :param caption_color: color of the caption
+        :param caption_background_color: background color of the caption
+        :param caption_x_pos: x-position of the caption
+        :param caption_y_pos: y-position of the caption
+        :param scale_bar_color: color of the scale bar
+        :param scale_bar_length: length of the scale bar
+        :param scale_bar_text: text of the scale bar
+        :param colorbar_label_font_size: font size of the colorbar label
+        :param arrow_color_north: color of the North arrow
+        :param arrow_color_east: color of the East arrow
+        :param arrow_font_size: font size of the arrow text
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: convergence plot in ax instance
         """
@@ -451,24 +490,24 @@ class ModelBandPlot(ModelBand):
                 arrowhead_size=self._arrowhead_size,
                 arrow_origin_x=self._arrow_origin_x,
                 arrow_origin_y=self._arrow_origin_y,
-                arrow_north_offset_x=self._arrow_north_offset_x,
-                arrow_north_offset_y=self._arrow_north_offset_y,
-                arrow_east_offset_x=self._arrow_east_offset_x,
-                arrow_east_offset_y=self._arrow_east_offset_y,
-                color_n=arrow_color_north,
-                color_e=arrow_color_east,
+                arrow_n_offset_x=self._arrow_n_offset_x,
+                arrow_n_offset_y=self._arrow_n_offset_y,
+                arrow_e_offset_x=self._arrow_e_offset_x,
+                arrow_e_offset_y=self._arrow_e_offset_y,
+                color_n=arrow_color_n,
+                color_e=arrow_color_e,
             )
-        plot_util.text_description(
-            ax,
-            self._frame_size,
-            text=text,
-            flipped=False,
-            color=caption_color,
-            backgroundcolor=caption_background_color,
-            font_size=caption_font_size,
-            caption_x_pos=caption_x_pos,
-            caption_y_pos=caption_y_pos,
-        )
+            plot_util.text_description(
+                ax,
+                self._frame_size,
+                text=text,
+                flipped=False,
+                color=caption_color,
+                backgroundcolor=caption_background_color,
+                font_size=caption_font_size,
+                caption_x_pos=caption_x_pos,
+                caption_y_pos=caption_y_pos,
+            )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
@@ -503,8 +542,8 @@ class ModelBandPlot(ModelBand):
         scale_bar_length=1.0,
         scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_north="k",
-        arrow_color_east="k",
+        arrow_color_n="k",
+        arrow_color_e="k",
         arrow_font_size=15,
         **matshow_kwargs,
     ):
@@ -526,6 +565,18 @@ class ModelBandPlot(ModelBand):
         :param super_sample_factor: a integer the specifies supersampling of the coordinate grid to create the convergence map
         :param add_color_bar: bool; whether or not to include a color bar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
+        :param caption_font_size: font size of the caption
+        :param caption_color: color of the caption
+        :param caption_background_color: background color of the caption
+        :param caption_x_pos: x-position of the caption
+        :param caption_y_pos: y-position of the caption
+        :param scale_bar_color: color of the scale bar
+        :param scale_bar_length: length of the scale bar
+        :param scale_bar_text: text of the scale bar
+        :param colorbar_label_font_size: font size of the colorbar label
+        :param arrow_color_north: color of the North arrow
+        :param arrow_color_east: color of the East arrow
+        :param arrow_font_size: font size of the arrow text
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotib axis and colorbar
         """
@@ -611,12 +662,12 @@ class ModelBandPlot(ModelBand):
                 arrowhead_size=self._arrowhead_size,
                 arrow_origin_x=self._arrow_origin_x,
                 arrow_origin_y=self._arrow_origin_y,
-                arrow_north_offset_x=self._arrow_north_offset_x,
-                arrow_north_offset_y=self._arrow_north_offset_y,
-                arrow_east_offset_x=self._arrow_east_offset_x,
-                arrow_east_offset_y=self._arrow_east_offset_y,
-                color_n=arrow_color_north,
-                color_e=arrow_color_east,
+                arrow_n_offset_x=self._arrow_n_offset_x,
+                arrow_n_offset_y=self._arrow_n_offset_y,
+                arrow_e_offset_x=self._arrow_e_offset_x,
+                arrow_e_offset_y=self._arrow_e_offset_y,
+                color_n=arrow_color_n,
+                color_e=arrow_color_e,
             )
             plot_util.text_description(
                 ax,
@@ -684,16 +735,13 @@ class ModelBandPlot(ModelBand):
         scale_bar_length=1.0,
         scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_north="k",
-        arrow_color_east="k",
+        arrow_color_n="k",
+        arrow_color_e="k",
         arrow_font_size=15,
         **matshow_kwargs,
     ):
         """
 
-        :param ax:
-        :param v_min:
-        :param v_max:
         :param ax: matplotlib axis instance
         :param v_min: minimum color scale
         :param v_max: max color scale
@@ -702,9 +750,19 @@ class ModelBandPlot(ModelBand):
         :param colorbar_label: label for the color bar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param color_bar: Option to display the color bar
+        :param caption_font_size: font size of the caption
+        :param caption_color: color of the caption
+        :param caption_background_color: background color of the caption
+        :param caption_x_pos: x-position of the caption
+        :param caption_y_pos: y-position of the caption
+        :param scale_bar_color: color of the scale bar
+        :param scale_bar_length: length of the scale bar
+        :param scale_bar_text: text of the scale bar
+        :param colorbar_label_font_size: font size of the colorbar label
+        :param arrow_color_north: color of the North arrow
+        :param arrow_color_east: color of the East arrow
+        :param arrow_font_size: font size of the arrow text
         :param matshow_kwargs: kwargs to send to matplotlib.pyplot.matshow()
-        :param color_bar: Option to display the color bar
-        :return:
         :return: matplotlib axis instance
         """
         if "cmap" not in matshow_kwargs:
@@ -749,12 +807,12 @@ class ModelBandPlot(ModelBand):
                 arrowhead_size=self._arrowhead_size,
                 arrow_origin_x=self._arrow_origin_x,
                 arrow_origin_y=self._arrow_origin_y,
-                arrow_north_offset_x=self._arrow_north_offset_x,
-                arrow_north_offset_y=self._arrow_north_offset_y,
-                arrow_east_offset_x=self._arrow_east_offset_x,
-                arrow_east_offset_y=self._arrow_east_offset_y,
-                color_n=arrow_color_north,
-                color_e=arrow_color_east,
+                arrow_n_offset_x=self._arrow_n_offset_x,
+                arrow_n_offset_y=self._arrow_n_offset_y,
+                arrow_e_offset_x=self._arrow_e_offset_x,
+                arrow_e_offset_y=self._arrow_e_offset_y,
+                color_n=arrow_color_n,
+                color_e=arrow_color_e,
             )
         if color_bar:
             divider = make_axes_locatable(ax)
@@ -783,14 +841,13 @@ class ModelBandPlot(ModelBand):
         scale_bar_length=1.0,
         scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_north="k",
-        arrow_color_east="k",
+        arrow_color_n="k",
+        arrow_color_e="k",
         arrow_font_size=15,
         **matshow_kwargs,
     ):
         """
 
-        :param ax:
         :param ax: matplotlib axis instance
         :param v_min: minimum color scale
         :param v_max: max color scale
@@ -798,8 +855,19 @@ class ModelBandPlot(ModelBand):
         :param text: text appearing in frame
         :param colorbar_label: label for the color bar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
+        :param caption_font_size: font size of the caption
+        :param caption_color: color of the caption
+        :param caption_background_color: background color of the caption
+        :param caption_x_pos: x-position of the caption
+        :param caption_y_pos: y-position of the caption
+        :param scale_bar_color: color of the scale bar
+        :param scale_bar_length: length of the scale bar
+        :param scale_bar_text: text of the scale bar
+        :param colorbar_label_font_size: font size of the colorbar label
+        :param arrow_color_north: color of the North arrow
+        :param arrow_color_east: color of the East arrow
+        :param arrow_font_size: font size of the arrow text
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
-        :return:
         :return: matplotlib axis instance
         """
         if "cmap" not in matshow_kwargs:
@@ -844,12 +912,12 @@ class ModelBandPlot(ModelBand):
                 arrowhead_size=self._arrowhead_size,
                 arrow_origin_x=self._arrow_origin_x,
                 arrow_origin_y=self._arrow_origin_y,
-                arrow_north_offset_x=self._arrow_north_offset_x,
-                arrow_north_offset_y=self._arrow_north_offset_y,
-                arrow_east_offset_x=self._arrow_east_offset_x,
-                arrow_east_offset_y=self._arrow_east_offset_y,
-                color_n=arrow_color_north,
-                color_e=arrow_color_east,
+                arrow_n_offset_x=self._arrow_n_offset_x,
+                arrow_n_offset_y=self._arrow_n_offset_y,
+                arrow_e_offset_x=self._arrow_e_offset_x,
+                arrow_e_offset_y=self._arrow_e_offset_y,
+                color_n=arrow_color_n,
+                color_e=arrow_color_e,
             )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
@@ -934,24 +1002,17 @@ class ModelBandPlot(ModelBand):
         scale_bar_length=0.1,
         scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_north="w",
-        arrow_color_east="w",
+        arrow_color_n="w",
+        arrow_color_e="w",
         arrow_font_size=15,
         **matshow_kwargs,
     ):
         """
 
-        :param ax:
-        :param numPix:
-        :param deltaPix_source:
         :param ax: matplotlib axis instance
         :param numPix: number of pixels in plot per axis
         :param deltaPix_source: pixel spacing in the source resolution illustrated in plot
         :param center: [center_x, center_y], if specified, uses this as the center
-        :param v_min:
-        :param v_max:
-        :param caustic_color:
-        :param font_size:
         :param v_min: minimum plotting scale of the map
         :param v_max: maximum plotting scale of the map
         :param with_caustics: plot the caustics on top of the source reconstruction
@@ -964,8 +1025,19 @@ class ModelBandPlot(ModelBand):
         :param point_source_position: boolean, if True, plots a point at the position of the point source
         :param kwargs_caustic: keyword arguments for caustic plotting
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
+        :param caption_font_size: font size of the caption
+        :param caption_color: color of the caption
+        :param caption_background_color: background color of the caption
+        :param caption_x_pos: x-position of the caption
+        :param caption_y_pos: y-position of the caption
+        :param scale_bar_color: color of the scale bar
+        :param scale_bar_length: length of the scale bar
+        :param scale_bar_text: text of the scale bar
+        :param colorbar_label_font_size: font size of the colorbar label
+        :param arrow_color_north: color of the North arrow
+        :param arrow_color_east: color of the East arrow
+        :param arrow_font_size: font size of the arrow text
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
-        :return:
         :return: matplotlib axis instance
         """
         if v_min is None:
@@ -1019,6 +1091,14 @@ class ModelBandPlot(ModelBand):
                 dec_caustic_list,
                 color=caustic_color,
                 points_only=self._caustic_points_only,
+            )
+            plot_util.plot_line_set(
+                ax,
+                coords_source,
+                ra_caustic_list,
+                dec_caustic_list,
+                color=caustic_color,
+                points_only=self._caustic_points_only,
                 **kwargs_caustic,
             )
         if scale_bar_length > 0:
@@ -1041,12 +1121,12 @@ class ModelBandPlot(ModelBand):
                 arrowhead_size=self._arrowhead_size,
                 arrow_origin_x=self._arrow_origin_x,
                 arrow_origin_y=self._arrow_origin_y,
-                arrow_north_offset_x=self._arrow_north_offset_x,
-                arrow_north_offset_y=self._arrow_north_offset_y,
-                arrow_east_offset_x=self._arrow_east_offset_x,
-                arrow_east_offset_y=self._arrow_east_offset_y,
-                color_n=arrow_color_north,
-                color_e=arrow_color_east,
+                arrow_n_offset_x=self._arrow_n_offset_x,
+                arrow_n_offset_y=self._arrow_n_offset_y,
+                arrow_e_offset_x=self._arrow_e_offset_x,
+                arrow_e_offset_y=self._arrow_e_offset_y,
+                color_n=arrow_color_n,
+                color_e=arrow_color_e,
             )
             plot_util.text_description(
                 ax,
@@ -1086,8 +1166,8 @@ class ModelBandPlot(ModelBand):
         scale_bar_length=0.1,
         scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_north="w",
-        arrow_color_east="w",
+        arrow_color_n="w",
+        arrow_color_e="w",
         arrow_font_size=15,
         **matshow_kwargs,
     ):
@@ -1110,6 +1190,18 @@ class ModelBandPlot(ModelBand):
         :param point_source_position: boolean, if True, plots a point at the position of
             the point source
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
+        :param caption_font_size: font size of the caption
+        :param caption_color: color of the caption
+        :param caption_background_color: background color of the caption
+        :param caption_x_pos: x-position of the caption
+        :param caption_y_pos: y-position of the caption
+        :param scale_bar_color: color of the scale bar
+        :param scale_bar_length: length of the scale bar
+        :param scale_bar_text: text of the scale bar
+        :param colorbar_label_font_size: font size of the colorbar label
+        :param arrow_color_north: color of the North arrow
+        :param arrow_color_east: color of the East arrow
+        :param arrow_font_size: font size of the arrow text
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot of source surface brightness errors in the reconstruction on the
             axis instance
@@ -1187,12 +1279,12 @@ class ModelBandPlot(ModelBand):
                 arrowhead_size=self._arrowhead_size,
                 arrow_origin_x=self._arrow_origin_x,
                 arrow_origin_y=self._arrow_origin_y,
-                arrow_north_offset_x=self._arrow_north_offset_x,
-                arrow_north_offset_y=self._arrow_north_offset_y,
-                arrow_east_offset_x=self._arrow_east_offset_x,
-                arrow_east_offset_y=self._arrow_east_offset_y,
-                color_n=arrow_color_north,
-                color_e=arrow_color_east,
+                arrow_n_offset_x=self._arrow_n_offset_x,
+                arrow_n_offset_y=self._arrow_n_offset_y,
+                arrow_e_offset_x=self._arrow_e_offset_x,
+                arrow_e_offset_y=self._arrow_e_offset_y,
+                color_n=arrow_color_n,
+                color_e=arrow_color_e,
             )
         plot_util.text_description(
             ax,
@@ -1231,8 +1323,8 @@ class ModelBandPlot(ModelBand):
         scale_bar_length=1.0,
         scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_north="k",
-        arrow_color_east="k",
+        arrow_color_n="k",
+        arrow_color_e="k",
         arrow_font_size=15,
         **matshow_kwargs,
     ):
@@ -1246,8 +1338,19 @@ class ModelBandPlot(ModelBand):
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param text: string, text to be displayed in the image
         :param colorbar_label: string, label for the colorbar
+        :param caption_font_size: font size of the caption
+        :param caption_color: color of the caption
+        :param caption_background_color: background color of the caption
+        :param caption_x_pos: x-position of the caption
+        :param caption_y_pos: y-position of the caption
+        :param scale_bar_color: color of the scale bar
+        :param scale_bar_length: length of the scale bar
+        :param scale_bar_text: text of the scale bar
+        :param colorbar_label_font_size: font size of the colorbar label
+        :param arrow_color_north: color of the North arrow
+        :param arrow_color_east: color of the East arrow
+        :param arrow_font_size: font size of the arrow text
         :param matshow_kwargs: kwargs to send to matplotlib.pyplot.matshow()
-        :return:
         :return: matplotlib axis instance
         """
         if "cmap" not in matshow_kwargs:
@@ -1289,12 +1392,12 @@ class ModelBandPlot(ModelBand):
                 arrowhead_size=self._arrowhead_size,
                 arrow_origin_x=self._arrow_origin_x,
                 arrow_origin_y=self._arrow_origin_y,
-                arrow_north_offset_x=self._arrow_north_offset_x,
-                arrow_north_offset_y=self._arrow_north_offset_y,
-                arrow_east_offset_x=self._arrow_east_offset_x,
-                arrow_east_offset_y=self._arrow_east_offset_y,
-                color_n=arrow_color_north,
-                color_e=arrow_color_east,
+                arrow_n_offset_x=self._arrow_n_offset_x,
+                arrow_n_offset_y=self._arrow_n_offset_y,
+                arrow_e_offset_x=self._arrow_e_offset_x,
+                arrow_e_offset_y=self._arrow_e_offset_y,
+                color_n=arrow_color_n,
+                color_e=arrow_color_e,
             )
         plot_util.text_description(
             ax,
@@ -1347,8 +1450,8 @@ class ModelBandPlot(ModelBand):
         scale_bar_length=1.0,
         scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_north="k",
-        arrow_color_east="k",
+        arrow_color_n="k",
+        arrow_color_e="k",
         arrow_font_size=15,
         **matshow_kwargs,
     ):
@@ -1364,8 +1467,19 @@ class ModelBandPlot(ModelBand):
         :param font_size: font size of labels
         :param colorbar_label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
+        :param caption_font_size: font size of the caption
+        :param caption_color: color of the caption
+        :param caption_background_color: background color of the caption
+        :param caption_x_pos: x-position of the caption
+        :param caption_y_pos: y-position of the caption
+        :param scale_bar_color: color of the scale bar
+        :param scale_bar_length: length of the scale bar
+        :param scale_bar_text: text of the scale bar
+        :param colorbar_label_font_size: font size of the colorbar label
+        :param arrow_color_north: color of the North arrow
+        :param arrow_color_east: color of the East arrow
+        :param arrow_font_size: font size of the arrow text
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
-        :return:
         :return: matplotlib axis instance
         """
 
@@ -1411,12 +1525,12 @@ class ModelBandPlot(ModelBand):
                 arrowhead_size=self._arrowhead_size,
                 arrow_origin_x=self._arrow_origin_x,
                 arrow_origin_y=self._arrow_origin_y,
-                arrow_north_offset_x=self._arrow_north_offset_x,
-                arrow_north_offset_y=self._arrow_north_offset_y,
-                arrow_east_offset_x=self._arrow_east_offset_x,
-                arrow_east_offset_y=self._arrow_east_offset_y,
-                color_n=arrow_color_north,
-                color_e=arrow_color_east,
+                arrow_n_offset_x=self._arrow_n_offset_x,
+                arrow_n_offset_y=self._arrow_n_offset_y,
+                arrow_e_offset_x=self._arrow_e_offset_x,
+                arrow_e_offset_y=self._arrow_e_offset_y,
+                color_n=arrow_color_n,
+                color_e=arrow_color_e,
             )
         plot_util.text_description(
             ax,
@@ -1487,8 +1601,8 @@ class ModelBandPlot(ModelBand):
         scale_bar_length=1.0,
         scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_north="w",
-        arrow_color_east="w",
+        arrow_color_n="w",
+        arrow_color_e="w",
         arrow_font_size=15,
         **matshow_kwargs,
     ):
@@ -1506,7 +1620,19 @@ class ModelBandPlot(ModelBand):
         :param lens_light_add: bool, if True, includes the lens light in the plot
         :param coordinate_arrows: bool, if True, shows the North/East directional arrows
             from the plot
-        :param kwargs: kwargs to send matplotlib.pyplot.matshow()
+        :param caption_font_size: font size of the caption
+        :param caption_color: color of the caption
+        :param caption_background_color: background color of the caption
+        :param caption_x_pos: x-position of the caption
+        :param caption_y_pos: y-position of the caption
+        :param scale_bar_color: color of the scale bar
+        :param scale_bar_length: length of the scale bar
+        :param scale_bar_text: text of the scale bar
+        :param colorbar_label_font_size: font size of the colorbar label
+        :param arrow_color_north: color of the North arrow
+        :param arrow_color_east: color of the East arrow
+        :param arrow_font_size: font size of the arrow text
+        :param matshow_kwargs: kwargs to send matplotlib.pyplot.matshow()
         :return: the instance of matplotlib.axes.Axes
         """
         model = ImageModel.image(
@@ -1568,12 +1694,12 @@ class ModelBandPlot(ModelBand):
                 arrowhead_size=self._arrowhead_size,
                 arrow_origin_x=self._arrow_origin_x,
                 arrow_origin_y=self._arrow_origin_y,
-                arrow_north_offset_x=self._arrow_north_offset_x,
-                arrow_north_offset_y=self._arrow_north_offset_y,
-                arrow_east_offset_x=self._arrow_east_offset_x,
-                arrow_east_offset_y=self._arrow_east_offset_y,
-                color_n=arrow_color_north,
-                color_e=arrow_color_east,
+                arrow_n_offset_x=self._arrow_n_offset_x,
+                arrow_n_offset_y=self._arrow_n_offset_y,
+                arrow_e_offset_x=self._arrow_e_offset_x,
+                arrow_e_offset_y=self._arrow_e_offset_y,
+                color_n=arrow_color_n,
+                color_e=arrow_color_e,
             )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
@@ -1603,8 +1729,8 @@ class ModelBandPlot(ModelBand):
         scale_bar_length=1.0,
         scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_north="w",
-        arrow_color_east="w",
+        arrow_color_n="w",
+        arrow_color_e="w",
         arrow_font_size=15,
         **matshow_kwargs,
     ):
@@ -1665,12 +1791,12 @@ class ModelBandPlot(ModelBand):
                 arrowhead_size=self._arrowhead_size,
                 arrow_origin_x=self._arrow_origin_x,
                 arrow_origin_y=self._arrow_origin_y,
-                arrow_north_offset_x=self._arrow_north_offset_x,
-                arrow_north_offset_y=self._arrow_north_offset_y,
-                arrow_east_offset_x=self._arrow_east_offset_x,
-                arrow_east_offset_y=self._arrow_east_offset_y,
-                color_n=arrow_color_north,
-                color_e=arrow_color_east,
+                arrow_n_offset_x=self._arrow_n_offset_x,
+                arrow_n_offset_y=self._arrow_n_offset_y,
+                arrow_e_offset_x=self._arrow_e_offset_x,
+                arrow_e_offset_y=self._arrow_e_offset_y,
+                color_n=arrow_color_n,
+                color_e=arrow_color_e,
             )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
@@ -1778,14 +1904,10 @@ class ModelBandPlot(ModelBand):
     def plot_extinction_map(self, ax, v_min=None, v_max=None, **matshow_kwargs):
         """
 
-        :param ax:
-        :param v_min:
-        :param v_max:
         :param ax: matplotlib axis instance
         :param v_min: minimum color scale for matshow plot
         :param v_max: maximum color scale for matshow plot
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
-        :return:
         :return: matplotlib axis instance
         """
         model = ImageModel.extinction_map(

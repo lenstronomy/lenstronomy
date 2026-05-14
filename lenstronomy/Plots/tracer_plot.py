@@ -36,11 +36,21 @@ class TracerPlot(object):
     ):
         """
 
+        :param kwargs_data_joint: joint data keyword argument list
         :param kwargs_model: model keyword argument list for the full multi-band modeling
         :param kwargs_params: keyword argument of keyword argument lists of the different model components selected for
          the imaging band, NOT including linear amplitudes (not required as being overwritten by the param list)
+        :param kwargs_likelihood: likelihood keyword arguments
         :param cmap_string: string of color map (or cmap matplotlib object)
         :param fast_caustic: boolean; if True, uses fast (but less accurate) caustic calculation method
+        :param arrow_length: length of the coordinate arrow
+        :param arrowhead_size: size of the arrowhead of the coordinate arrow
+        :param arrow_origin_x: x-origin of the coordinate arrow
+        :param arrow_origin_y: y-origin of the coordinate arrow
+        :param arrow_east_offset_x: x-offset of the East arrow text
+        :param arrow_east_offset_y: y-offset of the East arrow text
+        :param arrow_north_offset_x: x-offset of the North arrow text
+        :param arrow_north_offset_y: y-offset of the North arrow text
         :param scale_bar_width: width of the scale bar
         :param scale_bar_font_size: font size of the scale bar
         """
@@ -204,7 +214,6 @@ class TracerPlot(object):
     ):
         """
 
-        :param ax:
         :param ax: matplotlib axis instance
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
@@ -212,8 +221,19 @@ class TracerPlot(object):
         :param font_size: font size of the text
         :param colorbar_label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
+        :param caption_font_size: font size of the caption
+        :param caption_color: color of the caption
+        :param caption_background_color: background color of the caption
+        :param caption_x_pos: x-position of the caption
+        :param caption_y_pos: y-position of the caption
+        :param scale_bar_color: color of the scale bar
+        :param scale_bar_length: length of the scale bar
+        :param scale_bar_text: text of the scale bar
+        :param colorbar_label_font_size: font size of the colorbar label
+        :param arrow_color_north: color of the North arrow
+        :param arrow_color_east: color of the East arrow
+        :param arrow_font_size: font size of the arrow text
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
-        :return:
         :return: matplotlib axis instance
         """
         if v_min is None:
@@ -309,8 +329,6 @@ class TracerPlot(object):
         """
 
         :param ax: matplotib axis instance
-        :param v_min:
-        :param v_max:
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
         :param image_names: boolean, if True, prints image names
@@ -320,8 +338,19 @@ class TracerPlot(object):
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param original_position: boolean, if True, uses original image positions
         :param image_name_list: list of names for images
+        :param caption_font_size: font size of the caption
+        :param caption_color: color of the caption
+        :param caption_background_color: background color of the caption
+        :param caption_x_pos: x-position of the caption
+        :param caption_y_pos: y-position of the caption
+        :param scale_bar_color: color of the scale bar
+        :param scale_bar_length: length of the scale bar
+        :param scale_bar_text: text of the scale bar
+        :param colorbar_label_font_size: font size of the colorbar label
+        :param arrow_color_north: color of the North arrow
+        :param arrow_color_east: color of the East arrow
+        :param arrow_font_size: font size of the arrow text
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
-        :return:
         :return: matplotlib axis instance
         """
         if v_min is None:
@@ -432,6 +461,18 @@ class TracerPlot(object):
         :param font_size: font size of the text
         :param colorbar_label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
+        :param caption_font_size: font size of the caption
+        :param caption_color: color of the caption
+        :param caption_background_color: background color of the caption
+        :param caption_x_pos: x-position of the caption
+        :param caption_y_pos: y-position of the caption
+        :param scale_bar_color: color of the scale bar
+        :param scale_bar_length: length of the scale bar
+        :param scale_bar_text: text of the scale bar
+        :param colorbar_label_font_size: font size of the colorbar label
+        :param arrow_color_north: color of the North arrow
+        :param arrow_color_east: color of the East arrow
+        :param arrow_font_size: font size of the arrow text
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: convergence plot in ax instance
         """
@@ -523,9 +564,6 @@ class TracerPlot(object):
     ):
         """
 
-        :param ax:
-        :param v_min:
-        :param v_max:
         :param ax: matplotlib axis instance
         :param v_min: minimum color scale
         :param v_max: max color scale
@@ -533,9 +571,20 @@ class TracerPlot(object):
         :param text: text appearing in frame
         :param colorbar_label: label for the color bar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param matshow_kwargs: kwargs to send to matplotlib.pyplot.matshow()
         :param color_bar: Option to display the color bar
-        :return:
+        :param caption_font_size: font size of the caption
+        :param caption_color: color of the caption
+        :param caption_background_color: background color of the caption
+        :param caption_x_pos: x-position of the caption
+        :param caption_y_pos: y-position of the caption
+        :param scale_bar_color: color of the scale bar
+        :param scale_bar_length: length of the scale bar
+        :param scale_bar_text: text of the scale bar
+        :param colorbar_label_font_size: font size of the colorbar label
+        :param arrow_color_north: color of the North arrow
+        :param arrow_color_east: color of the East arrow
+        :param arrow_font_size: font size of the arrow text
+        :param matshow_kwargs: kwargs to send to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
         if "cmap" not in matshow_kwargs:
@@ -621,7 +670,6 @@ class TracerPlot(object):
     ):
         """
 
-        :param ax:
         :param ax: matplotlib axis instance
         :param v_min: minimum color scale
         :param v_max: max color scale
@@ -629,8 +677,19 @@ class TracerPlot(object):
         :param text: text appearing in frame
         :param colorbar_label: label for the color bar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
+        :param caption_font_size: font size of the caption
+        :param caption_color: color of the caption
+        :param caption_background_color: background color of the caption
+        :param caption_x_pos: x-position of the caption
+        :param caption_y_pos: y-position of the caption
+        :param scale_bar_color: color of the scale bar
+        :param scale_bar_length: length of the scale bar
+        :param scale_bar_text: text of the scale bar
+        :param colorbar_label_font_size: font size of the colorbar label
+        :param arrow_color_north: color of the North arrow
+        :param arrow_color_east: color of the East arrow
+        :param arrow_font_size: font size of the arrow text
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
-        :return:
         :return: matplotlib axis instance
         """
         if "cmap" not in matshow_kwargs:
@@ -771,17 +830,10 @@ class TracerPlot(object):
     ):
         """
 
-        :param ax:
-        :param numPix:
-        :param deltaPix_source:
         :param ax: matplotlib axis instance
         :param numPix: number of pixels in plot per axis
         :param deltaPix_source: pixel spacing in the source resolution illustrated in plot
         :param center: [center_x, center_y], if specified, uses this as the center
-        :param v_min:
-        :param v_max:
-        :param caustic_color:
-        :param font_size:
         :param v_min: minimum plotting scale of the map
         :param v_max: maximum plotting scale of the map
         :param with_caustics: plot the caustics on top of the source reconstruction
@@ -793,8 +845,19 @@ class TracerPlot(object):
         :param point_source_position: boolean, if True, plots a point at the position of the point source
         :param kwargs_caustic: keyword arguments for caustic plotting
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
+        :param caption_font_size: font size of the caption
+        :param caption_color: color of the caption
+        :param caption_background_color: background color of the caption
+        :param caption_x_pos: x-position of the caption
+        :param caption_y_pos: y-position of the caption
+        :param scale_bar_color: color of the scale bar
+        :param scale_bar_length: length of the scale bar
+        :param scale_bar_text: text of the scale bar
+        :param colorbar_label_font_size: font size of the colorbar label
+        :param arrow_color_north: color of the North arrow
+        :param arrow_color_east: color of the East arrow
+        :param arrow_font_size: font size of the arrow text
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
-        :return:
         :return: matplotlib axis instance
         """
         if v_min is None:
@@ -923,8 +986,19 @@ class TracerPlot(object):
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param text: string, text to be displayed in the image
         :param colorbar_label: string, label for the colorbar
+        :param caption_font_size: font size of the caption
+        :param caption_color: color of the caption
+        :param caption_background_color: background color of the caption
+        :param caption_x_pos: x-position of the caption
+        :param caption_y_pos: y-position of the caption
+        :param scale_bar_color: color of the scale bar
+        :param scale_bar_length: length of the scale bar
+        :param scale_bar_text: text of the scale bar
+        :param colorbar_label_font_size: font size of the colorbar label
+        :param arrow_color_north: color of the North arrow
+        :param arrow_color_east: color of the East arrow
+        :param arrow_font_size: font size of the arrow text
         :param matshow_kwargs: kwargs to send to matplotlib.pyplot.matshow()
-        :return:
         :return: matplotlib axis instance
         """
         if "cmap" not in matshow_kwargs:
@@ -1038,8 +1112,19 @@ class TracerPlot(object):
         :param font_size: font size of labels
         :param colorbar_label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
+        :param caption_font_size: font size of the caption
+        :param caption_color: color of the caption
+        :param caption_background_color: background color of the caption
+        :param caption_x_pos: x-position of the caption
+        :param caption_y_pos: y-position of the caption
+        :param scale_bar_color: color of the scale bar
+        :param scale_bar_length: length of the scale bar
+        :param scale_bar_text: text of the scale bar
+        :param colorbar_label_font_size: font size of the colorbar label
+        :param arrow_color_north: color of the North arrow
+        :param arrow_color_east: color of the East arrow
+        :param arrow_font_size: font size of the arrow text
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
-        :return:
         :return: matplotlib axis instance
         """
 

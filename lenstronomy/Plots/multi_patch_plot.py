@@ -48,6 +48,16 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param verbose: if True (default), computes and prints the total log-likelihood.
             This can deactivated for speedup purposes (does not run linear inversion again), and reduces the number of prints.
         :param cmap_string: string of color map (or cmap matplotlib object)
+        :param arrow_length: length of the coordinate arrow
+        :param arrowhead_size: size of the arrowhead of the coordinate arrow
+        :param arrow_origin_x: x-origin of the coordinate arrow
+        :param arrow_origin_y: y-origin of the coordinate arrow
+        :param arrow_east_offset_x: x-offset of the East arrow text
+        :param arrow_east_offset_y: y-offset of the East arrow text
+        :param arrow_north_offset_x: x-offset of the North arrow text
+        :param arrow_north_offset_y: y-offset of the North arrow text
+        :param scale_bar_width: width of the scale bar
+        :param scale_bar_font_size: font size of the scale bar
         """
         MultiPatchReconstruction.__init__(
             self,
@@ -360,8 +370,17 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param cmap: string of color map (or cmap matplotlib object)
         :param scale_bar_length: distance scale for scale bar
         :param scale_bar_text: string to be printed on scale bar
+        :param caption_font_size: font size of the caption
+        :param caption_color: color of the caption
+        :param caption_background_color: background color of the caption
+        :param caption_x_pos: x-position of the caption
+        :param caption_y_pos: y-position of the caption
         :param white_on_black: boolean, if True, prints white text on black background, otherwise the opposite
         :param no_support: boolean, if True, does not plot the scale bar, text description, coordinate arrows, or color bar
+        :param colorbar_label_font_size: font size of the colorbar label
+        :param arrow_color_north: color of the North arrow
+        :param arrow_color_east: color of the East arrow
+        :param arrow_font_size: font size of the arrow text
         :param kwargs: keyword arguments
         :return: matplotlib axis instance
         """

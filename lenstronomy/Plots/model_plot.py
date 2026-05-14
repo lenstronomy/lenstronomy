@@ -65,7 +65,14 @@ class ModelPlot(object):
         :param fast_caustic: boolean; if True, uses fast (but less accurate) caustic calculation method
         :param linear_solver: bool, if True (default) fixes the linear amplitude parameters 'amp' (avoid sampling) such
          that they get overwritten by the linear solver solution.
-        :param arrow_size: size of the scale and orientation arrow
+        :param arrow_length: length of the coordinate arrow
+        :param arrowhead_size: size of the arrowhead of the coordinate arrow
+        :param arrow_origin_x: x-origin of the coordinate arrow
+        :param arrow_origin_y: y-origin of the coordinate arrow
+        :param arrow_east_offset_x: x-offset of the East arrow text
+        :param arrow_east_offset_y: y-offset of the East arrow text
+        :param arrow_north_offset_x: x-offset of the North arrow text
+        :param arrow_north_offset_y: y-offset of the North arrow text
         :param scale_bar_width: width of the scale bar
         :param scale_bar_font_size: font size of the scale bar
         """
@@ -256,6 +263,18 @@ class ModelPlot(object):
         :param font_size: font size of the text
         :param colorbar_label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
+        :param caption_font_size: font size of the caption
+        :param caption_color: color of the caption
+        :param caption_background_color: background color of the caption
+        :param caption_x_pos: x-position of the caption
+        :param caption_y_pos: y-position of the caption
+        :param scale_bar_color: color of the scale bar
+        :param scale_bar_length: length of the scale bar
+        :param scale_bar_text: text of the scale bar
+        :param colorbar_label_font_size: font size of the colorbar label
+        :param arrow_color_north: color of the North arrow
+        :param arrow_color_east: color of the East arrow
+        :param arrow_font_size: font size of the arrow text
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
@@ -323,6 +342,18 @@ class ModelPlot(object):
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param original_position: boolean, if True, uses original image positions
         :param image_name_list: list of names for images
+        :param caption_font_size: font size of the caption
+        :param caption_color: color of the caption
+        :param caption_background_color: background color of the caption
+        :param caption_x_pos: x-position of the caption
+        :param caption_y_pos: y-position of the caption
+        :param scale_bar_color: color of the scale bar
+        :param scale_bar_length: length of the scale bar
+        :param scale_bar_text: text of the scale bar
+        :param colorbar_label_font_size: font size of the colorbar label
+        :param arrow_color_north: color of the North arrow
+        :param arrow_color_east: color of the East arrow
+        :param arrow_font_size: font size of the arrow text
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
@@ -387,6 +418,18 @@ class ModelPlot(object):
         :param font_size: font size of the text
         :param colorbar_label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
+        :param caption_font_size: font size of the caption
+        :param caption_color: color of the caption
+        :param caption_background_color: background color of the caption
+        :param caption_x_pos: x-position of the caption
+        :param caption_y_pos: y-position of the caption
+        :param scale_bar_color: color of the scale bar
+        :param scale_bar_length: length of the scale bar
+        :param scale_bar_text: text of the scale bar
+        :param colorbar_label_font_size: font size of the colorbar label
+        :param arrow_color_north: color of the North arrow
+        :param arrow_color_east: color of the East arrow
+        :param arrow_font_size: font size of the arrow text
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
@@ -464,6 +507,18 @@ class ModelPlot(object):
         :param super_sample_factor: a integer the specifies supersampling of the coordinate grid to create the convergence map
         :param add_color_bar: bool; whether or not to include a color bar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
+        :param caption_font_size: font size of the caption
+        :param caption_color: color of the caption
+        :param caption_background_color: background color of the caption
+        :param caption_x_pos: x-position of the caption
+        :param caption_y_pos: y-position of the caption
+        :param scale_bar_color: color of the scale bar
+        :param scale_bar_length: length of the scale bar
+        :param scale_bar_text: text of the scale bar
+        :param colorbar_label_font_size: font size of the colorbar label
+        :param arrow_color_north: color of the North arrow
+        :param arrow_color_east: color of the East arrow
+        :param arrow_font_size: font size of the arrow text
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
@@ -537,6 +592,18 @@ class ModelPlot(object):
         :param colorbar_label: label for the color bar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param color_bar: Option to display the color bar
+        :param caption_font_size: font size of the caption
+        :param caption_color: color of the caption
+        :param caption_background_color: background color of the caption
+        :param caption_x_pos: x-position of the caption
+        :param caption_y_pos: y-position of the caption
+        :param scale_bar_color: color of the scale bar
+        :param scale_bar_length: length of the scale bar
+        :param scale_bar_text: text of the scale bar
+        :param colorbar_label_font_size: font size of the colorbar label
+        :param arrow_color_north: color of the North arrow
+        :param arrow_color_east: color of the East arrow
+        :param arrow_font_size: font size of the arrow text
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
@@ -599,6 +666,18 @@ class ModelPlot(object):
         :param text: text appearing in frame
         :param colorbar_label: label for the color bar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
+        :param caption_font_size: font size of the caption
+        :param caption_color: color of the caption
+        :param caption_background_color: background color of the caption
+        :param caption_x_pos: x-position of the caption
+        :param caption_y_pos: y-position of the caption
+        :param scale_bar_color: color of the scale bar
+        :param scale_bar_length: length of the scale bar
+        :param scale_bar_text: text of the scale bar
+        :param colorbar_label_font_size: font size of the colorbar label
+        :param arrow_color_north: color of the North arrow
+        :param arrow_color_east: color of the East arrow
+        :param arrow_font_size: font size of the arrow text
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
@@ -672,13 +751,24 @@ class ModelPlot(object):
         :param caustic_color: color of the caustics
         :param font_size: font size of labels
         :param plot_scale: string, log or linear, scale of surface brightness plot
-        :param scale_bar_length: float, size of the scale bar
         :param text: string, text to be displayed in the image
         :param colorbar_label: string, label for the colorbar
         :param point_source_position: boolean, if True, plots a point at the position of
             the point source
         :param kwargs_caustic: keyword arguments for caustic plotting
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
+        :param caption_font_size: font size of the caption
+        :param caption_color: color of the caption
+        :param caption_background_color: background color of the caption
+        :param caption_x_pos: x-position of the caption
+        :param caption_y_pos: y-position of the caption
+        :param scale_bar_color: color of the scale bar
+        :param scale_bar_length: float, length of the scale bar
+        :param scale_bar_text: text of the scale bar
+        :param colorbar_label_font_size: font size of the colorbar label
+        :param arrow_color_north: color of the North arrow
+        :param arrow_color_east: color of the East arrow
+        :param arrow_font_size: font size of the arrow text
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
@@ -755,6 +845,18 @@ class ModelPlot(object):
         :param point_source_position: boolean, if True, plots a point at the position of
             the point source
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
+        :param caption_font_size: font size of the caption
+        :param caption_color: color of the caption
+        :param caption_background_color: background color of the caption
+        :param caption_x_pos: x-position of the caption
+        :param caption_y_pos: y-position of the caption
+        :param scale_bar_color: color of the scale bar
+        :param scale_bar_length: length of the scale bar
+        :param scale_bar_text: text of the scale bar
+        :param colorbar_label_font_size: font size of the colorbar label
+        :param arrow_color_north: color of the North arrow
+        :param arrow_color_east: color of the East arrow
+        :param arrow_font_size: font size of the arrow text
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
@@ -821,6 +923,18 @@ class ModelPlot(object):
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param text: string, text to be displayed in the image
         :param colorbar_label: string, label for the colorbar
+        :param caption_font_size: font size of the caption
+        :param caption_color: color of the caption
+        :param caption_background_color: background color of the caption
+        :param caption_x_pos: x-position of the caption
+        :param caption_y_pos: y-position of the caption
+        :param scale_bar_color: color of the scale bar
+        :param scale_bar_length: length of the scale bar
+        :param scale_bar_text: text of the scale bar
+        :param colorbar_label_font_size: font size of the colorbar label
+        :param arrow_color_north: color of the North arrow
+        :param arrow_color_east: color of the East arrow
+        :param arrow_font_size: font size of the arrow text
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
@@ -889,6 +1003,18 @@ class ModelPlot(object):
         :param font_size: font size of labels
         :param colorbar_label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
+        :param caption_font_size: font size of the caption
+        :param caption_color: color of the caption
+        :param caption_background_color: background color of the caption
+        :param caption_x_pos: x-position of the caption
+        :param caption_y_pos: y-position of the caption
+        :param scale_bar_color: color of the scale bar
+        :param scale_bar_length: length of the scale bar
+        :param scale_bar_text: text of the scale bar
+        :param colorbar_label_font_size: font size of the colorbar label
+        :param arrow_color_north: color of the North arrow
+        :param arrow_color_east: color of the East arrow
+        :param arrow_font_size: font size of the arrow text
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
@@ -962,6 +1088,18 @@ class ModelPlot(object):
         :param lens_light_add: bool, if True, includes the lens light in the plot
         :param coordinate_arrows: bool, if True, shows the North/East directional arrows
             from the plot
+        :param caption_font_size: font size of the caption
+        :param caption_color: color of the caption
+        :param caption_background_color: background color of the caption
+        :param caption_x_pos: x-position of the caption
+        :param caption_y_pos: y-position of the caption
+        :param scale_bar_color: color of the scale bar
+        :param scale_bar_length: length of the scale bar
+        :param scale_bar_text: text of the scale bar
+        :param colorbar_label_font_size: font size of the colorbar label
+        :param arrow_color_north: color of the North arrow
+        :param arrow_color_east: color of the East arrow
+        :param arrow_font_size: font size of the arrow text
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
@@ -1033,6 +1171,18 @@ class ModelPlot(object):
         :param font_size: font size of labels
         :param coordinate_arrows: bool, if True, shows the North/East directional arrows
             from the plot
+        :param caption_font_size: font size of the caption
+        :param caption_color: color of the caption
+        :param caption_background_color: background color of the caption
+        :param caption_x_pos: x-position of the caption
+        :param caption_y_pos: y-position of the caption
+        :param scale_bar_color: color of the scale bar
+        :param scale_bar_length: length of the scale bar
+        :param scale_bar_text: text of the scale bar
+        :param colorbar_label_font_size: font size of the colorbar label
+        :param arrow_color_north: color of the North arrow
+        :param arrow_color_east: color of the East arrow
+        :param arrow_font_size: font size of the arrow text
         :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """

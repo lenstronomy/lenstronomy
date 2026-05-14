@@ -25,9 +25,8 @@ def plot_quasar_images(
     :param x_image: a list or array of x coordinates [units arcsec]
     :param y_image: a list or array of y coordinates [units arcsec]
     :param kwargs_lens: keyword arguments for the lens model
-    :param source_size: the size of the background source [units parsec]
     :param source_light_model: instance of LightModel for the source
-    :param source_light_kwargs: the keyword arguments for the source light
+    :param kwargs_light_source: the keyword arguments for the source light
     :param grid_resolution: the grid resolution in units arcsec/pixel
     :param grid_radius_arcsec: the size of the ray tracing region in arcsec
     """

@@ -1,5 +1,4 @@
 import copy
-import jax
 import numpy as np
 import lenstronomy.Util.kernel_util as kernel_util
 import lenstronomy.Util.util as util
@@ -65,7 +64,7 @@ class PSF(object):
                     "kernel_point_source needs to be specified for PIXEL PSF type!"
                 )
             # store the initial input PSF and supersampling factor
-            self._kernel_point_source_init = kernel_point_source
+            self._kernel_point_source_init = np.array(kernel_point_source)
             self._point_source_supersampling_factor_init = (
                 point_source_supersampling_factor
             )
@@ -108,7 +107,7 @@ class PSF(object):
         if psf_variance_map is not None:
             n_kernel = len(self.kernel_point_source)
             self._psf_variance_map = kernel_util.match_kernel_size(
-                psf_variance_map, n_kernel
+                np.array(psf_variance_map), n_kernel
             )
             if self.psf_type == "PIXEL" and point_source_supersampling_factor > 1:
                 if len(psf_variance_map) == len(self._kernel_point_source_supersampled):
@@ -117,17 +116,7 @@ class PSF(object):
                         "psf_variance_map are on the down-sampled pixel scale."
                     )
             if kernel_point_source_normalisation is True:
-                # self._psf_variance_map /= np.sum(kernel_point_source) ** 2
-                # Handle the inconsistency between jax and numpy arrays for the psf variance map.
-                if isinstance(self._psf_variance_map, jax.Array) or isinstance(
-                    kernel_point_source, jax.Array
-                ):
-                    psf_var = np.array(self._psf_variance_map)
-                    kernel = np.array(kernel_point_source)
-                    psf_var /= np.sum(kernel) ** 2
-                    self._psf_variance_map = psf_var
-                else:
-                    self._psf_variance_map /= np.sum(kernel_point_source) ** 2
+                self._psf_variance_map /= np.sum(np.array(kernel_point_source)) ** 2
             self.psf_variance_map_bool = True
         else:
             self.psf_variance_map_bool = False

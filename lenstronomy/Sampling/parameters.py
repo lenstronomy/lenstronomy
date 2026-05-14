@@ -239,7 +239,7 @@ class Param(object):
         :param cosmology_model: str, name of the cosmology model to use for
         :param solver_param_module: a class that performs conversions update_kwargs, extract_array, and add_fixed_lens
          for the Solver4Point class with the solver_type = 'CUSTOM' option
-        :param _jax: bool, flag that is set whenever this class is called from JAXtronomy
+        :param _jax: bool, flag that is set to True whenever this class is called from JAXtronomy
         """
 
         self._lens_model_list = kwargs_model.get("lens_model_list", [])
@@ -538,6 +538,8 @@ class Param(object):
                 )
         self._linear_solver = linear_solver
 
+        self._jax = _jax
+
     @property
     def num_point_source_images(self):
         """
@@ -554,7 +556,7 @@ class Param(object):
         """
         return self._linear_solver
 
-    def args2kwargs(self, args, bijective=False, jax=False):
+    def args2kwargs(self, args, bijective=False):
         """
 
         :param args: tuple of parameter values (float, strings, ...)
@@ -562,18 +564,23 @@ class Param(object):
          (e.g. if image_plane_source_list is set =True it returns the position in the image plane coordinates),
          if False, returns the parameters in the form to render a model (e.g. image_plane_source_list positions are
          ray-traced back to the source plane).
-        :param jax: Always False unless this function is being called from jaxtronomy, in which case set to True.
         :return: keyword arguments sorted in lenstronomy conventions
         """
         i = 0
-        if jax is False:
+        if self._jax is False:
             args = np.atleast_1d(args)
+            impose_bound = True
+        # Turn off bound checks for kwargs_special when being called from JAXtronomy
+        else:
+            impose_bound = False
 
         kwargs_lens, i = self.lensParams.get_params(args, i)
         kwargs_source, i = self.sourceParams.get_params(args, i)
         kwargs_lens_light, i = self.lensLightParams.get_params(args, i)
         kwargs_ps, i = self.pointSourceParams.get_params(args, i)
-        kwargs_special, i = self.specialParams.get_params(args, i, impose_bound=True)
+        kwargs_special, i = self.specialParams.get_params(
+            args, i, impose_bound=impose_bound
+        )
         kwargs_extinction, i = self.extinctionParams.get_params(args, i)
         kwargs_tracer_source, i = self.tracerSourceParams.get_params(args, i)
         self._update_lens_model(kwargs_special)

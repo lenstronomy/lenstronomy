@@ -132,6 +132,9 @@ class TestDeLens(object):
         m_inv = de_lens._stable_inv(m)
         npt.assert_almost_equal(m_inv, m)
 
+        cond_inv = de_lens._cond_inv(np.zeros((3, 3)))
+        assert cond_inv is False
+
     def test_solve_stable(self):
         m = np.array([[2, 1], [1, 2]])
         r = np.array([2, 1])

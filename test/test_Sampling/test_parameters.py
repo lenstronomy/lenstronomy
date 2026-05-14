@@ -176,6 +176,10 @@ class TestParam(object):
         assert lens_dict["center_y"] == 0.0
         assert lens_light_dict_list[0]["center_x"] == -0.06
 
+        # this flag is set whenever the param class is called from jaxtronomy
+        self.param_class._jax = True
+        kwargs_return = self.param_class.args2kwargs(args)
+
     def test_get_cosmo(self):
         kwargs_model = {
             "lens_model_list": ["SPEP"],
@@ -670,7 +674,7 @@ class TestParam(object):
         kwargs_fixed_ps = [{"ra_image": [-1, 1], "dec_image": [-1, 1]}]
         kwargs_fixed_lens_light = [{}]
         kwargs_fixed_cosmo = [{}]
-        self.param_class = Param(
+        param_class = Param(
             kwargs_model,
             kwargs_fixed_lens=kwargs_fixed_lens,
             kwargs_fixed_source=kwargs_fixed_source,
@@ -680,7 +684,7 @@ class TestParam(object):
             _jax=True,
             **kwargs_param
         )
-        self.param_class.print_setting()
+        param_class.print_setting()
 
 
 class TestRaise(unittest.TestCase):

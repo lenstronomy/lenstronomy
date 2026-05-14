@@ -88,8 +88,7 @@ def title_text(
 def scale_bar(
     ax, d, dist=1.0, text=None, color="w", font_size=15, flipped=False, linewidth=2
 ):
-    """
-    Plot a scale bar.
+    """Plot a scale bar.
 
     :param ax: matplotlib.axes instance
     :param d: diameter of frame
@@ -149,8 +148,7 @@ def coordinate_arrows(
     arrow_color_north="w",
     arrow_color_east="w",
 ):
-    """
-    Plot East and North coordinate arrows.
+    """Plot East and North coordinate arrows.
 
     :param ax: matplotlib axes instance
     :param d: diameter of frame in ax
@@ -160,10 +158,14 @@ def coordinate_arrows(
     :param arrowhead_size: size of the arrow head as a fraction of the image size
     :param arrow_origin_x: x origin of the arrow as a fraction of the image size
     :param arrow_origin_y: y origin of the arrow as a fraction of the image size
-    :param arrow_north_offset_x: x offset for N from the tip of the arrow as a fraction of image size
-    :param arrow_north_offset_y: y offset for N from the tip of the arrow as a fraction of image size
-    :param arrow_east_offset_x: x offset for E from the tip of the arrow as a fraction of image size
-    :param arrow_east_offset_y: y offset for E from the tip of the arrow as a fraction of image size
+    :param arrow_north_offset_x: x offset for N from the tip of the arrow as a fraction
+        of image size
+    :param arrow_north_offset_y: y offset for N from the tip of the arrow as a fraction
+        of image size
+    :param arrow_east_offset_x: x offset for E from the tip of the arrow as a fraction
+        of image size
+    :param arrow_east_offset_y: y offset for E from the tip of the arrow as a fraction
+        of image size
     :param arrow_color_north: color string for N
     :param arrow_color_east: color string for E
     :return: updated ax instance
@@ -355,18 +357,22 @@ def image_position_plot(
     flipped_x=False,
     plot_out_of_image=True,
 ):
-    """
-    Plot lensed image positions.
+    """Plot lensed image positions.
 
     :param ax: matplotlib axis instance
-    :param coords: Coordinates() class instance or inherited class (such as PixelGrid(), or Data())
-    :param ra_image: Ra/x-coordinates of image positions (list of arrays in angular units)
-    :param dec_image: Dec/y-coordinates of image positions (list of arrays in angular units)
+    :param coords: Coordinates() class instance or inherited class (such as PixelGrid(),
+        or Data())
+    :param ra_image: Ra/x-coordinates of image positions (list of arrays in angular
+        units)
+    :param dec_image: Dec/y-coordinates of image positions (list of arrays in angular
+        units)
     :param color: color of ticks and text
-    :param image_name_list: list of strings for names of the images in the same order as the positions
+    :param image_name_list: list of strings for names of the images in the same order as
+        the positions
     :param origin: [x0, y0], lower left pixel coordinate in the frame of the pixels
     :param flipped_x: bool, if True, flips x-axis
-    :param plot_out_of_image: if True, plots images even appearing out of the Coordinate frame
+    :param plot_out_of_image: if True, plots images even appearing out of the Coordinate
+        frame
     :type plot_out_of_image: bool
     :return: matplotlib axis instance with images plotted on
     """
@@ -404,11 +410,11 @@ def image_position_plot(
 def source_position_plot(
     ax, coords, ra_source, dec_source, marker="*", markersize=10, **kwargs
 ):
-    """
-    Plot source positions.
+    """Plot source positions.
 
     :param ax: matplotlib axis instance
-    :param coords: Coordinates() class instance or inherited class (such as PixelGrid(), or Data())
+    :param coords: Coordinates() class instance or inherited class (such as PixelGrid(),
+        or Data())
     :param ra_source: list of source position in angular units
     :param dec_source: list of source position in angular units
     :param marker: marker style for matplotlib
@@ -431,8 +437,7 @@ def source_position_plot(
 
 @export
 def result_string(x, weights=None, title_fmt=".2f", label=None):
-    """
-    Format posterior summary string.
+    """Format posterior summary string.
 
     :param x: marginalized 1-d posterior
     :param weights: weights of posteriors (optional)

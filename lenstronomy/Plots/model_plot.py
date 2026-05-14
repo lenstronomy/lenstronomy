@@ -44,8 +44,7 @@ class ModelPlot(object):
         scale_bar_width=2,
         scale_bar_font_size=15,
     ):
-        """
-        Initialize the multi-band plotting manager.
+        """Initialize the multi-band plotting manager.
 
         :param multi_band_list: list of [[kwargs_data, kwargs_psf, kwargs_numerics], [], ..]
         :param multi_band_type: string, option when having multiple imaging data sets modelled simultaneously.
@@ -182,8 +181,7 @@ class ModelPlot(object):
             index += 1
 
     def _select_band(self, band_index):
-        """
-        Select a computed imaging band for plotting.
+        """Select a computed imaging band for plotting.
 
         :param band_index: index of imaging band to be plotted
         :return: bandplot() instance of selected band, raises when band is not computed
@@ -195,12 +193,11 @@ class ModelPlot(object):
         return self._band_plot_list[i]
 
     def reconstruction_all_bands(self, **kwargs_matshow):
-        """
-        Plot data, model, and normalized residuals for all computed bands.
+        """Plot data, model, and normalized residuals for all computed bands.
 
         :param kwargs_matshow: arguments of plotting
-        :return: 3 x n_data plot with data, model, reduced residual plots of all the images/bands that are being modeled
-
+        :return: 3 x n_data plot with data, model, reduced residual plots of all the
+            images/bands that are being modeled
         """
         n_bands = len(self._band_plot_list)
         import matplotlib.pyplot as plt
@@ -1270,8 +1267,7 @@ class ModelPlot(object):
     def plot_extinction_map(
         self, band_index=0, ax=None, v_min=None, v_max=None, **kwargs_matshow
     ):
-        """
-        Plot differential extinction map for one band.
+        """Plot differential extinction map for one band.
 
         :param band_index: index of band
         :param ax: an instance of matplotlib.axes.Axes
@@ -1286,8 +1282,7 @@ class ModelPlot(object):
         )
 
     def source(self, band_index=0, **kwargs):
-        """
-        Compute source surface brightness for one band.
+        """Compute source surface brightness for one band.
 
         :param band_index: index of band
         :param kwargs: keyword arguments accessible in model_band_plot.source()
@@ -1297,8 +1292,7 @@ class ModelPlot(object):
         return plot_band.source(**kwargs)
 
     def single_band_chi2(self, band_index=0):
-        """
-        Return reduced chi-square for one band.
+        """Return reduced chi-square for one band.
 
         :param band_index: index of band
         :return: the reduced chi-square value of the band as a float

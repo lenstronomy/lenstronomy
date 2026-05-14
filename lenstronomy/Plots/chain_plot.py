@@ -115,8 +115,7 @@ def plot_mcmc_behaviour(ax, samples_mcmc, param_mcmc, dist_mcmc=None, num_averag
 
 @export
 def psf_iteration_compare(kwargs_psf, **kwargs):
-    """
-    Compare initial and iteratively reconstructed PSF kernels.
+    """Compare initial and iteratively reconstructed PSF kernels.
 
     :param kwargs_psf: keyword arguments that initiate a PSF() class
     :param kwargs: kwargs to send to matplotlib.pyplot.matshow()

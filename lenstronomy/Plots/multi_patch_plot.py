@@ -33,8 +33,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         scale_bar_width=2,
         scale_bar_font_size=15,
     ):
-        """
-        Initialize the multi-patch plotting class.
+        """Initialize the multi-patch plotting class.
 
         :param multi_band_list: list of imaging data configuration [[kwargs_data, kwargs_psf, kwargs_numerics], [...]]
         :param kwargs_model: model keyword argument list
@@ -357,8 +356,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         arrow_font_size=15,
         **kwargs
     ):
-        """
-        Plot a 2D map for a given coordinate system.
+        """Plot a 2D map for a given coordinate system.
 
         :param ax: matplotlib axis instance
         :param image: 2d numpy array to be plotted
@@ -377,8 +375,10 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param title_background_color: background color of the title
         :param title_x_pos: x-position of the title
         :param title_y_pos: y-position of the title
-        :param white_on_black: boolean, if True, prints white text on black background, otherwise the opposite
-        :param no_support: boolean, if True, does not plot the scale bar, text description, coordinate arrows, or color bar
+        :param white_on_black: boolean, if True, prints white text on black background,
+            otherwise the opposite
+        :param no_support: boolean, if True, does not plot the scale bar, text
+            description, coordinate arrows, or color bar
         :param colorbar_label_font_size: font size of the colorbar label
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow

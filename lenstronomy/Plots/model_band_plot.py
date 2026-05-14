@@ -40,8 +40,7 @@ class ModelBandPlot(ModelBand):
         scale_bar_width=2,
         scale_bar_font_size=15,
     ):
-        """
-        Initialize the model-band plotting class.
+        """Initialize the model-band plotting class.
 
         :param multi_band_list: list of imaging data configuration [[kwargs_data, kwargs_psf, kwargs_numerics], [...]]
         :param kwargs_model: model keyword argument list for the full multi-band modeling
@@ -192,8 +191,7 @@ class ModelBandPlot(ModelBand):
         colorbar_label_font_size=15,
         **kwargs_matshow,
     ):
-        """
-        Plot observed imaging data.
+        """Plot observed imaging data.
 
         :param ax: matplotlib axis instance
         :param v_min: minimum plotting scale
@@ -306,8 +304,7 @@ class ModelBandPlot(ModelBand):
         colorbar_label_font_size=15,
         **kwargs_matshow,
     ):
-        """
-        Plot reconstructed imaging model.
+        """Plot reconstructed imaging model.
 
         :param ax: matplotib axis instance
         :param v_min: minimum plotting scale
@@ -433,8 +430,7 @@ class ModelBandPlot(ModelBand):
         arrow_font_size=15,
         **kwargs_matshow,
     ):
-        """
-        Plot lensing convergence in the data frame.
+        """Plot lensing convergence in the data frame.
 
         :param ax: matplotib axis instance
         :param title_text: string, text to be displayed in the image
@@ -742,8 +738,7 @@ class ModelBandPlot(ModelBand):
         arrow_font_size=15,
         **kwargs_matshow,
     ):
-        """
-        Plot normalized residuals between data and model.
+        """Plot normalized residuals between data and model.
 
         :param ax: matplotlib axis instance
         :param v_min: minimum color scale
@@ -848,8 +843,7 @@ class ModelBandPlot(ModelBand):
         arrow_font_size=15,
         **kwargs_matshow,
     ):
-        """
-        Plot absolute residuals between data and model.
+        """Plot absolute residuals between data and model.
 
         :param ax: matplotlib axis instance
         :param v_min: minimum color scale
@@ -930,13 +924,14 @@ class ModelBandPlot(ModelBand):
         return ax
 
     def source(self, numPix, deltaPix, center=None, image_orientation=True):
-        """
-        Compute source surface brightness on a source grid.
+        """Compute source surface brightness on a source grid.
 
         :param numPix: number of pixels per axes
         :param deltaPix: pixel size
-        :param image_orientation: bool, if True, uses frame in orientation of the image, otherwise in RA-DEC coordinates
-        :return: 2d surface brightness grid of the reconstructed source and Coordinates() instance of source grid
+        :param image_orientation: bool, if True, uses frame in orientation of the image,
+            otherwise in RA-DEC coordinates
+        :return: 2d surface brightness grid of the reconstructed source and
+            Coordinates() instance of source grid
         """
         if image_orientation is True:
             Mpix2coord = self._coords.transform_pix2angle * deltaPix / self._deltaPix
@@ -1010,12 +1005,12 @@ class ModelBandPlot(ModelBand):
         arrow_font_size=15,
         **kwargs_matshow,
     ):
-        """
-        Plot reconstructed source brightness.
+        """Plot reconstructed source brightness.
 
         :param ax: matplotlib axis instance
         :param numPix: number of pixels in plot per axis
-        :param deltaPix_source: pixel spacing in the source resolution illustrated in plot
+        :param deltaPix_source: pixel spacing in the source resolution illustrated in
+            plot
         :param center: [center_x, center_y], if specified, uses this as the center
         :param v_min: minimum plotting scale of the map
         :param v_max: maximum plotting scale of the map
@@ -1026,7 +1021,8 @@ class ModelBandPlot(ModelBand):
         :param scale_size: float, size of the scale bar
         :param title_text: string, text to be displayed in the image
         :param colorbar_label: string, label for the colorbar
-        :param point_source_position: boolean, if True, plots a point at the position of the point source
+        :param point_source_position: boolean, if True, plots a point at the position of
+            the point source
         :param kwargs_caustic: keyword arguments for caustic plotting
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param title_font_size: font size of the title
@@ -1330,13 +1326,13 @@ class ModelBandPlot(ModelBand):
         arrow_font_size=15,
         **kwargs_matshow,
     ):
-        """
-        Plot magnification map in the data frame.
+        """Plot magnification map in the data frame.
 
         :param ax: matplotib axis instance
         :param v_min: minimum range of plotting
         :param v_max: maximum range of plotting
-        :param image_name_list: list of strings for names of the images in the same order as the positions
+        :param image_name_list: list of strings for names of the images in the same
+            order as the positions
         :param font_size: font size of labels
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param title_text: string, text to be displayed in the image
@@ -1457,8 +1453,7 @@ class ModelBandPlot(ModelBand):
         arrow_font_size=15,
         **kwargs_matshow,
     ):
-        """
-        Plot deflection-angle map in the data frame.
+        """Plot deflection-angle map in the data frame.
 
         :param ax: matplotlib axis instance
         :param v_min: minimum plotting scale
@@ -1906,8 +1901,7 @@ class ModelBandPlot(ModelBand):
         return f, axes
 
     def plot_extinction_map(self, ax, v_min=None, v_max=None, **kwargs_matshow):
-        """
-        Plot differential extinction map.
+        """Plot differential extinction map.
 
         :param ax: matplotlib axis instance
         :param v_min: minimum color scale for matshow plot

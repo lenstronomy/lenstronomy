@@ -206,17 +206,17 @@ def caustics_plot(
     *args,
     **kwargs,
 ):
-    """
-    Plot caustics and critical curves.
+    """Plot caustics and critical curves.
 
     :param ax: matplotlib axis instance
-    :param pixel_grid: lenstronomy PixelGrid() instance (or class with inheritance of PixelGrid()
+    :param pixel_grid: lenstronomy PixelGrid() instance (or class with inheritance of
+        PixelGrid()
     :param lens_model: LensModel() class instance
     :param kwargs_lens: lens model keyword argument list
-    :param fast_caustic: boolean, if True, uses faster but less precise caustic calculation
-     (might have troubles for the outer caustic (inner critical curve)
-    :param coord_inverse: bool, if True, inverts the x-coordinates to go from right-to-left
-     (effectively the RA definition)
+    :param fast_caustic: boolean, if True, uses faster but less precise caustic
+        calculation (might have troubles for the outer caustic (inner critical curve)
+    :param coord_inverse: bool, if True, inverts the x-coordinates to go from right-to-
+        left (effectively the RA definition)
     :param color_crit: string, color of critical curve
     :param color_caustic: string, color of caustic curve
     :param args: argument for plotting curve
@@ -409,8 +409,7 @@ def arrival_time_surface(
     letter_font_size=20,
     name_list=None,
 ):
-    """
-    Plot Fermat potential contours and optional images.
+    """Plot Fermat potential contours and optional images.
 
     :param ax: matplotlib axis instance
     :param lensModel: LensModel() class instance
@@ -531,15 +530,15 @@ def arrival_time_surface(
 def curved_arc_illustration(
     ax, lensModel, kwargs_lens, with_centroid=True, stretch_scale=0.1, color="k"
 ):
-    """
-    Illustrate curved-arc lens model components.
+    """Illustrate curved-arc lens model components.
 
     :param ax: matplotlib axis instance
     :param lensModel: LensModel() instance
-    :param kwargs_lens: list of lens model keyword arguments (only those of CURVED_ARC considered
+    :param kwargs_lens: list of lens model keyword arguments (only those of CURVED_ARC
+        considered
     :param with_centroid: plots the center of the curvature radius
-    :param stretch_scale: float, relative scale of banana to the tangential and radial stretches
-     (effectively intrinsic source size)
+    :param stretch_scale: float, relative scale of banana to the tangential and radial
+        stretches (effectively intrinsic source size)
     :param color: string, matplotlib color for plot
     :return: matplotlib axis instance
     """
@@ -588,23 +587,24 @@ def plot_arc(
     color="k",
     dtan_dtan=0,
 ):
-    """
-    Plot a curved arc illustration for one model component.
+    """Plot a curved arc illustration for one model component.
 
     :param ax: matplotlib.axes instance
-    :param tangential_stretch: float, stretch of intrinsic source in tangential direction
+    :param tangential_stretch: float, stretch of intrinsic source in tangential
+        direction
     :param radial_stretch: float, stretch of intrinsic source in radial direction
     :param curvature: 1/curvature radius
     :param direction: float, angle in radian
     :param center_x: center of source in image plane
     :param center_y: center of source in image plane
     :param with_centroid: plots the center of the curvature radius
-    :param stretch_scale: float, relative scale of banana to the tangential and radial stretches
-     (effectively intrinsic source size)
+    :param stretch_scale: float, relative scale of banana to the tangential and radial
+        stretches (effectively intrinsic source size)
     :param linewidth: linewidth
     :param color: color
     :type color: string in matplotlib color convention
-    :param dtan_dtan: tangential eigenvector differential in tangential direction (not implemented yet as illustration)
+    :param dtan_dtan: tangential eigenvector differential in tangential direction (not
+        implemented yet as illustration)
     :return:
     """
     # plot line to centroid
@@ -679,8 +679,7 @@ def distortions(
     smoothing_scale=None,
     **kwargs,
 ):
-    """
-    Plot lensing distortion diagnostics.
+    """Plot lensing distortion diagnostics.
 
     :param lensModel: LensModel instance
     :param kwargs_lens: lens model keyword argument list
@@ -689,7 +688,8 @@ def distortions(
     :param center_ra: center of the grid
     :param center_dec: center of the grid
     :param differential_scale: scale of the finite derivative length in units of angles
-    :param smoothing_scale: float or None, Gaussian FWHM of a smoothing kernel applied before plotting
+    :param smoothing_scale: float or None, Gaussian FWHM of a smoothing kernel applied
+        before plotting
     :return: matplotlib instance with different panels
     """
     kwargs_grid = sim_util.data_configure_simple(
@@ -777,8 +777,7 @@ def distortions(
         )
 
     def _plot_frame(ax, frame, vmin, vmax, title_text):
-        """
-        Plot one diagnostic frame panel.
+        """Plot one diagnostic frame panel.
 
         :param ax: matplotlib.axis instance
         :param frame: 2d array

@@ -34,24 +34,34 @@ class TracerPlot(object):
         scale_bar_width=2,
         scale_bar_font_size=15,
     ):
-        """
-        Initialize the tracer plotting class.
+        """Initialize the tracer plotting class.
 
         :param kwargs_data_joint: joint data keyword argument list
-        :param kwargs_model: model keyword argument list for the full multi-band modeling
-        :param kwargs_params: keyword argument of keyword argument lists of the different model components selected for
-         the imaging band, NOT including linear amplitudes (not required as being overwritten by the param list)
+        :param kwargs_model: model keyword argument list for the full multi-band
+            modeling
+        :param kwargs_params: keyword argument of keyword argument lists of the
+            different model components selected for the imaging band, NOT including
+            linear amplitudes (not required as being overwritten by the param list)
         :param kwargs_likelihood: likelihood keyword arguments
         :param cmap_string: string of color map (or cmap matplotlib object)
-        :param fast_caustic: boolean; if True, uses fast (but less accurate) caustic calculation method
-        :param arrow_length: length of the coordinate arrow as a fraction of the image size
-        :param arrowhead_size: size of the arrowhead of the coordinate arrow as a fraction of the image size
-        :param arrow_origin_x: x-origin of the coordinate arrow as a fraction of the image size
-        :param arrow_origin_y: y-origin of the coordinate arrow as a fraction of the image size
-        :param arrow_east_offset_x: x-offset of the East arrow text as a fraction of the image size
-        :param arrow_east_offset_y: y-offset of the East arrow text as a fraction of the image size
-        :param arrow_north_offset_x: x-offset of the North arrow text as a fraction of the image size
-        :param arrow_north_offset_y: y-offset of the North arrow text as a fraction of the image size
+        :param fast_caustic: boolean; if True, uses fast (but less accurate) caustic
+            calculation method
+        :param arrow_length: length of the coordinate arrow as a fraction of the image
+            size
+        :param arrowhead_size: size of the arrowhead of the coordinate arrow as a
+            fraction of the image size
+        :param arrow_origin_x: x-origin of the coordinate arrow as a fraction of the
+            image size
+        :param arrow_origin_y: y-origin of the coordinate arrow as a fraction of the
+            image size
+        :param arrow_east_offset_x: x-offset of the East arrow text as a fraction of the
+            image size
+        :param arrow_east_offset_y: y-offset of the East arrow text as a fraction of the
+            image size
+        :param arrow_north_offset_x: x-offset of the North arrow text as a fraction of
+            the image size
+        :param arrow_north_offset_y: y-offset of the North arrow text as a fraction of
+            the image size
         :param scale_bar_width: width of the scale bar
         :param scale_bar_font_size: font size of the scale bar
         """
@@ -215,8 +225,7 @@ class TracerPlot(object):
         colorbar_label_font_size=15,
         **kwargs_matshow,
     ):
-        """
-        Plot observed tracer data.
+        """Plot observed tracer data.
 
         :param ax: matplotlib axis instance
         :param v_min: minimum plotting scale
@@ -329,8 +338,7 @@ class TracerPlot(object):
         colorbar_label_font_size=15,
         **kwargs_matshow,
     ):
-        """
-        Plot reconstructed tracer model.
+        """Plot reconstructed tracer model.
 
         :param ax: matplotib axis instance
         :param v_min: minimum plotting scale
@@ -455,8 +463,7 @@ class TracerPlot(object):
         arrow_font_size=15,
         **kwargs_matshow,
     ):
-        """
-        Plot lensing convergence in the tracer frame.
+        """Plot lensing convergence in the tracer frame.
 
         :param ax: matplotib axis instance
         :param title_text: string, text to be displayed in the image
@@ -565,8 +572,7 @@ class TracerPlot(object):
         arrow_font_size=15,
         **kwargs_matshow,
     ):
-        """
-        Plot normalized residuals between data and model.
+        """Plot normalized residuals between data and model.
 
         :param ax: matplotlib axis instance
         :param v_min: minimum color scale
@@ -671,8 +677,7 @@ class TracerPlot(object):
         arrow_font_size=15,
         **kwargs_matshow,
     ):
-        """
-        Plot absolute residuals between data and model.
+        """Plot absolute residuals between data and model.
 
         :param ax: matplotlib axis instance
         :param v_min: minimum color scale
@@ -753,13 +758,14 @@ class TracerPlot(object):
         return ax
 
     def source(self, numPix, deltaPix, center=None, image_orientation=True):
-        """
-        Compute tracer source surface brightness on a source grid.
+        """Compute tracer source surface brightness on a source grid.
 
         :param numPix: number of pixels per axes
         :param deltaPix: pixel size
-        :param image_orientation: bool, if True, uses frame in orientation of the image, otherwise in RA-DEC coordinates
-        :return: 2d surface brightness grid of the reconstructed source and Coordinates() instance of source grid
+        :param image_orientation: bool, if True, uses frame in orientation of the image,
+            otherwise in RA-DEC coordinates
+        :return: 2d surface brightness grid of the reconstructed source and
+            Coordinates() instance of source grid
         """
         if image_orientation is True:
             Mpix2coord = self._coords.transform_pix2angle * deltaPix / self._deltaPix
@@ -832,12 +838,12 @@ class TracerPlot(object):
         arrow_font_size=15,
         **kwargs_matshow,
     ):
-        """
-        Plot reconstructed tracer source brightness.
+        """Plot reconstructed tracer source brightness.
 
         :param ax: matplotlib axis instance
         :param numPix: number of pixels in plot per axis
-        :param deltaPix_source: pixel spacing in the source resolution illustrated in plot
+        :param deltaPix_source: pixel spacing in the source resolution illustrated in
+            plot
         :param center: [center_x, center_y], if specified, uses this as the center
         :param v_min: minimum plotting scale of the map
         :param v_max: maximum plotting scale of the map
@@ -847,7 +853,8 @@ class TracerPlot(object):
         :param plot_scale: string, log or linear, scale of surface brightness plot
         :param title_text: string, text to be displayed in the image
         :param colorbar_label: string, label for the colorbar
-        :param point_source_position: boolean, if True, plots a point at the position of the point source
+        :param point_source_position: boolean, if True, plots a point at the position of
+            the point source
         :param kwargs_caustic: keyword arguments for caustic plotting
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param title_font_size: font size of the title
@@ -980,13 +987,13 @@ class TracerPlot(object):
         arrow_font_size=15,
         **kwargs_matshow,
     ):
-        """
-        Plot magnification map in the tracer frame.
+        """Plot magnification map in the tracer frame.
 
         :param ax: matplotib axis instance
         :param v_min: minimum range of plotting
         :param v_max: maximum range of plotting
-        :param image_name_list: list of strings for names of the images in the same order as the positions
+        :param image_name_list: list of strings for names of the images in the same
+            order as the positions
         :param font_size: font size of labels
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param title_text: string, text to be displayed in the image
@@ -1104,8 +1111,7 @@ class TracerPlot(object):
         arrow_font_size=15,
         **kwargs_matshow,
     ):
-        """
-        Plot deflection-angle map in the tracer frame.
+        """Plot deflection-angle map in the tracer frame.
 
         :param ax: matplotlib axis instance
         :param v_min: minimum plotting scale

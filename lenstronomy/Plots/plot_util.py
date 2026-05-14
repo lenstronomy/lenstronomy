@@ -52,11 +52,11 @@ def text_description(
 ):
     if caption_x_pos is None:
         if flipped:
-            caption_x_pos = 1.0
+            caption_x_pos = 0.975
         else:
-            caption_x_pos = 0.0
+            caption_x_pos = 0.025
     if caption_y_pos is None:
-        caption_y_pos = 1.0
+        caption_y_pos = 0.975
 
     ha = "right" if flipped else "left"
 

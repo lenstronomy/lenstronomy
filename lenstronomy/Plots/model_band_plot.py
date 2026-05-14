@@ -212,12 +212,11 @@ class ModelBandPlot(ModelBand):
         ax.autoscale(False)
 
         plot_util.scale_bar(
-            ax, self._frame_size, dist=1, text='1"', font_size=font_size
-            ax, 
-            self._frame_size, 
-            dist=scale_bar_length, 
-            text=scale_bar_text, 
-            color=scale_bar_color, 
+            ax,
+            self._frame_size,
+            dist=scale_bar_length,
+            text=scale_bar_text,
+            color=scale_bar_color,
             font_size=scale_bar_font_size,
             linewidth=scale_bar_width,
         )
@@ -225,9 +224,6 @@ class ModelBandPlot(ModelBand):
             ax,
             self._frame_size,
             text=text,
-            color="w",
-            backgroundcolor="k",
-            font_size=font_size,
             color=text_color,
             backgroundcolor=text_bg_color,
             font_size=text_font_size,
@@ -240,9 +236,6 @@ class ModelBandPlot(ModelBand):
                 ax,
                 self._frame_size,
                 self._coords,
-                color="w",
-                arrow_size=self._arrow_size,
-                font_size=font_size,
                 font_size=arrow_font_size,
                 arrow_length=self._arrow_length,
                 arrowhead_size=self._arrowhead_size,
@@ -327,12 +320,11 @@ class ModelBandPlot(ModelBand):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
         plot_util.scale_bar(
-            ax, self._frame_size, dist=1, text='1"', font_size=font_size
-            ax, 
-            self._frame_size, 
-            dist=scale_bar_length, 
-            text=scale_bar_text, 
-            color=scale_bar_color, 
+            ax,
+            self._frame_size,
+            dist=scale_bar_length,
+            text=scale_bar_text,
+            color=scale_bar_color,
             font_size=scale_bar_font_size,
             linewidth=scale_bar_width,
         )
@@ -340,9 +332,6 @@ class ModelBandPlot(ModelBand):
             ax,
             self._frame_size,
             text=text,
-            color="w",
-            backgroundcolor="k",
-            font_size=font_size,
             color=text_color,
             backgroundcolor=text_bg_color,
             font_size=text_font_size,
@@ -354,9 +343,6 @@ class ModelBandPlot(ModelBand):
                 ax,
                 self._frame_size,
                 self._coords,
-                color="w",
-                arrow_size=self._arrow_size,
-                font_size=font_size,
                 font_size=arrow_font_size,
                 arrow_length=self._arrow_length,
                 arrowhead_size=self._arrowhead_size,
@@ -449,12 +435,11 @@ class ModelBandPlot(ModelBand):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
         plot_util.scale_bar(
-            ax, self._frame_size, dist=1, text='1"', color="w", font_size=font_size
-            ax, 
-            self._frame_size, 
-            dist=scale_bar_length, 
-            text=scale_bar_text, 
-            color=scale_bar_color, 
+            ax,
+            self._frame_size,
+            dist=scale_bar_length,
+            text=scale_bar_text,
+            color=scale_bar_color,
             font_size=scale_bar_font_size,
             linewidth=scale_bar_width,
         )
@@ -463,9 +448,6 @@ class ModelBandPlot(ModelBand):
                 ax,
                 self._frame_size,
                 self._coords,
-                color="w",
-                arrow_size=self._arrow_size,
-                font_size=font_size,
                 font_size=arrow_font_size,
                 arrow_length=self._arrow_length,
                 arrowhead_size=self._arrowhead_size,
@@ -482,10 +464,7 @@ class ModelBandPlot(ModelBand):
                 ax,
                 self._frame_size,
                 text=text,
-                color="w",
-                backgroundcolor="k",
                 flipped=False,
-                font_size=font_size,
                 color=text_color,
                 backgroundcolor=text_bg_color,
                 font_size=text_font_size,
@@ -618,12 +597,11 @@ class ModelBandPlot(ModelBand):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
         plot_util.scale_bar(
-            ax, self._frame_size, dist=1, text='1"', color="k", font_size=font_size
-            ax, 
-            self._frame_size, 
-            dist=scale_bar_length, 
-            text=scale_bar_text, 
-            color=scale_bar_color, 
+            ax,
+            self._frame_size,
+            dist=scale_bar_length,
+            text=scale_bar_text,
+            color=scale_bar_color,
             font_size=scale_bar_font_size,
             linewidth=scale_bar_width,
         )
@@ -632,9 +610,6 @@ class ModelBandPlot(ModelBand):
                 ax,
                 self._frame_size,
                 self._coords,
-                color="k",
-                arrow_size=self._arrow_size,
-                font_size=font_size,
                 font_size=arrow_font_size,
                 arrow_length=self._arrow_length,
                 arrowhead_size=self._arrowhead_size,
@@ -651,10 +626,7 @@ class ModelBandPlot(ModelBand):
                 ax,
                 self._frame_size,
                 text=text,
-                color="k",
-                backgroundcolor="w",
                 flipped=False,
-                font_size=font_size,
                 color=text_color,
                 backgroundcolor=text_bg_color,
                 font_size=text_font_size,
@@ -755,12 +727,11 @@ class ModelBandPlot(ModelBand):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
         plot_util.scale_bar(
-            ax, self._frame_size, dist=1, text='1"', color="k", font_size=font_size
-            ax, 
-            self._frame_size, 
-            dist=scale_bar_length, 
-            text=scale_bar_text, 
-            color=scale_bar_color, 
+            ax,
+            self._frame_size,
+            dist=scale_bar_length,
+            text=scale_bar_text,
+            color=scale_bar_color,
             font_size=scale_bar_font_size,
             linewidth=scale_bar_width,
         )
@@ -768,9 +739,6 @@ class ModelBandPlot(ModelBand):
             ax,
             self._frame_size,
             text=text,
-            color="k",
-            backgroundcolor="w",
-            font_size=font_size,
             color=text_color,
             backgroundcolor=text_bg_color,
             font_size=text_font_size,
@@ -782,9 +750,6 @@ class ModelBandPlot(ModelBand):
                 ax,
                 self._frame_size,
                 self._coords,
-                color="w",
-                arrow_size=self._arrow_size,
-                font_size=font_size,
                 font_size=arrow_font_size,
                 arrow_length=self._arrow_length,
                 arrowhead_size=self._arrowhead_size,
@@ -859,12 +824,11 @@ class ModelBandPlot(ModelBand):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
         plot_util.scale_bar(
-            ax, self._frame_size, dist=1, text='1"', color="k", font_size=font_size
-            ax, 
-            self._frame_size, 
-            dist=scale_bar_length, 
-            text=scale_bar_text, 
-            color=scale_bar_color, 
+            ax,
+            self._frame_size,
+            dist=scale_bar_length,
+            text=scale_bar_text,
+            color=scale_bar_color,
             font_size=scale_bar_font_size,
             linewidth=scale_bar_width,
         )
@@ -872,9 +836,6 @@ class ModelBandPlot(ModelBand):
             ax,
             self._frame_size,
             text=text,
-            color="k",
-            backgroundcolor="w",
-            font_size=font_size,
             color=text_color,
             backgroundcolor=text_bg_color,
             font_size=text_font_size,
@@ -886,9 +847,6 @@ class ModelBandPlot(ModelBand):
                 ax,
                 self._frame_size,
                 self._coords,
-                font_size=font_size,
-                color="k",
-                arrow_size=self._arrow_size,
                 font_size=arrow_font_size,
                 arrow_length=self._arrow_length,
                 arrowhead_size=self._arrowhead_size,
@@ -1081,16 +1039,10 @@ class ModelBandPlot(ModelBand):
                 points_only=self._caustic_points_only,
                 **kwargs_caustic,
             )
-        if scale_size > 0:
         if scale_bar_length > 0:
             plot_util.scale_bar(
                 ax,
                 d_s,
-                dist=scale_size,
-                text='{:.1f}"'.format(scale_size),
-                color="w",
-                flipped=False,
-                font_size=font_size,
                 dist=scale_bar_length,
                 text=scale_bar_text,
                 color=scale_bar_color,
@@ -1102,9 +1054,6 @@ class ModelBandPlot(ModelBand):
                 ax,
                 self._frame_size,
                 self._coords,
-                color="w",
-                arrow_size=self._arrow_size,
-                font_size=font_size,
                 font_size=arrow_font_size,
                 arrow_length=self._arrow_length,
                 arrowhead_size=self._arrowhead_size,
@@ -1121,10 +1070,7 @@ class ModelBandPlot(ModelBand):
                 ax,
                 d_s,
                 text=text,
-                color="w",
-                backgroundcolor="k",
                 flipped=False,
-                font_size=font_size,
                 color=text_color,
                 backgroundcolor=text_bg_color,
                 font_size=text_font_size,
@@ -1245,11 +1191,6 @@ class ModelBandPlot(ModelBand):
         plot_util.scale_bar(
             ax,
             d_s,
-            dist=0.1,
-            text='0.1"',
-            color="w",
-            flipped=False,
-            font_size=font_size,
             dist=scale_bar_length,
             text=scale_bar_text,
             color=scale_bar_color,
@@ -1261,9 +1202,6 @@ class ModelBandPlot(ModelBand):
                 ax,
                 d_s,
                 coords_source,
-                arrow_size=self._arrow_size,
-                color="w",
-                font_size=font_size,
                 font_size=arrow_font_size,
                 arrow_length=self._arrow_length,
                 arrowhead_size=self._arrowhead_size,
@@ -1280,10 +1218,7 @@ class ModelBandPlot(ModelBand):
             ax,
             d_s,
             text="Error map in source",
-            color="w",
-            backgroundcolor="k",
             flipped=False,
-            font_size=font_size,
             color=text_color,
             backgroundcolor=text_bg_color,
             font_size=text_font_size,
@@ -1358,12 +1293,11 @@ class ModelBandPlot(ModelBand):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
         plot_util.scale_bar(
-            ax, self._frame_size, dist=1, text='1"', color="k", font_size=font_size
-            ax, 
-            self._frame_size, 
-            dist=scale_bar_length, 
-            text=scale_bar_text, 
-            color=scale_bar_color, 
+            ax,
+            self._frame_size,
+            dist=scale_bar_length,
+            text=scale_bar_text,
+            color=scale_bar_color,
             font_size=scale_bar_font_size,
             linewidth=scale_bar_width,
         )
@@ -1372,9 +1306,6 @@ class ModelBandPlot(ModelBand):
                 ax,
                 self._frame_size,
                 self._coords,
-                color="k",
-                arrow_size=self._arrow_size,
-                font_size=font_size,
                 font_size=arrow_font_size,
                 arrow_length=self._arrow_length,
                 arrowhead_size=self._arrowhead_size,
@@ -1391,9 +1322,6 @@ class ModelBandPlot(ModelBand):
             ax,
             self._frame_size,
             text=text,
-            color="k",
-            backgroundcolor="w",
-            font_size=font_size,
             color=text_color,
             backgroundcolor=text_bg_color,
             font_size=text_font_size,
@@ -1489,12 +1417,11 @@ class ModelBandPlot(ModelBand):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
         plot_util.scale_bar(
-            ax, self._frame_size, dist=1, text='1"', color="k", font_size=font_size
-            ax, 
-            self._frame_size, 
-            dist=scale_bar_length, 
-            text=scale_bar_text, 
-            color=scale_bar_color, 
+            ax,
+            self._frame_size,
+            dist=scale_bar_length,
+            text=scale_bar_text,
+            color=scale_bar_color,
             font_size=scale_bar_font_size,
             linewidth=scale_bar_width,
         )
@@ -1503,9 +1430,6 @@ class ModelBandPlot(ModelBand):
                 ax,
                 self._frame_size,
                 self._coords,
-                color="k",
-                arrow_size=self._arrow_size,
-                font_size=font_size,
                 font_size=arrow_font_size,
                 arrow_length=self._arrow_length,
                 arrowhead_size=self._arrowhead_size,
@@ -1522,9 +1446,6 @@ class ModelBandPlot(ModelBand):
             ax,
             self._frame_size,
             text=text,
-            color="k",
-            backgroundcolor="w",
-            font_size=font_size,
             color=text_color,
             backgroundcolor=text_bg_color,
             font_size=text_font_size,
@@ -1645,12 +1566,11 @@ class ModelBandPlot(ModelBand):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
         plot_util.scale_bar(
-            ax, self._frame_size, dist=1, text='1"', font_size=font_size
-            ax, 
-            self._frame_size, 
-            dist=scale_bar_length, 
-            text=scale_bar_text, 
-            color=scale_bar_color, 
+            ax,
+            self._frame_size,
+            dist=scale_bar_length,
+            text=scale_bar_text,
+            color=scale_bar_color,
             font_size=scale_bar_font_size,
             linewidth=scale_bar_width,
         )
@@ -1658,9 +1578,6 @@ class ModelBandPlot(ModelBand):
             ax,
             self._frame_size,
             text=text,
-            color="w",
-            backgroundcolor="k",
-            font_size=font_size,
             color=text_color,
             backgroundcolor=text_bg_color,
             font_size=text_font_size,
@@ -1672,9 +1589,6 @@ class ModelBandPlot(ModelBand):
                 ax,
                 self._frame_size,
                 self._coords,
-                color="w",
-                arrow_size=self._arrow_size,
-                font_size=font_size,
                 font_size=arrow_font_size,
                 arrow_length=self._arrow_length,
                 arrowhead_size=self._arrowhead_size,
@@ -1751,12 +1665,11 @@ class ModelBandPlot(ModelBand):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
         plot_util.scale_bar(
-            ax, self._frame_size, dist=1, text='1"', font_size=font_size
-            ax, 
-            self._frame_size, 
-            dist=scale_bar_length, 
-            text=scale_bar_text, 
-            color=scale_bar_color, 
+            ax,
+            self._frame_size,
+            dist=scale_bar_length,
+            text=scale_bar_text,
+            color=scale_bar_color,
             font_size=scale_bar_font_size,
             linewidth=scale_bar_width,
         )
@@ -1764,9 +1677,6 @@ class ModelBandPlot(ModelBand):
             ax,
             self._frame_size,
             text=text,
-            color="w",
-            backgroundcolor="k",
-            font_size=font_size,
             color=text_color,
             backgroundcolor=text_bg_color,
             font_size=text_font_size,
@@ -1778,8 +1688,6 @@ class ModelBandPlot(ModelBand):
                 ax,
                 self._frame_size,
                 self._coords,
-                arrow_size=self._arrow_size,
-                font_size=font_size,
                 font_size=arrow_font_size,
                 arrow_length=self._arrow_length,
                 arrowhead_size=self._arrowhead_size,

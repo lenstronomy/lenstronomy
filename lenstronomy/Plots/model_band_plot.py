@@ -33,10 +33,10 @@ class ModelBandPlot(ModelBand):
         arrowhead_size=0.025,
         arrow_origin_x=None,
         arrow_origin_y=None,
-        arrow_e_offset_x=None,
-        arrow_e_offset_y=None,
-        arrow_n_offset_x=None,
-        arrow_n_offset_y=None,
+        arrow_east_offset_x=None,
+        arrow_east_offset_y=None,
+        arrow_north_offset_x=None,
+        arrow_north_offset_y=None,
         scale_bar_width=2,
         scale_bar_font_size=15,
     ):
@@ -107,10 +107,10 @@ class ModelBandPlot(ModelBand):
         self._arrowhead_size = arrowhead_size
         self._arrow_origin_x = arrow_origin_x
         self._arrow_origin_y = arrow_origin_y
-        self._arrow_e_offset_x = arrow_e_offset_x
-        self._arrow_e_offset_y = arrow_e_offset_y
-        self._arrow_n_offset_x = arrow_n_offset_x
-        self._arrow_n_offset_y = arrow_n_offset_y
+        self._arrow_e_offset_x = arrow_east_offset_x
+        self._arrow_e_offset_y = arrow_east_offset_y
+        self._arrow_n_offset_x = arrow_north_offset_x
+        self._arrow_n_offset_y = arrow_north_offset_y
 
         self._image_extent = [
             -self._deltaPix / 2,

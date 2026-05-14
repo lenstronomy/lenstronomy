@@ -439,16 +439,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
                     linewidth=self._scale_bar_width,
                 )
             if "no_text" not in kwargs or not kwargs["no_text"]:
-                plot_util.title_text(
-                    ax,
-                    frame_size,
-                    title_text=title_text,
-                    color=title_color,
-                    backgroundcolor=title_background_color,
-                    font_size=title_font_size,
-                    title_x_pos=title_x_pos,
-                    title_y_pos=title_y_pos,
-                )
+                plot_util.title_text(ax, title_text=title_text, color=title_color, backgroundcolor=title_background_color, font_size=title_font_size, title_x_pos=title_x_pos, title_y_pos=title_y_pos)
 
             if kwargs.get("coordinate_arrows", True):
                 plot_util.coordinate_arrows(

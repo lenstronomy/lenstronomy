@@ -21,9 +21,7 @@ class TestPlotUtil(object):
         plot_util.scale_bar(ax, 3, dist=1, text='1"', flipped=True)
         plt.close()
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
-        plot_util.title_text(
-            ax, d=3, title_text="test", color="w", backgroundcolor="k", flipped=True
-        )
+        plot_util.title_text(ax, title_text="test", color="w", backgroundcolor="k", flipped=True)
         plt.close()
 
     def test_source_position_plot(self):

@@ -41,7 +41,6 @@ def sqrt(inputArray, scale_min=None, scale_max=None):
 @export
 def title_text(
     ax,
-    d,
     title_text,
     color="w",
     backgroundcolor="k",

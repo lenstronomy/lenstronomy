@@ -44,14 +44,14 @@ class TracerPlot(object):
         :param kwargs_likelihood: likelihood keyword arguments
         :param cmap_string: string of color map (or cmap matplotlib object)
         :param fast_caustic: boolean; if True, uses fast (but less accurate) caustic calculation method
-        :param arrow_length: length of the coordinate arrow
-        :param arrowhead_size: size of the arrowhead of the coordinate arrow
-        :param arrow_origin_x: x-origin of the coordinate arrow
-        :param arrow_origin_y: y-origin of the coordinate arrow
-        :param arrow_east_offset_x: x-offset of the East arrow text
-        :param arrow_east_offset_y: y-offset of the East arrow text
-        :param arrow_north_offset_x: x-offset of the North arrow text
-        :param arrow_north_offset_y: y-offset of the North arrow text
+        :param arrow_length: length of the coordinate arrow as a fraction of the image size
+        :param arrowhead_size: size of the arrowhead of the coordinate arrow as a fraction of the image size
+        :param arrow_origin_x: x-origin of the coordinate arrow as a fraction of the image size
+        :param arrow_origin_y: y-origin of the coordinate arrow as a fraction of the image size
+        :param arrow_east_offset_x: x-offset of the East arrow text as a fraction of the image size
+        :param arrow_east_offset_y: y-offset of the East arrow text as a fraction of the image size
+        :param arrow_north_offset_x: x-offset of the North arrow text as a fraction of the image size
+        :param arrow_north_offset_y: y-offset of the North arrow text as a fraction of the image size
         :param scale_bar_width: width of the scale bar
         :param scale_bar_font_size: font size of the scale bar
         """

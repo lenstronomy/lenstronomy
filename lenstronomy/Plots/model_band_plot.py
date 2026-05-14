@@ -187,7 +187,7 @@ class ModelBandPlot(ModelBand):
         arrow_color_n="w",
         arrow_color_e="w",
         arrow_font_size=15,
-        **matshow_kwargs,
+        **kwargs_matshow,
     ):
         """
 
@@ -210,7 +210,7 @@ class ModelBandPlot(ModelBand):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
-        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
         if v_min is None:
@@ -224,7 +224,7 @@ class ModelBandPlot(ModelBand):
             cmap=self._cmap,
             vmin=v_min,
             vmax=v_max,
-            **matshow_kwargs,
+            **kwargs_matshow,
         )  # , vmin=0, vmax=2
 
         ax.get_xaxis().set_visible(False)
@@ -301,7 +301,7 @@ class ModelBandPlot(ModelBand):
         arrow_color_n="w",
         arrow_color_e="w",
         arrow_font_size=15,
-        **matshow_kwargs,
+        **kwargs_matshow,
     ):
         """
 
@@ -327,7 +327,7 @@ class ModelBandPlot(ModelBand):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
-        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
         if v_min is None:
@@ -341,7 +341,7 @@ class ModelBandPlot(ModelBand):
             vmax=v_max,
             extent=self._image_extent,
             cmap=self._cmap,
-            **matshow_kwargs,
+            **kwargs_matshow,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -428,7 +428,7 @@ class ModelBandPlot(ModelBand):
         arrow_color_n="w",
         arrow_color_e="w",
         arrow_font_size=15,
-        **matshow_kwargs,
+        **kwargs_matshow,
     ):
         """
 
@@ -451,11 +451,11 @@ class ModelBandPlot(ModelBand):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
-        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: convergence plot in ax instance
         """
-        if "cmap" not in matshow_kwargs:
-            matshow_kwargs["cmap"] = self._cmap
+        if "cmap" not in kwargs_matshow:
+            kwargs_matshow["cmap"] = self._cmap
 
         kappa_result = util.array2image(
             self._lensModel.kappa(self._x_grid, self._y_grid, self._kwargs_lens_partial)
@@ -466,7 +466,7 @@ class ModelBandPlot(ModelBand):
             extent=self._image_extent,
             vmin=v_min,
             vmax=v_max,
-            **matshow_kwargs,
+            **kwargs_matshow,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -545,7 +545,7 @@ class ModelBandPlot(ModelBand):
         arrow_color_n="k",
         arrow_color_e="k",
         arrow_font_size=15,
-        **matshow_kwargs,
+        **kwargs_matshow,
     ):
         """Plots the convergence of a full lens model minus the convergence from a few
         specified lens models to more clearly show the presence of substructure.
@@ -577,7 +577,7 @@ class ModelBandPlot(ModelBand):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
-        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotib axis and colorbar
         """
 
@@ -738,7 +738,7 @@ class ModelBandPlot(ModelBand):
         arrow_color_n="k",
         arrow_color_e="k",
         arrow_font_size=15,
-        **matshow_kwargs,
+        **kwargs_matshow,
     ):
         """
 
@@ -762,18 +762,18 @@ class ModelBandPlot(ModelBand):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
-        :param matshow_kwargs: kwargs to send to matplotlib.pyplot.matshow()
+        :param kwargs_matshow: kwargs to send to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
-        if "cmap" not in matshow_kwargs:
-            matshow_kwargs["cmap"] = "RdBu_r"
+        if "cmap" not in kwargs_matshow:
+            kwargs_matshow["cmap"] = "RdBu_r"
         im = ax.matshow(
             self._norm_residuals,
             vmin=v_min,
             vmax=v_max,
             extent=self._image_extent,
             origin="lower",
-            **matshow_kwargs,
+            **kwargs_matshow,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -844,7 +844,7 @@ class ModelBandPlot(ModelBand):
         arrow_color_n="k",
         arrow_color_e="k",
         arrow_font_size=15,
-        **matshow_kwargs,
+        **kwargs_matshow,
     ):
         """
 
@@ -867,18 +867,18 @@ class ModelBandPlot(ModelBand):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
-        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
-        if "cmap" not in matshow_kwargs:
-            matshow_kwargs["cmap"] = "RdBu_r"
+        if "cmap" not in kwargs_matshow:
+            kwargs_matshow["cmap"] = "RdBu_r"
         im = ax.matshow(
             self._data - self._model,
             vmin=v_min,
             vmax=v_max,
             extent=self._image_extent,
             origin="lower",
-            **matshow_kwargs,
+            **kwargs_matshow,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -1005,7 +1005,7 @@ class ModelBandPlot(ModelBand):
         arrow_color_n="w",
         arrow_color_e="w",
         arrow_font_size=15,
-        **matshow_kwargs,
+        **kwargs_matshow,
     ):
         """
 
@@ -1037,7 +1037,7 @@ class ModelBandPlot(ModelBand):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
-        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
         if v_min is None:
@@ -1070,7 +1070,7 @@ class ModelBandPlot(ModelBand):
             cmap=self._cmap,
             vmin=v_min,
             vmax=v_max,
-            **matshow_kwargs,
+            **kwargs_matshow,
         )  # source
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -1169,7 +1169,7 @@ class ModelBandPlot(ModelBand):
         arrow_color_n="w",
         arrow_color_e="w",
         arrow_font_size=15,
-        **matshow_kwargs,
+        **kwargs_matshow,
     ):
         """Plots the uncertainty in the surface brightness in the source from the linear
         inversion by taking the diagonal elements of the covariance matrix of the
@@ -1202,7 +1202,7 @@ class ModelBandPlot(ModelBand):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
-        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot of source surface brightness errors in the reconstruction on the
             axis instance
         """
@@ -1239,7 +1239,7 @@ class ModelBandPlot(ModelBand):
             cmap=self._cmap,
             vmin=v_min,
             vmax=v_max,
-            **matshow_kwargs,
+            **kwargs_matshow,
         )  # source
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -1326,7 +1326,7 @@ class ModelBandPlot(ModelBand):
         arrow_color_n="k",
         arrow_color_e="k",
         arrow_font_size=15,
-        **matshow_kwargs,
+        **kwargs_matshow,
     ):
         """
 
@@ -1350,13 +1350,13 @@ class ModelBandPlot(ModelBand):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
-        :param matshow_kwargs: kwargs to send to matplotlib.pyplot.matshow()
+        :param kwargs_matshow: kwargs to send to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
-        if "cmap" not in matshow_kwargs:
-            matshow_kwargs["cmap"] = "RdYlBu_r"
-        if "alpha" not in matshow_kwargs:
-            matshow_kwargs["alpha"] = 0.5
+        if "cmap" not in kwargs_matshow:
+            kwargs_matshow["cmap"] = "RdYlBu_r"
+        if "alpha" not in kwargs_matshow:
+            kwargs_matshow["alpha"] = 0.5
         mag_result = util.array2image(
             self._lensModel.magnification(
                 self._x_grid, self._y_grid, self._kwargs_lens_partial
@@ -1368,7 +1368,7 @@ class ModelBandPlot(ModelBand):
             extent=self._image_extent,
             vmin=v_min,
             vmax=v_max,
-            **matshow_kwargs,
+            **kwargs_matshow,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -1453,7 +1453,7 @@ class ModelBandPlot(ModelBand):
         arrow_color_n="k",
         arrow_color_e="k",
         arrow_font_size=15,
-        **matshow_kwargs,
+        **kwargs_matshow,
     ):
         """
 
@@ -1479,7 +1479,7 @@ class ModelBandPlot(ModelBand):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
-        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
 
@@ -1492,8 +1492,8 @@ class ModelBandPlot(ModelBand):
             alpha = alpha1
         else:
             alpha = alpha2
-        if "cmap" not in matshow_kwargs:
-            matshow_kwargs["cmap"] = "RdYlBu_r"
+        if "cmap" not in kwargs_matshow:
+            kwargs_matshow["cmap"] = "RdYlBu_r"
         im = ax.matshow(
             alpha,
             origin="lower",
@@ -1501,7 +1501,7 @@ class ModelBandPlot(ModelBand):
             vmin=v_min,
             vmax=v_max,
             alpha=0.5,
-            **matshow_kwargs,
+            **kwargs_matshow,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -1604,7 +1604,7 @@ class ModelBandPlot(ModelBand):
         arrow_color_n="w",
         arrow_color_e="w",
         arrow_font_size=15,
-        **matshow_kwargs,
+        **kwargs_matshow,
     ):
         """Make a plot displaying all or a subset of light components.
 
@@ -1632,7 +1632,7 @@ class ModelBandPlot(ModelBand):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
-        :param matshow_kwargs: kwargs to send matplotlib.pyplot.matshow()
+        :param kwargs_matshow: kwargs to send matplotlib.pyplot.matshow()
         :return: the instance of matplotlib.axes.Axes
         """
         model = ImageModel.image(
@@ -1652,15 +1652,15 @@ class ModelBandPlot(ModelBand):
             v_min = self._v_min_default
         if v_max is None:
             v_max = self._v_max_default
-        if "cmap" not in matshow_kwargs:
-            matshow_kwargs["cmap"] = self._cmap
+        if "cmap" not in kwargs_matshow:
+            kwargs_matshow["cmap"] = self._cmap
         im = ax.matshow(
             np.log10(model),
             origin="lower",
             vmin=v_min,
             vmax=v_max,
             extent=self._image_extent,
-            **matshow_kwargs,
+            **kwargs_matshow,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -1732,7 +1732,7 @@ class ModelBandPlot(ModelBand):
         arrow_color_n="w",
         arrow_color_e="w",
         arrow_font_size=15,
-        **matshow_kwargs,
+        **kwargs_matshow,
     ):
         model = ImageModel.image(
             self._bandmodel,
@@ -1757,7 +1757,7 @@ class ModelBandPlot(ModelBand):
             vmax=v_max,
             extent=self._image_extent,
             cmap=self._cmap,
-            **matshow_kwargs,
+            **kwargs_matshow,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -1901,13 +1901,13 @@ class ModelBandPlot(ModelBand):
         )
         return f, axes
 
-    def plot_extinction_map(self, ax, v_min=None, v_max=None, **matshow_kwargs):
+    def plot_extinction_map(self, ax, v_min=None, v_max=None, **kwargs_matshow):
         """
 
         :param ax: matplotlib axis instance
         :param v_min: minimum color scale for matshow plot
         :param v_max: maximum color scale for matshow plot
-        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
         model = ImageModel.extinction_map(
@@ -1926,6 +1926,6 @@ class ModelBandPlot(ModelBand):
             vmin=v_min,
             vmax=v_max,
             extent=self._image_extent,
-            **matshow_kwargs,
+            **kwargs_matshow,
         )
         return ax

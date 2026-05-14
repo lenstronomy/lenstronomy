@@ -193,10 +193,10 @@ class ModelPlot(object):
         i = int(i)
         return self._band_plot_list[i]
 
-    def reconstruction_all_bands(self, **matshow_kwargs):
+    def reconstruction_all_bands(self, **kwargs_matshow):
         """
 
-        :param matshow_kwargs: arguments of plotting
+        :param kwargs_matshow: arguments of plotting
         :return: 3 x n_data plot with data, model, reduced residual plots of all the images/bands that are being modeled
 
         """
@@ -212,19 +212,19 @@ class ModelPlot(object):
         for band_index in self._index_list:
             if band_index >= 0:
                 axes[i, 0].set_title("image " + str(band_index))
-                self.data_plot(ax=axes[i, 0], band_index=band_index, **matshow_kwargs)
+                self.data_plot(ax=axes[i, 0], band_index=band_index, **kwargs_matshow)
                 self.model_plot(
                     ax=axes[i, 1],
                     image_names=True,
                     band_index=band_index,
-                    **matshow_kwargs,
+                    **kwargs_matshow,
                 )
                 self.normalized_residual_plot(
                     ax=axes[i, 2],
                     v_min=-6,
                     v_max=6,
                     band_index=band_index,
-                    **matshow_kwargs,
+                    **kwargs_matshow,
                 )
                 i += 1
         return f, axes
@@ -251,7 +251,7 @@ class ModelPlot(object):
         arrow_color_north="w",
         arrow_color_east="w",
         arrow_font_size=15,
-        **matshow_kwargs
+        **kwargs_matshow
     ):
         """Illustrates data.
 
@@ -275,7 +275,7 @@ class ModelPlot(object):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
-        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -299,7 +299,7 @@ class ModelPlot(object):
             arrow_color_north=arrow_color_north,
             arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
-            **matshow_kwargs,
+            **kwargs_matshow,
         )
 
     def model_plot(
@@ -327,7 +327,7 @@ class ModelPlot(object):
         arrow_color_north="w",
         arrow_color_east="w",
         arrow_font_size=15,
-        **matshow_kwargs
+        **kwargs_matshow
     ):
         """Illustrates model.
 
@@ -354,7 +354,7 @@ class ModelPlot(object):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
-        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -381,7 +381,7 @@ class ModelPlot(object):
             arrow_color_north=arrow_color_north,
             arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
-            **matshow_kwargs,
+            **kwargs_matshow,
         )
 
     def convergence_plot(
@@ -406,7 +406,7 @@ class ModelPlot(object):
         arrow_color_north="w",
         arrow_color_east="w",
         arrow_font_size=15,
-        **matshow_kwargs
+        **kwargs_matshow
     ):
         """Illustrates lensing convergence in data frame.
 
@@ -430,7 +430,7 @@ class ModelPlot(object):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
-        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -454,7 +454,7 @@ class ModelPlot(object):
             arrow_color_north=arrow_color_north,
             arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
-            **matshow_kwargs,
+            **kwargs_matshow,
         )
 
     def substructure_plot(
@@ -487,7 +487,7 @@ class ModelPlot(object):
         arrow_color_north="k",
         arrow_color_east="k",
         arrow_font_size=15,
-        **matshow_kwargs
+        **kwargs_matshow
     ):
         """Illustrates substructure in the lens system.
 
@@ -519,7 +519,7 @@ class ModelPlot(object):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
-        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -553,7 +553,7 @@ class ModelPlot(object):
             arrow_color_north=arrow_color_north,
             arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
-            **matshow_kwargs,
+            **kwargs_matshow,
         )
 
     def normalized_residual_plot(
@@ -579,7 +579,7 @@ class ModelPlot(object):
         arrow_color_north="k",
         arrow_color_east="k",
         arrow_font_size=15,
-        **matshow_kwargs
+        **kwargs_matshow
     ):
         """Illustrates normalized residuals between data and model fit.
 
@@ -604,7 +604,7 @@ class ModelPlot(object):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
-        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -629,7 +629,7 @@ class ModelPlot(object):
             arrow_color_north=arrow_color_north,
             arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
-            **matshow_kwargs,
+            **kwargs_matshow,
         )
 
     def absolute_residual_plot(
@@ -654,7 +654,7 @@ class ModelPlot(object):
         arrow_color_north="k",
         arrow_color_east="k",
         arrow_font_size=15,
-        **matshow_kwargs
+        **kwargs_matshow
     ):
         """Illustrates absolute residuals between data and model fit.
 
@@ -678,7 +678,7 @@ class ModelPlot(object):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
-        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -702,7 +702,7 @@ class ModelPlot(object):
             arrow_color_north=arrow_color_north,
             arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
-            **matshow_kwargs,
+            **kwargs_matshow,
         )
 
     def source_plot(
@@ -735,7 +735,7 @@ class ModelPlot(object):
         arrow_color_north="w",
         arrow_color_east="w",
         arrow_font_size=15,
-        **matshow_kwargs
+        **kwargs_matshow
     ):
         """Illustrates reconstructed source (de-lensed de-convolved)
 
@@ -769,7 +769,7 @@ class ModelPlot(object):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
-        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -801,7 +801,7 @@ class ModelPlot(object):
             arrow_color_north=arrow_color_north,
             arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
-            **matshow_kwargs,
+            **kwargs_matshow,
         )
 
     def error_map_source_plot(
@@ -828,7 +828,7 @@ class ModelPlot(object):
         arrow_color_north="w",
         arrow_color_east="w",
         arrow_font_size=15,
-        **matshow_kwargs
+        **kwargs_matshow
     ):
         """Illustrates surface brightness variance in the reconstruction in the source
         plane.
@@ -857,7 +857,7 @@ class ModelPlot(object):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
-        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -883,7 +883,7 @@ class ModelPlot(object):
             arrow_color_north=arrow_color_north,
             arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
-            **matshow_kwargs,
+            **kwargs_matshow,
         )
 
     def magnification_plot(
@@ -909,7 +909,7 @@ class ModelPlot(object):
         arrow_color_north="k",
         arrow_color_east="k",
         arrow_font_size=15,
-        **matshow_kwargs
+        **kwargs_matshow
     ):
         """Illustrates lensing magnification in the field of view of the data frame.
 
@@ -935,7 +935,7 @@ class ModelPlot(object):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
-        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -960,7 +960,7 @@ class ModelPlot(object):
             arrow_color_north=arrow_color_north,
             arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
-            **matshow_kwargs,
+            **kwargs_matshow,
         )
 
     def deflection_plot(
@@ -988,7 +988,7 @@ class ModelPlot(object):
         arrow_color_north="k",
         arrow_color_east="k",
         arrow_font_size=15,
-        **matshow_kwargs
+        **kwargs_matshow
     ):
         """Illustrates lensing deflections on the field of view of the data frame.
 
@@ -1015,7 +1015,7 @@ class ModelPlot(object):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
-        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -1042,7 +1042,7 @@ class ModelPlot(object):
             arrow_color_north=arrow_color_north,
             arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
-            **matshow_kwargs,
+            **kwargs_matshow,
         )
 
     def decomposition_plot(
@@ -1070,7 +1070,7 @@ class ModelPlot(object):
         arrow_color_north="w",
         arrow_color_east="w",
         arrow_font_size=15,
-        **matshow_kwargs
+        **kwargs_matshow
     ):
         """Illustrates decomposition of model components.
 
@@ -1100,7 +1100,7 @@ class ModelPlot(object):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
-        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -1127,7 +1127,7 @@ class ModelPlot(object):
             arrow_color_north=arrow_color_north,
             arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
-            **matshow_kwargs,
+            **kwargs_matshow,
         )
 
     def subtract_from_data_plot(
@@ -1154,7 +1154,7 @@ class ModelPlot(object):
         arrow_color_north="w",
         arrow_color_east="w",
         arrow_font_size=15,
-        **matshow_kwargs
+        **kwargs_matshow
     ):
         """Subtracts individual model components from the data.
 
@@ -1183,7 +1183,7 @@ class ModelPlot(object):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
-        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -1209,7 +1209,7 @@ class ModelPlot(object):
             arrow_color_north=arrow_color_north,
             arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
-            **matshow_kwargs,
+            **kwargs_matshow,
         )
 
     def plot_main(self, band_index=0, with_caustics=False, **kwargs):
@@ -1266,7 +1266,7 @@ class ModelPlot(object):
         return plot_band.plot_subtract_from_data_all()
 
     def plot_extinction_map(
-        self, band_index=0, ax=None, v_min=None, v_max=None, **matshow_kwargs
+        self, band_index=0, ax=None, v_min=None, v_max=None, **kwargs_matshow
     ):
         """
 
@@ -1274,12 +1274,12 @@ class ModelPlot(object):
         :param ax: an instance of matplotlib.axes.Axes
         :param v_min: min color scale for matshow plot
         :param v_max: max color scale for matshow plot
-        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance of differential extinction map
         """
         plot_band = self._select_band(band_index)
         return plot_band.plot_extinction_map(
-            ax=ax, v_min=v_min, v_max=v_max, **matshow_kwargs
+            ax=ax, v_min=v_min, v_max=v_max, **kwargs_matshow
         )
 
     def source(self, band_index=0, **kwargs):

@@ -210,7 +210,7 @@ class TracerPlot(object):
         arrow_color_north="w",
         arrow_color_east="w",
         arrow_font_size=15,
-        **matshow_kwargs,
+        **kwargs_matshow,
     ):
         """
 
@@ -233,7 +233,7 @@ class TracerPlot(object):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
-        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
         if v_min is None:
@@ -247,7 +247,7 @@ class TracerPlot(object):
             cmap=self._cmap,
             vmin=v_min,
             vmax=v_max,
-            **matshow_kwargs,
+            **kwargs_matshow,
         )  # , vmin=0, vmax=2
 
         ax.get_xaxis().set_visible(False)
@@ -324,7 +324,7 @@ class TracerPlot(object):
         arrow_color_north="w",
         arrow_color_east="w",
         arrow_font_size=15,
-        **matshow_kwargs,
+        **kwargs_matshow,
     ):
         """
 
@@ -350,7 +350,7 @@ class TracerPlot(object):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
-        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
         if v_min is None:
@@ -364,7 +364,7 @@ class TracerPlot(object):
             vmax=v_max,
             extent=[0, self._frame_size, 0, self._frame_size],
             cmap=self._cmap,
-            **matshow_kwargs,
+            **kwargs_matshow,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -450,7 +450,7 @@ class TracerPlot(object):
         arrow_color_north="w",
         arrow_color_east="w",
         arrow_font_size=15,
-        **matshow_kwargs,
+        **kwargs_matshow,
     ):
         """
 
@@ -473,11 +473,11 @@ class TracerPlot(object):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
-        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: convergence plot in ax instance
         """
-        if "cmap" not in matshow_kwargs:
-            matshow_kwargs["cmap"] = self._cmap
+        if "cmap" not in kwargs_matshow:
+            kwargs_matshow["cmap"] = self._cmap
 
         kappa_result = util.array2image(
             self.LensModel.kappa(self._x_grid, self._y_grid, self._kwargs_lens)
@@ -488,7 +488,7 @@ class TracerPlot(object):
             extent=[0, self._frame_size, 0, self._frame_size],
             vmin=v_min,
             vmax=v_max,
-            **matshow_kwargs,
+            **kwargs_matshow,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -560,7 +560,7 @@ class TracerPlot(object):
         arrow_color_north="k",
         arrow_color_east="k",
         arrow_font_size=15,
-        **matshow_kwargs,
+        **kwargs_matshow,
     ):
         """
 
@@ -584,18 +584,18 @@ class TracerPlot(object):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
-        :param matshow_kwargs: kwargs to send to matplotlib.pyplot.matshow()
+        :param kwargs_matshow: kwargs to send to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
-        if "cmap" not in matshow_kwargs:
-            matshow_kwargs["cmap"] = "RdBu_r"
+        if "cmap" not in kwargs_matshow:
+            kwargs_matshow["cmap"] = "RdBu_r"
         im = ax.matshow(
             self._norm_residuals,
             vmin=v_min,
             vmax=v_max,
             extent=[0, self._frame_size, 0, self._frame_size],
             origin="lower",
-            **matshow_kwargs,
+            **kwargs_matshow,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -666,7 +666,7 @@ class TracerPlot(object):
         arrow_color_north="k",
         arrow_color_east="k",
         arrow_font_size=15,
-        **matshow_kwargs,
+        **kwargs_matshow,
     ):
         """
 
@@ -689,18 +689,18 @@ class TracerPlot(object):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
-        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
-        if "cmap" not in matshow_kwargs:
-            matshow_kwargs["cmap"] = "RdBu_r"
+        if "cmap" not in kwargs_matshow:
+            kwargs_matshow["cmap"] = "RdBu_r"
         im = ax.matshow(
             self._model - self._data,
             vmin=v_min,
             vmax=v_max,
             extent=[0, self._frame_size, 0, self._frame_size],
             origin="lower",
-            **matshow_kwargs,
+            **kwargs_matshow,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -826,7 +826,7 @@ class TracerPlot(object):
         arrow_color_north="w",
         arrow_color_east="w",
         arrow_font_size=15,
-        **matshow_kwargs,
+        **kwargs_matshow,
     ):
         """
 
@@ -857,7 +857,7 @@ class TracerPlot(object):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
-        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
         if v_min is None:
@@ -885,7 +885,7 @@ class TracerPlot(object):
             cmap=self._cmap,
             vmin=v_min,
             vmax=v_max,
-            **matshow_kwargs,
+            **kwargs_matshow,
         )  # source
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -974,7 +974,7 @@ class TracerPlot(object):
         arrow_color_north="k",
         arrow_color_east="k",
         arrow_font_size=15,
-        **matshow_kwargs,
+        **kwargs_matshow,
     ):
         """
 
@@ -998,13 +998,13 @@ class TracerPlot(object):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
-        :param matshow_kwargs: kwargs to send to matplotlib.pyplot.matshow()
+        :param kwargs_matshow: kwargs to send to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
-        if "cmap" not in matshow_kwargs:
-            matshow_kwargs["cmap"] = self._cmap
-        if "alpha" not in matshow_kwargs:
-            matshow_kwargs["alpha"] = 0.5
+        if "cmap" not in kwargs_matshow:
+            kwargs_matshow["cmap"] = self._cmap
+        if "alpha" not in kwargs_matshow:
+            kwargs_matshow["alpha"] = 0.5
         mag_result = util.array2image(
             self.LensModel.magnification(self._x_grid, self._y_grid, self._kwargs_lens)
         )
@@ -1014,7 +1014,7 @@ class TracerPlot(object):
             extent=[0, self._frame_size, 0, self._frame_size],
             vmin=v_min,
             vmax=v_max,
-            **matshow_kwargs,
+            **kwargs_matshow,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -1098,7 +1098,7 @@ class TracerPlot(object):
         arrow_color_north="k",
         arrow_color_east="k",
         arrow_font_size=15,
-        **matshow_kwargs,
+        **kwargs_matshow,
     ):
         """
 
@@ -1124,7 +1124,7 @@ class TracerPlot(object):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
-        :param matshow_kwargs: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
 
@@ -1137,17 +1137,17 @@ class TracerPlot(object):
             alpha = alpha1
         else:
             alpha = alpha2
-        if "cmap" not in matshow_kwargs:
-            matshow_kwargs["cmap"] = self._cmap
-        if "alpha" not in matshow_kwargs:
-            matshow_kwargs["alpha"] = 0.5
+        if "cmap" not in kwargs_matshow:
+            kwargs_matshow["cmap"] = self._cmap
+        if "alpha" not in kwargs_matshow:
+            kwargs_matshow["alpha"] = 0.5
         im = ax.matshow(
             alpha,
             origin="lower",
             extent=[0, self._frame_size, 0, self._frame_size],
             vmin=v_min,
             vmax=v_max,
-            **matshow_kwargs,
+            **kwargs_matshow,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)

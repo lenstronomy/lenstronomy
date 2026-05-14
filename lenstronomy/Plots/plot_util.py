@@ -126,8 +126,8 @@ def coordinate_arrows(
     d,
     coords,
     font_size=15,
-    arrow_length=10,
-    arrowhead_size=5,
+    arrow_length=0.05,
+    arrowhead_size=0.025,
     arrow_origin_x=None,
     arrow_origin_y=None,
     arrow_n_offset_x=None,
@@ -143,14 +143,14 @@ def coordinate_arrows(
     :param d: diameter of frame in ax
     :param coords: lenstronomy.Data.coord_transforms Coordinates() instance
     :param font_size: font size of length scale
-    :param arrow_length: length of the arrow in pixels
-    :param arrowhead_size: size of the arrow head in pixels
-    :param arrow_origin_x: x origin of the arrow in pixels
-    :param arrow_origin_y: y origin of the arrow in pixels
-    :param arrow_n_offset_x: x offset for N from the tip of the arrow in pixels
-    :param arrow_n_offset_y: y offset for N from the tip of the arrow in pixels
-    :param arrow_e_offset_x: x offset for E from the tip of the arrow in pixels
-    :param arrow_e_offset_y: y offset for E from the tip of the arrow in pixels
+    :param arrow_length: length of the arrow as a fraction of the image size
+    :param arrowhead_size: size of the arrow head as a fraction of the image size
+    :param arrow_origin_x: x origin of the arrow as a fraction of the image size
+    :param arrow_origin_y: y origin of the arrow as a fraction of the image size
+    :param arrow_n_offset_x: x offset for N from the tip of the arrow as a fraction of image size
+    :param arrow_n_offset_y: y offset for N from the tip of the arrow as a fraction of image size
+    :param arrow_e_offset_x: x offset for E from the tip of the arrow as a fraction of image size
+    :param arrow_e_offset_y: y offset for E from the tip of the arrow as a fraction of image size
     :param color_n: color string for N
     :param color_e: color string for E
     :return: updated ax instance
@@ -158,7 +158,7 @@ def coordinate_arrows(
     deltaPix = coords.pixel_width
 
     ra_test, dec_test = coords.map_pix2coord(0, 0)
-    p0 = arrow_length * deltaPix
+    p0 = arrow_length * d
 
     xx_ra_test, yy_ra_test = coords.map_coord2pix(ra_test + p0, dec_test)
     xx_dec_test, yy_dec_test = coords.map_coord2pix(ra_test, dec_test + p0)
@@ -172,30 +172,35 @@ def coordinate_arrows(
     len_n = np.sqrt(d_x_n**2 + d_y_n**2)
 
     if arrow_e_offset_x is None or arrow_e_offset_y is None:
-        arrow_e_offset_x = (d_x_e / len_e) * (font_size / 1.5)
-        arrow_e_offset_y = (d_y_e / len_e) * (font_size / 1.5)
+        arrow_e_offset_x = (d_x_e / len_e) * 0.06
+        arrow_e_offset_y = (d_y_e / len_e) * 0.06
 
     if arrow_n_offset_x is None or arrow_n_offset_y is None:
-        arrow_n_offset_x = (d_x_n / len_n) * (font_size / 1.5)
-        arrow_n_offset_y = (d_y_n / len_n) * (font_size / 1.5)
+        arrow_n_offset_x = (d_x_n / len_n) * 0.06
+        arrow_n_offset_y = (d_y_n / len_n) * 0.06
+
+    arrow_e_offset_x_pix = arrow_e_offset_x * (d / deltaPix)
+    arrow_e_offset_y_pix = arrow_e_offset_y * (d / deltaPix)
+    arrow_n_offset_x_pix = arrow_n_offset_x * (d / deltaPix)
+    arrow_n_offset_y_pix = arrow_n_offset_y * (d / deltaPix)
 
     if arrow_origin_x is None or arrow_origin_y is None:
         x_max_rel = max(
-            0, d_x_e, d_x_n, d_x_e + arrow_e_offset_x, d_x_n + arrow_n_offset_x
+            0, d_x_e, d_x_n, d_x_e + arrow_e_offset_x_pix, d_x_n + arrow_n_offset_x_pix
         )
         y_min_rel = min(
-            0, d_y_e, d_y_n, d_y_e + arrow_e_offset_y, d_y_n + arrow_n_offset_y
+            0, d_y_e, d_y_n, d_y_e + arrow_e_offset_y_pix, d_y_n + arrow_n_offset_y_pix
         )
 
-        margin = font_size / 2.0
+        margin = 0.05 * (d / deltaPix)
 
         xx_ = (d / deltaPix) - margin - x_max_rel
         yy_ = margin - y_min_rel
 
         ra0, dec0 = coords.map_pix2coord(xx_, yy_)
     else:
-        xx_ = arrow_origin_x
-        yy_ = arrow_origin_y
+        xx_ = arrow_origin_x * (d / deltaPix)
+        yy_ = arrow_origin_y * (d / deltaPix)
         ra0, dec0 = coords.map_pix2coord(xx_, yy_)
 
     xx_ra = xx_ + d_x_e
@@ -203,19 +208,19 @@ def coordinate_arrows(
     xx_dec = xx_ + d_x_n
     yy_dec = yy_ + d_y_n
 
-    xx_ra_t = xx_ra + arrow_e_offset_x
-    yy_ra_t = yy_ra + arrow_e_offset_y
+    xx_ra_t = xx_ra + arrow_e_offset_x_pix
+    yy_ra_t = yy_ra + arrow_e_offset_y_pix
 
-    xx_dec_t = xx_dec + arrow_n_offset_x
-    yy_dec_t = yy_dec + arrow_n_offset_y
+    xx_dec_t = xx_dec + arrow_n_offset_x_pix
+    yy_dec_t = yy_dec + arrow_n_offset_y_pix
 
     ax.arrow(
         xx_ * deltaPix,
         yy_ * deltaPix,
         (xx_ra - xx_) * deltaPix,
         (yy_ra - yy_) * deltaPix,
-        head_width=arrowhead_size * deltaPix,
-        head_length=arrowhead_size * deltaPix,
+        head_width=arrowhead_size * d,
+        head_length=arrowhead_size * d,
         fc=color_e,
         ec=color_e,
         linewidth=1,
@@ -234,8 +239,8 @@ def coordinate_arrows(
         yy_ * deltaPix,
         (xx_dec - xx_) * deltaPix,
         (yy_dec - yy_) * deltaPix,
-        head_width=arrowhead_size * deltaPix,
-        head_length=arrowhead_size * deltaPix,
+        head_width=arrowhead_size * d,
+        head_length=arrowhead_size * d,
         fc=color_n,
         ec=color_n,
         linewidth=1,

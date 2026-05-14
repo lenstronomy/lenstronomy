@@ -244,7 +244,15 @@ class ModelBandPlot(ModelBand):
             font_size=self._scale_bar_font_size,
             linewidth=self._scale_bar_width,
         )
-        plot_util.title_text(ax, title_text=title_text, color=title_color, backgroundcolor=title_background_color, font_size=title_font_size, title_x_pos=title_x_pos, title_y_pos=title_y_pos)
+        plot_util.title_text(
+            ax,
+            text=title_text,
+            color=title_color,
+            backgroundcolor=title_background_color,
+            font_size=title_font_size,
+            title_x_pos=title_x_pos,
+            title_y_pos=title_y_pos,
+        )
 
         if coordinate_arrows:
             plot_util.coordinate_arrows(
@@ -351,7 +359,15 @@ class ModelBandPlot(ModelBand):
             font_size=self._scale_bar_font_size,
             linewidth=self._scale_bar_width,
         )
-        plot_util.title_text(ax, title_text=title_text, color=title_color, backgroundcolor=title_background_color, font_size=title_font_size, title_x_pos=title_x_pos, title_y_pos=title_y_pos)
+        plot_util.title_text(
+            ax,
+            text=title_text,
+            color=title_color,
+            backgroundcolor=title_background_color,
+            font_size=title_font_size,
+            title_x_pos=title_x_pos,
+            title_y_pos=title_y_pos,
+        )
         if coordinate_arrows:
             plot_util.coordinate_arrows(
                 ax,
@@ -485,7 +501,16 @@ class ModelBandPlot(ModelBand):
                 arrow_color_north=arrow_color_n,
                 arrow_color_east=arrow_color_e,
             )
-            plot_util.title_text(ax, title_text=title_text, flipped=False, color=title_color, backgroundcolor=title_background_color, font_size=title_font_size, title_x_pos=title_x_pos, title_y_pos=title_y_pos)
+            plot_util.title_text(
+                ax,
+                text=title_text,
+                flipped=False,
+                color=title_color,
+                backgroundcolor=title_background_color,
+                font_size=title_font_size,
+                title_x_pos=title_x_pos,
+                title_y_pos=title_y_pos,
+            )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
@@ -647,7 +672,16 @@ class ModelBandPlot(ModelBand):
                 arrow_color_north=arrow_color_n,
                 arrow_color_east=arrow_color_e,
             )
-            plot_util.title_text(ax, title_text=title_text, flipped=False, color=title_color, backgroundcolor=title_background_color, font_size=title_font_size, title_x_pos=title_x_pos, title_y_pos=title_y_pos)
+            plot_util.title_text(
+                ax,
+                text=title_text,
+                flipped=False,
+                color=title_color,
+                backgroundcolor=title_background_color,
+                font_size=title_font_size,
+                title_x_pos=title_x_pos,
+                title_y_pos=title_y_pos,
+            )
 
         if with_critical_curves is True:
             ra_crit_list, dec_crit_list = self._critical_curves()
@@ -756,7 +790,15 @@ class ModelBandPlot(ModelBand):
             font_size=self._scale_bar_font_size,
             linewidth=self._scale_bar_width,
         )
-        plot_util.title_text(ax, title_text=title_text, color=title_color, backgroundcolor=title_background_color, font_size=title_font_size, title_x_pos=title_x_pos, title_y_pos=title_y_pos)
+        plot_util.title_text(
+            ax,
+            text=title_text,
+            color=title_color,
+            backgroundcolor=title_background_color,
+            font_size=title_font_size,
+            title_x_pos=title_x_pos,
+            title_y_pos=title_y_pos,
+        )
         if coordinate_arrows:
             plot_util.coordinate_arrows(
                 ax,
@@ -853,7 +895,15 @@ class ModelBandPlot(ModelBand):
             font_size=self._scale_bar_font_size,
             linewidth=self._scale_bar_width,
         )
-        plot_util.title_text(ax, title_text=title_text, color=title_color, backgroundcolor=title_background_color, font_size=title_font_size, title_x_pos=title_x_pos, title_y_pos=title_y_pos)
+        plot_util.title_text(
+            ax,
+            text=title_text,
+            color=title_color,
+            backgroundcolor=title_background_color,
+            font_size=title_font_size,
+            title_x_pos=title_x_pos,
+            title_y_pos=title_y_pos,
+        )
         if coordinate_arrows:
             plot_util.coordinate_arrows(
                 ax,
@@ -1082,7 +1132,16 @@ class ModelBandPlot(ModelBand):
                 arrow_color_north=arrow_color_n,
                 arrow_color_east=arrow_color_e,
             )
-            plot_util.title_text(ax, title_text=title_text, flipped=False, color=title_color, backgroundcolor=title_background_color, font_size=title_font_size, title_x_pos=title_x_pos, title_y_pos=title_y_pos)
+            plot_util.title_text(
+                ax,
+                text=title_text,
+                flipped=False,
+                color=title_color,
+                backgroundcolor=title_background_color,
+                font_size=title_font_size,
+                title_x_pos=title_x_pos,
+                title_y_pos=title_y_pos,
+            )
         if point_source_position is True:
             ra_source, dec_source = self._bandmodel.PointSource.source_position(
                 self._kwargs_ps_partial, self._kwargs_lens
@@ -1230,7 +1289,16 @@ class ModelBandPlot(ModelBand):
                 arrow_color_north=arrow_color_n,
                 arrow_color_east=arrow_color_e,
             )
-        plot_util.title_text(ax, title_text="Error map in source", flipped=False, color=title_color, backgroundcolor=title_background_color, font_size=title_font_size, title_x_pos=title_x_pos, title_y_pos=title_y_pos)
+        plot_util.title_text(
+            ax,
+            text="Error map in source",
+            flipped=False,
+            color=title_color,
+            backgroundcolor=title_background_color,
+            font_size=title_font_size,
+            title_x_pos=title_x_pos,
+            title_y_pos=title_y_pos,
+        )
         if point_source_position is True:
             ra_source, dec_source = self._bandmodel.PointSource.source_position(
                 self._kwargs_ps_partial, self._kwargs_lens
@@ -1334,7 +1402,15 @@ class ModelBandPlot(ModelBand):
                 arrow_color_north=arrow_color_n,
                 arrow_color_east=arrow_color_e,
             )
-        plot_util.title_text(ax, title_text=title_text, color=title_color, backgroundcolor=title_background_color, font_size=title_font_size, title_x_pos=title_x_pos, title_y_pos=title_y_pos)
+        plot_util.title_text(
+            ax,
+            text=title_text,
+            color=title_color,
+            backgroundcolor=title_background_color,
+            font_size=title_font_size,
+            title_x_pos=title_x_pos,
+            title_y_pos=title_y_pos,
+        )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
@@ -1459,7 +1535,15 @@ class ModelBandPlot(ModelBand):
                 arrow_color_north=arrow_color_n,
                 arrow_color_east=arrow_color_e,
             )
-        plot_util.title_text(ax, title_text=title_text, color=title_color, backgroundcolor=title_background_color, font_size=title_font_size, title_x_pos=title_x_pos, title_y_pos=title_y_pos)
+        plot_util.title_text(
+            ax,
+            text=title_text,
+            color=title_color,
+            backgroundcolor=title_background_color,
+            font_size=title_font_size,
+            title_x_pos=title_x_pos,
+            title_y_pos=title_y_pos,
+        )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
@@ -1592,7 +1676,15 @@ class ModelBandPlot(ModelBand):
             font_size=self._scale_bar_font_size,
             linewidth=self._scale_bar_width,
         )
-        plot_util.title_text(ax, title_text=title_text, color=title_color, backgroundcolor=title_background_color, font_size=title_font_size, title_x_pos=title_x_pos, title_y_pos=title_y_pos)
+        plot_util.title_text(
+            ax,
+            text=title_text,
+            color=title_color,
+            backgroundcolor=title_background_color,
+            font_size=title_font_size,
+            title_x_pos=title_x_pos,
+            title_y_pos=title_y_pos,
+        )
         if coordinate_arrows:
             plot_util.coordinate_arrows(
                 ax,
@@ -1681,7 +1773,15 @@ class ModelBandPlot(ModelBand):
             font_size=self._scale_bar_font_size,
             linewidth=self._scale_bar_width,
         )
-        plot_util.title_text(ax, title_text=title_text, color=title_color, backgroundcolor=title_background_color, font_size=title_font_size, title_x_pos=title_x_pos, title_y_pos=title_y_pos)
+        plot_util.title_text(
+            ax,
+            text=title_text,
+            color=title_color,
+            backgroundcolor=title_background_color,
+            font_size=title_font_size,
+            title_x_pos=title_x_pos,
+            title_y_pos=title_y_pos,
+        )
         if coordinate_arrows:
             plot_util.coordinate_arrows(
                 ax,
@@ -1736,7 +1836,10 @@ class ModelBandPlot(ModelBand):
         f, axes = plt.subplots(2, 3, figsize=(16, 8))
 
         self.decomposition_plot(
-            ax=axes[0, 0], title_text="Lens light", lens_light_add=True, unconvolved=True
+            ax=axes[0, 0],
+            title_text="Lens light",
+            lens_light_add=True,
+            unconvolved=True,
         )
         self.decomposition_plot(
             ax=axes[1, 0], title_text="Lens light convolved", lens_light_add=True

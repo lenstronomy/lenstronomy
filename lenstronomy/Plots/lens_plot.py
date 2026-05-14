@@ -800,7 +800,9 @@ def distortions(
         cb = plt.colorbar(im, cax=cax, orientation="vertical")
         # cb.set_label(text_string, fontsize=10)
         # plot_util.scale_bar(ax, _frame_size, dist=1, text='1"', font_size=font_size)
-        plot_util.title_text(ax, title_text=title_text, color="k", backgroundcolor="w", font_size=font_size)
+        plot_util.title_text(
+            ax, text=title_text, color="k", backgroundcolor="w", font_size=font_size
+        )
         # if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
         #    plot_util.coordinate_arrows(ax, _frame_size, _coords,
         #                                color='w', arrow_size=_arrow_size,

@@ -268,7 +268,15 @@ class TracerPlot(object):
                 font_size=self._scale_bar_font_size,
                 linewidth=self._scale_bar_width,
             )
-        plot_util.title_text(ax, title_text=title_text, color=title_color, backgroundcolor=title_background_color, font_size=title_font_size, title_x_pos=title_x_pos, title_y_pos=title_y_pos)
+        plot_util.title_text(
+            ax,
+            text=title_text,
+            color=title_color,
+            backgroundcolor=title_background_color,
+            font_size=title_font_size,
+            title_x_pos=title_x_pos,
+            title_y_pos=title_y_pos,
+        )
 
         if coordinate_arrows:
             plot_util.coordinate_arrows(
@@ -375,7 +383,15 @@ class TracerPlot(object):
                 font_size=self._scale_bar_font_size,
                 linewidth=self._scale_bar_width,
             )
-        plot_util.title_text(ax, title_text=title_text, color=title_color, backgroundcolor=title_background_color, font_size=title_font_size, title_x_pos=title_x_pos, title_y_pos=title_y_pos)
+        plot_util.title_text(
+            ax,
+            text=title_text,
+            color=title_color,
+            backgroundcolor=title_background_color,
+            font_size=title_font_size,
+            title_x_pos=title_x_pos,
+            title_y_pos=title_y_pos,
+        )
         if coordinate_arrows:
             plot_util.coordinate_arrows(
                 ax,
@@ -508,7 +524,16 @@ class TracerPlot(object):
                 arrow_color_north=arrow_color_north,
                 arrow_color_east=arrow_color_east,
             )
-        plot_util.title_text(ax, title_text=title_text, flipped=False, color=title_color, backgroundcolor=title_background_color, font_size=title_font_size, title_x_pos=title_x_pos, title_y_pos=title_y_pos)
+        plot_util.title_text(
+            ax,
+            text=title_text,
+            flipped=False,
+            color=title_color,
+            backgroundcolor=title_background_color,
+            font_size=title_font_size,
+            title_x_pos=title_x_pos,
+            title_y_pos=title_y_pos,
+        )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
@@ -589,7 +614,15 @@ class TracerPlot(object):
                 font_size=self._scale_bar_font_size,
                 linewidth=self._scale_bar_width,
             )
-        plot_util.title_text(ax, title_text=title_text, color=title_color, backgroundcolor=title_background_color, font_size=title_font_size, title_x_pos=title_x_pos, title_y_pos=title_y_pos)
+        plot_util.title_text(
+            ax,
+            text=title_text,
+            color=title_color,
+            backgroundcolor=title_background_color,
+            font_size=title_font_size,
+            title_x_pos=title_x_pos,
+            title_y_pos=title_y_pos,
+        )
         if coordinate_arrows:
             plot_util.coordinate_arrows(
                 ax,
@@ -686,7 +719,15 @@ class TracerPlot(object):
                 font_size=self._scale_bar_font_size,
                 linewidth=self._scale_bar_width,
             )
-        plot_util.title_text(ax, title_text=title_text, color=title_color, backgroundcolor=title_background_color, font_size=title_font_size, title_x_pos=title_x_pos, title_y_pos=title_y_pos)
+        plot_util.title_text(
+            ax,
+            text=title_text,
+            color=title_color,
+            backgroundcolor=title_background_color,
+            font_size=title_font_size,
+            title_x_pos=title_x_pos,
+            title_y_pos=title_y_pos,
+        )
         if coordinate_arrows:
             plot_util.coordinate_arrows(
                 ax,
@@ -898,7 +939,16 @@ class TracerPlot(object):
                 arrow_color_north=arrow_color_north,
                 arrow_color_east=arrow_color_east,
             )
-            plot_util.title_text(ax, title_text=title_text, flipped=False, color=title_color, backgroundcolor=title_background_color, font_size=title_font_size, title_x_pos=title_x_pos, title_y_pos=title_y_pos)
+            plot_util.title_text(
+                ax,
+                text=title_text,
+                flipped=False,
+                color=title_color,
+                backgroundcolor=title_background_color,
+                font_size=title_font_size,
+                title_x_pos=title_x_pos,
+                title_y_pos=title_y_pos,
+            )
         if point_source_position is True:
             ra_source, dec_source = self.PointSource.source_position(
                 self._kwargs_ps, self._kwargs_lens
@@ -1001,7 +1051,15 @@ class TracerPlot(object):
                 arrow_color_north=arrow_color_north,
                 arrow_color_east=arrow_color_east,
             )
-        plot_util.title_text(ax, title_text=title_text, color=title_color, backgroundcolor=title_background_color, font_size=title_font_size, title_x_pos=title_x_pos, title_y_pos=title_y_pos)
+        plot_util.title_text(
+            ax,
+            text=title_text,
+            color=title_color,
+            backgroundcolor=title_background_color,
+            font_size=title_font_size,
+            title_x_pos=title_x_pos,
+            title_y_pos=title_y_pos,
+        )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
@@ -1126,7 +1184,15 @@ class TracerPlot(object):
                 arrow_color_north=arrow_color_north,
                 arrow_color_east=arrow_color_east,
             )
-        plot_util.title_text(ax, title_text=title_text, color=title_color, backgroundcolor=title_background_color, font_size=title_font_size, title_x_pos=title_x_pos, title_y_pos=title_y_pos)
+        plot_util.title_text(
+            ax,
+            text=title_text,
+            color=title_color,
+            backgroundcolor=title_background_color,
+            font_size=title_font_size,
+            title_x_pos=title_x_pos,
+            title_y_pos=title_y_pos,
+        )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)

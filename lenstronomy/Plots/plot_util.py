@@ -41,7 +41,7 @@ def sqrt(inputArray, scale_min=None, scale_max=None):
 @export
 def title_text(
     ax,
-    title_text,
+    text,
     color="w",
     backgroundcolor="k",
     flipped=False,
@@ -52,7 +52,7 @@ def title_text(
     """Add title text to an axis in normalized coordinates.
 
     :param ax: matplotlib axis instance
-    :param title_text: text to be displayed
+    :param text: text to be displayed
     :param color: text color
     :param backgroundcolor: text background color
     :param flipped: if True, draw text on the right side
@@ -74,7 +74,7 @@ def title_text(
     ax.text(
         title_x_pos,
         title_y_pos,
-        title_text,
+        text,
         color=color,
         fontsize=font_size,
         backgroundcolor=backgroundcolor,

@@ -47,26 +47,29 @@ def text_description(
     backgroundcolor="k",
     flipped=False,
     font_size=15,
-    text_x=None,
-    text_y=None,
+    caption_x_pos=None,
+    caption_y_pos=None,
 ):
-    if text_x is None:
-        c_horizontal = 1.0 / 50
+    if caption_x_pos is None:
         if flipped:
-            text_x = d - d * c_horizontal
+            caption_x_pos = 1.0
         else:
-            text_x = d * c_horizontal
-    if text_y is None:
-        c_vertical = 1 / 13.0
-        text_y = d - d * c_vertical
+            caption_x_pos = 0.0
+    if caption_y_pos is None:
+        caption_y_pos = 1.0
+
+    ha = "right" if flipped else "left"
 
     ax.text(
-        text_x,
-        text_y,
+        caption_x_pos,
+        caption_y_pos,
         text,
         color=color,
         fontsize=font_size,
         backgroundcolor=backgroundcolor,
+        transform=ax.transAxes,
+        ha=ha,
+        va="top",
     )
 
 

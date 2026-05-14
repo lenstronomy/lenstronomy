@@ -26,7 +26,6 @@ class ModelBandPlot(ModelBand):
         kwargs_params,
         likelihood_mask_list=None,
         band_index=0,
-        cmap_string="gist_heat",
         fast_caustic=True,
         linear_solver=True,
         arrow_length=0.05,
@@ -52,7 +51,6 @@ class ModelBandPlot(ModelBand):
          the imaging band, NOT including linear amplitudes (not required as being overwritten by the param list)
         :param likelihood_mask_list: list of 2d numpy arrays of likelihood masks (for all bands)
         :param band_index: integer of the band to be considered in this class
-        :param cmap_string: string of color map (or cmap matplotlib object)
         :param fast_caustic: boolean; if True, uses fast (but less accurate) caustic calculation method
         :param linear_solver: bool, if True (default) fixes the linear amplitude parameters 'amp' (avoid sampling) such
          that they get overwritten by the linear solver solution.
@@ -97,7 +95,6 @@ class ModelBandPlot(ModelBand):
         self._y_grid = util.image2array(y_grid)
         self._x_center, self._y_center = self._coords.center
 
-        self._cmap = plot_util.cmap_conf(cmap_string)
         self._scale_bar_width = scale_bar_width
         self._scale_bar_font_size = scale_bar_font_size
         self._fast_caustic = fast_caustic
@@ -219,11 +216,12 @@ class ModelBandPlot(ModelBand):
             v_min = self._v_min_default
         if v_max is None:
             v_max = self._v_max_default
+        if "cmap" not in kwargs_matshow:
+            kwargs_matshow["cmap"] = "cubehelix"
         im = ax.matshow(
             np.log10(self._data),
             origin="lower",
             extent=self._image_extent,
-            cmap=self._cmap,
             vmin=v_min,
             vmax=v_max,
             **kwargs_matshow,
@@ -335,13 +333,14 @@ class ModelBandPlot(ModelBand):
             v_min = self._v_min_default
         if v_max is None:
             v_max = self._v_max_default
+        if "cmap" not in kwargs_matshow:
+            kwargs_matshow["cmap"] = "cubehelix"
         im = ax.matshow(
             np.log10(self._model),
             origin="lower",
             vmin=v_min,
             vmax=v_max,
             extent=self._image_extent,
-            cmap=self._cmap,
             **kwargs_matshow,
         )
         ax.get_xaxis().set_visible(False)
@@ -455,7 +454,7 @@ class ModelBandPlot(ModelBand):
         :return: convergence plot in ax instance
         """
         if "cmap" not in kwargs_matshow:
-            kwargs_matshow["cmap"] = self._cmap
+            kwargs_matshow["cmap"] = "gist_heat"
 
         kappa_result = util.array2image(
             self._lensModel.kappa(self._x_grid, self._y_grid, self._kwargs_lens_partial)
@@ -1067,7 +1066,6 @@ class ModelBandPlot(ModelBand):
                 -deltaPix_source / 2,
                 d_s - deltaPix_source / 2,
             ],
-            cmap=self._cmap,
             vmin=v_min,
             vmax=v_max,
             **kwargs_matshow,
@@ -1235,7 +1233,6 @@ class ModelBandPlot(ModelBand):
                 -deltaPix_source / 2,
                 d_s - deltaPix_source / 2,
             ],
-            cmap=self._cmap,
             vmin=v_min,
             vmax=v_max,
             **kwargs_matshow,
@@ -1650,7 +1647,7 @@ class ModelBandPlot(ModelBand):
         if v_max is None:
             v_max = self._v_max_default
         if "cmap" not in kwargs_matshow:
-            kwargs_matshow["cmap"] = self._cmap
+            kwargs_matshow["cmap"] = "cubehelix"
         im = ax.matshow(
             np.log10(model),
             origin="lower",
@@ -1747,13 +1744,14 @@ class ModelBandPlot(ModelBand):
             v_min = self._v_min_default
         if v_max is None:
             v_max = self._v_max_default
+        if "cmap" not in kwargs_matshow:
+            kwargs_matshow["cmap"] = "cubehelix"
         im = ax.matshow(
             np.log10(self._data - model),
             origin="lower",
             vmin=v_min,
             vmax=v_max,
             extent=self._image_extent,
-            cmap=self._cmap,
             **kwargs_matshow,
         )
         ax.get_xaxis().set_visible(False)

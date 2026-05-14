@@ -152,7 +152,6 @@ class TestMultiPatchPlot(object):
             multi_band_type="joint-linear",
             kwargs_likelihood=None,
             verbose=True,
-            cmap_string="gist_heat",
         )
         self.data_class = data_class
         self.model = model

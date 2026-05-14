@@ -21,7 +21,6 @@ class MultiPatchPlot(MultiPatchReconstruction):
         kwargs_likelihood=None,
         kwargs_pixel_grid=None,
         verbose=True,
-        cmap_string="gist_heat",
         arrow_length=0.05,
         arrowhead_size=0.025,
         arrow_origin_x=None,
@@ -47,7 +46,6 @@ class MultiPatchPlot(MultiPatchReconstruction):
             Attention for consistent pixel grid definitions!
         :param verbose: if True (default), computes and prints the total log-likelihood.
             This can deactivated for speedup purposes (does not run linear inversion again), and reduces the number of prints.
-        :param cmap_string: string of color map (or cmap matplotlib object)
         :param arrow_length: length of the coordinate arrow as a fraction of the image size
         :param arrowhead_size: size of the arrowhead of the coordinate arrow as a fraction of the image size
         :param arrow_origin_x: x-origin of the coordinate arrow as a fraction of the image size
@@ -85,7 +83,6 @@ class MultiPatchPlot(MultiPatchReconstruction):
         log_model[np.isnan(log_model)] = -5
         self._v_min_default = max(np.min(log_model), -5)
         self._v_max_default = min(np.max(log_model), 10)
-        self._cmap = plot_util.cmap_conf(cmap_string)
         self._arrow_length = arrow_length
         self._arrowhead_size = arrowhead_size
         self._arrow_origin_x = arrow_origin_x
@@ -121,6 +118,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
             log_scale=log_scale,
             title_text=title_text,
             colorbar_label=colorbar_label,
+            cmap="cubehelix",
             **kwargs
         )
 
@@ -148,6 +146,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
             log_scale=log_scale,
             title_text=title_text,
             colorbar_label=colorbar_label,
+            cmap="cubehelix",
             **kwargs
         )
 
@@ -260,6 +259,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
             v_max=v_max,
             title_text=title_text,
             colorbar_label=colorbar_label,
+            cmap="gist_heat",
             **kwargs
         )
 
@@ -403,7 +403,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
             arrow_color_east = text_k
 
         if cmap is None:
-            cmap = self._cmap
+            cmap = "cubehelix"
         frame_size = np.max(coords.width)
 
         if log_scale:

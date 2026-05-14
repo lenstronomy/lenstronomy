@@ -162,7 +162,6 @@ class TestOutputPlots(object):
             multi_band_list,
             self.kwargs_model,
             self.kwargs_params,
-            cmap_string="gist_heat",
             multi_band_type="single-band",
         )
 
@@ -173,7 +172,6 @@ class TestOutputPlots(object):
             multi_band_list_multiplane,
             self.kwargs_model_multiplane,
             self.kwargs_params,
-            cmap_string="gist_heat",
             multi_band_type="single-band",
         )
 
@@ -185,7 +183,6 @@ class TestOutputPlots(object):
             multi_band_list,
             self.kwargs_model,
             self.kwargs_params,
-            cmap_string=cmap,
         )
 
         lensPlot.plot_separate()
@@ -241,7 +238,6 @@ class TestOutputPlots(object):
             multi_band_list,
             self.kwargs_model,
             self.kwargs_params,
-            cmap_string="gist_heat",
             fast_caustic=False,
         )
 
@@ -265,7 +261,6 @@ class TestOutputPlots(object):
             multi_band_list,
             self.kwargs_model,
             self.kwargs_params,
-            cmap_string="gist_heat",
         )
         source, coords_source = lensPlot.source(
             band_index=0, numPix=10, deltaPix=0.1, image_orientation=True
@@ -288,7 +283,6 @@ class TestOutputPlots(object):
             multi_band_list,
             self.kwargs_model,
             self.kwargs_params,
-            cmap_string="gist_heat",
         )
 
         chi2 = lensPlot.single_band_chi2(band_index=0)
@@ -304,7 +298,6 @@ class TestOutputPlots(object):
             multi_band_list,
             self.kwargs_model,
             self.kwargs_params,
-            cmap_string="gist_heat",
             multi_band_type="joint-linear",
             bands_compute=[True, False],
         )
@@ -354,7 +347,6 @@ class TestOutputPlots(object):
             multi_band_list,
             self.kwargs_model,
             self.kwargs_params,
-            cmap_string="gist_heat",
             multi_band_type="joint-linear",
             bands_compute=[True, True],
         )
@@ -368,7 +360,6 @@ class TestOutputPlots(object):
             multi_band_list,
             self.kwargs_model,
             self.kwargs_params,
-            cmap_string="gist_heat",
             multi_band_type="joint-linear",
             bands_compute=[True],
         )
@@ -401,7 +392,6 @@ class TestOutputPlots(object):
             kwargs_model=kwargs_model,
             kwargs_params=kwargs_params,
             bands_compute=[True],
-            cmap_string="gist_heat",
             linear_solver=False,
         )
         lensPlot.plot_main(with_caustics=True)
@@ -427,7 +417,6 @@ class TestRaise(unittest.TestCase):
                 multi_band_list=[[kwargs_data, {"psf_type": "NONE"}, {}]],
                 kwargs_model=kwargs_model,
                 kwargs_params=kwargs_params,
-                cmap_string="gist_heat",
             )
         with self.assertRaises(ValueError):
             kwargs_data = sim_util.data_configure_simple(
@@ -445,7 +434,6 @@ class TestRaise(unittest.TestCase):
                 multi_band_list=[[kwargs_data, {}, {}]],
                 kwargs_model=kwargs_model,
                 kwargs_params=kwargs_params,
-                cmap_string="gist_heat",
             )
             f, ax = plt.subplots(1, 1, figsize=(4, 4))
             ax = lensPlot.source_plot(
@@ -477,7 +465,6 @@ class TestRaise(unittest.TestCase):
                 kwargs_model=kwargs_model,
                 kwargs_params=kwargs_params,
                 bands_compute=[False],
-                cmap_string="gist_heat",
             )
             lensPlot._select_band(band_index=0)
 
@@ -498,7 +485,6 @@ class TestRaise(unittest.TestCase):
                 kwargs_model=kwargs_model,
                 kwargs_params=kwargs_params,
                 bands_compute=[True],
-                cmap_string="gist_heat",
             )
 
             f, ax = plt.subplots(1, 1, figsize=(4, 4))
@@ -535,7 +521,6 @@ class TestRaise(unittest.TestCase):
                 kwargs_model=kwargs_model,
                 kwargs_params=kwargs_params,
                 bands_compute=[True],
-                cmap_string="gist_heat",
                 linear_solver=False,
             )
 
@@ -559,7 +544,6 @@ def test_interferometry_natwt_Model_Plot_linear_solver():
             kwargs_model=kwargs_model,
             kwargs_params=kwargs_params,
             bands_compute=[True],
-            cmap_string="gist_heat",
             linear_solver=True,
         )
     except:

@@ -30,7 +30,6 @@ class ModelPlot(object):
         multi_band_type="multi-linear",
         source_marg=False,
         linear_prior=None,
-        cmap_string="gist_heat",
         fast_caustic=True,
         linear_solver=True,
         arrow_length=0.05,
@@ -60,7 +59,6 @@ class ModelPlot(object):
          FittingSequence class
         :param source_marg:
         :param linear_prior:
-        :param cmap_string:
         :param fast_caustic: boolean; if True, uses fast (but less accurate) caustic calculation method
         :param linear_solver: bool, if True (default) fixes the linear amplitude parameters 'amp' (avoid sampling) such
          that they get overwritten by the linear solver solution.
@@ -159,7 +157,6 @@ class ModelPlot(object):
                     copy.deepcopy(kwargs_params),
                     likelihood_mask_list=image_likelihood_mask_list,
                     band_index=i,
-                    cmap_string=cmap_string,
                     fast_caustic=fast_caustic,
                     linear_solver=linear_solver,
                     arrow_length=arrow_length,

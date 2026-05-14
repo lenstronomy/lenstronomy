@@ -21,7 +21,6 @@ class TracerPlot(object):
         kwargs_model,
         kwargs_params,
         kwargs_likelihood,
-        cmap_string="gist_heat",
         fast_caustic=True,
         arrow_length=0.05,
         arrowhead_size=0.025,
@@ -43,7 +42,6 @@ class TracerPlot(object):
             different model components selected for the imaging band, NOT including
             linear amplitudes (not required as being overwritten by the param list)
         :param kwargs_likelihood: likelihood keyword arguments
-        :param cmap_string: string of color map (or cmap matplotlib object)
         :param fast_caustic: boolean; if True, uses fast (but less accurate) caustic
             calculation method
         :param arrow_length: length of the coordinate arrow as a fraction of the image
@@ -142,7 +140,6 @@ class TracerPlot(object):
         self._y_grid = util.image2array(y_grid)
         self._x_center, self._y_center = self._coords.center
 
-        self._cmap = plot_util.cmap_conf(cmap_string)
         self._fast_caustic = fast_caustic
         self._arrow_length = arrow_length
         self._arrowhead_size = arrowhead_size
@@ -237,7 +234,6 @@ class TracerPlot(object):
         :param title_font_size: font size of the title
         :param title_color: color of the title
         :param title_background_color: background color of the title
-        :param title_x_pos: x-position of the title
         :param title_y_pos: y-position of the title
         :param scale_bar_color: color of the scale bar
         :param scale_bar_length: length of the scale bar
@@ -253,11 +249,12 @@ class TracerPlot(object):
             v_min = self._v_min_default
         if v_max is None:
             v_max = self._v_max_default
+        if "cmap" not in kwargs_matshow:
+            kwargs_matshow["cmap"] = "cubehelix"
         im = ax.matshow(
             np.log10(self._data),
             origin="lower",
             extent=[0, self._frame_size, 0, self._frame_size],
-            cmap=self._cmap,
             vmin=v_min,
             vmax=v_max,
             **kwargs_matshow,
@@ -369,13 +366,14 @@ class TracerPlot(object):
             v_min = self._v_min_default
         if v_max is None:
             v_max = self._v_max_default
+        if "cmap" not in kwargs_matshow:
+            kwargs_matshow["cmap"] = "cubehelix"
         im = ax.matshow(
             np.log10(self._model),
             origin="lower",
             vmin=v_min,
             vmax=v_max,
             extent=[0, self._frame_size, 0, self._frame_size],
-            cmap=self._cmap,
             **kwargs_matshow,
         )
         ax.get_xaxis().set_visible(False)
@@ -429,7 +427,6 @@ class TracerPlot(object):
             ra_image, dec_image = self.PointSource.image_position(
                 self._kwargs_ps,
                 self._kwargs_lens,
-                original_position=original_position,
             )
             plot_util.image_position_plot(
                 ax,
@@ -488,7 +485,7 @@ class TracerPlot(object):
         :return: convergence plot in ax instance
         """
         if "cmap" not in kwargs_matshow:
-            kwargs_matshow["cmap"] = self._cmap
+            kwargs_matshow["cmap"] = "gist_heat"
 
         kappa_result = util.array2image(
             self.LensModel.kappa(self._x_grid, self._y_grid, self._kwargs_lens)
@@ -890,11 +887,12 @@ class TracerPlot(object):
                 'variable plot_scale needs to be "log" or "linear", not %s.'
                 % plot_scale
             )
+        if "cmap" not in kwargs_matshow:
+            kwargs_matshow["cmap"] = "cubehelix"
         im = ax.matshow(
             source_scale,
             origin="lower",
             extent=[0, d_s, 0, d_s],
-            cmap=self._cmap,
             vmin=v_min,
             vmax=v_max,
             **kwargs_matshow,
@@ -1014,7 +1012,7 @@ class TracerPlot(object):
         :return: matplotlib axis instance
         """
         if "cmap" not in kwargs_matshow:
-            kwargs_matshow["cmap"] = self._cmap
+            kwargs_matshow["cmap"] = "RdYlBu_r"
         if "alpha" not in kwargs_matshow:
             kwargs_matshow["alpha"] = 0.5
         mag_result = util.array2image(
@@ -1149,7 +1147,7 @@ class TracerPlot(object):
         else:
             alpha = alpha2
         if "cmap" not in kwargs_matshow:
-            kwargs_matshow["cmap"] = self._cmap
+            kwargs_matshow["cmap"] = "RdYlBu_r"
         if "alpha" not in kwargs_matshow:
             kwargs_matshow["alpha"] = 0.5
         im = ax.matshow(

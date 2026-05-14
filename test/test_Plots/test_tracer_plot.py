@@ -234,7 +234,6 @@ class TestTracerPlot(object):
             self.kwargs_model,
             self.kwargs_params,
             self.kwargs_likelihood,
-            cmap_string="gist_heat",
             fast_caustic=True,
         )
 

@@ -1736,27 +1736,27 @@ class ModelBandPlot(ModelBand):
         f, axes = plt.subplots(2, 3, figsize=(16, 8))
 
         self.decomposition_plot(
-            ax=axes[0, 0], text="Lens light", lens_light_add=True, unconvolved=True
+            ax=axes[0, 0], title_text="Lens light", lens_light_add=True, unconvolved=True
         )
         self.decomposition_plot(
-            ax=axes[1, 0], text="Lens light convolved", lens_light_add=True
+            ax=axes[1, 0], title_text="Lens light convolved", lens_light_add=True
         )
         self.decomposition_plot(
-            ax=axes[0, 1], text="Source light", source_add=True, unconvolved=True
+            ax=axes[0, 1], title_text="Source light", source_add=True, unconvolved=True
         )
         self.decomposition_plot(
-            ax=axes[1, 1], text="Source light convolved", source_add=True
+            ax=axes[1, 1], title_text="Source light convolved", source_add=True
         )
         self.decomposition_plot(
             ax=axes[0, 2],
-            text="All components",
+            title_text="All components",
             source_add=True,
             lens_light_add=True,
             unconvolved=True,
         )
         self.decomposition_plot(
             ax=axes[1, 2],
-            text="All components convolved",
+            title_text="All components convolved",
             source_add=True,
             lens_light_add=True,
             point_source_add=True,
@@ -1774,25 +1774,25 @@ class ModelBandPlot(ModelBand):
         """
         f, axes = plt.subplots(2, 3, figsize=(16, 8))
 
-        self.subtract_from_data_plot(ax=axes[0, 0], text="Data")
+        self.subtract_from_data_plot(ax=axes[0, 0], title_text="Data")
         self.subtract_from_data_plot(
-            ax=axes[0, 1], text="Data - Point Source", point_source_add=True
+            ax=axes[0, 1], title_text="Data - Point Source", point_source_add=True
         )
         self.subtract_from_data_plot(
-            ax=axes[0, 2], text="Data - Lens Light", lens_light_add=True
+            ax=axes[0, 2], title_text="Data - Lens Light", lens_light_add=True
         )
         self.subtract_from_data_plot(
-            ax=axes[1, 0], text="Data - Source Light", source_add=True
+            ax=axes[1, 0], title_text="Data - Source Light", source_add=True
         )
         self.subtract_from_data_plot(
             ax=axes[1, 1],
-            text="Data - Source Light - Point Source",
+            title_text="Data - Source Light - Point Source",
             source_add=True,
             point_source_add=True,
         )
         self.subtract_from_data_plot(
             ax=axes[1, 2],
-            text="Data - Lens Light - Point Source",
+            title_text="Data - Lens Light - Point Source",
             lens_light_add=True,
             point_source_add=True,
         )

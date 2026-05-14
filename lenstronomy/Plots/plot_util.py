@@ -40,32 +40,40 @@ def sqrt(inputArray, scale_min=None, scale_max=None):
 
 @export
 def text_description(
-    ax, d, text, color="w", backgroundcolor="k", flipped=False, font_size=15
+    ax,
+    d,
+    text,
+    color="w",
+    backgroundcolor="k",
+    flipped=False,
+    font_size=15,
+    text_x=None,
+    text_y=None,
 ):
-    c_vertical = 1 / 13.0  # + font_size / d / 10.**2
-    c_horizontal = 1.0 / 50
-    if flipped:
-        ax.text(
-            d - d * c_horizontal,
-            d - d * c_vertical,
-            text,
-            color=color,
-            fontsize=font_size,
-            backgroundcolor=backgroundcolor,
-        )
-    else:
-        ax.text(
-            d * c_horizontal,
-            d - d * c_vertical,
-            text,
-            color=color,
-            fontsize=font_size,
-            backgroundcolor=backgroundcolor,
-        )
+    if text_x is None:
+        c_horizontal = 1.0 / 50
+        if flipped:
+            text_x = d - d * c_horizontal
+        else:
+            text_x = d * c_horizontal
+    if text_y is None:
+        c_vertical = 1 / 13.0
+        text_y = d - d * c_vertical
+
+    ax.text(
+        text_x,
+        text_y,
+        text,
+        color=color,
+        fontsize=font_size,
+        backgroundcolor=backgroundcolor,
+    )
 
 
 @export
-def scale_bar(ax, d, dist=1.0, text='1"', color="w", font_size=15, flipped=False):
+def scale_bar(
+    ax, d, dist=1.0, text=None, color="w", font_size=15, flipped=False, linewidth=2
+):
     """
 
     :param ax: matplotlib.axes instance
@@ -75,12 +83,19 @@ def scale_bar(ax, d, dist=1.0, text='1"', color="w", font_size=15, flipped=False
     :param color: color of scale bar
     :param font_size: font size
     :param flipped: boolean
+    :param linewidth: line width of scale bar
     :return: None, updated ax instance
     """
+    if text is None:
+        if dist >= 1:
+            text = f'{int(dist)}"'
+        else:
+            text = f'{dist:.1g}"'
+
     if flipped:
         p0 = d - d / 15.0 - dist
         p1 = d / 15.0
-        ax.plot([p0, p0 + dist], [p1, p1], linewidth=2, color=color)
+        ax.plot([p0, p0 + dist], [p1, p1], linewidth=linewidth, color=color)
         ax.text(
             p0 + dist / 2.0,
             p1 + 0.01 * d,
@@ -91,7 +106,7 @@ def scale_bar(ax, d, dist=1.0, text='1"', color="w", font_size=15, flipped=False
         )
     else:
         p0 = d / 15.0
-        ax.plot([p0, p0 + dist], [p0, p0], linewidth=2, color=color)
+        ax.plot([p0, p0 + dist], [p0, p0], linewidth=linewidth, color=color)
         ax.text(
             p0 + dist / 2.0,
             p0 + 0.01 * d,
@@ -103,65 +118,100 @@ def scale_bar(ax, d, dist=1.0, text='1"', color="w", font_size=15, flipped=False
 
 
 @export
-def coordinate_arrows(ax, d, coords, color="w", font_size=15, arrow_size=0.05):
+def coordinate_arrows(
+    ax,
+    d,
+    coords,
+    font_size=15,
+    arrow_length=10,
+    arrowhead_size=5,
+    arrow_origin_x=None,
+    arrow_origin_y=None,
+    arrow_n_offset_x=0,
+    arrow_n_offset_y=3,
+    arrow_e_offset_x=3,
+    arrow_e_offset_y=0,
+    color_n="w",
+    color_e="w",
+):
     """
 
     :param ax: matplotlib axes instance
     :param d: diameter of frame in ax
     :param coords: lenstronomy.Data.coord_transforms Coordinates() instance
-    :param color: color string
     :param font_size: font size of length scale
-    :param arrow_size: size of arrow
+    :param arrow_length: length of the arrow in pixels
+    :param arrowhead_size: size of the arrow head in pixels
+    :param arrow_origin_x: x origin of the arrow in pixels
+    :param arrow_origin_y: y origin of the arrow in pixels
+    :param arrow_n_offset_x: x offset for N from the tip of the arrow in pixels
+    :param arrow_n_offset_y: y offset for N from the tip of the arrow in pixels
+    :param arrow_e_offset_x: x offset for E from the tip of the arrow in pixels
+    :param arrow_e_offset_y: y offset for E from the tip of the arrow in pixels
+    :param color_n: color string for N
+    :param color_e: color string for E
     :return: updated ax instance
     """
-    d0 = d / 6.0  # from right side of plot
-    p0 = d / 15.0
-    pt = d / 10.0
     deltaPix = coords.pixel_width
-    ra0, dec0 = coords.map_pix2coord((d - d0) / deltaPix, d0 / deltaPix)
-    xx_, yy_ = coords.map_coord2pix(ra0, dec0)
+    if arrow_origin_x is None or arrow_origin_y is None:
+        d0 = d / 6.0  # from right side of plot
+        ra0, dec0 = coords.map_pix2coord((d - d0) / deltaPix, d0 / deltaPix)
+        xx_, yy_ = coords.map_coord2pix(ra0, dec0)
+    else:
+        xx_ = arrow_origin_x
+        yy_ = arrow_origin_y
+        ra0, dec0 = coords.map_pix2coord(xx_, yy_)
+
+    p0 = arrow_length * deltaPix
+
     xx_ra, yy_ra = coords.map_coord2pix(ra0 + p0, dec0)
     xx_dec, yy_dec = coords.map_coord2pix(ra0, dec0 + p0)
-    xx_ra_t, yy_ra_t = coords.map_coord2pix(ra0 + pt, dec0)
-    xx_dec_t, yy_dec_t = coords.map_coord2pix(ra0, dec0 + pt)
+
+    xx_ra_t = xx_ra + arrow_e_offset_x
+    yy_ra_t = yy_ra + arrow_e_offset_y
+
+    xx_dec_t = xx_dec + arrow_n_offset_x
+    yy_dec_t = yy_dec + arrow_n_offset_y
 
     ax.arrow(
         xx_ * deltaPix,
         yy_ * deltaPix,
         (xx_ra - xx_) * deltaPix,
         (yy_ra - yy_) * deltaPix,
-        head_width=arrow_size * d,
-        head_length=arrow_size * d,
-        fc=color,
-        ec=color,
+        head_width=arrowhead_size * deltaPix,
+        head_length=arrowhead_size * deltaPix,
+        fc=color_e,
+        ec=color_e,
         linewidth=1,
     )
     ax.text(
         xx_ra_t * deltaPix,
         yy_ra_t * deltaPix,
         "E",
-        color=color,
+        color=color_e,
         fontsize=font_size,
         ha="center",
+        va="center",
     )
     ax.arrow(
         xx_ * deltaPix,
         yy_ * deltaPix,
         (xx_dec - xx_) * deltaPix,
         (yy_dec - yy_) * deltaPix,
-        head_width=arrow_size * d,
-        head_length=arrow_size * d,
-        fc=color,
-        ec=color,
+        head_width=arrowhead_size * deltaPix,
+        head_length=arrowhead_size * deltaPix,
+        fc=color_n,
+        ec=color_n,
         linewidth=1,
     )
     ax.text(
         xx_dec_t * deltaPix,
         yy_dec_t * deltaPix,
         "N",
-        color=color,
+        color=color_n,
         fontsize=font_size,
         ha="center",
+        va="center",
     )
 
 
@@ -176,7 +226,7 @@ def plot_line_set(
     points_only=False,
     label=None,
     *args,
-    **kwargs
+    **kwargs,
 ):
     """Plotting a line set on a matplotlib instance where the coordinates are defined in
     pixel units with the lower left corner (defined as origin) is by default (0, 0). The
@@ -216,7 +266,7 @@ def plot_line_set(
                 x_c * pixel_width_x + origin[0],
                 y_c * pixel_width + origin[1],
                 *args,
-                **kwargs
+                **kwargs,
             )
     else:
         x_c, y_c = coords.map_coord2pix(line_set_list_x, line_set_list_y)
@@ -224,7 +274,7 @@ def plot_line_set(
             x_c * pixel_width_x + origin[0],
             y_c * pixel_width + origin[1],
             *args,
-            **kwargs
+            **kwargs,
         )
     if label is not None:
         ax.plot(-1000, -1000, label=label, *args, **kwargs)
@@ -310,7 +360,7 @@ def source_position_plot(
                 y_source * delta_pix,
                 marker=marker,
                 markersize=markersize,
-                **kwargs
+                **kwargs,
             )
     return ax
 

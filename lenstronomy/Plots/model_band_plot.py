@@ -181,8 +181,8 @@ class ModelBandPlot(ModelBand):
         scale_bar_text=None,
         coordinate_arrows=True,
         arrow_font_size=15,
-        arrow_color_n="w",
-        arrow_color_e="w",
+        arrow_color_north="w",
+        arrow_color_east="w",
         font_size=15,
         colorbar_label=r"log$_{10}$ flux",
         colorbar_label_font_size=15,
@@ -264,8 +264,8 @@ class ModelBandPlot(ModelBand):
                 arrow_north_offset_y=self._arrow_north_offset_y,
                 arrow_east_offset_x=self._arrow_east_offset_x,
                 arrow_east_offset_y=self._arrow_east_offset_y,
-                arrow_color_north=arrow_color_n,
-                arrow_color_east=arrow_color_e,
+                arrow_color_north=arrow_color_north,
+                arrow_color_east=arrow_color_east,
             )
 
         divider = make_axes_locatable(ax)
@@ -295,8 +295,8 @@ class ModelBandPlot(ModelBand):
         scale_bar_text=None,
         coordinate_arrows=True,
         arrow_font_size=15,
-        arrow_color_n="w",
-        arrow_color_e="w",
+        arrow_color_north="w",
+        arrow_color_east="w",
         font_size=15,
         colorbar_label=r"log$_{10}$ flux",
         colorbar_label_font_size=15,
@@ -378,8 +378,8 @@ class ModelBandPlot(ModelBand):
                 arrow_north_offset_y=self._arrow_north_offset_y,
                 arrow_east_offset_x=self._arrow_east_offset_x,
                 arrow_east_offset_y=self._arrow_east_offset_y,
-                arrow_color_north=arrow_color_n,
-                arrow_color_east=arrow_color_e,
+                arrow_color_north=arrow_color_north,
+                arrow_color_east=arrow_color_east,
             )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
@@ -424,8 +424,8 @@ class ModelBandPlot(ModelBand):
         scale_bar_length=1.0,
         scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_n="w",
-        arrow_color_e="w",
+        arrow_color_north="w",
+        arrow_color_east="w",
         arrow_font_size=15,
         **kwargs_matshow,
     ):
@@ -493,8 +493,8 @@ class ModelBandPlot(ModelBand):
                 arrow_north_offset_y=self._arrow_north_offset_y,
                 arrow_east_offset_x=self._arrow_east_offset_x,
                 arrow_east_offset_y=self._arrow_east_offset_y,
-                arrow_color_north=arrow_color_n,
-                arrow_color_east=arrow_color_e,
+                arrow_color_north=arrow_color_north,
+                arrow_color_east=arrow_color_east,
             )
             plot_util.title_text(
                 ax,
@@ -524,7 +524,7 @@ class ModelBandPlot(ModelBand):
         v_max=0.05,
         font_size=15,
         colorbar_label=r"$\kappa - \kappa_{\rm{macro}}$",
-        cmap="bwr",
+        cmap="coolwarm",
         with_critical_curves=False,
         crit_curve_color="k",
         image_name_list=None,
@@ -540,8 +540,8 @@ class ModelBandPlot(ModelBand):
         scale_bar_length=1.0,
         scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_n="k",
-        arrow_color_e="k",
+        arrow_color_north="k",
+        arrow_color_east="k",
         arrow_font_size=15,
         **kwargs_matshow,
     ):
@@ -664,8 +664,8 @@ class ModelBandPlot(ModelBand):
                 arrow_north_offset_y=self._arrow_north_offset_y,
                 arrow_east_offset_x=self._arrow_east_offset_x,
                 arrow_east_offset_y=self._arrow_east_offset_y,
-                arrow_color_north=arrow_color_n,
-                arrow_color_east=arrow_color_e,
+                arrow_color_north=arrow_color_north,
+                arrow_color_east=arrow_color_east,
             )
             plot_util.title_text(
                 ax,
@@ -732,8 +732,8 @@ class ModelBandPlot(ModelBand):
         scale_bar_length=1.0,
         scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_n="k",
-        arrow_color_e="k",
+        arrow_color_north="k",
+        arrow_color_east="k",
         arrow_font_size=15,
         **kwargs_matshow,
     ):
@@ -807,8 +807,8 @@ class ModelBandPlot(ModelBand):
                 arrow_north_offset_y=self._arrow_north_offset_y,
                 arrow_east_offset_x=self._arrow_east_offset_x,
                 arrow_east_offset_y=self._arrow_east_offset_y,
-                arrow_color_north=arrow_color_n,
-                arrow_color_east=arrow_color_e,
+                arrow_color_north=arrow_color_north,
+                arrow_color_east=arrow_color_east,
             )
         if color_bar:
             divider = make_axes_locatable(ax)
@@ -837,8 +837,8 @@ class ModelBandPlot(ModelBand):
         scale_bar_length=1.0,
         scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_n="k",
-        arrow_color_e="k",
+        arrow_color_north="k",
+        arrow_color_east="k",
         arrow_font_size=15,
         **kwargs_matshow,
     ):
@@ -911,8 +911,8 @@ class ModelBandPlot(ModelBand):
                 arrow_north_offset_y=self._arrow_north_offset_y,
                 arrow_east_offset_x=self._arrow_east_offset_x,
                 arrow_east_offset_y=self._arrow_east_offset_y,
-                arrow_color_north=arrow_color_n,
-                arrow_color_east=arrow_color_e,
+                arrow_color_north=arrow_color_north,
+                arrow_color_east=arrow_color_east,
             )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
@@ -999,8 +999,8 @@ class ModelBandPlot(ModelBand):
         scale_bar_length=0.1,
         scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_n="w",
-        arrow_color_e="w",
+        arrow_color_north="w",
+        arrow_color_east="w",
         arrow_font_size=15,
         **kwargs_matshow,
     ):
@@ -1125,8 +1125,8 @@ class ModelBandPlot(ModelBand):
                 arrow_north_offset_y=self._arrow_north_offset_y,
                 arrow_east_offset_x=self._arrow_east_offset_x,
                 arrow_east_offset_y=self._arrow_east_offset_y,
-                arrow_color_north=arrow_color_n,
-                arrow_color_east=arrow_color_e,
+                arrow_color_north=arrow_color_north,
+                arrow_color_east=arrow_color_east,
             )
             plot_util.title_text(
                 ax,
@@ -1165,8 +1165,8 @@ class ModelBandPlot(ModelBand):
         scale_bar_length=0.1,
         scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_n="w",
-        arrow_color_e="w",
+        arrow_color_north="w",
+        arrow_color_east="w",
         arrow_font_size=15,
         **kwargs_matshow,
     ):
@@ -1283,8 +1283,8 @@ class ModelBandPlot(ModelBand):
                 arrow_north_offset_y=self._arrow_north_offset_y,
                 arrow_east_offset_x=self._arrow_east_offset_x,
                 arrow_east_offset_y=self._arrow_east_offset_y,
-                arrow_color_north=arrow_color_n,
-                arrow_color_east=arrow_color_e,
+                arrow_color_north=arrow_color_north,
+                arrow_color_east=arrow_color_east,
             )
         plot_util.title_text(
             ax,
@@ -1322,8 +1322,8 @@ class ModelBandPlot(ModelBand):
         scale_bar_length=1.0,
         scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_n="k",
-        arrow_color_e="k",
+        arrow_color_north="k",
+        arrow_color_east="k",
         arrow_font_size=15,
         **kwargs_matshow,
     ):
@@ -1396,8 +1396,8 @@ class ModelBandPlot(ModelBand):
                 arrow_north_offset_y=self._arrow_north_offset_y,
                 arrow_east_offset_x=self._arrow_east_offset_x,
                 arrow_east_offset_y=self._arrow_east_offset_y,
-                arrow_color_north=arrow_color_n,
-                arrow_color_east=arrow_color_e,
+                arrow_color_north=arrow_color_north,
+                arrow_color_east=arrow_color_east,
             )
         plot_util.title_text(
             ax,
@@ -1449,8 +1449,8 @@ class ModelBandPlot(ModelBand):
         scale_bar_length=1.0,
         scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_n="k",
-        arrow_color_e="k",
+        arrow_color_north="k",
+        arrow_color_east="k",
         arrow_font_size=15,
         **kwargs_matshow,
     ):
@@ -1492,7 +1492,7 @@ class ModelBandPlot(ModelBand):
         else:
             alpha = alpha2
         if "cmap" not in kwargs_matshow:
-            kwargs_matshow["cmap"] = "RdYlBu_r"
+            kwargs_matshow["cmap"] = "PiYG"
         im = ax.matshow(
             alpha,
             origin="lower",
@@ -1528,8 +1528,8 @@ class ModelBandPlot(ModelBand):
                 arrow_north_offset_y=self._arrow_north_offset_y,
                 arrow_east_offset_x=self._arrow_east_offset_x,
                 arrow_east_offset_y=self._arrow_east_offset_y,
-                arrow_color_north=arrow_color_n,
-                arrow_color_east=arrow_color_e,
+                arrow_color_north=arrow_color_north,
+                arrow_color_east=arrow_color_east,
             )
         plot_util.title_text(
             ax,
@@ -1599,8 +1599,8 @@ class ModelBandPlot(ModelBand):
         scale_bar_length=1.0,
         scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_n="w",
-        arrow_color_e="w",
+        arrow_color_north="w",
+        arrow_color_east="w",
         arrow_font_size=15,
         **kwargs_matshow,
     ):
@@ -1695,8 +1695,8 @@ class ModelBandPlot(ModelBand):
                 arrow_north_offset_y=self._arrow_north_offset_y,
                 arrow_east_offset_x=self._arrow_east_offset_x,
                 arrow_east_offset_y=self._arrow_east_offset_y,
-                arrow_color_north=arrow_color_n,
-                arrow_color_east=arrow_color_e,
+                arrow_color_north=arrow_color_north,
+                arrow_color_east=arrow_color_east,
             )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
@@ -1725,8 +1725,8 @@ class ModelBandPlot(ModelBand):
         scale_bar_text=None,
         coordinate_arrows=True,
         arrow_font_size=15,
-        arrow_color_n="w",
-        arrow_color_e="w",
+        arrow_color_north="w",
+        arrow_color_east="w",
         font_size=15,
         colorbar_label_font_size=15,
         **kwargs_matshow,
@@ -1793,8 +1793,8 @@ class ModelBandPlot(ModelBand):
                 arrow_north_offset_y=self._arrow_north_offset_y,
                 arrow_east_offset_x=self._arrow_east_offset_x,
                 arrow_east_offset_y=self._arrow_east_offset_y,
-                arrow_color_north=arrow_color_n,
-                arrow_color_east=arrow_color_e,
+                arrow_color_north=arrow_color_north,
+                arrow_color_east=arrow_color_east,
             )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)

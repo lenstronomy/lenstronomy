@@ -130,10 +130,10 @@ def coordinate_arrows(
     arrowhead_size=5,
     arrow_origin_x=None,
     arrow_origin_y=None,
-    arrow_n_offset_x=0,
-    arrow_n_offset_y=3,
-    arrow_e_offset_x=3,
-    arrow_e_offset_y=0,
+    arrow_n_offset_x=None,
+    arrow_n_offset_y=None,
+    arrow_e_offset_x=None,
+    arrow_e_offset_y=None,
     color_n="w",
     color_e="w",
 ):
@@ -156,19 +156,52 @@ def coordinate_arrows(
     :return: updated ax instance
     """
     deltaPix = coords.pixel_width
+
+    ra_test, dec_test = coords.map_pix2coord(0, 0)
+    p0 = arrow_length * deltaPix
+
+    xx_ra_test, yy_ra_test = coords.map_coord2pix(ra_test + p0, dec_test)
+    xx_dec_test, yy_dec_test = coords.map_coord2pix(ra_test, dec_test + p0)
+
+    d_x_e = xx_ra_test - 0
+    d_y_e = yy_ra_test - 0
+    len_e = np.sqrt(d_x_e**2 + d_y_e**2)
+
+    d_x_n = xx_dec_test - 0
+    d_y_n = yy_dec_test - 0
+    len_n = np.sqrt(d_x_n**2 + d_y_n**2)
+
+    if arrow_e_offset_x is None or arrow_e_offset_y is None:
+        arrow_e_offset_x = (d_x_e / len_e) * (font_size / 1.5)
+        arrow_e_offset_y = (d_y_e / len_e) * (font_size / 1.5)
+
+    if arrow_n_offset_x is None or arrow_n_offset_y is None:
+        arrow_n_offset_x = (d_x_n / len_n) * (font_size / 1.5)
+        arrow_n_offset_y = (d_y_n / len_n) * (font_size / 1.5)
+
     if arrow_origin_x is None or arrow_origin_y is None:
-        d0 = d / 6.0  # from right side of plot
-        ra0, dec0 = coords.map_pix2coord((d - d0) / deltaPix, d0 / deltaPix)
-        xx_, yy_ = coords.map_coord2pix(ra0, dec0)
+        x_max_rel = max(
+            0, d_x_e, d_x_n, d_x_e + arrow_e_offset_x, d_x_n + arrow_n_offset_x
+        )
+        y_min_rel = min(
+            0, d_y_e, d_y_n, d_y_e + arrow_e_offset_y, d_y_n + arrow_n_offset_y
+        )
+
+        margin = font_size / 2.0
+
+        xx_ = (d / deltaPix) - margin - x_max_rel
+        yy_ = margin - y_min_rel
+
+        ra0, dec0 = coords.map_pix2coord(xx_, yy_)
     else:
         xx_ = arrow_origin_x
         yy_ = arrow_origin_y
         ra0, dec0 = coords.map_pix2coord(xx_, yy_)
 
-    p0 = arrow_length * deltaPix
-
-    xx_ra, yy_ra = coords.map_coord2pix(ra0 + p0, dec0)
-    xx_dec, yy_dec = coords.map_coord2pix(ra0, dec0 + p0)
+    xx_ra = xx_ + d_x_e
+    yy_ra = yy_ + d_y_e
+    xx_dec = xx_ + d_x_n
+    yy_dec = yy_ + d_y_n
 
     xx_ra_t = xx_ra + arrow_e_offset_x
     yy_ra_t = yy_ra + arrow_e_offset_y

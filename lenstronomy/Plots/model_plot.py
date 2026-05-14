@@ -37,10 +37,10 @@ class ModelPlot(object):
         arrowhead_size=5,
         arrow_origin_x=None,
         arrow_origin_y=None,
-        arrow_e_offset_x=3,
-        arrow_e_offset_y=0,
-        arrow_n_offset_x=0,
-        arrow_n_offset_y=3,
+        arrow_e_offset_x=None,
+        arrow_e_offset_y=None,
+        arrow_n_offset_x=None,
+        arrow_n_offset_y=None,
     ):
         """
 

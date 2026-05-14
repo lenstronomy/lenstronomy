@@ -21,9 +21,16 @@ class TracerPlot(object):
         kwargs_model,
         kwargs_params,
         kwargs_likelihood,
-        arrow_size=0.02,
         cmap_string="gist_heat",
         fast_caustic=True,
+        arrow_length=0.05,
+        arrowhead_size=0.025,
+        arrow_origin_x=None,
+        arrow_origin_y=None,
+        arrow_east_offset_x=None,
+        arrow_east_offset_y=None,
+        arrow_north_offset_x=None,
+        arrow_north_offset_y=None,
         scale_bar_width=2,
         scale_bar_font_size=15,
     ):
@@ -32,7 +39,6 @@ class TracerPlot(object):
         :param kwargs_model: model keyword argument list for the full multi-band modeling
         :param kwargs_params: keyword argument of keyword argument lists of the different model components selected for
          the imaging band, NOT including linear amplitudes (not required as being overwritten by the param list)
-        :param arrow_size: size of the scale and orientation arrow
         :param cmap_string: string of color map (or cmap matplotlib object)
         :param fast_caustic: boolean; if True, uses fast (but less accurate) caustic calculation method
         :param scale_bar_width: width of the scale bar
@@ -116,8 +122,15 @@ class TracerPlot(object):
         self._x_center, self._y_center = self._coords.center
 
         self._cmap = plot_util.cmap_conf(cmap_string)
-        self._arrow_size = arrow_size
         self._fast_caustic = fast_caustic
+        self._arrow_length = arrow_length
+        self._arrowhead_size = arrowhead_size
+        self._arrow_origin_x = arrow_origin_x
+        self._arrow_origin_y = arrow_origin_y
+        self._arrow_east_offset_x = arrow_east_offset_x
+        self._arrow_east_offset_y = arrow_east_offset_y
+        self._arrow_north_offset_x = arrow_north_offset_x
+        self._arrow_north_offset_y = arrow_north_offset_y
         self._scale_bar_width = scale_bar_width
         self._scale_bar_font_size = scale_bar_font_size
 
@@ -175,6 +188,18 @@ class TracerPlot(object):
         font_size=15,
         colorbar_label=r"log$_{10}$ flux",
         coordinate_arrows=True,
+        caption_font_size=15,
+        caption_color="w",
+        caption_background_color="k",
+        caption_x_pos=None,
+        caption_y_pos=None,
+        scale_bar_color="w",
+        scale_bar_length=1.0,
+        scale_bar_text=None,
+        colorbar_label_font_size=15,
+        arrow_color_north="w",
+        arrow_color_east="w",
+        arrow_font_size=15,
         **matshow_kwargs,
     ):
         """
@@ -209,17 +234,25 @@ class TracerPlot(object):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
 
-        plot_util.scale_bar(
-            ax, self._frame_size, dist=1, text='1"', font_size=font_size
-            ax, self._frame_size, dist=1, text='1"', font_size=self._scale_bar_font_size, linewidth=self._scale_bar_width
-        )
+        if scale_bar_length > 0:
+            plot_util.scale_bar(
+                ax,
+                self._frame_size,
+                dist=scale_bar_length,
+                text=scale_bar_text,
+                color=scale_bar_color,
+                font_size=self._scale_bar_font_size,
+                linewidth=self._scale_bar_width,
+            )
         plot_util.text_description(
             ax,
             self._frame_size,
             text=text,
-            color="w",
-            backgroundcolor="k",
-            font_size=font_size,
+            color=caption_color,
+            backgroundcolor=caption_background_color,
+            font_size=caption_font_size,
+            caption_x_pos=caption_x_pos,
+            caption_y_pos=caption_y_pos,
         )
 
         if coordinate_arrows:
@@ -227,15 +260,24 @@ class TracerPlot(object):
                 ax,
                 self._frame_size,
                 self._coords,
-                color="w",
-                arrow_size=self._arrow_size,
-                font_size=font_size,
+                font_size=arrow_font_size,
+                arrow_length=self._arrow_length,
+                arrowhead_size=self._arrowhead_size,
+                arrow_origin_x=self._arrow_origin_x,
+                arrow_origin_y=self._arrow_origin_y,
+                arrow_north_offset_x=self._arrow_north_offset_x,
+                arrow_north_offset_y=self._arrow_north_offset_y,
+                arrow_east_offset_x=self._arrow_east_offset_x,
+                arrow_east_offset_y=self._arrow_east_offset_y,
+                color_n=arrow_color_north,
+                color_e=arrow_color_east,
             )
 
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax, orientation="vertical")
-        cb.set_label(colorbar_label, fontsize=font_size)
+        cb.set_label(colorbar_label, fontsize=colorbar_label_font_size)
+        cb.ax.tick_params(labelsize=font_size)
         return ax
 
     def model_plot(
@@ -250,6 +292,18 @@ class TracerPlot(object):
         coordinate_arrows=True,
         original_position=True,
         image_name_list=None,
+        caption_font_size=15,
+        caption_color="w",
+        caption_background_color="k",
+        caption_x_pos=None,
+        caption_y_pos=None,
+        scale_bar_color="w",
+        scale_bar_length=1.0,
+        scale_bar_text=None,
+        colorbar_label_font_size=15,
+        arrow_color_north="w",
+        arrow_color_east="w",
+        arrow_font_size=15,
         **matshow_kwargs,
     ):
         """
@@ -286,31 +340,48 @@ class TracerPlot(object):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        plot_util.scale_bar(
-            ax, self._frame_size, dist=1, text='1"', font_size=font_size
-            ax, self._frame_size, dist=1, text='1"', font_size=self._scale_bar_font_size, linewidth=self._scale_bar_width
-        )
+        if scale_bar_length > 0:
+            plot_util.scale_bar(
+                ax,
+                self._frame_size,
+                dist=scale_bar_length,
+                text=scale_bar_text,
+                color=scale_bar_color,
+                font_size=self._scale_bar_font_size,
+                linewidth=self._scale_bar_width,
+            )
         plot_util.text_description(
             ax,
             self._frame_size,
             text=text,
-            color="w",
-            backgroundcolor="k",
-            font_size=font_size,
+            color=caption_color,
+            backgroundcolor=caption_background_color,
+            font_size=caption_font_size,
+            caption_x_pos=caption_x_pos,
+            caption_y_pos=caption_y_pos,
         )
         if coordinate_arrows:
             plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
-                color="w",
-                arrow_size=self._arrow_size,
-                font_size=font_size,
+                font_size=arrow_font_size,
+                arrow_length=self._arrow_length,
+                arrowhead_size=self._arrowhead_size,
+                arrow_origin_x=self._arrow_origin_x,
+                arrow_origin_y=self._arrow_origin_y,
+                arrow_north_offset_x=self._arrow_north_offset_x,
+                arrow_north_offset_y=self._arrow_north_offset_y,
+                arrow_east_offset_x=self._arrow_east_offset_x,
+                arrow_east_offset_y=self._arrow_east_offset_y,
+                color_n=arrow_color_north,
+                color_e=arrow_color_east,
             )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(colorbar_label, fontsize=font_size)
+        cb.set_label(colorbar_label, fontsize=colorbar_label_font_size)
+        cb.ax.tick_params(labelsize=font_size)
 
         # plot_line_set(ax, self._coords, self._ra_caustic_list, self._dec_caustic_list, color='b')
         # plot_line_set(ax, self._coords, self._ra_crit_list, self._dec_crit_list, color='r')
@@ -338,6 +409,18 @@ class TracerPlot(object):
         font_size=15,
         colorbar_label=r"$\log_{10}\ \kappa$",
         coordinate_arrows=True,
+        caption_font_size=15,
+        caption_color="w",
+        caption_background_color="k",
+        caption_x_pos=None,
+        caption_y_pos=None,
+        scale_bar_color="w",
+        scale_bar_length=1.0,
+        scale_bar_text=None,
+        colorbar_label_font_size=15,
+        arrow_color_north="w",
+        arrow_color_east="w",
+        arrow_font_size=15,
         **matshow_kwargs,
     ):
         """
@@ -369,32 +452,49 @@ class TracerPlot(object):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        plot_util.scale_bar(
-            ax, self._frame_size, dist=1, text='1"', color="w", font_size=font_size
-            ax, self._frame_size, dist=1, text='1"', color="w", font_size=self._scale_bar_font_size, linewidth=self._scale_bar_width
-        )
+        if scale_bar_length > 0:
+            plot_util.scale_bar(
+                ax,
+                self._frame_size,
+                dist=scale_bar_length,
+                text=scale_bar_text,
+                color=scale_bar_color,
+                font_size=self._scale_bar_font_size,
+                linewidth=self._scale_bar_width,
+            )
         if coordinate_arrows:
             plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
-                color="w",
-                arrow_size=self._arrow_size,
-                font_size=font_size,
+                font_size=arrow_font_size,
+                arrow_length=self._arrow_length,
+                arrowhead_size=self._arrowhead_size,
+                arrow_origin_x=self._arrow_origin_x,
+                arrow_origin_y=self._arrow_origin_y,
+                arrow_north_offset_x=self._arrow_north_offset_x,
+                arrow_north_offset_y=self._arrow_north_offset_y,
+                arrow_east_offset_x=self._arrow_east_offset_x,
+                arrow_east_offset_y=self._arrow_east_offset_y,
+                color_n=arrow_color_north,
+                color_e=arrow_color_east,
             )
             plot_util.text_description(
                 ax,
                 self._frame_size,
                 text=text,
-                color="w",
-                backgroundcolor="k",
                 flipped=False,
-                font_size=font_size,
+                color=caption_color,
+                backgroundcolor=caption_background_color,
+                font_size=caption_font_size,
+                caption_x_pos=caption_x_pos,
+                caption_y_pos=caption_y_pos,
             )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(colorbar_label, fontsize=font_size)
+        cb.set_label(colorbar_label, fontsize=colorbar_label_font_size)
+        cb.ax.tick_params(labelsize=font_size)
         return ax
 
     def normalized_residual_plot(
@@ -407,6 +507,18 @@ class TracerPlot(object):
         colorbar_label=r"(f$_{\rm model}$ - f$_{\rm data}$)/$\sigma$",
         coordinate_arrows=True,
         color_bar=True,
+        caption_font_size=15,
+        caption_color="k",
+        caption_background_color="w",
+        caption_x_pos=None,
+        caption_y_pos=None,
+        scale_bar_color="k",
+        scale_bar_length=1.0,
+        scale_bar_text=None,
+        colorbar_label_font_size=15,
+        arrow_color_north="k",
+        arrow_color_east="k",
+        arrow_font_size=15,
         **matshow_kwargs,
     ):
         """
@@ -439,32 +551,49 @@ class TracerPlot(object):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        plot_util.scale_bar(
-            ax, self._frame_size, dist=1, text='1"', color="k", font_size=font_size
-            ax, self._frame_size, dist=1, text='1"', color="k", font_size=self._scale_bar_font_size, linewidth=self._scale_bar_width
-        )
+        if scale_bar_length > 0:
+            plot_util.scale_bar(
+                ax,
+                self._frame_size,
+                dist=scale_bar_length,
+                text=scale_bar_text,
+                color=scale_bar_color,
+                font_size=self._scale_bar_font_size,
+                linewidth=self._scale_bar_width,
+            )
         plot_util.text_description(
             ax,
             self._frame_size,
             text=text,
-            color="k",
-            backgroundcolor="w",
-            font_size=font_size,
+            color=caption_color,
+            backgroundcolor=caption_background_color,
+            font_size=caption_font_size,
+            caption_x_pos=caption_x_pos,
+            caption_y_pos=caption_y_pos,
         )
         if coordinate_arrows:
             plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
-                color="w",
-                arrow_size=self._arrow_size,
-                font_size=font_size,
+                font_size=arrow_font_size,
+                arrow_length=self._arrow_length,
+                arrowhead_size=self._arrowhead_size,
+                arrow_origin_x=self._arrow_origin_x,
+                arrow_origin_y=self._arrow_origin_y,
+                arrow_north_offset_x=self._arrow_north_offset_x,
+                arrow_north_offset_y=self._arrow_north_offset_y,
+                arrow_east_offset_x=self._arrow_east_offset_x,
+                arrow_east_offset_y=self._arrow_east_offset_y,
+                color_n=arrow_color_north,
+                color_e=arrow_color_east,
             )
         if color_bar:
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.05)
             cb = plt.colorbar(im, cax=cax)
-            cb.set_label(colorbar_label, fontsize=font_size)
+            cb.set_label(colorbar_label, fontsize=colorbar_label_font_size)
+            cb.ax.tick_params(labelsize=font_size)
         return ax
 
     def absolute_residual_plot(
@@ -476,6 +605,18 @@ class TracerPlot(object):
         text="Residuals",
         colorbar_label=r"(f$_{model}$-f$_{data}$)",
         coordinate_arrows=True,
+        caption_font_size=15,
+        caption_color="k",
+        caption_background_color="w",
+        caption_x_pos=None,
+        caption_y_pos=None,
+        scale_bar_color="k",
+        scale_bar_length=1.0,
+        scale_bar_text=None,
+        colorbar_label_font_size=15,
+        arrow_color_north="k",
+        arrow_color_east="k",
+        arrow_font_size=15,
         **matshow_kwargs,
     ):
         """
@@ -505,31 +646,48 @@ class TracerPlot(object):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        plot_util.scale_bar(
-            ax, self._frame_size, dist=1, text='1"', color="k", font_size=font_size
-            ax, self._frame_size, dist=1, text='1"', color="k", font_size=self._scale_bar_font_size, linewidth=self._scale_bar_width
-        )
+        if scale_bar_length > 0:
+            plot_util.scale_bar(
+                ax,
+                self._frame_size,
+                dist=scale_bar_length,
+                text=scale_bar_text,
+                color=scale_bar_color,
+                font_size=self._scale_bar_font_size,
+                linewidth=self._scale_bar_width,
+            )
         plot_util.text_description(
             ax,
             self._frame_size,
             text=text,
-            color="k",
-            backgroundcolor="w",
-            font_size=font_size,
+            color=caption_color,
+            backgroundcolor=caption_background_color,
+            font_size=caption_font_size,
+            caption_x_pos=caption_x_pos,
+            caption_y_pos=caption_y_pos,
         )
         if coordinate_arrows:
             plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
-                font_size=font_size,
-                color="k",
-                arrow_size=self._arrow_size,
+                font_size=arrow_font_size,
+                arrow_length=self._arrow_length,
+                arrowhead_size=self._arrowhead_size,
+                arrow_origin_x=self._arrow_origin_x,
+                arrow_origin_y=self._arrow_origin_y,
+                arrow_north_offset_x=self._arrow_north_offset_x,
+                arrow_north_offset_y=self._arrow_north_offset_y,
+                arrow_east_offset_x=self._arrow_east_offset_x,
+                arrow_east_offset_y=self._arrow_east_offset_y,
+                color_n=arrow_color_north,
+                color_e=arrow_color_east,
             )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(colorbar_label, fontsize=font_size)
+        cb.set_label(colorbar_label, fontsize=colorbar_label_font_size)
+        cb.ax.tick_params(labelsize=font_size)
         return ax
 
     def source(self, numPix, deltaPix, center=None, image_orientation=True):
@@ -592,12 +750,23 @@ class TracerPlot(object):
         caustic_color="yellow",
         font_size=15,
         plot_scale="log",
-        scale_size=0.1,
         text="Reconstructed source",
         colorbar_label=r"tracer",
         point_source_position=True,
         kwargs_caustic=None,
         coordinate_arrows=True,
+        caption_font_size=15,
+        caption_color="w",
+        caption_background_color="k",
+        caption_x_pos=None,
+        caption_y_pos=None,
+        scale_bar_color="w",
+        scale_bar_length=0.1,
+        scale_bar_text=None,
+        colorbar_label_font_size=15,
+        arrow_color_north="w",
+        arrow_color_east="w",
+        arrow_font_size=15,
         **matshow_kwargs,
     ):
         """
@@ -619,7 +788,6 @@ class TracerPlot(object):
         :param caustic_color: color of the caustics
         :param font_size: font size of labels
         :param plot_scale: string, log or linear, scale of surface brightness plot
-        :param scale_size: float, size of the scale bar
         :param text: string, text to be displayed in the image
         :param colorbar_label: string, label for the colorbar
         :param point_source_position: boolean, if True, plots a point at the position of the point source
@@ -662,7 +830,8 @@ class TracerPlot(object):
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(colorbar_label, fontsize=font_size)
+        cb.set_label(colorbar_label, fontsize=colorbar_label_font_size)
+        cb.ax.tick_params(labelsize=font_size)
 
         if with_caustics is True:
             ra_caustic_list, dec_caustic_list = self._caustics()
@@ -683,14 +852,13 @@ class TracerPlot(object):
                 points_only=self._caustic_points_only,
                 **kwargs_caustic,
             )
+        if scale_bar_length > 0:
             plot_util.scale_bar(
                 ax,
                 d_s,
-                dist=scale_size,
-                text='{:.1f}"'.format(scale_size),
-                color="w",
-                flipped=False,
-                font_size=font_size,
+                dist=scale_bar_length,
+                text=scale_bar_text,
+                color=scale_bar_color,
                 font_size=self._scale_bar_font_size,
                 linewidth=self._scale_bar_width,
             )
@@ -699,18 +867,28 @@ class TracerPlot(object):
                 ax,
                 self._frame_size,
                 self._coords,
-                color="w",
-                arrow_size=self._arrow_size,
-                font_size=font_size,
+                font_size=arrow_font_size,
+                arrow_length=self._arrow_length,
+                arrowhead_size=self._arrowhead_size,
+                arrow_origin_x=self._arrow_origin_x,
+                arrow_origin_y=self._arrow_origin_y,
+                arrow_north_offset_x=self._arrow_north_offset_x,
+                arrow_north_offset_y=self._arrow_north_offset_y,
+                arrow_east_offset_x=self._arrow_east_offset_x,
+                arrow_east_offset_y=self._arrow_east_offset_y,
+                color_n=arrow_color_north,
+                color_e=arrow_color_east,
             )
             plot_util.text_description(
                 ax,
                 d_s,
                 text=text,
-                color="w",
-                backgroundcolor="k",
                 flipped=False,
-                font_size=font_size,
+                color=caption_color,
+                backgroundcolor=caption_background_color,
+                font_size=caption_font_size,
+                caption_x_pos=caption_x_pos,
+                caption_y_pos=caption_y_pos,
             )
         if point_source_position is True:
             ra_source, dec_source = self.PointSource.source_position(
@@ -729,6 +907,18 @@ class TracerPlot(object):
         coordinate_arrows=True,
         text="Magnification model",
         colorbar_label=r"$\det\ (\mathsf{A}^{-1})$",
+        caption_font_size=15,
+        caption_color="k",
+        caption_background_color="w",
+        caption_x_pos=None,
+        caption_y_pos=None,
+        scale_bar_color="k",
+        scale_bar_length=1.0,
+        scale_bar_text=None,
+        colorbar_label_font_size=15,
+        arrow_color_north="k",
+        arrow_color_east="k",
+        arrow_font_size=15,
         **matshow_kwargs,
     ):
         """
@@ -763,31 +953,48 @@ class TracerPlot(object):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        plot_util.scale_bar(
-            ax, self._frame_size, dist=1, text='1"', color="k", font_size=font_size
-            ax, self._frame_size, dist=1, text='1"', color="k", font_size=self._scale_bar_font_size, linewidth=self._scale_bar_width
-        )
+        if scale_bar_length > 0:
+            plot_util.scale_bar(
+                ax,
+                self._frame_size,
+                dist=scale_bar_length,
+                text=scale_bar_text,
+                color=scale_bar_color,
+                font_size=self._scale_bar_font_size,
+                linewidth=self._scale_bar_width,
+            )
         if coordinate_arrows:
             plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
-                color="k",
-                arrow_size=self._arrow_size,
-                font_size=font_size,
+                font_size=arrow_font_size,
+                arrow_length=self._arrow_length,
+                arrowhead_size=self._arrowhead_size,
+                arrow_origin_x=self._arrow_origin_x,
+                arrow_origin_y=self._arrow_origin_y,
+                arrow_north_offset_x=self._arrow_north_offset_x,
+                arrow_north_offset_y=self._arrow_north_offset_y,
+                arrow_east_offset_x=self._arrow_east_offset_x,
+                arrow_east_offset_y=self._arrow_east_offset_y,
+                color_n=arrow_color_north,
+                color_e=arrow_color_east,
             )
         plot_util.text_description(
             ax,
             self._frame_size,
             text=text,
-            color="k",
-            backgroundcolor="w",
-            font_size=font_size,
+            color=caption_color,
+            backgroundcolor=caption_background_color,
+            font_size=caption_font_size,
+            caption_x_pos=caption_x_pos,
+            caption_y_pos=caption_y_pos,
         )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(colorbar_label, fontsize=font_size)
+        cb.set_label(colorbar_label, fontsize=colorbar_label_font_size)
+        cb.ax.tick_params(labelsize=font_size)
         ra_image, dec_image = self.PointSource.image_position(
             self._kwargs_ps, self._kwargs_lens
         )
@@ -813,6 +1020,18 @@ class TracerPlot(object):
         font_size=15,
         colorbar_label=r"arcsec",
         coordinate_arrows=True,
+        caption_font_size=15,
+        caption_color="k",
+        caption_background_color="w",
+        caption_x_pos=None,
+        caption_y_pos=None,
+        scale_bar_color="k",
+        scale_bar_length=1.0,
+        scale_bar_text=None,
+        colorbar_label_font_size=15,
+        arrow_color_north="k",
+        arrow_color_east="k",
+        arrow_font_size=15,
         **matshow_kwargs,
     ):
         """
@@ -856,31 +1075,48 @@ class TracerPlot(object):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        plot_util.scale_bar(
-            ax, self._frame_size, dist=1, text='1"', color="k", font_size=font_size
-            ax, self._frame_size, dist=1, text='1"', color="k", font_size=self._scale_bar_font_size, linewidth=self._scale_bar_width
-        )
+        if scale_bar_length > 0:
+            plot_util.scale_bar(
+                ax,
+                self._frame_size,
+                dist=scale_bar_length,
+                text=scale_bar_text,
+                color=scale_bar_color,
+                font_size=self._scale_bar_font_size,
+                linewidth=self._scale_bar_width,
+            )
         if coordinate_arrows:
             plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
-                color="k",
-                arrow_size=self._arrow_size,
-                font_size=font_size,
+                font_size=arrow_font_size,
+                arrow_length=self._arrow_length,
+                arrowhead_size=self._arrowhead_size,
+                arrow_origin_x=self._arrow_origin_x,
+                arrow_origin_y=self._arrow_origin_y,
+                arrow_north_offset_x=self._arrow_north_offset_x,
+                arrow_north_offset_y=self._arrow_north_offset_y,
+                arrow_east_offset_x=self._arrow_east_offset_x,
+                arrow_east_offset_y=self._arrow_east_offset_y,
+                color_n=arrow_color_north,
+                color_e=arrow_color_east,
             )
         plot_util.text_description(
             ax,
             self._frame_size,
             text=text,
-            color="k",
-            backgroundcolor="w",
-            font_size=font_size,
+            color=caption_color,
+            backgroundcolor=caption_background_color,
+            font_size=caption_font_size,
+            caption_x_pos=caption_x_pos,
+            caption_y_pos=caption_y_pos,
         )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(colorbar_label, fontsize=font_size)
+        cb.set_label(colorbar_label, fontsize=colorbar_label_font_size)
+        cb.ax.tick_params(labelsize=font_size)
         if with_caustics is True:
             ra_crit_list, dec_crit_list = self._critical_curves()
             ra_caustic_list, dec_caustic_list = self._caustics()

@@ -22,6 +22,14 @@ class MultiPatchPlot(MultiPatchReconstruction):
         kwargs_pixel_grid=None,
         verbose=True,
         cmap_string="gist_heat",
+        arrow_length=0.05,
+        arrowhead_size=0.025,
+        arrow_origin_x=None,
+        arrow_origin_y=None,
+        arrow_east_offset_x=None,
+        arrow_east_offset_y=None,
+        arrow_north_offset_x=None,
+        arrow_north_offset_y=None,
         scale_bar_width=2,
         scale_bar_font_size=15,
     ):
@@ -68,6 +76,14 @@ class MultiPatchPlot(MultiPatchReconstruction):
         self._v_min_default = max(np.min(log_model), -5)
         self._v_max_default = min(np.max(log_model), 10)
         self._cmap = plot_util.cmap_conf(cmap_string)
+        self._arrow_length = arrow_length
+        self._arrowhead_size = arrowhead_size
+        self._arrow_origin_x = arrow_origin_x
+        self._arrow_origin_y = arrow_origin_y
+        self._arrow_east_offset_x = arrow_east_offset_x
+        self._arrow_east_offset_y = arrow_east_offset_y
+        self._arrow_north_offset_x = arrow_north_offset_x
+        self._arrow_north_offset_y = arrow_north_offset_y
         self._scale_bar_width = scale_bar_width
         self._scale_bar_font_size = scale_bar_font_size
 
@@ -134,7 +150,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         log_scale=True,
         text="Source",
         colorbar_label=r"log$_{10}$ flux",
-        dist_scale=0.1,
+        scale_bar_length=0.1,
         **kwargs
     ):
         """Illustrates source.
@@ -146,7 +162,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param log_scale: boolean, if True, plots the map in log_10 scale
         :param text: string, text to be displayed in the image
         :param colorbar_label: string, label for the colorbar
-        :param dist_scale: distance scale for scale bar
+        :param scale_bar_length: distance scale for scale bar
         :param kwargs: plotting keyword arguments
         :return: matplotlib instance
         """
@@ -160,7 +176,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
             log_scale=log_scale,
             text=text,
             colorbar_label=colorbar_label,
-            dist_scale=dist_scale,
+            scale_bar_length=scale_bar_length,
             **kwargs
         )
 
@@ -315,9 +331,19 @@ class MultiPatchPlot(MultiPatchReconstruction):
         font_size=15,
         colorbar_label=r"log$_{10}$ flux",
         cmap=None,
-        dist_scale=1.0,
+        scale_bar_length=1.0,
+        scale_bar_text=None,
+        caption_font_size=15,
+        caption_color=None,
+        caption_background_color=None,
+        caption_x_pos=None,
+        caption_y_pos=None,
         white_on_black=True,
         no_support=False,
+        colorbar_label_font_size=15,
+        arrow_color_north=None,
+        arrow_color_east=None,
+        arrow_font_size=15,
         **kwargs
     ):
         """
@@ -332,7 +358,8 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param font_size: font size of the text
         :param colorbar_label: string, label for the colorbar
         :param cmap: string of color map (or cmap matplotlib object)
-        :param dist_scale: distance scale for scale bar
+        :param scale_bar_length: distance scale for scale bar
+        :param scale_bar_text: string to be printed on scale bar
         :param white_on_black: boolean, if True, prints white text on black background, otherwise the opposite
         :param no_support: boolean, if True, does not plot the scale bar, text description, coordinate arrows, or color bar
         :param kwargs: keyword arguments
@@ -344,6 +371,15 @@ class MultiPatchPlot(MultiPatchReconstruction):
         else:
             text_k = "k"
             bkg_k = "w"
+
+        if caption_color is None:
+            caption_color = text_k
+        if caption_background_color is None:
+            caption_background_color = bkg_k
+        if arrow_color_north is None:
+            arrow_color_north = text_k
+        if arrow_color_east is None:
+            arrow_color_east = text_k
 
         if cmap is None:
             cmap = self._cmap
@@ -371,13 +407,12 @@ class MultiPatchPlot(MultiPatchReconstruction):
         ax.autoscale(False)
 
         if not no_support:
-            text_dist = "{:.1f}".format(dist_scale) + '"'
             if "no_scale_bar" not in kwargs or not kwargs["no_scale_bar"]:
                 plot_util.scale_bar(
                     ax,
                     frame_size,
-                    dist=dist_scale,
-                    text=text_dist,
+                    dist=scale_bar_length,
+                    text=scale_bar_text,
                     color=kwargs.get("scale_bar_color", text_k),
                     font_size=self._scale_bar_font_size,
                     linewidth=self._scale_bar_width,
@@ -387,9 +422,11 @@ class MultiPatchPlot(MultiPatchReconstruction):
                     ax,
                     frame_size,
                     text=text,
-                    color=text_k,
-                    backgroundcolor=bkg_k,
-                    font_size=font_size,
+                    color=caption_color,
+                    backgroundcolor=caption_background_color,
+                    font_size=caption_font_size,
+                    caption_x_pos=caption_x_pos,
+                    caption_y_pos=caption_y_pos,
                 )
 
             if kwargs.get("coordinate_arrows", True):
@@ -397,12 +434,22 @@ class MultiPatchPlot(MultiPatchReconstruction):
                     ax,
                     frame_size,
                     coords,
-                    color=text_k,
-                    font_size=font_size,
+                    font_size=arrow_font_size,
+                    arrow_length=self._arrow_length,
+                    arrowhead_size=self._arrowhead_size,
+                    arrow_origin_x=self._arrow_origin_x,
+                    arrow_origin_y=self._arrow_origin_y,
+                    arrow_north_offset_x=self._arrow_north_offset_x,
+                    arrow_north_offset_y=self._arrow_north_offset_y,
+                    arrow_east_offset_x=self._arrow_east_offset_x,
+                    arrow_east_offset_y=self._arrow_east_offset_y,
+                    color_n=arrow_color_north,
+                    color_e=arrow_color_east,
                 )
 
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.05)
             cb = plt.colorbar(im, cax=cax, orientation="vertical")
-            cb.set_label(colorbar_label, fontsize=font_size)
+            cb.set_label(colorbar_label, fontsize=colorbar_label_font_size)
+            cb.ax.tick_params(labelsize=font_size)
         return ax

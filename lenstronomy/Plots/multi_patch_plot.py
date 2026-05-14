@@ -429,7 +429,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
 
         if not no_support:
             if "no_scale_bar" not in kwargs or not kwargs["no_scale_bar"]:
-                plot_util.scale_bar(
+                plot_util.show_scale_bar(
                     ax,
                     frame_size,
                     dist=scale_bar_length,
@@ -439,7 +439,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
                     linewidth=self._scale_bar_width,
                 )
             if "no_text" not in kwargs or not kwargs["no_text"]:
-                plot_util.title_text(
+                plot_util.show_title_text(
                     ax,
                     text=title_text,
                     color=title_color,
@@ -450,7 +450,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
                 )
 
             if kwargs.get("coordinate_arrows", True):
-                plot_util.coordinate_arrows(
+                plot_util.show_coordinate_arrows(
                     ax,
                     frame_size,
                     coords,

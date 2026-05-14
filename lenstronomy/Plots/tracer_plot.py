@@ -265,7 +265,7 @@ class TracerPlot(object):
         ax.autoscale(False)
 
         if scale_bar_length > 0:
-            plot_util.scale_bar(
+            plot_util.show_scale_bar(
                 ax,
                 self._frame_size,
                 dist=scale_bar_length,
@@ -274,7 +274,7 @@ class TracerPlot(object):
                 font_size=self._scale_bar_font_size,
                 linewidth=self._scale_bar_width,
             )
-        plot_util.title_text(
+        plot_util.show_title_text(
             ax,
             text=title_text,
             color=title_color,
@@ -285,7 +285,7 @@ class TracerPlot(object):
         )
 
         if coordinate_arrows:
-            plot_util.coordinate_arrows(
+            plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
@@ -380,7 +380,7 @@ class TracerPlot(object):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
         if scale_bar_length > 0:
-            plot_util.scale_bar(
+            plot_util.show_scale_bar(
                 ax,
                 self._frame_size,
                 dist=scale_bar_length,
@@ -389,7 +389,7 @@ class TracerPlot(object):
                 font_size=self._scale_bar_font_size,
                 linewidth=self._scale_bar_width,
             )
-        plot_util.title_text(
+        plot_util.show_title_text(
             ax,
             text=title_text,
             color=title_color,
@@ -399,7 +399,7 @@ class TracerPlot(object):
             title_y_pos=title_y_pos,
         )
         if coordinate_arrows:
-            plot_util.coordinate_arrows(
+            plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
@@ -502,7 +502,7 @@ class TracerPlot(object):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
         if scale_bar_length > 0:
-            plot_util.scale_bar(
+            plot_util.show_scale_bar(
                 ax,
                 self._frame_size,
                 dist=scale_bar_length,
@@ -512,7 +512,7 @@ class TracerPlot(object):
                 linewidth=self._scale_bar_width,
             )
         if coordinate_arrows:
-            plot_util.coordinate_arrows(
+            plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
@@ -528,7 +528,7 @@ class TracerPlot(object):
                 arrow_color_north=arrow_color_north,
                 arrow_color_east=arrow_color_east,
             )
-        plot_util.title_text(
+        plot_util.show_title_text(
             ax,
             text=title_text,
             flipped=False,
@@ -608,7 +608,7 @@ class TracerPlot(object):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
         if scale_bar_length > 0:
-            plot_util.scale_bar(
+            plot_util.show_scale_bar(
                 ax,
                 self._frame_size,
                 dist=scale_bar_length,
@@ -617,7 +617,7 @@ class TracerPlot(object):
                 font_size=self._scale_bar_font_size,
                 linewidth=self._scale_bar_width,
             )
-        plot_util.title_text(
+        plot_util.show_title_text(
             ax,
             text=title_text,
             color=title_color,
@@ -627,7 +627,7 @@ class TracerPlot(object):
             title_y_pos=title_y_pos,
         )
         if coordinate_arrows:
-            plot_util.coordinate_arrows(
+            plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
@@ -712,7 +712,7 @@ class TracerPlot(object):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
         if scale_bar_length > 0:
-            plot_util.scale_bar(
+            plot_util.show_scale_bar(
                 ax,
                 self._frame_size,
                 dist=scale_bar_length,
@@ -721,7 +721,7 @@ class TracerPlot(object):
                 font_size=self._scale_bar_font_size,
                 linewidth=self._scale_bar_width,
             )
-        plot_util.title_text(
+        plot_util.show_title_text(
             ax,
             text=title_text,
             color=title_color,
@@ -731,7 +731,7 @@ class TracerPlot(object):
             title_y_pos=title_y_pos,
         )
         if coordinate_arrows:
-            plot_util.coordinate_arrows(
+            plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
@@ -918,7 +918,7 @@ class TracerPlot(object):
                 **kwargs_caustic,
             )
         if scale_bar_length > 0:
-            plot_util.scale_bar(
+            plot_util.show_scale_bar(
                 ax,
                 d_s,
                 dist=scale_bar_length,
@@ -928,7 +928,7 @@ class TracerPlot(object):
                 linewidth=self._scale_bar_width,
             )
         if coordinate_arrows:
-            plot_util.coordinate_arrows(
+            plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
@@ -944,7 +944,7 @@ class TracerPlot(object):
                 arrow_color_north=arrow_color_north,
                 arrow_color_east=arrow_color_east,
             )
-            plot_util.title_text(
+            plot_util.show_title_text(
                 ax,
                 text=title_text,
                 flipped=False,
@@ -1030,7 +1030,7 @@ class TracerPlot(object):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
         if scale_bar_length > 0:
-            plot_util.scale_bar(
+            plot_util.show_scale_bar(
                 ax,
                 self._frame_size,
                 dist=scale_bar_length,
@@ -1040,7 +1040,7 @@ class TracerPlot(object):
                 linewidth=self._scale_bar_width,
             )
         if coordinate_arrows:
-            plot_util.coordinate_arrows(
+            plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
@@ -1056,7 +1056,7 @@ class TracerPlot(object):
                 arrow_color_north=arrow_color_north,
                 arrow_color_east=arrow_color_east,
             )
-        plot_util.title_text(
+        plot_util.show_title_text(
             ax,
             text=title_text,
             color=title_color,
@@ -1162,7 +1162,7 @@ class TracerPlot(object):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
         if scale_bar_length > 0:
-            plot_util.scale_bar(
+            plot_util.show_scale_bar(
                 ax,
                 self._frame_size,
                 dist=scale_bar_length,
@@ -1172,7 +1172,7 @@ class TracerPlot(object):
                 linewidth=self._scale_bar_width,
             )
         if coordinate_arrows:
-            plot_util.coordinate_arrows(
+            plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
@@ -1188,7 +1188,7 @@ class TracerPlot(object):
                 arrow_color_north=arrow_color_north,
                 arrow_color_east=arrow_color_east,
             )
-        plot_util.title_text(
+        plot_util.show_title_text(
             ax,
             text=title_text,
             color=title_color,

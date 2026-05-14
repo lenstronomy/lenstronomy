@@ -231,7 +231,7 @@ class ModelBandPlot(ModelBand):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
 
-        plot_util.scale_bar(
+        plot_util.show_scale_bar(
             ax,
             self._frame_size,
             dist=scale_bar_length,
@@ -240,7 +240,7 @@ class ModelBandPlot(ModelBand):
             font_size=self._scale_bar_font_size,
             linewidth=self._scale_bar_width,
         )
-        plot_util.title_text(
+        plot_util.show_title_text(
             ax,
             text=title_text,
             color=title_color,
@@ -251,7 +251,7 @@ class ModelBandPlot(ModelBand):
         )
 
         if coordinate_arrows:
-            plot_util.coordinate_arrows(
+            plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
@@ -346,7 +346,7 @@ class ModelBandPlot(ModelBand):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        plot_util.scale_bar(
+        plot_util.show_scale_bar(
             ax,
             self._frame_size,
             dist=scale_bar_length,
@@ -355,7 +355,7 @@ class ModelBandPlot(ModelBand):
             font_size=self._scale_bar_font_size,
             linewidth=self._scale_bar_width,
         )
-        plot_util.title_text(
+        plot_util.show_title_text(
             ax,
             text=title_text,
             color=title_color,
@@ -365,7 +365,7 @@ class ModelBandPlot(ModelBand):
             title_y_pos=title_y_pos,
         )
         if coordinate_arrows:
-            plot_util.coordinate_arrows(
+            plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
@@ -470,7 +470,7 @@ class ModelBandPlot(ModelBand):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        plot_util.scale_bar(
+        plot_util.show_scale_bar(
             ax,
             self._frame_size,
             dist=scale_bar_length,
@@ -480,7 +480,7 @@ class ModelBandPlot(ModelBand):
             linewidth=self._scale_bar_width,
         )
         if coordinate_arrows:
-            plot_util.coordinate_arrows(
+            plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
@@ -496,7 +496,7 @@ class ModelBandPlot(ModelBand):
                 arrow_color_north=arrow_color_north,
                 arrow_color_east=arrow_color_east,
             )
-            plot_util.title_text(
+            plot_util.show_title_text(
                 ax,
                 text=title_text,
                 flipped=False,
@@ -641,7 +641,7 @@ class ModelBandPlot(ModelBand):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        plot_util.scale_bar(
+        plot_util.show_scale_bar(
             ax,
             self._frame_size,
             dist=scale_bar_length,
@@ -651,7 +651,7 @@ class ModelBandPlot(ModelBand):
             linewidth=self._scale_bar_width,
         )
         if coordinate_arrows:
-            plot_util.coordinate_arrows(
+            plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
@@ -667,7 +667,7 @@ class ModelBandPlot(ModelBand):
                 arrow_color_north=arrow_color_north,
                 arrow_color_east=arrow_color_east,
             )
-            plot_util.title_text(
+            plot_util.show_title_text(
                 ax,
                 text=title_text,
                 flipped=False,
@@ -775,7 +775,7 @@ class ModelBandPlot(ModelBand):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        plot_util.scale_bar(
+        plot_util.show_scale_bar(
             ax,
             self._frame_size,
             dist=scale_bar_length,
@@ -784,7 +784,7 @@ class ModelBandPlot(ModelBand):
             font_size=self._scale_bar_font_size,
             linewidth=self._scale_bar_width,
         )
-        plot_util.title_text(
+        plot_util.show_title_text(
             ax,
             text=title_text,
             color=title_color,
@@ -794,7 +794,7 @@ class ModelBandPlot(ModelBand):
             title_y_pos=title_y_pos,
         )
         if coordinate_arrows:
-            plot_util.coordinate_arrows(
+            plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
@@ -879,7 +879,7 @@ class ModelBandPlot(ModelBand):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        plot_util.scale_bar(
+        plot_util.show_scale_bar(
             ax,
             self._frame_size,
             dist=scale_bar_length,
@@ -888,7 +888,7 @@ class ModelBandPlot(ModelBand):
             font_size=self._scale_bar_font_size,
             linewidth=self._scale_bar_width,
         )
-        plot_util.title_text(
+        plot_util.show_title_text(
             ax,
             text=title_text,
             color=title_color,
@@ -898,7 +898,7 @@ class ModelBandPlot(ModelBand):
             title_y_pos=title_y_pos,
         )
         if coordinate_arrows:
-            plot_util.coordinate_arrows(
+            plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
@@ -1102,7 +1102,7 @@ class ModelBandPlot(ModelBand):
                 **kwargs_caustic,
             )
         if scale_bar_length > 0:
-            plot_util.scale_bar(
+            plot_util.show_scale_bar(
                 ax,
                 d_s,
                 dist=scale_bar_length,
@@ -1112,7 +1112,7 @@ class ModelBandPlot(ModelBand):
                 linewidth=self._scale_bar_width,
             )
         if coordinate_arrows:
-            plot_util.coordinate_arrows(
+            plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
@@ -1128,7 +1128,7 @@ class ModelBandPlot(ModelBand):
                 arrow_color_north=arrow_color_north,
                 arrow_color_east=arrow_color_east,
             )
-            plot_util.title_text(
+            plot_util.show_title_text(
                 ax,
                 text=title_text,
                 flipped=False,
@@ -1260,7 +1260,7 @@ class ModelBandPlot(ModelBand):
                 color="b",
                 points_only=self._caustic_points_only,
             )
-        plot_util.scale_bar(
+        plot_util.show_scale_bar(
             ax,
             d_s,
             dist=scale_bar_length,
@@ -1270,7 +1270,7 @@ class ModelBandPlot(ModelBand):
             linewidth=self._scale_bar_width,
         )
         if coordinate_arrows:
-            plot_util.coordinate_arrows(
+            plot_util.show_coordinate_arrows(
                 ax,
                 d_s,
                 coords_source,
@@ -1286,7 +1286,7 @@ class ModelBandPlot(ModelBand):
                 arrow_color_north=arrow_color_north,
                 arrow_color_east=arrow_color_east,
             )
-        plot_util.title_text(
+        plot_util.show_title_text(
             ax,
             text="Error map in source",
             flipped=False,
@@ -1373,7 +1373,7 @@ class ModelBandPlot(ModelBand):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        plot_util.scale_bar(
+        plot_util.show_scale_bar(
             ax,
             self._frame_size,
             dist=scale_bar_length,
@@ -1383,7 +1383,7 @@ class ModelBandPlot(ModelBand):
             linewidth=self._scale_bar_width,
         )
         if coordinate_arrows:
-            plot_util.coordinate_arrows(
+            plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
@@ -1399,7 +1399,7 @@ class ModelBandPlot(ModelBand):
                 arrow_color_north=arrow_color_north,
                 arrow_color_east=arrow_color_east,
             )
-        plot_util.title_text(
+        plot_util.show_title_text(
             ax,
             text=title_text,
             color=title_color,
@@ -1505,7 +1505,7 @@ class ModelBandPlot(ModelBand):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        plot_util.scale_bar(
+        plot_util.show_scale_bar(
             ax,
             self._frame_size,
             dist=scale_bar_length,
@@ -1515,7 +1515,7 @@ class ModelBandPlot(ModelBand):
             linewidth=self._scale_bar_width,
         )
         if coordinate_arrows:
-            plot_util.coordinate_arrows(
+            plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
@@ -1531,7 +1531,7 @@ class ModelBandPlot(ModelBand):
                 arrow_color_north=arrow_color_north,
                 arrow_color_east=arrow_color_east,
             )
-        plot_util.title_text(
+        plot_util.show_title_text(
             ax,
             text=title_text,
             color=title_color,
@@ -1663,7 +1663,7 @@ class ModelBandPlot(ModelBand):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        plot_util.scale_bar(
+        plot_util.show_scale_bar(
             ax,
             self._frame_size,
             dist=scale_bar_length,
@@ -1672,7 +1672,7 @@ class ModelBandPlot(ModelBand):
             font_size=self._scale_bar_font_size,
             linewidth=self._scale_bar_width,
         )
-        plot_util.title_text(
+        plot_util.show_title_text(
             ax,
             text=title_text,
             color=title_color,
@@ -1682,7 +1682,7 @@ class ModelBandPlot(ModelBand):
             title_y_pos=title_y_pos,
         )
         if coordinate_arrows:
-            plot_util.coordinate_arrows(
+            plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
@@ -1761,7 +1761,7 @@ class ModelBandPlot(ModelBand):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        plot_util.scale_bar(
+        plot_util.show_scale_bar(
             ax,
             self._frame_size,
             dist=scale_bar_length,
@@ -1770,7 +1770,7 @@ class ModelBandPlot(ModelBand):
             font_size=self._scale_bar_font_size,
             linewidth=self._scale_bar_width,
         )
-        plot_util.title_text(
+        plot_util.show_title_text(
             ax,
             text=title_text,
             color=title_color,
@@ -1780,7 +1780,7 @@ class ModelBandPlot(ModelBand):
             title_y_pos=title_y_pos,
         )
         if coordinate_arrows:
-            plot_util.coordinate_arrows(
+            plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,

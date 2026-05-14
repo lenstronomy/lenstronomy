@@ -39,7 +39,7 @@ def sqrt(inputArray, scale_min=None, scale_max=None):
 
 
 @export
-def title_text(
+def show_title_text(
     ax,
     text,
     color="w",
@@ -85,7 +85,7 @@ def title_text(
 
 
 @export
-def scale_bar(
+def show_scale_bar(
     ax, d, dist=1.0, text=None, color="w", font_size=15, flipped=False, linewidth=2
 ):
     """Plot a scale bar.
@@ -132,7 +132,7 @@ def scale_bar(
 
 
 @export
-def coordinate_arrows(
+def show_coordinate_arrows(
     ax,
     d,
     coords,

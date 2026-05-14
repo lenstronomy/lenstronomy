@@ -18,10 +18,10 @@ class TestPlotUtil(object):
 
     def test_scale_bar(self):
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
-        plot_util.scale_bar(ax, 3, dist=1, text='1"', flipped=True)
+        plot_util.show_scale_bar(ax, 3, dist=1, text='1"', flipped=True)
         plt.close()
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
-        plot_util.title_text(
+        plot_util.show_title_text(
             ax, text="test", color="w", backgroundcolor="k", flipped=True
         )
         plt.close()

@@ -1,5 +1,6 @@
 import copy
 import numpy as np
+import matplotlib.pyplot as plt
 
 import lenstronomy.Util.class_creator as class_creator
 from lenstronomy.Plots.model_band_plot import ModelBandPlot
@@ -32,6 +33,7 @@ class ModelPlot(object):
         cmap_string="gist_heat",
         fast_caustic=True,
         linear_solver=True,
+        arrow_size=0.02,
         arrow_length=0.05,
         arrowhead_size=0.025,
         arrow_origin_x=None,
@@ -63,6 +65,7 @@ class ModelPlot(object):
         :param fast_caustic: boolean; if True, uses fast (but less accurate) caustic calculation method
         :param linear_solver: bool, if True (default) fixes the linear amplitude parameters 'amp' (avoid sampling) such
          that they get overwritten by the linear solver solution.
+        :param arrow_size: size of the scale and orientation arrow
         :param scale_bar_width: width of the scale bar
         :param scale_bar_font_size: font size of the scale bar
         """
@@ -152,6 +155,7 @@ class ModelPlot(object):
                     band_index=i,
                     cmap_string=cmap_string,
                     fast_caustic=fast_caustic,
+                    arrow_size=arrow_size,
                     linear_solver=linear_solver,
                     arrow_length=arrow_length,
                     arrowhead_size=arrowhead_size,
@@ -206,14 +210,14 @@ class ModelPlot(object):
                     ax=axes[i, 1],
                     image_names=True,
                     band_index=band_index,
-                    **matshow_kwargs
+                    **matshow_kwargs,
                 )
                 self.normalized_residual_plot(
                     ax=axes[i, 2],
                     v_min=-6,
                     v_max=6,
                     band_index=band_index,
-                    **matshow_kwargs
+                    **matshow_kwargs,
                 )
                 i += 1
         return f, axes
@@ -276,7 +280,7 @@ class ModelPlot(object):
             arrow_color_north=arrow_color_north,
             arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
-            **matshow_kwargs
+            **matshow_kwargs,
         )
 
     def model_plot(
@@ -346,7 +350,7 @@ class ModelPlot(object):
             arrow_color_north=arrow_color_north,
             arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
-            **matshow_kwargs
+            **matshow_kwargs,
         )
 
     def convergence_plot(
@@ -407,7 +411,7 @@ class ModelPlot(object):
             arrow_color_north=arrow_color_north,
             arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
-            **matshow_kwargs
+            **matshow_kwargs,
         )
 
     def substructure_plot(
@@ -494,7 +498,7 @@ class ModelPlot(object):
             arrow_color_north=arrow_color_north,
             arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
-            **matshow_kwargs
+            **matshow_kwargs,
         )
 
     def normalized_residual_plot(
@@ -558,7 +562,7 @@ class ModelPlot(object):
             arrow_color_north=arrow_color_north,
             arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
-            **matshow_kwargs
+            **matshow_kwargs,
         )
 
     def absolute_residual_plot(
@@ -619,7 +623,7 @@ class ModelPlot(object):
             arrow_color_north=arrow_color_north,
             arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
-            **matshow_kwargs
+            **matshow_kwargs,
         )
 
     def source_plot(
@@ -635,7 +639,6 @@ class ModelPlot(object):
         caustic_color="yellow",
         font_size=15,
         plot_scale="log",
-        scale_size=0.1,
         text="Reconstructed source",
         colorbar_label=r"log$_{10}$ flux",
         point_source_position=True,
@@ -669,7 +672,7 @@ class ModelPlot(object):
         :param caustic_color: color of the caustics
         :param font_size: font size of labels
         :param plot_scale: string, log or linear, scale of surface brightness plot
-        :param scale_size: float, size of the scale bar
+        :param scale_bar_length: float, size of the scale bar
         :param text: string, text to be displayed in the image
         :param colorbar_label: string, label for the colorbar
         :param point_source_position: boolean, if True, plots a point at the position of
@@ -691,7 +694,6 @@ class ModelPlot(object):
             caustic_color=caustic_color,
             font_size=font_size,
             plot_scale=plot_scale,
-            scale_size=scale_size,
             text=text,
             colorbar_label=colorbar_label,
             point_source_position=point_source_position,
@@ -709,7 +711,7 @@ class ModelPlot(object):
             arrow_color_north=arrow_color_north,
             arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
-            **matshow_kwargs
+            **matshow_kwargs,
         )
 
     def error_map_source_plot(
@@ -779,7 +781,7 @@ class ModelPlot(object):
             arrow_color_north=arrow_color_north,
             arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
-            **matshow_kwargs
+            **matshow_kwargs,
         )
 
     def magnification_plot(
@@ -844,7 +846,7 @@ class ModelPlot(object):
             arrow_color_north=arrow_color_north,
             arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
-            **matshow_kwargs
+            **matshow_kwargs,
         )
 
     def deflection_plot(
@@ -914,7 +916,7 @@ class ModelPlot(object):
             arrow_color_north=arrow_color_north,
             arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
-            **matshow_kwargs
+            **matshow_kwargs,
         )
 
     def decomposition_plot(
@@ -987,7 +989,7 @@ class ModelPlot(object):
             arrow_color_north=arrow_color_north,
             arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
-            **matshow_kwargs
+            **matshow_kwargs,
         )
 
     def subtract_from_data_plot(
@@ -1057,18 +1059,43 @@ class ModelPlot(object):
             arrow_color_north=arrow_color_north,
             arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
-            **matshow_kwargs
+            **matshow_kwargs,
         )
 
-    def plot_main(self, band_index=0, with_caustics=False):
+    def plot_main(self, band_index=0, with_caustics=False, **kwargs):
         """Plot a set of 'main' modelling diagnostics.
 
         :param band_index: index of band
         :param with_caustics: boolean, if True, plots caustics in the source plane
+        :param kwargs: plotting keyword arguments forwarded to the individual plots
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
-        return plot_band.plot_main(with_caustics=with_caustics)
+        kwargs_main = copy.deepcopy(kwargs)
+        kwargs_main.pop("with_caustics", None)
+        kwargs_residuals = copy.deepcopy(kwargs_main)
+        kwargs_residuals.pop("v_min", None)
+        kwargs_residuals.pop("v_max", None)
+        f, axes = plt.subplots(2, 3, figsize=(16, 8))
+        plot_band.data_plot(ax=axes[0, 0], **kwargs_main)
+        plot_band.model_plot(ax=axes[0, 1], image_names=True, **kwargs_main)
+        plot_band.normalized_residual_plot(
+            ax=axes[0, 2], v_min=-6, v_max=6, **kwargs_residuals
+        )
+        plot_band.source_plot(
+            ax=axes[1, 0],
+            deltaPix_source=0.01,
+            numPix=100,
+            with_caustics=with_caustics,
+            **kwargs_main,
+        )
+        plot_band.convergence_plot(ax=axes[1, 1], **kwargs_main)
+        plot_band.magnification_plot(ax=axes[1, 2], **kwargs_main)
+        f.tight_layout()
+        f.subplots_adjust(
+            left=None, bottom=None, right=None, top=None, wspace=0.0, hspace=0.05
+        )
+        return f, axes
 
     def plot_separate(self, band_index=0):
         """Plot a set of 'main' modelling diagnostics.

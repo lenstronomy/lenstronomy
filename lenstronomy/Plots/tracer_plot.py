@@ -479,17 +479,17 @@ class TracerPlot(object):
                 color_n=arrow_color_north,
                 color_e=arrow_color_east,
             )
-            plot_util.text_description(
-                ax,
-                self._frame_size,
-                text=text,
-                flipped=False,
-                color=caption_color,
-                backgroundcolor=caption_background_color,
-                font_size=caption_font_size,
-                caption_x_pos=caption_x_pos,
-                caption_y_pos=caption_y_pos,
-            )
+        plot_util.text_description(
+            ax,
+            self._frame_size,
+            text=text,
+            flipped=False,
+            color=caption_color,
+            backgroundcolor=caption_background_color,
+            font_size=caption_font_size,
+            caption_x_pos=caption_x_pos,
+            caption_y_pos=caption_y_pos,
+        )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
@@ -835,14 +835,6 @@ class TracerPlot(object):
 
         if with_caustics is True:
             ra_caustic_list, dec_caustic_list = self._caustics()
-            plot_util.plot_line_set(
-                ax,
-                coords_source,
-                ra_caustic_list,
-                dec_caustic_list,
-                color=caustic_color,
-                points_only=self._caustic_points_only,
-            )
             plot_util.plot_line_set(
                 ax,
                 coords_source,

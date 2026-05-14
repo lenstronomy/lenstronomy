@@ -187,7 +187,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         v_max=6,
         log_scale=False,
         text="Normalized Residuals",
-        colorbar_label=r"(f${}_{\rm model}$ - f${}_{\rm data}$)/$\sigma$",
+        colorbar_label=r"(f$_{\rm data}$ - f$_{\rm model}$)/$\sigma$",
         cmap="RdBu_r",
         white_on_black=False,
         **kwargs

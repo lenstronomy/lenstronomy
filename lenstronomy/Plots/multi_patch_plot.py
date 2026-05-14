@@ -23,7 +23,6 @@ class MultiPatchPlot(MultiPatchReconstruction):
         verbose=True,
         cmap_string="gist_heat",
         scale_bar_width=2,
-        scale_bar_color="w",
         scale_bar_font_size=15,
     ):
         """
@@ -70,7 +69,6 @@ class MultiPatchPlot(MultiPatchReconstruction):
         self._v_max_default = min(np.max(log_model), 10)
         self._cmap = plot_util.cmap_conf(cmap_string)
         self._scale_bar_width = scale_bar_width
-        self._scale_bar_color = scale_bar_color
         self._scale_bar_font_size = scale_bar_font_size
 
     def data_plot(
@@ -380,7 +378,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
                     frame_size,
                     dist=dist_scale,
                     text=text_dist,
-                    color=self._scale_bar_color,
+                    color=kwargs.get("scale_bar_color", text_k),
                     font_size=self._scale_bar_font_size,
                     linewidth=self._scale_bar_width,
                 )

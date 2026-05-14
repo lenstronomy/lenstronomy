@@ -1057,6 +1057,8 @@ class ModelBandPlot(ModelBand):
                 'variable plot_scale needs to be "log" or "linear", not %s.'
                 % plot_scale
             )
+        if "cmap" not in kwargs_matshow:
+            kwargs_matshow["cmap"] = "cubehelix"
         im = ax.matshow(
             source_scale,
             origin="lower",
@@ -1224,6 +1226,8 @@ class ModelBandPlot(ModelBand):
         )
         error_map_source = util.array2image(error_map_source)
         d_s = numPix * deltaPix_source
+        if "cmap" not in kwargs_matshow:
+            kwargs_matshow["cmap"] = "CMRmap"
         im = ax.matshow(
             error_map_source,
             origin="lower",
@@ -1916,6 +1920,8 @@ class ModelBandPlot(ModelBand):
             v_min = 0
         if v_max is None:
             v_max = 1
+        if "cmap" not in kwargs_matshow:
+            kwargs_matshow["cmap"] = "afmhot"
 
         _ = ax.matshow(
             model,

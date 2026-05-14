@@ -289,8 +289,8 @@ class TracerPlot(object):
                 arrow_north_offset_y=self._arrow_north_offset_y,
                 arrow_east_offset_x=self._arrow_east_offset_x,
                 arrow_east_offset_y=self._arrow_east_offset_y,
-                color_n=arrow_color_north,
-                color_e=arrow_color_east,
+                arrow_color_north=arrow_color_north,
+                arrow_color_east=arrow_color_east,
             )
 
         divider = make_axes_locatable(ax)
@@ -403,8 +403,8 @@ class TracerPlot(object):
                 arrow_north_offset_y=self._arrow_north_offset_y,
                 arrow_east_offset_x=self._arrow_east_offset_x,
                 arrow_east_offset_y=self._arrow_east_offset_y,
-                color_n=arrow_color_north,
-                color_e=arrow_color_east,
+                arrow_color_north=arrow_color_north,
+                arrow_color_east=arrow_color_east,
             )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
@@ -517,8 +517,8 @@ class TracerPlot(object):
                 arrow_north_offset_y=self._arrow_north_offset_y,
                 arrow_east_offset_x=self._arrow_east_offset_x,
                 arrow_east_offset_y=self._arrow_east_offset_y,
-                color_n=arrow_color_north,
-                color_e=arrow_color_east,
+                arrow_color_north=arrow_color_north,
+                arrow_color_east=arrow_color_east,
             )
         plot_util.text_description(
             ax,
@@ -634,8 +634,8 @@ class TracerPlot(object):
                 arrow_north_offset_y=self._arrow_north_offset_y,
                 arrow_east_offset_x=self._arrow_east_offset_x,
                 arrow_east_offset_y=self._arrow_east_offset_y,
-                color_n=arrow_color_north,
-                color_e=arrow_color_east,
+                arrow_color_north=arrow_color_north,
+                arrow_color_east=arrow_color_east,
             )
         if color_bar:
             divider = make_axes_locatable(ax)
@@ -739,8 +739,8 @@ class TracerPlot(object):
                 arrow_north_offset_y=self._arrow_north_offset_y,
                 arrow_east_offset_x=self._arrow_east_offset_x,
                 arrow_east_offset_y=self._arrow_east_offset_y,
-                color_n=arrow_color_north,
-                color_e=arrow_color_east,
+                arrow_color_north=arrow_color_north,
+                arrow_color_east=arrow_color_east,
             )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
@@ -931,8 +931,8 @@ class TracerPlot(object):
                 arrow_north_offset_y=self._arrow_north_offset_y,
                 arrow_east_offset_x=self._arrow_east_offset_x,
                 arrow_east_offset_y=self._arrow_east_offset_y,
-                color_n=arrow_color_north,
-                color_e=arrow_color_east,
+                arrow_color_north=arrow_color_north,
+                arrow_color_east=arrow_color_east,
             )
             plot_util.text_description(
                 ax,
@@ -1043,8 +1043,8 @@ class TracerPlot(object):
                 arrow_north_offset_y=self._arrow_north_offset_y,
                 arrow_east_offset_x=self._arrow_east_offset_x,
                 arrow_east_offset_y=self._arrow_east_offset_y,
-                color_n=arrow_color_north,
-                color_e=arrow_color_east,
+                arrow_color_north=arrow_color_north,
+                arrow_color_east=arrow_color_east,
             )
         plot_util.text_description(
             ax,
@@ -1176,8 +1176,8 @@ class TracerPlot(object):
                 arrow_north_offset_y=self._arrow_north_offset_y,
                 arrow_east_offset_x=self._arrow_east_offset_x,
                 arrow_east_offset_y=self._arrow_east_offset_y,
-                color_n=arrow_color_north,
-                color_e=arrow_color_east,
+                arrow_color_north=arrow_color_north,
+                arrow_color_east=arrow_color_east,
             )
         plot_util.text_description(
             ax,

@@ -134,8 +134,8 @@ def coordinate_arrows(
     arrow_north_offset_y=None,
     arrow_east_offset_x=None,
     arrow_east_offset_y=None,
-    color_n="w",
-    color_e="w",
+    arrow_color_north="w",
+    arrow_color_east="w",
 ):
     """
 
@@ -151,8 +151,8 @@ def coordinate_arrows(
     :param arrow_north_offset_y: y offset for N from the tip of the arrow as a fraction of image size
     :param arrow_east_offset_x: x offset for E from the tip of the arrow as a fraction of image size
     :param arrow_east_offset_y: y offset for E from the tip of the arrow as a fraction of image size
-    :param color_n: color string for N
-    :param color_e: color string for E
+    :param arrow_color_north: color string for N
+    :param arrow_color_east: color string for E
     :return: updated ax instance
     """
     deltaPix = coords.pixel_width
@@ -229,15 +229,15 @@ def coordinate_arrows(
         (yy_ra - yy_) * deltaPix,
         head_width=arrowhead_size * d,
         head_length=arrowhead_size * d,
-        fc=color_e,
-        ec=color_e,
+        fc=arrow_color_east,
+        ec=arrow_color_east,
         linewidth=1,
     )
     ax.text(
         xx_ra_t * deltaPix,
         yy_ra_t * deltaPix,
         "E",
-        color=color_e,
+        color=arrow_color_east,
         fontsize=font_size,
         ha="center",
         va="center",
@@ -249,15 +249,15 @@ def coordinate_arrows(
         (yy_dec - yy_) * deltaPix,
         head_width=arrowhead_size * d,
         head_length=arrowhead_size * d,
-        fc=color_n,
-        ec=color_n,
+        fc=arrow_color_north,
+        ec=arrow_color_north,
         linewidth=1,
     )
     ax.text(
         xx_dec_t * deltaPix,
         yy_dec_t * deltaPix,
         "N",
-        color=color_n,
+        color=arrow_color_north,
         fontsize=font_size,
         ha="center",
         va="center",

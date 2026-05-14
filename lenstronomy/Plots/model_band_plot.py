@@ -265,8 +265,8 @@ class ModelBandPlot(ModelBand):
                 arrow_n_offset_y=self._arrow_n_offset_y,
                 arrow_e_offset_x=self._arrow_e_offset_x,
                 arrow_e_offset_y=self._arrow_e_offset_y,
-                color_n=arrow_color_n,
-                color_e=arrow_color_e,
+                arrow_color_north=arrow_color_n,
+                arrow_color_east=arrow_color_e,
             )
 
         divider = make_axes_locatable(ax)
@@ -379,8 +379,8 @@ class ModelBandPlot(ModelBand):
                 arrow_n_offset_y=self._arrow_n_offset_y,
                 arrow_e_offset_x=self._arrow_e_offset_x,
                 arrow_e_offset_y=self._arrow_e_offset_y,
-                color_n=arrow_color_n,
-                color_e=arrow_color_e,
+                arrow_color_north=arrow_color_n,
+                arrow_color_east=arrow_color_e,
             )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
@@ -494,8 +494,8 @@ class ModelBandPlot(ModelBand):
                 arrow_n_offset_y=self._arrow_n_offset_y,
                 arrow_e_offset_x=self._arrow_e_offset_x,
                 arrow_e_offset_y=self._arrow_e_offset_y,
-                color_n=arrow_color_n,
-                color_e=arrow_color_e,
+                arrow_color_north=arrow_color_n,
+                arrow_color_east=arrow_color_e,
             )
             plot_util.text_description(
                 ax,
@@ -666,8 +666,8 @@ class ModelBandPlot(ModelBand):
                 arrow_n_offset_y=self._arrow_n_offset_y,
                 arrow_e_offset_x=self._arrow_e_offset_x,
                 arrow_e_offset_y=self._arrow_e_offset_y,
-                color_n=arrow_color_n,
-                color_e=arrow_color_e,
+                arrow_color_north=arrow_color_n,
+                arrow_color_east=arrow_color_e,
             )
             plot_util.text_description(
                 ax,
@@ -811,8 +811,8 @@ class ModelBandPlot(ModelBand):
                 arrow_n_offset_y=self._arrow_n_offset_y,
                 arrow_e_offset_x=self._arrow_e_offset_x,
                 arrow_e_offset_y=self._arrow_e_offset_y,
-                color_n=arrow_color_n,
-                color_e=arrow_color_e,
+                arrow_color_north=arrow_color_n,
+                arrow_color_east=arrow_color_e,
             )
         if color_bar:
             divider = make_axes_locatable(ax)
@@ -916,8 +916,8 @@ class ModelBandPlot(ModelBand):
                 arrow_n_offset_y=self._arrow_n_offset_y,
                 arrow_e_offset_x=self._arrow_e_offset_x,
                 arrow_e_offset_y=self._arrow_e_offset_y,
-                color_n=arrow_color_n,
-                color_e=arrow_color_e,
+                arrow_color_north=arrow_color_n,
+                arrow_color_east=arrow_color_e,
             )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
@@ -1125,8 +1125,8 @@ class ModelBandPlot(ModelBand):
                 arrow_n_offset_y=self._arrow_n_offset_y,
                 arrow_e_offset_x=self._arrow_e_offset_x,
                 arrow_e_offset_y=self._arrow_e_offset_y,
-                color_n=arrow_color_n,
-                color_e=arrow_color_e,
+                arrow_color_north=arrow_color_n,
+                arrow_color_east=arrow_color_e,
             )
             plot_util.text_description(
                 ax,
@@ -1283,8 +1283,8 @@ class ModelBandPlot(ModelBand):
                 arrow_n_offset_y=self._arrow_n_offset_y,
                 arrow_e_offset_x=self._arrow_e_offset_x,
                 arrow_e_offset_y=self._arrow_e_offset_y,
-                color_n=arrow_color_n,
-                color_e=arrow_color_e,
+                arrow_color_north=arrow_color_n,
+                arrow_color_east=arrow_color_e,
             )
         plot_util.text_description(
             ax,
@@ -1396,8 +1396,8 @@ class ModelBandPlot(ModelBand):
                 arrow_n_offset_y=self._arrow_n_offset_y,
                 arrow_e_offset_x=self._arrow_e_offset_x,
                 arrow_e_offset_y=self._arrow_e_offset_y,
-                color_n=arrow_color_n,
-                color_e=arrow_color_e,
+                arrow_color_north=arrow_color_n,
+                arrow_color_east=arrow_color_e,
             )
         plot_util.text_description(
             ax,
@@ -1529,8 +1529,8 @@ class ModelBandPlot(ModelBand):
                 arrow_n_offset_y=self._arrow_n_offset_y,
                 arrow_e_offset_x=self._arrow_e_offset_x,
                 arrow_e_offset_y=self._arrow_e_offset_y,
-                color_n=arrow_color_n,
-                color_e=arrow_color_e,
+                arrow_color_north=arrow_color_n,
+                arrow_color_east=arrow_color_e,
             )
         plot_util.text_description(
             ax,
@@ -1698,8 +1698,8 @@ class ModelBandPlot(ModelBand):
                 arrow_n_offset_y=self._arrow_n_offset_y,
                 arrow_e_offset_x=self._arrow_e_offset_x,
                 arrow_e_offset_y=self._arrow_e_offset_y,
-                color_n=arrow_color_n,
-                color_e=arrow_color_e,
+                arrow_color_north=arrow_color_n,
+                arrow_color_east=arrow_color_e,
             )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
@@ -1795,8 +1795,8 @@ class ModelBandPlot(ModelBand):
                 arrow_n_offset_y=self._arrow_n_offset_y,
                 arrow_e_offset_x=self._arrow_e_offset_x,
                 arrow_e_offset_y=self._arrow_e_offset_y,
-                color_n=arrow_color_n,
-                color_e=arrow_color_e,
+                arrow_color_north=arrow_color_n,
+                arrow_color_east=arrow_color_e,
             )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)

@@ -34,6 +34,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         scale_bar_font_size=15,
     ):
         """
+        Initialize the multi-patch plotting class.
 
         :param multi_band_list: list of imaging data configuration [[kwargs_data, kwargs_psf, kwargs_numerics], [...]]
         :param kwargs_model: model keyword argument list
@@ -357,6 +358,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         **kwargs
     ):
         """
+        Plot a 2D map for a given coordinate system.
 
         :param ax: matplotlib axis instance
         :param image: 2d numpy array to be plotted
@@ -437,7 +439,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
                     linewidth=self._scale_bar_width,
                 )
             if "no_text" not in kwargs or not kwargs["no_text"]:
-                plot_util.text_description(
+                plot_util.title_text(
                     ax,
                     frame_size,
                     title_text=title_text,

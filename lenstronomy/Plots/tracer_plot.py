@@ -35,6 +35,7 @@ class TracerPlot(object):
         scale_bar_font_size=15,
     ):
         """
+        Initialize the tracer plotting class.
 
         :param kwargs_data_joint: joint data keyword argument list
         :param kwargs_model: model keyword argument list for the full multi-band modeling
@@ -145,6 +146,7 @@ class TracerPlot(object):
         self._scale_bar_font_size = scale_bar_font_size
 
     def _critical_curves(self):
+        """Compute and cache critical curves."""
         if not hasattr(self, "_ra_crit_list") or not hasattr(self, "_dec_crit_list"):
             if self._fast_caustic:
                 (
@@ -183,6 +185,7 @@ class TracerPlot(object):
         return self._ra_crit_list, self._dec_crit_list
 
     def _caustics(self):
+        """Compute and cache caustics."""
         if not hasattr(self, "_ra_caustic_list") or not hasattr(
             self, "_dec_caustic_list"
         ):
@@ -195,24 +198,25 @@ class TracerPlot(object):
         v_min=None,
         v_max=None,
         title_text="Observed",
-        font_size=15,
-        colorbar_label=r"log$_{10}$ flux",
-        coordinate_arrows=True,
         title_font_size=15,
         title_color="w",
         title_background_color="k",
         title_x_pos=None,
         title_y_pos=None,
-        scale_bar_color="w",
         scale_bar_length=1.0,
+        scale_bar_color="w",
         scale_bar_text=None,
-        colorbar_label_font_size=15,
+        coordinate_arrows=True,
+        arrow_font_size=15,
         arrow_color_north="w",
         arrow_color_east="w",
-        arrow_font_size=15,
+        font_size=15,
+        colorbar_label=r"log$_{10}$ flux",
+        colorbar_label_font_size=15,
         **kwargs_matshow,
     ):
         """
+        Plot observed tracer data.
 
         :param ax: matplotlib axis instance
         :param v_min: minimum plotting scale
@@ -264,7 +268,7 @@ class TracerPlot(object):
                 font_size=self._scale_bar_font_size,
                 linewidth=self._scale_bar_width,
             )
-        plot_util.text_description(
+        plot_util.title_text(
             ax,
             self._frame_size,
             title_text=title_text,
@@ -306,10 +310,7 @@ class TracerPlot(object):
         v_min=None,
         v_max=None,
         image_names=False,
-        colorbar_label=r"log$_{10}$ flux",
-        font_size=15,
         title_text="Reconstructed",
-        coordinate_arrows=True,
         original_position=True,
         image_name_list=None,
         title_font_size=15,
@@ -317,16 +318,20 @@ class TracerPlot(object):
         title_background_color="k",
         title_x_pos=None,
         title_y_pos=None,
-        scale_bar_color="w",
         scale_bar_length=1.0,
+        scale_bar_color="w",
         scale_bar_text=None,
-        colorbar_label_font_size=15,
+        coordinate_arrows=True,
+        arrow_font_size=15,
         arrow_color_north="w",
         arrow_color_east="w",
-        arrow_font_size=15,
+        font_size=15,
+        colorbar_label=r"log$_{10}$ flux",
+        colorbar_label_font_size=15,
         **kwargs_matshow,
     ):
         """
+        Plot reconstructed tracer model.
 
         :param ax: matplotib axis instance
         :param v_min: minimum plotting scale
@@ -379,7 +384,7 @@ class TracerPlot(object):
                 font_size=self._scale_bar_font_size,
                 linewidth=self._scale_bar_width,
             )
-        plot_util.text_description(
+        plot_util.title_text(
             ax,
             self._frame_size,
             title_text=title_text,
@@ -453,6 +458,7 @@ class TracerPlot(object):
         **kwargs_matshow,
     ):
         """
+        Plot lensing convergence in the tracer frame.
 
         :param ax: matplotib axis instance
         :param title_text: string, text to be displayed in the image
@@ -520,7 +526,7 @@ class TracerPlot(object):
                 arrow_color_north=arrow_color_north,
                 arrow_color_east=arrow_color_east,
             )
-        plot_util.text_description(
+        plot_util.title_text(
             ax,
             self._frame_size,
             title_text=title_text,
@@ -563,6 +569,7 @@ class TracerPlot(object):
         **kwargs_matshow,
     ):
         """
+        Plot normalized residuals between data and model.
 
         :param ax: matplotlib axis instance
         :param v_min: minimum color scale
@@ -610,7 +617,7 @@ class TracerPlot(object):
                 font_size=self._scale_bar_font_size,
                 linewidth=self._scale_bar_width,
             )
-        plot_util.text_description(
+        plot_util.title_text(
             ax,
             self._frame_size,
             title_text=title_text,
@@ -669,6 +676,7 @@ class TracerPlot(object):
         **kwargs_matshow,
     ):
         """
+        Plot absolute residuals between data and model.
 
         :param ax: matplotlib axis instance
         :param v_min: minimum color scale
@@ -715,7 +723,7 @@ class TracerPlot(object):
                 font_size=self._scale_bar_font_size,
                 linewidth=self._scale_bar_width,
             )
-        plot_util.text_description(
+        plot_util.title_text(
             ax,
             self._frame_size,
             title_text=title_text,
@@ -751,6 +759,7 @@ class TracerPlot(object):
 
     def source(self, numPix, deltaPix, center=None, image_orientation=True):
         """
+        Compute tracer source surface brightness on a source grid.
 
         :param numPix: number of pixels per axes
         :param deltaPix: pixel size
@@ -829,6 +838,7 @@ class TracerPlot(object):
         **kwargs_matshow,
     ):
         """
+        Plot reconstructed tracer source brightness.
 
         :param ax: matplotlib axis instance
         :param numPix: number of pixels in plot per axis
@@ -934,7 +944,7 @@ class TracerPlot(object):
                 arrow_color_north=arrow_color_north,
                 arrow_color_east=arrow_color_east,
             )
-            plot_util.text_description(
+            plot_util.title_text(
                 ax,
                 d_s,
                 title_text=title_text,
@@ -977,6 +987,7 @@ class TracerPlot(object):
         **kwargs_matshow,
     ):
         """
+        Plot magnification map in the tracer frame.
 
         :param ax: matplotib axis instance
         :param v_min: minimum range of plotting
@@ -1046,7 +1057,7 @@ class TracerPlot(object):
                 arrow_color_north=arrow_color_north,
                 arrow_color_east=arrow_color_east,
             )
-        plot_util.text_description(
+        plot_util.title_text(
             ax,
             self._frame_size,
             title_text=title_text,
@@ -1101,6 +1112,7 @@ class TracerPlot(object):
         **kwargs_matshow,
     ):
         """
+        Plot deflection-angle map in the tracer frame.
 
         :param ax: matplotlib axis instance
         :param v_min: minimum plotting scale
@@ -1179,7 +1191,7 @@ class TracerPlot(object):
                 arrow_color_north=arrow_color_north,
                 arrow_color_east=arrow_color_east,
             )
-        plot_util.text_description(
+        plot_util.title_text(
             ax,
             self._frame_size,
             title_text=title_text,

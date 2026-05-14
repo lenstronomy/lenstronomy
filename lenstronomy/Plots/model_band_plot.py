@@ -41,6 +41,7 @@ class ModelBandPlot(ModelBand):
         scale_bar_font_size=15,
     ):
         """
+        Initialize the model-band plotting class.
 
         :param multi_band_list: list of imaging data configuration [[kwargs_data, kwargs_psf, kwargs_numerics], [...]]
         :param kwargs_model: model keyword argument list for the full multi-band modeling
@@ -119,6 +120,7 @@ class ModelBandPlot(ModelBand):
         ]
 
     def _critical_curves(self):
+        """Compute and cache critical curves."""
         if not hasattr(self, "_ra_crit_list") or not hasattr(self, "_dec_crit_list"):
             # self._ra_crit_list, self._dec_crit_list, self._ra_caustic_list, self._dec_caustic_list = self._lensModelExt.critical_curve_caustics(
             #    self._kwargs_lens_partial, compute_window=self._frame_size, grid_scale=self._deltaPix / 5.,
@@ -160,6 +162,7 @@ class ModelBandPlot(ModelBand):
         return self._ra_crit_list, self._dec_crit_list
 
     def _caustics(self):
+        """Compute and cache caustics."""
         if not hasattr(self, "_ra_caustic_list") or not hasattr(
             self, "_dec_caustic_list"
         ):
@@ -172,24 +175,25 @@ class ModelBandPlot(ModelBand):
         v_min=None,
         v_max=None,
         title_text="Observed",
-        font_size=15,
-        colorbar_label=r"log$_{10}$ flux",
-        coordinate_arrows=True,
         title_font_size=15,
         title_color="w",
         title_background_color="k",
         title_x_pos=None,
         title_y_pos=None,
-        scale_bar_color="w",
         scale_bar_length=1.0,
+        scale_bar_color="w",
         scale_bar_text=None,
-        colorbar_label_font_size=15,
+        coordinate_arrows=True,
+        arrow_font_size=15,
         arrow_color_n="w",
         arrow_color_e="w",
-        arrow_font_size=15,
+        font_size=15,
+        colorbar_label=r"log$_{10}$ flux",
+        colorbar_label_font_size=15,
         **kwargs_matshow,
     ):
         """
+        Plot observed imaging data.
 
         :param ax: matplotlib axis instance
         :param v_min: minimum plotting scale
@@ -240,7 +244,7 @@ class ModelBandPlot(ModelBand):
             font_size=self._scale_bar_font_size,
             linewidth=self._scale_bar_width,
         )
-        plot_util.text_description(
+        plot_util.title_text(
             ax,
             self._frame_size,
             title_text=title_text,
@@ -283,10 +287,7 @@ class ModelBandPlot(ModelBand):
         v_min=None,
         v_max=None,
         image_names=False,
-        colorbar_label=r"log$_{10}$ flux",
-        font_size=15,
         title_text="Reconstructed",
-        coordinate_arrows=True,
         original_position=True,
         image_name_list=None,
         title_font_size=15,
@@ -294,16 +295,20 @@ class ModelBandPlot(ModelBand):
         title_background_color="k",
         title_x_pos=None,
         title_y_pos=None,
-        scale_bar_color="w",
         scale_bar_length=1.0,
+        scale_bar_color="w",
         scale_bar_text=None,
-        colorbar_label_font_size=15,
+        coordinate_arrows=True,
+        arrow_font_size=15,
         arrow_color_n="w",
         arrow_color_e="w",
-        arrow_font_size=15,
+        font_size=15,
+        colorbar_label=r"log$_{10}$ flux",
+        colorbar_label_font_size=15,
         **kwargs_matshow,
     ):
         """
+        Plot reconstructed imaging model.
 
         :param ax: matplotib axis instance
         :param v_min: minimum plotting scale
@@ -355,7 +360,7 @@ class ModelBandPlot(ModelBand):
             font_size=self._scale_bar_font_size,
             linewidth=self._scale_bar_width,
         )
-        plot_util.text_description(
+        plot_util.title_text(
             ax,
             self._frame_size,
             title_text=title_text,
@@ -431,6 +436,7 @@ class ModelBandPlot(ModelBand):
         **kwargs_matshow,
     ):
         """
+        Plot lensing convergence in the data frame.
 
         :param ax: matplotib axis instance
         :param title_text: string, text to be displayed in the image
@@ -497,7 +503,7 @@ class ModelBandPlot(ModelBand):
                 arrow_color_north=arrow_color_n,
                 arrow_color_east=arrow_color_e,
             )
-            plot_util.text_description(
+            plot_util.title_text(
                 ax,
                 self._frame_size,
                 title_text=title_text,
@@ -669,7 +675,7 @@ class ModelBandPlot(ModelBand):
                 arrow_color_north=arrow_color_n,
                 arrow_color_east=arrow_color_e,
             )
-            plot_util.text_description(
+            plot_util.title_text(
                 ax,
                 self._frame_size,
                 title_text=title_text,
@@ -741,6 +747,7 @@ class ModelBandPlot(ModelBand):
         **kwargs_matshow,
     ):
         """
+        Plot normalized residuals between data and model.
 
         :param ax: matplotlib axis instance
         :param v_min: minimum color scale
@@ -787,7 +794,7 @@ class ModelBandPlot(ModelBand):
             font_size=self._scale_bar_font_size,
             linewidth=self._scale_bar_width,
         )
-        plot_util.text_description(
+        plot_util.title_text(
             ax,
             self._frame_size,
             title_text=title_text,
@@ -847,6 +854,7 @@ class ModelBandPlot(ModelBand):
         **kwargs_matshow,
     ):
         """
+        Plot absolute residuals between data and model.
 
         :param ax: matplotlib axis instance
         :param v_min: minimum color scale
@@ -892,7 +900,7 @@ class ModelBandPlot(ModelBand):
             font_size=self._scale_bar_font_size,
             linewidth=self._scale_bar_width,
         )
-        plot_util.text_description(
+        plot_util.title_text(
             ax,
             self._frame_size,
             title_text=title_text,
@@ -929,6 +937,7 @@ class ModelBandPlot(ModelBand):
 
     def source(self, numPix, deltaPix, center=None, image_orientation=True):
         """
+        Compute source surface brightness on a source grid.
 
         :param numPix: number of pixels per axes
         :param deltaPix: pixel size
@@ -1008,6 +1017,7 @@ class ModelBandPlot(ModelBand):
         **kwargs_matshow,
     ):
         """
+        Plot reconstructed source brightness.
 
         :param ax: matplotlib axis instance
         :param numPix: number of pixels in plot per axis
@@ -1128,7 +1138,7 @@ class ModelBandPlot(ModelBand):
                 arrow_color_north=arrow_color_n,
                 arrow_color_east=arrow_color_e,
             )
-            plot_util.text_description(
+            plot_util.title_text(
                 ax,
                 d_s,
                 title_text=title_text,
@@ -1286,7 +1296,7 @@ class ModelBandPlot(ModelBand):
                 arrow_color_north=arrow_color_n,
                 arrow_color_east=arrow_color_e,
             )
-        plot_util.text_description(
+        plot_util.title_text(
             ax,
             d_s,
             title_text="Error map in source",
@@ -1329,6 +1339,7 @@ class ModelBandPlot(ModelBand):
         **kwargs_matshow,
     ):
         """
+        Plot magnification map in the data frame.
 
         :param ax: matplotib axis instance
         :param v_min: minimum range of plotting
@@ -1399,7 +1410,7 @@ class ModelBandPlot(ModelBand):
                 arrow_color_north=arrow_color_n,
                 arrow_color_east=arrow_color_e,
             )
-        plot_util.text_description(
+        plot_util.title_text(
             ax,
             self._frame_size,
             title_text=title_text,
@@ -1456,6 +1467,7 @@ class ModelBandPlot(ModelBand):
         **kwargs_matshow,
     ):
         """
+        Plot deflection-angle map in the data frame.
 
         :param ax: matplotlib axis instance
         :param v_min: minimum plotting scale
@@ -1532,7 +1544,7 @@ class ModelBandPlot(ModelBand):
                 arrow_color_north=arrow_color_n,
                 arrow_color_east=arrow_color_e,
             )
-        plot_util.text_description(
+        plot_util.title_text(
             ax,
             self._frame_size,
             title_text=title_text,
@@ -1674,7 +1686,7 @@ class ModelBandPlot(ModelBand):
             font_size=self._scale_bar_font_size,
             linewidth=self._scale_bar_width,
         )
-        plot_util.text_description(
+        plot_util.title_text(
             ax,
             self._frame_size,
             title_text=title_text,
@@ -1718,22 +1730,23 @@ class ModelBandPlot(ModelBand):
         point_source_add=False,
         source_add=False,
         lens_light_add=False,
-        font_size=15,
-        coordinate_arrows=True,
         title_font_size=15,
         title_color="w",
         title_background_color="k",
         title_x_pos=None,
         title_y_pos=None,
-        scale_bar_color="w",
         scale_bar_length=1.0,
+        scale_bar_color="w",
         scale_bar_text=None,
-        colorbar_label_font_size=15,
+        coordinate_arrows=True,
+        arrow_font_size=15,
         arrow_color_n="w",
         arrow_color_e="w",
-        arrow_font_size=15,
+        font_size=15,
+        colorbar_label_font_size=15,
         **kwargs_matshow,
     ):
+        """Plot data after subtracting selected model components."""
         model = ImageModel.image(
             self._bandmodel,
             self._kwargs_lens_partial,
@@ -1771,7 +1784,7 @@ class ModelBandPlot(ModelBand):
             font_size=self._scale_bar_font_size,
             linewidth=self._scale_bar_width,
         )
-        plot_util.text_description(
+        plot_util.title_text(
             ax,
             self._frame_size,
             title_text=title_text,
@@ -1903,6 +1916,7 @@ class ModelBandPlot(ModelBand):
 
     def plot_extinction_map(self, ax, v_min=None, v_max=None, **kwargs_matshow):
         """
+        Plot differential extinction map.
 
         :param ax: matplotlib axis instance
         :param v_min: minimum color scale for matshow plot

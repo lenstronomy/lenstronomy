@@ -39,7 +39,7 @@ def sqrt(inputArray, scale_min=None, scale_max=None):
 
 
 @export
-def text_description(
+def title_text(
     ax,
     d,
     title_text,
@@ -50,6 +50,18 @@ def text_description(
     title_x_pos=None,
     title_y_pos=None,
 ):
+    """Add title text to an axis in normalized coordinates.
+
+    :param ax: matplotlib axis instance
+    :param title_text: text to be displayed
+    :param color: text color
+    :param backgroundcolor: text background color
+    :param flipped: if True, draw text on the right side
+    :param font_size: font size of the title
+    :param title_x_pos: x-position in axes coordinates
+    :param title_y_pos: y-position in axes coordinates
+    :return: None, updates the axis in place
+    """
     if title_x_pos is None:
         if flipped:
             title_x_pos = 0.975
@@ -78,6 +90,7 @@ def scale_bar(
     ax, d, dist=1.0, text=None, color="w", font_size=15, flipped=False, linewidth=2
 ):
     """
+    Plot a scale bar.
 
     :param ax: matplotlib.axes instance
     :param d: diameter of frame
@@ -138,6 +151,7 @@ def coordinate_arrows(
     arrow_color_east="w",
 ):
     """
+    Plot East and North coordinate arrows.
 
     :param ax: matplotlib axes instance
     :param d: diameter of frame in ax
@@ -343,6 +357,7 @@ def image_position_plot(
     plot_out_of_image=True,
 ):
     """
+    Plot lensed image positions.
 
     :param ax: matplotlib axis instance
     :param coords: Coordinates() class instance or inherited class (such as PixelGrid(), or Data())
@@ -391,6 +406,7 @@ def source_position_plot(
     ax, coords, ra_source, dec_source, marker="*", markersize=10, **kwargs
 ):
     """
+    Plot source positions.
 
     :param ax: matplotlib axis instance
     :param coords: Coordinates() class instance or inherited class (such as PixelGrid(), or Data())
@@ -417,6 +433,7 @@ def source_position_plot(
 @export
 def result_string(x, weights=None, title_fmt=".2f", label=None):
     """
+    Format posterior summary string.
 
     :param x: marginalized 1-d posterior
     :param weights: weights of posteriors (optional)

@@ -46,6 +46,7 @@ class ModelPlot(object):
         scale_bar_font_size=15,
     ):
         """
+        Initialize the multi-band plotting manager.
 
         :param multi_band_list: list of [[kwargs_data, kwargs_psf, kwargs_numerics], [], ..]
         :param multi_band_type: string, option when having multiple imaging data sets modelled simultaneously.
@@ -184,6 +185,8 @@ class ModelPlot(object):
 
     def _select_band(self, band_index):
         """
+        Select a computed imaging band for plotting.
+
         :param band_index: index of imaging band to be plotted
         :return: bandplot() instance of selected band, raises when band is not computed
         """
@@ -195,6 +198,7 @@ class ModelPlot(object):
 
     def reconstruction_all_bands(self, **kwargs_matshow):
         """
+        Plot data, model, and normalized residuals for all computed bands.
 
         :param kwargs_matshow: arguments of plotting
         :return: 3 x n_data plot with data, model, reduced residual plots of all the images/bands that are being modeled
@@ -236,21 +240,21 @@ class ModelPlot(object):
         v_min=None,
         v_max=None,
         title_text="Observed",
-        font_size=15,
-        colorbar_label=r"log$_{10}$ flux",
-        coordinate_arrows=True,
         title_font_size=15,
         title_color="w",
         title_background_color="k",
         title_x_pos=None,
         title_y_pos=None,
-        scale_bar_color="w",
         scale_bar_length=1.0,
+        scale_bar_color="w",
         scale_bar_text=None,
-        colorbar_label_font_size=15,
+        coordinate_arrows=True,
+        arrow_font_size=15,
         arrow_color_north="w",
         arrow_color_east="w",
-        arrow_font_size=15,
+        font_size=15,
+        colorbar_label=r"log$_{10}$ flux",
+        colorbar_label_font_size=15,
         **kwargs_matshow
     ):
         """Illustrates data.
@@ -284,21 +288,21 @@ class ModelPlot(object):
             v_min=v_min,
             v_max=v_max,
             title_text=title_text,
-            font_size=font_size,
-            colorbar_label=colorbar_label,
-            coordinate_arrows=coordinate_arrows,
             title_font_size=title_font_size,
             title_color=title_color,
             title_background_color=title_background_color,
             title_x_pos=title_x_pos,
             title_y_pos=title_y_pos,
-            scale_bar_color=scale_bar_color,
             scale_bar_length=scale_bar_length,
+            scale_bar_color=scale_bar_color,
             scale_bar_text=scale_bar_text,
-            colorbar_label_font_size=colorbar_label_font_size,
+            coordinate_arrows=coordinate_arrows,
+            arrow_font_size=arrow_font_size,
             arrow_color_north=arrow_color_north,
             arrow_color_east=arrow_color_east,
-            arrow_font_size=arrow_font_size,
+            font_size=font_size,
+            colorbar_label=colorbar_label,
+            colorbar_label_font_size=colorbar_label_font_size,
             **kwargs_matshow,
         )
 
@@ -309,10 +313,7 @@ class ModelPlot(object):
         v_min=None,
         v_max=None,
         image_names=False,
-        colorbar_label=r"log$_{10}$ flux",
-        font_size=15,
         title_text="Reconstructed",
-        coordinate_arrows=True,
         original_position=True,
         image_name_list=None,
         title_font_size=15,
@@ -320,13 +321,16 @@ class ModelPlot(object):
         title_background_color="k",
         title_x_pos=None,
         title_y_pos=None,
-        scale_bar_color="w",
         scale_bar_length=1.0,
+        scale_bar_color="w",
         scale_bar_text=None,
-        colorbar_label_font_size=15,
+        coordinate_arrows=True,
+        arrow_font_size=15,
         arrow_color_north="w",
         arrow_color_east="w",
-        arrow_font_size=15,
+        font_size=15,
+        colorbar_label=r"log$_{10}$ flux",
+        colorbar_label_font_size=15,
         **kwargs_matshow
     ):
         """Illustrates model.
@@ -363,10 +367,7 @@ class ModelPlot(object):
             v_min=v_min,
             v_max=v_max,
             image_names=image_names,
-            colorbar_label=colorbar_label,
-            font_size=font_size,
             title_text=title_text,
-            coordinate_arrows=coordinate_arrows,
             original_position=original_position,
             image_name_list=image_name_list,
             title_font_size=title_font_size,
@@ -374,13 +375,16 @@ class ModelPlot(object):
             title_background_color=title_background_color,
             title_x_pos=title_x_pos,
             title_y_pos=title_y_pos,
-            scale_bar_color=scale_bar_color,
             scale_bar_length=scale_bar_length,
+            scale_bar_color=scale_bar_color,
             scale_bar_text=scale_bar_text,
-            colorbar_label_font_size=colorbar_label_font_size,
+            coordinate_arrows=coordinate_arrows,
+            arrow_font_size=arrow_font_size,
             arrow_color_north=arrow_color_north,
             arrow_color_east=arrow_color_east,
-            arrow_font_size=arrow_font_size,
+            font_size=font_size,
+            colorbar_label=colorbar_label,
+            colorbar_label_font_size=colorbar_label_font_size,
             **kwargs_matshow,
         )
 
@@ -1269,6 +1273,7 @@ class ModelPlot(object):
         self, band_index=0, ax=None, v_min=None, v_max=None, **kwargs_matshow
     ):
         """
+        Plot differential extinction map for one band.
 
         :param band_index: index of band
         :param ax: an instance of matplotlib.axes.Axes
@@ -1284,6 +1289,7 @@ class ModelPlot(object):
 
     def source(self, band_index=0, **kwargs):
         """
+        Compute source surface brightness for one band.
 
         :param band_index: index of band
         :param kwargs: keyword arguments accessible in model_band_plot.source()
@@ -1294,6 +1300,7 @@ class ModelPlot(object):
 
     def single_band_chi2(self, band_index=0):
         """
+        Return reduced chi-square for one band.
 
         :param band_index: index of band
         :return: the reduced chi-square value of the band as a float

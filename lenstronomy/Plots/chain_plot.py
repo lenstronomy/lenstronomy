@@ -41,6 +41,12 @@ def plot_chain_list(chain_list, index=0, num_average=100):
 
 @export
 def plot_chain(chain, param_list):
+    """Plot PSO chain diagnostics.
+
+    :param chain: tuple/list with chi2, position, and velocity history
+    :param param_list: list of parameter names
+    :return: plotting instance figure and axes
+    """
     chi2_list, pos_list, vel_list = chain
 
     f, axes = plt.subplots(1, 3, figsize=(18, 6))
@@ -110,6 +116,7 @@ def plot_mcmc_behaviour(ax, samples_mcmc, param_mcmc, dist_mcmc=None, num_averag
 @export
 def psf_iteration_compare(kwargs_psf, **kwargs):
     """
+    Compare initial and iteratively reconstructed PSF kernels.
 
     :param kwargs_psf: keyword arguments that initiate a PSF() class
     :param kwargs: kwargs to send to matplotlib.pyplot.matshow()

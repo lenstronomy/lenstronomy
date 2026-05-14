@@ -207,6 +207,7 @@ def caustics_plot(
     **kwargs,
 ):
     """
+    Plot caustics and critical curves.
 
     :param ax: matplotlib axis instance
     :param pixel_grid: lenstronomy PixelGrid() instance (or class with inheritance of PixelGrid()
@@ -409,6 +410,7 @@ def arrival_time_surface(
     name_list=None,
 ):
     """
+    Plot Fermat potential contours and optional images.
 
     :param ax: matplotlib axis instance
     :param lensModel: LensModel() class instance
@@ -530,6 +532,7 @@ def curved_arc_illustration(
     ax, lensModel, kwargs_lens, with_centroid=True, stretch_scale=0.1, color="k"
 ):
     """
+    Illustrate curved-arc lens model components.
 
     :param ax: matplotlib axis instance
     :param lensModel: LensModel() instance
@@ -586,6 +589,7 @@ def plot_arc(
     dtan_dtan=0,
 ):
     """
+    Plot a curved arc illustration for one model component.
 
     :param ax: matplotlib.axes instance
     :param tangential_stretch: float, stretch of intrinsic source in tangential direction
@@ -676,6 +680,7 @@ def distortions(
     **kwargs,
 ):
     """
+    Plot lensing distortion diagnostics.
 
     :param lensModel: LensModel instance
     :param kwargs_lens: lens model keyword argument list
@@ -773,6 +778,7 @@ def distortions(
 
     def _plot_frame(ax, frame, vmin, vmax, title_text):
         """
+        Plot one diagnostic frame panel.
 
         :param ax: matplotlib.axis instance
         :param frame: 2d array
@@ -794,7 +800,7 @@ def distortions(
         cb = plt.colorbar(im, cax=cax, orientation="vertical")
         # cb.set_label(text_string, fontsize=10)
         # plot_util.scale_bar(ax, _frame_size, dist=1, text='1"', font_size=font_size)
-        plot_util.text_description(
+        plot_util.title_text(
             ax,
             _frame_size,
             title_text=title_text,

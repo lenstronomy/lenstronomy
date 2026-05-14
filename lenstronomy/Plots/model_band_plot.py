@@ -30,6 +30,14 @@ class ModelBandPlot(ModelBand):
         cmap_string="gist_heat",
         fast_caustic=True,
         linear_solver=True,
+        arrow_length=10,
+        arrowhead_size=5,
+        arrow_origin_x=None,
+        arrow_origin_y=None,
+        arrow_e_offset_x=3,
+        arrow_e_offset_y=0,
+        arrow_n_offset_x=0,
+        arrow_n_offset_y=3,
     ):
         """
 
@@ -82,6 +90,15 @@ class ModelBandPlot(ModelBand):
         self._cmap = plot_util.cmap_conf(cmap_string)
         self._arrow_size = arrow_size
         self._fast_caustic = fast_caustic
+
+        self._arrow_length = arrow_length
+        self._arrowhead_size = arrowhead_size
+        self._arrow_origin_x = arrow_origin_x
+        self._arrow_origin_y = arrow_origin_y
+        self._arrow_e_offset_x = arrow_e_offset_x
+        self._arrow_e_offset_y = arrow_e_offset_y
+        self._arrow_n_offset_x = arrow_n_offset_x
+        self._arrow_n_offset_y = arrow_n_offset_y
 
         self._image_extent = [
             -self._deltaPix / 2,
@@ -147,6 +164,20 @@ class ModelBandPlot(ModelBand):
         font_size=15,
         colorbar_label=r"log$_{10}$ flux",
         coordinate_arrows=True,
+        text_font_size=15,
+        text_color="w",
+        text_bg_color="k",
+        text_x=None,
+        text_y=None,
+        scale_bar_color="w",
+        scale_bar_width=2,
+        scale_bar_length=1.0,
+        scale_bar_text=None,
+        scale_bar_font_size=15,
+        colorbar_label_font_size=15,
+        arrow_color_n="w",
+        arrow_color_e="w",
+        arrow_font_size=15,
         **matshow_kwargs,
     ):
         """
@@ -182,6 +213,13 @@ class ModelBandPlot(ModelBand):
 
         plot_util.scale_bar(
             ax, self._frame_size, dist=1, text='1"', font_size=font_size
+            ax, 
+            self._frame_size, 
+            dist=scale_bar_length, 
+            text=scale_bar_text, 
+            color=scale_bar_color, 
+            font_size=scale_bar_font_size,
+            linewidth=scale_bar_width,
         )
         plot_util.text_description(
             ax,
@@ -190,6 +228,11 @@ class ModelBandPlot(ModelBand):
             color="w",
             backgroundcolor="k",
             font_size=font_size,
+            color=text_color,
+            backgroundcolor=text_bg_color,
+            font_size=text_font_size,
+            text_x=text_x,
+            text_y=text_y,
         )
 
         if coordinate_arrows:
@@ -200,12 +243,24 @@ class ModelBandPlot(ModelBand):
                 color="w",
                 arrow_size=self._arrow_size,
                 font_size=font_size,
+                font_size=arrow_font_size,
+                arrow_length=self._arrow_length,
+                arrowhead_size=self._arrowhead_size,
+                arrow_origin_x=self._arrow_origin_x,
+                arrow_origin_y=self._arrow_origin_y,
+                arrow_n_offset_x=self._arrow_n_offset_x,
+                arrow_n_offset_y=self._arrow_n_offset_y,
+                arrow_e_offset_x=self._arrow_e_offset_x,
+                arrow_e_offset_y=self._arrow_e_offset_y,
+                color_n=arrow_color_n,
+                color_e=arrow_color_e,
             )
 
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax, orientation="vertical")
         cb.set_label(colorbar_label, fontsize=font_size)
+        cb.set_label(colorbar_label, fontsize=colorbar_label_font_size)
         cb.ax.tick_params(labelsize=font_size)
         return ax
 
@@ -221,6 +276,20 @@ class ModelBandPlot(ModelBand):
         coordinate_arrows=True,
         original_position=True,
         image_name_list=None,
+        text_font_size=15,
+        text_color="w",
+        text_bg_color="k",
+        text_x=None,
+        text_y=None,
+        scale_bar_color="w",
+        scale_bar_width=2,
+        scale_bar_length=1.0,
+        scale_bar_text=None,
+        scale_bar_font_size=15,
+        colorbar_label_font_size=15,
+        arrow_color_n="w",
+        arrow_color_e="w",
+        arrow_font_size=15,
         **matshow_kwargs,
     ):
         """
@@ -259,6 +328,13 @@ class ModelBandPlot(ModelBand):
         ax.autoscale(False)
         plot_util.scale_bar(
             ax, self._frame_size, dist=1, text='1"', font_size=font_size
+            ax, 
+            self._frame_size, 
+            dist=scale_bar_length, 
+            text=scale_bar_text, 
+            color=scale_bar_color, 
+            font_size=scale_bar_font_size,
+            linewidth=scale_bar_width,
         )
         plot_util.text_description(
             ax,
@@ -267,6 +343,11 @@ class ModelBandPlot(ModelBand):
             color="w",
             backgroundcolor="k",
             font_size=font_size,
+            color=text_color,
+            backgroundcolor=text_bg_color,
+            font_size=text_font_size,
+            text_x=text_x,
+            text_y=text_y,
         )
         if coordinate_arrows:
             plot_util.coordinate_arrows(
@@ -276,11 +357,23 @@ class ModelBandPlot(ModelBand):
                 color="w",
                 arrow_size=self._arrow_size,
                 font_size=font_size,
+                font_size=arrow_font_size,
+                arrow_length=self._arrow_length,
+                arrowhead_size=self._arrowhead_size,
+                arrow_origin_x=self._arrow_origin_x,
+                arrow_origin_y=self._arrow_origin_y,
+                arrow_n_offset_x=self._arrow_n_offset_x,
+                arrow_n_offset_y=self._arrow_n_offset_y,
+                arrow_e_offset_x=self._arrow_e_offset_x,
+                arrow_e_offset_y=self._arrow_e_offset_y,
+                color_n=arrow_color_n,
+                color_e=arrow_color_e,
             )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
         cb.set_label(colorbar_label, fontsize=font_size)
+        cb.set_label(colorbar_label, fontsize=colorbar_label_font_size)
         cb.ax.tick_params(labelsize=font_size)
 
         # plot_line_set(ax, self._coords, self._ra_caustic_list, self._dec_caustic_list, color='b')
@@ -310,6 +403,20 @@ class ModelBandPlot(ModelBand):
         font_size=15,
         colorbar_label=r"$\log_{10}\ \kappa$",
         coordinate_arrows=True,
+        text_font_size=15,
+        text_color="w",
+        text_bg_color="k",
+        text_x=None,
+        text_y=None,
+        scale_bar_color="w",
+        scale_bar_width=2,
+        scale_bar_length=1.0,
+        scale_bar_text=None,
+        scale_bar_font_size=15,
+        colorbar_label_font_size=15,
+        arrow_color_n="w",
+        arrow_color_e="w",
+        arrow_font_size=15,
         **matshow_kwargs,
     ):
         """
@@ -343,6 +450,13 @@ class ModelBandPlot(ModelBand):
         ax.autoscale(False)
         plot_util.scale_bar(
             ax, self._frame_size, dist=1, text='1"', color="w", font_size=font_size
+            ax, 
+            self._frame_size, 
+            dist=scale_bar_length, 
+            text=scale_bar_text, 
+            color=scale_bar_color, 
+            font_size=scale_bar_font_size,
+            linewidth=scale_bar_width,
         )
         if coordinate_arrows:
             plot_util.coordinate_arrows(
@@ -352,6 +466,17 @@ class ModelBandPlot(ModelBand):
                 color="w",
                 arrow_size=self._arrow_size,
                 font_size=font_size,
+                font_size=arrow_font_size,
+                arrow_length=self._arrow_length,
+                arrowhead_size=self._arrowhead_size,
+                arrow_origin_x=self._arrow_origin_x,
+                arrow_origin_y=self._arrow_origin_y,
+                arrow_n_offset_x=self._arrow_n_offset_x,
+                arrow_n_offset_y=self._arrow_n_offset_y,
+                arrow_e_offset_x=self._arrow_e_offset_x,
+                arrow_e_offset_y=self._arrow_e_offset_y,
+                color_n=arrow_color_n,
+                color_e=arrow_color_e,
             )
             plot_util.text_description(
                 ax,
@@ -361,11 +486,17 @@ class ModelBandPlot(ModelBand):
                 backgroundcolor="k",
                 flipped=False,
                 font_size=font_size,
+                color=text_color,
+                backgroundcolor=text_bg_color,
+                font_size=text_font_size,
+                text_x=text_x,
+                text_y=text_y,
             )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
         cb.set_label(colorbar_label, fontsize=font_size)
+        cb.set_label(colorbar_label, fontsize=colorbar_label_font_size)
         cb.ax.tick_params(labelsize=font_size)
         return ax
 
@@ -386,6 +517,20 @@ class ModelBandPlot(ModelBand):
         super_sample_factor=None,
         add_color_bar=True,
         coordinate_arrows=True,
+        text_font_size=15,
+        text_color="k",
+        text_bg_color="w",
+        text_x=None,
+        text_y=None,
+        scale_bar_color="k",
+        scale_bar_width=2,
+        scale_bar_length=1.0,
+        scale_bar_text=None,
+        scale_bar_font_size=15,
+        colorbar_label_font_size=15,
+        arrow_color_n="k",
+        arrow_color_e="k",
+        arrow_font_size=15,
         **matshow_kwargs,
     ):
         """Plots the convergence of a full lens model minus the convergence from a few
@@ -474,6 +619,13 @@ class ModelBandPlot(ModelBand):
         ax.autoscale(False)
         plot_util.scale_bar(
             ax, self._frame_size, dist=1, text='1"', color="k", font_size=font_size
+            ax, 
+            self._frame_size, 
+            dist=scale_bar_length, 
+            text=scale_bar_text, 
+            color=scale_bar_color, 
+            font_size=scale_bar_font_size,
+            linewidth=scale_bar_width,
         )
         if coordinate_arrows:
             plot_util.coordinate_arrows(
@@ -483,6 +635,17 @@ class ModelBandPlot(ModelBand):
                 color="k",
                 arrow_size=self._arrow_size,
                 font_size=font_size,
+                font_size=arrow_font_size,
+                arrow_length=self._arrow_length,
+                arrowhead_size=self._arrowhead_size,
+                arrow_origin_x=self._arrow_origin_x,
+                arrow_origin_y=self._arrow_origin_y,
+                arrow_n_offset_x=self._arrow_n_offset_x,
+                arrow_n_offset_y=self._arrow_n_offset_y,
+                arrow_e_offset_x=self._arrow_e_offset_x,
+                arrow_e_offset_y=self._arrow_e_offset_y,
+                color_n=arrow_color_n,
+                color_e=arrow_color_e,
             )
             plot_util.text_description(
                 ax,
@@ -492,6 +655,11 @@ class ModelBandPlot(ModelBand):
                 backgroundcolor="w",
                 flipped=False,
                 font_size=font_size,
+                color=text_color,
+                backgroundcolor=text_bg_color,
+                font_size=text_font_size,
+                text_x=text_x,
+                text_y=text_y,
             )
 
         if with_critical_curves is True:
@@ -523,6 +691,7 @@ class ModelBandPlot(ModelBand):
             cax = divider.append_axes("right", size="5%", pad=0.05)
             cb = plt.colorbar(im, cax=cax)
             cb.set_label(colorbar_label, fontsize=font_size)
+            cb.set_label(colorbar_label, fontsize=colorbar_label_font_size)
             cb.ax.tick_params(labelsize=font_size)
         else:
             cb = None
@@ -538,6 +707,20 @@ class ModelBandPlot(ModelBand):
         colorbar_label=r"(f$_{\rm data}$ - f$_{\rm model}$)/$\sigma$",
         coordinate_arrows=True,
         color_bar=True,
+        text_font_size=15,
+        text_color="k",
+        text_bg_color="w",
+        text_x=None,
+        text_y=None,
+        scale_bar_color="k",
+        scale_bar_width=2,
+        scale_bar_length=1.0,
+        scale_bar_text=None,
+        scale_bar_font_size=15,
+        colorbar_label_font_size=15,
+        arrow_color_n="w",
+        arrow_color_e="w",
+        arrow_font_size=15,
         **matshow_kwargs,
     ):
         """
@@ -573,6 +756,13 @@ class ModelBandPlot(ModelBand):
         ax.autoscale(False)
         plot_util.scale_bar(
             ax, self._frame_size, dist=1, text='1"', color="k", font_size=font_size
+            ax, 
+            self._frame_size, 
+            dist=scale_bar_length, 
+            text=scale_bar_text, 
+            color=scale_bar_color, 
+            font_size=scale_bar_font_size,
+            linewidth=scale_bar_width,
         )
         plot_util.text_description(
             ax,
@@ -581,6 +771,11 @@ class ModelBandPlot(ModelBand):
             color="k",
             backgroundcolor="w",
             font_size=font_size,
+            color=text_color,
+            backgroundcolor=text_bg_color,
+            font_size=text_font_size,
+            text_x=text_x,
+            text_y=text_y,
         )
         if coordinate_arrows:
             plot_util.coordinate_arrows(
@@ -590,12 +785,24 @@ class ModelBandPlot(ModelBand):
                 color="w",
                 arrow_size=self._arrow_size,
                 font_size=font_size,
+                font_size=arrow_font_size,
+                arrow_length=self._arrow_length,
+                arrowhead_size=self._arrowhead_size,
+                arrow_origin_x=self._arrow_origin_x,
+                arrow_origin_y=self._arrow_origin_y,
+                arrow_n_offset_x=self._arrow_n_offset_x,
+                arrow_n_offset_y=self._arrow_n_offset_y,
+                arrow_e_offset_x=self._arrow_e_offset_x,
+                arrow_e_offset_y=self._arrow_e_offset_y,
+                color_n=arrow_color_n,
+                color_e=arrow_color_e,
             )
         if color_bar:
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.05)
             cb = plt.colorbar(im, cax=cax)
             cb.set_label(colorbar_label, fontsize=font_size)
+            cb.set_label(colorbar_label, fontsize=colorbar_label_font_size)
             cb.ax.tick_params(labelsize=font_size)
         return ax
 
@@ -608,6 +815,20 @@ class ModelBandPlot(ModelBand):
         text="Residuals",
         colorbar_label=r"(f$_{\rm data}$-f$_{\rm model}$)",
         coordinate_arrows=True,
+        text_font_size=15,
+        text_color="k",
+        text_bg_color="w",
+        text_x=None,
+        text_y=None,
+        scale_bar_color="k",
+        scale_bar_width=2,
+        scale_bar_length=1.0,
+        scale_bar_text=None,
+        scale_bar_font_size=15,
+        colorbar_label_font_size=15,
+        arrow_color_n="k",
+        arrow_color_e="k",
+        arrow_font_size=15,
         **matshow_kwargs,
     ):
         """
@@ -639,6 +860,13 @@ class ModelBandPlot(ModelBand):
         ax.autoscale(False)
         plot_util.scale_bar(
             ax, self._frame_size, dist=1, text='1"', color="k", font_size=font_size
+            ax, 
+            self._frame_size, 
+            dist=scale_bar_length, 
+            text=scale_bar_text, 
+            color=scale_bar_color, 
+            font_size=scale_bar_font_size,
+            linewidth=scale_bar_width,
         )
         plot_util.text_description(
             ax,
@@ -647,6 +875,11 @@ class ModelBandPlot(ModelBand):
             color="k",
             backgroundcolor="w",
             font_size=font_size,
+            color=text_color,
+            backgroundcolor=text_bg_color,
+            font_size=text_font_size,
+            text_x=text_x,
+            text_y=text_y,
         )
         if coordinate_arrows:
             plot_util.coordinate_arrows(
@@ -656,11 +889,23 @@ class ModelBandPlot(ModelBand):
                 font_size=font_size,
                 color="k",
                 arrow_size=self._arrow_size,
+                font_size=arrow_font_size,
+                arrow_length=self._arrow_length,
+                arrowhead_size=self._arrowhead_size,
+                arrow_origin_x=self._arrow_origin_x,
+                arrow_origin_y=self._arrow_origin_y,
+                arrow_n_offset_x=self._arrow_n_offset_x,
+                arrow_n_offset_y=self._arrow_n_offset_y,
+                arrow_e_offset_x=self._arrow_e_offset_x,
+                arrow_e_offset_y=self._arrow_e_offset_y,
+                color_n=arrow_color_n,
+                color_e=arrow_color_e,
             )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
         cb.set_label(colorbar_label, fontsize=font_size)
+        cb.set_label(colorbar_label, fontsize=colorbar_label_font_size)
         cb.ax.tick_params(labelsize=font_size)
         return ax
 
@@ -730,6 +975,20 @@ class ModelBandPlot(ModelBand):
         point_source_position=True,
         kwargs_caustic=None,
         coordinate_arrows=True,
+        text_font_size=15,
+        text_color="w",
+        text_bg_color="k",
+        text_x=None,
+        text_y=None,
+        scale_bar_color="w",
+        scale_bar_width=2,
+        scale_bar_length=0.1,
+        scale_bar_text=None,
+        scale_bar_font_size=15,
+        colorbar_label_font_size=15,
+        arrow_color_n="w",
+        arrow_color_e="w",
+        arrow_font_size=15,
         **matshow_kwargs,
     ):
         """
@@ -800,6 +1059,7 @@ class ModelBandPlot(ModelBand):
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
         cb.set_label(colorbar_label, fontsize=font_size)
+        cb.set_label(colorbar_label, fontsize=colorbar_label_font_size)
         cb.ax.tick_params(labelsize=font_size)
 
         if with_caustics is True:
@@ -822,6 +1082,7 @@ class ModelBandPlot(ModelBand):
                 **kwargs_caustic,
             )
         if scale_size > 0:
+        if scale_bar_length > 0:
             plot_util.scale_bar(
                 ax,
                 d_s,
@@ -830,6 +1091,11 @@ class ModelBandPlot(ModelBand):
                 color="w",
                 flipped=False,
                 font_size=font_size,
+                dist=scale_bar_length,
+                text=scale_bar_text,
+                color=scale_bar_color,
+                font_size=scale_bar_font_size,
+                linewidth=scale_bar_width,
             )
         if coordinate_arrows:
             plot_util.coordinate_arrows(
@@ -839,6 +1105,17 @@ class ModelBandPlot(ModelBand):
                 color="w",
                 arrow_size=self._arrow_size,
                 font_size=font_size,
+                font_size=arrow_font_size,
+                arrow_length=self._arrow_length,
+                arrowhead_size=self._arrowhead_size,
+                arrow_origin_x=self._arrow_origin_x,
+                arrow_origin_y=self._arrow_origin_y,
+                arrow_n_offset_x=self._arrow_n_offset_x,
+                arrow_n_offset_y=self._arrow_n_offset_y,
+                arrow_e_offset_x=self._arrow_e_offset_x,
+                arrow_e_offset_y=self._arrow_e_offset_y,
+                color_n=arrow_color_n,
+                color_e=arrow_color_e,
             )
             plot_util.text_description(
                 ax,
@@ -848,6 +1125,11 @@ class ModelBandPlot(ModelBand):
                 backgroundcolor="k",
                 flipped=False,
                 font_size=font_size,
+                color=text_color,
+                backgroundcolor=text_bg_color,
+                font_size=text_font_size,
+                text_x=text_x,
+                text_y=text_y,
             )
         if point_source_position is True:
             ra_source, dec_source = self._bandmodel.PointSource.source_position(
@@ -867,6 +1149,20 @@ class ModelBandPlot(ModelBand):
         font_size=15,
         point_source_position=True,
         coordinate_arrows=True,
+        text_font_size=15,
+        text_color="w",
+        text_bg_color="k",
+        text_x=None,
+        text_y=None,
+        scale_bar_color="w",
+        scale_bar_width=2,
+        scale_bar_length=0.1,
+        scale_bar_text=None,
+        scale_bar_font_size=15,
+        colorbar_label_font_size=15,
+        arrow_color_n="w",
+        arrow_color_e="w",
+        arrow_font_size=15,
         **matshow_kwargs,
     ):
         """Plots the uncertainty in the surface brightness in the source from the linear
@@ -934,6 +1230,7 @@ class ModelBandPlot(ModelBand):
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
         cb.set_label(r"error variance", fontsize=font_size)
+        cb.set_label(r"error variance", fontsize=colorbar_label_font_size)
         cb.ax.tick_params(labelsize=font_size)
         if with_caustics:
             ra_caustic_list, dec_caustic_list = self._caustics()
@@ -953,6 +1250,11 @@ class ModelBandPlot(ModelBand):
             color="w",
             flipped=False,
             font_size=font_size,
+            dist=scale_bar_length,
+            text=scale_bar_text,
+            color=scale_bar_color,
+            font_size=scale_bar_font_size,
+            linewidth=scale_bar_width,
         )
         if coordinate_arrows:
             plot_util.coordinate_arrows(
@@ -962,6 +1264,17 @@ class ModelBandPlot(ModelBand):
                 arrow_size=self._arrow_size,
                 color="w",
                 font_size=font_size,
+                font_size=arrow_font_size,
+                arrow_length=self._arrow_length,
+                arrowhead_size=self._arrowhead_size,
+                arrow_origin_x=self._arrow_origin_x,
+                arrow_origin_y=self._arrow_origin_y,
+                arrow_n_offset_x=self._arrow_n_offset_x,
+                arrow_n_offset_y=self._arrow_n_offset_y,
+                arrow_e_offset_x=self._arrow_e_offset_x,
+                arrow_e_offset_y=self._arrow_e_offset_y,
+                color_n=arrow_color_n,
+                color_e=arrow_color_e,
             )
         plot_util.text_description(
             ax,
@@ -971,6 +1284,11 @@ class ModelBandPlot(ModelBand):
             backgroundcolor="k",
             flipped=False,
             font_size=font_size,
+            color=text_color,
+            backgroundcolor=text_bg_color,
+            font_size=text_font_size,
+            text_x=text_x,
+            text_y=text_y,
         )
         if point_source_position is True:
             ra_source, dec_source = self._bandmodel.PointSource.source_position(
@@ -989,6 +1307,20 @@ class ModelBandPlot(ModelBand):
         coordinate_arrows=True,
         text="Magnification model",
         colorbar_label=r"$\det\ (\mathsf{A}^{-1})$",
+        text_font_size=15,
+        text_color="k",
+        text_bg_color="w",
+        text_x=None,
+        text_y=None,
+        scale_bar_color="k",
+        scale_bar_width=2,
+        scale_bar_length=1.0,
+        scale_bar_text=None,
+        scale_bar_font_size=15,
+        colorbar_label_font_size=15,
+        arrow_color_n="k",
+        arrow_color_e="k",
+        arrow_font_size=15,
         **matshow_kwargs,
     ):
         """
@@ -1027,6 +1359,13 @@ class ModelBandPlot(ModelBand):
         ax.autoscale(False)
         plot_util.scale_bar(
             ax, self._frame_size, dist=1, text='1"', color="k", font_size=font_size
+            ax, 
+            self._frame_size, 
+            dist=scale_bar_length, 
+            text=scale_bar_text, 
+            color=scale_bar_color, 
+            font_size=scale_bar_font_size,
+            linewidth=scale_bar_width,
         )
         if coordinate_arrows:
             plot_util.coordinate_arrows(
@@ -1036,6 +1375,17 @@ class ModelBandPlot(ModelBand):
                 color="k",
                 arrow_size=self._arrow_size,
                 font_size=font_size,
+                font_size=arrow_font_size,
+                arrow_length=self._arrow_length,
+                arrowhead_size=self._arrowhead_size,
+                arrow_origin_x=self._arrow_origin_x,
+                arrow_origin_y=self._arrow_origin_y,
+                arrow_n_offset_x=self._arrow_n_offset_x,
+                arrow_n_offset_y=self._arrow_n_offset_y,
+                arrow_e_offset_x=self._arrow_e_offset_x,
+                arrow_e_offset_y=self._arrow_e_offset_y,
+                color_n=arrow_color_n,
+                color_e=arrow_color_e,
             )
         plot_util.text_description(
             ax,
@@ -1044,11 +1394,17 @@ class ModelBandPlot(ModelBand):
             color="k",
             backgroundcolor="w",
             font_size=font_size,
+            color=text_color,
+            backgroundcolor=text_bg_color,
+            font_size=text_font_size,
+            text_x=text_x,
+            text_y=text_y,
         )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
         cb.set_label(colorbar_label, fontsize=font_size)
+        cb.set_label(colorbar_label, fontsize=colorbar_label_font_size)
         cb.ax.tick_params(labelsize=font_size)
         ra_image, dec_image = self._bandmodel.PointSource.image_position(
             self._kwargs_ps_partial, self._kwargs_lens_partial
@@ -1076,6 +1432,20 @@ class ModelBandPlot(ModelBand):
         font_size=15,
         colorbar_label=r"arcsec",
         coordinate_arrows=True,
+        text_font_size=15,
+        text_color="k",
+        text_bg_color="w",
+        text_x=None,
+        text_y=None,
+        scale_bar_color="k",
+        scale_bar_width=2,
+        scale_bar_length=1.0,
+        scale_bar_text=None,
+        scale_bar_font_size=15,
+        colorbar_label_font_size=15,
+        arrow_color_n="k",
+        arrow_color_e="k",
+        arrow_font_size=15,
         **matshow_kwargs,
     ):
         """
@@ -1120,6 +1490,13 @@ class ModelBandPlot(ModelBand):
         ax.autoscale(False)
         plot_util.scale_bar(
             ax, self._frame_size, dist=1, text='1"', color="k", font_size=font_size
+            ax, 
+            self._frame_size, 
+            dist=scale_bar_length, 
+            text=scale_bar_text, 
+            color=scale_bar_color, 
+            font_size=scale_bar_font_size,
+            linewidth=scale_bar_width,
         )
         if coordinate_arrows:
             plot_util.coordinate_arrows(
@@ -1129,6 +1506,17 @@ class ModelBandPlot(ModelBand):
                 color="k",
                 arrow_size=self._arrow_size,
                 font_size=font_size,
+                font_size=arrow_font_size,
+                arrow_length=self._arrow_length,
+                arrowhead_size=self._arrowhead_size,
+                arrow_origin_x=self._arrow_origin_x,
+                arrow_origin_y=self._arrow_origin_y,
+                arrow_n_offset_x=self._arrow_n_offset_x,
+                arrow_n_offset_y=self._arrow_n_offset_y,
+                arrow_e_offset_x=self._arrow_e_offset_x,
+                arrow_e_offset_y=self._arrow_e_offset_y,
+                color_n=arrow_color_n,
+                color_e=arrow_color_e,
             )
         plot_util.text_description(
             ax,
@@ -1137,11 +1525,17 @@ class ModelBandPlot(ModelBand):
             color="k",
             backgroundcolor="w",
             font_size=font_size,
+            color=text_color,
+            backgroundcolor=text_bg_color,
+            font_size=text_font_size,
+            text_x=text_x,
+            text_y=text_y,
         )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
         cb.set_label(colorbar_label, fontsize=font_size)
+        cb.set_label(colorbar_label, fontsize=colorbar_label_font_size)
         cb.ax.tick_params(labelsize=font_size)
         if with_caustics is True:
             ra_crit_list, dec_crit_list = self._critical_curves()
@@ -1187,6 +1581,20 @@ class ModelBandPlot(ModelBand):
         source_add=False,
         lens_light_add=False,
         coordinate_arrows=True,
+        text_font_size=15,
+        text_color="w",
+        text_bg_color="k",
+        text_x=None,
+        text_y=None,
+        scale_bar_color="w",
+        scale_bar_width=2,
+        scale_bar_length=1.0,
+        scale_bar_text=None,
+        scale_bar_font_size=15,
+        colorbar_label_font_size=15,
+        arrow_color_n="w",
+        arrow_color_e="w",
+        arrow_font_size=15,
         **matshow_kwargs,
     ):
         """Make a plot displaying all or a subset of light components.
@@ -1238,6 +1646,13 @@ class ModelBandPlot(ModelBand):
         ax.autoscale(False)
         plot_util.scale_bar(
             ax, self._frame_size, dist=1, text='1"', font_size=font_size
+            ax, 
+            self._frame_size, 
+            dist=scale_bar_length, 
+            text=scale_bar_text, 
+            color=scale_bar_color, 
+            font_size=scale_bar_font_size,
+            linewidth=scale_bar_width,
         )
         plot_util.text_description(
             ax,
@@ -1246,6 +1661,11 @@ class ModelBandPlot(ModelBand):
             color="w",
             backgroundcolor="k",
             font_size=font_size,
+            color=text_color,
+            backgroundcolor=text_bg_color,
+            font_size=text_font_size,
+            text_x=text_x,
+            text_y=text_y,
         )
         if coordinate_arrows:
             plot_util.coordinate_arrows(
@@ -1255,11 +1675,23 @@ class ModelBandPlot(ModelBand):
                 color="w",
                 arrow_size=self._arrow_size,
                 font_size=font_size,
+                font_size=arrow_font_size,
+                arrow_length=self._arrow_length,
+                arrowhead_size=self._arrowhead_size,
+                arrow_origin_x=self._arrow_origin_x,
+                arrow_origin_y=self._arrow_origin_y,
+                arrow_n_offset_x=self._arrow_n_offset_x,
+                arrow_n_offset_y=self._arrow_n_offset_y,
+                arrow_e_offset_x=self._arrow_e_offset_x,
+                arrow_e_offset_y=self._arrow_e_offset_y,
+                color_n=arrow_color_n,
+                color_e=arrow_color_e,
             )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
         cb.set_label(r"log$_{10}$ flux", fontsize=font_size)
+        cb.set_label(r"log$_{10}$ flux", fontsize=colorbar_label_font_size)
         cb.ax.tick_params(labelsize=font_size)
         return ax
 
@@ -1274,6 +1706,20 @@ class ModelBandPlot(ModelBand):
         lens_light_add=False,
         font_size=15,
         coordinate_arrows=True,
+        text_font_size=15,
+        text_color="w",
+        text_bg_color="k",
+        text_x=None,
+        text_y=None,
+        scale_bar_color="w",
+        scale_bar_width=2,
+        scale_bar_length=1.0,
+        scale_bar_text=None,
+        scale_bar_font_size=15,
+        colorbar_label_font_size=15,
+        arrow_color_n="w",
+        arrow_color_e="w",
+        arrow_font_size=15,
         **matshow_kwargs,
     ):
         model = ImageModel.image(
@@ -1306,6 +1752,13 @@ class ModelBandPlot(ModelBand):
         ax.autoscale(False)
         plot_util.scale_bar(
             ax, self._frame_size, dist=1, text='1"', font_size=font_size
+            ax, 
+            self._frame_size, 
+            dist=scale_bar_length, 
+            text=scale_bar_text, 
+            color=scale_bar_color, 
+            font_size=scale_bar_font_size,
+            linewidth=scale_bar_width,
         )
         plot_util.text_description(
             ax,
@@ -1314,6 +1767,11 @@ class ModelBandPlot(ModelBand):
             color="w",
             backgroundcolor="k",
             font_size=font_size,
+            color=text_color,
+            backgroundcolor=text_bg_color,
+            font_size=text_font_size,
+            text_x=text_x,
+            text_y=text_y,
         )
         if coordinate_arrows:
             plot_util.coordinate_arrows(
@@ -1322,11 +1780,23 @@ class ModelBandPlot(ModelBand):
                 self._coords,
                 arrow_size=self._arrow_size,
                 font_size=font_size,
+                font_size=arrow_font_size,
+                arrow_length=self._arrow_length,
+                arrowhead_size=self._arrowhead_size,
+                arrow_origin_x=self._arrow_origin_x,
+                arrow_origin_y=self._arrow_origin_y,
+                arrow_n_offset_x=self._arrow_n_offset_x,
+                arrow_n_offset_y=self._arrow_n_offset_y,
+                arrow_e_offset_x=self._arrow_e_offset_x,
+                arrow_e_offset_y=self._arrow_e_offset_y,
+                color_n=arrow_color_n,
+                color_e=arrow_color_e,
             )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
         cb.set_label(r"log$_{10}$ flux", fontsize=font_size)
+        cb.set_label(r"log$_{10}$ flux", fontsize=colorbar_label_font_size)
         cb.ax.tick_params(labelsize=font_size)
         return ax
 

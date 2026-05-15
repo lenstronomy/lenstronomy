@@ -18,6 +18,7 @@ import matplotlib
 matplotlib.use("agg")
 import matplotlib.pyplot as plt
 import unittest
+from unittest.mock import patch
 
 
 class TestOutputPlots(object):
@@ -398,6 +399,41 @@ class TestOutputPlots(object):
         plt.close()
         assert kwargs_params["kwargs_source"][0]["amp"] == 2
 
+    def test_substructure_plot_default_index_macromodel(self):
+        multi_band_list = [[self.kwargs_data, self.kwargs_psf, self.kwargs_numerics]]
+        lensPlot = ModelPlot(
+            multi_band_list,
+            self.kwargs_model,
+            self.kwargs_params,
+            multi_band_type="single-band",
+        )
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        ax, cb = lensPlot.substructure_plot(ax=ax, index_macromodel=None)
+        assert cb is not None
+        plt.close()
+
+    def test_model_band_plot_additional_paths(self):
+        multi_band_list = [[self.kwargs_data, self.kwargs_psf, self.kwargs_numerics]]
+        lensPlot = ModelPlot(
+            multi_band_list,
+            self.kwargs_model,
+            self.kwargs_params,
+            multi_band_type="single-band",
+        )
+        plot_band = lensPlot._select_band(0)
+
+        plot_band.plot_main(with_caustics=True)
+        plt.close()
+
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        ax, cb = plot_band.substructure_plot(
+            ax=ax,
+            index_macromodel=(0,),
+            add_color_bar=False,
+        )
+        assert cb is None
+        plt.close()
+
 
 class TestRaise(unittest.TestCase):
     def test_raise(self):
@@ -523,6 +559,34 @@ class TestRaise(unittest.TestCase):
                 bands_compute=[True],
                 linear_solver=False,
             )
+
+    def test_raise_linear_solver_false_multi_band_branch(self):
+        class DummyImageModel(object):
+            def image_linear_solve(self, inv_bool=True, **kwargs):
+                return [], [], None, kwargs
+
+        kwargs_params = {
+            "kwargs_lens": [],
+            "kwargs_source": [],
+            "kwargs_ps": [],
+            "kwargs_lens_light": [],
+        }
+
+        with patch(
+            "lenstronomy.Plots.model_plot.class_creator.create_im_sim",
+            return_value=DummyImageModel(),
+        ):
+            with self.assertRaisesRegex(
+                ValueError,
+                "plotting the solution without the linear solver currently only works with one band",
+            ):
+                ModelPlot(
+                    multi_band_list=[[{}, {}, {}], [{}, {}, {}]],
+                    kwargs_model={},
+                    kwargs_params=kwargs_params,
+                    linear_solver=False,
+                    multi_band_type="multi-linear",
+                )
 
 
 def test_interferometry_natwt_Model_Plot_linear_solver():

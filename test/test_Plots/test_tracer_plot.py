@@ -250,10 +250,75 @@ class TestTracerPlot(object):
             v_min=None,
             v_max=None,
         )
+        tracer_plot.source_plot(
+            ax=axes[1, 0],
+            deltaPix_source=0.01,
+            numPix=100,
+            plot_scale="log",
+            v_min=None,
+            v_max=None,
+            with_caustics=True,
+        )
         tracer_plot.convergence_plot(ax=axes[1, 1], v_max=1)
         tracer_plot.magnification_plot(ax=axes[1, 2])
         f.tight_layout()
         f.subplots_adjust(
             left=None, bottom=None, right=None, top=None, wspace=0.0, hspace=0.05
         )
+        plt.close()
+
+    def test_tracer_plot_extended_paths(self):
+        tracer_plot = TracerPlot(
+            self.kwargs_data_joint,
+            self.kwargs_model,
+            self.kwargs_params,
+            self.kwargs_likelihood,
+            fast_caustic=False,
+        )
+
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        tracer_plot.model_plot(ax=ax, image_names=True, image_name_list=["A", "B", "C"])
+        plt.close()
+
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        tracer_plot.absolute_residual_plot(ax=ax)
+        plt.close()
+
+        source_lin, _ = tracer_plot.source(
+            numPix=20,
+            deltaPix=0.02,
+            center=(0.01, -0.01),
+            image_orientation=False,
+        )
+        assert source_lin.shape == (20, 20)
+
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        tracer_plot.source_plot(
+            ax=ax,
+            numPix=30,
+            deltaPix_source=0.02,
+            plot_scale="linear",
+            with_caustics=True,
+        )
+        plt.close()
+
+        with np.testing.assert_raises(ValueError):
+            f, ax = plt.subplots(1, 1, figsize=(4, 4))
+            tracer_plot.source_plot(
+                ax=ax,
+                numPix=20,
+                deltaPix_source=0.02,
+                plot_scale="invalid",
+            )
+        plt.close()
+
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        tracer_plot.deflection_plot(ax=ax, axis=1, with_caustics=True)
+        plt.close()
+
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        tracer_plot.deflection_plot(ax=ax, with_caustics=False)
+        plt.close()
+
+        tracer_plot.plot_main(with_caustics=True)
         plt.close()

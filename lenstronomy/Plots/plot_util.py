@@ -3,9 +3,59 @@ import math
 import matplotlib.pyplot as plt
 import copy
 
+import sys
+from typing import TypedDict
+
+if sys.version_info >= (3, 12):
+    from typing import Unpack
+else:
+    try:
+        from typing_extensions import Unpack
+    except ImportError:
+        pass
+
 from lenstronomy.Util.package_util import exporter
 
 export, __all__ = exporter()
+
+
+class CoordArrowKwargs(TypedDict, total=False):
+    """Keyword arguments for coordinate arrows."""
+
+    font_size: int
+    arrow_length: float
+    arrowhead_size: float
+    arrow_origin_x: float
+    arrow_origin_y: float
+    arrow_north_offset_x: float
+    arrow_north_offset_y: float
+    arrow_east_offset_x: float
+    arrow_east_offset_y: float
+    arrow_color_north: str
+    arrow_color_east: str
+
+
+class ScaleBarKwargs(TypedDict, total=False):
+    """Keyword arguments for scale bar."""
+
+    dist: float
+    text: str
+    color: str
+    font_size: int
+    flipped: bool
+    linewidth: float
+
+
+class TitleKwargs(TypedDict, total=False):
+    """Keyword arguments for title."""
+
+    text: str
+    color: str
+    backgroundcolor: str
+    flipped: bool
+    font_size: int
+    title_x_pos: float
+    title_y_pos: float
 
 
 @export
@@ -39,28 +89,23 @@ def sqrt(inputArray, scale_min=None, scale_max=None):
 
 
 @export
-def show_title_text(
-    ax,
-    text,
-    color="w",
-    backgroundcolor="k",
-    flipped=False,
-    font_size=15,
-    title_x_pos=None,
-    title_y_pos=None,
-):
+def show_title_text(ax, **kwargs_title: "Unpack[TitleKwargs]"):
     """Add title text to an axis in normalized coordinates.
 
     :param ax: matplotlib axis instance
-    :param text: text to be displayed
-    :param color: text color
-    :param backgroundcolor: text background color
-    :param flipped: if True, draw text on the right side
-    :param font_size: font size of the title
-    :param title_x_pos: x-position in axes coordinates
-    :param title_y_pos: y-position in axes coordinates
+    :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
     :return: None, updates the axis in place
     """
+    text = kwargs_title.get("text")
+    if text is None:
+        return
+    color = kwargs_title.get("color", "w")
+    backgroundcolor = kwargs_title.get("backgroundcolor", "k")
+    flipped = kwargs_title.get("flipped", False)
+    font_size = kwargs_title.get("font_size", 15)
+    title_x_pos = kwargs_title.get("title_x_pos", None)
+    title_y_pos = kwargs_title.get("title_y_pos", None)
+
     if title_x_pos is None:
         if flipped:
             title_x_pos = 0.975
@@ -85,21 +130,21 @@ def show_title_text(
 
 
 @export
-def show_scale_bar(
-    ax, d, dist=1.0, text=None, color="w", font_size=15, flipped=False, linewidth=2
-):
+def show_scale_bar(ax, d, **kwargs_scale_bar: "Unpack[ScaleBarKwargs]"):
     """Plot a scale bar.
 
     :param ax: matplotlib.axes instance
     :param d: diameter of frame
-    :param dist: distance scale printed
-    :param text: string printed on scale bar
-    :param color: color of scale bar
-    :param font_size: font size
-    :param flipped: boolean
-    :param linewidth: line width of scale bar
+    :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
     :return: None, updated ax instance
     """
+    dist = kwargs_scale_bar.get("dist", 1.0)
+    text = kwargs_scale_bar.get("text", None)
+    color = kwargs_scale_bar.get("color", "w")
+    font_size = kwargs_scale_bar.get("font_size", 15)
+    flipped = kwargs_scale_bar.get("flipped", False)
+    linewidth = kwargs_scale_bar.get("linewidth", 2)
+
     if text is None:
         if dist >= 1:
             text = f'{int(dist)}"'
@@ -133,43 +178,28 @@ def show_scale_bar(
 
 @export
 def show_coordinate_arrows(
-    ax,
-    d,
-    coords,
-    font_size=15,
-    arrow_length=0.05,
-    arrowhead_size=0.025,
-    arrow_origin_x=None,
-    arrow_origin_y=None,
-    arrow_north_offset_x=None,
-    arrow_north_offset_y=None,
-    arrow_east_offset_x=None,
-    arrow_east_offset_y=None,
-    arrow_color_north="w",
-    arrow_color_east="w",
+    ax, d, coords, **kwargs_coordinate_arrows: "Unpack[CoordArrowKwargs]"
 ):
     """Plot East and North coordinate arrows.
 
     :param ax: matplotlib axes instance
     :param d: diameter of frame in ax
     :param coords: lenstronomy.Data.coord_transforms Coordinates() instance
-    :param font_size: font size of length scale
-    :param arrow_length: length of the arrow as a fraction of the image size
-    :param arrowhead_size: size of the arrow head as a fraction of the image size
-    :param arrow_origin_x: x origin of the arrow as a fraction of the image size
-    :param arrow_origin_y: y origin of the arrow as a fraction of the image size
-    :param arrow_north_offset_x: x offset for N from the tip of the arrow as a fraction
-        of image size
-    :param arrow_north_offset_y: y offset for N from the tip of the arrow as a fraction
-        of image size
-    :param arrow_east_offset_x: x offset for E from the tip of the arrow as a fraction
-        of image size
-    :param arrow_east_offset_y: y offset for E from the tip of the arrow as a fraction
-        of image size
-    :param arrow_color_north: color string for N
-    :param arrow_color_east: color string for E
+    :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
     :return: updated ax instance
     """
+    font_size = kwargs_coordinate_arrows.get("font_size", 15)
+    arrow_length = kwargs_coordinate_arrows.get("arrow_length", 0.05)
+    arrowhead_size = kwargs_coordinate_arrows.get("arrowhead_size", 0.025)
+    arrow_origin_x = kwargs_coordinate_arrows.get("arrow_origin_x", None)
+    arrow_origin_y = kwargs_coordinate_arrows.get("arrow_origin_y", None)
+    arrow_north_offset_x = kwargs_coordinate_arrows.get("arrow_north_offset_x", None)
+    arrow_north_offset_y = kwargs_coordinate_arrows.get("arrow_north_offset_y", None)
+    arrow_east_offset_x = kwargs_coordinate_arrows.get("arrow_east_offset_x", None)
+    arrow_east_offset_y = kwargs_coordinate_arrows.get("arrow_east_offset_y", None)
+    arrow_color_north = kwargs_coordinate_arrows.get("arrow_color_north", "w")
+    arrow_color_east = kwargs_coordinate_arrows.get("arrow_color_east", "w")
+
     deltaPix = coords.pixel_width
 
     ra_test, dec_test = coords.map_pix2coord(0, 0)

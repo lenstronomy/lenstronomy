@@ -28,16 +28,6 @@ class ModelBandPlot(ModelBand):
         band_index=0,
         fast_caustic=True,
         linear_solver=True,
-        arrow_length=0.05,
-        arrowhead_size=0.025,
-        arrow_origin_x=None,
-        arrow_origin_y=None,
-        arrow_east_offset_x=None,
-        arrow_east_offset_y=None,
-        arrow_north_offset_x=None,
-        arrow_north_offset_y=None,
-        scale_bar_width=2,
-        scale_bar_font_size=15,
     ):
         """Initialize the model-band plotting class.
 
@@ -54,16 +44,6 @@ class ModelBandPlot(ModelBand):
         :param fast_caustic: boolean; if True, uses fast (but less accurate) caustic calculation method
         :param linear_solver: bool, if True (default) fixes the linear amplitude parameters 'amp' (avoid sampling) such
          that they get overwritten by the linear solver solution.
-        :param arrow_length: length of the coordinate arrow as a fraction of the image size
-        :param arrowhead_size: size of the arrowhead of the coordinate arrow as a fraction of the image size
-        :param arrow_origin_x: x-origin of the coordinate arrow as a fraction of the image size
-        :param arrow_origin_y: y-origin of the coordinate arrow as a fraction of the image size
-        :param arrow_east_offset_x: x-offset of the East arrow text as a fraction of the image size
-        :param arrow_east_offset_y: y-offset of the East arrow text as a fraction of the image size
-        :param arrow_north_offset_x: x-offset of the North arrow text as a fraction of the image size
-        :param arrow_north_offset_y: y-offset of the North arrow text as a fraction of the image size
-        :param scale_bar_width: width of the scale bar
-        :param scale_bar_font_size: font size of the scale bar
         """
         ModelBand.__init__(
             self,
@@ -95,18 +75,7 @@ class ModelBandPlot(ModelBand):
         self._y_grid = util.image2array(y_grid)
         self._x_center, self._y_center = self._coords.center
 
-        self._scale_bar_width = scale_bar_width
-        self._scale_bar_font_size = scale_bar_font_size
         self._fast_caustic = fast_caustic
-
-        self._arrow_length = arrow_length
-        self._arrowhead_size = arrowhead_size
-        self._arrow_origin_x = arrow_origin_x
-        self._arrow_origin_y = arrow_origin_y
-        self._arrow_east_offset_x = arrow_east_offset_x
-        self._arrow_east_offset_y = arrow_east_offset_y
-        self._arrow_north_offset_x = arrow_north_offset_x
-        self._arrow_north_offset_y = arrow_north_offset_y
 
         self._image_extent = [
             -self._deltaPix / 2,
@@ -170,22 +139,13 @@ class ModelBandPlot(ModelBand):
         ax,
         v_min=None,
         v_max=None,
-        title_text="Observed",
-        title_font_size=15,
-        title_color="w",
-        title_background_color="k",
-        title_x_pos=None,
-        title_y_pos=None,
-        scale_bar_length=1.0,
-        scale_bar_color="w",
-        scale_bar_text=None,
         coordinate_arrows=True,
-        arrow_font_size=15,
-        arrow_color_north="w",
-        arrow_color_east="w",
         font_size=15,
         colorbar_label=r"log$_{10}$ flux",
         colorbar_label_font_size=15,
+        kwargs_title=None,
+        kwargs_scale_bar=None,
+        kwargs_coordinate_arrows=None,
         **kwargs_matshow,
     ):
         """Plot observed imaging data.
@@ -193,22 +153,16 @@ class ModelBandPlot(ModelBand):
         :param ax: matplotlib axis instance
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
-        :param title_text: string, text to be displayed in the image
         :param font_size: font size of the text
         :param colorbar_label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param title_font_size: font size of the title
-        :param title_color: color of the title
-        :param title_background_color: background color of the title
-        :param title_x_pos: x-position of the title
-        :param title_y_pos: y-position of the title
-        :param scale_bar_color: color of the scale bar
-        :param scale_bar_length: length of the scale bar
-        :param scale_bar_text: text of the scale bar
         :param colorbar_label_font_size: font size of the colorbar label
-        :param arrow_color_north: color of the North arrow
-        :param arrow_color_east: color of the East arrow
-        :param arrow_font_size: font size of the arrow text
+        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
+        :type kwargs_title: Unpack[plot_util.TitleKwargs]
+        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
+        :type kwargs_scale_bar: Unpack[plot_util.ScaleBarKwargs]
+        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :type kwargs_coordinate_arrows: Unpack[plot_util.CoordArrowKwargs]
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
@@ -231,23 +185,23 @@ class ModelBandPlot(ModelBand):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
 
+        if kwargs_title is None:
+            kwargs_title = {}
+        kwargs_title.setdefault("text", "Observed")
+        if kwargs_scale_bar is None:
+            kwargs_scale_bar = {}
+        kwargs_scale_bar.setdefault("dist", 1.0)
+        if kwargs_coordinate_arrows is None:
+            kwargs_coordinate_arrows = {}
+
         plot_util.show_scale_bar(
             ax,
             self._frame_size,
-            dist=scale_bar_length,
-            text=scale_bar_text,
-            color=scale_bar_color,
-            font_size=self._scale_bar_font_size,
-            linewidth=self._scale_bar_width,
+            **kwargs_scale_bar,
         )
         plot_util.show_title_text(
             ax,
-            text=title_text,
-            color=title_color,
-            backgroundcolor=title_background_color,
-            font_size=title_font_size,
-            title_x_pos=title_x_pos,
-            title_y_pos=title_y_pos,
+            **kwargs_title,
         )
 
         if coordinate_arrows:
@@ -255,17 +209,7 @@ class ModelBandPlot(ModelBand):
                 ax,
                 self._frame_size,
                 self._coords,
-                font_size=arrow_font_size,
-                arrow_length=self._arrow_length,
-                arrowhead_size=self._arrowhead_size,
-                arrow_origin_x=self._arrow_origin_x,
-                arrow_origin_y=self._arrow_origin_y,
-                arrow_north_offset_x=self._arrow_north_offset_x,
-                arrow_north_offset_y=self._arrow_north_offset_y,
-                arrow_east_offset_x=self._arrow_east_offset_x,
-                arrow_east_offset_y=self._arrow_east_offset_y,
-                arrow_color_north=arrow_color_north,
-                arrow_color_east=arrow_color_east,
+                **kwargs_coordinate_arrows,
             )
 
         divider = make_axes_locatable(ax)
@@ -282,24 +226,15 @@ class ModelBandPlot(ModelBand):
         v_min=None,
         v_max=None,
         image_names=False,
-        title_text="Reconstructed",
         original_position=True,
         image_name_list=None,
-        title_font_size=15,
-        title_color="w",
-        title_background_color="k",
-        title_x_pos=None,
-        title_y_pos=None,
-        scale_bar_length=1.0,
-        scale_bar_color="w",
-        scale_bar_text=None,
         coordinate_arrows=True,
-        arrow_font_size=15,
-        arrow_color_north="w",
-        arrow_color_east="w",
         font_size=15,
         colorbar_label=r"log$_{10}$ flux",
         colorbar_label_font_size=15,
+        kwargs_title=None,
+        kwargs_scale_bar=None,
+        kwargs_coordinate_arrows=None,
         **kwargs_matshow,
     ):
         """Plot reconstructed imaging model.
@@ -310,22 +245,16 @@ class ModelBandPlot(ModelBand):
         :param image_names: boolean, if True, prints image names
         :param colorbar_label: string, label for the colorbar
         :param font_size: font size of the text
-        :param title_text: string, text to be displayed in the image
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param original_position: boolean, if True, uses original image positions
         :param image_name_list: list of names for images
-        :param title_font_size: font size of the title
-        :param title_color: color of the title
-        :param title_background_color: background color of the title
-        :param title_x_pos: x-position of the title
-        :param title_y_pos: y-position of the title
-        :param scale_bar_color: color of the scale bar
-        :param scale_bar_length: length of the scale bar
-        :param scale_bar_text: text of the scale bar
         :param colorbar_label_font_size: font size of the colorbar label
-        :param arrow_color_north: color of the North arrow
-        :param arrow_color_east: color of the East arrow
-        :param arrow_font_size: font size of the arrow text
+        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
+        :type kwargs_title: Unpack[plot_util.TitleKwargs]
+        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
+        :type kwargs_scale_bar: Unpack[plot_util.ScaleBarKwargs]
+        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :type kwargs_coordinate_arrows: Unpack[plot_util.CoordArrowKwargs]
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
@@ -346,40 +275,31 @@ class ModelBandPlot(ModelBand):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
+
+        if kwargs_title is None:
+            kwargs_title = {}
+        kwargs_title.setdefault("text", "Reconstructed")
+        if kwargs_scale_bar is None:
+            kwargs_scale_bar = {}
+        kwargs_scale_bar.setdefault("dist", 1.0)
+        if kwargs_coordinate_arrows is None:
+            kwargs_coordinate_arrows = {}
+
         plot_util.show_scale_bar(
             ax,
             self._frame_size,
-            dist=scale_bar_length,
-            text=scale_bar_text,
-            color=scale_bar_color,
-            font_size=self._scale_bar_font_size,
-            linewidth=self._scale_bar_width,
+            **kwargs_scale_bar,
         )
         plot_util.show_title_text(
             ax,
-            text=title_text,
-            color=title_color,
-            backgroundcolor=title_background_color,
-            font_size=title_font_size,
-            title_x_pos=title_x_pos,
-            title_y_pos=title_y_pos,
+            **kwargs_title,
         )
         if coordinate_arrows:
             plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
-                font_size=arrow_font_size,
-                arrow_length=self._arrow_length,
-                arrowhead_size=self._arrowhead_size,
-                arrow_origin_x=self._arrow_origin_x,
-                arrow_origin_y=self._arrow_origin_y,
-                arrow_north_offset_x=self._arrow_north_offset_x,
-                arrow_north_offset_y=self._arrow_north_offset_y,
-                arrow_east_offset_x=self._arrow_east_offset_x,
-                arrow_east_offset_y=self._arrow_east_offset_y,
-                arrow_color_north=arrow_color_north,
-                arrow_color_east=arrow_color_east,
+                **kwargs_coordinate_arrows,
             )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
@@ -409,47 +329,32 @@ class ModelBandPlot(ModelBand):
     def convergence_plot(
         self,
         ax,
-        title_text="Convergence",
         v_min=None,
         v_max=None,
         font_size=15,
         colorbar_label=r"$\log_{10}\ \kappa$",
         coordinate_arrows=True,
-        title_font_size=15,
-        title_color="w",
-        title_background_color="k",
-        title_x_pos=None,
-        title_y_pos=None,
-        scale_bar_color="w",
-        scale_bar_length=1.0,
-        scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_north="w",
-        arrow_color_east="w",
-        arrow_font_size=15,
+        kwargs_title=None,
+        kwargs_scale_bar=None,
+        kwargs_coordinate_arrows=None,
         **kwargs_matshow,
     ):
         """Plot lensing convergence in the data frame.
 
         :param ax: matplotib axis instance
-        :param title_text: string, text to be displayed in the image
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
         :param font_size: font size of the text
         :param colorbar_label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param title_font_size: font size of the title
-        :param title_color: color of the title
-        :param title_background_color: background color of the title
-        :param title_x_pos: x-position of the title
-        :param title_y_pos: y-position of the title
-        :param scale_bar_color: color of the scale bar
-        :param scale_bar_length: length of the scale bar
-        :param scale_bar_text: text of the scale bar
         :param colorbar_label_font_size: font size of the colorbar label
-        :param arrow_color_north: color of the North arrow
-        :param arrow_color_east: color of the East arrow
-        :param arrow_font_size: font size of the arrow text
+        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
+        :type kwargs_title: Unpack[plot_util.TitleKwargs]
+        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
+        :type kwargs_scale_bar: Unpack[plot_util.ScaleBarKwargs]
+        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :type kwargs_coordinate_arrows: Unpack[plot_util.CoordArrowKwargs]
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: convergence plot in ax instance
         """
@@ -470,41 +375,31 @@ class ModelBandPlot(ModelBand):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
+
+        if kwargs_title is None:
+            kwargs_title = {}
+        kwargs_title.setdefault("text", "Convergence")
+        if kwargs_scale_bar is None:
+            kwargs_scale_bar = {}
+        kwargs_scale_bar.setdefault("dist", 1.0)
+        if kwargs_coordinate_arrows is None:
+            kwargs_coordinate_arrows = {}
+
         plot_util.show_scale_bar(
             ax,
             self._frame_size,
-            dist=scale_bar_length,
-            text=scale_bar_text,
-            color=scale_bar_color,
-            font_size=self._scale_bar_font_size,
-            linewidth=self._scale_bar_width,
+            **kwargs_scale_bar,
         )
         if coordinate_arrows:
             plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
-                font_size=arrow_font_size,
-                arrow_length=self._arrow_length,
-                arrowhead_size=self._arrowhead_size,
-                arrow_origin_x=self._arrow_origin_x,
-                arrow_origin_y=self._arrow_origin_y,
-                arrow_north_offset_x=self._arrow_north_offset_x,
-                arrow_north_offset_y=self._arrow_north_offset_y,
-                arrow_east_offset_x=self._arrow_east_offset_x,
-                arrow_east_offset_y=self._arrow_east_offset_y,
-                arrow_color_north=arrow_color_north,
-                arrow_color_east=arrow_color_east,
+                **kwargs_coordinate_arrows,
             )
             plot_util.show_title_text(
                 ax,
-                text=title_text,
-                flipped=False,
-                color=title_color,
-                backgroundcolor=title_background_color,
-                font_size=title_font_size,
-                title_x_pos=title_x_pos,
-                title_y_pos=title_y_pos,
+                **kwargs_title,
             )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
@@ -518,7 +413,6 @@ class ModelBandPlot(ModelBand):
         self,
         ax,
         index_macromodel,
-        title_text="Substructure convergence",
         subtract_mean=True,
         v_min=-0.05,
         v_max=0.05,
@@ -531,18 +425,10 @@ class ModelBandPlot(ModelBand):
         super_sample_factor=None,
         add_color_bar=True,
         coordinate_arrows=True,
-        title_font_size=15,
-        title_color="k",
-        title_background_color="w",
-        title_x_pos=None,
-        title_y_pos=None,
-        scale_bar_color="k",
-        scale_bar_length=1.0,
-        scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_north="k",
-        arrow_color_east="k",
-        arrow_font_size=15,
+        kwargs_title=None,
+        kwargs_scale_bar=None,
+        kwargs_coordinate_arrows=None,
         **kwargs_matshow,
     ):
         """Plots the convergence of a full lens model minus the convergence from a few
@@ -550,7 +436,6 @@ class ModelBandPlot(ModelBand):
 
         :param ax: matplotib axis instance
         :param index_macromodel: a list of indexes corresponding to the lens models with convergence to be subtracted
-        :param title_text: text appearing in frame
         :param subtract_mean: bool; displays the substructure convergence relative to the mean convergence in the frame
         :param v_min: minimum color scale
         :param v_max: max color scale
@@ -563,18 +448,13 @@ class ModelBandPlot(ModelBand):
         :param super_sample_factor: a integer the specifies supersampling of the coordinate grid to create the convergence map
         :param add_color_bar: bool; whether or not to include a color bar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param title_font_size: font size of the title
-        :param title_color: color of the title
-        :param title_background_color: background color of the title
-        :param title_x_pos: x-position of the title
-        :param title_y_pos: y-position of the title
-        :param scale_bar_color: color of the scale bar
-        :param scale_bar_length: length of the scale bar
-        :param scale_bar_text: text of the scale bar
         :param colorbar_label_font_size: font size of the colorbar label
-        :param arrow_color_north: color of the North arrow
-        :param arrow_color_east: color of the East arrow
-        :param arrow_font_size: font size of the arrow text
+        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
+        :type kwargs_title: Unpack[plot_util.TitleKwargs]
+        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
+        :type kwargs_scale_bar: Unpack[plot_util.ScaleBarKwargs]
+        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :type kwargs_coordinate_arrows: Unpack[plot_util.CoordArrowKwargs]
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotib axis and colorbar
         """
@@ -641,41 +521,36 @@ class ModelBandPlot(ModelBand):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
+
+        if kwargs_title is None:
+            kwargs_title = {}
+        kwargs_title.setdefault("text", "Substructure convergence")
+        kwargs_title.setdefault("color", "k")
+        kwargs_title.setdefault("backgroundcolor", "w")
+        if kwargs_scale_bar is None:
+            kwargs_scale_bar = {}
+        kwargs_scale_bar.setdefault("dist", 1.0)
+        kwargs_scale_bar.setdefault("color", "k")
+        if kwargs_coordinate_arrows is None:
+            kwargs_coordinate_arrows = {}
+        kwargs_coordinate_arrows.setdefault("arrow_color_north", "k")
+        kwargs_coordinate_arrows.setdefault("arrow_color_east", "k")
+
         plot_util.show_scale_bar(
             ax,
             self._frame_size,
-            dist=scale_bar_length,
-            text=scale_bar_text,
-            color=scale_bar_color,
-            font_size=self._scale_bar_font_size,
-            linewidth=self._scale_bar_width,
+            **kwargs_scale_bar,
         )
         if coordinate_arrows:
             plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
-                font_size=arrow_font_size,
-                arrow_length=self._arrow_length,
-                arrowhead_size=self._arrowhead_size,
-                arrow_origin_x=self._arrow_origin_x,
-                arrow_origin_y=self._arrow_origin_y,
-                arrow_north_offset_x=self._arrow_north_offset_x,
-                arrow_north_offset_y=self._arrow_north_offset_y,
-                arrow_east_offset_x=self._arrow_east_offset_x,
-                arrow_east_offset_y=self._arrow_east_offset_y,
-                arrow_color_north=arrow_color_north,
-                arrow_color_east=arrow_color_east,
+                **kwargs_coordinate_arrows,
             )
             plot_util.show_title_text(
                 ax,
-                text=title_text,
-                flipped=False,
-                color=title_color,
-                backgroundcolor=title_background_color,
-                font_size=title_font_size,
-                title_x_pos=title_x_pos,
-                title_y_pos=title_y_pos,
+                **kwargs_title,
             )
 
         if with_critical_curves is True:
@@ -719,22 +594,13 @@ class ModelBandPlot(ModelBand):
         v_min=-6,
         v_max=6,
         font_size=15,
-        title_text="Normalized Residuals",
         colorbar_label=r"(f$_{\rm data}$ - f$_{\rm model}$)/$\sigma$",
         coordinate_arrows=True,
         color_bar=True,
-        title_font_size=15,
-        title_color="k",
-        title_background_color="w",
-        title_x_pos=None,
-        title_y_pos=None,
-        scale_bar_color="k",
-        scale_bar_length=1.0,
-        scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_north="k",
-        arrow_color_east="k",
-        arrow_font_size=15,
+        kwargs_title=None,
+        kwargs_scale_bar=None,
+        kwargs_coordinate_arrows=None,
         **kwargs_matshow,
     ):
         """Plot normalized residuals between data and model.
@@ -743,22 +609,16 @@ class ModelBandPlot(ModelBand):
         :param v_min: minimum color scale
         :param v_max: max color scale
         :param font_size: font size for text appearing in image
-        :param title_text: text appearing in frame
         :param colorbar_label: label for the color bar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param color_bar: Option to display the color bar
-        :param title_font_size: font size of the title
-        :param title_color: color of the title
-        :param title_background_color: background color of the title
-        :param title_x_pos: x-position of the title
-        :param title_y_pos: y-position of the title
-        :param scale_bar_color: color of the scale bar
-        :param scale_bar_length: length of the scale bar
-        :param scale_bar_text: text of the scale bar
         :param colorbar_label_font_size: font size of the colorbar label
-        :param arrow_color_north: color of the North arrow
-        :param arrow_color_east: color of the East arrow
-        :param arrow_font_size: font size of the arrow text
+        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
+        :type kwargs_title: Unpack[plot_util.TitleKwargs]
+        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
+        :type kwargs_scale_bar: Unpack[plot_util.ScaleBarKwargs]
+        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :type kwargs_coordinate_arrows: Unpack[plot_util.CoordArrowKwargs]
         :param kwargs_matshow: kwargs to send to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
@@ -775,40 +635,36 @@ class ModelBandPlot(ModelBand):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
+
+        if kwargs_title is None:
+            kwargs_title = {}
+        kwargs_title.setdefault("text", "Normalized Residuals")
+        kwargs_title.setdefault("color", "k")
+        kwargs_title.setdefault("backgroundcolor", "w")
+        if kwargs_scale_bar is None:
+            kwargs_scale_bar = {}
+        kwargs_scale_bar.setdefault("dist", 1.0)
+        kwargs_scale_bar.setdefault("color", "k")
+        if kwargs_coordinate_arrows is None:
+            kwargs_coordinate_arrows = {}
+        kwargs_coordinate_arrows.setdefault("arrow_color_north", "k")
+        kwargs_coordinate_arrows.setdefault("arrow_color_east", "k")
+
         plot_util.show_scale_bar(
             ax,
             self._frame_size,
-            dist=scale_bar_length,
-            text=scale_bar_text,
-            color=scale_bar_color,
-            font_size=self._scale_bar_font_size,
-            linewidth=self._scale_bar_width,
+            **kwargs_scale_bar,
         )
         plot_util.show_title_text(
             ax,
-            text=title_text,
-            color=title_color,
-            backgroundcolor=title_background_color,
-            font_size=title_font_size,
-            title_x_pos=title_x_pos,
-            title_y_pos=title_y_pos,
+            **kwargs_title,
         )
         if coordinate_arrows:
             plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
-                font_size=arrow_font_size,
-                arrow_length=self._arrow_length,
-                arrowhead_size=self._arrowhead_size,
-                arrow_origin_x=self._arrow_origin_x,
-                arrow_origin_y=self._arrow_origin_y,
-                arrow_north_offset_x=self._arrow_north_offset_x,
-                arrow_north_offset_y=self._arrow_north_offset_y,
-                arrow_east_offset_x=self._arrow_east_offset_x,
-                arrow_east_offset_y=self._arrow_east_offset_y,
-                arrow_color_north=arrow_color_north,
-                arrow_color_east=arrow_color_east,
+                **kwargs_coordinate_arrows,
             )
         if color_bar:
             divider = make_axes_locatable(ax)
@@ -825,21 +681,12 @@ class ModelBandPlot(ModelBand):
         v_min=-1,
         v_max=1,
         font_size=15,
-        title_text="Residuals",
         colorbar_label=r"(f$_{\rm data}$-f$_{\rm model}$)",
         coordinate_arrows=True,
-        title_font_size=15,
-        title_color="k",
-        title_background_color="w",
-        title_x_pos=None,
-        title_y_pos=None,
-        scale_bar_color="k",
-        scale_bar_length=1.0,
-        scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_north="k",
-        arrow_color_east="k",
-        arrow_font_size=15,
+        kwargs_title=None,
+        kwargs_scale_bar=None,
+        kwargs_coordinate_arrows=None,
         **kwargs_matshow,
     ):
         """Plot absolute residuals between data and model.
@@ -848,21 +695,15 @@ class ModelBandPlot(ModelBand):
         :param v_min: minimum color scale
         :param v_max: max color scale
         :param font_size: font size for text appearing in image
-        :param title_text: text appearing in frame
         :param colorbar_label: label for the color bar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param title_font_size: font size of the title
-        :param title_color: color of the title
-        :param title_background_color: background color of the title
-        :param title_x_pos: x-position of the title
-        :param title_y_pos: y-position of the title
-        :param scale_bar_color: color of the scale bar
-        :param scale_bar_length: length of the scale bar
-        :param scale_bar_text: text of the scale bar
         :param colorbar_label_font_size: font size of the colorbar label
-        :param arrow_color_north: color of the North arrow
-        :param arrow_color_east: color of the East arrow
-        :param arrow_font_size: font size of the arrow text
+        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
+        :type kwargs_title: Unpack[plot_util.TitleKwargs]
+        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
+        :type kwargs_scale_bar: Unpack[plot_util.ScaleBarKwargs]
+        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :type kwargs_coordinate_arrows: Unpack[plot_util.CoordArrowKwargs]
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
@@ -879,40 +720,36 @@ class ModelBandPlot(ModelBand):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
+
+        if kwargs_title is None:
+            kwargs_title = {}
+        kwargs_title.setdefault("text", "Residuals")
+        kwargs_title.setdefault("color", "k")
+        kwargs_title.setdefault("backgroundcolor", "w")
+        if kwargs_scale_bar is None:
+            kwargs_scale_bar = {}
+        kwargs_scale_bar.setdefault("dist", 1.0)
+        kwargs_scale_bar.setdefault("color", "k")
+        if kwargs_coordinate_arrows is None:
+            kwargs_coordinate_arrows = {}
+        kwargs_coordinate_arrows.setdefault("arrow_color_north", "k")
+        kwargs_coordinate_arrows.setdefault("arrow_color_east", "k")
+
         plot_util.show_scale_bar(
             ax,
             self._frame_size,
-            dist=scale_bar_length,
-            text=scale_bar_text,
-            color=scale_bar_color,
-            font_size=self._scale_bar_font_size,
-            linewidth=self._scale_bar_width,
+            **kwargs_scale_bar,
         )
         plot_util.show_title_text(
             ax,
-            text=title_text,
-            color=title_color,
-            backgroundcolor=title_background_color,
-            font_size=title_font_size,
-            title_x_pos=title_x_pos,
-            title_y_pos=title_y_pos,
+            **kwargs_title,
         )
         if coordinate_arrows:
             plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
-                font_size=arrow_font_size,
-                arrow_length=self._arrow_length,
-                arrowhead_size=self._arrowhead_size,
-                arrow_origin_x=self._arrow_origin_x,
-                arrow_origin_y=self._arrow_origin_y,
-                arrow_north_offset_x=self._arrow_north_offset_x,
-                arrow_north_offset_y=self._arrow_north_offset_y,
-                arrow_east_offset_x=self._arrow_east_offset_x,
-                arrow_east_offset_y=self._arrow_east_offset_y,
-                arrow_color_north=arrow_color_north,
-                arrow_color_east=arrow_color_east,
+                **kwargs_coordinate_arrows,
             )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
@@ -984,24 +821,14 @@ class ModelBandPlot(ModelBand):
         caustic_color="yellow",
         font_size=15,
         plot_scale="log",
-        scale_size=0.1,
-        title_text="Reconstructed source",
         colorbar_label=r"log$_{10}$ flux",
         point_source_position=True,
         kwargs_caustic=None,
         coordinate_arrows=True,
-        title_font_size=15,
-        title_color="w",
-        title_background_color="k",
-        title_x_pos=None,
-        title_y_pos=None,
-        scale_bar_color="w",
-        scale_bar_length=0.1,
-        scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_north="w",
-        arrow_color_east="w",
-        arrow_font_size=15,
+        kwargs_title=None,
+        kwargs_scale_bar=None,
+        kwargs_coordinate_arrows=None,
         **kwargs_matshow,
     ):
         """Plot reconstructed source brightness.
@@ -1017,25 +844,18 @@ class ModelBandPlot(ModelBand):
         :param caustic_color: color of the caustics
         :param font_size: font size of labels
         :param plot_scale: string, log or linear, scale of surface brightness plot
-        :param scale_size: float, size of the scale bar
-        :param title_text: string, text to be displayed in the image
         :param colorbar_label: string, label for the colorbar
         :param point_source_position: boolean, if True, plots a point at the position of
             the point source
         :param kwargs_caustic: keyword arguments for caustic plotting
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param title_font_size: font size of the title
-        :param title_color: color of the title
-        :param title_background_color: background color of the title
-        :param title_x_pos: x-position of the title
-        :param title_y_pos: y-position of the title
-        :param scale_bar_color: color of the scale bar
-        :param scale_bar_length: length of the scale bar
-        :param scale_bar_text: text of the scale bar
         :param colorbar_label_font_size: font size of the colorbar label
-        :param arrow_color_north: color of the North arrow
-        :param arrow_color_east: color of the East arrow
-        :param arrow_font_size: font size of the arrow text
+        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
+        :type kwargs_title: Unpack[plot_util.TitleKwargs]
+        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
+        :type kwargs_scale_bar: Unpack[plot_util.ScaleBarKwargs]
+        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :type kwargs_coordinate_arrows: Unpack[plot_util.CoordArrowKwargs]
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
@@ -1101,15 +921,21 @@ class ModelBandPlot(ModelBand):
                 points_only=self._caustic_points_only,
                 **kwargs_caustic,
             )
-        if scale_bar_length > 0:
+
+        if kwargs_title is None:
+            kwargs_title = {}
+        kwargs_title.setdefault("text", "Reconstructed source")
+        if kwargs_scale_bar is None:
+            kwargs_scale_bar = {}
+        kwargs_scale_bar.setdefault("dist", 0.1)
+        if kwargs_coordinate_arrows is None:
+            kwargs_coordinate_arrows = {}
+
+        if kwargs_scale_bar.get("dist", 1.0) > 0:
             plot_util.show_scale_bar(
                 ax,
                 d_s,
-                dist=scale_bar_length,
-                text=scale_bar_text,
-                color=scale_bar_color,
-                font_size=self._scale_bar_font_size,
-                linewidth=self._scale_bar_width,
+                **kwargs_scale_bar,
             )
         if coordinate_arrows:
             plot_util.show_coordinate_arrows(
@@ -1156,18 +982,10 @@ class ModelBandPlot(ModelBand):
         font_size=15,
         point_source_position=True,
         coordinate_arrows=True,
-        title_font_size=15,
-        title_color="w",
-        title_background_color="k",
-        title_x_pos=None,
-        title_y_pos=None,
-        scale_bar_color="w",
-        scale_bar_length=0.1,
-        scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_north="w",
-        arrow_color_east="w",
-        arrow_font_size=15,
+        kwargs_title=None,
+        kwargs_scale_bar=None,
+        kwargs_coordinate_arrows=None,
         **kwargs_matshow,
     ):
         """Plots the uncertainty in the surface brightness in the source from the linear
@@ -1189,18 +1007,13 @@ class ModelBandPlot(ModelBand):
         :param point_source_position: boolean, if True, plots a point at the position of
             the point source
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param title_font_size: font size of the title
-        :param title_color: color of the title
-        :param title_background_color: background color of the title
-        :param title_x_pos: x-position of the title
-        :param title_y_pos: y-position of the title
-        :param scale_bar_color: color of the scale bar
-        :param scale_bar_length: length of the scale bar
-        :param scale_bar_text: text of the scale bar
         :param colorbar_label_font_size: font size of the colorbar label
-        :param arrow_color_north: color of the North arrow
-        :param arrow_color_east: color of the East arrow
-        :param arrow_font_size: font size of the arrow text
+        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
+        :type kwargs_title: Unpack[plot_util.TitleKwargs]
+        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
+        :type kwargs_scale_bar: Unpack[plot_util.ScaleBarKwargs]
+        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :type kwargs_coordinate_arrows: Unpack[plot_util.CoordArrowKwargs]
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot of source surface brightness errors in the reconstruction on the
             axis instance
@@ -1260,41 +1073,32 @@ class ModelBandPlot(ModelBand):
                 color="b",
                 points_only=self._caustic_points_only,
             )
+
+        if kwargs_title is None:
+            kwargs_title = {}
+        kwargs_title.setdefault("text", "Error map in source")
+        if kwargs_scale_bar is None:
+            kwargs_scale_bar = {}
+        kwargs_scale_bar.setdefault("dist", 0.1)
+        if kwargs_coordinate_arrows is None:
+            kwargs_coordinate_arrows = {}
+
         plot_util.show_scale_bar(
             ax,
             d_s,
-            dist=scale_bar_length,
-            text=scale_bar_text,
-            color=scale_bar_color,
-            font_size=self._scale_bar_font_size,
-            linewidth=self._scale_bar_width,
+            **kwargs_scale_bar,
         )
         if coordinate_arrows:
             plot_util.show_coordinate_arrows(
                 ax,
                 d_s,
                 coords_source,
-                font_size=arrow_font_size,
-                arrow_length=self._arrow_length,
-                arrowhead_size=self._arrowhead_size,
-                arrow_origin_x=self._arrow_origin_x,
-                arrow_origin_y=self._arrow_origin_y,
-                arrow_north_offset_x=self._arrow_north_offset_x,
-                arrow_north_offset_y=self._arrow_north_offset_y,
-                arrow_east_offset_x=self._arrow_east_offset_x,
-                arrow_east_offset_y=self._arrow_east_offset_y,
-                arrow_color_north=arrow_color_north,
-                arrow_color_east=arrow_color_east,
+                **kwargs_coordinate_arrows,
             )
         plot_util.show_title_text(
             ax,
-            text="Error map in source",
             flipped=False,
-            color=title_color,
-            backgroundcolor=title_background_color,
-            font_size=title_font_size,
-            title_x_pos=title_x_pos,
-            title_y_pos=title_y_pos,
+            **kwargs_title,
         )
         if point_source_position is True:
             ra_source, dec_source = self._bandmodel.PointSource.source_position(
@@ -1311,20 +1115,11 @@ class ModelBandPlot(ModelBand):
         image_name_list=None,
         font_size=15,
         coordinate_arrows=True,
-        title_text="Magnification model",
         colorbar_label=r"$\det\ (\mathsf{A}^{-1})$",
-        title_font_size=15,
-        title_color="k",
-        title_background_color="w",
-        title_x_pos=None,
-        title_y_pos=None,
-        scale_bar_color="k",
-        scale_bar_length=1.0,
-        scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_north="k",
-        arrow_color_east="k",
-        arrow_font_size=15,
+        kwargs_title=None,
+        kwargs_scale_bar=None,
+        kwargs_coordinate_arrows=None,
         **kwargs_matshow,
     ):
         """Plot magnification map in the data frame.
@@ -1336,20 +1131,14 @@ class ModelBandPlot(ModelBand):
             order as the positions
         :param font_size: font size of labels
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param title_text: string, text to be displayed in the image
         :param colorbar_label: string, label for the colorbar
-        :param title_font_size: font size of the title
-        :param title_color: color of the title
-        :param title_background_color: background color of the title
-        :param title_x_pos: x-position of the title
-        :param title_y_pos: y-position of the title
-        :param scale_bar_color: color of the scale bar
-        :param scale_bar_length: length of the scale bar
-        :param scale_bar_text: text of the scale bar
         :param colorbar_label_font_size: font size of the colorbar label
-        :param arrow_color_north: color of the North arrow
-        :param arrow_color_east: color of the East arrow
-        :param arrow_font_size: font size of the arrow text
+        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
+        :type kwargs_title: Unpack[plot_util.TitleKwargs]
+        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
+        :type kwargs_scale_bar: Unpack[plot_util.ScaleBarKwargs]
+        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :type kwargs_coordinate_arrows: Unpack[plot_util.CoordArrowKwargs]
         :param kwargs_matshow: kwargs to send to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
@@ -1373,40 +1162,36 @@ class ModelBandPlot(ModelBand):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
+
+        if kwargs_title is None:
+            kwargs_title = {}
+        kwargs_title.setdefault("text", "Magnification model")
+        kwargs_title.setdefault("color", "k")
+        kwargs_title.setdefault("backgroundcolor", "w")
+        if kwargs_scale_bar is None:
+            kwargs_scale_bar = {}
+        kwargs_scale_bar.setdefault("dist", 1.0)
+        kwargs_scale_bar.setdefault("color", "k")
+        if kwargs_coordinate_arrows is None:
+            kwargs_coordinate_arrows = {}
+        kwargs_coordinate_arrows.setdefault("arrow_color_north", "k")
+        kwargs_coordinate_arrows.setdefault("arrow_color_east", "k")
+
         plot_util.show_scale_bar(
             ax,
             self._frame_size,
-            dist=scale_bar_length,
-            text=scale_bar_text,
-            color=scale_bar_color,
-            font_size=self._scale_bar_font_size,
-            linewidth=self._scale_bar_width,
+            **kwargs_scale_bar,
         )
         if coordinate_arrows:
             plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
-                font_size=arrow_font_size,
-                arrow_length=self._arrow_length,
-                arrowhead_size=self._arrowhead_size,
-                arrow_origin_x=self._arrow_origin_x,
-                arrow_origin_y=self._arrow_origin_y,
-                arrow_north_offset_x=self._arrow_north_offset_x,
-                arrow_north_offset_y=self._arrow_north_offset_y,
-                arrow_east_offset_x=self._arrow_east_offset_x,
-                arrow_east_offset_y=self._arrow_east_offset_y,
-                arrow_color_north=arrow_color_north,
-                arrow_color_east=arrow_color_east,
+                **kwargs_coordinate_arrows,
             )
         plot_util.show_title_text(
             ax,
-            text=title_text,
-            color=title_color,
-            backgroundcolor=title_background_color,
-            font_size=title_font_size,
-            title_x_pos=title_x_pos,
-            title_y_pos=title_y_pos,
+            **kwargs_title,
         )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
@@ -1436,22 +1221,13 @@ class ModelBandPlot(ModelBand):
         axis=0,
         with_caustics=False,
         image_name_list=None,
-        title_text="Deflection model",
         font_size=15,
         colorbar_label=r"arcsec",
         coordinate_arrows=True,
-        title_font_size=15,
-        title_color="k",
-        title_background_color="w",
-        title_x_pos=None,
-        title_y_pos=None,
-        scale_bar_color="k",
-        scale_bar_length=1.0,
-        scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_north="k",
-        arrow_color_east="k",
-        arrow_font_size=15,
+        kwargs_title=None,
+        kwargs_scale_bar=None,
+        kwargs_coordinate_arrows=None,
         **kwargs_matshow,
     ):
         """Plot deflection-angle map in the data frame.
@@ -1462,22 +1238,16 @@ class ModelBandPlot(ModelBand):
         :param axis: integer, 0 or 1, specifies the deflection angle axis to be plotted
         :param with_caustics: boolean, if True, plots caustics
         :param image_name_list: list of strings for names of the images
-        :param title_text: string, text to be displayed in the image
         :param font_size: font size of labels
         :param colorbar_label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param title_font_size: font size of the title
-        :param title_color: color of the title
-        :param title_background_color: background color of the title
-        :param title_x_pos: x-position of the title
-        :param title_y_pos: y-position of the title
-        :param scale_bar_color: color of the scale bar
-        :param scale_bar_length: length of the scale bar
-        :param scale_bar_text: text of the scale bar
         :param colorbar_label_font_size: font size of the colorbar label
-        :param arrow_color_north: color of the North arrow
-        :param arrow_color_east: color of the East arrow
-        :param arrow_font_size: font size of the arrow text
+        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
+        :type kwargs_title: Unpack[plot_util.TitleKwargs]
+        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
+        :type kwargs_scale_bar: Unpack[plot_util.ScaleBarKwargs]
+        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :type kwargs_coordinate_arrows: Unpack[plot_util.CoordArrowKwargs]
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
@@ -1505,40 +1275,36 @@ class ModelBandPlot(ModelBand):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
+
+        if kwargs_title is None:
+            kwargs_title = {}
+        kwargs_title.setdefault("text", "Deflection model")
+        kwargs_title.setdefault("color", "k")
+        kwargs_title.setdefault("backgroundcolor", "w")
+        if kwargs_scale_bar is None:
+            kwargs_scale_bar = {}
+        kwargs_scale_bar.setdefault("dist", 1.0)
+        kwargs_scale_bar.setdefault("color", "k")
+        if kwargs_coordinate_arrows is None:
+            kwargs_coordinate_arrows = {}
+        kwargs_coordinate_arrows.setdefault("arrow_color_north", "k")
+        kwargs_coordinate_arrows.setdefault("arrow_color_east", "k")
+
         plot_util.show_scale_bar(
             ax,
             self._frame_size,
-            dist=scale_bar_length,
-            text=scale_bar_text,
-            color=scale_bar_color,
-            font_size=self._scale_bar_font_size,
-            linewidth=self._scale_bar_width,
+            **kwargs_scale_bar,
         )
         if coordinate_arrows:
             plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
-                font_size=arrow_font_size,
-                arrow_length=self._arrow_length,
-                arrowhead_size=self._arrowhead_size,
-                arrow_origin_x=self._arrow_origin_x,
-                arrow_origin_y=self._arrow_origin_y,
-                arrow_north_offset_x=self._arrow_north_offset_x,
-                arrow_north_offset_y=self._arrow_north_offset_y,
-                arrow_east_offset_x=self._arrow_east_offset_x,
-                arrow_east_offset_y=self._arrow_east_offset_y,
-                arrow_color_north=arrow_color_north,
-                arrow_color_east=arrow_color_east,
+                **kwargs_coordinate_arrows,
             )
         plot_util.show_title_text(
             ax,
-            text=title_text,
-            color=title_color,
-            backgroundcolor=title_background_color,
-            font_size=title_font_size,
-            title_x_pos=title_x_pos,
-            title_y_pos=title_y_pos,
+            **kwargs_title,
         )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
@@ -1581,7 +1347,6 @@ class ModelBandPlot(ModelBand):
     def decomposition_plot(
         self,
         ax,
-        title_text="Reconstructed",
         v_min=None,
         v_max=None,
         unconvolved=False,
@@ -1590,24 +1355,15 @@ class ModelBandPlot(ModelBand):
         source_add=False,
         lens_light_add=False,
         coordinate_arrows=True,
-        title_font_size=15,
-        title_color="w",
-        title_background_color="k",
-        title_x_pos=None,
-        title_y_pos=None,
-        scale_bar_color="w",
-        scale_bar_length=1.0,
-        scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_north="w",
-        arrow_color_east="w",
-        arrow_font_size=15,
+        kwargs_title=None,
+        kwargs_scale_bar=None,
+        kwargs_coordinate_arrows=None,
         **kwargs_matshow,
     ):
         """Make a plot displaying all or a subset of light components.
 
         :param ax: an instance of matplotlib.axes.Axes
-        :param title_text: text to display in upper left corner
         :param v_min: min color scale for matshow plot
         :param v_max: max color scale for matshow plot
         :param unconvolved: bool, if True, does not perform PSF convolution on the image
@@ -1618,18 +1374,13 @@ class ModelBandPlot(ModelBand):
         :param lens_light_add: bool, if True, includes the lens light in the plot
         :param coordinate_arrows: bool, if True, shows the North/East directional arrows
             from the plot
-        :param title_font_size: font size of the title
-        :param title_color: color of the title
-        :param title_background_color: background color of the title
-        :param title_x_pos: x-position of the title
-        :param title_y_pos: y-position of the title
-        :param scale_bar_color: color of the scale bar
-        :param scale_bar_length: length of the scale bar
-        :param scale_bar_text: text of the scale bar
         :param colorbar_label_font_size: font size of the colorbar label
-        :param arrow_color_north: color of the North arrow
-        :param arrow_color_east: color of the East arrow
-        :param arrow_font_size: font size of the arrow text
+        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
+        :type kwargs_title: Unpack[plot_util.TitleKwargs]
+        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
+        :type kwargs_scale_bar: Unpack[plot_util.ScaleBarKwargs]
+        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :type kwargs_coordinate_arrows: Unpack[plot_util.CoordArrowKwargs]
         :param kwargs_matshow: kwargs to send matplotlib.pyplot.matshow()
         :return: the instance of matplotlib.axes.Axes
         """
@@ -1663,40 +1414,31 @@ class ModelBandPlot(ModelBand):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
+
+        if kwargs_title is None:
+            kwargs_title = {}
+        kwargs_title.setdefault("text", "Reconstructed")
+        if kwargs_scale_bar is None:
+            kwargs_scale_bar = {}
+        kwargs_scale_bar.setdefault("dist", 1.0)
+        if kwargs_coordinate_arrows is None:
+            kwargs_coordinate_arrows = {}
+
         plot_util.show_scale_bar(
             ax,
             self._frame_size,
-            dist=scale_bar_length,
-            text=scale_bar_text,
-            color=scale_bar_color,
-            font_size=self._scale_bar_font_size,
-            linewidth=self._scale_bar_width,
+            **kwargs_scale_bar,
         )
         plot_util.show_title_text(
             ax,
-            text=title_text,
-            color=title_color,
-            backgroundcolor=title_background_color,
-            font_size=title_font_size,
-            title_x_pos=title_x_pos,
-            title_y_pos=title_y_pos,
+            **kwargs_title,
         )
         if coordinate_arrows:
             plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
-                font_size=arrow_font_size,
-                arrow_length=self._arrow_length,
-                arrowhead_size=self._arrowhead_size,
-                arrow_origin_x=self._arrow_origin_x,
-                arrow_origin_y=self._arrow_origin_y,
-                arrow_north_offset_x=self._arrow_north_offset_x,
-                arrow_north_offset_y=self._arrow_north_offset_y,
-                arrow_east_offset_x=self._arrow_east_offset_x,
-                arrow_east_offset_y=self._arrow_east_offset_y,
-                arrow_color_north=arrow_color_north,
-                arrow_color_east=arrow_color_east,
+                **kwargs_coordinate_arrows,
             )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
@@ -1709,26 +1451,17 @@ class ModelBandPlot(ModelBand):
     def subtract_from_data_plot(
         self,
         ax,
-        title_text="Subtracted",
         v_min=None,
         v_max=None,
         point_source_add=False,
         source_add=False,
         lens_light_add=False,
-        title_font_size=15,
-        title_color="w",
-        title_background_color="k",
-        title_x_pos=None,
-        title_y_pos=None,
-        scale_bar_length=1.0,
-        scale_bar_color="w",
-        scale_bar_text=None,
         coordinate_arrows=True,
-        arrow_font_size=15,
-        arrow_color_north="w",
-        arrow_color_east="w",
         font_size=15,
         colorbar_label_font_size=15,
+        kwargs_title=None,
+        kwargs_scale_bar=None,
+        kwargs_coordinate_arrows=None,
         **kwargs_matshow,
     ):
         """Plot data after subtracting selected model components."""
@@ -1761,40 +1494,31 @@ class ModelBandPlot(ModelBand):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
+
+        if kwargs_title is None:
+            kwargs_title = {}
+        kwargs_title.setdefault("text", "Subtracted")
+        if kwargs_scale_bar is None:
+            kwargs_scale_bar = {}
+        kwargs_scale_bar.setdefault("dist", 1.0)
+        if kwargs_coordinate_arrows is None:
+            kwargs_coordinate_arrows = {}
+
         plot_util.show_scale_bar(
             ax,
             self._frame_size,
-            dist=scale_bar_length,
-            text=scale_bar_text,
-            color=scale_bar_color,
-            font_size=self._scale_bar_font_size,
-            linewidth=self._scale_bar_width,
+            **kwargs_scale_bar,
         )
         plot_util.show_title_text(
             ax,
-            text=title_text,
-            color=title_color,
-            backgroundcolor=title_background_color,
-            font_size=title_font_size,
-            title_x_pos=title_x_pos,
-            title_y_pos=title_y_pos,
+            **kwargs_title,
         )
         if coordinate_arrows:
             plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
-                font_size=arrow_font_size,
-                arrow_length=self._arrow_length,
-                arrowhead_size=self._arrowhead_size,
-                arrow_origin_x=self._arrow_origin_x,
-                arrow_origin_y=self._arrow_origin_y,
-                arrow_north_offset_x=self._arrow_north_offset_x,
-                arrow_north_offset_y=self._arrow_north_offset_y,
-                arrow_east_offset_x=self._arrow_east_offset_x,
-                arrow_east_offset_y=self._arrow_east_offset_y,
-                arrow_color_north=arrow_color_north,
-                arrow_color_east=arrow_color_east,
+                **kwargs_coordinate_arrows,
             )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)

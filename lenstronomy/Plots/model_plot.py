@@ -201,19 +201,7 @@ class ModelPlot(object):
         ax=None,
         v_min=None,
         v_max=None,
-        title_text="Observed",
-        title_font_size=15,
-        title_color="w",
-        title_background_color="k",
-        title_x_pos=None,
-        title_y_pos=None,
-        scale_bar_length=1.0,
-        scale_bar_color="w",
-        scale_bar_text=None,
         coordinate_arrows=True,
-        arrow_font_size=15,
-        arrow_color_north="w",
-        arrow_color_east="w",
         font_size=15,
         colorbar_label=r"log$_{10}$ flux",
         colorbar_label_font_size=15,
@@ -228,22 +216,10 @@ class ModelPlot(object):
         :param ax: matplotlib axis instance
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
-        :param title_text: string, text to be displayed in the image
         :param font_size: font size of the text
         :param colorbar_label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param title_font_size: font size of the title
-        :param title_color: color of the title
-        :param title_background_color: background color of the title
-        :param title_x_pos: x-position of the title
-        :param title_y_pos: y-position of the title
-        :param scale_bar_color: color of the scale bar
-        :param scale_bar_length: length of the scale bar
-        :param scale_bar_text: text of the scale bar
         :param colorbar_label_font_size: font size of the colorbar label
-        :param arrow_color_north: color of the North arrow
-        :param arrow_color_east: color of the East arrow
-        :param arrow_font_size: font size of the arrow text
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
@@ -258,19 +234,7 @@ class ModelPlot(object):
             ax=ax,
             v_min=v_min,
             v_max=v_max,
-            title_text=title_text,
-            title_font_size=title_font_size,
-            title_color=title_color,
-            title_background_color=title_background_color,
-            title_x_pos=title_x_pos,
-            title_y_pos=title_y_pos,
-            scale_bar_length=scale_bar_length,
-            scale_bar_color=scale_bar_color,
-            scale_bar_text=scale_bar_text,
             coordinate_arrows=coordinate_arrows,
-            arrow_font_size=arrow_font_size,
-            arrow_color_north=arrow_color_north,
-            arrow_color_east=arrow_color_east,
             font_size=font_size,
             colorbar_label=colorbar_label,
             colorbar_label_font_size=colorbar_label_font_size,
@@ -287,21 +251,9 @@ class ModelPlot(object):
         v_min=None,
         v_max=None,
         image_names=False,
-        title_text="Reconstructed",
         original_position=True,
         image_name_list=None,
-        title_font_size=15,
-        title_color="w",
-        title_background_color="k",
-        title_x_pos=None,
-        title_y_pos=None,
-        scale_bar_length=1.0,
-        scale_bar_color="w",
-        scale_bar_text=None,
         coordinate_arrows=True,
-        arrow_font_size=15,
-        arrow_color_north="w",
-        arrow_color_east="w",
         font_size=15,
         colorbar_label=r"log$_{10}$ flux",
         colorbar_label_font_size=15,
@@ -319,22 +271,10 @@ class ModelPlot(object):
         :param image_names: boolean, if True, prints image names
         :param colorbar_label: string, label for the colorbar
         :param font_size: font size of the text
-        :param title_text: string, text to be displayed in the image
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param original_position: boolean, if True, uses original image positions
         :param image_name_list: list of names for images
-        :param title_font_size: font size of the title
-        :param title_color: color of the title
-        :param title_background_color: background color of the title
-        :param title_x_pos: x-position of the title
-        :param title_y_pos: y-position of the title
-        :param scale_bar_color: color of the scale bar
-        :param scale_bar_length: length of the scale bar
-        :param scale_bar_text: text of the scale bar
         :param colorbar_label_font_size: font size of the colorbar label
-        :param arrow_color_north: color of the North arrow
-        :param arrow_color_east: color of the East arrow
-        :param arrow_font_size: font size of the arrow text
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
@@ -350,21 +290,9 @@ class ModelPlot(object):
             v_min=v_min,
             v_max=v_max,
             image_names=image_names,
-            title_text=title_text,
             original_position=original_position,
             image_name_list=image_name_list,
-            title_font_size=title_font_size,
-            title_color=title_color,
-            title_background_color=title_background_color,
-            title_x_pos=title_x_pos,
-            title_y_pos=title_y_pos,
-            scale_bar_length=scale_bar_length,
-            scale_bar_color=scale_bar_color,
-            scale_bar_text=scale_bar_text,
             coordinate_arrows=coordinate_arrows,
-            arrow_font_size=arrow_font_size,
-            arrow_color_north=arrow_color_north,
-            arrow_color_east=arrow_color_east,
             font_size=font_size,
             colorbar_label=colorbar_label,
             colorbar_label_font_size=colorbar_label_font_size,
@@ -378,24 +306,12 @@ class ModelPlot(object):
         self,
         band_index=0,
         ax=None,
-        title_text="Convergence",
         v_min=None,
         v_max=None,
         font_size=15,
         colorbar_label=r"$\log_{10}\ \kappa$",
         coordinate_arrows=True,
-        title_font_size=15,
-        title_color="w",
-        title_background_color="k",
-        title_x_pos=None,
-        title_y_pos=None,
-        scale_bar_color="w",
-        scale_bar_length=1.0,
-        scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_north="w",
-        arrow_color_east="w",
-        arrow_font_size=15,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -405,24 +321,12 @@ class ModelPlot(object):
 
         :param band_index: index of band
         :param ax: matplotlib axis instance
-        :param title_text: string, text to be displayed in the image
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
         :param font_size: font size of the text
         :param colorbar_label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param title_font_size: font size of the title
-        :param title_color: color of the title
-        :param title_background_color: background color of the title
-        :param title_x_pos: x-position of the title
-        :param title_y_pos: y-position of the title
-        :param scale_bar_color: color of the scale bar
-        :param scale_bar_length: length of the scale bar
-        :param scale_bar_text: text of the scale bar
         :param colorbar_label_font_size: font size of the colorbar label
-        :param arrow_color_north: color of the North arrow
-        :param arrow_color_east: color of the East arrow
-        :param arrow_font_size: font size of the arrow text
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
@@ -435,24 +339,12 @@ class ModelPlot(object):
         plot_band = self._select_band(band_index)
         return plot_band.convergence_plot(
             ax=ax,
-            title_text=title_text,
             v_min=v_min,
             v_max=v_max,
             font_size=font_size,
             colorbar_label=colorbar_label,
             coordinate_arrows=coordinate_arrows,
-            title_font_size=title_font_size,
-            title_color=title_color,
-            title_background_color=title_background_color,
-            title_x_pos=title_x_pos,
-            title_y_pos=title_y_pos,
-            scale_bar_color=scale_bar_color,
-            scale_bar_length=scale_bar_length,
-            scale_bar_text=scale_bar_text,
             colorbar_label_font_size=colorbar_label_font_size,
-            arrow_color_north=arrow_color_north,
-            arrow_color_east=arrow_color_east,
-            arrow_font_size=arrow_font_size,
             kwargs_title=kwargs_title,
             kwargs_scale_bar=kwargs_scale_bar,
             kwargs_coordinate_arrows=kwargs_coordinate_arrows,
@@ -464,7 +356,6 @@ class ModelPlot(object):
         band_index=0,
         ax=None,
         index_macromodel=None,
-        title_text="Substructure convergence",
         subtract_mean=True,
         v_min=-0.05,
         v_max=0.05,
@@ -477,18 +368,7 @@ class ModelPlot(object):
         super_sample_factor=None,
         add_color_bar=True,
         coordinate_arrows=True,
-        title_font_size=15,
-        title_color="k",
-        title_background_color="w",
-        title_x_pos=None,
-        title_y_pos=None,
-        scale_bar_color="k",
-        scale_bar_length=1.0,
-        scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_north="k",
-        arrow_color_east="k",
-        arrow_font_size=15,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -499,7 +379,6 @@ class ModelPlot(object):
         :param band_index: index of band
         :param ax: matplotlib axis instance
         :param index_macromodel: a list of indexes corresponding to the lens models with convergence to be subtracted
-        :param title_text: text appearing in frame
         :param subtract_mean: bool; displays the substructure convergence relative to the mean convergence in the frame
         :param v_min: minimum color scale
         :param v_max: max color scale
@@ -512,18 +391,7 @@ class ModelPlot(object):
         :param super_sample_factor: a integer the specifies supersampling of the coordinate grid to create the convergence map
         :param add_color_bar: bool; whether or not to include a color bar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param title_font_size: font size of the title
-        :param title_color: color of the title
-        :param title_background_color: background color of the title
-        :param title_x_pos: x-position of the title
-        :param title_y_pos: y-position of the title
-        :param scale_bar_color: color of the scale bar
-        :param scale_bar_length: length of the scale bar
-        :param scale_bar_text: text of the scale bar
         :param colorbar_label_font_size: font size of the colorbar label
-        :param arrow_color_north: color of the North arrow
-        :param arrow_color_east: color of the East arrow
-        :param arrow_font_size: font size of the arrow text
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
@@ -539,7 +407,6 @@ class ModelPlot(object):
         return plot_band.substructure_plot(
             ax=ax,
             index_macromodel=index_macromodel,
-            title_text=title_text,
             subtract_mean=subtract_mean,
             v_min=v_min,
             v_max=v_max,
@@ -552,18 +419,7 @@ class ModelPlot(object):
             super_sample_factor=super_sample_factor,
             add_color_bar=add_color_bar,
             coordinate_arrows=coordinate_arrows,
-            title_font_size=title_font_size,
-            title_color=title_color,
-            title_background_color=title_background_color,
-            title_x_pos=title_x_pos,
-            title_y_pos=title_y_pos,
-            scale_bar_color=scale_bar_color,
-            scale_bar_length=scale_bar_length,
-            scale_bar_text=scale_bar_text,
             colorbar_label_font_size=colorbar_label_font_size,
-            arrow_color_north=arrow_color_north,
-            arrow_color_east=arrow_color_east,
-            arrow_font_size=arrow_font_size,
             kwargs_title=kwargs_title,
             kwargs_scale_bar=kwargs_scale_bar,
             kwargs_coordinate_arrows=kwargs_coordinate_arrows,
@@ -577,22 +433,10 @@ class ModelPlot(object):
         v_min=-6,
         v_max=6,
         font_size=15,
-        title_text="Normalized Residuals",
         colorbar_label=r"(f$_{\rm data}$ - f$_{\rm model}$)/$\sigma$",
         coordinate_arrows=True,
         color_bar=True,
-        title_font_size=15,
-        title_color="k",
-        title_background_color="w",
-        title_x_pos=None,
-        title_y_pos=None,
-        scale_bar_color="k",
-        scale_bar_length=1.0,
-        scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_north="k",
-        arrow_color_east="k",
-        arrow_font_size=15,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -605,22 +449,10 @@ class ModelPlot(object):
         :param v_min: minimum color scale
         :param v_max: max color scale
         :param font_size: font size for text appearing in image
-        :param title_text: text appearing in frame
         :param colorbar_label: label for the color bar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param color_bar: Option to display the color bar
-        :param title_font_size: font size of the title
-        :param title_color: color of the title
-        :param title_background_color: background color of the title
-        :param title_x_pos: x-position of the title
-        :param title_y_pos: y-position of the title
-        :param scale_bar_color: color of the scale bar
-        :param scale_bar_length: length of the scale bar
-        :param scale_bar_text: text of the scale bar
         :param colorbar_label_font_size: font size of the colorbar label
-        :param arrow_color_north: color of the North arrow
-        :param arrow_color_east: color of the East arrow
-        :param arrow_font_size: font size of the arrow text
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
@@ -636,22 +468,10 @@ class ModelPlot(object):
             v_min=v_min,
             v_max=v_max,
             font_size=font_size,
-            title_text=title_text,
             colorbar_label=colorbar_label,
             coordinate_arrows=coordinate_arrows,
             color_bar=color_bar,
-            title_font_size=title_font_size,
-            title_color=title_color,
-            title_background_color=title_background_color,
-            title_x_pos=title_x_pos,
-            title_y_pos=title_y_pos,
-            scale_bar_color=scale_bar_color,
-            scale_bar_length=scale_bar_length,
-            scale_bar_text=scale_bar_text,
             colorbar_label_font_size=colorbar_label_font_size,
-            arrow_color_north=arrow_color_north,
-            arrow_color_east=arrow_color_east,
-            arrow_font_size=arrow_font_size,
             kwargs_title=kwargs_title,
             kwargs_scale_bar=kwargs_scale_bar,
             kwargs_coordinate_arrows=kwargs_coordinate_arrows,
@@ -665,21 +485,9 @@ class ModelPlot(object):
         v_min=-1,
         v_max=1,
         font_size=15,
-        title_text="Residuals",
         colorbar_label=r"(f$_{\rm data}$-f$_{\rm model}$)",
         coordinate_arrows=True,
-        title_font_size=15,
-        title_color="k",
-        title_background_color="w",
-        title_x_pos=None,
-        title_y_pos=None,
-        scale_bar_color="k",
-        scale_bar_length=1.0,
-        scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_north="k",
-        arrow_color_east="k",
-        arrow_font_size=15,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -692,21 +500,9 @@ class ModelPlot(object):
         :param v_min: minimum color scale
         :param v_max: max color scale
         :param font_size: font size for text appearing in image
-        :param title_text: text appearing in frame
         :param colorbar_label: label for the color bar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param title_font_size: font size of the title
-        :param title_color: color of the title
-        :param title_background_color: background color of the title
-        :param title_x_pos: x-position of the title
-        :param title_y_pos: y-position of the title
-        :param scale_bar_color: color of the scale bar
-        :param scale_bar_length: length of the scale bar
-        :param scale_bar_text: text of the scale bar
         :param colorbar_label_font_size: font size of the colorbar label
-        :param arrow_color_north: color of the North arrow
-        :param arrow_color_east: color of the East arrow
-        :param arrow_font_size: font size of the arrow text
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
@@ -722,21 +518,9 @@ class ModelPlot(object):
             v_min=v_min,
             v_max=v_max,
             font_size=font_size,
-            title_text=title_text,
             colorbar_label=colorbar_label,
             coordinate_arrows=coordinate_arrows,
-            title_font_size=title_font_size,
-            title_color=title_color,
-            title_background_color=title_background_color,
-            title_x_pos=title_x_pos,
-            title_y_pos=title_y_pos,
-            scale_bar_color=scale_bar_color,
-            scale_bar_length=scale_bar_length,
-            scale_bar_text=scale_bar_text,
             colorbar_label_font_size=colorbar_label_font_size,
-            arrow_color_north=arrow_color_north,
-            arrow_color_east=arrow_color_east,
-            arrow_font_size=arrow_font_size,
             kwargs_title=kwargs_title,
             kwargs_scale_bar=kwargs_scale_bar,
             kwargs_coordinate_arrows=kwargs_coordinate_arrows,
@@ -756,23 +540,11 @@ class ModelPlot(object):
         caustic_color="yellow",
         font_size=15,
         plot_scale="log",
-        title_text="Reconstructed source",
         colorbar_label=r"log$_{10}$ flux",
         point_source_position=True,
         kwargs_caustic=None,
         coordinate_arrows=True,
-        title_font_size=15,
-        title_color="w",
-        title_background_color="k",
-        title_x_pos=None,
-        title_y_pos=None,
-        scale_bar_color="w",
-        scale_bar_length=0.1,
-        scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_north="w",
-        arrow_color_east="w",
-        arrow_font_size=15,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -792,24 +564,12 @@ class ModelPlot(object):
         :param caustic_color: color of the caustics
         :param font_size: font size of labels
         :param plot_scale: string, log or linear, scale of surface brightness plot
-        :param title_text: string, text to be displayed in the image
         :param colorbar_label: string, label for the colorbar
         :param point_source_position: boolean, if True, plots a point at the position of
             the point source
         :param kwargs_caustic: keyword arguments for caustic plotting
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param title_font_size: font size of the title
-        :param title_color: color of the title
-        :param title_background_color: background color of the title
-        :param title_x_pos: x-position of the title
-        :param title_y_pos: y-position of the title
-        :param scale_bar_color: color of the scale bar
-        :param scale_bar_length: float, length of the scale bar
-        :param scale_bar_text: text of the scale bar
         :param colorbar_label_font_size: font size of the colorbar label
-        :param arrow_color_north: color of the North arrow
-        :param arrow_color_east: color of the East arrow
-        :param arrow_font_size: font size of the arrow text
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
@@ -831,23 +591,11 @@ class ModelPlot(object):
             caustic_color=caustic_color,
             font_size=font_size,
             plot_scale=plot_scale,
-            title_text=title_text,
             colorbar_label=colorbar_label,
             point_source_position=point_source_position,
             kwargs_caustic=kwargs_caustic,
             coordinate_arrows=coordinate_arrows,
-            title_font_size=title_font_size,
-            title_color=title_color,
-            title_background_color=title_background_color,
-            title_x_pos=title_x_pos,
-            title_y_pos=title_y_pos,
-            scale_bar_color=scale_bar_color,
-            scale_bar_length=scale_bar_length,
-            scale_bar_text=scale_bar_text,
             colorbar_label_font_size=colorbar_label_font_size,
-            arrow_color_north=arrow_color_north,
-            arrow_color_east=arrow_color_east,
-            arrow_font_size=arrow_font_size,
             kwargs_title=kwargs_title,
             kwargs_scale_bar=kwargs_scale_bar,
             kwargs_coordinate_arrows=kwargs_coordinate_arrows,
@@ -866,18 +614,7 @@ class ModelPlot(object):
         font_size=15,
         point_source_position=True,
         coordinate_arrows=True,
-        title_font_size=15,
-        title_color="w",
-        title_background_color="k",
-        title_x_pos=None,
-        title_y_pos=None,
-        scale_bar_color="w",
-        scale_bar_length=0.1,
-        scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_north="w",
-        arrow_color_east="w",
-        arrow_font_size=15,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -898,18 +635,7 @@ class ModelPlot(object):
         :param point_source_position: boolean, if True, plots a point at the position of
             the point source
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param title_font_size: font size of the title
-        :param title_color: color of the title
-        :param title_background_color: background color of the title
-        :param title_x_pos: x-position of the title
-        :param title_y_pos: y-position of the title
-        :param scale_bar_color: color of the scale bar
-        :param scale_bar_length: length of the scale bar
-        :param scale_bar_text: text of the scale bar
         :param colorbar_label_font_size: font size of the colorbar label
-        :param arrow_color_north: color of the North arrow
-        :param arrow_color_east: color of the East arrow
-        :param arrow_font_size: font size of the arrow text
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
@@ -930,18 +656,7 @@ class ModelPlot(object):
             font_size=font_size,
             point_source_position=point_source_position,
             coordinate_arrows=coordinate_arrows,
-            title_font_size=title_font_size,
-            title_color=title_color,
-            title_background_color=title_background_color,
-            title_x_pos=title_x_pos,
-            title_y_pos=title_y_pos,
-            scale_bar_color=scale_bar_color,
-            scale_bar_length=scale_bar_length,
-            scale_bar_text=scale_bar_text,
             colorbar_label_font_size=colorbar_label_font_size,
-            arrow_color_north=arrow_color_north,
-            arrow_color_east=arrow_color_east,
-            arrow_font_size=arrow_font_size,
             kwargs_title=kwargs_title,
             kwargs_scale_bar=kwargs_scale_bar,
             kwargs_coordinate_arrows=kwargs_coordinate_arrows,
@@ -957,20 +672,8 @@ class ModelPlot(object):
         image_name_list=None,
         font_size=15,
         coordinate_arrows=True,
-        title_text="Magnification model",
         colorbar_label=r"$\det\ (\mathsf{A}^{-1})$",
-        title_font_size=15,
-        title_color="k",
-        title_background_color="w",
-        title_x_pos=None,
-        title_y_pos=None,
-        scale_bar_color="k",
-        scale_bar_length=1.0,
-        scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_north="k",
-        arrow_color_east="k",
-        arrow_font_size=15,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -986,20 +689,8 @@ class ModelPlot(object):
             order as the positions
         :param font_size: font size of labels
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param title_text: string, text to be displayed in the image
         :param colorbar_label: string, label for the colorbar
-        :param title_font_size: font size of the title
-        :param title_color: color of the title
-        :param title_background_color: background color of the title
-        :param title_x_pos: x-position of the title
-        :param title_y_pos: y-position of the title
-        :param scale_bar_color: color of the scale bar
-        :param scale_bar_length: length of the scale bar
-        :param scale_bar_text: text of the scale bar
         :param colorbar_label_font_size: font size of the colorbar label
-        :param arrow_color_north: color of the North arrow
-        :param arrow_color_east: color of the East arrow
-        :param arrow_font_size: font size of the arrow text
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
@@ -1017,20 +708,8 @@ class ModelPlot(object):
             image_name_list=image_name_list,
             font_size=font_size,
             coordinate_arrows=coordinate_arrows,
-            title_text=title_text,
             colorbar_label=colorbar_label,
-            title_font_size=title_font_size,
-            title_color=title_color,
-            title_background_color=title_background_color,
-            title_x_pos=title_x_pos,
-            title_y_pos=title_y_pos,
-            scale_bar_color=scale_bar_color,
-            scale_bar_length=scale_bar_length,
-            scale_bar_text=scale_bar_text,
             colorbar_label_font_size=colorbar_label_font_size,
-            arrow_color_north=arrow_color_north,
-            arrow_color_east=arrow_color_east,
-            arrow_font_size=arrow_font_size,
             kwargs_title=kwargs_title,
             kwargs_scale_bar=kwargs_scale_bar,
             kwargs_coordinate_arrows=kwargs_coordinate_arrows,
@@ -1046,22 +725,10 @@ class ModelPlot(object):
         axis=0,
         with_caustics=False,
         image_name_list=None,
-        title_text="Deflection model",
         font_size=15,
         colorbar_label=r"arcsec",
         coordinate_arrows=True,
-        title_font_size=15,
-        title_color="k",
-        title_background_color="w",
-        title_x_pos=None,
-        title_y_pos=None,
-        scale_bar_color="k",
-        scale_bar_length=1.0,
-        scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_north="k",
-        arrow_color_east="k",
-        arrow_font_size=15,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -1076,22 +743,10 @@ class ModelPlot(object):
         :param axis: integer, 0 or 1, specifies the deflection angle axis to be plotted
         :param with_caustics: boolean, if True, plots caustics
         :param image_name_list: list of strings for names of the images
-        :param title_text: string, text to be displayed in the image
         :param font_size: font size of labels
         :param colorbar_label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param title_font_size: font size of the title
-        :param title_color: color of the title
-        :param title_background_color: background color of the title
-        :param title_x_pos: x-position of the title
-        :param title_y_pos: y-position of the title
-        :param scale_bar_color: color of the scale bar
-        :param scale_bar_length: length of the scale bar
-        :param scale_bar_text: text of the scale bar
         :param colorbar_label_font_size: font size of the colorbar label
-        :param arrow_color_north: color of the North arrow
-        :param arrow_color_east: color of the East arrow
-        :param arrow_font_size: font size of the arrow text
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
@@ -1109,22 +764,10 @@ class ModelPlot(object):
             axis=axis,
             with_caustics=with_caustics,
             image_name_list=image_name_list,
-            title_text=title_text,
             font_size=font_size,
             colorbar_label=colorbar_label,
             coordinate_arrows=coordinate_arrows,
-            title_font_size=title_font_size,
-            title_color=title_color,
-            title_background_color=title_background_color,
-            title_x_pos=title_x_pos,
-            title_y_pos=title_y_pos,
-            scale_bar_color=scale_bar_color,
-            scale_bar_length=scale_bar_length,
-            scale_bar_text=scale_bar_text,
             colorbar_label_font_size=colorbar_label_font_size,
-            arrow_color_north=arrow_color_north,
-            arrow_color_east=arrow_color_east,
-            arrow_font_size=arrow_font_size,
             kwargs_title=kwargs_title,
             kwargs_scale_bar=kwargs_scale_bar,
             kwargs_coordinate_arrows=kwargs_coordinate_arrows,
@@ -1135,7 +778,6 @@ class ModelPlot(object):
         self,
         band_index=0,
         ax=None,
-        title_text="Reconstructed",
         v_min=None,
         v_max=None,
         unconvolved=False,
@@ -1144,18 +786,7 @@ class ModelPlot(object):
         source_add=False,
         lens_light_add=False,
         coordinate_arrows=True,
-        title_font_size=15,
-        title_color="w",
-        title_background_color="k",
-        title_x_pos=None,
-        title_y_pos=None,
-        scale_bar_color="w",
-        scale_bar_length=1.0,
-        scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_north="w",
-        arrow_color_east="w",
-        arrow_font_size=15,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -1165,7 +796,6 @@ class ModelPlot(object):
 
         :param band_index: index of band
         :param ax: an instance of matplotlib.axes.Axes
-        :param title_text: text to display in upper left corner
         :param v_min: min color scale for matshow plot
         :param v_max: max color scale for matshow plot
         :param unconvolved: bool, if True, does not perform PSF convolution on the image
@@ -1177,18 +807,7 @@ class ModelPlot(object):
         :param lens_light_add: bool, if True, includes the lens light in the plot
         :param coordinate_arrows: bool, if True, shows the North/East directional arrows
             from the plot
-        :param title_font_size: font size of the title
-        :param title_color: color of the title
-        :param title_background_color: background color of the title
-        :param title_x_pos: x-position of the title
-        :param title_y_pos: y-position of the title
-        :param scale_bar_color: color of the scale bar
-        :param scale_bar_length: length of the scale bar
-        :param scale_bar_text: text of the scale bar
         :param colorbar_label_font_size: font size of the colorbar label
-        :param arrow_color_north: color of the North arrow
-        :param arrow_color_east: color of the East arrow
-        :param arrow_font_size: font size of the arrow text
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
@@ -1201,7 +820,6 @@ class ModelPlot(object):
         plot_band = self._select_band(band_index)
         return plot_band.decomposition_plot(
             ax=ax,
-            title_text=title_text,
             v_min=v_min,
             v_max=v_max,
             unconvolved=unconvolved,
@@ -1210,18 +828,7 @@ class ModelPlot(object):
             source_add=source_add,
             lens_light_add=lens_light_add,
             coordinate_arrows=coordinate_arrows,
-            title_font_size=title_font_size,
-            title_color=title_color,
-            title_background_color=title_background_color,
-            title_x_pos=title_x_pos,
-            title_y_pos=title_y_pos,
-            scale_bar_color=scale_bar_color,
-            scale_bar_length=scale_bar_length,
-            scale_bar_text=scale_bar_text,
             colorbar_label_font_size=colorbar_label_font_size,
-            arrow_color_north=arrow_color_north,
-            arrow_color_east=arrow_color_east,
-            arrow_font_size=arrow_font_size,
             kwargs_title=kwargs_title,
             kwargs_scale_bar=kwargs_scale_bar,
             kwargs_coordinate_arrows=kwargs_coordinate_arrows,
@@ -1232,7 +839,6 @@ class ModelPlot(object):
         self,
         band_index=0,
         ax=None,
-        title_text="Subtracted",
         v_min=None,
         v_max=None,
         point_source_add=False,
@@ -1240,18 +846,7 @@ class ModelPlot(object):
         lens_light_add=False,
         font_size=15,
         coordinate_arrows=True,
-        title_font_size=15,
-        title_color="w",
-        title_background_color="k",
-        title_x_pos=None,
-        title_y_pos=None,
-        scale_bar_color="w",
-        scale_bar_length=1.0,
-        scale_bar_text=None,
         colorbar_label_font_size=15,
-        arrow_color_north="w",
-        arrow_color_east="w",
-        arrow_font_size=15,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -1261,7 +856,6 @@ class ModelPlot(object):
 
         :param band_index: index of band
         :param ax: an instance of matplotlib.axes.Axes
-        :param title_text: text to display in upper left corner
         :param v_min: min color scale for matshow plot
         :param v_max: max color scale for matshow plot
         :param point_source_add: bool, if True, includes the lensed point source(s) in
@@ -1272,18 +866,7 @@ class ModelPlot(object):
         :param font_size: font size of labels
         :param coordinate_arrows: bool, if True, shows the North/East directional arrows
             from the plot
-        :param title_font_size: font size of the title
-        :param title_color: color of the title
-        :param title_background_color: background color of the title
-        :param title_x_pos: x-position of the title
-        :param title_y_pos: y-position of the title
-        :param scale_bar_color: color of the scale bar
-        :param scale_bar_length: length of the scale bar
-        :param scale_bar_text: text of the scale bar
         :param colorbar_label_font_size: font size of the colorbar label
-        :param arrow_color_north: color of the North arrow
-        :param arrow_color_east: color of the East arrow
-        :param arrow_font_size: font size of the arrow text
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
@@ -1296,7 +879,6 @@ class ModelPlot(object):
         plot_band = self._select_band(band_index)
         return plot_band.subtract_from_data_plot(
             ax=ax,
-            title_text=title_text,
             v_min=v_min,
             v_max=v_max,
             point_source_add=point_source_add,
@@ -1304,18 +886,7 @@ class ModelPlot(object):
             lens_light_add=lens_light_add,
             font_size=font_size,
             coordinate_arrows=coordinate_arrows,
-            title_font_size=title_font_size,
-            title_color=title_color,
-            title_background_color=title_background_color,
-            title_x_pos=title_x_pos,
-            title_y_pos=title_y_pos,
-            scale_bar_color=scale_bar_color,
-            scale_bar_length=scale_bar_length,
-            scale_bar_text=scale_bar_text,
             colorbar_label_font_size=colorbar_label_font_size,
-            arrow_color_north=arrow_color_north,
-            arrow_color_east=arrow_color_east,
-            arrow_font_size=arrow_font_size,
             kwargs_title=kwargs_title,
             kwargs_scale_bar=kwargs_scale_bar,
             kwargs_coordinate_arrows=kwargs_coordinate_arrows,

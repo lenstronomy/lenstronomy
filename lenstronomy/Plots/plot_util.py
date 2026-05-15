@@ -28,29 +28,29 @@ class CoordArrowKwargs(TypedDict, total=False):
     """Length of the coordinate arrow as a fraction of the image size."""
     arrowhead_size: float
     """Size of the arrowhead of the coordinate arrow as a fraction of the image size."""
-    arrow_origin_x: float
+    origin_x: float
     """x-origin of the coordinate arrow as a fraction of the image size."""
-    arrow_origin_y: float
+    origin_y: float
     """y-origin of the coordinate arrow as a fraction of the image size."""
-    arrow_north_offset_x: float
+    north_letter_offset_x: float
     """x-offset of the North arrow text as a fraction of the image size."""
-    arrow_north_offset_y: float
+    north_letter_offset_y: float
     """y-offset of the North arrow text as a fraction of the image size."""
-    arrow_east_offset_x: float
+    east_letter_offset_x: float
     """x-offset of the East arrow text as a fraction of the image size."""
-    arrow_east_offset_y: float
+    east_letter_offset_y: float
     """y-offset of the East arrow text as a fraction of the image size."""
-    arrow_color_north: str
+    color_north: str
     """Color of the North arrow."""
-    arrow_color_east: str
+    color_east: str
     """Color of the East arrow."""
 
 
 class ScaleBarKwargs(TypedDict, total=False):
     """Keyword arguments for scale bar."""
 
-    dist: float
-    """Distance scale printed on the scale bar."""
+    scale_length: float
+    """Length of the scale bar in arcseconds."""
     text: str
     """String printed on the scale bar."""
     color: str
@@ -76,9 +76,9 @@ class TitleKwargs(TypedDict, total=False):
     """If True, draw text on the right side."""
     font_size: int
     """Font size of the title."""
-    title_x_pos: float
+    x_position: float
     """x-position of the title in axes coordinates."""
-    title_y_pos: float
+    y_position: float
     """y-position of the title in axes coordinates."""
 
 
@@ -162,7 +162,7 @@ def show_scale_bar(ax, d, **kwargs_scale_bar: "Unpack[ScaleBarKwargs]"):
     :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
     :return: None, updated ax instance
     """
-    dist = kwargs_scale_bar.get("dist", 1.0)
+    scale_length = kwargs_scale_bar.get("scale_length", 1.0)
     text = kwargs_scale_bar.get("text", None)
     color = kwargs_scale_bar.get("color", "w")
     font_size = kwargs_scale_bar.get("font_size", 15)
@@ -170,17 +170,17 @@ def show_scale_bar(ax, d, **kwargs_scale_bar: "Unpack[ScaleBarKwargs]"):
     linewidth = kwargs_scale_bar.get("linewidth", 2)
 
     if text is None:
-        if dist >= 1:
-            text = f'{int(dist)}"'
+        if scale_length >= 1:
+            text = f'{int(scale_length)}"'
         else:
-            text = f'{dist:.1g}"'
+            text = f'{scale_length:.1g}"'
 
     if flipped:
-        p0 = d - d / 15.0 - dist
+        p0 = d - d / 15.0 - scale_length
         p1 = d / 15.0
-        ax.plot([p0, p0 + dist], [p1, p1], linewidth=linewidth, color=color)
+        ax.plot([p0, p0 + scale_length], [p1, p1], linewidth=linewidth, color=color)
         ax.text(
-            p0 + dist / 2.0,
+            p0 + scale_length / 2.0,
             p1 + 0.01 * d,
             text,
             fontsize=font_size,
@@ -189,9 +189,9 @@ def show_scale_bar(ax, d, **kwargs_scale_bar: "Unpack[ScaleBarKwargs]"):
         )
     else:
         p0 = d / 15.0
-        ax.plot([p0, p0 + dist], [p0, p0], linewidth=linewidth, color=color)
+        ax.plot([p0, p0 + scale_length], [p0, p0], linewidth=linewidth, color=color)
         ax.text(
-            p0 + dist / 2.0,
+            p0 + scale_length / 2.0,
             p0 + 0.01 * d,
             text,
             fontsize=font_size,

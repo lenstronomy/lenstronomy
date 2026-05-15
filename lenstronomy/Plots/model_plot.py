@@ -217,6 +217,9 @@ class ModelPlot(object):
         font_size=15,
         colorbar_label=r"log$_{10}$ flux",
         colorbar_label_font_size=15,
+        kwargs_title=None,
+        kwargs_scale_bar=None,
+        kwargs_coordinate_arrows=None,
         **kwargs_matshow
     ):
         """Illustrates data.
@@ -241,6 +244,12 @@ class ModelPlot(object):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
+        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
+        :type kwargs_title: Unpack[plot_util.TitleKwargs]
+        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
+        :type kwargs_scale_bar: Unpack[plot_util.ScaleBarKwargs]
+        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :type kwargs_coordinate_arrows: Unpack[plot_util.CoordArrowKwargs]
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
@@ -265,6 +274,9 @@ class ModelPlot(object):
             font_size=font_size,
             colorbar_label=colorbar_label,
             colorbar_label_font_size=colorbar_label_font_size,
+            kwargs_title=kwargs_title,
+            kwargs_scale_bar=kwargs_scale_bar,
+            kwargs_coordinate_arrows=kwargs_coordinate_arrows,
             **kwargs_matshow,
         )
 
@@ -293,6 +305,9 @@ class ModelPlot(object):
         font_size=15,
         colorbar_label=r"log$_{10}$ flux",
         colorbar_label_font_size=15,
+        kwargs_title=None,
+        kwargs_scale_bar=None,
+        kwargs_coordinate_arrows=None,
         **kwargs_matshow
     ):
         """Illustrates model.
@@ -320,6 +335,12 @@ class ModelPlot(object):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
+        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
+        :type kwargs_title: Unpack[plot_util.TitleKwargs]
+        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
+        :type kwargs_scale_bar: Unpack[plot_util.ScaleBarKwargs]
+        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :type kwargs_coordinate_arrows: Unpack[plot_util.CoordArrowKwargs]
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
@@ -347,6 +368,9 @@ class ModelPlot(object):
             font_size=font_size,
             colorbar_label=colorbar_label,
             colorbar_label_font_size=colorbar_label_font_size,
+            kwargs_title=kwargs_title,
+            kwargs_scale_bar=kwargs_scale_bar,
+            kwargs_coordinate_arrows=kwargs_coordinate_arrows,
             **kwargs_matshow,
         )
 
@@ -372,6 +396,9 @@ class ModelPlot(object):
         arrow_color_north="w",
         arrow_color_east="w",
         arrow_font_size=15,
+        kwargs_title=None,
+        kwargs_scale_bar=None,
+        kwargs_coordinate_arrows=None,
         **kwargs_matshow
     ):
         """Illustrates lensing convergence in data frame.
@@ -396,6 +423,12 @@ class ModelPlot(object):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
+        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
+        :type kwargs_title: Unpack[plot_util.TitleKwargs]
+        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
+        :type kwargs_scale_bar: Unpack[plot_util.ScaleBarKwargs]
+        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :type kwargs_coordinate_arrows: Unpack[plot_util.CoordArrowKwargs]
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
@@ -420,6 +453,9 @@ class ModelPlot(object):
             arrow_color_north=arrow_color_north,
             arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
+            kwargs_title=kwargs_title,
+            kwargs_scale_bar=kwargs_scale_bar,
+            kwargs_coordinate_arrows=kwargs_coordinate_arrows,
             **kwargs_matshow,
         )
 
@@ -453,6 +489,9 @@ class ModelPlot(object):
         arrow_color_north="k",
         arrow_color_east="k",
         arrow_font_size=15,
+        kwargs_title=None,
+        kwargs_scale_bar=None,
+        kwargs_coordinate_arrows=None,
         **kwargs_matshow
     ):
         """Illustrates substructure in the lens system.
@@ -485,6 +524,12 @@ class ModelPlot(object):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
+        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
+        :type kwargs_title: Unpack[plot_util.TitleKwargs]
+        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
+        :type kwargs_scale_bar: Unpack[plot_util.ScaleBarKwargs]
+        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :type kwargs_coordinate_arrows: Unpack[plot_util.CoordArrowKwargs]
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
@@ -519,6 +564,9 @@ class ModelPlot(object):
             arrow_color_north=arrow_color_north,
             arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
+            kwargs_title=kwargs_title,
+            kwargs_scale_bar=kwargs_scale_bar,
+            kwargs_coordinate_arrows=kwargs_coordinate_arrows,
             **kwargs_matshow,
         )
 
@@ -545,6 +593,9 @@ class ModelPlot(object):
         arrow_color_north="k",
         arrow_color_east="k",
         arrow_font_size=15,
+        kwargs_title=None,
+        kwargs_scale_bar=None,
+        kwargs_coordinate_arrows=None,
         **kwargs_matshow
     ):
         """Illustrates normalized residuals between data and model fit.
@@ -570,6 +621,12 @@ class ModelPlot(object):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
+        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
+        :type kwargs_title: Unpack[plot_util.TitleKwargs]
+        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
+        :type kwargs_scale_bar: Unpack[plot_util.ScaleBarKwargs]
+        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :type kwargs_coordinate_arrows: Unpack[plot_util.CoordArrowKwargs]
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
@@ -595,6 +652,9 @@ class ModelPlot(object):
             arrow_color_north=arrow_color_north,
             arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
+            kwargs_title=kwargs_title,
+            kwargs_scale_bar=kwargs_scale_bar,
+            kwargs_coordinate_arrows=kwargs_coordinate_arrows,
             **kwargs_matshow,
         )
 
@@ -620,6 +680,9 @@ class ModelPlot(object):
         arrow_color_north="k",
         arrow_color_east="k",
         arrow_font_size=15,
+        kwargs_title=None,
+        kwargs_scale_bar=None,
+        kwargs_coordinate_arrows=None,
         **kwargs_matshow
     ):
         """Illustrates absolute residuals between data and model fit.
@@ -644,6 +707,12 @@ class ModelPlot(object):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
+        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
+        :type kwargs_title: Unpack[plot_util.TitleKwargs]
+        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
+        :type kwargs_scale_bar: Unpack[plot_util.ScaleBarKwargs]
+        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :type kwargs_coordinate_arrows: Unpack[plot_util.CoordArrowKwargs]
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
@@ -668,6 +737,9 @@ class ModelPlot(object):
             arrow_color_north=arrow_color_north,
             arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
+            kwargs_title=kwargs_title,
+            kwargs_scale_bar=kwargs_scale_bar,
+            kwargs_coordinate_arrows=kwargs_coordinate_arrows,
             **kwargs_matshow,
         )
 
@@ -701,6 +773,9 @@ class ModelPlot(object):
         arrow_color_north="w",
         arrow_color_east="w",
         arrow_font_size=15,
+        kwargs_title=None,
+        kwargs_scale_bar=None,
+        kwargs_coordinate_arrows=None,
         **kwargs_matshow
     ):
         """Illustrates reconstructed source (de-lensed de-convolved)
@@ -735,6 +810,12 @@ class ModelPlot(object):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
+        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
+        :type kwargs_title: Unpack[plot_util.TitleKwargs]
+        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
+        :type kwargs_scale_bar: Unpack[plot_util.ScaleBarKwargs]
+        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :type kwargs_coordinate_arrows: Unpack[plot_util.CoordArrowKwargs]
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
@@ -767,6 +848,9 @@ class ModelPlot(object):
             arrow_color_north=arrow_color_north,
             arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
+            kwargs_title=kwargs_title,
+            kwargs_scale_bar=kwargs_scale_bar,
+            kwargs_coordinate_arrows=kwargs_coordinate_arrows,
             **kwargs_matshow,
         )
 
@@ -794,6 +878,9 @@ class ModelPlot(object):
         arrow_color_north="w",
         arrow_color_east="w",
         arrow_font_size=15,
+        kwargs_title=None,
+        kwargs_scale_bar=None,
+        kwargs_coordinate_arrows=None,
         **kwargs_matshow
     ):
         """Illustrates surface brightness variance in the reconstruction in the source
@@ -823,6 +910,12 @@ class ModelPlot(object):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
+        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
+        :type kwargs_title: Unpack[plot_util.TitleKwargs]
+        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
+        :type kwargs_scale_bar: Unpack[plot_util.ScaleBarKwargs]
+        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :type kwargs_coordinate_arrows: Unpack[plot_util.CoordArrowKwargs]
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
@@ -849,6 +942,9 @@ class ModelPlot(object):
             arrow_color_north=arrow_color_north,
             arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
+            kwargs_title=kwargs_title,
+            kwargs_scale_bar=kwargs_scale_bar,
+            kwargs_coordinate_arrows=kwargs_coordinate_arrows,
             **kwargs_matshow,
         )
 
@@ -875,6 +971,9 @@ class ModelPlot(object):
         arrow_color_north="k",
         arrow_color_east="k",
         arrow_font_size=15,
+        kwargs_title=None,
+        kwargs_scale_bar=None,
+        kwargs_coordinate_arrows=None,
         **kwargs_matshow
     ):
         """Illustrates lensing magnification in the field of view of the data frame.
@@ -901,6 +1000,12 @@ class ModelPlot(object):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
+        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
+        :type kwargs_title: Unpack[plot_util.TitleKwargs]
+        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
+        :type kwargs_scale_bar: Unpack[plot_util.ScaleBarKwargs]
+        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :type kwargs_coordinate_arrows: Unpack[plot_util.CoordArrowKwargs]
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
@@ -926,6 +1031,9 @@ class ModelPlot(object):
             arrow_color_north=arrow_color_north,
             arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
+            kwargs_title=kwargs_title,
+            kwargs_scale_bar=kwargs_scale_bar,
+            kwargs_coordinate_arrows=kwargs_coordinate_arrows,
             **kwargs_matshow,
         )
 
@@ -954,6 +1062,9 @@ class ModelPlot(object):
         arrow_color_north="k",
         arrow_color_east="k",
         arrow_font_size=15,
+        kwargs_title=None,
+        kwargs_scale_bar=None,
+        kwargs_coordinate_arrows=None,
         **kwargs_matshow
     ):
         """Illustrates lensing deflections on the field of view of the data frame.
@@ -981,6 +1092,12 @@ class ModelPlot(object):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
+        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
+        :type kwargs_title: Unpack[plot_util.TitleKwargs]
+        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
+        :type kwargs_scale_bar: Unpack[plot_util.ScaleBarKwargs]
+        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :type kwargs_coordinate_arrows: Unpack[plot_util.CoordArrowKwargs]
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
@@ -1008,6 +1125,9 @@ class ModelPlot(object):
             arrow_color_north=arrow_color_north,
             arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
+            kwargs_title=kwargs_title,
+            kwargs_scale_bar=kwargs_scale_bar,
+            kwargs_coordinate_arrows=kwargs_coordinate_arrows,
             **kwargs_matshow,
         )
 
@@ -1036,6 +1156,9 @@ class ModelPlot(object):
         arrow_color_north="w",
         arrow_color_east="w",
         arrow_font_size=15,
+        kwargs_title=None,
+        kwargs_scale_bar=None,
+        kwargs_coordinate_arrows=None,
         **kwargs_matshow
     ):
         """Illustrates decomposition of model components.
@@ -1066,6 +1189,12 @@ class ModelPlot(object):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
+        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
+        :type kwargs_title: Unpack[plot_util.TitleKwargs]
+        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
+        :type kwargs_scale_bar: Unpack[plot_util.ScaleBarKwargs]
+        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :type kwargs_coordinate_arrows: Unpack[plot_util.CoordArrowKwargs]
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
@@ -1093,6 +1222,9 @@ class ModelPlot(object):
             arrow_color_north=arrow_color_north,
             arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
+            kwargs_title=kwargs_title,
+            kwargs_scale_bar=kwargs_scale_bar,
+            kwargs_coordinate_arrows=kwargs_coordinate_arrows,
             **kwargs_matshow,
         )
 
@@ -1120,6 +1252,9 @@ class ModelPlot(object):
         arrow_color_north="w",
         arrow_color_east="w",
         arrow_font_size=15,
+        kwargs_title=None,
+        kwargs_scale_bar=None,
+        kwargs_coordinate_arrows=None,
         **kwargs_matshow
     ):
         """Subtracts individual model components from the data.
@@ -1149,6 +1284,12 @@ class ModelPlot(object):
         :param arrow_color_north: color of the North arrow
         :param arrow_color_east: color of the East arrow
         :param arrow_font_size: font size of the arrow text
+        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
+        :type kwargs_title: Unpack[plot_util.TitleKwargs]
+        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
+        :type kwargs_scale_bar: Unpack[plot_util.ScaleBarKwargs]
+        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :type kwargs_coordinate_arrows: Unpack[plot_util.CoordArrowKwargs]
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
@@ -1175,6 +1316,9 @@ class ModelPlot(object):
             arrow_color_north=arrow_color_north,
             arrow_color_east=arrow_color_east,
             arrow_font_size=arrow_font_size,
+            kwargs_title=kwargs_title,
+            kwargs_scale_bar=kwargs_scale_bar,
+            kwargs_coordinate_arrows=kwargs_coordinate_arrows,
             **kwargs_matshow,
         )
 

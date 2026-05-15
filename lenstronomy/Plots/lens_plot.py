@@ -26,7 +26,7 @@ _NAME_LIST = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"]
 @export
 def lens_model_plot(
     ax,
-    lensModel,
+    lens_model,
     kwargs_lens,
     numPix=500,
     deltaPix=0.01,
@@ -47,7 +47,7 @@ def lens_model_plot(
     """Plots a lens model (convergence) and the critical curves and caustics.
 
     :param ax: matplotlib axis instance
-    :param lensModel: LensModel() class instance
+    :param lens_model: LensModel() class instance
     :param kwargs_lens: lens model keyword argument list
     :param numPix: total number of pixels (for convergence map)
     :param deltaPix: width of pixel (total frame size is deltaPix x numPix)
@@ -97,7 +97,7 @@ def lens_model_plot(
         convergence_plot(
             ax,
             pixel_grid=_coords,
-            lens_model=lensModel,
+            lens_model=lens_model,
             kwargs_lens=kwargs_lens,
             extent=extent,
             **kwargs_convergence,
@@ -107,7 +107,7 @@ def lens_model_plot(
         caustics_plot(
             ax,
             pixel_grid=_coords,
-            lens_model=lensModel,
+            lens_model=lens_model,
             kwargs_lens=kwargs_lens,
             fast_caustic=fast_caustic,
             coord_inverse=coord_inverse,
@@ -118,7 +118,7 @@ def lens_model_plot(
         point_source_plot(
             ax,
             pixel_grid=_coords,
-            lens_model=lensModel,
+            lens_model=lens_model,
             kwargs_lens=kwargs_lens,
             source_x=sourcePos_x,
             source_y=sourcePos_y,
@@ -152,6 +152,7 @@ def convergence_plot(
     with_color_bar=False,
     colorbar_label=r"$\log_{10}(\kappa)$",
     font_size=20,
+    colorbar_tick_fontsize=None,
     **kwargs,
 ):
     """Plot convergence.
@@ -169,6 +170,7 @@ def convergence_plot(
     :param with_color_bar: bool, if True, shows color bar
     :param colorbar_label: string, label of color bar
     :param font_size: int, font size of color bar label
+    :param colorbar_tick_fontsize: int, font size of color bar tick labels; defaults to font_size when None
     :return: matplotlib axis instance with convergence plot
     """
     x_grid, y_grid = pixel_grid.pixel_coordinates
@@ -190,6 +192,11 @@ def convergence_plot(
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
         cb.set_label(colorbar_label, fontsize=font_size)
+        cb.ax.tick_params(
+            labelsize=(
+                font_size if colorbar_tick_fontsize is None else colorbar_tick_fontsize
+            )
+        )
 
     return ax
 

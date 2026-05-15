@@ -22,16 +22,6 @@ class TracerPlot(object):
         kwargs_params,
         kwargs_likelihood,
         fast_caustic=True,
-        arrow_length=0.05,
-        arrowhead_size=0.025,
-        arrow_origin_x=None,
-        arrow_origin_y=None,
-        arrow_east_offset_x=None,
-        arrow_east_offset_y=None,
-        arrow_north_offset_x=None,
-        arrow_north_offset_y=None,
-        scale_bar_width=2,
-        scale_bar_font_size=15,
     ):
         """Initialize the tracer plotting class.
 
@@ -44,24 +34,6 @@ class TracerPlot(object):
         :param kwargs_likelihood: likelihood keyword arguments
         :param fast_caustic: boolean; if True, uses fast (but less accurate) caustic
             calculation method
-        :param arrow_length: length of the coordinate arrow as a fraction of the image
-            size
-        :param arrowhead_size: size of the arrowhead of the coordinate arrow as a
-            fraction of the image size
-        :param arrow_origin_x: x-origin of the coordinate arrow as a fraction of the
-            image size
-        :param arrow_origin_y: y-origin of the coordinate arrow as a fraction of the
-            image size
-        :param arrow_east_offset_x: x-offset of the East arrow text as a fraction of the
-            image size
-        :param arrow_east_offset_y: y-offset of the East arrow text as a fraction of the
-            image size
-        :param arrow_north_offset_x: x-offset of the North arrow text as a fraction of
-            the image size
-        :param arrow_north_offset_y: y-offset of the North arrow text as a fraction of
-            the image size
-        :param scale_bar_width: width of the scale bar
-        :param scale_bar_font_size: font size of the scale bar
         """
 
         multi_band_list = kwargs_data_joint.get("multi_band_list", [])
@@ -141,16 +113,6 @@ class TracerPlot(object):
         self._x_center, self._y_center = self._coords.center
 
         self._fast_caustic = fast_caustic
-        self._arrow_length = arrow_length
-        self._arrowhead_size = arrowhead_size
-        self._arrow_origin_x = arrow_origin_x
-        self._arrow_origin_y = arrow_origin_y
-        self._arrow_east_offset_x = arrow_east_offset_x
-        self._arrow_east_offset_y = arrow_east_offset_y
-        self._arrow_north_offset_x = arrow_north_offset_x
-        self._arrow_north_offset_y = arrow_north_offset_y
-        self._scale_bar_width = scale_bar_width
-        self._scale_bar_font_size = scale_bar_font_size
 
     def _critical_curves(self):
         """Compute and cache critical curves."""
@@ -204,22 +166,14 @@ class TracerPlot(object):
         ax,
         v_min=None,
         v_max=None,
-        title_text="Observed",
-        title_font_size=15,
-        title_color="w",
-        title_background_color="k",
-        title_x_pos=None,
-        title_y_pos=None,
-        scale_bar_length=1.0,
-        scale_bar_color="w",
-        scale_bar_text=None,
         coordinate_arrows=True,
-        arrow_font_size=15,
-        arrow_color_north="w",
-        arrow_color_east="w",
         font_size=15,
         colorbar_label=r"log$_{10}$ flux",
-        colorbar_label_font_size=15,
+        colorbar_label_font_size=None,
+        colorbar_tick_fontsize=None,
+        kwargs_title=None,
+        kwargs_scale_bar=None,
+        kwargs_coordinate_arrows=None,
         **kwargs_matshow,
     ):
         """Plot observed tracer data.
@@ -227,21 +181,17 @@ class TracerPlot(object):
         :param ax: matplotlib axis instance
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
-        :param title_text: string, text to be displayed in the image
-        :param font_size: font size of the text
+        :param font_size: font size of the plot text and, by default, the colorbar tick labels
         :param colorbar_label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param title_font_size: font size of the title
-        :param title_color: color of the title
-        :param title_background_color: background color of the title
-        :param title_y_pos: y-position of the title
-        :param scale_bar_color: color of the scale bar
-        :param scale_bar_length: length of the scale bar
-        :param scale_bar_text: text of the scale bar
-        :param colorbar_label_font_size: font size of the colorbar label
-        :param arrow_color_north: color of the North arrow
-        :param arrow_color_east: color of the East arrow
-        :param arrow_font_size: font size of the arrow text
+        :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
+        :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
+        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
+        :type kwargs_title: Unpack[plot_util.TitleKwargs]
+        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
+        :type kwargs_scale_bar: Unpack[plot_util.ScaleBarKwargs]
+        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :type kwargs_coordinate_arrows: Unpack[plot_util.CoordArrowKwargs]
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
@@ -264,49 +214,59 @@ class TracerPlot(object):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
 
-        if scale_bar_length > 0:
-            plot_util.show_scale_bar(
-                ax,
-                self._frame_size,
-                dist=scale_bar_length,
-                text=scale_bar_text,
-                color=scale_bar_color,
-                font_size=self._scale_bar_font_size,
-                linewidth=self._scale_bar_width,
-            )
-        plot_util.show_title_text(
-            ax,
-            text=title_text,
-            color=title_color,
-            backgroundcolor=title_background_color,
-            font_size=title_font_size,
-            title_x_pos=title_x_pos,
-            title_y_pos=title_y_pos,
-        )
+        if kwargs_title is None:
+            kwargs_title = {}
+        kwargs_title.setdefault("text", "Observed")
+        kwargs_title.setdefault("color", "w")
+        kwargs_title.setdefault("backgroundcolor", "k")
+        kwargs_title.setdefault("font_size", 15)
+        if kwargs_scale_bar is None:
+            kwargs_scale_bar = {}
+        kwargs_scale_bar.setdefault("scale_length", 1.0)
+        kwargs_scale_bar.setdefault("color", "w")
+        kwargs_scale_bar.setdefault("font_size", 15)
+        kwargs_scale_bar.setdefault("linewidth", 2)
+        if kwargs_coordinate_arrows is None:
+            kwargs_coordinate_arrows = {}
+        kwargs_coordinate_arrows.setdefault("font_size", font_size)
+        kwargs_coordinate_arrows.setdefault("arrow_length", 0.05)
+        kwargs_coordinate_arrows.setdefault("arrowhead_size", 0.025)
+        kwargs_coordinate_arrows.setdefault("arrow_origin_x", None)
+        kwargs_coordinate_arrows.setdefault("arrow_origin_y", None)
+        kwargs_coordinate_arrows.setdefault("arrow_north_offset_x", None)
+        kwargs_coordinate_arrows.setdefault("arrow_north_offset_y", None)
+        kwargs_coordinate_arrows.setdefault("arrow_east_offset_x", None)
+        kwargs_coordinate_arrows.setdefault("arrow_east_offset_y", None)
+        kwargs_coordinate_arrows.setdefault("arrow_color_north", "w")
+        kwargs_coordinate_arrows.setdefault("arrow_color_east", "w")
+
+        plot_util.show_scale_bar(ax, self._frame_size, **kwargs_scale_bar)
+        plot_util.show_title_text(ax, **kwargs_title)
 
         if coordinate_arrows:
             plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
-                font_size=arrow_font_size,
-                arrow_length=self._arrow_length,
-                arrowhead_size=self._arrowhead_size,
-                arrow_origin_x=self._arrow_origin_x,
-                arrow_origin_y=self._arrow_origin_y,
-                arrow_north_offset_x=self._arrow_north_offset_x,
-                arrow_north_offset_y=self._arrow_north_offset_y,
-                arrow_east_offset_x=self._arrow_east_offset_x,
-                arrow_east_offset_y=self._arrow_east_offset_y,
-                arrow_color_north=arrow_color_north,
-                arrow_color_east=arrow_color_east,
+                **kwargs_coordinate_arrows,
             )
 
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax, orientation="vertical")
-        cb.set_label(colorbar_label, fontsize=colorbar_label_font_size)
-        cb.ax.tick_params(labelsize=font_size)
+        cb.set_label(
+            colorbar_label,
+            fontsize=(
+                font_size
+                if colorbar_label_font_size is None
+                else colorbar_label_font_size
+            ),
+        )
+        cb.ax.tick_params(
+            labelsize=(
+                font_size if colorbar_tick_fontsize is None else colorbar_tick_fontsize
+            )
+        )
         return ax
 
     def model_plot(
@@ -315,24 +275,16 @@ class TracerPlot(object):
         v_min=None,
         v_max=None,
         image_names=False,
-        title_text="Reconstructed",
         original_position=True,
         image_name_list=None,
-        title_font_size=15,
-        title_color="w",
-        title_background_color="k",
-        title_x_pos=None,
-        title_y_pos=None,
-        scale_bar_length=1.0,
-        scale_bar_color="w",
-        scale_bar_text=None,
         coordinate_arrows=True,
-        arrow_font_size=15,
-        arrow_color_north="w",
-        arrow_color_east="w",
         font_size=15,
         colorbar_label=r"log$_{10}$ flux",
-        colorbar_label_font_size=15,
+        colorbar_label_font_size=None,
+        colorbar_tick_fontsize=None,
+        kwargs_title=None,
+        kwargs_scale_bar=None,
+        kwargs_coordinate_arrows=None,
         **kwargs_matshow,
     ):
         """Plot reconstructed tracer model.
@@ -342,23 +294,18 @@ class TracerPlot(object):
         :param v_max: maximum plotting scale
         :param image_names: boolean, if True, prints image names
         :param colorbar_label: string, label for the colorbar
-        :param font_size: font size of the text
-        :param title_text: string, text to be displayed in the image
+        :param font_size: font size of the plot text and, by default, the colorbar tick labels
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param original_position: boolean, if True, uses original image positions
         :param image_name_list: list of names for images
-        :param title_font_size: font size of the title
-        :param title_color: color of the title
-        :param title_background_color: background color of the title
-        :param title_x_pos: x-position of the title
-        :param title_y_pos: y-position of the title
-        :param scale_bar_color: color of the scale bar
-        :param scale_bar_length: length of the scale bar
-        :param scale_bar_text: text of the scale bar
-        :param colorbar_label_font_size: font size of the colorbar label
-        :param arrow_color_north: color of the North arrow
-        :param arrow_color_east: color of the East arrow
-        :param arrow_font_size: font size of the arrow text
+        :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
+        :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
+        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
+        :type kwargs_title: Unpack[plot_util.TitleKwargs]
+        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
+        :type kwargs_scale_bar: Unpack[plot_util.ScaleBarKwargs]
+        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :type kwargs_coordinate_arrows: Unpack[plot_util.CoordArrowKwargs]
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
@@ -379,47 +326,54 @@ class TracerPlot(object):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        if scale_bar_length > 0:
-            plot_util.show_scale_bar(
-                ax,
-                self._frame_size,
-                dist=scale_bar_length,
-                text=scale_bar_text,
-                color=scale_bar_color,
-                font_size=self._scale_bar_font_size,
-                linewidth=self._scale_bar_width,
-            )
-        plot_util.show_title_text(
-            ax,
-            text=title_text,
-            color=title_color,
-            backgroundcolor=title_background_color,
-            font_size=title_font_size,
-            title_x_pos=title_x_pos,
-            title_y_pos=title_y_pos,
-        )
+        if kwargs_title is None:
+            kwargs_title = {}
+        kwargs_title.setdefault("text", "Reconstructed")
+        kwargs_title.setdefault("color", "w")
+        if kwargs_scale_bar is None:
+            kwargs_scale_bar = {}
+        kwargs_scale_bar.setdefault("scale_length", 1.0)
+        kwargs_scale_bar.setdefault("color", "w")
+        kwargs_scale_bar.setdefault("font_size", 15)
+        kwargs_scale_bar.setdefault("linewidth", 2)
+        if kwargs_coordinate_arrows is None:
+            kwargs_coordinate_arrows = {}
+        kwargs_coordinate_arrows.setdefault("font_size", font_size)
+        kwargs_coordinate_arrows.setdefault("arrow_length", 0.05)
+        kwargs_coordinate_arrows.setdefault("arrowhead_size", 0.025)
+        kwargs_coordinate_arrows.setdefault("arrow_origin_x", None)
+        kwargs_coordinate_arrows.setdefault("arrow_origin_y", None)
+        kwargs_coordinate_arrows.setdefault("arrow_north_offset_x", None)
+        kwargs_coordinate_arrows.setdefault("arrow_north_offset_y", None)
+        kwargs_coordinate_arrows.setdefault("arrow_east_offset_x", None)
+        kwargs_coordinate_arrows.setdefault("arrow_east_offset_y", None)
+        kwargs_coordinate_arrows.setdefault("arrow_color_north", "w")
+        kwargs_coordinate_arrows.setdefault("arrow_color_east", "w")
+        plot_util.show_scale_bar(ax, self._frame_size, **kwargs_scale_bar)
+        plot_util.show_title_text(ax, **kwargs_title)
         if coordinate_arrows:
             plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
-                font_size=arrow_font_size,
-                arrow_length=self._arrow_length,
-                arrowhead_size=self._arrowhead_size,
-                arrow_origin_x=self._arrow_origin_x,
-                arrow_origin_y=self._arrow_origin_y,
-                arrow_north_offset_x=self._arrow_north_offset_x,
-                arrow_north_offset_y=self._arrow_north_offset_y,
-                arrow_east_offset_x=self._arrow_east_offset_x,
-                arrow_east_offset_y=self._arrow_east_offset_y,
-                arrow_color_north=arrow_color_north,
-                arrow_color_east=arrow_color_east,
+                **kwargs_coordinate_arrows,
             )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(colorbar_label, fontsize=colorbar_label_font_size)
-        cb.ax.tick_params(labelsize=font_size)
+        cb.set_label(
+            colorbar_label,
+            fontsize=(
+                font_size
+                if colorbar_label_font_size is None
+                else colorbar_label_font_size
+            ),
+        )
+        cb.ax.tick_params(
+            labelsize=(
+                font_size if colorbar_tick_fontsize is None else colorbar_tick_fontsize
+            )
+        )
 
         # plot_line_set(ax, self._coords, self._ra_caustic_list, self._dec_caustic_list, color='b')
         # plot_line_set(ax, self._coords, self._ra_crit_list, self._dec_crit_list, color='r')
@@ -440,47 +394,34 @@ class TracerPlot(object):
     def convergence_plot(
         self,
         ax,
-        title_text="Convergence",
         v_min=None,
         v_max=None,
         font_size=15,
         colorbar_label=r"$\log_{10}\ \kappa$",
         coordinate_arrows=True,
-        title_font_size=15,
-        title_color="w",
-        title_background_color="k",
-        title_x_pos=None,
-        title_y_pos=None,
-        scale_bar_color="w",
-        scale_bar_length=1.0,
-        scale_bar_text=None,
-        colorbar_label_font_size=15,
-        arrow_color_north="w",
-        arrow_color_east="w",
-        arrow_font_size=15,
+        colorbar_label_font_size=None,
+        colorbar_tick_fontsize=None,
+        kwargs_title=None,
+        kwargs_scale_bar=None,
+        kwargs_coordinate_arrows=None,
         **kwargs_matshow,
     ):
         """Plot lensing convergence in the tracer frame.
 
         :param ax: matplotib axis instance
-        :param title_text: string, text to be displayed in the image
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
-        :param font_size: font size of the text
+        :param font_size: font size of the plot text and, by default, the colorbar tick labels
         :param colorbar_label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param title_font_size: font size of the title
-        :param title_color: color of the title
-        :param title_background_color: background color of the title
-        :param title_x_pos: x-position of the title
-        :param title_y_pos: y-position of the title
-        :param scale_bar_color: color of the scale bar
-        :param scale_bar_length: length of the scale bar
-        :param scale_bar_text: text of the scale bar
-        :param colorbar_label_font_size: font size of the colorbar label
-        :param arrow_color_north: color of the North arrow
-        :param arrow_color_east: color of the East arrow
-        :param arrow_font_size: font size of the arrow text
+        :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
+        :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
+        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
+        :type kwargs_title: Unpack[plot_util.TitleKwargs]
+        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
+        :type kwargs_scale_bar: Unpack[plot_util.ScaleBarKwargs]
+        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :type kwargs_coordinate_arrows: Unpack[plot_util.CoordArrowKwargs]
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: convergence plot in ax instance
         """
@@ -501,48 +442,56 @@ class TracerPlot(object):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        if scale_bar_length > 0:
-            plot_util.show_scale_bar(
-                ax,
-                self._frame_size,
-                dist=scale_bar_length,
-                text=scale_bar_text,
-                color=scale_bar_color,
-                font_size=self._scale_bar_font_size,
-                linewidth=self._scale_bar_width,
-            )
+        if kwargs_title is None:
+            kwargs_title = {}
+        kwargs_title.setdefault("text", "Convergence")
+        kwargs_title.setdefault("color", "w")
+        kwargs_title.setdefault("backgroundcolor", "k")
+        kwargs_title.setdefault("font_size", 15)
+        if kwargs_scale_bar is None:
+            kwargs_scale_bar = {}
+        kwargs_scale_bar.setdefault("scale_length", 1.0)
+        kwargs_scale_bar.setdefault("color", "w")
+        kwargs_scale_bar.setdefault("font_size", 15)
+        kwargs_scale_bar.setdefault("linewidth", 2)
+        if kwargs_coordinate_arrows is None:
+            kwargs_coordinate_arrows = {}
+        kwargs_coordinate_arrows.setdefault("font_size", font_size)
+        kwargs_coordinate_arrows.setdefault("arrow_length", 0.05)
+        kwargs_coordinate_arrows.setdefault("arrowhead_size", 0.025)
+        kwargs_coordinate_arrows.setdefault("arrow_origin_x", None)
+        kwargs_coordinate_arrows.setdefault("arrow_origin_y", None)
+        kwargs_coordinate_arrows.setdefault("arrow_north_offset_x", None)
+        kwargs_coordinate_arrows.setdefault("arrow_north_offset_y", None)
+        kwargs_coordinate_arrows.setdefault("arrow_east_offset_x", None)
+        kwargs_coordinate_arrows.setdefault("arrow_east_offset_y", None)
+        kwargs_coordinate_arrows.setdefault("arrow_color_north", "w")
+        kwargs_coordinate_arrows.setdefault("arrow_color_east", "w")
+        plot_util.show_scale_bar(ax, self._frame_size, **kwargs_scale_bar)
         if coordinate_arrows:
             plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
-                font_size=arrow_font_size,
-                arrow_length=self._arrow_length,
-                arrowhead_size=self._arrowhead_size,
-                arrow_origin_x=self._arrow_origin_x,
-                arrow_origin_y=self._arrow_origin_y,
-                arrow_north_offset_x=self._arrow_north_offset_x,
-                arrow_north_offset_y=self._arrow_north_offset_y,
-                arrow_east_offset_x=self._arrow_east_offset_x,
-                arrow_east_offset_y=self._arrow_east_offset_y,
-                arrow_color_north=arrow_color_north,
-                arrow_color_east=arrow_color_east,
+                **kwargs_coordinate_arrows,
             )
-        plot_util.show_title_text(
-            ax,
-            text=title_text,
-            flipped=False,
-            color=title_color,
-            backgroundcolor=title_background_color,
-            font_size=title_font_size,
-            title_x_pos=title_x_pos,
-            title_y_pos=title_y_pos,
-        )
+        plot_util.show_title_text(ax, **kwargs_title)
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(colorbar_label, fontsize=colorbar_label_font_size)
-        cb.ax.tick_params(labelsize=font_size)
+        cb.set_label(
+            colorbar_label,
+            fontsize=(
+                font_size
+                if colorbar_label_font_size is None
+                else colorbar_label_font_size
+            ),
+        )
+        cb.ax.tick_params(
+            labelsize=(
+                font_size if colorbar_tick_fontsize is None else colorbar_tick_fontsize
+            )
+        )
         return ax
 
     def normalized_residual_plot(
@@ -551,22 +500,14 @@ class TracerPlot(object):
         v_min=-6,
         v_max=6,
         font_size=15,
-        title_text="Normalized Residuals",
         colorbar_label=r"(f$_{\rm model}$ - f$_{\rm data}$)/$\sigma$",
         coordinate_arrows=True,
         color_bar=True,
-        title_font_size=15,
-        title_color="k",
-        title_background_color="w",
-        title_x_pos=None,
-        title_y_pos=None,
-        scale_bar_color="k",
-        scale_bar_length=1.0,
-        scale_bar_text=None,
-        colorbar_label_font_size=15,
-        arrow_color_north="k",
-        arrow_color_east="k",
-        arrow_font_size=15,
+        colorbar_label_font_size=None,
+        colorbar_tick_fontsize=None,
+        kwargs_title=None,
+        kwargs_scale_bar=None,
+        kwargs_coordinate_arrows=None,
         **kwargs_matshow,
     ):
         """Plot normalized residuals between data and model.
@@ -574,23 +515,18 @@ class TracerPlot(object):
         :param ax: matplotlib axis instance
         :param v_min: minimum color scale
         :param v_max: max color scale
-        :param font_size: font size for text appearing in image
-        :param title_text: text appearing in frame
+        :param font_size: font size of the plot text and, by default, the colorbar tick labels
         :param colorbar_label: label for the color bar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param color_bar: Option to display the color bar
-        :param title_font_size: font size of the title
-        :param title_color: color of the title
-        :param title_background_color: background color of the title
-        :param title_x_pos: x-position of the title
-        :param title_y_pos: y-position of the title
-        :param scale_bar_color: color of the scale bar
-        :param scale_bar_length: length of the scale bar
-        :param scale_bar_text: text of the scale bar
-        :param colorbar_label_font_size: font size of the colorbar label
-        :param arrow_color_north: color of the North arrow
-        :param arrow_color_east: color of the East arrow
-        :param arrow_font_size: font size of the arrow text
+        :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
+        :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
+        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
+        :type kwargs_title: Unpack[plot_util.TitleKwargs]
+        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
+        :type kwargs_scale_bar: Unpack[plot_util.ScaleBarKwargs]
+        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :type kwargs_coordinate_arrows: Unpack[plot_util.CoordArrowKwargs]
         :param kwargs_matshow: kwargs to send to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
@@ -607,48 +543,59 @@ class TracerPlot(object):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        if scale_bar_length > 0:
-            plot_util.show_scale_bar(
-                ax,
-                self._frame_size,
-                dist=scale_bar_length,
-                text=scale_bar_text,
-                color=scale_bar_color,
-                font_size=self._scale_bar_font_size,
-                linewidth=self._scale_bar_width,
-            )
-        plot_util.show_title_text(
-            ax,
-            text=title_text,
-            color=title_color,
-            backgroundcolor=title_background_color,
-            font_size=title_font_size,
-            title_x_pos=title_x_pos,
-            title_y_pos=title_y_pos,
-        )
+        if kwargs_title is None:
+            kwargs_title = {}
+        kwargs_title.setdefault("text", "Normalized Residuals")
+        kwargs_title.setdefault("color", "k")
+        kwargs_title.setdefault("backgroundcolor", "w")
+        kwargs_title.setdefault("font_size", 15)
+        if kwargs_scale_bar is None:
+            kwargs_scale_bar = {}
+        kwargs_scale_bar.setdefault("scale_length", 1.0)
+        kwargs_scale_bar.setdefault("color", "k")
+        kwargs_scale_bar.setdefault("font_size", 15)
+        kwargs_scale_bar.setdefault("linewidth", 2)
+        if kwargs_coordinate_arrows is None:
+            kwargs_coordinate_arrows = {}
+        kwargs_coordinate_arrows.setdefault("font_size", font_size)
+        kwargs_coordinate_arrows.setdefault("arrow_length", 0.05)
+        kwargs_coordinate_arrows.setdefault("arrowhead_size", 0.025)
+        kwargs_coordinate_arrows.setdefault("arrow_origin_x", None)
+        kwargs_coordinate_arrows.setdefault("arrow_origin_y", None)
+        kwargs_coordinate_arrows.setdefault("arrow_north_offset_x", None)
+        kwargs_coordinate_arrows.setdefault("arrow_north_offset_y", None)
+        kwargs_coordinate_arrows.setdefault("arrow_east_offset_x", None)
+        kwargs_coordinate_arrows.setdefault("arrow_east_offset_y", None)
+        kwargs_coordinate_arrows.setdefault("arrow_color_north", "k")
+        kwargs_coordinate_arrows.setdefault("arrow_color_east", "k")
+        plot_util.show_scale_bar(ax, self._frame_size, **kwargs_scale_bar)
+        plot_util.show_title_text(ax, **kwargs_title)
         if coordinate_arrows:
             plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
-                font_size=arrow_font_size,
-                arrow_length=self._arrow_length,
-                arrowhead_size=self._arrowhead_size,
-                arrow_origin_x=self._arrow_origin_x,
-                arrow_origin_y=self._arrow_origin_y,
-                arrow_north_offset_x=self._arrow_north_offset_x,
-                arrow_north_offset_y=self._arrow_north_offset_y,
-                arrow_east_offset_x=self._arrow_east_offset_x,
-                arrow_east_offset_y=self._arrow_east_offset_y,
-                arrow_color_north=arrow_color_north,
-                arrow_color_east=arrow_color_east,
+                **kwargs_coordinate_arrows,
             )
         if color_bar:
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.05)
             cb = plt.colorbar(im, cax=cax)
-            cb.set_label(colorbar_label, fontsize=colorbar_label_font_size)
-            cb.ax.tick_params(labelsize=font_size)
+            cb.set_label(
+                colorbar_label,
+                fontsize=(
+                    font_size
+                    if colorbar_label_font_size is None
+                    else colorbar_label_font_size
+                ),
+            )
+            cb.ax.tick_params(
+                labelsize=(
+                    font_size
+                    if colorbar_tick_fontsize is None
+                    else colorbar_tick_fontsize
+                )
+            )
         return ax
 
     def absolute_residual_plot(
@@ -657,21 +604,13 @@ class TracerPlot(object):
         v_min=-1,
         v_max=1,
         font_size=15,
-        title_text="Residuals",
         colorbar_label=r"(f$_{model}$-f$_{data}$)",
         coordinate_arrows=True,
-        title_font_size=15,
-        title_color="k",
-        title_background_color="w",
-        title_x_pos=None,
-        title_y_pos=None,
-        scale_bar_color="k",
-        scale_bar_length=1.0,
-        scale_bar_text=None,
-        colorbar_label_font_size=15,
-        arrow_color_north="k",
-        arrow_color_east="k",
-        arrow_font_size=15,
+        colorbar_label_font_size=None,
+        colorbar_tick_fontsize=None,
+        kwargs_title=None,
+        kwargs_scale_bar=None,
+        kwargs_coordinate_arrows=None,
         **kwargs_matshow,
     ):
         """Plot absolute residuals between data and model.
@@ -679,22 +618,17 @@ class TracerPlot(object):
         :param ax: matplotlib axis instance
         :param v_min: minimum color scale
         :param v_max: max color scale
-        :param font_size: font size for text appearing in image
-        :param title_text: text appearing in frame
+        :param font_size: font size of the plot text and, by default, the colorbar tick labels
         :param colorbar_label: label for the color bar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param title_font_size: font size of the title
-        :param title_color: color of the title
-        :param title_background_color: background color of the title
-        :param title_x_pos: x-position of the title
-        :param title_y_pos: y-position of the title
-        :param scale_bar_color: color of the scale bar
-        :param scale_bar_length: length of the scale bar
-        :param scale_bar_text: text of the scale bar
-        :param colorbar_label_font_size: font size of the colorbar label
-        :param arrow_color_north: color of the North arrow
-        :param arrow_color_east: color of the East arrow
-        :param arrow_font_size: font size of the arrow text
+        :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
+        :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
+        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
+        :type kwargs_title: Unpack[plot_util.TitleKwargs]
+        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
+        :type kwargs_scale_bar: Unpack[plot_util.ScaleBarKwargs]
+        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :type kwargs_coordinate_arrows: Unpack[plot_util.CoordArrowKwargs]
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
@@ -711,47 +645,56 @@ class TracerPlot(object):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        if scale_bar_length > 0:
-            plot_util.show_scale_bar(
-                ax,
-                self._frame_size,
-                dist=scale_bar_length,
-                text=scale_bar_text,
-                color=scale_bar_color,
-                font_size=self._scale_bar_font_size,
-                linewidth=self._scale_bar_width,
-            )
-        plot_util.show_title_text(
-            ax,
-            text=title_text,
-            color=title_color,
-            backgroundcolor=title_background_color,
-            font_size=title_font_size,
-            title_x_pos=title_x_pos,
-            title_y_pos=title_y_pos,
-        )
+        if kwargs_title is None:
+            kwargs_title = {}
+        kwargs_title.setdefault("text", "Residuals")
+        kwargs_title.setdefault("color", "k")
+        kwargs_title.setdefault("backgroundcolor", "w")
+        kwargs_title.setdefault("font_size", 15)
+        if kwargs_scale_bar is None:
+            kwargs_scale_bar = {}
+        kwargs_scale_bar.setdefault("scale_length", 1.0)
+        kwargs_scale_bar.setdefault("color", "k")
+        kwargs_scale_bar.setdefault("font_size", 15)
+        kwargs_scale_bar.setdefault("linewidth", 2)
+        if kwargs_coordinate_arrows is None:
+            kwargs_coordinate_arrows = {}
+        kwargs_coordinate_arrows.setdefault("font_size", font_size)
+        kwargs_coordinate_arrows.setdefault("arrow_length", 0.05)
+        kwargs_coordinate_arrows.setdefault("arrowhead_size", 0.025)
+        kwargs_coordinate_arrows.setdefault("arrow_origin_x", None)
+        kwargs_coordinate_arrows.setdefault("arrow_origin_y", None)
+        kwargs_coordinate_arrows.setdefault("arrow_north_offset_x", None)
+        kwargs_coordinate_arrows.setdefault("arrow_north_offset_y", None)
+        kwargs_coordinate_arrows.setdefault("arrow_east_offset_x", None)
+        kwargs_coordinate_arrows.setdefault("arrow_east_offset_y", None)
+        kwargs_coordinate_arrows.setdefault("arrow_color_north", "k")
+        kwargs_coordinate_arrows.setdefault("arrow_color_east", "k")
+        plot_util.show_scale_bar(ax, self._frame_size, **kwargs_scale_bar)
+        plot_util.show_title_text(ax, **kwargs_title)
         if coordinate_arrows:
             plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
-                font_size=arrow_font_size,
-                arrow_length=self._arrow_length,
-                arrowhead_size=self._arrowhead_size,
-                arrow_origin_x=self._arrow_origin_x,
-                arrow_origin_y=self._arrow_origin_y,
-                arrow_north_offset_x=self._arrow_north_offset_x,
-                arrow_north_offset_y=self._arrow_north_offset_y,
-                arrow_east_offset_x=self._arrow_east_offset_x,
-                arrow_east_offset_y=self._arrow_east_offset_y,
-                arrow_color_north=arrow_color_north,
-                arrow_color_east=arrow_color_east,
+                **kwargs_coordinate_arrows,
             )
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(colorbar_label, fontsize=colorbar_label_font_size)
-        cb.ax.tick_params(labelsize=font_size)
+        cb.set_label(
+            colorbar_label,
+            fontsize=(
+                font_size
+                if colorbar_label_font_size is None
+                else colorbar_label_font_size
+            ),
+        )
+        cb.ax.tick_params(
+            labelsize=(
+                font_size if colorbar_tick_fontsize is None else colorbar_tick_fontsize
+            )
+        )
         return ax
 
     def source(self, numPix, deltaPix, center=None, image_orientation=True):
@@ -924,8 +867,8 @@ class TracerPlot(object):
                 dist=scale_bar_length,
                 text=scale_bar_text,
                 color=scale_bar_color,
-                font_size=self._scale_bar_font_size,
-                linewidth=self._scale_bar_width,
+                font_size=15,
+                linewidth=2,
             )
         if coordinate_arrows:
             plot_util.show_coordinate_arrows(
@@ -933,14 +876,14 @@ class TracerPlot(object):
                 self._frame_size,
                 self._coords,
                 font_size=arrow_font_size,
-                arrow_length=self._arrow_length,
-                arrowhead_size=self._arrowhead_size,
-                arrow_origin_x=self._arrow_origin_x,
-                arrow_origin_y=self._arrow_origin_y,
-                arrow_north_offset_x=self._arrow_north_offset_x,
-                arrow_north_offset_y=self._arrow_north_offset_y,
-                arrow_east_offset_x=self._arrow_east_offset_x,
-                arrow_east_offset_y=self._arrow_east_offset_y,
+                arrow_length=0.05,
+                arrowhead_size=0.025,
+                arrow_origin_x=None,
+                arrow_origin_y=None,
+                arrow_north_offset_x=None,
+                arrow_north_offset_y=None,
+                arrow_east_offset_x=None,
+                arrow_east_offset_y=None,
                 arrow_color_north=arrow_color_north,
                 arrow_color_east=arrow_color_east,
             )
@@ -1036,8 +979,8 @@ class TracerPlot(object):
                 dist=scale_bar_length,
                 text=scale_bar_text,
                 color=scale_bar_color,
-                font_size=self._scale_bar_font_size,
-                linewidth=self._scale_bar_width,
+                font_size=15,
+                linewidth=2,
             )
         if coordinate_arrows:
             plot_util.show_coordinate_arrows(
@@ -1045,14 +988,14 @@ class TracerPlot(object):
                 self._frame_size,
                 self._coords,
                 font_size=arrow_font_size,
-                arrow_length=self._arrow_length,
-                arrowhead_size=self._arrowhead_size,
-                arrow_origin_x=self._arrow_origin_x,
-                arrow_origin_y=self._arrow_origin_y,
-                arrow_north_offset_x=self._arrow_north_offset_x,
-                arrow_north_offset_y=self._arrow_north_offset_y,
-                arrow_east_offset_x=self._arrow_east_offset_x,
-                arrow_east_offset_y=self._arrow_east_offset_y,
+                arrow_length=0.05,
+                arrowhead_size=0.025,
+                arrow_origin_x=None,
+                arrow_origin_y=None,
+                arrow_north_offset_x=None,
+                arrow_north_offset_y=None,
+                arrow_east_offset_x=None,
+                arrow_east_offset_y=None,
                 arrow_color_north=arrow_color_north,
                 arrow_color_east=arrow_color_east,
             )
@@ -1168,8 +1111,8 @@ class TracerPlot(object):
                 dist=scale_bar_length,
                 text=scale_bar_text,
                 color=scale_bar_color,
-                font_size=self._scale_bar_font_size,
-                linewidth=self._scale_bar_width,
+                font_size=15,
+                linewidth=2,
             )
         if coordinate_arrows:
             plot_util.show_coordinate_arrows(
@@ -1177,14 +1120,14 @@ class TracerPlot(object):
                 self._frame_size,
                 self._coords,
                 font_size=arrow_font_size,
-                arrow_length=self._arrow_length,
-                arrowhead_size=self._arrowhead_size,
-                arrow_origin_x=self._arrow_origin_x,
-                arrow_origin_y=self._arrow_origin_y,
-                arrow_north_offset_x=self._arrow_north_offset_x,
-                arrow_north_offset_y=self._arrow_north_offset_y,
-                arrow_east_offset_x=self._arrow_east_offset_x,
-                arrow_east_offset_y=self._arrow_east_offset_y,
+                arrow_length=0.05,
+                arrowhead_size=0.025,
+                arrow_origin_x=None,
+                arrow_origin_y=None,
+                arrow_north_offset_x=None,
+                arrow_north_offset_y=None,
+                arrow_east_offset_x=None,
+                arrow_east_offset_y=None,
                 arrow_color_north=arrow_color_north,
                 arrow_color_east=arrow_color_east,
             )

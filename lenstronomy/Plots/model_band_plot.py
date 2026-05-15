@@ -139,7 +139,6 @@ class ModelBandPlot(ModelBand):
         ax,
         v_min=None,
         v_max=None,
-        coordinate_arrows=True,
         font_size=15,
         kwargs_colorbar={},
         kwargs_title={},
@@ -154,7 +153,6 @@ class ModelBandPlot(ModelBand):
         :param v_max: maximum plotting scale
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param label: string, label for the colorbar
-        :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
@@ -184,20 +182,21 @@ class ModelBandPlot(ModelBand):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
 
-        kwargs_title.setdefault("text", "Observed")
-        kwargs_scale_bar.setdefault("scale_size", 1.0)
+        if kwargs_scale_bar is not None:
+            kwargs_scale_bar.setdefault("scale_size", 1.0)
+            plot_util.show_scale_bar(
+                ax,
+                self._frame_size,
+                **kwargs_scale_bar,
+            )
+        if kwargs_title is not None:
+            kwargs_title.setdefault("text", "Observed")
+            plot_util.show_title_text(
+                ax,
+                **kwargs_title,
+            )
 
-        plot_util.show_scale_bar(
-            ax,
-            self._frame_size,
-            **kwargs_scale_bar,
-        )
-        plot_util.show_title_text(
-            ax,
-            **kwargs_title,
-        )
-
-        if coordinate_arrows:
+        if kwargs_coordinate_arrows is not None:
             plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
@@ -205,17 +204,16 @@ class ModelBandPlot(ModelBand):
                 **kwargs_coordinate_arrows,
             )
 
-        divider = make_axes_locatable(ax)
-        cax = divider.append_axes("right", size="5%", pad=0.05)
-        cb = plt.colorbar(im, cax=cax, orientation="vertical")
-        if kwargs_colorbar is None:
-            kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("label", r"log$_{10}$ flux")
-        plot_util.show_colorbar(
-            cb,
-            font_size=font_size,
-            **kwargs_colorbar,
-        )
+        if kwargs_colorbar is not None:
+            divider = make_axes_locatable(ax)
+            cax = divider.append_axes("right", size="5%", pad=0.05)
+            cb = plt.colorbar(im, cax=cax, orientation="vertical")
+            kwargs_colorbar.setdefault("label", r"log$_{10}$ flux")
+            plot_util.show_colorbar(
+                cb,
+                font_size=font_size,
+                **kwargs_colorbar,
+            )
         return ax
 
     def model_plot(
@@ -226,7 +224,6 @@ class ModelBandPlot(ModelBand):
         image_names=False,
         original_position=True,
         image_name_list=None,
-        coordinate_arrows=True,
         font_size=15,
         kwargs_colorbar={},
         kwargs_title={},
@@ -242,7 +239,6 @@ class ModelBandPlot(ModelBand):
         :param image_names: boolean, if True, prints image names
         :param label: string, label for the colorbar
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
-        :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param original_position: boolean, if True, uses original image positions
         :param image_name_list: list of names for images
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
@@ -273,36 +269,36 @@ class ModelBandPlot(ModelBand):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
 
-        kwargs_title.setdefault("text", "Reconstructed")
-        kwargs_scale_bar.setdefault("scale_size", 1.0)
-
-        plot_util.show_scale_bar(
-            ax,
-            self._frame_size,
-            **kwargs_scale_bar,
-        )
-        plot_util.show_title_text(
-            ax,
-            **kwargs_title,
-        )
-        if coordinate_arrows:
+        if kwargs_scale_bar is not None:
+            kwargs_scale_bar.setdefault("scale_size", 1.0)
+            plot_util.show_scale_bar(
+                ax,
+                self._frame_size,
+                **kwargs_scale_bar,
+            )
+        if kwargs_title is not None:
+            kwargs_title.setdefault("text", "Reconstructed")
+            plot_util.show_title_text(
+                ax,
+                **kwargs_title,
+            )
+        if kwargs_coordinate_arrows is not None:
             plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
                 **kwargs_coordinate_arrows,
             )
-        divider = make_axes_locatable(ax)
-        cax = divider.append_axes("right", size="5%", pad=0.05)
-        cb = plt.colorbar(im, cax=cax)
-        if kwargs_colorbar is None:
-            kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("label", r"log$_{10}$ flux")
-        plot_util.show_colorbar(
-            cb,
-            font_size=font_size,
-            **kwargs_colorbar,
-        )
+        if kwargs_colorbar is not None:
+            divider = make_axes_locatable(ax)
+            cax = divider.append_axes("right", size="5%", pad=0.05)
+            cb = plt.colorbar(im, cax=cax)
+            kwargs_colorbar.setdefault("label", r"log$_{10}$ flux")
+            plot_util.show_colorbar(
+                cb,
+                font_size=font_size,
+                **kwargs_colorbar,
+            )
 
         # plot_line_set(ax, self._coords, self._ra_caustic_list, self._dec_caustic_list, color='b')
         # plot_line_set(ax, self._coords, self._ra_crit_list, self._dec_crit_list, color='r')
@@ -328,7 +324,6 @@ class ModelBandPlot(ModelBand):
         v_min=None,
         v_max=None,
         font_size=15,
-        coordinate_arrows=True,
         kwargs_colorbar={},
         kwargs_title={},
         kwargs_scale_bar={},
@@ -342,7 +337,6 @@ class ModelBandPlot(ModelBand):
         :param v_max: maximum plotting scale
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param label: string, label for the colorbar
-        :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
@@ -371,36 +365,36 @@ class ModelBandPlot(ModelBand):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
 
-        kwargs_title.setdefault("text", "Convergence")
-        kwargs_scale_bar.setdefault("scale_size", 1.0)
-
-        plot_util.show_scale_bar(
-            ax,
-            self._frame_size,
-            **kwargs_scale_bar,
-        )
-        if coordinate_arrows:
+        if kwargs_scale_bar is not None:
+            kwargs_scale_bar.setdefault("scale_size", 1.0)
+            plot_util.show_scale_bar(
+                ax,
+                self._frame_size,
+                **kwargs_scale_bar,
+            )
+        if kwargs_coordinate_arrows is not None:
             plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
                 **kwargs_coordinate_arrows,
             )
+        if kwargs_title is not None:
+            kwargs_title.setdefault("text", "Convergence")
             plot_util.show_title_text(
                 ax,
                 **kwargs_title,
             )
-        divider = make_axes_locatable(ax)
-        cax = divider.append_axes("right", size="5%", pad=0.05)
-        cb = plt.colorbar(im, cax=cax)
-        if kwargs_colorbar is None:
-            kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("label", r"$\log_{10}\ \kappa$")
-        plot_util.show_colorbar(
-            cb,
-            font_size=font_size,
-            **kwargs_colorbar,
-        )
+        if kwargs_colorbar is not None:
+            divider = make_axes_locatable(ax)
+            cax = divider.append_axes("right", size="5%", pad=0.05)
+            cb = plt.colorbar(im, cax=cax)
+            kwargs_colorbar.setdefault("label", r"$\log_{10}\ \kappa$")
+            plot_util.show_colorbar(
+                cb,
+                font_size=font_size,
+                **kwargs_colorbar,
+            )
         return ax
 
     def substructure_plot(
@@ -416,8 +410,6 @@ class ModelBandPlot(ModelBand):
         crit_curve_color="k",
         image_name_list=None,
         super_sample_factor=None,
-        add_color_bar=True,
-        coordinate_arrows=True,
         kwargs_colorbar={},
         kwargs_title={},
         kwargs_scale_bar={},
@@ -439,8 +431,6 @@ class ModelBandPlot(ModelBand):
         :param crit_curve_color: color of the critical curves
         :param image_name_list: labels the images, default is A, B, C, ...
         :param super_sample_factor: a integer the specifies supersampling of the coordinate grid to create the convergence map
-        :param add_color_bar: bool; whether or not to include a color bar
-        :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
@@ -498,14 +488,11 @@ class ModelBandPlot(ModelBand):
             lens_model_macro.kappa(x_grid, y_grid, kwargs_lens_macro)
         )
         residual_kappa = kappa_full - kappa_macro
-        if kwargs_colorbar is None:
-            kwargs_colorbar = {}
         if subtract_mean:
             mean_kappa = np.mean(residual_kappa)
             residual_kappa -= mean_kappa
-            kwargs_colorbar["label"] = (
-                r"$\kappa_{\rm{sub}} - \langle \kappa_{\rm{sub}} \rangle$"
-            )
+        else:
+            pass
         alpha = 1.0
         im = ax.imshow(
             residual_kappa,
@@ -520,26 +507,27 @@ class ModelBandPlot(ModelBand):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
 
-        kwargs_title.setdefault("text", "Substructure convergence")
-        kwargs_title.setdefault("color", "k")
-        kwargs_title.setdefault("backgroundcolor", "w")
-        kwargs_scale_bar.setdefault("scale_size", 1.0)
-        kwargs_scale_bar.setdefault("color", "k")
-        kwargs_coordinate_arrows.setdefault("arrow_color_north", "k")
-        kwargs_coordinate_arrows.setdefault("arrow_color_east", "k")
-
-        plot_util.show_scale_bar(
-            ax,
-            self._frame_size,
-            **kwargs_scale_bar,
-        )
-        if coordinate_arrows:
+        if kwargs_scale_bar is not None:
+            kwargs_scale_bar.setdefault("scale_size", 1.0)
+            kwargs_scale_bar.setdefault("color", "k")
+            plot_util.show_scale_bar(
+                ax,
+                self._frame_size,
+                **kwargs_scale_bar,
+            )
+        if kwargs_coordinate_arrows is not None:
+            kwargs_coordinate_arrows.setdefault("arrow_color_north", "k")
+            kwargs_coordinate_arrows.setdefault("arrow_color_east", "k")
             plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
                 **kwargs_coordinate_arrows,
             )
+        if kwargs_title is not None:
+            kwargs_title.setdefault("text", "Substructure convergence")
+            kwargs_title.setdefault("color", "k")
+            kwargs_title.setdefault("backgroundcolor", "w")
             plot_util.show_title_text(
                 ax,
                 **kwargs_title,
@@ -569,20 +557,25 @@ class ModelBandPlot(ModelBand):
             plot_out_of_image=False,
         )
 
-        if add_color_bar:
+        cb = None
+
+
+        if kwargs_colorbar is not None:
+            if subtract_mean:
+                label = r"$\kappa_{\rm{sub}} - \langle \kappa_{\rm{sub}} \rangle$"
+            else:
+                label = r"$\kappa - \kappa_{\rm{macro}}$"
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.05)
             cb = plt.colorbar(im, cax=cax)
             kwargs_colorbar.setdefault(
-                "label", r"$\kappa - \kappa_{\rm{macro}}$"
+                "label", label
             )
             plot_util.show_colorbar(
                 cb,
                 font_size=font_size,
                 **kwargs_colorbar,
             )
-        else:
-            cb = None
         return ax, cb
 
     def normalized_residual_plot(
@@ -591,8 +584,6 @@ class ModelBandPlot(ModelBand):
         v_min=-6,
         v_max=6,
         font_size=15,
-        coordinate_arrows=True,
-        color_bar=True,
         kwargs_colorbar={},
         kwargs_title={},
         kwargs_scale_bar={},
@@ -606,8 +597,6 @@ class ModelBandPlot(ModelBand):
         :param v_max: max color scale
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param label: label for the color bar
-        :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param color_bar: Option to display the color bar
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
@@ -632,36 +621,35 @@ class ModelBandPlot(ModelBand):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
 
-        kwargs_title.setdefault("text", "Normalized Residuals")
-        kwargs_title.setdefault("color", "k")
-        kwargs_title.setdefault("backgroundcolor", "w")
-        kwargs_scale_bar.setdefault("scale_size", 1.0)
-        kwargs_scale_bar.setdefault("color", "k")
-        kwargs_coordinate_arrows.setdefault("arrow_color_north", "k")
-        kwargs_coordinate_arrows.setdefault("arrow_color_east", "k")
-
-        plot_util.show_scale_bar(
-            ax,
-            self._frame_size,
-            **kwargs_scale_bar,
-        )
-        plot_util.show_title_text(
-            ax,
-            **kwargs_title,
-        )
-        if coordinate_arrows:
+        if kwargs_scale_bar is not None:
+            kwargs_scale_bar.setdefault("scale_size", 1.0)
+            kwargs_scale_bar.setdefault("color", "k")
+            plot_util.show_scale_bar(
+                ax,
+                self._frame_size,
+                **kwargs_scale_bar,
+            )
+        if kwargs_title is not None:
+            kwargs_title.setdefault("text", "Normalized Residuals")
+            kwargs_title.setdefault("color", "k")
+            kwargs_title.setdefault("backgroundcolor", "w")
+            plot_util.show_title_text(
+                ax,
+                **kwargs_title,
+            )
+        if kwargs_coordinate_arrows is not None:
+            kwargs_coordinate_arrows.setdefault("arrow_color_north", "k")
+            kwargs_coordinate_arrows.setdefault("arrow_color_east", "k")
             plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
                 **kwargs_coordinate_arrows,
             )
-        if color_bar:
+        if kwargs_colorbar is not None:
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.05)
             cb = plt.colorbar(im, cax=cax)
-            if kwargs_colorbar is None:
-                kwargs_colorbar = {}
             kwargs_colorbar.setdefault(
                 "label", r"(f$_{\rm data}$ - f$_{\rm model}$)/$\sigma$"
             )
@@ -678,7 +666,6 @@ class ModelBandPlot(ModelBand):
         v_min=-1,
         v_max=1,
         font_size=15,
-        coordinate_arrows=True,
         kwargs_colorbar={},
         kwargs_title={},
         kwargs_scale_bar={},
@@ -692,7 +679,6 @@ class ModelBandPlot(ModelBand):
         :param v_max: max color scale
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param label: label for the color bar
-        :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
@@ -717,43 +703,43 @@ class ModelBandPlot(ModelBand):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
 
-        kwargs_title.setdefault("text", "Residuals")
-        kwargs_title.setdefault("color", "k")
-        kwargs_title.setdefault("backgroundcolor", "w")
-        kwargs_scale_bar.setdefault("scale_size", 1.0)
-        kwargs_scale_bar.setdefault("color", "k")
-        kwargs_coordinate_arrows.setdefault("arrow_color_north", "k")
-        kwargs_coordinate_arrows.setdefault("arrow_color_east", "k")
-
-        plot_util.show_scale_bar(
-            ax,
-            self._frame_size,
-            **kwargs_scale_bar,
-        )
-        plot_util.show_title_text(
-            ax,
-            **kwargs_title,
-        )
-        if coordinate_arrows:
+        if kwargs_scale_bar is not None:
+            kwargs_scale_bar.setdefault("scale_size", 1.0)
+            kwargs_scale_bar.setdefault("color", "k")
+            plot_util.show_scale_bar(
+                ax,
+                self._frame_size,
+                **kwargs_scale_bar,
+            )
+        if kwargs_title is not None:
+            kwargs_title.setdefault("text", "Residuals")
+            kwargs_title.setdefault("color", "k")
+            kwargs_title.setdefault("backgroundcolor", "w")
+            plot_util.show_title_text(
+                ax,
+                **kwargs_title,
+            )
+        if kwargs_coordinate_arrows is not None:
+            kwargs_coordinate_arrows.setdefault("arrow_color_north", "k")
+            kwargs_coordinate_arrows.setdefault("arrow_color_east", "k")
             plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
                 **kwargs_coordinate_arrows,
             )
-        divider = make_axes_locatable(ax)
-        cax = divider.append_axes("right", size="5%", pad=0.05)
-        cb = plt.colorbar(im, cax=cax)
-        if kwargs_colorbar is None:
-            kwargs_colorbar = {}
-        kwargs_colorbar.setdefault(
-            "label", r"(f$_{\rm data}$-f$_{\rm model}$)"
-        )
-        plot_util.show_colorbar(
-            cb,
-            font_size=font_size,
-            **kwargs_colorbar,
-        )
+        if kwargs_colorbar is not None:
+            divider = make_axes_locatable(ax)
+            cax = divider.append_axes("right", size="5%", pad=0.05)
+            cb = plt.colorbar(im, cax=cax)
+            kwargs_colorbar.setdefault(
+                "label", r"(f$_{\rm data}$-f$_{\rm model}$)"
+            )
+            plot_util.show_colorbar(
+                cb,
+                font_size=font_size,
+                **kwargs_colorbar,
+            )
         return ax
 
     def source(self, numPix, deltaPix, center=None, image_orientation=True):
@@ -820,7 +806,6 @@ class ModelBandPlot(ModelBand):
         plot_scale="log",
         point_source_position=True,
         kwargs_caustic=None,
-        coordinate_arrows=True,
         kwargs_colorbar={},
         kwargs_title={},
         kwargs_scale_bar={},
@@ -844,7 +829,6 @@ class ModelBandPlot(ModelBand):
         :param point_source_position: boolean, if True, plots a point at the position of
             the point source
         :param kwargs_caustic: keyword arguments for caustic plotting
-        :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
@@ -891,17 +875,16 @@ class ModelBandPlot(ModelBand):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        divider = make_axes_locatable(ax)
-        cax = divider.append_axes("right", size="5%", pad=0.05)
-        cb = plt.colorbar(im, cax=cax)
-        if kwargs_colorbar is None:
-            kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("label", r"log$_{10}$ flux")
-        plot_util.show_colorbar(
-            cb,
-            font_size=font_size,
-            **kwargs_colorbar,
-        )
+        if kwargs_colorbar is not None:
+            divider = make_axes_locatable(ax)
+            cax = divider.append_axes("right", size="5%", pad=0.05)
+            cb = plt.colorbar(im, cax=cax)
+            kwargs_colorbar.setdefault("label", r"log$_{10}$ flux")
+            plot_util.show_colorbar(
+                cb,
+                font_size=font_size,
+                **kwargs_colorbar,
+            )
 
         if with_caustics is True:
             ra_caustic_list, dec_caustic_list = self._caustics()
@@ -923,40 +906,41 @@ class ModelBandPlot(ModelBand):
                 **kwargs_caustic,
             )
 
-        kwargs_title.setdefault("text", "Reconstructed source")
-        kwargs_title.setdefault("flipped", False)
-        kwargs_title.setdefault("font_size", font_size)
-        kwargs_scale_bar.setdefault("scale_size", 0.1)
-        kwargs_coordinate_arrows.setdefault("font_size", font_size)
-        kwargs_coordinate_arrows.setdefault("arrow_length", self._arrow_length)
-        kwargs_coordinate_arrows.setdefault("arrowhead_size", self._arrowhead_size)
-        kwargs_coordinate_arrows.setdefault("arrow_origin_x", self._arrow_origin_x)
-        kwargs_coordinate_arrows.setdefault("arrow_origin_y", self._arrow_origin_y)
-        kwargs_coordinate_arrows.setdefault(
-            "arrow_north_offset_x", self._arrow_north_offset_x
-        )
-        kwargs_coordinate_arrows.setdefault(
-            "arrow_north_offset_y", self._arrow_north_offset_y
-        )
-        kwargs_coordinate_arrows.setdefault(
-            "arrow_east_offset_x", self._arrow_east_offset_x
-        )
-        kwargs_coordinate_arrows.setdefault(
-            "arrow_east_offset_y", self._arrow_east_offset_y
-        )
-        kwargs_coordinate_arrows.setdefault("arrow_color_north", "w")
-        kwargs_coordinate_arrows.setdefault("arrow_color_east", "w")
-
-        if kwargs_scale_bar.get("scale_size", 1.0) > 0:
-            plot_util.show_scale_bar(ax, d_s, **kwargs_scale_bar)
-        if coordinate_arrows:
+        if kwargs_scale_bar is not None:
+            kwargs_scale_bar.setdefault("scale_size", 0.1)
+            if kwargs_scale_bar.get("scale_size", 1.0) > 0:
+                plot_util.show_scale_bar(ax, d_s, **kwargs_scale_bar)
+        if kwargs_coordinate_arrows is not None:
+            kwargs_coordinate_arrows.setdefault("font_size", font_size)
+            kwargs_coordinate_arrows.setdefault("arrow_length", self._arrow_length)
+            kwargs_coordinate_arrows.setdefault("arrowhead_size", self._arrowhead_size)
+            kwargs_coordinate_arrows.setdefault("arrow_origin_x", self._arrow_origin_x)
+            kwargs_coordinate_arrows.setdefault("arrow_origin_y", self._arrow_origin_y)
+            kwargs_coordinate_arrows.setdefault(
+                "arrow_north_offset_x", self._arrow_north_offset_x
+            )
+            kwargs_coordinate_arrows.setdefault(
+                "arrow_north_offset_y", self._arrow_north_offset_y
+            )
+            kwargs_coordinate_arrows.setdefault(
+                "arrow_east_offset_x", self._arrow_east_offset_x
+            )
+            kwargs_coordinate_arrows.setdefault(
+                "arrow_east_offset_y", self._arrow_east_offset_y
+            )
+            kwargs_coordinate_arrows.setdefault("arrow_color_north", "w")
+            kwargs_coordinate_arrows.setdefault("arrow_color_east", "w")
             plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
                 **kwargs_coordinate_arrows,
             )
-        plot_util.show_title_text(ax, **kwargs_title)
+        if kwargs_title is not None:
+            kwargs_title.setdefault("text", "Reconstructed source")
+            kwargs_title.setdefault("flipped", False)
+            kwargs_title.setdefault("font_size", font_size)
+            plot_util.show_title_text(ax, **kwargs_title)
         if point_source_position is True:
             ra_source, dec_source = self._bandmodel.PointSource.source_position(
                 self._kwargs_ps_partial, self._kwargs_lens
@@ -974,7 +958,6 @@ class ModelBandPlot(ModelBand):
         with_caustics=False,
         font_size=15,
         point_source_position=True,
-        coordinate_arrows=True,
         kwargs_colorbar={},
         kwargs_title={},
         kwargs_scale_bar={},
@@ -999,7 +982,6 @@ class ModelBandPlot(ModelBand):
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param point_source_position: boolean, if True, plots a point at the position of
             the point source
-        :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
@@ -1050,17 +1032,16 @@ class ModelBandPlot(ModelBand):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        divider = make_axes_locatable(ax)
-        cax = divider.append_axes("right", size="5%", pad=0.05)
-        cb = plt.colorbar(im, cax=cax)
-        if kwargs_colorbar is None:
-            kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("label", r"log$_{10}$ flux")
-        plot_util.show_colorbar(
-            cb,
-            font_size=font_size,
-            **kwargs_colorbar,
-        )
+        if kwargs_colorbar is not None:
+            divider = make_axes_locatable(ax)
+            cax = divider.append_axes("right", size="5%", pad=0.05)
+            cb = plt.colorbar(im, cax=cax)
+            kwargs_colorbar.setdefault("label", r"log$_{10}$ flux")
+            plot_util.show_colorbar(
+                cb,
+                font_size=font_size,
+                **kwargs_colorbar,
+            )
         if with_caustics:
             ra_caustic_list, dec_caustic_list = self._caustics()
             plot_util.plot_line_set(
@@ -1072,26 +1053,27 @@ class ModelBandPlot(ModelBand):
                 points_only=self._caustic_points_only,
             )
 
-        kwargs_title.setdefault("text", "Error map in source")
-        kwargs_scale_bar.setdefault("scale_size", 0.1)
-
-        plot_util.show_scale_bar(
-            ax,
-            d_s,
-            **kwargs_scale_bar,
-        )
-        if coordinate_arrows:
+        if kwargs_scale_bar is not None:
+            kwargs_scale_bar.setdefault("scale_size", 0.1)
+            plot_util.show_scale_bar(
+                ax,
+                d_s,
+                **kwargs_scale_bar,
+            )
+        if kwargs_coordinate_arrows is not None:
             plot_util.show_coordinate_arrows(
                 ax,
                 d_s,
                 coords_source,
                 **kwargs_coordinate_arrows,
             )
-        plot_util.show_title_text(
-            ax,
-            flipped=False,
-            **kwargs_title,
-        )
+        if kwargs_title is not None:
+            kwargs_title.setdefault("text", "Error map in source")
+            plot_util.show_title_text(
+                ax,
+                flipped=False,
+                **kwargs_title,
+            )
         if point_source_position is True:
             ra_source, dec_source = self._bandmodel.PointSource.source_position(
                 self._kwargs_ps_partial, self._kwargs_lens
@@ -1106,7 +1088,6 @@ class ModelBandPlot(ModelBand):
         v_max=10,
         image_name_list=None,
         font_size=15,
-        coordinate_arrows=True,
         kwargs_colorbar={},
         kwargs_title={},
         kwargs_scale_bar={},
@@ -1121,7 +1102,6 @@ class ModelBandPlot(ModelBand):
         :param image_name_list: list of strings for names of the images in the same
             order as the positions
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
-        :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param label: string, label for the colorbar
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
@@ -1153,41 +1133,41 @@ class ModelBandPlot(ModelBand):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
 
-        kwargs_title.setdefault("text", "Magnification model")
-        kwargs_title.setdefault("color", "k")
-        kwargs_title.setdefault("backgroundcolor", "w")
-        kwargs_scale_bar.setdefault("scale_size", 1.0)
-        kwargs_scale_bar.setdefault("color", "k")
-        kwargs_coordinate_arrows.setdefault("arrow_color_north", "k")
-        kwargs_coordinate_arrows.setdefault("arrow_color_east", "k")
-
-        plot_util.show_scale_bar(
-            ax,
-            self._frame_size,
-            **kwargs_scale_bar,
-        )
-        if coordinate_arrows:
+        if kwargs_scale_bar is not None:
+            kwargs_scale_bar.setdefault("scale_size", 1.0)
+            kwargs_scale_bar.setdefault("color", "k")
+            plot_util.show_scale_bar(
+                ax,
+                self._frame_size,
+                **kwargs_scale_bar,
+            )
+        if kwargs_coordinate_arrows is not None:
+            kwargs_coordinate_arrows.setdefault("arrow_color_north", "k")
+            kwargs_coordinate_arrows.setdefault("arrow_color_east", "k")
             plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
                 **kwargs_coordinate_arrows,
             )
-        plot_util.show_title_text(
-            ax,
-            **kwargs_title,
-        )
-        divider = make_axes_locatable(ax)
-        cax = divider.append_axes("right", size="5%", pad=0.05)
-        cb = plt.colorbar(im, cax=cax)
-        if kwargs_colorbar is None:
-            kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("label", r"$\det\ (\mathsf{A}^{-1})$")
-        plot_util.show_colorbar(
-            cb,
-            font_size=font_size,
-            **kwargs_colorbar,
-        )
+        if kwargs_title is not None:
+            kwargs_title.setdefault("text", "Magnification model")
+            kwargs_title.setdefault("color", "k")
+            kwargs_title.setdefault("backgroundcolor", "w")
+            plot_util.show_title_text(
+                ax,
+                **kwargs_title,
+            )
+        if kwargs_colorbar is not None:
+            divider = make_axes_locatable(ax)
+            cax = divider.append_axes("right", size="5%", pad=0.05)
+            cb = plt.colorbar(im, cax=cax)
+            kwargs_colorbar.setdefault("label", r"$\det\ (\mathsf{A}^{-1})$")
+            plot_util.show_colorbar(
+                cb,
+                font_size=font_size,
+                **kwargs_colorbar,
+            )
         ra_image, dec_image = self._bandmodel.PointSource.image_position(
             self._kwargs_ps_partial, self._kwargs_lens_partial
         )
@@ -1211,7 +1191,6 @@ class ModelBandPlot(ModelBand):
         with_caustics=False,
         image_name_list=None,
         font_size=15,
-        coordinate_arrows=True,
         kwargs_colorbar={},
         kwargs_title={},
         kwargs_scale_bar={},
@@ -1228,7 +1207,6 @@ class ModelBandPlot(ModelBand):
         :param image_name_list: list of strings for names of the images
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param label: string, label for the colorbar
-        :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
@@ -1264,41 +1242,41 @@ class ModelBandPlot(ModelBand):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
 
-        kwargs_title.setdefault("text", "Deflection model")
-        kwargs_title.setdefault("color", "k")
-        kwargs_title.setdefault("backgroundcolor", "w")
-        kwargs_scale_bar.setdefault("scale_size", 1.0)
-        kwargs_scale_bar.setdefault("color", "k")
-        kwargs_coordinate_arrows.setdefault("arrow_color_north", "k")
-        kwargs_coordinate_arrows.setdefault("arrow_color_east", "k")
-
-        plot_util.show_scale_bar(
-            ax,
-            self._frame_size,
-            **kwargs_scale_bar,
-        )
-        if coordinate_arrows:
+        if kwargs_scale_bar is not None:
+            kwargs_scale_bar.setdefault("scale_size", 1.0)
+            kwargs_scale_bar.setdefault("color", "k")
+            plot_util.show_scale_bar(
+                ax,
+                self._frame_size,
+                **kwargs_scale_bar,
+            )
+        if kwargs_coordinate_arrows is not None:
+            kwargs_coordinate_arrows.setdefault("arrow_color_north", "k")
+            kwargs_coordinate_arrows.setdefault("arrow_color_east", "k")
             plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
                 **kwargs_coordinate_arrows,
             )
-        plot_util.show_title_text(
-            ax,
-            **kwargs_title,
-        )
-        divider = make_axes_locatable(ax)
-        cax = divider.append_axes("right", size="5%", pad=0.05)
-        cb = plt.colorbar(im, cax=cax)
-        if kwargs_colorbar is None:
-            kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("label", r"arcsec")
-        plot_util.show_colorbar(
-            cb,
-            font_size=font_size,
-            **kwargs_colorbar,
-        )
+        if kwargs_title is not None:
+            kwargs_title.setdefault("text", "Deflection model")
+            kwargs_title.setdefault("color", "k")
+            kwargs_title.setdefault("backgroundcolor", "w")
+            plot_util.show_title_text(
+                ax,
+                **kwargs_title,
+            )
+        if kwargs_colorbar is not None:
+            divider = make_axes_locatable(ax)
+            cax = divider.append_axes("right", size="5%", pad=0.05)
+            cb = plt.colorbar(im, cax=cax)
+            kwargs_colorbar.setdefault("label", r"arcsec")
+            plot_util.show_colorbar(
+                cb,
+                font_size=font_size,
+                **kwargs_colorbar,
+            )
         if with_caustics is True:
             ra_crit_list, dec_crit_list = self._critical_curves()
             ra_caustic_list, dec_caustic_list = self._caustics()
@@ -1341,7 +1319,6 @@ class ModelBandPlot(ModelBand):
         font_size=15,
         source_add=False,
         lens_light_add=False,
-        coordinate_arrows=True,
         kwargs_colorbar={},
         kwargs_title={},
         kwargs_scale_bar={},
@@ -1359,7 +1336,6 @@ class ModelBandPlot(ModelBand):
         :param source_add: bool, if True, includes the lensed image of the source in the
             plot
         :param lens_light_add: bool, if True, includes the lens light in the plot
-        :param coordinate_arrows: bool, if True, shows the North/East directional arrows
             from the plot
         :param label: string, label for the colorbar
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
@@ -1403,36 +1379,36 @@ class ModelBandPlot(ModelBand):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
 
-        kwargs_title.setdefault("text", "Reconstructed")
-        kwargs_scale_bar.setdefault("scale_size", 1.0)
-
-        plot_util.show_scale_bar(
-            ax,
-            self._frame_size,
-            **kwargs_scale_bar,
-        )
-        plot_util.show_title_text(
-            ax,
-            **kwargs_title,
-        )
-        if coordinate_arrows:
+        if kwargs_scale_bar is not None:
+            kwargs_scale_bar.setdefault("scale_size", 1.0)
+            plot_util.show_scale_bar(
+                ax,
+                self._frame_size,
+                **kwargs_scale_bar,
+            )
+        if kwargs_title is not None:
+            kwargs_title.setdefault("text", "Reconstructed")
+            plot_util.show_title_text(
+                ax,
+                **kwargs_title,
+            )
+        if kwargs_coordinate_arrows is not None:
             plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
                 **kwargs_coordinate_arrows,
             )
-        divider = make_axes_locatable(ax)
-        cax = divider.append_axes("right", size="5%", pad=0.05)
-        cb = plt.colorbar(im, cax=cax)
-        if kwargs_colorbar is None:
-            kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("label", r"log$_{10}$ flux")
-        plot_util.show_colorbar(
-            cb,
-            font_size=font_size,
-            **kwargs_colorbar,
-        )
+        if kwargs_colorbar is not None:
+            divider = make_axes_locatable(ax)
+            cax = divider.append_axes("right", size="5%", pad=0.05)
+            cb = plt.colorbar(im, cax=cax)
+            kwargs_colorbar.setdefault("label", r"log$_{10}$ flux")
+            plot_util.show_colorbar(
+                cb,
+                font_size=font_size,
+                **kwargs_colorbar,
+            )
         return ax
 
     def subtract_from_data_plot(
@@ -1443,7 +1419,6 @@ class ModelBandPlot(ModelBand):
         point_source_add=False,
         source_add=False,
         lens_light_add=False,
-        coordinate_arrows=True,
         font_size=15,
         kwargs_colorbar={},
         kwargs_title={},
@@ -1481,36 +1456,36 @@ class ModelBandPlot(ModelBand):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
 
-        kwargs_title.setdefault("text", "Subtracted")
-        kwargs_scale_bar.setdefault("scale_size", 1.0)
-
-        plot_util.show_scale_bar(
-            ax,
-            self._frame_size,
-            **kwargs_scale_bar,
-        )
-        plot_util.show_title_text(
-            ax,
-            **kwargs_title,
-        )
-        if coordinate_arrows:
+        if kwargs_scale_bar is not None:
+            kwargs_scale_bar.setdefault("scale_size", 1.0)
+            plot_util.show_scale_bar(
+                ax,
+                self._frame_size,
+                **kwargs_scale_bar,
+            )
+        if kwargs_title is not None:
+            kwargs_title.setdefault("text", "Subtracted")
+            plot_util.show_title_text(
+                ax,
+                **kwargs_title,
+            )
+        if kwargs_coordinate_arrows is not None:
             plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
                 **kwargs_coordinate_arrows,
             )
-        divider = make_axes_locatable(ax)
-        cax = divider.append_axes("right", size="5%", pad=0.05)
-        cb = plt.colorbar(im, cax=cax)
-        if kwargs_colorbar is None:
-            kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("label", r"log$_{10}$ flux")
-        plot_util.show_colorbar(
-            cb,
-            font_size=font_size,
-            **kwargs_colorbar,
-        )
+        if kwargs_colorbar is not None:
+            divider = make_axes_locatable(ax)
+            cax = divider.append_axes("right", size="5%", pad=0.05)
+            cb = plt.colorbar(im, cax=cax)
+            kwargs_colorbar.setdefault("label", r"log$_{10}$ flux")
+            plot_util.show_colorbar(
+                cb,
+                font_size=font_size,
+                **kwargs_colorbar,
+            )
         return ax
 
     def plot_main(self, with_caustics=False):

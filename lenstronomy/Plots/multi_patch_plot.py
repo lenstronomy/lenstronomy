@@ -467,8 +467,6 @@ class MultiPatchPlot(MultiPatchReconstruction):
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.05)
             cb = plt.colorbar(im, cax=cax, orientation="vertical")
-            if kwargs_colorbar is None:
-                kwargs_colorbar = {}
             kwargs_colorbar.setdefault("label", r"log$_{10}$ flux")
             plot_util.show_colorbar(
                 cb,

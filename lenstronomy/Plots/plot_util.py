@@ -23,39 +23,63 @@ class CoordArrowKwargs(TypedDict, total=False):
     """Keyword arguments for coordinate arrows."""
 
     font_size: int
+    """Font size of the arrow text."""
     arrow_length: float
+    """Length of the coordinate arrow as a fraction of the image size."""
     arrowhead_size: float
+    """Size of the arrowhead of the coordinate arrow as a fraction of the image size."""
     arrow_origin_x: float
+    """x-origin of the coordinate arrow as a fraction of the image size."""
     arrow_origin_y: float
+    """y-origin of the coordinate arrow as a fraction of the image size."""
     arrow_north_offset_x: float
+    """x-offset of the North arrow text as a fraction of the image size."""
     arrow_north_offset_y: float
+    """y-offset of the North arrow text as a fraction of the image size."""
     arrow_east_offset_x: float
+    """x-offset of the East arrow text as a fraction of the image size."""
     arrow_east_offset_y: float
+    """y-offset of the East arrow text as a fraction of the image size."""
     arrow_color_north: str
+    """Color of the North arrow."""
     arrow_color_east: str
+    """Color of the East arrow."""
 
 
 class ScaleBarKwargs(TypedDict, total=False):
     """Keyword arguments for scale bar."""
 
     dist: float
+    """Distance scale printed on the scale bar."""
     text: str
+    """String printed on the scale bar."""
     color: str
+    """Color of the scale bar."""
     font_size: int
+    """Font size of the scale bar text."""
     flipped: bool
+    """If True, flips the scale bar to the other side."""
     linewidth: float
+    """Line width of the scale bar."""
 
 
 class TitleKwargs(TypedDict, total=False):
     """Keyword arguments for title."""
 
     text: str
+    """Text to be displayed."""
     color: str
+    """Color of the title text."""
     backgroundcolor: str
+    """Background color of the title text."""
     flipped: bool
+    """If True, draw text on the right side."""
     font_size: int
+    """Font size of the title."""
     title_x_pos: float
+    """x-position of the title in axes coordinates."""
     title_y_pos: float
+    """y-position of the title in axes coordinates."""
 
 
 @export

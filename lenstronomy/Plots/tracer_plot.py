@@ -213,20 +213,14 @@ class TracerPlot(object):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
 
-        if kwargs_title is None:
-            kwargs_title = {}
         kwargs_title.setdefault("text", "Observed")
         kwargs_title.setdefault("color", "w")
         kwargs_title.setdefault("backgroundcolor", "k")
         kwargs_title.setdefault("font_size", 15)
-        if kwargs_scale_bar is None:
-            kwargs_scale_bar = {}
         kwargs_scale_bar.setdefault("scale_length", 1.0)
         kwargs_scale_bar.setdefault("color", "w")
         kwargs_scale_bar.setdefault("font_size", 15)
         kwargs_scale_bar.setdefault("linewidth", 2)
-        if kwargs_coordinate_arrows is None:
-            kwargs_coordinate_arrows = {}
         kwargs_coordinate_arrows.setdefault("font_size", font_size)
         kwargs_coordinate_arrows.setdefault("arrow_length", 0.05)
         kwargs_coordinate_arrows.setdefault("arrowhead_size", 0.025)
@@ -319,18 +313,12 @@ class TracerPlot(object):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        if kwargs_title is None:
-            kwargs_title = {}
         kwargs_title.setdefault("text", "Reconstructed")
         kwargs_title.setdefault("color", "w")
-        if kwargs_scale_bar is None:
-            kwargs_scale_bar = {}
         kwargs_scale_bar.setdefault("scale_length", 1.0)
         kwargs_scale_bar.setdefault("color", "w")
         kwargs_scale_bar.setdefault("font_size", 15)
         kwargs_scale_bar.setdefault("linewidth", 2)
-        if kwargs_coordinate_arrows is None:
-            kwargs_coordinate_arrows = {}
         kwargs_coordinate_arrows.setdefault("font_size", font_size)
         kwargs_coordinate_arrows.setdefault("arrow_length", 0.05)
         kwargs_coordinate_arrows.setdefault("arrowhead_size", 0.025)
@@ -429,20 +417,14 @@ class TracerPlot(object):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        if kwargs_title is None:
-            kwargs_title = {}
         kwargs_title.setdefault("text", "Convergence")
         kwargs_title.setdefault("color", "w")
         kwargs_title.setdefault("backgroundcolor", "k")
         kwargs_title.setdefault("font_size", 15)
-        if kwargs_scale_bar is None:
-            kwargs_scale_bar = {}
         kwargs_scale_bar.setdefault("scale_length", 1.0)
         kwargs_scale_bar.setdefault("color", "w")
         kwargs_scale_bar.setdefault("font_size", 15)
         kwargs_scale_bar.setdefault("linewidth", 2)
-        if kwargs_coordinate_arrows is None:
-            kwargs_coordinate_arrows = {}
         kwargs_coordinate_arrows.setdefault("font_size", font_size)
         kwargs_coordinate_arrows.setdefault("arrow_length", 0.05)
         kwargs_coordinate_arrows.setdefault("arrowhead_size", 0.025)
@@ -524,20 +506,14 @@ class TracerPlot(object):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        if kwargs_title is None:
-            kwargs_title = {}
         kwargs_title.setdefault("text", "Normalized Residuals")
         kwargs_title.setdefault("color", "k")
         kwargs_title.setdefault("backgroundcolor", "w")
         kwargs_title.setdefault("font_size", 15)
-        if kwargs_scale_bar is None:
-            kwargs_scale_bar = {}
         kwargs_scale_bar.setdefault("scale_length", 1.0)
         kwargs_scale_bar.setdefault("color", "k")
         kwargs_scale_bar.setdefault("font_size", 15)
         kwargs_scale_bar.setdefault("linewidth", 2)
-        if kwargs_coordinate_arrows is None:
-            kwargs_coordinate_arrows = {}
         kwargs_coordinate_arrows.setdefault("font_size", font_size)
         kwargs_coordinate_arrows.setdefault("arrow_length", 0.05)
         kwargs_coordinate_arrows.setdefault("arrowhead_size", 0.025)
@@ -618,20 +594,14 @@ class TracerPlot(object):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        if kwargs_title is None:
-            kwargs_title = {}
         kwargs_title.setdefault("text", "Residuals")
         kwargs_title.setdefault("color", "k")
         kwargs_title.setdefault("backgroundcolor", "w")
         kwargs_title.setdefault("font_size", 15)
-        if kwargs_scale_bar is None:
-            kwargs_scale_bar = {}
         kwargs_scale_bar.setdefault("scale_length", 1.0)
         kwargs_scale_bar.setdefault("color", "k")
         kwargs_scale_bar.setdefault("font_size", 15)
         kwargs_scale_bar.setdefault("linewidth", 2)
-        if kwargs_coordinate_arrows is None:
-            kwargs_coordinate_arrows = {}
         kwargs_coordinate_arrows.setdefault("font_size", font_size)
         kwargs_coordinate_arrows.setdefault("arrow_length", 0.05)
         kwargs_coordinate_arrows.setdefault("arrowhead_size", 0.025)

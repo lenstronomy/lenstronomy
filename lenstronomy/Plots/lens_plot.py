@@ -150,7 +150,6 @@ def convergence_plot(
     vmax=1,
     cmap="Greys",
     with_color_bar=False,
-    colorbar_label=r"$\log_{10}(\kappa)$",
     font_size=20,
     kwargs_colorbar={},
     **kwargs,
@@ -194,7 +193,7 @@ def convergence_plot(
         cb = plt.colorbar(im, cax=cax)
         if kwargs_colorbar is None:
             kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+        kwargs_colorbar.setdefault("colorbar_label", r"$\log_{10}(\kappa)$")
         plot_util.show_colorbar(
             cb,
             font_size=font_size,

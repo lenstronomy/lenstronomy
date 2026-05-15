@@ -141,7 +141,6 @@ class ModelBandPlot(ModelBand):
         v_max=None,
         coordinate_arrows=True,
         font_size=15,
-        colorbar_label=r"log$_{10}$ flux",
         kwargs_colorbar={},
         kwargs_title={},
         kwargs_scale_bar={},
@@ -211,7 +210,7 @@ class ModelBandPlot(ModelBand):
         cb = plt.colorbar(im, cax=cax, orientation="vertical")
         if kwargs_colorbar is None:
             kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+        kwargs_colorbar.setdefault("colorbar_label", r"log$_{10}$ flux")
         plot_util.show_colorbar(
             cb,
             font_size=font_size,
@@ -229,7 +228,6 @@ class ModelBandPlot(ModelBand):
         image_name_list=None,
         coordinate_arrows=True,
         font_size=15,
-        colorbar_label=r"log$_{10}$ flux",
         kwargs_colorbar={},
         kwargs_title={},
         kwargs_scale_bar={},
@@ -299,7 +297,7 @@ class ModelBandPlot(ModelBand):
         cb = plt.colorbar(im, cax=cax)
         if kwargs_colorbar is None:
             kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+        kwargs_colorbar.setdefault("colorbar_label", r"log$_{10}$ flux")
         plot_util.show_colorbar(
             cb,
             font_size=font_size,
@@ -330,7 +328,6 @@ class ModelBandPlot(ModelBand):
         v_min=None,
         v_max=None,
         font_size=15,
-        colorbar_label=r"$\log_{10}\ \kappa$",
         coordinate_arrows=True,
         kwargs_colorbar={},
         kwargs_title={},
@@ -398,7 +395,7 @@ class ModelBandPlot(ModelBand):
         cb = plt.colorbar(im, cax=cax)
         if kwargs_colorbar is None:
             kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+        kwargs_colorbar.setdefault("colorbar_label", r"$\log_{10}\ \kappa$")
         plot_util.show_colorbar(
             cb,
             font_size=font_size,
@@ -414,7 +411,6 @@ class ModelBandPlot(ModelBand):
         v_min=-0.05,
         v_max=0.05,
         font_size=15,
-        colorbar_label=r"$\kappa - \kappa_{\rm{macro}}$",
         cmap="coolwarm",
         with_critical_curves=False,
         crit_curve_color="k",
@@ -502,10 +498,14 @@ class ModelBandPlot(ModelBand):
             lens_model_macro.kappa(x_grid, y_grid, kwargs_lens_macro)
         )
         residual_kappa = kappa_full - kappa_macro
+        if kwargs_colorbar is None:
+            kwargs_colorbar = {}
         if subtract_mean:
             mean_kappa = np.mean(residual_kappa)
             residual_kappa -= mean_kappa
-            colorbar_label = r"$\kappa_{\rm{sub}} - \langle \kappa_{\rm{sub}} \rangle$"
+            kwargs_colorbar["colorbar_label"] = (
+                r"$\kappa_{\rm{sub}} - \langle \kappa_{\rm{sub}} \rangle$"
+            )
         alpha = 1.0
         im = ax.imshow(
             residual_kappa,
@@ -573,9 +573,9 @@ class ModelBandPlot(ModelBand):
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.05)
             cb = plt.colorbar(im, cax=cax)
-            if kwargs_colorbar is None:
-                kwargs_colorbar = {}
-            kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+            kwargs_colorbar.setdefault(
+                "colorbar_label", r"$\kappa - \kappa_{\rm{macro}}$"
+            )
             plot_util.show_colorbar(
                 cb,
                 font_size=font_size,
@@ -591,7 +591,6 @@ class ModelBandPlot(ModelBand):
         v_min=-6,
         v_max=6,
         font_size=15,
-        colorbar_label=r"(f$_{\rm data}$ - f$_{\rm model}$)/$\sigma$",
         coordinate_arrows=True,
         color_bar=True,
         kwargs_colorbar={},
@@ -663,7 +662,9 @@ class ModelBandPlot(ModelBand):
             cb = plt.colorbar(im, cax=cax)
             if kwargs_colorbar is None:
                 kwargs_colorbar = {}
-            kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+            kwargs_colorbar.setdefault(
+                "colorbar_label", r"(f$_{\rm data}$ - f$_{\rm model}$)/$\sigma$"
+            )
             plot_util.show_colorbar(
                 cb,
                 font_size=font_size,
@@ -677,7 +678,6 @@ class ModelBandPlot(ModelBand):
         v_min=-1,
         v_max=1,
         font_size=15,
-        colorbar_label=r"(f$_{\rm data}$-f$_{\rm model}$)",
         coordinate_arrows=True,
         kwargs_colorbar={},
         kwargs_title={},
@@ -746,7 +746,9 @@ class ModelBandPlot(ModelBand):
         cb = plt.colorbar(im, cax=cax)
         if kwargs_colorbar is None:
             kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+        kwargs_colorbar.setdefault(
+            "colorbar_label", r"(f$_{\rm data}$-f$_{\rm model}$)"
+        )
         plot_util.show_colorbar(
             cb,
             font_size=font_size,
@@ -816,7 +818,6 @@ class ModelBandPlot(ModelBand):
         caustic_color="yellow",
         font_size=15,
         plot_scale="log",
-        colorbar_label=r"log$_{10}$ flux",
         point_source_position=True,
         kwargs_caustic=None,
         coordinate_arrows=True,
@@ -895,7 +896,7 @@ class ModelBandPlot(ModelBand):
         cb = plt.colorbar(im, cax=cax)
         if kwargs_colorbar is None:
             kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+        kwargs_colorbar.setdefault("colorbar_label", r"log$_{10}$ flux")
         plot_util.show_colorbar(
             cb,
             font_size=font_size,
@@ -972,7 +973,6 @@ class ModelBandPlot(ModelBand):
         v_max=None,
         with_caustics=False,
         font_size=15,
-        colorbar_label=r"log$_{10}$ flux",
         point_source_position=True,
         coordinate_arrows=True,
         kwargs_colorbar={},
@@ -1055,7 +1055,7 @@ class ModelBandPlot(ModelBand):
         cb = plt.colorbar(im, cax=cax)
         if kwargs_colorbar is None:
             kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+        kwargs_colorbar.setdefault("colorbar_label", r"log$_{10}$ flux")
         plot_util.show_colorbar(
             cb,
             font_size=font_size,
@@ -1107,7 +1107,6 @@ class ModelBandPlot(ModelBand):
         image_name_list=None,
         font_size=15,
         coordinate_arrows=True,
-        colorbar_label=r"$\det\ (\mathsf{A}^{-1})$",
         kwargs_colorbar={},
         kwargs_title={},
         kwargs_scale_bar={},
@@ -1183,7 +1182,7 @@ class ModelBandPlot(ModelBand):
         cb = plt.colorbar(im, cax=cax)
         if kwargs_colorbar is None:
             kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+        kwargs_colorbar.setdefault("colorbar_label", r"$\det\ (\mathsf{A}^{-1})$")
         plot_util.show_colorbar(
             cb,
             font_size=font_size,
@@ -1212,7 +1211,6 @@ class ModelBandPlot(ModelBand):
         with_caustics=False,
         image_name_list=None,
         font_size=15,
-        colorbar_label=r"arcsec",
         coordinate_arrows=True,
         kwargs_colorbar={},
         kwargs_title={},
@@ -1295,7 +1293,7 @@ class ModelBandPlot(ModelBand):
         cb = plt.colorbar(im, cax=cax)
         if kwargs_colorbar is None:
             kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+        kwargs_colorbar.setdefault("colorbar_label", r"arcsec")
         plot_util.show_colorbar(
             cb,
             font_size=font_size,
@@ -1341,7 +1339,6 @@ class ModelBandPlot(ModelBand):
         unconvolved=False,
         point_source_add=False,
         font_size=15,
-        colorbar_label=r"log$_{10}$ flux",
         source_add=False,
         lens_light_add=False,
         coordinate_arrows=True,
@@ -1430,7 +1427,7 @@ class ModelBandPlot(ModelBand):
         cb = plt.colorbar(im, cax=cax)
         if kwargs_colorbar is None:
             kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+        kwargs_colorbar.setdefault("colorbar_label", r"log$_{10}$ flux")
         plot_util.show_colorbar(
             cb,
             font_size=font_size,
@@ -1448,7 +1445,6 @@ class ModelBandPlot(ModelBand):
         lens_light_add=False,
         coordinate_arrows=True,
         font_size=15,
-        colorbar_label=r"log$_{10}$ flux",
         kwargs_colorbar={},
         kwargs_title={},
         kwargs_scale_bar={},
@@ -1509,7 +1505,7 @@ class ModelBandPlot(ModelBand):
         cb = plt.colorbar(im, cax=cax)
         if kwargs_colorbar is None:
             kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+        kwargs_colorbar.setdefault("colorbar_label", r"log$_{10}$ flux")
         plot_util.show_colorbar(
             cb,
             font_size=font_size,

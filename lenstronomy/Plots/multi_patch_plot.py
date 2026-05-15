@@ -68,7 +68,6 @@ class MultiPatchPlot(MultiPatchReconstruction):
         self,
         ax,
         log_scale=True,
-        colorbar_label=r"log$_{10}$ flux",
         colorbar_tick_fontsize=None,
         kwargs_title={},
         kwargs_scale_bar={},
@@ -90,12 +89,15 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param kwargs: plotting keyword arguments
         :return: matplotlib instance
         """
+        kwargs_colorbar = kwargs.get("kwargs_colorbar", {})
+        kwargs_colorbar.setdefault("colorbar_label", r"log$_{10}$ flux")
+        kwargs["kwargs_colorbar"] = kwargs_colorbar
+
         return self._plot(
             ax,
             image=self._image_joint,
             coords=self._pixel_grid_joint,
             log_scale=log_scale,
-            colorbar_label=colorbar_label,
             kwargs_title=kwargs_title,
             kwargs_scale_bar=kwargs_scale_bar,
             kwargs_coordinate_arrows=kwargs_coordinate_arrows,
@@ -107,7 +109,6 @@ class MultiPatchPlot(MultiPatchReconstruction):
         self,
         ax,
         log_scale=True,
-        colorbar_label=r"log$_{10}$ flux",
         colorbar_tick_fontsize=None,
         kwargs_title={},
         kwargs_scale_bar={},
@@ -129,12 +130,15 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param kwargs: plotting keyword arguments
         :return: matplotlib instance
         """
+        kwargs_colorbar = kwargs.get("kwargs_colorbar", {})
+        kwargs_colorbar.setdefault("colorbar_label", r"log$_{10}$ flux")
+        kwargs["kwargs_colorbar"] = kwargs_colorbar
+
         return self._plot(
             ax,
             image=self._model_joint,
             coords=self._pixel_grid_joint,
             log_scale=log_scale,
-            colorbar_label=colorbar_label,
             kwargs_title=kwargs_title,
             kwargs_scale_bar=kwargs_scale_bar,
             kwargs_coordinate_arrows=kwargs_coordinate_arrows,
@@ -149,7 +153,6 @@ class MultiPatchPlot(MultiPatchReconstruction):
         num_pix,
         center=None,
         log_scale=True,
-        colorbar_label=r"log$_{10}$ flux",
         colorbar_tick_fontsize=None,
         kwargs_title={},
         kwargs_scale_bar={},
@@ -177,12 +180,15 @@ class MultiPatchPlot(MultiPatchReconstruction):
         source, coords = self.source(
             num_pix=num_pix, delta_pix=delta_pix, center=center
         )
+        kwargs_colorbar = kwargs.get("kwargs_colorbar", {})
+        kwargs_colorbar.setdefault("colorbar_label", r"log$_{10}$ flux")
+        kwargs["kwargs_colorbar"] = kwargs_colorbar
+
         return self._plot(
             ax,
             image=source,
             coords=coords,
             log_scale=log_scale,
-            colorbar_label=colorbar_label,
             kwargs_title=kwargs_title,
             kwargs_scale_bar=kwargs_scale_bar,
             kwargs_coordinate_arrows=kwargs_coordinate_arrows,
@@ -195,7 +201,6 @@ class MultiPatchPlot(MultiPatchReconstruction):
         v_min=-6,
         v_max=6,
         log_scale=False,
-        colorbar_label=r"(f$_{\rm data}$ - f$_{\rm model}$)/$\sigma$",
         cmap="RdBu_r",
         white_on_black=False,
         colorbar_tick_fontsize=None,
@@ -224,6 +229,12 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param kwargs: plotting keyword arguments
         :return: matplotlib instance
         """
+        kwargs_colorbar = kwargs.get("kwargs_colorbar", {})
+        kwargs_colorbar.setdefault(
+            "colorbar_label", r"(f$_{\rm data}$ - f$_{\rm model}$)/$\sigma$"
+        )
+        kwargs["kwargs_colorbar"] = kwargs_colorbar
+
         return self._plot(
             ax,
             image=self._norm_residuals_joint,
@@ -231,7 +242,6 @@ class MultiPatchPlot(MultiPatchReconstruction):
             v_min=v_min,
             v_max=v_max,
             log_scale=log_scale,
-            colorbar_label=colorbar_label,
             kwargs_title=kwargs_title,
             kwargs_scale_bar=kwargs_scale_bar,
             kwargs_coordinate_arrows=kwargs_coordinate_arrows,
@@ -247,7 +257,6 @@ class MultiPatchPlot(MultiPatchReconstruction):
         v_min=-2,
         v_max=0.2,
         title_text="Convergence",
-        colorbar_label=r"$\log_{10}\ \kappa$",
         **kwargs
     ):
         """Illustrates lensing convergence.
@@ -261,6 +270,10 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param kwargs: plotting keyword arguments
         :return: matplotlib instance
         """
+        kwargs_colorbar = kwargs.get("kwargs_colorbar", {})
+        kwargs_colorbar.setdefault("colorbar_label", r"$\log_{10}\ \kappa$")
+        kwargs["kwargs_colorbar"] = kwargs_colorbar
+
         return self._plot(
             ax,
             image=self._kappa_joint,
@@ -269,7 +282,6 @@ class MultiPatchPlot(MultiPatchReconstruction):
             v_min=v_min,
             v_max=v_max,
             title_text=title_text,
-            colorbar_label=colorbar_label,
             cmap="gist_heat",
             **kwargs,
         )
@@ -281,7 +293,6 @@ class MultiPatchPlot(MultiPatchReconstruction):
         v_min=-10,
         v_max=10,
         title_text="Magnification",
-        colorbar_label=r"$\det\ (\mathsf{A}^{-1})$",
         cmap="RdYlBu_r",
         white_on_black=False,
         **kwargs
@@ -300,6 +311,10 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param kwargs: plotting keyword arguments
         :return: matplotlib instance
         """
+        kwargs_colorbar = kwargs.get("kwargs_colorbar", {})
+        kwargs_colorbar.setdefault("colorbar_label", r"$\det\ (\mathsf{A}^{-1})$")
+        kwargs["kwargs_colorbar"] = kwargs_colorbar
+
         return self._plot(
             ax,
             image=self._magnification_joint,
@@ -308,7 +323,6 @@ class MultiPatchPlot(MultiPatchReconstruction):
             v_min=v_min,
             v_max=v_max,
             title_text=title_text,
-            colorbar_label=colorbar_label,
             cmap=cmap,
             white_on_black=white_on_black,
             **kwargs,
@@ -349,7 +363,6 @@ class MultiPatchPlot(MultiPatchReconstruction):
         v_min=None,
         v_max=None,
         font_size=15,
-        colorbar_label=r"log$_{10}$ flux",
         cmap=None,
         white_on_black=True,
         no_support=False,
@@ -456,7 +469,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
             cb = plt.colorbar(im, cax=cax, orientation="vertical")
             if kwargs_colorbar is None:
                 kwargs_colorbar = {}
-            kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+            kwargs_colorbar.setdefault("colorbar_label", r"log$_{10}$ flux")
             plot_util.show_colorbar(
                 cb,
                 font_size=font_size,

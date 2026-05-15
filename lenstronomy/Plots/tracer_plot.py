@@ -168,7 +168,6 @@ class TracerPlot(object):
         v_max=None,
         coordinate_arrows=True,
         font_size=15,
-        colorbar_label=r"log$_{10}$ flux",
         kwargs_colorbar={},
         kwargs_title={},
         kwargs_scale_bar={},
@@ -248,7 +247,7 @@ class TracerPlot(object):
         cb = plt.colorbar(im, cax=cax, orientation="vertical")
         if kwargs_colorbar is None:
             kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+        kwargs_colorbar.setdefault("colorbar_label", r"log$_{10}$ flux")
         plot_util.show_colorbar(
             cb,
             font_size=font_size,
@@ -266,7 +265,6 @@ class TracerPlot(object):
         image_name_list=None,
         coordinate_arrows=True,
         font_size=15,
-        colorbar_label=r"log$_{10}$ flux",
         kwargs_colorbar={},
         kwargs_title={},
         kwargs_scale_bar={},
@@ -342,7 +340,7 @@ class TracerPlot(object):
         cb = plt.colorbar(im, cax=cax)
         if kwargs_colorbar is None:
             kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+        kwargs_colorbar.setdefault("colorbar_label", r"log$_{10}$ flux")
         plot_util.show_colorbar(
             cb,
             font_size=font_size,
@@ -371,7 +369,6 @@ class TracerPlot(object):
         v_min=None,
         v_max=None,
         font_size=15,
-        colorbar_label=r"$\log_{10}\ \kappa$",
         coordinate_arrows=True,
         kwargs_colorbar={},
         kwargs_title={},
@@ -447,7 +444,7 @@ class TracerPlot(object):
         cb = plt.colorbar(im, cax=cax)
         if kwargs_colorbar is None:
             kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+        kwargs_colorbar.setdefault("colorbar_label", r"$\log_{10}\ \kappa$")
         plot_util.show_colorbar(
             cb,
             font_size=font_size,
@@ -461,7 +458,6 @@ class TracerPlot(object):
         v_min=-6,
         v_max=6,
         font_size=15,
-        colorbar_label=r"(f$_{\rm model}$ - f$_{\rm data}$)/$\sigma$",
         coordinate_arrows=True,
         color_bar=True,
         kwargs_colorbar={},
@@ -536,7 +532,7 @@ class TracerPlot(object):
             cb = plt.colorbar(im, cax=cax)
             if kwargs_colorbar is None:
                 kwargs_colorbar = {}
-            kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+            kwargs_colorbar.setdefault("colorbar_label", r"(f$_{\rm model}$ - f$_{\rm data}$)/$\sigma$")
             plot_util.show_colorbar(
                 cb,
                 font_size=font_size,
@@ -550,7 +546,6 @@ class TracerPlot(object):
         v_min=-1,
         v_max=1,
         font_size=15,
-        colorbar_label=r"(f$_{model}$-f$_{data}$)",
         coordinate_arrows=True,
         kwargs_colorbar={},
         kwargs_title={},
@@ -622,7 +617,7 @@ class TracerPlot(object):
         cb = plt.colorbar(im, cax=cax)
         if kwargs_colorbar is None:
             kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+        kwargs_colorbar.setdefault("colorbar_label", r"(f$_{model}$-f$_{data}$)")
         plot_util.show_colorbar(
             cb,
             font_size=font_size,
@@ -693,7 +688,6 @@ class TracerPlot(object):
         font_size=15,
         plot_scale="log",
         title_text="Reconstructed source",
-        colorbar_label=r"tracer",
         point_source_position=True,
         kwargs_caustic=None,
         coordinate_arrows=True,
@@ -780,7 +774,7 @@ class TracerPlot(object):
         cb = plt.colorbar(im, cax=cax)
         if kwargs_colorbar is None:
             kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+        kwargs_colorbar.setdefault("colorbar_label", r"tracer")
         plot_util.show_colorbar(
             cb,
             font_size=font_size,
@@ -851,7 +845,6 @@ class TracerPlot(object):
         font_size=15,
         coordinate_arrows=True,
         title_text="Magnification model",
-        colorbar_label=r"$\det\ (\mathsf{A}^{-1})$",
         title_font_size=15,
         title_color="k",
         title_background_color="w",
@@ -949,7 +942,7 @@ class TracerPlot(object):
         cb = plt.colorbar(im, cax=cax)
         if kwargs_colorbar is None:
             kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+        kwargs_colorbar.setdefault("colorbar_label", r"$\det\ (\mathsf{A}^{-1})$")
         plot_util.show_colorbar(
             cb,
             font_size=font_size,
@@ -978,7 +971,6 @@ class TracerPlot(object):
         image_name_list=None,
         title_text="Deflection model",
         font_size=15,
-        colorbar_label=r"arcsec",
         coordinate_arrows=True,
         title_font_size=15,
         title_color="k",
@@ -1085,7 +1077,7 @@ class TracerPlot(object):
         cb = plt.colorbar(im, cax=cax)
         if kwargs_colorbar is None:
             kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+        kwargs_colorbar.setdefault("colorbar_label", r"arcsec")
         plot_util.show_colorbar(
             cb,
             font_size=font_size,

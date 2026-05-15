@@ -198,8 +198,7 @@ class TracerPlot(object):
             v_min = self._v_min_default
         if v_max is None:
             v_max = self._v_max_default
-        if "cmap" not in kwargs_matshow:
-            kwargs_matshow["cmap"] = "cubehelix"
+        kwargs_matshow.setdefault("cmap", "cubehelix")
         im = ax.matshow(
             np.log10(self._data),
             origin="lower",
@@ -300,8 +299,7 @@ class TracerPlot(object):
             v_min = self._v_min_default
         if v_max is None:
             v_max = self._v_max_default
-        if "cmap" not in kwargs_matshow:
-            kwargs_matshow["cmap"] = "cubehelix"
+        kwargs_matshow.setdefault("cmap", "cubehelix")
         im = ax.matshow(
             np.log10(self._model),
             origin="lower",
@@ -400,8 +398,7 @@ class TracerPlot(object):
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: convergence plot in ax instance
         """
-        if "cmap" not in kwargs_matshow:
-            kwargs_matshow["cmap"] = "gist_heat"
+        kwargs_matshow.setdefault("cmap", "gist_heat")
 
         kappa_result = util.array2image(
             self.LensModel.kappa(self._x_grid, self._y_grid, self._kwargs_lens)
@@ -493,8 +490,7 @@ class TracerPlot(object):
         :param kwargs_matshow: kwargs to send to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
-        if "cmap" not in kwargs_matshow:
-            kwargs_matshow["cmap"] = "RdBu_r"
+        kwargs_matshow.setdefault("cmap", "RdBu_r")
         im = ax.matshow(
             self._norm_residuals,
             vmin=v_min,
@@ -581,8 +577,7 @@ class TracerPlot(object):
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
-        if "cmap" not in kwargs_matshow:
-            kwargs_matshow["cmap"] = "RdBu_r"
+        kwargs_matshow.setdefault("cmap", "RdBu_r")
         im = ax.matshow(
             self._model - self._data,
             vmin=v_min,
@@ -768,8 +763,7 @@ class TracerPlot(object):
                 'variable plot_scale needs to be "log" or "linear", not %s.'
                 % plot_scale
             )
-        if "cmap" not in kwargs_matshow:
-            kwargs_matshow["cmap"] = "cubehelix"
+        kwargs_matshow.setdefault("cmap", "cubehelix")
         im = ax.matshow(
             source_scale,
             origin="lower",
@@ -898,10 +892,8 @@ class TracerPlot(object):
         :param kwargs_matshow: kwargs to send to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
-        if "cmap" not in kwargs_matshow:
-            kwargs_matshow["cmap"] = "RdYlBu_r"
-        if "alpha" not in kwargs_matshow:
-            kwargs_matshow["alpha"] = 0.5
+        kwargs_matshow.setdefault("cmap", "RdYlBu_r")
+        kwargs_matshow.setdefault("alpha", 0.5)
         mag_result = util.array2image(
             self.LensModel.magnification(self._x_grid, self._y_grid, self._kwargs_lens)
         )
@@ -1039,10 +1031,8 @@ class TracerPlot(object):
             alpha = alpha1
         else:
             alpha = alpha2
-        if "cmap" not in kwargs_matshow:
-            kwargs_matshow["cmap"] = "RdYlBu_r"
-        if "alpha" not in kwargs_matshow:
-            kwargs_matshow["alpha"] = 0.5
+        kwargs_matshow.setdefault("cmap", "RdYlBu_r")
+        kwargs_matshow.setdefault("alpha", 0.5)
         im = ax.matshow(
             alpha,
             origin="lower",

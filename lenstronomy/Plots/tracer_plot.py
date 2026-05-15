@@ -169,11 +169,10 @@ class TracerPlot(object):
         coordinate_arrows=True,
         font_size=15,
         colorbar_label=r"log$_{10}$ flux",
-        colorbar_label_font_size=None,
-        colorbar_tick_fontsize=None,
-        kwargs_title=None,
-        kwargs_scale_bar=None,
-        kwargs_coordinate_arrows=None,
+        kwargs_colorbar={},
+        kwargs_title={},
+        kwargs_scale_bar={},
+        kwargs_coordinate_arrows={},
         **kwargs_matshow,
     ):
         """Plot observed tracer data.
@@ -254,18 +253,13 @@ class TracerPlot(object):
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax, orientation="vertical")
-        cb.set_label(
-            colorbar_label,
-            fontsize=(
-                font_size
-                if colorbar_label_font_size is None
-                else colorbar_label_font_size
-            ),
-        )
-        cb.ax.tick_params(
-            labelsize=(
-                font_size if colorbar_tick_fontsize is None else colorbar_tick_fontsize
-            )
+        if kwargs_colorbar is None:
+            kwargs_colorbar = {}
+        kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+        plot_util.show_colorbar(
+            cb,
+            font_size=font_size,
+            **kwargs_colorbar,
         )
         return ax
 
@@ -280,11 +274,10 @@ class TracerPlot(object):
         coordinate_arrows=True,
         font_size=15,
         colorbar_label=r"log$_{10}$ flux",
-        colorbar_label_font_size=None,
-        colorbar_tick_fontsize=None,
-        kwargs_title=None,
-        kwargs_scale_bar=None,
-        kwargs_coordinate_arrows=None,
+        kwargs_colorbar={},
+        kwargs_title={},
+        kwargs_scale_bar={},
+        kwargs_coordinate_arrows={},
         **kwargs_matshow,
     ):
         """Plot reconstructed tracer model.
@@ -361,18 +354,13 @@ class TracerPlot(object):
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(
-            colorbar_label,
-            fontsize=(
-                font_size
-                if colorbar_label_font_size is None
-                else colorbar_label_font_size
-            ),
-        )
-        cb.ax.tick_params(
-            labelsize=(
-                font_size if colorbar_tick_fontsize is None else colorbar_tick_fontsize
-            )
+        if kwargs_colorbar is None:
+            kwargs_colorbar = {}
+        kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+        plot_util.show_colorbar(
+            cb,
+            font_size=font_size,
+            **kwargs_colorbar,
         )
 
         # plot_line_set(ax, self._coords, self._ra_caustic_list, self._dec_caustic_list, color='b')
@@ -399,11 +387,10 @@ class TracerPlot(object):
         font_size=15,
         colorbar_label=r"$\log_{10}\ \kappa$",
         coordinate_arrows=True,
-        colorbar_label_font_size=None,
-        colorbar_tick_fontsize=None,
-        kwargs_title=None,
-        kwargs_scale_bar=None,
-        kwargs_coordinate_arrows=None,
+        kwargs_colorbar={},
+        kwargs_title={},
+        kwargs_scale_bar={},
+        kwargs_coordinate_arrows={},
         **kwargs_matshow,
     ):
         """Plot lensing convergence in the tracer frame.
@@ -479,18 +466,13 @@ class TracerPlot(object):
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(
-            colorbar_label,
-            fontsize=(
-                font_size
-                if colorbar_label_font_size is None
-                else colorbar_label_font_size
-            ),
-        )
-        cb.ax.tick_params(
-            labelsize=(
-                font_size if colorbar_tick_fontsize is None else colorbar_tick_fontsize
-            )
+        if kwargs_colorbar is None:
+            kwargs_colorbar = {}
+        kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+        plot_util.show_colorbar(
+            cb,
+            font_size=font_size,
+            **kwargs_colorbar,
         )
         return ax
 
@@ -503,11 +485,10 @@ class TracerPlot(object):
         colorbar_label=r"(f$_{\rm model}$ - f$_{\rm data}$)/$\sigma$",
         coordinate_arrows=True,
         color_bar=True,
-        colorbar_label_font_size=None,
-        colorbar_tick_fontsize=None,
-        kwargs_title=None,
-        kwargs_scale_bar=None,
-        kwargs_coordinate_arrows=None,
+        kwargs_colorbar={},
+        kwargs_title={},
+        kwargs_scale_bar={},
+        kwargs_coordinate_arrows={},
         **kwargs_matshow,
     ):
         """Plot normalized residuals between data and model.
@@ -581,20 +562,13 @@ class TracerPlot(object):
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.05)
             cb = plt.colorbar(im, cax=cax)
-            cb.set_label(
-                colorbar_label,
-                fontsize=(
-                    font_size
-                    if colorbar_label_font_size is None
-                    else colorbar_label_font_size
-                ),
-            )
-            cb.ax.tick_params(
-                labelsize=(
-                    font_size
-                    if colorbar_tick_fontsize is None
-                    else colorbar_tick_fontsize
-                )
+            if kwargs_colorbar is None:
+                kwargs_colorbar = {}
+            kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+            plot_util.show_colorbar(
+                cb,
+                font_size=font_size,
+                **kwargs_colorbar,
             )
         return ax
 
@@ -606,11 +580,10 @@ class TracerPlot(object):
         font_size=15,
         colorbar_label=r"(f$_{model}$-f$_{data}$)",
         coordinate_arrows=True,
-        colorbar_label_font_size=None,
-        colorbar_tick_fontsize=None,
-        kwargs_title=None,
-        kwargs_scale_bar=None,
-        kwargs_coordinate_arrows=None,
+        kwargs_colorbar={},
+        kwargs_title={},
+        kwargs_scale_bar={},
+        kwargs_coordinate_arrows={},
         **kwargs_matshow,
     ):
         """Plot absolute residuals between data and model.
@@ -682,18 +655,13 @@ class TracerPlot(object):
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(
-            colorbar_label,
-            fontsize=(
-                font_size
-                if colorbar_label_font_size is None
-                else colorbar_label_font_size
-            ),
-        )
-        cb.ax.tick_params(
-            labelsize=(
-                font_size if colorbar_tick_fontsize is None else colorbar_tick_fontsize
-            )
+        if kwargs_colorbar is None:
+            kwargs_colorbar = {}
+        kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+        plot_util.show_colorbar(
+            cb,
+            font_size=font_size,
+            **kwargs_colorbar,
         )
         return ax
 
@@ -772,7 +740,7 @@ class TracerPlot(object):
         scale_bar_color="w",
         scale_bar_length=0.1,
         scale_bar_text=None,
-        colorbar_label_font_size=15,
+        kwargs_colorbar={},
         arrow_color_north="w",
         arrow_color_east="w",
         arrow_font_size=15,
@@ -846,8 +814,14 @@ class TracerPlot(object):
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(colorbar_label, fontsize=colorbar_label_font_size)
-        cb.ax.tick_params(labelsize=font_size)
+        if kwargs_colorbar is None:
+            kwargs_colorbar = {}
+        kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+        plot_util.show_colorbar(
+            cb,
+            font_size=font_size,
+            **kwargs_colorbar,
+        )
 
         if with_caustics is True:
             ra_caustic_list, dec_caustic_list = self._caustics()
@@ -922,7 +896,7 @@ class TracerPlot(object):
         scale_bar_color="k",
         scale_bar_length=1.0,
         scale_bar_text=None,
-        colorbar_label_font_size=15,
+        kwargs_colorbar={},
         arrow_color_north="k",
         arrow_color_east="k",
         arrow_font_size=15,
@@ -1011,8 +985,14 @@ class TracerPlot(object):
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(colorbar_label, fontsize=colorbar_label_font_size)
-        cb.ax.tick_params(labelsize=font_size)
+        if kwargs_colorbar is None:
+            kwargs_colorbar = {}
+        kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+        plot_util.show_colorbar(
+            cb,
+            font_size=font_size,
+            **kwargs_colorbar,
+        )
         ra_image, dec_image = self.PointSource.image_position(
             self._kwargs_ps, self._kwargs_lens
         )
@@ -1046,7 +1026,7 @@ class TracerPlot(object):
         scale_bar_color="k",
         scale_bar_length=1.0,
         scale_bar_text=None,
-        colorbar_label_font_size=15,
+        kwargs_colorbar={},
         arrow_color_north="k",
         arrow_color_east="k",
         arrow_font_size=15,
@@ -1143,8 +1123,14 @@ class TracerPlot(object):
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(colorbar_label, fontsize=colorbar_label_font_size)
-        cb.ax.tick_params(labelsize=font_size)
+        if kwargs_colorbar is None:
+            kwargs_colorbar = {}
+        kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+        plot_util.show_colorbar(
+            cb,
+            font_size=font_size,
+            **kwargs_colorbar,
+        )
         if with_caustics is True:
             ra_crit_list, dec_crit_list = self._critical_curves()
             ra_caustic_list, dec_caustic_list = self._caustics()

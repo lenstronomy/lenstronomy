@@ -70,9 +70,9 @@ class MultiPatchPlot(MultiPatchReconstruction):
         log_scale=True,
         colorbar_label=r"log$_{10}$ flux",
         colorbar_tick_fontsize=None,
-        kwargs_title=None,
-        kwargs_scale_bar=None,
-        kwargs_coordinate_arrows=None,
+        kwargs_title={},
+        kwargs_scale_bar={},
+        kwargs_coordinate_arrows={},
         **kwargs
     ):
         """Illustrates data.
@@ -96,8 +96,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
             coords=self._pixel_grid_joint,
             log_scale=log_scale,
             colorbar_label=colorbar_label,
-            colorbar_tick_fontsize=colorbar_tick_fontsize,
-            kwargs_title=kwargs_title,
+                        kwargs_title=kwargs_title,
             kwargs_scale_bar=kwargs_scale_bar,
             kwargs_coordinate_arrows=kwargs_coordinate_arrows,
             cmap="cubehelix",
@@ -110,9 +109,9 @@ class MultiPatchPlot(MultiPatchReconstruction):
         log_scale=True,
         colorbar_label=r"log$_{10}$ flux",
         colorbar_tick_fontsize=None,
-        kwargs_title=None,
-        kwargs_scale_bar=None,
-        kwargs_coordinate_arrows=None,
+        kwargs_title={},
+        kwargs_scale_bar={},
+        kwargs_coordinate_arrows={},
         **kwargs
     ):
         """Illustrates model.
@@ -136,8 +135,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
             coords=self._pixel_grid_joint,
             log_scale=log_scale,
             colorbar_label=colorbar_label,
-            colorbar_tick_fontsize=colorbar_tick_fontsize,
-            kwargs_title=kwargs_title,
+                        kwargs_title=kwargs_title,
             kwargs_scale_bar=kwargs_scale_bar,
             kwargs_coordinate_arrows=kwargs_coordinate_arrows,
             cmap="cubehelix",
@@ -153,9 +151,9 @@ class MultiPatchPlot(MultiPatchReconstruction):
         log_scale=True,
         colorbar_label=r"log$_{10}$ flux",
         colorbar_tick_fontsize=None,
-        kwargs_title=None,
-        kwargs_scale_bar=None,
-        kwargs_coordinate_arrows=None,
+        kwargs_title={},
+        kwargs_scale_bar={},
+        kwargs_coordinate_arrows={},
         **kwargs
     ):
         """Illustrates source.
@@ -185,8 +183,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
             coords=coords,
             log_scale=log_scale,
             colorbar_label=colorbar_label,
-            colorbar_tick_fontsize=colorbar_tick_fontsize,
-            kwargs_title=kwargs_title,
+                        kwargs_title=kwargs_title,
             kwargs_scale_bar=kwargs_scale_bar,
             kwargs_coordinate_arrows=kwargs_coordinate_arrows,
             **kwargs,
@@ -202,9 +199,9 @@ class MultiPatchPlot(MultiPatchReconstruction):
         cmap="RdBu_r",
         white_on_black=False,
         colorbar_tick_fontsize=None,
-        kwargs_title=None,
-        kwargs_scale_bar=None,
-        kwargs_coordinate_arrows=None,
+        kwargs_title={},
+        kwargs_scale_bar={},
+        kwargs_coordinate_arrows={},
         **kwargs
     ):
         """
@@ -235,8 +232,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
             v_max=v_max,
             log_scale=log_scale,
             colorbar_label=colorbar_label,
-            colorbar_tick_fontsize=colorbar_tick_fontsize,
-            kwargs_title=kwargs_title,
+                        kwargs_title=kwargs_title,
             kwargs_scale_bar=kwargs_scale_bar,
             kwargs_coordinate_arrows=kwargs_coordinate_arrows,
             cmap=cmap,
@@ -357,11 +353,10 @@ class MultiPatchPlot(MultiPatchReconstruction):
         cmap=None,
         white_on_black=True,
         no_support=False,
-        colorbar_label_font_size=None,
-        colorbar_tick_fontsize=None,
-        kwargs_title=None,
-        kwargs_scale_bar=None,
-        kwargs_coordinate_arrows=None,
+        kwargs_colorbar={},
+        kwargs_title={},
+        kwargs_scale_bar={},
+        kwargs_coordinate_arrows={},
         **kwargs
     ):
         """Plot a 2D map for a given coordinate system.
@@ -465,19 +460,12 @@ class MultiPatchPlot(MultiPatchReconstruction):
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.05)
             cb = plt.colorbar(im, cax=cax, orientation="vertical")
-            cb.set_label(
-                colorbar_label,
-                fontsize=(
-                    font_size
-                    if colorbar_label_font_size is None
-                    else colorbar_label_font_size
-                ),
-            )
-            cb.ax.tick_params(
-                labelsize=(
-                    font_size
-                    if colorbar_tick_fontsize is None
-                    else colorbar_tick_fontsize
-                )
+            if kwargs_colorbar is None:
+                kwargs_colorbar = {}
+            kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+            plot_util.show_colorbar(
+                cb,
+                font_size=font_size,
+                **kwargs_colorbar,
             )
         return ax

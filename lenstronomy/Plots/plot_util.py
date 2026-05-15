@@ -63,6 +63,17 @@ class ScaleBarKwargs(TypedDict, total=False):
     """Line width of the scale bar."""
 
 
+class ColorBarKwargs(TypedDict, total=False):
+    """Keyword arguments for color bars."""
+
+    colorbar_label: str
+    """Label text for the colorbar."""
+    label_font_size: int
+    """Font size of the colorbar label."""
+    tick_fontsize: int
+    """Font size of the colorbar tick labels."""
+
+
 class TitleKwargs(TypedDict, total=False):
     """Keyword arguments for title."""
 
@@ -198,6 +209,27 @@ def show_scale_bar(ax, d, **kwargs_scale_bar: "Unpack[ScaleBarKwargs]"):
             color=color,
             ha="center",
         )
+
+
+@export
+def show_colorbar(
+    cb,
+    font_size=15,
+    **kwargs_colorbar: "Unpack[ColorBarKwargs]",
+):
+    """Apply a label and tick styling to a matplotlib colorbar.
+
+    :param cb: matplotlib colorbar instance
+    :param font_size: default font size used when bundle entries are omitted
+    :param kwargs_colorbar: keyword arguments for the colorbar, including optional ``colorbar_label``
+    :return: None, updates the colorbar in place
+    """
+    colorbar_label = kwargs_colorbar.get("colorbar_label", None)
+    label_font_size = kwargs_colorbar.get("label_font_size", font_size)
+    tick_fontsize = kwargs_colorbar.get("tick_fontsize", font_size)
+    if colorbar_label is not None:
+        cb.set_label(colorbar_label, fontsize=label_font_size)
+    cb.ax.tick_params(labelsize=tick_fontsize)
 
 
 @export

@@ -204,11 +204,10 @@ class ModelPlot(object):
         coordinate_arrows=True,
         font_size=15,
         colorbar_label=r"log$_{10}$ flux",
-        colorbar_label_font_size=None,
-        colorbar_tick_fontsize=None,
-        kwargs_title=None,
-        kwargs_scale_bar=None,
-        kwargs_coordinate_arrows=None,
+        kwargs_colorbar={},
+        kwargs_title={},
+        kwargs_scale_bar={},
+        kwargs_coordinate_arrows={},
         **kwargs_matshow
     ):
         """Illustrates data.
@@ -239,7 +238,7 @@ class ModelPlot(object):
             coordinate_arrows=coordinate_arrows,
             font_size=font_size,
             colorbar_label=colorbar_label,
-            colorbar_label_font_size=colorbar_label_font_size,
+            kwargs_colorbar=kwargs_colorbar,
             kwargs_title=kwargs_title,
             kwargs_scale_bar=kwargs_scale_bar,
             kwargs_coordinate_arrows=kwargs_coordinate_arrows,
@@ -258,11 +257,10 @@ class ModelPlot(object):
         coordinate_arrows=True,
         font_size=15,
         colorbar_label=r"log$_{10}$ flux",
-        colorbar_label_font_size=None,
-        colorbar_tick_fontsize=None,
-        kwargs_title=None,
-        kwargs_scale_bar=None,
-        kwargs_coordinate_arrows=None,
+        kwargs_colorbar={},
+        kwargs_title={},
+        kwargs_scale_bar={},
+        kwargs_coordinate_arrows={},
         **kwargs_matshow
     ):
         """Illustrates model.
@@ -299,7 +297,7 @@ class ModelPlot(object):
             coordinate_arrows=coordinate_arrows,
             font_size=font_size,
             colorbar_label=colorbar_label,
-            colorbar_label_font_size=colorbar_label_font_size,
+            kwargs_colorbar=kwargs_colorbar,
             kwargs_title=kwargs_title,
             kwargs_scale_bar=kwargs_scale_bar,
             kwargs_coordinate_arrows=kwargs_coordinate_arrows,
@@ -315,11 +313,10 @@ class ModelPlot(object):
         font_size=15,
         colorbar_label=r"$\log_{10}\ \kappa$",
         coordinate_arrows=True,
-        colorbar_label_font_size=None,
-        colorbar_tick_fontsize=None,
-        kwargs_title=None,
-        kwargs_scale_bar=None,
-        kwargs_coordinate_arrows=None,
+        kwargs_colorbar={},
+        kwargs_title={},
+        kwargs_scale_bar={},
+        kwargs_coordinate_arrows={},
         **kwargs_matshow
     ):
         """Illustrates lensing convergence in data frame.
@@ -350,7 +347,7 @@ class ModelPlot(object):
             font_size=font_size,
             colorbar_label=colorbar_label,
             coordinate_arrows=coordinate_arrows,
-            colorbar_label_font_size=colorbar_label_font_size,
+            kwargs_colorbar=kwargs_colorbar,
             kwargs_title=kwargs_title,
             kwargs_scale_bar=kwargs_scale_bar,
             kwargs_coordinate_arrows=kwargs_coordinate_arrows,
@@ -374,11 +371,10 @@ class ModelPlot(object):
         super_sample_factor=None,
         add_color_bar=True,
         coordinate_arrows=True,
-        colorbar_label_font_size=None,
-        colorbar_tick_fontsize=None,
-        kwargs_title=None,
-        kwargs_scale_bar=None,
-        kwargs_coordinate_arrows=None,
+        kwargs_colorbar={},
+        kwargs_title={},
+        kwargs_scale_bar={},
+        kwargs_coordinate_arrows={},
         **kwargs_matshow
     ):
         """Illustrates substructure in the lens system.
@@ -427,7 +423,7 @@ class ModelPlot(object):
             super_sample_factor=super_sample_factor,
             add_color_bar=add_color_bar,
             coordinate_arrows=coordinate_arrows,
-            colorbar_label_font_size=colorbar_label_font_size,
+            kwargs_colorbar=kwargs_colorbar,
             kwargs_title=kwargs_title,
             kwargs_scale_bar=kwargs_scale_bar,
             kwargs_coordinate_arrows=kwargs_coordinate_arrows,
@@ -444,11 +440,10 @@ class ModelPlot(object):
         colorbar_label=r"(f$_{\rm data}$ - f$_{\rm model}$)/$\sigma$",
         coordinate_arrows=True,
         color_bar=True,
-        colorbar_label_font_size=None,
-        colorbar_tick_fontsize=None,
-        kwargs_title=None,
-        kwargs_scale_bar=None,
-        kwargs_coordinate_arrows=None,
+        kwargs_colorbar={},
+        kwargs_title={},
+        kwargs_scale_bar={},
+        kwargs_coordinate_arrows={},
         **kwargs_matshow
     ):
         """Illustrates normalized residuals between data and model fit.
@@ -481,7 +476,7 @@ class ModelPlot(object):
             colorbar_label=colorbar_label,
             coordinate_arrows=coordinate_arrows,
             color_bar=color_bar,
-            colorbar_label_font_size=colorbar_label_font_size,
+            kwargs_colorbar=kwargs_colorbar,
             kwargs_title=kwargs_title,
             kwargs_scale_bar=kwargs_scale_bar,
             kwargs_coordinate_arrows=kwargs_coordinate_arrows,
@@ -497,11 +492,10 @@ class ModelPlot(object):
         font_size=15,
         colorbar_label=r"(f$_{\rm data}$-f$_{\rm model}$)",
         coordinate_arrows=True,
-        colorbar_label_font_size=None,
-        colorbar_tick_fontsize=None,
-        kwargs_title=None,
-        kwargs_scale_bar=None,
-        kwargs_coordinate_arrows=None,
+        kwargs_colorbar={},
+        kwargs_title={},
+        kwargs_scale_bar={},
+        kwargs_coordinate_arrows={},
         **kwargs_matshow
     ):
         """Illustrates absolute residuals between data and model fit.
@@ -532,7 +526,7 @@ class ModelPlot(object):
             font_size=font_size,
             colorbar_label=colorbar_label,
             coordinate_arrows=coordinate_arrows,
-            colorbar_label_font_size=colorbar_label_font_size,
+            kwargs_colorbar=kwargs_colorbar,
             kwargs_title=kwargs_title,
             kwargs_scale_bar=kwargs_scale_bar,
             kwargs_coordinate_arrows=kwargs_coordinate_arrows,
@@ -556,11 +550,10 @@ class ModelPlot(object):
         point_source_position=True,
         kwargs_caustic=None,
         coordinate_arrows=True,
-        colorbar_label_font_size=None,
-        colorbar_tick_fontsize=None,
-        kwargs_title=None,
-        kwargs_scale_bar=None,
-        kwargs_coordinate_arrows=None,
+        kwargs_colorbar={},
+        kwargs_title={},
+        kwargs_scale_bar={},
+        kwargs_coordinate_arrows={},
         **kwargs_matshow
     ):
         """Illustrates reconstructed source (de-lensed de-convolved)
@@ -609,7 +602,7 @@ class ModelPlot(object):
             point_source_position=point_source_position,
             kwargs_caustic=kwargs_caustic,
             coordinate_arrows=coordinate_arrows,
-            colorbar_label_font_size=colorbar_label_font_size,
+            kwargs_colorbar=kwargs_colorbar,
             kwargs_title=kwargs_title,
             kwargs_scale_bar=kwargs_scale_bar,
             kwargs_coordinate_arrows=kwargs_coordinate_arrows,
@@ -628,11 +621,10 @@ class ModelPlot(object):
         font_size=15,
         point_source_position=True,
         coordinate_arrows=True,
-        colorbar_label_font_size=None,
-        colorbar_tick_fontsize=None,
-        kwargs_title=None,
-        kwargs_scale_bar=None,
-        kwargs_coordinate_arrows=None,
+        kwargs_colorbar={},
+        kwargs_title={},
+        kwargs_scale_bar={},
+        kwargs_coordinate_arrows={},
         **kwargs_matshow
     ):
         """Illustrates surface brightness variance in the reconstruction in the source
@@ -672,7 +664,7 @@ class ModelPlot(object):
             font_size=font_size,
             point_source_position=point_source_position,
             coordinate_arrows=coordinate_arrows,
-            colorbar_label_font_size=colorbar_label_font_size,
+            kwargs_colorbar=kwargs_colorbar,
             kwargs_title=kwargs_title,
             kwargs_scale_bar=kwargs_scale_bar,
             kwargs_coordinate_arrows=kwargs_coordinate_arrows,
@@ -689,11 +681,10 @@ class ModelPlot(object):
         font_size=15,
         coordinate_arrows=True,
         colorbar_label=r"$\det\ (\mathsf{A}^{-1})$",
-        colorbar_label_font_size=None,
-        colorbar_tick_fontsize=None,
-        kwargs_title=None,
-        kwargs_scale_bar=None,
-        kwargs_coordinate_arrows=None,
+        kwargs_colorbar={},
+        kwargs_title={},
+        kwargs_scale_bar={},
+        kwargs_coordinate_arrows={},
         **kwargs_matshow
     ):
         """Illustrates lensing magnification in the field of view of the data frame.
@@ -727,7 +718,7 @@ class ModelPlot(object):
             font_size=font_size,
             coordinate_arrows=coordinate_arrows,
             colorbar_label=colorbar_label,
-            colorbar_label_font_size=colorbar_label_font_size,
+            kwargs_colorbar=kwargs_colorbar,
             kwargs_title=kwargs_title,
             kwargs_scale_bar=kwargs_scale_bar,
             kwargs_coordinate_arrows=kwargs_coordinate_arrows,
@@ -746,11 +737,10 @@ class ModelPlot(object):
         font_size=15,
         colorbar_label=r"arcsec",
         coordinate_arrows=True,
-        colorbar_label_font_size=None,
-        colorbar_tick_fontsize=None,
-        kwargs_title=None,
-        kwargs_scale_bar=None,
-        kwargs_coordinate_arrows=None,
+        kwargs_colorbar={},
+        kwargs_title={},
+        kwargs_scale_bar={},
+        kwargs_coordinate_arrows={},
         **kwargs_matshow
     ):
         """Illustrates lensing deflections on the field of view of the data frame.
@@ -787,7 +777,7 @@ class ModelPlot(object):
             font_size=font_size,
             colorbar_label=colorbar_label,
             coordinate_arrows=coordinate_arrows,
-            colorbar_label_font_size=colorbar_label_font_size,
+            kwargs_colorbar=kwargs_colorbar,
             kwargs_title=kwargs_title,
             kwargs_scale_bar=kwargs_scale_bar,
             kwargs_coordinate_arrows=kwargs_coordinate_arrows,
@@ -806,11 +796,10 @@ class ModelPlot(object):
         source_add=False,
         lens_light_add=False,
         coordinate_arrows=True,
-        colorbar_label_font_size=None,
-        colorbar_tick_fontsize=None,
-        kwargs_title=None,
-        kwargs_scale_bar=None,
-        kwargs_coordinate_arrows=None,
+        kwargs_colorbar={},
+        kwargs_title={},
+        kwargs_scale_bar={},
+        kwargs_coordinate_arrows={},
         **kwargs_matshow
     ):
         """Illustrates decomposition of model components.
@@ -850,7 +839,7 @@ class ModelPlot(object):
             source_add=source_add,
             lens_light_add=lens_light_add,
             coordinate_arrows=coordinate_arrows,
-            colorbar_label_font_size=colorbar_label_font_size,
+            kwargs_colorbar=kwargs_colorbar,
             kwargs_title=kwargs_title,
             kwargs_scale_bar=kwargs_scale_bar,
             kwargs_coordinate_arrows=kwargs_coordinate_arrows,
@@ -868,11 +857,10 @@ class ModelPlot(object):
         lens_light_add=False,
         font_size=15,
         coordinate_arrows=True,
-        colorbar_label_font_size=None,
-        colorbar_tick_fontsize=None,
-        kwargs_title=None,
-        kwargs_scale_bar=None,
-        kwargs_coordinate_arrows=None,
+        kwargs_colorbar={},
+        kwargs_title={},
+        kwargs_scale_bar={},
+        kwargs_coordinate_arrows={},
         **kwargs_matshow
     ):
         """Subtracts individual model components from the data.
@@ -910,7 +898,7 @@ class ModelPlot(object):
             lens_light_add=lens_light_add,
             font_size=font_size,
             coordinate_arrows=coordinate_arrows,
-            colorbar_label_font_size=colorbar_label_font_size,
+            kwargs_colorbar=kwargs_colorbar,
             kwargs_title=kwargs_title,
             kwargs_scale_bar=kwargs_scale_bar,
             kwargs_coordinate_arrows=kwargs_coordinate_arrows,

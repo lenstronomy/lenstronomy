@@ -142,11 +142,10 @@ class ModelBandPlot(ModelBand):
         coordinate_arrows=True,
         font_size=15,
         colorbar_label=r"log$_{10}$ flux",
-        colorbar_label_font_size=None,
-        colorbar_tick_fontsize=None,
-        kwargs_title=None,
-        kwargs_scale_bar=None,
-        kwargs_coordinate_arrows=None,
+        kwargs_colorbar={},
+        kwargs_title={},
+        kwargs_scale_bar={},
+        kwargs_coordinate_arrows={},
         **kwargs_matshow,
     ):
         """Plot observed imaging data.
@@ -217,15 +216,14 @@ class ModelBandPlot(ModelBand):
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax, orientation="vertical")
-        cb.set_label(
-            colorbar_label,
-            fontsize=(
-                font_size
-                if colorbar_label_font_size is None
-                else colorbar_label_font_size
-            ),
+        if kwargs_colorbar is None:
+            kwargs_colorbar = {}
+        kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+        plot_util.show_colorbar(
+            cb,
+            font_size=font_size,
+            **kwargs_colorbar,
         )
-        cb.ax.tick_params(labelsize=font_size if colorbar_tick_fontsize is None else colorbar_tick_fontsize)
         return ax
 
     def model_plot(
@@ -239,11 +237,10 @@ class ModelBandPlot(ModelBand):
         coordinate_arrows=True,
         font_size=15,
         colorbar_label=r"log$_{10}$ flux",
-        colorbar_label_font_size=None,
-        colorbar_tick_fontsize=None,
-        kwargs_title=None,
-        kwargs_scale_bar=None,
-        kwargs_coordinate_arrows=None,
+        kwargs_colorbar={},
+        kwargs_title={},
+        kwargs_scale_bar={},
+        kwargs_coordinate_arrows={},
         **kwargs_matshow,
     ):
         """Plot reconstructed imaging model.
@@ -314,15 +311,14 @@ class ModelBandPlot(ModelBand):
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(
-            colorbar_label,
-            fontsize=(
-                font_size
-                if colorbar_label_font_size is None
-                else colorbar_label_font_size
-            ),
+        if kwargs_colorbar is None:
+            kwargs_colorbar = {}
+        kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+        plot_util.show_colorbar(
+            cb,
+            font_size=font_size,
+            **kwargs_colorbar,
         )
-        cb.ax.tick_params(labelsize=font_size if colorbar_tick_fontsize is None else colorbar_tick_fontsize)
 
         # plot_line_set(ax, self._coords, self._ra_caustic_list, self._dec_caustic_list, color='b')
         # plot_line_set(ax, self._coords, self._ra_crit_list, self._dec_crit_list, color='r')
@@ -350,11 +346,10 @@ class ModelBandPlot(ModelBand):
         font_size=15,
         colorbar_label=r"$\log_{10}\ \kappa$",
         coordinate_arrows=True,
-        colorbar_label_font_size=None,
-        colorbar_tick_fontsize=None,
-        kwargs_title=None,
-        kwargs_scale_bar=None,
-        kwargs_coordinate_arrows=None,
+        kwargs_colorbar={},
+        kwargs_title={},
+        kwargs_scale_bar={},
+        kwargs_coordinate_arrows={},
         **kwargs_matshow,
     ):
         """Plot lensing convergence in the data frame.
@@ -422,15 +417,14 @@ class ModelBandPlot(ModelBand):
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(
-            colorbar_label,
-            fontsize=(
-                font_size
-                if colorbar_label_font_size is None
-                else colorbar_label_font_size
-            ),
+        if kwargs_colorbar is None:
+            kwargs_colorbar = {}
+        kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+        plot_util.show_colorbar(
+            cb,
+            font_size=font_size,
+            **kwargs_colorbar,
         )
-        cb.ax.tick_params(labelsize=font_size if colorbar_tick_fontsize is None else colorbar_tick_fontsize)
         return ax
 
     def substructure_plot(
@@ -449,11 +443,10 @@ class ModelBandPlot(ModelBand):
         super_sample_factor=None,
         add_color_bar=True,
         coordinate_arrows=True,
-        colorbar_label_font_size=None,
-        colorbar_tick_fontsize=None,
-        kwargs_title=None,
-        kwargs_scale_bar=None,
-        kwargs_coordinate_arrows=None,
+        kwargs_colorbar={},
+        kwargs_title={},
+        kwargs_scale_bar={},
+        kwargs_coordinate_arrows={},
         **kwargs_matshow,
     ):
         """Plots the convergence of a full lens model minus the convergence from a few
@@ -607,15 +600,14 @@ class ModelBandPlot(ModelBand):
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.05)
             cb = plt.colorbar(im, cax=cax)
-            cb.set_label(
-                colorbar_label,
-                fontsize=(
-                    font_size
-                    if colorbar_label_font_size is None
-                    else colorbar_label_font_size
-                ),
+            if kwargs_colorbar is None:
+                kwargs_colorbar = {}
+            kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+            plot_util.show_colorbar(
+                cb,
+                font_size=font_size,
+                **kwargs_colorbar,
             )
-            cb.ax.tick_params(labelsize=font_size if colorbar_tick_fontsize is None else colorbar_tick_fontsize)
         else:
             cb = None
         return ax, cb
@@ -629,11 +621,10 @@ class ModelBandPlot(ModelBand):
         colorbar_label=r"(f$_{\rm data}$ - f$_{\rm model}$)/$\sigma$",
         coordinate_arrows=True,
         color_bar=True,
-        colorbar_label_font_size=None,
-        colorbar_tick_fontsize=None,
-        kwargs_title=None,
-        kwargs_scale_bar=None,
-        kwargs_coordinate_arrows=None,
+        kwargs_colorbar={},
+        kwargs_title={},
+        kwargs_scale_bar={},
+        kwargs_coordinate_arrows={},
         **kwargs_matshow,
     ):
         """Plot normalized residuals between data and model.
@@ -704,15 +695,14 @@ class ModelBandPlot(ModelBand):
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.05)
             cb = plt.colorbar(im, cax=cax)
-            cb.set_label(
-                colorbar_label,
-                fontsize=(
-                    font_size
-                    if colorbar_label_font_size is None
-                    else colorbar_label_font_size
-                ),
+            if kwargs_colorbar is None:
+                kwargs_colorbar = {}
+            kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+            plot_util.show_colorbar(
+                cb,
+                font_size=font_size,
+                **kwargs_colorbar,
             )
-            cb.ax.tick_params(labelsize=font_size if colorbar_tick_fontsize is None else colorbar_tick_fontsize)
         return ax
 
     def absolute_residual_plot(
@@ -723,11 +713,10 @@ class ModelBandPlot(ModelBand):
         font_size=15,
         colorbar_label=r"(f$_{\rm data}$-f$_{\rm model}$)",
         coordinate_arrows=True,
-        colorbar_label_font_size=None,
-        colorbar_tick_fontsize=None,
-        kwargs_title=None,
-        kwargs_scale_bar=None,
-        kwargs_coordinate_arrows=None,
+        kwargs_colorbar={},
+        kwargs_title={},
+        kwargs_scale_bar={},
+        kwargs_coordinate_arrows={},
         **kwargs_matshow,
     ):
         """Plot absolute residuals between data and model.
@@ -796,15 +785,14 @@ class ModelBandPlot(ModelBand):
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(
-            colorbar_label,
-            fontsize=(
-                font_size
-                if colorbar_label_font_size is None
-                else colorbar_label_font_size
-            ),
+        if kwargs_colorbar is None:
+            kwargs_colorbar = {}
+        kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+        plot_util.show_colorbar(
+            cb,
+            font_size=font_size,
+            **kwargs_colorbar,
         )
-        cb.ax.tick_params(labelsize=font_size if colorbar_tick_fontsize is None else colorbar_tick_fontsize)
         return ax
 
     def source(self, numPix, deltaPix, center=None, image_orientation=True):
@@ -873,11 +861,10 @@ class ModelBandPlot(ModelBand):
         point_source_position=True,
         kwargs_caustic=None,
         coordinate_arrows=True,
-        colorbar_label_font_size=None,
-        colorbar_tick_fontsize=None,
-        kwargs_title=None,
-        kwargs_scale_bar=None,
-        kwargs_coordinate_arrows=None,
+        kwargs_colorbar={},
+        kwargs_title={},
+        kwargs_scale_bar={},
+        kwargs_coordinate_arrows={},
         **kwargs_matshow,
     ):
         """Plot reconstructed source brightness.
@@ -948,15 +935,14 @@ class ModelBandPlot(ModelBand):
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(
-            colorbar_label,
-            fontsize=(
-                font_size
-                if colorbar_label_font_size is None
-                else colorbar_label_font_size
-            ),
+        if kwargs_colorbar is None:
+            kwargs_colorbar = {}
+        kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+        plot_util.show_colorbar(
+            cb,
+            font_size=font_size,
+            **kwargs_colorbar,
         )
-        cb.ax.tick_params(labelsize=font_size if colorbar_tick_fontsize is None else colorbar_tick_fontsize)
 
         if with_caustics is True:
             ra_caustic_list, dec_caustic_list = self._caustics()
@@ -999,8 +985,12 @@ class ModelBandPlot(ModelBand):
         kwargs_coordinate_arrows.setdefault(
             "arrow_north_offset_y", self._arrow_north_offset_y
         )
-        kwargs_coordinate_arrows.setdefault("arrow_east_offset_x", self._arrow_east_offset_x)
-        kwargs_coordinate_arrows.setdefault("arrow_east_offset_y", self._arrow_east_offset_y)
+        kwargs_coordinate_arrows.setdefault(
+            "arrow_east_offset_x", self._arrow_east_offset_x
+        )
+        kwargs_coordinate_arrows.setdefault(
+            "arrow_east_offset_y", self._arrow_east_offset_y
+        )
         kwargs_coordinate_arrows.setdefault("arrow_color_north", "w")
         kwargs_coordinate_arrows.setdefault("arrow_color_east", "w")
 
@@ -1030,13 +1020,13 @@ class ModelBandPlot(ModelBand):
         v_max=None,
         with_caustics=False,
         font_size=15,
+        colorbar_label=r"log$_{10}$ flux",
         point_source_position=True,
         coordinate_arrows=True,
-        colorbar_label_font_size=None,
-        colorbar_tick_fontsize=None,
-        kwargs_title=None,
-        kwargs_scale_bar=None,
-        kwargs_coordinate_arrows=None,
+        kwargs_colorbar={},
+        kwargs_title={},
+        kwargs_scale_bar={},
+        kwargs_coordinate_arrows={},
         **kwargs_matshow,
     ):
         """Plots the uncertainty in the surface brightness in the source from the linear
@@ -1112,15 +1102,14 @@ class ModelBandPlot(ModelBand):
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(
-            r"error variance",
-            fontsize=(
-                font_size
-                if colorbar_label_font_size is None
-                else colorbar_label_font_size
-            ),
+        if kwargs_colorbar is None:
+            kwargs_colorbar = {}
+        kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+        plot_util.show_colorbar(
+            cb,
+            font_size=font_size,
+            **kwargs_colorbar,
         )
-        cb.ax.tick_params(labelsize=font_size if colorbar_tick_fontsize is None else colorbar_tick_fontsize)
         if with_caustics:
             ra_caustic_list, dec_caustic_list = self._caustics()
             plot_util.plot_line_set(
@@ -1174,11 +1163,10 @@ class ModelBandPlot(ModelBand):
         font_size=15,
         coordinate_arrows=True,
         colorbar_label=r"$\det\ (\mathsf{A}^{-1})$",
-        colorbar_label_font_size=None,
-        colorbar_tick_fontsize=None,
-        kwargs_title=None,
-        kwargs_scale_bar=None,
-        kwargs_coordinate_arrows=None,
+        kwargs_colorbar={},
+        kwargs_title={},
+        kwargs_scale_bar={},
+        kwargs_coordinate_arrows={},
         **kwargs_matshow,
     ):
         """Plot magnification map in the data frame.
@@ -1256,15 +1244,14 @@ class ModelBandPlot(ModelBand):
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(
-            colorbar_label,
-            fontsize=(
-                font_size
-                if colorbar_label_font_size is None
-                else colorbar_label_font_size
-            ),
+        if kwargs_colorbar is None:
+            kwargs_colorbar = {}
+        kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+        plot_util.show_colorbar(
+            cb,
+            font_size=font_size,
+            **kwargs_colorbar,
         )
-        cb.ax.tick_params(labelsize=font_size if colorbar_tick_fontsize is None else colorbar_tick_fontsize)
         ra_image, dec_image = self._bandmodel.PointSource.image_position(
             self._kwargs_ps_partial, self._kwargs_lens_partial
         )
@@ -1290,11 +1277,10 @@ class ModelBandPlot(ModelBand):
         font_size=15,
         colorbar_label=r"arcsec",
         coordinate_arrows=True,
-        colorbar_label_font_size=None,
-        colorbar_tick_fontsize=None,
-        kwargs_title=None,
-        kwargs_scale_bar=None,
-        kwargs_coordinate_arrows=None,
+        kwargs_colorbar={},
+        kwargs_title={},
+        kwargs_scale_bar={},
+        kwargs_coordinate_arrows={},
         **kwargs_matshow,
     ):
         """Plot deflection-angle map in the data frame.
@@ -1377,15 +1363,14 @@ class ModelBandPlot(ModelBand):
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(
-            colorbar_label,
-            fontsize=(
-                font_size
-                if colorbar_label_font_size is None
-                else colorbar_label_font_size
-            ),
+        if kwargs_colorbar is None:
+            kwargs_colorbar = {}
+        kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+        plot_util.show_colorbar(
+            cb,
+            font_size=font_size,
+            **kwargs_colorbar,
         )
-        cb.ax.tick_params(labelsize=font_size if colorbar_tick_fontsize is None else colorbar_tick_fontsize)
         if with_caustics is True:
             ra_crit_list, dec_crit_list = self._critical_curves()
             ra_caustic_list, dec_caustic_list = self._caustics()
@@ -1426,14 +1411,14 @@ class ModelBandPlot(ModelBand):
         unconvolved=False,
         point_source_add=False,
         font_size=15,
+        colorbar_label=r"log$_{10}$ flux",
         source_add=False,
         lens_light_add=False,
         coordinate_arrows=True,
-        colorbar_label_font_size=None,
-        colorbar_tick_fontsize=None,
-        kwargs_title=None,
-        kwargs_scale_bar=None,
-        kwargs_coordinate_arrows=None,
+        kwargs_colorbar={},
+        kwargs_title={},
+        kwargs_scale_bar={},
+        kwargs_coordinate_arrows={},
         **kwargs_matshow,
     ):
         """Make a plot displaying all or a subset of light components.
@@ -1449,6 +1434,7 @@ class ModelBandPlot(ModelBand):
         :param lens_light_add: bool, if True, includes the lens light in the plot
         :param coordinate_arrows: bool, if True, shows the North/East directional arrows
             from the plot
+        :param colorbar_label: string, label for the colorbar
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
@@ -1519,15 +1505,14 @@ class ModelBandPlot(ModelBand):
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(
-            r"log$_{10}$ flux",
-            fontsize=(
-                font_size
-                if colorbar_label_font_size is None
-                else colorbar_label_font_size
-            ),
+        if kwargs_colorbar is None:
+            kwargs_colorbar = {}
+        kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+        plot_util.show_colorbar(
+            cb,
+            font_size=font_size,
+            **kwargs_colorbar,
         )
-        cb.ax.tick_params(labelsize=font_size if colorbar_tick_fontsize is None else colorbar_tick_fontsize)
         return ax
 
     def subtract_from_data_plot(
@@ -1540,11 +1525,11 @@ class ModelBandPlot(ModelBand):
         lens_light_add=False,
         coordinate_arrows=True,
         font_size=15,
-        colorbar_label_font_size=None,
-        colorbar_tick_fontsize=None,
-        kwargs_title=None,
-        kwargs_scale_bar=None,
-        kwargs_coordinate_arrows=None,
+        colorbar_label=r"log$_{10}$ flux",
+        kwargs_colorbar={},
+        kwargs_title={},
+        kwargs_scale_bar={},
+        kwargs_coordinate_arrows={},
         **kwargs_matshow,
     ):
         """Plot data after subtracting selected model components."""
@@ -1606,15 +1591,14 @@ class ModelBandPlot(ModelBand):
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(
-            r"log$_{10}$ flux",
-            fontsize=(
-                font_size
-                if colorbar_label_font_size is None
-                else colorbar_label_font_size
-            ),
+        if kwargs_colorbar is None:
+            kwargs_colorbar = {}
+        kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+        plot_util.show_colorbar(
+            cb,
+            font_size=font_size,
+            **kwargs_colorbar,
         )
-        cb.ax.tick_params(labelsize=font_size if colorbar_tick_fontsize is None else colorbar_tick_fontsize)
         return ax
 
     def plot_main(self, with_caustics=False):

@@ -152,7 +152,7 @@ def convergence_plot(
     with_color_bar=False,
     colorbar_label=r"$\log_{10}(\kappa)$",
     font_size=20,
-    colorbar_tick_fontsize=None,
+    kwargs_colorbar={},
     **kwargs,
 ):
     """Plot convergence.
@@ -170,7 +170,8 @@ def convergence_plot(
     :param with_color_bar: bool, if True, shows color bar
     :param colorbar_label: string, label of color bar
     :param font_size: int, font size of color bar label
-    :param colorbar_tick_fontsize: int, font size of color bar tick labels; defaults to font_size when None
+    :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
+    :type kwargs_colorbar: Unpack[plot_util.ColorBarKwargs]
     :return: matplotlib axis instance with convergence plot
     """
     x_grid, y_grid = pixel_grid.pixel_coordinates
@@ -191,11 +192,13 @@ def convergence_plot(
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(colorbar_label, fontsize=font_size)
-        cb.ax.tick_params(
-            labelsize=(
-                font_size if colorbar_tick_fontsize is None else colorbar_tick_fontsize
-            )
+        if kwargs_colorbar is None:
+            kwargs_colorbar = {}
+        kwargs_colorbar.setdefault("colorbar_label", colorbar_label)
+        plot_util.show_colorbar(
+            cb,
+            font_size=font_size,
+            **kwargs_colorbar,
         )
 
     return ax

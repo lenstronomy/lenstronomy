@@ -205,7 +205,7 @@ class TracerPlot(object):
             vmin=v_min,
             vmax=v_max,
             **kwargs_matshow,
-        )  # , vmin=0, vmax=2
+        )
 
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)

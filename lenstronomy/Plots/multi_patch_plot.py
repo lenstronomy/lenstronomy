@@ -424,7 +424,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
             cmap=cmap,
             vmin=v_min,
             vmax=v_max,
-        )  # , vmin=0, vmax=2
+        )
 
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)

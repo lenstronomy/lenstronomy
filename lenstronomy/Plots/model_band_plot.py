@@ -185,7 +185,7 @@ class ModelBandPlot(ModelBand):
         ax.autoscale(False)
 
         kwargs_title.setdefault("text", "Observed")
-        kwargs_scale_bar.setdefault("dist", 1.0)
+        kwargs_scale_bar.setdefault("scale_size", 1.0)
 
         plot_util.show_scale_bar(
             ax,
@@ -274,7 +274,7 @@ class ModelBandPlot(ModelBand):
         ax.autoscale(False)
 
         kwargs_title.setdefault("text", "Reconstructed")
-        kwargs_scale_bar.setdefault("dist", 1.0)
+        kwargs_scale_bar.setdefault("scale_size", 1.0)
 
         plot_util.show_scale_bar(
             ax,
@@ -372,7 +372,7 @@ class ModelBandPlot(ModelBand):
         ax.autoscale(False)
 
         kwargs_title.setdefault("text", "Convergence")
-        kwargs_scale_bar.setdefault("dist", 1.0)
+        kwargs_scale_bar.setdefault("scale_size", 1.0)
 
         plot_util.show_scale_bar(
             ax,
@@ -523,7 +523,7 @@ class ModelBandPlot(ModelBand):
         kwargs_title.setdefault("text", "Substructure convergence")
         kwargs_title.setdefault("color", "k")
         kwargs_title.setdefault("backgroundcolor", "w")
-        kwargs_scale_bar.setdefault("dist", 1.0)
+        kwargs_scale_bar.setdefault("scale_size", 1.0)
         kwargs_scale_bar.setdefault("color", "k")
         kwargs_coordinate_arrows.setdefault("arrow_color_north", "k")
         kwargs_coordinate_arrows.setdefault("arrow_color_east", "k")
@@ -635,7 +635,7 @@ class ModelBandPlot(ModelBand):
         kwargs_title.setdefault("text", "Normalized Residuals")
         kwargs_title.setdefault("color", "k")
         kwargs_title.setdefault("backgroundcolor", "w")
-        kwargs_scale_bar.setdefault("dist", 1.0)
+        kwargs_scale_bar.setdefault("scale_size", 1.0)
         kwargs_scale_bar.setdefault("color", "k")
         kwargs_coordinate_arrows.setdefault("arrow_color_north", "k")
         kwargs_coordinate_arrows.setdefault("arrow_color_east", "k")
@@ -720,7 +720,7 @@ class ModelBandPlot(ModelBand):
         kwargs_title.setdefault("text", "Residuals")
         kwargs_title.setdefault("color", "k")
         kwargs_title.setdefault("backgroundcolor", "w")
-        kwargs_scale_bar.setdefault("dist", 1.0)
+        kwargs_scale_bar.setdefault("scale_size", 1.0)
         kwargs_scale_bar.setdefault("color", "k")
         kwargs_coordinate_arrows.setdefault("arrow_color_north", "k")
         kwargs_coordinate_arrows.setdefault("arrow_color_east", "k")
@@ -926,7 +926,7 @@ class ModelBandPlot(ModelBand):
         kwargs_title.setdefault("text", "Reconstructed source")
         kwargs_title.setdefault("flipped", False)
         kwargs_title.setdefault("font_size", font_size)
-        kwargs_scale_bar.setdefault("dist", 0.1)
+        kwargs_scale_bar.setdefault("scale_size", 0.1)
         kwargs_coordinate_arrows.setdefault("font_size", font_size)
         kwargs_coordinate_arrows.setdefault("arrow_length", self._arrow_length)
         kwargs_coordinate_arrows.setdefault("arrowhead_size", self._arrowhead_size)
@@ -947,7 +947,7 @@ class ModelBandPlot(ModelBand):
         kwargs_coordinate_arrows.setdefault("arrow_color_north", "w")
         kwargs_coordinate_arrows.setdefault("arrow_color_east", "w")
 
-        if kwargs_scale_bar.get("dist", 1.0) > 0:
+        if kwargs_scale_bar.get("scale_size", 1.0) > 0:
             plot_util.show_scale_bar(ax, d_s, **kwargs_scale_bar)
         if coordinate_arrows:
             plot_util.show_coordinate_arrows(
@@ -1073,7 +1073,7 @@ class ModelBandPlot(ModelBand):
             )
 
         kwargs_title.setdefault("text", "Error map in source")
-        kwargs_scale_bar.setdefault("dist", 0.1)
+        kwargs_scale_bar.setdefault("scale_size", 0.1)
 
         plot_util.show_scale_bar(
             ax,
@@ -1156,7 +1156,7 @@ class ModelBandPlot(ModelBand):
         kwargs_title.setdefault("text", "Magnification model")
         kwargs_title.setdefault("color", "k")
         kwargs_title.setdefault("backgroundcolor", "w")
-        kwargs_scale_bar.setdefault("dist", 1.0)
+        kwargs_scale_bar.setdefault("scale_size", 1.0)
         kwargs_scale_bar.setdefault("color", "k")
         kwargs_coordinate_arrows.setdefault("arrow_color_north", "k")
         kwargs_coordinate_arrows.setdefault("arrow_color_east", "k")
@@ -1267,7 +1267,7 @@ class ModelBandPlot(ModelBand):
         kwargs_title.setdefault("text", "Deflection model")
         kwargs_title.setdefault("color", "k")
         kwargs_title.setdefault("backgroundcolor", "w")
-        kwargs_scale_bar.setdefault("dist", 1.0)
+        kwargs_scale_bar.setdefault("scale_size", 1.0)
         kwargs_scale_bar.setdefault("color", "k")
         kwargs_coordinate_arrows.setdefault("arrow_color_north", "k")
         kwargs_coordinate_arrows.setdefault("arrow_color_east", "k")
@@ -1404,7 +1404,7 @@ class ModelBandPlot(ModelBand):
         ax.autoscale(False)
 
         kwargs_title.setdefault("text", "Reconstructed")
-        kwargs_scale_bar.setdefault("dist", 1.0)
+        kwargs_scale_bar.setdefault("scale_size", 1.0)
 
         plot_util.show_scale_bar(
             ax,
@@ -1482,7 +1482,7 @@ class ModelBandPlot(ModelBand):
         ax.autoscale(False)
 
         kwargs_title.setdefault("text", "Subtracted")
-        kwargs_scale_bar.setdefault("dist", 1.0)
+        kwargs_scale_bar.setdefault("scale_size", 1.0)
 
         plot_util.show_scale_bar(
             ax,

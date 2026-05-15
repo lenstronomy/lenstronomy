@@ -435,7 +435,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
             kwargs_title.setdefault("color", text_k)
             kwargs_title.setdefault("backgroundcolor", bkg_k)
             kwargs_title.setdefault("font_size", 15)
-            kwargs_scale_bar.setdefault("scale_length", 1.0)
+            kwargs_scale_bar.setdefault("scale_size", 1.0)
             kwargs_scale_bar.setdefault("color", text_k)
             kwargs_scale_bar.setdefault("font_size", 15)
             kwargs_scale_bar.setdefault("linewidth", 2)

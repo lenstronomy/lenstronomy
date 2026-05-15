@@ -49,7 +49,7 @@ class CoordArrowKwargs(TypedDict, total=False):
 class ScaleBarKwargs(TypedDict, total=False):
     """Keyword arguments for scale bar."""
 
-    scale_length: float
+    scale_size: float
     """Length of the scale bar in arcseconds."""
     text: str
     """String printed on the scale bar."""
@@ -173,7 +173,7 @@ def show_scale_bar(ax, d, **kwargs_scale_bar: "Unpack[ScaleBarKwargs]"):
     :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
     :return: None, updated ax instance
     """
-    scale_length = kwargs_scale_bar.get("scale_length", 1.0)
+    scale_size = kwargs_scale_bar.get("scale_size", 1.0)
     text = kwargs_scale_bar.get("text", None)
     color = kwargs_scale_bar.get("color", "w")
     font_size = kwargs_scale_bar.get("font_size", 15)
@@ -181,17 +181,17 @@ def show_scale_bar(ax, d, **kwargs_scale_bar: "Unpack[ScaleBarKwargs]"):
     linewidth = kwargs_scale_bar.get("linewidth", 2)
 
     if text is None:
-        if scale_length >= 1:
-            text = f'{int(scale_length)}"'
+        if scale_size >= 1:
+            text = f'{int(scale_size)}"'
         else:
-            text = f'{scale_length:.1g}"'
+            text = f'{scale_size:.1g}"'
 
     if flipped:
-        p0 = d - d / 15.0 - scale_length
+        p0 = d - d / 15.0 - scale_size
         p1 = d / 15.0
-        ax.plot([p0, p0 + scale_length], [p1, p1], linewidth=linewidth, color=color)
+        ax.plot([p0, p0 + scale_size], [p1, p1], linewidth=linewidth, color=color)
         ax.text(
-            p0 + scale_length / 2.0,
+            p0 + scale_size / 2.0,
             p1 + 0.01 * d,
             text,
             fontsize=font_size,
@@ -200,9 +200,9 @@ def show_scale_bar(ax, d, **kwargs_scale_bar: "Unpack[ScaleBarKwargs]"):
         )
     else:
         p0 = d / 15.0
-        ax.plot([p0, p0 + scale_length], [p0, p0], linewidth=linewidth, color=color)
+        ax.plot([p0, p0 + scale_size], [p0, p0], linewidth=linewidth, color=color)
         ax.text(
-            p0 + scale_length / 2.0,
+            p0 + scale_size / 2.0,
             p0 + 0.01 * d,
             text,
             fontsize=font_size,

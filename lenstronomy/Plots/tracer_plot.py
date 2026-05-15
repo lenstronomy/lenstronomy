@@ -215,7 +215,7 @@ class TracerPlot(object):
         kwargs_title.setdefault("color", "w")
         kwargs_title.setdefault("backgroundcolor", "k")
         kwargs_title.setdefault("font_size", 15)
-        kwargs_scale_bar.setdefault("scale_length", 1.0)
+        kwargs_scale_bar.setdefault("scale_size", 1.0)
         kwargs_scale_bar.setdefault("color", "w")
         kwargs_scale_bar.setdefault("font_size", 15)
         kwargs_scale_bar.setdefault("linewidth", 2)
@@ -311,7 +311,7 @@ class TracerPlot(object):
         ax.autoscale(False)
         kwargs_title.setdefault("text", "Reconstructed")
         kwargs_title.setdefault("color", "w")
-        kwargs_scale_bar.setdefault("scale_length", 1.0)
+        kwargs_scale_bar.setdefault("scale_size", 1.0)
         kwargs_scale_bar.setdefault("color", "w")
         kwargs_scale_bar.setdefault("font_size", 15)
         kwargs_scale_bar.setdefault("linewidth", 2)
@@ -415,7 +415,7 @@ class TracerPlot(object):
         kwargs_title.setdefault("color", "w")
         kwargs_title.setdefault("backgroundcolor", "k")
         kwargs_title.setdefault("font_size", 15)
-        kwargs_scale_bar.setdefault("scale_length", 1.0)
+        kwargs_scale_bar.setdefault("scale_size", 1.0)
         kwargs_scale_bar.setdefault("color", "w")
         kwargs_scale_bar.setdefault("font_size", 15)
         kwargs_scale_bar.setdefault("linewidth", 2)
@@ -502,7 +502,7 @@ class TracerPlot(object):
         kwargs_title.setdefault("color", "k")
         kwargs_title.setdefault("backgroundcolor", "w")
         kwargs_title.setdefault("font_size", 15)
-        kwargs_scale_bar.setdefault("scale_length", 1.0)
+        kwargs_scale_bar.setdefault("scale_size", 1.0)
         kwargs_scale_bar.setdefault("color", "k")
         kwargs_scale_bar.setdefault("font_size", 15)
         kwargs_scale_bar.setdefault("linewidth", 2)
@@ -532,7 +532,9 @@ class TracerPlot(object):
             cb = plt.colorbar(im, cax=cax)
             if kwargs_colorbar is None:
                 kwargs_colorbar = {}
-            kwargs_colorbar.setdefault("colorbar_label", r"(f$_{\rm model}$ - f$_{\rm data}$)/$\sigma$")
+            kwargs_colorbar.setdefault(
+                "colorbar_label", r"(f$_{\rm model}$ - f$_{\rm data}$)/$\sigma$"
+            )
             plot_util.show_colorbar(
                 cb,
                 font_size=font_size,
@@ -588,7 +590,7 @@ class TracerPlot(object):
         kwargs_title.setdefault("color", "k")
         kwargs_title.setdefault("backgroundcolor", "w")
         kwargs_title.setdefault("font_size", 15)
-        kwargs_scale_bar.setdefault("scale_length", 1.0)
+        kwargs_scale_bar.setdefault("scale_size", 1.0)
         kwargs_scale_bar.setdefault("color", "k")
         kwargs_scale_bar.setdefault("font_size", 15)
         kwargs_scale_bar.setdefault("linewidth", 2)

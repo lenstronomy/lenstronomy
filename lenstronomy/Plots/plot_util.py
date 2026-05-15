@@ -66,7 +66,7 @@ class ScaleBarKwargs(TypedDict, total=False):
 class ColorBarKwargs(TypedDict, total=False):
     """Keyword arguments for color bars."""
 
-    colorbar_label: str
+    label: str
     """Label text for the colorbar."""
     label_font_size: int
     """Font size of the colorbar label."""
@@ -221,20 +221,20 @@ def show_colorbar(
 
     :param cb: matplotlib colorbar instance
     :param font_size: default font size used when bundle entries are omitted
-    :param kwargs_colorbar: keyword arguments for the colorbar, including optional ``colorbar_label``
+    :param kwargs_colorbar: keyword arguments for the colorbar, including optional ``label``
     :return: None, updates the colorbar in place
     """
-    colorbar_label = kwargs_colorbar.get("colorbar_label", None)
+    label = kwargs_colorbar.get("label", None)
     label_font_size = kwargs_colorbar.get("label_font_size", font_size)
     tick_fontsize = kwargs_colorbar.get("tick_fontsize", font_size)
-    if colorbar_label is not None:
-        cb.set_label(colorbar_label, fontsize=label_font_size)
+    if label is not None:
+        cb.set_label(label, fontsize=label_font_size)
     cb.ax.tick_params(labelsize=tick_fontsize)
 
 
 @export
 def show_coordinate_arrows(
-    ax, d, coords, **kwargs_coordinate_arrows: "Unpack[CoordArrowKwargs]"
+    ax, d, coords, font_size=15, **kwargs_coordinate_arrows: "Unpack[CoordArrowKwargs]"
 ):
     """Plot East and North coordinate arrows.
 
@@ -244,7 +244,7 @@ def show_coordinate_arrows(
     :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
     :return: updated ax instance
     """
-    font_size = kwargs_coordinate_arrows.get("font_size", 15)
+    font_size = kwargs_coordinate_arrows.get("font_size", font_size)
     arrow_length = kwargs_coordinate_arrows.get("arrow_length", 0.05)
     arrowhead_size = kwargs_coordinate_arrows.get("arrowhead_size", 0.025)
     arrow_origin_x = kwargs_coordinate_arrows.get("arrow_origin_x", None)

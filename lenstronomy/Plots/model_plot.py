@@ -216,7 +216,7 @@ class ModelPlot(object):
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
-        :param colorbar_label: string, label for the colorbar
+        :param label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
@@ -267,7 +267,7 @@ class ModelPlot(object):
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
         :param image_names: boolean, if True, prints image names
-        :param colorbar_label: string, label for the colorbar
+        :param label: string, label for the colorbar
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param original_position: boolean, if True, uses original image positions
@@ -321,7 +321,7 @@ class ModelPlot(object):
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
-        :param colorbar_label: string, label for the colorbar
+        :param label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
@@ -379,7 +379,7 @@ class ModelPlot(object):
         :param v_min: minimum color scale
         :param v_max: max color scale
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
-        :param colorbar_label: label for the color bar
+        :param label: label for the color bar
         :param cmap: colormap for use in the visualization
         :param with_critical_curves: bool; plots the critical curves in the frame
         :param crit_curve_color: color of the critical curves
@@ -444,7 +444,7 @@ class ModelPlot(object):
         :param v_min: minimum color scale
         :param v_max: max color scale
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
-        :param colorbar_label: label for the color bar
+        :param label: label for the color bar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param color_bar: Option to display the color bar
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
@@ -494,7 +494,7 @@ class ModelPlot(object):
         :param v_min: minimum color scale
         :param v_max: max color scale
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
-        :param colorbar_label: label for the color bar
+        :param label: label for the color bar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
@@ -557,7 +557,7 @@ class ModelPlot(object):
         :param caustic_color: color of the caustics
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param plot_scale: string, log or linear, scale of surface brightness plot
-        :param colorbar_label: string, label for the colorbar
+        :param label: string, label for the colorbar
         :param point_source_position: boolean, if True, plots a point at the position of
             the point source
         :param kwargs_caustic: keyword arguments for caustic plotting
@@ -682,7 +682,7 @@ class ModelPlot(object):
             order as the positions
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param colorbar_label: string, label for the colorbar
+        :param label: string, label for the colorbar
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
@@ -736,7 +736,7 @@ class ModelPlot(object):
         :param with_caustics: boolean, if True, plots caustics
         :param image_name_list: list of strings for names of the images
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
-        :param colorbar_label: string, label for the colorbar
+        :param label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None

@@ -153,7 +153,7 @@ class ModelBandPlot(ModelBand):
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
-        :param colorbar_label: string, label for the colorbar
+        :param label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
@@ -210,7 +210,7 @@ class ModelBandPlot(ModelBand):
         cb = plt.colorbar(im, cax=cax, orientation="vertical")
         if kwargs_colorbar is None:
             kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("colorbar_label", r"log$_{10}$ flux")
+        kwargs_colorbar.setdefault("label", r"log$_{10}$ flux")
         plot_util.show_colorbar(
             cb,
             font_size=font_size,
@@ -240,7 +240,7 @@ class ModelBandPlot(ModelBand):
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
         :param image_names: boolean, if True, prints image names
-        :param colorbar_label: string, label for the colorbar
+        :param label: string, label for the colorbar
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param original_position: boolean, if True, uses original image positions
@@ -297,7 +297,7 @@ class ModelBandPlot(ModelBand):
         cb = plt.colorbar(im, cax=cax)
         if kwargs_colorbar is None:
             kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("colorbar_label", r"log$_{10}$ flux")
+        kwargs_colorbar.setdefault("label", r"log$_{10}$ flux")
         plot_util.show_colorbar(
             cb,
             font_size=font_size,
@@ -341,7 +341,7 @@ class ModelBandPlot(ModelBand):
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
-        :param colorbar_label: string, label for the colorbar
+        :param label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
@@ -395,7 +395,7 @@ class ModelBandPlot(ModelBand):
         cb = plt.colorbar(im, cax=cax)
         if kwargs_colorbar is None:
             kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("colorbar_label", r"$\log_{10}\ \kappa$")
+        kwargs_colorbar.setdefault("label", r"$\log_{10}\ \kappa$")
         plot_util.show_colorbar(
             cb,
             font_size=font_size,
@@ -433,7 +433,7 @@ class ModelBandPlot(ModelBand):
         :param v_min: minimum color scale
         :param v_max: max color scale
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
-        :param colorbar_label: label for the color bar
+        :param label: label for the color bar
         :param cmap: colormap for use in the visualization
         :param with_critical_curves: bool; plots the critical curves in the frame
         :param crit_curve_color: color of the critical curves
@@ -503,7 +503,7 @@ class ModelBandPlot(ModelBand):
         if subtract_mean:
             mean_kappa = np.mean(residual_kappa)
             residual_kappa -= mean_kappa
-            kwargs_colorbar["colorbar_label"] = (
+            kwargs_colorbar["label"] = (
                 r"$\kappa_{\rm{sub}} - \langle \kappa_{\rm{sub}} \rangle$"
             )
         alpha = 1.0
@@ -574,7 +574,7 @@ class ModelBandPlot(ModelBand):
             cax = divider.append_axes("right", size="5%", pad=0.05)
             cb = plt.colorbar(im, cax=cax)
             kwargs_colorbar.setdefault(
-                "colorbar_label", r"$\kappa - \kappa_{\rm{macro}}$"
+                "label", r"$\kappa - \kappa_{\rm{macro}}$"
             )
             plot_util.show_colorbar(
                 cb,
@@ -605,7 +605,7 @@ class ModelBandPlot(ModelBand):
         :param v_min: minimum color scale
         :param v_max: max color scale
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
-        :param colorbar_label: label for the color bar
+        :param label: label for the color bar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param color_bar: Option to display the color bar
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
@@ -663,7 +663,7 @@ class ModelBandPlot(ModelBand):
             if kwargs_colorbar is None:
                 kwargs_colorbar = {}
             kwargs_colorbar.setdefault(
-                "colorbar_label", r"(f$_{\rm data}$ - f$_{\rm model}$)/$\sigma$"
+                "label", r"(f$_{\rm data}$ - f$_{\rm model}$)/$\sigma$"
             )
             plot_util.show_colorbar(
                 cb,
@@ -691,7 +691,7 @@ class ModelBandPlot(ModelBand):
         :param v_min: minimum color scale
         :param v_max: max color scale
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
-        :param colorbar_label: label for the color bar
+        :param label: label for the color bar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
@@ -747,7 +747,7 @@ class ModelBandPlot(ModelBand):
         if kwargs_colorbar is None:
             kwargs_colorbar = {}
         kwargs_colorbar.setdefault(
-            "colorbar_label", r"(f$_{\rm data}$-f$_{\rm model}$)"
+            "label", r"(f$_{\rm data}$-f$_{\rm model}$)"
         )
         plot_util.show_colorbar(
             cb,
@@ -840,7 +840,7 @@ class ModelBandPlot(ModelBand):
         :param caustic_color: color of the caustics
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param plot_scale: string, log or linear, scale of surface brightness plot
-        :param colorbar_label: string, label for the colorbar
+        :param label: string, label for the colorbar
         :param point_source_position: boolean, if True, plots a point at the position of
             the point source
         :param kwargs_caustic: keyword arguments for caustic plotting
@@ -896,7 +896,7 @@ class ModelBandPlot(ModelBand):
         cb = plt.colorbar(im, cax=cax)
         if kwargs_colorbar is None:
             kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("colorbar_label", r"log$_{10}$ flux")
+        kwargs_colorbar.setdefault("label", r"log$_{10}$ flux")
         plot_util.show_colorbar(
             cb,
             font_size=font_size,
@@ -1055,7 +1055,7 @@ class ModelBandPlot(ModelBand):
         cb = plt.colorbar(im, cax=cax)
         if kwargs_colorbar is None:
             kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("colorbar_label", r"log$_{10}$ flux")
+        kwargs_colorbar.setdefault("label", r"log$_{10}$ flux")
         plot_util.show_colorbar(
             cb,
             font_size=font_size,
@@ -1122,7 +1122,7 @@ class ModelBandPlot(ModelBand):
             order as the positions
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param colorbar_label: string, label for the colorbar
+        :param label: string, label for the colorbar
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
@@ -1182,7 +1182,7 @@ class ModelBandPlot(ModelBand):
         cb = plt.colorbar(im, cax=cax)
         if kwargs_colorbar is None:
             kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("colorbar_label", r"$\det\ (\mathsf{A}^{-1})$")
+        kwargs_colorbar.setdefault("label", r"$\det\ (\mathsf{A}^{-1})$")
         plot_util.show_colorbar(
             cb,
             font_size=font_size,
@@ -1227,7 +1227,7 @@ class ModelBandPlot(ModelBand):
         :param with_caustics: boolean, if True, plots caustics
         :param image_name_list: list of strings for names of the images
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
-        :param colorbar_label: string, label for the colorbar
+        :param label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
@@ -1293,7 +1293,7 @@ class ModelBandPlot(ModelBand):
         cb = plt.colorbar(im, cax=cax)
         if kwargs_colorbar is None:
             kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("colorbar_label", r"arcsec")
+        kwargs_colorbar.setdefault("label", r"arcsec")
         plot_util.show_colorbar(
             cb,
             font_size=font_size,
@@ -1361,7 +1361,7 @@ class ModelBandPlot(ModelBand):
         :param lens_light_add: bool, if True, includes the lens light in the plot
         :param coordinate_arrows: bool, if True, shows the North/East directional arrows
             from the plot
-        :param colorbar_label: string, label for the colorbar
+        :param label: string, label for the colorbar
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
@@ -1427,7 +1427,7 @@ class ModelBandPlot(ModelBand):
         cb = plt.colorbar(im, cax=cax)
         if kwargs_colorbar is None:
             kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("colorbar_label", r"log$_{10}$ flux")
+        kwargs_colorbar.setdefault("label", r"log$_{10}$ flux")
         plot_util.show_colorbar(
             cb,
             font_size=font_size,
@@ -1505,7 +1505,7 @@ class ModelBandPlot(ModelBand):
         cb = plt.colorbar(im, cax=cax)
         if kwargs_colorbar is None:
             kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("colorbar_label", r"log$_{10}$ flux")
+        kwargs_colorbar.setdefault("label", r"log$_{10}$ flux")
         plot_util.show_colorbar(
             cb,
             font_size=font_size,

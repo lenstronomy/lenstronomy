@@ -78,7 +78,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
 
         :param ax: matplotlib axis instance
         :param log_scale: boolean, if True, plots the map in log_10 scale
-        :param colorbar_label: string, label for the colorbar
+        :param label: string, label for the colorbar
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :type kwargs_title: Unpack[plot_util.TitleKwargs]
@@ -90,7 +90,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :return: matplotlib instance
         """
         kwargs_colorbar = kwargs.get("kwargs_colorbar", {})
-        kwargs_colorbar.setdefault("colorbar_label", r"log$_{10}$ flux")
+        kwargs_colorbar.setdefault("label", r"log$_{10}$ flux")
         kwargs["kwargs_colorbar"] = kwargs_colorbar
 
         return self._plot(
@@ -119,7 +119,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
 
         :param ax: matplotlib axis instance
         :param log_scale: boolean, if True, plots the map in log_10 scale
-        :param colorbar_label: string, label for the colorbar
+        :param label: string, label for the colorbar
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :type kwargs_title: Unpack[plot_util.TitleKwargs]
@@ -131,7 +131,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :return: matplotlib instance
         """
         kwargs_colorbar = kwargs.get("kwargs_colorbar", {})
-        kwargs_colorbar.setdefault("colorbar_label", r"log$_{10}$ flux")
+        kwargs_colorbar.setdefault("label", r"log$_{10}$ flux")
         kwargs["kwargs_colorbar"] = kwargs_colorbar
 
         return self._plot(
@@ -166,7 +166,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param num_pix: number of pixels per axis of the source plot
         :param center: list with two entries [center_x, center_y] (optional)
         :param log_scale: boolean, if True, plots the map in log_10 scale
-        :param colorbar_label: string, label for the colorbar
+        :param label: string, label for the colorbar
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :type kwargs_title: Unpack[plot_util.TitleKwargs]
@@ -181,7 +181,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
             num_pix=num_pix, delta_pix=delta_pix, center=center
         )
         kwargs_colorbar = kwargs.get("kwargs_colorbar", {})
-        kwargs_colorbar.setdefault("colorbar_label", r"log$_{10}$ flux")
+        kwargs_colorbar.setdefault("label", r"log$_{10}$ flux")
         kwargs["kwargs_colorbar"] = kwargs_colorbar
 
         return self._plot(
@@ -216,7 +216,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
         :param log_scale: boolean, if True, plots the map in log_10 scale
-        :param colorbar_label: string, label for the colorbar
+        :param label: string, label for the colorbar
         :param cmap: string, color map
         :param white_on_black: boolean, if True, prints white text on black background, otherwise the opposite
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
@@ -231,7 +231,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         """
         kwargs_colorbar = kwargs.get("kwargs_colorbar", {})
         kwargs_colorbar.setdefault(
-            "colorbar_label", r"(f$_{\rm data}$ - f$_{\rm model}$)/$\sigma$"
+            "label", r"(f$_{\rm data}$ - f$_{\rm model}$)/$\sigma$"
         )
         kwargs["kwargs_colorbar"] = kwargs_colorbar
 
@@ -266,12 +266,12 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
         :param title_text: string, text to be displayed in the image
-        :param colorbar_label: string, label for the colorbar
+        :param label: string, label for the colorbar
         :param kwargs: plotting keyword arguments
         :return: matplotlib instance
         """
         kwargs_colorbar = kwargs.get("kwargs_colorbar", {})
-        kwargs_colorbar.setdefault("colorbar_label", r"$\log_{10}\ \kappa$")
+        kwargs_colorbar.setdefault("label", r"$\log_{10}\ \kappa$")
         kwargs["kwargs_colorbar"] = kwargs_colorbar
 
         return self._plot(
@@ -304,7 +304,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
         :param title_text: string, text to be displayed in the image
-        :param colorbar_label: string, label for the colorbar
+        :param label: string, label for the colorbar
         :param cmap: string, color map
         :param white_on_black: boolean, if True, prints white text on black background,
             otherwise the opposite
@@ -312,7 +312,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :return: matplotlib instance
         """
         kwargs_colorbar = kwargs.get("kwargs_colorbar", {})
-        kwargs_colorbar.setdefault("colorbar_label", r"$\det\ (\mathsf{A}^{-1})$")
+        kwargs_colorbar.setdefault("label", r"$\det\ (\mathsf{A}^{-1})$")
         kwargs["kwargs_colorbar"] = kwargs_colorbar
 
         return self._plot(
@@ -381,7 +381,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
         :param font_size: font size of the plot text and, by default, the colorbar tick labels
-        :param colorbar_label: string, label for the colorbar
+        :param label: string, label for the colorbar
         :param cmap: string of color map (or cmap matplotlib object)
         :param white_on_black: boolean, if True, prints white text on black background,
             otherwise the opposite
@@ -469,7 +469,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
             cb = plt.colorbar(im, cax=cax, orientation="vertical")
             if kwargs_colorbar is None:
                 kwargs_colorbar = {}
-            kwargs_colorbar.setdefault("colorbar_label", r"log$_{10}$ flux")
+            kwargs_colorbar.setdefault("label", r"log$_{10}$ flux")
             plot_util.show_colorbar(
                 cb,
                 font_size=font_size,

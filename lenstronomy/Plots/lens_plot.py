@@ -167,7 +167,7 @@ def convergence_plot(
     :param cmap: matplotlib cmap
     :param kwargs: keyword arguments for matshow
     :param with_color_bar: bool, if True, shows color bar
-    :param colorbar_label: string, label of color bar
+    :param label: string, label of color bar
     :param font_size: int, font size of color bar label
     :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
     :type kwargs_colorbar: Unpack[plot_util.ColorBarKwargs]
@@ -193,7 +193,7 @@ def convergence_plot(
         cb = plt.colorbar(im, cax=cax)
         if kwargs_colorbar is None:
             kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("colorbar_label", r"$\log_{10}(\kappa)$")
+        kwargs_colorbar.setdefault("label", r"$\log_{10}(\kappa)$")
         plot_util.show_colorbar(
             cb,
             font_size=font_size,

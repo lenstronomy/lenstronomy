@@ -180,7 +180,7 @@ class TracerPlot(object):
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
         :param font_size: font size of the plot text and, by default, the colorbar tick labels
-        :param colorbar_label: string, label for the colorbar
+        :param label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
@@ -247,7 +247,7 @@ class TracerPlot(object):
         cb = plt.colorbar(im, cax=cax, orientation="vertical")
         if kwargs_colorbar is None:
             kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("colorbar_label", r"log$_{10}$ flux")
+        kwargs_colorbar.setdefault("label", r"log$_{10}$ flux")
         plot_util.show_colorbar(
             cb,
             font_size=font_size,
@@ -277,7 +277,7 @@ class TracerPlot(object):
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
         :param image_names: boolean, if True, prints image names
-        :param colorbar_label: string, label for the colorbar
+        :param label: string, label for the colorbar
         :param font_size: font size of the plot text and, by default, the colorbar tick labels
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param original_position: boolean, if True, uses original image positions
@@ -340,7 +340,7 @@ class TracerPlot(object):
         cb = plt.colorbar(im, cax=cax)
         if kwargs_colorbar is None:
             kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("colorbar_label", r"log$_{10}$ flux")
+        kwargs_colorbar.setdefault("label", r"log$_{10}$ flux")
         plot_util.show_colorbar(
             cb,
             font_size=font_size,
@@ -382,7 +382,7 @@ class TracerPlot(object):
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
         :param font_size: font size of the plot text and, by default, the colorbar tick labels
-        :param colorbar_label: string, label for the colorbar
+        :param label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
@@ -444,7 +444,7 @@ class TracerPlot(object):
         cb = plt.colorbar(im, cax=cax)
         if kwargs_colorbar is None:
             kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("colorbar_label", r"$\log_{10}\ \kappa$")
+        kwargs_colorbar.setdefault("label", r"$\log_{10}\ \kappa$")
         plot_util.show_colorbar(
             cb,
             font_size=font_size,
@@ -472,7 +472,7 @@ class TracerPlot(object):
         :param v_min: minimum color scale
         :param v_max: max color scale
         :param font_size: font size of the plot text and, by default, the colorbar tick labels
-        :param colorbar_label: label for the color bar
+        :param label: label for the color bar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param color_bar: Option to display the color bar
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
@@ -533,7 +533,7 @@ class TracerPlot(object):
             if kwargs_colorbar is None:
                 kwargs_colorbar = {}
             kwargs_colorbar.setdefault(
-                "colorbar_label", r"(f$_{\rm model}$ - f$_{\rm data}$)/$\sigma$"
+                "label", r"(f$_{\rm model}$ - f$_{\rm data}$)/$\sigma$"
             )
             plot_util.show_colorbar(
                 cb,
@@ -561,7 +561,7 @@ class TracerPlot(object):
         :param v_min: minimum color scale
         :param v_max: max color scale
         :param font_size: font size of the plot text and, by default, the colorbar tick labels
-        :param colorbar_label: label for the color bar
+        :param label: label for the color bar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
@@ -619,7 +619,7 @@ class TracerPlot(object):
         cb = plt.colorbar(im, cax=cax)
         if kwargs_colorbar is None:
             kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("colorbar_label", r"(f$_{model}$-f$_{data}$)")
+        kwargs_colorbar.setdefault("label", r"(f$_{model}$-f$_{data}$)")
         plot_util.show_colorbar(
             cb,
             font_size=font_size,
@@ -721,7 +721,7 @@ class TracerPlot(object):
         :param font_size: font size of labels
         :param plot_scale: string, log or linear, scale of surface brightness plot
         :param title_text: string, text to be displayed in the image
-        :param colorbar_label: string, label for the colorbar
+        :param label: string, label for the colorbar
         :param point_source_position: boolean, if True, plots a point at the position of
             the point source
         :param kwargs_caustic: keyword arguments for caustic plotting
@@ -776,7 +776,7 @@ class TracerPlot(object):
         cb = plt.colorbar(im, cax=cax)
         if kwargs_colorbar is None:
             kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("colorbar_label", r"tracer")
+        kwargs_colorbar.setdefault("label", r"tracer")
         plot_util.show_colorbar(
             cb,
             font_size=font_size,
@@ -871,7 +871,7 @@ class TracerPlot(object):
         :param font_size: font size of labels
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param title_text: string, text to be displayed in the image
-        :param colorbar_label: string, label for the colorbar
+        :param label: string, label for the colorbar
         :param title_font_size: font size of the title
         :param title_color: color of the title
         :param title_background_color: background color of the title
@@ -944,7 +944,7 @@ class TracerPlot(object):
         cb = plt.colorbar(im, cax=cax)
         if kwargs_colorbar is None:
             kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("colorbar_label", r"$\det\ (\mathsf{A}^{-1})$")
+        kwargs_colorbar.setdefault("label", r"$\det\ (\mathsf{A}^{-1})$")
         plot_util.show_colorbar(
             cb,
             font_size=font_size,
@@ -998,7 +998,7 @@ class TracerPlot(object):
         :param image_name_list: list of strings for names of the images
         :param title_text: string, text to be displayed in the image
         :param font_size: font size of labels
-        :param colorbar_label: string, label for the colorbar
+        :param label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param title_font_size: font size of the title
         :param title_color: color of the title
@@ -1079,7 +1079,7 @@ class TracerPlot(object):
         cb = plt.colorbar(im, cax=cax)
         if kwargs_colorbar is None:
             kwargs_colorbar = {}
-        kwargs_colorbar.setdefault("colorbar_label", r"arcsec")
+        kwargs_colorbar.setdefault("label", r"arcsec")
         plot_util.show_colorbar(
             cb,
             font_size=font_size,

@@ -187,8 +187,6 @@ class ModelPlot(object):
                 )
                 self.normalized_residual_plot(
                     ax=axes[i, 2],
-                    v_min=-6,
-                    v_max=6,
                     band_index=band_index,
                     **kwargs_matshow,
                 )
@@ -199,8 +197,6 @@ class ModelPlot(object):
         self,
         band_index=0,
         ax=None,
-        v_min=None,
-        v_max=None,
         font_size=15,
         kwargs_colorbar={},
         kwargs_title={},
@@ -212,8 +208,6 @@ class ModelPlot(object):
 
         :param band_index: index of band
         :param ax: matplotlib axis instance
-        :param v_min: minimum plotting scale
-        :param v_max: maximum plotting scale
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param label: string, label for the colorbar
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
@@ -230,8 +224,6 @@ class ModelPlot(object):
         plot_band = self._select_band(band_index)
         return plot_band.data_plot(
             ax=ax,
-            v_min=v_min,
-            v_max=v_max,
             font_size=font_size,
             kwargs_colorbar=kwargs_colorbar,
             kwargs_title=kwargs_title,
@@ -244,8 +236,6 @@ class ModelPlot(object):
         self,
         band_index=0,
         ax=None,
-        v_min=None,
-        v_max=None,
         image_names=False,
         original_position=True,
         image_name_list=None,
@@ -260,8 +250,6 @@ class ModelPlot(object):
 
         :param band_index: index of band
         :param ax: matplotlib axis instance
-        :param v_min: minimum plotting scale
-        :param v_max: maximum plotting scale
         :param image_names: boolean, if True, prints image names
         :param label: string, label for the colorbar
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
@@ -281,8 +269,6 @@ class ModelPlot(object):
         plot_band = self._select_band(band_index)
         return plot_band.model_plot(
             ax=ax,
-            v_min=v_min,
-            v_max=v_max,
             image_names=image_names,
             original_position=original_position,
             image_name_list=image_name_list,
@@ -298,8 +284,6 @@ class ModelPlot(object):
         self,
         band_index=0,
         ax=None,
-        v_min=None,
-        v_max=None,
         font_size=15,
         kwargs_colorbar={},
         kwargs_title={},
@@ -311,8 +295,6 @@ class ModelPlot(object):
 
         :param band_index: index of band
         :param ax: matplotlib axis instance
-        :param v_min: minimum plotting scale
-        :param v_max: maximum plotting scale
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param label: string, label for the colorbar
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
@@ -329,8 +311,6 @@ class ModelPlot(object):
         plot_band = self._select_band(band_index)
         return plot_band.convergence_plot(
             ax=ax,
-            v_min=v_min,
-            v_max=v_max,
             font_size=font_size,
             kwargs_colorbar=kwargs_colorbar,
             kwargs_title=kwargs_title,
@@ -345,8 +325,6 @@ class ModelPlot(object):
         ax=None,
         index_macromodel=None,
         subtract_mean=True,
-        v_min=-0.05,
-        v_max=0.05,
         font_size=15,
         cmap="bwr",
         with_critical_curves=False,
@@ -365,8 +343,6 @@ class ModelPlot(object):
         :param ax: matplotlib axis instance
         :param index_macromodel: a list of indexes corresponding to the lens models with convergence to be subtracted
         :param subtract_mean: bool; displays the substructure convergence relative to the mean convergence in the frame
-        :param v_min: minimum color scale
-        :param v_max: max color scale
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param label: label for the color bar
         :param cmap: colormap for use in the visualization
@@ -392,8 +368,6 @@ class ModelPlot(object):
             ax=ax,
             index_macromodel=index_macromodel,
             subtract_mean=subtract_mean,
-            v_min=v_min,
-            v_max=v_max,
             font_size=font_size,
             cmap=cmap,
             with_critical_curves=with_critical_curves,
@@ -411,8 +385,6 @@ class ModelPlot(object):
         self,
         band_index=0,
         ax=None,
-        v_min=-6,
-        v_max=6,
         font_size=15,
         kwargs_colorbar={},
         kwargs_title={},
@@ -424,8 +396,6 @@ class ModelPlot(object):
 
         :param band_index: index of band
         :param ax: matplotlib axis instance
-        :param v_min: minimum color scale
-        :param v_max: max color scale
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param label: label for the color bar
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
@@ -442,8 +412,6 @@ class ModelPlot(object):
         plot_band = self._select_band(band_index)
         return plot_band.normalized_residual_plot(
             ax=ax,
-            v_min=v_min,
-            v_max=v_max,
             font_size=font_size,
             kwargs_colorbar=kwargs_colorbar,
             kwargs_title=kwargs_title,
@@ -456,8 +424,6 @@ class ModelPlot(object):
         self,
         band_index=0,
         ax=None,
-        v_min=-1,
-        v_max=1,
         font_size=15,
         kwargs_colorbar={},
         kwargs_title={},
@@ -469,8 +435,6 @@ class ModelPlot(object):
 
         :param band_index: index of band
         :param ax: matplotlib axis instance
-        :param v_min: minimum color scale
-        :param v_max: max color scale
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param label: label for the color bar
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
@@ -487,8 +451,6 @@ class ModelPlot(object):
         plot_band = self._select_band(band_index)
         return plot_band.absolute_residual_plot(
             ax=ax,
-            v_min=v_min,
-            v_max=v_max,
             font_size=font_size,
             kwargs_colorbar=kwargs_colorbar,
             kwargs_title=kwargs_title,
@@ -504,8 +466,6 @@ class ModelPlot(object):
         numPix=100,
         deltaPix_source=0.01,
         center=None,
-        v_min=None,
-        v_max=None,
         with_caustics=False,
         caustic_color="yellow",
         font_size=15,
@@ -526,8 +486,6 @@ class ModelPlot(object):
         :param deltaPix_source: pixel spacing in the source resolution illustrated in
             plot
         :param center: [center_x, center_y], if specified, uses this as the center
-        :param v_min: minimum plotting scale of the map
-        :param v_max: maximum plotting scale of the map
         :param with_caustics: plot the caustics on top of the source reconstruction
         :param caustic_color: color of the caustics
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
@@ -553,8 +511,6 @@ class ModelPlot(object):
             numPix=numPix,
             deltaPix_source=deltaPix_source,
             center=center,
-            v_min=v_min,
-            v_max=v_max,
             with_caustics=with_caustics,
             caustic_color=caustic_color,
             font_size=font_size,
@@ -574,8 +530,6 @@ class ModelPlot(object):
         ax=None,
         numPix=100,
         deltaPix_source=0.01,
-        v_min=None,
-        v_max=None,
         with_caustics=False,
         font_size=15,
         point_source_position=True,
@@ -593,8 +547,6 @@ class ModelPlot(object):
         :param numPix: number of pixels in plot per axis
         :param deltaPix_source: pixel spacing in the source resolution illustrated in
             plot
-        :param v_min: minimum plotting scale of the map
-        :param v_max: maximum plotting scale of the map
         :param with_caustics: plot the caustics on top of the source reconstruction
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param point_source_position: boolean, if True, plots a point at the position of
@@ -615,8 +567,6 @@ class ModelPlot(object):
             ax=ax,
             numPix=numPix,
             deltaPix_source=deltaPix_source,
-            v_min=v_min,
-            v_max=v_max,
             with_caustics=with_caustics,
             font_size=font_size,
             point_source_position=point_source_position,
@@ -631,8 +581,6 @@ class ModelPlot(object):
         self,
         band_index=0,
         ax=None,
-        v_min=-10,
-        v_max=10,
         image_name_list=None,
         font_size=15,
         kwargs_colorbar={},
@@ -645,8 +593,6 @@ class ModelPlot(object):
 
         :param band_index: index of band
         :param ax: matplotib axis instance
-        :param v_min: minimum range of plotting
-        :param v_max: maximum range of plotting
         :param image_name_list: list of strings for names of the images in the same
             order as the positions
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
@@ -665,8 +611,6 @@ class ModelPlot(object):
         plot_band = self._select_band(band_index)
         return plot_band.magnification_plot(
             ax=ax,
-            v_min=v_min,
-            v_max=v_max,
             image_name_list=image_name_list,
             font_size=font_size,
             kwargs_colorbar=kwargs_colorbar,
@@ -680,8 +624,6 @@ class ModelPlot(object):
         self,
         band_index=0,
         ax=None,
-        v_min=None,
-        v_max=None,
         axis=0,
         with_caustics=False,
         image_name_list=None,
@@ -696,8 +638,6 @@ class ModelPlot(object):
 
         :param band_index: index of band
         :param ax: matplotlib axis instance
-        :param v_min: minimum plotting scale
-        :param v_max: maximum plotting scale
         :param axis: integer, 0 or 1, specifies the deflection angle axis to be plotted
         :param with_caustics: boolean, if True, plots caustics
         :param image_name_list: list of strings for names of the images
@@ -717,8 +657,6 @@ class ModelPlot(object):
         plot_band = self._select_band(band_index)
         return plot_band.deflection_plot(
             ax=ax,
-            v_min=v_min,
-            v_max=v_max,
             axis=axis,
             with_caustics=with_caustics,
             image_name_list=image_name_list,
@@ -734,8 +672,6 @@ class ModelPlot(object):
         self,
         band_index=0,
         ax=None,
-        v_min=None,
-        v_max=None,
         unconvolved=False,
         point_source_add=False,
         font_size=15,
@@ -751,8 +687,6 @@ class ModelPlot(object):
 
         :param band_index: index of band
         :param ax: an instance of matplotlib.axes.Axes
-        :param v_min: min color scale for matshow plot
-        :param v_max: max color scale for matshow plot
         :param unconvolved: bool, if True, does not perform PSF convolution on the image
         :param point_source_add: bool, if True, includes the lensed point source(s) in
             the plot
@@ -775,8 +709,6 @@ class ModelPlot(object):
         plot_band = self._select_band(band_index)
         return plot_band.decomposition_plot(
             ax=ax,
-            v_min=v_min,
-            v_max=v_max,
             unconvolved=unconvolved,
             point_source_add=point_source_add,
             font_size=font_size,
@@ -793,8 +725,6 @@ class ModelPlot(object):
         self,
         band_index=0,
         ax=None,
-        v_min=None,
-        v_max=None,
         point_source_add=False,
         source_add=False,
         lens_light_add=False,
@@ -809,8 +739,6 @@ class ModelPlot(object):
 
         :param band_index: index of band
         :param ax: an instance of matplotlib.axes.Axes
-        :param v_min: min color scale for matshow plot
-        :param v_max: max color scale for matshow plot
         :param point_source_add: bool, if True, includes the lensed point source(s) in
             the plot
         :param source_add: bool, if True, includes the lensed image of the source in the
@@ -832,8 +760,6 @@ class ModelPlot(object):
         plot_band = self._select_band(band_index)
         return plot_band.subtract_from_data_plot(
             ax=ax,
-            v_min=v_min,
-            v_max=v_max,
             point_source_add=point_source_add,
             source_add=source_add,
             lens_light_add=lens_light_add,
@@ -863,7 +789,7 @@ class ModelPlot(object):
         plot_band.data_plot(ax=axes[0, 0], **kwargs_main)
         plot_band.model_plot(ax=axes[0, 1], image_names=True, **kwargs_main)
         plot_band.normalized_residual_plot(
-            ax=axes[0, 2], v_min=-6, v_max=6, **kwargs_residuals
+            ax=axes[0, 2], **kwargs_residuals
         )
         plot_band.source_plot(
             ax=axes[1, 0],
@@ -899,20 +825,18 @@ class ModelPlot(object):
         return plot_band.plot_subtract_from_data_all()
 
     def plot_extinction_map(
-        self, band_index=0, ax=None, v_min=None, v_max=None, **kwargs_matshow
+        self, band_index=0, ax=None, **kwargs_matshow
     ):
         """Plot differential extinction map for one band.
 
         :param band_index: index of band
         :param ax: an instance of matplotlib.axes.Axes
-        :param v_min: min color scale for matshow plot
-        :param v_max: max color scale for matshow plot
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance of differential extinction map
         """
         plot_band = self._select_band(band_index)
         return plot_band.plot_extinction_map(
-            ax=ax, v_min=v_min, v_max=v_max, **kwargs_matshow
+            ax=ax, **kwargs_matshow
         )
 
     def source(self, band_index=0, **kwargs):

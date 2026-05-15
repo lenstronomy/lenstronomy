@@ -164,8 +164,6 @@ class TracerPlot(object):
     def data_plot(
         self,
         ax,
-        v_min=None,
-        v_max=None,
         font_size=15,
         kwargs_colorbar={},
         kwargs_title={},
@@ -176,8 +174,6 @@ class TracerPlot(object):
         """Plot observed tracer data.
 
         :param ax: matplotlib axis instance
-        :param v_min: minimum plotting scale
-        :param v_max: maximum plotting scale
         :param font_size: font size of the plot text and, by default, the colorbar tick labels
         :param label: string, label for the colorbar
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
@@ -256,8 +252,6 @@ class TracerPlot(object):
     def model_plot(
         self,
         ax,
-        v_min=None,
-        v_max=None,
         image_names=False,
         original_position=True,
         image_name_list=None,
@@ -271,8 +265,6 @@ class TracerPlot(object):
         """Plot reconstructed tracer model.
 
         :param ax: matplotib axis instance
-        :param v_min: minimum plotting scale
-        :param v_max: maximum plotting scale
         :param image_names: boolean, if True, prints image names
         :param label: string, label for the colorbar
         :param font_size: font size of the plot text and, by default, the colorbar tick labels
@@ -363,8 +355,6 @@ class TracerPlot(object):
     def convergence_plot(
         self,
         ax,
-        v_min=None,
-        v_max=None,
         font_size=15,
         kwargs_colorbar={},
         kwargs_title={},
@@ -375,8 +365,6 @@ class TracerPlot(object):
         """Plot lensing convergence in the tracer frame.
 
         :param ax: matplotib axis instance
-        :param v_min: minimum plotting scale
-        :param v_max: maximum plotting scale
         :param font_size: font size of the plot text and, by default, the colorbar tick labels
         :param label: string, label for the colorbar
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
@@ -451,8 +439,6 @@ class TracerPlot(object):
     def normalized_residual_plot(
         self,
         ax,
-        v_min=-6,
-        v_max=6,
         font_size=15,
         kwargs_colorbar={},
         kwargs_title={},
@@ -463,8 +449,6 @@ class TracerPlot(object):
         """Plot normalized residuals between data and model.
 
         :param ax: matplotlib axis instance
-        :param v_min: minimum color scale
-        :param v_max: max color scale
         :param font_size: font size of the plot text and, by default, the colorbar tick labels
         :param label: label for the color bar
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
@@ -537,8 +521,6 @@ class TracerPlot(object):
     def absolute_residual_plot(
         self,
         ax,
-        v_min=-1,
-        v_max=1,
         font_size=15,
         kwargs_colorbar={},
         kwargs_title={},
@@ -549,8 +531,6 @@ class TracerPlot(object):
         """Plot absolute residuals between data and model.
 
         :param ax: matplotlib axis instance
-        :param v_min: minimum color scale
-        :param v_max: max color scale
         :param font_size: font size of the plot text and, by default, the colorbar tick labels
         :param label: label for the color bar
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
@@ -674,8 +654,6 @@ class TracerPlot(object):
         numPix,
         deltaPix_source,
         center=None,
-        v_min=None,
-        v_max=None,
         with_caustics=False,
         caustic_color="yellow",
         font_size=15,
@@ -704,8 +682,6 @@ class TracerPlot(object):
         :param deltaPix_source: pixel spacing in the source resolution illustrated in
             plot
         :param center: [center_x, center_y], if specified, uses this as the center
-        :param v_min: minimum plotting scale of the map
-        :param v_max: maximum plotting scale of the map
         :param with_caustics: plot the caustics on top of the source reconstruction
         :param caustic_color: color of the caustics
         :param font_size: font size of labels
@@ -827,8 +803,6 @@ class TracerPlot(object):
     def magnification_plot(
         self,
         ax,
-        v_min=-10,
-        v_max=10,
         image_name_list=None,
         font_size=15,
         title_text="Magnification model",
@@ -849,8 +823,6 @@ class TracerPlot(object):
         """Plot magnification map in the tracer frame.
 
         :param ax: matplotib axis instance
-        :param v_min: minimum range of plotting
-        :param v_max: maximum range of plotting
         :param image_name_list: list of strings for names of the images in the same
             order as the positions
         :param font_size: font size of labels
@@ -947,8 +919,6 @@ class TracerPlot(object):
     def deflection_plot(
         self,
         ax,
-        v_min=None,
-        v_max=None,
         axis=0,
         with_caustics=False,
         image_name_list=None,
@@ -971,8 +941,6 @@ class TracerPlot(object):
         """Plot deflection-angle map in the tracer frame.
 
         :param ax: matplotlib axis instance
-        :param v_min: minimum plotting scale
-        :param v_max: maximum plotting scale
         :param axis: integer, 0 or 1, specifies the deflection angle axis to be plotted
         :param with_caustics: boolean, if True, plots caustics
         :param image_name_list: list of strings for names of the images
@@ -1097,11 +1065,11 @@ class TracerPlot(object):
         f, axes = plt.subplots(2, 3, figsize=(16, 8))
         self.data_plot(ax=axes[0, 0])
         self.model_plot(ax=axes[0, 1], image_names=True)
-        self.normalized_residual_plot(ax=axes[0, 2], v_min=-6, v_max=6)
+        self.normalized_residual_plot(ax=axes[0, 2])
         self.source_plot(
             ax=axes[1, 0], deltaPix_source=0.01, numPix=100, with_caustics=with_caustics
         )
-        self.convergence_plot(ax=axes[1, 1], v_max=1)
+        self.convergence_plot(ax=axes[1, 1])
         self.magnification_plot(ax=axes[1, 2])
         f.tight_layout()
         f.subplots_adjust(

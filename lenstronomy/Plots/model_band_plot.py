@@ -76,6 +76,14 @@ class ModelBandPlot(ModelBand):
         self._x_center, self._y_center = self._coords.center
 
         self._fast_caustic = fast_caustic
+        self._arrow_length = 0.05
+        self._arrowhead_size = 0.025
+        self._arrow_origin_x = None
+        self._arrow_origin_y = None
+        self._arrow_north_offset_x = None
+        self._arrow_north_offset_y = None
+        self._arrow_east_offset_x = None
+        self._arrow_east_offset_y = None
 
         self._image_extent = [
             -self._deltaPix / 2,
@@ -149,8 +157,6 @@ class ModelBandPlot(ModelBand):
         """Plot observed imaging data.
 
         :param ax: matplotlib axis instance
-        :param v_min: minimum plotting scale
-        :param v_max: maximum plotting scale
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param label: string, label for the colorbar
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
@@ -164,17 +170,11 @@ class ModelBandPlot(ModelBand):
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
-        if v_min is None:
-            v_min = self._v_min_default
-        if v_max is None:
-            v_max = self._v_max_default
         kwargs_matshow.setdefault("cmap", "cubehelix")
         im = ax.matshow(
             np.log10(self._data),
             origin="lower",
             extent=self._image_extent,
-            vmin=v_min,
-            vmax=v_max,
             **kwargs_matshow,
         )
 
@@ -234,8 +234,6 @@ class ModelBandPlot(ModelBand):
         """Plot reconstructed imaging model.
 
         :param ax: matplotib axis instance
-        :param v_min: minimum plotting scale
-        :param v_max: maximum plotting scale
         :param image_names: boolean, if True, prints image names
         :param label: string, label for the colorbar
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
@@ -252,16 +250,10 @@ class ModelBandPlot(ModelBand):
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
-        if v_min is None:
-            v_min = self._v_min_default
-        if v_max is None:
-            v_max = self._v_max_default
         kwargs_matshow.setdefault("cmap", "cubehelix")
         im = ax.matshow(
             np.log10(self._model),
             origin="lower",
-            vmin=v_min,
-            vmax=v_max,
             extent=self._image_extent,
             **kwargs_matshow,
         )
@@ -333,8 +325,6 @@ class ModelBandPlot(ModelBand):
         """Plot lensing convergence in the data frame.
 
         :param ax: matplotib axis instance
-        :param v_min: minimum plotting scale
-        :param v_max: maximum plotting scale
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param label: string, label for the colorbar
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
@@ -357,8 +347,6 @@ class ModelBandPlot(ModelBand):
             np.log10(kappa_result),
             origin="lower",
             extent=self._image_extent,
-            vmin=v_min,
-            vmax=v_max,
             **kwargs_matshow,
         )
         ax.get_xaxis().set_visible(False)
@@ -422,8 +410,6 @@ class ModelBandPlot(ModelBand):
         :param ax: matplotib axis instance
         :param index_macromodel: a list of indexes corresponding to the lens models with convergence to be subtracted
         :param subtract_mean: bool; displays the substructure convergence relative to the mean convergence in the frame
-        :param v_min: minimum color scale
-        :param v_max: max color scale
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param label: label for the color bar
         :param cmap: colormap for use in the visualization
@@ -497,8 +483,6 @@ class ModelBandPlot(ModelBand):
         im = ax.imshow(
             residual_kappa,
             origin="lower",
-            vmin=v_min,
-            vmax=v_max,
             extent=self._image_extent,
             cmap=cmap,
             alpha=alpha,
@@ -590,8 +574,6 @@ class ModelBandPlot(ModelBand):
         """Plot normalized residuals between data and model.
 
         :param ax: matplotlib axis instance
-        :param v_min: minimum color scale
-        :param v_max: max color scale
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param label: label for the color bar
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
@@ -608,8 +590,6 @@ class ModelBandPlot(ModelBand):
         kwargs_matshow.setdefault("cmap", "RdBu_r")
         im = ax.matshow(
             self._norm_residuals,
-            vmin=v_min,
-            vmax=v_max,
             extent=self._image_extent,
             origin="lower",
             **kwargs_matshow,
@@ -672,8 +652,6 @@ class ModelBandPlot(ModelBand):
         """Plot absolute residuals between data and model.
 
         :param ax: matplotlib axis instance
-        :param v_min: minimum color scale
-        :param v_max: max color scale
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param label: label for the color bar
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
@@ -690,8 +668,6 @@ class ModelBandPlot(ModelBand):
         kwargs_matshow.setdefault("cmap", "RdBu_r")
         im = ax.matshow(
             self._data - self._model,
-            vmin=v_min,
-            vmax=v_max,
             extent=self._image_extent,
             origin="lower",
             **kwargs_matshow,
@@ -814,8 +790,6 @@ class ModelBandPlot(ModelBand):
         :param deltaPix_source: pixel spacing in the source resolution illustrated in
             plot
         :param center: [center_x, center_y], if specified, uses this as the center
-        :param v_min: minimum plotting scale of the map
-        :param v_max: maximum plotting scale of the map
         :param with_caustics: plot the caustics on top of the source reconstruction
         :param caustic_color: color of the caustics
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
@@ -835,16 +809,11 @@ class ModelBandPlot(ModelBand):
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
-        if v_min is None:
-            v_min = self._v_min_default
-        if v_max is None:
-            v_max = self._v_max_default
         if kwargs_caustic is None:
             kwargs_caustic = {}
         d_s = numPix * deltaPix_source
         source, coords_source = self.source(numPix, deltaPix_source, center=center)
         if plot_scale == "log":
-            source[source < 10**v_min] = 10 ** (v_min)  # to remove weird shadow in plot
             source_scale = np.log10(source)
         elif plot_scale == "linear":
             source_scale = source
@@ -863,8 +832,6 @@ class ModelBandPlot(ModelBand):
                 -deltaPix_source / 2,
                 d_s - deltaPix_source / 2,
             ],
-            vmin=v_min,
-            vmax=v_max,
             **kwargs_matshow,
         )  # source
         ax.get_xaxis().set_visible(False)
@@ -970,8 +937,6 @@ class ModelBandPlot(ModelBand):
         :param numPix: number of pixels in plot per axis
         :param deltaPix_source: pixel spacing in the source resolution illustrated in
             plot
-        :param v_min: minimum plotting scale of the map
-        :param v_max: maximum plotting scale of the map
         :param with_caustics: plot the caustics on top of the source reconstruction (may
             take some time)
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
@@ -1020,8 +985,6 @@ class ModelBandPlot(ModelBand):
                 -deltaPix_source / 2,
                 d_s - deltaPix_source / 2,
             ],
-            vmin=v_min,
-            vmax=v_max,
             **kwargs_matshow,
         )  # source
         ax.get_xaxis().set_visible(False)
@@ -1092,8 +1055,6 @@ class ModelBandPlot(ModelBand):
         """Plot magnification map in the data frame.
 
         :param ax: matplotib axis instance
-        :param v_min: minimum range of plotting
-        :param v_max: maximum range of plotting
         :param image_name_list: list of strings for names of the images in the same
             order as the positions
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
@@ -1120,8 +1081,6 @@ class ModelBandPlot(ModelBand):
             mag_result,
             origin="lower",
             extent=self._image_extent,
-            vmin=v_min,
-            vmax=v_max,
             **kwargs_matshow,
         )
         ax.get_xaxis().set_visible(False)
@@ -1195,8 +1154,6 @@ class ModelBandPlot(ModelBand):
         """Plot deflection-angle map in the data frame.
 
         :param ax: matplotlib axis instance
-        :param v_min: minimum plotting scale
-        :param v_max: maximum plotting scale
         :param axis: integer, 0 or 1, specifies the deflection angle axis to be plotted
         :param with_caustics: boolean, if True, plots caustics
         :param image_name_list: list of strings for names of the images
@@ -1228,8 +1185,6 @@ class ModelBandPlot(ModelBand):
             alpha,
             origin="lower",
             extent=self._image_extent,
-            vmin=v_min,
-            vmax=v_max,
             alpha=0.5,
             **kwargs_matshow,
         )
@@ -1323,8 +1278,6 @@ class ModelBandPlot(ModelBand):
         """Make a plot displaying all or a subset of light components.
 
         :param ax: an instance of matplotlib.axes.Axes
-        :param v_min: min color scale for matshow plot
-        :param v_max: max color scale for matshow plot
         :param unconvolved: bool, if True, does not perform PSF convolution on the image
         :param point_source_add: bool, if True, includes the lensed point source(s) in
             the plot
@@ -1357,16 +1310,10 @@ class ModelBandPlot(ModelBand):
             point_source_add=point_source_add,
         )
 
-        if v_min is None:
-            v_min = self._v_min_default
-        if v_max is None:
-            v_max = self._v_max_default
         kwargs_matshow.setdefault("cmap", "cubehelix")
         im = ax.matshow(
             np.log10(model),
             origin="lower",
-            vmin=v_min,
-            vmax=v_max,
             extent=self._image_extent,
             **kwargs_matshow,
         )
@@ -1434,16 +1381,10 @@ class ModelBandPlot(ModelBand):
             lens_light_add=lens_light_add,
             point_source_add=point_source_add,
         )
-        if v_min is None:
-            v_min = self._v_min_default
-        if v_max is None:
-            v_max = self._v_max_default
         kwargs_matshow.setdefault("cmap", "cubehelix")
         im = ax.matshow(
             np.log10(self._data - model),
             origin="lower",
-            vmin=v_min,
-            vmax=v_max,
             extent=self._image_extent,
             **kwargs_matshow,
         )
@@ -1492,11 +1433,11 @@ class ModelBandPlot(ModelBand):
         f, axes = plt.subplots(2, 3, figsize=(16, 8))
         self.data_plot(ax=axes[0, 0])
         self.model_plot(ax=axes[0, 1], image_names=True)
-        self.normalized_residual_plot(ax=axes[0, 2], v_min=-6, v_max=6)
+        self.normalized_residual_plot(ax=axes[0, 2])
         self.source_plot(
             ax=axes[1, 0], deltaPix_source=0.01, numPix=100, with_caustics=with_caustics
         )
-        self.convergence_plot(ax=axes[1, 1], v_max=1)
+        self.convergence_plot(ax=axes[1, 1])
         self.magnification_plot(ax=axes[1, 2])
         f.tight_layout()
         f.subplots_adjust(
@@ -1513,29 +1454,29 @@ class ModelBandPlot(ModelBand):
 
         self.decomposition_plot(
             ax=axes[0, 0],
-            title_text="Lens light",
+            kwargs_title={"text": "Lens light"},
             lens_light_add=True,
             unconvolved=True,
         )
         self.decomposition_plot(
-            ax=axes[1, 0], title_text="Lens light convolved", lens_light_add=True
+            ax=axes[1, 0], kwargs_title={"text": "Lens light convolved"}, lens_light_add=True
         )
         self.decomposition_plot(
-            ax=axes[0, 1], title_text="Source light", source_add=True, unconvolved=True
+            ax=axes[0, 1], kwargs_title={"text": "Source light"}, source_add=True, unconvolved=True
         )
         self.decomposition_plot(
-            ax=axes[1, 1], title_text="Source light convolved", source_add=True
+            ax=axes[1, 1], kwargs_title={"text": "Source light convolved"}, source_add=True
         )
         self.decomposition_plot(
             ax=axes[0, 2],
-            title_text="All components",
+            kwargs_title={"text": "All components"},
             source_add=True,
             lens_light_add=True,
             unconvolved=True,
         )
         self.decomposition_plot(
             ax=axes[1, 2],
-            title_text="All components convolved",
+            kwargs_title={"text": "All components convolved"},
             source_add=True,
             lens_light_add=True,
             point_source_add=True,
@@ -1553,25 +1494,25 @@ class ModelBandPlot(ModelBand):
         """
         f, axes = plt.subplots(2, 3, figsize=(16, 8))
 
-        self.subtract_from_data_plot(ax=axes[0, 0], title_text="Data")
+        self.subtract_from_data_plot(ax=axes[0, 0], kwargs_title={"text": "Data"})
         self.subtract_from_data_plot(
-            ax=axes[0, 1], title_text="Data - Point Source", point_source_add=True
+            ax=axes[0, 1], kwargs_title={"text": "Data - Point Source"}, point_source_add=True
         )
         self.subtract_from_data_plot(
-            ax=axes[0, 2], title_text="Data - Lens Light", lens_light_add=True
+            ax=axes[0, 2], kwargs_title={"text": "Data - Lens Light"}, lens_light_add=True
         )
         self.subtract_from_data_plot(
-            ax=axes[1, 0], title_text="Data - Source Light", source_add=True
+            ax=axes[1, 0], kwargs_title={"text": "Data - Source Light"}, source_add=True
         )
         self.subtract_from_data_plot(
             ax=axes[1, 1],
-            title_text="Data - Source Light - Point Source",
+            kwargs_title={"text": "Data - Source Light - Point Source"},
             source_add=True,
             point_source_add=True,
         )
         self.subtract_from_data_plot(
             ax=axes[1, 2],
-            title_text="Data - Lens Light - Point Source",
+            kwargs_title={"text": "Data - Lens Light - Point Source"},
             lens_light_add=True,
             point_source_add=True,
         )
@@ -1581,12 +1522,9 @@ class ModelBandPlot(ModelBand):
         )
         return f, axes
 
-    def plot_extinction_map(self, ax, v_min=None, v_max=None, **kwargs_matshow):
         """Plot differential extinction map.
 
         :param ax: matplotlib axis instance
-        :param v_min: minimum color scale for matshow plot
-        :param v_max: maximum color scale for matshow plot
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
@@ -1595,17 +1533,11 @@ class ModelBandPlot(ModelBand):
             self._kwargs_extinction_partial,
             self._kwargs_special_partial,
         )
-        if v_min is None:
-            v_min = 0
-        if v_max is None:
-            v_max = 1
         kwargs_matshow.setdefault("cmap", "afmhot")
 
         _ = ax.matshow(
             model,
             origin="lower",
-            vmin=v_min,
-            vmax=v_max,
             extent=self._image_extent,
             **kwargs_matshow,
         )

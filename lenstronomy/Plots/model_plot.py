@@ -445,7 +445,6 @@ class ModelPlot(object):
             v_min=v_min,
             v_max=v_max,
             font_size=font_size,
-
             kwargs_colorbar=kwargs_colorbar,
             kwargs_title=kwargs_title,
             kwargs_scale_bar=kwargs_scale_bar,

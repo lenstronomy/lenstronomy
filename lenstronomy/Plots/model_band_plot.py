@@ -559,7 +559,6 @@ class ModelBandPlot(ModelBand):
 
         cb = None
 
-
         if kwargs_colorbar is not None:
             if subtract_mean:
                 label = r"$\kappa_{\rm{sub}} - \langle \kappa_{\rm{sub}} \rangle$"
@@ -568,9 +567,7 @@ class ModelBandPlot(ModelBand):
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.05)
             cb = plt.colorbar(im, cax=cax)
-            kwargs_colorbar.setdefault(
-                "label", label
-            )
+            kwargs_colorbar.setdefault("label", label)
             plot_util.show_colorbar(
                 cb,
                 font_size=font_size,
@@ -732,9 +729,7 @@ class ModelBandPlot(ModelBand):
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.05)
             cb = plt.colorbar(im, cax=cax)
-            kwargs_colorbar.setdefault(
-                "label", r"(f$_{\rm data}$-f$_{\rm model}$)"
-            )
+            kwargs_colorbar.setdefault("label", r"(f$_{\rm data}$-f$_{\rm model}$)")
             plot_util.show_colorbar(
                 cb,
                 font_size=font_size,

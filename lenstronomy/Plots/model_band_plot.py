@@ -143,6 +143,7 @@ class ModelBandPlot(ModelBand):
         font_size=15,
         colorbar_label=r"log$_{10}$ flux",
         colorbar_label_font_size=None,
+        colorbar_tick_fontsize=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -156,7 +157,8 @@ class ModelBandPlot(ModelBand):
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param colorbar_label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param colorbar_label_font_size: font size of the colorbar label
+        :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
+        :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
@@ -223,7 +225,7 @@ class ModelBandPlot(ModelBand):
                 else colorbar_label_font_size
             ),
         )
-        cb.ax.tick_params(labelsize=font_size)
+        cb.ax.tick_params(labelsize=font_size if colorbar_tick_fontsize is None else colorbar_tick_fontsize)
         return ax
 
     def model_plot(
@@ -238,6 +240,7 @@ class ModelBandPlot(ModelBand):
         font_size=15,
         colorbar_label=r"log$_{10}$ flux",
         colorbar_label_font_size=None,
+        colorbar_tick_fontsize=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -254,7 +257,8 @@ class ModelBandPlot(ModelBand):
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param original_position: boolean, if True, uses original image positions
         :param image_name_list: list of names for images
-        :param colorbar_label_font_size: font size of the colorbar label
+        :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
+        :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
@@ -318,7 +322,7 @@ class ModelBandPlot(ModelBand):
                 else colorbar_label_font_size
             ),
         )
-        cb.ax.tick_params(labelsize=font_size)
+        cb.ax.tick_params(labelsize=font_size if colorbar_tick_fontsize is None else colorbar_tick_fontsize)
 
         # plot_line_set(ax, self._coords, self._ra_caustic_list, self._dec_caustic_list, color='b')
         # plot_line_set(ax, self._coords, self._ra_crit_list, self._dec_crit_list, color='r')
@@ -347,6 +351,7 @@ class ModelBandPlot(ModelBand):
         colorbar_label=r"$\log_{10}\ \kappa$",
         coordinate_arrows=True,
         colorbar_label_font_size=None,
+        colorbar_tick_fontsize=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -360,7 +365,8 @@ class ModelBandPlot(ModelBand):
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param colorbar_label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param colorbar_label_font_size: font size of the colorbar label
+        :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
+        :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
@@ -424,7 +430,7 @@ class ModelBandPlot(ModelBand):
                 else colorbar_label_font_size
             ),
         )
-        cb.ax.tick_params(labelsize=font_size)
+        cb.ax.tick_params(labelsize=font_size if colorbar_tick_fontsize is None else colorbar_tick_fontsize)
         return ax
 
     def substructure_plot(
@@ -444,6 +450,7 @@ class ModelBandPlot(ModelBand):
         add_color_bar=True,
         coordinate_arrows=True,
         colorbar_label_font_size=None,
+        colorbar_tick_fontsize=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -466,7 +473,8 @@ class ModelBandPlot(ModelBand):
         :param super_sample_factor: a integer the specifies supersampling of the coordinate grid to create the convergence map
         :param add_color_bar: bool; whether or not to include a color bar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param colorbar_label_font_size: font size of the colorbar label
+        :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
+        :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
@@ -607,7 +615,7 @@ class ModelBandPlot(ModelBand):
                     else colorbar_label_font_size
                 ),
             )
-            cb.ax.tick_params(labelsize=font_size)
+            cb.ax.tick_params(labelsize=font_size if colorbar_tick_fontsize is None else colorbar_tick_fontsize)
         else:
             cb = None
         return ax, cb
@@ -622,6 +630,7 @@ class ModelBandPlot(ModelBand):
         coordinate_arrows=True,
         color_bar=True,
         colorbar_label_font_size=None,
+        colorbar_tick_fontsize=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -636,7 +645,8 @@ class ModelBandPlot(ModelBand):
         :param colorbar_label: label for the color bar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param color_bar: Option to display the color bar
-        :param colorbar_label_font_size: font size of the colorbar label
+        :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
+        :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
@@ -702,7 +712,7 @@ class ModelBandPlot(ModelBand):
                     else colorbar_label_font_size
                 ),
             )
-            cb.ax.tick_params(labelsize=font_size)
+            cb.ax.tick_params(labelsize=font_size if colorbar_tick_fontsize is None else colorbar_tick_fontsize)
         return ax
 
     def absolute_residual_plot(
@@ -714,6 +724,7 @@ class ModelBandPlot(ModelBand):
         colorbar_label=r"(f$_{\rm data}$-f$_{\rm model}$)",
         coordinate_arrows=True,
         colorbar_label_font_size=None,
+        colorbar_tick_fontsize=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -727,7 +738,8 @@ class ModelBandPlot(ModelBand):
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param colorbar_label: label for the color bar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param colorbar_label_font_size: font size of the colorbar label
+        :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
+        :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
@@ -792,7 +804,7 @@ class ModelBandPlot(ModelBand):
                 else colorbar_label_font_size
             ),
         )
-        cb.ax.tick_params(labelsize=font_size)
+        cb.ax.tick_params(labelsize=font_size if colorbar_tick_fontsize is None else colorbar_tick_fontsize)
         return ax
 
     def source(self, numPix, deltaPix, center=None, image_orientation=True):
@@ -862,6 +874,7 @@ class ModelBandPlot(ModelBand):
         kwargs_caustic=None,
         coordinate_arrows=True,
         colorbar_label_font_size=None,
+        colorbar_tick_fontsize=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -885,7 +898,8 @@ class ModelBandPlot(ModelBand):
             the point source
         :param kwargs_caustic: keyword arguments for caustic plotting
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param colorbar_label_font_size: font size of the colorbar label
+        :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
+        :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
@@ -942,7 +956,7 @@ class ModelBandPlot(ModelBand):
                 else colorbar_label_font_size
             ),
         )
-        cb.ax.tick_params(labelsize=font_size)
+        cb.ax.tick_params(labelsize=font_size if colorbar_tick_fontsize is None else colorbar_tick_fontsize)
 
         if with_caustics is True:
             ra_caustic_list, dec_caustic_list = self._caustics()
@@ -967,45 +981,39 @@ class ModelBandPlot(ModelBand):
         if kwargs_title is None:
             kwargs_title = {}
         kwargs_title.setdefault("text", "Reconstructed source")
+        kwargs_title.setdefault("flipped", False)
+        kwargs_title.setdefault("font_size", font_size)
         if kwargs_scale_bar is None:
             kwargs_scale_bar = {}
         kwargs_scale_bar.setdefault("dist", 0.1)
         if kwargs_coordinate_arrows is None:
             kwargs_coordinate_arrows = {}
+        kwargs_coordinate_arrows.setdefault("font_size", font_size)
+        kwargs_coordinate_arrows.setdefault("arrow_length", self._arrow_length)
+        kwargs_coordinate_arrows.setdefault("arrowhead_size", self._arrowhead_size)
+        kwargs_coordinate_arrows.setdefault("arrow_origin_x", self._arrow_origin_x)
+        kwargs_coordinate_arrows.setdefault("arrow_origin_y", self._arrow_origin_y)
+        kwargs_coordinate_arrows.setdefault(
+            "arrow_north_offset_x", self._arrow_north_offset_x
+        )
+        kwargs_coordinate_arrows.setdefault(
+            "arrow_north_offset_y", self._arrow_north_offset_y
+        )
+        kwargs_coordinate_arrows.setdefault("arrow_east_offset_x", self._arrow_east_offset_x)
+        kwargs_coordinate_arrows.setdefault("arrow_east_offset_y", self._arrow_east_offset_y)
+        kwargs_coordinate_arrows.setdefault("arrow_color_north", "w")
+        kwargs_coordinate_arrows.setdefault("arrow_color_east", "w")
 
         if kwargs_scale_bar.get("dist", 1.0) > 0:
-            plot_util.show_scale_bar(
-                ax,
-                d_s,
-                **kwargs_scale_bar,
-            )
+            plot_util.show_scale_bar(ax, d_s, **kwargs_scale_bar)
         if coordinate_arrows:
             plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
-                font_size=arrow_font_size,
-                arrow_length=self._arrow_length,
-                arrowhead_size=self._arrowhead_size,
-                arrow_origin_x=self._arrow_origin_x,
-                arrow_origin_y=self._arrow_origin_y,
-                arrow_north_offset_x=self._arrow_north_offset_x,
-                arrow_north_offset_y=self._arrow_north_offset_y,
-                arrow_east_offset_x=self._arrow_east_offset_x,
-                arrow_east_offset_y=self._arrow_east_offset_y,
-                arrow_color_north=arrow_color_north,
-                arrow_color_east=arrow_color_east,
+                **kwargs_coordinate_arrows,
             )
-            plot_util.show_title_text(
-                ax,
-                text=title_text,
-                flipped=False,
-                color=title_color,
-                backgroundcolor=title_background_color,
-                font_size=title_font_size,
-                title_x_pos=title_x_pos,
-                title_y_pos=title_y_pos,
-            )
+        plot_util.show_title_text(ax, **kwargs_title)
         if point_source_position is True:
             ra_source, dec_source = self._bandmodel.PointSource.source_position(
                 self._kwargs_ps_partial, self._kwargs_lens
@@ -1025,6 +1033,7 @@ class ModelBandPlot(ModelBand):
         point_source_position=True,
         coordinate_arrows=True,
         colorbar_label_font_size=None,
+        colorbar_tick_fontsize=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -1049,7 +1058,8 @@ class ModelBandPlot(ModelBand):
         :param point_source_position: boolean, if True, plots a point at the position of
             the point source
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param colorbar_label_font_size: font size of the colorbar label
+        :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
+        :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
@@ -1110,7 +1120,7 @@ class ModelBandPlot(ModelBand):
                 else colorbar_label_font_size
             ),
         )
-        cb.ax.tick_params(labelsize=font_size)
+        cb.ax.tick_params(labelsize=font_size if colorbar_tick_fontsize is None else colorbar_tick_fontsize)
         if with_caustics:
             ra_caustic_list, dec_caustic_list = self._caustics()
             plot_util.plot_line_set(
@@ -1165,6 +1175,7 @@ class ModelBandPlot(ModelBand):
         coordinate_arrows=True,
         colorbar_label=r"$\det\ (\mathsf{A}^{-1})$",
         colorbar_label_font_size=None,
+        colorbar_tick_fontsize=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -1180,7 +1191,8 @@ class ModelBandPlot(ModelBand):
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param colorbar_label: string, label for the colorbar
-        :param colorbar_label_font_size: font size of the colorbar label
+        :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
+        :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
@@ -1252,7 +1264,7 @@ class ModelBandPlot(ModelBand):
                 else colorbar_label_font_size
             ),
         )
-        cb.ax.tick_params(labelsize=font_size)
+        cb.ax.tick_params(labelsize=font_size if colorbar_tick_fontsize is None else colorbar_tick_fontsize)
         ra_image, dec_image = self._bandmodel.PointSource.image_position(
             self._kwargs_ps_partial, self._kwargs_lens_partial
         )
@@ -1279,6 +1291,7 @@ class ModelBandPlot(ModelBand):
         colorbar_label=r"arcsec",
         coordinate_arrows=True,
         colorbar_label_font_size=None,
+        colorbar_tick_fontsize=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -1295,7 +1308,8 @@ class ModelBandPlot(ModelBand):
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param colorbar_label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param colorbar_label_font_size: font size of the colorbar label
+        :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
+        :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
@@ -1371,7 +1385,7 @@ class ModelBandPlot(ModelBand):
                 else colorbar_label_font_size
             ),
         )
-        cb.ax.tick_params(labelsize=font_size)
+        cb.ax.tick_params(labelsize=font_size if colorbar_tick_fontsize is None else colorbar_tick_fontsize)
         if with_caustics is True:
             ra_crit_list, dec_crit_list = self._critical_curves()
             ra_caustic_list, dec_caustic_list = self._caustics()
@@ -1416,6 +1430,7 @@ class ModelBandPlot(ModelBand):
         lens_light_add=False,
         coordinate_arrows=True,
         colorbar_label_font_size=None,
+        colorbar_tick_fontsize=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -1434,7 +1449,8 @@ class ModelBandPlot(ModelBand):
         :param lens_light_add: bool, if True, includes the lens light in the plot
         :param coordinate_arrows: bool, if True, shows the North/East directional arrows
             from the plot
-        :param colorbar_label_font_size: font size of the colorbar label
+        :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
+        :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
@@ -1511,7 +1527,7 @@ class ModelBandPlot(ModelBand):
                 else colorbar_label_font_size
             ),
         )
-        cb.ax.tick_params(labelsize=font_size)
+        cb.ax.tick_params(labelsize=font_size if colorbar_tick_fontsize is None else colorbar_tick_fontsize)
         return ax
 
     def subtract_from_data_plot(
@@ -1525,6 +1541,7 @@ class ModelBandPlot(ModelBand):
         coordinate_arrows=True,
         font_size=15,
         colorbar_label_font_size=None,
+        colorbar_tick_fontsize=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -1597,7 +1614,7 @@ class ModelBandPlot(ModelBand):
                 else colorbar_label_font_size
             ),
         )
-        cb.ax.tick_params(labelsize=font_size)
+        cb.ax.tick_params(labelsize=font_size if colorbar_tick_fontsize is None else colorbar_tick_fontsize)
         return ax
 
     def plot_main(self, with_caustics=False):

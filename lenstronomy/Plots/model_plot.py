@@ -205,6 +205,7 @@ class ModelPlot(object):
         font_size=15,
         colorbar_label=r"log$_{10}$ flux",
         colorbar_label_font_size=None,
+        colorbar_tick_fontsize=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -219,7 +220,8 @@ class ModelPlot(object):
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param colorbar_label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param colorbar_label_font_size: font size of the colorbar label
+        :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
+        :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
@@ -257,6 +259,7 @@ class ModelPlot(object):
         font_size=15,
         colorbar_label=r"log$_{10}$ flux",
         colorbar_label_font_size=None,
+        colorbar_tick_fontsize=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -274,7 +277,8 @@ class ModelPlot(object):
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param original_position: boolean, if True, uses original image positions
         :param image_name_list: list of names for images
-        :param colorbar_label_font_size: font size of the colorbar label
+        :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
+        :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
@@ -312,6 +316,7 @@ class ModelPlot(object):
         colorbar_label=r"$\log_{10}\ \kappa$",
         coordinate_arrows=True,
         colorbar_label_font_size=None,
+        colorbar_tick_fontsize=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -326,7 +331,8 @@ class ModelPlot(object):
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param colorbar_label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param colorbar_label_font_size: font size of the colorbar label
+        :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
+        :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
@@ -369,6 +375,7 @@ class ModelPlot(object):
         add_color_bar=True,
         coordinate_arrows=True,
         colorbar_label_font_size=None,
+        colorbar_tick_fontsize=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -391,7 +398,8 @@ class ModelPlot(object):
         :param super_sample_factor: a integer the specifies supersampling of the coordinate grid to create the convergence map
         :param add_color_bar: bool; whether or not to include a color bar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param colorbar_label_font_size: font size of the colorbar label
+        :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
+        :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
@@ -437,6 +445,7 @@ class ModelPlot(object):
         coordinate_arrows=True,
         color_bar=True,
         colorbar_label_font_size=None,
+        colorbar_tick_fontsize=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -452,7 +461,8 @@ class ModelPlot(object):
         :param colorbar_label: label for the color bar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param color_bar: Option to display the color bar
-        :param colorbar_label_font_size: font size of the colorbar label
+        :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
+        :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
@@ -488,6 +498,7 @@ class ModelPlot(object):
         colorbar_label=r"(f$_{\rm data}$-f$_{\rm model}$)",
         coordinate_arrows=True,
         colorbar_label_font_size=None,
+        colorbar_tick_fontsize=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -502,7 +513,8 @@ class ModelPlot(object):
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param colorbar_label: label for the color bar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param colorbar_label_font_size: font size of the colorbar label
+        :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
+        :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
@@ -545,6 +557,7 @@ class ModelPlot(object):
         kwargs_caustic=None,
         coordinate_arrows=True,
         colorbar_label_font_size=None,
+        colorbar_tick_fontsize=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -569,7 +582,8 @@ class ModelPlot(object):
             the point source
         :param kwargs_caustic: keyword arguments for caustic plotting
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param colorbar_label_font_size: font size of the colorbar label
+        :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
+        :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
@@ -615,6 +629,7 @@ class ModelPlot(object):
         point_source_position=True,
         coordinate_arrows=True,
         colorbar_label_font_size=None,
+        colorbar_tick_fontsize=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -635,7 +650,8 @@ class ModelPlot(object):
         :param point_source_position: boolean, if True, plots a point at the position of
             the point source
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param colorbar_label_font_size: font size of the colorbar label
+        :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
+        :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
@@ -674,6 +690,7 @@ class ModelPlot(object):
         coordinate_arrows=True,
         colorbar_label=r"$\det\ (\mathsf{A}^{-1})$",
         colorbar_label_font_size=None,
+        colorbar_tick_fontsize=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -690,7 +707,8 @@ class ModelPlot(object):
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param colorbar_label: string, label for the colorbar
-        :param colorbar_label_font_size: font size of the colorbar label
+        :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
+        :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
@@ -729,6 +747,7 @@ class ModelPlot(object):
         colorbar_label=r"arcsec",
         coordinate_arrows=True,
         colorbar_label_font_size=None,
+        colorbar_tick_fontsize=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -746,7 +765,8 @@ class ModelPlot(object):
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param colorbar_label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
-        :param colorbar_label_font_size: font size of the colorbar label
+        :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
+        :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
@@ -787,6 +807,7 @@ class ModelPlot(object):
         lens_light_add=False,
         coordinate_arrows=True,
         colorbar_label_font_size=None,
+        colorbar_tick_fontsize=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -807,7 +828,8 @@ class ModelPlot(object):
         :param lens_light_add: bool, if True, includes the lens light in the plot
         :param coordinate_arrows: bool, if True, shows the North/East directional arrows
             from the plot
-        :param colorbar_label_font_size: font size of the colorbar label
+        :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
+        :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
@@ -847,6 +869,7 @@ class ModelPlot(object):
         font_size=15,
         coordinate_arrows=True,
         colorbar_label_font_size=None,
+        colorbar_tick_fontsize=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -866,7 +889,8 @@ class ModelPlot(object):
         :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param coordinate_arrows: bool, if True, shows the North/East directional arrows
             from the plot
-        :param colorbar_label_font_size: font size of the colorbar label
+        :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
+        :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`

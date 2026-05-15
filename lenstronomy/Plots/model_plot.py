@@ -204,7 +204,7 @@ class ModelPlot(object):
         coordinate_arrows=True,
         font_size=15,
         colorbar_label=r"log$_{10}$ flux",
-        colorbar_label_font_size=15,
+        colorbar_label_font_size=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -216,7 +216,7 @@ class ModelPlot(object):
         :param ax: matplotlib axis instance
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
-        :param font_size: font size of the text
+        :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param colorbar_label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param colorbar_label_font_size: font size of the colorbar label
@@ -256,7 +256,7 @@ class ModelPlot(object):
         coordinate_arrows=True,
         font_size=15,
         colorbar_label=r"log$_{10}$ flux",
-        colorbar_label_font_size=15,
+        colorbar_label_font_size=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -270,7 +270,7 @@ class ModelPlot(object):
         :param v_max: maximum plotting scale
         :param image_names: boolean, if True, prints image names
         :param colorbar_label: string, label for the colorbar
-        :param font_size: font size of the text
+        :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param original_position: boolean, if True, uses original image positions
         :param image_name_list: list of names for images
@@ -311,7 +311,7 @@ class ModelPlot(object):
         font_size=15,
         colorbar_label=r"$\log_{10}\ \kappa$",
         coordinate_arrows=True,
-        colorbar_label_font_size=15,
+        colorbar_label_font_size=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -323,7 +323,7 @@ class ModelPlot(object):
         :param ax: matplotlib axis instance
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
-        :param font_size: font size of the text
+        :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param colorbar_label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param colorbar_label_font_size: font size of the colorbar label
@@ -368,7 +368,7 @@ class ModelPlot(object):
         super_sample_factor=None,
         add_color_bar=True,
         coordinate_arrows=True,
-        colorbar_label_font_size=15,
+        colorbar_label_font_size=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -382,7 +382,7 @@ class ModelPlot(object):
         :param subtract_mean: bool; displays the substructure convergence relative to the mean convergence in the frame
         :param v_min: minimum color scale
         :param v_max: max color scale
-        :param font_size: font size for text appearing in image
+        :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param colorbar_label: label for the color bar
         :param cmap: colormap for use in the visualization
         :param with_critical_curves: bool; plots the critical curves in the frame
@@ -436,7 +436,7 @@ class ModelPlot(object):
         colorbar_label=r"(f$_{\rm data}$ - f$_{\rm model}$)/$\sigma$",
         coordinate_arrows=True,
         color_bar=True,
-        colorbar_label_font_size=15,
+        colorbar_label_font_size=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -448,7 +448,7 @@ class ModelPlot(object):
         :param ax: matplotlib axis instance
         :param v_min: minimum color scale
         :param v_max: max color scale
-        :param font_size: font size for text appearing in image
+        :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param colorbar_label: label for the color bar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param color_bar: Option to display the color bar
@@ -487,7 +487,7 @@ class ModelPlot(object):
         font_size=15,
         colorbar_label=r"(f$_{\rm data}$-f$_{\rm model}$)",
         coordinate_arrows=True,
-        colorbar_label_font_size=15,
+        colorbar_label_font_size=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -499,7 +499,7 @@ class ModelPlot(object):
         :param ax: matplotlib axis instance
         :param v_min: minimum color scale
         :param v_max: max color scale
-        :param font_size: font size for text appearing in image
+        :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param colorbar_label: label for the color bar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param colorbar_label_font_size: font size of the colorbar label
@@ -544,7 +544,7 @@ class ModelPlot(object):
         point_source_position=True,
         kwargs_caustic=None,
         coordinate_arrows=True,
-        colorbar_label_font_size=15,
+        colorbar_label_font_size=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -562,7 +562,7 @@ class ModelPlot(object):
         :param v_max: maximum plotting scale of the map
         :param with_caustics: plot the caustics on top of the source reconstruction
         :param caustic_color: color of the caustics
-        :param font_size: font size of labels
+        :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param plot_scale: string, log or linear, scale of surface brightness plot
         :param colorbar_label: string, label for the colorbar
         :param point_source_position: boolean, if True, plots a point at the position of
@@ -614,7 +614,7 @@ class ModelPlot(object):
         font_size=15,
         point_source_position=True,
         coordinate_arrows=True,
-        colorbar_label_font_size=15,
+        colorbar_label_font_size=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -631,7 +631,7 @@ class ModelPlot(object):
         :param v_min: minimum plotting scale of the map
         :param v_max: maximum plotting scale of the map
         :param with_caustics: plot the caustics on top of the source reconstruction
-        :param font_size: font size of labels
+        :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param point_source_position: boolean, if True, plots a point at the position of
             the point source
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
@@ -673,7 +673,7 @@ class ModelPlot(object):
         font_size=15,
         coordinate_arrows=True,
         colorbar_label=r"$\det\ (\mathsf{A}^{-1})$",
-        colorbar_label_font_size=15,
+        colorbar_label_font_size=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -687,7 +687,7 @@ class ModelPlot(object):
         :param v_max: maximum range of plotting
         :param image_name_list: list of strings for names of the images in the same
             order as the positions
-        :param font_size: font size of labels
+        :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param colorbar_label: string, label for the colorbar
         :param colorbar_label_font_size: font size of the colorbar label
@@ -728,7 +728,7 @@ class ModelPlot(object):
         font_size=15,
         colorbar_label=r"arcsec",
         coordinate_arrows=True,
-        colorbar_label_font_size=15,
+        colorbar_label_font_size=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -743,7 +743,7 @@ class ModelPlot(object):
         :param axis: integer, 0 or 1, specifies the deflection angle axis to be plotted
         :param with_caustics: boolean, if True, plots caustics
         :param image_name_list: list of strings for names of the images
-        :param font_size: font size of labels
+        :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param colorbar_label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param colorbar_label_font_size: font size of the colorbar label
@@ -786,7 +786,7 @@ class ModelPlot(object):
         source_add=False,
         lens_light_add=False,
         coordinate_arrows=True,
-        colorbar_label_font_size=15,
+        colorbar_label_font_size=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -801,7 +801,7 @@ class ModelPlot(object):
         :param unconvolved: bool, if True, does not perform PSF convolution on the image
         :param point_source_add: bool, if True, includes the lensed point source(s) in
             the plot
-        :param font_size: font size of labels
+        :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param source_add: bool, if True, includes the lensed image of the source in the
             plot
         :param lens_light_add: bool, if True, includes the lens light in the plot
@@ -846,7 +846,7 @@ class ModelPlot(object):
         lens_light_add=False,
         font_size=15,
         coordinate_arrows=True,
-        colorbar_label_font_size=15,
+        colorbar_label_font_size=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -863,7 +863,7 @@ class ModelPlot(object):
         :param source_add: bool, if True, includes the lensed image of the source in the
             plot
         :param lens_light_add: bool, if True, includes the lens light in the plot
-        :param font_size: font size of labels
+        :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param coordinate_arrows: bool, if True, shows the North/East directional arrows
             from the plot
         :param colorbar_label_font_size: font size of the colorbar label

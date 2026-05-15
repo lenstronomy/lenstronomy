@@ -142,7 +142,7 @@ class ModelBandPlot(ModelBand):
         coordinate_arrows=True,
         font_size=15,
         colorbar_label=r"log$_{10}$ flux",
-        colorbar_label_font_size=15,
+        colorbar_label_font_size=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -153,7 +153,7 @@ class ModelBandPlot(ModelBand):
         :param ax: matplotlib axis instance
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
-        :param font_size: font size of the text
+        :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param colorbar_label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param colorbar_label_font_size: font size of the colorbar label
@@ -215,8 +215,14 @@ class ModelBandPlot(ModelBand):
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax, orientation="vertical")
-        cb.set_label(colorbar_label, fontsize=font_size)
-        cb.set_label(colorbar_label, fontsize=colorbar_label_font_size)
+        cb.set_label(
+            colorbar_label,
+            fontsize=(
+                font_size
+                if colorbar_label_font_size is None
+                else colorbar_label_font_size
+            ),
+        )
         cb.ax.tick_params(labelsize=font_size)
         return ax
 
@@ -231,7 +237,7 @@ class ModelBandPlot(ModelBand):
         coordinate_arrows=True,
         font_size=15,
         colorbar_label=r"log$_{10}$ flux",
-        colorbar_label_font_size=15,
+        colorbar_label_font_size=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -244,7 +250,7 @@ class ModelBandPlot(ModelBand):
         :param v_max: maximum plotting scale
         :param image_names: boolean, if True, prints image names
         :param colorbar_label: string, label for the colorbar
-        :param font_size: font size of the text
+        :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param original_position: boolean, if True, uses original image positions
         :param image_name_list: list of names for images
@@ -304,8 +310,14 @@ class ModelBandPlot(ModelBand):
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(colorbar_label, fontsize=font_size)
-        cb.set_label(colorbar_label, fontsize=colorbar_label_font_size)
+        cb.set_label(
+            colorbar_label,
+            fontsize=(
+                font_size
+                if colorbar_label_font_size is None
+                else colorbar_label_font_size
+            ),
+        )
         cb.ax.tick_params(labelsize=font_size)
 
         # plot_line_set(ax, self._coords, self._ra_caustic_list, self._dec_caustic_list, color='b')
@@ -334,7 +346,7 @@ class ModelBandPlot(ModelBand):
         font_size=15,
         colorbar_label=r"$\log_{10}\ \kappa$",
         coordinate_arrows=True,
-        colorbar_label_font_size=15,
+        colorbar_label_font_size=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -345,7 +357,7 @@ class ModelBandPlot(ModelBand):
         :param ax: matplotib axis instance
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
-        :param font_size: font size of the text
+        :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param colorbar_label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param colorbar_label_font_size: font size of the colorbar label
@@ -404,8 +416,14 @@ class ModelBandPlot(ModelBand):
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(colorbar_label, fontsize=font_size)
-        cb.set_label(colorbar_label, fontsize=colorbar_label_font_size)
+        cb.set_label(
+            colorbar_label,
+            fontsize=(
+                font_size
+                if colorbar_label_font_size is None
+                else colorbar_label_font_size
+            ),
+        )
         cb.ax.tick_params(labelsize=font_size)
         return ax
 
@@ -425,7 +443,7 @@ class ModelBandPlot(ModelBand):
         super_sample_factor=None,
         add_color_bar=True,
         coordinate_arrows=True,
-        colorbar_label_font_size=15,
+        colorbar_label_font_size=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -439,7 +457,7 @@ class ModelBandPlot(ModelBand):
         :param subtract_mean: bool; displays the substructure convergence relative to the mean convergence in the frame
         :param v_min: minimum color scale
         :param v_max: max color scale
-        :param font_size: font size for text appearing in image
+        :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param colorbar_label: label for the color bar
         :param cmap: colormap for use in the visualization
         :param with_critical_curves: bool; plots the critical curves in the frame
@@ -581,8 +599,14 @@ class ModelBandPlot(ModelBand):
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.05)
             cb = plt.colorbar(im, cax=cax)
-            cb.set_label(colorbar_label, fontsize=font_size)
-            cb.set_label(colorbar_label, fontsize=colorbar_label_font_size)
+            cb.set_label(
+                colorbar_label,
+                fontsize=(
+                    font_size
+                    if colorbar_label_font_size is None
+                    else colorbar_label_font_size
+                ),
+            )
             cb.ax.tick_params(labelsize=font_size)
         else:
             cb = None
@@ -597,7 +621,7 @@ class ModelBandPlot(ModelBand):
         colorbar_label=r"(f$_{\rm data}$ - f$_{\rm model}$)/$\sigma$",
         coordinate_arrows=True,
         color_bar=True,
-        colorbar_label_font_size=15,
+        colorbar_label_font_size=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -608,7 +632,7 @@ class ModelBandPlot(ModelBand):
         :param ax: matplotlib axis instance
         :param v_min: minimum color scale
         :param v_max: max color scale
-        :param font_size: font size for text appearing in image
+        :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param colorbar_label: label for the color bar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param color_bar: Option to display the color bar
@@ -670,8 +694,14 @@ class ModelBandPlot(ModelBand):
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.05)
             cb = plt.colorbar(im, cax=cax)
-            cb.set_label(colorbar_label, fontsize=font_size)
-            cb.set_label(colorbar_label, fontsize=colorbar_label_font_size)
+            cb.set_label(
+                colorbar_label,
+                fontsize=(
+                    font_size
+                    if colorbar_label_font_size is None
+                    else colorbar_label_font_size
+                ),
+            )
             cb.ax.tick_params(labelsize=font_size)
         return ax
 
@@ -683,7 +713,7 @@ class ModelBandPlot(ModelBand):
         font_size=15,
         colorbar_label=r"(f$_{\rm data}$-f$_{\rm model}$)",
         coordinate_arrows=True,
-        colorbar_label_font_size=15,
+        colorbar_label_font_size=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -694,7 +724,7 @@ class ModelBandPlot(ModelBand):
         :param ax: matplotlib axis instance
         :param v_min: minimum color scale
         :param v_max: max color scale
-        :param font_size: font size for text appearing in image
+        :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param colorbar_label: label for the color bar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param colorbar_label_font_size: font size of the colorbar label
@@ -754,8 +784,14 @@ class ModelBandPlot(ModelBand):
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(colorbar_label, fontsize=font_size)
-        cb.set_label(colorbar_label, fontsize=colorbar_label_font_size)
+        cb.set_label(
+            colorbar_label,
+            fontsize=(
+                font_size
+                if colorbar_label_font_size is None
+                else colorbar_label_font_size
+            ),
+        )
         cb.ax.tick_params(labelsize=font_size)
         return ax
 
@@ -825,7 +861,7 @@ class ModelBandPlot(ModelBand):
         point_source_position=True,
         kwargs_caustic=None,
         coordinate_arrows=True,
-        colorbar_label_font_size=15,
+        colorbar_label_font_size=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -842,7 +878,7 @@ class ModelBandPlot(ModelBand):
         :param v_max: maximum plotting scale of the map
         :param with_caustics: plot the caustics on top of the source reconstruction
         :param caustic_color: color of the caustics
-        :param font_size: font size of labels
+        :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param plot_scale: string, log or linear, scale of surface brightness plot
         :param colorbar_label: string, label for the colorbar
         :param point_source_position: boolean, if True, plots a point at the position of
@@ -898,8 +934,14 @@ class ModelBandPlot(ModelBand):
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(colorbar_label, fontsize=font_size)
-        cb.set_label(colorbar_label, fontsize=colorbar_label_font_size)
+        cb.set_label(
+            colorbar_label,
+            fontsize=(
+                font_size
+                if colorbar_label_font_size is None
+                else colorbar_label_font_size
+            ),
+        )
         cb.ax.tick_params(labelsize=font_size)
 
         if with_caustics is True:
@@ -982,7 +1024,7 @@ class ModelBandPlot(ModelBand):
         font_size=15,
         point_source_position=True,
         coordinate_arrows=True,
-        colorbar_label_font_size=15,
+        colorbar_label_font_size=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -1003,7 +1045,7 @@ class ModelBandPlot(ModelBand):
         :param v_max: maximum plotting scale of the map
         :param with_caustics: plot the caustics on top of the source reconstruction (may
             take some time)
-        :param font_size: font size of labels
+        :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param point_source_position: boolean, if True, plots a point at the position of
             the point source
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
@@ -1060,8 +1102,14 @@ class ModelBandPlot(ModelBand):
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(r"error variance", fontsize=font_size)
-        cb.set_label(r"error variance", fontsize=colorbar_label_font_size)
+        cb.set_label(
+            r"error variance",
+            fontsize=(
+                font_size
+                if colorbar_label_font_size is None
+                else colorbar_label_font_size
+            ),
+        )
         cb.ax.tick_params(labelsize=font_size)
         if with_caustics:
             ra_caustic_list, dec_caustic_list = self._caustics()
@@ -1116,7 +1164,7 @@ class ModelBandPlot(ModelBand):
         font_size=15,
         coordinate_arrows=True,
         colorbar_label=r"$\det\ (\mathsf{A}^{-1})$",
-        colorbar_label_font_size=15,
+        colorbar_label_font_size=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -1129,7 +1177,7 @@ class ModelBandPlot(ModelBand):
         :param v_max: maximum range of plotting
         :param image_name_list: list of strings for names of the images in the same
             order as the positions
-        :param font_size: font size of labels
+        :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param colorbar_label: string, label for the colorbar
         :param colorbar_label_font_size: font size of the colorbar label
@@ -1196,8 +1244,14 @@ class ModelBandPlot(ModelBand):
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(colorbar_label, fontsize=font_size)
-        cb.set_label(colorbar_label, fontsize=colorbar_label_font_size)
+        cb.set_label(
+            colorbar_label,
+            fontsize=(
+                font_size
+                if colorbar_label_font_size is None
+                else colorbar_label_font_size
+            ),
+        )
         cb.ax.tick_params(labelsize=font_size)
         ra_image, dec_image = self._bandmodel.PointSource.image_position(
             self._kwargs_ps_partial, self._kwargs_lens_partial
@@ -1224,7 +1278,7 @@ class ModelBandPlot(ModelBand):
         font_size=15,
         colorbar_label=r"arcsec",
         coordinate_arrows=True,
-        colorbar_label_font_size=15,
+        colorbar_label_font_size=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -1238,7 +1292,7 @@ class ModelBandPlot(ModelBand):
         :param axis: integer, 0 or 1, specifies the deflection angle axis to be plotted
         :param with_caustics: boolean, if True, plots caustics
         :param image_name_list: list of strings for names of the images
-        :param font_size: font size of labels
+        :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
         :param colorbar_label: string, label for the colorbar
         :param coordinate_arrows: boolean, if True, plots coordinate arrows
         :param colorbar_label_font_size: font size of the colorbar label
@@ -1309,8 +1363,14 @@ class ModelBandPlot(ModelBand):
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(colorbar_label, fontsize=font_size)
-        cb.set_label(colorbar_label, fontsize=colorbar_label_font_size)
+        cb.set_label(
+            colorbar_label,
+            fontsize=(
+                font_size
+                if colorbar_label_font_size is None
+                else colorbar_label_font_size
+            ),
+        )
         cb.ax.tick_params(labelsize=font_size)
         if with_caustics is True:
             ra_crit_list, dec_crit_list = self._critical_curves()
@@ -1355,7 +1415,7 @@ class ModelBandPlot(ModelBand):
         source_add=False,
         lens_light_add=False,
         coordinate_arrows=True,
-        colorbar_label_font_size=15,
+        colorbar_label_font_size=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -1443,8 +1503,14 @@ class ModelBandPlot(ModelBand):
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(r"log$_{10}$ flux", fontsize=font_size)
-        cb.set_label(r"log$_{10}$ flux", fontsize=colorbar_label_font_size)
+        cb.set_label(
+            r"log$_{10}$ flux",
+            fontsize=(
+                font_size
+                if colorbar_label_font_size is None
+                else colorbar_label_font_size
+            ),
+        )
         cb.ax.tick_params(labelsize=font_size)
         return ax
 
@@ -1458,7 +1524,7 @@ class ModelBandPlot(ModelBand):
         lens_light_add=False,
         coordinate_arrows=True,
         font_size=15,
-        colorbar_label_font_size=15,
+        colorbar_label_font_size=None,
         kwargs_title=None,
         kwargs_scale_bar=None,
         kwargs_coordinate_arrows=None,
@@ -1523,8 +1589,14 @@ class ModelBandPlot(ModelBand):
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(r"log$_{10}$ flux", fontsize=font_size)
-        cb.set_label(r"log$_{10}$ flux", fontsize=colorbar_label_font_size)
+        cb.set_label(
+            r"log$_{10}$ flux",
+            fontsize=(
+                font_size
+                if colorbar_label_font_size is None
+                else colorbar_label_font_size
+            ),
+        )
         cb.ax.tick_params(labelsize=font_size)
         return ax
 

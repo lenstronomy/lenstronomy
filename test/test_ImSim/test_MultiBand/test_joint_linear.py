@@ -7,6 +7,7 @@ import pytest
 from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
 from lenstronomy.ImSim.MultiBand.joint_linear import JointLinear
+import lenstronomy.ImSim.de_lens as de_lens
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
@@ -157,6 +158,34 @@ class TestJointLinear(object):
         )
         chi2_reduced = logL * 2 / self.imageModel.num_data_evaluate
         npt.assert_almost_equal(chi2_reduced, -1, 1)
+
+    def test_likelihood_data_given_model_source_marg_and_positive_flux(self):
+        original_marginalization_new = de_lens.marginalization_new
+        de_lens.marginalization_new = lambda *args, **kwargs: 0.0
+        try:
+            self.imageModel._image_model_list[0].check_positive_flux = (
+                lambda *args, **kwargs: False
+            )
+            logL, param = self.imageModel.likelihood_data_given_model(
+                self.kwargs_lens,
+                self.kwargs_source,
+                self.kwargs_lens_light,
+                self.kwargs_ps,
+                source_marg=True,
+                check_positive_flux=True,
+            )
+            assert logL < -1e4
+            updated_kwargs = self.imageModel.update_linear_kwargs(
+                param,
+                0,
+                self.kwargs_lens,
+                self.kwargs_source,
+                self.kwargs_lens_light,
+                self.kwargs_ps,
+            )
+            assert updated_kwargs is not None
+        finally:
+            de_lens.marginalization_new = original_marginalization_new
 
 
 if __name__ == "__main__":

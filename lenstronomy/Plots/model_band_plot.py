@@ -139,7 +139,6 @@ class ModelBandPlot(ModelBand):
                     self._ra_caustic_list,
                     self._dec_caustic_list,
                 ) = self._lens_model_ext.critical_curve_caustics(
-                ) = self._lens_model_ext.critical_curve_caustics(
                     self._kwargs_lens_partial,
                     compute_window=self._frame_size,
                     grid_scale=self._delta_pix,
@@ -389,7 +388,6 @@ class ModelBandPlot(ModelBand):
         kwargs_matshow.setdefault("cmap", "gist_heat")
 
         kappa_result = util.array2image(
-            self._lens_model.kappa(self._x_grid, self._y_grid, self._kwargs_lens_partial)
             self._lens_model.kappa(self._x_grid, self._y_grid, self._kwargs_lens_partial)
         )
         im = ax.matshow(

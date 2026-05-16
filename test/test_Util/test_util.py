@@ -423,7 +423,7 @@ def test_selectBest():
     assert array_select[0] == 3
     assert array_select[3] == 4
 
-    array_select = util.selectBest(array, select, numSelect=10, highest=False)
+    array_select = util.selectBest(array, select, num_select=10, highest=False)
     assert len(array_select) == len(array)
 
 
@@ -563,7 +563,7 @@ class TestRaise(unittest.TestCase):
             util.get_axes(x, y)
         with self.assertRaises(ValueError):
             util.selectBest(
-                array=np.ones(6), criteria=np.ones(5), numSelect=1, highest=True
+                array=np.ones(6), criteria=np.ones(5), num_select=1, highest=True
             )
         with self.assertRaises(ValueError):
             util.select_best(

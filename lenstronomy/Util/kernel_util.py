@@ -178,7 +178,7 @@ def subgrid_kernel(kernel, subgrid_res, odd=False, num_iter=100):
         if subgrid_res % 2 == 0:
             kernel_pixel = averaging_even_kernel(kernel_subgrid, subgrid_res)
         else:
-            kernel_pixel = util.averaging(kernel_subgrid, numGrid=nx_new, num_pix=nx)
+            kernel_pixel = util.averaging(kernel_subgrid, num_grid=nx_new, num_pix=nx)
         delta = kernel - kernel_pixel
         temp_kernel = kernel_input + delta
         kernel_subgrid = image_util.re_size_array(
@@ -194,7 +194,7 @@ def subgrid_kernel(kernel, subgrid_res, odd=False, num_iter=100):
     # whatever has not been matched is added to zeroth order (in squares of the undersampled PSF)
     if subgrid_res % 2 == 0:
         return kernel_subgrid
-    kernel_pixel = util.averaging(kernel_subgrid, numGrid=nx_new, num_pix=nx)
+    kernel_pixel = util.averaging(kernel_subgrid, num_grid=nx_new, num_pix=nx)
     kernel_pixel = kernel_norm(kernel_pixel)
     delta_kernel = kernel_pixel - kernel_norm(kernel)
     id = np.ones((subgrid_res, subgrid_res))
@@ -262,7 +262,7 @@ def pixel_kernel(point_source_kernel, subgrid_res=7):
                 kernel_pixel, k_x, k_y, kernel_subgrid
             )
     kernel_pixel = util.averaging(
-        kernel_pixel, numGrid=kernel_size * subgrid_res, num_pix=kernel_size
+        kernel_pixel, num_grid=kernel_size * subgrid_res, num_pix=kernel_size
     )
     return kernel_norm(kernel_pixel)
 
@@ -295,7 +295,9 @@ def kernel_average_pixel(kernel_super, supersampling_factor):
     if supersampling_factor % 2 == 0:
         kernel_pixel = averaging_even_kernel(kernel_pixel, supersampling_factor)
     else:
-        kernel_pixel = util.averaging(kernel_pixel, numGrid=n_high, num_pix=kernel_size)
+        kernel_pixel = util.averaging(
+            kernel_pixel, num_grid=n_high, num_pix=kernel_size
+        )
     kernel_pixel /= np.sum(kernel_pixel)
     return kernel_pixel * kernel_sum
 
@@ -448,7 +450,7 @@ def averaging_odd_kernel(kernel_super, degrading_factor):
     kernel_super_[i_start : i_start + n_kernel, i_start : i_start + n_kernel] = (
         kernel_super
     )
-    kernel_low_res = util.averaging(kernel_super_, numGrid=n_high, num_pix=num_pix)
+    kernel_low_res = util.averaging(kernel_super_, num_grid=n_high, num_pix=num_pix)
     return kernel_low_res
 
 

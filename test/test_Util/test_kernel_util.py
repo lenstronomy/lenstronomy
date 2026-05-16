@@ -316,7 +316,7 @@ def test_subgrid_rebin():
     kernel = util.array2image(flux)
     print(np.shape(kernel))
     kernel = util.averaging(
-        kernel, numGrid=kernel_size * subgrid_res, num_pix=kernel_size
+        kernel, num_grid=kernel_size * subgrid_res, num_pix=kernel_size
     )
     kernel = kernel_util.kernel_norm(kernel)
 
@@ -324,7 +324,7 @@ def test_subgrid_rebin():
         kernel, subgrid_res=subgrid_res, odd=True
     )
     kernel_pixel = util.averaging(
-        subgrid_kernel, numGrid=kernel_size * subgrid_res, num_pix=kernel_size
+        subgrid_kernel, num_grid=kernel_size * subgrid_res, num_pix=kernel_size
     )
     kernel_pixel = kernel_util.kernel_norm(kernel_pixel)
     assert np.sum((kernel_pixel - kernel) ** 2) < 0.1

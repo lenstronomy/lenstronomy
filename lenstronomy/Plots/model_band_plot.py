@@ -9,12 +9,12 @@ else:
     except ImportError:
         pass
 import lenstronomy.Util.util as util
+import lenstronomy.Plots.plot_util as plot_util
+from lenstronomy.Data.coord_transforms import Coordinates
 import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
-from lenstronomy.Data.coord_transforms import Coordinates
-from lenstronomy.Plots import plot_util
 from lenstronomy.Analysis.image_reconstruction import ModelBand
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.ImSim.image_linear_solve import ImageLinearFit, ImageModel
@@ -483,13 +483,9 @@ class ModelBandPlot(ModelBand):
         lens_model_list_macro = []
         profile_kwargs_list_macro = []
         multi_plane = self._lens_model.multi_plane
-        multi_plane = self._lens_model.multi_plane
         if multi_plane:
             lens_redshift_list = self._lens_model.redshift_list
-            lens_redshift_list = self._lens_model.redshift_list
             lens_redshift_list_macro = []
-            z_source = self._lens_model.z_source
-            cosmo = self._lens_model.cosmo
             z_source = self._lens_model.z_source
             cosmo = self._lens_model.cosmo
         else:
@@ -499,11 +495,9 @@ class ModelBandPlot(ModelBand):
             cosmo = None
         for idx in index_macromodel:
             lens_model_list_macro.append(self._lens_model.lens_model_list[idx])
-            lens_model_list_macro.append(self._lens_model.lens_model_list[idx])
             kwargs_lens_macro.append(self._kwargs_lens_partial[idx])
             if multi_plane:
                 lens_redshift_list_macro.append(lens_redshift_list[idx])
-            profile_kwargs_list_macro.append(self._lens_model.profile_kwargs_list[idx])
             profile_kwargs_list_macro.append(self._lens_model.profile_kwargs_list[idx])
 
         lens_model_macro = LensModel(
@@ -794,9 +788,11 @@ class ModelBandPlot(ModelBand):
             Coordinates() instance of source grid
         """
         if image_orientation is True:
-            Mpix2coord = self._coords.transform_pix2angle * delta_pix / self._delta_pix
+            mapping_pix2coord = (
+                self._coords.transform_pix2angle * delta_pix / self._delta_pix
+            )
             x_grid_source, y_grid_source = util.make_grid_transformed(
-                num_pix, matrix_pix2angle=Mpix2coord
+                num_pix, matrix_pix2angle=mapping_pix2coord
             )
             ra_at_xy_0, dec_at_xy_0 = x_grid_source[0], y_grid_source[0]
         else:
@@ -807,10 +803,8 @@ class ModelBandPlot(ModelBand):
                 dec_at_xy_0,
                 x_at_radec_0,
                 y_at_radec_0,
-                Mpix2coord,
+                mapping_pix2coord,
                 Mcoord2pix,
-                m_pix2coord,
-                m_coord2pix,
             ) = util.make_grid_with_coordtransform(num_pix, delta_pix)
 
         center_x = 0
@@ -824,7 +818,7 @@ class ModelBandPlot(ModelBand):
         y_grid_source += center_y
 
         coords_source = Coordinates(
-            transform_pix2angle=m_pix2coord,
+            transform_pix2angle=mapping_pix2coord,
             ra_at_xy_0=ra_at_xy_0 + center_x,
             dec_at_xy_0=dec_at_xy_0 + center_y,
         )
@@ -1013,6 +1007,10 @@ class ModelBandPlot(ModelBand):
         """
         if font_size is None:
             font_size = self._font_size
+        if kwargs_caustic is not None:
+            kwargs_caustic = dict(kwargs_caustic)
+        else:
+            kwargs_caustic = {}
         x_grid_source, y_grid_source = util.make_grid_transformed(
             num_pix,
             self._coords.transform_pix2angle * delta_pix_source / self._delta_pix,
@@ -1070,7 +1068,7 @@ class ModelBandPlot(ModelBand):
                 dec_caustic_list,
                 color="b",
                 points_only=self._caustic_points_only,
-                **kwrags_caustic,
+                **kwargs_caustic,
             )
 
         if kwargs_scale_bar is not None:

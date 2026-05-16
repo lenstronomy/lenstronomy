@@ -98,7 +98,7 @@ def rotate(xcoords, ycoords, angle):
 
 
 @export
-def map_coord2pix(ra, dec, x_0, y_0, M):
+def map_coord2pix(ra, dec, x_0, y_0, mapping):
     """This routines performs a linear transformation between two coordinate systems.
     Mainly used to transform angular into pixel coordinates in an image.
 
@@ -106,10 +106,10 @@ def map_coord2pix(ra, dec, x_0, y_0, M):
     :param dec: dec coordinates
     :param x_0: pixel value in x-axis of ra,dec = 0,0
     :param y_0: pixel value in y-axis of ra,dec = 0,0
-    :param M: 2x2 matrix to transform angular to pixel coordinates
+    :param matrix: 2x2 matrix to transform angular to pixel coordinates
     :return: transformed coordinate systems of input ra and dec
     """
-    x, y = M.dot(np.array([ra, dec]))
+    x, y = mapping.dot(np.array([ra, dec]))
     return x + x_0, y + y_0
 
 
@@ -235,7 +235,7 @@ def make_grid_transformed(num_pix, matrix_pix2angle):
     """Returns grid with linear transformation (delta_pix and rotation)
 
     :param num_pix: number of Pixels
-    :param Mpix2Angle: 2-by-2 matrix to mat a pixel to a coordinate
+    :param matrix_pix2angle: 2-by-2 matrix to map a pixel to a coordinate
     :return: coordinate grid
     """
     x_grid, y_grid = make_grid(num_pix, delta_pix=1)
@@ -290,7 +290,7 @@ def make_grid_with_coordtransform(
     :param left_lower: sets the zero point at the lower left corner of the pixels
     :param inverse: bool, if true sets East as left, otherwise East is righrt
     :return: ra_grid, dec_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0,
-        Mpix2coord, Mcoord2pix
+        mapping_pix2coord, mapping_coord2pix
     """
     num_pix_eff = num_pix * subgrid_res
     delta_pix_eff = delta_pix / float(subgrid_res)
@@ -312,10 +312,10 @@ def make_grid_with_coordtransform(
     ra_at_xy_0 = ra_grid[0]
     dec_at_xy_0 = dec_grid[0]
 
-    Mpix2coord = np.array([[delta_x, 0], [0, delta_pix_eff]])
-    Mcoord2pix = np.linalg.inv(Mpix2coord)
+    mapping_pix2coord = np.array([[delta_x, 0], [0, delta_pix_eff]])
+    mapping_coord2pix = np.linalg.inv(mapping_pix2coord)
     x_at_radec_0, y_at_radec_0 = map_coord2pix(
-        -ra_at_xy_0, -dec_at_xy_0, x_0=0, y_0=0, M=Mcoord2pix
+        -ra_at_xy_0, -dec_at_xy_0, x_0=0, y_0=0, mapping=mapping_coord2pix
     )
     return (
         ra_grid,
@@ -324,18 +324,18 @@ def make_grid_with_coordtransform(
         dec_at_xy_0,
         x_at_radec_0,
         y_at_radec_0,
-        Mpix2coord,
-        Mcoord2pix,
+        mapping_pix2coord,
+        mapping_coord2pix,
     )
 
 
 @export
-def grid_from_coordinate_transform(nx, ny, Mpix2coord, ra_at_xy_0, dec_at_xy_0):
+def grid_from_coordinate_transform(nx, ny, mapping_pix2coord, ra_at_xy_0, dec_at_xy_0):
     """Return a grid in x and y coordinates that satisfy the coordinate system.
 
     :param nx: number of pixels in x-axis
     :param ny: number of pixels in y-axis
-    :param Mpix2coord: transformation matrix (2x2) of pixels into coordinate
+    :param mapping_pix2coord: transformation matrix (2x2) of pixels into coordinate
         displacements
     :param ra_at_xy_0: RA coordinate at (x,y) = (0,0)
     :param dec_at_xy_0: DEC coordinate at (x,y) = (0,0)
@@ -346,8 +346,14 @@ def grid_from_coordinate_transform(nx, ny, Mpix2coord, ra_at_xy_0, dec_at_xy_0):
     matrix = np.dstack(np.meshgrid(a, b)).reshape(-1, 2)
     x_grid = matrix[:, 0]
     y_grid = matrix[:, 1]
-    ra_grid = x_grid * Mpix2coord[0, 0] + y_grid * Mpix2coord[0, 1] + ra_at_xy_0
-    dec_grid = x_grid * Mpix2coord[1, 0] + y_grid * Mpix2coord[1, 1] + dec_at_xy_0
+    ra_grid = (
+        x_grid * mapping_pix2coord[0, 0] + y_grid * mapping_pix2coord[0, 1] + ra_at_xy_0
+    )
+    dec_grid = (
+        x_grid * mapping_pix2coord[1, 0]
+        + y_grid * mapping_pix2coord[1, 1]
+        + dec_at_xy_0
+    )
     return ra_grid, dec_grid
 
 
@@ -373,7 +379,7 @@ def get_axes(x, y):
 
 
 @export
-def averaging(grid, numGrid, num_pix):
+def averaging(grid, num_grid, num_pix):
     """Resize 2d pixel grid with numGrid to num_pix and averages over the pixels.
 
     :param grid: higher resolution pixel grid
@@ -383,10 +389,12 @@ def averaging(grid, numGrid, num_pix):
     :return: averaged pixel grid
     """
 
-    Nbig = numGrid
-    Nsmall = num_pix
+    n_big = num_grid
+    n_small = num_pix
     small = (
-        grid.reshape([int(Nsmall), int(Nbig / Nsmall), int(Nsmall), int(Nbig / Nsmall)])
+        grid.reshape(
+            [int(n_small), int(n_big / n_small), int(n_small), int(n_big / n_small)]
+        )
         .mean(3)
         .mean(1)
     )
@@ -394,22 +402,22 @@ def averaging(grid, numGrid, num_pix):
 
 
 @export
-def displaceAbs(x, y, sourcePos_x, sourcePos_y):
+def displaceAbs(x, y, source_pos_x, source_pos_y):
     """Calculates a grid of distances to the observer in angel.
 
     :param x: cartesian coordinates
     :type x: numpy array
     :param y: cartesian coordinates
     :type y: numpy array
-    :param sourcePos_x: source position
-    :type sourcePos_x: float
-    :param sourcePos_y: source position
-    :type sourcePos_y: float
+    :param source_pos_x: source position
+    :type source_pos_x: float
+    :param source_pos_y: source position
+    :type source_pos_y: float
     :returns: array of displacement
     :raises: AttributeError, KeyError
     """
-    x_mapped = x - sourcePos_x
-    y_mapped = y - sourcePos_y
+    x_mapped = x - source_pos_x
+    y_mapped = y - source_pos_y
     absmapped = np.sqrt(x_mapped**2 + y_mapped**2)
     return absmapped
 
@@ -475,13 +483,13 @@ def min_square_dist(x_1, y_1, x_2, y_2):
 
 
 @export
-def selectBest(array, criteria, numSelect, highest=True):
+def selectBest(array, criteria, num_select, highest=True):
     """
 
     :param array: numpy array to be selected from
     :param criteria: criteria of selection
     :param highest: bool, if false the lowest will be selected
-    :param numSelect: number of elements to be selected
+    :param num_select: number of elements to be selected
     :return:
     """
     n = len(array)
@@ -490,13 +498,13 @@ def selectBest(array, criteria, numSelect, highest=True):
         raise ValueError(
             "Elements in array (%s) not equal to elements in criteria (%s)" % (n, m)
         )
-    if n < numSelect:
+    if n < num_select:
         return array
     array_sorted = array[criteria.argsort()]
     if highest:
-        result = array_sorted[n - numSelect :]
+        result = array_sorted[n - num_select :]
     else:
-        result = array_sorted[0:numSelect]
+        result = array_sorted[0:num_select]
     return result[::-1]
 
 

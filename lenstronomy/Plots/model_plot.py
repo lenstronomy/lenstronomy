@@ -830,6 +830,7 @@ class ModelPlot(object):
     def plot_main(
         self,
         band_index=0,
+        with_caustics=False,
         kwargs_data_plot=None,
         kwargs_model_plot=None,
         kwargs_residual_plot=None,
@@ -840,6 +841,7 @@ class ModelPlot(object):
         """Plot a set of 'main' modelling diagnostics.
 
         :param band_index: index of band
+        :param with_caustics: If True, plots caustics in the source panel
         :param kwargs_data_plot: keyword arguments passed to :meth:`~lenstronomy.Plots.model_band_plot.ModelBandPlot.data_plot`
         :param kwargs_model_plot: keyword arguments passed to :meth:`~lenstronomy.Plots.model_band_plot.ModelBandPlot.model_plot`
         :param kwargs_residual_plot: keyword arguments passed to :meth:`~lenstronomy.Plots.model_band_plot.ModelBandPlot.normalized_residual_plot`
@@ -850,6 +852,19 @@ class ModelPlot(object):
         """
         plot_band = self._select_band(band_index)
 
+        if kwargs_data_plot is None:
+            kwargs_data_plot = {}
+        if kwargs_model_plot is None:
+            kwargs_model_plot = {}
+        if kwargs_residual_plot is None:
+            kwargs_residual_plot = {}
+        if kwargs_source_plot is None:
+            kwargs_source_plot = {}
+        if kwargs_convergence_plot is None:
+            kwargs_convergence_plot = {}
+        if kwargs_magnification_plot is None:
+            kwargs_magnification_plot = {}
+
         f, axes = plt.subplots(2, 3, figsize=(16, 8))
 
         plot_band.data_plot(ax=axes[0, 0], **kwargs_data_plot)
@@ -859,6 +874,7 @@ class ModelPlot(object):
             ax=axes[1, 0],
             delta_pix_source=0.01,
             num_pix=100,
+            with_caustics=with_caustics,
             **kwargs_source_plot,
         )
         plot_band.convergence_plot(ax=axes[1, 1], **kwargs_convergence_plot)

@@ -38,12 +38,16 @@ class KinLikelihood(object):
         self.image_input = self.kwargs_data2image_input(kwargs_data)
         self.kinematic_NN = kinematic_NN_call.KinematicNN()
         self.config = self.kinematic_NN.config
+        grid_settings = self.config.get("grid_settings", {})
+        kin_delta_pix = grid_settings.get("delta_pix", grid_settings.get("deltapix"))
+        if kin_delta_pix is None:
+            raise KeyError("delta_pix")
         self.kinNN_input = {
-            "delta_pix": self.config["grid_settings"]["delta_pix"],
+            "delta_pix": kin_delta_pix,
             "image": np.ones(
                 (
-                    self.config["grid_settings"]["npix"],
-                    self.config["grid_settings"]["npix"],
+                    grid_settings["npix"],
+                    grid_settings["npix"],
                 )
             ),
         }

@@ -76,8 +76,6 @@ class ModelBandPlot(ModelBand):
             linear_solver=linear_solver,
         )
 
-        self._lensModel = self._bandmodel.LensModel
-        self._lensModelExt = LensModelExtensions(self._lensModel)
         self._lens_model = self._bandmodel.LensModel
         self._lens_model_ext = LensModelExtensions(self._lens_model)
         log_model = np.log10(model)
@@ -140,7 +138,7 @@ class ModelBandPlot(ModelBand):
                     self._dec_crit_list,
                     self._ra_caustic_list,
                     self._dec_caustic_list,
-                ) = self._lensModelExt.critical_curve_caustics(
+                ) = self._lens_model_ext.critical_curve_caustics(
                 ) = self._lens_model_ext.critical_curve_caustics(
                     self._kwargs_lens_partial,
                     compute_window=self._frame_size,
@@ -155,7 +153,7 @@ class ModelBandPlot(ModelBand):
                 (
                     self._ra_crit_list,
                     self._dec_crit_list,
-                ) = self._lensModelExt.critical_curve_tiling(
+                ) = self._lens_model_ext.critical_curve_tiling(
                 ) = self._lens_model_ext.critical_curve_tiling(
                     self._kwargs_lens_partial,
                     compute_window=self._frame_size,
@@ -167,7 +165,7 @@ class ModelBandPlot(ModelBand):
                 (
                     self._ra_caustic_list,
                     self._dec_caustic_list,
-                ) = self._lensModel.ray_shooting(
+                ) = self._lens_model.ray_shooting(
                 ) = self._lens_model.ray_shooting(
                     self._ra_crit_list, self._dec_crit_list, self._kwargs_lens_partial
                 )
@@ -391,7 +389,7 @@ class ModelBandPlot(ModelBand):
         kwargs_matshow.setdefault("cmap", "gist_heat")
 
         kappa_result = util.array2image(
-            self._lensModel.kappa(self._x_grid, self._y_grid, self._kwargs_lens_partial)
+            self._lens_model.kappa(self._x_grid, self._y_grid, self._kwargs_lens_partial)
             self._lens_model.kappa(self._x_grid, self._y_grid, self._kwargs_lens_partial)
         )
         im = ax.matshow(
@@ -486,14 +484,14 @@ class ModelBandPlot(ModelBand):
         kwargs_lens_macro = []
         lens_model_list_macro = []
         profile_kwargs_list_macro = []
-        multi_plane = self._lensModel.multi_plane
+        multi_plane = self._lens_model.multi_plane
         multi_plane = self._lens_model.multi_plane
         if multi_plane:
-            lens_redshift_list = self._lensModel.redshift_list
+            lens_redshift_list = self._lens_model.redshift_list
             lens_redshift_list = self._lens_model.redshift_list
             lens_redshift_list_macro = []
-            z_source = self._lensModel.z_source
-            cosmo = self._lensModel.cosmo
+            z_source = self._lens_model.z_source
+            cosmo = self._lens_model.cosmo
             z_source = self._lens_model.z_source
             cosmo = self._lens_model.cosmo
         else:
@@ -502,12 +500,12 @@ class ModelBandPlot(ModelBand):
             z_source = None
             cosmo = None
         for idx in index_macromodel:
-            lens_model_list_macro.append(self._lensModel.lens_model_list[idx])
+            lens_model_list_macro.append(self._lens_model.lens_model_list[idx])
             lens_model_list_macro.append(self._lens_model.lens_model_list[idx])
             kwargs_lens_macro.append(self._kwargs_lens_partial[idx])
             if multi_plane:
                 lens_redshift_list_macro.append(lens_redshift_list[idx])
-            profile_kwargs_list_macro.append(self._lensModel.profile_kwargs_list[idx])
+            profile_kwargs_list_macro.append(self._lens_model.profile_kwargs_list[idx])
             profile_kwargs_list_macro.append(self._lens_model.profile_kwargs_list[idx])
 
         lens_model_macro = LensModel(
@@ -528,7 +526,7 @@ class ModelBandPlot(ModelBand):
             )
 
         kappa_full = util.array2image(
-            self._lensModel.kappa(x_grid, y_grid, self._kwargs_lens_partial)
+            self._lens_model.kappa(x_grid, y_grid, self._kwargs_lens_partial)
             self._lens_model.kappa(x_grid, y_grid, self._kwargs_lens_partial)
         )
         kappa_macro = util.array2image(
@@ -1148,7 +1146,7 @@ class ModelBandPlot(ModelBand):
         kwargs_matshow.setdefault("vmax", 10)
         kwargs_matshow.setdefault("alpha", 0.5)
         mag_result = util.array2image(
-            self._lensModel.magnification(
+            self._lens_model.magnification(
             self._lens_model.magnification(
                 self._x_grid, self._y_grid, self._kwargs_lens_partial
             )

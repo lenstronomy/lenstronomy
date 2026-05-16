@@ -1,3 +1,13 @@
+import sys
+from typing import Optional
+
+if sys.version_info >= (3, 12):
+    from typing import Unpack
+else:
+    try:
+        from typing_extensions import Unpack
+    except ImportError:
+        pass
 import lenstronomy.Util.util as util
 import matplotlib.pyplot as plt
 import numpy as np
@@ -158,11 +168,11 @@ class ModelBandPlot(ModelBand):
         self,
         ax,
         font_size=None,
-        kwargs_colorbar={},
-        kwargs_title={},
-        kwargs_scale_bar={},
-        kwargs_coordinate_arrows={},
-        **kwargs_matshow,
+        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
+        kwargs_title: Optional[plot_util.TitleKwargs] = {},
+        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
+        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
+        **kwargs_matshow: Unpack[plot_util.MatshowKwargs],
     ):
         """Plot observed imaging data.
 
@@ -237,11 +247,11 @@ class ModelBandPlot(ModelBand):
         original_position=True,
         image_name_list=None,
         font_size=None,
-        kwargs_colorbar={},
-        kwargs_title={},
-        kwargs_scale_bar={},
-        kwargs_coordinate_arrows={},
-        **kwargs_matshow,
+        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
+        kwargs_title: Optional[plot_util.TitleKwargs] = {},
+        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
+        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
+        **kwargs_matshow: Unpack[plot_util.MatshowKwargs],
     ):
         """Plot reconstructed imaging model.
 
@@ -254,9 +264,7 @@ class ModelBandPlot(ModelBand):
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
-        :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
-        :type kwargs_scale_bar: Unpack[plot_util.ScaleBarKwargs]
         :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
         :type kwargs_coordinate_arrows: Unpack[plot_util.CoordArrowKwargs]
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
@@ -330,10 +338,10 @@ class ModelBandPlot(ModelBand):
         self,
         ax,
         font_size=None,
-        kwargs_colorbar={},
-        kwargs_title={},
-        kwargs_scale_bar={},
-        kwargs_coordinate_arrows={},
+        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
+        kwargs_title: Optional[plot_util.TitleKwargs] = {},
+        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
+        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
         **kwargs_matshow,
     ):
         """Plot lensing convergence in the data frame.
@@ -412,10 +420,10 @@ class ModelBandPlot(ModelBand):
         crit_curve_color="k",
         image_name_list=None,
         super_sample_factor=None,
-        kwargs_colorbar={},
-        kwargs_title={},
-        kwargs_scale_bar={},
-        kwargs_coordinate_arrows={},
+        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
+        kwargs_title: Optional[plot_util.TitleKwargs] = {},
+        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
+        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
         **kwargs_matshow,
     ):
         """Plots the convergence of a full lens model minus the convergence from a few
@@ -582,10 +590,10 @@ class ModelBandPlot(ModelBand):
         self,
         ax,
         font_size=None,
-        kwargs_colorbar={},
-        kwargs_title={},
-        kwargs_scale_bar={},
-        kwargs_coordinate_arrows={},
+        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
+        kwargs_title: Optional[plot_util.TitleKwargs] = {},
+        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
+        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
         **kwargs_matshow,
     ):
         """Plot normalized residuals between data and model.
@@ -662,10 +670,10 @@ class ModelBandPlot(ModelBand):
         self,
         ax,
         font_size=None,
-        kwargs_colorbar={},
-        kwargs_title={},
-        kwargs_scale_bar={},
-        kwargs_coordinate_arrows={},
+        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
+        kwargs_title: Optional[plot_util.TitleKwargs] = {},
+        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
+        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
         **kwargs_matshow,
     ):
         """Plot absolute residuals between data and model.
@@ -796,10 +804,10 @@ class ModelBandPlot(ModelBand):
         plot_scale="log",
         point_source_position=True,
         kwargs_caustic=None,
-        kwargs_colorbar={},
-        kwargs_title={},
-        kwargs_scale_bar={},
-        kwargs_coordinate_arrows={},
+        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
+        kwargs_title: Optional[plot_util.TitleKwargs] = {},
+        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
+        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
         **kwargs_matshow,
     ):
         """Plot reconstructed source brightness.
@@ -942,10 +950,10 @@ class ModelBandPlot(ModelBand):
         with_caustics=False,
         font_size=None,
         point_source_position=True,
-        kwargs_colorbar={},
-        kwargs_title={},
-        kwargs_scale_bar={},
-        kwargs_coordinate_arrows={},
+        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
+        kwargs_title: Optional[plot_util.TitleKwargs] = {},
+        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
+        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
         **kwargs_matshow,
     ):
         """Plots the uncertainty in the surface brightness in the source from the linear
@@ -1068,10 +1076,10 @@ class ModelBandPlot(ModelBand):
         ax,
         image_name_list=None,
         font_size=None,
-        kwargs_colorbar={},
-        kwargs_title={},
-        kwargs_scale_bar={},
-        kwargs_coordinate_arrows={},
+        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
+        kwargs_title: Optional[plot_util.TitleKwargs] = {},
+        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
+        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
         **kwargs_matshow,
     ):
         """Plot magnification map in the data frame.
@@ -1169,10 +1177,10 @@ class ModelBandPlot(ModelBand):
         with_caustics=False,
         image_name_list=None,
         font_size=None,
-        kwargs_colorbar={},
-        kwargs_title={},
-        kwargs_scale_bar={},
-        kwargs_coordinate_arrows={},
+        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
+        kwargs_title: Optional[plot_util.TitleKwargs] = {},
+        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
+        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
         **kwargs_matshow,
     ):
         """Plot deflection-angle map in the data frame.
@@ -1293,10 +1301,10 @@ class ModelBandPlot(ModelBand):
         font_size=None,
         source_add=False,
         lens_light_add=False,
-        kwargs_colorbar={},
-        kwargs_title={},
-        kwargs_scale_bar={},
-        kwargs_coordinate_arrows={},
+        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
+        kwargs_title: Optional[plot_util.TitleKwargs] = {},
+        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
+        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
         **kwargs_matshow,
     ):
         """Make a plot displaying all or a subset of light components.
@@ -1389,10 +1397,10 @@ class ModelBandPlot(ModelBand):
         source_add=False,
         lens_light_add=False,
         font_size=None,
-        kwargs_colorbar={},
-        kwargs_title={},
-        kwargs_scale_bar={},
-        kwargs_coordinate_arrows={},
+        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
+        kwargs_title: Optional[plot_util.TitleKwargs] = {},
+        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
+        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
         **kwargs_matshow,
     ):
         """Plot data after subtracting selected model components.

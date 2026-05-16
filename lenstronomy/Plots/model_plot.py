@@ -1,3 +1,14 @@
+import sys
+from typing import Optional
+
+if sys.version_info >= (3, 12):
+    from typing import Unpack
+else:
+    try:
+        from typing_extensions import Unpack
+    except ImportError:
+        pass
+from typing import Optional
 import copy
 import numpy as np
 import matplotlib.pyplot as plt
@@ -5,6 +16,7 @@ import matplotlib.pyplot as plt
 import lenstronomy.Util.class_creator as class_creator
 from lenstronomy.Plots.model_band_plot import ModelBandPlot
 from lenstronomy.Analysis.image_reconstruction import check_solver_error
+from lenstronomy.Plots import plot_util
 
 __all__ = ["ModelPlot"]
 
@@ -218,11 +230,11 @@ class ModelPlot(object):
         band_index=0,
         ax=None,
         font_size=None,
-        kwargs_colorbar={},
-        kwargs_title={},
-        kwargs_scale_bar={},
-        kwargs_coordinate_arrows={},
-        **kwargs_matshow
+        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
+        kwargs_title: Optional[plot_util.TitleKwargs] = {},
+        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
+        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
+        **kwargs_matshow: Unpack[plot_util.MatshowKwargs]
     ):
         """Illustrates data.
 
@@ -230,14 +242,10 @@ class ModelPlot(object):
         :param ax: matplotlib axis instance
         :param font_size: int, font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :param label: string, label for the colorbar
-        :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
-        :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
+        :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
-        :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
-        :type kwargs_scale_bar: Unpack[plot_util.ScaleBarKwargs]
         :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
-        :type kwargs_coordinate_arrows: Unpack[plot_util.CoordArrowKwargs]
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
@@ -260,11 +268,11 @@ class ModelPlot(object):
         original_position=True,
         image_name_list=None,
         font_size=None,
-        kwargs_colorbar={},
-        kwargs_title={},
-        kwargs_scale_bar={},
-        kwargs_coordinate_arrows={},
-        **kwargs_matshow
+        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
+        kwargs_title: Optional[plot_util.TitleKwargs] = {},
+        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
+        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
+        **kwargs_matshow: Unpack[plot_util.MatshowKwargs]
     ):
         """Illustrates model.
 
@@ -275,14 +283,10 @@ class ModelPlot(object):
         :param font_size: int, font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :param original_position: boolean, if True, uses original image positions
         :param image_name_list: list of names for images
-        :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
-        :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
+        :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
-        :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
-        :type kwargs_scale_bar: Unpack[plot_util.ScaleBarKwargs]
         :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
-        :type kwargs_coordinate_arrows: Unpack[plot_util.CoordArrowKwargs]
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: plot instance
         """
@@ -305,10 +309,10 @@ class ModelPlot(object):
         band_index=0,
         ax=None,
         font_size=None,
-        kwargs_colorbar={},
-        kwargs_title={},
-        kwargs_scale_bar={},
-        kwargs_coordinate_arrows={},
+        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
+        kwargs_title: Optional[plot_util.TitleKwargs] = {},
+        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
+        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
         **kwargs_matshow
     ):
         """Illustrates lensing convergence in data frame.
@@ -351,10 +355,10 @@ class ModelPlot(object):
         crit_curve_color="k",
         image_name_list=None,
         super_sample_factor=None,
-        kwargs_colorbar={},
-        kwargs_title={},
-        kwargs_scale_bar={},
-        kwargs_coordinate_arrows={},
+        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
+        kwargs_title: Optional[plot_util.TitleKwargs] = {},
+        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
+        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
         **kwargs_matshow
     ):
         """Illustrates substructure in the lens system.
@@ -406,10 +410,10 @@ class ModelPlot(object):
         band_index=0,
         ax=None,
         font_size=None,
-        kwargs_colorbar={},
-        kwargs_title={},
-        kwargs_scale_bar={},
-        kwargs_coordinate_arrows={},
+        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
+        kwargs_title: Optional[plot_util.TitleKwargs] = {},
+        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
+        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
         **kwargs_matshow
     ):
         """Illustrates normalized residuals between data and model fit.
@@ -445,10 +449,10 @@ class ModelPlot(object):
         band_index=0,
         ax=None,
         font_size=None,
-        kwargs_colorbar={},
-        kwargs_title={},
-        kwargs_scale_bar={},
-        kwargs_coordinate_arrows={},
+        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
+        kwargs_title: Optional[plot_util.TitleKwargs] = {},
+        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
+        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
         **kwargs_matshow
     ):
         """Illustrates absolute residuals between data and model fit.
@@ -492,10 +496,10 @@ class ModelPlot(object):
         plot_scale="log",
         point_source_position=True,
         kwargs_caustic=None,
-        kwargs_colorbar={},
-        kwargs_title={},
-        kwargs_scale_bar={},
-        kwargs_coordinate_arrows={},
+        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
+        kwargs_title: Optional[plot_util.TitleKwargs] = {},
+        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
+        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
         **kwargs_matshow
     ):
         """Illustrates reconstructed source (de-lensed de-convolved)
@@ -553,10 +557,10 @@ class ModelPlot(object):
         with_caustics=False,
         font_size=None,
         point_source_position=True,
-        kwargs_colorbar={},
-        kwargs_title={},
-        kwargs_scale_bar={},
-        kwargs_coordinate_arrows={},
+        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
+        kwargs_title: Optional[plot_util.TitleKwargs] = {},
+        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
+        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
         **kwargs_matshow
     ):
         """Illustrates surface brightness variance in the reconstruction in the source
@@ -603,10 +607,10 @@ class ModelPlot(object):
         ax=None,
         image_name_list=None,
         font_size=None,
-        kwargs_colorbar={},
-        kwargs_title={},
-        kwargs_scale_bar={},
-        kwargs_coordinate_arrows={},
+        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
+        kwargs_title: Optional[plot_util.TitleKwargs] = {},
+        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
+        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
         **kwargs_matshow
     ):
         """Illustrates lensing magnification in the field of view of the data frame.
@@ -648,10 +652,10 @@ class ModelPlot(object):
         with_caustics=False,
         image_name_list=None,
         font_size=None,
-        kwargs_colorbar={},
-        kwargs_title={},
-        kwargs_scale_bar={},
-        kwargs_coordinate_arrows={},
+        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
+        kwargs_title: Optional[plot_util.TitleKwargs] = {},
+        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
+        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
         **kwargs_matshow
     ):
         """Illustrates lensing deflections on the field of view of the data frame.
@@ -697,10 +701,10 @@ class ModelPlot(object):
         font_size=None,
         source_add=False,
         lens_light_add=False,
-        kwargs_colorbar={},
-        kwargs_title={},
-        kwargs_scale_bar={},
-        kwargs_coordinate_arrows={},
+        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
+        kwargs_title: Optional[plot_util.TitleKwargs] = {},
+        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
+        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
         **kwargs_matshow
     ):
         """Illustrates decomposition of model components.
@@ -749,10 +753,10 @@ class ModelPlot(object):
         source_add=False,
         lens_light_add=False,
         font_size=None,
-        kwargs_colorbar={},
-        kwargs_title={},
-        kwargs_scale_bar={},
-        kwargs_coordinate_arrows={},
+        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
+        kwargs_title: Optional[plot_util.TitleKwargs] = {},
+        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
+        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
         **kwargs_matshow
     ):
         """Subtracts individual model components from the data.

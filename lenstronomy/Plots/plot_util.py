@@ -93,6 +93,23 @@ class TitleKwargs(TypedDict, total=False):
     """y-position of the title in axes coordinates."""
 
 
+class MatshowKwargs(TypedDict, total=False):
+    """Keyword arguments for matplotlib.pyplot.matshow."""
+
+    cmap: str
+    """Colormap to use for the plot."""
+    vmin: float
+    """Minimum data value that corresponds to the lower end of the colormap."""
+    vmax: float
+    """Maximum data value that corresponds to the upper end of the colormap."""
+    origin: str
+    """Place the [0, 0] index of the array in the upper left or lower left corner."""
+    extent: tuple
+    """Bounding box in data coordinates."""
+    alpha: float
+    """Transparency, between 0 and 1."""
+
+
 @export
 def sqrt(inputArray, scale_min=None, scale_max=None):
     """Performs sqrt scaling of the input numpy array.

@@ -82,10 +82,10 @@ class TestLensProfileAnalysis(object):
 
         # test interpolated profile
         num_pix = 101
-        deltaPix = 0.02
+        delta_pix = 0.02
         from lenstronomy.Util import util
 
-        x_grid_interp, y_grid_interp = util.make_grid(num_pix, deltaPix)
+        x_grid_interp, y_grid_interp = util.make_grid(num_pix, delta_pix)
         from lenstronomy.LensModel.Profiles.sis import SIS
 
         sis = SIS()

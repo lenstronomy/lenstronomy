@@ -25,7 +25,7 @@ class TestLikelihood(object):
         sigma_bkg = 0.05  # background noise per pixel
         exp_time = 100  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)
         num_pix = 50  # cutout pixel size
-        deltaPix = 0.1  # pixel size in arcsec (area per pixel = deltaPix**2)
+        delta_pix = 0.1  # pixel size in arcsec (area per pixel = delta_pix**2)
         fwhm = 0.5  # full width half max of PSF
 
         kwargs_model = {
@@ -38,10 +38,10 @@ class TestLikelihood(object):
 
         # PSF specification
         kwargs_band = sim_util.data_configure_simple(
-            num_pix, deltaPix, exp_time, sigma_bkg
+            num_pix, delta_pix, exp_time, sigma_bkg
         )
         data_class = ImageData(**kwargs_band)
-        kwargs_psf = {"psf_type": "GAUSSIAN", "fwhm": fwhm, "pixel_size": deltaPix}
+        kwargs_psf = {"psf_type": "GAUSSIAN", "fwhm": fwhm, "pixel_size": delta_pix}
         psf_class = PSF(**kwargs_psf)
         print(np.shape(psf_class.kernel_point_source), "test kernel shape -")
         kwargs_spep = {
@@ -285,13 +285,13 @@ class TestLikelihood(object):
             # Now add kinematic likelihood
             # for simplicity, set kin image data to same as light data
             num_pix = 50  # cutout pixel size
-            deltaPix = 0.1  # pixel size in arcsec (area per pixel = deltaPix**2)
+            delta_pix = 0.1  # pixel size in arcsec (area per pixel = delta_pix**2)
 
             binmap = np.zeros_like(
                 self.kwargs_band["image_data"]
             )  # one single bin across whole image
             binned_dummy_data = np.array([200])
-            delta_pix_kin = deltaPix
+            delta_pix_kin = delta_pix
             npix_kin = num_pix
 
             kwargs_kin = {

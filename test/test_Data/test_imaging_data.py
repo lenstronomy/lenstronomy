@@ -22,7 +22,7 @@ class TestData(object):
 
     def test_shift_coords(self):
         num_pix = 10
-        deltaPix = 0.05
+        delta_pix = 0.05
         (
             x_grid,
             y_grid,
@@ -33,7 +33,7 @@ class TestData(object):
             Mpix2coord,
             Mcoord2pix,
         ) = util.make_grid_with_coordtransform(
-            num_pix=num_pix, deltapix=deltaPix, subgrid_res=1, inverse=True
+            num_pix=num_pix, delta_pix=delta_pix, subgrid_res=1, inverse=True
         )
         # mask (1= model this pixel, 0= leave blanck)
 
@@ -70,7 +70,7 @@ class TestData(object):
         y_shift = 0
 
         num_pix = 10
-        deltaPix = 0.05
+        delta_pix = 0.05
         (
             x_grid,
             y_grid,
@@ -81,7 +81,7 @@ class TestData(object):
             Mpix2coord,
             Mcoord2pix,
         ) = util.make_grid_with_coordtransform(
-            num_pix=num_pix, deltapix=deltaPix, subgrid_res=1, inverse=True
+            num_pix=num_pix, delta_pix=delta_pix, subgrid_res=1, inverse=True
         )
 
         kwargs_data = {

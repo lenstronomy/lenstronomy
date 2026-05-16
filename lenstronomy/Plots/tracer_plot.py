@@ -106,7 +106,7 @@ class TracerPlot(object):
         self._vmax_default = np.nanpercentile(log_model, 99)
 
         self._data = self._coords.data
-        self._deltaPix = self._coords.pixel_width
+        self._delta_pix = self._coords.pixel_width
         self._frame_size = np.max(self._coords.width)
         x_grid, y_grid = self._coords.pixel_coordinates
         self._x_grid = util.image2array(x_grid)
@@ -150,7 +150,7 @@ class TracerPlot(object):
                 ) = self._lensModelExt.critical_curve_caustics(
                     self._kwargs_lens,
                     compute_window=self._frame_size,
-                    grid_scale=self._deltaPix,
+                    grid_scale=self._delta_pix,
                     center_x=self._x_center,
                     center_y=self._y_center,
                 )
@@ -164,7 +164,7 @@ class TracerPlot(object):
                 ) = self._lensModelExt.critical_curve_tiling(
                     self._kwargs_lens,
                     compute_window=self._frame_size,
-                    start_scale=self._deltaPix / 5.0,
+                    start_scale=self._delta_pix / 5.0,
                     max_order=10,
                     center_x=self._x_center,
                     center_y=self._y_center,
@@ -611,18 +611,18 @@ class TracerPlot(object):
             )
         return ax
 
-    def source(self, num_pix, deltaPix, center=None, image_orientation=True):
+    def source(self, num_pix, delta_pix, center=None, image_orientation=True):
         """Compute tracer source surface brightness on a source grid.
 
         :param num_pix: number of pixels per axes
-        :param deltaPix: pixel size
+        :param delta_pix: pixel size
         :param image_orientation: If True, uses frame in orientation of the image,
         :type image_orientation: bool otherwise in RA-DEC coordinates
         :return: 2d surface brightness grid of the reconstructed source and
             Coordinates() instance of source grid
         """
         if image_orientation is True:
-            Mpix2coord = self._coords.transform_pix2angle * deltaPix / self._deltaPix
+            Mpix2coord = self._coords.transform_pix2angle * delta_pix / self._delta_pix
             x_grid_source, y_grid_source = util.make_grid_transformed(
                 num_pix, Mpix2Angle=Mpix2coord
             )
@@ -637,7 +637,7 @@ class TracerPlot(object):
                 y_at_radec_0,
                 Mpix2coord,
                 Mcoord2pix,
-            ) = util.make_grid_with_coordtransform(num_pix, deltaPix)
+            ) = util.make_grid_with_coordtransform(num_pix, delta_pix)
 
         center_x = 0
         center_y = 0
@@ -665,7 +665,7 @@ class TracerPlot(object):
         self,
         ax,
         num_pix,
-        deltaPix_source,
+        delta_pix_source,
         center=None,
         with_caustics=False,
         caustic_color="yellow",
@@ -684,7 +684,7 @@ class TracerPlot(object):
         :param ax: Matplotlib axes instance
         :type ax: matplotlib.axes.Axes
         :param num_pix: number of pixels in plot per axis
-        :param deltaPix_source: pixel spacing in the source resolution illustrated in
+        :param delta_pix_source: pixel spacing in the source resolution illustrated in
             plot
         :param center: [center_x, center_y], if specified, uses this as the center
         :param with_caustics: plot the caustics on top of the source reconstruction
@@ -711,8 +711,8 @@ class TracerPlot(object):
             kwargs_caustic = dict(kwargs_caustic)
         else:
             kwargs_caustic = {}
-        d_s = num_pix * deltaPix_source
-        source, coords_source = self.source(num_pix, deltaPix_source, center=center)
+        d_s = num_pix * delta_pix_source
+        source, coords_source = self.source(num_pix, delta_pix_source, center=center)
         if plot_scale == "log":
             kwargs_matshow.setdefault("vmin", self._vmin_default)
             kwargs_matshow.setdefault("vmax", self._vmax_default)
@@ -1030,7 +1030,7 @@ class TracerPlot(object):
         self.normalized_residual_plot(ax=axes[0, 2])
         self.source_plot(
             ax=axes[1, 0],
-            deltaPix_source=0.01,
+            delta_pix_source=0.01,
             num_pix=100,
             with_caustics=with_caustics,
         )

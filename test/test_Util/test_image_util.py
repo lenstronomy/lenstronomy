@@ -97,8 +97,8 @@ def test_add_poisson():
 def test_findOverlap():
     x_mins = [0, 1, 0, -0.1, 0.1]
     y_mins = [1, 2, 1, 1.1, 1.1]
-    deltapix = 0.5
-    x_mins, y_mins = image_util.findOverlap(x_mins, y_mins, deltapix)
+    delta_pix = 0.5
+    x_mins, y_mins = image_util.findOverlap(x_mins, y_mins, delta_pix)
     print(x_mins, y_mins)
     assert x_mins[0] == 0
     assert y_mins[0] == 1
@@ -109,8 +109,8 @@ def test_coordInImage():
     x_coord = [100, 20, -10]
     y_coord = [0, -30, 5]
     num_pix = 50
-    deltapix = 1
-    x_result, y_result = image_util.coordInImage(x_coord, y_coord, num_pix, deltapix)
+    delta_pix = 1
+    x_result, y_result = image_util.coordInImage(x_coord, y_coord, num_pix, delta_pix)
     assert x_result == -10
     assert y_result == 5
 
@@ -125,7 +125,7 @@ def test_rebin_coord_transform():
         y_at_radec_0,
         Mpix2coord,
         Mcoord2pix,
-    ) = util.make_grid_with_coordtransform(num_pix=3, deltapix=0.03, subgrid_res=1)
+    ) = util.make_grid_with_coordtransform(num_pix=3, delta_pix=0.03, subgrid_res=1)
     (
         x_grid,
         y_grid,
@@ -135,7 +135,7 @@ def test_rebin_coord_transform():
         y_at_radec_0_re,
         Mpix2coord_re,
         Mcoord2pix_re,
-    ) = util.make_grid_with_coordtransform(num_pix=1, deltapix=0.09, subgrid_res=1)
+    ) = util.make_grid_with_coordtransform(num_pix=1, delta_pix=0.09, subgrid_res=1)
 
     (
         ra_at_xy_0_resized,
@@ -163,7 +163,7 @@ def test_rebin_coord_transform():
         y_at_radec_0,
         Mpix2coord,
         Mcoord2pix,
-    ) = util.make_grid_with_coordtransform(num_pix=100, deltapix=0.05, subgrid_res=1)
+    ) = util.make_grid_with_coordtransform(num_pix=100, delta_pix=0.05, subgrid_res=1)
     (
         x_grid,
         y_grid,
@@ -173,7 +173,7 @@ def test_rebin_coord_transform():
         y_at_radec_0_re,
         Mpix2coord_re,
         Mcoord2pix_re,
-    ) = util.make_grid_with_coordtransform(num_pix=50, deltapix=0.1, subgrid_res=1)
+    ) = util.make_grid_with_coordtransform(num_pix=50, delta_pix=0.1, subgrid_res=1)
 
     (
         ra_at_xy_0_resized,
@@ -201,7 +201,7 @@ def test_rebin_coord_transform():
         y_at_radec_0,
         Mpix2coord,
         Mcoord2pix,
-    ) = util.make_grid_with_coordtransform(num_pix=99, deltapix=0.1, subgrid_res=1)
+    ) = util.make_grid_with_coordtransform(num_pix=99, delta_pix=0.1, subgrid_res=1)
     (
         x_grid,
         y_grid,
@@ -211,7 +211,7 @@ def test_rebin_coord_transform():
         y_at_radec_0_re,
         Mpix2coord_re,
         Mcoord2pix_re,
-    ) = util.make_grid_with_coordtransform(num_pix=33, deltapix=0.3, subgrid_res=1)
+    ) = util.make_grid_with_coordtransform(num_pix=33, delta_pix=0.3, subgrid_res=1)
 
     assert x_at_radec_0 == 49
     (
@@ -395,7 +395,7 @@ def test_rebin_image():
     wht_map = np.ones((num_pix, num_pix)) * 10
     idex_mask = np.ones((num_pix, num_pix))
     sigma_bkg = 0.1
-    ra_coords, dec_coords = util.make_grid(num_pix, deltapix=0.05)
+    ra_coords, dec_coords = util.make_grid(num_pix, delta_pix=0.05)
     ra_coords = util.array2image(ra_coords)
     dec_coords = util.array2image(dec_coords)
     (
@@ -419,7 +419,7 @@ def test_rebin_image():
     wht_map = np.ones((num_pix, num_pix)) * 10
     idex_mask = np.ones((num_pix, num_pix))
     sigma_bkg = 0.1
-    ra_coords, dec_coords = util.make_grid(num_pix, deltapix=0.05)
+    ra_coords, dec_coords = util.make_grid(num_pix, delta_pix=0.05)
     ra_coords = util.array2image(ra_coords)
     dec_coords = util.array2image(dec_coords)
     (

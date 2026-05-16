@@ -513,7 +513,7 @@ class ModelPlot(object):
         band_index=0,
         ax=None,
         num_pix=100,
-        deltaPix_source=0.01,
+        delta_pix_source=0.01,
         center=None,
         with_caustics=False,
         caustic_color="yellow",
@@ -533,7 +533,7 @@ class ModelPlot(object):
         :param ax: Matplotlib axes instance
         :type ax: matplotlib.axes.Axes
         :param num_pix: number of pixels in plot per axis
-        :param deltaPix_source: pixel spacing in the source resolution illustrated in
+        :param delta_pix_source: pixel spacing in the source resolution illustrated in
             plot
         :param center: [center_x, center_y], if specified, uses this as the center
         :param with_caustics: plot the caustics on top of the source reconstruction
@@ -560,7 +560,7 @@ class ModelPlot(object):
         return plot_band.source_plot(
             ax=ax,
             num_pix=num_pix,
-            deltaPix_source=deltaPix_source,
+            delta_pix_source=delta_pix_source,
             center=center,
             with_caustics=with_caustics,
             caustic_color=caustic_color,
@@ -580,7 +580,7 @@ class ModelPlot(object):
         band_index=0,
         ax=None,
         num_pix=100,
-        deltaPix_source=0.01,
+        delta_pix_source=0.01,
         with_caustics=False,
         font_size=None,
         point_source_position=True,
@@ -597,7 +597,7 @@ class ModelPlot(object):
         :param ax: Matplotlib axes instance
         :type ax: matplotlib.axes.Axes
         :param num_pix: number of pixels in plot per axis
-        :param deltaPix_source: pixel spacing in the source resolution illustrated in
+        :param delta_pix_source: pixel spacing in the source resolution illustrated in
             plot
         :param with_caustics: plot the caustics on top of the source reconstruction
         :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
@@ -617,7 +617,7 @@ class ModelPlot(object):
         return plot_band.error_map_source_plot(
             ax=ax,
             num_pix=num_pix,
-            deltaPix_source=deltaPix_source,
+            delta_pix_source=delta_pix_source,
             with_caustics=with_caustics,
             font_size=font_size,
             point_source_position=point_source_position,
@@ -857,7 +857,7 @@ class ModelPlot(object):
         plot_band.normalized_residual_plot(ax=axes[0, 2], **kwargs_residual_plot)
         plot_band.source_plot(
             ax=axes[1, 0],
-            deltaPix_source=0.01,
+            delta_pix_source=0.01,
             num_pix=100,
             **kwargs_source_plot,
         )
@@ -900,24 +900,24 @@ class ModelPlot(object):
         plot_band = self._select_band(band_index)
         return plot_band.plot_extinction_map(ax=ax, **kwargs_matshow)
 
-    def source(self, band_index=0, num_pix=None, deltaPix=None, center=None, image_orientation=True):
+    def source(self, band_index=0, num_pix=None, delta_pix=None, center=None, image_orientation=True):
         """Compute source surface brightness for one band.
 
         :param band_index: index of band
         :type band_index: int
         :param num_pix: number of pixels per axes
         :type num_pix: int
-        :param deltaPix: pixel size
-        :type deltaPix: float
+        :param delta_pix: pixel size
+        :type delta_pix: float
         :param center: center position of source
         :param image_orientation: If True, uses frame in orientation of the image, otherwise in RA-DEC coordinates
         :type image_orientation: bool
         :return: 2d array of source surface brightness
         """
-        if num_pix is None or deltaPix is None:
-            raise ValueError("num_pix and deltaPix must be provided")
+        if num_pix is None or delta_pix is None:
+            raise ValueError("num_pix and delta_pix must be provided")
         plot_band = self._select_band(band_index)
-        return plot_band.source(num_pix, deltaPix, center=center, image_orientation=image_orientation)
+        return plot_band.source(num_pix, delta_pix, center=center, image_orientation=image_orientation)
 
     def single_band_chi2(self, band_index=0):
         """Return reduced chi-square for one band.

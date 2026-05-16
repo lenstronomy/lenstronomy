@@ -64,7 +64,7 @@ class TestSolver4Point(object):
         lensEquationSolver = LensEquationSolver(lensModel)
         sourcePos_x = 0.1
         sourcePos_y = -0.1
-        deltapix = 0.05
+        delta_pix = 0.05
         num_pix = 150
         gamma = 1.9
         phi_G, q = 0.5, 0.8
@@ -85,8 +85,8 @@ class TestSolver4Point(object):
             sourcePos_y,
             kwargs_lens,
             numImages=4,
-            min_distance=deltapix,
-            search_window=num_pix * deltapix,
+            min_distance=delta_pix,
+            search_window=num_pix * delta_pix,
         )
         phi_G, q = 1.5, 0.9
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
@@ -161,7 +161,7 @@ class TestSolver4Point(object):
 
         sourcePos_x = 0.1
         sourcePos_y = -0.1
-        deltapix = 0.05
+        delta_pix = 0.05
         num_pix = 150
         gamma = 1.9
         phi_G, q = 0.5, 0.8
@@ -181,8 +181,8 @@ class TestSolver4Point(object):
             sourcePos_y,
             kwargs_lens,
             numImages=4,
-            min_distance=deltapix,
-            search_window=num_pix * deltapix,
+            min_distance=delta_pix,
+            search_window=num_pix * delta_pix,
         )
         phi_G, q = 1.5, 0.9
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
@@ -233,7 +233,7 @@ class TestSolver4Point(object):
         lensEquationSolver = LensEquationSolver(lensModel)
         sourcePos_x = 0.1
         sourcePos_y = -0.1
-        deltapix = 0.05
+        delta_pix = 0.05
         num_pix = 150
         Rs = 4.0
         phi_G, q = 0.5, 0.8
@@ -254,8 +254,8 @@ class TestSolver4Point(object):
             sourcePos_y,
             kwargs_lens,
             numImages=4,
-            min_distance=deltapix,
-            search_window=num_pix * deltapix,
+            min_distance=delta_pix,
+            search_window=num_pix * delta_pix,
         )
         phi_G, q = 1.5, 0.9
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
@@ -296,7 +296,7 @@ class TestSolver4Point(object):
         lensEquationSolver = LensEquationSolver(lensModel)
         sourcePos_x = 0.1
         sourcePos_y = -0.0
-        deltapix = 0.05
+        delta_pix = 0.05
         num_pix = 150
         coeffs = np.array([0, 0.1, 0.1, 0, 0, -0.1])
         kwargs_lens = [
@@ -315,8 +315,8 @@ class TestSolver4Point(object):
             sourcePos_y,
             kwargs_lens,
             numImages=4,
-            min_distance=deltapix,
-            search_window=num_pix * deltapix,
+            min_distance=delta_pix,
+            search_window=num_pix * delta_pix,
         )
         print(x_pos, y_pos)
         kwargs_lens_init = [
@@ -345,7 +345,7 @@ class TestSolver4Point(object):
         lensEquationSolver = LensEquationSolver(lensModel)
         sourcePos_x = 0.1
         sourcePos_y = -0.1
-        deltapix = 0.05
+        delta_pix = 0.05
         num_pix = 150
         gamma = 1.9
         gamma_ext = 0.05
@@ -367,8 +367,8 @@ class TestSolver4Point(object):
             sourcePos_y,
             kwargs_lens,
             numImages=4,
-            min_distance=deltapix,
-            search_window=num_pix * deltapix,
+            min_distance=delta_pix,
+            search_window=num_pix * delta_pix,
         )
         e1_new, e2_new = param_util.shear_polar2cartesian(
             phi=0.0, gamma=gamma_ext + 0.1
@@ -396,8 +396,8 @@ class TestSolver4Point(object):
             y_source,
             kwargs_lens_new,
             numImages=4,
-            min_distance=deltapix,
-            search_window=num_pix * deltapix,
+            min_distance=delta_pix,
+            search_window=num_pix * delta_pix,
         )
         print(x_pos, x_pos_new)
         x_pos = np.sort(x_pos)
@@ -415,7 +415,7 @@ class TestSolver4Point(object):
         lensEquationSolver = LensEquationSolver(lensModel)
         sourcePos_x = 0.1
         sourcePos_y = -0.1
-        deltapix = 0.05
+        delta_pix = 0.05
         num_pix = 150
         gamma = 1.96
         e1, e2 = -0.01, -0.01
@@ -438,8 +438,8 @@ class TestSolver4Point(object):
             sourcePos_y,
             kwargs_lens,
             numImages=4,
-            min_distance=deltapix,
-            search_window=num_pix * deltapix,
+            min_distance=delta_pix,
+            search_window=num_pix * delta_pix,
         )
         kwargs_lens_init = [
             {
@@ -464,8 +464,8 @@ class TestSolver4Point(object):
             y_source,
             kwargs_lens_new,
             numImages=4,
-            min_distance=deltapix,
-            search_window=num_pix * deltapix,
+            min_distance=delta_pix,
+            search_window=num_pix * delta_pix,
         )
         print(x_pos, x_pos_new)
         x_pos = np.sort(x_pos)
@@ -489,7 +489,7 @@ class TestSolver4Point(object):
         lensEquationSolver = LensEquationSolver(lensModel)
         sourcePos_x = 0.0
         sourcePos_y = 0.1
-        deltapix = 0.05
+        delta_pix = 0.05
         num_pix = 150
         gamma = 1.98
         e1, e2 = -0.04, -0.01
@@ -513,8 +513,8 @@ class TestSolver4Point(object):
             sourcePos_y,
             kwargs_lens,
             numImages=4,
-            min_distance=deltapix,
-            search_window=num_pix * deltapix,
+            min_distance=delta_pix,
+            search_window=num_pix * delta_pix,
         )
         print(x_pos, y_pos, "test positions")
         kwargs_lens_init = [
@@ -540,8 +540,8 @@ class TestSolver4Point(object):
             y_source,
             kwargs_lens_new,
             numImages=4,
-            min_distance=deltapix,
-            search_window=num_pix * deltapix,
+            min_distance=delta_pix,
+            search_window=num_pix * delta_pix,
         )
         print(x_pos, x_pos_new)
         x_pos = np.sort(x_pos)
@@ -571,7 +571,7 @@ class TestSolver4Point(object):
         lensEquationSolver = LensEquationSolver(lensModel)
         sourcePos_x = 0.0
         sourcePos_y = 0.1
-        deltapix = 0.05
+        delta_pix = 0.05
         num_pix = 150
         gamma = 1.98
         gamma1, gamma2 = -0.04, -0.01
@@ -595,8 +595,8 @@ class TestSolver4Point(object):
             sourcePos_y,
             kwargs_lens,
             numImages=4,
-            min_distance=deltapix,
-            search_window=num_pix * deltapix,
+            min_distance=delta_pix,
+            search_window=num_pix * delta_pix,
         )
         print(x_pos, y_pos, "test positions")
 
@@ -628,8 +628,8 @@ class TestSolver4Point(object):
             y_source,
             kwargs_lens_new,
             numImages=4,
-            min_distance=deltapix,
-            search_window=num_pix * deltapix,
+            min_distance=delta_pix,
+            search_window=num_pix * delta_pix,
         )
         print(x_pos, x_pos_new)
         x_pos = np.sort(x_pos)
@@ -664,7 +664,7 @@ class TestSolver4Point(object):
         lensEquationSolver = LensEquationSolver(lensModel)
         sourcePos_x = 0.01
         sourcePos_y = -0.01
-        deltapix = 0.05
+        delta_pix = 0.05
         num_pix = 150
         gamma = 1.96
         gamma1, gamma2 = 0.01, 0.01
@@ -687,8 +687,8 @@ class TestSolver4Point(object):
             sourcePos_y,
             kwargs_lens,
             numImages=4,
-            min_distance=deltapix,
-            search_window=num_pix * deltapix,
+            min_distance=delta_pix,
+            search_window=num_pix * delta_pix,
         )
         print(x_pos, y_pos, "test positions")
         kwargs_lens_init = [
@@ -716,8 +716,8 @@ class TestSolver4Point(object):
             y_source,
             kwargs_lens_new,
             numImages=4,
-            min_distance=deltapix,
-            search_window=num_pix * deltapix,
+            min_distance=delta_pix,
+            search_window=num_pix * delta_pix,
         )
         print(x_pos, x_pos_new)
         x_pos = np.sort(x_pos)
@@ -749,7 +749,7 @@ class TestSolver4Point(object):
         lensEquationSolver = LensEquationSolver(lensModel)
         sourcePos_x = 0.01
         sourcePos_y = -0.01
-        deltapix = 0.05
+        delta_pix = 0.05
         num_pix = 150
         gamma = 1.96
         gamma1, gamma2 = 0.01, 0.01
@@ -772,8 +772,8 @@ class TestSolver4Point(object):
             sourcePos_y,
             kwargs_lens,
             numImages=4,
-            min_distance=deltapix,
-            search_window=num_pix * deltapix,
+            min_distance=delta_pix,
+            search_window=num_pix * delta_pix,
         )
         print(x_pos, y_pos, "test positions")
         kwargs_lens_init = [
@@ -807,8 +807,8 @@ class TestSolver4Point(object):
             y_source,
             kwargs_lens_new,
             numImages=4,
-            min_distance=deltapix,
-            search_window=num_pix * deltapix,
+            min_distance=delta_pix,
+            search_window=num_pix * delta_pix,
         )
         print(x_pos, x_pos_new)
         x_pos = np.sort(x_pos)
@@ -879,7 +879,7 @@ class TestSolver4Point(object):
         lensEquationSolver = LensEquationSolver(lensModel)
         sourcePos_x = 0.1
         sourcePos_y = -0.1
-        deltapix = 0.05
+        delta_pix = 0.05
         num_pix = 150
         gamma = 1.9
         phi_G, q = 0.5, 0.8
@@ -906,8 +906,8 @@ class TestSolver4Point(object):
             sourcePos_y,
             kwargs_lens,
             numImages=4,
-            min_distance=deltapix,
-            search_window=num_pix * deltapix,
+            min_distance=delta_pix,
+            search_window=num_pix * delta_pix,
         )
 
         kwargs_lens_init = [

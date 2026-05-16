@@ -71,7 +71,7 @@ class TestMGEMass:
             ["GAUSSIAN"],
             kwargs_lens_light=[self.kw_gauss],
             num_pix=200,
-            deltaPix=0.2,
+            delta_pix=0.2,
             subgrid_res=3,
         )
         surf_interp = mge_interp.radial_convergence(

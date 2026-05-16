@@ -79,7 +79,7 @@ def center_kernel(kernel, iterations=20):
     if nx % 2 == 0:
         raise ValueError("kernel needs odd number of pixels")
     # make coordinate grid of kernel
-    x_grid, y_grid = util.make_grid(nx, deltapix=1, left_lower=False)
+    x_grid, y_grid = util.make_grid(nx, delta_pix=1, left_lower=False)
     # compute 1st moments to get light weighted center
     x_w = np.sum(kernel * util.array2image(x_grid))
     y_w = np.sum(kernel * util.array2image(y_grid))
@@ -203,24 +203,24 @@ def subgrid_kernel(kernel, subgrid_res, odd=False, num_iter=100):
 
 
 @export
-def kernel_pixelsize_change(kernel, deltaPix_in, deltaPix_out):
+def kernel_pixelsize_change(kernel, delta_pix_in, delta_pix_out):
     """Change the pixel size of a given kernel.
 
     :param kernel:
-    :param deltaPix_in:
-    :param deltaPix_out:
+    :param delta_pix_in:
+    :param delta_pix_out:
     :return:
     """
     num_pix = len(kernel)
-    num_pix_new = int(round(num_pix * deltaPix_in / deltaPix_out))
+    num_pix_new = int(round(num_pix * delta_pix_in / delta_pix_out))
     if num_pix_new % 2 == 0:
         num_pix_new -= 1
     x_in = np.linspace(
-        -(num_pix - 1) / 2 * deltaPix_in, (num_pix - 1) / 2 * deltaPix_in, num_pix
+        -(num_pix - 1) / 2 * delta_pix_in, (num_pix - 1) / 2 * delta_pix_in, num_pix
     )
     x_out = np.linspace(
-        -(num_pix_new - 1) / 2 * deltaPix_out,
-        (num_pix_new - 1) / 2 * deltaPix_out,
+        -(num_pix_new - 1) / 2 * delta_pix_out,
+        (num_pix_new - 1) / 2 * delta_pix_out,
         num_pix_new,
     )
     kernel_out = image_util.re_size_array(x_in, x_in, kernel, x_out, x_out)
@@ -362,7 +362,7 @@ def kernel_moffat(num_pix, delta_pix, fwhm, moffat_beta):
     :param moffat_beta: beta of Moffat profile
     :return: 2d kernel
     """
-    x, y = util.make_grid(num_pix=num_pix, deltapix=delta_pix)
+    x, y = util.make_grid(num_pix=num_pix, delta_pix=delta_pix)
     kernel = kernel_moffat_grid(x, y, fwhm, moffat_beta)
     kernel = util.array2image(kernel)
     return kernel

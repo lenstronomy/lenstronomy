@@ -30,11 +30,11 @@ class KinNNImageAlign(object):
             kinNN center (y-direction)
         :param kin_nn_inputs: dictionary which encodes grid information for NN output
             data :'image': contains 2d image used to calculate grid coordinates
-            :'deltaPix': pixel size
+            :'delta_pix': pixel size
         """
         self.spectra_data = spectra_inputs
         self.imaging_data = imaging_inputs
-        self.imaging_deltapix = np.sqrt(
+        self.imaging_delta_pix = np.sqrt(
             np.abs(np.linalg.det(self.imaging_data["transform_pix2angle"]))
         )
         self.kinNN_data = kin_nn_inputs
@@ -119,8 +119,8 @@ class KinNNImageAlign(object):
         imaging_x,
         imaging_y,
         ellipse_pa_to_imagingx_angle,
-        deltapix_imaging,
-        deltapix_kin_nn,
+        delta_pix_imaging,
+        delta_pix_kin_nn,
         npix_imaging,
         npix_kin_nn,
         offsetx=0,
@@ -133,8 +133,8 @@ class KinNNImageAlign(object):
         :param imaging_y: imaging y coordinate to transform
         :param ellipse_pa_to_imagingx_angle: (radians) position angle of ellipse major
             axis relative to x in the imaging coordinate system
-        :param deltapix_imaging: pixel size of imaging image
-        :param deltapix_kin_nn: pixel size of NN image
+        :param delta_pix_imaging: pixel size of imaging image
+        :param delta_pix_kin_nn: pixel size of NN image
         :param npix_imaging: number of pixels on a side of the imaging image
         :param npix_kin_nn: number of pixels on a side of the NN image
         :param offsetx: how many pixels to offset the center of the grid to match the
@@ -151,7 +151,7 @@ class KinNNImageAlign(object):
         cd2_2 = np.cos(counterrotation)
         # rotation matrix, applied to matching centers ()
         rotation_by_ellipse_angle = np.array([[cd1_1, cd1_2], [cd2_1, cd2_2]]) * (
-            deltapix_imaging / deltapix_kin_nn
+            delta_pix_imaging / delta_pix_kin_nn
         )
 
         (
@@ -160,8 +160,8 @@ class KinNNImageAlign(object):
         ) = rotation_by_ellipse_angle.dot(
             np.array(
                 [
-                    -npix_imaging / 2 - offsetx / deltapix_imaging,
-                    -npix_imaging / 2 - offsety / deltapix_imaging,
+                    -npix_imaging / 2 - offsetx / delta_pix_imaging,
+                    -npix_imaging / 2 - offsety / delta_pix_imaging,
                 ]
             )
         ) + [
@@ -238,8 +238,8 @@ class KinNNImageAlign(object):
             spectra_coords_in_imaging_x,
             spectra_coords_in_imaging_y,
             self.imaging_data["ellipse_PA"],
-            self.imaging_deltapix,
-            self.kinNN_data["deltaPix"],
+            self.imaging_delta_pix,
+            self.kinNN_data["delta_pix"],
             self.imaging_data["npix"],
             self.kinNN_data["npix"],
             offsetx=self.imaging_data["offset_x"],

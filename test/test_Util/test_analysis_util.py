@@ -15,7 +15,7 @@ class TestCorrelation(object):
         pass
 
     def test_radial_profile(self):
-        x_grid, y_grid = util.make_grid(num_pix=20, deltapix=1)
+        x_grid, y_grid = util.make_grid(num_pix=20, delta_pix=1)
         profile = Gaussian()
         light_grid = profile.function(x_grid, y_grid, amp=1.0, sigma=5)
         I_r, r = analysis_util.radial_profile(
@@ -24,7 +24,7 @@ class TestCorrelation(object):
         assert I_r[0] == 0
 
     def test_ellipticities(self):
-        x_grid, y_grid = util.make_grid(num_pix=200, deltapix=1)
+        x_grid, y_grid = util.make_grid(num_pix=200, delta_pix=1)
         e1, e2 = 0.0, 0.1
         profile = GaussianEllipse()
         I_xy = profile.function(x_grid, y_grid, amp=1, sigma=10, e1=e1, e2=e2)
@@ -44,7 +44,7 @@ class TestCorrelation(object):
         npt.assert_almost_equal(e2_out, e2, decimal=3)
 
     def test_half_light_radius(self):
-        x_grid, y_grid = util.make_grid(num_pix=10, deltapix=1)
+        x_grid, y_grid = util.make_grid(num_pix=10, delta_pix=1)
         lens_light = np.zeros_like(x_grid)
         r_half = analysis_util.half_light_radius(
             lens_light, x_grid, y_grid, center_x=0, center_y=0
@@ -57,7 +57,7 @@ class TestCorrelation(object):
 
     def test_azimuthalAverage(self):
         num_pix = 101
-        x_grid, y_grid = util.make_grid(num_pix=num_pix, deltapix=1)
+        x_grid, y_grid = util.make_grid(num_pix=num_pix, delta_pix=1)
         e1, e2 = 0.0, 0.0
         profile = GaussianEllipse()
         kwargs_profile = {"amp": 1, "sigma": 50, "e1": e1, "e2": e2}

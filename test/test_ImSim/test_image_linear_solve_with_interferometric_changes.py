@@ -28,7 +28,7 @@ def test_image_linear_solve_with_primary_beam_and_interferometry_psf():
     background_rms = 3.0
     exp_time = np.inf
     num_pix = 80
-    deltaPix = 0.05
+    delta_pix = 0.05
     psf_type = "PIXEL"
     kernel_size = 161
 
@@ -52,10 +52,10 @@ def test_image_linear_solve_with_primary_beam_and_interferometry_psf():
                 psf_test[i, j] = np.sin(r * 0.5) / (r * 0.5)
 
     kwargs_data = sim_util.data_configure_simple(
-        num_pix, deltaPix, exp_time, background_rms
+        num_pix, delta_pix, exp_time, background_rms
     )
-    kwargs_data["ra_at_xy_0"] = -(40) * deltaPix
-    kwargs_data["dec_at_xy_0"] = -(40) * deltaPix
+    kwargs_data["ra_at_xy_0"] = -(40) * delta_pix
+    kwargs_data["dec_at_xy_0"] = -(40) * delta_pix
     kwargs_data["antenna_primary_beam"] = primary_beam
     kwargs_data["likelihood_method"] = (
         "interferometry_natwt"  # testing just for interferometry natwt method
@@ -65,7 +65,7 @@ def test_image_linear_solve_with_primary_beam_and_interferometry_psf():
     kernel_cut = kernel_util.cut_psf(psf_test, kernel_size, normalisation=False)
     kwargs_psf = {
         "psf_type": psf_type,
-        "pixel_size": deltaPix,
+        "pixel_size": delta_pix,
         "kernel_point_source": kernel_cut,
         "kernel_point_source_normalisation": False,
     }
@@ -194,7 +194,7 @@ def test_interferometry_image_linear_solve_with_point_source():
     background_rms = 3.0
     exp_time = np.inf
     num_pix = 80
-    deltaPix = 0.05
+    delta_pix = 0.05
     psf_type = "PIXEL"
     kernel_size = 161
 
@@ -218,10 +218,10 @@ def test_interferometry_image_linear_solve_with_point_source():
                 psf_test[i, j] = np.sin(r * 0.5) / (r * 0.5)
 
     kwargs_data = sim_util.data_configure_simple(
-        num_pix, deltaPix, exp_time, background_rms
+        num_pix, delta_pix, exp_time, background_rms
     )
-    kwargs_data["ra_at_xy_0"] = -(40) * deltaPix
-    kwargs_data["dec_at_xy_0"] = -(40) * deltaPix
+    kwargs_data["ra_at_xy_0"] = -(40) * delta_pix
+    kwargs_data["dec_at_xy_0"] = -(40) * delta_pix
     kwargs_data["antenna_primary_beam"] = primary_beam
     kwargs_data["likelihood_method"] = (
         "interferometry_natwt"  # testing just for interferometry natwt method
@@ -231,7 +231,7 @@ def test_interferometry_image_linear_solve_with_point_source():
     kernel_cut = kernel_util.cut_psf(psf_test, kernel_size, normalisation=False)
     kwargs_psf = {
         "psf_type": psf_type,
-        "pixel_size": deltaPix,
+        "pixel_size": delta_pix,
         "kernel_point_source": kernel_cut,
         "kernel_point_source_normalisation": False,
     }
@@ -374,7 +374,7 @@ def test_interferometry_image_linear_solve_with_point_source_without_pb_input():
     background_rms = 3.0
     exp_time = np.inf
     num_pix = 80
-    deltaPix = 0.05
+    delta_pix = 0.05
     psf_type = "PIXEL"
     kernel_size = 161
 
@@ -391,10 +391,10 @@ def test_interferometry_image_linear_solve_with_point_source_without_pb_input():
                 psf_test[i, j] = np.sin(r * 0.5) / (r * 0.5)
 
     kwargs_data = sim_util.data_configure_simple(
-        num_pix, deltaPix, exp_time, background_rms
+        num_pix, delta_pix, exp_time, background_rms
     )
-    kwargs_data["ra_at_xy_0"] = -(40) * deltaPix
-    kwargs_data["dec_at_xy_0"] = -(40) * deltaPix
+    kwargs_data["ra_at_xy_0"] = -(40) * delta_pix
+    kwargs_data["dec_at_xy_0"] = -(40) * delta_pix
     kwargs_data["likelihood_method"] = (
         "interferometry_natwt"  # testing just for interferometry natwt method
     )
@@ -403,7 +403,7 @@ def test_interferometry_image_linear_solve_with_point_source_without_pb_input():
     kernel_cut = kernel_util.cut_psf(psf_test, kernel_size, normalisation=False)
     kwargs_psf = {
         "psf_type": psf_type,
-        "pixel_size": deltaPix,
+        "pixel_size": delta_pix,
         "kernel_point_source": kernel_cut,
         "kernel_point_source_normalisation": False,
     }

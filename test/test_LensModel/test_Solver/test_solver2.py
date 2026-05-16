@@ -112,7 +112,7 @@ class TestSolver(object):
         image_position_nfw = LensEquationSolver(LensModel(["SPEP", "NFW"]))
         sourcePos_x = 0.1
         sourcePos_y = 0.03
-        deltapix = 0.05
+        delta_pix = 0.05
         num_pix = 100
         gamma = 1.9
         Rs = 0.1
@@ -136,8 +136,8 @@ class TestSolver(object):
             sourcePos_y,
             kwargs_lens,
             numImages=2,
-            min_distance=deltapix,
-            search_window=num_pix * deltapix,
+            min_distance=delta_pix,
+            search_window=num_pix * delta_pix,
         )
         print(len(x_pos), "number of images")
         x_pos = x_pos[:2]
@@ -163,8 +163,8 @@ class TestSolver(object):
             source_y,
             kwargs_out_center,
             numImages=2,
-            min_distance=deltapix,
-            search_window=num_pix * deltapix,
+            min_distance=delta_pix,
+            search_window=num_pix * delta_pix,
         )
         print(kwargs_out_center, "kwargs_out_center")
         npt.assert_almost_equal(x_pos_new[0], x_pos[0], decimal=2)
@@ -209,7 +209,7 @@ class TestSolver(object):
         image_position = LensEquationSolver(lensModel)
         sourcePos_x = 0.1
         sourcePos_y = 0.03
-        deltapix = 0.05
+        delta_pix = 0.05
         num_pix = 100
         gamma = 1.9
         kwargs_lens = [
@@ -228,8 +228,8 @@ class TestSolver(object):
             sourcePos_y,
             kwargs_lens,
             numImages=2,
-            min_distance=deltapix,
-            search_window=num_pix * deltapix,
+            min_distance=delta_pix,
+            search_window=num_pix * delta_pix,
             precision_limit=10 ** (-10),
         )
         print(len(x_pos), "number of images")
@@ -257,8 +257,8 @@ class TestSolver(object):
             source_y,
             kwargs_out_center,
             numImages=2,
-            min_distance=deltapix,
-            search_window=num_pix * deltapix,
+            min_distance=delta_pix,
+            search_window=num_pix * delta_pix,
         )
         npt.assert_almost_equal(x_pos_new[0], x_pos[0], decimal=3)
         npt.assert_almost_equal(y_pos_new[0], y_pos[0], decimal=3)
@@ -301,7 +301,7 @@ class TestSolver(object):
         image_position = LensEquationSolver(lens)
         sourcePos_x = 0.1
         sourcePos_y = 0.03
-        deltapix = 0.05
+        delta_pix = 0.05
         num_pix = 100
 
         kwargs_lens = [
@@ -313,8 +313,8 @@ class TestSolver(object):
             sourcePos_y,
             kwargs_lens,
             numImages=2,
-            min_distance=deltapix,
-            search_window=num_pix * deltapix,
+            min_distance=delta_pix,
+            search_window=num_pix * delta_pix,
             precision_limit=10 ** (-10),
         )
         print(len(x_pos), "number of images")
@@ -333,8 +333,8 @@ class TestSolver(object):
             source_y,
             kwargs_out,
             numImages=2,
-            min_distance=deltapix,
-            search_window=num_pix * deltapix,
+            min_distance=delta_pix,
+            search_window=num_pix * delta_pix,
         )
         npt.assert_almost_equal(x_pos_new[0], x_pos[0], decimal=3)
         npt.assert_almost_equal(y_pos_new[0], y_pos[0], decimal=3)
@@ -353,7 +353,7 @@ class TestSolver(object):
         image_position = LensEquationSolver(lensModel)
         sourcePos_x = 0.1
         sourcePos_y = 0.03
-        deltapix = 0.05
+        delta_pix = 0.05
         num_pix = 100
         gamma = 1.9
         kwargs_lens = [
@@ -372,8 +372,8 @@ class TestSolver(object):
             sourcePos_y,
             kwargs_lens,
             numImages=2,
-            min_distance=deltapix,
-            search_window=num_pix * deltapix,
+            min_distance=delta_pix,
+            search_window=num_pix * delta_pix,
             precision_limit=10 ** (-15),
         )
         print(len(x_pos), "number of images")
@@ -399,8 +399,8 @@ class TestSolver(object):
             source_y,
             kwargs_out,
             numImages=2,
-            min_distance=deltapix,
-            search_window=num_pix * deltapix,
+            min_distance=delta_pix,
+            search_window=num_pix * delta_pix,
         )
         npt.assert_almost_equal(x_pos_new[0], x_pos[0], decimal=3)
         npt.assert_almost_equal(y_pos_new[0], y_pos[0], decimal=3)
@@ -422,7 +422,7 @@ class TestSolver(object):
         image_position = LensEquationSolver(lensModel)
         sourcePos_x = 0.1
         sourcePos_y = 0.03
-        deltapix = 0.05
+        delta_pix = 0.05
         num_pix = 100
         gamma = 1.9
         kwargs_lens = [
@@ -441,8 +441,8 @@ class TestSolver(object):
             sourcePos_y,
             kwargs_lens,
             numImages=2,
-            min_distance=deltapix,
-            search_window=num_pix * deltapix,
+            min_distance=delta_pix,
+            search_window=num_pix * delta_pix,
             precision_limit=10 ** (-15),
         )
         print(len(x_pos), "number of images")
@@ -468,8 +468,8 @@ class TestSolver(object):
             source_y,
             kwargs_out,
             numImages=2,
-            min_distance=deltapix,
-            search_window=num_pix * deltapix,
+            min_distance=delta_pix,
+            search_window=num_pix * delta_pix,
         )
         npt.assert_almost_equal(x_pos_new[0], x_pos[0], decimal=3)
         npt.assert_almost_equal(y_pos_new[0], y_pos[0], decimal=3)

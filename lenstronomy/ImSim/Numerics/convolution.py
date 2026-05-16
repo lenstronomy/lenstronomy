@@ -355,7 +355,7 @@ class MultiGaussianConvolution(object):
         from lenstronomy.LightModel.Profiles.gaussian import MultiGaussian
 
         mg = MultiGaussian()
-        x, y = util.make_grid(num_pix=num_pix, deltapix=1)
+        x, y = util.make_grid(num_pix=num_pix, delta_pix=1)
         kernel = mg.function(x, y, amp=self._fraction_list, sigma=self._sigmas_scaled)
         kernel = util.array2image(kernel)
         return kernel / np.sum(kernel)

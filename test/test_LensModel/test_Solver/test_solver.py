@@ -25,7 +25,7 @@ class TestSolver4Point(object):
         lensEquationSolver = LensEquationSolver(lensModel)
         sourcePos_x = 0.1
         sourcePos_y = -0.1
-        deltapix = 0.05
+        delta_pix = 0.05
         num_pix = 150
         gamma = 1.9
         phi_G, q = 0.5, 0.8
@@ -46,8 +46,8 @@ class TestSolver4Point(object):
             sourcePos_y,
             kwargs_lens,
             numImages=4,
-            min_distance=deltapix,
-            search_window=num_pix * deltapix,
+            min_distance=delta_pix,
+            search_window=num_pix * delta_pix,
         )
         kwargs_lens_init = [
             {

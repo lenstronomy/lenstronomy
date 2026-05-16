@@ -99,7 +99,7 @@ class TestTracerModelFit(object):
             _,
         ) = util.make_grid_with_coordtransform(
             num_pix=num_pix,
-            deltapix=pixel_scale,
+            delta_pix=pixel_scale,
             center_ra=0,
             center_dec=0,
             subgrid_res=1,
@@ -127,7 +127,7 @@ class TestTracerModelFit(object):
         }
 
         # if you are using a PSF estimate from e.g. a star in the FoV of your exposure, you can set
-        # kwargs_psf = {'psf_type': 'PIXEL', 'pixel_size': deltaPix, 'kernel_point_source': 'odd numbered 2d grid with centered star/PSF model'}
+        # kwargs_psf = {'psf_type': 'PIXEL', 'pixel_size': delta_pix, 'kernel_point_source': 'odd numbered 2d grid with centered star/PSF model'}
 
         psf_class = PSF(**kwargs_psf)
         kwargs_numerics = {

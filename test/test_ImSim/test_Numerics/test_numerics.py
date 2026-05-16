@@ -30,7 +30,7 @@ class TestNumerics(object):
         # we define a pixel grid and a higher resolution super sampling factor
         self._supersampling_factor = 5
         num_pix = 61  # cutout pixel size
-        deltaPix = 0.05  # pixel size in arcsec (area per pixel = deltaPix**2)
+        delta_pix = 0.05  # pixel size in arcsec (area per pixel = delta_pix**2)
         (
             x,
             y,
@@ -42,7 +42,7 @@ class TestNumerics(object):
             Mcoord2pix,
         ) = util.make_grid_with_coordtransform(
             num_pix=num_pix,
-            deltapix=deltaPix,
+            delta_pix=delta_pix,
             subgrid_res=1,
             left_lower=False,
             inverse=False,
@@ -138,7 +138,7 @@ class TestNumerics(object):
         # import PSF file
         kernel_super = kernel_util.kernel_gaussian(
             num_pix=11 * self._supersampling_factor,
-            delta_pix=deltaPix / self._supersampling_factor,
+            delta_pix=delta_pix / self._supersampling_factor,
             fwhm=0.1,
         )
 
@@ -486,7 +486,7 @@ def test_supersampling_simple():
 
     x, y = util.make_grid(
         num_pix=num_pix * supersampling_factor,
-        deltapix=detector_pixel_scale / supersampling_factor,
+        delta_pix=detector_pixel_scale / supersampling_factor,
     )
     from lenstronomy.LightModel.Profiles.gaussian import Gaussian
 

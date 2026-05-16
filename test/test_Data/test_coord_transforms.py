@@ -11,8 +11,8 @@ class TestCoordinates(object):
         pass
 
     def test_init(self):
-        deltaPix = 0.05
-        Mpix2a = np.array([[1, 0], [0, 1]]) * deltaPix
+        delta_pix = 0.05
+        Mpix2a = np.array([[1, 0], [0, 1]]) * delta_pix
         ra_0 = 1.0
         dec_0 = 1.0
         coords = Coordinates(
@@ -28,8 +28,8 @@ class TestCoordinates(object):
         assert y == 0
 
     def test_map_coord2pix(self):
-        deltaPix = 0.05
-        Mpix2a = np.array([[1, 0], [0, 1]]) * deltaPix
+        delta_pix = 0.05
+        Mpix2a = np.array([[1, 0], [0, 1]]) * delta_pix
         ra_0 = 1.0
         dec_0 = 1.0
         coords = Coordinates(
@@ -40,38 +40,38 @@ class TestCoordinates(object):
         assert y == 0
 
     def test_map_pix2coord(self):
-        deltaPix = 0.05
-        Mpix2a = np.array([[1, 0], [0, 1]]) * deltaPix
+        delta_pix = 0.05
+        Mpix2a = np.array([[1, 0], [0, 1]]) * delta_pix
         ra_0 = 1.0
         dec_0 = 1.0
         coords = Coordinates(
             transform_pix2angle=Mpix2a, ra_at_xy_0=ra_0, dec_at_xy_0=dec_0
         )
         x, y = coords.map_pix2coord(1, 0)
-        assert x == deltaPix + ra_0
+        assert x == delta_pix + ra_0
         assert y == dec_0
 
     def test_pixel_size(self):
-        deltaPix = -0.05
-        Mpix2a = np.array([[1, 0], [0, 1]]) * deltaPix
+        delta_pix = -0.05
+        Mpix2a = np.array([[1, 0], [0, 1]]) * delta_pix
         ra_0 = 1.0
         dec_0 = 1.0
         coords = Coordinates(
             transform_pix2angle=Mpix2a, ra_at_xy_0=ra_0, dec_at_xy_0=dec_0
         )
-        deltaPix_out = coords.pixel_width
-        assert deltaPix_out == -deltaPix
+        delta_pix_out = coords.pixel_width
+        assert delta_pix_out == -delta_pix
 
     def test_rescaled_grid(self):
         import lenstronomy.Util.util as util
 
         num_pix = 10
         theta = 0.5
-        deltaPix = 0.05
+        delta_pix = 0.05
         subgrid_res = 3
         Mpix2a = (
             np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])
-            * deltaPix
+            * delta_pix
         )
         x_grid, y_grid = util.make_grid_transformed(num_pix, Mpix2a)
         coords = Coordinates(Mpix2a, ra_at_xy_0=x_grid[0], dec_at_xy_0=y_grid[0])
@@ -111,8 +111,8 @@ class TestCoordinates(object):
         npt.assert_almost_equal(dec, y_2d[3, 2], decimal=10)
 
     def test_coordinate_grid(self):
-        deltaPix = 0.05
-        Mpix2a = np.array([[1, 0], [0, 1]]) * deltaPix
+        delta_pix = 0.05
+        Mpix2a = np.array([[1, 0], [0, 1]]) * delta_pix
         ra_0 = 1.0
         dec_0 = 1.0
         coords = Coordinates(
@@ -128,8 +128,8 @@ class TestCoordinates(object):
         npt.assert_almost_equal(dec_grid[int(y_pos), int(x_pos)], dec, decimal=8)
 
     def test_xy_at_radec_0(self):
-        deltaPix = 0.05
-        Mpix2a = np.array([[1, 0], [0, 1]]) * deltaPix
+        delta_pix = 0.05
+        Mpix2a = np.array([[1, 0], [0, 1]]) * delta_pix
         ra_0 = 1.0
         dec_0 = 1.0
         coords = Coordinates(
@@ -143,15 +143,15 @@ class TestCoordinates(object):
         npt.assert_almost_equal(Ma2pix, Ma2pix_, decimal=8)
 
     def test_shift_coordinate_system(self):
-        deltaPix = 0.05
-        Mpix2a = np.array([[1, 0], [0, 1]]) * deltaPix
+        delta_pix = 0.05
+        Mpix2a = np.array([[1, 0], [0, 1]]) * delta_pix
         ra_0 = 1.0
         dec_0 = 1.0
         coords = Coordinates(
             transform_pix2angle=Mpix2a, ra_at_xy_0=ra_0, dec_at_xy_0=dec_0
         )
         x0, y0 = coords.xy_at_radec_0
-        coords.shift_coordinate_system(x_shift=deltaPix, y_shift=0, pixel_unit=False)
+        coords.shift_coordinate_system(x_shift=delta_pix, y_shift=0, pixel_unit=False)
         x0_new, y0_new = coords.xy_at_radec_0
         assert x0_new == x0 - 1
 

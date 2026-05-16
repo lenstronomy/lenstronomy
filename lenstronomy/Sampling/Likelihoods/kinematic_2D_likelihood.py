@@ -39,7 +39,7 @@ class KinLikelihood(object):
         self.kinematic_NN = kinematic_NN_call.KinematicNN()
         self.config = self.kinematic_NN.config
         self.kinNN_input = {
-            "deltaPix": self.config["grid_settings"]["deltapix"],
+            "delta_pix": self.config["grid_settings"]["delta_pix"],
             "image": np.ones(
                 (
                     self.config["grid_settings"]["npix"],
@@ -208,7 +208,7 @@ class KinLikelihood(object):
         delta_pix = np.sqrt(np.abs(np.linalg.det(kwargs_data["transform_pix2angle"])))
         kwargs = {
             "image": kwargs_data["image_data"],
-            "deltaPix": delta_pix,
+            "delta_pix": delta_pix,
             "transform_pix2angle": kwargs_data["transform_pix2angle"],
             "ra_at_xy0": kwargs_data["ra_at_xy_0"],
             "dec_at_xy0": kwargs_data["dec_at_xy_0"],

@@ -103,7 +103,7 @@ class TestTracerPlot(object):
             _,
         ) = util.make_grid_with_coordtransform(
             num_pix=num_pix,
-            deltapix=pixel_scale,
+            delta_pix=pixel_scale,
             center_ra=0,
             center_dec=0,
             subgrid_res=1,
@@ -131,7 +131,7 @@ class TestTracerPlot(object):
         }
 
         # if you are using a PSF estimate from e.g. a star in the FoV of your exposure, you can set
-        # kwargs_psf = {'psf_type': 'PIXEL', 'pixel_size': deltaPix, 'kernel_point_source': 'odd numbered 2d grid with centered star/PSF model'}
+        # kwargs_psf = {'psf_type': 'PIXEL', 'pixel_size': delta_pix, 'kernel_point_source': 'odd numbered 2d grid with centered star/PSF model'}
 
         psf_class = PSF(**kwargs_psf)
         kwargs_numerics = {
@@ -244,13 +244,13 @@ class TestTracerPlot(object):
                 tracer_plot.normalized_residual_plot(ax=axes[0, 2], vmin=-6, vmax=6)
         tracer_plot.source_plot(
             ax=axes[1, 0],
-            deltaPix_source=0.01,
+            delta_pix_source=0.01,
             num_pix=100,
             plot_scale="log",
         )
         tracer_plot.source_plot(
             ax=axes[1, 0],
-            deltaPix_source=0.01,
+            delta_pix_source=0.01,
             num_pix=100,
             plot_scale="log",
             with_caustics=True,
@@ -282,7 +282,7 @@ class TestTracerPlot(object):
 
         source_lin, _ = tracer_plot.source(
             num_pix=20,
-            deltaPix=0.02,
+            delta_pix=0.02,
             center=(0.01, -0.01),
             image_orientation=False,
         )
@@ -292,7 +292,7 @@ class TestTracerPlot(object):
         tracer_plot.source_plot(
             ax=ax,
             num_pix=30,
-            deltaPix_source=0.02,
+            delta_pix_source=0.02,
             plot_scale="linear",
             with_caustics=True,
         )
@@ -303,7 +303,7 @@ class TestTracerPlot(object):
             tracer_plot.source_plot(
                 ax=ax,
                 num_pix=20,
-                deltaPix_source=0.02,
+                delta_pix_source=0.02,
                 plot_scale="invalid",
             )
         plt.close()

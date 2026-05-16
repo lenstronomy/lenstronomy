@@ -13,16 +13,16 @@ class TestSimulation(object):
         sigma_bkg = 1.0  # background noise per pixel
         exp_time = 10  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)
         num_pix = 100  # cutout pixel size
-        deltaPix = 0.05  # pixel size in arcsec (area per pixel = deltaPix**2)
+        delta_pix = 0.05  # pixel size in arcsec (area per pixel = delta_pix**2)
         fwhm = 0.5  # full width half max of PSF
 
         # PSF specification
 
         kwargs_data = sim_util.data_configure_simple(
-            num_pix, deltaPix, exp_time, sigma_bkg
+            num_pix, delta_pix, exp_time, sigma_bkg
         )
         data_class = ImageData(**kwargs_data)
-        assert data_class.pixel_width == deltaPix
+        assert data_class.pixel_width == delta_pix
 
 
 if __name__ == "__main__":

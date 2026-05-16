@@ -11,7 +11,7 @@ export, __all__ = exporter()
 @export
 def data_configure_simple(
     num_pix,
-    deltaPix,
+    delta_pix,
     exposure_time=None,
     background_rms=None,
     center_ra=0,
@@ -21,7 +21,7 @@ def data_configure_simple(
     """Configures the data keyword arguments with a coordinate grid centered at zero.
 
     :param num_pix: number of pixel (num_pix x num_pix)
-    :param deltaPix: pixel size (in angular units)
+    :param delta_pix: pixel size (in angular units)
     :param exposure_time: exposure time
     :param background_rms: background noise (Gaussian sigma)
     :param center_ra: RA at the center of the image
@@ -43,7 +43,7 @@ def data_configure_simple(
         Mcoord2pix,
     ) = util.make_grid_with_coordtransform(
         num_pix=num_pix,
-        deltapix=deltaPix,
+        delta_pix=delta_pix,
         center_ra=center_ra,
         center_dec=center_dec,
         subgrid_res=1,

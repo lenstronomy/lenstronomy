@@ -294,7 +294,7 @@ def show_coordinate_arrows(
     arrow_color_north = kwargs_coordinate_arrows.get("arrow_color_north", "w")
     arrow_color_east = kwargs_coordinate_arrows.get("arrow_color_east", "w")
 
-    deltaPix = coords.pixel_width
+    delta_pix = coords.pixel_width
 
     ra_test, dec_test = coords.map_pix2coord(0, 0)
     p0 = arrow_length * d
@@ -318,10 +318,10 @@ def show_coordinate_arrows(
         arrow_north_offset_x = (d_x_n / len_n) * 0.06
         arrow_north_offset_y = (d_y_n / len_n) * 0.06
 
-    arrow_east_offset_x_pix = arrow_east_offset_x * (d / deltaPix)
-    arrow_east_offset_y_pix = arrow_east_offset_y * (d / deltaPix)
-    arrow_north_offset_x_pix = arrow_north_offset_x * (d / deltaPix)
-    arrow_north_offset_y_pix = arrow_north_offset_y * (d / deltaPix)
+    arrow_east_offset_x_pix = arrow_east_offset_x * (d / delta_pix)
+    arrow_east_offset_y_pix = arrow_east_offset_y * (d / delta_pix)
+    arrow_north_offset_x_pix = arrow_north_offset_x * (d / delta_pix)
+    arrow_north_offset_y_pix = arrow_north_offset_y * (d / delta_pix)
 
     if arrow_origin_x is None or arrow_origin_y is None:
         x_max_rel = max(
@@ -339,15 +339,15 @@ def show_coordinate_arrows(
             d_y_n + arrow_north_offset_y_pix,
         )
 
-        margin = 0.05 * (d / deltaPix)
+        margin = 0.05 * (d / delta_pix)
 
-        xx_ = (d / deltaPix) - margin - x_max_rel
+        xx_ = (d / delta_pix) - margin - x_max_rel
         yy_ = margin - y_min_rel
 
         ra0, dec0 = coords.map_pix2coord(xx_, yy_)
     else:
-        xx_ = arrow_origin_x * (d / deltaPix)
-        yy_ = arrow_origin_y * (d / deltaPix)
+        xx_ = arrow_origin_x * (d / delta_pix)
+        yy_ = arrow_origin_y * (d / delta_pix)
         ra0, dec0 = coords.map_pix2coord(xx_, yy_)
 
     xx_ra = xx_ + d_x_e
@@ -362,10 +362,10 @@ def show_coordinate_arrows(
     yy_dec_t = yy_dec + arrow_north_offset_y_pix
 
     ax.arrow(
-        xx_ * deltaPix,
-        yy_ * deltaPix,
-        (xx_ra - xx_) * deltaPix,
-        (yy_ra - yy_) * deltaPix,
+        xx_ * delta_pix,
+        yy_ * delta_pix,
+        (xx_ra - xx_) * delta_pix,
+        (yy_ra - yy_) * delta_pix,
         head_width=arrowhead_size * d,
         head_length=arrowhead_size * d,
         fc=arrow_color_east,
@@ -373,8 +373,8 @@ def show_coordinate_arrows(
         linewidth=1,
     )
     ax.text(
-        xx_ra_t * deltaPix,
-        yy_ra_t * deltaPix,
+        xx_ra_t * delta_pix,
+        yy_ra_t * delta_pix,
         "E",
         color=arrow_color_east,
         fontsize=font_size,
@@ -382,10 +382,10 @@ def show_coordinate_arrows(
         va="center",
     )
     ax.arrow(
-        xx_ * deltaPix,
-        yy_ * deltaPix,
-        (xx_dec - xx_) * deltaPix,
-        (yy_dec - yy_) * deltaPix,
+        xx_ * delta_pix,
+        yy_ * delta_pix,
+        (xx_dec - xx_) * delta_pix,
+        (yy_dec - yy_) * delta_pix,
         head_width=arrowhead_size * d,
         head_length=arrowhead_size * d,
         fc=arrow_color_north,
@@ -393,8 +393,8 @@ def show_coordinate_arrows(
         linewidth=1,
     )
     ax.text(
-        xx_dec_t * deltaPix,
-        yy_dec_t * deltaPix,
+        xx_dec_t * delta_pix,
+        yy_dec_t * delta_pix,
         "N",
         color=arrow_color_north,
         fontsize=font_size,

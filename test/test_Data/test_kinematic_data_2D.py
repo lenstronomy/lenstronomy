@@ -46,7 +46,7 @@ class TestKinBin(object):
         )
 
     def test_KinBin2kwargs(self):
-        assert self.KinBin.kin_bin2kwargs()["deltaPix"] == 1.0
+        assert self.KinBin.kin_bin2kwargs()["delta_pix"] == 1.0
 
     def test_kin_grid(self):
         assert np.shape(self.KinBin.kin_grid()[0]) == (self.num_pix, self.num_pix)

@@ -188,13 +188,13 @@ def cube2array(cube):
 
 
 @export
-def make_grid(num_pix, deltapix, subgrid_res=1, left_lower=False):
+def make_grid(num_pix, delta_pix, subgrid_res=1, left_lower=False):
     """Creates pixel grid (in 1d arrays of x- and y- positions) default coordinate frame
     is such that (0,0) is in the center of the coordinate grid.
 
     :param num_pix: number of pixels per axis Give an integers for a square grid, or a
         2-length sequence (first, second axis length) for a non-square grid.
-    :param deltapix: pixel size
+    :param delta_pix: pixel size
     :param subgrid_res: sub-pixel resolution (default=1)
     :return: x, y position information in two 1d arrays
     """
@@ -212,12 +212,12 @@ def make_grid(num_pix, deltapix, subgrid_res=1, left_lower=False):
 
     # Super-resolution sampling
     num_pix_eff = (num_pix * subgrid_res).astype(int)
-    deltapix_eff = deltapix / float(subgrid_res)
+    delta_pix_eff = delta_pix / float(subgrid_res)
 
     # Compute unshifted grids.
     # X values change quickly, Y values are repeated many times
-    x_grid = np.tile(np.arange(num_pix_eff[0]), num_pix_eff[1]) * deltapix_eff
-    y_grid = np.repeat(np.arange(num_pix_eff[1]), num_pix_eff[0]) * deltapix_eff
+    x_grid = np.tile(np.arange(num_pix_eff[0]), num_pix_eff[1]) * delta_pix_eff
+    y_grid = np.repeat(np.arange(num_pix_eff[1]), num_pix_eff[0]) * delta_pix_eff
 
     if left_lower is True:
         # Shift so (0, 0) is in the "lower left"
@@ -225,20 +225,20 @@ def make_grid(num_pix, deltapix, subgrid_res=1, left_lower=False):
         shift = -1.0 / 2 + 1.0 / (2 * subgrid_res) * np.array([1, 1])
     else:
         # Shift so (0, 0) is centered
-        shift = deltapix_eff * (num_pix_eff - 1) / 2
+        shift = delta_pix_eff * (num_pix_eff - 1) / 2
 
     return x_grid - shift[0], y_grid - shift[1]
 
 
 @export
 def make_grid_transformed(num_pix, Mpix2Angle):
-    """Returns grid with linear transformation (deltaPix and rotation)
+    """Returns grid with linear transformation (delta_pix and rotation)
 
     :param num_pix: number of Pixels
     :param Mpix2Angle: 2-by-2 matrix to mat a pixel to a coordinate
     :return: coordinate grid
     """
-    x_grid, y_grid = make_grid(num_pix, deltapix=1)
+    x_grid, y_grid = make_grid(num_pix, delta_pix=1)
     ra_grid, dec_grid = map_coord2pix(x_grid, y_grid, 0, 0, Mpix2Angle)
     return ra_grid, dec_grid
 
@@ -272,7 +272,7 @@ def centered_coordinate_system(num_pix, transform_pix2angle):
 @export
 def make_grid_with_coordtransform(
     num_pix,
-    deltapix,
+    delta_pix,
     subgrid_res=1,
     center_ra=0,
     center_dec=0,
@@ -283,7 +283,7 @@ def make_grid_with_coordtransform(
     between coordinates and pixel.
 
     :param num_pix: number of pixels per axis
-    :param deltapix: pixel scale per axis
+    :param delta_pix: pixel scale per axis
     :param subgrid_res: super-sampling resolution relative to the stated pixel size
     :param center_ra: center of the grid
     :param center_dec: center of the grid
@@ -293,26 +293,26 @@ def make_grid_with_coordtransform(
         Mpix2coord, Mcoord2pix
     """
     num_pix_eff = num_pix * subgrid_res
-    deltapix_eff = deltapix / float(subgrid_res)
+    delta_pix_eff = delta_pix / float(subgrid_res)
     a = np.arange(num_pix_eff)
     matrix = np.dstack(np.meshgrid(a, a)).reshape(-1, 2)
     if inverse is True:
-        delta_x = -deltapix_eff
+        delta_x = -delta_pix_eff
     else:
-        delta_x = deltapix_eff
+        delta_x = delta_pix_eff
     if left_lower is True:
         ra_grid = matrix[:, 0] * delta_x
-        dec_grid = matrix[:, 1] * deltapix_eff
+        dec_grid = matrix[:, 1] * delta_pix_eff
     else:
         ra_grid = (matrix[:, 0] - (num_pix_eff - 1) / 2.0) * delta_x
-        dec_grid = (matrix[:, 1] - (num_pix_eff - 1) / 2.0) * deltapix_eff
-    shift = (subgrid_res - 1) / (2.0 * subgrid_res) * deltapix
+        dec_grid = (matrix[:, 1] - (num_pix_eff - 1) / 2.0) * delta_pix_eff
+    shift = (subgrid_res - 1) / (2.0 * subgrid_res) * delta_pix
     ra_grid += -shift + center_ra
     dec_grid += -shift + center_dec
     ra_at_xy_0 = ra_grid[0]
     dec_at_xy_0 = dec_grid[0]
 
-    Mpix2coord = np.array([[delta_x, 0], [0, deltapix_eff]])
+    Mpix2coord = np.array([[delta_x, 0], [0, delta_pix_eff]])
     Mcoord2pix = np.linalg.inv(Mpix2coord)
     x_at_radec_0, y_at_radec_0 = map_coord2pix(
         -ra_at_xy_0, -dec_at_xy_0, x_0=0, y_0=0, M=Mcoord2pix

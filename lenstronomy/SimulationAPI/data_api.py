@@ -63,7 +63,7 @@ class DataAPI(SingleBand):
                 _,
             ) = util.make_grid_with_coordtransform(
                 num_pix=self.num_pix,
-                deltapix=self.pixel_scale,
+                delta_pix=self.pixel_scale,
                 subgrid_res=1,
                 left_lower=False,
                 inverse=False,

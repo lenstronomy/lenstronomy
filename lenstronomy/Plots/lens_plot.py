@@ -100,7 +100,7 @@ def lens_model_plot(
     lens_model,
     kwargs_lens,
     num_pix=500,
-    deltaPix=0.01,
+    delta_pix=0.01,
     sourcePos_x=0,
     sourcePos_y=0,
     point_source=False,
@@ -126,8 +126,8 @@ def lens_model_plot(
     :param kwargs_lens: lens model keyword argument list
     :param num_pix: total number of pixels (for convergence map)
     :type num_pix: int
-    :param deltaPix: width of pixel (total frame size is deltaPix x num_pix)
-    :type deltaPix: float
+    :param delta_pix: width of pixel (total frame size is delta_pix x num_pix)
+    :type delta_pix: float
     :param sourcePos_x: X-position of point source (image positions computed by
     :type sourcePos_x: float
         the lens equation)
@@ -167,23 +167,23 @@ def lens_model_plot(
     """
     kwargs_data = sim_util.data_configure_simple(
         num_pix,
-        deltaPix,
+        delta_pix,
         center_ra=coord_center_ra,
         center_dec=coord_center_dec,
         inverse=coord_inverse,
     )
     data = ImageData(**kwargs_data)
     _coords = data
-    _frame_size = num_pix * deltaPix
+    _frame_size = num_pix * delta_pix
 
     ra0, dec0 = data.radec_at_xy_0
     # shift half a pixel such that pixel is in the center
-    dec0 -= deltaPix / 2
+    dec0 -= delta_pix / 2
     if coord_inverse:
-        ra0 += deltaPix / 2
+        ra0 += delta_pix / 2
         extent = [ra0, ra0 - _frame_size, dec0, dec0 + _frame_size]
     else:
-        ra0 -= deltaPix / 2
+        ra0 -= delta_pix / 2
         extent = [ra0, ra0 + _frame_size, dec0, dec0 + _frame_size]
 
     if with_convergence:
@@ -517,7 +517,7 @@ def arrival_time_surface(
     lensModel,
     kwargs_lens,
     num_pix=500,
-    deltaPix=0.01,
+    delta_pix=0.01,
     sourcePos_x=0,
     sourcePos_y=0,
     with_caustics=False,
@@ -537,8 +537,8 @@ def arrival_time_surface(
     :param kwargs_lens: lens model keyword argument list
     :param num_pix:
     :type num_pix: int
-    :param deltaPix:
-    :type deltaPix: float
+    :param delta_pix:
+    :type delta_pix: float
     :param sourcePos_x:
     :type sourcePos_x: float
     :param sourcePos_y:
@@ -556,16 +556,16 @@ def arrival_time_surface(
     :type name_list: list of strings, longer or equal the number of point sources
     :return:
     """
-    kwargs_data = sim_util.data_configure_simple(num_pix, deltaPix)
+    kwargs_data = sim_util.data_configure_simple(num_pix, delta_pix)
     data = ImageData(**kwargs_data)
     ra0, dec0 = data.radec_at_xy_0
     origin = [ra0, dec0]
-    _frame_size = num_pix * deltaPix
+    _frame_size = num_pix * delta_pix
     _coords = data
     x_grid, y_grid = data.pixel_coordinates
     lensModelExt = LensModelExtensions(lensModel)
     # ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list = lensModelExt.critical_curve_caustics(
-    #    kwargs_lens, compute_window=_frame_size, grid_scale=deltaPix/2.)
+    #    kwargs_lens, compute_window=_frame_size, grid_scale=delta_pix/2.)
     x_grid1d = util.image2array(x_grid)
     y_grid1d = util.image2array(y_grid)
     fermat_surface = lensModel.fermat_potential(
@@ -579,7 +579,7 @@ def arrival_time_surface(
         ra_crit_list, dec_crit_list = lensModelExt.critical_curve_tiling(
             kwargs_lens,
             compute_window=_frame_size,
-            start_scale=deltaPix / 5,
+            start_scale=delta_pix / 5,
             max_order=10,
         )
         ra_caustic_list, dec_caustic_list = lensModel.ray_shooting(
@@ -599,8 +599,8 @@ def arrival_time_surface(
             sourcePos_x,
             sourcePos_y,
             kwargs_lens,
-            min_distance=deltaPix,
-            search_window=deltaPix * num_pix,
+            min_distance=delta_pix,
+            search_window=delta_pix * num_pix,
         )
 
         fermat_pot_images = lensModel.fermat_potential(theta_x, theta_y, kwargs_lens)
@@ -618,8 +618,8 @@ def arrival_time_surface(
             name_list = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"]
 
         for i in range(len(x_image)):
-            x_ = (x_image[i] + 0.5) * deltaPix - _frame_size / 2
-            y_ = (y_image[i] + 0.5) * deltaPix - _frame_size / 2
+            x_ = (x_image[i] + 0.5) * delta_pix - _frame_size / 2
+            y_ = (y_image[i] + 0.5) * delta_pix - _frame_size / 2
             if image_color_value is None:
                 color = "k"
             else:
@@ -627,16 +627,16 @@ def arrival_time_surface(
             ax.plot(x_, y_, "x", markersize=10, alpha=1, color=color)
             # markersize=8*(1 + np.log(np.abs(mag_images[i])))
             ax.text(
-                x_ + deltaPix,
-                y_ + deltaPix,
+                x_ + delta_pix,
+                y_ + delta_pix,
                 name_list[i],
                 fontsize=letter_font_size,
                 color="k",
             )
         x_source, y_source = _coords.map_coord2pix(sourcePos_x, sourcePos_y)
         ax.plot(
-            (x_source + 0.5) * deltaPix - _frame_size / 2,
-            (y_source + 0.5) * deltaPix - _frame_size / 2,
+            (x_source + 0.5) * delta_pix - _frame_size / 2,
+            (y_source + 0.5) * delta_pix - _frame_size / 2,
             "*k",
             markersize=20,
         )

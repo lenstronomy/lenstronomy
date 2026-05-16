@@ -29,20 +29,20 @@ class TestOutputPlots(object):
         sigma_bkg = 0.05  # background noise per pixel
         exp_time = 100  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)
         num_pix = 10  # cutout pixel size
-        deltaPix = 0.5  # pixel size in arcsec (area per pixel = deltaPix**2)
+        delta_pix = 0.5  # pixel size in arcsec (area per pixel = delta_pix**2)
         fwhm = 0.5  # full width half max of PSF
 
         # PSF specification
 
         self.kwargs_data = sim_util.data_configure_simple(
-            num_pix, deltaPix, exp_time, sigma_bkg
+            num_pix, delta_pix, exp_time, sigma_bkg
         )
         data_class = ImageData(**self.kwargs_data)
         kwargs_psf_gaussian = {
             "psf_type": "GAUSSIAN",
             "fwhm": fwhm,
             "truncation": 5,
-            "pixel_size": deltaPix,
+            "pixel_size": delta_pix,
         }
         psf_gaussian = PSF(**kwargs_psf_gaussian)
         self.kwargs_psf = {
@@ -203,10 +203,13 @@ class TestOutputPlots(object):
         plt.close()
 
         num_pix = 100
-        deltaPix_source = 0.01
+        delta_pix_source = 0.01
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
         lensPlot.error_map_source_plot(
-            ax=ax, num_pix=num_pix, deltaPix_source=deltaPix_source, with_caustics=True
+            ax=ax,
+            num_pix=num_pix,
+            delta_pix_source=delta_pix_source,
+            with_caustics=True,
         )
         plt.close()
 
@@ -246,7 +249,7 @@ class TestOutputPlots(object):
         ax = lensPlot.source_plot(
             ax=ax,
             num_pix=10,
-            deltaPix_source=0.1,
+            delta_pix_source=0.1,
             with_caustics=True,
             caustic_color="yellow",
             font_size=15,
@@ -262,17 +265,17 @@ class TestOutputPlots(object):
             self.kwargs_params,
         )
         source, coords_source = lensPlot.source(
-            band_index=0, num_pix=10, deltaPix=0.1, image_orientation=True
+            band_index=0, num_pix=10, delta_pix=0.1, image_orientation=True
         )
         assert len(source) == 10
 
         source, coords_source = lensPlot.source(
-            band_index=0, num_pix=10, deltaPix=0.1, image_orientation=False
+            band_index=0, num_pix=10, delta_pix=0.1, image_orientation=False
         )
         assert len(source) == 10
 
         source, coords_source = lensPlot.source(
-            band_index=0, num_pix=10, deltaPix=0.1, center=[0, 0]
+            band_index=0, num_pix=10, delta_pix=0.1, center=[0, 0]
         )
         assert len(source) == 10
 
@@ -370,7 +373,7 @@ class TestOutputPlots(object):
 
     def test_no_linear_solver(self):
         kwargs_data = sim_util.data_configure_simple(
-            num_pix=10, deltaPix=1, background_rms=1, exposure_time=1
+            num_pix=10, delta_pix=1, background_rms=1, exposure_time=1
         )
         # kwargs_data['image_data'] = np.zeros((10, 10))
         kwargs_model = {"source_light_model_list": ["GAUSSIAN"]}
@@ -430,7 +433,7 @@ class TestRaise(unittest.TestCase):
     def test_raise(self):
         with self.assertRaises(ValueError):
             kwargs_data = sim_util.data_configure_simple(
-                num_pix=10, deltaPix=1, background_rms=1
+                num_pix=10, delta_pix=1, background_rms=1
             )
             # kwargs_data['image_data'] = np.zeros((10, 10))
             kwargs_model = {"source_light_model_list": ["GAUSSIAN"]}
@@ -447,7 +450,7 @@ class TestRaise(unittest.TestCase):
             )
         with self.assertRaises(ValueError):
             kwargs_data = sim_util.data_configure_simple(
-                num_pix=10, deltaPix=1, background_rms=1
+                num_pix=10, delta_pix=1, background_rms=1
             )
             # kwargs_data['image_data'] = np.zeros((10, 10))
             kwargs_model = {"source_light_model_list": ["GAUSSIAN"]}
@@ -466,7 +469,7 @@ class TestRaise(unittest.TestCase):
             ax = lensPlot.source_plot(
                 ax=ax,
                 num_pix=10,
-                deltaPix_source=0.1,
+                delta_pix_source=0.1,
                 with_caustics=False,
                 caustic_color="yellow",
                 fsize=15,
@@ -475,7 +478,7 @@ class TestRaise(unittest.TestCase):
             plt.close()
         with self.assertRaises(ValueError):
             kwargs_data = sim_util.data_configure_simple(
-                num_pix=10, deltaPix=1, background_rms=1
+                num_pix=10, delta_pix=1, background_rms=1
             )
             # kwargs_data['image_data'] = np.zeros((10, 10))
             kwargs_model = {"source_light_model_list": ["GAUSSIAN"]}
@@ -495,7 +498,7 @@ class TestRaise(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             kwargs_data = sim_util.data_configure_simple(
-                num_pix=10, deltaPix=1, background_rms=1, exposure_time=1
+                num_pix=10, delta_pix=1, background_rms=1, exposure_time=1
             )
             # kwargs_data['image_data'] = np.zeros((10, 10))
             kwargs_model = {"source_light_model_list": ["GAUSSIAN"]}
@@ -516,7 +519,7 @@ class TestRaise(unittest.TestCase):
             ax = lensPlot.source_plot(
                 ax=ax,
                 num_pix=10,
-                deltaPix_source=0.1,
+                delta_pix_source=0.1,
                 v_min=None,
                 v_max=None,
                 with_caustics=False,
@@ -528,7 +531,7 @@ class TestRaise(unittest.TestCase):
         with self.assertRaises(ValueError):
             # test whether linear_solver=False returns raise when having two bands
             kwargs_data = sim_util.data_configure_simple(
-                num_pix=10, deltaPix=1, background_rms=1, exposure_time=1
+                num_pix=10, delta_pix=1, background_rms=1, exposure_time=1
             )
             # kwargs_data['image_data'] = np.zeros((10, 10))
             kwargs_model = {"source_light_model_list": ["GAUSSIAN"]}
@@ -582,7 +585,7 @@ def test_interferometry_natwt_Model_Plot_linear_solver():
     # Test no errors are raised in the Model Plot linear solver for 'interferometry_natwt' likelihood function.
     try:
         kwargs_data = sim_util.data_configure_simple(
-            num_pix=10, deltaPix=1, background_rms=1, exposure_time=1
+            num_pix=10, delta_pix=1, background_rms=1, exposure_time=1
         )
         kwargs_data["likelihood_method"] = "interferometry_natwt"
         kwargs_model = {"source_light_model_list": ["GAUSSIAN"]}

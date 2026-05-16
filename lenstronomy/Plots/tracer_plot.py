@@ -34,8 +34,7 @@ class TracerPlot(object):
             linear amplitudes (not required as being overwritten by the param list)
         :param kwargs_likelihood: likelihood keyword arguments
         :param fast_caustic: ; if True, uses fast (but less accurate) caustic
-        :type fast_caustic: bool
-            calculation method
+        :type fast_caustic: bool calculation method
         """
 
         multi_band_list = kwargs_data_joint.get("multi_band_list", [])
@@ -119,12 +118,24 @@ class TracerPlot(object):
 
     @property
     def font_size(self):
-        """Default font size for all texts in the subplots. Font size in individual subplots can be adjusted by font_size argument in the plotting methods. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods."""
+        """Default font size for all texts in the subplots.
+
+        Font size in individual subplots can be adjusted by font_size argument in the
+        plotting methods. Font size for different text elements can be further fine-
+        tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and
+        kwargs_coordinate_arrows arguments in the plotting methods.
+        """
         return self._font_size
 
     @font_size.setter
     def font_size(self, value):
-        """Set default font size for all texts in the subplots. Font size in individual subplots can be adjusted by font_size argument in the plotting methods. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods."""
+        """Set default font size for all texts in the subplots.
+
+        Font size in individual subplots can be adjusted by font_size argument in the
+        plotting methods. Font size for different text elements can be further fine-
+        tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and
+        kwargs_coordinate_arrows arguments in the plotting methods.
+        """
         self._font_size = value
 
     def _critical_curves(self):
@@ -588,8 +599,7 @@ class TracerPlot(object):
         :param numPix: number of pixels per axes
         :param deltaPix: pixel size
         :param image_orientation: If True, uses frame in orientation of the image,
-        :type image_orientation: bool
-            otherwise in RA-DEC coordinates
+        :type image_orientation: bool otherwise in RA-DEC coordinates
         :return: 2d surface brightness grid of the reconstructed source and
             Coordinates() instance of source grid
         """

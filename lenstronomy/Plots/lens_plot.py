@@ -656,8 +656,7 @@ def curved_arc_illustration(
     :param with_centroid: plots the center of the curvature radius
     :type with_centroid: bool
     :param stretch_scale: Relative scale of banana to the tangential and radial
-    :type stretch_scale: float
-        stretches (effectively intrinsic source size)
+    :type stretch_scale: float stretches (effectively intrinsic source size)
     :param color: Matplotlib color for plot
     :type color: str
     :return: matplotlib axis instance
@@ -712,8 +711,7 @@ def plot_arc(
     :param ax: Matplotlib axes instance
     :type ax: matplotlib.axes.Axes
     :param tangential_stretch: Stretch of intrinsic source in tangential
-    :type tangential_stretch: float
-        direction
+    :type tangential_stretch: float direction
     :param radial_stretch: Stretch of intrinsic source in radial direction
     :type radial_stretch: float
     :param curvature: 1/curvature radius
@@ -727,15 +725,13 @@ def plot_arc(
     :param with_centroid: plots the center of the curvature radius
     :type with_centroid: bool
     :param stretch_scale: Relative scale of banana to the tangential and radial
-    :type stretch_scale: float
-        stretches (effectively intrinsic source size)
+    :type stretch_scale: float stretches (effectively intrinsic source size)
     :param linewidth: linewidth
     :type linewidth: float
     :param color: color
     :type color: string in matplotlib color convention
     :param dtan_dtan: tangential eigenvector differential in tangential direction (not
-    :type dtan_dtan: float
-        implemented yet as illustration)
+    :type dtan_dtan: float implemented yet as illustration)
     :return:
     """
     # plot line to centroid
@@ -825,8 +821,7 @@ def distortions(
     :param differential_scale: scale of the finite derivative length in units of angles
     :type differential_scale: float
     :param smoothing_scale: Or None, Gaussian FWHM of a smoothing kernel applied
-    :type smoothing_scale: float
-        before plotting
+    :type smoothing_scale: float before plotting
     :return: matplotlib instance with different panels
     """
     kwargs_grid = sim_util.data_configure_simple(

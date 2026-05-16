@@ -29,17 +29,17 @@ class CoordArrowKwargs(TypedDict, total=False):
     arrowhead_size: float
     """Size of the arrowhead of the coordinate arrow as a fraction of the image size."""
     origin_x: float
-    """x-origin of the coordinate arrow as a fraction of the image size."""
+    """X-origin of the coordinate arrow as a fraction of the image size."""
     origin_y: float
-    """y-origin of the coordinate arrow as a fraction of the image size."""
+    """Y-origin of the coordinate arrow as a fraction of the image size."""
     north_letter_offset_x: float
-    """x-offset of the North arrow text as a fraction of the image size."""
+    """X-offset of the North arrow text as a fraction of the image size."""
     north_letter_offset_y: float
-    """y-offset of the North arrow text as a fraction of the image size."""
+    """Y-offset of the North arrow text as a fraction of the image size."""
     east_letter_offset_x: float
-    """x-offset of the East arrow text as a fraction of the image size."""
+    """X-offset of the East arrow text as a fraction of the image size."""
     east_letter_offset_y: float
-    """y-offset of the East arrow text as a fraction of the image size."""
+    """Y-offset of the East arrow text as a fraction of the image size."""
     color_north: str
     """Color of the North arrow."""
     color_east: str
@@ -88,9 +88,9 @@ class TitleKwargs(TypedDict, total=False):
     font_size: int
     """Font size of the title."""
     x_position: float
-    """x-position of the title in axes coordinates."""
+    """X-position of the title in axes coordinates."""
     y_position: float
-    """y-position of the title in axes coordinates."""
+    """Y-position of the title in axes coordinates."""
 
 
 class MatshowKwargs(TypedDict, total=False):
@@ -410,18 +410,15 @@ def plot_line_set(
     :param coords: Coordinates() class instance
     :param origin: [x0, y0], lower left pixel coordinate in the frame of the pixels
     :param line_set_list_x: S corresponding of different disconnected regions
-    :type line_set_list_x: numpy.ndarray
-        of the line (e.g. caustic or critical curve)
+    :type line_set_list_x: numpy.ndarray of the line (e.g. caustic or critical curve)
     :param line_set_list_y: S corresponding of different disconnected regions
-    :type line_set_list_y: numpy.ndarray
-        of the line (e.g. caustic or critical curve)
+    :type line_set_list_y: numpy.ndarray of the line (e.g. caustic or critical curve)
     :param color: With matplotlib color
     :type color: str
     :param flipped_x: If True, flips x-axis
     :type flipped_x: bool
     :param points_only: If True, sets plotting keywords to plot single points
-    :type points_only: bool
-        without connecting lines
+    :type points_only: bool without connecting lines
     :return: plot with line sets on matplotlib axis in pixel coordinates
     """
     if origin is None:
@@ -483,8 +480,7 @@ def image_position_plot(
         units)
     :param color: color of ticks and text
     :param image_name_list: Strings for names of the images in the same order as
-    :type image_name_list: list
-        the positions
+    :type image_name_list: list the positions
     :param origin: [x0, y0], lower left pixel coordinate in the frame of the pixels
     :param flipped_x: If True, flips x-axis
     :type flipped_x: bool

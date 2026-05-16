@@ -700,7 +700,7 @@ class TracerPlot(object):
         :param point_source_position: If True, plots a point at the position of
         :type point_source_position: bool
             the point source
-        :param kwargs_caustic: keyword arguments for caustic plotting
+        :param kwargs_caustic: keyword arguments for caustic plotting, see :class:`~lenstronomy.Plots.plot_util.CausticKwargs`
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`

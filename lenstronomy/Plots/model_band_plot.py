@@ -863,7 +863,7 @@ class ModelBandPlot(ModelBand):
         :param point_source_position: If True, plots a point at the position of
         :type point_source_position: bool
             the point source
-        :param kwargs_caustic: keyword arguments for caustic plotting
+        :param kwargs_caustic: keyword arguments for caustic plotting, see :class:`~lenstronomy.Plots.plot_util.CausticKwargs`
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`

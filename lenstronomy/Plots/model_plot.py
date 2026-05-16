@@ -264,8 +264,6 @@ class ModelPlot(object):
         :type ax: matplotlib.axes.Axes
         :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :type font_size: int
-        :param label: Label for the colorbar
-        :type label: str
         :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
@@ -902,15 +900,24 @@ class ModelPlot(object):
         plot_band = self._select_band(band_index)
         return plot_band.plot_extinction_map(ax=ax, **kwargs_matshow)
 
-    def source(self, band_index=0, **kwargs):
+    def source(self, band_index=0, numPix=None, deltaPix=None, center=None, image_orientation=True):
         """Compute source surface brightness for one band.
 
         :param band_index: index of band
-        :param kwargs: keyword arguments accessible in model_band_plot.source()
+        :type band_index: int
+        :param numPix: number of pixels per axes
+        :type numPix: int
+        :param deltaPix: pixel size
+        :type deltaPix: float
+        :param center: center position of source
+        :param image_orientation: If True, uses frame in orientation of the image, otherwise in RA-DEC coordinates
+        :type image_orientation: bool
         :return: 2d array of source surface brightness
         """
+        if numPix is None or deltaPix is None:
+            raise ValueError("numPix and deltaPix must be provided")
         plot_band = self._select_band(band_index)
-        return plot_band.source(**kwargs)
+        return plot_band.source(numPix, deltaPix, center=center, image_orientation=image_orientation)
 
     def single_band_chi2(self, band_index=0):
         """Return reduced chi-square for one band.

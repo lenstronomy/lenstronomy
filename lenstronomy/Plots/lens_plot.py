@@ -158,6 +158,11 @@ def lens_model_plot(
     :type name_list: list
     :param index: number of sources, an integer number. Default None.
     :type index: int or None
+    :param color_value: color for critical curves and caustics
+    :type color_value: str
+    :param kwargs_convergence: keyword arguments for convergence plot
+    :param kwargs_caustics: keyword arguments for caustic plotting, see :class:`~lenstronomy.Plots.plot_util.CausticKwargs`
+    :param kwargs_point_source: keyword arguments for point source plot
     :return: matplotlib axis instance with plot
     """
     kwargs_data = sim_util.data_configure_simple(
@@ -536,6 +541,11 @@ def arrival_time_surface(
     :type with_caustics: bool
     :param point_source:
     :type point_source: bool
+    :param n_levels: number of contour levels to plot for the Fermat potential
+    :type n_levels: int
+    :param kwargs_contours: keyword arguments for contour plotting
+    :param image_color_value: color for image names
+    :param letter_font_size: font size for image names
     :param name_list: list of names of images
     :type name_list: list of strings, longer or equal the number of point sources
     :return:

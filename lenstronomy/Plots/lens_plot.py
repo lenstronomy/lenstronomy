@@ -1,4 +1,14 @@
-from typing import Optional
+from typing import Optional, TypedDict
+import sys
+
+if sys.version_info >= (3, 12):
+    from typing import Unpack
+else:
+    try:
+        from typing_extensions import Unpack
+    except ImportError:
+        pass
+
 import lenstronomy.Util.util as util
 from lenstronomy.Util.param_util import shear_cartesian2polar
 import lenstronomy.Util.simulation_util as sim_util
@@ -16,6 +26,66 @@ from lenstronomy.Data.pixel_grid import PixelGrid
 from lenstronomy.Util.package_util import exporter
 
 export, __all__ = exporter()
+
+
+# TypedDict classes for **kwargs type hints
+class PlotKwargs(TypedDict, total=False):
+    """Keyword arguments for matplotlib plot function."""
+
+    color: str
+    """Line color."""
+    linestyle: str
+    """Line style."""
+    marker: str
+    """Marker style."""
+    markersize: float
+    """Marker size."""
+    linewidth: float
+    """Line width."""
+    alpha: float
+    """Transparency."""
+    label: str
+    """Label for legend."""
+
+
+class QuiverKwargs(TypedDict, total=False):
+    """Keyword arguments for matplotlib quiver function."""
+
+    scale: float
+    """Scale of the arrows."""
+    headaxislength: float
+    """Length of the arrow head."""
+    headlength: float
+    """Length of the arrow head in pixels."""
+    headwidth: float
+    """Width of the arrow head."""
+    linewidth: float
+    """Line width."""
+    width: float
+    """Arrow width."""
+    pivot: str
+    """Arrow pivot point."""
+    color: str
+    """Arrow color."""
+    units: str
+    """Units for arrow dimensions."""
+
+
+class EllipseKwargs(TypedDict, total=False):
+    """Keyword arguments for matplotlib Ellipse patch."""
+
+    linewidth: float
+    """Line width."""
+    fill: bool
+    """Whether to fill the ellipse."""
+    color: str
+    """Color of the ellipse."""
+    alpha: float
+    """Transparency."""
+    edgecolor: str
+    """Edge color."""
+    facecolor: str
+    """Face color."""
 
 
 _NAME_LIST = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"]
@@ -43,7 +113,9 @@ def lens_model_plot(
     name_list=None,
     index=None,
     color_value="k",
-    **kwargs,
+    kwargs_convergence=None,
+    kwargs_caustics=None,
+    kwargs_point_source=None,
 ):
     """Plots a lens model (convergence) and the critical curves and caustics.
 
@@ -94,7 +166,6 @@ def lens_model_plot(
         extent = [ra0, ra0 + _frame_size, dec0, dec0 + _frame_size]
 
     if with_convergence:
-        kwargs_convergence = kwargs.get("kwargs_convergence", {})
         convergence_plot(
             ax,
             pixel_grid=_coords,
@@ -104,7 +175,6 @@ def lens_model_plot(
             **kwargs_convergence,
         )
     if with_caustics is True:
-        kwargs_caustics = kwargs.get("kwargs_caustics", {})
         caustics_plot(
             ax,
             pixel_grid=_coords,
@@ -115,7 +185,6 @@ def lens_model_plot(
             **kwargs_caustics,
         )
     if point_source:
-        kwargs_point_source = kwargs.get("kwargs_point_source", {})
         point_source_plot(
             ax,
             pixel_grid=_coords,
@@ -152,7 +221,7 @@ def convergence_plot(
     cmap="Greys",
     font_size=20,
     kwargs_colorbar={},
-    **kwargs,
+    **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
 ):
     """Plot convergence.
 
@@ -184,7 +253,7 @@ def convergence_plot(
         cmap=cmap,
         vmin=vmin,
         vmax=vmax,
-        **kwargs,
+        **kwargs_matshow,
     )
     if kwargs_colorbar is not None:
         divider = make_axes_locatable(ax)
@@ -210,7 +279,7 @@ def caustics_plot(
     color_crit="r",
     color_caustic="g",
     *args,
-    **kwargs,
+    **kwargs: "Unpack[PlotKwargs]",
 ):
     """Plot caustics and critical curves.
 
@@ -306,7 +375,7 @@ def point_source_plot(
     solver_type="lenstronomy",
     kwargs_solver={},
     color="k",
-    **kwargs,
+    **kwargs: "Unpack[PlotKwargs]",
 ):
     """Plots and illustrates images of a point source. The plotting routine orders the
     image labels according to the arrival time and illustrates a diamond shape of the
@@ -393,6 +462,7 @@ def point_source_plot(
         mec="k",
         markersize=10,
         label="source position",
+        **kwargs,
     )
 
     return ax
@@ -683,7 +753,6 @@ def distortions(
     center_dec=0,
     differential_scale=0.0001,
     smoothing_scale=None,
-    **kwargs,
 ):
     """Plot lensing distortion diagnostics.
 
@@ -891,7 +960,7 @@ def stretch_plot(
     scale=1,
     ellipse_color="k",
     max_stretch=np.inf,
-    **patch_kwargs,
+    **patch_kwargs: "Unpack[EllipseKwargs]",
 ):
     """Plots ellipses at each point on a grid, scaled corresponding to the local
     Jacobian eigenvalues.
@@ -948,7 +1017,7 @@ def shear_plot(
     scale=5,
     color="k",
     max_stretch=np.inf,
-    **kwargs,
+    **kwargs: "Unpack[QuiverKwargs]",
 ):
     """Plots combined internal+external shear at each point on a grid, represented by
     pseudovectors in the direction of local shear with length corresponding to shear

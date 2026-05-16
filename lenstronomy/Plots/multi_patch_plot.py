@@ -4,9 +4,9 @@ from typing import Optional
 if sys.version_info >= (3, 12):
     from typing import Unpack
 else:
-    try:
+    try:  # pragma: no cover
         from typing_extensions import Unpack
-    except ImportError:
+    except ImportError:  # pragma: no cover
         pass
 
 from lenstronomy.Analysis.multi_patch_reconstruction import MultiPatchReconstruction

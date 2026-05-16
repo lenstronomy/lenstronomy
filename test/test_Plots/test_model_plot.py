@@ -428,6 +428,54 @@ class TestOutputPlots(object):
         assert cb is not None
         plt.close()
 
+        old_model_font_size = lensPlot.font_size
+        lensPlot.font_size = old_model_font_size + 1
+        assert lensPlot.font_size == old_model_font_size + 1
+        assert plot_band.font_size == old_model_font_size + 1
+
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        plot_band.source_plot(
+            ax=ax,
+            num_pix=30,
+            delta_pix_source=0.02,
+            with_caustics=True,
+            kwargs_caustic={"linewidth": 2},
+            plot_scale="linear",
+        )
+        plt.close()
+
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        plot_band.error_map_source_plot(
+            ax=ax,
+            num_pix=30,
+            delta_pix_source=0.02,
+            with_caustics=True,
+            kwargs_caustic={"linewidth": 2},
+        )
+        plt.close()
+
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        ax, cb = plot_band.substructure_plot(
+            ax=ax,
+            index_macromodel=(0,),
+            subtract_mean=False,
+            with_critical_curves=True,
+        )
+        assert cb is not None
+        plt.close()
+
+    def test_source_requires_grid_arguments(self):
+        multi_band_list = [[self.kwargs_data, self.kwargs_psf, self.kwargs_numerics]]
+        lensPlot = ModelPlot(
+            multi_band_list,
+            self.kwargs_model,
+            self.kwargs_params,
+            multi_band_type="single-band",
+        )
+
+        with pytest.raises(ValueError):
+            lensPlot.source(band_index=0)
+
 
 class TestRaise(unittest.TestCase):
     def test_raise(self):

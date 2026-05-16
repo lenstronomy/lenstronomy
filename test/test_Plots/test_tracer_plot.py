@@ -295,8 +295,13 @@ class TestTracerPlot(object):
             delta_pix_source=0.02,
             plot_scale="linear",
             with_caustics=True,
+            kwargs_caustic={"linewidth": 2},
         )
         plt.close()
+
+        old_font_size = tracer_plot.font_size
+        tracer_plot.font_size = old_font_size + 1
+        assert tracer_plot.font_size == old_font_size + 1
 
         with np.testing.assert_raises(ValueError):
             f, ax = plt.subplots(1, 1, figsize=(4, 4))

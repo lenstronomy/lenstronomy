@@ -98,7 +98,7 @@ def rotate(xcoords, ycoords, angle):
 
 
 @export
-def map_coord2pix(ra, dec, x_0, y_0, mapping):
+def map_coord2pix(ra, dec, x_0, y_0, transform_matrix):
     """This routines performs a linear transformation between two coordinate systems.
     Mainly used to transform angular into pixel coordinates in an image.
 
@@ -106,10 +106,10 @@ def map_coord2pix(ra, dec, x_0, y_0, mapping):
     :param dec: dec coordinates
     :param x_0: pixel value in x-axis of ra,dec = 0,0
     :param y_0: pixel value in y-axis of ra,dec = 0,0
-    :param matrix: 2x2 matrix to transform angular to pixel coordinates
+    :param transform_matrix: 2x2 matrix to transform angular to pixel coordinates
     :return: transformed coordinate systems of input ra and dec
     """
-    x, y = mapping.dot(np.array([ra, dec]))
+    x, y = transform_matrix.dot(np.array([ra, dec]))
     return x + x_0, y + y_0
 
 
@@ -315,7 +315,7 @@ def make_grid_with_coordtransform(
     transform_pix2coord = np.array([[delta_x, 0], [0, delta_pix_eff]])
     transform_coord2pix = np.linalg.inv(transform_pix2coord)
     x_at_radec_0, y_at_radec_0 = map_coord2pix(
-        -ra_at_xy_0, -dec_at_xy_0, x_0=0, y_0=0, mapping=transform_coord2pix
+        -ra_at_xy_0, -dec_at_xy_0, x_0=0, y_0=0, transform_matrix=transform_coord2pix
     )
     return (
         ra_grid,

@@ -24,6 +24,7 @@ class TestPlotUtil(object):
         plot_util.show_title_text(
             ax, text="test", color="w", backgroundcolor="k", flipped=True
         )
+        plot_util.show_title_text(ax)
         plt.close()
 
     def test_source_position_plot(self):

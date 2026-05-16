@@ -93,7 +93,9 @@ class MultiPatchReconstruction(MultiBandImageReconstruction):
             data_class_i = ImageData(**kwargs_data)
             transform_pix2angle_i = data_class_i.transform_pix2angle
             # check we are operating in the same coordinate system/rotation and pixel scale
-            npt.assert_almost_equal(transform_pix2angle, transform_pix2angle_i, decimal=5)
+            npt.assert_almost_equal(
+                transform_pix2angle, transform_pix2angle_i, decimal=5
+            )
 
             # evaluate pixel of zero point with the base coordinate system
             ra0, dec0 = data_class_i.radec_at_xy_0

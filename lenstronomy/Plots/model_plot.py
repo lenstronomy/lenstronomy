@@ -147,6 +147,26 @@ class ModelPlot(object):
                 self._index_list.append(-1)
             index += 1
 
+        self._font_size = 15
+
+    @property
+    def font_size(self):
+        """Font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size."""
+        return self._font_size
+
+    @font_size.setter
+    def font_size(self, font_size):
+        """Set font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size.
+
+        :param font_size: int, default font size for all texts in the subplots. Font size in individual subplots can be adjusted by font_size argument in the plotting methods. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
+        :type font_size: int
+        :return: None
+        :rtype: NoneType
+        """
+        self._font_size = font_size
+        for band_plot in self._band_plot_list:
+            band_plot.font_size = font_size
+
     def _select_band(self, band_index):
         """Select a computed imaging band for plotting.
 

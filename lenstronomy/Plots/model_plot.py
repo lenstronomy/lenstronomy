@@ -196,7 +196,7 @@ class ModelPlot(object):
     ):
         """Plot data, model, and normalized residuals for all computed bands.
 
-        :param kwargs_matshow: arguments of plotting
+        :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
         :return: 3 x n_data plot with data, model, reduced residual plots of all the
             images/bands that are being modeled
         """
@@ -247,8 +247,8 @@ class ModelPlot(object):
         :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
-        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
-        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -288,8 +288,8 @@ class ModelPlot(object):
         :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
-        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
-        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -327,8 +327,8 @@ class ModelPlot(object):
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
-        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
-        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -375,8 +375,8 @@ class ModelPlot(object):
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
-        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
-        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -420,8 +420,8 @@ class ModelPlot(object):
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
-        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
-        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -456,8 +456,8 @@ class ModelPlot(object):
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
-        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
-        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -510,8 +510,8 @@ class ModelPlot(object):
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
-        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
-        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -564,8 +564,8 @@ class ModelPlot(object):
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
-        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
-        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -607,8 +607,8 @@ class ModelPlot(object):
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
-        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
-        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -650,8 +650,8 @@ class ModelPlot(object):
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
-        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
-        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -699,8 +699,8 @@ class ModelPlot(object):
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
-        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
-        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -746,8 +746,8 @@ class ModelPlot(object):
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
-        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
-        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -822,7 +822,7 @@ class ModelPlot(object):
 
         :param band_index: index of band
         :param ax: an instance of matplotlib.axes.Axes
-        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
         :return: plot instance of differential extinction map
         """
         plot_band = self._select_band(band_index)

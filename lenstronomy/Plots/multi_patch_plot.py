@@ -93,8 +93,8 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
-        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
-        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
         :return: matplotlib instance
         """
         kwargs_colorbar.setdefault("label", r"log$_{10}$ flux")
@@ -133,8 +133,8 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
-        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
-        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
         :return: matplotlib instance
         """
         kwargs_colorbar.setdefault("label", r"log$_{10}$ flux")
@@ -179,8 +179,8 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
-        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
-        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
         :return: matplotlib instance
         """
         source, coords = self.source(
@@ -228,8 +228,8 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
-        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
-        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
         :return: matplotlib instance
         """
         kwargs_colorbar.setdefault(
@@ -277,8 +277,8 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
-        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
-        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
         :return: matplotlib instance
         """
         kwargs_colorbar.setdefault("label", r"$\log_{10}\ \kappa$")
@@ -327,8 +327,8 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
-        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
-        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
         :return: matplotlib instance
         """
         kwargs_colorbar.setdefault("label", r"$\det\ (\mathsf{A}^{-1})$")
@@ -354,7 +354,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
     def plot_main(self, **kwargs_plot):
         """Print the main plots together in a joint frame.
 
-        :param kwargs_plot: keyword arguments forwarded to the individual plot methods
+        :param kwargs_plot: keyword arguments passed to :func:`matplotlib.pyplot.plot`
         :return: figure and axes instances
         """
         f, axes = plt.subplots(2, 3, figsize=(16, 8))
@@ -397,15 +397,15 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param font_size: int, default font size for all texts in the plot. Font size for different text elements
             can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows.
         :param white_on_black: boolean, if True, prints white text on black background, otherwise the opposite
-        :param kwargs_colorbar: keyword arguments for the colorbar; pass None to suppress the colorbar,
+        :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
             see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
-        :param kwargs_title: keyword arguments for the title; pass None to suppress the title,
+        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
             see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
-        :param kwargs_scale_bar: keyword arguments for the scale bar; pass None to suppress the scale bar,
+        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
             see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
-        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows; pass None to suppress arrows,
+        :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
             see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
-        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
+        :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
         :return: matplotlib axis instance
         """
         if font_size is None:

@@ -238,7 +238,7 @@ def show_colorbar(
 
     :param cb: matplotlib colorbar instance
     :param font_size: default font size used when bundle entries are omitted
-    :param kwargs_colorbar: keyword arguments for the colorbar, including optional ``label``
+    :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
     :return: None, updates the colorbar in place
     """
     label = kwargs_colorbar.get("label", None)

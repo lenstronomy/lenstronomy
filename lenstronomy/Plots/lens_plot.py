@@ -232,11 +232,9 @@ def convergence_plot(
     :param extent: [[min, max] [min, max]] of frame
     :param vmin: matplotlib vmin
     :param vmax: matplotlib vmax
-    :param kwargs: keyword arguments for matshow
-    :param with_color_bar: bool, if True, shows color bar (deprecated, use kwargs_colorbar=None to disable)
-    :param label: string, label of color bar
-    :param font_size: int, default font size for all texts in the plot. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
+    :param font_size: int, default font size for all texts in the plot. Font size for different text elements can be further fine-tuned by kwargs_colorbar arguments in the plotting methods.
     :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
+    :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
     :return: matplotlib axis instance with convergence plot
     """
     kwargs_matshow.setdefault("cmap", "gist_heat")
@@ -277,7 +275,7 @@ def caustics_plot(
     color_crit="r",
     color_caustic="g",
     *args,
-    **kwargs: "Unpack[PlotKwargs]",
+    **kwargs_plot: "Unpack[PlotKwargs]",
 ):
     """Plot caustics and critical curves.
 
@@ -293,7 +291,7 @@ def caustics_plot(
     :param color_crit: string, color of critical curve
     :param color_caustic: string, color of caustic curve
     :param args: argument for plotting curve
-    :param kwargs: keyword arguments for plotting curves
+    :param kwargs_plot: keyword arguments passed to :func:`matplotlib.pyplot.plot`
     :return: updated matplotlib axis instance
     """
     lens_model_ext = LensModelExtensions(lens_model)
@@ -343,7 +341,7 @@ def caustics_plot(
         points_only=points_only,
         label="caustics",
         *args,
-        **kwargs,
+        **kwargs_plot,
     )
     plot_util.plot_line_set(
         ax,
@@ -356,7 +354,7 @@ def caustics_plot(
         points_only=points_only,
         label="critical curves",
         *args,
-        **kwargs,
+        **kwargs_plot,
     )
     return ax
 
@@ -373,7 +371,7 @@ def point_source_plot(
     solver_type="lenstronomy",
     kwargs_solver={},
     color="k",
-    **kwargs: "Unpack[PlotKwargs]",
+    **kwargs_plot: "Unpack[PlotKwargs]",
 ):
     """Plots and illustrates images of a point source. The plotting routine orders the
     image labels according to the arrival time and illustrates a diamond shape of the
@@ -460,7 +458,7 @@ def point_source_plot(
         mec="k",
         markersize=10,
         label="source position",
-        **kwargs,
+        **kwargs_plot,
     )
 
     return ax
@@ -1015,7 +1013,7 @@ def shear_plot(
     scale=5,
     color="k",
     max_stretch=np.inf,
-    **kwargs: "Unpack[QuiverKwargs]",
+    **kwargs_quiver: "Unpack[QuiverKwargs]",
 ):
     """Plots combined internal+external shear at each point on a grid, represented by
     pseudovectors in the direction of local shear with length corresponding to shear
@@ -1028,7 +1026,7 @@ def shear_plot(
     :param scale: scales sizes of drawn pseudovectors, smaller number=larger vectors
     :param color: color of pseudovectors, defaults to black
     :param max_stretch: optional max amount to stretch ellipses which sometimes diverge
-    :param kwargs: additional plotting keyword arguments
+    :param kwargs_quiver: keyword arguments passed to :func:`matplotlib.pyplot.quiver`
     :return: matplotlib axis instance with figure
     """
 
@@ -1057,7 +1055,7 @@ def shear_plot(
         width=0.02,
         headwidth=1,
         color=color,
-        **kwargs,
+        **kwargs_quiver,
     )
     # , headwidth=0, headlength=0)
     ax.set_xlim(np.min(x_grid), np.max(x_grid))

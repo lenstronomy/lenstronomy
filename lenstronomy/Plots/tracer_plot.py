@@ -113,6 +113,17 @@ class TracerPlot(object):
         self._x_center, self._y_center = self._coords.center
 
         self._fast_caustic = fast_caustic
+        self._font_size = 15
+
+    @property
+    def font_size(self):
+        """Font size for plot text and colorbar tick labels."""
+        return self._font_size
+
+    @font_size.setter
+    def font_size(self, value):
+        """Set font size for plot text and colorbar tick labels."""
+        self._font_size = value
 
     def _critical_curves(self):
         """Compute and cache critical curves."""
@@ -164,7 +175,7 @@ class TracerPlot(object):
     def data_plot(
         self,
         ax,
-        font_size=15,
+        font_size=None,
         kwargs_colorbar={},
         kwargs_title={},
         kwargs_scale_bar={},
@@ -187,11 +198,11 @@ class TracerPlot(object):
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
-        if v_min is None:
-            v_min = self._v_min_default
-        if v_max is None:
-            v_max = self._v_max_default
+        if font_size is None:
+            font_size = self._font_size
         kwargs_matshow.setdefault("cmap", "cubehelix")
+        v_min = kwargs_matshow.pop("vmin", self._v_min_default)
+        v_max = kwargs_matshow.pop("vmax", self._v_max_default)
         im = ax.matshow(
             np.log10(self._data),
             origin="lower",
@@ -255,7 +266,7 @@ class TracerPlot(object):
         image_names=False,
         original_position=True,
         image_name_list=None,
-        font_size=15,
+        font_size=None,
         kwargs_colorbar={},
         kwargs_title={},
         kwargs_scale_bar={},
@@ -281,11 +292,11 @@ class TracerPlot(object):
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
-        if v_min is None:
-            v_min = self._v_min_default
-        if v_max is None:
-            v_max = self._v_max_default
+        if font_size is None:
+            font_size = self._font_size
         kwargs_matshow.setdefault("cmap", "cubehelix")
+        v_min = kwargs_matshow.pop("vmin", self._v_min_default)
+        v_max = kwargs_matshow.pop("vmax", self._v_max_default)
         im = ax.matshow(
             np.log10(self._model),
             origin="lower",
@@ -355,7 +366,7 @@ class TracerPlot(object):
     def convergence_plot(
         self,
         ax,
-        font_size=15,
+        font_size=None,
         kwargs_colorbar={},
         kwargs_title={},
         kwargs_scale_bar={},
@@ -378,7 +389,11 @@ class TracerPlot(object):
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: convergence plot in ax instance
         """
+        if font_size is None:
+            font_size = self._font_size
         kwargs_matshow.setdefault("cmap", "gist_heat")
+        v_min = kwargs_matshow.pop("vmin", None)
+        v_max = kwargs_matshow.pop("vmax", None)
 
         kappa_result = util.array2image(
             self.LensModel.kappa(self._x_grid, self._y_grid, self._kwargs_lens)
@@ -439,7 +454,7 @@ class TracerPlot(object):
     def normalized_residual_plot(
         self,
         ax,
-        font_size=15,
+        font_size=None,
         kwargs_colorbar={},
         kwargs_title={},
         kwargs_scale_bar={},
@@ -462,7 +477,11 @@ class TracerPlot(object):
         :param kwargs_matshow: kwargs to send to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
+        if font_size is None:
+            font_size = self._font_size
         kwargs_matshow.setdefault("cmap", "RdBu_r")
+        v_min = kwargs_matshow.pop("vmin", -5)
+        v_max = kwargs_matshow.pop("vmax", 5)
         im = ax.matshow(
             self._norm_residuals,
             vmin=v_min,
@@ -521,7 +540,7 @@ class TracerPlot(object):
     def absolute_residual_plot(
         self,
         ax,
-        font_size=15,
+        font_size=None,
         kwargs_colorbar={},
         kwargs_title={},
         kwargs_scale_bar={},
@@ -544,7 +563,11 @@ class TracerPlot(object):
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
+        if font_size is None:
+            font_size = self._font_size
         kwargs_matshow.setdefault("cmap", "RdBu_r")
+        v_min = kwargs_matshow.pop("vmin", -1)
+        v_max = kwargs_matshow.pop("vmax", 1)
         im = ax.matshow(
             self._model - self._data,
             vmin=v_min,
@@ -656,7 +679,7 @@ class TracerPlot(object):
         center=None,
         with_caustics=False,
         caustic_color="yellow",
-        font_size=15,
+        font_size=None,
         plot_scale="log",
         title_text="Reconstructed source",
         point_source_position=True,
@@ -706,10 +729,10 @@ class TracerPlot(object):
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
-        if v_min is None:
-            v_min = self._v_min_default
-        if v_max is None:
-            v_max = self._v_max_default
+        if font_size is None:
+            font_size = self._font_size
+        v_min = kwargs_matshow.pop("vmin", self._v_min_default)
+        v_max = kwargs_matshow.pop("vmax", self._v_max_default)
         if kwargs_caustic is None:
             kwargs_caustic = {}
         d_s = numPix * deltaPix_source
@@ -804,7 +827,7 @@ class TracerPlot(object):
         self,
         ax,
         image_name_list=None,
-        font_size=15,
+        font_size=None,
         title_text="Magnification model",
         title_font_size=15,
         title_color="k",
@@ -843,7 +866,11 @@ class TracerPlot(object):
         :param kwargs_matshow: kwargs to send to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
+        if font_size is None:
+            font_size = self._font_size
         kwargs_matshow.setdefault("cmap", "RdYlBu_r")
+        v_min = kwargs_matshow.pop("vmin", -10)
+        v_max = kwargs_matshow.pop("vmax", 10)
         kwargs_matshow.setdefault("alpha", 0.5)
         mag_result = util.array2image(
             self.LensModel.magnification(self._x_grid, self._y_grid, self._kwargs_lens)
@@ -923,7 +950,7 @@ class TracerPlot(object):
         with_caustics=False,
         image_name_list=None,
         title_text="Deflection model",
-        font_size=15,
+        font_size=None,
         title_font_size=15,
         title_color="k",
         title_background_color="w",
@@ -962,6 +989,10 @@ class TracerPlot(object):
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
+        if font_size is None:
+            font_size = self._font_size
+        v_min = kwargs_matshow.pop("vmin", None)
+        v_max = kwargs_matshow.pop("vmax", None)
 
         alpha1, alpha2 = self.LensModel.alpha(
             self._x_grid, self._y_grid, self._kwargs_lens

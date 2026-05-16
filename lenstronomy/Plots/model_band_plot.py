@@ -28,7 +28,6 @@ class ModelBandPlot(ModelBand):
         band_index=0,
         fast_caustic=True,
         linear_solver=True,
-        font_size=15,
     ):
         """Initialize the model-band plotting class.
 
@@ -77,7 +76,8 @@ class ModelBandPlot(ModelBand):
         self._x_center, self._y_center = self._coords.center
 
         self._fast_caustic = fast_caustic
-        self._font_size = font_size
+
+        self._font_size = 15
         self._arrow_length = 0.05
         self._arrowhead_size = 0.025
         self._arrow_origin_x = None

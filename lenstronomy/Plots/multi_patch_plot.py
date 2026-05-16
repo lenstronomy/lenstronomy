@@ -362,7 +362,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         log_scale=True,
         v_min=None,
         v_max=None,
-        font_size=15,
+        font_size=None,
         cmap=None,
         white_on_black=True,
         no_support=False,
@@ -398,6 +398,8 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param kwargs: keyword arguments
         :return: matplotlib axis instance
         """
+        if font_size is None:
+            font_size = 15
         if white_on_black:
             text_k = "w"
             bkg_k = "k"

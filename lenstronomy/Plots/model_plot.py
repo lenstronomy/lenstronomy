@@ -197,7 +197,7 @@ class ModelPlot(object):
         self,
         band_index=0,
         ax=None,
-        font_size=15,
+        font_size=None,
         kwargs_colorbar={},
         kwargs_title={},
         kwargs_scale_bar={},
@@ -239,7 +239,7 @@ class ModelPlot(object):
         image_names=False,
         original_position=True,
         image_name_list=None,
-        font_size=15,
+        font_size=None,
         kwargs_colorbar={},
         kwargs_title={},
         kwargs_scale_bar={},
@@ -284,7 +284,7 @@ class ModelPlot(object):
         self,
         band_index=0,
         ax=None,
-        font_size=15,
+        font_size=None,
         kwargs_colorbar={},
         kwargs_title={},
         kwargs_scale_bar={},
@@ -325,7 +325,7 @@ class ModelPlot(object):
         ax=None,
         index_macromodel=None,
         subtract_mean=True,
-        font_size=15,
+        font_size=None,
         cmap="bwr",
         with_critical_curves=False,
         crit_curve_color="k",
@@ -385,7 +385,7 @@ class ModelPlot(object):
         self,
         band_index=0,
         ax=None,
-        font_size=15,
+        font_size=None,
         kwargs_colorbar={},
         kwargs_title={},
         kwargs_scale_bar={},
@@ -424,7 +424,7 @@ class ModelPlot(object):
         self,
         band_index=0,
         ax=None,
-        font_size=15,
+        font_size=None,
         kwargs_colorbar={},
         kwargs_title={},
         kwargs_scale_bar={},
@@ -468,7 +468,7 @@ class ModelPlot(object):
         center=None,
         with_caustics=False,
         caustic_color="yellow",
-        font_size=15,
+        font_size=None,
         plot_scale="log",
         point_source_position=True,
         kwargs_caustic=None,
@@ -531,7 +531,7 @@ class ModelPlot(object):
         numPix=100,
         deltaPix_source=0.01,
         with_caustics=False,
-        font_size=15,
+        font_size=None,
         point_source_position=True,
         kwargs_colorbar={},
         kwargs_title={},
@@ -582,7 +582,7 @@ class ModelPlot(object):
         band_index=0,
         ax=None,
         image_name_list=None,
-        font_size=15,
+        font_size=None,
         kwargs_colorbar={},
         kwargs_title={},
         kwargs_scale_bar={},
@@ -627,7 +627,7 @@ class ModelPlot(object):
         axis=0,
         with_caustics=False,
         image_name_list=None,
-        font_size=15,
+        font_size=None,
         kwargs_colorbar={},
         kwargs_title={},
         kwargs_scale_bar={},
@@ -674,7 +674,7 @@ class ModelPlot(object):
         ax=None,
         unconvolved=False,
         point_source_add=False,
-        font_size=15,
+        font_size=None,
         source_add=False,
         lens_light_add=False,
         kwargs_colorbar={},
@@ -728,7 +728,7 @@ class ModelPlot(object):
         point_source_add=False,
         source_add=False,
         lens_light_add=False,
-        font_size=15,
+        font_size=None,
         kwargs_colorbar={},
         kwargs_title={},
         kwargs_scale_bar={},
@@ -788,9 +788,7 @@ class ModelPlot(object):
         f, axes = plt.subplots(2, 3, figsize=(16, 8))
         plot_band.data_plot(ax=axes[0, 0], **kwargs_main)
         plot_band.model_plot(ax=axes[0, 1], image_names=True, **kwargs_main)
-        plot_band.normalized_residual_plot(
-            ax=axes[0, 2], **kwargs_residuals
-        )
+        plot_band.normalized_residual_plot(ax=axes[0, 2], **kwargs_residuals)
         plot_band.source_plot(
             ax=axes[1, 0],
             deltaPix_source=0.01,
@@ -824,9 +822,7 @@ class ModelPlot(object):
         plot_band = self._select_band(band_index)
         return plot_band.plot_subtract_from_data_all()
 
-    def plot_extinction_map(
-        self, band_index=0, ax=None, **kwargs_matshow
-    ):
+    def plot_extinction_map(self, band_index=0, ax=None, **kwargs_matshow):
         """Plot differential extinction map for one band.
 
         :param band_index: index of band
@@ -835,9 +831,7 @@ class ModelPlot(object):
         :return: plot instance of differential extinction map
         """
         plot_band = self._select_band(band_index)
-        return plot_band.plot_extinction_map(
-            ax=ax, **kwargs_matshow
-        )
+        return plot_band.plot_extinction_map(ax=ax, **kwargs_matshow)
 
     def source(self, band_index=0, **kwargs):
         """Compute source surface brightness for one band.

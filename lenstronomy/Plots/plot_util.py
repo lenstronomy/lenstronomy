@@ -234,7 +234,11 @@ def show_colorbar(
 
 @export
 def show_coordinate_arrows(
-    ax, d, coords, font_size=15, **kwargs_coordinate_arrows: "Unpack[CoordArrowKwargs]"
+    ax,
+    d,
+    coords,
+    font_size=15,
+    **kwargs_coordinate_arrows: "Unpack[CoordArrowKwargs]",
 ):
     """Plot East and North coordinate arrows.
 

@@ -28,6 +28,7 @@ class ModelBandPlot(ModelBand):
         band_index=0,
         fast_caustic=True,
         linear_solver=True,
+        font_size=15,
     ):
         """Initialize the model-band plotting class.
 
@@ -76,6 +77,7 @@ class ModelBandPlot(ModelBand):
         self._x_center, self._y_center = self._coords.center
 
         self._fast_caustic = fast_caustic
+        self._font_size = font_size
         self._arrow_length = 0.05
         self._arrowhead_size = 0.025
         self._arrow_origin_x = None
@@ -91,6 +93,16 @@ class ModelBandPlot(ModelBand):
             -self._deltaPix / 2,
             self._width_y - self._deltaPix / 2,
         ]
+
+    @property
+    def font_size(self):
+        """Font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size."""
+        return self._font_size
+
+    @font_size.setter
+    def font_size(self, value):
+        """Set font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size."""
+        self._font_size = value
 
     def _critical_curves(self):
         """Compute and cache critical curves."""
@@ -145,7 +157,7 @@ class ModelBandPlot(ModelBand):
     def data_plot(
         self,
         ax,
-        font_size=15,
+        font_size=None,
         kwargs_colorbar={},
         kwargs_title={},
         kwargs_scale_bar={},
@@ -168,6 +180,8 @@ class ModelBandPlot(ModelBand):
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
+        if font_size is None:
+            font_size = self._font_size
         kwargs_matshow.setdefault("cmap", "cubehelix")
         kwargs_matshow.setdefault("vmin", self._v_min_default)
         kwargs_matshow.setdefault("vmax", self._v_max_default)
@@ -222,7 +236,7 @@ class ModelBandPlot(ModelBand):
         image_names=False,
         original_position=True,
         image_name_list=None,
-        font_size=15,
+        font_size=None,
         kwargs_colorbar={},
         kwargs_title={},
         kwargs_scale_bar={},
@@ -248,6 +262,8 @@ class ModelBandPlot(ModelBand):
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
+        if font_size is None:
+            font_size = self._font_size
         kwargs_matshow.setdefault("cmap", "cubehelix")
         kwargs_matshow.setdefault("vmin", self._v_min_default)
         kwargs_matshow.setdefault("vmax", self._v_max_default)
@@ -313,7 +329,7 @@ class ModelBandPlot(ModelBand):
     def convergence_plot(
         self,
         ax,
-        font_size=15,
+        font_size=None,
         kwargs_colorbar={},
         kwargs_title={},
         kwargs_scale_bar={},
@@ -336,6 +352,8 @@ class ModelBandPlot(ModelBand):
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: convergence plot in ax instance
         """
+        if font_size is None:
+            font_size = self._font_size
         kwargs_matshow.setdefault("cmap", "gist_heat")
 
         kappa_result = util.array2image(
@@ -388,7 +406,7 @@ class ModelBandPlot(ModelBand):
         ax,
         index_macromodel,
         subtract_mean=True,
-        font_size=15,
+        font_size=None,
         cmap="coolwarm",
         with_critical_curves=False,
         crit_curve_color="k",
@@ -424,6 +442,8 @@ class ModelBandPlot(ModelBand):
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotib axis and colorbar
         """
+        if font_size is None:
+            font_size = self._font_size
 
         kwargs_lens_macro = []
         lens_model_list_macro = []
@@ -561,7 +581,7 @@ class ModelBandPlot(ModelBand):
     def normalized_residual_plot(
         self,
         ax,
-        font_size=15,
+        font_size=None,
         kwargs_colorbar={},
         kwargs_title={},
         kwargs_scale_bar={},
@@ -584,6 +604,8 @@ class ModelBandPlot(ModelBand):
         :param kwargs_matshow: kwargs to send to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
+        if font_size is None:
+            font_size = self._font_size
         kwargs_matshow.setdefault("cmap", "RdBu_r")
         kwargs_matshow.setdefault("vmin", -5)
         kwargs_matshow.setdefault("vmax", 5)
@@ -639,7 +661,7 @@ class ModelBandPlot(ModelBand):
     def absolute_residual_plot(
         self,
         ax,
-        font_size=15,
+        font_size=None,
         kwargs_colorbar={},
         kwargs_title={},
         kwargs_scale_bar={},
@@ -662,6 +684,8 @@ class ModelBandPlot(ModelBand):
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
+        if font_size is None:
+            font_size = self._font_size
         kwargs_matshow.setdefault("cmap", "RdBu_r")
         im = ax.matshow(
             self._data - self._model,
@@ -768,7 +792,7 @@ class ModelBandPlot(ModelBand):
         center=None,
         with_caustics=False,
         caustic_color="yellow",
-        font_size=15,
+        font_size=None,
         plot_scale="log",
         point_source_position=True,
         kwargs_caustic=None,
@@ -804,6 +828,8 @@ class ModelBandPlot(ModelBand):
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
+        if font_size is None:
+            font_size = self._font_size
         if kwargs_caustic is None:
             kwargs_caustic = {}
         d_s = numPix * deltaPix_source
@@ -914,7 +940,7 @@ class ModelBandPlot(ModelBand):
         numPix,
         deltaPix_source,
         with_caustics=False,
-        font_size=15,
+        font_size=None,
         point_source_position=True,
         kwargs_colorbar={},
         kwargs_title={},
@@ -950,6 +976,8 @@ class ModelBandPlot(ModelBand):
         :return: plot of source surface brightness errors in the reconstruction on the
             axis instance
         """
+        if font_size is None:
+            font_size = self._font_size
         x_grid_source, y_grid_source = util.make_grid_transformed(
             numPix, self._coords.transform_pix2angle * deltaPix_source / self._deltaPix
         )
@@ -1039,7 +1067,7 @@ class ModelBandPlot(ModelBand):
         self,
         ax,
         image_name_list=None,
-        font_size=15,
+        font_size=None,
         kwargs_colorbar={},
         kwargs_title={},
         kwargs_scale_bar={},
@@ -1064,6 +1092,8 @@ class ModelBandPlot(ModelBand):
         :param kwargs_matshow: kwargs to send to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
+        if font_size is None:
+            font_size = self._font_size
         kwargs_matshow.setdefault("cmap", "RdYlBu_r")
         kwargs_matshow.setdefault("vmin", -10)
         kwargs_matshow.setdefault("vmax", 10)
@@ -1138,7 +1168,7 @@ class ModelBandPlot(ModelBand):
         axis=0,
         with_caustics=False,
         image_name_list=None,
-        font_size=15,
+        font_size=None,
         kwargs_colorbar={},
         kwargs_title={},
         kwargs_scale_bar={},
@@ -1164,6 +1194,8 @@ class ModelBandPlot(ModelBand):
         :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
+        if font_size is None:
+            font_size = self._font_size
 
         alpha1, alpha2 = self._lensModel.alpha(
             self._x_grid, self._y_grid, self._kwargs_lens_partial
@@ -1258,7 +1290,7 @@ class ModelBandPlot(ModelBand):
         ax,
         unconvolved=False,
         point_source_add=False,
-        font_size=15,
+        font_size=None,
         source_add=False,
         lens_light_add=False,
         kwargs_colorbar={},
@@ -1289,6 +1321,8 @@ class ModelBandPlot(ModelBand):
         :param kwargs_matshow: kwargs to send matplotlib.pyplot.matshow()
         :return: the instance of matplotlib.axes.Axes
         """
+        if font_size is None:
+            font_size = self._font_size
         model = ImageModel.image(
             self._bandmodel,
             self._kwargs_lens_partial,
@@ -1353,7 +1387,7 @@ class ModelBandPlot(ModelBand):
         point_source_add=False,
         source_add=False,
         lens_light_add=False,
-        font_size=15,
+        font_size=None,
         kwargs_colorbar={},
         kwargs_title={},
         kwargs_scale_bar={},
@@ -1361,6 +1395,8 @@ class ModelBandPlot(ModelBand):
         **kwargs_matshow,
     ):
         """Plot data after subtracting selected model components."""
+        if font_size is None:
+            font_size = self._font_size
         model = ImageModel.image(
             self._bandmodel,
             self._kwargs_lens_partial,

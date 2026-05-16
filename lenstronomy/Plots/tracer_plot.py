@@ -117,12 +117,12 @@ class TracerPlot(object):
 
     @property
     def font_size(self):
-        """Font size for plot text and colorbar tick labels."""
+        """Default font size for all texts in the subplots. Font size in individual subplots can be adjusted by font_size argument in the plotting methods. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods."""
         return self._font_size
 
     @font_size.setter
     def font_size(self, value):
-        """Set font size for plot text and colorbar tick labels."""
+        """Set default font size for all texts in the subplots. Font size in individual subplots can be adjusted by font_size argument in the plotting methods. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods."""
         self._font_size = value
 
     def _critical_curves(self):
@@ -185,7 +185,7 @@ class TracerPlot(object):
         """Plot observed tracer data.
 
         :param ax: matplotlib axis instance
-        :param font_size: font size of the plot text and, by default, the colorbar tick labels
+        :param font_size: int, font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :param label: string, label for the colorbar
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
@@ -278,7 +278,7 @@ class TracerPlot(object):
         :param ax: matplotib axis instance
         :param image_names: boolean, if True, prints image names
         :param label: string, label for the colorbar
-        :param font_size: font size of the plot text and, by default, the colorbar tick labels
+        :param font_size: int, font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :param original_position: boolean, if True, uses original image positions
         :param image_name_list: list of names for images
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
@@ -376,7 +376,7 @@ class TracerPlot(object):
         """Plot lensing convergence in the tracer frame.
 
         :param ax: matplotib axis instance
-        :param font_size: font size of the plot text and, by default, the colorbar tick labels
+        :param font_size: int, font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :param label: string, label for the colorbar
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
@@ -464,7 +464,7 @@ class TracerPlot(object):
         """Plot normalized residuals between data and model.
 
         :param ax: matplotlib axis instance
-        :param font_size: font size of the plot text and, by default, the colorbar tick labels
+        :param font_size: int, font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :param label: label for the color bar
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
@@ -550,7 +550,7 @@ class TracerPlot(object):
         """Plot absolute residuals between data and model.
 
         :param ax: matplotlib axis instance
-        :param font_size: font size of the plot text and, by default, the colorbar tick labels
+        :param font_size: int, font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :param label: label for the color bar
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
@@ -707,7 +707,7 @@ class TracerPlot(object):
         :param center: [center_x, center_y], if specified, uses this as the center
         :param with_caustics: plot the caustics on top of the source reconstruction
         :param caustic_color: color of the caustics
-        :param font_size: font size of labels
+        :param font_size: int, font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :param plot_scale: string, log or linear, scale of surface brightness plot
         :param title_text: string, text to be displayed in the image
         :param label: string, label for the colorbar
@@ -848,7 +848,7 @@ class TracerPlot(object):
         :param ax: matplotib axis instance
         :param image_name_list: list of strings for names of the images in the same
             order as the positions
-        :param font_size: font size of labels
+        :param font_size: int, font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :param title_text: string, text to be displayed in the image
         :param label: string, label for the colorbar
         :param title_font_size: font size of the title
@@ -972,7 +972,7 @@ class TracerPlot(object):
         :param with_caustics: boolean, if True, plots caustics
         :param image_name_list: list of strings for names of the images
         :param title_text: string, text to be displayed in the image
-        :param font_size: font size of labels
+        :param font_size: int, font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :param label: string, label for the colorbar
         :param title_font_size: font size of the title
         :param title_color: color of the title

@@ -167,7 +167,7 @@ def convergence_plot(
     :param kwargs: keyword arguments for matshow
     :param with_color_bar: bool, if True, shows color bar (deprecated, use kwargs_colorbar=None to disable)
     :param label: string, label of color bar
-    :param font_size: int, font size of color bar label
+    :param font_size: int, default font size for all texts in the plot. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
     :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
     :type kwargs_colorbar: Unpack[plot_util.ColorBarKwargs]
     :return: matplotlib axis instance with convergence plot

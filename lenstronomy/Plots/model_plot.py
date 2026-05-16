@@ -151,12 +151,12 @@ class ModelPlot(object):
 
     @property
     def font_size(self):
-        """Font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size."""
+        """Default font size for all texts in the subplots. Font size in individual subplots can be adjusted by font_size argument in the plotting methods. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods."""
         return self._font_size
 
     @font_size.setter
     def font_size(self, font_size):
-        """Set font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size.
+        """Set default font size for all texts in the subplots. Font size in individual subplots can be adjusted by font_size argument in the plotting methods. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
 
         :param font_size: int, default font size for all texts in the subplots. Font size in individual subplots can be adjusted by font_size argument in the plotting methods. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :type font_size: int
@@ -228,7 +228,7 @@ class ModelPlot(object):
 
         :param band_index: index of band
         :param ax: matplotlib axis instance
-        :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
+        :param font_size: int, font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :param label: string, label for the colorbar
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
@@ -272,7 +272,7 @@ class ModelPlot(object):
         :param ax: matplotlib axis instance
         :param image_names: boolean, if True, prints image names
         :param label: string, label for the colorbar
-        :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
+        :param font_size: int, font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :param original_position: boolean, if True, uses original image positions
         :param image_name_list: list of names for images
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
@@ -315,7 +315,7 @@ class ModelPlot(object):
 
         :param band_index: index of band
         :param ax: matplotlib axis instance
-        :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
+        :param font_size: int, font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :param label: string, label for the colorbar
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
@@ -363,7 +363,7 @@ class ModelPlot(object):
         :param ax: matplotlib axis instance
         :param index_macromodel: a list of indexes corresponding to the lens models with convergence to be subtracted
         :param subtract_mean: bool; displays the substructure convergence relative to the mean convergence in the frame
-        :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
+        :param font_size: int, font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :param label: label for the color bar
         :param cmap: colormap for use in the visualization
         :param with_critical_curves: bool; plots the critical curves in the frame
@@ -416,7 +416,7 @@ class ModelPlot(object):
 
         :param band_index: index of band
         :param ax: matplotlib axis instance
-        :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
+        :param font_size: int, font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :param label: label for the color bar
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
@@ -455,7 +455,7 @@ class ModelPlot(object):
 
         :param band_index: index of band
         :param ax: matplotlib axis instance
-        :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
+        :param font_size: int, font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :param label: label for the color bar
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
@@ -508,7 +508,7 @@ class ModelPlot(object):
         :param center: [center_x, center_y], if specified, uses this as the center
         :param with_caustics: plot the caustics on top of the source reconstruction
         :param caustic_color: color of the caustics
-        :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
+        :param font_size: int, font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :param plot_scale: string, log or linear, scale of surface brightness plot
         :param label: string, label for the colorbar
         :param point_source_position: boolean, if True, plots a point at the position of
@@ -568,7 +568,7 @@ class ModelPlot(object):
         :param deltaPix_source: pixel spacing in the source resolution illustrated in
             plot
         :param with_caustics: plot the caustics on top of the source reconstruction
-        :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
+        :param font_size: int, font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :param point_source_position: boolean, if True, plots a point at the position of
             the point source
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
@@ -615,7 +615,7 @@ class ModelPlot(object):
         :param ax: matplotib axis instance
         :param image_name_list: list of strings for names of the images in the same
             order as the positions
-        :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
+        :param font_size: int, font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :param label: string, label for the colorbar
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
@@ -661,7 +661,7 @@ class ModelPlot(object):
         :param axis: integer, 0 or 1, specifies the deflection angle axis to be plotted
         :param with_caustics: boolean, if True, plots caustics
         :param image_name_list: list of strings for names of the images
-        :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
+        :param font_size: int, font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :param label: string, label for the colorbar
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
@@ -710,7 +710,7 @@ class ModelPlot(object):
         :param unconvolved: bool, if True, does not perform PSF convolution on the image
         :param point_source_add: bool, if True, includes the lensed point source(s) in
             the plot
-        :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
+        :param font_size: int, font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :param source_add: bool, if True, includes the lensed image of the source in the
             plot
         :param lens_light_add: bool, if True, includes the lens light in the plot
@@ -764,8 +764,7 @@ class ModelPlot(object):
         :param source_add: bool, if True, includes the lensed image of the source in the
             plot
         :param lens_light_add: bool, if True, includes the lens light in the plot
-        :param font_size: font size of the plot text and colorbar tick labels; the colorbar label uses colorbar_label_font_size
-            from the plot
+        :param font_size: int, font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`

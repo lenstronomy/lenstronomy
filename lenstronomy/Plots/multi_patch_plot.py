@@ -380,7 +380,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param log_scale: boolean, if True, plots the map in log_10 scale
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
-        :param font_size: font size of the plot text and, by default, the colorbar tick labels
+        :param font_size: int, default font size for all texts in the plot. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :param label: string, label for the colorbar
         :param cmap: string of color map (or cmap matplotlib object)
         :param white_on_black: boolean, if True, prints white text on black background,

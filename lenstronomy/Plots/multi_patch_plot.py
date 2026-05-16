@@ -399,8 +399,6 @@ class MultiPatchPlot(MultiPatchReconstruction):
         image,
         coords,
         log_scale=True,
-        vmin=None,
-        vmax=None,
         font_size=None,
         white_on_black=True,
         kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
@@ -418,8 +416,6 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param coords: Coordinate() instance with the coordinate system
         :param log_scale: If True, plots the map in log_10 scale
         :type log_scale: bool
-        :param v_min: minimum plotting scale
-        :param v_max: maximum plotting scale
         :param font_size: Default font size for all texts in the plot. Font size for different text elements
         :type font_size: int
             can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows.
@@ -448,17 +444,13 @@ class MultiPatchPlot(MultiPatchReconstruction):
         frame_size = np.max(coords.width)
 
         if log_scale:
-            if vmin is None:
-                vmin = self._vmin_default
-            if vmax is None:
-                vmax = self._vmax_default
+            kwargs_matshow.setdefault("vmin", self._vmin_default)
+            kwargs_matshow.setdefault("vmax", self._vmax_default)
             image_plot = np.log10(image)
         else:
             image_plot = image
 
         kwargs_matshow.setdefault("cmap", "cubehelix")
-        kwargs_matshow.setdefault("vmin", vmin)
-        kwargs_matshow.setdefault("vmax", vmax)
         im = ax.matshow(
             image_plot,
             origin="lower",

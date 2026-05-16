@@ -232,10 +232,8 @@ def convergence_plot(
     lens_model,
     kwargs_lens,
     extent=None,
-    vmin=-1,
-    vmax=1,
     font_size=20,
-    kwargs_colorbar={},
+    kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
     **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
 ):
     """Plot convergence.
@@ -250,10 +248,6 @@ def convergence_plot(
     :param kwargs_lens: lens model keyword argument list
     :param extent: [[min, max] [min, max]] of frame
     :type extent: list or None
-    :param vmin: matplotlib vmin
-    :type vmin: float
-    :param vmax: matplotlib vmax
-    :type vmax: float
     :param font_size: Default font size for all texts in the plot. Font size for different text elements can be further fine-tuned by kwargs_colorbar arguments in the plotting methods.
     :type font_size: int
     :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
@@ -261,6 +255,8 @@ def convergence_plot(
     :return: matplotlib axis instance with convergence plot
     """
     kwargs_matshow.setdefault("cmap", "gist_heat")
+    kwargs_matshow.setdefault("vmin", -1)
+    kwargs_matshow.setdefault("vmax", 1)
     x_grid, y_grid = pixel_grid.pixel_coordinates
     x_grid1d = util.image2array(x_grid)
     y_grid1d = util.image2array(y_grid)
@@ -270,8 +266,6 @@ def convergence_plot(
         np.log10(kappa_result),
         origin="lower",
         extent=extent,
-        vmin=vmin,
-        vmax=vmax,
         **kwargs_matshow,
     )
     if kwargs_colorbar is not None:

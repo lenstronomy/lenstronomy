@@ -193,7 +193,7 @@ class TestMultiPatchPlot(object):
         plt.close()
 
     def test_main_plot(self):
-        f, axes = self.multiPatch.plot_main(v_min=-5, v_max=1)
+           f, axes = self.multiPatch.plot_main()
         plt.close()
 
 

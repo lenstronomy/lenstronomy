@@ -187,6 +187,8 @@ def lens_model_plot(
         extent = [ra0, ra0 + _frame_size, dec0, dec0 + _frame_size]
 
     if with_convergence:
+        if kwargs_convergence is None:
+            kwargs_convergence = {}
         convergence_plot(
             ax,
             pixel_grid=_coords,
@@ -196,6 +198,8 @@ def lens_model_plot(
             **kwargs_convergence,
         )
     if with_caustics is True:
+        if kwargs_caustics is None:
+            kwargs_caustics = {}
         caustics_plot(
             ax,
             pixel_grid=_coords,
@@ -206,6 +210,8 @@ def lens_model_plot(
             **kwargs_caustics,
         )
     if point_source:
+        if kwargs_point_source is None:
+            kwargs_point_source = {}
         point_source_plot(
             ax,
             pixel_grid=_coords,

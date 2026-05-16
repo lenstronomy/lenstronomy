@@ -145,8 +145,6 @@ class ModelBandPlot(ModelBand):
     def data_plot(
         self,
         ax,
-        v_min=None,
-        v_max=None,
         font_size=15,
         kwargs_colorbar={},
         kwargs_title={},
@@ -171,6 +169,8 @@ class ModelBandPlot(ModelBand):
         :return: matplotlib axis instance
         """
         kwargs_matshow.setdefault("cmap", "cubehelix")
+        kwargs_matshow.setdefault("vmin", self._v_min_default)
+        kwargs_matshow.setdefault("vmax", self._v_max_default)
         im = ax.matshow(
             np.log10(self._data),
             origin="lower",
@@ -219,8 +219,6 @@ class ModelBandPlot(ModelBand):
     def model_plot(
         self,
         ax,
-        v_min=None,
-        v_max=None,
         image_names=False,
         original_position=True,
         image_name_list=None,
@@ -251,6 +249,8 @@ class ModelBandPlot(ModelBand):
         :return: matplotlib axis instance
         """
         kwargs_matshow.setdefault("cmap", "cubehelix")
+        kwargs_matshow.setdefault("vmin", self._v_min_default)
+        kwargs_matshow.setdefault("vmax", self._v_max_default)
         im = ax.matshow(
             np.log10(self._model),
             origin="lower",
@@ -313,8 +313,6 @@ class ModelBandPlot(ModelBand):
     def convergence_plot(
         self,
         ax,
-        v_min=None,
-        v_max=None,
         font_size=15,
         kwargs_colorbar={},
         kwargs_title={},
@@ -390,8 +388,6 @@ class ModelBandPlot(ModelBand):
         ax,
         index_macromodel,
         subtract_mean=True,
-        v_min=-0.05,
-        v_max=0.05,
         font_size=15,
         cmap="coolwarm",
         with_critical_curves=False,
@@ -479,6 +475,8 @@ class ModelBandPlot(ModelBand):
             residual_kappa -= mean_kappa
         else:
             pass
+        kwargs_matshow.setdefault("vmin", -0.05)
+        kwargs_matshow.setdefault("vmax", 0.05)
         alpha = 1.0
         im = ax.imshow(
             residual_kappa,
@@ -486,6 +484,7 @@ class ModelBandPlot(ModelBand):
             extent=self._image_extent,
             cmap=cmap,
             alpha=alpha,
+            **kwargs_matshow,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -562,8 +561,6 @@ class ModelBandPlot(ModelBand):
     def normalized_residual_plot(
         self,
         ax,
-        v_min=-6,
-        v_max=6,
         font_size=15,
         kwargs_colorbar={},
         kwargs_title={},
@@ -588,6 +585,8 @@ class ModelBandPlot(ModelBand):
         :return: matplotlib axis instance
         """
         kwargs_matshow.setdefault("cmap", "RdBu_r")
+        kwargs_matshow.setdefault("vmin", -5)
+        kwargs_matshow.setdefault("vmax", 5)
         im = ax.matshow(
             self._norm_residuals,
             extent=self._image_extent,
@@ -640,8 +639,6 @@ class ModelBandPlot(ModelBand):
     def absolute_residual_plot(
         self,
         ax,
-        v_min=-1,
-        v_max=1,
         font_size=15,
         kwargs_colorbar={},
         kwargs_title={},
@@ -769,8 +766,6 @@ class ModelBandPlot(ModelBand):
         numPix,
         deltaPix_source,
         center=None,
-        v_min=None,
-        v_max=None,
         with_caustics=False,
         caustic_color="yellow",
         font_size=15,
@@ -823,6 +818,9 @@ class ModelBandPlot(ModelBand):
                 % plot_scale
             )
         kwargs_matshow.setdefault("cmap", "cubehelix")
+        if plot_scale == "log":
+            kwargs_matshow.setdefault("vmin", self._v_min_default)
+            kwargs_matshow.setdefault("vmax", self._v_max_default)
         im = ax.matshow(
             source_scale,
             origin="lower",
@@ -915,8 +913,6 @@ class ModelBandPlot(ModelBand):
         ax,
         numPix,
         deltaPix_source,
-        v_min=None,
-        v_max=None,
         with_caustics=False,
         font_size=15,
         point_source_position=True,
@@ -1042,8 +1038,6 @@ class ModelBandPlot(ModelBand):
     def magnification_plot(
         self,
         ax,
-        v_min=-10,
-        v_max=10,
         image_name_list=None,
         font_size=15,
         kwargs_colorbar={},
@@ -1071,6 +1065,8 @@ class ModelBandPlot(ModelBand):
         :return: matplotlib axis instance
         """
         kwargs_matshow.setdefault("cmap", "RdYlBu_r")
+        kwargs_matshow.setdefault("vmin", -10)
+        kwargs_matshow.setdefault("vmax", 10)
         kwargs_matshow.setdefault("alpha", 0.5)
         mag_result = util.array2image(
             self._lensModel.magnification(
@@ -1139,8 +1135,6 @@ class ModelBandPlot(ModelBand):
     def deflection_plot(
         self,
         ax,
-        v_min=None,
-        v_max=None,
         axis=0,
         with_caustics=False,
         image_name_list=None,
@@ -1262,8 +1256,6 @@ class ModelBandPlot(ModelBand):
     def decomposition_plot(
         self,
         ax,
-        v_min=None,
-        v_max=None,
         unconvolved=False,
         point_source_add=False,
         font_size=15,
@@ -1311,6 +1303,8 @@ class ModelBandPlot(ModelBand):
         )
 
         kwargs_matshow.setdefault("cmap", "cubehelix")
+        kwargs_matshow.setdefault("vmin", self._v_min_default)
+        kwargs_matshow.setdefault("vmax", self._v_max_default)
         im = ax.matshow(
             np.log10(model),
             origin="lower",
@@ -1356,8 +1350,6 @@ class ModelBandPlot(ModelBand):
     def subtract_from_data_plot(
         self,
         ax,
-        v_min=None,
-        v_max=None,
         point_source_add=False,
         source_add=False,
         lens_light_add=False,
@@ -1382,6 +1374,8 @@ class ModelBandPlot(ModelBand):
             point_source_add=point_source_add,
         )
         kwargs_matshow.setdefault("cmap", "cubehelix")
+        kwargs_matshow.setdefault("vmin", self._v_min_default)
+        kwargs_matshow.setdefault("vmax", self._v_max_default)
         im = ax.matshow(
             np.log10(self._data - model),
             origin="lower",
@@ -1459,13 +1453,20 @@ class ModelBandPlot(ModelBand):
             unconvolved=True,
         )
         self.decomposition_plot(
-            ax=axes[1, 0], kwargs_title={"text": "Lens light convolved"}, lens_light_add=True
+            ax=axes[1, 0],
+            kwargs_title={"text": "Lens light convolved"},
+            lens_light_add=True,
         )
         self.decomposition_plot(
-            ax=axes[0, 1], kwargs_title={"text": "Source light"}, source_add=True, unconvolved=True
+            ax=axes[0, 1],
+            kwargs_title={"text": "Source light"},
+            source_add=True,
+            unconvolved=True,
         )
         self.decomposition_plot(
-            ax=axes[1, 1], kwargs_title={"text": "Source light convolved"}, source_add=True
+            ax=axes[1, 1],
+            kwargs_title={"text": "Source light convolved"},
+            source_add=True,
         )
         self.decomposition_plot(
             ax=axes[0, 2],
@@ -1496,10 +1497,14 @@ class ModelBandPlot(ModelBand):
 
         self.subtract_from_data_plot(ax=axes[0, 0], kwargs_title={"text": "Data"})
         self.subtract_from_data_plot(
-            ax=axes[0, 1], kwargs_title={"text": "Data - Point Source"}, point_source_add=True
+            ax=axes[0, 1],
+            kwargs_title={"text": "Data - Point Source"},
+            point_source_add=True,
         )
         self.subtract_from_data_plot(
-            ax=axes[0, 2], kwargs_title={"text": "Data - Lens Light"}, lens_light_add=True
+            ax=axes[0, 2],
+            kwargs_title={"text": "Data - Lens Light"},
+            lens_light_add=True,
         )
         self.subtract_from_data_plot(
             ax=axes[1, 0], kwargs_title={"text": "Data - Source Light"}, source_add=True
@@ -1522,6 +1527,7 @@ class ModelBandPlot(ModelBand):
         )
         return f, axes
 
+    def plot_extinction_map(self, ax, **kwargs_matshow):
         """Plot differential extinction map.
 
         :param ax: matplotlib axis instance

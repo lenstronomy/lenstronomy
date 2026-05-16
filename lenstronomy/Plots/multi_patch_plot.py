@@ -1,3 +1,4 @@
+from typing import Optional
 import copy
 
 from lenstronomy.Analysis.multi_patch_reconstruction import MultiPatchReconstruction
@@ -69,9 +70,10 @@ class MultiPatchPlot(MultiPatchReconstruction):
         ax,
         log_scale=True,
         colorbar_tick_fontsize=None,
-        kwargs_title={},
-        kwargs_scale_bar={},
-        kwargs_coordinate_arrows={},
+        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
+        kwargs_title: Optional[plot_util.TitleKwargs] = {},
+        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
+        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
         **kwargs
     ):
         """Illustrates data.
@@ -81,11 +83,8 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param label: string, label for the colorbar
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
-        :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
-        :type kwargs_scale_bar: Unpack[plot_util.ScaleBarKwargs]
         :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
-        :type kwargs_coordinate_arrows: Unpack[plot_util.CoordArrowKwargs]
         :param kwargs: plotting keyword arguments
         :return: matplotlib instance
         """
@@ -110,9 +109,10 @@ class MultiPatchPlot(MultiPatchReconstruction):
         ax,
         log_scale=True,
         colorbar_tick_fontsize=None,
-        kwargs_title={},
-        kwargs_scale_bar={},
-        kwargs_coordinate_arrows={},
+        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
+        kwargs_title: Optional[plot_util.TitleKwargs] = {},
+        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
+        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
         **kwargs
     ):
         """Illustrates model.
@@ -122,11 +122,8 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param label: string, label for the colorbar
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
-        :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
-        :type kwargs_scale_bar: Unpack[plot_util.ScaleBarKwargs]
         :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
-        :type kwargs_coordinate_arrows: Unpack[plot_util.CoordArrowKwargs]
         :param kwargs: plotting keyword arguments
         :return: matplotlib instance
         """
@@ -154,9 +151,10 @@ class MultiPatchPlot(MultiPatchReconstruction):
         center=None,
         log_scale=True,
         colorbar_tick_fontsize=None,
-        kwargs_title={},
-        kwargs_scale_bar={},
-        kwargs_coordinate_arrows={},
+        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
+        kwargs_title: Optional[plot_util.TitleKwargs] = {},
+        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
+        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
         **kwargs
     ):
         """Illustrates source.
@@ -169,11 +167,8 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param label: string, label for the colorbar
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
-        :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
-        :type kwargs_scale_bar: Unpack[plot_util.ScaleBarKwargs]
         :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
-        :type kwargs_coordinate_arrows: Unpack[plot_util.CoordArrowKwargs]
         :param kwargs: plotting keyword arguments
         :return: matplotlib instance
         """
@@ -204,9 +199,10 @@ class MultiPatchPlot(MultiPatchReconstruction):
         cmap="RdBu_r",
         white_on_black=False,
         colorbar_tick_fontsize=None,
-        kwargs_title={},
-        kwargs_scale_bar={},
-        kwargs_coordinate_arrows={},
+        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
+        kwargs_title: Optional[plot_util.TitleKwargs] = {},
+        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
+        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
         **kwargs
     ):
         """
@@ -221,11 +217,8 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param white_on_black: boolean, if True, prints white text on black background, otherwise the opposite
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
-        :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
-        :type kwargs_scale_bar: Unpack[plot_util.ScaleBarKwargs]
         :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
-        :type kwargs_coordinate_arrows: Unpack[plot_util.CoordArrowKwargs]
         :param kwargs: plotting keyword arguments
         :return: matplotlib instance
         """
@@ -366,10 +359,10 @@ class MultiPatchPlot(MultiPatchReconstruction):
         cmap=None,
         white_on_black=True,
         no_support=False,
-        kwargs_colorbar={},
-        kwargs_title={},
-        kwargs_scale_bar={},
-        kwargs_coordinate_arrows={},
+        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
+        kwargs_title: Optional[plot_util.TitleKwargs] = {},
+        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
+        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
         **kwargs
     ):
         """Plot a 2D map for a given coordinate system.
@@ -390,11 +383,8 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
-        :type kwargs_title: Unpack[plot_util.TitleKwargs]
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
-        :type kwargs_scale_bar: Unpack[plot_util.ScaleBarKwargs]
         :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
-        :type kwargs_coordinate_arrows: Unpack[plot_util.CoordArrowKwargs]
         :param kwargs: keyword arguments
         :return: matplotlib axis instance
         """

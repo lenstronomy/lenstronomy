@@ -414,7 +414,7 @@ def plot_line_set(
     points_only=False,
     label=None,
     *args,
-    **kwargs,
+    **kwargs_plot: "Unpack[PlotKwargs]",
 ):
     """Plotting a line set on a matplotlib instance where the coordinates are defined in
     pixel units with the lower left corner (defined as origin) is by default (0, 0). The
@@ -434,6 +434,7 @@ def plot_line_set(
     :type flipped_x: bool
     :param points_only: If True, sets plotting keywords to plot single points
     :type points_only: bool without connecting lines
+    :param kwargs_plot: keyword arguments for the plot, see :class:`~lenstronomy.Plots.plot_util.PlotKwargs`
     :return: plot with line sets on matplotlib axis in pixel coordinates
     """
     if origin is None:
@@ -441,12 +442,9 @@ def plot_line_set(
     pixel_width = coords.pixel_width
     pixel_width_x = pixel_width
     if points_only:
-        if "linestyle" not in kwargs:
-            kwargs["linestyle"] = ""
-        if "marker" not in kwargs:
-            kwargs["marker"] = "o"
-        if "markersize" not in kwargs:
-            kwargs["markersize"] = 0.01
+        kwargs_plot.setdefault("linestyle", "")
+        kwargs_plot.setdefault("marker", "o")
+        kwargs_plot.setdefault("markersize", 0.01)
     if flipped_x:
         pixel_width_x = -pixel_width
     if isinstance(line_set_list_x, list):
@@ -456,7 +454,7 @@ def plot_line_set(
                 x_c * pixel_width_x + origin[0],
                 y_c * pixel_width + origin[1],
                 *args,
-                **kwargs,
+                **kwargs_plot,
             )
     else:
         x_c, y_c = coords.map_coord2pix(line_set_list_x, line_set_list_y)
@@ -464,10 +462,10 @@ def plot_line_set(
             x_c * pixel_width_x + origin[0],
             y_c * pixel_width + origin[1],
             *args,
-            **kwargs,
+            **kwargs_plot,
         )
     if label is not None:
-        ax.plot(-1000, -1000, label=label, *args, **kwargs)
+        ax.plot(-1000, -1000, label=label, *args, **kwargs_plot)
     return ax
 
 
@@ -536,7 +534,13 @@ def image_position_plot(
 
 @export
 def source_position_plot(
-    ax, coords, ra_source, dec_source, marker="*", markersize=10, **kwargs
+    ax,
+    coords,
+    ra_source,
+    dec_source,
+    marker="*",
+    markersize=10,
+    **kwargs_plot: "Unpack[PlotKwargs]",
 ):
     """Plot source positions.
 
@@ -550,6 +554,7 @@ def source_position_plot(
     :type dec_source: list
     :param marker: marker style for matplotlib
     :param markersize: marker size for matplotlib
+    :param kwargs_plot: keyword arguments for the plot, see :class:`~lenstronomy.Plots.plot_util.PlotKwargs`
     :return: matplotlib axis instance with images plotted on
     """
     delta_pix = coords.pixel_width
@@ -561,7 +566,7 @@ def source_position_plot(
                 y_source * delta_pix,
                 marker=marker,
                 markersize=markersize,
-                **kwargs,
+                **kwargs_plot,
             )
     return ax
 

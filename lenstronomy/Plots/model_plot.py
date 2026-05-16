@@ -829,34 +829,42 @@ class ModelPlot(object):
             **kwargs_matshow,
         )
 
-    def plot_main(self, band_index=0, with_caustics=False, **kwargs):
+    def plot_main(
+        self,
+        band_index=0,
+        kwargs_data_plot=None,
+        kwargs_model_plot=None,
+        kwargs_residual_plot=None,
+        kwargs_source_plot=None,
+        kwargs_convergence_plot=None,
+        kwargs_magnification_plot=None,
+    ):
         """Plot a set of 'main' modelling diagnostics.
 
         :param band_index: index of band
-        :param with_caustics: If True, plots caustics in the source plane
-        :type with_caustics: bool
-        :param kwargs: plotting keyword arguments forwarded to the individual plots
+        :param kwargs_data_plot: keyword arguments passed to :meth:`~lenstronomy.Plots.model_band_plot.ModelBandPlot.data_plot`
+        :param kwargs_model_plot: keyword arguments passed to :meth:`~lenstronomy.Plots.model_band_plot.ModelBandPlot.model_plot`
+        :param kwargs_residual_plot: keyword arguments passed to :meth:`~lenstronomy.Plots.model_band_plot.ModelBandPlot.normalized_residual_plot`
+        :param kwargs_source_plot: keyword arguments passed to :meth:`~lenstronomy.Plots.model_band_plot.ModelBandPlot.source_plot`
+        :param kwargs_convergence_plot: keyword arguments passed to :meth:`~lenstronomy.Plots.model_band_plot.ModelBandPlot.convergence_plot`
+        :param kwargs_magnification_plot: keyword arguments passed to :meth:`~lenstronomy.Plots.model_band_plot.ModelBandPlot.magnification_plot`
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
-        kwargs_main = copy.deepcopy(kwargs)
-        kwargs_main.pop("with_caustics", None)
-        kwargs_residuals = copy.deepcopy(kwargs_main)
-        kwargs_residuals.pop("v_min", None)
-        kwargs_residuals.pop("v_max", None)
+
         f, axes = plt.subplots(2, 3, figsize=(16, 8))
-        plot_band.data_plot(ax=axes[0, 0], **kwargs_main)
-        plot_band.model_plot(ax=axes[0, 1], image_names=True, **kwargs_main)
-        plot_band.normalized_residual_plot(ax=axes[0, 2], **kwargs_residuals)
+
+        plot_band.data_plot(ax=axes[0, 0], **kwargs_data_plot)
+        plot_band.model_plot(ax=axes[0, 1], image_names=True, **kwargs_model_plot)
+        plot_band.normalized_residual_plot(ax=axes[0, 2], **kwargs_residual_plot)
         plot_band.source_plot(
             ax=axes[1, 0],
             deltaPix_source=0.01,
             numPix=100,
-            with_caustics=with_caustics,
-            **kwargs_main,
+            **kwargs_source_plot,
         )
-        plot_band.convergence_plot(ax=axes[1, 1], **kwargs_main)
-        plot_band.magnification_plot(ax=axes[1, 2], **kwargs_main)
+        plot_band.convergence_plot(ax=axes[1, 1], **kwargs_convergence_plot)
+        plot_band.magnification_plot(ax=axes[1, 2], **kwargs_magnification_plot)
         f.tight_layout()
         f.subplots_adjust(
             left=None, bottom=None, right=None, top=None, wspace=0.0, hspace=0.05

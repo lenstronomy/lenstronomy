@@ -4,6 +4,19 @@ import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
+import sys
+from typing import TYPE_CHECKING
+
+if sys.version_info >= (3, 12):
+    from typing import Unpack
+else:
+    try:
+        from typing_extensions import Unpack
+    except ImportError:
+        pass
+
+if TYPE_CHECKING:
+    from lenstronomy.Plots import plot_util
 
 from lenstronomy.Util.package_util import exporter
 
@@ -117,11 +130,13 @@ def plot_mcmc_behaviour(ax, samples_mcmc, param_mcmc, dist_mcmc=None, num_averag
 
 
 @export
-def psf_iteration_compare(kwargs_psf, **kwargs):
+def psf_iteration_compare(
+    kwargs_psf, **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]"
+):
     """Compare initial and iteratively reconstructed PSF kernels.
 
     :param kwargs_psf: keyword arguments that initiate a PSF() class
-    :param kwargs: kwargs to send to matplotlib.pyplot.matshow()
+    :param kwargs_matshow: kwargs to send to matplotlib.pyplot.matshow()
     :return:
     """
     psf_out = kwargs_psf["kernel_point_source"]
@@ -136,20 +151,17 @@ def psf_iteration_compare(kwargs_psf, **kwargs):
     delta_x = n_kernel / 20.0
     delta_y = n_kernel / 10.0
 
-    if "cmap" not in kwargs:
-        kwargs["cmap"] = "seismic"
+    kwargs_matshow.setdefault("cmap", "seismic")
 
     n = 3
     if psf_variance_map is not None:
         n += 1
     f, axes = plt.subplots(1, n, figsize=(5 * n, 5))
     ax = axes[0]
-    im = ax.matshow(np.log10(psf_in), origin="lower", **kwargs)
-    v_min, v_max = im.get_clim()
-    if "vmin" not in kwargs:
-        kwargs["vmin"] = v_min
-    if "vmax" not in kwargs:
-        kwargs["vmax"] = v_max
+    im = ax.matshow(np.log10(psf_in), origin="lower", **kwargs_matshow)
+    vmin, vmax = im.get_clim()
+    kwargs_matshow.setdefault("vmin", vmin)
+    kwargs_matshow.setdefault("vmax", vmax)
     divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax)
@@ -165,7 +177,7 @@ def psf_iteration_compare(kwargs_psf, **kwargs):
     )
 
     ax = axes[1]
-    im = ax.matshow(np.log10(psf_out), origin="lower", **kwargs)
+    im = ax.matshow(np.log10(psf_out), origin="lower", **kwargs_matshow)
     divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax)
@@ -181,10 +193,10 @@ def psf_iteration_compare(kwargs_psf, **kwargs):
     )
 
     ax = axes[2]
-    kwargs_new = copy.deepcopy(kwargs)
+    kwargs_new = copy.deepcopy(kwargs_matshow)
 
-    del kwargs_new["vmin"]
-    del kwargs_new["vmax"]
+    kwargs_new.pop("vmin", None)
+    kwargs_new.pop("vmax", None)
 
     im = ax.matshow(
         psf_out - psf_in, origin="lower", vmin=-(10**-3), vmax=10**-3, **kwargs_new
@@ -208,7 +220,7 @@ def psf_iteration_compare(kwargs_psf, **kwargs):
         im = ax.matshow(
             np.log10(psf_variance_map * psf.kernel_point_source**2),
             origin="lower",
-            **kwargs
+            **kwargs_matshow
         )
         n_kernel = len(psf_variance_map)
         delta_x = n_kernel / 20.0

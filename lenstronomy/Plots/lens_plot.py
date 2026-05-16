@@ -218,7 +218,6 @@ def convergence_plot(
     extent=None,
     vmin=-1,
     vmax=1,
-    cmap="Greys",
     font_size=20,
     kwargs_colorbar={},
     **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
@@ -233,7 +232,6 @@ def convergence_plot(
     :param extent: [[min, max] [min, max]] of frame
     :param vmin: matplotlib vmin
     :param vmax: matplotlib vmax
-    :param cmap: matplotlib cmap
     :param kwargs: keyword arguments for matshow
     :param with_color_bar: bool, if True, shows color bar (deprecated, use kwargs_colorbar=None to disable)
     :param label: string, label of color bar
@@ -241,6 +239,7 @@ def convergence_plot(
     :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
     :return: matplotlib axis instance with convergence plot
     """
+    kwargs_matshow.setdefault("cmap", "gist_heat")
     x_grid, y_grid = pixel_grid.pixel_coordinates
     x_grid1d = util.image2array(x_grid)
     y_grid1d = util.image2array(y_grid)
@@ -250,7 +249,6 @@ def convergence_plot(
         np.log10(kappa_result),
         origin="lower",
         extent=extent,
-        cmap=cmap,
         vmin=vmin,
         vmax=vmax,
         **kwargs_matshow,

@@ -90,6 +90,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         """
         kwargs_colorbar = kwargs.get("kwargs_colorbar", {})
         kwargs_colorbar.setdefault("label", r"log$_{10}$ flux")
+        kwargs.setdefault("cmap", "cubehelix")
         kwargs["kwargs_colorbar"] = kwargs_colorbar
 
         return self._plot(
@@ -100,7 +101,6 @@ class MultiPatchPlot(MultiPatchReconstruction):
             kwargs_title=kwargs_title,
             kwargs_scale_bar=kwargs_scale_bar,
             kwargs_coordinate_arrows=kwargs_coordinate_arrows,
-            cmap="cubehelix",
             **kwargs,
         )
 
@@ -129,6 +129,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         """
         kwargs_colorbar = kwargs.get("kwargs_colorbar", {})
         kwargs_colorbar.setdefault("label", r"log$_{10}$ flux")
+        kwargs.setdefault("cmap", "cubehelix")
         kwargs["kwargs_colorbar"] = kwargs_colorbar
 
         return self._plot(
@@ -139,7 +140,6 @@ class MultiPatchPlot(MultiPatchReconstruction):
             kwargs_title=kwargs_title,
             kwargs_scale_bar=kwargs_scale_bar,
             kwargs_coordinate_arrows=kwargs_coordinate_arrows,
-            cmap="cubehelix",
             **kwargs,
         )
 
@@ -177,6 +177,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         )
         kwargs_colorbar = kwargs.get("kwargs_colorbar", {})
         kwargs_colorbar.setdefault("label", r"log$_{10}$ flux")
+        kwargs.setdefault("cmap", "cubehelix")
         kwargs["kwargs_colorbar"] = kwargs_colorbar
 
         return self._plot(
@@ -196,7 +197,6 @@ class MultiPatchPlot(MultiPatchReconstruction):
         v_min=-6,
         v_max=6,
         log_scale=False,
-        cmap="RdBu_r",
         white_on_black=False,
         colorbar_tick_fontsize=None,
         kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
@@ -213,7 +213,6 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param v_max: maximum plotting scale
         :param log_scale: boolean, if True, plots the map in log_10 scale
         :param label: string, label for the colorbar
-        :param cmap: string, color map
         :param white_on_black: boolean, if True, prints white text on black background, otherwise the opposite
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
@@ -226,6 +225,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         kwargs_colorbar.setdefault(
             "label", r"(f$_{\rm data}$ - f$_{\rm model}$)/$\sigma$"
         )
+        kwargs.setdefault("cmap", "RdBu_r")
         kwargs["kwargs_colorbar"] = kwargs_colorbar
 
         return self._plot(
@@ -238,7 +238,6 @@ class MultiPatchPlot(MultiPatchReconstruction):
             kwargs_title=kwargs_title,
             kwargs_scale_bar=kwargs_scale_bar,
             kwargs_coordinate_arrows=kwargs_coordinate_arrows,
-            cmap=cmap,
             white_on_black=white_on_black,
             **kwargs,
         )
@@ -265,6 +264,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         """
         kwargs_colorbar = kwargs.get("kwargs_colorbar", {})
         kwargs_colorbar.setdefault("label", r"$\log_{10}\ \kappa$")
+        kwargs.setdefault("cmap", "gist_heat")
         kwargs["kwargs_colorbar"] = kwargs_colorbar
 
         return self._plot(
@@ -275,7 +275,6 @@ class MultiPatchPlot(MultiPatchReconstruction):
             v_min=v_min,
             v_max=v_max,
             title_text=title_text,
-            cmap="gist_heat",
             **kwargs,
         )
 
@@ -286,7 +285,6 @@ class MultiPatchPlot(MultiPatchReconstruction):
         v_min=-10,
         v_max=10,
         title_text="Magnification",
-        cmap="RdYlBu_r",
         white_on_black=False,
         **kwargs
     ):
@@ -298,7 +296,6 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param v_max: maximum plotting scale
         :param title_text: string, text to be displayed in the image
         :param label: string, label for the colorbar
-        :param cmap: string, color map
         :param white_on_black: boolean, if True, prints white text on black background,
             otherwise the opposite
         :param kwargs: plotting keyword arguments
@@ -306,6 +303,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         """
         kwargs_colorbar = kwargs.get("kwargs_colorbar", {})
         kwargs_colorbar.setdefault("label", r"$\det\ (\mathsf{A}^{-1})$")
+        kwargs.setdefault("cmap", "RdYlBu_r")
         kwargs["kwargs_colorbar"] = kwargs_colorbar
 
         return self._plot(
@@ -316,7 +314,6 @@ class MultiPatchPlot(MultiPatchReconstruction):
             v_min=v_min,
             v_max=v_max,
             title_text=title_text,
-            cmap=cmap,
             white_on_black=white_on_black,
             **kwargs,
         )
@@ -356,7 +353,6 @@ class MultiPatchPlot(MultiPatchReconstruction):
         v_min=None,
         v_max=None,
         font_size=None,
-        cmap=None,
         white_on_black=True,
         no_support=False,
         kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
@@ -375,7 +371,6 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param v_max: maximum plotting scale
         :param font_size: int, default font size for all texts in the plot. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :param label: string, label for the colorbar
-        :param cmap: string of color map (or cmap matplotlib object)
         :param white_on_black: boolean, if True, prints white text on black background,
             otherwise the opposite
         :param no_support: boolean, if True, does not plot the scale bar, text
@@ -397,8 +392,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
             text_k = "k"
             bkg_k = "w"
 
-        if cmap is None:
-            cmap = "cubehelix"
+        cmap = kwargs.pop("cmap", "cubehelix")
         frame_size = np.max(coords.width)
 
         if log_scale:

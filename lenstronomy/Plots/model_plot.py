@@ -191,7 +191,9 @@ class ModelPlot(object):
         i = int(i)
         return self._band_plot_list[i]
 
-    def reconstruction_all_bands(self, **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]"):
+    def reconstruction_all_bands(
+        self, **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]"
+    ):
         """Plot data, model, and normalized residuals for all computed bands.
 
         :param kwargs_matshow: arguments of plotting
@@ -347,7 +349,6 @@ class ModelPlot(object):
         index_macromodel=None,
         subtract_mean=True,
         font_size=None,
-        cmap="bwr",
         with_critical_curves=False,
         crit_curve_color="k",
         image_name_list=None,
@@ -366,7 +367,6 @@ class ModelPlot(object):
         :param subtract_mean: bool; displays the substructure convergence relative to the mean convergence in the frame
         :param font_size: int, font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :param label: label for the color bar
-        :param cmap: colormap for use in the visualization
         :param with_critical_curves: bool; plots the critical curves in the frame
         :param crit_curve_color: color of the critical curves
         :param image_name_list: labels the images, default is A, B, C, ...
@@ -382,12 +382,12 @@ class ModelPlot(object):
         plot_band = self._select_band(band_index)
         if index_macromodel is None:
             index_macromodel = tuple()
+        kwargs_matshow.setdefault("cmap", "bwr")
         return plot_band.substructure_plot(
             ax=ax,
             index_macromodel=index_macromodel,
             subtract_mean=subtract_mean,
             font_size=font_size,
-            cmap=cmap,
             with_critical_curves=with_critical_curves,
             crit_curve_color=crit_curve_color,
             image_name_list=image_name_list,
@@ -815,7 +815,9 @@ class ModelPlot(object):
         plot_band = self._select_band(band_index)
         return plot_band.plot_subtract_from_data_all()
 
-    def plot_extinction_map(self, band_index=0, ax=None, **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]"):
+    def plot_extinction_map(
+        self, band_index=0, ax=None, **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]"
+    ):
         """Plot differential extinction map for one band.
 
         :param band_index: index of band

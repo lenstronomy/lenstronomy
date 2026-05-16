@@ -172,7 +172,7 @@ class ModelBandPlot(ModelBand):
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
         kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]"
+        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
     ):
         """Plot observed imaging data.
 
@@ -408,7 +408,6 @@ class ModelBandPlot(ModelBand):
         index_macromodel,
         subtract_mean=True,
         font_size=None,
-        cmap="coolwarm",
         with_critical_curves=False,
         crit_curve_color="k",
         image_name_list=None,
@@ -427,7 +426,6 @@ class ModelBandPlot(ModelBand):
         :param subtract_mean: bool; displays the substructure convergence relative to the mean convergence in the frame
         :param font_size: int, font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :param label: label for the color bar
-        :param cmap: colormap for use in the visualization
         :param with_critical_curves: bool; plots the critical curves in the frame
         :param crit_curve_color: color of the critical curves
         :param image_name_list: labels the images, default is A, B, C, ...
@@ -442,6 +440,7 @@ class ModelBandPlot(ModelBand):
         """
         if font_size is None:
             font_size = self._font_size
+        kwargs_matshow.setdefault("cmap", "coolwarm")
 
         kwargs_lens_macro = []
         lens_model_list_macro = []
@@ -500,7 +499,6 @@ class ModelBandPlot(ModelBand):
             residual_kappa,
             origin="lower",
             extent=self._image_extent,
-            cmap=cmap,
             alpha=alpha,
             **kwargs_matshow,
         )
@@ -1556,7 +1554,9 @@ class ModelBandPlot(ModelBand):
         )
         return f, axes
 
-    def plot_extinction_map(self, ax, **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]"):
+    def plot_extinction_map(
+        self, ax, **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]"
+    ):
         """Plot differential extinction map.
 
         :param ax: matplotlib axis instance

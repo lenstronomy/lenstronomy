@@ -903,8 +903,8 @@ class ModelPlot(object):
     def source(
         self,
         band_index=0,
-        numPix=None,
-        deltaPix=None,
+        num_pix=None,
+        delta_pix=None,
         center=None,
         image_orientation=True,
     ):
@@ -926,7 +926,7 @@ class ModelPlot(object):
             raise ValueError("num_pix and delta_pix must be provided")
         plot_band = self._select_band(band_index)
         return plot_band.source(
-            numPix, deltaPix, center=center, image_orientation=image_orientation
+            num_pix, delta_pix, center=center, image_orientation=image_orientation
         )
 
     def single_band_chi2(self, band_index=0):

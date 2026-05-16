@@ -250,8 +250,6 @@ class TestOutputPlots(object):
             ax=ax,
             num_pix=10,
             delta_pix_source=0.1,
-            with_caustics=True,
-            caustic_color="yellow",
             font_size=15,
             plot_scale="linear",
         )
@@ -518,8 +516,6 @@ class TestRaise(unittest.TestCase):
                 ax=ax,
                 num_pix=10,
                 delta_pix_source=0.1,
-                with_caustics=False,
-                caustic_color="yellow",
                 fsize=15,
                 plot_scale="bad",
             )
@@ -570,8 +566,6 @@ class TestRaise(unittest.TestCase):
                 delta_pix_source=0.1,
                 v_min=None,
                 v_max=None,
-                with_caustics=False,
-                caustic_color="yellow",
                 fsize=15,
                 plot_scale="wrong",
             )

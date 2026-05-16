@@ -161,7 +161,7 @@ def show_title_text(ax, **kwargs_title: "Unpack[TitleKwargs]"):
 
     :param ax: Matplotlib axes instance
     :type ax: matplotlib.axes.Axes
-    :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
+    :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.. Set to None to exclude this element from the plot.
     :return: None, updates the axis in place
     """
     text = kwargs_title.get("text")
@@ -204,7 +204,7 @@ def show_scale_bar(ax, d, **kwargs_scale_bar: "Unpack[ScaleBarKwargs]"):
     :param ax: Matplotlib axes instance
     :type ax: matplotlib.axes.Axes
     :param d: diameter of frame
-    :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
+    :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.. Set to None to exclude this element from the plot.
     :return: None, updated ax instance
     """
     scale_size = kwargs_scale_bar.get("scale_size", 1.0)
@@ -279,7 +279,7 @@ def show_coordinate_arrows(
     :param ax: Matplotlib axes instance
     :param d: diameter of frame in ax
     :param coords: lenstronomy.Data.coord_transforms Coordinates() instance
-    :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+    :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.. Set to None to exclude this element from the plot.
     :return: updated ax instance
     """
     font_size = kwargs_coordinate_arrows.get("font_size", font_size)

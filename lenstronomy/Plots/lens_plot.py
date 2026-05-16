@@ -104,7 +104,6 @@ def lens_model_plot(
     source_pos_x=0,
     source_pos_y=0,
     point_source=False,
-    with_caustics=False,
     with_convergence=True,
     coord_center_ra=0,
     coord_center_dec=0,
@@ -112,9 +111,8 @@ def lens_model_plot(
     fast_caustic=True,
     name_list=None,
     index=None,
-    color_value="k",
     kwargs_convergence=None,
-    kwargs_caustics: Optional[plot_util.CausticKwargs] = None,
+    kwargs_caustics: Optional[plot_util.CausticKwargs] = {},
     kwargs_point_source=None,
 ):
     """Plots a lens model (convergence) and the critical curves and caustics.
@@ -161,7 +159,7 @@ def lens_model_plot(
     :param color_value: color for critical curves and caustics
     :type color_value: str
     :param kwargs_convergence: keyword arguments for convergence plot
-    :param kwargs_caustics: keyword arguments for caustic plotting, see :class:`~lenstronomy.Plots.plot_util.CausticKwargs`
+    :param kwargs_caustics: keyword arguments for caustic plotting, see :class:`~lenstronomy.Plots.plot_util.CausticKwargs`. Set to None to exclude this element from the plot.. Set to None to exclude this element from the plot.
     :param kwargs_point_source: keyword arguments for point source plot
     :return: matplotlib axis instance with plot
     """
@@ -197,9 +195,10 @@ def lens_model_plot(
             extent=extent,
             **kwargs_convergence,
         )
-    if with_caustics is True:
-        if kwargs_caustics is None:
-            kwargs_caustics = {}
+
+    if kwargs_caustics is not None:
+        kwargs_caustics = dict(kwargs_caustics)
+        kwargs_caustics.setdefault("color", "k")
         caustics_plot(
             ax,
             pixel_grid=_coords,
@@ -212,6 +211,7 @@ def lens_model_plot(
     if point_source:
         if kwargs_point_source is None:
             kwargs_point_source = {}
+        kwargs_point_source.setdefault("color", "k")
         point_source_plot(
             ax,
             pixel_grid=_coords,
@@ -221,7 +221,6 @@ def lens_model_plot(
             source_y=source_pos_y,
             name_list=name_list,
             index=index,
-            color=color_value,
             **kwargs_point_source,
         )
     if coord_inverse:

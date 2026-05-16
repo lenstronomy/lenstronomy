@@ -419,7 +419,7 @@ class TestArcDistortions(object):
         lensEquationSolver = LensEquationSolver(lens_model_class)
         source_x = 0.0
         source_y = 0.05
-        x_image, y_image = lensEquationSolver.findBrightImage(
+        x_image, y_image = lensEquationSolver.find_bright_image(
             source_x,
             source_y,
             kwargs_lens,

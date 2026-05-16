@@ -190,7 +190,7 @@ def findOverlap(x_mins, y_mins, min_distance):
 
 
 @export
-def coordInImage(x_coord, y_coord, num_pix, delta_pix):
+def coord_in_image(x_coord, y_coord, num_pix, delta_pix):
     """
     checks whether image positions are within the pixel image in units of arcsec
     if not: remove it

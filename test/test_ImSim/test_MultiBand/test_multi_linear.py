@@ -147,7 +147,7 @@ class TestImageModel(object):
             self.kwargs_ps,
             inv_bool=False,
         )
-        chi2_reduced = self.imageModel._imageModel_list[0].reduced_chi2(
+        chi2_reduced = self.imageModel._image_model_list[0].reduced_chi2(
             model[0], error_map[0]
         )
         npt.assert_almost_equal(chi2_reduced, 1, decimal=1)

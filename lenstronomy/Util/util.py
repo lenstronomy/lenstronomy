@@ -582,7 +582,7 @@ def local_minima_2d(a, x, y):
 
 @export
 @jit()
-def neighborSelect(a, x, y):
+def neighbor_select(a, x, y):
     """#TODO replace by from scipy.signal import argrelextrema for speed up >>> from
     scipy.signal import argrelextrema >>> x = np.array([2, 1, 2, 3, 2, 0, 1, 0]) >>>
     argrelextrema(x, np.greater) (array([3, 6]),) >>> y = np.array([[1, 2, 1, 2], ...

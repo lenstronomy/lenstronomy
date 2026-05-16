@@ -29,7 +29,7 @@ class TestPlotQuasarImages(object):
         lensmodel = LensModel(lens_model_list)
         solver = LensEquationSolver(lensmodel)
         source_x, source_y = 0.07, 0.03
-        x_image, y_image = solver.findBrightImage(source_x, source_y, kwargs_lens)
+        x_image, y_image = solver.find_bright_image(source_x, source_y, kwargs_lens)
         source_fwhm_parsec = 40.0
 
         grid_radius_arcsec = auto_raytracing_grid_size(source_fwhm_parsec)

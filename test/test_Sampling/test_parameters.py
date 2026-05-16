@@ -243,7 +243,7 @@ class TestParam(object):
             kwargs_ps=kwargs_true_ps,
             kwargs_special={"D_dt": 1000},
         )
-        assert param_class.specialParams._D_dt_sampling.on
+        assert param_class.special_params._D_dt_sampling.on
 
     def test_mass_scaling(self):
         kwargs_model = {

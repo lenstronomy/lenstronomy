@@ -80,7 +80,7 @@ class TestSolver4Point(object):
             },
             {"theta_E": 0.1, "center_x": 0.5, "center_y": 0},
         ]
-        x_pos, y_pos = lensEquationSolver.findBrightImage(
+        x_pos, y_pos = lensEquationSolver.find_bright_image(
             sourcePos_x,
             sourcePos_y,
             kwargs_lens,
@@ -176,7 +176,7 @@ class TestSolver4Point(object):
                 "center_y": -0.1,
             }
         ]
-        x_pos, y_pos = lensEquationSolver.findBrightImage(
+        x_pos, y_pos = lensEquationSolver.find_bright_image(
             sourcePos_x,
             sourcePos_y,
             kwargs_lens,
@@ -249,7 +249,7 @@ class TestSolver4Point(object):
             },
             {"theta_E": 1, "center_x": 0, "center_y": 0},
         ]
-        x_pos, y_pos = lensEquationSolver.findBrightImage(
+        x_pos, y_pos = lensEquationSolver.find_bright_image(
             sourcePos_x,
             sourcePos_y,
             kwargs_lens,
@@ -310,7 +310,7 @@ class TestSolver4Point(object):
                 "center_y": 0,
             },
         ]
-        x_pos, y_pos = lensEquationSolver.findBrightImage(
+        x_pos, y_pos = lensEquationSolver.find_bright_image(
             sourcePos_x,
             sourcePos_y,
             kwargs_lens,
@@ -362,7 +362,7 @@ class TestSolver4Point(object):
             },
             {"gamma_ext": gamma_ext, "psi_ext": psi_ext},
         ]
-        x_pos, y_pos = lensEquationSolver.findBrightImage(
+        x_pos, y_pos = lensEquationSolver.find_bright_image(
             sourcePos_x,
             sourcePos_y,
             kwargs_lens,
@@ -391,7 +391,7 @@ class TestSolver4Point(object):
         assert accuracy < 10 ** (-10)
         x_source, y_source = lensModel.ray_shooting(x_pos, y_pos, kwargs_lens_new)
         x_source, y_source = np.mean(x_source), np.mean(y_source)
-        x_pos_new, y_pos_new = lensEquationSolver.findBrightImage(
+        x_pos_new, y_pos_new = lensEquationSolver.find_bright_image(
             x_source,
             y_source,
             kwargs_lens_new,
@@ -433,7 +433,7 @@ class TestSolver4Point(object):
             "e2": -0.03,
         }
         kwargs_lens = [kwargs_spemd, kwargs_shear]
-        x_pos, y_pos = lensEquationSolver.findBrightImage(
+        x_pos, y_pos = lensEquationSolver.find_bright_image(
             sourcePos_x,
             sourcePos_y,
             kwargs_lens,
@@ -459,7 +459,7 @@ class TestSolver4Point(object):
         assert accuracy < 10 ** (-10)
         x_source, y_source = lensModel.ray_shooting(x_pos, y_pos, kwargs_lens_new)
         x_source, y_source = np.mean(x_source), np.mean(y_source)
-        x_pos_new, y_pos_new = lensEquationSolver.findBrightImage(
+        x_pos_new, y_pos_new = lensEquationSolver.find_bright_image(
             x_source,
             y_source,
             kwargs_lens_new,
@@ -508,7 +508,7 @@ class TestSolver4Point(object):
         }  # parameters of the deflector lens model
 
         kwargs_lens = [kwargs_spemd, kwargs_shear]
-        x_pos, y_pos = lensEquationSolver.findBrightImage(
+        x_pos, y_pos = lensEquationSolver.find_bright_image(
             sourcePos_x,
             sourcePos_y,
             kwargs_lens,
@@ -535,7 +535,7 @@ class TestSolver4Point(object):
         assert accuracy < 10 ** (-10)
         x_source, y_source = lensModel.ray_shooting(x_pos, y_pos, kwargs_lens_new)
         x_source, y_source = np.mean(x_source), np.mean(y_source)
-        x_pos_new, y_pos_new = lensEquationSolver.findBrightImage(
+        x_pos_new, y_pos_new = lensEquationSolver.find_bright_image(
             x_source,
             y_source,
             kwargs_lens_new,
@@ -590,7 +590,7 @@ class TestSolver4Point(object):
         }  # parameters of the deflector lens model
 
         kwargs_lens = [kwargs_spemd, kwargs_shear]
-        x_pos, y_pos = lensEquationSolver.findBrightImage(
+        x_pos, y_pos = lensEquationSolver.find_bright_image(
             sourcePos_x,
             sourcePos_y,
             kwargs_lens,
@@ -623,7 +623,7 @@ class TestSolver4Point(object):
         assert accuracy < 10 ** (-10)
         x_source, y_source = lensModel.ray_shooting(x_pos, y_pos, kwargs_lens_new)
         x_source, y_source = np.mean(x_source), np.mean(y_source)
-        x_pos_new, y_pos_new = lensEquationSolver.findBrightImage(
+        x_pos_new, y_pos_new = lensEquationSolver.find_bright_image(
             x_source,
             y_source,
             kwargs_lens_new,
@@ -682,7 +682,7 @@ class TestSolver4Point(object):
         }
         kwargs_sis = {"theta_E": 0.1, "center_x": 1, "center_y": 0}
         kwargs_lens = [kwargs_spemd, kwargs_shear, kwargs_sis]
-        x_pos, y_pos = lensEquationSolver.findBrightImage(
+        x_pos, y_pos = lensEquationSolver.find_bright_image(
             sourcePos_x,
             sourcePos_y,
             kwargs_lens,
@@ -711,7 +711,7 @@ class TestSolver4Point(object):
         assert accuracy < 10 ** (-10)
         x_source, y_source = lensModel.ray_shooting(x_pos, y_pos, kwargs_lens_new)
         x_source, y_source = np.mean(x_source), np.mean(y_source)
-        x_pos_new, y_pos_new = lensEquationSolver.findBrightImage(
+        x_pos_new, y_pos_new = lensEquationSolver.find_bright_image(
             x_source,
             y_source,
             kwargs_lens_new,
@@ -767,7 +767,7 @@ class TestSolver4Point(object):
         }
         kwargs_sis = {"theta_E": 0.1, "center_x": 1, "center_y": 0}
         kwargs_lens = [kwargs_spemd, kwargs_shear, kwargs_sis]
-        x_pos, y_pos = lensEquationSolver.findBrightImage(
+        x_pos, y_pos = lensEquationSolver.find_bright_image(
             sourcePos_x,
             sourcePos_y,
             kwargs_lens,
@@ -802,7 +802,7 @@ class TestSolver4Point(object):
         assert accuracy < 10 ** (-10)
         x_source, y_source = lensModel.ray_shooting(x_pos, y_pos, kwargs_lens_new)
         x_source, y_source = np.mean(x_source), np.mean(y_source)
-        x_pos_new, y_pos_new = lensEquationSolver.findBrightImage(
+        x_pos_new, y_pos_new = lensEquationSolver.find_bright_image(
             x_source,
             y_source,
             kwargs_lens_new,
@@ -901,7 +901,7 @@ class TestSolver4Point(object):
             }
         ]
 
-        x_pos, y_pos = lensEquationSolver.findBrightImage(
+        x_pos, y_pos = lensEquationSolver.find_bright_image(
             sourcePos_x,
             sourcePos_y,
             kwargs_lens,

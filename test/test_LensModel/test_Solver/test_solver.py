@@ -41,7 +41,7 @@ class TestSolver4Point(object):
             },
             {"theta_E": 0.1, "center_x": 0.5, "center_y": 0},
         ]
-        x_pos, y_pos = lensEquationSolver.findBrightImage(
+        x_pos, y_pos = lensEquationSolver.find_bright_image(
             sourcePos_x,
             sourcePos_y,
             kwargs_lens,

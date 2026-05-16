@@ -593,7 +593,7 @@ class LensEquationSolver(object):
         else:
             return x_new, y_new, delta_new, iter_num
 
-    def findBrightImage(
+    def find_bright_image(
         self,
         sourcePos_x,
         sourcePos_y,

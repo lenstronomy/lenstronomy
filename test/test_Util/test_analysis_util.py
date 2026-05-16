@@ -63,7 +63,7 @@ class TestCorrelation(object):
         kwargs_profile = {"amp": 1, "sigma": 50, "e1": e1, "e2": e2}
         I_xy = profile.function(x_grid, y_grid, **kwargs_profile)
         I_xy = util.array2image(I_xy)
-        I_r, r_new = analysis_util.azimuthalAverage(I_xy, center=None)
+        I_r, r_new = analysis_util.azimuthal_average(I_xy, center=None)
         # r = np.linspace(start=0.5, stop=len(I_r) + 0.5, num=len(I_r))
 
         # r = np.linspace(start=1, stop=len(I_r), num=len(I_r))
@@ -76,7 +76,7 @@ class TestCorrelation(object):
         r_max = np.max(r)
         I_xy = np.sin(r / r_max * (2 * np.pi))
         I_xy = util.array2image(I_xy)
-        I_r, r_new = analysis_util.azimuthalAverage(I_xy, center=None)
+        I_r, r_new = analysis_util.azimuthal_average(I_xy, center=None)
         I_r_true = np.sin(r_new / r_max * (2 * np.pi))
         # import matplotlib.pyplot as plt
         # plt.plot(r_new, I_r_true, label='true', alpha=0.5)

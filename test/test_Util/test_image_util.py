@@ -110,7 +110,7 @@ def test_coordInImage():
     y_coord = [0, -30, 5]
     num_pix = 50
     delta_pix = 1
-    x_result, y_result = image_util.coordInImage(x_coord, y_coord, num_pix, delta_pix)
+    x_result, y_result = image_util.coord_in_image(x_coord, y_coord, num_pix, delta_pix)
     assert x_result == -10
     assert y_result == 5
 

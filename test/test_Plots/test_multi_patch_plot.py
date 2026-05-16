@@ -82,7 +82,7 @@ class TestMultiPatchPlot(object):
         source_model_class = LightModel(light_model_list=source_model_list)
 
         lensEquationSolver = LensEquationSolver(lens_model_class)
-        x_image, y_image = lensEquationSolver.findBrightImage(
+        x_image, y_image = lensEquationSolver.find_bright_image(
             source_x,
             source_y,
             kwargs_lens_true,

@@ -477,7 +477,7 @@ def test_neighborSelect():
     a[41] = 0
     x = np.linspace(0, 99, 100)
     y = np.linspace(0, 99, 100)
-    x_mins, y_mins, values = util.neighborSelect(a, x, y)
+    x_mins, y_mins, values = util.neighbor_select(a, x, y)
     assert x_mins[0] == 41
     assert y_mins[0] == 41
     assert values[0] == 0

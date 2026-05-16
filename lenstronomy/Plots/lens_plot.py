@@ -101,8 +101,8 @@ def lens_model_plot(
     kwargs_lens,
     num_pix=500,
     delta_pix=0.01,
-    sourcePos_x=0,
-    sourcePos_y=0,
+    source_pos_x=0,
+    source_pos_y=0,
     point_source=False,
     with_caustics=False,
     with_convergence=True,
@@ -128,11 +128,11 @@ def lens_model_plot(
     :type num_pix: int
     :param delta_pix: width of pixel (total frame size is delta_pix x num_pix)
     :type delta_pix: float
-    :param sourcePos_x: X-position of point source (image positions computed by
-    :type sourcePos_x: float
+    :param source_pos_x: X-position of point source (image positions computed by
+    :type source_pos_x: float
         the lens equation)
-    :param sourcePos_y: Y-position of point source (image positions computed by
-    :type sourcePos_y: float
+    :param source_pos_y: Y-position of point source (image positions computed by
+    :type source_pos_y: float
         the lens equation)
     :param point_source: If True, illustrates and computes the image positions of
     :type point_source: bool
@@ -217,8 +217,8 @@ def lens_model_plot(
             pixel_grid=_coords,
             lens_model=lens_model,
             kwargs_lens=kwargs_lens,
-            source_x=sourcePos_x,
-            source_y=sourcePos_y,
+            source_x=source_pos_x,
+            source_y=source_pos_y,
             name_list=name_list,
             index=index,
             color=color_value,
@@ -518,8 +518,8 @@ def arrival_time_surface(
     kwargs_lens,
     num_pix=500,
     delta_pix=0.01,
-    sourcePos_x=0,
-    sourcePos_y=0,
+    source_pos_x=0,
+    source_pos_y=0,
     with_caustics=False,
     point_source=False,
     n_levels=10,
@@ -539,10 +539,10 @@ def arrival_time_surface(
     :type num_pix: int
     :param delta_pix:
     :type delta_pix: float
-    :param sourcePos_x:
-    :type sourcePos_x: float
-    :param sourcePos_y:
-    :type sourcePos_y: float
+    :param source_pos_x:
+    :type source_pos_x: float
+    :param source_pos_y:
+    :type source_pos_y: float
     :param with_caustics:
     :type with_caustics: bool
     :param point_source:
@@ -563,20 +563,20 @@ def arrival_time_surface(
     _frame_size = num_pix * delta_pix
     _coords = data
     x_grid, y_grid = data.pixel_coordinates
-    lensModelExt = LensModelExtensions(lensModel)
+    lens_model_ext = LensModelExtensions(lensModel)
     # ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list = lensModelExt.critical_curve_caustics(
     #    kwargs_lens, compute_window=_frame_size, grid_scale=delta_pix/2.)
     x_grid1d = util.image2array(x_grid)
     y_grid1d = util.image2array(y_grid)
     fermat_surface = lensModel.fermat_potential(
-        x_grid1d, y_grid1d, kwargs_lens, sourcePos_x, sourcePos_y
+        x_grid1d, y_grid1d, kwargs_lens, source_pos_x, source_pos_y
     )
     fermat_surface = util.array2image(fermat_surface)
     if kwargs_contours is None:
         kwargs_contours = {}
         # , cmap='Greys', vmin=-1, vmax=1) #, cmap=self._cmap, vmin=v_min, vmax=v_max)
     if with_caustics is True:
-        ra_crit_list, dec_crit_list = lensModelExt.critical_curve_tiling(
+        ra_crit_list, dec_crit_list = lens_model_ext.critical_curve_tiling(
             kwargs_lens,
             compute_window=_frame_size,
             start_scale=delta_pix / 5,
@@ -596,8 +596,8 @@ def arrival_time_surface(
 
         solver = LensEquationSolver(lensModel)
         theta_x, theta_y = solver.image_position_from_source(
-            sourcePos_x,
-            sourcePos_y,
+            source_pos_x,
+            source_pos_y,
             kwargs_lens,
             min_distance=delta_pix,
             search_window=delta_pix * num_pix,
@@ -633,7 +633,7 @@ def arrival_time_surface(
                 fontsize=letter_font_size,
                 color="k",
             )
-        x_source, y_source = _coords.map_coord2pix(sourcePos_x, sourcePos_y)
+        x_source, y_source = _coords.map_coord2pix(source_pos_x, source_pos_y)
         ax.plot(
             (x_source + 0.5) * delta_pix - _frame_size / 2,
             (y_source + 0.5) * delta_pix - _frame_size / 2,

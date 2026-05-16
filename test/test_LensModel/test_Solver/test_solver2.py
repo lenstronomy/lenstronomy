@@ -46,7 +46,7 @@ class TestSolver(object):
                 "center_y": -0.1,
             }
         ]
-        x_pos, y_pos = image_position_spep.findBrightImage(
+        x_pos, y_pos = image_position_spep.find_bright_image(
             sourcePos_x,
             sourcePos_y,
             kwargs_lens,
@@ -131,7 +131,7 @@ class TestSolver(object):
             },
             {"Rs": Rs, "alpha_Rs": alpha_Rs, "center_x": -0.5, "center_y": 0.5},
         ]
-        x_pos, y_pos = image_position_nfw.findBrightImage(
+        x_pos, y_pos = image_position_nfw.find_bright_image(
             sourcePos_x,
             sourcePos_y,
             kwargs_lens,
@@ -158,7 +158,7 @@ class TestSolver(object):
             x_pos, y_pos, kwargs_init
         )
         source_x, source_y = spep.ray_shooting(x_pos[0], y_pos[0], kwargs_out_center)
-        x_pos_new, y_pos_new = image_position_nfw.findBrightImage(
+        x_pos_new, y_pos_new = image_position_nfw.find_bright_image(
             source_x,
             source_y,
             kwargs_out_center,
@@ -223,7 +223,7 @@ class TestSolver(object):
             },
             {"theta_E": 0.6, "center_x": -0.5, "center_y": 0.5},
         ]
-        x_pos, y_pos = image_position.findBrightImage(
+        x_pos, y_pos = image_position.find_bright_image(
             sourcePos_x,
             sourcePos_y,
             kwargs_lens,
@@ -252,7 +252,7 @@ class TestSolver(object):
         )
         print(kwargs_out_center, "output")
         source_x, source_y = spep.ray_shooting(x_pos[0], y_pos[0], kwargs_out_center)
-        x_pos_new, y_pos_new = image_position.findBrightImage(
+        x_pos_new, y_pos_new = image_position.find_bright_image(
             source_x,
             source_y,
             kwargs_out_center,
@@ -308,7 +308,7 @@ class TestSolver(object):
             {"coeffs": [1.0, 0.0, 0.1, 1.0], "beta": 1.0},
             {"theta_E": 1.0, "center_x": -0.1, "center_y": 0.1},
         ]
-        x_pos, y_pos = image_position.findBrightImage(
+        x_pos, y_pos = image_position.find_bright_image(
             sourcePos_x,
             sourcePos_y,
             kwargs_lens,
@@ -328,7 +328,7 @@ class TestSolver(object):
         kwargs_out, precision = solver.constraint_lensmodel(x_pos, y_pos, kwargs_init)
         print(kwargs_out, "output")
         source_x, source_y = lens.ray_shooting(x_pos[0], y_pos[0], kwargs_out)
-        x_pos_new, y_pos_new = image_position.findBrightImage(
+        x_pos_new, y_pos_new = image_position.find_bright_image(
             source_x,
             source_y,
             kwargs_out,
@@ -367,7 +367,7 @@ class TestSolver(object):
             },
             {"gamma1": 0.03, "gamma2": 0.0},
         ]
-        x_pos, y_pos = image_position.findBrightImage(
+        x_pos, y_pos = image_position.find_bright_image(
             sourcePos_x,
             sourcePos_y,
             kwargs_lens,
@@ -394,7 +394,7 @@ class TestSolver(object):
         kwargs_out, precision = solver.constraint_lensmodel(x_pos, y_pos, kwargs_init)
         print(kwargs_out, "output")
         source_x, source_y = lensModel.ray_shooting(x_pos[0], y_pos[0], kwargs_out)
-        x_pos_new, y_pos_new = image_position.findBrightImage(
+        x_pos_new, y_pos_new = image_position.find_bright_image(
             source_x,
             source_y,
             kwargs_out,
@@ -436,7 +436,7 @@ class TestSolver(object):
             },
             {"gamma1": 0.03, "gamma2": 0.0},
         ]
-        x_pos, y_pos = image_position.findBrightImage(
+        x_pos, y_pos = image_position.find_bright_image(
             sourcePos_x,
             sourcePos_y,
             kwargs_lens,
@@ -463,7 +463,7 @@ class TestSolver(object):
         kwargs_out, precision = solver.constraint_lensmodel(x_pos, y_pos, kwargs_init)
         print(kwargs_out, "output")
         source_x, source_y = lensModel.ray_shooting(x_pos[0], y_pos[0], kwargs_out)
-        x_pos_new, y_pos_new = image_position.findBrightImage(
+        x_pos_new, y_pos_new = image_position.find_bright_image(
             source_x,
             source_y,
             kwargs_out,

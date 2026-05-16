@@ -229,14 +229,6 @@ class TracerPlot(object):
 
         if kwargs_coordinate_arrows is not None:
             kwargs_coordinate_arrows.setdefault("font_size", font_size)
-            kwargs_coordinate_arrows.setdefault("arrow_length", 0.05)
-            kwargs_coordinate_arrows.setdefault("arrowhead_size", 0.025)
-            kwargs_coordinate_arrows.setdefault("arrow_origin_x", None)
-            kwargs_coordinate_arrows.setdefault("arrow_origin_y", None)
-            kwargs_coordinate_arrows.setdefault("arrow_north_offset_x", None)
-            kwargs_coordinate_arrows.setdefault("arrow_north_offset_y", None)
-            kwargs_coordinate_arrows.setdefault("arrow_east_offset_x", None)
-            kwargs_coordinate_arrows.setdefault("arrow_east_offset_y", None)
             kwargs_coordinate_arrows.setdefault("arrow_color_north", "w")
             kwargs_coordinate_arrows.setdefault("arrow_color_east", "w")
             plot_util.show_coordinate_arrows(
@@ -315,14 +307,6 @@ class TracerPlot(object):
             plot_util.show_title_text(ax, **kwargs_title)
         if kwargs_coordinate_arrows is not None:
             kwargs_coordinate_arrows.setdefault("font_size", font_size)
-            kwargs_coordinate_arrows.setdefault("arrow_length", 0.05)
-            kwargs_coordinate_arrows.setdefault("arrowhead_size", 0.025)
-            kwargs_coordinate_arrows.setdefault("arrow_origin_x", None)
-            kwargs_coordinate_arrows.setdefault("arrow_origin_y", None)
-            kwargs_coordinate_arrows.setdefault("arrow_north_offset_x", None)
-            kwargs_coordinate_arrows.setdefault("arrow_north_offset_y", None)
-            kwargs_coordinate_arrows.setdefault("arrow_east_offset_x", None)
-            kwargs_coordinate_arrows.setdefault("arrow_east_offset_y", None)
             kwargs_coordinate_arrows.setdefault("arrow_color_north", "w")
             kwargs_coordinate_arrows.setdefault("arrow_color_east", "w")
             plot_util.show_coordinate_arrows(
@@ -409,14 +393,6 @@ class TracerPlot(object):
             plot_util.show_scale_bar(ax, self._frame_size, **kwargs_scale_bar)
         if kwargs_coordinate_arrows is not None:
             kwargs_coordinate_arrows.setdefault("font_size", font_size)
-            kwargs_coordinate_arrows.setdefault("arrow_length", 0.05)
-            kwargs_coordinate_arrows.setdefault("arrowhead_size", 0.025)
-            kwargs_coordinate_arrows.setdefault("arrow_origin_x", None)
-            kwargs_coordinate_arrows.setdefault("arrow_origin_y", None)
-            kwargs_coordinate_arrows.setdefault("arrow_north_offset_x", None)
-            kwargs_coordinate_arrows.setdefault("arrow_north_offset_y", None)
-            kwargs_coordinate_arrows.setdefault("arrow_east_offset_x", None)
-            kwargs_coordinate_arrows.setdefault("arrow_east_offset_y", None)
             kwargs_coordinate_arrows.setdefault("arrow_color_north", "w")
             kwargs_coordinate_arrows.setdefault("arrow_color_east", "w")
             plot_util.show_coordinate_arrows(
@@ -496,14 +472,6 @@ class TracerPlot(object):
             plot_util.show_title_text(ax, **kwargs_title)
         if kwargs_coordinate_arrows is not None:
             kwargs_coordinate_arrows.setdefault("font_size", font_size)
-            kwargs_coordinate_arrows.setdefault("arrow_length", 0.05)
-            kwargs_coordinate_arrows.setdefault("arrowhead_size", 0.025)
-            kwargs_coordinate_arrows.setdefault("arrow_origin_x", None)
-            kwargs_coordinate_arrows.setdefault("arrow_origin_y", None)
-            kwargs_coordinate_arrows.setdefault("arrow_north_offset_x", None)
-            kwargs_coordinate_arrows.setdefault("arrow_north_offset_y", None)
-            kwargs_coordinate_arrows.setdefault("arrow_east_offset_x", None)
-            kwargs_coordinate_arrows.setdefault("arrow_east_offset_y", None)
             kwargs_coordinate_arrows.setdefault("arrow_color_north", "k")
             kwargs_coordinate_arrows.setdefault("arrow_color_east", "k")
             plot_util.show_coordinate_arrows(
@@ -579,14 +547,6 @@ class TracerPlot(object):
             plot_util.show_title_text(ax, **kwargs_title)
         if kwargs_coordinate_arrows is not None:
             kwargs_coordinate_arrows.setdefault("font_size", font_size)
-            kwargs_coordinate_arrows.setdefault("arrow_length", 0.05)
-            kwargs_coordinate_arrows.setdefault("arrowhead_size", 0.025)
-            kwargs_coordinate_arrows.setdefault("arrow_origin_x", None)
-            kwargs_coordinate_arrows.setdefault("arrow_origin_y", None)
-            kwargs_coordinate_arrows.setdefault("arrow_north_offset_x", None)
-            kwargs_coordinate_arrows.setdefault("arrow_north_offset_y", None)
-            kwargs_coordinate_arrows.setdefault("arrow_east_offset_x", None)
-            kwargs_coordinate_arrows.setdefault("arrow_east_offset_y", None)
             kwargs_coordinate_arrows.setdefault("arrow_color_north", "k")
             kwargs_coordinate_arrows.setdefault("arrow_color_east", "k")
             plot_util.show_coordinate_arrows(

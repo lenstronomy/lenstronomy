@@ -1,5 +1,13 @@
+import sys
 from typing import Optional
-import copy
+
+if sys.version_info >= (3, 12):
+    from typing import Unpack
+else:
+    try:
+        from typing_extensions import Unpack
+    except ImportError:
+        pass
 
 from lenstronomy.Analysis.multi_patch_reconstruction import MultiPatchReconstruction
 from lenstronomy.Plots import plot_util
@@ -62,85 +70,87 @@ class MultiPatchPlot(MultiPatchReconstruction):
 
         log_model = np.log10(self._model_joint)
         log_model[np.isnan(log_model)] = -5
-        self._v_min_default = max(np.min(log_model), -5)
-        self._v_max_default = min(np.max(log_model), 10)
+        self._vmin_default = max(np.min(log_model), -5)
+        self._vmax_default = min(np.max(log_model), 10)
 
     def data_plot(
         self,
         ax,
         log_scale=True,
-        colorbar_tick_fontsize=None,
+        font_size=None,
         kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
         kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs
+        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
     ):
         """Illustrates data.
 
         :param ax: matplotlib axis instance
         :param log_scale: boolean, if True, plots the map in log_10 scale
-        :param label: string, label for the colorbar
-        :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
+        :param font_size: int, font size to override the class-level default. Font size for different text elements
+            can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows.
+        :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
         :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
-        :param kwargs: plotting keyword arguments
+        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib instance
         """
-        kwargs_colorbar = kwargs.get("kwargs_colorbar", {})
         kwargs_colorbar.setdefault("label", r"log$_{10}$ flux")
-        kwargs.setdefault("cmap", "cubehelix")
-        kwargs["kwargs_colorbar"] = kwargs_colorbar
+        kwargs_matshow.setdefault("cmap", "cubehelix")
 
         return self._plot(
             ax,
             image=self._image_joint,
             coords=self._pixel_grid_joint,
             log_scale=log_scale,
+            font_size=font_size,
+            kwargs_colorbar=kwargs_colorbar,
             kwargs_title=kwargs_title,
             kwargs_scale_bar=kwargs_scale_bar,
             kwargs_coordinate_arrows=kwargs_coordinate_arrows,
-            **kwargs,
+            **kwargs_matshow,
         )
 
     def model_plot(
         self,
         ax,
         log_scale=True,
-        colorbar_tick_fontsize=None,
+        font_size=None,
         kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
         kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs
+        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
     ):
         """Illustrates model.
 
         :param ax: matplotlib axis instance
         :param log_scale: boolean, if True, plots the map in log_10 scale
-        :param label: string, label for the colorbar
-        :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
+        :param font_size: int, font size to override the class-level default. Font size for different text elements
+            can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows.
+        :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
         :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
-        :param kwargs: plotting keyword arguments
+        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib instance
         """
-        kwargs_colorbar = kwargs.get("kwargs_colorbar", {})
         kwargs_colorbar.setdefault("label", r"log$_{10}$ flux")
-        kwargs.setdefault("cmap", "cubehelix")
-        kwargs["kwargs_colorbar"] = kwargs_colorbar
+        kwargs_matshow.setdefault("cmap", "cubehelix")
 
         return self._plot(
             ax,
             image=self._model_joint,
             coords=self._pixel_grid_joint,
             log_scale=log_scale,
+            font_size=font_size,
+            kwargs_colorbar=kwargs_colorbar,
             kwargs_title=kwargs_title,
             kwargs_scale_bar=kwargs_scale_bar,
             kwargs_coordinate_arrows=kwargs_coordinate_arrows,
-            **kwargs,
+            **kwargs_matshow,
         )
 
     def source_plot(
@@ -150,45 +160,46 @@ class MultiPatchPlot(MultiPatchReconstruction):
         num_pix,
         center=None,
         log_scale=True,
-        colorbar_tick_fontsize=None,
+        font_size=None,
         kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
         kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs
+        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
     ):
         """Illustrates source.
 
-        :param ax: matplotlib axis instance :param delta_pix scale of the pixel size of
-            the source plot
+        :param ax: matplotlib axis instance
+        :param delta_pix: scale of the pixel size of the source plot
         :param num_pix: number of pixels per axis of the source plot
         :param center: list with two entries [center_x, center_y] (optional)
         :param log_scale: boolean, if True, plots the map in log_10 scale
-        :param label: string, label for the colorbar
-        :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
+        :param font_size: int, font size to override the class-level default. Font size for different text elements
+            can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows.
+        :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
         :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
-        :param kwargs: plotting keyword arguments
+        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib instance
         """
         source, coords = self.source(
             num_pix=num_pix, delta_pix=delta_pix, center=center
         )
-        kwargs_colorbar = kwargs.get("kwargs_colorbar", {})
         kwargs_colorbar.setdefault("label", r"log$_{10}$ flux")
-        kwargs.setdefault("cmap", "cubehelix")
-        kwargs["kwargs_colorbar"] = kwargs_colorbar
+        kwargs_matshow.setdefault("cmap", "cubehelix")
 
         return self._plot(
             ax,
             image=source,
             coords=coords,
             log_scale=log_scale,
+            font_size=font_size,
+            kwargs_colorbar=kwargs_colorbar,
             kwargs_title=kwargs_title,
             kwargs_scale_bar=kwargs_scale_bar,
             kwargs_coordinate_arrows=kwargs_coordinate_arrows,
-            **kwargs,
+            **kwargs_matshow,
         )
 
     def normalized_residual_plot(
@@ -198,48 +209,48 @@ class MultiPatchPlot(MultiPatchReconstruction):
         v_max=6,
         log_scale=False,
         white_on_black=False,
-        colorbar_tick_fontsize=None,
+        font_size=None,
         kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
         kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs
+        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
     ):
-        """
-        illustrates normalized residuals of (data - model) / error
+        """Illustrates normalized residuals of (data - model) / error.
 
         :param ax: matplotlib axis instance
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
         :param log_scale: boolean, if True, plots the map in log_10 scale
-        :param label: string, label for the colorbar
         :param white_on_black: boolean, if True, prints white text on black background, otherwise the opposite
-        :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
+        :param font_size: int, font size to override the class-level default. Font size for different text elements
+            can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows.
+        :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
         :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
-        :param kwargs: plotting keyword arguments
+        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib instance
         """
-        kwargs_colorbar = kwargs.get("kwargs_colorbar", {})
         kwargs_colorbar.setdefault(
             "label", r"(f$_{\rm data}$ - f$_{\rm model}$)/$\sigma$"
         )
-        kwargs.setdefault("cmap", "RdBu_r")
-        kwargs["kwargs_colorbar"] = kwargs_colorbar
+        kwargs_matshow.setdefault("cmap", "RdBu_r")
 
         return self._plot(
             ax,
             image=self._norm_residuals_joint,
             coords=self._pixel_grid_joint,
-            v_min=v_min,
-            v_max=v_max,
+            vmin=v_min,
+            vmax=v_max,
             log_scale=log_scale,
+            white_on_black=white_on_black,
+            font_size=font_size,
+            kwargs_colorbar=kwargs_colorbar,
             kwargs_title=kwargs_title,
             kwargs_scale_bar=kwargs_scale_bar,
             kwargs_coordinate_arrows=kwargs_coordinate_arrows,
-            white_on_black=white_on_black,
-            **kwargs,
+            **kwargs_matshow,
         )
 
     def convergence_plot(
@@ -248,8 +259,12 @@ class MultiPatchPlot(MultiPatchReconstruction):
         log_scale=True,
         v_min=-2,
         v_max=0.2,
-        title_text="Convergence",
-        **kwargs
+        font_size=None,
+        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
+        kwargs_title: Optional[plot_util.TitleKwargs] = {},
+        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
+        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
+        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
     ):
         """Illustrates lensing convergence.
 
@@ -257,25 +272,32 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param log_scale: boolean, if True, plots the map in log_10 scale
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
-        :param title_text: string, text to be displayed in the image
-        :param label: string, label for the colorbar
-        :param kwargs: plotting keyword arguments
+        :param font_size: int, font size to override the class-level default. Font size for different text elements
+            can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows.
+        :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
+        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
+        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
+        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib instance
         """
-        kwargs_colorbar = kwargs.get("kwargs_colorbar", {})
         kwargs_colorbar.setdefault("label", r"$\log_{10}\ \kappa$")
-        kwargs.setdefault("cmap", "gist_heat")
-        kwargs["kwargs_colorbar"] = kwargs_colorbar
+        kwargs_title.setdefault("text", "Convergence")
+        kwargs_matshow.setdefault("cmap", "gist_heat")
 
         return self._plot(
             ax,
             image=self._kappa_joint,
             coords=self._pixel_grid_joint,
             log_scale=log_scale,
-            v_min=v_min,
-            v_max=v_max,
-            title_text=title_text,
-            **kwargs,
+            vmin=v_min,
+            vmax=v_max,
+            font_size=font_size,
+            kwargs_colorbar=kwargs_colorbar,
+            kwargs_title=kwargs_title,
+            kwargs_scale_bar=kwargs_scale_bar,
+            kwargs_coordinate_arrows=kwargs_coordinate_arrows,
+            **kwargs_matshow,
         )
 
     def magnification_plot(
@@ -284,60 +306,64 @@ class MultiPatchPlot(MultiPatchReconstruction):
         log_scale=False,
         v_min=-10,
         v_max=10,
-        title_text="Magnification",
         white_on_black=False,
-        **kwargs
+        font_size=None,
+        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
+        kwargs_title: Optional[plot_util.TitleKwargs] = {},
+        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
+        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
+        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
     ):
-        """Illustrates lensing convergence.
+        """Illustrates lensing magnification.
 
         :param ax: matplotlib axis instance
         :param log_scale: boolean, if True, plots the map in log_10 scale
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
-        :param title_text: string, text to be displayed in the image
-        :param label: string, label for the colorbar
         :param white_on_black: boolean, if True, prints white text on black background,
             otherwise the opposite
-        :param kwargs: plotting keyword arguments
+        :param font_size: int, font size to override the class-level default. Font size for different text elements
+            can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows.
+        :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
+        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
+        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
+        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib instance
         """
-        kwargs_colorbar = kwargs.get("kwargs_colorbar", {})
         kwargs_colorbar.setdefault("label", r"$\det\ (\mathsf{A}^{-1})$")
-        kwargs.setdefault("cmap", "RdYlBu_r")
-        kwargs["kwargs_colorbar"] = kwargs_colorbar
+        kwargs_title.setdefault("text", "Magnification")
+        kwargs_matshow.setdefault("cmap", "RdYlBu_r")
 
         return self._plot(
             ax,
             image=self._magnification_joint,
             coords=self._pixel_grid_joint,
             log_scale=log_scale,
-            v_min=v_min,
-            v_max=v_max,
-            title_text=title_text,
+            vmin=v_min,
+            vmax=v_max,
             white_on_black=white_on_black,
-            **kwargs,
+            font_size=font_size,
+            kwargs_colorbar=kwargs_colorbar,
+            kwargs_title=kwargs_title,
+            kwargs_scale_bar=kwargs_scale_bar,
+            kwargs_coordinate_arrows=kwargs_coordinate_arrows,
+            **kwargs_matshow,
         )
 
-    def plot_main(self, **kwargs):
+    def plot_main(self, **kwargs_plot):
         """Print the main plots together in a joint frame.
 
-        :return:
+        :param kwargs_plot: keyword arguments forwarded to the individual plot methods
+        :return: figure and axes instances
         """
-
         f, axes = plt.subplots(2, 3, figsize=(16, 8))
-        self.data_plot(ax=axes[0, 0], **kwargs)
-        self.model_plot(ax=axes[0, 1], image_names=True, **kwargs)
-        kwargs_residuals = copy.deepcopy(kwargs)
-        if "v_min" in kwargs_residuals:
-            kwargs_residuals.pop("v_min")
-        if "v_max" in kwargs_residuals:
-            kwargs_residuals.pop("v_max")
-        self.normalized_residual_plot(
-            ax=axes[0, 2], v_min=-6, v_max=6, **kwargs_residuals
-        )
-        self.source_plot(ax=axes[1, 0], delta_pix=0.01, num_pix=100, **kwargs)
-        self.convergence_plot(ax=axes[1, 1], **kwargs)
-        self.magnification_plot(ax=axes[1, 2], **kwargs)
+        self.data_plot(ax=axes[0, 0], **kwargs_plot)
+        self.model_plot(ax=axes[0, 1], **kwargs_plot)
+        self.normalized_residual_plot(ax=axes[0, 2], **kwargs_plot)
+        self.source_plot(ax=axes[1, 0], delta_pix=0.01, num_pix=100, **kwargs_plot)
+        self.convergence_plot(ax=axes[1, 1], **kwargs_plot)
+        self.magnification_plot(ax=axes[1, 2], **kwargs_plot)
         f.tight_layout()
         f.subplots_adjust(
             left=None, bottom=None, right=None, top=None, wspace=0.0, hspace=0.05
@@ -350,16 +376,15 @@ class MultiPatchPlot(MultiPatchReconstruction):
         image,
         coords,
         log_scale=True,
-        v_min=None,
-        v_max=None,
+        vmin=None,
+        vmax=None,
         font_size=None,
         white_on_black=True,
-        no_support=False,
         kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
         kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs
+        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
     ):
         """Plot a 2D map for a given coordinate system.
 
@@ -369,18 +394,18 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param log_scale: boolean, if True, plots the map in log_10 scale
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
-        :param font_size: int, default font size for all texts in the plot. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
-        :param label: string, label for the colorbar
-        :param white_on_black: boolean, if True, prints white text on black background,
-            otherwise the opposite
-        :param no_support: boolean, if True, does not plot the scale bar, text
-            description, coordinate arrows, or color bar
-        :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
-        :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
-        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
-        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
-        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
-        :param kwargs: keyword arguments
+        :param font_size: int, default font size for all texts in the plot. Font size for different text elements
+            can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows.
+        :param white_on_black: boolean, if True, prints white text on black background, otherwise the opposite
+        :param kwargs_colorbar: keyword arguments for the colorbar; pass None to suppress the colorbar,
+            see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
+        :param kwargs_title: keyword arguments for the title; pass None to suppress the title,
+            see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
+        :param kwargs_scale_bar: keyword arguments for the scale bar; pass None to suppress the scale bar,
+            see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
+        :param kwargs_coordinate_arrows: keyword arguments for the coordinate arrows; pass None to suppress arrows,
+            see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :param kwargs_matshow: keyword arguments passed to matplotlib.pyplot.matshow()
         :return: matplotlib axis instance
         """
         if font_size is None:
@@ -392,56 +417,57 @@ class MultiPatchPlot(MultiPatchReconstruction):
             text_k = "k"
             bkg_k = "w"
 
-        cmap = kwargs.pop("cmap", "cubehelix")
         frame_size = np.max(coords.width)
 
         if log_scale:
-            if v_min is None:
-                v_min = self._v_min_default
-            if v_max is None:
-                v_max = self._v_max_default
+            if vmin is None:
+                vmin = self._vmin_default
+            if vmax is None:
+                vmax = self._vmax_default
             image_plot = np.log10(image)
         else:
             image_plot = image
+
+        kwargs_matshow.setdefault("cmap", "cubehelix")
+        kwargs_matshow.setdefault("vmin", vmin)
+        kwargs_matshow.setdefault("vmax", vmax)
         im = ax.matshow(
             image_plot,
             origin="lower",
             extent=[0, frame_size, 0, frame_size],
-            cmap=cmap,
-            vmin=v_min,
-            vmax=v_max,
+            **kwargs_matshow,
         )
 
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
 
-        if not no_support:
-            kwargs_title.setdefault("text", "Observed")
-            kwargs_title.setdefault("color", text_k)
-            kwargs_title.setdefault("backgroundcolor", bkg_k)
-            kwargs_title.setdefault("font_size", 15)
+        if kwargs_scale_bar is not None:
             kwargs_scale_bar.setdefault("scale_size", 1.0)
             kwargs_scale_bar.setdefault("color", text_k)
-            kwargs_scale_bar.setdefault("font_size", 15)
+            kwargs_scale_bar.setdefault("font_size", font_size)
             kwargs_scale_bar.setdefault("linewidth", 2)
+            plot_util.show_scale_bar(ax, frame_size, **kwargs_scale_bar)
+
+        if kwargs_title is not None:
+            kwargs_title.setdefault("text", "")
+            kwargs_title.setdefault("color", text_k)
+            kwargs_title.setdefault("backgroundcolor", bkg_k)
+            kwargs_title.setdefault("font_size", font_size)
+            plot_util.show_title_text(ax, **kwargs_title)
+
+        if kwargs_coordinate_arrows is not None:
             kwargs_coordinate_arrows.setdefault("font_size", font_size)
             kwargs_coordinate_arrows.setdefault("arrow_color_north", text_k)
             kwargs_coordinate_arrows.setdefault("arrow_color_east", text_k)
+            plot_util.show_coordinate_arrows(
+                ax,
+                frame_size,
+                coords,
+                **kwargs_coordinate_arrows,
+            )
 
-            if not kwargs.get("no_scale_bar", False):
-                plot_util.show_scale_bar(ax, frame_size, **kwargs_scale_bar)
-            if not kwargs.get("no_text", False):
-                plot_util.show_title_text(ax, **kwargs_title)
-
-            if kwargs.get("coordinate_arrows", True):
-                plot_util.show_coordinate_arrows(
-                    ax,
-                    frame_size,
-                    coords,
-                    **kwargs_coordinate_arrows,
-                )
-
+        if kwargs_colorbar is not None:
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.05)
             cb = plt.colorbar(im, cax=cax, orientation="vertical")

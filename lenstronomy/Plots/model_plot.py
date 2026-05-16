@@ -900,7 +900,14 @@ class ModelPlot(object):
         plot_band = self._select_band(band_index)
         return plot_band.plot_extinction_map(ax=ax, **kwargs_matshow)
 
-    def source(self, band_index=0, numPix=None, deltaPix=None, center=None, image_orientation=True):
+    def source(
+        self,
+        band_index=0,
+        numPix=None,
+        deltaPix=None,
+        center=None,
+        image_orientation=True,
+    ):
         """Compute source surface brightness for one band.
 
         :param band_index: index of band
@@ -910,14 +917,17 @@ class ModelPlot(object):
         :param deltaPix: pixel size
         :type deltaPix: float
         :param center: center position of source
-        :param image_orientation: If True, uses frame in orientation of the image, otherwise in RA-DEC coordinates
+        :param image_orientation: If True, uses frame in orientation of the image,
+            otherwise in RA-DEC coordinates
         :type image_orientation: bool
         :return: 2d array of source surface brightness
         """
         if numPix is None or deltaPix is None:
             raise ValueError("numPix and deltaPix must be provided")
         plot_band = self._select_band(band_index)
-        return plot_band.source(numPix, deltaPix, center=center, image_orientation=image_orientation)
+        return plot_band.source(
+            numPix, deltaPix, center=center, image_orientation=image_orientation
+        )
 
     def single_band_chi2(self, band_index=0):
         """Return reduced chi-square for one band.

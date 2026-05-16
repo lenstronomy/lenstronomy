@@ -33,10 +33,12 @@ class MultiPatchPlot(MultiPatchReconstruction):
     ):
         """Initialize the multi-patch plotting class.
 
-        :param multi_band_list: list of imaging data configuration [[kwargs_data, kwargs_psf, kwargs_numerics], [...]]
+        :param multi_band_list: Imaging data configuration [[kwargs_data, kwargs_psf, kwargs_numerics], [...]]
+        :type multi_band_list: list
         :param kwargs_model: model keyword argument list
         :param kwargs_params: keyword arguments of the model parameters, same as output of FittingSequence() 'kwargs_result'
-        :param multi_band_type: string, option when having multiple imaging data sets modelled simultaneously. Options are:
+        :param multi_band_type: Option when having multiple imaging data sets modelled simultaneously. Options are:
+        :type multi_band_type: str
             - 'multi-linear': linear amplitudes are inferred on single data set
             - 'linear-joint': linear amplitudes ae jointly inferred
             - 'single-band': single band
@@ -86,9 +88,12 @@ class MultiPatchPlot(MultiPatchReconstruction):
     ):
         """Illustrates data.
 
-        :param ax: matplotlib axis instance
-        :param log_scale: boolean, if True, plots the map in log_10 scale
-        :param font_size: int, font size to override the class-level default. Font size for different text elements
+        :param ax: Matplotlib axes instance
+        :type ax: matplotlib.axes.Axes
+        :param log_scale: If True, plots the map in log_10 scale
+        :type log_scale: bool
+        :param font_size: Font size to override the class-level default. Font size for different text elements
+        :type font_size: int
             can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows.
         :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
@@ -126,9 +131,12 @@ class MultiPatchPlot(MultiPatchReconstruction):
     ):
         """Illustrates model.
 
-        :param ax: matplotlib axis instance
-        :param log_scale: boolean, if True, plots the map in log_10 scale
-        :param font_size: int, font size to override the class-level default. Font size for different text elements
+        :param ax: Matplotlib axes instance
+        :type ax: matplotlib.axes.Axes
+        :param log_scale: If True, plots the map in log_10 scale
+        :type log_scale: bool
+        :param font_size: Font size to override the class-level default. Font size for different text elements
+        :type font_size: int
             can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows.
         :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
@@ -169,12 +177,16 @@ class MultiPatchPlot(MultiPatchReconstruction):
     ):
         """Illustrates source.
 
-        :param ax: matplotlib axis instance
+        :param ax: Matplotlib axes instance
+        :type ax: matplotlib.axes.Axes
         :param delta_pix: scale of the pixel size of the source plot
         :param num_pix: number of pixels per axis of the source plot
-        :param center: list with two entries [center_x, center_y] (optional)
-        :param log_scale: boolean, if True, plots the map in log_10 scale
-        :param font_size: int, font size to override the class-level default. Font size for different text elements
+        :param center: With two entries [center_x, center_y] (optional)
+        :type center: list
+        :param log_scale: If True, plots the map in log_10 scale
+        :type log_scale: bool
+        :param font_size: Font size to override the class-level default. Font size for different text elements
+        :type font_size: int
             can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows.
         :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
@@ -218,12 +230,16 @@ class MultiPatchPlot(MultiPatchReconstruction):
     ):
         """Illustrates normalized residuals of (data - model) / error.
 
-        :param ax: matplotlib axis instance
+        :param ax: Matplotlib axes instance
+        :type ax: matplotlib.axes.Axes
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
-        :param log_scale: boolean, if True, plots the map in log_10 scale
-        :param white_on_black: boolean, if True, prints white text on black background, otherwise the opposite
-        :param font_size: int, font size to override the class-level default. Font size for different text elements
+        :param log_scale: If True, plots the map in log_10 scale
+        :type log_scale: bool
+        :param white_on_black: If True, prints white text on black background, otherwise the opposite
+        :type white_on_black: bool
+        :param font_size: Font size to override the class-level default. Font size for different text elements
+        :type font_size: int
             can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows.
         :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
@@ -268,11 +284,14 @@ class MultiPatchPlot(MultiPatchReconstruction):
     ):
         """Illustrates lensing convergence.
 
-        :param ax: matplotlib axis instance
-        :param log_scale: boolean, if True, plots the map in log_10 scale
+        :param ax: Matplotlib axes instance
+        :type ax: matplotlib.axes.Axes
+        :param log_scale: If True, plots the map in log_10 scale
+        :type log_scale: bool
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
-        :param font_size: int, font size to override the class-level default. Font size for different text elements
+        :param font_size: Font size to override the class-level default. Font size for different text elements
+        :type font_size: int
             can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows.
         :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
@@ -316,13 +335,17 @@ class MultiPatchPlot(MultiPatchReconstruction):
     ):
         """Illustrates lensing magnification.
 
-        :param ax: matplotlib axis instance
-        :param log_scale: boolean, if True, plots the map in log_10 scale
+        :param ax: Matplotlib axes instance
+        :type ax: matplotlib.axes.Axes
+        :param log_scale: If True, plots the map in log_10 scale
+        :type log_scale: bool
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
-        :param white_on_black: boolean, if True, prints white text on black background,
+        :param white_on_black: If True, prints white text on black background,
+        :type white_on_black: bool
             otherwise the opposite
-        :param font_size: int, font size to override the class-level default. Font size for different text elements
+        :param font_size: Font size to override the class-level default. Font size for different text elements
+        :type font_size: int
             can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows.
         :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
@@ -388,15 +411,20 @@ class MultiPatchPlot(MultiPatchReconstruction):
     ):
         """Plot a 2D map for a given coordinate system.
 
-        :param ax: matplotlib axis instance
-        :param image: 2d numpy array to be plotted
+        :param ax: Matplotlib axes instance
+        :type ax: matplotlib.axes.Axes
+        :param image: To be plotted
+        :type image: numpy.ndarray
         :param coords: Coordinate() instance with the coordinate system
-        :param log_scale: boolean, if True, plots the map in log_10 scale
+        :param log_scale: If True, plots the map in log_10 scale
+        :type log_scale: bool
         :param v_min: minimum plotting scale
         :param v_max: maximum plotting scale
-        :param font_size: int, default font size for all texts in the plot. Font size for different text elements
+        :param font_size: Default font size for all texts in the plot. Font size for different text elements
+        :type font_size: int
             can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows.
-        :param white_on_black: boolean, if True, prints white text on black background, otherwise the opposite
+        :param white_on_black: If True, prints white text on black background, otherwise the opposite
+        :type white_on_black: bool
         :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
             see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`

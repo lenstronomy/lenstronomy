@@ -144,7 +144,8 @@ def sqrt(inputArray, scale_min=None, scale_max=None):
 def show_title_text(ax, **kwargs_title: "Unpack[TitleKwargs]"):
     """Add title text to an axis in normalized coordinates.
 
-    :param ax: matplotlib axis instance
+    :param ax: Matplotlib axes instance
+    :type ax: matplotlib.axes.Axes
     :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
     :return: None, updates the axis in place
     """
@@ -185,7 +186,8 @@ def show_title_text(ax, **kwargs_title: "Unpack[TitleKwargs]"):
 def show_scale_bar(ax, d, **kwargs_scale_bar: "Unpack[ScaleBarKwargs]"):
     """Plot a scale bar.
 
-    :param ax: matplotlib.axes instance
+    :param ax: Matplotlib axes instance
+    :type ax: matplotlib.axes.Axes
     :param d: diameter of frame
     :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
     :return: None, updated ax instance
@@ -259,7 +261,7 @@ def show_coordinate_arrows(
 ):
     """Plot East and North coordinate arrows.
 
-    :param ax: matplotlib axes instance
+    :param ax: Matplotlib axes instance
     :param d: diameter of frame in ax
     :param coords: lenstronomy.Data.coord_transforms Coordinates() instance
     :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
@@ -404,16 +406,21 @@ def plot_line_set(
     coordinates are moved by 0.5 pixels to be placed in the center of the pixel in
     accordance with the matplotlib.matshow() routine.
 
-    :param ax: matplotlib.axis instance
+    :param ax: Matplotlib axes instance
     :param coords: Coordinates() class instance
     :param origin: [x0, y0], lower left pixel coordinate in the frame of the pixels
-    :param line_set_list_x: numpy arrays corresponding of different disconnected regions
+    :param line_set_list_x: S corresponding of different disconnected regions
+    :type line_set_list_x: numpy.ndarray
         of the line (e.g. caustic or critical curve)
-    :param line_set_list_y: numpy arrays corresponding of different disconnected regions
+    :param line_set_list_y: S corresponding of different disconnected regions
+    :type line_set_list_y: numpy.ndarray
         of the line (e.g. caustic or critical curve)
-    :param color: string with matplotlib color
-    :param flipped_x: bool, if True, flips x-axis
-    :param points_only: bool, if True, sets plotting keywords to plot single points
+    :param color: With matplotlib color
+    :type color: str
+    :param flipped_x: If True, flips x-axis
+    :type flipped_x: bool
+    :param points_only: If True, sets plotting keywords to plot single points
+    :type points_only: bool
         without connecting lines
     :return: plot with line sets on matplotlib axis in pixel coordinates
     """
@@ -466,7 +473,8 @@ def image_position_plot(
 ):
     """Plot lensed image positions.
 
-    :param ax: matplotlib axis instance
+    :param ax: Matplotlib axes instance
+    :type ax: matplotlib.axes.Axes
     :param coords: Coordinates() class instance or inherited class (such as PixelGrid(),
         or Data())
     :param ra_image: Ra/x-coordinates of image positions (list of arrays in angular
@@ -474,10 +482,12 @@ def image_position_plot(
     :param dec_image: Dec/y-coordinates of image positions (list of arrays in angular
         units)
     :param color: color of ticks and text
-    :param image_name_list: list of strings for names of the images in the same order as
+    :param image_name_list: Strings for names of the images in the same order as
+    :type image_name_list: list
         the positions
     :param origin: [x0, y0], lower left pixel coordinate in the frame of the pixels
-    :param flipped_x: bool, if True, flips x-axis
+    :param flipped_x: If True, flips x-axis
+    :type flipped_x: bool
     :param plot_out_of_image: if True, plots images even appearing out of the Coordinate
         frame
     :type plot_out_of_image: bool
@@ -519,11 +529,14 @@ def source_position_plot(
 ):
     """Plot source positions.
 
-    :param ax: matplotlib axis instance
+    :param ax: Matplotlib axes instance
+    :type ax: matplotlib.axes.Axes
     :param coords: Coordinates() class instance or inherited class (such as PixelGrid(),
         or Data())
-    :param ra_source: list of source position in angular units
-    :param dec_source: list of source position in angular units
+    :param ra_source: Source position in angular units
+    :type ra_source: list
+    :param dec_source: Source position in angular units
+    :type dec_source: list
     :param marker: marker style for matplotlib
     :param markersize: marker size for matplotlib
     :return: matplotlib axis instance with images plotted on
@@ -549,7 +562,8 @@ def result_string(x, weights=None, title_fmt=".2f", label=None):
     :param x: marginalized 1-d posterior
     :param weights: weights of posteriors (optional)
     :param title_fmt: format to what digit the results are presented
-    :param label: string of parameter label (optional)
+    :param label: Of parameter label (optional)
+    :type label: str
     :return: string with mean :math:`\\pm` quartile
     """
     from corner import quantile
@@ -570,7 +584,8 @@ def result_string(x, weights=None, title_fmt=".2f", label=None):
 def cmap_conf(cmap_string):
     """Configures matplotlib color map.
 
-    :param cmap_string: string of cmap name, or cmap instance
+    :param cmap_string: Of cmap name, or cmap instance
+    :type cmap_string: str
     :return: cmap instance with setting for bad pixels and values below the threshold
     """
     if isinstance(cmap_string, str):

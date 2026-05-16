@@ -119,28 +119,40 @@ def lens_model_plot(
 ):
     """Plots a lens model (convergence) and the critical curves and caustics.
 
-    :param ax: matplotlib axis instance
+    :param ax: Matplotlib axes instance
+    :type ax: matplotlib.axes.Axes
     :param lens_model: LensModel() class instance
     :param kwargs_lens: lens model keyword argument list
     :param numPix: total number of pixels (for convergence map)
     :param deltaPix: width of pixel (total frame size is deltaPix x numPix)
-    :param sourcePos_x: float, x-position of point source (image positions computed by
+    :param sourcePos_x: X-position of point source (image positions computed by
+    :type sourcePos_x: float
         the lens equation)
-    :param sourcePos_y: float, y-position of point source (image positions computed by
+    :param sourcePos_y: Y-position of point source (image positions computed by
+    :type sourcePos_y: float
         the lens equation)
-    :param point_source: bool, if True, illustrates and computes the image positions of
+    :param point_source: If True, illustrates and computes the image positions of
+    :type point_source: bool
         the point source
-    :param with_caustics: bool, if True, illustrates the critical curve and caustics of
+    :param with_caustics: If True, illustrates the critical curve and caustics of
+    :type with_caustics: bool
         the system
-    :param with_convergence: bool, if True, illustrates the convergence map
-    :param coord_center_ra: float, x-coordinate of the center of the frame
-    :param coord_center_dec: float, y-coordinate of the center of the frame
-    :param coord_inverse: bool, if True, inverts the x-coordinates to go from right-to-
+    :param with_convergence: If True, illustrates the convergence map
+    :type with_convergence: bool
+    :param coord_center_ra: X-coordinate of the center of the frame
+    :type coord_center_ra: float
+    :param coord_center_dec: Y-coordinate of the center of the frame
+    :type coord_center_dec: float
+    :param coord_inverse: If True, inverts the x-coordinates to go from right-to-
+    :type coord_inverse: bool
         left (effectively the RA definition)
-    :param fast_caustic: boolean, if True, uses faster but less precise caustic
+    :param fast_caustic: If True, uses faster but less precise caustic
+    :type fast_caustic: bool
         calculation (might have troubles for the outer caustic (inner critical curve)
-    :param with_convergence: boolean, if True, plots the convergence of the deflector
-    :param name_list: list of strings, longer or equal the number of point sources. If changing this parameter, input as name_list=[...]
+    :param with_convergence: If True, plots the convergence of the deflector
+    :type with_convergence: bool
+    :param name_list: Strings, longer or equal the number of point sources. If changing this parameter, input as name_list=[...]
+    :type name_list: list
     :param index: number of sources, an integer number. Default None.
     :return: matplotlib axis instance with plot
     """
@@ -224,7 +236,8 @@ def convergence_plot(
 ):
     """Plot convergence.
 
-    :param ax: matplotlib axis instance
+    :param ax: Matplotlib axes instance
+    :type ax: matplotlib.axes.Axes
     :param pixel_grid: lenstronomy PixelGrid() instance (or class with inheritance of
         PixelGrid()
     :param lens_model: LensModel() class instance
@@ -232,7 +245,8 @@ def convergence_plot(
     :param extent: [[min, max] [min, max]] of frame
     :param vmin: matplotlib vmin
     :param vmax: matplotlib vmax
-    :param font_size: int, default font size for all texts in the plot. Font size for different text elements can be further fine-tuned by kwargs_colorbar arguments in the plotting methods.
+    :param font_size: Default font size for all texts in the plot. Font size for different text elements can be further fine-tuned by kwargs_colorbar arguments in the plotting methods.
+    :type font_size: int
     :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
     :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
     :return: matplotlib axis instance with convergence plot
@@ -279,17 +293,22 @@ def caustics_plot(
 ):
     """Plot caustics and critical curves.
 
-    :param ax: matplotlib axis instance
+    :param ax: Matplotlib axes instance
+    :type ax: matplotlib.axes.Axes
     :param pixel_grid: lenstronomy PixelGrid() instance (or class with inheritance of
         PixelGrid()
     :param lens_model: LensModel() class instance
     :param kwargs_lens: lens model keyword argument list
-    :param fast_caustic: boolean, if True, uses faster but less precise caustic
+    :param fast_caustic: If True, uses faster but less precise caustic
+    :type fast_caustic: bool
         calculation (might have troubles for the outer caustic (inner critical curve)
-    :param coord_inverse: bool, if True, inverts the x-coordinates to go from right-to-
+    :param coord_inverse: If True, inverts the x-coordinates to go from right-to-
+    :type coord_inverse: bool
         left (effectively the RA definition)
-    :param color_crit: string, color of critical curve
-    :param color_caustic: string, color of caustic curve
+    :param color_crit: Color of critical curve
+    :type color_crit: str
+    :param color_caustic: Color of caustic curve
+    :type color_caustic: str
     :param args: argument for plotting curve
     :param kwargs_plot: keyword arguments passed to :func:`matplotlib.pyplot.plot`
     :return: updated matplotlib axis instance
@@ -377,18 +396,23 @@ def point_source_plot(
     image labels according to the arrival time and illustrates a diamond shape of the
     size of the magnification. The coordinates are chosen in pixel coordinates.
 
-    :param ax: matplotlib axis instance
+    :param ax: Matplotlib axes instance
+    :type ax: matplotlib.axes.Axes
     :param pixel_grid: lenstronomy PixelGrid() instance (or class with inheritance of
         PixelGrid()
     :param lens_model: LensModel() class instance
     :param kwargs_lens: lens model keyword argument list
     :param source_x: x-position of source
     :param source_y: y-position of source
-    :param name_list: list of names of images
-    :param name_list: list of strings, longer or equal the number of point sources. If changing this parameter, input as name_list=[[...], [...]]
+    :param name_list: Names of images
+    :type name_list: list
+    :param name_list: Strings, longer or equal the number of point sources. If changing this parameter, input as name_list=[[...], [...]]
+    :type name_list: list
     :param index: number of sources, an integer number. Default None.
-    :param color: string representing the color for the source's images. Default "k".
-    :param solver_type: string, type of solver to find the image positions ('lenstronomy', 'analytical' or 'stochastic')
+    :param color: Representing the color for the source's images. Default "k".
+    :type color: str
+    :param solver_type: Type of solver to find the image positions ('lenstronomy', 'analytical' or 'stochastic')
+    :type solver_type: str
     :param kwargs_solver: keyword arguments for the solver
     :param kwargs: additional plotting keyword arguments
     :return: matplotlib axis instance with figure
@@ -483,7 +507,8 @@ def arrival_time_surface(
 ):
     """Plot Fermat potential contours and optional images.
 
-    :param ax: matplotlib axis instance
+    :param ax: Matplotlib axes instance
+    :type ax: matplotlib.axes.Axes
     :param lensModel: LensModel() class instance
     :param kwargs_lens: lens model keyword argument list
     :param numPix:
@@ -604,14 +629,17 @@ def curved_arc_illustration(
 ):
     """Illustrate curved-arc lens model components.
 
-    :param ax: matplotlib axis instance
+    :param ax: Matplotlib axes instance
+    :type ax: matplotlib.axes.Axes
     :param lensModel: LensModel() instance
     :param kwargs_lens: list of lens model keyword arguments (only those of CURVED_ARC
         considered
     :param with_centroid: plots the center of the curvature radius
-    :param stretch_scale: float, relative scale of banana to the tangential and radial
+    :param stretch_scale: Relative scale of banana to the tangential and radial
+    :type stretch_scale: float
         stretches (effectively intrinsic source size)
-    :param color: string, matplotlib color for plot
+    :param color: Matplotlib color for plot
+    :type color: str
     :return: matplotlib axis instance
     """
 
@@ -661,16 +689,21 @@ def plot_arc(
 ):
     """Plot a curved arc illustration for one model component.
 
-    :param ax: matplotlib.axes instance
-    :param tangential_stretch: float, stretch of intrinsic source in tangential
+    :param ax: Matplotlib axes instance
+    :type ax: matplotlib.axes.Axes
+    :param tangential_stretch: Stretch of intrinsic source in tangential
+    :type tangential_stretch: float
         direction
-    :param radial_stretch: float, stretch of intrinsic source in radial direction
+    :param radial_stretch: Stretch of intrinsic source in radial direction
+    :type radial_stretch: float
     :param curvature: 1/curvature radius
-    :param direction: float, angle in radian
+    :param direction: Angle in radian
+    :type direction: float
     :param center_x: center of source in image plane
     :param center_y: center of source in image plane
     :param with_centroid: plots the center of the curvature radius
-    :param stretch_scale: float, relative scale of banana to the tangential and radial
+    :param stretch_scale: Relative scale of banana to the tangential and radial
+    :type stretch_scale: float
         stretches (effectively intrinsic source size)
     :param linewidth: linewidth
     :param color: color
@@ -759,7 +792,8 @@ def distortions(
     :param center_ra: center of the grid
     :param center_dec: center of the grid
     :param differential_scale: scale of the finite derivative length in units of angles
-    :param smoothing_scale: float or None, Gaussian FWHM of a smoothing kernel applied
+    :param smoothing_scale: Or None, Gaussian FWHM of a smoothing kernel applied
+    :type smoothing_scale: float
         before plotting
     :return: matplotlib instance with different panels
     """
@@ -850,11 +884,12 @@ def distortions(
     def _plot_frame(ax, frame, vmin, vmax, title_text):
         """Plot one diagnostic frame panel.
 
-        :param ax: matplotlib.axis instance
+        :param ax: Matplotlib axes instance
         :param frame: 2d array
         :param vmin: minimum plotting scale
         :param vmax: maximum plotting scale
-        :param title_text: string to describe the label
+        :param title_text: To describe the label
+        :type title_text: str
         :return:
         """
         font_size = 10
@@ -961,7 +996,7 @@ def stretch_plot(
     """Plots ellipses at each point on a grid, scaled corresponding to the local
     Jacobian eigenvalues.
 
-    :param ax: matplotib axis instance
+    :param ax: Matplotlib axes instance
     :param lens_model: LensModel instance
     :param kwargs_lens: lens model keyword argument list
     :param plot_grid: pixelgrid instance at which to draw ellipses. 'None' uses default.
@@ -1019,7 +1054,7 @@ def shear_plot(
     pseudovectors in the direction of local shear with length corresponding to shear
     magnitude.
 
-    :param ax: matplotib axis instance
+    :param ax: Matplotlib axes instance
     :param lens_model: LensModel instance
     :param kwargs_lens: lens model keyword argument list
     :param plot_grid: pixelgrid instance at which to draw pseudovectors

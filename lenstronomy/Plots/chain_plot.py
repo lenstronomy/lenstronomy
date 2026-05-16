@@ -16,7 +16,8 @@ def plot_chain_list(chain_list, index=0, num_average=100):
     convergence. This routine is an example and more tests might be appropriate to
     analyse a specific chain.
 
-    :param chain_list: list of chains with arguments [type string, samples etc...]
+    :param chain_list: Chains with arguments [type string, samples etc...]
+    :type chain_list: list
     :param index: index of chain to be plotted
     :param num_average: in chains, number of steps to average over in plotting diagnostics
     :return: plotting instance figure, axes (potentially multiple)
@@ -44,7 +45,8 @@ def plot_chain(chain, param_list):
     """Plot PSO chain diagnostics.
 
     :param chain: tuple/list with chi2, position, and velocity history
-    :param param_list: list of parameter names
+    :param param_list: Parameter names
+    :type param_list: list
     :return: plotting instance figure and axes
     """
     chi2_list, pos_list, vel_list = chain
@@ -79,9 +81,10 @@ def plot_chain(chain, param_list):
 def plot_mcmc_behaviour(ax, samples_mcmc, param_mcmc, dist_mcmc=None, num_average=100):
     """Plots the MCMC behaviour and looks for convergence of the chain.
 
-    :param ax: matplotlib.axis instance
+    :param ax: Matplotlib axes instance
     :param samples_mcmc: parameters sampled 2d numpy array
-    :param param_mcmc: list of parameters
+    :param param_mcmc: Parameters
+    :type param_mcmc: list
     :param dist_mcmc: log likelihood of the chain
     :param num_average: number of samples to average (should coincide with the number of
         samples in the emcee process)

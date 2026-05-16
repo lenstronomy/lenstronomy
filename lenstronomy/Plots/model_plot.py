@@ -47,22 +47,27 @@ class ModelPlot(object):
     ):
         """Initialize the multi-band plotting manager.
 
-        :param multi_band_list: list of [[kwargs_data, kwargs_psf, kwargs_numerics], [], ..]
-        :param multi_band_type: string, option when having multiple imaging data sets modelled simultaneously.
+        :param multi_band_list: [[kwargs_data, kwargs_psf, kwargs_numerics], [], ..]
+        :type multi_band_list: list
+        :param multi_band_type: Option when having multiple imaging data sets modelled simultaneously.
+        :type multi_band_type: str
          Options are:
          - 'multi-linear': linear amplitudes are inferred on single data set
          - 'linear-joint': linear amplitudes ae jointly inferred
          - 'single-band': single band
         :param kwargs_model: model keyword arguments
         :param bands_compute: (optional), bool list to indicate which band to be included in the modeling
-        :param image_likelihood_mask_list: list of image likelihood mask
+        :param image_likelihood_mask_list: Image likelihood mask
+        :type image_likelihood_mask_list: list
          (same size as image_data with 1 indicating being evaluated and 0 being left out)
         :param kwargs_params: keyword arguments of 'kwargs_lens', 'kwargs_source' etc. as coming as kwargs_result from
          FittingSequence class
         :param source_marg:
         :param linear_prior:
-        :param fast_caustic: boolean; if True, uses fast (but less accurate) caustic calculation method
-        :param linear_solver: bool, if True (default) fixes the linear amplitude parameters 'amp' (avoid sampling) such
+        :param fast_caustic: ; if True, uses fast (but less accurate) caustic calculation method
+        :type fast_caustic: bool
+        :param linear_solver: If True (default) fixes the linear amplitude parameters 'amp' (avoid sampling) such
+        :type linear_solver: bool
          that they get overwritten by the linear solver solution.
         """
 
@@ -241,9 +246,12 @@ class ModelPlot(object):
         """Illustrates data.
 
         :param band_index: index of band
-        :param ax: matplotlib axis instance
-        :param font_size: int, font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
-        :param label: string, label for the colorbar
+        :param ax: Matplotlib axes instance
+        :type ax: matplotlib.axes.Axes
+        :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
+        :type font_size: int
+        :param label: Label for the colorbar
+        :type label: str
         :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
@@ -279,12 +287,18 @@ class ModelPlot(object):
         """Illustrates model.
 
         :param band_index: index of band
-        :param ax: matplotlib axis instance
-        :param image_names: boolean, if True, prints image names
-        :param label: string, label for the colorbar
-        :param font_size: int, font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
-        :param original_position: boolean, if True, uses original image positions
-        :param image_name_list: list of names for images
+        :param ax: Matplotlib axes instance
+        :type ax: matplotlib.axes.Axes
+        :param image_names: If True, prints image names
+        :type image_names: bool
+        :param label: Label for the colorbar
+        :type label: str
+        :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
+        :type font_size: int
+        :param original_position: If True, uses original image positions
+        :type original_position: bool
+        :param image_name_list: Names for images
+        :type image_name_list: list
         :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
@@ -320,9 +334,12 @@ class ModelPlot(object):
         """Illustrates lensing convergence in data frame.
 
         :param band_index: index of band
-        :param ax: matplotlib axis instance
-        :param font_size: int, font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
-        :param label: string, label for the colorbar
+        :param ax: Matplotlib axes instance
+        :type ax: matplotlib.axes.Axes
+        :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
+        :type font_size: int
+        :param label: Label for the colorbar
+        :type label: str
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
@@ -362,12 +379,16 @@ class ModelPlot(object):
         """Illustrates substructure in the lens system.
 
         :param band_index: index of band
-        :param ax: matplotlib axis instance
+        :param ax: Matplotlib axes instance
+        :type ax: matplotlib.axes.Axes
         :param index_macromodel: a list of indexes corresponding to the lens models with convergence to be subtracted
-        :param subtract_mean: bool; displays the substructure convergence relative to the mean convergence in the frame
-        :param font_size: int, font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
+        :param subtract_mean: ; displays the substructure convergence relative to the mean convergence in the frame
+        :type subtract_mean: bool
+        :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
+        :type font_size: int
         :param label: label for the color bar
-        :param with_critical_curves: bool; plots the critical curves in the frame
+        :param with_critical_curves: ; plots the critical curves in the frame
+        :type with_critical_curves: bool
         :param crit_curve_color: color of the critical curves
         :param image_name_list: labels the images, default is A, B, C, ...
         :param super_sample_factor: a integer the specifies supersampling of the coordinate grid to create the convergence map
@@ -413,8 +434,10 @@ class ModelPlot(object):
         """Illustrates normalized residuals between data and model fit.
 
         :param band_index: index of band
-        :param ax: matplotlib axis instance
-        :param font_size: int, font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
+        :param ax: Matplotlib axes instance
+        :type ax: matplotlib.axes.Axes
+        :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
+        :type font_size: int
         :param label: label for the color bar
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
@@ -449,8 +472,10 @@ class ModelPlot(object):
         """Illustrates absolute residuals between data and model fit.
 
         :param band_index: index of band
-        :param ax: matplotlib axis instance
-        :param font_size: int, font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
+        :param ax: Matplotlib axes instance
+        :type ax: matplotlib.axes.Axes
+        :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
+        :type font_size: int
         :param label: label for the color bar
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
@@ -493,17 +518,22 @@ class ModelPlot(object):
         """Illustrates reconstructed source (de-lensed de-convolved)
 
         :param band_index: index of band
-        :param ax: matplotlib axis instance
+        :param ax: Matplotlib axes instance
+        :type ax: matplotlib.axes.Axes
         :param numPix: number of pixels in plot per axis
         :param deltaPix_source: pixel spacing in the source resolution illustrated in
             plot
         :param center: [center_x, center_y], if specified, uses this as the center
         :param with_caustics: plot the caustics on top of the source reconstruction
         :param caustic_color: color of the caustics
-        :param font_size: int, font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
-        :param plot_scale: string, log or linear, scale of surface brightness plot
-        :param label: string, label for the colorbar
-        :param point_source_position: boolean, if True, plots a point at the position of
+        :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
+        :type font_size: int
+        :param plot_scale: Log or linear, scale of surface brightness plot
+        :type plot_scale: str
+        :param label: Label for the colorbar
+        :type label: str
+        :param point_source_position: If True, plots a point at the position of
+        :type point_source_position: bool
             the point source
         :param kwargs_caustic: keyword arguments for caustic plotting
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
@@ -552,13 +582,16 @@ class ModelPlot(object):
         plane.
 
         :param band_index: index of band
-        :param ax: matplotlib axis instance
+        :param ax: Matplotlib axes instance
+        :type ax: matplotlib.axes.Axes
         :param numPix: number of pixels in plot per axis
         :param deltaPix_source: pixel spacing in the source resolution illustrated in
             plot
         :param with_caustics: plot the caustics on top of the source reconstruction
-        :param font_size: int, font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
-        :param point_source_position: boolean, if True, plots a point at the position of
+        :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
+        :type font_size: int
+        :param point_source_position: If True, plots a point at the position of
+        :type point_source_position: bool
             the point source
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
@@ -598,11 +631,14 @@ class ModelPlot(object):
         """Illustrates lensing magnification in the field of view of the data frame.
 
         :param band_index: index of band
-        :param ax: matplotib axis instance
-        :param image_name_list: list of strings for names of the images in the same
+        :param ax: Matplotlib axes instance
+        :param image_name_list: Strings for names of the images in the same
+        :type image_name_list: list
             order as the positions
-        :param font_size: int, font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
-        :param label: string, label for the colorbar
+        :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
+        :type font_size: int
+        :param label: Label for the colorbar
+        :type label: str
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
@@ -640,12 +676,18 @@ class ModelPlot(object):
         """Illustrates lensing deflections on the field of view of the data frame.
 
         :param band_index: index of band
-        :param ax: matplotlib axis instance
-        :param axis: integer, 0 or 1, specifies the deflection angle axis to be plotted
-        :param with_caustics: boolean, if True, plots caustics
-        :param image_name_list: list of strings for names of the images
-        :param font_size: int, font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
-        :param label: string, label for the colorbar
+        :param ax: Matplotlib axes instance
+        :type ax: matplotlib.axes.Axes
+        :param axis: 0 or 1, specifies the deflection angle axis to be plotted
+        :type axis: int
+        :param with_caustics: If True, plots caustics
+        :type with_caustics: bool
+        :param image_name_list: Strings for names of the images
+        :type image_name_list: list
+        :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
+        :type font_size: int
+        :param label: Label for the colorbar
+        :type label: str
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
@@ -686,14 +728,19 @@ class ModelPlot(object):
         """Illustrates decomposition of model components.
 
         :param band_index: index of band
-        :param ax: an instance of matplotlib.axes.Axes
-        :param unconvolved: bool, if True, does not perform PSF convolution on the image
-        :param point_source_add: bool, if True, includes the lensed point source(s) in
+        :param ax: Matplotlib axes instance
+        :param unconvolved: If True, does not perform PSF convolution on the image
+        :type unconvolved: bool
+        :param point_source_add: If True, includes the lensed point source(s) in
+        :type point_source_add: bool
             the plot
-        :param font_size: int, font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
-        :param source_add: bool, if True, includes the lensed image of the source in the
+        :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
+        :type font_size: int
+        :param source_add: If True, includes the lensed image of the source in the
+        :type source_add: bool
             plot
-        :param lens_light_add: bool, if True, includes the lens light in the plot
+        :param lens_light_add: If True, includes the lens light in the plot
+        :type lens_light_add: bool
             from the plot
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
@@ -735,13 +782,17 @@ class ModelPlot(object):
         """Subtracts individual model components from the data.
 
         :param band_index: index of band
-        :param ax: an instance of matplotlib.axes.Axes
-        :param point_source_add: bool, if True, includes the lensed point source(s) in
+        :param ax: Matplotlib axes instance
+        :param point_source_add: If True, includes the lensed point source(s) in
+        :type point_source_add: bool
             the plot
-        :param source_add: bool, if True, includes the lensed image of the source in the
+        :param source_add: If True, includes the lensed image of the source in the
+        :type source_add: bool
             plot
-        :param lens_light_add: bool, if True, includes the lens light in the plot
-        :param font_size: int, font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
+        :param lens_light_add: If True, includes the lens light in the plot
+        :type lens_light_add: bool
+        :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
+        :type font_size: int
         :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
         :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
@@ -768,7 +819,8 @@ class ModelPlot(object):
         """Plot a set of 'main' modelling diagnostics.
 
         :param band_index: index of band
-        :param with_caustics: boolean, if True, plots caustics in the source plane
+        :param with_caustics: If True, plots caustics in the source plane
+        :type with_caustics: bool
         :param kwargs: plotting keyword arguments forwarded to the individual plots
         :return: plot instance
         """
@@ -821,7 +873,7 @@ class ModelPlot(object):
         """Plot differential extinction map for one band.
 
         :param band_index: index of band
-        :param ax: an instance of matplotlib.axes.Axes
+        :param ax: Matplotlib axes instance
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
         :return: plot instance of differential extinction map
         """

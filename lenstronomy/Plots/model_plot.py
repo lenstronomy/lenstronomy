@@ -925,7 +925,9 @@ class ModelPlot(object):
         if num_pix is None or delta_pix is None:
             raise ValueError("num_pix and delta_pix must be provided")
         plot_band = self._select_band(band_index)
-        return plot_band.source(numPix, deltaPix, center=center, image_orientation=image_orientation)
+        return plot_band.source(
+            numPix, deltaPix, center=center, image_orientation=image_orientation
+        )
 
     def single_band_chi2(self, band_index=0):
         """Return reduced chi-square for one band.

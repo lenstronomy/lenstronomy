@@ -231,15 +231,15 @@ def make_grid(num_pix, delta_pix, subgrid_res=1, left_lower=False):
 
 
 @export
-def make_grid_transformed(num_pix, matrix_pix2angle):
+def make_grid_transformed(num_pix, transform_pix2angle):
     """Returns grid with linear transformation (delta_pix and rotation)
 
     :param num_pix: number of Pixels
-    :param matrix_pix2angle: 2-by-2 matrix to map a pixel to a coordinate
+    :param transform_pix2angle: 2-by-2 matrix to map a pixel to a coordinate
     :return: coordinate grid
     """
     x_grid, y_grid = make_grid(num_pix, delta_pix=1)
-    ra_grid, dec_grid = map_coord2pix(x_grid, y_grid, 0, 0, matrix_pix2angle)
+    ra_grid, dec_grid = map_coord2pix(x_grid, y_grid, 0, 0, transform_pix2angle)
     return ra_grid, dec_grid
 
 
@@ -290,7 +290,7 @@ def make_grid_with_coordtransform(
     :param left_lower: sets the zero point at the lower left corner of the pixels
     :param inverse: bool, if true sets East as left, otherwise East is righrt
     :return: ra_grid, dec_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0,
-        mapping_pix2coord, mapping_coord2pix
+        transform_pix2coord, transform_coord2pix
     """
     num_pix_eff = num_pix * subgrid_res
     delta_pix_eff = delta_pix / float(subgrid_res)
@@ -312,10 +312,10 @@ def make_grid_with_coordtransform(
     ra_at_xy_0 = ra_grid[0]
     dec_at_xy_0 = dec_grid[0]
 
-    mapping_pix2coord = np.array([[delta_x, 0], [0, delta_pix_eff]])
-    mapping_coord2pix = np.linalg.inv(mapping_pix2coord)
+    transform_pix2coord = np.array([[delta_x, 0], [0, delta_pix_eff]])
+    transform_coord2pix = np.linalg.inv(transform_pix2coord)
     x_at_radec_0, y_at_radec_0 = map_coord2pix(
-        -ra_at_xy_0, -dec_at_xy_0, x_0=0, y_0=0, mapping=mapping_coord2pix
+        -ra_at_xy_0, -dec_at_xy_0, x_0=0, y_0=0, mapping=transform_coord2pix
     )
     return (
         ra_grid,
@@ -324,18 +324,20 @@ def make_grid_with_coordtransform(
         dec_at_xy_0,
         x_at_radec_0,
         y_at_radec_0,
-        mapping_pix2coord,
-        mapping_coord2pix,
+        transform_pix2coord,
+        transform_coord2pix,
     )
 
 
 @export
-def grid_from_coordinate_transform(nx, ny, mapping_pix2coord, ra_at_xy_0, dec_at_xy_0):
+def grid_from_coordinate_transform(
+    nx, ny, transform_pix2coord, ra_at_xy_0, dec_at_xy_0
+):
     """Return a grid in x and y coordinates that satisfy the coordinate system.
 
     :param nx: number of pixels in x-axis
     :param ny: number of pixels in y-axis
-    :param mapping_pix2coord: transformation matrix (2x2) of pixels into coordinate
+    :param transform_pix2coord: transformation matrix (2x2) of pixels into coordinate
         displacements
     :param ra_at_xy_0: RA coordinate at (x,y) = (0,0)
     :param dec_at_xy_0: DEC coordinate at (x,y) = (0,0)
@@ -347,11 +349,13 @@ def grid_from_coordinate_transform(nx, ny, mapping_pix2coord, ra_at_xy_0, dec_at
     x_grid = matrix[:, 0]
     y_grid = matrix[:, 1]
     ra_grid = (
-        x_grid * mapping_pix2coord[0, 0] + y_grid * mapping_pix2coord[0, 1] + ra_at_xy_0
+        x_grid * transform_pix2coord[0, 0]
+        + y_grid * transform_pix2coord[0, 1]
+        + ra_at_xy_0
     )
     dec_grid = (
-        x_grid * mapping_pix2coord[1, 0]
-        + y_grid * mapping_pix2coord[1, 1]
+        x_grid * transform_pix2coord[1, 0]
+        + y_grid * transform_pix2coord[1, 1]
         + dec_at_xy_0
     )
     return ra_grid, dec_grid

@@ -197,13 +197,13 @@ class MultiPatchReconstruction(MultiBandImageReconstruction):
         :return: 2d surface brightness grid of the reconstructed source and PixelGrid()
             instance of source grid
         """
-        mapping_pix2coord = (
+        transform_pix2coord = (
             self._pixel_grid_joint.transform_pix2angle
             * delta_pix
             / self._pixel_grid_joint.pixel_width
         )
         x_grid_source, y_grid_source = util.make_grid_transformed(
-            num_pix, matrix_pix2angle=mapping_pix2coord
+            num_pix, transform_pix2angle=transform_pix2coord
         )
         ra_at_xy_0, dec_at_xy_0 = x_grid_source[0], y_grid_source[0]
 
@@ -224,7 +224,7 @@ class MultiPatchReconstruction(MultiBandImageReconstruction):
         pixel_grid = PixelGrid(
             nx=num_pix,
             ny=num_pix,
-            transform_pix2angle=mapping_pix2coord,
+            transform_pix2angle=transform_pix2coord,
             ra_at_xy_0=ra_at_xy_0 + center_x,
             dec_at_xy_0=dec_at_xy_0 + center_y,
         )

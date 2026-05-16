@@ -39,8 +39,8 @@ def data_configure_simple(
         dec_at_xy_0,
         x_at_radec_0,
         y_at_radec_0,
-        Mpix2coord,
-        Mcoord2pix,
+        transform_pix2coord,
+        transform_coord2pix,
     ) = util.make_grid_with_coordtransform(
         num_pix=num_pix,
         delta_pix=delta_pix,
@@ -57,7 +57,7 @@ def data_configure_simple(
         "exposure_time": exposure_time,
         "ra_at_xy_0": ra_at_xy_0,
         "dec_at_xy_0": dec_at_xy_0,
-        "transform_pix2angle": Mpix2coord,
+        "transform_pix2angle": transform_pix2coord,
         "image_data": np.zeros((num_pix, num_pix)),
     }
     return kwargs_data

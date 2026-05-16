@@ -102,11 +102,11 @@ def test_make_grid_transform():
     num_pix = 11
     theta = np.pi / 2
     delta_pix = 0.05
-    Mpix2coord = (
+    transform_pix2coord = (
         np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])
         * delta_pix
     )
-    ra_coord, dec_coord = util.make_grid_transformed(num_pix, Mpix2coord)
+    ra_coord, dec_coord = util.make_grid_transformed(num_pix, transform_pix2coord)
     ra2d = util.array2image(ra_coord)
     assert ra2d[5, 5] == 0
     assert ra2d[4, 5] == delta_pix
@@ -123,14 +123,14 @@ def test_grid_with_coords():
         dec_at_xy_0,
         x_at_radec_0,
         y_at_radec_0,
-        Mpix2coord,
-        Mcoord2pix,
+        transform_pix2coord,
+        transform_coord2pix,
     ) = util.make_grid_with_coordtransform(
         num_pix, delta_pix, subgrid_res=1, left_lower=False
     )
     ra = 0
     dec = 0
-    x, y = util.map_coord2pix(ra, dec, x_at_radec_0, y_at_radec_0, Mcoord2pix)
+    x, y = util.map_coord2pix(ra, dec, x_at_radec_0, y_at_radec_0, transform_coord2pix)
     assert x == 5
     assert y == 5
 
@@ -143,14 +143,14 @@ def test_grid_with_coords():
         dec_at_xy_0,
         x_at_radec_0,
         y_at_radec_0,
-        Mpix2coord,
-        Mcoord2pix,
+        transform_pix2coord,
+        transform_coord2pix,
     ) = util.make_grid_with_coordtransform(
         num_pix, delta_pix, subgrid_res=1, left_lower=False
     )
     ra = 0
     dec = 0
-    x, y = util.map_coord2pix(ra, dec, x_at_radec_0, y_at_radec_0, Mcoord2pix)
+    x, y = util.map_coord2pix(ra, dec, x_at_radec_0, y_at_radec_0, transform_coord2pix)
     assert x == 5
     assert y == 5
 
@@ -163,13 +163,13 @@ def test_grid_with_coords():
         dec_at_xy_0,
         x_at_radec_0,
         y_at_radec_0,
-        Mpix2coord,
-        Mcoord2pix,
+        transform_pix2coord,
+        transform_coord2pix,
     ) = util.make_grid_with_coordtransform(
         num_pix, delta_pix, subgrid_res=1, left_lower=False, inverse=True
     )
     x_, y_ = 0, 0
-    ra, dec = util.map_coord2pix(x_, y_, ra_at_xy_0, dec_at_xy_0, Mpix2coord)
+    ra, dec = util.map_coord2pix(x_, y_, ra_at_xy_0, dec_at_xy_0, transform_pix2coord)
     assert ra == 5
     assert dec == -5
 
@@ -182,13 +182,13 @@ def test_grid_with_coords():
         dec_at_xy_0,
         x_at_radec_0,
         y_at_radec_0,
-        Mpix2coord,
-        Mcoord2pix,
+        transform_pix2coord,
+        transform_coord2pix,
     ) = util.make_grid_with_coordtransform(
         num_pix, delta_pix, subgrid_res=1, left_lower=False, inverse=False
     )
     x_, y_ = 0, 0
-    ra, dec = util.map_coord2pix(x_, y_, ra_at_xy_0, dec_at_xy_0, Mpix2coord)
+    ra, dec = util.map_coord2pix(x_, y_, ra_at_xy_0, dec_at_xy_0, transform_pix2coord)
     assert ra == -5
     assert dec == -5
 
@@ -201,16 +201,18 @@ def test_grid_with_coords():
         dec_at_xy_0,
         x_at_radec_0,
         y_at_radec_0,
-        Mpix2coord,
-        Mcoord2pix,
+        transform_pix2coord,
+        transform_coord2pix,
     ) = util.make_grid_with_coordtransform(
         num_pix, delta_pix, subgrid_res=1, left_lower=False
     )
     x_, y_ = 0, 0
-    ra, dec = util.map_coord2pix(x_, y_, ra_at_xy_0, dec_at_xy_0, Mpix2coord)
+    ra, dec = util.map_coord2pix(x_, y_, ra_at_xy_0, dec_at_xy_0, transform_pix2coord)
     assert ra == 0.5
     assert dec == -0.5
-    x__, y__ = util.map_coord2pix(ra, dec, x_at_radec_0, y_at_radec_0, Mcoord2pix)
+    x__, y__ = util.map_coord2pix(
+        ra, dec, x_at_radec_0, y_at_radec_0, transform_coord2pix
+    )
     assert x__ == x_
     assert y__ == y_
 
@@ -223,8 +225,8 @@ def test_grid_with_coords():
         dec_at_xy_0,
         x_at_radec_0,
         y_at_radec_0,
-        Mpix2coord,
-        Mcoord2pix,
+        transform_pix2coord,
+        transform_coord2pix,
     ) = util.make_grid_with_coordtransform(
         num_pix, delta_pix, subgrid_res=1, left_lower=True
     )
@@ -240,8 +242,8 @@ def test_grid_with_coords():
         dec_at_xy_0,
         x_at_radec_0,
         y_at_radec_0,
-        Mpix2coord,
-        Mcoord2pix,
+        transform_pix2coord,
+        transform_coord2pix,
     ) = util.make_grid_with_coordtransform(
         num_pix, delta_pix, subgrid_res=1, left_lower=True, center_ra=2, center_dec=3
     )
@@ -261,7 +263,7 @@ def test_centered_coordinate_system():
         x_at_radec_0,
         y_at_radec_0,
         transform_pix2angle,
-        Mcoord2pix,
+        transform_coord2pix,
     ) = util.make_grid_with_coordtransform(
         num_pix, delta_pix, subgrid_res=1, left_lower=False, inverse=False
     )
@@ -277,7 +279,7 @@ def test_centered_coordinate_system():
         x_at_radec_0,
         y_at_radec_0,
         transform_pix2angle,
-        Mcoord2pix,
+        transform_coord2pix,
     ) = util.make_grid_with_coordtransform(
         num_pix, delta_pix, subgrid_res=1, left_lower=False, inverse=True
     )

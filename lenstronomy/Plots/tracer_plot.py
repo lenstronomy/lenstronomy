@@ -622,9 +622,11 @@ class TracerPlot(object):
             Coordinates() instance of source grid
         """
         if image_orientation is True:
-            Mpix2coord = self._coords.transform_pix2angle * delta_pix / self._delta_pix
+            transform_pix2coord = (
+                self._coords.transform_pix2angle * delta_pix / self._delta_pix
+            )
             x_grid_source, y_grid_source = util.make_grid_transformed(
-                num_pix, matrix_pix2angle=Mpix2coord
+                num_pix, transform_pix2angle=transform_pix2coord
             )
             ra_at_xy_0, dec_at_xy_0 = x_grid_source[0], y_grid_source[0]
         else:
@@ -635,8 +637,8 @@ class TracerPlot(object):
                 dec_at_xy_0,
                 x_at_radec_0,
                 y_at_radec_0,
-                Mpix2coord,
-                Mcoord2pix,
+                transform_pix2coord,
+                transform_coord2pix,
             ) = util.make_grid_with_coordtransform(num_pix, delta_pix)
 
         center_x = 0
@@ -650,7 +652,7 @@ class TracerPlot(object):
         y_grid_source += center_y
 
         coords_source = Coordinates(
-            transform_pix2angle=Mpix2coord,
+            transform_pix2angle=transform_pix2coord,
             ra_at_xy_0=ra_at_xy_0 + center_x,
             dec_at_xy_0=dec_at_xy_0 + center_y,
         )

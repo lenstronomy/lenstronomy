@@ -99,7 +99,7 @@ class TestTracerPlot(object):
             dec_at_xy_0,
             _,
             _,
-            Mpix2coord,
+            transform_pix2coord,
             _,
         ) = util.make_grid_with_coordtransform(
             num_pix=num_pix,
@@ -115,7 +115,7 @@ class TestTracerPlot(object):
             "exposure_time": exp_time,  # exposure time (or a map per pixel)
             "ra_at_xy_0": ra_at_xy_0,  # RA at (0,0) pixel
             "dec_at_xy_0": dec_at_xy_0,  # DEC at (0,0) pixel
-            "transform_pix2angle": Mpix2coord,
+            "transform_pix2angle": transform_pix2coord,
             # matrix to translate shift in pixel in shift in relative RA/DEC (2x2 matrix). Make sure it's units are arcseconds or the angular units you want to model.
             "image_data": np.zeros((num_pix, num_pix)),
             # 2d data vector, here initialized with zeros as place holders that get's overwritten once a simulated image with noise is created.
@@ -169,7 +169,7 @@ class TestTracerPlot(object):
             "noise_map": tracer_noise_map,  # variance of pixels
             "ra_at_xy_0": ra_at_xy_0,  # RA at (0,0) pixel
             "dec_at_xy_0": dec_at_xy_0,  # DEC at (0,0) pixel
-            "transform_pix2angle": Mpix2coord,
+            "transform_pix2angle": transform_pix2coord,
             # matrix to translate shift in pixel in shift in relative RA/DEC (2x2 matrix). Make sure it's units are arcseconds or the angular units you want to model.
             "image_data": np.zeros((num_pix, num_pix)),
             # 2d data vector, here initialized with zeros as place holders that get's overwritten once a simulated image with noise is created.

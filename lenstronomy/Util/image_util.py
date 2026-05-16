@@ -269,24 +269,26 @@ def rebin_image(bin_size, image, wht_map, sigma_bkg, ra_coords, dec_coords, idex
 
 
 @export
-def rebin_coord_transform(factor, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix):
+def rebin_coord_transform(
+    factor, x_at_radec_0, y_at_radec_0, transform_pix2coord, transform_coord2pix
+):
     """Adopt coordinate system and transformation between angular and pixel coordinates
     of a re-binned image."""
     factor = int(factor)
-    Mcoord2pix_resized = Mcoord2pix / factor
-    Mpix2coord_resized = Mpix2coord * factor
+    transform_coord2pix_resized = transform_coord2pix / factor
+    transform_pix2coord_resized = transform_pix2coord * factor
     x_at_radec_0_resized = (x_at_radec_0 + 0.5) / factor - 0.5
     y_at_radec_0_resized = (y_at_radec_0 + 0.5) / factor - 0.5
     ra_at_xy_0_resized, dec_at_xy_0_resized = util.map_coord2pix(
-        -x_at_radec_0_resized, -y_at_radec_0_resized, 0, 0, Mpix2coord_resized
+        -x_at_radec_0_resized, -y_at_radec_0_resized, 0, 0, transform_pix2coord_resized
     )
     return (
         ra_at_xy_0_resized,
         dec_at_xy_0_resized,
         x_at_radec_0_resized,
         y_at_radec_0_resized,
-        Mpix2coord_resized,
-        Mcoord2pix_resized,
+        transform_pix2coord_resized,
+        transform_coord2pix_resized,
     )
 
 

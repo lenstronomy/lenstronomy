@@ -122,9 +122,12 @@ def lens_model_plot(
     :param ax: Matplotlib axes instance
     :type ax: matplotlib.axes.Axes
     :param lens_model: LensModel() class instance
+    :type lens_model: LensModel
     :param kwargs_lens: lens model keyword argument list
     :param numPix: total number of pixels (for convergence map)
+    :type numPix: int
     :param deltaPix: width of pixel (total frame size is deltaPix x numPix)
+    :type deltaPix: float
     :param sourcePos_x: X-position of point source (image positions computed by
     :type sourcePos_x: float
         the lens equation)
@@ -154,6 +157,7 @@ def lens_model_plot(
     :param name_list: Strings, longer or equal the number of point sources. If changing this parameter, input as name_list=[...]
     :type name_list: list
     :param index: number of sources, an integer number. Default None.
+    :type index: int or None
     :return: matplotlib axis instance with plot
     """
     kwargs_data = sim_util.data_configure_simple(
@@ -240,11 +244,16 @@ def convergence_plot(
     :type ax: matplotlib.axes.Axes
     :param pixel_grid: lenstronomy PixelGrid() instance (or class with inheritance of
         PixelGrid()
+    :type pixel_grid: PixelGrid
     :param lens_model: LensModel() class instance
+    :type lens_model: LensModel
     :param kwargs_lens: lens model keyword argument list
     :param extent: [[min, max] [min, max]] of frame
+    :type extent: list or None
     :param vmin: matplotlib vmin
+    :type vmin: float
     :param vmax: matplotlib vmax
+    :type vmax: float
     :param font_size: Default font size for all texts in the plot. Font size for different text elements can be further fine-tuned by kwargs_colorbar arguments in the plotting methods.
     :type font_size: int
     :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
@@ -297,7 +306,9 @@ def caustics_plot(
     :type ax: matplotlib.axes.Axes
     :param pixel_grid: lenstronomy PixelGrid() instance (or class with inheritance of
         PixelGrid()
+    :type pixel_grid: PixelGrid
     :param lens_model: LensModel() class instance
+    :type lens_model: LensModel
     :param kwargs_lens: lens model keyword argument list
     :param fast_caustic: If True, uses faster but less precise caustic
     :type fast_caustic: bool
@@ -310,6 +321,7 @@ def caustics_plot(
     :param color_caustic: Color of caustic curve
     :type color_caustic: str
     :param args: argument for plotting curve
+    :type args: tuple
     :param kwargs_plot: keyword arguments passed to :func:`matplotlib.pyplot.plot`
     :return: updated matplotlib axis instance
     """
@@ -400,21 +412,26 @@ def point_source_plot(
     :type ax: matplotlib.axes.Axes
     :param pixel_grid: lenstronomy PixelGrid() instance (or class with inheritance of
         PixelGrid()
+    :type pixel_grid: PixelGrid
     :param lens_model: LensModel() class instance
+    :type lens_model: LensModel
     :param kwargs_lens: lens model keyword argument list
     :param source_x: x-position of source
+    :type source_x: float
     :param source_y: y-position of source
+    :type source_y: float
     :param name_list: Names of images
     :type name_list: list
     :param name_list: Strings, longer or equal the number of point sources. If changing this parameter, input as name_list=[[...], [...]]
     :type name_list: list
     :param index: number of sources, an integer number. Default None.
+    :type index: int or None
     :param color: Representing the color for the source's images. Default "k".
     :type color: str
     :param solver_type: Type of solver to find the image positions ('lenstronomy', 'analytical' or 'stochastic')
     :type solver_type: str
     :param kwargs_solver: keyword arguments for the solver
-    :param kwargs: additional plotting keyword arguments
+    :param kwargs_plot: additional plotting keyword arguments
     :return: matplotlib axis instance with figure
     """
     from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
@@ -510,13 +527,20 @@ def arrival_time_surface(
     :param ax: Matplotlib axes instance
     :type ax: matplotlib.axes.Axes
     :param lensModel: LensModel() class instance
+    :type lensModel: LensModel
     :param kwargs_lens: lens model keyword argument list
     :param numPix:
+    :type numPix: int
     :param deltaPix:
+    :type deltaPix: float
     :param sourcePos_x:
+    :type sourcePos_x: float
     :param sourcePos_y:
+    :type sourcePos_y: float
     :param with_caustics:
+    :type with_caustics: bool
     :param point_source:
+    :type point_source: bool
     :param name_list: list of names of images
     :type name_list: list of strings, longer or equal the number of point sources
     :return:
@@ -632,9 +656,11 @@ def curved_arc_illustration(
     :param ax: Matplotlib axes instance
     :type ax: matplotlib.axes.Axes
     :param lensModel: LensModel() instance
+    :type lensModel: LensModel
     :param kwargs_lens: list of lens model keyword arguments (only those of CURVED_ARC
         considered
     :param with_centroid: plots the center of the curvature radius
+    :type with_centroid: bool
     :param stretch_scale: Relative scale of banana to the tangential and radial
     :type stretch_scale: float
         stretches (effectively intrinsic source size)
@@ -697,18 +723,24 @@ def plot_arc(
     :param radial_stretch: Stretch of intrinsic source in radial direction
     :type radial_stretch: float
     :param curvature: 1/curvature radius
+    :type curvature: float
     :param direction: Angle in radian
     :type direction: float
     :param center_x: center of source in image plane
+    :type center_x: float
     :param center_y: center of source in image plane
+    :type center_y: float
     :param with_centroid: plots the center of the curvature radius
+    :type with_centroid: bool
     :param stretch_scale: Relative scale of banana to the tangential and radial
     :type stretch_scale: float
         stretches (effectively intrinsic source size)
     :param linewidth: linewidth
+    :type linewidth: float
     :param color: color
     :type color: string in matplotlib color convention
     :param dtan_dtan: tangential eigenvector differential in tangential direction (not
+    :type dtan_dtan: float
         implemented yet as illustration)
     :return:
     """
@@ -786,12 +818,18 @@ def distortions(
     """Plot lensing distortion diagnostics.
 
     :param lensModel: LensModel instance
+    :type lensModel: LensModel
     :param kwargs_lens: lens model keyword argument list
     :param num_pix: number of pixels per axis
+    :type num_pix: int
     :param delta_pix: pixel scale per axis
+    :type delta_pix: float
     :param center_ra: center of the grid
+    :type center_ra: float
     :param center_dec: center of the grid
+    :type center_dec: float
     :param differential_scale: scale of the finite derivative length in units of angles
+    :type differential_scale: float
     :param smoothing_scale: Or None, Gaussian FWHM of a smoothing kernel applied
     :type smoothing_scale: float
         before plotting
@@ -885,9 +923,13 @@ def distortions(
         """Plot one diagnostic frame panel.
 
         :param ax: Matplotlib axes instance
+        :type ax: matplotlib.axes.Axes
         :param frame: 2d array
+        :type frame: numpy.ndarray
         :param vmin: minimum plotting scale
+        :type vmin: float
         :param vmax: maximum plotting scale
+        :type vmax: float
         :param title_text: To describe the label
         :type title_text: str
         :return:
@@ -997,13 +1039,20 @@ def stretch_plot(
     Jacobian eigenvalues.
 
     :param ax: Matplotlib axes instance
+    :type ax: matplotlib.axes.Axes
     :param lens_model: LensModel instance
+    :type lens_model: LensModel
     :param kwargs_lens: lens model keyword argument list
     :param plot_grid: pixelgrid instance at which to draw ellipses. 'None' uses default.
+    :type plot_grid: PixelGrid or None
     :param scale: scales sizes of drawn ellipses, bigger number=larger
+    :type scale: float
     :param ellipse_color: color of ellipses, defaults to black
+    :type ellipse_color: str
     :param max_stretch: optional max amount to stretch ellipses which sometimes diverge
+    :type max_stretch: float
     :param patch_kwargs: additional keyword arguments for creating ellipse patch
+    :type patch_kwargs: dict
     :return: matplotlib axis instance with figure
     """
 
@@ -1055,12 +1104,18 @@ def shear_plot(
     magnitude.
 
     :param ax: Matplotlib axes instance
+    :type ax: matplotlib.axes.Axes
     :param lens_model: LensModel instance
+    :type lens_model: LensModel
     :param kwargs_lens: lens model keyword argument list
     :param plot_grid: pixelgrid instance at which to draw pseudovectors
+    :type plot_grid: PixelGrid or None
     :param scale: scales sizes of drawn pseudovectors, smaller number=larger vectors
+    :type scale: float
     :param color: color of pseudovectors, defaults to black
+    :type color: str
     :param max_stretch: optional max amount to stretch ellipses which sometimes diverge
+    :type max_stretch: float
     :param kwargs_quiver: keyword arguments passed to :func:`matplotlib.pyplot.quiver`
     :return: matplotlib axis instance with figure
     """

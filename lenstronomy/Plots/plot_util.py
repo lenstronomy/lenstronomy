@@ -93,6 +93,21 @@ class TitleKwargs(TypedDict, total=False):
     """Y-position of the title in axes coordinates."""
 
 
+class CausticKwargs(TypedDict, total=False):
+    """Keyword arguments for caustic plotting."""
+
+    color: str
+    """Color of the caustic lines."""
+    linewidth: float
+    """Line width of the caustic lines."""
+    linestyle: str
+    """Line style of the caustic lines."""
+    alpha: float
+    """Transparency of the caustic lines."""
+    label: str
+    """Label for the caustic lines."""
+
+
 class MatshowKwargs(TypedDict, total=False):
     """Keyword arguments for matplotlib.pyplot.matshow."""
 

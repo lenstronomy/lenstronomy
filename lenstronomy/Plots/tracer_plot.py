@@ -674,7 +674,7 @@ class TracerPlot(object):
         font_size=None,
         plot_scale="log",
         point_source_position=True,
-        kwargs_caustic=None,
+        kwargs_caustic: Optional[plot_util.CausticKwargs] = None,
         kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
@@ -709,7 +709,9 @@ class TracerPlot(object):
         """
         if font_size is None:
             font_size = self._font_size
-        if kwargs_caustic is None:
+        if kwargs_caustic is not None:
+            kwargs_caustic = dict(kwargs_caustic)
+        else:
             kwargs_caustic = {}
         d_s = numPix * deltaPix_source
         source, coords_source = self.source(numPix, deltaPix_source, center=center)

@@ -837,7 +837,7 @@ class ModelBandPlot(ModelBand):
         font_size=None,
         plot_scale="log",
         point_source_position=True,
-        kwargs_caustic=None,
+        kwargs_caustic: Optional[plot_util.CausticKwargs] = None,
         kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
@@ -874,7 +874,9 @@ class ModelBandPlot(ModelBand):
         """
         if font_size is None:
             font_size = self._font_size
-        if kwargs_caustic is None:
+        if kwargs_caustic is not None:
+            kwargs_caustic = dict(kwargs_caustic)
+        else:
             kwargs_caustic = {}
         d_s = numPix * deltaPix_source
         source, coords_source = self.source(numPix, deltaPix_source, center=center)
@@ -926,14 +928,6 @@ class ModelBandPlot(ModelBand):
                 dec_caustic_list,
                 color=caustic_color,
                 points_only=self._caustic_points_only,
-            )
-            plot_util.plot_line_set(
-                ax,
-                coords_source,
-                ra_caustic_list,
-                dec_caustic_list,
-                color=caustic_color,
-                points_only=self._caustic_points_only,
                 **kwargs_caustic,
             )
 
@@ -974,6 +968,7 @@ class ModelBandPlot(ModelBand):
         with_caustics=False,
         font_size=None,
         point_source_position=True,
+        kwargs_caustic: Optional[plot_util.CausticKwargs] = None,
         kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
@@ -999,8 +994,7 @@ class ModelBandPlot(ModelBand):
         :param point_source_position: If True, plots a point at the position of
         :type point_source_position: bool
             the point source
-        :param colorbar_label_font_size: font size of the colorbar label; defaults to font_size when None
-        :param colorbar_tick_fontsize: font size of the colorbar tick labels; defaults to font_size when None
+        :param kwrags_caustic: keyword arguments for caustic plotting
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
@@ -1066,6 +1060,7 @@ class ModelBandPlot(ModelBand):
                 dec_caustic_list,
                 color="b",
                 points_only=self._caustic_points_only,
+                **kwrags_caustic,
             )
 
         if kwargs_scale_bar is not None:

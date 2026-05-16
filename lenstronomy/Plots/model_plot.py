@@ -522,7 +522,7 @@ class ModelPlot(object):
         font_size=None,
         plot_scale="log",
         point_source_position=True,
-        kwargs_caustic=None,
+        kwargs_caustic: Optional[plot_util.CausticKwargs] = None,
         kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},

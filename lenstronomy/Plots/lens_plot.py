@@ -114,7 +114,7 @@ def lens_model_plot(
     index=None,
     color_value="k",
     kwargs_convergence=None,
-    kwargs_caustics=None,
+    kwargs_caustics: Optional[plot_util.CausticKwargs] = None,
     kwargs_point_source=None,
 ):
     """Plots a lens model (convergence) and the critical curves and caustics.

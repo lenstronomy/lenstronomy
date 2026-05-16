@@ -7,9 +7,9 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 import sys
 from typing import TYPE_CHECKING
 
-if sys.version_info >= (3, 12):
+if sys.version_info >= (3, 12):  # pragma: no cover
     from typing import Unpack
-else:
+else:  # pragma: no cover
     try:  # pragma: no cover
         from typing_extensions import Unpack
     except ImportError:  # pragma: no cover

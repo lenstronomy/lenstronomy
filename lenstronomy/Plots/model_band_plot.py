@@ -153,6 +153,7 @@ class ModelBandPlot(ModelBand):
                     self._ra_crit_list,
                     self._dec_crit_list,
                 ) = self._lens_model_ext.critical_curve_tiling(
+                    self._kwargs_lens_partial,
                     compute_window=self._frame_size,
                     start_scale=self._delta_pix / 5.0,
                     max_order=10,

@@ -153,8 +153,6 @@ class ModelBandPlot(ModelBand):
                     self._ra_crit_list,
                     self._dec_crit_list,
                 ) = self._lens_model_ext.critical_curve_tiling(
-                ) = self._lens_model_ext.critical_curve_tiling(
-                    self._kwargs_lens_partial,
                     compute_window=self._frame_size,
                     start_scale=self._delta_pix / 5.0,
                     max_order=10,
@@ -164,7 +162,6 @@ class ModelBandPlot(ModelBand):
                 (
                     self._ra_caustic_list,
                     self._dec_caustic_list,
-                ) = self._lens_model.ray_shooting(
                 ) = self._lens_model.ray_shooting(
                     self._ra_crit_list, self._dec_crit_list, self._kwargs_lens_partial
                 )
@@ -388,7 +385,9 @@ class ModelBandPlot(ModelBand):
         kwargs_matshow.setdefault("cmap", "gist_heat")
 
         kappa_result = util.array2image(
-            self._lens_model.kappa(self._x_grid, self._y_grid, self._kwargs_lens_partial)
+            self._lens_model.kappa(
+                self._x_grid, self._y_grid, self._kwargs_lens_partial
+            )
         )
         im = ax.matshow(
             np.log10(kappa_result),
@@ -524,7 +523,6 @@ class ModelBandPlot(ModelBand):
             )
 
         kappa_full = util.array2image(
-            self._lens_model.kappa(x_grid, y_grid, self._kwargs_lens_partial)
             self._lens_model.kappa(x_grid, y_grid, self._kwargs_lens_partial)
         )
         kappa_macro = util.array2image(
@@ -796,10 +794,8 @@ class ModelBandPlot(ModelBand):
         """
         if image_orientation is True:
             Mpix2coord = self._coords.transform_pix2angle * delta_pix / self._delta_pix
-            m_pix2coord = self._coords.transform_pix2angle * delta_pix / self._delta_pix
             x_grid_source, y_grid_source = util.make_grid_transformed(
-                num_pix, Mpix2Angle=Mpix2coord
-                num_pix, Mpix2Angle=m_pix2coord
+                num_pix, matrix_pix2angle=Mpix2coord
             )
             ra_at_xy_0, dec_at_xy_0 = x_grid_source[0], y_grid_source[0]
         else:
@@ -827,7 +823,6 @@ class ModelBandPlot(ModelBand):
         y_grid_source += center_y
 
         coords_source = Coordinates(
-            transform_pix2angle=Mpix2coord,
             transform_pix2angle=m_pix2coord,
             ra_at_xy_0=ra_at_xy_0 + center_x,
             dec_at_xy_0=dec_at_xy_0 + center_y,
@@ -1145,7 +1140,6 @@ class ModelBandPlot(ModelBand):
         kwargs_matshow.setdefault("alpha", 0.5)
         mag_result = util.array2image(
             self._lens_model.magnification(
-            self._lens_model.magnification(
                 self._x_grid, self._y_grid, self._kwargs_lens_partial
             )
         )
@@ -1250,7 +1244,6 @@ class ModelBandPlot(ModelBand):
         if font_size is None:
             font_size = self._font_size
 
-        alpha1, alpha2 = self._lensModel.alpha(
         alpha1, alpha2 = self._lens_model.alpha(
             self._x_grid, self._y_grid, self._kwargs_lens_partial
         )

@@ -231,7 +231,7 @@ def make_grid(num_pix, delta_pix, subgrid_res=1, left_lower=False):
 
 
 @export
-def make_grid_transformed(num_pix, Mpix2Angle):
+def make_grid_transformed(num_pix, matrix_pix2angle):
     """Returns grid with linear transformation (delta_pix and rotation)
 
     :param num_pix: number of Pixels
@@ -239,7 +239,7 @@ def make_grid_transformed(num_pix, Mpix2Angle):
     :return: coordinate grid
     """
     x_grid, y_grid = make_grid(num_pix, delta_pix=1)
-    ra_grid, dec_grid = map_coord2pix(x_grid, y_grid, 0, 0, Mpix2Angle)
+    ra_grid, dec_grid = map_coord2pix(x_grid, y_grid, 0, 0, matrix_pix2angle)
     return ra_grid, dec_grid
 
 

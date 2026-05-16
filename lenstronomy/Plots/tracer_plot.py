@@ -624,7 +624,7 @@ class TracerPlot(object):
         if image_orientation is True:
             Mpix2coord = self._coords.transform_pix2angle * delta_pix / self._delta_pix
             x_grid_source, y_grid_source = util.make_grid_transformed(
-                num_pix, Mpix2Angle=Mpix2coord
+                num_pix, matrix_pix2angle=Mpix2coord
             )
             ra_at_xy_0, dec_at_xy_0 = x_grid_source[0], y_grid_source[0]
         else:

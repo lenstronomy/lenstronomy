@@ -241,7 +241,7 @@ class TestTracerPlot(object):
 
         tracer_plot.data_plot(ax=axes[0, 0])
         tracer_plot.model_plot(ax=axes[0, 1])
-                tracer_plot.normalized_residual_plot(ax=axes[0, 2], vmin=-6, vmax=6)
+        tracer_plot.normalized_residual_plot(ax=axes[0, 2], vmin=-6, vmax=6)
         tracer_plot.source_plot(
             ax=axes[1, 0],
             delta_pix_source=0.01,
@@ -255,7 +255,7 @@ class TestTracerPlot(object):
             plot_scale="log",
             with_caustics=True,
         )
-            tracer_plot.convergence_plot(ax=axes[1, 1], vmax=1)
+        tracer_plot.convergence_plot(ax=axes[1, 1], vmax=1)
         tracer_plot.magnification_plot(ax=axes[1, 2])
         f.tight_layout()
         f.subplots_adjust(

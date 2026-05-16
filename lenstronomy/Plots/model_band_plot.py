@@ -78,6 +78,8 @@ class ModelBandPlot(ModelBand):
 
         self._lensModel = self._bandmodel.LensModel
         self._lensModelExt = LensModelExtensions(self._lensModel)
+        self._lens_model = self._bandmodel.LensModel
+        self._lens_model_ext = LensModelExtensions(self._lens_model)
         log_model = np.log10(model)
         log_model[np.isnan(log_model)] = -5
         self._vmin_default = np.nanpercentile(log_model, 1)
@@ -129,6 +131,7 @@ class ModelBandPlot(ModelBand):
         """Compute and cache critical curves."""
         if not hasattr(self, "_ra_crit_list") or not hasattr(self, "_dec_crit_list"):
             # self._ra_crit_list, self._dec_crit_list, self._ra_caustic_list, self._dec_caustic_list = self._lensModelExt.critical_curve_caustics(
+            # self._ra_crit_list, self._dec_crit_list, self._ra_caustic_list, self._dec_caustic_list = self._lens_model_ext.critical_curve_caustics(
             #    self._kwargs_lens_partial, compute_window=self._frame_size, grid_scale=self._delta_pix / 5.,
             #    center_x=self._x_center, center_y=self._y_center)
             if self._fast_caustic:
@@ -138,6 +141,7 @@ class ModelBandPlot(ModelBand):
                     self._ra_caustic_list,
                     self._dec_caustic_list,
                 ) = self._lensModelExt.critical_curve_caustics(
+                ) = self._lens_model_ext.critical_curve_caustics(
                     self._kwargs_lens_partial,
                     compute_window=self._frame_size,
                     grid_scale=self._delta_pix,
@@ -152,6 +156,7 @@ class ModelBandPlot(ModelBand):
                     self._ra_crit_list,
                     self._dec_crit_list,
                 ) = self._lensModelExt.critical_curve_tiling(
+                ) = self._lens_model_ext.critical_curve_tiling(
                     self._kwargs_lens_partial,
                     compute_window=self._frame_size,
                     start_scale=self._delta_pix / 5.0,
@@ -163,6 +168,7 @@ class ModelBandPlot(ModelBand):
                     self._ra_caustic_list,
                     self._dec_caustic_list,
                 ) = self._lensModel.ray_shooting(
+                ) = self._lens_model.ray_shooting(
                     self._ra_crit_list, self._dec_crit_list, self._kwargs_lens_partial
                 )
         return self._ra_crit_list, self._dec_crit_list
@@ -386,6 +392,7 @@ class ModelBandPlot(ModelBand):
 
         kappa_result = util.array2image(
             self._lensModel.kappa(self._x_grid, self._y_grid, self._kwargs_lens_partial)
+            self._lens_model.kappa(self._x_grid, self._y_grid, self._kwargs_lens_partial)
         )
         im = ax.matshow(
             np.log10(kappa_result),
@@ -480,11 +487,15 @@ class ModelBandPlot(ModelBand):
         lens_model_list_macro = []
         profile_kwargs_list_macro = []
         multi_plane = self._lensModel.multi_plane
+        multi_plane = self._lens_model.multi_plane
         if multi_plane:
             lens_redshift_list = self._lensModel.redshift_list
+            lens_redshift_list = self._lens_model.redshift_list
             lens_redshift_list_macro = []
             z_source = self._lensModel.z_source
             cosmo = self._lensModel.cosmo
+            z_source = self._lens_model.z_source
+            cosmo = self._lens_model.cosmo
         else:
             lens_redshift_list = None
             lens_redshift_list_macro = None
@@ -492,10 +503,12 @@ class ModelBandPlot(ModelBand):
             cosmo = None
         for idx in index_macromodel:
             lens_model_list_macro.append(self._lensModel.lens_model_list[idx])
+            lens_model_list_macro.append(self._lens_model.lens_model_list[idx])
             kwargs_lens_macro.append(self._kwargs_lens_partial[idx])
             if multi_plane:
                 lens_redshift_list_macro.append(lens_redshift_list[idx])
             profile_kwargs_list_macro.append(self._lensModel.profile_kwargs_list[idx])
+            profile_kwargs_list_macro.append(self._lens_model.profile_kwargs_list[idx])
 
         lens_model_macro = LensModel(
             lens_model_list_macro,
@@ -516,6 +529,7 @@ class ModelBandPlot(ModelBand):
 
         kappa_full = util.array2image(
             self._lensModel.kappa(x_grid, y_grid, self._kwargs_lens_partial)
+            self._lens_model.kappa(x_grid, y_grid, self._kwargs_lens_partial)
         )
         kappa_macro = util.array2image(
             lens_model_macro.kappa(x_grid, y_grid, kwargs_lens_macro)
@@ -786,8 +800,10 @@ class ModelBandPlot(ModelBand):
         """
         if image_orientation is True:
             Mpix2coord = self._coords.transform_pix2angle * delta_pix / self._delta_pix
+            m_pix2coord = self._coords.transform_pix2angle * delta_pix / self._delta_pix
             x_grid_source, y_grid_source = util.make_grid_transformed(
                 num_pix, Mpix2Angle=Mpix2coord
+                num_pix, Mpix2Angle=m_pix2coord
             )
             ra_at_xy_0, dec_at_xy_0 = x_grid_source[0], y_grid_source[0]
         else:
@@ -800,6 +816,8 @@ class ModelBandPlot(ModelBand):
                 y_at_radec_0,
                 Mpix2coord,
                 Mcoord2pix,
+                m_pix2coord,
+                m_coord2pix,
             ) = util.make_grid_with_coordtransform(num_pix, delta_pix)
 
         center_x = 0
@@ -814,6 +832,7 @@ class ModelBandPlot(ModelBand):
 
         coords_source = Coordinates(
             transform_pix2angle=Mpix2coord,
+            transform_pix2angle=m_pix2coord,
             ra_at_xy_0=ra_at_xy_0 + center_x,
             dec_at_xy_0=dec_at_xy_0 + center_y,
         )
@@ -1130,6 +1149,7 @@ class ModelBandPlot(ModelBand):
         kwargs_matshow.setdefault("alpha", 0.5)
         mag_result = util.array2image(
             self._lensModel.magnification(
+            self._lens_model.magnification(
                 self._x_grid, self._y_grid, self._kwargs_lens_partial
             )
         )
@@ -1235,6 +1255,7 @@ class ModelBandPlot(ModelBand):
             font_size = self._font_size
 
         alpha1, alpha2 = self._lensModel.alpha(
+        alpha1, alpha2 = self._lens_model.alpha(
             self._x_grid, self._y_grid, self._kwargs_lens_partial
         )
         alpha1 = util.array2image(alpha1)

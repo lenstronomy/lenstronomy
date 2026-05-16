@@ -191,7 +191,7 @@ class ModelPlot(object):
         i = int(i)
         return self._band_plot_list[i]
 
-    def reconstruction_all_bands(self, **kwargs_matshow):
+    def reconstruction_all_bands(self, **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]"):
         """Plot data, model, and normalized residuals for all computed bands.
 
         :param kwargs_matshow: arguments of plotting
@@ -234,7 +234,7 @@ class ModelPlot(object):
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
         kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow: Unpack[plot_util.MatshowKwargs]
+        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]"
     ):
         """Illustrates data.
 
@@ -272,7 +272,7 @@ class ModelPlot(object):
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
         kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow: Unpack[plot_util.MatshowKwargs]
+        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]"
     ):
         """Illustrates model.
 
@@ -313,7 +313,7 @@ class ModelPlot(object):
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
         kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow
+        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]"
     ):
         """Illustrates lensing convergence in data frame.
 
@@ -356,7 +356,7 @@ class ModelPlot(object):
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
         kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow
+        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]"
     ):
         """Illustrates substructure in the lens system.
 
@@ -408,7 +408,7 @@ class ModelPlot(object):
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
         kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow
+        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]"
     ):
         """Illustrates normalized residuals between data and model fit.
 
@@ -444,7 +444,7 @@ class ModelPlot(object):
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
         kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow
+        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]"
     ):
         """Illustrates absolute residuals between data and model fit.
 
@@ -488,7 +488,7 @@ class ModelPlot(object):
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
         kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow
+        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]"
     ):
         """Illustrates reconstructed source (de-lensed de-convolved)
 
@@ -546,7 +546,7 @@ class ModelPlot(object):
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
         kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow
+        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]"
     ):
         """Illustrates surface brightness variance in the reconstruction in the source
         plane.
@@ -593,7 +593,7 @@ class ModelPlot(object):
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
         kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow
+        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]"
     ):
         """Illustrates lensing magnification in the field of view of the data frame.
 
@@ -635,7 +635,7 @@ class ModelPlot(object):
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
         kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow
+        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]"
     ):
         """Illustrates lensing deflections on the field of view of the data frame.
 
@@ -681,7 +681,7 @@ class ModelPlot(object):
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
         kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow
+        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]"
     ):
         """Illustrates decomposition of model components.
 
@@ -730,7 +730,7 @@ class ModelPlot(object):
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
         kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow
+        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]"
     ):
         """Subtracts individual model components from the data.
 
@@ -815,7 +815,7 @@ class ModelPlot(object):
         plot_band = self._select_band(band_index)
         return plot_band.plot_subtract_from_data_all()
 
-    def plot_extinction_map(self, band_index=0, ax=None, **kwargs_matshow):
+    def plot_extinction_map(self, band_index=0, ax=None, **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]"):
         """Plot differential extinction map for one band.
 
         :param band_index: index of band

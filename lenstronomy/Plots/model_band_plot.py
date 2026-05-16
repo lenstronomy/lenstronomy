@@ -172,7 +172,7 @@ class ModelBandPlot(ModelBand):
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
         kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow: Unpack[plot_util.MatshowKwargs],
+        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]"
     ):
         """Plot observed imaging data.
 
@@ -248,7 +248,7 @@ class ModelBandPlot(ModelBand):
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
         kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow: Unpack[plot_util.MatshowKwargs],
+        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
     ):
         """Plot reconstructed imaging model.
 
@@ -338,7 +338,7 @@ class ModelBandPlot(ModelBand):
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
         kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow,
+        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
     ):
         """Plot lensing convergence in the data frame.
 
@@ -417,7 +417,7 @@ class ModelBandPlot(ModelBand):
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
         kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow,
+        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
     ):
         """Plots the convergence of a full lens model minus the convergence from a few
         specified lens models to more clearly show the presence of substructure.
@@ -584,7 +584,7 @@ class ModelBandPlot(ModelBand):
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
         kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow,
+        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
     ):
         """Plot normalized residuals between data and model.
 
@@ -661,7 +661,7 @@ class ModelBandPlot(ModelBand):
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
         kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow,
+        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
     ):
         """Plot absolute residuals between data and model.
 
@@ -792,7 +792,7 @@ class ModelBandPlot(ModelBand):
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
         kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow,
+        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
     ):
         """Plot reconstructed source brightness.
 
@@ -935,7 +935,7 @@ class ModelBandPlot(ModelBand):
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
         kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow,
+        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
     ):
         """Plots the uncertainty in the surface brightness in the source from the linear
         inversion by taking the diagonal elements of the covariance matrix of the
@@ -1058,7 +1058,7 @@ class ModelBandPlot(ModelBand):
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
         kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow,
+        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
     ):
         """Plot magnification map in the data frame.
 
@@ -1156,7 +1156,7 @@ class ModelBandPlot(ModelBand):
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
         kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow,
+        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
     ):
         """Plot deflection-angle map in the data frame.
 
@@ -1277,7 +1277,7 @@ class ModelBandPlot(ModelBand):
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
         kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow,
+        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
     ):
         """Make a plot displaying all or a subset of light components.
 
@@ -1370,7 +1370,7 @@ class ModelBandPlot(ModelBand):
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
         kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow,
+        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
     ):
         """Plot data after subtracting selected model components.
 
@@ -1556,7 +1556,7 @@ class ModelBandPlot(ModelBand):
         )
         return f, axes
 
-    def plot_extinction_map(self, ax, **kwargs_matshow):
+    def plot_extinction_map(self, ax, **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]"):
         """Plot differential extinction map.
 
         :param ax: matplotlib axis instance

@@ -181,7 +181,7 @@ class TracerPlot(object):
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
         kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow,
+        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
     ):
         """Plot observed tracer data.
 
@@ -269,7 +269,7 @@ class TracerPlot(object):
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
         kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow,
+        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
     ):
         """Plot reconstructed tracer model.
 
@@ -366,7 +366,7 @@ class TracerPlot(object):
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
         kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow,
+        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
     ):
         """Plot lensing convergence in the tracer frame.
 
@@ -451,7 +451,7 @@ class TracerPlot(object):
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
         kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow,
+        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
     ):
         """Plot normalized residuals between data and model.
 
@@ -534,7 +534,7 @@ class TracerPlot(object):
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
         kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow,
+        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
     ):
         """Plot absolute residuals between data and model.
 
@@ -682,7 +682,7 @@ class TracerPlot(object):
         arrow_color_north="w",
         arrow_color_east="w",
         arrow_font_size=15,
-        **kwargs_matshow,
+        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
     ):
         """Plot reconstructed tracer source brightness.
 
@@ -827,7 +827,7 @@ class TracerPlot(object):
         arrow_color_north="k",
         arrow_color_east="k",
         arrow_font_size=15,
-        **kwargs_matshow,
+        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
     ):
         """Plot magnification map in the tracer frame.
 
@@ -949,7 +949,7 @@ class TracerPlot(object):
         arrow_color_north="k",
         arrow_color_east="k",
         arrow_font_size=15,
-        **kwargs_matshow,
+        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
     ):
         """Plot deflection-angle map in the tracer frame.
 

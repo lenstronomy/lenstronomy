@@ -230,12 +230,14 @@ class TracerPlot(object):
         ax.autoscale(False)
 
         if kwargs_scale_bar is not None:
+            kwargs_scale_bar = dict(kwargs_scale_bar)
             kwargs_scale_bar.setdefault("scale_size", 1.0)
             kwargs_scale_bar.setdefault("color", "w")
             kwargs_scale_bar.setdefault("font_size", 15)
             kwargs_scale_bar.setdefault("linewidth", 2)
             plot_util.show_scale_bar(ax, self._frame_size, **kwargs_scale_bar)
         if kwargs_title is not None:
+            kwargs_title = dict(kwargs_title)
             kwargs_title.setdefault("text", "Observed")
             kwargs_title.setdefault("color", "w")
             kwargs_title.setdefault("backgroundcolor", "k")
@@ -243,6 +245,7 @@ class TracerPlot(object):
             plot_util.show_title_text(ax, **kwargs_title)
 
         if kwargs_coordinate_arrows is not None:
+            kwargs_coordinate_arrows = dict(kwargs_coordinate_arrows)
             kwargs_coordinate_arrows.setdefault("font_size", font_size)
             kwargs_coordinate_arrows.setdefault("arrow_color_north", "w")
             kwargs_coordinate_arrows.setdefault("arrow_color_east", "w")
@@ -254,6 +257,7 @@ class TracerPlot(object):
             )
 
         if kwargs_colorbar is not None:
+            kwargs_colorbar = dict(kwargs_colorbar)
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.05)
             cb = plt.colorbar(im, cax=cax, orientation="vertical")
@@ -316,16 +320,19 @@ class TracerPlot(object):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
         if kwargs_scale_bar is not None:
+            kwargs_scale_bar = dict(kwargs_scale_bar)
             kwargs_scale_bar.setdefault("scale_size", 1.0)
             kwargs_scale_bar.setdefault("color", "w")
             kwargs_scale_bar.setdefault("font_size", 15)
             kwargs_scale_bar.setdefault("linewidth", 2)
             plot_util.show_scale_bar(ax, self._frame_size, **kwargs_scale_bar)
         if kwargs_title is not None:
+            kwargs_title = dict(kwargs_title)
             kwargs_title.setdefault("text", "Reconstructed")
             kwargs_title.setdefault("color", "w")
             plot_util.show_title_text(ax, **kwargs_title)
         if kwargs_coordinate_arrows is not None:
+            kwargs_coordinate_arrows = dict(kwargs_coordinate_arrows)
             kwargs_coordinate_arrows.setdefault("font_size", font_size)
             kwargs_coordinate_arrows.setdefault("arrow_color_north", "w")
             kwargs_coordinate_arrows.setdefault("arrow_color_east", "w")
@@ -336,6 +343,7 @@ class TracerPlot(object):
                 **kwargs_coordinate_arrows,
             )
         if kwargs_colorbar is not None:
+            kwargs_colorbar = dict(kwargs_colorbar)
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.05)
             cb = plt.colorbar(im, cax=cax)
@@ -408,12 +416,14 @@ class TracerPlot(object):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
         if kwargs_scale_bar is not None:
+            kwargs_scale_bar = dict(kwargs_scale_bar)
             kwargs_scale_bar.setdefault("scale_size", 1.0)
             kwargs_scale_bar.setdefault("color", "w")
             kwargs_scale_bar.setdefault("font_size", 15)
             kwargs_scale_bar.setdefault("linewidth", 2)
             plot_util.show_scale_bar(ax, self._frame_size, **kwargs_scale_bar)
         if kwargs_coordinate_arrows is not None:
+            kwargs_coordinate_arrows = dict(kwargs_coordinate_arrows)
             kwargs_coordinate_arrows.setdefault("font_size", font_size)
             kwargs_coordinate_arrows.setdefault("arrow_color_north", "w")
             kwargs_coordinate_arrows.setdefault("arrow_color_east", "w")
@@ -424,12 +434,14 @@ class TracerPlot(object):
                 **kwargs_coordinate_arrows,
             )
         if kwargs_title is not None:
+            kwargs_title = dict(kwargs_title)
             kwargs_title.setdefault("text", "Convergence")
             kwargs_title.setdefault("color", "w")
             kwargs_title.setdefault("backgroundcolor", "k")
             kwargs_title.setdefault("font_size", 15)
             plot_util.show_title_text(ax, **kwargs_title)
         if kwargs_colorbar is not None:
+            kwargs_colorbar = dict(kwargs_colorbar)
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.05)
             cb = plt.colorbar(im, cax=cax)
@@ -483,18 +495,21 @@ class TracerPlot(object):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
         if kwargs_scale_bar is not None:
+            kwargs_scale_bar = dict(kwargs_scale_bar)
             kwargs_scale_bar.setdefault("scale_size", 1.0)
             kwargs_scale_bar.setdefault("color", "k")
             kwargs_scale_bar.setdefault("font_size", 15)
             kwargs_scale_bar.setdefault("linewidth", 2)
             plot_util.show_scale_bar(ax, self._frame_size, **kwargs_scale_bar)
         if kwargs_title is not None:
+            kwargs_title = dict(kwargs_title)
             kwargs_title.setdefault("text", "Normalized Residuals")
             kwargs_title.setdefault("color", "k")
             kwargs_title.setdefault("backgroundcolor", "w")
             kwargs_title.setdefault("font_size", 15)
             plot_util.show_title_text(ax, **kwargs_title)
         if kwargs_coordinate_arrows is not None:
+            kwargs_coordinate_arrows = dict(kwargs_coordinate_arrows)
             kwargs_coordinate_arrows.setdefault("font_size", font_size)
             kwargs_coordinate_arrows.setdefault("arrow_color_north", "k")
             kwargs_coordinate_arrows.setdefault("arrow_color_east", "k")
@@ -505,6 +520,7 @@ class TracerPlot(object):
                 **kwargs_coordinate_arrows,
             )
         if kwargs_colorbar is not None:
+            kwargs_colorbar = dict(kwargs_colorbar)
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.05)
             cb = plt.colorbar(im, cax=cax)
@@ -560,18 +576,21 @@ class TracerPlot(object):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
         if kwargs_scale_bar is not None:
+            kwargs_scale_bar = dict(kwargs_scale_bar)
             kwargs_scale_bar.setdefault("scale_size", 1.0)
             kwargs_scale_bar.setdefault("color", "k")
             kwargs_scale_bar.setdefault("font_size", 15)
             kwargs_scale_bar.setdefault("linewidth", 2)
             plot_util.show_scale_bar(ax, self._frame_size, **kwargs_scale_bar)
         if kwargs_title is not None:
+            kwargs_title = dict(kwargs_title)
             kwargs_title.setdefault("text", "Residuals")
             kwargs_title.setdefault("color", "k")
             kwargs_title.setdefault("backgroundcolor", "w")
             kwargs_title.setdefault("font_size", 15)
             plot_util.show_title_text(ax, **kwargs_title)
         if kwargs_coordinate_arrows is not None:
+            kwargs_coordinate_arrows = dict(kwargs_coordinate_arrows)
             kwargs_coordinate_arrows.setdefault("font_size", font_size)
             kwargs_coordinate_arrows.setdefault("arrow_color_north", "k")
             kwargs_coordinate_arrows.setdefault("arrow_color_east", "k")
@@ -582,6 +601,7 @@ class TracerPlot(object):
                 **kwargs_coordinate_arrows,
             )
         if kwargs_colorbar is not None:
+            kwargs_colorbar = dict(kwargs_colorbar)
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.05)
             cb = plt.colorbar(im, cax=cax)
@@ -738,6 +758,7 @@ class TracerPlot(object):
                 **kwargs_caustic,
             )
         if kwargs_scale_bar is not None:
+            kwargs_scale_bar = dict(kwargs_scale_bar)
             kwargs_scale_bar.setdefault("scale_size", 0.1)
             kwargs_scale_bar.setdefault("color", "w")
             if kwargs_scale_bar.get("scale_size", 0) > 0:
@@ -747,6 +768,7 @@ class TracerPlot(object):
                     **kwargs_scale_bar,
                 )
         if kwargs_coordinate_arrows is not None:
+            kwargs_coordinate_arrows = dict(kwargs_coordinate_arrows)
             kwargs_coordinate_arrows.setdefault("font_size", font_size)
             kwargs_coordinate_arrows.setdefault("arrow_color_north", "w")
             kwargs_coordinate_arrows.setdefault("arrow_color_east", "w")
@@ -757,6 +779,7 @@ class TracerPlot(object):
                 **kwargs_coordinate_arrows,
             )
         if kwargs_title is not None:
+            kwargs_title = dict(kwargs_title)
             kwargs_title.setdefault("text", "Reconstructed source")
             kwargs_title.setdefault("flipped", False)
             kwargs_title.setdefault("font_size", font_size)
@@ -820,6 +843,7 @@ class TracerPlot(object):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
         if kwargs_scale_bar is not None:
+            kwargs_scale_bar = dict(kwargs_scale_bar)
             kwargs_scale_bar.setdefault("scale_size", 1.0)
             kwargs_scale_bar.setdefault("color", "k")
             if kwargs_scale_bar.get("scale_size", 0) > 0:
@@ -829,6 +853,7 @@ class TracerPlot(object):
                     **kwargs_scale_bar,
                 )
         if kwargs_coordinate_arrows is not None:
+            kwargs_coordinate_arrows = dict(kwargs_coordinate_arrows)
             kwargs_coordinate_arrows.setdefault("font_size", font_size)
             kwargs_coordinate_arrows.setdefault("arrow_color_north", "k")
             kwargs_coordinate_arrows.setdefault("arrow_color_east", "k")
@@ -839,6 +864,7 @@ class TracerPlot(object):
                 **kwargs_coordinate_arrows,
             )
         if kwargs_title is not None:
+            kwargs_title = dict(kwargs_title)
             kwargs_title.setdefault("text", "Magnification model")
             kwargs_title.setdefault("color", "k")
             kwargs_title.setdefault("backgroundcolor", "w")
@@ -926,6 +952,7 @@ class TracerPlot(object):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
         if kwargs_scale_bar is not None:
+            kwargs_scale_bar = dict(kwargs_scale_bar)
             kwargs_scale_bar.setdefault("scale_size", 1.0)
             kwargs_scale_bar.setdefault("color", "k")
             if kwargs_scale_bar.get("scale_size", 0) > 0:
@@ -935,6 +962,7 @@ class TracerPlot(object):
                     **kwargs_scale_bar,
                 )
         if kwargs_coordinate_arrows is not None:
+            kwargs_coordinate_arrows = dict(kwargs_coordinate_arrows)
             kwargs_coordinate_arrows.setdefault("font_size", font_size)
             kwargs_coordinate_arrows.setdefault("arrow_color_north", "k")
             kwargs_coordinate_arrows.setdefault("arrow_color_east", "k")
@@ -945,6 +973,7 @@ class TracerPlot(object):
                 **kwargs_coordinate_arrows,
             )
         if kwargs_title is not None:
+            kwargs_title = dict(kwargs_title)
             kwargs_title.setdefault("text", "Deflection model")
             kwargs_title.setdefault("color", "k")
             kwargs_title.setdefault("backgroundcolor", "w")

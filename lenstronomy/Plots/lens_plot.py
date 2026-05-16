@@ -269,6 +269,7 @@ def convergence_plot(
         **kwargs_matshow,
     )
     if kwargs_colorbar is not None:
+        kwargs_colorbar = dict(kwargs_colorbar)
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)

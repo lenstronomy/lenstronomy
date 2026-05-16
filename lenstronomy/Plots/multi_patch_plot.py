@@ -463,6 +463,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         ax.autoscale(False)
 
         if kwargs_scale_bar is not None:
+            kwargs_scale_bar = dict(kwargs_scale_bar)
             kwargs_scale_bar.setdefault("scale_size", 1.0)
             kwargs_scale_bar.setdefault("color", text_k)
             kwargs_scale_bar.setdefault("font_size", font_size)
@@ -470,6 +471,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
             plot_util.show_scale_bar(ax, frame_size, **kwargs_scale_bar)
 
         if kwargs_title is not None:
+            kwargs_title = dict(kwargs_title)
             kwargs_title.setdefault("text", "")
             kwargs_title.setdefault("color", text_k)
             kwargs_title.setdefault("backgroundcolor", bkg_k)
@@ -477,6 +479,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
             plot_util.show_title_text(ax, **kwargs_title)
 
         if kwargs_coordinate_arrows is not None:
+            kwargs_coordinate_arrows = dict(kwargs_coordinate_arrows)
             kwargs_coordinate_arrows.setdefault("font_size", font_size)
             kwargs_coordinate_arrows.setdefault("arrow_color_north", text_k)
             kwargs_coordinate_arrows.setdefault("arrow_color_east", text_k)
@@ -488,6 +491,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
             )
 
         if kwargs_colorbar is not None:
+            kwargs_colorbar = dict(kwargs_colorbar)
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.05)
             cb = plt.colorbar(im, cax=cax, orientation="vertical")

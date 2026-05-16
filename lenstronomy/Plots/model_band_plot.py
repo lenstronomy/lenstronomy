@@ -218,6 +218,7 @@ class ModelBandPlot(ModelBand):
         ax.autoscale(False)
 
         if kwargs_scale_bar is not None:
+            kwargs_scale_bar = dict(kwargs_scale_bar)
             kwargs_scale_bar.setdefault("scale_size", 1.0)
             plot_util.show_scale_bar(
                 ax,
@@ -225,6 +226,7 @@ class ModelBandPlot(ModelBand):
                 **kwargs_scale_bar,
             )
         if kwargs_title is not None:
+            kwargs_title = dict(kwargs_title)
             kwargs_title.setdefault("text", "Observed")
             plot_util.show_title_text(
                 ax,
@@ -232,6 +234,7 @@ class ModelBandPlot(ModelBand):
             )
 
         if kwargs_coordinate_arrows is not None:
+            kwargs_coordinate_arrows = dict(kwargs_coordinate_arrows)
             plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
@@ -240,6 +243,7 @@ class ModelBandPlot(ModelBand):
             )
 
         if kwargs_colorbar is not None:
+            kwargs_colorbar = dict(kwargs_colorbar)
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.05)
             cb = plt.colorbar(im, cax=cax, orientation="vertical")
@@ -301,6 +305,7 @@ class ModelBandPlot(ModelBand):
         ax.autoscale(False)
 
         if kwargs_scale_bar is not None:
+            kwargs_scale_bar = dict(kwargs_scale_bar)
             kwargs_scale_bar.setdefault("scale_size", 1.0)
             plot_util.show_scale_bar(
                 ax,
@@ -308,12 +313,14 @@ class ModelBandPlot(ModelBand):
                 **kwargs_scale_bar,
             )
         if kwargs_title is not None:
+            kwargs_title = dict(kwargs_title)
             kwargs_title.setdefault("text", "Reconstructed")
             plot_util.show_title_text(
                 ax,
                 **kwargs_title,
             )
         if kwargs_coordinate_arrows is not None:
+            kwargs_coordinate_arrows = dict(kwargs_coordinate_arrows)
             plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
@@ -321,6 +328,7 @@ class ModelBandPlot(ModelBand):
                 **kwargs_coordinate_arrows,
             )
         if kwargs_colorbar is not None:
+            kwargs_colorbar = dict(kwargs_colorbar)
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.05)
             cb = plt.colorbar(im, cax=cax)
@@ -392,6 +400,7 @@ class ModelBandPlot(ModelBand):
         ax.autoscale(False)
 
         if kwargs_scale_bar is not None:
+            kwargs_scale_bar = dict(kwargs_scale_bar)
             kwargs_scale_bar.setdefault("scale_size", 1.0)
             plot_util.show_scale_bar(
                 ax,
@@ -399,6 +408,7 @@ class ModelBandPlot(ModelBand):
                 **kwargs_scale_bar,
             )
         if kwargs_coordinate_arrows is not None:
+            kwargs_coordinate_arrows = dict(kwargs_coordinate_arrows)
             plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
@@ -406,12 +416,14 @@ class ModelBandPlot(ModelBand):
                 **kwargs_coordinate_arrows,
             )
         if kwargs_title is not None:
+            kwargs_title = dict(kwargs_title)
             kwargs_title.setdefault("text", "Convergence")
             plot_util.show_title_text(
                 ax,
                 **kwargs_title,
             )
         if kwargs_colorbar is not None:
+            kwargs_colorbar = dict(kwargs_colorbar)
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.05)
             cb = plt.colorbar(im, cax=cax)
@@ -531,6 +543,7 @@ class ModelBandPlot(ModelBand):
         ax.autoscale(False)
 
         if kwargs_scale_bar is not None:
+            kwargs_scale_bar = dict(kwargs_scale_bar)
             kwargs_scale_bar.setdefault("scale_size", 1.0)
             kwargs_scale_bar.setdefault("color", "k")
             plot_util.show_scale_bar(
@@ -539,6 +552,7 @@ class ModelBandPlot(ModelBand):
                 **kwargs_scale_bar,
             )
         if kwargs_coordinate_arrows is not None:
+            kwargs_coordinate_arrows = dict(kwargs_coordinate_arrows)
             kwargs_coordinate_arrows.setdefault("arrow_color_north", "k")
             kwargs_coordinate_arrows.setdefault("arrow_color_east", "k")
             plot_util.show_coordinate_arrows(
@@ -548,6 +562,7 @@ class ModelBandPlot(ModelBand):
                 **kwargs_coordinate_arrows,
             )
         if kwargs_title is not None:
+            kwargs_title = dict(kwargs_title)
             kwargs_title.setdefault("text", "Substructure convergence")
             kwargs_title.setdefault("color", "k")
             kwargs_title.setdefault("backgroundcolor", "w")
@@ -583,6 +598,7 @@ class ModelBandPlot(ModelBand):
         cb = None
 
         if kwargs_colorbar is not None:
+            kwargs_colorbar = dict(kwargs_colorbar)
             if subtract_mean:
                 label = r"$\kappa_{\rm{sub}} - \langle \kappa_{\rm{sub}} \rangle$"
             else:
@@ -639,6 +655,7 @@ class ModelBandPlot(ModelBand):
         ax.autoscale(False)
 
         if kwargs_scale_bar is not None:
+            kwargs_scale_bar = dict(kwargs_scale_bar)
             kwargs_scale_bar.setdefault("scale_size", 1.0)
             kwargs_scale_bar.setdefault("color", "k")
             plot_util.show_scale_bar(
@@ -647,6 +664,7 @@ class ModelBandPlot(ModelBand):
                 **kwargs_scale_bar,
             )
         if kwargs_title is not None:
+            kwargs_title = dict(kwargs_title)
             kwargs_title.setdefault("text", "Normalized Residuals")
             kwargs_title.setdefault("color", "k")
             kwargs_title.setdefault("backgroundcolor", "w")
@@ -655,6 +673,7 @@ class ModelBandPlot(ModelBand):
                 **kwargs_title,
             )
         if kwargs_coordinate_arrows is not None:
+            kwargs_coordinate_arrows = dict(kwargs_coordinate_arrows)
             kwargs_coordinate_arrows.setdefault("arrow_color_north", "k")
             kwargs_coordinate_arrows.setdefault("arrow_color_east", "k")
             plot_util.show_coordinate_arrows(
@@ -664,6 +683,7 @@ class ModelBandPlot(ModelBand):
                 **kwargs_coordinate_arrows,
             )
         if kwargs_colorbar is not None:
+            kwargs_colorbar = dict(kwargs_colorbar)
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.05)
             cb = plt.colorbar(im, cax=cax)
@@ -716,6 +736,7 @@ class ModelBandPlot(ModelBand):
         ax.autoscale(False)
 
         if kwargs_scale_bar is not None:
+            kwargs_scale_bar = dict(kwargs_scale_bar)
             kwargs_scale_bar.setdefault("scale_size", 1.0)
             kwargs_scale_bar.setdefault("color", "k")
             plot_util.show_scale_bar(
@@ -724,6 +745,7 @@ class ModelBandPlot(ModelBand):
                 **kwargs_scale_bar,
             )
         if kwargs_title is not None:
+            kwargs_title = dict(kwargs_title)
             kwargs_title.setdefault("text", "Residuals")
             kwargs_title.setdefault("color", "k")
             kwargs_title.setdefault("backgroundcolor", "w")
@@ -732,6 +754,7 @@ class ModelBandPlot(ModelBand):
                 **kwargs_title,
             )
         if kwargs_coordinate_arrows is not None:
+            kwargs_coordinate_arrows = dict(kwargs_coordinate_arrows)
             kwargs_coordinate_arrows.setdefault("arrow_color_north", "k")
             kwargs_coordinate_arrows.setdefault("arrow_color_east", "k")
             plot_util.show_coordinate_arrows(
@@ -741,6 +764,7 @@ class ModelBandPlot(ModelBand):
                 **kwargs_coordinate_arrows,
             )
         if kwargs_colorbar is not None:
+            kwargs_colorbar = dict(kwargs_colorbar)
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.05)
             cb = plt.colorbar(im, cax=cax)
@@ -882,6 +906,7 @@ class ModelBandPlot(ModelBand):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
         if kwargs_colorbar is not None:
+            kwargs_colorbar = dict(kwargs_colorbar)
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.05)
             cb = plt.colorbar(im, cax=cax)
@@ -913,10 +938,12 @@ class ModelBandPlot(ModelBand):
             )
 
         if kwargs_scale_bar is not None:
+            kwargs_scale_bar = dict(kwargs_scale_bar)
             kwargs_scale_bar.setdefault("scale_size", 0.1)
             if kwargs_scale_bar.get("scale_size", 1.0) > 0:
                 plot_util.show_scale_bar(ax, d_s, **kwargs_scale_bar)
         if kwargs_coordinate_arrows is not None:
+            kwargs_coordinate_arrows = dict(kwargs_coordinate_arrows)
             kwargs_coordinate_arrows.setdefault("font_size", font_size)
             kwargs_coordinate_arrows.setdefault("arrow_color_north", "w")
             kwargs_coordinate_arrows.setdefault("arrow_color_east", "w")
@@ -927,6 +954,7 @@ class ModelBandPlot(ModelBand):
                 **kwargs_coordinate_arrows,
             )
         if kwargs_title is not None:
+            kwargs_title = dict(kwargs_title)
             kwargs_title.setdefault("text", "Reconstructed source")
             kwargs_title.setdefault("flipped", False)
             kwargs_title.setdefault("font_size", font_size)
@@ -1019,6 +1047,7 @@ class ModelBandPlot(ModelBand):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
         if kwargs_colorbar is not None:
+            kwargs_colorbar = dict(kwargs_colorbar)
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.05)
             cb = plt.colorbar(im, cax=cax)
@@ -1040,6 +1069,7 @@ class ModelBandPlot(ModelBand):
             )
 
         if kwargs_scale_bar is not None:
+            kwargs_scale_bar = dict(kwargs_scale_bar)
             kwargs_scale_bar.setdefault("scale_size", 0.1)
             plot_util.show_scale_bar(
                 ax,
@@ -1047,6 +1077,7 @@ class ModelBandPlot(ModelBand):
                 **kwargs_scale_bar,
             )
         if kwargs_coordinate_arrows is not None:
+            kwargs_coordinate_arrows = dict(kwargs_coordinate_arrows)
             plot_util.show_coordinate_arrows(
                 ax,
                 d_s,
@@ -1054,6 +1085,7 @@ class ModelBandPlot(ModelBand):
                 **kwargs_coordinate_arrows,
             )
         if kwargs_title is not None:
+            kwargs_title = dict(kwargs_title)
             kwargs_title.setdefault("text", "Error map in source")
             plot_util.show_title_text(
                 ax,
@@ -1118,6 +1150,7 @@ class ModelBandPlot(ModelBand):
         ax.autoscale(False)
 
         if kwargs_scale_bar is not None:
+            kwargs_scale_bar = dict(kwargs_scale_bar)
             kwargs_scale_bar.setdefault("scale_size", 1.0)
             kwargs_scale_bar.setdefault("color", "k")
             plot_util.show_scale_bar(
@@ -1126,6 +1159,7 @@ class ModelBandPlot(ModelBand):
                 **kwargs_scale_bar,
             )
         if kwargs_coordinate_arrows is not None:
+            kwargs_coordinate_arrows = dict(kwargs_coordinate_arrows)
             kwargs_coordinate_arrows.setdefault("arrow_color_north", "k")
             kwargs_coordinate_arrows.setdefault("arrow_color_east", "k")
             plot_util.show_coordinate_arrows(
@@ -1135,6 +1169,7 @@ class ModelBandPlot(ModelBand):
                 **kwargs_coordinate_arrows,
             )
         if kwargs_title is not None:
+            kwargs_title = dict(kwargs_title)
             kwargs_title.setdefault("text", "Magnification model")
             kwargs_title.setdefault("color", "k")
             kwargs_title.setdefault("backgroundcolor", "w")
@@ -1143,6 +1178,7 @@ class ModelBandPlot(ModelBand):
                 **kwargs_title,
             )
         if kwargs_colorbar is not None:
+            kwargs_colorbar = dict(kwargs_colorbar)
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.05)
             cb = plt.colorbar(im, cax=cax)
@@ -1226,6 +1262,7 @@ class ModelBandPlot(ModelBand):
         ax.autoscale(False)
 
         if kwargs_scale_bar is not None:
+            kwargs_scale_bar = dict(kwargs_scale_bar)
             kwargs_scale_bar.setdefault("scale_size", 1.0)
             kwargs_scale_bar.setdefault("color", "k")
             plot_util.show_scale_bar(
@@ -1234,6 +1271,7 @@ class ModelBandPlot(ModelBand):
                 **kwargs_scale_bar,
             )
         if kwargs_coordinate_arrows is not None:
+            kwargs_coordinate_arrows = dict(kwargs_coordinate_arrows)
             kwargs_coordinate_arrows.setdefault("arrow_color_north", "k")
             kwargs_coordinate_arrows.setdefault("arrow_color_east", "k")
             plot_util.show_coordinate_arrows(
@@ -1243,6 +1281,7 @@ class ModelBandPlot(ModelBand):
                 **kwargs_coordinate_arrows,
             )
         if kwargs_title is not None:
+            kwargs_title = dict(kwargs_title)
             kwargs_title.setdefault("text", "Deflection model")
             kwargs_title.setdefault("color", "k")
             kwargs_title.setdefault("backgroundcolor", "w")
@@ -1251,6 +1290,7 @@ class ModelBandPlot(ModelBand):
                 **kwargs_title,
             )
         if kwargs_colorbar is not None:
+            kwargs_colorbar = dict(kwargs_colorbar)
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.05)
             cb = plt.colorbar(im, cax=cax)
@@ -1361,6 +1401,7 @@ class ModelBandPlot(ModelBand):
         ax.autoscale(False)
 
         if kwargs_scale_bar is not None:
+            kwargs_scale_bar = dict(kwargs_scale_bar)
             kwargs_scale_bar.setdefault("scale_size", 1.0)
             plot_util.show_scale_bar(
                 ax,
@@ -1368,12 +1409,14 @@ class ModelBandPlot(ModelBand):
                 **kwargs_scale_bar,
             )
         if kwargs_title is not None:
+            kwargs_title = dict(kwargs_title)
             kwargs_title.setdefault("text", "Reconstructed")
             plot_util.show_title_text(
                 ax,
                 **kwargs_title,
             )
         if kwargs_coordinate_arrows is not None:
+            kwargs_coordinate_arrows = dict(kwargs_coordinate_arrows)
             plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
@@ -1381,6 +1424,7 @@ class ModelBandPlot(ModelBand):
                 **kwargs_coordinate_arrows,
             )
         if kwargs_colorbar is not None:
+            kwargs_colorbar = dict(kwargs_colorbar)
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.05)
             cb = plt.colorbar(im, cax=cax)
@@ -1453,6 +1497,7 @@ class ModelBandPlot(ModelBand):
         ax.autoscale(False)
 
         if kwargs_scale_bar is not None:
+            kwargs_scale_bar = dict(kwargs_scale_bar)
             kwargs_scale_bar.setdefault("scale_size", 1.0)
             plot_util.show_scale_bar(
                 ax,
@@ -1460,12 +1505,14 @@ class ModelBandPlot(ModelBand):
                 **kwargs_scale_bar,
             )
         if kwargs_title is not None:
+            kwargs_title = dict(kwargs_title)
             kwargs_title.setdefault("text", "Subtracted")
             plot_util.show_title_text(
                 ax,
                 **kwargs_title,
             )
         if kwargs_coordinate_arrows is not None:
+            kwargs_coordinate_arrows = dict(kwargs_coordinate_arrows)
             plot_util.show_coordinate_arrows(
                 ax,
                 self._frame_size,
@@ -1473,6 +1520,7 @@ class ModelBandPlot(ModelBand):
                 **kwargs_coordinate_arrows,
             )
         if kwargs_colorbar is not None:
+            kwargs_colorbar = dict(kwargs_colorbar)
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.05)
             cb = plt.colorbar(im, cax=cax)

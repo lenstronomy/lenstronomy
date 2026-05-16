@@ -88,14 +88,6 @@ class ModelBandPlot(ModelBand):
         self._fast_caustic = fast_caustic
 
         self._font_size = 15
-        self._arrow_length = 0.05
-        self._arrowhead_size = 0.025
-        self._arrow_origin_x = None
-        self._arrow_origin_y = None
-        self._arrow_north_offset_x = None
-        self._arrow_north_offset_y = None
-        self._arrow_east_offset_x = None
-        self._arrow_east_offset_y = None
 
         self._image_extent = [
             -self._deltaPix / 2,
@@ -885,22 +877,6 @@ class ModelBandPlot(ModelBand):
                 plot_util.show_scale_bar(ax, d_s, **kwargs_scale_bar)
         if kwargs_coordinate_arrows is not None:
             kwargs_coordinate_arrows.setdefault("font_size", font_size)
-            kwargs_coordinate_arrows.setdefault("arrow_length", self._arrow_length)
-            kwargs_coordinate_arrows.setdefault("arrowhead_size", self._arrowhead_size)
-            kwargs_coordinate_arrows.setdefault("arrow_origin_x", self._arrow_origin_x)
-            kwargs_coordinate_arrows.setdefault("arrow_origin_y", self._arrow_origin_y)
-            kwargs_coordinate_arrows.setdefault(
-                "arrow_north_offset_x", self._arrow_north_offset_x
-            )
-            kwargs_coordinate_arrows.setdefault(
-                "arrow_north_offset_y", self._arrow_north_offset_y
-            )
-            kwargs_coordinate_arrows.setdefault(
-                "arrow_east_offset_x", self._arrow_east_offset_x
-            )
-            kwargs_coordinate_arrows.setdefault(
-                "arrow_east_offset_y", self._arrow_east_offset_y
-            )
             kwargs_coordinate_arrows.setdefault("arrow_color_north", "w")
             kwargs_coordinate_arrows.setdefault("arrow_color_east", "w")
             plot_util.show_coordinate_arrows(

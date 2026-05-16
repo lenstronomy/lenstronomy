@@ -73,8 +73,8 @@ class ModelBandPlot(ModelBand):
         self._lensModelExt = LensModelExtensions(self._lensModel)
         log_model = np.log10(model)
         log_model[np.isnan(log_model)] = -5
-        self._v_min_default = max(np.min(log_model), -5)
-        self._v_max_default = min(np.max(log_model), 10)
+        self._vmin_default = np.nanpercentile(log_model, 1)
+        self._vmax_default = np.nanpercentile(log_model, 99)
         self._coords = self._bandmodel.Data
         self._width_x, self._width_y = self._coords.width
         self._data = self._coords.data
@@ -182,8 +182,8 @@ class ModelBandPlot(ModelBand):
         if font_size is None:
             font_size = self._font_size
         kwargs_matshow.setdefault("cmap", "cubehelix")
-        kwargs_matshow.setdefault("vmin", self._v_min_default)
-        kwargs_matshow.setdefault("vmax", self._v_max_default)
+        kwargs_matshow.setdefault("vmin", self._vmin_default)
+        kwargs_matshow.setdefault("vmax", self._vmax_default)
         im = ax.matshow(
             np.log10(self._data),
             origin="lower",
@@ -261,8 +261,8 @@ class ModelBandPlot(ModelBand):
         if font_size is None:
             font_size = self._font_size
         kwargs_matshow.setdefault("cmap", "cubehelix")
-        kwargs_matshow.setdefault("vmin", self._v_min_default)
-        kwargs_matshow.setdefault("vmax", self._v_max_default)
+        kwargs_matshow.setdefault("vmin", self._vmin_default)
+        kwargs_matshow.setdefault("vmax", self._vmax_default)
         im = ax.matshow(
             np.log10(self._model),
             origin="lower",
@@ -824,8 +824,8 @@ class ModelBandPlot(ModelBand):
             )
         kwargs_matshow.setdefault("cmap", "cubehelix")
         if plot_scale == "log":
-            kwargs_matshow.setdefault("vmin", self._v_min_default)
-            kwargs_matshow.setdefault("vmax", self._v_max_default)
+            kwargs_matshow.setdefault("vmin", self._vmin_default)
+            kwargs_matshow.setdefault("vmax", self._vmax_default)
         im = ax.matshow(
             source_scale,
             origin="lower",
@@ -1289,8 +1289,8 @@ class ModelBandPlot(ModelBand):
         )
 
         kwargs_matshow.setdefault("cmap", "cubehelix")
-        kwargs_matshow.setdefault("vmin", self._v_min_default)
-        kwargs_matshow.setdefault("vmax", self._v_max_default)
+        kwargs_matshow.setdefault("vmin", self._vmin_default)
+        kwargs_matshow.setdefault("vmax", self._vmax_default)
         im = ax.matshow(
             np.log10(model),
             origin="lower",
@@ -1377,8 +1377,8 @@ class ModelBandPlot(ModelBand):
             point_source_add=point_source_add,
         )
         kwargs_matshow.setdefault("cmap", "cubehelix")
-        kwargs_matshow.setdefault("vmin", self._v_min_default)
-        kwargs_matshow.setdefault("vmax", self._v_max_default)
+        kwargs_matshow.setdefault("vmin", self._vmin_default)
+        kwargs_matshow.setdefault("vmax", self._vmax_default)
         im = ax.matshow(
             np.log10(self._data - model),
             origin="lower",

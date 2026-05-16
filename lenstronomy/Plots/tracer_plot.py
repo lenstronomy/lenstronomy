@@ -102,8 +102,8 @@ class TracerPlot(object):
         self.PointSource = self.tracerModel.PointSource
         log_model = np.log10(self._model)
         log_model[np.isnan(log_model)] = -5
-        self._v_min_default = max(np.min(log_model), -5)
-        self._v_max_default = min(np.max(log_model), 10)
+        self._vmin_default = np.nanpercentile(log_model, 1)
+        self._vmax_default = np.nanpercentile(log_model, 99)
 
         self._data = self._coords.data
         self._deltaPix = self._coords.pixel_width
@@ -199,14 +199,14 @@ class TracerPlot(object):
         if font_size is None:
             font_size = self._font_size
         kwargs_matshow.setdefault("cmap", "cubehelix")
-        v_min = kwargs_matshow.pop("vmin", self._v_min_default)
-        v_max = kwargs_matshow.pop("vmax", self._v_max_default)
+        vmin = kwargs_matshow.pop("vmin", self._vmin_default)
+        vmax = kwargs_matshow.pop("vmax", self._vmax_default)
         im = ax.matshow(
             np.log10(self._data),
             origin="lower",
             extent=[0, self._frame_size, 0, self._frame_size],
-            vmin=v_min,
-            vmax=v_max,
+            vmin=vmin,
+            vmax=vmax,
             **kwargs_matshow,
         )
 
@@ -282,13 +282,13 @@ class TracerPlot(object):
         if font_size is None:
             font_size = self._font_size
         kwargs_matshow.setdefault("cmap", "cubehelix")
-        v_min = kwargs_matshow.pop("vmin", self._v_min_default)
-        v_max = kwargs_matshow.pop("vmax", self._v_max_default)
+        vmin = kwargs_matshow.pop("vmin", self._vmin_default)
+        vmax = kwargs_matshow.pop("vmax", self._vmax_default)
         im = ax.matshow(
             np.log10(self._model),
             origin="lower",
-            vmin=v_min,
-            vmax=v_max,
+            vmin=vmin,
+            vmax=vmax,
             extent=[0, self._frame_size, 0, self._frame_size],
             **kwargs_matshow,
         )
@@ -677,8 +677,8 @@ class TracerPlot(object):
         """
         if font_size is None:
             font_size = self._font_size
-        v_min = kwargs_matshow.pop("vmin", self._v_min_default)
-        v_max = kwargs_matshow.pop("vmax", self._v_max_default)
+        v_min = kwargs_matshow.pop("vmin", self._vmin_default)
+        v_max = kwargs_matshow.pop("vmax", self._vmax_default)
         if kwargs_caustic is None:
             kwargs_caustic = {}
         d_s = numPix * deltaPix_source

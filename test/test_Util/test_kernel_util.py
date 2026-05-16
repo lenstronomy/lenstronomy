@@ -314,7 +314,7 @@ def test_subgrid_rebin():
     kernel = util.array2image(flux)
     print(np.shape(kernel))
     kernel = util.averaging(
-        kernel, numGrid=kernel_size * subgrid_res, numPix=kernel_size
+        kernel, numGrid=kernel_size * subgrid_res, num_pix=kernel_size
     )
     kernel = kernel_util.kernel_norm(kernel)
 
@@ -322,7 +322,7 @@ def test_subgrid_rebin():
         kernel, subgrid_res=subgrid_res, odd=True
     )
     kernel_pixel = util.averaging(
-        subgrid_kernel, numGrid=kernel_size * subgrid_res, numPix=kernel_size
+        subgrid_kernel, numGrid=kernel_size * subgrid_res, num_pix=kernel_size
     )
     kernel_pixel = kernel_util.kernel_norm(kernel_pixel)
     assert np.sum((kernel_pixel - kernel) ** 2) < 0.1
@@ -334,7 +334,7 @@ def test_mge_kernel():
     mg = MultiGaussian()
     fraction_list = [0.2, 0.7, 0.1]
     sigmas_scaled = [5, 10, 15]
-    x, y = util.make_grid(numPix=101, deltapix=1)
+    x, y = util.make_grid(num_pix=101, deltapix=1)
     kernel = mg.function(x, y, amp=fraction_list, sigma=sigmas_scaled)
     kernel = util.array2image(kernel)
 

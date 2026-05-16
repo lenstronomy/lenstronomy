@@ -138,15 +138,15 @@ class TestPixelatedSourceReconstruction(object):
                 ],
             ]
         )
-        self.numPix = self.image_data.shape[0]
+        self.num_pix = self.image_data.shape[0]
         self.deltaPix = 0.05
         self.background_rms = 1
         self.kwargs_data = sim_util.data_configure_simple(
-            self.numPix, self.deltaPix, np.inf, self.background_rms
+            self.num_pix, self.deltaPix, np.inf, self.background_rms
         )
         self.kwargs_data["image_data"] = self.image_data
-        self.kwargs_data["ra_at_xy_0"] = -self.numPix * self.deltaPix / 2
-        self.kwargs_data["dec_at_xy_0"] = -self.numPix * self.deltaPix / 2
+        self.kwargs_data["ra_at_xy_0"] = -self.num_pix * self.deltaPix / 2
+        self.kwargs_data["dec_at_xy_0"] = -self.num_pix * self.deltaPix / 2
         self.data_class = ImageData(**self.kwargs_data)
 
         self.lens_model_list = ["SIE"]
@@ -190,7 +190,7 @@ class TestPixelatedSourceReconstruction(object):
             self.lens_model_class,
             self.source_pixel_grid_class,
         )
-        assert psr._numPix == len(self.image_data)
+        assert psr._num_pix == len(self.image_data)
         assert np.allclose(psr._image_data, self.image_data)
         assert np.allclose(psr._noise_rms, self.background_rms)
         assert psr._primary_beam is None

@@ -20,14 +20,14 @@ class TestMultiPatchPlot(object):
         # data specifics
         sigma_bkg = 0.05  # background noise per pixel (Gaussian)
         exp_time = 100.0  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)
-        numPix = 100  # cutout pixel size
+        num_pix = 100  # cutout pixel size
         deltaPix = 0.05  # pixel size in arcsec (area per pixel = deltaPix**2)
         fwhm = 0.1  # full width half max of PSF (only valid when psf_type='gaussian')
         psf_type = "GAUSSIAN"  # 'GAUSSIAN', 'PIXEL', 'NONE'
 
         # generate the coordinate grid and image properties
         kwargs_data = sim_util.data_configure_simple(
-            numPix, deltaPix, exp_time, sigma_bkg
+            num_pix, deltaPix, exp_time, sigma_bkg
         )
         kwargs_data["exposure_time"] = exp_time * np.ones_like(
             kwargs_data["image_data"]
@@ -88,7 +88,7 @@ class TestMultiPatchPlot(object):
             kwargs_lens_true,
             numImages=4,
             min_distance=deltaPix,
-            search_window=numPix * deltaPix,
+            search_window=num_pix * deltaPix,
         )
         mag = lens_model_class.magnification(x_image, y_image, kwargs=kwargs_lens_true)
 

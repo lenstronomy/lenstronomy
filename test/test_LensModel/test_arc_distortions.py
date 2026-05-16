@@ -192,7 +192,7 @@ class TestArcDistortions(object):
     def test_radial_tangential_differentials(self):
         from lenstronomy.Util import util
 
-        x, y = util.make_grid(numPix=10, deltapix=1)
+        x, y = util.make_grid(num_pix=10, deltapix=1)
 
         lens_model_list = ["SIS"]
         center_x, center_y = 0, 0
@@ -279,7 +279,7 @@ class TestArcDistortions(object):
         npt.assert_almost_equal(gamma_arc, gamma, decimal=3)
         npt.assert_almost_equal(center_x_spp_arc, 0, decimal=3)
         npt.assert_almost_equal(center_y_spp_arc, 0, decimal=3)
-        x, y = util.make_grid(numPix=10, deltapix=1)
+        x, y = util.make_grid(num_pix=10, deltapix=1)
         alpha_x, alpha_y = lens.alpha(x, y, kwargs_lens)
         alpha0_x, alpha0_y = lens.alpha(x_0, y_0, kwargs_lens)
         alpha_x_arc, alpha_y_arc = arc.alpha(x, y, [kwargs_arc])
@@ -397,7 +397,7 @@ class TestArcDistortions(object):
         npt.assert_almost_equal(e1_sie - e1, 0, decimal=1)
         npt.assert_almost_equal(e2_sie, e2, decimal=3)
 
-        x, y = util.make_grid(numPix=100, deltapix=0.1)
+        x, y = util.make_grid(num_pix=100, deltapix=0.1)
         kappa = lens.kappa(x, y, kwargs_lens)
         kappa_arc = arc.kappa(x, y, [kwargs_arc])
 
@@ -438,7 +438,7 @@ class TestArcDistortions(object):
             print(kwargs_arc_i)
             direction = kwargs_arc_i["direction"]
             print(np.cos(direction), np.sin(direction))
-            x, y = util.make_grid(numPix=5, deltapix=0.01)
+            x, y = util.make_grid(num_pix=5, deltapix=0.01)
             x = x0
             y = y0
             gamma1_arc, gamma2_arc = arc_model.gamma(x, y, kwargs_arc)

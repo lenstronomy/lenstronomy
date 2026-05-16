@@ -99,7 +99,7 @@ def lens_model_plot(
     ax,
     lens_model,
     kwargs_lens,
-    numPix=500,
+    num_pix=500,
     deltaPix=0.01,
     sourcePos_x=0,
     sourcePos_y=0,
@@ -124,9 +124,9 @@ def lens_model_plot(
     :param lens_model: LensModel() class instance
     :type lens_model: LensModel
     :param kwargs_lens: lens model keyword argument list
-    :param numPix: total number of pixels (for convergence map)
-    :type numPix: int
-    :param deltaPix: width of pixel (total frame size is deltaPix x numPix)
+    :param num_pix: total number of pixels (for convergence map)
+    :type num_pix: int
+    :param deltaPix: width of pixel (total frame size is deltaPix x num_pix)
     :type deltaPix: float
     :param sourcePos_x: X-position of point source (image positions computed by
     :type sourcePos_x: float
@@ -166,7 +166,7 @@ def lens_model_plot(
     :return: matplotlib axis instance with plot
     """
     kwargs_data = sim_util.data_configure_simple(
-        numPix,
+        num_pix,
         deltaPix,
         center_ra=coord_center_ra,
         center_dec=coord_center_dec,
@@ -174,7 +174,7 @@ def lens_model_plot(
     )
     data = ImageData(**kwargs_data)
     _coords = data
-    _frame_size = numPix * deltaPix
+    _frame_size = num_pix * deltaPix
 
     ra0, dec0 = data.radec_at_xy_0
     # shift half a pixel such that pixel is in the center
@@ -516,7 +516,7 @@ def arrival_time_surface(
     ax,
     lensModel,
     kwargs_lens,
-    numPix=500,
+    num_pix=500,
     deltaPix=0.01,
     sourcePos_x=0,
     sourcePos_y=0,
@@ -535,8 +535,8 @@ def arrival_time_surface(
     :param lensModel: LensModel() class instance
     :type lensModel: LensModel
     :param kwargs_lens: lens model keyword argument list
-    :param numPix:
-    :type numPix: int
+    :param num_pix:
+    :type num_pix: int
     :param deltaPix:
     :type deltaPix: float
     :param sourcePos_x:
@@ -556,11 +556,11 @@ def arrival_time_surface(
     :type name_list: list of strings, longer or equal the number of point sources
     :return:
     """
-    kwargs_data = sim_util.data_configure_simple(numPix, deltaPix)
+    kwargs_data = sim_util.data_configure_simple(num_pix, deltaPix)
     data = ImageData(**kwargs_data)
     ra0, dec0 = data.radec_at_xy_0
     origin = [ra0, dec0]
-    _frame_size = numPix * deltaPix
+    _frame_size = num_pix * deltaPix
     _coords = data
     x_grid, y_grid = data.pixel_coordinates
     lensModelExt = LensModelExtensions(lensModel)
@@ -600,7 +600,7 @@ def arrival_time_surface(
             sourcePos_y,
             kwargs_lens,
             min_distance=deltaPix,
-            search_window=deltaPix * numPix,
+            search_window=deltaPix * num_pix,
         )
 
         fermat_pot_images = lensModel.fermat_potential(theta_x, theta_y, kwargs_lens)

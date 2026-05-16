@@ -289,18 +289,18 @@ class ShapeletSet(object):
         return A
 
     def shapelet_basis_2d(
-        self, num_order, beta, numPix, deltaPix=1, center_x=0, center_y=0
+        self, num_order, beta, num_pix, deltaPix=1, center_x=0, center_y=0
     ):
         """
 
         :param num_order: max shapelet order
         :param beta: shapelet scale
-        :param numPix: number of pixel of the grid
+        :param num_pix: number of pixel of the grid
         :return: list of shapelets drawn on pixel grid, centered.
         """
         num_param = int((num_order + 2) * (num_order + 1) / 2)
         kernel_list = []
-        x_grid, y_grid = util.make_grid(numPix, deltapix=deltaPix, subgrid_res=1)
+        x_grid, y_grid = util.make_grid(num_pix, deltapix=deltaPix, subgrid_res=1)
         n1 = 0
         n2 = 0
         H_x, H_y = self.shapelets.pre_calc(

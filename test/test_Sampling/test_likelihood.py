@@ -24,7 +24,7 @@ class TestLikelihood(object):
         # data specifics
         sigma_bkg = 0.05  # background noise per pixel
         exp_time = 100  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)
-        numPix = 50  # cutout pixel size
+        num_pix = 50  # cutout pixel size
         deltaPix = 0.1  # pixel size in arcsec (area per pixel = deltaPix**2)
         fwhm = 0.5  # full width half max of PSF
 
@@ -38,7 +38,7 @@ class TestLikelihood(object):
 
         # PSF specification
         kwargs_band = sim_util.data_configure_simple(
-            numPix, deltaPix, exp_time, sigma_bkg
+            num_pix, deltaPix, exp_time, sigma_bkg
         )
         data_class = ImageData(**kwargs_band)
         kwargs_psf = {"psf_type": "GAUSSIAN", "fwhm": fwhm, "pixel_size": deltaPix}
@@ -180,7 +180,7 @@ class TestLikelihood(object):
         )
         self.kwargs_band = kwargs_band
         self.kwargs_psf = kwargs_psf
-        self.numPix = numPix
+        self.num_pix = num_pix
 
     def test_logL(self):
         args = self.param_class.kwargs2args(
@@ -284,7 +284,7 @@ class TestLikelihood(object):
 
             # Now add kinematic likelihood
             # for simplicity, set kin image data to same as light data
-            numPix = 50  # cutout pixel size
+            num_pix = 50  # cutout pixel size
             deltaPix = 0.1  # pixel size in arcsec (area per pixel = deltaPix**2)
 
             binmap = np.zeros_like(
@@ -292,7 +292,7 @@ class TestLikelihood(object):
             )  # one single bin across whole image
             binned_dummy_data = np.array([200])
             delta_pix_kin = deltaPix
-            npix_kin = numPix
+            npix_kin = num_pix
 
             kwargs_kin = {
                 "bin_data": binned_dummy_data,
@@ -359,7 +359,7 @@ class TestLikelihood(object):
 
     def test_pixelbased_modelling(self):
         ss_source = 2
-        numPix_source = self.numPix * ss_source
+        num_pix_source = self.num_pix * ss_source
         n_scales = 3
         kwargs_pixelbased = {
             "source_interpolation": "nearest",
@@ -391,7 +391,7 @@ class TestLikelihood(object):
         kwargs_fixed_source = [
             {
                 "n_scales": n_scales,
-                "n_pixels": numPix_source**2,
+                "n_pixels": num_pix_source**2,
                 "scale": 1,
                 "center_x": 0,
                 "center_y": 0,
@@ -400,7 +400,7 @@ class TestLikelihood(object):
         kwargs_fixed_lens_light = [
             {
                 "n_scales": n_scales,
-                "n_pixels": self.numPix**2,
+                "n_pixels": self.num_pix**2,
                 "scale": 1,
                 "center_x": 0,
                 "center_y": 0,
@@ -421,8 +421,8 @@ class TestLikelihood(object):
             **kwargs_likelihood,
         )
 
-        kwargs_source = [{"amp": np.ones(n_scales * numPix_source**2)}]
-        kwargs_lens_light = [{"amp": np.ones(n_scales * self.numPix**2)}]
+        kwargs_source = [{"amp": np.ones(n_scales * num_pix_source**2)}]
+        kwargs_lens_light = [{"amp": np.ones(n_scales * self.num_pix**2)}]
         kwargs_special = {"delta_x_source_grid": 0, "delta_y_source_grid": 0}
         args = param_class.kwargs2args(
             kwargs_lens=self.kwargs_lens,

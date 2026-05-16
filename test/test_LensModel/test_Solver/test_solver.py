@@ -26,7 +26,7 @@ class TestSolver4Point(object):
         sourcePos_x = 0.1
         sourcePos_y = -0.1
         deltapix = 0.05
-        numPix = 150
+        num_pix = 150
         gamma = 1.9
         phi_G, q = 0.5, 0.8
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
@@ -47,7 +47,7 @@ class TestSolver4Point(object):
             kwargs_lens,
             numImages=4,
             min_distance=deltapix,
-            search_window=numPix * deltapix,
+            search_window=num_pix * deltapix,
         )
         kwargs_lens_init = [
             {

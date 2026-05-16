@@ -10,7 +10,7 @@ export, __all__ = exporter()
 
 @export
 def data_configure_simple(
-    numPix,
+    num_pix,
     deltaPix,
     exposure_time=None,
     background_rms=None,
@@ -20,7 +20,7 @@ def data_configure_simple(
 ):
     """Configures the data keyword arguments with a coordinate grid centered at zero.
 
-    :param numPix: number of pixel (numPix x numPix)
+    :param num_pix: number of pixel (num_pix x num_pix)
     :param deltaPix: pixel size (in angular units)
     :param exposure_time: exposure time
     :param background_rms: background noise (Gaussian sigma)
@@ -31,7 +31,7 @@ def data_configure_simple(
         lenstronomy
     """
 
-    # 1d list of coordinates (x,y) of a numPix x numPix square grid, centered to zero
+    # 1d list of coordinates (x,y) of a num_pix x num_pix square grid, centered to zero
     (
         x_grid,
         y_grid,
@@ -42,7 +42,7 @@ def data_configure_simple(
         Mpix2coord,
         Mcoord2pix,
     ) = util.make_grid_with_coordtransform(
-        numPix=numPix,
+        num_pix=num_pix,
         deltapix=deltaPix,
         center_ra=center_ra,
         center_dec=center_dec,
@@ -50,7 +50,7 @@ def data_configure_simple(
         inverse=inverse,
     )
     # mask (1= model this pixel, 0= leave blanck)
-    # exposure_map = np.ones((numPix, numPix)) * exposure_time  # individual exposure time/weight per pixel
+    # exposure_map = np.ones((num_pix, num_pix)) * exposure_time  # individual exposure time/weight per pixel
 
     kwargs_data = {
         "background_rms": background_rms,
@@ -58,7 +58,7 @@ def data_configure_simple(
         "ra_at_xy_0": ra_at_xy_0,
         "dec_at_xy_0": dec_at_xy_0,
         "transform_pix2angle": Mpix2coord,
-        "image_data": np.zeros((numPix, numPix)),
+        "image_data": np.zeros((num_pix, num_pix)),
     }
     return kwargs_data
 

@@ -245,7 +245,7 @@ class LensModelExtensions(object):
 
         quasar = Gaussian()
         x_grid, y_grid = util.make_grid(
-            numPix=grid_number, deltapix=deltaPix, subgrid_res=1
+            num_pix=grid_number, deltapix=deltaPix, subgrid_res=1
         )
 
         if polar_grid is True:
@@ -308,7 +308,7 @@ class LensModelExtensions(object):
                 "shape %s not valid for finite magnification computation!" % shape
             )
         x_grid, y_grid = util.make_grid(
-            numPix=grid_number, deltapix=deltaPix, subgrid_res=1
+            num_pix=grid_number, deltapix=deltaPix, subgrid_res=1
         )
         center_x, center_y = self._lensModel.ray_shooting(x_pos, y_pos, kwargs_lens)
         betax, betay = self._lensModel.ray_shooting(
@@ -337,9 +337,9 @@ class LensModelExtensions(object):
         :param center_y: float, center of the window to compute critical curves and caustics
         :return: list of positions representing coordinates of the critical curve (in RA and DEC)
         """
-        numPix = int(compute_window / start_scale)
+        num_pix = int(compute_window / start_scale)
         x_grid_init, y_grid_init = util.make_grid(
-            numPix, deltapix=start_scale, subgrid_res=1
+            num_pix, deltapix=start_scale, subgrid_res=1
         )
         x_grid_init += center_x
         y_grid_init += center_y
@@ -352,8 +352,8 @@ class LensModelExtensions(object):
         ra_crit_list = []
         dec_crit_list = []
         # iterate through original triangles and return ra_crit, dec_crit list
-        for i in range(numPix - 1):
-            for j in range(numPix - 1):
+        for i in range(num_pix - 1):
+            for j in range(num_pix - 1):
                 edge1 = [x_grid_init[i, j], y_grid_init[i, j], mag_init[i, j]]
                 edge2 = [
                     x_grid_init[i + 1, j + 1],

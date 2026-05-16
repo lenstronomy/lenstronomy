@@ -774,10 +774,10 @@ class ModelBandPlot(ModelBand):
             )
         return ax
 
-    def source(self, numPix, deltaPix, center=None, image_orientation=True):
+    def source(self, num_pix, deltaPix, center=None, image_orientation=True):
         """Compute source surface brightness on a source grid.
 
-        :param numPix: number of pixels per axes
+        :param num_pix: number of pixels per axes
         :param deltaPix: pixel size
         :param image_orientation: If True, uses frame in orientation of the image,
         :type image_orientation: bool otherwise in RA-DEC coordinates
@@ -787,7 +787,7 @@ class ModelBandPlot(ModelBand):
         if image_orientation is True:
             Mpix2coord = self._coords.transform_pix2angle * deltaPix / self._deltaPix
             x_grid_source, y_grid_source = util.make_grid_transformed(
-                numPix, Mpix2Angle=Mpix2coord
+                num_pix, Mpix2Angle=Mpix2coord
             )
             ra_at_xy_0, dec_at_xy_0 = x_grid_source[0], y_grid_source[0]
         else:
@@ -800,7 +800,7 @@ class ModelBandPlot(ModelBand):
                 y_at_radec_0,
                 Mpix2coord,
                 Mcoord2pix,
-            ) = util.make_grid_with_coordtransform(numPix, deltaPix)
+            ) = util.make_grid_with_coordtransform(num_pix, deltaPix)
 
         center_x = 0
         center_y = 0
@@ -827,7 +827,7 @@ class ModelBandPlot(ModelBand):
     def source_plot(
         self,
         ax,
-        numPix,
+        num_pix,
         deltaPix_source,
         center=None,
         with_caustics=False,
@@ -846,7 +846,7 @@ class ModelBandPlot(ModelBand):
 
         :param ax: Matplotlib axes instance
         :type ax: matplotlib.axes.Axes
-        :param numPix: number of pixels in plot per axis
+        :param num_pix: number of pixels in plot per axis
         :param deltaPix_source: pixel spacing in the source resolution illustrated in
             plot
         :param center: [center_x, center_y], if specified, uses this as the center
@@ -876,8 +876,8 @@ class ModelBandPlot(ModelBand):
             kwargs_caustic = dict(kwargs_caustic)
         else:
             kwargs_caustic = {}
-        d_s = numPix * deltaPix_source
-        source, coords_source = self.source(numPix, deltaPix_source, center=center)
+        d_s = num_pix * deltaPix_source
+        source, coords_source = self.source(num_pix, deltaPix_source, center=center)
         if plot_scale == "log":
             source_scale = np.log10(source)
         elif plot_scale == "linear":
@@ -961,7 +961,7 @@ class ModelBandPlot(ModelBand):
     def error_map_source_plot(
         self,
         ax,
-        numPix,
+        num_pix,
         deltaPix_source,
         with_caustics=False,
         font_size=None,
@@ -982,7 +982,7 @@ class ModelBandPlot(ModelBand):
 
         :param ax: Matplotlib axes instance
         :type ax: matplotlib.axes.Axes
-        :param numPix: number of pixels in plot per axis
+        :param num_pix: number of pixels in plot per axis
         :param deltaPix_source: pixel spacing in the source resolution illustrated in
             plot
         :param with_caustics: plot the caustics on top of the source reconstruction (may
@@ -1003,7 +1003,7 @@ class ModelBandPlot(ModelBand):
         if font_size is None:
             font_size = self._font_size
         x_grid_source, y_grid_source = util.make_grid_transformed(
-            numPix, self._coords.transform_pix2angle * deltaPix_source / self._deltaPix
+            num_pix, self._coords.transform_pix2angle * deltaPix_source / self._deltaPix
         )
         x_center = self._kwargs_source_partial[0]["center_x"]
         y_center = self._kwargs_source_partial[0]["center_y"]
@@ -1022,7 +1022,7 @@ class ModelBandPlot(ModelBand):
             self._cov_param,
         )
         error_map_source = util.array2image(error_map_source)
-        d_s = numPix * deltaPix_source
+        d_s = num_pix * deltaPix_source
         kwargs_matshow.setdefault("cmap", "CMRmap")
         im = ax.matshow(
             error_map_source,
@@ -1536,7 +1536,10 @@ class ModelBandPlot(ModelBand):
         self.model_plot(ax=axes[0, 1], image_names=True)
         self.normalized_residual_plot(ax=axes[0, 2])
         self.source_plot(
-            ax=axes[1, 0], deltaPix_source=0.01, numPix=100, with_caustics=with_caustics
+            ax=axes[1, 0],
+            deltaPix_source=0.01,
+            num_pix=100,
+            with_caustics=with_caustics,
         )
         self.convergence_plot(ax=axes[1, 1])
         self.magnification_plot(ax=axes[1, 2])

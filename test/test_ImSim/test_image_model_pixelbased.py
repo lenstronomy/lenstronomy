@@ -30,14 +30,14 @@ class TestImageModel(object):
         # data specifics
         sigma_bkg = 0.05  # background noise per pixel
         exp_time = 100  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)
-        numPix = 100  # cutout pixel size
+        num_pix = 100  # cutout pixel size
         deltaPix = 0.05  # pixel size in arcsec (area per pixel = deltaPix**2)
         fwhm = 0.5  # full width half max of PSF
 
         # PSF specification
 
         kwargs_data = sim_util.data_configure_simple(
-            numPix, deltaPix, exp_time, sigma_bkg, inverse=True
+            num_pix, deltaPix, exp_time, sigma_bkg, inverse=True
         )
         data_class = ImageData(**kwargs_data)
         kwargs_psf = {
@@ -141,7 +141,7 @@ class TestImageModel(object):
             {
                 "amp": source_map_starlets,
                 "n_scales": n_scales,
-                "n_pixels": numPix,
+                "n_pixels": num_pix,
                 "scale": deltaPix,
                 "center_x": 0,
                 "center_y": 0,
@@ -157,7 +157,7 @@ class TestImageModel(object):
             {
                 "amp": lens_light_starlets,
                 "n_scales": n_scales,
-                "n_pixels": numPix,
+                "n_pixels": num_pix,
                 "scale": deltaPix,
                 "center_x": 0,
                 "center_y": 0,
@@ -303,7 +303,7 @@ class TestImageModel(object):
 
     def test_update_data(self):
         kwargs_data = sim_util.data_configure_simple(
-            numPix=10, deltaPix=1, exposure_time=1, background_rms=1, inverse=True
+            num_pix=10, deltaPix=1, exposure_time=1, background_rms=1, inverse=True
         )
         data_class = ImageData(**kwargs_data)
         self.imageModel.update_data(data_class)
@@ -311,7 +311,7 @@ class TestImageModel(object):
 
     def test_create_empty(self):
         kwargs_data = sim_util.data_configure_simple(
-            numPix=10, deltaPix=1, exposure_time=1, background_rms=1
+            num_pix=10, deltaPix=1, exposure_time=1, background_rms=1
         )
         data_class = ImageData(**kwargs_data)
         imageModel_empty = ImageModel(data_class, PSF())
@@ -322,7 +322,7 @@ class TestImageModel(object):
 
     def test_extinction_map(self):
         kwargs_data = sim_util.data_configure_simple(
-            numPix=10, deltaPix=1, exposure_time=1, background_rms=1
+            num_pix=10, deltaPix=1, exposure_time=1, background_rms=1
         )
         data_class = ImageData(**kwargs_data)
         extinction_class = DifferentialExtinction(
@@ -356,14 +356,14 @@ class TestRaise(unittest.TestCase):
         # data specifics
         sigma_bkg = 0.05  # background noise per pixel
         exp_time = 100  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)
-        numPix = 100  # cutout pixel size
+        num_pix = 100  # cutout pixel size
         deltaPix = 0.05  # pixel size in arcsec (area per pixel = deltaPix**2)
         fwhm = 0.5  # full width half max of PSF
 
         # PSF specification
 
         kwargs_data = sim_util.data_configure_simple(
-            numPix, deltaPix, exp_time, sigma_bkg, inverse=True
+            num_pix, deltaPix, exp_time, sigma_bkg, inverse=True
         )
         self.data_class = ImageData(**kwargs_data)
         kwargs_psf = {
@@ -467,7 +467,7 @@ class TestRaise(unittest.TestCase):
             {
                 "amp": source_map_starlets,
                 "n_scales": n_scales,
-                "n_pixels": numPix,
+                "n_pixels": num_pix,
                 "scale": deltaPix,
                 "center_x": 0,
                 "center_y": 0,
@@ -483,7 +483,7 @@ class TestRaise(unittest.TestCase):
             {
                 "amp": lens_light_starlets,
                 "n_scales": n_scales,
-                "n_pixels": numPix,
+                "n_pixels": num_pix,
                 "scale": deltaPix,
                 "center_x": 0,
                 "center_y": 0,

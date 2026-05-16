@@ -30,14 +30,14 @@ class TestSampler(object):
         # data specifics
         sigma_bkg = 0.05  # background noise per pixel
         exp_time = 100  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)
-        numPix = 10  # cutout pixel size
+        num_pix = 10  # cutout pixel size
         deltaPix = 0.1  # pixel size in arcsec (area per pixel = deltaPix**2)
         fwhm = 0.5  # full width half max of PSF
 
         # PSF specification
 
         kwargs_data = sim_util.data_configure_simple(
-            numPix, deltaPix, exp_time, sigma_bkg
+            num_pix, deltaPix, exp_time, sigma_bkg
         )
         data_class = ImageData(**kwargs_data)
         kwargs_psf_gaussian = {

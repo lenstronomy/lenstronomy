@@ -51,7 +51,7 @@ class TestData(object):
 
     def test_kernel_subsampled(self):
         deltaPix = 0.05  # pixel size of image
-        numPix = 40  # number of pixels per axis
+        num_pix = 40  # number of pixels per axis
         subsampling_res = 3  # subsampling scale factor (in each dimension)
         fwhm = 0.3  # FWHM of the PSF kernel
         fwhm_object = 0.2  # FWHM of the Gaussian source to be convolved
@@ -91,7 +91,7 @@ class TestData(object):
         npt.assert_almost_equal(np.sum(kernel_point_source), 1, decimal=8)
 
         deltaPix = 0.05  # pixel size of image
-        numPix = 40  # number of pixels per axis
+        num_pix = 40  # number of pixels per axis
         subsampling_res = 4  # subsampling scale factor (in each dimension)
         fwhm = 0.3  # FWHM of the PSF kernel
         fwhm_object = 0.2  # FWHM of the Gaussian source to be convolved

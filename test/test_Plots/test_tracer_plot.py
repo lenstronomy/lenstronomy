@@ -11,14 +11,14 @@ class TestTracerPlot(object):
         # imagng data specifics
         background_rms = 0.005  # background noise per pixel
         exp_time = 500.0  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)
-        numPix = 60  # cutout pixel size per axis
+        num_pix = 60  # cutout pixel size per axis
         pixel_scale = 0.05  # pixel size in arcsec (area per pixel = pixel_scale**2)
         fwhm = 0.05  # full width at half maximum of PSF
         psf_type = "GAUSSIAN"  # 'GAUSSIAN', 'PIXEL', 'NONE'
 
         # tracer measurements specifics
         tracer_noise_map = np.ones(
-            (numPix, numPix)
+            (num_pix, num_pix)
         )  # variance of metallicity measurement for each pixel
 
         # lensing quantities
@@ -102,7 +102,7 @@ class TestTracerPlot(object):
             Mpix2coord,
             _,
         ) = util.make_grid_with_coordtransform(
-            numPix=numPix,
+            num_pix=num_pix,
             deltapix=pixel_scale,
             center_ra=0,
             center_dec=0,
@@ -117,7 +117,7 @@ class TestTracerPlot(object):
             "dec_at_xy_0": dec_at_xy_0,  # DEC at (0,0) pixel
             "transform_pix2angle": Mpix2coord,
             # matrix to translate shift in pixel in shift in relative RA/DEC (2x2 matrix). Make sure it's units are arcseconds or the angular units you want to model.
-            "image_data": np.zeros((numPix, numPix)),
+            "image_data": np.zeros((num_pix, num_pix)),
             # 2d data vector, here initialized with zeros as place holders that get's overwritten once a simulated image with noise is created.
         }
 
@@ -171,7 +171,7 @@ class TestTracerPlot(object):
             "dec_at_xy_0": dec_at_xy_0,  # DEC at (0,0) pixel
             "transform_pix2angle": Mpix2coord,
             # matrix to translate shift in pixel in shift in relative RA/DEC (2x2 matrix). Make sure it's units are arcseconds or the angular units you want to model.
-            "image_data": np.zeros((numPix, numPix)),
+            "image_data": np.zeros((num_pix, num_pix)),
             # 2d data vector, here initialized with zeros as place holders that get's overwritten once a simulated image with noise is created.
         }
 
@@ -245,13 +245,13 @@ class TestTracerPlot(object):
         tracer_plot.source_plot(
             ax=axes[1, 0],
             deltaPix_source=0.01,
-            numPix=100,
+            num_pix=100,
             plot_scale="log",
         )
         tracer_plot.source_plot(
             ax=axes[1, 0],
             deltaPix_source=0.01,
-            numPix=100,
+            num_pix=100,
             plot_scale="log",
             with_caustics=True,
         )
@@ -281,7 +281,7 @@ class TestTracerPlot(object):
         plt.close()
 
         source_lin, _ = tracer_plot.source(
-            numPix=20,
+            num_pix=20,
             deltaPix=0.02,
             center=(0.01, -0.01),
             image_orientation=False,
@@ -291,7 +291,7 @@ class TestTracerPlot(object):
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
         tracer_plot.source_plot(
             ax=ax,
-            numPix=30,
+            num_pix=30,
             deltaPix_source=0.02,
             plot_scale="linear",
             with_caustics=True,
@@ -302,7 +302,7 @@ class TestTracerPlot(object):
             f, ax = plt.subplots(1, 1, figsize=(4, 4))
             tracer_plot.source_plot(
                 ax=ax,
-                numPix=20,
+                num_pix=20,
                 deltaPix_source=0.02,
                 plot_scale="invalid",
             )

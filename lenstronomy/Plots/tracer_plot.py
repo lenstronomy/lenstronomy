@@ -611,10 +611,10 @@ class TracerPlot(object):
             )
         return ax
 
-    def source(self, numPix, deltaPix, center=None, image_orientation=True):
+    def source(self, num_pix, deltaPix, center=None, image_orientation=True):
         """Compute tracer source surface brightness on a source grid.
 
-        :param numPix: number of pixels per axes
+        :param num_pix: number of pixels per axes
         :param deltaPix: pixel size
         :param image_orientation: If True, uses frame in orientation of the image,
         :type image_orientation: bool otherwise in RA-DEC coordinates
@@ -624,7 +624,7 @@ class TracerPlot(object):
         if image_orientation is True:
             Mpix2coord = self._coords.transform_pix2angle * deltaPix / self._deltaPix
             x_grid_source, y_grid_source = util.make_grid_transformed(
-                numPix, Mpix2Angle=Mpix2coord
+                num_pix, Mpix2Angle=Mpix2coord
             )
             ra_at_xy_0, dec_at_xy_0 = x_grid_source[0], y_grid_source[0]
         else:
@@ -637,7 +637,7 @@ class TracerPlot(object):
                 y_at_radec_0,
                 Mpix2coord,
                 Mcoord2pix,
-            ) = util.make_grid_with_coordtransform(numPix, deltaPix)
+            ) = util.make_grid_with_coordtransform(num_pix, deltaPix)
 
         center_x = 0
         center_y = 0
@@ -664,7 +664,7 @@ class TracerPlot(object):
     def source_plot(
         self,
         ax,
-        numPix,
+        num_pix,
         deltaPix_source,
         center=None,
         with_caustics=False,
@@ -683,7 +683,7 @@ class TracerPlot(object):
 
         :param ax: Matplotlib axes instance
         :type ax: matplotlib.axes.Axes
-        :param numPix: number of pixels in plot per axis
+        :param num_pix: number of pixels in plot per axis
         :param deltaPix_source: pixel spacing in the source resolution illustrated in
             plot
         :param center: [center_x, center_y], if specified, uses this as the center
@@ -711,8 +711,8 @@ class TracerPlot(object):
             kwargs_caustic = dict(kwargs_caustic)
         else:
             kwargs_caustic = {}
-        d_s = numPix * deltaPix_source
-        source, coords_source = self.source(numPix, deltaPix_source, center=center)
+        d_s = num_pix * deltaPix_source
+        source, coords_source = self.source(num_pix, deltaPix_source, center=center)
         if plot_scale == "log":
             kwargs_matshow.setdefault("vmin", self._vmin_default)
             kwargs_matshow.setdefault("vmax", self._vmax_default)
@@ -1029,7 +1029,10 @@ class TracerPlot(object):
         self.model_plot(ax=axes[0, 1], image_names=True)
         self.normalized_residual_plot(ax=axes[0, 2])
         self.source_plot(
-            ax=axes[1, 0], deltaPix_source=0.01, numPix=100, with_caustics=with_caustics
+            ax=axes[1, 0],
+            deltaPix_source=0.01,
+            num_pix=100,
+            with_caustics=with_caustics,
         )
         self.convergence_plot(ax=axes[1, 1])
         self.magnification_plot(ax=axes[1, 2])

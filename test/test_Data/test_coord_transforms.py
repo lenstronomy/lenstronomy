@@ -65,7 +65,7 @@ class TestCoordinates(object):
     def test_rescaled_grid(self):
         import lenstronomy.Util.util as util
 
-        numPix = 10
+        num_pix = 10
         theta = 0.5
         deltaPix = 0.05
         subgrid_res = 3
@@ -73,7 +73,7 @@ class TestCoordinates(object):
             np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])
             * deltaPix
         )
-        x_grid, y_grid = util.make_grid_transformed(numPix, Mpix2a)
+        x_grid, y_grid = util.make_grid_transformed(num_pix, Mpix2a)
         coords = Coordinates(Mpix2a, ra_at_xy_0=x_grid[0], dec_at_xy_0=y_grid[0])
         x_grid_high_res, y_grid_high_res = util.make_subgrid(
             x_grid, y_grid, subgrid_res=subgrid_res

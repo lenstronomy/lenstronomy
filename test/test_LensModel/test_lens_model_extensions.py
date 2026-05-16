@@ -113,7 +113,7 @@ class TestLensModelExtensions(object):
             "source_light_model_list": ["GAUSSIAN"],
             "lens_light_model_list": ["SERSIC"],
             "subgrid_res": 10,
-            "numPix": 200,
+            "num_pix": 200,
             "psf_type": "gaussian",
             "x2_simple": True,
         }

@@ -70,7 +70,7 @@ class TestMGEMass:
         kw_interp = light2mass_interpol(
             ["GAUSSIAN"],
             kwargs_lens_light=[self.kw_gauss],
-            numPix=200,
+            num_pix=200,
             deltaPix=0.2,
             subgrid_res=3,
         )

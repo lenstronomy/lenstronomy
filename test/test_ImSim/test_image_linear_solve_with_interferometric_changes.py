@@ -27,15 +27,15 @@ The test should be independent of the specific definitions of the light and lens
 def test_image_linear_solve_with_primary_beam_and_interferometry_psf():
     background_rms = 3.0
     exp_time = np.inf
-    numPix = 80
+    num_pix = 80
     deltaPix = 0.05
     psf_type = "PIXEL"
     kernel_size = 161
 
     # simulate a primary beam (pb)
-    primary_beam = np.zeros((numPix, numPix))
-    for i in range(numPix):
-        for j in range(numPix):
+    primary_beam = np.zeros((num_pix, num_pix))
+    for i in range(num_pix):
+        for j in range(num_pix):
             primary_beam[i, j] = np.exp(-1e-4 * ((i - 78) ** 2 + (j - 56) ** 2))
     primary_beam /= np.max(primary_beam)
 
@@ -52,7 +52,7 @@ def test_image_linear_solve_with_primary_beam_and_interferometry_psf():
                 psf_test[i, j] = np.sin(r * 0.5) / (r * 0.5)
 
     kwargs_data = sim_util.data_configure_simple(
-        numPix, deltaPix, exp_time, background_rms
+        num_pix, deltaPix, exp_time, background_rms
     )
     kwargs_data["ra_at_xy_0"] = -(40) * deltaPix
     kwargs_data["dec_at_xy_0"] = -(40) * deltaPix
@@ -124,7 +124,7 @@ def test_image_linear_solve_with_primary_beam_and_interferometry_psf():
     # note that the simulated noise here is not the interferometric noise. we just use it to test the numerics
     np.random.seed(42)
     test_noise = scipy.signal.fftconvolve(
-        np.random.normal(0, 1, (numPix, numPix)), psf_test, mode="same"
+        np.random.normal(0, 1, (num_pix, num_pix)), psf_test, mode="same"
     )
     test_noise *= background_rms / np.std(test_noise)
     sim_data = image_sim + test_noise
@@ -193,15 +193,15 @@ def test_image_linear_solve_with_primary_beam_and_interferometry_psf():
 def test_interferometry_image_linear_solve_with_point_source():
     background_rms = 3.0
     exp_time = np.inf
-    numPix = 80
+    num_pix = 80
     deltaPix = 0.05
     psf_type = "PIXEL"
     kernel_size = 161
 
     # simulate a primary beam (pb)
-    primary_beam = np.zeros((numPix, numPix))
-    for i in range(numPix):
-        for j in range(numPix):
+    primary_beam = np.zeros((num_pix, num_pix))
+    for i in range(num_pix):
+        for j in range(num_pix):
             primary_beam[i, j] = np.exp(-1e-4 * ((i - 78) ** 2 + (j - 56) ** 2))
     primary_beam /= np.max(primary_beam)
 
@@ -218,7 +218,7 @@ def test_interferometry_image_linear_solve_with_point_source():
                 psf_test[i, j] = np.sin(r * 0.5) / (r * 0.5)
 
     kwargs_data = sim_util.data_configure_simple(
-        numPix, deltaPix, exp_time, background_rms
+        num_pix, deltaPix, exp_time, background_rms
     )
     kwargs_data["ra_at_xy_0"] = -(40) * deltaPix
     kwargs_data["dec_at_xy_0"] = -(40) * deltaPix
@@ -313,7 +313,7 @@ def test_interferometry_image_linear_solve_with_point_source():
     # note that the simulated noise here is not the interferometric noise. we just use it to test the numerics
     np.random.seed(42)
     test_noise = scipy.signal.fftconvolve(
-        np.random.normal(0, 1, (numPix, numPix)), psf_test, mode="same"
+        np.random.normal(0, 1, (num_pix, num_pix)), psf_test, mode="same"
     )
     test_noise *= background_rms / np.std(test_noise)
     sim_data = image_sim + test_noise
@@ -373,7 +373,7 @@ def test_interferometry_image_linear_solve_with_point_source():
 def test_interferometry_image_linear_solve_with_point_source_without_pb_input():
     background_rms = 3.0
     exp_time = np.inf
-    numPix = 80
+    num_pix = 80
     deltaPix = 0.05
     psf_type = "PIXEL"
     kernel_size = 161
@@ -391,7 +391,7 @@ def test_interferometry_image_linear_solve_with_point_source_without_pb_input():
                 psf_test[i, j] = np.sin(r * 0.5) / (r * 0.5)
 
     kwargs_data = sim_util.data_configure_simple(
-        numPix, deltaPix, exp_time, background_rms
+        num_pix, deltaPix, exp_time, background_rms
     )
     kwargs_data["ra_at_xy_0"] = -(40) * deltaPix
     kwargs_data["dec_at_xy_0"] = -(40) * deltaPix
@@ -485,7 +485,7 @@ def test_interferometry_image_linear_solve_with_point_source_without_pb_input():
     # note that the simulated noise here is not the interferometric noise. we just use it to test the numerics
     np.random.seed(42)
     test_noise = scipy.signal.fftconvolve(
-        np.random.normal(0, 1, (numPix, numPix)), psf_test, mode="same"
+        np.random.normal(0, 1, (num_pix, num_pix)), psf_test, mode="same"
     )
     test_noise *= background_rms / np.std(test_noise)
     sim_data = image_sim + test_noise

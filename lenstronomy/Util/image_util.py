@@ -243,20 +243,20 @@ def rebin_image(bin_size, image, wht_map, sigma_bkg, ra_coords, dec_coords, idex
     :param bin_size: number of pixels (per axis) to merge
     :return:
     """
-    numPix = int(len(image) / bin_size)
-    numPix_precut = numPix * bin_size
-    factor = int(len(image) / numPix)
-    if not numPix * bin_size == len(image):
-        image_precut = image[0:numPix_precut, 0:numPix_precut]
+    num_pix = int(len(image) / bin_size)
+    num_pix_precut = num_pix * bin_size
+    factor = int(len(image) / num_pix)
+    if not num_pix * bin_size == len(image):
+        image_precut = image[0:num_pix_precut, 0:num_pix_precut]
     else:
         image_precut = image
     image_resized = re_size(image_precut, factor)
     image_resized *= bin_size**2
-    wht_map_resized = re_size(wht_map[0:numPix_precut, 0:numPix_precut], factor)
+    wht_map_resized = re_size(wht_map[0:num_pix_precut, 0:num_pix_precut], factor)
     sigma_bkg_resized = bin_size * sigma_bkg
-    ra_coords_resized = re_size(ra_coords[0:numPix_precut, 0:numPix_precut], factor)
-    dec_coords_resized = re_size(dec_coords[0:numPix_precut, 0:numPix_precut], factor)
-    idex_mask_resized = re_size(idex_mask[0:numPix_precut, 0:numPix_precut], factor)
+    ra_coords_resized = re_size(ra_coords[0:num_pix_precut, 0:num_pix_precut], factor)
+    dec_coords_resized = re_size(dec_coords[0:num_pix_precut, 0:num_pix_precut], factor)
+    idex_mask_resized = re_size(idex_mask[0:num_pix_precut, 0:num_pix_precut], factor)
     idex_mask_resized[idex_mask_resized > 0] = 1
     return (
         image_resized,
@@ -311,12 +311,12 @@ def stack_images(image_list, wht_list, sigma_list):
 
 @export
 def cut_edges(image, num_pix):
-    """Cuts out the edges of a 2d image and returns re-sized image to numPix center is
+    """Cuts out the edges of a 2d image and returns re-sized image to num_pix center is
     well defined for odd pixel sizes.
 
     :param image: 2d numpy array
     :param num_pix: square size of cut out image
-    :return: cutout image with size numPix
+    :return: cutout image with size num_pix
     """
     nx, ny = image.shape
     if nx < num_pix or ny < num_pix:

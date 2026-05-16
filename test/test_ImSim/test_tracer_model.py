@@ -27,14 +27,14 @@ class TestTracerModel(object):
         # data specifics
         sigma_bkg = 0.05  # background noise per pixel
         exp_time = 100  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)
-        numPix = 100  # cutout pixel size
+        num_pix = 100  # cutout pixel size
         deltaPix = 0.05  # pixel size in arcsec (area per pixel = deltaPix**2)
         fwhm = 0.5  # full width half max of PSF
 
         # PSF specification
 
         kwargs_data = sim_util.data_configure_simple(
-            numPix, deltaPix, exp_time, sigma_bkg, inverse=True
+            num_pix, deltaPix, exp_time, sigma_bkg, inverse=True
         )
         data_class = ImageData(**kwargs_data)
         kwargs_psf = {

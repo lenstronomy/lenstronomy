@@ -57,8 +57,8 @@ class TestShapeletSet(object):
     def test_shapelet_basis(self):
         num_order = 5
         beta = 1
-        numPix = 10
-        kernel_list = self.shapeletSet.shapelet_basis_2d(num_order, beta, numPix)
+        num_pix = 10
+        kernel_list = self.shapeletSet.shapelet_basis_2d(num_order, beta, num_pix)
         npt.assert_almost_equal(kernel_list[0][4, 4], 0.4393912894677224, decimal=9)
 
     def test_decomposition(self):

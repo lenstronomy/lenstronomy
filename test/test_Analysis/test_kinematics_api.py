@@ -1184,12 +1184,12 @@ class TestKinematicsAPI(object):
             }
         ]
         deltaPix = 0.1
-        numPix = 100
+        num_pix = 100
 
         kwargs_interp = light2mass_interpol(
             ["SERSIC"],
             kwargs_lens_light=kwargs_light,
-            numPix=numPix,
+            num_pix=num_pix,
             deltaPix=deltaPix,
             subgrid_res=5,
         )

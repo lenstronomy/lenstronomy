@@ -168,7 +168,7 @@ class TestSersic(object):
 
     def test_total_flux(self):
         deltapix = 0.1
-        x_grid, y_grid = util.make_grid(numPix=400, deltapix=deltapix)
+        x_grid, y_grid = util.make_grid(num_pix=400, deltapix=deltapix)
         r_eff = 1
         I_eff = 1.0
         n_sersic = 2

@@ -188,36 +188,36 @@ def cube2array(cube):
 
 
 @export
-def make_grid(numPix, deltapix, subgrid_res=1, left_lower=False):
+def make_grid(num_pix, deltapix, subgrid_res=1, left_lower=False):
     """Creates pixel grid (in 1d arrays of x- and y- positions) default coordinate frame
     is such that (0,0) is in the center of the coordinate grid.
 
-    :param numPix: number of pixels per axis Give an integers for a square grid, or a
+    :param num_pix: number of pixels per axis Give an integers for a square grid, or a
         2-length sequence (first, second axis length) for a non-square grid.
     :param deltapix: pixel size
     :param subgrid_res: sub-pixel resolution (default=1)
     :return: x, y position information in two 1d arrays
     """
 
-    # Check numPix is an integer, or 2-sequence of integers
-    if isinstance(numPix, (tuple, list, np.ndarray)):
-        assert len(numPix) == 2
-        if any(x != round(x) for x in numPix):
-            raise ValueError("numPix contains non-integers: %s" % numPix)
-        numPix = np.asarray(numPix, dtype=int)
+    # Check num_pix is an integer, or 2-sequence of integers
+    if isinstance(num_pix, (tuple, list, np.ndarray)):
+        assert len(num_pix) == 2
+        if any(x != round(x) for x in num_pix):
+            raise ValueError("num_pix contains non-integers: %s" % num_pix)
+        num_pix = np.asarray(num_pix, dtype=int)
     else:
-        if numPix != round(numPix):
-            raise ValueError("Attempt to specify non-int numPix: %s" % numPix)
-        numPix = np.array([numPix, numPix], dtype=int)
+        if num_pix != round(num_pix):
+            raise ValueError("Attempt to specify non-int num_pix: %s" % num_pix)
+        num_pix = np.array([num_pix, num_pix], dtype=int)
 
     # Super-resolution sampling
-    numPix_eff = (numPix * subgrid_res).astype(int)
+    num_pix_eff = (num_pix * subgrid_res).astype(int)
     deltapix_eff = deltapix / float(subgrid_res)
 
     # Compute unshifted grids.
     # X values change quickly, Y values are repeated many times
-    x_grid = np.tile(np.arange(numPix_eff[0]), numPix_eff[1]) * deltapix_eff
-    y_grid = np.repeat(np.arange(numPix_eff[1]), numPix_eff[0]) * deltapix_eff
+    x_grid = np.tile(np.arange(num_pix_eff[0]), num_pix_eff[1]) * deltapix_eff
+    y_grid = np.repeat(np.arange(num_pix_eff[1]), num_pix_eff[0]) * deltapix_eff
 
     if left_lower is True:
         # Shift so (0, 0) is in the "lower left"
@@ -225,20 +225,20 @@ def make_grid(numPix, deltapix, subgrid_res=1, left_lower=False):
         shift = -1.0 / 2 + 1.0 / (2 * subgrid_res) * np.array([1, 1])
     else:
         # Shift so (0, 0) is centered
-        shift = deltapix_eff * (numPix_eff - 1) / 2
+        shift = deltapix_eff * (num_pix_eff - 1) / 2
 
     return x_grid - shift[0], y_grid - shift[1]
 
 
 @export
-def make_grid_transformed(numPix, Mpix2Angle):
+def make_grid_transformed(num_pix, Mpix2Angle):
     """Returns grid with linear transformation (deltaPix and rotation)
 
-    :param numPix: number of Pixels
+    :param num_pix: number of Pixels
     :param Mpix2Angle: 2-by-2 matrix to mat a pixel to a coordinate
     :return: coordinate grid
     """
-    x_grid, y_grid = make_grid(numPix, deltapix=1)
+    x_grid, y_grid = make_grid(num_pix, deltapix=1)
     ra_grid, dec_grid = map_coord2pix(x_grid, y_grid, 0, 0, Mpix2Angle)
     return ra_grid, dec_grid
 
@@ -271,7 +271,7 @@ def centered_coordinate_system(num_pix, transform_pix2angle):
 
 @export
 def make_grid_with_coordtransform(
-    numPix,
+    num_pix,
     deltapix,
     subgrid_res=1,
     center_ra=0,
@@ -282,7 +282,7 @@ def make_grid_with_coordtransform(
     """Same as make_grid routine, but returns the transformation matrix and shift
     between coordinates and pixel.
 
-    :param numPix: number of pixels per axis
+    :param num_pix: number of pixels per axis
     :param deltapix: pixel scale per axis
     :param subgrid_res: super-sampling resolution relative to the stated pixel size
     :param center_ra: center of the grid
@@ -292,9 +292,9 @@ def make_grid_with_coordtransform(
     :return: ra_grid, dec_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0,
         Mpix2coord, Mcoord2pix
     """
-    numPix_eff = numPix * subgrid_res
+    num_pix_eff = num_pix * subgrid_res
     deltapix_eff = deltapix / float(subgrid_res)
-    a = np.arange(numPix_eff)
+    a = np.arange(num_pix_eff)
     matrix = np.dstack(np.meshgrid(a, a)).reshape(-1, 2)
     if inverse is True:
         delta_x = -deltapix_eff
@@ -304,8 +304,8 @@ def make_grid_with_coordtransform(
         ra_grid = matrix[:, 0] * delta_x
         dec_grid = matrix[:, 1] * deltapix_eff
     else:
-        ra_grid = (matrix[:, 0] - (numPix_eff - 1) / 2.0) * delta_x
-        dec_grid = (matrix[:, 1] - (numPix_eff - 1) / 2.0) * deltapix_eff
+        ra_grid = (matrix[:, 0] - (num_pix_eff - 1) / 2.0) * delta_x
+        dec_grid = (matrix[:, 1] - (num_pix_eff - 1) / 2.0) * deltapix_eff
     shift = (subgrid_res - 1) / (2.0 * subgrid_res) * deltapix
     ra_grid += -shift + center_ra
     dec_grid += -shift + center_dec
@@ -373,18 +373,18 @@ def get_axes(x, y):
 
 
 @export
-def averaging(grid, numGrid, numPix):
-    """Resize 2d pixel grid with numGrid to numPix and averages over the pixels.
+def averaging(grid, numGrid, num_pix):
+    """Resize 2d pixel grid with numGrid to num_pix and averages over the pixels.
 
     :param grid: higher resolution pixel grid
     :param numGrid: number of pixels per axis in the high resolution input image
-    :param numPix: lower number of pixels per axis in the output image (numGrid/numPix
+    :param num_pix: lower number of pixels per axis in the output image (numGrid/num_pix
         is integer number)
     :return: averaged pixel grid
     """
 
     Nbig = numGrid
-    Nsmall = numPix
+    Nsmall = num_pix
     small = (
         grid.reshape([int(Nsmall), int(Nbig / Nsmall), int(Nsmall), int(Nbig / Nsmall)])
         .mean(3)
@@ -551,11 +551,11 @@ def local_minima_2d(a, x, y):
     second-order tangential minima criteria.
 
     :param a: 1d array of displacements from the source positions
-    :type a: numpy array with length numPix**2 in float
+    :type a: numpy array with length num_pix**2 in float
     :param x: 1d coordinate grid in x-direction
-    :type x: numpy array with length numPix**2 in float
+    :type x: numpy array with length num_pix**2 in float
     :param y: 1d coordinate grid in x-direction
-    :type y: numpy array with length numPix**2 in float
+    :type y: numpy array with length num_pix**2 in float
     :returns: array of indices of local minima, values of those minima
     :raises: AttributeError, KeyError
     """
@@ -592,7 +592,7 @@ def neighborSelect(a, x, y):
     finds (local) minima in a 2d grid
 
     :param a: 1d array of displacements from the source positions
-    :type a: numpy array with length numPix**2 in float
+    :type a: numpy array with length num_pix**2 in float
     :returns: array of indices of local minima, values of those minima
     :raises: AttributeError, KeyError
     """

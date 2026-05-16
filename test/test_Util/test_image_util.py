@@ -108,9 +108,9 @@ def test_findOverlap():
 def test_coordInImage():
     x_coord = [100, 20, -10]
     y_coord = [0, -30, 5]
-    numPix = 50
+    num_pix = 50
     deltapix = 1
-    x_result, y_result = image_util.coordInImage(x_coord, y_coord, numPix, deltapix)
+    x_result, y_result = image_util.coordInImage(x_coord, y_coord, num_pix, deltapix)
     assert x_result == -10
     assert y_result == 5
 
@@ -125,7 +125,7 @@ def test_rebin_coord_transform():
         y_at_radec_0,
         Mpix2coord,
         Mcoord2pix,
-    ) = util.make_grid_with_coordtransform(numPix=3, deltapix=0.03, subgrid_res=1)
+    ) = util.make_grid_with_coordtransform(num_pix=3, deltapix=0.03, subgrid_res=1)
     (
         x_grid,
         y_grid,
@@ -135,7 +135,7 @@ def test_rebin_coord_transform():
         y_at_radec_0_re,
         Mpix2coord_re,
         Mcoord2pix_re,
-    ) = util.make_grid_with_coordtransform(numPix=1, deltapix=0.09, subgrid_res=1)
+    ) = util.make_grid_with_coordtransform(num_pix=1, deltapix=0.09, subgrid_res=1)
 
     (
         ra_at_xy_0_resized,
@@ -163,7 +163,7 @@ def test_rebin_coord_transform():
         y_at_radec_0,
         Mpix2coord,
         Mcoord2pix,
-    ) = util.make_grid_with_coordtransform(numPix=100, deltapix=0.05, subgrid_res=1)
+    ) = util.make_grid_with_coordtransform(num_pix=100, deltapix=0.05, subgrid_res=1)
     (
         x_grid,
         y_grid,
@@ -173,7 +173,7 @@ def test_rebin_coord_transform():
         y_at_radec_0_re,
         Mpix2coord_re,
         Mcoord2pix_re,
-    ) = util.make_grid_with_coordtransform(numPix=50, deltapix=0.1, subgrid_res=1)
+    ) = util.make_grid_with_coordtransform(num_pix=50, deltapix=0.1, subgrid_res=1)
 
     (
         ra_at_xy_0_resized,
@@ -201,7 +201,7 @@ def test_rebin_coord_transform():
         y_at_radec_0,
         Mpix2coord,
         Mcoord2pix,
-    ) = util.make_grid_with_coordtransform(numPix=99, deltapix=0.1, subgrid_res=1)
+    ) = util.make_grid_with_coordtransform(num_pix=99, deltapix=0.1, subgrid_res=1)
     (
         x_grid,
         y_grid,
@@ -211,7 +211,7 @@ def test_rebin_coord_transform():
         y_at_radec_0_re,
         Mpix2coord_re,
         Mcoord2pix_re,
-    ) = util.make_grid_with_coordtransform(numPix=33, deltapix=0.3, subgrid_res=1)
+    ) = util.make_grid_with_coordtransform(num_pix=33, deltapix=0.3, subgrid_res=1)
 
     assert x_at_radec_0 == 49
     (
@@ -305,18 +305,18 @@ def test_shift_image():
 
 
 def test_re_size_array():
-    numPix = 9
-    kernel = np.zeros((numPix, numPix))
-    kernel[int((numPix - 1) / 2), int((numPix - 1) / 2)] = 1
+    num_pix = 9
+    kernel = np.zeros((num_pix, num_pix))
+    kernel[int((num_pix - 1) / 2), int((num_pix - 1) / 2)] = 1
     subgrid_res = 2
     input_values = kernel
-    x_in = np.linspace(0, 1, numPix)
-    x_out = np.linspace(0, 1, numPix * subgrid_res)
+    x_in = np.linspace(0, 1, num_pix)
+    x_out = np.linspace(0, 1, num_pix * subgrid_res)
     out_values = image_util.re_size_array(x_in, x_in, input_values, x_out, x_out)
     kernel_out = out_values
     assert (
         kernel_out[
-            int((numPix * subgrid_res - 1) / 2), int((numPix * subgrid_res - 1) / 2)
+            int((num_pix * subgrid_res - 1) / 2), int((num_pix * subgrid_res - 1) / 2)
         ]
         == 0.58477508650519028
     )
@@ -333,32 +333,32 @@ def test_symmetry_average():
 def test_cut_edges():
     image = np.zeros((51, 51))
     image[25][25] = 1
-    numPix = 21
-    resized = image_util.cut_edges(image, numPix)
+    num_pix = 21
+    resized = image_util.cut_edges(image, num_pix)
     nx, ny = resized.shape
-    assert nx == numPix
-    assert ny == numPix
+    assert nx == num_pix
+    assert ny == num_pix
     assert resized[10][10] == 1
 
     image = np.zeros((5, 5))
     image[2, 2] = 1
-    numPix = 3
-    image_cut = image_util.cut_edges(image, numPix)
-    assert len(image_cut) == numPix
+    num_pix = 3
+    image_cut = image_util.cut_edges(image, num_pix)
+    assert len(image_cut) == num_pix
     assert image_cut[1, 1] == 1
 
     image = np.zeros((6, 6))
     image[3, 2] = 1
-    numPix = 4
-    image_cut = image_util.cut_edges(image, numPix)
-    assert len(image_cut) == numPix
+    num_pix = 4
+    image_cut = image_util.cut_edges(image, num_pix)
+    assert len(image_cut) == num_pix
     assert image_cut[2, 1] == 1
 
     image = np.zeros((6, 8))
     image[3, 2] = 1
-    numPix = 4
-    image_cut = image_util.cut_edges(image, numPix)
-    assert len(image_cut) == numPix
+    num_pix = 4
+    image_cut = image_util.cut_edges(image, num_pix)
+    assert len(image_cut) == num_pix
     assert image_cut[2, 0] == 1
 
 
@@ -372,12 +372,12 @@ def test_re_size():
 
 
 def test_stack_images():
-    numPix = 10
-    image1 = np.ones((numPix, numPix))
-    image2 = np.ones((numPix, numPix)) / 10.0
+    num_pix = 10
+    image1 = np.ones((num_pix, num_pix))
+    image2 = np.ones((num_pix, num_pix)) / 10.0
     image_list = [image1, image2]
-    wht1 = np.ones((numPix, numPix))
-    wht2 = np.ones((numPix, numPix)) * 10
+    wht1 = np.ones((num_pix, num_pix))
+    wht2 = np.ones((num_pix, num_pix)) * 10
     wht_list = [wht1, wht2]
     sigma_list = [0.1, 0.2]
     image_stacked, wht_stacked, sigma_stacked = image_util.stack_images(
@@ -389,13 +389,13 @@ def test_stack_images():
 
 
 def test_rebin_image():
-    numPix = 10
+    num_pix = 10
     bin_size = 2
-    image = np.ones((numPix, numPix))
-    wht_map = np.ones((numPix, numPix)) * 10
-    idex_mask = np.ones((numPix, numPix))
+    image = np.ones((num_pix, num_pix))
+    wht_map = np.ones((num_pix, num_pix)) * 10
+    idex_mask = np.ones((num_pix, num_pix))
     sigma_bkg = 0.1
-    ra_coords, dec_coords = util.make_grid(numPix, deltapix=0.05)
+    ra_coords, dec_coords = util.make_grid(num_pix, deltapix=0.05)
     ra_coords = util.array2image(ra_coords)
     dec_coords = util.array2image(dec_coords)
     (
@@ -413,13 +413,13 @@ def test_rebin_image():
     assert sigma_bkg_resized == 0.2
     assert ra_coords_resized[0, 0] == -0.2
 
-    numPix = 11
+    num_pix = 11
     bin_size = 2
-    image = np.ones((numPix, numPix))
-    wht_map = np.ones((numPix, numPix)) * 10
-    idex_mask = np.ones((numPix, numPix))
+    image = np.ones((num_pix, num_pix))
+    wht_map = np.ones((num_pix, num_pix)) * 10
+    idex_mask = np.ones((num_pix, num_pix))
     sigma_bkg = 0.1
-    ra_coords, dec_coords = util.make_grid(numPix, deltapix=0.05)
+    ra_coords, dec_coords = util.make_grid(num_pix, deltapix=0.05)
     ra_coords = util.array2image(ra_coords)
     dec_coords = util.array2image(dec_coords)
     (

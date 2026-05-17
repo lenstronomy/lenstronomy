@@ -437,7 +437,7 @@ class ModelBandPlot(ModelBand):
         subtract_mean=True,
         font_size=None,
         with_critical_curves=False,
-        crit_curve_color="k",
+        critical_curve_color="k",
         image_name_list=None,
         super_sample_factor=None,
         kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
@@ -458,7 +458,7 @@ class ModelBandPlot(ModelBand):
         :param label: label for the color bar
         :param with_critical_curves: ; plots the critical curves in the frame
         :type with_critical_curves: bool
-        :param crit_curve_color: color of the critical curves
+        :param critical_curve_color: color of the critical curves
         :param image_name_list: labels the images, default is A, B, C, ...
         :param super_sample_factor: a integer the specifies supersampling of the coordinate grid to create the convergence map
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
@@ -571,7 +571,7 @@ class ModelBandPlot(ModelBand):
                 self._coords,
                 ra_crit_list,
                 dec_crit_list,
-                color=crit_curve_color,
+                color=critical_curve_color,
                 points_only=self._caustic_points_only,
             )
 
@@ -1276,9 +1276,10 @@ class ModelBandPlot(ModelBand):
                 **kwargs_colorbar,
             )
         if kwargs_caustics is not None:
-            kwargs_caustics = dict(kwargs_caustics)
             ra_crit_list, dec_crit_list = self._critical_curves()
             ra_caustic_list, dec_caustic_list = self._caustics()
+
+            kwargs_caustics = dict(kwargs_caustics)
             kwargs_caustics.setdefault("color", "yellow")
             critical_curve_color = kwargs_caustics.pop("critical_curve_color", "red")
             plot_util.plot_line_set(

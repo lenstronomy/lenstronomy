@@ -983,10 +983,7 @@ class ModelBandPlot(ModelBand):
         """
         if font_size is None:
             font_size = self._font_size
-        if kwargs_caustics is not None:
-            kwargs_caustics = dict(kwargs_caustics)
-        else:
-            kwargs_caustics = {}
+
         x_grid_source, y_grid_source = util.make_grid_transformed(
             num_pix,
             self._coords.transform_pix2angle * delta_pix_source / self._delta_pix,
@@ -1037,8 +1034,11 @@ class ModelBandPlot(ModelBand):
             )
         if kwargs_caustics is not None:
             ra_caustic_list, dec_caustic_list = self._caustics()
+
+            kwargs_caustics = dict(kwargs_caustics)
             kwargs_caustics = dict(kwargs_caustics)
             kwargs_caustics.setdefault("color", "b")
+
             plot_util.plot_line_set(
                 ax,
                 coords_source,

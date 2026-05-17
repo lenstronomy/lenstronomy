@@ -162,6 +162,7 @@ class TestLensPlot(object):
 
         for i in range(len(x_sources)):
             color_list = ["k", "b", "g", "r", "c", "m", "y"]
+            kwargs_caustics = {"color": color_list[i % len(color_list)]}
             lens_plot.lens_model_plot(
                 ax,
                 lensModel,
@@ -172,9 +173,8 @@ class TestLensPlot(object):
                 source_pos_y=y_sources[i],
                 name_list=name_lists[i],
                 index=i,
-                color_value=color_list[i],
                 point_source=True,
-                kwargs_caustics={"color": "b"},
+                kwargs_caustics=kwargs_caustics,
                 fast_caustic=True,
                 coord_inverse=True,
             )

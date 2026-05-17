@@ -415,7 +415,7 @@ class TestOutputPlots(object):
         )
         plot_band = lensPlot._select_band(0)
 
-        plot_band.plot_main(kwargs_cuastics={"color": "b"})
+        plot_band.plot_main(kwargs_caustics={"color": "b"})
         plt.close()
 
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
@@ -436,7 +436,7 @@ class TestOutputPlots(object):
             ax=ax,
             num_pix=30,
             delta_pix_source=0.02,
-            kwargs_caustic={"linewidth": 2},
+            kwargs_caustics={"linewidth": 2},
             plot_scale="linear",
         )
         plt.close()
@@ -446,7 +446,7 @@ class TestOutputPlots(object):
             ax=ax,
             num_pix=30,
             delta_pix_source=0.02,
-            kwargs_caustic={"linewidth": 2},
+            kwargs_caustics={"linewidth": 2},
         )
         plt.close()
 

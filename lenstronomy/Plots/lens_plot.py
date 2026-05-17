@@ -363,12 +363,12 @@ def caustics_plot(
         )
         # ra_crit_list, dec_crit_list = list(ra_crit_list), list(dec_crit_list)
         # ra_caustic_list, dec_caustic_list = list(ra_caustic_list), list(dec_caustic_list)
+    kwargs_plot.setdefault("color", color_caustic)
     plot_util.plot_line_set(
         ax,
         pixel_grid,
         ra_caustic_list,
         dec_caustic_list,
-        color=color_caustic,
         origin=origin,
         flipped_x=coord_inverse,
         points_only=points_only,
@@ -376,12 +376,12 @@ def caustics_plot(
         *args,
         **kwargs_plot,
     )
+    kwargs_plot.setdefault("color", color_crit)
     plot_util.plot_line_set(
         ax,
         pixel_grid,
         ra_crit_list,
         dec_crit_list,
-        color=color_crit,
         origin=origin,
         flipped_x=coord_inverse,
         points_only=points_only,
@@ -510,7 +510,7 @@ def point_source_plot(
 @export
 def arrival_time_surface(
     ax,
-    lensModel,
+    lens_model,
     kwargs_lens,
     num_pix=500,
     delta_pix=0.01,
@@ -522,13 +522,14 @@ def arrival_time_surface(
     image_color_value=None,
     letter_font_size=20,
     name_list=None,
+    **kwargs_contours: "Unpack[PlotKwargs]",
 ):
     """Plot Fermat potential contours and optional images.
 
     :param ax: Matplotlib axes instance
     :type ax: matplotlib.axes.Axes
-    :param lensModel: LensModel() class instance
-    :type lensModel: LensModel
+    :param lens_model: LensModel() class instance
+    :type lens_model: LensModel
     :param kwargs_lens: lens model keyword argument list
     :param num_pix:
     :type num_pix: int
@@ -556,18 +557,15 @@ def arrival_time_surface(
     _frame_size = num_pix * delta_pix
     _coords = data
     x_grid, y_grid = data.pixel_coordinates
-    lens_model_ext = LensModelExtensions(lensModel)
+    lens_model_ext = LensModelExtensions(lens_model)
     # ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list = lensModelExt.critical_curve_caustics(
     #    kwargs_lens, compute_window=_frame_size, grid_scale=delta_pix/2.)
     x_grid1d = util.image2array(x_grid)
     y_grid1d = util.image2array(y_grid)
-    fermat_surface = lensModel.fermat_potential(
+    fermat_surface = lens_model.fermat_potential(
         x_grid1d, y_grid1d, kwargs_lens, source_pos_x, source_pos_y
     )
     fermat_surface = util.array2image(fermat_surface)
-    if kwargs_contours is None:
-        kwargs_contours = {}
-        # , cmap='Greys', vmin=-1, vmax=1) #, cmap=self._cmap, vmin=v_min, vmax=v_max)
     if kwargs_caustics is not None:
         kwargs_caustics = dict(kwargs_caustics)
         kwargs_caustics.setdefault("color", "k")
@@ -579,7 +577,7 @@ def arrival_time_surface(
             start_scale=delta_pix / 5,
             max_order=10,
         )
-        ra_caustic_list, dec_caustic_list = lensModel.ray_shooting(
+        ra_caustic_list, dec_caustic_list = lens_model.ray_shooting(
             ra_crit_list, dec_crit_list, kwargs_lens
         )
         plot_util.plot_line_set(
@@ -597,7 +595,7 @@ def arrival_time_surface(
     if point_source is True:
         from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 
-        solver = LensEquationSolver(lensModel)
+        solver = LensEquationSolver(lens_model)
         theta_x, theta_y = solver.image_position_from_source(
             source_pos_x,
             source_pos_y,
@@ -606,7 +604,7 @@ def arrival_time_surface(
             search_window=delta_pix * num_pix,
         )
 
-        fermat_pot_images = lensModel.fermat_potential(theta_x, theta_y, kwargs_lens)
+        fermat_pot_images = lens_model.fermat_potential(theta_x, theta_y, kwargs_lens)
         _ = ax.contour(
             x_grid,
             y_grid,
@@ -663,14 +661,14 @@ def arrival_time_surface(
 
 @export
 def curved_arc_illustration(
-    ax, lensModel, kwargs_lens, with_centroid=True, stretch_scale=0.1, color="k"
+    ax, lens_model, kwargs_lens, with_centroid=True, stretch_scale=0.1, color="k"
 ):
     """Illustrate curved-arc lens model components.
 
     :param ax: Matplotlib axes instance
     :type ax: matplotlib.axes.Axes
-    :param lensModel: LensModel() instance
-    :type lensModel: LensModel
+    :param lens_model: LensModel() instance
+    :type lens_model: LensModel
     :param kwargs_lens: list of lens model keyword arguments (only those of CURVED_ARC
         considered
     :param with_centroid: plots the center of the curvature radius
@@ -685,7 +683,7 @@ def curved_arc_illustration(
 
     # loop through lens models
     # check whether curved arc
-    lens_model_list = lensModel.lens_model_list
+    lens_model_list = lens_model.lens_model_list
     for i, lens_type in enumerate(lens_model_list):
         if lens_type in [
             "CURVED_ARC",

@@ -253,7 +253,7 @@ class TestTracerPlot(object):
             delta_pix_source=0.01,
             num_pix=100,
             plot_scale="log",
-            kwargs_caustic={"color": "b"},
+            kwargs_caustics={"color": "b"},
         )
         tracer_plot.convergence_plot(ax=axes[1, 1], vmax=1)
         tracer_plot.magnification_plot(ax=axes[1, 2])
@@ -294,7 +294,7 @@ class TestTracerPlot(object):
             num_pix=30,
             delta_pix_source=0.02,
             plot_scale="linear",
-            kwargs_caustic={"linewidth": 2},
+            kwargs_caustics={"linewidth": 2},
         )
         plt.close()
 

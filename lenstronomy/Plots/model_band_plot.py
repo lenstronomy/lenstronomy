@@ -1037,12 +1037,13 @@ class ModelBandPlot(ModelBand):
             )
         if kwargs_caustics is not None:
             ra_caustic_list, dec_caustic_list = self._caustics()
+            kwargs_caustics = dict(kwargs_caustics)
+            kwargs_caustics.setdefault("color", "b")
             plot_util.plot_line_set(
                 ax,
                 coords_source,
                 ra_caustic_list,
                 dec_caustic_list,
-                color="b",
                 points_only=self._caustic_points_only,
                 **kwargs_caustics,
             )

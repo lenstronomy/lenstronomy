@@ -193,7 +193,7 @@ class Numerics(PointSourceRendering):
         :param unconvolved: boolean, if True, does not apply a convolution
         :return: convolved image on regular pixel grid, 2d array
         """
-        # add supersampled region to lower resolution on
+        # add supersampled region to lower resolution one
         image_low_res, image_high_res_partial = self._grid.flux_array2image_low_high(
             flux_array, high_res_return=self._high_res_return
         )
